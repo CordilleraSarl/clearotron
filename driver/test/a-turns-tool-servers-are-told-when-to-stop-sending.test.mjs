@@ -15,6 +15,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { withSendUntil } from "../engine/mcp/gather-config.mjs";
 import { renderCodexConfigToml } from "../engine/mcp/codex-config.mjs";
+import { registerMounts } from "./register-mounts.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const CONFIG = JSON.stringify({ mcpServers: { register: { command: "node", args: ["server.mjs"], env: { CLEAROTRON_GATHER_SESSION_KEY: "k" } },
@@ -43,9 +44,9 @@ test("the wiring: each turn and each repair turn builds its config with the time
     "the turn is dispatched without its own copy of the config");
   assert.equal((gateway.match(/mcpConfig: turnConfig\(effTimeout\)/g) ?? []).length, 1, "the repair turn is dispatched without its time to stop sending");
   assert.doesNotMatch(gateway, /mcpConfig: gatherMcpConfig[,}]/, "a turn still takes the stage's config as it was built");
-  const servers = readdirSync(join(HERE, "..", "engine", "mcp")).filter((f) => f.endsWith("-server.mjs"))
-    .filter((f) => /const tctx = \(kind\) => \(\{/.test(readFileSync(join(HERE, "..", "engine", "mcp", f), "utf8")));
+  const servers = registerMounts().map((m) => m.path)
+    .filter((f) => /const tctx = \(kind\) => \(\{/.test(readFileSync(f, "utf8")));
   assert.ok(servers.length >= 6, `guard: found only ${servers.length} register servers, so this reads too few`);
   for (const f of servers)
-    assert.match(readFileSync(join(HERE, "..", "engine", "mcp", f), "utf8"), /sendUntilMs: sendUntilFromEnv\(\),/, `${f} does not put the time on its call context`);
+    assert.match(readFileSync(f, "utf8"), /sendUntilMs: sendUntilFromEnv\(\),/, `${f} does not put the time on its call context`);
 });

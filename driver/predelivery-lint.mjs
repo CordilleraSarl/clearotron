@@ -38,7 +38,7 @@ import { CLIENT_TIER_BY_COMPOSITE, joinFindingToBlock, parseBlockOrd, worstLiveB
 import { normalizeBand } from "./framework.mjs";
 import { clientConditions, unrenderableConditions, ENGINE_TOKEN_RE, ENGINE_PHRASE_RE } from "./terminal-clamp.mjs";   // the reader's clause per condition, and the token shape it may never carry
 import { knockoutNoteView, REQUEST_NOTE_WORDS, REQUEST_SUBJECT_WORDS } from "./findings-model.mjs";   // one reader for where a note prints
-import { isEngineAppendedCaveat } from "./verify-knockout.mjs";   // ONE derivation for "the engine appended this caveat, not a seat"
+import { isEngineAppendedCaveat } from "./knockout-caveats.mjs";   // ONE derivation for "the engine appended this caveat, not a seat"
 
 // V4-3: diacritics FOLD (NFD strip) instead of being deleted — "Televisión" must normalize to
 // "television" (deletion made it "televisin", so a diacritic mention never matched its introduction).

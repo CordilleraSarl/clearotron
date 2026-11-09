@@ -54,7 +54,7 @@ test("enqueue CLI → explicit CLEAROTRON_QUEUE_DIR → runner drains to .done (
   const env = {
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE,
     CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),
-    CLEAROTRON_QUEUE_DIR: qdir, CLEAROTRON_QUEUE_DIR: qdir,
+    CLEAROTRON_QUEUE_DIR: qdir,
     CLEAROTRON_MAX_RETRIES: "0", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
     CORSEARCH_SESSION_KEY: "test-offline",  // doc-27 register-cred preflight is fail-closed at claim
     CLEAROTRON_SATPROBE_CODESIDE: "0", CLEAROTRON_BAND_TRUTH_GATE: "0",  // hermetic: no provider dialing, no ledger to evidence bands

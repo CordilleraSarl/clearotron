@@ -51,17 +51,17 @@ import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-p
 announceWithheldMode();
 
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-export const GUARD = "citation-line-check (#1135)";
+export const GUARD = "citation-line-check";
 
 /** What this guard is blind to. Printed on EVERY run, clean or not. Exported so the test can pin it. */
 export const BLINDNESS =
   "CANNOT SEE: a citation that points at the WRONG LIVE LINE while that line is real code. Two arms "
-  + "narrow that class and neither closes it. #1567 checks a citation against the SYMBOL written beside "
-  + "it, which is a minority of this corpus. #1712 checks that the cited span is not entirely blank or "
+  + "narrow that class and neither closes it. One checks a citation against the SYMBOL written beside "
+  + "it, which is a minority of this corpus. The other checks that the cited span is not entirely blank or "
   + "brace-only — that one needs no symbol, but it recognises only PUNCTUATION: a citation that drifted "
   + "onto a different REAL line reads as correct to it. Two hand measurements, both over citations this "
-  + "script had passed — 2026-08-20 (#1135): three of ten then-ambiguous citations pointed at the wrong "
-  + "line. 2026-08-23 (#1712): of eleven repointed by hand in one contract file, THREE had landed on a "
+  + "script had passed — 2026-08-20: three of ten then-ambiguous citations pointed at the wrong "
+  + "line. 2026-08-23: of eleven repointed by hand in one contract file, THREE had landed on a "
   + "wrong NON-BLANK line. Cite the SYMBOL (CONTRIBUTING.md): it is both the fix and the thing that "
   + "makes a citation checkable at all.";
 
@@ -462,7 +462,7 @@ function main() {
       || symbolGone.length || blankTarget.length || floorBroken || ratchetBroken ? 1 : 0);
   }
 
-  console.log(`citation-line-check (#1135) - ${citations.length} line citation(s) across ${corpus.length} tracked file(s)`);
+  console.log(`citation-line-check - ${citations.length} line citation(s) across ${corpus.length} tracked file(s)`);
   console.log(`  ${resolved.length} resolve to a tracked file - ${overrun.length} point past its last line`);
   console.log(`  ${dangling.length} name a file that is NOT in the tree`);
   console.log(`  ${ambiguous.length} name a bare filename matching several files and are NOT declared - FAILS`);

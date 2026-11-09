@@ -14,8 +14,8 @@ from its own receipts. Nothing you write by hand is read, and you hold no `Write
 | Field | One entry per | You send | The driver renders |
 |---|---|---|---|
 | `findings_rows` | Sheet-1 position | `uri`, `flag_reason`, `verify` (`yes`/`no`) | URI, Mark, Owner, Country, Classes, Status, Filed, Expiry + the clickable URL |
-| `incumbent_rows` | Sheet-2 position | the same three | the same cells |
-| `negative_rows` | dropped candidate | `uri`, `drop_reason`, optional `variant` | the Mark cell and the Notes provenance (URI, `screen_verdict`, class, status) |
+| `incumbent_rows` | Sheet-2 position you change or add; send no row for a sheet-2 placement you keep (the driver writes it with placement's reason) | the same three | the same cells |
+| `negative_rows` | dropped candidate | `uri`, `drop_reason`, `ground`, optional `variant` | the Mark cell and the Notes provenance (URI, `screen_verdict`, class, status) |
 | `instructed_checks` | requester ask | `ask`, `answer` | the record ids you read while answering |
 | `disagreement_resolutions` | disagreement / borderline | `subject`, `ADOPTED`\|`OVERRODE`, `reason` | the section and its rows |
 | `opposition` / `merch_sweep` / `cross_checks` / `open_flags` | — | your prose | the headings around it |
@@ -35,8 +35,7 @@ reader can see it.
 #### Summary counts
 
 Driver-computed from its own receipts. **There is no field for them and you do not state them.** The
-COVERAGE judgment is not among them: it is yours, and it rides `record_coverage` (below), which is also
-where the rolled-up `sufficient` line comes from.
+COVERAGE judgment is not among them: it is yours, and it rides `record_coverage` (below). You send no rolled-up line. Your row statuses are what synthesis reads when it writes `coverage_judgment`.
 
 #### `findings_rows` — Sheet 1 (risk-relevant) and `incumbent_rows` — Sheet 2
 
@@ -55,13 +54,7 @@ Brexit-clone arithmetic, Madrid IR↔base linkage) = ONE position with territori
 rows follow POSITIONS, never registrations: one row per position, the Country/Classes cells the
 union, the Flag reason naming the senior leg.
 
-**The URI cell must cite AT LEAST ONE constituent record URI — any one of them.** Listing all of a
-position's constituents (`/mark/gb/… ; /mark/em/…`) is the better row and stays the recommendation,
-but ONE is what the driver's reconciliation requires: an ending on any constituent ends the whole
-position, so a row citing only the senior leg is complete and can never block the run. (This used to
-say "EVERY constituent URI", which made a prose sentence delivery-blocking — a compliant one-URI row
-left its sibling records unended and the pre-verdict floor killed the delivery. The gate and this
-instruction now count the same thing: positions.)
+`uri` carries exactly one constituent; any one ends the whole position.
 
 Records the projection did NOT fold stay separate rows. Where registration arithmetic links two
 records whose OWNERS differ, the shape lists them under **Cross-references** rather than folding them
@@ -83,8 +76,7 @@ section does not appear.
 
 #### `negative_rows` — every candidate screened OUT
 
-One entry per dropped candidate. You send the **`uri`**, your one-line **`drop_reason`**, and optionally
-the **`variant`** the candidate came back on.
+One entry per dropped candidate. You send the `uri`, your one-line `drop_reason`, the `ground` token (off-field, goods-distance, duplicate-of-surfaced, sign, dead-status, out-of-class), and optionally the `variant`.
 
 **The provenance is the DRIVER's.** The Notes cell's URI, `screen_verdict`, class and status are all
 fields of the batch-screen record already in the band; the driver composes that cell from the record your
@@ -100,39 +92,9 @@ refused on the call. **Never** batch-drop a `surface:in-scope-live` / `surface:a
 row on goods/services (brand-json lacks G&S) — those are decided on the record's goods, read with `band_record`;
 **never** drop a Slice-A exact-in-class-live candidate or class-drop an `all_class` row.
 
-**Fetch the SENIOR leg.** When a kept conflict's owner holds SEVERAL
-registrations of the same mark (a multi-country family), deep-fetch the **senior live leg** — the
-earliest `applicationDate` among live batch-screen rows, a registered right before a pending
-application — verify goods/status from THAT record, and cite it as the finding's source (use
-`translate=true` where the senior register is non-Latin; same call, one param). Do **not** fetch
-additional legs: one leg per family is fetched either way — this only redirects WHICH one. The
-VENZY defect: the report read "verified" from the junior AE 2015 leg while the senior TR 2009
-registration — the right an opponent would assert first — was never pulled. The driver's
-senior-right closure re-fetches the senior leg when the digest cites a junior one, so citing the
-junior leg makes an extra request.
+When a kept conflict's owner holds several registrations of the same mark, identify the senior live leg (earliest filing, registered before pending), read it with `band_record` if held, and cite its uri; if it is not held, say so.
 
-**Relevance-gate drops (provenance — floor-critical).** A candidate that PASSED the status filter but the
-relevance gate (Step 2) dropped as genuinely field-irrelevant is recorded the SAME way — one row per drop in
-THIS table, in the column shape the deterministic audit builder parses — so it reaches the published
-`# Negative Results` (the internal/senior-facing workbook's defensibility record of what was considered and
-ruled out). Do **not** put these under a separate "audit-only" heading: a heading `buildAuditMd` does not parse
-never leaves the spine, so the drop vanishes from the delivered audit. An **in-scope-live** off-field drop
-(verdict `surface:in-scope-live` / `surface:all-class`) must rest on the official record's goods, read with
-`band_record`, never a batch-row guess. This tool reads evidence already held; it does not fetch. If the required
-record is missing or unavailable, leave the gap explicit. The driver applies the existing fetch-and-recheck
-recovery; an unresolved gap remains disclosed. Carry
-the **`screen_verdict`, `class`, and `status`** into Notes so the gate can identify the row.
-
-**ONE ROW PER RECORD — the row is the unit of DISMISSAL, so it is one record (floor-critical).** A drop row
-names **exactly one** record URI, and its reason is a decision about *that* record's fetched goods. Never
-group several records under one row and one shared rationale, however alike they look: a rationale that is
-true of a group is not a decision about any of its members, and the gate then polices a batch on one member.
-(Live failure: a 14-record row dismissed as "Cl.35/41 retail/advertising/education services, no Cl.9/42
-software, no AI-customer overlap" — false for two of its members, which recited AI-integration advisory
-services in an instructed class.) The acceptance gate now reads **every** URI in a row and holds each to the
-fetch requirement separately, and a goods/field drop row with **no** URI is itself a violation — an unnamed
-drop can be neither examined nor audited. Batching stays correct for *retrieval* (`register_batch_screen`,
-enumeration, `_query` attribution); it is only forbidden as a unit of dismissal.
+A field-irrelevance drop is a `negative_rows` entry with ground `off-field`, one uri per entry, decided on the record's goods read with `band_record`.
 
 One entry, one record, one reason. A `drop_reason` is the judgment alone — the uri, verdict, class and
 status are rendered beside it: `dropped — off-field (relevance gate): DUSK-only hit; the
@@ -192,7 +154,7 @@ You are JUDGMENT (Layer B), not the funnel. The funnel handed up the band in **t
 (paged to `has_more:false` — complete) or `incomplete` (a crowd descriptor it could not exhaust). The funnel wrote
 **no** clearance verdict — **you** author this per-slice coverage reconciliation from the band evidence and placement's recorded decisions. The
 decider of "does an `incomplete` gap matter" is your judgment on the risk picture, **never** a count threshold.
-There is **no re-search re-loop and no halt**: a material slice you could not fully clear ships as a **CONDITIONAL**
+The unit narrows a crowd or records it with its count. A `sufficient:false` does not re-search; a `deferred` row may be re-run by the driver. There is **no halt**: a material slice you could not fully clear ships as a **CONDITIONAL**
 with an honest, specific flag — a lawyer always gets a report unless something technically breaks.
 
 For each crowd descriptor in the band (the shape's `crowds` list; each rides along on matching lookups too) — and each expectation-mismatch from the band reconciliation — consuming
@@ -200,8 +162,8 @@ For each crowd descriptor in the band (the shape's `crowds` list; each rides alo
 
 | Ruling | When | Status you write | Effect |
 |---|---|---|---|
-| **cleared** (enumerated + judged clear, OR immaterial noise) | The slice `enumerated` and you cleared it; OR the `incomplete` crowd is genuinely off-field noise (single-character substring pile, an unrelated class) that would not change the risk read. This IS judgment-sufficiency — you decide it is enough. | `confirmed-clean` | None — the run can deliver clean (subject to the findings). |
-| **material gap** (a dangerous slice NOT fully cleared) | The exact mark / a near-identical named variant in an in-scope class was NOT enumerated to `has_more:false`, or a material jurisdiction's named band is unfinished — and it bears on whether you can sign. | `coverage-limited` (reason NAMES the slice + count) | `sufficient:false` → the run ships **CONDITIONAL**, surfacing this slice as an explicit open gap in # Actions. No re-search, no halt. |
+| **cleared** (enumerated + judged clear) | The slice `enumerated` and you cleared it. An unenumerated crowd row is never `confirmed-clean`: rule it `withheld-by-judgment` with its count and reason if it is settled, else `coverage-limited`. | `confirmed-clean` | None — the run can deliver clean (subject to the findings). |
+| **material gap** (a dangerous slice NOT fully cleared) | The exact mark / a near-identical named variant in an in-scope class was NOT enumerated to `has_more:false`, or a material jurisdiction's named band is unfinished — and it bears on whether you can sign. | `coverage-limited` (reason NAMES the slice + count) | A `coverage-limited` row does not change the verdict by itself. Synthesis reads it when deciding `coverage_judgment`. Insufficient coverage, a material deferred register slice, or unresolved timeout-taint on a material axis can raise CLEAR to CONDITIONAL; other terminal checks still apply. |
 | **could-not-reach** (the funnel could not run the slice at all) | A provider error / tool absence meant the slice never reached its data. | `deferred` | Same as material gap → `sufficient:false` → CONDITIONAL; the gap is named. |
 
 **You do not write the Coverage ledger table, and you do not open or edit any coverage file.** The
@@ -286,21 +248,16 @@ Never retype a query id, a hit count or any other identifier into a reason cell 
 something. Nothing joins on your typing; the driver supplies every identifier. Your reason is your
 reasoning.
 
-**Rolled-up coverage judgment (synthesis lifts this into `findings.json` `coverage_judgment`):** state
-`sufficient: <true\|false>` and a one-line `reason`. `sufficient:false` iff any **material** slice above is
-`coverage-limited`/`deferred` (name it in the reason). `sufficient:true` → the run delivers (clear, subject to
-findings); `sufficient:false` → the verdict clamps CLEAR→CONDITIONAL and the gap is surfaced in # Actions. **There
-are no `commands[]` and no `halt`** — a material gap is delivered as a conditional with an honest flag, never a
-re-enumeration loop and never a no-deliver halt.
+You send no rolled-up line. Your row statuses are what synthesis reads when it writes `coverage_judgment`. A `sufficient:false` does not re-search; a `deferred` row may be re-run by the driver.
 
 **Saturated dominant/meaning-token (the COLORA→色彩 case).** The funnel enumerates the class-scoped contains band
 for a saturated dominant element or `translit-*-meaning` token (the token kept as the search predicate;
 goods-vocabulary words are **never** ANDed into the search text — goods-relevance is judged at SELECTION). If that
 named slice came back `enumerated`, read it and clear or surface its hits. If it came back `incomplete` AND it is
 material (the exact / near-identical in-class slice is the highest-relevance category), write it `coverage-limited`
-with a reason that NAMES the slice and the count → the run ships **CONDITIONAL**. An everyday-word-scale count on
-its own (a count-only saturation probe) is off-field noise — `confirmed-clean`, immaterial — never a clean of the
-dangerous category and never a reason to drop the token, re-narrow it, or swap it for the phonetic form.
+with a reason that NAMES the slice and the count. A `coverage-limited` row does not change the verdict by itself. Synthesis reads it when deciding `coverage_judgment`. Insufficient coverage, a material deferred register slice, or unresolved timeout-taint on a material axis can raise CLEAR to CONDITIONAL; other terminal checks still apply. An everyday-word-scale count on
+its own (a count-only saturation probe) is never a clean of the
+dangerous category and never a reason to drop the token, re-narrow it, or swap it for the phonetic form. An unenumerated crowd row is never `confirmed-clean`: rule it `withheld-by-judgment` with its count and reason if it is settled, else `coverage-limited`.
 
 **recently-dead is a status you weigh, not a date-cutoff the funnel applied.** Lapsed / lapse-date /
 revival-window records arrive in the band with their status. Whether a recently-lapsed near-identical matters
@@ -336,7 +293,7 @@ through `record_coverage`. Where it lists none, the declared cause is carried fo
 coverage ledger is unavailable supports no clean, limited or deferred claim anywhere in the findings,
 and the declaration says so to the reader in as many words.
 
-Everything else — the three statuses, the closed axis vocabulary, the counted dominant-element crowd and the
+Everything else — the four statuses, the closed axis vocabulary, the counted dominant-element crowd and the
 rolled-up `coverage_judgment` — is unchanged, because there is no second arm for it to differ on.
 
 #### The audit trail and the status-filter summary are the DRIVER's
@@ -369,8 +326,7 @@ decision `ADOPTED`, reason `the cl.12 overlap is auto-parts vs the applicant's s
 **Coverage ledger → the `coverage_judgment` contract.** You rule every row of the driver's coverage form
 through `record_coverage` (a `confirmed-clean` / `coverage-limited` / `deferred` / `withheld-by-judgment` status and a reason on
 every row — the driver renders both the `## Coverage ledger` table and `register-coverage-ledger.json`
-from what the tool records), plus the rolled-up sufficiency line. The **synthesis stage** lifts the rolled-up line into `findings.json`
-as the top-level `coverage_judgment` field: `{ "sufficient": <bool>, "reason": "<why>" }`. The FORM is the
+from what the tool records). You send no rolled-up line. Your row statuses are what synthesis reads when it writes `coverage_judgment`. The FORM is the
 single source of truth; the rendered table and the JSON mirror are both derived from it, so they agree by
 construction and neither can be the thing that drifts. Driver
 semantics: `sufficient:false` (any material `coverage-limited`/`deferred` slice) ⇒ the verdict clamps
@@ -402,7 +358,7 @@ Every judgment below spans the band and/or needs data a single unit cannot have,
 - The "Disagreements / flags surfaced to downstream" section names cases where placement-inquiry deviated from class-match — read those reasonings carefully
 - **Resolve EVERY disagreement explicitly (#7).** For each item in that section, send ONE `disagreement_resolutions` entry — `{subject, decision: ADOPTED|OVERRODE, reason}`. A disagreement that just vanishes (neither adopted nor overridden) is the miss the driver's grading tripwire flags; a blank / `tbd` / `pending` reason trips it too, and a `decision` outside the two tokens is refused on the call. Send none only when placement-inquiry surfaced no disagreements.
 - You MAY override placement-inquiry's placement with your own counter-reasoning, but you MUST state that counter-reasoning as the `reason` on its `disagreement_resolutions` entry (never silently). The narrative-refutation gate downstream will flag any override that isn't defensible against the source files
-- Candidates `placement-inquiry` placed at `out-of-scope-filtered` go to the Excel Out-of-Scope tab with their reasoning, NOT to the Findings tab. Candidates at `watchlist-annex` go to the audit-tab plus optionally a brief narrative mention with the monitor-trigger condition
+- Candidates placed `out-of-scope-filtered` take no findings row; end each with a `negative_rows` entry on its ground. Candidates at `watchlist-annex` go to the audit-tab plus optionally a brief narrative mention with the monitor-trigger condition
 - **Carry placement-inquiry's `### Coverage rulings & open questions` into the coverage form (through `record_coverage`)** (its per-crowd-descriptor cleared/material-gap rulings + band-reconciliation mismatches) — onto the driver row each ruling is about, or as a seat row where it is about a slice the driver did not write. Adopt or counter-reason each, exactly as you do its placements. **Carry its `### Open questions for the client / reviewer` (genuine open judgment) into the synthesis narrative** — those ship; they are NOT coverage gaps.
 
 **Per-jurisdiction sub-query attribution.** Each enumerated record carries `_query` (the slice that surfaced it — the driver stamps it at merge; `band_lookup`'s `query` filter selects on it) and `jurisdictions`, so a record from a materially-matters-jurisdiction sub-query is identifiable by its `_query`. Carry the attribution forward in the findings file's audit trail — `matter-context` says PH matters, the PH sub-query (`_query`) returned this record, so the audit trail records the chain explicitly.
@@ -436,10 +392,7 @@ With that posture fixed, the question is simply: **could an examiner or court pl
 is this worth keeping for the Stage-2 confusion test to assess?** **Cast wide; Stage-2 / synthesis
 discriminates.** The archetype table below is a **sanity-aid for that question, not a lookup to run first** —
 read it after you've asked the field-relevance question, and where it conflicts with your read, follow the
-read. Keep if plausibly on-point; drop only genuine field-irrelevance, or a near spelling on its sign (below) — and **log every drop as a row in the
-`### Negative results` table** (mark, surfacing variant, `Result: dropped — off-field (relevance gate)`, and
-`Notes: URI <uri>; <one-line why>`) so it reaches the published `# Negative Results` audit, per the
-*Relevance-gate drops* format above. Units did NOT pre-gate — this is the only relevance judge. The spelling band is read differently: carry a near spelling only where a buyer in this market could take it for the mark by sound, by look or by meaning, and record each other one as a drop on the ground `sign`, with your reason.
+read. Keep if plausibly on-point; drop only genuine field-irrelevance, or a near spelling on its sign (below). A field-irrelevance drop is a `negative_rows` entry with ground `off-field`, one uri per entry, decided on the record's goods read with `band_record`. Units did NOT pre-gate — this is the only relevance judge. The spelling band is read differently: carry a near spelling only where a buyer in this market could take it for the mark by sound, by look or by meaning, and record each other one as a drop on the ground `sign`, with your reason.
 
 | Archetype | Keep when | Drop when |
 |---|---|---|
@@ -502,9 +455,7 @@ working instrument into a disclaimer.
 **Applicant own-rights sweep (gated on priority-live — surfacing only, never a conflict).** When a unit has
 surfaced a senior on-point conflict (an identical / near-identical in-class incumbent) AND `matter-context` /
 the request form indicates the applicant may hold prior rights of its own (prior use, or co-pending / unclear
-priority — i.e. priority is *live*), run an **owner-bound search on the applicant's own name** — the one
-name the applicant-exclusion (`matter-context`) normally drops — with `active_only: false` to catch the
-applicant's own lapsed filings. Tag every hit `applicant_own_rights: true`. This is a **surfacing exception
+priority), priority is *live*. When priority is live, look the applicant up in the held band with `band_lookup` by owner. State what the held filings establish. An empty lookup establishes neither that the applicant has no filings nor that no owner search ran. Describe a search as run or not run only where the run's records establish that status; otherwise leave the status unresolved. This is a **surfacing exception
 for the applicant only**: these rows are **never conflicts, never Findings-sheet rows, and never gate or
 down-rank the conflict sweep** — they exist solely to resolve the *filing* branch of the priority question
 (does the client have earlier rights of its own?) for the synthesis's "client's own prior rights" note. The
@@ -530,12 +481,7 @@ kept.
 Run the stealth-filer regex ([stealth-filer-indicators.md](stealth-filer-indicators.md)) over all
 owners. Then per the orchestrator's cross-pollination logic:
 
-- **Trigger 1:** every common-law owner found → register check (your unit work already covers in-target-class filings by surfaced owners; run a targeted follow-up for any not yet covered)
-- **Trigger 2:** every register stealth-filer pattern (law-firm owner) → common-law check (flag for orchestrator)
-- **Trigger 3:** every watchlist-hit owner in register but not in common-law → common-law check (flag)
-- **Trigger 4:** every common-law finding without a register tie → register query (run here)
-
-Execute Triggers 1 and 4 to the extent you have inputs; FLAG Triggers 2 and 3 for the orchestrator.
+The driver prepares Trigger 1 and 4 checks before this stage. Read their receipt and the band to distinguish checks that ran from checks withheld, refused, or left beyond the cap. Keep each not-searched reason; a check that did not run is not a clean result. Record Triggers 2 and 3 in `cross_checks`, naming the owner and why. No stage runs those two; synthesis and the reviewing lawyer read them as open checks.
 
 ### Step 7 — Compile register findings file + flag thin units
 
@@ -566,11 +512,6 @@ narrative-refutation skeptic both consume this section.
 
 ## Provider facts the driver stamps — and the two you must still not compose
 
-Conversion 11 moved the composing here into the driver: `record_register_digest` takes no record field,
-so the register name, the environment word and the record link are stamped from the run's own config
-onto every row. That changes WHO writes them. It does not retire the rules, and both of these were
-learned by a run losing hours to them.
-
 **The corpus is the driver's receipt, never a tag you type.** Exactly one register is searched per run;
 which one, and for EUIPO which environment, is recorded on every receipt in `_driver/receipts.json`.
 Never tag it in the findings — a seat retyping it onto records is how the two disagreed.
@@ -599,11 +540,11 @@ This skill's universal logic — per-axis funnel, status filter, relevance gate,
 - [ ] Per-jurisdiction sub-query attribution (`_query`) carried forward in the findings file's audit trail
 - [ ] Relevance gate applied per archetype over the candidates placement carried forward (field-relevance only — filer size/dormancy held for Stage-2, never a drop reason); drops logged
 - [ ] Owner aggregation across the band; owner-identity conflicts flagged `Verify? ✅` (never silently picked)
-- [ ] **Every coverage-form row ruled through `record_coverage`** — the tool's answer reports nothing outstanding; every `incomplete` crowd descriptor ruled cleared/material-gap; reconciled against `matter-context`'s material-jurisdiction list (every material jurisdiction enumerated-and-cleared, or written `coverage-limited`/`deferred` → CONDITIONAL — never a self-accepted clean over an unsearched slice); rolled-up `{sufficient, reason}` stated for synthesis to emit; genuine open judgment surfaced to ship (not a coverage gap)
-- [ ] Applicant own-rights sweep run **if priority is live** (tagged `applicant_own_rights`; never a conflict / Findings row / gate)
+- [ ] **Every coverage-form row ruled through `record_coverage`** — the tool's answer reports nothing outstanding; every `incomplete` crowd descriptor ruled cleared/material-gap; reconciled against `matter-context`'s material-jurisdiction list (every material jurisdiction enumerated-and-cleared, or written `coverage-limited`/`deferred` → CONDITIONAL — never a self-accepted clean over an unsearched slice); genuine open judgment surfaced to ship (not a coverage gap)
+- [ ] Applicant own-rights sweep run **if priority is live** (never a conflict / Findings row / gate)
 - [ ] Watchlist matches flagged
-- [ ] Stealth-filer detection + Option-D triggers (exec 1 & 4, flag 2 & 3)
-- [ ] Out-of-scope-filtered candidates routed to Excel Out-of-Scope tab with reasoning (NOT to Findings)
+- [ ] Stealth-filer detection + Option-D triggers. The driver prepares Trigger 1 and 4 checks before this stage. Read their receipt and the band to distinguish checks that ran from checks withheld, refused, or left beyond the cap. Keep each not-searched reason; a check that did not run is not a clean result. Record Triggers 2 and 3 in `cross_checks`, naming the owner and why. No stage runs those two; synthesis and the reviewing lawyer read them as open checks.
+- [ ] Candidates placed `out-of-scope-filtered` take no findings row; end each with a `negative_rows` entry on its ground
 - [ ] Watchlist-annex candidates routed to audit-tab + optional brief narrative mention with monitor trigger
 - [ ] **Dominant-element reconciliation satisfied** — every screened-live dominant-element POSITION ends as a finding row, a drop row citing any one constituent URI, or membership of the ONE counted `dominant-element crowd` row ADDED THROUGH `record_coverage`, whose `unit` value carries `(<N> members)` with `<N>` >= the residual POSITION count (the count is read from `unit`, never from `reason`); the code-ranked closest positions ended individually
 - [ ] **Sheet-1 rows are POSITIONS** (one row per position, citing at least one constituent URI; owner-divergent pairs left as separate rows per the shape's Cross-references) — never one row per registration of the same right

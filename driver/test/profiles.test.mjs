@@ -4,6 +4,7 @@
 // (forwarder-domain only), load-time hard-fails, derived floor/batch arithmetic, the applicant gate
 // on self-exclusion, the platform-identity join, and the profile-aware message rendering.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, writeFileSync, mkdirSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -248,7 +249,7 @@ test("the open rows are WIRED at the ledger chokepoint — a row nothing reads i
   // consumer reads the ledger through — the escalation gate, the deadline envelope and the verdict
   // clamp all act on what it returns — so the rows join there, beside the two relabels already applied. The three
   // are one function, which the chokepoint and the floor's read of the coverage form both call.
-  const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.match(src, /export function relabelCoverageRows\(runDir, rows\) \{[^\n]*\n\s+return \[\.\.\.applyTaintDeferred\(coerceToolAbsenceDeferred\(rows\), readActiveTaintAxes\(runDir\)\), \.\.\.openChannelRows\(runDir\)\];/,
     "the coverage chokepoint no longer adds the open-channel rows");
   assert.match(src, /const relabel = \(rows\) => relabelCoverageRows\(runDir, rows\);/, "the ledger loader no longer reads its rows through the one relabel");

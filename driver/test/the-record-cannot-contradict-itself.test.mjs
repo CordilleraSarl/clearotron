@@ -15,20 +15,17 @@
 // trip — an honest failure, a corrected finding, a clean success — because a flag that fires on all of
 // them says nothing, and that is how the original contradiction survived being looked at.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, rmSync, readFileSync, writeFileSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { tmpdir } from "node:os";
-import { fileURLToPath } from "node:url";
 
 import { runStage, registerEngine } from "../gateway.mjs";
 import { buildCorrectionsApplied, correctionsAppliedTable, correctionsWorklist } from "../corrections-feedforward.mjs";
 import { parseCorrections, countCitedDefects } from "../verify.mjs";
 import { riskStatement, bindRecommendation, deriveDisplayVerdict } from "../findings-model.mjs";
-
-const HERE = dirname(fileURLToPath(import.meta.url));
-
 // ── the gateway harness (instrumentation-house-rule.test.mjs's, verbatim) — offline, $0 ─────────────
 async function withEngine(name, runTurn, fn) {
   registerEngine({ name, runTurn });
@@ -181,7 +178,7 @@ test("the sidecar writer carries the grounds and refuses an empty BLOCKING", () 
   // called from here. The two claims asserted are the ones a later edit would break silently: that the
   // BLOCKING arm reads the review at all, and that the invariant is stated over the value WRITTEN rather
   // than over the branch that fills it.
-  const SRC = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  const SRC = driverSource("pipeline.mjs");
   const at = SRC.indexOf('if (verdict === "BLOCKING") {\n        let cited = []');
   assert.ok(at > 0, "the #1065 grounds arm is gone from the sidecar writer — a BLOCKING verdict is shipping "
     + "its decision without its grounds again");

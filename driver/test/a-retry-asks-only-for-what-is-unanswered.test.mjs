@@ -11,8 +11,9 @@
 // per-attempt composition point BOTH pipelines pass through, so the load-bearing assertion is that a
 // stage which declares nothing sends the same bytes on attempt 2 that it sent on attempt 1.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { driverDir } from "../../shared/driver-dir.mjs";
@@ -106,7 +107,7 @@ test("every OTHER stage composes the same bytes however many attempts it takes",
   }
   assert.deepEqual(offenders, [], offenders.join("\n  "));
   // And the hook is genuinely opt-in at the read site: no default, no env, no wildcard.
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.match(src, /typeof def\.refreshCtx === "function"/,
     "the pipeline no longer gates the refresh on the stage having declared it");
   assert.match(src, /patch == null &&/,

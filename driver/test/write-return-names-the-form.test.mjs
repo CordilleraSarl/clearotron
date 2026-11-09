@@ -16,15 +16,10 @@
 // against the current implementation, so the two cannot drift into agreement.
 
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
-import { join, dirname } from "node:path";
 
 import { writeReturn } from "../stages.mjs";
-
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-
 // The text as it stood before this change, pasted, not imported. If the no-form path ever drifts, this
 // literal is what notices — a comparison against the implementation would move with it.
 const OLD = (out) =>
@@ -110,7 +105,7 @@ test("EVERY driver-written form is wired into a writeReturn call", (t) => {
   // declared; this asserts that every declared form reaches the closing line of some dispatch. A new
   // form added to paths() and handed to a seat, but never wired here, fails on this assertion — which
   // is the only place it would fail, because a dispatch that omits it still renders perfectly well.
-  const src = readFileSync(join(ROOT, "stages.mjs"), "utf8");
+  const src = driverSource("stages.mjs");
 
   // Read the form names from paths() rather than listing them here: a hand-kept list is the second copy
   // that drifts, and this round has deleted four of those.
@@ -148,7 +143,7 @@ test("EVERY driver-written form is wired into a writeReturn call", (t) => {
 });
 
 test("the form-bearing seats are wired, and the coverage form is UNCONDITIONAL", () => {
-  const src = readFileSync(join(ROOT, "stages.mjs"), "utf8");
+  const src = driverSource("stages.mjs");
   // B — the meaning seats are NOT form-bearing any more: rulings ride `record_dispositions`, so their
   // closing lines are the BARE shape and must stay it (a form list here would re-teach the dead file).
   assert.ok(src.includes("writeReturn(P.commonLaw)"), "meaning lane, whole run — bare");
@@ -173,7 +168,7 @@ test("the form-bearing seats are wired, and the coverage form is UNCONDITIONAL",
 });
 
 test("no dispatch names a form it was not given — the no-form path stays reachable", () => {
-  const src = readFileSync(join(ROOT, "stages.mjs"), "utf8");
+  const src = driverSource("stages.mjs");
   const bare = (src.match(/writeReturn\(P\.\w+(?:\([^)]*\))?\),/g) ?? []).length;
   // 10 -> 9: `notify`'s bare `writeReturn(P.notifyReceipt)` went with the stage. The floor is
   // a floor rather than an equality precisely so a stage leaving does not read as the no-form path

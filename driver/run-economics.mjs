@@ -107,7 +107,8 @@ import { runLog, note } from "./log.mjs";
 import { writeRunStatus } from "./progress.mjs";
 // tokens.mjs imports this module too (isCodeSide, stampRunEconomics). The cycle is safe because each side
 // reads the other's bindings only inside functions, never while the module is loading.
-import { isAttemptRow, modelKey } from "./tokens.mjs";
+import { isAttemptRow, modelKey } from "./attempt-rows.mjs";
+import { readJson } from "./run-record.mjs";
 
 /**
  * The provider's separately-priced token kinds, in the driver's own `usage` vocabulary (gateway.mjs /
@@ -374,7 +375,7 @@ function readQuote(runDir) {
 }
 
 function readStatus(runDir) {
-  try { return JSON.parse(readFileSync(join(runDir, "status.json"), "utf8")) ?? null; }
+  try { return readJson(join(runDir, "status.json")) ?? null; }
   catch { return null; }
 }
 
@@ -589,7 +590,7 @@ export function runEconomics(runDir, { now = null, bytesPerOutputToken = BYTES_P
     runDir,
     // The instrument's own weakness, on every record it writes. See the header.
     modelBasis: "requested",
-    modelBasisNote: "this record's billing classes key on the dispatch row's `modelUsed`, which is resolved from the REQUESTED alias. Since #238 the rows ALSO carry `modelActual`/`modelBasis`/`modelMismatch` — the provider's own answer, or an explicit unknown — and an unhonoured override now fails the turn instead of being billed here silently. Switching this module to a per-record actual basis is #240's work",
+    modelBasisNote: "this record's billing classes key on the dispatch row's `modelUsed`, which is resolved from the REQUESTED alias. The rows ALSO carry `modelActual`/`modelBasis`/`modelMismatch` — the provider's own answer, or an explicit unknown — and an unhonoured override now fails the turn instead of being billed here silently. Switching this module to a per-record actual basis is still to do",
     billingClasses: BILLING_CLASSES,
     telemetryPresent: files != null,
     dispatchCensus: census,

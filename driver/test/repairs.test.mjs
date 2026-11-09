@@ -5,10 +5,10 @@
 // Bound (TMP8729) park reasons: three byte-identical parks must sign identically (the repeat-signature
 // terminal exists exactly for that shape), while genuinely different defects must sign apart.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, readFileSync, existsSync } from "node:fs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";   // — the wiring arm reads pipeline.mjs from source
+import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { tmpdir } from "node:os";
 import { normalizeReason, bareStage, failureSignature, classifyFailureReason, createRepairLedger, decideRecovery, countTrailingStageStrikes, recoveryLaneOf, countRecoveryLanes, weatherCeilingFor, TRANSIENT_RE, DETERMINISTIC_RE, fanInMissingEvidence, STRUCTURAL_REFUSAL_RE, retryCannotHelpWith, unnamedStructuredFailure } from "../repairs.mjs";
@@ -810,7 +810,7 @@ test("the wiring: the ladder carries its condition out, and the throw site leads
   // PASSED — because a classifier that reads a reason nobody gives it is the whole defect, and the
   // lesson from the same day is that an arm proving the machinery obeys proves
   // nothing about whether anyone asks it to.
-  const src = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.match(src, /if \(!r\.ok\) return \{ ok: false, fail: r\.fail \?\? null \};/,
     "refute() must carry the stage's condition out — a bare { ok: false } is what discarded it");
   assert.match(src, /firstRef\.fail\s*\n?\s*\? `\$\{firstRef\.fail\} — the refutation ladder exhausted/,

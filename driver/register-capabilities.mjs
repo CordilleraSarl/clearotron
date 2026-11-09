@@ -45,9 +45,3 @@ export function capabilitiesFor(providerId) {
   }
   return caps;
 }
-
-/** The ACTIVE provider's capabilities (driver.config.mjs owns the toggle; this never re-reads the env). */
-export async function activeCapabilities() {
-  const { REGISTER_PROVIDER } = await import("./driver.config.mjs");
-  return capabilitiesFor(REGISTER_PROVIDER);
-}

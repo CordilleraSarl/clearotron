@@ -790,6 +790,7 @@ jobs:
     outputs:
       cut: ${{ steps.cut.outputs.cut }}
       version: ${{ steps.cut.outputs.version }}
+      sha: ${{ steps.cut.outputs.sha }}
     steps:
       # ── THE INSTRUMENT IS THIS REF; THE SUBJECT IS `main` ──────────────────────────────────────
       #
@@ -837,6 +838,21 @@ jobs:
         env:
           CLEAROTRON_CUT_REF: origin/main
         run: node scripts/release-cut-decision.mjs
+
+      # THE COPY A PUBLISH RESTORES. A cache entry nobody reads for seven days is evicted and publishes are further
+      # apart than that, so this job, which runs on the schedule, is what keeps it. It never holds up the decision.
+      - name: Keep the secret scanner
+        continue-on-error: true
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ runner.temp }}/gitleaks-cache
+          key: gitleaks-${{ env.GITLEAKS_VERSION }}-linux-x64
+
+      - name: Fill the kept copy when it is empty
+        continue-on-error: true
+        env:
+          GITLEAKS_CACHE_DIR: ${{ runner.temp }}/gitleaks-cache
+        run: node scripts/secret-scanner-fetch.mjs
 
   # ── FINISH A RELEASE NPM WAS STILL VALIDATING ──────────────────────────────────────────────────────
   #
@@ -1064,6 +1080,8 @@ jobs:
       && ((needs.version.outputs.cut == 'true' && !contains(needs.version.outputs.version, '-'))
           || (needs.pending.outputs.cut == 'true' && !contains(needs.pending.outputs.version, '-')))
     uses: ./.github/workflows/macos.yml
+    with:
+      ref: ${{ needs.pending.outputs.sha }}
 
   # EVERY CUT IS INSTALLED ON WINDOWS, AND A RED ONE HOLDS A STABLE. README names Windows, natively from
   # PowerShell, and a change made on Linux can break how a turn is started, located or stopped there
@@ -1085,6 +1103,8 @@ jobs:
       && ((needs.version.outputs.cut == 'true' && !contains(needs.version.outputs.version, '-'))
           || (needs.pending.outputs.cut == 'true' && !contains(needs.pending.outputs.version, '-')))
     uses: ./.github/workflows/windows.yml
+    with:
+      ref: ${{ needs.pending.outputs.sha }}
 
   windows-beta:
     name: Install the beta on Windows, without holding it
@@ -1095,6 +1115,8 @@ jobs:
       && ((needs.version.outputs.cut == 'true' && contains(needs.version.outputs.version, '-'))
           || (needs.pending.outputs.cut == 'true' && contains(needs.pending.outputs.version, '-')))
     uses: ./.github/workflows/windows.yml
+    with:
+      ref: ${{ needs.pending.outputs.sha }}
 
   publish:
     name: Publish the release to npm
@@ -1142,8 +1164,11 @@ jobs:
       id-token: write     # the OIDC token npm exchanges for a short-lived publish credential
       security-events: read   # the code-scanning verdict a stable is published over
     steps:
+      # THE COMMIT THE DECISION READ. A scheduled run's event commit is the one it was queued on, and `pending`
+      # asks about main as it is now, so the two differ whenever a version commit lands while the run waits.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ needs.pending.outputs.sha || github.sha }}
           fetch-depth: 0
 
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -1184,9 +1209,25 @@ jobs:
       #    repository, which is the one thing this design forbids. One publish, one tag.
       - name: What is being published, and whether this run may publish it
         id: what
+        env:
+          DECIDED_CUT: ${{ needs.pending.outputs.cut }}
+          DECIDED_SHA: ${{ needs.pending.outputs.sha }}
+          DECIDED_VERSION: ${{ needs.pending.outputs.version }}
         run: |
           set -euo pipefail
           VERSION=$(node -p "require('./package.json').version")
+          # A SCHEDULED PUBLISH BUILDS THE COMMIT ITS DECISION READ, or nothing. The checkout above names that
+          # commit; an absent or different one here means the two ends are not talking about one tree.
+          if [ "${DECIDED_CUT:-}" = "true" ]; then
+            if [ -z "${DECIDED_SHA:-}" ] || [ "$(git rev-parse HEAD)" != "$DECIDED_SHA" ]; then
+              echo "::error::The decision named commit \"${DECIDED_SHA:-}\" and this job checked out $(git rev-parse HEAD). That is a failure to LOOK, so nothing publishes."
+              exit 2
+            fi
+            if [ "$VERSION" != "$DECIDED_VERSION" ]; then
+              echo "::error::The decision was about $DECIDED_VERSION and this commit is $VERSION."
+              exit 2
+            fi
+          fi
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.cut }}" = "rehearse" ]; then
             # A rehearsal, and it stays one on whatever branch it was dispatched from — that is the
             # point of being able to dispatch it. The branch check below is skipped here BECAUSE the
@@ -1339,13 +1380,19 @@ jobs:
         # for the wrong reason teaches its reader to ignore the right one.
         run: node scripts/no-test-account-reaches-the-package.mjs "${{ steps.what.outputs.tarball }}"
 
+      # A KEPT COPY, SO A PUBLISH DOES NOT HANG ON GITHUB'S RELEASE FILES. The download stays as the fallback.
+      - name: Restore the kept secret scanner
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ runner.temp }}/gitleaks-cache
+          key: gitleaks-${{ env.GITLEAKS_VERSION }}-linux-x64
+
       - name: No secret leaves in the packed bytes
+        env:
+          GITLEAKS_CACHE_DIR: ${{ runner.temp }}/gitleaks-cache
         run: |
           set -euo pipefail
-          curl -sSfL --retry 5 --retry-delay 10 -o gitleaks.tgz \
-            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
-          echo "${GITLEAKS_SHA256}  gitleaks.tgz" | sha256sum -c -
-          tar -xzf gitleaks.tgz gitleaks
+          node scripts/secret-scanner-fetch.mjs
           mkdir -p packed
           tar -xzf "${{ steps.what.outputs.tarball }}" -C packed
           COUNT=$(find packed -type f | wc -l)
@@ -1538,6 +1585,8 @@ jobs:
       && github.repository == 'CordilleraSarl/clearotron'
       && needs.awaited.outputs.cut == 'true' && !contains(needs.awaited.outputs.version, '-')
     uses: ./.github/workflows/macos.yml
+    with:
+      ref: ${{ needs.awaited.outputs.sha }}
 
   # THE SAME TWO WINDOWS JOBS, for the version a dispatch cut and `awaited` saw merge. See `windows`.
   windows-awaited:
@@ -1548,6 +1597,8 @@ jobs:
       && github.repository == 'CordilleraSarl/clearotron'
       && needs.awaited.outputs.cut == 'true' && !contains(needs.awaited.outputs.version, '-')
     uses: ./.github/workflows/windows.yml
+    with:
+      ref: ${{ needs.awaited.outputs.sha }}
 
   windows-awaited-beta:
     name: Install the awaited beta on Windows, without holding it
@@ -1557,6 +1608,8 @@ jobs:
       && github.repository == 'CordilleraSarl/clearotron'
       && needs.awaited.outputs.cut == 'true' && contains(needs.awaited.outputs.version, '-')
     uses: ./.github/workflows/windows.yml
+    with:
+      ref: ${{ needs.awaited.outputs.sha }}
 
   publish-awaited:
     name: Publish the version this push cut, once it merges itself
@@ -1848,13 +1901,19 @@ jobs:
         # for the wrong reason teaches its reader to ignore the right one.
         run: node scripts/no-test-account-reaches-the-package.mjs "${{ steps.what.outputs.tarball }}"
 
+      # A KEPT COPY, SO A PUBLISH DOES NOT HANG ON GITHUB'S RELEASE FILES. The download stays as the fallback.
+      - name: Restore the kept secret scanner
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ runner.temp }}/gitleaks-cache
+          key: gitleaks-${{ env.GITLEAKS_VERSION }}-linux-x64
+
       - name: No secret leaves in the packed bytes
+        env:
+          GITLEAKS_CACHE_DIR: ${{ runner.temp }}/gitleaks-cache
         run: |
           set -euo pipefail
-          curl -sSfL --retry 5 --retry-delay 10 -o gitleaks.tgz \
-            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
-          echo "${GITLEAKS_SHA256}  gitleaks.tgz" | sha256sum -c -
-          tar -xzf gitleaks.tgz gitleaks
+          node scripts/secret-scanner-fetch.mjs
           mkdir -p packed
           tar -xzf "${{ steps.what.outputs.tarball }}" -C packed
           COUNT=$(find packed -type f | wc -l)

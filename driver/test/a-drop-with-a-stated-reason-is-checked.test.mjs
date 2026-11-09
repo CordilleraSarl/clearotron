@@ -10,6 +10,7 @@
 // A silent drop leaves a hole. A stated drop leaves a SENTENCE, and the sentence reads as diligence.
 // That delivery carried 92 recall asks and 66 rulings of IMMATERIAL.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { statedDivergenceFindings, silentlyLostFindings } from "../record-carry.mjs";
 
@@ -144,8 +145,7 @@ test("the pipeline CALLS it, beside its sibling, on the same inputs", async () =
   const { readFileSync } = await import("node:fs");
   const { fileURLToPath } = await import("node:url");
   const { dirname, join } = await import("node:path");
-  const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-  const pipeline = readFileSync(join(ROOT, "pipeline.mjs"), "utf8");
+  const pipeline = driverSource("pipeline.mjs");
 
   assert.match(pipeline, /import \{[^}]*statedDivergenceFindings[^}]*\} from "\.\/record-carry\.mjs"/s,
     "it must be imported from the module that owns it, not re-implemented");

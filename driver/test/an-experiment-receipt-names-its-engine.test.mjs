@@ -12,15 +12,10 @@
 // guard rather than a reader's attention.
 
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
 import { telemetryDelta, refuseToCompare, engineOf } from "../compare.mjs";
 import { resolveModel } from "../driver.config.mjs";
-
-const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
-
 test("resolveModel is engine-blind — the defect, stated as a measurement not a memory", () => {
   // This is the behaviour the receipt used to trust. It is CORRECT for what it is for (one alias table,
   // one namespace) and wrong as an answer to "which engine ran": it never consults one.
@@ -32,7 +27,7 @@ test("resolveModel is engine-blind — the defect, stated as a measurement not a
 });
 
 test("the receipt records the ENGINE and the TIER, and synthesises no vendor id", () => {
-  const src = readFileSync(join(DRIVER, "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   const receipt = src.slice(src.indexOf("// ── 5. THE CONTEXT RECEIPT"), src.indexOf("experiment-context.json"));
   assert.ok(receipt.length > 0, "the context receipt block moved — this guard is reading nothing");
   assert.match(receipt, /engine: experimentEngineName\(\)/,
@@ -112,7 +107,7 @@ test("a non-default-engine arm is distinguishable from a default one by the rece
 // is the acceptance criterion on the issue.
 
 test("the receipt records the rating authority the arm ran under, from the FROZEN sidecar", () => {
-  const src = readFileSync(join(DRIVER, "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   const receipt = src.slice(src.indexOf("// ── 5. THE CONTEXT RECEIPT"), src.indexOf("experiment-context.json"));
   assert.ok(receipt.length > 0, "the context receipt block moved — this guard is reading nothing");
   assert.match(receipt, /ratedUnder: ctx\.profile\?\.profileKey \?\? null/,
@@ -127,7 +122,7 @@ test("the MATCHING profile is recorded, so no-mismatch stops standing in for a p
   // `profile-mismatch` existed and its counterpart did not, so "the profile was right" was carried by
   // the ABSENCE of a row — and an absence cannot tell "it matched" from "the probe never ran" from
   // "this run predates the probe". Three facts, one empty grep.
-  const src = readFileSync(join(DRIVER, "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.match(src, /event: "profile-resolved", sidecar: sidecar\.profileKey, resolved: current\.key/,
     "the matching case writes no row, so it is still an absence standing in for a fact");
   // The anti-vacuity control: the row this one is the counterpart of must still be there, or the pair

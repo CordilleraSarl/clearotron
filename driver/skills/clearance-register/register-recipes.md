@@ -1,8 +1,8 @@
 # Register recipes — frozen query patterns
 
-Seven common mark shapes; each has a frozen query pattern. Use these as templates when the variant manifest matches one of these shapes. For shapes outside this list, fall back to the general process in [SKILL.md](SKILL.md).
+Six common mark shapes; each has a frozen query pattern. Use these as templates when the variant manifest matches one of these shapes. For shapes outside this list, fall back to the general process in [SKILL.md](SKILL.md).
 
-Recipes use the provider-agnostic `<provider>_search` placeholder — concrete syntax per provider lives in `providers/<name>.md`.
+Recipes use the provider-agnostic `register_search` placeholder — concrete syntax per provider lives in `providers/<name>.md`.
 
 **Recipes give the QUERIES, not a stopping rule, and on a plan-mode run they do not give the ROUTE either.**
 Every fresh run's frozen plan carries the `supplemental_lane` contract: `register_enumerate` is not in the
@@ -25,8 +25,7 @@ is a **count-only crowd descriptor** (`limit:1`); a recipe step that names a var
 > (`match_mode:exact`, `nice_classes:[25]`). `fuzzy` is never an enumerate mode.
 
 **Execution note:** `clearance-register` now runs as a worker that decomposes these axes into isolated
-search **units** (saturation-probe / primary-sweep / transliteration-numeric / incumbent-class /
-merch-sweep), each executing one axis and writing its named-band array (`register-units/<axis>-band.json`).
+search **units** (saturation-probe / primary-sweep / transliteration-numeric / incumbent-class), each executing one axis and writing its named-band array (`register-units/<axis>-band.json`).
 If you are a unit, run only your assigned axis from the recipe below; the write-up (Layer B) performs the cross-cutting relevance / owner-aggregation / prioritisation over the candidates placement carried forward. See
 [SKILL.md](SKILL.md).
 
@@ -82,17 +81,12 @@ If you are a unit, run only your assigned axis from the recipe below; the write-
 **Pattern:**
 
 ```
-1. Phoneme expansion (provider-specific — availability + tool name in providers/<name>.md)
-   → <provider>_expand_phoneme(word=<mark>, language=en_US)
-   → also _de_DE, _fr_FR, _it_IT, _es_ES if jurisdiction is multi-language
+1. On a plan run the plan's phonetic entries are the sound-alike search; a register with no sound-alike search defers the slice.
 
-2. ENUMERATE the phonetic-mode named band (register_enumerate)
-   → name:<mark> match=phonetic phonetic_variants=<aiVariants from step 1> classes <target>
-
-3. ENUMERATE the default-mode named band (register_enumerate)
+2. ENUMERATE the default-mode named band (register_enumerate)
    → name:<mark> match=default classes <target>
 
-4. ENUMERATE a cross-class merch query if identical match
+3. ENUMERATE a cross-class merch query if identical match
 ```
 
 **Why:** coined words rarely have crowded fields; phonetic expansion catches misspellings and stylisations the default mode misses. Multi-language phoneme expansion catches non-English-speaker filings. Each enumeration returns `enumerated` (the usual case — sparse, fully paged) or `incomplete` if a crowd; either way it crosses verbatim.
@@ -250,8 +244,7 @@ Ask one script question per market the frame names. Where the register files for
      every exact-in-class record (live + dead with status). Never sub-sampled, never rolled into a count.
 
 3. Slice B — phonetic-equivalent fringe (register_enumerate)
-   → <provider>_expand_phoneme(word=<dominant>, language=<matter languages>)
-   → register_enumerate name:<dominant> match=phonetic phonetic_variants=<…> nice_classes:<target>
+   → On a plan run the plan's phonetic entries are the sound-alike search; a register with no sound-alike search defers the slice.
    → enumerated if bounded, incomplete if a crowd. Do NOT name any phonetic algorithm.
 
 4. Tag results

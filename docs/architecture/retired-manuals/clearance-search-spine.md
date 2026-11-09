@@ -10,13 +10,12 @@ description: Orchestrator for preliminary trademark search requests with registe
 - [Register sources — the active vendor is the source of truth](#register-sources--the-active-vendor-is-the-source-of-truth)
 - [Model](#model)
 - [Upfront instructions (per-mark guidance from the reviewing lawyer)](#upfront-instructions-per-mark-guidance-from-the-reviewing-lawyer)
-- [Scope discipline — "stop if manageable"](#scope-discipline--stop-if-manageable)
 - [Process overview](#process-overview)
 - [HITL exception (shared across sub-skills)](#hitl-exception-shared-across-sub-skills)
 - [Failure fallbacks](#failure-fallbacks)
 - [Phase 0 — Workspace hygiene + matter-frame + template selection (run-start)](#phase-0--workspace-hygiene--matter-frame--template-selection-run-start)
 - [Phase 1 — Template](#phase-1--template)
-- [Phase 2 — Research and synthesis](#phase-2--research-and-synthesis) → detail in [phase2-execution.md](phase2-execution.md)
+- [Phase 2 — Research and synthesis](#phase-2--research-and-synthesis) → detail in [phase2-execution.md](../../../driver/skills/clearance-search/phase2-execution.md)
 - [Phase 3 — Delivery](#phase-3--delivery)
 - [Delivery & handoff](#delivery--handoff)
 - [Reply rules](#reply-rules)
@@ -30,12 +29,12 @@ This file is the **driver's compute orchestration spec** — it lives in `driver
 This workflow is run by the **deterministic driver** (`driver/`): an intake path (the `enqueue` CLI or the ops-MCP `start_run` tool) enqueues a job and the driver invokes each stage as a standalone compute turn (the `anthropic-agent` engine — a headless `claude -p` process off the gateway; sequencing, fan-in, gating, retries all in code). The judgment content + companion files below are what the stages read; the driver passes each stage its run-dir paths + the job context (email message id, forwarder, instructions, mark names).
 
 Companion files (this skill):
-- [phase2-execution.md](phase2-execution.md) — Phase 2 methodology (variants → gather → Touchpoint 2 placement → digest → skeptic review → cross-pollination → synthesis → Touchpoint 3 narrative refutation → case-law grounding)
-- [template-formatting.md](../../../docs/architecture/retired-manuals/template-formatting.md) — HTML/CSS spec for the report
-- [risk-framework.md](risk-framework.md) — the house-default band ladder (Very High · High · Moderate · Manageable), each band stated as Legal position, Practical position and Potential consequences
-- [synthesis-rules.md](synthesis-rules.md) — how to combine common-law + register findings into a single risk assessment (carries the default-to-senior-lawyer-judgment posture)
-- [worked-examples.md](worked-examples.md) — the analytical depth target
-- [templates/email/](templates/email/) — a RECORD of the retired per-customer email bodies (`generic.md`), kept for history. Nothing selects one and no seat writes from one: `composeEmailHtml` composes the single cover note in code. Do not draft against it
+- [phase2-execution.md](../../../driver/skills/clearance-search/phase2-execution.md) — Phase 2 methodology (variants → gather → Touchpoint 2 placement → digest → skeptic review → cross-pollination → synthesis → Touchpoint 3 narrative refutation → case-law grounding)
+- [template-formatting.md](template-formatting.md) — HTML/CSS spec for the report
+- [risk-framework.md](../../../driver/skills/clearance-search/risk-framework.md) — the house-default band ladder (Very High · High · Moderate · Manageable), each band stated as Legal position, Practical position and Potential consequences
+- [synthesis-rules.md](../../../driver/skills/clearance-search/synthesis-rules.md) — how to combine common-law + register findings into a single risk assessment (carries the default-to-senior-lawyer-judgment posture)
+- [worked-examples.md](../../../driver/skills/clearance-search/worked-examples.md) — the analytical depth target
+- [templates/email/](email-generic.md) — a RECORD of the retired per-customer email bodies (`generic.md`), kept for history. Nothing selects one and no seat writes from one: `composeEmailHtml` composes the single cover note in code. Do not draft against it
 
 Top-level reusable judgment skills (the three new "touchpoints" — see Phase 2 below):
 - `matter-frame` — runs **inline** at Phase 0: produces `matter-context.md` naming client + sector + customer base + materially-matters jurisdictions + off-field sectors + watchlist-owner seeds. Strategic foundation the rest of the workflow reasons against. Reusable by `knockout-searches` and future clearance-search.
@@ -101,18 +100,6 @@ Before Phase 1, scan the forwarded email body for **per-mark guidance** from the
 
 This hook exists because some judgment calls (mark-element distinctiveness, industry-specific enforcement patterns) require the reviewing lawyer's institutional knowledge and cannot be reliably inferred from the search itself.
 
-## Scope discipline — "stop if manageable"
-
-When the request form lists multiple proposed names and includes language like *"preferred name — please stop review here if manageable"*, the skill MUST honour it:
-
-1. Run the full Phase 2 workflow on the **preferred (first) name only**.
-2. Synthesise its risk verdict.
-3. **If the preferred name is rated Composite 1 or 2 (Manageable / Low Risk),** stop. Do not run the alternates. Deliver Phase 1 + the preferred name's Phase 2 + 3 output. Note in the narrative: "Per request form, review stopped at [preferred name] as risk was assessed manageable. Alternates not searched."
-4. **If the preferred name is rated Composite 3+,** continue to the alternates so the reviewing lawyer has the full picture for selecting a fallback.
-5. The reviewing lawyer is the final arbiter — if their upfront instructions say otherwise (e.g. "run all three regardless"), follow those instructions.
-
-This prevents producing noise findings on names that the client never intended to evaluate.
-
 ## Process overview
 
 Three phases, all complete before a single reply is sent to the forwarder.
@@ -120,16 +107,16 @@ Three phases, all complete before a single reply is sent to the forwarder.
 **Phase 1 — Template:**
 1. Extract all fields from the forwarded search request form
 2. Mark the email as read immediately (prevents duplicate processing if a heartbeat picks up the same unread email)
-3. Derive the run slug and open the run-dir from those fields — Phase 1 authors NO client prose. The report is written in Phase 2 synthesis (per [delivery-contract.md](delivery-contract.md)) and the client email is composed in CODE at Phase 3 (`composeEmailHtml`)
+3. Derive the run slug and open the run-dir from those fields — Phase 1 authors NO client prose. The report is written in Phase 2 synthesis (per [delivery-contract.md](../../../driver/skills/clearance-search/delivery-contract.md)) and the client email is composed in CODE at Phase 3 (`composeEmailHtml`)
 
-**Phase 2 — Research and synthesis** (run by the deterministic driver; methodology in [phase2-execution.md](phase2-execution.md)):
+**Phase 2 — Research and synthesis** (run by the deterministic driver; methodology in [phase2-execution.md](../../../driver/skills/clearance-search/phase2-execution.md)):
 1. **Variants** — `clearance-variants` produces the variant manifest (consumes `matter-context.md` from Phase 0)
 2. **Gather** — common-law + the applicable register units run as batched stages against the manifest
 3. **Touchpoint 2: placement-inquiry** — structured inquiry per candidate; produces `placement-recommendations.md` (each candidate placed headline / sheet-2 / watchlist / out-of-scope with reasoning)
 4. **Register digest** — combines the unit digests into `register-findings.md`; consumes `placement-recommendations.md`
 5. **Skeptic review** — a fresh-eyes coverage check; a unit with a gap its register can close is re-run
 6. **Cross-pollination** — Option D deterministic cross-checks (cap N=10) using both layers' findings
-7. **Synthesis** — joint risk analysis using [risk-framework.md](risk-framework.md) and [synthesis-rules.md](synthesis-rules.md)
+7. **Synthesis** — joint risk analysis using [risk-framework.md](../../../driver/skills/clearance-search/risk-framework.md) and [synthesis-rules.md](../../../driver/skills/clearance-search/synthesis-rules.md)
 8. **Touchpoint 3: narrative-refutation** — refutes the narrative against the source files; produces `senior-eye-review.md` (verdict CLEAR / CONDITIONAL / BLOCKING)
 9. **Case-law grounding** — ground watchlist / enforcer findings in cited precedent
 10. **Cross-mark references** — once, after all marks complete (multi-mark requests only)
@@ -184,14 +171,14 @@ On every invocation, before Phase 1:
 
 1. **Generate the run codename** — a random `<adjective>-<noun>` (lowercase, single hyphen; pick freshly, never reuse a prior run's). This fixes your run-dir leaf `<date>-<codename>` for the entire run.
 2. **Create the run-dir by WRITING into it.** The `write` tool creates parent dirs automatically, so your first write (the matter-context.md in step 3, then `register-units/<axis>.md` files as Phase 2 needs them) creates `studio/clearance-search/<slug>/<date>/`. The unique codename already guarantees a clean, collision-free dir, so there is **nothing to inspect** — do not `read` or list a directory to check or create it; track every file by its known path.
-3. **Run `matter-frame` inline** to produce `studio/clearance-search/<slug>/<date>/matter-context.md`. This is the strategic foundation — it names client + sector + customer base + materially-matters jurisdictions + off-field sectors + watchlist-owner seeds. Downstream (Phase 1 variants, Phase 2 register units, Touchpoint 2 placement, Touchpoint 3 refutation) all consume this artifact. Read [matter-frame/SKILL.md](../matter-frame/SKILL.md) and execute it inline; it makes no tool calls and stays in context.
+3. **Run `matter-frame` inline** to produce `studio/clearance-search/<slug>/<date>/matter-context.md`. This is the strategic foundation — it names client + sector + customer base + materially-matters jurisdictions + off-field sectors + watchlist-owner seeds. Downstream (Phase 1 variants, Phase 2 register units, Touchpoint 2 placement, Touchpoint 3 refutation) all consume this artifact. Read [matter-frame/SKILL.md](../../../driver/skills/matter-frame/SKILL.md) and execute it inline; it makes no tool calls and stays in context.
 4. **Per-customer delivery is driven by the RESOLVED CUSTOMER PROFILE, not the sender domain.** The intake
    AI resolves which customer this is for and stamps `profileKey` on the job (email-loop §B3.2a); the driver
    freezes that profile into `_driver/profile.json`, and the deterministic publish code reads its `delivery`
    descriptor — which today carries only the P&C header flag. `email` no longer selects a body: every
    customer gets the same cover note (`{ email: "summary" }`), and a stored `"table"` folds to it.
    There is no per-customer body left to select and no template to pick: one file remains
-   ([templates/email/generic.md](../../../docs/architecture/retired-manuals/email-generic.md)) and it is a RECORD of the retired
+   ([templates/email/generic.md](email-generic.md)) and it is a RECORD of the retired
    per-customer body, not an instruction. What the profile still decides is the P&C flag, and it
    decides it through the bound profile, never `*@domain`.
 5. **Phase 3 archives this run** on successful delivery: the dated subdir is moved to `studio/clearance-search/archive/<YYYY-MM>/<slug>/<date>/`. A run that delivered but failed to archive is a workflow violation — Phase 3 (see [Phase 3](#phase-3--delivery--must-pattern)) handles the move.
@@ -200,7 +187,7 @@ On every invocation, before Phase 1:
 
 Extract the fields from the Trademark Search Request Form and derive the slug. **Phase 1 produces no client-facing prose** — it is field extraction and run-dir setup, and nothing else.
 
-The report body is authored in Phase 2 synthesis against [delivery-contract.md](delivery-contract.md); the email that carries it is composed in CODE at Phase 3 (`composeEmailHtml`), one cover note for every customer. A body drafted here reaches no reader — the notify seat is a courier that sends the driver's file verbatim. ([template-formatting.md](../../../docs/architecture/retired-manuals/template-formatting.md) survives as the KNOCKOUT RENDERER'S formatting reference — see its header; it is not a drafting instruction to this seat.)
+The report body is authored in Phase 2 synthesis against [delivery-contract.md](../../../driver/skills/clearance-search/delivery-contract.md); the email that carries it is composed in CODE at Phase 3 (`composeEmailHtml`), one cover note for every customer. A body drafted here reaches no reader — the notify seat is a courier that sends the driver's file verbatim. ([template-formatting.md](template-formatting.md) survives as the KNOCKOUT RENDERER'S formatting reference — see its header; it is not a drafting instruction to this seat.)
 
 **Slug derivation.** The slug for the run-dir is `tmp<n>-<kebab-mark-name>` — e.g. `tmp2201-project-novapulse`, `tmp8642-glowvault`. The TMP number from the request form's *Reference No.* field is the firm's unique identifier and guarantees uniqueness; the kebab mark name keeps the slug human-readable. Lowercase, ASCII letters / digits / hyphens only. Multi-mark requests: use one slug for the request (typically the first mark); if per-mark separation is needed inside the run, use a `marks/<mark-kebab>/` subdir within the dated dir.
 
@@ -209,7 +196,7 @@ The report body is authored in Phase 2 synthesis against [delivery-contract.md](
 ## Phase 2 — Research and synthesis
 
 Phase 2 is **sequenced by the deterministic driver** (`driver/`); the step-by-step
-**methodology** lives in [phase2-execution.md](phase2-execution.md). It covers:
+**methodology** lives in [phase2-execution.md](../../../driver/skills/clearance-search/phase2-execution.md). It covers:
 - **Step 1** — variants (`clearance-variants` writes the variant manifest)
 - **Step 2** — gather (common-law + the applicable register units) → Touchpoint 2 placement-inquiry → register digest
 - **Step 2.6** — skeptic review (fresh-eyes audit before trust)
@@ -239,13 +226,13 @@ The driver runs the delivery stage on **every** completed run — the search is 
 
 ### Deliverable 1: Narrative summary (email body)
 
-**No template is selected and no seat composes this.** `composeEmailHtml` builds the cover note in code from the structure below, one shape for every customer; the files under [templates/email/](templates/email/) are a record of the retired per-customer bodies, not a spec to draft against. The confidentiality marking is `confPosture` (`shared/brand.mjs`) — three-valued, stated there and nowhere else. What follows is the **content** the code renders, described so a reader can see what the mail carries.
+**No template is selected and no seat composes this.** `composeEmailHtml` builds the cover note in code from the structure below, one shape for every customer; the files under [templates/email/](email-generic.md) are a record of the retired per-customer bodies, not a spec to draft against. The confidentiality marking is `confPosture` (`shared/brand.mjs`) — three-valued, stated there and nowhere else. What follows is the **content** the code renders, described so a reader can see what the mail carries.
 
 **Game-title developer attribution MUST come from `common-law-findings.md`'s `developer_of_record` / `publisher_of_record` fields** — never confabulate publishers (Bandai Namco, Tencent, etc.) by inferring from prior-frequent gaming companies. If the field is `not extracted` or empty, write "(developer unverified)" rather than guessing.
 
 **Methodology lives in the Excel Methodology tab, NOT in the email body.** Do not include paragraph-length descriptions of search approach, sub-skills invoked, variants generated, etc. in the client-facing email. That bloat is what the render-layer split fixes.
 
-**The email is a COVER NOTE; the HTML report is the single master document (wp50).** The house default for every customer: the email carries only the headline risk tier, the report link, and any surviving scope/verdict/handling flags plus reviewer's open questions — no findings body, no client-voice prose, no hand-holding preamble. Client-voice findings live in the **HTML report** (the one surface the client reads). The last exception — a customer's review-table overlay (`delivery.email:'table'`) — is DELETED as of 2026-07-28, along with the knob that asked for it: a second full findings surface in the mail was the seam that let per-conflict tiers diverge from the report, and on the knockout lane it shipped internal purple notes over the wire. A lawyer who needs a bespoke, forwardable client mail asks the assistant to draft one from the run's `report-data.json` — formatting is judgement, and it belongs where judgement lives, not in a profile enum. The operative delivery spec is [delivery-contract.md](delivery-contract.md) + the driver's `report-synthesis` stage. (The `client-summary` stage, which re-voiced the findings into a separate client-facing document, is RETIRED as of 2026-08-01 — the one report is the one surface.)
+**The email is a COVER NOTE; the HTML report is the single master document (wp50).** The house default for every customer: the email carries only the headline risk tier, the report link, and any surviving scope/verdict/handling flags plus reviewer's open questions — no findings body, no client-voice prose, no hand-holding preamble. Client-voice findings live in the **HTML report** (the one surface the client reads). The last exception — a customer's review-table overlay (`delivery.email:'table'`) — is DELETED as of 2026-07-28, along with the knob that asked for it: a second full findings surface in the mail was the seam that let per-conflict tiers diverge from the report, and on the knockout lane it shipped internal purple notes over the wire. A lawyer who needs a bespoke, forwardable client mail asks the assistant to draft one from the run's `report-data.json` — formatting is judgement, and it belongs where judgement lives, not in a profile enum. The operative delivery spec is [delivery-contract.md](../../../driver/skills/clearance-search/delivery-contract.md) + the driver's `report-synthesis` stage. (The `client-summary` stage, which re-voiced the findings into a separate client-facing document, is RETIRED as of 2026-08-01 — the one report is the one surface.)
 
 Structure (content shared across templates):
 
@@ -258,7 +245,7 @@ Structure (content shared across templates):
 **1. Scope statement** (from variant manifest's scope_statement field)
 > "We conducted common law and marketplace searches and trademark register searches for [N] proposed marks in the context of [product description], focusing on Classes [X, Y, Z]. Our common-law search covered the [N] mandatory marketplaces dictated for this customer (e.g., for gaming: Steam, Epic Games Store, Google Play, Apple App Store, Microsoft Store, itch.io), plus general web, e-commerce, social media and domain registries — and, for any collaborated / non-gaming goods, a general search scoped to those goods (e.g. [pizza]). Our register search ran via [vendor] (with EUIPO for EU/EUTM confirmation) across [N] jurisdictions with funnel narrowing and live-status filtering. Cross-pollination between layers applied per our standard methodology (see audit trail)."
 
-**Coverage statement (mandatory, honest).** Right after the scope, state plainly what was and was not searched, from the `## Coverage ledger`: *"Searched to completion in [these jurisdictions / axes]; coverage was limited in [these]; not searched this run in [these] — risk in unsearched markets is **unassessed**, not clean."* A `deferred` / `coverage-limited` jurisdiction is **never** rendered as a clean negative; the reviewing lawyer must see exactly what they are signing off on. **A dropped variant / field / source is a coverage limitation too:** read the variant manifest's `### Scope ledger` section (the variants-stage coverage statement, spanning the variant / field / source layers) alongside the two findings-file ledgers, and surface any `dropped` row as a recall limitation in the same breath (e.g. *"transliteration sweeps were not run — conflicts under non-Latin scripts are unassessed"*; *"the developer ecosystem was not searched — collisions on that channel are unassessed"*) — a dropped variant axis, an off-fielded sector, or an unsearched channel is unsearched recall, never silent absence (see [synthesis-rules.md](synthesis-rules.md) → *Coverage honesty*).
+**Coverage statement (mandatory, honest).** Right after the scope, state plainly what was and was not searched, from the `## Coverage ledger`: *"Searched to completion in [these jurisdictions / axes]; coverage was limited in [these]; not searched this run in [these] — risk in unsearched markets is **unassessed**, not clean."* A `deferred` / `coverage-limited` jurisdiction is **never** rendered as a clean negative; the reviewing lawyer must see exactly what they are signing off on. **A dropped variant / field / source is a coverage limitation too:** read the variant manifest's `### Scope ledger` section (the variants-stage coverage statement, spanning the variant / field / source layers) alongside the two findings-file ledgers, and surface any `dropped` row as a recall limitation in the same breath (e.g. *"transliteration sweeps were not run — conflicts under non-Latin scripts are unassessed"*; *"the developer ecosystem was not searched — collisions on that channel are unassessed"*) — a dropped variant axis, an off-fielded sector, or an unsearched channel is unsearched recall, never silent absence (see [synthesis-rules.md](../../../driver/skills/clearance-search/synthesis-rules.md) → *Coverage honesty*).
 
 **2. Per-mark findings** — for each mark, lead with the **proposed-mark assessment**, then the five finding categories:
 
@@ -292,7 +279,7 @@ The **Methodology** sheet carries: matter-context summary, search approach, plac
 **Detail-fetch coverage** (register search-depth floor — kept here, not in the Excel spec, because the Step 2.6 skeptic review depends on it) — rank the union of unique URIs returned across all register searches by signal strength, then detail-fetch as follows:
 
 1. **Identical-mark hits** — fetch all, no cap.
-2. **Near-exact (dominant-token-substring) in-class-live hits — fetch all, no cap (Slice A).** The mirror, at the orchestrator floor, of the unit-side [exact-in-class-live floor](../clearance-register/unit.md#exact-in-class-live-floor-primary-sweep-unit-owns-it). The **near-exact band** — where the **dominant element** (from the variant manifest) appears as a *substring* of `mark_text` (case-insensitive, after the `normalize()` strip in [status-rules.md](../clearance-register/status-rules.md), see the Identical-match normalisation shape) in a **filed target class** with **live** status, but is not an identical match (e.g. NORDWAVE NOVAPULSE, NOVAPULSE.com on dominant element NOVAPULSE) — is **enumerate-and-fetch, no top-N, no score gate**. This is the F-1/F-3 hole: the near-exact band otherwise falls into the Top-K sample (item 5) and a dangerous in-class-live conflict gets paged past the cliff. Slice A is **exhaustive** — distinct from the sample-with-disclosure Slice B below.
+2. **Near-exact (dominant-token-substring) in-class-live hits — fetch all, no cap (Slice A).** The mirror, at the orchestrator floor, of the unit-side [exact-in-class-live floor](../../../driver/skills/clearance-register/unit.md#exact-in-class-live-floor-primary-sweep-unit-owns-it). The **near-exact band** — where the **dominant element** (from the variant manifest) appears as a *substring* of `mark_text` (case-insensitive, after the `normalize()` strip in [status-rules.md](../../../driver/skills/clearance-register/status-rules.md), see the Identical-match normalisation shape) in a **filed target class** with **live** status, but is not an identical match (e.g. NORDWAVE NOVAPULSE, NOVAPULSE.com on dominant element NOVAPULSE) — is **enumerate-and-fetch, no top-N, no score gate**. This is the F-1/F-3 hole: the near-exact band otherwise falls into the Top-K sample (item 5) and a dangerous in-class-live conflict gets paged past the cliff. Slice A is **exhaustive** — distinct from the sample-with-disclosure Slice B below.
 3. **Phonetic-equivalent fringe — floor, sample-with-disclosure (Slice B).** Run the provider phonetic capability on the dominant token for the matter languages (provider-agnostic: `<provider>_expand_phoneme` then `match_mode: phonetic`; Clarivate uses native `match_mode: phonetic`). It **is a floor** — it MUST run for the dominant token in the filed class — but phonetic sets are unbounded, so it is **sample-with-disclosure**: where it cannot be fully worked, the coverage unit is **`coverage-limited`** (reason: "phonetic fringe sampled, not enumerated"), never `confirmed-clean`. Keep Slice A (exhaustive) and Slice B (sampled) **structurally distinct** — they have different correctness properties.
 4. **Watchlist-owner hits** — fetch all.
 5. **Top-K by relevance** — sample from each match-mode (exact / phrase / default) and across regions to ensure representative coverage. If the worker stops detail-fetching before ~25 URIs across all match-modes, the worker MUST answer in its digest audit: did the result set genuinely run out, or is this the empirical execution-tier truncation pattern (~10 URIs, no explanation)? The 25 figure is a tripwire-with-question, not a target — the Step 2.6 skeptic reads the worker's answer and re-spawns escalated to Opus if the answer is missing or unconvincing.
@@ -328,7 +315,7 @@ be audited without touching the engine.
 
 ## Checklist — before sending
 
-- [ ] Phase 1 HTML template is complete and formatted per [template-formatting.md](../../../docs/architecture/retired-manuals/template-formatting.md)
+- [ ] Phase 1 HTML template is complete and formatted per [template-formatting.md](template-formatting.md)
 - [ ] Variant manifest produced by `clearance-variants` and validated
 - [ ] `clearance-common-law` produced its findings file with every dictated platform covered
 - [ ] `clearance-register` produced its findings file with funnel pattern executed

@@ -149,6 +149,7 @@
     "!driver/skills/clearance-search/worked-examples-*",
     "driver/skills/clearance-search/worked-examples.md",
     "driver/skills/clearance-search/worked-examples-demo.md",
+    "!scripts/secret-scanner-fetch.mjs",
     "!scripts/home-render-check.mjs",
     "!scripts/ai-page-render-check.mjs",
     "!scripts/composer-render-check.mjs",

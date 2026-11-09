@@ -34,12 +34,13 @@
 // `n` is the render's, taken from array order. A seat-supplied number is a value that can disagree with
 // the list it labels — duplicated, skipped, or renumbered by a corrective pass — and nothing downstream
 // would notice. Removing the field removes the defect (the doubt-closure `file_index` rule).
-import { writeFileSync, mkdirSync, existsSync, readFileSync, readdirSync } from "node:fs";
+import { writeFileSync, existsSync, readFileSync, readdirSync } from "node:fs";
 import { captureCall, mergeCapture, nextSeq } from "./call-capture.mjs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 import { parseVerdict, countCitedDefects, parseCorrections, parseCorrectionKinds, correctionFlagContent, CORRECTION_KINDS, SECTION_HEADING_RE } from "./verify.mjs";
+import { readJson } from "./run-record.mjs";
 
 export const REVIEW_FILE = "senior-eye-review.md";
 
@@ -60,7 +61,7 @@ export function refutationCallPaths(runDir) {
 export const REVIEW_EXCLUSIONS_FILE = "review-exclusions.json";
 export function listedExclusionPositions(runDir) {
   try {
-    const doc = JSON.parse(readFileSync(driverDir(String(runDir ?? ""), REVIEW_EXCLUSIONS_FILE), "utf8"));
+    const doc = readJson(driverDir(String(runDir ?? ""), REVIEW_EXCLUSIONS_FILE));
     const out = new Map();
     for (const p of Array.isArray(doc?.positions) ? doc.positions : [])
       for (const m of [p?.uri, ...(Array.isArray(p?.members) ? p.members : [])]) { const k = String(normalizeRecordUri(m) ?? ""); if (k && p?.uri) out.set(k, p.uri); }
@@ -317,7 +318,7 @@ export function recordRefutation(runDir, received, { now = () => new Date().toIS
 export function readAcceptedFlags(runDir) {
   const { payload } = refutationCallPaths(String(runDir ?? ""));
   let doc;
-  try { doc = JSON.parse(readFileSync(payload, "utf8")); } catch { return null; }
+  try { doc = readJson(payload); } catch { return null; }
   if (doc?.accepted !== true) return null;
   const flags = doc?.params?.flags;
   return Array.isArray(flags) ? flags : null;
@@ -353,7 +354,7 @@ export function readAcceptedReviewSince(runDir, seq0) {
     .sort((a, b) => b.seq - a.seq);
   for (const c of calls) {
     let doc;
-    try { doc = JSON.parse(readFileSync(c.file, "utf8")); } catch { continue; }
+    try { doc = readJson(c.file); } catch { continue; }
     if (doc?.accepted !== true) continue;
     const p = doc?.params ?? {};
     return { seq: c.seq, verdict: p.verdict ?? null, flags: Array.isArray(p.flags) ? p.flags : [], planAudit: p.plan_audit ?? null };
@@ -445,18 +446,4 @@ export function settleRecheckSave(runDir, { before = null, stageOk = false, seq0
   if (file.ok) return { read: { by: "file", seq: null }, fail: null, refused: null, restore: null };
   if (byTool) return { read: byTool, fail: null, refused: file.reason, restore: saved };
   return { read: null, fail: `file-save-refused:${file.reason}`, refused: file.reason, restore: earlierBack };
-}
-
-/** Read back what was written — the verdict view of the stored file, through the one parse. */
-export function readRecordedVerdict(runDir) {
-  try { return parseVerdict(readFileSync(join(String(runDir ?? ""), REVIEW_FILE), "utf8")); }
-  catch { return null; }
-}
-
-/** The flag lines as the corrective ladder sees them — through the shipped selector, not a local one. */
-export function readRecordedFlagLines(runDir) {
-  try {
-    return readFileSync(join(String(runDir ?? ""), REVIEW_FILE), "utf8")
-      .split("\n").map((l) => correctionFlagContent(l)).filter(Boolean);
-  } catch { return null; }
 }

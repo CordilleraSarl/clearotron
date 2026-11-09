@@ -16,8 +16,9 @@
 // A failure on the pass that delivers without the assessment is not routed again: the run ends with the stop notice.
 // Every mark and owner is invented; the mock engine's own fixture words are not repeated here.
 import { test, after } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { mkdtempSync, chmodSync, readFileSync, readdirSync, existsSync, rmSync, writeFileSync, cpSync } from "node:fs";
+import { mkdtempSync, chmodSync, readFileSync, readdirSync, existsSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -154,7 +155,7 @@ test("the one new sentence is written once, and the report's conclusion is it fo
   assert.equal(ASSESSMENT_NOT_COMPLETED, "The overall assessment is incomplete.");
   assert.equal(assessmentNotCompletedNote(), `${ASSESSMENT_NOT_COMPLETED} ${CLIENT_ACTION}`);
   for (const f of ["pipeline.mjs", "publish/index.mjs", "publish/render.mjs", "publish/xlsx.mjs", "degraded-parts.mjs"])
-    assert.ok(!readFileSync(join(HERE, "..", f), "utf8").includes(ASSESSMENT_NOT_COMPLETED), `${f} spells the sentence out instead of importing it`);
+    assert.ok(!driverSource(f).includes(ASSESSMENT_NOT_COMPLETED), `${f} spells the sentence out instead of importing it`);
 });
 
 for (const engine of Object.keys(ENGINES)) {
@@ -268,7 +269,7 @@ test("without the record: the strict parse refuses an empty record, a clean matt
 // before, and the check never delivers past staleness. A mock run cannot make a repair fail twice and then succeed, so
 // the naming is read from the source, and the record's answer is driven: a pass that clears the check removes it.
 test("the changed-material check's repeat is named as its own part, and a pass that clears the check answers its record", async () => {
-  const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.match(src, /throw Object\.assign\(new StageFailure\("delivery", `the report was assembled from material that has since changed[^\n]*\{ failClass: "stale" \}\), \{ notCompletedPart: "delivery" \}\);/,
     "the check's repeat is not named as its own part, so it ends the run");
   const root = tempDir("clearotron-open-delivery-");

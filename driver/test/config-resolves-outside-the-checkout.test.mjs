@@ -127,7 +127,7 @@ test("the doctor NAMES where configuration resolves from, in all three states", 
 
   // UNSET is a reported state, not silence: it means this install is running our demo roster, which is
   // fine to start with and bad to discover later from a clearance that used a framework nobody chose.
-  const unset = doctor({ CLEAROTRON_CUSTOMERS_DIR: "", CLEAROTRON_CUSTOMERS_DIR: "" });
+  const unset = doctor({ CLEAROTRON_CUSTOMERS_DIR: "" });
   assert.match(unset, /Configuration store/, "the doctor must have a section for this at all");
   // — "not set" is ADVICE: it tells the reader what to go and write, so it names the CURRENT
   // spelling. This arm pinned the retired one and so passed while the doctor sent a fresh installer to

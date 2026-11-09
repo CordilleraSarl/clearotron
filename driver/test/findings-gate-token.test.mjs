@@ -25,6 +25,7 @@
 // private, so those are read out of the source and applied — the test tracks the code that ships rather
 // than a copy of it that can drift. If a regex here stops being found, that is a failure, not a skip.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -37,7 +38,7 @@ const TOKEN = "findings_net_chained";
 const WIRE = `invalid_file:findings.json:${TOKEN}:3`;
 
 const GATEWAY_SRC = readFileSync(new URL("../gateway.mjs", import.meta.url), "utf8");
-const PIPELINE_SRC = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+const PIPELINE_SRC = driverSource("pipeline.mjs");
 
 /** Pull a literal regex out of shipped source by an anchoring prefix, so the test applies the real one. */
 function literalRegex(src, anchor, label) {

@@ -110,7 +110,7 @@ test("planted: the ceiling dropped from its section, kept in the tool table, is 
 
 /** Every value a tool's input schema accepts for `match_mode`, `match` and `predicate`, per argument. */
 function acceptedModes(provider) {
-  const src = readFileSync(join(ROOT, "driver", "engine", "mcp", `${provider}-server.mjs`), "utf8");
+  const src = readFileSync(join(ROOT, "providers", provider, "src", "mount.js"), "utf8");
   const accepted = {};
   for (const m of src.matchAll(/\b(match_mode|match|predicate): \{ type: "string", enum: \[([^\]]*)\]/g)) {
     accepted[m[1]] ??= new Set();
@@ -140,7 +140,7 @@ for (const provider of PROVIDERS) {
     const accepted = acceptedModes(provider);
     const refused = modesWritten(manual(provider)).filter(([arg, v]) => !accepted[arg]?.has(v));
     assert.deepEqual(refused.map(([a, v]) => `${a}: "${v}"`), [],
-      `${provider}.md writes a mode that driver/engine/mcp/${provider}-server.mjs does not accept. A `
+      `${provider}.md writes a mode that providers/${provider}/src/mount.js does not accept. A `
       + "model that copies it into a call gets a refusal, or a different search than the manual describes.");
   });
 }
@@ -148,7 +148,7 @@ for (const provider of PROVIDERS) {
 test("the tool schemas were read, so an empty refusal list means something", () => {
   for (const provider of ["clarivate", "corsearch", "euipo", "free-tier", "signa"]) {
     const accepted = acceptedModes(provider);
-    assert.ok(Object.values(accepted).some((s) => s.size > 0), `no mode enum read from ${provider}-server.mjs — the check above could not look`);
+    assert.ok(Object.values(accepted).some((s) => s.size > 0), `no mode enum read from ${provider}'s mount — the check above could not look`);
   }
   assert.ok(modesWritten(manual("clarivate")).length >= 6, "clarivate's mode table was not read — the check above could not look");
 });

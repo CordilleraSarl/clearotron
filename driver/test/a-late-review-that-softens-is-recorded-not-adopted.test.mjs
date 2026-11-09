@@ -7,10 +7,8 @@
 // opening CONDITIONAL. BLOCKING rightly stood, but nothing in the run said so, and a reader found two
 // answers. The repair now logs `verdict-softening-not-adopted` beside the verdict it did not change.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
 import { lateReviewAgainst } from "../verify.mjs";
 
 const review = (verdict) => `${verdict}\n\n1. one open point the narrative has not yet stated\n`;
@@ -33,7 +31,7 @@ test("THE CONTROL: a stricter review is still adopted, and a same or unreadable 
 // after a settled CONDITIONAL or BLOCKING. So the wiring is read from the source: the one place the late
 // review is read must decide through lateReviewAgainst and log the softening it returns.
 test("the delivery stale-repair decides through lateReviewAgainst and logs the softening", () => {
-  const src = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   // The late review is read in ONE closure, which both reviews the delivery loop can run call: the whole review
   // and the review after a delivery-check repair.
   const at = src.indexOf("const adoptLateReview = (reviewNow, stageLabel) => {");

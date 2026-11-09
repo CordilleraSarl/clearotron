@@ -121,7 +121,7 @@ test("profile-service REFUSES TO START on a store it could never commit — the 
   // blocked the store sync until a human removed them.
   const { r } = bootWithSplitStore("profile-service.mjs", (store, root) => ({
     PROFILE_AUTH_DISABLED: "1", PROFILE_DEV: "1",
-    CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined,
+    CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined,
     CLEAROTRON_CUSTOMERS_DIR: store, PROFILE_REPO_ROOT: root,
     PROFILE_HOST: "127.0.0.1", PROFILE_PORT: "0",
   }));
@@ -134,7 +134,7 @@ test("profile-service REFUSES TO START on a store it could never commit — the 
 test("recipe-service still refuses too — the control that was already right is not traded away", () => {
   const { r } = bootWithSplitStore("recipe-service.mjs", (store, root) => ({
     RECIPE_AUTH_DISABLED: "1", RECIPE_DEV: "1",
-    CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined,
+    CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined,
     CLEAROTRON_RECIPES_DIR: store, RECIPE_REPO_ROOT: root,
     RECIPE_HOST: "127.0.0.1", RECIPE_PORT: "0",
   }));
@@ -153,7 +153,7 @@ test("a service with a CONTAINED store does not refuse — the guard can pass, o
     const r = spawnSync(process.execPath, [join(DRIVER, "profile-service.mjs")], {
       encoding: "utf8", timeout: 15000,
       env: { ...process.env, PROFILE_AUTH_DISABLED: "1", PROFILE_DEV: "1",
-        CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined,
+        CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined,
         CLEAROTRON_CUSTOMERS_DIR: store, PROFILE_REPO_ROOT: root,
         PROFILE_HOST: "127.0.0.1", PROFILE_PORT: "0" },
     });
@@ -169,7 +169,7 @@ function portalEnv(extra) {
   return {
     PORTAL_AUTH_MODE: "local", PORTAL_LOCAL_USER: "dev@local",
     PORTAL_LOCAL_CREDENTIAL: join(mkdtempSync(join(tmpdir(), "sir-cred-")), "credential.json"),
-    CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined,
+    CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined,
     PORTAL_SECRET: "sir-test-secret",
     CLEAROTRON_ACCESS_FILE: grants,
     CLEAROTRON_REPORTS_DIR: mkdtempSync(join(tmpdir(), "sir-pool-")),

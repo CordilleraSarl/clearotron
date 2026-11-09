@@ -3,19 +3,7 @@
 
 # Firm-wide reasoning discipline
 
-**This file is the ONE copy.** Every section here was MOVED out of `synthesis-rules.md` — not copied —
-because more than one lane needs it and a second transcription is exactly the drift that let the
-knockout lane rate under a retired rulebook while this discipline sat in a file it never read.
-
-Read by the clearance lane (`synthesis`) and the knockout lane (`knockout-assess`). What belongs here is
-reasoning that is true under EVERY framework and in every lane. What does not belong here is anything
-that names an artifact only one lane produces — that stays in the lane's own doctrine. The heading in
-`synthesis-rules.md` used to make the "applies under every framework" claim with nothing keeping the
-clearance lane's own material out of it; the boundary has a file of its own now.
-
-**This file names no tool.** A tool named in a shared skill document is ORDERED for every reader and
-GRANTED to none, and the agreement guard then fires on whichever innocent stage also reads it. Tool
-orders belong in a stage's own dispatch.
+Reasoning true under every framework and lane.
 
 ## Risk calibration adjustments (vs the v2 common-law-only framework)
 
@@ -27,7 +15,7 @@ The risk-framework calibration rules originated in a common-law-only context. Wi
 
 **v3 (register included):** when register analysis ran AND surfaced live filings related to the finding, the assessment is no longer "pending overlay" — it's confirmed. Use the caveat only when:
 
-1. Register skipped (e.g., provider failed mid-run) — in which case fall back to v2 wording: "Ratings reflect our common-law assessment only — register layer unavailable this run."
+1. Register skipped (e.g., provider failed mid-run) — in which case fall back to v2 wording: "Ratings reflect our common law assessment. Register analysis may adjust ratings in either direction."
 2. Register completed but no live filings surfaced for the finding's entity — note: "Register search returned no live filings for [entity] in target classes; rating reflects common-law evidence only." **Only sayable when that entity's material jurisdictions are `confirmed-clean` in the coverage ledger.**
 3. Register completed and surfaced live filings — drop the caveat entirely. Synthesis cites the register evidence directly.
 4. Register ran but the entity's material jurisdictions are `deferred` / `coverage-limited` in the ledger — do NOT say "no live filings." Caveat per the Coverage-honesty rule: "Register coverage for [entity] in [jurisdiction] was [deferred/limited] this run — not a clean negative" (the verdict carries it). doc-35: do NOT append "[scope] sweep recommended" — a search-reachable gap is closed or an internal note, never a client commission-a-sweep caveat.
@@ -36,14 +24,14 @@ The risk-framework calibration rules originated in a common-law-only context. Wi
 
 **v2 (common-law only):** *"Register Risk Estimate (purple bullet, mandatory for Composite 2+). Estimate whether register filings are likely based on how common/commercial the phrase is."*
 
-**v3 (register included):** estimation becomes confirmation when register actually ran. Replace the purple bullet with one of three states:
+**v3 (register included):** estimation becomes confirmation when register actually ran. Replace the purple bullet with one of four states:
 
 | State | Wording |
 |---|---|
 | Register ran, found filings | "Register search surfaced [N] live filings related to this entity (see Findings #X, #Y)." |
 | Register ran, no filings (material jurisdictions `confirmed-clean`) | "Register search returned no live filings for [entity] in target classes — common-law-only basis." |
 | Register ran, but material jurisdictions `deferred` / `coverage-limited` | "Register coverage for [entity] in [jurisdiction(s)] was [deferred/limited] — not confirmed clean" (the verdict carries it; no "sweep recommended" caveat — closed in the run or an internal note). |
-| Register skipped | Original v2 estimation language: "Register filings likely based on commercial visibility — the staff lawyer to confirm." |
+| Register skipped | Original v2 estimation language: "Ratings reflect our common law assessment. Register analysis may adjust ratings in either direction." |
 
 ### Stealth-filer recalibration
 
@@ -70,7 +58,7 @@ Note: revocability does NOT automatically change the band. It is a mitigating fa
 
 Total worldwide filing count is NOT a risk factor. Risk is assessed per owner/mark combination, not aggregated across all filings.
 
-If 27 identical filings exist across 27 unrelated owners, each is assessed independently — the count does not raise the composite. Document the volume as context in the narrative methodology note: "[N] exact-match filings found across [M] unique owners — each assessed independently; volume not used as a risk multiplier."
+If 27 identical filings exist across 27 unrelated owners, each is assessed independently — the count does not raise the composite. Document the volume as context in `coverage.read`: "[N] exact-match filings found across [M] unique owners — each assessed independently; volume not used as a risk multiplier."
 
 High filing volume in a field is evidence of crowding (see *Crowded field analysis* under Firm-wide reasoning discipline below), which if anything reduces the enforcement power of any individual holder — it is a neutral-to-mitigating signal, not an elevation signal.
 
@@ -232,9 +220,7 @@ the band.
 ### Enforcer profiling — mandatory for findings rated medium risk or higher
 
 Assess: Is this a portfolio brand? TTAB/UDRP history? Institutional vs individual filer? "No large brands
-or assertive enforcers" is a practical factor the staff lawyer weights heavily. *(`courtlistener__search` covers US
-federal courts incl. CAFC trademark-appeal opinions — NOT raw TTAB proceedings. For TTAB direct
-(oppositions, cancellations, ex parte), source is TTABVUE — separate integration, not yet wired.)* The Step 3.5 query (`phase2-execution.md`) asks for
+or assertive enforcers" is a practical factor the staff lawyer weights heavily. The Step 3.5 query (`phase2-execution.md`) asks for
 the owner's enforcement record; what it finds is a lead, cited inline, never a verified authority.
 
 Profiling informs the **business / practical read only — it never raises the legal read** (the read is the
@@ -332,10 +318,8 @@ PR and reputational risks are NOT trademark risks but **must be surfaced wheneve
 rated conflict**. The staff lawyer wants visibility on these — do not omit them.
 
 They must be:
-- Flagged in a separate section of the narrative (don't bury inside a trademark-risk paragraph)
+- Carry a loaded reading in the `mark_assessment.connotation` field, which prints as the Connotation & meaning line; keep it unrated; where the sweep was clean, say so there once.
 - NOT rated on the framework's bands
-- Labeled as "PR / Reputational risk" clearly
-- Documented even if clean: "No negative connotations identified" is a useful data point
 
 The scope is the run's OWN dictated meaning sweep — the matter frame's `Meaning angles:` (cultural origin
 and communities the word evokes, charged history of the term or its imagery, category-specific controversy

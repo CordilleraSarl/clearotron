@@ -1,7 +1,6 @@
-#!/usr/bin/env node
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Standalone MCP server wrapping the uspto-local CORE (node:sqlite, no network) so a `claude -p`
+// The uspto-local register's tools, as driver/engine/mcp/register-server.mjs mounts them, wrapping its CORE (node:sqlite, no network) so a `claude -p`
 // process can call the register-search tools off-gateway. Pure glue: the core owns all logic.
 //
 // ── THERE IS NO CREDENTIAL, AND THAT IS THE INTERESTING PART ──────────────────────────────────────
@@ -31,14 +30,10 @@
 // it never quietly degrades into a weaker query wearing the right tool's name. The absence is made
 // visible where a spawn and a reviewer each actually look — the tool list here, the REGISTER_SERVERS
 // filter in gather-config.mjs, and the exact-six pin in driver/test/engine.gather.test.mjs.
-import { serve } from "./stdio-server.mjs";
-import { sendUntilFromEnv } from "../../../providers/_shared/send-until.mjs";
-import { crowdNoteFor } from "./crowd-note.mjs";   // how the unit decides on a crowd, beside an answer that carries one
+import { sendUntilFromEnv } from "../../_shared/send-until.mjs";
 import {
   CAPABILITIES, DEFAULT_DB_ENV, doSearch, doRecordFetch, doBatchScreen, doEnumerate, doExecutePlan,
-} from "../../../providers/uspto-local/src/core.js";
-import { proposeSupplemental } from "./supplemental.mjs";
-import { narrowingFields } from "./proposal-fields.mjs";
+} from "./core.js";
 
 const DB_PATH = process.env[DEFAULT_DB_ENV] || "";
 // The auth object IS the index path — see the core's header. Passed as an object rather than a bare
@@ -77,8 +72,8 @@ const QUERY_PROPS = {
   status: { type: "array", items: { type: "string" }, description: "USPTO status codes; omit for all filings. Screening classifies live/dead from the row, so filtering here is rarely what you want." },
 };
 
-serve({
-  name: "register", version: "0.1.0", noteFor: crowdNoteFor,
+export const mount = ({ proposeSupplemental, narrowingFields }) => ({
+  version: "0.1.0",
   tools: [
     {
       name: "register_search",

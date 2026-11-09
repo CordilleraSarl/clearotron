@@ -16,8 +16,9 @@
 // has reopened the per-product design. No bound is asserted here.
 
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync, mkdtempSync, writeFileSync } from "node:fs";
+import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { correctionsExtra } from "../pipeline.mjs";
@@ -60,7 +61,7 @@ test("THE CALL SITE passes the depth — a composer arm cannot see a dispatch th
   // it builds, which is true of a function nobody calls that way. The defect was never in the composer:
   // it was a dispatch calling it WITHOUT a depth, so the composer answered correctly for the argument it
   // got and the rung still never shipped. This reads the call site instead.
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   const calls = [...src.matchAll(/(?<!function )correctionsExtra\(([^)]*)\)/g)]
     .map((m) => m[1].trim())
     .filter((a) => !/^P,\s*depth = null/.test(a));    // the declaration, not a call

@@ -139,7 +139,7 @@ test("WRITE_DISCIPLINE names the Write tool and the DISCARDED failure mode", () 
   assert.match(WRITE_DISCIPLINE, /DISCARDED/);
 });
 
-test("WRITE_DISCIPLINE carries the repair exception, and the two engine copies never drift", async () => {
+test("WRITE_DISCIPLINE carries the repair exception", () => {
   // Producing a stage's output and repairing one named defect in it are different acts. Without this
   // sentence a corrective turn retypes a whole 160 KB document to fix a few lines — measured at 3-4x the
   // wall and tokens of the patching attempt that actually passed (repair-contract.mjs carries the numbers).
@@ -148,10 +148,6 @@ test("WRITE_DISCIPLINE carries the repair exception, and the two engine copies n
   assert.match(WRITE_DISCIPLINE, /counts as written/, "a repaired file must not read as an unwritten one");
   // …and the exception must never swallow the base rule: an ABSENT file is still written in full.
   assert.match(WRITE_DISCIPLINE, /If the file does not exist, the rule above stands/);
-  // engine/anthropic-agent.mjs deliberately imports nothing but node built-ins, so it holds its own copy.
-  // Two copies of a system prompt are two chances to fix one and forget the other — pin them equal.
-  const { WRITE_DISCIPLINE: fromAnthropic } = await import("../engine/anthropic-agent.mjs");
-  assert.equal(fromAnthropic, WRITE_DISCIPLINE, "the anthropic-agent copy drifted from engine/common.mjs");
 });
 
 // ── — THE STALL CLOCK STARTED AT SPAWN, SO STARTUP COUNTED AS SILENCE ───────────────────────────

@@ -22,18 +22,16 @@
 // line of that report.
 
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, rmSync, readFileSync, existsSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { fileURLToPath } from "node:url";
 
 import { recordSpan, DISPATCH_FIELDS } from "../attributed-span.mjs";
 import { isDispatchRow, dispatchRows } from "../seat-attempts.mjs";
 import { createRepairLedger } from "../repairs.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
-
-const HERE = dirname(fileURLToPath(import.meta.url));
 const tmpRun = () => mkdtempSync(join(tmpdir(), "span-"));
 const rowsOf = (runDir, name) =>
   readFileSync(driverDir(runDir, `${name}.jsonl`), "utf8").trim().split("\n").map((l) => JSON.parse(l));
@@ -98,7 +96,7 @@ test("an unmeasurable span writes nothing, and never throws", () => {
 });
 
 test("both silences the addendum named are actually wired, not just wire-able", () => {
-  const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   // The register repair: timed at the DISPATCH, and the duration reaches the ledger row.
   assert.match(src, /const dispatchStartedMs = Date\.now\(\);/);
   assert.match(src, /durationMs: dispatchEndedMs - dispatchStartedMs/);

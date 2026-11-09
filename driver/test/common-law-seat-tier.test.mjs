@@ -26,6 +26,7 @@
 // Run:  node --test driver/test/common-law-seat-tier.test.mjs
 
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { COMMON_LAW_SEAT_TIER, axisTier, chainEntries, assertTierSanity, STAGES } from "../stages.mjs";
 import { GRID_SEATS, MEANING_SEAT } from "../common-law-receipts.mjs";
@@ -160,9 +161,8 @@ test("UNSET is the shipped default — an A/B knob that changes the default is n
 test("`thinking` is NOT overridable — two movable variables is the trap", () => {
   // The whole entry exists so a round can attribute a change to one thing. An env knob on the thinking
   // budget beside the model one would re-create the confound the sonnet/adaptive pair was rejected for.
-  const src = readFileSync(new URL("../stages.mjs", import.meta.url), "utf8");
+  const src = driverSource("stages.mjs");
   const entry = src.slice(src.indexOf("export const COMMON_LAW_SEAT_TIER"), src.indexOf("export const COMMON_LAW_SEAT_TIER") + 400);
   assert.match(entry, /process\.env\.CLEAROTRON_MEANING_SEAT_MODEL \|\| "haiku"/);
   assert.ok(!/thinking:\s*process\.env/.test(entry), "the thinking budget stays a value, not a knob");
 });
-import { readFileSync } from "node:fs";

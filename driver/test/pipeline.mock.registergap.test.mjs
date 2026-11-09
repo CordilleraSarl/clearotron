@@ -6,6 +6,7 @@
 // predate it), and a recall store left on disk from before its removal, which no run reads or writes.
 // Mirrors pipeline.mock.test.mjs's harness; every run is billable-call-free (mock engine).
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, chmodSync, readFileSync, existsSync, writeFileSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -131,7 +132,7 @@ test("the coverage floor names itself, and names which of its inputs fired", asy
 // Asserted over the SOURCE because the property is about all three sites while a mock run trips one
 // floor at a time: an arm driving a single run cannot see two causes collide, which is the defect.
 test("tracker 636 every coverage-floor-clamp site carries its own cause, and no two share one", () => {
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   const sites = [...src.matchAll(/event: "coverage-floor-clamp", cause: "([a-z-]+)"/g)].map((m) => m[1]);
   assert.equal(sites.length, 3, `all three clamp sites must carry a cause; found ${sites.length}`);
   assert.equal(new Set(sites).size, 3,

@@ -54,7 +54,7 @@ wiring as a `config.toml` through `codex-config.mjs`, and `../../test/engine.gat
 | `codex-config.mjs` | The same wiring rendered as a codex `config.toml`, so `gather-config.mjs` stays the one source |
 | `stdio-server.mjs` | `serve()` — the shared JSON-RPC stdio scaffolding, and the writer of the per-run `_driver/tool-calls.jsonl`, where a `started` line with no `settled` line is the only evidence that a killed call ever happened |
 | `http-dispatcher.mjs` | Side-effect import: raises undici's 300s headers timeout for long grid/register calls |
-| `corsearch-server.mjs`, `clarivate-server.mjs`, `euipo-server.mjs`, `signa-server.mjs`, `uspto-local-server.mjs`, `free-tier-server.mjs` | One per register provider, all under the neutral `register_*` names |
+| `register-server.mjs` | The one server for every register provider, mounting `providers/<id>/src/mount.js` by name, under the neutral `register_*` names |
 | `supplemental.mjs` | Mint-and-execute for model-proposed register queries; bound by each server that serves `register_propose_supplemental` |
 | `perplexity-server.mjs` | `perplexity_research` (the common-law grid and open-web research); calls the Perplexity agent API under `PERPLEXITY_API_KEY`. It served `record_dispositions` too until — a record tool on a key FOUR stages hold, so three of them were granted a writer into the common-law lane's ruling ledger that no doctrine of theirs ordered |
 | `band-server.mjs` | Read-only lookups over the run's frozen register band; every call appended to the reading audit |

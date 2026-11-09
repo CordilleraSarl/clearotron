@@ -43,7 +43,7 @@ const VERB_NAMES = Object.keys(SUMMARY ?? {});
 // defect with a different fix.
 const help = (verb) => {
   const opts = { encoding: "utf8", timeout: 60_000,
-    env: { ...process.env, CLEAROTRON_NO_ENV_FILE: "1", CLEAROTRON_NO_ENV_FILE: "1" } };
+    env: { ...process.env, CLEAROTRON_NO_ENV_FILE: "1" } };
   try {
     const r = execFileSync(process.execPath, [CLI, verb, "--help"], { ...opts, stdio: ["ignore", "pipe", "pipe"] });
     return { code: 0, stdout: String(r ?? ""), stderr: "", out: String(r ?? "") };

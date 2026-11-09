@@ -121,7 +121,7 @@ const ENV = '"env":{"CLEAROTRON_GATHER_SESSION_KEY":"SK","CLEAROTRON_GATHER_AGEN
   + ',"CLEAROTRON_REGISTER_CALL_LOG":"<CALL_LOG>","CLEAROTRON_REGISTER_RECORD_LOG":"/RUN/_driver/register-record-bodies.jsonl"'
   // Every server's answer size, so a long answer comes in parts (gather-config CLAUDE_TOOL_ANSWER_BYTES).
   + ',"CLEAROTRON_TOOL_ANSWER_BYTES":"45000"}';
-const local = (key, script) => `"${key}":{"command":"<NODE>","args":["<MCP>/${script}"],${ENV}}`;
+const local = (key, script, ...rest) => `"${key}":{"command":"<NODE>","args":${JSON.stringify([`<MCP>/${script}`, ...rest])},${ENV}}`;
 const bridge = (key) => `"${key}":{"command":"<NODE>","args":["<BRIDGE>","--server","${key}"],"connectionTimeoutMs":60000`
   + ',"env":{"CLEAROTRON_BAND_RUN_DIR":"/RUN","CLEAROTRON_GATHER_SESSION_KEY":"SK","CLEAROTRON_GATHER_AGENT":"AG","CLEAROTRON_TOOL_ANSWER_BYTES":"45000"}}';
 
@@ -162,7 +162,7 @@ const PINNED = Object.freeze({
       + " mcp__register__register_batch_screen mcp__register__register_enumerate"
       + " mcp__register__register_execute_plan mcp__register__register_propose_supplemental"
       + " mcp__unit-note__record_unit_note mcp__unit-note__record_withheld_families mcp__unit-note__record_released_families",
-    mcpConfig: `{"mcpServers":{${local("register", "corsearch-server.mjs")},${local("unit-note", "unit-note-server.mjs")}}}`,
+    mcpConfig: `{"mcpServers":{${local("register", "register-server.mjs", "corsearch")},${local("unit-note", "unit-note-server.mjs")}}}`,
   },
   // THREE groups on one stage — the only row that pins server ORDER inside the config across more than
   // two, and the coverage key's separation from `band` (a record tool riding the shared key would be

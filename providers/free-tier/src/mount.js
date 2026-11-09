@@ -1,7 +1,6 @@
-#!/usr/bin/env node
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Standalone MCP server wrapping the FREE-TIER COMPOSITE under the neutral `register_*` names — EUIPO
+// The free tier's tools, as driver/engine/mcp/register-server.mjs mounts them, wrapping its COMPOSITE under the neutral `register_*` names — EUIPO
 // and the local US index serving one clearance as a single register. Pure glue: the core owns the
 // routing and every merge decision.
 //
@@ -29,14 +28,10 @@
 //
 // Telemetry: the core writes CLEAROTRON_REGISTER_CALL_LOG / CLEAROTRON_REGISTER_RECORD_LOG (the SHARED register
 // ledger) under the provider id `free-tier`, keyed by the gateway session key.
-import { serve } from "./stdio-server.mjs";
-import { sendUntilFromEnv } from "../../../providers/_shared/send-until.mjs";
-import { crowdNoteFor } from "./crowd-note.mjs";   // how the unit decides on a crowd, beside an answer that carries one
+import { sendUntilFromEnv } from "../../_shared/send-until.mjs";
 import {
   CAPABILITIES, doSearch, doRecordFetch, doBatchScreen, doImageFetch, doEnumerate, doExecutePlan,
-} from "../../../providers/free-tier/src/core.js";
-import { proposeSupplemental } from "./supplemental.mjs";
-import { narrowingFields } from "./proposal-fields.mjs";
+} from "./core.js";
 
 // NULL, and it is not a placeholder. Each member core resolves its OWN credentials from the environment
 // — EUIPO its OAuth pair, the index its file path — so there is no single auth object a composite could
@@ -102,8 +97,8 @@ const QUERY_PROPS = {
   regions: { type: "array", items: { type: "string" }, description: `territory codes. This register covers ${CAPABILITIES.offices.covered.join(", ")} — the EU register (EUTM + IRs designating the EU) and the US register. A code outside that is REFUSED as a deferred gap, never filtered away so the search runs over the rest regardless. Omit for the whole tier.` },
 };
 
-serve({
-  name: "register", version: "0.1.0", noteFor: crowdNoteFor,
+export const mount = ({ proposeSupplemental, narrowingFields }) => ({
+  version: "0.1.0",
   tools: [
     {
       name: "register_search",

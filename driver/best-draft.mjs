@@ -29,9 +29,10 @@
 // The store lives under `_driver/` — it survives a park and a `--resume`, and it is deliberately NOT an
 // artifact version (`_history/` is where superseded outputs go for compare.mjs). Keyed by STAGE LABEL, so
 // `common-law-half:a` and `common-law-half:b` never collide.
-import { copyFileSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, renameSync, writeFileSync } from "node:fs";
 import { join, basename } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
+import { readJson } from "./run-record.mjs";
 
 const safe = (label) => String(label).replace(/[^\w.:-]/g, "_");
 
@@ -53,7 +54,7 @@ export function beatsBest(quantity, prior) {
 export function readBestDraft(runDir, label) {
   try {
     const d = bestDraftDir(runDir, label);
-    const rec = JSON.parse(readFileSync(join(d, "score.json"), "utf8"));
+    const rec = readJson(join(d, "score.json"));
     const p = join(d, rec.file);
     return existsSync(p) ? { ...rec, path: p } : null;
   } catch { return null; }

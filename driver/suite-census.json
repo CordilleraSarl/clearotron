@@ -1,6 +1,6 @@
 {
   "_README": [
-    "#1010 — THE SUITE'S SELF-CENSUS. Minted and checked by shared/suite-census.mjs's ONE counter, so the",
+    "THE SUITE'S SELF-CENSUS. Minted and checked by shared/suite-census.mjs's ONE counter, so the",
     "minting side cannot drift from the checking side and manufacture its own findings.",
     "",
     "Collection is a glob, so a test file that is DELETED or RENAMED out of it simply stops being",
@@ -66,6 +66,12 @@
         "a-batch-of-names-is-one-question-per-name-without-or.test.mjs": {
           "tests": 6,
           "asserts": 32,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-behaviour-snapshot-reports-a-changed-prompt-and-a-reordered-stage.test.mjs": {
+          "tests": 6,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -2145,6 +2151,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-scheduled-publish-builds-the-commit-its-decision-read.test.mjs": {
+          "tests": 3,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "a-screenshot-of-an-error-page-is-not-a-report.test.mjs": {
           "tests": 21,
           "asserts": 55,
@@ -4145,7 +4157,7 @@
         },
         "engine.common.test.mjs": {
           "tests": 18,
-          "asserts": 55,
+          "asserts": 54,
           "skips": 0,
           "todos": 0
         },
@@ -4157,7 +4169,7 @@
         },
         "engine.gather.test.mjs": {
           "tests": 20,
-          "asserts": 116,
+          "asserts": 117,
           "skips": 0,
           "todos": 0
         },
@@ -5314,8 +5326,8 @@
           "todos": 0
         },
         "portal-service.test.mjs": {
-          "tests": 136,
-          "asserts": 732,
+          "tests": 137,
+          "asserts": 738,
           "skips": 1,
           "todos": 0
         },
@@ -6030,6 +6042,12 @@
         "run-quote.test.mjs": {
           "tests": 14,
           "asserts": 43,
+          "skips": 0,
+          "todos": 0
+        },
+        "run-record.test.mjs": {
+          "tests": 5,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -7935,6 +7953,12 @@
           "skips": 2,
           "todos": 0
         },
+        "the-secret-scanner-comes-from-a-kept-copy.test.mjs": {
+          "tests": 5,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "the-settings-surface-reads-the-customer-store.test.mjs": {
           "tests": 10,
           "asserts": 43,
@@ -8478,6 +8502,12 @@
         "whatif-queue.test.mjs": {
           "tests": 13,
           "asserts": 36,
+          "skips": 0,
+          "todos": 0
+        },
+        "with-no-ai-chosen-doctor-asks-for-no-programs-path.test.mjs": {
+          "tests": 3,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },

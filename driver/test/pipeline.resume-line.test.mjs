@@ -11,6 +11,7 @@
 // suppressions matter as much as the printing: a command that is known to fail, or that undoes the
 // reader's own decision, is worse than no line.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
 import { pinEnv, envFrom } from "../../shared/env-aliases.mjs";   // — the default is taken only when NO spelling holds a value
@@ -103,7 +104,7 @@ test("a signal that lands AFTER delivery prints no command and parks nothing", (
   // resume command the resume guard refuses outright. `noResume` is how the CLI's delivered check says so.
   assert.deepEqual(advise({ signal: "SIGTERM", codename: "tealkeystone", noResume: true }), []);
   const fs = require("node:fs");
-  const src = fs.readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   // the handler must consult the SAME two markers the resume guard consults
   assert.match(src, /const delivered = Boolean\(run\?\.runDir\) &&/);
   assert.match(src, /existsSync\(join\(run\.runDir, "\.delivered"\)\) \|\| existsSync\(driverDir\(run\.runDir, "delivery\.json"\)\)/);
@@ -138,7 +139,7 @@ test("all four in-file terminals return the codename the CLI composes from", asy
   // with no identity, at the one terminal where resuming is the entire remedy. A source read, because
   // reaching these returns for real costs a paid run.
   const fs = await import("node:fs");
-  const src = fs.readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   const returns = [...src.matchAll(/return \{ ok: false,[^\n]*\}/g)].map((m) => m[0])
     .filter((r) => /runDir/.test(r));   // the run terminals, not the small helper returns
   assert.ok(returns.length >= 4, `expected the four run terminals, found ${returns.length}`);
@@ -151,7 +152,7 @@ test("all four in-file terminals return the codename the CLI composes from", asy
 
 test("the CLI reads the job file inside a guard — a path typo is an error line, not a stack trace", async () => {
   const fs = await import("node:fs");
-  const src = fs.readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.match(src, /cannot read job file/);
   // and the parse must not sit bare at the top level again
   assert.ok(!/^  const job = JSON\.parse\(readFileSync\(a\.job, "utf8"\)\);$/m.test(src));
@@ -161,7 +162,7 @@ test("the CLI installs its signal handlers in the mainline block only", async ()
   // Importing the runner's installStopHandlers here would stack listeners on every in-process test that
   // imports pipeline.mjs — the reason that function is documented as mainline-only.
   const fs = await import("node:fs");
-  const src = fs.readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   // — ANCHORED ON THE SANCTIONED FORM, not on a spelling. This used to indexOf the literal
   // `if (process.argv[1] && fileURLToPath(...) === process.argv[1]) {`, so converting pipeline.mjs to
   // isEntrypoint() made the search return -1 and this arm fail for a reason unrelated to signal

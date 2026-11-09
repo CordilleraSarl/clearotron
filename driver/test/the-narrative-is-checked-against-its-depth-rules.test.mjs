@@ -12,8 +12,8 @@
 // ungraded one, which is what byte-identical means. The arms supply them directly.
 
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import { narrativeWriteUps, writeUpViolations, wordCount, writeUpMessage } from "../narrative-write-ups.mjs";
 import { narrativeWriteUpChecks } from "../predelivery-lint.mjs";
 
@@ -122,7 +122,7 @@ test("a failure lands on the NARRATIVE surface, or it never reaches the redo", (
 test("THE REDO ROUTE EXISTS — a check with nowhere to route only flags", () => {
   // The call site, read out of the source. Before this, `bySurface("narrative")` had no consumer at all:
   // every narrative check could only ship as a note on a run that broke the rules.
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.match(src, /bySurface\("narrative"\)/, "nothing at the lint seam reads the narrative surface");
   assert.match(src, /redo\("synthesis",\s*narrativeFixable/,
     "the narrative surface has no redo route — its failures can only be flagged, which is the run "

@@ -9,6 +9,7 @@
 // as a territory, so that row now reads as no territory list, the answer every reader already takes as worldwide, and
 // a named order reads as before. This holds the ruled lines, the check's answer for each, and that the old line is gone.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -29,7 +30,7 @@ test("one applied worldwide row is a worldwide scope: nothing reads as unsearche
   assert.deepEqual(check([row("worldwide")], ["US", "EU"]), { overReach: [], underCoverage: [] });
   assert.deepEqual(scopeJurisdictions([row("Global")]), [], "global, in any case, names the world too");
   // The pipeline runs the check only on a scope that lists territories.
-  assert.match(readFileSync(join(DRIVER, "pipeline.mjs"), "utf8"), /if \(scopeJ\.length\) \{/, "guard: the check still skips an empty scope");
+  assert.match(driverSource("pipeline.mjs"), /if \(scopeJ\.length\) \{/, "guard: the check still skips an empty scope");
 });
 
 test("a worldwide row beside applied territory rows is still worldwide: the named markets are priorities, never scope", () => {

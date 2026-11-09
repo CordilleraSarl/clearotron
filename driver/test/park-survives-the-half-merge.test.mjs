@@ -19,9 +19,8 @@
 // A park that survives the union in memory and is dropped by the parse whitelist is the same outage with
 // a different owner, and only the round trip can tell the two apart.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
 import { connotationObligations, obligationRows, findConnotationViolations, parseDispositionForm,
   connotationAuditCounts } from "../connotation-search.mjs";
 import { unionDispositionForm } from "../disposition-union.mjs";
@@ -136,7 +135,7 @@ test("pipeline's merge passes the halves through the PRIOR channel", () => {
   // by hand. Only this reads the caller, which is where the defect lived. Anchored to code: the comment
   // beside the fix necessarily quotes the old shape, and an unanchored grep would fail on the
   // explanation of the very bug it is guarding.
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8")
+  const src = driverSource("pipeline.mjs")
     .replace(/\/\*[\s\S]*?\*\//g, "").split("\n").map((l) => l.replace(/\/\/.*$/, "")).join("\n");
   //
   // The argument pattern is DELIBERATELY LOOSE — `[^}]*` rather than an identifier — so that a wrong

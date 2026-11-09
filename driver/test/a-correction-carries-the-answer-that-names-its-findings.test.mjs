@@ -10,14 +10,10 @@
 // every Moderate-or-higher finding but the three the correction raised or added. A shared band is a reason to ask the
 // writer, never a required citation (design, 2026-11-03).
 import test from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
 import { answersLeftBehind } from "../corrections-feedforward.mjs";
 import { repairFollowup, composerFor } from "../repair-composers.mjs";
-
-const HERE = dirname(fileURLToPath(import.meta.url));
 const BANDS = [{ label: "Very High" }, { label: "High" }, { label: "Moderate" }, { label: "Manageable" }];
 const f = (ordinal, band, disposition = "adversarial") => ({ ordinal, band, disposition });
 const rec = (findings, ordinals, more = {}) => ({ findings, four_answers: { third_party_rights: { token: "strong", ordinals, basis: "", read: "" }, ...more } });
@@ -87,7 +83,7 @@ test("the correction and its re-emit both carry step 4, and the PATCH line names
 });
 
 test("the gate asks once, only where the findings reached the record, and hands no positions", () => {
-  const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.match(src, /if \(!readState\(\)\.stale\) return answerFollowsCorrection\(ctx, P, pre, resume\);/,
     "the answer is checked only when the existing re-emit did not run, so the gate never asks twice");
   const body = src.slice(src.indexOf("async function answerFollowsCorrection("), src.indexOf("// (T3a, ruling 2026-08-26"));

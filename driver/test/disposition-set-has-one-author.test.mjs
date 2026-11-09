@@ -36,6 +36,7 @@
 // property is asserted where behaviour cannot reach it.
 
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -83,7 +84,7 @@ test("the complement is exactly one token, which is the premise the sentence is 
 test("the derived site in stages.mjs is left alone, and the reason is recorded", () => {
   // The false positive. It is correct code, and a sweep that "fixed" it would be rewriting a derivation
   // into… a derivation, on the say-so of a checker that cannot see interpolation.
-  const stages = readFileSync(join(DRIVER, "stages.mjs"), "utf8");
+  const stages = driverSource("stages.mjs");
   assert.match(stages, /POSITION_REQUIRED_DISPOSITIONS\.join\(" \/ "\)/,
     "stages.mjs stopped deriving its disposition list — that site was the one already doing this right");
 });

@@ -316,7 +316,7 @@ if (missingDeps.length) {
   console.error(``);
   console.error(`  A fresh 'git worktree add' has no node_modules. Running anyway would report ~190`);
   console.error(`  tests that never executed as ~295 failed assertions, which reads as code defects and`);
-  console.error(`  makes a clean-looking baseline diff out of a suite that was never run. #535.`);
+  console.error(`  makes a clean-looking baseline diff out of a suite that was never run.`);
   process.exit(1);
 }
 

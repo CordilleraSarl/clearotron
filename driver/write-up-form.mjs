@@ -31,9 +31,6 @@
 // and renders a single-member group as a short entry, so it is a property of the population. This returns
 // `full` or `entry`, and the grouping pass turns `entry` into one or the other.
 
-/** The two answers this function can give. `entry` becomes a short entry or a grouped line downstream. */
-export const WRITE_UP_FORMS = Object.freeze(["full", "entry"]);
-
 /**
  * The form one finding earns.
  *

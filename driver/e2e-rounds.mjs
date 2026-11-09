@@ -38,6 +38,7 @@
 import { readFileSync, writeFileSync, readdirSync, existsSync, statSync, copyFileSync } from "node:fs";
 import { join } from "node:path";
 import { DRIVER_DIR } from "../shared/driver-dir.mjs";   //
+import { readJsonOrNull } from "./run-record.mjs";
 
 export const RECEIPT_VERSION = 2;
 
@@ -49,7 +50,6 @@ export function receiptPath(poolRoot, id) {
   return join(String(poolRoot ?? ""), "..", `_e2e-doors-${String(id).toUpperCase()}.json`);
 }
 
-const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
 const iso = (ms) => new Date(ms).toISOString();
 
 /**
@@ -281,7 +281,7 @@ export function findRunsByRef(ref, workspaceRoot) {
     for (const e of entries) {
       const p = join(dir, e.name);
       if (e.isFile() && e.name === "status.json") {
-        const st = readJson(p);
+        const st = readJsonOrNull(p);
         if (st && String(st.ref ?? "").startsWith(String(ref))) {
           let mtime = 0;
           try { mtime = statSync(p).mtimeMs; } catch { /* the sort key degrades; the hit still counts */ }
@@ -410,7 +410,7 @@ export function selectRound(rounds, requestedToken = null) {
  */
 export function previousRunDir({ refs = [], workspaceRoot = null, runDir = null } = {}) {
   if (!runDir) return { error: "no run dir given — previousRunDir needs the run it should find the predecessor of" };
-  const st = readJson(join(runDir, "status.json"));
+  const st = readJsonOrNull(join(runDir, "status.json"));
   if (!st) return { error: `${join(runDir, "status.json")} is missing or does not parse — a run's own ref is the only way to say which round it belongs to` };
   const thisRef = String(st.ref ?? "");
   if (!thisRef) return { error: `${join(runDir, "status.json")} carries no \`ref\`, so this run belongs to no nameable round` };

@@ -1,20 +1,15 @@
-#!/usr/bin/env node
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Standalone MCP server wrapping the signa CORE (pure node+fetch) so a `claude -p` process can
+// The signa register's tools, as driver/engine/mcp/register-server.mjs mounts them, wrapping its CORE (pure node+fetch) so a `claude -p` process can
 // call the register-search tools off-gateway. Pure glue: the core owns all logic. Auth = SIGNA_API_KEY
 // (Bearer token); base = SIGNA_BASE_URL || the core's DEFAULT_BASE. Telemetry: the core writes
 // CLEAROTRON_REGISTER_CALL_LOG / CLEAROTRON_REGISTER_RECORD_LOG (the SHARED register ledger — one provider
 // runs at a time; took this vendor's name off it)
 // keyed by the GATEWAY session key (tctx.sessionKey) — we thread the run's session key via
 // CLEAROTRON_GATHER_SESSION_KEY so the $0 provider-usage diff still attributes calls to the run.
-import { serve } from "./stdio-server.mjs";
-import { sendUntilFromEnv } from "../../../providers/_shared/send-until.mjs";
-import { crowdNoteFor } from "./crowd-note.mjs";   // how the unit decides on a crowd, beside an answer that carries one
-import { doSearch, doRecordFetch, doEnumerate, doExecutePlan, DEFAULT_BASE } from "../../../providers/signa/src/core.js";
-import { proposeSupplemental } from "./supplemental.mjs";
-import { narrowingFields } from "./proposal-fields.mjs";
-import { CAPABILITIES } from "../../../providers/signa/src/capabilities.js";
+import { sendUntilFromEnv } from "../../_shared/send-until.mjs";
+import { doSearch, doRecordFetch, doEnumerate, doExecutePlan, DEFAULT_BASE } from "./core.js";
+import { CAPABILITIES } from "./capabilities.js";
 
 const API_KEY = process.env.SIGNA_API_KEY || "";
 const BASE = process.env.SIGNA_BASE_URL || DEFAULT_BASE;
@@ -31,8 +26,8 @@ const guard = (fn) => async (args) => {
   return passthrough(await fn(args));
 };
 
-serve({
-  name: "register", version: "0.1.0", noteFor: crowdNoteFor,
+export const mount = ({ proposeSupplemental, narrowingFields }) => ({
+  version: "0.1.0",
   tools: [
     {
       name: "register_search",
@@ -96,7 +91,7 @@ serve({
     },
     {
       name: "register_propose_supplemental",
-      description: "PROPOSE judgment-addition register queries; CODE executes them and writes the band (the supplemental lane — you never run register coverage by hand and never author band blocks). Each proposal: {predicate: exact|default|wildcard|phonetic|owner, term OR terms[] (OR-stack, split anything wider than the plan bound), romanization, owner? (a mark-text proposal may add an owner SCOPE FIELD — the owner×term intersection, which composes in ONE request here), nice_classes (REQUIRED — an unscoped sweep is rejected), rationale?, term_literal?}. Terms must be MARK-SHAPED and agree with the predicate: an anchored `*` needs predicate:wildcard, and a label/prose string is rejected — supply the mark terms it stands for. THIS SOURCE HONOURS ALL FIVE PREDICATES, predicate:phonetic included — it is a native ranked strategy here, and `phonemeExpansion: false` in the contract withholds only the client-supplied VARIANT PREVIEW, which this tool never sends. TWO SHAPES IT CANNOT SERVE, and both DEFER rather than degrade: an INFIX wildcard (`*foo*`), where the prefix and suffix anchors are served and the infix pattern has no operator — `contains` would appear to serve it and would in fact search the asterisks; and predicate:default on a term under 3 characters, which the vendor refuses outright (HTTP 400 — loud, never a narrower set). A NON-LATIN term is fine here and is sent AS ITSELF — this index holds the characters (probed 2026-08-17 on the full-record script field; the 38-key search row carries no script field at all, which is how the first probe read as 'the index holds none'), so a romanisation is never substituted. An owner term is a TEXT MATCH, not an entity identifier: it WIDENS on a shorter string rather than failing to match, so an owner slice reads as 'marks whose owner name contains this', never as one entity's portfolio. The tool mints each proposal as a qid'd supplemental plan entry (deterministic qid), executes them through the same deterministic executor as the dictated plan, MERGES the results into the band at output_path, and returns per-qid results: {state, total_hits, count, term_counts?, reason?, records_preview[≤25]}. Iterate freely: propose → read counts → propose narrower; a count that comes back UNKNOWN is this vendor's 10000 saturation marker, which is neither a zero nor a total. A crowd result (state:incomplete) is a descriptor for judgment — never a clean.",
+      description: "PROPOSE judgment-addition register queries; CODE executes them and writes the band (the supplemental lane — you never run register coverage by hand and never author band blocks). Each proposal: {predicate: exact|default|wildcard|phonetic|owner, term OR terms[] (OR-stack, split anything wider than the plan bound), romanization, owner? (a mark-text proposal may add an owner SCOPE FIELD — the owner×term intersection, which composes in ONE request here), nice_classes (REQUIRED — an unscoped sweep is rejected), rationale?, term_literal?}. Terms must be MARK-SHAPED and agree with the predicate: an anchored `*` needs predicate:wildcard, and a label/prose string is rejected — supply the mark terms it stands for. THIS SOURCE HONOURS ALL FIVE PREDICATES, predicate:phonetic included — it is a native ranked strategy here, and `phonemeExpansion: false` in the contract withholds only the client-supplied VARIANT PREVIEW, which this tool never sends. TWO SHAPES IT CANNOT SERVE, and both DEFER rather than degrade: an INFIX wildcard (`*foo*`), where the prefix and suffix anchors are served and the infix pattern has no operator — `contains` would appear to serve it and would in fact search the asterisks; and predicate:default on a term under 3 characters, which the vendor refuses outright (HTTP 400 — loud, never a narrower set). A NON-LATIN term is fine here and is sent AS ITSELF — this index holds the characters, so a romanisation is never substituted. An owner term is a TEXT MATCH, not an entity identifier: it WIDENS on a shorter string rather than failing to match, so an owner slice reads as 'marks whose owner name contains this', never as one entity's portfolio. The tool mints each proposal as a qid'd supplemental plan entry (deterministic qid), executes them through the same deterministic executor as the dictated plan, MERGES the results into the band at output_path, and returns per-qid results: {state, total_hits, count, term_counts?, reason?, records_preview[≤25]}. Iterate freely: propose → read counts → propose narrower; a count that comes back UNKNOWN is this vendor's 10000 saturation marker, which is neither a zero nor a total. A crowd result (state:incomplete) is a descriptor for judgment — never a clean.",
       inputSchema: { type: "object", required: ["axis", "output_path", "proposals"], properties: {
         axis: { type: "string", description: "The register axis these supplementals belong to (e.g. primary-sweep)" },
         output_path: { type: "string", description: "Absolute path of the named band to merge into (register-units/<axis>-band.json)" },

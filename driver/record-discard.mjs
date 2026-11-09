@@ -72,9 +72,6 @@ export const DISCARD_LEDGER_NAME = "record-discard.jsonl";
  */
 export const DISCARD_SEAMS = ["placement", "digest", "synthesis"];
 
-/** What a pass did with a record. `carried` cancels an earlier `discarded` at the same seam. */
-export const DISCARD_VERDICTS = ["carried", "discarded"];
-
 const clip = (s, n = 300) => {
   const t = String(s ?? "").replace(/\s+/g, " ").trim();
   return t.length > n ? `${t.slice(0, n - 1)}…` : t;

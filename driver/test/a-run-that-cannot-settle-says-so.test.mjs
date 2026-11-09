@@ -24,12 +24,11 @@
 // regressed is a SHAPE, not a value. Somebody re-introducing `await` at this entry would restore the
 // deadlock exactly, and no assertion about run behaviour would fire until a knockout run was attempted.
 import test from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 
-const SRC = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "pipeline.mjs"), "utf8");
+const SRC = driverSource("pipeline.mjs");
 
 test("the CLI entry does not run from a top-level await", () => {
   const entry = /^if \(isEntrypoint\(import\.meta\.url\)\)\s*(\S+)/m.exec(SRC);

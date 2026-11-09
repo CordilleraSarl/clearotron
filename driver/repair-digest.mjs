@@ -31,21 +31,20 @@
 //     which is what makes a classifier gap reportable HERE: the pipeline logs one to run.jsonl, and
 //     this module never opens that file, so the park row is the only carrier it can read.
 
-import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { failureSignature, classifyFailureReason, bareStage, REFUSAL_TERMINAL_KIND,
   unnamedStructuredFailure } from "./repairs.mjs";
 import { enumerateRuns } from "../mcp-server/lib/runs.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — realpath both sides, or a symlinked invocation exits 0 silently
+import { readJsonOrNull } from "./run-record.mjs";
 
 const DAY_MS = 86400000;
 
-function readJsonDefault(p) { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } }
 
 // The failure events one run contributes inside the window. `run` is an enumerateRuns row (status +
 // runDir). A torn packet or a malformed history row degrades to less detail — never a throw.
-export function failureEventsForRun(run, { sinceMs = 0, readJson = readJsonDefault } = {}) {
+export function failureEventsForRun(run, { sinceMs = 0, readJson = readJsonOrNull } = {}) {
   const status = run.status ?? {};
   const events = [];
   const runId = run.runId ?? "?";
@@ -130,7 +129,7 @@ export function failureEventsForRun(run, { sinceMs = 0, readJson = readJsonDefau
 
 // One group per signature over the window: which runs hit it, how many terminals vs parks, and a
 // sample reason. Sorted most-recurrent first (run count, then terminals, then recency).
-export function aggregateFailureRecurrence({ enumerate = enumerateRuns, now = Date.now(), days = 7, readJson = readJsonDefault } = {}) {
+export function aggregateFailureRecurrence({ enumerate = enumerateRuns, now = Date.now(), days = 7, readJson = readJsonOrNull } = {}) {
   const nowMs = typeof now === "number" ? now : (Date.parse(now) || Date.now());
   const sinceMs = nowMs - days * DAY_MS;
   const bySig = new Map();

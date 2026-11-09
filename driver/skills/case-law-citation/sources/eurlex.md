@@ -3,20 +3,19 @@
 EUR-Lex translation of the universal grounding logic in `../SKILL.md`. Use for **EU trademark case
 law — Court of Justice (CJEU) and General Court judgments** (likelihood of confusion under
 **Art. 8(1)(b) EUTMR**, enforcer profiling, distinctiveness). This is the dedicated EU court layer
-that Legal Data Hunter only covers patchily; run it for EU findings **in addition to** LDH and
-de-duplicate by CELEX / ECLI.
+that Legal Data Hunter only covers patchily. Where both return one judgment, de-duplicate by CELEX / ECLI.
 
 **No dedicated MCP, by design.** Unlike `courtlistener.md` / `legaldatahunter.md`, this adapter does
-**not** call a `eurlex__*` server. EU judgments are published verbatim and anonymously on EUR-Lex, so
-this adapter drives the agent's existing **`WebFetch`** tool against a stable, account-free URL. The
+**not** call a `eurlex__*` server. EU judgments are published verbatim and anonymously on EUR-Lex, at a stable, account-free URL.
+Fetch the page with the web-fetch tool your session provides. The
 fetch-before-cite spine is unchanged — you still read every holding from the document you fetched.
 
 ## Tool reference
 
 | Tool | Use in this skill |
 |---|---|
-| `WebFetch` | **Fetch the full judgment** (Step 3) from the verified EUR-Lex URL below. Read the holding, ECLI, and parties from the returned text. |
-| `perplexity_research` *(or `legaldatahunter__search`)* | **Lead-finding only** — to discover a candidate case name / number when the finding doesn't already name one. A lead is **not** an authority; you must still fetch the judgment before citing. |
+| The web-fetch tool your session provides | **Fetch the full judgment** (Step 3) from the verified EUR-Lex URL below. Read the holding, ECLI, and parties from the returned text. |
+| `legaldatahunter__search` | **Lead-finding only** — to discover a candidate case name / number when the finding doesn't already name one. A lead is **not** an authority; you must still fetch the judgment before citing. |
 
 ## The fetch pattern (live-verified 2026-06-05)
 

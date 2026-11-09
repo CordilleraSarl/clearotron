@@ -15,10 +15,6 @@ Phase 0 of any trademark search workflow, after the request has been parsed (mar
 
 Invoked from `clearance-search` (orchestrator) at Phase 0, before `clearance-variants`. Reusable by a future clearance-search at the equivalent step.
 
-## Model
-
-Inherits the orchestrator's tier when invoked inline. No `sessions_spawn` — this is a templated reasoning step the orchestrator performs itself.
-
 ## Inputs you receive
 
 From the orchestrator's spawn task / Phase 0 context:
@@ -29,7 +25,7 @@ From the orchestrator's spawn task / Phase 0 context:
 - Campaign shape, when stated ("Stated campaign shape: …") — the client's own facts about how the mark will
   be deployed: standalone brand vs flavour/sub-brand under a named house mark, seasonal/limited vs permanent,
   launch scale
-- Additional info (tier, localisation, geography, deadline)
+- Additional info (deadline, when stated)
 - Client identity (typically from forwarded-email metadata)
 - Requester (who sent the request — may differ from end client)
 - Any client-supplied context
@@ -132,8 +128,7 @@ VERBATIM; nothing else asks what the name means:
   form a buyer could confuse, could read as slang, a gang name or an offensive word in a market the matter
   names, one angle asks that too.
 - Every entry must be a real, runnable web-search query (each is executed and receipted — an unrunnable
-  entry burns a dictated query). `Meaning angles: none` is the only valid empty form, reserved for a coined
-  term with no real-word semantic field.
+  entry burns a dictated query). Send `meaning_angles_none: true` with an empty list, for a coined term only.
 
 `search_channels`, `confusable_forms` and `set_aside` decide the web grid before the web sweep runs it:
 
@@ -159,4 +154,4 @@ VERBATIM; nothing else asks what the name means:
 
 ## Failure fallback
 
-If the request is too thin to produce a meaningful matter-context (e.g. only a mark name, no client / classes / context), write a minimal matter-context.md that names the explicit ambiguities ("client inferred as X — confirm before downstream reasoning relies on it"; "classes not specified — defaulting to <inferred classes> per the product description") and proceeds. The downstream skeptic (Step 2.6) will flag any over-inferences.
+If the request is too thin to produce a meaningful matter-context (e.g. only a mark name, no client / classes / context), send a short prose_body that names each ambiguity and labels each inference; never leave the call unmade. The downstream skeptic (Step 2.6) will flag any over-inferences.

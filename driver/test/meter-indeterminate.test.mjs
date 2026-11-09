@@ -28,6 +28,7 @@
 //   · the missing-meter message names each meter's set   → break: restore "use unknown", arm 2
 //   · the closed sets themselves are unchanged           → break: admit unknown, arm 4
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -35,7 +36,7 @@ import { fileURLToPath } from "node:url";
 import { METERS, METER_TOKENS, parseFindingsJson } from "../findings-model.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const STAGES = readFileSync(join(HERE, "..", "stages.mjs"), "utf8");
+const STAGES = driverSource("stages.mjs");
 
 // The words a model reaches for when the closed set has no room for the honest answer. `unknown` is the
 // one that was actually written and cost the 654 seconds; the rest are the same move in other clothes.

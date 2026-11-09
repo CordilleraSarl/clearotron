@@ -6,8 +6,8 @@
 // declaring the undeclared outputs stopped being a follow-on and became the prerequisite. You cannot
 // tell which stale stage feeds which without knowing who WROTE the artifact that moved.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import { basename } from "node:path";
 import { paths, STAGES, stageInputs, stageOutputs, dependencyOrder } from "../stages.mjs";
 import { partitionDeliveryStale } from "../pipeline.mjs";
@@ -30,14 +30,14 @@ test("15c — every stage's authored surface is declared, not just the one file 
 
 // THE TRAP the ruling names, and the reason this is a second list rather than an addition to outSibs.
 test("15c — the declaration is NOT the destructive list: nothing deletes from stageOutputs", () => {
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   const snap = src.slice(src.indexOf("function snapshotOutputs("), src.indexOf("function snapshotOutputs(") + 1200);
   assert.match(snap, /outSibs/, "snapshotOutputs still drives its deletes off outSibs");
   assert.ok(!/stageOutputs/.test(snap),
     "…and never off stageOutputs — findings.json in the destructive list would be deleted before every "
     + "forced synthesis, and since #188 a corrective pass EDITS, so the edit would land on a file that is gone");
   // only placement declares outSibs, as before — this change added no deletions anywhere
-  const stagesSrc = readFileSync(new URL("../stages.mjs", import.meta.url), "utf8");
+  const stagesSrc = driverSource("stages.mjs");
   assert.equal((stagesSrc.match(/outSibs:/g) ?? []).length, 1, "outSibs is still declared by exactly one stage");
 });
 
@@ -68,14 +68,14 @@ test("15a — mixed staleness is repaired, not suppressed: the guard's own parti
   // the pass no longer REFUSES to repair because `upstream` is non-empty; it orders instead. The one
   // thing that must not happen — a tail rebuilt while its upstream is still stale — is what the order
   // prevents, and suppressing everything never prevented it, it moved the same work into a resume.
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.ok(!/if \(staleStages\.length && !partitionDeliveryStale\(staleStages\)\.upstream\.length\)/.test(src),
     "the all-or-nothing gate is gone");
   assert.match(src, /dependencyOrder\(staleStages\.map/, "…replaced by the ordering");
 });
 
 test("15a — the upstream repair map is the honest scope statement", () => {
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   const map = src.slice(src.indexOf("// item 15a — the UPSTREAM repair arms"), src.indexOf("export const DELIVERY_TAIL_LABEL_RE"));
   for (const label of ["register-digest", "synthesis", "narrative-refutation", "skeptic"])
     assert.ok(map.includes(`"${label}"`) || map.includes(`${label}:`), `${label} has a repair arm`);
@@ -84,7 +84,7 @@ test("15a — the upstream repair map is the honest scope statement", () => {
 });
 
 test("15b — the blocked pass writes down WHAT is stale, so the recovery has something to aim at", () => {
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.match(src, /delivery-stale\.json/, "the set is recorded at the throw");
   assert.match(src, /labels: dependencyOrder\(staleStages\.map/, "…in dependency order, so reader and repair agree about what happens first");
   assert.match(src, /export async function repairStale\(/, "and there is an entry point that runs exactly it");
@@ -100,7 +100,7 @@ test("A-4 — the skeptic declares what it consumes, and has an arm to be repair
   const inputs = stageInputs("skeptic", P).map((f) => basename(f));
   assert.ok(inputs.includes("plan-execution.json"), "the receipt skepticDeferralExtra is built from");
   assert.ok(inputs.includes("register-coverage-ledger.json"));
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   const map = src.slice(src.indexOf("const UPSTREAM_STALE_REPAIR = {"), src.indexOf("export const DELIVERY_TAIL_LABEL_RE"));
   assert.match(map, /skeptic:/, "…and the arm that makes declaring it safe, which is why it waited for Wave D");
 });
@@ -114,7 +114,7 @@ test("placement-inquiry declares the band material, and has a stale-repair arm; 
   const inputs = stageInputs("placement-inquiry", P).map((f) => basename(f));
   assert.ok(inputs.includes("register-named-band.json"),
     "the declaration is why it can go stale — narrowing it instead would be the gate lying");
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   const map = src.slice(src.indexOf("const UPSTREAM_STALE_REPAIR = {"), src.indexOf("export const DELIVERY_TAIL_LABEL_RE"));
   assert.match(map, /"placement-inquiry":/, "the arm exists");
   assert.match(map, /"placement-inquiry": async \(ctx\) => recordPlacementPass\(ctx, await stage\("placement-inquiry", ctx, \{ force: true/,
@@ -143,7 +143,7 @@ test("placement-inquiry declares the band material, and has a stale-repair arm; 
 // would contain exactly the entries I had already read, which is the same blind spot with a test around
 // it — so this arm fails on a stage declared later that nobody wired into the repair path.
 test("every stale-repair arm carries the driver-computed blocks its stage declares", () => {
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   const map = src.slice(src.indexOf("const UPSTREAM_STALE_REPAIR = {"), src.indexOf("export const DELIVERY_TAIL_LABEL_RE"));
   assert.ok(map.length > 100, "the map was not located — this arm must fail loudly rather than vacuously pass");
 
@@ -174,7 +174,7 @@ test("every stale-repair arm carries the driver-computed blocks its stage declar
 });
 
 test("the shared repair dispatcher forces, and composes through the SAME composer as the fresh path", () => {
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   const helper = /const repairStage = [\s\S]{0,400}?\n\};?/.exec(src)?.[0] ?? "";
   assert.ok(helper, "there is one dispatcher for every stale-repair arm, so a new arm cannot omit the blocks");
   assert.match(helper, /composeDispatchExtra\(name, ctx\)/,

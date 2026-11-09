@@ -16,6 +16,7 @@
 //
 // Driven through registered fake engines (the exit1-artifact-rescue harness pattern) — fully offline, $0.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, readFileSync, writeFileSync, mkdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
@@ -350,7 +351,7 @@ test("AUDIT #175/N1 — the settled attempt was a WARM PATCH: absence journals n
 // the writer"): the behaviour is proven above, this asserts the call site exists. Without it, deleting
 // `warm: r.warm` from either line passes every suite while the reviewer's finding walks straight back in.
 test("AUDIT #175/N1 — stageOnce's stage row actually FORWARDS warm: to journalStageInputs, and writes it", () => {
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   // anchor on stageOnce's call (the code-side lane's passes a path array, not stageInputs()), then take
   // its options object — a flat literal, so "up to the first }" is exactly that argument and no more.
   const call = src.match(/journalStageInputs\(stageInputs\([\s\S]*?\{\s*reads:[^}]*\}/);

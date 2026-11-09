@@ -16,6 +16,7 @@
 // The fixture below is BUILT, not copied: same structure, invented content. The review it reproduces
 // names a real third party and a run codename, and neither belongs in this tree.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -210,7 +211,7 @@ test("the excluded-section list is pinned to the skill's own headings", () => {
 // site, not that a real run emits it. Nothing in this suite drives that pipeline branch — which is how
 // the hardcoded `ok: true` survived in the first place. A run-level assertion belongs to the test lane.
 test("the kind-channel tell is recorded at the call site, on BOTH arms", () => {
-  const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   const rows = src.split("\n").filter((l) => /runLog\(.*event:\s*"correction-kinds"/.test(l));
   assert.equal(rows.length, 2, `expected the success and failure arms, found ${rows.length}`);
   for (const r of rows)

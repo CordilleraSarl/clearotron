@@ -39,6 +39,7 @@
 // intended is visible at the moment it is written rather than in a diff nobody re-reads.
 
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { driverSource } from "./driver-source.mjs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { STAGES } from "../stages.mjs";
@@ -63,7 +64,7 @@ const row = (counts) => Object.fromEntries(E3_KINDS.map((k) => [k, counts?.[k] ?
  * day one is added, and the lint then reports clean because it never looked.
  */
 export function measureE3() {
-  const src = readFileSync(join(DRIVER, "stages.mjs"), "utf8");
+  const src = driverSource("stages.mjs");
   const blocks = stageSourceBlocks(src);
 
   const byStage = {};

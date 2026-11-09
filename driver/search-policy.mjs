@@ -34,7 +34,7 @@
 // BETA POSTURE: runs delivered under the old numbering KEEP it — an archived run re-renders through
 // RETIRED_POLICIES below, which still carries "Depth 4" for the level it was sold as.
 
-import { readFileSync, readdirSync } from "node:fs";
+import { readdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
@@ -43,6 +43,7 @@ import { PRODUCT_IDS, productSpec, productFor, maxNamesFor, productName, checkPr
 // own static graph to compose-read + territory-tiers for exactly this reason (see its header).
 import { registerCoverageCause, offerableTerritories } from "./register-coverage.mjs";
 import { PROMPT_TERRITORIES } from "./compose-read.mjs";   // — the names a reader can choose from, which is the universe the disclosure counts against
+import { readJson } from "./run-record.mjs";
 
 // ── The closed product registry ──────────────────────────────────────────────────────────────────────
 //
@@ -228,8 +229,6 @@ export const PRODUCT_POLICIES = {
       // Pinned with the same provenance in the-doubt-carries-its-placement-tier.test.mjs (RULED_CUTS).
       doubtClosure: "headline-candidate",
       recallFollowupMax: 1,
-      envelopeRounds: "one",               // one closing round, not to exhaustion
-      coverageClosureRounds: "one",
     },
     components: { registerProbe: false, jxLanes: false, commonLawGrid: true },
     web: { questionPreset: "medium", resultsPerCell: 15 },
@@ -280,8 +279,6 @@ export const PRODUCT_POLICIES = {
       // ruling to the most expensive product is not mine to do. Raised as a question rather than
       // assumed —.
       recallFollowupMax: 2,
-      envelopeRounds: "as-today",
-      coverageClosureRounds: "as-today",
     },
     components: { registerProbe: false, jxLanes: false, commonLawGrid: true },
     web: { questionPreset: "high", resultsPerCell: 20 },
@@ -302,8 +299,6 @@ export const PRODUCT_POLICIES = {
       groundedProfiles: "every-finding",
       doubtClosure: "every-doubt",
       recallFollowupMax: 2,                // RECALL_FOLLOWUP_MAX
-      envelopeRounds: "as-today",
-      coverageClosureRounds: "as-today",
     },
     components: { registerProbe: false, jxLanes: true, commonLawGrid: true },
     web: { questionPreset: "xhigh", resultsPerCell: 25 },
@@ -459,7 +454,7 @@ export function depthFor(policy) {
   // Reading only `product` meant ctx.searchPolicy resolved to `default-ungraded` on EVERY run: the whole
   // ladder ran at one-country depth, every rung returned "", and nothing anywhere failed. Both names are
   // accepted because both shapes reach this function — the frozen policy and a bare {product} selector.
-  const key = String(policy?.level ?? policy?.product ?? "").trim();
+  const key = productKeyOf(policy);
   const row = PRODUCT_POLICIES[key]?.depth;
   if (row) return Object.freeze({ ...row, source: key });
   // A product this build KNOWS but does not grade is not the same thing as one it does not recognise.
@@ -468,6 +463,11 @@ export function depthFor(policy) {
   const known = Object.prototype.hasOwnProperty.call(PRODUCT_POLICIES, key);
   return Object.freeze({ ...PRODUCT_POLICIES["full-country-search"].depth,
     source: known ? `ungraded:${key}` : "default-ungraded" });
+}
+
+/** The product a policy names: `level` on a run's frozen policy, `product` on a bare selector. "" when neither. */
+export function productKeyOf(policy) {
+  return String(policy?.level ?? policy?.product ?? "").trim();
 }
 
 export function isRegisterOnly(policy) {
@@ -1115,7 +1115,7 @@ export function loadRecipes({ dir = process.env.CLEAROTRON_RECIPES_DIR || null, 
     try { files = readdirSync(join(dir, customer)).filter((f) => f.endsWith(".json")); } catch (e) { if (!absent(e)) throw e; continue; }
     for (const f of files) {
       const slug = f.replace(/\.json$/, "");
-      const r = JSON.parse(readFileSync(join(dir, customer, f), "utf8"));   // parse error = loud (config bug)
+      const r = readJson(join(dir, customer, f));   // parse error = loud (config bug)
       // A RETIRED extra is dropped here, not refused. Refusing to SAVE one is right — that is the door
       // where somebody is asking for a behaviour that no longer exists. Refusing to LOAD one would be a
       // different and much worse thing: a key that has never done anything would take out every run that
