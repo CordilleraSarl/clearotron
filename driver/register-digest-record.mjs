@@ -43,7 +43,7 @@
 // real checks move here, to the values as received, where a refusal names the row the seat can act on
 // instead of a shape it cannot see. THE VALIDATOR IS NOT DELETED: archived runs were hand-written
 // under the old dictation and must keep parsing. A new way in, never a replacement.
-import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
@@ -62,6 +62,7 @@ const SCHEMA_VERSION = 1;
  */
 import { applyFates } from "./hit-list.mjs";   // — the digest marks the list
 import { formKey } from "../providers/_shared/script-form.mjs";   // — the one fold for "is this the same form of the mark"
+import { readJson } from "./run-record.mjs";
 
 export const FACTS_FILE = "register-digest-facts.json";
 /** — the slim hit list the digest marks; a projection of the merged band. */
@@ -336,7 +337,7 @@ export function recordedFindingUris(runDir) {
   for (const name of names) {
     if (!/^call-\d+\.json$/.test(name)) continue;
     try {
-      const doc = JSON.parse(readFileSync(join(registerDigestCallPaths(runDir).dir, name), "utf8"));
+      const doc = readJson(join(registerDigestCallPaths(runDir).dir, name));
       for (const row of doc?.params?.findings_rows ?? []) {
         const uri = row?.uri ?? row?.record_id;
         if (uri) out.add(String(uri).toLowerCase());
@@ -445,7 +446,7 @@ export const joinKey = (u) => lc(u).replace(/^https?:\/\/[^/]+/, "");
  */
 export function readDigestFacts(runDir) {
   let raw;
-  try { raw = JSON.parse(readFileSync(driverDir(String(runDir ?? ""), FACTS_FILE), "utf8")); }
+  try { raw = readJson(driverDir(String(runDir ?? ""), FACTS_FILE)); }
   // THE STAMP IS READ EVEN WHEN THE FACTS ARE NOT, and this line is the whole of the stamp-lands-first
   // ordering being worth anything. `emptyFacts()` hardcodes `armed:false`, so returning it bare made the
   // STAMPED-BUT-NO-FACTS state — the exact state that ordering exists to catch — unreachable: the call
@@ -944,7 +945,7 @@ export function recordRegisterDigest(runDir, received, { facts = null, now = () 
   if (Array.isArray(received?.fates) && received.fates.length) {
     try {
       applyFates(join(String(runDir ?? ""), HIT_LIST_FILE), received.fates, {
-        readJson: (f) => { try { return JSON.parse(readFileSync(f, "utf8")); } catch { return null; } },
+        readJson: (f) => { try { return readJson(f); } catch { return null; } },
         writeJson: (f, o) => writeFileSync(f, JSON.stringify(o, null, 2) + "\n"),
       });
     } catch { /* the marking is a projection; the accepted call stands regardless */ }
@@ -1030,7 +1031,7 @@ export function refusalsFor(runDir) {
  * The last model this run accepted, or null. The patch path's base.
  */
 export function lastAcceptedModel(runDir) {
-  try { return JSON.parse(readFileSync(registerDigestCallPaths(String(runDir ?? "")).model, "utf8")); }
+  try { return readJson(registerDigestCallPaths(String(runDir ?? "")).model); }
   catch { return null; }
 }
 
