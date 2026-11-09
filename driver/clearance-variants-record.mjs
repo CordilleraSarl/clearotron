@@ -31,7 +31,7 @@
 // the ledger for code from the SAME values. The parse does not change hands — it stops existing. That is
 // the difference between this conversion and matter-frame's, whose consumers still re-parse the driver's
 // own render (recorded honestly at that conversion's retirement site rather than claimed away).
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
@@ -39,6 +39,7 @@ import { refuseUndeclared as refuseUndeclaredShared, keepIfAbsent, lastAccepted,
 import { parseVariantManifestModel } from "./variant-manifest-model.mjs";
 // THE LEDGER'S CLOSED VOCABULARIES, IMPORTED — never re-declared here. See the note at their re-export.
 import { SCOPE_LAYERS, SCOPE_STATUSES as SCOPE_STATUS } from "./scope-ledger.mjs";
+import { readJson } from "./run-record.mjs";
 
 export const MODEL_FILE = "variant-manifest.json";
 export const PROSE_FILE = "variant-manifest.md";
@@ -374,7 +375,7 @@ export function recordedScopeLedgerRows(runDir) {
   // FALLBACK: runs that predate the base, which have a capture and no accepted.json. Unchanged
   // behaviour for them, and it is why this is a fallback rather than a replacement.
   let captured;
-  try { captured = JSON.parse(readFileSync(clearanceVariantsCallPaths(dir0).payload, "utf8")); }
+  try { captured = readJson(clearanceVariantsCallPaths(dir0).payload); }
   catch { return null; }                                  // no call — the prose path is the answer
   const v = acceptClearanceVariants(captured?.params);
   return v.ok ? v.scopeRows : null;                       // a refused call never wrote a manifest either
