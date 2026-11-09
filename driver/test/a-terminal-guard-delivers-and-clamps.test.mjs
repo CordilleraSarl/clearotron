@@ -22,16 +22,11 @@
 // `terminal-clamp.mjs` and these arms call it. The one source-level arm below is honest about being
 // exactly that — a regression catch, not the proof.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
 import { terminalClampDecision, recordNamesDefect, ENGINE_TOKEN_RE, orderClausesForLede } from "../terminal-clamp.mjs";
 import { reconcileDeclinationDuty } from "../declination-duty.mjs";
 import { reconcileFloorDuty, floorDutyBlock } from "../floor-duty.mjs";
-
-const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
-
 test("a defect found at delivery DELIVERS — at every verdict, with no exception", () => {
   for (const verdict of ["CLEAR", "CONDITIONAL", "BLOCKING"]) {
     const d = terminalClampDecision({
@@ -136,7 +131,7 @@ test("neither terminal site throws any more — a regression catch, and it is on
   // A SOURCE PIN, and named as one. It cannot tell an armed check from a disarmed one; the arms above
   // do that. What it catches is the specific regression of someone re-adding a throw beside these two
   // tokens, which is the shape this issue exists to remove.
-  const src = readFileSync(join(DRIVER, "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   for (const token of ["floor_duty_undischarged", "synthesis_unaccounted_delivered"]) {
     const at = src.indexOf(token);
     assert.notEqual(at, -1, `${token} is gone from pipeline.mjs — the defect is no longer named at all, which is worse than blocking on it`);

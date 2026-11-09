@@ -61,8 +61,9 @@
 // The UNIT sub-shape (`.some(` / `.every(` — 241 sites) is NOT covered here and is not claimed to be.
 
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync } from "node:fs";
+import { readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { REGISTER_AXES } from "../coverage-ledger.mjs";
@@ -70,7 +71,7 @@ import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 const EVERY_PASS = /(regenerat\w*|rebuil\w*)[^.\n]{0,80}?(every|each|per) (pass|regeneration)/i;
-const src = (f) => readFileSync(join(DRIVER, f), "utf8");
+const src = (f) => driverSource(f);
 
 /**
  * A file's prose with its scaffolding removed, so a sentence can be matched whole however it is laid out.

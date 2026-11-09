@@ -13,6 +13,7 @@
 // Run:  node --test driver/test/a-failed-run-resumes-from-the-command-line.test.mjs
 
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -86,7 +87,7 @@ test("a resume rebuilt from status.json keeps the run's instructed scope; a job 
   assert.equal(instructedScopeToWrite(fromFile, { jobRebuiltFromStatus: false, scopeOnDisk: true })?.goods, "invented goods",
     "a job read from a file no longer writes its scope");
   // And the command line marks the rebuild exactly when no --job was given, and a job file as given explicitly.
-  const src = (await import("node:fs")).readFileSync(PIPELINE, "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.match(src, /fromStage: a\.fromStage, \.\.\.\(a\.job \? \{ explicitJob: true \} : \{ jobRebuiltFromStatus: true \}\)/);
   assert.match(src, /instructedScopeToWrite\(job, \{ jobRebuiltFromStatus: opts\.jobRebuiltFromStatus, scopeOnDisk: existsSync\(P\.instructedScope\) \}\)/);
 });

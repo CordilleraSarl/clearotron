@@ -86,9 +86,15 @@ permissions:
 
 # Supersede a branch's own earlier run, never main's. Cancelling a main run would leave the branch
 # people trust with no verdict at all, which is the one place the saved minutes are not worth it.
+#
+# A RELEASE LINE (`next-*`) IS NOT SUPERSEDED EITHER, AND EACH OF ITS COMMITS HAS A GROUP OF ITS OWN.
+# Several branches merge onto a line, and a red has to name the merge that caused it, so every merge's
+# run must finish. Turning cancellation off would not do that: a group holds one running and one pending
+# run, and GitHub cancels the pending one when a newer run queues. `head_ref` names the branch on a pull
+# request, where `ref` is the merge ref; `ref` names it on a dispatch.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+  group: ${{ github.workflow }}-${{ (startsWith(github.head_ref, 'next-') || startsWith(github.ref, 'refs/heads/next-')) && github.sha || github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' && !startsWith(github.head_ref, 'next-') && !startsWith(github.ref, 'refs/heads/next-') }}
 
 jobs:
   # A JOB THAT HANGS IS INDISTINGUISHABLE FROM ONE THAT IS STILL WORKING, AND THAT IS WHAT THESE BOUND.

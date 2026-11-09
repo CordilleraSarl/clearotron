@@ -22,15 +22,11 @@
 // an absence wearing a green tick, in the check whose whole job is to refuse exactly that.
 
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import { toolWrittenArtifact } from "../gateway.mjs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
 import { REPAIR_COMPOSERS, REGISTERED_KEYS, composerFor, repairFollowup } from "../repair-composers.mjs";
-
-const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
-const pipelineSrc = () => readFileSync(join(DRIVER, "pipeline.mjs"), "utf8");
+const pipelineSrc = () => driverSource("pipeline.mjs");
 
 /**
  * Every composing site in a source text, and how each one supplies its value. PURE — the source is

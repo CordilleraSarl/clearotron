@@ -19,17 +19,12 @@
 // mode this whole file exists to catch.
 
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
 import { envOn, envGateOn } from "../driver.config.mjs";
 import { retiredEnvWarnings } from "../pipeline.mjs";
 import { RETIRED_NEW_SPELLINGS, warnRetiredEnv } from "../../shared/env-aliases.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
-
-const HERE = dirname(fileURLToPath(import.meta.url));
-
 const NAME = "CLEAROTRON_TEST_IDIOM_PROBE";
 const withVal = (v, fn) => {
   const had = Object.hasOwn(process.env, NAME), prev = process.env[NAME];
@@ -131,7 +126,7 @@ test("every retired variable is live in BOTH lists, in the one spelling there is
 test("both entrypoints emit the retired-env warning: the systemd runner AND the manual CLI", () => {
   for (const [file, why] of [["runner.mjs", "prelim-driver.service ExecStart — the process that reads the EnvironmentFile"],
                              ["pipeline.mjs", "the manual CLI"]]) {
-    const src = readFileSync(join(HERE, "..", file), "utf8");
+    const src = driverSource(file);
     assert.match(src, /for \(const w of retiredEnvWarnings\(\)\) console\.error\(w\);/,
       `${file} must emit the warning (${why})`);
     assert.doesNotMatch(src, /for \(const w of retiredEnvWarnings\(\)\) console\.log\(/,

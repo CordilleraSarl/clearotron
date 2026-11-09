@@ -21,6 +21,7 @@
 //   anchor-reader               sector/industry/jurisdiction anchors go unfound
 //   findSeedNeutralityViolations (S2)  the seed-neutrality tripwire has nothing to scan
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -401,7 +402,7 @@ test("the plan compile actually calls it — the wiring, not the helper", () => 
   // where an added class is now one identical-mark question. So the instructed list stays the plan's
   // class scope, and the frame's rows — with their reasons, which the union threw away — arrive beside
   // it as `addedClasses`. The arm still answers the same question: is the reader wired in at all.
-  const pipeline = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const pipeline = driverSource("pipeline.mjs");
   const lines = pipeline.split("\n");
   const i = lines.findIndex((l) => l.includes("jobKey: ctx.run.slug") && l.includes("classes:"));
   assert.ok(i >= 0, "the register-plan compile's job line could not be found — this arm cannot look");

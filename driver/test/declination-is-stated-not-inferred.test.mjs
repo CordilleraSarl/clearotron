@@ -24,11 +24,11 @@
 // The tripwire asks for already existed. The seam was reporting the one value defined as "not a
 // defect", so it could never fire on these rows.
 import test from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, rmSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import {
   DECLINATION_REASONS, DECLINATION_REASON_TOKENS, MIN_GROUNDS,
@@ -362,7 +362,7 @@ test("the refusal rests on BOTH facts, so a dead record and an out-of-class one 
 
 test("the seat is TOLD before it calls, not only refused after", () => {
   // Avoiding the error beats recovering from it: a seat that learns this by refusal has spent a turn.
-  const src = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "stages.mjs"), "utf8");
+  const src = driverSource("stages.mjs");
   assert.match(src, /is a statement about the report's budget rather than about the mark/,
     "the declination dictation does not warn the seat, so the rule is enforced only by refusal");
 });

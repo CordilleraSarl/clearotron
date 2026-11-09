@@ -15,8 +15,8 @@
 // entry. An arm that asserted "enforceRecallReconciliation is the exemption" would have been green
 // through both. The class is "a forced digest pass outside the funnel", so the arm walks the class.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { DIGEST_OWN_PASS_EXEMPTIONS } from "../digest-queue.mjs";
@@ -38,7 +38,7 @@ const DISPATCH = /\brunDigest\s*\(|stage\s*\(\s*"register-digest"/;
  * Comment and jsdoc lines are excluded — the header prose names both symbols repeatedly.
  */
 function dispatchSites() {
-  const lines = readFileSync(PIPELINE, "utf8").split("\n");
+  const lines = driverSource("pipeline.mjs").split("\n");
   const sites = [];
   for (let i = 0; i < lines.length; i++) {
     const text = lines[i];
@@ -104,7 +104,7 @@ test("each exemption carries a reason someone can act on, not a label", () => {
 // in DIGEST_OWN_PASS_EXEMPTIONS stops being true and this arm says so — the ruling and its mechanism
 // stay joined instead of drifting apart the way the funnel header did.
 test("no settlement flush survives digestSettled — the fact the recall-reconcile exemption rests on", () => {
-  const src = readFileSync(PIPELINE, "utf8");
+  const src = driverSource("pipeline.mjs");
   // The queue closes on TWO paths and both must be past: the frame-reopen block flushes and settles
   // inline, and the standalone seam flushes only `if (!ctx.digestSettled)`. So the seam this arm is
   // about is the LAST assignment, not the first — reading the first calls the standalone flush a

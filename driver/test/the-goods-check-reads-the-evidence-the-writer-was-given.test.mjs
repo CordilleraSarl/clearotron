@@ -15,11 +15,11 @@
 // SAFETY GUARD (repo convention): the workspace root and the call ledger are pinned BEFORE any driver module loads, so
 // driver modules are imported dynamically below.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, appendFileSync, existsSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { envFrom, pinEnv } from "../../shared/env-aliases.mjs";
 
@@ -29,8 +29,6 @@ const { DERIVATION_RUNNERS, goodsEvidenceForTheWriter, keepGoodsEvidenceAsWritte
 const { paths } = await import("../stages.mjs");
 const { readGoodsEvidence, readGoodsEvidenceAsWritten, GOODS_EVIDENCE_FILE, GOODS_EVIDENCE_AS_WRITTEN_FILE } = await import("../goods-evidence.mjs");
 const { goodsHeldWholeChecks } = await import("../predelivery-lint.mjs");
-
-const HERE = dirname(fileURLToPath(import.meta.url));
 const URI = "/mark/us/tm_invented-quorvane";
 const CUT = "Downloadable software for planning invented ferry timetables, and downloadable applications for";
 const WHOLE = "Downloadable software for planning invented ferry timetables, and downloadable applications for booking invented ferry seats";
@@ -128,7 +126,7 @@ test("a claim the repair left standing keeps its unresolved row once the band is
 
 test("the writer's stage keeps the copy, and the delivery check reads it", () => {
   // The dispatch and the check are inline in pipeline.mjs, so their wiring is pinned in the source.
-  const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.match(src, /async function stage\(name, ctx, opts = \{\}\) \{\n  const writersEvidence = goodsEvidenceForTheWriter\(name, ctx, opts\);/,
     "the stage dispatch does not read the evidence before it dispatches");
   assert.match(src, /sweepStrayArtifacts\(ctx, name\);\n      keepGoodsEvidenceAsWritten\(ctx, r, writersEvidence\);\n      await afterLateSynthesisSave\(name, ctx, r\);\n      return r;/,
