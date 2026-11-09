@@ -163,7 +163,7 @@ For each crowd descriptor in the band (the shape's `crowds` list; each rides alo
 | Ruling | When | Status you write | Effect |
 |---|---|---|---|
 | **cleared** (enumerated + judged clear) | The slice `enumerated` and you cleared it. An unenumerated crowd row is never `confirmed-clean`: rule it `withheld-by-judgment` with its count and reason if it is settled, else `coverage-limited`. | `confirmed-clean` | None — the run can deliver clean (subject to the findings). |
-| **material gap** (a dangerous slice NOT fully cleared) | The exact mark / a near-identical named variant in an in-scope class was NOT enumerated to `has_more:false`, or a material jurisdiction's named band is unfinished — and it bears on whether you can sign. | `coverage-limited` (reason NAMES the slice + count) | A `coverage-limited` row does not change the verdict by itself. Synthesis reads it when it decides `coverage_judgment`; only `sufficient:false` or a `deferred` row clamps CLEAR to CONDITIONAL. |
+| **material gap** (a dangerous slice NOT fully cleared) | The exact mark / a near-identical named variant in an in-scope class was NOT enumerated to `has_more:false`, or a material jurisdiction's named band is unfinished — and it bears on whether you can sign. | `coverage-limited` (reason NAMES the slice + count) | A `coverage-limited` row does not change the verdict by itself. Synthesis reads it when deciding `coverage_judgment`. Insufficient coverage, a material deferred register slice, or unresolved timeout-taint on a material axis can raise CLEAR to CONDITIONAL; other terminal checks still apply. |
 | **could-not-reach** (the funnel could not run the slice at all) | A provider error / tool absence meant the slice never reached its data. | `deferred` | Same as material gap → `sufficient:false` → CONDITIONAL; the gap is named. |
 
 **You do not write the Coverage ledger table, and you do not open or edit any coverage file.** The
@@ -255,7 +255,7 @@ for a saturated dominant element or `translit-*-meaning` token (the token kept a
 goods-vocabulary words are **never** ANDed into the search text — goods-relevance is judged at SELECTION). If that
 named slice came back `enumerated`, read it and clear or surface its hits. If it came back `incomplete` AND it is
 material (the exact / near-identical in-class slice is the highest-relevance category), write it `coverage-limited`
-with a reason that NAMES the slice and the count. A `coverage-limited` row does not change the verdict by itself. Synthesis reads it when it decides `coverage_judgment`; only `sufficient:false` or a `deferred` row clamps CLEAR to CONDITIONAL. An everyday-word-scale count on
+with a reason that NAMES the slice and the count. A `coverage-limited` row does not change the verdict by itself. Synthesis reads it when deciding `coverage_judgment`. Insufficient coverage, a material deferred register slice, or unresolved timeout-taint on a material axis can raise CLEAR to CONDITIONAL; other terminal checks still apply. An everyday-word-scale count on
 its own (a count-only saturation probe) is never a clean of the
 dangerous category and never a reason to drop the token, re-narrow it, or swap it for the phonetic form. An unenumerated crowd row is never `confirmed-clean`: rule it `withheld-by-judgment` with its count and reason if it is settled, else `coverage-limited`.
 
@@ -455,7 +455,7 @@ working instrument into a disclaimer.
 **Applicant own-rights sweep (gated on priority-live — surfacing only, never a conflict).** When a unit has
 surfaced a senior on-point conflict (an identical / near-identical in-class incumbent) AND `matter-context` /
 the request form indicates the applicant may hold prior rights of its own (prior use, or co-pending / unclear
-priority), priority is *live*. When priority is live, look the applicant up in the band with `band_lookup` by owner and state what it holds. If the band holds none, say no owner search was run on the applicant. This is a **surfacing exception
+priority), priority is *live*. When priority is live, look the applicant up in the held band with `band_lookup` by owner. State what the held filings establish. An empty lookup establishes neither that the applicant has no filings nor that no owner search ran. Describe a search as run or not run only where the run's records establish that status; otherwise leave the status unresolved. This is a **surfacing exception
 for the applicant only**: these rows are **never conflicts, never Findings-sheet rows, and never gate or
 down-rank the conflict sweep** — they exist solely to resolve the *filing* branch of the priority question
 (does the client have earlier rights of its own?) for the synthesis's "client's own prior rights" note. The
@@ -481,7 +481,7 @@ kept.
 Run the stealth-filer regex ([stealth-filer-indicators.md](stealth-filer-indicators.md)) over all
 owners. Then per the orchestrator's cross-pollination logic:
 
-Triggers 1 and 4 run in code before this stage and their answers are in the band. Record Triggers 2 and 3 in `cross_checks`, naming the owner and why. No stage runs them; synthesis and the reviewing lawyer read them as open checks.
+The driver prepares Trigger 1 and 4 checks before this stage. Read their receipt and the band to distinguish checks that ran from checks withheld, refused, or left beyond the cap. Keep each not-searched reason; a check that did not run is not a clean result. Record Triggers 2 and 3 in `cross_checks`, naming the owner and why. No stage runs those two; synthesis and the reviewing lawyer read them as open checks.
 
 ### Step 7 — Compile register findings file + flag thin units
 
@@ -543,7 +543,7 @@ This skill's universal logic — per-axis funnel, status filter, relevance gate,
 - [ ] **Every coverage-form row ruled through `record_coverage`** — the tool's answer reports nothing outstanding; every `incomplete` crowd descriptor ruled cleared/material-gap; reconciled against `matter-context`'s material-jurisdiction list (every material jurisdiction enumerated-and-cleared, or written `coverage-limited`/`deferred` → CONDITIONAL — never a self-accepted clean over an unsearched slice); genuine open judgment surfaced to ship (not a coverage gap)
 - [ ] Applicant own-rights sweep run **if priority is live** (never a conflict / Findings row / gate)
 - [ ] Watchlist matches flagged
-- [ ] Stealth-filer detection + Option-D triggers (exec 1 & 4, flag 2 & 3)
+- [ ] Stealth-filer detection + Option-D triggers. The driver prepares Trigger 1 and 4 checks before this stage. Read their receipt and the band to distinguish checks that ran from checks withheld, refused, or left beyond the cap. Keep each not-searched reason; a check that did not run is not a clean result. Record Triggers 2 and 3 in `cross_checks`, naming the owner and why. No stage runs those two; synthesis and the reviewing lawyer read them as open checks.
 - [ ] Candidates placed `out-of-scope-filtered` take no findings row; end each with a `negative_rows` entry on its ground
 - [ ] Watchlist-annex candidates routed to audit-tab + optional brief narrative mention with monitor trigger
 - [ ] **Dominant-element reconciliation satisfied** — every screened-live dominant-element POSITION ends as a finding row, a drop row citing any one constituent URI, or membership of the ONE counted `dominant-element crowd` row ADDED THROUGH `record_coverage`, whose `unit` value carries `(<N> members)` with `<N>` >= the residual POSITION count (the count is read from `unit`, never from `reason`); the code-ranked closest positions ended individually

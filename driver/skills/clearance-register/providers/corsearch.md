@@ -188,7 +188,7 @@ Be aware these capabilities are missing, so the skill doesn't promise them:
 
 Sustained-burst behaviour is UNDECLARED.
 
-Session-key validation: send one `register_search({ name: "EXAMPLEMARK", limit: 1 })` with `limit: 1` before doing any real work. If it returns 401/403, halt and surface to orchestrator immediately.
+Do not make a separate session-key test search. If a register tool returns HTTP 401 or 403, report that access was refused and stop this register step.
 
 ## Where the contract lives
 

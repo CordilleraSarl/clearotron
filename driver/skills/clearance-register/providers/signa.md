@@ -16,9 +16,7 @@ workflow — never both.)
 | `register_propose_supplemental` | Judgment-addition queries: CODE mints, executes and writes the band | `axis`, `output_path`, `proposals[]` |
 
 Auth: `Authorization: Bearer <SIGNA_API_KEY>`. There is **no** batch-screen tool and **no** clearance tool
-(`/v1/analysis/clearance` 404s) — so the spine's batch-screen step is skipped under Signa; detail-fetch
-candidates directly (per `unit.md` step 5). Screening needs no extra call either way: the search row already
-carries status and classes.
+(`/v1/analysis/clearance` 404s). There is no batch-screen tool here; the search row already carries status and classes.
 
 **Do not page or plan by hand.** `register_enumerate` owns the page loop and returns a completeness state;
 `register_execute_plan` runs every dictated entry for an axis. A hand-assembled band is not a band.
