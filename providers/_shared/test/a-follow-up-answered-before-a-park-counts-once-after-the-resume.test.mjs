@@ -99,7 +99,7 @@ test("a follow-up that failed before a park still counts again after the resume,
 });
 
 test("the band the park renames is the one the net reads, under the name it reads", () => {
-  const src = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..", "driver", "pipeline.mjs"), "utf8");
+  const src = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..", "driver", "steps", "register-sweep.mjs"), "utf8");
   assert.match(src, /for \(const f of \[P\.registerUnit\(a\), P\.registerBand\(a\)\]\)/, "the park no longer renames the axis's band");
   assert.match(src, /`\$\{f\}\.tainted-\$\{recoveryAttempts\}`/, "the park renames a band to something other than <band>.tainted-<n>");
 });
