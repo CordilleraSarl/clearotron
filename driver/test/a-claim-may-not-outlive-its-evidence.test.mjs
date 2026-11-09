@@ -147,7 +147,7 @@ test("the ladder is the run's own, and ordered", () => {
 // prove the call, the artifact and the run.jsonl row are all still present.
 test("the invariant is CALLED at the corrective seam, and its result is recorded", () => {
   const src = driverSource("pipeline.mjs");
-  assert.match(src, /import \{[^}]*evidenceClaimViolations[^}]*\} from "\.\/evidence-claim-invariant\.mjs"/,
+  assert.match(src, /import \{[^}]*evidenceClaimViolations[^}]*\} from "\.\.?\/evidence-claim-invariant\.mjs"/,
     "imported");
   assert.match(src, /evidenceClaimViolations\(\{\s*before:[^}]*after:[^}]*demotions/,
     "called with all three inputs — the demotion list is arm B's entire before-state");
