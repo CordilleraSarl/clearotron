@@ -23,7 +23,7 @@ test("every rmSync-of-.sent site clears _driver/send-receipts.json within the ne
       if (!/rmSync\([^)]*"\.sent"/.test(line)) return;   // .sentPath / ".postponed" etc. don't match
       sites++;
       const window = lines.slice(i, i + 3).join("\n");
-      assert.ok(/rmSync\([^)]*"send-receipts\.json"/.test(window),
+      assert.ok(/rmSync\((?:[^)]*"send-receipts\.json"|[^;\n]*\.sendReceipts\b)/.test(window),
         `${src}:${i + 1} clears .sent but not send-receipts.json alongside:\n${window}`);
     });
   }
