@@ -31,9 +31,8 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, mkdirSync, writeFileSync, renameSync, statSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { DRIVER_DIR } from "../shared/driver-dir.mjs";   // the subtree name from its one definition, never a literal
 import { composeMemo } from "./whatif-memo.mjs";
-import { paths as runPaths } from "./run-record.mjs";
+import { DRIVER_DIR, paths as runPaths } from "./run-record.mjs";   // the subtree name from its one definition, never a literal
 
 export const SKILL_ROOT = join(dirname(fileURLToPath(import.meta.url)), "skills");
 
