@@ -59,8 +59,7 @@ note tripped that guard in conversion 4 and again in conversion 5 — describe t
 tools.)*
 
 
-**Curation:** The finding's disposition chooses the report band a card renders in; it never recomputes the finding's rating. Mirror the run's actual data. Do **not** emit every finding as a headline card — a run
-with ~20–50 findings typically curates to a handful of headline cards. Rating vocabulary is the band words
+**Curation:** The finding's disposition chooses the report band a card renders in; it never recomputes the finding's rating. Mirror the run's actual data. Rating vocabulary is the band words
 of the framework in force (`risk-framework.md` house default, or the profile-selected
 `risk-framework-<customer>.md`); synthesis discipline follows `synthesis-rules.md`.
 
@@ -102,12 +101,12 @@ English, never internal engine idioms ("slice", "crossed into the band", "null c
 "unadjudicable", "enumerated-empty", telemetry counts). The render also sanitises these as a backstop, but the
 authored text should already be plain.
 
-**Distil for the reviewing lawyer (the one reader).** Lead with the decision: `overall_caption` is the ≤3-line
-plain-legal-English bottom line and `# Actions` lists the open external checks — both surface above the fold.
+**Distil for the reviewing lawyer (the one reader).** Lead with the decision: `overall_caption` is at most 3 sentences of plain legal English.
+`# Actions` lists the open external checks — both surface above the fold.
 The card's risk chip is code-built from the finding's `band` + disposition; the typed `net` and
-`overall_caption` are plain legal English — business consequence + action, ZERO risk codes — never
-engineering/pipeline register. "Full detail & provenance" and Methodology are
-progressive-disclosure (collapsed). This is distillation by *removal and relocation* — do not add length to hit it.
+`overall_caption` are plain legal English: the consequence and the fact that conditions it, with no risk codes and no step to take — never
+engineering/pipeline register. "Full detail" is collapsed.
+This is distillation by *removal and relocation* — do not add length to hit it.
 
 **Prose & curation (spec 09).** Cut dead weight and throat-clearing; one idea per sentence; 3+ parallel items
 become a `- ` list (**inside card bodies too**), never an inline `(a)…(b)…(c)` run; verdict-first; numbers over
@@ -117,10 +116,9 @@ detail`. The highest-risk card must be the **clearest**, never the longest. Stat
 posture once (in `overall_caption`), never per-card.
 
 **Order inside a card, and inside the report.** Verdict first, then what was looked for and not found,
-then what was found — at every scale. The assembled report already has that order (the caption, then the
-coverage panel and the reasoned negatives, then the conflict cards), and `### Full detail` repeats it in
-miniature: the **Risk assessment** bullet leads, the checks that ran and came back empty follow, then the
-filing, enforcement and use facts. A card that opens with a filing date makes the reader hunt for the
+then what was found — at every scale. In `### Full detail`, send the Risk assessment entry first.
+Send a filing fact only where it carries the read: the driver prints the registrations.
+A card that opens with a filing date makes the reader hunt for the
 answer they were given a chip about.
 
 **Findings group by why they matter — never by jurisdiction or class.** That grouping is code's: the
@@ -141,7 +139,7 @@ basis is an inference (the owner looks like a music act, not a games company), s
 entity; no targeted use-check ran, so there is no use finding either way", never a clean negative. Note the
 shape — the un-run check is a FACT with its consequence, not a recommendation to run one ("— recommended" is
 prescription grammar, ruled out; a check a human must still make is a typed action the code renders). Once WS2's use-check runs, the
-finding's actual-use line carries the searched result + link (and the "Checks we ran" bucket states it). Never
+finding's actual-use line carries the searched result + link. Never
 dress an un-run check as a searched negative — on any surface (report, cover, client table).
 
 **Source layer on every card (spec 09 §5, v2).** Each `## ` card carries a `- source: Register | Common-law |
@@ -151,12 +149,7 @@ the marketplace / meaning search surfaced or strengthened this finding — it is
 (e.g. an active competitor found selling under the mark in our field) — say so in one plain clause in Full
 detail: what the marketplace/meaning check actually *found* for THIS mark. And keep what was **checked**
 (searched and found) separate from what is only **assumed** or still **to-do** — a not-yet-run check is carried
-as an explicit "not yet verified" or a `# Actions` open item, never dressed up as a result. **Do NOT** write a common-law telemetry line into
-`# Methodology` (platform/storefront counts, variant counts, "N surfaced, remainder clean", cell-matrix sizes,
-the audit-Excel matrix size): that run telemetry lives in the run-dir / audit, not the report body. The
-coverage panel (rendered from the typed `coverage[]` states) and any genuine gap as an `# Actions` open item
-carry what the reviewer needs about coverage; `# Methodology`, when present at all, is a short plain-English
-scope note only.
+as an explicit "not yet verified" or a `# Actions` open item, never dressed up as a result.
 
 **Coverage = open items, not a telemetry panel.** Coverage is drawn **only** from the typed `coverage[]` array in
 `findings.json` (states: `confirmed-clean` / `coverage-limited` / `open` / `not-searched` / `note`), which the
@@ -165,8 +158,7 @@ section or enumerate confirmed-clean areas / clean-checks in prose. doc-35 close
 that is `open` / `not-searched` / `coverage-limited` and **search-reachable** is CLOSED in the run or an INTERNAL
 reviewer note — it does NOT surface as a client `# Actions` item; a genuinely **un-cleared dangerous slice** the
 search could not close is stated in the **risk read as analysis** (it also clamps the verdict to CONDITIONAL),
-never a client "gap we should close" caveat. Only a **client-only** ask (no search reaches it) is a `# Actions`
-item, under "Only you can close these". `confirmed-clean` / `note` areas are not gaps and are not actions. The
+never a client "gap we should close" caveat. A forward step a human must take is a typed entry in the `actions` register, written in synthesis and rendered by code. The shell's `actions` carry results only. `confirmed-clean` / `note` areas are not gaps and are not actions. The
 `overall_caption` never **leads** with a coverage gap — it leads with the substantive risk.
 
 **Coverage prose — the numbers are code's, the substance is yours (P6).** The register coverage line a reader
@@ -226,8 +218,8 @@ behind the marks) stay — they are the findings' subject.
 
 ## House prose contract (P6 — spec §7 + the lawyer walk-through)
 
-Prompt guidance, deliberately **not** a lint: a code gate on prose adds redelivery cycles and removes the
-flexibility the judgment needs. The stage message carries the same contract verbatim — these two levels
+Prompt guidance, deliberately **not** a gate: a code gate on prose adds redelivery cycles and removes the
+flexibility the judgment needs. The stage message carries the same contract — these two levels
 must never teach different rules.
 
 **This section is the PROHIBITIONS.** What a good finding positively reads like is
@@ -236,8 +228,8 @@ hedge the assessment, never the fact; numbers do the work adjectives would; say 
 trades away a fact; the controlled assessment vocabulary. Read both — a card that breaks none of the
 rules below can still be unreadable.
 
-- **Word budgets.** ~20–25 words a sentence, ~80 a paragraph. The hard caps code folds at (3-sentence
-  caption, 2-sentence read) are **fold points, not targets** — three 60-word sentences obey the cap and
+- **Word budgets.** ~20–25 words a sentence, ~80 a paragraph. The one hard cap is the 3-sentence caption; it is a limit, not a target
+  — three 60-word sentences obey the cap and
   defeat it. One idea a sentence; 3+ parallel items become a list.
 - **Each fact once, at its rank.** A finding is stated in its row; the caption names the decisive one and
   no other; a later section **cross-references by ordinal** (*"the three US class-32 rights — findings 1, 4
