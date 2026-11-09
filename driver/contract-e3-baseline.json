@@ -105,7 +105,7 @@
     "skills/clearance-variants/transliteration-scripts.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 0,
-      "dictated-line-shape": 1
+      "dictated-line-shape": 0
     },
     "skills/blind-frame/SKILL.md": {
       "literal-json-skeleton": 4,
@@ -125,7 +125,7 @@
     "skills/clearance-register/unit.md": {
       "literal-json-skeleton": 5,
       "exactly-these-keys": 0,
-      "dictated-line-shape": 6
+      "dictated-line-shape": 5
     },
     "skills/placement-inquiry/SKILL.md": {
       "literal-json-skeleton": 1,
@@ -133,7 +133,7 @@
       "dictated-line-shape": 1
     },
     "skills/clearance-register/digest.md": {
-      "literal-json-skeleton": 1,
+      "literal-json-skeleton": 0,
       "exactly-these-keys": 1,
       "dictated-line-shape": 4
     },
@@ -165,7 +165,7 @@
     "skills/clearance-search/worked-examples.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 0,
-      "dictated-line-shape": 1
+      "dictated-line-shape": 0
     },
     "skills/clearance-search/report-prose.md": {
       "literal-json-skeleton": 0,
@@ -180,16 +180,16 @@
     "skills/narrative-refutation/SKILL.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 2,
-      "dictated-line-shape": 1
+      "dictated-line-shape": 0
     },
     "skills/clearance-search/delivery-contract.md": {
       "literal-json-skeleton": 0,
-      "exactly-these-keys": 1,
-      "dictated-line-shape": 1
+      "exactly-these-keys": 0,
+      "dictated-line-shape": 0
     }
   },
   "totals": {
     "stages": 43,
-    "files": 62
+    "files": 55
   }
 }

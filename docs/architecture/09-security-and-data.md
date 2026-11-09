@@ -142,7 +142,7 @@ the company's name, the goods description, or any profile material.
 | `signa` | `api.signa.so` | `providers/signa/src/core.js` |
 | `euipo` | `euipo.europa.eu` and `api.euipo.europa.eu` in production; `auth-sandbox.euipo.europa.eu` and `api-sandbox.euipo.europa.eu` under `EUIPO_ENVIRONMENT=sandbox` — different hosts, different corpora | `providers/euipo/src/euipo-client.js` |
 | `uspto-local` | **Nothing.** Queries read a local SQLite FTS5 file at `USPTO_LOCAL_DB` | `providers/uspto-local/src/index-store.js` |
-| `free-tier` | The EUIPO hosts above, and nothing else — the composite pairs EUIPO with the local US index | `engine/mcp/free-tier-server.mjs` |
+| `free-tier` | The EUIPO hosts above, and nothing else — the composite pairs EUIPO with the local US index | `providers/free-tier/src/mount.js` |
 
 `api.uspto.gov` is reached by the index build alone — `npm run sync:uspto`, which downloads the bulk
 corpus (`providers/uspto-local/src/sync.js`). No clearance run contacts it.

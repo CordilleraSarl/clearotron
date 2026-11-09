@@ -211,9 +211,9 @@ test("the register_execute_plan tool DESCRIPTION agrees with the lane — it rid
   // — and corsearch's (the DEFAULT provider) told it to "add judgment extras as separate register_enumerate
   // calls appended without a qid", i.e. use the tool the stage message had just called absent BY DESIGN and
   // hand-append blocks band_block_unplanned kills. Clarivate already named the propose tool; they agree now.
-  // Read as TEXT, never imported: these files are executable stdio servers.
-  for (const f of ["corsearch-server.mjs", "clarivate-server.mjs"]) {
-    const src = readFileSync(new URL(`../engine/mcp/${f}`, import.meta.url), "utf8");
+  // Read as TEXT, never imported.
+  for (const f of ["corsearch/src/mount.js", "clarivate/src/mount.js"]) {
+    const src = readFileSync(new URL(`../../providers/${f}`, import.meta.url), "utf8");
     const desc = (src.split(`name: "register_execute_plan"`)[1] ?? "").split("inputSchema:")[0];
     assert.ok(desc.includes("description:"), `${f} declares register_execute_plan with a description`);
     assert.doesNotMatch(desc, /register_enumerate/, `${f} — the executor must not point judgment extras at the tool the lane removes`);

@@ -29,9 +29,10 @@ const pinProvider = (value) => Object.fromEntries(
   ["CLEAROTRON_DATABASE"].map((n) => [n, value]));
 
 // Spawn a server, run a sequence of JSON-RPC requests over stdio, return responses keyed by id.
-async function mcpSession(serverScript, requests, env = {}) {
+async function mcpSession(server, requests, env = {}) {
+  const [serverScript, ...serverArgs] = [].concat(server);
   return await new Promise((resolve, reject) => {
-    const child = spawn(process.execPath, [join(MCP, serverScript)], { stdio: ["pipe", "pipe", "pipe"], env: { ...process.env, ...env } });
+    const child = spawn(process.execPath, [join(MCP, serverScript), ...serverArgs], { stdio: ["pipe", "pipe", "pipe"], env: { ...process.env, ...env } });
     const responses = {}; let buf = "", stderr = "";
     const wantIds = new Set(requests.filter((r) => r.id != null).map((r) => r.id));
     const done = () => { try { child.kill("SIGKILL"); } catch { /* gone */ } resolve({ responses, stderr }); };
@@ -211,7 +212,8 @@ test("buildGatherMcpConfig: maps groups → the right MCP servers + threads the 
   assert.ok(r.mcpServers.register, "register group → the neutral register server");
   assert.ok(!r.mcpServers.corsearch && !r.mcpServers.clarivate && !r.mcpServers.signa && !r.mcpServers["uspto-local"],
     "no vendor-named MCP server key may be mounted — the register surface is provider-neutral");
-  assert.match(r.mcpServers.register.args[0], /(corsearch|clarivate|signa|euipo|uspto-local)-server\.mjs$/,    "the neutral key resolves to the active provider's server script");
+  assert.match(r.mcpServers.register.args[0], /register-server\.mjs$/);
+  assert.match(r.mcpServers.register.args[1], /^(corsearch|clarivate|signa|euipo|uspto-local)$/, "the neutral key mounts the active provider");
   //: this assertion USED TO READ `r.mcpServers.register && r.mcpServers.euipo` — it PINNED the
   // credential-blind attach, mounting the EU tools beside the paid vendor on every register-unit
   // stage whether or not the instance held EUIPO credentials. EUIPO is a register PROVIDER now, so it
@@ -281,7 +283,7 @@ test("dispositions server: handshake + the one tool, under its own server name (
 
 test("corsearch server: handshake + 8 tools + creds-missing guard returns clean isError", async () => {
   const call = { jsonrpc: "2.0", id: 3, method: "tools/call", params: { name: "register_search", arguments: { name: "ACME" } } };
-  const r = await mcpSession("corsearch-server.mjs", [INIT, LIST, call], { CORSEARCH_SESSION_KEY: "" });
+  const r = await mcpSession(["register-server.mjs", "corsearch"], [INIT, LIST, call], { CORSEARCH_SESSION_KEY: "" });
   assert.deepEqual(toolNames(r), ["register_batch_screen", "register_enumerate", "register_execute_plan", "register_expand_phoneme", "register_image_fetch", "register_propose_supplemental", "register_record_fetch", "register_search"]);
   assert.equal(r.responses[3]?.result?.isError, true);
   assert.match(r.responses[3]?.result?.content?.[0]?.text ?? "", /CORSEARCH_SESSION_KEY not set/);
@@ -297,7 +299,7 @@ test("corsearch server: handshake + 8 tools + creds-missing guard returns clean 
 test("clarivate server: handshake + 7 tools, phoneme expansion absent-not-stubbed, creds guard", async () => {
   const { CAPABILITIES } = await import("../../providers/clarivate/src/capabilities.js");
   const call = { jsonrpc: "2.0", id: 3, method: "tools/call", params: { name: "register_search", arguments: { name: "ACME", regions: ["CH"] } } };
-  const r = await mcpSession("clarivate-server.mjs", [INIT, LIST, call], { CLARIVATE_API_KEY: "" });
+  const r = await mcpSession(["register-server.mjs", "clarivate"], [INIT, LIST, call], { CLARIVATE_API_KEY: "" });
   assert.equal(r.responses[1]?.result?.serverInfo?.name, "register", "the server key is neutral, never the vendor's name");
   const names = toolNames(r);
   assert.deepEqual(names, ["register_batch_screen", "register_enumerate", "register_execute_plan",
@@ -322,7 +324,7 @@ test("clarivate server: handshake + 7 tools, phoneme expansion absent-not-stubbe
 test("uspto-local server: handshake + 6 tools, images and phonemes absent-not-stubbed, index guard", async () => {
   const { CAPABILITIES } = await import("../../providers/uspto-local/src/capabilities.js");
   const call = { jsonrpc: "2.0", id: 3, method: "tools/call", params: { name: "register_search", arguments: { name: "ACME" } } };
-  const r = await mcpSession("uspto-local-server.mjs", [INIT, LIST, call], { USPTO_LOCAL_DB: "" });
+  const r = await mcpSession(["register-server.mjs", "uspto-local"], [INIT, LIST, call], { USPTO_LOCAL_DB: "" });
   assert.equal(r.responses[1]?.result?.serverInfo?.name, "register", "the server key is neutral, never the provider's name");
   const names = toolNames(r);
   assert.deepEqual(names, ["register_batch_screen", "register_enumerate", "register_execute_plan",
@@ -349,7 +351,7 @@ test("every REGISTER_SERVERS provider resolves to a mounted `register` key + its
   const { promisify } = await import("node:util");
   const run = promisify(execFile);
   const script = 'import("./driver/engine/mcp/gather-config.mjs").then(m=>{const c=m.buildGatherMcpConfig(["register"],{sessionKey:"k",runDir:"/tmp/run-register"});'
-    + 'console.log(JSON.stringify({servers:Object.keys(c.mcpServers),script:c.mcpServers.register.args[0],'
+    + 'console.log(JSON.stringify({servers:Object.keys(c.mcpServers),script:c.mcpServers.register.args.join(" "),'
     + 'tools:m.allowedToolsFor(["register"]).split(" ").filter(x=>x.startsWith("mcp__register__")).length}))})';
   const repo = join(HERE, "..", "..");
   // — signa is 4, not 2; then took it to 5 by wiring register_propose_supplemental.
@@ -362,7 +364,7 @@ test("every REGISTER_SERVERS provider resolves to a mounted `register` key + its
   for (const [provider, expected] of [["corsearch", 8], ["clarivate", 7], ["signa", 5], ["euipo", 7], ["uspto-local", 6], ["free-tier", 7]]) {    const { stdout } = await run(process.execPath, ["-e", script], { cwd: repo, env: { ...process.env, ...pinProvider(provider) } });
     const got = JSON.parse(stdout.trim().split("\n").pop());
     assert.ok(got.servers.includes("register"), `${provider}: the neutral register key must mount`);
-    assert.match(got.script, new RegExp(`${provider}-server\\.mjs$`), `${provider}: resolves to its own server script`);
+    assert.match(got.script, new RegExp(`register-server\\.mjs ${provider}$`), `${provider}: mounts its own provider`);
     assert.equal(got.tools, expected, `${provider}: mcp__register__* allowlist size`);
   }
 });
@@ -379,7 +381,7 @@ test("signa server: handshake + 5 tools + creds-missing guard returns clean isEr
   // door and never reaches the guard — correctly, but it would stop this arm testing what it is named for.
   // The property is unchanged and now proven on a CONFORMING call: valid arguments, absent key, key error.
   const call = { jsonrpc: "2.0", id: 3, method: "tools/call", params: { name: "register_search", arguments: { query: "ACME" } } };
-  const r = await mcpSession("signa-server.mjs", [INIT, LIST, call], { SIGNA_API_KEY: "" });
+  const r = await mcpSession(["register-server.mjs", "signa"], [INIT, LIST, call], { SIGNA_API_KEY: "" });
   assert.equal(r.responses[1]?.result?.serverInfo?.name, "register",
     "the server identifies as the neutral `register`, never as the vendor");
   assert.deepEqual(toolNames(r),
@@ -400,7 +402,7 @@ test("euipo server: handshake + the 7 NEUTRAL tools + creds-missing guard return
   //: this server used to serve `euipo_search` / `euipo_record_fetch` as a side tool. It now serves
   // the neutral register_* names as a register provider, under the server key `register`.
   const call = { jsonrpc: "2.0", id: 3, method: "tools/call", params: { name: "register_search", arguments: { name: "ACME" } } };
-  const r = await mcpSession("euipo-server.mjs", [INIT, LIST, call], { EUIPO_CLIENT_ID: "", EUIPO_CLIENT_SECRET: "" });
+  const r = await mcpSession(["register-server.mjs", "euipo"], [INIT, LIST, call], { EUIPO_CLIENT_ID: "", EUIPO_CLIENT_SECRET: "" });
   assert.equal(r.responses[1]?.result?.serverInfo?.name, "register",
     "the server identifies as the neutral `register`, never as the vendor");
   assert.deepEqual(toolNames(r), [

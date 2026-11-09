@@ -4,7 +4,7 @@ This file is the Corsearch-specific translation of the universal logic in `../SK
 
 ## Plugin reference
 
-The skill calls these 4 tools. THE TOOL NAMES ARE PROVIDER-AGNOSTIC — one register, and the adapter
+The tools named in your dispatch are the ones you call; the table covers only those with vendor-specific params. THE TOOL NAMES ARE PROVIDER-AGNOSTIC — one register, and the adapter
 behind it is deployment configuration, so a skill never names a vendor in a tool call:
 
 | Tool | Purpose | Key params |
@@ -14,7 +14,7 @@ behind it is deployment configuration, so a skill never names a vendor in a tool
 | `register_image_fetch` | Figurative-mark image metadata | `image_path`, `size` |
 | `register_expand_phoneme` | AI phoneme expansion | `word`, `language` (en_US, de_DE, fr_FR, it_IT, es_ES) |
 
-Plugin source: `providers/corsearch/src/index.js`.
+Plugin source: `providers/corsearch/src/core.js`.
 
 Auth: `CORSEARCH_SESSION_KEY` environment variable, supplied from the deployment's env file. Never logged or committed.
 
@@ -45,7 +45,7 @@ running the wider one does not cover the narrower one, and a leg you drop is a l
 
 **Critical:** No explicit `AND` / `OR` keywords — those return HTTP 400. Composition is space-separated. Repeated fields = implicit OR. Use `must` prefix for AND within same field. Repeated `nice-class:` fields are therefore an implicit-OR union — `nice_classes:[9,28,41,42]` correctly scopes to *any of* those classes.
 
-> **The hit-volumes above are UNSCOPED (all-class).** On a funnel `register_enumerate` EVERY match mode MUST be
+> On a funnel `register_enumerate` EVERY match mode MUST be
 > `nice_classes`-scoped to the matter's in-scope Nice set — an unscoped `default` / `starts_with` / `ends_with` /
 > `phonetic` enumerate pulls thousands of all-class records that flood the band and time the stage out (the
 > NOVAPULSE/BIOVELTRIN failure). `fuzzy` (~143k) is **never** an enumerate mode at all. Class-scope is breadth the
@@ -106,7 +106,7 @@ Owner matching is fuzzy on free-text. Try both the formal name (`"Aureon Interac
 
 ## Status filter caveat
 
-**Do NOT rely on `status:` field-side filtering** — it does not select live records on this provider. Use the [status-rules.md](../status-rules.md) keep-list applied AFTER detail-fetch instead.
+Leave status unfiltered; `screen_verdict` classifies it.
 
 ## Response field limitations
 
@@ -188,7 +188,7 @@ Be aware these capabilities are missing, so the skill doesn't promise them:
 
 Sustained-burst behaviour is UNDECLARED.
 
-Session-key validation: send one `register_search({ name: "EXAMPLEMARK", limit: 1 })` with `limit: 1` before doing any real work. If it returns 401/403, halt and surface to orchestrator immediately.
+Do not make a separate session-key test search. If a register tool returns HTTP 401 or 403, report that access was refused and stop this register step.
 
 ## Where the contract lives
 

@@ -16,8 +16,7 @@ sentence generates most of what follows.
 Every stage that writes a line a reader sees is held to these rules: `synthesis` (the narrative and the
 typed findings), `report-overview` (the shell), `report-card` (the cards). The **form** each of those
 writes lives in that stage's own file — the finding sentence and the grouped reasoned negative in
-[synthesis-rules.md](synthesis-rules.md), the card and section shape in
-[delivery-contract.md](delivery-contract.md). What is below is general and is stated only here.
+[synthesis-rules.md](synthesis-rules.md), the card's shape is the driver's. What is below is general and is stated only here.
 
 ## At every step: look at what you have before you work on it
 
@@ -185,7 +184,7 @@ Reusing a defined term is **not** repetition — it is the reader recognising th
 read three findings ago. Minting a synonym (*"seems cancellable"*, *"looks shaky"*, *"a bit exposed"*)
 makes them work out whether you meant something new, and usually you did not.
 
-[synthesis-rules.md](synthesis-rules.md)'s revocability rule states the same assessment in its Key
+[firm-wide-reasoning.md](firm-wide-reasoning.md)'s revocability rule states the same assessment in its Key
 Factors form (*"vulnerable to partial revocation in [classes] on non-use grounds"*). That is the **same
 term**, not a second one — do not mint a third phrasing for it.
 

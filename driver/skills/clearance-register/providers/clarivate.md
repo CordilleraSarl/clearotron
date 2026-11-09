@@ -13,7 +13,7 @@ them: what `match_mode: "phonetic"` maps to, which office codes are legal, what 
 > **This file states the adapter's live behaviour.** An earlier version made two
 > claims that were WRONG and cost recall: that multi-class needed an N-call fan-out (it does not — it is
 > one call), and that `default` was a phrase-EQUALS you had to escape into `contains` (it is now a true
-> contains). If you are working from memory of the old doc, discard it. See **Provenance** at the bottom.
+> contains). If you are working from memory of the old doc, discard it.
 
 ## Tool surface — 7 of the 8 neutral tools
 
@@ -137,7 +137,7 @@ at **any** magnitude, and returns a `counts` object keyed by office code in one 
 **A `tooManyResults` / over-ceiling band is `state:"incomplete"` — a CROWD DESCRIPTOR, never an error and
 never a clean negative.** It is dilution the lawyer reads. On this provider the crowd block also carries
 `per_office_counts`: the jurisdictional *shape* of the crowd, which is exactly what judgment needs to
-weigh materiality. (Exception: a `names` stack wider than the 500 chunk bound is enumerated
+weigh materiality. (Exception: a `names` stack wider than the 496 chunk bound is enumerated
 window-by-window, so no whole-stack per-office count exists — the field is then null with a stated
 reason, because a mislabelled per-jurisdiction figure is worse than none.)
 

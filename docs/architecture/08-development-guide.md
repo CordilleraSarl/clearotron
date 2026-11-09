@@ -138,8 +138,8 @@ The reasoning layer dictates what it needs; a thin adapter supplies it. Concrete
    normalization, record normalization into the provider-neutral fields the driver reads
    (`REC` accessors in `registry-fidelity.mjs` — application/registration numbers, dates,
    `statusClass`, proprietor, designations).
-2. **Engine-local MCP server**: wrap the core like `engine/mcp/corsearch-server.mjs` (~130 lines); add
-   it to `REGISTER_SERVERS` in `gather-config.mjs` (`registerEntry()` **throws loudly** for any provider
+2. **The tools**: wrap the core in `providers/<id>/src/mount.js`, like corsearch's (~130 lines); the one
+   register server mounts it by name. Add it to `REGISTER_SERVERS` in `gather-config.mjs` (`registerEntry()` **throws loudly** for any provider
    without a built server — a provider flip without the server breaks every register unit, loudly).
 3. **Driver config**: a `PROVIDERS` entry in `driver.config.mjs` (label, credential env name,
    `recordFetch` + `executePlan` adapters, public-record-URL capability) — the credential is

@@ -35,7 +35,7 @@ documents in this session — do not paste them into the final message (that def
 Companion files (one level deep — read the one you need):
 - [sources/courtlistener.md](sources/courtlistener.md) — US federal opinions incl. CAFC; `courtlistener__*` tools.
 - [sources/legaldatahunter.md](sources/legaldatahunter.md) — international statutes and case law (Swiss / EU / non-US); `legaldatahunter__*` tools.
-- [sources/eurlex.md](sources/eurlex.md) — EU CJEU + General Court judgments, verbatim, via `WebFetch` (no MCP, no account).
+- [sources/eurlex.md](sources/eurlex.md) — EU CJEU + General Court judgments, verbatim (no MCP, no account). Fetch the page with the web-fetch tool your session provides.
 - [evals.md](evals.md) — the three scenarios this skill is verified against.
 
 Still-future adapter (drops in here with no change to this file): `sources/euipo.md` (EUIPO
@@ -76,12 +76,12 @@ multi-jurisdiction case to handle here: one run, one jurisdiction, one adapter.
 | Finding jurisdiction | Source | Adapter |
 |---|---|---|
 | US (federal, incl. CAFC trademark appeals) | CourtListener | [sources/courtlistener.md](sources/courtlistener.md) |
-| EU — CJEU / General Court judgments | EUR-Lex (verbatim, via `WebFetch`) | [sources/eurlex.md](sources/eurlex.md) |
+| EU — CJEU / General Court judgments | EUR-Lex (verbatim). Fetch the page with the web-fetch tool your session provides. | [sources/eurlex.md](sources/eurlex.md) |
 | Switzerland / other non-US (+ EU statutes) | Legal Data Hunter | [sources/legaldatahunter.md](sources/legaldatahunter.md) |
 
 **MCP tool naming.** Tools are fully qualified `server__tool`, e.g.
 `courtlistener__search`, `legaldatahunter__get_document`. Use exactly these names. (EUR-Lex is the
-exception — it has no MCP; it uses `WebFetch`, see [sources/eurlex.md](sources/eurlex.md).) Do not
+exception — it has no MCP. Fetch the page with the web-fetch tool your session provides. See [sources/eurlex.md](sources/eurlex.md).) Do not
 reference a source that is not wired — **EUIPO Boards-of-Appeal** has no source wired here today — treat it as
 a coverage gap, not an available tool.
 

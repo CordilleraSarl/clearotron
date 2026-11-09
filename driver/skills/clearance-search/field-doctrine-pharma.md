@@ -2,13 +2,9 @@
 
 Force-read by synthesis when the matter is pharma-shaped (Nice class 5 anywhere in scope, or
 pharma-shaped goods text). These rules SHARPEN how the standard framework applies to medicine
-marks — they never replace the doctrine tables in `risk-framework.md` and they never change how a
-Level/Composite is computed; they change what counts as proximity, use-evidence weight, and
+marks — they never replace the doctrine tables in `risk-framework.md` and they never change how the framework in force yields a band; they change what counts as proximity, use-evidence weight, and
 confusion likelihood **inside** that framework. The refutation review verifies they were honoured
 on pharma matters; a violation is a flagged correction.
-
-**Validation:** this module ships behind a PR checkbox for the senior lawyer — treat its rules
-as binding once merged; propose edits through them, not ad hoc.
 
 ## 1. Therapeutic-area goods discipline
 
