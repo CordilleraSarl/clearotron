@@ -24,7 +24,7 @@
 //
 // NO MODEL TOUCHES A ROW. The step names record ids; this module joins them to what the register answered.
 
-import { appendFileSync, mkdirSync, readdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import { appendFileSync, mkdirSync, readdirSync, renameSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 
 import { driverDir } from "../shared/driver-dir.mjs";
@@ -35,6 +35,7 @@ import { RECORD_BASIS, fixtureLister, toRecord } from "./register-records.mjs";
 import { ENUMERATE_CEILING_DEFAULT } from "../providers/_shared/enumerate.mjs";
 export { writeFixtureMarker } from "./register-fixture-marker.mjs";
 import { withFilingGoods } from "./filing-goods.mjs";
+import { readJson } from "./run-record.mjs";
 
 export const QUESTION_PLAN_FILE = "register-plan.json";
 export const BAND_DIR = "register-units";
@@ -115,7 +116,7 @@ export function knockoutQuestionPlan({ marks, classes = null, jurisdictions = nu
 /** The questions the frame's added classes owe one name, from the run's frozen plan: each class's identical-name question. */
 export function addedClassQuestions(runDir, name) {
   let plan = null;
-  try { plan = JSON.parse(readFileSync(questionPlanPath(runDir), "utf8")); } catch { return []; }
+  try { plan = readJson(questionPlanPath(runDir)); } catch { return []; }
   return addedOf(plan, name);
 }
 const addedOf = (plan, name) => (plan?.entries ?? []).filter((e) => e?.axis === knockoutAxis(name) && e?.added_class_reason)
@@ -125,7 +126,7 @@ const addedOf = (plan, name) => (plan?.entries ?? []).filter((e) => e?.axis === 
 export function knockoutBandBlocks(runDir, name) {
   const out = new Map();
   let doc;
-  try { doc = JSON.parse(readFileSync(knockoutBandPath(runDir, name), "utf8")); } catch { return out; }
+  try { doc = readJson(knockoutBandPath(runDir, name)); } catch { return out; }
   for (const b of Array.isArray(doc) ? doc : []) if (b?.qid) out.set(String(b.qid), b);
   return out;
 }
@@ -134,7 +135,7 @@ export function knockoutBandBlocks(runDir, name) {
 export function knockoutProposals(runDir, name) {
   const path = join(String(runDir ?? ""), BAND_DIR, `${knockoutAxis(name)}-supplemental-plan.json`);
   try {
-    const doc = JSON.parse(readFileSync(path, "utf8"));
+    const doc = readJson(path);
     return { entries: Array.isArray(doc?.entries) ? doc.entries : [], rejected: Array.isArray(doc?.rejected) ? doc.rejected : [] };
   } catch { return { entries: [], rejected: [] }; }
 }
@@ -578,7 +579,7 @@ export function knockoutListView(runDir, { qid, record_id: recordId = null }, go
   try { files = readdirSync(dir).filter((f) => f.endsWith("-band.json")); } catch { files = []; }
   for (const f of files) {
     let doc;
-    try { doc = JSON.parse(readFileSync(join(dir, f), "utf8")); } catch { continue; }
+    try { doc = readJson(join(dir, f)); } catch { continue; }
     for (const b of Array.isArray(doc) ? doc : []) if (String(b?.qid ?? "") === want) found = b;
     if (found) break;
   }
@@ -602,7 +603,7 @@ export function knockoutListView(runDir, { qid, record_id: recordId = null }, go
 
 /** All the wording held for one filing: its whole held record where one was written, else the statements its view carries. */
 function heldWording(record, runDir) {
-  try { if (record.fullRecord) return { full_record: JSON.parse(readFileSync(join(String(runDir ?? ""), record.fullRecord), "utf8")) }; }
+  try { if (record.fullRecord) return { full_record: readJson(join(String(runDir ?? ""), record.fullRecord)) }; }
   catch { /* the view below is what is left to read */ }
   return { goods: record.goods };
 }
@@ -632,19 +633,19 @@ const MATCH_MODES = Object.freeze({ exact: "exact", default: "default", phonetic
  * never as a zero. For offline runs and tests alone, and it sends nothing anywhere. Returns the executor's summary text.
  */
 export async function executeQuestionsWithLister(lister, { plan_path: planPath, axis, output_path: outputPath, qids = null }) {
-  const plan = JSON.parse(readFileSync(planPath, "utf8"));
+  const plan = readJson(planPath);
   const wanted = Array.isArray(qids) && qids.length ? new Set(qids.map(String)) : null;
   const entries = (plan?.entries ?? []).filter((e) => e?.axis === axis && (!wanted || wanted.has(String(e?.qid))));
   if (!entries.length) return { type: "text", text: `ERROR: the plan carries no entries for axis "${axis}".` };
   let band = [];
-  try { const had = JSON.parse(readFileSync(outputPath, "utf8")); if (Array.isArray(had)) band = had; } catch { /* first write */ }
+  try { const had = readJson(outputPath); if (Array.isArray(had)) band = had; } catch { /* first write */ }
   const owned = new Set(entries.map((e) => String(e.qid)));
   const states = {};
   const blocks = [];
   // What the name's own question was asked over: a question over other classes is a narrower one, and is keyed as one.
   let nameClasses = null;
   try {
-    const frozen = JSON.parse(readFileSync(driverDir(dirname(dirname(outputPath)), QUESTION_PLAN_FILE), "utf8"));
+    const frozen = readJson(driverDir(dirname(dirname(outputPath)), QUESTION_PLAN_FILE));
     nameClasses = (frozen?.entries ?? []).find((f) => f?.axis === axis && f?.provenance === "mark" && !f?.added_class_reason)?.nice_classes ?? null;
   } catch { nameClasses = null; }
   const sameClasses = (a) => JSON.stringify([...(a ?? [])].map(String).sort()) === JSON.stringify([...(nameClasses ?? [])].map(String).sort());
