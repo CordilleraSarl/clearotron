@@ -28,8 +28,7 @@ import { existsSync, readdirSync } from "node:fs";
 import { basename, join } from "node:path";
 
 import { koPaths, addressListedFilings, declaredRecordOrigins } from "./driver.mjs";
-import { driverDir } from "../../shared/driver-dir.mjs";
-import { readJsonOrNull } from "../../driver/run-record.mjs";
+import { paths, readJsonOrNull } from "../../driver/run-record.mjs";
 
 
 /**
@@ -86,7 +85,7 @@ export function knockoutArtifacts(run) {
     { name: "registerCounts", file: basename(K.registerCounts), path: K.registerCounts },
     { name: "registerRecords", file: basename(K.registerRecords), path: K.registerRecords },
     { name: "sweepLedger", file: basename(K.sweepLedger), path: K.sweepLedger },
-    { name: "runLog", file: "run.jsonl", path: driverDir(run.runDir, "run.jsonl") },
+    { name: "runLog", file: "run.jsonl", path: paths(run.runDir).run },
   ].map((a) => ({ name: a.name, file: a.file, exists: existsSync(a.path) }));
 
   // The published half. A knockout's report lives in the pool and NOWHERE in the run dir, so a list built
@@ -126,7 +125,7 @@ export function knockoutArtifactPath(run, name) {
   const direct = {
     frame: K.frame, plan: K.plan, findings: K.findings, assessment: K.assessment,
     registerCounts: K.registerCounts, registerRecords: K.registerRecords,
-    sweepLedger: K.sweepLedger, "run.jsonl": driverDir(run.runDir, "run.jsonl"),
+    sweepLedger: K.sweepLedger, "run.jsonl": paths(run.runDir).run,
   }[name];
   if (direct) return direct;
   if (name?.startsWith("research:")) return K.research(name.slice("research:".length));
