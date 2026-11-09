@@ -39,7 +39,7 @@ test("phase two prices no re-run and no audit", () => {
 });
 
 test("the old spine names a register vendor, not a paid one, and sets no tool-call budget", () => {
-  const spine = flat("clearance-search/SKILL.md");
+  const spine = flat("../../docs/architecture/retired-manuals/clearance-search-spine.md");
   assert.ok(spine.includes("Your tool surface binds **one register vendor** plus"));
   assert.ok(spine.includes("- **Register vendor = the register source of truth**"));
   for (const gone of ["one paid register vendor", "**Paid vendor", "## Tool call budget", "(#tool-call-budget)", "usage-billed", "billing-tier ceiling"])
