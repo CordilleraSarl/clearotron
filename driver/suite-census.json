@@ -1451,7 +1451,7 @@
         },
         "a-new-run-folder-is-closed-to-other-accounts.test.mjs": {
           "tests": 5,
-          "asserts": 9,
+          "asserts": 11,
           "skips": 5,
           "todos": 0
         },

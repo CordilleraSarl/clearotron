@@ -95,7 +95,7 @@ test("the fixture's premise is PINNED to the publisher, so it cannot drift from 
   // this stays true: publish writes meta.json into the POOL run dir and nowhere else, which is what
   // makes "meta.json present, status.json absent" the archived-run signature.
   const src = readFileSync(join(DRIVER, "publish", "index.mjs"), "utf8");
-  assert.match(src, /const writeRO = \(name, data\) => \{ const p = join\(poolRunDir, name\);/,
+  assert.match(readFileSync(join(DRIVER, "publish", "shell.mjs"), "utf8"), /const writeRO = \(name, data\) => \{ const p = join\(poolRunDir, name\);/,
     "writeRO no longer targets poolRunDir — the archived-run signature these arms assume has moved");
   assert.match(src, /writeRO\('meta\.json'/,
     "meta.json is no longer written through writeRO — it may no longer be pool-only");

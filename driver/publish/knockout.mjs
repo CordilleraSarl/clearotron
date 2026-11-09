@@ -7,7 +7,8 @@
 // self-reported trail), meta.json batch stamps, and the email composer. Deliberately separate from publishReport (single-clearance-shaped); shares the exported
 // palette (TONE_TIER, resolved against the run's FROZEN framework) so driver and interactive output
 // can never drift and a knockout never reads the clearance composer's module state.
-import { readFileSync, writeFileSync, copyFileSync, mkdirSync, chmodSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { grpRead, openPoolRun } from './shell.mjs';
 import { plainDeferralReason, plainCause } from '../deferral-row.mjs'; import { knockoutStepFailures, PART_NAMES, RULED_WORDS, NOT_COMPLETED, linkNotOnRegisterSite } from '../degraded-parts.mjs'; import { ownersOwedACheck, composeOwnerQuery } from '../owner-use-check.mjs'; import { KNOCKOUT_WEB } from '../stages-knockout.mjs';   // — the reader's words for a search left open; and the parts that failed as a whole
 import { join } from 'node:path';
 import { riskTier, TONE_TIER, regenIndex, regenSurfaces, auditRouteFor, markReportRouteFor, reportRouteFor } from './index.mjs';
@@ -26,7 +27,6 @@ import { servedModels } from '../tokens.mjs';
 import { knockoutFindingViews, knockoutFindingRange } from '../findings-model.mjs';
 import { knockoutReceipts, worstBand } from '../verify-knockout.mjs';
 
-const grpRead = (p, mode) => { try { chmodSync(p, mode); } catch { /* best-effort */ } };
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 // The http(s)-only link helpers that used to live here went with the MSO review table (2026-07-28) and
 // had no caller left: this module writes workbook CELLS and a cover note that links the report, never a
@@ -450,10 +450,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   // A pass with nothing to check is not the same answer as a pass, so it is recorded rather than
   // assumed: `urls: 0` in the receipt below means no finding cited anything.
   note(`knockout receipts: ${receipts.checked.urls} citation(s) across ${receipts.checked.findings} finding(s) on ${receipts.checked.citing}/${receipts.checked.marks} mark(s) traced to held evidence`);
-  const poolRunDir = join(poolRoot, runId);
-  // Owner and group only: a mode given to mkdir, which keeps the set-GID the pool root passes down.
-  mkdirSync(poolRunDir, { recursive: true, mode: RUN_DIR_MODE });
-  const writeRO = (name, data) => { const p = join(poolRunDir, name); writeFileSync(p, data); grpRead(p, 0o640); };
+  const { poolRunDir, writeRO, copyRO } = openPoolRun(poolRoot, runId);
 
   // ── THE RUN'S WORKING RECORD TRAVELS WITH THE REPORT ──────────────────────────────────────────────
   //
@@ -471,9 +468,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   for (const name of ['knockout-findings.json', 'knockout-assessment.md']) {
     const src = join(runDir, name);
     if (existsSync(src)) {
-      const dest = join(poolRunDir, name);
-      copyFileSync(src, dest);
-      grpRead(dest, 0o640);
+      copyRO(src, name);
     } else {
       note(`knockout working record: ${name} is not in the run directory, so the delivered report has no engine text to be checked against`);
     }
@@ -946,4 +941,4 @@ export function knockoutDocumentRoutes(reports, { auditFile = null } = {}) {
 import { addressListedFilings, reasonCellFor } from './office-record-links.mjs';
 import { reportDates, zurichStamp } from './report-dates.mjs';   // the dates a report prints, from its record
 import { declaredRecordOrigins } from '../record-origins.mjs';
-import { RUN_DIR_MODE, driverDir, ensureDriverDir, paths, readJson } from "../run-record.mjs";
+import { driverDir, ensureDriverDir, paths, readJson } from "../run-record.mjs";
