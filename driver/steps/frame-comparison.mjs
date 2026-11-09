@@ -5,7 +5,6 @@
 //
 // One phase of a run, moved out of pipelineInner unchanged. `helpers` are functions still held in pipeline.mjs, handed in
 // because this module must not import that one back; each moves here when the other phases that share it have moved.
-import { driverDir } from "../../shared/driver-dir.mjs";
 import { verifyRegisterDirectiveClose } from "../close-verify.mjs";
 import { pendingItems } from "../digest-queue.mjs";
 import { countedOnLists, heldAnswers, refuseCountedOnList, refuseHeldQuestions } from "../engine/mcp/held-answers.mjs";
@@ -14,7 +13,7 @@ import { addedClassBound, alreadyAttemptedReopen, applyDominantBackstop, deriveD
 import { boundDominantElementFrom } from "../frame-diff-record.mjs";
 import { canonicalJurisdictionCode } from "../jurisdiction-codes.mjs";
 import { note, runLog } from "../log.mjs";
-import { atomicWrite } from "../progress.mjs";
+import { atomicWrite, readJson } from "../run-record.mjs";
 import { blocksByQidOf, foldSupplementalEntries, joinPlanToBands, pendingRequiredQids, refuseWithheldFamilies, searchedJurisdictionsFromPlan, withheldFamilyTwins } from "../register-plan.mjs";
 import { registerCapabilities } from "../register-unreachable.mjs";
 import { accountRemedyTerms, domClosedOverAccounted, remedyAccountingEvent } from "../remedy-accounting.mjs";
@@ -93,8 +92,8 @@ export async function runFrameComparison({ P, axes, ctx, dispatchPlanQids, flush
       // stageOnce's attempt loop, which is a change to the stage contract, not to this branch.
       if (/framediff_directive_undispatchable/.test(String(fd.fail ?? ""))) {
         try {
-          const rp = driverDir(run.runDir, "frame-reopen.json");
-          const prior = existsSync(rp) ? JSON.parse(readFileSync(rp, "utf8")) : {};
+          const rp = P.frameReopenReceipt;
+          const prior = existsSync(rp) ? readJson(rp) : {};
           // EVERY firing directive, not only the offenders: when this stage fails, `parsed` stays
           // null and the whole reopen block below is skipped, so a firing directive that WAS
           // dispatchable dies here just as silently as one that was not. The 2026-07-29 artifact
@@ -212,8 +211,8 @@ export async function runFrameComparison({ P, axes, ctx, dispatchPlanQids, flush
           // failure direction is over-disclosure, which a reader resolves, never a silent clean over a
           // territory nobody queried.
           let planDoc = null, execDoc = null;
-          try { planDoc = ctx.registerPlan ?? JSON.parse(readFileSync(P.registerPlan, "utf8")); } catch { /* no plan on this run */ }
-          try { execDoc = JSON.parse(readFileSync(P.planExecution, "utf8")); } catch { /* no receipt on this run */ }
+          try { planDoc = ctx.registerPlan ?? readJson(P.registerPlan); } catch { /* no plan on this run */ }
+          try { execDoc = readJson(P.planExecution); } catch { /* no receipt on this run */ }
           const sj = searchedJurisdictionsFromPlan(planDoc, execDoc);
           const ledgerWorldwide = (() => {
             // `worldwide` stays a PROSE reading, and only this one: it can only ever WIDEN what the run
@@ -258,8 +257,8 @@ export async function runFrameComparison({ P, axes, ctx, dispatchPlanQids, flush
         }
       } catch (e) { note(`jurisdiction-scope check skipped (non-fatal): ${String(e.message).slice(0, 80)}`); }
 
-      const reopenReceiptPath = driverDir(run.runDir, "frame-reopen.json");
-      const priorReceipt = existsSync(reopenReceiptPath) ? JSON.parse(readFileSync(reopenReceiptPath, "utf8")) : null;
+      const reopenReceiptPath = P.frameReopenReceipt;
+      const priorReceipt = existsSync(reopenReceiptPath) ? readJson(reopenReceiptPath) : null;
       const already = alreadyAttemptedReopen(priorReceipt, firing);
       const reopenDisabled = process.env.CLEAROTRON_FRAME_REOPEN === "0" || Number(process.env.CLEAROTRON_FRAME_REOPEN_MAX ?? 1) < 1;
       const digestLockedReopen = existsSync(P.narrative) && !forceFromActive(ctx, "synthesis");
@@ -448,7 +447,7 @@ export async function runFrameComparison({ P, axes, ctx, dispatchPlanQids, flush
               const suppPath = join(run.runDir, "register-units", `${a}-supplemental-plan.json`);
               let suppDoc = { schema: "register-plan/1", plan_version: 1, derived_from: { job_key: `supplemental:${a}`, variants_fingerprint: "supplemental" }, regions: ctx.registerPlan?.regions ?? [], entries: [] };
               if (existsSync(suppPath)) {
-                try { const prior = JSON.parse(readFileSync(suppPath, "utf8")); if (prior && Array.isArray(prior.entries)) suppDoc = prior; } catch { /* torn — rebuilt */ }
+                try { const prior = readJson(suppPath); if (prior && Array.isArray(prior.entries)) suppDoc = prior; } catch { /* torn — rebuilt */ }
               }
               suppDoc = withRejected(suppDoc, allRejected, { ts: new Date().toISOString(), origin: "frame-reopen" });
               mkdirSync(dirname(suppPath), { recursive: true });

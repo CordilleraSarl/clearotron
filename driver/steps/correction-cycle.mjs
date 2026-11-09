@@ -5,13 +5,13 @@
 //
 // One phase of a run, moved out of pipelineInner unchanged. `helpers` are functions still held in pipeline.mjs, handed in
 // because this module must not import that one back; each moves here when the other phases that share it have moved.
-import { driverDir } from "../../shared/driver-dir.mjs";
 import { buildCorrectionsApplied, correctionsAppliedTable, scopeDrift } from "../corrections-feedforward.mjs";
 import { evidenceClaimTable, evidenceClaimViolations } from "../evidence-claim-invariant.mjs";
 import { parseFindingsJsonLenient } from "../findings-model.mjs";
 import { note, runLog } from "../log.mjs";
 import { nextRefutationSeq, settleRecheckSave } from "../narrative-refutation-record.mjs";
-import { atomicWrite, signoffPatch, writeRunStatus } from "../progress.mjs";
+import { signoffPatch, writeRunStatus } from "../progress.mjs";
+import { atomicWrite, driverDir, readJson } from "../run-record.mjs";
 import { modelRecordPath } from "../record-fold.mjs";
 import { repairFollowup } from "../repair-composers.mjs";
 import { shaOf } from "../stage-freshness.mjs";
@@ -34,14 +34,14 @@ export async function runCorrectionCycle({ ctx, run, P, verdict, firstRef, synth
   // would re-arm the settled cycle on every resume, the exact cost this receipt kills. Whether the
   // corrections REACHED findings.json is enforced inside the cycle (enforceCorrectionsReachFindings
   // + the verdict-recheck), never by this receipt.
-  const correctiveCyclePath = driverDir(run.runDir, "corrective-cycle.json");
+  const correctiveCyclePath = P.correctiveCycle;
   const correctiveCycleShas = () => ({ review: shaOf(P.seniorEyeReview), narrative: shaOf(P.narrative) });
   const correctiveEntryVerdict = verdict;   // the recheck reassigns `verdict`; the receipt keys on the entry gate
   let correctiveCycleSettled = false;
   let correctiveRecheckOk = false;
   if (correctiveEntryVerdict === "CONDITIONAL" || correctiveEntryVerdict === "BLOCKING") {
     let cycleReceipt = null;
-    try { cycleReceipt = JSON.parse(readFileSync(correctiveCyclePath, "utf8")); } catch { /* no receipt — the cycle runs */ }
+    try { cycleReceipt = readJson(correctiveCyclePath); } catch { /* no receipt — the cycle runs */ }
     correctiveCycleSettled = correctiveCycleSettledDecision(cycleReceipt, correctiveCycleShas());
     if (correctiveCycleSettled) {
       runLog(run.runDir, { event: "corrective-cycle-settled", verdict, receiptTs: cycleReceipt?.ts ?? null });
@@ -155,7 +155,7 @@ export async function runCorrectionCycle({ ctx, run, P, verdict, firstRef, synth
       // the seat that can judge it.
       try {
         let demotions = [];
-        try { demotions = JSON.parse(readFileSync(P.basisDerivation, "utf8"))?.rows ?? []; }
+        try { demotions = readJson(P.basisDerivation)?.rows ?? []; }
         catch { /* no derivation record — stated below, never inferred as "clean" */ }
         const ec = evidenceClaimViolations({ before: preDoc?.findings, after: postDoc?.findings, demotions });
         evidenceViolations = ec.violations;
@@ -163,7 +163,7 @@ export async function runCorrectionCycle({ ctx, run, P, verdict, firstRef, synth
           byArm: ec.violations.reduce((a, v) => ({ ...a, [v.arm]: (a[v.arm] ?? 0) + 1 }), {}),
           snapshots: ec.snapshots });
         if (ec.violations.length) {
-          atomicWrite(driverDir(run.runDir, "evidence-claim-violations.json"),
+          atomicWrite(P.evidenceClaimViolations,
             JSON.stringify({ ts: new Date().toISOString(), ...ec }, null, 2) + "\n");
           note(`#1557: ${ec.violations.length} claim(s) moved against their own evidence in the corrective pass — `
             + ec.violations.slice(0, 3).map((v) => `${v.finding}/${v.meter} (${v.arm})`).join("; ")
