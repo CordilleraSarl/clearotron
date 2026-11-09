@@ -53,12 +53,12 @@ export const ANSWER_MEMORY_MODES = Object.freeze(["off", "watch", "on"]);
  * The registers whose core consults this memory, the environment switch that sets it for each (`env`, the
  * table shape the configuration audit reads), and the mode a run takes when that switch is unset. Every other register is `off`, whatever any switch says.
  *
- * SIGNA starts `off`: it goes `on` only after runs in watch mode show no mismatch, by the owner's ruling.
- * CLARIVATE starts `on`, with no watch period, also by his ruling: the repeated answers of its past runs
- * were already compared and matched.
+ * SIGNA and CLARIVATE both start `on`, by the owner's rulings. Clarivate had no watch period: the repeated
+ * answers of its past runs were already compared and matched. Signa keeps `watch` for an install that wants
+ * the comparison.
  */
 export const ANSWER_MEMORY_PROVIDERS = Object.freeze({
-  signa: Object.freeze({ env: "CLEAROTRON_SIGNA_ANSWER_MEMORY", defaultMode: "off" }),
+  signa: Object.freeze({ env: "CLEAROTRON_SIGNA_ANSWER_MEMORY", defaultMode: "on" }),
   clarivate: Object.freeze({ env: "CLEAROTRON_CLARIVATE_ANSWER_MEMORY", defaultMode: "on" }),
 });
 export const ANSWER_MEMORY_SWITCH = ANSWER_MEMORY_PROVIDERS.signa.env;
