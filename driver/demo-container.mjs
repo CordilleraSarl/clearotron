@@ -23,10 +23,11 @@
 // stage apart. This module is the single answer. `cut/` cannot import it (that directory does not travel
 // and this one does), so the pack gate restates the disjunction and its own test pins the two together.
 
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { basename, dirname, join, resolve, sep } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
 import { config } from "./driver.config.mjs";   // — the install's own default agent, never a literal
+import { readJson } from "./run-record.mjs";
 
 /** The entry file each lane's publisher reads as its source, in the order a child is probed for one. */
 export const ENTRY_FILES = Object.freeze(["report.md", "knockout-findings.json"]);
@@ -91,7 +92,7 @@ export function prepareSample(dir, { repoRoot, tmp } = {}) {
   if (!isFrozen(dir)) return { name, why: NOT_FROZEN };
   const manifest = join(dir, "meta.json");
   let meta;
-  try { meta = JSON.parse(readFileSync(manifest, "utf8")); } catch (e) { return { name, why: `its meta.json could not be read (${why(e)})` }; }
+  try { meta = readJson(manifest); } catch (e) { return { name, why: `its meta.json could not be read (${why(e)})` }; }
   if (!meta?.runId) return { name, why: `${manifest} names no runId, so it is not a frozen demo manifest` };
   try { return { sample: { dir, meta, name, publishFrom: publishSource(dir, { repoRoot, ...(tmp ? { tmp } : {}) }) } }; }
   catch (e) { return { name, why: `it could not be copied to publish from (${why(e)})` }; }
@@ -199,7 +200,7 @@ export function seedDemoRuns({ workspace, examplesDir, portalOrigin = null }) {
   for (const name of demoChildren(examplesDir)) {
     const run = join(examplesDir, name, "run");
     let s;
-    try { s = JSON.parse(readFileSync(join(run, "status.json"), "utf8")); } catch { continue; }
+    try { s = readJson(join(run, "status.json")); } catch { continue; }
     if (!s?.slug || !s?.codename || !s?.date) continue;
     // THE FALLBACK IS THE INSTALL'S OWN DEFAULT AGENT, not a literal (ruling 563). It fires only for a
     // sample whose status.json carries no agent; all four shipped samples carry one.
@@ -231,7 +232,7 @@ export const reportRoute = (runId) => `/portal/report/${encodeURIComponent(runId
  */
 export function stampReportLinks(statusFile, origin) {
   let s;
-  try { s = JSON.parse(readFileSync(statusFile, "utf8")); } catch { return false; }
+  try { s = readJson(statusFile); } catch { return false; }
   if (!s?.runId) return false;
   const base = String(origin).replace(/\/+$/, "");
   const local = (url) => {
