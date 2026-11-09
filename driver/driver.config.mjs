@@ -9,7 +9,7 @@
 
 import { join, dirname, basename, isAbsolute, win32 } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { readdirSync, existsSync, accessSync, statSync, statfsSync, readFileSync, realpathSync, openSync, readSync, closeSync, constants as FS } from "node:fs";
+import { readdirSync, existsSync, accessSync, statSync, statfsSync, realpathSync, openSync, readSync, closeSync, constants as FS } from "node:fs";
 import { homedir } from "node:os";
 import { isWsl } from "../shared/wsl.mjs";   // — the one answer to "is this Linux under Windows", which decides the /mnt/<drive> skip
 import { envFrom } from "../shared/env-aliases.mjs";   // — an operator-facing name is the one an operator sets, and it has to work where they set it; — envFrom is the resolver that reads every spelling of it
@@ -23,6 +23,7 @@ import { adapter as signaAdapter } from "../providers/signa/src/adapter.js";
 import { adapter as euipoAdapter } from "../providers/euipo/src/adapter.js";
 import { adapter as usptoLocalAdapter } from "../providers/uspto-local/src/adapter.js";
 import { adapter as freeTierAdapter } from "../providers/free-tier/src/adapter.js";
+import { readJson } from "./run-record.mjs";
 
 const { X_OK } = FS;
 
@@ -1619,7 +1620,7 @@ const isExecFile = (p, platform = process.platform) => {
   } catch { return false; }
 };
 const realOrNull = (p) => { try { return realpathSync(p); } catch { return null; } };
-const readPackage = (dir) => { try { return JSON.parse(readFileSync(join(dir, "package.json"), "utf8")); } catch { return null; } };
+const readPackage = (dir) => { try { return readJson(join(dir, "package.json")); } catch { return null; } };
 
 /**
  * Whether the kernel runs this file ITSELF: a native executable (ELF, Mach-O, a Windows PE) or a `#!` script.
