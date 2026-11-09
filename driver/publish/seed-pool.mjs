@@ -34,8 +34,9 @@
 // shape that reads like "seeded nothing, all good", because "the archive is empty" and "the archive is
 // empty and nobody noticed why" look identical from the browser.
 
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import { readJson } from "../run-record.mjs";
 
 /** A pool "run" is a directory holding meta.json. Mirrors pool-admin.mjs's listRuns and regenIndex's
  *  scan filter — `customer` is the per-customer page tree, not a run. */
@@ -79,7 +80,7 @@ export function frozenSamples(examplesDir) {
       continue;
     }
     let meta;
-    try { meta = JSON.parse(readFileSync(manifest, "utf8")); }
+    try { meta = readJson(manifest); }
     catch (e) { problems.push(`${manifest} is not readable JSON (${String(e?.message ?? e)})`); continue; }
     if (!meta?.runId) { problems.push(`${manifest} names no runId — it is not a frozen example manifest`); continue; }
     if (!hasRun) { problems.push(`${dir} names runId ${meta.runId} but has no run/ directory to publish`); continue; }
