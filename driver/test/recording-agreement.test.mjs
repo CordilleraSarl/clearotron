@@ -1167,7 +1167,9 @@ test("ANTI-ROT: every marker still matches the live dispatch it was written for"
   // is edited. A marker that stops matching anything is a rule that silently stopped applying.
   const unit = readFileSync(join(DRIVER, "skills/clearance-register/unit.md"), "utf8");
   const live = PROVIDER_CONDITIONAL_MARKERS.filter((k) => k.re.test(unit));
-  assert.ok(live.length >= 1,
+  // The carve-out may go only together with the order it excused: a plan run's phonetic entries are the
+  // sound-alike search, so the unit manual no longer orders the phoneme preview at all.
+  assert.ok(live.length >= 1 || !unit.includes("register_expand_phoneme"),
     "no provider-conditional marker matches the register unit dispatch any more. Either the carve-out was "
     + "reworded — in which case this table needs the new phrasing — or it was deleted, in which case the "
     + "order is now unconditional and the finding it stopped producing was real:\n  "

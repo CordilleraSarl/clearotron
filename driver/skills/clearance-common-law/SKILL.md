@@ -6,17 +6,12 @@ description: Common-law / marketplace execution for the v3 preliminary trademark
 ## Spawned session
 
 Invoked from `clearance-search` (orchestrator) alongside `clearance-register`. Reads:
-- The variant manifest at `studio/clearance-search/<slug>/<date>/variant-manifest.md` (produced by `clearance-variants`)
+- The variant manifest at the path your task message names (produced by `clearance-variants`)
 - The request context (classes, jurisdiction scope, industry, manner of use)
 
 Writes:
-- A common-law findings file at `studio/clearance-search/<slug>/<date>/common-law-findings.md`
-- **The machine grid ledger** at `studio/clearance-search/<slug>/<date>/common-law-grid.json` — the grid
-  call's stdout JSON saved **verbatim** (a single stdout object, or a JSON array of the per-batch
-  stdout objects in batch order when the grid is batched). Copy it exactly as the tool returned it —
-  no reformatting, no re-typing, no judging. **The driver validates grid completeness from this file**
-  (exact join against the dictated grid keys), not from your markdown matrix; a missing or hand-retyped
-  ledger fails the stage.
+- A common-law findings file at the path your task message names
+- The grid ledger common-law-grid.json is written by the tool. Do not write it.
 
 Returns to the orchestrator: your **final session message** MUST be a 2–3 line summary (call
 count, platform coverage, whether the Negative results matrix is present, finding counts) plus
@@ -37,17 +32,14 @@ The model tier is set **by the deterministic driver** — `driver/stages.mjs` is
 source of truth (currently Haiku, low thinking). This worker is extraction, not open analysis: it
 fills templated Perplexity prompts from the manifest and transcribes what Perplexity returns into
 the fixed finding taxonomy. The creative variant/strategy work is already done upstream by
-`clearance-variants` (Opus), and the cross-cutting risk synthesis is the orchestrator's (Opus). If the
-orchestrator's skeptic review (clearance-search Step 2.6) finds this worker shortcut the manifest's
-coverage, it is re-spawned escalated to Opus.
+`clearance-variants` (Opus), and the cross-cutting risk synthesis is the orchestrator's (Opus).
 
 ## Tool call budget
 
-One grid call per mark, as dictated. Ask a targeted follow-up when its answer could change what you tell the client,
-and a famous-mark query when the manifest flags one.
+One grid call per mark, as dictated. Ask a targeted follow-up when its answer could change what you tell the client.
+The grid already searches each flagged element on the general web; judge its results.
 
-**Every call passes an explicit `depth`** — see the routing table at the top of
-[perplexity-prompts.md](perplexity-prompts.md).
+Do not pass depth. The run's search setting decides the tier of every follow-up; the grid runs on its own tier.
 
 Other tools (file read/write, memory write) are bounded by workflow steps — no cap needed. The audit
 workbook is NOT one of them: the driver builds it in code at publish (`driver/publish/xlsx.mjs`) from
@@ -86,8 +78,8 @@ so there is **no partial-delivery fallback**:
 ### In scope
 
 - Internet-based marketplace searches (Google, Amazon, social media, industry platforms)
-- **The dictated platforms** — your task message's PLATFORMS block names the exact store domains for this customer's profile. A gaming profile is one example of such a list — Steam, Epic Games Store, Google Play, Apple App Store, Microsoft Store, itch.io — illustrative only; never substitute the example for the dictated list
-- **Field-scoped general search** — when the frame names a field outside the customer's own (the profile's industry — e.g. a collaboration or goods outside it), a general internet search **scoped to the collaborated / actual goods** is also run (e.g. a gaming × pizza collab → search the web generally for *pizza*). Extend with field-scoped cells when the frame names a field outside the customer's own. Scope to the specific goods the brief instructs — not a fixed per-field platform list (staff-lawyer redline, Project NOVA PULSE)
+- **The dictated platforms** — The grid spec names the stores; the tool runs them. Key rows by the term and platform on the candidates it returns. A gaming profile is one example of such a list — Steam, Epic Games Store, Google Play, Apple App Store, Microsoft Store, itch.io — illustrative only; never substitute the example for the dictated list
+- **Field-scoped general search** — when the frame names a field outside the customer's own (the profile's industry — e.g. a collaboration or goods outside it), a general internet search **scoped to the collaborated / actual goods** is also run (e.g. a gaming × pizza collab → search the web generally for *pizza*). Scope to the specific goods the brief instructs — not a fixed per-field platform list (staff-lawyer redline, Project NOVA PULSE)
 - Domain name presence
 - Social media presence and commercial use
 - Industry press and trade publications
@@ -106,7 +98,7 @@ so there is **no partial-delivery fallback**:
 - Formal enforcement history analysis (organic mentions OK; targeted register-based enforcement search NOT)
 - Prior-art register-based analysis
 
-**Bleed rule:** if register information surfaces organically during a common-law search (e.g., a news article mentions a filing), note it briefly and flag it in the findings file's `Cross-checks suggested` section. Do not pursue it — the orchestrator hands such flags to `clearance-register` for cross-pollination.
+**Bleed rule:** if register information surfaces organically during a common-law search (e.g., a news article mentions a filing), note it briefly. Record each on its own line as CROSS-CHECK REQUIRED: <what> — <why>, mark in capitals; the driver reads only that line. Do not pursue it — the orchestrator hands such flags to `clearance-register` for cross-pollination.
 
 ## Output — common-law findings file
 
@@ -145,7 +137,7 @@ not need to match the template's wording, and you will not be failed for choosin
 
 ### Consumer-confusion risks (gaming-industry overlap)
 
-For game-title rows, the `developer_of_record` and `publisher_of_record` columns are MANDATORY (see Step 5b above). Use `not extracted` when the attribution cannot be confirmed from the Perplexity result or the platform metadata — never confabulate.
+For game-title rows, the `developer_of_record` and `publisher_of_record` columns are MANDATORY (see Step 5b below). Use `not extracted` when the attribution cannot be confirmed from the Perplexity result or the platform metadata — never confabulate.
 
 | Finding | Source / Platform | URL | developer_of_record | publisher_of_record | Type | Notes |
 |---|---|---|---|---|---|---|
@@ -219,8 +211,7 @@ and `rows`, one entry per obligation:
     reproduce, omit it. **Do not translate** — a translation is not a copy, and an empty field is better
     than a wrong one.
   **It does not have to mention the mark.** The check is that the text you point at is really in that
-  passage, not that the receipt is about the mark. A row owing these whose fragment does not occur in the
-  passage it names is not counted as ruled, and the stage fails while any remain; if the material seems
+  passage, not that the receipt is about the mark. A row owing segment_index is accepted once the number names a passage with text. If the material seems
   off-topic, point at it anyway and rule it `off-topic`.
 - `obstacle` — **only when you cannot evidence a row at all**, and never instead of judging it. One line
   saying what stops you: the passages are elision markers with nothing quotable in them, the snippet is
@@ -279,19 +270,14 @@ The driver renders these into the canonical findings file as the PR / reputation
 do **not** hand-write that table. This section still carries your own narrative, and a charged reading
 still becomes a Finding — whether you ruled it `loaded` or declined it as `inconclusive`.
 
-A query LIST without a ruling is not a disposition — a delivered run listed every query it ran and still
-reported clean past a recorded cultural-appropriation article sitting in its own receipts. The validator
+A query LIST without a ruling is not a disposition. The validator
 judges the recorded rulings against the same obligation list the tool computed, and rejects the turn
 while **any** row is unruled, whatever this section concludes. Reporting a loaded reading does not
 discharge the other queries; the two are different facts and only the second is what the gate
 establishes. Queries whose recorded results are empty get no row at all — the empty receipt is itself
 the clean evidence.
 
-**Why a tool, and what the failure tokens mean.** A disposition used to name its receipt by retyping
-text the validator matched back out — and on the measured evidence ten of fourteen refusals were a
-correct ruling thrown away over the shape of its citation; later, one hand-typed 140 KB document lost 74
-correct rulings to a single typographic quote. The typed call ends the class: the machine writes
-everything that has to be exact, and you supply only the judgment. These tokens can reach you, and they
+**What the failure tokens mean.** These tokens can reach you, and they
 mean different things:
 
 - `connotation_call_never_made` — rulings are owed and `record_dispositions` was never called this run.
@@ -311,26 +297,17 @@ mean different things:
   answer names which of the two fields is wrong, and they have different remedies:
   - `segment_absent` / `segment_invalid` — no passage number, or a number that is not one of that
     receipt's passages. Give a number in the range the answer states.
-  - `fragment_absent` / `fragment_too_short` — nothing copied out of the passage, or too few characters
-    to show you read it. Copy a few more.
-  - `fragment_unbound` — what you copied does not occur in the passage you named. **Do not rephrase and
-    do not translate**: copy the characters out of THAT passage exactly as they are written.
+  - `segment_dead_end`
 
 A spot-checked row is where you show you read the receipt. Only a few rows per run carry it and the driver
 picks which, so it is never a transcription tax on the whole sweep — and because the passage number does
 the finding, the copied characters can be short in any script.
 
-**One passage — never stitch two together.** Your `fragment` has to occur inside the ONE passage your
-`segment_index` names, so characters taken from two adjacent passages with the numbering dropped between
-them will not join, even though both halves are verbatim. This is what the numbering is for: `1. …。 2. …。`
-is two passages, and you name one and copy from it. It used to be easiest to get wrong where the script has
-no inter-word spaces, because a stitch reads as continuous there — that is now a number, not a judgement.
-
 ### Negative results
 <!-- clearotron:section=negative-results -->
 
-**One row for EVERY grid cell**, each carrying its receipt. The three row
-forms (and the gap form) — this is what the driver's receipt gate counts:
+One row per cell, each with its receipt. The gate joins the tool's ledger and checks only that this section exists. The three row
+forms (and the gap form):
 
 | Variant | Platform | Result |
 |---|---|---|
@@ -351,18 +328,13 @@ One row per planned coverage unit (each dictated platform; the field-scoped gene
 | Coverage unit | Status | Reason |
 |---|---|---|
 | dictated platform grid | confirmed-clean | all dictated platforms searched |
-| field-scoped general search (collab / non-gaming goods) | confirmed-clean | run per matter scope |
 | non-Latin platform reach (translit variants) | coverage-limited | marketplace data thin for non-Latin scripts; absence not confirmed clean |
 
 Record the same statuses by calling `record_coverage_status`, passing `grid_spec_path` (the same driver-written spec path the grid tool was given) and one entry per ledger row: its coverage unit, and its status, exactly `confirmed-clean`, `coverage-limited` or `deferred`.
 
 ### Cross-checks suggested (handed to orchestrator for clearance-register dispatch)
 
-| Trigger | Suggested cross-check |
-|---|---|
-| Brightwick appears using "SHARPENING YOUR AIM" | Check register: does Brightwick have any aim-related trademark in target classes? |
-| Veltrona "Pulse Aim" portfolio | Check register: any Veltrona aim filings in target classes? |
-| Thornfall Games "Thornmantle" (itch.io) | Check register: any Thornfall trademark protection? |
+Record each on its own line as CROSS-CHECK REQUIRED: <what> — <why>, mark in capitals; the driver reads only that line.
 
 ### Audit trail
 <!-- clearotron:section=audit-trail -->
@@ -373,12 +345,6 @@ Record the same statuses by calling `record_coverage_status`, passing `grid_spec
 | 2 | Famous-mark | None flagged in manifest | (not run) |
 | 3 | Follow-up | Brightwick gaming portfolio + "sharpening your aim" deeper trace | 3 additional findings |
 | 4 | Follow-up | Veltrona pulse-aim portfolio | 2 additional findings |
-
-**Grid program receipt** — the executed sandbox program returned by the tool, verbatim:
-
-```python
-# (paste the SANDBOX PROGRAM block from the grid call's tool result here)
-```
 
 ### Open verification flags
 
@@ -396,15 +362,14 @@ list of records, to the placements, to the off-register sweep and to the write-u
 
 ## Process
 
-Four steps per mark.
+The steps below per mark.
 
 ### Step 1 — Read variant manifest
 
-Open `studio/clearance-search/<slug>/<date>/variant-manifest.md`. Parse:
-- Request context: marks, classes, jurisdiction, industry, manner of use
+Open the variant manifest at the path your task message names. Parse:
+- Read the matter frame for the request context.
 - Per-mark variant tables — these become the search terms in the Perplexity prompt
 - Watchlists — used for competitor intelligence framing
-- Diligence notes — informs how aggressive to be on saturated common words
 - The Elements table's `Famous-mark check` column — the elements Step 3 judges
 
 The variants table is the source of truth for what to search. The skill does NOT generate its own variants — manifest is authoritative.
@@ -425,8 +390,7 @@ The variants table is the source of truth for what to search. The skill does NOT
 > the taxonomy (Step 4) and write the COMPLETE findings file with every section (Findings, famous-mark, Negative
 > results matrix, Coverage ledger, Audit trail). Skipping Step 3 leaves the deliverable missing a core search
 > layer. The only things you skip are authoring the grid program and
-> saving the grid ledger — the tool owns those. The program template and the verbatim-save step below are
-> the **LEGACY path**, used only when the task gives no `grid_spec_path`.
+> saving the grid ledger — the tool owns those.
 
 **The marketplace sweep is ONE `perplexity_research` call with `enable_sandbox: true` and
 `depth: "pro-search"`** — Perplexity's sandbox runs a *program* that executes a real search for
@@ -446,14 +410,6 @@ The tool returns the program's stdout JSON (`cells` + `extras` + `gaps`) and the
 audit receipt. **Trademark-register lookups stay out of scope** — the grid only searches
 marketplaces/web (the register layer is `clearance-register`'s).
 
-**LEGACY path only (no `grid_spec_path` given) — immediately after the grid call(s): save the stdout
-JSON verbatim** to `studio/clearance-search/<slug>/<date>/common-law-grid.json` — one call → the stdout
-object as-is; batched calls → a JSON array of the per-batch stdout objects, in batch order. This is a
-copy operation, not a writing task: the bytes the tool returned, unmodified. The deterministic driver
-validates the grid by exact join on this file (machine receipts) — the markdown Negative results
-matrix remains your judged, human-readable view, but it is not what the gate counts.
-*(In deterministic grid mode the tool already wrote this file — do not write it.)*
-
 ### Step 3 — Famous-mark check (1 per flagged element)
 
 The manifest's Elements table marks under `Famous-mark check` each element that may also be a well-known brand, band, celebrity, sports team, entertainment property or cultural icon. The grid searched each of them on the general web, so ask no separate question. For each flagged element whose general-web cell your grid ran, judge from its results whether it is a famous mark and whether its fame reaches the client's goods, and record that judgment in the famous-mark section with the results it rests on.
@@ -468,7 +424,7 @@ After the grid call, run the gate:
 4. Are there any dual-meaning terms where a descriptive reading may be masking a trademark?
 5. For compound marks: would the average consumer recognise any element as a brand name?
 
-If an answer is "no" or "unsure" and closing it could change what you tell the client, fire a targeted `perplexity_research` follow-up (`depth: "pro-search"`) focused on the specific gap.
+If an answer is "no" or "unsure" and closing it could change what you tell the client, fire a targeted `perplexity_research` follow-up focused on the specific gap.
 
 ### Step 5 — Judge the grid output into structured tables
 
@@ -481,7 +437,7 @@ common word) does not. Then categorise each finding into one of:
 - **Commercial awareness** — identical/similar in unrelated fields; crowded field evidence; competitor intelligence (existing brand partnerships)
 - **Competitor intelligence** — watchlist matches; existing partnerships major brands have in the space
 - **PR / reputational risk** — the meaning read of the mark AND its near-forms, scoped by the run's OWN dictated sweep: the fixed meaning / slang / gang / offensive / lookup shapes plus the matter frame's derived `Meaning angles:` queries (cultural origin/appropriation, charged history of the term or its imagery, category-specific controversy — as THIS matter's frame reasoned them). Never a generic sensitivities checklist — the scope IS the dictated sweep. NOT scored on legal-risk framework — separate category. **Every recorded query with results carries a ruling recorded through `record_dispositions`, whatever this section concludes** — reporting a loaded reading does not discharge the rest of the sweep (see the PR / reputational risk contract above). `None identified` is additionally a clean *receipt* ONLY when the meaning sweep ran — cite a `Connotation-search source:` line; the driver rejects an unsearched clean claim (`connotation_search_missing`) and refuses the turn while any ruling is unrecorded (the `connotation_call_*` family). A dictionary gloss is never a clearance.
-- **Negative results** — **one row for EVERY grid cell** (the grid accounting the driver's receipt gate counts), **plus rows for the field-scoped cells** (collab / non-gaming goods) when run. **Each row carries its receipt:** `No results` (the search returned nothing), `No similar listings (N candidates reviewed)` (returned N candidates, none prima facie similar), `Similar listing(s) found — see Findings (N candidates)` (the cell produced findings), or `not executed — coverage-limited (see ledger)` (the cell is in the grid's `gaps` — never a clean negative).
+- **Negative results** — **one row for EVERY grid cell**, **plus rows for the field-scoped cells** (collab / non-gaming goods) when run. **Each row carries its receipt:** `No results` (the search returned nothing), `No similar listings (N candidates reviewed)` (returned N candidates, none prima facie similar), `Similar listing(s) found — see Findings (N candidates)` (the cell produced findings), or `not executed — coverage-limited (see ledger)` (the cell is in the grid's `gaps` — never a clean negative).
 - **Cross-checks suggested** — register-side checks the orchestrator should dispatch to `clearance-register` (every common-law owner found → ONE register check)
 
 **100% URL coverage is mandatory.** Every finding row must have a clickable URL. If a finding cannot be verified with a URL, mark it as an Open verification flag and note the source.
@@ -497,7 +453,7 @@ For every Consumer-confusion-risks row that is a **game title** (Steam game, Mic
 2. **The platform's own record of the thing** — whatever that platform publishes about who made it, when it appeared and how large it is. A store's developer / publisher metadata is the familiar case (Steam, Microsoft Store and the app stores expose these as structured fields), and it is an EXAMPLE rather than the set: a platform that is not a store still keeps a record, in page metadata or on a public endpoint of its own, and it is read the same way. Open it before writing that the owner is unknown.
 3. The game's Wikipedia article's infobox developer / publisher row, when the platform page is ambiguous
 
-**"Not extracted" is written with the source OPEN and the field genuinely absent.** A delivered run held a competing platform's own page address for a title, wrote that no creator account behind it could be identified, and carried no launch date and no scale — while that platform published the creator, the creation date and the visit count, unauthenticated, to anyone who asked. The reviewing lawyer named the studio, the month and the visit count, and rated the game inactive on them. The pass had treated a non-store platform as unreadable because this list named only stores. Record what you read, including the reading that came back empty; `not extracted` after a look is a finding, and `not extracted` instead of a look is a gap the reader has to close by hand.
+**"Not extracted" is written with the source OPEN and the field genuinely absent.** Record what you read, including the reading that came back empty; `not extracted` after a look is a finding, and `not extracted` instead of a look is a gap the reader has to close by hand.
 
 **When the attribution cannot be extracted:**
 - Write **`not extracted`** as the field value
@@ -510,7 +466,7 @@ This requirement applies even when the model running this skill is at the Haiku 
 
 ### Step 6 — Compile common-law findings file
 
-Assemble `studio/clearance-search/<slug>/<date>/common-law-findings.md` per the format above. Sections (in order):
+Assemble common-law-findings.md at the path your task message names, per the format above. Sections (in order):
 
 1. **Summary** — call counts, platform coverage, finding counts
 2. **Consumer-confusion risks** — gaming-industry overlap
@@ -526,13 +482,13 @@ Assemble `studio/clearance-search/<slug>/<date>/common-law-findings.md` per the 
 ## Checklist before handing off
 
 - [ ] Variant manifest read; all marks accounted for
-- [ ] Search-as-code grid call executed for every mark (sandbox program receipt captured in audit trail)
-- [ ] **`common-law-grid.json` exists** — deterministic mode: the TOOL wrote it (you passed `grid_spec_path`, you did NOT save it). Legacy mode (no `grid_spec_path`): you saved the grid stdout JSON VERBATIM (single object, or JSON array per batch in order). Either way the driver's machine-receipts join validates THIS file
+- [ ] Search-as-code grid call executed; the tool holds the receipt.
+- [ ] The grid ledger common-law-grid.json is written by the tool. Do not write it.
 - [ ] Negative results matrix has one receipt-carrying row per grid cell
-- [ ] Every `perplexity_research` call passed an explicit `depth` (routing table in perplexity-prompts.md)
+- [ ] Do not pass depth. The run's search setting decides the tier of every follow-up; the grid runs on its own tier.
 - [ ] Famous-mark check judged for every flagged element from its general-web results (or "None" documented)
 - [ ] Post-search 5-question checklist run; any "no/unsure" gaps closed via follow-up calls
-- [ ] Every DICTATED platform appears in the audit trail (the list from your task message's PLATFORMS block)
+- [ ] Every DICTATED platform appears in the audit trail
 - [ ] Field-scoped general search for collaborated / out-of-field goods logged (when the frame names a field outside the customer's own)
 - [ ] Every finding has a URL (or is in Open verification flags)
 - [ ] Findings categorised: consumer-confusion / commercial-awareness / competitor-intel / PR-risk
@@ -541,5 +497,5 @@ Assemble `studio/clearance-search/<slug>/<date>/common-law-findings.md` per the 
 - [ ] Coverage ledger emitted — one row per planned coverage unit; non-Latin / thin-data reach logged `coverage-limited`, not silently clean
 - [ ] Cross-checks suggested section populated
 - [ ] Open verification flags listed (URL-404s, thin coverage, transliteration confirmations)
-- [ ] Common-law findings file written to `studio/clearance-search/<slug>/<date>/common-law-findings.md`
+- [ ] Common-law findings file written at the path your task message names
 - [ ] No client identity, reference numbers, or contact names in any submitted Perplexity prompt

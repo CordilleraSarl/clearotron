@@ -185,9 +185,7 @@ the reader sees it. Write the one thing the scope block does not say, or write n
 
 **A note is verb-first, one line, and about one of two things.** Write each `purpleNotes` entry as an
 instruction to the reviewing lawyer, opening on the verb. Every note is about the REQUEST — what was
-asked, and whether it holds together — or about the NAME. The report prints the first kind at the top,
-above the conflicts, and the second under that name's cards, so a note that mixes the two lands in one
-place and reads oddly in it. Write two notes.
+asked, and whether it holds together — or about the NAME. The report never prints a note; it reaches the audit workbook and the assistant. The driver still sorts notes about the request from notes about the name, so name the request in a request note. Write two notes.
 
 A note about the request NAMES the request in the note — "the request", or "what we were asked". That is
 not a formality: the report sorts the two kinds by what the note talks about, so a request note that
@@ -296,12 +294,7 @@ A recorded owner check linked to a held filing is held evidence. You may cite a 
   actually used. The report derives the finding's source labelling from this, so list one only if you
   reasoned from it.
 
-**Both are optional, and omitting them is always safe.** A filing with no row keeps its card's standing
-line, which describes the card and claims nothing about the rating. So:
-
-> **Never invent a read to fill a row, and never write "not weighed" as a read.** A filing you did not
-> weigh simply gets no row. A row written to look complete would tell the reader the rating turned, or
-> did not turn, on a filing you never reasoned from.
+Omit these fields when their information does not apply. When a finding's reasoning uses a held filing, record its ID in `weighedFilings`. When you weigh a filing without making it a finding, record the read in `registerReads`. Never invent a read or citation to fill a field.
 
 ## Saying what you put down (`setAside`)
 
@@ -371,7 +364,7 @@ not look identical afterwards.
                "degraded": null } ] }
 ```
 
-**The finding record — closed keys, all nine, no others, and "inputs" where the framework states a method.** A key this list does not name is refused
+**The finding record — closed keys, ten in all, no others, "inputs" only where the framework states a method and "weighedFilings" only where you reasoned from a held filing.** A key this list does not name is refused
 (the validator is `findings-model.mjs validateKnockoutFinding`, and it runs at the chunk and again on
 the merged artifact):
 

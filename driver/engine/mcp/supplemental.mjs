@@ -26,7 +26,7 @@
 // widening need none. The reading step decides now; every proposal is minted or refused on its own
 // merits. `mintSupplementalEntries` still takes a cap from a caller that sets one, and none does.
 //
-// Pure orchestration with injected IO/executor (deps) so it tests offline; the corsearch-server handler
+// Pure orchestration with injected IO/executor (deps) so it tests offline; the corsearch mount's handler
 // binds the live doExecutePlan.
 
 import { readFileSync, writeFileSync, renameSync, existsSync, mkdirSync } from "node:fs";
