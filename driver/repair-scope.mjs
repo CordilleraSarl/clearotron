@@ -18,6 +18,7 @@ import { join, dirname } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { synthesisCallPaths } from "./synthesis-record.mjs";
 import { REPORT_LINE_KEY, REPORT_LINE_LABEL } from "./corrections-feedforward.mjs";
+import { readJson } from "./run-record.mjs";
 
 const isObj = (v) => v != null && typeof v === "object" && !Array.isArray(v);
 const collapse = (s) => String(s).replace(/\s+/g, " ").trim();
@@ -281,7 +282,7 @@ export function snapshotRepairBase(runDir) {
 
 /** The kept base's params, or null. Never throws. */
 export function readRepairBase(runDir) {
-  try { return JSON.parse(readFileSync(repairBasePath(runDir), "utf8"))?.params ?? null; } catch { return null; }
+  try { return readJson(repairBasePath(runDir))?.params ?? null; } catch { return null; }
 }
 
 /** The review after a repair's own record: what it was handed, how each point was classed, what the pass did. */
