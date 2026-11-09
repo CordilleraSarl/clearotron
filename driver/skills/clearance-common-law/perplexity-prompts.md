@@ -4,13 +4,7 @@ Templates for the `perplexity_research` calls in `clearance-common-law`. Prompts
 
 ## Depth routing (mandatory)
 
-Every `perplexity_research` call in this skill MUST pass an explicit `depth`. Never rely on the
-plugin's auto-detection (it guesses from prompt formatting and routes grid-shaped prompts to the deepest tier).
-
-| Call | `depth` | Other params |
-|---|---|---|
-| Search-as-code marketplace grid (Step 2) | `pro-search` | `enable_sandbox: true` |
-| Targeted follow-ups (Step 4) | `pro-search` | — |
+Do not pass depth. The run's search setting decides the tier of every follow-up; the grid runs on its own tier.
 
 ## Search-as-code marketplace grid (Step 2)
 
@@ -25,7 +19,7 @@ variants — tag their findings `Verify? ✅` downstream).
 **Probe-validated constraints (2026-06-10 — do not loosen):**
 - The SDK result object supports **iteration and attribute access only** — the pinned access idiom
   below is mandatory (slicing or `dict()` makes every cell silently fail into gaps).
-- The program records **up to 8 candidates per cell without judging similarity** — filtering is YOUR
+- The program records **up to the number the grid spec states (results_per_cell) without judging similarity** — filtering is YOUR
   job afterwards, with legal judgment, not the program's string logic.
 - The model must **never re-emit the program output in its message** (re-transcription is lossy — a
   full term vanished in probe testing); the confirmation line is derived from parsed stdout.
@@ -45,7 +39,7 @@ PLATFORMS block (dictated per customer — copy that list verbatim; a gaming pro
 Where the frame names a field outside the customer's own, run one general-web search of the mark combined with
 "[COLLABORATED GOODS, e.g. pizza]" (platform name "web-field:[goods]").
 
-For EVERY (term, platform) cell run a web search and record up to 8 returned candidate listings —
+For EVERY (term, platform) cell run a web search and record up to the number the grid spec states (results_per_cell) of returned candidate listings —
 record what the search returns, do NOT filter or judge similarity in code.
 
 Access the search results EXACTLY like this (the result object supports iteration and attribute
@@ -90,10 +84,7 @@ query is recorded, and a clean PR claim with no recorded search is rejected (`co
 The tool returns: the stdout JSON (cells + extras + gaps) → the **SANDBOX PROGRAM audit receipt**
 (the exact code that ran) → a metadata footer. Then:
 
-0. **Save the stdout JSON verbatim to `common-law-grid.json` first** (machine receipts — see the
-   skill's Writes section): the object exactly as returned; batched grids → a JSON array of the
-   batch objects in order. Do this BEFORE judging — it is the driver's validation substrate, and a
-   re-typed/reformatted copy defeats it.
+0. The grid ledger common-law-grid.json is written by the tool. Do not write it.
 1. **Judge each cell's candidates yourself** — identical / confusingly similar / conceptually
    related vs. plain noise. The program recorded everything; the legal filtering is yours.
 2. **Negative matrix rows carry the receipt**: a cell with `no_hit` → "No results"; a cell whose
@@ -108,7 +99,7 @@ The tool returns: the stdout JSON (cells + extras + gaps) → the **SANDBOX PROG
 
 ## Follow-up calls
 
-`depth: "pro-search"`. After the grid call, review results against the variant manifest:
+After the grid call, review results against the variant manifest:
 - Did any cell land in `gaps` that a single targeted search could close?
 - Does a headline-relevant game title need `developer_of_record` / `publisher_of_record`
   attribution that the candidate name+URL didn't carry? (e.g. "who develops and publishes

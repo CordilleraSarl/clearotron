@@ -30,8 +30,8 @@ test("the legacy grid takes the terms the task message's GRID KEYS names", () =>
 test("the field search runs once, for the mark, where the frame names a field outside the customer's own", () => {
   assert.ok(manual.includes("- **Field-scoped general search** — when the frame names a field outside the customer's own (the profile's "
     + "industry — e.g. a collaboration or goods outside it), a general internet search **scoped to the collaborated / actual goods** is "
-    + "also run (e.g. a gaming × pizza collab → search the web generally for *pizza*). Extend with field-scoped cells when the frame names "
-    + "a field outside the customer's own. Scope to the specific goods the brief instructs — not a fixed per-field platform list"));
+    + "also run (e.g. a gaming × pizza collab → search the web generally for *pizza*). "
+    + "Scope to the specific goods the brief instructs — not a fixed per-field platform list"));
   assert.ok(manual.includes("- **Field-scoped general-web cell (when the frame names a field outside the customer's own):** one extra cell "
     + "for the mark combined with the collaborated / actual goods the brief instructs — e.g. for a gaming × pizza collab, a "
     + "`\"<mark> pizza\"` cell."));
