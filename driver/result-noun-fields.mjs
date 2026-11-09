@@ -70,9 +70,11 @@ export const RESULT_NOUN_FIELDS = Object.freeze([
       + "the record had no line a reader meets first, `applied` after the rewrite passed the merged gate and was "
       + "written, and the `keep()` forms after the artifact or the gate refused it. Every one is a fact "
       + "about what already happened to the record, never the return of the call being logged" },
-  { file: "driver/pipeline.mjs", noun: "closed", sites: 6, atWriteSite: 4, verdict: "result",
+  { file: "driver/steps/register-sweep.mjs", noun: "closed", sites: 6, atWriteSite: 4, verdict: "result",
     why: "closure counts derived from the landed set (`qids.filter(q => landed.has(q)).length`) and from the receipt" },
-  { file: "driver/pipeline.mjs", noun: "executed", sites: 4, atWriteSite: 3, verdict: "result",
+  { file: "driver/steps/register-sweep.mjs", noun: "executed", sites: 3, atWriteSite: 3, verdict: "result",
+    why: "lengths of the executed set as the join computed it" },
+  { file: "driver/pipeline.mjs", noun: "executed", sites: 1, atWriteSite: 0, verdict: "result",
     why: "lengths of the executed set as the join computed it" },
   { file: "driver/steps/frame-comparison.mjs", noun: "outcome", sites: 1, atWriteSite: 0, verdict: "result",
     why: "the frame-reopen sweep hands back what dispatchPlanQids answered for the axis, in process; nothing writes it under this name" },
@@ -80,11 +82,13 @@ export const RESULT_NOUN_FIELDS = Object.freeze([
     why: "the escalation recheck logs what dispatchPlanQids answered for the axis, or that the repair budget was spent" },
   { file: "driver/steps/skeptic-and-follow-up.mjs", noun: "recovered", sites: 2, atWriteSite: 2, verdict: "result",
     why: "each sits on the branch reached only after the screen gate read clean again" },
-  { file: "driver/pipeline.mjs", noun: "outcome", sites: 10, atWriteSite: 5, verdict: "result",
+  { file: "driver/steps/register-sweep.mjs", noun: "outcome", sites: 4, atWriteSite: 2, verdict: "result",
+    why: "what a fan-in repair's dispatch answered for the axis, logged beside the slices it closed, which are counted apart" },
+  { file: "driver/pipeline.mjs", noun: "outcome", sites: 6, atWriteSite: 3, verdict: "result",
     why: "the one member that reported an invocation — taint-rerun's `r.ok ? \"ok\" : …`, which travels on a StageFailure packet — now carries a `cleared` sibling read from the taint, the remedy 10/5 -> 11/6 at the profile-store receipt's `outcome: pr.outcome`. Classified by READING ITS WRITING SITE, which is profiles.mjs and not this file: the value is one of three literals chosen by a situation the resolver decided (`overlay` and `bundled-fallback` are `pass`, `env-arrived-late` is `blocked`), never a call's return read as a verdict. `bundled-fallback` being `pass` is the point of the whole receipt — a legitimate install that nobody was told about is what this row says out loud. 11/6 -> 12/6 at the reviewing lawyer's record, where a read review whose one correction never ran prints its points with `outcome: \"not-checkable\"`: a literal the situation decides (no correction is on record to compare), never a call's return." },
   { file: "driver/pipeline.mjs", noun: "permanent", sites: 1, atWriteSite: 1, verdict: "result",
     why: "`permanent.length` — a count of the classified set" },
-  { file: "driver/pipeline.mjs", noun: "recovered", sites: 3, atWriteSite: 3, verdict: "result",
+  { file: "driver/steps/register-sweep.mjs", noun: "recovered", sites: 3, atWriteSite: 3, verdict: "result",
     why: "each sits on a branch reached only after the gap was cleared; one follows a `throw` that guarantees the ledger exists. "
       + "The two newest record what an engine-side re-issue of a missing meaning search actually brought back, counted off the rows "
       + "in hand at the write site rather than from anything the call promised — an attempt that recovered nothing writes 0, which "
