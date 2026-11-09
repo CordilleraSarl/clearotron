@@ -1651,6 +1651,10 @@ for (const x of DISPATCH_EXTRAS) {
     throw new Error(`[stage-context] dispatch extra "${x.id}" is declared but has no builder in pipeline.mjs DISPATCH_EXTRA_BUILDERS — a sandboxed ${x.stage} would run without its driver-computed block`);
 }
 
+// The case-law profiles joined to the findings as they stand: the profiles carry the writer's numbers, and after a
+// grouping the delivered record has its own (joinCaseLawProfiles).
+const caseLawJoin = (P, findings) => joinCaseLawProfiles(parseCaseLawProfiles(readFileSync(P.caseLaw, "utf8")), findings, readFold(P.runDir)?.map?.modelToFolded ?? null);
+
 // The runnable half of INLINE_CONTEXT. Reads the CANONICAL run (`ctx.paths`), because that is the run
 // pipelineInner would have been reading when it built this payload.
 const INLINE_RESOLVERS = {
@@ -1665,7 +1669,7 @@ const INLINE_RESOLVERS = {
     let caseLawProfile = null;
     try {
       if (finding && existsSync(P.caseLaw))
-        caseLawProfile = joinCaseLawProfiles(parseCaseLawProfiles(readFileSync(P.caseLaw, "utf8")), findings).get(ord) ?? null;
+        caseLawProfile = caseLawJoin(P, findings).get(ord) ?? null;
     } catch { /* no case-law layer — production passes null here too */ }
     return { finding, caseLawProfile };
   },
@@ -16213,7 +16217,7 @@ async function pipelineInner(job, opts = {}) {
     // "if the file exists, fish in it" instruction was model-discretionary and missed cards.
     let caseLawByOrd = new Map();
     try {
-      if (existsSync(P.caseLaw)) caseLawByOrd = joinCaseLawProfiles(parseCaseLawProfiles(readFileSync(P.caseLaw, "utf8")), findingsForCards);
+      if (existsSync(P.caseLaw)) caseLawByOrd = caseLawJoin(P, findingsForCards);
     } catch { /* no case-law layer */ }
     // A2 — cards are isolated BY DESIGN (each sees ONLY its own finding and writes its own
     // P.reportCard(ord) file), so they fan out like the gather members instead of paying 8–14 serial
@@ -17423,7 +17427,7 @@ async function pipelineInner(job, opts = {}) {
         if (readNow.rejected) note(`stale-repair: findings.json is present and REJECTED by the strict parser (${readNow.rejected}) — ${findingsNow.length} finding(s) still join by ordinal; this rejection is the run's defect, not a missing finding`);
         let caseLawNow = new Map();
         try {
-          if (existsSync(P.caseLaw)) caseLawNow = joinCaseLawProfiles(parseCaseLawProfiles(readFileSync(P.caseLaw, "utf8")), findingsNow);
+          if (existsSync(P.caseLaw)) caseLawNow = caseLawJoin(P, findingsNow);
         } catch { /* no case-law layer */ }
         let reassemble = false;
         // THE LATE VERDICT, ONE RULE FOR BOTH REVIEWS THIS LOOP CAN RUN — the whole review and the review after
@@ -17585,7 +17589,7 @@ async function pipelineInner(job, opts = {}) {
               findingsNow = readNow.findings;
               ordinalsNow = fullProseOrdinals(findingsNow);
               try {
-                if (existsSync(P.caseLaw)) caseLawNow = joinCaseLawProfiles(parseCaseLawProfiles(readFileSync(P.caseLaw, "utf8")), findingsNow);
+                if (existsSync(P.caseLaw)) caseLawNow = caseLawJoin(P, findingsNow);
               } catch { /* no case-law layer */ }
               // After a correction, and after a rollback that rebuilt the record from a save, what reads the record is
               // rebuilt from it; a rollback that put the same bytes back leaves nothing stale, and queues nothing.
@@ -17658,7 +17662,7 @@ async function pipelineInner(job, opts = {}) {
               findingsNow = readNow.findings;
               ordinalsNow = fullProseOrdinals(findingsNow);
               try {
-                if (existsSync(P.caseLaw)) caseLawNow = joinCaseLawProfiles(parseCaseLawProfiles(readFileSync(P.caseLaw, "utf8")), findingsNow);
+                if (existsSync(P.caseLaw)) caseLawNow = caseLawJoin(P, findingsNow);
               } catch { /* no case-law layer */ }
               for (const owed of cardsNeverBuilt(P, ctx.depth, cardOrdinals)) if (!staleStages.some((x) => x.label === owed.label)) staleStages.push(owed);
               // — AND THE REVIEW IS ALSO SOMETHING THIS PASS JUST WROTE.
