@@ -33,6 +33,7 @@ import { coverageFormSidecarName, parseCoverageForm } from "./coverage-form.mjs"
 import { capabilitiesFor } from "./register-capabilities.mjs";
 import { readWithheldFamilies, splitWaitingFamilies } from "./withheld-families.mjs";
 import { slicesTakenOutByAxis } from "../shared/slices-taken-out.mjs";   // the slices the searches record took out of the band
+import { readJsonOrNull } from "./run-record.mjs";
 
 export { COVERAGE_FORM_NAME };
 
@@ -53,14 +54,13 @@ export function coverageFormPaths(runDir, formName = COVERAGE_FORM_NAME) {
   };
 }
 
-const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
 
 /**
  * The era stamp, read. Returns {required, formName} — `required` is true only when a driver carrying
  * this code stamped it, so every archived run answers false and the arm stays off for all of them.
  */
 export function coverageFormStamp(runDir) {
-  const s = readJson(driverDir(runDir, "coverage-enum.json"));
+  const s = readJsonOrNull(driverDir(runDir, "coverage-enum.json"));
   return {
     required: s?.form_required === true,
     formName: (typeof s?.form_path === "string" && s.form_path.trim())
@@ -89,16 +89,16 @@ export function coverageFormStamp(runDir) {
  * (`generated_from.bands_unreadable`) rather than swallowed, so the absence is visible in the artifact.
  */
 export function coverageFormInput(runDir) {
-  const exec = readJson(driverDir(runDir, "plan-execution.json"));
+  const exec = readJsonOrNull(driverDir(runDir, "plan-execution.json"));
   if (!exec || typeof exec !== "object" || !Array.isArray(exec.skeleton)) return { input: null, absent: "no_plan_execution_receipt" };
-  const plan = readJson(driverDir(runDir, "register-plan.json"));
+  const plan = readJsonOrNull(driverDir(runDir, "register-plan.json"));
   if (!plan || !Array.isArray(plan.entries)) return { input: null, absent: "no_frozen_plan" };
   const bandBlocksByAxis = {};
   const bandsUnreadable = [];
   for (const s of exec.skeleton) {
     const axis = String(s?.axis ?? "").trim();
     if (!axis) continue;
-    const parsed = readJson(join(runDir, "register-units", `${axis}-band.json`));
+    const parsed = readJsonOrNull(join(runDir, "register-units", `${axis}-band.json`));
     if (parsed == null) { bandsUnreadable.push(axis); continue; }
     bandBlocksByAxis[axis] = Array.isArray(parsed) ? parsed : (Array.isArray(parsed?.blocks) ? parsed.blocks : []);
   }
