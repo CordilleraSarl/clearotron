@@ -79,7 +79,7 @@ const TOKEN_BASE = {
   TRADEMARK_MCP_HTTP_PORT: "0",
   TRADEMARK_MCP_ALLOWED_HOSTS: "127.0.0.1:18790",
   CLEAROTRON_ACCESS_FILE: "/tmp/does-not-need-to-exist.json",
-  CF_ACCESS_TEAM: "", CLEAROTRON_OIDC_AUDIENCE: "", CLEAROTRON_OIDC_AUDIENCE: "",
+  CF_ACCESS_TEAM: "", CLEAROTRON_OIDC_AUDIENCE: "",
 };
 
 test("token mode and the auth bypass together are FATAL — they mean opposite things", async () => {
@@ -114,7 +114,7 @@ test("MODE UNSET IS UNCHANGED — the old fail-closed refusals fire, and this mo
   const r = await boot({
     TRADEMARK_MCP_AUTH_MODE: "",
     TRADEMARK_MCP_AUTH_DISABLED: "", TRADEMARK_MCP_DEV: "",
-    CF_ACCESS_TEAM: "", CLEAROTRON_OIDC_AUDIENCE: "", CLEAROTRON_OIDC_AUDIENCE: "",
+    CF_ACCESS_TEAM: "", CLEAROTRON_OIDC_AUDIENCE: "",
     TRADEMARK_MCP_HTTP_PORT: "0",
   });
   refused(r, new RegExp(`CLEAROTRON_OIDC_AUDIENCE|CF_ACCESS_TEAM|OIDC`));

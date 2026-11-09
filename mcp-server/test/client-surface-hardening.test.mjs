@@ -85,7 +85,7 @@ test("the two pre-existing fail-closed guards are unaffected by the tightened se
   // Auth ON with a client AUD copy-pasted from the staff AUD — the surface-collapse guard.
   const collapsed = await boot({
     CLIENT_MCP_AUTH_DISABLED: "", CLIENT_MCP_DEV: "", CLIENT_MCP_HTTP_PORT: "0",
-    CF_ACCESS_TEAM: "t", CLEAROTRON_OIDC_AUDIENCE: "same-aud", CLEAROTRON_OIDC_AUDIENCE: "same-aud", CLEAROTRON_CLIENT_OIDC_AUDIENCE: "same-aud", CLEAROTRON_CLIENT_OIDC_AUDIENCE: "same-aud",
+    CF_ACCESS_TEAM: "t", CLEAROTRON_OIDC_AUDIENCE: "same-aud", CLEAROTRON_CLIENT_OIDC_AUDIENCE: "same-aud",
   });
   assert.ok(!/listening on/.test(collapsed.stderr));
   assert.match(collapsed.stderr, /distinct CF Access application AUD/);

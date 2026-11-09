@@ -1586,7 +1586,6 @@ test("built-but-off and can't-be-built read differently — the Knockout search 
   // "none") cannot answer it however the switches are set. The portal learns that from the snapshot's
   // `built`, not from its own import, because it has no engine environment to work it out from.
   const { service } = world({
-    readBuilt: () => BUILT_ALL,
     readBuilt: () => ({ knockout: true, jxLanes: true, registerProbe: false }),
   });
   const res = await service.route("GET", "/portal/api/searches", CLIENT, {}, {});

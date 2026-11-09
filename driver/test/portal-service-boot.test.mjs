@@ -108,7 +108,7 @@ function bootEnv(extra = {}) {
     PORTAL_AUTH_MODE: "local",
     PORTAL_LOCAL_USER: "dev@local",
     PORTAL_LOCAL_CREDENTIAL: join(tempDir("portal-bootcred-"), "credential.json"),
-    CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined,
+    CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined,
     PORTAL_SERVICE_HOST: "127.0.0.1", PORTAL_SERVICE_PORT: "0",
     PORTAL_SECRET: BOOT_SECRET,
     CLEAROTRON_REPORTS_DIR: tempDir("portal-bootpool-"),
@@ -124,7 +124,7 @@ function cfEnv(extra = {}) {
   return bootEnv({
     PORTAL_AUTH_MODE: undefined,                  // unset ⇒ cf-access, the default that must not have moved
     PORTAL_LOCAL_USER: undefined, PORTAL_LOCAL_CREDENTIAL: undefined,
-    CF_ACCESS_TEAM: "example-team", CLEAROTRON_OIDC_AUDIENCE: "a", CLEAROTRON_OIDC_AUDIENCE: "a".repeat(64),
+    CF_ACCESS_TEAM: "example-team", CLEAROTRON_OIDC_AUDIENCE: "a".repeat(64),
     MCP_ALLOWED_EMAIL_DOMAINS: "example-firm.com",
     MCP_ALLOWED_EMAILS: undefined,
     ...extra,
@@ -235,7 +235,7 @@ test("CF-ACCESS MODE STILL BOOTS — the hosted deployment's path, unchanged", a
 test("cf-access mode's fail-closed exits ALL still fire", async () => {
   // Each of these refused to start before and must refuse identically after it. The mode branch is
   // the one place a new `if` could have swallowed them.
-  const missingAud = await boot(cfEnv({ CLEAROTRON_OIDC_AUDIENCE: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined, CLEAROTRON_ACCESS_FILE: grantsFile() }));
+  const missingAud = await boot(cfEnv({ CLEAROTRON_OIDC_AUDIENCE: undefined, CLEAROTRON_ACCESS_FILE: grantsFile() }));
   assert.equal(missingAud.listened, false);
   assert.equal(missingAud.code, 1);
   assert.match(missingAud.stderr, new RegExp(`CLEAROTRON_OIDC_AUDIENCE plus CF_ACCESS_TEAM or PORTAL_OIDC_ISSUER are missing`));
@@ -260,7 +260,7 @@ test("A MISSING CF VALUE CANNOT SELECT LOCAL MODE — it is still a refusal", as
   // loopback host ⇒ local"), a deployment that lost CLEAROTRON_OIDC_AUDIENCE would start a portal reachable through
   // its tunnel with a passphrase nobody has ever seen printed — and look healthy. Loopback does not
   // discriminate: the test box and production both bind 127.0.0.1 behind a Cloudflare tunnel.
-  const r = await boot(cfEnv({ CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined, CLEAROTRON_ACCESS_FILE: grantsFile() }));
+  const r = await boot(cfEnv({ CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined, CLEAROTRON_ACCESS_FILE: grantsFile() }));
   assert.equal(r.listened, false, "a missing value must never be able to choose an identity source");
   assert.equal(r.code, 1);
   assert.match(r.stderr, /refusing to start/i);
