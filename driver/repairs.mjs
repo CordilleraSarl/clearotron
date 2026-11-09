@@ -18,10 +18,11 @@
 //   3. createRepairLedger — persistent per-run attempt bookkeeping (_driver/repairs.json) so a
 //      park/resume can never re-arm an exhausted repair and repairs can never loop.
 
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { writeFileSync, mkdirSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join, dirname } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
+import { readJson } from "./run-record.mjs";
 
 // ── the terminal kind that is not a failure ───────────────────────────────────────────────
 //
@@ -796,7 +797,7 @@ export function repairVerdict(row, { max = 1 } = {}) {
 export function createRepairLedger(runDir, { log } = {}) {
   const file = driverDir(runDir, "repairs.json");
   const load = () => {
-    try { return JSON.parse(readFileSync(file, "utf8")) ?? {}; } catch { return {}; }
+    try { return readJson(file) ?? {}; } catch { return {}; }
   };
   const save = (o) => {
     mkdirSync(dirname(file), { recursive: true });
