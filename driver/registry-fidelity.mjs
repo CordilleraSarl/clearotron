@@ -17,12 +17,11 @@
 
 import { writeFileSync, mkdirSync, existsSync, readdirSync, openSync, readSync, closeSync } from "node:fs"; import { runPrefixSpellings } from "../shared/pre-rename-spellings.mjs";
 import { join } from "node:path";
-import { ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
 import { ledgerPath, runRecordLogPath, ledgerDeprecationNotice, retiredGlobalRecordLogNotice }
   from "../providers/_shared/ledger-path.mjs";
 import { envFrom } from "../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
 import { USE_SOURCE_QUALITY } from "./findings-model.mjs";   // — the attested vocabulary; an unknown value falls back to the heuristic
-import { paths, readJson } from "./run-record.mjs";
+import { ensureDriverDir, paths, readJson } from "./run-record.mjs";   // — one definition of where `_driver/` is
 
 // — `DEFAULT_RECORD_LOG` IS GONE, and it went because the question it answered no longer has one
 // answer. It was `ledgerPath("record")` frozen at import, in the DRIVER — a long-lived process running
