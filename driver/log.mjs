@@ -7,6 +7,7 @@ import { appendFileSync, mkdirSync, readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { dirname, join, basename } from "node:path";
 import { driverDir, RUN_DIR_MODE } from "../shared/driver-dir.mjs";   //
+import { paths } from "./run-record.mjs";
 
 function appendLine(file, obj) {
   mkdirSync(dirname(file), { recursive: true, mode: RUN_DIR_MODE });   // a first log line can be what creates the run folder
@@ -50,7 +51,7 @@ export function outputMeta(absPath) {
 
 // One line per stage transition + the verdict + delivery result.
 export function runLog(runDir, obj) {
-  appendLine(driverDir(runDir, "run.jsonl"), obj);
+  appendLine(paths(runDir).run, obj);
 }
 
 // Per-stage attempt detail (argv-redacted, status, file-validation result).
