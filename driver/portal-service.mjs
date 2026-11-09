@@ -866,7 +866,7 @@ export function resolveRunAccount({ poolRoot, workspaceRoot, queueDirs = [], run
 // `sign-out` joins them for the reason the comment above gives: a head the server answers but does not
 // RESERVE falls into the static handler and returns the app shell with a 200, which for a route whose
 // whole job is to end a session is the worst possible silent success ( — F47).
-export const SERVER_ROUTE_HEADS = Object.freeze(["api", "report", "admin", "health", "login", "logout", "sign-out", "connect-help"]);
+export { SERVER_ROUTE_HEADS } from "./portal-static.mjs";
 
 /**
  * THE PORTAL'S HALF OF THE DECLARED-FIELD PARTITION (enqueue-schema DECLARED_JOB_FIELDS).

@@ -107,7 +107,7 @@ import { runLog, note } from "./log.mjs";
 import { writeRunStatus } from "./progress.mjs";
 // tokens.mjs imports this module too (isCodeSide, stampRunEconomics). The cycle is safe because each side
 // reads the other's bindings only inside functions, never while the module is loading.
-import { isAttemptRow, modelKey } from "./tokens.mjs";
+import { isAttemptRow, modelKey } from "./attempt-rows.mjs";
 import { readJson } from "./run-record.mjs";
 
 /**
