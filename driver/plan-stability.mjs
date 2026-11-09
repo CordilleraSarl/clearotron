@@ -15,19 +15,17 @@
 // CLI: node plan-stability.mjs <runDir> [<runDir>…]   (groups by slug = parent dir name)
 // Run via sudo when the run dirs belong to another user; read-only throughout.
 
-import { readFileSync, existsSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { basename, dirname, join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — realpath both sides, or a symlinked invocation exits 0 silently
+import { readJsonOrNull } from "./run-record.mjs";
 
 const norm = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 
-function readJson(p) {
-  try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; }
-}
 
 export function bandIdSet(runDir) {
-  const band = readJson(join(runDir, "register-named-band.json"));
+  const band = readJsonOrNull(join(runDir, "register-named-band.json"));
   const out = new Set();
   if (!band) return out;
   const blocks = Array.isArray(band) ? band : [band];
@@ -38,7 +36,7 @@ export function bandIdSet(runDir) {
 }
 
 export function materialSet(runDir) {
-  const f = readJson(join(runDir, "findings.json"));
+  const f = readJsonOrNull(join(runDir, "findings.json"));
   const out = new Set();
   for (const x of f?.findings ?? []) {
     // material = composite>=3 (legacy) or band-rated (doc 50 v4: any banded finding — off-field
@@ -50,8 +48,8 @@ export function materialSet(runDir) {
 }
 
 export function executedQidSet(runDir) {
-  const plan = readJson(driverDir(runDir, "register-plan.json"));
-  const exec = readJson(driverDir(runDir, "plan-execution.json"));
+  const plan = readJsonOrNull(driverDir(runDir, "register-plan.json"));
+  const exec = readJsonOrNull(driverDir(runDir, "plan-execution.json"));
   const out = new Set();
   for (const e of exec?.executed ?? []) if (e?.qid) out.add(e.qid);
   if (!out.size && plan) for (const ax of Object.values(plan.axes ?? {})) for (const q of ax) if (q?.qid) out.add(q.qid);
@@ -87,7 +85,7 @@ export function slugStability(runDirs) {
 // Re-runs of one mark can live under different slugs (noref slugs embed a per-submission hash),
 // so grouping keys on the normalized mark name from status.json, falling back to the slug dir.
 export function markKey(runDir) {
-  const s = readJson(join(runDir, "status.json"));
+  const s = readJsonOrNull(join(runDir, "status.json"));
   return norm(s?.markName) || basename(dirname(runDir));
 }
 
