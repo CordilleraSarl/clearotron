@@ -309,4 +309,4 @@ function compareDirs(baseDir, headDir) {
   }
   return out;
 }
-process.exit(await main(process.argv.slice(2)));
+if (resolve(process.argv[1] ?? "") === fileURLToPath(import.meta.url)) process.exit(await main(process.argv.slice(2)));
