@@ -17,9 +17,8 @@
 
 import { existsSync } from "node:fs";
 import { basename, dirname, join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — realpath both sides, or a symlinked invocation exits 0 silently
-import { readJsonOrNull } from "./run-record.mjs";
+import { paths, readJsonOrNull } from "./run-record.mjs";
 
 const norm = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 
@@ -48,8 +47,8 @@ export function materialSet(runDir) {
 }
 
 export function executedQidSet(runDir) {
-  const plan = readJsonOrNull(driverDir(runDir, "register-plan.json"));
-  const exec = readJsonOrNull(driverDir(runDir, "plan-execution.json"));
+  const plan = readJsonOrNull(paths(runDir).registerPlan);
+  const exec = readJsonOrNull(paths(runDir).planExecution);
   const out = new Set();
   for (const e of exec?.executed ?? []) if (e?.qid) out.add(e.qid);
   if (!out.size && plan) for (const ax of Object.values(plan.axes ?? {})) for (const q of ax) if (q?.qid) out.add(q.qid);
