@@ -12,15 +12,13 @@
 // publishReport unconditionally, so `republish <a knockout run>` failed on a missing report.md and no
 // knockout report could ever be re-rendered. A report shape you cannot re-render is a report shape you
 // cannot fix after delivery.
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { driverDir } from '../../shared/driver-dir.mjs';   //
+import { readJson, readJsonOrNull } from '../run-record.mjs';
 import { publishReport } from './index.mjs';
 import { publishKnockout } from './knockout.mjs';
 import { worstBand } from '../verify-knockout.mjs';
-
-const readJson = (p) => JSON.parse(readFileSync(p, 'utf8'));
-const readJsonOr = (p, fallback = null) => { try { return readJson(p); } catch { return fallback; } };
 
 /** The template a PUBLISHED run was rendered under, read from its meta.
  *
@@ -43,7 +41,7 @@ export async function republishRun({ runId, meta, pool, poolUrl, runDir, skipReg
   const template = templateOfMeta(meta);
   if (template !== 'knockout') {
     if (!existsSync(join(runDir, 'report.md'))) throw new Error(`${runDir} has no report.md — not a clearance run workspace.`);
-    const prof = readJsonOr(driverDir(runDir, 'profile.json'));
+    const prof = readJsonOrNull(driverDir(runDir, 'profile.json'));
     return publishReport({
       runId,
       codename: meta?.codename || '',
@@ -66,16 +64,16 @@ export async function republishRun({ runId, meta, pool, poolUrl, runDir, skipReg
   const findingsPath = join(runDir, 'knockout-findings.json');
   if (!existsSync(findingsPath)) throw new Error(`${runDir} has no knockout-findings.json — not a knockout run workspace.`);
   const findings = readJson(findingsPath);
-  const framework = readJsonOr(driverDir(runDir, 'framework.json'));
+  const framework = readJsonOrNull(driverDir(runDir, 'framework.json'));
   if (!framework) throw new Error(`${runDir} has no _driver/framework.json — a knockout cannot be re-rendered without the bands it was rated under.`);
-  const searchPolicy = readJsonOr(driverDir(runDir, 'search-policy.json'));
-  const prof = readJsonOr(driverDir(runDir, 'profile.json'));
+  const searchPolicy = readJsonOrNull(driverDir(runDir, 'search-policy.json'));
+  const prof = readJsonOrNull(driverDir(runDir, 'profile.json'));
   return publishKnockout({
     runId,
     codename: meta?.codename || '',
     runDir,
     findings,
-    plan: readJsonOr(join(runDir, 'knockout-plan.json')),
+    plan: readJsonOrNull(join(runDir, 'knockout-plan.json')),
     framework,
     // Recomputed from the frozen framework + the frozen findings, exactly as the lane computed it. The
     // stored meta.overall is not trusted as an input: it is an OUTPUT of this same join, and feeding an
