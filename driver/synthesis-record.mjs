@@ -45,7 +45,6 @@
 import { writeFileSync, appendFileSync, mkdirSync, readFileSync, existsSync, renameSync, rmSync } from "node:fs";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join, dirname } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";
 import { parseFindingsJson, COVERAGE_AREA_STATES, topKeysForVersion, validateFindingForSave, isUseCheckNoResult, findingOrdinalInvalid } from "./findings-model.mjs";
 import { heldResearchAnswers, isResearchAnswer, questionKey, NO_SEARCH_RESULT } from "./research-answers.mjs";   // a "no result" names a question that completed
 import { writeResearchChecks } from "./research-checks.mjs";   // the research behind the use checks, written for the review
@@ -59,7 +58,7 @@ import { foldAfterSave } from "./record-fold.mjs";   // once the delivery seam i
 import { SAVED_FINDINGS_FILE } from "./saved-findings-block.mjs";   // the file a later attempt is handed the saved findings in
 import { runLog } from "./log.mjs";   // what the transport read a call as goes to the run's record, never to the model's answer
 import { recordOriginsOr, blankOnRepeat, recordBlanking, FOREIGN_HOST_TOKEN } from "./foreign-record-links.mjs";   // a foreign record link: refused once, then blanked
-import { paths, readJson } from "./run-record.mjs";
+import { driverDir, paths, readJson } from "./run-record.mjs";
 export const NARRATIVE_FILE = "narrative.md";
 export const FINDINGS_FILE = "findings.json";
 
