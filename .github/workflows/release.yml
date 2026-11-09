@@ -1212,9 +1212,9 @@ jobs:
           VERSION=$(node -p "require('./package.json').version")
           # A SCHEDULED PUBLISH BUILDS THE COMMIT ITS DECISION READ, or nothing. The checkout above names that
           # commit; an absent or different one here means the two ends are not talking about one tree.
-          if [ "$DECIDED_CUT" = "true" ]; then
-            if [ -z "$DECIDED_SHA" ] || [ "$(git rev-parse HEAD)" != "$DECIDED_SHA" ]; then
-              echo "::error::The decision named commit \"$DECIDED_SHA\" and this job checked out $(git rev-parse HEAD). That is a failure to LOOK, so nothing publishes."
+          if [ "${DECIDED_CUT:-}" = "true" ]; then
+            if [ -z "${DECIDED_SHA:-}" ] || [ "$(git rev-parse HEAD)" != "$DECIDED_SHA" ]; then
+              echo "::error::The decision named commit \"${DECIDED_SHA:-}\" and this job checked out $(git rev-parse HEAD). That is a failure to LOOK, so nothing publishes."
               exit 2
             fi
             if [ "$VERSION" != "$DECIDED_VERSION" ]; then
