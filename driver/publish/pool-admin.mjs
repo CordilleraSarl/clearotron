@@ -57,6 +57,7 @@ import { republishRun } from './report-registry.mjs';
 import { config } from '../driver.config.mjs';
 import { isEntrypoint } from "../../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { envFrom } from "../../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
+import { readJson } from "../run-record.mjs";
 
 // One derivation, not a second copy of the literal: config.poolRoot IS the answer, and it refuses when
 // CLEAROTRON_REPORTS_DIR is unset. This file used to spell `|| '/srv/trademark-archive'` itself, which
@@ -68,7 +69,7 @@ const POOL = config.poolRoot;
 function listRuns(poolDir) {
   return readdirSync(poolDir, { withFileTypes: true })
     .filter(d => d.isDirectory() && d.name !== 'customer' && existsSync(join(poolDir, d.name, 'meta.json')))
-    .map(d => JSON.parse(readFileSync(join(poolDir, d.name, 'meta.json'), 'utf8')))
+    .map(d => readJson(join(poolDir, d.name, 'meta.json')))
     .sort(runOrder);
 }
 
@@ -248,7 +249,7 @@ async function main(argv) {
       const st = statSync(dir);
       const ms = (st.birthtimeMs && st.birthtimeMs > 0) ? st.birthtimeMs : st.mtimeMs;
       const metaPath = join(dir, 'meta.json');
-      const meta = JSON.parse(readFileSync(metaPath, 'utf8'));
+      const meta = readJson(metaPath);
       meta.issuedAt = new Date(ms).toISOString();
       writeFileSync(metaPath, JSON.stringify(meta, null, 2));
       try { chmodSync(metaPath, 0o640); } catch { /* best-effort; group-read via set-gid pool */ }
@@ -300,7 +301,7 @@ async function main(argv) {
     const runs = listRuns(POOL);
     const id = resolveId(token, runs);
     const metaPath = join(POOL, id, 'meta.json');
-    const meta = JSON.parse(readFileSync(metaPath, 'utf8'));
+    const meta = readJson(metaPath);
     const from = meta.customerKey || 'generic';
     if (from === target) {
       console.log(`reassign: ${id} is already owned by "${target}" — nothing to do.`);

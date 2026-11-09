@@ -44,12 +44,13 @@
 // printed it: neither shows a search that found nothing. A row now keeps the link it has and nothing in its place, and
 // its `ok` says whether the lookup answered. The card's words for the two are the owner's (render-knockout.mjs). A
 // reply the formatter could not read is a lookup that did not answer.
-import { existsSync, readFileSync, writeFileSync, appendFileSync, mkdirSync } from "node:fs";
+import { existsSync, writeFileSync, appendFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { createHash } from "node:crypto";
 
 import { promotableRecords, ownerCheckOutcome, ownerCheckText, USE_CHECK_UNAVAILABLE } from "./publish/render-knockout.mjs";
 import { isResearchAnswer } from "./research-answers.mjs";   // a reply the formatter could not read is no answer
+import { readJson } from "./run-record.mjs";
 
 /** The literal the clearance lane uses for an honest non-answer. Copied, not re-worded. */
 export const NO_RESULT = "perplexity_research — no result";
@@ -226,7 +227,7 @@ export function useCheckLineFor(ownerChecks, recordId) {
 export function readOwnerChecks(path) {
   try {
     if (!existsSync(path)) return [];
-    const d = JSON.parse(readFileSync(path, "utf8"));
+    const d = readJson(path);
     return Array.isArray(d?.checks) ? d.checks : [];
   } catch { return []; }
 }

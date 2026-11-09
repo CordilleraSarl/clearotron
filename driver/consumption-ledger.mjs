@@ -26,6 +26,7 @@
 
 import { appendFileSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
+import { readJson } from "./run-record.mjs";
 
 /** Where the consumption ledger sits: beside the matter ledger, in the studio dir. */
 export function consumptionLedgerPath(studioRoot) {
@@ -94,7 +95,7 @@ export function recordRunConsumption(ctx, { phase, tokens = null, providerUsage 
   // startedAt comes from the run's own status.json rather than ctx: it is written once at seed and
   // survives a resume, so a run that postponed and came back still measures wall from its true start.
   let startedAt = null;
-  try { startedAt = JSON.parse(readFileSync(join(run.runDir, "status.json"), "utf8"))?.startedAt ?? null; }
+  try { startedAt = readJson(join(run.runDir, "status.json"))?.startedAt ?? null; }
   catch { /* no status yet — the row simply carries no wall figure */ }
   return recordConsumption({
     studioRoot: run.studioRoot,

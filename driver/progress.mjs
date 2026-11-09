@@ -13,11 +13,11 @@
 // Both writes are atomic (temp + rename) and idempotent — status is DERIVED from the current run, never
 // blindly incremented — so the resumable pipeline can re-drive a run without corrupting either file.
 
-import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
+import { readdirSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path"; import { STUDIO_SEGMENT_RE } from "../shared/pre-rename-spellings.mjs";
 import { sepClass, notSepClass } from "../shared/path-seps.mjs";   // a Windows path is built with "\"
 import { DRIVER_DIR } from "../shared/driver-dir.mjs";   //
-import { atomicWrite } from "./run-record.mjs";
+import { atomicWrite, readJson } from "./run-record.mjs";
 import { config } from "./driver.config.mjs";
 import { batchMarkName } from "./mark-name.mjs";
 import { runLog, note } from "./log.mjs";
@@ -146,7 +146,7 @@ function statusPath(runDir) { return join(runDir, "status.json"); }
  * a second copy of where status.json lives.
  */
 export function readRunStatus(runDir) {
-  try { return JSON.parse(readFileSync(statusPath(runDir), "utf8")); }
+  try { return readJson(statusPath(runDir)); }
   catch { return {}; }
 }
 
@@ -543,7 +543,7 @@ export function rollupStatus(studioRoot) {
     const byRun = new Map();
     for (const f of files) {
       let s;
-      try { s = JSON.parse(readFileSync(f, "utf8")); } catch { continue; }
+      try { s = readJson(f); } catch { continue; }
       // THE ROLLUP SETTLES FROM THE SAME STORE mark_sent writes (audit item 7): `.sent` beside
       // status.json is the primary settle receipt, and mark_sent's sendPending flip is best-effort —
       // a flip that failed left STATUS.md shouting "SEND PENDING" over a run whose .sent guard was

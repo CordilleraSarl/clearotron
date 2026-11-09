@@ -22,6 +22,7 @@ import { fileURLToPath } from "node:url";
 import { ORDERABLE_PRODUCTS } from "./search-policy.mjs";
 import { recognizedTerritories } from "./territory-tiers.mjs";   // which stored territories the engine can actually search
 import { envFrom } from "../shared/env-aliases.mjs";   // — a refusal names the name in force
+import { readJson } from "./run-record.mjs";
 
 // CLEAROTRON_CUSTOMERS_DIR selects the customer config STORE; the bundled driver/profiles is the
 // fallback (and what the offline tests + the shipped demo roster use).
@@ -709,7 +710,7 @@ function readProfilesLayer(dir, { tolerant = false } = {}) {
     const key = f.replace(/\.json$/, "");
     try {
       let p;
-      try { p = JSON.parse(readFileSync(join(dir, f), "utf8")); }
+      try { p = readJson(join(dir, f)); }
       catch (e) { throw new Error(`profiles/${f}: unparseable JSON (${e.message})`); }
       validateProfileShape(key, p);
       // Context pack (Phase 1): a sibling `<key>.context.md`, attached AFTER validateProfileShape so the
@@ -948,7 +949,7 @@ function readProfileFlag(roots, key, flag) {
   for (const root of roots) {
     const f = join(root, `${key}.json`);
     if (!existsSync(f)) continue;
-    try { return JSON.parse(readFileSync(f, "utf8"))?.[flag] === true; } catch { return false; }
+    try { return readJson(f)?.[flag] === true; } catch { return false; }
   }
   return false;
 }
@@ -1019,7 +1020,7 @@ export function loadProjects({ dir, profiles, force = false } = {}) {
       assertProfileKey(slug);
       const rel = `projects/${ck}/${slug}`;   // becomes the validator's error prefix + the fully-qualified key
       let o;
-      try { o = JSON.parse(readFileSync(join(cdir, f), "utf8")); }
+      try { o = readJson(join(cdir, f)); }
       catch (e) { throw new Error(`profiles/${rel}.json: unparseable JSON (${e.message})`); }
       validateProfileShape(rel, o, { sparse: true });
       // sibling <slug>.context.md — attached AFTER validation like the customer pack; the project's own

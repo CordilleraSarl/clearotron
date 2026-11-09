@@ -47,11 +47,12 @@
 // THE VALIDATOR IS NOT DELETED. Archived and replayed shells were hand-written under the old dictation
 // and must keep parsing — the archive-validator trap, ruled binding on every conversion: a new way in,
 // never a replacement. The strict boundary binds new writes; the permissive read path stays.
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join } from "node:path";
 import { driverDir, driverRel } from "../shared/driver-dir.mjs";   //
 import { refuseUndeclared as refuseUndeclaredShared, keepIfAbsent, lastAccepted, acceptedEnvelope } from "./preserve-merge.mjs";
+import { readJson } from "./run-record.mjs";
 
 export const PROSE_FILE = "report-overview.md";
 const SCHEMA_VERSION = 1;
@@ -159,7 +160,7 @@ const countSentences = (s) => (String(s).match(/[.!?](?=\s|$)/g) ?? []).length;
  * `null` when absent: an archived or replayed run has no sidecar, and the caller renders what it holds.
  */
 export function readReportIdentity(runDir) {
-  try { return JSON.parse(readFileSync(join(String(runDir ?? ""), IDENTITY_FILE), "utf8")); }
+  try { return readJson(join(String(runDir ?? ""), IDENTITY_FILE)); }
   catch { return null; }
 }
 

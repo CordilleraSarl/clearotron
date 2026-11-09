@@ -38,6 +38,7 @@ import { normalizeRecordUri, readRecordArtifacts, forEachLedgerLine, recordBodyH
 import { recordGoodsProvenance } from "./record-goods.mjs";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { runPrefixSpellings } from "../shared/pre-rename-spellings.mjs";
+import { readJson } from "./run-record.mjs";
 
 export const GOODS_EVIDENCE_SCHEMA_VERSION = 1;
 export const GOODS_EVIDENCE_FILE = "goods-evidence.json";
@@ -112,7 +113,7 @@ export function heldBodiesOf(runDir, uris) {
   for (const uri of want) {
     const name = names.get(`${uri.replace(/^\/mark\//, "").replace(/[^a-z0-9]+/gi, "-")}.json`.toLowerCase());
     if (!name) continue;
-    let body; try { body = JSON.parse(readFileSync(join(runDir, "_records", name), "utf8")); } catch { continue; }
+    let body; try { body = readJson(join(runDir, "_records", name)); } catch { continue; }
     if (!body || typeof body !== "object" || Array.isArray(body)) continue;
     const { _uri, _receipt, ...rest } = body;
     if ((_uri == null || uriKey(_uri) === uri) && recordBodyHasContent(rest)) out.set(uri, rest);
@@ -271,7 +272,7 @@ export function deriveGoodsEvidence({ records = [], goods = null, held = null, f
 const readDriverJson = (runDir, name) => {
   const p = driverDir(runDir, name);
   if (!existsSync(p)) return null;
-  try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; }
+  try { return readJson(p); } catch { return null; }
 };
 
 /** The record the run wrote, or null when there is none or it will not parse. IMPURE. */

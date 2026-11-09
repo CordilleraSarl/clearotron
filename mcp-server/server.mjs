@@ -26,7 +26,7 @@ import {
   ListResourcesRequestSchema, ReadResourceRequestSchema, ListResourceTemplatesRequestSchema,
   ListPromptsRequestSchema, GetPromptRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync } from "node:fs";
 import { join, basename } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { fileURLToPath } from "node:url";
@@ -93,6 +93,7 @@ import { instructionsFor } from "./lib/instructions.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { BRAND } from "../shared/brand.mjs";   // — the operator name a client is told to expect, from the tenant seam
 import { productIdentity } from "../shared/product-identity.mjs";   // AGPL §13 — one answer, three surfaces
+import { readJson } from "../driver/run-record.mjs";
 
 const NS = "trademark-artifacts";
 const log = (...a) => process.stderr.write(`[${NS}] ${a.join(" ")}\n`);
@@ -250,7 +251,7 @@ function runSummary(run) {
 function channelState(runDir) {
   const legacySent = existsSync(join(runDir, ".sent"));
   let receipts = {};
-  try { receipts = JSON.parse(readFileSync(driverDir(runDir, "send-receipts.json"), "utf8")) ?? {}; }
+  try { receipts = readJson(driverDir(runDir, "send-receipts.json")) ?? {}; }
   catch { /* absent (fresh/legacy run) or unreadable — fall back to the .sent marker alone */ }
   const chan = (key, idField) => ({
     sent: Boolean(receipts[key]) || legacySent,
