@@ -1,20 +1,15 @@
-#!/usr/bin/env node
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Standalone MCP server wrapping the signa CORE (pure node+fetch) so a `claude -p` process can
+// The signa register's tools, as driver/engine/mcp/register-server.mjs mounts them, wrapping its CORE (pure node+fetch) so a `claude -p` process can
 // call the register-search tools off-gateway. Pure glue: the core owns all logic. Auth = SIGNA_API_KEY
 // (Bearer token); base = SIGNA_BASE_URL || the core's DEFAULT_BASE. Telemetry: the core writes
 // CLEAROTRON_REGISTER_CALL_LOG / CLEAROTRON_REGISTER_RECORD_LOG (the SHARED register ledger — one provider
 // runs at a time; took this vendor's name off it)
 // keyed by the GATEWAY session key (tctx.sessionKey) — we thread the run's session key via
 // CLEAROTRON_GATHER_SESSION_KEY so the $0 provider-usage diff still attributes calls to the run.
-import { serve } from "./stdio-server.mjs";
-import { sendUntilFromEnv } from "../../../providers/_shared/send-until.mjs";
-import { crowdNoteFor } from "./crowd-note.mjs";   // how the unit decides on a crowd, beside an answer that carries one
-import { doSearch, doRecordFetch, doEnumerate, doExecutePlan, DEFAULT_BASE } from "../../../providers/signa/src/core.js";
-import { proposeSupplemental } from "./supplemental.mjs";
-import { narrowingFields } from "./proposal-fields.mjs";
-import { CAPABILITIES } from "../../../providers/signa/src/capabilities.js";
+import { sendUntilFromEnv } from "../../_shared/send-until.mjs";
+import { doSearch, doRecordFetch, doEnumerate, doExecutePlan, DEFAULT_BASE } from "./core.js";
+import { CAPABILITIES } from "./capabilities.js";
 
 const API_KEY = process.env.SIGNA_API_KEY || "";
 const BASE = process.env.SIGNA_BASE_URL || DEFAULT_BASE;
@@ -31,8 +26,8 @@ const guard = (fn) => async (args) => {
   return passthrough(await fn(args));
 };
 
-serve({
-  name: "register", version: "0.1.0", noteFor: crowdNoteFor,
+export const mount = ({ proposeSupplemental, narrowingFields }) => ({
+  version: "0.1.0",
   tools: [
     {
       name: "register_search",

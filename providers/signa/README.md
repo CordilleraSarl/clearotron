@@ -37,7 +37,7 @@ past `OWNER_SCOPED_WINDOW` (400 rows). Approximate totals saturate at 10000 and 
   at module load — the contract is pure (no node imports, no vendor HTTP) so that stays free.
 - [`../../driver/driver.config.mjs`](../../driver/driver.config.mjs) lazy-imports `src/core.js` for the
   in-process lanes under `credEnv: "SIGNA_API_KEY"`, selected by `CLEAROTRON_DATABASE=signa`.
-- [`../../driver/engine/mcp/signa-server.mjs`](../../driver/engine/mcp/signa-server.mjs) wraps the same
+- [`src/mount.js`](src/mount.js) wraps the same
   core as a standalone MCP server, mounting four tools under the neutral names `register_search`,
   `register_record_fetch`, `register_enumerate`, `register_execute_plan`. There is no batch-screen tool:
   search rows already carry status, classes and owner, so screening costs no extra call.

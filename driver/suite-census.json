@@ -4169,7 +4169,7 @@
         },
         "engine.gather.test.mjs": {
           "tests": 20,
-          "asserts": 116,
+          "asserts": 117,
           "skips": 0,
           "todos": 0
         },

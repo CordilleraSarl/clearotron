@@ -9,7 +9,7 @@ a global aggregator, so it declares no enumerable covered office set; see the la
 |---|---|
 | `src/capabilities.js` | The capability contract, and the **reference copy** — signa's and clarivate's contracts point here for what the file is and why |
 | `src/core.js` | Transport: the flat query language, paging, screening, phoneme expansion, the call ledger |
-| ~~`src/index.js`~~ | RETIRED. It was a plugin-SDK entry for an agent platform this product does not ship: TypeBox schemas plus tool-factory registration of six`corsearch_*` tools, importing a package no `package.json` here declares. The adapter reaches this engine through `driver/engine/mcp/corsearch-server.mjs`, which is the only path any run has used |
+| ~~`src/index.js`~~ | RETIRED. It was a plugin-SDK entry for an agent platform this product does not ship: TypeBox schemas plus tool-factory registration of six`corsearch_*` tools, importing a package no `package.json` here declares. The adapter reaches this engine through `src/mount.js`, which is the only path any run has used |
 | `test/` | Characterisation and fault-lane tests |
 
 Environment: `CORSEARCH_SESSION_KEY` is required, and it is a **session cookie**, not a bearer token —
@@ -42,7 +42,7 @@ What it notably cannot do, each declared as data in `src/capabilities.js`:
 - [`../../driver/driver.config.mjs`](../../driver/driver.config.mjs) lazy-imports `src/core.js` for the
   in-process lanes under `credEnv: "CORSEARCH_SESSION_KEY"`, selected by
   `CLEAROTRON_DATABASE=corsearch`.
-- [`../../driver/engine/mcp/corsearch-server.mjs`](../../driver/engine/mcp/corsearch-server.mjs) wraps the
+- [`src/mount.js`](src/mount.js) wraps the
   same core as a standalone MCP server, mounting all eight neutral `register_*` tools.
 - Paging, counting, screening and the ledger are the shared kernel in [`../_shared/`](../_shared/);
   `core.js` spreads `CAPABILITIES.kernel` straight into it, so no literal can drift from the contract.
