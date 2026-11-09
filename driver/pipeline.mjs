@@ -4,6 +4,7 @@
 // turn, joins the fan-out in code (the fan-in barrier), gates on the refutation
 // verdict, and never parks (there is no LLM continuation decision anywhere). CLI: `node pipeline.mjs --job <file.json>`.
 
+import { runPlacementAndDigest } from "./steps/placement-and-digest.mjs";
 import { runRegisterSweep } from "./steps/register-sweep.mjs";
 import { runSynthesis } from "./steps/synthesis.mjs";
 import { runFrameComparison } from "./steps/frame-comparison.mjs";
@@ -11326,18 +11327,8 @@ async function pipelineInner(job, opts = {}) {
     // assessment's first step and before anything that exists only to feed it runs. See deliverWithoutTheAssessment.
     const assessmentOpen = readPartNotCompleted(run.runDir, "assessment");
     if (assessmentOpen) return await deliverWithoutTheAssessment(assessmentOpen);
-    await assertReceiptSettled(ctx, "placement-inquiry");
-    // Placement and the register write-up are the assessment's first two steps. A failure of either, a band too large
-    // to dispatch over included, is named as the assessment, as synthesis's own is below.
-    const placementPass = await asPartNotCompleted("assessment", () => stage("placement-inquiry", ctx));
-    // What THIS pass did, recorded before anything else can overwrite placements.json, and ahead of `must`
-    // deliberately: a pass that failed or skipped on a partial artifact is exactly the pass whose account is
-    // worth having, and `must` throws. The delivery gate's repeat of this stage records through the same helper.
-    recordPlacementPass(ctx, placementPass);
-    await asPartNotCompleted("assessment", async () => must(placementPass, "placement-inquiry"));
-    await checkLateBind("pre-digest");   // B5b checkpoint 2: a bind here rides the digest message as a re-classification block
-    const digestKey = (await asPartNotCompleted("assessment", async () => must(await runDigest(ctx), "register-digest"))).sessionKey;
-    ctx.digestKey = digestKey;           // B5b: the warm-redigest late-bind path resumes this session
+    // Placement and the register write-up (steps/placement-and-digest.mjs).
+    await runPlacementAndDigest({ checkLateBind, ctx }, { asPartNotCompleted, assertReceiptSettled, must, recordPlacementPass, runDigest, stage });
 
     // The skeptic, and the searches and rechecks that follow it (steps/skeptic-and-follow-up.mjs).
     await runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQids, flushDigestQueue, job, mintDigestWork, opts, planExec, run, unitKey }, { askableOf, bandBytesOf, capabilityGapAxes, defaultRecordFetcher, deriveBandShape, deriveNamedBand, envelopeDecision, envelopeHeldNote, escalationHeldNote, findFloorBreaches, forceFromActive, isInactiveAxisRow, lateRecordIds, loadCoverageLedger, officeGapOf, readFloorAxes, readPlanExecution, recordPlacementPass, recordScreenGateEvidence, refreshSupplementalExecution, remergeIfBandsMoved, runBatched, screenGateSnapshot, settleOneShotStamp, skepticDeferralExtra, stage, stickyGapUnits });
