@@ -11,7 +11,7 @@ import { CROWD_CONTEXT_AXIS, buildCrowdContext } from "../crowd-context.mjs";
 import { pendingItems, runPostFlushGateRepair } from "../digest-queue.mjs";
 import { config } from "../driver.config.mjs";
 import { note, outputMeta, runLog } from "../log.mjs";
-import { atomicWrite, driverDir, readJson } from "../run-record.mjs";
+import { atomicWrite, readJson } from "../run-record.mjs";
 import { fullyDeferredAxes, undoneSearchesNote } from "../register-plan.mjs";
 import { registerCapabilities } from "../register-unreachable.mjs";
 import { assembleRunRecords, recordBodyHasContent } from "../registry-fidelity.mjs";

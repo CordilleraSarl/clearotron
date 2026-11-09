@@ -13,7 +13,7 @@ import { addedClassBound, alreadyAttemptedReopen, applyDominantBackstop, deriveD
 import { boundDominantElementFrom } from "../frame-diff-record.mjs";
 import { canonicalJurisdictionCode } from "../jurisdiction-codes.mjs";
 import { note, runLog } from "../log.mjs";
-import { atomicWrite, driverDir, readJson } from "../run-record.mjs";
+import { atomicWrite, readJson } from "../run-record.mjs";
 import { blocksByQidOf, foldSupplementalEntries, joinPlanToBands, pendingRequiredQids, refuseWithheldFamilies, searchedJurisdictionsFromPlan, withheldFamilyTwins } from "../register-plan.mjs";
 import { registerCapabilities } from "../register-unreachable.mjs";
 import { accountRemedyTerms, domClosedOverAccounted, remedyAccountingEvent } from "../remedy-accounting.mjs";
