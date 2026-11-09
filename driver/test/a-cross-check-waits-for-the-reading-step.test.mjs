@@ -22,6 +22,7 @@ import { recordReleasedFamilies, recordWithheldFamilies, releasedFamilyQids, rea
 import { joinPlanToBands } from "../register-plan.mjs";
 import { repairFollowup } from "../repair-composers.mjs";
 import { STAGES, DECIDE_WAITING_FAMILIES } from "../stages.mjs";
+import { registerMounts } from "./register-mounts.mjs";
 
 const AXIS = "primary-sweep";
 const xcheck = (qid, predicate, term) => waitingCrossCheck({ qid, axis: AXIS, predicate, term, nice_classes: ["9"], regions: [], expected_kind: "enumerate" });
@@ -94,15 +95,14 @@ test("the follow-up lists the questions and gives the reading step its own order
 });
 
 test("the follow-up hands a fresh session the plan, axis and band path the tool takes, ahead of the order", async () => {
-  const { readFileSync, readdirSync } = await import("node:fs");
+  const { readFileSync } = await import("node:fs");
   const entries = PLAN.entries.filter((e) => e.when);
   const text = repairFollowup("register-unit:xcheck-decide", { axis: AXIS, registerPlan: "/run/_driver/register-plan.json", bandPath: "/run/bands/primary-sweep.md", entries });
   const line = 'For `register_execute_plan`, use `plan_path: "/run/_driver/register-plan.json"`, `axis: "primary-sweep"`, and `output_path: "/run/bands/primary-sweep.md"`; pass only the qids you released.';
   assert.ok(text.includes(line), "the follow-up does not give the tool's three arguments their values");
   assert.ok(text.indexOf(line) < text.indexOf(DECIDE_WAITING_FAMILIES), "the arguments do not come before the order that uses them");
   // Each argument it names is one every register server's plan tool requires.
-  const mcp = new URL("../engine/mcp/", import.meta.url);
-  const servers = readdirSync(mcp).filter((f) => f.endsWith(".mjs")).map((f) => readFileSync(new URL(f, mcp), "utf8"))
+  const servers = registerMounts().map(({ path }) => readFileSync(path, "utf8"))
     .filter((s) => /name: "register_execute_plan"/.test(s));
   assert.ok(servers.length > 0, "no server defines the plan tool; re-read this check");
   for (const s of servers) {
