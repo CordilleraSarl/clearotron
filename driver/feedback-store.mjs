@@ -23,8 +23,9 @@
 // would have hidden.
 
 import { randomUUID } from "node:crypto";
-import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { readJson } from "./run-record.mjs";
 
 /** good/bad, as the issue rules it: "Good flags matter as much as bad." */
 export const VERDICTS = new Set(["good", "bad"]);
@@ -111,7 +112,7 @@ export function listFlags(dir) {
   catch { return []; }
   const out = [];
   for (const n of names) {
-    try { out.push(JSON.parse(readFileSync(join(dir, n), "utf8"))); }
+    try { out.push(readJson(join(dir, n))); }
     catch { /* a half-written or hand-edited file is not a reason to lose the other 74 */ }
   }
   return out.sort((a, b) => String(b.capturedAt ?? "").localeCompare(String(a.capturedAt ?? "")));
