@@ -49,10 +49,9 @@
 // Writing a second application path would be the second writer, one artifact earlier.
 import { readFileSync, writeFileSync, mkdirSync, appendFileSync, readdirSync } from "node:fs";
 import { join, basename } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
 import { acceptClosureCall, toClosureLines, MAX_CLOSURES_PER_CALL } from "./doubt-closure-call.mjs";
 import { idSetHash as idSetHashOf, priorCallWithIdSet as priorCallWithIdSetIn } from "./call-repeat.mjs";   //
-import { readJson } from "./run-record.mjs";
+import { driverDir, readJson } from "./run-record.mjs";
 
 const CALLS_DIR = "doubt-closure-calls";
 const ARTIFACT = "doubt-closure.md";   // conversion 6 — the driver's render, read by validators.doubtClosure
