@@ -42,18 +42,20 @@ const KNOCKOUT = {
 };
 const AT_THE_SPLIT = "joint synthesis narrative";
 const KO_DEFECT = JSON.stringify([{ kind: "contradiction", mark: "IRONWHISK", finding: 1, problem: "The first conflict is rated below what its own evidence shows." }]);
+const moreThanOne = (stage) => (r) => (r.stages ?? []).filter((x) => x.stage === stage).length > 1;
 function scenarios() {
   const out = [];
   for (const engine of Object.keys(ENGINES)) {
     for (const [p, patch] of Object.entries(PRODUCTS)) out.push({ id: `${p}.${engine}`, engine, job: { ...JOB, ...patch } });
     out.push({ id: `knockout.${engine}`, engine, job: { ...JOB, ...KNOCKOUT }, knockout: true });
     const full = { ...JOB, ...PRODUCTS["full-country"] };
-    out.push({ id: `correction.${engine}`, engine, job: full, env: { MOCK_VERDICT_DEFECTS: "- the summary says the phonetic axis ran; the receipt shows it never did" } });
-    out.push({ id: `knockout-correction.${engine}`, engine, job: { ...JOB, ...KNOCKOUT }, knockout: true, env: { MOCK_KO_MATERIAL: KO_DEFECT } });
-    out.push({ id: `failed-stage.${engine}`, engine, job: full, env: { MOCK_FAIL_STAGE: AT_THE_SPLIT } });
-    out.push({ id: `resumed.${engine}`, engine, job: full, env: { MOCK_FAIL_STAGE: AT_THE_SPLIT, CLEAROTRON_RECOVERY_MAX: "1" }, resume: true });
-    out.push({ id: `parked.${engine}`, engine, job: full, env: engine === "codex" ? { MOCK_CODEX_RATELIMIT: "1", MOCK_CODEX_RATELIMIT_MATCH: AT_THE_SPLIT } : { MOCK_CLAUDE_RATELIMIT: "4102444800", MOCK_CLAUDE_RATELIMIT_MATCH: AT_THE_SPLIT } });
-    out.push({ id: `cancelled.${engine}`, engine, job: full, cancel: true });
+    out.push({ id: `correction.${engine}`, engine, job: full, env: { MOCK_VERDICT: "BLOCKING", MOCK_VERDICT_DEFECTS: "- the summary says the phonetic axis ran; the receipt shows it never did" }, reaches: moreThanOne("synthesis") });
+    out.push({ id: `knockout-correction.${engine}`, engine, job: { ...JOB, ...KNOCKOUT }, knockout: true, env: { MOCK_KO_MATERIAL: KO_DEFECT }, reaches: (r) => r.stages?.some((x) => x.stage.startsWith("knockout-correct")) });
+    out.push({ id: `failed-stage.${engine}`, engine, job: full, env: { MOCK_FAIL_STAGE: AT_THE_SPLIT }, reaches: (r) => r.terminal?.state === "recovering" });
+    out.push({ id: `knockout-failed.${engine}`, engine, job: { ...JOB, ...KNOCKOUT }, knockout: true, env: { MOCK_FAIL_STAGE: "KNOCKOUT SEARCH batch" }, reaches: (r) => r.terminal?.state === "failed" });
+    out.push({ id: `resumed.${engine}`, engine, job: full, env: { MOCK_FAIL_STAGE: AT_THE_SPLIT, CLEAROTRON_RECOVERY_MAX: "1" }, resume: true, reaches: (r) => r.terminal?.ok === true && moreThanOne("synthesis")(r) });
+    out.push({ id: `parked.${engine}`, engine, job: full, env: engine === "codex" ? { MOCK_CODEX_RATELIMIT: "1", MOCK_CODEX_RATELIMIT_MATCH: AT_THE_SPLIT } : { MOCK_CLAUDE_RATELIMIT: "4102444800", MOCK_CLAUDE_RATELIMIT_MATCH: AT_THE_SPLIT }, reaches: (r) => r.terminal?.state === "postponed" });
+    out.push({ id: `cancelled.${engine}`, engine, job: full, cancel: true, reaches: (r) => r.terminal?.state === "cancelled" });
   }
   return out;
 }
@@ -104,7 +106,8 @@ function normaliser(root, result) {
     let t = String(text);
     for (const [a, b] of pairs) t = t.split(a).join(b);
     return t
-      .replace(/\b\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:?\d{2})?/g, "<TS>")
+      .replace(/\b\d{4}-\d{2}-\d{2}T\d{2}[:-]\d{2}[:-]\d{2}([.-]\d+)?(Z|[+-]\d{2}:?\d{2})?/g, "<TS>")
+      .replace(/\.prev-[0-9a-f]{12}\b/g, ".prev-<HASH>")
       .replace(/\b\d{4}-\d{2}-\d{2}\b/g, "<DATE>")
       .replace(/"pid(Starttime)?":\s*"?\d+"?/g, '"pid$1":0')
       .replace(/\b1[7-9]\d{8}(\d{3})?\b/g, "<EPOCH>")
@@ -123,6 +126,7 @@ function record(spec, root, result, callLog, netLog, out) {
   const rec = { id: spec.id, engine: spec.engine, terminal: { ok: result.ok ?? null, failedStage: result.failedStage ?? null, terminalKind: result.terminalKind ?? null, state: result.state ?? null, threw: result.threw ? norm(result.threw) : null } };
   rec.network = existsSync(netLog) ? [...new Set(readFileSync(netLog, "utf8").trim().split("\n"))].sort() : [];
   if (!result.runDir) return rec;
+  try { rec.terminal.state = JSON.parse(readFileSync(join(result.runDir, "status.json"), "utf8")).state ?? null; } catch { /* a run that wrote no status file has no state to report */ }
   const run = join(result.runDir, "_driver");
   const events = readFileSync(join(run, "run.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
   rec.stages = stageOrder(events.filter((e) => e.event === "stage")).map((row) => JSON.parse(norm(JSON.stringify(row))));
@@ -200,6 +204,8 @@ function runOne(spec, out) {
       let rec;
       if (existsSync(resultFile)) rec = record(spec, root, JSON.parse(readFileSync(resultFile, "utf8")), callLog, netLog, out);
       else rec = { id: spec.id, engine: spec.engine, terminal: { couldNotRun: String(err?.message ?? "no result").slice(0, 400), stderr: stderr.slice(-800) } };
+      // A SCENARIO THAT STOPS REACHING ITS PATH STILL RUNS AND STILL COMPARES EQUAL, so it says so in its record.
+      if (spec.reaches && !spec.reaches(rec)) rec.didNotReachItsPath = true;
       writeFileSync(join(out, `${spec.id}.json`), JSON.stringify(rec, null, 1) + "\n");
       done({ id: spec.id, ms: Date.now() - t0, ok: rec.terminal?.ok, stages: rec.stages?.length ?? 0, couldNotRun: Boolean(rec.terminal?.couldNotRun) });
     });
@@ -234,6 +240,7 @@ async function main(argv) {
     for (const m of modules) console.log(`${m.file} [${owner(m.file)}]: ${m.changed} changed line(s), ${m.notRun.length} not run by any scenario`);
     console.log(`behaviour-snapshot: ${differences.length} behaviour difference(s) in ${new Set(differences.map((d) => d.split("/")[0])).size} scenario(s); ${modules.length} changed module(s)`);
     for (const gap of SCENARIO_GAPS) console.log(`behaviour-snapshot: not driven: ${gap}`);
+    for (const f of readdirSync(headDir).filter((n) => n.endsWith(".json"))) if (JSON.parse(readFileSync(join(headDir, f), "utf8")).didNotReachItsPath) console.log(`behaviour-snapshot: not driven: ${f.replace(/\.json$/, "")} ran but did not reach its path`);
     if (at("--detail")) writeFileSync(at("--detail"), [...differences, "", ...modules.map((m) => `${m.file}: not run: ${m.notRun.join(",")}`)].join("\n") + "\n");
     else for (const d of differences) console.log(d);
     return 0;

@@ -2152,8 +2152,8 @@
           "todos": 0
         },
         "a-scheduled-publish-builds-the-commit-its-decision-read.test.mjs": {
-          "tests": 2,
-          "asserts": 7,
+          "tests": 3,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },

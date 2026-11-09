@@ -23,8 +23,8 @@
 // recoverable. A genuine dead end must still terminate. What these tests pin is that the QUESTION IS
 // ASKED — the token reaches the channel, and the class comes from what the validator said.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import { StageFailure, connotationRemedyToken } from "../pipeline.mjs";
 import { classifyFailureReason } from "../repairs.mjs";
 
@@ -81,7 +81,7 @@ test("the merge derives its class from the validator's reason, and only after th
   // directly. Only this reads the call site, and the ORDER is half the defect — the class was computed
   // two lines before the validator spoke. Anchored to code, because the comment beside the fix quotes
   // the old expression and an unanchored grep would match the explanation of the bug.
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8")
+  const src = driverSource("pipeline.mjs")
     .replace(/\/\*[\s\S]*?\*\//g, "").split("\n").map((l) => l.replace(/\/\/.*$/, "")).join("\n");
   const iValidator = src.indexOf("validators.commonLaw(P.commonLaw");
   const iClass = src.indexOf("const clFailClass");
@@ -97,7 +97,7 @@ test("the merge derives its class from the validator's reason, and only after th
 });
 
 test("the remedy call site uses the exported reader, not a private message match", () => {
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8")
+  const src = driverSource("pipeline.mjs")
     .replace(/\/\*[\s\S]*?\*\//g, "").split("\n").map((l) => l.replace(/\/\/.*$/, "")).join("\n");
   assert.match(src, /const tok = connotationRemedyToken\(e\);/,
     "the remedy is extracting its token inline again — the tested reader is not the one that runs");

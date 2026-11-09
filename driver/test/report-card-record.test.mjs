@@ -6,8 +6,9 @@
 // wrong finding's file is the failure this stage's isolation exists to prevent, and O3c's 224/0 was a
 // measured habit until the driver started binding the index.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { mkdtempSync, writeFileSync, mkdirSync, readFileSync, existsSync } from "node:fs";
+import { mkdtempSync, writeFileSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import {
@@ -165,7 +166,7 @@ test("⭐ COUNTING — EVERY pipeline site that dispatches report-card binds the
   // reaches the first-attempt surface and misses the correction surface: here the second site is the
   // lint-repair re-render, a FRESH COLD turn, and a card written there without a binding would land
   // unbound. Enumerated from the SOURCE so a third site added later fails this instead of shipping.
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   const sites = [...src.matchAll(/stage\("report-card",\s*\{([^}]*)\}/g)].map((m) => m[1]);
   // THREE, and the third is why this arm is a count. The scope note for this conversion said two — the
   // render fan-out and the lint-repair re-render — because those are the two anybody reads about. The

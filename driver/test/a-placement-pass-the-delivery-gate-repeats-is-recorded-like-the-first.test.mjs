@@ -14,11 +14,11 @@
 // the delivery gate and is not derived again after its repairs; that is its own limit, older than this.
 // Every mark and owner is invented.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 import { paths } from "../stages.mjs";
 import { buildBandShape, deriveRegisterPositions } from "../band-shape.mjs";
 import { setAsideKeysOf, renderPlacementsJson } from "../placement-form.mjs";
@@ -29,8 +29,6 @@ import { recordPlacementPass } from "../pipeline.mjs";
 import { foldDiscardLedger, ledgerEnding, DISCARD_LEDGER_NAME } from "../record-discard.mjs";
 import { FLOOR_DUTY_STAMP } from "../floor-duty.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
-
-const HERE = dirname(fileURLToPath(import.meta.url));
 const rec = (id, mark, owner, extra = {}) => ({ record_id: `/mark/eu/${id}`, mark_text: mark, owner_name: owner, classes: ["9"],
   status: "registered", jurisdictions: ["EU"], ...extra });
 const BAND = [
@@ -108,7 +106,7 @@ test("a skipped pass decides nothing: the earlier pass's grounds stand and no st
 });
 
 test("the delivery gate's repeat of placement goes through the one helper, as the main path does", () => {
-  const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   const map = src.slice(src.indexOf("const UPSTREAM_STALE_REPAIR = {"), src.indexOf("export const DELIVERY_TAIL_LABEL_RE"));
   assert.match(map, /"placement-inquiry": async \(ctx\) => recordPlacementPass\(ctx, await stage\("placement-inquiry", ctx, \{ force: true, trigger: "stale-repair" \}\), "stale-repair"\)/);
   const start = src.indexOf("const placementPass = await asPartNotCompleted(\"assessment\", () => stage(\"placement-inquiry\", ctx));");

@@ -11,10 +11,8 @@
 // where none is, and the operator's copy beside it. ENV IS SET BEFORE THE FIRST IMPORT: both rosters are read once at
 // module load.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
 
 const REQUESTER = "+41000000111";
 const OPERATOR = "+41000000999";
@@ -23,8 +21,6 @@ process.env.CLEAROTRON_REQUESTER_WHATSAPP = JSON.stringify({ "robin@tenant.examp
 delete process.env.CLEAROTRON_WHATSAPP_OPERATOR_COPY;
 
 const { buildFailurePacket } = await import("../pipeline.mjs");
-const HERE = dirname(fileURLToPath(import.meta.url));
-
 const failure = (job) => buildFailurePacket({ runId: "velmorax-2026-10-27-amber-finch", agent: "mailagent", job,
   failedStage: "register-unit:primary-sweep", shortReason: "the register timed out", reasonVerbatim: "timed out",
   sig: "s", failClass: "transient", terminalKind: "exhausted" });
@@ -49,7 +45,7 @@ test("no notice anywhere takes its chat recipient from the agent's number", () =
   // The floor behind the two arms above: the pre-run and late-bind notices are built inline, so they are held by their
   // source. A packet key `whatsappTo:` read off the agent roster is the defect, wherever it reappears.
   for (const f of ["pipeline.mjs", "pipeline-knockout.mjs", "runner.mjs"]) {
-    const src = readFileSync(join(HERE, "..", f), "utf8").split("\n").filter((l) => !/^\s*\/\//.test(l)).join("\n");
+    const src = driverSource(f).split("\n").filter((l) => !/^\s*\/\//.test(l)).join("\n");
     assert.doesNotMatch(src, /whatsappTo:\s*AGENT_WHATSAPP\[/, `${f} addresses a notice to the agent's number`);
     assert.match(src, /whatsappRouting\(/, `${f} routes no notice through whatsappRouting — the floor is reading nothing`);
   }

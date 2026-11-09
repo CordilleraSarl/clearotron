@@ -6,6 +6,7 @@
 // these do: it compares two implementations given identical inputs, and the bug this module exists for
 // was two doors feeding the model DIFFERENT inputs and both computing correctly.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
@@ -186,7 +187,7 @@ test("AUDIT #172/8 — a run with no status.json still leaves a row: 'not measur
 // The behavioural tests above prove the writer. This one proves the CALL SITES exist — the finding was
 // never that the row was wrong, it was that four of the five terminals never reached it.
 test("AUDIT #172/8 — every terminal in pipeline.mjs actually calls the writer", () => {
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   const called = [...src.matchAll(/logTurnaroundReconciliation\([^)]*?"([a-z-]+)"\)/g)].map((m) => m[1]);
   for (const state of TERMINAL_STATES)
     assert.ok(called.includes(state), `the ${state} terminal must write a turnaround row (found: ${called.join(", ")})`);

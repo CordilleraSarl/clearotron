@@ -19,15 +19,15 @@
 // as a target: a definition written so those two strings appear is written to the answer sheet, and the
 // ruling calls that a fail. The categories are tested for having a meaning, never for reaching a mark.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { STAGES, VARIANT_CATEGORY_BRIEF } from "../stages.mjs";
 import { VARIANT_CATEGORIES } from "../variant-manifest-model.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const SRC = readFileSync(join(HERE, "..", "stages.mjs"), "utf8");
+const SRC = driverSource("stages.mjs");
 
 /**
  * The category enum, RE-DERIVED (conversion 3).

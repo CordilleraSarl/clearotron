@@ -29,6 +29,7 @@
 // which is a behaviour change on the engine path and is not done here.
 
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import { pinEnv, envFrom } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling; the default is taken only when NO spelling holds one
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -63,7 +64,7 @@ const wiringVia = (label, opts) => {
 // ══ the label is ONE construction, shared ═══════════════════════════════════════════════════════
 
 test("the sandbox dispatches on the same label production does — one construction site", () => {
-  const src = readFileSync(join(ROOT, "driver", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   const sites = [...src.matchAll(/const label = name \+ \(ctx\.axis \? `:\$\{ctx\.axis\}` : ""\);/g)];
   assert.ok(sites.length >= 1, "stageOnce still builds the dispatch label from name + ctx.axis");
   // `dispatchLabel` must reproduce it exactly, because the receipt claims to describe the dispatch.

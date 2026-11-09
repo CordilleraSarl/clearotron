@@ -10,11 +10,11 @@
 // Both now leave the count. A waiting family nobody judged stays where it was: it is still unread, and
 // "did not complete" is the fail-closed reading. The receipt is derived by the production join.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { deriveScopeFacts } from "../scope-facts.mjs";
 import { joinPlanToBands } from "../register-plan.mjs";
@@ -82,7 +82,7 @@ test("the run's waiting families are read as withheld from the turn's record and
 // families on the plan. The wiring is read from the source: the one call must name the withheld
 // families through the same reader the reviewer's table uses.
 test("the pipeline derives the summary line with the withheld families from waitingFamilyStates", () => {
-  const src = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.equal(src.split("deriveScopeFacts({").length - 1, 1, "one derivation of the summary line");
   const site = src.slice(src.indexOf("deriveScopeFacts({"), src.indexOf("deriveScopeFacts({") + 600);
   assert.match(site, /withheldQids: waitingFamilyStates\(runDir, planExecution\?\.awaiting\)\.withheld\.map\(\(f\) => f\.qid\)/);

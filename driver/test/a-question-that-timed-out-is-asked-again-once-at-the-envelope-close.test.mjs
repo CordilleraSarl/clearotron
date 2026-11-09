@@ -10,6 +10,7 @@
 // its answer instead of sending it; and the envelope close's own dispatch, which a tool argument cannot reach, asks it
 // once. Driven through the real executor against a stand-in register that records every request. Every mark is invented.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { existsSync, mkdtempSync, mkdirSync, readdirSync, writeFileSync, readFileSync, renameSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -123,7 +124,7 @@ test("the envelope close's dispatch, and only it, carries the driver's re-ask th
   assert.ok(adapters.every((a) => a.includes("reaskTimedOut = false")), "an adapter does not take the re-ask");
   assert.equal((config.match(/recordLog, \.\.\.\(reaskTimedOut \? \{ reaskTimedOut: true \} : \{\}\) \}\);/g) ?? []).length, adapters.length,
     "an adapter does not hand the re-ask to its executor");
-  const pipeline = readFileSync(join(DRIVER, "pipeline.mjs"), "utf8");
+  const pipeline = driverSource("pipeline.mjs");
   assert.ok(pipeline.includes('...(repairId === "early-envelope-close" ? { reaskTimedOut: true } : {})'), "the envelope close's dispatch does not ask again");
   assert.equal((pipeline.match(/reaskTimedOut: true/g) ?? []).length, 1, "another dispatch asks a timed-out question again");
 });

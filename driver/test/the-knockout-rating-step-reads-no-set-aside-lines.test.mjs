@@ -74,7 +74,7 @@ test("sentence 6 stays in the clearance's picking step; the knockout manual reco
   // below is a positive `includes`, and a positive cannot be broken by ADDING text, so a per-page
   // accounting paragraph could be added beside the section and pass all of them.
   assert.doesNotMatch(md, /EACH MARK'S PAGES/, "the page list stays out of the manual too, not only out of the dispatch");
-  assert.ok(md.includes("**Both are optional, and omitting them is always safe.**"), "the filing lines read as before");
+  assert.ok(md.includes("Omit these fields when their information does not apply."), "the filing lines say when to omit them");
   const placement = readFileSync(join(DRIVER, "skills", "placement-inquiry", "SKILL.md"), "utf8");
   assert.equal(placement.split(SENTENCE_6).length - 1, 1, "and it stays, once, in the clearance's picking step");
 

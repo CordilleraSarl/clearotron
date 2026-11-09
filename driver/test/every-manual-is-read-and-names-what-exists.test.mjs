@@ -27,7 +27,7 @@ import { NOT_INSTRUCTION_LOAD, identifierFindings, identifierFindingsIn, knownTo
 
 const BACKLOG = JSON.parse(readFileSync(join(DRIVER, "test/fixtures/manual-identifier-backlog.json"), "utf8"));
 // Lower this in the commit that lowers the backlog. It is never raised to admit a new finding.
-const BACKLOG_TOTAL = 3;
+const BACKLOG_TOTAL = 2;
 const POPULATION_FLOOR = 40;
 
 // Null when there is no checkout to list: `trackedFiles` has already said so, and no arm below can run.

@@ -231,6 +231,7 @@
 //   with rather than left implicit in a sampling decision.
 
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { readFileSync, mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -242,7 +243,7 @@ import { runEconomics } from "../run-economics.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
-const src = (f) => readFileSync(join(DRIVER, f), "utf8");
+const src = (f) => driverSource(f);
 
 /** The adjudication set, re-derived. Never a list — the population moved twice on its own thread. */
 const structureSites = () => nonEmpty(sweep(), "travelling-predicates sweep()")

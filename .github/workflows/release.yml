@@ -1080,6 +1080,8 @@ jobs:
       && ((needs.version.outputs.cut == 'true' && !contains(needs.version.outputs.version, '-'))
           || (needs.pending.outputs.cut == 'true' && !contains(needs.pending.outputs.version, '-')))
     uses: ./.github/workflows/macos.yml
+    with:
+      ref: ${{ needs.pending.outputs.sha }}
 
   # EVERY CUT IS INSTALLED ON WINDOWS, AND A RED ONE HOLDS A STABLE. README names Windows, natively from
   # PowerShell, and a change made on Linux can break how a turn is started, located or stopped there
@@ -1101,6 +1103,8 @@ jobs:
       && ((needs.version.outputs.cut == 'true' && !contains(needs.version.outputs.version, '-'))
           || (needs.pending.outputs.cut == 'true' && !contains(needs.pending.outputs.version, '-')))
     uses: ./.github/workflows/windows.yml
+    with:
+      ref: ${{ needs.pending.outputs.sha }}
 
   windows-beta:
     name: Install the beta on Windows, without holding it
@@ -1111,6 +1115,8 @@ jobs:
       && ((needs.version.outputs.cut == 'true' && contains(needs.version.outputs.version, '-'))
           || (needs.pending.outputs.cut == 'true' && contains(needs.pending.outputs.version, '-')))
     uses: ./.github/workflows/windows.yml
+    with:
+      ref: ${{ needs.pending.outputs.sha }}
 
   publish:
     name: Publish the release to npm
@@ -1579,6 +1585,8 @@ jobs:
       && github.repository == 'CordilleraSarl/clearotron'
       && needs.awaited.outputs.cut == 'true' && !contains(needs.awaited.outputs.version, '-')
     uses: ./.github/workflows/macos.yml
+    with:
+      ref: ${{ needs.awaited.outputs.sha }}
 
   # THE SAME TWO WINDOWS JOBS, for the version a dispatch cut and `awaited` saw merge. See `windows`.
   windows-awaited:
@@ -1589,6 +1597,8 @@ jobs:
       && github.repository == 'CordilleraSarl/clearotron'
       && needs.awaited.outputs.cut == 'true' && !contains(needs.awaited.outputs.version, '-')
     uses: ./.github/workflows/windows.yml
+    with:
+      ref: ${{ needs.awaited.outputs.sha }}
 
   windows-awaited-beta:
     name: Install the awaited beta on Windows, without holding it
@@ -1598,6 +1608,8 @@ jobs:
       && github.repository == 'CordilleraSarl/clearotron'
       && needs.awaited.outputs.cut == 'true' && contains(needs.awaited.outputs.version, '-')
     uses: ./.github/workflows/windows.yml
+    with:
+      ref: ${{ needs.awaited.outputs.sha }}
 
   publish-awaited:
     name: Publish the version this push cut, once it merges itself

@@ -18,8 +18,8 @@
 // would have closed the non-Latin half and left a live silent drop on Latin owner rows.
 
 import test from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 
 import { mintSupplementalQid, termIdentity, foldSupplementalEntries } from "../register-plan.mjs";
 import { kebab } from "../phase0.mjs";
@@ -88,7 +88,7 @@ test("minting is idempotent per batch, not per call — the caller mints in a lo
 // ── neither lane may go back to composing an identity from a display slug ─────────────────────────
 
 test("no mid-run lane composes a qid from kebab — asserted against the source, both lanes", () => {
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   const offenders = src.split("\n")
     .map((line, i) => [i + 1, line])
     .filter(([, line]) => /(?:qid|recall|xcheck)[^\n]*kebab\(/.test(line) && !line.trim().startsWith("//"));

@@ -165,7 +165,7 @@
     "skills/clearance-search/worked-examples.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 0,
-      "dictated-line-shape": 1
+      "dictated-line-shape": 0
     },
     "skills/clearance-search/report-prose.md": {
       "literal-json-skeleton": 0,
@@ -175,21 +175,21 @@
     "skills/case-law-citation/SKILL.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 1,
-      "dictated-line-shape": 1
+      "dictated-line-shape": 0
     },
     "skills/narrative-refutation/SKILL.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 2,
-      "dictated-line-shape": 1
+      "dictated-line-shape": 0
     },
     "skills/clearance-search/delivery-contract.md": {
       "literal-json-skeleton": 0,
-      "exactly-these-keys": 1,
-      "dictated-line-shape": 1
+      "exactly-these-keys": 0,
+      "dictated-line-shape": 0
     }
   },
   "totals": {
     "stages": 43,
-    "files": 59
+    "files": 54
   }
 }

@@ -16,15 +16,10 @@
 // de-identified by design. Same structure, invented marks — and the numbers above are the out-of-tree
 // measurement, quoted so a reader can re-run it against the preserved pair.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
 import { evidenceClaimViolations, evidenceFellClaimHeld, demotedStampReasserted, evidenceClaimTable, BASIS_RANK }
   from "../evidence-claim-invariant.mjs";
-
-const HERE = dirname(fileURLToPath(import.meta.url));
-
 const meter = (basis, source = "https://register.test/mark/ch/x1") => ({ token: "confirmed", basis, source });
 const finding = (mark, over = {}) => ({
   mark, owner: { name: `${mark} Holdings` }, band: "High",
@@ -151,7 +146,7 @@ test("the ladder is the run's own, and ordered", () => {
 // scan cannot prove a real run emits the event — nothing here drives that pipeline branch — but it does
 // prove the call, the artifact and the run.jsonl row are all still present.
 test("the invariant is CALLED at the corrective seam, and its result is recorded", () => {
-  const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.match(src, /import \{[^}]*evidenceClaimViolations[^}]*\} from "\.\/evidence-claim-invariant\.mjs"/,
     "imported");
   assert.match(src, /evidenceClaimViolations\(\{\s*before:[^}]*after:[^}]*demotions/,
@@ -201,7 +196,7 @@ test("the PIPELINE passes it — the composer working proves nothing about the c
   // passes `evidenceTable` at all. That is exactly the hole this whole issue is about — a signal computed
   // correctly and handed to nobody — and removing the argument from the call site reds nothing without
   // this. Verified by seeding: deleting `evidenceTable` from the dispatch args left the suite green.
-  const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.match(src, /const evidenceTable = evidenceClaimTable\(/, "the table is rendered at the seam");
   const dispatch = src.split("\n").find((l) => /correctionsScope,\s*appliedTable/.test(l));
   assert.ok(dispatch, "found the recheck dispatch args");

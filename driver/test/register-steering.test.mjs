@@ -18,6 +18,7 @@
 // structurally: the source guard at the bottom fails if a register_enumerate literal reappears anywhere
 // in pipeline.mjs outside a comment, so a future inline dispatch cannot ship an order to call it.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { STAGES, REGISTER_ENUMERATE_TOOL, SUPPLEMENTAL_LANE_STEERING, OWNER_SWEEP_STEERING,
@@ -279,7 +280,7 @@ test("SOURCE GUARD: no register_enumerate literal survives outside a comment in 
   // comment on a code line is deliberately NOT stripped, so the guard cannot be dodged with one. Only the
   // two real comment openers are stripped — a leading `*` was too broad (a markdown-style bullet inside a
   // multi-line prompt template would have been read as a JSDoc continuation and skipped).
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   const offenders = src.split("\n")
     .map((line, i) => [i + 1, line])
     .filter(([, line]) => !/^\s*(\/\/|\/\*)/.test(line))

@@ -11,18 +11,16 @@
 // rendered report is read. This file carries the two halves that arm cannot reach: the section builder's
 // own vocabulary, and a SOURCE-LEVEL check on the late-hardening branch.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { readFileSync, writeFileSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { fileURLToPath } from "node:url";
 import { join, dirname } from "node:path";
 import { buildReviewerOpenPointsSection, assembleReportMd } from "../pipeline.mjs";
 import { REVIEWER_OPEN_QUESTIONS_FILE } from "../reviewer-open-points.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { paths as stagePaths } from "../stages.mjs";
-
-const HERE = dirname(fileURLToPath(import.meta.url));
-const pipelineSrc = () => readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+const pipelineSrc = () => driverSource("pipeline.mjs");
 
 const review = (verdict, ...flags) =>
   [verdict, "", "## Flags", "", ...flags.map((f, i) => `${i + 1}. [kind: fact] [on: -] ${f}`)].join("\n");

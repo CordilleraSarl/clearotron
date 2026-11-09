@@ -10,8 +10,8 @@
 // The BUILDER and not audit.md, per the ruling: buildAuditMd runs on every republish, so an
 // already-delivered run gets its search log repaired the next time its workbook is built.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import { gridNegativeRows, buildAuditMd } from "../publish/audit-from-spine.mjs";
 import { searchRows } from "../publish/xlsx.mjs";
 import { STAGES, chainEntries, REGISTER_AXES } from "../stages.mjs";
@@ -91,8 +91,8 @@ test("item 33 — buildAuditMd uses the grid instead of the common-law tables wh
 // they parse `failover` events out of ARCHIVED runs' run.jsonl and degrade to null, and retiring that
 // response shape is a separate decision.
 test("no driver source can write or render a failover note", () => {
-  for (const f of ["../pipeline.mjs", "../stages.mjs", "../publish/index.mjs"]) {
-    const src = readFileSync(new URL(f, import.meta.url), "utf8");
+  for (const f of ["pipeline.mjs", "stages.mjs", "publish/index.mjs"]) {
+    const src = driverSource(f);
     // strip comments: the deletion is recorded in prose in all three files, and that prose must be
     // free to say the word. Only executable text is asserted on. NOTE the stripper handles FULL-LINE
     // `//` comments and block comments — a TRAILING `// … failover …` on a code line reads as
