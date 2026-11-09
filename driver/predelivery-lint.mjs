@@ -1819,14 +1819,35 @@ export function contentModelChecks({ findings, fourAnswers, expected }) {
 // writer's record, and the writer's own repair edits that record. Marked structural, a citation of a
 // finding the review withdrew went to no repair at all: measured in testing, 2026-10-28, all three
 // answers of a delivered summary panel linked to a withdrawn finding after a repair that had already
-// re-run the writer for another fault. So a failure that cites a withdrawn finding names the register
-// that holds it and each citation, and the repair hands it to the writer (repair-targets.mjs). One
-// that cites only findings the run does not have stays structural: the writer's repair has no wording
-// for that fault.
+// re-run the writer for another fault. So a failure names the register that holds it and each citation,
+// and the repair hands it to the writer (repair-targets.mjs). A citation of a finding the run does not
+// have goes the same way, in the general instruction, since "withdrew" would be untrue of it.
 //
 // ABSENT ⇒ SILENT. `fourAnswers` null/absent emits NOTHING, exactly as placementsChecks gates on
 // Array.isArray. Every archived run carries `four_answers: null`, so an ungated check would grow a new
 // failure across the whole replay corpus and flip verdicts the corpus depends on.
+// A forward step resting on a finding that is gone. The step's own displayed links skip a withdrawn finding, which says
+// nothing about whether the step still stands, so the step goes back to the writer with the finding it cited, and the
+// recheck after that repair reads it. Evidence that survives keeps the step: the writer decides, this names the fault.
+// ABSENT ⇒ SILENT, as for the four answers below: a record with no actions register emits nothing.
+export function actionCitationChecks({ actionsRegister, findings }) {
+  if (!Array.isArray(actionsRegister)) return [];
+  const live = new Set((findings ?? []).filter((f) => f && f.disposition !== "withdrawn").map((f) => Number(f.ordinal)));
+  const withdrawn = new Set((findings ?? []).filter((f) => f && f.disposition === "withdrawn").map((f) => Number(f.ordinal)));
+  const cites = [];
+  for (const a of actionsRegister) {
+    for (const n of Array.isArray(a?.ordinals) ? a.ordinals : []) {
+      const ord = Number(n);
+      if (withdrawn.has(ord)) cites.push({ action: a.id, ordinal: ord, withdrawn: true });
+      else if (!live.has(ord)) cites.push({ action: a.id, ordinal: ord, withdrawn: false });
+    }
+  }
+  const c = check("action-citations", "actions", "report", cites.length === 0, cites.length
+    ? `action(s) rest on finding(s) that are not there: ${cites.map((x) => `action ${x.action} cites #${x.ordinal}, which ${x.withdrawn ? "the review WITHDREW" : "this run has no finding for"}`).join("; ")}` : "");
+  if (cites.length) Object.assign(c, { register: "actions", cites });
+  return [c];
+}
+
 export function fourAnswersCoherenceChecks({ fourAnswers, findings, verdictDoc }) {
   if (!fourAnswers || typeof fourAnswers !== "object") return [];
   const out = [];
@@ -1853,8 +1874,7 @@ export function fourAnswersCoherenceChecks({ fourAnswers, findings, verdictDoc }
   }
   const ordinals = check("four-answers-ordinals", "content-model", "report", dangling.length === 0, dangling.length ?
     `the four-answers panel cites finding(s) that are not there: ${dangling.join("; ")} — the panel links each ordinal as a card anchor, so the reader follows it to nothing; re-cite the findings the answer actually rests on` : "");
-  if (cites.some((c) => c.withdrawn)) Object.assign(ordinals, { register: "four_answers", cites });
-  else if (!ordinals.pass) ordinals.structural = true;
+  if (cites.length) Object.assign(ordinals, { register: "four_answers", cites });
   out.push(ordinals);
 
   // (2) THIRD-PARTY RIGHTS vs the findings. "weak" is a statement about the field the findings
@@ -2558,6 +2578,7 @@ export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, 
   // UNGATED. contentModelExpected is `schema_version >= 5`, so leaving this inside the call above
   // meant a down-level file switched off the check that reports a down-level file.
   checks.push(...schemaVersionChecks({ schemaVersion: findingsSchemaVersion }));   // — the declared contract version
+  checks.push(...actionCitationChecks({ actionsRegister, findings }));   // a forward step resting on a finding that is gone: the writer's repair
   checks.push(...fourAnswersCoherenceChecks({ fourAnswers, findings, verdictDoc }));   // P5 review — the four answers must not contradict the verdict or the findings (flag-only, absent ⇒ silent)
   checks.push(...placementsChecks({ placements }));   // B2 — an empty structured mirror is a flag a human reads, never an unrepairable validator kill
   checks.push(...recordCarryChecks({ recordCarry }));   // — a retrieved record dropped with no recorded ground, and a drop that is really an incomplete stage

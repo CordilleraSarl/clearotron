@@ -35,7 +35,7 @@ Companion files (this skill):
 - [risk-framework.md](risk-framework.md) — the house-default band ladder (Very High · High · Moderate · Manageable), each band stated as Legal position, Practical position and Potential consequences
 - [synthesis-rules.md](synthesis-rules.md) — how to combine common-law + register findings into a single risk assessment (carries the default-to-senior-lawyer-judgment posture)
 - [worked-examples.md](worked-examples.md) — the analytical depth target
-- [templates/email/](templates/email/) — a RECORD of the retired per-customer email bodies (`generic.md`), kept for history. Nothing selects one and no seat writes from one: `composeEmailHtml` composes the single cover note in code. Do not draft against it
+- [templates/email/](../../../docs/architecture/retired-manuals/email-generic.md) — a RECORD of the retired per-customer email bodies (`generic.md`), kept for history. Nothing selects one and no seat writes from one: `composeEmailHtml` composes the single cover note in code. Do not draft against it
 
 Top-level reusable judgment skills (the three new "touchpoints" — see Phase 2 below):
 - `matter-frame` — runs **inline** at Phase 0: produces `matter-context.md` naming client + sector + customer base + materially-matters jurisdictions + off-field sectors + watchlist-owner seeds. Strategic foundation the rest of the workflow reasons against. Reusable by `knockout-searches` and future clearance-search.
@@ -239,7 +239,7 @@ The driver runs the delivery stage on **every** completed run — the search is 
 
 ### Deliverable 1: Narrative summary (email body)
 
-**No template is selected and no seat composes this.** `composeEmailHtml` builds the cover note in code from the structure below, one shape for every customer; the files under [templates/email/](templates/email/) are a record of the retired per-customer bodies, not a spec to draft against. The confidentiality marking is `confPosture` (`shared/brand.mjs`) — three-valued, stated there and nowhere else. What follows is the **content** the code renders, described so a reader can see what the mail carries.
+**No template is selected and no seat composes this.** `composeEmailHtml` builds the cover note in code from the structure below, one shape for every customer; the files under [templates/email/](../../../docs/architecture/retired-manuals/email-generic.md) are a record of the retired per-customer bodies, not a spec to draft against. The confidentiality marking is `confPosture` (`shared/brand.mjs`) — three-valued, stated there and nowhere else. What follows is the **content** the code renders, described so a reader can see what the mail carries.
 
 **Game-title developer attribution MUST come from `common-law-findings.md`'s `developer_of_record` / `publisher_of_record` fields** — never confabulate publishers (Bandai Namco, Tencent, etc.) by inferring from prior-frequent gaming companies. If the field is `not extracted` or empty, write "(developer unverified)" rather than guessing.
 

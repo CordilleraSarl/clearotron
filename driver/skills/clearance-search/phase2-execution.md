@@ -302,7 +302,6 @@ For **each finding** in the combined findings set (common-law + register, both l
 
 **Source of truth (file-truth precondition).** Build every Findings row from `studio/clearance-search/<slug>/<date>/register-findings.md` and `studio/clearance-search/<slug>/<date>/common-law-findings.md`. Do **NOT** assemble the Findings sheet / Excel from inline digest output — if the register-findings file is not present the synthesis is not ready (the driver re-runs the digest). *(Prior-incident anchor: a run where the register layer found an identical-mark registration, but with no register-findings file written it never reached the deliverable — the deliverable is built from files, not inline payloads.)*
 
-Every assessment must be labeled: **Advisory — preliminary assessment for the reviewing lawyer.**
 
 The staff lawyer makes the final determination. The skill's role is to surface the facts, apply the framework systematically, and flag what matters — not to make conclusive legal judgments.
 

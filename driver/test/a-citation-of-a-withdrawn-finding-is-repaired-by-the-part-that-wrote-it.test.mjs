@@ -30,7 +30,7 @@ import { pinEnv, envFrom } from "../../shared/env-aliases.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { overviewCitationFault, writersCitationFaults } from "../repair-targets.mjs";
 import { foldRecord, keptModelOrdinal } from "../record-fold.mjs";
-import { fourAnswersCoherenceChecks, overviewCitationChecks } from "../predelivery-lint.mjs";
+import { fourAnswersCoherenceChecks, actionCitationChecks, overviewCitationChecks } from "../predelivery-lint.mjs";
 import { synthesisFindings } from "./mock-stage-fixtures.mjs";
 
 const TEMP_DIRS = [];
@@ -58,7 +58,7 @@ const ENGINES = {
   codex: { CLEAROTRON_AI: "openai-agent", CLEAROTRON_CODEX_PATH: CODEX, CLEAROTRON_AI_BILLING: "api-key", CODEX_API_KEY: "sk-codex-dummy" },
 };
 const ENGINE_KEYS = ["CLEAROTRON_CLAUDE_PATH", "CLEAROTRON_CODEX_PATH", "CLEAROTRON_AI_BILLING", "CODEX_API_KEY"];
-const MOCK_KNOBS = ["MOCK_VERDICT", "MOCK_SKEPTIC", "MOCK_FINDINGS_N", "MOCK_ACTIONS", "MOCK_RECORD_WITHDRAWS", "MOCK_ANSWERS_CITE", "MOCK_OVERVIEW_CITES"];
+const MOCK_KNOBS = ["MOCK_VERDICT", "MOCK_SKEPTIC", "MOCK_FINDINGS_N", "MOCK_ACTIONS", "MOCK_RECORD_WITHDRAWS", "MOCK_ANSWERS_CITE", "MOCK_OVERVIEW_CITES", "MOCK_ACTION_CITES", "MOCK_LINT_REPAIR_ACTIONS"];
 const SCENARIO = { MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FINDINGS_N: "3", MOCK_RECORD_WITHDRAWS: "3" };
 
 async function runPipeline(engine, knobs) {
@@ -75,6 +75,8 @@ async function runPipeline(engine, knobs) {
 // The two ruled lines, with this scenario's finding filled in.
 const WRITER_LINE = "Your text cites finding 3, which the review withdrew. Remove that citation. Check the affected statement against the surviving assessment, and correct or remove it if unsupported. Keep unaffected text unchanged.";
 const OVERVIEW_LINE = "References: finding 3 (withdrawn). The listed references point to findings that have been withdrawn or are absent. Reassess the affected answers, actions, and conclusions against the surviving findings. Cite a surviving finding only where its evidence supports the statement; otherwise correct the statement. Preserve unaffected work and record the corrections through the existing correction tool.";
+const GENERAL = OVERVIEW_LINE.replace("References: finding 3 (withdrawn). ", "");
+const ABSENT_LINE = (n) => `References: finding ${n} (absent). ${GENERAL}`;
 const saved = (runDir, name) => JSON.parse(readFileSync(driverDir(runDir, "synthesis-calls", name), "utf8")).params.findings;
 
 const dispatches = (runDir, stage) => readdirSync(driverDir(runDir)).filter((f) => f.startsWith(`${stage}.attempt`) && f.includes(".dispatch.txt"))
@@ -106,6 +108,37 @@ for (const engine of Object.keys(ENGINES)) {
     assert.deepEqual(data.fourAnswers?.third_party_rights?.ordinals, [1], "the delivered panel still cites the withdrawn finding: the writer's patch was refused or never sent");
     assert.equal(res.ok, true, JSON.stringify(res));
   });
+
+  test(`${engine}: the summary panel citing a finding the run lacks goes to the writer's repair, in the general instruction`, async () => {
+    const { res, events } = await runPipeline(engine, { ...SCENARIO, MOCK_ANSWERS_CITE: "1,9" });
+    const lintFailed = events.findIndex((e) => e.event === "predelivery-lint-failed");
+    assert.ok(lintFailed >= 0 && events[lintFailed].failures.includes("four-answers-ordinals"), "the delivery check did not find the panel's citation");
+    assert.deepEqual(repairsAfter(events, lintFailed), ["synthesis"], "the repair did not go to the writer alone");
+    const msg = dispatches(res.runDir, "synthesis").find((m) => m.includes("The deterministic pre-delivery checks found these faults"));
+    assert.ok(msg?.split("\n").includes(`- ${ABSENT_LINE(9)}`), "the writer was not handed the general instruction");
+    assert.ok(!msg.includes("finding 9, which the review withdrew"), "a finding the run never had was called withdrawn");
+    assert.ok(!JSON.parse(readFileSync(driverDir(res.runDir, "predelivery-lint.json"), "utf8")).failures.includes("four-answers-ordinals"), "the delivery check still finds the citation");
+    assert.deepEqual(saved(res.runDir, "accepted.json").four_answers.third_party_rights.ordinals, [1]);
+    assert.equal(res.ok, true, JSON.stringify(res));
+  });
+
+  // The two cases design named: the withdrawn finding was the step's only support, and surviving evidence still supports it.
+  for (const [name, cites, repair, steps] of [["its only support", "3", "drop", []], ["one of its supports", "1,3", "uncite", [[1]]]]) {
+    test(`${engine}: a step resting on a withdrawn finding as ${name} goes to the writer's repair and is reread`, async () => {
+      const { res, events } = await runPipeline(engine, { ...SCENARIO, MOCK_VERDICT: "CONDITIONAL", MOCK_ACTIONS: "condition", MOCK_ACTION_CITES: cites, MOCK_LINT_REPAIR_ACTIONS: repair });
+      const lintFailed = events.findIndex((e) => e.event === "predelivery-lint-failed");
+      assert.ok(lintFailed >= 0 && events[lintFailed].failures.includes("action-citations"), "the delivery check did not find the step");
+      assert.deepEqual(events.find((e) => e.event === "report-repair-targets")?.record, ["action-citations"], "the step's fault was not placed in the writer's record");
+      assert.ok(repairsAfter(events, lintFailed).includes("synthesis"), "the repair did not go to the writer");
+      const msg = dispatches(res.runDir, "synthesis").find((m) => m.includes("The deterministic pre-delivery checks found these faults"));
+      assert.ok(msg?.split("\n").includes(`- References: action 1, finding 3 (withdrawn). ${GENERAL}`), "the writer was not handed the step and its finding");
+      assert.ok(!JSON.parse(readFileSync(driverDir(res.runDir, "predelivery-lint.json"), "utf8")).failures.includes("action-citations"), "the delivery check still finds the step");
+      const before = saved(res.runDir, "accepted-before-repair.json"), after = saved(res.runDir, "accepted.json");
+      assert.deepEqual(after.findings, before.findings, "the correction changed findings it was not asked to change");
+      assert.deepEqual(after.actions.map((a) => a.ordinals), steps);
+      assert.equal(res.ok, true, JSON.stringify(res));
+    });
+  }
 
   test(`${engine}: the overview citing a withdrawn finding by its number goes to the overview's repair, which removes it`, async () => {
     const { res, events } = await runPipeline(engine, { ...SCENARIO, MOCK_VERDICT: "CONDITIONAL", MOCK_ACTIONS: "condition", MOCK_OVERVIEW_CITES: "3" });
@@ -146,21 +179,32 @@ test("an overview whose prose cites no withdrawn or absent finding is given no c
     "a name the reference check could not place was read as the overview's citation");
 });
 
-test("the writer is handed one ruled line per withdrawn finding, in its own numbering, and none for a finding the run lacks", () => {
+test("the writer is handed one ruled line per withdrawn finding, in its own numbering, and the general instruction for a finding the run lacks", () => {
   const fault = { id: "four-answers-ordinals", register: "four_answers", detail: "delivered numbering", cites: [
     { answer: "registrability", ordinal: 2, withdrawn: true }, { answer: "third_party_rights", ordinal: 2, withdrawn: true },
     { answer: "registrability", ordinal: 7, withdrawn: false }] };
   const got = writersCitationFaults(fault, (o) => ({ 2: 3 })[o] ?? null);
-  assert.deepEqual(got.map((f) => f.detail), [WRITER_LINE], "one line for the withdrawn finding, in the writer's number, and none for the absent one");
+  assert.deepEqual(got.map((f) => f.detail), [WRITER_LINE, ABSENT_LINE(7)], "the ruled line for the withdrawn finding in the writer's number, then the general instruction for the absent one, never called withdrawn");
   assert.equal(got[0].finding, undefined, "the line is not named by a finding as well, which would repeat the number");
   const plain = { id: "scope-numbers-in-prose", detail: "x" };
   assert.deepEqual(writersCitationFaults(plain, () => 1), [plain], "a fault no register holds is left as it is");
 });
 
-test("a panel citing only findings the run lacks stays a flag: the writer's line is for a withdrawn one", () => {
+test("a panel citing only findings the run lacks goes to the writer, in the general instruction", () => {
   const c = fourAnswersCoherenceChecks({ fourAnswers: { third_party_rights: { token: "moderate", ordinals: [1, 9] } },
     findings: [{ ordinal: 1, disposition: "adversarial", band: "High" }], verdictDoc: null }).find((x) => x.id === "four-answers-ordinals");
-  assert.deepEqual([c.pass, c.structural, c.register], [false, true, undefined]);
+  assert.deepEqual([c.pass, c.structural, c.register], [false, undefined, "four_answers"]);
+  assert.deepEqual(writersCitationFaults(c, () => null).map((f) => f.detail), [ABSENT_LINE(9)]);
+});
+
+test("a step citing a withdrawn or absent finding is named to the writer in the general instruction; a step on live findings is not", () => {
+  const findings = [{ ordinal: 1, disposition: "adversarial" }, { ordinal: 3, disposition: "withdrawn" }];
+  const [c] = actionCitationChecks({ actionsRegister: [{ id: 1, ordinals: [1] }, { id: 2, ordinals: [3] }, { id: 3, ordinals: [1, 9] }], findings });
+  assert.deepEqual([c.id, c.pass, c.register, c.structural], ["action-citations", false, "actions", undefined]);
+  assert.deepEqual(writersCitationFaults(c, () => null).map((f) => f.detail),
+    [`References: action 2, finding 3 (withdrawn); action 3, finding 9 (absent). ${GENERAL}`]);
+  assert.deepEqual(actionCitationChecks({ actionsRegister: [{ id: 1, ordinals: [1] }, { id: 2, ordinals: [] }], findings }).map((x) => x.pass), [true], "a live or run-level step is a fault");
+  assert.deepEqual(actionCitationChecks({ actionsRegister: null, findings }), [], "a record with no register is silent");
 });
 
 test("a withdrawn finding the fold renumbered is named to the writer by the number its record carries", () => {

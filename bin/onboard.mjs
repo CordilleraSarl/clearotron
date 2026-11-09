@@ -243,7 +243,7 @@ export const cloudAccount = (cloud) =>
 export const servedLine = (v) => (v?.served || v?.provider)
   ? `served by ${v.served ?? "a model the program did not name"}${v.provider ? `; the program names its provider "${v.provider}"` : ""}.`
   : null;
-import { runRequiredNames, missingRequirements, billingRefusalWords, whatIsMissing, cannotSearchYet, REGISTER_ENV, ENGINE_ENV } from "../driver/run-requirements.mjs";   // the order-time gate's own question, asked here rather than restated
+import { runRequiredNames, missingRequirements, billingRefusalWords, whatIsMissing, rowsToName, cannotSearchYet, REGISTER_ENV, ENGINE_ENV } from "../driver/run-requirements.mjs";   // the order-time gate's own question, asked here rather than restated
 import { pinEnv, envFrom } from "../shared/env-aliases.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 // one synopsis reader for every verb that prints one.
@@ -1861,8 +1861,9 @@ export async function runCheck() {
     if (!serviceKnown) {
       info("the units' environment could not be read, so what a search would be refused for is NOT checked here — a failure to look is not a clean result");
     } else if (atOrder.length) {
-      blocking(`a search is refused until ${atOrder.length === 1 ? "this is" : "these are"} set in ${serviceEnvLabel}: ${atOrder.map((r) => r.name).join(", ")}`);
-      for (const r of atOrder) info(`  ${r.name} — ${r.why}`);
+      const named = rowsToName(atOrder);
+      blocking(`a search is refused until ${named.length === 1 ? "this is" : "these are"} set in ${serviceEnvLabel}: ${named.map((r) => r.name).join(", ")}`);
+      for (const r of named) info(`  ${r.name} — ${r.why}`);
     } else ok(`nothing a search is refused for at order time is missing from ${serviceEnvLabel}`);
   };
   const sayResearch = () => {

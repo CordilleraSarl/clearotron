@@ -438,6 +438,12 @@ export async function runJxSerpGrid(ctx, job, opts = {}, { runLog = () => {}, no
 const URI_RE = /https?:\/\/[^\s|)\]"'<>]+/g;
 const normUri = (u) => String(u).replace(/[.,;:!?]+$/, "");
 
+// The rows the cap keeps. The grid is in cell order, which says nothing about relevance, so use a reader could flag sat
+// past the cap on most saved runs (measured in testing, 2026-11-09). The judge's own classes come first, then anything
+// it could not judge, then the rest; within a class the grid's order stands.
+const GRID_ROW_RANK = new Map([["use-evidence", 0], ["listing-candidate", 1], ["unjudged", 2]]);
+const gridRowRank = (f) => GRID_ROW_RANK.get(f?.classification) ?? 3;
+
 /** Assemble the code-inlined zh evidence slice + the fetched-URI set it carries (pure over inputs). */
 export function buildNativereadPayload({ registerSliceText = "", candidates = [], cnipaSubgroups = [], gridFindings = [] }) {
   const sections = [];
@@ -452,7 +458,7 @@ export function buildNativereadPayload({ registerSliceText = "", candidates = []
   }
   let gridRowsDropped = 0;
   if (gridFindings.length) {
-    const rows = gridFindings.slice(0, NATIVEREAD_GRID_ROWS_CAP);
+    const rows = [...gridFindings].sort((a, b) => gridRowRank(a) - gridRowRank(b)).slice(0, NATIVEREAD_GRID_ROWS_CAP);
     gridRowsDropped = gridFindings.length - rows.length;
     sections.push("## Platform grid findings (judged)\n"
       + rows.map((f) => `- [${f.classification}] "${f.title}" — ${f.url} (term ${f.term} on ${f.platform})${f.note ? ` — ${f.note}` : ""}`).join("\n")
