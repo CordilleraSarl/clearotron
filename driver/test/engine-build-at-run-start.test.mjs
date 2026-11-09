@@ -127,14 +127,16 @@ test("NOT A CHECKOUT is BLOCKED, which is not clean — could-not-determine is i
 // ── the wiring: the stamp is at run START, in the run's own directory ──────────────────────────────
 
 test("the stamp is written where a FAILED run keeps it — the run dir, not the pool copy", () => {
-  const src = read("driver/pipeline.mjs");
+  const src = read("driver/steps/open-run.mjs");
   const at = src.indexOf('event: "engine-build"');
-  assert.ok(at > 0, "pipeline.mjs no longer logs the engine-build event");
+  assert.ok(at > 0, "open-run.mjs no longer logs the engine-build event");
 
   // BEFORE the first dispatch. Measured by position against the run-start record it sits beside, not
   // by reading the comment: an aborted run keeps only what was written before it aborted.
-  const startAt = src.indexOf('runLog(run.runDir, { event: "start"');
-  assert.ok(startAt > at,
+  const pipeline = read("driver/pipeline.mjs");
+  const openAt = pipeline.indexOf("await openRun(");
+  const startAt = pipeline.indexOf('runLog(run.runDir, { event: "start"');
+  assert.ok(openAt > 0 && startAt > openAt,
     "the engine-build row must be written BEFORE the run's own start record and every dispatch after it "
     + "— a stamp written at the end is a stamp an aborted run does not have, which is the population "
     + "#1423 exists for");
@@ -144,7 +146,7 @@ test("the stamp is written where a FAILED run keeps it — the run dir, not the 
 });
 
 test("THE KEY NAMES ITS REPOSITORY — `run.jsonl` already carries a different repo's `head`", () => {
-  const src = read("driver/pipeline.mjs");
+  const src = read("driver/steps/open-run.mjs");
   // The doctrine store's row is the one that was mistaken for the engine's. Both must exist, and the
   // engine's must not use the bare key.
   assert.match(src, /event: "skills-store".*head: s\.head/s, "the doctrine store's row still carries `head`");
