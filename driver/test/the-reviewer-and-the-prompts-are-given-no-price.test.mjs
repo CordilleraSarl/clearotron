@@ -18,7 +18,7 @@ const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
 
 test("the web prompts name the deepest tier, not the most expensive, and a footer without its cost", () => {
   const prompts = flat("clearance-common-law/perplexity-prompts.md");
-  assert.ok(prompts.includes("routes grid-shaped prompts to the deepest tier)."));
+  assert.ok(prompts.includes("Do not pass depth. The run's search setting decides the tier of every follow-up; the grid runs on its own tier."));
   assert.ok(prompts.includes("→ a metadata footer. Then:"));
   for (const gone of ["most expensive tier", "(tokens, cost)"])
     assert.ok(!prompts.includes(gone), `the web prompts still say "${gone}"`);
