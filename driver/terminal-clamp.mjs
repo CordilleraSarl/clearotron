@@ -52,6 +52,16 @@ export function verdictWithoutTheClosedGap({ verdict, assessed, reasons = [] } =
 }
 
 /**
+ * THE RESULT WHEN A REVIEW ASKED AGAIN RETURNS CLEAR OVER A CONDITION STILL STANDING. A guard that met a BLOCKING moved
+ * nothing, since BLOCKING is already the most cautious result, but its condition stands. A CLEAR with any condition left
+ * is CONDITIONAL on it, which is the recomputation a closed gap gets, from the assessment and the conditions that still
+ * stand, and the assessment stays CLEAR so a gap later closed can give that result back. PURE.
+ */
+export function verdictWithConditionsStanding({ verdict, reasons = [] } = {}) {
+  return verdict === "CLEAR" && reasons.length ? "CONDITIONAL" : verdict;
+}
+
+/**
  * THE RESULT ONCE A CORRECTION WITHDRAWS EVERY FORWARD LEGAL STEP THAT ALONE MADE IT CONDITIONAL (the owner's decision,
  * 2026-11-04). The review said CLEAR and the floor raised it to CONDITIONAL on the record's steps (`raisedBySteps`). The
  * withdrawal must be positive: a readable record whose actions register is a list holds none of them (`withdrawnAt`),
