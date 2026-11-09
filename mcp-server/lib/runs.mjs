@@ -8,7 +8,7 @@
 
 import { readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { DRIVER_DIR, driverDir } from "../../shared/driver-dir.mjs";   //
+import { DRIVER_DIR } from "../../shared/driver-dir.mjs";   //
 import { channelPackage } from "../../shared/permanent-install.mjs";   // — the check a reader is sent to, on this install's channel
 import { config, paths, reportIdentityFor } from "./driver.mjs";
 import { readJson, readJsonOrNull } from "../../driver/run-record.mjs";
@@ -54,7 +54,7 @@ export const bandWord = (v) => {
 export function tierFromRecord(runDir) {
   if (!runDir) return null;
   try {
-    const v = readJson(driverDir(runDir, "verdict.json"));
+    const v = readJson(paths(runDir).verdict);
     const t = String(v?.tier ?? "").trim();
     return t || null;
   } catch { return null; }
@@ -240,7 +240,7 @@ export function readReportData(run) {
 // render-knockout.mjs).
 export function productIdentityFor(run, docs = null) {
   try {
-    const pol = readJson(driverDir(run.runDir, "search-policy.json"));
+    const pol = readJson(paths(run.runDir).searchPolicy);
     const id = reportIdentityFor(pol).identity;
     if (id) return id;
   } catch { /* no frozen sidecar on this run — fall through to the published level id */ }
@@ -261,7 +261,7 @@ export function productIdentityFor(run, docs = null) {
 // full-grant sessions.
 export function runAccountKey(run) {
   try {
-    const p = readJson(driverDir(run.runDir, "profile.json"));
+    const p = readJson(paths(run.runDir).profile);
     return p.profileKey ?? p.key ?? null;
   } catch { return null; }
 }
@@ -280,7 +280,7 @@ export function runAccountKey(run) {
 // `known: false` says the engine cannot tell, which is a different sentence and an actionable one.
 export function runProfileFacts(run) {
   try {
-    const p = readJson(driverDir(run.runDir, "profile.json"));
+    const p = readJson(paths(run.runDir).profile);
     const key = p.profileKey ?? p.key ?? null;
     return {
       known: true,
@@ -299,7 +299,7 @@ export function runProfileFacts(run) {
 // visible only to a full-grant session.
 export function runOrganisation(run) {
   try {
-    const p = readJson(driverDir(run.runDir, "profile.json"));
+    const p = readJson(paths(run.runDir).profile);
     return typeof p.organisation === "string" && p.organisation ? p.organisation : null;
   } catch { return null; }
 }
