@@ -3,8 +3,7 @@
 EUR-Lex translation of the universal grounding logic in `../SKILL.md`. Use for **EU trademark case
 law — Court of Justice (CJEU) and General Court judgments** (likelihood of confusion under
 **Art. 8(1)(b) EUTMR**, enforcer profiling, distinctiveness). This is the dedicated EU court layer
-that Legal Data Hunter only covers patchily; run it for EU findings **in addition to** LDH and
-de-duplicate by CELEX / ECLI.
+that Legal Data Hunter only covers patchily. Where both return one judgment, de-duplicate by CELEX / ECLI.
 
 **No dedicated MCP, by design.** Unlike `courtlistener.md` / `legaldatahunter.md`, this adapter does
 **not** call a `eurlex__*` server. EU judgments are published verbatim and anonymously on EUR-Lex, at a stable, account-free URL.

@@ -44,6 +44,7 @@
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 
 import { driverDir } from "../shared/driver-dir.mjs";   //
+import { readJson } from "./run-record.mjs";
 
 export const TAINT_FAIL_RE = /^timeout$|^status_timeout$/;
 
@@ -136,7 +137,7 @@ function readTaintReceipt(runDir) {
   try {
     const p = driverDir(runDir, "register-taint.json");
     if (!existsSync(p)) return null;
-    const rec = JSON.parse(readFileSync(p, "utf8"));
+    const rec = readJson(p);
     return rec && typeof rec === "object" ? rec : null;
   } catch { return null; }
 }

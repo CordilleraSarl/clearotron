@@ -17,8 +17,8 @@ import { buildSelectionIndex, setAsideGrounds, isSetAsideGroupRow, lineKey, grou
 import { unionPlacementForm } from "./placement-union.mjs";
 import { readPlacementForm, readPlacementFormInput, placementFormStamp, placementFormPaths } from "./placement-form-io.mjs";
 import { parsePlacementsJson } from "./placement-model.mjs";
+import { readJsonOrNull } from "./run-record.mjs";
 
-const safeReadJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
 
 /** Every record uri a placements.json names. */
 export function placedUriRows(P) {
@@ -87,7 +87,7 @@ export function placementSetAsideGrounds(P) {   // @internal — driven by its t
  */
 export function placementFloorDecisionLines(P) {   // @internal — driven by its test with a run's own files
   try {
-    const floors = safeReadJson(P.bandShape)?.floors?.in_class_identical_or_near;
+    const floors = readJsonOrNull(P.bandShape)?.floors?.in_class_identical_or_near;
     if (!Array.isArray(floors) || !floors.length) return [];
     const groundOf = placementSetAsideGrounds(P);
     const out = [];

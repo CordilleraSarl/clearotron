@@ -65,7 +65,7 @@ import { drainWhatIfQueues, liveRunDirs } from "./whatif-worker.mjs";
 // throw. A self-contained LEGACY job (prose inline in the JSON, no sidecars) assembles unchanged: the overlay
 // loop is a no-op. A present, non-empty sidecar overrides the manifest's value for that field (sidecar wins).
 function assembleJob(procPath, qdir, base) {
-  const job = JSON.parse(readFileSync(procPath, "utf8"));
+  const job = readJson(procPath);
   // Prose sidecars share the job's BARE base (<id>.markName.md, …). A manifest mis-named `<id>.manifest.json`
   // — an observed forwarding-agent fumble (live, 2026-06-19) — leaves `base` as "<id>.manifest", so the
   // bare-base sidecars stop matching and the mark name never overlays → the job parks "missing mark name(s)".
@@ -267,7 +267,7 @@ export function checkRunCaps({ account, caps, queueDirs, inHandTagged = true, no
       let files = [];
       try { files = readdirSync(qd).filter(isLiveQueueMarker); } catch { continue; }
       for (const f of files) {
-        try { const j = JSON.parse(readFileSync(join(qd, f), "utf8")); if (inLane(j.profileKey, j.tenant)) queued++; }
+        try { const j = readJson(join(qd, f)); if (inLane(j.profileKey, j.tenant)) queued++; }
         catch { /* mid-rename / prose sidecar — skip */ }
       }
     }
@@ -552,6 +552,7 @@ import { procStarttime, parseClaimSidecar, claimAgeMs, claimerIsAlive } from "./
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { beat } from "./worker-heartbeat.mjs";   // — is anything draining this install
 import { BRAND } from "../shared/brand.mjs";   // — the operator name in the allowance note, from the tenant seam
+import { readJson } from "./run-record.mjs";
 export { procStarttime, parseClaimSidecar, claimAgeMs, claimerIsAlive };
 
 // — a queue running WITHOUT the birth stamp says so, once, out loud. Where no stamp can be read
@@ -751,7 +752,7 @@ async function backstopFailureNotice({ res, job, agentId, base, codename, studio
     // status flip mirrors the pipeline path (best-effort — packet + marker are the guaranteed lane)
     try {
       const sp = join(owned.dir, "status.json");
-      const s = JSON.parse(readFileSync(sp, "utf8"));
+      const s = readJson(sp);
       writeFileSync(sp, JSON.stringify({ ...s, state: "failed", failedStage: "pre-run", reason: shortReason, reasonTruncated, reasonFull, sendPending: true }, null, 2) + "\n");
     } catch { /* a pre-seed throw leaves no status.json — the packet still notifies */ }
     mkdirSync(config.outboxDir, { recursive: true });
@@ -1468,7 +1469,7 @@ export function claimDuePostponed(qdir) {
   for (const f of readdirSync(qdir).filter((f) => f.endsWith(".postponed"))) {
     const base = f.replace(/\.postponed$/, "");
     let meta = {};
-    try { meta = JSON.parse(readFileSync(join(qdir, `${base}.postponed.meta`), "utf8")); } catch { /* missing meta -> resume now (fail-open) */ }
+    try { meta = readJson(join(qdir, `${base}.postponed.meta`)); } catch { /* missing meta -> resume now (fail-open) */ }
     if (postponedDueAt(meta, config.rateLimitDefaultBackoffMs) > now) continue;   // window not elapsed yet
     // STOPPED WHILE PARKED. This is the resume path that most needs the check: a rate-limit park can
     // sit for hours, which is exactly when someone gives up and presses Stop — and a park has no turn
@@ -1571,7 +1572,7 @@ function queueOwnedCodenames() {
     try {
       for (const f of readdirSync(q)) {
         if (!f.endsWith(".postponed.meta") && !f.endsWith(".processing.meta")) continue;
-        try { const m = JSON.parse(readFileSync(join(q, f), "utf8")); if (m?.codename) owned.add(m.codename); } catch { /* skip */ }
+        try { const m = readJson(join(q, f)); if (m?.codename) owned.add(m.codename); } catch { /* skip */ }
       }
     } catch { /* queue dir absent */ }
   }
@@ -1602,7 +1603,7 @@ function queueTerminalCodenames() {
     try {
       for (const f of readdirSync(q)) {
         if (!suffixes.some((sfx) => f.endsWith(sfx))) continue;
-        try { const m = JSON.parse(readFileSync(join(q, f), "utf8")); if (m?.codename) settled.add(m.codename); } catch { /* skip */ }
+        try { const m = readJson(join(q, f)); if (m?.codename) settled.add(m.codename); } catch { /* skip */ }
       }
     } catch { /* queue dir absent */ }
   }
@@ -1692,7 +1693,7 @@ export function scanDueRunDirOrphans(now = Date.now()) {
           .filter((m) => !(abandoned && m === ".resuming"));
         if (inFlight.some((m) => existsSync(join(runDir, m)))) continue;
         let sent;
-        try { sent = JSON.parse(readFileSync(sentPath, "utf8")); } catch { continue; }
+        try { sent = readJson(sentPath); } catch { continue; }
         if (!sent.job || !sent.agent || !sent.codename) continue;          // pre-fix sentinel without payload — leave for manual handling
         if (owned.has(sent.codename)) continue;                            // the queue owns this resume — don't double-fire
         // ── — THE OTHER TWO WAYS A STOP IS SPELLED ──────────────────────────
@@ -1783,7 +1784,7 @@ export async function resumeRunDirOrphans(orphans, { runPipeline = pipeline } = 
     // already on disk, and threading them would put the same fact in two places to disagree.
     try {
       let sent = {};
-      try { sent = JSON.parse(readFileSync(claimPath, "utf8")); } catch { /* pre-fix sentinel — log what we have */ }
+      try { sent = readJson(claimPath); } catch { /* pre-fix sentinel — log what we have */ }
       runLog(o.runDir, { event: "park-resumed", via: "run-dir-sentinel",
         probeAttempt: Number(sent?.probeAttempt) || 0, parkedAt: sent?.postponedAt ?? null,
         kind: sent?.kind ?? null, fromStage: o.fromStage ?? sent?.fromStage ?? null });
@@ -1813,7 +1814,7 @@ export async function resumeRunDirOrphans(orphans, { runPipeline = pipeline } = 
           writeFileSync(join(o.runDir, ".failed"), JSON.stringify({ stage: "self-resume", reason: reasonText, reparks, ts: new Date().toISOString() }, null, 2) + "\n");
           try {
             const statusPath = join(o.runDir, "status.json");
-            const status = JSON.parse(readFileSync(statusPath, "utf8"));
+            const status = readJson(statusPath);
             // — cut VISIBLY. This is a terminal status write and it carried a bare 200-char slice,
             // so the cap that hides a cause hid it here too — and reasonText has already lost its own
             // tail to a 300-char slice one level up, which is the second cut nobody was told about.
@@ -1883,7 +1884,7 @@ export function armUnannouncedDelivery(runDir, label = "") {
     if (!existsSync(driverDir(runDir, "delivery.json"))) return "no-packet";
     if (existsSync(join(runDir, ".sent"))) return "already-sent";
     let status = {};
-    try { status = JSON.parse(readFileSync(join(runDir, "status.json"), "utf8")); } catch { /* absent/corrupt ⇒ treat as unarmed */ }
+    try { status = readJson(join(runDir, "status.json")); } catch { /* absent/corrupt ⇒ treat as unarmed */ }
     if (status?.sendPending === true) return "already-pending";
     const merged = { ...status, state: "delivered", sendPending: true, updatedAt: new Date().toISOString() };
     const tmp = join(runDir, `status.json.${process.pid}.${Date.now().toString(36)}.tmp`);
@@ -1902,7 +1903,7 @@ export function armUnannouncedDelivery(runDir, label = "") {
 export function runDirDelivered(dir) {
   if (existsSync(join(dir, ".delivered"))) return true;
   if (existsSync(driverDir(dir, "delivery.json"))) return true;
-  try { return JSON.parse(readFileSync(join(dir, "status.json"), "utf8"))?.state === "delivered"; } catch { return false; }
+  try { return readJson(join(dir, "status.json"))?.state === "delivered"; } catch { return false; }
 }
 
 // B1 — where (if anywhere) a codename's run already lives on disk. The live leaf is "<date>-<codename>";
@@ -2023,7 +2024,7 @@ function reclaimOrphanedClaims(qdir, agentId) {
       continue;
     }
     let meta = null;
-    try { meta = JSON.parse(readFileSync(`${procPath}.meta`, "utf8")); } catch { /* no/corrupt meta — legacy fresh re-claim */ }
+    try { meta = readJson(`${procPath}.meta`); } catch { /* no/corrupt meta — legacy fresh re-claim */ }
     if (meta?.codename) {
       let job = null;
       try { job = assembleJob(procPath, qdir, base); } catch { /* malformed manifest — the .json path fails it at intake properly */ }
@@ -2268,7 +2269,7 @@ function hasQueuedWork() {
         // postponedDueAt is the single source of truth, so the idle gate and the resume gate never disagree
         // (a null-resetsAt run is NOT yet work until its postponedAt backoff elapses).
         if (f.endsWith(".postponed")) {
-          try { const m = JSON.parse(readFileSync(join(q, `${f}.meta`), "utf8")); return postponedDueAt(m, config.rateLimitDefaultBackoffMs) <= now; }
+          try { const m = readJson(join(q, `${f}.meta`)); return postponedDueAt(m, config.rateLimitDefaultBackoffMs) <= now; }
           catch { return true; }
         }
         return false;

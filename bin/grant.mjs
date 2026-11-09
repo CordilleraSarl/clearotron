@@ -66,7 +66,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { assertGrantsShape } from "../shared/scope.mjs";   // — one shape check, not a second opinion
 import { withPerson, withoutPerson, personPoints, withOrganisation, withCompany } from "../shared/grants-edit.mjs";   // — the People page's own editors
 import { basename } from "node:path";
-import { atomicWrite } from "../driver/progress.mjs";
+import { atomicWrite } from "../driver/run-record.mjs";
 import { accessView } from "../driver/portal-config-view.mjs";
 import { makePrincipal } from "../driver/portal-access.mjs";
 import { envFrom } from "../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half

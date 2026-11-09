@@ -13,10 +13,11 @@
 // Both writes are atomic (temp + rename) and idempotent — status is DERIVED from the current run, never
 // blindly incremented — so the resumable pipeline can re-drive a run without corrupting either file.
 
-import { readFileSync, writeFileSync, renameSync, unlinkSync, readdirSync, statSync, existsSync } from "node:fs";
+import { readdirSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path"; import { STUDIO_SEGMENT_RE } from "../shared/pre-rename-spellings.mjs";
 import { sepClass, notSepClass } from "../shared/path-seps.mjs";   // a Windows path is built with "\"
 import { DRIVER_DIR } from "../shared/driver-dir.mjs";   //
+import { atomicWrite, readJson } from "./run-record.mjs";
 import { config } from "./driver.config.mjs";
 import { batchMarkName } from "./mark-name.mjs";
 import { runLog, note } from "./log.mjs";
@@ -135,21 +136,7 @@ export function finalStepFields() {
 
 function nowISO() { return new Date().toISOString(); }
 
-// Exported (B5): pipeline.mjs routes findings.json, sentinels, front-matter and escalation-state
-// through this same idiom — the tmp lives in the TARGET's directory (a sibling name), so the rename
-// never crosses a device; a reader sees the old complete file or the new one, never a truncation.
-export function atomicWrite(file, text) {
-  // unique tmp name: concurrent runs (WS-C) can rollup the same STATUS.md — a shared .tmp would
-  // cross-rename/ENOENT between writers (content is derived-from-disk either way, so last-writer-wins
-  // on the RENAME is fine; the tmp file itself must not be shared).
-  const tmp = `${file}.${process.pid}.${Date.now().toString(36)}.tmp`;
-  writeFileSync(tmp, text);
-  try { renameSync(tmp, file); }
-  catch (e) {
-    try { unlinkSync(tmp); } catch { /* cleanup is best-effort — the rename failure is the real error */ }
-    throw e;
-  }
-}
+export { atomicWrite };   // until every importer takes it from the door
 
 function statusPath(runDir) { return join(runDir, "status.json"); }
 
@@ -159,7 +146,7 @@ function statusPath(runDir) { return join(runDir, "status.json"); }
  * a second copy of where status.json lives.
  */
 export function readRunStatus(runDir) {
-  try { return JSON.parse(readFileSync(statusPath(runDir), "utf8")); }
+  try { return readJson(statusPath(runDir)); }
   catch { return {}; }
 }
 
@@ -556,7 +543,7 @@ export function rollupStatus(studioRoot) {
     const byRun = new Map();
     for (const f of files) {
       let s;
-      try { s = JSON.parse(readFileSync(f, "utf8")); } catch { continue; }
+      try { s = readJson(f); } catch { continue; }
       // THE ROLLUP SETTLES FROM THE SAME STORE mark_sent writes (audit item 7): `.sent` beside
       // status.json is the primary settle receipt, and mark_sent's sendPending flip is best-effort —
       // a flip that failed left STATUS.md shouting "SEND PENDING" over a run whose .sent guard was

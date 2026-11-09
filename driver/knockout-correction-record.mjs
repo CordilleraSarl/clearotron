@@ -27,6 +27,7 @@ import { DRIVER_DIR, driverDir } from "../shared/driver-dir.mjs";
 import { acceptedEnvelope } from "./preserve-merge.mjs";
 import { acceptKnockoutAssess, knockoutAssessCallPaths, knockoutAssessChunkFile, refuseUndeclared } from "./knockout-assess-record.mjs";
 import { validators as koValidators } from "./verify-knockout.mjs";
+import { readJsonOrNull } from "./run-record.mjs";
 
 const TOKEN = "knockoutcorrection";
 const SCHEMA_VERSION = 1;
@@ -41,7 +42,6 @@ const chunkBasePath = (runDir, chunkNo) => driverDir(runDir, `knockout-correctio
 const correctionCallDir = (runDir, chunkNo) => driverDir(runDir, join("knockout-correction-calls", `chunk-${Number(chunkNo)}`));
 
 const nameKey = (s) => String(s ?? "").trim().toLowerCase();
-const readJson = (path) => { try { return JSON.parse(readFileSync(path, "utf8")); } catch { return null; } };
 /** A finding's identity across a renumbering: the gate re-ranks on the band, so an ordinal does not survive a move. */
 export const sameFinding = (a, b) => nameKey(a?.name) === nameKey(b?.name) && nameKey(a?.owner) === nameKey(b?.owner);
 const withoutOrdinal = (f) => { const { ordinal: _ordinal, ...rest } = f ?? {}; return JSON.stringify(rest); };
@@ -62,7 +62,7 @@ export function correctionWork({ rated, material, chunks }) {
   return { schema_version: SCHEMA_VERSION, rated, defects };
 }
 
-export const readCorrectionWork = (runDir) => readJson(correctionWorkPath(runDir));
+export const readCorrectionWork = (runDir) => readJsonOrNull(correctionWorkPath(runDir));
 
 /** Keep each chunk a defect touches as it was rated. Written once: a resumed round must not take a corrected chunk for the base. */
 export function keepChunkBases(runDir, chunkNos) {
@@ -217,14 +217,14 @@ export function recordKnockoutCorrection(runDir, received, { boundOrdinal = null
 
   const work = readCorrectionWork(dir);
   const file = knockoutAssessChunkFile(dir, chunkNo);
-  const held = readJson(file), base = readJson(chunkBasePath(dir, chunkNo));
+  const held = readJsonOrNull(file), base = readJsonOrNull(chunkBasePath(dir, chunkNo));
   if (!work || !held || !base) return refused(`${TOKEN}_state: this run holds no correction for chunk ${chunkNo}.`);
   const scope = chunkScope(work, chunkNo, base);
 
   const applied = applyCorrectionCall({ held, call: rest, scope });
   if (!applied.ok) return refused(applied.reason);
   const receipt = knockoutCorrectionFile(dir, chunkNo);
-  const answers = mergedAnswers(readJson(receipt)?.answers, receivedAnswers, scope, { base, chunk: applied.chunk });
+  const answers = mergedAnswers(readJsonOrNull(receipt)?.answers, receivedAnswers, scope, { base, chunk: applied.chunk });
   if (!answers.ok) return refused(answers.reason);
 
   // THE SAME GATES A RATED CHUNK PASSED, at the call, while the seat can still repair what they name.
@@ -273,14 +273,14 @@ export function rollBackName(runDir, work, name) {
   const defects = (work?.defects ?? []).filter((d) => nameKey(d.mark) === nameKey(name));
   const chunkNo = defects[0]?.chunk;
   if (chunkNo == null) return;
-  const base = readJson(chunkBasePath(runDir, chunkNo)), held = readJson(knockoutAssessChunkFile(runDir, chunkNo));
+  const base = readJsonOrNull(chunkBasePath(runDir, chunkNo)), held = readJsonOrNull(knockoutAssessChunkFile(runDir, chunkNo));
   const rated = (base?.marks ?? []).find((m) => nameKey(m?.name) === nameKey(name));
   if (!base || !held || !rated) return;
   const was = summaryBlock(base.chunkSummary, name), now = summaryBlock(held.chunkSummary, name);
   const chunkSummary = was != null && now != null ? held.chunkSummary.replace(now, () => was) : held.chunkSummary;
   const text = JSON.stringify({ ...held, chunkSummary, marks: held.marks.map((m) => (nameKey(m?.name) === nameKey(name) ? rated : m)) }, null, 2) + "\n";
   writeFileSync(knockoutAssessChunkFile(runDir, chunkNo), text);
-  const receipt = readJson(knockoutCorrectionFile(runDir, chunkNo));
+  const receipt = readJsonOrNull(knockoutCorrectionFile(runDir, chunkNo));
   const ns = new Set(defects.map((d) => d.n));
   if (receipt) writeFileSync(knockoutCorrectionFile(runDir, chunkNo), JSON.stringify({ ...receipt, chunkSha: chunkSha(text),
     answers: (receipt.answers ?? []).filter((a) => !ns.has(a.defect)), rolledBack: [...new Set([...(receipt.rolledBack ?? []), ...ns])] }, null, 2) + "\n");
@@ -297,7 +297,7 @@ export function knockoutCorrectionRefusalsFor(runDir, chunkNo = 0) {
 /** The answers every chunk of the round has given, by defect. */
 export function correctionAnswers(runDir, chunkNos) {
   const out = new Map();
-  for (const c of chunkNos) for (const a of readJson(knockoutCorrectionFile(runDir, c))?.answers ?? []) out.set(a.defect, a);
+  for (const c of chunkNos) for (const a of readJsonOrNull(knockoutCorrectionFile(runDir, c))?.answers ?? []) out.set(a.defect, a);
   return out;
 }
 

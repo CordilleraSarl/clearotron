@@ -23,12 +23,12 @@
 import { STAGES, STAGE_ORDER, stageOrdinal, REGISTER_AXES, axisTier, resolveModel, config, deriveSlug } from "./driver.mjs";
 import { readCapped } from "./util.mjs";
 import { join, basename } from "node:path";
-import { readFileSync } from "node:fs";   // the canonical run's frozen profile
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 // — the SHARED eligibility composer. A leaf module (fs/path/crypto only), so a
 // static import here costs the read-only surface nothing and buys the one thing three copies of this
 // question could not give: the same answer at the door and at the worker.
 import { whatIfRefusal } from "../../driver/whatif-queue.mjs";
+import { readJson } from "../../driver/run-record.mjs";
 
 // ── — THE NOTE SAYS WHAT IS TRUE, AND IT IS THE STRONGER SENTENCE ────────
 //
@@ -294,7 +294,7 @@ export async function whatIfRun({ confirmationToken } = {}, deps = {}) {
   // resolveProfile THROWS `profile_key_unknown` on a named key it cannot find, so a what-if against a
   // store that no longer holds the customer now refuses instead of substituting one.
   const canonicalProfileKey = (() => {
-    try { return JSON.parse(readFileSync(driverDir(run.runDir, "profile.json"), "utf8"))?.profileKey ?? null; }
+    try { return readJson(driverDir(run.runDir, "profile.json"))?.profileKey ?? null; }
     catch { return null; }
   })();
   if (canonicalProfileKey) job.profileKey = canonicalProfileKey;

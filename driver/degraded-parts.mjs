@@ -28,6 +28,7 @@ import { driverDir, labelOfDriverFile } from "../shared/driver-dir.mjs";   // a 
 import { deferralCoverageRow } from "./deferral-row.mjs";
 import { PUBLISH_INPUTS, readStore } from "./publish/publish-inputs.mjs";
 import { readPartNotCompleted } from "./parts-not-completed.mjs";
+import { readJson } from "./run-record.mjs";
 
 // The name each part is given: a label the report or the workbook already prints. Never a new phrase.
 export const PART_NAMES = {
@@ -196,7 +197,7 @@ function register(runDir, log) {
     (searches.disclosed_axes ?? []).length ? `the pass on ${searches.disclosed_axes.join(", ")} timed out, read as it stands with its clean claims open` : "",
   ].filter(Boolean).join("; ") + `: ${searches.reason ?? "no cause recorded"}` }, "the searches"]);
   let reopen = null;
-  try { reopen = JSON.parse(readFileSync(driverDir(runDir, "frame-reopen.json"), "utf8")); } catch { reopen = null; }
+  try { reopen = readJson(driverDir(runDir, "frame-reopen.json")); } catch { reopen = null; }
   if (reopen?.dominant_element_gap === true && reopen?.domClosed !== true)
     failed.push([{ fail: "the omission the blind frame comparison flagged was not closed by the reopen pass" }, "the dominant-element crowd"]);
   if (!failed.length) return null;
@@ -286,7 +287,7 @@ export function recordsState(runDir) {
   if (!files.length) return "absent";
   for (const f of files) {
     try {
-      const body = JSON.parse(readFileSync(join(runDir, "_records", f), "utf8"));
+      const body = readJson(join(runDir, "_records", f));
       if (body && typeof body === "object" && !Array.isArray(body)) return "read";
     } catch { /* the next file */ }
   }
@@ -325,7 +326,7 @@ function coverageRows(runDir, log) {
 function evidenceStamps(runDir, log) {
   const threw = failedStep(log, "basis-derivation", "basis-derivation-failed");
   let record = null;
-  try { record = JSON.parse(readFileSync(driverDir(runDir, "basis-derivation.json"), "utf8")); } catch { record = null; }
+  try { record = readJson(driverDir(runDir, "basis-derivation.json")); } catch { record = null; }
   const standing = threw ? 0 : Number(record?.unwritable) || 0;
   if (!threw && !standing) return null;
   return { part: "evidence-stamps", name: RULED_WORDS.officialRecords, reason: NOT_COMPLETED,
@@ -375,7 +376,7 @@ export function writeDegradedParts(runDir, parts) {
 /** The rows written at delivery, or [] for a run that wrote none (every run before this change). */
 export function readDegradedPartRows(runDir) {
   try {
-    const rows = JSON.parse(readFileSync(driverDir(runDir, DEGRADED_PARTS_FILE), "utf8"))?.rows;
+    const rows = readJson(driverDir(runDir, DEGRADED_PARTS_FILE))?.rows;
     return Array.isArray(rows) ? rows.filter((r) => r && typeof r.area === "string" && typeof r.note === "string") : [];
   } catch { return []; }
 }
@@ -439,7 +440,7 @@ export function storeStates(base) {
 /** The store states delivery recorded, or null for a run delivered before it recorded them. */
 export function readDeliveredStores(runDir) {
   try {
-    const stores = JSON.parse(readFileSync(driverDir(runDir, DEGRADED_PARTS_FILE), "utf8"))?.stores;
+    const stores = readJson(driverDir(runDir, DEGRADED_PARTS_FILE))?.stores;
     return stores && typeof stores === "object" && !Array.isArray(stores) ? stores : null;
   } catch { return null; }
 }

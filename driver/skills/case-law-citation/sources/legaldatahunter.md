@@ -29,7 +29,7 @@ legaldatahunter`).
   decisions there is no source wired here today — report that as a coverage gap.
 - The dedicated EU court layer (CJEU / General Court judgments) now lives in
   [eurlex.md](eurlex.md) — prefer it for EU *judgments*. Keep LDH for EU **statutes** and the non-US /
-  Swiss jurisdictions, and run both for an EU finding, de-duplicating by CELEX / ECLI.
+  Swiss jurisdictions. Where both return one judgment, de-duplicate by CELEX / ECLI.
 
 ## Query vocabulary
 

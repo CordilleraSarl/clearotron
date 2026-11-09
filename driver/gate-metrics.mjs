@@ -35,9 +35,9 @@ import { slugStability, groupByMark } from "./plan-stability.mjs";
 // word is its own `band` — telemetry compares against whichever the finding carries.
 import { CLIENT_TIER_BY_COMPOSITE as TIER_BY_COMPOSITE } from "./findings-model.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — realpath both sides, or a symlinked invocation exits 0 silently
+import { readJson, readJsonOrNull } from "./run-record.mjs";
 const canonicalWord = (f) => f?.band != null ? String(f.band) : TIER_BY_COMPOSITE[f?.composite];
 const norm = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
-const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
 const readText = (p) => { try { return readFileSync(p, "utf8"); } catch { return ""; } };
 
 export function findRunDirs(roots) {
@@ -69,11 +69,11 @@ function deferralSlice(directive) {
 }
 
 export function deferralsRendered(runDir) {
-  const rec = readJson(driverDir(runDir, "frame-reopen.json"));
+  const rec = readJsonOrNull(driverDir(runDir, "frame-reopen.json"));
   const defs = rec?.deferrals ?? [];
   if (!defs.length) return null;
   const report = norm(readText(join(runDir, "report.md")));
-  const f = readJson(join(runDir, "findings.json"));
+  const f = readJsonOrNull(join(runDir, "findings.json"));
   const covText = norm((f?.coverage ?? []).map((c) => `${c.area} ${c.note ?? ""}`).join(" "));
   let rendered = 0;
   for (const d of defs) {
@@ -108,7 +108,7 @@ export function skepticConsumed(runDir) {
   if (!bullets.length) return null;
   // An absent register is not a run where nothing was consumed — it is a run this metric cannot read.
   // Returning 0-of-N here would print as a total collapse in skeptic uptake.
-  const parsed = readJson(join(runDir, "findings.json"));
+  const parsed = readJsonOrNull(join(runDir, "findings.json"));
   if (!parsed) return null;
   const register = norm(findingsText(parsed));
   let consumed = 0;
@@ -124,7 +124,7 @@ export function skepticConsumed(runDir) {
 // "Scored" = composite>=3 (legacy) or band-rated at all (doc 50 v4 — off-field carries no band, so
 // band-presence IS the rated line; telemetry only, so no manifest rank needed here).
 export function scoredFetched(runDir) {
-  const f = readJson(join(runDir, "findings.json"));
+  const f = readJsonOrNull(join(runDir, "findings.json"));
   const scored = (f?.findings ?? []).filter((x) => (x?.composite ?? 0) >= 3 || x?.band != null);
   if (!scored.length) return null;
   // ── THE FATE CODES, WHERE THE RUN HAS THEM ──────────────────────────────────
@@ -147,7 +147,7 @@ export function scoredFetched(runDir) {
   // uppercase. Both sides are lowercased before joining, as the `_records/` path below already does. An
   // un-normalised join here would miss ALL of them, not some — and a total miss reads as a clean
   // `fetched: 0`, which is this metric's alert, not its absence.
-  const lines = readJson(join(runDir, "register-hit-list.json"))?.lines;
+  const lines = readJsonOrNull(join(runDir, "register-hit-list.json"))?.lines;
   // NOT COMPUTED WHERE THE CODES ARE NOT THERE. The reading step is not asked for fate codes, and a list whose
   // lines carry none says nothing about what judgment opened: read as a measurement, every scored finding would
   // count as unfetched, an alarm about nothing. It says it could not be computed instead.
@@ -209,7 +209,7 @@ export function scoredFetched(runDir) {
   const fetched = new Set();
   for (const file of readdirSync(recDir)) {
     if (!file.endsWith(".json")) continue;
-    const uri = readJson(join(recDir, file))?._uri;
+    const uri = readJsonOrNull(join(recDir, file))?._uri;
     if (uri) fetched.add(String(uri).toLowerCase());
   }
   let ok = 0;
@@ -228,7 +228,7 @@ export function scoredFetched(runDir) {
 // archived runs it was built for. Read a null here as "no such surface", never as a failing join.
 export function clientTierMatch(runDir) {
   const cs = readText(join(runDir, "client-summary.md"));
-  const f = readJson(join(runDir, "findings.json"));
+  const f = readJsonOrNull(join(runDir, "findings.json"));
   if (!cs.trim() || !f?.findings?.length) return null;
   const blocks = [...cs.matchAll(/^## +([^\n—-]+).*\n([\s\S]*?)(?=^## |\s*$)/gm)];
   let total = 0, match = 0;
@@ -252,7 +252,7 @@ function pct(agg) { return agg.den ? Math.round((100 * agg.num) / agg.den) : nul
 // states the linted constraints in the drafting prompts; this is the before/after meter.
 export function lintFirstPassTax(runDir) {
   try {
-    const sink = JSON.parse(readFileSync(driverDir(runDir, "predelivery-lint.json"), "utf8"));
+    const sink = readJson(driverDir(runDir, "predelivery-lint.json"));
     if (!Array.isArray(sink?.initialFailures)) return null;
     return { initialFailures: sink.initialFailures.length };
   } catch { return null; }
