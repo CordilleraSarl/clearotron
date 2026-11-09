@@ -34,12 +34,11 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
 import { refuseUndeclared as refuseUndeclaredShared, keepIfAbsent, lastAccepted, acceptedEnvelope } from "./preserve-merge.mjs";
 import { parseVariantManifestModel } from "./variant-manifest-model.mjs";
 // THE LEDGER'S CLOSED VOCABULARIES, IMPORTED — never re-declared here. See the note at their re-export.
 import { SCOPE_LAYERS, SCOPE_STATUSES as SCOPE_STATUS } from "./scope-ledger.mjs";
-import { readJson } from "./run-record.mjs";
+import { paths, readJson } from "./run-record.mjs";
 
 export const MODEL_FILE = "variant-manifest.json";
 export const PROSE_FILE = "variant-manifest.md";
@@ -47,7 +46,7 @@ const SCHEMA_VERSION = 1;
 
 /** Where the call's evidence lives — the driver's own record of what the seat handed it. */
 export function clearanceVariantsCallPaths(runDir) {
-  const dir = driverDir(runDir, "clearance-variants-calls");
+  const dir = paths(runDir).clearanceVariantsCalls;
   return { dir, payload: join(dir, "call-001.json"), accepted: join(dir, "accepted.json") };
 }
 
