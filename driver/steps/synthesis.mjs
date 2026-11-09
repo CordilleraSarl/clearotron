@@ -42,7 +42,7 @@ export async function runSynthesis({ P, checkLateBind, ctx, job, opts, run }, he
   // with no items, so a run that has nothing to consume still leaves ctx.jxAim unset and the synthesis
   // message byte-identical. The unit itself refuses with a stated cause on every other condition.
   if (ctx.searchPolicy?.components?.jxLanes) {
-    const { runJxNativeread, jxAimForSynthesis } = await import("./jx-units.mjs");
+    const { runJxNativeread, jxAimForSynthesis } = await import("../jx-units.mjs");
     const nr = await runJxNativeread(ctx, job, opts, { runLog: (d, row) => runLog(d, row), note });
     if (nr.cause && !nr.ran) runLog(run.runDir, { event: "jx-nativeread-skipped", cause: nr.cause });
     const aim = jxAimForSynthesis(run.runDir);
