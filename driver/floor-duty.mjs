@@ -33,9 +33,8 @@
 // check, so every run predating it reports its whole floor unmet. That is the correct reading of those
 // runs, not a broken check.
 import { existsSync, writeFileSync } from "node:fs";
-import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
 import { entryUris } from "./placement-carry.mjs";
-import { paths, readJson } from "./run-record.mjs";
+import { driverDir, ensureDriverDir, paths, readJson } from "./run-record.mjs";   // — one definition of where `_driver/` is
 
 export const FLOOR_DUTY_SCHEMA_VERSION = 1;
 
