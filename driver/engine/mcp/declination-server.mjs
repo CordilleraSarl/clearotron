@@ -36,9 +36,8 @@
 import { serve } from "./stdio-server.mjs";
 import { recordDeclinations } from "../../declination-tool.mjs";
 import { MAX_DECLINATIONS_PER_CALL, DECLINATION_REASONS, DECLINATION_REASON_TOKENS } from "../../declination-call.mjs";
-import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir } from "../../../shared/driver-dir.mjs";   //
+import { driverDir, readJson } from "../../run-record.mjs";   //
 
 const DECLINATION_SPEC = "declination-spec.json";
 
@@ -55,7 +54,7 @@ const DECLINATION_SPEC = "declination-spec.json";
  * which is the failure the doubt-closure transport's own loader records in the same words.
  */
 function loadDeclinationSpec(runDir) {
-  const spec = JSON.parse(readFileSync(driverDir(runDir, DECLINATION_SPEC), "utf8"));
+  const spec = readJson(driverDir(runDir, DECLINATION_SPEC));
   return {
     runDir,
     rows: Array.isArray(spec?.rows) ? spec.rows : [],

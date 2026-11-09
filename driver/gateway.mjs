@@ -11,7 +11,7 @@
 // nothing and stops the next reader looking for a gateway.
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
+import { driverDir, readJson } from "./run-record.mjs";   //
 import { NO_SEARCH_RESULT, RESEARCH_CORRECTION } from "./research-answers.mjs";   // a search that did not answer supplies no result
 import { tmpdir } from "node:os";
 import { config, resolveModel, modelFamily, modelSnapshotKind, envOn, envGateOn, preflightEngineBinary, olderThanFloor, ENGINE_BINARIES } from "./driver.config.mjs";
@@ -691,7 +691,7 @@ export function syncDispositionForm(files) {
       const dir = dirname(String(f)), half = m[1] ?? null;
       const specPath = driverDir(dir, seat.spec(half));
       let spec = null;
-      try { spec = JSON.parse(readFileSync(specPath, "utf8")); }
+      try { spec = readJson(specPath); }
       catch {
         // No spec sidecar ⇒ a pre-change archived resume: nothing dictated, nothing owed, nothing to count.
         // A spec that EXISTS and does not parse is a different fact: the stage owes a sweep whose state
