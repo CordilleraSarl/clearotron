@@ -506,26 +506,26 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   // here so the decision has something to key on when it is made.
   let registerCountsUnreadable = false;
   if (!registerCounts) {
-    try { registerCounts = JSON.parse(readFileSync(driverDir(runDir, 'register-counts.json'), 'utf8')); }
+    try { registerCounts = readJson(driverDir(runDir, 'register-counts.json')); }
     catch { registerCounts = null; registerCountsUnreadable = existsSync(driverDir(runDir, 'register-counts.json')); }
   }
   // part 5 — the filings sidecar, read the same way and for the same reason: the publisher renders
   // what the driver measured and wrote, and a republish of an archived run picks up the same file. An
   // absent sidecar publishes exactly the counts-only knockout, with no filings section anywhere.
   let registerRecords = null, registerRecordsUnreadable = false;
-  try { registerRecords = JSON.parse(readFileSync(driverDir(runDir, 'register-records.json'), 'utf8')); }
+  try { registerRecords = readJson(driverDir(runDir, 'register-records.json')); }
   catch { registerRecords = null; registerRecordsUnreadable = existsSync(driverDir(runDir, 'register-records.json')); }
   // The owner lookups this run made, read the same tolerant way as the records above:
   // an archived run that predates the lane has no file, and its cards then render exactly as they were
   // delivered. The source line the report prints comes from HERE, not from anything the seat typed.
   let ownerChecks = [];
-  try { ownerChecks = JSON.parse(readFileSync(driverDir(runDir, 'owner-checks.json'), 'utf8')).checks ?? []; }
+  try { ownerChecks = readJson(driverDir(runDir, 'owner-checks.json')).checks ?? []; }
   catch { ownerChecks = []; }
   // The request the run was given, read the same tolerant way as the sidecars above and for the same
   // reason (A.1). It is what "About this request" states; a run archived before the
   // sidecar existed has none, and its page renders exactly as it was delivered.
   let instructedScope = null, scopeUnreadable = false;
-  try { instructedScope = JSON.parse(readFileSync(driverDir(runDir, 'instructed-scope.json'), 'utf8')); }
+  try { instructedScope = readJson(driverDir(runDir, 'instructed-scope.json')); }
   catch { instructedScope = null; scopeUnreadable = existsSync(driverDir(runDir, 'instructed-scope.json')); }
   // The run's frozen method, where its framework states one (framework-method.mjs): the report card and
   // the workbook's band cell show the framework's inputs beside the band. A run that froze none — every
@@ -621,7 +621,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     && existsSync(join(runDir, 'research', `${kebab(name)}.md`))
     && !sweepReceipts.some((r) => r?.mark === name && !r.question))
     .map((mark) => ({ mark, preset: koPreset }));
-  const openPoints = (() => { try { return JSON.parse(readFileSync(driverDir(runDir, 'knockout-corrections.json'), 'utf8')).open ?? []; } catch { return []; } })();
+  const openPoints = (() => { try { return readJson(driverDir(runDir, 'knockout-corrections.json')).open ?? []; } catch { return []; } })();
   const auditFile = `knockout-audit-${codename ?? runId}.xlsx`;
   await buildKnockoutWorkbook(findings, sweepReceipts, join(poolRunDir, auditFile), registerCounts, qcFlags, framework, registerRecords, frameworkMethod, [...ownerChecks, ...lookupsNotRun], {
     listing: registerRecords ? null : steps.listing, reading: steps.reading, review: steps.review, machineChecks: machineChecksFailed,
@@ -819,7 +819,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     // WHICH ORGANISATION'S GENERIC this batch was filed under, read from the frozen sidecar exactly as
     // the clearance publisher reads it. Absent on a company's batch and on one filed before
     // organisations existed.
-    organisation: (() => { try { const f = JSON.parse(readFileSync(driverDir(runDir, 'profile.json'), 'utf8')); return typeof f?.organisation === 'string' && f.organisation ? f.organisation : undefined; } catch { return undefined; } })(),
+    organisation: (() => { try { const f = readJson(driverDir(runDir, 'profile.json')); return typeof f?.organisation === 'string' && f.organisation ? f.organisation : undefined; } catch { return undefined; } })(),
     issuedAt: dates.issuedAt,
     renderedAt: dates.renderedAt,
     kind: 'knockout-batch',
@@ -947,3 +947,4 @@ export function knockoutDocumentRoutes(reports, { auditFile = null } = {}) {
 import { addressListedFilings, reasonCellFor } from './office-record-links.mjs';
 import { reportDates, zurichStamp } from './report-dates.mjs';   // the dates a report prints, from its record
 import { declaredRecordOrigins } from '../record-origins.mjs';
+import { readJson } from "../run-record.mjs";
