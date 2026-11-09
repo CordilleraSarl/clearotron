@@ -44,9 +44,10 @@
 // re-running a CLEARANCE twice costs a second billable search and a second report to a lawyer. The
 // cheaper failure buys a much simpler protocol, and the asymmetry is the whole reason to state it.
 
-import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, renameSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { randomUUID } from "node:crypto";
+import { readJson } from "./run-record.mjs";
 
 // ── WHICH RUNS A WHAT-IF MAY TOUCH — ONE DECLARATION, TWO READERS ───────────────────────────────────
 //
@@ -186,7 +187,7 @@ export function claimWhatIf(entry) {
   if (!entry.stale) {
     try { renameSync(entry.path, target); } catch { return null; }
   }
-  try { return { ...JSON.parse(readFileSync(target, "utf8")), _path: target }; }
+  try { return { ...readJson(target), _path: target }; }
   catch (e) {
     try { writeFileSync(pathFor(entry.runDir, entry.id, "failed"), JSON.stringify({ id: entry.id, state: "failed", error: `unreadable manifest: ${e.message}` }, null, 2)); } catch { /* best-effort */ }
     return null;
@@ -222,7 +223,7 @@ export function readWhatIf(runDir, id) {
     const p = pathFor(runDir, id, suffix);
     if (!existsSync(p)) continue;
     let body = null;
-    try { body = JSON.parse(readFileSync(p, "utf8")); } catch { /* a mid-write terminal reads as its state with no body */ }
+    try { body = readJson(p); } catch { /* a mid-write terminal reads as its state with no body */ }
     return { id, state, ...(body ?? {}) };
   }
   return { id, state: "unknown", note: "no what-if with that id on this run" };
