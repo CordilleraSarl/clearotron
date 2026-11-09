@@ -30,12 +30,15 @@ const FIELDS = ["readOnlyHint", "destructiveHint", "idempotentHint", "openWorldH
 // every server below calls, and it serves nothing on its own. Excluded by name, with the reason, rather
 // than by loosening the glob: a looser pattern would silently stop covering a server named later.
 const NOT_A_SERVER = new Set(["stdio-server.mjs"]);
-const serverFiles = () => readdirSync(MCP_DIR).filter((f) => f.endsWith("-server.mjs") && !NOT_A_SERVER.has(f));
+const REGISTER_SERVER = "register-server.mjs";
+const serverFiles = () => readdirSync(MCP_DIR).filter((f) => f.endsWith("-server.mjs") && !NOT_A_SERVER.has(f) && f !== REGISTER_SERVER)
+  .concat(KNOWN_REGISTER_PROVIDERS.map((p) => `${REGISTER_SERVER} ${p}`));
 
 /** Speak MCP to one server over stdio and return its tools/list reply. */
 function listTools(file) {
   return new Promise((resolve) => {
-    const child = spawn(process.execPath, [join(MCP_DIR, file)], { stdio: ["pipe", "pipe", "ignore"] });
+    const [script, ...args] = file.split(" ");
+    const child = spawn(process.execPath, [join(MCP_DIR, script), ...args], { stdio: ["pipe", "pipe", "ignore"] });
     let out = "";
     const done = (v) => { try { child.kill("SIGKILL"); } catch { /* already gone */ } resolve(v); };
     const timer = setTimeout(() => done({ error: "timed out" }), 20_000);
@@ -125,7 +128,7 @@ test("no tool that reaches a vendor claims to stay in the closed world", async (
   // their reason, in the same idiom as NOT_A_SERVER above — they are outbound by definition rather than
   // members of a growing set.
   const OUTBOUND_FETCHERS = ["fetch", "perplexity"];
-  const reachesAVendor = new Set([...KNOWN_REGISTER_PROVIDERS, ...OUTBOUND_FETCHERS].map((n) => `${n}-server.mjs`));
+  const reachesAVendor = new Set([...KNOWN_REGISTER_PROVIDERS.map((n) => `${REGISTER_SERVER} ${n}`), ...OUTBOUND_FETCHERS.map((n) => `${n}-server.mjs`)]);
 
   const liars = [];
   let reachers = 0;
