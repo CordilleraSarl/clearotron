@@ -21,6 +21,10 @@ The funnel hands you the named band unjudged; it decided *nothing* about relevan
 
 After register-unit workers and common-law workers have returned their findings (Phase 2 Step 2B end), BEFORE the digest worker (`clearance-register` MODE B) spawns to tier candidates. One Opus call (inline by the orchestrator), reads matter-context.md + the band shape, then the records its order and your judgment call for (through the band tools) + the common-law findings.
 
+## Model
+
+Inherits the orchestrator's tier when invoked inline. No `sessions_spawn` — this is a templated reasoning step the orchestrator performs itself between Step 2B end and the digest spawn.
+
 ## Inputs you receive
 
 - `matter-context.md` from `matter-frame` at the path your task message names (the strategic foundation — read it once, reference it throughout)

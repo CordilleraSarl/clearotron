@@ -30,7 +30,10 @@ no worked entries teaches nothing about the shape it is asking for. They are exa
 not a roster to match against.
 
 **The real roster is not in this repository.** A deployment supplies its own by shipping a
-`watchlist-reference.md` in its instructions directory, which replaces this file wholesale. Until a deployment ships its own reference, name seeds from the matter and the request.
+`watchlist-reference.md` in its instructions directory, which replaces this file wholesale. Until
+one is supplied, matter-frame names seeds from the matter and from the run manifest's own
+`aggressive_enforcers` / `competitors` / `major_brand_owners` lists — which is where a run's real
+watchlists come from in any case, and is why this file was never authority.
 
 ## Gaming
 
