@@ -8,6 +8,7 @@
 // declarations, not just the green tick."
 
 import test from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -576,7 +577,7 @@ test("E3: the lint does not count the E1 declaration — the scaffolding is invi
   //
   // The guard is a differential: strip the declaration and the count must not move. If it does, the
   // ceiling is measuring the audit rather than the contract.
-  const src = readFileSync(join(DRIVER, "stages.mjs"), "utf8");
+  const src = driverSource("stages.mjs");
   const blocks = stageSourceBlocks(src);
   const moved = [];
   for (const stage of Object.keys(STAGES)) {

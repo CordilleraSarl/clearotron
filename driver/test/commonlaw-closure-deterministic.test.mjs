@@ -9,6 +9,7 @@
 // the mock only ever wrote VALID ledger JSON; these tests inject the exact malformed shape and prove the
 // driver no longer depends on any agent-authored ledger JSON.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, chmodSync, readFileSync, existsSync, readdirSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -65,7 +66,7 @@ const hasUnparseable = (events) => events.some((e) => /grid_ledger_unparseable/.
 
 // ── guard (test c): the append instruction is GONE; the cell arm dictates a driver-written supp spec ─────
 test("guard: no lane instructs an agent ledger append; the closure cell arm dictates grid_spec_path", async () => {
-  const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.doesNotMatch(src, /APPEND the supplementary call/, "the agent-authored ledger append is deleted from every lane");
   // dynamic: a split run with closable cells routes the closure followup through a supplementary grid spec
   const { messages } = await run({ MOCK_CL_GAPS: "1" }, "guard");

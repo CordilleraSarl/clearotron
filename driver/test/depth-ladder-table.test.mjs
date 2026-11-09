@@ -13,6 +13,7 @@
 //     un-grades a product silently, which reads as "the ladder did nothing" rather than as a defect.
 
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -168,8 +169,7 @@ const DECLARED_ONLY = {
 };
 
 test("every depth row is either CONSUMED by the driver or listed as declared-only, with a reason", () => {
-  const sources = ["../pipeline.mjs", "../stages.mjs"]
-    .map((f) => readFileSync(new URL(f, import.meta.url), "utf8")).join("\n");
+  const sources = ["pipeline.mjs", "stages.mjs"].map((f) => driverSource(f)).join("\n");
   const fields = Object.keys(PRODUCT_POLICIES["full-country-search"].depth);
   assert.ok(fields.length > 0, "the one-country row is empty — nothing below discriminates");
   for (const field of fields) {

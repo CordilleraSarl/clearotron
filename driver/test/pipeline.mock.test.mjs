@@ -4,6 +4,7 @@
 // Offline driver dry-run: runs the WHOLE pipeline against a mock engine (no billable calls).
 // Asserts stage sequence, the fan-in barrier, skeptic escalation, the verdict gate, and sentinels.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import { refusalsFor } from "../synthesis-record.mjs";   // the run's record that a defect was refused and restated
 // THE AGENT IS PINNED BECAUSE THE PATH IS THE AGENT'S (ruling 563). The studio paths these fixtures
 // build resolve under `config.defaultAgent`, which reads CLEAROTRON_DEFAULT_AGENT. Until that ruling one
@@ -888,7 +889,7 @@ test("screen-gate: one mode filter, one helper, BOTH gate checks — the ION pro
   // re-check called the helper raw. The cure was structural — every gate read goes through
   // `enforcedViolations`, which owns the filter — so this asserts the structure rather than a run,
   // WITH a control that fails if it is reading the wrong text.
-  const SRC = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  const SRC = driverSource("pipeline.mjs");
   const from = SRC.indexOf("const checkScreenGate = ()");
   // ANCHORED ON THE PROSE, NOT THE SPEC NUMBER. The end marker used to read "// spec-66: AFTER any
   // settlement/late flush"; the cut strips a spec reference out of a comment and left "//: AFTER any
@@ -3028,7 +3029,7 @@ test("a legitimate unsplit path is NOT a failure: a pre-split resume still deliv
 // on the dependency-repair.test.mjs precedent (its 15a and 15b tests), because the failure being guarded is a future edit
 // quietly demoting it back to a recorded row, not a particular run.
 test("selector/record disagreement FAULTS, and the record is written BEFORE the throw", async () => {
-  const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   // ANCHORED ON THE PROSE, NOT THE ISSUE NUMBER. The heading carried a bare issue reference and the cut
   // strips those out of comments, so the old anchor stopped existing. This arm's vacuity control caught
   // it — an uncontrolled slice on a missing anchor is not an error, it is a window from the end of the

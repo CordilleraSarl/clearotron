@@ -12,15 +12,10 @@
 // saying "recorded, not rendered", and the arrays stay index-aligned because `orderClausesForLede` returns
 // them the same length.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
 import { clientConditions, orderClausesForLede } from "../terminal-clamp.mjs";
 import { riskStatement } from "../findings-model.mjs";
-
-const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
-
 // The run's shape, in invented words: five authored conditions, eight appended grounds.
 const CLAUSES = ["consent from the prior owner is not in hand", "the examiner's objection is unanswered",
   "the coexistence deal is unsigned", "the assignment is not recorded",
@@ -62,7 +57,7 @@ test("the defect, as it stood: with no stored clause the same grounds print as c
 });
 
 test("the pipeline stores a null clause per appended ground, and the statement is composed from the same array", () => {
-  const src = readFileSync(join(ROOT, "driver", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.match(src, /const clausesOut = blockingGrounds\.length\s*\n\s*\? \[\.\.\.orderedClauses, \.\.\.blockingGrounds\.map\(\(\) => null\)\]/,
     "the grounds no longer carry an explicit null clause");
   assert.match(src, /riskStatement\(\{ tier: derived\.tier, verdict, reasons: reasonsOut, clauses: clausesOut,/);

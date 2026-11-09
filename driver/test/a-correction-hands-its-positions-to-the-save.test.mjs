@@ -10,6 +10,7 @@
 // Codex engine's rendered config, the save tool's server answering a call, the retry wording, and the pipeline's own
 // dispatch sites, where the first correction and its follow-up hand them on and no other synthesis dispatch does.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync } from "node:fs";
@@ -148,7 +149,7 @@ test("the save tool's server adds the finding when its dispatch handed it the po
 // ── THE PIPELINE HANDS THEM ON AT THE CORRECTION'S OWN DISPATCHES, AND AT NO OTHER ───────────────────────────────
 
 test("the first correction and its follow-up hand on the positions; the correction after a repair's review and every other writer dispatch do not", () => {
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   // Every writer dispatch the pipeline makes, by its trigger.
   const dispatches = [...src.matchAll(/stage\("synthesis", ctx, \{([\s\S]*?)\}\);/g)].map((m) => m[1]);
   const trigger = (d) => /trigger: "([^"]+)"/.exec(d)?.[1] ?? null;

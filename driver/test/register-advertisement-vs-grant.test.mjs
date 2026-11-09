@@ -25,6 +25,7 @@
 // exact trap, and its first version set the variable, re-asked, got an empty answer and reported a clean
 // pass. One child process per provider is the only way to ask the question honestly.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { spawn, execFile } from "node:child_process";
 import { promisify } from "node:util";
@@ -192,7 +193,7 @@ test("every register tool the driver's own prose ORDERS is served by every provi
   // tool is not an order and a variable holding one is not either. Same rule, same helper, as E12.
   const named = new Set();
   for (const f of ["gateway.mjs", "stages.mjs", "pipeline.mjs"]) {
-    for (const lit of stringLiterals(readFileSync(join(HERE, "..", f), "utf8"))) {
+    for (const lit of stringLiterals(driverSource(f))) {
       for (const t of universe) if (new RegExp(`(?<![A-Za-z0-9_])${t}(?![A-Za-z0-9_])`).test(lit.text)) named.add(t);
     }
   }

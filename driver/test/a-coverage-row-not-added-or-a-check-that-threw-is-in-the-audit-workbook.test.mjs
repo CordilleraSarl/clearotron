@@ -7,6 +7,7 @@
 // cannot back. Each is driven to fail here by its own input, and delivery's read of the run names the part in the
 // shipped deferral row's words. A later pass that succeeded clears it, and a run with no failure writes nothing.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -103,7 +104,7 @@ test("a floor of the verdict that threw on its last entry is a failed check; a l
 test("the names delivery reads are the literal names the pipeline writes", () => {
   // The run log's names are written as literals so that they can be read from the source and classed; this holds the
   // reader's constants to them, so neither side can be renamed alone.
-  const source = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const source = driverSource("pipeline.mjs");
   for (const name of [COVERAGE_ROWS_PASS, COVERAGE_ROW_NOT_ADDED, VERDICT_FLOORS_PASS, VERDICT_FLOOR_FAILED])
     assert.ok(source.includes(`event: "${name}"`), `pipeline.mjs writes the event ${name}`);
 });

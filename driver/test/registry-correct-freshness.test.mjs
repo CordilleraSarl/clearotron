@@ -17,12 +17,12 @@
 // fires AND the correction lands — which is why it is worth closing before it happens rather than after.
 
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
-import { fileURLToPath } from "node:url";
 import { writeStamp, stageStaleness, restamp, staleOnPath } from "../stage-freshness.mjs";
 import { applyRegistryCorrections } from "../registry-fidelity.mjs";
 
@@ -104,7 +104,7 @@ test("THE CALL SITE EXISTS — the corrector restamps what it wrote", () => {
   // The two tests above pin the MECHANISM, which already worked; this pins that autoCorrectRegistry
   // actually uses it. Deleting the restamp call is precisely how this defect comes back, and without
   // this assertion every test in this file would still pass while the run died in production.
-  const src = readFileSync(fileURLToPath(new URL("../pipeline.mjs", import.meta.url)), "utf8");
+  const src = driverSource("pipeline.mjs");
   const fn = src.slice(src.indexOf("const autoCorrectRegistry = ()"));
   const body = fn.slice(0, fn.indexOf("\n      };"));
   assert.ok(body.includes("writeFileSync(file, after)"), "found the corrector's write (anchor still valid)");
@@ -119,7 +119,7 @@ test("autoCorrectClientTiers is deliberately NOT restamped — it cannot strand 
   // input of any stage in the stageInputs map, so rewriting it moves no watched sha. Adding a restamp
   // there would be cargo-cult; if client-summary.md ever BECOMES a declared input, this test fails and
   // whoever made that change gets told to look here.
-  const stages = readFileSync(fileURLToPath(new URL("../stages.mjs", import.meta.url)), "utf8");
+  const stages = driverSource("stages.mjs");
   const map = stages.slice(stages.indexOf("stageInputs"));
   const declared = map.slice(0, map.indexOf("\n}"));
   assert.ok(!/P\.clientSummary/.test(declared),

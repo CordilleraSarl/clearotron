@@ -26,13 +26,11 @@
 //    promoting this to a floor on arrival is the  shape — a grammar killing paid work.
 
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
 import { planVsExecutedChannels } from "../commonlaw-carry.mjs";
 
-const SRC = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "pipeline.mjs"), "utf8");
+const SRC = driverSource("pipeline.mjs");
 
 test("the check is called where the merged grid is written, not only at publish", () => {
   const at = SRC.indexOf("atomicWrite(P.commonLawGrid,");

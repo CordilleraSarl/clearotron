@@ -23,6 +23,7 @@
 // enqueue-schema-archived-project.test.mjs is separate. Synthetic customers and projects only; no real
 // client name appears here.
 import { test, before } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readdirSync, chmodSync, rmSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -64,7 +65,7 @@ before(async () => { ({ validateJob } = await import("../enqueue-schema.mjs")); 
 test("the premise — the run itself inherits classes, so the door refusing them was wrong", () => {
   // Read rather than restated. If either of these stops being true, the gate below is admitting jobs the
   // engine will run unscoped, and this test is where that gets caught.
-  const stages = readFileSync(join(HERE, "..", "stages.mjs"), "utf8");
+  const stages = driverSource("stages.mjs");
   assert.match(stages, /Customer-default classes \(the request names none — apply these\)/,
     "stages.mjs must still apply profile.defaultClasses when the request names none");
   const scope = readFileSync(join(HERE, "..", "effective-scope.mjs"), "utf8");

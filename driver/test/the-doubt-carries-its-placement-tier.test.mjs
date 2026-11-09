@@ -10,6 +10,7 @@
 // Every arm here drives the REAL producers. A fixture I hand-build cannot tell me the mint stamps the
 // field — it can only tell me my fixture has it.
 import test from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { reconcilePlacementCarry, mintPlacementCarryDoubts } from "../placement-carry.mjs";
 import { mintRecordCarryDoubts } from "../record-carry.mjs";
@@ -248,7 +249,7 @@ test("the pipeline reads the cut, and the SIDECAR lists exactly what the DISPATC
   // tested that the pipeline passes the cut in or uses the answer, and a helper whose call site has no
   // arm is the shape exactly: a full suite green with the change reverted.
   const { readFileSync } = await import("node:fs");
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
 
   assert.ok(src.includes("doubtClosure: ctx.depth?.doubtClosure ?? null"),
     "the pipeline no longer passes the depth row's cut into doubtsForClosure, so every product runs "

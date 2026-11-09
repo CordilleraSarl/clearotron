@@ -17,15 +17,11 @@
 // OFF_FIELD_GROUNDS from the same module, two imports away. This is the half that stops it coming back:
 // a hardcoded token list in the dictation now fails CI rather than waiting to be noticed by a read.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
 import { STAGES } from "../stages.mjs";
 import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS } from "../findings-model.mjs";
-
-const HERE = dirname(fileURLToPath(import.meta.url));
-const SRC = readFileSync(join(HERE, "..", "stages.mjs"), "utf8");
+const SRC = driverSource("stages.mjs");
 
 /** The synthesis dictation as the seat actually receives it, composed rather than read as source. */
 function synthesisText() {
