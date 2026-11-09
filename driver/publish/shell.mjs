@@ -26,3 +26,14 @@ export function openPoolRun(poolRoot, runId) {
   const copyRO = (src, name) => { const p = join(poolRunDir, name); copyFileSync(src, p); grpRead(p, 0o640); };
   return { poolRunDir, writeRO, copyRO };
 }
+
+/**
+ * Write the run's `meta.json` and refresh the pool's index, and return the index's count (null when the caller asked for
+ * no refresh). `meta.json` is the last file a publisher writes, because the index lists only folders that hold one: every
+ * document is in place before the run becomes visible. `regenIndex` is passed in because it lives with the clearance
+ * publisher, which imports this module.
+ */
+export function finishPoolRun({ writeRO, meta, poolRoot, skipRegen, regenIndex }) {
+  writeRO('meta.json', JSON.stringify(meta, null, 2));
+  return skipRegen ? null : regenIndex(poolRoot);
+}

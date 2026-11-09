@@ -97,7 +97,7 @@ test("the fixture's premise is PINNED to the publisher, so it cannot drift from 
   const src = readFileSync(join(DRIVER, "publish", "index.mjs"), "utf8");
   assert.match(readFileSync(join(DRIVER, "publish", "shell.mjs"), "utf8"), /const writeRO = \(name, data\) => \{ const p = join\(poolRunDir, name\);/,
     "writeRO no longer targets poolRunDir — the archived-run signature these arms assume has moved");
-  assert.match(src, /writeRO\('meta\.json'/,
+  assert.match(readFileSync(join(DRIVER, "publish", "shell.mjs"), "utf8"), /writeRO\('meta\.json'/,
     "meta.json is no longer written through writeRO — it may no longer be pool-only");
 });
 

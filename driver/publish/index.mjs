@@ -8,7 +8,7 @@
 // This is deterministic Node — NOT an LLM turn — so it cannot hang/timeout. The driver calls it directly
 // (not via runStage). Run identity (runId/codename) comes from the driver's ctx.run; do NOT regenerate it.
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, chmodSync } from 'node:fs';
-import { grpRead, openPoolRun } from './shell.mjs';
+import { finishPoolRun, grpRead, openPoolRun } from './shell.mjs';
 import { join, dirname } from 'node:path';
 import { readFold } from '../record-fold.mjs'; import { parseReport, parseAudit, parseSections, parseBlocks, stripInternal, parseCaseLawProfiles, parseCaseLawPreamble, joinCaseLawProfiles } from './parse.mjs';
 import { renderHtml } from './render.mjs'; import { emailConditionsOf } from './email-conditions.mjs';   // the box's conditions, read the same way by the delivery check
@@ -1357,7 +1357,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   } catch (e) {
     console.warn(`[report-data] producer failed (report ships without the data file): ${String(e?.message ?? e).slice(0, 140)}`);
   }
-  writeRO('meta.json', JSON.stringify({
+  const total = finishPoolRun({ writeRO, poolRoot, skipRegen, regenIndex, meta: {
     runId, codename: codename || '', matter: fm.matter, title: fm.title, client: fm.client,
     // The mark as typed — see above. Distinct from `title`, which is the report's own headline.
     markName: markName ?? undefined,
@@ -1428,9 +1428,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     // same stamp the knockout lane writes; the consumer branch had readers before it had a writer).
     // undefined on a producer miss, so the meta never advertises a file that is not there.
     reportSchema: reportSchema ?? undefined,
-  }, null, 2));
-
-  const total = skipRegen ? null : regenIndex(poolRoot);
+  } });
   if (!skipRegen) await regenSurfaces(poolRoot);
   // THE PORTAL ROUTE, not the pool's directory layout. This was
   // `<origin>/<runId>/report.html` — where the documents sit on disk, which is not an application route.

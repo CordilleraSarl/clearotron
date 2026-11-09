@@ -8,7 +8,7 @@
 // palette (TONE_TIER, resolved against the run's FROZEN framework) so driver and interactive output
 // can never drift and a knockout never reads the clearance composer's module state.
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
-import { grpRead, openPoolRun } from './shell.mjs';
+import { finishPoolRun, grpRead, openPoolRun } from './shell.mjs';
 import { plainDeferralReason, plainCause } from '../deferral-row.mjs'; import { knockoutStepFailures, PART_NAMES, RULED_WORDS, NOT_COMPLETED, linkNotOnRegisterSite } from '../degraded-parts.mjs'; import { ownersOwedACheck, composeOwnerQuery } from '../owner-use-check.mjs'; import { KNOCKOUT_WEB } from '../stages-knockout.mjs';   // — the reader's words for a search left open; and the parts that failed as a whole
 import { join } from 'node:path';
 import { riskTier, TONE_TIER, regenIndex, regenSurfaces, auditRouteFor, markReportRouteFor, reportRouteFor } from './index.mjs';
@@ -791,7 +791,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   // lane wrote "(+N marks)" onto status.json for the same batch, so a run changed its name at delivery
   // and the browser, which threads reads on the name string, listed one batch as two different marks.
   const markNames = (findings.marks ?? []).map((m) => m.name).filter(Boolean);
-  writeRO('meta.json', JSON.stringify({
+  const total = finishPoolRun({ writeRO, poolRoot, skipRegen, regenIndex, meta: {
     runId, codename: codename ?? '', matter: runId,
     // The plural bug lived on this line: `${n} marks` with no guard, so every one-mark batch said
     // "1 marks". The sibling statement writer above has always guarded it; this never did.
@@ -863,9 +863,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     // for by design (a batch has no run-level document) — so every per-mark link 404'd, and the
     // clearances row printed a fallback saying the report was with us for a final read.
     reports: reports.map(({ mark, slug, file, dataFile, band }) => ({ mark, slug, file, dataFile, band })),
-  }, null, 2));
-
-  const total = skipRegen ? null : regenIndex(poolRoot);
+  } });
   if (!skipRegen) { try { await regenSurfaces(poolRoot); } catch { /* best-effort */ } }
   // `url` IS NULL FOR A BATCH, and that is the honest answer rather than a convenient one. A multi-name
   // knockout has no single report, so any one URL here would be the first name standing for all of them —
