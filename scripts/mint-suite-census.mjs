@@ -55,7 +55,7 @@ const CHECK = process.argv.includes("--check");
 const ALLOW_LOSS = process.argv.includes("--allow-loss");
 
 const README = [
-  "#1010 — THE SUITE'S SELF-CENSUS. Minted and checked by shared/suite-census.mjs's ONE counter, so the",
+  "THE SUITE'S SELF-CENSUS. Minted and checked by shared/suite-census.mjs's ONE counter, so the",
   "minting side cannot drift from the checking side and manufacture its own findings.",
   "",
   "Collection is a glob, so a test file that is DELETED or RENAMED out of it simply stops being",
@@ -309,7 +309,7 @@ function main() {
     console.error("\nOne of the two moved. Either a workspace's test script or a root test script was "
       + "re-pointed, or CENSUS_WORKSPACES / CENSUS_ROOT_SCRIPTS in shared/suite-census.mjs is out of "
       + "date. Fix the disagreement — do not re-stamp over it, because a census minted against a corpus "
-      + "nothing runs is the defect #1010 names, not the fix for it.");
+      + "nothing runs is the defect, not the fix for it.");
     process.exitCode = 1;
     return;
   }

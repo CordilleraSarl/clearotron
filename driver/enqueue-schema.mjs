@@ -183,7 +183,7 @@ export function undeclaredFieldsWarning(names) {
   return `job carries ${names.length} field(s) no door declares: ${list} — DECLARED_JOB_FIELDS does not `
     + `name them, so nothing validates them, no door gate can rule on them, and any assembling door `
     + `drops them silently. Declare them in driver/enqueue-schema.mjs if they are meaningful, or stop `
-    + `writing them. #1085`;
+    + `writing them.`;
 }
 
 // — "DID THE REQUEST NAME ANY CLASSES?", ONCE.
@@ -409,7 +409,7 @@ export function validateJob(job, { atClaim = false } = {}) {
   const sidecarNote = `promptParts declares the prose rides as SIDECAR files and none arrived — expected `
     + `one or more of ${Object.values(PROSE_PARTS).map((x) => `<base>${x}`).join(", ")} beside the manifest. `
     + `A mis-named manifest is the observed cause: sidecars key on the BARE base, so <base>.manifest.json `
-    + `leaves them unmatched. #1085`;
+    + `leaves them unmatched.`;
   if (sidecarsMissing) warnings.push(sidecarNote);
 
   if (!hasMark) errs.push(sidecarsMissing ? `missing mark name(s) — ${sidecarNote}` : "missing mark name(s)");

@@ -54,7 +54,7 @@ test("no credential can reach the log", () => {
 
 test("IT IS THE SAME LOG AND THE SAME RULE AS THE BAND SERVER — one pattern, not a second one", () => {
   for (const src of [SRC, BAND]) {
-    assert.match(src, /"reading-log\.jsonl"/, "same file");
+    assert.match(src, /"reading-log\.jsonl"|\.readingLog\b/, "same file");
     assert.match(src, /best-effort/i, "same rule: a log failure never breaks a lookup");
   }
   assert.match(SRC, /if \(!RUN_DIR\) return;/, "and no run dir means no log, never a throw");

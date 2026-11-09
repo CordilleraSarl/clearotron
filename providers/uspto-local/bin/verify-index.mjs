@@ -159,7 +159,7 @@ if (!rec) {
   line("");
   line("Cross-check this serial against TSDR by hand before anyone calls the record CORRECT. The index");
   line("agreeing with itself is not evidence that it agrees with the register — and the five questions");
-  line("#547 lists as needing real data (response body shape, ownerCountry, the status date, the true");
+  line("that need real data (response body shape, ownerCountry, the status date, the true");
   line("delta cadence, nativeScriptIndex) are settled by reading records, not by counting them.");
 }
 db.close();

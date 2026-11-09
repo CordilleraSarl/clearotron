@@ -243,9 +243,3 @@ export function recordFrameDiff(runDir, received, { now = () => new Date().toISO
     capture_failed: captureFailed,
   };
 }
-
-/** Read back what was written — used by the tool's answer so the seat is told the stored state. */
-export function readRecordedFrameDiff(runDir) {
-  try { return parseFrameDiff(readFileSync(join(String(runDir ?? ""), MODEL_FILE), "utf8")); }
-  catch { return null; }
-}

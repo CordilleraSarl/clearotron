@@ -7,7 +7,7 @@
 // spec.output_path itself (never round-trips the grid through the model's bounded turn output).
 import { existsSync, readFileSync, writeFileSync, mkdirSync, appendFileSync } from "node:fs";
 import { dirname, basename } from "node:path";
-import { driverDir } from "../../../shared/driver-dir.mjs";   //
+import { driverDir, paths, readJson } from "../../run-record.mjs";   //
 import { underStudioSegment } from "../../../shared/path-seps.mjs";   // Windows builds the path with "\"
 import { serve } from "./stdio-server.mjs";
 import { answerBudget } from "../../../shared/answer-parts.mjs";
@@ -68,7 +68,7 @@ const AGENT = process.env.CLEAROTRON_GATHER_AGENT || "";
 function logCall(tool, args, result) {
   if (!RUN_DIR) return;
   try {
-    const p = driverDir(RUN_DIR, "reading-log.jsonl");
+    const p = paths(RUN_DIR).readingLog;
     mkdirSync(dirname(p), { recursive: true });
     appendFileSync(p, JSON.stringify({
       ts: new Date().toISOString(), tool, args, ...result,
@@ -85,7 +85,7 @@ function logCall(tool, args, result) {
 const PINNED_QUESTION_PRESET = (() => {
   if (!RUN_DIR) return null;
   try {
-    const p = JSON.parse(readFileSync(driverDir(RUN_DIR, "search-policy.json"), "utf8"))?.web?.questionPreset;
+    const p = readJson(paths(RUN_DIR).searchPolicy)?.web?.questionPreset;
     return typeof p === "string" && isKnownPreset(p) ? p : null;
   } catch { return null; }
 })();
@@ -238,7 +238,7 @@ async function research(params) {
     if (RUN_DIR && !insideRun(RUN_DIR, grid_spec_path))
       return "ERROR: grid_spec_path is outside this run's folder. The driver writes the spec inside the run; use the path it gave you.";
     let spec;
-    try { spec = validateGridSpec(JSON.parse(readFileSync(grid_spec_path, "utf8"))); }
+    try { spec = validateGridSpec(readJson(grid_spec_path)); }
     catch (err) { return `ERROR: grid_spec_path unreadable/invalid (${err.message}). The driver writes this file; do not hand-author it.`; }
     if (RUN_DIR && !insideRun(RUN_DIR, spec.output_path))
       return requiredLedgerRefusal("ERROR: the grid spec's output_path is outside this run's folder. The driver writes the spec inside the run; use the path it gave you.", { spec, gridSpecPath: grid_spec_path });

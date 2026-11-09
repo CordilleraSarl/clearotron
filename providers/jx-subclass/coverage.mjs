@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // coverage.mjs — what this database has actually READ, as opposed to what it happens to hold rows for.
-// Zero dependencies (node:sqlite only), the same pattern as providers/uspto-local/src/index-store.js.
+// Zero dependencies, the same pattern as providers/uspto-local/src/index-store.js.
 //
 // ── THE ONE THING THIS FILE EXISTS TO GET RIGHT ────────────────────────────────────────────────────
 //
@@ -28,7 +28,6 @@
 //
 // A MISSING ROW REFUSES. Omission is the failure mode a stated table invites, so absence is never
 // treated as permission.
-import { DatabaseSync } from "node:sqlite";
 
 export const COVERAGE_DDL = `
   CREATE TABLE IF NOT EXISTS coverage (
@@ -113,8 +112,4 @@ export function assertCoverageComplete(db) {
     );
   }
   return true;
-}
-
-export function openCoverage(path = "similar-groups.db") {
-  return new DatabaseSync(path, { readOnly: true });
 }

@@ -503,7 +503,7 @@ export function lintScenarios(scenarios) {
       if (Object.prototype.hasOwnProperty.call(sc.cost ?? {}, k)) {
         dead.push(`${label}: cost.${k} = ${JSON.stringify(sc.cost[k])} is DEAD AND UNREAD — the BAND owns the`
           + ` benchmark (driver/turnaround-bands.mjs), derived from the pipeline the doors resolve this job to.`
-          + ` A benchmark copied from a scenario's own expected wall can never be exceeded (#523). Delete the key.`);
+          + ` A benchmark copied from a scenario's own expected wall can never be exceeded. Delete the key.`);
       }
     }
     for (const f of sc.expect?.artifacts ?? []) {
@@ -538,7 +538,7 @@ export function lintScenarios(scenarios) {
     if ((sc.expect?.artifacts ?? []).includes("knockout-assessment.md") && sc.expect?.terminal === "delivered") {
       const ops = new Set((sc.expect?.assert ?? []).map((a) => a.op));
       for (const op of KNOCKOUT_OPS) {
-        if (!ops.has(op)) wrong.push(`${label}: a knockout deliverable must exercise ${op} — without it the lane can claim what it never examined (#324)`);
+        if (!ops.has(op)) wrong.push(`${label}: a knockout deliverable must exercise ${op} — without it the lane can claim what it never examined`);
       }
     }
   }
@@ -597,7 +597,7 @@ function sweepStoreOrDie(scenarioId = null) {
   // Printed BEFORE the refusal check and printed even when nothing is wrong: a dead key is a finding
   // about the store, not a reason to stop, and it must not be swallowed by an exit on the line below.
   if (lint.dead.length) {
-    process.stderr.write(`dead scenario keys — read by nothing, and the store still carries them (#523):\n`
+    process.stderr.write(`dead scenario keys — read by nothing, and the store still carries them:\n`
       + lint.dead.map((w) => `  ${w}`).join("\n") + "\n");
   }
   const wrong = [...validateStoreJobs(scenarios), ...lint.wrong];
@@ -1825,7 +1825,7 @@ function evalAssertion(a, runDir, { names = REPORT_NAMES } = {}) {
     const terminal = String(st.state ?? "").trim().toLowerCase();
     if (terminal && terminal !== "delivered")
       return { ok: true, saw: `state=${terminal} — this run never entered the delivery contract, so it is `
-        + `NOT ASSERTED here (#1561: a non-delivered terminal run owes the CLIENT no report; the failure `
+        + `NOT ASSERTED here (a non-delivered terminal run owes the CLIENT no report; the failure `
         + `notification it owes its requester is covered by the outbox sweep, not by this line). This is `
         + `a scope statement, not a delivery that was checked.` };
 
@@ -2236,7 +2236,7 @@ export function provenanceLines(cost, today = new Date()) {
     // An absence is a finding. A scenario asserting `measured: true` with nothing behind it is the exact
     // shape filed, so it is named rather than passed over in silence.
     return cost?.measured
-      ? ["measured: true — and NOTHING says where the figure came from (#1091). Re-measure, or drop the flag."]
+      ? ["measured: true — and NOTHING says where the figure came from. Re-measure, or drop the flag."]
       : [];
   }
   const out = [];
@@ -2673,7 +2673,7 @@ export function readMarkerTerminal(queueDir, base, suffix) {
     return { terminal: live, started: null, undetermined: false, inFlight: true,
       why: live === suffix
         ? "not a terminal — the job is still in the queue"
-        : `not a terminal — ${name} is the #377 claim lock, which is the .processing marker renamed while its liveness token is written; a live token is a claim in progress and a dead one is restored by sweepAbandonedTakeovers`,
+        : `not a terminal — ${name} is the claim lock, which is the .processing marker renamed while its liveness token is written; a live token is a claim in progress and a dead one is restored by sweepAbandonedTakeovers`,
       runDir: null, runId: null, runIds: [], statusRead: null, terminalKind: null };
   }
   const rec = readRecord(join(queueDir, `${name}.result`));
@@ -2909,7 +2909,7 @@ function printPreviousRoundNotice(s) {
   if (notice.kind === "in-flight") {
     console.log(`\n⚠ previous round ${label} IS STILL IN FLIGHT — ${settlement.why}.`);
     console.log(`  Launching now puts two rounds of ${s.id} in the queue at once. That is legal and it is what a`);
-    console.log(`  #217 noise-floor pair is, but \`report ${s.id}\` reads ONE round: name the other with --round.`);
+    console.log(`  noise-floor pair is, but \`report ${s.id}\` reads ONE round: name the other with --round.`);
     return;
   }
   if (notice.kind === "unknown") {
@@ -3271,7 +3271,7 @@ async function cmdReport(id, { round: requestedToken = null } = {}) {
   // NOT SEARCHED IS NOT EMPTY, the same distinction this file already makes about run dirs below. An
   // empty list from a directory nobody walked reads as "these are all of them".
   if (!disk.searched) console.log(`  run dirs NOT SEARCHED — ${disk.why}. Rounds that left no receipt entry cannot appear below.`);
-  else if (disk.untokened) console.log(`  ${disk.untokened} run dir(s) carry a ref with NO round token — pre-#388 or submitted by hand, so they belong to no nameable round.`);
+  else if (disk.untokened) console.log(`  ${disk.untokened} run dir(s) carry a ref with NO round token — older or submitted by hand, so they belong to no nameable round.`);
   if (!QUEUE_DIR || !existsSync(QUEUE_DIR)) console.log(`  queue NOT SEARCHED — ${QUEUE_DIR ? `CLEAROTRON_QUEUE_DIR ${QUEUE_DIR} does not exist` : `CLEAROTRON_QUEUE_DIR is unset`}. No round below can be called settled.`);
   for (const [i, r] of rounds.entries()) {
     const st = settlementOf(r);
@@ -3290,7 +3290,7 @@ async function cmdReport(id, { round: requestedToken = null } = {}) {
       // prints as itself, because "not recorded" is not "none served" and a reader must not have to guess.
       console.log(`         register: ${registerServedLine(readJson(join(run.runDir, "status.json")))}`);
       const eb = engineBuildOf(run.runDir);
-      if (!eb) console.log(`         engine build: NOT RECORDED — this run predates the run-start stamp (#1423); any attribution for it is a reflog reconstruction`);
+      if (!eb) console.log(`         engine build: NOT RECORDED — this run predates the run-start stamp; any attribution for it is a reflog reconstruction`);
       else {
         const dirty = eb.outcome === "clean" ? "" : `  ⚠ ${eb.outcome.toUpperCase()}`;
         console.log(`         engine build: ${eb.head ?? "(none)"}${eb.branch ? ` on ${eb.branch}` : " (detached)"}${dirty}`);
@@ -3693,16 +3693,16 @@ async function cmdReport(id, { round: requestedToken = null } = {}) {
         + `asserted under any of them, so screening, close-variation matching, record hydration and citation fidelity `
         + `were not proved to have run on anything. A count that came back non-zero here is an incidental collision `
         + `with a real filing, not coverage: nothing holds it there. This round proves the register CALL and not the `
-        + `code that reads its answer (#1870).`);
+        + `code that reads its answer.`);
     } else if (mp.state === MARK_PROVENANCE.UNSTATED) {
       notProbed.push(`marks: ${mp.why}. Whether this round entered the register hit path cannot be established from the `
-        + `store, and an unstated label is not a synthetic one — add \`markProvenance\` to ${s.id}.json (#1870).`);
+        + `store, and an unstated label is not a synthetic one — add \`markProvenance\` to ${s.id}.json.`);
     } else if (w.sidecars > 0 && w.taken > 0 && w.nonZero === 0) {
       // The direction the label cannot catch.: nothing on this box distinguishes a register that
       // has emptied out under this mark from a credential that stopped working, so this names both.
       toInvestigate.push(`marks: ${s.id} is declared LIVE and every count it took came back ZERO. Either the register `
         + `no longer holds this mark in the classes searched — in which case the scenario needs a new mark, not a lower `
-        + `floor — or the register credential has stopped working and is failing as an empty answer (#1871). This round `
+        + `floor — or the register credential has stopped working and is failing as an empty answer. This round `
         + `did NOT enter the hit path whatever the label says.`);
     } else if (w.sidecars > 0 && w.taken === 0 && w.cells > 0) {
       toInvestigate.push(`marks: ${s.id} is declared LIVE and not one of its ${w.cells} count cell(s) was TAKEN — every `

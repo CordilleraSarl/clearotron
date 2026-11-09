@@ -435,7 +435,7 @@ export function declaredEffects(rows) {
 }
 
 export function auditEnv(root = ROOT) {
-  const tracked = trackedFiles("env-audit (#692 governance ratchet)", { root });
+  const tracked = trackedFiles("env-audit (governance ratchet)", { root });
   if (!tracked) return null;
   const files = tracked.filter((f) => CODE_RE.test(f) && !f.startsWith("node_modules/"));
 
@@ -739,7 +739,7 @@ const TOKEN_RE = /[A-Z][A-Z0-9_]*/g;
  * function until review.
  */
 export function auditCatalogue(root = ROOT) {
-  const tracked = trackedFiles("env-audit (#1426 catalogue ratchet)", { root });
+  const tracked = trackedFiles("env-audit (catalogue ratchet)", { root });
   if (!tracked) return null;
   const file = ".env.example";
   if (!existsSync(join(root, file)))

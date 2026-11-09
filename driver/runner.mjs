@@ -568,7 +568,7 @@ export function claimToken(pid = process.pid) {
   if (!st && !starttimeGapAnnounced) {
     starttimeGapAnnounced = true;
     note("[runner] no birth stamp for this pid on this host — neither /proc/<pid>/stat nor `ps` " +
-      "answered, so claims record a BARE PID and the #665 PID-reuse " +
+      "answered, so claims record a BARE PID and the PID-reuse " +
       "defence is inactive. Fail-safe direction (a claim whose liveness cannot be proved counts as " +
       "ALIVE): no run is ever double-claimed and no lawyer double-delivered to. What is lost: a " +
       "`.processing` held by a RECYCLED pid is not freed by liveness and waits for the max-claim-age " +
