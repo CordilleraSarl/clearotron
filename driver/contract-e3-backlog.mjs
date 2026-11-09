@@ -645,7 +645,7 @@ export const E3_BACKLOG = [
   {
     stage: "case-law",
     kind: "literal-json-skeleton",
-    where: "driver/skills/case-law-citation/SKILL.md:153-177",
+    where: "driver/skills/case-law-citation/SKILL.md:127-151",
     surface: "skill-file",
     evidence: "```markdown\\n### Grounded profile — <proposed mark> vs <conflicting mark / owner> (<jurisdiction>)\\n- ord: <N …>\\n\\n**Question grounded:** …\\n\\n**On-point authorities:** …\\n\\n**Tags:** … **Coverage gaps:** …\\n``` OR, when nothing is on point: ```markdown … **No on-point precedent found.** …```",
     reparsedBy: "driver/publish/parse.mjs:339 parseCaseLawProfiles — splits on /^#{2,3}\\s+Grounded profile\\s+—\\s+/m and reads the `- ord:` first body line",
@@ -654,7 +654,7 @@ export const E3_BACKLOG = [
   {
     stage: "case-law",
     kind: "dictated-line-shape",
-    where: "driver/skills/case-law-citation/SKILL.md:90-100",
+    where: "driver/skills/case-law-citation/SKILL.md:64-74",
     surface: "skill-file",
     evidence: "Copy this checklist into your working notes and tick each finding through it:\\n```\\nGrounding progress (per finding):\\n- [ ] Step 1: Pick the source(s) by jurisdiction; read that adapter\\n…\\n```",
     reparsedBy: "",
@@ -691,7 +691,7 @@ export const E3_BACKLOG = [
   {
     stage: "narrative-refutation",
     kind: "dictated-line-shape",
-    where: "driver/skills/narrative-refutation/SKILL.md:73",
+    where: "driver/skills/narrative-refutation/SKILL.md:70",
     surface: "skill-file",
     // RE-QUOTED BY CONVERSION 9. The dictation survives and its CHANNEL changed: `on` is an array of
     // ordinals the seat sends, and the bracketed forms are now labelled as what the DRIVER renders. The
@@ -705,7 +705,7 @@ export const E3_BACKLOG = [
   {
     stage: "narrative-refutation",
     kind: "dictated-line-shape",
-    where: "driver/stages.mjs:1879 and driver/skills/narrative-refutation/SKILL.md:41-50",
+    where: "driver/stages.mjs:1879 and driver/skills/narrative-refutation/SKILL.md:39-48",
     // RE-QUOTED 2026-08-16. The dictated SENTENCE survives in narrative-refutation's SKILL.md — it is the
     // `evidence` below, verbatim. What changed is that the four kinds moved from an inline list after the
     // colon onto their own `- [kind: …]` bullet lines. Measured, not assumed: the old anchor matched 59 of

@@ -175,7 +175,7 @@
     "skills/case-law-citation/SKILL.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 1,
-      "dictated-line-shape": 1
+      "dictated-line-shape": 0
     },
     "skills/narrative-refutation/SKILL.md": {
       "literal-json-skeleton": 0,
@@ -190,6 +190,6 @@
   },
   "totals": {
     "stages": 43,
-    "files": 55
+    "files": 54
   }
 }
