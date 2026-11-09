@@ -7,8 +7,10 @@
 // on each move though nothing about a run changed, so every such test reads through here: the file it names and, for the
 // orchestrator, everything carved out of it. A pin is retired for a behaviour test when its code becomes reachable, not here.
 import { existsSync, readdirSync, readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+
+import { paths } from "../run-record.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -23,4 +25,11 @@ export function driverSource(file) {
   const carved = dir && existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith(".mjs")).sort().map((f) => join(dir, f)) : [];
   const moved = (MOVED_TO[file] ?? []).map((f) => join(DRIVER, f));
   return [join(DRIVER, file), ...carved, ...moved].map((p) => readFileSync(p, "utf8")).join("\n");
+}
+
+/** The file names a source reaches through `paths(base).key`, for a test that pins which run files it reads. */
+export function runFilesNamedIn(src) {
+  const table = paths("");
+  const named = [...src.matchAll(/\b(?:paths|runPaths)\([^;\n]*?\)\.(\w+)/g)].map((m) => table[m[1]]);
+  return [...new Set(named.filter((v) => typeof v === "string").map((v) => basename(v)))];
 }

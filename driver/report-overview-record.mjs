@@ -50,9 +50,9 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join } from "node:path";
-import { driverDir, driverRel } from "../shared/driver-dir.mjs";   //
+import { driverRel } from "../shared/driver-dir.mjs";   //
 import { refuseUndeclared as refuseUndeclaredShared, keepIfAbsent, lastAccepted, acceptedEnvelope } from "./preserve-merge.mjs";
-import { readJson } from "./run-record.mjs";
+import { paths, readJson } from "./run-record.mjs";
 
 export const PROSE_FILE = "report-overview.md";
 const SCHEMA_VERSION = 1;
@@ -62,7 +62,7 @@ export const IDENTITY_FILE = driverRel("report-identity.json");
 
 /** Where the call's evidence lives — the driver's own record of what the seat handed it. */
 export function reportOverviewCallPaths(runDir) {
-  const dir = driverDir(runDir, "report-overview-calls");
+  const dir = paths(runDir).reportOverviewCalls;
   return { dir, payload: join(dir, "call-001.json"), accepted: join(dir, "accepted.json") };
 }
 

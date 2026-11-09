@@ -59,7 +59,7 @@ import { foldAfterSave } from "./record-fold.mjs";   // once the delivery seam i
 import { SAVED_FINDINGS_FILE } from "./saved-findings-block.mjs";   // the file a later attempt is handed the saved findings in
 import { runLog } from "./log.mjs";   // what the transport read a call as goes to the run's record, never to the model's answer
 import { recordOriginsOr, blankOnRepeat, recordBlanking, FOREIGN_HOST_TOKEN } from "./foreign-record-links.mjs";   // a foreign record link: refused once, then blanked
-import { readJson } from "./run-record.mjs";
+import { paths, readJson } from "./run-record.mjs";
 export const NARRATIVE_FILE = "narrative.md";
 export const FINDINGS_FILE = "findings.json";
 
@@ -68,7 +68,7 @@ export const NARRATIVE_SECTIONS = ["verdict", "coverage", "spine", "calibration"
 
 /** Where the call's evidence lives — the driver's own record of what the seat handed it. */
 export function synthesisCallPaths(runDir) {
-  const dir = driverDir(runDir, "synthesis-calls");
+  const dir = paths(runDir).synthesisCalls;
   // TWO FILES, AND THE SPLIT IS LOAD-BEARING. `payload` is what ARRIVED, written before the decision —
   // the forensic record, including calls that were refused. `accepted` is the last call that PASSED,
   // and it is the merge base a repair patches onto. Reading the forensic file as the merge base would
@@ -315,7 +315,7 @@ const withoutUseCheck = (f) => { const { use_check: _taken, ...rest } = f; retur
 /** What a repeat took off, kept beside the run with one run-log row. Never throws. */
 function recordNoResultRemoval(runDir, { layer, removed, now }) {
   try {
-    appendFileSync(driverDir(runDir, "no-result-removed.jsonl"), removed.map((r) => JSON.stringify({ at: now(), stage: "synthesis", layer, ...r })).join("\n") + "\n");
+    appendFileSync(paths(runDir).noResultRemoved, removed.map((r) => JSON.stringify({ at: now(), stage: "synthesis", layer, ...r })).join("\n") + "\n");
   } catch { /* the file is forensics; the run-log row below is the record */ }
   try { runLog(runDir, { event: "no-result-without-a-completed-search-removed", stage: "synthesis", layer, ordinals: removed.map((r) => r.ordinal ?? null) }); }
   catch { /* a log that cannot be written must not stop the record it describes */ }

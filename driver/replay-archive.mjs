@@ -30,14 +30,14 @@ import "../shared/env-local.mjs";   // — FIRST: the CLEAROTRON_* translation m
                                      // would run too late — that was the repair that left this open.
 import { readFileSync, writeFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { join, basename } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
-import { DRIVER_DIR, driverDir } from "../shared/driver-dir.mjs";   //
+import { DRIVER_DIR } from "../shared/driver-dir.mjs";   //
 import { homedir } from "node:os";
 import { validators } from "./verify.mjs";
 import { runLint, clientSummaryShape } from "./predelivery-lint.mjs"; import { emailConditionsOfReport } from "./publish/email-conditions.mjs";   // what the cover email carries
 import { config } from "./driver.config.mjs";
 import { GRID_HALVES } from "./common-law-receipts.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
-import { readJson } from "./run-record.mjs";
+import { paths, readJson } from "./run-record.mjs";
 
 // Artifact filename → verify.mjs validator key. notify receipts are trivial and skipped.
 const FILE_CHECKS = {
@@ -178,12 +178,12 @@ export function replayRun(runDir) {
       // mirror it from the archived sidecar or post-WS-B runs flip live-vs-replay (pre-WS-B runs
       // have no sidecar → empty extras, verdicts unchanged).
       let extraPlatformNames = [];
-      try { extraPlatformNames = readJson(driverDir(runDir, "profile.json")).platforms ?? []; }
+      try { extraPlatformNames = readJson(paths(runDir).profile).platforms ?? []; }
       catch { /* legacy run */ }
       const narrativeMd = existsSync(join(runDir, "narrative.md")) ? readFileSync(join(runDir, "narrative.md"), "utf8") : ""; // R.1: narrative plumbing
       // wp50/wi2 — mirror the live lint's verdict-sidecar read (pre-49 runs have none → check skipped).
       let verdictDoc = null;
-      try { verdictDoc = readJson(driverDir(runDir, "verdict.json")); } catch { /* legacy run */ }
+      try { verdictDoc = readJson(paths(runDir).verdict); } catch { /* legacy run */ }
       const lint = runLint({
         reportMd, clientSummaryMd: csMd, narrativeMd,
         recordsByUri: recordsFor(runDir, reportMd + "\n" + csMd),

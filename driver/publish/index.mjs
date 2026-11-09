@@ -779,7 +779,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // the currently-configured one (a re-published archive keeps its own register). Legacy runs: null ⇒
   // render keeps the resolved_link inference and prints no receipt lines (byte-identical output).
   let fetchReceipts = null;
-  try { const rj = readJson(driverDir(runDir, 'receipts.json')); if (Array.isArray(rj?.receipts) && rj.receipts.length) fetchReceipts = rj.receipts; } catch { /* legacy run */ }
+  try { const rj = readJson(paths(runDir).receipts); if (Array.isArray(rj?.receipts) && rj.receipts.length) fetchReceipts = rj.receipts; } catch { /* legacy run */ }
   const runProviderConf = fetchReceipts ? PROVIDERS[String(fetchReceipts[0]?.provider ?? '').toLowerCase()] : null;
   const recordOrigin = runProviderConf?.hasPublicRecordUrl ? (runProviderConf.publicRecordOrigin ?? null) : null;
   const providerLabel = runProviderConf?.label ?? null;
@@ -805,12 +805,12 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // WP-receipts W3/W4 — the senior-right sidecar: the render code-adds the plain-English open item on
   // any verdict-driving card whose senior right went unverified. Absent on legacy runs → no lines.
   let seniorRights = null;
-  if (!assessmentNotCompleted) try { const sr = readJson(driverDir(runDir, 'senior-rights.json')); if (Array.isArray(sr?.rows)) seniorRights = sr.rows; } catch { /* legacy run */ }
+  if (!assessmentNotCompleted) try { const sr = readJson(paths(runDir).seniorRights); if (Array.isArray(sr?.rows)) seniorRights = sr.rows; } catch { /* legacy run */ }
   // D1 — the code-carried verdict + clamp reasons/kinds (A2 sidecar): the report bound line
   // distinguishes a machinery/coverage-clamped CONDITIONAL from a genuine legal read (which lives in
   // the narrative, never in a status line). Best-effort; legacy runs have no sidecar.
   let verdictInfo = null;
-  if (!assessmentNotCompleted) try { verdictInfo = readJson(driverDir(runDir, 'verdict.json')); } catch { /* legacy */ }
+  if (!assessmentNotCompleted) try { verdictInfo = readJson(paths(runDir).verdict); } catch { /* legacy */ }
   // Every surface below reads the statement from here, so its count of further conditions is made true here, to
   // the list the client reads (terminal-clamp.mjs clientStatement). The stored record is not touched.
   if (typeof verdictInfo?.statement === 'string') verdictInfo = { ...verdictInfo, statement: clientStatement(verdictInfo) };
@@ -910,7 +910,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // doc 50 — the run's FROZEN framework manifest (band vocabulary). Present on band-doctrine runs;
   // absent on every archived run (they render byte-identically on the legacy paths).
   let framework = null, frameworkMethod = null;   // + the frozen method, where the framework states one (framework-method.mjs): the card and workbook show its inputs
-  try { framework = parseFrameworkManifest(readFileSync(driverDir(runDir, 'framework.json'), 'utf8')); frameworkMethod = readFrozenMethod(driverDir(runDir, FROZEN_METHOD_FILE), framework).method ?? null; } catch { /* legacy run */ }
+  try { framework = parseFrameworkManifest(readFileSync(paths(runDir).framework, 'utf8')); frameworkMethod = readFrozenMethod(driverDir(runDir, FROZEN_METHOD_FILE), framework).method ?? null; } catch { /* legacy run */ }
   // T2 (H5): a pre-49 sidecar ({verdict,reasons,kinds} — copper-spire's shape) gains the derived
   // display fields HERE, so a re-published archived run joins the same single authority as a fresh one.
   // No sidecar at all (pre-A2 runs) ⇒ legacy fm rendering, byte-stable.
@@ -947,7 +947,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // cannot say — an archived or legacy run — and it must not be confused with a plan that named nothing.
   let planTerritories = null;
   try {
-    const plan = readJson(driverDir(runDir ?? dirname(reportMd), 'register-plan.json'));
+    const plan = readJson(paths(runDir ?? dirname(reportMd)).registerPlan);
     if (plan?.scope_basis === 'worldwide') scopeBasis = 'worldwide';
     searchedJurisdictions = [...new Set((plan?.entries ?? []).flatMap((e) => Array.isArray(e.regions) ? e.regions : []))];
     if (!searchedJurisdictions.length && Array.isArray(plan?.regions)) searchedJurisdictions = [...new Set(plan.regions)];
@@ -957,7 +957,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   } catch { /* no plan sidecar — try the instructed scope */ }
   if (!searchedJurisdictions.length) {
     try {
-      const scope = readJson(driverDir(runDir ?? dirname(reportMd), 'instructed-scope.json'));
+      const scope = readJson(paths(runDir ?? dirname(reportMd)).instructedScope);
       if (Array.isArray(scope?.jurisdictions)) searchedJurisdictions = scope.jurisdictions;
       else if (typeof scope?.jurisdictions === 'string') searchedJurisdictions = scope.jurisdictions.split(/[,·;\s]+/).filter(Boolean);
     } catch { /* legacy run — render falls back */ }
@@ -988,7 +988,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // extension point. Presentation-only — a provider-recorded fact beside the meter, never a restamp.
   let enforcerSignals = [];
   try {
-    const esPath = driverDir(runDir ?? dirname(reportMd), 'enforcer-signals.json');
+    const esPath = paths(runDir ?? dirname(reportMd)).enforcerSignals;
     if (existsSync(esPath)) { const es = readJson(esPath); if (Array.isArray(es)) enforcerSignals = es; }
   } catch { /* absent — no telemetry lines */ }
   const officeLinks = officeLinksFor(findings, recordsByUri, runOrigins); bindFindingsToRecords(findings, recordsByUri);
@@ -999,7 +999,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // (archived/legacy runs) means no stamp, byte-identical legacy render.
   let recordFetchFailures = null;
   try {
-    const sink = readJson(driverDir(dirname(reportMd), 'predelivery-lint.json'));
+    const sink = readJson(paths(dirname(reportMd)).predeliveryLint);
     if (Array.isArray(sink?.artifactSet?.recordFetchFailures)) recordFetchFailures = sink.artifactSet.recordFetchFailures;
   } catch { /* legacy run — no failure list */ }
   // A4 — derive per-meter evidence status by machine join (verified needs a receipt; a
@@ -1089,7 +1089,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // The frozen product shape. Read HERE rather than at the meta.json write below, because the Summary's
   // jurisdiction line is composed before that point and must not claim a surface this run never touched.
   let searchPolicy = null;
-  try { searchPolicy = runDir ? readJson(driverDir(runDir, 'search-policy.json')) : null; } catch { /* legacy run */ }
+  try { searchPolicy = runDir ? readJson(paths(runDir).searchPolicy) : null; } catch { /* legacy run */ }
   // A run whose frozen policy predates the component reads as grid-ran — archived reports never change.
   // THE ENGINE'S PREDICATE, not a copy of it. This line used to re-implement isRegisterOnly by
   // hand without importing it, so the predicate whose own doc comment calls it "the ONE predicate every
@@ -1103,7 +1103,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // the frozen profile, which is the list the run actually searched; absent (a legacy run) reads as picked.
   let noMarketplacesPicked = false;
   try {
-    const frozenProfile = runDir ? readJson(driverDir(runDir, 'profile.json')) : null;
+    const frozenProfile = runDir ? readJson(paths(runDir).profile) : null;
     noMarketplacesPicked = Array.isArray(frozenProfile?.platforms) && frozenProfile.platforms.length === 0;
   } catch { /* no frozen profile — a legacy run keeps its wording */ }
 
@@ -1138,7 +1138,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // byte-identically to before — which is the proof obligation for touching the frozen renderer at all.
   let stageLabel, depthNote, productName;
   try {
-    const pol = readJson(driverDir(runDir, 'search-policy.json'));
+    const pol = readJson(paths(runDir).searchPolicy);
     stageLabel = reportIdentityFor(pol).stageLabel ?? undefined;
     // — THE PRODUCT NAME THE DOCUMENT PRINTS. `.identity`, never `.banner`: banner leads with
     // `stageLabel`, which on a retired row is "Depth 4" and on a level the registry has forgotten is
@@ -1230,12 +1230,12 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // machinery at all. No sidecar means the component never ran, which the fold reports as not-in-scope.
   let laneDepthVerdicts = null;
   try {
-    const jxSidecar = driverDir(runDir ?? dirname(reportMd), 'jx-lanes.json');
+    const jxSidecar = paths(runDir ?? dirname(reportMd)).jxLanes;
     if (existsSync(jxSidecar)) {
       const sidecar = readJson(jxSidecar);
       const { laneDepthOfRun } = await import('../jx.mjs');
       let units = null;
-      try { units = readJson(driverDir(runDir ?? dirname(reportMd), 'jx/units.json')); } catch { /* the statement handles an absent units file */ }
+      try { units = readJson(paths(runDir ?? dirname(reportMd)).jxUnits); } catch { /* the statement handles an absent units file */ }
       // THE RUN ALREADY ANSWERED THIS, AND THE STAMPED ANSWER IS THE ONE THAT COUNTS.
       //
       // `deriveJxSliceStatement` writes `fold.depth` at delivery, from the run's OWN environment, for the
@@ -1275,13 +1275,13 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
       caseLawRecord: (() => {
         const ledger = readStore(runBase, 'case-law-citations.json');
         return caseLawPassRecord({
-          attemptsJsonl: rdText(driverDir(runBase, 'case-law.jsonl')) || null,
+          attemptsJsonl: rdText(paths(runBase).caseLawRecord) || null,
           ledgerRaw: ledger.state === 'absent' ? null : (ledger.raw ?? ''),
-          readingLogJsonl: rdText(driverDir(runBase, 'reading-log.jsonl')) || null,
+          readingLogJsonl: rdText(paths(runBase).readingLog) || null,
           bridges: CASELAW_BRIDGES,
         });
       })(),
-      registerPlan: rdJson(driverDir(runBase, 'register-plan.json')),
+      registerPlan: rdJson(paths(runBase).registerPlan),
       laneDepthVerdicts,
       noMarketplacesPicked,
     });
@@ -1335,7 +1335,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   let project = null;
   let organisation = null;
   try {
-    const frozen = runDir ? readJson(driverDir(runDir, 'profile.json')) : null;
+    const frozen = runDir ? readJson(paths(runDir).profile) : null;
     if (frozen?.projectKey) project = { key: String(frozen.projectKey), name: String(frozen.projectName ?? frozen.projectKey) };
     if (typeof frozen?.organisation === 'string' && frozen.organisation) organisation = frozen.organisation;
   } catch { /* no frozen profile — pre-WS-B run, or a republish with no workspace */ }
@@ -1891,7 +1891,7 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
 // of the tree cites by number.
 import { recordLinksFor } from './office-record-links.mjs';
 import { reportDates, zurichStamp } from './report-dates.mjs';   // the dates a report prints, from its record
-import { readJson } from "../run-record.mjs";
+import { paths, readJson } from "../run-record.mjs";
 function officeLinksFor(findings, recordsByUri, runOrigins) {
   const links = recordLinksFor(findings, recordsByUri, runOrigins);
   if (links) console.log(`[record-links] ${links.summary}`);
@@ -1933,7 +1933,7 @@ export function releasedFamilyRows(runDir) {
   try {
     const released = readReleasedFamilies(runDir);
     let entries = [];
-    try { entries = readJson(driverDir(runDir, 'register-plan.json'))?.entries ?? []; } catch { /* no frozen plan */ }
+    try { entries = readJson(paths(runDir).registerPlan)?.entries ?? []; } catch { /* no frozen plan */ }
     const byQid = new Map((Array.isArray(entries) ? entries : []).map((e) => [e?.qid, e]));
     return Object.entries(released).map(([qid, r]) => ({ area: coverageUnitLabel(unitLabel(r.axis, byQid.get(qid))), state: 'note', note: String(r.reason), done: String(r.reason), left: '' }));
   } catch { return []; }

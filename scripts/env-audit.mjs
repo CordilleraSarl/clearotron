@@ -324,6 +324,9 @@ export function isProductFile(rel) {
   // when this was added: HOME, PATH, TMPDIR and that delay were all the checks read, and the first three
   // stay product, because shipping code reads them too.
   if (/^scripts\/[a-z0-9-]+-render-check\.mjs$/.test(rel)) return false;
+  // THE SECRET SCANNER'S DOWNLOAD. CI passes it the version, hash and cache folder, and the package does not
+  // ship it, so a row for those in `.env.example` would hand an operator settings nothing they run reads.
+  if (rel === "scripts/secret-scanner-fetch.mjs") return false;
   return true;
 }
 

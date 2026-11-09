@@ -25,6 +25,7 @@ import { paths as runRecordPaths } from "../run-record.mjs";   //
 import { fileURLToPath } from "node:url";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
 import { toolGroupsForStage } from "../engine/mcp/gather-config.mjs";   // conversion 11 — the grant the tool-group edge is keyed on
+import { runFilesNamedIn } from "./driver-source.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const CLAUDE = join(HERE, "mock-claude.mjs");
@@ -451,6 +452,7 @@ test("drift guard: every _driver sidecar verify.mjs resolves is declared for som
   for (const m of src.matchAll(/driverDir\([^;\n]*?,\s*(?:`|")([a-z0-9.$~{}-]+)(?:`|")\s*\)/g))
     if (/\.[a-z]+$/.test(m[1])) found.add(m[1]);
   for (const m of src.matchAll(/_driver\/([a-z0-9.-]+\.json)/g)) found.add(m[1]);
+  for (const name of runFilesNamedIn(src)) if (/\.[a-z]+$/.test(name)) found.add(name);
   assert.ok(found.size >= 13,
     `the sidecar extractor found only ${found.size} names in verify.mjs — it found 13 before #1336. `
     + `A pattern that stops matching the source makes every assertion below vacuous: nothing to compare `

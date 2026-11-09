@@ -26,7 +26,7 @@ import { runLog } from "./log.mjs";   // — the empty-ladder observable; valida
 // this lane where a check can stop a delivery.
 import { permissionProseChecks } from "./predelivery-lint.mjs";
 import { SURVIVOR_BOUNDARY_RE, isEngineAppendedCaveat } from "./knockout-caveats.mjs";
-import { readJson, readJsonOrNull } from "./run-record.mjs";
+import { paths, readJson, readJsonOrNull } from "./run-record.mjs";
 
 const norm = (s) => String(s ?? "").trim();
 const nameKey = (s) => norm(s).toLowerCase().replace(/\s+/g, " ");
@@ -108,11 +108,11 @@ const OWNER_PAYLOAD = /^owner-.+-[0-9a-f]{10}\.md$/;   // the name `ownerPayload
 export function urlHeldFor(runDir) {
   let filings = null;
   try {
-    const doc = readJson(driverDir(runDir, "register-records.json"));
+    const doc = readJson(paths(runDir).registerRecords);
     filings = JSON.stringify((Array.isArray(doc?.marks) ? doc.marks : []).flatMap((x) => [...(Array.isArray(x?.records) ? x.records : []), ...(Array.isArray(x?.setAsideRecords) ? x.setAsideRecords : [])]));
   } catch { filings = null; }
   let checks = [];
-  try { checks = readJson(driverDir(runDir, "owner-checks.json")).checks ?? []; } catch { checks = []; }
+  try { checks = readJson(paths(runDir).ownerChecks).checks ?? []; } catch { checks = []; }
   const heldIds = registerRecordIdsHeld(runDir);
   const linked = new Set(checks.filter((c) => (c?.recordIds ?? []).some((id) => heldIds.has(String(id)))).map((c) => c?.payloadFile));
   const researchDir = join(runDir, "research");
@@ -236,7 +236,7 @@ export function isUnbrokenWall(s) {
 // line, which is true — so this can never cost a client a report over a field the run did not need.
 /** Every register recordId this run holds for `markName`. Empty set when the lane did not run. PURE-ish (reads disk). */
 export function registerRecordIdsFor(runDir, markName) {
-  const doc = readJsonOrNull(driverDir(runDir, "register-records.json"));
+  const doc = readJsonOrNull(paths(runDir).registerRecords);
   const want = String(markName ?? "").trim().toLowerCase();
   const entry = (Array.isArray(doc?.marks) ? doc.marks : []).find((e) => String(e?.name ?? "").trim().toLowerCase() === want);
   return new Set([...(Array.isArray(entry?.records) ? entry.records : []), ...(Array.isArray(entry?.setAsideRecords) ? entry.setAsideRecords : [])]
@@ -245,7 +245,7 @@ export function registerRecordIdsFor(runDir, markName) {
 
 /** Every register recordId this run holds, under any name: what a check may rest a defect on. Empty set when the lane did not run. */
 export function registerRecordIdsHeld(runDir) {
-  const doc = readJsonOrNull(driverDir(runDir, "register-records.json"));
+  const doc = readJsonOrNull(paths(runDir).registerRecords);
   return new Set((Array.isArray(doc?.marks) ? doc.marks : []).flatMap((e) => [...(Array.isArray(e?.records) ? e.records : []), ...(Array.isArray(e?.setAsideRecords) ? e.setAsideRecords : [])])
     .map((r) => String(r?.recordId ?? "").trim()).filter(Boolean));
 }
@@ -295,10 +295,10 @@ export function heldCitationsOnly(runDir, mark) {
 export const REGISTER_LANE_FILE = "register-lane.json";
 export function registerLaneState(runDir) {
   if (readJsonOrNull(driverDir(runDir, REGISTER_LANE_FILE))?.skipped === true) return { state: "skipped" };
-  const doc = readJsonOrNull(driverDir(runDir, "register-records.json"));
+  const doc = readJsonOrNull(paths(runDir).registerRecords);
   if (doc?.unavailable) return { state: "unavailable", reason: String(doc.unavailable) };
   if (doc) return { state: "held" };
-  return { state: existsSync(driverDir(runDir, "register-counts.json")) ? "unavailable" : "unknown", reason: null };
+  return { state: existsSync(paths(runDir).registerCounts) ? "unavailable" : "unknown", reason: null };
 }
 
 export const KNOCKOUT_RATING_QUALIFIERS = ["low"];
@@ -340,7 +340,7 @@ const bandIdx = (ladder, word) => ladder.findIndex((l) => l.toLowerCase() === St
 const materialIdxMax = (ladder) => ladder.length - 3;   // inclusive index bound for "material"
 
 /** The frozen ladder of a run, worst first, or none where the run holds no framework. */
-export const frozenLadder = (runDir) => ladderOf(readJsonOrNull(driverDir(runDir, "framework.json")));
+export const frozenLadder = (runDir) => ladderOf(readJsonOrNull(paths(runDir).framework));
 
 // ── A NAME'S CONCLUSION BY CLASS GROUP ───────────────────────────────────────────────
 //
@@ -524,7 +524,7 @@ export const validators = {
     if (collisions.length)
       return { ok: false, reason: `marks ${collisions.map(([a, b]) => `"${a}"/"${b}"`).join(", ")} collide to the same research key — a batch cannot carry two marks that differ only in spacing/punctuation/case; drop or reword one` };
     // name parity vs the instructed scope (the paraphrase-drift gate)
-    const scope = readJsonOrNull(driverDir(dirname(file), "instructed-scope.json"));
+    const scope = readJsonOrNull(paths(dirname(file)).instructedScope);
     const instructed = Array.isArray(scope?.marks) ? scope.marks : (scope?.marks ? [scope.marks] : null);
     if (instructed?.length) {
       const want = new Set(instructed.map(nameKey));
@@ -561,7 +561,7 @@ export const validators = {
     // before the move.
     const chunkDir = dirname(file);
     const runDir = basename(chunkDir) === DRIVER_DIR ? dirname(chunkDir) : chunkDir;
-    const fw = readJsonOrNull(driverDir(runDir, "framework.json"));
+    const fw = readJsonOrNull(paths(runDir).framework);
     const ladder = ladderOf(fw);
     // The frozen method, when the framework states one. A corrupt copy is a driver fault, as an unreadable
     // ladder is below: recorded, and its checks left to the merged gate, which refuses to publish on it —
@@ -590,13 +590,13 @@ export const validators = {
     // What belongs HERE is the record that this chunk's ratings were never constrained.
     if (!ladder.length) {
       runLog(runDir, { event: "knockout-band-checks-inert", stage: "knockout-assess", chunk: file,
-        framework: driverDir(runDir, "framework.json"),
+        framework: paths(runDir).framework,
         detail: "empty band ladder — knockout_band_unknown, classesDriving and registerEstimate all passed without checking anything" });
     }
     const chunkNo = Number(file.match(/knockout-assess-(\d+)\.json$/)?.[1] ?? NaN);
     // membership: the chunk may rate exactly its assigned marks — no invention, no neighbour-chunk
     // overrun (a duplicate row across chunks would double-render in the report), no omission.
-    const chunksSidecar = readJsonOrNull(driverDir(runDir, "knockout-chunks.json"));
+    const chunksSidecar = readJsonOrNull(paths(runDir).knockoutChunks);
     const assigned = Number.isInteger(chunkNo) && Array.isArray(chunksSidecar?.chunks) ? chunksSidecar.chunks[chunkNo] : null;
     if (Array.isArray(assigned)) {
       const want = new Set(assigned.map(nameKey));
@@ -898,7 +898,7 @@ export function validateMergedFindings(runDir, merged, plan) {
   // it counts wherever it sits. `supplied` answers "does this run owe one"; this answers "is one there".
   const caveats = (merged?.batch?.standardCaveats ?? []).map((c) => String(c ?? "")).join(" ");
   const owed = supplied.length === 0
-    && !registerSurfacedFilings(driverDir(runDir, "register-records.json"));
+    && !registerSurfacedFilings(paths(runDir).registerRecords);
   if (owed && !/register analysis may adjust/i.test(caveats)) {
     failures.push('the standing caveat ("Register analysis may adjust ratings in either direction") is '
       + "missing, and this run owes it: the rater supplied no caveats of its own and the register "
@@ -956,7 +956,7 @@ export function validateMergedFindings(runDir, merged, plan) {
   // THIS IS THE ONE DOOR THE RENUMBER LANDS AT, and it is why the ranked array is assigned back here
   // while the chunk gate discards it: a chunk file is the audit record of what the model wrote, and
   // nothing publishes from it. Everything a reader sees is rendered from `merged`.
-  const manifest = readJsonOrNull(driverDir(runDir, "framework.json"));
+  const manifest = readJsonOrNull(paths(runDir).framework);
   // The frozen method, as the chunk gate reads it. Here a corrupt copy refuses: this is the artifact that
   // ships, and a method nobody could read has checked nothing.
   const fm = frozenMethodOf(runDir, manifest);

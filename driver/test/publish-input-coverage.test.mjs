@@ -19,6 +19,7 @@ import { fileURLToPath } from "node:url";
 import {
   PUBLISH_INPUTS, NOT_READ_BY_NAME, CALLER_SUPPLIED, readStore, requiredAbsent, assertPublishInputCoverage,
 } from "../publish/publish-inputs.mjs";
+import { runFilesNamedIn } from "./driver-source.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
@@ -145,7 +146,7 @@ test("source scan: publishReport reads no store the table does not declare — a
 });
 
 test("source scan: no DEAD key — every declared store is still read by publishReport", () => {
-  const body = publishSource();
+  const body = publishSource() + "\n" + runFilesNamedIn(publishSource()).join("\n");
   const dead = Object.keys(PUBLISH_INPUTS).filter((k) => !body.includes(basename(k)));
   assert.deepEqual(dead, [],
     "publish-inputs.mjs declares a store publishReport no longer reads — a dead key is how a table stops describing the code");

@@ -38,7 +38,7 @@ import { normalizeRecordUri, readRecordArtifacts, forEachLedgerLine, recordBodyH
 import { recordGoodsProvenance } from "./record-goods.mjs";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { runPrefixSpellings } from "../shared/pre-rename-spellings.mjs";
-import { readJson } from "./run-record.mjs";
+import { paths, readJson } from "./run-record.mjs";
 
 export const GOODS_EVIDENCE_SCHEMA_VERSION = 1;
 export const GOODS_EVIDENCE_FILE = "goods-evidence.json";
@@ -72,7 +72,7 @@ export function heldRecordProvenance(runDir) {
       session: facts.session ?? prev?.session ?? null, ts: facts.ts ?? prev?.ts ?? null, goods: recordGoodsProvenance(body) });
   };
   let text = "";
-  try { text = readFileSync(driverDir(runDir, "register-record-bodies.jsonl"), "utf8"); } catch { text = ""; }
+  try { text = readFileSync(paths(runDir).registerRecordBodies, "utf8"); } catch { text = ""; }
   for (const line of text.split("\n")) {
     if (!line.trim()) continue;
     let row; try { row = JSON.parse(line); } catch { continue; }
@@ -99,7 +99,7 @@ export function heldBodiesOf(runDir, uris) {
   if (!want.size) return out;
   // A ledger row is written with its `target` before its `body` (providers/_shared/ledger.mjs), so the first target
   // on a line is the row's own, and only the rows of the records asked about are parsed.
-  forEachLedgerLine(driverDir(runDir, "register-record-bodies.jsonl"), (line) => {
+  forEachLedgerLine(paths(runDir).registerRecordBodies, (line) => {
     const t = /"target":("(?:[^"\\]|\\.)*")/.exec(line);
     let target = null;
     try { target = t ? JSON.parse(t[1]) : null; } catch { target = null; }

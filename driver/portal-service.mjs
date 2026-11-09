@@ -132,7 +132,6 @@ const INSTALL_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 const READ_OFF_NOTE = "Reading a brief is not available on this instance — set the search up below.";
 import { basename, dirname, join, resolve as pathResolve } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
-import { driverDir } from "../shared/driver-dir.mjs";   //
 import { createHmac, timingSafeEqual, randomBytes } from "node:crypto";
 import { makePrincipal, assertPrincipal, genericOrgOf, mayReadRun, reachCovers, principalView, seesEverything, mayRun,
   PortalDeny } from "./portal-access.mjs";
@@ -187,7 +186,7 @@ import { resolveNumericSetting } from "./numeric-setting.mjs";   // — the same
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { deploymentBox } from "../shared/deployment-box.mjs";   // — the box names itself; one rule
 import { stageNow } from "./progress.mjs";   // the stage a live run is in now, for the card and the row
-import { readJson } from "./run-record.mjs";
+import { paths, readJson } from "./run-record.mjs";
 // A run in one of these has finished; its step is the one its terminal write set, not the stage it last entered.
 const TERMINAL_STATES = new Set(["delivered", "failed", "cancelled"]);
 // This install's release channel, `beta` or `latest`, read once off its own version. /me carries it.
@@ -468,7 +467,7 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
   const readRun = (dir) => {
     try {
       const s = readJson(join(dir, "status.json"));
-      const p = readJson(driverDir(dir, "profile.json"));
+      const p = readJson(paths(dir).profile);
       const owner = p.profileKey ?? p.key ?? "generic";
       if (!mine(owner, p.organisation ?? null)) return;
       if (s.state === "delivered") return;   // the pool row is the delivered face
@@ -489,7 +488,7 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
       // search-policy sidecar carries the stage. Both are read here so a run does not change identity
       // when it crosses from live to delivered: same mark, same stage, same thread.
       let sp = null;
-      try { sp = readJson(driverDir(dir, "search-policy.json")); } catch { /* legacy/early run */ }
+      try { sp = readJson(paths(dir).searchPolicy); } catch { /* legacy/early run */ }
       // A PAUSE IS NOT A RUN. The engine writes `postponed` (a rate-limit park, auto-resuming at
       // `resetsAt`) and `recovering` (an auto-retry backing off), and the portal contract knows neither
       // — its coercion treats anything unrecognised as `running`. So a run parked for five hours showed

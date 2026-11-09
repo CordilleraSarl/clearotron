@@ -14,8 +14,7 @@
 // cannot fix after delivery.
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { driverDir } from '../../shared/driver-dir.mjs';   //
-import { readJson, readJsonOrNull } from '../run-record.mjs';
+import { paths, readJson, readJsonOrNull } from "../run-record.mjs";
 import { publishReport } from './index.mjs';
 import { publishKnockout } from './knockout.mjs';
 import { worstBand } from '../verify-knockout.mjs';
@@ -41,7 +40,7 @@ export async function republishRun({ runId, meta, pool, poolUrl, runDir, skipReg
   const template = templateOfMeta(meta);
   if (template !== 'knockout') {
     if (!existsSync(join(runDir, 'report.md'))) throw new Error(`${runDir} has no report.md — not a clearance run workspace.`);
-    const prof = readJsonOrNull(driverDir(runDir, 'profile.json'));
+    const prof = readJsonOrNull(paths(runDir).profile);
     return publishReport({
       runId,
       codename: meta?.codename || '',
@@ -64,10 +63,10 @@ export async function republishRun({ runId, meta, pool, poolUrl, runDir, skipReg
   const findingsPath = join(runDir, 'knockout-findings.json');
   if (!existsSync(findingsPath)) throw new Error(`${runDir} has no knockout-findings.json — not a knockout run workspace.`);
   const findings = readJson(findingsPath);
-  const framework = readJsonOrNull(driverDir(runDir, 'framework.json'));
+  const framework = readJsonOrNull(paths(runDir).framework);
   if (!framework) throw new Error(`${runDir} has no _driver/framework.json — a knockout cannot be re-rendered without the bands it was rated under.`);
-  const searchPolicy = readJsonOrNull(driverDir(runDir, 'search-policy.json'));
-  const prof = readJsonOrNull(driverDir(runDir, 'profile.json'));
+  const searchPolicy = readJsonOrNull(paths(runDir).searchPolicy);
+  const prof = readJsonOrNull(paths(runDir).profile);
   return publishKnockout({
     runId,
     codename: meta?.codename || '',
