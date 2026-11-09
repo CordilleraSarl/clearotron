@@ -143,8 +143,8 @@ export function applyCorrectionCall({ held, call, scope }) {
     const name = String(row?.name ?? "");
     const i = marks.findIndex((m) => nameKey(m?.name) === nameKey(name));
     const concerned = scope.byMark.has(nameKey(name));
-    if (!concerned && !(i >= 0 && onlyNamedFindings(row, marks[i], scope))) return refuse(`scope:${name}: no material defect concerns this name. Leave it as it stands.`);
     if (i < 0) return refuse(`scope:${name}: this name is not in the chunk you were handed.`);
+    if (!concerned && !onlyNamedFindings(row, marks[i], scope)) return refuse(`scope:${name}: No material defect concerns this name. You may correct only a finding named by a defect that already appears on this name; keep the name's rating, summary, and other findings unchanged.`);
     const { findings: _findings, remove_findings: _removed, ...fields } = row;
     const next = { ...marks[i], ...fields };
     if (row.findings !== undefined || row.remove_findings !== undefined) {

@@ -327,7 +327,7 @@ const apply = (defects, call) => {
 
 test("a call reaches only the names a defect concerns, and their summary blocks stand", () => {
   const onOne = [{ kind: "band", mark: NAME, finding: 1, problem: "p", rests_on: ["x"] }];
-  assert.match(apply(onOne, { marks: [{ name: SIBLING, basis: "new" }] }).reason, /no material defect concerns this name/);
+  assert.match(apply(onOne, { marks: [{ name: SIBLING, basis: "new" }] }).reason, /No material defect concerns this name/);
   const ok = apply(onOne, { marks: [{ name: NAME, findings: [{ ...finding(1, "ONE"), band: "High" }] }] });
   assert.equal(ok.ok, true);
   assert.equal(ok.chunk.marks[0].findings[0].band, "High");
@@ -344,6 +344,7 @@ const sharedChunk = () => {
   return base;
 };
 const onShared = [{ kind: "contradiction", mark: NAME, finding: 1, problem: "p", rests_on: ["x"] }];
+const REFUSAL = "No material defect concerns this name. You may correct only a finding named by a defect that already appears on this name; keep the name's rating, summary, and other findings unchanged.";
 const applyShared = (call) => {
   const base = sharedChunk();
   return applyCorrectionCall({ held: base, call, scope: chunkScope(correctionWork({ rated: base, material: onShared, chunks: [[NAME, SIBLING]] }), 0, base) });
@@ -361,7 +362,12 @@ test("a line a defect names may be corrected on every name it prints on, and not
     ["its rating", { name: SIBLING, rating: "High", findings: [fixed] }],
     ["a removal", { name: SIBLING, findings: [fixed], remove_findings: [2] }],
     ["a different finding under the same number", { name: SIBLING, findings: [{ ...finding(1, "OTHER") }] }],
-  ]) assert.match(applyShared({ marks: [row] }).reason, /no material defect concerns this name/, what);
+  ]) assert.match(applyShared({ marks: [row] }).reason, /No material defect concerns this name/, what);
+});
+
+test("a refused change to another name says what may be corrected there, and a name outside the chunk is told so", () => {
+  assert.match(applyShared({ marks: [{ name: SIBLING, basis: "new" }] }).reason, new RegExp(`: ${REFUSAL.replace(/[.;]/g, "\\$&")}$`));
+  assert.match(applyShared({ marks: [{ name: "ABSENT", findings: [finding(1, "ONE")] }] }).reason, /this name is not in the chunk you were handed/);
 });
 
 test("a named finding corrected on another name is not a change outside the round, and anything else there still is", () => {
