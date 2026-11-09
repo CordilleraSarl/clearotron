@@ -11,7 +11,7 @@ import "./http-dispatcher.mjs";   // side effect: raise undici headersTimeout fo
 import { createInterface } from "node:readline";
 import { appendFileSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
-import { driverDir } from "../../../shared/driver-dir.mjs";   //
+import { paths } from "../../run-record.mjs";   //
 import { answerBudget, answerPieces, servedPart, partNotHeld, takePart, heldAnswers, withAnswerPart } from "../../../shared/answer-parts.mjs";
 
 // ── half 2 — THE TOOL CALL LOG, so a killed call is a FACT and not an inference ────────────────
@@ -38,7 +38,7 @@ import { answerBudget, answerPieces, servedPart, partNotHeld, takePart, heldAnsw
 // failed write costs this diagnostic and nothing else.
 const toolLogPath = () => {
   const dir = process.env.CLEAROTRON_BAND_RUN_DIR;
-  return dir ? driverDir(dir, "tool-calls.jsonl") : null;
+  return dir ? paths(dir).toolCalls : null;
 };
 
 // WHAT GOES IN: the tool's name, the sequence number that pairs the two lines, and — for the plan tools

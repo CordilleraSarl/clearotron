@@ -153,7 +153,7 @@ test("the invariant is CALLED at the corrective seam, and its result is recorded
     "called with all three inputs — the demotion list is arm B's entire before-state");
   assert.match(src, /event:\s*"evidence-claim-invariant"[^}]*violations:/,
     "the count reaches run.jsonl");
-  assert.match(src, /evidence-claim-violations\.json/,
+  assert.match(src, /P\.evidenceClaimViolations|evidence-claim-violations\.json/,
     "and the violations themselves reach an artifact, not just a count");
   // The failure arm must record too: a check that threw and a check that found nothing must not look
   // the same in the log.

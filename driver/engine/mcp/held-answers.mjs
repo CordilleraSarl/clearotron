@@ -18,9 +18,9 @@
 // close asks it once more (execute-plan.mjs, timedOutBefore). An answer in a slice the run took out of its band
 // because a check could not prove it ran is asked again too, whatever wrote the band since.
 
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir } from "../../../shared/driver-dir.mjs";
+import { paths, readJson } from "../../run-record.mjs";
 import { OUTSTANDING_REASON } from "../../../providers/_shared/follow-up-searches.mjs";
 import { awaitsReadingTurn } from "../../../providers/_shared/plan-guards.mjs";
 import { releasedFamilyQids } from "../../withheld-families.mjs";
@@ -57,7 +57,7 @@ function readBlocks(path) {
   if (hit && hit.stamp === stamp) return hit.blocks;
   let blocks = [];
   try {
-    const j = JSON.parse(readFileSync(path, "utf8"));
+    const j = readJson(path);
     blocks = (Array.isArray(j) ? j : []).filter((b) => b?.qid).map((b) => ({
       qid: b.qid, state: b.state ?? null, error: b.error === true, total_hits: b.total_hits ?? null,
       count: b.count ?? (Array.isArray(b.records) ? b.records.length : null),
@@ -97,7 +97,7 @@ function readRunQuestions(runDir) {
   const units = join(runDir, "register-units");
   const blocksByQid = new Map();
   const plans = [];
-  try { plans.push({ axis: null, plan: JSON.parse(readFileSync(driverDir(runDir, "register-plan.json"), "utf8")) }); } catch { /* no frozen plan */ }
+  try { plans.push({ axis: null, plan: readJson(paths(runDir).registerPlan) }); } catch { /* no frozen plan */ }
   let files = [];
   try { files = readdirSync(units); } catch { files = []; }
   const takenOut = slicesTakenOutByAxis(runDir);
@@ -107,7 +107,7 @@ function readRunQuestions(runDir) {
       for (const b of blocks) if (b?.qid) blocksByQid.set(String(b.qid), b);
     }
     if (f.endsWith("-supplemental-plan.json")) {
-      try { plans.push({ axis: f.slice(0, -"-supplemental-plan.json".length), plan: JSON.parse(readFileSync(join(units, f), "utf8")) }); } catch { /* torn: skipped */ }
+      try { plans.push({ axis: f.slice(0, -"-supplemental-plan.json".length), plan: readJson(join(units, f)) }); } catch { /* torn: skipped */ }
     }
   }
   return { plans, blocksByQid };
