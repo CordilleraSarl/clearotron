@@ -23,9 +23,10 @@
 // KEYED ON (runId, state), never on runId alone. A run that leaves the state you dismissed it in is a
 // different fact: an id-only key would hide a paused run for ever the moment it briefly read as failed,
 // and hiding a live run is the failure this whole feature is meant to avoid.
-import { readFileSync, writeFileSync, renameSync, mkdirSync, unlinkSync } from 'node:fs';
+import { writeFileSync, renameSync, mkdirSync, unlinkSync } from "node:fs";
 import { createHash } from 'node:crypto';
 import { join } from 'node:path';
+import { readJson } from "./run-record.mjs";
 
 export const ACKS_DIR = 'viewer-acks';
 
@@ -45,7 +46,7 @@ const fileFor = (poolDir, email) =>
  *  error: the file is optional by design and a reader who has dismissed nothing has none. */
 export function readAcks(poolDir, email) {
   try {
-    const j = JSON.parse(readFileSync(fileFor(poolDir, email), 'utf8'));
+    const j = readJson(fileFor(poolDir, email));
     const out = new Map();
     for (const a of Array.isArray(j?.acks) ? j.acks : []) {
       if (a && typeof a.run === 'string' && typeof a.state === 'string') out.set(a.run, a.state);
