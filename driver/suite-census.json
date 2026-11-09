@@ -238,8 +238,8 @@
           "todos": 0
         },
         "a-citation-of-a-withdrawn-finding-is-repaired-by-the-part-that-wrote-it.test.mjs": {
-          "tests": 7,
-          "asserts": 30,
+          "tests": 10,
+          "asserts": 50,
           "skips": 0,
           "todos": 0
         },
@@ -281,7 +281,7 @@
         },
         "a-clear-from-a-review-asked-again-keeps-the-conditions-still-standing.pipeline.test.mjs": {
           "tests": 3,
-          "asserts": 24,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
@@ -3184,8 +3184,8 @@
           "todos": 0
         },
         "case-law-join.test.mjs": {
-          "tests": 2,
-          "asserts": 10,
+          "tests": 6,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -4666,8 +4666,8 @@
           "todos": 0
         },
         "jx-p4-units.test.mjs": {
-          "tests": 24,
-          "asserts": 131,
+          "tests": 25,
+          "asserts": 135,
           "skips": 0,
           "todos": 0
         },
