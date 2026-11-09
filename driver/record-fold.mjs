@@ -29,10 +29,9 @@
 // in force.
 import { readFileSync, writeFileSync, existsSync, renameSync, rmSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";
 import { consolidateFindings, remapActionOrdinals, remapFourAnswersOrdinals, parseFindingsJson } from "./findings-model.mjs";
 import { parseFrameworkManifest } from "./framework.mjs";
-import { paths, readJson } from "./run-record.mjs";
+import { driverDir, paths, readJson } from "./run-record.mjs";
 
 export const FOLD_FILE = "fold.json";
 export const UNFOLDED_FILE = "findings-unfolded.json";
