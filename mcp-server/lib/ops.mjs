@@ -10,7 +10,6 @@
 
 import { writeFileSync, existsSync, mkdirSync, rmSync, renameSync, readFileSync, readdirSync } from "node:fs";
 import { join, basename } from "node:path";
-import { driverDir } from "../../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
 import { randomUUID } from "node:crypto";
 import { config } from "./driver.mjs";
 import { validateJob } from "../../driver/enqueue-schema.mjs";
@@ -23,7 +22,7 @@ import { readEngineChild, engineChildIsLive, endEngineChild } from "../../driver
 import { killEscalateMs } from "../../driver/engine/common.mjs";   // the watchdogs' grace, reused by an immediate stop
 import { stopReason } from "../../shared/stop-reason.mjs";   //
 import { envFrom } from "../../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
-import { paths, readJson } from "../../driver/run-record.mjs";
+import { driverDir, paths, readJson } from "../../driver/run-record.mjs";   // — one definition of where `_driver/` is
 
 // Queue resolution (mirrors the enqueue CLI, docs/INTAKE.md): with NO explicit agent, a
 // headless deployment's CLEAROTRON_QUEUE_DIR wins; otherwise the default agent's workspace queue. An
