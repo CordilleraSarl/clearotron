@@ -43,6 +43,7 @@ import { STAGES, stageInputs, REGISTER_AXES } from "./stages.mjs";
 import { withheldFamiliesPath } from "./withheld-families.mjs";
 import { toolGroupsForStage } from "./engine/mcp/gather-config.mjs";
 import { FACTS_FILE as DIGEST_FACTS_FILE, ACCOUNTING_STAMP as DIGEST_ACCOUNTING_STAMP } from "./register-digest-record.mjs";
+import { paths } from "./run-record.mjs";
 
 /**
  * The five ways an artifact reaches a stage. A declaration can express the first one; production uses
@@ -135,7 +136,7 @@ export const TOOL_GROUP_EDGES = {
     // checked. The filter stood in for telling a read from a write, since every file the servers write is
     // `.jsonl` too. The walk now makes that distinction itself, at any extension (experiment-context.test.mjs,
     // `driverFileUses`), so this file is held by the same rule as every other read.
-    { path: driverDir(P.runDir, "register-record-bodies.jsonl"),
+    { path: paths(P.runDir).registerRecordBodies,
       why: "band_record serves a record body from this log when the run fetched it through the ledger rather than into _records/ (band-server.mjs recordLedgerPath); without it the sandbox's record reads all fail and the re-run sees less than the stage saw" },
   ],
   // ── conversion 11 — THE RECORD TOOL READS A DRIVER-WRITTEN SIDECAR, AND NOTHING DECLARED IT ───────
@@ -177,13 +178,13 @@ export const TOOL_GROUP_EDGES = {
   // The research server sends every question on the tier the run's frozen policy pins. A sandbox without
   // the policy asks on the question's own depth instead, so the arm would measure a different tier.
   perplexity: (P) => [
-    { path: driverDir(P.runDir, "search-policy.json"), why: "perplexity_research sends every question on the tier the run's frozen policy pins (web.questionPreset); without it a question goes out on its own depth" },
+    { path: paths(P.runDir).searchPolicy, why: "perplexity_research sends every question on the tier the run's frozen policy pins (web.questionPreset); without it a question goes out on its own depth" },
   ],
   declination: (P) => [
-    { path: driverDir(P.runDir, "declination-spec.json"), why: "record_declination resolves every row_index against this spec; without it the tool refuses the call and the seat cannot decline at all" },
+    { path: paths(P.runDir).declinationSpec, why: "record_declination resolves every row_index against this spec; without it the tool refuses the call and the seat cannot decline at all" },
   ],
   "recording-doubt-closure": (P) => [
-    { path: driverDir(P.runDir, "doubt-closure-spec.json"), why: "record_doubt_closure resolves its rows against this spec; without it the tool refuses and the closure verdicts cannot be recorded" },
+    { path: paths(P.runDir).doubtClosureSpec, why: "record_doubt_closure resolves its rows against this spec; without it the tool refuses and the closure verdicts cannot be recorded" },
   ],
   "recording-register-digest": (P) => [
     { path: driverDir(P.runDir, DIGEST_FACTS_FILE), why: "record_register_digest resolves every uri the seat cites against this sidecar (readDigestFacts); without it every call refuses registerdigest_uri_unknown" },
@@ -197,14 +198,14 @@ export const TOOL_GROUP_EDGES = {
 // positions, the scope, what the band tools served and the goods evidence, under the era stamp that says a form is
 // required. An arm without them was told of no set-aside at all.
 const placementSetAsideReads = (P) => [
-  { path: driverDir(P.runDir, "placement-form.form.json"), kind: "driver-side", why: "standingPlacementDecisions reads placement's set-asides from the form's driver copy" },
-  { path: driverDir(P.runDir, "stage-contracts.json"), kind: "driver-side", why: "the era stamp that says this run's placement records a form; without it a missing form reads as none set aside" },
+  { path: paths(P.runDir).placementFormForm, kind: "driver-side", why: "standingPlacementDecisions reads placement's set-asides from the form's driver copy" },
+  { path: paths(P.runDir).stageContracts, kind: "driver-side", why: "the era stamp that says this run's placement records a form; without it a missing form reads as none set aside" },
   { path: P.placementModel, kind: "driver-side", why: "the placed records a set-aside is checked against (placedUriRows)" },
   { path: P.bandShape, kind: "driver-side", why: "readPlacementFormInput: the floors and groups a set-aside is judged against" },
   { path: P.registerPositions, kind: "driver-side", why: "readPlacementFormInput: the positions a named set-aside resolves to" },
-  { path: driverDir(P.runDir, "instructed-scope.json"), kind: "driver-side", why: "readPlacementFormInput: the applied-for marks a ground is refused on" },
-  { path: driverDir(P.runDir, "reading-log.jsonl"), kind: "driver-side", why: "readServed: the lines a group row may cover are the lines placement was shown" },
-  { path: driverDir(P.runDir, "goods-evidence.json"), kind: "driver-side", why: "readGoodsStates: a ground on a record's goods is checked against what its goods rest on" },
+  { path: paths(P.runDir).instructedScope, kind: "driver-side", why: "readPlacementFormInput: the applied-for marks a ground is refused on" },
+  { path: paths(P.runDir).readingLog, kind: "driver-side", why: "readServed: the lines a group row may cover are the lines placement was shown" },
+  { path: paths(P.runDir).goodsEvidence, kind: "driver-side", why: "readGoodsStates: a ground on a record's goods is checked against what its goods rest on" },
 ];
 
 // THE STATE A CORRECTIVE PASS STARTS FROM, for an arm that reproduces one (`--dispatch-trigger corrective`): the findings
@@ -212,14 +213,14 @@ const placementSetAsideReads = (P) => [
 // pass is handed none of them, so only a corrective arm carries them. Without them an arm on a saved run refused as having
 // no corrective state (measured 2026-10-29).
 const correctiveStateReads = (P) => [
-  { path: driverDir(P.runDir, "findings-pre-corrective.json"), kind: "driver-side", why: "correctiveReadiness and the pass's snapshot: the findings the corrective pass started from" },
+  { path: paths(P.runDir).findingsPreCorrective, kind: "driver-side", why: "correctiveReadiness and the pass's snapshot: the findings the corrective pass started from" },
   { path: P.seniorEyeReview, kind: "driver-side", why: "the review whose flags the corrective pass answers; correctionsExtra hands it on verbatim" },
   { path: driverDir(P.runDir, "refutation-calls", "call-001.json"), kind: "driver-side", why: "readAcceptedFlags: the review's typed flags, the corrective worklist's source" },
-  { path: driverDir(P.runDir, "declinations.json"), kind: "driver-side", why: "the writer's declinations the corrective pass starts from" },
+  { path: paths(P.runDir).declinations, kind: "driver-side", why: "the writer's declinations the corrective pass starts from" },
   { path: driverDir(P.runDir, REVIEW_EXCLUSIONS_FILE), kind: "driver-side", why: "correctionsExtra names each excluded position a flag is about, with its mark, owner and row, from the exclusions the review was shown" },
   // The writer's own record while a fold is in force, which the correction is handed in place of the folded one.
-  { path: driverDir(P.runDir, "fold.json"), kind: "driver-side", why: "modelRecordPath: whether findings.json is the folded record, which decides the record correctionsExtra names" },
-  { path: driverDir(P.runDir, "findings-unfolded.json"), kind: "conditional", why: "named in the correction's message only while a fold is in force: the writer's own record, which its patch updates" },
+  { path: paths(P.runDir).fold, kind: "driver-side", why: "modelRecordPath: whether findings.json is the folded record, which decides the record correctionsExtra names" },
+  { path: paths(P.runDir).findingsUnfolded, kind: "conditional", why: "named in the correction's message only while a fold is in force: the writer's own record, which its patch updates" },
 ];
 
 const UNDECLARED = {
@@ -268,7 +269,7 @@ const UNDECLARED = {
     // The research the run already got, handed to a later attempt of the writer as a file (messageCtxFor,
     // research-answers.mjs). Carried only by an arm that reproduces one: a first attempt is handed none, and the copy
     // is readable by the arm's own commands, so an arm that carried the run's later answers would hand them on.
-    ...(researchHandOff ? [{ path: driverDir(P.runDir, "research-answers.jsonl"), kind: "driver-side",
+    ...(researchHandOff ? [{ path: paths(P.runDir).researchAnswers, kind: "driver-side",
       why: "handResearchAnswers writes research-answers.md from it for an arm that reproduces a later attempt; without it that arm is handed nothing" }] : []),
     { path: P.enforcerSignals, kind: "conditional",
       why: "named in the prompt only when ctx.enforcerSignals > 0; aim-attention telemetry, deliberately outside the freshness map" },
@@ -292,25 +293,25 @@ const UNDECLARED = {
     // What the full review was shown, which a later review's list is compared with. Without it an arm reproducing a later
     // review reads as a run with no full review on record and is given the whole list as decisions to check, a shape
     // production never sends. A full-review arm writes its own over the copy.
-    { path: driverDir(P.runDir, "review-exclusions-full.json"), kind: "driver-side",
+    { path: paths(P.runDir).reviewExclusionsFull, kind: "driver-side",
       why: "writerExclusionBlock: a later review's list is the full review's compared with the run as it stands" },
     // What each exclusion's evidence is read from beside the band and the bodies: the goods state the writer's list gave
     // each record, and, from the delivery seam on, the writer's own record and the fold's map, which keep the writer's
     // numbering. Without the list an arm reads every exclusion's evidence without its goods state, so a later review's
     // arm reads every exclusion the full review read with one as changed.
-    { path: driverDir(P.runDir, "declination-spec.json"), kind: "driver-side", why: "writerExclusions: the goods state each record's evidence is read with" },
-    { path: driverDir(P.runDir, "fold.json"), kind: "driver-side", why: "modelRecordPath: whether findings.json is the folded record" },
-    { path: driverDir(P.runDir, "findings-unfolded.json"), kind: "driver-side", why: "modelRecordPath: the writer's own record while a fold is in force" },
+    { path: paths(P.runDir).declinationSpec, kind: "driver-side", why: "writerExclusions: the goods state each record's evidence is read with" },
+    { path: paths(P.runDir).fold, kind: "driver-side", why: "modelRecordPath: whether findings.json is the folded record" },
+    { path: paths(P.runDir).findingsUnfolded, kind: "driver-side", why: "modelRecordPath: the writer's own record while a fold is in force" },
     // The research a later review is told the run obtained after the full review. Carried only by an arm that reproduces a
     // later review: a full review's copy would hold answers the run got after it.
-    ...(dispatchTrigger !== "fresh" ? [{ path: driverDir(P.runDir, "research-answers.jsonl"), kind: "driver-side",
+    ...(dispatchTrigger !== "fresh" ? [{ path: paths(P.runDir).researchAnswers, kind: "driver-side",
       why: "writerExclusionBlock writes research-after-review.md from it for a later review; without it that arm is told of none" }] : []),
     // Placement's floor decisions and the writer's declinations, which the review is told when its message is built
     // (messageCtxFor): placement's are read through the same files as the set-asides the reading step and the writer are
     // told. Measured on a saved run, 2026-10-29: an arm without them was told none of placement's 33 floor decisions and
     // none of the writer's 30 floor lines.
     ...placementSetAsideReads(P),
-    { path: driverDir(P.runDir, "declinations.json"), kind: "driver-side",
+    { path: paths(P.runDir).declinations, kind: "driver-side",
       why: "the review is told the writer's declinations from it when its message is built; without it the arm is told of none" },
   ],
 };
@@ -368,17 +369,17 @@ export const CONTEXT_DERIVATIONS = [
     // buildBandShape), which is why a rig that REPLAYS a persisted band-shape.json cannot serve a
     // seeded arm: it would replay the unseeded artifact and report no movement.
     // goods-evidence.json: what each record's goods rest on, read from the same run files; no band tool serves it.
-    writes: (P) => [P.bandShape, P.bandShapeMd, P.registerPositions, driverDir(P.runDir, "goods-evidence.json")],
+    writes: (P) => [P.bandShape, P.bandShapeMd, P.registerPositions, paths(P.runDir).goodsEvidence],
     reads: (P) => [
       { path: P.registerNamedBand, why: "the merged band the shape is derived FROM" },
       { path: P.variantManifestModel, why: "targets: the mark, its dominant element, distinctive elements and variants" },
       { path: P.crowdContext, why: "the crowd join the shape's crowd descriptors carry" },
       { path: join(P.runDir, "_records"), dir: true, why: "recordDetailIndex — registration/application numbers, IR↔base linkage, Madrid designations; no search row carries them" },
-      { path: driverDir(P.runDir, "register-record-bodies.jsonl"), why: "record-goods.mjs bandGoodsIndex: each record's goods, which the groups test against the client's goods words" },
+      { path: paths(P.runDir).registerRecordBodies, why: "record-goods.mjs bandGoodsIndex: each record's goods, which the groups test against the client's goods words" },
       // THE REGISTER'S OWN PAGES THE RUN'S RESEARCH SAVED complete a goods statement a search answer cut, so they are an
       // input of this derivation (saved-register-pages.mjs). Seeded as the canonical run holds the folder, as `_records`
       // is: a page saved after the replayed stage is in the sandbox too. That is this input's stated replay limit.
-      { path: driverDir(P.runDir, "web-results"), dir: true, why: "saved-register-pages.mjs savedStatusPages: the register's own status pages the run's research saved, which complete a goods statement the search answer cut; seeded as the run holds them, so a page saved after the replayed stage is seeded too" },
+      { path: paths(P.runDir).webResults, dir: true, why: "saved-register-pages.mjs savedStatusPages: the register's own status pages the run's research saved, which complete a goods statement the search answer cut; seeded as the run holds them, so a page saved after the replayed stage is seeded too" },
       { path: P.registerPlan, why: "record-goods.mjs bandShapeGoods: the word the register's goods-narrowed search asked for, which the shape sorts on" },
       { path: driverDir(P.runDir, "matter-frame-calls", "accepted.json"), why: "withFrameClasses: the classes the frame added for the client's own goods join the in-scope set and the floors" },
       { path: P.instructedScope, why: "record-goods.mjs instructedOrder: the order's goods wording and markets, which the groups sort by" },
@@ -392,7 +393,7 @@ export const CONTEXT_DERIVATIONS = [
       { path: P.variantManifest, why: "ctx.gridVariants = parseManifestVariants(variant-manifest.md)" },
       { path: P.matterContext, why: "the generic profile's channels and the derived meaning angles come from the frame" },
       { path: driverDir(P.runDir, "matter-frame-calls", "accepted.json"), why: "web-grid.mjs frameWebChoiceFor: the forms the frame names and the stores it set aside decide the grid's blocks" },
-      { path: driverDir(P.runDir, "stage-contracts.json"), why: "web-grid.mjs frameAskedForWebGrid: a frame asked for its forms that sent none gets the mark itself; one never asked keeps the full grid" },
+      { path: paths(P.runDir).stageContracts, why: "web-grid.mjs frameAskedForWebGrid: a frame asked for its forms that sent none gets the mark itself; one never asked keeps the full grid" },
       { path: P.variantManifestModel, why: "the transliteration connotation bucket" },
       { path: P.commonLaw, why: "the resumed-unsplit self-disarm reads the canonical findings" },
       { path: P.commonLawHalf("a"), why: "the resumed-unsplit self-disarm" },
@@ -423,7 +424,7 @@ export const CONTEXT_DERIVATIONS = [
       { path: P.planExecution, why: "digestSummaryCounts and digestAuditRows both tabulate the plan-execution receipt" },
       { path: P.registerFindings, why: "digestAuditRows returns EMPTY without it — the audit rows would silently vanish from the sandboxed sidecar" },
       { path: P.coverageEnum, why: "coverageFormStamp — whether this run requires a coverage form at all, which decides whether the audit rows read one" },
-      { path: driverDir(P.runDir, "register-coverage-form.form.json"), why: "readCoverageForm — the accumulator digestAuditRows reads when the stamp says a form is required" },
+      { path: paths(P.runDir).registerCoverageFormForm, why: "readCoverageForm — the accumulator digestAuditRows reads when the stamp says a form is required" },
     ],
   },
 ];
@@ -440,7 +441,7 @@ export const CONTEXT_DERIVATIONS = [
 const waitingFamilyJudgmentReads = (P) => [
   ...REGISTER_AXES.map((a) => ({ path: withheldFamiliesPath(P.runDir, a),
     why: "planAuditExtra reads the reading turn's record of the families it chose not to ask (readWithheldFamilies)" })),
-  { path: driverDir(P.runDir, "register-coverage-form.form.json"), why: "planAuditExtra counts a family whose form row is settled withheld-by-judgment as withheld" },
+  { path: paths(P.runDir).registerCoverageFormForm, why: "planAuditExtra counts a family whose form row is settled withheld-by-judgment as withheld" },
   { path: P.coverageEnum, why: "the stamp that names the coverage form planAuditExtra reads" },
 ];
 
@@ -453,7 +454,7 @@ export const DISPATCH_EXTRAS = [
       // ride record_coverage), so an arm dispatched without it is not measuring its variable — it is
       // measuring the absence of the rows the stage's whole coverage contract now runs through. The
       // same file is on VALIDATOR_SIDECARS, because it is also the copy the gate judges.
-      { path: driverDir(P.runDir, "register-coverage-form.form.json"), why: "the accumulator coverageFormBrief enumerates into the dispatch (typed transport)" },
+      { path: paths(P.runDir).registerCoverageFormForm, why: "the accumulator coverageFormBrief enumerates into the dispatch (typed transport)" },
       { path: P.coverageEnum, why: "the era stamp that says a coverage form is required on this run" },
       { path: P.planExecution, why: "the coverage form's skeleton + per-qid deferral reasons (was the A8 deferred-axis hint)" },
       { path: P.registerPlan, why: "the coverage form's unit labels and open-block join come from the frozen plan" },
@@ -470,7 +471,7 @@ export const DISPATCH_EXTRAS = [
       { path: P.planExecution, why: "readPlanExecution — the deterministically-refused queries" },
       { path: P.ownerScreen, why: "the owner-screen negative that rides the same block" },
       { path: P.registerPlan, why: "capabilityGapAxes / fullyDeferredAxes split the deferrals against the frozen plan" },
-      { path: driverDir(P.runDir, "register-taint.json"), why: "readActiveTaintAxes — a kill-touched axis is relabelled deferred at the same choke point" },
+      { path: paths(P.runDir).registerTaint, why: "readActiveTaintAxes — a kill-touched axis is relabelled deferred at the same choke point" },
       // …and the FALLBACK behind that receipt: with no register-taint.json, readActiveTaintAxes reads
       // the per-axis unit telemetry directly (register-taint.jsonlTaintedAxes). A sandbox without these
       // would silently relabel nothing on exactly the runs that never wrote a receipt — the taint would
