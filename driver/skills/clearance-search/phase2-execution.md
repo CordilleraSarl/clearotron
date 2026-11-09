@@ -220,14 +220,7 @@ Example: a JELLY register hit owned by Jellycat (a toy company) for Class 9 vide
 
 **Output contract — ENFORCED by the driver (spec 11), not optional.** For every Composite 3+ finding whose
 mitigant or verdict turns on the **absence** of use (it says the mark is "not in actual use" / "unused" / has
-"no marketplace use found", or names non-use revocation/cancellation as the mitigant), the finding's actual-use line
-MUST end with a literal source line:
-
-> `- **Use-check source:** <the perplexity_research result URL> — <one-clause finding>`
-
-If the marketplace query genuinely returned nothing, write the honest value verbatim:
-
-> `- **Use-check source:** perplexity_research — no result`
+"no marketplace use found", or names non-use revocation/cancellation as the mitigant), record its result in that finding's `use_check.source`: <result URL | "perplexity_research — no result">.
 
 The driver checks the structured finding record. A required use-check source belongs in that record. An unknown use
 status does not require an invented source. The reviewer checks whether the available evidence supports the claim.

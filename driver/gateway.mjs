@@ -2551,10 +2551,10 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       `(a qualifier like "(count-only, saturated)" moves into reason). The failed check was: ${tok}. ` +
       resaveClause;
   } else if (/use_check_missing/.test(lastFail)) {
-    hint = "every Composite-3-or-higher finding whose risk turns on the owner's actual use ENDS with a " +
-      "\"**Use-check source:** <result URL | 'perplexity_research — no result'>\" line — run the scoped marketplace " +
-      "use-check (owner + mark + goods/field) and cite its result, or state the honest 'no result'; never assert a " +
-      "use-negative you did not search";
+    hint = "every finding the failed check names by number, a finding at a material band whose owner's use is recorded as " +
+      "confirmed or not-confirmed, carries the cite of record in its `use_check.source`: a result URL, or " +
+      "'perplexity_research — no result'. Run the scoped marketplace use-check (owner + mark + goods/field) and record " +
+      "its result there, or record the honest 'no result'; never assert a use-negative you did not search";
   } else if (/connotation_form_damaged/.test(lastFail)) {
     // The accumulator is DRIVER-WRITTEN, so a damaged row is a narrow, nameable fault: a row's recorded
     // receipt is no longer one of that row's own candidates (the ledger regenerates candidates every

@@ -150,7 +150,7 @@
     "skills/clearance-search/synthesis-rules.md": {
       "literal-json-skeleton": 1,
       "exactly-these-keys": 1,
-      "dictated-line-shape": 2
+      "dictated-line-shape": 1
     },
     "skills/clearance-search/firm-wide-reasoning.md": {
       "literal-json-skeleton": 0,
@@ -190,6 +190,6 @@
   },
   "totals": {
     "stages": 43,
-    "files": 54
+    "files": 53
   }
 }

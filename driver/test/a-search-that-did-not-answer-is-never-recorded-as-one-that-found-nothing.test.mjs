@@ -66,7 +66,6 @@ const EXAMPLES = (list) => `Examples of completed questions with answers availab
   + "Use a question only where its answer supports this finding. Other relevant answers already held remain usable.";
 const POINTER = "the cited questions, their recorded outcomes, any saved answers, and the writer's research questions with their outcomes.";
 const QUESTION_FIELD = "question: required for a no-result; copy the research question whose completed answer supports it, as instructed above.";
-const OWN_RIGHTS = "record the source in the finding's `own_rights.source` field, which the driver checks in the structured finding record.";
 
 const ask = (owner) => `Does ${owner} use the mark QZORVEL for toys in France, and has it opposed or sued over a similar mark?`;
 
@@ -456,8 +455,8 @@ test("the ruled words stand where the writer, its correction and the review read
   assert.equal(step.includes("accepted satisfying answer"), false, "Step 3.5 still calls no-result the answer to an outage");
   assert.ok(step.includes(`${CHECKED} The synthesis stage cannot ship an *inferred* "no use"`), "Step 3.5 still names the retired validator");
   const rules = flat(["clearance-search", "synthesis-rules.md"]);
-  assert.ok(rules.includes(`"perplexity_research — no result">\` line. ${CHECKED} A use-negative`), "the synthesis manual still names the retired validator");
-  assert.ok(rules.includes(`searched register material">\` line — ${OWN_RIGHTS} **Know what the negative means:**`), "the own-rights paragraph still names the retired validator");
+  assert.ok(rules.includes(`MUST record its source in the finding's \`use_check.source\`. ${CHECKED} A use-negative`), "the synthesis manual still names the retired validator");
+  assert.ok(rules.includes(`MUST record its source in the finding's \`own_rights.source\`, which the driver checks in the structured finding record. **Know what the negative means:**`), "the own-rights paragraph still names the retired validator");
   assert.equal(/validator rejects the narrative/.test(rules), false, "the synthesis manual still names the retired narrative validator");
   const review = flat(["narrative-refutation", "SKILL.md"]);
   assert.ok(review.includes(`an un-run check dressed as a clean negative is a defect. ${CHECKED}`), "the review still names the retired validator");
@@ -476,16 +475,16 @@ test("the ruled words stand where the writer, its correction and the review read
 test("an unknown use owes no source line in the manuals or the review", () => {
   const flat = (p) => readFileSync(join(DRIVER, "skills", ...p), "utf8").replace(/\s+/g, " ");
   const step = flat(["clearance-search", "phase2-execution.md"]);
-  const contract = step.slice(step.indexOf("**Output contract"), step.indexOf("> `- **Use-check source:** <the perplexity_research result URL>"));
-  assert.ok(contract.includes("names non-use revocation/cancellation as the mitigant), the finding's actual-use line MUST end"));
+  const contract = step.slice(step.indexOf("**Output contract"), step.indexOf("record its result in that finding's `use_check.source`"));
+  assert.ok(contract.includes("names non-use revocation/cancellation as the mitigant),"));
   assert.equal(/unknown/i.test(contract), false, "Step 3.5 still owes a source line for an unknown use");
   const rules = flat(["clearance-search", "synthesis-rules.md"]);
   const filed = rules.slice(rules.indexOf("## Filed-vs-used check"), rules.indexOf("## Own-rights evidence"));
-  assert.ok(filed.includes('(non-use revocation/cancellation, "not in actual use", "no marketplace use found") MUST carry'));
+  assert.ok(filed.includes('(non-use revocation/cancellation, "not in actual use", "no marketplace use found") MUST record'));
   assert.equal(filed.includes("owner's use unknown"), false, "the synthesis manual still owes a source line for an unknown use");
   const review = flat(["narrative-refutation", "SKILL.md"]);
   const bullet = review.slice(review.indexOf("**Use-negative without a search.**"), review.indexOf("### Optics-escalation checks"));
-  assert.ok(bullet.includes('non-use revocation/cancellation as the mitigant): does the finding carry'));
+  assert.ok(bullet.includes("check `use_check.source` and the held answer supporting that claim"));
   assert.equal(bullet.includes("owner's use unknown"), false, "the review still flags an honest unknown as blocking");
 });
 
