@@ -9,7 +9,7 @@
 // the sidecar and moves on; nothing gates on it. PURE (no node imports, tests offline); empty input → [].
 //
 // DELIBERATELY NARROW — near-zero false positives. It does NOT flag bare percentages or counts: the
-// engine ENCOURAGES base-rate counts ("640 of 3,060 filings claim gaming", "545 live JELLY filings",
+// engine ENCOURAGES base-rate counts ("640 of 3,060 filings claim gaming",
 // "127k reviews") over adjectives. It flags ONLY the shape of a RULE that DECIDES the rating: a
 // Level/Composite cutoff ("Level C or above", "Composite 3+"), an explicit "threshold", or a blanket
 // "always/automatically/any X is <rating>". The real target (a rule injected into a customer context

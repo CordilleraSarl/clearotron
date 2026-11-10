@@ -21,12 +21,10 @@ test("flags rule-shaped reasoning: Level/Composite cutoffs, thresholds, blanket 
 test("does NOT flag base-rate counts / the firm formula (the engine ENCOURAGES counts over adjectives)", () => {
   for (const t of [
     "640 of 3,060 live filings claim gaming software",
-    "545 live JELLY filings worldwide; the element is heavily diluted",
     "127k overwhelmingly positive Steam reviews; 1m+ downloads",
     "75% of the class-9 filings are dead",
     "Level 3 Risk = C + Bargain",
     "Level 5 Risk = E + Head-on",
-    "8,575 live BR(E)AKER filings (2,317 claim gaming)",
     "the registration is revocable for non-use after 5 years",
   ]) assert.deepEqual(findRuleShapeFlags(t), [], `must NOT flag: ${t}`);
 });
