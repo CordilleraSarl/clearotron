@@ -20,7 +20,7 @@
 // read into each tool server's imports. The registry's `engineForRun` serves a run's turns from this record.
 import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { driverDir, ensureDriverDir } from "../../shared/driver-dir.mjs";
-import { ENGINE_BINARIES, PROVIDERS, REGISTER_PROVIDER } from "../driver.config.mjs";
+import { ENGINE_BINARIES, PROVIDERS, REGISTER_PROVIDER, activeProvider } from "../driver.config.mjs";
 
 export const RUN_CHOICES_FILE = "run-choices.json";
 
@@ -127,4 +127,15 @@ export function registerForRun(runDir) {
 export function recordedRegister(runDir) {
   const rec = readRunChoices(runDir);
   return rec.state === "recorded" && rec.register ? rec.register : null;
+}
+
+/**
+ * The register adapter for a run's register (`ctx.register`), or the machine's when none is named: the one way a place
+ * that reads a register for a run asks for its adapter. A name this driver does not know throws, as `activeProvider` does.
+ */
+export function registerAdapter(register = null) {
+  if (!register) return activeProvider();
+  const a = PROVIDERS[register];
+  if (!a) throw new Error(`[register-provider] unknown register "${register}". Known: ${Object.keys(PROVIDERS).join(", ")}`);
+  return a;
 }

@@ -215,3 +215,10 @@ test("a register unit is briefed on its run's register: its name, its manual and
   assert.deepEqual(PROVIDER_META, providerMeta(REGISTER_PROVIDER));
   assert.deepEqual(STAGES["register-unit"].followupSkillReads({ register: other }), [providerMeta(other).skillDoc]);
 });
+
+test("a run's register adapter is the named register's, or the machine's when none is named", async () => {
+  const { activeProvider, PROVIDERS } = await import("../driver.config.mjs");
+  assert.equal(RC.registerAdapter("signa"), PROVIDERS.signa);
+  assert.equal(RC.registerAdapter(null), activeProvider());
+  assert.throws(() => RC.registerAdapter("invented-register"), /unknown register "invented-register"/);
+});
