@@ -69,3 +69,43 @@ test("a park with no identity to give still writes, and says so by leaving the t
   assert.equal(m.job, null); assert.equal(m.agent, null); assert.equal(m.codename, null);
   assert.equal(watcherResumes(m), false, "the watcher leaves it for a person, as before");
 });
+
+// ── A RESUME THIS RUNNER CANNOT SERVE PARKS THROUGH THE SAME WRITER ─────────────────────────────────────────────
+// A resumed run whose recorded engine or register this runner cannot serve stops before anything is spent, with a
+// RunChoiceUnavailable signal. pipeline() parks it rather than ending it, and the marker it writes is the one above.
+import { isRunChoiceUnavailable, parkForRunChoice } from "../pipeline.mjs";
+import { postponedDueAt } from "../runner.mjs";
+import { driverSource } from "./driver-source.mjs";
+
+const signal = (runDir) => Object.assign(new Error("run amber-gate started on the euipo register, and this process serves the signa register."), {
+  name: "RunChoiceUnavailable", run: { runDir, codename: "amber-gate", date: "2026-11-10" },
+  dependency: { kind: "register", recorded: "euipo", machine: "signa", detail: null },
+  waitingOn: "the euipo register, which this run started on", resolvedBy: "a runner whose register is euipo" });
+
+test("the signal is told apart by its name and the fields the park needs", () => {
+  const runDir = mkdtempSync(join(tmpdir(), "park-"));
+  assert.equal(isRunChoiceUnavailable(signal(runDir)), true);
+  assert.equal(isRunChoiceUnavailable(new Error("RunChoiceUnavailable")), false, "a message alone is not the signal");
+  assert.equal(isRunChoiceUnavailable(Object.assign(signal(runDir), { run: null })), false, "a signal with no run has nothing to park");
+  assert.equal(isRunChoiceUnavailable(new StageFailure("assess", "x")), false);
+});
+
+test("a resume this runner cannot serve parks with what it waits on, and the runner times it by its backoff", () => {
+  const runDir = mkdtempSync(join(tmpdir(), "park-"));
+  const r = parkForRunChoice(signal(runDir), { job: JOB, agent: "intake-agent" });
+  assert.deepEqual(r, { ok: false, postponed: true, resetsAt: null, parkedFor: signal(runDir).dependency, codename: "amber-gate", runDir });
+  const m = marker(runDir);
+  assert.equal(m.kind, "run-choice");
+  assert.equal(m.resetsAt, null, "no clock of its own");
+  assert.deepEqual(m.dependency, signal(runDir).dependency);
+  assert.match(m.waitingOn, /euipo register/); assert.match(m.resolvedBy, /register is euipo/);
+  assert.ok(watcherResumes(m), "the watcher can resume it");
+  const backoffMs = 10 * 60_000;
+  assert.equal(postponedDueAt(m, backoffMs), Date.parse(m.postponedAt) + backoffMs, "due at the park plus the backoff");
+});
+
+test("pipeline() parks the signal and lets every other failure through", () => {
+  const src = driverSource("pipeline.mjs");
+  const fn = src.slice(src.indexOf("export async function pipeline(job, opts = {}) {"), src.indexOf("export function isRunChoiceUnavailable("));
+  assert.match(fn, /if \(isRunChoiceUnavailable\(e\)\) return parkForRunChoice\(e, \{ job, agent: opts\.agent \?\? config\.defaultAgent \}\);\s*throw e;/);
+});
