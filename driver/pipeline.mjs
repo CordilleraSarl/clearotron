@@ -12121,8 +12121,8 @@ async function pipelineInner(job, opts = {}) {
     if (findingsRead.rejected) note(`findings.json is present and REJECTED by the strict parser (${findingsRead.rejected}) — joining ${findingsForCards.length} finding(s) leniently for the card match; the delivery guard still refuses`);
     // P2 clause 3 — assigned in the lint block below, consumed by the freshness precondition before the
     // client gate. Declared here so both live in the same scope regardless of the lint block's nesting.
-    let staleStages = [];
-    let staleOnTheDeliveryPath = () => staleStages;   // the same question, asked again: set where the lint block asks it
+    runState.staleStages = [];
+    runState.staleOnTheDeliveryPath = () => runState.staleStages;   // the same question, asked again: set where the lint block asks it
     // ── §9 — THE CARD SET IS `fullProseOrdinals ∧ form === "full"` ───────────────────────────
     //
     // On one country every form is `full`, so this reduces to `fullProseOrdinals` — the same list, in the
@@ -13307,23 +13307,23 @@ async function pipelineInner(job, opts = {}) {
       // again, and nothing re-runs either.
       const deliveryPathNow = () => deliveryPathStages().filter((l) => !(overviewOpen && l === "report-overview")
         && !(reviewOpen && l === "narrative-refutation"));
-      staleOnTheDeliveryPath = () => [...staleOnPath(run.runDir, deliveryPathNow(), deliveryInputsFor, { project: projectStageInput }),
+      runState.staleOnTheDeliveryPath = () => [...staleOnPath(run.runDir, deliveryPathNow(), deliveryInputsFor, { project: projectStageInput }),
         ...cardsNeverBuilt(P, ctx.depth, cardOrdinals)];   // a finding a later save added is owed its one card call
-      staleStages = staleOnTheDeliveryPath();
+      runState.staleStages = runState.staleOnTheDeliveryPath();
       // A DELIVERY-CHECK REPAIR THAT CHANGED ONLY THE FINDINGS RECORD leaves the narrative's bytes, and so the
       // reviewer, fresh — the reviewer does not declare findings.json. The change is still content no review has
       // read, so the reviewer is queued for the review after a repair, marked as the record's change.
-      if (repairBaseKept && !staleStages.some((s2) => s2.label === "narrative-refutation")) {
+      if (repairBaseKept && !runState.staleStages.some((s2) => s2.label === "narrative-refutation")) {
         if (recordChangeOwesReview(run.runDir)) {
           // At the FRONT, so the dependency order below puts it after the writer and ahead of the overview and the
           // cards, which then rebuild from whatever its correction changes.
-          staleStages.unshift({ label: "narrative-refutation", changed: [{ name: basename(P.findings), via: "repair-record" }] });
+          runState.staleStages.unshift({ label: "narrative-refutation", changed: [{ name: basename(P.findings), via: "repair-record" }] });
           runLog(run.runDir, { event: "post-repair-review-queued", why: "the repair changed the findings record only" });
         }
       }
       // A RESUME AFTER SUCH A CHANGE WENT UNREVIEWED: its record queues the reviewer again, so this pass reviews it.
-      if (unreadRecordReview(run.runDir) && !staleStages.some((s2) => s2.label === "narrative-refutation")) {
-        staleStages.unshift({ label: "narrative-refutation", changed: [{ name: basename(P.findings), via: "repair-record" }] });
+      if (unreadRecordReview(run.runDir) && !runState.staleStages.some((s2) => s2.label === "narrative-refutation")) {
+        runState.staleStages.unshift({ label: "narrative-refutation", changed: [{ name: basename(P.findings), via: "repair-record" }] });
         runLog(run.runDir, { event: "post-repair-review-queued", why: "a change to the findings record went unreviewed" });
       }
       // ── AD-2 A1 (E2E-R2, ordering) — repair-owned staleness is re-done IN-PASS, never parked. The
@@ -13352,12 +13352,12 @@ async function pipelineInner(job, opts = {}) {
       //
       // Still ONE bounded pass, exactly as before: each label is re-done at most once, and whatever is
       // still stale afterwards blocks at the guard below. Nothing here weakens that guard.
-      if (staleStages.length) {
-        const ordered = dependencyOrder(staleStages.map((s2) => s2.label), P, { axes: ctx.axes });
-        staleStages = ordered.map((l) => staleStages.find((s2) => s2.label === l)).filter(Boolean);
-        const upstreamCount = partitionDeliveryStale(staleStages).upstream.length;
-        runLog(run.runDir, { event: "delivery-stale-repair", stages: staleStages.map((s2) => s2.label), upstream: upstreamCount, order: ordered });
-        note(`delivery: ${staleStages.length} stale stage(s)${upstreamCount ? ` (${upstreamCount} upstream)` : ""} — re-doing them in-pass in DEPENDENCY ORDER (${ordered.join(" → ")}); what went stale, never a pipeline restart`);
+      if (runState.staleStages.length) {
+        const ordered = dependencyOrder(runState.staleStages.map((s2) => s2.label), P, { axes: ctx.axes });
+        runState.staleStages = ordered.map((l) => runState.staleStages.find((s2) => s2.label === l)).filter(Boolean);
+        const upstreamCount = partitionDeliveryStale(runState.staleStages).upstream.length;
+        runLog(run.runDir, { event: "delivery-stale-repair", stages: runState.staleStages.map((s2) => s2.label), upstream: upstreamCount, order: ordered });
+        note(`delivery: ${runState.staleStages.length} stale stage(s)${upstreamCount ? ` (${upstreamCount} upstream)` : ""} — re-doing them in-pass in DEPENDENCY ORDER (${ordered.join(" → ")}); what went stale, never a pipeline restart`);
         // The whole point is that the staled consumers rebuild from the MOVED input: re-read the
         // findings as they now stand — the pre-repair snapshot this pass rendered from is the past.
         let readNow = readFindingsForReport(P);
@@ -13440,23 +13440,23 @@ async function pipelineInner(job, opts = {}) {
         const chain = new Set();
         const staleNow = () => staleOnPath(run.runDir, deliveryPathStages(), deliveryInputsFor, { project: projectStageInput });
         const queueWhatItLeftStale = (s2, before) => {
-          const at = staleStages.indexOf(s2) + 1;
+          const at = runState.staleStages.indexOf(s2) + 1;
           const left = whatTheRepairLeftStale({ before, after: staleNow(), repaired: s2.label,
-            ahead: new Set(staleStages.slice(at).map((x) => x.label)), processed: processedLabels, requeued: requeuedLabels });
+            ahead: new Set(runState.staleStages.slice(at).map((x) => x.label)), processed: processedLabels, requeued: requeuedLabels });
           for (const l of left.chain) chain.add(l);
           for (const l of left.requeue) requeuedLabels.add(l);
           if (!left.queue.length) return;
-          const rest = [...staleStages.slice(at), ...left.queue];
+          const rest = [...runState.staleStages.slice(at), ...left.queue];
           const order = [...new Set(dependencyOrder(rest.map((x) => x.label), P, { axes: ctx.axes }))];   // each label once
-          staleStages.splice(at, staleStages.length - at, ...order.map((l) => rest.find((x) => x.label === l)).filter(Boolean));
+          runState.staleStages.splice(at, runState.staleStages.length - at, ...order.map((l) => rest.find((x) => x.label === l)).filter(Boolean));
           runLog(run.runDir, { event: "delivery-stale-requeued", after: s2.label, stages: left.queue.map((x) => x.label) });
         };
         // A STAGE STALE ON WHAT PLACEMENT WROTE IS THE CHAIN'S FROM THE START, whoever moved it: the decisions written
         // again when the shape is derived again, or a late pass whose readers had already run, as much as this check's
         // own repeat. Its re-run is followed, and a re-run that does not complete delivers.
         const placementWrote = new Set([...stageOutputs("placement-inquiry", P, { axes: ctx.axes }).map((f) => basename(f)), basename(P.placementDecisions)]);
-        for (const l of stagesStaleOnPlacement(staleStages, placementWrote)) chain.add(l);
-        for (const s2 of staleStages) {
+        for (const l of stagesStaleOnPlacement(runState.staleStages, placementWrote)) chain.add(l);
+        for (const s2 of runState.staleStages) {
           processedLabels.add(s2.label);
           if (s2.label === "report-overview") {
             const r = await stage("report-overview", { ...ctx, displayVerdict: runState.displayVerdict }, { force: true, trigger: "stale-repair" });
@@ -13535,13 +13535,13 @@ async function pipelineInner(job, opts = {}) {
               if (pass.ok || pass.rollback) {
                 // A label not queued yet is appended; one this loop already re-done is re-queued ONCE, so the
                 // pass stays bounded and still ends with every surface rebuilt from the corrected record.
-                const queued = new Set(staleStages.map((x) => x.label));
+                const queued = new Set(runState.staleStages.map((x) => x.label));
                 // A finding the correction's save added is owed its one card call, as after any later save.
                 for (const x of [...staleOnPath(run.runDir, deliveryPathStages(), deliveryInputsFor, { project: projectStageInput }),
                   ...cardsNeverBuilt(P, ctx.depth, cardOrdinals)]) {
                   if (!(x.label === "report-overview" || x.label.startsWith("report-card:"))) continue;
-                  if (!queued.has(x.label)) { staleStages.push(x); queued.add(x.label); }
-                  else if (processedLabels.has(x.label) && !requeuedLabels.has(x.label)) { requeuedLabels.add(x.label); staleStages.push(x); }
+                  if (!queued.has(x.label)) { runState.staleStages.push(x); queued.add(x.label); }
+                  else if (processedLabels.has(x.label) && !requeuedLabels.has(x.label)) { requeuedLabels.add(x.label); runState.staleStages.push(x); }
                 }
               }
               // THE WRITER'S DUTY, JUDGED AGAIN ONCE THE CORRECTION HAS SETTLED, rollback included. The terminal guards judged
@@ -13603,7 +13603,7 @@ async function pipelineInner(job, opts = {}) {
               try {
                 if (existsSync(P.caseLaw)) caseLawNow = caseLawJoin(P, findingsNow);
               } catch { /* no case-law layer */ }
-              for (const owed of cardsNeverBuilt(P, ctx.depth, cardOrdinals)) if (!staleStages.some((x) => x.label === owed.label)) staleStages.push(owed);
+              for (const owed of cardsNeverBuilt(P, ctx.depth, cardOrdinals)) if (!runState.staleStages.some((x) => x.label === owed.label)) runState.staleStages.push(owed);
               // — AND THE REVIEW IS ALSO SOMETHING THIS PASS JUST WROTE.
               //
               // The re-reads above are the artifacts a repaired stage's CONSUMERS need. narrative-refutation
@@ -13682,7 +13682,7 @@ async function pipelineInner(job, opts = {}) {
         // freshness question — one bounded pass; anything still stale blocks below, exactly as before.
         lint = lintNow();
         autoCorrectRegistry();
-        staleStages = staleOnPath(run.runDir, deliveryPathNow(), deliveryInputsFor, { project: projectStageInput });
+        runState.staleStages = staleOnPath(run.runDir, deliveryPathNow(), deliveryInputsFor, { project: projectStageInput });
         // A REPAIR WHOSE REVIEW COULD NOT BE READ IS NOT REVIEWED, and its record says so (`unreadRecordReview`). The guard
         // is never handed that record: a run is not held on an unread review (owner's ruling, 2026-10-19). What the guard
         // reads here is staleness alone, as in the released engine.
@@ -13698,8 +13698,8 @@ async function pipelineInner(job, opts = {}) {
         // stands, and the late records the report does not address are counted in the approved sentence for records
         // neither addressed nor set aside. The attempts and the records are kept in the run record.
         const unassessed = repairFailed.has("placement-inquiry") ? lateRecordIds(P) : [];
-        if (unassessed.length && staleStages.some((x) => x.label === "placement-inquiry")
-          && staleStages.every((x) => x.label === "placement-inquiry" || chain.has(x.label))) {
+        if (unassessed.length && runState.staleStages.some((x) => x.label === "placement-inquiry")
+          && runState.staleStages.every((x) => x.label === "placement-inquiry" || chain.has(x.label))) {
           const was = runState.verdict, stood = JSON.stringify(runState.clampReasons);
           clampOnTheFloorDuty({ again: true });
           const judged = clampOnTheWritersDuty({ again: true });
@@ -13707,15 +13707,15 @@ async function pipelineInner(job, opts = {}) {
           runLog(run.runDir, { event: "late-evidence-unassessed-delivered", was, now: runState.verdict, records: unassessed.length, ids: unassessed.slice(0, 20),
             stated: judged.recall, latePass: ctx.latePassFailed ?? null, repeat: repairFailed.get("placement-inquiry") });
           note(`late evidence: ${unassessed.length} record(s) reached the band after placement's last pass, and neither its pass for them nor the delivery check's repeat completed — the run delivers what the last accepted passes built, and the approved clauses state what is open`);
-          staleStages = staleStages.filter((x) => x.label !== "placement-inquiry");
+          runState.staleStages = runState.staleStages.filter((x) => x.label !== "placement-inquiry");
         }
-        if (staleStages.length && staleStages.every((x) => chain.has(x.label))) {
+        if (runState.staleStages.length && runState.staleStages.every((x) => chain.has(x.label))) {
           const was = runState.verdict, named = runState.clampReasons.length, stood = JSON.stringify(runState.clampReasons);
           clampOnTheWritersDuty({ again: true });
           // THE RECORDS RE-RANKED SINCE THE WRITER LAST WROTE, in the owner's words of 2026-10-19. The report states the
           // ranking the writer last read; the audit trail, written again after the repeat, states the one that stands.
           const readByWriter = rankingFromJson(safeReadJson(rankingReadByWriterPath(P))) ?? runState.rankingBeforeRepeat;
-          if (readByWriter && staleStages.some((x) => x.label === "synthesis")) {
+          if (readByWriter && runState.staleStages.some((x) => x.label === "synthesis")) {
             const now = rankingNow(P), n = recordsReRanked(readByWriter, now);
             const m = Math.max(rankedRecords(readByWriter), rankedRecords(now), n);
             if (n > 0) deliverAndClamp({
@@ -13728,12 +13728,12 @@ async function pipelineInner(job, opts = {}) {
           }
           if ((JSON.stringify(runState.clampReasons) !== stood || runState.verdict !== was) && saveTheLabel("after a changed decision went unread")) applyVerdictFrontMatter();
           runLog(run.runDir, { event: "changed-decision-unread-delivered", was, now: runState.verdict, named: runState.clampReasons.length - named,
-            stages: staleStages.map((x) => ({ label: x.label, changed: (x.changed ?? []).map((c) => c.name) })) });
-          note(`stale-repair: ${staleStages.map((x) => x.label).join(", ")} could not be re-run for the changed decision — the run delivers, and the approved clauses name what they find`);
-          staleStages = [];
+            stages: runState.staleStages.map((x) => ({ label: x.label, changed: (x.changed ?? []).map((c) => c.name) })) });
+          note(`stale-repair: ${runState.staleStages.map((x) => x.label).join(", ")} could not be re-run for the changed decision — the run delivers, and the approved clauses name what they find`);
+          runState.staleStages = [];
         }
         saveTheOwedLabel();   // before anything is published from it
-        note(`stale-repair: re-did ${staleRepaired.length} stage(s) in-pass (${staleRepaired.join(", ") || "none"}) — ${staleStages.length ? `${staleStages.length} still stale, the delivery guard blocks` : "the delivery path is fresh"}`);
+        note(`stale-repair: re-did ${staleRepaired.length} stage(s) in-pass (${staleRepaired.join(", ") || "none"}) — ${runState.staleStages.length ? `${runState.staleStages.length} still stale, the delivery guard blocks` : "the delivery path is fresh"}`);
       }
       // THE CONDITIONS FOLLOW THE RECORD AS IT IS DELIVERED, whichever repair above moved it last, and the label owed is
       // saved before the receipt below and anything published from it. A list that moved is judged again.
@@ -13747,12 +13747,12 @@ async function pipelineInner(job, opts = {}) {
       // below), so ANY later exit from this pass — the staleness throw, a core-artifact throw between here
       // and it, an auto-recovery park — carries the set into reconcilePassStamps. Reconcile must leave these
       // stamps stale (see reconcileStamps' `exclude`), else it erases the block and the resume ships stale.
-      if (staleStages.length) ctx.deliveryBlockingStale = new Set(staleStages.map((s2) => s2.label));
+      if (runState.staleStages.length) ctx.deliveryBlockingStale = new Set(runState.staleStages.map((s2) => s2.label));
       try {
         writeFileSync(driverDir(run.runDir, "predelivery-lint.json"), JSON.stringify({
           ts: new Date().toISOString(),
           checks: lint.checks, failures: lint.failures.map((f) => f.id),
-          staleStages,   // P2: non-empty ⇒ this run was blocked on freshness, not on lint quality
+          staleStages: runState.staleStages,   // P2: non-empty ⇒ this run was blocked on freshness, not on lint quality
           staleRepaired,   // AD-2 A1: delivery-tail stages re-done IN-PASS after a repair moved their input
 
           initialFailures: initialFailures.map((f) => f.id), repaired,
@@ -14013,7 +14013,7 @@ async function pipelineInner(job, opts = {}) {
       const failure = new StageFailure("core-artifact-gate", `a core machine artifact is invalid and cannot ship: ${coreInvalid.join("; ")}`);
       if (!coreInvalid.every((f) => f.startsWith("findings.json "))) throw failure;   // only the findings record is the assessment's
       if (!(await restoreTheBrokenRecord(coreInvalid, "delivery-gate"))) throw Object.assign(failure, { notCompletedPart: "assessment" });
-      staleStages = staleOnTheDeliveryPath();
+      runState.staleStages = runState.staleOnTheDeliveryPath();
     }
 
     // P2 clause 3 — FRESHNESS PRECONDITION, immediately before the client gate. copper-vault's gate
@@ -14021,10 +14021,10 @@ async function pipelineInner(job, opts = {}) {
     // underneath a frozen deliverable. A gate whose subject can change without the deliverable changing
     // is not a gate — so nothing is asked of the gate until every stage on the delivery path is fresh
     // with respect to its declared inputs. Deterministic; same failure shape as the other delivery gates.
-    if (staleStages.length) {
-      const detail = staleStages.map((s2) => `${s2.label} (${s2.changed.map((c) => c.name).join(", ")})`).join("; ");
-      runLog(run.runDir, { event: "delivery-stale-blocked", stages: staleStages });
-      note(`delivery: ${staleStages.length} stage(s) on the delivery path are stale w.r.t. their inputs — ${detail}`);
+    if (runState.staleStages.length) {
+      const detail = runState.staleStages.map((s2) => `${s2.label} (${s2.changed.map((c) => c.name).join(", ")})`).join("; ");
+      runLog(run.runDir, { event: "delivery-stale-blocked", stages: runState.staleStages });
+      note(`delivery: ${runState.staleStages.length} stage(s) on the delivery path are stale w.r.t. their inputs — ${detail}`);
       // item 15b — WRITE DOWN WHAT IS STALE, so the recovery has something to aim at.
       //
       // A `stale` failClass parks and the resume re-enters the pipeline from the top. That is correct and
@@ -14039,8 +14039,8 @@ async function pipelineInner(job, opts = {}) {
         const tmp = join(dir, "delivery-stale.json.tmp");
         writeFileSync(tmp, JSON.stringify({
           ts: new Date().toISOString(),
-          labels: dependencyOrder(staleStages.map((s2) => s2.label), P, { axes: ctx.axes }),
-          changed: Object.fromEntries(staleStages.map((s2) => [s2.label, (s2.changed ?? []).map((c) => c.name)])),
+          labels: dependencyOrder(runState.staleStages.map((s2) => s2.label), P, { axes: ctx.axes }),
+          changed: Object.fromEntries(runState.staleStages.map((s2) => [s2.label, (s2.changed ?? []).map((c) => c.name)])),
         }, null, 2));
         renameSync(tmp, join(dir, "delivery-stale.json"));
       } catch { /* accelerator only — the resume stands without it */ }
