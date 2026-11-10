@@ -1521,6 +1521,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-parked-run-carries-what-resumes-it.test.mjs": {
+          "tests": 7,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
         "a-part-not-completed-is-a-stated-state.test.mjs": {
           "tests": 6,
           "asserts": 37,
