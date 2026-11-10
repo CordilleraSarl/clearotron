@@ -107,6 +107,11 @@ export const COUNTED_EVENTS = {
   "degraded-parts-failed": FAILED,
   // A store publishing found unreadable, or one delivery read and a republish found missing: its only record.
   "degraded-parts-at-publish": FAILED,
+  // A part publishing could not write, and the report shipped without it. A clearance's workbook is counted by its
+  // `publish-gates` row below, so only a Knockout's counts here.
+  "workbook-not-built": { kind: FAILED, when: (e) => /^knockout-audit-/.test(String(e.file ?? "")) },
+  "data-file-not-written": FAILED,
+  "staff-pages-not-refreshed": FAILED,
   // A workbook that failed to build is recorded only here.
   "publish-gates": { kind: FAILED, when: (e) => e.auditWorkbook === "failed" },
   // the plain-English pass rewrote the rater's text, or failed and shipped it unrewritten
