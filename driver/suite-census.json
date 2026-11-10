@@ -1714,8 +1714,8 @@
           "todos": 0
         },
         "a-rate-limit-with-no-reset-postpones-a-knockout.test.mjs": {
-          "tests": 1,
-          "asserts": 8,
+          "tests": 2,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
