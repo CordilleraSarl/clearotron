@@ -22,7 +22,6 @@ Cross-referenced from [clearance-register/SKILL.md](SKILL.md) — the canonical 
 - [Owner-extraction fallback chain](#owner-extraction-fallback-chain)
 - [Status enum reference (full observed list)](#status-enum-reference-full-observed-list)
 - [What we don't normalise](#what-we-dont-normalise)
-- [Open question for the reviewing lawyer](#open-question-for-the-reviewing-lawyer)
 
 ## Live-status classification
 
