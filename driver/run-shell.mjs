@@ -3,12 +3,33 @@
 //
 // run-shell.mjs — what every run does around its own steps, the same for a clearance and a Knockout.
 //
-// Each product keeps its own ordered steps. What a run does when they end is shared: a failure ends through
-// run-failed.mjs, and a delivery through the ending below.
+// Each product keeps its own ordered steps: a narrower level of clearance has its own evidence work, inputs and
+// outputs. What runs them, and what a run does when they end, is shared: `runShell` runs a product's steps in order,
+// a failure ends through run-failed.mjs, and a delivery through the ending below.
 import { endAnswerMemory } from "../providers/_shared/answer-memory.mjs";
+import { endTheFailedRun } from "./run-failed.mjs";
 import { note } from "./log.mjs";
 import { rollupStatus, writeRunStatus } from "./progress.mjs";
 import { writeSettleStamp } from "./settle-stamp.mjs";
+
+/**
+ * Run a product's steps in order, and end the run as both products end one. `steps` is the product's own ordered
+ * recipe, each `{ name, run }`. The first step that returns a result ends the run with it: the last step returns the
+ * delivered run, and an earlier one may end the run sooner. A throw from any step ends through run-failed.mjs, with
+ * the product's data (`ending`) and the helpers the failure path takes from it.
+ */
+export async function runShell({ P, agent, ctx, job, run }, { ending, helpers, steps }) {
+  try {
+    let result;
+    for (const step of steps) {
+      result = await step.run();
+      if (result !== undefined) return result;
+    }
+    return result;
+  } catch (e) {
+    return await endTheFailedRun({ P, agent, ctx, e, job, run, product: ending }, helpers);
+  }
+}
 
 /**
  * The delivered ending, the same for both products once a run's report is published and its packet is out: the run's

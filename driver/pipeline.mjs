@@ -5,7 +5,8 @@
 // verdict, and never parks (there is no LLM continuation decision anywhere). CLI: `node pipeline.mjs --job <file.json>`.
 
 import { writePark } from "./run-park.mjs";
-import { endTheFailedRun } from "./run-failed.mjs";
+import { CLEARANCE_ENDING } from "./run-failed.mjs";
+import { runShell } from "./run-shell.mjs";
 import { deliveryEndState } from "./run-delivered.mjs";
 import { StageFailure, buildFailurePacket, isDesignedRefusal, stageWallFields, terminalReasonFields } from "./run-outcome.mjs";
 import { correctionNamedLines, correctionNamedOrdinals, correctionNamedSet, correctionReading, correctionRows, enforceCorrectionsReachFindings, flagOrdinals, recordCorrectionsBasis, repairUnnamedRemovals, rollbackCorrectivePass, runPostRepairCorrection, useThePipeline } from "./steps/corrections.mjs";
@@ -9685,103 +9686,114 @@ async function pipelineInner(job, opts = {}) {
   // How the run ends delivered (run-delivered.mjs).
   const { deliverWithoutTheAssessment, publishAndDeliver } = await deliveryEndState({ P, agent, ctx, job, run }, { applyScopeFrontMatterOf, archive, assessmentCoverageOfRun, localLanguageStateOf, reportIdentityRecord, searchLogAuditMd, sentinel, setAsideTheAssessment, writeScopeFactsOf });
 
-  try {
-    // The matter frame, its variants and the plan (steps/intake.mjs).
-    const { axes, runCommonLaw } = await runIntake({ P, ctx, job, opts, run }, { StageFailure, attachRegisterPlan, deriveFormNeighbourhood, deriveGridSpec, deriveIntakeAsks, deriveScopeLedgerJson, inScopeClassList, must, stage, verifyAndRecordHouseElement });
+  // The clearance's own steps, in order, run by run-shell.mjs. A value one step hands a later one is held here, between
+  // them; a step that returns a result ends the run with it. A failure in any step ends through run-failed.mjs.
+  let axes, runCommonLaw, planExec, unitKey, dispatchPlanQids, synthesisKey, synthesisModel, synthesisThinking, coverageJudgment, reviewOpen, firstRef, runState, correctiveEntryVerdict, correctiveCycleSettled, correctiveRecheckOk, applyCoverageFloor, clampOnTheFloorDuty, clampOnTheWritersDuty, deliverAndClamp, followTheRecordsActions, saveTheLabel, saveTheOwedLabel, writeVerdictSidecar, applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, findingsForCards, groupedMembers, overviewOpen, rebuildTheDeliveredRecord, restoreTheBrokenRecord, rov, writeScopeFacts, writeUps;
+  return await runShell({ P, agent, ctx, job, run }, { ending: CLEARANCE_ENDING, helpers: { recordConnotationAudit, sentinel, undoTaintRenames }, steps: [
+    { name: "intake", run: async () => {
+        // The matter frame, its variants and the plan (steps/intake.mjs).
+        ({ axes, runCommonLaw } = await runIntake({ P, ctx, job, opts, run }, { StageFailure, attachRegisterPlan, deriveFormNeighbourhood, deriveGridSpec, deriveIntakeAsks, deriveScopeLedgerJson, inScopeClassList, must, stage, verifyAndRecordHouseElement }));
+    } },
+    { name: "register-sweep", run: async () => {
+        // The register and unregistered-use searches and their fan-in (steps/register-sweep.mjs).
+        ({ planExec, unitKey, dispatchPlanQids } = await runRegisterSweep({ P, agent, axes, ctx, job, opts, run, runCommonLaw }, { CL_SUPP_TAGS, StageFailure, connotationRemedyToken, defaultConnotationReissuer, deriveNamedBand, foldSupplementalProposals, holdStickyGapsIn, inScopeClassList, isFallbackEligible, joinOptions, mergeRegisterBands, must, noteAdapter, noteChannelCoverageAtStageExit, readPlanExecution, readRegisterBands, recordConnotationAudit, remergeIfBandsMoved, resultsPerCellOf, runBatched, runSaturationProbeCodeSide, slicesUnitNeverReached, stage, taintDisposition, taintParkJudgmentArtifacts, takeSlicesOutOfTheBand, unfinishedUnitAsItStands, writePlanExecutionReceipt }));
+    } },
+    { name: "frame-comparison", run: async () => {
+        // The blind frame compared with what the run scoped, and the reopen (steps/frame-comparison.mjs).
+        await runFrameComparison({ P, axes, ctx, dispatchPlanQids, flushDigestQueue, job, mintDigestWork, planExec, run, runCommonLaw, unitKey }, { bandBytesOf, deriveNamedBand, forceFromActive, inScopeClassList, joinOptions, loadCoverageLedger, mechanicalFormGapDirectives, readRegisterBands, refreshSupplementalExecution, remergeIfBandsMoved, settleOneShotStamp, stage });
+    } },
+    { name: "placement-and-digest", run: async () => {
+        // Step 2C placement → Step 2D digest
+        //
+        // THE PASS THAT RESUMES A RUN WHOSE ASSESSMENT COULD NOT BE COMPLETED delivers what the run holds, here, at the
+        // assessment's first step and before anything that exists only to feed it runs. See deliverWithoutTheAssessment.
+        const assessmentOpen = readPartNotCompleted(run.runDir, "assessment");
+        if (assessmentOpen) return await deliverWithoutTheAssessment(assessmentOpen);
+        // Placement and the register write-up (steps/placement-and-digest.mjs).
+        await runPlacementAndDigest({ checkLateBind, ctx }, { asPartNotCompleted, assertReceiptSettled, must, recordPlacementPass, runDigest, stage });
+    } },
+    { name: "skeptic-and-follow-up", run: async () => {
+        // The skeptic, and the searches and rechecks that follow it (steps/skeptic-and-follow-up.mjs).
+        await runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQids, flushDigestQueue, job, mintDigestWork, opts, planExec, run, unitKey }, { askableOf, bandBytesOf, capabilityGapAxes, defaultRecordFetcher, deriveBandShape, deriveNamedBand, envelopeDecision, envelopeHeldNote, escalationHeldNote, findFloorBreaches, forceFromActive, isInactiveAxisRow, lateRecordIds, loadCoverageLedger, officeGapOf, readFloorAxes, readPlanExecution, recordPlacementPass, recordScreenGateEvidence, refreshSupplementalExecution, remergeIfBandsMoved, runBatched, screenGateSnapshot, settleOneShotStamp, skepticDeferralExtra, stage, stickyGapUnits });
+    } },
+    { name: "synthesis", run: async () => {
+        // The writer, the case-law grounding and the first review (steps/synthesis.mjs).
+        ({ synthesisKey, synthesisModel, synthesisThinking, coverageJudgment, reviewOpen, firstRef } = await runSynthesis({ P, checkLateBind, ctx, job, opts, run }, { asPartNotCompleted, composeDispatchExtra, decideCaseLaw, goodsEvidenceForTheWriter, keepGoodsEvidenceAsWritten, prepareDeclinationSpec, quarantineSynth, readCoverageJudgment, recordSynthesisSeam, refute, settleDerivedBases, stage, stageCharter }));
 
-    // The register and unregistered-use searches and their fan-in (steps/register-sweep.mjs).
-    const { planExec, unitKey, dispatchPlanQids } = await runRegisterSweep({ P, agent, axes, ctx, job, opts, run, runCommonLaw }, { CL_SUPP_TAGS, StageFailure, connotationRemedyToken, defaultConnotationReissuer, deriveNamedBand, foldSupplementalProposals, holdStickyGapsIn, inScopeClassList, isFallbackEligible, joinOptions, mergeRegisterBands, must, noteAdapter, noteChannelCoverageAtStageExit, readPlanExecution, readRegisterBands, recordConnotationAudit, remergeIfBandsMoved, resultsPerCellOf, runBatched, runSaturationProbeCodeSide, slicesUnitNeverReached, stage, taintDisposition, taintParkJudgmentArtifacts, takeSlicesOutOfTheBand, unfinishedUnitAsItStands, writePlanExecutionReceipt });
+        // Step 4.7 — the code-side verdict gate
+        // — the classifier is handed the FAILURE, not a statement about the ladder. The
+        // condition leads the sentence: `recoveryLaneOf` reads the reason text, and a park bought because an
+        // upstream provider was rate-limiting is WEATHER, not a defect. The ladder's own summary stays, after
+        // it, because "this had already exhausted retries and fallback" is still what a reader needs next.
+        // The fallback branch is deliberate and not decoration: when the ladder truly recorded no condition,
+        // saying so is honest, and inventing one would be the same guess in a more confident voice.
+        if (!firstRef.ok)
+          throw Object.assign(new StageFailure("narrative-refutation", firstRef.fail
+            ? `${firstRef.fail} — the refutation ladder exhausted retries and fallback on it`
+            : "failed after retries + fallback (the ladder recorded no condition)"), { notCompletedPart: "review" });
+        runState = { verdict: firstRef.verdict };   // null where the review was not completed: no sign-off, the band alone
+        runLog(run.runDir, { event: "verdict", verdict: runState.verdict });
+        writeRunStatus(ctx, signoffPatch(runState.verdict));
+        note(`refutation verdict: ${runState.verdict}`);
+        // qw/typed-correction-kinds — TELEMETRY ONLY (data first; the corrective-skip decision is a
+        // separate owner-gated build): partition the review's flagged-correction lines by their
+        // self-declared [kind: …] tokens (verify.parseCorrectionKinds — closed enum, author-declared,
+        // untyped/unknown ⇒ `fact` fail-safe) and record the histogram in run.jsonl. ZERO behavior
+        // change by construction: the corrective/recheck flow below reads only `verdict`, never these
+        // counts, and a read/parse defect can never touch the verdict gate.
+        // AD-4 (instrumentation house rule): the event is written UNCONDITIONALLY. The R2 evidence run logged
+        // an all-zero histogram against a BLOCKING verdict, and nothing said whether the reviewer really flagged
+        // zero correction lines or the read/parse quietly failed (the old catch logged NOTHING). Now: `verdict`
+        // rides the row (an all-zero histogram on CONDITIONAL/BLOCKING is legible as the anomaly it is), and a
+        // read/parse failure is a recorded fact (ok:false + the error) instead of silence.
+        // — `kindChannelOk` IS A SECOND FACT, AND IT NEEDED ITS OWN KEY.
+        //
+        // `ok` here has always meant "the file was read and parsed without throwing". It cannot also carry
+        // "the reviewer's kind channel produced something", and overloading it would have been the cheaper
+        // change and the wrong one: the two are false in different situations and a reader cannot tell which
+        // from one boolean.
+        //
+        // The distinction is the whole. A review where every parsed line landed on the `fact`
+        // fail-safe reads, in the counts alone, exactly like a review whose flags were all genuinely
+        // factual — and on the run that found this, `fact: 10` on a BLOCKING verdict was the former and
+        // looked entirely reasonable. The all-zero histogram AD-4 above made legible is the easy case;
+        // `untyped === total` is the one that was not, and now it is a recorded fact rather than an
+        // inference a reader has to make by comparing two other numbers.
+        try {
+          const ck = parseCorrectionKinds(readFileSync(P.seniorEyeReview, "utf8"));
+          runLog(run.runDir, { event: "correction-kinds", ok: true, kindChannelOk: ck.ok !== false, verdict: runState.verdict,
+            counts: ck.counts, untyped: ck.untyped, total: ck.total, ...(ck.why ? { kindChannelWhy: ck.why } : {}) });
+        } catch (e) {
+          // The key rides BOTH arms: written only on success, its absence on a failed row would read as
+          // "the channel was fine", which is precisely the inference this issue exists to stop.
+          try { runLog(run.runDir, { event: "correction-kinds", ok: false, kindChannelOk: false, verdict: runState.verdict, error: String(e?.message ?? e).slice(0, 160) }); }
+          catch { /* telemetry best-effort — never-kill */ }
+        }
+    } },
+    { name: "correction-cycle", run: async () => {
+        // The correction after the review and the recheck of it (steps/correction-cycle.mjs).
+        const correctionCycle = await runCorrectionCycle({ ctx, run, P, verdict: runState.verdict, firstRef, synthesisKey, synthesisModel, synthesisThinking }, { CORRECTIONS_DELIVERED_FILE, CORRECTIVE_RECHECK_FILE, asPartNotCompleted, correctionNamedLines, correctionNamedOrdinals, correctionNamedSet, correctionReading, correctionRows, correctionsExtra, correctiveCycleSettledDecision, enforceCorrectionsReachFindings, must, planAuditExtra, prepareDeclinationSpec, recordCorrectionsBasis, recordSynthesisSeam, removalRepairedRow, repairUnnamedRemovals, restoredFindingsTable, rollbackCorrectivePass, snapshotFindingsForCorrections, stage, writerExclusionBlock });
+        runState.verdict = correctionCycle.verdict;
+        ({ correctiveEntryVerdict, correctiveCycleSettled, correctiveRecheckOk } = correctionCycle);
+    } },
+    { name: "verdict-gate", run: async () => {
+        // The verdict's floors and terminal guards (steps/verdict-gate.mjs).
+        // applyVerdictFrontMatter is declared further down, so it goes in by name, read when called.
+        ({ applyCoverageFloor, clampOnTheFloorDuty, clampOnTheWritersDuty, deliverAndClamp, followTheRecordsActions, saveTheLabel, saveTheOwedLabel, writeVerdictSidecar } = await runVerdictGate({ P, agent, applyVerdictFrontMatter: (...a) => applyVerdictFrontMatter(...a), correctiveCycleSettled, correctiveEntryVerdict, correctiveRecheckOk, coverageJudgment, ctx, opts, run, runState }, { StageFailure, actionsRegisterListed, conditionsFollowingTheRecord, defaultRecordFetcher, enrichFindingDeadlines, lateRecordsUnaddressed, loadCoverageLedger, loadScreenGateUnresolved, owedUrisFor, planAuditExtra, refusedRecordsLeftOut, registerGapConditions, safeReadJson, saveWithRetries, stage, withdrawByToken }));
 
-    // The blind frame compared with what the run scoped, and the reopen (steps/frame-comparison.mjs).
-    await runFrameComparison({ P, axes, ctx, dispatchPlanQids, flushDigestQueue, job, mintDigestWork, planExec, run, runCommonLaw, unitKey }, { bandBytesOf, deriveNamedBand, forceFromActive, inScopeClassList, joinOptions, loadCoverageLedger, mechanicalFormGapDirectives, readRegisterBands, refreshSupplementalExecution, remergeIfBandsMoved, settleOneShotStamp, stage });
-
-    // Step 2C placement → Step 2D digest
-    //
-    // THE PASS THAT RESUMES A RUN WHOSE ASSESSMENT COULD NOT BE COMPLETED delivers what the run holds, here, at the
-    // assessment's first step and before anything that exists only to feed it runs. See deliverWithoutTheAssessment.
-    const assessmentOpen = readPartNotCompleted(run.runDir, "assessment");
-    if (assessmentOpen) return await deliverWithoutTheAssessment(assessmentOpen);
-    // Placement and the register write-up (steps/placement-and-digest.mjs).
-    await runPlacementAndDigest({ checkLateBind, ctx }, { asPartNotCompleted, assertReceiptSettled, must, recordPlacementPass, runDigest, stage });
-
-    // The skeptic, and the searches and rechecks that follow it (steps/skeptic-and-follow-up.mjs).
-    await runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQids, flushDigestQueue, job, mintDigestWork, opts, planExec, run, unitKey }, { askableOf, bandBytesOf, capabilityGapAxes, defaultRecordFetcher, deriveBandShape, deriveNamedBand, envelopeDecision, envelopeHeldNote, escalationHeldNote, findFloorBreaches, forceFromActive, isInactiveAxisRow, lateRecordIds, loadCoverageLedger, officeGapOf, readFloorAxes, readPlanExecution, recordPlacementPass, recordScreenGateEvidence, refreshSupplementalExecution, remergeIfBandsMoved, runBatched, screenGateSnapshot, settleOneShotStamp, skepticDeferralExtra, stage, stickyGapUnits });
-
-    // The writer, the case-law grounding and the first review (steps/synthesis.mjs).
-    const { synthesisKey, synthesisModel, synthesisThinking, coverageJudgment, reviewOpen, firstRef } = await runSynthesis({ P, checkLateBind, ctx, job, opts, run }, { asPartNotCompleted, composeDispatchExtra, decideCaseLaw, goodsEvidenceForTheWriter, keepGoodsEvidenceAsWritten, prepareDeclinationSpec, quarantineSynth, readCoverageJudgment, recordSynthesisSeam, refute, settleDerivedBases, stage, stageCharter });
-
-    // Step 4.7 — the code-side verdict gate
-    // — the classifier is handed the FAILURE, not a statement about the ladder. The
-    // condition leads the sentence: `recoveryLaneOf` reads the reason text, and a park bought because an
-    // upstream provider was rate-limiting is WEATHER, not a defect. The ladder's own summary stays, after
-    // it, because "this had already exhausted retries and fallback" is still what a reader needs next.
-    // The fallback branch is deliberate and not decoration: when the ladder truly recorded no condition,
-    // saying so is honest, and inventing one would be the same guess in a more confident voice.
-    if (!firstRef.ok)
-      throw Object.assign(new StageFailure("narrative-refutation", firstRef.fail
-        ? `${firstRef.fail} — the refutation ladder exhausted retries and fallback on it`
-        : "failed after retries + fallback (the ladder recorded no condition)"), { notCompletedPart: "review" });
-    const runState = { verdict: firstRef.verdict };   // null where the review was not completed: no sign-off, the band alone
-    runLog(run.runDir, { event: "verdict", verdict: runState.verdict });
-    writeRunStatus(ctx, signoffPatch(runState.verdict));
-    note(`refutation verdict: ${runState.verdict}`);
-    // qw/typed-correction-kinds — TELEMETRY ONLY (data first; the corrective-skip decision is a
-    // separate owner-gated build): partition the review's flagged-correction lines by their
-    // self-declared [kind: …] tokens (verify.parseCorrectionKinds — closed enum, author-declared,
-    // untyped/unknown ⇒ `fact` fail-safe) and record the histogram in run.jsonl. ZERO behavior
-    // change by construction: the corrective/recheck flow below reads only `verdict`, never these
-    // counts, and a read/parse defect can never touch the verdict gate.
-    // AD-4 (instrumentation house rule): the event is written UNCONDITIONALLY. The R2 evidence run logged
-    // an all-zero histogram against a BLOCKING verdict, and nothing said whether the reviewer really flagged
-    // zero correction lines or the read/parse quietly failed (the old catch logged NOTHING). Now: `verdict`
-    // rides the row (an all-zero histogram on CONDITIONAL/BLOCKING is legible as the anomaly it is), and a
-    // read/parse failure is a recorded fact (ok:false + the error) instead of silence.
-    // — `kindChannelOk` IS A SECOND FACT, AND IT NEEDED ITS OWN KEY.
-    //
-    // `ok` here has always meant "the file was read and parsed without throwing". It cannot also carry
-    // "the reviewer's kind channel produced something", and overloading it would have been the cheaper
-    // change and the wrong one: the two are false in different situations and a reader cannot tell which
-    // from one boolean.
-    //
-    // The distinction is the whole. A review where every parsed line landed on the `fact`
-    // fail-safe reads, in the counts alone, exactly like a review whose flags were all genuinely
-    // factual — and on the run that found this, `fact: 10` on a BLOCKING verdict was the former and
-    // looked entirely reasonable. The all-zero histogram AD-4 above made legible is the easy case;
-    // `untyped === total` is the one that was not, and now it is a recorded fact rather than an
-    // inference a reader has to make by comparing two other numbers.
-    try {
-      const ck = parseCorrectionKinds(readFileSync(P.seniorEyeReview, "utf8"));
-      runLog(run.runDir, { event: "correction-kinds", ok: true, kindChannelOk: ck.ok !== false, verdict: runState.verdict,
-        counts: ck.counts, untyped: ck.untyped, total: ck.total, ...(ck.why ? { kindChannelWhy: ck.why } : {}) });
-    } catch (e) {
-      // The key rides BOTH arms: written only on success, its absence on a failed row would read as
-      // "the channel was fine", which is precisely the inference this issue exists to stop.
-      try { runLog(run.runDir, { event: "correction-kinds", ok: false, kindChannelOk: false, verdict: runState.verdict, error: String(e?.message ?? e).slice(0, 160) }); }
-      catch { /* telemetry best-effort — never-kill */ }
-    }
-
-    // The correction after the review and the recheck of it (steps/correction-cycle.mjs).
-    const correctionCycle = await runCorrectionCycle({ ctx, run, P, verdict: runState.verdict, firstRef, synthesisKey, synthesisModel, synthesisThinking }, { CORRECTIONS_DELIVERED_FILE, CORRECTIVE_RECHECK_FILE, asPartNotCompleted, correctionNamedLines, correctionNamedOrdinals, correctionNamedSet, correctionReading, correctionRows, correctionsExtra, correctiveCycleSettledDecision, enforceCorrectionsReachFindings, must, planAuditExtra, prepareDeclinationSpec, recordCorrectionsBasis, recordSynthesisSeam, removalRepairedRow, repairUnnamedRemovals, restoredFindingsTable, rollbackCorrectivePass, snapshotFindingsForCorrections, stage, writerExclusionBlock });
-    runState.verdict = correctionCycle.verdict;
-    const { correctiveEntryVerdict, correctiveCycleSettled, correctiveRecheckOk } = correctionCycle;
-
-    // The verdict's floors and terminal guards (steps/verdict-gate.mjs).
-    // applyVerdictFrontMatter is declared further down, so it goes in by name, read when called.
-    const { applyCoverageFloor, clampOnTheFloorDuty, clampOnTheWritersDuty, deliverAndClamp, followTheRecordsActions, saveTheLabel, saveTheOwedLabel, writeVerdictSidecar } = await runVerdictGate({ P, agent, applyVerdictFrontMatter: (...a) => applyVerdictFrontMatter(...a), correctiveCycleSettled, correctiveEntryVerdict, correctiveRecheckOk, coverageJudgment, ctx, opts, run, runState }, { StageFailure, actionsRegisterListed, conditionsFollowingTheRecord, defaultRecordFetcher, enrichFindingDeadlines, lateRecordsUnaddressed, loadCoverageLedger, loadScreenGateUnresolved, owedUrisFor, planAuditExtra, refusedRecordsLeftOut, registerGapConditions, safeReadJson, saveWithRetries, stage, withdrawByToken });
-
-    // R.1 primitive #3 (engagement receipt) is computed later, in the pre-delivery block, together with
-    // F2 rule-shape + B2b reviewer self-coherence into ONE _driver/reasoning-integrity.json sidecar — that
-    // point has report.md + senior-eye-review.md on disk too, so the single writer carries all three signals.
-
-    // The report's overview and its cards (steps/overview-and-cards.mjs).
-    const { applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, findingsForCards, groupedMembers, overviewOpen, rebuildTheDeliveredRecord, restoreTheBrokenRecord, rov, writeScopeFacts, writeUps } = await runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWritersDuty, ctx, followTheRecordsActions, job, run, runState, saveTheLabel, writeVerdictSidecar }, { StageFailure, applyScopeFrontMatterOf, asPartNotCompleted, assembleReportMd, caseLawJoin, consolidateFindingsFile, correctionsTheRestoreLacks, deriveCommonLawCarry, deriveRecordCarry, inScopeClassList, injectDeferralCoverage, injectFrontMatter, injectLaneDepthCoverage, injectMeaningGapCoverage, injectScreenGateCoverage, injectScriptScopeCoverage, keepDeliveredRecordAsHistory, localLanguageStateOf, must, openAskForClosure, originRowsForReport, planWriteUps, readFindingsForReport, readReadingLog, rebuildDeliveredRecord, reportIdentityRecord, restoreTheRecordThatPassed, rewriteFromBeforeTheSeam, runBatched, safeReadJson, settleDerivedBases, stage, stampCoverageJudgmentRows, withdrawSupersededAudit, writeScopeFactsOf, writeShortEntries });
-
-    // The checks before delivery, their repairs, and the publish (steps/delivery.mjs).
-    return await runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, checkLateBind, clampOnTheFloorDuty, clampOnTheWritersDuty, ctx, deliverAndClamp, findingsForCards, followTheRecordsActions, groupedMembers, job, opts, overviewOpen, publishAndDeliver, rebuildTheDeliveredRecord, restoreTheBrokenRecord, reviewOpen, rov, run, runState, saveTheLabel, saveTheOwedLabel, synthesisKey, synthesisModel, synthesisThinking, writeScopeFacts, writeUps, writeVerdictSidecar }, { CITED_URI_RE, NO_CHANGE, REBUILDS_THE_DELIVERED_RECORD, StageFailure, UPSTREAM_STALE_REPAIR, assembleReportMd, cardsNeverBuilt, caseLawJoin, computeOpenFloors, defaultRecordFetcher, fullProseOrdinals, inScopeClassList, injectFrontMatter, keepRankingReadByWriter, lateRecordIds, loadCoverageLedger, owedCardOrdinals, ownerScreenForDelivery, partitionDeliveryStale, postRepairScope, queuedForTheRecordOnly, rankingReadByWriterPath, readFindingsForReport, readFloorAxes, readGoodsHanded, reassembleFromTheRecord, recordChangeOwesReview, recordGoodsHanded, relabelCoverageRows, retainStateBeforeReview, runPostRepairCorrection, runPostRepairReview, runWholeReviewForRecord, safeReadJson, settleDerivedBases, stage, stageCharter, stagesStaleOnPlacement, unreadRecordFindingOnly, unreadRecordReview, whatTheRepairLeftStale });
-  } catch (e) {
-    // What the run does when a step fails (run-failed.mjs).
-    return await endTheFailedRun({ P, agent, ctx, e, job, run }, { recordConnotationAudit, sentinel, undoTaintRenames });
-  }
+        // R.1 primitive #3 (engagement receipt) is computed later, in the pre-delivery block, together with
+        // F2 rule-shape + B2b reviewer self-coherence into ONE _driver/reasoning-integrity.json sidecar — that
+        // point has report.md + senior-eye-review.md on disk too, so the single writer carries all three signals.
+    } },
+    { name: "overview-and-cards", run: async () => {
+        // The report's overview and its cards (steps/overview-and-cards.mjs).
+        ({ applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, findingsForCards, groupedMembers, overviewOpen, rebuildTheDeliveredRecord, restoreTheBrokenRecord, rov, writeScopeFacts, writeUps } = await runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWritersDuty, ctx, followTheRecordsActions, job, run, runState, saveTheLabel, writeVerdictSidecar }, { StageFailure, applyScopeFrontMatterOf, asPartNotCompleted, assembleReportMd, caseLawJoin, consolidateFindingsFile, correctionsTheRestoreLacks, deriveCommonLawCarry, deriveRecordCarry, inScopeClassList, injectDeferralCoverage, injectFrontMatter, injectLaneDepthCoverage, injectMeaningGapCoverage, injectScreenGateCoverage, injectScriptScopeCoverage, keepDeliveredRecordAsHistory, localLanguageStateOf, must, openAskForClosure, originRowsForReport, planWriteUps, readFindingsForReport, readReadingLog, rebuildDeliveredRecord, reportIdentityRecord, restoreTheRecordThatPassed, rewriteFromBeforeTheSeam, runBatched, safeReadJson, settleDerivedBases, stage, stampCoverageJudgmentRows, withdrawSupersededAudit, writeScopeFactsOf, writeShortEntries }));
+    } },
+    { name: "delivery", run: async () => {
+        // The checks before delivery, their repairs, and the publish (steps/delivery.mjs).
+        return await runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, checkLateBind, clampOnTheFloorDuty, clampOnTheWritersDuty, ctx, deliverAndClamp, findingsForCards, followTheRecordsActions, groupedMembers, job, opts, overviewOpen, publishAndDeliver, rebuildTheDeliveredRecord, restoreTheBrokenRecord, reviewOpen, rov, run, runState, saveTheLabel, saveTheOwedLabel, synthesisKey, synthesisModel, synthesisThinking, writeScopeFacts, writeUps, writeVerdictSidecar }, { CITED_URI_RE, NO_CHANGE, REBUILDS_THE_DELIVERED_RECORD, StageFailure, UPSTREAM_STALE_REPAIR, assembleReportMd, cardsNeverBuilt, caseLawJoin, computeOpenFloors, defaultRecordFetcher, fullProseOrdinals, inScopeClassList, injectFrontMatter, keepRankingReadByWriter, lateRecordIds, loadCoverageLedger, owedCardOrdinals, ownerScreenForDelivery, partitionDeliveryStale, postRepairScope, queuedForTheRecordOnly, rankingReadByWriterPath, readFindingsForReport, readFloorAxes, readGoodsHanded, reassembleFromTheRecord, recordChangeOwesReview, recordGoodsHanded, relabelCoverageRows, retainStateBeforeReview, runPostRepairCorrection, runPostRepairReview, runWholeReviewForRecord, safeReadJson, settleDerivedBases, stage, stageCharter, stagesStaleOnPlacement, unreadRecordFindingOnly, unreadRecordReview, whatTheRepairLeftStale });
+    } },
+  ] });
 }
 
 // ── A DELIVERY WITHOUT THE OVERALL ASSESSMENT: WHAT IT SETS ASIDE AND WHAT IT READS ───────────────────────────────
