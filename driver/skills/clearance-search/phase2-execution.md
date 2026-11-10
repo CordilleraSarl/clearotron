@@ -198,7 +198,7 @@ The driver ranks its cross-checks (a verified use with a URL, then an owner, the
 
 Cap-overflow MUST be flagged in the deliverable audit trail with a specific reason ("would have triggered cross-check on owner X but cap reached after 10 — the staff lawyer to assess manually").
 
-Every cross-check (including "checked, found nothing") logged in the unified audit trail as proof-of-work. The collaborator value-add (vs assistant) is in this section: synthesis can be decisive ("HP uses, does not register → Level 2 B") rather than tentative ("recommend the staff lawyer check HP register").
+Every cross-check (including "checked, found nothing") logged in the unified audit trail as proof-of-work. The collaborator value-add (vs assistant) is in this section: synthesis can be decisive ("HP uses, does not register → a common-law conflict, banded in the framework's words") rather than tentative ("recommend the staff lawyer check HP register").
 
 ## Step 3.5 — Actual-use and enforcement check (mandatory for register hits rated medium risk or higher)
 
@@ -218,7 +218,7 @@ Example: a JELLY register hit owned by Jellycat (a toy company) for Class 9 vide
 - Owner-portfolio-bound common-law checks already counted in this step count toward the Option D cap (Step 3).
 - **Enforcement the query finds is a lead, not a verified authority** (the ENFORCEMENT AUTHORITY rule in the stage message): it informs the enforcer meter with basis `inferred-from-signal`, and its URL is cited inline in the finding's prose. If the query finds no enforcement record, the enforcer is `low` with basis `inferred-from-signal`, and the finding says the search found none. The enforcer stays `unknown`, and nothing is claimed, only when the query could not run.
 
-**Output contract — ENFORCED by the driver (spec 11), not optional.** For every Composite 3+ finding whose
+**Output contract — ENFORCED by the driver (spec 11), not optional.** For every finding, at any band, whose
 mitigant or verdict turns on the **absence** of use (it says the mark is "not in actual use" / "unused" / has
 "no marketplace use found", or names non-use revocation/cancellation as the mitigant), record its result in that finding's `use_check.source`: <result URL | "perplexity_research — no result">.
 
@@ -261,8 +261,8 @@ revocability reads (`synthesis-rules.md`). This step adds what the register laye
 **Two non-inheritances from Step 3.5** (so the two steps don't blur):
 - Do **not** apply Step 3.5's tight "use in *our* field only" scoping — the owner workup is deliberately
   about the owner's *whole* posture and *their own* use of the term, not just the clearance field.
-- Do **not** apply Step 3.5's mechanical one-composite-level downgrade. This step's output is a
-  **practical-likelihood statement**, not a score move; it feeds the finding's business read and the net
+- Do **not** move the finding's band in this step. This step's output is a
+  **practical-likelihood statement**, not a band move; it feeds the finding's business read and the net
   rating (Step 4 / `synthesis-rules.md`), where the weighing happens.
 
 **Output:** a practical-likelihood statement in the finding's business read ("how likely is this owner to
