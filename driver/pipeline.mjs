@@ -41,6 +41,7 @@ import { config, resolveModel, laneArmed } from "./driver.config.mjs";
 import { registerAdapter } from "./engine/run-choices.mjs";   // the run's register adapter, from ctx.register
 import { codexSandboxBypassed } from "./engine/openai-agent.mjs";        // — a replay is refused where nothing keeps a stage's commands out of the answers it replays
 import { buildRunContext, deriveSlug, kebab } from "./phase0.mjs";
+import { crossBuildResumeRefusal } from "./one-build-per-run.mjs";   // a run is finished on the build it started on (owner, 2026-11-09)
 import { paths, STAGES, axisTier, decideAxes, assertEffectiveTier, lines, whatsappRouting, chainEntries, stageOrdinal, stageInputs, dependencyOrder, REGISTER_AXES, REGISTER_ENUMERATE_TOOL, buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenFollowup, buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, providerMeta, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
 import { handResearchAnswers, RESEARCH_ANSWERS_FILE, RESEARCH_REPLAY_FILE, replayAnswersFile, savedResearchCount, runResearchAnswers, researchAnswerKey, handResearchAfterReview } from "./research-answers.mjs";   // the research a stage's earlier attempts got, handed to a later one; a replay of it
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE } from "./report-overview-record.mjs";
@@ -10933,6 +10934,19 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   try { void config.poolRoot; }
   catch (e) { console.error(`error: ${e.message}`); process.exit(2); }
 
+  // ── A RUN IS FINISHED ON THE BUILD IT STARTED ON, FROM THE COMMAND LINE TOO ───────────────────────────
+  //
+  // The runner's resumes refuse a run that started on another build (one-build-per-run.mjs). `--resume`, with
+  // `--from` or `--experiment` or neither, is the same door typed by a person, and it carried a run from an
+  // earlier version onto this one. Each branch below asks it of the run folder as soon as it has found one,
+  // before the order is rebuilt or anything is written, and refuses in the runner's words. With no run folder
+  // there is nothing to ask: the resume itself refuses that, by name. `pipeline()` stays unchecked as a
+  // library, because the bench resumes saved copies on new code to measure what a change does.
+  const refuseAcrossBuilds = (runDir) => {
+    const refused = crossBuildResumeRefusal(runDir);
+    if (refused) { console.error(`error: ${refused}`); process.exit(2); }
+  };
+
   // — reading the job file used to sit OUTSIDE the try below, so a path typo or a stray comma
   // exited on a raw V8 stack trace: a non-clean exit with no honest message, and the one shape of
   // mistake a first-time reader is likeliest to make. Kept guarded here through the rebase — the
@@ -10968,6 +10982,7 @@ if (isEntrypoint(import.meta.url)) void (async () => {
       console.error("       pass --job <file.json> if the run lives somewhere this cannot see.");
       process.exit(2);
     }
+    refuseAcrossBuilds(found.dir);
     let status = null;
     try { status = JSON.parse(readFileSync(join(found.dir, "status.json"), "utf8")); }
     catch (e) { console.error(`error: cannot read ${join(found.dir, "status.json")} — ${e.message}`); process.exit(2); }
@@ -10999,6 +11014,12 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   } else {
     try { job = JSON.parse(readFileSync(a.job, "utf8")); }
     catch (e) { console.error(`error: cannot read job file ${a.job} — ${e.message}`); process.exit(2); }
+    if (a.codename) {
+      // The live run the resume will open, by the lookup the resume itself makes.
+      const studioRoot = a.agent ? config.studioRootForAgent(a.agent) : config.studioRoot;
+      const date = findRunDate(job, a.codename, studioRoot);
+      if (date) refuseAcrossBuilds(join(studioRoot, deriveSlug(job), `${date}-${a.codename}`));
+    }
   }
   // Manual runs: if --agent is given, root the run-dir in that agent's workspace too (mirrors the runner).
   const base = a.agent
