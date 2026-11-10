@@ -5,7 +5,8 @@
 //   node driver/test/snapshot/publish-compare.mjs record --out <dir> [--repo <checkout>] [--run <saved-run-dir>]...
 //   node driver/test/snapshot/publish-compare.mjs compare <base-dir> <head-dir>
 //
-// Each sample is copied, then published under a frozen clock into a throwaway report folder. Nothing is normalised but the
+// Each sample is copied, then published under a frozen clock into a throwaway report folder. What the publisher returns and the
+// rows it appends to the run's log are compared too, key by key and row by row. Nothing is normalised but the
 // throwaway folder's own name, the publishing build's own commit and a workbook's two generation stamps, so a changed date,
 // word or cell shows as a difference.
 // A saved run is a folder holding `meta.json` and `run/`, the shape `demo/` uses. It makes no model turn and no register call.
@@ -53,8 +54,15 @@ function recordSample(sample, repo, out) {
     // The build that published stamps its own commit into meta.json and the data file; two commits differ there by design.
     const commit = execFileSync("git", ["-C", repo, "rev-parse", "HEAD"], { encoding: "utf8" }).trim() || null;
     const files = Object.fromEntries(walk(pool).map((f) => [relative(pool, f).split(sep).join("/"), fingerprint(f, root, commit)]));
-    const { email } = JSON.parse(readFileSync(resultFile, "utf8"));
-    const record = { name: sample.name, files, email: Object.fromEntries(Object.entries(email).map(([k, v]) => [k, sha(String(v).split(root).join("<ROOT>"))])) };
+    const { email, returned, logRows } = JSON.parse(readFileSync(resultFile, "utf8"));
+    const cleanText = (t) => (commit ? String(t).split(commit).join("<COMMIT>") : String(t)).split(root).join("<ROOT>");
+    const record = {
+      name: sample.name, files,
+      email: Object.fromEntries(Object.entries(email).map(([k, v]) => [k, sha(String(v).split(root).join("<ROOT>"))])),
+      // What the publisher hands back to the pipeline, key by key, and each row it appended to the run's log, by its event.
+      returned: Object.fromEntries(Object.entries(returned ?? {}).map(([k, v]) => [k, sha(cleanText(JSON.stringify(v ?? null)))])),
+      log: Object.fromEntries((logRows ?? []).map((row, i) => { let ev = "?"; try { ev = JSON.parse(row).event ?? "?"; } catch { /* kept by position */ } return [`${i} ${ev}`, sha(cleanText(row))]; })),
+    };
     writeFileSync(join(out, `${sample.name}.json`), JSON.stringify(record, null, 1) + "\n");
     return { name: sample.name, files: Object.keys(files).length };
   } finally { rmSync(root, { recursive: true, force: true }); }
