@@ -1331,48 +1331,61 @@ export async function knockoutInner(ctx, job, opts = {}) {
 
     // 4 — publish (report + workbook + meta + index)
     //
-    // THE LAST READ OF THE STOP FLAG. Everything above dispatches through the gateway, which reads it
-    // before a turn — so on this lane, where publication follows the final stage directly, a stop
-    // pressed during that stage was never seen and the report went out anyway.
-    assertNotCancelledBeforePublish(run.runDir, "knockout");
-    // PAST THE LAST STOPPABLE POINT, RECORDED WHERE IT BECOMES TRUE. The read above is the final one, so
-    // from this line on a stop cannot prevent delivery — and the screen must stop promising it will.
-    // Written here rather than derived on the screen from a step number: "Report & publish" is step 4 of
-    // 5 on this lane, not the last, so any arithmetic over stepN would name the wrong step and go stale
-    // the day a lane's list changes.
-    writeRunStatus(ctx, { stoppable: false });
-    koStep(ctx, "Report & publish");
+    // PUBLISHED ONCE, as a clearance is. The publish result is recorded in `.published`, and a resume that finds the
+    // record delivers what was published rather than publishing again: a run stopped between the publish and its
+    // delivery record would otherwise put a second copy in the pool. The record carries everything the delivery
+    // below reads, so the resumed delivery is the one the first pass would have sent.
     const overall = worstBand(ctx.framework, merged.marks);
-    // A set-aside filing the rating cites moves up with the carried ones, so the report has its row.
-    try {
-      const held = JSON.parse(readFileSync(K.registerRecords, "utf8"));
-      const moved = withCitedFilings(held, merged);
-      if (moved !== held) atomicWrite(K.registerRecords, JSON.stringify(moved, null, 2) + "\n");
-    } catch { /* no record on this run, or none readable: publish says which */ }
-    const published = await publishKnockout({
-      runId, codename: run.codename, runDir: run.runDir,
-      findings: merged, plan, framework: ctx.framework, overall,
-      poolRoot: config.poolRoot,
-      // THE FALLBACK HERE COULD NOT FIRE, AND COULD NOT HAVE HELPED IF IT HAD. It read
-      // `config.poolUrl ?? envFrom(process.env, "CLEAROTRON_REPORTS_URL") ?? null`. Two things were wrong
-      // with it and both were invisible: the getter returns "" when the variable is unset, and `??` only
-      // falls through on null or undefined — so the second operand was unreachable — and that second
-      // operand read the same `process.env` the getter had just read, so reaching it would have returned
-      // the same empty answer. A reader saw a safety net twice over where there was none.
-      //
-      // `|| null` instead, which says the one true thing: no base URL configured, so no link. That is the
-      // state `reportUrlFor` already handles by returning null per report rather than an empty string, and
-      // a null link is what the delivery packet is specified to carry when no pool URL is set.
-      poolUrl: config.poolUrl || null,
-      customerKey: ctx.profile?.profileKey ?? "generic",
-      // — the frozen profile's delivery overlay decides the confidentiality marking, exactly as it
-      // does on the clearance lane. Absent (an unbound run, or a profile silent on the field) is the
-      // NO-OPINION state and gets the plain default; only an explicit `privileged:false` suppresses it.
-      delivery: ctx.profile?.delivery,
-      searchPolicy: policy, tokens: (() => { try { return rollupTokens(run.runDir).total; } catch { return null; } })(),
-      registerCounts,
-    });
-    runLog(run.runDir, { event: "knockout-published", url: published.url, reports: published.reports.map((r) => ({ mark: r.mark, url: r.url })), overall, marks: merged.marks.length });
+    let published;
+    if (existsSync(join(run.runDir, ".published"))) {
+      const { ts: _publishedAt, ...stored } = JSON.parse(readFileSync(join(run.runDir, ".published"), "utf8"));
+      published = stored;
+      koStep(ctx, "Report & publish");
+      note(`publish skip — already published → ${published.url}`);
+    } else {
+      // THE LAST READ OF THE STOP FLAG. Everything above dispatches through the gateway, which reads it
+      // before a turn — so on this lane, where publication follows the final stage directly, a stop
+      // pressed during that stage was never seen and the report went out anyway.
+      assertNotCancelledBeforePublish(run.runDir, "knockout");
+      // PAST THE LAST STOPPABLE POINT, RECORDED WHERE IT BECOMES TRUE. The read above is the final one, so
+      // from this line on a stop cannot prevent delivery — and the screen must stop promising it will.
+      // Written here rather than derived on the screen from a step number: "Report & publish" is step 4 of
+      // 5 on this lane, not the last, so any arithmetic over stepN would name the wrong step and go stale
+      // the day a lane's list changes.
+      writeRunStatus(ctx, { stoppable: false });
+      koStep(ctx, "Report & publish");
+      // A set-aside filing the rating cites moves up with the carried ones, so the report has its row.
+      try {
+        const held = JSON.parse(readFileSync(K.registerRecords, "utf8"));
+        const moved = withCitedFilings(held, merged);
+        if (moved !== held) atomicWrite(K.registerRecords, JSON.stringify(moved, null, 2) + "\n");
+      } catch { /* no record on this run, or none readable: publish says which */ }
+      published = await publishKnockout({
+        runId, codename: run.codename, runDir: run.runDir,
+        findings: merged, plan, framework: ctx.framework, overall,
+        poolRoot: config.poolRoot,
+        // THE FALLBACK HERE COULD NOT FIRE, AND COULD NOT HAVE HELPED IF IT HAD. It read
+        // `config.poolUrl ?? envFrom(process.env, "CLEAROTRON_REPORTS_URL") ?? null`. Two things were wrong
+        // with it and both were invisible: the getter returns "" when the variable is unset, and `??` only
+        // falls through on null or undefined — so the second operand was unreachable — and that second
+        // operand read the same `process.env` the getter had just read, so reaching it would have returned
+        // the same empty answer. A reader saw a safety net twice over where there was none.
+        //
+        // `|| null` instead, which says the one true thing: no base URL configured, so no link. That is the
+        // state `reportUrlFor` already handles by returning null per report rather than an empty string, and
+        // a null link is what the delivery packet is specified to carry when no pool URL is set.
+        poolUrl: config.poolUrl || null,
+        customerKey: ctx.profile?.profileKey ?? "generic",
+        // — the frozen profile's delivery overlay decides the confidentiality marking, exactly as it
+        // does on the clearance lane. Absent (an unbound run, or a profile silent on the field) is the
+        // NO-OPINION state and gets the plain default; only an explicit `privileged:false` suppresses it.
+        delivery: ctx.profile?.delivery,
+        searchPolicy: policy, tokens: (() => { try { return rollupTokens(run.runDir).total; } catch { return null; } })(),
+        registerCounts,
+      });
+      sentinel(run.runDir, ".published", published);
+      runLog(run.runDir, { event: "knockout-published", url: published.url, reports: published.reports.map((r) => ({ mark: r.mark, url: r.url })), overall, marks: merged.marks.length });
+    }
     // The knockout lane put its token total in the PUBLISHED ARTIFACT but never stamped the run itself,
     // so `status.json.tokens` was empty for every Stage-0 run however it ended (fixed 2026-07-28) — and
     // a Stage-0 run appeared in no account-level consumption view at all.

@@ -1161,6 +1161,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-publishes-once.test.mjs": {
+          "tests": 2,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-rating-may-cite-the-filings-it-was-handed.test.mjs": {
           "tests": 3,
           "asserts": 12,
