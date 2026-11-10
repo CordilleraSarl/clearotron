@@ -1356,56 +1356,48 @@ function deriveGridSpec(ctx) {
     // level), connotation queries partitioned the same way (each owned by exactly one half; the merge's
     // concat+dedup restores the full receipt set), each half writing its OWN ledger. The halves merge in
     // CODE into the canonical common-law-grid.json at gather fan-in, before anything downstream reads it.
-    // Self-disarm cases (single-member assembly kept VERBATIM): a single-term grid (nothing to
-    // partition); and a resume of a PRE-SPLIT run — a valid common-law-findings.md with no half files on
-    // disk means the grid already ran unsplit, and re-running it as halves would re-spend the full grid.
+    // Self-disarm case (single-member assembly kept VERBATIM): a single-term grid, which has nothing to
+    // partition.
     //
-    // item 8 deleted the `flag-off` case with CLEAROTRON_COMMONLAW_SPLIT. The two above are why the
-    // ASSEMBLY stays: they reach it without any switch, and each records its own reason.
+    // item 8 deleted the `flag-off` case with CLEAROTRON_COMMONLAW_SPLIT. A resume of a PRE-SPLIT run (a
+    // valid common-law-findings.md with no half files beside it) also kept the single-member assembly, and
+    // that case is gone too: a run from an earlier build is no longer resumed, and a current run whose
+    // grid has two or more terms splits on its first pass, from frozen inputs a resume derives the same
+    // grid from. The single-term grid is why the ASSEMBLY stays: it reaches it without any switch, and
+    // records its own reason.
     const splitTerms = gridSpec.terms.length;
     if (splitTerms < 2)
       ctx.clSplitDecision = { path: "unsplit", reason: "single-term-grid",
         detail: `the grid carries ${splitTerms} term(s) — there is nothing to partition into two halves`,
         terms: splitTerms };
     if (splitTerms >= 2) {
-      const resumedUnsplit = existsSync(P.commonLaw)
-        && !GRID_SEATS.some((h) => existsSync(P.commonLawHalf(h)))
-        && validators.commonLaw(P.commonLaw, readFileSync(P.commonLaw, "utf8")).ok;
-      if (resumedUnsplit) {
-        note("common-law split: resuming a pre-split run (valid single-member findings, no half artifacts) — keeping the single-member assembly");
-        runLog(P.runDir, { event: "grid-split-skipped", reason: "resumed-unsplit" });
-        ctx.clSplitDecision = { path: "unsplit", reason: "resumed-unsplit",
-          detail: "a valid single-member common-law-findings.md is on disk with no half artifacts beside it — the grid already ran unsplit and re-running it as halves would re-spend the whole grid",
-          terms: splitTerms };
-      } else {
-        const halves = splitGridSpec(gridSpec, {
-          outputPaths: Object.fromEntries(GRID_SEATS.map((h) => [h, P.commonLawGridHalf(h)])),
-          // — dictated, so the grid tool names the same file the validator reads.
-          dispositionsPaths: Object.fromEntries(GRID_SEATS.map((h) => [h, P.commonLawDispositionsHalf(h)])),
-        });
-        for (const h of GRID_SEATS) atomicWrite(P.gridSpecHalf(h), JSON.stringify(halves[h], null, 2) + "\n");
-        // THE FRAME NAMED NO MEANING QUESTION, so the meaning seat has nothing to search. Its ledger is the
-        // empty one the grid tool would have written, written here, so the merge and every check downstream
-        // read a sweep of zero queries rather than a missing file; the seat is told not to run the tool.
-        if (halves[MEANING_SEAT]?.connotation?.none_named === true)
-          atomicWrite(P.commonLawGridHalf(MEANING_SEAT), JSON.stringify({ cells: [], extras: { pr_risk: [] }, gaps: [] }, null, 2) + "\n");
-        ctx.clHalfTerms = { a: halves.a.terms, b: halves.b.terms };
+      const halves = splitGridSpec(gridSpec, {
+        outputPaths: Object.fromEntries(GRID_SEATS.map((h) => [h, P.commonLawGridHalf(h)])),
+        // — dictated, so the grid tool names the same file the validator reads.
+        dispositionsPaths: Object.fromEntries(GRID_SEATS.map((h) => [h, P.commonLawDispositionsHalf(h)])),
+      });
+      for (const h of GRID_SEATS) atomicWrite(P.gridSpecHalf(h), JSON.stringify(halves[h], null, 2) + "\n");
+      // THE FRAME NAMED NO MEANING QUESTION, so the meaning seat has nothing to search. Its ledger is the
+      // empty one the grid tool would have written, written here, so the merge and every check downstream
+      // read a sweep of zero queries rather than a missing file; the seat is told not to run the tool.
+      if (halves[MEANING_SEAT]?.connotation?.none_named === true)
+        atomicWrite(P.commonLawGridHalf(MEANING_SEAT), JSON.stringify({ cells: [], extras: { pr_risk: [] }, gaps: [] }, null, 2) + "\n");
+      ctx.clHalfTerms = { a: halves.a.terms, b: halves.b.terms };
 
-        ctx.clSplitDecision = { path: "split", reason: "armed",
-          detail: `${splitTerms} dictated terms, not a pre-split resume — the grid runs as ${GRID_SEATS.length} concurrent half-members`,
-          terms: splitTerms,
-          halves: Object.fromEntries(GRID_SEATS.map((h) => [h, halves[h]?.terms?.length ?? 0])) };
-        //: connotation_<h> = 0 on the non-owning half is the ASSERTED ownership receipt, not a
-        // missing sweep. The count that means "no meaning sweep was dictated at all" is the `grid-spec`
-        // event's own `connotation:` field above; a reader comparing the two can tell them apart.
-        // — connotation_a / connotation_b are now BOTH zero by construction, and that pair is the
-        // regression signal this issue asked for: the gate that fired on 13 of 14 first attempts cannot
-        // fire on a seat that owes nothing. connotation_m is where the sweep went.
-        runLog(P.runDir, { event: "grid-split", terms_a: halves.a.terms.length, terms_b: halves.b.terms.length,
-          connotation_a: halves.a.connotation.queries.length, connotation_b: halves.b.connotation.queries.length,
-          connotation_m: halves[MEANING_SEAT].connotation.queries.length,
-          connotationOwner: MEANING_SEAT });
-      }
+      ctx.clSplitDecision = { path: "split", reason: "armed",
+        detail: `${splitTerms} dictated terms, not a pre-split resume — the grid runs as ${GRID_SEATS.length} concurrent half-members`,
+        terms: splitTerms,
+        halves: Object.fromEntries(GRID_SEATS.map((h) => [h, halves[h]?.terms?.length ?? 0])) };
+      //: connotation_<h> = 0 on the non-owning half is the ASSERTED ownership receipt, not a
+      // missing sweep. The count that means "no meaning sweep was dictated at all" is the `grid-spec`
+      // event's own `connotation:` field above; a reader comparing the two can tell them apart.
+      // — connotation_a / connotation_b are now BOTH zero by construction, and that pair is the
+      // regression signal this issue asked for: the gate that fired on 13 of 14 first attempts cannot
+      // fire on a seat that owes nothing. connotation_m is where the sweep went.
+      runLog(P.runDir, { event: "grid-split", terms_a: halves.a.terms.length, terms_b: halves.b.terms.length,
+        connotation_a: halves.a.connotation.queries.length, connotation_b: halves.b.connotation.queries.length,
+        connotation_m: halves[MEANING_SEAT].connotation.queries.length,
+        connotationOwner: MEANING_SEAT });
     }
   }
 }
