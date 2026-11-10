@@ -113,6 +113,16 @@ test("a clearance whose data file cannot be written is delivered, and meta.json 
   assert.equal(logged(runDir, "data-file-not-written").length, 1, "the run records the failure");
 });
 
+test("a clearance whose findings.json cannot be kept in the pool is delivered with its findings, and its results are not called unreadable", async () => {
+  const { published, poolRunDir, runDir, meta } = await publishWith("full-country-search", { blocked: () => ["findings.json"] });
+  assert.equal(opensEveryReport(poolRunDir, meta), 1);
+  assert.ok(!isFile(join(poolRunDir, "findings.json")), "premise: the copy could not be written");
+  assert.equal(published.findingsError, null, "the findings were read, so no read error is reported");
+  assert.ok(!published.clientGate.reasons.some((r) => /could not be read back/.test(r)), "the machine checks do not record the results as unreadable");
+  assert.ok(JSON.parse(readFileSync(join(poolRunDir, "report-data.json"), "utf8")).findings.length > 0, "the report carries the findings it read");
+  assert.deepEqual(logged(runDir, "data-file-not-written").map((r) => r.file), ["findings.json"], "the run records the copy that failed");
+});
+
 test("a Knockout whose workbook cannot be built delivers its report, and nothing names the workbook", async () => {
   const { published, poolRunDir, runDir, meta } = await publishWith("knockout-search", {
     blocked: (m) => [`knockout-audit-${m.codename || m.runId}.xlsx`],

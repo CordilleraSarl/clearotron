@@ -642,7 +642,7 @@ export function normalizeRecordLinks(findings, origins) {
  * own field, so every surface prints what it printed before; which way is right is not this function's to decide. It
  * writes nothing to the pool. It does append to the run's own log what the read found dropped or missing, as before.
  */
-export async function readClearanceDocument({ runId, reportMd, auditMd, findingsJson, poolRoot, customerKey, delivery, runDir }) {
+export async function readClearanceDocument({ runId, reportMd, auditMd, findingsJson, poolRoot, poolUrl, customerKey, delivery, runDir }) {
   const parsed = parseReport(reportMd);
   const { fm } = parsed;
   const deliv = delivery || NEUTRAL_DELIVERY;
@@ -1291,6 +1291,21 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
     renderedAt, markName, project, organisation, tokenRollup,
     // WHICH BUILD produced this, read once for every surface that records it. null off a git checkout.
     engineCommit: engineCommit(),
+    // FACTS THE SURFACES STATE TWO WAYS, each way named, so every surface prints what it printed before. Which way is
+    // right is for the owner to rule; nothing here chooses.
+    // The report's link: the portal route the email and the run record take, and the pool path the data file names.
+    reportRoute: reportRouteFor(poolUrl, runId),
+    reportPoolUrl: poolUrl ? `${String(poolUrl).replace(/\/$/, '')}/${runId}/report.html` : null,
+    // The product's stage label as frozen with the run, which meta.json keeps; `stageLabel` above is today's registry's.
+    frozenStageLabel: searchPolicy?.stageLabel,
+    // The rating word and its badge for meta.json, falling back to the report's front matter on a run older than the
+    // verdict record, as the page does; the data file takes the verdict record's alone. None where the assessment was not
+    // completed.
+    ratingWord: assessmentNotCompleted ? undefined : (verdictInfo?.tier ?? fm.overall_label),
+    ratingBadge: assessmentNotCompleted ? undefined : (verdictInfo?.badge ?? fm.overall_badge),
+    // The headline caption as the front matter states it, empty as null. The email, the data file, meta.json and the run
+    // record take it; the page takes the report's Summary instead (render.mjs).
+    caption: fm.overall_caption || null,
   };
 }
 
@@ -1309,7 +1324,7 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
 //   ONE regen after the whole loop instead of N redundant ones (per-run publish leaves it false, as before).
 // (skipClient is retired with report.client.html — one report, spec 2026-07-30 §5.)
 export async function publishReport({ runId, codename, reportMd, auditMd, findingsJson, poolRoot, poolUrl, customerKey, delivery, runDir, skipRegen = false }) {
-  const doc = await readClearanceDocument({ runId, reportMd, auditMd, findingsJson, poolRoot, customerKey, delivery, runDir });
+  const doc = await readClearanceDocument({ runId, reportMd, auditMd, findingsJson, poolRoot, poolUrl, customerKey, delivery, runDir });
   const { parsed, fm, deliv, issued, asOf, demoData, demoMd, findings, coverage, contextNotes, findingsError,
     coverageJudgment, markAssessment, actionsRegister, askAnswers, correctionsDoc, fourAnswers, findingsSchemaVersion,
     findingsKept, assessmentNotCompleted, coverageJudgmentDisplay, recordsByUri, runProviderConf, recordOrigin, providerLabel,
@@ -1317,7 +1332,8 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     frameworkMethod, scopeBasis, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals,
     officeLinks, reviewReceipts, clientGate, fetchState, searchPolicy, registerOnly, jurisdiction, commonLawJoinedTerms,
     stageLabel, depthNote, productName, publishParts, auditParsed, degradedRows, releasedFamilies, served, searchDepth,
-    issuedAt, renderedAt, markName, project, organisation, tokenRollup } = doc;
+    issuedAt, renderedAt, markName, project, organisation, tokenRollup, reportRoute, reportPoolUrl, frozenStageLabel, ratingWord,
+    ratingBadge, caption } = doc;
   const { poolRunDir, writeRO, copyRO, copyPart, buildWorkbook, writeDataFile } = openPoolRun(poolRoot, runId, { runDir });
   // The pool's copy of report.md, marked as demo data where the document says it is (the answer and its argument are
   // with `demoData` in readClearanceDocument).
@@ -1379,16 +1395,16 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // report (the baked HTML above is already on disk).
   const reportSchema = writeDataFile('report-data.json', () => clearanceReportData({
     runId, codename, matter: fm.matter, markName, title: fm.title, customerKey: customerKey || 'generic',
-    issued, url: poolUrl ? `${String(poolUrl).replace(/\/$/, '')}/${runId}/report.html` : null,
+    issued, url: reportPoolUrl,
     // stageLabel REGISTRY-FIRST ( residual, audit item 4): `stageLabel` is reportIdentityFor's
     // read-time derivation — the same label report.html renders — so a republished pre-renumber run
     // cannot mint report.html "Depth 2" beside report-data.json "Stage 0.5". The frozen sidecar label
     // is the LAST resort (a level today's registry no longer knows). meta.json below keeps the frozen
     // stamp BY DESIGN — its readers re-derive.
-    auditFile, searchLevel: searchPolicy?.level ?? null, stageLabel: stageLabel ?? searchPolicy?.stageLabel ?? null,
+    auditFile, searchLevel: searchPolicy?.level ?? null, stageLabel: stageLabel ?? frozenStageLabel ?? null,
     engineCommit: doc.engineCommit, servedModels: served,
     framework, verdictInfo, findings, coverage, contextNotes, markAssessment, fourAnswers, askAnswers,
-    actions: actionsRegister, jurisdiction, searchedJurisdictions, scopeBasis, caption: fm.overall_caption ?? null,
+    actions: actionsRegister, jurisdiction, searchedJurisdictions, scopeBasis, caption,
     assessmentNotCompleted,
   })) ? 'report-data/1' : null;
   const total = finishPoolRun({ writeRO, poolRoot, skipRegen, regenIndex, meta: {
@@ -1415,7 +1431,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     searchLevel: searchPolicy?.level ?? undefined,
     // Display-only face of the level ("Depth 4"), frozen alongside it so the list can show which reads
     // have run on a name without the browser having to know the level registry.
-    stageLabel: searchPolicy?.stageLabel ?? undefined,
+    stageLabel: frozenStageLabel ?? undefined,
     recipe: searchPolicy?.recipe ?? undefined,
     enqueuedVia: searchPolicy?.enqueuedVia ?? undefined,
     enqueuedBy: searchPolicy?.enqueuedBy ?? undefined,
@@ -1428,8 +1444,8 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     // T2 (H5): the derived display verdict is THE authority when the sidecar exists; the
     // model-authored fm fields are the pre-A2 legacy fallback only.
     // No rating at all in the state where the assessment was not completed, whatever a report's front matter says.
-    overall: assessmentNotCompleted ? undefined : (verdictInfo?.tier ?? fm.overall_label),
-    badge: assessmentNotCompleted ? undefined : (verdictInfo?.badge ?? fm.overall_badge), run: fm.run, date: dateOf(fm.run), auditFile,
+    overall: ratingWord,
+    badge: ratingBadge, run: fm.run, date: dateOf(fm.run), auditFile,
     // WHY THERE IS NO WORKBOOK, when the build threw. Absent when it built, so such a meta is unchanged.
     auditError: auditError ?? undefined,
     // THE PARTS PUBLISHING FOUND DEGRADED, with their raw causes, which no cell carries. Absent when none.
@@ -1438,7 +1454,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     // writer). Absent on legacy runs — regenIndex re-reads every historical meta.json, so consumers
     // null-guard and old rows render byte-identically.
     statement: verdictInfo?.statement ?? undefined,
-    caption: fm.overall_caption || undefined,   // the report's own conclusion, which the run list quotes
+    caption: caption ?? undefined,   // the report's own conclusion, which the run list quotes
     // The run's overall assessment could not be completed, so it carries no rating: a stated state, for every reader
     // of the pool that has no run directory. Absent on every other run, so its meta is unchanged.
     assessment: assessmentNotCompleted ? 'not-completed' : undefined,
@@ -1467,9 +1483,9 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // THE PORTAL ROUTE, not the pool's directory layout. This was
   // `<origin>/<runId>/report.html` — where the documents sit on disk, which is not an application route.
   // Composed rather than spelled here so the report link is built the same way the audit link always was.
-  const url = reportRouteFor(poolUrl, runId);
+  const url = reportRoute;
   return { runId, auditFile, counts, total, url, poolRunDir, auditError, findingsError, customerKey: customerKey || 'generic', clientGate,
-    caption: fm.overall_caption || null };   // the report's own conclusion, for the run record's short surfaces
+    caption };   // the report's own conclusion, for the run record's short surfaces
 }
 
 // Compose the notification email body — MARKDOWN (the mail tool renders markdown→HTML; raw HTML gets escaped).

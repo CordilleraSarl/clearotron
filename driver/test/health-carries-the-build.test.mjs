@@ -89,7 +89,9 @@ test("the endpoint and the publisher import the same stamp, so they cannot drift
       `${what} no longer imports engineCommit from engine-build.mjs — if either grows its own, /health `
       + `stops being a statement about the run that pool meta will record`);
   }
-  assert.match(publisher, /engineCommit: engineCommit\(\)/, "and the publisher still stamps it into meta.json");
+  // The report document reads the stamp once, and meta.json takes it from the document.
+  assert.match(publisher, /engineCommit: engineCommit\(\)/, "the publisher's report document reads engine-build's own stamp");
+  assert.match(publisher, /\n    engineCommit: doc\.engineCommit,\n/, "and the publisher still stamps it into meta.json");
 });
 
 test("health answers BEFORE identity — any account can confirm a deploy with no grant", async () => {

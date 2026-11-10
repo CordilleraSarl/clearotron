@@ -1534,8 +1534,8 @@
           "todos": 0
         },
         "a-part-that-fails-to-publish-leaves-the-report-delivered.test.mjs": {
-          "tests": 5,
-          "asserts": 42,
+          "tests": 6,
+          "asserts": 48,
           "skips": 0,
           "todos": 0
         },
@@ -4613,7 +4613,7 @@
         },
         "health-carries-the-build.test.mjs": {
           "tests": 6,
-          "asserts": 16,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
