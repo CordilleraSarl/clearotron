@@ -14,7 +14,7 @@ import { parseFindingsJsonLenient } from "../findings-model.mjs";
 import { note, runLog } from "../log.mjs";
 import { listedAddresses, listedExclusionPositions, readAcceptedFlags } from "../narrative-refutation-record.mjs";
 import { properNameCandidates } from "../predelivery-lint.mjs";
-import { atomicWrite } from "../progress.mjs";
+import { atomicWrite } from "../run-record.mjs";
 import { foldAfterSave, modelRecordPath, restoreFold } from "../record-fold.mjs";
 import { normalizeRecordUri } from "../registry-fidelity.mjs";
 import { repairFollowup } from "../repair-composers.mjs";

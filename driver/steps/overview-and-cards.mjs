@@ -5,7 +5,7 @@
 //
 // One phase of a run, moved out of pipelineInner unchanged. `helpers` are functions still held in pipeline.mjs, handed in
 // because this module must not import that one back; each moves here when the other phases that share it have moved.
-import { paths } from "../run-record.mjs";
+import { atomicWrite, paths } from "../run-record.mjs";
 import { driverDir, ensureDriverDir } from "../../shared/driver-dir.mjs";
 import { applyAskClosure, deriveAsks, finalizeOpenHandoffs, summarizeAsks } from "../ask-ledger.mjs";
 import { mintCommonLawCarryDoubts } from "../commonlaw-carry.mjs";
@@ -26,7 +26,6 @@ import { mintPlacementCarryDoubts, reconcilePlacementCarry } from "../placement-
 import { placementAuditRows } from "../placement-decisions.mjs";
 import { parsePlacementsJson } from "../placement-model.mjs";
 import { mintPresenceDoubts } from "../presence-reconciliation.mjs";
-import { atomicWrite } from "../progress.mjs";
 import { buildAuditMd, parseSpineFindingBlocks } from "../publish/audit-from-spine.mjs";
 import { deriveRegisterPresence } from "../publish/register-presence.mjs";
 import { recallReceiptForOwnCompany } from "../recall-receipt.mjs";
