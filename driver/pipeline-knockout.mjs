@@ -29,6 +29,7 @@
 // history is not rewritten to tidy a citation, so the wrong number stands in the log forever; the
 // references in this file are corrected and this comment is the reconciliation. A reader who greps the
 // history for 1886 and lands here is in the right place and the number that brought them is not.
+import { paths } from "./run-record.mjs";
 import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, rmSync, renameSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
@@ -102,7 +103,7 @@ const koStep = (ctx, label, extra = {}) => {
 // TRIAGE ladder (NOT the clearance Generic default — a knockout rates at triage grain). Same freeze
 // doctrine as attachFramework: minted once, read verbatim on resume, corrupt = loud.
 function attachKnockoutFramework(ctx) {
-  const sidecarPath = driverDir(ctx.paths.runDir, "framework.json");
+  const sidecarPath = paths(ctx.paths.runDir).framework;
   // ── THE DECK'S PATH, RESOLVED ONCE AND ON BOTH PATHS ────────────────────────
   //
   // The assess stage is served the DECK now, not only the manifest — `framework.mjs` states the rule
@@ -214,7 +215,7 @@ async function knockoutReviewingPass({ ctx, run, K, merged, plan, chunks, compos
   const sourceAnswered = chunks.flatMap((_, c) => knockoutAssessSourceDefects(run.runDir, c)).filter((x) => x.state === "answered");
   const keepOpen = () => {
     if (!sourceDefects.length && !sourceAnswered.length) return;
-    atomicWrite(driverDir(run.runDir, "knockout-corrections.json"), JSON.stringify({ defects: sourceDefects, outcomes: [], recheck: "not-run",
+    atomicWrite(paths(run.runDir).knockoutCorrections, JSON.stringify({ defects: sourceDefects, outcomes: [], recheck: "not-run",
       open: [...sourceDefects.map((x) => ({ kind: x.kind, mark: x.mark, problem: x.problem, state: "not-corrected" })),
         ...sourceAnswered.map((x) => ({ kind: "source", mark: x.mark, problem: sourceProblem(x), state: "not-rechecked" }))] }, null, 2) + "\n");
   };
@@ -301,7 +302,7 @@ async function correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, wor
   const correctedNames = [...new Set(work.defects.map((x) => x.mark))];
   const log = (outcome, detail = {}) => runLog(run.runDir, { event: "knockout-review", outcome, material: work.defects.length, marks: correctedNames.length, ...detail });
   const asOpen = (defects, state, reason = null) => defects.map((x) => ({ kind: x.kind, mark: x.mark, problem: x.problem, state, ...(reason ? { reason } : {}) }));
-  const keepRecord = (record) => { try { atomicWrite(driverDir(run.runDir, "knockout-corrections.json"), JSON.stringify(record, null, 2) + "\n"); } catch (e) { note(`corrections record not kept (non-fatal): ${String(e?.message ?? e).slice(0, 160)}`); } };
+  const keepRecord = (record) => { try { atomicWrite(paths(run.runDir).knockoutCorrections, JSON.stringify(record, null, 2) + "\n"); } catch (e) { note(`corrections record not kept (non-fatal): ${String(e?.message ?? e).slice(0, 160)}`); } };
   const failed = [];
   for (const c of touched) {
     try {
@@ -1109,7 +1110,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
           if (owed.length) {
             const checks = await runOwnerChecks({
               owners: owed, exec: sweep.exec, runDir: run.runDir, ledgerPath: K.ownerCheckLedger,
-              rawDir: driverDir(run.runDir, "web-results"), preset: KNOCKOUT_WEB.questionPreset,
+              rawDir: paths(run.runDir).webResults, preset: KNOCKOUT_WEB.questionPreset,
               concurrency: 3,   // step 3 — the same constant as the sibling calls above
             });
             atomicWrite(K.ownerChecks, JSON.stringify({ schema: 1, checks }, null, 2) + "\n");
@@ -1198,7 +1199,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
     const chunks = koChunks(chunkRows);
     // the assignment sidecar — the per-chunk validator joins each chunk's marks against THIS (membership
     // is enforced in code, not prompted); deterministic from the frozen plan, so a resume re-mints equal.
-    atomicWrite(driverDir(run.runDir, "knockout-chunks.json"),
+    atomicWrite(paths(run.runDir).knockoutChunks,
       JSON.stringify({ schema: 1, chunks: chunks.map((ch) => ch.map((m) => m.name)) }, null, 2) + "\n");
     // a recovered mark's evidence changed — its prior assess chunk is STALE by construction; drop it so
     // the stage re-runs (otherwise the re-sweep was billed for nothing and the fresh payload never read).
@@ -1417,9 +1418,9 @@ export async function knockoutInner(ctx, job, opts = {}) {
       verdict: overall, markName: batchMarkName(markNames),
     };
     try { rmSync(join(run.runDir, ".sent")); } catch { /* none */ }
-    try { rmSync(driverDir(run.runDir, "send-receipts.json"), { force: true }); } catch { /* none */ }
-    try { rmSync(driverDir(run.runDir, "failure.json")); } catch { /* none */ }
-    writeFileSync(driverDir(run.runDir, "delivery.json"), JSON.stringify(packet, null, 2) + "\n");
+    try { rmSync(paths(run.runDir).sendReceipts, { force: true }); } catch { /* none */ }
+    try { rmSync(paths(run.runDir).failure); } catch { /* none */ }
+    writeFileSync(paths(run.runDir).delivery, JSON.stringify(packet, null, 2) + "\n");
     try {
       mkdirSync(config.outboxDir, { recursive: true });
       writeFileSync(join(config.outboxDir, `${packet.runId}.pending`), `${agent}\n`);
@@ -1535,7 +1536,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
     // flag, then the writes that can fail.
     let failPingSent = false;
     try { rmSync(join(run.runDir, ".sent")); } catch { /* none */ }
-    try { rmSync(driverDir(run.runDir, "send-receipts.json"), { force: true }); } catch { /* none */ }
+    try { rmSync(paths(run.runDir).sendReceipts, { force: true }); } catch { /* none */ }
     // a fresh notice supersedes an older send's skip-guards (a resumed-then-failed-again run must
     // still notify — the .sent/receipts invariant, clearance parity)
     try { writeRunStatus(ctx, { sendPending: true }); } catch (sErr) {
@@ -1551,7 +1552,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
         markName: job.markName ?? job.name ?? null, reason: shortReason,
         text: rich.whatsappText,   // the short fallback line legacy relays read (clearance parity)
       };
-      writeFileSync(driverDir(run.runDir, "failure.json"), JSON.stringify(packet, null, 2) + "\n");
+      writeFileSync(paths(run.runDir).failure, JSON.stringify(packet, null, 2) + "\n");
       failPingSent = Boolean(writeOutboxPacket(`${runId}.failed`, packet));
       if (!failPingSent) {
         mkdirSync(config.outboxDir, { recursive: true });

@@ -178,7 +178,7 @@ export async function openRun({ job, opts }, helpers) {
     // .sent + receipts and re-sends → a duplicate report. Refuse on ANY of the three (the runner's reclaim
     // router consults the SAME check — runDirDelivered — and marks such a dir .done rather than resuming).
     const deliveredMarker = existsSync(join(run.runDir, ".delivered")) ? ".delivered"
-      : existsSync(driverDir(run.runDir, "delivery.json")) ? "_driver/delivery.json"
+      : existsSync(paths(run.runDir).delivery) ? "_driver/delivery.json"
       : (() => { try { return JSON.parse(readFileSync(join(run.runDir, "status.json"), "utf8"))?.state === "delivered" ? "status delivered" : null; } catch { return null; } })();
     if (deliveredMarker) {
       // `noResume`: the run identity EXISTS here — opts.__runRef was set just above — so the CLI's

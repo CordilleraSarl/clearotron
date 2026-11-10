@@ -5,6 +5,7 @@
 // kept in its OWN table: the knockout lane is a different product shape (a 5–15 mark triage batch), and
 // its stages must never leak into the clearance STAGE_ORDER. New-named stages get [] MCP tool groups
 // automatically (gather-config prefix map — the matter-frame precedent), so frame/assess run lean.
+import { paths } from "./run-record.mjs";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
@@ -64,8 +65,8 @@ export function koPaths(runDir) {
     review: knockoutReviewFile(runDir),
     // Depth 2: the code-authoritative count sidecar + its per-call receipts. Both live under
     // _driver/ — they are the driver's own measurements, never a model's output.
-    registerCounts: driverDir(runDir, "register-counts.json"),
-    countLedger: driverDir(runDir, "register-count.jsonl"),
+    registerCounts: paths(runDir).registerCounts,
+    countLedger: paths(runDir).registerCount,
     // part 5 — the filings behind the narrow counts, beside the counts they explain. Because the
     // MCP server serves run artifacts generically, landing it here makes the filings queryable over MCP
     // with no MCP-side work at all. Its receipts ride the count lane's ledger file and are the ONLY
@@ -73,18 +74,18 @@ export function koPaths(runDir) {
     // cost", and the two lanes are told apart by a key the older lines simply do not have. The count
     // rows were left exactly as they were rather than gaining a matching marker: their shape is pinned
     // byte-for-byte by register-count.test.mjs, and a discriminator only one side needs is enough.
-    registerRecords: driverDir(runDir, "register-records.json"),
+    registerRecords: paths(runDir).registerRecords,
     // THE READING STEP'S RECORD, a model output and so at the run root: what it carried forward, set aside and did not
     // ask. The questions and their rows are the register tool's, in the bands under `register-units/`.
     registerReading: knockoutRegisterFile(runDir),
-    inboundRequest: join(runDir, "inbound-request.txt"),
+    inboundRequest: paths(runDir).inboundRequest,
     // The scoped owner lookups this run owes its promoted filings, and their receipts. Both under `_driver/` because both are the DRIVER's own measurement of a call it made — the
     // rule stated fourteen lines above. The seat reads the payloads under research/, never these.
-    ownerChecks: driverDir(runDir, "owner-checks.json"),
-    ownerCheckLedger: driverDir(runDir, "owner-check.jsonl"),
+    ownerChecks: paths(runDir).ownerChecks,
+    ownerCheckLedger: paths(runDir).ownerCheck,
     researchDir: join(runDir, "research"),
     research: (markKebab) => join(runDir, "research", `${markKebab}.md`),
-    sweepLedger: driverDir(runDir, "knockout-sweep.jsonl"),
+    sweepLedger: paths(runDir).knockoutSweep,
     // What each web call returned, verbatim, one file per call: the pages a search reached, which the ledger
     // above and the payload under research/ do not carry. A directory, because every `_driver/*.jsonl` is
     // read as a stage log. The driver's own record of a call it made, so under `_driver/`.
@@ -115,14 +116,14 @@ export function koPaths(runDir) {
     // through the Bash bypass — must still resume without re-dispatching a paid stage, so the reader falls
     // back to this and nothing ever writes it again. Delete once no resumable run predates the move.
     assessChunkLegacy: (n) => driverDir(runDir, `knockout-assess-${n}.json`),
-    instructedScope: driverDir(runDir, "instructed-scope.json"),
+    instructedScope: paths(runDir).instructedScope,
     // The client's own words, written at intake as on the clearance lane (stages.mjs, the same two names).
-    inboundRequest: join(runDir, "inbound-request.txt"),
-    confirmationBrief: join(runDir, "confirmation-brief.md"),
+    inboundRequest: paths(runDir).inboundRequest,
+    confirmationBrief: paths(runDir).confirmationBrief,
     // as on the clearance lane, and apart from instructed-scope.json for the same reason: the frame
     // quotes that file's values verbatim. Written at intake, read by no stage.
-    defaultTerritories: driverDir(runDir, "default-territories.json"),
-    emailBody: join(runDir, "email-body.md"),
+    defaultTerritories: paths(runDir).defaultTerritories,
+    emailBody: paths(runDir).emailBody,
   };
 }
 

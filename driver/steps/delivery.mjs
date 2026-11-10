@@ -5,6 +5,7 @@
 //
 // One phase of a run, moved out of pipelineInner unchanged. `helpers` are functions still held in pipeline.mjs, handed in
 // because this module must not import that one back; each moves here when the other phases that share it have moved.
+import { paths } from "../run-record.mjs";
 import { runRecordLogPath } from "../../providers/_shared/ledger-path.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { readAnchors } from "../anchor-reader.mjs";
@@ -169,7 +170,7 @@ export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontM
       }
       // wp50/wi2 — the sidecar tier joins the lint so overall-level prose can't contradict it.
       let lintVerdict = null;
-      try { lintVerdict = JSON.parse(readFileSync(driverDir(run.runDir, "verdict.json"), "utf8")); } catch { /* legacy */ }
+      try { lintVerdict = JSON.parse(readFileSync(paths(run.runDir).verdict, "utf8")); } catch { /* legacy */ }
       // B2 — placements.json joins the lint ONLY so an empty mirror surfaces as a flag (the parser no
       // longer throws on it). Absent (every archived run) or malformed (validators.placement owns that
       // case) ⇒ null ⇒ no check is emitted.
@@ -213,12 +214,12 @@ export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontM
         recordCarry: lintRecordCarry,   // — flag-only: an unreasoned drop, and an upstream-absent one, are named on the delivery surface
         commonLawCarries: lintCommonLawCarries,   // — a lane that flagged its own trace wrong reaches the delivery surface
         actionsExpected: lintSv >= 4,   // spec 64 — a fresh v4 run without the register ships a visible structural flag
-        seniorRights: ctx.seniorRights?.rows ?? (() => { try { return JSON.parse(readFileSync(driverDir(run.runDir, "senior-rights.json"), "utf8")).rows; } catch { return null; } })(),   // WP-receipts W4
+        seniorRights: ctx.seniorRights?.rows ?? (() => { try { return JSON.parse(readFileSync(paths(run.runDir).seniorRights, "utf8")).rows; } catch { return null; } })(),   // WP-receipts W4
         seniorRightsExpected: ctx.seniorRightsExpected === true,   // D1 — expected-but-absent is a failing structural check, never a silent pass
         manifest: lintSv >= 4 ? ctx.framework : null,   // doc 50: v4 tier words judged in the frozen framework's vocabulary
-        intakeAsks: ctx.intakeAsks ?? (() => { try { return JSON.parse(readFileSync(driverDir(run.runDir, "intake-asks.json"), "utf8")).asks; } catch { return []; } })(),   // A6
+        intakeAsks: ctx.intakeAsks ?? (() => { try { return JSON.parse(readFileSync(paths(run.runDir).intakeAsks, "utf8")).asks; } catch { return []; } })(),   // A6
         askAnswers: lintAskAnswers,   // PR-9 — present ⇒ the intake-ask check judges the deterministic join, not fuzzy containment
-        cardFolds: (() => { try { return JSON.parse(readFileSync(driverDir(run.runDir, "card-folds.json"), "utf8")).folds; } catch { return null; } })(),   // PR-9 — fold observability (flag-only)
+        cardFolds: (() => { try { return JSON.parse(readFileSync(paths(run.runDir).cardFolds, "utf8")).folds; } catch { return null; } })(),   // PR-9 — fold observability (flag-only)
         extraPlatformNames: ctx.profile?.platforms ?? [],   // WS-B: profile marketplaces are run vocabulary
         // the SAME structure the masthead's coverage_line is stamped from
         // (scope-facts.json, written by writeScopeFacts). Passing the sidecar rather than re-deriving
@@ -729,7 +730,7 @@ export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontM
             // does the first cycle's receipt, so a resume re-fires neither.
             settleOneShotStamp(run.runDir, "narrative-refutation", [P.narrative], "post-repair-fix");
             try {
-              const at = driverDir(run.runDir, "corrective-cycle.json");
+              const at = paths(run.runDir).correctiveCycle;
               let receipt = null;
               try { receipt = JSON.parse(readFileSync(at, "utf8")); } catch { receipt = null; }
               atomicWrite(at, JSON.stringify({ ...(receipt ?? { entryVerdict: runState.verdict }), ts: new Date().toISOString(), verdict: runState.verdict,
@@ -962,7 +963,7 @@ export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontM
     // stamps stale (see reconcileStamps' `exclude`), else it erases the block and the resume ships stale.
     if (runState.staleStages.length) ctx.deliveryBlockingStale = new Set(runState.staleStages.map((s2) => s2.label));
     try {
-      writeFileSync(driverDir(run.runDir, "predelivery-lint.json"), JSON.stringify({
+      writeFileSync(paths(run.runDir).predeliveryLint, JSON.stringify({
         ts: new Date().toISOString(),
         checks: lint.checks, failures: lint.failures.map((f) => f.id),
         staleStages: runState.staleStages,   // P2: non-empty ⇒ this run was blocked on freshness, not on lint quality
@@ -1029,10 +1030,10 @@ export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontM
       // the coverage gaps fed to the status-honesty signal, so the delivered headline cannot read clean while
       // the dominant-element crowd is unfinished (and the caption is promoted to disclose it, below).
       let frameReopenReceipt = null;
-      try { const rp = driverDir(run.runDir, "frame-reopen.json"); frameReopenReceipt = existsSync(rp) ? JSON.parse(readFileSync(rp, "utf8")) : null; } catch { /* best-effort */ }
+      try { const rp = paths(run.runDir).frameReopenReceipt; frameReopenReceipt = existsSync(rp) ? JSON.parse(readFileSync(rp, "utf8")) : null; } catch { /* best-effort */ }
       // copper-lattice net #3 — the cross-check tripwire's substrate (only-if-present)
       let xcheckReceipt = null;
-      try { const xp = driverDir(run.runDir, "register-xcheck.json"); xcheckReceipt = existsSync(xp) ? JSON.parse(readFileSync(xp, "utf8")) : null; } catch { /* best-effort */ }
+      try { const xp = paths(run.runDir).registerXcheck; xcheckReceipt = existsSync(xp) ? JSON.parse(readFileSync(xp, "utf8")) : null; } catch { /* best-effort */ }
       const carriedOwners = (parsedFindings?.findings ?? []).flatMap((f) => [f?.owner, f?.owner_name, f?.owner?.name]).filter((x) => typeof x === "string" && x);
       const executedQids = (ctx.planExecution?.executed ?? []).map((x) => x.qid);
       const regLedgerRows = loadCoverageLedger(run.runDir).rows;
@@ -1093,7 +1094,7 @@ export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontM
         ...tripwires.documentGrowth.map((t) => `document-growth: ${t.stage} grew ${t.growthPct}% (${t.before} → ${t.after} bytes) under trigger "${t.trigger}" — a repair defends or corrects, it does not add; review what the pass appended`),
       ];
 
-      writeFileSync(driverDir(run.runDir, "reasoning-integrity.json"), JSON.stringify({
+      writeFileSync(paths(run.runDir).reasoningIntegrity, JSON.stringify({
         ts: new Date().toISOString(),
         inputs: inputsRead,   // AD-4: which substrates this pass could read — a 0 below is only a 0 when its input was true
         engagement: { total: receipts.length, blandCount: bland.length, bland: bland.map((r) => r.finding), receipts },
