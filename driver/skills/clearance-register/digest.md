@@ -497,7 +497,7 @@ not a fresh Opus spawn). You do NOT re-run anything.
 
 **Rule the coverage form and reconcile the complete band against `matter-context`.** Rule every
 crowd descriptor (cleared / material-gap) by recording that row's status and reason through
-`record_coverage` — and write the rolled-up sufficiency line. Then **reconcile the band against `matter-context`'s materially-matters jurisdiction list**:
+`record_coverage`. You send no rolled-up line. Your row statuses are what synthesis reads when it writes `coverage_judgment`. Then **reconcile the band against `matter-context`'s materially-matters jurisdiction list**:
 every material jurisdiction must be accounted for. One covered by a complete worldwide or regional answer, or by a
 narrowed list that was read, is accounted for by that answer. One the identical mark's narrowing left inside a crowd,
 because the one market list did not name it, stays in that crowd's count on the crowd's own row. Only a material
