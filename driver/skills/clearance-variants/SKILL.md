@@ -54,7 +54,7 @@ These are starting points. A mark can fit a primary archetype and pick up one or
 | # | Archetype | Signature | Risk concentrates in |
 |---|---|---|---|
 | 1 | **Coined word** | Invented term, no real-world meaning (e.g., LUMENGARDE, XYRELL, KODAK) | Phonetic / visual variants; transliteration; leet substitution; coined-word collisions in unrelated industries; phoneme expansion |
-| 2 | **Descriptive compound** | Multiple real words combining to describe goods/services (e.g., "Arcade Party", "Cavern Crates", "Jelly Royale") | Element-by-element analysis; semantic neighbours; common-combination saturation; crowded-field documentation |
+| 2 | **Descriptive compound** | Multiple real words combining to describe goods/services (e.g., "Cavern Crates") | Element-by-element analysis; semantic neighbours; common-combination saturation; crowded-field documentation |
 | 3 | **Slogan** | Imperative or grammatically-complete phrase (e.g., "SET YOUR PACE", "SHARPEN YOUR AIM", "JUST DO IT") | Family patterns (`X YOUR PACE`, `SET * PACE`, `SET YOUR *`); verb-swap variants; slang spellings; co-brand wildcards. Tiered: identical/near-identical → same-structure-close-concept → conceptual customisation |
 | 4 | **Acronym / initialism** | Short letter strings (e.g., "RAIZ8", "CYC", "EA") | Letter-collision searches in target classes; expansion forms (what does it spell out?); ambiguity with stock acronyms |
 | 5 | **Device-led** | Figurative/logo dominant, verbal element secondary or absent | Image searches; dominant verbal element (if any); design-code searches. Often layered as a modifier on top of a primary archetype |
