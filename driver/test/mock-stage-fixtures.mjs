@@ -2780,6 +2780,16 @@ export function applyStageWrites(msg, argv) {
     const chunkSummary = `${held.chunkSummary}\n\n${names.map((n) => `## ${n}\nRated ${band} on the conflict the check named.`).join("\n\n")}`;
     const verdict = recordKnockoutCorrection(runDir, { answers: answering.map((d) => ({ defect: d.n, outcome: "changed", why: "mock correction: the evidence supports the defect" })), chunkSummary, marks }, { boundOrdinal: boundChunk });
     if (!verdict.written) return `mock knockout-correct: the transport refused the composed call — ${verdict.refused ?? verdict.write_failed}`;
+    // MOCK_KO_CORRECTION_MOVES=<name> then changes that name's opening read in the chunk file itself, past the call: a
+    // move no defect concerns that the call never saw and the merged gate accepts, which only the check after composing
+    // can catch.
+    const moves = process.env.MOCK_KO_CORRECTION_MOVES;
+    if (moves) {
+      const file = join(runDir, `knockout-assess-${Number(boundChunk)}.json`);
+      const chunk = JSON.parse(readFileSync(file, "utf8"));
+      const other = chunk.marks.find((m) => m.name === moves);
+      if (other) { other.assessment = `${other.assessment} A sentence no defect asked for.`; writeFileSync(file, JSON.stringify(chunk, null, 2)); }
+    }
     return "mock knockout correction ok";
   }
   // Repair-first A4: the single-artifact findings repair names ONLY findings.json ("Fix ONLY these

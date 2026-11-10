@@ -46,7 +46,7 @@ const NAME = "QUILLBRAE", SIBLING = "MOSSVALE";
 
 /** One two-name knockout through the lane, on the mock engine. What the run left. */
 async function knockout(codename, env = {}, { recordLister = async () => ({ ok: true, total: 0, records: [] }), countExecutor = async () => ({ ok: true, total: 0 }) } = {}) {
-  const set = { MOCK_KO_CLASS_GROUPS: undefined, MOCK_KO_CORRECTED_GROUPS: undefined, MOCK_KO_MATERIAL: undefined, MOCK_KO_MATERIAL_OPEN: undefined, MOCK_KO_CORRECTED_BAND: undefined, MOCK_KO_CORRECTION_STANDS: undefined, MOCK_KO_CORRECTION_PARTIAL: undefined, MOCK_KO_CORRECTED_READS: undefined, MOCK_KO_CITE_NOWHERE: undefined, MOCK_KO_CITE_NOWHERE_THEN: undefined, MOCK_FAIL_STAGE: undefined,
+  const set = { MOCK_KO_CLASS_GROUPS: undefined, MOCK_KO_CORRECTED_GROUPS: undefined, MOCK_KO_MATERIAL: undefined, MOCK_KO_MATERIAL_OPEN: undefined, MOCK_KO_CORRECTED_BAND: undefined, MOCK_KO_CORRECTION_STANDS: undefined, MOCK_KO_CORRECTION_MOVES: undefined, MOCK_KO_CORRECTION_PARTIAL: undefined, MOCK_KO_CORRECTED_READS: undefined, MOCK_KO_CITE_NOWHERE: undefined, MOCK_KO_CITE_NOWHERE_THEN: undefined, MOCK_FAIL_STAGE: undefined,
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_AI_BILLING: undefined, CODEX_API_KEY: undefined, ...env };
   for (const [k, v] of Object.entries(set)) { if (v === undefined) delete process.env[k]; else process.env[k] = v; }
   const id = `ko-${codename}`;
@@ -142,6 +142,20 @@ test("a correction that fails leaves the rated record standing and the defect on
   const record = r.json(driverDir(r.dir, "knockout-corrections.json"));
   assert.deepEqual(record.open.map((o) => [o.mark, o.problem, o.state]), [[NAME, DEFECT.problem, "not-corrected"]], "a failed step cannot erase the defect");
   assert.ok((await notes("correction-failed")).includes(`Not corrected in this run: ${DEFECT.problem}`), "the reviewing lawyer sees it, and why it is open");
+});
+
+// THE KNOCKOUT'S POLICY, PINNED END TO END: a correction that moved a name no defect concerns stands down whole. The
+// move here is made past the correction call, which never sees it, so only the check after composing can catch it.
+test("a correction that moves a name no defect concerns stands down: the rated record ships and the defect stays open", async () => {
+  const r = await knockout("moved-sibling", { MOCK_KO_MATERIAL: JSON.stringify([DEFECT]), MOCK_KO_CORRECTED_BAND: "High", MOCK_KO_CORRECTION_MOVES: SIBLING });
+  const work = r.json(driverDir(r.dir, "knockout-correction-work.json"));
+  assert.equal(work.stoodDown, "correction-moved-what-no-defect-named", "a move outside the defects did not stand the correction down");
+  assert.equal(r.review.outcome, "correction-moved-what-no-defect-named");
+  assert.deepEqual(r.of(r.findings, SIBLING), r.of(work.rated, SIBLING), "the name no defect concerns ships as rated");
+  assert.deepEqual(r.of(r.findings, NAME), r.of(work.rated, NAME), "the correction stood down whole, so the named one ships as rated too");
+  assert.equal(existsSync(knockoutReviewFile(r.dir, 1)), false, "with nothing corrected there is nothing to read again");
+  const record = r.json(driverDir(r.dir, "knockout-corrections.json"));
+  assert.deepEqual(record.open.map((o) => [o.mark, o.problem, o.state]), [[NAME, DEFECT.problem, "not-corrected"]], "the defect stays on the record");
 });
 
 test("a recheck that fails leaves the corrected record standing, and calls no defect answered", async () => {
