@@ -13,21 +13,20 @@ import { driverDir } from "../shared/driver-dir.mjs";
 import { assertNotCancelledBeforePublish } from "./cancel.mjs";
 import { recordRunConsumption } from "./consumption-ledger.mjs";
 import { degradedParts, writeDegradedParts } from "./degraded-parts.mjs";
-import { activeProvider, config } from "./driver.config.mjs";
-import { parseFindingsJsonLenient } from "./findings-model.mjs";
+import { config } from "./driver.config.mjs";
+import { registerAdapter } from "./engine/run-choices.mjs";   // the run's register adapter, from ctx.register
 import { note, runLog } from "./log.mjs";
 import { NOT_COMPLETED_DIR } from "./parts-not-completed.mjs";
 import { deliveryForRun } from "./profiles.mjs";
 import { finalStepFields, readRunStatus, recordTransition, rollupStatus, signoffPatch, writeRunStatus } from "./progress.mjs";
 import { DEFAULT_LEDGER_PATH, tallyRegisterCalls } from "./provider-usage.mjs";
-import { composeEmailHtml, deliverySubject, publishReport } from "./publish/index.mjs";
+import { composeEmailHtml, coverNoteOptions, deliverySubject, publishReport } from "./publish/index.mjs";
 import { noteRegisterServed, providerUsageCaveat, registersServedFrom } from "./register-served.mjs";
 import { renderReportOverview } from "./report-overview-record.mjs";
 import { atomicWrite } from "./run-record.mjs";
 import { reportIdentityFor } from "./search-policy.mjs";
 import { writeSettleStamp } from "./settle-stamp.mjs";
 import { paths, whatsappRouting } from "./stages.mjs";
-import { clientConditions } from "./terminal-clamp.mjs";
 import { stampTokenRollup } from "./tokens.mjs";
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -114,7 +113,7 @@ export async function deliveryEndState({ P, agent, ctx, job, run }, helpers) {
     // measures the Workstream-B dedup opportunity (and which scope matters) directly from data.
     let providerTally = null;
     try {
-      const provider = activeProvider().id;
+      const provider = registerAdapter(ctx.register).id;
       const usage = tallyRegisterCalls(DEFAULT_LEDGER_PATH, `clearance-${run.slug}-${run.codename}-`);
       // ── A WHOLE-RUN TALLY FILED UNDER ONE REGISTER SAYS SO WHEN THE RUN SERVED MORE THAN ONE ──────
       //
@@ -191,17 +190,11 @@ export async function deliveryEndState({ P, agent, ctx, job, run }, helpers) {
     // name two different products. Null on a run with no sidecar ⇒ both surfaces say nothing rather
     // than asserting one.
     const emailProductName = reportIdentityFor(ctx.searchPolicy ?? null).identity;
-    // A2 — thread the code-carried verdict + its conditions into the e-mail composer.
-    let emailVerdictOpts = { productName: emailProductName ?? undefined };
-    // SPREAD, never reassign: this used to replace the whole object, which would now drop productName
-    // above on every run that has a verdict sidecar — i.e. on every healthy run, and on no test.
-    try { const v = JSON.parse(readFileSync(paths(run.runDir).verdict, "utf8")); emailVerdictOpts = { ...emailVerdictOpts, verdict: v.verdict, conditions: clientConditions(v), tier: v.tier, statement: v.statement ?? null }; } catch { /* legacy path — no row */ }
-    // wp50 — thread the findings too: the table overlay's rating cells are code-bound to the canonical
-    // ratings (joinFindingToBlock), never the summary's own words.
-    try { emailVerdictOpts.findings = parseFindingsJsonLenient(readFileSync(P.findings, "utf8"))?.findings ?? undefined; } catch { /* no findings — table falls back to the summary words */ }
-    // doc 50 — the run's band ladder: the email table colours + sorts by the framework in force's own
-    // vocabulary (one framework's "Medium", the house's "Moderate", another's five bands) instead of the fixed table.
-    if (ctx.framework) emailVerdictOpts.bands = ctx.framework.bands.map((b) => ({ label: b.label, tone: b.tone }));
+    // The email's options, read from the run's frozen files by the publisher's one function (coverNoteOptions), which the
+    // report document carries too: the verdict record as written and the band ladder. Read from the files rather than from
+    // `published`, because a resume that finds the run already published has no document. The product's name stays the one
+    // the subject takes, which names a run with no frozen policy as the legacy clearance it was.
+    const emailVerdictOpts = { ...coverNoteOptions(run.runDir), productName: emailProductName ?? undefined };
     // ONE report (spec 2026-07-30 §6): the cover note is a cover note — verdict, one-line summary, link.
     // A10 (addendum, 2026-07-30) NARROWS the old "machine-QC never on the email" rule rather than
     // restating it: surviving predelivery machine-check failures are enumerated on BOTH delivery

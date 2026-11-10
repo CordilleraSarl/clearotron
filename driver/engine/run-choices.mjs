@@ -20,7 +20,7 @@
 // read into each tool server's imports. The registry's `engineForRun` serves a run's turns from this record.
 import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { driverDir, ensureDriverDir } from "../../shared/driver-dir.mjs";
-import { ENGINE_BINARIES, PROVIDERS } from "../driver.config.mjs";
+import { ENGINE_BINARIES, PROVIDERS, REGISTER_PROVIDER, activeProvider } from "../driver.config.mjs";
 
 export const RUN_CHOICES_FILE = "run-choices.json";
 
@@ -61,4 +61,81 @@ export function readRunChoices(runDir) {
   if (!engine) return { state: "unreadable", detail: "names no engine" };
   if (o?.register != null && typeof o.register !== "string") return { state: "unreadable", detail: "its register is not a name" };
   return { state: "recorded", engine, register };
+}
+
+/**
+ * A resumed run whose recorded engine or register this process cannot serve.
+ *
+ * It is a PARK, not a failure. It is raised before any check spends anything and before the run's markers are cleared,
+ * so the run keeps every stage it finished, and `dependency` names what it waits for. The pipeline holds the run until
+ * a process that serves the recorded choice resumes it. There is no deadline, and the run is never moved to the
+ * machine's choice. `run` is the run's identity, because this is raised before the pipeline holds one.
+ *
+ * `kind` is one of:
+ *   register        the run's register is not the one this process serves (registers are fixed per process for now);
+ *   engine          this driver has no adapter for the run's engine;
+ *   engine-program  the run's engine program is not installed here;
+ *   engine-sign-in  the run's engine refused a turn for a configuration fault (signed out, no key).
+ */
+export const RUN_CHOICE_KINDS = Object.freeze(["register", "engine", "engine-program", "engine-sign-in"]);
+export class RunChoiceUnavailable extends Error {
+  constructor({ kind, recorded, machine = null, detail = null, run = null }) {
+    if (!RUN_CHOICE_KINDS.includes(kind)) throw new Error(`RunChoiceUnavailable: unknown kind "${kind}"`);
+    const what = kind === "register" ? `the ${recorded} register` : `the ${recorded} engine`;
+    const why = kind === "register" ? `this process serves the ${machine ?? "(no)"} register`
+      : kind === "engine" ? "this driver has no adapter for it"
+      : kind === "engine-program" ? "its program is not installed here"
+      : "it cannot take a turn here";
+    super(`run ${run?.codename ?? "(unnamed)"} started on ${what}, and ${why}${detail ? ` (${String(detail).slice(0, 300)})` : ""}. It is parked with its work kept, and resumes on ${what}.`);
+    this.name = "RunChoiceUnavailable";
+    this.dependency = { kind, recorded, machine, detail: detail == null ? null : String(detail).slice(0, 300) };
+    this.run = run;
+    // For the park's own record, as the rate-limit park writes its two lines: what it waits for, and what ends the wait.
+    this.waitingOn = `${what}, which this run started on (${why})`;
+    this.resolvedBy = kind === "register"
+      ? `a runner whose register is ${recorded}, on this build; it resumes the run where it stopped`
+      : `${what} made available to this runner (installed and signed in), on this build; the run resumes where it stopped`;
+  }
+}
+
+/**
+ * Which recorded choice this process cannot serve, before anything is checked or spent, or null. The register is
+ * compared only when the run recorded one: a run that started with none set never reached the register. The engine is
+ * unservable here only when no adapter is registered for it; a missing program or sign-in is found by the engine doors.
+ * PURE.
+ */
+export function unservedChoice(recorded, { engineRegistered, machineRegister }) {
+  if (recorded?.state !== "recorded") return null;
+  if (!engineRegistered) return { kind: "engine", recorded: recorded.engine, machine: null };
+  if (recorded.register != null && recorded.register !== (machineRegister ?? null))
+    return { kind: "register", recorded: recorded.register, machine: machineRegister ?? null };
+  return null;
+}
+
+/**
+ * The register that serves this run: the one it recorded when it started, or the machine's for a run with no record or
+ * one that started with none set. While a run whose register differs from the machine's is parked before any stage
+ * (`unservedChoice`), this always equals the machine's; it is the one place a run's register is decided. PURE but for
+ * reading the record.
+ */
+export function registerForRun(runDir) {
+  const rec = readRunChoices(runDir);
+  return rec.state === "recorded" && rec.register ? rec.register : (REGISTER_PROVIDER ?? null);
+}
+
+/** The register the run recorded, or null for a run with no record or one that started with none set. PURE but for the read. */
+export function recordedRegister(runDir) {
+  const rec = readRunChoices(runDir);
+  return rec.state === "recorded" && rec.register ? rec.register : null;
+}
+
+/**
+ * The register adapter for a run's register (`ctx.register`), or the machine's when none is named: the one way a place
+ * that reads a register for a run asks for its adapter. A name this driver does not know throws, as `activeProvider` does.
+ */
+export function registerAdapter(register = null) {
+  if (!register) return activeProvider();
+  const a = PROVIDERS[register];
+  if (!a) throw new Error(`[register-provider] unknown register "${register}". Known: ${Object.keys(PROVIDERS).join(", ")}`);
+  return a;
 }

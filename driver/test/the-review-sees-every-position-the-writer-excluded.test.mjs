@@ -392,9 +392,9 @@ test("a later review re-reads a decision whose placement reason, evidence or sam
 test("the review's manual states the targets as ruled: positions beside on, the document flag's passage, and no all-or-nothing", () => {
   const manual = readFileSync(new URL("../skills/narrative-refutation/SKILL.md", import.meta.url), "utf8").replace(/\s+/g, " ");
   for (const ruled of [
-    "and optionally `positions` (the record ids of the writer's excluded positions it is about, as their list names them).",
+    "and optionally `positions` (the record ids of the writer's excluded positions it is about, as their list names them), and optionally `lines` (the addresses of the parts of the report it is about that are not findings, copied from the dispatch's address list).",
     "**Identify what each flag is about** — the `on` field",
-    "`[on: -]` means no existing finding is named. For an excluded position, supply its record id in `positions`. For a document passage, omit both fields and name the affected passage, section, or coverage claim in `text`. A flag affecting a finding and an excluded position may carry both `on` and `positions`.",
+    "`[on: -]` means no existing finding is named. For an excluded position, supply its record id in `positions`. For a coverage line, an action, a mark assessment read or a narrative section with a listed address, supply that address in `lines`. Name any passage without a listed address in `text`. Omit all three fields only when none applies to the flag. A flag may carry `on`, `positions` and `lines` together.",
     "The writer corrects the named findings, excluded positions, and document passages, together with conclusions that depend on them. Unaffected findings stay unchanged. The recheck reviews that same scope and any additional changes the writer had to make, using its recorded reasons. A missing finding number does not make the whole report open for revision.",
   ]) assert.ok(manual.includes(ruled), `the manual does not carry: ${ruled.slice(0, 60)}…`);
   assert.ok(!/Either every flag has one|a partial set buys nothing|the absence is the statement/.test(manual), "the all-or-nothing paragraph is still in the manual");
@@ -407,7 +407,7 @@ test("the review after a repair is told to name a writer's exclusion by a record
   const text = String(repairFollowup("narrative-refutation:post-repair-review", { findings: "/run/findings.json", changes: [], resting: [],
     renumbered: false, coverageChanged: false, evidence: {}, registerOnly: false, job: {}, skepticFlags: "/run/sf.md", frameReopenReceipt: "/run/fr.json",
     floorDecisions: [], writerExclusions: writerExclusionBlock(P, { review: "later" }) }));
-  assert.ok(text.includes("For a finding, put its number from the list below in `on`. For a writer's exclusion, put a record id from its entry in `positions`. For anything else,"),
+  assert.ok(text.includes("For a finding, put its number from the list below in `on`. For a writer's exclusion, put a record id from its entry in `positions`. For a coverage line, an action, a mark assessment read or a narrative section with a listed address, put that address in `lines`. For anything else,"),
     "the review after a repair is not told the clause as ruled");
 });
 

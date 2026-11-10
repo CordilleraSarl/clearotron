@@ -509,7 +509,7 @@ test("the resolution above still matches the gateway's — a paraphrase that dri
   const src = driverSource("gateway.mjs");
   assert.match(src, /const groups = toolGroupsForStage\(name\);/, "the gateway no longer resolves groups by stage name this way");
   assert.match(src, /if \(groups\.length\) \{/, "the gateway no longer gates the whole grant on groups.length — the baseline's premise moved");
-  assert.match(src, /gatherAllowedTools = allowedToolsFor\(groups\)/, "the gateway no longer derives the allowlist from the groups");
+  assert.match(src, /gatherAllowedTools = allowedToolsFor\(groups[,)]/, "the gateway no longer derives the allowlist from the groups");
 });
 
 test("⭐ THE ARGV DIFFERENTIAL — doubt-closure gained all three flags and NO retrieval server, and the mechanical scope is now empty", () => {
