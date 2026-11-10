@@ -6,7 +6,8 @@
 //   node driver/test/snapshot/publish-compare.mjs compare <base-dir> <head-dir>
 //
 // Each sample is copied, then published under a frozen clock into a throwaway report folder. Nothing is normalised but the
-// throwaway folder's own name and a workbook's two generation stamps, so a changed date, word or cell shows as a difference.
+// throwaway folder's own name, the publishing build's own commit and a workbook's two generation stamps, so a changed date,
+// word or cell shows as a difference.
 // A saved run is a folder holding `meta.json` and `run/`, the shape `demo/` uses. It makes no model turn and no register call.
 //
 // IT REPORTS AND DOES NOT JUDGE: exit 0 means no difference was found in the samples given, and a sample that could not
@@ -33,9 +34,9 @@ function walk(dir) {
 }
 
 /** One published file's fingerprint: text exactly, a workbook entry by entry, anything else by its bytes. */
-function fingerprint(file, root) {
+function fingerprint(file, root, commit) {
   const buf = readFileSync(file);
-  const clean = (t) => t.split(root).join("<ROOT>");
+  const clean = (t) => (commit ? t.split(commit).join("<COMMIT>") : t).split(root).join("<ROOT>");
   if (file.endsWith(".xlsx")) return Object.fromEntries(zipEntries(buf).map(([n, b]) => [n, sha(clean(workbookEntryText(n, b)))]));
   return /\.(html?|md|json|txt|csv|svg)$/.test(file) ? sha(clean(buf.toString("utf8"))) : sha(buf);
 }
@@ -49,7 +50,9 @@ function recordSample(sample, repo, out) {
     writeFileSync(specFile, JSON.stringify({ driver: join(repo, "driver"), metaFile: join(copy, "meta.json"), runDir: join(copy, "run"), pool, resultFile }));
     const env = { PATH: process.env.PATH, HOME: home, TMPDIR: root, TZ: "UTC", CLEAROTRON_NO_ENV_FILE: "1" };
     execFileSync(process.execPath, [join(HERE, "publish-scenario.mjs"), specFile], { env, cwd: root, stdio: ["ignore", "ignore", "pipe"], timeout: 300_000, maxBuffer: 64 * 1024 * 1024 });
-    const files = Object.fromEntries(walk(pool).map((f) => [relative(pool, f).split(sep).join("/"), fingerprint(f, root)]));
+    // The build that published stamps its own commit into meta.json and the data file; two commits differ there by design.
+    const commit = execFileSync("git", ["-C", repo, "rev-parse", "HEAD"], { encoding: "utf8" }).trim() || null;
+    const files = Object.fromEntries(walk(pool).map((f) => [relative(pool, f).split(sep).join("/"), fingerprint(f, root, commit)]));
     const { email } = JSON.parse(readFileSync(resultFile, "utf8"));
     const record = { name: sample.name, files, email: Object.fromEntries(Object.entries(email).map(([k, v]) => [k, sha(String(v).split(root).join("<ROOT>"))])) };
     writeFileSync(join(out, `${sample.name}.json`), JSON.stringify(record, null, 1) + "\n");
