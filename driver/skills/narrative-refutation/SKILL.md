@@ -73,7 +73,7 @@ in the file:
 
 - `[on: 9]` — this flag is about finding #9. You send `on: [9]`.
 - `[on: 6, 12]` — it is about both. You send `on: [6, 12]`.
-- `[on: -]` means no existing finding is named. For an excluded position, supply its record id in `positions`. For a coverage line, an action, a mark assessment read or a narrative section, supply its address from the dispatch's address list in `lines`. For any other passage, omit all three and name the passage in `text`. A flag may carry `on`, `positions` and `lines` together.
+- `[on: -]` means no existing finding is named. For an excluded position, supply its record id in `positions`. For a coverage line, an action, a mark assessment read or a narrative section with a listed address, supply that address in `lines`. Name any passage without a listed address in `text`. Omit all three fields only when none applies to the flag. A flag may carry `on`, `positions` and `lines` together.
 
 An ordinal or address this review was not handed is refused in your turn with the reason. Correct it and send the whole call again.
 

@@ -195,7 +195,7 @@ export async function runCorrectionCycle({ ctx, run, P, verdict, firstRef, synth
       runLog(run.runDir, { event: "corrections-applied", flags: correctionsApplied.length, outcomes: by,
         scoped: correctionsScope.scoped, named: correctionsScope.named.length,
         movedOutsideScope: correctionsScope.moved.length, unboundOrdinals: correctionsScope.unbound.length,
-        partsMovedOutsideScope: correctionsScope.lines.moved.length });
+        partsMovedOutsideScope: correctionsScope.lines.moved.length, partsComparedWhole: correctionsScope.lines.complete });
       // The basis for the delivery check each assembly makes (recordCorrectionsDelivered): what each flag
       // changed in the fields a report prints from the record, from the same two records. Its own file.
       try { recordCorrectionsBasis(run.runDir, correctionsApplied, preDoc, postDoc); }
@@ -254,7 +254,7 @@ export async function runCorrectionCycle({ ctx, run, P, verdict, firstRef, synth
             correctionsScope, appliedTable, restoredTable, evidenceTable, planAuditCarry,
             writerExclusions: writerExclusionBlock(P, { review: "later", named: correctionsScope?.positions ?? [] }),
             reviewAddresses: writeReviewAddresses(run.runDir, { records: [...recheckRecords, lastAcceptedCall(run.runDir)?.findings],
-              narratives: [lastAcceptedCall(run.runDir)?.narrative] }),
+              narratives: [lastAcceptedCall(run.runDir)?.narrative], seq0: recheckSeq0 }),
           }),
         })
       : await stage("narrative-refutation", ctx, { force: true, model: firstRef.model, thinking: firstRef.thinking, trigger: "verdict-recheck", ...(planAuditExtra(ctx) ? { extra: planAuditExtra(ctx) } : {}) });

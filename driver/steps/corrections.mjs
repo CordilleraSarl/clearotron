@@ -345,8 +345,8 @@ export function repairUnnamedRemovals(P, runDir, pre, namedOrdinals, namedMarks,
 export function correctionNamedOrdinals(P) {
   const out = [];
   try {
-    // `P.reviewFlags`: the pass after a delivery-check repair applies a LATER review's flags, which
-    // `readAcceptedFlags` (the first review's call) cannot see. Absent everywhere else.
+    // `P.reviewFlags`: the pass after a delivery-check repair applies a LATER review's flags, read from that review's own
+    // calls. Absent everywhere else, where `readAcceptedFlags` reads the newest accepted call of the review acted on.
     const typed = Array.isArray(P.reviewFlags) ? P.reviewFlags : readAcceptedFlags(P.runDir);
     if (typed) { for (const f of typed) if (Array.isArray(f?.on)) out.push(...f.on); return out; }
   } catch { /* fall through to the rendered parse, exactly as the worklist does */ }

@@ -17,6 +17,7 @@
 import { REPORT_LINE_KEY, REPORT_LINE_LABEL } from "./corrections-feedforward.mjs";
 import { NARRATIVE_SECTIONS } from "./synthesis-record.mjs";
 import { atomicWrite, driverDir, ensureDriverDir } from "./run-record.mjs";
+import { rmSync } from "node:fs";
 
 export const REVIEW_ADDRESSES_FILE = "review-addresses.json";
 
@@ -35,28 +36,41 @@ function partsOf(doc) {
   return out;
 }
 
-/** Every part of one record that is not a finding, by address, with the value a reader is given for it. */
+/**
+ * Every part of one record that is not a finding, by address, with the value a reader is given for it, and whether any
+ * address is held by two rows: such a record cannot say which of the two moved.
+ */
 function partValues(doc) {
   const out = new Map();
-  const put = (address, label, value) => { if (address.slice(address.indexOf(":") + 1).trim()) out.set(address, { label, value: JSON.stringify(value ?? null) }); };
+  let ambiguous = false;
+  const put = (address, label, value) => {
+    if (!address.slice(address.indexOf(":") + 1).trim()) return;
+    if (out.has(address)) ambiguous = true;
+    out.set(address, { label, value: JSON.stringify(value ?? null) });
+  };
   for (const c of Array.isArray(doc?.coverage) ? doc.coverage : []) put(REPORT_LINE_KEY.coverage(c), REPORT_LINE_LABEL.coverage(c), c);
   for (const a of Array.isArray(doc?.actions) ? doc.actions : []) put(REPORT_LINE_KEY.actions(a), REPORT_LINE_LABEL.actions(a), a);
   const ma = doc?.markAssessment ?? doc?.mark_assessment;
   for (const k of MARK_ASSESSMENT_READS) put(`mark-assessment:${k}`, `the mark assessment's ${k}`, ma?.[k]);
-  return out;
+  return { values: out, ambiguous };
 }
 
 /**
- * The parts of the report other than findings that a correction changed and no flag named: `{ named, moved }`, each
- * `moved` entry `{ address, label }`. A part added, removed or rewritten counts as moved. Narrative sections are
- * compared only when both narratives are handed in, so a caller without the earlier one claims nothing about them.
- * Recorded, never refused: the clearance's correction policy (scopeDrift in corrections-feedforward.mjs). PURE.
+ * The parts of the report other than findings that a correction changed and no flag named: `{ named, moved, complete }`,
+ * each `moved` entry `{ address, label }`. A part added, removed or rewritten counts as moved.
+ *
+ * `complete` says whether every coverage line, action, mark assessment read and narrative section was compared. It is
+ * false when either record or either narrative is missing, or when one address is held by two rows of a record: then
+ * "none moved" is not known, and the recheck must not be told it (repair-composers.mjs reads it). Recorded, never
+ * refused: the clearance's correction policy (scopeDrift in corrections-feedforward.mjs). PURE.
  */
 export function partsDrift(rows, preDoc, postDoc, { narratives = null } = {}) {
   const named = [...new Set((rows ?? []).flatMap((r) => (Array.isArray(r?.lines) ? r.lines : [])))];
-  if (!preDoc || !postDoc) return { named, moved: [] };
-  const pre = partValues(preDoc), post = partValues(postDoc);
-  if (narratives?.before && narratives?.after) {
+  if (!preDoc || !postDoc) return { named, moved: [], complete: false };
+  const a = partValues(preDoc), b = partValues(postDoc);
+  const pre = a.values, post = b.values;
+  const sectionsHeld = Boolean(narratives?.before && narratives?.after);
+  if (sectionsHeld) {
     for (const k of NARRATIVE_SECTIONS) {
       pre.set(`section:${k}`, { label: `the narrative's ${k} section`, value: JSON.stringify(narratives.before[k] ?? null) });
       post.set(`section:${k}`, { label: `the narrative's ${k} section`, value: JSON.stringify(narratives.after[k] ?? null) });
@@ -68,7 +82,7 @@ export function partsDrift(rows, preDoc, postDoc, { narratives = null } = {}) {
     if (isNamed.has(address)) continue;
     if (pre.get(address)?.value !== post.get(address)?.value) moved.push({ address, label: (post.get(address) ?? pre.get(address)).label });
   }
-  return { named, moved };
+  return { named, moved, complete: sectionsHeld && !a.ambiguous && !b.ambiguous };
 }
 
 /**
@@ -122,17 +136,23 @@ export function resolveDeclared(list, { on = null, lines = null } = {}) {
 }
 
 /**
- * Build the list and write it beside the review's exclusions, where the review's recording tool reads it. Returns the
- * list, or null when it could not be written: the dispatch then shows no address block, and the tool checks `on` as it
- * always did. IMPURE.
+ * Build the list and write it beside the review's exclusions, where the review's recording tool reads it. `seq0` is the
+ * sequence the dispatch's first review call will take (nextRefutationSeq), so the list, and the accepted call the
+ * correction reads, belong to this dispatch and no earlier one. Returns the list, or null when it could not be written:
+ * the dispatch then shows no address block, and an older list is removed rather than left for this dispatch to read.
+ * IMPURE.
  */
-export function writeReviewAddresses(runDir, { records = [], narratives = [] } = {}) {
+export function writeReviewAddresses(runDir, { records = [], narratives = [], seq0 = null } = {}) {
+  const at = driverDir(runDir, REVIEW_ADDRESSES_FILE);
   try {
-    const list = reviewAddresses({ records: records.filter(Boolean), narratives: narratives.filter(Boolean) });
+    const list = { ...reviewAddresses({ records: records.filter(Boolean), narratives: narratives.filter(Boolean) }), seq0 };
     ensureDriverDir(runDir);
-    atomicWrite(driverDir(runDir, REVIEW_ADDRESSES_FILE), JSON.stringify({ ts: new Date().toISOString(), ...list }, null, 2) + "\n");
+    atomicWrite(at, JSON.stringify({ ts: new Date().toISOString(), ...list }, null, 2) + "\n");
     return list;
-  } catch { return null; }
+  } catch {
+    try { rmSync(at, { force: true }); } catch { /* nothing more can be done; the list stays as it was */ }
+    return null;
+  }
 }
 
 // What the review dispatch shows the reviewer: the block's heading, then one row per address. No block for a list with

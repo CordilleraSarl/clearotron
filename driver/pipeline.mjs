@@ -5128,7 +5128,8 @@ function clearedForSeat(runDir, label) {
  */
 function reviewAddressesFor(P) {
   const accepted = lastAcceptedCall(P.runDir);
-  return writeReviewAddresses(P.runDir, { records: [accepted?.findings, safeReadJson(P.findings)], narratives: [accepted?.narrative] });
+  return writeReviewAddresses(P.runDir, { records: [accepted?.findings, safeReadJson(P.findings)], narratives: [accepted?.narrative],
+    seq0: nextRefutationSeq(P.runDir) });
 }
 export function messageCtxFor(name, ctx) {   // @internal — driven by its test
   if (!ctx?.paths) return ctx;
@@ -6781,7 +6782,7 @@ async function runPostRepairReview(ctx, P, run, scope) {
     writerExclusions: writerExclusionBlock(P, { review: "later" }),
     // The record after the repair, and each changed finding by its ordinal, so a finding the repair removed is nameable.
     reviewAddresses: writeReviewAddresses(runDir, { records: [scope.after?.findings, { findings: scope.changed.findings }],
-      narratives: [scope.after?.narrative] }),
+      narratives: [scope.after?.narrative], seq0 }),
   });
   const { text: blocks } = composeDispatchExtra("narrative-refutation", ctx, { skip: ["refute-plain-register"] });
   const t0 = Date.now();

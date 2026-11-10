@@ -78,7 +78,8 @@ export function listedAddresses(runDir) {
   try {
     const doc = readJson(driverDir(String(runDir ?? ""), REVIEW_ADDRESSES_FILE));
     if (!Array.isArray(doc?.ordinals) || !Array.isArray(doc?.lines)) return null;
-    return { ordinals: doc.ordinals.filter((n) => Number.isInteger(n)), lines: doc.lines.filter((l) => typeof l?.address === "string") };
+    return { ordinals: doc.ordinals.filter((n) => Number.isInteger(n)), lines: doc.lines.filter((l) => typeof l?.address === "string"),
+      seq0: Number.isInteger(doc.seq0) ? doc.seq0 : null };
   } catch { return null; }
 }
 
@@ -195,7 +196,7 @@ export function acceptRefutation(params, { receiptPresent = false, positionsList
       // An ordinal is resolved against the findings this review was handed, when the dispatch listed them.
       const r = addresses ? resolveDeclared(addresses, { on: f.on }) : { ok: true };
       if (!r.ok) {
-        return { ok: false, reason: `refutation_flag_on_unknown:${i}:${r.value} — finding ${r.value} is not among the findings this review was handed; use one of their ordinals, or omit \`on\`` };
+        return { ok: false, reason: `refutation_flag_on_unknown:${i}:${r.value} — finding ${r.value} is not among the findings this review was handed; use the correct listed ordinal, or omit \`on\` if the flag is not about a finding` };
       }
     }
     if (f?.lines != null) {
@@ -352,10 +353,12 @@ export function recordRefutation(runDir, received, { now = () => new Date().toIS
  * it is looking at.
  */
 export function readAcceptedFlags(runDir) {
-  // THE NEWEST ACCEPTED CALL, not the first capture. A review refused once and accepted on its next call left its
-  // accepted flags in `call-002.json`, and reading `call-001.json` alone sent that correction to the rendered parse.
-  // A refused or unreadable call is passed over, never returned.
-  const accepted = readAcceptedReviewSince(runDir, 0);
+  // THE NEWEST ACCEPTED CALL OF THE REVIEW BEING ACTED ON, not the first capture. A review refused once and accepted on
+  // its next call left its accepted flags in `call-002.json`, and reading `call-001.json` alone sent that correction to
+  // the rendered parse. The calls read start at the dispatch that wrote the address list (`seq0`), so a later dispatch
+  // with no accepted call returns null, and its correction takes the logged parse, rather than an earlier review's
+  // flags. A refused or unreadable call is passed over, never returned.
+  const accepted = readAcceptedReviewSince(runDir, listedAddresses(runDir)?.seq0 ?? 0);
   return accepted ? accepted.flags : null;
 }
 
@@ -374,8 +377,8 @@ export function nextRefutationSeq(runDir) {
 /**
  * THE LAST ACCEPTED REVIEW CALL FROM `seq0` ON, AS TYPED: `{seq, verdict, flags, planAudit}`, or null.
  *
- * The review after a delivery-check repair is a later call than the first review's, so `readAcceptedFlags`
- * (which opens the first call) cannot read it. A refused or unfinished call is skipped, as it is there: null
+ * The review after a delivery-check repair is a later dispatch than the first review, and its caller names that
+ * dispatch's `seq0` itself (`readAcceptedFlags` takes it from the address list). A refused or unfinished call is skipped: null
  * means there is no review from that dispatch the driver can act on, and its caller says so rather than
  * reading anything else in its place. Never throws.
  */

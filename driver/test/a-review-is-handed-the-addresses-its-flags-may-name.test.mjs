@@ -87,7 +87,8 @@ test("a flag's declared parts render on its line and read back off it, without t
 });
 
 test("an ordinal or address the review was not handed is refused in its turn, with the near address when there is one", () => {
-  assert.match(accept([flag({ on: [9] })]).reason, /^refutation_flag_on_unknown:0:9 — finding 9 is not among the findings this review was handed/);
+  assert.equal(accept([flag({ on: [9] })]).reason,
+    "refutation_flag_on_unknown:0:9 — finding 9 is not among the findings this review was handed; use the correct listed ordinal, or omit `on` if the flag is not about a finding");
   assert.match(accept([flag({ lines: "coverage:european union" })]).reason, /^refutation_flag_lines_invalid:0 /);
   assert.match(accept([flag({ lines: [] })]).reason, /^refutation_flag_lines_invalid:0 /);
   assert.match(accept([flag({ lines: ["Coverage:European Union"] })]).reason,
@@ -120,24 +121,27 @@ const { repairFollowup } = await import("../repair-composers.mjs");
 test("the dispatch writes the list where the recording tool reads it, and shows one row per address", () => {
   const runDir = mkdtempSync(join(tmpdir(), "review-addresses-write-"));
   const list = writeReviewAddresses(runDir, { records: [BEFORE, null, AFTER], narratives: [NARRATIVE] });
-  assert.deepEqual(listedAddresses(runDir), { ordinals: list.ordinals, lines: list.lines });
+  assert.deepEqual(listedAddresses(runDir), { ordinals: list.ordinals, lines: list.lines, seq0: null });
   assert.deepEqual(addressListLines(list), [ADDRESS_LIST_HEADING, ...list.lines.map((l) => `- ${l.label} — address ${l.address}`)]);
   assert.equal(addressListLines(list)[1], '- the coverage line for "European Union" — address coverage:european union');
   assert.deepEqual(addressListLines({ ordinals: [1], lines: [] }), [], "no block when only findings are addressable");
   assert.deepEqual(addressListLines(null), []);
 });
 
-test("a correction's other parts that moved and no flag named are recorded, sections only when both narratives are held", () => {
+test("a correction's other parts that moved and no flag named are recorded, and the comparison says when it was not complete", () => {
   const rewritten = { ...AFTER, coverage: [{ area: "European Union", note: "searched again" }, BEFORE.coverage[1]],
     actions: [{ id: "watch", text: "Watch the register monthly." }] };
-  const named = partsDrift([{ lines: ["coverage:european union"] }], BEFORE, rewritten);
-  assert.deepEqual(named, { named: ["coverage:european union"], moved: [{ address: "action:watch", label: 'the action "watch"' }] });
-  const narratives = { before: NARRATIVE, after: { ...NARRATIVE, spine: "A different spine." } };
-  assert.deepEqual(partsDrift([], BEFORE, AFTER, { narratives }).moved, [{ address: "section:spine", label: "the narrative's spine section" }]);
-  assert.deepEqual(partsDrift([], BEFORE, AFTER).moved, [], "with no earlier narrative nothing is claimed about the sections");
-  assert.deepEqual(partsDrift([], null, AFTER), { named: [], moved: [] });
+  const narratives = { before: NARRATIVE, after: NARRATIVE };
+  assert.deepEqual(partsDrift([{ lines: ["coverage:european union"] }], BEFORE, rewritten, { narratives }),
+    { named: ["coverage:european union"], moved: [{ address: "action:watch", label: 'the action "watch"' }], complete: true });
+  const spine = { before: NARRATIVE, after: { ...NARRATIVE, spine: "A different spine." } };
+  assert.deepEqual(partsDrift([], BEFORE, AFTER, { narratives: spine }).moved, [{ address: "section:spine", label: "the narrative's spine section" }]);
+  // Missing evidence or an ambiguous address is not "none moved".
+  assert.deepEqual(partsDrift([], BEFORE, AFTER), { named: [], moved: [], complete: false }, "with no earlier narrative the sections were not compared");
+  assert.deepEqual(partsDrift([], null, AFTER), { named: [], moved: [], complete: false }, "with no record before the pass nothing was compared");
+  const twice = { ...BEFORE, coverage: [...BEFORE.coverage, { area: "european union", note: "a second row" }] };
+  assert.equal(partsDrift([], twice, twice, { narratives }).complete, false, "two rows under one address cannot say which moved");
 });
-
 test("the correction is told the parts its flags declared, and the recheck what moved outside them", () => {
   const correction = String(repairFollowup("synthesis:corrective", { narrative: "narrative.md", findings: "findings.json", placement: "placement.md",
     worklist: "", review: "", scope: { scoped: true, ordinals: [2], lineLabels: ['the coverage line for "European Union"', "the narrative's verdict section"] } }));
@@ -149,9 +153,13 @@ test("the correction is told the parts its flags declared, and the recheck what 
   const recheck = (lines) => String(repairFollowup("narrative-refutation:verdict-recheck", { narrative: "narrative.md", findings: "findings.json",
     seniorEyeReview: "senior-eye-review.md", correctionsScope: { scoped: true, named: [2], moved: [], unbound: [], ...(lines ? { lines } : {}) },
     appliedTable: "", restoredTable: "", evidenceTable: "", planAuditCarry: "" }));
-  assert.match(recheck({ named: [], moved: [{ address: "action:watch", label: 'the action "watch"' }] }),
+  assert.match(recheck({ named: [], moved: [{ address: "action:watch", label: 'the action "watch"' }], complete: true }),
     /none moved, so you do not need to re-read them\. THE DRIVER ALSO COMPARED EVERY COVERAGE LINE, ACTION, MARK ASSESSMENT READ AND NARRATIVE SECTION NO FLAG NAMES and 1 moved anyway — the action "watch"; read those too and say whether the change is defended\. Then re-write/);
-  assert.match(recheck({ named: [], moved: [] }), /NO FLAG NAMES and none moved\. Then re-write/);
+  assert.match(recheck({ named: [], moved: [], complete: true }), /NO FLAG NAMES and none moved\. Then re-write/);
+  // A comparison that could not be completed claims nothing: the recheck re-reads both files whole, as before the scope.
+  const incomplete = recheck({ named: [], moved: [], complete: false });
+  assert.doesNotMatch(incomplete, /Read narrowly|THE DRIVER ALSO COMPARED|none moved/);
+  assert.match(incomplete, /Re-read BOTH updated files/);
   assert.doesNotMatch(recheck(null), /THE DRIVER ALSO COMPARED/, "a correction recorded before the parts were compared says nothing about them");
 });
 
@@ -174,4 +182,22 @@ test("a flag that declares a part is bound to it, not to the line its prose happ
   assert.deepEqual({ targets: declared.targets, outcome: declared.outcome }, { targets: ['the action "watch"'], outcome: "line-changed" });
   const [prose] = buildCorrectionsApplied([{ n: 1, kind: "fact", ordinals: [], text: quoting }], pre, post);
   assert.ok(prose.targets.includes('the coverage line for "European Union"'), "with no declaration the prose match stands, as before");
+});
+
+test("the list and the accepted call belong to the review dispatch being acted on, and a failed write leaves no older list", async () => {
+  const { readAcceptedFlags } = await import("../narrative-refutation-record.mjs");
+  const runDir = mkdtempSync(join(tmpdir(), "review-dispatch-bound-"));
+  writeReviewAddresses(runDir, { records: [BEFORE], seq0: 1 });
+  assert.equal(recordRefutation(runDir, { verdict: "CONDITIONAL", flags: [flag({})] }).refused, null);
+  assert.deepEqual(readAcceptedFlags(runDir), [flag({})], "the first review's own call");
+  // A later dispatch whose every call is refused, or which wrote its review by hand, has no accepted call of its own.
+  writeReviewAddresses(runDir, { records: [AFTER], seq0: 2 });
+  assert.ok(recordRefutation(runDir, { verdict: "BLOCKING", flags: [] }).refused);
+  assert.equal(readAcceptedFlags(runDir), null, "a later dispatch must not inherit the earlier review's flags");
+  // A list that cannot be written is not left in place from an earlier dispatch.
+  const failing = mkdtempSync(join(tmpdir(), "review-dispatch-failed-"));
+  writeReviewAddresses(failing, { records: [BEFORE], seq0: 1 });
+  const unreadable = { get findings() { throw new Error("the record could not be read"); } };
+  assert.equal(writeReviewAddresses(failing, { records: [unreadable], seq0: 3 }), null);
+  assert.equal(listedAddresses(failing), null, "the earlier dispatch's list was left for this one to read");
 });

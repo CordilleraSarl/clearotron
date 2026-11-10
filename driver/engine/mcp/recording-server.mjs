@@ -1023,7 +1023,7 @@ serve({
               text: { type: "string", description: "One line, naming the file and the exact claim. A flag that opens as a list item or heading is refused — the driver renders the list." },
               fix: { type: "string", description: "Optional. One line describing the targeted edit that would settle it." },
               on: { type: "array", items: { type: "integer" }, description: "The finding ordinals this flag is about, 1-based. Omit for a flag about the document rather than a finding. An ordinal that names no finding this review was handed is refused." },
-              lines: { type: "array", items: { type: "string" }, description: "The address of each part of the report this flag is about that is not a finding: a coverage line, an action, a mark assessment read or a narrative section. Copy each address from the address list in the dispatch. An address not on that list is refused. Omit it when the flag is about none of them." },
+              lines: { type: "array", items: { type: "string" }, description: "The address of each part of the report this flag is about that is not a finding: a coverage line, an action, a mark assessment read or a narrative section. Copy each address from the address list in the dispatch. An address not on that list is refused. If none of the flag's targets has a listed address, omit `lines` and name the targets in `text`." },
               positions: { type: "array", items: { type: "string" }, description: "The record id of each excluded position this flag is about, exactly as the writer's exclusions list names it. A flag about an exclusion needs no finding ordinal." },
             },
           },
