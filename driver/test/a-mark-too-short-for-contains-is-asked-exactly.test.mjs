@@ -201,11 +201,11 @@ test("every register's propose tool hands the minting its own capabilities, so t
   }
 });
 
-test("the pipeline hands the crowd-context pass the active register's capabilities", () => {
+test("the pipeline hands the crowd-context pass the run's register's capabilities", () => {
   // buildCrowdContext defaults to no capabilities, which counts every term on the contains form. The
   // floor reaches a run only if the pipeline's own call passes them, so the call site is asserted.
   const src = driverSource("pipeline.mjs");
   const call = src.slice(src.indexOf("await buildCrowdContext({"), src.indexOf("await buildCrowdContext({") + 600);
   assert.ok(call.length > 100, "the pipeline no longer calls buildCrowdContext where this arm looks");
-  assert.match(call, /capabilities: registerCapabilities\(\)/, "the crowd-context call passes no register capabilities");
+  assert.match(call, /capabilities: registerCapabilities\(ctx\.register\)/, "the crowd-context call passes no capabilities of the run's register");
 });

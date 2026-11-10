@@ -213,7 +213,7 @@ const placementSetAsideReads = (P) => [
 const correctiveStateReads = (P) => [
   { path: paths(P.runDir).findingsPreCorrective, kind: "driver-side", why: "correctiveReadiness and the pass's snapshot: the findings the corrective pass started from" },
   { path: P.seniorEyeReview, kind: "driver-side", why: "the review whose flags the corrective pass answers; correctionsExtra hands it on verbatim" },
-  { path: driverDir(P.runDir, "refutation-calls"), dir: true, kind: "driver-side", why: "readAcceptedFlags: the review's typed flags, the corrective worklist's source, from its newest accepted call" },
+  { path: paths(P.runDir).refutationCalls, dir: true, kind: "driver-side", why: "readAcceptedFlags: the review's typed flags, the corrective worklist's source, from its newest accepted call" },
   { path: driverDir(P.runDir, "review-addresses.json"), kind: "driver-side", why: "readAcceptedFlags and correctionsExtra: the review dispatch the calls belong to, and the labels of the parts its flags declare" },
   { path: paths(P.runDir).declinations, kind: "driver-side", why: "the writer's declinations the corrective pass starts from" },
   { path: driverDir(P.runDir, REVIEW_EXCLUSIONS_FILE), kind: "driver-side", why: "correctionsExtra names each excluded position a flag is about, with its mark, owner and row, from the exclusions the review was shown" },

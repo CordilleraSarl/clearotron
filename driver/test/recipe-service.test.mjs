@@ -10,6 +10,7 @@ import { execFileSync } from "node:child_process";
 import { join } from "node:path";
 import { makeRecipeService, defaultWriteRecipe, registryProducts, recipeProseGuard } from "../recipe-service.mjs";
 import { loadRecipes, resolveSearchPolicy, recipeShaOf } from "../search-policy.mjs";
+import { driverSource } from "./driver-source.mjs";
 
 const STAFF = { email: "staff@example-firm.com" };
 
@@ -237,7 +238,7 @@ test("THE CONTROL: the same store read as an explicit directory refuses every co
 test("the portal builds its recipe service reading the roster layered, as it builds its profile service", () => {
   // One construction in the tree, so the source is read rather than the portal booted: the flag on it is
   // the whole fix, and the arms above drive what the flag does.
-  const src = readFileSync(new URL("../portal-service.mjs", import.meta.url), "utf8");
+  const src = driverSource("portal-service.mjs");
   const calls = src.match(/makeRecipeService\(\{[^}]*\}\)/g) ?? [];
   assert.equal(calls.length, 1, `one construction: ${calls}`);
   assert.match(calls[0], /readLayered: true/);

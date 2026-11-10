@@ -292,6 +292,11 @@ test("an ordinary knockout failure carries terminalKind null and reads exactly a
   const packet = readJson(driverDir(runDir, "failure.json"));
   assert.equal(packet.refused, false);
   assert.match(packet.whatsappText, /FAILED at knockout-scope/);
+  // The signature and class the clearance end records travel here too, and change no word of the notice.
+  const marker = readJson(join(runDir, ".failed"));
+  assert.match(String(marker.sig ?? ""), /\S/, "the sentinel carries the failure's signature");
+  assert.equal(marker.class, "factual", "and its class, stamped where the collision was found");
+  assert.equal(packet.failureSignature, marker.sig, "the packet carries the same signature");
   // That fields land here too, and on a SHORT reason the answer is "nothing was cut" — never a missing key
   assert.equal(status.reasonTruncated, false);
   assert.equal(status.reasonFull, null);
