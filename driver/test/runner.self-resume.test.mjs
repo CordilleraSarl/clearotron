@@ -11,6 +11,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
+import { startedOnThisBuild } from "./started-on-this-build.mjs";   // the row a run writes when it starts
 
 // set the workspace root BEFORE driver.config.mjs loads (via the dynamic runner import below), so config.workspaceRoot freezes to our temp dir
 const ROOT = mkdtempSync(join(tmpdir(), "clearotron-resume-"));
@@ -21,7 +22,7 @@ process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 const mkRun = (agent, slug, run) => {
   const d = join(ROOT, `workspace-${agent}`, "studio", "clearance-search", slug, run);
   mkdirSync(d, { recursive: true });
-  return d;
+  return startedOnThisBuild(d);
 };
 const past = new Date(Date.now() - 60_000).toISOString();
 const future = new Date(Date.now() + 3_600_000).toISOString();

@@ -321,12 +321,22 @@ export async function update(argv = process.argv.slice(2)) {
   //
   // No override flag, deliberately. A timer retries in an hour; a human waits or clears the queue. An
   // escape hatch on an unattended path is a hatch that gets taken by the unattended path.
-  const holds = liveRunHolds({ queueDirs: config.queueDirs, lockDir: config.runLockDir });
-  const held = [...holds.queued, ...holds.claimed, ...holds.slots];
+  //
+  // A PARKED RUN HOLDS IT TOO (owner, 2026-11-09: a search is not upgraded part-way, and a run is not resumed after an
+  // update). A park in a queue is read with the queue; a run folder parked on its own comes from the runner's own scan,
+  // so the update and the runner cannot disagree about what will resume. A scan that cannot load is a could-not-look and
+  // refuses like an unreadable queue.
+  let parkedRunDirs = [];
+  try { parkedRunDirs = (await import("../driver/runner.mjs")).parkedRunDirOrphans(); }
+  catch (e) { parkedRunDirs = null; console.error(`\n  The scan for parked run folders could not run: ${String(e?.message ?? e).slice(0, 200)}`); }
+  const holds = liveRunHolds({ queueDirs: config.queueDirs, lockDir: config.runLockDir, parkedRunDirs: parkedRunDirs ?? [] });
+  if (parkedRunDirs === null) holds.unreadable.push({ path: "parked run folders", error: "the runner's scan did not load" });
+  const held = [...holds.queued, ...holds.claimed, ...holds.parked, ...holds.slots];
   if (held.length) {
-    console.error(`\n  REFUSED — ${held.length} run(s) queued, claimed or in flight.`);
+    console.error(`\n  REFUSED — ${held.length} run(s) queued, claimed, parked or in flight.`);
     for (const q of holds.queued) console.error(`    queued   ${q.id}`);
     for (const c of holds.claimed) console.error(`    claimed  ${c.id}  pid ${c.pid ?? "unknown"}`);
+    for (const p of holds.parked) console.error(`    parked   ${p.id}`);
     for (const sl of holds.slots) console.error(`    slot     ${sl.file}  pid ${sl.pid}`);
     console.error(packaged
       ? "\n  An update replaces the program's files under whatever is running. Nothing was touched."

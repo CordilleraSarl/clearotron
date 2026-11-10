@@ -17,6 +17,7 @@ import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { fileURLToPath } from "node:url";
 import { todayISO } from "../phase0.mjs";
 import { deadClaimToken } from "./claim-fixtures.mjs";   // — pid+starttime, never a bare pid
+import { startedOnThisBuild } from "./started-on-this-build.mjs";   // the row a run writes when it starts
 // code-side saturation-probe (2026-07-14): OFF in this legacy harness — its scenarios script the AGENT
 // member; the dedicated satprobe-codeside tests exercise the code-side path with an injected executor.
 process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
@@ -71,6 +72,7 @@ test("pre-try throw with a run dir (corrupt _driver/profile.json) → failure pa
   // attachProfile — before pipelineInner's try{} — the exact silent-.failed class the backstop closes
   const runDir = join(studioFor(root), slug, `${date}-copper-anvil`);
   mkdirSync(driverDir(runDir), { recursive: true });
+  startedOnThisBuild(runDir);
   writeFileSync(driverDir(runDir, "profile.json"), "{corrupt");
   writeFileSync(join(Q, "job-p.processing"), JSON.stringify(J));
   writeFileSync(join(Q, "job-p.processing.pid"), await deadClaimToken());
