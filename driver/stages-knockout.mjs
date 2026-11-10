@@ -5,6 +5,7 @@
 // kept in its OWN table: the knockout lane is a different product shape (a 5–15 mark triage batch), and
 // its stages must never leak into the clearance STAGE_ORDER. New-named stages get [] MCP tool groups
 // automatically (gather-config prefix map — the matter-frame precedent), so frame/assess run lean.
+import { paths } from "./run-record.mjs";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
@@ -64,8 +65,8 @@ export function koPaths(runDir) {
     review: knockoutReviewFile(runDir),
     // Depth 2: the code-authoritative count sidecar + its per-call receipts. Both live under
     // _driver/ — they are the driver's own measurements, never a model's output.
-    registerCounts: driverDir(runDir, "register-counts.json"),
-    countLedger: driverDir(runDir, "register-count.jsonl"),
+    registerCounts: paths(runDir).registerCounts,
+    countLedger: paths(runDir).registerCount,
     // part 5 — the filings behind the narrow counts, beside the counts they explain. Because the
     // MCP server serves run artifacts generically, landing it here makes the filings queryable over MCP
     // with no MCP-side work at all. Its receipts ride the count lane's ledger file and are the ONLY
@@ -73,18 +74,18 @@ export function koPaths(runDir) {
     // cost", and the two lanes are told apart by a key the older lines simply do not have. The count
     // rows were left exactly as they were rather than gaining a matching marker: their shape is pinned
     // byte-for-byte by register-count.test.mjs, and a discriminator only one side needs is enough.
-    registerRecords: driverDir(runDir, "register-records.json"),
+    registerRecords: paths(runDir).registerRecords,
     // THE READING STEP'S RECORD, a model output and so at the run root: what it carried forward, set aside and did not
     // ask. The questions and their rows are the register tool's, in the bands under `register-units/`.
     registerReading: knockoutRegisterFile(runDir),
-    inboundRequest: join(runDir, "inbound-request.txt"),
+    inboundRequest: paths(runDir).inboundRequest,
     // The scoped owner lookups this run owes its promoted filings, and their receipts. Both under `_driver/` because both are the DRIVER's own measurement of a call it made — the
     // rule stated fourteen lines above. The seat reads the payloads under research/, never these.
-    ownerChecks: driverDir(runDir, "owner-checks.json"),
-    ownerCheckLedger: driverDir(runDir, "owner-check.jsonl"),
+    ownerChecks: paths(runDir).ownerChecks,
+    ownerCheckLedger: paths(runDir).ownerCheck,
     researchDir: join(runDir, "research"),
     research: (markKebab) => join(runDir, "research", `${markKebab}.md`),
-    sweepLedger: driverDir(runDir, "knockout-sweep.jsonl"),
+    sweepLedger: paths(runDir).knockoutSweep,
     // What each web call returned, verbatim, one file per call: the pages a search reached, which the ledger
     // above and the payload under research/ do not carry. A directory, because every `_driver/*.jsonl` is
     // read as a stage log. The driver's own record of a call it made, so under `_driver/`.
@@ -115,14 +116,14 @@ export function koPaths(runDir) {
     // through the Bash bypass — must still resume without re-dispatching a paid stage, so the reader falls
     // back to this and nothing ever writes it again. Delete once no resumable run predates the move.
     assessChunkLegacy: (n) => driverDir(runDir, `knockout-assess-${n}.json`),
-    instructedScope: driverDir(runDir, "instructed-scope.json"),
+    instructedScope: paths(runDir).instructedScope,
     // The client's own words, written at intake as on the clearance lane (stages.mjs, the same two names).
-    inboundRequest: join(runDir, "inbound-request.txt"),
-    confirmationBrief: join(runDir, "confirmation-brief.md"),
+    inboundRequest: paths(runDir).inboundRequest,
+    confirmationBrief: paths(runDir).confirmationBrief,
     // as on the clearance lane, and apart from instructed-scope.json for the same reason: the frame
     // quotes that file's values verbatim. Written at intake, read by no stage.
-    defaultTerritories: driverDir(runDir, "default-territories.json"),
-    emailBody: join(runDir, "email-body.md"),
+    defaultTerritories: paths(runDir).defaultTerritories,
+    emailBody: paths(runDir).emailBody,
   };
 }
 
@@ -445,7 +446,7 @@ export const KO_STAGES = {
       registerRecordHeld(K)
         ? `WHEN YOU WEIGH ONE OF THOSE FILINGS, SAY SO BY ITS OWN ID — copy "recordId" verbatim from the file above. "registerReads" on the MARK: rows of ${frameworkMethod ? "{recordId, read, band?, inputs?}" : "{recordId, read, band?}"} for a filing you weighed that did NOT become a findings[] record; "read" is what you concluded about THAT filing — how its goods meet the goods the client asked about, whether it bears on the rating, and why — and it prints on that filing's card in the reader's own report. "band" is OPTIONAL and is your rating of THAT filing on its own, in the framework's band words: send it whenever you formed a view on the filing itself, because a registered right left unbanded is the only card on the page with no rating while softer uses beside it carry one, which reads as though the registration mattered least. Omit it and your read still prints, claiming no rating.${frameworkMethod ? ' A row that carries "band" also carries "inputs", the framework\'s own inputs for that filing; a row with no band carries none.' : ""} "weighedFilings" on a FINDING: the recordIds whose evidence your reasoning for that conflict actually used, because the report derives that finding's source labelling from it. Both are optional and both are joined against the filings you were given, so an id we do not hold is refused by name. A filing you did not weigh simply gets no row: do not invent a read to fill one, and never write "not weighed" as a read.`
         : "",
-      `The FROZEN framework in force (rate in ITS band vocabulary, highest→lowest ${framework.bands.map((b) => b.label).join(" · ")}): ${driverDir(K.runDir, "framework.json")}`,
+      `The FROZEN framework in force (rate in ITS band vocabulary, highest→lowest ${framework.bands.map((b) => b.label).join(" · ")}): ${paths(K.runDir).framework}`,
       frameworkMethod ? methodDictation(frameworkMethod) : "",
       frameworkMethod ? `- inputs: ${inputsShape(frameworkMethod)} — the framework's own inputs for this finding, each one of the values it lists, reasoned in its order before the band. On every rated finding.` : "",
       // A seam for a note about Depth 2, and it stays UNUSED on purpose (2026-07-22). The counts
@@ -615,7 +616,7 @@ export const KO_STAGES = {
           (at) => `THE CLIENT'S OWN REQUEST, VERBATIM: ${at}. Read it before you rate. Its stated goods, services, and intended use lead over the plan; the customer's profile fills gaps. Keep a guessed use as a possibility. Do not use that guess to narrow the instructed scope or lower a rating.`,
           (at) => `AVAILABLE BRIEF: ${at}. The original request is not held here. Read the brief before you rate, keep its stated scope, and distinguish supplied facts from inferred uses. Do not lower a rating on a guessed use.`),
         `The record as rated: ${K.assessChunk(chunkNo)}. The ordinals you use are the ones in that file.`,
-        `The batch plan: ${K.plan}. The frozen framework's bands: ${driverDir(K.runDir, "framework.json")}.`,
+        `The batch plan: ${K.plan}. The frozen framework's bands: ${paths(K.runDir).framework}.`,
         `Each name's research payload: ${chunkMarks.filter((m) => named.has(m.name)).map((m) => K.research(kebab(m.name))).join(" · ")}. The batch's other recorded research payloads are under ${K.researchDir}.`,
         existsSync(K.ownerChecks) ? `The recorded owner checks, with the owner and filing each belongs to: ${K.ownerChecks}.` : "",
         existsSync(K.registerRecords) ? `The filings this run read: ${K.registerRecords}. \`read_register_list\` reads any question's whole list by qid, and fetches nothing.` : "",

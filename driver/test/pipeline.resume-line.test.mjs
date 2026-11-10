@@ -107,7 +107,7 @@ test("a signal that lands AFTER delivery prints no command and parks nothing", (
   const src = driverSource("pipeline.mjs");
   // the handler must consult the SAME two markers the resume guard consults
   assert.match(src, /const delivered = Boolean\(run\?\.runDir\) &&/);
-  assert.match(src, /existsSync\(join\(run\.runDir, "\.delivered"\)\) \|\| existsSync\(driverDir\(run\.runDir, "delivery\.json"\)\)/);
+  assert.match(src, /existsSync\(join\(run\.runDir, "\.delivered"\)\) \|\| existsSync\(paths\(run\.runDir\)\.delivery\)/);
   // — and it must not drift back to a hand-built path, which is what this assertion used to read.
   assert.doesNotMatch(src, /join\(run\.runDir, "_driver"/);
   assert.match(src, /if \(run\?\.runDir && !delivered\) \{/);

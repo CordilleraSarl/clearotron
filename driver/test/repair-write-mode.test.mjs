@@ -23,6 +23,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { driverSource } from "./driver-source.mjs";
 import { editRepairTail, fullWriteTail } from "../repair-contract.mjs";
 import { digestReemitContract, buildFlushFollowup } from "../digest-queue.mjs";
 import { buildEscalationFollowup, buildEnvelopeCloseFollowup,
@@ -294,7 +295,7 @@ test("the report-card lint repair is a COLD re-render and keeps its full write �
   // reads almost identically to the redo() ladder and is the opposite case. The card is dispatched FRESH
   // with `extra` riding the stage's own write mandate, precisely so a provenance bleed cannot survive in
   // context — a targeted edit of the contaminated card would preserve what the re-render exists to discard.
-  const t = src("pipeline.mjs");
+  const t = driverSource("pipeline.mjs");
   const site = t.split("Fix ONLY what the checks name; change nothing else about the card.")[0].slice(-1600);
   assert.match(site, /The card is re-rendered FRESH/);
   assert.match(site, /this stays a FULL WRITE, and not by omission/);
@@ -348,7 +349,7 @@ test("no composer carries a whole-file re-emission order except the two that exp
 
 
 test("the document-growth tripwire now reads a repair-shaped trip as a regression alarm", () => {
-  const t = src("pipeline.mjs");
+  const t = driverSource("pipeline.mjs");
   const comment = t.split("// PR-4 — document-growth tripwire")[1].split("if (r.ok && out && priorSize")[0];
   assert.match(comment, /a regression to alarm on, not the known noise it used to be/);
   assert.match(comment, /leave every other line byte-identical/, "it says WHY a trip means the direction was ignored");

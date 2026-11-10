@@ -12,69 +12,11 @@ ONE call executes the whole variant × platform grid as a **program** in Perplex
 program's stdout is the deliverable; the executed code comes back as an audit receipt. This is what
 makes every "no results" row a *real executed search*, not a claim.
 
-Call `perplexity_research` with `enable_sandbox: true`, `depth: "pro-search"`, and the task below.
-Fill the bracketed sections from the variant manifest (every variant row, including transliteration
-variants — tag their findings `Verify? ✅` downstream).
-
-**Probe-validated constraints (2026-06-10 — do not loosen):**
-- The SDK result object supports **iteration and attribute access only** — the pinned access idiom
-  below is mandatory (slicing or `dict()` makes every cell silently fail into gaps).
-- The program records **up to the number the grid spec states (results_per_cell) without judging similarity** — filtering is YOUR
-  job afterwards, with legal judgment, not the program's string logic.
-- The model must **never re-emit the program output in its message** (re-transcription is lossy — a
-  full term vanished in probe testing); the confirmation line is derived from parsed stdout.
-
-### Task template
-
-```
-Write and run a sandbox program that executes a marketplace search grid for a proposed trademark.
-
-SEARCH TERMS ([N]): [JSON array of the terms your task message's GRID KEYS names]
-
-PLATFORMS ([M]): domain-restricted search for each store domain in YOUR TASK MESSAGE's
-PLATFORMS block (dictated per customer — copy that list verbatim; a gaming profile is one example:
-["store.steampowered.com", "store.epicgames.com", "play.google.com", "apps.apple.com",
-"apps.microsoft.com", "itch.io"]), plus one unrestricted general-web search per term
-(platform name "web").
-
-For EVERY (term, platform) cell run a web search and record up to the number the grid spec states (results_per_cell) of returned candidate listings —
-record what the search returns, do NOT filter or judge similarity in code.
-
-Access the search results EXACTLY like this (the result object supports iteration and attribute
-access only — no slicing, no dict()):
-
-    hits = pplx_sdk.search.web(term, limit=10, domains=[platform])   # omit domains= for web cells
-    results = []
-    for h in hits:
-        if len(results) >= 8: break
-        results.append({"name": h.title or "", "url": h.url or ""})
-
-status = "hit" if results else "no_hit". Wrap each cell in try/except; on exception append to gaps
-the string "<term> | <platform> | <repr of the exception>". Do not skip any cell.
-
-AFTER the grid, the same program runs the CONNOTATION searches (same access idiom, up to 8 results
-each, recorded raw into extras.pr_risk — the ONLY extras key with a consumer; the old
-competitor_intel / crowded_field extras are RETIRED: nothing ever read them):
-- pr_risk: run the matter frame's meaning questions, its `Meaning angles:` line in matter-context.md, each
-  as written. **Weight subcultural / social / community web
-  — Urban Dictionary, Wikipedia, news, forums — NOT just dictionaries:** the hazard (e.g. "Mara" = a
-  Central American street gang) lives on the social web, never in a lexical entry. **A dictionary gloss ("it just
-  means crowd") is context, NEVER a clearance** — a connotation reads CLEAN only when the searched social/web
-  sources came back empty, never because a dictionary looked benign.
-The program prints EXACTLY one JSON object to stdout:
-{"cells": [{"term", "platform", "status", "results": [{"name", "url"}]}],
- "extras": {"pr_risk": [{"query", "results": [...]}]},
- "gaps": ["<term> | <platform> | <error>"]}
-
-Your final message after the program runs must be ONLY one line, derived from the PARSED stdout:
-"GRID: <len(cells)> cells, <len(gaps)> gaps" — do NOT repeat the JSON.
-```
-
 **Deterministic-grid mode (the default when the profile has platforms):** you do NOT author this program.
 The driver writes `grid-spec.json` — including a `connotation.queries` list: the matter frame's meaning
 questions, as it wrote them — and the `perplexity_research` tool BUILDS and runs the program itself, recording the marketplace
-cells AND the connotation/meaning queries into the ledger's `extras.pr_risk[]`. The template above governs only
-the no-profile fallback path. Either way the connotation contract is identical: the meaning sweep RUNS and every
+cells AND the connotation/meaning queries into the ledger's `extras.pr_risk[]`.
+In this mode the connotation contract is identical: the meaning sweep RUNS and every
 query is recorded, and a clean PR claim with no recorded search is rejected (`connotation_search_missing`).
 
 ### What comes back, and what you do with it

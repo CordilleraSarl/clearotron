@@ -5,6 +5,7 @@
 //
 // One phase of a run, moved out of pipelineInner unchanged. `helpers` are functions still held in pipeline.mjs, handed in
 // because this module must not import that one back; each moves here when the other phases that share it have moved.
+import { atomicWrite, paths } from "../run-record.mjs";
 import { driverDir, ensureDriverDir } from "../../shared/driver-dir.mjs";
 import { applyAskClosure, deriveAsks, finalizeOpenHandoffs, summarizeAsks } from "../ask-ledger.mjs";
 import { mintCommonLawCarryDoubts } from "../commonlaw-carry.mjs";
@@ -25,7 +26,6 @@ import { mintPlacementCarryDoubts, reconcilePlacementCarry } from "../placement-
 import { placementAuditRows } from "../placement-decisions.mjs";
 import { parsePlacementsJson } from "../placement-model.mjs";
 import { mintPresenceDoubts } from "../presence-reconciliation.mjs";
-import { atomicWrite } from "../progress.mjs";
 import { buildAuditMd, parseSpineFindingBlocks } from "../publish/audit-from-spine.mjs";
 import { deriveRegisterPresence } from "../publish/register-presence.mjs";
 import { recallReceiptForOwnCompany } from "../recall-receipt.mjs";
@@ -135,7 +135,7 @@ export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWri
   // every code surface said VERY HIGH). Thread the just-refreshed sidecar into the stage prompt; the
   // deterministic backstop is predelivery-lint's overallTierChecks.
   runState.displayVerdict = null;
-  try { runState.displayVerdict = JSON.parse(readFileSync(driverDir(run.runDir, "verdict.json"), "utf8")); } catch { /* legacy — prompt line omitted */ }
+  try { runState.displayVerdict = JSON.parse(readFileSync(paths(run.runDir).verdict, "utf8")); } catch { /* legacy — prompt line omitted */ }
   // ── CONVERSION 4 — THE DRIVER'S OWN FRONT-MATTER RECORD ──────────────────────────────────────
   //
   // Nine of report-overview.md's ten front-matter keys are values the driver already holds and used to
@@ -291,7 +291,7 @@ export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWri
   // redo re-emits report.md, so every driver-owned front-matter field is re-applied after it.
   const applyVerdictFrontMatter = () => {
     let v = null;
-    try { v = JSON.parse(readFileSync(driverDir(run.runDir, "verdict.json"), "utf8")); } catch { return; }
+    try { v = JSON.parse(readFileSync(paths(run.runDir).verdict, "utf8")); } catch { return; }
     if (!v?.tier) return;
     const fields = { overall_label: v.tier, overall_badge: v.badge };
     try {
@@ -375,7 +375,7 @@ export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWri
     const lacks = correctionsTheRestoreLacks(run.runDir, restored.from);
     if (lacks.length) {
       // Joined to what the state already holds: an earlier correction's names stay in the reason.
-      const at = driverDir(run.runDir, "corrections-state.json");
+      const at = paths(run.runDir).correctionsState;
       const held = (() => { try { const s = JSON.parse(readFileSync(at, "utf8"))?.stale; return Array.isArray(s) ? s : []; } catch { return []; } })();
       try { atomicWrite(at, JSON.stringify({ ts: new Date().toISOString(), stale: [...new Set([...held, ...lacks])] }, null, 2)); }
       catch { /* the event below records it */ }
@@ -536,7 +536,7 @@ export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWri
       const readJson = (p) => { try { return existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : null; } catch { return null; } };
       const runEvents = (() => {
         try {
-          return readFileSync(driverDir(run.runDir, "run.jsonl"), "utf8").split("\n")
+          return readFileSync(paths(run.runDir).run, "utf8").split("\n")
             .filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
         } catch { return []; }
       })();
@@ -548,15 +548,15 @@ export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWri
           })
         : [];
       runAsks = deriveAsks({
-        intakeAsks: ctx.intakeAsks ?? readJson(driverDir(run.runDir, "intake-asks.json"))?.asks ?? [],
+        intakeAsks: ctx.intakeAsks ?? readJson(paths(run.runDir).intakeAsks)?.asks ?? [],
         reportMd: existsSync(P.report) ? readFileSync(P.report, "utf8") : "",
-        escalationState: readJson(driverDir(run.runDir, "escalation-state.json")),
+        escalationState: readJson(paths(run.runDir).escalationState),
         events: runEvents,
-        frameReopen: readJson(driverDir(run.runDir, "frame-reopen.json")),
-        screenGateUnresolved: readJson(driverDir(run.runDir, "screen-gate-unresolved.json"))?.unresolved ?? null,
+        frameReopen: readJson(paths(run.runDir).frameReopenReceipt),
+        screenGateUnresolved: readJson(paths(run.runDir).screenGateUnresolved)?.unresolved ?? null,
         supplementalPlans,
-        xcheck: readJson(driverDir(run.runDir, "register-xcheck.json")),
-        recall: recallReceiptForOwnCompany(readJson(driverDir(run.runDir, "register-recall.json"))),   // never another company's recall line
+        xcheck: readJson(paths(run.runDir).registerXcheck),
+        recall: recallReceiptForOwnCompany(readJson(paths(run.runDir).registerRecall)),   // never another company's recall line
         withheldFamilies: readWithheldFamilies(run.runDir),   // the reading turn's reasons, for a frame ask its judgment settled
         planExecution: ctx.planExecution ?? readJson(P.planExecution),
       }, { ts: askTs });
@@ -662,7 +662,7 @@ export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWri
       // answered — and nor does one the reading turn's recorded judgment settled (SETTLED_CLASSES). A run
       // with no reopen, or a legacy receipt with no term rows, mints nothing.
       try {
-        const fr = JSON.parse(readFileSync(driverDir(run.runDir, "frame-reopen.json"), "utf8"));
+        const fr = JSON.parse(readFileSync(paths(run.runDir).frameReopenReceipt, "utf8"));
         if (Array.isArray(fr?.remedy_terms)) {
           doubts.push(...mintRemedyAccountingDoubts(
             { not_accounted: fr.remedy_terms.filter((r) => !SETTLED_CLASSES.includes(r?.class)) },
@@ -731,7 +731,7 @@ export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWri
           // inside the seat's own turn (doubt-ledger.applyClosure refuses it again either way). Asks
           // are absent from the map on purpose: an ask is a question about a probe or directive, not
           // a claim lifted out of an artifact, so it has no source to be circular with.
-          writeFileSync(driverDir(run.runDir, "doubt-closure-spec.json"), `${JSON.stringify({
+          writeFileSync(paths(run.runDir).doubtClosureSpec, `${JSON.stringify({
             // The SAME set the dispatch carries. Listing openAfterStitch here while dispatching a
             // subset would tell the seat it may speak about ids it was never shown.
             openIds: [...dispatchDoubts.map((d) => d.id), ...openAsksForStage.map((a) => a.ask_id)],
@@ -774,7 +774,7 @@ export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWri
               for (const c of askApplied.carryIntoFindings ?? [])
                 runLog(run.runDir, { event: "ask-closure-mark-owed", ...c });
               if (askApplied.carryIntoFindings?.length)
-                writeFileSync(driverDir(run.runDir, "marks-owed-a-finding.json"),
+                writeFileSync(paths(run.runDir).marksOwedAFinding,
                   JSON.stringify({
                     _provenance: "recall asks that could not close because the mark they found is absent from findings.json — owner ruling 2026-09-07, Option A, worded about the MARK",
                     _notWritten: "these are NOT appended to findings.json: a finding carries a band, a net line and a legal position, and a row minted here would carry none of them. The repair belongs where the findings are authored.",
@@ -791,7 +791,7 @@ export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWri
       }
 
       const settled = runDoubts.filter((d) => d.status === "checked-and-settled").length;
-      writeFileSync(driverDir(run.runDir, "doubts.json"),
+      writeFileSync(paths(run.runDir).doubts,
         JSON.stringify({ minted: runDoubts.length, settled, open: runDoubts.length - settled,
           // — recorded here too so the live sidecar and the delivered audit cannot disagree
           // about whether the mint truncated. Omitted entirely when nothing was dropped.
@@ -809,7 +809,7 @@ export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWri
       try {
         runAsks = finalizeOpenHandoffs(runAsks);
         const askSummary = summarizeAsks(runAsks);
-        writeFileSync(driverDir(run.runDir, "asks.json"),
+        writeFileSync(paths(run.runDir).asks,
           JSON.stringify({ ...askSummary, asks: runAsks }, null, 2) + "\n");
         runLog(run.runDir, { event: "asks", ...askSummary });
         note(`ask ledger: ${askSummary.total} ask(s) — ${askSummary.executed} executed, ${askSummary.immaterial} judged immaterial, ${askSummary.recovery} handed over, ${askSummary.open} OPEN`);

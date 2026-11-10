@@ -29,14 +29,17 @@
 // history is not rewritten to tidy a citation, so the wrong number stands in the log forever; the
 // references in this file are corrected and this comment is the reconciliation. A reader who greps the
 // history for 1886 and lands here is in the right place and the number that brought them is not.
+import { writePark } from "./run-park.mjs";
+import { atomicWrite, paths } from "./run-record.mjs";
 import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, rmSync, renameSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
 import { fileURLToPath } from "node:url";
 
 import { runStage } from "./gateway.mjs";
-import { config, RESEARCH_PROVIDERS, REGISTER_PROVIDER, activeProvider, missingCredentials } from "./driver.config.mjs";
-import { StageFailure, buildFailurePacket, stageWallFields, terminalReasonFields, isDesignedRefusal } from "./pipeline.mjs";   // — the wall fields the spine already carries
+import { config, RESEARCH_PROVIDERS, REGISTER_PROVIDER, missingCredentials } from "./driver.config.mjs";
+import { registerAdapter as adapterForRegister } from "./engine/run-choices.mjs";   // the run's register adapter, from ctx.register
+import { StageFailure, buildFailurePacket, stageWallFields, terminalReasonFields, isDesignedRefusal } from "./run-outcome.mjs";   // — the wall fields the spine already carries
 import {
   REFUSAL_TERMINAL_KIND,   // — the terminal kind that is not a failure
   // — the clearance lane's recovery DECISION, reused rather than restated. The
@@ -67,7 +70,7 @@ import { correctionsAppliedTable, unresolvedFlags } from "./corrections-feedforw
 import { settledKnockoutReading } from "./knockout-register-record.mjs";
 import { stripNextStepSections } from "./knockout-next-step.mjs";
 import { publishKnockout, composeKnockoutEmail } from "./publish/knockout.mjs";
-import { writeRunStatus, readRunStatus, rollupStatus, atomicWrite, identitySeed } from "./progress.mjs";   // — the identity seed is shared; the stepper is not
+import { writeRunStatus, readRunStatus, rollupStatus, identitySeed } from "./progress.mjs";   // — the identity seed is shared; the stepper is not
 import { batchMarkName } from "./mark-name.mjs";
 import { runLog, note, outputMeta } from "./log.mjs";
 import { defaultTerritoryState } from "./effective-scope.mjs";   // the stored-defaults reading — one producer, shared with the clearance lane
@@ -102,7 +105,7 @@ const koStep = (ctx, label, extra = {}) => {
 // TRIAGE ladder (NOT the clearance Generic default — a knockout rates at triage grain). Same freeze
 // doctrine as attachFramework: minted once, read verbatim on resume, corrupt = loud.
 function attachKnockoutFramework(ctx) {
-  const sidecarPath = driverDir(ctx.paths.runDir, "framework.json");
+  const sidecarPath = paths(ctx.paths.runDir).framework;
   // ── THE DECK'S PATH, RESOLVED ONCE AND ON BOTH PATHS ────────────────────────
   //
   // The assess stage is served the DECK now, not only the manifest — `framework.mjs` states the rule
@@ -214,7 +217,7 @@ async function knockoutReviewingPass({ ctx, run, K, merged, plan, chunks, compos
   const sourceAnswered = chunks.flatMap((_, c) => knockoutAssessSourceDefects(run.runDir, c)).filter((x) => x.state === "answered");
   const keepOpen = () => {
     if (!sourceDefects.length && !sourceAnswered.length) return;
-    atomicWrite(driverDir(run.runDir, "knockout-corrections.json"), JSON.stringify({ defects: sourceDefects, outcomes: [], recheck: "not-run",
+    atomicWrite(paths(run.runDir).knockoutCorrections, JSON.stringify({ defects: sourceDefects, outcomes: [], recheck: "not-run",
       open: [...sourceDefects.map((x) => ({ kind: x.kind, mark: x.mark, problem: x.problem, state: "not-corrected" })),
         ...sourceAnswered.map((x) => ({ kind: "source", mark: x.mark, problem: sourceProblem(x), state: "not-rechecked" }))] }, null, 2) + "\n");
   };
@@ -301,7 +304,7 @@ async function correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, wor
   const correctedNames = [...new Set(work.defects.map((x) => x.mark))];
   const log = (outcome, detail = {}) => runLog(run.runDir, { event: "knockout-review", outcome, material: work.defects.length, marks: correctedNames.length, ...detail });
   const asOpen = (defects, state, reason = null) => defects.map((x) => ({ kind: x.kind, mark: x.mark, problem: x.problem, state, ...(reason ? { reason } : {}) }));
-  const keepRecord = (record) => { try { atomicWrite(driverDir(run.runDir, "knockout-corrections.json"), JSON.stringify(record, null, 2) + "\n"); } catch (e) { note(`corrections record not kept (non-fatal): ${String(e?.message ?? e).slice(0, 160)}`); } };
+  const keepRecord = (record) => { try { atomicWrite(paths(run.runDir).knockoutCorrections, JSON.stringify(record, null, 2) + "\n"); } catch (e) { note(`corrections record not kept (non-fatal): ${String(e?.message ?? e).slice(0, 160)}`); } };
   const failed = [];
   for (const c of touched) {
     try {
@@ -432,9 +435,10 @@ async function koStage(name, ctx, { chunkNo = null, msgCtx = {} } = {}) {
 // with the failure on it, and nothing more is fetched: listing each smaller count is no recovery. A rate limit is not
 // that failure: it parks and resumes as every stage's does, and the resume reuses each answer held.
 async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts, countExec, opts }) {
+  const register = ctx.register ?? REGISTER_PROVIDER;   // the run's register (ctx.register), the machine's where none is named
   const names = markRows.map((m) => ({ name: String(m.name), classes: Array.isArray(m.classes) ? m.classes : null }));
   const exec = resolveQuestionExecutor({
-    lister: opts?.recordLister ?? null, adapter: activeProvider(),
+    lister: opts?.recordLister ?? null, adapter: adapterForRegister(ctx.register),
     agentId: agent, sessionKey: `clearance-${run.slug}-${run.codename}`, recordLog: runRecordLogPath(run.runDir),
     // A fixture run never reaches a live register: if the counts ran on fixtures this lane may not either.
     offline: countExec.source.startsWith("fixtures:"),
@@ -446,16 +450,16 @@ async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts
     : recordsPreflight({ capabilities: ctx.registerCaps, hasAdapter: exec.source !== "none" });
   if (refusal) {
     atomicWrite(K.registerRecords, JSON.stringify({
-      schema: 2, provider: REGISTER_PROVIDER, providerLabel: ctx.registerCaps?.label ?? REGISTER_PROVIDER,
+      schema: 2, provider: register, providerLabel: ctx.registerCaps?.label ?? register,
       takenAt: new Date().toISOString(), unavailable: refusal, marks: [],
     }, null, 2) + "\n");
     note(`register filings not listed: ${refusal}`);
-    runLog(run.runDir, { event: "knockout-register-records-refused", provider: REGISTER_PROVIDER, reason: refusal });
+    runLog(run.runDir, { event: "knockout-register-records-refused", provider: register, reason: refusal });
     return null;
   }
   const unreachable = exec.source === "provider" ? (ctx.registerUnreachable ?? []) : [];
   const scope = { marks: names, classes: job.classes ?? null, jurisdictions: job.jurisdictions ?? null, capabilities: ctx.registerCaps, unreachable };
-  const build = (reading) => knockoutRecordsDoc({ ...scope, provider: REGISTER_PROVIDER, counts, reading, framedMarks: plan.marks,
+  const build = (reading) => knockoutRecordsDoc({ ...scope, provider: register, counts, reading, framedMarks: plan.marks,
     readBlocks: (name) => knockoutBandBlocks(run.runDir, name), readProposals: (name) => knockoutProposals(run.runDir, name) });
   try {
     if (exec.fixtureDir) writeFixtureMarker(run.runDir, exec.fixtureDir);
@@ -463,7 +467,7 @@ async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts
     mkdirSync(join(run.runDir, "register-units"), { recursive: true });
   } catch (e) {
     note(`register filings listing failed (non-fatal): ${e.message}`);
-    runLog(run.runDir, { event: "knockout-register-records-failed", provider: REGISTER_PROVIDER, cause: String(e?.message ?? e).slice(0, 300) });
+    runLog(run.runDir, { event: "knockout-register-records-failed", provider: register, cause: String(e?.message ?? e).slice(0, 300) });
     return null;
   }
 
@@ -484,7 +488,7 @@ async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts
       const inScope = [...new Set(names.flatMap((m) => m.classes ?? []).concat(Array.isArray(job.classes) ? job.classes : []))].join(", ") || null;
       await koStage("knockout-register-read", ctx, { msgCtx: {
         readingLines: readingTableLines({ marks: names, counts, classes: job.classes ?? null, framedMarks: plan.marks, runDir: run.runDir }),
-        providerDoc: activeProvider()?.skillDoc ?? null, inScope,
+        providerDoc: adapterForRegister(ctx.register)?.skillDoc ?? null, inScope,
       } });
       reading = JSON.parse(readFileSync(K.registerReading, "utf8"));
       runLog(run.runDir, { event: "knockout-register-read", names: reading.marks?.length ?? 0 });
@@ -498,14 +502,14 @@ async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts
   try {
     const doc = withHeldGoods(build(reading), run.runDir, { runPrefix: `clearance-${run.slug}-${run.codename}` });
     atomicWrite(K.registerRecords, JSON.stringify(doc, null, 2) + "\n");
-    appendQuestionReceipts(K.countLedger, doc, { provider: REGISTER_PROVIDER });
-    runLog(run.runDir, { event: "knockout-register-records", provider: REGISTER_PROVIDER, executor: exec.source,
+    appendQuestionReceipts(K.countLedger, doc, { provider: register });
+    runLog(run.runDir, { event: "knockout-register-records", provider: register, executor: exec.source,
       marks: doc.marks.length, listed: listedMarks(doc), records: doc.marks.reduce((n, m) => n + m.records.length, 0),
       questions: doc.marks.reduce((n, m) => n + m.terms.filter((t) => t.qid?.startsWith("supp:")).length, 0), reading: reading ? "finished" : "not-finished" });
     return doc;
   } catch (e) {
     note(`register filings listing failed (non-fatal): ${e.message}`);
-    runLog(run.runDir, { event: "knockout-register-records-failed", provider: REGISTER_PROVIDER, cause: String(e?.message ?? e).slice(0, 300) });
+    runLog(run.runDir, { event: "knockout-register-records-failed", provider: register, cause: String(e?.message ?? e).slice(0, 300) });
     return null;
   }
 }
@@ -690,8 +694,8 @@ export function knockoutRecoveryPark({ ctx, run, e, reason, failedStage, note = 
   // `.postponed` and NO `.failed`: the marker IS the difference between a parked run and a dead one,
   // and writing both would leave a run the runner resumes and a reader reads as failed.
   try {
-    sentinel(run.runDir, ".postponed", { kind: "recovery", lane: "knockout", recoveryResumesAt,
-      postponedAt: new Date().toISOString(), stage: failedStage });
+    writePark(run.runDir, { kind: "recovery", lane: "knockout", recoveryResumesAt,
+      postponedAt: new Date().toISOString(), stage: failedStage }, { job: ctx.job, agent: ctx.agent, codename: run.codename });
   } catch { /* best-effort — status.json below is the durable record */ }
   try {
     writeRunStatus(ctx, { state: "recovering", recoveryAttempts: attempt, recoveryMax, failedStage,
@@ -712,6 +716,7 @@ export function knockoutRecoveryPark({ ctx, run, e, reason, failedStage, note = 
 
 export async function knockoutInner(ctx, job, opts = {}) {
   const { run, agent, paths: P } = ctx;
+  const register = ctx.register ?? REGISTER_PROVIDER;   // the run's register (ctx.register), the machine's where none is named
   const K = ctx.K = koPaths(run.runDir);
   const policy = ctx.searchPolicy;
   const runId = `${run.slug}-${run.date}-${run.codename}`;   // same shape as clearance (seedRunStatus) — one format across every consumer
@@ -784,11 +789,11 @@ export async function knockoutInner(ctx, job, opts = {}) {
       // from its prose and parked the run to retry a setting no wait can supply, with the reason only
       // in status.json. The remedy is the deployment, so it ends here, refused, before any spend.
       let registerAdapter;
-      try { registerAdapter = activeProvider(); }
+      try { registerAdapter = adapterForRegister(ctx.register); }
       catch (e) {
         throw new StageFailure("knockout-register-count", e.message, null, { refusal: true, failClass: "deterministic" });
       }
-      const caps = capabilitiesFor(REGISTER_PROVIDER);
+      const caps = capabilitiesFor(register);
       countExec = resolveCountExecutor({
         counter: opts?.countExecutor ?? null, adapter: registerAdapter,
         agentId: agent, sessionKey: `clearance-${run.slug}-${run.codename}`,
@@ -922,7 +927,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
     rollupStatus(run.studioRoot);
     // THE SIGNA RUN MEMORY'S ATTEMPT (providers/_shared/answer-memory.mjs): whatever an earlier attempt
     // held is dropped, so a re-run asks the register again, and the mode is fixed for this attempt.
-    ctx.answerMemory = beginAnswerMemory(run.runDir, REGISTER_PROVIDER);
+    ctx.answerMemory = beginAnswerMemory(run.runDir, register);
     if (ctx.answerMemory.applies)
       runLog(run.runDir, { event: "answer-memory", mode: ctx.answerMemory.mode, ...(ctx.answerMemory.unknown ? { unrecognised: ctx.answerMemory.unknown } : {}) });
     if (ctx.answerMemory.unknown) note(`answer memory: ${ctx.answerMemory.switch}="${ctx.answerMemory.unknown}" is not off, watch or on, so this register's default applies (${ctx.answerMemory.mode})`);
@@ -1109,7 +1114,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
           if (owed.length) {
             const checks = await runOwnerChecks({
               owners: owed, exec: sweep.exec, runDir: run.runDir, ledgerPath: K.ownerCheckLedger,
-              rawDir: driverDir(run.runDir, "web-results"), preset: KNOCKOUT_WEB.questionPreset,
+              rawDir: paths(run.runDir).webResults, preset: KNOCKOUT_WEB.questionPreset,
               concurrency: 3,   // step 3 — the same constant as the sibling calls above
             });
             atomicWrite(K.ownerChecks, JSON.stringify({ schema: 1, checks }, null, 2) + "\n");
@@ -1145,7 +1150,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
         // one row per instructed mark, verbatim), so this is a scope decision, not a set difference.
         marks: countRowsOf(markRows.map((m) => ({ name: String(m.name), classes: Array.isArray(m.classes) ? m.classes : null })), plan.marks),
         classes: job.classes ?? null, jurisdictions: job.jurisdictions ?? null,
-        provider: REGISTER_PROVIDER, capabilities: ctx.registerCaps,
+        provider: register, capabilities: ctx.registerCaps,
         counter: countExec.count, ledgerPath: K.countLedger, prior,
         joinForms: countExec.source === "provider" && ctx.registerCaps?.exactFormsCountAsOne === true,
         unreachable: ctx.registerUnreachable ?? [],   // — computed once at preflight, above
@@ -1167,11 +1172,11 @@ export async function knockoutInner(ctx, job, opts = {}) {
         const first = doc.marks?.[0]?.counts?.[Object.keys(doc.marks[0].counts)[0]];
         const why = first?.cause ?? first?.unavailable ?? "no reason recorded";
         throw new StageFailure("knockout-register-count",
-          `no register count could be taken for any of the ${planMarks.length} mark(s) via ${REGISTER_PROVIDER} (executor ${countExec.source}) — first cause: ${String(why).slice(0, 200)}`, null);
+          `no register count could be taken for any of the ${planMarks.length} mark(s) via ${register} (executor ${countExec.source}) — first cause: ${String(why).slice(0, 200)}`, null);
       }
       atomicWrite(K.registerCounts, JSON.stringify(doc, null, 2) + "\n");
       registerCounts = doc;
-      runLog(run.runDir, { event: "knockout-register-counts", provider: REGISTER_PROVIDER, executor: countExec.source, marks: doc.marks.length, counted, regions: doc.scope.regions ?? "worldwide" });
+      runLog(run.runDir, { event: "knockout-register-counts", provider: register, executor: countExec.source, marks: doc.marks.length, counted, regions: doc.scope.regions ?? "worldwide" });
       if (counted < doc.marks.length) note(`register counts: ${doc.marks.length - counted}/${doc.marks.length} mark(s) unavailable — the batch continues (they publish as "not available", never as zero)`);
 
       const sweeping = startSweep();
@@ -1198,7 +1203,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
     const chunks = koChunks(chunkRows);
     // the assignment sidecar — the per-chunk validator joins each chunk's marks against THIS (membership
     // is enforced in code, not prompted); deterministic from the frozen plan, so a resume re-mints equal.
-    atomicWrite(driverDir(run.runDir, "knockout-chunks.json"),
+    atomicWrite(paths(run.runDir).knockoutChunks,
       JSON.stringify({ schema: 1, chunks: chunks.map((ch) => ch.map((m) => m.name)) }, null, 2) + "\n");
     // a recovered mark's evidence changed — its prior assess chunk is STALE by construction; drop it so
     // the stage re-runs (otherwise the re-sweep was billed for nothing and the fresh payload never read).
@@ -1417,9 +1422,9 @@ export async function knockoutInner(ctx, job, opts = {}) {
       verdict: overall, markName: batchMarkName(markNames),
     };
     try { rmSync(join(run.runDir, ".sent")); } catch { /* none */ }
-    try { rmSync(driverDir(run.runDir, "send-receipts.json"), { force: true }); } catch { /* none */ }
-    try { rmSync(driverDir(run.runDir, "failure.json")); } catch { /* none */ }
-    writeFileSync(driverDir(run.runDir, "delivery.json"), JSON.stringify(packet, null, 2) + "\n");
+    try { rmSync(paths(run.runDir).sendReceipts, { force: true }); } catch { /* none */ }
+    try { rmSync(paths(run.runDir).failure); } catch { /* none */ }
+    writeFileSync(paths(run.runDir).delivery, JSON.stringify(packet, null, 2) + "\n");
     try {
       mkdirSync(config.outboxDir, { recursive: true });
       writeFileSync(join(config.outboxDir, `${packet.runId}.pending`), `${agent}\n`);
@@ -1519,7 +1524,10 @@ export async function knockoutInner(ctx, job, opts = {}) {
     // the plain knockout level" — on a terminal whose entire purpose is to tell an operator what to do.
     // `reason` keeps its 200 chars (it rides the ping); the cut is now STATED and the tail kept beside it.
     const { reason: shortReason, reasonTruncated, reasonFull } = terminalReasonFields(reason);
-    sentinel(run.runDir, ".failed", { stage: failedStage, reason, lane: "knockout", terminalKind });
+    // The signature and class the clearance end records, so a reader of either product's failure reads the same fields.
+    const failSig = failureSignature(failedStage, reason, { codes: e instanceof StageFailure ? e.reasonCodes : undefined });
+    const failClass = (e instanceof StageFailure && e.failClass) || classifyFailureReason(String(reason));
+    sentinel(run.runDir, ".failed", { stage: failedStage, reason, lane: "knockout", sig: failSig.sig, class: failClass, terminalKind });
     runLog(run.runDir, { event: "failed", stage: failedStage, reason, lane: "knockout", ...(terminalKind ? { terminalKind } : {}) });
     writeRunStatus(ctx, { state: "failed", failedStage, reason: shortReason, reasonTruncated, reasonFull, terminalKind });
     recordRunConsumption(ctx, { phase: "failed", tokens: stampTokenRollup(run.runDir, "failed") });
@@ -1535,7 +1543,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
     // flag, then the writes that can fail.
     let failPingSent = false;
     try { rmSync(join(run.runDir, ".sent")); } catch { /* none */ }
-    try { rmSync(driverDir(run.runDir, "send-receipts.json"), { force: true }); } catch { /* none */ }
+    try { rmSync(paths(run.runDir).sendReceipts, { force: true }); } catch { /* none */ }
     // a fresh notice supersedes an older send's skip-guards (a resumed-then-failed-again run must
     // still notify — the .sent/receipts invariant, clearance parity)
     try { writeRunStatus(ctx, { sendPending: true }); } catch (sErr) {
@@ -1544,14 +1552,15 @@ export async function knockoutInner(ctx, job, opts = {}) {
     try {
       const rich = buildFailurePacket({
         runId, agent, job, failedStage, shortReason, terminalKind,
-        reasonVerbatim: String(reason).slice(0, 1000),
+        reasonVerbatim: String(reason).slice(0, 1000), sig: failSig.sig, failClass,
       });
       const packet = {
         kind: "run-failed", ...rich,
         markName: job.markName ?? job.name ?? null, reason: shortReason,
         text: rich.whatsappText,   // the short fallback line legacy relays read (clearance parity)
+        failureSignature: failSig.sig,   // machine field, as on the clearance packet
       };
-      writeFileSync(driverDir(run.runDir, "failure.json"), JSON.stringify(packet, null, 2) + "\n");
+      writeFileSync(paths(run.runDir).failure, JSON.stringify(packet, null, 2) + "\n");
       failPingSent = Boolean(writeOutboxPacket(`${runId}.failed`, packet));
       if (!failPingSent) {
         mkdirSync(config.outboxDir, { recursive: true });

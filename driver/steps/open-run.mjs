@@ -8,11 +8,11 @@
 import { driverDir, ensureDriverDir } from "../../shared/driver-dir.mjs";
 import { orderSnapshot } from "../accepted-order.mjs";
 import { recordSpan } from "../attributed-span.mjs";
-import { activeProvider, config, preflightCredentials, preflightEngineBinary, preflightFreeSpace, preflightResearchCredential, REGISTER_PROVIDER } from "../driver.config.mjs";
+import { config, preflightCredentials, preflightEngineBinary, preflightFreeSpace, preflightResearchCredential, REGISTER_PROVIDER } from "../driver.config.mjs";
 import { engineProvenance } from "../engine-build.mjs";
 import { preflightEngineTurn } from "../engine/probe.mjs";
 import { engineNamed, registeredEngines, selectEngine } from "../engine/registry.mjs";
-import { readRunChoices, recordRunChoices } from "../engine/run-choices.mjs";
+import { RunChoiceUnavailable, readRunChoices, recordRunChoices, registerAdapter, registerForRun, unservedChoice } from "../engine/run-choices.mjs";
 import { note, runLog } from "../log.mjs";
 import { buildRunContext } from "../phase0.mjs";
 import { profileStoreResolution } from "../profiles.mjs";
@@ -32,27 +32,40 @@ export async function openRun({ job, opts }, helpers) {
   // A RESUMED RUN KEEPS THE ENGINE IT STARTED ON (engine/run-choices.mjs), so the engine doors below test that
   // engine rather than the machine's current setting. The run's folder is named the way the resume below names
   // it, and naming it creates nothing; a resume with no folder reads as no record here and is refused below in
-  // its own words. A recorded engine this driver does not have is refused by name before any door runs.
+  // its own words. A recorded engine or register this process cannot serve PARKS the run before any door runs, with
+  // nothing cleared, so it keeps its work and resumes on its own choice (RunChoiceUnavailable): never on the machine's.
   const resuming = Boolean(opts.codename) && !opts.minted;
+  let parkedRun = null;
   const recorded = (() => {
     if (!resuming) return { state: "none" };
     const date = opts.date ?? findRunDate(job, opts.codename, opts.studioRoot ?? config.studioRoot);
     if (!date) return { state: "none" };
-    return readRunChoices(buildRunContext(job, { studioRoot: opts.studioRoot, archiveRoot: opts.archiveRoot, codename: opts.codename, date }).runDir);
+    const at = buildRunContext(job, { studioRoot: opts.studioRoot, archiveRoot: opts.archiveRoot, codename: opts.codename, date });
+    parkedRun = { runDir: at.runDir, codename: at.codename, date };
+    return readRunChoices(at.runDir);
   })();
+  const park = (choice) => {
+    const err = new RunChoiceUnavailable({ ...choice, run: parkedRun });
+    try { runLog(parkedRun.runDir, { event: "run-choices-park", ...err.dependency }); } catch { /* best-effort */ }
+    return err;
+  };
   if (recorded.state === "unreadable") {
     const err = new Error(`resume refused: run ${opts.codename}'s engine record ${recorded.detail}, so it is not resumed on the machine's engine in its place`);
     err.noResume = true;
     throw err;
   }
-  if (recorded.state === "recorded" && !engineNamed(recorded.engine))
-    throw new Error(`resume refused: run ${opts.codename} started on the "${recorded.engine}" engine, which this driver does not have registered (${registeredEngines().join(", ")}); it keeps that engine rather than switch`);
+  const unserved = unservedChoice(recorded, { engineRegistered: recorded.state === "recorded" && Boolean(engineNamed(recorded.engine)),
+    machineRegister: REGISTER_PROVIDER ?? null });
+  if (unserved) throw park({ ...unserved, ...(unserved.kind === "engine" ? { detail: `registered: ${registeredEngines().join(", ")}` } : {}) });
   const engineEnv = recorded.state === "recorded" ? { ...process.env, CLEAROTRON_AI: recorded.engine } : process.env;
+  // A recorded engine whose program or sign-in this machine lacks parks the run too; a run with no record meets the
+  // doors as before. Only a refusal is caught: a door that passes, or fails open on weather, runs on unchanged.
+  const parksIfRecorded = (kind) => (e) => { throw recorded.state === "recorded" ? park({ kind, recorded: recorded.engine, detail: e?.message ?? e }) : e; };
   // The engine binary, first and UNCONDITIONALLY — before the register preflight, which two lanes skip.
   // Every lane spawns the engine: a knockout does, and so does a run with an injected recordFetcher. So
   // unlike the credential check below this one has no exemption, because there is no shape of run that
   // can proceed without it. It reads the filesystem and never spawns (driver.config.preflightEngineBinary).
-  preflightEngineBinary(engineEnv);
+  try { preflightEngineBinary(engineEnv); } catch (e) { parksIfRecorded("engine-program")(e); }
   // — there is somewhere to write, checked the same way, at the same door and for the same reason.
   // UNCONDITIONAL like the binary check above and unlike the credential check below: every lane writes a
   // run directory, so there is no shape of run that is exempt. A full disk fails as "artifact absent" at
@@ -94,7 +107,7 @@ export async function openRun({ job, opts }, helpers) {
   if (opts.records != null && !RECORDS_MODES.includes(opts.records))
     throw new Error(`--records: unknown value "${opts.records}" — one of: ${RECORDS_MODES.join(", ")}`);
   if (opts.records === "replay") {
-    const held = heldRegisterCredentials(activeProvider());
+    const held = heldRegisterCredentials(registerAdapter(parkedRun ? registerForRun(parkedRun.runDir) : null));   // the run's register
     if (held.length)
       throw new Error(`--records replay: ${held.join(" + ")} is set, so a stage's register tools could still reach the register — unset it for this resume, which answers every record fetch from the run's own records`);
     opts.recordFetcher ??= (uri) => savedRecordFetch(opts.__runRef?.runDir, uri);
@@ -147,7 +160,7 @@ export async function openRun({ job, opts }, helpers) {
     engineTurnStartedMs = Date.now();
     // `opts.engineTurnWait` stands in for the door's wait before it checks a locked sign-in refresh again,
     // in tests; a run passes none and waits.
-    engineTurn = await preflightEngineTurn({ wait: opts.engineTurnWait, env: engineEnv });
+    engineTurn = await preflightEngineTurn({ wait: opts.engineTurnWait, env: engineEnv }).catch(parksIfRecorded("engine-sign-in"));
     engineTurnEndedMs = Date.now();
     if (engineTurn.warning) console.error(engineTurn.warning);
   }
@@ -178,7 +191,7 @@ export async function openRun({ job, opts }, helpers) {
     // .sent + receipts and re-sends → a duplicate report. Refuse on ANY of the three (the runner's reclaim
     // router consults the SAME check — runDirDelivered — and marks such a dir .done rather than resuming).
     const deliveredMarker = existsSync(join(run.runDir, ".delivered")) ? ".delivered"
-      : existsSync(driverDir(run.runDir, "delivery.json")) ? "_driver/delivery.json"
+      : existsSync(paths(run.runDir).delivery) ? "_driver/delivery.json"
       : (() => { try { return JSON.parse(readFileSync(join(run.runDir, "status.json"), "utf8"))?.state === "delivered" ? "status delivered" : null; } catch { return null; } })();
     if (deliveredMarker) {
       // `noResume`: the run identity EXISTS here — opts.__runRef was set just above — so the CLI's
@@ -323,7 +336,9 @@ export async function openRun({ job, opts }, helpers) {
   // stateReset (A5): the resume guard above DELIBERATELY cleared terminal sentinels, so the status
   // seeds below (clearance seedRunStatus / knockout's own seed) may reopen a terminal state — that
   // authority is threaded, never ambient (writeRunStatus refuses a terminal→running flip without it).
-  const ctx = { paths: P, job, run, agent, stateReset: isResume };
+  // `register` is the run's register, decided once from its record (the machine's for a run with none): the one value
+  // every place that reads a register for this run takes, never the process's setting.
+  const ctx = { paths: P, job, run, agent, stateReset: isResume, register: registerForRun(run.runDir) };
   opts.__ctx = ctx;   // P2 — the outer wrapper reconciles this pass's stamps in its finally, success or failure
   // WS-B: freeze the customer profile into the sidecar before ANY validated stage — early stages'
   // idempotency re-validation and the receipts gate must all see the same per-run values. Minted on

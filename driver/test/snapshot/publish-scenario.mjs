@@ -29,9 +29,28 @@ const delivery = existsSync(profileFile) ? JSON.parse(readFileSync(profileFile, 
 const reportMd = join(spec.runDir, "report.md");
 const email = {};
 if (existsSync(reportMd)) {
-  const { composeEmailBody, composeEmailHtml } = await load("publish/index.mjs");
+  const { composeEmailBody, composeEmailHtml, coverNoteOptions } = await load("publish/index.mjs");
   email.text = composeEmailBody(reportMd, published.url, published.auditFile);
-  email.html = composeEmailHtml(reportMd, published.url, published.auditFile, [], delivery);
+  if (coverNoteOptions) {
+    // The cover note composed with the options the publisher's one function reads, which the report document carries too.
+    const opts = coverNoteOptions(spec.runDir);
+    email.html = composeEmailHtml(reportMd, published.url, published.auditFile, [], delivery, opts);
+    email.cover = JSON.stringify({ tier: opts.tier ?? null, statement: opts.statement ?? null });
+  } else {
+    // The cover note composed as the delivery composes it from its own reads: the frozen policy's product name, the verdict
+    // record as written, and the run's band ladder.
+    const { reportIdentityFor } = await load("search-policy.mjs");
+    const { clientConditions } = await load("terminal-clamp.mjs");
+    const { parseFrameworkManifest } = await load("framework.mjs");
+    const frozen = (name, parse = JSON.parse) => { try { return parse(readFileSync(join(spec.runDir, "_driver", name), "utf8")); } catch { return null; } };
+    const opts = { productName: reportIdentityFor(frozen("search-policy.json")).identity ?? undefined };
+    const v = frozen("verdict.json");
+    if (v) Object.assign(opts, { verdict: v.verdict, conditions: clientConditions(v), tier: v.tier, statement: v.statement ?? null });
+    const framework = frozen("framework.json", parseFrameworkManifest);
+    if (framework) opts.bands = framework.bands.map((b) => ({ label: b.label, tone: b.tone }));
+    email.html = composeEmailHtml(reportMd, published.url, published.auditFile, [], delivery, opts);
+    email.cover = JSON.stringify({ tier: opts.tier ?? null, statement: opts.statement ?? null });
+  }
 } else {
   const { composeKnockoutEmail } = await load("publish/knockout.mjs");
   const { worstBand } = await load("verify-knockout.mjs");

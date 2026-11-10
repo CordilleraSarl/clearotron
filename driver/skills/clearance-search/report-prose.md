@@ -184,8 +184,8 @@ Reusing a defined term is **not** repetition — it is the reader recognising th
 read three findings ago. Minting a synonym (*"seems cancellable"*, *"looks shaky"*, *"a bit exposed"*)
 makes them work out whether you meant something new, and usually you did not.
 
-[firm-wide-reasoning.md](firm-wide-reasoning.md)'s revocability rule states the same assessment in its Key
-Factors form (*"vulnerable to partial revocation in [classes] on non-use grounds"*). That is the **same
+[firm-wide-reasoning.md](firm-wide-reasoning.md)'s revocability rule states the same assessment in its
+`legal_position` and `practical_position` form (*"vulnerable to partial revocation in [classes] on non-use grounds"*). That is the **same
 term**, not a second one — do not mint a third phrasing for it.
 
 Control the verdict words. Never control the evidence sentence: that is where the facts of this

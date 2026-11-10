@@ -10,6 +10,7 @@
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { requireRegisterProvider } from "../../driver.config.mjs";
+import { recordedRegister } from "../run-choices.mjs";   // the register a run recorded, which serves it
 import { fixtureRecordsDir } from "../../register-fixture-marker.mjs";
 import { ledgerPath, runRecordLogPath } from "../../../providers/_shared/ledger-path.mjs";
 import { CORRECTION_POSITIONS_ENV } from "./correction-positions.mjs";   // the positions a correction hands its save
@@ -793,19 +794,19 @@ export function providerUnavailableRegisterTools(provider = null) {
   return new Set(REGISTER_TOOLS.filter((t) => !served.has(t)));
 }
 
-function registerEntry() {
+function registerEntry(register = null) {
   // `|| "corsearch"` lived here too — a SECOND silent default, behind the first one, so fixing
   // driver.config alone would have left the gather stages resolving to a vendor we hold no licence
   // with. requireRegisterProvider throws instead, with the same message the driver gives.
-  const p = requireRegisterProvider();
+  const p = register ?? requireRegisterProvider();
   const entry = REGISTER_SERVERS[p];
   if (!entry) throw new Error(`[gather-config] no MCP server built for REGISTER_PROVIDER="${p}" yet — wrap providers/${p}/src/core in a mount.js like corsearch's (pure glue, exposing the register_* names), then add it to REGISTER_SERVERS.`);
   return entry;
 }
 
 // Resolve a local key to its {script, tools}. `register` is dynamic; everything else is static LOCAL.
-function localEntry(key) {
-  return key === "register" ? registerEntry() : LOCAL[key];
+function localEntry(key, register = null) {
+  return key === "register" ? registerEntry(register) : LOCAL[key];
 }
 
 // group → { localKeys[], bridgeKeys[], extraTools[] }
@@ -879,7 +880,7 @@ export const claudeToolAnswerBytes = (env = process.env) =>
 // The mcp-config server env carries ONLY the per-run, non-secret values (session key + ledger paths +
 // agent + the run dir the band tools serve, and the answer size above). Creds (CORSEARCH_SESSION_KEY /
 // PERPLEXITY_API_KEY / EUIPO_*) are inherited from the engine env.
-function serverEnv({ sessionKey, agent, runDir, recordAxis, bandGroups = false, correctionPositions = null }) {
+function serverEnv({ sessionKey, agent, runDir, recordAxis, bandGroups = false, correctionPositions = null, register = null }) {
   const e = {};
   // — see buildGatherMcpConfig: a register server without a run is refused there, so by the time
   // the record-log line below runs, `runDir` is present for every config that could use it.
@@ -898,7 +899,10 @@ function serverEnv({ sessionKey, agent, runDir, recordAxis, bandGroups = false, 
   // — THE RUN'S REGISTER, so a recording tool gates a record link at the call as verify.mjs gates the
   // saved file (record-origins.mjs). Handed over explicitly: Codex gives a server only its own `env` and
   // the names it forwards, so a value left to inheritance reaches a Claude server and never a Codex one.
-  if (process.env.CLEAROTRON_DATABASE) e.CLEAROTRON_DATABASE = process.env.CLEAROTRON_DATABASE;
+  // The run's recorded register (engine/run-choices.mjs), which each tool server reads as its own; the machine's, as
+  // before, for a run with no record.
+  const reg = register ?? process.env.CLEAROTRON_DATABASE;
+  if (reg) e.CLEAROTRON_DATABASE = reg;
   // — the ledger paths are RESOLVED HERE and handed to the child explicitly, not forwarded as raw
   // env. Two reasons, and the second is the one that kept this rename parked for months:
   //   · the old line was `if (process.env[v]) e[v] = …`, and NO box sets those vars — prod, test and dev
@@ -948,7 +952,8 @@ export function withSendUntil(mcpConfigJson, sendUntilMs) {
   return JSON.stringify(cfg);
 }
 
-export function buildGatherMcpConfig(groups = [], { sessionKey, agent, runDir, recordAxis, bandGroups = false, correctionPositions = null } = {}) {
+export function buildGatherMcpConfig(groups = [], { sessionKey, agent, runDir, recordAxis, bandGroups = false, correctionPositions = null,
+  register = recordedRegister(runDir) } = {}) {
   const localKeys = new Set(), bridgeKeys = new Set();
   for (const g of groups) { const r = resolveGroup(g); r.local.forEach((k) => localKeys.add(k)); r.bridges.forEach((k) => bridgeKeys.add(k)); }
   const mcpServers = {};
@@ -972,14 +977,14 @@ export function buildGatherMcpConfig(groups = [], { sessionKey, agent, runDir, r
   // is the more fundamental refusal and the one an operator acts on, so it must still come out ahead of
   // this one — a box with neither a provider nor a run should be told about the provider.
   if (localKeys.has("register")) {
-    localEntry("register");
+    localEntry("register", register);
     if (!runDir) {
       throw new Error("gather-config: a register server needs the run it is fetching for — record bodies "
         + "belong to their run, and the box-global ledger is retired. Pass runDir.");
     }
   }
-  const env = serverEnv({ sessionKey, agent, runDir, recordAxis, bandGroups, correctionPositions });
-  for (const k of localKeys) mcpServers[k] = { command: NODE, args: [join(MCP_DIR, localEntry(k).script), ...(localEntry(k).args ?? [])], env };
+  const env = serverEnv({ sessionKey, agent, runDir, recordAxis, bandGroups, correctionPositions, register });
+  for (const k of localKeys) mcpServers[k] = { command: NODE, args: [join(MCP_DIR, localEntry(k, register).script), ...(localEntry(k, register).args ?? [])], env };
   // A FIXTURE RUN NEVER REACHES A LIVE REGISTER, and its job says so: the same key serves its canned answers.
   if (localKeys.has("register") && runDir && fixtureRecordsDir(runDir)) mcpServers.register.args = [join(MCP_DIR, "fixture-register-server.mjs")];
   // — THE BRIDGES GET THE AUDIT ENV, AND ONLY THAT. Until now they were spawned with no env at
@@ -1518,7 +1523,7 @@ export const RECORDING_STAGES_KEEPING_RETRIEVAL = Object.freeze(
   Object.keys(RECORDING).filter((k) => RECORDING[k].keepsRetrieval === true).sort(),
 );
 
-export function allowedToolsFor(groups = []) {
+export function allowedToolsFor(groups = [], { register = null } = {}) {
   // — THE SEED IS NO LONGER UNCONDITIONAL. `Read` always; `Write`/`Edit` only where some group's seat
   // still authors a file. A recording row that declares `seatWrites: false` has its artifact written by the
   // driver, so the hand-write tools are a superseded path left executable — and this is the seeding that
@@ -1535,7 +1540,7 @@ export function allowedToolsFor(groups = []) {
   const tools = seatWritesForGroups(groups) ? new Set(["Read", "Write", "Edit"]) : new Set(["Read"]);
   for (const g of groups) {
     const r = resolveGroup(g);
-    for (const k of r.local) (r.only ?? localEntry(k).tools).forEach((t) => tools.add(`mcp__${k}__${t}`));
+    for (const k of r.local) (r.only ?? localEntry(k, register).tools).forEach((t) => tools.add(`mcp__${k}__${t}`));
     for (const k of r.bridges) tools.add(`mcp__${k}__*`);    // whole bridge server (its tools are namespaced)
     r.extra.forEach((t) => tools.add(t));
   }

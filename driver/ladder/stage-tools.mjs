@@ -8,6 +8,7 @@
 import { config } from "../driver.config.mjs";
 import { buildGatherMcpConfig, allowedToolsFor, toolGroupsForStage, recordAxisFor, seatWritesForGroups } from "../engine/mcp/gather-config.mjs";
 import { GROUP_READING_STAGES } from "../stages.mjs";
+import { recordedRegister } from "../engine/run-choices.mjs";
 
 export function stageTools({ engine, name, sessionKey, agent, runDir, correction, excludeTools }) {
   // Two INDEPENDENT engine capability flags (both default ON for an engine that declares neither, so the
@@ -35,10 +36,12 @@ export function stageTools({ engine, name, sessionKey, agent, runDir, correction
     if (groups.length) {
       // The bound card index rides the same label the grant was resolved from — derived by the SAME
       // declared rule (`perAxis`), never by a second string-sniff that could disagree with it.
+      // The register the run recorded names the register tool server and the tools it grants; none recorded, the machine's.
+      const register = recordedRegister(runDir);
       const cfg = buildGatherMcpConfig(groups, { sessionKey, agent, runDir, recordAxis: recordAxisFor(name)?.axis,
-        bandGroups: GROUP_READING_STAGES.has(name), correctionPositions: correction?.positions ?? null });
+        bandGroups: GROUP_READING_STAGES.has(name), correctionPositions: correction?.positions ?? null, register });
       gatherMcpConfig = cfg ? JSON.stringify(cfg) : undefined;
-      gatherAllowedTools = allowedToolsFor(groups);
+      gatherAllowedTools = allowedToolsFor(groups, { register });
       gatherSeatWrites = seatWritesForGroups(groups);   // — the SAME derivation allowedToolsFor uses
       // Per-stage exclusion (copper-lattice re-route): a supplemental-lane register unit loses
       // register_enumerate — its judgment additions go through register_propose_supplemental, so the
