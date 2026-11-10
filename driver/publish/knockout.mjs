@@ -382,11 +382,16 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
 /**
  * THE NAME A KNOCKOUT'S EMAIL AND RECORD GIVE THE PRODUCT: the product's own, read from the run's frozen policy, as its report
  * page and the staff list read it (owner's ruling, 2026-11-10). The subject, the email's first line and the pool's report.md
- * title all take it from here. A level the registry no longer names keeps the wording these surfaces always carried.
+ * title all take it from here. Null where the registry no longer names the level: each surface then says less, as a
+ * clearance's does, and never names a product the run may not have been.
  */
-export const knockoutName = (searchPolicy) => reportIdentityFor(searchPolicy ?? null).identity ?? 'Knockout trademark review';
+export const knockoutName = (searchPolicy) => reportIdentityFor(searchPolicy ?? null).identity || null;
 
-export function composeKnockoutEmail({ findings, framework, overall, reports = [], auditUrl = null, job, registerCounts = null, qcFlags = [], productName = knockoutName(null) }) {
+/** The pool's report.md title: the product's name in capitals where it has one, then the run. Staff read it. */
+export const knockoutRecordTitle = (searchPolicy, runId) =>
+  `${[knockoutName(searchPolicy)?.toUpperCase(), 'REPORT'].filter(Boolean).join(' ')} — ${runId}`;
+
+export function composeKnockoutEmail({ findings, framework, overall, reports = [], auditUrl = null, job, registerCounts = null, qcFlags = [], productName = null }) {
   const t = bandTier(framework, overall);
   const n = (findings.marks ?? []).length;
   const urlByMark = new Map((reports ?? []).map((r) => [r.mark, r.url]).filter(([, u]) => u));
@@ -394,7 +399,9 @@ export function composeKnockoutEmail({ findings, framework, overall, reports = [
   // says how to read the list instead: a "full report" link on a batch could only be one name standing
   // for all of them. A single-mark run keeps its head link exactly as before — same bytes, same place.
   const only = n === 1 ? urlByMark.get((findings.marks ?? [])[0]?.name) ?? null : null;
-  const head = `<p style="${FONT}">${esc(productName)}${job?.ref ? ` — ${esc(job.ref)}` : ''}: <b>${n} mark${n === 1 ? '' : 's'}</b>, ${n === 1 ? 'rating' : 'highest rating'} <b style="color:${t.txt}">${esc(overall ?? '')}</b>.`
+  // The product's name and the reference, each where there is one: a part left out leaves no dash or colon behind it.
+  const lead = [productName, job?.ref].filter(Boolean).map((p) => esc(p)).join(' — ');
+  const head = `<p style="${FONT}">${lead ? `${lead}: ` : ''}<b>${n} mark${n === 1 ? '' : 's'}</b>, ${n === 1 ? 'rating' : 'highest rating'} <b style="color:${t.txt}">${esc(overall ?? '')}</b>.`
     + (only ? ` <a href="${esc(only)}">Open the full report</a>${auditUrl ? ` · <a href="${esc(auditUrl)}">audit workbook</a>` : ''}.` : '')
     + (!only && n > 1 ? ` One report per name below${auditUrl ? `, and one <a href="${esc(auditUrl)}">audit workbook</a> for the batch` : ''}.` : '') + `</p>`;
   // — THE FIRST NON-BLANK, never element 0. `?? fallback` catches null and undefined
@@ -828,7 +835,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   const routes = knockoutDocumentRoutes(reports, { auditFile });
   writeRO('report.md', [
     '---',
-    `title: "${knockoutName(searchPolicy).toUpperCase()} REPORT — ${runId}"`,
+    `title: "${knockoutRecordTitle(searchPolicy, runId)}"`,
     `matter: "${runId}"`,
     `overall_label: "${overall ?? ''}"`,
     `overall_badge: "${overallBadge}"`,

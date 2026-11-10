@@ -1392,7 +1392,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
       runId, agent,
       forwarder: job.forwarder, forwarderEmail: job.forwarderEmail, msgId: job.msgId,
       conversationId: job.conversationId ?? null,
-      subject: `${productName} — ${job.ref ?? markNames[0] ?? "batch"} (${nMarks} mark${nMarks === 1 ? "" : "s"})`,
+      subject: `${[productName, job.ref ?? markNames[0] ?? "batch"].filter(Boolean).join(" — ")} (${nMarks} mark${nMarks === 1 ? "" : "s"})`,
       emailBodyHtml: emailHtml,
       // THE SAME ROUTING AS THE CLEARANCE PACKET (part b). This read
       // `AGENT_WHATSAPP[agent]`, and every user of a deployment shares one agent id, so every knockout
