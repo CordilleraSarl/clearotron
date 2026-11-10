@@ -32,9 +32,10 @@ if (existsSync(reportMd)) {
   const { composeEmailBody, composeEmailHtml } = await load("publish/index.mjs");
   email.text = composeEmailBody(reportMd, published.url, published.auditFile);
   if (published.document?.cover) {
-    // The cover note composed from the report document, as the delivery composes it once it reads the document.
-    email.html = composeEmailHtml(published.document, published.url, published.auditFile, [], delivery);
-    email.cover = JSON.stringify({ tier: published.document.cover.tier ?? null, statement: published.document.cover.statement ?? null });
+    // The cover note composed with the report document's options, which the delivery reads from the same function.
+    const opts = published.document.cover;
+    email.html = composeEmailHtml(reportMd, published.url, published.auditFile, [], delivery, opts);
+    email.cover = JSON.stringify({ tier: opts.tier ?? null, statement: opts.statement ?? null });
   } else {
     // The cover note composed as the delivery composes it from its own reads: the frozen policy's product name, the verdict
     // record as written, and the run's band ladder.

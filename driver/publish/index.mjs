@@ -23,7 +23,7 @@ import { rollupTokens, servedModels } from '../tokens.mjs';
 import { reportIdentityFor, productCoverageNote, isRegisterOnly } from '../search-policy.mjs';
 import { readRecordArtifacts, bindFindingsToRecords, joinEvidenceStatus } from '../registry-fidelity.mjs';
 import { deliveryFlagLines, deliveredFailure } from '../predelivery-lint.mjs';
-import { unrenderableConditions, clientStatement } from '../terminal-clamp.mjs';   // — the conditions that reach no client surface
+import { unrenderableConditions, clientStatement, clientConditions } from '../terminal-clamp.mjs';   // — the conditions that reach no client surface; the cover note's
 import { runLog } from '../log.mjs';   // — one line in the run record when one does
 import { PROVIDERS, config } from '../driver.config.mjs';
 import { declaredRecordOrigins } from '../record-origins.mjs';
@@ -1306,6 +1306,8 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
     // The headline caption as the front matter states it, empty as null. The email, the data file, meta.json and the run
     // record take it; the page takes the report's Summary instead (render.mjs).
     caption: fm.overall_caption || null,
+    // The email's options (coverNoteOptions): the delivery composes the email after publishing, from the same function.
+    cover: coverNoteOptions(runDir ?? dirname(reportMd)),
   };
 }
 
@@ -1485,7 +1487,8 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // Composed rather than spelled here so the report link is built the same way the audit link always was.
   const url = reportRoute;
   return { runId, auditFile, counts, total, url, poolRunDir, auditError, findingsError, customerKey: customerKey || 'generic', clientGate,
-    caption };   // the report's own conclusion, for the run record's short surfaces
+    caption,   // the report's own conclusion, for the run record's short surfaces
+    document: doc };   // the report document
 }
 
 // Compose the notification email body — MARKDOWN (the mail tool renders markdown→HTML; raw HTML gets escaped).
@@ -1772,6 +1775,23 @@ function mdBlock(block) {
 // opts.tier, else the report front-matter, and the conditions from the report's own `# Actions`), and
 // the note that used to stand here claiming the parameter was "retained because client-summary.md is
 // still a first-class artifact" outlived its own truth: the stage is retired and nothing writes the file.
+/**
+ * THE EMAIL'S OPTIONS, read from the run's frozen files: the product's name off the frozen search policy, the verdict
+ * record's sign-off word, conditions, rating and statement as the record wrote them, and the band ladder of the frozen
+ * framework. The report document carries them as `cover`, and the delivery passes them to composeEmailHtml, on a fresh
+ * publish and on a resume that finds the run already published. The statement is the record's own, which the run's status
+ * keeps; the report's surfaces print the client form. Never throws: a file it cannot read leaves its options out.
+ */
+export function coverNoteOptions(runDir) {
+  const frozen = (key, parse = JSON.parse) => { try { return parse(readFileSync(paths(runDir)[key], 'utf8')); } catch { return null; } };
+  const opts = { productName: reportIdentityFor(frozen('searchPolicy')).identity ?? undefined };
+  const v = frozen('verdict');
+  if (v) Object.assign(opts, { verdict: v.verdict, conditions: clientConditions(v), tier: v.tier, statement: v.statement ?? null });
+  const framework = frozen('framework', parseFrameworkManifest);
+  if (framework) opts.bands = framework.bands.map((b) => ({ label: b.label, tone: b.tone }));
+  return opts;
+}
+
 export function composeEmailHtml(reportMdPath, url, auditFile, names = [], delivery = NEUTRAL_DELIVERY, opts = {}) {
   EMAIL_BANDS = Array.isArray(opts?.bands) && opts.bands.length ? opts.bands : null;   // doc 50 — per-run vocabulary
   const { fm, secs } = parseReport(reportMdPath);
