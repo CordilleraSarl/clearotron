@@ -6,7 +6,7 @@
 // A run records its engine and register when it starts. Resumed after the machine's engine setting changed, it is
 // checked and served on the engine it recorded, and every segment logs the record beside the machine's setting. A run
 // that has no record is resumed on the machine's engine and is given no record. A run whose recorded engine this driver
-// does not have is refused by name and runs nothing. The mark and the requester are invented.
+// does not have is refused by name and runs nothing. The order is the one the corrective-cycle tests use.
 import { test, after } from "node:test";
 import assert from "node:assert/strict";
 import { chmodSync, existsSync, mkdtempSync, readFileSync, rmSync, unlinkSync, writeFileSync } from "node:fs";
@@ -29,7 +29,7 @@ process.env.CLEAROTRON_REGISTER_GAP_CLAMP ||= "0";
 process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
 
 const JOB = { id: "test-job", msgId: "<test@x>", forwarder: "requester", forwarderDomain: "example.com",
-  ref: "TMP8440", markName: "PROJECT VELMORAX", classes: [9, 41], provider: "corsearch" };
+  ref: "TMP8440", markName: "PROJECT NOVAPULSE", classes: [9, 41], provider: "corsearch" };
 const FAIL_LATE = "record_report_overview";   // a stage in the delivery phase, so the first segment leaves a resumable run
 
 const events = (runDir) => readFileSync(driverDir(runDir, "run.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
