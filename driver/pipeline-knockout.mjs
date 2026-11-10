@@ -1149,10 +1149,8 @@ export async function knockoutInner(ctx, job, opts = {}) {
         // the stage re-runs (otherwise the re-sweep was billed for nothing and the fresh payload never read).
         if (recovered.length) {
           for (let c = 0; c < chunks.length; c++) {
-            // Both locations: a stale chunk left at the pre-relocation path must be invalidated too, or a
-            // resumed run reads the STALE one through the fallback below and the re-sweep is billed for nothing.
-            if (chunks[c].some((m) => recovered.includes(m.name)) && (existsSync(K.assessChunk(c)) || existsSync(K.assessChunkLegacy(c)))) {
-              try { for (const f of [K.assessChunk(c), K.assessChunkLegacy(c)]) if (existsSync(f)) rmSync(f); runLog(run.runDir, { event: "knockout-assess-invalidated", chunk: c, recovered: chunks[c].filter((m) => recovered.includes(m.name)).map((m) => m.name) }); } catch { /* best-effort */ }
+            if (chunks[c].some((m) => recovered.includes(m.name)) && existsSync(K.assessChunk(c))) {
+              try { rmSync(K.assessChunk(c)); runLog(run.runDir, { event: "knockout-assess-invalidated", chunk: c, recovered: chunks[c].filter((m) => recovered.includes(m.name)).map((m) => m.name) }); } catch { /* best-effort */ }
             }
           }
         }
@@ -1166,10 +1164,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
           const merged = { schema_version: 1, framework: null, batch: null, cardOrder: KNOCKOUT_CARD_ORDER, marks: [] };
           const summaries = [];
           for (let c = 0; c < chunks.length; c++) {
-            // READ prefers the new location and falls back to the pre-relocation one, so a run whose chunks
-            // were written before the move (or through the Bash bypass closed) resumes without paying for
-            // a re-dispatch. Nothing writes the legacy path any more — see stages-knockout.mjs.
-            const chunkPath = existsSync(K.assessChunk(c)) ? K.assessChunk(c) : K.assessChunkLegacy(c);
+            const chunkPath = K.assessChunk(c);
             const part = JSON.parse(readFileSync(chunkPath, "utf8"));
             if (c === 0) { merged.framework = part.framework ?? { source: ctx.framework.framework_key, ladder: ctx.framework.bands.map((b) => b.label) }; merged.batch = part.batch ?? null; }
             if (typeof part.chunkSummary === "string" && part.chunkSummary.trim()) summaries.push(part.chunkSummary.trim());
