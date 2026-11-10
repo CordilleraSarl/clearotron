@@ -1662,6 +1662,12 @@ export function resumeClaimIsAbandoned(resumingPath, now = Date.now(), {
 // needs to see it once would be the person least able to find it.
 const announcedTerminalSkips = new Set();
 
+/** Is there a `.published` at `publishedPath` written no earlier than the park at `parkPath`? Unreadable reads as yes. */
+export function publishedSincePark(publishedPath, parkPath) {
+  if (!existsSync(publishedPath)) return false;
+  try { return statSync(publishedPath).mtimeMs >= statSync(parkPath).mtimeMs; } catch { return true; }
+}
+
 /** Every run folder this watcher will resume on its own, due now or later: what an update has to wait for. */
 export const parkedRunDirOrphans = (now = Date.now()) => scanDueRunDirOrphans(now, { dueOnly: false });
 
@@ -1707,9 +1713,16 @@ export function scanDueRunDirOrphans(now = Date.now(), { dueOnly = true } = {}) 
         // `.resuming` stays in this list for the ORDINARY path: a live self-resume must not be re-fired.
         // It is excluded only when this run IS the abandoned claim recovered above, which is the whole
         // of the change — the fail-safe polarity is unchanged and an unprovable claim still counts alive.
-        const inFlight = [".delivered", ".failed", ".published", ".resuming", ".cancelled", ".cancel"]
+        //
+        // `.published` skips only when it is at least as new as the park. A run that published and then failed in a
+        // later delivery step parks like any other, and its `.published` is older than the park: the resume finds the
+        // record and delivers it without publishing again. A resume deletes the park it resumes (steps/open-run.mjs),
+        // so a park older than the publish is one this watcher must leave alone, as it always has. An unreadable time
+        // reads as moved on.
+        const inFlight = [".delivered", ".failed", ".resuming", ".cancelled", ".cancel"]
           .filter((m) => !(abandoned && m === ".resuming"));
         if (inFlight.some((m) => existsSync(join(runDir, m)))) continue;
+        if (publishedSincePark(join(runDir, ".published"), sentPath)) continue;
         let sent;
         try { sent = readJson(sentPath); } catch { continue; }
         if (!sent.job || !sent.agent || !sent.codename) continue;          // pre-fix sentinel without payload — leave for manual handling

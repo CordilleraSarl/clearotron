@@ -6262,8 +6262,8 @@
           "todos": 0
         },
         "runner.self-resume.test.mjs": {
-          "tests": 2,
-          "asserts": 18,
+          "tests": 3,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
