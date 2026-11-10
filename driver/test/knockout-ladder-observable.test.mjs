@@ -12,14 +12,13 @@
 //
 // Two changes, and the split matters more than either half:
 //   · readBackLadder (pipeline-knockout.mjs) reads the sidecar back THE WAY THE CONSUMER READS IT, at the
-//     freeze, before any dispatch. Minted ⇒ hard fail (the driver wrote it itself and cannot read it
-//     back). Pre-existing ⇒ loud, run continues — a replayed archive turning red is how this fix would
-//     go wrong, and its own "not claimed" says so.
+//     freeze, before any dispatch, and hard fails when it cannot: the driver wrote the file itself, on
+//     this pass or an earlier pass of the same build, since a run from another build is not resumed.
 //   · the validator emits `knockout-band-checks-inert` and does NOT fail. It rides the corrective ladder,
 //     so {ok:false} re-asks the SEAT, and no seat can repair a driver's sidecar.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync, chmodSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
@@ -98,13 +97,12 @@ test("THE DISCRIMINATOR: with a real ladder the line is absent AND the band chec
 
 // ── the refusal at the freeze ───────────────────────────────────────────────────────────────────────
 
-const ctxFor = (d) => ({ paths: { runDir: d } });
 
 test("MINTED: the driver cannot read back the ladder it just wrote — hard fail, before any paid turn", () => {
   for (const [label, framework] of [["empty bands", { bands: [] }], ["no bands key", { framework_key: "x" }],
     ["bands not an array", { bands: "Blocking/Medium" }], ["labels blank", { bands: [{ label: "" }, { label: null }] }]]) {
     const d = runDirWith(framework);
-    assert.throws(() => readBackLadder(ctxFor(d), driverDir(d, "framework.json"), { minted: true }),
+    assert.throws(() => readBackLadder(driverDir(d, "framework.json")),
       /knockout_ladder_unreadable/, `${label}: minting must refuse`);
     rmSync(d, { recursive: true, force: true });
   }
@@ -112,44 +110,21 @@ test("MINTED: the driver cannot read back the ladder it just wrote — hard fail
 
 test("MINTED: the sidecar missing entirely also refuses — an absent file is not an empty pass", () => {
   const d = runDirWith(undefined);
-  assert.throws(() => readBackLadder(ctxFor(d), driverDir(d, "framework.json"), { minted: true }),
+  assert.throws(() => readBackLadder(driverDir(d, "framework.json")),
     /knockout_ladder_unreadable/);
 });
 
 test("MINTED, GOOD: a real ladder reads back and nothing is raised or logged", () => {
   const d = runDirWith(FW);
-  readBackLadder(ctxFor(d), driverDir(d, "framework.json"), { minted: true });
+  readBackLadder(driverDir(d, "framework.json"));
   assert.deepEqual(runLogEvents(d), [], "a healthy freeze writes no fault line — otherwise the fault line means nothing");
 });
 
-test("PRE-EXISTING: loud, and the run is NOT stopped — a replayed archive must not turn red", () => {
-  // The disposition the "not claimed" asks for by name. These bytes predate this process and may
-  // predate this shape; refusing here would take down an archived run that renders fine today.
-  const d = runDirWith({ framework_key: "legacy-shape", ladder: ["Blocking", "Low"] });
-  readBackLadder(ctxFor(d), driverDir(d, "framework.json"), { minted: false });
-  const events = runLogEvents(d).filter((e) => e.event === "knockout-ladder-unreadable");
-  assert.equal(events.length, 1, "the fault is recorded");
-  assert.equal(events[0].minted, false, "and it says which disposition it took");
-});
-
-// SKIPPED under root rather than returned early: this drives the EACCES with a real 0o500 directory, and
-// root ignores a directory's write bit — the append lands, the run log gets its row, and the final
-// assertion that no row exists correctly fails. That is a defect in this harness, not in the branch. An
-// early `return` would report `ok` for a test that asserted nothing, so the reason is declared on the line.
-test("PRE-EXISTING: an unwritable run log does NOT take down the run it exists to spare",
-  { skip: (process.getuid?.() === 0 && "root writes through a 0o500 directory — the fault injection is a no-op")
-    || (process.platform === "win32" && "mode bits: chmod 0o500 does not make a folder unwritable on Windows, so the fault injection is a no-op there too") }, () => {
-  // runLog -> appendLine (log.mjs:12) is an unguarded mkdirSync + appendFileSync, so it throws on EACCES
-  // or a full disk. Accepted behaviour everywhere else in the driver; not here, where the whole point of
-  // this branch is that a pre-existing file keeps its run alive. Driven by making _driver/ unwritable —
-  // the real shape, not a stubbed throw.
-  const d = runDirWith({ framework_key: "legacy-shape", ladder: ["Blocking", "Low"] });
-  chmodSync(driverDir(d), 0o500);
-  try {
-    readBackLadder(ctxFor(d), driverDir(d, "framework.json"), { minted: false });
-  } finally {
-    chmodSync(driverDir(d), 0o700);
-  }
-  // Nothing thrown. The record is absent because the disk refused it, which is the case being handled.
-  assert.deepEqual(runLogEvents(d).filter((e) => e.event === "knockout-ladder-unreadable"), []);
+test("RESUMED: a ladder that does not read back refuses as a minted one does — this build wrote it", () => {
+  // A resume reads back a sidecar an earlier pass of the same build froze; a run started on another build is
+  // not resumed. So a ladder that will not read back is the same driver fault on every pass, and it stops the
+  // run before a paid turn rather than letting every rating pass unchecked.
+  const d = runDirWith({ framework_key: "no-bands", ladder: ["Blocking", "Low"] });
+  assert.throws(() => readBackLadder(driverDir(d, "framework.json")), /knockout_ladder_unreadable/);
+  assert.deepEqual(runLogEvents(d), [], "nothing is recorded as a soft finding instead");
 });
