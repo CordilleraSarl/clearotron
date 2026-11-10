@@ -173,7 +173,7 @@ export const COUNTED_EVENTS = {
   "jx-entry-refused": REFUSED, "knockout-register-records-refused": REFUSED, "register-xcheck-refused": REFUSED,
   "supplemental-fold-refused": REFUSED, "verdict-softening-not-adopted": REFUSED, "named-band-remerge-over-ceiling": REFUSED, "register-recall-refused": REFUSED,
   "auto-recovery-exhausted": RECOVERY, "auto-recovery-parked": RECOVERY, "corrective-rollback": RECOVERY,
-  "parked-for-human": RECOVERY, "postponed": RECOVERY, "recovery-parked": RECOVERY, "taint-park": RECOVERY, "run-choices-park": RECOVERY,
+  "parked-for-human": RECOVERY, "postponed": RECOVERY, "taint-park": RECOVERY, "run-choices-park": RECOVERY,
   // a covered part whose recovery was spent, parked to be delivered without (driver/parts-not-completed.mjs)
   "part-not-completed": RECOVERY,
   "cancelled": "cancelled", "failed": "run failed", "form-repair": "form repair turn",
