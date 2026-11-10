@@ -54,7 +54,7 @@ These are starting points. A mark can fit a primary archetype and pick up one or
 | # | Archetype | Signature | Risk concentrates in |
 |---|---|---|---|
 | 1 | **Coined word** | Invented term, no real-world meaning (e.g., LUMENGARDE, XYRELL, KODAK) | Phonetic / visual variants; transliteration; leet substitution; coined-word collisions in unrelated industries; phoneme expansion |
-| 2 | **Descriptive compound** | Multiple real words combining to describe goods/services (e.g., "Arcade Party", "Cavern Crates", "Jelly Royale") | Element-by-element analysis; semantic neighbours; common-combination saturation; crowded-field documentation |
+| 2 | **Descriptive compound** | Multiple real words combining to describe goods/services (e.g., "Cavern Crates") | Element-by-element analysis; semantic neighbours; common-combination saturation; crowded-field documentation |
 | 3 | **Slogan** | Imperative or grammatically-complete phrase (e.g., "SET YOUR PACE", "SHARPEN YOUR AIM", "JUST DO IT") | Family patterns (`X YOUR PACE`, `SET * PACE`, `SET YOUR *`); verb-swap variants; slang spellings; co-brand wildcards. Tiered: identical/near-identical → same-structure-close-concept → conceptual customisation |
 | 4 | **Acronym / initialism** | Short letter strings (e.g., "RAIZ8", "CYC", "EA") | Letter-collision searches in target classes; expansion forms (what does it spell out?); ambiguity with stock acronyms |
 | 5 | **Device-led** | Figurative/logo dominant, verbal element secondary or absent | Image searches; dominant verbal element (if any); design-code searches. Often layered as a modifier on top of a primary archetype |
@@ -142,25 +142,25 @@ ratified one, and a model-authored variant claiming the same standing is precise
 exists to check. Do not work around the refusal by stripping punctuation out of a real mark — that
 silently narrows what was searched, and the deferred row is the honest outcome.
 
-| Category | Value | Rationale | Verify? |
-|---|---|---|---|
-| exact-phrase | Dusk: Tales of Lumengarde | full mark | |
-| exact-element | LUMENGARDE | distinctive anchor — primary register vector | |
-| exact-element | DUSK | common element — single-word coverage hunt | |
-| exact-element | TALES | common element — single-word coverage hunt | |
-| plural-root | LEGEND | tokeniser superset | |
-| phonetic | EVERLITE | homophone, distinctive element | |
-| phonetic | EVRLIGHT | vowel drop | |
-| numeric-substitution | EV3RLIGHT | leet on distinctive element | |
-| compound | Lumengarde | tokenisation split | |
-| translit-jp-katakana | エバーライト | distinctive element in JP | ✅ |
-| translit-zh-phonetic | 艾佛莱特 | sound-alike (Ài fó lái tè) | ✅ |
-| translit-zh-meaning | 永光 · 长明 · 恒光 | meaning SET — everyday-first, then literal/adjacent (never one guess); derive the set per concept (not a fixed list), and keep the everyday member even when its count is saturated — cf. COLORA → 色彩 in *Meaning-translation rules* | ✅ |
-| translit-kr | 에버라이트 | hangul phonetic | ✅ |
-| translit-ar | إيفرلايت | phonetic abjad | ✅ |
-| translit-cy | Эверлайт | phonetic Cyrillic | ✅ |
+| Category | Value | Rationale |
+|---|---|---|
+| exact-phrase | Dusk: Tales of Lumengarde | full mark |
+| exact-element | LUMENGARDE | distinctive anchor — primary register vector |
+| exact-element | DUSK | common element — single-word coverage hunt |
+| exact-element | TALES | common element — single-word coverage hunt |
+| plural-root | LEGEND | tokeniser superset |
+| phonetic | EVERLITE | homophone, distinctive element |
+| phonetic | EVRLIGHT | vowel drop |
+| numeric-substitution | EV3RLIGHT | leet on distinctive element |
+| compound | Lumengarde | tokenisation split |
+| translit-jp-katakana | エバーライト | distinctive element in JP |
+| translit-zh-phonetic | 艾佛莱特 | sound-alike (Ài fó lái tè) |
+| translit-zh-meaning | 永光 · 长明 · 恒光 | meaning SET — everyday-first, then literal/adjacent (never one guess); derive the set per concept (not a fixed list), and keep the everyday member even when its count is saturated — cf. COLORA → 色彩 in *Meaning-translation rules* |
+| translit-kr | 에버라이트 | hangul phonetic |
+| translit-ar | إيفرلايت | phonetic abjad |
+| translit-cy | Эверлайт | phonetic Cyrillic |
 
-(✅ = requires human verification when this variant produces a hit — transliteration plausibility is the staff lawyer's call.)
+Every row of category transliteration needs human confirmation on a hit; there is no column to tick.
 
 ### Scope ledger
 

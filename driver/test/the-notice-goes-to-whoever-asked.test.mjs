@@ -116,7 +116,7 @@ const GUARD = "321-send-packets-are-classified";
 
 // file:line → why it is or is not routed. The COMPLETION notices must route; the rest must not.
 const RULED = {
-  "driver/pipeline.mjs": "the clearance completion packet — routed",
+  "driver/run-delivered.mjs": "the clearance completion packet — routed",
   "driver/run-outcome.mjs": "buildFailurePacket, the failure notice both products send — routed to whoever "
     + "asked, as the completion notice is; the operator keeps the page as the copy beside it",
   "driver/pipeline-knockout.mjs": "the knockout completion packet — routed; its failure notice is "
@@ -156,7 +156,7 @@ test("every file that builds a send packet has been ruled on", (ctx) => {
 });
 
 test("both completion packets route through whatsappRouting, and neither picks the agent directly", () => {
-  for (const f of ["driver/pipeline.mjs", "driver/pipeline-knockout.mjs"]) {
+  for (const f of ["driver/run-delivered.mjs", "driver/pipeline-knockout.mjs"]) {
     const src = readFileSync(join(ROOT, f), "utf8");
     assert.match(src, /\.\.\.whatsappRouting\(job, agent\)/,
       `${f} no longer spreads whatsappRouting into its completion packet — the notice goes to whoever `

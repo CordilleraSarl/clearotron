@@ -5,7 +5,7 @@
 //
 // One phase of a run, moved out of pipelineInner unchanged. `helpers` are functions still held in pipeline.mjs, handed in
 // because this module must not import that one back; each moves here when the other phases that share it have moved.
-import { paths } from "../run-record.mjs";
+import { atomicWrite, paths } from "../run-record.mjs";
 import { runRecordLogPath } from "../../providers/_shared/ledger-path.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { readAnchors } from "../anchor-reader.mjs";
@@ -25,7 +25,7 @@ import { clearPartNotCompleted, readPartNotCompleted } from "../parts-not-comple
 import { rankedRecords, rankingFromJson, rankingNow, recordsReRanked } from "../placement-decisions.mjs";
 import { parsePlacementsJson } from "../placement-model.mjs";
 import { OVERVIEW_CITATION_ID, flagLines, goodsRepairLine, runLint } from "../predelivery-lint.mjs";
-import { atomicWrite, signoffPatch, writeRunStatus } from "../progress.mjs";
+import { signoffPatch, writeRunStatus } from "../progress.mjs";
 import { emailConditionsOfReport } from "../publish/email-conditions.mjs";
 import { findDeadlineUrgencyMiss, findOrphanVerificationFlags, findProbativeGradingViolations, findRecallFloorViolations, findReviewFreshnessViolation, findSeedNeutralityViolations, findStatusHonestyViolation, findUncrossCheckedDemotions, findUnresolvedDisagreements } from "../reasoning-tripwires.mjs";
 import { findingUris } from "../record-carry.mjs";
