@@ -174,7 +174,8 @@ import { classifySkillsStore } from "./skills-store-provenance.mjs";
 import { makeStaticHandler, reportCsp, docCsp } from "./portal-static.mjs";
 import { crossSiteReason, bodyNotJson } from "./portal-request-origin.mjs";
 import { bundleVerdict, healthUi } from "../shared/bundle-freshness.mjs";   // one definition of a usable bundle, shared with `doctor`
-import { readReport, reportsOf, resolveReportFile, batchSummaryOf } from "./portal-report.mjs";
+import { reportsOf, batchSummaryOf } from "./portal-report.mjs";
+import { reportRoutes } from "./portal-routes/report.mjs";   // the route groups the dispatcher below asks in turn
 import { readArchivedSet, updateArchived } from "./publish/archive-tags.mjs";
 import { readAcks, setAck, withAcks, ACKNOWLEDGEABLE } from "./portal-acks.mjs";
 import { MAX_BRIEF, makeReadBudget } from "./compose-read.mjs";
@@ -1622,11 +1623,17 @@ export function makePortalService({
     }
   }
 
+  // THE ROUTE GROUPS (portal-routes/). Each group is handed two objects: what this service holds (`svc`) and what the request
+  // carries (`request`). A group answers a request it serves and returns undefined for any other, and the dispatcher asks the
+  // groups in the order its routes have always been matched, so a request is answered by the route that answered it before.
+  const svc = { poolRoot, auditLog };
+
   async function route(method, path, identity, body = {}, query = {}) {
     const grantsHere = grantsNow();
     const principal = makePrincipal({ email: identity?.email, grants: grantsHere });
     const parts = path.replace(/\/+$/, "").split("/").filter(Boolean);   // ["portal", ...]
     if (parts[0] !== "portal") return { status: 404, json: { error: "not_found" } };
+    const request = { method, path, parts, identity, principal, grantsHere, body, query };   // what a route group reads of the request
     try {
       // /portal/api/me
       if (parts[1] === "api" && parts[2] === "me" && method === "GET") {
@@ -2913,97 +2920,7 @@ async function connectorDoorKind(url) {
         const acks = setAck(poolRoot, principal.email, { runId, state, acknowledged });
         return { status: 200, json: { acknowledged, runId, count: acks.size } };
       }
-      // /portal/report/<runId>/audit.xlsx — the audit workbook.
-      //
-      // MUST be branched before the report route below, which matches any parts.length >= 3 and would
-      // otherwise answer this with the report's HTML under a spreadsheet's name.
-      //
-      // The comment this replaces said the portal "does not serve the file", and the embed strip removes
-      // the report's own .xlsx link for that reason — so the workbook has been unreachable from the
-      // portal since the portal existed. That was treated as a policy. It is not: the workbook is part of
-      // the deliverable, and a link that is stripped without being replaced is a feature that quietly
-      // stopped existing.
-      //
-      // The old objection — "a route serving archive files addressed by a path from the URL is the shape
-      // of the bypass that leaked reports" — is answered by construction rather than by declining to
-      // build it. The URL supplies ONE path segment, the run id, which is validated to be a directory
-      // name and nothing else. The FILENAME is read from that run's meta.json. There is no component of
-      // the served path a caller can influence, which is precisely what the report route already does.
-      if (parts[1] === "report" && parts.length === 4 && parts[3] === "audit.xlsx" && method === "GET") {
-        assertPrincipal(principal, { door: true });
-        const runId = parts[2];
-        if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,180}$/.test(runId) || runId.includes(".."))
-          return { status: 404, json: { error: "not_found" } };
-        const dir = join(poolRoot, runId);
-        let meta; try { meta = readJson(join(dir, "meta.json")); } catch { return { status: 404, json: { error: "not_found" } }; }
-        const owner = meta.customerKey || "generic";
-        if (!mayReadRun(principal, { owner, organisation: meta.organisation ?? null })) return { status: 404, json: { error: "not_found" } };
-        // NOT staff-only any more. This route used to 404 a client on role alone — "the workbook is the
-        // working paper behind the opinion, not the opinion" — with the note that widening it was a
-        // disclosure decision and not one to make in passing. The owner made it on 2026-07-27, in the same
-        // ruling that retired the two-report split: one report for everyone, and every reader who owns the
-        // run may download its workbook. The ownership check two lines up is the boundary that matters and
-        // it is unchanged — a client still sees exactly their own accounts' runs and 404s on anyone else's.
-        //
-        // (An audit's other half: the link we emailed pointed at the archive path, which the edge stopped
-        // serving at the portal cutover, so no client had ever reached this gate to be refused by it. Both
-        // ends are fixed together — auditUrlFor() in publish/index.mjs is the other one.)
-        // (The held-run 404 that stood here is retired — one report, spec 2026-07-30 §5: ownership is
-        // the boundary, and the workbook now carries the machine-QC row every owner may read.)
-        // The name comes from the RUN, and is re-checked to be a plain basename even so: meta.json is a
-        // generated file, and "generated by us" is not the same as "safe to concatenate into a path".
-        const name = typeof meta.auditFile === "string" ? meta.auditFile : "";
-        if (!/^[A-Za-z0-9][A-Za-z0-9._-]*\.xlsx$/.test(name)) return { status: 404, json: { error: "not_found" } };
-        let bytes; try { bytes = readFileSync(join(dir, name)); } catch { return { status: 404, json: { error: "not_found" } }; }
-        auditLog(`audit-download run=${runId} by=${principal.email}`);
-        return { status: 200, file: {
-          body: bytes,
-          filename: name,
-          contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        } };
-      }
-      // /portal/report/<runId>/… — ownership-checked client report; foreign = 404 (never 403)
-      if (parts[1] === "report" && parts.length >= 3 && method === "GET") {
-        assertPrincipal(principal, { door: true });   // door only — ownership is checked against the META below
-        const runId = parts[2];
-        // slug gate (review 2026-07-18: the old resolve-vs-resolve clause was a tautology): a runId is a
-        // pool dir NAME — one path segment, no dots-only names, nothing traversal-shaped ever reaches fs
-        if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,180}$/.test(runId) || runId.includes(".."))
-          return { status: 404, json: { error: "not_found" } };
-        const dir = join(poolRoot, runId);
-        let meta; try { meta = readJson(join(dir, "meta.json")); } catch { return { status: 404, json: { error: "not_found" } }; }
-        const owner = meta.customerKey || "generic";
-        // Foreign is 404, never 403, and a Generic run is its organisation's — the same question the connector asks (LEAK-#9 alignment).
-        if (!mayReadRun(principal, { owner, organisation: meta.organisation ?? null })) return { status: 404, json: { error: "not_found" } };
-        // ONE REPORT PER MARK: `/portal/report/<runId>/` serves a run that has one document, and
-        // `/portal/report/<runId>/<slug>/` serves one name's document out of a batch. A batch has no
-        // run-level document at all — resolveReportFile returns null and this 404s — because serving mark
-        // one of eight as "the report" is the defect the fan-out removed. report.client.html stays
-        // retired (the cutover is done: clients.example.com serves through this same readReport
-        // preparation). A run you have rights to is always served; the old held-run 404 is deleted with
-        // the readiness state it enforced (spec 2026-07-30 §5 — the machine checks moved to the audit
-        // workbook and decide nothing here).
-        //
-        // The slug is matched against the run's OWN list, never used to build a path: `meta.reports` is
-        // the only source of a filename here, so a crafted segment can name nothing that is not already a
-        // document this run published.
-        const wantSlug = parts[3] && parts[3] !== "audit.xlsx" ? parts[3] : null;
-        const reportFile = resolveReportFile(meta, wantSlug);
-        if (!reportFile || !existsSync(join(dir, reportFile))) return { status: 404, json: { error: "not_found" } };
-        // poolRoot is passed so the report's own stylesheet can be inlined: it is linked RELATIVE to the
-        // archive (`../assets/chrome.css`) and 404s from under /portal/report/, which is what made every
-        // report render with the wrong fonts and a 300px Swiss flag. See portal-report.mjs.
-        // — NO FLAG CONTROL IS INJECTED, on this host or any other.
-        //
-        // `feedback` defaults OFF in prepareReportForEmbed, and this call site was the only opt-in in the
-        // tree. Retiring the control is therefore the ABSENCE of an argument rather than a new one — which
-        // is why nothing here reads a switch and nothing new was minted to hold one.
-        //
-        // The injection stays where it is (portal-report.mjs's FEEDBACK_CSS/FEEDBACK_JS, still exercised
-        // by portal-report.test.mjs's `feedback: true` arms). The owner ruled disable, not delete, so
-        // re-enabling the document half is this argument coming back.
-        return { status: 200, html: readReport(dir, { log: auditLog, staff: seesEverything(principal), poolRoot, file: reportFile }) };
-      }
+      { const answer = await reportRoutes(svc, request); if (answer !== undefined) return answer; }   // portal-routes/report.mjs
       // POST /portal/api/feedback — a lawyer flags one finding on a delivered report.
       //
       // This is the SECOND POST under /portal/api that spends nothing (compose/read is the other). It
