@@ -12,7 +12,8 @@
 // and after a correction, so it can still name a finding the correction removed. Each coverage line, action and mark
 // assessment read is addressed by the key a correction already gives it (REPORT_LINE_KEY), and each narrative section
 // that has content by its name. A key two rows of one record share would bind a flag to either of them, so it is not
-// offered. PURE throughout.
+// offered, and neither is one holding a comma or a bracket, which the review line's `[lines: …]` token cannot carry
+// back. PURE throughout.
 import { REPORT_LINE_KEY, REPORT_LINE_LABEL } from "./corrections-feedforward.mjs";
 import { NARRATIVE_SECTIONS } from "./synthesis-record.mjs";
 
@@ -48,7 +49,7 @@ export function reviewAddresses({ records = [], narratives = [] } = {}) {
     for (const f of Array.isArray(doc?.findings) ? doc.findings : []) if (Number.isInteger(f?.ordinal) && f.ordinal > 0) ordinals.add(f.ordinal);
     const inThisRecord = new Set();
     for (const [address, label] of partsOf(doc)) {
-      if (!address.slice(address.indexOf(":") + 1).trim()) continue;
+      if (!address.slice(address.indexOf(":") + 1).trim() || /[,[\]]/.test(address)) continue;
       if (inThisRecord.has(address)) shared.add(address);
       inThisRecord.add(address);
       lines.set(address, label);

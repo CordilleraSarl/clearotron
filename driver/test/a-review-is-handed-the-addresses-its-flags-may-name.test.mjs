@@ -61,3 +61,54 @@ test("what a flag declares resolves against the list, or the first thing that do
   assert.deepEqual(resolveDeclared(list, { lines: ["section:calibration"] }),
     { ok: false, kind: "line", value: "section:calibration", near: null }, "an empty section was not handed to the review");
 });
+
+// ── what the review's recording tool does with them ──────────────────────────────────────────────────
+const { acceptRefutation, recordRefutation, listedAddresses } = await import("../narrative-refutation-record.mjs");
+const { parseCorrections } = await import("../verify.mjs");
+const { mkdtempSync, mkdirSync, writeFileSync, readFileSync } = await import("node:fs");
+const { tmpdir } = await import("node:os");
+const { join } = await import("node:path");
+const { driverDir } = await import("../../shared/driver-dir.mjs");
+
+const LIST = reviewAddresses({ records: [BEFORE, AFTER], narratives: [NARRATIVE] });
+const flag = (extra) => ({ kind: "fact", text: "The coverage line for the European Union overstates what was searched.", ...extra });
+const accept = (flags, addresses = LIST) => acceptRefutation({ verdict: "CONDITIONAL", flags }, { addresses });
+
+test("a flag's declared parts render on its line and read back off it, without the token in its text", () => {
+  const r = accept([flag({ on: [2], lines: ["coverage:european union", "section:verdict"] })]);
+  assert.equal(r.ok, true, r.reason);
+  assert.match(r.content, /^1\. \[kind: fact\] \[on: 2\] \[lines: coverage:european union, section:verdict\] The coverage line/m);
+  const [row] = parseCorrections(r.content);
+  assert.deepEqual(row.lines, ["coverage:european union", "section:verdict"]);
+  assert.deepEqual(row.ordinals, [2]);
+  assert.doesNotMatch(row.text, /\[lines:/, "the token is the channel, not the instruction");
+  assert.deepEqual(accept([flag({})]).ok, true, "a flag that declares nothing is unchanged");
+  assert.doesNotMatch(accept([flag({})]).content, /\[lines:/);
+});
+
+test("an ordinal or address the review was not handed is refused in its turn, with the near address when there is one", () => {
+  assert.match(accept([flag({ on: [9] })]).reason, /^refutation_flag_on_unknown:0:9 — finding 9 is not among the findings this review was handed/);
+  assert.match(accept([flag({ lines: "coverage:european union" })]).reason, /^refutation_flag_lines_invalid:0 /);
+  assert.match(accept([flag({ lines: [] })]).reason, /^refutation_flag_lines_invalid:0 /);
+  assert.match(accept([flag({ lines: ["Coverage:European Union"] })]).reason,
+    /^refutation_flag_line_unlisted:0:Coverage:European Union — .*; the list gives "coverage:european union"$/);
+  assert.doesNotMatch(accept([flag({ lines: ["section:calibration"] })]).reason, /the list gives/);
+});
+
+test("with no address list written, `on` is checked as before and no address can resolve", () => {
+  assert.equal(accept([flag({ on: [9] })], null).ok, true, "a dispatch that wrote no list keeps today's check");
+  assert.match(accept([flag({ lines: ["section:verdict"] })], null).reason, /^refutation_flag_line_unlisted:0:section:verdict/);
+});
+
+test("the recording tool reads the list the dispatch wrote into the run", () => {
+  const runDir = mkdtempSync(join(tmpdir(), "review-addresses-"));
+  mkdirSync(driverDir(runDir), { recursive: true });
+  assert.equal(listedAddresses(runDir), null);
+  writeFileSync(driverDir(runDir, "review-addresses.json"), JSON.stringify(LIST));
+  assert.deepEqual(listedAddresses(runDir).ordinals, [1, 2, 3, 4]);
+  const refused = recordRefutation(runDir, { verdict: "CONDITIONAL", flags: [flag({ on: [7] })] });
+  assert.match(refused.refused ?? "", /^refutation_flag_on_unknown:0:7/);
+  const written = recordRefutation(runDir, { verdict: "CONDITIONAL", flags: [flag({ lines: ["action:watch"] })] });
+  assert.equal(written.refused, null);
+  assert.match(readFileSync(written.written, "utf8"), /\[lines: action:watch\]/);
+});

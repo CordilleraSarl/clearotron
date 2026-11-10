@@ -40,6 +40,7 @@ import { join } from "node:path";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 import { parseVerdict, countCitedDefects, parseCorrections, parseCorrectionKinds, correctionFlagContent, CORRECTION_KINDS, SECTION_HEADING_RE } from "./verify.mjs";
 import { driverDir, paths, readJson } from "./run-record.mjs";
+import { REVIEW_ADDRESSES_FILE, resolveDeclared } from "./review-addresses.mjs";
 
 export const REVIEW_FILE = "senior-eye-review.md";
 
@@ -65,6 +66,19 @@ export function listedExclusionPositions(runDir) {
     for (const p of Array.isArray(doc?.positions) ? doc.positions : [])
       for (const m of [p?.uri, ...(Array.isArray(p?.members) ? p.members : [])]) { const k = String(normalizeRecordUri(m) ?? ""); if (k && p?.uri) out.set(k, p.uri); }
     return out;
+  } catch { return null; }
+}
+
+/**
+ * The address list the last review dispatch wrote (review-addresses.mjs): the finding ordinals and the other parts of
+ * the report that review was handed. null when none was written or it does not read back, so `on` is checked as it
+ * always was and an address in `lines` has nothing to resolve against. Never throws.
+ */
+export function listedAddresses(runDir) {
+  try {
+    const doc = readJson(driverDir(String(runDir ?? ""), REVIEW_ADDRESSES_FILE));
+    if (!Array.isArray(doc?.ordinals) || !Array.isArray(doc?.lines)) return null;
+    return { ordinals: doc.ordinals.filter((n) => Number.isInteger(n)), lines: doc.lines.filter((l) => typeof l?.address === "string") };
   } catch { return null; }
 }
 
@@ -98,7 +112,9 @@ export function renderRefutation(verdict, flags, planAudit) {
       // A flag about a writer's exclusion names its position; the token is written only then, so a review without one
       // renders as it always did.
       const positions = Array.isArray(f.positions) && f.positions.length ? ` [positions: ${f.positions.join(", ")}]` : "";
-      out.push(`${i + 1}. [kind: ${f.kind}] [on: ${on}]${positions} ${f.text}`);
+      // The same for the report's other parts: the token is written only for a flag that declared some.
+      const lines = Array.isArray(f.lines) && f.lines.length ? ` [lines: ${f.lines.join(", ")}]` : "";
+      out.push(`${i + 1}. [kind: ${f.kind}] [on: ${on}]${positions}${lines} ${f.text}`);
       if (f.fix) out.push(`   Fix: ${f.fix}`);
       out.push("");
     });
@@ -145,7 +161,7 @@ const textDefect = (t) => {
  * `receiptPresent` is the DRIVER's read, never a parameter of the call: whether the audit section is
  * owed is a fact about the run, and a seat that could assert it could waive its own audit.
  */
-export function acceptRefutation(params, { receiptPresent = false, positionsListed = null } = {}) {
+export function acceptRefutation(params, { receiptPresent = false, positionsListed = null, addresses = null } = {}) {
   const verdict = params?.verdict;
   const flags = params?.flags;
   const planAudit = params?.plan_audit;
@@ -175,6 +191,20 @@ export function acceptRefutation(params, { receiptPresent = false, positionsList
     if (f?.on != null) {
       if (!Array.isArray(f.on) || f.on.some((n) => !Number.isInteger(n) || n < 1)) {
         return { ok: false, reason: `refutation_flag_on_invalid:${i} — \`on\` is an array of finding ordinals (1-based), or omit it for a flag about the document rather than a finding` };
+      }
+      // An ordinal is resolved against the findings this review was handed, when the dispatch listed them.
+      const r = addresses ? resolveDeclared(addresses, { on: f.on }) : { ok: true };
+      if (!r.ok) {
+        return { ok: false, reason: `refutation_flag_on_unknown:${i}:${r.value} — finding ${r.value} is not among the findings this review was handed; use one of their ordinals, or omit \`on\`` };
+      }
+    }
+    if (f?.lines != null) {
+      if (!Array.isArray(f.lines) || !f.lines.length || f.lines.some((l) => typeof l !== "string" || !l.trim())) {
+        return { ok: false, reason: `refutation_flag_lines_invalid:${i} — \`lines\` is an array of addresses from the dispatch's address list, or omit it` };
+      }
+      const r = resolveDeclared(addresses ?? { ordinals: [], lines: [] }, { lines: f.lines });
+      if (!r.ok) {
+        return { ok: false, reason: `refutation_flag_line_unlisted:${i}:${String(r.value).slice(0, 80)} — name a part of the report by an address the dispatch's address list gives${r.near ? `; the list gives "${r.near}"` : ""}` };
       }
     }
     if (f?.positions != null) {
@@ -220,6 +250,12 @@ export function acceptRefutation(params, { receiptPresent = false, positionsList
   }
   if ((kinds?.untyped ?? 0) !== 0) {
     return { ok: false, reason: `refutation_roundtrip_untyped:${kinds.untyped} — every flag was typed in the call, so a line landing on the \`fact\` fail-safe means the token did not render onto it` };
+  }
+  // The addresses a flag declared must read back off its line as declared, or the correction would bind it to other parts.
+  const parsed = parseCorrections(content);
+  const lost = rendered.findIndex((f, i) => JSON.stringify([...new Set(f.lines ?? [])]) !== JSON.stringify(parsed[i]?.lines ?? []));
+  if (lost !== -1) {
+    return { ok: false, reason: `refutation_roundtrip_lines:${lost} — the rendered line does not carry back the addresses the call declared; the \`[lines:]\` channel did not survive the render` };
   }
 
   // `flags` stays a COUNT because that is what its readers assert; `acceptedFlags` is the array itself.
@@ -268,7 +304,8 @@ export function recordRefutation(runDir, received, { now = () => new Date().toIS
   // Written first so a call that CRASHES the validator still leaves its input — that was the original
   // reason and it survives — then rewritten with the verdict once there is one.
   capture({ accepted: null, refusedReason: null });
-  const verdict = acceptRefutation(received, { receiptPresent: planReceiptPresent(dir0), positionsListed: listedExclusionPositions(dir0) });
+  const verdict = acceptRefutation(received, { receiptPresent: planReceiptPresent(dir0), positionsListed: listedExclusionPositions(dir0),
+    addresses: listedAddresses(dir0) });
   capture({ accepted: Boolean(verdict.ok), refusedReason: verdict.ok ? null : verdict.reason });
   if (!verdict.ok) {
     return { written: null, refused: verdict.reason, captured: captureFailed ? null : payload, capture_failed: captureFailed };
