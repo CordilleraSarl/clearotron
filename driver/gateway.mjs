@@ -572,9 +572,6 @@ export function syncDispositionForm(files) {
         return existsSync(specPath) ? { countable: false } : null;
       }
       const formPath = spec?.connotation?.dispositions_path;
-      // No dictated path ⇒ a pre-change spec (an archived run being resumed). Nothing to count, and the
-      // gate has nothing to judge either — the two agree by construction.
-      if (!formPath || spec?.connotation?.disposition_required !== true) return null;
       let recorded = null;
       try { recorded = parsePrRiskResults(readFileSync(join(dir, seat.ledger(half)), "utf8")); }
       catch { return { countable: false }; }   // owes a sweep; the ledger — the obligations' source — is unreadable
@@ -1989,17 +1986,6 @@ const REPAIR_HINTS = [
       "(1, 2, …) — never a typed id of any kind, never a query string, never a string index, never extra " +
       "fields. Re-send your rulings with the corrected " +
       "shape; the tool's answer names each refusal and what is still outstanding";
-  } },
-  { code: "connotation_no_ruling", when: /connotation_(no_ruling|token_absent|cite_absent)/, hint(lastFail) {
-    // READER TOLERANCE, not a live path: this engine's gate can no longer mint these three — any unruled
-    // residual surfaces as a call token (the audit runs whenever rows are owed). What CAN still carry
-    // one is the recorded lastFail of a run parked under the previous engine and resumed on this one,
-    // and the golden-rule boundary is exactly that parsing history is fine. The remedy under this
-    // engine is the same as call_partial's: record the remainder through the tool.
-    return "every remaining meaning obligation is recorded through the `record_dispositions` tool — " +
-      "never by writing or editing any file. Everything already recorded is KEPT. Call " +
-      "`record_dispositions` with rows for the obligations still outstanding; the tool's answer lists " +
-      "them, marks which still owe a `segment_index` and a `fragment`, and reports when nothing remains";
   } },
   { code: "connotation_call_partial", when: /connotation_call_partial/, hint(lastFail) {
     // B — rows landed and obligations remain. What is recorded is KEPT; the remedy is the remainder.
