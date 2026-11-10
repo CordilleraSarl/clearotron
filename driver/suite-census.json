@@ -4787,7 +4787,7 @@
         },
         "knockout-assess-guarded-write.test.mjs": {
           "tests": 8,
-          "asserts": 24,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
@@ -4804,9 +4804,9 @@
           "todos": 0
         },
         "knockout-ladder-observable.test.mjs": {
-          "tests": 7,
-          "asserts": 15,
-          "skips": 1,
+          "tests": 6,
+          "asserts": 14,
+          "skips": 0,
           "todos": 0
         },
         "knockout-record-link-host.test.mjs": {
