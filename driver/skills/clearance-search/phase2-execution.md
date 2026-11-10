@@ -213,7 +213,7 @@ Example: a JELLY register hit owned by Jellycat (a toy company) for Class 9 vide
 - Scope the marketplace query tightly to the search's field (gaming, fintech, whatever the clearance targets), not the owner's full portfolio.
 - Record the check and its result in the Audit Trail with Source Layer = "Cross-pollination".
 - If actual use in the relevant field is **confirmed,** the register finding's risk weight stands.
-- If actual use in the relevant field is **not found** (despite the filing), do **NOT** automatically downgrade — weigh the lack of field use as a Stage-2 factor together with revocation-vulnerability (`synthesis-rules.md` → *Actual-use assessment results* / *Rule on downgrade quantum*), and note in Key Factors: "Register filing claims [field] but no marketplace use identified — filed-vs-used noted; weighed with revocability."
+- If actual use in the relevant field is **not found** (despite the filing), do **NOT** automatically downgrade — weigh the lack of field use as a Stage-2 factor together with revocation-vulnerability (`synthesis-rules.md` → *Actual-use assessment results* / *Rule on downgrade quantum*), and note in `legal_position` and `practical_position`: "Register filing claims [field] but no marketplace use identified — filed-vs-used noted; weighed with revocability."
 - This check measures *use in the field*, not registry status: a renewal / re-registration / "Registered" status is administrative upkeep, not marketplace use, and does not satisfy the actual-use check or defeat a non-use mitigant (see `synthesis-rules.md` → "Administrative liveness is not market use").
 - Owner-portfolio-bound common-law checks already counted in this step count toward the Option D cap (Step 3).
 - **Enforcement the query finds is a lead, not a verified authority** (the ENFORCEMENT AUTHORITY rule in the stage message): it informs the enforcer meter with basis `inferred-from-signal`, and its URL is cited inline in the finding's prose. If the query finds no enforcement record, the enforcer is `low` with basis `inferred-from-signal`, and the finding says the search found none. The enforcer stays `unknown`, and nothing is claimed, only when the query could not run.
@@ -299,7 +299,7 @@ to ground, supply:
 
 The result is a **grounded profile** per finding (on-point authorities with court / date / one-line holding /
 stable id, or an explicit "no on-point precedent found"), optionally written to
-`studio/clearance-search/<slug>/<date>/case-law-findings.md`. Fold the grounded profiles into Key Factors + the
+`studio/clearance-search/<slug>/<date>/case-law-findings.md`. Fold the grounded profiles into `legal_position` and `practical_position` + the
 narrative. Do NOT ground every finding — it is cost-prohibitive and low-signal — but DO ground watchlist hits
 unless the digest's own evidence already grounds them concretely (e.g. opposition data pulled directly).
 
