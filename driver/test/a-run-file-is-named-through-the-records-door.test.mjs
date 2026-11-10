@@ -33,10 +33,7 @@ const handSpelled = (src) => [...String(src).matchAll(CALL)].map((m) => m[2]).fi
 
 const inScope = (f) => f.endsWith(".mjs") && !f.startsWith("driver/skills/") && !/(^|\/)test\//.test(f) && !f.endsWith(".test.mjs");
 
-const REMAINDER = {
-  "driver/pipeline.mjs": ["post-repair-corrections.json", "findings-pre-corrective.json", "experiment-context.json", "profile.json", "search-policy.json"],
-  "driver/stages-knockout.mjs": ["framework.json", "framework.json"],
-};
+const REMAINDER = {};
 
 test("the guard's own premises: the door names its files, and the scan tells a hand-spelled path from a keyed one", () => {
   assert.ok(DOOR_NAMES.size > 100, `the door names only ${DOOR_NAMES.size} fixed files — the scan below would pass on nothing`);

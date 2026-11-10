@@ -122,7 +122,8 @@ import { runLog, note, fileMeta, outputMeta, stageLog } from "./log.mjs"; import
 import { deriveScopeFacts } from "./scope-facts.mjs";
 import { editRepairTail, abbrev } from "./repair-contract.mjs";
 import { repairFollowup } from "./repair-composers.mjs";
-import { seedRunStatus, recordTransition, writeRunStatus, readRunStatus, rollupStatus, atomicWrite, finalStepFields, terminalRunState, signoffPatch, readSignoff } from "./progress.mjs";
+import { seedRunStatus, recordTransition, writeRunStatus, readRunStatus, rollupStatus, finalStepFields, terminalRunState, signoffPatch, readSignoff } from "./progress.mjs";
+import { atomicWrite } from "./run-record.mjs";
 import { writeOutboxPacket } from "./outbox.mjs";
 import { publishReport, composeEmailHtml, deliverySubject } from "./publish/index.mjs";
 import { parseCaseLawProfiles, joinCaseLawProfiles } from "./publish/parse.mjs"; import { buildAuditMd } from "./publish/audit-from-spine.mjs";
@@ -9012,7 +9013,7 @@ export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRi
     // the run's own records (_driver/post-repair-review.json); the printed line adds nothing.
     // Where that review hardened the verdict its points are the verdict's grounds, and print even when changed.
     try {
-      const doc = JSON.parse(readFileSync(driverDir(dirname(P.report), "post-repair-corrections.json"), "utf8"));
+      const doc = JSON.parse(readFileSync(paths(dirname(P.report)).postRepairCorrections, "utf8"));
       const after = doc?.rows;
       if (Array.isArray(after) && after.length) applied = [...(applied ?? []), ...after.map((r) => ({ ...r, later: true, ...(doc.grounds === true ? { ground: true } : {}) }))];
     } catch { /* no correction after a repair on this run */ }
@@ -11341,7 +11342,7 @@ async function runExperimentInner(job, opts) {
   // The receipt says `dispatched-cold`, never `dispatched-warm`, so the two cannot be read as one another.
   const P = shadowCtx.paths;
   const correctiveReady = correctiveReadiness({
-    preCorrective: existsSync(driverDir(shadowDir, "findings-pre-corrective.json")),
+    preCorrective: existsSync(paths(shadowDir).findingsPreCorrective),
     reviewerVerdict: existsSync(P.seniorEyeReview),
   });
   const whichPass = correctivePassState({ trigger: opts.dispatchTrigger ?? null, ready: correctiveReady.ready });
@@ -11447,7 +11448,7 @@ async function runExperimentInner(job, opts) {
         sha: meta.sha, shaCanonical: canonicalisedSha(inSandbox, shadowDir, ctx.paths.runDir) };
     }),
   };
-  try { atomicWrite(driverDir(shadowDir, "experiment-context.json"), JSON.stringify(receipt, null, 2) + "\n"); }
+  try { atomicWrite(paths(shadowDir).experimentContext, JSON.stringify(receipt, null, 2) + "\n"); }
   catch (e) { note(`--experiment: context receipt write failed (${String(e?.message ?? e).slice(0, 80)}) — the arm still runs, its context is just unstated`); }
   // — the same correction on the experiment EVENT: tier and engine, never a
   // vendor-namespaced id this site cannot know.
@@ -11787,7 +11788,7 @@ if (isEntrypoint(import.meta.url)) void (async () => {
     // can ride on this install (jobFromStatus says why it may not).
     let roster = null;
     try { roster = loadProfiles(); } catch { /* the run context reads the roster again, and refuses with its reason */ }
-    const frozen = { profile: safeReadJson(driverDir(found.dir, "profile.json")), searchPolicy: safeReadJson(driverDir(found.dir, "search-policy.json")), roster };
+    const frozen = { profile: safeReadJson(paths(found.dir).profile), searchPolicy: safeReadJson(paths(found.dir).searchPolicy), roster };
     // The order the run kept at intake, else an older run's retained queue entry, else the rebuild from status
     // (accepted-order.mjs says which, and why a queue entry was refused).
     orderRecovery = rebuildRunOrder({ runDir: found.dir, status, scope, profile: frozen.profile,
