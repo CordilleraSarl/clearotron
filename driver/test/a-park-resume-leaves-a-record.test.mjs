@@ -141,6 +141,7 @@ test("a pre-fix run-dir sentinel with no probeAttempt still records the wake", a
   const root = mkdtempSync(join(tmpdir(), "clearotron-1732-old-"));
   const runDir = join(root, "run");
   mkdirSync(driverDir(runDir, "."), { recursive: true });
+  startedOnThisBuild(runDir);
   const sentPath = join(runDir, ".postponed");
   writeFileSync(sentPath, "not json at all");
 
