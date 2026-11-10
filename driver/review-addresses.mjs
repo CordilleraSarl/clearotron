@@ -12,9 +12,12 @@
 // and after a correction, so it can still name a finding the correction removed. Each coverage line, action and mark
 // assessment read is addressed by the key a correction already gives it (REPORT_LINE_KEY), and each narrative section
 // that has content by its name. A key two rows of one record share would bind a flag to either of them, so it is not
-// offered. PURE throughout.
+// offered, and neither is one holding a comma or a bracket, which the review line's `[lines: …]` token cannot carry
+// back. PURE, apart from `writeReviewAddresses`, which writes the list into the run.
 import { REPORT_LINE_KEY, REPORT_LINE_LABEL } from "./corrections-feedforward.mjs";
 import { NARRATIVE_SECTIONS } from "./synthesis-record.mjs";
+import { atomicWrite, driverDir, ensureDriverDir } from "./run-record.mjs";
+import { rmSync } from "node:fs";
 
 export const REVIEW_ADDRESSES_FILE = "review-addresses.json";
 
@@ -34,6 +37,55 @@ function partsOf(doc) {
 }
 
 /**
+ * Every part of one record that is not a finding, by address, with the value a reader is given for it, and whether any
+ * address is held by two rows: such a record cannot say which of the two moved.
+ */
+function partValues(doc) {
+  const out = new Map();
+  let ambiguous = false;
+  const put = (address, label, value) => {
+    if (!address.slice(address.indexOf(":") + 1).trim()) return;
+    if (out.has(address)) ambiguous = true;
+    out.set(address, { label, value: JSON.stringify(value ?? null) });
+  };
+  for (const c of Array.isArray(doc?.coverage) ? doc.coverage : []) put(REPORT_LINE_KEY.coverage(c), REPORT_LINE_LABEL.coverage(c), c);
+  for (const a of Array.isArray(doc?.actions) ? doc.actions : []) put(REPORT_LINE_KEY.actions(a), REPORT_LINE_LABEL.actions(a), a);
+  const ma = doc?.markAssessment ?? doc?.mark_assessment;
+  for (const k of MARK_ASSESSMENT_READS) put(`mark-assessment:${k}`, `the mark assessment's ${k}`, ma?.[k]);
+  return { values: out, ambiguous };
+}
+
+/**
+ * The parts of the report other than findings that a correction changed and no flag named: `{ named, moved, complete }`,
+ * each `moved` entry `{ address, label }`. A part added, removed or rewritten counts as moved.
+ *
+ * `complete` says whether every coverage line, action, mark assessment read and narrative section was compared. It is
+ * false when either record or either narrative is missing, or when one address is held by two rows of a record: then
+ * "none moved" is not known, and the recheck must not be told it (repair-composers.mjs reads it). Recorded, never
+ * refused: the clearance's correction policy (scopeDrift in corrections-feedforward.mjs). PURE.
+ */
+export function partsDrift(rows, preDoc, postDoc, { narratives = null } = {}) {
+  const named = [...new Set((rows ?? []).flatMap((r) => (Array.isArray(r?.lines) ? r.lines : [])))];
+  if (!preDoc || !postDoc) return { named, moved: [], complete: false };
+  const a = partValues(preDoc), b = partValues(postDoc);
+  const pre = a.values, post = b.values;
+  const sectionsHeld = Boolean(narratives?.before && narratives?.after);
+  if (sectionsHeld) {
+    for (const k of NARRATIVE_SECTIONS) {
+      pre.set(`section:${k}`, { label: `the narrative's ${k} section`, value: JSON.stringify(narratives.before[k] ?? null) });
+      post.set(`section:${k}`, { label: `the narrative's ${k} section`, value: JSON.stringify(narratives.after[k] ?? null) });
+    }
+  }
+  const isNamed = new Set(named);
+  const moved = [];
+  for (const address of new Set([...pre.keys(), ...post.keys()])) {
+    if (isNamed.has(address)) continue;
+    if (pre.get(address)?.value !== post.get(address)?.value) moved.push({ address, label: (post.get(address) ?? pre.get(address)).label });
+  }
+  return { named, moved, complete: sectionsHeld && !a.ambiguous && !b.ambiguous };
+}
+
+/**
  * The address list for one review dispatch: `{ schema, ordinals, lines: [{ address, label }] }`.
  *
  * `records` are the findings documents the review reads (one at a first review; the record before and after the
@@ -48,7 +100,7 @@ export function reviewAddresses({ records = [], narratives = [] } = {}) {
     for (const f of Array.isArray(doc?.findings) ? doc.findings : []) if (Number.isInteger(f?.ordinal) && f.ordinal > 0) ordinals.add(f.ordinal);
     const inThisRecord = new Set();
     for (const [address, label] of partsOf(doc)) {
-      if (!address.slice(address.indexOf(":") + 1).trim()) continue;
+      if (!address.slice(address.indexOf(":") + 1).trim() || /[,[\]]/.test(address)) continue;
       if (inThisRecord.has(address)) shared.add(address);
       inThisRecord.add(address);
       lines.set(address, label);
@@ -82,3 +134,30 @@ export function resolveDeclared(list, { on = null, lines = null } = {}) {
   }
   return { ok: true };
 }
+
+/**
+ * Build the list and write it beside the review's exclusions, where the review's recording tool reads it. `seq0` is the
+ * sequence the dispatch's first review call will take (nextRefutationSeq), so the list, and the accepted call the
+ * correction reads, belong to this dispatch and no earlier one. Returns the list, or null when it could not be written:
+ * the dispatch then shows no address block, and an older list is removed rather than left for this dispatch to read.
+ * IMPURE.
+ */
+export function writeReviewAddresses(runDir, { records = [], narratives = [], seq0 = null } = {}) {
+  const at = driverDir(runDir, REVIEW_ADDRESSES_FILE);
+  try {
+    const list = { ...reviewAddresses({ records: records.filter(Boolean), narratives: narratives.filter(Boolean) }), seq0 };
+    ensureDriverDir(runDir);
+    atomicWrite(at, JSON.stringify({ ts: new Date().toISOString(), ...list }, null, 2) + "\n");
+    return list;
+  } catch {
+    try { rmSync(at, { force: true }); } catch { /* nothing more can be done; the list stays as it was */ }
+    return null;
+  }
+}
+
+// What the review dispatch shows the reviewer: the block's heading, then one row per address. No block for a list with
+// no parts beyond the findings, whose ordinals the reviewer already reads off the report.
+export const ADDRESS_LIST_HEADING = "THE ADDRESS LIST: each part of the report below is not a finding. A flag about one carries its address in `lines`, copied exactly; an address not on this list is refused.";
+export const addressListLines = (list) => (Array.isArray(list?.lines) && list.lines.length
+  ? [ADDRESS_LIST_HEADING, ...list.lines.map((l) => `- ${l.label} — address ${l.address}`)]
+  : []);

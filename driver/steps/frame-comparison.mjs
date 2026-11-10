@@ -402,7 +402,7 @@ export async function runFrameComparison({ P, axes, ctx, dispatchPlanQids, flush
             const { minted, rejected } = mintSupplementalEntries(a, proposals, {
               existingQids, perCall: proposals.length,
               axisMax: ctx.registerPlan.entries.length + allMinted.length + proposals.length, existingCount: 0,
-              capabilities: registerCapabilities(), priorityClasses: inScope,
+              capabilities: registerCapabilities(ctx.register), priorityClasses: inScope,
             });
             rejectedN += rejected.length;
             allRejected.push(...rejected);

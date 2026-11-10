@@ -12,7 +12,7 @@ import { correctionTargets } from "../corrections-delivered.mjs";
 import { REPORT_LINE_KEY, REPORT_LINE_LABEL, answersLeftBehind, buildCorrectionsApplied, correctionScope, correctionsWorklist, flaggedPositions, linesOf, reportLines } from "../corrections-feedforward.mjs";
 import { parseFindingsJsonLenient } from "../findings-model.mjs";
 import { note, runLog } from "../log.mjs";
-import { listedExclusionPositions, readAcceptedFlags } from "../narrative-refutation-record.mjs";
+import { listedAddresses, listedExclusionPositions, readAcceptedFlags } from "../narrative-refutation-record.mjs";
 import { properNameCandidates } from "../predelivery-lint.mjs";
 import { atomicWrite } from "../run-record.mjs";
 import { foldAfterSave, modelRecordPath, restoreFold } from "../record-fold.mjs";
@@ -72,7 +72,17 @@ export function correctionRows(P, review, typed = readAcceptedFlags(P?.runDir)) 
     ordinals: flagOrdinals(f),
     // A writer's excluded position, as the review's list keys it, whichever of its record ids the flag named.
     positions: positionIdsOf(f.positions, listed),
+    // The report's other parts the flag declared, by the addresses its review was handed.
+    ...(Array.isArray(f.lines) && f.lines.length ? { lines: [...new Set(f.lines)] } : {}),
   }));
+}
+
+/** The scope with each part its flags declared, by the label its review was shown, in declaration order. IMPURE (reads the run). */
+function withLineLabels(scope, rows, P) {
+  const declared = [...new Set((rows ?? []).flatMap((r) => (Array.isArray(r?.lines) ? r.lines : [])))];
+  if (!declared.length) return scope;
+  const byAddress = new Map((listedAddresses(P.runDir)?.lines ?? []).map((l) => [l.address, l.label]));
+  return { ...scope, lineLabels: declared.map((a) => byAddress.get(a) ?? a) };
 }
 
 /** The scope with each named position's mark, owner and id, as the corrective pass is told them. IMPURE (reads the run). */
@@ -137,7 +147,7 @@ export function correctionReading(P) {   // @internal
   // byte-identical to the one before this existed — the narrowing is bought by the reviewer's own
   // declaration, never assumed on its behalf. The positions the flags named ride either way, with their rows.
   const named = flaggedPositions(rows);
-  const scope = withPositionLabels({ ...correctionScope(rows), ...(named.length ? { positions: named } : {}) }, P);
+  const scope = withLineLabels(withPositionLabels({ ...correctionScope(rows), ...(named.length ? { positions: named } : {}) }, P), rows, P);
   return { review, rulingsTail, worklist, scope, positions: named };
 }
 
@@ -335,8 +345,8 @@ export function repairUnnamedRemovals(P, runDir, pre, namedOrdinals, namedMarks,
 export function correctionNamedOrdinals(P) {
   const out = [];
   try {
-    // `P.reviewFlags`: the pass after a delivery-check repair applies a LATER review's flags, which
-    // `readAcceptedFlags` (the first review's call) cannot see. Absent everywhere else.
+    // `P.reviewFlags`: the pass after a delivery-check repair applies a LATER review's flags, read from that review's own
+    // calls. Absent everywhere else, where `readAcceptedFlags` reads the newest accepted call of the review acted on.
     const typed = Array.isArray(P.reviewFlags) ? P.reviewFlags : readAcceptedFlags(P.runDir);
     if (typed) { for (const f of typed) if (Array.isArray(f?.on)) out.push(...f.on); return out; }
   } catch { /* fall through to the rendered parse, exactly as the worklist does */ }
@@ -372,7 +382,9 @@ export function correctionNamedLines(P, doc0) {
   try {
     const review = existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "";
     const lines = reportLines(doc0);
-    return [...new Set(parseCorrections(review).flatMap((r) => linesOf(r?.text, lines).map((l) => l.key)))];
+    // A flag that declared its parts by address is bound to those; only a flag that declared none is matched by its prose.
+    return [...new Set(parseCorrections(review).flatMap((r) => (Array.isArray(r?.lines) && r.lines.length ? r.lines
+      : linesOf(r?.text, lines).map((l) => l.key))))];
   } catch { return []; }   // no review read — every row removal is then unnamed, and restored
 }
 
@@ -542,10 +554,30 @@ export async function runPostRepairCorrection(ctx, P, run, { rec, items, points,
 
 // `resume.correction` is the first correction's (see its dispatch), handed on by that caller alone: the correction after
 // the review of a repair shares this follow-up and is handed no positions.
+/**
+ * The findings and other parts the review's flags declare, by the names a reader is given: a finding's mark or owner, or
+ * "finding N" when it has neither, and a part's label from the address list. IMPURE (reads the run).
+ */
+function correctionDeclaredNames(P, pre) {
+  try {
+    let doc = null;
+    try { doc = pre ? parseFindingsJsonLenient(pre.model?.raw ?? pre.raw) : null; } catch { doc = null; }
+    const review = existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "";
+    const rows = correctionRows(P, review, Array.isArray(P.reviewFlags) ? P.reviewFlags : readAcceptedFlags(P.runDir));
+    const byOrd = new Map((doc?.findings ?? []).map((f) => [f?.ordinal, f]));
+    const labels = new Map((listedAddresses(P.runDir)?.lines ?? []).map((l) => [l.address, l.label]));
+    return rows.flatMap((r) => [
+      ...(Array.isArray(r?.ordinals) ? r.ordinals : []).map((o) => { const f = byOrd.get(o); return f?.mark ?? f?.owner?.name ?? `finding ${o}`; }),
+      ...(Array.isArray(r?.lines) ? r.lines : []).map((a) => labels.get(a) ?? a)]);
+  } catch { return []; }   // nothing declared can be read — the prose names stand alone, as before
+}
+
 export async function enforceCorrectionsReachFindings(ctx, P, pre, resume) {
   if (!pre) return;                                            // no findings.json before the pass — nothing to enforce
   const { run } = ctx;
-  const named = correctionNamedSet(P);
+  // What the review's prose names, and what its flags declare: a target either way counts, so the hold below never fires
+  // less often than it did on the prose alone.
+  const named = [...new Set([...correctionNamedSet(P), ...correctionDeclaredNames(P, pre)])];
   const readState = () => {
     let raw = null, corrections = null;
     // the record the model wrote: a change the fold hides is still a change it made (record-fold.mjs)

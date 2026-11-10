@@ -19,6 +19,7 @@ import { writeFileSync, mkdirSync, existsSync, readdirSync, openSync, readSync, 
 import { join } from "node:path";
 import { ledgerPath, runRecordLogPath, ledgerDeprecationNotice, retiredGlobalRecordLogNotice }
   from "../providers/_shared/ledger-path.mjs";
+import { recordedRegister } from "./engine/run-choices.mjs";   // the register the run recorded, which named its receipts
 import { envFrom } from "../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
 import { USE_SOURCE_QUALITY } from "./findings-model.mjs";   // — the attested vocabulary; an unknown value falls back to the heuristic
 import { ensureDriverDir, paths, readJson } from "./run-record.mjs";   // — one definition of where `_driver/` is
@@ -319,7 +320,8 @@ export function assembleRunRecords(runDir, runPrefix,
   try {
     if (records.size) {
       const callMeta = fetchCalls;   // — one read of the call ledger per assembly, not two
-      const provider = (envFrom(process.env, "CLEAROTRON_DATABASE") || "").toLowerCase() || null;
+      // The register the run recorded; the machine's, as before, for a run with no record.
+      const provider = recordedRegister(runDir) ?? ((envFrom(process.env, "CLEAROTRON_DATABASE") || "").toLowerCase() || null);
       // — WHICH CORPUS ANSWERED, ON THE MACHINE RECORD.
       //
       // put `environment` on euipo_search's response envelope and taught two skill files to carry

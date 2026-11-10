@@ -305,11 +305,11 @@ const PROVIDER = REGISTER_PROVIDER;
 // the provider half is this label. It was a driver fact the seat retyped out of the dispatch; the driver
 // stamps it now, and it reads the label from here rather than re-deriving it from CLEAROTRON_DATABASE
 // — a second derivation of a provider name is how a masthead ends up naming a register the run never used.
-export const PROVIDER_META = PROVIDERS[PROVIDER] ?? {
-  label: PROVIDER ?? "(none configured)",
+export const providerMeta = (register) => PROVIDERS[register] ?? {   // a run's register (ctx.register), or the machine's
+  label: register ?? "(none configured)",
   skillDoc: null,
   hasPublicRecordUrl: true,
-};
+}; export const PROVIDER_META = providerMeta(PROVIDER);
 
 // ---- message builders (faithful to the spawn briefs in phase2-execution.md; the leaf reads the skill for detail) ----
 export const lines = (...a) => a.filter(Boolean).join("\n");
@@ -1951,7 +1951,7 @@ export const STAGES = {
     // Every follow-up is a fresh session that calls the same register tools, so its methodology line also names the
     // active provider's manual, which holds THIS provider's tool names and operator vocabulary and which the opening
     // message tells the first session to read and follow.
-    followupSkillReads: () => (PROVIDER_META.skillDoc ? [PROVIDER_META.skillDoc] : []),
+    followupSkillReads: (ctx) => (providerMeta(ctx?.register ?? PROVIDER).skillDoc ? [providerMeta(ctx?.register ?? PROVIDER).skillDoc] : []),
     out: (P, axis) => P.registerUnit(axis),
     validate: validators.registerUnit,
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
@@ -2022,7 +2022,7 @@ export const STAGES = {
         why: "The path is `out: (P, axis) => P.registerUnit(axis)`, pre-bound by the driver; all three counts are aggregates over the band the tool wrote. No token speaks about the return message.",
       },
     },
-    message: ({ paths: P, axis, job, profile, registerPlan, capabilities = registerCapabilities() }) => {
+    message: ({ paths: P, axis, job, profile, registerPlan, register = PROVIDER, capabilities = registerCapabilities(register) }) => {
     // Lever-1 data plane (2026-06-24): hand the funnel a COPYABLE in-scope Nice-class array. The NOVA PULSE timeout
     // proved skill prose alone is not enough — the funnel HAD [9,28,41,42] in matter-context and still ran
     // all-class enumerations (10k-record flood) because nice_classes read as optional. Pin it in the task.
@@ -2053,19 +2053,19 @@ export const STAGES = {
       // told it holds tools its grant does not carry. The composer derives the list from the same table
       // that does the excluding, and returns NULL — not an empty sentence — when the provider cannot be
       // resolved, which is the path `--experiment` takes.
-      grantVocabularySentence(),
-      `You are register UNIT mode, axis = "${axis}". Active register provider: ${PROVIDER_META.label}.`
+      grantVocabularySentence(register),
+      `You are register UNIT mode, axis = "${axis}". Active register provider: ${providerMeta(register).label}.`
       // A provider with no vocabulary doc is a provider this seat cannot be briefed on. Emitting the
       // sentence with a null path in it would instruct the model to read a file that does not exist,
       // which it resolves by carrying on unbriefed — indistinguishable from choosing not to read.
-      + (PROVIDER_META.skillDoc
+      + (providerMeta(register).skillDoc
         // "(EUIPO = free EU cross-check, available alongside)" used to sit at the end of this sentence.
         // It described the credential-blind attach, which is gone: EUIPO is a register PROVIDER
         // now, so when it is active it IS `${PROVIDER_META.label}` and there is nothing "alongside".
         // Leaving the clause in would tell every unit on every vendor that a second EU source was
         // available to it, and a unit that believes it has a cross-check it does not have will report
         // agreement it never obtained.
-        ? ` Read and follow ${PROVIDER_META.skillDoc} for THIS provider's exact tool names + operator vocabulary; use only that provider's register tools. There is exactly ONE register in this run — if its coverage does not reach a territory the matter needs, that is a DEFERRED coverage row you disclose, never a gap you fill from somewhere else.`
+        ? ` Read and follow ${providerMeta(register).skillDoc} for THIS provider's exact tool names + operator vocabulary; use only that provider's register tools. There is exactly ONE register in this run — if its coverage does not reach a territory the matter needs, that is a DEFERRED coverage row you disclose, never a gap you fill from somewhere else.`
         : " NO provider vocabulary doc is registered for it, so there is nothing to read for its tool names — treat that as a fault and say so rather than improvising an operator vocabulary."),
       `Inputs: variant manifest ${P.variantManifest}; matter frame ${P.matterContext}.`,
       planEntries.length
@@ -3430,7 +3430,7 @@ export const STAGES = {
         why: "the items are code-found and driver-fed, so the FINDING is mechanical; what the model owes is the flag, the quote and the verdict consequence. NO TOKEN — unlike the plan-execution table, this driver-fed block has no section gate at all",
       },
     },
-    message: ({ paths: P, intakeAsks, job, registerOnly, profileSelection, placementFloorDecisions, writerExclusions, researchChecks }) => lines(
+    message: ({ paths: P, intakeAsks, job, registerOnly, profileSelection, placementFloorDecisions, writerExclusions, reviewAddressLines, researchChecks }) => lines(
       reads(["skills/narrative-refutation/SKILL.md", "skills/clearance-search/report-prose.md"]),
       // lever 3 — WHICH FINDINGS EARN A GROUNDED PROFILE, chosen by the DRIVER and listed by
       // ordinal. The band is on findings.json before this stage is dispatched, so there is nothing for
@@ -3438,7 +3438,7 @@ export const STAGES = {
       // which is the one-country product always, and any run whose cut keeps everything.
       profileSelectionDirective(profileSelection),
       `Adversarially refute the narrative ${P.narrative} against the source files: register findings ${P.registerFindings}${registerOnly ? "" : `, common-law ${P.commonLaw}`}, placements ${P.placement} (structured tiers + reasons: ${P.placementModel}), matter frame ${P.matterContext}.`,
-      ...refutationStandingLines({ registerOnly, job, floorDecisions: placementFloorDecisions, writerExclusions }),
+      ...refutationStandingLines({ registerOnly, job, floorDecisions: placementFloorDecisions, writerExclusions, addressLines: reviewAddressLines }),
       // PR-8: the reviewer verifies register claims against the RECORD, on the record — the same
       // read-only band tools the drafting stages used, every lookup logged to the reading audit.
       // The skeptic's shipped sentence, word for word: a granted tool is named, or the seat cannot know it holds it.
@@ -4677,13 +4677,13 @@ export const writerExclusionLines = (block) => {
     ...(reference.length ? [WRITER_EXCLUSIONS_REFERENCE, ...reference] : [])];
 };
 
-export const refutationStandingLines = ({ registerOnly = false, job = {}, floorDecisions = null, writerExclusions = null } = {}) => [
+export const refutationStandingLines = ({ registerOnly = false, job = {}, floorDecisions = null, writerExclusions = null, addressLines = [] } = {}) => [
   PLACEMENT_BORDERLINE_NOTE,
   `REGISTER VERIFICATION TOOLS: you hold the read-only band tools — band_shape (the deterministic shape of the complete register band, including floors marked on their lines; crowded groups may show only their first page), band_lookup (pull any record the narrative relies on or omits) and band_record (the official registry record fetched this run). Check the narrative's register assertions against them. Each floor must be rated in the narrative, reasoned away in it, or accounted for by a decision listed below: placement's decisions on the floors, or the writer's exclusions of positions placement retained. A floor that is none of these is a FLAGGED CORRECTION. Check each of placement's listed decisions against the evidence, and flag one only when you can name the evidence against its ground or the error in its reasoning. The writer's exclusions are listed after them, under their own standard. They are read-only and logged; you hold no live register tools (by design, never an outage).`,
   // The validated decisions themselves, written by the driver from the placement form (pipeline.mjs
   // placementFloorDecisionLines); none stands where the list is empty.
   ...(Array.isArray(floorDecisions) && floorDecisions.length ? floorDecisions : ["(none)"]),
-  ...writerExclusionLines(writerExclusions),
+  ...writerExclusionLines(writerExclusions), ...(addressLines ?? []),
   `Re-read any of this run's own artifacts with the \`search_run_artifacts\` tool — ONE file per call, named relative to the run directory (e.g. "register-findings.md"), with \`terms\` as literal substrings OR-matched per line.`,
   registerOnly ? REGISTER_ONLY_NOTE : "",
   pharmaMatter(job) ? `This is a PHARMA matter (Nice 5 / pharma goods): verify the narrative honoured the pharma field module (skills/clearance-search/field-doctrine-pharma.md) — therapeutic-area goods discipline (same therapeutic area ≈ proximate goods regardless of formulation), NO-USE never softens a pharma risk (pipelines run 5-10 years pre-launch), and practitioner/pharmacist confusion including handwriting/verbal look-alikes was weighed. A violation is a FLAGGED CORRECTION.` : "",
@@ -4692,7 +4692,7 @@ export const refutationOpenItemsLine = (P) =>
   `Also verify against ${P.skepticFlags} and ${P.frameReopenReceipt} (JSON "deferrals"): every skeptic flag and every reopen deferral must be either visible as a coverage[]/narrative open item or explicitly reasoned immaterial — one that appears in neither place is a FLAGGED CORRECTION. Files absent ⇒ skip.`;
 export const REFUTATION_RECORDING_LINES = Object.freeze([
   `RECORD YOUR REVIEW WITH \`record_narrative_refutation\`. THE DISPATCH NAMES NO FILE FOR YOU TO WRITE, deliberately — the driver renders the review from what you send, so a flag the corrective ladder cannot parse cannot be written. You hold no Write or Edit tool for it and nothing you write by hand is read.`,
-  `WHAT THE CALL TAKES: \`verdict\` (CLEAR / CONDITIONAL / BLOCKING) and \`flags\`, one entry per flag. Each flag carries \`kind\`, \`text\` (one line, naming the file and the exact claim), optionally \`fix\` (one line — the targeted edit that would settle it) and optionally \`on\` (the finding ordinals it is about) and optionally \`positions\` (the record ids of the writer's excluded positions it is about, as their list names them). Omit both for a flag about the document. You do NOT number the flags: render order is the numbering.`,
+  `WHAT THE CALL TAKES: \`verdict\` (CLEAR / CONDITIONAL / BLOCKING) and \`flags\`, one entry per flag. Each flag carries \`kind\`, \`text\` (one line, naming the file and the exact claim), optionally \`fix\` (one line — the targeted edit that would settle it) and optionally \`on\` (the finding ordinals it is about) and optionally \`positions\` (the record ids of the writer's excluded positions it is about, as their list names them) and optionally \`lines\` (the addresses of the other parts of the report it is about, copied from the address list). Omit all three for a flag about the document as a whole. You do NOT number the flags: render order is the numbering.`,
   `TYPE EACH CORRECTION: \`kind\` is ONE of coverage-disposition | fact | rating | narrative — pick the one your own legal read says the correction IS: coverage-disposition (a coverage row / disposition placement is wrong or dishonest), fact (a factual defect — record values, owners, statuses, dates, grounding), rating (a band/rating you challenge), narrative (prose, structure or voice of the narrative). DECLARE the kind from what the correction is about, never from how severe it is.`,
   `A BLOCKING verdict REQUIRES at least one flag. A refusal to sign that names nothing is refused by the call itself, in this turn, rather than at the gate — where its only repair is one forced re-ask of this whole stage.`,
 ]);
