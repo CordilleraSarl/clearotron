@@ -31,6 +31,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { recordOriginsFor } from "../record-origins.mjs";
 import { PROVIDERS } from "../driver.config.mjs";
+import { driverSource } from "./driver-source.mjs";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const read = (p) => readFileSync(join(REPO, p), "utf8");
@@ -170,6 +171,6 @@ test("the strip's justification is no longer false — it cost the last reader a
   assert.match(src, /REPLACED, not removed/,
     "the comment must state the real reason: the portal offers a better affordance in its own chrome");
   // Independently verified rather than taken on the thread's word.
-  assert.match(read("driver/portal-service.mjs"), /parts\[3\] === "audit\.xlsx"/, "the route serves it");
+  assert.match(driverSource("portal-service.mjs"), /parts\[3\] === "audit\.xlsx"/, "the route serves it");
   assert.match(read("portal-ui/src/screens/Result.tsx"), /audit\.xlsx/, "and the UI offers it");
 });

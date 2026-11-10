@@ -127,7 +127,8 @@ const { TOOL_DEFS } = await import("../../mcp-server/server.mjs");
  * lands, which is the only moment at which adding its adapter is cheap.
  */
 function doorsFromSource() {
-  const roots = [DRIVER, join(REPO, "mcp-server", "lib")];
+  // portal-routes: the portal's route groups, moved out of portal-service.mjs; its door is one of them.
+  const roots = [DRIVER, join(DRIVER, "portal-routes"), join(REPO, "mcp-server", "lib")];
   const hits = [];
   for (const root of roots) {
     for (const f of nonEmpty(readdirSync(root, { withFileTypes: true }), "readdirSync(root, { withFileTypes: true })")) {
@@ -369,7 +370,7 @@ async function devDoor(req) {
 
 /** name → [source module, adapter]. The source path is what the derivation above joins against. */
 const DOOR_ADAPTERS = {
-  portal: ["driver/portal-service.mjs", portalDoor],
+  portal: ["driver/portal-routes/run.mjs", portalDoor],
   start_run: ["mcp-server/lib/ops.mjs", mcpDoor],
   plan_run: ["mcp-server/lib/plan.mjs", planDoor],
   cli: ["driver/enqueue.mjs", cliDoor],

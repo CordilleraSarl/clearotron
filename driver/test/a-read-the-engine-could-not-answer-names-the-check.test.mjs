@@ -14,6 +14,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { engineFailureMessage, makeComposeReader } from "../compose-read.mjs";
 import { browserCommand } from "../../shared/invocation.mjs";
+import { driverSource } from "./driver-source.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const RETRY = /just now|try again|shortly|in a moment/i;
@@ -45,7 +46,7 @@ test("the engine's rate limit reaches the reader as a flag, not only as a senten
 });
 
 test("the portal hands the reader the check as the reader types it, with no path of this machine", () => {
-  const src = readFileSync(join(ROOT, "driver", "portal-service.mjs"), "utf8");
+  const src = driverSource("portal-service.mjs");
   assert.match(src, /makeComposeReader\(\{ turn: runner\.turn, checkCommand: browserCommand\("doctor --probe-engine"\) \}\)/);
   const cmd = browserCommand("doctor --probe-engine");
   assert.match(cmd, /doctor --probe-engine$/);

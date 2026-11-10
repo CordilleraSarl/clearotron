@@ -7,16 +7,15 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, utimesSync, readFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, utimesSync } from "node:fs";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
 import { createHash } from "node:crypto";
 import { makeStaticHandler, spaCsp, reportCsp } from "../portal-static.mjs";
 import { SERVER_ROUTE_HEADS } from "../portal-service.mjs";
 
-const at = (p) => fileURLToPath(new URL(p, import.meta.url));
 import { PRE_PAINT_SCRIPT } from "../../shared/portal-tokens.mjs";
+import { driverSource } from "./driver-source.mjs";
 
 // A minimal stand-in for a ServerResponse that records what was written.
 const fakeRes = () => {
@@ -62,7 +61,7 @@ const withDist = (fn, { build = true } = {}) => {
 // idiom for exactly this shape — no-client-identifiers.test.mjs reads driver/phase0.mjs the same way —
 // and it means the assertion needs no booted portal.
 test("SERVER_ROUTE_HEADS is a BIJECTION with the routes the service actually registers", () => {
-  const src = readFileSync(at("../portal-service.mjs"), "utf8");
+  const src = driverSource("portal-service.mjs");
 
   // Every `parts[1] === "<head>"` in the router, which is how every route under /portal is dispatched.
   const registered = new Set([...src.matchAll(/parts\[1\] === "([a-z][a-z0-9-]*)"/g)].map((m) => m[1]));
