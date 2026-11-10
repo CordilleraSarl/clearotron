@@ -806,7 +806,7 @@ export async function runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQ
         ledger: loadCoverageLedger(run.runDir).rows,   // fresh read — post-reopen/re-digest, same source as every gate
         planContext: { entries: ctx.registerPlan.entries ?? [], niceClasses: ctx.registerPlan.nice_classes ?? [], regions: ctx.registerPlan.regions ?? [] },
         executor: ccExecutor,
-        capabilities: registerCapabilities(),   // the contains floor, read the way the plan compile reads it
+        capabilities: registerCapabilities(ctx.register),   // the contains floor, read the way the plan compile reads it
         note: (m) => note(m),
         log: (row) => runLog(run.runDir, row),   // the orchestrator's own crowd-context-failed row lands in run.jsonl
       });
