@@ -1521,7 +1521,10 @@ export async function knockoutInner(ctx, job, opts = {}) {
     // the plain knockout level" — on a terminal whose entire purpose is to tell an operator what to do.
     // `reason` keeps its 200 chars (it rides the ping); the cut is now STATED and the tail kept beside it.
     const { reason: shortReason, reasonTruncated, reasonFull } = terminalReasonFields(reason);
-    sentinel(run.runDir, ".failed", { stage: failedStage, reason, lane: "knockout", terminalKind });
+    // The signature and class the clearance end records, so a reader of either product's failure reads the same fields.
+    const failSig = failureSignature(failedStage, reason, { codes: e instanceof StageFailure ? e.reasonCodes : undefined });
+    const failClass = (e instanceof StageFailure && e.failClass) || classifyFailureReason(String(reason));
+    sentinel(run.runDir, ".failed", { stage: failedStage, reason, lane: "knockout", sig: failSig.sig, class: failClass, terminalKind });
     runLog(run.runDir, { event: "failed", stage: failedStage, reason, lane: "knockout", ...(terminalKind ? { terminalKind } : {}) });
     writeRunStatus(ctx, { state: "failed", failedStage, reason: shortReason, reasonTruncated, reasonFull, terminalKind });
     recordRunConsumption(ctx, { phase: "failed", tokens: stampTokenRollup(run.runDir, "failed") });
@@ -1546,12 +1549,13 @@ export async function knockoutInner(ctx, job, opts = {}) {
     try {
       const rich = buildFailurePacket({
         runId, agent, job, failedStage, shortReason, terminalKind,
-        reasonVerbatim: String(reason).slice(0, 1000),
+        reasonVerbatim: String(reason).slice(0, 1000), sig: failSig.sig, failClass,
       });
       const packet = {
         kind: "run-failed", ...rich,
         markName: job.markName ?? job.name ?? null, reason: shortReason,
         text: rich.whatsappText,   // the short fallback line legacy relays read (clearance parity)
+        failureSignature: failSig.sig,   // machine field, as on the clearance packet
       };
       writeFileSync(paths(run.runDir).failure, JSON.stringify(packet, null, 2) + "\n");
       failPingSent = Boolean(writeOutboxPacket(`${runId}.failed`, packet));
