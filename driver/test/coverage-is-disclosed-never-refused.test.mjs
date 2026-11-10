@@ -31,6 +31,7 @@ import { TURNAROUND_QUOTE, leversFromResolved, quoteEffort } from "../effort-mod
 import { registerCoverageCause } from "../register-coverage.mjs";
 import { PROMPT_TERRITORIES } from "../compose-read.mjs";
 import { PRODUCTS } from "../products.mjs";
+import { driverSource } from "./driver-source.mjs";
 
 // A register reaching a real but partial set — the owner's case in shape if not in name.
 const PARTIAL = ["United States", "European Union", "Germany", "France", "United Kingdom"];
@@ -134,7 +135,7 @@ test("arm 7 — the menus say nothing about coverage and both review steps still
   // PINNED ON THE FIELD, NOT ON THE ABSENCE OF A CALL. portal-service still calls coverageDisclosure for
   // its review step, so "does this file mention it" cannot tell the menu from the review step. The
   // count is what separates them: one call, and it is the reviewing one.
-  const portal = readFileSync(fileURLToPath(new URL("../portal-service.mjs", import.meta.url)), "utf8");
+  const portal = driverSource("portal-service.mjs");
   assert.equal((portal.match(/coverageDisclosure\(/g) ?? []).length, 1,
     "the portal asks twice, so the menu is composing the sentence the ruling took off the row");
   // AND THE REVIEW STEPS STILL ASK. A client committing to a worldwide search on a partial register is

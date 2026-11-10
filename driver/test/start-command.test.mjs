@@ -23,6 +23,7 @@ import { listenErrorMessage } from "../../shared/listen.mjs";
 import { snapshot, unchanged } from "./secret-file-compare.mjs";   // — the repo's .env is compared, never rendered
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+import { driverSource } from "./driver-source.mjs";
 
 const plan = (ports) => childEnv({
   ports,
@@ -466,7 +467,7 @@ test("the ops token start mints carries EVERY write verb the portal actually cal
   // calls are two spellings of one contract; this arm joins them at the source so the next verb the
   // portal grows reds the tree until the mint knows it.
   const start = readFileSync(join(REPO, "bin", "start.mjs"), "utf8");
-  const portal = readFileSync(join(REPO, "driver", "portal-service.mjs"), "utf8");
+  const portal = driverSource("portal-service.mjs");
   const mintMatch = start.match(/mintToken\(\{\s*scope:\s*"ops"[\s\S]*?verbs:\s*\[([^\]]*)\]/);
   assert.ok(mintMatch, "start.mjs no longer mints the portal ops token with an explicit verbs list — re-aim this arm");
   const minted = [...mintMatch[1].matchAll(/"([a-z_]+)"/g)].map((m) => m[1]);

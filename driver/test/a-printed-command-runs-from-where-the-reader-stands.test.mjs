@@ -29,6 +29,7 @@ import { signInResetCommand } from "../portal-local-auth.mjs";
 import { NO_INSTALLED_ENGINES } from "./drive-env.mjs";   // this doctor's env is composed from nothing
 
 const HERE = dirname(fileURLToPath(import.meta.url));
+import { driverSource } from "./driver-source.mjs";
 const REPO = join(HERE, "..", "..");
 const ONBOARD = join(REPO, "bin", "onboard.mjs");
 
@@ -491,7 +492,7 @@ test("the portal's sign-in page names a passphrase reset the reader can run", ()
   // THE COMMAND THE OWNER TYPED. The sign-in page is where a reader who has lost their passphrase is
   // told what to do, and it carried a hardcoded `npx clearotron passphrase --reset` — unrunnable from
   // anywhere but the install directory, which is not where somebody reading a browser page is standing.
-  const src = readFileSync(join(REPO, "driver", "portal-service.mjs"), "utf8");
+  const src = driverSource("portal-service.mjs");
   const hint = /Lost it\? Run\s*<code>([^<]*)<\/code>/.exec(src);
   assert.ok(hint, "the sign-in page's passphrase hint is gone — re-point this arm rather than deleting it");
   assert.doesNotMatch(hint[1], /npx clearotron|invocationPrefix|invoke\(|\/|cd /,

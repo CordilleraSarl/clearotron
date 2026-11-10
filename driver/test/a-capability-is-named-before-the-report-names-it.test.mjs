@@ -32,6 +32,7 @@ import { caseLawInventory } from "../config-inventory.mjs";
 import { caseLawReadyFor } from "../flag-snapshot.mjs";
 import { CASELAW_BRIDGES } from "../engine/mcp/gather-config.mjs";
 import { PRODUCTS } from "../products.mjs";
+import { driverSource } from "./driver-source.mjs";
 
 const withCreds = (enrolled) => {
   const dir = mkdtempSync(join(tmpdir(), "caselaw-creds-"));
@@ -109,7 +110,7 @@ test("arm 4 — the composer warns off the PRODUCT'S declaration, and only on a 
   const needs = PRODUCTS.filter((p) => p.caseLaw);
   assert.equal(needs.length, 1, "the offering changed shape — check the arms below still ask the right question");
 
-  const src = readFileSync(fileURLToPath(new URL("../portal-service.mjs", import.meta.url)), "utf8");
+  const src = driverSource("portal-service.mjs");
   const line = src.split("\n").find((l) => l.includes("capabilityNote:"));
   assert.ok(line, "the level rows carry no capability note");
   assert.match(line, /l\.caseLaw/, "the warning is keyed on something other than the product's own declaration");
