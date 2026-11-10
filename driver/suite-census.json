@@ -3527,7 +3527,7 @@
         },
         "convergence-ledger.test.mjs": {
           "tests": 10,
-          "asserts": 60,
+          "asserts": 59,
           "skips": 0,
           "todos": 0
         },

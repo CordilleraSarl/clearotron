@@ -302,8 +302,6 @@ export function bareStage(stage) {
 // The table is an ALLOWLIST, not a find-a-digit heuristic: a bare \d+ grab would read the exit code out
 // of nonzero_exit_1, or the ordinal out of finding_use_check_missing:12, and call it progress. An entry
 // joins this table only with the throw site's literal template in hand and a test.
-const OVERFLOW_RE = /\(\+(\d+) more\)\s*$/;
-const overflowOf = (tail) => { const m = OVERFLOW_RE.exec(tail.trim()); return m ? Number(m[1]) : 0; };
 
 // verify.mjs connotationDispositionFail, since:
 //   `connotation_no_ruling:no_ruling=<n>;<row-id> [<query|receipt>],…[ (+N more)]`
@@ -311,10 +309,8 @@ const overflowOf = (tail) => { const m = OVERFLOW_RE.exec(tail.trim()); return m
 //   `connotation_quote_unbound:quote_unbound=<n>;<row-id> [<query>] <state> <R-id>,…[ (+N more)]`
 // The leading CAUSE CENSUS is the exact count stamped at the throw site, so the total is the sum of its
 // numbers — no comma-splitting, and therefore immune to the over-count a query containing a comma used to
-// cause. LEGACY SHAPES still parse and must: this text path exists for the run-level catch, which sees
-// prose only, and a resumed or archived run can still carry a pre-change token
-// (`connotation_undisposed:<census>;…`, `<q1,q2,…>[ (+N more)]`). A stale token that stopped counting
-// would read as a MISSING quantity, which is what a converged run looks like.
+// cause. A tail with no census is ABSENT: every token in the table below is written with one, and a run
+// is only ever continued on the build that started it, so no older shape reaches this reader.
 // The validator's exact count still rides as `quantity` at the throw site and always wins.
 const CENSUS_RE = /^((?:[a-z_]+=\d+)(?:,[a-z_]+=\d+)*)(?:[;\s]|$)/;
 function undisposedCount(tail) {
@@ -325,19 +321,7 @@ function undisposedCount(tail) {
     // ABSENT, not converged (see the ABSENT IS NOT ZERO block above).
     return total || null;
   }
-  const overflow = overflowOf(tail);
-  const listed = tail.replace(OVERFLOW_RE, "").trim();
-  const named = listed ? listed.split(",").map((s) => s.trim()).filter(Boolean).length : 0;
-  // The token cannot fire with zero outstanding rows, so a zero here means the string reaching us
-  // was cut short of its payload — ABSENT, not converged.
-  return named ? named + overflow : null;
-}
-// A pre-change archived token: `connotation_recurrent_uncited:<one result, ≤80 chars>[ (+N more)]` — ONE
-// named result plus the overflow. Never split on commas: that payload is a copied result title, not a
-// joined list. Nothing emits this shape any more; it is kept so a resumed run's own history still counts.
-function recurrentCount(tail) {
-  const named = tail.replace(OVERFLOW_RE, "").trim();
-  return named ? 1 + overflowOf(tail) : null;
+  return null;
 }
 
 // FIRST MATCH WINS, so the live tokens lead. Every entry's `count` reads a census when there is one, and
@@ -345,28 +329,10 @@ function recurrentCount(tail) {
 const PROGRESS_TOKENS = [
   { token: "connotation_no_ruling", count: undisposedCount },        //, live
   { token: "connotation_form_damaged", count: undisposedCount },     //, live
-  // — the three states split out of `connotation_no_ruling`, and they are here for the reason the
-  // block above states rather than for symmetry: a token with no entry returns null from
-  // progressQuantity, `progress.kind` becomes "unknown", and a seat converging 75 → 40 → 0 reads as
-  // stuck — so the ladder breaks on the attempt that was working. Same census shape (`<reason>=<n>;`),
-  // so the same counter. FIRST MATCH WINS on indexOf and none of these three names contains another,
-  // so position among themselves is free; they sit with their family because a token added away from
-  // this comment is a token added without it in view.
-  // `form_untouched` signs the POPULATION, not 1 — verify.mjs emits `form_untouched=<row count>` for
-  // exactly this reader, so a 75-row failure followed by `token_absent=40` reads as convergence and not
-  // as a 40x regression.
-  // RETIRED, kept so archived and replayed runs still count. `form_untouched` left CONNOTATION_REASONS
-  // with the hand-edited form path (owner ruling 2026-08-17, recorded at contract-vocabulary.mjs:85) and
-  // nothing emits it now; its subject matter is `call_never_made`. Delete the ENTRY and a resumed run's
-  // own history stops counting — a dead allowlist row costs nothing, a missing one costs a ladder.
-  { token: "connotation_form_untouched", count: undisposedCount },   //, retired 2026-08-17
-  // — same census shape (`<reason>=<n>;`) and the same counter. It signs the POPULATION for the
-  // reason stated just above: an unparseable submission recorded nothing, so every obligation is still
-  // owed, and `=1` here would make the next attempt's real progress read as a regression. FIRST MATCH
-  // WINS on indexOf and neither this name nor `connotation_form_untouched` contains the other.
-  { token: "connotation_form_unparseable", count: undisposedCount }, //, retired 2026-08-17 (as above)
+  // A token with no entry here returns null from progressQuantity, `progress.kind` becomes "unknown", and a
+  // seat converging 75 → 40 → 0 reads as stuck — so the ladder breaks on the attempt that was working.
   // B — the four TRANSPORT states. Same census shape (`<reason>=<n>;`), so the same counter. Three of them
-  // sign the POPULATION for the reason the two blocks above give: when a call never landed, nothing was
+  // sign the POPULATION: when a call never landed, nothing was
   // recorded, every obligation is still owed, and `=1` would make the next attempt's real progress read as
   // a regression.
   //
@@ -380,18 +346,9 @@ const PROGRESS_TOKENS = [
   { token: "connotation_call_truncated", count: undisposedCount },
   { token: "connotation_call_schema_violation", count: undisposedCount },
   { token: "connotation_call_partial", count: undisposedCount },
-  // A DIFFERENT KIND OF STALE from the two above, and the distinction is the whole point of writing it
-  // down. `token_absent` and `cite_absent` are still LIVE row-level reasons (CONNOTATION_REASONS carries
-  // both; findConnotationViolations still pushes them) — but they never mint a TOP-LEVEL fail token any
-  // more. connotationDispositionFail reports the four call_* transport states, then form_damaged, then
-  // quote_unbound, and returns null; under the typed transport an unruled residual surfaces as a call
-  // state instead. So these two can only ever match an ARCHIVED reason string, and a test pinning either
-  // as a live token would pin nothing. Kept for exactly that archived traffic.
-  { token: "connotation_token_absent", count: undisposedCount },     //, row-level only — never a top-level token
-  { token: "connotation_cite_absent", count: undisposedCount },      //, row-level only — never a top-level token
   //. Without an entry here the quote ladder's residual is invisible: progressQuantity returns null,
   // `progress.kind` becomes "unknown", and a run converging 3 → 1 → 0 reads as stuck — the silent failure
-  // the block above describes, on the one token added since it was written. Same census shape, so the
+  // the head of this table describes, on the one token added since it was written. Same census shape, so the
   // same counter. FIRST MATCH WINS on `indexOf` and this name contains neither of the two above it, so
   // the position is free; it sits with its family because a token added away from them is a token added
   // without this comment in view.
@@ -407,8 +364,6 @@ const PROGRESS_TOKENS = [
   { token: "coverage_form_axis_invalid", count: undisposedCount },   // fix round, live
   { token: "coverage_no_status", count: undisposedCount },           //, live
   { token: "coverage_form_damaged", count: undisposedCount },        //, live
-  { token: "connotation_undisposed", count: undisposedCount },       // pre-, archived runs only
-  { token: "connotation_recurrent_uncited", count: recurrentCount }, // pre-, archived runs only
 ];
 
 // The reason must arrive UNTRUNCATED — feed this the fail string as thrown, never a display slice.

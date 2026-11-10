@@ -741,7 +741,7 @@ test("a <kind>:<path> failure is nameable, and it was not before", () => {
 });
 
 test("the quantity shape this reporter already caught still reports", () => {
-  const f = failureSignature("common-law-half:m", "connotation_form_damaged: form_damaged = 27");
+  const f = failureSignature("common-law-half:m", "connotation_form_damaged:form_damaged=27;unparseable");
   assert.ok(f.quantityToken, "the original case is unchanged");
   assert.equal(unnamedStructuredFailure({ failClass: "unknown", classSource: "reason-text",
     token: f.quantityToken, kind: f.kindToken }), true);
