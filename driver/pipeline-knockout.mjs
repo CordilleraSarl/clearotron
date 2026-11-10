@@ -39,6 +39,7 @@ import { config, RESEARCH_PROVIDERS, REGISTER_PROVIDER, missingCredentials } fro
 import { registerAdapter as adapterForRegister } from "./engine/run-choices.mjs";   // the run's register adapter, from ctx.register
 import { StageFailure, stageWallFields } from "./run-outcome.mjs";   // — the wall fields the spine already carries
 import { endTheFailedRun } from "./run-failed.mjs";   // — the failure path both products share
+import { endTheDeliveredRun } from "./run-shell.mjs";   // — the delivered ending both products share
 import { logTurnaroundReconciliation } from "./run-quote.mjs";
 import { RunCancelled, assertNotCancelledBeforePublish, isCancelled, readCancel } from "./cancel.mjs";   // stop-by-user: never the failure lane below
 import { loadFrameworkManifest, parseFrameworkManifest, frameworkFor, DEFAULT_FRAMEWORK } from "./framework.mjs";
@@ -53,7 +54,7 @@ import { capabilitiesFor } from "./register-capabilities.mjs";
 // — the ONE binding of the office split to this box's env, shared with the plan lane.
 import { registerUnavailableOffices } from "./register-unreachable.mjs";
 import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";   // — this run's record log
-import { beginAnswerMemory, endAnswerMemory } from "../providers/_shared/answer-memory.mjs";
+import { beginAnswerMemory } from "../providers/_shared/answer-memory.mjs";
 import { validators as koValidators, validateMergedFindings, worstBand, registerSurfacedFilings, raterCaveats, SURVIVOR_BOUNDARY_RE, REGISTER_LANE_FILE, PERMITTED_SOURCES } from "./verify-knockout.mjs";
 import { KNOCKOUT_CARD_ORDER } from "./findings-model.mjs";
 import { reviewDispatch, applyKnockoutReview, knockoutReviewFile, rewritesThatSurvive } from "./knockout-review-record.mjs";
@@ -70,7 +71,6 @@ import { defaultTerritoryState } from "./effective-scope.mjs";   // the stored-d
 import { whatsappRouting } from "./stages.mjs";
 import { rollupTokens, stampTokenRollup } from "./tokens.mjs";
 import { recordRunConsumption } from "./consumption-ledger.mjs";
-import { writeSettleStamp } from "./settle-stamp.mjs";   // — the pool copy's own terminal state
 // The scoped owner lookup a promoted register filing is owed. Bounded, deduplicated
 // per owner, and structurally unable to withhold a report.
 import { ownersOwedACheck, runOwnerChecks } from "./owner-use-check.mjs";
@@ -1400,17 +1400,13 @@ export async function knockoutInner(ctx, job, opts = {}) {
     // The turnaround row every run ending writes. A Knockout computes no quote, so the row carries its wall alone.
     logTurnaroundReconciliation(run.runDir, ctx.quote, "delivered");
     // `tier` beside `verdict` — the same band word under the name the clearance lane records it by, so a
-    // reader of either lane's status finds the rating in one place. `verdict` stays as it was.
-    writeRunStatus(ctx, { state: "delivered", tier: overall, statement: published.statement, url: published.url, reports: published.reports.map((r) => ({ mark: r.mark, url: r.url })), deliveredAt, sendPending: true, stepIndex: STEPS.length - 1, stepLabel: STEPS[STEPS.length - 1], stepN: STEPS.length, stepTotal: STEPS.length });
-    // — the knockout lane's pool copy learns its terminal state the same way,
-    // for the same reason: publish returns the pool dir, and `state: "delivered"` is decided after it
-    // returns. Same seam, same best-effort contract, no lane-specific exception to write down.
-    const stamp = writeSettleStamp(published.poolRunDir, { state: "delivered", tier: overall, deliveredAt, runId: published.runId ?? run.runId, lane: "knockout" });
-    if (!stamp.written) note(`delivery: settle stamp not written (${stamp.reason})`);
-    endAnswerMemory(run.runDir);   // the held answers do not travel into the archive
-    const archived = archive(run);
-    rollupStatus(run.studioRoot);
-    sentinel(archived ?? run.runDir, ".delivered", { verdict: overall, url: published.url, reports: published.reports.map((r) => ({ mark: r.mark, url: r.url })), notified: "pending", sendPending: true, archived, lane: "knockout" });
+    // reader of either lane's status finds the rating in one place. `verdict` stays as it was. The pool copy
+    // learns its terminal state at the same seam as a clearance's (run-shell.mjs).
+    const archived = endTheDeliveredRun({ ctx, run, published, archive, sentinel }, {
+      status: { state: "delivered", tier: overall, statement: published.statement, url: published.url, reports: published.reports.map((r) => ({ mark: r.mark, url: r.url })), deliveredAt, sendPending: true, stepIndex: STEPS.length - 1, stepLabel: STEPS[STEPS.length - 1], stepN: STEPS.length, stepTotal: STEPS.length },
+      settle: { state: "delivered", tier: overall, deliveredAt, runId: published.runId ?? run.runId, lane: "knockout" },
+      delivered: (archivedAt) => ({ verdict: overall, url: published.url, reports: published.reports.map((r) => ({ mark: r.mark, url: r.url })), notified: "pending", sendPending: true, archived: archivedAt, lane: "knockout" }),
+    });
     note(`=== KNOCKOUT DELIVERED (${nMarks} marks, worst ${overall}) → ${published.reports.map((r) => r.url).join(", ") || "no report URL (pool URL unset)"}${archived ? ` — archived → ${archived}` : ""} ===\n`);
     return { ok: true, verdict: overall, url: published.url, reports: published.reports, runDir: archived ?? run.runDir };
   } catch (e) {

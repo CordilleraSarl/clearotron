@@ -7,7 +7,6 @@
 // The clearance pipeline's delivery end state, moved out of pipelineInner unchanged. It hands back the two ways a run
 // delivers. `helpers` are functions still held in pipeline.mjs, handed in because this module must not import that
 // one back.
-import { endAnswerMemory } from "../providers/_shared/answer-memory.mjs";
 import { assessmentNotCompletedNote } from "../shared/client-failure-note.mjs";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { assertNotCancelledBeforePublish } from "./cancel.mjs";
@@ -18,15 +17,15 @@ import { registerAdapter } from "./engine/run-choices.mjs";   // the run's regis
 import { note, runLog } from "./log.mjs";
 import { NOT_COMPLETED_DIR } from "./parts-not-completed.mjs";
 import { deliveryForRun } from "./profiles.mjs";
-import { finalStepFields, readRunStatus, recordTransition, rollupStatus, signoffPatch, writeRunStatus } from "./progress.mjs";
+import { finalStepFields, readRunStatus, recordTransition, signoffPatch, writeRunStatus } from "./progress.mjs";
 import { DEFAULT_LEDGER_PATH, tallyRegisterCalls } from "./provider-usage.mjs";
 import { composeEmailHtml, coverNoteOptions, deliverySubject, publishReport } from "./publish/index.mjs";
 import { noteRegisterServed, providerUsageCaveat, registersServedFrom } from "./register-served.mjs";
 import { renderReportOverview } from "./report-overview-record.mjs";
 import { atomicWrite } from "./run-record.mjs";
 import { logTurnaroundReconciliation } from "./run-quote.mjs";
+import { endTheDeliveredRun } from "./run-shell.mjs";
 import { reportIdentityFor } from "./search-policy.mjs";
-import { writeSettleStamp } from "./settle-stamp.mjs";
 import { paths, whatsappRouting } from "./stages.mjs";
 import { stampTokenRollup } from "./tokens.mjs";
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
@@ -282,24 +281,17 @@ export async function deliveryEndState({ P, agent, ctx, job, run }, helpers) {
     // .published + .delivered on disk must never read "7/9" on any status surface (nothing runs after
     // the packet, so no stage transition would ever finish the display sequence). finalStepFields ⇒ 9/9.
     const deliveredAt = new Date().toISOString();
-    writeRunStatus(ctx, { state: "delivered", ...signoffPatch(verdict), statement: emailVerdictOpts.statement ?? undefined, caption: published.caption ?? undefined, url: published.url, deliveredAt, sendPending: true, ...finalStepFields() });
-    // — THE POOL COPY LEARNS ITS OWN TERMINAL STATE, HERE AND NOWHERE ELSE.
-    // `meta.json` cannot carry this: it is composed inside publish, before this line runs, so the state
-    // did not exist yet when it was written. This is the one moment where the terminal state and the
-    // pool directory are both in hand. Best-effort by construction — the report is already published
-    // and the run is already settled, so a failure to stamp is logged and the delivery proceeds.
-    const stamp = writeSettleStamp(published.poolRunDir, { state: "delivered", signoff: verdict, deliveredAt, runId: published.runId ?? run.runId, lane: "clearance" });
-    if (!stamp.written) note(`delivery: settle stamp not written (${stamp.reason})`);
-    endAnswerMemory(run.runDir);   // the held answers do not travel into the archive
-    const archived = archive(run);
-    rollupStatus(run.studioRoot);
     // `notified: "pending"` and `sendPending: true` unconditionally, which is what the KNOCKOUT lane has
     // always written one file over. They used to be three-valued because a send STAGE could report
     // success, failure or "no chat binding" here; with the packet as the only lane the integrator owns
     // the outcome, and a field that can hold exactly one value is not evidence of anything. `notifiedChat`
     // is gone for the same reason rather than pinned to false — a key that is always there and always
     // says no reads as a measurement.
-    sentinel(archived ?? run.runDir, ".delivered", { verdict, url: published.url, notified: "pending", archived, sendPending: true });
+    const archived = endTheDeliveredRun({ ctx, run, published, archive, sentinel }, {
+      status: { state: "delivered", ...signoffPatch(verdict), statement: emailVerdictOpts.statement ?? undefined, caption: published.caption ?? undefined, url: published.url, deliveredAt, sendPending: true, ...finalStepFields() },
+      settle: { state: "delivered", signoff: verdict, deliveredAt, runId: published.runId ?? run.runId, lane: "clearance" },
+      delivered: (archivedAt) => ({ verdict, url: published.url, notified: "pending", archived: archivedAt, sendPending: true }),
+    });
     note(`=== DELIVERED (verdict ${verdict}) → ${published.url}${archived ? ` — archived → ${archived}` : ""} ===\n`);
     return { ok: true, verdict, url: published.url, runDir: archived ?? run.runDir };
   }
