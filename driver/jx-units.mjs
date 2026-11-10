@@ -175,7 +175,7 @@ export function resolveSerpExecutor(opts, { mark, lane }) {
   return { source: "serpapi", exec: (args) => SERP_PROVIDERS.serpapi.search(args) };
 }
 
-export function resolveJudge(opts, { mark, lane }) {
+export function resolveJudge(opts, { mark, lane, runDir = null }) {
   if (typeof opts?.jxJudge === "function") return { exec: opts.jxJudge, source: "injected" };
   const fixDir = process.env.CLEAROTRON_JX_FIXTURES;
   if (fixDir) {
@@ -190,10 +190,10 @@ export function resolveJudge(opts, { mark, lane }) {
       },
     };
   }
-  return { source: "engine", exec: (args) => JX_PROVIDERS.judge.judge(args) };
+  return { source: "engine", exec: (args) => JX_PROVIDERS.judge.judge({ ...args, runDir }) };
 }
 
-export function resolveNativeread(opts, { mark, lane }) {
+export function resolveNativeread(opts, { mark, lane, runDir = null }) {
   if (typeof opts?.nativereadExecutor === "function") return { exec: opts.nativereadExecutor, source: "injected" };
   const fixDir = process.env.CLEAROTRON_JX_FIXTURES;
   if (fixDir) {
@@ -207,7 +207,7 @@ export function resolveNativeread(opts, { mark, lane }) {
       },
     };
   }
-  return { source: "engine", exec: (args) => JX_PROVIDERS.nativeread.read(args) };
+  return { source: "engine", exec: (args) => JX_PROVIDERS.nativeread.read({ ...args, runDir }) };
 }
 
 // Bounded local pool (runBatched is pipeline-local; 10 lines beat an export churn).
@@ -383,7 +383,7 @@ export async function runJxSerpGrid(ctx, job, opts = {}, { runLog = () => {}, no
     });
 
     // The judge — classification only, chunked, degrade-to-unjudged (the grid + receipts stand).
-    const { exec: judgeExec, source: judgeSource } = resolveJudge(opts, { mark: markName, lane });
+    const { exec: judgeExec, source: judgeSource } = resolveJudge(opts, { mark: markName, lane, runDir: run.runDir });
     const judged = [];
     let judgeDegraded = null;
     for (let at = 0; at < judgeable.length && !judgeDegraded; at += 40) {
@@ -525,7 +525,7 @@ export async function runJxNativeread(ctx, job, opts = {}, { runLog = () => {}, 
       registerSliceText, candidates: fold.accepted ?? [], cnipaSubgroups: fold.cnipaSubgroups ?? [], gridFindings });
     if (!sections) return { ran: false, cause: "no zh evidence to read (no register slice, candidates or grid findings)" };
 
-    const { exec, source } = resolveNativeread(opts, { mark: markName, lane });
+    const { exec, source } = resolveNativeread(opts, { mark: markName, lane, runDir: run.runDir });
     const started = Date.now();
     let r;
     try { r = await exec({ mark: markName, lane, payload }); }

@@ -52,7 +52,8 @@ const JOB = {
 const MOCK_KNOBS = ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE",
   "MOCK_ACTIONS", "MOCK_LINT_REPAIR_TOUCH_FINDINGS", "MOCK_LINT_REPAIR_TOUCH_FINDING",
   "MOCK_REVIEW_BLOCKS_AFTER_VERDICT", "MOCK_NARRATIVE_OVER_CAP", "MOCK_RECHECK_UNREAD", "MOCK_RECHECK_REWRITES", "MOCK_VERDICT_DEFECTS",
-  "MOCK_POST_REPAIR_FLAGS", "MOCK_POST_REPAIR_VERDICT", "MOCK_POST_REPAIR_UNREAD", "MOCK_WHOLE_FALLBACK_FLAGS"];
+  "MOCK_POST_REPAIR_FLAGS", "MOCK_POST_REPAIR_VERDICT", "MOCK_POST_REPAIR_UNREAD", "MOCK_WHOLE_FALLBACK_FLAGS",
+  "MOCK_VERDICT_FLAG_ON", "MOCK_CORRECTION_MOVES", "MOCK_FINDINGS_N"];
 
 async function runPipeline(env, jobPatch = {}, opts = {}) {
   const root = tempDir("clearotron-mock-adc-");
@@ -355,6 +356,23 @@ test("T3a/#1674: a review that flips to BLOCKING during the delivery stale-repai
 // start from an accepted first review, refuse every save of the recheck, and then let a resumed recheck save one.
 const recheckRecord = (runDir) => JSON.parse(readFileSync(driverDir(runDir, "corrective-recheck.json"), "utf8"));
 const RECHECK = (e) => e.event === "stage" && e.stage === "narrative-refutation" && e.trigger === "verdict-recheck";
+
+// THE CLEARANCE'S POLICY, PINNED END TO END: a correction that moves a finding no flag names is RECORDED, the recheck is
+// told, and the report delivers with the move in it. Clearance never refuses it; the Knockout's policy is the opposite and
+// is pinned in a-knockout-defect-reaches-the-step-that-can-repair-it.test.mjs.
+test("a correction that moves a finding no flag names is recorded, and the report delivers with the move", async () => {
+  const { res } = await runPipeline({ MOCK_VERDICT: "CONDITIONAL", MOCK_SKEPTIC: "no flags surfaced", MOCK_ACTIONS: "condition",
+    MOCK_FINDINGS_N: "2", MOCK_VERDICT_DEFECTS: "- the registration date printed for finding 1 contradicts the fetched record (mock)",
+    MOCK_VERDICT_FLAG_ON: "1", MOCK_CORRECTION_MOVES: "2" });
+  assert.ok(existsSync(join(res.runDir, ".delivered")), "the report delivers");
+  const applied = JSON.parse(readFileSync(driverDir(res.runDir, "corrections-applied.json"), "utf8"));
+  assert.equal(applied.scope.scoped, true, "the review declared its findings, so the correction was scoped");
+  assert.deepEqual(applied.scope.named, [1]);
+  assert.deepEqual(applied.scope.moved, [2], "the finding no flag named moved, and the record says so");
+  const delivered = JSON.parse(readFileSync(join(res.runDir, "findings.json"), "utf8"));
+  assert.match(delivered.findings.find((f) => f.ordinal === 2).practical_position, /The mock correction also moved this position\./,
+    "the move is not refused or rolled back: clearance records it and delivers it");
+});
 
 test("a recheck whose every save is refused verifies nothing: the entry verdict stands, no receipt, and the record says so", async () => {
   const { readAcceptedReviewSince } = await import("../narrative-refutation-record.mjs");

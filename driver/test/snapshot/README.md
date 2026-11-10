@@ -7,7 +7,7 @@ register call, and they report rather than judge. Exit 0 means they looked, exit
 | Tool | What it compares |
 |---|---|
 | `behaviour-snapshot.mjs` | What a run does. It drives the mock pipeline over a fixed set of scenarios on both engines, with the network refused, and records the stages in order, a hash of each prompt, the tools each stage was granted, the output files, the terminal state and the driver lines the scenarios ran. `.github/workflows/behaviour-snapshot.yml` runs it on every push to a `next-*` line. |
-| `publish-compare.mjs` | What a saved run publishes. It publishes each sample under a frozen clock and compares the page, the data files, the workbook entry by entry, the pool's index pages and the email. A saved run is a folder holding `meta.json` and `run/`, the shape `demo/` uses. |
+| `publish-compare.mjs` | What a saved run publishes. It publishes each sample under a frozen clock and compares the page, the data files, the workbook entry by entry, the pool's index pages, the email, what the publisher returns and the rows it appends to the run's log. A saved run is a folder holding `meta.json` and `run/`, the shape `demo/` uses. |
 
 The other four files serve those two:
 

@@ -6106,7 +6106,7 @@ export function extractRulingsTail(placementMd, { cap = 8000 } = {}) {   // @int
 // A1 (F1): a correction must reach EVERY surface the client sees. The narrative alone is
 // not enough — report cards, the landscape and the client summary render from findings.json, so a
 // corrective pass that re-emits only the narrative lets a killed/mis-attributed card resurrect on
-// the delivered page (the VENZY "Kestrel Lifesciences" case). The followup therefore mandates BOTH
+// the delivered page (the VENZY case). The followup therefore mandates BOTH
 // files; the driver-side freshness gate below makes it enforceable.
 // AD-2 A9 (E2E-R2): the dispatch carries placement's rulings tail AS DATA — computed things reach
 // the next stage as data, not prose. A warm resume must not depend on the rulings having survived
