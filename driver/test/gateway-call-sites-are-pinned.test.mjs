@@ -9,7 +9,7 @@
 //
 //   1. `stderrTail: streamDigest(...)` — replacing the digest with raw stderr leaves the five arms of
 //      `exit-cause-survives-the-digest.test.mjs` green at all three call sites.
-//   2. `codexHome: stageCodexHome` — deleting it from both dispatch sites leaves all 37 arms of
+//   2. `stageHome` — deleting it from both dispatch sites leaves all 37 arms of
 //      `engine.openai.test.mjs` green, and silently restores the  failure: codex resolves
 //      `resume <thread-id>` against `$CODEX_HOME/sessions`, so a home created and deleted per TURN means
 //      every warm resume points at a directory that never heard of the thread. Measured on codex-cli
@@ -91,14 +91,14 @@ const CODEX = "openai-agent";
 const { openaiAgentEngine: { makeStageHome, releaseStageHome } } = await import("../engine/openai-agent.mjs");
 const stageHome = { makeStageHome, releaseStageHome };
 
-test("every dispatch in one ladder receives the SAME codexHome, and it is not empty", async () => {
+test("every dispatch in one ladder receives the SAME stageHome, and it is not empty", async () => {
   // The property is not "a home was passed" but "one home per LADDER". A per-turn home is exactly what
   // removed, and a fresh directory on each attempt would satisfy a mere presence check while
   // failing every warm resume — the defect wearing the fix's clothes.
   const seen = [];
   GW.registerEngine({ name: CODEX, ...stageHome,
     async runTurn(opts) {
-      seen.push(opts?.codexHome ?? null);
+      seen.push(opts?.stageHome ?? null);
       return { code: 1, killed: false, wall: 0.2, stdout: "", stderr: "boom", laneWaitMs: 0,
         json: null, usage: null, sessionRef: "thread-abc" };
     } });
@@ -110,7 +110,7 @@ test("every dispatch in one ladder receives the SAME codexHome, and it is not em
   assert.ok(seen.length >= 2, `the ladder must dispatch more than once for this to mean anything — got ${seen.length}`);
   for (const [i, h] of seen.entries())
     assert.ok(h && typeof h === "string",
-      `dispatch ${i + 1} received no codexHome. On the codex arm the engine then builds its own per-turn `
+      `dispatch ${i + 1} received no stageHome. On the codex arm the engine then builds its own per-turn `
       + `home and deletes it, so the next warm resume finds no rollout and dies exit 1 under a second (#713)`);
   assert.equal(new Set(seen).size, 1,
     `the ladder handed out ${new Set(seen).size} different homes across ${seen.length} dispatches — one home `
@@ -124,7 +124,7 @@ test("the recording engine's homes are real, distinct paths per ladder — the a
   const homes = [];
   GW.registerEngine({ name: CODEX, ...stageHome,
     async runTurn(opts) {
-      homes.push(opts?.codexHome ?? null);
+      homes.push(opts?.stageHome ?? null);
       return { code: 1, killed: false, wall: 0.1, stdout: "", stderr: "boom", laneWaitMs: 0,
         json: null, usage: null, sessionRef: null };
     } });
@@ -151,7 +151,7 @@ test("the recording engine's homes are real, distinct paths per ladder — the a
 //
 // IT IS THE PATH THAT MATTERS MOST. :1056's own comment reads "a relative path there would silently
 // strip the write root off the one turn that needs it most" — the warm repair turn, which is the exact
-// path and are about. A codexHome regression there is the original defect, and the suite
+// path and are about. A stageHome regression there is the original defect, and the suite
 // stayed green through it.
 //
 // REACHING IT needs a form-class failure, which needs three things the arms above have none of: a
@@ -171,7 +171,7 @@ async function runWithFormRepair(tag, onTurn) {
   const seen = { homes: [], turns: 0 };
   GW.registerEngine({ name: CODEX, ...stageHome,
     async runTurn(opts) {
-      seen.turns++; seen.homes.push(opts?.codexHome ?? null);
+      seen.turns++; seen.homes.push(opts?.stageHome ?? null);
       writeFileSync(out, `attempt ${seen.turns}\n`);
       return onTurn ? onTurn(seen) : { code: 0, killed: false, wall: 0.2, stdout: "", stderr: LOUD_STDERR,
         laneWaitMs: 0, json: { status: "ok" }, usage: { input_tokens: 1, output_tokens: 1 }, sessionRef: "thread-abc" };
@@ -185,7 +185,7 @@ async function runWithFormRepair(tag, onTurn) {
   return { runDir, seen, rows: rows(runDir, "frame-diff") };
 }
 
-test("the FORM-REPAIR dispatch receives the ladder's codexHome too", async () => {
+test("the FORM-REPAIR dispatch receives the ladder's stageHome too", async () => {
   const { seen, rows: r } = await runWithFormRepair("repairhome");
 
   // The premise first: without it the assertion below is about a path that never ran, which is exactly
@@ -198,7 +198,7 @@ test("the FORM-REPAIR dispatch receives the ladder's codexHome too", async () =>
 
   for (const [i, h] of seen.homes.entries())
     assert.ok(h && typeof h === "string",
-      `dispatch ${i + 1} received no codexHome. On the repair turn that strips the write root off the one `
+      `dispatch ${i + 1} received no stageHome. On the repair turn that strips the write root off the one `
       + `turn that needs it most — the warm patch resumes a thread whose rollout the home never saw (#713)`);
   assert.equal(new Set(seen.homes).size, 1,
     `the repair dispatch was handed a different home from the ladder's (${new Set(seen.homes).size} across `

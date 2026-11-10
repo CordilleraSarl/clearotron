@@ -16,6 +16,7 @@ does not exist — that is the design, and [`CONTRACT.md`](CONTRACT.md) is the d
 | `auth.mjs` | `resolveAuthMode()` — subscription, API key or (Claude only) cloud account, resolved once per turn and stamped on the telemetry |
 | `probe.mjs` | Drives one cheap turn through whichever adapter is configured, to prove the engine can complete a turn at all. What `npm run setup` spends |
 | `common.mjs` | Helpers both adapters share |
+| `registry.mjs` | Which adapters this driver ships and which one `CLEAROTRON_AI` selects; the gateway asks it and names no engine |
 | `stamps.mjs` | What the `engine` word on a saved attempt row means: the vendor billed, how its model is keyed, whether it is a native-language row |
 | `deny-authority-write.mjs` | A PreToolUse hook. `--add-dir` has no read-only form, so the read-only intent over the skills tree is enforced here |
 | [`mcp/`](mcp/README.md) | The tool servers a stage mounts, and the per-stage grant table |
