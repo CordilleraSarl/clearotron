@@ -495,6 +495,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-cross-check-already-in-the-plan-stays-on-the-receipt.test.mjs": {
+          "tests": 6,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
         "a-cross-check-waits-for-the-reading-step.test.mjs": {
           "tests": 6,
           "asserts": 26,
@@ -1108,8 +1114,8 @@
           "todos": 0
         },
         "a-knockout-defect-reaches-the-step-that-can-repair-it.test.mjs": {
-          "tests": 31,
-          "asserts": 163,
+          "tests": 32,
+          "asserts": 169,
           "skips": 0,
           "todos": 0
         },
@@ -1528,8 +1534,8 @@
           "todos": 0
         },
         "a-part-that-fails-to-publish-leaves-the-report-delivered.test.mjs": {
-          "tests": 5,
-          "asserts": 42,
+          "tests": 6,
+          "asserts": 48,
           "skips": 0,
           "todos": 0
         },
@@ -2019,6 +2025,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-resumed-run-keeps-the-engine-it-started-on.pipeline.test.mjs": {
+          "tests": 4,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
         "a-resumed-run-keeps-the-order-it-was-accepted-on.test.mjs": {
           "tests": 7,
           "asserts": 44,
@@ -2064,6 +2076,12 @@
         "a-run-is-finished-on-the-build-it-started-on.test.mjs": {
           "tests": 5,
           "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-run-keeps-the-engine-it-started-on.test.mjs": {
+          "tests": 8,
+          "asserts": 29,
           "skips": 0,
           "todos": 0
         },
@@ -3502,8 +3520,8 @@
           "todos": 0
         },
         "corrective-cycle.test.mjs": {
-          "tests": 16,
-          "asserts": 156,
+          "tests": 17,
+          "asserts": 161,
           "skips": 0,
           "todos": 0
         },
@@ -4601,7 +4619,7 @@
         },
         "health-carries-the-build.test.mjs": {
           "tests": 6,
-          "asserts": 16,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
@@ -5764,8 +5782,8 @@
           "todos": 0
         },
         "register-findings-link-to-the-office-record.test.mjs": {
-          "tests": 23,
-          "asserts": 71,
+          "tests": 25,
+          "asserts": 77,
           "skips": 0,
           "todos": 0
         },

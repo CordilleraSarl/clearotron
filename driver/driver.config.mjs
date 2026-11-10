@@ -1141,14 +1141,16 @@ export const RESEARCH_PROVIDERS = {
 // safety that replaces the forcing lives in providers/jx/src/turn-envelope.mjs: an answer the parser
 // cannot read is a DEGRADE with a cause, never an empty result. Without that, an unreadable judge reply
 // would have meant every SERP hit came back unclassified, which a report reads as no adverse hits.
-async function jxRunner() {
+// `runDir` is the run the lane serves: a run that recorded its engine at its start keeps it here as its stages
+// do, so a run's lanes and stages never split across engines (engine/run-choices.mjs).
+async function jxRunner(runDir) {
   const { makeJxTurnRunner } = await import("./engine/jx-turn.mjs");
-  return makeJxTurnRunner();
+  return makeJxTurnRunner({ runDir });
 }
 
 /** One lane's dispatch: resolve the engine, lazy-import the pure core, run it on the turn. */
-async function jxLane(kind, mod, call) {
-  const runner = await jxRunner();
+async function jxLane(kind, mod, call, runDir = null) {
+  const runner = await jxRunner(runDir);
   if (runner.error) return { ok: false, cause: `jx ${kind}: ${runner.error}` };
   let core;
   try { core = await import(mod); }
@@ -1159,22 +1161,22 @@ async function jxLane(kind, mod, call) {
 
 export const JX_PROVIDERS = {
   completions: {
-    generate: ({ mark, productContext, lane }) =>
+    generate: ({ mark, productContext, lane, runDir }) =>
       jxLane("completions", "../providers/jx/src/core.js",
-        (core, turn) => core.generateCandidates({ mark, productContext, lane, turn })),
+        (core, turn) => core.generateCandidates({ mark, productContext, lane, turn }), runDir),
   },
   // Phase 4 slice 2 — the SERP-grid hit judge (classification only; retrieval is code-side).
   judge: {
-    judge: ({ mark, hits }) =>
+    judge: ({ mark, hits, runDir }) =>
       jxLane("judge", "../providers/jx/src/judge.js",
-        (mod, turn) => mod.judgeHits({ mark, hits, turn })),
+        (mod, turn) => mod.judgeHits({ mark, hits, turn }), runDir),
   },
   // Phase 4 slice 3 — the nativeread lane (reads the code-inlined zh evidence slice, returns structured
   // flags; severity_hint never sets a band).
   nativeread: {
-    read: ({ mark, lane, payload }) =>
+    read: ({ mark, lane, payload, runDir }) =>
       jxLane("nativeread", "../providers/jx/src/nativeread.js",
-        (mod, turn) => mod.generateReadItems({ mark, lane, payload, turn })),
+        (mod, turn) => mod.generateReadItems({ mark, lane, payload, turn }), runDir),
   },
 };
 

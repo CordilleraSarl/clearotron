@@ -69,9 +69,9 @@ test("15a — mixed staleness is repaired, not suppressed: the guard's own parti
   // thing that must not happen — a tail rebuilt while its upstream is still stale — is what the order
   // prevents, and suppressing everything never prevented it, it moved the same work into a resume.
   const src = driverSource("pipeline.mjs");
-  assert.ok(!/if \(staleStages\.length && !partitionDeliveryStale\(staleStages\)\.upstream\.length\)/.test(src),
+  assert.ok(!/if \((?:runState\.)?staleStages\.length && !partitionDeliveryStale\((?:runState\.)?staleStages\)\.upstream\.length\)/.test(src),
     "the all-or-nothing gate is gone");
-  assert.match(src, /dependencyOrder\(staleStages\.map/, "…replaced by the ordering");
+  assert.match(src, /dependencyOrder\(runState\.staleStages\.map/, "…replaced by the ordering");
 });
 
 test("15a — the upstream repair map is the honest scope statement", () => {
@@ -86,7 +86,7 @@ test("15a — the upstream repair map is the honest scope statement", () => {
 test("15b — the blocked pass writes down WHAT is stale, so the recovery has something to aim at", () => {
   const src = driverSource("pipeline.mjs");
   assert.match(src, /delivery-stale\.json/, "the set is recorded at the throw");
-  assert.match(src, /labels: dependencyOrder\(staleStages\.map/, "…in dependency order, so reader and repair agree about what happens first");
+  assert.match(src, /labels: dependencyOrder\(runState\.staleStages\.map/, "…in dependency order, so reader and repair agree about what happens first");
   assert.match(src, /export async function repairStale\(/, "and there is an entry point that runs exactly it");
   const fn = src.slice(src.indexOf("export async function repairStale("), src.indexOf("export async function repairStale(") + 2400);
   assert.match(fn, /RE-DERIVE THE ORDER rather than trusting the file/,

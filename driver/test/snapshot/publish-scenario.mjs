@@ -18,7 +18,11 @@ const load = (rel) => import(pathToFileURL(join(spec.driver, rel)).href);
 const { republishRun } = await load("publish/report-registry.mjs");
 const meta = JSON.parse(readFileSync(spec.metaFile, "utf8"));
 const url = "https://reports.example.test";
+// The rows publishing appends to the run's own log are part of what it does, so they are kept with what it returns.
+const runLogFile = join(spec.runDir, "_driver", "run.jsonl");
+const logBefore = existsSync(runLogFile) ? readFileSync(runLogFile, "utf8").length : 0;
 const published = await republishRun({ runId: meta.runId, meta, pool: spec.pool, poolUrl: url, runDir: spec.runDir });
+const logRows = existsSync(runLogFile) ? readFileSync(runLogFile, "utf8").slice(logBefore).split("\n").filter(Boolean) : [];
 
 const profileFile = join(spec.runDir, "_driver", "profile.json");
 const delivery = existsSync(profileFile) ? JSON.parse(readFileSync(profileFile, "utf8"))?.delivery : undefined;
@@ -35,5 +39,5 @@ if (existsSync(reportMd)) {
   const framework = JSON.parse(readFileSync(join(spec.runDir, "_driver", "framework.json"), "utf8"));
   email.html = composeKnockoutEmail({ findings, framework, overall: worstBand(framework, findings.marks ?? []), reports: published.reports, auditUrl: published.auditUrl, job: meta.job ?? {} });
 }
-writeFileSync(spec.resultFile, JSON.stringify({ email }));
+writeFileSync(spec.resultFile, JSON.stringify({ email, returned: published ?? null, logRows }));
 process.exit(0);

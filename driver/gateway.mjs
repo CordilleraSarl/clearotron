@@ -14,15 +14,18 @@ import { join, dirname, basename } from "node:path";
 import { driverDir, readJson } from "./run-record.mjs";   //
 import { NO_SEARCH_RESULT, RESEARCH_CORRECTION } from "./research-answers.mjs";   // a search that did not answer supplies no result
 import { tmpdir } from "node:os";
-import { config, modelFamily, modelSnapshotKind, envOn, envGateOn, preflightEngineBinary, olderThanFloor, ENGINE_BINARIES } from "./driver.config.mjs";
-import { probeCliVersion } from "./engine/cli-version.mjs";
+import { config, envOn, envGateOn } from "./driver.config.mjs";
 import { stageLog, runLog, note, outputMeta } from "./log.mjs";
 // — the closed disposition set has ONE author; this file dictates it and must not retype it.
 import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS } from "./findings-model.mjs";
 import { frozenSnapshot, describeDrift } from "./run-integrity.mjs";   // — the frozen judged-by set across a seat turn
 import { isCancelled, readCancel, RunCancelled } from "./cancel.mjs";
-import { selectEngine, modelIdOf } from "./engine/registry.mjs";
+import { engineForRun, selectEngine, modelIdOf } from "./engine/registry.mjs";
 import { timeoutCause, turnFailure, nameTheFailure } from "./ladder/turn-failure.mjs";
+import { modelGauge, servingProgram } from "./ladder/model-gauge.mjs";
+import { rescueAttempt } from "./ladder/rescue.mjs";
+import { nextRung } from "./ladder/next-rung.mjs";
+import { stageTools } from "./ladder/stage-tools.mjs";
 import { resolveAuthMode } from "./engine/auth.mjs";
 // ABBREVIATED_VALUE_NOTE is no longer imported: it explained the "…" marker on a value the model
 // had to reproduce EXACTLY, and the only messages that rendered one were the connotation arms telling a
@@ -227,7 +230,7 @@ export function toolWrittenArtifact(p) {
     ?? TOOL_WRITTEN_PATTERNS.find((r) => r.re.test(base))
     ?? null;
 }
-import { buildGatherMcpConfig, allowedToolsFor, toolGroupsForStage, recordAxisFor, seatWritesForGroups, withSendUntil } from "./engine/mcp/gather-config.mjs";
+import { withSendUntil } from "./engine/mcp/gather-config.mjs";
 import { sendReserveMs } from "../providers/_shared/send-until.mjs";   // each turn's plan calls stop sending ahead of its deadline
 import { everyToolCallRefused } from "./engine/tool-refusal.mjs";   // one definition, shared with the engine probe
 export { everyToolCallRefused };
@@ -244,7 +247,7 @@ import { KNOCKOUT_RECHECK_RE, knockoutReviewFile, knockoutReviewRefusalsFor } fr
 import { profilesStoreDir } from "./profiles.mjs";
 // The supplemental lane's single source (stages.mjs). The import is acyclic — stages.mjs reads
 // verify/coverage-ledger/config/framework and never reaches back here.
-import { REGISTER_ENUMERATE_TOOL, SUPPLEMENTAL_LANE_STEERING, GROUP_READING_STAGES } from "./stages.mjs";
+import { REGISTER_ENUMERATE_TOOL, SUPPLEMENTAL_LANE_STEERING } from "./stages.mjs";
 // The ONE kill-class discriminator (timeout/status_timeout fails, exit 137, killed, hard-wall/stall
 // signals; lane_wedge and rate_limited deliberately excluded). Reused verbatim so "a kill" means the
 // same thing to the exit-1 rescue below as it does to the register taint chain that reads the very
@@ -290,9 +293,10 @@ import { PLAN_AUDIT_CLASSES } from "./register-plan.mjs";   // — the repair tu
 // was — CLEAROTRON_GATHER_CONCURRENCY x CLEAROTRON_MAX_CONCURRENT_RUNS, and pipeline.acquireRunSlot, which is
 // the OTHER user of slot-lock.mjs and is untouched.
 
-// What a settled turn's failure is called lives in ladder/turn-failure.mjs, carved out of the stage ladder below;
-// these are re-exported so every importer of them is unchanged.
+// What a settled turn's failure is called lives in ladder/turn-failure.mjs, and what the ladder does after it in
+// ladder/next-rung.mjs, both carved out of the stage ladder below; these are re-exported so every importer is unchanged.
 export { isEmbeddedFallback, isTimeout, timeoutCause, isLaneWedge, classifyWedge, isOverloaded, attemptTimedOut } from "./ladder/turn-failure.mjs";
+export { warmHardWallStop } from "./ladder/next-rung.mjs";
 
 /**
  * Did this attempt spend its whole derived budget, exit cleanly, and still fail? PURE.
@@ -427,19 +431,6 @@ export function tokensPerSec(usage, wall) {
   return Math.round((out / w) * 100) / 100;
 }
 
-// #5b — stop a WARM attempt after ONE try when it ran to the HARD WALL. The warm patch is the one rung that resumes
-// a session: it is passed the session that just produced a content failure. If that resumed turn was SIGKILLed at
-// the full timeout+60 wall (signals.hardWall, NOT a 0-token stall), break and let the caller record the
-// coverage-limited deferral. A warm attempt can itself time out; warmEligible() only stops the attempt AFTER a
-// timeout from being warm. A FOLLOWUP IS NOT STOPPED HERE. It is a new stage() call, attempt 1, with no resumeRef,
-// so it is a fresh session with its own wall. This rule used to stop it too, on the premise that it resumed an
-// already-loaded session, and that premise was false; it now gets the one extended retry any fresh dispatch gets.
-// Measured 2026-11-05 over saved runs: no follow-up attempt and no warm attempt had timed out, so neither form of
-// the rule had decided a run. A STALL (no hardWall) is NOT stopped here: it keeps its one retry at the same budget,
-// since a transient stall can clear. PURE + exported for test: the live path needs a wall-clock kill.
-export function warmHardWallStop({ fail, warm, signals }) {
-  return fail === "timeout" && Boolean(warm) && Boolean(signals?.hardWall);
-}
 
 // ── — THE CAUSE HAS TO SURVIVE THE DIGEST, AND `slice(-3)` IS WHY IT DID NOT ──────────────────────
 //
@@ -495,19 +486,6 @@ export function payloadText(json) {
   return (json?.result?.payloads ?? []).map((p) => p?.text ?? "").join("\n").trim();
 }
 
-// ── — WALL RESCUE QUIESCENCE. How long every declared artifact must have been UNTOUCHED when the
-// turn settled, for its write to count as provably COMPLETE rather than possibly torn.
-//
-// The torn-write window is [watchdog decision, child death]: one poll tick plus the SIGTERM→SIGKILL
-// escalation (engine/common.mjs killEscalateMs, default 5000ms). 60s is that window with an order of
-// magnitude to spare, and the incident clears it by another: on the 2026-08-04 R1 run the
-// placement artifact's last write was 13:58:46Z and the wall kill was 14:15:00Z — 974 seconds quiet.
-//
-// This is the ONE fact a shape validator cannot supply, and it is the entire reason this rescue may do
-// what the exit-1 rescue must not. Setting it to 0 is NOT tuning — it deletes the only completeness
-// evidence and would rescue post-merge audit 2's torn draft. Disarm with CLEAROTRON_WALL_RESCUE=0 instead.
-const wallRescueQuiesceMs = () => 60000;   // step 3 — was a knob; no environment ever set it
-const wallRescueEnabled = () => !/^(0|off|false|no)$/i.test(String(process.env.CLEAROTRON_WALL_RESCUE ?? "").trim());
 
 // ── Engine seam (CLEAROTRON_AI) ──────────────────────────────────────────────────────────────────
 // Which adapters exist and which one this activation runs are engine/registry.mjs's; the gateway asks it
@@ -742,14 +720,15 @@ export function syncPlacementForm(files) {
 // Anthropic needs none of this: `claude -p --resume` resolves against an ambient store nothing wipes,
 // which is precisely why warm resume worked there and not here.
 export async function runStage(name, opts) {
-  const engineForHome = selectEngine();
+  // The run's own engine: the one it recorded when it started, or the machine's for a run with no record.
+  const engineForHome = engineForRun(opts?.runDir);
   let stageHome = null;
   if (engineForHome?.makeStageHome) {
     try { stageHome = engineForHome.makeStageHome(name); }
     catch { stageHome = null; }   // fall back to the engine's own per-turn home rather than fail a stage
   }
   try {
-    return await runStageLadder(name, opts, stageHome);
+    return await runStageLadder(name, opts, stageHome, engineForHome);
   } finally {
     // Deleted when the LADDER settles — every resume that needed it has happened by then. Best-effort:
     // a home we cannot remove must never turn a completed stage into a failure.
@@ -757,7 +736,7 @@ export async function runStage(name, opts) {
   }
 }
 
-async function runStageLadder(name, opts, stageHome = null) {
+async function runStageLadder(name, opts, stageHome = null, engine = selectEngine()) {
   const {
     agent = config.defaultAgent,
     message,
@@ -797,53 +776,16 @@ async function runStageLadder(name, opts, stageHome = null) {
   // agrees with the toolset the attempt actually gets, instead of contradicting the base prompt.
   const supplementalLane = Array.isArray(excludeTools) && excludeTools.includes(REGISTER_ENUMERATE_TOOL);
 
-  const engine = selectEngine();   // process-wide, not per-stage — see selectEngine
   // Billing-mode (auth) resolution — fail LOUD if a mode claims API billing but has no key (fixes the
   // anthropic silent-fallthrough WITHOUT editing anthropic-agent.mjs), and give the stamp its value. Frozen
   // per run (env-derived). The throw is caught by pipelineInner's terminal catch and turned into a run
   // FAILURE carrying the named auth error on the guaranteed failure-packet lane (verified) — loud + named,
   // NOT a silent mis-bill. (Same catch as the unknown-engine throw above.)
   const auth = resolveAuthMode({ engineName: engine.name });
-  // Two INDEPENDENT engine capability flags (both default ON for an engine that declares neither, so the
-  // anthropic engine — which sets neither — behaves exactly as before). A future adapter can opt out of
-  // either without the other:
-  let gatherMcpConfig, gatherAllowedTools, engineSkillsDir, engineSkillsGrantRoots, engineResolveSkill;
-  // — the DECLARATION half of the run-dir read grant. `null` means this stage has no recording
-  // row to declare anything, and the adapter treats unknown as "keep the grant" — so a stage the
-  // gateway says nothing about is unaffected by that change.
-  let gatherSeatWrites = null;
-  // (a) Skills plumbing (usesSkillsDir): a CLI-agentic engine resolves the stage prompts' `skills/…` refs
-  // against its neutral cwd (a tmpdir) and confines file tools to cwd + --add-dir roots, so hand it the
-  // compute-skills dir (config.skillsDir — the driver-co-located tree) + this run's dir so it can absolutize
-  // the refs and grant read(skills)/write(runDir). The agent's own workspace is no longer involved.
-  if (engine.usesSkillsDir !== false) {
-    engineSkillsDir = config.skillsDir;
-    engineSkillsGrantRoots = config.skillsGrantRoots;   // layered skills: BOTH roots reach the seat, resolve overlay-first
-    engineResolveSkill = (rel) => config.resolveSkillPath(rel);
-  }
-  // (b) Gather tools (usesGatherMcp): a gather stage gets its tool group's MCP servers + allowedTools;
-  // tool-free judgment stages get none (lean context). Both current engines get the SAME claude-shaped
-  // mcpConfig; a codex engine translates it to config.toml internally, so gather-config.mjs is untouched.
-  if (engine.usesGatherMcp !== false) {
-    const groups = toolGroupsForStage(name);
-    if (groups.length) {
-      // The bound card index rides the same label the grant was resolved from — derived by the SAME
-      // declared rule (`perAxis`), never by a second string-sniff that could disagree with it.
-      const cfg = buildGatherMcpConfig(groups, { sessionKey, agent, runDir, recordAxis: recordAxisFor(name)?.axis,
-        bandGroups: GROUP_READING_STAGES.has(name), correctionPositions: correction?.positions ?? null });
-      gatherMcpConfig = cfg ? JSON.stringify(cfg) : undefined;
-      gatherAllowedTools = allowedToolsFor(groups);
-      gatherSeatWrites = seatWritesForGroups(groups);   // — the SAME derivation allowedToolsFor uses
-      // Per-stage exclusion (copper-lattice re-route): a supplemental-lane register unit loses
-      // register_enumerate — its judgment additions go through register_propose_supplemental, so the
-      // free-enumerate hand-transcription lane cannot silently return. Group-level removal is
-      // infeasible (synthesis + legacy no-plan units share the group); the validator is the backstop.
-      if (Array.isArray(excludeTools) && excludeTools.length && gatherAllowedTools) {
-        const drop = new Set(excludeTools);
-        gatherAllowedTools = gatherAllowedTools.split(" ").filter((t) => !drop.has(t)).join(" ");
-      }
-    }
-  }
+  // The stage's tool servers, allowed tools, skills folder and read grants, by the engine's two capability flags
+  // (ladder/stage-tools.mjs).
+  const { gatherMcpConfig, gatherAllowedTools, gatherSeatWrites, engineSkillsDir, engineSkillsGrantRoots, engineResolveSkill } =
+    stageTools({ engine, name, sessionKey, agent, runDir, correction, excludeTools });
   // EACH TURN'S OWN COPY of the stage's tool config, carrying that turn's time to stop sending: ahead of the turn's
   // deadline by the reserve, so a plan call returns what it holds while the turn can still write it (send-until.mjs).
   const turnConfig = (sec) => withSendUntil(gatherMcpConfig, Date.now() + sec * 1000 - sendReserveMs(sec));
@@ -880,29 +822,7 @@ async function runStageLadder(name, opts, stageHome = null) {
   // entitled to on attempt 2.
   let formRepairsUsed = 0;
   let attempt = 0;
-  // criterion 1 — A WARM TURN THAT NEVER REACHED THE MODEL DOES NOT COST A RUNG, ONCE.
-  //
-  // Measured before this existed: a warm turn returning `usage: null` and `runId: null` — the
-  // startup-death shape, exit 1 under a second, zero tokens — still advanced the ladder. A stage with
-  // three attempts spent one on a turn that did nothing, which is the defect this issue names: "a
-  // warm-patch attempt either reaches the model or does not consume a ladder rung."
-  //
-  // THE BOUND IS THE WHOLE DESIGN. Refunding unconditionally lets a warm turn that never lands loop
-  // until the wall. ONE free rung per ladder is the concession; a second zero-usage warm turn in the
-  // same ladder is charged, and the record says so rather than leaving the difference to be inferred.
-  //
-  // PROVISIONAL, and deliberately one line to change: the number below is a routed parameter (2026-08-22),
-  // not a measured optimum. Nobody has yet counted how often a second free rung would have
-  // converted, and until someone does, 1 is the smallest concession that closes the defect.
-  //
-  // THE CHARGING BRANCH CANNOT FIRE TODAY, and that is stated rather than left to be discovered. `warm`
-  // requires `!warmUsed` and `warmUsed` is set the moment one fires, so a ladder gets AT MOST ONE warm
-  // turn — there can be no second zero-usage warm turn to charge. This counter is therefore defence, not
-  // arithmetic anyone reaches: it keeps the bound LOCAL and explicit, so that if the one-warm-per-ladder
-  // invariant is ever relaxed, the refund does not silently become unbounded along with it. Deriving the
-  // bound from `warmUsed` instead would have coupled a rung policy to an unrelated rule and hidden the
-  // dependency. The arms pin the invariant as the premise rather than pretending to exercise the branch.
-  const WARM_ZERO_USAGE_FREE_RUNGS = 1;
+  // A warm turn that never reached the model costs no rung, once per ladder: WARM_ZERO_USAGE_FREE_RUNGS in ladder/next-rung.mjs.
   let rungsRefunded = 0;
   let timeoutRetriesUsed = 0;   // a slow stage gets ONE longer shot, then we stop (don't burn 3× the budget)
   let effTimeout = timeoutSec;  // bumped ×1.5 for the single timeout retry
@@ -1111,79 +1031,10 @@ async function runStageLadder(name, opts, stageHome = null) {
       return { fail: null, quantity: null, file: null, graded: null };
     };
 
-    // ── corruption 3 — WHAT WAS ASKED FOR vs WHAT ACTUALLY RAN ─────────────────────────────────
-    //
-    // Until this landed, every model figure on every record was a pure function of the REQUESTED alias:
-    // `resolveModel(model)` / `engine.resolveModelId(model)`, computed here without ever looking at the
-    // provider's answer. So `--model gemini` logged `google/gemini-3.1-pro-preview` and ran sonnet (the
-    // engine's alias table substituted, silently), a haiku stage that bounced to sonnet logged haiku,
-    // and every attribution downstream — the A/B arm's manifest, tokens.mjs' per-model rollup, the
-    // billing classes — was keyed to a model that had not run. Patching the log would not have fixed
-    // it; the log was already saying what the code believed.
-    //
-    // TWO FIELDS, NEVER COLLAPSED INTO ONE:
-    //   modelUsed   — the requested resolution, unchanged in meaning and value: run-economics.mjs and
-    //                 tokens.mjs both read it, and a field that quietly changes meaning is its own corruption.
-    //   modelActual — the id the WIRE reported (engine tuple `modelWire`), or NULL when the stream never
-    //                 said: an engine that does not emit one (codex), a turn killed before any event, a
-    //                 spawn error. It NEVER falls back to the requested alias, and `modelBasis` ("actual" or
-    //                 "unknown") never dresses a requested value as an observed one. `providerReported` is
-    //                 the provider word the same stream gave (tuple `providerWire`), null on the same terms.
-    const modelRequested = modelIdOf(engine, model);
-    const modelActual = (typeof turn.modelWire === "string" && turn.modelWire) ? turn.modelWire : null;
-    const modelBasis = modelActual ? "actual" : "unknown";
-    const providerReported = (typeof turn.providerWire === "string" && turn.providerWire) ? turn.providerWire : null;
-    // WHETHER THE OBSERVED ID NAMES A FIXED BUILD. `modelBasis: "actual"` says the provider answered,
-    // not that the answer is pinned: two of the three tiers come back as undated aliases the provider
-    // may repoint, and recorded beside a dated one they read identically. null when there is nothing to
-    // judge, never collapsed into "alias".
-    const modelSnapshot = modelSnapshotKind(modelActual);
-    // WHICH BUILD OF THE TOOL SERVED THIS TURN. `modelSnapshot` above answers "did the model move";
-    // this answers "did the tool move", and the two have one symptom — a run whose judgment differs from
-    // last week's. Captured at dispatch rather than read back afterwards, because the binary a reader
-    // could probe later is not necessarily the one that ran.
-    //
-    // Written as an object with its own `probe` field, so an unreadable version is a RECORDED state
-    // rather than a missing one. Omitting it on failure would collapse "asked and could not say" into
-    // "written before anybody asked", which is the distinction the field exists for. One spawn per
-    // binary per process; a probe never throws, because taking down a dispatch to record a version
-    // would be a worse defect than the gap it closes.
-    // `source` says WHICH copy served (explicit / path / installed), and it is attached here, outside the
-    // probe's cache: that cache is keyed by the file, and one file can be reached by more than one route.
-    const cli = (() => {
-      try {
-        const pre = preflightEngineBinary(process.env);
-        const probed = probeCliVersion(pre?.resolved ?? null);
-        // ── THE FLOOR, COMPARED WHERE THE RUN CAN SEE IT ────────────────────────────────────────
-        //
-        // The build declares a minimum version for each engine's program, and until now nothing
-        // compared a running copy against it. The floor was passed to the installer, so a copy this
-        // product installs cannot land beneath it — but resolution walks PATH first and takes the
-        // first hit, so a copy already on the machine wins and was never measured against anything.
-        // That is the common case, not the edge one: most machines have their own copy. A stage then
-        // runs on a program below the floor and is served whatever that program serves, silently.
-        //
-        // RECORDED, NOT REFUSED. Refusing here would stop every run on any machine whose copy is
-        // behind — including ones already deployed and working — and that is a decision about those
-        // deployments rather than a defect fix. What was missing is the fact, so the fact is what is
-        // written: an operator, and anyone reading the run afterwards, can now see it. Whether it
-        // should also refuse is a separate question and is not answered here.
-        //
-        // THREE-VALUED and written unconditionally, like the model fields below: true, false, or null
-        // when either side names no version this build can compare — an unknown is an unknown, never
-        // an all-clear. The floor itself rides along so the record says what it was measured against
-        // rather than leaving a later reader to guess which build's floor applied.
-        const floor = ENGINE_BINARIES[pre?.engine]?.floor ?? null;
-        const belowFloor = floor ? olderThanFloor(probed?.version ?? null, floor) : null;
-        return { ...probed, source: pre?.source ?? null, floor, belowFloor };
-      } catch (e) { return { version: null, probe: "unreadable", why: String(e?.message ?? e).slice(0, 160), source: null, floor: null, belowFloor: null }; }
-    })();
+    // What the turn asked for against what the wire reported, and which program served it (ladder/model-gauge.mjs).
+    const { modelRequested, modelActual, modelBasis, providerReported, modelSnapshot, famRequested, famActual, modelMismatch } = modelGauge(engine, model, turn);
+    const cli = servingProgram();
     if (modelActual) lastModelWire = modelActual;                       // — never overwritten with null
-    // The comparison is by FAMILY (driver.config modelFamily), because `--model haiku` legitimately comes
-    // back as `claude-haiku-4-5-20251001`. THREE-VALUED: null when either side names no family this
-    // build recognises — an unknown is recorded as unknown and never as agreement.
-    const famRequested = modelFamily(modelRequested), famActual = modelFamily(modelActual);
-    const modelMismatch = (famRequested && famActual) ? famRequested !== famActual : null;
 
     let fail = null;
     let stampedQuantity = null;   //: a validator's own exact count, when it stamped one (see below)
@@ -1346,32 +1197,8 @@ async function runStageLadder(name, opts, stageHome = null) {
       // doctrine, applied inside the dispatch). In all three the ORIGINAL fail goes to the ladder.
       if (outcome !== "moved") break;
     }
-    // Exit-1 adapter truth (charter P1 §2): the claude CLI reports a provider error on the FINAL assistant
-    // message (an HTTP 500 after the work was done) as subtype:"success" + is_error:true, which the adapter
-    // rightly converts to a nonzero exit — but by then the turn's Write already landed the artifact, and
-    // re-running finished work burned ~35 min on the R-round evidence run. So before a nonzero exit is
-    // accepted as failure, judge the ARTIFACT exactly as the skip path does (exists + validates), with one
-    // extra requirement the skip path doesn't need: the file must have been WRITTEN by THIS ATTEMPT
-    // (differs from the attempt-start snapshot) — an inherited/stale file, and equally an EARLIER
-    // ATTEMPT's file, never rescues a failed turn.
-    //
-    // A KILL ANYWHERE IN THIS LADDER CLOSES THE RESCUE (post-merge audit 2, 2026-07-31). The design
-    // always said the rescue "never applies to a kill — a cut-down turn's artifact may be mid-write";
-    // testing only the CURRENT attempt's `killed` honoured that one attempt at a time, so attempt 1 =
-    // kill that wrote a torn partial + attempt 2 = nonzero exit shipped the partial as stage truth.
-    // Both legs of the fix are needed, because they refuse different things:
-    //   · the per-attempt snapshot refuses an EARLIER attempt's bytes outright;
-    //   · `killSeen` refuses this attempt's own write once a kill has torn the file underneath it —
-    //     freshness is `stat differs`, i.e. a MUTATION, never a proof of complete rewrite (a patch, an
-    //     append, or a Write killed mid-flush all satisfy it), and a stage `validate` is a SHAPE check,
-    //     not a completeness proof: the audit repro is a torn draft that passes its own validator.
-    // Only register stages carry a backstop for this (register-taint.mjs, on these very rows);
-    // synthesis / narrative / cards / digest have none, and synthesis is where the evidence run took its
-    // 137 hard-wall kill. This does NOT touch the plain retry ladder register-taint's corpus audit found
-    // benign (kill → fresh full redo that EXITS CLEAN): that turn reports completion and is gated on its
-    // final state by the normal success path above. The rescue is the opposite case by construction — the
-    // turn did not report completion, and completeness of its write is exactly what is unknown.
-    // Still never applies to a rate-limit rejection either (0 tokens, nothing written).
+    // Whether this attempt's own artifacts answer its failure is ladder/rescue.mjs (rescueAttempt), with why a kill
+    // anywhere in this ladder closes the exit-1 rescue; `killClass` and `killSeen` carry that kill to it.
     const killClass = isTaintRow({ fail, code, killed, signals: turn.signals });
     // ONE artifact judgement, shared by both rescues below (the rule: never a second, drifting copy of
     // the contract). Present + written by THIS attempt (the per-attempt snapshot — an inherited file and
@@ -1400,95 +1227,10 @@ async function runStageLadder(name, opts, stageHome = null) {
         return true;
       });
     };
-    let rescued = null;
-    let quiescentMs = null;   //: how long the artifact had been untouched when the turn settled
-    let rescueRefused = null; //: WHICH of the rescue's four causes refused — on the row, not only in a note
-    let rescueRefusedFile = null, rescueRefusedReason = null;   //: and which file, and on what
     let attemptRefusals = null;   //: this dispatch's refusals of a tool-written artifact, on a timeout
-    if (fail && /^nonzero_exit_/.test(fail) && files.length) {
-      if (killClass || killSeen) {
-        note(`[${name}] ${fail} with a kill-class attempt in this ladder — the exit-1 rescue stays CLOSED (a killed turn's artifact may be torn mid-write and a validator cannot prove it whole); failing honestly instead`);
-      } else if (attemptWroteTruth()) {
-        rescued = fail;
-        fail = null;
-        note(`[${name}] ${rescued} but every expected artifact is present, fresh and valid — accepting the artifact as stage truth (a final-message provider error must not re-run finished work)`);
-      }
-    }
-    // ── — THE WALL RESCUE ────────────────────────────────────────────────────────────────────
-    //
-    // A stage SIGKILLed at its hard wall AFTER it had already written a complete, valid artifact is a
-    // stage that SUCCEEDED. Measured on R1 2026-08-04: placement-inquiry walled twice (1861s/1800s and
-    // 2760s/2700s, both `wrote: true`, the second `noChange: true`), parked the run — and the resume two
-    // minutes later SKIPPED it, because pipeline.mjs's skip predicate found the artifact present and
-    // passing its own validator. 77 minutes of dispatch, 335,782 output tokens and one park out of a
-    // budget of three, all spent after the deliverable was finished.
-    //
-    // WHY THIS MAY DO WHAT THE EXIT-1 RESCUE ABOVE MUST NOT. That refusal is not wrong and is not being
-    // reversed: post-merge audit 2 pinned a torn draft that CLEARS its own shape validator, and
-    // `stat differs` is a mutation, never a proof of complete rewrite. What this arm adds is the one
-    // fact neither has — QUIESCENCE. The torn-write window is [watchdog decision, child death]: a poll
-    // tick plus the SIGTERM→SIGKILL escalation, single-digit seconds. An artifact that had been
-    // untouched for a full minute when the turn settled was not being written when the turn was killed.
-    // On the incident the margin was 974 seconds. On the audit's repro it is zero, which is why that
-    // fixture still fails exactly as it did.
-    //
-    // AND IT ADMITS NOTHING THE RESUME WOULD REFUSE. The skip predicate accepts these same bytes minutes
-    // later on the same disk; this only stops the run paying a second wall, a park and a resume to reach
-    // the same answer. The resume's `!freshness.stale` arm is deliberately NOT copied: it compares
-    // declared inputs against a stamp written only on success, so at kill time it is not merely
-    // unnecessary but meaningless — and the stage cannot be stale against inputs it has just this moment
-    // read and acted on.
-    //
-    // A stage with no validator, or whose artifact fails it, or which never wrote, is untouched.
-    else if (fail === "timeout" && turn.signals?.hardWall && files.length && validate && wallRescueEnabled()) {
-      // — A FILE THAT COULD NOT BE STAT'ED IS NAMED, WITH WHY, rather than folded into a number. It
-      // used to be a -1 in `quiescentMs` and the cause `artifact-unreadable`, and the commonest way to get
-      // there is not a filesystem fault at all: the turn was killed before it wrote. Measured on two
-      // stages of one run, 2026-09-10: both rows read `wrote: false`, `quiescentMs: -1`,
-      // `artifact-unreadable`, for files that did not exist. An ABSENT file (ENOENT) is its own cause now;
-      // `artifact-unreadable` stays for a stat that fails any other way, with its error code. Rows
-      // written before this change say `artifact-unreadable` for both.
-      //
-      // `quiescentMs` IS A MEASUREMENT OR IT IS ABSENT. With a file unstat'able there is no quiescence of
-      // the set to measure, so it stays null and the row omits it: a -1 reads as a number to anything that
-      // averages or compares it. An mtime that lands after the settle instant (written in that same
-      // instant, or a clock step) measures 0 rather than a negative; it is the under-quiescence case.
-      let missing = null;
-      const quiet = [];
-      for (const f of files) {
-        try { quiet.push(Math.max(0, settledAt - statSync(f).mtimeMs)); }
-        catch (e) { if (!missing) missing = { file: rel(f), code: String(e?.code ?? "unknown") }; }
-      }
-      quiescentMs = missing || !quiet.length ? null : Math.min(...quiet);
-      const bar = wallRescueQuiesceMs();
-      const why = {};
-      if (quiescentMs !== null && quiescentMs >= bar && attemptWroteTruth(why)) {
-        rescued = fail;
-        fail = null;
-        note(`[${name}] hard-wall kill at ${Math.round(wall)}s, but every expected artifact was written by this attempt, passes its validator and had been untouched for ${Math.round(quiescentMs / 1000)}s when the turn settled — the stage FINISHED and the wall is a fact about the dispatch, not a failure of the stage (the resume's skip path would accept these same bytes)`);
-      } else {
-        // Said out loud, because "the rescue considered it and refused" and "the rescue never looked"
-        // must not be the same silence. This is the file that reads an absence as a diagnosis otherwise.
-        //
-        // — AND SAID ON THE ROW, not only in a note. The note goes to the operator's console; the
-        // JOURNAL is what a later round reads, and `rescued: null` reads identically for all three
-        // refusal causes. Measured on the 2026-08-09 R1: placement-inquiry was killed at its
-        // hard wall having WRITTEN its artifact and lain quiescent for 371 s against a 60 s bar — so the
-        // rescue was refused on the third cause, its validator — and 31 minutes of finished work were
-        // discarded and re-run cold. `grep -c rescue run.jsonl` on that run returns 0. Nothing in the
-        // record said why, and reconstructing it took a file-mtime comparison against a preserved run dir.
-        rescueRefused = missing ? (missing.code === "ENOENT" ? "artifact-absent" : "artifact-unreadable")
-          : quiescentMs < bar ? "under-quiescence"
-          : "not-written-by-this-attempt-or-invalid";
-        // — AND WHICH FILE, AND ON WHAT: an unstat'able file with its error code; under the bar, the file
-        // touched last (`quiescentMs` carries the number); otherwise the first file the artifact judgement
-        // failed, with its cause — `absent`, `not-written-by-this-attempt`, or the validator's own reason.
-        if (missing) { rescueRefusedFile = missing.file; rescueRefusedReason = missing.code; }
-        else if (quiescentMs < bar) rescueRefusedFile = rel(files[quiet.indexOf(quiescentMs)]);
-        else { rescueRefusedFile = why.file ?? null; rescueRefusedReason = why.reason ?? why.cause ?? null; }
-        note(`[${name}] hard-wall kill at ${Math.round(wall)}s — wall rescue REFUSED (${rescueRefused}: ${rescueRefusedFile ?? "no file named"}${rescueRefusedReason ? `, ${rescueRefusedReason}` : quiescentMs < bar ? `, touched ${Math.round(quiescentMs / 1000)}s before the kill, under the ${Math.round(bar / 1000)}s bar` : ""}); failing honestly as timeout`);
-      }
-    }
+    const rescue = rescueAttempt({ fail, files, killClass, killSeen, signals: turn.signals, validate, wall, settledAt, name, rel, wroteTruth: attemptWroteTruth });
+    fail = rescue.fail;
+    const { rescued, quiescentMs, rescueRefused, rescueRefusedFile, rescueRefusedReason } = rescue;
     // — WHAT A KILLED ATTEMPT WAS DOING, where its transport kept a record. A tool-written artifact's
     // refusal journal says how many times this attempt sent its record and was told no, and the reason the
     // last time. The missing-file row has carried that last reason since the journal existed; a timeout row
@@ -1793,245 +1535,13 @@ async function runStageLadder(name, opts, stageHome = null) {
     lastSessionRef = turn.sessionRef ?? lastSessionRef;   // anthropic warm-resume target for the next attempt
     note(`[${name}] attempt ${attempt} FAILED: ${fail}${quantity === null ? "" : ` (count ${quantity}${noChange ? ", unchanged" : ""})`}`);
 
-    // A4 (addendum 2026-07-30): a byte-identical CONTENT failure signature on consecutive attempts is a
-    // proven-deterministic defect — the previous attempt already carried this exact validator string and
-    // the corrective/warm re-dispatch reproduced it byte-for-byte, so another paid turn cannot converge
-    // (VENZY/E2E-R2: 63% of the run was correction, much of it re-buying identical failures). Stop NOW
-    // and park honestly: the run-level recovery ladder (classifyFailureReason → one "unknown" park →
-    // repeat-signature terminal) owns what happens next, with proper accounting — that lane's single
-    // fresh sample replaces the blind third attempt this used to buy. Scoped to the content classes
-    // (missing_file / invalid_file / max_tokens_no_output — same stage, same validator string); every
-    // transport class keeps its own policy (timeout's single extended shot, and the
-    // wedge/overload breaks above and below).
-    //
-    // BUILD 2 — A4's PREMISE FAILS ON EXACTLY ONE ATTEMPT, AND IT IS THE ONE IT USUALLY FIRES ON.
-    // "Another paid turn cannot converge" assumes the two consecutive attempts are independent samples.
-    // A warm patch is not a sample: it RESUMES the session that produced the previous failure (key =
-    // lastKey, resumeRef = lastSessionRef), so a session that wrote a document with zero rulings writes
-    // it again. It has no capacity to disagree with itself, and its repeat proves nothing about whether
-    // a fresh dispatch would converge.
-    //
-    // The 2026-08-07 round measured both sides of this on the meaning-sweep stage. Where it cost a run:
-    // fresh ruled 0 of 72 → warm ruled 0 of 72, byte-identical, the artifact never rewritten → A4 broke
-    // the ladder at 2 of 3 with attempt 3's budget unspent → RECOVERABLE park, ~90s, one of three defect
-    // lanes → the recovery lane then re-dispatched FRESH and ruled 69 of 72. Two dispatches and a park to
-    // reach the attempt the ladder still had in hand. The control is the run whose warm attempt MOVED
-    // (78 unruled → 1): the string changed, A4 never fired, and cold attempt 3 cleared it in the ladder.
-    //
-    // So: discard the SESSION, not the ladder. Fall through to attempt N+1, which is necessarily FRESH
-    // (`warmUsed` is already spent, so `warm` cannot be true again) and carries the full corrective
-    // message. Three existing bounds keep this finite and none of them is new or relaxed here:
-    //   1. `warmUsed` caps warm at ONE attempt per stage run, and `warm` is this escalation's trigger —
-    //      so the escalation can fire at most once per ladder, structurally. It is never reset below.
-    //   2. `while (attempt < maxRetries + 1)` is untouched: the ceiling stays 3 attempts in production.
-    //   3. The guard below only escalates when a further attempt already exists. With no budget left the
-    //      break happens exactly as it does today, terminal signal intact.
-    // Worst case: fresh(X) → warm(X, escalate) → fresh(X) → A4 fires normally (attempt 3 is not warm) →
-    // terminal at 3 attempts.
-    //
-    // The escalated dispatch does NOT re-buy the paid sweep: perplexity-server short-circuits on a
-    // complete recorded ledger ("the sweep is a fact of this run, not of this attempt"), and the seat
-    // opens a form already carrying every prior ruling.
-    //
-    // NOT de-allowlisting the connotation family from WARM_ELIGIBLE_RE instead: on the same round another
-    // clearance cleared 61 unruled → 0 on a warm attempt 2. That lane works, and removing it would cost
-    // every run that converges on it. This refuses to treat a warm no-op as proof, and nothing more.
-    const identicalContent = /^(missing_file:|invalid_file:|max_tokens_no_output)/.test(fail)
-      && attemptFails.length >= 2 && attemptFails[attemptFails.length - 2] === fail;
-    // ── — THE ESCALATION IS FOR A SEAT THAT PRODUCED SOMETHING ───────────────────────────────
-    //
-    // BUILD 2 (above) buys ONE fresh attempt after a warm repeat, because a resumed session cannot
-    // disagree with itself and its repeat proves nothing about a fresh dispatch. Measured, that is true
-    // of a seat whose output was WRONG and false of a seat that wrote nothing at all:
-    //
-    //   invalid_file repeated (the seat produced something)   fresh attempt 3 converged  9 of 9
-    //   missing_file repeated (the seat produced nothing)     fresh attempt 3 converged  0 of 6
-    //
-    // The second case cost ~3.4 min and ~19k output tokens per affected run for an attempt that has never
-    // once converged. So the escalation keeps its budget where it pays and stops buying the case where it
-    // does not. This is the deterministic-vs-transient line asked for, drawn on what the record
-    // already shows before attempt 3 is spent — not a shorter ladder, which would hide the escalation
-    // rather than decide it.
-    //
-    // A CHANGED FAILURE IS NEVER CUT, and that is structural rather than a second condition:
-    // `identicalContent` requires this attempt's failure to repeat the previous one byte-for-byte, so a
-    // run that moved missing_file → invalid_file never reaches here at all. Two of the measured runs did
-    // exactly that, with real quantity — precisely where the ladder earns its keep.
-    //
-    // `noChange` says the same thing one line up and is NOT read here on purpose: it is RECORDING ONLY,
-    // and no break/park/terminate decision reads it ( owns that policy). `identicalContent` is the
-    // live signal this branch already decides on, so the rule needs no new input.
-    //
-    // SIX IS SIX, and all of it from the test box. If a fresh attempt 3 ever converges after a
-    // produced-nothing repeat, this is the line to revisit — the note below names the case in the run log
-    // so that event is findable rather than silent.
-    const producedNothing = /^missing_file:/.test(fail);
-    // (round 2) — THE CUT WAS RECORDED AND THE BREAK BESIDE IT WAS NOT, SO THE PATHOLOGY SURVIVED.
-    //
-    // The comment below says a decision that prevents an attempt must leave a trace. It shipped attached
-    // to ONE of the two branches that prevent one. Measured on a delivered run of the test instance (engine 734689e8): the
-    // marker `escalationDeclined` appears in ZERO files anywhere in the workspace, because the cut also
-    // requires `warm` and that run's attempt rows carry no `warm` field at all — while `"warm"` appears
-    // in 98 jsonl files instance-wide, so the absence is the run's, not the field's. With `warm` falsy
-    // the run fell through to the pre-existing `else if (identicalContent)` break, which stopped attempt
-    // 3 exactly as the cut would have and recorded NOTHING: its note is gated on `warm`, and note() is
-    // stderr regardless.
-    //
-    // `warm` is CORRECT on the cut and is not an accidental narrowing of the decision: the thing being
-    // declined is the warm→fresh escalation, which only exists on a warm attempt. On a cold path there is
-    // no escalation to decline — the ladder simply breaks. What was narrowed with it was the RECORDING,
-    // and both branches end the same way, with budget still in hand.
-    //
-    // ONE STATEMENT, so a third branch cannot arrive recording a fourth shape. `wouldHaveBeenAttempt` is
-    // the number when budget remained and NULL when the ladder was genuinely spent — that is the whole
-    // difference between a choice and an ending, and a row that printed `attempt + 1` unconditionally
-    // would claim a prevented attempt that never existed.
-    // THE RUN SPINE, NOT THE SEAT JSONL — and the first cut had this wrong.
-    //
-    // `_driver/<stage>.jsonl` IS THE ATTEMPT LEDGER. Nothing states that in one place, and it is relied on
-    // everywhere: convergence-ledger derives quantities per row, warm-retry and retry-backoff count rows as
-    // attempts, seat-attempts.mjs claims any row carrying `{attempt:int≥1, key, status}` as a dispatch for
-    // seat-retry-report's statistics. A decision is not an attempt, and filing one there put a row with no
-    // quantity into ledgers that derive quantities — four test files caught it the moment this fired on a
-    // path that is actually common. The escalation cut merged into that file first and had the same fault
-    // latent: it fires only on warm produced-nothing, so nothing had reached it yet.
-    //
-    // `run.jsonl` is where this codebase already files the things that are NOT attempts — `form-repair`
-    // above, `repair-attempted`, `engine-turn-probe`. It is durable, it is one file per run, and it is the
-    // one the wall decomposition deliberately skips. Findable was the requirement; the seat ledger was
-    // never what made it so.
-    const recordAttemptPrevented = (decision, rule) => {
-      try {
-        runLog(runDir, {
-          event: "attempt-prevented", stage: name, attempt, of: maxRetries + 1, decision, rule,
-          fail: String(fail).slice(0, 200),
-          warm: Boolean(warm), producedNothing,
-          // The whole difference between a CHOICE and an ENDING. Null when the ladder was genuinely spent:
-          // printing `attempt + 1` there claims a prevented attempt that never existed, and every count
-          // taken off these rows would be high by exactly the runs that had nothing left to prevent.
-          // Null and PRESENT — an omitted key cannot be told from a row written before this existed.
-          wouldHaveBeenAttempt: attempt < maxRetries + 1 ? attempt + 1 : null,
-        });
-      } catch { /* telemetry best-effort — never fail a turn over a journal line */ }
-    };
-    // criterion 1 — the rung decision, recorded on BOTH branches.
-    //
-    // `usage == null && runId == null` is the seat never having answered: no token count and no run
-    // identity, which together mean the turn died before the model saw it. Either alone is weaker —
-    // a turn can legitimately report no usage on some paths — so both are required.
-    const zeroUsageWarm = Boolean(warm) && fail && usage == null && json?.runId == null;
-    if (zeroUsageWarm) {
-      const free = rungsRefunded < WARM_ZERO_USAGE_FREE_RUNGS;
-      if (free) rungsRefunded++;
-      note(`[${name}] attempt ${attempt} [warm patch] returned no usage and no runId — it never reached the model`
-        + (free ? `; NOT charging the ladder a rung for it (${rungsRefunded}/${WARM_ZERO_USAGE_FREE_RUNGS} free rungs used)`
-          : `; CHARGING it — the ladder has already refunded ${rungsRefunded}, and a second one would let a warm turn that never lands loop`));
-      try {
-        runLog(runDir, { event: "warm-rung", stage: name, attempt, of: maxRetries + 1 + rungsRefunded,
-          rung_free: free,
-          reason: free ? "warm turn never reached the model" : "second zero-usage warm turn",
-          free_rungs_used: rungsRefunded, free_rungs_max: WARM_ZERO_USAGE_FREE_RUNGS,
-          fail: String(fail).slice(0, 200) });
-      } catch { /* telemetry best-effort — never fail a turn over a journal line */ }
-    }
-    // Exactly one row per prevented attempt: the warm produced-nothing case satisfies the cut AND then
-    // falls into the break below, and two rows for one decision would double every count taken off them.
-    const cutFired = identicalContent && producedNothing && warm && attempt < maxRetries + 1;
-    if (cutFired) {
-      note(`[${name}] attempt ${attempt} [warm patch] reproduced attempt ${attempt - 1}'s failure byte-for-byte and the seat produced NOTHING either time (${fail.slice(0, 140)}) — NOT escalating to a fresh attempt ${attempt + 1}: measured 0 of 6 convergences on this shape. A seat whose output was merely wrong still escalates.`);
-      // THE CUT IS RECORDED, NOT JUST NOTED. `note` is stderr only (log.mjs) and reaches no artifact, so
-      // the run record held no trace of a decision that PREVENTS an attempt — and because the cut
-      // returns, the prevented attempt never runs. n=6 would therefore be permanent: a seat or model
-      // change that made attempt 3 worth buying again could not be noticed, because nothing anywhere
-      // counts how often the cut fired or on what. Its own row in the seat's attempt jsonl, where every
-      // attempt already lives, is the smallest thing that makes it findable.
-      //
-      // FINDABILITY ONLY. This samples nothing: the prevented attempt is still prevented, and the row
-      // records the case rather than the counterfactual. Re-opening the question needs a deliberate
-      // measurement, not a quiet retry ladder that buys one anyway.
-      recordAttemptPrevented("escalation-declined:produced-nothing", "#1062");
-    }
-    if (identicalContent && !producedNothing && warm && attempt < maxRetries + 1) {
-      warmEscalatedAt = attempt + 1;
-      note(`[${name}] attempt ${attempt} [warm patch] reproduced attempt ${attempt - 1}'s failure byte-for-byte (${fail.slice(0, 140)}) — a resumed session cannot disagree with itself; DISCARDING that session and escalating attempt ${attempt + 1} to a FRESH dispatch (the recovery lane's fresh sample, bought here without the park)`);
-    } else if (identicalContent) {
-      // — NOT said when the break was a CHOICE. A produced-nothing repeat reaches here with budget
-      // still in hand, and "there is no attempt left" would be false: the attempt exists and was
-      // deliberately not spent. Its own note above says which case this is.
-      if (warm && !producedNothing) note(`[${name}] the warm patch reproduced its own failure and there is no attempt left to escalate to (attempt ${attempt} of ${maxRetries + 1}) — breaking; the fresh sample falls to the recovery lane`);
-      note(`[${name}] attempt ${attempt} failed BYTE-IDENTICALLY to attempt ${attempt - 1} (${fail.slice(0, 140)}) — breaking the ladder: same stage, same validator string, further retries are provably futile`);
-      // RECORDED, on the path the cut does not reach. This break is the PRE-EXISTING rule and this change
-      // does not re-decide it: my 0-of-6 measurement is about the warm→fresh escalation and licenses
-      // nothing about a cold break. It makes the population countable, which is what a later ruling on
-      // that question would need and could not have had.
-      if (!cutFired) recordAttemptPrevented("ladder-break:identical-signature", "#460");
-      // A said-back refusal the step left as it was: the pass stands, below, with what it left open recorded.
-      if (SAID_BACK_OPEN_RE.test(fail)) break;
-      return { ok: false, attempts: attempt, fail, sessionKey: key, modelWire: lastModelWire, modelUsed: lastModelUsed, attemptFails: [...attemptFails], identicalSignature: true, warmEscalated: warmEscalatedAt > 0 || undefined, quantity, noChange, reads, readsTruncated, warm, wrote, formRepairs: formRepairsUsed };
-    }
-
-    // Lane-wedge: the turn never got a command lane (0 tokens). The extended ×1.5 shot can't help (it produced
-    // nothing), and another attempt on a SHARED lane cannot help — so stop here and hand it on fast. The
-    // lane-wedge retry in stage() (pipeline.mjs) waits for the lane to clear and dispatches the stage again.
-    if (fail === "lane_wedge") break;
-    //: a model mismatch is a CONFIGURATION fault, not a transient. The next attempt sends the same
-    // argv to the same provider and gets the same substitution, so retrying only buys the wrong model
-    // twice. Break immediately and let the stage fail with the mismatch named on every row.
-    if (fail.startsWith("model_mismatch:")) {
-      note(`[${name}] model mismatch is deterministic — breaking the ladder (a retry re-buys the same wrong model)`);
-      break;
-    }
-    // A sign-in that could not be refreshed refuses every attempt the same way: the next one sends the
-    // same credential and gets the same 401, seconds apart. Break, and let the stage fail with it named.
-    if (fail.startsWith("engine_signed_out:")) {
-      note(`[${name}] the engine's sign-in could not be refreshed — breaking the ladder (a retry re-sends the same credential)`);
-      break;
-    }
-    // EVERY TOOL CALL THE TURN MADE WAS REFUSED. On some hosts codex's own sandbox refuses the stage's
-    // tool servers while the turn reports success, and the stage then fails for want of what the tools
-    // would have produced. The next attempt spawns the same sandbox and is refused the same way, so a
-    // retry re-buys the refusal: measured at three paid attempts per stage on a production run before the
-    // identical-failure break stopped it. Break on the first. A turn where any call completed is not this.
-    if (everyToolCallRefused(turn)) {
-      note(`[${name}] every tool call this turn made was refused (${turn.mcpToolCallsRefused}) — breaking the ladder (a retry is refused the same way)`);
-      break;
-    }
-    // D3: overload (529 / status_overloaded) — stop the ladder here: an in-ladder re-attempt hammers an
-    // API that just said it is overloaded, seconds apart, on the SAME model. Breaking hands the failure
-    // to the existing machinery: the stage fails on its one model (there is no model cascade), and that
-    // failure parks the run for recovery with escalating backoff (TRANSIENT_RE → .postponed).
-    if (fail === "status_overloaded") break;
-    // Rate-limit: do NOT retry (every retry hits the same capped subscription) and do NOT fall back — return
-    // immediately so the pipeline can postpone + auto-resume after the window. resetsAt rides the result.
-    if (fail === "rate_limited") return { ok: false, attempts: attempt, fail, resetsAt: turn.signals?.resetsAt, sessionKey: key, modelWire: lastModelWire, modelUsed: lastModelUsed, attemptFails: [...attemptFails], quantity, noChange, reads, readsTruncated, warm, wrote, formRepairs: formRepairsUsed };
-    // Timeout-aware retry: a genuinely over-budget/hung stage will just re-time-out on an identical
-    // attempt (the v14 delivery burned 3 × 600s). Give it exactly ONE longer shot, then stop.
-    if (fail === "timeout") {
-      // A WARM attempt, the one rung that resumes a session, that ran to its HARD WALL breaks after this attempt,
-      // and the caller records the coverage-limited DEFERRAL (which the gate clamps CLEAR→CONDITIONAL). A
-      // FOLLOWUP is a fresh session and is not stopped here: it takes the one extended retry below, as any fresh
-      // dispatch does. Until 2026-11-05 a followup stopped here too, on the false premise that it resumed a loaded
-      // session. See warmHardWallStop.
-      if (warmHardWallStop({ fail, warm, signals: turn.signals })) {
-        note(`[${name}] warm attempt hit the hard wall — breaking (recording the deferral)`);
-        break;
-      }
-      if (timeoutRetriesUsed >= 1) {
-        note(`[${name}] second timeout — stopping (won't finish on a 3rd identical attempt)`);
-        break;
-      }
-      timeoutRetriesUsed++;
-      // Stall honesty (charter P1 §1): a STALL kill (byte-silent or no-progress — signals.stalled) is NOT
-      // "the stage needed more time" — the R-round evidence retry did the identical work in 369s after a
-      // 1500s stall burn. Retry ONCE at the SAME budget; extending would only extend the next stall's burn.
-      // A hard-wall kill (a genuine over-budget grind) keeps the single 1.5× extended shot.
-      if (turn.signals?.stalled) {
-        note(`[${name}] stall kill${turn.signals?.noProgress ? " (no-progress watchdog)" : ""} → one retry at the SAME ${effTimeout}s budget (a stall is not a slow turn)`);
-      } else {
-        effTimeout = Math.round(timeoutSec * 1.5);
-        note(`[${name}] timeout → one extended retry at ${effTimeout}s`);
-      }
-    }
+    // What the ladder does next after this failure — escalate, retry, break, or return — is ladder/next-rung.mjs.
+    const next = nextRung({ fail, warm, attempt, maxRetries, attemptFails, usage, json, turn, signals: turn.signals, runDir, name, timeoutSec,
+      saidBackOpen: SAID_BACK_OPEN_RE.test(fail), warmEscalatedAt, rungsRefunded, timeoutRetriesUsed, effTimeout });
+    ({ warmEscalatedAt, rungsRefunded, timeoutRetriesUsed, effTimeout } = next);
+    if (next.rung === "identical") return { ok: false, attempts: attempt, fail, sessionKey: key, modelWire: lastModelWire, modelUsed: lastModelUsed, attemptFails: [...attemptFails], identicalSignature: true, warmEscalated: warmEscalatedAt > 0 || undefined, quantity, noChange, reads, readsTruncated, warm, wrote, formRepairs: formRepairsUsed };
+    if (next.rung === "rate-limited") return { ok: false, attempts: attempt, fail, resetsAt: turn.signals?.resetsAt, sessionKey: key, modelWire: lastModelWire, modelUsed: lastModelUsed, attemptFails: [...attemptFails], quantity, noChange, reads, readsTruncated, warm, wrote, formRepairs: formRepairsUsed };
+    if (next.rung === "break") break;
   }
   // A SAID-BACK REFUSAL NEVER WITHHOLDS THE REPORT (reports always ship, ruled 2026-08-27). The placement form's
   // refusals refuse the pass so that a corrective turn carries them to the step, which is the only way back to it

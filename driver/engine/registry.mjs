@@ -8,6 +8,7 @@
 import { resolveModel } from "../driver.config.mjs";
 import { anthropicAgentEngine } from "./anthropic-agent.mjs";
 import { openaiAgentEngine } from "./openai-agent.mjs";
+import { RUN_CHOICES_FILE, readRunChoices } from "./run-choices.mjs";
 
 // ── Engine seam (CLEAROTRON_AI) ──────────────────────────────────────────────────────────────────
 // The 14 stages run on the anthropic-agent engine (`claude -p` off-gateway with the stall-watchdog; see
@@ -46,7 +47,9 @@ export function registerEngine(engine) {
 }
 
 /**
- * The engine for this activation. PROCESS-WIDE, and the missing parameter is the point.
+ * The machine's engine: the one a run STARTS on. PROCESS-WIDE, and the missing parameter is the point. A run
+ * that has started serves its turns from the engine it recorded then (`engineForRun` below, reading engine/run-choices.mjs), so
+ * a later change to `CLEAROTRON_AI` reaches new runs only.
  *
  * This took a `_stageName` it ignored, under a call-site comment reading "per-stage: CLEAROTRON_AI base,
  * comms forced to the gateway, override-able". None of that existed: no per-stage override, no comms
@@ -64,10 +67,30 @@ export function registerEngine(engine) {
  * ports. The same absence blocks routing the refutation reviewer to a different engine for family
  * diversity (ENGINE-OPENAI-ADAPTER §6). Recorded in docs/E2E.md, which is where a round plan looks.
  */
+/** The registered adapter for one engine name, or null: no fallback to the machine's engine. */
+export function engineNamed(id) { return ENGINES.get(String(id ?? "").trim().toLowerCase()) ?? null; }
+
 export function selectEngine() {
   const id = (process.env.CLEAROTRON_AI || DEFAULT_ENGINE).toLowerCase();
   const engine = ENGINES.get(id);
   if (!engine) throw new Error(`CLEAROTRON_AI="${id}" is not a registered engine adapter (available: ${[...ENGINES.keys()].join(", ")}). Implement one and registerEngine() it — see engine/CONTRACT.md.`);
+  return engine;
+}
+
+/**
+ * The engine that serves this run's turns. A run with a record gets its recorded engine whatever the machine's
+ * setting now says; a run with none gets the machine's engine, as every run did before the record existed.
+ * A recorded engine this driver cannot serve, or a record that does not read back, throws by name: the run's
+ * turns never fall through to a different engine.
+ */
+export function engineForRun(runDir) {
+  const rec = readRunChoices(runDir);
+  if (rec.state === "none") return selectEngine();
+  if (rec.state === "unreadable")
+    throw new Error(`this run's engine record (_driver/${RUN_CHOICES_FILE}) ${rec.detail}, so its turns are not run on the machine's engine in its place`);
+  const engine = engineNamed(rec.engine);
+  if (!engine)
+    throw new Error(`this run started on the "${rec.engine}" engine, which this driver does not have registered (${registeredEngines().join(", ")}); it keeps that engine rather than switch to ${String(process.env.CLEAROTRON_AI ?? "").trim().toLowerCase() || DEFAULT_ENGINE}`);
   return engine;
 }
 

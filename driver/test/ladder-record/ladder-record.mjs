@@ -10,12 +10,14 @@
 // records each turn's arguments, the stage rows, the run events, the files and the return value. `compare` prints
 // the scenarios whose records differ. Each record also lists the code lines of runStage, runStageLadder and the
 // modules carved out of it under driver/ladder/ that no scenario reached: equal means equal on the lines that ran.
-// No engine, register or network is called. It reports and does not judge.
+// No engine or register is called, and the network is refused: an attempt is written into the scenario's record.
+// It reports and does not judge.
 import { execFile } from "node:child_process";
 import { mkdirSync, rmSync, readFileSync, writeFileSync, readdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { tmpdir } from "node:os";
+import { createHash } from "node:crypto";
 import { SCENARIOS } from "./scenarios.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -35,14 +37,18 @@ rmSync(outDir, { recursive: true, force: true });
 const cov = join(outDir, "coverage");
 mkdirSync(cov, { recursive: true });
 const ids = Object.keys(SCENARIOS).filter((id) => !only || only.includes(id));
-const scratch = join(tmpdir(), `ladder-${process.pid}`);
+// A fixed-length name: the messages a turn receives carry this path, and a dispatch record counts their bytes.
+const scratch = join(tmpdir(), `ladder-${createHash("sha256").update(`${outDir}:${process.pid}`).digest("hex").slice(0, 12)}`);
 
 const runOne = (id) => new Promise((done) => {
   const root = join(scratch, id), home = join(scratch, `${id}-home`);
   mkdirSync(home, { recursive: true });
   execFile(process.execPath, [join(HERE, "scenario.mjs"), repo, id, join(outDir, `${id}.json`), root], {
     cwd: repo, timeout: 300_000, maxBuffer: 64 * 1024 * 1024,
-    env: { PATH: process.env.PATH, HOME: home, TMPDIR: join(scratch, `${id}-tmp`), LANG: "C.UTF-8", TZ: "UTC", NODE_V8_COVERAGE: cov },
+    // The snapshot's own network guard: a connection to anywhere but this machine is refused and written to the
+    // log, which the scenario copies into its record, so "no network is called" is checked rather than stated.
+    env: { PATH: process.env.PATH, HOME: home, TMPDIR: join(scratch, `${id}-tmp`), LANG: "C.UTF-8", TZ: "UTC", NODE_V8_COVERAGE: cov,
+      NODE_OPTIONS: `--import=${join(HERE, "..", "snapshot", "no-network.mjs")} --no-warnings`, BEHAVIOUR_SNAPSHOT_NET_LOG: join(scratch, `${id}-net.log`) },
   }, (err, stdout, stderr) => done({ id, err: err ? `${err.code ?? ""} ${String(stderr).slice(-400)}` : null }));
 });
 for (const id of ids) mkdirSync(join(scratch, `${id}-tmp`), { recursive: true });

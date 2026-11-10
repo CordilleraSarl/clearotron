@@ -13,12 +13,8 @@
 // negative is how a question acquires a false elimination.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { driverSource } from "./driver-source.mjs";
 import { modelSnapshotKind } from "../driver.config.mjs";
-
-const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 test("the three ids three real runs actually recorded are told apart", () => {
   // Not invented values — these are what the archived attempt rows carry.
@@ -43,7 +39,7 @@ test("nothing to judge is NULL, never quietly an alias", () => {
 test("the gateway records it on the attempt row beside modelBasis", () => {
   // A derivation nothing writes down answers nobody. Source-level, because the row is built inside the
   // dispatch loop with no seam a unit test reaches — the same reason its neighbours are checked this way.
-  const src = readFileSync(join(DRIVER, "gateway.mjs"), "utf8");
+  const src = driverSource("gateway.mjs");
   assert.match(src, /const modelSnapshot = modelSnapshotKind\(modelActual\)/,
     "the gateway does not derive it, so no run record can carry it");
   const rows = [...src.matchAll(/modelActual, modelBasis,([^\n]*)/g)].map((m) => m[1]);
