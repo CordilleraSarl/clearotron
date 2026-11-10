@@ -159,3 +159,21 @@ test("each live jurisdiction lane hands its run to the turn runner", async () =>
     }
   } finally { if (saved !== undefined) process.env.CLEAROTRON_JX_FIXTURES = saved; }
 });
+
+test("a run's register names its register tool server and the tools it grants, decided once from the run's record", async () => {
+  const { buildGatherMcpConfig, allowedToolsFor, toolGroupsForStage } = await import("../engine/mcp/gather-config.mjs");
+  const { REGISTER_PROVIDER } = await import("../driver.config.mjs");
+  const groups = toolGroupsForStage("register-unit:primary-sweep");
+  const other = REGISTER_PROVIDER === "signa" ? "euipo" : "signa";
+  const recorded = newRun("register-recorded");
+  RC.recordRunChoices(recorded, { engine: "anthropic-agent", register: other });
+  assert.equal(RC.registerForRun(recorded), other);
+  const cfg = buildGatherMcpConfig(groups, { sessionKey: "k", agent: "a", runDir: recorded });
+  assert.equal(cfg.mcpServers.register.env.CLEAROTRON_DATABASE, other, "the tool server reads the run's register");
+  const unrecorded = newRun("register-unrecorded");
+  assert.equal(RC.registerForRun(unrecorded), REGISTER_PROVIDER ?? null, "a run with no record is served the machine's");
+  const machine = buildGatherMcpConfig(groups, { sessionKey: "k", agent: "a", runDir: unrecorded });
+  assert.equal(machine.mcpServers.register.env.CLEAROTRON_DATABASE ?? null, REGISTER_PROVIDER ?? null);
+  assert.notDeepEqual(cfg.mcpServers.register.args, machine.mcpServers.register.args, "two registers, two tool servers");
+  assert.equal(allowedToolsFor(groups, { register: REGISTER_PROVIDER }), allowedToolsFor(groups), "naming the machine's register changes nothing");
+});

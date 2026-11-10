@@ -20,7 +20,7 @@
 // read into each tool server's imports. The registry's `engineForRun` serves a run's turns from this record.
 import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { driverDir, ensureDriverDir } from "../../shared/driver-dir.mjs";
-import { ENGINE_BINARIES, PROVIDERS } from "../driver.config.mjs";
+import { ENGINE_BINARIES, PROVIDERS, REGISTER_PROVIDER } from "../driver.config.mjs";
 
 export const RUN_CHOICES_FILE = "run-choices.json";
 
@@ -110,4 +110,21 @@ export function unservedChoice(recorded, { engineRegistered, machineRegister }) 
   if (recorded.register != null && recorded.register !== (machineRegister ?? null))
     return { kind: "register", recorded: recorded.register, machine: machineRegister ?? null };
   return null;
+}
+
+/**
+ * The register that serves this run: the one it recorded when it started, or the machine's for a run with no record or
+ * one that started with none set. While a run whose register differs from the machine's is parked before any stage
+ * (`unservedChoice`), this always equals the machine's; it is the one place a run's register is decided. PURE but for
+ * reading the record.
+ */
+export function registerForRun(runDir) {
+  const rec = readRunChoices(runDir);
+  return rec.state === "recorded" && rec.register ? rec.register : (REGISTER_PROVIDER ?? null);
+}
+
+/** The register the run recorded, or null for a run with no record or one that started with none set. PURE but for the read. */
+export function recordedRegister(runDir) {
+  const rec = readRunChoices(runDir);
+  return rec.state === "recorded" && rec.register ? rec.register : null;
 }
