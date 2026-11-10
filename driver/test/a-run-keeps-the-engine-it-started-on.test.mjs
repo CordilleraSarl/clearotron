@@ -222,3 +222,14 @@ test("a run's register adapter is the named register's, or the machine's when no
   assert.equal(RC.registerAdapter(null), activeProvider());
   assert.throws(() => RC.registerAdapter("invented-register"), /unknown register "invented-register"/);
 });
+
+test("a report's identity line names the register its run recorded", async () => {
+  const { reportIdentityRecord } = await import("../pipeline.mjs");
+  const { REGISTER_PROVIDER, PROVIDERS } = await import("../driver.config.mjs");
+  const { PROVIDER_META } = await import("../stages.mjs");
+  const other = REGISTER_PROVIDER === "signa" ? "euipo" : "signa";
+  const runDir = newRun("identity");
+  const job = { ref: "N-1", markName: "QZORVAK" };
+  assert.equal(reportIdentityRecord(job, { register: other, registerOnly: true }, runDir).run, PROVIDERS[other].label);
+  assert.equal(reportIdentityRecord(job, { registerOnly: true }, runDir).run, PROVIDER_META.label, "a context with no register names the machine's, as before");
+});

@@ -34,10 +34,11 @@ import { toolGroupsForStage as experimentToolGroups, buildGatherMcpConfig as exp
 import { readBestDraft, bestDraftDir } from "./best-draft.mjs";
 import { canonicalJurisdictionCode, isKnownJurisdictionCode } from "./jurisdiction-codes.mjs";
 import { probeSeed as orderProbeSeed } from "./order-probe.mjs";   // item 11 — records which ordering arm a run ran under
-import { config, resolveModel, activeProvider, laneArmed } from "./driver.config.mjs";
+import { config, resolveModel, laneArmed } from "./driver.config.mjs";
+import { registerAdapter } from "./engine/run-choices.mjs";   // the run's register adapter, from ctx.register
 import { codexSandboxBypassed } from "./engine/openai-agent.mjs";        // — a replay is refused where nothing keeps a stage's commands out of the answers it replays
 import { buildRunContext, deriveSlug, kebab } from "./phase0.mjs";
-import { paths, STAGES, axisTier, decideAxes, assertEffectiveTier, lines, whatsappRouting, chainEntries, stageOrdinal, stageInputs, dependencyOrder, REGISTER_AXES, REGISTER_ENUMERATE_TOOL, buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenFollowup, buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
+import { paths, STAGES, axisTier, decideAxes, assertEffectiveTier, lines, whatsappRouting, chainEntries, stageOrdinal, stageInputs, dependencyOrder, REGISTER_AXES, REGISTER_ENUMERATE_TOOL, buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenFollowup, buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, providerMeta, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
 import { handResearchAnswers, RESEARCH_ANSWERS_FILE, RESEARCH_REPLAY_FILE, replayAnswersFile, savedResearchCount, runResearchAnswers, researchAnswerKey, handResearchAfterReview } from "./research-answers.mjs";   // the research a stage's earlier attempts got, handed to a later one; a replay of it
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE, renderReportOverview } from "./report-overview-record.mjs";
 import { writePartNotCompleted, readPartNotCompleted, clearPartsNotCompleted, NOT_COMPLETED_DIR, slicesNotYetRecorded, axesNotYetDisclosed, unitsNotYetRecorded } from "./parts-not-completed.mjs";
@@ -234,7 +235,7 @@ function noteAdapter(ctx, adapter) {
 }
 
 async function defaultRecordFetcher(uri, ctx) {
-  return noteAdapter(ctx, activeProvider()).recordFetch(uri, ctx);
+  return noteAdapter(ctx, registerAdapter(ctx.register)).recordFetch(uri, ctx);
 }
 
 /**
@@ -1012,7 +1013,7 @@ function deriveOwnerScreenArtifact(ctx, band) {
     const deferredByQid = new Map((readPlanExecution(ctx)?.deferred ?? [])
       .map((d) => [String(d?.qid ?? ""), String(d?.reason ?? "")]).filter(([q]) => q));
     let caps = null;
-    try { caps = registerCapabilities(); } catch { /* unknown provider — the screen still reports states */ }
+    try { caps = registerCapabilities(ctx.register); } catch { /* unknown provider — the screen still reports states */ }
     const screen = deriveOwnerScreen(ctx.registerPlan.entries ?? [], blocks, band?.enumerated ?? [],
       { deferredByQid, capabilities: caps });
     if (!screen.owners.length) return null;   // no incumbent lane on this matter — nothing to receipt
@@ -2359,9 +2360,9 @@ export function writeRegisterDigestFacts(ctx, trigger) {   // @internal
       identity: {
         mark: ctx.job?.markName ?? ctx.run?.slug ?? null,
         date: ctx.job?.filedDate ?? ctx.run?.startedAt?.slice?.(0, 10) ?? null,
-        provider: REGISTER_PROVIDER ?? null,
+        provider: (ctx.register ?? REGISTER_PROVIDER) ?? null,
       },
-      recordHost: recordOriginsFor(REGISTER_PROVIDER)?.[0] ?? "",
+      recordHost: recordOriginsFor(ctx.register ?? REGISTER_PROVIDER)?.[0] ?? "",
       counts: digestSummaryCounts(ctx, slim.length),
       auditRows: digestAuditRows(ctx),
       readIds,
@@ -2551,7 +2552,7 @@ export function deriveFormNeighbourhood(ctx) {   // @internal — exported for i
     const mark = ctx.job.marks ?? ctx.job.markName ?? ctx.job.name ?? "";
     // The active register's own declaration: `false` leaves the mixed-alphabet look-alike spellings out of
     // the band and lists them as not searched, with the reason its index gives. Undeclared changes nothing.
-    const caps = registerCapabilities();
+    const caps = registerCapabilities(ctx.register);
     const mixedScriptQuery = caps?.mixedScriptQuery ?? null;
     const ow = loadOrdinaryWords("en"), json = renderFormNeighbourhoodJson(manifestMd, { markets, droppedAxes, model, mark, ordinaryWords: ow.words, mixedScriptQuery, nativeScriptIndex: caps?.nativeScriptIndex ?? null });   // an unloadable word list removes nothing
     const tmp = P.formNeighbourhood + ".tmp";
@@ -2668,10 +2669,10 @@ async function verifyAndRecordHouseElement(ctx, opts = {}) {
     // the free-text one. Both, because a profile may be absent on a one-off matter and a customer string
     // may be a person where the filings are held by a company.
     const owners = [...new Set([...(ctx.profile?.selfExclusionOwners ?? []), ctx.job?.customer].map((o) => String(o ?? "").trim()).filter(Boolean))];
-    const caps = registerCapabilities();
+    const caps = registerCapabilities(ctx.register);
     const { regions } = resolvePlanRegions(registerJurisdictions(ctx.job, ctx.profile), caps);
     const rec = resolveRecordExecutor({
-      lister: opts?.recordLister ?? null, adapter: noteAdapter(ctx, activeProvider()),
+      lister: opts?.recordLister ?? null, adapter: noteAdapter(ctx, registerAdapter(ctx.register)),
       agentId: ctx.agentId ?? null, sessionKey: `clearance-${ctx.run.slug}-${ctx.run.codename}`,
       recordLog: runRecordLogPath(P.runDir),
       fixtureDir: ctx.job?.registerFixtures?.records ?? null,
@@ -2714,7 +2715,7 @@ function attachRegisterPlan(ctx, { frozenOnly = false } = {}) {
     runLog(P.runDir, { event: "register-plan", source: "frozen", version: ctx.registerPlan.plan_version, entries: ctx.registerPlan.entries.length });
     // Repair-first D: a FROZEN plan failing feasibility (a pre-split legacy shape) is logged and
     // CONTINUES — never brick an in-flight resume; the executor chunks defensively regardless.
-    const frozenIssues = validatePlanFeasibility(ctx.registerPlan, { capabilities: registerCapabilities() });
+    const frozenIssues = validatePlanFeasibility(ctx.registerPlan, { capabilities: registerCapabilities(ctx.register) });
     if (frozenIssues.length) runLog(P.runDir, { event: "register-plan-infeasible", source: "frozen", issues: feasibilityMessages(frozenIssues).slice(0, 6) });
     logFullyDeferredAxes(ctx.registerPlan, P, "frozen");
     return;
@@ -2777,7 +2778,7 @@ function attachRegisterPlan(ctx, { frozenOnly = false } = {}) {
       // jurisdictions are translated into its office vocabulary (EU→EM on Compumark), and a predicate
       // it cannot express is stamped `unsupported` (→ an error:true block → a deferred coverage row)
       // instead of quietly compiling into a weaker search.
-      capabilities: registerCapabilities(),
+      capabilities: registerCapabilities(ctx.register),
       // — the offices this contract covers that THIS BOX cannot reach (a composed provider with an
       // unconfigured member). Split out at compile so the reachable half still executes and the rest
       // rides the plan as a disclosed deferral, never as a silently narrower search.
@@ -2827,7 +2828,7 @@ function attachRegisterPlan(ctx, { frozenOnly = false } = {}) {
   //     loud ONLY for freshly-authored entries — the whole plan on a fresh mint, ONLY the `added`
   //     entries on an extension. Inherited/reused entries are history, never a fresh compiler bug:
   //     log-only, never brick a matter over its own store.
-  const allIssues = validatePlanFeasibility(plan, { capabilities: registerCapabilities() });
+  const allIssues = validatePlanFeasibility(plan, { capabilities: registerCapabilities(ctx.register) });
   if (allIssues.length) {
     const freshQids = new Set(action === "minted" ? plan.entries.map((e) => e.qid) : (added ?? []).map((e) => e.qid));
     const terminalIssues = allIssues.filter((i) => i.severity === "unexecutable" && freshQids.has(i.entry));
@@ -9675,7 +9676,7 @@ async function pipelineInner(job, opts = {}) {
   runLog(run.runDir, { event: "start", agent, resume: isResume, fromStage: opts.fromStage ?? null, job: { id: job.id, slug: run.slug, codename: run.codename, customer: run.customer, forwarder: job.forwarder } });
   // THE SIGNA RUN MEMORY'S ATTEMPT (providers/_shared/answer-memory.mjs): whatever an earlier attempt held
   // is dropped, so a resume asks the register again, and the mode is fixed for this attempt.
-  ctx.answerMemory = beginAnswerMemory(run.runDir, REGISTER_PROVIDER);
+  ctx.answerMemory = beginAnswerMemory(run.runDir, ctx.register ?? REGISTER_PROVIDER);
   if (ctx.answerMemory.applies)
     runLog(run.runDir, { event: "answer-memory", mode: ctx.answerMemory.mode, ...(ctx.answerMemory.unknown ? { unrecognised: ctx.answerMemory.unknown } : {}) });
   if (ctx.answerMemory.unknown) note(`answer memory: ${ctx.answerMemory.switch}="${ctx.answerMemory.unknown}" is not off, watch or on, so this register's default applies (${ctx.answerMemory.mode})`);
@@ -9776,7 +9777,7 @@ async function pipelineInner(job, opts = {}) {
     // measures the Workstream-B dedup opportunity (and which scope matters) directly from data.
     let providerTally = null;
     try {
-      const provider = activeProvider().id;
+      const provider = registerAdapter(ctx.register).id;
       const usage = tallyRegisterCalls(DEFAULT_LEDGER_PATH, `clearance-${run.slug}-${run.codename}-`);
       // ── A WHOLE-RUN TALLY FILED UNDER ONE REGISTER SAYS SO WHEN THE RUN SERVED MORE THAN ONE ──────
       //
@@ -10745,7 +10746,7 @@ export function reportIdentityRecord(job, ctx, runDir, displayVerdict = null) { 
     client: job.customer ?? ctx.profile?.name ?? null,
     use: job.goods ?? null,
     classes: Array.isArray(job.classes) ? job.classes.join(", ") : (job.classes ?? null),
-    run: [runDate, PROVIDER_META.label].filter(Boolean).join(" · ") + (clRan ? " + common-law" : ""),
+    run: [runDate, providerMeta(ctx?.register ?? REGISTER_PROVIDER).label].filter(Boolean).join(" · ") + (clRan ? " + common-law" : ""),
     overall_label: displayVerdict?.tier ?? null,
     overall_badge: displayVerdict?.badge ?? null,
   };
