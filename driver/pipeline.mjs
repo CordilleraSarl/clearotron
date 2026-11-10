@@ -2688,10 +2688,6 @@ function attachRegisterPlan(ctx, { frozenOnly = false } = {}) {
     // parseRegisterPlan throws token-first on corruption — the frozen plan is never silently re-derived
     ctx.registerPlan = parseRegisterPlan(readFileSync(P.registerPlan, "utf8"));
     runLog(P.runDir, { event: "register-plan", source: "frozen", version: ctx.registerPlan.plan_version, entries: ctx.registerPlan.entries.length });
-    // Repair-first D: a FROZEN plan failing feasibility (a pre-split legacy shape) is logged and
-    // CONTINUES — never brick an in-flight resume; the executor chunks defensively regardless.
-    const frozenIssues = validatePlanFeasibility(ctx.registerPlan, { capabilities: registerCapabilities(ctx.register) });
-    if (frozenIssues.length) runLog(P.runDir, { event: "register-plan-infeasible", source: "frozen", issues: feasibilityMessages(frozenIssues).slice(0, 6) });
     logFullyDeferredAxes(ctx.registerPlan, P, "frozen");
     return;
   }
