@@ -52,11 +52,14 @@ if (existsSync(reportMd)) {
     email.cover = JSON.stringify({ tier: opts.tier ?? null, statement: opts.statement ?? null });
   }
 } else {
-  const { composeKnockoutEmail } = await load("publish/knockout.mjs");
+  const { composeKnockoutEmail, knockoutName } = await load("publish/knockout.mjs");
   const { worstBand } = await load("verify-knockout.mjs");
   const findings = JSON.parse(readFileSync(join(spec.runDir, "knockout-findings.json"), "utf8"));
   const framework = JSON.parse(readFileSync(join(spec.runDir, "_driver", "framework.json"), "utf8"));
-  email.html = composeKnockoutEmail({ findings, framework, overall: worstBand(framework, findings.marks ?? []), reports: published.reports, auditUrl: published.auditUrl, job: meta.job ?? {} });
+  // The product's name as the delivery takes it, from the run's frozen policy, where the build names it at all.
+  const policyFile = join(spec.runDir, "_driver", "search-policy.json");
+  const named = knockoutName ? { productName: knockoutName(existsSync(policyFile) ? JSON.parse(readFileSync(policyFile, "utf8")) : null) } : {};
+  email.html = composeKnockoutEmail({ findings, framework, overall: worstBand(framework, findings.marks ?? []), reports: published.reports, auditUrl: published.auditUrl, job: meta.job ?? {}, ...named });
 }
 writeFileSync(spec.resultFile, JSON.stringify({ email, returned: published ?? null, logRows }));
 process.exit(0);
