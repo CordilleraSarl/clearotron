@@ -19,6 +19,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { browserCommand, invoke, reachableCommand } from "../../shared/invocation.mjs";
 import { handRunEnv } from "./drive-env.mjs";
 import { npmInvocation } from "../../shared/npm-cli.mjs";
+import { driverSource } from "./driver-source.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const read = (f) => readFileSync(join(ROOT, f), "utf8");
@@ -118,7 +119,7 @@ test("a remedy names a command the reader can type after npm cleans its cache", 
 
 test("the organisation remedy reaches the terminal and the New company screen in that form", () => {
   assert.match(read("bin/start.mjs"), /no organisation named yet — \\`\$\{reachableCommand\('start --organisation "<name>"'\)\}\\`/);
-  assert.match(read("driver/portal-service.mjs"), /organisationCommand: browserCommand\('start --organisation "<name>"'\),/);
+  assert.match(driverSource("portal-service.mjs"), /organisationCommand: browserCommand\('start --organisation "<name>"'\),/);
   const screen = read("portal-ui/src/screens/NewCompany.tsx");
   assert.match(screen, /File one with: \$\{ctx\.me\.organisationCommand\}/);
   assert.doesNotMatch(screen, /File one with: clearotron start/, "the screen still hard-codes the bare name");
