@@ -8846,13 +8846,13 @@ useThePipeline({ CORRECTIONS_DELIVERED_FILE, asPartNotCompleted, extractRulingsT
  * the whole review then put back. Other bytes in place mean another review was saved over it, through the tool or by
  * rewriting the file, and its points are its own. The one such review that did not read the corrected record is a
  * narrowed review that hardened the verdict and stays in place: the earlier review is then the one kept beside it, and
- * the correction's rows are still its flags. A record with no sha, from an earlier version, builds as it was.
+ * the correction's rows are still its flags.
  */
 function earlierReviewNotRechecked(P) {
   try {
     const runDir = dirname(P.report);
     const recheck = JSON.parse(readFileSync(driverDir(runDir, CORRECTIVE_RECHECK_FILE), "utf8"));
-    if (recheck?.status !== "unread" || !recheck.reviewSha) return null;
+    if (recheck?.status !== "unread") return null;
     const named = (file) => relative(runDir, file).replace(/\\/g, "/");
     const inPlace = shaOf(P.seniorEyeReview);
     if (inPlace === recheck.reviewSha) return { review: named(P.seniorEyeReview), inPlace: true };
