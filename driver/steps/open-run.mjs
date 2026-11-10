@@ -12,7 +12,7 @@ import { config, preflightCredentials, preflightEngineBinary, preflightFreeSpace
 import { engineProvenance } from "../engine-build.mjs";
 import { preflightEngineTurn } from "../engine/probe.mjs";
 import { engineNamed, registeredEngines, selectEngine } from "../engine/registry.mjs";
-import { RunChoiceUnavailable, readRunChoices, recordRunChoices, registerAdapter, registerForRun, unservedChoice } from "../engine/run-choices.mjs";
+import { RunChoiceUnavailable, readRunChoices, recordRunChoices, registerAdapter, registerEnvFor, registerForRun, unservedChoice } from "../engine/run-choices.mjs";
 import { note, runLog } from "../log.mjs";
 import { buildRunContext } from "../phase0.mjs";
 import { profileStoreResolution } from "../profiles.mjs";
@@ -32,8 +32,9 @@ export async function openRun({ job, opts }, helpers) {
   // A RESUMED RUN KEEPS THE ENGINE IT STARTED ON (engine/run-choices.mjs), so the engine doors below test that
   // engine rather than the machine's current setting. The run's folder is named the way the resume below names
   // it, and naming it creates nothing; a resume with no folder reads as no record here and is refused below in
-  // its own words. A recorded engine or register this process cannot serve PARKS the run before any door runs, with
-  // nothing cleared, so it keeps its work and resumes on its own choice (RunChoiceUnavailable): never on the machine's.
+  // its own words. A recorded engine this driver has no adapter for PARKS the run before any door runs, and one whose
+  // program, sign-in or register this runner lacks parks at that door. Nothing is cleared, so the run keeps its work and
+  // resumes on its own choice (RunChoiceUnavailable): never on the machine's.
   const resuming = Boolean(opts.codename) && !opts.minted;
   let parkedRun = null;
   const recorded = (() => {
@@ -54,8 +55,7 @@ export async function openRun({ job, opts }, helpers) {
     err.noResume = true;
     throw err;
   }
-  const unserved = unservedChoice(recorded, { engineRegistered: recorded.state === "recorded" && Boolean(engineNamed(recorded.engine)),
-    machineRegister: REGISTER_PROVIDER ?? null });
+  const unserved = unservedChoice(recorded, { engineRegistered: recorded.state === "recorded" && Boolean(engineNamed(recorded.engine)) });
   if (unserved) throw park({ ...unserved, ...(unserved.kind === "engine" ? { detail: `registered: ${registeredEngines().join(", ")}` } : {}) });
   const engineEnv = recorded.state === "recorded" ? { ...process.env, CLEAROTRON_AI: recorded.engine } : process.env;
   // A recorded engine whose program or sign-in this machine lacks parks the run too; a run with no record meets the
@@ -112,7 +112,15 @@ export async function openRun({ job, opts }, helpers) {
       throw new Error(`--records replay: ${held.join(" + ")} is set, so a stage's register tools could still reach the register — unset it for this resume, which answers every record fetch from the run's own records`);
     opts.recordFetcher ??= (uri) => savedRecordFetch(opts.__runRef?.runDir, uri);
   }
-  if (!opts.recordFetcher && !koSelector) preflightCredentials();
+  // A RECORDED REGISTER IS SERVED WHEREVER THIS RUNNER HOLDS WHAT IT NEEDS, whatever the machine's default. The door
+  // checks a copy of the environment naming the run's register, never a changed process environment; a register that
+  // is not the machine's and fails the door parks the run with the door's own words. The machine's fails as before.
+  if (!opts.recordFetcher && !koSelector) {
+    try { preflightCredentials(registerEnvFor(recorded)); } catch (e) {
+      if (recorded.state !== "recorded" || !recorded.register || recorded.register === (REGISTER_PROVIDER ?? null)) throw e;
+      throw park({ kind: "register", recorded: recorded.register, machine: REGISTER_PROVIDER ?? null, detail: e?.message ?? e });
+    }
+  }
   // -6 — and the RESEARCH credential, for the products that cannot deliver their answer without it.
   //
   // NOT gated on `koSelector`, and that is not an oversight: the predicate inside is
@@ -288,7 +296,7 @@ export async function openRun({ job, opts }, helpers) {
       engine: held.engine ?? null, register: held.register ?? null, machineEngine: machine.engine, machineRegister: machine.register,
       ...(registerDiffers ? { registerDiffers: true } : {}) });
     if (registerDiffers)
-      note(`[run-choices] this run started on the ${held.register ?? "(none)"} register; this machine is set to ${machine.register ?? "(none)"}, and serves the run with its own`);
+      note(`[run-choices] this run started on the ${held.register ?? "(none)"} register; this machine is set to ${machine.register ?? "(none)"}, and serves the run on the run's own`);
   } catch (e) {
     try { runLog(run.runDir, { event: "run-choices", state: "not-written", detail: String(e?.message ?? e).slice(0, 300) }); } catch { /* best-effort */ }
   }
