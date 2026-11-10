@@ -104,7 +104,7 @@ test("arm 4 — the payload is its own field, from the throw site to the status 
   assert.equal(e.detail, "connotation_undisposed:KIN-ZY wikipedia", "…and the payload is beside it");
   assert.ok(!e.reason.includes("connotation_undisposed"), "THE ENGINE HALF: no interpolation at the throw site");
 
-  const pl = live("driver/pipeline.mjs");
+  const pl = ["driver/pipeline.mjs", "driver/run-failed.mjs"].map(live).join("\n");   // the run-level catch moved to run-failed.mjs
   assert.match(live("driver/steps/register-sweep.mjs"), /StageFailure\("common-law", "merged half-grids failed the canonical validator", undefined,\s*\{ failClass: clFailClass, detail: v\.reason, quantity: v\.quantity \}\)/,
     "the canonical-validator throw must pass the reason as `detail`, never inside the message");
   // moved the abbrev off the writeRunStatus literal into `reasonDetailField`, because the same
