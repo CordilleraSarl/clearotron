@@ -413,7 +413,7 @@
         },
         "a-correction-hands-its-positions-to-the-save.test.mjs": {
           "tests": 6,
-          "asserts": 23,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -2077,6 +2077,12 @@
           "tests": 17,
           "asserts": 73,
           "skips": 0,
+          "todos": 0
+        },
+        "a-run-file-is-named-through-the-records-door.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 1,
           "todos": 0
         },
         "a-run-keeps-the-engine-it-started-on.test.mjs": {
