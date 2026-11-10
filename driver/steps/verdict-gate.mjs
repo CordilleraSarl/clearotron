@@ -5,6 +5,7 @@
 //
 // One phase of a run, moved out of pipelineInner unchanged. `helpers` are functions still held in pipeline.mjs, handed in
 // because this module must not import that one back; each moves here when the other phases that share it have moved.
+import { paths } from "../run-record.mjs";
 import { runRecordLogPath } from "../../providers/_shared/ledger-path.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { decideRegisterGap } from "../coverage-ledger.mjs";
@@ -114,7 +115,7 @@ export async function runVerdictGate({ P, agent, applyVerdictFrontMatter, correc
           rows.push({ ordinal: f.ordinal, mark: f.mark, applicable: true, seniorUri: senior.uri, rankedFrom: senior.source, verified, ...(fetchFailureCause ? { fetchFailureCause } : {}), excludedDead: excluded.length });
         }
         ctx.seniorRights = { schema_version: 1, policy: UNREACHABLE_SENIOR_POLICY, rows };
-        writeFileSync(driverDir(run.runDir, "senior-rights.json"), JSON.stringify(ctx.seniorRights, null, 2) + "\n");
+        writeFileSync(paths(run.runDir).seniorRights, JSON.stringify(ctx.seniorRights, null, 2) + "\n");
         runLog(run.runDir, { event: "senior-rights", driving: driving.length, applicable: rows.filter((r) => r.applicable).length,
           verified: rows.filter((r) => r.verified).length, open: rows.filter((r) => r.applicable && !r.verified).length });
       }
@@ -560,7 +561,7 @@ export async function runVerdictGate({ P, agent, applyVerdictFrontMatter, correc
   if (entryVerdict === "CLEAR") {
     const frameGap = ctx.frameReopenGap === true;
     let frameDeferrals = [];
-    try { const rp = driverDir(run.runDir, "frame-reopen.json"); const rec = existsSync(rp) ? JSON.parse(readFileSync(rp, "utf8")) : null; frameDeferrals = Array.isArray(rec?.deferrals) ? rec.deferrals : []; } catch { /* best-effort */ }
+    try { const rp = paths(run.runDir).frameReopenReceipt; const rec = existsSync(rp) ? JSON.parse(readFileSync(rp, "utf8")) : null; frameDeferrals = Array.isArray(rec?.deferrals) ? rec.deferrals : []; } catch { /* best-effort */ }
     const frameResidual = frameGap || frameDeferrals.length > 0;
     // This arm's producer went live (it had none since the initial port):
     // the unresolved set comes from ctx when THIS session's gate disclosed it, else from the durable
@@ -760,9 +761,9 @@ export async function runVerdictGate({ P, agent, applyVerdictFrontMatter, correc
   // the label it could not yet save.
   const writeVerdictSidecar = () => {
     const { derived, statement, doc } = composeVerdictSidecar();
-    const tmp = driverDir(run.runDir, "verdict.json.tmp");
+    const tmp = paths(run.runDir).verdictJson;
     writeFileSync(tmp, JSON.stringify(doc, null, 2));
-    renameSync(tmp, driverDir(run.runDir, "verdict.json"));
+    renameSync(tmp, paths(run.runDir).verdict);
     // — THE STATUS RECORD CARRIES THE BAND AND THE SENTENCE, so a reader of the run does not
     // have to reach for `verdict` to say something about the outcome. `verdict` is the gate's decision
     // (CLEAR / CONDITIONAL / BLOCKING) and is engine vocabulary; the band and the composed statement are
@@ -782,7 +783,7 @@ export async function runVerdictGate({ P, agent, applyVerdictFrontMatter, correc
     const saved = saveWithRetries(() => writeVerdictSidecar());
     if (saved.ok) {
       if (saved.attempts > 1) runLog(run.runDir, { event: "verdict-write-retried", why, attempts: saved.attempts });
-      try { runState.displayVerdict = JSON.parse(readFileSync(driverDir(run.runDir, "verdict.json"), "utf8")); } catch { /* the label is re-read at reassembly */ }
+      try { runState.displayVerdict = JSON.parse(readFileSync(paths(run.runDir).verdict, "utf8")); } catch { /* the label is re-read at reassembly */ }
       return true;
     }
     runState.labelOwed = runState.labelOwed ?? why;

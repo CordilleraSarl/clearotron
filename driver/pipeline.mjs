@@ -425,12 +425,12 @@ export function loadCoverageLedger(runDir) {   // @internal
   // pass was kill-touched (register-taint.mjs) is downgraded to deferred at the same choke point, so the
   // envelope re-runs it and the verdict floor clamps over it, whatever the prose self-reported.
   const relabel = (rows) => relabelCoverageRows(runDir, rows);
-  const jsonPath = join(runDir, "register-coverage-ledger.json");
+  const jsonPath = paths(runDir).registerCoverageLedger;
   if (existsSync(jsonPath)) {
     try { return { rows: relabel(parseCoverageLedgerJson(readFileSync(jsonPath, "utf8"))), source: "machine", dropped: [] }; }
     catch (e) { note(`loadCoverageLedger: machine ledger unreadable (${String(e.message).slice(0, 80)}) — prose fallback`); }
   }
-  const findingsPath = join(runDir, "register-findings.md");
+  const findingsPath = paths(runDir).registerFindings;
   if (!existsSync(findingsPath)) return { rows: [], source: "none", dropped: [] };
   const { rows, dropped } = parseCoverageLedgerFull(readFileSync(findingsPath, "utf8"));
   return { rows: relabel(rows), source: "prose", dropped };
@@ -918,7 +918,7 @@ export function remergeIfBandsMoved(ctx, why, { refusing = (bytes) => stagesRefu
 }
 
 /** Where the records a refused merge left out are kept, for the recall gate. */
-const refusedRecordsPath = (P) => driverDir(P.runDir, "band-refused-records.json");
+const refusedRecordsPath = (P) => paths(P.runDir).bandRefusedRecords;
 
 /**
  * THE RECORDS A REFUSED MERGE LEAVES OUT: the ids the band merged again holds and the band standing does not, added to
@@ -1933,7 +1933,7 @@ export function profileShaOf(frozen) {   // @internal
 }
 
 function attachProfile(ctx, job, { write = true } = {}) {
-  const sidecarPath = driverDir(ctx.paths.runDir, "profile.json");
+  const sidecarPath = paths(ctx.paths.runDir).profile;
   let raw = null;
   try { raw = readFileSync(sidecarPath, "utf8"); } catch { /* ENOENT — genuinely absent */ }
   if (raw != null) {
@@ -2008,7 +2008,7 @@ function attachProfile(ctx, job, { write = true } = {}) {
 // declares, judged by that version's gates. Corrupt ⇒ fail loud (driver-written, same as profile.json).
 const DRIVER_DIR = dirname(fileURLToPath(import.meta.url));
 function attachFramework(ctx, { write = true } = {}) {
-  const sidecarPath = driverDir(ctx.paths.runDir, "framework.json");
+  const sidecarPath = paths(ctx.paths.runDir).framework;
   let raw = null;
   try { raw = readFileSync(sidecarPath, "utf8"); } catch { /* ENOENT — genuinely absent */ }
   const methodPath = driverDir(ctx.paths.runDir, FROZEN_METHOD_FILE);
@@ -2092,7 +2092,7 @@ export function foldRecipeScope(job, searchPolicy) {   // @internal
 }
 
 export function attachSearchPolicy(ctx, job, { write = true } = {}) {   // @internal
-  const sidecarPath = driverDir(ctx.paths.runDir, "search-policy.json");
+  const sidecarPath = paths(ctx.paths.runDir).searchPolicy;
   let raw = null;
   try { raw = readFileSync(sidecarPath, "utf8"); } catch { /* ENOENT — genuinely absent */ }
   // A job that names NO SELECTOR at all. It reads `product`/`recipeKey`, which are the two selectors on
@@ -2438,7 +2438,7 @@ export function writeRegisterDigestFacts(ctx, trigger) {   // @internal
 function digestSummaryCounts(ctx, enumerated) {
   const P = ctx.paths;
   const out = [];
-  const exec = safeReadJson(driverDir(P.runDir, "plan-execution.json"));
+  const exec = safeReadJson(paths(P.runDir).planExecution);
   const entries = Array.isArray(exec?.skeleton) ? exec.skeleton : [];
   // ── NO TOOL NAME IS SPELLED HERE, AND THAT IS A CONSTRAINT RATHER THAN A STYLE CHOICE ────────────
   //
@@ -2477,7 +2477,7 @@ function digestSummaryCounts(ctx, enumerated) {
 /** The `### Audit trail` rows — per-unit search / detail-fetch counts with the driver's `_query` stamp. */
 function digestAuditRows(ctx) {
   const P = ctx.paths;
-  const exec = safeReadJson(driverDir(P.runDir, "plan-execution.json"));
+  const exec = safeReadJson(paths(P.runDir).planExecution);
   const rows = [];
   for (const e of Array.isArray(exec?.skeleton) ? exec.skeleton : []) {
     rows.push({ unit: e?.axis ?? e?.qid ?? "—", searches: e?.searches ?? e?.pages ?? 0,
@@ -3349,7 +3349,7 @@ const bandRecordIds = (band) => [...new Set((band?.enumerated ?? []).map((r) => 
 function recordPlacementBandIds(P) {
   try {
     const ids = bandRecordIds(safeReadJson(P.registerNamedBand)).sort();
-    atomicWrite(driverDir(P.runDir, "placement-band-ids.json"), JSON.stringify({ count: ids.length, ids }) + "\n");
+    atomicWrite(paths(P.runDir).placementBandIds, JSON.stringify({ count: ids.length, ids }) + "\n");
   } catch (e) { runLog(P.runDir, { event: "placement-band-ids-failed", reason: String(e?.message ?? e).slice(0, 120) }); }
 }
 
@@ -3359,7 +3359,7 @@ function recordPlacementBandIds(P) {
  * a count that moved is not a record placement has not seen. PURE over the run's files.
  */
 export function lateRecordIds(P) {   // @internal — driven by its test with a run's own files
-  const seen = safeReadJson(driverDir(P.runDir, "placement-band-ids.json"));
+  const seen = safeReadJson(paths(P.runDir).placementBandIds);
   if (!Array.isArray(seen?.ids)) return [];
   const had = new Set(seen.ids);
   return bandRecordIds(safeReadJson(P.registerNamedBand)).filter((id) => !had.has(id));
@@ -3626,7 +3626,7 @@ export function writerExclusions(P) {   // @internal — driven by its test with
     } catch { return empty("unreadable"); }
     // The goods state each record was given on the writer's list, where the list carries one.
     const goodsOf = new Map();
-    for (const r of safeReadJson(driverDir(P.runDir, "declination-spec.json"))?.rows ?? [])
+    for (const r of safeReadJson(paths(P.runDir).declinationSpec)?.rows ?? [])
       for (const m of [r, ...(Array.isArray(r?.members) ? r.members : [])]) if (m?.uri) goodsOf.set(key(m.uri), m.goods ?? null);
     const bandOf = new Map();
     for (const row of rows) for (const m of (Array.isArray(row?.members) && row.members.length ? row.members : [row])) bandOf.set(key(m?.uri), m);
@@ -3685,7 +3685,7 @@ export const revisedCitesNote = (ords) => `; that ground cites ${ords.length ===
 export const withdrawnExclusionLine = (x) => `- ${x.mark ?? "(unnamed)"}${x.owner ? ` — ${x.owner}` : ""} (${(x.members ?? [x.uri]).join(", ")}): excluded at the full review, now delivered as a finding`;
 
 /** What the full review was shown, kept for the reviews after it; and what the last review was shown, for its flags. */
-export const reviewExclusionsPaths = (P) => ({ full: driverDir(P.runDir, "review-exclusions-full.json"), shown: driverDir(P.runDir, REVIEW_EXCLUSIONS_FILE) });
+export const reviewExclusionsPaths = (P) => ({ full: paths(P.runDir).reviewExclusionsFull, shown: driverDir(P.runDir, REVIEW_EXCLUSIONS_FILE) });
 
 /**
  * THE LIST A REVIEW IS GIVEN, and the record of it. The full review gets every exclusion. A later review (the recheck
@@ -3789,7 +3789,7 @@ export function prepareDeclinationSpec(ctx, P) {   // @internal
     // whatever list the spec file carries, and a repair or corrective pass re-prepares because the
     // findings may have moved. Left in place, a list from an earlier pass would bind a pass whose own
     // prompt carries none: the order enforced, and missing from the prompt.
-    try { rmSync(driverDir(P.runDir, "declination-spec.json"), { force: true }); } catch { /* absent is the goal */ }
+    try { rmSync(paths(P.runDir).declinationSpec, { force: true }); } catch { /* absent is the goal */ }
     delete ctx.findingsSurface;
     return;
   }
@@ -3798,7 +3798,7 @@ export function prepareDeclinationSpec(ctx, P) {   // @internal
   try {
     ensureDriverDir(P.runDir);
     const read = surfaceGoodsEvidence(ctx, P, rows);
-    atomicWrite(driverDir(P.runDir, "declination-spec.json"),
+    atomicWrite(paths(P.runDir).declinationSpec,
       JSON.stringify({ ts: new Date().toISOString(), rows: withGoodsStates(ctx, P, rows, read), scope: { marks: scope.marks ?? [], classes: scope.classes ?? [] } }, null, 2) + "\n");
     ctx.findingsSurface = withGoodsFrom(ctx, P, rows, read);
   } catch (e) {
@@ -3815,7 +3815,7 @@ export function prepareDeclinationSpec(ctx, P) {   // @internal
  * record every record it delivered as discarded — the defect rebuilt one seam later.
  */
 /** Where the ranking the writer last read is kept, for the sentence on records re-ranked after it wrote. */
-const rankingReadByWriterPath = (P) => driverDir(P.runDir, "ranking-read-by-writer.json");
+const rankingReadByWriterPath = (P) => paths(P.runDir).rankingReadByWriter;
 /** Keeps where each record stood when a writer's pass completed. Never throws. */
 function keepRankingReadByWriter(P) {
   try { atomicWrite(rankingReadByWriterPath(P), JSON.stringify(rankingToJson(rankingNow(P)), null, 2) + "\n"); }
@@ -3921,8 +3921,8 @@ export function deriveRecordCarry(ctx, trigger, { findings = null } = {}) {   //
       placements,
       registerFindingsText: existsSync(P.registerFindings) ? readFileSync(P.registerFindings, "utf8") : "",
       findings: deliveredFindings,
-      outcomes: parseStageOutcomes(safeReadText(driverDir(P.runDir, "run.jsonl"))),
-      planExecution: safeReadJson(driverDir(P.runDir, "plan-execution.json")),
+      outcomes: parseStageOutcomes(safeReadText(paths(P.runDir).run)),
+      planExecution: safeReadJson(paths(P.runDir).planExecution),
       ledger: foldDiscardLedger(safeReadText(driverDir(P.runDir, DISCARD_LEDGER_NAME))),
       // — read the sibling traces OFF DISK rather than threading state through the run: what is
       // on disk at publish is exactly what this run produced, and a declaration derived from anything
@@ -4159,7 +4159,7 @@ function deriveCommonLawCarry(ctx, trigger, { slice = "common-law", gridPath = n
       // ALL THREE labels. A split run logs `common-law-half:a` / `:b` and never `common-law`; asking for
       // `["common-law"]` alone finds no events and every candidate on every split run reads
       // stage-incomplete — a loud wrong answer on the common path.
-      outcomes: parseStageOutcomes(safeReadText(driverDir(P.runDir, "run.jsonl")), CL_STAGES),
+      outcomes: parseStageOutcomes(safeReadText(paths(P.runDir).run), CL_STAGES),
       consumed, slice,
     });
     write(artifact);
@@ -5066,7 +5066,7 @@ function writeSatProbeAuditNote({ ctx, out, bandPath, entries }) {
 // force-re-run completed stages on resume. Idempotent merge; non-fatal like every _driver sidecar.
 function recordStageContract(runDir, name, contract) {
   try {
-    const p = driverDir(runDir, "stage-contracts.json");
+    const p = paths(runDir).stageContracts;
     let cur = {};
     try { cur = JSON.parse(readFileSync(p, "utf8")) ?? {}; } catch { /* first write */ }
     const next = { ...cur, [name]: { ...(cur[name] ?? {}), ...contract } };
@@ -6183,7 +6183,7 @@ function withPositionLabels(scope, P) {
   const shown = safeReadJson(reviewExclusionsPaths(P).shown);
   const byUri = new Map((Array.isArray(shown?.positions) ? shown.positions : []).map((p) => [p.uri, p]));
   // Its row in the list `record_declination` reads, prepared again before this pass, so keeping an exclusion names the row.
-  const spec = safeReadJson(driverDir(P.runDir, "declination-spec.json"))?.rows;
+  const spec = safeReadJson(paths(P.runDir).declinationSpec)?.rows;
   const rowOf = (u) => (Array.isArray(spec) ? spec.findIndex((r) => r?.kind !== "page" && String(normalizeRecordUri(r?.uri) ?? "") === u) : -1);
   const label = (u) => { const p = byUri.get(u); const i = rowOf(u); return `${p?.mark ?? "(unnamed)"}${p?.owner ? ` — ${p.owner}` : ""} (${u})${i >= 0 ? `, row ${i}` : ""}`; };
   return { ...scope, positionLabels: scope.positions.map(label) };
@@ -6658,7 +6658,7 @@ export function recordConnotationAudit(run, P) {   // @internal
       // is the whole failure being fixed. Unreadable prior ⇒ this pass's own numbers, never zero.
       peak: (() => {
         let prior = {};
-        try { prior = JSON.parse(readFileSync(driverDir(run.runDir, "connotation-receipts.json"), "utf8"))?.peak ?? {}; } catch { /* first pass, or unreadable — this pass IS the peak */ }
+        try { prior = JSON.parse(readFileSync(paths(run.runDir).connotationReceipts, "utf8"))?.peak ?? {}; } catch { /* first pass, or unreadable — this pass IS the peak */ }
         const worst = (k, now) => Math.max(Number(prior?.[k]) || 0, Number(now) || 0);
         return { dispositionsThatDidNotBind: worst("dispositionsThatDidNotBind", didNotBind),
           obligationsNeverAddressed: worst("obligationsNeverAddressed", neverAddressed),
@@ -6673,9 +6673,9 @@ export function recordConnotationAudit(run, P) {   // @internal
           ledgerCalls: worst("ledgerCalls", ledgerCalls) };
       })(),
     };
-    const tmp = driverDir(run.runDir, "connotation-receipts.json.tmp");
+    const tmp = paths(run.runDir).connotationReceiptsJson;
     writeFileSync(tmp, JSON.stringify(audit, null, 2) + "\n");
-    renameSync(tmp, driverDir(run.runDir, "connotation-receipts.json"));
+    renameSync(tmp, paths(run.runDir).connotationReceipts);
     runLog(run.runDir, { event: "connotation-receipts", recordedQueries, distinctReasons: reasonKeys.size,
       dispositionsThatDidNotBind: didNotBind, obligationsNeverAddressed: neverAddressed,
       seats: seats.map((x) => `${x.seat}:${x.source}`) });
@@ -6813,13 +6813,13 @@ export function snapshotFindingsForCorrections(P, runDir) {   // @internal
   const model = { raw: modelRaw, sha: modelRaw === raw ? sha : createHash("sha256").update(modelRaw).digest("hex") };
   const fold = snapshotFold(runDir);
   try {
-    const tmp = driverDir(runDir, "findings-pre-corrective.json.tmp");
+    const tmp = paths(runDir).findingsPreCorrectiveJson;
     // PR-4 (snapshot-before-overwrite): store the FULL pre-corrective text, not just its sha — a
     // sha proves the file changed but cannot show WHAT the corrective pass changed; that run's
     // pre-corrective findings were unrecoverable for exactly this reason. Findings are small (KBs);
     // the audit value of the diff dwarfs the bytes.
     writeFileSync(tmp, JSON.stringify({ ts: new Date().toISOString(), sha, text: raw }, null, 2));
-    renameSync(tmp, driverDir(runDir, "findings-pre-corrective.json"));
+    renameSync(tmp, paths(runDir).findingsPreCorrective);
   } catch { /* advisory sidecar */ }
   return { raw, sha, model, fold, base: snapshotSynthesisBase(runDir) };
 }
@@ -6880,7 +6880,7 @@ export function rollbackCorrectivePass(P, runDir, pre, fail) {   // @internal
   const base = restoreSynthesisBase(runDir, pre.base);
   const record = { ts: new Date().toISOString(), reason: String(fail?.fail ?? "failed").slice(0, 200),
     restored: changed, preSha: pre.sha, failedSha: nowSha, ...(base ? { base } : {}) };
-  try { atomicWrite(driverDir(runDir, "corrective-rollback.json"), JSON.stringify(record, null, 2) + "\n"); }
+  try { atomicWrite(paths(runDir).correctiveRollback, JSON.stringify(record, null, 2) + "\n"); }
   catch { /* sidecar is best-effort; the runLog event below is the record that decides */ }
   return record;
 }
@@ -7009,7 +7009,7 @@ export function repairUnnamedRemovals(P, runDir, pre, namedOrdinals, namedMarks,
   // onto the base and re-renders the file from it, so a restore written to the file alone is dropped again.
   // The edit is judged as a call is; a refusal leaves the base as it was, and the record says so.
   record.base = rebaseSynthesis(runDir, restoreInto);
-  try { atomicWrite(driverDir(runDir, "corrective-repair.json"), JSON.stringify(record, null, 2) + "\n"); }
+  try { atomicWrite(paths(runDir).correctiveRepair, JSON.stringify(record, null, 2) + "\n"); }
   catch { /* sidecar is best-effort; the runLog event is the record that decides */ }
   return record;
 }
@@ -7326,9 +7326,9 @@ export function unreadRecordReview(runDir) {   // @internal
   catch { return false; }
 }
 
-const reviewBeforeRepairPath = (runDir) => driverDir(runDir, "review-before-repair.md");
-const reviewAfterRepairPath = (runDir) => driverDir(runDir, "review-after-repair.md");
-const postRepairCorrectionsPath = (runDir) => driverDir(runDir, "post-repair-corrections.json");
+const reviewBeforeRepairPath = (runDir) => paths(runDir).reviewBeforeRepair;
+const reviewAfterRepairPath = (runDir) => paths(runDir).reviewAfterRepair;
+const postRepairCorrectionsPath = (runDir) => paths(runDir).postRepairCorrections;
 const scopeRecord = (scope, items) => ({
   findingOnly: Boolean(scope.findingOnly),
   changed: { findings: scope.changed.findings.map((f) => ({ ordinal: f.ordinal, change: f.change, fields: f.fields })),
@@ -7427,7 +7427,7 @@ async function runWholeReviewForRecord(ctx, P, run, scope, rerun) {
 }
 
 /** Where the state the review after a repair reads is kept whole, before the review and its correction run. */
-const postRepairStatePath = (runDir) => driverDir(runDir, "post-repair-state.json");
+const postRepairStatePath = (runDir) => paths(runDir).postRepairState;
 
 /**
  * THE STATE THE REVIEW AFTER A REPAIR READS, KEPT WHOLE before the review and its correction can lose any of it: the
@@ -7517,7 +7517,7 @@ function recordFromTheSaves(Pv, runDir, before) {
 async function restoreTheRecordThatPassed(ctx, P, runDir, check) {
   const pre = recordFromTheSaves(P, runDir, lastAcceptedCall(runDir));
   if (!pre?.raw) return null;
-  try { copyFileSync(P.findings, driverDir(runDir, "findings-broken-at-delivery.json")); } catch { /* the evidence is best-effort */ }
+  try { copyFileSync(P.findings, paths(runDir).findingsBrokenAtDelivery); } catch { /* the evidence is best-effort */ }
   writeFindings(runDir, pre.raw, { why: "record-that-passed-restored", settles: [] });
   restoreSynthesisBase(runDir, pre.base);
   try { foldAfterSave(runDir, P.findings); } catch (e) { note(`[core-artifact] the restored record could not be folded (${String(e?.message ?? e).slice(0, 100)})`); }
@@ -7585,7 +7585,7 @@ async function recoverFromFailedCorrection(ctx, Pv, runDir, pre, pass, { baseBef
     try { now = readFileSync(Pv.findings, "utf8"); } catch { now = null; }
     // Set aside, never deleted: the failed pass's record stays beside the run's record for whoever diagnoses the run.
     if (now != null) {
-      try { renameSync(Pv.findings, driverDir(runDir, "findings-failed-correction.json")); findings = "set-aside"; }
+      try { renameSync(Pv.findings, paths(runDir).findingsFailedCorrection); findings = "set-aside"; }
       catch { try { rmSync(Pv.findings, { force: true }); findings = "removed"; } catch { findings = "failed"; } }
     }
   }
@@ -7685,9 +7685,9 @@ async function enforceCorrectionsReachFindings(ctx, P, pre, resume) {
     runLog(run.runDir, { event: "corrective-findings-stale", named });
     note(`[corrections] findings.json STILL stale — internal report ships; client export will hold (corrections-state)`);
     try {
-      const tmp = driverDir(run.runDir, "corrections-state.json.tmp");
+      const tmp = paths(run.runDir).correctionsStateJson;
       writeFileSync(tmp, JSON.stringify({ ts: new Date().toISOString(), stale: named }, null, 2));
-      renameSync(tmp, driverDir(run.runDir, "corrections-state.json"));
+      renameSync(tmp, paths(run.runDir).correctionsState);
     } catch { /* sidecar is best-effort; the runLog event stands */ }
   }
 }
@@ -8388,9 +8388,9 @@ async function deriveIntakeAsks(ctx) {
   if (asks == null) { runLog(run.runDir, { event: "intake-asks-missing" }); asks = []; }
   ctx.intakeAsks = asks;
   try {
-    const tmp = driverDir(run.runDir, "intake-asks.json.tmp");
+    const tmp = paths(run.runDir).intakeAsksJson;
     writeFileSync(tmp, JSON.stringify({ ts: new Date().toISOString(), asks }, null, 2));
-    renameSync(tmp, driverDir(run.runDir, "intake-asks.json"));
+    renameSync(tmp, paths(run.runDir).intakeAsks);
   } catch { /* best-effort sidecar; ctx carries the rows for this run */ }
   // item 14a — UNCONDITIONAL, like every other AD-4 counter. This was the last one still written inside
   // an `if`, and it is a bad one to leave: "the requester asked for nothing in particular" and "nobody
@@ -8607,7 +8607,7 @@ export function stampCoverageJudgmentRows(P, runDir, note, ctx) {   // @internal
 
 export function injectDeferralCoverage(P, runDir, note) {   // @internal — exported so a second pass is testable without a run
   try {
-    const rp = driverDir(runDir, "frame-reopen.json");
+    const rp = paths(runDir).frameReopenReceipt;
     if (!existsSync(rp) || !existsSync(P.findings)) return;
     const deferrals = JSON.parse(readFileSync(rp, "utf8"))?.deferrals ?? [];
     if (!deferrals.length) return;
@@ -8764,7 +8764,7 @@ export function scriptLaneRanOnRun(runDir, lane, { searchPolicy = null, env = pr
   if (!searchPolicy?.components?.jxLanes) return false;
   if (!laneArmed(lane, env)) return false;   // — the shared fail-open reader
   let sidecar = null;
-  try { sidecar = JSON.parse(readFileSync(driverDir(runDir, "jx-lanes.json"), "utf8")); }
+  try { sidecar = JSON.parse(readFileSync(paths(runDir).jxLanes, "utf8")); }
   catch { return false; }   // sidecar absent/corrupt ⇒ no frozen lane decision ⇒ the lane did not run
   if (!sidecar?.lanes?.[lane]) return false;
   // WHAT "RAN" MEANS IS PER-LANE, and this is a rule table rather than a parameter because the lanes
@@ -8867,7 +8867,7 @@ export function injectScriptScopeCoverage(P, runDir, note, { searchPolicy = null
  * which a plain clearance never imports.
  */
 export async function localLanguageStateOf(runDir) {   // @internal
-  if (!existsSync(driverDir(runDir, "jx-lanes.json"))) return null;
+  if (!existsSync(paths(runDir).jxLanes)) return null;
   const { laneDepthOfRun } = await import("./jx.mjs");
   const { localLanguageDepth } = await import("./publish/search-depth.mjs");
   const read = (f) => { try { return JSON.parse(readFileSync(driverDir(runDir, f), "utf8")); } catch { return null; } };
@@ -8901,7 +8901,7 @@ export function injectLaneDepthCoverage(P, runDir, note) {   // @internal
   try {
     if (!existsSync(P.findings)) return;
     let sidecar = null;
-    try { sidecar = JSON.parse(readFileSync(driverDir(runDir, "jx-lanes.json"), "utf8")); }
+    try { sidecar = JSON.parse(readFileSync(paths(runDir).jxLanes, "utf8")); }
     catch { return; }   // no lane on this run, or no frozen decision — nothing to disclose
     const verdicts = sidecar?.fold?.depth;
     if (!verdicts || typeof verdicts !== "object") return;
@@ -9003,7 +9003,7 @@ function recordScreenGateEvidence(ctx, { runPrefix, before, heldBeforeGate, held
       reading_note: "A drop with no recorded read has no band_record open or search-answer serve, and no lookup, part of the shape or page of a group serving its line, in the reading log for the reading step. The log is best-effort: this does not show the goods were never read.",
       ...(before.error ? { snapshot_error: before.error } : {}), ...(calls.error ? { call_ledger_error: calls.error } : {}) };
     ensureDriverDir(P.runDir);
-    atomicWrite(driverDir(P.runDir, "screen-gate-evidence.json"), JSON.stringify({ ts: new Date().toISOString(), ...doc }, null, 2) + "\n");
+    atomicWrite(paths(P.runDir).screenGateEvidence, JSON.stringify({ ts: new Date().toISOString(), ...doc }, null, 2) + "\n");
     runLog(P.runDir, { event: "screen-gate-evidence", ...ev.counts, unnamed: ev.unnamed, fetches: ev.fetches,
       alternatives: ev.alternatives, gate_calls: gateCalls });
   } catch (e) {
@@ -9020,7 +9020,7 @@ function recordScreenGateEvidence(ctx, { runPrefix, before, heldBeforeGate, held
 export function loadScreenGateUnresolved(runDir, ctx = {}) {   // @internal
   if (Array.isArray(ctx.screenGateUnresolved) && ctx.screenGateUnresolved.length) return ctx.screenGateUnresolved;
   try {
-    const rows = JSON.parse(readFileSync(driverDir(runDir, "screen-gate-unresolved.json"), "utf8"))?.unresolved;
+    const rows = JSON.parse(readFileSync(paths(runDir).screenGateUnresolved, "utf8"))?.unresolved;
     return Array.isArray(rows) ? rows : [];
   } catch { return []; }   // absent/corrupt sidecar ⇒ no disclosure owed on this path
 }
@@ -9090,7 +9090,7 @@ export function enrichFindingDeadlines(P, runDir, note, { nowMs = Date.now(), wi
     parseFindingsJson(JSON.stringify(doc));                    // re-validate the shape (throws → catch keeps original)
     writeFindings(runDir, doc, { why: "finding-deadlines", settles: [] });   // B5 — a crash mid-write must never leave a truncated findings.json
     const base = rebaseEnrichedDeadlines(runDir, enriched);   // a later patch keeps what the file now carries
-    atomicWrite(driverDir(runDir, "deadline-enrich.json"), JSON.stringify({ schema_version: 1, ts: new Date().toISOString(), judged_at: new Date(nowMs).toISOString(), enriched, base }, null, 2) + "\n");
+    atomicWrite(paths(runDir).deadlineEnrich, JSON.stringify({ schema_version: 1, ts: new Date().toISOString(), judged_at: new Date(nowMs).toISOString(), enriched, base }, null, 2) + "\n");
     note(`[deadline-enrich] ${enriched.length} finding(s) gained the register's own opposition window (${enriched.map((e) => `${e.mark}: ${e.date}`).join("; ").slice(0, 140)}) — a recorded deadline never silently disappears`);
   } catch (e) {
     note(`[deadline-enrich] skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
@@ -9659,7 +9659,7 @@ function earlierReviewNotRechecked(P) {
     const named = (file) => relative(runDir, file).replace(/\\/g, "/");
     const inPlace = shaOf(P.seniorEyeReview);
     if (inPlace === recheck.reviewSha) return { review: named(P.seniorEyeReview), inPlace: true };
-    const narrowed = JSON.parse(readFileSync(driverDir(runDir, "post-repair-review.json"), "utf8"));
+    const narrowed = JSON.parse(readFileSync(paths(runDir).postRepairReview, "utf8"));
     const kept = reviewBeforeRepairPath(runDir);
     return narrowed?.status === "read" && narrowed.whole !== true && inPlace === shaOf(reviewAfterRepairPath(runDir)) && shaOf(kept) === recheck.reviewSha
       ? { review: named(kept), inPlace: false } : null;
@@ -9727,7 +9727,7 @@ export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRi
     const fdoc = (P.findings && existsSync(P.findings)) ? parseFindingsJsonLenient(readFileSync(P.findings, "utf8")) : null;
     if (Array.isArray(fdoc?.askAnswers)) {
       let intakeAsks = [];
-      try { intakeAsks = JSON.parse(readFileSync(driverDir(P.runDir, "intake-asks.json"), "utf8")).asks ?? []; } catch { /* refless run — register order alone */ }
+      try { intakeAsks = JSON.parse(readFileSync(paths(P.runDir).intakeAsks, "utf8")).asks ?? []; } catch { /* refless run — register order alone */ }
       const ansSection = buildAskAnswersSection(fdoc.askAnswers, intakeAsks);
       const hasAuthoredAns = /^###\s+Answers to your instructions\b/m.test(overview);
       if (hasAuthoredAns) {
@@ -9823,8 +9823,8 @@ export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRi
     // and nothing on a resume repeats it. Its points are not shown closed, so they print through the same rule.
     try {
       const runDir = dirname(P.report);
-      const rec = JSON.parse(readFileSync(driverDir(runDir, "post-repair-review.json"), "utf8"));
-      if (rec?.status === "read" && !existsSync(driverDir(runDir, "post-repair-corrections.json"))) {
+      const rec = JSON.parse(readFileSync(paths(runDir).postRepairReview, "utf8"));
+      if (rec?.status === "read" && !existsSync(paths(runDir).postRepairCorrections)) {
         const rows = (Array.isArray(rec.points) ? rec.points : []).filter((x) => String(x?.text ?? "").trim())
           .map((x) => ({ text: String(x.text), kind: x.kind ?? null, outcome: "not-checkable", later: true }));
         if (rows.length) applied = [...(applied ?? []), ...rows];
@@ -9933,7 +9933,7 @@ export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRi
   // the report.
   try {
     ensureDriverDir(P.runDir);
-    writeFileSync(driverDir(P.runDir, "card-folds.json"), `${JSON.stringify({ schema: 1, folds }, null, 2)}\n`);
+    writeFileSync(paths(P.runDir).cardFolds, `${JSON.stringify({ schema: 1, folds }, null, 2)}\n`);
   } catch { /* observability only */ }
   // Whether each reviewer correction reached the record this report was built from: rewritten on every
   // assembly, like the fold record above, so the last assembly's answer stands. Nothing without a basis.
@@ -10730,7 +10730,7 @@ async function pipelineInner(job, opts = {}) {
     let emailVerdictOpts = { productName: emailProductName ?? undefined };
     // SPREAD, never reassign: this used to replace the whole object, which would now drop productName
     // above on every run that has a verdict sidecar — i.e. on every healthy run, and on no test.
-    try { const v = JSON.parse(readFileSync(driverDir(run.runDir, "verdict.json"), "utf8")); emailVerdictOpts = { ...emailVerdictOpts, verdict: v.verdict, conditions: clientConditions(v), tier: v.tier, statement: v.statement ?? null }; } catch { /* legacy path — no row */ }
+    try { const v = JSON.parse(readFileSync(paths(run.runDir).verdict, "utf8")); emailVerdictOpts = { ...emailVerdictOpts, verdict: v.verdict, conditions: clientConditions(v), tier: v.tier, statement: v.statement ?? null }; } catch { /* legacy path — no row */ }
     // wp50 — thread the findings too: the table overlay's rating cells are code-bound to the canonical
     // ratings (joinFindingToBlock), never the summary's own words.
     try { emailVerdictOpts.findings = parseFindingsJsonLenient(readFileSync(P.findings, "utf8"))?.findings ?? undefined; } catch { /* no findings — table falls back to the summary words */ }
@@ -10795,9 +10795,9 @@ async function pipelineInner(job, opts = {}) {
       // per-channel send receipts are per-SEND state exactly like .sent — a stale email receipt from
       // the superseded send would make clearotron-deliver skip THIS packet's email, so they reset together.
       try { rmSync(join(run.runDir, ".sent")); } catch { /* none */ }
-      try { rmSync(driverDir(run.runDir, "send-receipts.json"), { force: true }); } catch { /* none */ }
-      try { rmSync(driverDir(run.runDir, "failure.json")); } catch { /* none */ }
-      writeFileSync(driverDir(run.runDir, "delivery.json"), JSON.stringify(packet, null, 2) + "\n");
+      try { rmSync(paths(run.runDir).sendReceipts, { force: true }); } catch { /* none */ }
+      try { rmSync(paths(run.runDir).failure); } catch { /* none */ }
+      writeFileSync(paths(run.runDir).delivery, JSON.stringify(packet, null, 2) + "\n");
       note(`delivery: handoff → wrote _driver/delivery.json (the forwarding agent's completion-watch sends email${packet.whatsappTo ? " + WhatsApp" : ""})`);
       // Workstream B — instant delivery: drop a marker in the fixed outbox so the prelim-outbox.path unit
       // wakes the forwarder agent NOW (vs ≤55m on the HEARTBEAT completion-watch, which stays as the
@@ -11103,7 +11103,7 @@ async function pipelineInner(job, opts = {}) {
     let strikeTerminalKind = null;
     if (run?.runDir && failClass !== "factual") {
       try {
-        const rows = readFileSync(driverDir(run.runDir, "run.jsonl"), "utf8").trim().split("\n")
+        const rows = readFileSync(paths(run.runDir).run, "utf8").trim().split("\n")
           .map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
         const strikes = countTrailingStageStrikes(rows, failedStage, { isContentShaped: isContentShapedFail });
         if (strikes >= INVALID_ARTIFACT_STRIKE_CAP) {
@@ -11396,7 +11396,7 @@ async function pipelineInner(job, opts = {}) {
           failureSignature: failSig.sig, recoveryAttempts: priorAttempts,
         };
         ensureDriverDir(run.runDir);
-        writeFileSync(driverDir(run.runDir, "failure.json"), JSON.stringify(packet, null, 2) + "\n");
+        writeFileSync(paths(run.runDir).failure, JSON.stringify(packet, null, 2) + "\n");
         failPingSent = Boolean(writeOutboxPacket(`${runId}.failed`, packet));
       } catch (evErr) {
         note(`failure event packet threw (swallowed): ${evErr?.message ?? evErr}`);
@@ -11428,7 +11428,7 @@ async function pipelineInner(job, opts = {}) {
     // thing that could still record the obligation. Order, therefore: supersede the old send's guards,
     // arm the flag, and only then attempt the writes that can fail.
     try { rmSync(join(run.runDir, ".sent")); } catch { /* none */ }
-    try { rmSync(driverDir(run.runDir, "send-receipts.json"), { force: true }); } catch { /* none */ }
+    try { rmSync(paths(run.runDir).sendReceipts, { force: true }); } catch { /* none */ }
     // A fresh notice supersedes an older send's .sent marker AND its per-channel receipts (a resumed run
     // that fails again must still notify on every channel, not be skip-guarded by the earlier send's).
     // Both are best-effort removals above, so neither can keep the flag below from being written.
@@ -11443,7 +11443,7 @@ async function pipelineInner(job, opts = {}) {
           repairs: attemptedRepairs ?? [], priorAttempts,
           reasonDetail: reasonDetailField, reasonQuantity: quantity,   // — the BACKSTOP notice carries it too
         });
-        writeFileSync(driverDir(run.runDir, "failure.json"), JSON.stringify(packet, null, 2) + "\n");
+        writeFileSync(paths(run.runDir).failure, JSON.stringify(packet, null, 2) + "\n");
         mkdirSync(config.outboxDir, { recursive: true });
         writeFileSync(join(config.outboxDir, `${packet.runId}.pending`), `${agent}\n`);
       }
@@ -11737,7 +11737,7 @@ export function reconstructCtx(job, opts) {   // @internal
   // mint the clearance DEFAULT_FRAMEWORK into a triage-graded run (review 2026-07-17). A knockout redo
   // is a re-enqueue (~$2), not a stage surgery.
   try {
-    const sp = JSON.parse(readFileSync(driverDir(run.runDir, "search-policy.json"), "utf8"));
+    const sp = JSON.parse(readFileSync(paths(run.runDir).searchPolicy, "utf8"));
     if (sp?.pipeline === "knockout")
       throw new Error(`run ${run.codename} is a KNOCKOUT batch — it has no clearance stages to repair or --experiment; re-enqueue the batch instead`);
   } catch (e) { if (/KNOCKOUT batch/.test(String(e?.message))) throw e; /* no/corrupt sidecar ⇒ legacy clearance run */ }
@@ -11905,7 +11905,7 @@ export async function repairStale(job, opts = {}) {   // @internal
   const ctx = reconstructCtx(job, opts);
   const P = ctx.paths;
   let rec = null;
-  try { rec = JSON.parse(readFileSync(driverDir(P.runDir, "delivery-stale.json"), "utf8")); } catch { return null; }
+  try { rec = JSON.parse(readFileSync(paths(P.runDir).deliveryStale, "utf8")); } catch { return null; }
   const labels = Array.isArray(rec?.labels) ? rec.labels : [];
   if (!labels.length) return null;
   attachFramework(ctx, { write: true });
@@ -12723,7 +12723,7 @@ if (isEntrypoint(import.meta.url)) void (async () => {
       // face A5 exists to end, and the resume line would name a run the resume guard refuses outright.
       // Same two markers the resume guard consults, checked inline rather than imported.
       const delivered = Boolean(run?.runDir) &&
-        (existsSync(join(run.runDir, ".delivered")) || existsSync(driverDir(run.runDir, "delivery.json")));
+        (existsSync(join(run.runDir, ".delivered")) || existsSync(paths(run.runDir).delivery));
       if (run?.runDir && !delivered) {
         try {
           writeFileSync(join(run.runDir, ".parked"), JSON.stringify({ kind: "cli-signal", signal: sig, codename: run.codename, agent: opts.agent ?? config.defaultAgent, ts: new Date().toISOString() }, null, 2) + "\n");
@@ -12908,7 +12908,7 @@ export function rewriteFromBeforeTheSeam(ctx) {   // @internal
  */
 function deadlineClockOf(runDir) {
   try {
-    const at = Date.parse(JSON.parse(readFileSync(driverDir(runDir, "deadline-enrich.json"), "utf8"))?.judged_at);
+    const at = Date.parse(JSON.parse(readFileSync(paths(runDir).deadlineEnrich, "utf8"))?.judged_at);
     return Number.isFinite(at) ? at : Date.now();
   } catch { return Date.now(); }
 }
@@ -13062,7 +13062,7 @@ const REBUILDS_THE_DELIVERED_RECORD = new Set(["placement-inquiry", "register-di
  * them too. Returns the directory, or null when there was nothing to keep. Best-effort, like every snapshot.
  */
 export function keepDeliveredRecordAsHistory(P, reason) {   // @internal — driven by its test with a run's own files
-  const files = [P.audit, P.recordCarry, driverDir(P.runDir, "doubts.json")].filter((f) => existsSync(f));
+  const files = [P.audit, P.recordCarry, paths(P.runDir).doubts].filter((f) => existsSync(f));
   if (!files.length) return null;
   try {
     const ts = new Date().toISOString().replace(/[:.]/g, "-");
@@ -13106,7 +13106,7 @@ export function withdrawSupersededAudit(P, reason, { keep = true } = {}) {   // 
 
 /** The doubt ledger on disk, written again with the doubts the rebuilt audit carries; what it said of the closure stays. */
 function writeDoubtLedgerAgain(P, doubts, truncated) {
-  const path = driverDir(P.runDir, "doubts.json");
+  const path = paths(P.runDir).doubts;
   const earlier = safeReadJson(path) ?? {};
   const settled = doubts.filter((d) => d?.status === "checked-and-settled").length;
   const { doubts: _d, minted: _m, settled: _s, open: _o, truncated: _t, ...closure } = earlier;
