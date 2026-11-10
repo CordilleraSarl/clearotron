@@ -39,7 +39,7 @@ The driver dispatches this as a stage with its own context and a 900-second wall
 `record_narrative_refutation`, with:
 
 - **`verdict`** — `CLEAR` / `CONDITIONAL` / `BLOCKING`. **A BLOCKING requires at least one flag**: a refusal to sign that names nothing is refused by the call, in this turn, rather than at the gate — where its only repair is one forced re-ask of this whole stage.
-- **`flags`** — one entry per flag. Each carries `kind`, `text` (one line, naming the file and the exact claim), optionally `fix` (one line — the targeted edit that would settle it), and optionally `on` (the finding ordinals it is about; omit it for a flag about the document rather than a finding), and optionally `positions` (the record ids of the writer's excluded positions it is about, as their list names them).
+- **`flags`** — one entry per flag. Each carries `kind`, `text` (one line, naming the file and the exact claim), optionally `fix` (one line — the targeted edit that would settle it), and optionally `on` (the finding ordinals it is about; omit it for a flag about the document rather than a finding), and optionally `positions` (the record ids of the writer's excluded positions it is about, as their list names them), and optionally `lines` (the addresses of the parts of the report it is about that are not findings, copied from the dispatch's address list).
 - **`plan_audit`** — the PLAN-EXECUTION CHECK lines. Required when this run has a plan-execution receipt; **the driver reads whether it does**, so you cannot waive your own audit by omitting the field.
 
 You do **not** number your flags, and you do not format them. Render order is the numbering, so a number cannot disagree with the list it labels; the enumeration style is the driver's, so a flag the corrective ladder cannot parse cannot be written.
@@ -73,7 +73,9 @@ in the file:
 
 - `[on: 9]` — this flag is about finding #9. You send `on: [9]`.
 - `[on: 6, 12]` — it is about both. You send `on: [6, 12]`.
-- `[on: -]` means no existing finding is named. For an excluded position, supply its record id in `positions`. For a document passage, omit both fields and name the affected passage, section, or coverage claim in `text`. A flag affecting a finding and an excluded position may carry both `on` and `positions`.
+- `[on: -]` means no existing finding is named. For an excluded position, supply its record id in `positions`. For a coverage line, an action, a mark assessment read or a narrative section with a listed address, supply that address in `lines`. Name any passage without a listed address in `text`. Omit all three fields only when none applies to the flag. A flag may carry `on`, `positions` and `lines` together.
+
+An ordinal or address this review was not handed is refused in your turn with the reason. Correct it and send the whole call again.
 
 Use the finding's **ordinal**, the number the narrative and `findings.json` already agree on — not the
 mark, not the owner. You are writing them anyway ("Finding 9 — VELTRIC…"); the token is the same fact

@@ -44,13 +44,13 @@ Confirm during historical-case review with the staff lawyer.
 
 ## Revocability — mandatory assessment for register findings above the lowest band
 
-For every register hit rated above the framework's lowest band, assess whether the registration is vulnerable to revocation for non-use in the relevant goods/services and document this in Key Factors. This is a standard step for every such hit — not triggered only by unusually broad G&S specifications.
+For every register hit rated above the framework's lowest band, assess whether the registration is vulnerable to revocation for non-use in the relevant goods/services and document this in `legal_position` and `practical_position`. This is a standard step for every such hit — not triggered only by unusually broad G&S specifications.
 
 The staff lawyer's rule: "It is always considered as a risk mitigating factor where a registration is vulnerable to revocation for non-use."
 
-**Standard Key Factors statement:** "Registration covers [G&S text]. Owner's identifiable commercial use is [description / not found]. Registration [is / does not appear to be] vulnerable to partial revocation in [specific classes/goods] on non-use grounds."
+**Standard `legal_position` and `practical_position` statement:** "Registration covers [G&S text]. Owner's identifiable commercial use is [description / not found]. Registration [is / does not appear to be] vulnerable to partial revocation in [specific classes/goods] on non-use grounds."
 
-Note: revocability does NOT automatically change the band. It is a mitigating factor for the staff lawyer to weigh alongside actual use evidence (see Filed-vs-used rule above). The combination of no identifiable use AND revocability vulnerability is the strongest basis for a mitigation argument. A recent renewal does NOT cure non-use vulnerability and is not evidence of use (see "Administrative liveness is not market use" above) — do not let a renewal date remove the vulnerability assessment.
+Note: revocability does NOT automatically change the band. It is a mitigating factor for the staff lawyer to weigh alongside actual use evidence (see Filed-vs-used rule above). The combination of no identifiable use AND revocability vulnerability is the strongest basis for a mitigation argument. A recent renewal does NOT cure non-use vulnerability and is not evidence of use — do not let a renewal date remove the vulnerability assessment.
 
 **Canadian official marks exception:** Non-use revocation does not apply to Canadian official marks under s. 9 of the Canadian Trademarks Act. See *Canadian official marks* under Firm-wide reasoning discipline below.
 
@@ -64,13 +64,13 @@ High filing volume in a field is evidence of crowding (see *Crowded field analys
 
 ### When the crowded-field frame is available as a mitigant (gating precondition)
 
-Crowding is neutral-to-mitigating, but it does not become an active **mitigant** automatically — applying the dilution frame requires earning it. **Durable principle: a saturated element raises the search bar BEFORE it can lower the risk** — you may not invoke "crowded field → dilution → lower risk" until the crowd has been counted, narrowed by goods, and its survivors named. The crowded-field / dilution frame is available to mitigate a finding **ONLY when all three of the following are surfaced in that finding's Key Factors**:
+Crowding is neutral-to-mitigating, but it does not become an active **mitigant** automatically — applying the dilution frame requires earning it. **Durable principle: a saturated element raises the search bar BEFORE it can lower the risk** — you may not invoke "crowded field → dilution → lower risk" until the crowd has been counted, narrowed by goods, and its survivors named. The crowded-field / dilution frame is available to mitigate a finding **ONLY when all three of the following are surfaced in that finding's `legal_position` and `practical_position`**:
 
 1. **The crowded-field count** — the actual volume **in THAT conflict's jurisdiction × goods lane** (dilution is earned per conflict: volume in another jurisdiction, or an adjacent goods lane, earns nothing against this right), taken from the `saturation-probe` axis (the macro count), a band block's `total_hits` (an `incomplete` crowd descriptor's `total_hits` **IS the counted field** — spec-49: a crowd over the enumerate ceiling is *definitionally* un-enumerable, that is why it is a descriptor; enumeration is NOT required to earn the dilution frame), or the register findings' `## Summary`. Not "the field feels crowded" — the number. A paginated top-N **sample with no total** is still not a count ("top-50, total unknown" earns nothing); a descriptor carrying the worldwide `total_hits` does. Whether an un-enumerable dominant-element crowd is MATERIAL is your `coverage_judgment` call (per-mark reasoning), never an automatic block. (In the report, write "crowded field" / "many similar marks", never "saturation" — rule 8.)
 2. **The named narrowing mechanism** — the specific G&S or jurisdiction filter that makes the field *tractable in this lane*. Volume in an adjacent lane does not dilute the lane the conflict actually sits in.
-3. **The named live conflicts that survive that narrowing** — the on-point in-class hits that remain after the narrowing filter, named. **Crowding cannot mitigate away a surviving on-point in-class conflict:** a heavily-diluted element caps how high any *individual* holder rates, but it does not erase an identical / near-identical in-class mark from the findings (that is the dominant-element spine, rule 2 above). The frame mitigates the *weight* of a surviving conflict; it never deletes it.
+3. **The named live conflicts that survive that narrowing** — the on-point in-class hits that remain after the narrowing filter, named. **Crowding cannot mitigate away a surviving on-point in-class conflict:** a heavily-diluted element caps how high any *individual* holder rates, but it does not erase an identical / near-identical in-class mark from the findings (that is the dominant-element spine). The frame mitigates the *weight* of a surviving conflict; it never deletes it.
 
-**Absent any one of the three, the frame is unavailable and volume is neutral context only** — documented in the methodology note (per the count-across-owners rule above), never invoked to soften a finding's risk. A bare "the field is crowded so this is lower risk" with no count, no named narrowing, and no surviving-conflict list is exactly the F-4 failure: dilution asserted as a conclusion instead of earned from the evidence. This gates against waving away a real in-class conflict on unquantified crowding.
+**Absent any one of the three, the frame is unavailable and volume is neutral context only** — documented in `coverage.read` (per the count-across-owners rule above), never invoked to soften a finding's risk. A bare "the field is crowded so this is lower risk" with no count, no named narrowing, and no surviving-conflict list is exactly the F-4 failure: dilution asserted as a conclusion instead of earned from the evidence. This gates against waving away a real in-class conflict on unquantified crowding.
 
 The calibration of *how much* a properly-earned crowded field caps risk lives in *Crowded field analysis* (under **Firm-wide reasoning discipline**, this file) — the cap is a **ceiling, not a floor**: a crowded field caps any individual holder at the framework's **middle band** *maximum* — it does not amplify, and it does not auto-downgrade on volume alone — **but** a diluted element whose holder is also distinguishable from our use **on its registered scope** (the mark and G&S as registered — never its current presentation) reasons *below* the middle band to the framework's **lowest band**; "caps at the middle band" means "no higher", never "no lower"; and an **active same-field brand in our core classes is not diluted away** — the crowd caps it at the middle band but does not drop it lower. This section gates **whether** the frame applies at all; that section calibrates **how much** once it does.
 
@@ -150,7 +150,7 @@ escalate on shared-element + class + audience overlap alone.
 - **Mirror for the client side.** When the proposed mark will be marketed with the client's own house mark or
   distinctive prefix as part of the trade-dress presentation — confirmed via the request-form Manner of Use
   field (e.g. "[HOUSE-MARK] [MARK]", "[CLIENT] presents [MARK]") — the client's house-mark affix distinguishes
-  the proposed use from bare-dominant-element third-party holders. Document in Key Factors: "Proposed mark
+  the proposed use from bare-dominant-element third-party holders. Document in `legal_position` and `practical_position`: "Proposed mark
   travels as '[HOUSE-MARK] [MARK]' per Manner of Use; the affix distinguishes the client's use from
   bare-dominant-element third-party holders." Do NOT apply when manner-of-use indicates the mark travels
   standalone.
@@ -201,7 +201,7 @@ escalate on shared-element + class + audience overlap alone.
 - Geographic separation
 - Different consumer demographic
 - Low enforcement history / no IP disputes on record
-- Non-use revocation vulnerability (dormant registrations may lower real-world risk) — note: a renewal / re-registration is registry upkeep, not market use, and does not cure this vulnerability (see "Administrative liveness is not market use")
+- Non-use revocation vulnerability (dormant registrations may lower real-world risk) — note: a renewal / re-registration is registry upkeep, not market use, and does not cure this vulnerability
   — **but (spec-48 C5): non-use is a REVOCATION defence, never an injunction shield.** A registered right can support an injunction without the owner's own use (country-dependent; grace periods run ~5 years) — "the owner doesn't use it → procedural risk only / no injunction exposure" is a forbidden inference. Non-use lowers the Stage-2 practical read; it does not neutralise the enforceable registration today.
 - Credible distinguishing arguments available
 
@@ -243,7 +243,7 @@ applicant used the mark before the conflicting rights arose, ask what right that
 reaches: strongest for the *same* goods (a continued-use right in that product line), weaker as the goods
 get more distant, context-only for a merely-adjacent industry. Reason the practical effect on the business
 read from those facts — do **not** apply a fixed "drop one band." Document the prior use and its scope in
-Key Factors, and headline it in the narrative when it is same- or adjacent-goods. (Read the request-form
+`legal_position` and `practical_position`, and headline it in the narrative when it is same- or adjacent-goods. (Read the request-form
 "Manner of Use" / "Additional Information" fields for this.)
 
 ### Language discipline
@@ -267,7 +267,7 @@ call on whether the use is "real enough" to count as risk. Signals to capture (w
 - Channels of trade and audience overlap with the proposed use
 - Prominence in industry press or community discussion
 
-Report the signals plainly in Key Factors. The staff lawyer weights them — the skill does not.
+Report the signals plainly in `legal_position` and `practical_position`. The staff lawyer weights them — the skill does not.
 
 **Hard rule: never drop or dismiss an identical-mark hit regardless of how thin the apparent use is.** A
 title with a single review, or a lone small-filer registration, still gets a Findings row — apparent
@@ -371,12 +371,12 @@ The staff lawyer's rule: "I read the actual G&S specification, not just the clas
 - If the G&S specification in the matched class is entirely unrelated to the proposed use (e.g. Class 28
   covers "balloons" rather than gaming devices), the read drops to the client-favoured side — the lowest
   band, or out of the rated set — before Stage 2 applies.
-- Flag in Key Factors: "Class match confirmed; G&S specification: [text] — limited overlap with [proposed use]."
+- Flag in `legal_position` and `practical_position`: "Class match confirmed; G&S specification: [text] — limited overlap with [proposed use]."
 - Example: LTA GB, Class 28 — the registered goods include "balloons" and sporting equipment, not video game
   consoles or accessories. Treating a Class 28 number match as a gaming conflict without reading the G&S
   text is a workflow error.
 
-Document the G&S reading in Key Factors for every RATED register finding: "G&S specification reviewed:
+Document the G&S reading in `legal_position` and `practical_position` for every RATED register finding: "G&S specification reviewed:
 [relevant text excerpt]."
 
 ### Canadian official marks — absolute filing bar
@@ -387,13 +387,13 @@ marks across all 45 classes, regardless of the goods/services the client intends
 **Mandatory treatment:**
 - The statutory bar means the prior right is more likely than not to prevail against the identical filing —
   rate it **at least the framework's middle band**, never lower.
-- The absolute legal blocking position must be stated explicitly in the narrative and the Findings sheet Key
-  Factors.
+- The absolute legal blocking position must be stated explicitly in the narrative and in `legal_position` and
+  `practical_position`.
 - Mitigation is **enforcement appetite only** — assess commercial overlap between the official mark owner's
   actual use and the proposed use. If there is no commercial overlap, note this as the primary practical
   mitigant.
 - **Non-use revocation does NOT apply to Canadian official marks.** The standard Revocability rule cannot be
-  used to downgrade these findings. State explicitly in Key Factors: "Canadian official mark — non-use
+  used to downgrade these findings. State explicitly in `legal_position` and `practical_position`: "Canadian official mark — non-use
   revocation does not apply under s. 9 Canadian Trademarks Act."
 - No further investigation (prosecution history, marketplace use in the conventional sense) changes the
   legal blocking position — only enforcement appetite and commercial overlap drive the practical risk

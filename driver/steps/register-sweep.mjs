@@ -14,7 +14,8 @@ import { NON_MATERIAL_AXES } from "../coverage-ledger.mjs";
 import { undecidedCrossChecks, waitingCrossCheck, withoutWait } from "../cross-check-wait.mjs";
 import { plainDeferralReason } from "../deferral-row.mjs";
 import { formSidecarPath, outstandingRows, unionDispositionForm } from "../disposition-union.mjs";
-import { activeProvider, config, envGateOn } from "../driver.config.mjs";
+import { config, envGateOn } from "../driver.config.mjs";
+import { registerAdapter } from "../engine/run-choices.mjs";   // the run's register adapter, from ctx.register
 import { readStickyGaps, receiptSettled, settleReceipt } from "../envelope-settle.mjs";
 import { note, runLog } from "../log.mjs";
 import { findCollapsedBands, quarantineUnknownStates, taintQuarantineCleanBlocks } from "../named-band.mjs";
@@ -123,8 +124,8 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
   // deployments and 15 test files already say "off", and breaking that would arm dispatch silently,
   // which is the same bug in the other direction.
   const planExec = opts.planExecutor
-    ?? (envGateOn("CLEAROTRON_PLAN_DISPATCH") && activeProvider().executePlan
-      ? (args, c) => noteAdapter(c ?? ctx, activeProvider()).executePlan(args, c) : null);
+    ?? (envGateOn("CLEAROTRON_PLAN_DISPATCH") && registerAdapter(ctx.register).executePlan
+      ? (args, c) => noteAdapter(c ?? ctx, registerAdapter(ctx.register)).executePlan(args, c) : null);
   // Kill switch CLEAROTRON_SATPROBE_CODESIDE=0 (the inline `!== "0"` pattern): legacy mock harnesses
   // opt out — their scenarios pre-date the code-side member and script the AGENT path (and an armed
   // real executor lane would dial the provider from a test). Production default is ON.

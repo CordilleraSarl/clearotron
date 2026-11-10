@@ -142,25 +142,25 @@ ratified one, and a model-authored variant claiming the same standing is precise
 exists to check. Do not work around the refusal by stripping punctuation out of a real mark — that
 silently narrows what was searched, and the deferred row is the honest outcome.
 
-| Category | Value | Rationale | Verify? |
-|---|---|---|---|
-| exact-phrase | Dusk: Tales of Lumengarde | full mark | |
-| exact-element | LUMENGARDE | distinctive anchor — primary register vector | |
-| exact-element | DUSK | common element — single-word coverage hunt | |
-| exact-element | TALES | common element — single-word coverage hunt | |
-| plural-root | LEGEND | tokeniser superset | |
-| phonetic | EVERLITE | homophone, distinctive element | |
-| phonetic | EVRLIGHT | vowel drop | |
-| numeric-substitution | EV3RLIGHT | leet on distinctive element | |
-| compound | Lumengarde | tokenisation split | |
-| translit-jp-katakana | エバーライト | distinctive element in JP | ✅ |
-| translit-zh-phonetic | 艾佛莱特 | sound-alike (Ài fó lái tè) | ✅ |
-| translit-zh-meaning | 永光 · 长明 · 恒光 | meaning SET — everyday-first, then literal/adjacent (never one guess); derive the set per concept (not a fixed list), and keep the everyday member even when its count is saturated — cf. COLORA → 色彩 in *Meaning-translation rules* | ✅ |
-| translit-kr | 에버라이트 | hangul phonetic | ✅ |
-| translit-ar | إيفرلايت | phonetic abjad | ✅ |
-| translit-cy | Эверлайт | phonetic Cyrillic | ✅ |
+| Category | Value | Rationale |
+|---|---|---|
+| exact-phrase | Dusk: Tales of Lumengarde | full mark |
+| exact-element | LUMENGARDE | distinctive anchor — primary register vector |
+| exact-element | DUSK | common element — single-word coverage hunt |
+| exact-element | TALES | common element — single-word coverage hunt |
+| plural-root | LEGEND | tokeniser superset |
+| phonetic | EVERLITE | homophone, distinctive element |
+| phonetic | EVRLIGHT | vowel drop |
+| numeric-substitution | EV3RLIGHT | leet on distinctive element |
+| compound | Lumengarde | tokenisation split |
+| translit-jp-katakana | エバーライト | distinctive element in JP |
+| translit-zh-phonetic | 艾佛莱特 | sound-alike (Ài fó lái tè) |
+| translit-zh-meaning | 永光 · 长明 · 恒光 | meaning SET — everyday-first, then literal/adjacent (never one guess); derive the set per concept (not a fixed list), and keep the everyday member even when its count is saturated — cf. COLORA → 色彩 in *Meaning-translation rules* |
+| translit-kr | 에버라이트 | hangul phonetic |
+| translit-ar | إيفرلايت | phonetic abjad |
+| translit-cy | Эверлайт | phonetic Cyrillic |
 
-(✅ = requires human verification when this variant produces a hit — transliteration plausibility is the staff lawyer's call.)
+Every row of category transliteration needs human confirmation on a hit; there is no column to tick.
 
 ### Scope ledger
 
