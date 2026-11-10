@@ -2243,9 +2243,19 @@ export function applyStageWrites(msg, argv) {
       // narrative got wrong against the file, which is that kind's definition.
       // MOCK_VERDICT_FLAG_ON=<ordinal>[,…] has every flag declare those findings in `on`, so the correction is scoped.
       const flagOn = String(process.env.MOCK_VERDICT_FLAG_ON ?? "").split(",").map((o) => Number(o.trim())).filter((o) => Number.isInteger(o) && o > 0);
+      // MOCK_VERDICT_FLAG_LINES=listed:<n> has every flag declare the n-th part (1-based) of the address list the
+      // dispatch wrote into the run (review-addresses.mjs); any other value is sent as the address itself.
+      const flagLines = (() => {
+        const want = String(process.env.MOCK_VERDICT_FLAG_LINES ?? "").trim();
+        if (!want) return [];
+        const m = want.match(/^listed:(\d+)$/);
+        if (!m) return [want];
+        try { return [JSON.parse(readFileSync(driverDir(runDir, "review-addresses.json"), "utf8")).lines[Number(m[1]) - 1].address]; }
+        catch { return ["(no address list in the run)"]; }
+      })();
       const flags = String(process.env.MOCK_VERDICT_DEFECTS ?? "")
         .split("\n").map((l) => l.replace(/^[-*]\s*/, "").trim()).filter(Boolean)
-        .map((text) => ({ kind: "fact", text, ...(flagOn.length ? { on: flagOn } : {}) }));
+        .map((text) => ({ kind: "fact", text, ...(flagOn.length ? { on: flagOn } : {}), ...(flagLines.length ? { lines: flagLines } : {}) }));
       let r = send({ verdict, flags, plan_audit: planAudit });
 
       // ── THE SEAT CORRECTS IN THE TURN, WHICH IS THE WHOLE POINT OF REFUSING AT THE CALL ────────────

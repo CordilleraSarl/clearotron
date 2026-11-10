@@ -352,12 +352,11 @@ export function recordRefutation(runDir, received, { now = () => new Date().toIS
  * it is looking at.
  */
 export function readAcceptedFlags(runDir) {
-  const { payload } = refutationCallPaths(String(runDir ?? ""));
-  let doc;
-  try { doc = readJson(payload); } catch { return null; }
-  if (doc?.accepted !== true) return null;
-  const flags = doc?.params?.flags;
-  return Array.isArray(flags) ? flags : null;
+  // THE NEWEST ACCEPTED CALL, not the first capture. A review refused once and accepted on its next call left its
+  // accepted flags in `call-002.json`, and reading `call-001.json` alone sent that correction to the rendered parse.
+  // A refused or unreadable call is passed over, never returned.
+  const accepted = readAcceptedReviewSince(runDir, 0);
+  return accepted ? accepted.flags : null;
 }
 
 /**

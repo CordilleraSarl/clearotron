@@ -45,7 +45,7 @@ import { dispatchRows, clearedSignatures } from "./seat-attempts.mjs";
 import { CONTEXT_DERIVATIONS, DISPATCH_EXTRAS, INLINE_CONTEXT, sandboxManifest, sandboxGaps, derivationsFor } from "./stage-context.mjs";   // — what a stage is actually handed
 import { derivedStateOf, recordedDerivedState, replayOfDerivation } from "./derived-state.mjs";   // the register picture a dispatch was handed, so a replay can be checked against it
 import { parseVerdict, parseCorrectionKinds, parseCorrections, validators } from "./verify.mjs";
-import { readAcceptedFlags, nextRefutationSeq, readAcceptedReviewSince, REVIEW_EXCLUSIONS_FILE, listedExclusionPositions } from "./narrative-refutation-record.mjs";   // T3b — the typed flags, not the re-parse
+import { readAcceptedFlags, nextRefutationSeq, readAcceptedReviewSince, REVIEW_EXCLUSIONS_FILE, listedExclusionPositions, listedAddresses } from "./narrative-refutation-record.mjs";   // T3b — the typed flags, not the re-parse
 import { buildCorrectionsApplied, correctionsWorklist, correctionScope, flaggedPositions, unresolvedFlags, reportLines, linesOf, REPORT_LINE_KEY, REPORT_LINE_LABEL, answersLeftBehind } from "./corrections-feedforward.mjs";
 import { correctionTargets, deliveredOutcomes } from "./corrections-delivered.mjs";   // whether each correction reached the record the report was built from
 import { parseCoverageLedgerJson, parseCoverageLedgerFull, classTokensFromScopeText, coerceToolAbsenceDeferred, applyTaintDeferred, splitDeferredByCloseability, formRowUnitKey, coverageLedgerTableRows, coverageUnitLabel, COVERAGE_STATUSES } from "./coverage-ledger.mjs";
@@ -166,7 +166,8 @@ import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";
 import { beginAnswerMemory, endAnswerMemory } from "../providers/_shared/answer-memory.mjs";
 import { screenGateEvidence, policedDropUris } from "./screen-gate.mjs";
 import { emptyQueue, coerceQueue, mintItem, pendingItems, markFlushed, receiptKeyFor, buildFlushFollowup } from "./digest-queue.mjs";   // (t1cd) — the digest-trigger funnel
-import { foldFindingsFile, foldAfterSave, openPass, modelRecordPath, snapshotFold, restoreFold, readFold, keptModelOrdinal } from "./record-fold.mjs";   // the folded record from the delivery seam on
+import { foldFindingsFile, foldAfterSave, openPass, modelRecordPath, snapshotFold, restoreFold, readFold, keptModelOrdinal } from "./record-fold.mjs";
+import { addressListLines, writeReviewAddresses } from "./review-addresses.mjs";   // the parts of the report each review dispatch may address   // the folded record from the delivery seam on
 import { writeStamp, stageStaleness, restamp, restampStage, reconcileStamps, shaOf, readStamp, writeFindings, settleOneShotStamp, projectStageInput } from "./stage-freshness.mjs";
 import { parseManifestVariants, GRID_HALVES, GRID_SEATS, MEANING_SEAT, splitGridSpec, halfOfTerm, openChannelRows } from "./common-law-receipts.mjs";
 import { stampTokenRollup } from "./tokens.mjs";
@@ -5164,11 +5165,21 @@ function clearedForSeat(runDir, label) {
  * that never set one. The reading step and the writer read placement's accepted set-asides the same way. Every
  * other stage composes from the context as it is.
  */
+/**
+ * The address list a whole review is handed, written where its recording tool reads it: the writer's accepted record
+ * and the findings file together, so an ordinal from either numbering resolves, and the accepted narrative's sections.
+ * IMPURE.
+ */
+function reviewAddressesFor(P) {
+  const accepted = lastAcceptedCall(P.runDir);
+  return writeReviewAddresses(P.runDir, { records: [accepted?.findings, safeReadJson(P.findings)], narratives: [accepted?.narrative] });
+}
 export function messageCtxFor(name, ctx) {   // @internal — driven by its test
   if (!ctx?.paths) return ctx;
   // The review is also pointed at the research behind the findings' use checks, where the writer's record wrote it.
   if (name === "narrative-refutation") return { ...ctx, placementFloorDecisions: placementFloorDecisionLines(ctx.paths),
     writerExclusions: writerExclusionBlock(ctx.paths, { review: "full" }),
+    reviewAddressLines: addressListLines(reviewAddressesFor(ctx.paths)),
     researchChecks: ctx.paths.researchChecks && existsSync(ctx.paths.researchChecks) ? ctx.paths.researchChecks : null };
   // The reading step and the writer are told placement's accepted set-asides the same way, read when the message is built.
   if (name === "register-digest") return { ...ctx, placementSetAsides: placementSetAsideLines(ctx.paths) };
@@ -6174,7 +6185,17 @@ export function correctionRows(P, review, typed = readAcceptedFlags(P?.runDir)) 
     ordinals: flagOrdinals(f),
     // A writer's excluded position, as the review's list keys it, whichever of its record ids the flag named.
     positions: positionIdsOf(f.positions, listed),
+    // The report's other parts the flag declared, by the addresses its review was handed.
+    ...(Array.isArray(f.lines) && f.lines.length ? { lines: [...new Set(f.lines)] } : {}),
   }));
+}
+
+/** The scope with each part its flags declared, by the label its review was shown, in declaration order. IMPURE (reads the run). */
+function withLineLabels(scope, rows, P) {
+  const declared = [...new Set((rows ?? []).flatMap((r) => (Array.isArray(r?.lines) ? r.lines : [])))];
+  if (!declared.length) return scope;
+  const byAddress = new Map((listedAddresses(P.runDir)?.lines ?? []).map((l) => [l.address, l.label]));
+  return { ...scope, lineLabels: declared.map((a) => byAddress.get(a) ?? a) };
 }
 
 /** The scope with each named position's mark, owner and id, as the corrective pass is told them. IMPURE (reads the run). */
@@ -6239,7 +6260,7 @@ export function correctionReading(P) {   // @internal
   // byte-identical to the one before this existed — the narrowing is bought by the reviewer's own
   // declaration, never assumed on its behalf. The positions the flags named ride either way, with their rows.
   const named = flaggedPositions(rows);
-  const scope = withPositionLabels({ ...correctionScope(rows), ...(named.length ? { positions: named } : {}) }, P);
+  const scope = withLineLabels(withPositionLabels({ ...correctionScope(rows), ...(named.length ? { positions: named } : {}) }, P), rows, P);
   return { review, rulingsTail, worklist, scope, positions: named };
 }
 
@@ -7120,7 +7141,9 @@ function correctionNamedLines(P, doc0) {
   try {
     const review = existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "";
     const lines = reportLines(doc0);
-    return [...new Set(parseCorrections(review).flatMap((r) => linesOf(r?.text, lines).map((l) => l.key)))];
+    // A flag that declared its parts by address is bound to those; only a flag that declared none is matched by its prose.
+    return [...new Set(parseCorrections(review).flatMap((r) => (Array.isArray(r?.lines) && r.lines.length ? r.lines
+      : linesOf(r?.text, lines).map((l) => l.key))))];
   } catch { return []; }   // no review read — every row removal is then unnamed, and restored
 }
 
@@ -7363,6 +7386,9 @@ async function runPostRepairReview(ctx, P, run, scope) {
     findings: P.findings, ...list, registerOnly: Boolean(ctx.registerOnly), job: ctx.job ?? {},
     skepticFlags: P.skepticFlags, frameReopenReceipt: P.frameReopenReceipt, floorDecisions: placementFloorDecisionLines(P),
     writerExclusions: writerExclusionBlock(P, { review: "later" }),
+    // The record after the repair, and each changed finding by its ordinal, so a finding the repair removed is nameable.
+    reviewAddresses: writeReviewAddresses(runDir, { records: [scope.after?.findings, { findings: scope.changed.findings }],
+      narratives: [scope.after?.narrative] }),
   });
   const { text: blocks } = composeDispatchExtra("narrative-refutation", ctx, { skip: ["refute-plain-register"] });
   const t0 = Date.now();
@@ -7660,10 +7686,30 @@ async function runPostRepairCorrection(ctx, P, run, { rec, items, points, ground
 
 // `resume.correction` is the first correction's (see its dispatch), handed on by that caller alone: the correction after
 // the review of a repair shares this follow-up and is handed no positions.
+/**
+ * The findings and other parts the review's flags declare, by the names a reader is given: a finding's mark or owner, or
+ * "finding N" when it has neither, and a part's label from the address list. IMPURE (reads the run).
+ */
+function correctionDeclaredNames(P, pre) {
+  try {
+    let doc = null;
+    try { doc = pre ? parseFindingsJsonLenient(pre.model?.raw ?? pre.raw) : null; } catch { doc = null; }
+    const review = existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "";
+    const rows = correctionRows(P, review, Array.isArray(P.reviewFlags) ? P.reviewFlags : readAcceptedFlags(P.runDir));
+    const byOrd = new Map((doc?.findings ?? []).map((f) => [f?.ordinal, f]));
+    const labels = new Map((listedAddresses(P.runDir)?.lines ?? []).map((l) => [l.address, l.label]));
+    return rows.flatMap((r) => [
+      ...(Array.isArray(r?.ordinals) ? r.ordinals : []).map((o) => { const f = byOrd.get(o); return f?.mark ?? f?.owner?.name ?? `finding ${o}`; }),
+      ...(Array.isArray(r?.lines) ? r.lines : []).map((a) => labels.get(a) ?? a)]);
+  } catch { return []; }   // nothing declared can be read — the prose names stand alone, as before
+}
+
 async function enforceCorrectionsReachFindings(ctx, P, pre, resume) {
   if (!pre) return;                                            // no findings.json before the pass — nothing to enforce
   const { run } = ctx;
-  const named = correctionNamedSet(P);
+  // What the review's prose names, and what its flags declare: a target either way counts, so the hold below never fires
+  // less often than it did on the prose alone.
+  const named = [...new Set([...correctionNamedSet(P), ...correctionDeclaredNames(P, pre)])];
   const readState = () => {
     let raw = null, corrections = null;
     // the record the model wrote: a change the fold hides is still a change it made (record-fold.mjs)

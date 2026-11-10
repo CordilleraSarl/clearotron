@@ -54,6 +54,7 @@ import { basename } from "node:path";
 // nothing enumerated them, so the guard could not walk them. They are imported and registered.
 import { buildFrameReopenFollowup, buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenRetryMessage, DECIDE_WAITING_FAMILIES, followupScopeLines } from "./stages.mjs";
 import { refutationStandingLines, refutationOpenItemsLine, REFUTATION_RECORDING_LINES, writerExclusionLines } from "./stages.mjs";
+import { addressListLines } from "./review-addresses.mjs";
 import { buildReconcileFollowup } from "./recall-reconciliation.mjs";
 import { buildFlushFollowup } from "./digest-queue.mjs";
 
@@ -341,6 +342,7 @@ export const REPAIR_COMPOSERS = [
         `SCOPE — THE REVIEWER DECLARED WHICH FINDINGS ITS FLAGS ARE ABOUT, AND THIS IS THE COMPLETE LIST: ${
           scope.ordinals.length ? scope.ordinals.map((o) => `#${o}`).join(", ") : NO_FINDING_NAMED}.`,
         positions.length ? `THE EXCLUDED POSITIONS ITS FLAGS ARE ABOUT: ${positions.join("; ")}. ${answers}` : "",
+        Array.isArray(scope.lineLabels) && scope.lineLabels.length ? `THE LINES AND SECTIONS ITS FLAGS ARE ABOUT: ${scope.lineLabels.join("; ")}.` : "",
         // The scope sentence is the one ruled 2026-10-30: the passages a document flag identifies are inside the scope.
         `Change the named finding objects, any finding you record for the named excluded positions, and the document passages the flags identify. Preserve unaffected findings and passages. If a correction requires another change, record what changed and why. EVERY OTHER FINDING OBJECT IN ${findings} MUST COME BACK BYTE-IDENTICAL — do not re-derive it, do not re-word it, do not re-order its keys. The driver compares them and records anything that moved.`,
         KNOCK_ON,
@@ -423,14 +425,14 @@ export const REPAIR_COMPOSERS = [
     trigger: "verdict-recheck",
     stage: "narrative-refutation",
     key: "narrative-refutation:verdict-recheck",
-    compose: ({ narrative, findings, seniorEyeReview, correctionsScope, appliedTable, restoredTable, evidenceTable, planAuditCarry, writerExclusions = null }) => lines(
+    compose: ({ narrative, findings, seniorEyeReview, correctionsScope, appliedTable, restoredTable, evidenceTable, planAuditCarry, writerExclusions = null, reviewAddresses = null }) => lines(
       `This is a fresh session: your earlier refutation is not in your context, and you do NOT redo it from scratch. Your prior verdict and its flags are in ${seniorEyeReview} — open it first — and the source files you refuted against are listed below.`,
       // — WHEN THE SCOPE WAS DECLARED, THE RE-READ IS NARROWED TO IT. The recheck cost 270-510 s on
       // every measured run, and its whole job is to judge whether the corrections are RIGHT — not to
       // re-derive which parts of two long documents changed. The driver already knows: it holds the
       // pre-corrective snapshot and compared every finding outside the declared scope.
       correctionsScope?.scoped
-        ? `The synthesis author applied your flagged corrections. Read narrowly. Named findings in ${findings}: ${correctionsScope.named.length ? correctionsScope.named.map((o) => `#${o}`).join(", ") : NO_FINDING_NAMED}. Review those findings, the excluded positions your flags name, and the document passages your flags identify in ${narrative}, together with conclusions that depend on the corrections. Judge whether each correction answers its flag; the recorded outcome alone is not proof.${correctionsScope.positions?.length ? " For each excluded position your flags named, check the resulting finding or renewed exclusion against the evidence and the specific objection you raised. A newly recorded ground alone does not settle the flag. Retain the flag if its factual error, reasoning error, or relevant uncertainty remains." : ""} THE DRIVER COMPARED EVERY OTHER FINDING OBJECT against the pre-correction file${correctionsScope.moved.length ? ` and ${correctionsScope.moved.length} moved anyway — ${correctionsScope.moved.map((o) => `#${o}`).join(", ")}; read those too and say whether the change is defended` : " and none moved, so you do not need to re-read them"}. Then re-write ${seniorEyeReview}: the verdict (CLEAR / CONDITIONAL / BLOCKING) on the FIRST line, then any corrections that still stand.`
+        ? `The synthesis author applied your flagged corrections. Read narrowly. Named findings in ${findings}: ${correctionsScope.named.length ? correctionsScope.named.map((o) => `#${o}`).join(", ") : NO_FINDING_NAMED}. Review those findings, the excluded positions your flags name, and the document passages your flags identify in ${narrative}, together with conclusions that depend on the corrections. Judge whether each correction answers its flag; the recorded outcome alone is not proof.${correctionsScope.positions?.length ? " For each excluded position your flags named, check the resulting finding or renewed exclusion against the evidence and the specific objection you raised. A newly recorded ground alone does not settle the flag. Retain the flag if its factual error, reasoning error, or relevant uncertainty remains." : ""} THE DRIVER COMPARED EVERY OTHER FINDING OBJECT against the pre-correction file${correctionsScope.moved.length ? ` and ${correctionsScope.moved.length} moved anyway — ${correctionsScope.moved.map((o) => `#${o}`).join(", ")}; read those too and say whether the change is defended` : " and none moved, so you do not need to re-read them"}.${correctionsScope.lines ? ` THE DRIVER ALSO COMPARED EVERY COVERAGE LINE, ACTION, MARK ASSESSMENT READ AND NARRATIVE SECTION NO FLAG NAMES${correctionsScope.lines.moved.length ? ` and ${correctionsScope.lines.moved.length} moved anyway — ${correctionsScope.lines.moved.map((l) => l.label).join("; ")}; read those too and say whether the change is defended` : " and none moved"}.` : ""} Then re-write ${seniorEyeReview}: the verdict (CLEAR / CONDITIONAL / BLOCKING) on the FIRST line, then any corrections that still stand.`
         : `The synthesis author applied your flagged corrections and re-emitted the narrative ${narrative} AND the machine findings ${findings}. Re-read BOTH updated files — verify the structured findings (owners, tiers, dispositions; a killed finding must be "withdrawn") carry your corrections — re-verify your prior concerns, then re-write ${seniorEyeReview}: the verdict (CLEAR / CONDITIONAL / BLOCKING) on the FIRST line, then any corrections that still stand.`,
       // THOSE TWO FILES ARE THE ONLY EVIDENCE THAT EXISTS YET. report.md is BUILT FROM the narrative at
       // report-overview / report-card, both of which run AFTER this gate, so they hold the PREVIOUS
@@ -440,6 +442,7 @@ export const REPAIR_COMPOSERS = [
       `Judge ONLY ${narrative} and ${findings}. The report is GENERATED FROM the narrative by stages that run after this gate, so on disk it still carries the previous round's text — that is expected and is NOT evidence a correction failed to land. Do not read it as the deliverable and do not block on it.`,
       // The writer's exclusions a recheck reads: the ones that changed and the ones its flags named, then the others for reference.
       ...writerExclusionLines(writerExclusions),
+      ...addressListLines(reviewAddresses),
       appliedTable,
       // — WHAT THE DRIVER PUT BACK, and why the reviewer has to be told rather than
       // merely handed the file. Every other row in this document is the seat's judgment; a restored row
@@ -490,17 +493,17 @@ export const REPAIR_COMPOSERS = [
     // correction. VALUES IN: the list `repair-scope.mjs listForReview` computed from the writer's record before
     // and after the repair. The standing tools and notes, the open-items check and the recording lines are the
     // full review's own, read from one shared text in stages.mjs.
-    compose: ({ findings, changes, resting, renumbered, coverageChanged, evidence, registerOnly = false, job = {}, skepticFlags, frameReopenReceipt, floorDecisions = null, writerExclusions = null }) => lines(
+    compose: ({ findings, changes, resting, renumbered, coverageChanged, evidence, registerOnly = false, job = {}, skepticFlags, frameReopenReceipt, floorDecisions = null, writerExclusions = null, reviewAddresses = null }) => lines(
       `This is a review of a repair, not a full review. Earlier in this run the narrative was reviewed in full, and the corrections that review raised went to the writer. The delivery check then found a fault, and the writer repaired the record.`,
       `Review only what that repair changed, listed below under WHAT THE REPAIR CHANGED, and any statement elsewhere in the narrative or in the findings record, ${findings}, that rests on a changed item. Such a statement no longer holds if the change leaves it untrue, without its support, or incomplete.`,
       `Everything else stands as this run's earlier reviews left it. Do not flag a statement that rests on no changed item.`,
       `From your own manual, skills/narrative-refutation/SKILL.md, use only the checks that bear on these items. Its whole-report checks, its length target for a review and its expectation that a clean review is rare belong to the full review, not to this one. A clean result is a normal outcome here.`,
       `Check each changed item against the evidence named for it, and each statement that rests on a changed item against the new values.`,
-      `Say what each flag is about. For a finding, put its number from the list below in \`on\`. For a writer's exclusion, put a record id from its entry in \`positions\`. For anything else, begin the flag's text with the item's name exactly as the list gives it, for example: the coverage line for "<area>".`,
+      `Say what each flag is about. For a finding, put its number from the list below in \`on\`. For a writer's exclusion, put a record id from its entry in \`positions\`. For a coverage line, an action, a mark assessment read or a narrative section, put its address from the address list in \`lines\`. For anything else, begin the flag's text with the item's name exactly as the list gives it.`,
       renumbered ? `Where a finding below shows two numbers, put the first in \`on\`. The second is its number in findings.json.` : "",
       `Your verdict is about the repair. CLEAR: what changed is sound, and every statement that rests on a changed item still holds. CONDITIONAL: a flag needs a correction. BLOCKING: the change makes the report unsafe to sign, under your manual's verdict logic.`,
       `Your flags go to one correction pass by the writer, and nothing reviews that pass again. Make each fix exact.`,
-      ...refutationStandingLines({ registerOnly, job, floorDecisions, writerExclusions }),
+      ...refutationStandingLines({ registerOnly, job, floorDecisions, writerExclusions, addressLines: addressListLines(reviewAddresses) }),
       // A repair that rewrites coverage lines can drop an open item; when coverage is untouched, the full review
       // already checked this.
       coverageChanged ? refutationOpenItemsLine({ skepticFlags, frameReopenReceipt }) : "",

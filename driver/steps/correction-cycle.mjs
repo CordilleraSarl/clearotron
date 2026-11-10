@@ -14,6 +14,8 @@ import { signoffPatch, writeRunStatus } from "../progress.mjs";
 import { atomicWrite, driverDir, readJson } from "../run-record.mjs";
 import { modelRecordPath } from "../record-fold.mjs";
 import { repairFollowup } from "../repair-composers.mjs";
+import { partsDrift, writeReviewAddresses } from "../review-addresses.mjs";
+import { lastAcceptedCall } from "../synthesis-record.mjs";
 import { shaOf } from "../stage-freshness.mjs";
 import { parseVerdict } from "../verify.mjs";
 import { existsSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
@@ -54,6 +56,7 @@ export async function runCorrectionCycle({ ctx, run, P, verdict, firstRef, synth
   let correctionsApplied = null;   // — the driver's flag-by-flag observation, shared by both legs
   let evidenceViolations = [];     // — claims that moved against their own evidence, carried to the recheck
   let correctionsScope = null;     // — the declared per-finding scope, and whether the pass held to it
+  let recheckRecords = [];         // — the records before and after the pass, so the recheck can name a finding either holds
   let correctiveRollback = null;   // T3b — set when the corrective pass failed and the last good findings came back
   let correctiveRepair = null;     // — set when the driver put back a removal no flag named
   if (!correctiveCycleSettled && (verdict === "CONDITIONAL" || verdict === "BLOCKING")) {   // T3: the quarantine path is terminal now — the corrective pass always runs
@@ -139,6 +142,7 @@ export async function runCorrectionCycle({ ctx, run, P, verdict, firstRef, synth
       let postDoc = null;
       try { postDoc = parseFindingsJsonLenient(readFileSync(modelRecordPath(run.runDir, P.findings), "utf8")); } catch { /* shape defects ride the normal ladder */ }
       correctionsApplied = buildCorrectionsApplied(rows, preDoc, postDoc);
+      recheckRecords = [preDoc, postDoc];
       // — A CLAIM MAY NOT OUTLIVE ITS EVIDENCE, AND A DEMOTED STAMP MAY NOT COME BACK.
       //
       // Same two documents, one more question. The pass that fixes the reviewer's flags is the pass
@@ -178,12 +182,20 @@ export async function runCorrectionCycle({ ctx, run, P, verdict, firstRef, synth
       // whether a knock-on edit was right. `unbound` is the `cite_unbound` shape one gate over and
       // would earn a refusal if it recurs; this round measures whether it does.
       correctionsScope = scopeDrift(rows, preDoc, postDoc);
+      // The report's other parts and the narrative's sections, compared the same way, against the accepted call the pass
+      // started from. Recorded, never refused, as above.
+      let narrativeBefore = null;
+      try { narrativeBefore = preCorrective?.base?.accepted ? JSON.parse(preCorrective.base.accepted)?.params?.narrative ?? null : null; }
+      catch { narrativeBefore = null; }
+      correctionsScope = { ...correctionsScope,
+        lines: partsDrift(rows, preDoc, postDoc, { narratives: { before: narrativeBefore, after: lastAcceptedCall(run.runDir)?.narrative ?? null } }) };
       atomicWrite(P.correctionsApplied, JSON.stringify({ ts: new Date().toISOString(), verdict,
         scope: correctionsScope, rows: correctionsApplied }, null, 2) + "\n");
       const by = correctionsApplied.reduce((a, r) => (a[r.outcome] = (a[r.outcome] ?? 0) + 1, a), {});
       runLog(run.runDir, { event: "corrections-applied", flags: correctionsApplied.length, outcomes: by,
         scoped: correctionsScope.scoped, named: correctionsScope.named.length,
-        movedOutsideScope: correctionsScope.moved.length, unboundOrdinals: correctionsScope.unbound.length });
+        movedOutsideScope: correctionsScope.moved.length, unboundOrdinals: correctionsScope.unbound.length,
+        partsMovedOutsideScope: correctionsScope.lines.moved.length });
       // The basis for the delivery check each assembly makes (recordCorrectionsDelivered): what each flag
       // changed in the fields a report prints from the record, from the same two records. Its own file.
       try { recordCorrectionsBasis(run.runDir, correctionsApplied, preDoc, postDoc); }
@@ -241,6 +253,8 @@ export async function runCorrectionCycle({ ctx, run, P, verdict, firstRef, synth
             narrative: P.narrative, findings: modelRecordPath(run.runDir, P.findings), seniorEyeReview: P.seniorEyeReview,
             correctionsScope, appliedTable, restoredTable, evidenceTable, planAuditCarry,
             writerExclusions: writerExclusionBlock(P, { review: "later", named: correctionsScope?.positions ?? [] }),
+            reviewAddresses: writeReviewAddresses(run.runDir, { records: [...recheckRecords, lastAcceptedCall(run.runDir)?.findings],
+              narratives: [lastAcceptedCall(run.runDir)?.narrative] }),
           }),
         })
       : await stage("narrative-refutation", ctx, { force: true, model: firstRef.model, thinking: firstRef.thinking, trigger: "verdict-recheck", ...(planAuditExtra(ctx) ? { extra: planAuditExtra(ctx) } : {}) });

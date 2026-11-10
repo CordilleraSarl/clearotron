@@ -112,3 +112,66 @@ test("the recording tool reads the list the dispatch wrote into the run", () => 
   assert.equal(written.refused, null);
   assert.match(readFileSync(written.written, "utf8"), /\[lines: action:watch\]/);
 });
+
+// ── the dispatch, the correction and the recheck ───────────────────────────────────────────────────────
+const { addressListLines, partsDrift, writeReviewAddresses, ADDRESS_LIST_HEADING } = await import("../review-addresses.mjs");
+const { repairFollowup } = await import("../repair-composers.mjs");
+
+test("the dispatch writes the list where the recording tool reads it, and shows one row per address", () => {
+  const runDir = mkdtempSync(join(tmpdir(), "review-addresses-write-"));
+  const list = writeReviewAddresses(runDir, { records: [BEFORE, null, AFTER], narratives: [NARRATIVE] });
+  assert.deepEqual(listedAddresses(runDir), { ordinals: list.ordinals, lines: list.lines });
+  assert.deepEqual(addressListLines(list), [ADDRESS_LIST_HEADING, ...list.lines.map((l) => `- ${l.label} — address ${l.address}`)]);
+  assert.equal(addressListLines(list)[1], '- the coverage line for "European Union" — address coverage:european union');
+  assert.deepEqual(addressListLines({ ordinals: [1], lines: [] }), [], "no block when only findings are addressable");
+  assert.deepEqual(addressListLines(null), []);
+});
+
+test("a correction's other parts that moved and no flag named are recorded, sections only when both narratives are held", () => {
+  const rewritten = { ...AFTER, coverage: [{ area: "European Union", note: "searched again" }, BEFORE.coverage[1]],
+    actions: [{ id: "watch", text: "Watch the register monthly." }] };
+  const named = partsDrift([{ lines: ["coverage:european union"] }], BEFORE, rewritten);
+  assert.deepEqual(named, { named: ["coverage:european union"], moved: [{ address: "action:watch", label: 'the action "watch"' }] });
+  const narratives = { before: NARRATIVE, after: { ...NARRATIVE, spine: "A different spine." } };
+  assert.deepEqual(partsDrift([], BEFORE, AFTER, { narratives }).moved, [{ address: "section:spine", label: "the narrative's spine section" }]);
+  assert.deepEqual(partsDrift([], BEFORE, AFTER).moved, [], "with no earlier narrative nothing is claimed about the sections");
+  assert.deepEqual(partsDrift([], null, AFTER), { named: [], moved: [] });
+});
+
+test("the correction is told the parts its flags declared, and the recheck what moved outside them", () => {
+  const correction = String(repairFollowup("synthesis:corrective", { narrative: "narrative.md", findings: "findings.json", placement: "placement.md",
+    worklist: "", review: "", scope: { scoped: true, ordinals: [2], lineLabels: ['the coverage line for "European Union"', "the narrative's verdict section"] } }));
+  assert.match(correction, /THE LINES AND SECTIONS ITS FLAGS ARE ABOUT: the coverage line for "European Union"; the narrative's verdict section\./);
+  const undeclared = String(repairFollowup("synthesis:corrective", { narrative: "narrative.md", findings: "findings.json", placement: "placement.md",
+    worklist: "", review: "", scope: { scoped: true, ordinals: [2] } }));
+  assert.doesNotMatch(undeclared, /THE LINES AND SECTIONS/, "a correction whose flags declared no part is told nothing new");
+
+  const recheck = (lines) => String(repairFollowup("narrative-refutation:verdict-recheck", { narrative: "narrative.md", findings: "findings.json",
+    seniorEyeReview: "senior-eye-review.md", correctionsScope: { scoped: true, named: [2], moved: [], unbound: [], ...(lines ? { lines } : {}) },
+    appliedTable: "", restoredTable: "", evidenceTable: "", planAuditCarry: "" }));
+  assert.match(recheck({ named: [], moved: [{ address: "action:watch", label: 'the action "watch"' }] }),
+    /none moved, so you do not need to re-read them\. THE DRIVER ALSO COMPARED EVERY COVERAGE LINE, ACTION, MARK ASSESSMENT READ AND NARRATIVE SECTION NO FLAG NAMES and 1 moved anyway — the action "watch"; read those too and say whether the change is defended\. Then re-write/);
+  assert.match(recheck({ named: [], moved: [] }), /NO FLAG NAMES and none moved\. Then re-write/);
+  assert.doesNotMatch(recheck(null), /THE DRIVER ALSO COMPARED/, "a correction recorded before the parts were compared says nothing about them");
+});
+
+test("a review refused once and accepted on its next call hands the correction its accepted flags", async () => {
+  const { readAcceptedFlags } = await import("../narrative-refutation-record.mjs");
+  const runDir = mkdtempSync(join(tmpdir(), "review-refused-then-accepted-"));
+  assert.ok(recordRefutation(runDir, { verdict: "BLOCKING", flags: [] }).refused, "the first call must be refused");
+  assert.equal(readAcceptedFlags(runDir), null);
+  assert.equal(recordRefutation(runDir, { verdict: "CONDITIONAL", flags: [flag({})] }).refused, null);
+  assert.deepEqual(readAcceptedFlags(runDir), [flag({})], "the second call's flags, not the parse and not the refused call");
+});
+
+test("a flag that declares a part is bound to it, not to the line its prose happens to quote", async () => {
+  const { buildCorrectionsApplied } = await import("../corrections-feedforward.mjs");
+  const pre = { findings: [], coverage: [{ area: "European Union", note: "every class searched on the register" }],
+    actions: [{ id: "watch", text: "Watch the register." }] };
+  const post = { ...pre, actions: [{ id: "watch", text: "Watch the register monthly." }] };
+  const quoting = "the coverage line for European Union says every class searched on the register, and the watch action must follow it";
+  const [declared] = buildCorrectionsApplied([{ n: 1, kind: "fact", ordinals: [], lines: ["action:watch"], text: quoting }], pre, post);
+  assert.deepEqual({ targets: declared.targets, outcome: declared.outcome }, { targets: ['the action "watch"'], outcome: "line-changed" });
+  const [prose] = buildCorrectionsApplied([{ n: 1, kind: "fact", ordinals: [], text: quoting }], pre, post);
+  assert.ok(prose.targets.includes('the coverage line for "European Union"'), "with no declaration the prose match stands, as before");
+});
