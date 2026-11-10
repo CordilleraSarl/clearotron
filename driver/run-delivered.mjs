@@ -13,7 +13,8 @@ import { driverDir } from "../shared/driver-dir.mjs";
 import { assertNotCancelledBeforePublish } from "./cancel.mjs";
 import { recordRunConsumption } from "./consumption-ledger.mjs";
 import { degradedParts, writeDegradedParts } from "./degraded-parts.mjs";
-import { activeProvider, config } from "./driver.config.mjs";
+import { config } from "./driver.config.mjs";
+import { registerAdapter } from "./engine/run-choices.mjs";   // the run's register adapter, from ctx.register
 import { note, runLog } from "./log.mjs";
 import { NOT_COMPLETED_DIR } from "./parts-not-completed.mjs";
 import { deliveryForRun } from "./profiles.mjs";
@@ -112,7 +113,7 @@ export async function deliveryEndState({ P, agent, ctx, job, run }, helpers) {
     // measures the Workstream-B dedup opportunity (and which scope matters) directly from data.
     let providerTally = null;
     try {
-      const provider = activeProvider().id;
+      const provider = registerAdapter(ctx.register).id;
       const usage = tallyRegisterCalls(DEFAULT_LEDGER_PATH, `clearance-${run.slug}-${run.codename}-`);
       // ── A WHOLE-RUN TALLY FILED UNDER ONE REGISTER SAYS SO WHEN THE RUN SERVED MORE THAN ONE ──────
       //
