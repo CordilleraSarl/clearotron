@@ -2068,8 +2068,8 @@
           "todos": 0
         },
         "a-run-keeps-the-engine-it-started-on.test.mjs": {
-          "tests": 7,
-          "asserts": 26,
+          "tests": 8,
+          "asserts": 29,
           "skips": 0,
           "todos": 0
         },

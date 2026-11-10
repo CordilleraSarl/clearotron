@@ -132,3 +132,26 @@ test("a run's jurisdiction lanes follow its recorded engine too, so its lanes an
   writeFileSync(driverDir(bad, RC.RUN_CHOICES_FILE), "{ not json");
   assert.match((await makeJxTurnRunner({ env, runTurn, runDir: bad })).error ?? "", /engine record does not parse/);
 });
+
+test("each live jurisdiction lane hands its run to the turn runner", async () => {
+  const { resolveJxExecutor } = await import("../jx.mjs");
+  const { resolveJudge, resolveNativeread } = await import("../jx-units.mjs");
+  // A recorded engine this driver does not ship is refused before any turn, so the cause shows the run arrived.
+  const runDir = newRun("jx-lanes");
+  RC.recordRunChoices(runDir, { engine: "probe-started", register: null });
+  const saved = process.env.CLEAROTRON_JX_FIXTURES;
+  delete process.env.CLEAROTRON_JX_FIXTURES;
+  try {
+    const lanes = [
+      ["completions", resolveJxExecutor({}, { runDir }), { mark: "VELMORAX", productContext: "", lane: "zh" }],
+      ["judge", resolveJudge({}, { mark: "VELMORAX", lane: "zh", runDir }), { mark: "VELMORAX", hits: [] }],
+      ["nativeread", resolveNativeread({}, { mark: "VELMORAX", lane: "zh", runDir }), { mark: "VELMORAX", lane: "zh", payload: "" }],
+    ];
+    for (const [kind, { exec, source }, args] of lanes) {
+      assert.equal(source, "engine", `${kind}: not the live lane`);
+      const r = await exec(args);
+      assert.equal(r.ok, false);
+      assert.match(r.cause, new RegExp(`^jx ${kind}: this run started on the "probe-started" engine`), `${kind}: the run did not reach the runner`);
+    }
+  } finally { if (saved !== undefined) process.env.CLEAROTRON_JX_FIXTURES = saved; }
+});
