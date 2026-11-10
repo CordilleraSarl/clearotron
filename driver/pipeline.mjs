@@ -4,6 +4,7 @@
 // turn, joins the fan-out in code (the fan-in barrier), gates on the refutation
 // verdict, and never parks (there is no LLM continuation decision anywhere). CLI: `node pipeline.mjs --job <file.json>`.
 
+import { writePark } from "./run-park.mjs";
 import { endTheFailedRun } from "./run-failed.mjs";
 import { deliveryEndState } from "./run-delivered.mjs";
 import { StageFailure, buildFailurePacket, isDesignedRefusal, stageWallFields, terminalReasonFields } from "./run-outcome.mjs";
@@ -9247,12 +9248,37 @@ export async function pipeline(job, opts = {}) {
     // stage are intact, so park it resumable and let the runner auto-resume after resetsAt (vs burning a
     // ~$40 cold re-run, and vs the futile fallback cascade). Any OTHER failure propagates unchanged.
     if (e instanceof StageFailure && e.rateLimited) return postponeRun(e, opts.__runRef, { job, agent: opts.agent ?? config.defaultAgent, ctx: opts.__ctx });
+    // A RESUME THIS RUNNER CANNOT SERVE: the run started on an engine or a register this runner does not serve, and
+    // the resume stopped before anything was spent or cleared. It parks, and resumes by itself on a runner that
+    // serves its choice; it never switches to this runner's.
+    if (isRunChoiceUnavailable(e)) return parkForRunChoice(e, { job, agent: opts.agent ?? config.defaultAgent });
     throw e;
   } finally {
     reconcilePassStamps(opts.__runRef, opts.__ctx);
     releaseSlot(slot);
     liveRunSlot = null;
   }
+}
+
+// The signal a resume raises when its recorded engine or register cannot be served here. Matched by its name and the
+// fields the park needs, so the park does not depend on which module defines the signal.
+export function isRunChoiceUnavailable(e) {   // @internal
+  return e?.name === "RunChoiceUnavailable" && typeof e.run?.runDir === "string" && Boolean(e.dependency);
+}
+
+/**
+ * Park a resume whose recorded choice this runner cannot serve. The marker states what the run waits on and what
+ * ends the wait, as a rate-limit park does, with no clock of its own: the runner's due time is the park plus its
+ * backoff, and the re-dispatch parks again until a runner serves the choice. Nothing was spent, so no cost rows.
+ */
+export function parkForRunChoice(e, { job, agent }) {   // @internal
+  const { runDir, codename = null } = e.run;
+  try {
+    writePark(runDir, { kind: "run-choice", resetsAt: null, postponedAt: new Date().toISOString(), dependency: e.dependency,
+      waitingOn: e.waitingOn ?? null, resolvedBy: e.resolvedBy ?? null }, { job, agent, codename });
+  } catch { /* best-effort — the returned park still tells the runner */ }
+  note(`[pipeline] PARKED ${codename ?? "run"}: ${String(e.message).slice(0, 300)}`);
+  return { ok: false, postponed: true, resetsAt: null, parkedFor: e.dependency, codename, runDir };
 }
 
 export function journalStageInputs(paths = [], { reads = null, readsTruncated = null, warm = false } = {}) {   // @internal
@@ -9336,10 +9362,10 @@ function postponeRun(e, run, meta = {}) {
       try { return Number(JSON.parse(readFileSync(join(run.runDir, ".postponed"), "utf8"))?.probeAttempt) || 0; }
       catch { return 0; }
     })();
-    try { sentinel(run.runDir, ".postponed", { kind: "rate-limit", resetsAt, postponedAt: new Date().toISOString(), fromStage: e.stage, codename, job: meta.job ?? null, agent: meta.agent ?? null,
+    try { writePark(run.runDir, { kind: "rate-limit", resetsAt, postponedAt: new Date().toISOString(), fromStage: e.stage, codename, job: meta.job ?? null, agent: meta.agent ?? null,
       probeAttempt: priorProbe + 1,
       waitingOn: PARK_WAITING_ON,
-      resolvedBy: PARK_RESOLVED_BY }); } catch { /* best-effort */ }
+      resolvedBy: PARK_RESOLVED_BY }, { job: meta.job, agent: meta.agent, codename }); } catch { /* best-effort */ }
     // Flip the dashboard status.json state -> "postponed" (best-effort; the .postponed marker is the
     // source of truth). Routed through writeRunStatus so the terminal-state guard applies here too.
     try {
