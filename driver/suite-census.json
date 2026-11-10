@@ -3382,9 +3382,9 @@
           "todos": 0
         },
         "closing-the-terminal-stops-what-start-started.test.mjs": {
-          "tests": 2,
-          "asserts": 6,
-          "skips": 1,
+          "tests": 5,
+          "asserts": 20,
+          "skips": 2,
           "todos": 0
         },
         "cn-scope-honesty.test.mjs": {

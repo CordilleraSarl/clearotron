@@ -991,14 +991,44 @@ export function childEnv({ ports, paths, user, portalSecret, tokenSecret, opsTok
 // the wrong direction. Re-exported so every existing reader keeps working.
 export { mergeEnvFile } from "../shared/env-file-merge.mjs";
 
+/**
+ * The supervisor's writers, which stop at a terminal that has gone.
+ *
+ * CLOSING THE WINDOW TURNED THE TEARDOWN INTO A LOOP (measured on Linux, 2026-11-10). The hangup reached
+ * the teardown, whose first act is a line on the screen. The write failed (EIO from a hung-up terminal,
+ * EPIPE from a closed pipe), and with no listener on the stream the failure became an uncaught exception.
+ * Its handler wrote the exception to the same dead terminal, which failed again, on the next tick, without
+ * end. The services had already been told to stop, so they stopped, but the timers the teardown waits on
+ * never ran: this process held a full core, ignored SIGTERM because it was already stopping, and left the
+ * demo's folder and its running record behind.
+ *
+ * Each stream now has a listener, so a failed write is an event rather than an exception, and a stream
+ * that has failed once is written to no more: there is nobody left to read it. Per stream, because
+ * `start | head` closes stdout alone, and the refusals on stderr still have a reader.
+ */
+export function terminalWriters({ stdout = process.stdout, stderr = process.stderr } = {}) {
+  const gone = new Set();
+  const writer = (stream) => {
+    stream.on("error", () => { gone.add(stream); });
+    return (text) => { if (!gone.has(stream)) stream.write(text); };
+  };
+  const toOut = writer(stdout);
+  const toErr = stderr === stdout ? toOut : writer(stderr);
+  return {
+    say: (s = "") => toOut(`${s}\n`),
+    err: (s) => toErr(`${s}\n`),
+    toErr,
+    gone: (stream = stdout) => gone.has(stream),
+  };
+}
+
 
 // ── everything below runs only as a command ──────────────────────────────────────────────────────────
 
 const isMain = isEntrypoint(import.meta.url);
 if (isMain) {
   const argv = process.argv.slice(2);
-  const say = (s = "") => process.stdout.write(`${s}\n`);
-  const err = (s) => process.stderr.write(`${s}\n`);
+  const { say, err, toErr } = terminalWriters();
   // Flipped at the first state-changing act (the third criterion): a refusal AFTER
   // writes must say what survives and that re-running is safe — the reader's only question at that
   // moment, and one the screen never answered while the writes sat above the port probe.
@@ -2268,10 +2298,10 @@ if (isMain) {
   // last lines put on the screen before the sentence that points at them, so nothing that explains a failure stays only in the file.
   const DEMO_STARTUP_LOG = DEMO ? join(paths.base, "startup.log") : null;
   const fileDemoLine = (line) => {
-    try { appendFileSync(DEMO_STARTUP_LOG, `${line}\n`); } catch { process.stderr.write(`${line}\n`); return; }
-    if (demoLineOnScreen(line)) process.stderr.write(`${line}\n`);
+    try { appendFileSync(DEMO_STARTUP_LOG, `${line}\n`); } catch { err(line); return; }
+    if (demoLineOnScreen(line)) err(line);
   };
-  const showFiledTail = (rec) => { if (DEMO) for (const line of rec.tail) process.stderr.write(`${line}\n`); };
+  const showFiledTail = (rec) => { if (DEMO) for (const line of rec.tail) err(line); };
   const start = (name, script, env, { args = [], fatal = true, clientDoor = false } = {}) => {
     const child = spawn(process.execPath, [join(REPO, script), ...args], {
       cwd: REPO,
@@ -2310,7 +2340,7 @@ if (isMain) {
     const keep = (line) => { if (line.trim()) tail.push(line); while (tail.length > 12) tail.shift(); };
     child.stderr?.setEncoding("utf8");
     child.stderr?.on("data", (chunk) => {
-      if (!DEMO) process.stderr.write(chunk);
+      if (!DEMO) toErr(chunk);
       const parts = (pending + String(chunk)).split("\n");
       pending = parts.pop() ?? "";
       for (const line of parts) { keep(line); if (DEMO) fileDemoLine(line); }

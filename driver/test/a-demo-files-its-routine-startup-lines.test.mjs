@@ -91,7 +91,8 @@ test("the supervisor says where the file is before any service starts, and a rea
     assert.ok(src.indexOf(name) > 0 && src.indexOf(name) < src.indexOf("if (isMain) {"), `${name} is declared after the main block`);
   // CONTROL: a real install inherits its services' output and forwards their errors unchanged.
   assert.match(src, /stdio: \["ignore", DEMO \? "pipe" : "inherit", "pipe"\]/);
-  assert.match(src, /if \(!DEMO\) process\.stderr\.write\(chunk\);/);
+  // The chunk as it came, through the writer that stops at a closed terminal (terminalWriters).
+  assert.match(src, /if \(!DEMO\) toErr\(chunk\);/);
   // A service that does not answer has its last lines shown before the sentence that points at them.
   for (const who of ["mcp", "portal"])
     assert.match(src, new RegExp(`if \\(${who}\\.alive\\) \\{ showFiledTail\\(${who}\\); err\\(.*its output above says why`),
