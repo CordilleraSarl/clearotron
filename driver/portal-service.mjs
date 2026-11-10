@@ -141,7 +141,6 @@ import { makePrincipal, assertPrincipal, genericOrgOf, mayReadRun, reachCovers, 
 import { readLocalCredential, establishCredential, checkPassphrase, mintSession, verifySession,
   makeAttemptLimiter, credentialPathFor,
   localCredentialHandoff, firstRunCredentialLines, passphraseResetCommand, signInResetCommand } from "./portal-local-auth.mjs";   
-import { appendFlag, feedbackDir, MAX_WHY, VERDICTS } from "./feedback-store.mjs";
 import { loadRecipes, PRODUCT_POLICIES, policyFor, countJobMarks, kebabCollisions,
   gateResolvedPolicy, productAvailability, UNAVAILABLE_NOTE, coverageDisclosure, reportIdentityFor } from "./search-policy.mjs";
 import { PLAN_MAX_NAME_LENGTH } from "./register-plan.mjs";   // — the budget the screen states
@@ -175,7 +174,10 @@ import { makeStaticHandler, reportCsp, docCsp } from "./portal-static.mjs";
 import { crossSiteReason, bodyNotJson } from "./portal-request-origin.mjs";
 import { bundleVerdict, healthUi } from "../shared/bundle-freshness.mjs";   // one definition of a usable bundle, shared with `doctor`
 import { reportsOf, batchSummaryOf } from "./portal-report.mjs";
-import { reportRoutes } from "./portal-routes/report.mjs";   // the route groups the dispatcher below asks in turn
+import { configRoutes } from "./portal-routes/config.mjs";   // the route groups the dispatcher below asks in turn
+import { feedbackRoutes } from "./portal-routes/feedback.mjs";
+import { reportRoutes } from "./portal-routes/report.mjs";
+import { usageRoutes } from "./portal-routes/usage.mjs";
 import { readArchivedSet, updateArchived } from "./publish/archive-tags.mjs";
 import { readAcks, setAck, withAcks, ACKNOWLEDGEABLE } from "./portal-acks.mjs";
 import { MAX_BRIEF, makeReadBudget } from "./compose-read.mjs";
@@ -1626,7 +1628,7 @@ export function makePortalService({
   // THE ROUTE GROUPS (portal-routes/). Each group is handed two objects: what this service holds (`svc`) and what the request
   // carries (`request`). A group answers a request it serves and returns undefined for any other, and the dispatcher asks the
   // groups in the order its routes have always been matched, so a request is answered by the route that answered it before.
-  const svc = { poolRoot, auditLog };
+  const svc = { poolRoot, queueDirs, audit, auditLog, feedbackCapture, upstream, loadProfilesImpl };
 
   async function route(method, path, identity, body = {}, query = {}) {
     const grantsHere = grantsNow();
@@ -2371,182 +2373,8 @@ export function makePortalService({
         audit({ event: "queue-order", by: principal.email, account, ids: wanted.length, lanes: applied.lanes });
         return { status: 200, json: { ok: true, order: wanted, lanes: applied.lanes } };
       }
-      // ── /portal/api/config/* — the settings surface ────────────────────────────────────────────
-      // Every route here goes through portal-upstream, which is the ONLY tenancy wall in front of
-      // profile-service. Nothing in this block resolves an account itself; doing so would create a
-      // second implementation of tenancy that has to agree with the first one forever.
-      if (parts[1] === "api" && parts[2] === "config") {
-        // THE DOOR FIRST — before the wiring check, before the method check, before anything whose
-        // answer depends on what this deployment happens to have.
-        //
-        // This block used to answer 405 method_not_allowed to a caller who had not been admitted at all:
-        // POST /portal/api/config/profile from an unenrolled address returned a crisp "that endpoint
-        // exists and you used the wrong verb on it", from the one surface that reads and writes tenant
-        // configuration. GET on the same path already 403'd (the door check happens inside
-        // portal-upstream's resolveAccount), so the surface answered two different ways to the same
-        // stranger depending only on the method — and the chattier answer was the one no identity check
-        // had run in front of.
-        //
-        // Now every method behaves identically for an unadmitted identity: the same PortalDeny(403) the
-        // rest of the API gives, carrying nothing this caller could not already read off /portal/api/me.
-        // 403-at-the-door is the deliberate doctrine here (portal-access.mjs: "an unmapped identity gets
-        // NO principal (403 at the door)") and it is what the denial page in makeHttpHandler exists to
-        // render; 404 is the doctrine for FOREIGN and NONEXISTENT resources, which is the case handled
-        // on the method line below.
-        assertPrincipal(principal, { door: true });
-        // 404 WITH A NAMED REASON. The status is unchanged and deliberately so —
-        // `portal-service.test.mjs` pins "never a 500" for this branch, and a config surface that failed
-        // to construct is a clean refusal rather than a fault. What changes is the BODY: `not_found` was
-        // the only thing the client had, so the screens rendered "Projects are not available to you" to
-        // the owner of the account when the real cause was that `PROFILE_REPO_ROOT` does not contain the
-        // customer store. That reason existed only in a boot log, and it cost the owner a morning.
-        //
-        // The 404-never-403 rule is untouched, and this code cannot weaken it. The rule protects the
-        // EXISTENCE of tenant-scoped resources from probing; this answer is tenant-INDEPENDENT — every
-        // admitted identity on this deployment gets exactly it, so it separates no account from any
-        // other. The door check above still answers 403 first, so an unadmitted caller never reaches
-        // this line. A 503 was the other candidate and was rejected: it would have reversed a pinned
-        // contract for nothing the reader gains, and it says "try again later" about a condition that
-        // needs a configuration change.
-        if (!upstream) return { status: 404, json: { error: "config_surface_unavailable" } };
-        const acct = query.account ?? body.account ?? null;
-
-        // /portal/api/config/profile
-        if (parts[3] === "profile" && parts.length === 4) {
-          if (method === "GET") return await upstream.getProfile(principal, acct);
-          // 404, not 405 — the 404-never-403 rule applied to SHAPE as well as ownership. A foreign
-          // account already reads here as not-found (portal-upstream rule 2), so answering
-          // method_not_allowed for a wrong verb made ONE endpoint distinguishable from an endpoint that
-          // does not exist, which is precisely the fact the 404 rule is protecting. The other half of
-          // this same block has always fallen through to the not_found below for the identical mistake
-          // (a POST to /portal/api/config/projects) — the two halves disagreed, and this was the wrong
-          // half. Byte-identical body, so nothing downstream can tell them apart either.
-          return { status: 404, json: { error: "not_found" } };
-        }
-        // /portal/api/config/profile/{validate,save}
-        if (parts[3] === "profile" && parts.length === 5 && method === "POST") {
-          const r = await upstream.writeProfile(principal, acct, parts[4], body);
-          if (parts[4] === "save" && r.status === 200) {
-            audit({ event: "profile-save", by: principal.email, account: r.json?.account ?? acct });
-          }
-          return r;
-        }
-        // /portal/api/config/companies — CREATE. No account segment, because there is no account yet.
-        //
-        // It does not hang off `profile` for a reason worth stating: every route under that word acts on
-        // ONE company, resolved from the caller, and this one is the act of there not being one. Reusing
-        // the noun would put "the company you are in" and "the company you are making" behind the same
-        // path, which is the conflation the pick panel exists to remove.
-        //
-        // The audit row is written upstream by the create route itself, in the same commit as the file,
-        // so there is none here. An audit call copied from its neighbours would also be wrong twice: it
-        // would test `status === 200` against a 201, and file nothing.
-        if (parts[3] === "companies") {
-          if (parts.length === 4 && method === "POST") return await upstream.createCompany(principal, body);
-          // 404 for a wrong verb, as the profile branch above explains at length: 405 would make this
-          // endpoint distinguishable from one that does not exist.
-          return { status: 404, json: { error: "not_found" } };
-        }
-        // /portal/api/config/projects[/:project[/{validate,save}]]
-        if (parts[3] === "projects") {
-          if (parts.length === 4 && method === "GET") return await upstream.listProjects(principal, acct);
-          if (parts.length === 5 && method === "GET") return await upstream.getProject(principal, acct, parts[4]);
-          if (parts.length === 6 && method === "POST") {
-            const r = await upstream.writeProject(principal, acct, parts[4], parts[5], body);
-            if (parts[5] === "save" && r.status === 200) {
-              audit({ event: "project-save", by: principal.email, account: acct, project: parts[4] });
-            }
-            return r;
-          }
-        }
-        // /portal/api/config/searches[/:slug[/{validate,save}]] — saved searches, client-authorable.
-        // Same shape as projects because it is the same discipline: list, read one, validate, save.
-        // Archive is a save carrying archived:true; there is no delete verb to mount.
-        if (parts[3] === "searches") {
-          if (parts.length === 4 && method === "GET") return await upstream.listSearches(principal, acct);
-          if (parts.length === 5 && method === "GET") return await upstream.getSearch(principal, acct, parts[4]);
-          if (parts.length === 6 && method === "POST") {
-            const r = await upstream.writeSearch(principal, acct, parts[4], parts[5], body);
-            if (parts[5] === "save" && r.status === 200) {
-              audit({ event: "saved-search-save", by: principal.email, account: acct, slug: parts[4],
-                version: r.json?.version ?? null, archived: Boolean(body?.recipe?.archived) });
-            }
-            return r;
-          }
-        }
-        return { status: 404, json: { error: "not_found" } };
-      }
-
-      // /portal/api/usage — what this account has used against its allowance.
-      //
-      // Its own route rather than a field on /portal/api/me, because it is per-ACCOUNT and `me` is
-      // per-identity: a staff member acting for three clients has three different answers, and one of
-      // them is never "yours". Cheap enough to fetch beside the composer and the run list.
-      if (parts[1] === "api" && parts[2] === "usage" && method === "GET") {
-        const account = assertPrincipal(principal, { account: query.account ?? null, tenant: query.tenant ?? null });
-        if (!account) return { status: 400, json: { error: "name an account (?account=)" } };
-        // Generic is counted per organisation — the lane the wall caps (runner.mjs checkRunCaps).
-        const organisation = account === "generic" ? genericOrgOf(principal, query.tenant ?? null) : null;
-        // Caps live on the customer profile and are code-owned (never client-editable). A deployment
-        // with no config surface still answers, with counts and no caps — "we cannot tell you your
-        // limit" is a better answer than a fabricated one.
-        let caps = null, capsRead = false;
-        if (upstream) {
-          try {
-            if (account === "generic") { caps = (await loadProfilesImpl()).get("generic")?.runCaps ?? null; capsRead = true; }
-            else {
-              const r = await upstream.getProfile(principal, account);
-              if (r.status === 200) { caps = r.json?.readOnly?.runCaps ?? null; capsRead = true; }
-            }
-          } catch { /* a settings surface fault must not take the counter down */ }
-        }
-        // `complete` rides out with the counts (see usage-ledger.mjs): false means no ledger was read and
-        // these numbers are a floor. The UI can render that as "—" the way it already renders an
-        // unreadable cap as null, instead of a confident 0 nobody counted.
-        //
-        // `basis` is dropped here on purpose. What a client is owed is "we could not count", which
-        // `complete` says; WHICH kind of nothing it was is an operator's diagnosis of our deployment and
-        // belongs in the audit trail, where the quota pre-check puts it.
-        const { basis: _basis, ...used } = accountUsage({ queueDirs: queueDirs(), account, organisation });
-        return { status: 200, json: { account, ...(account === "generic" ? { tenant: organisation } : {}), ...used,
-          // The EFFECTIVE daily allowance: the profile's value, else the default the wall applies — a
-          // client reading "—" while the wall enforces 2 is the same lie as a wrong count. But a profile
-          // we could NOT read still reports null: "we cannot tell you your limit" is a different
-          // statement from "your limit is 2", and only one of them is honest when settings are down.
-          dailyRuns: Number.isInteger(caps?.dailyRuns) ? caps.dailyRuns : (capsRead ? DEFAULT_CLIENT_DAILY_RUNS : null),
-          monthlyRuns: caps?.monthlyRuns ?? null, maxQueued: caps?.maxQueued ?? null,
-          // A person who sees everything is not capped, and the UI needs to know that to avoid showing an
-          // allowance to someone it does not bind. See checkRunCaps for why it is decided here and nowhere else.
-          capped: !seesEverything(principal) } };
-      }
-
-      // /portal/api/mcp-access — the connection details for driving the engine from your own assistant.
-      //
-      // The Use-your-AI screen shipped deliberately EMPTY: there was no API that reported a host, so the
-      // page said so rather than printing a plausible placeholder (a genericised host has gone out of this
-      // codebase before and had to be chased). This is that API, and it keeps the same discipline: the URL
-      // comes from configuration and is null when unset. A deployment that has not wired the client MCP
-      // says "not available here", which is true, instead of showing an address that will not connect.
-      //
-      // There is no credential in this response, and that is the design rather than an omission: client
-      // MCP access is the caller's OWN Cloudflare Access login plus the grants entry that already governs
-      // this portal. Nothing to mint, nothing to paste, nothing to leak — and revoking portal access
-      // revokes the connector with it.
-      //
-      // `keyUrl` is the SECOND address: the API-key door, for assistants that cannot do a browser sign-in
-      // (a fixed "API key" box, a headless agent). It is a different HOST, never the same one with a key
-      // bolted on, and it is reported separately so the page can be honest about which is which. It stays
-      // null until that door is deployed — and a key itself is never in this response: keys are issued to a
-      // named person out of band, not handed to whoever loads the page.
-      // DOOR CHECK, not an account check — and the distinction is the whole bug this once had. Nothing in
-      // this answer is per-account: the connector address is one host for the deployment, and the identity
-      // to sign in with is the caller's own. Asking assertPrincipal to resolve an ACCOUNT made the route
-      // depend on something it never uses, and the failure was silent in the worst way — `assertPrincipal`
-      // returns null for STAFF with no acting-for account (portal-access.mjs: "caller decides"), that null
-      // became a 400, and the screen fell back to its "not shown here" empty state. So every staff user and
-      // every multi-account client was told the connector did not exist yet, while single-account clients
-      // saw it. `door:true` is the mode for exactly this question — may this identity enter — and it is what
-      // /portal/api/me already uses.
+      { const answer = await configRoutes(svc, request); if (answer !== undefined) return answer; }   // portal-routes/config.mjs
+      { const answer = await usageRoutes(svc, request); if (answer !== undefined) return answer; }   // portal-routes/usage.mjs
 // ── ONE READING OF THE CONNECTOR'S OWN DOOR, CACHED ────────────────────────────────────────────────
 //
 // The same unauthenticated probe `doctor` makes, asked here so the connector steps follow what the door
@@ -2921,170 +2749,7 @@ async function connectorDoorKind(url) {
         return { status: 200, json: { acknowledged, runId, count: acks.size } };
       }
       { const answer = await reportRoutes(svc, request); if (answer !== undefined) return answer; }   // portal-routes/report.mjs
-      // POST /portal/api/feedback — a lawyer flags one finding on a delivered report.
-      //
-      // This is the SECOND POST under /portal/api that spends nothing (compose/read is the other). It
-      // mints no confirmation token, queues nothing and changes no report: flagging is an observation
-      // ABOUT a delivered artifact, never an instruction to the engine.
-      //
-      // THE RULE THAT MAKES A FLAG EVIDENCE: every identifying field is read SERVER-SIDE from the run's
-      // own artifacts. The request supplies exactly three things — which run, which ordinal, and the
-      // reader's own words. Mark, band, disposition, matter, account, engine build and the excerpt all
-      // come from meta.json and report-data.json on disk. A client who could name the mark on a flag
-      // could label another customer's finding with it, which is how the predecessor system's Triage
-      // grouping was attacked (spec 61 critic finding 1) — and beyond the attack, a locator the reader
-      // typed is a locator that cannot be trusted to still point anywhere.
-      if (parts[1] === "api" && parts[2] === "feedback" && method === "POST") {
-        assertPrincipal(principal, { door: true });
-        // — RETIRED, 2026-08-20. It REFUSES; it does not disappear.
-        //
-        // AFTER assertPrincipal ON PURPOSE. A 410 says "this existed and is gone", which is exactly what
-        // a reader on a report published before today needs to be told and exactly what an unauthenticated
-        // prober should not learn. The door check runs first, so only a principal who could have used the
-        // control sees the answer.
-        //
-        // 410 RATHER THAN 404, which is what every other refusal in this handler returns. The difference
-        // is the audit log: `isAdminWrite` still names this path, so a POST here still files an outcome
-        // row, and a retired-endpoint row is a different fact from a not-yours row. If an old open tab is
-        // still clicking Flag, that is a thing worth being able to count.
-        //
-        // WHAT IS DELIBERATELY STILL BELOW THIS LINE: the whole resolver — the two-lane shape, the
-        // disposition read, the server-side-locator rule. The owner ruled "disable services and any code",
-        // and the acceptance criterion says re-enabling must be a switch and not a rebuild. Deleting 130
-        // lines of hard-won doctrine would have made it a rebuild.
-        if (!feedbackCapture) return { status: 410, json: { code: "retired", error: "Flagging a finding is switched off." } };
-        const runId = typeof body?.runId === "string" ? body.runId : "";
-        if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,180}$/.test(runId) || runId.includes(".."))
-          return { status: 404, json: { error: "not_found" } };
-        const dir = join(poolRoot, runId);
-        let meta; try { meta = readJson(join(dir, "meta.json")); } catch { return { status: 404, json: { error: "not_found" } }; }
-        // Ownership, exactly as GET /portal/report/<id> checks it — foreign is 404, never 403, and
-        // a Generic run is its organisation's. A reader who cannot READ the report cannot flag it either.
-        const owner = meta.customerKey || "generic";
-        if (!mayReadRun(principal, { owner, organisation: meta.organisation ?? null })) return { status: 404, json: { error: "not_found" } };
-
-        const verdict = typeof body?.verdict === "string" ? body.verdict : "";
-        if (!VERDICTS.has(verdict))
-          return { status: 400, json: { code: "bad_verdict", error: "A flag is good or bad." } };
-        const why = typeof body?.why === "string" ? body.why.trim() : "";
-        if (!why) return { status: 400, json: { code: "why_required", error: "Say what is right or wrong about it — a flag with no reason cannot be acted on." } };
-        if (why.length > MAX_WHY) return { status: 400, json: { code: "why_too_long", error: `That is longer than a note — keep it under ${MAX_WHY} characters.` } };
-
-        // The ordinal names a POSITION; the finding's own facts are read back from the run so the flag
-        // survives the contiguous renumber every republish performs.
-        //
-        // — THE TWO LANES SHAPE report-data.json DIFFERENTLY, and the resolver used to know one.
-        //
-        // Clearance writes a top-level `findings[]` numbered once across the document. Knockout writes
-        // `marks.findings`, and restarts the ordinals at 1 FOR EACH MARK, so every mark in a
-        // batch has a finding 1. Reading `data.findings` on a knockout run therefore found nothing, and
-        // a flag on the knockout lane resolved to no facts at all — silently, because a flag with an
-        // unresolved ordinal is a legitimate state (a run published before report-data.json existed).
-        //
-        // Branching on the SHAPE ON DISK rather than on what the request sent is the load-bearing part.
-        // If a knockout flag arrives with no markIndex, this resolves NOTHING rather than falling back
-        // to an ordinal lookup that would silently attach a lawyer's correction to the FIRST mark's
-        // finding of that number. The issue is explicit that the wrong mark is worse than no mark.
-        const ordinal = Number.isInteger(body?.ordinal) && body.ordinal > 0 ? body.ordinal : null;
-        const markIndex = Number.isInteger(body?.markIndex) && body.markIndex >= 0 ? body.markIndex : null;
-        let found = null, searchedMark = null, foundLane = null, engineCommitOf = meta.engineCommit ?? null;
-        try {
-          const data = readJson(join(dir, "report-data.json"));
-          engineCommitOf = data.engineCommit ?? engineCommitOf;
-          if (ordinal != null) {
-            if (Array.isArray(data.findings)) {
-              found = data.findings.find((f) => f.ordinal === ordinal) ?? null;
-              if (found) foundLane = "clearance";
-            } else if (Array.isArray(data.marks) && markIndex != null) {
-              const m = data.marks[markIndex] ?? null;
-              found = (m?.findings ?? []).find((f) => f.ordinal === ordinal) ?? null;
-              if (found) { foundLane = "knockout"; searchedMark = m?.name ?? null; }
-            }
-          }
-        } catch { /* a run published before report-data.json: the ordinal still locates, the facts do not */ }
-
-        // — THE DISPOSITION COMES FROM findings.json, NOT FROM report-data.json.
-        //
-        // report-data.json is the CLIENT CUT by construction, and `disposition` is a placement key in the
-        // engine's own spelling — it stopped being served there in the same commit as this read. That
-        // deletion on its own would have started writing `null` into the locator of every flag captured
-        // from that moment on, and a flag is already-minted evidence a revert cannot repair. So the source
-        // moves rather than disappearing: publish copies the run's findings.json into the pool run dir
-        // (publish/index.mjs copyRO, both the strict and the lenient parse), which satisfies the rule this
-        // handler states above — every identifying field read SERVER-SIDE from the run's own artifacts.
-        //
-        // JOINED ON ORDINAL **AND** MARK, and it resolves NOTHING on a mismatch. report-data projects the
-        // same parsed findings array publish read from that same findings.json, so the ordinals are one
-        // set — but a wrong disposition on a lawyer's flag is worse than no disposition (the ruling on
-        // the batch lane, applied here), so the mark is checked rather than assumed.
-        //
-        // CLEARANCE ONLY, on purpose. publish/knockout.mjs emits no disposition, so `found?.disposition`
-        // was already null on that lane and this must not invent one from a differently-shaped file.
-        //
-        // ABSENT IS NULL, NEVER AN ERROR. A run with no findings.json (no register, or a top-level parse
-        // failure that published a structured-light report) resolves to null — the same honest "the
-        // ordinal locates, this fact does not" state a pre-report-data run records — and the flag still
-        // saves. The audit line below records whether it resolved, so the absence is visible rather than
-        // silent.
-        let disposition = null;
-        if (foundLane === "clearance") {
-          try {
-            const fj = readJson(join(dir, "findings.json"));
-            const rec = (Array.isArray(fj?.findings) ? fj.findings : []).find((f) => f?.ordinal === ordinal) ?? null;
-            if (rec && String(rec.mark ?? "") === String(found.mark ?? "")) disposition = rec.disposition ?? null;
-          } catch { /* no findings.json in the run dir: the finding still locates, its posture does not */ }
-        }
-
-        let rec;
-        try {
-          rec = appendFlag(feedbackDir(poolRoot), {
-            runId, verdict, why,
-            capturedBy: principal.email ?? null,
-            locator: {
-              ordinal,
-              // — the drill-through key the report page and the workbook both print
-              // (`<MARK> #<ordinal>`,), read off the resolved finding rather than composed here or
-              // taken from the request. It is what a human reading the flag store or a minted issue
-              // needs in order to find the row again, and on a batch it is the only thing that says
-              // WHICH mark. Null on the clearance lane, which has no such key.
-              ref: found?.ref ?? null,
-              // The searched mark on the knockout lane, where `mark` below is the CONFLICTING name.
-              searchedMark,
-              // Clearance calls the conflicting name `mark`; the knockout view calls it `name`.
-              mark: found?.mark ?? found?.name ?? null,
-              band: found?.band ?? null,
-              // — read above, from findings.json. NOT `found.disposition`: report-data.json no
-              // longer serves the placement key, and a `?? null` fallback onto it would read as working.
-              disposition,
-              section: typeof body?.section === "string" ? body.section.slice(0, 120) : null,
-            },
-            // The sentence the reader was looking at, from the RUN rather than the request — the same
-            // reason as the locator, and it keeps from putting attacker-authored prose in an issue.
-            excerpt: found ? (found.net ?? found.impact ?? null) : null,
-            run: {
-              account: owner, matter: meta.matter ?? null, markName: meta.markName ?? null,
-              product: meta.searchLevel ?? null, issuedAt: meta.issuedAt ?? null,
-              engineCommit: engineCommitOf, runDir: dir,
-            },
-          });
-        } catch (e) {
-          audit({ event: "report-feedback", by: principal.email, runId, ok: false, error: String(e?.message ?? e) });
-          return { status: 500, json: { code: "not_saved", error: "The flag was not saved. Nothing was lost from the report — try again." } };
-        }
-        // Length and location, never the words. A why is the lawyer's own reading of a client matter,
-        // and an audit log is a different disclosure surface from the flag store.
-        //
-        // — `dispositionResolved` rides here because the disposition now comes from a SECOND file:
-        // a clearance flag that located its finding but read no posture means findings.json was absent or
-        // did not agree, and a null that nobody can see is how the paired edit would have failed silently.
-        // Only on the lane that can carry one, so a knockout flag's honest null is not logged as a miss.
-        audit({
-          event: "report-feedback", by: principal.email, runId, account: owner, verdict, ordinal, markIndex,
-          resolved: Boolean(found), ...(foundLane === "clearance" ? { dispositionResolved: Boolean(disposition) } : {}),
-          chars: why.length, id: rec.id, ok: true, status: 201,
-        });
-        return { status: 201, json: { id: rec.id } };
-      }
+      { const answer = await feedbackRoutes(svc, request); if (answer !== undefined) return answer; }   // portal-routes/feedback.mjs
       // /portal/admin/* — the install-wide surfaces, for a person who sees everything, and People, for a
       // person with Manage. Everyone else gets 404: the surface does not exist for them.
       if (parts[1] === "admin") {
