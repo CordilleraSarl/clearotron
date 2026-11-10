@@ -51,15 +51,18 @@ export async function endTheFailedRun({ P, agent, ctx, e, job, run }, helpers) {
   //      pressed Stop must never be told something went wrong; they already know what happened.
   //
   // Partial work is not deliverable, so nothing is published — but the spend up to this point is
-  // real, which is why this leaves a row rather than vanishing.
+  // real, which is why this leaves a row rather than vanishing: the consumption ledger records it with
+  // the cancelled status, and the run list is refreshed, as for a Knockout. The ledger keeps one row per
+  // run, so handling a stop twice counts it once, and neither write can turn the stop into a resume.
   if (e instanceof RunCancelled) {
     note(`[pipeline] STOPPED ${run.codename} at ${e.stage} by user request${e.requestedAt ? ` (asked ${e.requestedAt})` : ""} — terminal, nothing delivered`);
     try { sentinel(run.runDir, ".cancelled", { stage: e.stage, requestedAt: e.requestedAt, via: e.via }); } catch { /* best-effort */ }
     try { runLog(run.runDir, { event: "cancelled", stage: e.stage, requestedAt: e.requestedAt, via: e.via }); } catch { /* best-effort */ }
-    try { stampTokenRollup(run.runDir, "cancelled"); } catch { /* best-effort — a stop still spent what it spent */ }
+    try { recordRunConsumption(ctx, { phase: "cancelled", tokens: stampTokenRollup(run.runDir, "cancelled") }); } catch { /* best-effort — a stop still spent what it spent */ }
     logTurnaroundReconciliation(run.runDir, ctx?.quote, "cancelled");   // a stop still consumed wall
     writeRunStatus(ctx, { state: "cancelled", failedStage: e.stage,
       reason: stopReason({ stage: e.stage, via: e.via, requestedAt: e.requestedAt }) });
+    try { rollupStatus(run.studioRoot); } catch { /* best-effort */ }
     // `failedStage` non-null satisfies the runner's backstop predicate, so it does not overwrite
     // this with a spurious "pre-run" failure notice.
     //

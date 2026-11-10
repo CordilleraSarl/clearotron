@@ -2427,6 +2427,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-stopped-run-records-what-it-spent.test.mjs": {
+          "tests": 2,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "a-stopped-run-says-why-it-stopped.test.mjs": {
           "tests": 3,
           "asserts": 11,

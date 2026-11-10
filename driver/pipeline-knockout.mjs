@@ -1493,7 +1493,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
     if (e instanceof RunCancelled) {
       note(`[knockout] STOPPED ${run?.codename ?? "run"} at ${e.stage} by user request${e.requestedAt ? ` (asked ${e.requestedAt})` : ""} — terminal, nothing delivered`);
       try { sentinel(run.runDir, ".cancelled", { stage: e.stage, requestedAt: e.requestedAt, via: e.via, lane: "knockout" }); } catch { /* best-effort */ }
-      try { runLog(run.runDir, { event: "cancelled", stage: e.stage, lane: "knockout" }); } catch { /* best-effort */ }
+      try { runLog(run.runDir, { event: "cancelled", stage: e.stage, requestedAt: e.requestedAt, via: e.via, lane: "knockout" }); } catch { /* best-effort */ }
       try { recordRunConsumption(ctx, { phase: "cancelled", tokens: stampTokenRollup(run.runDir, "cancelled") }); } catch { /* best-effort */ }
       // — the same builder the clearance lane uses; `lane` is carried because a knockout stop and a
       // clearance stop at the same stage name are different runs.
