@@ -112,6 +112,8 @@ export const COUNTED_EVENTS = {
   "workbook-not-built": { kind: FAILED, when: (e) => /^knockout-audit-/.test(String(e.file ?? "")) },
   "data-file-not-written": FAILED,
   "staff-pages-not-refreshed": FAILED,
+  // A run started on another build that the runner would not resume: the run ends here.
+  "resume-refused": FAILED,
   // A workbook that failed to build is recorded only here.
   "publish-gates": { kind: FAILED, when: (e) => e.auditWorkbook === "failed" },
   // the plain-English pass rewrote the rater's text, or failed and shipped it unrewritten

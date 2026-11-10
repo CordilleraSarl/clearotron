@@ -2097,6 +2097,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-run-is-finished-on-the-build-it-started-on.test.mjs": {
+          "tests": 5,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
         "a-run-keeps-the-engine-it-started-on.test.mjs": {
           "tests": 13,
           "asserts": 47,

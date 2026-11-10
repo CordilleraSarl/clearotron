@@ -32,6 +32,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 import { HAS_BIRTH_STAMP, NO_PROC_STARTTIME_WHY } from "./platform-caps.mjs";
+import { startedOnThisBuild } from "./started-on-this-build.mjs";   // the row a run writes when it starts
 
 // The PID-REUSE half of the liveness protocol needs /proc/<pid>/stat, which macOS does not have and a
 // container without /proc mounted does not either. Probed rather than gated on `process.platform`, the
@@ -163,6 +164,7 @@ test("two watchers recovering the SAME abandoned claim run the pipeline ONCE", a
   // Nothing in the liveness tests above can see that: none of them races. This one does.
   const dir = join(WS, "workspace-race", "studio", "clearance-search", "amber", "2026-08-12-contended");
   mkdirSync(dir, { recursive: true });
+  startedOnThisBuild(dir);
   writeFileSync(join(dir, ".resuming"), JSON.stringify({ job: { mark: "AMBER" }, agent: "race", codename: "contended" }));
   writeFileSync(join(dir, ".resuming.pid"), "2147483646:99\n");   // a pid that cannot exist
 
