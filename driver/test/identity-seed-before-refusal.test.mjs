@@ -61,6 +61,13 @@ const at = (needle) => {
   assert.ok(i >= 0, `expected to find ${JSON.stringify(needle.slice(0, 60))} in pipeline-knockout.mjs`);
   return i;
 };
+/** The same, for a needle whose indentation is not part of what it pins. */
+const atRe = (re) => {
+  const m = re.exec(SRC);
+  assert.ok(m, `expected to find ${re} in pipeline-knockout.mjs`);
+  return m.index;
+};
+const IDENTITY_SEED = /writeRunStatus\(ctx, \{\s*schema: 1, id: job\.id, runId,/;
 
 test("IDENTITY IS SEEDED BEFORE BOTH PREFLIGHTS — the ordering IS the fix", () => {
   const seed = at('state: "running", lane: "knockout",');
@@ -86,7 +93,7 @@ test("the research-credential door does not refuse, and a reintroduced throw wou
 });
 
 test("the seed carries `ref`, which is the ONLY key discovery matches on", () => {
-  const block = SRC.slice(at("writeRunStatus(ctx, {\n      schema: 1, id: job.id, runId,"), at('state: "running", lane: "knockout",') + 60);
+  const block = SRC.slice(atRe(IDENTITY_SEED), at('state: "running", lane: "knockout",') + 60);
   assert.match(block, /ref: job\.ref \?\? null/, "without this the run is invisible, not merely untokened");
   assert.match(block, /runId/);
   assert.match(block, /id: job\.id/);
@@ -95,7 +102,7 @@ test("the seed carries `ref`, which is the ONLY key discovery matches on", () =>
 test("the seed claims NO progress it has not made", () => {
   // An identity seed that stamped a step, a verdict or a delivered state would be asserting work that
   // has not happened — trading an invisible run for a lying one.
-  const block = SRC.slice(at("writeRunStatus(ctx, {\n      schema: 1, id: job.id, runId,"), at('state: "running", lane: "knockout",') + 60);
+  const block = SRC.slice(atRe(IDENTITY_SEED), at('state: "running", lane: "knockout",') + 60);
   for (const forbidden of ["verdict", "stepIndex", "deliveredAt", "url"])
     assert.ok(!block.includes(forbidden), `the identity seed must not carry \`${forbidden}\``);
 });
@@ -104,7 +111,7 @@ test("the full seat-flow seed still runs, and still after the preflights", () =>
   // The fix ADDS a seed; it does not move the existing one. The step flow depends on `probeWanted`,
   // which the register preflight computes, so hoisting the whole seed was never available.
   const identity = at('state: "running", lane: "knockout",');
-  const fullSeed = at("const STEPS = ctx.koSteps = koSteps({ registerProbe: probeWanted });");
+  const fullSeed = at("STEPS = ctx.koSteps = koSteps({ registerProbe: probeWanted });");
   assert.ok(identity < fullSeed, "identity first");
   assert.ok(at("const refusal = countPreflight({") < fullSeed,
     "and the full seed still follows the preflight that computes its steps");
