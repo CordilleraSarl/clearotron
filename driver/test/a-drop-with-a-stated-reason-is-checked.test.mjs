@@ -147,7 +147,7 @@ test("the pipeline CALLS it, beside its sibling, on the same inputs", async () =
   const { dirname, join } = await import("node:path");
   const pipeline = driverSource("pipeline.mjs");
 
-  assert.match(pipeline, /import \{[^}]*statedDivergenceFindings[^}]*\} from "\.\/record-carry\.mjs"/s,
+  assert.match(pipeline, /import \{[^}]*statedDivergenceFindings[^}]*\} from "\.\.?\/record-carry\.mjs"/s,
     "it must be imported from the module that owns it, not re-implemented");
   assert.match(pipeline, /statedDivergenceFindings\(\{/,
     "and actually called — an uncalled check is the shape this whole family exists to refuse");
