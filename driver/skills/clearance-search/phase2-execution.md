@@ -206,8 +206,6 @@ For **every register finding** advisory-rated on a rung **the framework rates me
 
 Apply the existing triggers for actual-use, enforcement, and owner checks after the relevant legal assessment. First use a suitable answer already held by this run, including an earlier stage or attempt, where it answers the same owner, mark, goods, territory, and material time question. A source requirement is not a requirement for a new call. One answer may support several findings only where it answers each finding's question. Ask only what remains unanswered and record the result against every finding it supports.
 
-Example: a JELLY register hit owned by Jellycat (a toy company) for Class 9 video game software — check whether Jellycat actually sells or markets video games under JELLY. If they don't (their commercial use is toys), note the filed-vs-used distinction in Key Factors and weigh it as a Stage-2 factor together with revocation-vulnerability — no automatic downgrade (see `synthesis-rules.md` → *Actual-use assessment results*).
-
 **Mechanics:**
 
 - Scope the marketplace query tightly to the search's field (gaming, fintech, whatever the clearance targets), not the owner's full portfolio.
