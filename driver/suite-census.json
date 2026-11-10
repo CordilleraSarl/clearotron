@@ -1114,8 +1114,8 @@
           "todos": 0
         },
         "a-knockout-defect-reaches-the-step-that-can-repair-it.test.mjs": {
-          "tests": 31,
-          "asserts": 163,
+          "tests": 32,
+          "asserts": 169,
           "skips": 0,
           "todos": 0
         },
@@ -3502,8 +3502,8 @@
           "todos": 0
         },
         "corrective-cycle.test.mjs": {
-          "tests": 16,
-          "asserts": 156,
+          "tests": 17,
+          "asserts": 161,
           "skips": 0,
           "todos": 0
         },
@@ -5764,8 +5764,8 @@
           "todos": 0
         },
         "register-findings-link-to-the-office-record.test.mjs": {
-          "tests": 23,
-          "asserts": 71,
+          "tests": 25,
+          "asserts": 77,
           "skips": 0,
           "todos": 0
         },
