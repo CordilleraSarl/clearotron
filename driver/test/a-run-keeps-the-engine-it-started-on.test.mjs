@@ -113,3 +113,22 @@ test("a recorded engine this driver cannot serve, or an unreadable record, stops
   await assert.rejects(stageOn(bad), /engine record \(_driver\/run-choices\.json\) does not parse/);
   assert.deepEqual(turns, []);
 });
+
+test("a run's jurisdiction lanes follow its recorded engine too, so its lanes and its stages never split", async () => {
+  const { makeJxTurnRunner } = await import("../engine/jx-turn.mjs");
+  const runTurn = async () => ({ code: 0, json: { status: "ok" }, stdout: "" });
+  const env = { CLEAROTRON_AI: "openai-agent" };
+  const started = newRun("jx-started");
+  RC.recordRunChoices(started, { engine: "anthropic-agent", register: null });
+  assert.equal((await makeJxTurnRunner({ env, runTurn, runDir: started })).engine, "anthropic-agent");
+  assert.equal((await makeJxTurnRunner({ env, runTurn, runDir: newRun("jx-unrecorded") })).engine, "openai-agent",
+    "a run with no record takes the machine's engine");
+  assert.equal((await makeJxTurnRunner({ env, runTurn })).engine, "openai-agent", "a caller with no run is unchanged");
+  const unshipped = newRun("jx-unshipped");
+  RC.recordRunChoices(unshipped, { engine: "probe-started", register: null });
+  assert.match((await makeJxTurnRunner({ env, runTurn, runDir: unshipped })).error ?? "",
+    /started on the "probe-started" engine, which this driver does not ship; the jx lanes keep that engine/);
+  const bad = newRun("jx-bad");
+  writeFileSync(driverDir(bad, RC.RUN_CHOICES_FILE), "{ not json");
+  assert.match((await makeJxTurnRunner({ env, runTurn, runDir: bad })).error ?? "", /engine record does not parse/);
+});
