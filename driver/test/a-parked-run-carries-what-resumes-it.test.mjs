@@ -5,16 +5,18 @@
 // A PARKED RUN CARRIES WHAT RESUMES IT.
 //
 // The runner resumes a parked run the queue does not own from its `.postponed` marker alone, and skips a marker
-// without `job`, `agent` and `codename` (runner.mjs, the run-folder watcher). The Knockout's recovery park wrote
+// without `job`, `agent` and `codename` (runner.mjs, the run-folder watcher). The Knockout's recovery park once wrote
 // none of the three, so a Knockout resumed by the watcher that parked again was never woken. Every park now goes
-// through one writer, run-park.mjs, which adds the three a park did not name.
+// through one writer, run-park.mjs, which adds the three a park did not name, and a Knockout parks through the
+// clearance's own failure path.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { writePark } from "../run-park.mjs";
-import { knockoutRecoveryPark } from "../pipeline-knockout.mjs";
+import { endTheFailedRun } from "../run-failed.mjs";
+import { KNOCKOUT_ENDING } from "../pipeline-knockout.mjs";
 import { StageFailure } from "../pipeline.mjs";
 
 const JOB = { markName: "INVENTED MARK", ref: "T-1" };
@@ -22,14 +24,16 @@ const marker = (runDir) => JSON.parse(readFileSync(join(runDir, ".postponed"), "
 /** The runner's own condition for resuming a marker it finds in a run folder. */
 const watcherResumes = (m) => Boolean(m.job && m.agent && m.codename);
 
-test("a Knockout parked for recovery writes the job, the agent and the codename the watcher resumes it by", () => {
+test("a Knockout parked for recovery writes the job, the agent and the codename the watcher resumes it by", async () => {
   const runDir = mkdtempSync(join(tmpdir(), "park-"));
   const saved = { ...process.env };
   Object.assign(process.env, { CLEAROTRON_RECOVERY_MAX: "3" });
   try {
     const e = new StageFailure("assess", "knockout_chunk_invalid: rating vocabulary miss", undefined, { failClass: "unknown" });
-    const r = knockoutRecoveryPark({ ctx: { job: JOB, agent: "intake-agent" }, run: { runDir, codename: "amber-gate", studioRoot: runDir },
-      e, reason: e.reason, failedStage: "assess" });
+    const run = { runDir, codename: "amber-gate", studioRoot: runDir, slug: "invented-mark", date: "2026-11-10" };
+    const ctx = { job: JOB, agent: "intake-agent", run, paths: { runDir } };
+    const r = await endTheFailedRun({ P: ctx.paths, agent: "intake-agent", ctx, e, job: JOB, run, product: KNOCKOUT_ENDING },
+      { sentinel: () => {} });
     assert.ok(r?.postponed, "premise: an unknown failure buys its one park");
     const m = marker(runDir);
     assert.deepEqual(m.job, JOB);
@@ -37,7 +41,7 @@ test("a Knockout parked for recovery writes the job, the agent and the codename 
     assert.equal(m.codename, "amber-gate");
     assert.ok(watcherResumes(m), "the watcher would skip this marker");
     assert.equal(m.kind, "recovery");
-    assert.equal(m.lane, "knockout", "the park's own fields are kept");
+    assert.equal(m.lane, "defect", "the park's own fields are kept: the recovery lane it was charged to, as a clearance's");
   } finally { process.env = saved; }
 });
 

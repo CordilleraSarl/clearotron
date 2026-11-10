@@ -3,9 +3,10 @@
 //
 // run-failed.mjs — what a run does when a step fails: postpone, stop, park for recovery, or end, and the notice it sends.
 //
-// The clearance pipeline's failure path, moved out of pipelineInner's catch unchanged. Every path through it returns
-// the run's result or throws, so pipelineInner returns what it returns. `helpers` are functions still held in
-// pipeline.mjs, handed in because this module must not import that one back.
+// The failure path of both products. A clearance and a Knockout fail, park, recover, stop and end the same way here;
+// what differs is the product's data, `product` below. Every path through it returns the run's result or throws, so
+// each product's step loop returns what it returns. `helpers` are functions still held in pipeline.mjs, handed in
+// because this module must not import that one back; a Knockout hands in only `sentinel`.
 import { writePark } from "./run-park.mjs";
 import { ensureDriverDir } from "../shared/driver-dir.mjs";
 import { stopReason } from "../shared/stop-reason.mjs";
@@ -17,16 +18,23 @@ import { writeOutboxPacket } from "./outbox.mjs";
 import { axesNotYetDisclosed, clearPartsNotCompleted, readPartNotCompleted, slicesNotYetRecorded, unitsNotYetRecorded, writePartNotCompleted } from "./parts-not-completed.mjs";
 import { rollupStatus, writeRunStatus } from "./progress.mjs";
 import { abbrev } from "./repair-contract.mjs";
-import { capParkSchedule, capWaitFrom, classificationSource, classifyFailureReason, countRecoveryLanes, countTrailingStageStrikes, decideRecovery, failureSignature, isCapPark, isContentShapedFail, unnamedStructuredFailure, weatherCeilingFor } from "./repairs.mjs";
+import { REFUSAL_TERMINAL_KIND, capParkSchedule, capWaitFrom, classificationSource, classifyFailureReason, countRecoveryLanes, countTrailingStageStrikes, decideRecovery, failureSignature, isCapPark, isContentShapedFail, unnamedStructuredFailure, weatherCeilingFor } from "./repairs.mjs";
 import { logTurnaroundReconciliation } from "./run-quote.mjs";
-import { StageFailure, buildFailurePacket, terminalReasonFields } from "./run-outcome.mjs";
+import { StageFailure, buildFailurePacket, isDesignedRefusal, terminalReasonFields } from "./run-outcome.mjs";
 import { paths } from "./stages.mjs";
 import { stampTokenRollup } from "./tokens.mjs";
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-export async function endTheFailedRun({ P, agent, ctx, e, job, run }, helpers) {
-  const { recordConnotationAudit, sentinel, undoTaintRenames } = helpers;
+/**
+ * What a product hands the failure path: the stage a failure is named at when its error names none, which reaches the
+ * notice; how a stop names its stage; and the tag on the log lines. Nothing here changes what a failure buys.
+ */
+export const CLEARANCE_ENDING = Object.freeze({ unnamedStage: "pipeline", stopStage: (stage) => stage, logTag: "pipeline" });
+
+export async function endTheFailedRun({ P, agent, ctx, e, job, run, product = CLEARANCE_ENDING }, helpers) {
+  const { recordConnotationAudit = null, sentinel, undoTaintRenames } = helpers;
+  const tag = `[${product.logTag}]`;
   // RATE-LIMIT POSTPONE (re-throw): a 429 session-cap is NOT a terminal failure — RE-THROW it so pipeline()'s
   // outer catch parks the run resumable (.postponed, no .failed, no notify-fail) and the runner auto-resumes
   // after the cap window, vs stranding every completed stage and forcing a ~$40 cold re-run. This catch wraps
@@ -40,7 +48,8 @@ export async function endTheFailedRun({ P, agent, ctx, e, job, run }, helpers) {
   // from precisely the runs that need explaining — and that count is what the boundary gets tuned
   // against. Reads whatever is on disk (merged pair, else each half's, else its preserved best
   // draft) and can never mask the failure it is describing.
-  try { recordConnotationAudit(run, P); } catch { /* observability must never mask the failure */ }
+  // A clearance hands this in; its meaning gate is a step a Knockout does not run.
+  if (recordConnotationAudit) { try { recordConnotationAudit(run, P); } catch { /* observability must never mask the failure */ } }
   // ── STOPPED BY THE USER ──────────────────────────────────────────────────────────────────────
   // Terminal, and deliberately NOT routed through anything below. Two reasons:
   //
@@ -56,13 +65,13 @@ export async function endTheFailedRun({ P, agent, ctx, e, job, run }, helpers) {
   // the cancelled status, and the run list is refreshed, as for a Knockout. The ledger keeps one row per
   // run, so handling a stop twice counts it once, and neither write can turn the stop into a resume.
   if (e instanceof RunCancelled) {
-    note(`[pipeline] STOPPED ${run.codename} at ${e.stage} by user request${e.requestedAt ? ` (asked ${e.requestedAt})` : ""} — terminal, nothing delivered`);
+    note(`${tag} STOPPED ${run.codename} at ${e.stage} by user request${e.requestedAt ? ` (asked ${e.requestedAt})` : ""} — terminal, nothing delivered`);
     try { sentinel(run.runDir, ".cancelled", { stage: e.stage, requestedAt: e.requestedAt, via: e.via }); } catch { /* best-effort */ }
     try { runLog(run.runDir, { event: "cancelled", stage: e.stage, requestedAt: e.requestedAt, via: e.via }); } catch { /* best-effort */ }
     try { recordRunConsumption(ctx, { phase: "cancelled", tokens: stampTokenRollup(run.runDir, "cancelled") }); } catch { /* best-effort — a stop still spent what it spent */ }
     logTurnaroundReconciliation(run.runDir, ctx?.quote, "cancelled");   // a stop still consumed wall
     writeRunStatus(ctx, { state: "cancelled", failedStage: e.stage,
-      reason: stopReason({ stage: e.stage, via: e.via, requestedAt: e.requestedAt }) });
+      reason: stopReason({ stage: product.stopStage(e.stage), via: e.via, requestedAt: e.requestedAt }) });
     try { rollupStatus(run.studioRoot); } catch { /* best-effort */ }
     // `failedStage` non-null satisfies the runner's backstop predicate, so it does not overwrite
     // this with a spurious "pre-run" failure notice.
@@ -84,7 +93,11 @@ export async function endTheFailedRun({ P, agent, ctx, e, job, run }, helpers) {
   // portal can render one and put the other behind a disclosure. Null on every failure that carries
   // none, and on every non-StageFailure throw.
   const reasonDetail = e instanceof StageFailure ? e.detail : null;
-  const failedStage = e?.stage ?? "pipeline";
+  const failedStage = e?.stage ?? product.unnamedStage;
+  // A DESIGNED REFUSAL BUYS NOTHING. A throw stamped `refusal` is the product declining an order before any spend, not
+  // the engine breaking, so it is asked first and kept away from every recovery path below: no strike count, no
+  // classification row, no park. Re-sampling a refusal re-earns the same refusal. It ends with its own kind.
+  const refused = isDesignedRefusal(e);
   // ── 2026-07-04 (senior lawyer, production doctrine): AUTOMATIC RUN-LEVEL RECOVERY ─────────────────
   // A business-critical report must converge to an honest delivery WITHOUT a human re-trigger. The
   // VENZY bake run proved the gap: the corrective re-synthesis exhausted its in-stage ladder on
@@ -156,7 +169,7 @@ export async function endTheFailedRun({ P, agent, ctx, e, job, run }, helpers) {
   // stamp outranks the strike relabel (it is already terminal, and its kind is the truer diagnosis).
   const INVALID_ARTIFACT_STRIKE_CAP = 3;
   let strikeTerminalKind = null;
-  if (run?.runDir && failClass !== "factual") {
+  if (run?.runDir && failClass !== "factual" && !refused) {
     try {
       const rows = readFileSync(paths(run.runDir).run, "utf8").trim().split("\n")
         .map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
@@ -166,7 +179,7 @@ export async function endTheFailedRun({ P, agent, ctx, e, job, run }, helpers) {
         failClass = "deterministic";
         classSource = "invalid-artifact-strikes";
         runLog(run.runDir, { event: "invalid-artifact-strikes", stage: failedStage, strikes, cap: INVALID_ARTIFACT_STRIKE_CAP });
-        note(`[pipeline] ${failedStage} has produced ${strikes} consecutive invalid/failed outputs — terminal (invalid-artifact-loop), artifacts kept for diagnosis`);
+        note(`${tag} ${failedStage} has produced ${strikes} consecutive invalid/failed outputs — terminal (invalid-artifact-loop), artifacts kept for diagnosis`);
       }
     } catch { /* the strike backstop must never mask the original failure */ }
   }
@@ -184,9 +197,9 @@ export async function endTheFailedRun({ P, agent, ctx, e, job, run }, helpers) {
     nonRecoverable: NON_RECOVERABLE_RE.test(String(reason)), hasRunDir: Boolean(run?.runDir),
     weatherAttempts: laneCounts.weather, defectAttempts: laneCounts.defect, weatherCeiling, quantity,
   });
-  // The stamped kind: the strike relabel names the loop precisely; otherwise the decision's own kind.
-  const terminalKind = decision.recoverable ? null : (strikeTerminalKind ?? decision.terminalKind);
-  if (run?.runDir) {
+  // The stamped kind: a refusal's own; the strike relabel names the loop precisely; otherwise the decision's own kind.
+  const terminalKind = refused ? REFUSAL_TERMINAL_KIND : decision.recoverable ? null : (strikeTerminalKind ?? decision.terminalKind);
+  if (run?.runDir && !refused) {
     try {
       runLog(run.runDir, { event: "recovery-classified", sig: failSig.sig, class: failClass, stage: failedStage, classSource, priorAttempts, parkBudget: decision.parkBudget, lane: decision.lane, laneAttempts: decision.laneAttempts, laneCeiling: decision.laneCeiling, ...(terminalKind ? { terminalKind } : {}), ...(failSig.codes?.length ? { reasonCodes: failSig.codes } : {}), ...(attemptedRepairs ? { repairs: attemptedRepairs } : {}),
         //: what the comparison SAW — this failure's count, the last count for the same signature,
@@ -214,7 +227,7 @@ export async function endTheFailedRun({ P, agent, ctx, e, job, run }, helpers) {
       }
     } catch { /* never mask the failure */ }
   }
-  if (decision.recoverable) {
+  if (!refused && decision.recoverable) {
     const attempt = priorAttempts + 1;
     // The rung follows THIS SIGNATURE's own park count, not the run-global attempt: a repeated
     // transient (a provider outage that has not ended) must wait longer each time — 2 → 15 → 60 —
@@ -261,7 +274,7 @@ export async function endTheFailedRun({ P, agent, ctx, e, job, run }, helpers) {
       weather: { attempts: laneCounts.weather + (lane === "weather" ? 1 : 0), ceiling: weatherCeiling },
       defect: { attempts: laneCounts.defect + (lane === "defect" ? 1 : 0), ceiling: recoveryMax },
     };
-    note(`[pipeline] RECOVERABLE failure in ${run.codename} at ${failedStage} — parking for AUTO-RECOVERY, ${laneLabel} lane ${laneAttempt}/${decision.laneCeiling} (defect budget ${recoveryLanes.defect.attempts}/${recoveryMax} spent; resumes ~${recoveryWaitMin}min${capSchedule ? ` on the ${recoveryWaitBasis === "provider" ? "provider's stated reset" : "cap ladder"}` : ""}; valid stages skip on resume): ${String(reason).slice(0, 160)}`);
+    note(`${tag} RECOVERABLE failure in ${run.codename} at ${failedStage} — parking for AUTO-RECOVERY, ${laneLabel} lane ${laneAttempt}/${decision.laneCeiling} (defect budget ${recoveryLanes.defect.attempts}/${recoveryMax} spent; resumes ~${recoveryWaitMin}min${capSchedule ? ` on the ${recoveryWaitBasis === "provider" ? "provider's stated reset" : "cap ladder"}` : ""}; valid stages skip on resume): ${String(reason).slice(0, 160)}`);
     // no fromStage: the failed-stage label can be decorated ("synthesis(blocking)") and is not a
     // resume key — plain idempotent resume re-runs exactly the invalid/missing outputs.
     try { writePark(run.runDir, { kind: "recovery", recoveryResumesAt, postponedAt: new Date().toISOString(), codename: run.codename, job, agent, attempt, reason: String(reason).slice(0, 300), sig: failSig.sig, class: failClass, lane }, { job, agent, codename: run.codename }); } catch { /* best-effort */ }
@@ -273,6 +286,9 @@ export async function endTheFailedRun({ P, agent, ctx, e, job, run }, helpers) {
     // and said nothing. `recovering` is not terminal, so it was never covered by the terminal
     // fields; the reader's problem is identical either way — a sentence that stops mid-thought with
     // no key admitting it stopped. Same three fields, same function, so the two cannot drift.
+    // EACH WRITE BELOW IS GUARDED: the marker above already makes the run resumable, and a throw from the record or
+    // the bookkeeping would escape this path and end a parked run as a crash with a notice that misnames its cause.
+    try {
     writeRunStatus(ctx, { state: "recovering", recoveryAttempts: attempt, recoveryMax, failedStage,
       ...terminalReasonFields(reason),
       recoveryResumesAt, resetsAt: null,
@@ -300,15 +316,16 @@ export async function endTheFailedRun({ P, agent, ctx, e, job, run }, helpers) {
       // rather than false, for the reason stated below: a row that says nothing is honest about not
       // having looked; `capPark: false` claims we checked.
       ...(capSchedule ? { capPark: true, recoveryWaitBasis, recoveryWaitMin } : {}) }] });
-    rollupStatus(run.studioRoot);
-    runLog(run.runDir, { event: "auto-recovery-parked", stage: failedStage, attempt, of: recoveryMax, lane, laneAttempt, laneOf: decision.laneCeiling, recoveryResumesAt, reason: String(reason).slice(0, 200), sig: failSig.sig, class: failClass,
+    } catch { /* best-effort — the marker is the resumable record */ }
+    try { rollupStatus(run.studioRoot); } catch { /* best-effort */ }
+    try { runLog(run.runDir, { event: "auto-recovery-parked", stage: failedStage, attempt, of: recoveryMax, lane, laneAttempt, laneOf: decision.laneCeiling, recoveryResumesAt, reason: String(reason).slice(0, 200), sig: failSig.sig, class: failClass,
       // a cap park has to be legible in the record, or the next reader diagnosing
       // "why did this wait 21 hours" cannot tell a provider's stated reset from our own ladder guess.
       // Absent on a non-cap park rather than false: a row that says nothing is honest about not having
       // looked, while `capPark: false` would read as "we checked and it was not one".
-      ...(capSchedule ? { capPark: true, recoveryWaitBasis, recoveryWaitMin, capResetHint: capResetHint ?? null } : {}) });
+      ...(capSchedule ? { capPark: true, recoveryWaitBasis, recoveryWaitMin, capResetHint: capResetHint ?? null } : {}) }); } catch { /* best-effort */ }
     logTurnaroundReconciliation(run.runDir, ctx?.quote, "recovery-parked");
-    recordRunConsumption(ctx, { phase: "recovery-park", tokens: stampTokenRollup(run.runDir, "recovery-park") });
+    try { recordRunConsumption(ctx, { phase: "recovery-park", tokens: stampTokenRollup(run.runDir, "recovery-park") }); } catch { /* best-effort */ }
     // the return's `resetsAt` is the runner's due-clock contract (parkPostponed meta / postponedDueAt),
     // not a status surface — it stays under the machinery name deliberately.
     return { ok: false, postponed: true, recovery: true, attempt, resetsAt: recoveryResumesAt, codename: run.codename, runDir: run.runDir };
@@ -325,7 +342,7 @@ export async function endTheFailedRun({ P, agent, ctx, e, job, run }, helpers) {
   // without it ends the run below, as every failure did. Written before `.failed` and before the failure packet, so
   // a run that delivers carries neither. A rate limit and a stop never reach this line (both are handled above), and
   // a storage failure is not a covered part: no throw site names one.
-  const coveredPart = e instanceof StageFailure ? (e.notCompletedPart ?? null) : null;
+  const coveredPart = e instanceof StageFailure && !refused ? (e.notCompletedPart ?? null) : null;
   const heldRecord = coveredPart && run?.runDir ? readPartNotCompleted(run.runDir, coveredPart) : null;
   // THE SEARCHES' RECORD GROWS: a failure is routed again while it names a slice the record does not hold yet.
   const addedSlices = coveredPart === "searches" ? slicesNotYetRecorded(heldRecord, e.excludedSlices) : [];
@@ -355,10 +372,10 @@ export async function endTheFailedRun({ P, agent, ctx, e, job, run }, helpers) {
         terminalKind: terminalKind ?? null, resumesAt });
       logTurnaroundReconciliation(run.runDir, ctx?.quote, "recovery-parked");
       recordRunConsumption(ctx, { phase: "recovery-park", tokens: stampTokenRollup(run.runDir, "recovery-park") });
-      note(`[pipeline] ${failedStage} could not be completed once its recovery was spent — recorded as the ${coveredPart} not completed; the run resumes now and delivers what it holds`);
+      note(`${tag} ${failedStage} could not be completed once its recovery was spent — recorded as the ${coveredPart} not completed; the run resumes now and delivers what it holds`);
       parked = { ok: false, postponed: true, recovery: true, attempt: priorAttempts, resetsAt: resumesAt, codename: run.codename, runDir: run.runDir };
     } catch (rErr) {
-      note(`[pipeline] the ${coveredPart} could not be recorded as not completed (${String(rErr?.message ?? rErr).slice(0, 120)}) — the run ends with the stop notice`);
+      note(`${tag} the ${coveredPart} could not be recorded as not completed (${String(rErr?.message ?? rErr).slice(0, 120)}) — the run ends with the stop notice`);
     }
     if (parked) return parked;
   }
@@ -368,7 +385,7 @@ export async function endTheFailedRun({ P, agent, ctx, e, job, run }, helpers) {
   // Both lane ceilings end the run, and both say so. "weather-exhausted" is the honest terminal for
   // a provider that was still refusing after the whole weather ladder — the run did not break, the
   // far end never came back, and the notice must not read as a defect in the run's own output.
-  if ((decision.terminalKind === "exhausted" || decision.terminalKind === "weather-exhausted") && recoveryMax > 0) {
+  if (!refused && (decision.terminalKind === "exhausted" || decision.terminalKind === "weather-exhausted") && recoveryMax > 0) {
     runLog(run.runDir, { event: "auto-recovery-exhausted", attempts: priorAttempts, of: recoveryMax, lane: decision.lane, laneAttempts: decision.laneAttempts, laneOf: decision.laneCeiling });
   }
   sentinel(run.runDir, ".failed", { stage: failedStage, reason, recoveryAttempts: priorAttempts, sig: failSig.sig, class: failClass, terminalKind });
@@ -510,7 +527,7 @@ export async function endTheFailedRun({ P, agent, ctx, e, job, run }, helpers) {
     // reader looking in the right place.
     note(`failure notice is owed but its packet/marker could not be written (${String(nfErr?.message ?? nfErr).slice(0, 100)}) — status.json carries the obligation; the outbox does not`);
   }
-  note(`=== FAILED ${run.codename} at ${failedStage}: ${reason} ===\n`);
+  note(`=== ${refused ? "REFUSED" : "FAILED"} ${run.codename} at ${failedStage}: ${reason} ===\n`);
   // `codename` matches the three sibling terminals (postpone, recovery park, cancelled). Without it
   // the CLI could not name the run to resume at the one terminal where resuming is the whole remedy.
   //

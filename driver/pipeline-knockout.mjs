@@ -11,12 +11,11 @@
 // What this lane deliberately does NOT have, by design:
 //   - no register machinery, no grid, no coverage ledger — the sweep is ONE broad question per mark,
 //     and one narrow one on the name in use in the client's field, as the frame words it;
-//   - no UNCONDITIONAL auto-recovery ladder. Since  this lane has a CLASS-AWARE one:
-//     a knockout re-run costs ~$2, so a park is bought only where a fresh sample is the plausible
-//     remedy — TRANSIENT gets the ladder, UNKNOWN exactly one park, DETERMINISTIC and FACTUAL get NONE,
-//     every designed refusal gets none, and a signature that already parked is terminal at once.
-//     Everything else goes terminal with the standard failure packet exactly as before (rate-limits
-//     still postpone via pipeline()'s outer catch — we re-throw StageFailure).
+//   - no failure path of its own. A failure takes the clearance's (run-failed.mjs): the same class-aware
+//     recovery ladder — TRANSIENT gets the ladder, UNKNOWN exactly one park, DETERMINISTIC and FACTUAL get
+//     NONE, every designed refusal gets none, and a signature that already parked is terminal at once —
+//     the same park, stop and failure records, and the same notice. Rate limits still postpone via
+//     pipeline()'s outer catch.
 //     A THROW SITE THAT KNOWS ITS OWN CLASS MUST STAMP IT (`failClass`, see StageFailure). Unstamped,
 //     the ladder can only guess from the reason text, and the guess for anything the regexes do not
 //     recognise is UNKNOWN — which buys a park. Every throw in this file was written while the lane had
@@ -29,7 +28,6 @@
 // history is not rewritten to tidy a citation, so the wrong number stands in the log forever; the
 // references in this file are corrected and this comment is the reconciliation. A reader who greps the
 // history for 1886 and lands here is in the right place and the number that brought them is not.
-import { writePark } from "./run-park.mjs";
 import { atomicWrite, paths } from "./run-record.mjs";
 import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, rmSync, renameSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -39,15 +37,8 @@ import { fileURLToPath } from "node:url";
 import { runStage } from "./gateway.mjs";
 import { config, RESEARCH_PROVIDERS, REGISTER_PROVIDER, missingCredentials } from "./driver.config.mjs";
 import { registerAdapter as adapterForRegister } from "./engine/run-choices.mjs";   // the run's register adapter, from ctx.register
-import { StageFailure, buildFailurePacket, stageWallFields, terminalReasonFields, isDesignedRefusal } from "./run-outcome.mjs";   // — the wall fields the spine already carries
-import { abbrev } from "./repair-contract.mjs";
-import {
-  REFUSAL_TERMINAL_KIND,   // — the terminal kind that is not a failure
-  // — the clearance lane's recovery DECISION, reused rather than restated. The
-  // ladder's class-awareness, its repeat-signature backstop and its lane accounting are one
-  // implementation; a second copy here would be a second thing to keep true.
-  decideRecovery, failureSignature, classifyFailureReason, countRecoveryLanes, weatherCeilingFor, capWaitFrom,
-} from "./repairs.mjs";
+import { StageFailure, stageWallFields } from "./run-outcome.mjs";   // — the wall fields the spine already carries
+import { endTheFailedRun } from "./run-failed.mjs";   // — the failure path both products share
 import { RunCancelled, assertNotCancelledBeforePublish, isCancelled, readCancel } from "./cancel.mjs";   // stop-by-user: never the failure lane below
 import { loadFrameworkManifest, parseFrameworkManifest, frameworkFor, DEFAULT_FRAMEWORK } from "./framework.mjs";
 import { attachFrameworkMethod, methodPathFor, FROZEN_METHOD_FILE } from "./framework-method.mjs";
@@ -76,11 +67,9 @@ import { batchMarkName } from "./mark-name.mjs";
 import { runLog, note, outputMeta } from "./log.mjs";
 import { defaultTerritoryState } from "./effective-scope.mjs";   // the stored-defaults reading — one producer, shared with the clearance lane
 import { whatsappRouting } from "./stages.mjs";
-import { writeOutboxPacket } from "./outbox.mjs";
 import { rollupTokens, stampTokenRollup } from "./tokens.mjs";
 import { recordRunConsumption } from "./consumption-ledger.mjs";
 import { writeSettleStamp } from "./settle-stamp.mjs";   // — the pool copy's own terminal state
-import { stopReason } from "../shared/stop-reason.mjs";   //
 // The scoped owner lookup a promoted register filing is owed. Bounded, deduplicated
 // per owner, and structurally unable to withhold a report.
 import { ownersOwedACheck, runOwnerChecks } from "./owner-use-check.mjs";
@@ -641,90 +630,9 @@ export function removeNextStepSections(runDir, marks) {
   return out;
 }
 
-/**
- * What the recovery ladder decides for a Knockout failure: its signature and class, the attempts the run already spent,
- * read from its status, and the decision itself. Reads status.json and nothing else. The park below acts on the
- * decision, and the terminal records the same signature, class, count and end kind, as a clearance's terminal does.
- */
-export function knockoutRecoveryDecision({ run, e, reason, failedStage }) {
-  let snapshot = {};
-  try { snapshot = JSON.parse(readFileSync(join(run.runDir, "status.json"), "utf8")) ?? {}; } catch { snapshot = {}; }
-  const priorAttempts = Number(snapshot.recoveryAttempts) || 0;
-  const history = Array.isArray(snapshot.recoveryHistory) ? snapshot.recoveryHistory : [];
-  // No early return for recoveryMax === 0: decideRecovery already refuses on its own ceiling
-  // (laneAttempts < laneCeiling is false at 0), and a guard that cannot fail is a guard that looks
-  // load-bearing and is not. Proved by planting its removal — nothing red. Letting the decision run
-  // also means a deployment with the ladder OFF still records "recovery-classified", so the journal
-  // says the ladder was consulted and declined rather than saying nothing at all.
-  const recoveryMax = Math.max(0, Number(process.env.CLEAROTRON_RECOVERY_MAX ?? 3));
-
-  const failSig = failureSignature(failedStage, reason,
-    { codes: e instanceof StageFailure ? e.reasonCodes : undefined });
-  const failClass = (e instanceof StageFailure && e.failClass) || classifyFailureReason(String(reason));
-  const laneCounts = countRecoveryLanes(history, { total: priorAttempts });
-  const weatherCeiling = weatherCeilingFor(recoveryMax);
-  const decision = decideRecovery({
-    failClass, sig: failSig.sig, reason: String(reason), history, priorAttempts,
-    recoveryMax, hasRunDir: Boolean(run?.runDir), runCeiling: recoveryMax, weatherCeiling,
-    weatherAttempts: laneCounts.weather, defectAttempts: laneCounts.defect,
-  });
-  return { priorAttempts, history, recoveryMax, failSig, failClass, laneCounts, weatherCeiling, decision };
-}
-
-// ── — the knockout lane's recovery park ───────────────────────────────────────
-//
-// EXPORTED so it can be armed directly. The clearance lane's equivalent is inline in a 6,000-line catch
-// and is reachable only by driving a whole pipeline; that is why its class-awareness has no focused arm
-// and why this one does.
-//
-// Returns the runner's park result, or NULL to mean "no park was bought — carry on to the terminal".
-// Null is the answer on every path that is not a park, including a failure to read the run's own status:
-// a park bought on an unreadable history could re-buy a signature that already parked, which is the one
-// thing `decideRecovery`'s backstop exists to stop.
-export function knockoutRecoveryPark({ ctx, run, e, reason, failedStage, note = () => {} }) {
-  if (!run?.runDir) return null;
-  const { priorAttempts, history, recoveryMax, failSig, failClass, laneCounts, weatherCeiling, decision } =
-    knockoutRecoveryDecision({ run, e, reason, failedStage });
-  try {
-    runLog(run.runDir, { event: "recovery-classified", lane: "knockout", sig: failSig.sig,
-      class: failClass, stage: failedStage, recoverable: decision.recoverable,
-      parkBudget: decision.parkBudget, repeat: decision.repeat, recoveryLane: decision.lane });
-  } catch { /* observability must never mask the failure being handled */ }
-  if (!decision.recoverable) return null;
-
-  const RECOVERY_BACKOFF_MIN = [2, 15, 60];   // attempt N resumes after BACKOFF[N-1] minutes (last repeats)
-  const attempt = priorAttempts + 1;
-  const backoffMin = RECOVERY_BACKOFF_MIN[Math.min(decision.sigAttempts, RECOVERY_BACKOFF_MIN.length - 1)];
-  const recoveryResumesAt = new Date(Date.now() + backoffMin * 60000).toISOString();
-  const lane = decision.lane;
-  const recoveryLanes = {
-    weather: { attempts: laneCounts.weather + (lane === "weather" ? 1 : 0), ceiling: weatherCeiling },
-    defect: { attempts: laneCounts.defect + (lane === "defect" ? 1 : 0), ceiling: recoveryMax },
-  };
-  note(`[knockout] RECOVERABLE failure in ${run.codename} at ${failedStage} — parking for AUTO-RECOVERY, `
-     + `${lane === "weather" ? "upstream weather" : "defect"} attempt ${attempt}/${recoveryMax}, resumes ${recoveryResumesAt}`);
-  // `.postponed` and NO `.failed`: the marker IS the difference between a parked run and a dead one,
-  // and writing both would leave a run the runner resumes and a reader reads as failed.
-  try {
-    writePark(run.runDir, { kind: "recovery", lane: "knockout", recoveryResumesAt,
-      postponedAt: new Date().toISOString(), stage: failedStage }, { job: ctx.job, agent: ctx.agent, codename: run.codename });
-  } catch { /* best-effort — status.json below is the durable record */ }
-  try {
-    writeRunStatus(ctx, { state: "recovering", recoveryAttempts: attempt, recoveryMax, failedStage,
-      ...terminalReasonFields(reason), recoveryResumesAt, resetsAt: null,
-      recoveryLane: lane, recoveryLanes, lane: "knockout",
-      recoveryHistory: [...history, { sig: failSig.sig, class: failClass, stage: failedStage,
-        lane, at: new Date().toISOString(), quantity: decision.progress?.quantity ?? null }] });
-  } catch { /* best-effort */ }
-  try { runLog(run.runDir, { event: "recovery-parked", lane: "knockout", attempt, of: recoveryMax,
-    sig: failSig.sig, recoveryResumesAt, recoveryLane: lane }); } catch { /* best-effort */ }
-  try { recordRunConsumption(ctx, { phase: "recovery-park", tokens: stampTokenRollup(run.runDir, "recovery-park") }); }
-  catch { /* best-effort */ }
-  try { rollupStatus(run.studioRoot); } catch { /* best-effort */ }
-  // `resetsAt` is the runner's due-clock contract (parkPostponed / postponedDueAt), not a status surface.
-  return { ok: false, postponed: true, recovery: true, attempt, resetsAt: recoveryResumesAt,
-    codename: run.codename, runDir: run.runDir, failedStage, lane: "knockout" };
-}
+// What the failure path takes from this product. A failure whose error names no stage is named "knockout", the stage the
+// notice then names; a stop names its stage with "(knockout)" after it, as the staff read it in the stop reason.
+export const KNOCKOUT_ENDING = Object.freeze({ unnamedStage: "knockout", stopStage: (stage) => `${stage} (knockout)`, logTag: "knockout" });
 
 export async function knockoutInner(ctx, job, opts = {}) {
   const { run, agent, paths: P } = ctx;
@@ -1430,7 +1338,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
       // two existing. Where no number is held the packet now SAYS so in `whatsappToReason` rather than
       // substituting the operator silently.
       //
-      // The failure notice below routes the same way (buildFailurePacket). It used to keep `AGENT_WHATSAPP[agent]` as an
+      // The failure notice (run-failed.mjs, buildFailurePacket) routes the same way. It used to keep `AGENT_WHATSAPP[agent]` as an
       // operational page, but the courier relays it to the requester, who is owed it as they are owed a report, and the
       // operator keeps the page as the copy beside it.
       ...whatsappRouting(job, agent),
@@ -1490,134 +1398,9 @@ export async function knockoutInner(ctx, job, opts = {}) {
     note(`=== KNOCKOUT DELIVERED (${nMarks} marks, worst ${overall}) → ${published.reports.map((r) => r.url).join(", ") || "no report URL (pool URL unset)"}${archived ? ` — archived → ${archived}` : ""} ===\n`);
     return { ok: true, verdict: overall, url: published.url, reports: published.reports, runDir: archived ?? run.runDir };
   } catch (e) {
-    // rate-limit rides to pipeline()'s postpone catch (the shared park+auto-resume lane)
-    if (e instanceof StageFailure && e.rateLimited) throw e;
-    // STOPPED BY THE USER — terminal, and it must not take the failure lane below: that lane pushes
-    // "❌ … FAILED at …" to the customer over the outbox, and someone who pressed Stop must never be
-    // told their search broke. Same shape as the clearance lane's cancel terminal (pipeline.mjs).
-    if (e instanceof RunCancelled) {
-      note(`[knockout] STOPPED ${run?.codename ?? "run"} at ${e.stage} by user request${e.requestedAt ? ` (asked ${e.requestedAt})` : ""} — terminal, nothing delivered`);
-      try { sentinel(run.runDir, ".cancelled", { stage: e.stage, requestedAt: e.requestedAt, via: e.via, lane: "knockout" }); } catch { /* best-effort */ }
-      try { runLog(run.runDir, { event: "cancelled", stage: e.stage, requestedAt: e.requestedAt, via: e.via, lane: "knockout" }); } catch { /* best-effort */ }
-      try { recordRunConsumption(ctx, { phase: "cancelled", tokens: stampTokenRollup(run.runDir, "cancelled") }); } catch { /* best-effort */ }
-      // — the same builder the clearance lane uses; `lane` is carried because a knockout stop and a
-      // clearance stop at the same stage name are different runs.
-      writeRunStatus(ctx, { state: "cancelled", failedStage: e.stage,
-        reason: stopReason({ stage: `${e.stage} (knockout)`, via: e.via, requestedAt: e.requestedAt }) });
-      try { rollupStatus(run.studioRoot); } catch { /* best-effort */ }
-      return { ok: false, cancelled: true, failedStage: e.stage, codename: run?.codename ?? null, runDir: run.runDir };
-    }
-    // ── — THE RECOVERY LADDER THIS LANE NEVER HAD ─────────────────────────────
-    //
-    // The line that stood here said "NO recovery ladder (a knockout re-run is ~$2)", and the comment
-    // below it went further: "There is no recovery machinery on this lane to keep it away from."
-    // So ANY validator exhaustion ended the run — dead until a human noticed — which is the exact shape
-    // the clearance lane fixed after the VENZY bake: an in-stage ladder exhausted on model vocabulary
-    // misses, terminal, and a fresh resume converges with high probability.
-    //
-    // WHY THE PRICE OBJECTION DOES NOT SURVIVE CLASS-AWARENESS. `decideRecovery` buys a park only where
-    // a fresh re-sample is the plausible remedy: TRANSIENT gets the ladder, UNKNOWN gets exactly one
-    // park, DETERMINISTIC and FACTUAL get NONE — their repairs already ran at the point of defect, so a
-    // re-sample re-derives the same failure. And a signature that already parked once is terminal
-    // immediately whatever the class guess said. At ~$2 a re-run the worst case for the common case is
-    // one extra run, and the failures that would have burned it are exactly the ones that buy nothing.
-    //
-    // A DESIGNED REFUSAL BUYS NOTHING, AND THAT IS THE EXISTING BEHAVIOUR PRESERVED, NOT A NEW RULE.
-    // countPreflight's refusals, a kebab collision — anything `isDesignedRefusal` already marks — is the
-    // PRODUCT answering before model work began, not the engine breaking. Re-sampling a refusal re-earns
-    // the same refusal and spends money to do it. The check is FIRST, ahead of every artifact below.
-    const reason = e instanceof StageFailure ? e.reason : String(e?.stack ?? e);
-    const failedStage = e?.stage ?? "knockout";
-    const refused = isDesignedRefusal(e);
-    if (!refused) {
-      const parked = knockoutRecoveryPark({ ctx, run, e, reason, failedStage, note });
-      // A park writes `.postponed` and NO `.failed`; the runner's `res.postponed` branch re-dispatches
-      // it, and `pipeline()` re-enters THIS lane by policy, so a knockout park can never resume as a
-      // clearance run. Verified structurally: pipeline.mjs dispatches on `searchPolicy.pipeline`.
-      if (parked) return parked;
-    }
-    // terminal — the ladder above declined to buy a park: .failed + the standard failure packet
-    // — WAS THIS THE PRODUCT REFUSING, OR THE ENGINE BREAKING? Asked once, here, and carried into
-    // every record this block writes. An ordinary failure carries the kind the ladder decided, as a
-    // clearance's does, and never the refusal's. That other half — a designed refusal must never reach recovery machinery — was
-    // satisfied by construction while the lane had none. It is now satisfied by CODE: the
-    // `if (!refused)` above, which asks the refusal question BEFORE the ladder is consulted and is
-    // the reason a refusal cannot buy a park. The arms that prove it are in the ladder's own test file.
-    // REACHES THIS LANE ( · E11). The fix for "status.json truncates the cause the journal
-    // keeps" landed on the clearance terminal and was never ported here, and this is the lane where it
-    // bites hardest: countPreflight's refusals run 300–450 characters and every one of them puts the
-    // REMEDY in its last sentence. The bare `.slice(0, 200)` cut the refusal at "There is no off",
-    // deleting all three of "set the variable and re-run, order a search this deployment covers, or run
-    // the plain knockout level" — on a terminal whose entire purpose is to tell an operator what to do.
-    // `reason` keeps its 200 chars (it rides the ping); the cut is now STATED and the tail kept beside it.
-    const { reason: shortReason, reasonTruncated, reasonFull } = terminalReasonFields(reason);
-    // What the clearance's terminal records, from the decision the ladder made: the signature, the class, the automatic
-    // recovery attempts already spent, and why the run stopped. The notice says "after N automatic recovery attempts"
-    // when there were any, and gives the end kind's sentence, both word for word as a clearance's does. A refusal keeps
-    // its own kind, which the ladder never saw.
-    const { failSig, failClass, priorAttempts, history, recoveryMax, decision } = knockoutRecoveryDecision({ run, e, reason, failedStage });
-    const terminalKind = refused ? REFUSAL_TERMINAL_KIND : decision.terminalKind;
-    // The payload and its count, as the clearance's terminal derives them: the throw site's own, else none.
-    const reasonDetail = e instanceof StageFailure && e.detail ? abbrev(String(e.detail).replace(/\s+/g, " ").trim(), 600) : null;
-    const quantity = (e instanceof StageFailure && Number.isFinite(e.quantity) ? e.quantity : null) ?? failSig.quantity;
-    if (!refused && (terminalKind === "exhausted" || terminalKind === "weather-exhausted") && recoveryMax > 0) {
-      try { runLog(run.runDir, { event: "auto-recovery-exhausted", lane: "knockout", attempts: priorAttempts, of: recoveryMax,
-        recoveryLane: decision.lane, laneAttempts: decision.laneAttempts, laneOf: decision.laneCeiling }); } catch { /* best-effort */ }
-    }
-    sentinel(run.runDir, ".failed", { stage: failedStage, reason, lane: "knockout", recoveryAttempts: priorAttempts, sig: failSig.sig, class: failClass, terminalKind });
-    runLog(run.runDir, { event: "failed", stage: failedStage, reason, lane: "knockout", sig: failSig.sig, class: failClass, terminalKind });
-    writeRunStatus(ctx, { state: "failed", failedStage, reason: shortReason, reasonTruncated, reasonFull, terminalKind,
-      reasonDetail, reasonQuantity: quantity });
-    recordRunConsumption(ctx, { phase: "failed", tokens: stampTokenRollup(run.runDir, "failed") });
-    rollupStatus(run.studioRoot);
-    // OWED EITHER WAY, mirroring pipelineInner: the flag is armed whichever lane wrote the packet,
-    // because mark_sent is the only clear and it settles a failure.json on the same evidence a delivery
-    // needs. The marker is NOT duplicated — the primary lane's own packet lands `<runId>.failed.pending`
-    // and the *.pending watch matches it; a second `<runId>.pending` would outlive every settle.
-    // THE RECORD OF AN OBLIGATION MUST NOT BE CONTINGENT ON THE ACTION IT OBLIGES — clearance parity,
-    // and the same defect this lane would have had. `writeOutboxPacket` returns null rather than throwing,
-    // so an unwritable outbox reaches the raw marker write below; with the flag after it, that throw took
-    // the record of the obligation with it and the run ended failed and NOT owed. Guards first, then the
-    // flag, then the writes that can fail.
-    let failPingSent = false;
-    try { rmSync(join(run.runDir, ".sent")); } catch { /* none */ }
-    try { rmSync(paths(run.runDir).sendReceipts, { force: true }); } catch { /* none */ }
-    // a fresh notice supersedes an older send's skip-guards (a resumed-then-failed-again run must
-    // still notify — the .sent/receipts invariant, clearance parity)
-    try { writeRunStatus(ctx, { sendPending: true }); } catch (sErr) {
-      note(`knockout failure notice could NOT be recorded as owed (${String(sErr?.message ?? sErr).slice(0, 100)}) — the run directory is unwritable`);
-    }
-    try {
-      const rich = buildFailurePacket({
-        runId, agent, job, failedStage, shortReason, terminalKind,
-        reasonVerbatim: String(reason).slice(0, 1000), sig: failSig.sig, failClass, priorAttempts,
-        repairs: e instanceof StageFailure ? e.repairs : [], capWait: capWaitFrom(history), reasonDetail, reasonQuantity: quantity,
-      });
-      const packet = {
-        kind: "run-failed", ...rich,
-        markName: job.markName ?? job.name ?? null, reason: shortReason,
-        text: rich.whatsappText,   // the short fallback line legacy relays read (clearance parity)
-        failureSignature: failSig.sig, recoveryAttempts: priorAttempts,   // machine fields, as on the clearance packet
-      };
-      writeFileSync(paths(run.runDir).failure, JSON.stringify(packet, null, 2) + "\n");
-      failPingSent = Boolean(writeOutboxPacket(`${runId}.failed`, packet));
-      if (!failPingSent) {
-        mkdirSync(config.outboxDir, { recursive: true });
-        writeFileSync(join(config.outboxDir, `${runId}.pending`), `${agent}\n`);
-      }
-    } catch (nfErr) { note(`knockout failure notice is owed but its packet/marker could not be written (${String(nfErr?.message ?? nfErr).slice(0, 100)}) — status.json carries the obligation`); }
-    note(`=== KNOCKOUT ${terminalKind === REFUSAL_TERMINAL_KIND ? "REFUSED" : "FAILED"} ${run.codename} at ${failedStage}: ${shortReason} ===\n`);
-    // `codename`: this lane's terminals reach the SAME CLI exit as the clearance lane's, and the
-    // CLI composes its resume line from the returned identity. Without it a knockout operator is the only
-    // one left with a failure and no way to know what to type.
-    //
-    // `terminalKind` — THE SECOND WRITER'S ONLY INPUT. This return does not stop at the CLI:
-    // runner.mjs's queue terminal writes it whole into `<base>.failed.result`, and that sidecar is what
-    // the E2E round reads for a run whose dir it cannot resolve (scripts/e2e.mjs readMarkerTerminal:
-    // `st?.terminalKind ?? result?.terminalKind`). The marker's own SUFFIX stays `.failed` deliberately
-    // — the runner writes exactly three (`done`/`cancelled`/`failed`) and the harness's
-    // TERMINAL_BY_SUFFIX_RAN knows exactly those, so a fourth would not read as "refused" anywhere; it
-    // would read as UNDETERMINED, which is how a refusal disappears instead of being mislabelled.
-    return { ok: false, failedStage, reason, terminalKind, codename: run.codename, runDir: run.runDir };
+    // A Knockout fails, parks, recovers, stops and ends exactly as a clearance does (run-failed.mjs): the same
+    // rate-limit postpone, the same class-aware recovery ladder and park, the same refusal, stop and failure records,
+    // and the same notice. Only the product's data differs, KNOCKOUT_ENDING above.
+    return await endTheFailedRun({ P, agent, ctx, e, job, run, product: KNOCKOUT_ENDING }, { sentinel });
   }
 }

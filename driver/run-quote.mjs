@@ -121,14 +121,12 @@ export function reconcileTurnaround({ quote = null, startedAt = null, now = Date
   };
 }
 
-// Quoted-vs-actual turnaround, written at every terminal of the CLEARANCE pipeline — all five of them, in
-// pipeline.mjs and the run endings carved from it: delivered, cancelled, rate-limit-postponed, recovery-parked,
-// failed. (The call-site census test greps those files, and that is the scope it can police.) Two terminals elsewhere are deliberately
-// NOT covered and must not be read as covered: the knockout lane's delivered/cancelled/failed exits
-// (pipeline-knockout.mjs) — a knockout run never computes a quote, so there is no quoted figure to
-// reconcile against and every field but the wall would be null — and the runner's `parked-for-human`
-// grace-exit (runner.mjs parkInFlightForHuman), which is a SIGTERM handler with no ctx and no quote in
-// hand. Extending to either is a change of shape, not a call site; until then this is the honest scope.
+// Quoted-vs-actual turnaround, written at every terminal of a run — delivered, cancelled, rate-limit-postponed,
+// recovery-parked, failed — in pipeline.mjs and the run endings carved from it. (The call-site census test greps
+// those files, and that is the scope it can police.) A Knockout computes no quote, so its rows carry the wall and a
+// null quote. It writes them where it ends through run-failed.mjs (stopped, parked, failed), and not where it
+// delivers, in pipeline-knockout.mjs. The runner's `parked-for-human` grace-exit (runner.mjs parkInFlightForHuman)
+// is not covered: it is a SIGTERM handler with no ctx and no quote in hand.
 //
 // AD-4 surfaced this only at the delivered terminal, so a run that failed, parked for auto-recovery or
 // postponed on a rate-limit cap recorded nothing at all — and "we never measured this run" was byte-for-byte

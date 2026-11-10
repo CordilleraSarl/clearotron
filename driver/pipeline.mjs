@@ -9392,9 +9392,9 @@ async function pipelineInner(job, opts = {}) {
   // ── Phase 2a dispatch: a knockout-pipeline policy runs the SLIM lane (pipeline-knockout.mjs) —
   // lazy import (a clearance run never loads it; also breaks the static cycle). Placed INSIDE the
   // run slot + pipeline()'s rate-limit postpone catch, with profile+policy frozen; the knockout lane
-  // owns its own framework freeze, status stepper, delivery handoff and failure tail (no recovery
-  // ladder — a knockout re-run is ~$2). attachSearchPolicy already refused any pipeline this build
-  // cannot execute, so reaching this branch means the lane is available.
+  // owns its own framework freeze, status stepper and delivery handoff, and ends a failed run through
+  // the clearance's own failure path (run-failed.mjs). attachSearchPolicy already refused any pipeline
+  // this build cannot execute, so reaching this branch means the lane is available.
   if (ctx.searchPolicy?.pipeline === "knockout") {
     const { knockoutInner } = await import("./pipeline-knockout.mjs");
     return await knockoutInner(ctx, job, opts);
