@@ -2782,7 +2782,7 @@ function attachRegisterPlan(ctx, { frozenOnly = false } = {}) {
       // — the offices this contract covers that THIS BOX cannot reach (a composed provider with an
       // unconfigured member). Split out at compile so the reachable half still executes and the rest
       // rides the plan as a disclosed deferral, never as a silently narrower search.
-      unavailableOffices: registerUnavailableOffices(),
+      unavailableOffices: registerUnavailableOffices(registerCapabilities(ctx.register)),
     });
     // REQUIREMENT 3 — the element is still checked ONCE, as a confirmation of the client's own live
     // registrations rather than as a conflict sweep, so the exclusion is evidenced on the report by a
