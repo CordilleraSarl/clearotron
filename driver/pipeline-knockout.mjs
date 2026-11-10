@@ -29,6 +29,7 @@
 // history is not rewritten to tidy a citation, so the wrong number stands in the log forever; the
 // references in this file are corrected and this comment is the reconciliation. A reader who greps the
 // history for 1886 and lands here is in the right place and the number that brought them is not.
+import { writePark } from "./run-park.mjs";
 import { atomicWrite, paths } from "./run-record.mjs";
 import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, rmSync, renameSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -691,8 +692,8 @@ export function knockoutRecoveryPark({ ctx, run, e, reason, failedStage, note = 
   // `.postponed` and NO `.failed`: the marker IS the difference between a parked run and a dead one,
   // and writing both would leave a run the runner resumes and a reader reads as failed.
   try {
-    sentinel(run.runDir, ".postponed", { kind: "recovery", lane: "knockout", recoveryResumesAt,
-      postponedAt: new Date().toISOString(), stage: failedStage });
+    writePark(run.runDir, { kind: "recovery", lane: "knockout", recoveryResumesAt,
+      postponedAt: new Date().toISOString(), stage: failedStage }, { job: ctx.job, agent: ctx.agent, codename: run.codename });
   } catch { /* best-effort — status.json below is the durable record */ }
   try {
     writeRunStatus(ctx, { state: "recovering", recoveryAttempts: attempt, recoveryMax, failedStage,

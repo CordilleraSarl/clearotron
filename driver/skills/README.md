@@ -40,8 +40,9 @@ instead; and `clearance-search/templates/search-request-form.html`, named only i
   (`CLEAROTRON_INSTRUCTIONS_DIR`) wins per file, this tree is the fallback, and a configured-but-unreadable overlay throws
   rather than silently falling back to the Generic defaults.
 - `../methodology-witness.mjs` — records the sha of every file each stage read, per run.
-- `../test/skill-contract-enumerations.test.mjs` and `../test/prose-voice.test.mjs` read these files rather than a
-  copy: what a skill teaches vs. what the code enforces, and the house prose contract.
+- `../test/every-manual-is-read-and-names-what-exists.test.mjs` and `../test/prose-voice.test.mjs` read these files
+  rather than a copy: that every manual is read by a stage and names only tools and files that exist, and the house
+  prose contract.
 
 ## The provider boundary
 

@@ -8,7 +8,8 @@
 // narrative reviewer would block delivery. On that path the task message dictates the terms as its GRID KEYS, so the
 // manual names those; the field search runs once, for the mark, where the frame names a field outside the customer's
 // own; and the reviewer flags in the audit workbook rather than blocks. This holds the ruled lines and that the old
-// ones are gone.
+// ones are gone. The hand-authored grid program and its task template were later removed from both files, so the grid
+// runs only from the spec the driver writes; that removal is held here too.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -20,9 +21,11 @@ const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
 const manual = flat("SKILL.md");
 const prompts = flat("perplexity-prompts.md");
 
-test("the legacy grid takes the terms the task message's GRID KEYS names", () => {
-  assert.ok(manual.includes("- The terms your task message's GRID KEYS names (the program's SEARCH TERMS array)"));
-  assert.ok(prompts.includes("SEARCH TERMS ([N]): [JSON array of the terms your task message's GRID KEYS names]"));
+test("no manual teaches a hand-authored grid program, and neither takes every variant", () => {
+  assert.ok(!manual.includes("- The terms your task message's GRID KEYS names"), "the web manual still fills a grid program's terms");
+  assert.ok(!prompts.includes("SEARCH TERMS ([N])"), "the grid prompt still carries the program's task template");
+  for (const [name, text] of [["web manual", manual], ["grid prompt", prompts]])
+    assert.ok(!text.includes('depth: "pro-search"'), `the ${name} still sets the program's depth`);
   assert.ok(!manual.includes("ALL variants from the Variants table"), "the web manual still takes every variant");
   assert.ok(!prompts.includes("every variant from the manifest's Variants table"), "the grid prompt still takes every variant");
 });

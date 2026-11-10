@@ -716,12 +716,12 @@ const inputsForReference = (paths, { changedInputs = null } = {}) => changedInpu
 // SKILL.md chose its own framing on purpose — matter-frame's is explicitly "enrichment, not authority".
 //
 // So these are declared here, measured the same way, and emitted into no prompt. `resolveAlsoReads` has
-// exactly one consumer: driver/test/skill-instruction-load.mjs.
+// two consumers, both tests: driver/test/instruction-read-map.mjs and a-skill-that-points-at-a-sibling.test.mjs.
 //
 // DECLARED PER SKILL, NOT PER STAGE, because that is the shape of the fact. Two stages read
 // clearance-register/SKILL.md and both therefore carry its companions; declaring the pair twice is how the
 // two drift. A stage picks these up by reading the SKILL.md they belong to, which is also what makes the
-// guard in skill-instruction-load.test.mjs able to check the list against the documents themselves.
+// guard in a-skill-that-points-at-a-sibling.test.mjs able to check the list against the documents themselves.
 export const SKILL_COMPANIONS = Object.freeze({
   "matter-frame": Object.freeze(["watchlist-reference.md"]),
   "clearance-common-law": Object.freeze(["perplexity-prompts.md"]),
