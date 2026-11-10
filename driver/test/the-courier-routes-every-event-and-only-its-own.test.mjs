@@ -30,7 +30,8 @@ const step = (kind) => {
 
 test("the courier contract routes every event the delivery catalog lists, and a packet writer names each", () => {
   assert.ok(CATALOG.length >= 6, `guard: the delivery catalog was read (${CATALOG.join(", ")})`);
-  const writers = ["driver/pipeline.mjs", "driver/pipeline-knockout.mjs", "driver/runner.mjs", "mcp-server/lib/ops.mjs"].map(read).join("\n");
+  // run-failed.mjs writes the failed run's packet for both products.
+  const writers = ["driver/pipeline.mjs", "driver/pipeline-knockout.mjs", "driver/run-failed.mjs", "driver/runner.mjs", "mcp-server/lib/ops.mjs"].map(read).join("\n");
   for (const kind of CATALOG) {
     assert.ok(writers.includes(`kind: "${kind}"`), `the catalog lists ${kind}, which no packet writer names`);
     assert.ok(step(kind), `the courier contract has no route for ${kind}`);
