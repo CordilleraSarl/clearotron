@@ -39,12 +39,13 @@ import { fileURLToPath } from "node:url";
 import { runStage } from "./gateway.mjs";
 import { config, RESEARCH_PROVIDERS, REGISTER_PROVIDER, activeProvider, missingCredentials } from "./driver.config.mjs";
 import { StageFailure, buildFailurePacket, stageWallFields, terminalReasonFields, isDesignedRefusal } from "./run-outcome.mjs";   // — the wall fields the spine already carries
+import { abbrev } from "./repair-contract.mjs";
 import {
   REFUSAL_TERMINAL_KIND,   // — the terminal kind that is not a failure
   // — the clearance lane's recovery DECISION, reused rather than restated. The
   // ladder's class-awareness, its repeat-signature backstop and its lane accounting are one
   // implementation; a second copy here would be a second thing to keep true.
-  decideRecovery, failureSignature, classifyFailureReason, countRecoveryLanes, weatherCeilingFor,
+  decideRecovery, failureSignature, classifyFailureReason, countRecoveryLanes, weatherCeilingFor, capWaitFrom,
 } from "./repairs.mjs";
 import { RunCancelled, assertNotCancelledBeforePublish, isCancelled, readCancel } from "./cancel.mjs";   // stop-by-user: never the failure lane below
 import { loadFrameworkManifest, parseFrameworkManifest, frameworkFor, DEFAULT_FRAMEWORK } from "./framework.mjs";
@@ -638,18 +639,12 @@ export function removeNextStepSections(runDir, marks) {
   return out;
 }
 
-// ── — the knockout lane's recovery park ───────────────────────────────────────
-//
-// EXPORTED so it can be armed directly. The clearance lane's equivalent is inline in a 6,000-line catch
-// and is reachable only by driving a whole pipeline; that is why its class-awareness has no focused arm
-// and why this one does.
-//
-// Returns the runner's park result, or NULL to mean "no park was bought — carry on to the terminal".
-// Null is the answer on every path that is not a park, including a failure to read the run's own status:
-// a park bought on an unreadable history could re-buy a signature that already parked, which is the one
-// thing `decideRecovery`'s backstop exists to stop.
-export function knockoutRecoveryPark({ ctx, run, e, reason, failedStage, note = () => {} }) {
-  if (!run?.runDir) return null;
+/**
+ * What the recovery ladder decides for a Knockout failure: its signature and class, the attempts the run already spent,
+ * read from its status, and the decision itself. Reads status.json and nothing else. The park below acts on the
+ * decision, and the terminal records the same signature, class, count and end kind, as a clearance's terminal does.
+ */
+export function knockoutRecoveryDecision({ run, e, reason, failedStage }) {
   let snapshot = {};
   try { snapshot = JSON.parse(readFileSync(join(run.runDir, "status.json"), "utf8")) ?? {}; } catch { snapshot = {}; }
   const priorAttempts = Number(snapshot.recoveryAttempts) || 0;
@@ -668,9 +663,26 @@ export function knockoutRecoveryPark({ ctx, run, e, reason, failedStage, note = 
   const weatherCeiling = weatherCeilingFor(recoveryMax);
   const decision = decideRecovery({
     failClass, sig: failSig.sig, reason: String(reason), history, priorAttempts,
-    recoveryMax, hasRunDir: true, runCeiling: recoveryMax, weatherCeiling,
+    recoveryMax, hasRunDir: Boolean(run?.runDir), runCeiling: recoveryMax, weatherCeiling,
     weatherAttempts: laneCounts.weather, defectAttempts: laneCounts.defect,
   });
+  return { priorAttempts, history, recoveryMax, failSig, failClass, laneCounts, weatherCeiling, decision };
+}
+
+// ── — the knockout lane's recovery park ───────────────────────────────────────
+//
+// EXPORTED so it can be armed directly. The clearance lane's equivalent is inline in a 6,000-line catch
+// and is reachable only by driving a whole pipeline; that is why its class-awareness has no focused arm
+// and why this one does.
+//
+// Returns the runner's park result, or NULL to mean "no park was bought — carry on to the terminal".
+// Null is the answer on every path that is not a park, including a failure to read the run's own status:
+// a park bought on an unreadable history could re-buy a signature that already parked, which is the one
+// thing `decideRecovery`'s backstop exists to stop.
+export function knockoutRecoveryPark({ ctx, run, e, reason, failedStage, note = () => {} }) {
+  if (!run?.runDir) return null;
+  const { priorAttempts, history, recoveryMax, failSig, failClass, laneCounts, weatherCeiling, decision } =
+    knockoutRecoveryDecision({ run, e, reason, failedStage });
   try {
     runLog(run.runDir, { event: "recovery-classified", lane: "knockout", sig: failSig.sig,
       class: failClass, stage: failedStage, recoverable: decision.recoverable,
@@ -1511,8 +1523,8 @@ export async function knockoutInner(ctx, job, opts = {}) {
     // the same refusal and spends money to do it. The check is FIRST, ahead of every artifact below.
     const reason = e instanceof StageFailure ? e.reason : String(e?.stack ?? e);
     const failedStage = e?.stage ?? "knockout";
-    const terminalKind = isDesignedRefusal(e) ? REFUSAL_TERMINAL_KIND : null;
-    if (!terminalKind) {
+    const refused = isDesignedRefusal(e);
+    if (!refused) {
       const parked = knockoutRecoveryPark({ ctx, run, e, reason, failedStage, note });
       // A park writes `.postponed` and NO `.failed`; the runner's `res.postponed` branch re-dispatches
       // it, and `pipeline()` re-enters THIS lane by policy, so a knockout park can never resume as a
@@ -1521,10 +1533,10 @@ export async function knockoutInner(ctx, job, opts = {}) {
     }
     // terminal — the ladder above declined to buy a park: .failed + the standard failure packet
     // — WAS THIS THE PRODUCT REFUSING, OR THE ENGINE BREAKING? Asked once, here, and carried into
-    // every record this block writes. Null on an ordinary failure, so nothing about an ordinary failure
-    // changes shape. That other half — a designed refusal must never reach recovery machinery — was
+    // every record this block writes. An ordinary failure carries the kind the ladder decided, as a
+    // clearance's does, and never the refusal's. That other half — a designed refusal must never reach recovery machinery — was
     // satisfied by construction while the lane had none. It is now satisfied by CODE: the
-    // `if (!terminalKind)` above, which asks the refusal question BEFORE the ladder is consulted and is
+    // `if (!refused)` above, which asks the refusal question BEFORE the ladder is consulted and is
     // the reason a refusal cannot buy a park. The arms that prove it are in the ladder's own test file.
     // REACHES THIS LANE ( · E11). The fix for "status.json truncates the cause the journal
     // keeps" landed on the clearance terminal and was never ported here, and this is the lane where it
@@ -1534,15 +1546,23 @@ export async function knockoutInner(ctx, job, opts = {}) {
     // the plain knockout level" — on a terminal whose entire purpose is to tell an operator what to do.
     // `reason` keeps its 200 chars (it rides the ping); the cut is now STATED and the tail kept beside it.
     const { reason: shortReason, reasonTruncated, reasonFull } = terminalReasonFields(reason);
-    // The signature and class the clearance end records, so a reader of either product's failure reads the same fields.
-    const failSig = failureSignature(failedStage, reason, { codes: e instanceof StageFailure ? e.reasonCodes : undefined });
-    const failClass = (e instanceof StageFailure && e.failClass) || classifyFailureReason(String(reason));
-    // The automatic recovery attempts this run already spent, read from its status as the park reads them. The notice
-    // says "after N automatic recovery attempts" when there were any, word for word as a clearance's does.
-    const priorAttempts = Number(readRunStatus(run.runDir)?.recoveryAttempts) || 0;
+    // What the clearance's terminal records, from the decision the ladder made: the signature, the class, the automatic
+    // recovery attempts already spent, and why the run stopped. The notice says "after N automatic recovery attempts"
+    // when there were any, and gives the end kind's sentence, both word for word as a clearance's does. A refusal keeps
+    // its own kind, which the ladder never saw.
+    const { failSig, failClass, priorAttempts, history, recoveryMax, decision } = knockoutRecoveryDecision({ run, e, reason, failedStage });
+    const terminalKind = refused ? REFUSAL_TERMINAL_KIND : decision.terminalKind;
+    // The payload and its count, as the clearance's terminal derives them: the throw site's own, else none.
+    const reasonDetail = e instanceof StageFailure && e.detail ? abbrev(String(e.detail).replace(/\s+/g, " ").trim(), 600) : null;
+    const quantity = (e instanceof StageFailure && Number.isFinite(e.quantity) ? e.quantity : null) ?? failSig.quantity;
+    if (!refused && (terminalKind === "exhausted" || terminalKind === "weather-exhausted") && recoveryMax > 0) {
+      try { runLog(run.runDir, { event: "auto-recovery-exhausted", lane: "knockout", attempts: priorAttempts, of: recoveryMax,
+        recoveryLane: decision.lane, laneAttempts: decision.laneAttempts, laneOf: decision.laneCeiling }); } catch { /* best-effort */ }
+    }
     sentinel(run.runDir, ".failed", { stage: failedStage, reason, lane: "knockout", recoveryAttempts: priorAttempts, sig: failSig.sig, class: failClass, terminalKind });
-    runLog(run.runDir, { event: "failed", stage: failedStage, reason, lane: "knockout", sig: failSig.sig, class: failClass, ...(terminalKind ? { terminalKind } : {}) });
-    writeRunStatus(ctx, { state: "failed", failedStage, reason: shortReason, reasonTruncated, reasonFull, terminalKind });
+    runLog(run.runDir, { event: "failed", stage: failedStage, reason, lane: "knockout", sig: failSig.sig, class: failClass, terminalKind });
+    writeRunStatus(ctx, { state: "failed", failedStage, reason: shortReason, reasonTruncated, reasonFull, terminalKind,
+      reasonDetail, reasonQuantity: quantity });
     recordRunConsumption(ctx, { phase: "failed", tokens: stampTokenRollup(run.runDir, "failed") });
     rollupStatus(run.studioRoot);
     // OWED EITHER WAY, mirroring pipelineInner: the flag is armed whichever lane wrote the packet,
@@ -1566,6 +1586,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
       const rich = buildFailurePacket({
         runId, agent, job, failedStage, shortReason, terminalKind,
         reasonVerbatim: String(reason).slice(0, 1000), sig: failSig.sig, failClass, priorAttempts,
+        repairs: e instanceof StageFailure ? e.repairs : [], capWait: capWaitFrom(history), reasonDetail, reasonQuantity: quantity,
       });
       const packet = {
         kind: "run-failed", ...rich,

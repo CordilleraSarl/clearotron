@@ -269,7 +269,7 @@ test("a designed refusal parks nothing — no .postponed, no recovery history, n
 
 // Everything above would also be satisfied by stamping every knockout terminal as a refusal. This is the
 // assertion that says the discriminator discriminates.
-test("an ordinary knockout failure carries terminalKind null and reads exactly as it did", async () => {
+test("an ordinary knockout failure is no refusal, and carries the end kind a clearance's would", async () => {
   const studioRoot = join(ROOT, "studio", "cli-plain-failure");
   const runDir = join(studioRoot, "clearance-search", "runs", "wanderer", "2026-08-13-copper-bastion");
   mkdirSync(driverDir(runDir), { recursive: true });
@@ -285,13 +285,17 @@ test("an ordinary knockout failure carries terminalKind null and reads exactly a
 
   assert.equal(res.ok, false);
   assert.equal(res.failedStage, "knockout-scope");
-  assert.equal(res.terminalKind, null, "an ordinary failure carries no kind on this lane — unchanged");
+  // A Knockout is a level of a clearance and fails like one: the collision is a factual gap, the ladder says so, and
+  // every record and the notice carry it, in the clearance's own sentence. It is still a failure, not a refusal.
+  assert.equal(res.terminalKind, "factual", "the kind the recovery decision gave, as on a clearance");
   const status = readJson(join(runDir, "status.json"));
   assert.equal(status.state, "failed");
-  assert.equal(status.terminalKind, null);
+  assert.equal(status.terminalKind, "factual");
   const packet = readJson(driverDir(runDir, "failure.json"));
   assert.equal(packet.refused, false);
-  assert.match(packet.whatsappText, /FAILED at knockout-scope/);
+  assert.notEqual(packet.terminalKind, REFUSAL_TERMINAL_KIND);
+  assert.match(packet.whatsappText, /FAILED at knockout-scope \[factual\]: .* — nothing was delivered; needs human attention\.$/);
+  assert.match(packet.emailBodyHtml, /A factual gap the machinery could not close — this is a human decision, not a retry\./);
   // The signature and class the clearance end records travel here too, and change no word of the notice.
   const marker = readJson(join(runDir, ".failed"));
   assert.match(String(marker.sig ?? ""), /\S/, "the sentinel carries the failure's signature");
@@ -323,7 +327,7 @@ test("a knockout that already spent recovery attempts says how many when it fail
 
   assert.equal(res.failedStage, "knockout-scope", "premise: the same factual failure, which buys no further park");
   const packet = readJson(driverDir(runDir, "failure.json"));
-  assert.match(packet.whatsappText, /FAILED at knockout-scope after 2 automatic recovery attempts: /);
+  assert.match(packet.whatsappText, /FAILED at knockout-scope after 2 automatic recovery attempts \[factual\]: /);
   assert.match(packet.emailBodyHtml, /FAILED at stage <b>knockout-scope<\/b> after <b>2 automatic recovery attempts<\/b> and NOTHING was delivered/);
   assert.equal(packet.recoveryAttempts, 2);
   assert.equal(readJson(join(runDir, ".failed")).recoveryAttempts, 2);
