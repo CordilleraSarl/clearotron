@@ -374,7 +374,7 @@ Open the variant manifest at the path your task message names. Parse:
 
 The variants table is the source of truth for what to search. The skill does NOT generate its own variants — manifest is authoritative.
 
-**Transliteration variants** (rows tagged `translit-<script>` with `Verify? ✅`) get included in the grid call's SEARCH TERMS like every other variant, but findings on these get carried through with the `Verify?` flag to the findings file.
+Transliteration variants are included in the instructed grid like every other variant. A hit on a transliteration needs human confirmation; carry that need in the finding.
 
 ### Step 2 — Search-as-code marketplace grid (1 sandbox call per mark)
 
