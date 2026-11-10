@@ -6940,9 +6940,9 @@
           "todos": 0
         },
         "the-copy-npx-fetched-does-not-shadow-the-installed-command.test.mjs": {
-          "tests": 3,
-          "asserts": 9,
-          "skips": 3,
+          "tests": 5,
+          "asserts": 14,
+          "skips": 5,
           "todos": 0
         },
         "the-corrections-section-is-an-allowlist.test.mjs": {
