@@ -30,8 +30,9 @@ const ROOT = mkdtempSync(join(tmpdir(), "warm-rung-"));
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
 pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", join(ROOT, "pool"));
 process.env.CLEAROTRON_RETRY_BACKOFF_MS = "0";
+import { driverSource } from "./driver-source.mjs";
 const GW = await import("../gateway.mjs");
-const GATEWAY_SRC = readFileSync(new URL("../gateway.mjs", import.meta.url), "utf8");
+const GATEWAY_SRC = driverSource("gateway.mjs");
 
 const withEnv = async (vars, fn) => {
   const prev = {};
