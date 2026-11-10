@@ -382,7 +382,7 @@ Transliteration variants are included in the instructed grid like every other va
 > Call `perplexity_research` with `enable_sandbox: true` and `grid_spec_path: <the path from the task>`
 > and nothing else for the grid. The tool runs EXACTLY the dictated term × platform grid and **writes
 > `common-law-grid.json` itself** from the program's stdout. In this mode you do **NOT** author the
-> program from the template below, you do **NOT** save `common-law-grid.json` (saving it yourself —
+> program, you do **NOT** save `common-law-grid.json` (saving it yourself —
 > re-emitting ~100 cells through your turn output — is exactly what truncated/dropped cells before), and
 > you do **NOT** re-emit the grid JSON. The tool returns the candidate hits that need judgment.
 > **This mode changes ONLY the Step-2 grid mechanics — nothing else about common-law.** You STILL run
@@ -391,16 +391,6 @@ Transliteration variants are included in the instructed grid like every other va
 > results matrix, Coverage ledger, Audit trail). Skipping Step 3 leaves the deliverable missing a core search
 > layer. The only things you skip are authoring the grid program and
 > saving the grid ledger — the tool owns those.
-
-**The marketplace sweep is ONE `perplexity_research` call with `enable_sandbox: true` and
-`depth: "pro-search"`** — Perplexity's sandbox runs a *program* that executes a real search for
-every (variant × platform) cell and returns per-cell receipts plus the executed code. Use the
-**Search-as-code marketplace grid** template in [perplexity-prompts.md](perplexity-prompts.md),
-filling in:
-
-- The terms your task message's GRID KEYS names (the program's SEARCH TERMS array)
-- Every store domain in the task message's PLATFORMS block + the general-web cell (never a remembered list)
-- The meaning questions the frame wrote, as the grid spec carries them.
 
 The tool returns the program's stdout JSON (`cells` + `extras` + `gaps`) and the program code as an
 audit receipt. **Trademark-register lookups stay out of scope** — the grid only searches
