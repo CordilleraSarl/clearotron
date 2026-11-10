@@ -17,7 +17,8 @@ import { writeOutboxPacket } from "./outbox.mjs";
 import { axesNotYetDisclosed, clearPartsNotCompleted, readPartNotCompleted, slicesNotYetRecorded, unitsNotYetRecorded, writePartNotCompleted } from "./parts-not-completed.mjs";
 import { rollupStatus, writeRunStatus } from "./progress.mjs";
 import { abbrev } from "./repair-contract.mjs";
-import { capParkSchedule, capWaitFrom, classificationSource, classifyFailureReason, countRecoveryLanes, countTrailingStageStrikes, decideRecovery, failureSignature, isCapPark, unnamedStructuredFailure, weatherCeilingFor } from "./repairs.mjs";
+import { capParkSchedule, capWaitFrom, classificationSource, classifyFailureReason, countRecoveryLanes, countTrailingStageStrikes, decideRecovery, failureSignature, isCapPark, isContentShapedFail, unnamedStructuredFailure, weatherCeilingFor } from "./repairs.mjs";
+import { logTurnaroundReconciliation } from "./run-quote.mjs";
 import { StageFailure, buildFailurePacket, terminalReasonFields } from "./run-outcome.mjs";
 import { paths } from "./stages.mjs";
 import { stampTokenRollup } from "./tokens.mjs";
@@ -25,7 +26,7 @@ import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 export async function endTheFailedRun({ P, agent, ctx, e, job, run }, helpers) {
-  const { isContentShapedFail, logTurnaroundReconciliation, recordConnotationAudit, sentinel, undoTaintRenames } = helpers;
+  const { recordConnotationAudit, sentinel, undoTaintRenames } = helpers;
   // RATE-LIMIT POSTPONE (re-throw): a 429 session-cap is NOT a terminal failure — RE-THROW it so pipeline()'s
   // outer catch parks the run resumable (.postponed, no .failed, no notify-fail) and the runner auto-resumes
   // after the cap window, vs stranding every completed stage and forcing a ~$40 cold re-run. This catch wraps

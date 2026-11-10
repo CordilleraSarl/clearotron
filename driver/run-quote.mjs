@@ -23,6 +23,9 @@
 import { resolveEffectiveScope } from "./effective-scope.mjs";
 import { decideJxLanes } from "./jx-lanes.mjs";
 import { quoteEffort, leversFromResolved } from "./effort-model.mjs";
+import { note, runLog } from "./log.mjs";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 
 /**
  * Whether a native-language lane will ACTUALLY run.
@@ -116,4 +119,35 @@ export function reconcileTurnaround({ quote = null, startedAt = null, now = Date
     actualHoursBasis: measured ? "wall:status.startedAt→terminal" : null,
     actualHoursIncludesParked: measured ? true : null,
   };
+}
+
+// Quoted-vs-actual turnaround, written at every terminal of the CLEARANCE pipeline — all five of them, in
+// pipeline.mjs and the run endings carved from it: delivered, cancelled, rate-limit-postponed, recovery-parked,
+// failed. (The call-site census test greps those files, and that is the scope it can police.) Two terminals elsewhere are deliberately
+// NOT covered and must not be read as covered: the knockout lane's delivered/cancelled/failed exits
+// (pipeline-knockout.mjs) — a knockout run never computes a quote, so there is no quoted figure to
+// reconcile against and every field but the wall would be null — and the runner's `parked-for-human`
+// grace-exit (runner.mjs parkInFlightForHuman), which is a SIGTERM handler with no ctx and no quote in
+// hand. Extending to either is a change of shape, not a call site; until then this is the honest scope.
+//
+// AD-4 surfaced this only at the delivered terminal, so a run that failed, parked for auto-recovery or
+// postponed on a rate-limit cap recorded nothing at all — and "we never measured this run" was byte-for-byte
+// the same as "this run did not deliver", the exact three-valuedness the package exists to enforce. The row
+// now always carries `state`: delivered | failed | recovery-parked | rate-limit-postponed | cancelled. A run
+// legitimately writes SEVERAL of these across its life (a park is the terminal of an INVOCATION, not of the
+// run) — they are append-only and the LAST row is the run's outcome; the earlier ones are the honest record
+// of how long each leg took. HOURS ONLY: the tokens-only directive holds and no currency appears here.
+// Best-effort telemetry — this must never affect a delivery, a failure notice or a park.
+export function logTurnaroundReconciliation(runDir, quote, state) {   // @internal
+  if (!runDir) return null;
+  try {
+    let startedAt = null;
+    // status.json `startedAt` is written once at seed and a resume deliberately never touches it, so the
+    // figure is the run's TRUE wall — see reconcileTurnaround on what that includes.
+    try { startedAt = JSON.parse(readFileSync(join(runDir, "status.json"), "utf8"))?.startedAt ?? null; } catch { /* no status yet — actualHours stays null */ }
+    const ta = reconcileTurnaround({ quote: quote ?? null, startedAt });
+    runLog(runDir, { event: "turnaround-reconciliation", state, ...ta });
+    note(`turnaround (${state}): quoted ${ta.quotedHours != null ? `${ta.quotedHours}h` : "(never sized)"}, actual ${ta.actualHours != null ? `${ta.actualHours}h` : "(no startedAt)"}${ta.ratio != null ? ` — ${ta.ratio}× the quote` : ""}${ta.actualHoursIncludesParked ? " [wall since start, includes rate-limit postpones and recovery parks]" : ""}`);
+    return ta;
+  } catch { return null; /* telemetry best-effort — never affects a run's terminal */ }
 }

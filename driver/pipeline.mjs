@@ -176,7 +176,7 @@ import { writeStamp, stageStaleness, restamp, restampStage, reconcileStamps, sha
 import { parseManifestVariants, GRID_HALVES, GRID_SEATS, MEANING_SEAT, splitGridSpec, halfOfTerm, openChannelRows } from "./common-law-receipts.mjs";
 import { stampTokenRollup } from "./tokens.mjs";
 import { recordRunConsumption } from "./consumption-ledger.mjs";
-import { quoteForJob, reconcileTurnaround } from "./run-quote.mjs";
+import { quoteForJob, logTurnaroundReconciliation } from "./run-quote.mjs";
 import { assembleRunRecords, readRecordArtifacts, findRegistryArithmeticIssues, findRegistryViolations, collectOppositionDeadlines, normalizeRecordUri } from "./registry-fidelity.mjs";
 import { parsePlacementsJson } from "./placement-model.mjs";   // B2 — the structured tier mirror; the lint reads it only to flag an EMPTY one
 import { plainRegisterFlags, SENTENCE_WORD_LIMIT } from "./plain-register.mjs";
@@ -199,13 +199,15 @@ import { JURISDICTION_ADAPTERS, LANGUAGE_LANES, scopeJurisdictions as jxScopeJur
 // parseBlindFrameModel nor dominantElementFromManifest is called from this file any more.
 import { recordedScopeLedgerRows } from "./clearance-variants-record.mjs";
 import { renderFormNeighbourhoodJson, parseFormNeighbourhoodJson, dispatchedQueriesFromBand, formGapDirectives, markText } from "./form-neighbourhood.mjs"; import { loadOrdinaryWords } from "./ordinary-words.mjs";
-import { classifyFailureReason, createRepairLedger, TRANSIENT_RE, retryCannotHelpWith } from "./repairs.mjs";
+import { classifyFailureReason, createRepairLedger, TRANSIENT_RE, retryCannotHelpWith, isContentShapedFail, isFallbackEligible } from "./repairs.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { isCancelled } from "./cancel.mjs";   // stop-by-user: a distinct class, never classified as a failure; isCancelled is the resume door's own refusal (2155)
 import { BRAND } from "../shared/brand.mjs";   // — the operator name a client is told to expect, from the tenant seam
 import { reachableCommand } from "../shared/invocation.mjs";   // — a printed command the reader can type later, from anywhere
 export { StageFailure, buildFailurePacket, isDesignedRefusal, stageWallFields, terminalReasonFields };   // moved to run-outcome.mjs; importers read them here as before
 export { correctionReading, correctionRows, flagOrdinals, recordCorrectionsBasis, repairUnnamedRemovals, rollbackCorrectivePass };   // moved to steps/corrections.mjs; importers read them here as before
+export { isContentShapedFail, isFallbackEligible };   // moved to repairs.mjs; importers read them here as before
+export { logTurnaroundReconciliation };   // moved to run-quote.mjs; importers read it here as before
 
 // Fix-1 (deterministic common-law closure): the lanes that dictate a supplementary grid SPEC (the driver
 // writes the spec, the plugin writes the ledger, the driver folds it in code). One tag per lane so
@@ -326,36 +328,8 @@ export function connotationRemedyToken(err) {   // @internal
 // the funnel enumerates the dangerous named band COMPLETELY (the fan-in band gate guarantees it crossed), so a
 // conditional covers a genuine residual the lawyer flagged, not a sampled-and-hidden miss.
 
-// Failure causes that are TRANSIENT INFRASTRUCTURE (provider overload / idle-timeout / transport) — the only
-// ones a caller may re-run without risking a quality drop, because a repeat is the actual remedy and it
-// CANNOT paper over a recall gap. Everything NOT matched here is a content/coverage failure (validator
-// reject, missing output, unparseable, self-reported incomplete) — those never earn a re-run beyond the
-// same-model ladder inside runStage; they hard-stop, loudly. ⚠️ `status_timeout` is the 2026-06-07
-// incident itself (the gateway's ~120s LLM idle-timeout surfaced as a clean-JSON status:"timeout" → the soft
-// `status_<json.status>` bucket) and MUST stay eligible.
-//
-// NAME: the model-failover chain this predicate was written for is deleted. The predicate is not —
-// it is live at the common-law half-join below and it is what `isContentShapedFail` is defined against.
-// Renaming it would touch the retry-ladder tests, so the name stays and this note says why.
-const FALLBACK_ELIGIBLE = [
-  /^timeout$/, /^lane_wedge$/, /^embedded_fallback$/, /^nonzero_exit/,
-  /^status_timeout$/, /^status_overloaded$/, /^status_error$/, /^status_aborted$/, /^status_rate_limited$/,
-];
-export function isFallbackEligible(fail) {   // @internal
-  return Boolean(fail) && FALLBACK_ELIGIBLE.some((re) => re.test(fail));
-}
-
-// A5 strike predicate — is this run.jsonl stage-row failure a CONTENT verdict (counts toward the
-// invalid-artifact strike cap) rather than infra weather (breaks the streak)? isFallbackEligible alone
-// is NOT enough: it matches only the transient-infrastructure token set, but the trail also carries
-// transient shapes that set does not match — `rate_limited` (the subscription 5h cap), bare
-// `unparseable_json`, and prose transport causes from code-side units ("… direct execution failed:
-// HTTP 502 …"). repairs.mjs's own doctrine says those are sampling noise, not a content verdict — so
-// anything classifyFailureReason calls transient breaks the streak too. Exported so the strike tests
-// exercise THIS predicate, not a hand-rolled stand-in.
-export function isContentShapedFail(fail) {   // @internal
-  return classifyFailureReason(String(fail ?? "")) !== "transient" && !isFallbackEligible(fail);
-}
+// The predicates that tell a transient failure from a content verdict, isFallbackEligible and isContentShapedFail,
+// live in repairs.mjs, beside the classifier they are defined against. Both run endings read them there.
 
 // The prose Coverage-ledger parser moved to coverage-ledger.mjs (the registerFindings validator
 // mirror-checks prose against JSON, and verify cannot import pipeline) — re-exported for callers/tests.
@@ -9318,36 +9292,8 @@ export function journalStageInputs(paths = [], { reads = null, readsTruncated = 
   });
 }
 
-// Quoted-vs-actual turnaround, written at every terminal of the CLEARANCE pipeline in this file — all
-// five of them: delivered, cancelled, rate-limit-postponed, recovery-parked, failed. (The call-site census
-// test greps this file, and that is the scope it can police.) Two terminals elsewhere are deliberately
-// NOT covered and must not be read as covered: the knockout lane's delivered/cancelled/failed exits
-// (pipeline-knockout.mjs) — a knockout run never computes a quote, so there is no quoted figure to
-// reconcile against and every field but the wall would be null — and the runner's `parked-for-human`
-// grace-exit (runner.mjs parkInFlightForHuman), which is a SIGTERM handler with no ctx and no quote in
-// hand. Extending to either is a change of shape, not a call site; until then this is the honest scope.
-//
-// AD-4 surfaced this only at the delivered terminal, so a run that failed, parked for auto-recovery or
-// postponed on a rate-limit cap recorded nothing at all — and "we never measured this run" was byte-for-byte
-// the same as "this run did not deliver", the exact three-valuedness the package exists to enforce. The row
-// now always carries `state`: delivered | failed | recovery-parked | rate-limit-postponed | cancelled. A run
-// legitimately writes SEVERAL of these across its life (a park is the terminal of an INVOCATION, not of the
-// run) — they are append-only and the LAST row is the run's outcome; the earlier ones are the honest record
-// of how long each leg took. HOURS ONLY: the tokens-only directive holds and no currency appears here.
-// Best-effort telemetry — this must never affect a delivery, a failure notice or a park.
-export function logTurnaroundReconciliation(runDir, quote, state) {   // @internal
-  if (!runDir) return null;
-  try {
-    let startedAt = null;
-    // status.json `startedAt` is written once at seed and a resume deliberately never touches it, so the
-    // figure is the run's TRUE wall — see reconcileTurnaround on what that includes.
-    try { startedAt = JSON.parse(readFileSync(join(runDir, "status.json"), "utf8"))?.startedAt ?? null; } catch { /* no status yet — actualHours stays null */ }
-    const ta = reconcileTurnaround({ quote: quote ?? null, startedAt });
-    runLog(runDir, { event: "turnaround-reconciliation", state, ...ta });
-    note(`turnaround (${state}): quoted ${ta.quotedHours != null ? `${ta.quotedHours}h` : "(never sized)"}, actual ${ta.actualHours != null ? `${ta.actualHours}h` : "(no startedAt)"}${ta.ratio != null ? ` — ${ta.ratio}× the quote` : ""}${ta.actualHoursIncludesParked ? " [wall since start, includes rate-limit postpones and recovery parks]" : ""}`);
-    return ta;
-  } catch { return null; /* telemetry best-effort — never affects a run's terminal */ }
-}
+// logTurnaroundReconciliation, the quoted-against-actual row each run ending writes, lives in run-quote.mjs beside
+// reconcileTurnaround.
 
 // The two sentences a rate-limit park owes its reader, in ONE place. They are written into the `.postponed`
 // sentinel for whoever reads the run dir AND printed by the CLI for whoever is watching the terminal, and a
@@ -9737,7 +9683,7 @@ async function pipelineInner(job, opts = {}) {
   note(`\n=== clearotron-driver: ${run.slug} / ${run.date}-${run.codename} (agent=${agent}) ===`);
 
   // How the run ends delivered (run-delivered.mjs).
-  const { deliverWithoutTheAssessment, publishAndDeliver } = await deliveryEndState({ P, agent, ctx, job, run }, { applyScopeFrontMatterOf, archive, assessmentCoverageOfRun, localLanguageStateOf, logTurnaroundReconciliation, reportIdentityRecord, searchLogAuditMd, sentinel, setAsideTheAssessment, writeScopeFactsOf });
+  const { deliverWithoutTheAssessment, publishAndDeliver } = await deliveryEndState({ P, agent, ctx, job, run }, { applyScopeFrontMatterOf, archive, assessmentCoverageOfRun, localLanguageStateOf, reportIdentityRecord, searchLogAuditMd, sentinel, setAsideTheAssessment, writeScopeFactsOf });
 
   try {
     // The matter frame, its variants and the plan (steps/intake.mjs).
@@ -9834,7 +9780,7 @@ async function pipelineInner(job, opts = {}) {
     return await runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, checkLateBind, clampOnTheFloorDuty, clampOnTheWritersDuty, ctx, deliverAndClamp, findingsForCards, followTheRecordsActions, groupedMembers, job, opts, overviewOpen, publishAndDeliver, rebuildTheDeliveredRecord, restoreTheBrokenRecord, reviewOpen, rov, run, runState, saveTheLabel, saveTheOwedLabel, synthesisKey, synthesisModel, synthesisThinking, writeScopeFacts, writeUps, writeVerdictSidecar }, { CITED_URI_RE, NO_CHANGE, REBUILDS_THE_DELIVERED_RECORD, StageFailure, UPSTREAM_STALE_REPAIR, assembleReportMd, cardsNeverBuilt, caseLawJoin, computeOpenFloors, defaultRecordFetcher, fullProseOrdinals, inScopeClassList, injectFrontMatter, keepRankingReadByWriter, lateRecordIds, loadCoverageLedger, owedCardOrdinals, ownerScreenForDelivery, partitionDeliveryStale, postRepairScope, queuedForTheRecordOnly, rankingReadByWriterPath, readFindingsForReport, readFloorAxes, readGoodsHanded, reassembleFromTheRecord, recordChangeOwesReview, recordGoodsHanded, relabelCoverageRows, retainStateBeforeReview, runPostRepairCorrection, runPostRepairReview, runWholeReviewForRecord, safeReadJson, settleDerivedBases, stage, stageCharter, stagesStaleOnPlacement, unreadRecordFindingOnly, unreadRecordReview, whatTheRepairLeftStale });
   } catch (e) {
     // What the run does when a step fails (run-failed.mjs).
-    return await endTheFailedRun({ P, agent, ctx, e, job, run }, { isContentShapedFail, logTurnaroundReconciliation, recordConnotationAudit, sentinel, undoTaintRenames });
+    return await endTheFailedRun({ P, agent, ctx, e, job, run }, { recordConnotationAudit, sentinel, undoTaintRenames });
   }
 }
 

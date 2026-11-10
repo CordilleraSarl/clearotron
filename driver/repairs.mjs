@@ -471,6 +471,37 @@ export function failureSignature(stage, reason, { codes } = {}) {
   return { sig, stage: s, norm, quantity, quantityToken, kindToken };
 }
 
+// Failure causes that are TRANSIENT INFRASTRUCTURE (provider overload / idle-timeout / transport) — the only
+// ones a caller may re-run without risking a quality drop, because a repeat is the actual remedy and it
+// CANNOT paper over a recall gap. Everything NOT matched here is a content/coverage failure (validator
+// reject, missing output, unparseable, self-reported incomplete) — those never earn a re-run beyond the
+// same-model ladder inside runStage; they hard-stop, loudly. ⚠️ `status_timeout` is the 2026-06-07
+// incident itself (the gateway's ~120s LLM idle-timeout surfaced as a clean-JSON status:"timeout" → the soft
+// `status_<json.status>` bucket) and MUST stay eligible.
+//
+// NAME: the model-failover chain this predicate was written for is deleted. The predicate is not —
+// it is live at the common-law half-join (steps/register-sweep.mjs) and it is what `isContentShapedFail` is defined against.
+// Renaming it would touch the retry-ladder tests, so the name stays and this note says why.
+const FALLBACK_ELIGIBLE = [
+  /^timeout$/, /^lane_wedge$/, /^embedded_fallback$/, /^nonzero_exit/,
+  /^status_timeout$/, /^status_overloaded$/, /^status_error$/, /^status_aborted$/, /^status_rate_limited$/,
+];
+export function isFallbackEligible(fail) {   // @internal
+  return Boolean(fail) && FALLBACK_ELIGIBLE.some((re) => re.test(fail));
+}
+
+// A5 strike predicate — is this run.jsonl stage-row failure a CONTENT verdict (counts toward the
+// invalid-artifact strike cap) rather than infra weather (breaks the streak)? isFallbackEligible alone
+// is NOT enough: it matches only the transient-infrastructure token set, but the trail also carries
+// transient shapes that set does not match — `rate_limited` (the subscription 5h cap), bare
+// `unparseable_json`, and prose transport causes from code-side units ("… direct execution failed:
+// HTTP 502 …"). This module's own doctrine says those are sampling noise, not a content verdict — so
+// anything classifyFailureReason calls transient breaks the streak too. Exported so the strike tests
+// exercise THIS predicate, not a hand-rolled stand-in.
+export function isContentShapedFail(fail) {   // @internal
+  return classifyFailureReason(String(fail ?? "")) !== "transient" && !isFallbackEligible(fail);
+}
+
 // ── invalid-artifact strikes (A5, 2026-07-28 postmortem) ───────────────────────────────────────────────────
 // A stage that repeatedly produces an INVALID output never went terminal: the idempotency skip can't
 // fire over an invalid artifact, so every resume re-ran it — and with the reclaim/resume lanes feeding
@@ -478,7 +509,7 @@ export function failureSignature(stage, reason, { codes } = {}) {
 // every resume while the operator watched "running 7/9"). This counts the TRAILING CONSECUTIVE failed
 // executions of one stage from the append-only run.jsonl spine ("stage" events only — skips and other
 // stages are transparent). Only CONTENT-SHAPED failures count (the caller passes an isContentShaped
-// predicate — pipeline's isContentShapedFail: not transient-classified AND not fallback-eligible): a
+// predicate — isContentShapedFail, below: not transient-classified AND not fallback-eligible): a
 // flapping provider, a rate-limit trail, or a timeout streak must never convert to deterministic —
 // waiting/re-sampling is a real remedy there, and any infra-shaped failure in the trail breaks the
 // streak. A success ends the streak too, by definition.

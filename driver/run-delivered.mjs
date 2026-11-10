@@ -24,6 +24,7 @@ import { composeEmailHtml, coverNoteOptions, deliverySubject, publishReport } fr
 import { noteRegisterServed, providerUsageCaveat, registersServedFrom } from "./register-served.mjs";
 import { renderReportOverview } from "./report-overview-record.mjs";
 import { atomicWrite } from "./run-record.mjs";
+import { logTurnaroundReconciliation } from "./run-quote.mjs";
 import { reportIdentityFor } from "./search-policy.mjs";
 import { writeSettleStamp } from "./settle-stamp.mjs";
 import { paths, whatsappRouting } from "./stages.mjs";
@@ -32,7 +33,7 @@ import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node
 import { join } from "node:path";
 
 export async function deliveryEndState({ P, agent, ctx, job, run }, helpers) {
-  const { applyScopeFrontMatterOf, archive, assessmentCoverageOfRun, localLanguageStateOf, logTurnaroundReconciliation, reportIdentityRecord, searchLogAuditMd, sentinel, setAsideTheAssessment, writeScopeFactsOf } = helpers;
+  const { applyScopeFrontMatterOf, archive, assessmentCoverageOfRun, localLanguageStateOf, reportIdentityRecord, searchLogAuditMd, sentinel, setAsideTheAssessment, writeScopeFactsOf } = helpers;
   // ── PUBLISHING AND DELIVERING: ONE PATH, FOR EVERY RUN THAT DELIVERS ─────────────────────────────────
   //
   // The run's last steps, from publishing the report to the delivered state, the packet and the archive. A run whose
