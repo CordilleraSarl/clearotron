@@ -119,6 +119,7 @@ export const RESULT_NOUN_FIELDS = Object.freeze([
   { file: "driver/remedy-accounting.mjs", noun: "executed", sites: 1, atWriteSite: 0, verdict: "out-of-scope" },
   { file: "driver/runner.mjs", noun: "recovered", sites: 1, atWriteSite: 0, verdict: "out-of-scope" },
   { file: "driver/skills-store-provenance.mjs", noun: "outcome", sites: 6, atWriteSite: 0, verdict: "out-of-scope" },
+  { file: "driver/stage-freshness.mjs", noun: "settled", sites: 1, atWriteSite: 0, verdict: "out-of-scope" },
   { file: "driver/status-snapshot.mjs", noun: "outcome", sites: 1, atWriteSite: 0, verdict: "out-of-scope" },
   { file: "mcp-server/lib/events.mjs", noun: "recovered", sites: 1, atWriteSite: 0, verdict: "out-of-scope" },
   // Read at the writing site, as this table requires. All three sites are in `knockoutSearches`, a

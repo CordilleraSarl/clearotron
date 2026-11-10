@@ -1527,6 +1527,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-part-that-fails-to-publish-leaves-the-report-delivered.test.mjs": {
+          "tests": 5,
+          "asserts": 42,
+          "skips": 0,
+          "todos": 0
+        },
         "a-partial-payload-cannot-delete-what-it-omits.test.mjs": {
           "tests": 12,
           "asserts": 49,

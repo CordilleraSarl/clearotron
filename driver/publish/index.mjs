@@ -8,7 +8,7 @@
 // This is deterministic Node — NOT an LLM turn — so it cannot hang/timeout. The driver calls it directly
 // (not via runStage). Run identity (runId/codename) comes from the driver's ctx.run; do NOT regenerate it.
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, chmodSync } from 'node:fs';
-import { finishPoolRun, grpRead, openPoolRun } from './shell.mjs';
+import { finishPoolRun, grpRead, openPoolRun, refreshStaffPages } from './shell.mjs';
 import { join, dirname } from 'node:path';
 import { readFold } from '../record-fold.mjs'; import { parseReport, parseAudit, parseSections, parseBlocks, stripInternal, parseCaseLawProfiles, parseCaseLawPreamble, joinCaseLawProfiles } from './parse.mjs';
 import { renderHtml } from './render.mjs'; import { emailConditionsOf } from './email-conditions.mjs';   // the box's conditions, read the same way by the delivery check
@@ -666,7 +666,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   const dates = reportDates({ runDir: runDir ?? dirname(reportMd), poolRunDir: join(poolRoot, runId) });
   const issued = zurichStamp(dates.issuedAt, { zone: true });
   const asOf = new Date().toISOString();   // C2 — publish-time clock for the priority-window flag (render stays pure)
-  const { poolRunDir, writeRO, copyRO } = openPoolRun(poolRoot, runId);
+  const { poolRunDir, writeRO, copyRO, buildWorkbook, writeDataFile } = openPoolRun(poolRoot, runId, { runDir });
 
   // T6 (H7): the POOL copy of report.md is written through the stripInternal choke point —
   // markers consumed, internal tails labelled "[internal]" — so no raw ::p:: token ever reaches a
@@ -1170,8 +1170,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // In the state the workbook is built even with no finding and no search log: it carries the part that was not
   // completed, and the coverage the run did record.
   if (findings.length || auditParsed || assessmentNotCompleted) {
-    try {
-      auditFile = `${runId}-audit.xlsx`;
+    ({ auditFile, auditError, built: counts } = await buildWorkbook(`${runId}-audit.xlsx`, async (at) => {
       // A10 — the failing predelivery checks ride into the workbook and are ENUMERATED on its Summary
       // sheet (with the cover note, the delivery surfaces that reach the reviewing lawyer). The
       // reviewReceipts assembly above claimed for two releases that these "land on the audit workbook's
@@ -1181,12 +1180,10 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
       // the same rule (the workbook's own BANNED gate had already started firing on the raw detail —
       // advisory, so CI stayed green). reviewReceipts.lint keeps its raw detail for the internal
       // readers above (fetchState reads registry-record-coverage's URIs out of it).
-      counts = await buildAudit({ degradedParts: mergeDegradedRows(runDir ? readDegradedPartRows(runDir) : [], degradedPartRows(publishParts)), droppedConditions, undispatchedProbes, withheldFamilies, releasedFamilies: releasedFamilyRows(runDir ?? dirname(reportMd)), setAside, findings, frameworkMethod, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null, assessmentNotCompleted }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
-      grpRead(join(poolRunDir, auditFile), 0o640);
-      if (counts?.gateViolations?.length) console.warn(`[audit-workbook] advisory: ${counts.gateViolations.join(' | ')}`);
-    } catch (e) {
-      auditFile = null; auditError = e.message;                 // a REAL exception only — report ships without the workbook
-    }
+      const built = await buildAudit({ degradedParts: mergeDegradedRows(runDir ? readDegradedPartRows(runDir) : [], degradedPartRows(publishParts)), droppedConditions, undispatchedProbes, withheldFamilies, releasedFamilies: releasedFamilyRows(runDir ?? dirname(reportMd)), setAside, findings, frameworkMethod, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null, assessmentNotCompleted }, auditParsed, at, fm.title, fm);
+      if (built?.gateViolations?.length) console.warn(`[audit-workbook] advisory: ${built.gateViolations.join(' | ')}`);
+      return built;
+    }));   // a REAL exception only — the report ships without the workbook, and nothing names it
   }
 
 
@@ -1336,27 +1333,20 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // meta.reportSchema is stamped ONLY when the file actually wrote — a run whose meta advertises a data
   // file that is not there would break the portal's presence branch. A producer throw never blocks the
   // report (the baked HTML above is already on disk).
-  let reportSchema = null;
-  try {
-    const data = clearanceReportData({
-      runId, codename, matter: fm.matter, markName, title: fm.title, customerKey: customerKey || 'generic',
-      issued, url: poolUrl ? `${String(poolUrl).replace(/\/$/, '')}/${runId}/report.html` : null,
-      // stageLabel REGISTRY-FIRST ( residual, audit item 4): `stageLabel` is reportIdentityFor's
-      // read-time derivation — the same label report.html renders — so a republished pre-renumber run
-      // cannot mint report.html "Depth 2" beside report-data.json "Stage 0.5". The frozen sidecar label
-      // is the LAST resort (a level today's registry no longer knows). meta.json below keeps the frozen
-      // stamp BY DESIGN — its readers re-derive.
-      auditFile, searchLevel: searchPolicy?.level ?? null, stageLabel: stageLabel ?? searchPolicy?.stageLabel ?? null,
-      engineCommit: engineCommit(), servedModels: served,
-      framework, verdictInfo, findings, coverage, contextNotes, markAssessment, fourAnswers, askAnswers,
-      actions: actionsRegister, jurisdiction, searchedJurisdictions, scopeBasis, caption: fm.overall_caption ?? null,
-      assessmentNotCompleted,
-    });
-    writeRO('report-data.json', JSON.stringify(data, null, 2));
-    reportSchema = 'report-data/1';
-  } catch (e) {
-    console.warn(`[report-data] producer failed (report ships without the data file): ${String(e?.message ?? e).slice(0, 140)}`);
-  }
+  const reportSchema = writeDataFile('report-data.json', () => clearanceReportData({
+    runId, codename, matter: fm.matter, markName, title: fm.title, customerKey: customerKey || 'generic',
+    issued, url: poolUrl ? `${String(poolUrl).replace(/\/$/, '')}/${runId}/report.html` : null,
+    // stageLabel REGISTRY-FIRST ( residual, audit item 4): `stageLabel` is reportIdentityFor's
+    // read-time derivation — the same label report.html renders — so a republished pre-renumber run
+    // cannot mint report.html "Depth 2" beside report-data.json "Stage 0.5". The frozen sidecar label
+    // is the LAST resort (a level today's registry no longer knows). meta.json below keeps the frozen
+    // stamp BY DESIGN — its readers re-derive.
+    auditFile, searchLevel: searchPolicy?.level ?? null, stageLabel: stageLabel ?? searchPolicy?.stageLabel ?? null,
+    engineCommit: engineCommit(), servedModels: served,
+    framework, verdictInfo, findings, coverage, contextNotes, markAssessment, fourAnswers, askAnswers,
+    actions: actionsRegister, jurisdiction, searchedJurisdictions, scopeBasis, caption: fm.overall_caption ?? null,
+    assessmentNotCompleted,
+  })) ? 'report-data/1' : null;
   const total = finishPoolRun({ writeRO, poolRoot, skipRegen, regenIndex, meta: {
     runId, codename: codename || '', matter: fm.matter, title: fm.title, client: fm.client,
     // The mark as typed — see above. Distinct from `title`, which is the report's own headline.
@@ -1429,7 +1419,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     // undefined on a producer miss, so the meta never advertises a file that is not there.
     reportSchema: reportSchema ?? undefined,
   } });
-  if (!skipRegen) await regenSurfaces(poolRoot);
+  await refreshStaffPages({ regenSurfaces, poolRoot, skipRegen, runDir });
   // THE PORTAL ROUTE, not the pool's directory layout. This was
   // `<origin>/<runId>/report.html` — where the documents sit on disk, which is not an application route.
   // Composed rather than spelled here so the report link is built the same way the audit link always was.

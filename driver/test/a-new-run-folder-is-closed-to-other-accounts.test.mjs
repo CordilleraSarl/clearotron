@@ -83,7 +83,7 @@ test("both publishers create the report folder with the run-folder mode, and nei
     assert.doesNotMatch(code(rel), /chmodSync\(poolRunDir|grpRead\(poolRunDir/, `${rel} changes the report folder's mode after creating it`);
   }
   for (const rel of ["driver/publish/index.mjs", "driver/publish/knockout.mjs"]) {
-    assert.match(code(rel), /openPoolRun\(poolRoot, runId\)/, `${rel} does not open the report folder through the shell`);
+    assert.match(code(rel), /openPoolRun\(poolRoot, runId[,)]/, `${rel} does not open the report folder through the shell`);
     assert.doesNotMatch(code(rel), /mkdirSync\(poolRunDir/, `${rel} creates the report folder itself`);
   }
 });
