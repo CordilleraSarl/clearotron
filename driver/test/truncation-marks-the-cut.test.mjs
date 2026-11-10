@@ -28,6 +28,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { driverSource } from "./driver-source.mjs";
 import { abbrev } from "../repair-contract.mjs";
 import { parseCaseLawLedger } from "../case-law-ledger.mjs";
 
@@ -92,7 +93,7 @@ test("arm 4 — the composed operator reason carries the whole requirement", () 
   assert.ok(outer.includes("gates ran on the prose table"),
     "THE SECOND CUT: the outer bound still eats the end of the inner note");
   assert.ok(!/ the pr[;,]/.test(outer), "`the pr` is the exact string from the shipped report");
-  const pl = SRC("pipeline.mjs");
+  const pl = driverSource("pipeline.mjs");
   assert.match(pl, /no readable coverage ledger — \$\{abbrev\(String\(ctx\.machineLedgerNote\), 200\)\}/,
     "the outer bound is back to a bare slice, or is too tight for the inner note to survive it");
 });
