@@ -2740,16 +2740,24 @@ test("/portal/api/me names the release channel this install came from, so a beta
   assert.ok(["beta", "latest"].includes(me.channel), `the channel is a word no screen knows: ${JSON.stringify(me.channel)}`);
 });
 
-test("the brief reader's off line sends the operator to the doctor on this install's channel", async () => {
-  // `npx clearotron doctor` fetches the stable, which on a beta reads the beta's install with the other code.
-  const { channelPackage } = await import("../../shared/permanent-install.mjs");
+test("the brief reader's off line sends the operator to the doctor this install is reached by", async () => {
+  // `npx clearotron doctor` fetches the stable, which on a beta reads the beta's install with the other code. A
+  // channel's package through npx was then named to a global install too, which has its own `clearotron` on PATH.
+  const { reachableCommand } = await import("../../shared/invocation.mjs");
   const { briefReadingOffLine } = await import("../portal-service.mjs");
-  assert.equal(briefReadingOffLine("no AI is chosen", "clearotron@beta"),
-    "brief reading OFF — no AI is chosen. Describe-it stays disabled; `npx clearotron@beta doctor` reports the engine's auth state.");
-  // THE CONTROL: on the stable the line is the one that shipped.
-  assert.equal(briefReadingOffLine("no AI is chosen", "clearotron"),
-    "brief reading OFF — no AI is chosen. Describe-it stays disabled; `npx clearotron doctor` reports the engine's auth state.");
-  assert.ok(briefReadingOffLine("x").includes(`\`npx ${channelPackage()} doctor\``), "the line names a package other than this install's");
+  assert.equal(briefReadingOffLine("no AI is chosen", "clearotron doctor"),
+    "brief reading OFF — no AI is chosen. Describe-it stays disabled; `clearotron doctor` reports the engine's auth state.");
+  assert.equal(briefReadingOffLine("no AI is chosen", "npx clearotron@0.6.0-beta.0 doctor"),
+    "brief reading OFF — no AI is chosen. Describe-it stays disabled; `npx clearotron@0.6.0-beta.0 doctor` reports the engine's auth state.");
+  assert.ok(briefReadingOffLine("x").includes(`\`${reachableCommand("doctor")}\``), "the line names a command other than the one doctor prints");
+  // THE CASE THE WALK MET: the supervisor was started through the `clearotron` on PATH and hands that down.
+  const was = process.env.CLEAROTRON_INVOKED_AS;
+  process.env.CLEAROTRON_INVOKED_AS = join(tmpdir(), "home", ".local", "bin", "clearotron");
+  try {
+    assert.equal(briefReadingOffLine("no AI is chosen"),
+      "brief reading OFF — no AI is chosen. Describe-it stays disabled; `clearotron doctor` reports the engine's auth state.",
+      "an install started through its own `clearotron` was sent somewhere else");
+  } finally { if (was === undefined) delete process.env.CLEAROTRON_INVOKED_AS; else process.env.CLEAROTRON_INVOKED_AS = was; }
 });
 
 test("an unreadable profile store costs a name, never the door", async () => {

@@ -44,8 +44,8 @@ import { hostname as osHostname, homedir } from "node:os";   // — the address 
 const PORTAL_PORT_DEFAULT = 18802;
 import { storeInRepo, storeOutsideRepoMessage, makeCommittableAudit, resolveStoreRepoRoot, makeStoreCommit } from "../shared/store-in-repo.mjs";   //,
 import { customerStoreDir, customerStoreLine } from "../shared/customer-store.mjs";   // — one store for the surface and the runs
-import { bareInvocation, browserCommand, invocationPrefix, npxVersionOf } from "../shared/invocation.mjs";   // — and why this one surface is by NAME
-import { channelOf, channelPackage, ownVersion } from "../shared/permanent-install.mjs";   // — which release channel this install came from
+import { bareInvocation, browserCommand, invocationPrefix, npxVersionOf, reachableCommand } from "../shared/invocation.mjs";   // — and why this one surface is by NAME
+import { channelOf, ownVersion } from "../shared/permanent-install.mjs";   // — which release channel this install came from
 
 /**
  * The ops credential for one trigger call: the boot token's cap, re-taken against the roster now.
@@ -182,11 +182,15 @@ export { jobHashOf, mintConfirmation, verifyConfirmation, concurrentRunsCap, res
 const INSTALL_CHANNEL = channelOf(ownVersion());
 
 /**
- * The operator's line when the brief reader cannot be built: why, and the check to run, ON THIS CHANNEL.
- * `npx clearotron doctor` fetches the stable, which on a beta reads the beta's install with the other code.
+ * The operator's line when the brief reader cannot be built: why, and the check to run, as THIS install is
+ * reached. `npx clearotron doctor` fetches the stable, which on a beta reads the beta's install with the other
+ * code; and a channel's package fetched through npx was named to a global install too, which has its own
+ * `clearotron` on PATH (measured in a stranger walk of a beta, 2026-11-10). The supervisor hands down how it
+ * was invoked, so the command is the one doctor and start print: the installed name, or from npx's cache the
+ * published version.
  */
-export function briefReadingOffLine(reason, pkg = channelPackage()) {
-  return `brief reading OFF — ${reason}. Describe-it stays disabled; \`npx ${pkg} doctor\` reports the engine's auth state.`;
+export function briefReadingOffLine(reason, command = reachableCommand("doctor")) {
+  return `brief reading OFF — ${reason}. Describe-it stays disabled; \`${command}\` reports the engine's auth state.`;
 }
 
 // The offering the portal menus build from — product-rows.mjs's row, unchanged.
