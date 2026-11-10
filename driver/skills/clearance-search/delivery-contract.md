@@ -76,8 +76,8 @@ never a client "gap we should close" caveat. A forward step a human must take is
 
 **Coverage prose — the numbers are code's, the substance is yours (P6).** The register coverage line a reader
 sees is computed from the run's own record (`scope-facts.mjs`) and stamped as the `coverage_line:`
-front-matter beside `classes:`. **Never re-type its numbers in prose** — not in a card, not in `# Actions`,
-not in `# Methodology`. The code-stamped line is deliberately outside the prose scan (front-matter is
+front-matter beside `classes:`. **Never re-type its numbers in prose** — not in a card, not in `# Actions`.
+The code-stamped line is deliberately outside the prose scan (front-matter is
 stripped before `predelivery-lint.mjs` looks), so a duplicated count is not caught for you and does not
 "disagree" with anything — it simply drifts from the record the next time the run is republished. Carry the
 substance, drop the number: *"the remaining forms are non-Latin script"* is the useful half; the stamped line
