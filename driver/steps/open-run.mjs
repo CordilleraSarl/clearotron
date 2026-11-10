@@ -12,7 +12,7 @@ import { activeProvider, config, preflightCredentials, preflightEngineBinary, pr
 import { engineProvenance } from "../engine-build.mjs";
 import { preflightEngineTurn } from "../engine/probe.mjs";
 import { engineNamed, registeredEngines, selectEngine } from "../engine/registry.mjs";
-import { RunChoiceUnavailable, readRunChoices, recordRunChoices, unservedChoice } from "../engine/run-choices.mjs";
+import { RunChoiceUnavailable, readRunChoices, recordRunChoices, registerForRun, unservedChoice } from "../engine/run-choices.mjs";
 import { note, runLog } from "../log.mjs";
 import { buildRunContext } from "../phase0.mjs";
 import { profileStoreResolution } from "../profiles.mjs";
@@ -336,7 +336,9 @@ export async function openRun({ job, opts }, helpers) {
   // stateReset (A5): the resume guard above DELIBERATELY cleared terminal sentinels, so the status
   // seeds below (clearance seedRunStatus / knockout's own seed) may reopen a terminal state — that
   // authority is threaded, never ambient (writeRunStatus refuses a terminal→running flip without it).
-  const ctx = { paths: P, job, run, agent, stateReset: isResume };
+  // `register` is the run's register, decided once from its record (the machine's for a run with none): the one value
+  // every place that reads a register for this run takes, never the process's setting.
+  const ctx = { paths: P, job, run, agent, stateReset: isResume, register: registerForRun(run.runDir) };
   opts.__ctx = ctx;   // P2 — the outer wrapper reconciles this pass's stamps in its finally, success or failure
   // WS-B: freeze the customer profile into the sidecar before ANY validated stage — early stages'
   // idempotency re-validation and the receipts gate must all see the same per-run values. Minted on

@@ -146,3 +146,11 @@ test("a run whose recorded engine's program is not installed here is parked; a r
     unchanged(runDir, before);
   } finally { pinEnv(process.env, "CLEAROTRON_CODEX_PATH", undefined); }
 });
+
+test("the run's register is decided once at its opening, from its record", async () => {
+  const { registerForRun } = await import("../engine/run-choices.mjs");
+  const { registerCapabilities } = await import("../register-unreachable.mjs");
+  const { runDir } = await startedAndFailed();
+  assert.equal(registerForRun(runDir), recordOf(runDir).register, "the run's register is the one it recorded");
+  assert.deepEqual(registerCapabilities(recordOf(runDir).register), registerCapabilities(), "naming the machine's register changes nothing");
+});
