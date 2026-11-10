@@ -16,6 +16,7 @@ import { mkdirSync, rmSync, readFileSync, writeFileSync, readdirSync } from "nod
 import { join, dirname } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { tmpdir } from "node:os";
+import { createHash } from "node:crypto";
 import { SCENARIOS } from "./scenarios.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -35,7 +36,8 @@ rmSync(outDir, { recursive: true, force: true });
 const cov = join(outDir, "coverage");
 mkdirSync(cov, { recursive: true });
 const ids = Object.keys(SCENARIOS).filter((id) => !only || only.includes(id));
-const scratch = join(tmpdir(), `ladder-${process.pid}`);
+// A fixed-length name: the messages a turn receives carry this path, and a dispatch record counts their bytes.
+const scratch = join(tmpdir(), `ladder-${createHash("sha256").update(`${outDir}:${process.pid}`).digest("hex").slice(0, 12)}`);
 
 const runOne = (id) => new Promise((done) => {
   const root = join(scratch, id), home = join(scratch, `${id}-home`);
