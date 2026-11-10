@@ -86,7 +86,8 @@ test("the gate asks once, only where the findings reached the record, and hands 
   const src = driverSource("pipeline.mjs");
   assert.match(src, /if \(!readState\(\)\.stale\) return answerFollowsCorrection\(ctx, P, pre, resume\);/,
     "the answer is checked only when the existing re-emit did not run, so the gate never asks twice");
-  const body = src.slice(src.indexOf("async function answerFollowsCorrection("), src.indexOf("// (T3a, ruling 2026-08-26"));
+  const at = src.indexOf("async function answerFollowsCorrection(");
+  const body = src.slice(at, src.indexOf("\n}\n", at));   // the function itself, wherever it lives
   assert.equal((body.match(/await stage\(/g) ?? []).length, 1, "one re-ask, never a loop");
   assert.doesNotMatch(body, /correction: resume\.correction/, "an answer patch adds no finding, so it is handed no positions");
 });
