@@ -32,6 +32,24 @@ import { readWithheldFamilies, releasedFamilyQids } from "../withheld-families.m
 import { existsSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
+/**
+ * Which cross-checks this pass folds into the plan, and which the receipt keeps from an earlier pass. PURE.
+ *
+ * A run that enters the sweep again finds the cross-checks it minted before already in the plan. The fold
+ * passes over a qid the plan holds without adding or refusing it, so the screen alone keeps none of them,
+ * and the receipt was rewritten with no directives: the audit, the ask count and the demotion tripwire lost
+ * cross-checks that had run. A directive whose qid the plan holds is carried, as the earlier receipt
+ * recorded it where it did, and counts against the cap, so a later pass mints only what the first left
+ * room for. On a first pass the plan holds none, and the answer is the screen's.
+ */
+export function crossChecksForThisPass(plan, candidates, candDirectives, prior, cap) {
+  const held = new Set((plan?.entries ?? []).map((e) => e?.qid));
+  const carried = new Map();
+  for (const d of [...(Array.isArray(prior?.directives) ? prior.directives : []), ...(candDirectives ?? [])])
+    if (held.has(d?.qid) && !carried.has(d.qid)) carried.set(d.qid, d);
+  return { ...screenThenCap(plan, candidates, Math.max(0, cap - carried.size)), carried: [...carried.values()] };
+}
+
 export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, runCommonLaw }, helpers) {
   const { CL_SUPP_TAGS, StageFailure, connotationRemedyToken, defaultConnotationReissuer, deriveNamedBand, foldSupplementalProposals, holdStickyGapsIn, inScopeClassList, isFallbackEligible, joinOptions, mergeRegisterBands, must, noteAdapter, noteChannelCoverageAtStageExit, readPlanExecution, readRegisterBands, recordConnotationAudit, remergeIfBandsMoved, resultsPerCellOf, runBatched, runSaturationProbeCodeSide, slicesUnitNeverReached, stage, taintDisposition, taintParkJudgmentArtifacts, takeSlicesOutOfTheBand, unfinishedUnitAsItStands, writePlanExecutionReceipt } = helpers;
   // Step 2A/2B — fan-out (batched ≤ gatherConcurrency) then the code-side fan-in barrier.
@@ -1053,7 +1071,7 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
       // list costs nothing, and it is what makes the batch-internal dedup visible before the cap is
       // spent. The fold's refusal logic is untouched: it is right about every row it refuses, and
       // only the ORDER of screening and counting moves.
-      const screened = screenThenCap(ctx.registerPlan, candidates, XCHECK_CAP);
+      const screened = crossChecksForThisPass(ctx.registerPlan, candidates, candDirectives, prior, XCHECK_CAP);
       const entries = screened.entries;
       // Overflow now holds GENUINE excess only: a term is over-cap because ten real queries were
       // minted ahead of it, never because a slot was burned on a row nobody dispatched.
@@ -1061,7 +1079,7 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
         overflow.push({ term: e.term, reason: `cap ${XCHECK_CAP} reached — assess manually` });
       const folded = foldSupplementalEntries(ctx.registerPlan, entries);   // PURE — safe above the guard
       const entryQids = new Set(entries.map((e) => e.qid));
-      const { kept } = partitionFoldDirectives(candDirectives.filter((d) => entryQids.has(d.qid)), folded.refused);
+      const kept = [...screened.carried, ...partitionFoldDirectives(candDirectives.filter((d) => entryQids.has(d.qid)), folded.refused).kept];
       // The refusals are still RECORDED, across the WHOLE candidate list. They render as asks a reader
       // adjudicates, and screening further down the list must not quietly drop the disclosure for rows
       // the cap never reached — a fix that searched more while disclosing less would be a bad trade.
