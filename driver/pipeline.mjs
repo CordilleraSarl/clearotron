@@ -4,6 +4,7 @@
 // turn, joins the fan-out in code (the fan-in barrier), gates on the refutation
 // verdict, and never parks (there is no LLM continuation decision anywhere). CLI: `node pipeline.mjs --job <file.json>`.
 
+import { writePark } from "./run-park.mjs";
 import { endTheFailedRun } from "./run-failed.mjs";
 import { deliveryEndState } from "./run-delivered.mjs";
 import { StageFailure, buildFailurePacket, isDesignedRefusal, stageWallFields, terminalReasonFields } from "./run-outcome.mjs";
@@ -9336,10 +9337,10 @@ function postponeRun(e, run, meta = {}) {
       try { return Number(JSON.parse(readFileSync(join(run.runDir, ".postponed"), "utf8"))?.probeAttempt) || 0; }
       catch { return 0; }
     })();
-    try { sentinel(run.runDir, ".postponed", { kind: "rate-limit", resetsAt, postponedAt: new Date().toISOString(), fromStage: e.stage, codename, job: meta.job ?? null, agent: meta.agent ?? null,
+    try { writePark(run.runDir, { kind: "rate-limit", resetsAt, postponedAt: new Date().toISOString(), fromStage: e.stage, codename, job: meta.job ?? null, agent: meta.agent ?? null,
       probeAttempt: priorProbe + 1,
       waitingOn: PARK_WAITING_ON,
-      resolvedBy: PARK_RESOLVED_BY }); } catch { /* best-effort */ }
+      resolvedBy: PARK_RESOLVED_BY }, { job: meta.job, agent: meta.agent, codename }); } catch { /* best-effort */ }
     // Flip the dashboard status.json state -> "postponed" (best-effort; the .postponed marker is the
     // source of truth). Routed through writeRunStatus so the terminal-state guard applies here too.
     try {

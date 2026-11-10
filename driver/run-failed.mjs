@@ -6,6 +6,7 @@
 // The clearance pipeline's failure path, moved out of pipelineInner's catch unchanged. Every path through it returns
 // the run's result or throws, so pipelineInner returns what it returns. `helpers` are functions still held in
 // pipeline.mjs, handed in because this module must not import that one back.
+import { writePark } from "./run-park.mjs";
 import { ensureDriverDir } from "../shared/driver-dir.mjs";
 import { stopReason } from "../shared/stop-reason.mjs";
 import { RunCancelled } from "./cancel.mjs";
@@ -259,7 +260,7 @@ export async function endTheFailedRun({ P, agent, ctx, e, job, run }, helpers) {
     note(`[pipeline] RECOVERABLE failure in ${run.codename} at ${failedStage} — parking for AUTO-RECOVERY, ${laneLabel} lane ${laneAttempt}/${decision.laneCeiling} (defect budget ${recoveryLanes.defect.attempts}/${recoveryMax} spent; resumes ~${recoveryWaitMin}min${capSchedule ? ` on the ${recoveryWaitBasis === "provider" ? "provider's stated reset" : "cap ladder"}` : ""}; valid stages skip on resume): ${String(reason).slice(0, 160)}`);
     // no fromStage: the failed-stage label can be decorated ("synthesis(blocking)") and is not a
     // resume key — plain idempotent resume re-runs exactly the invalid/missing outputs.
-    try { sentinel(run.runDir, ".postponed", { kind: "recovery", recoveryResumesAt, postponedAt: new Date().toISOString(), codename: run.codename, job, agent, attempt, reason: String(reason).slice(0, 300), sig: failSig.sig, class: failClass, lane }); } catch { /* best-effort */ }
+    try { writePark(run.runDir, { kind: "recovery", recoveryResumesAt, postponedAt: new Date().toISOString(), codename: run.codename, job, agent, attempt, reason: String(reason).slice(0, 300), sig: failSig.sig, class: failClass, lane }, { job, agent, codename: run.codename }); } catch { /* best-effort */ }
     // recoveryHistory is the repeat-signature memory AND the lane ledger: append-only, one row per
     // park, read back on the next failure so an identical defect is never bought twice and so each
     // lane's spend is recomputed from the record rather than from a second counter that could drift
@@ -339,9 +340,9 @@ export async function endTheFailedRun({ P, agent, ctx, e, job, run }, helpers) {
       const resumesAt = new Date().toISOString();
       // The payload the runner's self-resume needs (job, agent, codename), and the recovery kind, whose stated
       // clock it keeps exactly: now. No recovery attempt is counted, because nothing is being retried.
-      sentinel(run.runDir, ".postponed", { kind: "recovery", recoveryResumesAt: resumesAt, postponedAt: resumesAt,
+      writePark(run.runDir, { kind: "recovery", recoveryResumesAt: resumesAt, postponedAt: resumesAt,
         codename: run.codename, job, agent, attempt: priorAttempts, reason: String(reason).slice(0, 300), sig: failSig.sig,
-        class: failClass, notCompleted: coveredPart });
+        class: failClass, notCompleted: coveredPart }, { job, agent, codename: run.codename });
       // The cause's payload rides beside the sentence, as on the stop it replaces, so the record still points at it.
       writeRunStatus(ctx, { state: "recovering", failedStage, ...terminalReasonFields(reason), recoveryResumesAt: resumesAt, resetsAt: null,
         reasonDetail: reasonDetail ? abbrev(String(reasonDetail).replace(/\s+/g, " ").trim(), 600) : null });
