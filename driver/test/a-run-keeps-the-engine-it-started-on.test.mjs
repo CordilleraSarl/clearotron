@@ -147,9 +147,9 @@ test("each live jurisdiction lane hands its run to the turn runner", async () =>
   delete process.env.CLEAROTRON_JX_FIXTURES;
   try {
     const lanes = [
-      ["completions", resolveJxExecutor({}, { runDir }), { mark: "VELMORAX", productContext: "", lane: "zh" }],
-      ["judge", resolveJudge({}, { mark: "VELMORAX", lane: "zh", runDir }), { mark: "VELMORAX", hits: [] }],
-      ["nativeread", resolveNativeread({}, { mark: "VELMORAX", lane: "zh", runDir }), { mark: "VELMORAX", lane: "zh", payload: "" }],
+      ["completions", resolveJxExecutor({}, { runDir }), { mark: "PROJECT NOVAPULSE", productContext: "", lane: "zh" }],
+      ["judge", resolveJudge({}, { mark: "PROJECT NOVAPULSE", lane: "zh", runDir }), { mark: "PROJECT NOVAPULSE", hits: [] }],
+      ["nativeread", resolveNativeread({}, { mark: "PROJECT NOVAPULSE", lane: "zh", runDir }), { mark: "PROJECT NOVAPULSE", lane: "zh", payload: "" }],
     ];
     for (const [kind, { exec, source }, args] of lanes) {
       assert.equal(source, "engine", `${kind}: not the live lane`);
