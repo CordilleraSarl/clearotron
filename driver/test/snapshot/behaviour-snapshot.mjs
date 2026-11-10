@@ -3,7 +3,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // behaviour-snapshot.mjs — what a run does, written down so a change can be compared with the code before it.
 //
-//   node driver/test/snapshot/behaviour-snapshot.mjs record --out <dir> [--repo <checkout>] [--only <id,id>] [--jobs <n>]
+//   node driver/test/snapshot/behaviour-snapshot.mjs record --out <dir> [--repo <checkout>] [--only <id,id>] [--jobs <n>] [--keep]
 //   node driver/test/snapshot/behaviour-snapshot.mjs compare <base> <head> [--from <sha> --to <sha>] [--detail <file>]
 //
 // Drives the mock pipeline, at no cost and with the network refused, and writes per scenario: the stages in
@@ -25,6 +25,7 @@ import { workbookEntryText, zipEntries } from "./workbook-entries.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 let REPO = resolve(HERE, "..", "..", "..");
+let KEEP = false;   // record --keep: leave each scenario's folder for inspection
 const TEST = () => join(REPO, "driver", "test");
 const sha = (s) => createHash("sha256").update(s).digest("hex").slice(0, 16);
 
@@ -120,6 +121,8 @@ function normaliser(root, result) {
       .replace(/<DATE> · \d{1,2}:\d{2}( ?(GMT|UTC)([+-]\d{1,2})?)?/g, "<DATE> · <TIME>")
       .replace(/\bprobe-[0-9a-f]{8}\b/g, "probe-<NONCE>")
       .replace(/"turnaroundHours":\s*\{[^}]*\}/g, '"turnaroundHours":"<WALL>"')
+      // A record's own duration, which the wall clock decides: the post-repair review's `ms` moved on every run.
+      .replace(/"ms":\s*\d+/g, '"ms":"<MS>"')
       .replace(/mock-sess-[a-z0-9]+/g, "<SESSION>")
       .replace(/\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/g, "<UUID>");
   };
@@ -213,6 +216,8 @@ function runOne(spec, out) {
       // A SCENARIO THAT STOPS REACHING ITS PATH STILL RUNS AND STILL COMPARES EQUAL, so it says so in its record.
       if (spec.reaches && !spec.reaches(rec)) rec.didNotReachItsPath = true;
       writeFileSync(join(out, `${spec.id}.json`), JSON.stringify(rec, null, 1) + "\n");
+      // The scenario's folder is spent once its record is written; `--keep` leaves it for a person to open.
+      if (!KEEP) rmSync(root, { recursive: true, force: true });
       done({ id: spec.id, ms: Date.now() - t0, ok: rec.terminal?.ok, stages: rec.stages?.length ?? 0, couldNotRun: Boolean(rec.terminal?.couldNotRun) });
     });
   });
@@ -222,6 +227,7 @@ async function main(argv) {
   const at = (f) => { const i = argv.indexOf(f); return i < 0 ? null : argv[i + 1]; };
   if (argv[0] === "record") {
     if (at("--repo")) REPO = resolve(at("--repo"));
+    KEEP = argv.includes("--keep");
     const out = resolve(at("--out"));
     mkdirSync(out, { recursive: true });
     const only = at("--only")?.split(",");
@@ -251,7 +257,7 @@ async function main(argv) {
     else for (const d of differences) console.log(d);
     return 0;
   }
-  console.error("usage: behaviour-snapshot.mjs record --out <dir> [--repo <checkout>] [--only <ids>] [--jobs <n>]\n       behaviour-snapshot.mjs compare <base> <head> [--from <sha> --to <sha>] [--detail <file>]");
+  console.error("usage: behaviour-snapshot.mjs record --out <dir> [--repo <checkout>] [--only <ids>] [--jobs <n>] [--keep]\n       behaviour-snapshot.mjs compare <base> <head> [--from <sha> --to <sha>] [--detail <file>]");
   return 2;
 }
 
