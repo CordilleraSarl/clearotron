@@ -82,7 +82,7 @@ test("a queue claim of a run started on another build ends failed through the ru
   mkdirSync(Q, { recursive: true });
   const job = { id: "tmp9411-crossbuild", msgId: "<tmp9411@x>", forwarder: "requesting-lawyer", forwarderDomain: "example.com",
     ref: "TMP9411", markName: "CROSSVALE", classes: [9], provider: "corsearch" };
-  const slug = "tmp9411-crossvale", codename = "slate-harbor", dateISO = todayISO();
+  const slug = "tmp9411-crossvale", codename = "probe-crossbuild", dateISO = todayISO();
   const runDir = startedOn(join(studio, slug, `${dateISO}-${codename}`), OTHER);
   writeFileSync(join(runDir, "status.json"), JSON.stringify({ runId: `${slug}-${dateISO}-${codename}`, slug, codename, date: dateISO,
     agent: "intake-agent", state: "running", updatedAt: new Date().toISOString() }));
@@ -98,6 +98,8 @@ test("a queue claim of a run started on another build ends failed through the ru
     CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_QUEUE_SCAN_MS: "100", CORSEARCH_SESSION_KEY: "test-offline",
     CLEAROTRON_SATPROBE_CODESIDE: "0", CLEAROTRON_BAND_TRUTH_GATE: "0" } });
   let log = "";
+  child.stdout.setEncoding("utf8");
+  child.stderr.setEncoding("utf8");
   child.stdout.on("data", (d) => { log += d; });
   child.stderr.on("data", (d) => { log += d; });
   assert.equal(await new Promise((r) => child.on("exit", r)), 0, log);
