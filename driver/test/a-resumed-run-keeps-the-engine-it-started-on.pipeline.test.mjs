@@ -125,17 +125,68 @@ test("a run whose recorded engine this driver does not have is parked by name an
   assert.deepEqual(events(runDir).filter((e) => e.event === "run-choices-park").map((e) => e.kind), ["engine"]);
 });
 
-test("a run whose recorded register is not the one this process serves is parked, naming both, and runs nothing", async () => {
+test("a run whose recorded register this runner lacks the credentials for is parked at the register's door, naming what is missing", async () => {
   const { root, runDir, codename } = await startedAndFailed();
   const rec = recordOf(runDir);
-  const other = rec.register === "euipo" ? "signa" : "euipo";
-  writeFileSync(driverDir(runDir, "run-choices.json"), JSON.stringify({ ...rec, register: other }));
-  const before = stateOf(runDir);
-  const { parkedFor, marker } = await resumeParked(root, codename, runDir);
-  assert.deepEqual(parkedFor, { kind: "register", recorded: other, machine: rec.register, detail: null });
-  assert.match(marker.waitingOn, new RegExp(`the ${other} register`));
-  assert.match(marker.resolvedBy, new RegExp(`a runner whose register is ${other}`));
-  unchanged(runDir, before);
+  assert.notEqual(rec.register, "signa", "the probe needs a register other than the machine's");
+  writeFileSync(driverDir(runDir, "run-choices.json"), JSON.stringify({ ...rec, register: "signa" }));
+  const saved = process.env.SIGNA_API_KEY;
+  delete process.env.SIGNA_API_KEY;
+  try {
+    const before = stateOf(runDir);
+    const { parkedFor, marker } = await resumeParked(root, codename, runDir);
+    assert.deepEqual({ kind: parkedFor.kind, recorded: parkedFor.recorded, machine: parkedFor.machine }, { kind: "register", recorded: "signa", machine: rec.register });
+    assert.match(parkedFor.detail ?? "", /missing SIGNA_API_KEY/, "the door's own words ride with the park");
+    assert.match(marker.waitingOn, /the signa register/);
+    assert.match(marker.resolvedBy, /the signa register's credentials and capabilities set for this runner/);
+    unchanged(runDir, before);
+  } finally { if (saved !== undefined) process.env.SIGNA_API_KEY = saved; }
+});
+
+// The tool servers' configuration each resumed turn was handed, from the mock engine's call log: every server given a
+// register names one, so the set is the registers the turns could reach.
+const registersHanded = (logFile) => {
+  const out = new Set();
+  const lines = existsSync(logFile) ? readFileSync(logFile, "utf8").trim().split("\n").filter(Boolean) : [];
+  for (const line of lines) {
+    const argv = JSON.parse(line).argv ?? [];
+    const i = argv.indexOf("--mcp-config");
+    if (i < 0) continue;
+    const raw = argv[i + 1];
+    const cfg = JSON.parse(raw.trim().startsWith("{") ? raw : readFileSync(raw, "utf8"));
+    for (const s of Object.values(cfg.mcpServers ?? {})) if (s?.env?.CLEAROTRON_DATABASE) out.add(s.env.CLEAROTRON_DATABASE);
+  }
+  return { turns: lines.length, registers: [...out] };
+};
+
+test("a run whose recorded register is not the machine's is served on its own register where this runner can serve it", async () => {
+  const { root, runDir, codename } = await startedAndFailed();
+  const rec = recordOf(runDir);
+  assert.notEqual(rec.register, "uspto-local", "the probe needs a register other than the machine's");
+  writeFileSync(driverDir(runDir, "run-choices.json"), JSON.stringify({ ...rec, register: "uspto-local" }));
+  // The local register reads a database file and never the network; an empty file is enough for its door.
+  const db = join(root, "uspto-local.sqlite");
+  writeFileSync(db, "");
+  const callLog = join(root, "calls.jsonl");
+  pinEnv(process.env, "USPTO_LOCAL_DB", db);
+  pinEnv(process.env, "MOCK_CLAUDE_CALL_LOG", callLog);
+  try {
+    // The resumed stage fails again where the first segment did, so the turn it runs is the evidence and nothing
+    // the first segment wrote under the machine's register is delivered under the run's.
+    const res = await segment(root, { codename, fail: FAIL_LATE });
+    assert.notEqual(res?.postponed, true, `the run was parked rather than served: ${JSON.stringify(res).slice(0, 400)}`);
+    const at = res?.runDir ?? runDir;   // a run that fails again is moved, so the resume's own folder is read
+    assert.equal(existsSync(join(at, ".postponed")), false, "the run was parked rather than served");
+    const last = choicesRows(at).at(-1);
+    assert.deepEqual({ register: last.register, machineRegister: last.machineRegister, registerDiffers: last.registerDiffers },
+      { register: "uspto-local", machineRegister: rec.register, registerDiffers: true });
+    const handed = registersHanded(callLog);
+    assert.ok(handed.turns > 0, "the resume ran no turn");
+    assert.deepEqual(handed.registers, ["uspto-local"], "a resumed turn's tool servers were handed a register other than the run's");
+  } finally {
+    pinEnv(process.env, "USPTO_LOCAL_DB", undefined);
+    pinEnv(process.env, "MOCK_CLAUDE_CALL_LOG", undefined);
+  }
 });
 
 test("a run whose recorded engine's program is not installed here is parked; a run with no record meets that door as before", async () => {
