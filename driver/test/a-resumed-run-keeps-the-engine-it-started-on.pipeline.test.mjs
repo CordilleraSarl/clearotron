@@ -93,16 +93,56 @@ test("a run with no record resumes on the machine's engine and is given no recor
   assert.equal(last.written, false);
 });
 
-test("a run whose recorded engine this driver does not have is refused by name and runs nothing", async () => {
+// A resume whose recorded choice this process cannot serve is PARKED: refused before any door runs or anything is
+// cleared, carrying the dependency it waits for and the run's identity. The pipeline's own park of it is the pipeline's
+// half; until it lands the signal reaches the caller, and these arms read it there.
+async function resumeParked(root, codename) {
+  try { const res = await segment(root, { codename }); return { res, err: null }; }
+  catch (err) { return { res: null, err }; }
+}
+const unchanged = (runDir, before) => {
+  assert.equal(events(runDir).filter((e) => e.event === "stage").length, before.stages, "a stage ran on another choice");
+  assert.equal(existsSync(join(runDir, ".failed")), before.failed, "the run's markers were cleared");
+  assert.equal(existsSync(join(runDir, ".delivered")), false);
+};
+const stateOf = (runDir) => ({ stages: events(runDir).filter((e) => e.event === "stage").length, failed: existsSync(join(runDir, ".failed")) });
+
+test("a run whose recorded engine this driver does not have is parked by name and runs nothing", async () => {
   const { root, runDir, codename } = await startedAndFailed();
   writeFileSync(driverDir(runDir, "run-choices.json"), JSON.stringify({ schema: 1, engine: "probe-retired", register: null }));
-  const stagesBefore = events(runDir).filter((e) => e.event === "stage").length;
-  let refused = null;
+  const before = stateOf(runDir);
+  const { err } = await resumeParked(root, codename);
+  assert.equal(err?.name, "RunChoiceUnavailable", String(err?.message ?? err));
+  assert.deepEqual({ kind: err.dependency.kind, recorded: err.dependency.recorded }, { kind: "engine", recorded: "probe-retired" });
+  assert.equal(err.run.runDir, runDir, "the signal carries the run it parks");
+  unchanged(runDir, before);
+  assert.deepEqual(events(runDir).filter((e) => e.event === "run-choices-park").map((e) => e.kind), ["engine"]);
+});
+
+test("a run whose recorded register is not the one this process serves is parked, naming both, and runs nothing", async () => {
+  const { root, runDir, codename } = await startedAndFailed();
+  const rec = recordOf(runDir);
+  const other = rec.register === "euipo" ? "signa" : "euipo";
+  writeFileSync(driverDir(runDir, "run-choices.json"), JSON.stringify({ ...rec, register: other }));
+  const before = stateOf(runDir);
+  const { err } = await resumeParked(root, codename);
+  assert.equal(err?.name, "RunChoiceUnavailable", String(err?.message ?? err));
+  assert.deepEqual(err.dependency, { kind: "register", recorded: other, machine: rec.register, detail: null });
+  assert.match(err.waitingOn, new RegExp(`the ${other} register`));
+  assert.match(err.resolvedBy, new RegExp(`a runner whose register is ${other}`));
+  unchanged(runDir, before);
+});
+
+test("a run whose recorded engine's program is not installed here is parked; a run with no record meets that door as before", async () => {
+  const { root, runDir, codename } = await startedAndFailed();
+  writeFileSync(driverDir(runDir, "run-choices.json"), JSON.stringify({ ...recordOf(runDir), engine: "openai-agent" }));
+  const before = stateOf(runDir);
+  pinEnv(process.env, "CLEAROTRON_CODEX_PATH", join(root, "no-such-program", "codex"));
   try {
-    const res = await segment(root, { codename });
-    refused = res.ok === false ? JSON.stringify(res) : null;
-  } catch (e) { refused = String(e?.message ?? e); }
-  assert.match(refused ?? "", /started on the \\?"probe-retired\\?" engine, which this driver does not have registered/);
-  assert.equal(events(runDir).filter((e) => e.event === "stage").length, stagesBefore, "a stage ran on another engine");
-  assert.equal(existsSync(join(runDir, ".delivered")), false);
+    const { err } = await resumeParked(root, codename);
+    assert.equal(err?.name, "RunChoiceUnavailable", String(err?.message ?? err));
+    assert.deepEqual({ kind: err.dependency.kind, recorded: err.dependency.recorded }, { kind: "engine-program", recorded: "openai-agent" });
+    assert.ok(err.dependency.detail, "the door's own words ride with the park");
+    unchanged(runDir, before);
+  } finally { pinEnv(process.env, "CLEAROTRON_CODEX_PATH", undefined); }
 });
