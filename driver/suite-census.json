@@ -2025,6 +2025,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-resumed-run-keeps-the-engine-it-started-on.pipeline.test.mjs": {
+          "tests": 4,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
         "a-resumed-run-keeps-the-order-it-was-accepted-on.test.mjs": {
           "tests": 7,
           "asserts": 44,
@@ -2064,6 +2070,12 @@
         "a-run-asks-signa-each-question-once.test.mjs": {
           "tests": 17,
           "asserts": 73,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-run-keeps-the-engine-it-started-on.test.mjs": {
+          "tests": 8,
+          "asserts": 29,
           "skips": 0,
           "todos": 0
         },

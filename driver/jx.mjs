@@ -284,7 +284,7 @@ export function attachJxLanes(ctx) {
 
 // ── Executor chain (the knockout resolveSweepExecutor idiom): injected (tests) → CLEAROTRON_JX_FIXTURES
 // (the $0 dev seam: <mark-kebab>.<lane>.json {candidates:[…]}) → the live JX_PROVIDERS completions.
-export function resolveJxExecutor(opts) {
+export function resolveJxExecutor(opts, { runDir = null } = {}) {
   if (typeof opts?.jxExecutor === "function") return { exec: opts.jxExecutor, source: "injected" };
   const fixDir = process.env.CLEAROTRON_JX_FIXTURES;
   if (fixDir) {
@@ -299,7 +299,7 @@ export function resolveJxExecutor(opts) {
       },
     };
   }
-  return { source: "engine", exec: (args) => JX_PROVIDERS.completions.generate(args) };
+  return { source: "engine", exec: (args) => JX_PROVIDERS.completions.generate({ ...args, runDir }) };
 }
 
 /** Pure: candidates → validated plan entries for the lane. Refusals are RETURNED (the caller logs
@@ -496,7 +496,7 @@ export async function runJxCandidateFold(ctx, job, opts = {}, { runLog = () => {
     }
     const repairedFold = repairReceipt();
 
-    const { exec, source } = resolveJxExecutor(opts);
+    const { exec, source } = resolveJxExecutor(opts, { runDir: run.runDir });
     const ledgerPath = paths(run.runDir).jxCompletions;
     const markName = job.markName ?? job.name;
     const productContext = String(job.goods ?? ctx.profile?.industry ?? "").slice(0, 300);

@@ -8,9 +8,11 @@
 import { driverDir, ensureDriverDir } from "../../shared/driver-dir.mjs";
 import { orderSnapshot } from "../accepted-order.mjs";
 import { recordSpan } from "../attributed-span.mjs";
-import { activeProvider, config, preflightCredentials, preflightEngineBinary, preflightFreeSpace, preflightResearchCredential } from "../driver.config.mjs";
+import { activeProvider, config, preflightCredentials, preflightEngineBinary, preflightFreeSpace, preflightResearchCredential, REGISTER_PROVIDER } from "../driver.config.mjs";
 import { engineProvenance } from "../engine-build.mjs";
 import { preflightEngineTurn } from "../engine/probe.mjs";
+import { engineNamed, registeredEngines, selectEngine } from "../engine/registry.mjs";
+import { readRunChoices, recordRunChoices } from "../engine/run-choices.mjs";
 import { note, runLog } from "../log.mjs";
 import { buildRunContext } from "../phase0.mjs";
 import { profileStoreResolution } from "../profiles.mjs";
@@ -27,11 +29,30 @@ export async function openRun({ job, opts }, helpers) {
   // The order as it arrived, before anything below folds its scope or settles its fields (accepted-order.mjs).
   const acceptedOrder = orderSnapshot(job);
   assertTierSanity();
+  // A RESUMED RUN KEEPS THE ENGINE IT STARTED ON (engine/run-choices.mjs), so the engine doors below test that
+  // engine rather than the machine's current setting. The run's folder is named the way the resume below names
+  // it, and naming it creates nothing; a resume with no folder reads as no record here and is refused below in
+  // its own words. A recorded engine this driver does not have is refused by name before any door runs.
+  const resuming = Boolean(opts.codename) && !opts.minted;
+  const recorded = (() => {
+    if (!resuming) return { state: "none" };
+    const date = opts.date ?? findRunDate(job, opts.codename, opts.studioRoot ?? config.studioRoot);
+    if (!date) return { state: "none" };
+    return readRunChoices(buildRunContext(job, { studioRoot: opts.studioRoot, archiveRoot: opts.archiveRoot, codename: opts.codename, date }).runDir);
+  })();
+  if (recorded.state === "unreadable") {
+    const err = new Error(`resume refused: run ${opts.codename}'s engine record ${recorded.detail}, so it is not resumed on the machine's engine in its place`);
+    err.noResume = true;
+    throw err;
+  }
+  if (recorded.state === "recorded" && !engineNamed(recorded.engine))
+    throw new Error(`resume refused: run ${opts.codename} started on the "${recorded.engine}" engine, which this driver does not have registered (${registeredEngines().join(", ")}); it keeps that engine rather than switch`);
+  const engineEnv = recorded.state === "recorded" ? { ...process.env, CLEAROTRON_AI: recorded.engine } : process.env;
   // The engine binary, first and UNCONDITIONALLY — before the register preflight, which two lanes skip.
   // Every lane spawns the engine: a knockout does, and so does a run with an injected recordFetcher. So
   // unlike the credential check below this one has no exemption, because there is no shape of run that
   // can proceed without it. It reads the filesystem and never spawns (driver.config.preflightEngineBinary).
-  preflightEngineBinary();
+  preflightEngineBinary(engineEnv);
   // — there is somewhere to write, checked the same way, at the same door and for the same reason.
   // UNCONDITIONAL like the binary check above and unlike the credential check below: every lane writes a
   // run directory, so there is no shape of run that is exempt. A full disk fails as "artifact absent" at
@@ -126,7 +147,7 @@ export async function openRun({ job, opts }, helpers) {
     engineTurnStartedMs = Date.now();
     // `opts.engineTurnWait` stands in for the door's wait before it checks a locked sign-in refresh again,
     // in tests; a run passes none and waits.
-    engineTurn = await preflightEngineTurn({ wait: opts.engineTurnWait });
+    engineTurn = await preflightEngineTurn({ wait: opts.engineTurnWait, env: engineEnv });
     engineTurnEndedMs = Date.now();
     if (engineTurn.warning) console.error(engineTurn.warning);
   }
@@ -139,7 +160,7 @@ export async function openRun({ job, opts }, helpers) {
   // crash-reclaim resumes this exact run instead of re-minting). Only a RESUME expects an existing run
   // dir; a minted dispatch is a cold start in every other respect. The resume date is read off disk (not
   // defaulted to today) so a resume works on any day after the original run.
-  const isResume = Boolean(opts.codename) && !opts.minted;
+  const isResume = resuming;
   const resumeDate = isResume ? (opts.date ?? findRunDate(job, opts.codename, opts.studioRoot ?? config.studioRoot)) : opts.date;
   if (isResume && !resumeDate)
     throw new Error(`resume: no live run-dir for codename "${opts.codename}" (a delivered run is archived — use --experiment/compare instead)`);
@@ -242,6 +263,22 @@ export async function openRun({ job, opts }, helpers) {
     runLog(run.runDir, { event: "profile-store", outcome: pr.outcome, situation: pr.situation,
       findings: pr.findings, store: pr.store, readRoots: pr.readRoots, detail: pr.detail });
   } catch { /* best-effort */ }
+  // — THE ENGINE AND REGISTER THIS RUN BELONGS TO. A cold start records the machine's choice once; a resume keeps
+  // the record it has and is given none if it has none, so a run never gains a start nobody recorded. Each segment
+  // logs the record beside the machine's setting, so a register that differs is on the record rather than silent.
+  // Best-effort like its neighbours: a run whose record cannot be written runs on as a run with no record.
+  try {
+    const machine = { engine: selectEngine().name, register: REGISTER_PROVIDER ?? null };
+    const held = isResume ? readRunChoices(run.runDir) : recordRunChoices(run.runDir, machine);
+    const registerDiffers = held.state === "recorded" && held.register !== machine.register;
+    runLog(run.runDir, { event: "run-choices", state: held.state, written: held.written === true,
+      engine: held.engine ?? null, register: held.register ?? null, machineEngine: machine.engine, machineRegister: machine.register,
+      ...(registerDiffers ? { registerDiffers: true } : {}) });
+    if (registerDiffers)
+      note(`[run-choices] this run started on the ${held.register ?? "(none)"} register; this machine is set to ${machine.register ?? "(none)"}, and serves the run with its own`);
+  } catch (e) {
+    try { runLog(run.runDir, { event: "run-choices", state: "not-written", detail: String(e?.message ?? e).slice(0, 300) }); } catch { /* best-effort */ }
+  }
   // — WHICH ENGINE THIS RUN LOADED, beside the doctrine store whose commit sits one line up. Those
   // two `head`s are different repositories, which is the whole reason this event names its key
   // `engineHead`: reading the store's commit as the engine's is the mistake that produced two near-miss
