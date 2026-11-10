@@ -14,15 +14,14 @@ import { join, dirname, basename } from "node:path";
 import { driverDir, readJson } from "./run-record.mjs";   //
 import { NO_SEARCH_RESULT, RESEARCH_CORRECTION } from "./research-answers.mjs";   // a search that did not answer supplies no result
 import { tmpdir } from "node:os";
-import { config, resolveModel, modelFamily, modelSnapshotKind, envOn, envGateOn, preflightEngineBinary, olderThanFloor, ENGINE_BINARIES } from "./driver.config.mjs";
+import { config, modelFamily, modelSnapshotKind, envOn, envGateOn, preflightEngineBinary, olderThanFloor, ENGINE_BINARIES } from "./driver.config.mjs";
 import { probeCliVersion } from "./engine/cli-version.mjs";
 import { stageLog, runLog, note, outputMeta } from "./log.mjs";
 // — the closed disposition set has ONE author; this file dictates it and must not retype it.
 import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS } from "./findings-model.mjs";
 import { frozenSnapshot, describeDrift } from "./run-integrity.mjs";   // — the frozen judged-by set across a seat turn
 import { isCancelled, readCancel, RunCancelled } from "./cancel.mjs";
-import { anthropicAgentEngine } from "./engine/anthropic-agent.mjs";
-import { openaiAgentEngine } from "./engine/openai-agent.mjs";
+import { selectEngine, modelIdOf } from "./engine/registry.mjs";
 import { resolveAuthMode } from "./engine/auth.mjs";
 // ABBREVIATED_VALUE_NOTE is no longer imported: it explained the "…" marker on a value the model
 // had to reproduce EXACTLY, and the only messages that rendered one were the connotation arms telling a
@@ -560,59 +559,10 @@ const wallRescueQuiesceMs = () => 60000;   // step 3 — was a knob; no environm
 const wallRescueEnabled = () => !/^(0|off|false|no)$/i.test(String(process.env.CLEAROTRON_WALL_RESCUE ?? "").trim());
 
 // ── Engine seam (CLEAROTRON_AI) ──────────────────────────────────────────────────────────────────
-// The 14 stages run on the anthropic-agent engine (`claude -p` off-gateway with the stall-watchdog; see
-// engine/CONTRACT.md). Its runTurn() returns the normalized tuple runStage consumes
-// ({code,killed,wall,stdout,stderr,laneWaitMs,json,usage,sessionRef,signals}); all the
-// classification/retry/warm logic below is engine-agnostic. There is no second exec path beside it —
-// the comms one-shots that used to have one now write outbox packets and spawn nothing.
-//
-// Engine registry (provider adapters). The driver orchestration + the classification/retry/warm ladder are
-// ENGINE-AGNOSTIC: everything provider-specific lives behind an engine's runTurn() → the normalized tuple. So
-// provider CHOICE (e.g. Anthropic → OpenAI) = which adapter is registered and selected via CLEAROTRON_AI —
-// NOT a model-name swap: each provider needs its own agentic-runtime adapter (MCP/tools/skills/streaming/resume).
-// One is implemented today: `anthropic-agent` (`claude -p`, off-gateway). Adding e.g. `openai-agent` = write
-// engine/openai-agent.mjs implementing the same runTurn() contract (engine/CONTRACT.md §1), registerEngine() it,
-// and select it via CLEAROTRON_AI — runStage is untouched. (The legacy gateway-bin engine removed in the
-// extraction was a *runtime*, not a provider choice, and coupled the driver to one integrator platform.) An
-// unknown CLEAROTRON_AI fails loud — no silent wrong-provider run. There are no comms stages: every
-// requester-facing event is an outbox packet (docs/DELIVERY.md).
-const ENGINES = new Map([
-  [anthropicAgentEngine.name, anthropicAgentEngine],
-  [openaiAgentEngine.name, openaiAgentEngine],   // second provider adapter (codex exec) — CLEAROTRON_AI=openai-agent
-]);
-export const DEFAULT_ENGINE = anthropicAgentEngine.name;   // "anthropic-agent" — production default UNCHANGED
-/**
- * The ids this registry actually holds — read-only, so a SECOND list can be pinned against the first
- * rather than drifting away from it in silence. `ENGINE_BINARIES` in driver.config names the
- * binary variable per engine and the wizard builds its menu from it; without this, "the wizard offers
- * an engine the driver does not ship" and "the driver ships an engine setup cannot reach" are both
- * invisible until a reader picks the row that does not exist. Same guarantee the register-provider
- * list already has (onboard-wizard.test.mjs, "a new adapter must not be invisible to setup").
- */
-export function registeredEngines() { return [...ENGINES.keys()]; }
-export function registerEngine(engine) {
-  if (!engine?.name || typeof engine.runTurn !== "function") throw new Error("registerEngine: expected an { name, runTurn } engine adapter");
-  ENGINES.set(engine.name.toLowerCase(), engine);
-}
-/**
- * The engine for this activation. PROCESS-WIDE, and the missing parameter is the point.
- *
- * This took a `_stageName` it ignored, under a call-site comment reading "per-stage: CLEAROTRON_AI base,
- * comms forced to the gateway, override-able". None of that existed: no per-stage override, no comms
- * forcing, no per-job override. `CLEAROTRON_AI` is read from the process env at every activation and
- * governs every stage of every job in it.
- *
- * A comment describing a capability that does not exist is worse than no comment — it gets believed and
- * planned against, and the plan only fails once someone tries to use it. Corrected rather than built:
- * per-stage selection is an architecture change (a job spec would have to carry the engine, and the
- * routing would have to survive resume), not a comment fix.
- *
- * WHAT THE ABSENCE COSTS, stated so a round plan does not discover it mid-round: **an A/B cannot run
- * both engines concurrently on one instance.** Comparing codex against anthropic means flipping
- * CLEAROTRON_AI and running sequentially, or standing up a second instance with its own env, pool and
- * ports. The same absence blocks routing the refutation reviewer to a different engine for family
- * diversity (ENGINE-OPENAI-ADAPTER §6). Recorded in docs/E2E.md, which is where a round plan looks.
- */
+// Which adapters exist and which one this activation runs are engine/registry.mjs's; the gateway asks it
+// and names no engine. Re-exported here, so every importer of these names is unchanged.
+export { DEFAULT_ENGINE, registeredEngines, registerEngine, selectEngine } from "./engine/registry.mjs";
+
 // — THE ENGINE'S OWN WRITE GUARANTEE, for the run record.
 //
 // The boundary is enforced on the anthropic path and absent on the codex path, and until now nothing
@@ -627,13 +577,6 @@ export const writeBoundaryOf = (engine) => {
   const v = String(engine?.writeBoundary ?? "").trim();
   return v || "undeclared";
 };
-
-export function selectEngine() {
-  const id = (process.env.CLEAROTRON_AI || DEFAULT_ENGINE).toLowerCase();
-  const engine = ENGINES.get(id);
-  if (!engine) throw new Error(`CLEAROTRON_AI="${id}" is not a registered engine adapter (available: ${[...ENGINES.keys()].join(", ")}). Implement one and registerEngine() it — see engine/CONTRACT.md.`);
-  return engine;
-}
 
 // ── B — THE MEANING-SWEEP ACCUMULATOR IS REGENERATED AND COUNTED BEFORE IT IS JUDGED ───────────────
 //
@@ -849,21 +792,21 @@ export function syncPlacementForm(files) {
 // which is precisely why warm resume worked there and not here.
 export async function runStage(name, opts) {
   const engineForHome = selectEngine();
-  let stageCodexHome = null;
+  let stageHome = null;
   if (engineForHome?.makeStageHome) {
-    try { stageCodexHome = engineForHome.makeStageHome(name); }
-    catch { stageCodexHome = null; }   // fall back to the engine's own per-turn home rather than fail a stage
+    try { stageHome = engineForHome.makeStageHome(name); }
+    catch { stageHome = null; }   // fall back to the engine's own per-turn home rather than fail a stage
   }
   try {
-    return await runStageLadder(name, opts, stageCodexHome);
+    return await runStageLadder(name, opts, stageHome);
   } finally {
     // Deleted when the LADDER settles — every resume that needed it has happened by then. Best-effort:
     // a home we cannot remove must never turn a completed stage into a failure.
-    if (stageCodexHome) engineForHome.releaseStageHome(stageCodexHome);
+    if (stageHome) engineForHome.releaseStageHome(stageHome);
   }
 }
 
-async function runStageLadder(name, opts, stageCodexHome = null) {
+async function runStageLadder(name, opts, stageHome = null) {
   const {
     agent = config.defaultAgent,
     message,
@@ -1143,7 +1086,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // written to disk before the comparison, so the thing being watched cannot reach it. See
     // run-integrity.mjs for why it is not a manifest file and why the append-only journals are excluded.
     const integrityBefore = frozenSnapshot(runDir);
-    const turn = await engine.runTurn({ agent, sessionKey: key, message: effMessage, grantDispatch: base, model, thinking, timeoutSec: effTimeout, resumeRef: warm ? lastSessionRef : undefined, codexHome: stageCodexHome, mcpConfig, allowedTools: gatherAllowedTools, seatWrites: gatherSeatWrites, skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
+    const turn = await engine.runTurn({ agent, sessionKey: key, message: effMessage, grantDispatch: base, model, thinking, timeoutSec: effTimeout, resumeRef: warm ? lastSessionRef : undefined, stageHome, mcpConfig, allowedTools: gatherAllowedTools, seatWrites: gatherSeatWrites, skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
       progressFiles: files,   // the no-progress watchdog's artifact-advance signal (anthropic-agent; other adapters ignore it)
       // The raw stream of this session, beside its dispatch record (engine/session-record.mjs). The engines
       // keep it while the disk has room and say on the tuple's `stream` what landed.
@@ -1235,7 +1178,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     //                 spawn error. It NEVER falls back to the requested alias, and `modelBasis` ("actual" or
     //                 "unknown") never dresses a requested value as an observed one. `providerReported` is
     //                 the provider word the same stream gave (tuple `providerWire`), null on the same terms.
-    const modelRequested = engine.resolveModelId ? engine.resolveModelId(model) : resolveModel(model);
+    const modelRequested = modelIdOf(engine, model);
     const modelActual = (typeof turn.modelWire === "string" && turn.modelWire) ? turn.modelWire : null;
     const modelBasis = modelActual ? "actual" : "unknown";
     const providerReported = (typeof turn.providerWire === "string" && turn.providerWire) ? turn.providerWire : null;
@@ -1369,7 +1312,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
       // under the run dir to win the grant back, and warmPatchMessage renders the target through rel();
       // a relative path there would silently strip the write root off the one turn that needs it most.
       const rt = await engine.runTurn({ agent, sessionKey: key, message: repairMessage, model, thinking,
-        timeoutSec: effTimeout, resumeRef: repairRef, codexHome: stageCodexHome, mcpConfig: turnConfig(effTimeout), allowedTools: gatherAllowedTools,
+        timeoutSec: effTimeout, resumeRef: repairRef, stageHome, mcpConfig: turnConfig(effTimeout), allowedTools: gatherAllowedTools,
         skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
         progressFiles: files, streamFile: streamFilePath(runDir, name, attempt, formRepairsUsed + 1) });
       repairRef = rt.sessionRef ?? repairRef;
@@ -1404,7 +1347,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         // last line of the stage's telemetry (compare.mjs reads exactly that line).
         stageLog(runDir, name, {
           attempt, key, agent, model,
-          modelUsed: (lastModelUsed = engine.resolveModelId ? engine.resolveModelId(model) : resolveModel(model)),
+          modelUsed: (lastModelUsed = modelIdOf(engine, model)),
           // Same billing stamp as the attempt row, written on the same terms — see the note there.
           engine: engine.name, writeBoundary: writeBoundaryOf(engine), authMode: auth.mode, apiBilled: auth.apiBilled === true, cloud: auth.cloud ?? null,
           code: rt.code, wall: rt.wall, timeoutSec: effTimeout,
@@ -1446,7 +1389,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
           runLog(runDir, {
             event: "form-repair", stage: name, attempt, repair: formRepairsUsed, of: MAX_FORM_REPAIRS,
             fail: triggeredBy, outcome, landed, ok: outcome === "repaired",
-            model: engine.resolveModelId ? engine.resolveModelId(model) : resolveModel(model),
+            model: modelIdOf(engine, model),
           });
         } catch { /* telemetry best-effort — never fail a turn over a journal line */ }
       }

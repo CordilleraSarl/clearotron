@@ -42,7 +42,7 @@ async function codexTurns(t, { bypass, codexHome = null, turns = 1, between = nu
   await withEnv({ CLEAROTRON_CODEX_PATH: join(HERE, "mock-codex.mjs"), MOCK_CODEX_CALL_LOG: log,
     CLEAROTRON_AI_BILLING: "api-key", CODEX_API_KEY: "sk-codex-test", CLEAROTRON_CODEX_SANDBOX_BYPASS: bypass }, async () => {
     for (let i = 0; i < turns; i++) {
-      const r = await openaiAgentEngine.runTurn({ message: "reply ok", model: "haiku", thinking: "low", timeoutSec: 60, runDir, skillsDir: SKILLS, codexHome });
+      const r = await openaiAgentEngine.runTurn({ message: "reply ok", model: "haiku", thinking: "low", timeoutSec: 60, runDir, skillsDir: SKILLS, stageHome: codexHome });
       assert.equal(r.code, 0, r.stderr);
       if (between && i < turns - 1) between(JSON.parse(readFileSync(log, "utf8").trim().split("\n").pop()));
     }

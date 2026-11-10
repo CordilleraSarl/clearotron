@@ -536,7 +536,7 @@ test("the correction's dispatch names each defect, in the chunk's own numbering"
   const K = { runDir: dir, assessChunk: () => chunkFile, plan: join(dir, "plan.json"), research: (k) => join(dir, "research", `${k}.md`), registerRecords: join(dir, "absent"), inboundRequest: join(dir, "absent"), confirmationBrief: join(dir, "absent") };
   const msg = KO_STAGES["knockout-correct"].message({ K, chunkNo: 0, work: w, chunkMarks: [{ name: NAME }, { name: SIBLING }] });
   assert.match(msg, /1\. \[band\] "QUILLBRAE", finding 5 \(TWO\): The second conflict is rated too low\. Rests on: \/mark\/em\/x\./);
-  assert.ok(msg.includes("A name no defect concerns stays unchanged. Within an affected name, repair the findings and dependent answers needed to resolve the defect, and explain their connection to it. Leave unrelated findings unchanged."));
+  assert.ok(msg.includes("A name no defect concerns stays unchanged, except a finding a defect names that also stands on that name. Within an affected name, repair the findings and dependent answers needed to resolve the defect, and explain their connection to it. Leave unrelated findings unchanged."));
   assert.ok(msg.includes("A filing held for this batch may bear on more than one name. Weigh it against the particular name and its instructed scope, and cite its held recordId and source. Keep where it was found: using that filing does not mean its original search answered this name's register question."));
   assert.match(msg, /quillbrae\.md/);
   assert.doesNotMatch(msg, /mossvale\.md/, "a name no defect names is not reopened");

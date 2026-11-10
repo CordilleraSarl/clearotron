@@ -118,7 +118,7 @@ The seam is real but has known single-vendor assumptions outside it. The full pa
    zero. `modelWire` is the same discipline for the model gauge: the served id the turn OBSERVED on the
    wire, or `null` — never the alias you asked for. The gateway derives `modelActual` / `modelBasis` /
    `modelMismatch` from it, so an adapter that never sets it stamps every row `unknown`.
-3. Register it: add the adapter to the `ENGINES` map in `gateway.mjs` (or call `registerEngine()`),
+3. Register it: add the adapter to the `ENGINES` map in `engine/registry.mjs` (or call `registerEngine()`),
    and add its binary to `ENGINE_BINARIES` in `driver.config.mjs` so the setup wizard can offer it —
    the two lists are pinned against each other, because "the wizard offers an engine the driver does
    not ship" and "the driver ships an engine setup cannot reach" are both invisible otherwise. Then
