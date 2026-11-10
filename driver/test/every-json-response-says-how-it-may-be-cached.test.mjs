@@ -90,7 +90,8 @@ test("the credential route still declares its own stricter policy", async () => 
   // together they close the gap, because either one alone goes green when the other half is deleted.
   // Read from the source rather than driven, because reaching that route needs a whole service.
   const src = driverSource("portal-service.mjs");
-  const i = src.indexOf("/portal/api/connect-key");
+  // Found by the route's own test of the path, which moves with the route; the path itself is also named in prose elsewhere.
+  const i = src.indexOf('parts[2] === "connect-key"');
   assert.ok(i > 0, "the credential route is gone from this file — this arm is now measuring nothing");
   const region = src.slice(i, i + 6000);
   assert.match(region, /"cache-control":\s*"no-store, no-cache, must-revalidate, private"/,

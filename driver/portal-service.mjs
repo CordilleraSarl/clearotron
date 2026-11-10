@@ -34,7 +34,7 @@
 // (stageLabel), never a client's recipe label; every trigger is audited (JSONL) with the human email.
 import "../shared/env-local.mjs";   // — FIRST: applies the CLEAROTRON_* translation before any module-top
 // capture evaluates. Reads no `.env` here — that load is gated on isCliEntry(argv[1]).
-import { readFileSync, existsSync, readdirSync } from "node:fs";
+import { existsSync, readdirSync } from "node:fs";
 import { hostname as osHostname, homedir } from "node:os";   // — the address a refusal page names when nothing else identifies this instance
 
 // The port this service listens on when nobody says otherwise. Declared here rather than at the
@@ -44,13 +44,8 @@ import { hostname as osHostname, homedir } from "node:os";   // — the address 
 const PORTAL_PORT_DEFAULT = 18802;
 import { storeInRepo, storeOutsideRepoMessage, makeCommittableAudit, resolveStoreRepoRoot, makeStoreCommit } from "../shared/store-in-repo.mjs";   //,
 import { customerStoreDir, customerStoreLine } from "../shared/customer-store.mjs";   // — one store for the surface and the runs
-import { bareInvocation, browserCommand, invocationPrefix, installRoute, npxVersionOf } from "../shared/invocation.mjs";   // — and why this one surface is by NAME
+import { bareInvocation, browserCommand, invocationPrefix, npxVersionOf } from "../shared/invocation.mjs";   // — and why this one surface is by NAME
 import { channelOf, channelPackage, ownVersion } from "../shared/permanent-install.mjs";   // — which release channel this install came from
-import { stdioConnectOffer, stdioConnectFor, STDIO_SHAPES } from "../shared/stdio-connect.mjs";   // — ONE author for the connect route
-import { isWsl, wslTarget } from "../shared/wsl.mjs";   // — on WSL, the connect lines say where they run and cross the boundary themselves
-import { doorKind } from "../shared/mcp-challenge.mjs";   // — one reading of what a connector asks for, shared with doctor
-import { claudeNamer } from "./engine/probe.mjs";   // names the copy setup installed, which is not on PATH
-import { connectOffers, offersForWire } from "../shared/connect-clients.mjs";                 // — ONE table, resolved server-side
 
 /**
  * The ops credential for one trigger call: the boot token's cap, re-taken against the roster now.
@@ -131,7 +126,7 @@ const INSTALL_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 const READ_OFF_NOTE = "Reading a brief is not available on this instance — set the search up below.";
 import { dirname, join, resolve as pathResolve } from "node:path";
-import { makePrincipal, assertPrincipal, genericOrgOf, principalView, seesEverything, PortalDeny } from "./portal-access.mjs";
+import { makePrincipal, genericOrgOf, principalView, seesEverything, PortalDeny } from "./portal-access.mjs";
 // — the THIRD identity source (after the CF Access edge and, until, the deleted bypass). It
 // decides nothing about access: it turns a passphrase into an email string, which then goes through
 // makePrincipal and assertPrincipal exactly as a Cloudflare-verified address does.
@@ -152,7 +147,7 @@ import { makeUpstream } from "./portal-upstream.mjs";
 import { flagView } from "./portal-config-view.mjs";
 import { livePosture } from "./flag-snapshot.mjs";   // — for the capture-vs-box comparison only, never for a value
 import { DEFAULT_CLIENT_DAILY_RUNS, accountUsage } from "./usage-ledger.mjs";
-import { productIdentity, SOURCE_REPO } from "../shared/product-identity.mjs";   // AGPL §13 — one answer, three surfaces
+import { SOURCE_REPO } from "../shared/product-identity.mjs";   // AGPL §13 — one answer, three surfaces
 import { engineCommit } from "./engine-build.mjs";                  // — the SAME stamp pool meta records
 // — siblings, on their own line: the guard pins the line above and its subject is the JOIN
 // (this endpoint and pool meta stamp the same function), not the import list. Kept separate so that
@@ -163,15 +158,18 @@ import { makeStaticHandler, reportCsp, docCsp } from "./portal-static.mjs";
 import { crossSiteReason, bodyNotJson } from "./portal-request-origin.mjs";
 import { bundleVerdict, healthUi } from "../shared/bundle-freshness.mjs";   // one definition of a usable bundle, shared with `doctor`
 import { adminRoutes } from "./portal-routes/admin.mjs";   // the route groups the dispatcher below asks in turn
+import { composeRoutes } from "./portal-routes/compose.mjs";
 import { configRoutes } from "./portal-routes/config.mjs";
+import { connectRoutes } from "./portal-routes/connect.mjs";
 import { feedbackRoutes } from "./portal-routes/feedback.mjs";
+import { meRoutes } from "./portal-routes/me.mjs";
 import { queueRoutes } from "./portal-routes/queue.mjs";
 import { reportRoutes } from "./portal-routes/report.mjs";
 import { runRoutes } from "./portal-routes/run.mjs";
 import { runsRoutes } from "./portal-routes/runs.mjs";
 import { usageRoutes } from "./portal-routes/usage.mjs";
 import { MAX_BRIEF, makeReadBudget } from "./compose-read.mjs";
-import { BRAND, ORGANISATION_NAME, ADMINISTRATOR_CONTACT, PALETTE, FAVICON_LINK, bracketMark, DOOR_ROOT, DOOR_ROOT_DARK, DOOR_THEME_INIT } from "../shared/brand.mjs";
+import { BRAND, ORGANISATION_NAME, PALETTE, FAVICON_LINK, bracketMark, DOOR_ROOT, DOOR_ROOT_DARK, DOOR_THEME_INIT } from "../shared/brand.mjs";
 import { TEXT_FONT_STYLE } from "../shared/brand-fonts.mjs";   // the text face, carried in the page rather than fetched
 import { envFrom, pinEnv } from "../shared/env-aliases.mjs";   // — a refusal names the name in force
 import { accessAudience, audienceLabel } from "../shared/access-audience.mjs";   // — F54; jose-free on purpose
@@ -1008,8 +1006,9 @@ export function makePortalService({
   // own constants a group prints or answers with, and what the request carries (`request`). A group answers a request it serves and returns undefined for any other, and the dispatcher asks the
   // groups in the order its routes have always been matched, so a request is answered by the route that answered it before.
   const svc = { poolRoot, workspaceRoot, secret, grants, localSignIn, writeGrants, revokeConnectorKeys, queueDirs, trigger,
-    stopRun, demo, orderRefusal, audit, auditPath, auditLog, feedbackCapture, readBuilt, readCanCount, readTerritories,
-    upstream, loadProfilesImpl, usedJtis, sweepJtis, jobFor, selectorOf, refusalFor, allowanceExhaustedLine };
+    stopRun, stopControl, demo, orderRefusal, audit, auditPath, auditLog, feedbackCapture, readBuilt, readCanCount,
+    readTerritories, upstream, composeRead, readBudget, loadProfilesImpl, usedJtis, sweepJtis, searchesFor, jobFor, selectorOf,
+    engineProgramDisputed, INSTALL_ROOT, INSTALL_CHANNEL, READ_OFF_NOTE, refusalFor, allowanceExhaustedLine };
 
   async function route(method, path, identity, body = {}, query = {}) {
     const grantsHere = grantsNow();
@@ -1018,470 +1017,13 @@ export function makePortalService({
     if (parts[0] !== "portal") return { status: 404, json: { error: "not_found" } };
     const request = { method, path, parts, identity, principal, grantsHere, body, query };   // what a route group reads of the request
     try {
-      // /portal/api/me
-      if (parts[1] === "api" && parts[2] === "me" && method === "GET") {
-        assertPrincipal(principal, { door: true });   // door check only — a multi-account client enters and gets the picker list
-        // `accountNames` — the DISPLAY name of each account this identity holds, and nothing else.
-        //
-        // Every profile carries a name ("Vantor Labs", "Foxglade Interactive"); the account KEY is a
-        // slug ("vantor"). Staff read names because the account picker fetches the staff-only
-        // roster; a client had no name source at all, so the identical screen printed the slug at them.
-        // The same brand owner therefore read two different ways depending on who signed in, which is
-        // what this field ends.
-        //
-        // SCOPED TO THE GRANTED ACCOUNTS, never the roster. A name map covering everything would put
-        // Cordillera's customer list on the one route every signed-in identity can reach — the exact
-        // leak /profiles is never proxied for (portal-upstream: "a client reaching it would learn the
-        // customer base"). `"*"` identities get {} and keep using the roster, which is staff-gated.
-        //
-        // `accountFacts` rides in the SAME loop, under the SAME scoping decision, for the same reason
-        // the names do: the pick panel shows industry, marketplace count and territories per company,
-        // and a client with several grants meets that panel. One loop, so there is one answer to
-        // "which accounts may this identity learn about" rather than two that can drift apart. A `"*"`
-        // identity gets {} here exactly as it does for names and keeps reading the staff-only roster.
-        let accountNames = {};
-        let accountFacts = {};
-        let meRoster = null;   // read once for this answer: the names below and the house marketplaces
-        // GENERIC IS NAMED TOO when the person sees an organisation's Generic. It is not a company, so it is
-        // never in `accounts`, and without a name here the switcher printed the raw key at everyone below
-        // everything. An organisation with no company yet is the case with an empty `accounts`, so the
-        // guard is on the names to look up, not on the company list.
-        const named = Array.isArray(principal.accounts)
-          ? [...principal.accounts, ...(principal.genericOrgs?.length ? ["generic"] : [])] : [];
-        if (named.length) {
-          try {
-            const { companyFactsOf } = await import("./profiles.mjs");
-            const profiles = meRoster = await loadProfilesImpl();
-            for (const key of named) {
-              const profile = profiles.get(key);
-              const name = profile?.name;
-              if (typeof name === "string" && name) accountNames[key] = name;
-              if (profile) accountFacts[key] = companyFactsOf(profile);
-            }
-          } catch {
-            // A name is a nicety; the door is not. An unreadable profile store must not lock a user
-            // out of the portal, so this degrades to the keys the UI already falls back to.
-            accountNames = {};
-            accountFacts = {};
-          }
-        }
-        // HOW MANY RUNS THIS DEPLOYMENT EXECUTES AT ONCE. Deployment-wide, not account-scoped, which is
-        // why it rides here rather than on /usage: it is the same number for everyone, /me is fetched
-        // once by every screen, and a multi-brand account has no single /usage to read it from.
-        //
-        // Home states it in its section header. It was written into the UI as a literal `2` — right on
-        // the day, and silently wrong the moment CLEAROTRON_MAX_CONCURRENT_RUNS is set to anything else,
-        // which is exactly the shape of over-promise this screen exists to avoid.
-        // WHO OPERATES THIS DEPLOYMENT. The portal named the operator in three places as a
-        // string literal — the role label was the operator's own name, which a fork would have shipped
-        // about a company it has nothing to do with. `CLEAROTRON_BRAND_NAME` has been the brand seam all
-        // along and TRADEMARKS.md already listed portal nav as a consumer; it simply was not one.
-        // Riding on /me because that is where the ROLE comes from, and the label is role plus operator.
-        // WHICH MODE THIS INSTALL IS. Same rationale as concurrentRuns above: it is the
-        // same answer for everyone, /me is fetched once by every screen, and the screen that needs it
-        // most — New clearance — has no other deployment-wide source.
-        //
-        // READ, NEVER COMPUTED. This process deliberately has no engine environment (see this file's
-        // own header, three times over), so `engineInventory(process.env)` here would report demo on
-        // every install — a confident wrong answer. `flagView` reads the snapshot `bin/start.mjs`
-        // writes at boot and derives the mode from `binaryPresent`, which that snapshot already
-        // carries. NULL when there is no snapshot to read, and null means THIS CANNOT ANSWER — the UI
-        // must leave the button alone rather than infer demo from an absent file.
-        // READ ONCE. The payload names it and the program reading below is gated on it; two calls to
-        // `flagView` here would be two reads of the same file that could disagree with each other.
-        //
-        // A DEMO ANSWERS NULL. No order in a demo reaches an engine: the run route below resolves each one
-        // to the finished example for the search picked (`if (demo)`), which is what the demo's banner
-        // promises. The demo's snapshot still describes the machine, so on a machine with no engine program
-        // this read "demo", and New clearance drew the no-engine notice where Review search belongs: the
-        // one flow the demo exists to show could not be started. Null leaves the button alone, as it does
-        // on a fresh install, and the configuration page still reads the snapshot for itself.
-        const meEngineMode = demo ? null : flagView(poolRoot).engineMode;
-        const searchRefusal = demo ? null : await orderRefusal();
-        // THE HOUSE MARKETPLACES, offered as suggestions wherever a company's marketplaces are edited. A new
-        // company starts with none (the owner's ruling of 2026-09-23) and somebody picks; these are the
-        // Generic default's own list, read from the store so an install that changed it offers its own.
-        // Deployment-wide and the same for everyone, like concurrentRuns. [] when the store cannot be read:
-        // the box still takes any marketplace typed into it.
-        let houseMarketplaces = [];
-        try {
-          const house = (meRoster ?? await loadProfilesImpl()).get("generic")?.platforms;
-          if (Array.isArray(house)) houseMarketplaces = house.filter((d) => typeof d === "string" && d.trim());
-        } catch { /* a suggestion list is a nicety; the door is not */ }
-        return { status: 200, json: { email: principal.email, ...principalView(principal, grantsHere, accountNames),
-          accounts: principal.accounts, accountNames, accountFacts,
-          concurrentRuns: concurrentRunsCap(), brand: ORGANISATION_NAME, engineMode: meEngineMode, houseMarketplaces,
-          // WHERE A PERSON ASKS FOR A CHANGE TO THEIR SIGN-IN, beside the brand and read where it is read:
-          // an href Preferences links "Clearotron administrator" to, or null, and then the words are plain.
-          administratorContact: ADMINISTRATOR_CONTACT,
-          // WHETHER THE PROGRAM IS ON THIS BOX WHILE THE ENGINE CANNOT SEE IT — true, false, or null
-          // for "this could not be checked". The screen above renders one of three remedies from it,
-          // and they are different remedies: install the CLI, restart the service that cannot see it,
-          // or the general advice when nothing could be read. Only `engineMode: "demo"` can make this
-          // anything but false; see `engineProgramDisputed`.
-          engineProgramDisputed: await engineProgramDisputed(meEngineMode),
-          // WHETHER THIS INSTALL CAN RUN A SEARCH AT ALL, by the runner's own order-time test (`orderRefusal`), and when
-          // it cannot, the refusal the review would give this person: Home shows it in place of its invite, and New
-          // clearance shows it and holds its start, so nobody fills in a search the install would refuse. A demo walks
-          // its own ordering flow, so it reads as able.
-          canSearch: !searchRefusal,
-          ...(searchRefusal ? { searchRefusal: refusalFor(principal, searchRefusal) } : {}),
-          // HOW THIS INSTALL ARRIVED, so a screen can name the setup command the reader can actually
-          // type. `npm run setup` and `npx clearotron install` are the same wizard and each one is
-          // unrunnable on the other route; the no-engine notice named one of them and was wrong for
-          // half its readers. A WORD, never a command line and never a prefix: `invocationForm` can
-          // answer with this machine's absolute path, and this value is rendered in a browser.
-          setupRoute: installRoute(),
-          // WHICH RELEASE CHANNEL THIS INSTALL CAME FROM, read off its own version as `update` reads it, so the
-          // setup command a screen names fetches this channel. `npx clearotron install` fetches the stable, and
-          // the stable's setup then moves itself into ~/.local over a beta. A WORD, like the route above.
-          channel: INSTALL_CHANNEL,
-          // THE COMMAND THAT FILES AN ORGANISATION, for the screen that cannot create a company without one.
-          // `browserCommand`'s rule: no path on this machine, and from npx's cache the published version
-          // rather than a bare name that reader does not have.
-          organisationCommand: browserCommand('start --organisation "<name>"'),
-          // — a button that always fails must not render as available. The reason is
-          // operator-shaped and staff-only; a client reads the generic sentence the button carries.
-          controls: { stop: { available: stopControl.available !== false,
-            reason: seesEverything(principal) ? (stopControl.reason ?? null) : null } } } };
-      }
-      // /portal/api/about — the AGPL §13 source offer ()
-      //
-      // UNAUTHENTICATED, DELIBERATELY, and it is the only route here that is. §13 obliges an operator
-      // running a modified version to offer the source to the users interacting with it — the offer is
-      // owed to whoever reaches the service, and a licence notice you must first sign in to read is not
-      // an offer. Nothing here is private either: the product's name, its version, its licence and the
-      // commit it is running are all facts about code that is published under a licence requiring
-      // exactly that. The sha is not a secret; it is the thing being offered.
-      //
-      // SERVED, NOT BUILT. The bundle cannot carry its own commit — portal-ui/dist is committed and CI
-      // fails when dist and source disagree, so a hash baked in at build time is not known until after
-      // the commit that would carry it. The server knows what it is running; the page asks.
-      if (parts[1] === "api" && parts[2] === "about" && method === "GET") {
-        return { status: 200, json: productIdentity() };
-      }
-      // /portal/api/searches
-      if (parts[1] === "api" && parts[2] === "searches" && method === "GET") {
-        const account = assertPrincipal(principal, { account: query.account ?? null });
-        if (!account) return { status: 400, json: { error: "name an account (?account=)" } };
-        return { status: 200, json: { account, ...searchesFor(account, principal) } };
-      }
-      // /portal/api/compose/read — turn a pasted brief into a filled-in composer.
-      //
-      // THE ONE THING TO KEEP TRUE ABOUT THIS ROUTE: it is the only POST under /portal/api that is not
-      // a step towards spending money. It mints no confirmation token, writes nothing, queues nothing
-      // and returns a draft. If it ever grows a side effect, it stops being safe to leave un-gated
-      // behind the composer's first click and belongs beside plan/run instead.
-      if (parts[1] === "api" && parts[2] === "compose" && parts[3] === "read" && method === "POST") {
-        // Door check only. The read touches no account data, so demanding an account here would be a
-        // gate with nothing behind it — and a staff member composing for a client they have not yet
-        // picked would be refused a form-filler for no reason.
-        assertPrincipal(principal, { door: true });
-        // `error` carries the SENTENCE, `code` the machine word — the convention every other route on
-        // this service follows, and what portal-ui's decoder reads. A code in `error` reaches a client
-        // screen as the literal word "read_failed".
-        if (!composeRead) {
-          return { status: 501, json: { code: "unavailable", error: READ_OFF_NOTE } };
-        }
-        if (readBudget && !readBudget.take(principal.email)) {
-          return { status: 429, json: { code: "rate_limited", error: "That is a lot of reading in one hour — set this one up below." } };
-        }
-        let out;
-        try {
-          out = await composeRead(typeof body?.brief === "string" ? body.brief : "");
-        } catch (e) {
-          // A provider outage is not a portal fault and must not read as one. The composer shows the
-          // sentence and keeps every field the user already typed — the brief is still in the box.
-          audit({ event: "compose-read", by: principal.email, ok: false, error: String(e?.message ?? e) });
-          // NOT "just now": a throw says nothing about whether it will pass, and that wording sent a reader
-          // back to the button for a failure no retry fixes. It names the check instead.
-          return { status: 502, json: { code: "read_failed",
-            error: `The request could not be read: the reader failed. \`${browserCommand("doctor --probe-engine")}\` finds out why — set the search up below meanwhile.` } };
-        }
-        // Length, never content. A brief is client material — whose mark, for whose product, before
-        // whose deadline — and an audit log is a different disclosure surface from a run store.
-        audit({ event: "compose-read", by: principal.email, ok: out.ok === true,
-          chars: String(body?.brief ?? "").length, ...(out.ok ? {} : { error: out.error }) });
-        if (!out.ok) {
-          // "engine" IS AN UPSTREAM FAULT AND KEEPS ITS 502. Before this the reader
-          // built its own client and a provider outage THREW, landing in the catch above as a 502. Going
-          // through the engine door made it a returned refusal instead — total rather than throwing — and
-          // routing that to 422 would have told the user their brief was unprocessable when the engine
-          // was simply unreachable. Same fault, same status as before; the reader changed, not the
-          // meaning. `unreadable` and `shape` stay 422 beside it: those ARE answers, just untrustworthy
-          // ones, and 422 is what this route has always said about them.
-          if (out.error === "engine") {
-            audit({ event: "compose-read", by: principal.email, ok: false, error: out.cause ?? "engine" });
-            return { status: 502, json: { code: "read_failed", error: out.message } };
-          }
-          const status = out.error === "too_long" || out.error === "empty" ? 400 : 422;
-          return { status, json: { code: out.error, error: out.message } };
-        }
-        return { status: 200, json: { read: out.read } };
-      }
+      { const answer = await meRoutes(svc, request); if (answer !== undefined) return answer; }   // portal-routes/me.mjs
+      { const answer = await composeRoutes(svc, request); if (answer !== undefined) return answer; }   // portal-routes/compose.mjs
       { const answer = await runRoutes(svc, request); if (answer !== undefined) return answer; }   // portal-routes/run.mjs
       { const answer = await queueRoutes(svc, request); if (answer !== undefined) return answer; }   // portal-routes/queue.mjs
       { const answer = await configRoutes(svc, request); if (answer !== undefined) return answer; }   // portal-routes/config.mjs
       { const answer = await usageRoutes(svc, request); if (answer !== undefined) return answer; }   // portal-routes/usage.mjs
-// ── ONE READING OF THE CONNECTOR'S OWN DOOR, CACHED ────────────────────────────────────────────────
-//
-// The same unauthenticated probe `doctor` makes, asked here so the connector steps follow what the door
-// actually answers. Bounded three ways, because this sits on a page load: a short timeout, a one-minute
-// cache, and a failure that answers `null` rather than throwing — a page that cannot read its door says
-// so, which is the honest half of this change.
-let doorKindCache = { at: 0, url: null, kind: null };
-// ── WHETHER A READER HAS AN ASSISTANT ON THIS INSTALLATION ────────────────────────────────────────
-//
-// The only evidence either process holds is the connector's own access log: enrolment says a person MAY
-// connect, never that they did. `readConnections` is the connector's reader, imported rather than
-// rebuilt here — the path this log lives at is the connector's fact, and a portal deriving it from its
-// own environment is how a live key's record nearly got struck on a split install.
-//
-// TWO INSTALLATION SHAPES, AND THE SPLIT IS THE ONE THE ROUTE ALREADY MAKES. A hosted install has a
-// published client door and many signed-in people, so the question is answered per person: is this
-// email in the log. A local install has no client door, one reader, and a connector that cannot know
-// who it is serving — so the local route's own record answers for the only person who could be asking.
-// Reading a local record as an answer on a HOSTED install would mark every reader connected the moment
-// one member of staff ran the server by hand, which is why it is gated on there being no client door.
-//
-// Returns null, never false, when there was nothing to read. See the route for why that matters.
-//
-// CACHED FOR A MINUTE, the same as the door probe above and for the same reason: this is a page load,
-// not a check. It runs on every report a reader opens, and reading the tail of a log each time to
-// answer a question whose answer changes once, ever, would be paid on the client-facing screen.
-// KEYED ON THE FILES IT READ, not on time alone. The log's location is configuration and does not move
-// under a running service — but a cache that ignored it would answer about the wrong file for a minute
-// after it did, and it is what makes this cache testable at the route rather than only at the helper.
-let connectionsCache = { at: 0, key: null, seen: null };
-const CONNECTIONS_TTL_MS = 60_000;
-
-async function readerHasConnectedAi(principal) {
-  const email = String(principal?.email ?? "").trim().toLowerCase();
-  let seen = null;
-  // Imported here rather than at the top, the way every other reach into mcp-server/lib from this file
-  // is: the driver does not depend on the connector, and the import-cycle walk is what keeps it so.
-  let audit = null;
-  try { audit = await import("../mcp-server/lib/audit.mjs"); }
-  catch { return null; }                                            // best-effort: never fail a page load
-  const key = audit.auditPaths().join("\u0000");
-  if (connectionsCache.seen && connectionsCache.key === key && Date.now() - connectionsCache.at < CONNECTIONS_TTL_MS) {
-    seen = connectionsCache.seen;
-  } else {
-    try { seen = audit.readConnections(); } catch { return null; }
-    connectionsCache = { at: Date.now(), key, seen };
-  }
-  if (!seen.available) return null;
-  if (email && seen.emails.has(email)) return true;
-  if (!process.env.CLEAROTRON_CLIENT_MCP_URL && seen.local) return true;
-  return false;
-}
-
-const DOOR_KIND_TTL_MS = 60_000;
-async function connectorDoorKind(url) {
-  if (!url) return null;
-  const now = Date.now();
-  if (doorKindCache.url === url && now - doorKindCache.at < DOOR_KIND_TTL_MS) return doorKindCache.kind;
-  let probe = null;
-  try {
-    const res = await fetch(url, { method: "GET", redirect: "manual", signal: AbortSignal.timeout(2000) });
-    let body = null;
-    if (res.status === 401) { try { body = (await res.text()).slice(0, 400); } catch { body = null; } }
-    probe = { ok: res.status < 500, status: res.status, error: null, challenge: res.headers.get("www-authenticate"), body };
-  } catch (e) { probe = { ok: false, status: null, error: String(e?.cause?.code ?? e?.name ?? e?.message ?? e) }; }
-  const kind = doorKind(probe);
-  doorKindCache = { at: now, url, kind };
-  return kind;
-}
-
-      if (parts[1] === "api" && parts[2] === "mcp-access" && method === "GET") {
-        assertPrincipal(principal, { door: true });   // throws PortalDeny(403) for an unmapped identity
-        const url = process.env.CLEAROTRON_CLIENT_MCP_URL || null;
-        const keyUrl = process.env.CLEAROTRON_AGENT_MCP_URL || null;
-        // ── THE ROUTE THAT NEEDS NO ADDRESS ──────────────────────────────────
-        //
-        // Both addresses above are null on a local install and always will be: there is no hosted door
-        // to point at. The surfaces built on them then render nothing — correctly, by their own rule —
-        // and the owner met that as a wall on his own first install, with the one route that DOES work
-        // sitting unmentioned on his disk.
-        //
-        // STAFF ONLY, and that boundary is honest rather than a guess about deployment shape. The
-        // command is a true fact about THIS INSTALL'S OWN DISK, useful to anyone with a shell on the
-        // box and useless to a hosted client who has no checkout. On a local install the reader IS the
-        // operator, which is why the split that already exists does the work an "is this deployment
-        // local" inference would have done badly. Agreed before building, because it
-        // changes what a signed-in staff user is shown.
-        //
-        // COMPOSED IN ONE PLACE and handed over as a string. The browser cannot know this install's
-        // path, so the three surfaces stating this route cannot drift apart even if someone tries.
-        //
-        // AND IT NAMES THE DISTRIBUTION, like every other surface that states this route. Without the
-        // target this one composer answers as it does for an install that is not under WSL at all, so on
-        // a WSL box this field alone carried the inside-WSL line while the rows beside it led with the
-        // Windows-side one. Nothing draws this field today; it is on the wire, and a field that answers
-        // differently from the rows is a trap for whoever draws it next.
-        const stdio = seesEverything(principal)
-          ? stdioConnectOffer({ workDir: process.env.CLEAROTRON_WORK_DIR || null, reportsDir: process.env.CLEAROTRON_REPORTS_DIR || null, wsl: wslTarget(), demo: isDemo(process.env) })
-          : null;
-
-        // ── THE PAGE IS HANDED ANSWERS, NOT FACTS TO REASON FROM ─────────────
-        //
-        // The browser used to hold its own client table on its own axis — `door` × `reach` — and derive
-        // offered-versus-withheld from `url`, `keyUrl` and `enabled`. Two tables partitioning the same
-        // clients on different axes did not merely risk drifting; they had already drifted. The page
-        // said Codex needs a key address, which is `null` on a local install, so it named a one-line
-        // command in its own instructions and then rendered no command. That is this issue's defect,
-        // living inside the page written to answer it.
-        //
-        // So the resolution happens HERE, once, through `shared/connect-clients.mjs`, and the page
-        // renders what it is handed. This is not a preference for server-side logic: the install's own
-        // filesystem path is not a browser fact, and any derivation needing it must happen where it is
-        // known. `assistantsFor` and `addressFor` are DELETED rather than kept in step, because a
-        // second author kept in step by hand is exactly what broke.
-        //
-        // STAFF-ONLY STDIO SURVIVES THE MOVE. The command is a true fact about this install's own disk
-        // — useful to anyone with a shell on the box, useless to a hosted client who has no checkout —
-        // so a client is handed no stdio routes at all and the rows that need one resolve to a stated
-        // absence rather than to a command they cannot run.
-        const offers = connectOffers({
-          stdioRoutes: stdio
-            ? Object.fromEntries(Object.keys(STDIO_SHAPES).map((shape) =>
-                [shape, stdioConnectFor(shape, { workDir: process.env.CLEAROTRON_WORK_DIR || null, reportsDir: process.env.CLEAROTRON_REPORTS_DIR || null, wsl: wslTarget(), demo: isDemo(process.env) })]))
-            : {},
-          wsl: isWsl(),
-          nameClaude: claudeNamer(),
-          demo: isDemo(process.env),
-          // ONE ADDRESS, and it is the publicly reachable one ( §5). The
-          // `localAddress` and `clientDoorStanding` inputs are gone with the axis that read them: no
-          // surface serves a loopback address to anybody, and the door's running-or-not stopped being
-          // a question the moment it auto-started with the product.
-          publicAddress: url,
-          // THE KEY DOOR'S OWN HOST, when one is deployed. Beside a sign-in door its steps ride along for
-          // the page to fold away; they are never resolved against `url`, which refuses a key.
-          keyAddress: keyUrl,
-          operator: principal.email ?? null,
-          // WHAT THE DOOR ANSWERS, read from the door rather than assumed by the row. The steps used to
-          // be fixed: Claude's said to paste a key and set authentication to None, which is right for a
-          // self-hosted door and cannot work on any deployment behind an identity provider — the key is
-          // minted for nothing and the warning the reader is told to ignore IS the sign-in. Cached
-          // because this is a page load, not a check: one reading serves every reader for a minute, and
-          // a door that could not be read leaves this null so the page says so instead of guessing.
-          door: await connectorDoorKind(url),
-        });
-        return { status: 200, json: {
-          url,                                   // null ⇒ the UI keeps its honest empty state
-          keyUrl,                                // the API-key door; null until it is deployed
-          email: principal.email ?? null,        // the identity to sign in with — what they already use
-          enabled: !!url,
-          stdio,                                 // the local route, or null for a client
-          // ── HAS THIS READER ALREADY CONNECTED AN ASSISTANT? ──────────────────────────────────────
-          //
-          // Folded into this route rather than given its own, because the Ask-AI control on a report
-          // already loads it and a second request per report open buys nothing.
-          //
-          // `null` IS A THIRD STATE AND THE SCREEN HAS TO DRAW IT. True, false and "no log to read" are
-          // different facts: an installation whose access log has not been written yet, or cannot be
-          // read, has not told us this reader never connected — it has told us nothing. The control
-          // treats null the way it treats false, because offering the menu to somebody with no
-          // assistant reproduces the defect this is fixing, and because the panel carries its own way
-          // past ("Already connected? Ask anyway"). What it must not do is claim the measurement.
-          aiConnected: await readerHasConnectedAi(principal),
-          // Every client, already resolved: served or not, with what it needs or why it cannot be.
-          //
-          // ── `steps` COMES BACK, on the owner's 2026-09-03 ruling ─────────
-          //
-          // It was dropped here deliberately under his 2026-08-31 cut, which said the page shows no
-          // recipes and the per-assistant blocks "become the one italic link at the bottom". His
-          // re-inspection reverses that for one specific thing: *"The page must lead each vendor with
-          // the path that vendor's UI user actually takes; a CLI command is at most a collapsed
-          // 'advanced' detail."*
-          //
-          // The two rulings are consistent once you separate what was actually objected to. "Settings →
-          // Connectors → Add custom connector" is not a recipe in the sense the cut banned — it is the
-          // reader's OWN vocabulary, three taps in an app they already have open. The technical thing,
-          // the part irrelevant to a reader connecting from Cowork, is the command, and that is what moves behind
-          // a fold. So the steps travel and the command demotes.
-          //
-          // They are resolved HERE and not composed in the browser, for the reason this route already
-          // exists: the step that names an address must name the address this deployment actually
-          // resolved, and a page that built its own would drift from it.
-          offers: offersForWire(offers),
-        } };
-      }
-
-      // /portal/api/connect-key — mint THIS caller's own access, for the clipboard, never for the page.
-      //
-      // ── THE OWNER'S RULING, 2026-08-31 ───────────────────────────────────────────────────────────
-      //
-      // *"The page never shows a key, in any state."* Three reasons he gave, and the second is the one
-      // that shapes this endpoint: *"A rendered key outlives the moment. It's in the DOM, in the
-      // screenshot someone takes, in the browser cache, on a screen left open. A key that's never text
-      // on a page has none of that."*
-      //
-      // So the key still reaches the browser — a clipboard write needs it — and never becomes text. The
-      // page holds it in a local variable for the length of one press.
-      //
-      // ── MINTED PER CALLER, AND `sub` NEVER COMES FROM THE REQUEST ────────────────────────────────
-      //
-      // The rule this replaces existed because a key shown on a shared page made one person's
-      // credential everyone's. Moving it to the clipboard does NOT answer that on its own: anybody who
-      // loads the page can still press the button. What answers it is that each press mints a key for
-      // THE CALLER, from the authenticated principal and never from anything the request said — so a
-      // colleague pressing it gets their own credential, attributable in the audit log and revocable by
-      // name, rather than a copy of somebody else's.
-      //
-      // ENROLMENT IS CHECKED FIRST, for the same reason `clearotron connect` checks it: a key issued to
-      // an identity the guest list has never heard of authenticates and is then refused on every
-      // request, which is a credential that opens nothing and a reader who believes they are finished.
-      if (parts[1] === "api" && parts[2] === "connect-key" && method === "POST") {
-        assertPrincipal(principal, { door: true });
-        const url = process.env.CLEAROTRON_CLIENT_MCP_URL || null;
-        if (!url) return { status: 409, json: { error: "no_connector" } };
-        const identity = principal.email ?? null;
-        if (!identity) return { status: 403, json: { error: "no_identity" } };
-        // Enrolled means a principal exists: the door check above has already refused an address with no
-        // access anywhere. Asking for a company list here instead read a person whose only reach is their
-        // organisation's Generic as not enrolled.
-        let key;
-        try { key = mintToken({ scope: "account", sub: identity, ttlSec: 90 * 24 * 3600 }); }
-        catch { return { status: 503, json: { error: "cannot_issue" } }; }
-        auditLog(`connect-key issued for=${identity}`);   // WHO, never WHAT — the token itself is never logged
-        return {
-          status: 200,
-          json: { address: url, key },
-          // NEVER CACHED, by any hop. A credential sitting in a proxy or a disk cache is the "outlives
-          // the moment" failure the ruling is about, arriving by a route the page cannot see.
-          headers: { "cache-control": "no-store, no-cache, must-revalidate, private", "pragma": "no-cache" },
-        };
-      }
-
-      // /portal/connect-help — the by-hand setup instructions, for the one link the page carries.
-      //
-      // ── WHY THIS ROUTE EXISTS AT ALL ─────────────────────────────────────
-      //
-      // The owner's cut ends the Use-your-AI page with *"Not connecting? [Set it up by hand](…)"* and
-      // left the target open. There was no document route on this portal, so the link had nowhere to
-      // go — and a link to nowhere is the same defect class as a button that cannot work. The
-      // instructions already exist and carry exactly the recipes the cut removed from the page, so this
-      // serves them rather than inventing a fourth description of how to connect.
-      //
-      // THE SIX BANNED WORDS DO NOT APPLY HERE, deliberately. "No connector, no key, no address" is a
-      // rule about the PAGE, whose reader is choosing an assistant and nothing else. This is the escape
-      // hatch for the reader who wants the mechanism, and withholding the vocabulary from them would
-      // make the page's simplicity a lie rather than a kindness.
-      //
-      // READ-ONLY, DOOR-CHECKED, AND SERVED AS ESCAPED TEXT. It runs nothing and loads nothing, so it
-      // gets `docCsp()` rather than the report policy, which permits inline script for frozen artefacts
-      // that need it. Before this shipped the document named the private repository in an illustrative
-      // path six times; nothing that reaches a client may carry that, so the placeholder now names the
-      // install. Anything added to that file is published by this route — check it before you add it.
-      if (parts[1] === "connect-help" && method === "GET") {
-        assertPrincipal(principal, { door: true });
-        let md;
-        try { md = readFileSync(join(INSTALL_ROOT, "mcp-server", "CONNECT.md"), "utf8"); }
-        catch { return { status: 404, json: { error: "not_found" } }; }
-        return { status: 200, doc: md };
-      }
-
+      { const answer = await connectRoutes(svc, request); if (answer !== undefined) return answer; }   // portal-routes/connect.mjs
       { const answer = await runsRoutes(svc, request); if (answer !== undefined) return answer; }   // portal-routes/runs.mjs
       { const answer = await reportRoutes(svc, request); if (answer !== undefined) return answer; }   // portal-routes/report.mjs
       { const answer = await feedbackRoutes(svc, request); if (answer !== undefined) return answer; }   // portal-routes/feedback.mjs
