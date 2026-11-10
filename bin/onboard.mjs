@@ -2610,8 +2610,17 @@ export async function runCheck() {
           // What it CAN catch is a second source in the CODE: a resurrected PROFILE_DIR, a bundled
           // directory that moves under one caller and not the other. That is the regression it is for,
           // and the sentence now says so instead of implying the larger claim.
-          ok(`the settings surface and the run roster resolve to one store (${surface.dir}), read from `
-            + `${hosted && serviceKnown ? serviceEnvFile : "this command's environment"} — they share a `
+          //
+          // WITH NO UNITS, THE STORE NAMED IS THE SERVICES'. They are `start`'s children and get the variable
+          // from the environment file, which this process does not load. Named from this process alone, the
+          // line ticked the bundled roster two lines below the one naming the configured store (measured in a
+          // stranger walk of a beta, 2026-11-10). The comparison above stays on this process, where both
+          // readers really ran; one variable means it holds for the services' value as well.
+          const named = !hosted && svcCustomers?.from === serviceEnvLabel
+            ? { dir: svcCustomers.v, from: serviceEnvFile }
+            : { dir: surface.dir, from: hosted && serviceKnown ? serviceEnvFile : "this command's environment" };
+          ok(`the settings surface and the run roster resolve to one store (${named.dir}), read from `
+            + `${named.from} — they share a `
             + "variable, so this catches a second store appearing in the code, not two environments disagreeing");
         }
       } catch (e) {
