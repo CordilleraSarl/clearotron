@@ -115,7 +115,7 @@
     "skills/clearance-common-law/SKILL.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 1,
-      "dictated-line-shape": 2
+      "dictated-line-shape": 1
     },
     "skills/clearance-register/SKILL.md": {
       "literal-json-skeleton": 0,
@@ -190,6 +190,6 @@
   },
   "totals": {
     "stages": 43,
-    "files": 53
+    "files": 52
   }
 }

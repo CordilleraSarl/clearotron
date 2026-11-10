@@ -33,6 +33,7 @@ import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { triggerLaneVerdict, HOSTED } from "../../shared/trigger-lane.mjs";
+import { driverSource } from "./driver-source.mjs";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const PORTAL = join(REPO, "driver", "portal-service.mjs");
@@ -156,7 +157,7 @@ test("a door that ANSWERED wrongly keeps the full warning — the fix is not a m
 });
 
 test("only `fail` is logged as a WARNING, so the word still means something", () => {
-  const src = readFileSync(join(REPO, "driver", "portal-service.mjs"), "utf8");
+  const src = driverSource("portal-service.mjs");
   assert.match(src, /if \(lane\.state === "fail"\) log\(`WARNING: trigger lane/,
     "a real lane failure no longer announces itself as a warning");
   assert.match(src, /lane\.state === "unsettled" \|\| lane\.state === "unprobed"/,

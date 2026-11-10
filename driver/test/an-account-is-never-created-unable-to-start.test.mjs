@@ -30,6 +30,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { triggerCapGap, triggerCapWarning } from "../trigger-cap.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
+import { driverSource } from "./driver-source.mjs";
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 
@@ -94,7 +95,7 @@ test("the shared warning describes a CONDITIONAL refusal, because the portal re-
 });
 
 test("the portal still warns at boot, through the shared answer rather than its own copy", () => {
-  const src = readFileSync(join(ROOT, "driver", "portal-service.mjs"), "utf8");
+  const src = driverSource("portal-service.mjs");
   assert.match(src, /triggerCapGap\(\{ accounts: posture\.accounts, roster \}\)/,
     "the portal computes the gap itself again — three surfaces, three opinions");
   assert.match(src, /triggerCapWarning\(\{ uncovered, union \}\)/, "the portal no longer speaks the shared sentence");

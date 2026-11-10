@@ -15,6 +15,7 @@ import { readFileSync } from "node:fs";
 import { makePortalService } from "../portal-service.mjs";
 import { orderTimeRefusal, whatIsMissing } from "../run-requirements.mjs";
 import { runTables } from "../order-tables.mjs";
+import { driverSource } from "./driver-source.mjs";
 
 const GRANTS = { tenants: { celta: { accounts: ["generic", "zephyr"], users: { "cli@celta.example": ["zephyr"] } } },
   people: { "staff@example-firm.com": { run: true, manage: true, everything: true }, "cli@celta.example": { run: true } } };
@@ -124,7 +125,7 @@ test("a demo walks its own ordering flow and is not asked", async () => {
 test("the portal and the runner read one set of order tables, and the running portal asks the runner's question", async () => {
   const { runTables: runnerTables } = await import("../runner.mjs");
   assert.equal(runnerTables, runTables, "the runner's intake wall reads a different tables loader from the portal's");
-  const src = readFileSync(new URL("../portal-service.mjs", import.meta.url), "utf8");
+  const src = driverSource("portal-service.mjs");
   assert.match(src, /orderRefusal: async \(\) => portalOrderRefusal\(\{ tables: await runTables\(\) \}\)/,
     "the bootstrap no longer hands the running portal its own refusal path");
   assert.match(src, /env = process\.env, tables = \{\}[\s\S]{0,300}return orderTimeRefusal\(env, tables, \{\s*howFor: \(missing\) => howItRuns\(/,

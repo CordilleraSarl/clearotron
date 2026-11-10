@@ -159,3 +159,77 @@ test("each live jurisdiction lane hands its run to the turn runner", async () =>
     }
   } finally { if (saved !== undefined) process.env.CLEAROTRON_JX_FIXTURES = saved; }
 });
+
+test("a run's register names its register tool server and the tools it grants, decided once from the run's record", async () => {
+  const { buildGatherMcpConfig, allowedToolsFor, toolGroupsForStage } = await import("../engine/mcp/gather-config.mjs");
+  const { REGISTER_PROVIDER } = await import("../driver.config.mjs");
+  const groups = toolGroupsForStage("register-unit:primary-sweep");
+  const other = REGISTER_PROVIDER === "signa" ? "euipo" : "signa";
+  const recorded = newRun("register-recorded");
+  RC.recordRunChoices(recorded, { engine: "anthropic-agent", register: other });
+  assert.equal(RC.registerForRun(recorded), other);
+  const cfg = buildGatherMcpConfig(groups, { sessionKey: "k", agent: "a", runDir: recorded });
+  assert.equal(cfg.mcpServers.register.env.CLEAROTRON_DATABASE, other, "the tool server reads the run's register");
+  const unrecorded = newRun("register-unrecorded");
+  assert.equal(RC.registerForRun(unrecorded), REGISTER_PROVIDER ?? null, "a run with no record is served the machine's");
+  const machine = buildGatherMcpConfig(groups, { sessionKey: "k", agent: "a", runDir: unrecorded });
+  assert.equal(machine.mcpServers.register.env.CLEAROTRON_DATABASE ?? null, REGISTER_PROVIDER ?? null);
+  assert.notDeepEqual(cfg.mcpServers.register.args, machine.mcpServers.register.args, "two registers, two tool servers");
+  assert.equal(allowedToolsFor(groups, { register: REGISTER_PROVIDER }), allowedToolsFor(groups), "naming the machine's register changes nothing");
+});
+
+test("a run's record receipts name the register it recorded; a run with no record names the machine's, as before", async () => {
+  const { assembleRunRecords } = await import("../registry-fidelity.mjs");
+  const { paths } = await import("../run-record.mjs");
+  const { REGISTER_PROVIDER } = await import("../driver.config.mjs");
+  const other = REGISTER_PROVIDER === "signa" ? "euipo" : "signa";
+  const PREFIX = "clearance-qzorvak-2026-11-10-test-";
+  const receiptsOf = (runDir) => {
+    const log = join(runDir, "_driver", "register-record-bodies.jsonl");
+    writeFileSync(log, JSON.stringify({ ts: "2026-11-10T10:00:00Z", sessionKey: `${PREFIX}register-digest`, target: "/mark/eu/q1",
+      body: { statusText: "Registered", classList: ["9"] } }) + "\n");
+    assembleRunRecords(runDir, PREFIX, log, join(runDir, "no-call-ledger.jsonl"));
+    return JSON.parse(readFileSync(paths(runDir).receipts, "utf8")).receipts.map((r) => r.provider);
+  };
+  const recorded = newRun("receipts-recorded");
+  RC.recordRunChoices(recorded, { engine: "anthropic-agent", register: other });
+  assert.deepEqual(receiptsOf(recorded), [other]);
+  const pinned = process.env.CLEAROTRON_DATABASE;
+  assert.deepEqual(receiptsOf(newRun("receipts-unrecorded")), [pinned ? pinned.toLowerCase() : null]);
+});
+
+test("a register unit is briefed on its run's register: its name, its manual and its grant", async () => {
+  const { STAGES, PROVIDER_META, providerMeta } = await import("../stages.mjs");
+  const { REGISTER_PROVIDER, PROVIDERS } = await import("../driver.config.mjs");
+  const other = REGISTER_PROVIDER === "signa" ? "euipo" : "signa";
+  const PATHS = { variantManifest: "vm.json", matterContext: "mc.md", registerBand: (a) => `band-${a}.json`,
+    registerUnit: (a) => `unit-${a}.md`, registerPlan: "plan.json" };
+  const PLAN = { plan_version: 1, regions: [], entries: [{ qid: "primary-sweep:exact:qzorvak", axis: "primary-sweep",
+    predicate: "exact", term: "QZORVAK", nice_classes: ["9"], expected_kind: "enumerate" }] };
+  const message = (extra) => STAGES["register-unit"].message({ paths: PATHS, axis: "primary-sweep",
+    job: { ref: "N-1", markName: "QZORVAK", classes: [9], goods: "computer game software" }, profile: {}, registerPlan: PLAN, ...extra });
+  const onOther = message({ register: other });
+  assert.match(onOther, new RegExp(`Active register provider: ${PROVIDERS[other].label}\\.`));
+  assert.ok(onOther.includes(providerMeta(other).skillDoc), "the unit is told to read its run's register manual");
+  assert.equal(message({}), message({ register: REGISTER_PROVIDER }), "a run that names no register is briefed on the machine's, as before");
+  assert.deepEqual(PROVIDER_META, providerMeta(REGISTER_PROVIDER));
+  assert.deepEqual(STAGES["register-unit"].followupSkillReads({ register: other }), [providerMeta(other).skillDoc]);
+});
+
+test("a run's register adapter is the named register's, or the machine's when none is named", async () => {
+  const { activeProvider, PROVIDERS } = await import("../driver.config.mjs");
+  assert.equal(RC.registerAdapter("signa"), PROVIDERS.signa);
+  assert.equal(RC.registerAdapter(null), activeProvider());
+  assert.throws(() => RC.registerAdapter("invented-register"), /unknown register "invented-register"/);
+});
+
+test("a report's identity line names the register its run recorded", async () => {
+  const { reportIdentityRecord } = await import("../pipeline.mjs");
+  const { REGISTER_PROVIDER, PROVIDERS } = await import("../driver.config.mjs");
+  const { PROVIDER_META } = await import("../stages.mjs");
+  const other = REGISTER_PROVIDER === "signa" ? "euipo" : "signa";
+  const runDir = newRun("identity");
+  const job = { ref: "N-1", markName: "QZORVAK" };
+  assert.equal(reportIdentityRecord(job, { register: other, registerOnly: true }, runDir).run, PROVIDERS[other].label);
+  assert.equal(reportIdentityRecord(job, { registerOnly: true }, runDir).run, PROVIDER_META.label, "a context with no register names the machine's, as before");
+});

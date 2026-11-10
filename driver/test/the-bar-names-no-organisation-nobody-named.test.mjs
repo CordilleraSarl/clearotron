@@ -19,7 +19,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { fileURLToPath } from "node:url";
+import { driverSource } from "./driver-source.mjs";
 
 // A file URL, not a path: the child imports it, and an import of a Windows path reads its drive letter
 // as a URL scheme.
@@ -99,8 +99,7 @@ test("SURROUNDING WHITESPACE IS NOT AN ORGANISATION", () => {
 test("THE WIRE SENDS THE ORGANISATION, and has no path back to the product name", () => {
   // Pinned at the source because the value only differs on an unbranded box: a reviewer swapping this
   // back to `BRAND.name` sees every test stay green and every screenshot keep its name.
-  const svc = execFileSync("grep", ["-n", "brand:", fileURLToPath(new URL("../portal-service.mjs", import.meta.url))],
-    { encoding: "utf8" });
+  const svc = driverSource("portal-service.mjs").split("\n").filter((l) => l.includes("brand:")).join("\n");
   assert.match(svc, /brand: ORGANISATION_NAME/, "the identity corner is fed the operator, not the product");
   assert.doesNotMatch(svc, /brand: BRAND\.name/,
     'the fallback-to-product value is what put "Organisation: Clearotron" on a fresh install');
