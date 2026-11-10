@@ -48,7 +48,9 @@
 import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync, existsSync, readdirSync, unlinkSync } from "node:fs";
 import { join, basename } from "node:path";
-import { driverDir, ensureDriverDir, readJson } from "./run-record.mjs";   // — one definition of where `_driver/` is
+import { atomicWrite, driverDir, ensureDriverDir, paths, readJson } from "./run-record.mjs";   // — one definition of where `_driver/` is
+import { runLog, note } from "./log.mjs";
+import { parseFindingsJsonLenient } from "./findings-model.mjs";
 
 const STAMP_DIR = "stage-inputs";
 const sha12 = (buf) => createHash("sha256").update(buf).digest("hex").slice(0, 12);
@@ -289,4 +291,105 @@ export function reconcileStamps(runDir, inputsFor, exclude = null, { project = n
     }
   } catch { /* best-effort */ }
   return touched;
+}
+
+// ── findings.json: one write, and its stamp choice stated where it is made ─────────────────────────────
+//
+// findings.json is the record every client surface renders from, and a dozen driver arms rewrite it after
+// synthesis has written it. Each rewrite makes one of two choices about the stamps. It can leave them alone,
+// so the stages that read the file read it as moved and run again: the comment above `injectFrontMatter`
+// in pipeline.mjs says that is what those rewrites are for. Or it can settle the stamp of a one-shot stage,
+// which has no in-process re-run and would otherwise park the run at the delivery gate. `writeFindings` is
+// the one place both choices are made, so a write that settles nothing says so by passing nothing.
+//
+// `settleOneShotStamp` and `projectStageInput` sit here for that reason: the write cannot reach them in
+// pipeline.mjs, which imports this module.
+
+// ── — WHAT A STAGE COMPARES INSTEAD OF THE WHOLE FILE ──────────────────────────────────────────
+// A `report-card:N` declares findings.json and READS NONE OF IT: its finding arrives inline on the
+// message as ctx.finding, and the file is declared so the freshness gate sees it move at all. So a
+// sanctioned late arm that edits ONE finding — corrective synthesis, a verdict recheck — moved the
+// whole-file sha and made all 26 cards read stale at the delivery gate. The tail repair then re-derived
+// them: 496,327 output tokens, 48.0M cache read, 43 dispatches of which 33 were repeats, 1h29m. A third
+// of that run's output and 29% of its wall clock, re-deriving work already on disk and already valid.
+//
+// The projection is EXACTLY WHAT THE STAGE WAS FED — the finding object at that ordinal, serialized the
+// way the card's own message serializes it. Deliberately not canonicalized: the message renders the raw
+// object, so a key reordering genuinely changes what the model saw and must genuinely read as stale.
+//
+// A NULL PROJECTION IS A FALLBACK, NEVER A PASS. Ordinal absent from the current file, an unreadable or
+// rejected findings.json, any throw — all return null, the compare falls back to the whole-file sha, and
+// the card stays stale. Ordinals are safe to key on because consolidateFindingsFile RENUMBERS before the
+// cards are dispatched, and a renumber that moves a finding away from ordinal N changes N's projection,
+// which is correctly stale.
+//
+// This is NOT the settleOneShotStamp blessing warns about: nothing is declared settled and no
+// artifact is blessed past a live consumer. And it narrows what is COMPARED, never what is DECLARED —
+// narrowing the declaration would let a card be repaired ahead of its stale upstream, which is the one
+// thing item 15a exists to prevent, and dependency-repair.test.mjs pins that edge.
+export function projectStageInput(label, absPath) {
+  if (typeof label !== "string" || !label.startsWith("report-card:")) return null;
+  if (basename(String(absPath ?? "")) !== "findings.json") return null;
+  const ord = Number(label.slice("report-card:".length));
+  if (!Number.isFinite(ord)) return null;
+  try {
+    const doc = parseFindingsJsonLenient(readFileSync(absPath, "utf8"));
+    const f = (doc?.findings ?? []).find((x) => Number(x?.ordinal) === ord);
+    if (!f) return null;
+    return createHash("sha256").update(JSON.stringify(f)).digest("hex").slice(0, 12);
+  } catch { return null; }
+}
+
+/**
+ * follow-up (2026-08-04) — account for a SANCTIONED in-pass rewrite in a ONE-SHOT stage's stamp.
+ *
+ * A one-shot stage reads its evidence at a fixed seam and has no in-process re-run: frame-diff's own
+ * contract says "NO in-process re-diff". When a later arm legitimately rewrites an artifact such a
+ * stage declared, there is no repair to schedule — the delivery precondition simply reads it stale and
+ * parks the run, which pays a park plus a full re-drive to re-dispatch a stage whose every consumer
+ * already ran. `restampStage` is the sanctioned-rewrite mechanism (the settlement flush's own idiom);
+ * this wraps it so every call site says WHICH artifacts moved and WHY, in one place.
+ *
+ * NARROW ON PURPOSE. `files` is the list the calling arm actually rewrote, never "everything this stage
+ * declares": blessing the whole declaration would quietly widen the grant every time an input is added,
+ * and a blind-frame model or a manifest that moves between passes is NEW MATERIAL that must still force
+ * the diff (the copper-vault catch).
+ *
+ * AND IT IS NOT SILENT WHEN IT MATCHES NOTHING. Every `files` entry is a literal path whose declaration
+ * lives in stages.mjs; moved frame-diff's list and turned an existing restamp call into a
+ * guaranteed no-op that nothing recorded. A file this label does not declare now lands a `restamp-miss`
+ * row in run.jsonl — the absence becomes a finding, and the next input-list move cannot go unnoticed.
+ * Logged rather than thrown: the freshness module is best-effort by contract, and killing a run over
+ * bookkeeping would trade a cheap park for a dead one.
+ */
+export function settleOneShotStamp(runDir, label, files, why) {
+  const changed = [], missed = [];
+  for (const f of files.filter(Boolean)) {
+    const r = restampStage(runDir, label, f, { project: projectStageInput });
+    if (r.changed) changed.push(f);
+    if (r.stamped && !r.matched) missed.push(f);
+  }
+  for (const f of missed) {
+    runLog(runDir, { event: "restamp-miss", stage: label, path: f, why });
+    note(`stage-freshness: restamp of ${label} against ${basename(f)} matched nothing — ${label} does not declare that file (${why}); the compensating rewrite is aimed at nothing`);
+  }
+  if (changed.length) runLog(runDir, { event: "one-shot-stamp-settled", stage: label, why, changed });
+  return { changed, missed };
+}
+
+/**
+ * Write the run's findings.json, then settle the stamp of each one-shot stage in `settles`.
+ *
+ * `doc` is the record as an object, written the way every site wrote it before (two-space JSON and a
+ * final newline), or as text, written exactly as given: a restore puts back the bytes it saved. The write
+ * is atomic and throws as `atomicWrite` does, so a caller's existing `try` still decides what a failed
+ * write means. `why` names the arm; it reaches run.jsonl only through a settlement, so a write that
+ * settles nothing adds no row. Returns what each settlement changed and missed, by stage.
+ */
+export function writeFindings(runDir, doc, { why, settles = [] } = {}) {
+  const file = paths(runDir).findings;
+  atomicWrite(file, typeof doc === "string" ? doc : JSON.stringify(doc, null, 2) + "\n");
+  const settled = {};
+  for (const label of settles) settled[label] = settleOneShotStamp(runDir, label, [file], why);
+  return { file, settled };
 }

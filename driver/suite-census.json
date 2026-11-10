@@ -4317,6 +4317,12 @@
           "skips": 0,
           "todos": 0
         },
+        "every-repair-hint-row-is-reachable.test.mjs": {
+          "tests": 3,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "every-run-log-name-is-classed-for-first-time.test.mjs": {
           "tests": 2,
           "asserts": 14,
@@ -6484,8 +6490,8 @@
           "todos": 0
         },
         "stage-freshness.test.mjs": {
-          "tests": 23,
-          "asserts": 60,
+          "tests": 26,
+          "asserts": 79,
           "skips": 0,
           "todos": 0
         },

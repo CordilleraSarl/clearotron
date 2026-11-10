@@ -40,7 +40,7 @@ test("the wiring: each turn and each repair turn builds its config with the time
   const gateway = readFileSync(join(HERE, "..", "gateway.mjs"), "utf8");
   assert.match(gateway, /const turnConfig = \(sec\) => withSendUntil\(gatherMcpConfig, Date\.now\(\) \+ sec \* 1000 - sendReserveMs\(sec\)\);/,
     "a turn's config is not built with its time to stop sending");
-  assert.match(gateway, /const mcpConfig = turnConfig\(effTimeout\);[^\n]*\n[\s\S]{0,1200}engine\.runTurn\(\{[^\n]*codexHome: stageCodexHome, mcpConfig, /,
+  assert.match(gateway, /const mcpConfig = turnConfig\(effTimeout\);[^\n]*\n[\s\S]{0,1200}engine\.runTurn\(\{[^\n]*stageHome, mcpConfig, /,
     "the turn is dispatched without its own copy of the config");
   assert.equal((gateway.match(/mcpConfig: turnConfig\(effTimeout\)/g) ?? []).length, 1, "the repair turn is dispatched without its time to stop sending");
   assert.doesNotMatch(gateway, /mcpConfig: gatherMcpConfig[,}]/, "a turn still takes the stage's config as it was built");

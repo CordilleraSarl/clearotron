@@ -103,7 +103,7 @@ These are the one place the record holds the program's words: an expired sign-in
 verdict.
 
 An adapter whose repair turns need a home that outlasts one turn also exports `makeStageHome(stage)` and
-`releaseStageHome(home)`; `runStage` makes the home once per stage and passes it to each turn as `codexHome`.
+`releaseStageHome(home)`; `runStage` makes the home once per stage and passes it to each turn as `stageHome`.
 
 `runStage()` folds that into what the pipeline consumes — `{ok, json, attempts, text, sessionKey, …}` —
 and journals usage/wall/status on the way past.

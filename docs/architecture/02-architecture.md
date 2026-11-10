@@ -113,7 +113,7 @@ packet-sender; the driver does not change.
 ## The engine seam
 
 One stage execution = one `runStage()` call = one engine invocation. Everything provider-specific
-lives behind the seam (`engine/CONTRACT.md`; selection in `gateway.mjs` `selectEngine()`). Engine
+lives behind the seam (`engine/CONTRACT.md`; selection in `engine/registry.mjs` `selectEngine()`). Engine
 choice is **process-wide**: `CLEAROTRON_AI` is read at every activation and governs every stage of
 every job in it. There is no per-stage, per-job or comms-specific override, so comparing the two
 engines means flipping the variable and running sequentially, or standing up a second instance.
