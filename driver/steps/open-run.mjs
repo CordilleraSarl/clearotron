@@ -8,11 +8,11 @@
 import { driverDir, ensureDriverDir } from "../../shared/driver-dir.mjs";
 import { orderSnapshot } from "../accepted-order.mjs";
 import { recordSpan } from "../attributed-span.mjs";
-import { activeProvider, config, preflightCredentials, preflightEngineBinary, preflightFreeSpace, preflightResearchCredential, REGISTER_PROVIDER } from "../driver.config.mjs";
+import { config, preflightCredentials, preflightEngineBinary, preflightFreeSpace, preflightResearchCredential, REGISTER_PROVIDER } from "../driver.config.mjs";
 import { engineProvenance } from "../engine-build.mjs";
 import { preflightEngineTurn } from "../engine/probe.mjs";
 import { engineNamed, registeredEngines, selectEngine } from "../engine/registry.mjs";
-import { RunChoiceUnavailable, readRunChoices, recordRunChoices, registerForRun, unservedChoice } from "../engine/run-choices.mjs";
+import { RunChoiceUnavailable, readRunChoices, recordRunChoices, registerAdapter, registerForRun, unservedChoice } from "../engine/run-choices.mjs";
 import { note, runLog } from "../log.mjs";
 import { buildRunContext } from "../phase0.mjs";
 import { profileStoreResolution } from "../profiles.mjs";
@@ -107,7 +107,7 @@ export async function openRun({ job, opts }, helpers) {
   if (opts.records != null && !RECORDS_MODES.includes(opts.records))
     throw new Error(`--records: unknown value "${opts.records}" — one of: ${RECORDS_MODES.join(", ")}`);
   if (opts.records === "replay") {
-    const held = heldRegisterCredentials(activeProvider());
+    const held = heldRegisterCredentials(registerAdapter(parkedRun ? registerForRun(parkedRun.runDir) : null));   // the run's register
     if (held.length)
       throw new Error(`--records replay: ${held.join(" + ")} is set, so a stage's register tools could still reach the register — unset it for this resume, which answers every record fetch from the run's own records`);
     opts.recordFetcher ??= (uri) => savedRecordFetch(opts.__runRef?.runDir, uri);
