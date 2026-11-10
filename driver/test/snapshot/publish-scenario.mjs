@@ -29,11 +29,11 @@ const delivery = existsSync(profileFile) ? JSON.parse(readFileSync(profileFile, 
 const reportMd = join(spec.runDir, "report.md");
 const email = {};
 if (existsSync(reportMd)) {
-  const { composeEmailBody, composeEmailHtml } = await load("publish/index.mjs");
+  const { composeEmailBody, composeEmailHtml, coverNoteOptions } = await load("publish/index.mjs");
   email.text = composeEmailBody(reportMd, published.url, published.auditFile);
-  if (published.document?.cover) {
-    // The cover note composed with the report document's options, which the delivery reads from the same function.
-    const opts = published.document.cover;
+  if (coverNoteOptions) {
+    // The cover note composed with the options the publisher's one function reads, which the report document carries too.
+    const opts = coverNoteOptions(spec.runDir);
     email.html = composeEmailHtml(reportMd, published.url, published.auditFile, [], delivery, opts);
     email.cover = JSON.stringify({ tier: opts.tier ?? null, statement: opts.statement ?? null });
   } else {
@@ -58,7 +58,5 @@ if (existsSync(reportMd)) {
   const framework = JSON.parse(readFileSync(join(spec.runDir, "_driver", "framework.json"), "utf8"));
   email.html = composeKnockoutEmail({ findings, framework, overall: worstBand(framework, findings.marks ?? []), reports: published.reports, auditUrl: published.auditUrl, job: meta.job ?? {} });
 }
-// The report document rides the return for the delivery's cover note; what it holds shows in the files and the email above.
-const { document: _document, ...returned } = published ?? {};
-writeFileSync(spec.resultFile, JSON.stringify({ email, returned, logRows }));
+writeFileSync(spec.resultFile, JSON.stringify({ email, returned: published ?? null, logRows }));
 process.exit(0);

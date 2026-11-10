@@ -1487,8 +1487,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // Composed rather than spelled here so the report link is built the same way the audit link always was.
   const url = reportRoute;
   return { runId, auditFile, counts, total, url, poolRunDir, auditError, findingsError, customerKey: customerKey || 'generic', clientGate,
-    caption,   // the report's own conclusion, for the run record's short surfaces
-    document: doc };   // the report document
+    caption };   // the report's own conclusion, for the run record's short surfaces
 }
 
 // Compose the notification email body — MARKDOWN (the mail tool renders markdown→HTML; raw HTML gets escaped).
