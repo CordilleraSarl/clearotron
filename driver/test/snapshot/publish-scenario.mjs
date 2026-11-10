@@ -31,7 +31,26 @@ const email = {};
 if (existsSync(reportMd)) {
   const { composeEmailBody, composeEmailHtml } = await load("publish/index.mjs");
   email.text = composeEmailBody(reportMd, published.url, published.auditFile);
-  email.html = composeEmailHtml(reportMd, published.url, published.auditFile, [], delivery);
+  if (published.document?.cover) {
+    // The cover note composed with the report document's options, which the delivery reads from the same function.
+    const opts = published.document.cover;
+    email.html = composeEmailHtml(reportMd, published.url, published.auditFile, [], delivery, opts);
+    email.cover = JSON.stringify({ tier: opts.tier ?? null, statement: opts.statement ?? null });
+  } else {
+    // The cover note composed as the delivery composes it from its own reads: the frozen policy's product name, the verdict
+    // record as written, and the run's band ladder.
+    const { reportIdentityFor } = await load("search-policy.mjs");
+    const { clientConditions } = await load("terminal-clamp.mjs");
+    const { parseFrameworkManifest } = await load("framework.mjs");
+    const frozen = (name, parse = JSON.parse) => { try { return parse(readFileSync(join(spec.runDir, "_driver", name), "utf8")); } catch { return null; } };
+    const opts = { productName: reportIdentityFor(frozen("search-policy.json")).identity ?? undefined };
+    const v = frozen("verdict.json");
+    if (v) Object.assign(opts, { verdict: v.verdict, conditions: clientConditions(v), tier: v.tier, statement: v.statement ?? null });
+    const framework = frozen("framework.json", parseFrameworkManifest);
+    if (framework) opts.bands = framework.bands.map((b) => ({ label: b.label, tone: b.tone }));
+    email.html = composeEmailHtml(reportMd, published.url, published.auditFile, [], delivery, opts);
+    email.cover = JSON.stringify({ tier: opts.tier ?? null, statement: opts.statement ?? null });
+  }
 } else {
   const { composeKnockoutEmail } = await load("publish/knockout.mjs");
   const { worstBand } = await load("verify-knockout.mjs");
@@ -39,5 +58,7 @@ if (existsSync(reportMd)) {
   const framework = JSON.parse(readFileSync(join(spec.runDir, "_driver", "framework.json"), "utf8"));
   email.html = composeKnockoutEmail({ findings, framework, overall: worstBand(framework, findings.marks ?? []), reports: published.reports, auditUrl: published.auditUrl, job: meta.job ?? {} });
 }
-writeFileSync(spec.resultFile, JSON.stringify({ email, returned: published ?? null, logRows }));
+// The report document rides the return for the delivery's cover note; what it holds shows in the files and the email above.
+const { document: _document, ...returned } = published ?? {};
+writeFileSync(spec.resultFile, JSON.stringify({ email, returned, logRows }));
 process.exit(0);
