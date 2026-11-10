@@ -428,7 +428,7 @@ export function composeKnockoutEmail({ findings, framework, overall, reports = [
  * receipts door below), and it writes the run's own lint receipt, as the publisher always did. It writes nothing to
  * the pool.
  */
-export async function readKnockoutDocument({ runId, runDir, findings, plan, framework, poolRoot, poolUrl, customerKey, searchPolicy, registerCounts = null }) {
+export async function readKnockoutDocument({ runId, runDir, findings, plan, framework, overall, poolRoot, poolUrl, customerKey, searchPolicy, registerCounts = null }) {
   // ── THE RECEIPTS DOOR ───────────────────────────────────────────────────────────────────────
   // BEFORE anything is written, and it can refuse. The live lane already gates the merged artifact
   // (pipeline-knockout.mjs → validateMergedFindings), so on that path this is belt-and-braces; the path
@@ -695,6 +695,26 @@ export async function readKnockoutDocument({ runId, runDir, findings, plan, fram
     markRows, single, origin, reportUrlFor, demoData, served, statement, markNames, organisation,
     // WHICH BUILD produced this, read once for every surface that records it. null off a git checkout.
     engineCommit: engineCommit(),
+    // FACTS THE SURFACES STATE TWO WAYS, each way named, so every surface prints what it printed before. Which way is
+    // right is for the owner to rule; nothing here chooses.
+    // The issue date: `issued` above is the firm's date and time (Europe/Zurich), which each name's page prints;
+    // meta.json keeps the date of the UTC instant, which differs from it near midnight.
+    issuedDateUtc: dates.issuedAt.slice(0, 10),
+    // The product's name in the run's record, with how many names, which meta.json and the staff index print; the
+    // pool's report.md and the email print fixed Knockout wording instead.
+    // The plural bug lived on this line: `${n} marks` with no guard, so every one-mark batch said
+    // "1 marks". The sibling statement writer above has always guarded it; this never did.
+    //
+    // AND IT SPELT THE PRODUCT BY HAND. The literal was "Knockout review" — a product
+    // retired — so every batch published under the live "Knockout search" stamped a name the offering
+    // no longer sells into its own record, and the staff pool index rendered it in the Mark column
+    // (publish/index.mjs anonMark(r.title)) on every knockout row, past and future. The identity is
+    // resolved twenty lines up from the run's own frozen policy; this is that same string. A level the
+    // registry cannot name says only how many marks, because a wrong product name is worse than none.
+    title: [identity.identity, `${markNames.length} mark${markNames.length === 1 ? '' : 's'}`]
+      .filter(Boolean).join(' — '),
+    // The batch's badge, read once for report.md's front matter and meta.json.
+    overallBadge: bandBadge(framework, overall),
   };
 }
 
@@ -704,11 +724,11 @@ export async function readKnockoutDocument({ runId, runDir, findings, plan, fram
 // knockout-units.test.mjs that call this without one are unaffected by its arrival.
 export async function publishKnockout({ runId, codename, runDir, findings, plan, framework, overall, poolRoot, poolUrl, customerKey, searchPolicy, tokens, registerCounts: givenCounts = null, skipRegen = false, delivery = null }) {
   // `givenCounts`: counts the lane already holds; the document reads the run's own when none are given.
-  const doc = await readKnockoutDocument({ runId, runDir, findings, plan, framework, poolRoot, poolUrl, customerKey, searchPolicy, registerCounts: givenCounts });
+  const doc = await readKnockoutDocument({ runId, runDir, findings, plan, framework, overall, poolRoot, poolUrl, customerKey, searchPolicy, registerCounts: givenCounts });
   const { receipts, dates, issued, searched, sweepReceipts, registerCounts, registerRecords, registerRecordsUnreadable,
     ownerChecks, instructedScope, scopeUnreadable, frameworkMethod, recordLinksDropped, officeLinks, qcFlags,
     machineChecksFailed, steps, lookupsNotRun, recordsNotKept, openPoints, identity, probeRan, markRows, single, origin,
-    reportUrlFor, demoData, served, statement, markNames, organisation } = doc;
+    reportUrlFor, demoData, served, statement, markNames, organisation, issuedDateUtc, title, overallBadge } = doc;
   const { poolRunDir, writeRO, copyRO, buildWorkbook, writeDataFile } = openPoolRun(poolRoot, runId, { runDir });
 
   // ── THE RUN'S WORKING RECORD TRAVELS WITH THE REPORT ──────────────────────────────────────────────
@@ -804,7 +824,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     `title: "KNOCKOUT TRADEMARK REVIEW REPORT — ${runId}"`,
     `matter: "${runId}"`,
     `overall_label: "${overall ?? ''}"`,
-    `overall_badge: "${bandBadge(framework, overall)}"`,
+    `overall_badge: "${overallBadge}"`,
     '---',
     '',
     // — THE CROSS-MARK SURFACE, MARKED. Acceptance 3 asks for the banner on "the
@@ -821,17 +841,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   ].join('\n'));
   const total = finishPoolRun({ writeRO, poolRoot, skipRegen, regenIndex, meta: {
     runId, codename: codename ?? '', matter: runId,
-    // The plural bug lived on this line: `${n} marks` with no guard, so every one-mark batch said
-    // "1 marks". The sibling statement writer above has always guarded it; this never did.
-    //
-    // AND IT SPELT THE PRODUCT BY HAND. The literal was "Knockout review" — a product
-    // retired — so every batch published under the live "Knockout search" stamped a name the offering
-    // no longer sells into its own record, and the staff pool index rendered it in the Mark column
-    // (publish/index.mjs anonMark(r.title)) on every knockout row, past and future. The identity is
-    // resolved twenty lines up from the run's own frozen policy; this is that same string. A level the
-    // registry cannot name says only how many marks, because a wrong product name is worse than none.
-    title: [identity.identity, `${markNames.length} mark${markNames.length === 1 ? '' : 's'}`]
-      .filter(Boolean).join(' — '),
+    title,   // the product's name and how many names (readKnockoutDocument)
     markName: batchMarkName(markNames) ?? undefined,
     engineCommit: doc.engineCommit,
     // The models that served the batch, named as a client may read them (tokens.mjs servedModels). Absent when
@@ -870,7 +880,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     // read it. The one `.run` reader in the tree parses report.html front matter and uses it as a DATE
     // fallback, so had this field ever been joined to that one it would have printed a product name where
     // a date belongs. The product is `meta.product`, written from the run's own frozen policy.
-    overall: overall ?? '', badge: bandBadge(framework, overall), date: dates.issuedAt.slice(0, 10),
+    overall: overall ?? '', badge: overallBadge, date: issuedDateUtc,
     auditFile, statement,
     // WHY THERE IS NO WORKBOOK, when the build threw. Absent when it built, so such a meta is unchanged.
     auditError: auditError ?? undefined,
