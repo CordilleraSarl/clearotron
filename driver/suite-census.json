@@ -3790,8 +3790,8 @@
           "todos": 0
         },
         "designed-refusal.test.mjs": {
-          "tests": 10,
-          "asserts": 67,
+          "tests": 11,
+          "asserts": 81,
           "skips": 0,
           "todos": 0
         },

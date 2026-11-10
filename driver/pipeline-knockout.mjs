@@ -1524,8 +1524,11 @@ export async function knockoutInner(ctx, job, opts = {}) {
     // The signature and class the clearance end records, so a reader of either product's failure reads the same fields.
     const failSig = failureSignature(failedStage, reason, { codes: e instanceof StageFailure ? e.reasonCodes : undefined });
     const failClass = (e instanceof StageFailure && e.failClass) || classifyFailureReason(String(reason));
-    sentinel(run.runDir, ".failed", { stage: failedStage, reason, lane: "knockout", sig: failSig.sig, class: failClass, terminalKind });
-    runLog(run.runDir, { event: "failed", stage: failedStage, reason, lane: "knockout", ...(terminalKind ? { terminalKind } : {}) });
+    // The automatic recovery attempts this run already spent, read from its status as the park reads them. The notice
+    // says "after N automatic recovery attempts" when there were any, word for word as a clearance's does.
+    const priorAttempts = Number(readRunStatus(run.runDir)?.recoveryAttempts) || 0;
+    sentinel(run.runDir, ".failed", { stage: failedStage, reason, lane: "knockout", recoveryAttempts: priorAttempts, sig: failSig.sig, class: failClass, terminalKind });
+    runLog(run.runDir, { event: "failed", stage: failedStage, reason, lane: "knockout", sig: failSig.sig, class: failClass, ...(terminalKind ? { terminalKind } : {}) });
     writeRunStatus(ctx, { state: "failed", failedStage, reason: shortReason, reasonTruncated, reasonFull, terminalKind });
     recordRunConsumption(ctx, { phase: "failed", tokens: stampTokenRollup(run.runDir, "failed") });
     rollupStatus(run.studioRoot);
@@ -1549,13 +1552,13 @@ export async function knockoutInner(ctx, job, opts = {}) {
     try {
       const rich = buildFailurePacket({
         runId, agent, job, failedStage, shortReason, terminalKind,
-        reasonVerbatim: String(reason).slice(0, 1000), sig: failSig.sig, failClass,
+        reasonVerbatim: String(reason).slice(0, 1000), sig: failSig.sig, failClass, priorAttempts,
       });
       const packet = {
         kind: "run-failed", ...rich,
         markName: job.markName ?? job.name ?? null, reason: shortReason,
         text: rich.whatsappText,   // the short fallback line legacy relays read (clearance parity)
-        failureSignature: failSig.sig,   // machine field, as on the clearance packet
+        failureSignature: failSig.sig, recoveryAttempts: priorAttempts,   // machine fields, as on the clearance packet
       };
       writeFileSync(paths(run.runDir).failure, JSON.stringify(packet, null, 2) + "\n");
       failPingSent = Boolean(writeOutboxPacket(`${runId}.failed`, packet));

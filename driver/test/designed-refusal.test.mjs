@@ -18,7 +18,7 @@
 // exactly what they do". A writer test that cannot see the writer is the shape of that mistake.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, readFileSync, existsSync, readdirSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, existsSync, readdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pinEnv, pinEnvAll } from "../../shared/env-aliases.mjs";
@@ -297,9 +297,40 @@ test("an ordinary knockout failure carries terminalKind null and reads exactly a
   assert.match(String(marker.sig ?? ""), /\S/, "the sentinel carries the failure's signature");
   assert.equal(marker.class, "factual", "and its class, stamped where the collision was found");
   assert.equal(packet.failureSignature, marker.sig, "the packet carries the same signature");
+  assert.equal(marker.recoveryAttempts, 0, "a run that never parked says so, as a clearance's sentinel does");
+  assert.equal(packet.recoveryAttempts, 0);
+  assert.doesNotMatch(packet.whatsappText, /automatic recovery/, "no attempts, no clause");
   // That fields land here too, and on a SHORT reason the answer is "nothing was cut" — never a missing key
   assert.equal(status.reasonTruncated, false);
   assert.equal(status.reasonFull, null);
+});
+
+// A Knockout is a level of a clearance and fails like one: a run the recovery ladder already parked says how many
+// automatic attempts it made before it failed, in the notice and in the machine fields, as a clearance's does.
+test("a knockout that already spent recovery attempts says how many when it fails, as a clearance does", async () => {
+  const studioRoot = join(ROOT, "studio", "cli-failure-after-attempts");
+  const runDir = join(studioRoot, "clearance-search", "runs", "wanderer", "2026-08-13-slate-harbour");
+  mkdirSync(driverDir(runDir), { recursive: true });
+  // Two parks already spent, as the recovery park records them; the resumed run's seed keeps the count.
+  writeFileSync(join(runDir, "status.json"), JSON.stringify({ state: "recovering", recoveryAttempts: 2, recoveryMax: 3 }));
+  const run = { runDir, studioRoot, slug: "wanderer", date: "2026-08-13", codename: "slate-harbour",
+    archiveDir: join(studioRoot, "archive", "2026-08-13-slate-harbour") };
+  const job = { id: "cli-failure-after-attempts", marks: [{ name: "WANDERER" }, { name: "wanderer!" }], classes: [9],
+    jurisdictions: ["EU"], forwarder: "jordan", msgId: "<attempts@x>" };
+  const ctx = { run, job, agent: "mailagent", paths: { runDir }, profile: {},
+    searchPolicy: { level: "knockout", stageLabel: "Knockout", components: {} } };
+  const res = await knockoutInner(ctx, job, { sweepExecutor: async () => ({ ok: true, text: "u", bytes: 1 }) });
+
+  assert.equal(res.failedStage, "knockout-scope", "premise: the same factual failure, which buys no further park");
+  const packet = readJson(driverDir(runDir, "failure.json"));
+  assert.match(packet.whatsappText, /FAILED at knockout-scope after 2 automatic recovery attempts: /);
+  assert.match(packet.emailBodyHtml, /FAILED at stage <b>knockout-scope<\/b> after <b>2 automatic recovery attempts<\/b> and NOTHING was delivered/);
+  assert.equal(packet.recoveryAttempts, 2);
+  assert.equal(readJson(join(runDir, ".failed")).recoveryAttempts, 2);
+  const failed = readFileSync(driverDir(runDir, "run.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l)).filter((r) => r.event === "failed");
+  assert.equal(failed.length, 1);
+  assert.equal(failed[0].sig, packet.failureSignature, "the journal's failed row carries the signature, as a clearance's does");
+  assert.equal(failed[0].class, "factual");
 });
 
 // Nothing above may have written outside the sandbox. `config.outboxDir` is derived from
