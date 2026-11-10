@@ -21,6 +21,7 @@ import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS } from "./findings-model.m
 import { frozenSnapshot, describeDrift } from "./run-integrity.mjs";   // — the frozen judged-by set across a seat turn
 import { isCancelled, readCancel, RunCancelled } from "./cancel.mjs";
 import { selectEngine, modelIdOf } from "./engine/registry.mjs";
+import { engineForRun } from "./engine/run-choices.mjs";
 import { timeoutCause, turnFailure, nameTheFailure } from "./ladder/turn-failure.mjs";
 import { modelGauge, servingProgram } from "./ladder/model-gauge.mjs";
 import { rescueAttempt } from "./ladder/rescue.mjs";
@@ -720,14 +721,15 @@ export function syncPlacementForm(files) {
 // Anthropic needs none of this: `claude -p --resume` resolves against an ambient store nothing wipes,
 // which is precisely why warm resume worked there and not here.
 export async function runStage(name, opts) {
-  const engineForHome = selectEngine();
+  // The run's own engine: the one it recorded when it started, or the machine's for a run with no record.
+  const engineForHome = engineForRun(opts?.runDir);
   let stageHome = null;
   if (engineForHome?.makeStageHome) {
     try { stageHome = engineForHome.makeStageHome(name); }
     catch { stageHome = null; }   // fall back to the engine's own per-turn home rather than fail a stage
   }
   try {
-    return await runStageLadder(name, opts, stageHome);
+    return await runStageLadder(name, opts, stageHome, engineForHome);
   } finally {
     // Deleted when the LADDER settles — every resume that needed it has happened by then. Best-effort:
     // a home we cannot remove must never turn a completed stage into a failure.
@@ -735,7 +737,7 @@ export async function runStage(name, opts) {
   }
 }
 
-async function runStageLadder(name, opts, stageHome = null) {
+async function runStageLadder(name, opts, stageHome = null, engine = selectEngine()) {
   const {
     agent = config.defaultAgent,
     message,
@@ -775,7 +777,6 @@ async function runStageLadder(name, opts, stageHome = null) {
   // agrees with the toolset the attempt actually gets, instead of contradicting the base prompt.
   const supplementalLane = Array.isArray(excludeTools) && excludeTools.includes(REGISTER_ENUMERATE_TOOL);
 
-  const engine = selectEngine();   // process-wide, not per-stage — see selectEngine
   // Billing-mode (auth) resolution — fail LOUD if a mode claims API billing but has no key (fixes the
   // anthropic silent-fallthrough WITHOUT editing anthropic-agent.mjs), and give the stamp its value. Frozen
   // per run (env-derived). The throw is caught by pipelineInner's terminal catch and turned into a run

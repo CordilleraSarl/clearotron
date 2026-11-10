@@ -46,7 +46,9 @@ export function registerEngine(engine) {
 }
 
 /**
- * The engine for this activation. PROCESS-WIDE, and the missing parameter is the point.
+ * The machine's engine: the one a run STARTS on. PROCESS-WIDE, and the missing parameter is the point. A run
+ * that has started serves its turns from the engine it recorded then (`engineForRun` in run-choices.mjs), so
+ * a later change to `CLEAROTRON_AI` reaches new runs only.
  *
  * This took a `_stageName` it ignored, under a call-site comment reading "per-stage: CLEAROTRON_AI base,
  * comms forced to the gateway, override-able". None of that existed: no per-stage override, no comms
@@ -64,6 +66,9 @@ export function registerEngine(engine) {
  * ports. The same absence blocks routing the refutation reviewer to a different engine for family
  * diversity (ENGINE-OPENAI-ADAPTER §6). Recorded in docs/E2E.md, which is where a round plan looks.
  */
+/** The registered adapter for one engine name, or null: no fallback to the machine's engine. */
+export function engineNamed(id) { return ENGINES.get(String(id ?? "").trim().toLowerCase()) ?? null; }
+
 export function selectEngine() {
   const id = (process.env.CLEAROTRON_AI || DEFAULT_ENGINE).toLowerCase();
   const engine = ENGINES.get(id);
