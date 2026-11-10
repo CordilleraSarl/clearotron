@@ -26,6 +26,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync
 import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
+import { driverSource } from "./driver-source.mjs";
 
 
 // EVERY temp directory this file makes is removed — including ones created inside helpers, and ones
@@ -3029,7 +3030,7 @@ test("the startup banner NAMES the audit log, in the place an operator actually 
   // The journal is what somebody tails when a client reports a failed save. It carried auth mode, the
   // ops-token posture, the saved-search store and the listen line — and no mention of the file holding
   // every admin write. Two investigations then spent themselves on an absence that was never a signal.
-  const src = readFileSync(new URL("../portal-service.mjs", import.meta.url), "utf8");
+  const src = driverSource("portal-service.mjs");
   assert.match(src, /log\(`audit log: \$\{auditPath\}/,
     "the banner stopped naming the audit log — the journal goes back to looking empty on a box that is recording everything");
   assert.match(src, /PORTAL_AUDIT overrides/, "…including how to point it somewhere else");

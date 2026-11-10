@@ -39,10 +39,12 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { StageFailure } from "../pipeline.mjs";
 import { progressQuantity } from "../repairs.mjs";
+import { driverSource } from "./driver-source.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const src = (rel) => readFileSync(join(HERE, "..", "..", rel), "utf8");
-const live = (rel) => src(rel).split("\n").filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l.trim())).join("\n");
+const liveOf = (text) => text.split("\n").filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l.trim())).join("\n");
+const live = (rel) => liveOf(src(rel));
 
 // The string from the delivered card, shortened to the same shape. Synthetic marks.
 const DELIVERED = "merged half-grids failed the canonical validator (connotation_undisposed:KIN-ZY wikipedia, VENZ VET meaning slang (+1 more))";
@@ -130,7 +132,7 @@ test("arm 5 — taking the census out of the message does NOT blind the converge
 });
 
 test("arm 6 — a client session sees neither the reason nor the payload", () => {
-  const t = live("driver/portal-service.mjs");
+  const t = liveOf(driverSource("portal-service.mjs"));
   assert.match(t, /reason: CLIENT_FAILURE_NOTE, reasonDetail: null, reasonRedacted: true/,
     "the redaction must take the new field with it — a second field carrying the engine's raw words "
     + "would walk straight past the note that replaced the first");
