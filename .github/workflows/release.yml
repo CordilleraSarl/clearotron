@@ -1307,7 +1307,9 @@ jobs:
       # `exceljs/dist` is a copy of the library built to run inside a web browser, plus its source maps:
       # 19.87 MB across 340 files, roughly a quarter of the whole package. Clearotron runs the Node build
       # in `lib/`, 0.51 MB packed, imported lazily where a workbook is written — nothing reaches `dist/`.
-      # `README_zh.md` goes with it: 0.19 MB of a translation of a dependency's own readme.
+      # `README_zh.md` goes with it: 0.19 MB of a translation of a dependency's own readme. So does
+      # `README.md`, the dependency's own readme: nothing loads it, and the package ships the library's
+      # code and its licence, not its documentation.
       #
       # Measured with the portal bundle built, because this job builds it before packing and a tree
       # without it understates what ships: 84.49 MB unpacked over 4,972 files. Removing both leaves
@@ -1326,7 +1328,8 @@ jobs:
       - name: Leave the browser build of the spreadsheet library out of the package
         run: |
           set -euo pipefail
-          rm -rf node_modules/exceljs/dist node_modules/exceljs/README_zh.md
+          rm -rf node_modules/exceljs/dist node_modules/exceljs/README_zh.md node_modules/exceljs/README.md
+          test ! -e node_modules/exceljs/README.md
           test ! -e node_modules/exceljs/dist
           test -d node_modules/exceljs/lib
 
@@ -1828,7 +1831,9 @@ jobs:
       # `exceljs/dist` is a copy of the library built to run inside a web browser, plus its source maps:
       # 19.87 MB across 340 files, roughly a quarter of the whole package. Clearotron runs the Node build
       # in `lib/`, 0.51 MB packed, imported lazily where a workbook is written — nothing reaches `dist/`.
-      # `README_zh.md` goes with it: 0.19 MB of a translation of a dependency's own readme.
+      # `README_zh.md` goes with it: 0.19 MB of a translation of a dependency's own readme. So does
+      # `README.md`, the dependency's own readme: nothing loads it, and the package ships the library's
+      # code and its licence, not its documentation.
       #
       # Measured with the portal bundle built, because this job builds it before packing and a tree
       # without it understates what ships: 84.49 MB unpacked over 4,972 files. Removing both leaves
@@ -1847,7 +1852,8 @@ jobs:
       - name: Leave the browser build of the spreadsheet library out of the package
         run: |
           set -euo pipefail
-          rm -rf node_modules/exceljs/dist node_modules/exceljs/README_zh.md
+          rm -rf node_modules/exceljs/dist node_modules/exceljs/README_zh.md node_modules/exceljs/README.md
+          test ! -e node_modules/exceljs/README.md
           test ! -e node_modules/exceljs/dist
           test -d node_modules/exceljs/lib
 
