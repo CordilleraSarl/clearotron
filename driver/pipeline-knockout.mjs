@@ -39,6 +39,7 @@ import { config, RESEARCH_PROVIDERS, REGISTER_PROVIDER, missingCredentials } fro
 import { registerAdapter as adapterForRegister } from "./engine/run-choices.mjs";   // the run's register adapter, from ctx.register
 import { StageFailure, stageWallFields } from "./run-outcome.mjs";   // — the wall fields the spine already carries
 import { endTheFailedRun } from "./run-failed.mjs";   // — the failure path both products share
+import { logTurnaroundReconciliation } from "./run-quote.mjs";
 import { RunCancelled, assertNotCancelledBeforePublish, isCancelled, readCancel } from "./cancel.mjs";   // stop-by-user: never the failure lane below
 import { loadFrameworkManifest, parseFrameworkManifest, frameworkFor, DEFAULT_FRAMEWORK } from "./framework.mjs";
 import { attachFrameworkMethod, methodPathFor, FROZEN_METHOD_FILE } from "./framework-method.mjs";
@@ -62,7 +63,7 @@ import { correctionsAppliedTable, unresolvedFlags } from "./corrections-feedforw
 import { settledKnockoutReading } from "./knockout-register-record.mjs";
 import { stripNextStepSections } from "./knockout-next-step.mjs";
 import { publishKnockout, composeKnockoutEmail, knockoutName } from "./publish/knockout.mjs";
-import { writeRunStatus, readRunStatus, rollupStatus, identitySeed } from "./progress.mjs";   // — the identity seed is shared; the stepper is not
+import { writeRunStatus, readRunStatus, rollupStatus, identitySeed, recordTransition, resumeRecord } from "./progress.mjs";   // — the identity seed is shared; the stepper is not
 import { batchMarkName } from "./mark-name.mjs";
 import { runLog, note, outputMeta } from "./log.mjs";
 import { defaultTerritoryState } from "./effective-scope.mjs";   // the stored-defaults reading — one producer, shared with the clearance lane
@@ -85,10 +86,13 @@ function archive(run) {
 }
 // Steps are addressed BY LABEL: Depth 2 inserts a step, so every index after the frame shifts. The
 // run's own step list is frozen on ctx at dispatch (ctx.koSteps).
+// `currentStep` is the step the run is in now, as a clearance records it; this stepper only moves forward, so it is
+// the step fields in the clearance's shape.
 const koStep = (ctx, label, extra = {}) => {
   const steps = ctx.koSteps ?? KO_STEPS;
   const i = steps.indexOf(label);
-  writeRunStatus(ctx, { stepIndex: i, stepLabel: label, stepN: i + 1, stepTotal: steps.length, ...extra });
+  writeRunStatus(ctx, { stepIndex: i, stepLabel: label, stepN: i + 1, stepTotal: steps.length,
+    currentStep: { index: i, label, n: i + 1, total: steps.length }, ...extra });
 };
 
 // ── framework freeze (knockout flavour): the customer's OWN framework when configured, else the house
@@ -386,10 +390,14 @@ async function koStage(name, ctx, { chunkNo = null, msgCtx = {} } = {}) {
       // grep that found its only reader found none.
       runLog(ctx.paths.runDir, { event: "skip", stage: label, lane: "knockout", trigger: "skip", ok: true,
         model, output: outputMeta(out), ...stageWallFields(tDispatch) });
+      recordTransition(ctx, name);   // as a clearance's stage records it: the stage the run is at, on a resume too
       return { ok: true, skipped: true };
     }
     runLog(ctx.paths.runDir, { event: "stage-stale", stage: label, reason: v.reason });
   }
+  // The run is in this stage from the moment it dispatches, as a clearance's stage records it. The bare name, so a
+  // batch's chunks are one stage. No Knockout stage has a step on the clearance's stepper, so this moves no step.
+  recordTransition(ctx, name);
   const r = await runStage(label, {
     agent: ctx.agent,
     message: def.message({ ...ctx, K, chunkNo, ...msgCtx }),
@@ -411,6 +419,7 @@ async function koStage(name, ctx, { chunkNo = null, msgCtx = {} } = {}) {
     modelSelector: model,          // — what re-spawns the writer, beside what ran
     output: outputMeta(out), outputWritten: r.wrote ?? null, ...stageWallFields(tDispatch) });
   if (!r.ok) throw new StageFailure(label, r.fail ?? "failed", r.resetsAt);
+  recordTransition(ctx, name);
   return r;
 }
 
@@ -671,10 +680,15 @@ export async function knockoutInner(ctx, job, opts = {}) {
     //
     // `startedAt` now backfills HERE rather than at the failure, which is more honest and is the
     // documented first-write-wins behaviour (A3, progress.mjs) rather than a change to it.
+    //
+    // WHICH PASS THIS IS, here and only here, as a clearance's seed records it (resumeRecord): a fresh run
+    // is attempt 1, and a resume records its clock and counts itself. Here because a pass refused in
+    // preflight is still a pass; only here because a second seed reading the count back would count twice.
     writeRunStatus(ctx, {
       schema: 1, id: job.id, runId, slug: run.slug, codename: run.codename,
       date: run.date, agent, forwarder: job.forwarder, ref: job.ref ?? null,
       state: "running", lane: "knockout",
+      ...resumeRecord(run.runDir, ctx.stateReset),
       // — and the PROCESS and BUILD identity for the same reason the run
       // identity is here: a knockout refused in preflight is exactly the run whose record nobody can
       // otherwise attribute, and it is the one most likely to be asked about. Found by the derived
@@ -1383,6 +1397,8 @@ export async function knockoutInner(ctx, job, opts = {}) {
       const verdict = knockoutBarVerdict({ startedAt: readRunStatus(run.runDir)?.startedAt, deliveredAt });
       runLog(run.runDir, { event: "knockout-run-total", barMinutes: KNOCKOUT_MINUTES_BAR, ...verdict });
     } catch { /* the bar is a record, never a gate: a summary that could not be written never fails a delivery */ }
+    // The turnaround row every run ending writes. A Knockout computes no quote, so the row carries its wall alone.
+    logTurnaroundReconciliation(run.runDir, ctx.quote, "delivered");
     // `tier` beside `verdict` — the same band word under the name the clearance lane records it by, so a
     // reader of either lane's status finds the rating in one place. `verdict` stays as it was.
     writeRunStatus(ctx, { state: "delivered", tier: overall, statement: published.statement, url: published.url, reports: published.reports.map((r) => ({ mark: r.mark, url: r.url })), deliveredAt, sendPending: true, stepIndex: STEPS.length - 1, stepLabel: STEPS[STEPS.length - 1], stepN: STEPS.length, stepTotal: STEPS.length });

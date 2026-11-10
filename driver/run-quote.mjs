@@ -124,8 +124,8 @@ export function reconcileTurnaround({ quote = null, startedAt = null, now = Date
 // Quoted-vs-actual turnaround, written at every terminal of a run — delivered, cancelled, rate-limit-postponed,
 // recovery-parked, failed — in pipeline.mjs and the run endings carved from it. (The call-site census test greps
 // those files, and that is the scope it can police.) A Knockout computes no quote, so its rows carry the wall and a
-// null quote. It writes them where it ends through run-failed.mjs (stopped, parked, failed), and not where it
-// delivers, in pipeline-knockout.mjs. The runner's `parked-for-human` grace-exit (runner.mjs parkInFlightForHuman)
+// null quote: where it ends through run-failed.mjs (stopped, parked, failed) and where it delivers, in
+// pipeline-knockout.mjs. The runner's `parked-for-human` grace-exit (runner.mjs parkInFlightForHuman)
 // is not covered: it is a SIGTERM handler with no ctx and no quote in hand.
 //
 // AD-4 surfaced this only at the delivered terminal, so a run that failed, parked for auto-recovery or

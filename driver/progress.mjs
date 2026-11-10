@@ -383,10 +383,21 @@ export function identitySeed() {
 // threads __stateReset because the resume guard has deliberately cleared a terminal sentinel. The
 // review/failedStage/reason resets stay (a resumed run owes a fresh outcome);
 // recoveryAttempts/recoveryHistory stay OUT of the seed (they are the park budget's memory).
+/**
+ * What a run's seed records about which pass this is: a fresh run is attempt 1; a resume records its own clock and
+ * counts itself, and threads __stateReset because the resume guard has deliberately cleared a terminal sentinel.
+ * Both products' seeds spread it. Reads status.json, so it is read before the seed writes.
+ */
+export function resumeRecord(runDir, resume) {
+  if (!resume) return { attempts: 1 };
+  const prior = readRunStatus(runDir);
+  return { resumedAt: nowISO(), attempts: (Number(prior.attempts) || 1) + 1, __stateReset: true };
+}
+
 export function seedRunStatus(ctx, { resume = false } = {}) {
   const { job, run, agent } = ctx;
   const first = stepForStage("matter-frame");
-  const prior = resume ? readRunStatus(run.runDir) : {};
+  const pass = resumeRecord(run.runDir, resume);
   writeRunStatus(ctx, {
     schema: 1,
     id: job.id,
@@ -420,9 +431,7 @@ export function seedRunStatus(ctx, { resume = false } = {}) {
     failedStage: null,
     reason: null,
     deliveredAt: null,
-    ...(resume
-      ? { resumedAt: nowISO(), attempts: (Number(prior.attempts) || 1) + 1, __stateReset: true }
-      : { attempts: 1 }),
+    ...pass,
   }, null, { critical: true });   // door B — the clearance lane's identity seed, same rule
 }
 

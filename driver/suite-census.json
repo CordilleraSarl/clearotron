@@ -1203,6 +1203,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-records-each-pass-as-a-clearance-does.test.mjs": {
+          "tests": 1,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-refusal-is-routed-as-the-knockout-records.test.mjs": {
           "tests": 2,
           "asserts": 6,
