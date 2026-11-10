@@ -310,7 +310,7 @@ async function correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, wor
     try {
       await koStage("knockout-correct", ctx, { chunkNo: c, msgCtx: { work, chunkMarks: chunks[c], framework: ctx.framework, frameworkMethod: ctx.frameworkMethod ?? null } });
     } catch (e) {
-      if (e instanceof StageFailure && e.resetsAt) throw e;
+      if (e instanceof StageFailure && (e.rateLimited || e.resetsAt)) throw e;
       failed.push({ chunk: c, reason: String(e?.message ?? e).slice(0, 200) });
     }
   }
@@ -359,7 +359,7 @@ async function correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, wor
   try {
     await koStage("knockout-review", ctx, { chunkNo: 1, msgCtx: { ...d.msgCtx, recheckTable: correctionsAppliedTable(outcomes) } });
   } catch (e) {
-    if (e instanceof StageFailure && e.resetsAt) throw e;
+    if (e instanceof StageFailure && (e.rateLimited || e.resetsAt)) throw e;
     // NOBODY READ THE CORRECTED RECORD, so nothing here can call a defect answered.
     const reason = String(e?.message ?? e).slice(0, 200);
     keepRecord({ ...held, recheck: "failed", failure: reason, open: asOpen(work.defects, "not-rechecked", "recheck-failed") });
@@ -493,7 +493,7 @@ async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts
       runLog(run.runDir, { event: "knockout-register-read", names: reading.marks?.length ?? 0 });
     }
   } catch (e) {
-    if (e instanceof StageFailure && e.resetsAt) throw e;
+    if (e instanceof StageFailure && (e.rateLimited || e.resetsAt)) throw e;
     note(`register reading step did not finish (non-fatal): ${String(e?.message ?? e).slice(0, 200)}`);
     runLog(run.runDir, { event: "knockout-register-read-failed", cause: String(e?.message ?? e).slice(0, 300) });
     reading = settledKnockoutReading(run.runDir);

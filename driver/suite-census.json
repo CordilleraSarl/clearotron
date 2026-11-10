@@ -1707,6 +1707,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-rate-limit-with-no-reset-postpones-a-knockout.test.mjs": {
+          "tests": 1,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-rated-conflict-carries-its-framework-inputs.test.mjs": {
           "tests": 3,
           "asserts": 21,
