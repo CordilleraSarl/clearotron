@@ -2033,7 +2033,7 @@
         },
         "a-resumed-run-keeps-the-engine-it-started-on.pipeline.test.mjs": {
           "tests": 6,
-          "asserts": 30,
+          "asserts": 33,
           "skips": 0,
           "todos": 0
         },
