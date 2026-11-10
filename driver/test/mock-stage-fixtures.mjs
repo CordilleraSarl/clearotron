@@ -1991,6 +1991,12 @@ export function applyStageWrites(msg, argv) {
           verdict: "The identical registration in the searched class drives the read, and the position is adverse on the current filing.",
           coverage: { read: reco },
       };
+      // MOCK_CORRECTION_MOVES=<ordinal> — a scoped correction also changes that finding's practical position, a finding
+      // its flags do not name, so a test can see what the clearance does with a move outside the declared scope.
+      if (process.env.MOCK_CORRECTION_MOVES && /SCOPE — THE REVIEWER DECLARED WHICH FINDINGS ITS FLAGS ARE ABOUT/.test(msg)) {
+        const moved = (doc.findings ?? []).find((f) => String(f.ordinal) === process.env.MOCK_CORRECTION_MOVES.trim());
+        if (moved) moved.practical_position = `${moved.practical_position ?? ""} The mock correction also moved this position.`.trim();
+      }
       // MOCK_CORRECTION_MARKS=<text> — the correction after a post-repair review writes this text into finding 1's `net`
       // and the verdict section, so a test can tell that save from every other; keyed on the correction's own opening.
       if (process.env.MOCK_CORRECTION_MARKS && /After the delivery check, that record was repaired/.test(msg)) {
@@ -2235,9 +2241,11 @@ export function applyStageWrites(msg, argv) {
       // MOCK_VERDICT_DEFECTS held the bullet lines the seat used to WRITE. Each becomes one flag. `fact`
       // is the right default and not a shrug: every scenario that sets this knob names something the
       // narrative got wrong against the file, which is that kind's definition.
+      // MOCK_VERDICT_FLAG_ON=<ordinal>[,…] has every flag declare those findings in `on`, so the correction is scoped.
+      const flagOn = String(process.env.MOCK_VERDICT_FLAG_ON ?? "").split(",").map((o) => Number(o.trim())).filter((o) => Number.isInteger(o) && o > 0);
       const flags = String(process.env.MOCK_VERDICT_DEFECTS ?? "")
         .split("\n").map((l) => l.replace(/^[-*]\s*/, "").trim()).filter(Boolean)
-        .map((text) => ({ kind: "fact", text }));
+        .map((text) => ({ kind: "fact", text, ...(flagOn.length ? { on: flagOn } : {}) }));
       let r = send({ verdict, flags, plan_audit: planAudit });
 
       // ── THE SEAT CORRECTS IN THE TURN, WHICH IS THE WHOLE POINT OF REFUSING AT THE CALL ────────────
