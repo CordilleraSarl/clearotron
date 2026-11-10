@@ -179,7 +179,7 @@ test("the sidecar writer carries the grounds and refuses an empty BLOCKING", () 
   // BLOCKING arm reads the review at all, and that the invariant is stated over the value WRITTEN rather
   // than over the branch that fills it.
   const SRC = driverSource("pipeline.mjs");
-  const at = SRC.indexOf('if (runState.verdict === "BLOCKING") {\n        let cited = []');
+  const at = SRC.search(/if \(runState\.verdict === "BLOCKING"\) \{\n\s*let cited = \[\]/);
   assert.ok(at > 0, "the #1065 grounds arm is gone from the sidecar writer — a BLOCKING verdict is shipping "
     + "its decision without its grounds again");
   assert.match(SRC.slice(at, at + 600), /parseCorrections\(readFileSync\(P\.seniorEyeReview/,
