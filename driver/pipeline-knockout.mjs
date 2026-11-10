@@ -37,7 +37,7 @@ import { fileURLToPath } from "node:url";
 
 import { runStage } from "./gateway.mjs";
 import { config, RESEARCH_PROVIDERS, REGISTER_PROVIDER, activeProvider, missingCredentials } from "./driver.config.mjs";
-import { StageFailure, buildFailurePacket, stageWallFields, terminalReasonFields, isDesignedRefusal } from "./pipeline.mjs";   // — the wall fields the spine already carries
+import { StageFailure, buildFailurePacket, stageWallFields, terminalReasonFields, isDesignedRefusal } from "./run-outcome.mjs";   // — the wall fields the spine already carries
 import {
   REFUSAL_TERMINAL_KIND,   // — the terminal kind that is not a failure
   // — the clearance lane's recovery DECISION, reused rather than restated. The
