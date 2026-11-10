@@ -197,3 +197,21 @@ test("a run's record receipts name the register it recorded; a run with no recor
   const pinned = process.env.CLEAROTRON_DATABASE;
   assert.deepEqual(receiptsOf(newRun("receipts-unrecorded")), [pinned ? pinned.toLowerCase() : null]);
 });
+
+test("a register unit is briefed on its run's register: its name, its manual and its grant", async () => {
+  const { STAGES, PROVIDER_META, providerMeta } = await import("../stages.mjs");
+  const { REGISTER_PROVIDER, PROVIDERS } = await import("../driver.config.mjs");
+  const other = REGISTER_PROVIDER === "signa" ? "euipo" : "signa";
+  const PATHS = { variantManifest: "vm.json", matterContext: "mc.md", registerBand: (a) => `band-${a}.json`,
+    registerUnit: (a) => `unit-${a}.md`, registerPlan: "plan.json" };
+  const PLAN = { plan_version: 1, regions: [], entries: [{ qid: "primary-sweep:exact:qzorvak", axis: "primary-sweep",
+    predicate: "exact", term: "QZORVAK", nice_classes: ["9"], expected_kind: "enumerate" }] };
+  const message = (extra) => STAGES["register-unit"].message({ paths: PATHS, axis: "primary-sweep",
+    job: { ref: "N-1", markName: "QZORVAK", classes: [9], goods: "computer game software" }, profile: {}, registerPlan: PLAN, ...extra });
+  const onOther = message({ register: other });
+  assert.match(onOther, new RegExp(`Active register provider: ${PROVIDERS[other].label}\\.`));
+  assert.ok(onOther.includes(providerMeta(other).skillDoc), "the unit is told to read its run's register manual");
+  assert.equal(message({}), message({ register: REGISTER_PROVIDER }), "a run that names no register is briefed on the machine's, as before");
+  assert.deepEqual(PROVIDER_META, providerMeta(REGISTER_PROVIDER));
+  assert.deepEqual(STAGES["register-unit"].followupSkillReads({ register: other }), [providerMeta(other).skillDoc]);
+});

@@ -305,11 +305,11 @@ const PROVIDER = REGISTER_PROVIDER;
 // the provider half is this label. It was a driver fact the seat retyped out of the dispatch; the driver
 // stamps it now, and it reads the label from here rather than re-deriving it from CLEAROTRON_DATABASE
 // — a second derivation of a provider name is how a masthead ends up naming a register the run never used.
-export const PROVIDER_META = PROVIDERS[PROVIDER] ?? {
-  label: PROVIDER ?? "(none configured)",
+export const providerMeta = (register) => PROVIDERS[register] ?? {   // a run's register (ctx.register), or the machine's
+  label: register ?? "(none configured)",
   skillDoc: null,
   hasPublicRecordUrl: true,
-};
+}; export const PROVIDER_META = providerMeta(PROVIDER);
 
 // ---- message builders (faithful to the spawn briefs in phase2-execution.md; the leaf reads the skill for detail) ----
 export const lines = (...a) => a.filter(Boolean).join("\n");
@@ -1951,7 +1951,7 @@ export const STAGES = {
     // Every follow-up is a fresh session that calls the same register tools, so its methodology line also names the
     // active provider's manual, which holds THIS provider's tool names and operator vocabulary and which the opening
     // message tells the first session to read and follow.
-    followupSkillReads: () => (PROVIDER_META.skillDoc ? [PROVIDER_META.skillDoc] : []),
+    followupSkillReads: (ctx) => (providerMeta(ctx?.register ?? PROVIDER).skillDoc ? [providerMeta(ctx?.register ?? PROVIDER).skillDoc] : []),
     out: (P, axis) => P.registerUnit(axis),
     validate: validators.registerUnit,
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
@@ -2022,7 +2022,7 @@ export const STAGES = {
         why: "The path is `out: (P, axis) => P.registerUnit(axis)`, pre-bound by the driver; all three counts are aggregates over the band the tool wrote. No token speaks about the return message.",
       },
     },
-    message: ({ paths: P, axis, job, profile, registerPlan, capabilities = registerCapabilities() }) => {
+    message: ({ paths: P, axis, job, profile, registerPlan, register = PROVIDER, capabilities = registerCapabilities(register) }) => {
     // Lever-1 data plane (2026-06-24): hand the funnel a COPYABLE in-scope Nice-class array. The NOVA PULSE timeout
     // proved skill prose alone is not enough — the funnel HAD [9,28,41,42] in matter-context and still ran
     // all-class enumerations (10k-record flood) because nice_classes read as optional. Pin it in the task.
@@ -2053,19 +2053,19 @@ export const STAGES = {
       // told it holds tools its grant does not carry. The composer derives the list from the same table
       // that does the excluding, and returns NULL — not an empty sentence — when the provider cannot be
       // resolved, which is the path `--experiment` takes.
-      grantVocabularySentence(),
-      `You are register UNIT mode, axis = "${axis}". Active register provider: ${PROVIDER_META.label}.`
+      grantVocabularySentence(register),
+      `You are register UNIT mode, axis = "${axis}". Active register provider: ${providerMeta(register).label}.`
       // A provider with no vocabulary doc is a provider this seat cannot be briefed on. Emitting the
       // sentence with a null path in it would instruct the model to read a file that does not exist,
       // which it resolves by carrying on unbriefed — indistinguishable from choosing not to read.
-      + (PROVIDER_META.skillDoc
+      + (providerMeta(register).skillDoc
         // "(EUIPO = free EU cross-check, available alongside)" used to sit at the end of this sentence.
         // It described the credential-blind attach, which is gone: EUIPO is a register PROVIDER
         // now, so when it is active it IS `${PROVIDER_META.label}` and there is nothing "alongside".
         // Leaving the clause in would tell every unit on every vendor that a second EU source was
         // available to it, and a unit that believes it has a cross-check it does not have will report
         // agreement it never obtained.
-        ? ` Read and follow ${PROVIDER_META.skillDoc} for THIS provider's exact tool names + operator vocabulary; use only that provider's register tools. There is exactly ONE register in this run — if its coverage does not reach a territory the matter needs, that is a DEFERRED coverage row you disclose, never a gap you fill from somewhere else.`
+        ? ` Read and follow ${providerMeta(register).skillDoc} for THIS provider's exact tool names + operator vocabulary; use only that provider's register tools. There is exactly ONE register in this run — if its coverage does not reach a territory the matter needs, that is a DEFERRED coverage row you disclose, never a gap you fill from somewhere else.`
         : " NO provider vocabulary doc is registered for it, so there is nothing to read for its tool names — treat that as a fault and say so rather than improvising an operator vocabulary."),
       `Inputs: variant manifest ${P.variantManifest}; matter frame ${P.matterContext}.`,
       planEntries.length
