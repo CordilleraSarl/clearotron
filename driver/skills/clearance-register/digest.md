@@ -329,8 +329,7 @@ every row — the driver renders both the `## Coverage ledger` table and `regist
 from what the tool records). You send no rolled-up line. Your row statuses are what synthesis reads when it writes `coverage_judgment`. The FORM is the
 single source of truth; the rendered table and the JSON mirror are both derived from it, so they agree by
 construction and neither can be the thing that drifts. Driver
-semantics: `sufficient:false` (any material `coverage-limited`/`deferred` slice) ⇒ the verdict clamps
-CLEAR→CONDITIONAL and the named gap surfaces in # Actions (the report still ships); `sufficient:true` ⇒ deliver.
+semantics: A `coverage-limited` row does not change the verdict by itself. Synthesis reads it when it decides `coverage_judgment`; only `sufficient:false` or a `deferred` row clamps CLEAR to CONDITIONAL, and the named gap surfaces in # Actions (the report still ships); `sufficient:true` ⇒ deliver.
 There are **no `commands[]` and no `halt`** — a material gap is a delivered conditional, never a re-enumeration
 loop and never a no-deliver halt.
 
@@ -503,7 +502,7 @@ every material jurisdiction must be accounted for. One covered by a complete wor
 narrowed list that was read, is accounted for by that answer. One the identical mark's narrowing left inside a crowd,
 because the one market list did not name it, stays in that crowd's count on the crowd's own row. Only a material
 jurisdiction no question reached at all is an **unsearched dangerous slice**: write it `deferred` if it could not
-reach its data, else `coverage-limited`, with a reason that NAMES the slice — `sufficient:false` → the run ships **CONDITIONAL**
+reach its data, else `coverage-limited`, with a reason that NAMES the slice. A `coverage-limited` row does not change the verdict by itself. Synthesis reads it when it decides `coverage_judgment`; only `sufficient:false` or a `deferred` row clamps CLEAR to CONDITIONAL,
 and the gap surfaces in # Actions. **Never** write a missing material jurisdiction as a self-accepted clean — but
 it is a delivered conditional, not a re-search loop and not a halt. Each slice is prefixed by the axis that ran
 (or owes) its sweep — `primary-sweep / CH (material)`, never a bare `CH (material)`. Do not re-judge a unit's
