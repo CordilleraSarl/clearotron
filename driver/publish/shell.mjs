@@ -32,8 +32,9 @@ const removePart = (p) => { try { rmSync(p, { force: true }); } catch { /* nothi
  * The two parts a report can ship without go through the folder too. `buildWorkbook(name, build)` awaits `build(path)` and
  * returns `{ auditFile, auditError, built }`: the file's name and what `build` returned, or a null name and the reason when
  * it threw, with any part of the file it left removed. `writeDataFile(name, produce)` writes `produce()` as JSON and
- * returns the name, or null when either threw, so a caller claims a data file only when it exists. Both record a failure
- * in `runDir`'s log when they are given one.
+ * returns the name, or null when either threw, so a caller claims a data file only when it exists. `copyPart(src, name)`
+ * copies a run file into the folder the same way, and returns the name or null. All three record a failure in `runDir`'s
+ * log when they are given one.
  */
 export function openPoolRun(poolRoot, runId, { runDir = null } = {}) {
   const poolRunDir = join(poolRoot, runId);
@@ -64,7 +65,17 @@ export function openPoolRun(poolRoot, runId, { runDir = null } = {}) {
       return null;
     }
   };
-  return { poolRunDir, writeRO, copyRO, buildWorkbook, writeDataFile };
+  const copyPart = (src, name) => {
+    try { copyRO(src, name); return name; }
+    catch (e) {
+      removePart(join(poolRunDir, name));
+      const error = reasonOf(e);
+      console.warn(`[publish] ${name} not copied, the report ships without it: ${error.slice(0, 140)}`);
+      record(runDir, { event: 'data-file-not-written', file: name, error: error.slice(0, 300) });
+      return null;
+    }
+  };
+  return { poolRunDir, writeRO, copyRO, copyPart, buildWorkbook, writeDataFile };
 }
 
 /**
