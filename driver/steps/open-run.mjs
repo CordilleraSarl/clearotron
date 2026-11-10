@@ -12,7 +12,7 @@ import { config, preflightCredentials, preflightEngineBinary, preflightFreeSpace
 import { engineProvenance } from "../engine-build.mjs";
 import { preflightEngineTurn } from "../engine/probe.mjs";
 import { engineNamed, registeredEngines, selectEngine } from "../engine/registry.mjs";
-import { RunChoiceUnavailable, readRunChoices, recordRunChoices, registerAdapter, registerEnvFor, registerForRun, unservedChoice } from "../engine/run-choices.mjs";
+import { RunChoiceUnavailable, readRunChoices, recordRunChoices, registerAdapter, registerDoor, registerForRun, unservedChoice } from "../engine/run-choices.mjs";
 import { note, runLog } from "../log.mjs";
 import { buildRunContext } from "../phase0.mjs";
 import { profileStoreResolution } from "../profiles.mjs";
@@ -115,9 +115,11 @@ export async function openRun({ job, opts }, helpers) {
   // A RECORDED REGISTER IS SERVED WHEREVER THIS RUNNER HOLDS WHAT IT NEEDS, whatever the machine's default. The door
   // checks a copy of the environment naming the run's register, never a changed process environment; a register that
   // is not the machine's and fails the door parks the run with the door's own words. The machine's fails as before.
-  if (!opts.recordFetcher && !koSelector) {
-    try { preflightCredentials(registerEnvFor(recorded)); } catch (e) {
-      if (recorded.state !== "recorded" || !recorded.register || recorded.register === (REGISTER_PROVIDER ?? null)) throw e;
+  // Which runs meet the door, the Knockout lane included, is `registerDoor`'s answer.
+  const door = registerDoor(recorded, { machineRegister: REGISTER_PROVIDER ?? null, knockout: koSelector, fetchesInjected: Boolean(opts.recordFetcher) });
+  if (door) {
+    try { preflightCredentials(door.env); } catch (e) {
+      if (!door.parks) throw e;
       throw park({ kind: "register", recorded: recorded.register, machine: REGISTER_PROVIDER ?? null, detail: e?.message ?? e });
     }
   }
