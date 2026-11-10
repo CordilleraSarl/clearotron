@@ -1,0 +1,73 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
+// scenarios.mjs — the ladder scenarios: each a scripted sequence of turn outcomes. A step is one runTurn call (an attempt or a
+// form-repair turn inside one). `write` writes files into the run before returning; `turn` overrides the tuple.
+const VALID = { "out.json": { ok: true } };
+const inv = (reason, extra = {}) => ({ "out.json": { reason, ...extra } });
+const VALIDF = { "frame-diff.json": { ok: true } };
+const invf = (reason) => ({ "frame-diff.json": { reason } });
+const KILL = { killed: true, code: 137, wall: 160 };
+const NOUSE = { usage: null, json: { status: "error", runId: null } };
+
+export const SCENARIOS = {
+  "ok-first": { steps: [{ write: VALID }] },
+  "warm-repair": { steps: [{ write: inv("findings_band_missing: F1", { quantity: 3 }) }, { write: VALID }] },
+  "corrective-fresh": { steps: [{ write: inv("something_else_wrong: x") }, { write: VALID }] },
+  "warm-identical-escalates": { steps: [{ write: inv("findings_band_missing: F1") }, { write: inv("findings_band_missing: F1") }, { write: VALID }] },
+  "identical-breaks": { steps: [{ write: inv("something_else_wrong: x") }, { write: inv("something_else_wrong: x") }] },
+  "produced-nothing-cut": { steps: [{}, {}, {}] },
+  "missing-then-ok": { steps: [{}, { write: VALID }] },
+  "exhausted": { maxRetries: 2, steps: [{ write: inv("something_else_wrong: a") }, { write: inv("something_else_wrong: b") }, { write: inv("something_else_wrong: c") }] },
+  "exit1-rescue": { steps: [{ write: VALID, turn: { code: 1 } }] },
+  "exit1-invalid": { steps: [{ write: inv("something_else_wrong: x"), turn: { code: 1 } }, { write: VALID }] },
+  "exit1-after-kill": { steps: [{ turn: KILL }, { write: VALID, turn: { code: 1 } }, { write: VALID }] },
+  "wall-rescue": { steps: [{ write: VALID, ageSec: 120, turn: { ...KILL, signals: { hardWall: true } } }] },
+  "wall-rescue-quiet-too-short": { steps: [{ write: VALID, turn: { ...KILL, signals: { hardWall: true } } }, { write: VALID }] },
+  "wall-rescue-absent": { steps: [{ turn: { ...KILL, signals: { hardWall: true } } }, { write: VALID }] },
+  "wall-rescue-invalid": { steps: [{ write: inv("something_else_wrong: x"), ageSec: 120, turn: { ...KILL, signals: { hardWall: true } } }, { write: VALID }] },
+  "stall-retry": { steps: [{ turn: { ...KILL, signals: { stalled: true, noProgress: true } } }, { write: VALID }] },
+  "timeout-twice": { maxRetries: 3, steps: [{ turn: KILL }, { turn: KILL }, { write: VALID }] },
+  "stderr-timeout": { steps: [{ turn: { code: 1, stderr: "request timed out" } }, { write: VALID }] },
+  "lane-wedge": { steps: [{ turn: { ...KILL, usage: null } }, { write: VALID }] },
+  "rate-limited": { steps: [{ turn: { code: 1, signals: { rateLimited: true, resetsAt: 4102444800 } } }] },
+  "overloaded": { steps: [{ turn: { code: 1, stderr: "API Error: 529 {\"type\":\"error\",\"error\":{\"type\":\"overloaded_error\"}}" } }] },
+  "signed-out": { steps: [{ turn: { code: 1, signals: { signedOut: "the sign-in expired" } } }] },
+  "tools-refused-signal": { steps: [{ turn: { code: 1, signals: { toolsRefused: "permission denied" } } }, { write: VALID }] },
+  "every-tool-refused": { steps: [{ turn: { mcpToolCallsRefused: 3, mcpToolCalls: 0 } }] },
+  "max-tokens": { steps: [{ turn: { json: { status: "ok", stopReason: "max_tokens" } } }, { write: VALID }] },
+  "max-tokens-exit": { steps: [{ turn: { code: 1, json: { status: "ok", stopReason: "max_tokens" } } }, { write: VALID }] },
+  "model-mismatch": { model: "haiku", steps: [{ write: VALID, turn: { modelWire: "claude-opus-5-5", providerWire: "anthropic" } }] },
+  "model-wire-match": { model: "sonnet", steps: [{ write: VALID, turn: { modelWire: "claude-sonnet-5-5" } }] },
+  "model-mismatch-gate-off": { model: "haiku", env: { CLEAROTRON_MODEL_WIRE_CHECK: "0" }, steps: [{ write: VALID, turn: { modelWire: "claude-opus-5-5" } }] },
+  "embedded-fallback": { steps: [{ write: VALID, turn: { json: { status: "ok", meta: { transport: "embedded" } } } }, { write: VALID }] },
+  "unparseable": { steps: [{ turn: { json: null, stdout: "not json\nat all" } }, { write: VALID }] },
+  "status-error": { steps: [{ turn: { json: { status: "error", runId: "e1" } } }, { write: VALID }] },
+  "form-repair-repaired": { files: ["frame-diff.json"], steps: [{ write: invf("framediff_severity_invalid: D1") }, { write: VALIDF }] },
+  "form-repair-unchanged": { files: ["frame-diff.json"], steps: [{ write: invf("framediff_severity_invalid: D1") }, { write: invf("framediff_severity_invalid: D1") }, { write: VALIDF }] },
+  "form-repair-moved": { files: ["frame-diff.json"], steps: [{ write: invf("framediff_severity_invalid: D1") }, { write: invf("framediff_gap_invalid: D2") }, { write: VALIDF }] },
+  "form-repair-no-write": { files: ["frame-diff.json"], steps: [{ write: invf("framediff_severity_invalid: D1") }, {}, { write: VALIDF }] },
+  "form-repair-killed": { files: ["frame-diff.json"], steps: [{ write: invf("framediff_severity_invalid: D1") }, { turn: KILL }, { write: VALIDF }] },
+  "form-repair-gate-off": { files: ["frame-diff.json"], env: { CLEAROTRON_FORM_REPAIR: "0" }, steps: [{ write: invf("framediff_severity_invalid: D1") }, { write: VALIDF }] },
+  "zero-usage-warm": { steps: [{ write: inv("findings_band_missing: F1") }, { turn: NOUSE }, { write: VALID }] },
+  "zero-usage-warm-twice": { maxRetries: 1, steps: [{ write: inv("findings_band_missing: F1") }, { turn: NOUSE }, { turn: NOUSE }, { write: VALID }] },
+  "warm-hard-wall-stop": { steps: [{ write: inv("findings_band_missing: F1") }, { turn: { ...KILL, signals: { hardWall: true } } }, { write: VALID }] },
+  "said-back-open": { steps: [{ write: inv("placement_refused=2 rows") }, { write: inv("placement_refused=2 rows") }] },
+  "said-back-then-ok": { steps: [{ write: inv("placement_refused=2 rows") }, { write: VALID }] },
+  "cancel": { steps: [{ write: inv("findings_band_missing: F1"), cancelAfter: true }, { write: VALID }] },
+  "refresh-message": { refresh: true, steps: [{ write: inv("something_else_wrong: x") }, { write: VALID }] },
+  "refresh-message-warm": { refresh: true, steps: [{ write: inv("findings_band_missing: F1") }, { write: VALID }] },
+  "stage-home": { stageHome: true, steps: [{ write: inv("findings_band_missing: F1") }, { write: VALID }] },
+  "followup": { opts: { followup: true }, steps: [{ write: inv("something_else_wrong: x") }, { write: VALID }] },
+  "correction-adds": { opts: { correction: { positions: [1] } }, steps: [{ write: inv("findings_band_missing: F1") }, { write: VALID }] },
+  "two-files-one-missing": { files: ["out.json", "second.json"], steps: [{ write: VALID }, { write: { ...VALID, "second.json": { ok: true } } }] },
+  "dispatch-record-off": { env: { CLEAROTRON_DISPATCH_RECORD: "0" }, steps: [{ write: inv("findings_band_missing: F1") }, { write: VALID }] },
+  "warm-off": { env: { CLEAROTRON_WARM_RETRY: "0" }, steps: [{ write: inv("findings_band_missing: F1") }, { write: VALID }] },
+  "no-gather-no-skills": { engineProps: { usesGatherMcp: false, usesSkillsDir: false }, steps: [{ write: inv("findings_band_missing: F1") }, { write: VALID }] },
+  "derived-limit": { opts: { derivedLimit: { sec: 90, inputBytes: 12345 }, bandSize: 7, stallSec: 30 }, steps: [{ turn: { ...KILL, wall: 95 } }, { write: VALID }] },
+  "exclude-tools": { opts: { excludeTools: ["register_enumerate"] }, steps: [{ write: inv("findings_band_missing: F1") }, { write: VALID }] },
+  "dump-json": { env: { CLEAROTRON_DUMP_JSON: "1" }, steps: [{ write: inv("something_else_wrong: x") }, { write: VALID }] },
+  "gather-common-law": { stage: "common-law", steps: [{ write: inv("findings_band_missing: F1") }, { write: VALID }] },
+  "gather-exclude-tools": { stage: "register-unit-phonetic", opts: { excludeTools: ["register_enumerate"] }, steps: [{ write: inv("something_else_wrong: x") }, { write: VALID }] },
+  "refresh-throws": { refresh: "throw", steps: [{ write: inv("something_else_wrong: x") }, { write: VALID }] },
+  "write-boundary": { engineProps: { writeBoundary: "enforced", resolveModelId: (m) => `probe/${m}` }, steps: [{ write: VALID }] },
+};
