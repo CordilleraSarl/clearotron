@@ -5410,8 +5410,8 @@
           "todos": 0
         },
         "portal-service.test.mjs": {
-          "tests": 137,
-          "asserts": 738,
+          "tests": 138,
+          "asserts": 744,
           "skips": 1,
           "todos": 0
         },

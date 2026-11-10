@@ -16,14 +16,16 @@ import { isDemo } from "../demo-posture.mjs";
 import { claudeNamer } from "../engine/probe.mjs";
 import { assertPrincipal, PortalDeny, seesEverything } from "../portal-access.mjs";
 
-export async function connectRoutes({ demo, audit, auditLog, INSTALL_ROOT }, { method, parts, identity, principal, body }) {
+export async function connectRoutes({ demo, audit, auditLog, INSTALL_ROOT, connectCaches }, { method, parts, identity, principal, body }) {
   // ── ONE READING OF THE CONNECTOR'S OWN DOOR, CACHED ────────────────────────────────────────────────
   //
   // The same unauthenticated probe `doctor` makes, asked here so the connector steps follow what the door
   // actually answers. Bounded three ways, because this sits on a page load: a short timeout, a one-minute
   // cache, and a failure that answers `null` rather than throwing — a page that cannot read its door says
   // so, which is the honest half of this change.
-  let doorKindCache = { at: 0, url: null, kind: null };
+  //
+  // Both caches live on the service (`connectCaches`, made once in makePortalService), not here: this
+  // function runs once per request, and a cache declared in it starts empty on every one.
   // ── WHETHER A READER HAS AN ASSISTANT ON THIS INSTALLATION ────────────────────────────────────────
   //
   // The only evidence either process holds is the connector's own access log: enrolment says a person MAY
@@ -46,7 +48,6 @@ export async function connectRoutes({ demo, audit, auditLog, INSTALL_ROOT }, { m
   // KEYED ON THE FILES IT READ, not on time alone. The log's location is configuration and does not move
   // under a running service — but a cache that ignored it would answer about the wrong file for a minute
   // after it did, and it is what makes this cache testable at the route rather than only at the helper.
-  let connectionsCache = { at: 0, key: null, seen: null };
   const CONNECTIONS_TTL_MS = 60_000;
 
   async function readerHasConnectedAi(principal) {
@@ -58,11 +59,12 @@ export async function connectRoutes({ demo, audit, auditLog, INSTALL_ROOT }, { m
     try { audit = await import("../../mcp-server/lib/audit.mjs"); }
     catch { return null; }                                            // best-effort: never fail a page load
     const key = audit.auditPaths().join("\u0000");
-    if (connectionsCache.seen && connectionsCache.key === key && Date.now() - connectionsCache.at < CONNECTIONS_TTL_MS) {
-      seen = connectionsCache.seen;
+    const cached = connectCaches.connections;
+    if (cached.seen && cached.key === key && Date.now() - cached.at < CONNECTIONS_TTL_MS) {
+      seen = cached.seen;
     } else {
       try { seen = audit.readConnections(); } catch { return null; }
-      connectionsCache = { at: Date.now(), key, seen };
+      connectCaches.connections = { at: Date.now(), key, seen };
     }
     if (!seen.available) return null;
     if (email && seen.emails.has(email)) return true;
@@ -74,7 +76,8 @@ export async function connectRoutes({ demo, audit, auditLog, INSTALL_ROOT }, { m
   async function connectorDoorKind(url) {
     if (!url) return null;
     const now = Date.now();
-    if (doorKindCache.url === url && now - doorKindCache.at < DOOR_KIND_TTL_MS) return doorKindCache.kind;
+    const cached = connectCaches.door;
+    if (cached.url === url && now - cached.at < DOOR_KIND_TTL_MS) return cached.kind;
     let probe = null;
     try {
       const res = await fetch(url, { method: "GET", redirect: "manual", signal: AbortSignal.timeout(2000) });
@@ -83,7 +86,7 @@ export async function connectRoutes({ demo, audit, auditLog, INSTALL_ROOT }, { m
       probe = { ok: res.status < 500, status: res.status, error: null, challenge: res.headers.get("www-authenticate"), body };
     } catch (e) { probe = { ok: false, status: null, error: String(e?.cause?.code ?? e?.name ?? e?.message ?? e) }; }
     const kind = doorKind(probe);
-    doorKindCache = { at: now, url, kind };
+    connectCaches.door = { at: now, url, kind };
     return kind;
   }
 

@@ -729,6 +729,9 @@ export function makePortalService({
   const grantsNow = () => (typeof grants === "function" ? grants() : grants);
   // one-shot confirmation jtis (in-memory: ONE portal process per instance — documented POC bound)
   const usedJtis = new Map();
+  // The connect group's two one-minute caches, the connector's door and its access log: one pair per service,
+  // which is one per process in production. Made here because a route group runs once per request.
+  const connectCaches = { door: { at: 0, url: null, kind: null }, connections: { at: 0, key: null, seen: null } };
   const sweepJtis = (now = Date.now()) => { for (const [k, exp] of usedJtis) if (exp < now) usedJtis.delete(k); };
 
   const searchesFor = (account, principal) => {
@@ -1008,7 +1011,7 @@ export function makePortalService({
   const svc = { poolRoot, workspaceRoot, secret, grants, localSignIn, writeGrants, revokeConnectorKeys, queueDirs, trigger,
     stopRun, stopControl, demo, orderRefusal, audit, auditPath, auditLog, feedbackCapture, readBuilt, readCanCount,
     readTerritories, upstream, composeRead, readBudget, loadProfilesImpl, usedJtis, sweepJtis, searchesFor, jobFor, selectorOf,
-    engineProgramDisputed, INSTALL_ROOT, INSTALL_CHANNEL, READ_OFF_NOTE, refusalFor, allowanceExhaustedLine };
+    engineProgramDisputed, connectCaches, INSTALL_ROOT, INSTALL_CHANNEL, READ_OFF_NOTE, refusalFor, allowanceExhaustedLine };
 
   async function route(method, path, identity, body = {}, query = {}) {
     const grantsHere = grantsNow();

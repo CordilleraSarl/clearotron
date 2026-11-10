@@ -22,7 +22,8 @@ pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", envFrom(process.env, "CLEAROTRON_R
 import { test, after } from "node:test";
 import assert from "node:assert/strict";
 import { PRODUCT_IDS } from "../products.mjs";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync, chmodSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, appendFileSync, readFileSync, existsSync, rmSync, chmodSync } from "node:fs";
+import { createServer } from "node:http";
 import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
@@ -2357,6 +2358,38 @@ test("mcp-access: NO LOG TO READ answers null, not false", async () => {
     assert.equal(r.status, 200, "an unreadable log must never fail the page");
     assert.equal(r.json.aiConnected, null, "a could-not-look was reported as a measurement");
   } finally {
+    delete process.env.CLEAROTRON_CLIENT_MCP_URL;
+    if (saved === undefined) delete process.env.TRADEMARK_MCP_AUDIT_LOG; else process.env.TRADEMARK_MCP_AUDIT_LOG = saved;
+  }
+});
+
+test("mcp-access: the connector's door and its log are read once a minute, not once a request", async () => {
+  // Three screens call this route as they load. Both readings are cached for a minute, and the caches
+  // belong to the service: declared inside the request handler, each request started with an empty one,
+  // asked the door again (up to two seconds when it is slow) and read the log's tail again.
+  let doorHits = 0;
+  const door = createServer((req, res) => { doorHits++; res.writeHead(404); res.end(); });
+  await new Promise((done) => door.listen(0, "127.0.0.1", done));
+  const saved = process.env.TRADEMARK_MCP_AUDIT_LOG;
+  process.env.CLEAROTRON_CLIENT_MCP_URL = `http://127.0.0.1:${door.address().port}/mcp`;
+  const log = seedConnectorLog([{ ts: "2026-09-14T09:00:00Z", email: MULTI_CLIENT.email, method: "initialize" }]);
+  try {
+    const { service } = world();
+    const first = await service.route("GET", "/portal/api/mcp-access", CLIENT, {}, {});
+    assert.equal(first.json.aiConnected, false);
+    assert.equal(doorHits, 1, "the first load asks the door");
+    // The reader connects; within the minute the service answers from what it read.
+    appendFileSync(log, JSON.stringify({ ts: "2026-09-14T09:01:00Z", email: CLIENT.email, method: "initialize" }) + "\n");
+    const second = await service.route("GET", "/portal/api/mcp-access", CLIENT, {}, {});
+    assert.equal(doorHits, 1, "the second load asked the door again inside the minute");
+    assert.equal(second.json.aiConnected, false, "the second load read the log again inside the minute");
+    // Another service keeps its own caches: it asks the door and reads the log for itself.
+    const { service: other } = world();
+    const fresh = await other.route("GET", "/portal/api/mcp-access", CLIENT, {}, {});
+    assert.equal(doorHits, 2, "a second service answered from the first one's cache");
+    assert.equal(fresh.json.aiConnected, true);
+  } finally {
+    await new Promise((done) => door.close(done));
     delete process.env.CLEAROTRON_CLIENT_MCP_URL;
     if (saved === undefined) delete process.env.TRADEMARK_MCP_AUDIT_LOG; else process.env.TRADEMARK_MCP_AUDIT_LOG = saved;
   }
