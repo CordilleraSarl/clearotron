@@ -171,6 +171,7 @@ import { beginAnswerMemory } from "../providers/_shared/answer-memory.mjs";
 import { screenGateEvidence, policedDropUris } from "./screen-gate.mjs";
 import { emptyQueue, coerceQueue, mintItem, pendingItems, markFlushed, receiptKeyFor, buildFlushFollowup } from "./digest-queue.mjs";   // (t1cd) — the digest-trigger funnel
 import { foldFindingsFile, foldAfterSave, openPass, modelRecordPath, snapshotFold, readFold, keptModelOrdinal } from "./record-fold.mjs";   // the folded record from the delivery seam on
+import { addressListLines, writeReviewAddresses } from "./review-addresses.mjs";   // the parts of the report each review dispatch may address
 import { writeStamp, stageStaleness, restamp, restampStage, reconcileStamps, shaOf, readStamp, writeFindings, settleOneShotStamp, projectStageInput } from "./stage-freshness.mjs";
 import { parseManifestVariants, GRID_HALVES, GRID_SEATS, MEANING_SEAT, splitGridSpec, halfOfTerm, openChannelRows } from "./common-law-receipts.mjs";
 import { stampTokenRollup } from "./tokens.mjs";
@@ -5122,11 +5123,22 @@ function clearedForSeat(runDir, label) {
  * that never set one. The reading step and the writer read placement's accepted set-asides the same way. Every
  * other stage composes from the context as it is.
  */
+/**
+ * The address list a whole review is handed, written where its recording tool reads it: the writer's accepted record
+ * and the findings file together, so an ordinal from either numbering resolves, and the accepted narrative's sections.
+ * IMPURE.
+ */
+function reviewAddressesFor(P) {
+  const accepted = lastAcceptedCall(P.runDir);
+  return writeReviewAddresses(P.runDir, { records: [accepted?.findings, safeReadJson(P.findings)], narratives: [accepted?.narrative],
+    seq0: nextRefutationSeq(P.runDir) });
+}
 export function messageCtxFor(name, ctx) {   // @internal — driven by its test
   if (!ctx?.paths) return ctx;
   // The review is also pointed at the research behind the findings' use checks, where the writer's record wrote it.
   if (name === "narrative-refutation") return { ...ctx, placementFloorDecisions: placementFloorDecisionLines(ctx.paths),
     writerExclusions: writerExclusionBlock(ctx.paths, { review: "full" }),
+    reviewAddressLines: addressListLines(reviewAddressesFor(ctx.paths)),
     researchChecks: ctx.paths.researchChecks && existsSync(ctx.paths.researchChecks) ? ctx.paths.researchChecks : null };
   // The reading step and the writer are told placement's accepted set-asides the same way, read when the message is built.
   if (name === "register-digest") return { ...ctx, placementSetAsides: placementSetAsideLines(ctx.paths) };
@@ -6770,6 +6782,9 @@ async function runPostRepairReview(ctx, P, run, scope) {
     findings: P.findings, ...list, registerOnly: Boolean(ctx.registerOnly), job: ctx.job ?? {},
     skepticFlags: P.skepticFlags, frameReopenReceipt: P.frameReopenReceipt, floorDecisions: placementFloorDecisionLines(P),
     writerExclusions: writerExclusionBlock(P, { review: "later" }),
+    // The record after the repair, and each changed finding by its ordinal, so a finding the repair removed is nameable.
+    reviewAddresses: writeReviewAddresses(runDir, { records: [scope.after?.findings, { findings: scope.changed.findings }],
+      narratives: [scope.after?.narrative], seq0 }),
   });
   const { text: blocks } = composeDispatchExtra("narrative-refutation", ctx, { skip: ["refute-plain-register"] });
   const t0 = Date.now();

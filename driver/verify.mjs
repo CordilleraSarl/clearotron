@@ -891,6 +891,15 @@ export function parsePositions(line) {
   const ids = [...new Set(raw.split(",").map((s) => s.trim()).filter(Boolean))];
   return ids.length ? ids : null;
 }
+// The other parts of the report a flag is about, by the address the dispatch's address list gave each
+// (review-addresses.mjs). Absent ⇒ null: the flag declared none, and the render writes the token only then.
+const CORRECTION_LINES_RE = /\[lines:\s*([^\]]*?)\s*\]/i;
+export function parseLines(line) {
+  const raw = String(line ?? "").match(CORRECTION_LINES_RE)?.[1];
+  if (raw == null) return null;
+  const addresses = [...new Set(raw.split(",").map((s) => s.trim()).filter(Boolean))];
+  return addresses.length ? addresses : null;
+}
 // ── — WHAT COUNTS AS A FLAG, AND WHY IT IS NOT "ANY BULLET" ──────────────────────────────────
 //
 // The old selector was `^(?:[-*•]|\d+[.)])\s+\S`, and it skipped EVERY typed correction the reviewer
@@ -1074,7 +1083,9 @@ export function parseCorrections(reviewMd) {
       // — the findings this flag declares itself to be about. null ⇒ undeclared ⇒ scopes to all.
       ordinals: parseOn(ln),
       ...(parsePositions(ln) ? { positions: parsePositions(ln) } : {}),
-      text: content.replace(CORRECTION_KIND_RE, "").replace(CORRECTION_ON_RE, "").replace(CORRECTION_POSITIONS_RE, "").replace(/\s{2,}/g, " ").trim(),
+      ...(parseLines(ln) ? { lines: parseLines(ln) } : {}),
+      text: content.replace(CORRECTION_KIND_RE, "").replace(CORRECTION_ON_RE, "").replace(CORRECTION_POSITIONS_RE, "").replace(CORRECTION_LINES_RE, "")
+        .replace(/\s{2,}/g, " ").trim(),
     });
   }
   return rows;
