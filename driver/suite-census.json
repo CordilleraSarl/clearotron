@@ -4317,6 +4317,12 @@
           "skips": 0,
           "todos": 0
         },
+        "every-repair-hint-row-is-reachable.test.mjs": {
+          "tests": 3,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "every-run-log-name-is-classed-for-first-time.test.mjs": {
           "tests": 2,
           "asserts": 14,

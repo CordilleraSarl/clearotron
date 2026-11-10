@@ -2352,14 +2352,16 @@ export const heldSynthesisRecord = (files) => {
   return Boolean(f) && existsSync(synthesisCallPaths(dirname(f)).accepted);
 };
 
-export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.json", supplementalLane = false, undispatchable = [], toolWritten = null, heldRecord = false, adds = false } = {}) {
-  // The repair act, for the hints that name one. Kept to a single sentence and a single decision so a
-  // new hint has one thing to append rather than a branch to reproduce.
-  const resaveClause = toolWritten
-    ? `Fix exactly that and send the corrected values — the driver re-derives this file and the prose table together from your \`${toolWritten}\` call, so there is nothing here for you to save`
-    : `Fix exactly that, re-save the COMPLETE JSON file, and leave the prose table unchanged`;
-  let hint = "the required output file is actually written and contains every required section IN FULL";
-  if (CLEARANCE_FINDINGS_TOKEN_RE.test(lastFail)) {
+// ── THE REPAIR HINTS: ONE ROW PER FAILURE, READ IN ORDER ─────────────────────────────────────────
+//
+// Each row names the failure it answers (`code`), the pattern that recognises that failure in the
+// failure string (`when`), and the end state the corrective turn is told to reach (`hint`). The FIRST row
+// whose pattern matches answers, so the order is part of the table: a row that must sit above another
+// says so in its own comments, as the findings row does above the coverage rows. A failure no row
+// recognises gets REPAIR_HINT_DEFAULT. `failureCode` names the row a failure selects, so a test or a
+// record can say which repair a turn was handed without matching the sentence.
+const REPAIR_HINTS = [
+  { code: "findings_contract", when: CLEARANCE_FINDINGS_TOKEN_RE, hint(lastFail, { heldRecord, adds }) {
     // The per-finding machine contract (findings-model.mjs). MUST sit ABOVE the coverage_ branch — a
     // findings_coverage_* token would otherwise route to the (wrong) coverage-ledger hint. The structural
     // "findings-heading" token has no underscore after "findings", so it never matches this branch.
@@ -2410,7 +2412,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
         `findings are NOT rated and carry NO band. The top level carries "rated_under_framework" = the ` +
         `framework key you were told to rate under, verbatim.`;
     }
-    hint = `findings.json is a JSON OBJECT { schema_version, rated_under_framework, findings[], coverage[], context_notes[] } ` +
+    return `findings.json is a JSON OBJECT { schema_version, rated_under_framework, findings[], coverage[], context_notes[] } ` +
       `(schema_version 5 additionally allows top-level ask_answers[] = [{ask, answer}], structured mark_assessment fields, ` +
       // review — coverage_judgment.rows USED TO BE LISTED HERE as a key the model may emit, and
       // this is the message the seat reads at the moment it is REPAIRING findings.json: the one turn
@@ -2455,19 +2457,21 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       (USE_CHECK_TOKEN_RE.test(lastFail) ? useCheckCorrection(heldRecord, adds)
         : heldRecord && !VERSION_FAILURE_RE.test(lastFail) ? heldRecordRetry(adds)
         : `Fix exactly that, re-save the COMPLETE findings.json, and leave the narrative prose unchanged`);
-  } else if (/coverage_status_offenum/.test(lastFail)) {
+  } },
+  { code: "coverage_status_offenum", when: /coverage_status_offenum/, hint(lastFail) {
     // D1 — the off-enum PROSE Status cell (distinct from coverage_status_invalid, which is the JSON
     // mirror's token): the defect lives in register-findings.md's own Coverage-ledger table, so the
     // repair is a one-cell prose relabel — never a JSON re-save. MUST sit above the JSON-mirror
     // coverage_ branch so the shared substring never routes this to the wrong file.
     const det = (lastFail.match(/\(axis ([a-z-]+)/) || [])[1] || "";   // the status text itself may carry parens — anchor on the token's own "(axis …" tail
-    hint = `every row of the prose Coverage ledger's Status column is EXACTLY one bare token of ` +
+    return `every row of the prose Coverage ledger's Status column is EXACTLY one bare token of ` +
       `confirmed-clean / coverage-limited / deferred${det ? ` (the off-enum row is on axis ${det})` : ""}. ` +
       `Relabel the offending Status cell(s) to the honest enum token and move any qualifier or commentary ` +
       `("N/A", "confirmed", "not-searched (…)", ✅, bolding) into the Reason column — an axis that was not ` +
       `applicable or not searched is an honest \`deferred\` with the reason stated. Leave every other row ` +
       `and section unchanged`;
-  } else if (/coverage_(ledger_unparseable|ledger_empty|axis_invalid|axis_missing|status_invalid|key_unknown|mirror_missing)/.test(lastFail)) {
+  } },
+  { code: "coverage_ledger_shape", when: /coverage_(ledger_unparseable|ledger_empty|axis_invalid|axis_missing|status_invalid|key_unknown|mirror_missing)/, hint(lastFail, { resaveClause }) {
     // Map #3 — `mirror_missing` is LEGACY and never fires anymore (the JSON is code-derived from the prose,
     // so the prose↔JSON cross-check was retired); the alternation keeps it only to give a sane hint to any
     // in-flight pre-Map-#3 run that might surface it. The structure tokens (unparseable/empty/axis_*/status_*/
@@ -2482,7 +2486,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     // retry was told to redo the very derivation that failed, so it looped until the attempts ran out.
     // The validator's own message carries the allowed list; quote it back rather than re-deriving it here.
     const allowedAxes = (lastFail.match(/\(not in: ([^)]+)\)/) || [])[1] || "";
-    hint = `register-coverage-ledger.json is a JSON ARRAY mirroring the prose Coverage ledger — one object ` +
+    return `register-coverage-ledger.json is a JSON ARRAY mirroring the prose Coverage ledger — one object ` +
       `per table row with EXACTLY the keys {"axis","scope","status","reason"}: axis = lowercase text left of ` +
       `the first " / " of the Coverage-unit cell, and it must be ` +
       (allowedAxes ? `EXACTLY one of the run's active axes (${allowedAxes})` : `one of the run's ACTIVE AXES`) +
@@ -2493,21 +2497,24 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       `verbatim right side; status = EXACTLY one bare token of confirmed-clean / coverage-limited / deferred ` +
       `(a qualifier like "(count-only, saturated)" moves into reason). The failed check was: ${tok}. ` +
       resaveClause;
-  } else if (/use_check_missing/.test(lastFail)) {
-    hint = "every finding the failed check names by number, a finding at a material band whose owner's use is recorded as " +
+  } },
+  { code: "use_check_missing", when: /use_check_missing/, hint(lastFail) {
+    return "every finding the failed check names by number, a finding at a material band whose owner's use is recorded as " +
       "confirmed or not-confirmed, carries the cite of record in its `use_check.source`: a result URL, or " +
       "'perplexity_research — no result'. Run the scoped marketplace use-check (owner + mark + goods/field) and record " +
       "its result there, or record the honest 'no result'; never assert a use-negative you did not search";
-  } else if (/connotation_form_damaged/.test(lastFail)) {
+  } },
+  { code: "connotation_form_damaged", when: /connotation_form_damaged/, hint(lastFail) {
     // The accumulator is DRIVER-WRITTEN, so a damaged row is a narrow, nameable fault: a row's recorded
     // receipt is no longer one of that row's own candidates (the ledger regenerates candidates every
     // pass, so a top-up can orphan a recorded id). The remedy is ONE tool call about the named row —
     // never a file edit; the seat writes no dispositions file.
-    hint = "every recorded row's receipt is one of THAT ROW's own listed candidates. Re-send ONLY the " +
+    return "every recorded row's receipt is one of THAT ROW's own listed candidates. Re-send ONLY the " +
       "named row(s) through the `record_dispositions` tool with `receipt_index` set to the POSITION of " +
       "the candidate you ruled on in that row's own list (1, 2, …) — never a typed id. Your other rows " +
       "are recorded and KEPT; do not re-send them and do not write any file";
-  } else if (/connotation_quote_unbound/.test(lastFail)) {
+  } },
+  { code: "connotation_quote_unbound", when: /connotation_quote_unbound/, hint(lastFail) {
     // — THE ARM THAT MAKES THE LOOP ESCAPABLE. Its own token and its own remedy, deliberately not
     // folded into the no-ruling arm below: the seat this fires on HAS ruled, and telling it to add a
     // ruling is the message R6 received four times before the run died. Every one of those attempts was
@@ -2543,7 +2550,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     //
     // Each field carries its own imperative in its own sentence — measured a field phrased outside one
     // as written 0 of 9 times against 74 of 74 when imperative-carried.
-    hint = "every row owing proof of reading carries BOTH fields. Give `segment_index` — the NUMBER of the " +
+    return "every row owing proof of reading carries BOTH fields. Give `segment_index` — the NUMBER of the " +
       `passage you relied on, in the numbered passages of the receipt you ruled on. And copy \`fragment\` — a ` +
       `few characters taken EXACTLY out of that same passage, in whatever script it is written in. ` +
       `${rowTok ? `The failure names the row (${rowTok}) and every other row is already accepted` : "The failure names the rows"} — ` +
@@ -2551,11 +2558,12 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       `through the \`record_dispositions\` tool (keep \`row_index\`, \`ruling\` and ` +
       `\`note\` as you had them) — never write or edit any file. ` +
       `You are POINTING at the passage, not reproducing it — short and exact beats long and approximate. ${where}`;
-  } else if (/connotation_call_never_made/.test(lastFail)) {
+  } },
+  { code: "connotation_call_never_made", when: /connotation_call_never_made/, hint(lastFail) {
     // B — rows are owed and no `record_dispositions` call was ever STARTED this run. The one thing R6's
     // dead attempts were never told was WHERE the gate was counting; under the typed transport the
     // answer is a TOOL, and this arm names it. — composed into `Fix exactly this: ensure <hint>.`.
-    hint = "every meaning obligation is recorded through the `record_dispositions` tool. NOTHING has been " +
+    return "every meaning obligation is recorded through the `record_dispositions` tool. NOTHING has been " +
       "recorded this run — no call was ever made — and rulings written into your findings prose, or into " +
       "any file, are not read by this check and cannot make it pass. Call `record_dispositions` now with " +
       "`grid_spec_path` (the driver-written spec path your grid instructions name) and `rows`: one entry " +
@@ -2565,43 +2573,48 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       "outstanding and which rows still owe proof of reading — a `segment_index` and a `fragment`. " +
       "Rule from what the receipts say, never from memory, " +
       "and carry any loaded reading into Findings as well";
-  } else if (/connotation_call_truncated/.test(lastFail)) {
+  } },
+  { code: "connotation_call_truncated", when: /connotation_call_truncated/, hint(lastFail) {
     // B — a call STARTED and never returned: a driver-side or transport fault, NOT a fault in the
     // rulings. The one message a seat must never take from this is "re-derive your rulings".
-    hint = "the `record_dispositions` call(s) that never returned are re-sent AS THEY WERE. This is NOT a " +
+    return "the `record_dispositions` call(s) that never returned are re-sent AS THEY WERE. This is NOT a " +
       "fault in your rulings — a call was killed in flight before its rows were recorded, which is the " +
       "driver's fault, not yours. Do not re-derive or change any ruling: call `record_dispositions` again " +
       "with the same rows for whatever the tool's answer still lists as outstanding, and stop when it " +
       "reports nothing outstanding";
-  } else if (/connotation_call_schema_violation/.test(lastFail)) {
+  } },
+  { code: "connotation_call_schema_violation", when: /connotation_call_schema_violation/, hint(lastFail) {
     // B — calls arrived and not one row was accepted from any of them: the payload SHAPE is wrong. The
     // remedy is the shape, never the rulings — the tool's own answer named each refusal in-turn.
-    hint = "the `record_dispositions` payload has the right SHAPE — the rulings themselves are not in " +
+    return "the `record_dispositions` payload has the right SHAPE — the rulings themselves are not in " +
       "question. `rows` must be an ARRAY of objects, each with `row_index` (the obligation's NUMBER in the " +
       "obligations block) as an INTEGER, `ruling`, `note`, and `receipt_index` as an INTEGER position " +
       "(1, 2, …) — never a typed id of any kind, never a query string, never a string index, never extra " +
       "fields. Re-send your rulings with the corrected " +
       "shape; the tool's answer names each refusal and what is still outstanding";
-  } else if (/connotation_(no_ruling|token_absent|cite_absent)/.test(lastFail)) {
+  } },
+  { code: "connotation_no_ruling", when: /connotation_(no_ruling|token_absent|cite_absent)/, hint(lastFail) {
     // READER TOLERANCE, not a live path: this engine's gate can no longer mint these three — any unruled
     // residual surfaces as a call token (the audit runs whenever rows are owed). What CAN still carry
     // one is the recorded lastFail of a run parked under the previous engine and resumed on this one,
     // and the golden-rule boundary is exactly that parsing history is fine. The remedy under this
     // engine is the same as call_partial's: record the remainder through the tool.
-    hint = "every remaining meaning obligation is recorded through the `record_dispositions` tool — " +
+    return "every remaining meaning obligation is recorded through the `record_dispositions` tool — " +
       "never by writing or editing any file. Everything already recorded is KEPT. Call " +
       "`record_dispositions` with rows for the obligations still outstanding; the tool's answer lists " +
       "them, marks which still owe a `segment_index` and a `fragment`, and reports when nothing remains";
-  } else if (/connotation_call_partial/.test(lastFail)) {
+  } },
+  { code: "connotation_call_partial", when: /connotation_call_partial/, hint(lastFail) {
     // B — rows landed and obligations remain. What is recorded is KEPT; the remedy is the remainder.
-    hint = "every remaining meaning obligation is recorded through the `record_dispositions` tool. " +
+    return "every remaining meaning obligation is recorded through the `record_dispositions` tool. " +
       "Everything you already recorded is KEPT — do not re-send it and do not re-derive it. Call " +
       "`record_dispositions` with rows for ONLY the obligations the failure counts as outstanding " +
       "(the tool's answer lists them and marks which still owe a `segment_index` and a `fragment`), and " +
       "stop when it reports nothing " +
       "outstanding. Rule from what the receipts say, never from memory, and carry any loaded reading " +
       "into Findings as well";
-  } else if (/meaning_angles_missing|matterframe_meaning_angles/.test(lastFail)) {
+  } },
+  { code: "meaning_angles_missing", when: /meaning_angles_missing|matterframe_meaning_angles/, hint(lastFail) {
     // P2-C (Round-2 §8b): the matter frame's derived-connotation angles are required on fresh runs.
     //
     // CONVERSION 2 — THIS ORDERED A HAND-WRITE AND NOW ORDERS A CALL. It ended "Re-save the COMPLETE file
@@ -2612,7 +2625,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     //
     // The ANGLES themselves are described in the same words as before: what the seat has to decide has not
     // changed, only how it hands the decision over.
-    hint = "the matter frame must carry the per-matter meaning/connotation angles — derived from the mark's " +
+    return "the matter frame must carry the per-matter meaning/connotation angles — derived from the mark's " +
       "OWN semantic field and this matter's market/industry (cultural origin and communities the word " +
       "evokes, charged historical/political associations of the term or its imagery, category-specific " +
       "controversy for these goods) — short queries, each anchored on the mark's element(s); they are the " +
@@ -2621,14 +2634,16 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       "empty array ONLY when the mark is a coined term with no real-word semantic field to probe. The call " +
       "replaces the stored frame, so send the whole frame again, not only the angles — the driver renders " +
       "the file and there is nothing for you to save";
-  } else if (/own_rights_missing/.test(lastFail)) {
-    hint = "every finding whose clearance reasoning relies on the client's own house mark / franchise root ENDS " +
+  } },
+  { code: "own_rights_missing", when: /own_rights_missing/, hint(lastFail) {
+    return "every finding whose clearance reasoning relies on the client's own house mark / franchise root ENDS " +
       "with an \"**Own-rights source:** <record URI(s) | 'no applicant-owned registrations in the searched register material'>\" line — " +
       "run ONE owner-scoped band_lookup over the run's frozen register material (plus band_record for any cite) and cite the record URIs, " +
       "or state the honest SCOPED negative (never a portfolio-wide 'no registrations found' — the frozen material covers only this " +
       "matter's dispatched slices), adjust the reasoning to stand without the crutch, and record the missing owner query as an open " +
       "Coverage/open-item row for the escalation lane; the affiliate-exclusion mandate covers CONFLICTS, never this supporting evidence";
-  } else if (/blindframe_/.test(lastFail)) {
+  } },
+  { code: "blindframe", when: /blindframe_/, hint(lastFail) {
     // Property 1 (frame-omission design): the blind-frame stage's STRUCTURED MODEL, which since is
     // the stage's whole output — there is no prose companion to leave alone. A JSON-defect repair on a
     // clean turn: warm-eligible (WARM_ELIGIBLE_RE), and warmPatchMessage aims it at the file itself
@@ -2639,13 +2654,14 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     // act the grant denies: a failure on obedience, mid-round, on the first repair rung that fires. Same
     // shape as the ten anchor sites, caught before it shipped rather than after. The one-change
     // invariant covers a dictation AND the ladder that corrects it.
-    hint = `the model is a set of VALUES you hand to the \`record_blind_frame\` tool: dominant_element, ` +
+    return `the model is a set of VALUES you hand to the \`record_blind_frame\` tool: dominant_element, ` +
       `variants[] (each {value, direction (add|drop|phonetic|homophone|neighbour|composite), rationale}), ` +
       `fields[] (each {goods, on_field — a JSON boolean, rationale}), sources[] (each {channel, rationale}) ` +
       `and ranking_basis (goods-overlap | class-number). The failed check was: ${tok}. Call ` +
       `\`record_blind_frame\` again with the corrected values — everything that already validated can be ` +
       `sent as it was. Do not write or edit any file: blind-frame-model.json is the driver's to write`;
-  } else if (/framediff_directive_undispatchable/.test(lastFail)) {
+  } },
+  { code: "framediff_directive_undispatchable", when: /framediff_directive_undispatchable/, hint(lastFail, { undispatchable }) {
     // P2-B (charter P2e — the ask contract). This is the ONE frame-diff defect whose repair is not
     // "re-save the JSON": a firing directive named a thing to search in words nothing can dispatch.
     // The refusal used to arrive hours later at reopen, after this session had exited — so it arrives
@@ -2667,7 +2683,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       // reproduce; both were cut with no marker. Same class as the recurrence receipt.
       ? offenders.map((o, i) => `  ${i + 1}. "${abbrev(String(o.item), 120)}" — ${abbrev(String(o.why || "not dispatchable as written"), 260)}`).join("\n")
       : `  (the saved frame-diff.json could not be re-read — re-check EVERY firing directive yourself)`;
-    hint = `${offenders.length || "one or more"} of your FIRING directives (severity dominant-element or material) ask for a search the driver cannot dispatch. ` +
+    return `${offenders.length || "one or more"} of your FIRING directives (severity dominant-element or material) ask for a search the driver cannot dispatch. ` +
       `EVERY ONE of them is listed here, and ALL of them must be fixed in ONE re-save — the repair ladder counts ATTEMPTS, not directives, ` +
       `so fixing only the first will exhaust it and lose the whole reopen pass:\n${enumerated}\n` +
       //, third conversion — THE ORDER IS A CALL, NOT A RE-SAVE. This read "re-save the COMPLETE
@@ -2680,7 +2696,8 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       `and the dominant element is then the term. Do NOT delete any directive and do NOT downgrade one to "minor" to make this pass: ` +
       `a real omission that cannot be searched must still be raised — but it has to say what the search IS. Send the whole diff again, ` +
       `not only the corrected directives — the call replaces the stored model`;
-  } else if (/framediff_/.test(lastFail)) {
+  } },
+  { code: "framediff", when: /framediff_/, hint(lastFail) {
     const tok = (lastFail.match(/framediff_[a-z_]+(?::[^\s)]*)?/) || ["frame-diff defect"])[0];
     //, third conversion — the shape hint stays (it is what the values must satisfy) and the ORDER
     // changes. The seat sends `directives[]` and `dominant_element_gap` as values; the driver serializes
@@ -2694,41 +2711,46 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     // the field back into existence one rung down from the dispatch that stopped asking. This is the third
     // repair surface a frame-diff change has had to sweep; see recording-agreement.mjs on why the sweep is
     // never optional.
-    hint = `the structured diff is { schema_version, directives[], ` +
+    return `the structured diff is { schema_version, directives[], ` +
       `dominant_element_gap (a JSON boolean) } — send directives:[] for a clean diff. Each directive is ` +
       `{layer (variant|field|source), item, observation, severity (dominant-element|material|minor)}. ` +
       `The dominant element itself is the driver's — it is bound from the blind model, not sent by you. ` +
       `The failed check was: ${tok}. Send the corrected diff in one \`record_frame_diff\` call — the driver ` +
       `writes frame-diff.json and renders the prose from it, so there is nothing for you to save`;
-  } else if (/receipts_short/.test(lastFail)) {
+  } },
+  { code: "receipts_short", when: /receipts_short/, hint(lastFail) {
     const shorts = (lastFail.match(/receipts_short:([^\s]+)/) || [])[1] || "";
-    hint = `the Negative-results matrix accounts for EVERY (variant × platform) grid cell — these variants are ` +
+    return `the Negative-results matrix accounts for EVERY (variant × platform) grid cell — these variants are ` +
       `short (variant:rows/expected): ${shorts}. Re-transcribe their cells from the grid call's stdout JSON ` +
       `(every cell needs a receipt row: "No results" / "No similar listings (N candidates reviewed)" / ` +
       `"Similar listing(s) found — see Findings" / "not executed — coverage-limited"); re-run the grid call ` +
       `only if those cells are genuinely absent from its output`;
-  } else if (/grid_ledger_unparseable/.test(lastFail)) {
-    hint = `${gridLedgerName} is the grid call's stdout JSON saved VERBATIM — a single stdout object, or a ` +
+  } },
+  { code: "grid_ledger_unparseable", when: /grid_ledger_unparseable/, hint(lastFail, { gridLedgerName }) {
+    return `${gridLedgerName} is the grid call's stdout JSON saved VERBATIM — a single stdout object, or a ` +
       `JSON ARRAY of the per-batch stdout objects in batch order, each with its cells[] (and gaps[]) intact. ` +
       `Re-save the file exactly as the tool returned it — no reformatting, no re-typing, no judging. If the ` +
       `saved file is TRUNCATED mid-string (an unterminated value near the end), your single call's stdout ` +
       `EXCEEDED the output budget: re-run the grid SPLIT into MORE, SMALLER batches (fewer variants per call) ` +
       `and save each batch's stdout as its own element of the JSON array — never try to re-emit one oversized object.`;
-  } else if (/grid_join_missing/.test(lastFail)) {
+  } },
+  { code: "grid_join_missing", when: /grid_join_missing/, hint(lastFail, { gridLedgerName }) {
     const shorts = (lastFail.match(/grid_join_missing:([^\s]+)/) || [])[1] || "";
-    hint = `the saved ${gridLedgerName} must account for EVERY dictated (variant × platform) grid cell — ` +
+    return `the saved ${gridLedgerName} must account for EVERY dictated (variant × platform) grid cell — ` +
       `these variants are short (variant:cells/expected): ${shorts}. Append the missing cells' grid stdout to ` +
       `the JSON (make the file a JSON array of stdout objects if it is not already), re-running ONLY the cells ` +
       `genuinely absent from the prior output; then make sure the Negative-results matrix matches`;
-  } else if (/platforms_missing/.test(lastFail)) {
+  } },
+  { code: "platforms_missing", when: /platforms_missing/, hint(lastFail, { gridLedgerName }) {
     // capture to end-of-string: real manifest variants are multi-word, a [^\s]+ capture would chop
     // "PROJECT NOVA PULSE:itch.io+…" at the first space and dictate a garbage cell list.
     const det = (lastFail.match(/platforms_missing:(.+)$/s) || [])[1] || "";
-    hint = `the grid must sweep EVERY platform DICTATED in your task message's PLATFORMS list — never a ` +
+    return `the grid must sweep EVERY platform DICTATED in your task message's PLATFORMS list — never a ` +
       `remembered or skill-example list. These variants are missing dictated platforms ` +
       `(variant:domain+domain): ${det}. Run exactly those missing (variant × platform) cells, append their ` +
       `stdout to ${gridLedgerName}, and account for them in the Negative-results matrix`;
-  } else if (/connotation_query_unrecorded/.test(lastFail)) {
+  } },
+  { code: "connotation_query_unrecorded", when: /connotation_query_unrecorded/, hint(lastFail, { gridLedgerName }) {
     // — THE TOKEN THAT HAD NO HINT, and the absence is what made the failure
     // permanent rather than merely wrong.
     //
@@ -2778,7 +2800,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     // opposite repairs, and a re-worded label with a stale matcher here keeps sending the wrong one.
     const anyUnmatched = String(dropped).includes(CONNOTATION_UNMATCHED_MARK);
     const anyUnresembled = String(dropped).includes(CONNOTATION_NO_RESEMBLANCE_MARK);
-    hint = anyUnmatched && !anyUnresembled
+    return anyUnmatched && !anyUnresembled
       ? `these dictated meaning queries ARE recorded in ${gridLedgerName} extras.pr_risk[] under a ` +
         `different wording, which is why the driver cannot match them: ${dropped}. Do NOT re-run them — ` +
         `the search already ran and its results are already in the ledger. EDIT each row's \`query\` ` +
@@ -2798,10 +2820,11 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       `reworded query reads as one you never ran. Touch ONLY the listed queries and leave every other ` +
       `recorded row exactly as it is. Where a query is marked \`[unmatched; nearest recorded: …]\` the ` +
       `driver has already found its row for you: edit that row's \`query\` and do not search again`;
-  } else if (/connotation_search_missing/.test(lastFail)) {
+  } },
+  { code: "connotation_search_missing", when: /connotation_search_missing/, hint(lastFail) {
     // — was "your PR / reputational section claims a clean meaning … but the ledger recorded ZERO
     // searches", which under the `ensure` prefix instructed the model to make the unbacked claim.
-    hint = "a clean-meaning claim has the sweep behind it — yours does not: your PR / reputational section " +
+    return "a clean-meaning claim has the sweep behind it — yours does not: your PR / reputational section " +
       "claims a clean meaning (None identified / no gang / no offensive " +
       "association / affirmative sweep) but the grid ledger's extras.pr_risk recorded ZERO connotation searches. " +
       "Run the CONNOTATION / MEANING sweep — the mark AND its near-forms on the general web (Urban Dictionary, " +
@@ -2809,7 +2832,8 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       "zero-result ones) into extras.pr_risk, and cite a `Connotation-search source:` line in the PR section. A " +
       "dictionary gloss is never a clearance (a mark can read as a benign given name yet sit one letter off \"Mara\", a street-gang label). You may " +
       "instead report a real connotation hit — but a clean claim needs the search behind it";
-  } else if (/named_band_collapsed/.test(lastFail)) {
+  } },
+  { code: "named_band_collapsed", when: /named_band_collapsed/, hint(lastFail, { supplementalLane }) {
     const slices = (lastFail.match(/named_band_collapsed:(.+)$/s) || [])[1] || "";
     // The diagnosis is lane-independent; the REPAIR is not. This hint rides correctiveMessage, so it is
     // appended to the register-unit stage message itself — and on the supplemental lane that message has
@@ -2819,7 +2843,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     const diagnosis = `your named band has a COLLAPSED enumerated slice — a block that claimed hits (total_hits>0) but ` +
       `carried ZERO records (slice~claimed-hits): ${slices}. The funnel enumerated the slice yet nothing reached ` +
       `the band — a clean can never ship over a searched-but-lost slice. `;
-    hint = supplementalLane
+    return supplementalLane
       ? diagnosis +
         `On this run the TOOLS own every band block: if the collapsed slice belongs to a DICTATED plan entry ` +
         `(it carries a qid from the frozen plan), close it by calling register_execute_plan ONCE with the exact ` +
@@ -2837,7 +2861,8 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
         `has_more:false, and APPEND its records as an "enumerated" block (every record with its screening facts). ` +
         `If the slice is genuinely a crowd you cannot exhaust, write an honest "incomplete" block (count + sample + ` +
         `reason) — NEVER an empty "enumerated" block`;
-  } else if (/intake_ask_unanswered/.test(lastFail)) {
+  } },
+  { code: "intake_ask_unanswered", when: /intake_ask_unanswered/, hint(lastFail) {
     // T9 (A2): the committed-check completion gate — every frozen intake ask needs its line.
     const det = (lastFail.match(/intake_ask_unanswered:(\d+):of:(\d+)/) || []);
     // RE-AIMED AT THE CALL. This ordered the seat to "End the narrative with the
@@ -2849,14 +2874,15 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     // The SUBSTANCE is unchanged, because none of it was wrong: answer from the gather stages' actual
     // results, and an un-run check gets the honest not-executed line plus an open coverage row rather
     // than silence. What moves is where the answer goes.
-    hint = `your record is missing ${det[1] ?? "some"} of the ${det[2] ?? "frozen"} intake-ask answers. ` +
+    return `your record is missing ${det[1] ?? "some"} of the ${det[2] ?? "frozen"} intake-ask answers. ` +
       `Send one \`ask_answers\` entry per frozen ask (_driver/intake-asks.json) on the findings record you ` +
       `hand to \`record_synthesis\` — the ask VERBATIM as it was given to you, and the ANSWER ALONE: the ` +
       `driver renders the labelled line into the narrative and the report from those entries, so there is ` +
       `no section for you to write and nothing you write by hand is read. ` +
       `Answer from the gather stages' actual results (the owning stage was instructed to run each check); an ` +
       `un-run check gets the honest "NOT executed this run — <reason>" answer plus an open coverage[] row — never silence`;
-  } else if (/\btool_timeout:/.test(lastFail)) {
+  } },
+  { code: "tool_timeout", when: /\btool_timeout:/, hint(lastFail) {
     // — THE SAME ABSENT BAND, AND THE OPPOSITE INSTRUCTION.
     //
     // `named_band_missing`'s hint below tells the model it never made its call. When the call WAS made
@@ -2869,24 +2895,26 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     // dies again the honest audit note IS the answer. Nothing here asks for a shorter or cheaper call —
     // no model gets a time budget, and the cap that killed it is the bridge's, fixed in this issue's
     // other half.
-    hint = `your dictated register tool call was MADE and never RETURNED — it was still running when ` +
+    return `your dictated register tool call was MADE and never RETURNED — it was still running when ` +
       `the bridge killed it, so the band was never written. This is NOT a missing-structure defect and ` +
       `NOT something you did wrong. Call register_execute_plan ONCE more with the exact ` +
       `{"plan_path", "axis", "output_path"} from your stage instructions. If it is killed again, do ` +
       `NOT author band blocks by hand and do NOT narrate coverage you did not get — the driver's own call ` +
       `log records that the call never returned`;
-  } else if (/named_band_missing/.test(lastFail)) {
+  } },
+  { code: "named_band_missing", when: /named_band_missing/, hint(lastFail) {
     // 2026-07-14 (copper-keystone): the unit's .md narrated success but the band file was NEVER WRITTEN —
     // the model skipped its one register_execute_plan call and fabricated the narrative. Unlike the
     // defective-block repairs below, the fix here IS re-calling the tool: with no existing blocks there
     // is nothing the qid-ownership merge could wrongly preserve, and a hand-authored band fails the stage.
-    hint = `your unit's NAMED BAND file (<axis>-band.json beside your .md) was NEVER WRITTEN — the ` +
+    return `your unit's NAMED BAND file (<axis>-band.json beside your .md) was NEVER WRITTEN — the ` +
       `load-bearing artifact is absent, so the stage cannot pass no matter what the .md says. Produce it ` +
       `NOW by CALLING register_execute_plan ONCE with the exact {"plan_path", "axis", "output_path"} ` +
       `from your stage instructions — the TOOL executes the dictated entries and writes the band itself, ` +
       `qid-stamped. Do NOT author band blocks by hand (a hand-authored band fails the stage), do NOT ` +
       `re-do your digest prose, and NEVER claim the band was written without the tool call actually made`;
-  } else if (/named_band_(state_invalid|block_invalid|unparseable)/.test(lastFail)) {
+  } },
+  { code: "named_band_shape", when: /named_band_(state_invalid|block_invalid|unparseable)/, hint(lastFail, { supplementalLane }) {
     // T1 (J1b): the copper-spire killer. The generic hint never named the fix, and re-calling
     // register_execute_plan cannot repair a model-authored block (its merge PRESERVES qid-less blocks) —
     // so every retry deterministically re-failed. Name the exact repair.
@@ -2901,7 +2929,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     const bandDiagnosis = `your band JSON has a defective MODEL-AUTHORED block${badState ? ` (state "${badState}")` : ""}. ` +
       `The ONLY legal states are "enumerated" (paged to has_more:false, records carried) and "incomplete" ` +
       `(count + sample + reason) — there is no "verified"/"checked"/"complete"/"clean" state. `;
-    hint = supplementalLane
+    return supplementalLane
       ? bandDiagnosis +
         `On this run the TOOLS own every block, so a hand-authored one is the defect itself — not something to ` +
         `repair into shape (the next pass rejects any qid-less block outright). DELETE the offending qid-less ` +
@@ -2916,7 +2944,8 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
         `file and REWRITE the offending qid-less block(s) IN PLACE to the correct state (records present ⇒ ` +
         `"enumerated"; otherwise an honest "incomplete" descriptor). NEVER touch a qid-stamped block, and do ` +
         `NOT re-call register_execute_plan to fix this — its merge preserves your defective block verbatim`;
-  } else if (/plan_audit_missing/.test(lastFail)) {
+  } },
+  { code: "plan_audit_missing", when: /plan_audit_missing/, hint(lastFail) {
     // T1 (J3b): the reviewer omitted the deterministic plan audit — the validator requires the
     // exact section title whenever the plan-execution receipt exists.
     // — THE GRADING IS QUOTED, NOT PARAPHRASED. What stood here restated the three classes in its
@@ -2925,12 +2954,13 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     // exactly the moment it is rewriting the section the rule governs. The dispatch blocks now share a
     // single literal; this is its third reader, so a change to the grading reaches the repair turn too
     // instead of leaving it teaching the previous version.
-    hint = `your review lacks the section titled exactly "PLAN-EXECUTION CHECK". Add it: audit the ` +
+    return `your review lacks the section titled exactly "PLAN-EXECUTION CHECK". Add it: audit the ` +
       `driver-fed plan-execution receipt, under the same grading you were given with it — ` +
       `${PLAN_AUDIT_CLASSES} — flagging a clean claim that rests on class (1), a class (2) fringe ` +
       `claimed searched-clean, and a class (3) slice the narrative shows no materiality reasoning for. ` +
       `Keep the verdict (CLEAR / CONDITIONAL / BLOCKING) on the FIRST line and the rest of your review intact`;
-  } else if (/coverage_no_status/.test(lastFail)) {
+  } },
+  { code: "coverage_no_status", when: /coverage_no_status/, hint(lastFail) {
     // — THE HINT NO LONGER EXPLAINS A TRANSCRIPTION REQUIREMENT, BECAUSE THERE IS NOT ONE.
     // What stood here were two arms (coverage_deferred_unaccounted and coverage_clean_unverified_
     // incomplete) whose entire content was instructions for reproducing an identifier: "each qid must
@@ -2958,7 +2988,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       : unset && !badAxis
         ? `row(s) of your coverage form carry no status this gate accepts`
         : `row(s) of your coverage form were refused`;
-    hint = `${lead}: ${abbrev(rows, 200) || "see the failure"}. ` +
+    return `${lead}: ${abbrev(rows, 200) || "see the failure"}. ` +
       `The driver computed every obligation and every identifier in it — the coverage unit, the query id, the hit ` +
       `count, the unaccounted classes and terms, each deferred slice's own receipt reason. Record the named row(s) ` +
       `through the \`record_coverage\` tool — {"row_id","status","reason"} per row, never by writing or editing any ` +
@@ -2974,7 +3004,8 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       `slices that genuinely enumerated to has_more:false STAY confirmed-clean — do not downgrade them, that trades ` +
       `one false claim for another. Everything already recorded is kept. Do NOT re-run ` +
       `searches yourself and do NOT hand-write a Coverage ledger table — the driver renders it from what the tool records`;
-  } else if (/coverage_form_axis_invalid/.test(lastFail)) {
+  } },
+  { code: "coverage_form_axis_invalid", when: /coverage_form_axis_invalid/, hint(lastFail) {
     // fix round — THE HINT NAMES THE CELL AND QUOTES THE ALLOWED SET, which is the whole of the
     // 2026-07-30 lesson recorded on the `coverage_axis_invalid` arm above: "the retry was told to redo
     // the very derivation that failed, so it looped until the attempts ran out … The validator's own
@@ -2992,7 +3023,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     // correctionHint caller passes ONE validator reason (verify returns a single fail object), so no
     // fail string carries two coverage tokens for an earlier arm to match first.
     const rows = (lastFail.match(/coverage_form_axis_invalid:[^;]*;([^\n]*)/) || [])[1] || "";
-    hint = `row(s) YOU ADDED to the coverage form carry an "axis" outside the register-axis vocabulary, which ` +
+    return `row(s) YOU ADDED to the coverage form carry an "axis" outside the register-axis vocabulary, which ` +
       `is CLOSED: ${abbrev(rows, 220) || "see the failure"}. Each entry above is the row's id followed by the value ` +
       `that was rejected — "axis=<empty>" means that row has no "axis" at all. ` +
       `Re-send each of those rows through the \`record_coverage\` tool — {"kind":"seat","axis","unit","status",` +
@@ -3008,18 +3039,20 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       `The rows the DRIVER wrote already carry a correct axis: do not touch them — every "status" and "reason" ` +
       `already recorded is kept. Do NOT re-run any search, do NOT write or edit any file, and do NOT hand-write a ` +
       `Coverage ledger table — the driver renders it from what the tool records`;
-  } else if (/coverage_form_damaged/.test(lastFail)) {
+  } },
+  { code: "coverage_form_damaged", when: /coverage_form_damaged/, hint(lastFail) {
     // Typed transport: the seat holds no writer onto the accumulator, so a damaged one is the driver's
     // own serialization or filesystem at fault — never the seat's JSON. The repair is still a tool
     // call, because record_coverage rewrites the accumulator whole from the regenerated rows plus the
     // call: statuses in the unreadable copy cannot be carried, so the seat re-sends its rulings.
     const detail = (lastFail.match(/coverage_form_damaged:form_damaged=\d+;([^\n]*)/) || [])[1] || "";
-    hint = `the driver's coverage accumulator could not be read${detail ? ` (${abbrev(detail, 120)})` : ""} — a ` +
+    return `the driver's coverage accumulator could not be read${detail ? ` (${abbrev(detail, 120)})` : ""} — a ` +
       `driver-side fault, not your JSON (you never write this file). Re-record your statuses through the ` +
       `\`record_coverage\` tool — {"row_id","status","reason"} per obligation row — which rewrites the record ` +
       `from the driver's own rows plus your call. Statuses in the unreadable copy cannot be read, so re-send ` +
       `every ruling the tool's answer still lists as outstanding. Never write or edit any file`;
-  } else if (/coverage_form_(missing|empty)/.test(lastFail)) {
+  } },
+  { code: "coverage_form_missing", when: /coverage_form_(missing|empty)/, hint(lastFail) {
     // Named for readability in the journal, not because a model can act on either: both mean the DRIVER
     // did not write the form it stamped as required — absent in one case, present with no obligations in
     // it in the other. Deliberately out of the warm allowlist, and for the same reason: a resumed seat
@@ -3027,7 +3060,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     // fix a driver bug. `coverage_form_empty` is matched HERE rather than by the `coverage_no_status`
     // arm above so an empty form never reads to the seat as rows it forgot to fill in.
     const empty = /coverage_form_empty/.test(lastFail);
-    hint = `the driver-written coverage form is ${empty ? "present but carries no rows" : "absent"} although this run ` +
+    return `the driver-written coverage form is ${empty ? "present but carries no rows" : "absent"} although this run ` +
       `requires one. This is a DRIVER defect, not something your turn can repair: write your findings as normal and ` +
       `report the ${empty ? "empty" : "missing"} form in your final message`;
   // ── — THE TWO ARMS BELOW SERVE THE UNSTAMPED (PROSE) ERA, AND THEY ARE BACK BECAUSE THEIR
@@ -3043,18 +3076,20 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
   // `coverage_clean_deferred` gets NO arm: its token is folded into the superset above and nothing emits
   // it any more, and an arm for a token nobody emits is what the closed-vocabulary rule refuses to leave
   // lying around.
-  } else if (/coverage_deferred_unaccounted/.test(lastFail)) {
+  } },
+  { code: "coverage_deferred_unaccounted", when: /coverage_deferred_unaccounted/, hint(lastFail) {
     //: the accounting requirement, not the clean-claim gate. The distinction matters in the hint —
     // this fires when the ledger is SILENT about a deferred qid, so telling the model to "correct its
     // clean claim" would send it looking for a row that does not exist. The qids ride in the token.
     const [, ax = "", qids = ""] = lastFail.match(/coverage_deferred_unaccounted:([^:\s)]+):?([^\s)]*)/) || [];
-    hint = `your Coverage ledger does not account for ${qids ? `these DEFERRED slice(s): ${qids}` : "every DEFERRED slice"} ` +
+    return `your Coverage ledger does not account for ${qids ? `these DEFERRED slice(s): ${qids}` : "every DEFERRED slice"} ` +
       `on ${ax ? `axis "${ax}"` : "a dictated axis"}. The active register provider cannot express those queries at all, ` +
       `so they were never searched and nothing can make them run — the plan recorded that before this stage began. ` +
       `Each qid must appear VERBATIM in a row on its own axis with Status "deferred" (or "coverage-limited"), quoting ` +
       `the receipt's mechanical reason. A ledger that says nothing about a slice the plan could not run is incomplete ` +
       `output, not a clean one; treat the gap as an OPEN, disclosed question for the lawyer`;
-  } else if (/coverage_clean_unverified_incomplete/.test(lastFail)) {
+  } },
+  { code: "coverage_clean_unverified_incomplete", when: /coverage_clean_unverified_incomplete/, hint(lastFail) {
     // The discriminated incomplete gate (copper-lattice): clean claimed over a multi-term OR-stack
     // crowd whose per-term truth is not fully accounted. Relabel — the re-enumeration is the driver's.
     // ION/copper-foundry: the repair is now a DISCLOSURE, not a mass downgrade — the gate joins the
@@ -3082,7 +3117,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
         ? `these terms of its OR-stack are neither verified-zero nor individually enumerated nor themselves ` +
           `crowds: ${terms}`
         : `part of it is neither verified-zero nor enumerated nor itself a crowd`;
-    hint = `${ax ? `axis "${ax}"` : "an axis"} has ONE undisclosed incomplete block and this is it: ` +
+    return `${ax ? `axis "${ax}"` : "an axis"} has ONE undisclosed incomplete block and this is it: ` +
       `${qid ? `qid ${qid}` : "the block named in the failure"}${hits ? ` (${hits} hits)` : ""}. ${what} — and no ` +
       `Coverage-ledger row discloses it, so that axis's confirmed-clean rows swallow it. Give THAT block its ` +
       `OWN coverage-limited (or deferred) row on this axis. The gate recognises the disclosure by exactly two ` +
@@ -3092,49 +3127,74 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       `that genuinely enumerated to has_more:false STAY confirmed-clean: do not downgrade them, that trades one ` +
       `false claim for another. Correct exactly that row and change nothing else. Do NOT re-run searches ` +
       `yourself — the driver owns the re-run`;
-  } else if (/coverage_clean_unexecuted/.test(lastFail)) {
+  } },
+  { code: "coverage_clean_unexecuted", when: /coverage_clean_unexecuted/, hint(lastFail) {
     // T1 (J6): the F3 gate — a clean claim over a slice the plan-execution receipt says never ran.
     const ax = (lastFail.match(/coverage_clean_unexecuted:([^\s)]+)/) || [])[1] || "";
-    hint = `the plan-execution receipt says ${ax ? `axis "${ax}"` : "a dictated axis"} did NOT fully execute, ` +
+    return `the plan-execution receipt says ${ax ? `axis "${ax}"` : "a dictated axis"} did NOT fully execute, ` +
       `yet your findings claim it clean. Either the claim is wrong — correct it to an honest ` +
       `coverage-limited/deferred row carrying the mechanical reason from the receipt — or the coverage ` +
       `actually ran and your ledger row mis-states it: fix the row to match the receipt. A clean can never ` +
       `rest on a slice the plan dictated and nothing ran`;
-  } else if (/band_block_unplanned/.test(lastFail)) {
+  } },
+  { code: "band_block_unplanned", when: /band_block_unplanned/, hint(lastFail) {
     // copper-lattice re-route: a hand-authored band block under the supplemental_lane contract.
     const qs = (lastFail.match(/band_block_unplanned:([^\s)]+)/) || [])[1] || "";
-    hint = `this run's register plan carries the supplemental_lane contract: EVERY band block is written by ` +
+    return `this run's register plan carries the supplemental_lane contract: EVERY band block is written by ` +
       `a TOOL and carries a qid — you never author band blocks. The qid-less block(s) (${abbrev(qs, 100)}) came ` +
       `from a hand append. REMOVE them from the band file, then re-run their queries the sanctioned way: ` +
       `register_propose_supplemental with the same query as a proposal (the tool executes it and merges the ` +
       `band itself, qid-stamped). Leave every qid-stamped block untouched`;
-  } else if (/coverage_clean_tainted/.test(lastFail)) {
+  } },
+  { code: "coverage_clean_tainted", when: /coverage_clean_tainted/, hint(lastFail) {
     // Timeout-taint gate (copper-lattice): a clean claim over an axis whose winning register-unit pass
     // was cut down mid-work. The repair is a RELABEL, never a re-search — the re-run is the driver's job
     // (taint chain / envelope), the digest's job is the honest status.
     const ax = (lastFail.match(/coverage_clean_tainted:([^\s)]+)/) || [])[1] || "";
-    hint = `the register-unit pass that produced ${ax ? `axis "${ax}"` : "a tainted axis"} was killed at the ` +
+    return `the register-unit pass that produced ${ax ? `axis "${ax}"` : "a tainted axis"} was killed at the ` +
       `timeout wall mid-work (the per-attempt log is code-truth you cannot argue with), so its self-reported ` +
       `clean is unverified. Relabel that axis's confirmed-clean Coverage-ledger row(s) to deferred with the ` +
       `reason "timeout-tainted pass — self-reported clean downgraded pending re-run", and change nothing ` +
       `else. Do NOT re-run searches yourself — the driver owns the re-run`;
-  } else if (/declared_unavailable/.test(lastFail)) {
-    hint = "you never write a fallback/partial findings file: if the perplexity_research tool returned results, write " +
+  } },
+  { code: "declared_unavailable", when: /declared_unavailable/, hint(lastFail) {
+    return "you never write a fallback/partial findings file: if the perplexity_research tool returned results, write " +
       "the COMPLETE findings file from them; if the tool is genuinely failing after retries, write NO findings file " +
       "at all and report the tool failure with diagnostics in your final message (the driver fails the run — a report " +
       "must never ship without its marketplace layer)";
-  } else if (/findings\+ledger|no_coverage_status_row/.test(lastFail)) {
+  } },
+  { code: "coverage_status_row", when: /findings\+ledger|no_coverage_status_row/, hint(lastFail) {
     // — `findings+ledger` IS BACK IN THIS ALTERNATION. The first cut of this build removed it on
     // the reading that the seat never writes a Coverage-ledger table any more; that is true only on a
     // run the driver stamped as form-required, and the stamp is conditional. On an unstamped run
     // validators.registerFindings demands the table exactly as it did before and emits this label,
     // so dropping the arm left the one lane that can still fire it with a generic hint.
-    hint = "the file has a findings heading plus a Coverage ledger with a status row (confirmed-clean / coverage-limited / deferred)";   // the common-law clause went with that lane's status gate (ruling 2026-10-01)
-  } else if (/negative-results|coverage-ledger|audit-trail|findings-heading/.test(lastFail)) {
-    hint = "the findings file carries ALL required sections: a findings heading, the Negative results matrix " +
+    return "the file has a findings heading plus a Coverage ledger with a status row (confirmed-clean / coverage-limited / deferred)";   // the common-law clause went with that lane's status gate (ruling 2026-10-01)
+  } },
+  { code: "prose_sections", when: /negative-results|coverage-ledger|audit-trail|findings-heading/, hint(lastFail) {
+    return "the findings file carries ALL required sections: a findings heading, the Negative results matrix " +
       "(every variant × platform row), the Coverage ledger with a status row, and the Audit trail call log";
-  }
-  return hint;
+  } },
+];
+
+const REPAIR_HINT_DEFAULT = "the required output file is actually written and contains every required section IN FULL";
+
+/** The code of the repair hint a failure string selects, or null when it gets the default. PURE. */
+export function failureCode(lastFail) {   // @internal — driven by its test
+  return REPAIR_HINTS.find((row) => row.when.test(lastFail))?.code ?? null;
+}
+
+/** Every row's code, in the order the rows are read. */
+export const REPAIR_HINT_CODES = Object.freeze(REPAIR_HINTS.map((row) => row.code));   // @internal — driven by its test
+
+export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.json", supplementalLane = false, undispatchable = [], toolWritten = null, heldRecord = false, adds = false } = {}) {
+  // The repair act, for the hints that name one. Kept to a single sentence and a single decision so a
+  // new hint has one thing to append rather than a branch to reproduce.
+  const resaveClause = toolWritten
+    ? `Fix exactly that and send the corrected values — the driver re-derives this file and the prose table together from your \`${toolWritten}\` call, so there is nothing here for you to save`
+    : `Fix exactly that, re-save the COMPLETE JSON file, and leave the prose table unchanged`;
+  const row = REPAIR_HINTS.find((r) => r.when.test(lastFail));
+  return row ? row.hint(lastFail, { resaveClause, gridLedgerName, supplementalLane, undispatchable, toolWritten, heldRecord, adds }) : REPAIR_HINT_DEFAULT;
 }
 
 // ── the DEFERRED-SLICE BLOCK IS GONE ──────────────────────────────────────────────────────
