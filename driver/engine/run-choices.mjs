@@ -120,6 +120,20 @@ export function registerEnvFor(recorded, env = process.env) {
 }
 
 /**
+ * The register door a run meets: null where it skips the door, else `{ env, parks }`. `env` is what the door checks
+ * (`registerEnvFor`), and `parks` says a refusal parks the run rather than failing it, which it does only for a
+ * recorded register that is not the machine's. A run whose record fetches are injected (an offline replay) skips the
+ * door. So does a Knockout on the machine's own register, as it always has; a Knockout recorded on another register
+ * meets the door, because its counts and filings are that register's. PURE.
+ */
+export function registerDoor(recorded, { machineRegister = null, knockout = false, fetchesInjected = false, env = process.env } = {}) {
+  if (fetchesInjected) return null;
+  const differs = recorded?.state === "recorded" && Boolean(recorded.register) && recorded.register !== (machineRegister ?? null);
+  if (knockout && !differs) return null;
+  return { env: registerEnvFor(recorded, env), parks: differs };
+}
+
+/**
  * The register that serves this run: the one it recorded when it started, or the machine's for a run with no record or
  * one that started with none set, whatever the machine's default is now. It is the one place a run's register is
  * decided. A recorded register this runner cannot serve parks the run at the register's door before any stage. PURE

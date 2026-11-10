@@ -233,3 +233,23 @@ test("a report's identity line names the register its run recorded", async () =>
   assert.equal(reportIdentityRecord(job, { register: other, registerOnly: true }, runDir).run, PROVIDERS[other].label);
   assert.equal(reportIdentityRecord(job, { registerOnly: true }, runDir).run, PROVIDER_META.label, "a context with no register names the machine's, as before");
 });
+
+test("the register door: a register that is not the machine's is checked on a copy naming it, and parks on refusal, Knockout included", () => {
+  const base = Object.freeze({ CLEAROTRON_DATABASE: "corsearch", OTHER: "kept" });
+  const on = (register) => ({ state: "recorded", engine: "anthropic-agent", register });
+  const door = (recorded, o = {}) => RC.registerDoor(recorded, { machineRegister: "corsearch", env: base, ...o });
+  // The machine's own register: checked as it is, and a refusal fails as before; a Knockout skips the door as it always has.
+  assert.deepEqual(door(on("corsearch")), { env: base, parks: false });
+  assert.equal(door(on("corsearch"), { knockout: true }), null);
+  assert.deepEqual(door({ state: "none" }), { env: base, parks: false }, "a run with no record meets the machine's door");
+  // Another register: checked on a copy that names it, and a refusal parks, for a Knockout too.
+  for (const knockout of [false, true]) {
+    const d = door(on("signa"), { knockout });
+    assert.equal(d?.parks, true, `knockout=${knockout}: a refusal would not park`);
+    assert.deepEqual(d.env, { CLEAROTRON_DATABASE: "signa", OTHER: "kept" });
+    assert.notEqual(d.env, base, "the door was handed the shared environment");
+  }
+  assert.equal(base.CLEAROTRON_DATABASE, "corsearch", "the shared environment changed");
+  // Injected record fetches (an offline replay) skip the door whatever the register.
+  assert.equal(door(on("signa"), { fetchesInjected: true }), null);
+});
