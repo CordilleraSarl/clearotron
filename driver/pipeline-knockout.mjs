@@ -69,7 +69,7 @@ import { knockoutAssessSourceDefects } from "./knockout-assess-record.mjs";
 import { correctionsAppliedTable, unresolvedFlags } from "./corrections-feedforward.mjs";
 import { settledKnockoutReading } from "./knockout-register-record.mjs";
 import { stripNextStepSections } from "./knockout-next-step.mjs";
-import { publishKnockout, composeKnockoutEmail } from "./publish/knockout.mjs";
+import { publishKnockout, composeKnockoutEmail, knockoutName } from "./publish/knockout.mjs";
 import { writeRunStatus, readRunStatus, rollupStatus, identitySeed } from "./progress.mjs";   // — the identity seed is shared; the stepper is not
 import { batchMarkName } from "./mark-name.mjs";
 import { runLog, note, outputMeta } from "./log.mjs";
@@ -1386,7 +1386,9 @@ export async function knockoutInner(ctx, job, opts = {}) {
     // qcFlags: the projected predelivery-lint lines publishKnockout just computed and recorded — the
     // cover note enumerates exactly what the workbook does (A10, extended to this lane 2026-07-31).
     // They are FLAGS: the packet, the state and the send below are byte-identical with or without them.
-    const emailHtml = composeKnockoutEmail({ findings: merged, framework: ctx.framework, overall, reports: published.reports, auditUrl: published.auditUrl, job, registerCounts, qcFlags: published.qcFlags });
+    // The product's name, from the run's frozen policy, for the email's first line and its subject alike.
+    const productName = knockoutName(policy);
+    const emailHtml = composeKnockoutEmail({ findings: merged, framework: ctx.framework, overall, reports: published.reports, auditUrl: published.auditUrl, job, registerCounts, qcFlags: published.qcFlags, productName });
     writeFileSync(K.emailBody, emailHtml);
     const nMarks = merged.marks.length;
     const refTag = job.ref ? ` (${job.ref})` : "";
@@ -1394,7 +1396,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
       runId, agent,
       forwarder: job.forwarder, forwarderEmail: job.forwarderEmail, msgId: job.msgId,
       conversationId: job.conversationId ?? null,
-      subject: `Knockout trademark review — ${job.ref ?? markNames[0] ?? "batch"} (${nMarks} mark${nMarks === 1 ? "" : "s"})`,
+      subject: `${[productName, job.ref ?? markNames[0] ?? "batch"].filter(Boolean).join(" — ")} (${nMarks} mark${nMarks === 1 ? "" : "s"})`,
       emailBodyHtml: emailHtml,
       // THE SAME ROUTING AS THE CLEARANCE PACKET (part b). This read
       // `AGENT_WHATSAPP[agent]`, and every user of a deployment shares one agent id, so every knockout
