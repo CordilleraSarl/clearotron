@@ -112,5 +112,7 @@ const record = {
   files: walk(runDir).filter((p) => !/\.jsonl$/.test(p) || !p.includes("_driver")).sort()
     .map((p) => [norm(relative(runDir, p)), H(norm(readFileSync(p, "utf8")))]),
   notes: notes.join("").split("\n").filter(Boolean).map(norm),
+  network: process.env.BEHAVIOUR_SNAPSHOT_NET_LOG && existsSync(process.env.BEHAVIOUR_SNAPSHOT_NET_LOG)
+    ? [...new Set(readFileSync(process.env.BEHAVIOUR_SNAPSHOT_NET_LOG, "utf8").split("\n").filter(Boolean))].sort() : [],
 };
 writeFileSync(out, JSON.stringify(record, null, 1));
