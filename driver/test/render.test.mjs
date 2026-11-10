@@ -1045,19 +1045,19 @@ test("the card header shows the contentious MARK + the classes it matched in (no
 
 // ---- A1: a review-killed (withdrawn) finding renders NOWHERE; internal bar notes the kill ----
 test("spec-48 A1 + spec-49 T4: a withdrawn finding appears NOWHERE on either report variant (receipt lives on the audit workbook)", () => {
-  const killed = { ordinal: 3, mark: "KESTRELION", owner: { name: "Kestrel Lifesciences", country: "IN", registrations: [] },
+  const killed = { ordinal: 3, mark: "KESTRELION", owner: { name: "Quernwick Lifesciences", country: "IN", registrations: [] },
     composite: 4, level: "D", dispute_type: "head-on", disposition: "withdrawn",
     withdrawn_reason: "review flag: confabulated attribution",
     meters: { mark_similarity: meter("high"), goods_proximity: meter("high"), use: meter("unknown", "inferred-from-signal"), enforcer: meter("unknown", "inferred-from-signal") },
     quadrant: { x: 0.9, y: 0.9 }, source: { source_type: "common-law-web", resolved_link: "" } };
   const internal = renderHtml(parsedOf(REPORT), [...FINDINGS, killed], COVERAGE, {});
   assert.doesNotMatch(internal, /id="c3"/, "no card for the withdrawn ordinal");
-  assert.doesNotMatch(internal, /KESTRELION/.source ? /class="who">Kestrel Lifesciences/ : /x/, "no rights-holder row");
+  assert.doesNotMatch(internal, /KESTRELION/.source ? /class="who">Quernwick Lifesciences/ : /x/, "no rights-holder row");
   assert.doesNotMatch(internal, /href="#c3"/, "no scatter/panel drill-through");
   // T4: the withdrawal receipt lives on audit.xlsx (Disposition column + Review receipts),
   // not on a report banner — the mark now appears NOWHERE on either report variant.
   assert.doesNotMatch(internal, /Withdrawn by review/);
-  assert.doesNotMatch(internal, /KESTRELION|Kestrel Lifesciences/, "the internal report never resurrects the kill either");
+  assert.doesNotMatch(internal, /KESTRELION|Quernwick Lifesciences/, "the internal report never resurrects the kill either");
   // one report: a stale opts.client is inert, and the kill holds on it identically
   const stale = renderHtml(parsedOf(REPORT), [...FINDINGS, killed], COVERAGE, { client: true });
   assert.equal(stale, internal, "opts.client no longer forks the render");
