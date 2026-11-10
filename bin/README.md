@@ -54,7 +54,7 @@ each office's own `status`, and a failed sync exits non-zero with the existing s
 
 ## Where to start
 
-`example.mjs` (172 lines) is the shortest complete path through the system: frozen example, ordinary
+`example.mjs` (485 lines) is the shortest complete path through the system: frozen example, ordinary
 publisher, local pool, loopback server. Then read the header of `start.mjs` for why the portal and the
 engine door are separate processes, and what each of those two doors demands of a caller.
 
