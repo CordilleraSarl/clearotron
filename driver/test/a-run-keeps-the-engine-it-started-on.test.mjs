@@ -35,6 +35,10 @@ for (const name of ["probe-started", "probe-machine"]) {
   } });
 }
 
+// A record as a run that started on a probe engine would hold. Written directly: the record module takes only an
+// engine this driver ships, and the probes are registered for this test alone.
+const writeRecord = (runDir, engine) =>
+  writeFileSync(driverDir(runDir, RC.RUN_CHOICES_FILE), JSON.stringify({ schema: 1, engine, register: null }));
 const newRun = (tag) => {
   const runDir = mkdtempSync(join(ROOT, `${tag}-`));
   mkdirSync(driverDir(runDir), { recursive: true });
@@ -58,22 +62,22 @@ async function stageOn(runDir) {
 
 test("the record holds the engine and register names only, and a second write keeps the first", () => {
   const runDir = newRun("record");
-  const first = RC.recordRunChoices(runDir, { engine: "Probe-Started", register: "corsearch" });
-  assert.deepEqual(first, { written: true, state: "recorded", engine: "probe-started", register: "corsearch" });
+  const first = RC.recordRunChoices(runDir, { engine: "Anthropic-Agent", register: "corsearch" });
+  assert.deepEqual(first, { written: true, state: "recorded", engine: "anthropic-agent", register: "corsearch" });
   assert.deepEqual(JSON.parse(readFileSync(driverDir(runDir, RC.RUN_CHOICES_FILE), "utf8")),
-    { schema: 1, engine: "probe-started", register: "corsearch" }, "nothing beyond the two names is written");
-  const again = RC.recordRunChoices(runDir, { engine: "probe-machine", register: null });
+    { schema: 1, engine: "anthropic-agent", register: "corsearch" }, "nothing beyond the two names is written");
+  const again = RC.recordRunChoices(runDir, { engine: "openai-agent", register: null });
   assert.equal(again.written, false);
-  assert.equal(again.engine, "probe-started", "a run's first choice is never rewritten");
-  assert.deepEqual(RC.readRunChoices(runDir), { state: "recorded", engine: "probe-started", register: "corsearch" });
+  assert.equal(again.engine, "anthropic-agent", "a run's first choice is never rewritten");
+  assert.deepEqual(RC.readRunChoices(runDir), { state: "recorded", engine: "anthropic-agent", register: "corsearch" });
 });
 
-test("only a registered engine and a known register can be recorded, so no other string reaches the record", () => {
+test("only an engine this driver ships and a known register can be recorded, so no other string reaches the record", () => {
   const runDir = newRun("refused");
-  assert.throws(() => RC.recordRunChoices(runDir, { engine: "invented-credential-value", register: "corsearch" }), /not an engine this driver has registered/);
-  assert.throws(() => RC.recordRunChoices(runDir, { engine: "probe-started", register: "invented-credential-value" }), /not a register this driver knows/);
+  assert.throws(() => RC.recordRunChoices(runDir, { engine: "invented-credential-value", register: "corsearch" }), /not an engine this driver ships/);
+  assert.throws(() => RC.recordRunChoices(runDir, { engine: "openai-agent", register: "invented-credential-value" }), /not a register this driver knows/);
   assert.deepEqual(RC.readRunChoices(runDir), { state: "none" }, "a refused write leaves no record");
-  assert.equal(RC.recordRunChoices(runDir, { engine: "probe-started", register: null }).register, null,
+  assert.equal(RC.recordRunChoices(runDir, { engine: "openai-agent", register: null }).register, null,
     "a machine with no register set is recorded as having none");
 });
 
@@ -89,7 +93,7 @@ test("a record that does not read back is named as unreadable, not taken as abse
 
 test("a run that recorded its engine runs every turn on it after the machine's setting changed", async () => {
   const runDir = newRun("started");
-  RC.recordRunChoices(runDir, { engine: "probe-started", register: "corsearch" });
+  writeRecord(runDir, "probe-started");
   const { r, turns: served } = await stageOn(runDir);
   assert.equal(r?.ok, true, `the stage failed: ${r?.fail ?? "(no fail recorded)"}`);
   assert.deepEqual(served, ["probe-started"], "a turn went to the machine's engine instead of the run's");
@@ -125,7 +129,7 @@ test("a run's jurisdiction lanes follow its recorded engine too, so its lanes an
     "a run with no record takes the machine's engine");
   assert.equal((await makeJxTurnRunner({ env, runTurn })).engine, "openai-agent", "a caller with no run is unchanged");
   const unshipped = newRun("jx-unshipped");
-  RC.recordRunChoices(unshipped, { engine: "probe-started", register: null });
+  writeRecord(unshipped, "probe-started");
   assert.match((await makeJxTurnRunner({ env, runTurn, runDir: unshipped })).error ?? "",
     /started on the "probe-started" engine, which this driver does not ship; the jx lanes keep that engine/);
   const bad = newRun("jx-bad");
@@ -138,7 +142,7 @@ test("each live jurisdiction lane hands its run to the turn runner", async () =>
   const { resolveJudge, resolveNativeread } = await import("../jx-units.mjs");
   // A recorded engine this driver does not ship is refused before any turn, so the cause shows the run arrived.
   const runDir = newRun("jx-lanes");
-  RC.recordRunChoices(runDir, { engine: "probe-started", register: null });
+  writeRecord(runDir, "probe-started");
   const saved = process.env.CLEAROTRON_JX_FIXTURES;
   delete process.env.CLEAROTRON_JX_FIXTURES;
   try {

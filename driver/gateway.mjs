@@ -20,8 +20,7 @@ import { stageLog, runLog, note, outputMeta } from "./log.mjs";
 import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS } from "./findings-model.mjs";
 import { frozenSnapshot, describeDrift } from "./run-integrity.mjs";   // — the frozen judged-by set across a seat turn
 import { isCancelled, readCancel, RunCancelled } from "./cancel.mjs";
-import { selectEngine, modelIdOf } from "./engine/registry.mjs";
-import { engineForRun } from "./engine/run-choices.mjs";
+import { engineForRun, selectEngine, modelIdOf } from "./engine/registry.mjs";
 import { timeoutCause, turnFailure, nameTheFailure } from "./ladder/turn-failure.mjs";
 import { modelGauge, servingProgram } from "./ladder/model-gauge.mjs";
 import { rescueAttempt } from "./ladder/rescue.mjs";

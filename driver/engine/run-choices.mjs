@@ -12,12 +12,15 @@
 //   - a run with no record is left without one. Nothing here writes a record for a run that has already started,
 //     because that would date today's setting back to a start nobody recorded.
 //
-// The record holds the two names and nothing else. Each must name an engine this driver has registered or a
-// register it knows, so no other string (a credential included) can be written into it.
+// The record holds the two names and nothing else. Each must name an engine this driver ships or a register it
+// knows, so no other string (a credential included) can be written into it.
+//
+// A LEAF: it reads the shipped-engine table, not the engine registry. The jurisdiction lanes' turn runner reads the
+// record, tool servers reach that runner, and the registry would bring both engine adapters and every setting they
+// read into each tool server's imports. The registry's `engineForRun` serves a run's turns from this record.
 import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { driverDir, ensureDriverDir } from "../../shared/driver-dir.mjs";
-import { PROVIDERS } from "../driver.config.mjs";
-import { DEFAULT_ENGINE, engineNamed, registeredEngines, selectEngine } from "./registry.mjs";
+import { ENGINE_BINARIES, PROVIDERS } from "../driver.config.mjs";
 
 export const RUN_CHOICES_FILE = "run-choices.json";
 
@@ -32,8 +35,8 @@ export function recordRunChoices(runDir, { engine, register }) {
   const held = readRunChoices(runDir);
   if (held.state !== "none") return { written: false, ...held };
   const e = nameOf(engine), r = nameOf(register);
-  if (!e || !registeredEngines().includes(e))
-    throw new Error(`run-choices: "${e}" is not an engine this driver has registered (${registeredEngines().join(", ")})`);
+  if (!e || !Object.hasOwn(ENGINE_BINARIES, e))
+    throw new Error(`run-choices: "${e}" is not an engine this driver ships (${Object.keys(ENGINE_BINARIES).join(", ")})`);
   if (r !== null && !Object.hasOwn(PROVIDERS, r))
     throw new Error(`run-choices: "${r}" is not a register this driver knows (${Object.keys(PROVIDERS).join(", ")})`);
   ensureDriverDir(runDir);
@@ -58,21 +61,4 @@ export function readRunChoices(runDir) {
   if (!engine) return { state: "unreadable", detail: "names no engine" };
   if (o?.register != null && typeof o.register !== "string") return { state: "unreadable", detail: "its register is not a name" };
   return { state: "recorded", engine, register };
-}
-
-/**
- * The engine that serves this run's turns. A run with a record gets its recorded engine whatever the machine's
- * setting now says; a run with none gets the machine's engine, as every run did before the record existed.
- * A recorded engine this driver cannot serve, or a record that does not read back, throws by name: the run's
- * turns never fall through to a different engine.
- */
-export function engineForRun(runDir) {
-  const rec = readRunChoices(runDir);
-  if (rec.state === "none") return selectEngine();
-  if (rec.state === "unreadable")
-    throw new Error(`this run's engine record (_driver/${RUN_CHOICES_FILE}) ${rec.detail}, so its turns are not run on the machine's engine in its place`);
-  const engine = engineNamed(rec.engine);
-  if (!engine)
-    throw new Error(`this run started on the "${rec.engine}" engine, which this driver does not have registered (${registeredEngines().join(", ")}); it keeps that engine rather than switch to ${nameOf(process.env.CLEAROTRON_AI) ?? DEFAULT_ENGINE}`);
-  return engine;
 }
