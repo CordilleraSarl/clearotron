@@ -25,6 +25,7 @@ import { timeoutCause, turnFailure, nameTheFailure } from "./ladder/turn-failure
 import { modelGauge, servingProgram } from "./ladder/model-gauge.mjs";
 import { rescueAttempt } from "./ladder/rescue.mjs";
 import { nextRung } from "./ladder/next-rung.mjs";
+import { stageTools } from "./ladder/stage-tools.mjs";
 import { resolveAuthMode } from "./engine/auth.mjs";
 // ABBREVIATED_VALUE_NOTE is no longer imported: it explained the "…" marker on a value the model
 // had to reproduce EXACTLY, and the only messages that rendered one were the connotation arms telling a
@@ -229,7 +230,7 @@ export function toolWrittenArtifact(p) {
     ?? TOOL_WRITTEN_PATTERNS.find((r) => r.re.test(base))
     ?? null;
 }
-import { buildGatherMcpConfig, allowedToolsFor, toolGroupsForStage, recordAxisFor, seatWritesForGroups, withSendUntil } from "./engine/mcp/gather-config.mjs";
+import { withSendUntil } from "./engine/mcp/gather-config.mjs";
 import { sendReserveMs } from "../providers/_shared/send-until.mjs";   // each turn's plan calls stop sending ahead of its deadline
 import { everyToolCallRefused } from "./engine/tool-refusal.mjs";   // one definition, shared with the engine probe
 export { everyToolCallRefused };
@@ -246,7 +247,7 @@ import { KNOCKOUT_RECHECK_RE, knockoutReviewFile, knockoutReviewRefusalsFor } fr
 import { profilesStoreDir } from "./profiles.mjs";
 // The supplemental lane's single source (stages.mjs). The import is acyclic — stages.mjs reads
 // verify/coverage-ledger/config/framework and never reaches back here.
-import { REGISTER_ENUMERATE_TOOL, SUPPLEMENTAL_LANE_STEERING, GROUP_READING_STAGES } from "./stages.mjs";
+import { REGISTER_ENUMERATE_TOOL, SUPPLEMENTAL_LANE_STEERING } from "./stages.mjs";
 // The ONE kill-class discriminator (timeout/status_timeout fails, exit 137, killed, hard-wall/stall
 // signals; lane_wedge and rate_limited deliberately excluded). Reused verbatim so "a kill" means the
 // same thing to the exit-1 rescue below as it does to the register taint chain that reads the very
@@ -781,46 +782,10 @@ async function runStageLadder(name, opts, stageHome = null) {
   // FAILURE carrying the named auth error on the guaranteed failure-packet lane (verified) — loud + named,
   // NOT a silent mis-bill. (Same catch as the unknown-engine throw above.)
   const auth = resolveAuthMode({ engineName: engine.name });
-  // Two INDEPENDENT engine capability flags (both default ON for an engine that declares neither, so the
-  // anthropic engine — which sets neither — behaves exactly as before). A future adapter can opt out of
-  // either without the other:
-  let gatherMcpConfig, gatherAllowedTools, engineSkillsDir, engineSkillsGrantRoots, engineResolveSkill;
-  // — the DECLARATION half of the run-dir read grant. `null` means this stage has no recording
-  // row to declare anything, and the adapter treats unknown as "keep the grant" — so a stage the
-  // gateway says nothing about is unaffected by that change.
-  let gatherSeatWrites = null;
-  // (a) Skills plumbing (usesSkillsDir): a CLI-agentic engine resolves the stage prompts' `skills/…` refs
-  // against its neutral cwd (a tmpdir) and confines file tools to cwd + --add-dir roots, so hand it the
-  // compute-skills dir (config.skillsDir — the driver-co-located tree) + this run's dir so it can absolutize
-  // the refs and grant read(skills)/write(runDir). The agent's own workspace is no longer involved.
-  if (engine.usesSkillsDir !== false) {
-    engineSkillsDir = config.skillsDir;
-    engineSkillsGrantRoots = config.skillsGrantRoots;   // layered skills: BOTH roots reach the seat, resolve overlay-first
-    engineResolveSkill = (rel) => config.resolveSkillPath(rel);
-  }
-  // (b) Gather tools (usesGatherMcp): a gather stage gets its tool group's MCP servers + allowedTools;
-  // tool-free judgment stages get none (lean context). Both current engines get the SAME claude-shaped
-  // mcpConfig; a codex engine translates it to config.toml internally, so gather-config.mjs is untouched.
-  if (engine.usesGatherMcp !== false) {
-    const groups = toolGroupsForStage(name);
-    if (groups.length) {
-      // The bound card index rides the same label the grant was resolved from — derived by the SAME
-      // declared rule (`perAxis`), never by a second string-sniff that could disagree with it.
-      const cfg = buildGatherMcpConfig(groups, { sessionKey, agent, runDir, recordAxis: recordAxisFor(name)?.axis,
-        bandGroups: GROUP_READING_STAGES.has(name), correctionPositions: correction?.positions ?? null });
-      gatherMcpConfig = cfg ? JSON.stringify(cfg) : undefined;
-      gatherAllowedTools = allowedToolsFor(groups);
-      gatherSeatWrites = seatWritesForGroups(groups);   // — the SAME derivation allowedToolsFor uses
-      // Per-stage exclusion (copper-lattice re-route): a supplemental-lane register unit loses
-      // register_enumerate — its judgment additions go through register_propose_supplemental, so the
-      // free-enumerate hand-transcription lane cannot silently return. Group-level removal is
-      // infeasible (synthesis + legacy no-plan units share the group); the validator is the backstop.
-      if (Array.isArray(excludeTools) && excludeTools.length && gatherAllowedTools) {
-        const drop = new Set(excludeTools);
-        gatherAllowedTools = gatherAllowedTools.split(" ").filter((t) => !drop.has(t)).join(" ");
-      }
-    }
-  }
+  // The stage's tool servers, allowed tools, skills folder and read grants, by the engine's two capability flags
+  // (ladder/stage-tools.mjs).
+  const { gatherMcpConfig, gatherAllowedTools, gatherSeatWrites, engineSkillsDir, engineSkillsGrantRoots, engineResolveSkill } =
+    stageTools({ engine, name, sessionKey, agent, runDir, correction, excludeTools });
   // EACH TURN'S OWN COPY of the stage's tool config, carrying that turn's time to stop sending: ahead of the turn's
   // deadline by the reserve, so a plan call returns what it holds while the turn can still write it (send-until.mjs).
   const turnConfig = (sec) => withSendUntil(gatherMcpConfig, Date.now() + sec * 1000 - sendReserveMs(sec));
