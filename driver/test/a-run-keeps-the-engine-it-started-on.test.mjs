@@ -177,3 +177,23 @@ test("a run's register names its register tool server and the tools it grants, d
   assert.notDeepEqual(cfg.mcpServers.register.args, machine.mcpServers.register.args, "two registers, two tool servers");
   assert.equal(allowedToolsFor(groups, { register: REGISTER_PROVIDER }), allowedToolsFor(groups), "naming the machine's register changes nothing");
 });
+
+test("a run's record receipts name the register it recorded; a run with no record names the machine's, as before", async () => {
+  const { assembleRunRecords } = await import("../registry-fidelity.mjs");
+  const { paths } = await import("../run-record.mjs");
+  const { REGISTER_PROVIDER } = await import("../driver.config.mjs");
+  const other = REGISTER_PROVIDER === "signa" ? "euipo" : "signa";
+  const PREFIX = "clearance-qzorvak-2026-11-10-test-";
+  const receiptsOf = (runDir) => {
+    const log = join(runDir, "_driver", "register-record-bodies.jsonl");
+    writeFileSync(log, JSON.stringify({ ts: "2026-11-10T10:00:00Z", sessionKey: `${PREFIX}register-digest`, target: "/mark/eu/q1",
+      body: { statusText: "Registered", classList: ["9"] } }) + "\n");
+    assembleRunRecords(runDir, PREFIX, log, join(runDir, "no-call-ledger.jsonl"));
+    return JSON.parse(readFileSync(paths(runDir).receipts, "utf8")).receipts.map((r) => r.provider);
+  };
+  const recorded = newRun("receipts-recorded");
+  RC.recordRunChoices(recorded, { engine: "anthropic-agent", register: other });
+  assert.deepEqual(receiptsOf(recorded), [other]);
+  const pinned = process.env.CLEAROTRON_DATABASE;
+  assert.deepEqual(receiptsOf(newRun("receipts-unrecorded")), [pinned ? pinned.toLowerCase() : null]);
+});
