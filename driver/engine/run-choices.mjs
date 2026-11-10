@@ -72,7 +72,7 @@ export function readRunChoices(runDir) {
  * machine's choice. `run` is the run's identity, because this is raised before the pipeline holds one.
  *
  * `kind` is one of:
- *   register        the run's register is not the one this process serves (registers are fixed per process for now);
+ *   register        this runner cannot serve the run's register: a credential or a capability it needs is missing here;
  *   engine          this driver has no adapter for the run's engine;
  *   engine-program  the run's engine program is not installed here;
  *   engine-sign-in  the run's engine refused a turn for a configuration fault (signed out, no key).
@@ -82,7 +82,7 @@ export class RunChoiceUnavailable extends Error {
   constructor({ kind, recorded, machine = null, detail = null, run = null }) {
     if (!RUN_CHOICE_KINDS.includes(kind)) throw new Error(`RunChoiceUnavailable: unknown kind "${kind}"`);
     const what = kind === "register" ? `the ${recorded} register` : `the ${recorded} engine`;
-    const why = kind === "register" ? `this process serves the ${machine ?? "(no)"} register`
+    const why = kind === "register" ? "this runner cannot serve it"
       : kind === "engine" ? "this driver has no adapter for it"
       : kind === "engine-program" ? "its program is not installed here"
       : "it cannot take a turn here";
@@ -93,30 +93,51 @@ export class RunChoiceUnavailable extends Error {
     // For the park's own record, as the rate-limit park writes its two lines: what it waits for, and what ends the wait.
     this.waitingOn = `${what}, which this run started on (${why})`;
     this.resolvedBy = kind === "register"
-      ? `a runner whose register is ${recorded}, on this build; it resumes the run where it stopped`
+      ? `${what}'s credentials and capabilities set for this runner, on this build; the run resumes where it stopped`
       : `${what} made available to this runner (installed and signed in), on this build; the run resumes where it stopped`;
   }
 }
 
 /**
- * Which recorded choice this process cannot serve, before anything is checked or spent, or null. The register is
- * compared only when the run recorded one: a run that started with none set never reached the register. The engine is
+ * Which recorded choice this process cannot serve, before anything is checked or spent, or null. The engine is
  * unservable here only when no adapter is registered for it; a missing program or sign-in is found by the engine doors.
- * PURE.
+ * The register is not decided here: a recorded register is served wherever this runner holds what it needs, whatever
+ * the machine's default, and the register's own door finds out (`registerEnvFor`, steps/open-run.mjs). PURE.
  */
-export function unservedChoice(recorded, { engineRegistered, machineRegister }) {
+export function unservedChoice(recorded, { engineRegistered }) {
   if (recorded?.state !== "recorded") return null;
   if (!engineRegistered) return { kind: "engine", recorded: recorded.engine, machine: null };
-  if (recorded.register != null && recorded.register !== (machineRegister ?? null))
-    return { kind: "register", recorded: recorded.register, machine: machineRegister ?? null };
   return null;
 }
 
 /**
+ * The environment the register's door checks for this run: a copy of `env` naming the run's recorded register, or `env`
+ * itself for a run with no record or one that started with none set. A copy, so one run's register never changes the
+ * process environment every concurrent run shares. PURE.
+ */
+export function registerEnvFor(recorded, env = process.env) {
+  return recorded?.state === "recorded" && recorded.register ? { ...env, CLEAROTRON_DATABASE: recorded.register } : env;
+}
+
+/**
+ * The register door a run meets: null where it skips the door, else `{ env, parks }`. `env` is what the door checks
+ * (`registerEnvFor`), and `parks` says a refusal parks the run rather than failing it, which it does only for a
+ * recorded register that is not the machine's. A run whose record fetches are injected (an offline replay) skips the
+ * door. So does a Knockout on the machine's own register, as it always has; a Knockout recorded on another register
+ * meets the door, because its counts and filings are that register's. PURE.
+ */
+export function registerDoor(recorded, { machineRegister = null, knockout = false, fetchesInjected = false, env = process.env } = {}) {
+  if (fetchesInjected) return null;
+  const differs = recorded?.state === "recorded" && Boolean(recorded.register) && recorded.register !== (machineRegister ?? null);
+  if (knockout && !differs) return null;
+  return { env: registerEnvFor(recorded, env), parks: differs };
+}
+
+/**
  * The register that serves this run: the one it recorded when it started, or the machine's for a run with no record or
- * one that started with none set. While a run whose register differs from the machine's is parked before any stage
- * (`unservedChoice`), this always equals the machine's; it is the one place a run's register is decided. PURE but for
- * reading the record.
+ * one that started with none set, whatever the machine's default is now. It is the one place a run's register is
+ * decided. A recorded register this runner cannot serve parks the run at the register's door before any stage. PURE
+ * but for reading the record.
  */
 export function registerForRun(runDir) {
   const rec = readRunChoices(runDir);

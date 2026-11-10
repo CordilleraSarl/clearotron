@@ -22,6 +22,7 @@ import "../shared/env-local.mjs";   // side effect: apply <repo>/.env when THIS 
 import "./engine/mcp/http-dispatcher.mjs";   // side effect: raise undici headersTimeout (code-side fetches)
 import { readdirSync, renameSync, existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync, rmSync, statSync } from "node:fs";
 import { join, dirname, basename } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
+import { crossBuildResumeRefusal } from "./one-build-per-run.mjs";   // a run is finished on the build it started on (owner, 2026-11-09)
 // The queue's filename vocabulary, in ONE place — the rule, extended by to the prose-sidecar and
 // claim-sidecar names, because a harness check retyped four of them from memory and false-alarmed on the
 // other nine. Behaviour here is unchanged: the same object and the same three suffixes, sourced.
@@ -1079,6 +1080,18 @@ export function parkCause(res = {}) {
 // CONCURRENTLY across a queue's prepared jobs — each owns its own .processing/.pid + run dir, and the
 // matter-dedup was already settled serially in claimAndPrep. The run-slot cap (acquireRunSlot) bounds how
 // many pipelines actually run at once.
+/** The refusal for resuming this claim's run on the running build, recorded in the run's log, or null. */
+function resumeRefusalFor({ job, identity, studioRoot, archiveRoot }) {
+  const owned = findRunDirFor({ codename: identity.codename, slug: deriveSlug(job), dateISO: identity.dateISO ?? null, studioRoot, archiveRoot });
+  if (!owned?.dir) return null;   // no run folder: the pipeline's own resume refuses that, by name
+  const refused = crossBuildResumeRefusal(owned.dir);
+  if (refused) {
+    note(`[runner] ${identity.codename}: ${refused}`);
+    try { runLog(owned.dir, { event: "resume-refused", reason: refused }); } catch { /* the queue's failure record carries it too */ }
+  }
+  return refused;
+}
+
 async function runPrepared({ procPath, base, job }, qdir, agentId, resumeMeta = null) {
   const studioRoot = config.studioRootForAgent(agentId);
   const archiveRoot = config.archiveRootForAgent(agentId);
@@ -1107,13 +1120,16 @@ async function runPrepared({ procPath, base, job }, qdir, agentId, resumeMeta = 
   // whole recovery. Stated plainly because the previous wording said the dir "certainly exists", and an
   // arm built on that claim reddened main for one commit.
   inFlightRuns.set(procPath, { slug: deriveSlug(job), codename: identity.codename, dateISO: identity.dateISO ?? null, agentId, studioRoot, archiveRoot });
+  // A POSTPONED CLAIM OR A CRASH RECLAIM OF A RUN STARTED ON ANOTHER BUILD IS REFUSED here, before the pipeline is
+  // entered, and the refusal takes the failure path below like any other, the client's notice included.
+  const refused = resumeMeta ? resumeRefusalFor({ job, identity, studioRoot, archiveRoot }) : null;
   let res;
   try {
     // Run as the forwarding agent, with the run-dir + archive rooted in THAT agent's workspace (so the
     // agent's sandboxed write tool can reach them). Delivery still publishes to the central pool. resumeMeta
     // (set by resumePostponed / the crash-reclaim) reuses the prior codename's valid stages via the pipeline
     // resume path; a fresh job dispatches its pre-minted identity as a cold start (minted:true).
-    res = await pipeline(job, {
+    res = refused ? { ok: false, reason: refused } : await pipeline(job, {
       agent: agentId, studioRoot, archiveRoot,
       // A2 — pass the dispatch-persisted dateISO so the RESUME targets the EXACT `${dateISO}-${codename}`
       // run dir. Without it the pipeline re-resolves the date via a date-agnostic findRunDate() that could
@@ -1646,7 +1662,10 @@ export function resumeClaimIsAbandoned(resumingPath, now = Date.now(), {
 // needs to see it once would be the person least able to find it.
 const announcedTerminalSkips = new Set();
 
-export function scanDueRunDirOrphans(now = Date.now()) {
+/** Every run folder this watcher will resume on its own, due now or later: what an update has to wait for. */
+export const parkedRunDirOrphans = (now = Date.now()) => scanDueRunDirOrphans(now, { dueOnly: false });
+
+export function scanDueRunDirOrphans(now = Date.now(), { dueOnly = true } = {}) {
   const owned = queueOwnedCodenames();
   const settled = queueTerminalCodenames();
   const out = [];
@@ -1721,7 +1740,7 @@ export function scanDueRunDirOrphans(now = Date.now()) {
           }
           continue;
         }
-        if (postponedDueAt(sent, config.rateLimitDefaultBackoffMs) > now) continue;   // backoff window not elapsed
+        if (dueOnly && postponedDueAt(sent, config.rateLimitDefaultBackoffMs) > now) continue;   // backoff window not elapsed
         out.push({ runDir, sentPath, job: sent.job, agent: sent.agent, codename: sent.codename, fromStage: sent.fromStage ?? null, reparks: Number(sent.reparks) || 0, payload: sent });
       }
     }
@@ -1790,6 +1809,12 @@ export async function resumeRunDirOrphans(orphans, { runPipeline = pipeline } = 
     } catch { /* spine append is best-effort */ }
     note(`[runner] self-resuming run-dir POSTPONED ${o.codename} (agent=${o.agent} from=${o.fromStage ?? "auto"}; window elapsed)`);
     try {
+      // A run started on another build is not resumed, and a re-park cannot change that, so the refusal is final at once.
+      const refused = crossBuildResumeRefusal(o.runDir);
+      if (refused) {
+        try { runLog(o.runDir, { event: "resume-refused", reason: refused }); } catch { /* the .failed sentinel below carries it */ }
+        throw Object.assign(new Error(refused), { final: true });
+      }
       await runPipeline(o.job, {
         agent: o.agent, codename: o.codename, fromStage: o.fromStage ?? undefined,
         studioRoot: config.studioRootForAgent(o.agent), archiveRoot: config.archiveRootForAgent(o.agent),
@@ -1802,8 +1827,8 @@ export async function resumeRunDirOrphans(orphans, { runPipeline = pipeline } = 
       // it goes terminal (.failed + status), the same honest circuit breaker the pipeline itself uses.
       const reparks = (Number(o.reparks) || 0) + 1;
       const REPARK_MAX = 3;
-      if (reparks >= REPARK_MAX) {
-        const reasonText = `self-resume errored ${reparks}× — last: ${String(err?.message ?? err).slice(0, 300)}`;
+      if (err?.final || reparks >= REPARK_MAX) {
+        const reasonText = err?.final ? String(err.message) : `self-resume errored ${reparks}× — last: ${String(err?.message ?? err).slice(0, 300)}`;
         // — derived ONCE, outside both best-effort try blocks below, because both sinks need it:
         // the status write and the failure notice. Computing it inside the status `try` scoped it away
         // from the packet, which is the shape that had the packet re-cutting the string on its own.
@@ -1829,7 +1854,7 @@ export async function resumeRunDirOrphans(orphans, { runPipeline = pipeline } = 
               // string with a bare slice, so the notice and status.json could disagree about whether the
               // sentence was finished. One cap, one marker, both sinks.
               failedStage: "self-resume", shortReason: rt.reason, reasonVerbatim: reasonText,
-              terminalKind: "exhausted", priorAttempts: reparks,
+              terminalKind: err?.final ? undefined : "exhausted", priorAttempts: reparks,
             });
             try { rmSync(join(o.runDir, ".sent"), { force: true }); } catch { /* none */ }
             try { rmSync(paths(o.runDir).sendReceipts, { force: true }); } catch { /* none */ }
