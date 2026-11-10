@@ -35,7 +35,8 @@ const { driverDir } = await import("../../shared/driver-dir.mjs");
 const { endTheFailedRun } = await import("../run-failed.mjs");
 const { knockoutInner } = await import("../pipeline-knockout.mjs");
 const { RunCancelled, requestCancel } = await import("../cancel.mjs");
-const { consumptionLedgerPath } = await import("../consumption-ledger.mjs");
+const { consumptionLedgerPath, accountConsumption } = await import("../consumption-ledger.mjs");
+const { studioDirFor } = await import("../../shared/pre-rename-spellings.mjs");
 
 /** A run folder in its own studio, as openRun lays one out. */
 function runIn(id, codename) {
@@ -84,4 +85,26 @@ test("a stopped Knockout still records its consumption and refreshes the run lis
   assert.equal(stopped.length, 1);
   assert.equal(stopped[0].via, "portal", "the journal says how the stop arrived, as a clearance's does");
   assert.ok(stopped[0].requestedAt, "and when it was asked");
+});
+
+test("a stop handled twice is counted once in the account's usage", async () => {
+  // The ledger is append-only, so a second handling of the same stop writes a second row. The account's view keeps the
+  // last row per run, so the run counts once. This lays out one workspace the way the account view walks it.
+  const workspaceRoot = mkdtempSync(join(ROOT, "workspaces-"));
+  const studioRoot = studioDirFor(join(workspaceRoot, "workspace-intake-agent"));
+  const runDir = join(studioRoot, "runs", "lanternwick", "2026-11-10-amber-twice");
+  mkdirSync(driverDir(runDir), { recursive: true });
+  const run = { runDir, studioRoot, slug: "lanternwick", date: "2026-11-10", codename: "amber-twice", archiveDir: join(studioRoot, "archive", "2026-11-10-amber-twice") };
+  const job = { id: "clearance-stop-twice", markName: "LANTERNWICK", classes: [4], jurisdictions: ["EU"], forwarder: "jordan", msgId: "<twice@x>" };
+  const ctx = { run, job, agent: "mailagent", paths: { runDir }, profile: { profileKey: "invented-account" }, searchPolicy: { level: "full-country", stageLabel: "Full country search" } };
+  const helpers = { isContentShapedFail: () => false, logTurnaroundReconciliation: () => {}, recordConnotationAudit: () => {},
+    sentinel: (dir) => { mkdirSync(dir, { recursive: true }); }, undoTaintRenames: () => {} };
+  for (let i = 0; i < 2; i++) {
+    const e = new RunCancelled("synthesis", { ts: "2026-11-10T18:00:00.000Z", via: "portal" });
+    await endTheFailedRun({ P: {}, agent: "mailagent", ctx, e, job, run }, helpers);
+  }
+  assert.equal(ledgerRows(studioRoot).length, 2, "premise: the second handling wrote a second row");
+  const usage = accountConsumption({ workspaceRoot, account: "invented-account" });
+  assert.equal(usage.today.runs, 1, "the account counts the stopped run once");
+  assert.equal(usage.thisMonth.runs, 1);
 });

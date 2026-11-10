@@ -2440,8 +2440,8 @@
           "todos": 0
         },
         "a-stopped-run-records-what-it-spent.test.mjs": {
-          "tests": 2,
-          "asserts": 14,
+          "tests": 3,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
