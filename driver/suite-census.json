@@ -2034,7 +2034,7 @@
         "a-report-is-republished-only-by-the-build-that-made-it.test.mjs": {
           "tests": 3,
           "asserts": 8,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "a-report-prints-the-dates-of-its-record.test.mjs": {

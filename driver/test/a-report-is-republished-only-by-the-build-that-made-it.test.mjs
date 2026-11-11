@@ -63,9 +63,10 @@ test("`pool-admin republish` refuses a run from an earlier build and leaves its 
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("THE CONTROL: this checkout names its own build, so a run it made is not refused by the arm above's rule", () => {
+test("THE CONTROL: this checkout names its own build, so a run it made is not refused by the arm above's rule", (t) => {
   const current = engineProvenance().engineHead;
-  if (!current) return;   // off a checkout with no build record the refusal is right, and the first arm covers it
+  // Off a checkout with no build record there is no run this build made, so nothing here can be measured.
+  if (!current) return t.skip("this tree names no build of its own; the first arm covers the refusal it then makes");
   const root = mkdtempSync(join(tmpdir(), "republish-same-"));
   try { assert.equal(crossBuildRepublishRefusal(runDirWith(root, current)), null); }
   finally { rmSync(root, { recursive: true, force: true }); }
