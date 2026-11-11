@@ -188,7 +188,7 @@ import { foldCaption, foldCardRead } from "./card-budget.mjs";
 // S2 — the report card's mechanical frame, composed from the record instead of dictated (see below).
 import { carriesOwnFrame, composeCard } from "./card-frame.mjs";
 import { parseFrameworkManifest, loadFrameworkManifest, frameworkFor, manifestPathFor, DEFAULT_FRAMEWORK } from "./framework.mjs";
-import { attachFrameworkMethod, loadFrameworkMethod, methodPathFor, FROZEN_METHOD_FILE } from "./framework-method.mjs";
+import { attachFrameworkMethod, methodPathFor, FROZEN_METHOD_FILE } from "./framework-method.mjs";
 import { renderScopeLedgerJson, scopeLedgerJsonFromRows, gridChannels, parseScopeLedgerJson, scopeJurisdictions, droppedVariantFamilies } from "./scope-ledger.mjs";
 // qw/cn-scope-honesty — the zh-lane capability tables + the requested-scope resolver, for the plain-clearotron
 // honesty row/note. jx-lanes.mjs is a PURE zero-import leaf (data + decisions, no env/fs), so a static
@@ -1946,15 +1946,18 @@ function attachFramework(ctx, { write = true } = {}) {
     ctx.frameworkMethod = attachFrameworkMethod({ frozenPath: methodPath, manifest: ctx.framework, minted: false });
     return;
   }
-  // No frozen profile (a pre-WS-B resume, or a codename re-dispatch into a dir with no sidecar): the
-  // framework in force is still the GENERIC DEFAULT — doc 50 has no framework-less runs. frameworkFor(null)
-  // resolves it; a genuinely-legacy run's v3 artifacts never consult the minted manifest (version-gated).
+  // NO FROZEN FRAMEWORK. It is frozen before the first stage, so a run without one ran no stage, and a
+  // read-only caller has nothing to rebuild. (A run from before the framework freeze was given one here,
+  // resolved in memory; a run from an earlier build is no longer resumed.)
+  if (!write) throw new Error("_driver/framework.json is absent — the run stopped before its framework was frozen, so it ran no stage and there is nothing to rebuild");
+  // A cold start, or a resume of a first pass that stopped before this freeze: the framework in force is
+  // resolved from the frozen profile and minted now, as the cold path does. With no profile it is the
+  // GENERIC DEFAULT — doc 50 has no framework-less runs, and frameworkFor(null) resolves it.
   const fwPath = frameworkFor(ctx.profile);
   // config.skillsRoot, NOT DRIVER_DIR: the profile's framework may live in the deployment's config
   // store (CLEAROTRON_INSTRUCTIONS_DIR), which is also the root the AGENT resolves the same path against.
   const manifest = loadFrameworkManifest((rel) => config.resolveSkillPath(rel), fwPath);   // throws framework_manifest_missing — a deploy defect, loud
   ctx.framework = manifest;
-  if (!write) { ctx.frameworkMethod = loadFrameworkMethod((rel) => config.resolveSkillPath(rel), fwPath, manifest); return; }
   // The method is frozen BEFORE the manifest: a run interrupted between the two writes has no manifest,
   // so its resume mints both again. The other order would leave a manifest with no method beside it,
   // which the resume branch above reads as a framework that states none.
@@ -9389,9 +9392,9 @@ async function pipelineInner(job, opts = {}) {
     const { knockoutInner } = await import("./pipeline-knockout.mjs");
     return await knockoutInner(ctx, job, opts);
   }
-  // doc 50 — freeze the framework-in-force's manifest beside it. write:true even on resume: a run frozen
-  // BEFORE doc 50 backfills its framework sidecar from the frozen frameworkPath (deploy-boundary case) so
-  // the v4 gates always have vocabulary; a run that already has one reads it verbatim (never re-derived).
+  // doc 50 — freeze the framework-in-force's manifest beside it. A resume reads the frozen one verbatim
+  // (never re-derived); a resume whose first pass stopped before this line mints it now, as that pass would
+  // have.
   attachFramework(ctx);
   // A pass opens before the delivery seam: until this pass's seam folds the record, a save writes the
   // model's record as it is (record-fold.mjs).
@@ -10050,6 +10053,12 @@ export function resumeJobRefusal(job, slug) {   // @internal
 export function reconstructCtx(job, opts) {   // @internal
   const run = resolveRun(job, opts);
   const P = paths(run.runDir);
+  // A run that froze no search policy stopped before its first stage (the policy is frozen as the run
+  // opens), so it has nothing to repair or --experiment on, and reading it as a clearance could hand a
+  // Knockout batch the clearance's framework. (A run from before the policy freeze was read as a clearance
+  // here; a run from an earlier build is no longer resumed.)
+  if (!existsSync(paths(run.runDir).searchPolicy))
+    throw new Error(`run ${run.codename} froze no search policy — it stopped before its first stage, so there is nothing to repair or --experiment on`);
   // A KNOCKOUT run has none of the clearance stages this tooling drives — and letting it through would
   // mint the clearance DEFAULT_FRAMEWORK into a triage-graded run (review 2026-07-17). A knockout redo
   // is a re-enqueue (~$2), not a stage surgery.
@@ -10057,7 +10066,7 @@ export function reconstructCtx(job, opts) {   // @internal
     const sp = JSON.parse(readFileSync(paths(run.runDir).searchPolicy, "utf8"));
     if (sp?.pipeline === "knockout")
       throw new Error(`run ${run.codename} is a KNOCKOUT batch — it has no clearance stages to repair or --experiment; re-enqueue the batch instead`);
-  } catch (e) { if (/KNOCKOUT batch/.test(String(e?.message))) throw e; /* no/corrupt sidecar ⇒ legacy clearance run */ }
+  } catch (e) { if (/KNOCKOUT batch/.test(String(e?.message))) throw e; /* a corrupt sidecar: attachSearchPolicy below notes it */ }
   // ctx.job is a SHALLOW COPY: attachSearchPolicy (below) folds the frozen recipe's scope INTO the job
   // (foldRecipeScope mutates job.platforms/classes). The fold is right — it is what the cold path's
   // stages saw — but reconstructCtx was side-effect-free on its argument and stays that way.
@@ -10220,7 +10229,6 @@ export async function repairStale(job, opts = {}) {   // @internal
   try { rec = JSON.parse(readFileSync(paths(P.runDir).deliveryStale, "utf8")); } catch { return null; }
   const labels = Array.isArray(rec?.labels) ? rec.labels : [];
   if (!labels.length) return null;
-  attachFramework(ctx, { write: true });
   await attachJxAim(ctx);   // the aim count the cold pass sets, as --experiment sets it on its rebuilt context
   // RE-DERIVE THE ORDER rather than trusting the file's. The recorded order was right when it was
   // written, and a code change since could have moved an edge — the file names WHAT, the live graph says

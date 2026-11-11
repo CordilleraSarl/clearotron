@@ -42,10 +42,11 @@ const OTHER_BUILD = "0123456789abcdef0123456789abcdef01234567";
 /**
  * Spawn `pipeline.mjs --resume <codename>` over a fixture run. `startedOn` is the build the run's first segment
  * recorded: "this" (the default), another commit, or null for a run that recorded none. With `job`, the run sits
- * under that job's own slug and the CLI is given the job file; `args` are appended to the command line. Returns
+ * under that job's own slug and the CLI is given the job file; `args` are appended to the command line; `seed`
+ * writes more of the run folder. Returns
  * the exit code, the error stream, and the run folder's file list before and after the CLI ran.
  */
-function resumeCli(codename, status, { startedOn = "this", job = null, args = [] } = {}) {
+function resumeCli(codename, status, { startedOn = "this", job = null, args = [], seed = null } = {}) {
   const root = mkdtempSync(join(tmpdir(), "resume-cli-"));
   const work = join(root, "workspace"), pool = join(root, "pool");
   mkdirSync(pool, { recursive: true });
@@ -60,6 +61,7 @@ function resumeCli(codename, status, { startedOn = "this", job = null, args = []
       mkdirSync(driverDir(runDir), { recursive: true });
       appendFileSync(driverDir(runDir, "run.jsonl"), JSON.stringify({ event: "engine-build", engineHead: startedOn }) + "\n");
     }
+    seed?.(runDir);
   } else mkdirSync(studio, { recursive: true });
   const jobArgs = [];
   if (job) { writeFileSync(join(root, "job.json"), JSON.stringify(job)); jobArgs.push("--job", join(root, "job.json")); }
@@ -162,4 +164,26 @@ test("control: the same --experiment on a run started on THIS build passes the d
   assert.equal(r.code, 2);
   assert.doesNotMatch(r.err, /resume refused/);
   assert.match(r.err, /--experiment common-law-half requires --axis <seat>/, "the rig's own refusal answered, so the door let it through");
+});
+
+// ── a run that stopped before its first stage has nothing to rebuild ─────────────────────────────────────
+//
+// The search policy and the framework are frozen as a run opens, before any stage. A run without them ran
+// none, so an --experiment on it is refused by name before anything is dispatched. (A run from before
+// those freezes was rebuilt as a clearance here; a run from an earlier build is no longer resumed.)
+
+test("--experiment on a run that froze no search policy is refused: it ran no stage", () => {
+  const r = resumeCli("amber-nopolicy", WHOLE_STATUS, { job: WHOLE_STATUS, args: ["--experiment", "synthesis"] });
+  assert.equal(r.code, 2);
+  assert.match(r.err, /froze no search policy — it stopped before its first stage, so there is nothing to repair or --experiment on/);
+  assert.doesNotMatch(r.err, /\[synthesis\] attempt/, "nothing was dispatched");
+});
+
+test("--experiment on a run with a search policy and no frozen framework is refused: it ran no stage", () => {
+  const policy = (runDir) => writeFileSync(driverDir(runDir, "search-policy.json"),
+    JSON.stringify({ schema: 1, level: "clearance", pipeline: "clearance", components: {}, recipe: null }));
+  const r = resumeCli("amber-noframework", WHOLE_STATUS, { job: WHOLE_STATUS, seed: policy, args: ["--experiment", "synthesis"] });
+  assert.equal(r.code, 2);
+  assert.match(r.err, /framework\.json is absent — the run stopped before its framework was frozen/);
+  assert.doesNotMatch(r.err, /\[synthesis\] attempt/, "nothing was dispatched");
 });
