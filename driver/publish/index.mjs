@@ -1291,11 +1291,10 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
     renderedAt, markName, project, organisation, tokenRollup,
     // WHICH BUILD produced this, read once for every surface that records it. null off a git checkout.
     engineCommit: engineCommit(),
-    // FACTS THE SURFACES STATE TWO WAYS, each way named, so every surface prints what it printed before. Which way is
-    // right is for the owner to rule; nothing here chooses.
-    // The report's link: the portal route the email and the run record take, and the pool path the data file names.
+    // THE REPORT'S LINK, ONE WAY: the portal route the email, the run record and the data file all name. The data file
+    // used to name the pool path, which production serves as "not found" (owner's ruling 2026-11-11: the route).
     reportRoute: reportRouteFor(poolUrl, runId),
-    reportPoolUrl: poolUrl ? `${String(poolUrl).replace(/\/$/, '')}/${runId}/report.html` : null,
+
     // The product's stage label as frozen with the run, which meta.json keeps; `stageLabel` above is today's registry's.
     frozenStageLabel: searchPolicy?.stageLabel,
     // The rating word and its badge for meta.json, falling back to the report's front matter on a run older than the
@@ -1334,7 +1333,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     frameworkMethod, scopeBasis, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals,
     officeLinks, reviewReceipts, clientGate, fetchState, searchPolicy, registerOnly, jurisdiction, commonLawJoinedTerms,
     stageLabel, depthNote, productName, publishParts, auditParsed, degradedRows, releasedFamilies, served, searchDepth,
-    issuedAt, renderedAt, markName, project, organisation, tokenRollup, reportRoute, reportPoolUrl, frozenStageLabel, ratingWord,
+    issuedAt, renderedAt, markName, project, organisation, tokenRollup, reportRoute, frozenStageLabel, ratingWord,
     ratingBadge, caption } = doc;
   const { poolRunDir, writeRO, copyRO, copyPart, buildWorkbook, writeDataFile } = openPoolRun(poolRoot, runId, { runDir });
   // The pool's copy of report.md, marked as demo data where the document says it is (the answer and its argument are
@@ -1397,7 +1396,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // report (the baked HTML above is already on disk).
   const reportSchema = writeDataFile('report-data.json', () => clearanceReportData({
     runId, codename, matter: fm.matter, markName, title: fm.title, customerKey: customerKey || 'generic',
-    issued, url: reportPoolUrl,
+    issued, url: reportRoute,
     // stageLabel REGISTRY-FIRST ( residual, audit item 4): `stageLabel` is reportIdentityFor's
     // read-time derivation — the same label report.html renders — so a republished pre-renumber run
     // cannot mint report.html "Depth 2" beside report-data.json "Stage 0.5". The frozen sidecar label
