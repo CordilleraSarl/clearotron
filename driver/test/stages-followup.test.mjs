@@ -119,7 +119,7 @@ test("A-1 — resolveSkillReads equals what message() emits, for every stage, un
 });
 
 test("A-1 — the profile-aware stages resolve the CUSTOMER's framework, not the static default", () => {
-  for (const name of ["synthesis", "report-overview", "report-card"]) {
+  for (const name of ["synthesis", "report-overview", "report-card", "narrative-refutation"]) {
     const resolved = resolveSkillReads(name, { profile: CUSTOM, job: {} });
     assert.ok(resolved.includes(CUSTOM.frameworkPath),
       `${name}: a followup must point at the customer's own framework`);

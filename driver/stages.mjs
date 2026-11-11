@@ -766,6 +766,8 @@ export function composeFollowup(name, ctx, { followup, extra = null, inputs = []
   return lines(
     skills.length ? readsForReference(skills) : "",
     followup,
+    // The rules a stage's opening message states for every session it opens, which a follow-up is too.
+    ...(STAGES[name]?.standing ?? []),
     clearedConstraint(cleared),
     extra || "",
     // A fresh session of the reading step or the writer is given placement's accepted set-asides as its first
@@ -864,6 +866,24 @@ const reportOverviewSkillReads = ({ profile }) =>
   ["skills/clearance-search/synthesis-rules.md", SPINE_DOC, frameworkFor(profile), "skills/clearance-search/delivery-contract.md", REPORT_PROSE];
 const reportCardSkillReads = ({ profile }) =>
   ["skills/clearance-search/delivery-contract.md", frameworkFor(profile), REPORT_PROSE];
+// THE REVIEW READS WHAT IT ENFORCES. Its manual judges a rating on the framework's own method, at the framework's
+// lowest band and under the framework in force, and its standing lines hold a pharma matter to the field module. It was
+// handed none of them: on a test run with Codex, a review that had not been given the framework went looking for one in
+// folders outside its run. So it reads the writer's own resolved framework and the shared reasoning, and the field module
+// on a pharma matter. The writer's level-specific rules (synthesis-rules.md) and its worked examples stay the writer's.
+const reviewSkillReads = ({ profile, job }) => [
+  "skills/narrative-refutation/SKILL.md", frameworkFor(profile), SPINE_DOC,
+  ...(pharmaMatter(job) ? ["skills/clearance-search/field-doctrine-pharma.md"] : []),
+  REPORT_PROSE,
+];
+
+// Standing rules a stage's opening message states and every follow-up session repeats (`standing` on the stage,
+// read by composeFollowup). Approved word for word on 2026-11-11.
+// The writer's web checks go through the research tool, which keeps the record and the limits. On a test run with Codex,
+// a writer also tried to fetch pages with a script of its own.
+export const WEB_EVIDENCE_ONLY_THROUGH_RESEARCH = "Web evidence comes only through `perplexity_research`; do not fetch pages with a shell command or a script.";
+// The review applies the framework it is handed, and says so when an input is missing rather than looking elsewhere.
+export const REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK = "Apply the frozen risk framework supplied for this run. If it or another required instruction is missing or unreadable, report the missing input; do not search other folders for a replacement.";
 
 // spec-48 C1 — the territories whose legal system scopes the marketplace-risk directive, and whose
 // registration scripts set the script floor. THE SHARED LADDER (effective-scope.mjs resolveTerritories),
@@ -1691,7 +1711,7 @@ export const STAGES = {
         why: "The path is `out: (P) => P.commonLaw`, interpolated into the message by the driver; the summary's counts are the ledger's. No token speaks about the return message at all.",
       },
     },
-    message: ({ paths: P, gridVariants, profile, gridSpecPath, job, intakeAsks }) => {
+    message: ({ paths: P, profile, gridSpecPath, job, intakeAsks }) => {
       // C1 — weight the sweep where use creates RIGHTS (data-derived; "" when unknown)
       const systemScope = marketplaceScopeDirective(scopeTerritories(job, profile));
       // T9 (A2) — the OWNING stage finally receives its committed intake checks (the VENZY
@@ -1708,51 +1728,26 @@ export const STAGES = {
       // WRITES common-law-grid.json from the API response (no truncation, no dropped/mis-keyed cells), and
       // the model only judges the returned candidates. This is the structural cure for both the dense-marketplace
       // truncation and the NOVA PULSE dropped-cell failures (no tier bump would fix the output ceiling).
-      if (gridSpecPath) {
-        return lines(
-          reads(["skills/clearance-common-law/SKILL.md"]),
-          `Inputs: variant manifest ${P.variantManifest}; matter frame ${P.matterContext}.`,
-          systemScope,
-          asksBlock,
-          `Run the marketplace sweep via the DETERMINISTIC grid: call perplexity_research with enable_sandbox:true and grid_spec_path: ${gridSpecPath}. The tool runs EXACTLY the dictated term × platform grid and WRITES the complete ledger to ${P.commonLawGrid} itself.`,
-          `Do NOT author the grid program, do NOT save ${P.commonLawGrid} yourself, and do NOT re-emit the grid JSON in your message (re-emitting is exactly what truncated/dropped cells before). The tool returns only the candidate hits that need judgment.`,
-          `Judge each returned candidate into the fixed taxonomy and write your findings file to ${P.commonLaw} with its Findings, Negative-results matrix, Coverage ledger, and Audit trail sections. The driver validates grid completeness from the ledger the tool wrote — never from your prose.`,
-          // P2-C (Round-2 §8b leg 2) — receipts disposition is a dictated obligation, not skill-prose-only
-          // (the §7 lesson: prose-only contracts get skipped under output pressure; the evidence run listed
-          // its queries and still asserted clean past a recorded cultural-criticism receipt).
-          // — the obligation is unchanged; what was deleted is the TRANSCRIPTION it used to demand
-          // ("the query VERBATIM, one recorded result … title or URL copied exactly"). The driver writes
-          // the form; this names it and the two fields the seat owns, and nothing else.
-          meaningSweepReceiptsInstruction(),
-          CROSS_CHECK_HANDOFF,
-          writeReturn(P.commonLaw),
-        );
-      }
-      // WS-B: the platform grid is DICTATED from the customer profile (single source — the receipts
-      // gate's identity join validates the saved ledger against this same list); the batch ceiling is
-      // derived from the profile's cell floor (Ember Guard 2026-06-12: a 224-cell single grid call
-      // truncated mid-matrix — ~14×7=98 cells/call is the proven-safe budget, scaled per profile).
-      const batch = profile?.batchSize ?? 14;
+      // THE SWEEP RUNS ONLY FROM THE SPEC. A run that sends this stage always has one: every profile carries a platforms
+      // list (profiles.mjs, validateProfileShape), a matter with no variants stops at intake, and a spec that cannot be
+      // derived stops the run (deriveGridSpec). The branch that ordered a hand-written grid program for a run without one
+      // is gone with the program itself, which the manual no longer teaches; a dispatch is pointed at the run's own spec.
+      const specPath = gridSpecPath ?? P.gridSpec;
       return lines(
         reads(["skills/clearance-common-law/SKILL.md"]),
         `Inputs: variant manifest ${P.variantManifest}; matter frame ${P.matterContext}.`,
         systemScope,
         asksBlock,
-        `Run the marketplace sweep as the Step-2 search-as-code grid call (enable_sandbox: true, depth: "pro-search"); judge the per-cell candidates into the fixed taxonomy; the Negative-results matrix carries one receipt row per (variant × platform) cell.`,
-        profile?.platforms?.length ? lines(
-          `PLATFORMS (the grid sweeps EXACTLY these store domains for EVERY variant): ${profile.platforms.join(", ")} — plus ONE unrestricted general-web search per variant (platform name "web").`,
-          `The receipts gate validates every variant against THIS list (count AND identity) — never substitute platforms from memory or skill examples.`,
-        ) : "",
-        gridVariants?.length ? lines(
-          `GRID KEYS (the validator checks EXACTLY these ${gridVariants.length} terms — use each VERBATIM as its Negative-results matrix key; a " / "-packed key may instead carry full per-alternate rows):`,
-          ...gridVariants.map((v) => `- ${v}`),
-          ...(gridVariants.length > batch ? [
-            `BATCHING (MANDATORY at this size — one oversized grid call truncates and fails the run): split the keys into ${Math.ceil(gridVariants.length / batch)} batches of ≤${batch} variants, run ONE grid call per batch (same program, same platforms), and concatenate the matrices. Every batch's stdout is transcribed in full before the next call.`,
-          ] : []),
-          // Machine receipts (post-mortem §1b): the gate validates the saved stdout JSON by exact join on the
-          // keys above — not by re-reading the markdown matrix — whenever this file exists.
-          `MACHINE RECEIPTS (MANDATORY): save the grid call's stdout JSON VERBATIM to ${P.commonLawGrid} — the single stdout object, or a JSON ARRAY of the per-batch stdout objects in batch order when batched. Copy the JSON exactly as the tool returned it (no reformatting, no re-typing, no judging); the driver validates grid completeness from THIS file.`,
-        ) : "",
+        `Run the marketplace sweep via the DETERMINISTIC grid: call perplexity_research with enable_sandbox:true and grid_spec_path: ${specPath}. The tool runs EXACTLY the dictated term × platform grid and WRITES the complete ledger to ${P.commonLawGrid} itself.`,
+        `Do NOT author the grid program, do NOT save ${P.commonLawGrid} yourself, and do NOT re-emit the grid JSON in your message (re-emitting is exactly what truncated/dropped cells before). The tool returns only the candidate hits that need judgment.`,
+        `Judge each returned candidate into the fixed taxonomy and write your findings file to ${P.commonLaw} with its Findings, Negative-results matrix, Coverage ledger, and Audit trail sections. The driver validates grid completeness from the ledger the tool wrote — never from your prose.`,
+        // P2-C (Round-2 §8b leg 2) — receipts disposition is a dictated obligation, not skill-prose-only
+        // (the §7 lesson: prose-only contracts get skipped under output pressure; the evidence run listed
+        // its queries and still asserted clean past a recorded cultural-criticism receipt).
+        // — the obligation is unchanged; what was deleted is the TRANSCRIPTION it used to demand
+        // ("the query VERBATIM, one recorded result … title or URL copied exactly"). The driver writes
+        // the form; this names it and the two fields the seat owns, and nothing else.
+        meaningSweepReceiptsInstruction(),
         CROSS_CHECK_HANDOFF,
         writeReturn(P.commonLaw),
       );
@@ -2736,6 +2731,7 @@ export const STAGES = {
     // depth target was silently absent on many runs. It is now in-context for every synthesis.
     skillReads: ["skills/clearance-search/synthesis-rules.md", "skills/clearance-search/firm-wide-reasoning.md", "skills/clearance-search/risk-framework.md", "skills/clearance-search/worked-examples.md", "skills/clearance-search/report-prose.md"],
     skillReadsFor: synthesisSkillReads,
+    standing: Object.freeze([WEB_EVIDENCE_ONLY_THROUGH_RESEARCH]),
     out: (P) => P.narrative,
     validate: validators.narrative,
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
@@ -2956,6 +2952,8 @@ export const STAGES = {
       // use-dependent finding above the framework's lowest band asserts a use-negative without a searched
       // source line. So actually run the query.
       `USE-CHECK (enforced): run the scoped use check (phase2-execution.md Step 3.5) on EVERY finding banded ${(framework && materialBandPhrase(framework)) || "medium risk or higher"} — the rungs this framework rates medium risk or higher; a lower rung is not checked — and ask in the SAME query for the owner's enforcement record (oppositions, disputes or court actions over this mark or a similar one). ${USE_CHECK_ANSWERS_HELD} After a completed search, use is "confirmed" or "not-confirmed", never "unknown". What the query finds about enforcement is a LEAD under ENFORCEMENT AUTHORITY below: enforcer basis "inferred-from-signal", its URL cited inline in that finding's prose; where it finds none, the enforcer is "low" with basis "inferred-from-signal" and the finding says the search found no enforcement record. ALSO, for EVERY finding whose mitigant/verdict turns on the ABSENCE of use (regardless of its band) ("not in actual use", "unused", "no marketplace use found", non-use revocation/cancellation as the mitigant), run ONE scoped \`perplexity_research\` query (owner + mark + the goods/field) unless an answer this run already holds answers that question, and record its result in that finding's use_check.source: <result URL | "perplexity_research — no result">. Mirror the result into the matching # Actions item (the deferred "confirm the owner's use" becomes a stated result). NEVER assert a use-negative you did not search — an inference from the owner's profile is not a searched result. ${NO_SEARCH_RESULT} ALSO populate that finding's use_check field in findings.json: {"source": "<the result URL | perplexity_research — no result>"}, and with a no-result also "question": "<the research question whose completed answer returned it, word for word as it was asked>" — the structured field is the authoritative cite the report renders from (the prose line is for narrative readability).`,
+      // The route for every web check above: the research tool, never a fetch of the stage's own (standing, so every follow-up repeats it).
+      WEB_EVIDENCE_ONLY_THROUGH_RESEARCH,
       // Spec-v3 A4 — ENFORCED the same way (validators.narrative): own-rights reliance needs its evidence.
       // PR-8 review fix: synthesis holds the FROZEN band, not the live register — and the band is class-
       // and mark-text-scoped to this matter's dispatched slices, so the client's OWN house-mark
@@ -3376,6 +3374,10 @@ export const STAGES = {
     // The reviewer reads the prose manual whose rules it enforces (approved 2026-10-02): the 25-word limit and
     // the word list it applies come from there, and so does the finding sentence's two-sentence limit.
     skillReads: ["skills/narrative-refutation/SKILL.md", "skills/clearance-search/report-prose.md"],
+    // The live read, which every recheck and review after a repair is pointed at too (resolveSkillReads): the run's own
+    // framework and the shared reasoning beside the two manuals above (reviewSkillReads).
+    skillReadsFor: reviewSkillReads,
+    standing: Object.freeze([REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK]),
     out: (P) => P.seniorEyeReview,
     validate: validators.seniorEyeReview,
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
@@ -3430,8 +3432,9 @@ export const STAGES = {
         why: "the items are code-found and driver-fed, so the FINDING is mechanical; what the model owes is the flag, the quote and the verdict consequence. NO TOKEN — unlike the plan-execution table, this driver-fed block has no section gate at all",
       },
     },
-    message: ({ paths: P, intakeAsks, job, registerOnly, profileSelection, placementFloorDecisions, writerExclusions, reviewAddressLines, researchChecks }) => lines(
-      reads(["skills/narrative-refutation/SKILL.md", "skills/clearance-search/report-prose.md"]),
+    message: ({ paths: P, intakeAsks, job, profile, registerOnly, profileSelection, placementFloorDecisions, writerExclusions, reviewAddressLines, researchChecks }) => lines(
+      reads(reviewSkillReads({ profile, job })),
+      REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK,
       // lever 3 — WHICH FINDINGS EARN A GROUNDED PROFILE, chosen by the DRIVER and listed by
       // ordinal. The band is on findings.json before this stage is dispatched, so there is nothing for
       // the seat to judge: unlisted work is never asked for. Empty when every finding is profiled —

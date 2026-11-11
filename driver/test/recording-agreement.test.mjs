@@ -968,6 +968,8 @@ test("a tool named in a multi-reader doc is granted to every reader of it", () =
     // and the section labels are the scoping.
     "skills/clearance-register/SKILL.md names record_register_digest, not held by: register-unit",
     "skills/clearance-register/SKILL.md names register_enumerate, not held by: register-digest",
+    // The approved Unit-mode sentence that names the unit's note tool: the mirror of record_register_digest above.
+    "skills/clearance-register/SKILL.md names record_unit_note, not held by: register-digest",
     "skills/clearance-register/SKILL.md names register_execute_plan, not held by: register-digest",
     "skills/clearance-search/synthesis-rules.md names band_lookup, not held by: report-overview",
     "skills/clearance-search/synthesis-rules.md names band_record, not held by: report-overview",

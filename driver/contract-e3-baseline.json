@@ -17,7 +17,7 @@
     },
     "common-law": {
       "literal-json-skeleton": 0,
-      "exactly-these-keys": 2,
+      "exactly-these-keys": 0,
       "dictated-line-shape": 0
     },
     "common-law-half": {
@@ -189,7 +189,7 @@
     }
   },
   "totals": {
-    "stages": 43,
+    "stages": 41,
     "files": 52
   }
 }

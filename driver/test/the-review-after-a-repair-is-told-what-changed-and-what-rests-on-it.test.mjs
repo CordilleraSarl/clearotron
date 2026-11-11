@@ -100,8 +100,8 @@ test("its closing line says which files the repair changed; every other dispatch
   const ctx = { profile: null, job: {} };
   const out = composeFollowup("narrative-refutation", ctx, { followup: "the review", inputs: ["narrative.md", "register-findings.md"], changedInputs: ["narrative.md", "findings.json"] }).split("\n");
   assert.equal(out.at(-1), "YOUR DECLARED INPUTS, on disk — this dispatch is a fresh session and does not carry them. Since this run's last review, the repair has changed narrative.md and findings.json where listed above; your other inputs have not changed. Open the ones the instruction above turns on (and only those): narrative.md, register-findings.md.");
-  assert.equal(out[0], "METHODOLOGY (reference — this is a correction to work that already exists, NOT an instruction to redo the stage): this stage is held to skills/narrative-refutation/SKILL.md, skills/clearance-search/report-prose.md. Re-read whatever the instruction below turns on.",
-    "it opens with the line every follow-up opens with, naming both manuals");
+  assert.equal(out[0], "METHODOLOGY (reference — this is a correction to work that already exists, NOT an instruction to redo the stage): this stage is held to skills/narrative-refutation/SKILL.md, skills/clearance-search/risk-framework.md, skills/clearance-search/firm-wide-reasoning.md, skills/clearance-search/report-prose.md. Re-read whatever the instruction below turns on.",
+    "it opens with the line every follow-up opens with, naming its manuals");
   const plain = composeFollowup("narrative-refutation", ctx, { followup: "the re-check", inputs: ["narrative.md"] }).split("\n");
   assert.equal(plain.at(-1), "YOUR DECLARED INPUTS, on disk — this dispatch is a fresh session and does not carry them, so open the ones the instruction above turns on (and only those): narrative.md.");
 });
@@ -153,7 +153,7 @@ test("the first full review's message still opens with its whole-review order: i
   // The run directory's paths are joined for the platform, so on Windows the narrative is `\r\narrative.md`.
   const P = paths("/r");
   const msg = STAGES["narrative-refutation"].message({ paths: P, intakeAsks: [], job: {}, registerOnly: false, profileSelection: null });
-  assert.match(msg, /^First, read and follow exactly: skills\/narrative-refutation\/SKILL\.md, skills\/clearance-search\/report-prose\.md\.\n/);
+  assert.match(msg, /^First, read and follow exactly: skills\/narrative-refutation\/SKILL\.md, skills\/clearance-search\/risk-framework\.md, skills\/clearance-search\/firm-wide-reasoning\.md, skills\/clearance-search\/report-prose\.md\.\n/);
   assert.match(msg, new RegExp(`\\nAdversarially refute the narrative ${P.narrative.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")} against the source files:`));
   for (const l of REFUTATION_RECORDING_LINES) assert.ok(msg.includes(l));
 });

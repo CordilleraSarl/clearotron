@@ -280,8 +280,7 @@ For **each finding** in the combined findings set (common-law + register, both l
 
 The staff lawyer makes the final determination. The skill's role is to surface the facts, apply the framework systematically, and flag what matters — not to make conclusive legal judgments.
 
-Per-finding output is the band in the framework's words, with the legal and practical positions.
-- Key Factors (elevation + mitigation factors observed)
+Per-finding output is the band in the framework's words, with the legal and practical positions, which carry the elevation and mitigation factors observed.
 - Cross-Mark Reference (if applicable)
 
 ## Step 4.5 — Case-law grounding

@@ -238,7 +238,7 @@ USPTO records sometimes use country codes beyond ISO-3166:
 | `USFD` | US + Federal address |
 | `PRUS` | Puerto Rico (USPTO context) |
 
-Normalise these to `US` for the Findings sheet's "Owner Country" column (add a note in Key Factors if relevant). Preserve the original code in the audit trail.
+Normalise these to `US` for the owner country. Preserve the original code in the audit trail.
 
 ## Status enum reference (full observed list)
 

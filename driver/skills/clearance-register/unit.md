@@ -235,4 +235,4 @@ emits no clearance verdict.** Each block's `enumerated` / `incomplete` state IS 
 - [ ] Dead records carried forward **with their status** (no date-cutoff drop, no dead-except-identical filter) — `recently-dead` is a status for judgment
 - [ ] Mechanical facts only (live/dead status, class membership read off the record) applied; **no** off-field goods drop
 - [ ] `register-units/<axis>-band.json` written (the named-band array) before return; raw character-noise pile kept in-session
-- [ ] Final message = queries-enumerated count + incomplete-block count + records-carried-forward count + band path (no raw records, no clearance verdict)
+- [ ] Final message = queries-enumerated count + incomplete-block count + records-carried-forward count (no raw records, no clearance verdict)

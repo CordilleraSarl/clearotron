@@ -289,16 +289,20 @@ test("identity join honors the count ladder's carve-outs: partial entries skip; 
 
 // ---- message rendering (the dictation block + the byte-identical anchor) ---------------------------
 
-test("common-law message: profile dictates the PLATFORMS block + derived batching; no profile = legacy shape", () => {
-  const P = { variantManifest: "/r/variant-manifest.md", matterContext: "/r/matter-context.md", commonLaw: "/r/common-law-findings.md", commonLawGrid: "/r/common-law-grid.json" };
+// The profile's platforms reach the grid through the spec the driver writes (deriveGridSpec), and the tool batches the
+// cells itself. The message dictates no platform list and no batch of its own, with a profile or without one: it points
+// the sweep at the run's spec.
+test("common-law message: the profile's platforms ride the spec, never a block the seat re-types", () => {
+  const P = { variantManifest: "/r/variant-manifest.md", matterContext: "/r/matter-context.md", commonLaw: "/r/common-law-findings.md",
+    commonLawGrid: "/r/common-law-grid.json", gridSpec: "/r/_driver/grid-spec.json" };
   const gridVariants = Array.from({ length: 20 }, (_, i) => `v${i}`);
-  const legacy = STAGES["common-law"].message({ paths: P, gridVariants });
-  assert.doesNotMatch(legacy, /PLATFORMS \(/, "no profile → no dictation block (legacy ctx)");
-  assert.match(legacy, /≤14 variants/, "legacy batch ceiling");
-  const acme = STAGES["common-law"].message({ paths: P, gridVariants, profile: { platforms: ACME.platforms, batchSize: 16 } });
-  assert.match(acme, /PLATFORMS \(the grid sweeps EXACTLY these store domains/);
-  assert.match(acme, /alibaba\.com, thomasnet\.com/);
-  assert.match(acme, /≤16 variants/, "batch ceiling derived from the profile");
+  for (const profile of [undefined, { platforms: ACME.platforms, batchSize: 16 }]) {
+    const msg = STAGES["common-law"].message({ paths: P, gridVariants, profile });
+    assert.ok(msg.includes("grid_spec_path: /r/_driver/grid-spec.json"), "the sweep is not pointed at the run's spec");
+    assert.doesNotMatch(msg, /PLATFORMS \(/, "a platform block the seat would re-type");
+    assert.doesNotMatch(msg, /≤\d+ variants/, "a batch ceiling the tool owns");
+    assert.doesNotMatch(msg, /alibaba\.com/, "the profile's platforms were dictated in the message");
+  }
 });
 
 test("matter-frame message: byte-identical for an empty profile (the anchor); defaults + gated exclusion seed render when present", () => {

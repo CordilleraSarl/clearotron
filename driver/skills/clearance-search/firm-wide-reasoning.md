@@ -50,7 +50,7 @@ The staff lawyer's rule: "It is always considered as a risk mitigating factor wh
 
 **Standard `legal_position` and `practical_position` statement:** "Registration covers [G&S text]. Owner's identifiable commercial use is [description / not found]. Registration [is / does not appear to be] vulnerable to partial revocation in [specific classes/goods] on non-use grounds."
 
-Note: revocability does NOT automatically change the band. It is a mitigating factor for the staff lawyer to weigh alongside actual use evidence (see Filed-vs-used rule above). The combination of no identifiable use AND revocability vulnerability is the strongest basis for a mitigation argument. A recent renewal does NOT cure non-use vulnerability and is not evidence of use — do not let a renewal date remove the vulnerability assessment.
+Note: revocability does NOT automatically change the band. It is a mitigating factor for the staff lawyer to weigh alongside actual use evidence (whether the owner is found using the mark for the goods it filed; use not found does not by itself lower the band). The combination of no identifiable use AND revocability vulnerability is the strongest basis for a mitigation argument. A recent renewal does NOT cure non-use vulnerability and is not evidence of use — do not let a renewal date remove the vulnerability assessment.
 
 **Canadian official marks exception:** Non-use revocation does not apply to Canadian official marks under s. 9 of the Canadian Trademarks Act. See *Canadian official marks* under Firm-wide reasoning discipline below.
 
