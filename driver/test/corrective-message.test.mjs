@@ -88,10 +88,12 @@ test("J1b: named_band_state_invalid names the bad state, dictates the in-place q
   assert.match(m, /NOT re-call register_execute_plan/, "the executor merge preserves the defect — the retry must not re-invoke it");
 });
 
-test("J3b: plan_audit_missing dictates the exact section title and keeps the verdict-first shape", async () => {
+test("J3b: plan_audit_missing asks for the audit on the typed route or as the exact section, and keeps verdict and flags", async () => {
   const m = correctiveMessage("Refute.", 2, "invalid_file:run/senior-eye-review.md:plan_audit_missing", "/x/run/senior-eye-review.md");
-  assert.match(m, /"PLAN-EXECUTION CHECK"/, "the exact required section title is dictated");
-  assert.match(m, /FIRST line/, "the verdict-first contract is restated");
+  assert.match(m, /"PLAN-EXECUTION CHECK"/, "the exact required section title is dictated for a review saved by rewriting its file");
+  assert.match(m, /make sure your review carries a plan audit: audit the /, "the hint does not read as the end state its wrapper asks for");
+  assert.match(m, /`plan_audit` in a new `record_narrative_refutation` call/, "the typed route is not named");
+  assert.match(m, /Keep your verdict and flags as they were/, "the review's verdict and flags are not kept")
   // — the grading is asserted BY THE LITERAL, not by a phrase retyped here. This line used to read
   // `/skipped fringe is sanctioned/`, which is the same defect the hint had: a fourth copy of one rule,
   // in a test, quietly deciding what "sanctioned" means. Now the repair turn and the two dispatch blocks
