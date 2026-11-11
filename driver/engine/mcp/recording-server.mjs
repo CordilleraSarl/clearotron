@@ -1259,7 +1259,7 @@ serve({
               registerEstimate: { type: "string" },
               parodyNote: { type: ["string", "null"] },
               crowdedField: { type: "boolean" },
-              purpleNotes: { type: "array", items: { type: "string" }, description: "Reviewer notes appear on the report page and are removed on export." },
+              purpleNotes: { type: "array", items: { type: "string" }, description: "The report never prints a note; it reaches the audit workbook and the assistant." },
               // — DECLARED HERE OR IT IS FOLKLORE.
               //
               // Both fields were built end to end for — instructed in the dispatch,

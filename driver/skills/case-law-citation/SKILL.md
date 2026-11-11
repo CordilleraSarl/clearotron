@@ -35,8 +35,7 @@ Boards-of-Appeal decisions — no API wired here today). EUIPO *register* lookup
 
 ## Scope — light and targeted
 
-Ground **only** the watchlist / aggressive-enforcer hits flagged in synthesis
-— not every finding. Grounding all findings is slow and low-signal. Expect a small batch,
+Ground **only** the watchlist or aggressive-enforcer claims you selected from the narrative — not every finding. Grounding all findings is slow and low-signal. Expect a small batch,
 typically a handful per search.
 
 ## Source selection
@@ -112,8 +111,7 @@ true of every citation always.
 ## Coverage gaps — state them
 
 Name what you did not search, rather than implying completeness. Common gaps:
-- **TTAB administrative proceedings** (oppositions, cancellations, ex parte) are **not** in CourtListener
-  — that source covers US federal opinions incl. CAFC only. TTABVUE is a separate, not-yet-wired source.
+- CourtListener covers US federal and state court opinions, including CAFC. Its jurisdiction list includes TTAB, but that listing does not establish coverage of a particular TTAB decision or proceeding. TTABVUE is a separate source not wired into this stage. Where the required TTAB material has not been retrieved and verified, record the coverage gap.
 - **EU court judgments** (CJEU / General Court) are covered verbatim via [sources/eurlex.md](sources/eurlex.md),
   but it has **no keyword search** — recall depends on having a case name/number lead (state when you had
   none). **EUIPO Boards-of-Appeal decisions** have no API wired here and are not searched.
