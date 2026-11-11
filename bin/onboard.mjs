@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// clearotron install / clearotron doctor — one install from a fresh clone to a first real run.
+// clearotron install / clearotron doctor — one install, from nothing to a first real run.
 //
 //   npx clearotron install                    the wizard: one decision at a time, Enter takes the default
 //   npx clearotron doctor                     report what this machine is configured for. Writes NOTHING.

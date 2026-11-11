@@ -13,6 +13,7 @@
 //                                        n+1 and the client door n+2 unless each is set explicitly
 //   npx clearotron start --demo           the demo posture: own data directory, nothing persisted
 //   npx clearotron start --no-worker      do not drain the queue here; run the worker yourself
+//   npx clearotron start --background     run as services that survive closing the terminal; `clearotron stop` stops them
 //   npx clearotron start --help
 //
 // It is NOT `npm run example`. Demo replays a frozen example report with no credentials, no model and no

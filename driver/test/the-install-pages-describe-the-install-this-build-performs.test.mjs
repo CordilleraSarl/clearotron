@@ -87,7 +87,7 @@ test("the install pages leave installing the reasoning program to setup", () => 
   "INSTALL.md §1 no longer opens the reasoning program with the approved paragraph");
   // "Offers": setup asks before it installs anything, and says first how much space the program takes. The
   // line lived in INSTALL.md's WSL2 steps until native Windows ran; the quickstart carries it now.
-  assert.match(read("QUICKSTART.md"), /^\s*npx clearotron install {2}# offers to install the reasoning program if the machine has none, and shows you how to sign it in$/m,
+  assert.match(read("QUICKSTART.md"), /^\s*npx clearotron install {2}# in a terminal: it asks one question at a time, offers to install the reasoning program if the machine has none, and shows you how to sign it in$/m,
     "the quickstart's install line no longer says that setup offers to install the program");
   assert.match(flat(one), /the program setup installed \(doctor prints its path\), or `claude` if the machine has its own/,
     "the sign-in table still sends the reader to a `claude` command that setup's copy does not put on PATH");
@@ -161,7 +161,7 @@ test("the quickstart's install line says what it installs", () => {
   assert.ok(block, "QUICKSTART.md has no bash block under ## Install");
   // INSTALL.md §1 carried the same line in its WSL2 steps, and the two were held together. Those steps
   // went when native Windows ran, so the line is held here, route and comment both.
-  assert.ok(block[1].split("\n").includes("npx clearotron install  # offers to install the reasoning program if the machine has none, and shows you how to sign it in"),
+  assert.ok(block[1].split("\n").includes("npx clearotron install  # in a terminal: it asks one question at a time, offers to install the reasoning program if the machine has none, and shows you how to sign it in"),
     "QUICKSTART.md's install block does not say that the install command installs the reasoning program");
   // Still a block a reader can paste: every line is a command, with at most a comment after it.
   for (const line of block[1].trim().split("\n"))
@@ -392,4 +392,21 @@ test("the pages say doctor contacts nothing outside this machine, not that it ca
     assert.match(text, /[Ww]rites nothing and contacts nothing outside this machine/, `${page} does not say what doctor reaches`);
     assert.doesNotMatch(text, /calls nobody/, `${page} still says doctor calls nobody`);
   }
+});
+
+test("the guides and the help say what the walk found, in the words approved for them", () => {
+  // Measured in a stranger walk of a beta, 2026-11-10: setup needs a terminal and no guide said so; INSTALL §2 named
+  // `npx` after a global install; INSTALL §3 called an engine turn free that §1 says costs one; QUICKSTART went
+  // straight to a doctor that spends; §2a called a folder a record and left an empty one behind; `install --help` spoke of a clone; `start --help` left out --background.
+  const quick = read("QUICKSTART.md"), install = flat(read("INSTALL.md"));
+  assert.match(quick, /^clearotron doctor {2}# reads only; add --probe-engine to spend one cheap turn proving the AI$/m);
+  assert.doesNotMatch(quick, /^clearotron doctor --probe-engine$/m, "the quickstart still sends a newcomer straight to a turn that spends");
+  assert.match(install, /`npm install -g clearotron`, then `clearotron install`\. For the beta,/);
+  assert.match(install, /checks what it can check before it writes anything — one cheap engine turn, an EUIPO token exchange, and an offered \(not assumed\) Perplexity ping — and never touches a path you did not name\./);
+  assert.doesNotMatch(install, /without billing you/, "§3 still calls the engine turn free");
+  assert.match(install, /`~\/\.config\/clearotron\/running`, a folder holding one small file for each product running in a terminal\./);
+  assert.match(install, /Delete the folder to remove it, and `~\/\.local\/share\/clearotron` too once it is empty\./);
+  const help = (p) => read(p).split("\n").filter((l) => l.startsWith("//")).join("\n");
+  assert.match(help("bin/onboard.mjs"), /one install, from nothing to a first real run\./);
+  assert.match(help("bin/start.mjs"), /npx clearotron start --background {5}run as services that survive closing the terminal; `clearotron stop` stops them/);
 });

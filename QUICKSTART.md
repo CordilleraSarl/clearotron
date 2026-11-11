@@ -32,8 +32,8 @@ it from, and closing the window stops it.
 ## Install
 
 ```bash
-npx clearotron install  # offers to install the reasoning program if the machine has none, and shows you how to sign it in
-clearotron doctor --probe-engine
+npx clearotron install  # in a terminal: it asks one question at a time, offers to install the reasoning program if the machine has none, and shows you how to sign it in
+clearotron doctor  # reads only; add --probe-engine to spend one cheap turn proving the AI
 ```
 
 `install` puts the program under `~/.local` and needs no root, and every command after it here uses the
