@@ -1812,7 +1812,9 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // drawn where it stands. Not licence-only, so this constant moves with the other one.
 // Advanced again by the break recorded above the FROZEN constant: the gauge's heading and its scale's name are two
 // blocks. Not licence-only, so this constant moves with the other one.
-const FROZEN_BEFORE_SPDX = "c2a20193dcfa57261f63e1ff9f4a34236c3ecec474aeb80b0241f1df19cf9fb0";
+// Advanced again by the break recorded above the FROZEN constant: the run's own common-law search record is named in
+// words. Not licence-only, so this constant moves with the other one.
+const FROZEN_BEFORE_SPDX = "7e135f4051f05f83e22a0cb69b29ebd717d7b842549690048a4078e6e151d73f";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2830,7 +2832,23 @@ const FROZEN_BEFORE_SPDX = "c2a20193dcfa57261f63e1ff9f4a34236c3ecec474aeb80b0241
 //   2. Could it live in report.css or brand.mjs? The spacing did, in report.css. Which element holds the name could
 //      not: a stylesheet cannot split one element into two.
 //   3. Why it had to move here: the gauge is composed in this file and nowhere else.
-const FROZEN = "bb5a47605b59f7e6efb75c298b3db4022f554de3c228c347e90c6dbf94f70dce";
+//
+// ── BREAK (2026-11-11 — the run's own common-law search record is named in words) ─────────────────────────────────
+//
+// WHAT MOVED: a row of the web and marketplace names that the assessing model backed with the run's own search ledger
+// carried that file's name where a web address would be, and the page printed it as a link to nowhere:
+// "common-law-grid.half-b.json". A reference positively identified as that ledger (`common-law-grid.json` or one of
+// its half ledgers) now reads "the run's own common-law search record", the words design approved (2026-11-11). Any
+// other source keeps its exact reference, and the run's record and the audit keep the original.
+//
+// THE THREE QUESTIONS.
+//   1. Reachable from republish? Yes, for a run whose web names cite the ledger. Measured with
+//      driver/test/snapshot/publish-compare.mjs, the four demo runs through the previous tree and this one: one
+//      difference, the full country demo's report.html, where that one row changes (82 bytes of link become 64 of
+//      text, derived from the row's markup on each tree). The other three demos publish byte-identical.
+//   2. Could it live in report.css or brand.mjs? No: it decides what a row says.
+//   3. Why it had to move here: the row is composed in this file and nowhere else.
+const FROZEN = "0a8c4478c9dbb4b4aca51885027d56cc6b7cb3888a421c8320117423ba551949";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

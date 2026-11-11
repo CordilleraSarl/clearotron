@@ -1836,16 +1836,16 @@ if (isMain) {
   // snapshot could not be written", naming a deployed server's archive path, followed by the portal
   // saying its configuration page cannot answer. Exactly the reader the paragraph above names.
   //
-  // ONLY IN DEMO MODE. On a real start an operator's own `CLEAROTRON_REPORTS_DIR` deliberately wins
-  // over the computed path (see the resolution site), and forcing `paths.pool` here would overrule
-  // them. `envs.worker` is the shared block — the install's paths in both spellings and nothing
-  // else — so engine and provider identity still resolve from the real environment and report,
-  // honestly, that a demo carries no credentials.
+  // A REAL START HANDS IT THE SAME PATHS, for the same reason. On an install with no settings yet, the
+  // snapshot read an environment that named no pool and printed the hosted-archive refusal on the first
+  // screen, while every service this command started had been handed the install's pool. An operator's own
+  // `CLEAROTRON_REPORTS_DIR` still wins: `startPaths` applies it before anything here reads `paths.pool`.
+  // A reader that resolves no paths of its own (doctor, the services, the commands) still meets the refusal.
+  // `envs.worker` is the shared block — the install's paths in both spellings and nothing else — so engine
+  // and provider identity still resolve from the real environment and report, honestly, what is missing.
   try {
     const { writeFlagSnapshot } = await import("../driver/flag-snapshot.mjs");
-    const { path } = await writeFlagSnapshot(DEMO
-      ? { quiet: true, env: { ...process.env, ...envs.worker }, poolRoot: paths.pool }
-      : { quiet: true });
+    const { path } = await writeFlagSnapshot({ quiet: true, env: { ...process.env, ...envs.worker }, poolRoot: paths.pool });
     say(`  configuration snapshot: ${path}`);
   } catch (e) {
     err(`  WARNING: the configuration snapshot could not be written (${String(e?.message ?? e)}).`);

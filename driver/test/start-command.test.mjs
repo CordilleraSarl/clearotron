@@ -397,10 +397,10 @@ test("Refs tracker issue 2015 the demo hands the snapshot writer its own pool an
   const callAt = src.search(/writeFlagSnapshot\s*\(/);
   assert.ok(callAt > 0, "no writeFlagSnapshot call in bin/start.mjs — this arm has lost its subject");
   const call = src.slice(callAt, callAt + 320);
-  assert.match(call, /\bDEMO\b/,
-    "the snapshot call no longer distinguishes the demo. A demo writes no .env, so this process carries "
-    + "no pool, config.poolRoot throws by name, and the demo's configuration page goes back to saying it "
-    + "cannot answer — on the one install whose reader has never run anything");
+  // EVERY START HANDS THEM OVER NOW, the demo among them. A real start on an install with no settings yet met the
+  // same refusal on its first screen, so the call no longer asks which kind of start it is (design, 2026-11-11). An
+  // operator's own pool still wins: `startPaths` applies it before `paths.pool` is read. What this arm guards is
+  // unchanged: the call hands over the pool and the environment, or a demo's snapshot is not written.
   assert.match(call, /poolRoot:\s*paths\.pool/,
     "the demo's call hands over no poolRoot, so the writer falls back to config.poolRoot and throws");
   assert.match(call, /env:\s*\{[^}]*envs\.worker/,

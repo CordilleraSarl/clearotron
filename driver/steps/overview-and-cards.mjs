@@ -337,10 +337,7 @@ export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWri
       // filename is the title again in machine form. Both are DROPPED from the client surface; both
       // are still recorded, in `run.jsonl`'s methodology-witness and `_driver/methodology-read.json`,
       // which is where anyone asking "which revision rated this run" is actually looking.
-      const fw = pr.frameworkPath
-        ? `custom framework: ${ctx.framework?.title ?? basename(String(pr.frameworkPath))}`
-        : "generic default framework";
-      injectFrontMatter(P.report, { rated_under: `${pr.name ?? pr.profileKey} · ${fw}` }, run.runDir);
+      injectFrontMatter(P.report, { rated_under: ratedUnderLine(pr, ctx.framework) }, run.runDir);
       // spec 62 — beside the framework disclosure, name WHICH PROJECT rated this run (the customer's own
       // display name in parentheses), plus the per-field configuration-provenance rows (rendered internal-only
       // in the scope fold). Omitted entirely for a no-project run (pr.projectKey absent).
@@ -886,4 +883,17 @@ export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWri
     if (!auditWrittenThisPass) withdrawSupersededAudit(P, "audit-build-failed", { keep: !earlierPairKept });
   }
   return { applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, findingsForCards, groupedMembers, overviewOpen, rebuildTheDeliveredRecord, restoreTheBrokenRecord, rov, writeScopeFacts, writeUps };
+}
+
+/**
+ * The footer's "Rated under" line: the company, then the scale that rated the run. A customer's own scale is named as
+ * its own. The house scale is named by the title the run froze, as the gauge names it: a new run says "Standard risk
+ * scale", and a run frozen under an older title keeps that title. With no frozen title the earlier words stand. PURE.
+ */
+export function ratedUnderLine(profile, framework) {
+  const title = typeof framework?.title === "string" && framework.title.trim() ? framework.title.trim() : null;
+  const scale = profile?.frameworkPath
+    ? `custom framework: ${framework?.title ?? basename(String(profile.frameworkPath))}`
+    : title ?? "generic default framework";
+  return `${profile?.name ?? profile?.profileKey} · ${scale}`;
 }
