@@ -2440,8 +2440,8 @@
           "todos": 0
         },
         "a-stage-standing-rule-reaches-every-session.test.mjs": {
-          "tests": 5,
-          "asserts": 12,
+          "tests": 6,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
