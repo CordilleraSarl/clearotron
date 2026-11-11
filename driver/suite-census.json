@@ -3419,7 +3419,7 @@
         },
         "common-law-receipts.test.mjs": {
           "tests": 42,
-          "asserts": 148,
+          "asserts": 145,
           "skips": 0,
           "todos": 0
         },
