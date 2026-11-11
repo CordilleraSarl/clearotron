@@ -127,7 +127,6 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
         // having no report at all while carrying three. reportsOf() reads the published list and answers
         // `report.html` for a run that predates it, which is every archived run and every clearance.
         const docs = reportsOf(meta).filter((r) => existsSync(join(poolRoot, name, r.file)));
-        const hasReport = docs.length > 0;
         const { bands, toneFor } = ladderOf(meta);
         const band = meta.overall ?? null;   // the rating; a meta's retired `verdict` held the reviewer's sign-off on the full-search lane
         out.push({ runId: meta.runId ?? name, account: owner, ...(owner === "generic" ? { organisation: meta.organisation ?? null } : {}),

@@ -14,7 +14,7 @@ import { STDIO_SHAPES, stdioConnectFor, stdioConnectOffer } from "../../shared/s
 import { isWsl, wslTarget } from "../../shared/wsl.mjs";
 import { isDemo } from "../demo-posture.mjs";
 import { claudeNamer } from "../engine/probe.mjs";
-import { assertPrincipal, PortalDeny, seesEverything } from "../portal-access.mjs";
+import { assertPrincipal, seesEverything } from "../portal-access.mjs";
 
 export async function connectRoutes({ demo, audit, auditLog, INSTALL_ROOT, connectCaches }, { method, parts, identity, principal, body }) {
   // ── ONE READING OF THE CONNECTOR'S OWN DOOR, CACHED ────────────────────────────────────────────────

@@ -5,7 +5,6 @@
 //
 // One of the portal service's route groups, moved out of its dispatcher unchanged; makePortalService says how it asks them.
 import { join } from "node:path";
-import { engineCommit } from "../engine-build.mjs";
 import { appendFlag, feedbackDir, MAX_WHY, VERDICTS } from "../feedback-store.mjs";
 import { assertPrincipal, mayReadRun } from "../portal-access.mjs";
 import { readJson } from "../run-record.mjs";

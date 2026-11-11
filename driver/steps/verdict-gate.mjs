@@ -7,7 +7,6 @@
 // because this module must not import that one back; each moves here when the other phases that share it have moved.
 import { paths } from "../run-record.mjs";
 import { runRecordLogPath } from "../../providers/_shared/ledger-path.mjs";
-import { driverDir } from "../../shared/driver-dir.mjs";
 import { decideRegisterGap } from "../coverage-ledger.mjs";
 import { plainDirective } from "../deferral-row.mjs";
 import { UNREACHABLE_SENIOR_POLICY } from "../driver.config.mjs";

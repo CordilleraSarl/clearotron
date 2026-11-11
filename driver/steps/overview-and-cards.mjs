@@ -6,7 +6,7 @@
 // One phase of a run, moved out of pipelineInner unchanged. `helpers` are functions still held in pipeline.mjs, handed in
 // because this module must not import that one back; each moves here when the other phases that share it have moved.
 import { atomicWrite, paths } from "../run-record.mjs";
-import { driverDir, ensureDriverDir } from "../../shared/driver-dir.mjs";
+import { ensureDriverDir } from "../../shared/driver-dir.mjs";
 import { applyAskClosure, deriveAsks, finalizeOpenHandoffs, summarizeAsks } from "../ask-ledger.mjs";
 import { mintCommonLawCarryDoubts } from "../commonlaw-carry.mjs";
 import { readDeclinations } from "../declination-tool.mjs";

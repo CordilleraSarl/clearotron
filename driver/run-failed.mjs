@@ -446,7 +446,6 @@ export async function endTheFailedRun({ P, agent, ctx, e, job, run, product = CL
   {
     try {
       const runId = `${run.slug}-${run.date}-${run.codename}`;   // ONE canonical runId form (charter P1 §3) — matches status.runId
-      const mark = job.markName ?? job.name ?? job.ref ?? "the matter";
       // The packet carries the FULL code-authored notice (terminal-kind sentence, verbatim
       // machine reason, attempted repairs, burned recovery attempts) — the courier relays it verbatim,
       // so the requester reads the honest diagnosis, not a thin one-liner. `text` stays as the short

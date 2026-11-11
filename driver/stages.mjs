@@ -14,7 +14,7 @@
 // per-stage `stallSec` (the standalone engine's zero-streamed-tokens watchdog) so deep thinking is not
 // false-killed by the tight global default. Models are friendly aliases; gateway.resolveModel() maps to full ids.
 
-import { join, basename } from "node:path";
+import { basename } from "node:path";
 import { researchAnsweredBlock, NO_SEARCH_RESULT, RESEARCH_AFTER_REVIEW_MD } from "./research-answers.mjs"; import { reviewResearchLine } from "./research-checks.mjs"; import { savedFindingsBlock } from "./saved-findings-block.mjs";   // the research an earlier attempt got, and the findings it saved, handed to a later one
 import { awaitsReadingTurn } from "../providers/_shared/plan-guards.mjs";   // — a guard the dictation misreads is a question the model never knows it may ask
 import { isNonLatinTerm } from "../providers/_shared/script-form.mjs";

@@ -5,7 +5,7 @@
 //
 // One phase of a run, moved out of pipelineInner unchanged. `helpers` are functions still held in pipeline.mjs, handed in
 // because this module must not import that one back; each moves here when the other phases that share it have moved.
-import { driverDir, ensureDriverDir } from "../../shared/driver-dir.mjs";
+import { ensureDriverDir } from "../../shared/driver-dir.mjs";
 import { orderSnapshot } from "../accepted-order.mjs";
 import { recordSpan } from "../attributed-span.mjs";
 import { config, preflightCredentials, preflightEngineBinary, preflightFreeSpace, preflightResearchCredential, REGISTER_PROVIDER } from "../driver.config.mjs";
