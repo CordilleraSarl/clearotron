@@ -21,7 +21,6 @@ const EXAMPLES = {
   connotation_call_never_made: "invalid_file:x.json:connotation_call_never_made",
   connotation_call_truncated: "invalid_file:x.json:connotation_call_truncated",
   connotation_call_schema_violation: "invalid_file:x.json:connotation_call_schema_violation",
-  connotation_no_ruling: "invalid_file:x.json:connotation_no_ruling",
   connotation_call_partial: "invalid_file:x.json:connotation_call_partial",
   meaning_angles_missing: "invalid_file:matter-frame.json:meaning_angles_missing",
   own_rights_missing: "invalid_file:findings.json:own_rights_missing",

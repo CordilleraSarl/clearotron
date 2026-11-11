@@ -38,19 +38,6 @@ function ensured(message) {
   return m[1];
 }
 
-test("unruled rows: the model is told to ensure they ARE recorded — through the tool, never a file", () => {
-  // B: `no_ruling` is a form-era token this engine no longer mints, kept actionable for runs parked
-  // under the previous engine. The requirement it states is the tool route.
-  const msg = warmPatchMessage(TOK("connotation_no_ruling:no_ruling=34;Q-ABCDEFGH [Q gang],X-JKMNPQRS [https://e.example/a]"), [FILE]);
-  const clause = ensured(msg);
-  assert.match(clause, /every remaining meaning obligation is recorded through the `record_dispositions` tool/,
-    "names the end state the model must reach — and the ROUTE, which is the one thing R6 was never told");
-  assert.ok(!/rows are UNRULED|carries no ruling/.test(clause),
-    "the clause after `ensure` must not be the defect — that shipped once and read as an instruction to leave them unruled");
-  assert.match(msg, /already recorded is KEPT/i, "the seat is told its earlier work is kept");
-  assert.match(msg, /Record rulings ONLY by calling/, "and the patch orders the call, never a file edit");
-});
-
 test("a damaged row: the model is told to ensure the receipts come from the row's own candidates", () => {
   const msg = warmPatchMessage(TOK("connotation_form_damaged:form_damaged=1;receipt_id R-ZZZZZZZZ is not a candidate of row Q-ABCDEFGH"), [FILE]);
   const clause = ensured(msg);
@@ -75,8 +62,8 @@ test("no composed hint opens by asserting its own defect", () => {
     /^your PR \/ reputational section claims a clean meaning/,
   ];
   const TOKENS = [
-    "connotation_no_ruling:no_ruling=4;Q-ABCDEFGH [Q gang]",
-    "connotation_no_ruling:no_ruling=62;Q-ABCDEFGH [Q gang],X-JKMNPQRS [https://e.example/c] (+60 more)",
+    "connotation_call_partial:call_partial=4;Q-ABCDEFGH [Q gang]",
+    "connotation_call_partial:call_partial=62;Q-ABCDEFGH [Q gang],X-JKMNPQRS [https://e.example/c] (+60 more)",
     "connotation_form_damaged:form_damaged=1;receipt_id R-ZZZZZZZZ is not a candidate of row Q-ABCDEFGH",
     "connotation_search_missing",
   ];
@@ -92,7 +79,7 @@ test("the caller's full stop is not doubled", () => {
   // — the multi-family composition is gone with the six causes it composed: one token, one remedy.
   // The property that outlived it is the one that produced a live dispatch reading two sentences run
   // together — the caller composes `… ensure ${hint}.` and owns the final stop.
-  for (const t of ["connotation_no_ruling:no_ruling=1;Q-ABCDEFGH [Q gang]",
+  for (const t of ["connotation_call_partial:call_partial=1;Q-ABCDEFGH [Q gang]",
                    "connotation_form_damaged:form_damaged=1;bad row",
                    "connotation_search_missing"]) {
     const h = correctionHint(TOK(t));

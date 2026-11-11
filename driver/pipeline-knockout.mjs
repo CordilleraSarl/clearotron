@@ -119,7 +119,7 @@ function attachKnockoutFramework(ctx) {
   if (raw != null) {
     try { ctx.framework = parseFrameworkManifest(raw); }
     catch (e) { throw new Error(`_driver/framework.json is corrupt (${e.message}) — investigate; the frozen framework is never silently re-derived`); }
-    readBackLadder(ctx, sidecarPath, { minted: false });
+    readBackLadder(sidecarPath);
     // The method is read back with the manifest it was frozen beside, never loaded fresh on a resume.
     ctx.frameworkMethod = attachFrameworkMethod({ frozenPath: driverDir(ctx.paths.runDir, FROZEN_METHOD_FILE),
       resolve: (rel) => config.resolveSkillPath(rel), fwPath, manifest: ctx.framework, minted: false });
@@ -137,7 +137,7 @@ function attachKnockoutFramework(ctx) {
   atomicWrite(sidecarPath, JSON.stringify(manifest, null, 2) + "\n");
   runLog(ctx.paths.runDir, { event: "framework", key: manifest.framework_key, custom: fwPath !== TRIAGE_FRAMEWORK, lane: "knockout", bands: manifest.bands.map((b) => b.label).join("/"),
     method: ctx.frameworkMethod ? methodPathFor(fwPath) : null });
-  readBackLadder(ctx, sidecarPath, { minted: true });
+  readBackLadder(sidecarPath);
 }
 
 // ── — READ THE LADDER BACK THE WAY ITS CONSUMER READS IT, AT THE ONE MOMENT IT IS FREE ─────────
@@ -153,31 +153,16 @@ function attachKnockoutFramework(ctx) {
 // not travel — check-what-enforces, not what declares. Checking here costs no model call: this runs before
 // any assess dispatch.
 //
-// TWO DISPOSITIONS, because it is not the same fault in both directions:
-//   MINTED — the driver wrote the file itself, moments ago, from a manifest it had already parsed. If it
-//     cannot read its own ladder back, the driver is contradicting itself and nothing downstream is
-//     trustworthy. Hard fail, before a paid turn.
-//   PRE-EXISTING (a resume, or an archived run replayed) — those bytes predate this process and may
-//     predate this shape. its own "not claimed" names exactly this risk: a replay turning red is how
-//     this fix would go wrong. So it is LOUD and it does not stop the run.
-export function readBackLadder(ctx, sidecarPath, { minted }) {   // exported for its test: both dispositions are driven directly
+// ONE DISPOSITION. The driver wrote the file from a manifest it had already parsed: on this pass when it froze
+// the framework, or on an earlier pass of the same build when this is a resume, since a run started on another
+// build is not resumed. If it cannot read its own ladder back, the driver is contradicting itself and nothing
+// downstream is trustworthy. Hard fail, before a paid turn.
+export function readBackLadder(sidecarPath) {   // exported for its test
   let bands = null;
   try { bands = JSON.parse(readFileSync(sidecarPath, "utf8"))?.bands; } catch { /* handled below */ }
   const ladder = Array.isArray(bands) ? bands.map((b) => String(b?.label ?? "")).filter(Boolean) : [];
   if (ladder.length) return;
-  const detail = `${sidecarPath} does not read back as a band ladder, so knockoutAssessChunk's three band checks would pass every rating unchecked`;
-  if (minted) throw new Error(`knockout_ladder_unreadable: ${detail} — the driver wrote this file itself from a parsed manifest, so this is a driver fault and no seat can fix it`);
-  // THE RECORDING CANNOT BE WHAT STOPS THE RUN. `runLog` → appendLine() in log.mjs (:11) does an unguarded
-  // mkdirSync + appendFileSync: on EACCES or a full disk it THROWS. Everywhere else in the driver that is
-  // the accepted behaviour, but not here — this branch exists precisely to keep a pre-existing run alive,
-  // and a throw out of it would take down the run it is written to spare, for a reason unrelated to
-  // frameworks. The note still fires either way: stderr is the one sink that does not touch the disk.
-  try {
-    runLog(ctx.paths.runDir, { event: "knockout-ladder-unreadable", path: sidecarPath, lane: "knockout", minted: false });
-  } catch (e) {
-    note(`knockout-ladder-unreadable could not be written to run.jsonl (${String(e?.message ?? e).slice(0, 80)}) — the finding below still stands`);
-  }
-  note(`_driver/framework.json does not read back as a band ladder — the knockout band checks will not constrain this run's ratings. The file predates this process, so the run continues; investigate before trusting its bands.`);
+  throw new Error(`knockout_ladder_unreadable: ${sidecarPath} does not read back as a band ladder, so knockoutAssessChunk's three band checks would pass every rating unchecked — the driver wrote this file itself from a parsed manifest, so this is a driver fault and no seat can fix it`);
 }
 
 // ── koStage: the slim lane's stage runner — skip-if-output-valid (the stageOnce pattern), one
@@ -1149,10 +1134,8 @@ export async function knockoutInner(ctx, job, opts = {}) {
         // the stage re-runs (otherwise the re-sweep was billed for nothing and the fresh payload never read).
         if (recovered.length) {
           for (let c = 0; c < chunks.length; c++) {
-            // Both locations: a stale chunk left at the pre-relocation path must be invalidated too, or a
-            // resumed run reads the STALE one through the fallback below and the re-sweep is billed for nothing.
-            if (chunks[c].some((m) => recovered.includes(m.name)) && (existsSync(K.assessChunk(c)) || existsSync(K.assessChunkLegacy(c)))) {
-              try { for (const f of [K.assessChunk(c), K.assessChunkLegacy(c)]) if (existsSync(f)) rmSync(f); runLog(run.runDir, { event: "knockout-assess-invalidated", chunk: c, recovered: chunks[c].filter((m) => recovered.includes(m.name)).map((m) => m.name) }); } catch { /* best-effort */ }
+            if (chunks[c].some((m) => recovered.includes(m.name)) && existsSync(K.assessChunk(c))) {
+              try { rmSync(K.assessChunk(c)); runLog(run.runDir, { event: "knockout-assess-invalidated", chunk: c, recovered: chunks[c].filter((m) => recovered.includes(m.name)).map((m) => m.name) }); } catch { /* best-effort */ }
             }
           }
         }
@@ -1166,10 +1149,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
           const merged = { schema_version: 1, framework: null, batch: null, cardOrder: KNOCKOUT_CARD_ORDER, marks: [] };
           const summaries = [];
           for (let c = 0; c < chunks.length; c++) {
-            // READ prefers the new location and falls back to the pre-relocation one, so a run whose chunks
-            // were written before the move (or through the Bash bypass closed) resumes without paying for
-            // a re-dispatch. Nothing writes the legacy path any more — see stages-knockout.mjs.
-            const chunkPath = existsSync(K.assessChunk(c)) ? K.assessChunk(c) : K.assessChunkLegacy(c);
+            const chunkPath = K.assessChunk(c);
             const part = JSON.parse(readFileSync(chunkPath, "utf8"));
             if (c === 0) { merged.framework = part.framework ?? { source: ctx.framework.framework_key, ladder: ctx.framework.bands.map((b) => b.label) }; merged.batch = part.batch ?? null; }
             if (typeof part.chunkSummary === "string" && part.chunkSummary.trim()) summaries.push(part.chunkSummary.trim());

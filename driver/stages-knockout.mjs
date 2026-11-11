@@ -112,10 +112,6 @@ export function koPaths(runDir) {
     // driver would write where the pipeline does not read and every arm on both sides would stay green.
     // One producer, imported.
     assessChunk: (n) => knockoutAssessChunkFile(runDir, n),
-    // The pre-relocation location, for READS ONLY. A run that got its chunks written before the move — or
-    // through the Bash bypass — must still resume without re-dispatching a paid stage, so the reader falls
-    // back to this and nothing ever writes it again. Delete once no resumable run predates the move.
-    assessChunkLegacy: (n) => driverDir(runDir, `knockout-assess-${n}.json`),
     instructedScope: paths(runDir).instructedScope,
     // The client's own words, written at intake as on the clearance lane (stages.mjs, the same two names).
     inboundRequest: paths(runDir).inboundRequest,

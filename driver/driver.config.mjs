@@ -548,10 +548,10 @@ export const config = {
   //
   // THE SINGLE-MEMBER ASSEMBLY STAYS, and item 8's instruction to delete it with the switch does not
   // survive contact with the code. The flag was never the only thing that reached it: the split also
-  // self-disarms on a single-term grid (nothing to partition) and on a resume of a pre-split run (a
-  // valid unsplit findings file with no half artifacts — re-running as halves would re-spend the whole
-  // grid). Both are disclosed decisions recorded on ctx.clSplitDecision with their own reason, and
-  // deleting the assembly would break them. What goes is the switch and the branch that read it.
+  // self-disarms on a single-term grid (nothing to partition), a disclosed decision recorded on
+  // ctx.clSplitDecision with its own reason, and deleting the assembly would break it. (A resume of a
+  // pre-split run reached it too, until runs from an earlier build stopped being resumed.) What goes is
+  // the switch and the branch that read it.
 
   // B2 — hard ceiling on a `.processing` claim's age, measured from the `.pid` sidecar's mtime (written
   // fresh at every claim/takeover — NOT the marker's mtime, which rename(2) preserves from enqueue, so a

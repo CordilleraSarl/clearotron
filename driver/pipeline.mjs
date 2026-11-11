@@ -41,6 +41,7 @@ import { config, resolveModel, laneArmed } from "./driver.config.mjs";
 import { registerAdapter } from "./engine/run-choices.mjs";   // the run's register adapter, from ctx.register
 import { codexSandboxBypassed } from "./engine/openai-agent.mjs";        // — a replay is refused where nothing keeps a stage's commands out of the answers it replays
 import { buildRunContext, deriveSlug, kebab } from "./phase0.mjs";
+import { crossBuildResumeRefusal } from "./one-build-per-run.mjs";   // a run is finished on the build it started on (owner, 2026-11-09)
 import { paths, STAGES, axisTier, decideAxes, assertEffectiveTier, lines, whatsappRouting, chainEntries, stageOrdinal, stageInputs, dependencyOrder, REGISTER_AXES, REGISTER_ENUMERATE_TOOL, buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenFollowup, buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, providerMeta, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
 import { handResearchAnswers, RESEARCH_ANSWERS_FILE, RESEARCH_REPLAY_FILE, replayAnswersFile, savedResearchCount, runResearchAnswers, researchAnswerKey, handResearchAfterReview } from "./research-answers.mjs";   // the research a stage's earlier attempts got, handed to a later one; a replay of it
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE } from "./report-overview-record.mjs";
@@ -187,7 +188,7 @@ import { foldCaption, foldCardRead } from "./card-budget.mjs";
 // S2 — the report card's mechanical frame, composed from the record instead of dictated (see below).
 import { carriesOwnFrame, composeCard } from "./card-frame.mjs";
 import { parseFrameworkManifest, loadFrameworkManifest, frameworkFor, manifestPathFor, DEFAULT_FRAMEWORK } from "./framework.mjs";
-import { attachFrameworkMethod, loadFrameworkMethod, methodPathFor, FROZEN_METHOD_FILE } from "./framework-method.mjs";
+import { attachFrameworkMethod, methodPathFor, FROZEN_METHOD_FILE } from "./framework-method.mjs";
 import { renderScopeLedgerJson, scopeLedgerJsonFromRows, gridChannels, parseScopeLedgerJson, scopeJurisdictions, droppedVariantFamilies } from "./scope-ledger.mjs";
 // qw/cn-scope-honesty — the zh-lane capability tables + the requested-scope resolver, for the plain-clearotron
 // honesty row/note. jx-lanes.mjs is a PURE zero-import leaf (data + decisions, no env/fs), so a static
@@ -1356,56 +1357,48 @@ function deriveGridSpec(ctx) {
     // level), connotation queries partitioned the same way (each owned by exactly one half; the merge's
     // concat+dedup restores the full receipt set), each half writing its OWN ledger. The halves merge in
     // CODE into the canonical common-law-grid.json at gather fan-in, before anything downstream reads it.
-    // Self-disarm cases (single-member assembly kept VERBATIM): a single-term grid (nothing to
-    // partition); and a resume of a PRE-SPLIT run — a valid common-law-findings.md with no half files on
-    // disk means the grid already ran unsplit, and re-running it as halves would re-spend the full grid.
+    // Self-disarm case (single-member assembly kept VERBATIM): a single-term grid, which has nothing to
+    // partition.
     //
-    // item 8 deleted the `flag-off` case with CLEAROTRON_COMMONLAW_SPLIT. The two above are why the
-    // ASSEMBLY stays: they reach it without any switch, and each records its own reason.
+    // item 8 deleted the `flag-off` case with CLEAROTRON_COMMONLAW_SPLIT. A resume of a PRE-SPLIT run (a
+    // valid common-law-findings.md with no half files beside it) also kept the single-member assembly, and
+    // that case is gone too: a run from an earlier build is no longer resumed, and a current run whose
+    // grid has two or more terms splits on its first pass, from frozen inputs a resume derives the same
+    // grid from. The single-term grid is why the ASSEMBLY stays: it reaches it without any switch, and
+    // records its own reason.
     const splitTerms = gridSpec.terms.length;
     if (splitTerms < 2)
       ctx.clSplitDecision = { path: "unsplit", reason: "single-term-grid",
         detail: `the grid carries ${splitTerms} term(s) — there is nothing to partition into two halves`,
         terms: splitTerms };
     if (splitTerms >= 2) {
-      const resumedUnsplit = existsSync(P.commonLaw)
-        && !GRID_SEATS.some((h) => existsSync(P.commonLawHalf(h)))
-        && validators.commonLaw(P.commonLaw, readFileSync(P.commonLaw, "utf8")).ok;
-      if (resumedUnsplit) {
-        note("common-law split: resuming a pre-split run (valid single-member findings, no half artifacts) — keeping the single-member assembly");
-        runLog(P.runDir, { event: "grid-split-skipped", reason: "resumed-unsplit" });
-        ctx.clSplitDecision = { path: "unsplit", reason: "resumed-unsplit",
-          detail: "a valid single-member common-law-findings.md is on disk with no half artifacts beside it — the grid already ran unsplit and re-running it as halves would re-spend the whole grid",
-          terms: splitTerms };
-      } else {
-        const halves = splitGridSpec(gridSpec, {
-          outputPaths: Object.fromEntries(GRID_SEATS.map((h) => [h, P.commonLawGridHalf(h)])),
-          // — dictated, so the grid tool names the same file the validator reads.
-          dispositionsPaths: Object.fromEntries(GRID_SEATS.map((h) => [h, P.commonLawDispositionsHalf(h)])),
-        });
-        for (const h of GRID_SEATS) atomicWrite(P.gridSpecHalf(h), JSON.stringify(halves[h], null, 2) + "\n");
-        // THE FRAME NAMED NO MEANING QUESTION, so the meaning seat has nothing to search. Its ledger is the
-        // empty one the grid tool would have written, written here, so the merge and every check downstream
-        // read a sweep of zero queries rather than a missing file; the seat is told not to run the tool.
-        if (halves[MEANING_SEAT]?.connotation?.none_named === true)
-          atomicWrite(P.commonLawGridHalf(MEANING_SEAT), JSON.stringify({ cells: [], extras: { pr_risk: [] }, gaps: [] }, null, 2) + "\n");
-        ctx.clHalfTerms = { a: halves.a.terms, b: halves.b.terms };
+      const halves = splitGridSpec(gridSpec, {
+        outputPaths: Object.fromEntries(GRID_SEATS.map((h) => [h, P.commonLawGridHalf(h)])),
+        // — dictated, so the grid tool names the same file the validator reads.
+        dispositionsPaths: Object.fromEntries(GRID_SEATS.map((h) => [h, P.commonLawDispositionsHalf(h)])),
+      });
+      for (const h of GRID_SEATS) atomicWrite(P.gridSpecHalf(h), JSON.stringify(halves[h], null, 2) + "\n");
+      // THE FRAME NAMED NO MEANING QUESTION, so the meaning seat has nothing to search. Its ledger is the
+      // empty one the grid tool would have written, written here, so the merge and every check downstream
+      // read a sweep of zero queries rather than a missing file; the seat is told not to run the tool.
+      if (halves[MEANING_SEAT]?.connotation?.none_named === true)
+        atomicWrite(P.commonLawGridHalf(MEANING_SEAT), JSON.stringify({ cells: [], extras: { pr_risk: [] }, gaps: [] }, null, 2) + "\n");
+      ctx.clHalfTerms = { a: halves.a.terms, b: halves.b.terms };
 
-        ctx.clSplitDecision = { path: "split", reason: "armed",
-          detail: `${splitTerms} dictated terms, not a pre-split resume — the grid runs as ${GRID_SEATS.length} concurrent half-members`,
-          terms: splitTerms,
-          halves: Object.fromEntries(GRID_SEATS.map((h) => [h, halves[h]?.terms?.length ?? 0])) };
-        //: connotation_<h> = 0 on the non-owning half is the ASSERTED ownership receipt, not a
-        // missing sweep. The count that means "no meaning sweep was dictated at all" is the `grid-spec`
-        // event's own `connotation:` field above; a reader comparing the two can tell them apart.
-        // — connotation_a / connotation_b are now BOTH zero by construction, and that pair is the
-        // regression signal this issue asked for: the gate that fired on 13 of 14 first attempts cannot
-        // fire on a seat that owes nothing. connotation_m is where the sweep went.
-        runLog(P.runDir, { event: "grid-split", terms_a: halves.a.terms.length, terms_b: halves.b.terms.length,
-          connotation_a: halves.a.connotation.queries.length, connotation_b: halves.b.connotation.queries.length,
-          connotation_m: halves[MEANING_SEAT].connotation.queries.length,
-          connotationOwner: MEANING_SEAT });
-      }
+      ctx.clSplitDecision = { path: "split", reason: "armed",
+        detail: `${splitTerms} dictated terms, not a pre-split resume — the grid runs as ${GRID_SEATS.length} concurrent half-members`,
+        terms: splitTerms,
+        halves: Object.fromEntries(GRID_SEATS.map((h) => [h, halves[h]?.terms?.length ?? 0])) };
+      //: connotation_<h> = 0 on the non-owning half is the ASSERTED ownership receipt, not a
+      // missing sweep. The count that means "no meaning sweep was dictated at all" is the `grid-spec`
+      // event's own `connotation:` field above; a reader comparing the two can tell them apart.
+      // — connotation_a / connotation_b are now BOTH zero by construction, and that pair is the
+      // regression signal this issue asked for: the gate that fired on 13 of 14 first attempts cannot
+      // fire on a seat that owes nothing. connotation_m is where the sweep went.
+      runLog(P.runDir, { event: "grid-split", terms_a: halves.a.terms.length, terms_b: halves.b.terms.length,
+        connotation_a: halves.a.connotation.queries.length, connotation_b: halves.b.connotation.queries.length,
+        connotation_m: halves[MEANING_SEAT].connotation.queries.length,
+        connotationOwner: MEANING_SEAT });
     }
   }
 }
@@ -1953,15 +1946,18 @@ function attachFramework(ctx, { write = true } = {}) {
     ctx.frameworkMethod = attachFrameworkMethod({ frozenPath: methodPath, manifest: ctx.framework, minted: false });
     return;
   }
-  // No frozen profile (a pre-WS-B resume, or a codename re-dispatch into a dir with no sidecar): the
-  // framework in force is still the GENERIC DEFAULT — doc 50 has no framework-less runs. frameworkFor(null)
-  // resolves it; a genuinely-legacy run's v3 artifacts never consult the minted manifest (version-gated).
+  // NO FROZEN FRAMEWORK. It is frozen before the first stage, so a run without one ran no stage, and a
+  // read-only caller has nothing to rebuild. (A run from before the framework freeze was given one here,
+  // resolved in memory; a run from an earlier build is no longer resumed.)
+  if (!write) throw new Error("_driver/framework.json is absent — the run stopped before its framework was frozen, so it ran no stage and there is nothing to rebuild");
+  // A cold start, or a resume of a first pass that stopped before this freeze: the framework in force is
+  // resolved from the frozen profile and minted now, as the cold path does. With no profile it is the
+  // GENERIC DEFAULT — doc 50 has no framework-less runs, and frameworkFor(null) resolves it.
   const fwPath = frameworkFor(ctx.profile);
   // config.skillsRoot, NOT DRIVER_DIR: the profile's framework may live in the deployment's config
   // store (CLEAROTRON_INSTRUCTIONS_DIR), which is also the root the AGENT resolves the same path against.
   const manifest = loadFrameworkManifest((rel) => config.resolveSkillPath(rel), fwPath);   // throws framework_manifest_missing — a deploy defect, loud
   ctx.framework = manifest;
-  if (!write) { ctx.frameworkMethod = loadFrameworkMethod((rel) => config.resolveSkillPath(rel), fwPath, manifest); return; }
   // The method is frozen BEFORE the manifest: a run interrupted between the two writes has no manifest,
   // so its resume mints both again. The other order would leave a manifest with no method beside it,
   // which the resume branch above reads as a framework that states none.
@@ -2688,10 +2684,6 @@ function attachRegisterPlan(ctx, { frozenOnly = false } = {}) {
     // parseRegisterPlan throws token-first on corruption — the frozen plan is never silently re-derived
     ctx.registerPlan = parseRegisterPlan(readFileSync(P.registerPlan, "utf8"));
     runLog(P.runDir, { event: "register-plan", source: "frozen", version: ctx.registerPlan.plan_version, entries: ctx.registerPlan.entries.length });
-    // Repair-first D: a FROZEN plan failing feasibility (a pre-split legacy shape) is logged and
-    // CONTINUES — never brick an in-flight resume; the executor chunks defensively regardless.
-    const frozenIssues = validatePlanFeasibility(ctx.registerPlan, { capabilities: registerCapabilities(ctx.register) });
-    if (frozenIssues.length) runLog(P.runDir, { event: "register-plan-infeasible", source: "frozen", issues: feasibilityMessages(frozenIssues).slice(0, 6) });
     logFullyDeferredAxes(ctx.registerPlan, P, "frozen");
     return;
   }
@@ -8846,13 +8838,13 @@ useThePipeline({ CORRECTIONS_DELIVERED_FILE, asPartNotCompleted, extractRulingsT
  * the whole review then put back. Other bytes in place mean another review was saved over it, through the tool or by
  * rewriting the file, and its points are its own. The one such review that did not read the corrected record is a
  * narrowed review that hardened the verdict and stays in place: the earlier review is then the one kept beside it, and
- * the correction's rows are still its flags. A record with no sha, from an earlier version, builds as it was.
+ * the correction's rows are still its flags.
  */
 function earlierReviewNotRechecked(P) {
   try {
     const runDir = dirname(P.report);
     const recheck = JSON.parse(readFileSync(driverDir(runDir, CORRECTIVE_RECHECK_FILE), "utf8"));
-    if (recheck?.status !== "unread" || !recheck.reviewSha) return null;
+    if (recheck?.status !== "unread") return null;
     const named = (file) => relative(runDir, file).replace(/\\/g, "/");
     const inPlace = shaOf(P.seniorEyeReview);
     if (inPlace === recheck.reviewSha) return { review: named(P.seniorEyeReview), inPlace: true };
@@ -9400,9 +9392,9 @@ async function pipelineInner(job, opts = {}) {
     const { knockoutInner } = await import("./pipeline-knockout.mjs");
     return await knockoutInner(ctx, job, opts);
   }
-  // doc 50 — freeze the framework-in-force's manifest beside it. write:true even on resume: a run frozen
-  // BEFORE doc 50 backfills its framework sidecar from the frozen frameworkPath (deploy-boundary case) so
-  // the v4 gates always have vocabulary; a run that already has one reads it verbatim (never re-derived).
+  // doc 50 — freeze the framework-in-force's manifest beside it. A resume reads the frozen one verbatim
+  // (never re-derived); a resume whose first pass stopped before this line mints it now, as that pass would
+  // have.
   attachFramework(ctx);
   // A pass opens before the delivery seam: until this pass's seam folds the record, a save writes the
   // model's record as it is (record-fold.mjs).
@@ -10061,6 +10053,12 @@ export function resumeJobRefusal(job, slug) {   // @internal
 export function reconstructCtx(job, opts) {   // @internal
   const run = resolveRun(job, opts);
   const P = paths(run.runDir);
+  // A run that froze no search policy stopped before its first stage (the policy is frozen as the run
+  // opens), so it has nothing to repair or --experiment on, and reading it as a clearance could hand a
+  // Knockout batch the clearance's framework. (A run from before the policy freeze was read as a clearance
+  // here; a run from an earlier build is no longer resumed.)
+  if (!existsSync(paths(run.runDir).searchPolicy))
+    throw new Error(`run ${run.codename} froze no search policy — it stopped before its first stage, so there is nothing to repair or --experiment on`);
   // A KNOCKOUT run has none of the clearance stages this tooling drives — and letting it through would
   // mint the clearance DEFAULT_FRAMEWORK into a triage-graded run (review 2026-07-17). A knockout redo
   // is a re-enqueue (~$2), not a stage surgery.
@@ -10068,7 +10066,7 @@ export function reconstructCtx(job, opts) {   // @internal
     const sp = JSON.parse(readFileSync(paths(run.runDir).searchPolicy, "utf8"));
     if (sp?.pipeline === "knockout")
       throw new Error(`run ${run.codename} is a KNOCKOUT batch — it has no clearance stages to repair or --experiment; re-enqueue the batch instead`);
-  } catch (e) { if (/KNOCKOUT batch/.test(String(e?.message))) throw e; /* no/corrupt sidecar ⇒ legacy clearance run */ }
+  } catch (e) { if (/KNOCKOUT batch/.test(String(e?.message))) throw e; /* a corrupt sidecar: attachSearchPolicy below notes it */ }
   // ctx.job is a SHALLOW COPY: attachSearchPolicy (below) folds the frozen recipe's scope INTO the job
   // (foldRecipeScope mutates job.platforms/classes). The fold is right — it is what the cold path's
   // stages saw — but reconstructCtx was side-effect-free on its argument and stays that way.
@@ -10153,20 +10151,15 @@ export function reconstructCtx(job, opts) {   // @internal
   ctx.gridSpecPath = existsSync(P.gridSpec) ? P.gridSpec : null;
   ctx.clHalfTerms = null;
   try {
-    // — armed on ALL THREE seat specs, never on the two grid halves alone. A run split under the
-    // pre-seat code has no meaning-seat spec on disk, and arming from a/b would dispatch a seat whose
-    // spec does not exist and kill the resume on a driver-written file. Missing ⇒ the split self-disarms
-    // to the single-member assembly, which is the rollback path this design already documents — and it
-    // is SAID, because an in-flight run silently changing shape across a deploy is exactly the kind of
-    // absence that reads as normal.
+    // — armed on ALL THREE seat specs, never on the two grid halves alone: arming from a/b would dispatch a
+    // seat whose spec does not exist. A split writes all three, so a run missing one did not split, and its
+    // routing stays unsplit. (A run split before the meaning seat existed had only a/b, and was named here;
+    // a run from an earlier build is no longer resumed.)
     if (GRID_SEATS.every((h) => existsSync(P.gridSpecHalf(h)))) {
       ctx.clHalfTerms = Object.fromEntries(GRID_HALVES.map((h) =>
         [h, JSON.parse(readFileSync(P.gridSpecHalf(h), "utf8")).terms ?? []]));
-    } else if (GRID_HALVES.every((h) => existsSync(P.gridSpecHalf(h)))) {
-      note(`common-law split: this run was split before the meaning seat existed (no ${basename(P.gridSpecHalf(MEANING_SEAT))}) — resuming on the single-member assembly`);
-      runLog(P.runDir, { event: "grid-split-skipped", reason: "pre-meaning-seat-split" });
     }
-  } catch { /* a torn/legacy half spec — the unsplit routing stands, as it did before */ }
+  } catch { /* a torn half spec — the unsplit routing stands */ }
   return ctx;
 }
 
@@ -10236,7 +10229,6 @@ export async function repairStale(job, opts = {}) {   // @internal
   try { rec = JSON.parse(readFileSync(paths(P.runDir).deliveryStale, "utf8")); } catch { return null; }
   const labels = Array.isArray(rec?.labels) ? rec.labels : [];
   if (!labels.length) return null;
-  attachFramework(ctx, { write: true });
   await attachJxAim(ctx);   // the aim count the cold pass sets, as --experiment sets it on its rebuilt context
   // RE-DERIVE THE ORDER rather than trusting the file's. The recorded order was right when it was
   // written, and a code change since could have moved an edge — the file names WHAT, the live graph says
@@ -10945,6 +10937,19 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   try { void config.poolRoot; }
   catch (e) { console.error(`error: ${e.message}`); process.exit(2); }
 
+  // ── A RUN IS FINISHED ON THE BUILD IT STARTED ON, FROM THE COMMAND LINE TOO ───────────────────────────
+  //
+  // The runner's resumes refuse a run that started on another build (one-build-per-run.mjs). `--resume`, with
+  // `--from` or `--experiment` or neither, is the same door typed by a person, and it carried a run from an
+  // earlier version onto this one. Each branch below asks it of the run folder as soon as it has found one,
+  // before the order is rebuilt or anything is written, and refuses in the runner's words. With no run folder
+  // there is nothing to ask: the resume itself refuses that, by name. `pipeline()` stays unchecked as a
+  // library, because the bench resumes saved copies on new code to measure what a change does.
+  const refuseAcrossBuilds = (runDir) => {
+    const refused = crossBuildResumeRefusal(runDir);
+    if (refused) { console.error(`error: ${refused}`); process.exit(2); }
+  };
+
   // — reading the job file used to sit OUTSIDE the try below, so a path typo or a stray comma
   // exited on a raw V8 stack trace: a non-clean exit with no honest message, and the one shape of
   // mistake a first-time reader is likeliest to make. Kept guarded here through the rebase — the
@@ -10980,6 +10985,7 @@ if (isEntrypoint(import.meta.url)) void (async () => {
       console.error("       pass --job <file.json> if the run lives somewhere this cannot see.");
       process.exit(2);
     }
+    refuseAcrossBuilds(found.dir);
     let status = null;
     try { status = JSON.parse(readFileSync(join(found.dir, "status.json"), "utf8")); }
     catch (e) { console.error(`error: cannot read ${join(found.dir, "status.json")} — ${e.message}`); process.exit(2); }
@@ -11011,6 +11017,12 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   } else {
     try { job = JSON.parse(readFileSync(a.job, "utf8")); }
     catch (e) { console.error(`error: cannot read job file ${a.job} — ${e.message}`); process.exit(2); }
+    if (a.codename) {
+      // The live run the resume will open, by the lookup the resume itself makes.
+      const studioRoot = a.agent ? config.studioRootForAgent(a.agent) : config.studioRoot;
+      const date = findRunDate(job, a.codename, studioRoot);
+      if (date) refuseAcrossBuilds(join(studioRoot, deriveSlug(job), `${date}-${a.codename}`));
+    }
   }
   // Manual runs: if --agent is given, root the run-dir in that agent's workspace too (mirrors the runner).
   const base = a.agent

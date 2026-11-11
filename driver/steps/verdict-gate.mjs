@@ -524,10 +524,9 @@ export async function runVerdictGate({ P, agent, applyVerdictFrontMatter, correc
   // swallow this reader whenever deriveActionConditions threw, and a downgrade lost because an
   // unrelated parse failed is the same silence one layer along.
   //
-  // The predicate is deliberately narrow — the four other decision arms (flag-off, single-term-grid,
-  // resumed-unsplit, register-only) are legitimate paths and must not clamp. The unsplit path is the
-  // documented rollback and is NOT a failure; the defect is the silence, so this records and clamps
-  // rather than throwing.
+  // The predicate is deliberately narrow — the other decision arms (single-term-grid, register-only)
+  // are legitimate paths and must not clamp. The unsplit path is the documented rollback and is NOT
+  // a failure; the defect is the silence, so this records and clamps rather than throwing.
   try {
     if (runState.verdict === "CLEAR" || runState.verdict === "CONDITIONAL") {
       let rec = null;

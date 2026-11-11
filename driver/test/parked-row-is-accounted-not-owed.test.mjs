@@ -224,7 +224,7 @@ test("THE READER TRIPWIRE — a new module that reads row state must be taught t
   // and only the second one has to know about parks.
   const PROSE = [
     "case-law-ledger.mjs", "common-law-receipts.mjs", "contract-vocabulary.mjs", "coverage-form.mjs",
-    "disposition-call-audit.mjs", "doubt-closure-tool.mjs", "repairs.mjs",
+    "disposition-call-audit.mjs", "doubt-closure-tool.mjs",
   ];
 
   assert.deepEqual(readers, READERS,
