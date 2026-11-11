@@ -109,7 +109,10 @@ test("SIGKILLed claimer with identity meta → re-drain RESUMES the same codenam
   const meta = JSON.parse(readFileSync(metaPath, "utf8"));
   assert.ok(meta.codename && meta.dateISO && meta.agentId === "intake-agent", `meta carries the identity: ${JSON.stringify(meta)}`);
   const runDir = join(studioFor(root), slug, `${meta.dateISO}-${meta.codename}`);
-  assert.ok(await waitFor(() => existsSync(join(runDir, "matter-context.md"))), `matter-frame completed before the kill\n${claimer.log}`);
+  // Completed is recorded: the stage's output and its record of what it read. An output with no record is one whose
+  // stage the kill may have stopped before it recorded, and that stage runs again on the resume.
+  assert.ok(await waitFor(() => existsSync(join(runDir, "matter-context.md")) && existsSync(driverDir(runDir, "stage-inputs", "matter-frame.json"))),
+    `matter-frame completed before the kill\n${claimer.log}`);
 
   claimer.kill("SIGKILL");
   await exited(claimer);

@@ -7,8 +7,9 @@
 // run's own file, so a resume, which is a new process, goes on from it. A question the run has asked and answered counts
 // nothing when it is sent again, and one whose earlier send failed counts again. Whether it was answered is read from
 // the axis's band. A unit whose pass is killed at its time limit is parked: its band is renamed so the resume runs the
-// unit again, and the re-run sends the same follow-ups. Each of them was answered, and its answer is in the renamed
-// band, so it still counts nothing. Driven through the real plan executor. Every mark is invented.
+// unit again, and the re-run asks the same follow-ups. Each of them was answered, and its answer is in the renamed band,
+// so the executor takes it from there: nothing is sent, and nothing counts (a register answer is never bought twice,
+// ruled 2026-11-11). Driven through the real plan executor. Every mark is invented.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, renameSync, rmSync } from "node:fs";
@@ -70,7 +71,7 @@ test("the count is the run's own and a resumed pass goes on from it", async (t) 
   assert.equal(followUpSearchesSent(f.driver).sent, 3, "a new process started its own count");
 });
 
-test("a follow-up answered before a park is sent again after the resume and counts nothing, with the net full", async (t) => {
+test("a follow-up answered before a park is not sent again after the resume, and counts nothing, with the net full", async (t) => {
   const f = runFolder(t, { sent: LIMIT - 1 });
   const first = executor();
   await send(first.executePlan, f, [followUp("sup:a", "QZORVA")]);
@@ -80,9 +81,10 @@ test("a follow-up answered before a park is sent again after the resume and coun
   const resumed = executor();
   const reply = await send(resumed.executePlan, f, [followUp("sup:a", "QZORVA")]);
   assert.equal(reply.outstanding, undefined, "a question answered before the park was held back as if it had never been answered");
-  assert.deepEqual(resumed.asked, ["QZORVA"], "the re-run's question was not sent");
+  assert.deepEqual(resumed.asked, [], "a question answered before the park was bought again");
+  assert.equal(JSON.parse(readFileSync(f.band, "utf8")).find((b) => b.qid === "sup:a")?.state, "enumerated", "its answer from before the park stands");
   assert.equal(followUpSearchesSent(f.driver).sent, LIMIT, "a question answered before the park counted again");
-  assert.equal(readFileSync(join(f.driver, SEARCHES_FILE), "utf8").split("\n").filter(Boolean).length, LIMIT, "the resent question wrote a line of its own");
+  assert.equal(readFileSync(join(f.driver, SEARCHES_FILE), "utf8").split("\n").filter(Boolean).length, LIMIT, "the question asked again wrote a line of its own");
 });
 
 test("a follow-up that failed before a park still counts again after the resume, so the net still stops it", async (t) => {

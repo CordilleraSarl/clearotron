@@ -85,9 +85,10 @@ test("a later call on the axis, and a unit's retry after its pass was parked, ca
   const f = runFolder(t), reg = register();
   await call(reg, f);
   const before = reg.slowAsks();
-  await call(reg, f);
+  const later = await call(reg, f);
   assert.equal(reg.slowAsks(), before, "a later call on the axis sent a timed-out question again");
-  assert.ok(reg.asked.filter((n) => n === QUICK).length >= 2, "guard: the later call ran the axis's other questions");
+  // The quick question's answer is held, so the later call answers it from the band and sends nothing for it.
+  assert.equal(later.states?.[`${AXIS}:exact:quick`], "enumerated", "guard: the later call ran the axis's other questions");
   renameSync(f.band, `${f.band}.tainted-0`);   // the park: the band renamed, so the unit runs again from an empty one
   await call(reg, f);
   assert.equal(reg.slowAsks(), before, "the retry after the park sent a timed-out question again");

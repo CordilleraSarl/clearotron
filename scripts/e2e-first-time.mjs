@@ -252,7 +252,7 @@ export const NOT_COUNTED_EVENTS = {
     "coverage-closure", "coverage-ledger-recovered", "delivery-stale-repair", "delivery-stale-requeued", "envelope-close-rows", "escalation-noop", "floor-duty-after-repair", "writer-duty-after-repair", "writer-duty-after-correction", "guard-clause-replaced", "guard-gap-closed", "verdict-recomputed-gap-closed", "guard-clause-named-elsewhere", "audit-rebuilt", "audit-withdrawn", "record-carry-doubts-again",
     "finding-reemit", "findings-actions-absent", "findings-schema-downlevel", "form-oracle-gap", "frame-reopen",
     "frame-reopen-reattempt", "grid-ledger-missing", "knockout-assess-invalidated", "knockout-review-round-set-aside", "lint-redo-skipped", "lint-redo-skipped-structural",
-    "meaning-gap-coverage", "park-resumed", "plan-qids-sticky-gap", "recall-reconciliation-unended",
+    "meaning-gap-coverage", "opening-finished-on-resume", "park-marker-unwritten", "park-resumed", "plan-qids-sticky-gap", "recall-reconciliation-unended",
     "recovery-classified", "record-discard", "report-repair-targets", "screen-gate-unresolved", "skeptic-escalation", "stage-stale",
     "stale-repair-entry", "taint-disclose", "unsettled-inputs", "verdict-2", "verdict-3", "verdict-recheck-file-save-refused", "verdict-recheck-unread",
   ],

@@ -25,24 +25,25 @@ import "../shared/env-local.mjs";   // side effect: apply <repo>/.env when THIS 
 import "./engine/mcp/http-dispatcher.mjs"; import { readFileSync, existsSync, mkdirSync, writeFileSync, renameSync, copyFileSync, readdirSync, rmSync, statSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join, dirname, basename, resolve, relative } from "node:path";   // resolve: the resume line must work from any cwd
-import { driverDir, driverRel, ensureDriverDir } from "../shared/driver-dir.mjs";
+import { driverDir, driverFileName, driverRel, ensureDriverDir } from "../shared/driver-dir.mjs";
+import { DISPATCH_SUFFIX } from "./dispatch-record.mjs";   // a stage that was dispatched left its dispatch record
 import { REVIEWER_OPEN_QUESTIONS_FILE } from "./reviewer-open-points.mjs";   // the run-record file the reviewer's open points go to, and the only thing that reads them now
 import { goodsOf } from "./queue-markers.mjs";   // — one reading of "does this job name goods", shared with the intake gate
 import { fileURLToPath } from "node:url";
-import { runStage, correctionHint, gridLedgerNameFor, draftCarryEligible, toolWrittenArtifact, selectEngine, saidBackOnly } from "./gateway.mjs";
+import { runStage, draftCarryEligible, toolWrittenArtifact, selectEngine, saidBackOnly } from "./gateway.mjs";
 // — the arm's TOOL WIRING, for its context receipt. Read through the same two functions the
 // gateway dispatches with, never re-derived: a receipt that described a second computation would be
 // describing a dispatch that did not happen.
 import { toolGroupsForStage as experimentToolGroups, buildGatherMcpConfig as experimentMcpConfig, allowedToolsFor as experimentAllowedTools } from "./engine/mcp/gather-config.mjs";
 import { readBestDraft, bestDraftDir } from "./best-draft.mjs";
-import { canonicalJurisdictionCode, isKnownJurisdictionCode } from "./jurisdiction-codes.mjs";
+import { canonicalJurisdictionCode } from "./jurisdiction-codes.mjs";
 import { probeSeed as orderProbeSeed } from "./order-probe.mjs";   // item 11 — records which ordering arm a run ran under
 import { config, resolveModel } from "./driver.config.mjs";
 import { registerAdapter } from "./engine/run-choices.mjs";   // the run's register adapter, from ctx.register
 import { codexSandboxBypassed } from "./engine/openai-agent.mjs";        // — a replay is refused where nothing keeps a stage's commands out of the answers it replays
 import { buildRunContext, deriveSlug, kebab } from "./phase0.mjs";
 import { crossBuildResumeRefusal } from "./one-build-per-run.mjs";   // a run is finished on the build it started on (owner, 2026-11-09)
-import { paths, STAGES, axisTier, decideAxes, assertEffectiveTier, lines, whatsappRouting, chainEntries, stageOrdinal, stageInputs, dependencyOrder, REGISTER_AXES, REGISTER_ENUMERATE_TOOL, buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenFollowup, buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, providerMeta, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
+import { paths, STAGES, axisTier, decideAxes, assertEffectiveTier, lines, whatsappRouting, chainEntries, stageOrdinal, stageInputs, dependencyOrder, REGISTER_AXES, REGISTER_ENUMERATE_TOOL, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, providerMeta, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
 import { handResearchAnswers, RESEARCH_ANSWERS_FILE, RESEARCH_REPLAY_FILE, replayAnswersFile, savedResearchCount, runResearchAnswers, researchAnswerKey, handResearchAfterReview } from "./research-answers.mjs";   // the research a stage's earlier attempts got, handed to a later one; a replay of it
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE } from "./report-overview-record.mjs";
 import { readPartNotCompleted, NOT_COMPLETED_DIR } from "./parts-not-completed.mjs";
@@ -55,7 +56,7 @@ import { parseVerdict, parseCorrectionKinds, parseCorrections, validators } from
 import { nextRefutationSeq, readAcceptedReviewSince, REVIEW_EXCLUSIONS_FILE } from "./narrative-refutation-record.mjs";   // T3b — the typed flags, not the re-parse
 import { unresolvedFlags, reportLines } from "./corrections-feedforward.mjs";
 import { deliveredOutcomes } from "./corrections-delivered.mjs";   // whether each correction reached the record the report was built from
-import { parseCoverageLedgerJson, parseCoverageLedgerFull, classTokensFromScopeText, coerceToolAbsenceDeferred, applyTaintDeferred, splitDeferredByCloseability, formRowUnitKey, coverageLedgerTableRows, coverageUnitLabel, COVERAGE_STATUSES } from "./coverage-ledger.mjs";
+import { parseCoverageLedgerJson, parseCoverageLedgerFull, classTokensFromScopeText, coerceToolAbsenceDeferred, applyTaintDeferred, splitDeferredByCloseability, formRowUnitKey, coverageLedgerTableRows, coverageUnitLabel } from "./coverage-ledger.mjs";
 import { receiptSettled, readEnvelopeDecision, settleReceipt, settledDeferralsSection, readStickyGaps } from "./envelope-settle.mjs";
 import { readActiveTaintAxes } from "./register-taint.mjs";
 import { parseNamedBand, mergeNamedBands, quarantineUnknownStates, bandRecords } from "./named-band.mjs";
@@ -86,7 +87,7 @@ import { classifyGroundsNote } from "./grounds-grammar.mjs";   // — a charged 
 import { documentCoverage, renderDocumentCoverageSection, spliceDocumentCoverage } from "./document-coverage.mjs";   //
 import { buildCoverageAbsenceForm, coverageFormAbsence, coverageFormBrief, renderCoverageAbsenceSection, renderCoverageLedgerSection, spliceCoverageLedger, renderCoverageLedgerJsonFromForm, unitLabel, buildCoverageForm, formLedgerRows, isLayerRow, nationalRegistersNotSearched, nationalRegistersNote, orderFormName } from "./coverage-form.mjs";
 import { unionCoverageForm } from "./coverage-union.mjs";
-import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, readCoverageFormInput, waitingFamilyStates, writeCoverageForm } from "./coverage-form-io.mjs";
+import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, waitingFamilyStates, writeCoverageForm } from "./coverage-form-io.mjs";
 import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
 import { readOutstanding, FOLLOW_UP_SEARCH_LIMIT, followUpSearchesSent } from "../providers/_shared/follow-up-searches.mjs";
 // The plan join's options, one place: the families the reading turn released, the follow-ups the run's
@@ -114,7 +115,7 @@ import { rebuildRunOrder } from "./accepted-order.mjs";   // the order a run was
 import { buildSelectionIndex, setAsideKeysOf, ownerFates, servedLines, lineKey } from "./placement-form.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree, matterSiblings, findStrayMatterSiblings } from "./stray-artifacts.mjs";   // — a run dir holds no document no stage dictated; — nor does the doctrine tree
 import { resolveProfile, loadProfiles, resolveEffectiveProfile, derivedFloor, derivedBatchSize, gridBatchFor, applicantMatchesProfile, NEUTRAL_DELIVERY, recipeProseGuard, withRunPlatforms } from "./profiles.mjs";   // adds profileStoreResolution — the CONFIG store's identity, beside the doctrine tree's
-import { resolveSearchPolicy, gateResolvedPolicy, loadRecipes, isRegisterOnly, depthFor } from "./search-policy.mjs";
+import { resolveSearchPolicy, gateResolvedPolicy, loadRecipes, isRegisterOnly, depthFor, productKeyOf } from "./search-policy.mjs";
 import { profileOrdinals } from "./profile-selection.mjs";   // lever 3 — driver selection
 // THE OFFERING'S own sentence about where the native-language investigation can be bought. It reaches a
 // CLIENT REPORT through the script-scope coverage row, which is why it is imported rather than typed:
@@ -125,7 +126,7 @@ import { acquireSlot, releaseSlot } from "./slot-lock.mjs";
 import { withRejected } from "./engine/mcp/supplemental.mjs";
 import { runLog, note, fileMeta, outputMeta, stageLog } from "./log.mjs"; import { plainDirective, deferralCoverageRow, plainDeferralReason } from "./deferral-row.mjs"; import { PART_NAMES, NOT_COMPLETED } from "./degraded-parts.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
 import { deriveScopeFacts } from "./scope-facts.mjs";
-import { editRepairTail, abbrev } from "./repair-contract.mjs";
+import { abbrev } from "./repair-contract.mjs";
 import { repairFollowup } from "./repair-composers.mjs";
 import { seedRunStatus, recordTransition, writeRunStatus, rollupStatus, terminalRunState, signoffPatch, readSignoff } from "./progress.mjs";
 import { atomicWrite } from "./run-record.mjs";
@@ -171,11 +172,11 @@ import { DEFAULT_LEDGER_PATH } from "./provider-usage.mjs";
 import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";
 import { beginAnswerMemory } from "../providers/_shared/answer-memory.mjs";
 import { screenGateEvidence, policedDropUris } from "./screen-gate.mjs";
-import { emptyQueue, coerceQueue, mintItem, pendingItems, markFlushed, receiptKeyFor, buildFlushFollowup } from "./digest-queue.mjs";   // (t1cd) — the digest-trigger funnel
+import { emptyQueue, coerceQueue, mintItem, pendingItems, markFlushed, receiptKeyFor } from "./digest-queue.mjs";   // (t1cd) — the digest-trigger funnel
 import { foldFindingsFile, foldAfterSave, openPass, modelRecordPath, snapshotFold, readFold, keptModelOrdinal } from "./record-fold.mjs";   // the folded record from the delivery seam on
 import { addressListLines, writeReviewAddresses } from "./review-addresses.mjs";   // the parts of the report each review dispatch may address
 import { writeStamp, stageStaleness, restamp, restampStage, reconcileStamps, shaOf, readStamp, writeFindings, settleOneShotStamp, projectStageInput } from "./stage-freshness.mjs";
-import { parseManifestVariants, GRID_HALVES, GRID_SEATS, MEANING_SEAT, splitGridSpec, halfOfTerm, openChannelRows } from "./common-law-receipts.mjs";
+import { parseManifestVariants, GRID_HALVES, GRID_SEATS, MEANING_SEAT, splitGridSpec, openChannelRows } from "./common-law-receipts.mjs";
 import { stampTokenRollup } from "./tokens.mjs";
 import { recordRunConsumption } from "./consumption-ledger.mjs";
 import { quoteForJob, logTurnaroundReconciliation } from "./run-quote.mjs";
@@ -183,7 +184,7 @@ import { assembleRunRecords, readRecordArtifacts, findRegistryArithmeticIssues, 
 import { parsePlacementsJson } from "./placement-model.mjs";   // B2 — the structured tier mirror; the lint reads it only to flag an EMPTY one
 import { plainRegisterFlags, SENTENCE_WORD_LIMIT } from "./plain-register.mjs";
 import { readRepairBase, repairBasePath, changedContent, isEmptyChange, restingOn, scopeItems, classifyPoints, changedInputsOf, listForReview, writePostRepairRecord, postRepairRecordPath } from "./repair-scope.mjs";
-import { parseFindingsJson, parseFindingsJsonLenient, consolidateFindings, compareBlockingPower, inDispositionMode, DISPOSITION_GROUP, deriveActionConditions, cardedParties, actionPartyReferences, salvageRepairTargets, remapActionOrdinals, joinAskToAnswer, stripAskLabel, reasonedNegativeGroups, blankForeignRecordLinks } from "./findings-model.mjs";
+import { parseFindingsJson, parseFindingsJsonLenient, compareBlockingPower, inDispositionMode, DISPOSITION_GROUP, deriveActionConditions, cardedParties, actionPartyReferences, salvageRepairTargets, joinAskToAnswer, stripAskLabel, reasonedNegativeGroups, blankForeignRecordLinks } from "./findings-model.mjs";
 import { foldCaption, foldCardRead } from "./card-budget.mjs";
 // S2 — the report card's mechanical frame, composed from the record instead of dictated (see below).
 import { carriesOwnFrame, composeCard } from "./card-frame.mjs";
@@ -201,10 +202,9 @@ import { JURISDICTION_ADAPTERS, LANGUAGE_LANES, scopeJurisdictions as jxScopeJur
 // parseBlindFrameModel nor dominantElementFromManifest is called from this file any more.
 import { recordedScopeLedgerRows } from "./clearance-variants-record.mjs";
 import { renderFormNeighbourhoodJson, parseFormNeighbourhoodJson, dispatchedQueriesFromBand, formGapDirectives, markText } from "./form-neighbourhood.mjs"; import { loadOrdinaryWords } from "./ordinary-words.mjs";
-import { createRepairLedger, TRANSIENT_RE, retryCannotHelpWith, isContentShapedFail, isFallbackEligible } from "./repairs.mjs";
+import { createRepairLedger, retryCannotHelpWith, isContentShapedFail, isFallbackEligible } from "./repairs.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { isCancelled } from "./cancel.mjs";   // stop-by-user: a distinct class, never classified as a failure; isCancelled is the resume door's own refusal (2155)
-import { BRAND } from "../shared/brand.mjs";   // — the operator name a client is told to expect, from the tenant seam
 import { reachableCommand } from "../shared/invocation.mjs";   // — a printed command the reader can type later, from anywhere
 export { StageFailure, buildFailurePacket, isDesignedRefusal, stageWallFields, terminalReasonFields };   // moved to run-outcome.mjs; importers read them here as before
 export { correctionReading, correctionRows, flagOrdinals, recordCorrectionsBasis, repairUnnamedRemovals, rollbackCorrectivePass };   // moved to steps/corrections.mjs; importers read them here as before
@@ -1748,9 +1748,9 @@ export function decideCaseLaw({ job, narrative, policy } = {}) {   // @internal
   const requested = job?.caseLaw === true || policy?.caseLaw === true;
   const m = CASE_LAW_TRIGGERS.exec(String(narrative ?? ""));
   const detected = Boolean(m);
-  // `product` and `level` are one value under two keys — search-policy.mjs writes both, and archived runs
-  // carry `level`. Read both so a resumed pre-rename run is not silently ineligible.
-  const product = String(policy?.product ?? policy?.level ?? "").trim() || null;
+  // The product is `level` on a run's frozen policy and `product` on a bare selector; productKeyOf reads either
+  // (search-policy.mjs), so a resumed run and a bare selector name the same product.
+  const product = productKeyOf(policy) || null;
   const eligible = product === CASE_LAW_PRODUCT;
   const called = requested || detected;
   return {
@@ -2025,22 +2025,14 @@ export function attachSearchPolicy(ctx, job, { write = true } = {}) {   // @inte
   const sidecarPath = paths(ctx.paths.runDir).searchPolicy;
   let raw = null;
   try { raw = readFileSync(sidecarPath, "utf8"); } catch { /* ENOENT — genuinely absent */ }
-  // A job that names NO SELECTOR at all. It reads `product`/`recipeKey`, which are the two selectors on
-  // the wire; it used to read `searchLevel`, which DELETED — so it evaluated true for every job,
-  // including one that spelled out `product: "full-country-search"`, and the guard below was unreachable.
-  const noSelector = !job?.recipeKey && !job?.product;
   if (raw != null) {
     try { ctx.searchPolicy = JSON.parse(raw); }
     catch (e) { throw new Error(`_driver/search-policy.json is corrupt (${e.message}) — investigate; the frozen policy is never silently re-derived`); }
   } else if (!write) {
-    // pre-spine run read-only (reconstructCtx / legacy resume): implicitly a clearotron — the only shape that
-    // existed. It names a RETIRED row on purpose: this branch describes a run that already happened, and
-    // RETIRED_POLICIES exists so an archived run re-renders under the name it was sold under. But ONLY
-    // for a selector-less job: a selector-carrying job with no frozen sidecar must never be assumed into
-    // a clearance (review 2026-07-17 — the crash-reclaim/reconstruct window).
-    if (!noSelector)
-      throw new Error(`run dir has no frozen search policy but the job names a selector (product=${JSON.stringify(job?.product ?? null)}, recipeKey=${JSON.stringify(job?.recipeKey ?? null)}) — refusing the legacy-implicit clearotron assumption; re-dispatch cold so the policy is minted`);
-    ctx.searchPolicy = { schema: 1, level: "clearance", pipeline: "clearance", stageLabel: "Depth 4", components: {}, recipe: null, origins: { level: "legacy-implicit" } };
+    // NO FROZEN PRODUCT, AND THIS CALLER MAY NOT FREEZE ONE. A run froze its product before its first stage, so it has
+    // none to read. A resume finishes the opening first (steps/open-run.mjs finishTheOpening), so a reader here never
+    // assumes one: this used to read the absence as a run from before the freeze and name a retired clearance.
+    throw new Error("_driver/search-policy.json is absent — the run stopped before its product was frozen, and this reader does not settle one");
   } else {
     let resolved;
     // force:true — the recipe store is written by a LIVE service; a long-lived driver process must see a
@@ -3015,7 +3007,7 @@ export function depthLadderEvent(ctx) {   // @internal
   return {
     event: "depth-ladder",
     // `level` is what the frozen policy calls it; see depthFor()'s note.
-    product: String(ctx?.searchPolicy?.level ?? ctx?.searchPolicy?.product ?? "") || null,
+    product: productKeyOf(ctx?.searchPolicy) || null,
     source: depth?.source ?? null,
     // the row, spread flat so a jq over run.jsonl reads one field per setting
     ...(depth ? Object.fromEntries(Object.entries(depth).filter(([k]) => k !== "source")) : {}),
@@ -5124,6 +5116,18 @@ export function messageCtxFor(name, ctx) {   // @internal — driven by its test
 /** A stage's session key, which its retries extend with `-rerun<n>`. One statement, read where a stage is dispatched. */
 export const stageSessionKey = (ctx, name, keyAxis = "") => `clearance-${ctx.run.slug}-${ctx.run.codename}-${name}${keyAxis}`;   // @internal
 
+/**
+ * Was the stage `label` itself dispatched in this run? Its dispatch record is written as its turn starts, and its attempt
+ * journal as each attempt ends; either says the stage ran here. IMPURE (lists `_driver/`).
+ */
+function stageWasDispatched(runDir, label) {
+  let names = [];
+  try { names = readdirSync(driverDir(runDir)); } catch { return false; }
+  const journal = driverFileName(`${label}.jsonl`);
+  const dispatched = driverFileName(`${label}.attempt`);
+  return names.some((n) => n === journal || (n.startsWith(dispatched) && n.endsWith(`.${DISPATCH_SUFFIX}`)));
+}
+
 async function stageOnce(name, ctx, opts = {}) {
   const def = STAGES[name];
   if (!def) throw new Error(`unknown stage ${name}`);
@@ -5148,11 +5152,21 @@ async function stageOnce(name, ctx, opts = {}) {
   // declared, already logged per stage; this consults it. Keyed on CONTENT, so a pure crash-resume (no
   // input bytes changed) still skips exactly as cheaply as before.
   const declaredInputs = () => stageInputs(name, P, { axes: ctx.axes, axis: ctx.axis, registerOnly: ctx.registerOnly });
-  const freshness = forced ? { stale: false, changed: [] } : stageStaleness(P.runDir, label, declaredInputs());
+  // AN OUTPUT ITS STAGE MADE WITH NO RECORD OF WHAT IT READ IS NOT REUSED, as in the Knockout. A stage records what it
+  // read when it succeeds, so where the stage itself was dispatched and its output has no record, the stage stopped
+  // between writing the output and recording it, or ran before the record existed. Its freshness is unknown, so the
+  // stage runs again. The register answers it holds are not bought again: the executor reuses every answer the run
+  // holds to the same question. An output another step wrote, as the merge of the research halves writes the whole
+  // research output, was never this stage's to record, and is reused as before.
+  const unrecorded = !forced && Boolean(out) && existsSync(out) && !readStamp(P.runDir, label) && stageWasDispatched(P.runDir, label);
+  const freshness = forced ? { stale: false, changed: [] }
+    : unrecorded ? { stale: true, reason: "no record of the inputs it was produced from", changed: [] }
+    : stageStaleness(P.runDir, label, declaredInputs());
   if (freshness.stale) {
     const why = freshness.changed.map((c) => `${c.name} ${c.was ?? "(absent)"}→${c.now ?? "(absent)"}`).join(", ");
-    runLog(P.runDir, { event: "stage-stale", stage: label, changed: freshness.changed });
-    note(`[${label}] stale — ${freshness.changed.length} input(s) changed since this output was produced (${why}); recomputing`);
+    runLog(P.runDir, { event: "stage-stale", stage: label, changed: freshness.changed, ...(freshness.reason ? { reason: freshness.reason } : {}) });
+    note(freshness.reason ? `[${label}] stale — ${freshness.reason}; recomputing`
+      : `[${label}] stale — ${freshness.changed.length} input(s) changed since this output was produced (${why}); recomputing`);
   }
   // ── — AN UNDISCHARGED FLOOR DUTY IS PART OF "VALID" ──────────────────────────
   //
@@ -9257,7 +9271,11 @@ export function parkForRunChoice(e, { job, agent }) {   // @internal
   try {
     writePark(runDir, { kind: "run-choice", resetsAt: null, postponedAt: new Date().toISOString(), dependency: e.dependency,
       waitingOn: e.waitingOn ?? null, resolvedBy: e.resolvedBy ?? null }, { job, agent, codename });
-  } catch { /* best-effort — the returned park still tells the runner */ }
+  } catch (err) {
+    // The returned park still tells this runner; a later runner finds the run only by its marker, so its loss is said.
+    note(`[pipeline] park marker NOT written for ${codename ?? "run"}: ${String(err?.message ?? err).slice(0, 160)}`);
+    try { runLog(runDir, { event: "park-marker-unwritten", kind: "run-choice", cause: String(err?.message ?? err).slice(0, 200) }); } catch { /* the note is the record */ }
+  }
   note(`[pipeline] PARKED ${codename ?? "run"}: ${String(e.message).slice(0, 300)}`);
   return { ok: false, postponed: true, resetsAt: null, parkedFor: e.dependency, codename, runDir };
 }
@@ -9318,7 +9336,12 @@ function postponeRun(e, run, meta = {}) {
     try { writePark(run.runDir, { kind: "rate-limit", resetsAt, postponedAt: new Date().toISOString(), fromStage: e.stage, codename, job: meta.job ?? null, agent: meta.agent ?? null,
       probeAttempt: priorProbe + 1,
       waitingOn: PARK_WAITING_ON,
-      resolvedBy: PARK_RESOLVED_BY }, { job: meta.job, agent: meta.agent, codename }); } catch { /* best-effort */ }
+      resolvedBy: PARK_RESOLVED_BY }, { job: meta.job, agent: meta.agent, codename }); }
+    catch (err) {
+      // The marker is how the runner resumes the run once the limit resets; a run whose marker is lost is said to be.
+      note(`[pipeline] park marker NOT written for ${codename ?? "run"}: ${String(err?.message ?? err).slice(0, 160)} — the runner cannot resume this run from it`);
+      try { runLog(run.runDir, { event: "park-marker-unwritten", kind: "rate-limit", cause: String(err?.message ?? err).slice(0, 200) }); } catch { /* the note is the record */ }
+    }
     // Flip the dashboard status.json state -> "postponed" (best-effort; the .postponed marker is the
     // source of truth). Routed through writeRunStatus so the terminal-state guard applies here too.
     try {
@@ -9439,7 +9462,8 @@ async function pipelineInner(job, opts = {}) {
     }
     return r.minted;
   };
-  // The settlement flush: ONE warm re-digest carrying every queued segment (plus the frame-reopen
+  // The settlement flush: ONE re-digest follow-up (a fresh session carrying its whole message, as every follow-up
+  // is; stages.mjs, followup composition) carrying every queued segment (plus the frame-reopen
   // segment when that block fired), sectioned, ending with the standard FULL re-emission contract.
   // Timeout ⇒ one retry on a fresh session, on the same model (the legacy frame-reopen re-digest's own
   // recovery). A flush that still fails leaves its items PENDING (durable — the late flush or the next
@@ -9598,7 +9622,7 @@ async function pipelineInner(job, opts = {}) {
     } else if (action === "digest-message") {
       ctx.lateBind = bind;                          // the digest stage message carries the re-classification block
     } else if (action === "warm-redigest") {
-      // exclusion IS a filter: one warm reconciliation on the digest session — re-classify, never re-run searches
+      // exclusion IS a filter: one reconciliation follow-up of the digest step, in a fresh session — re-classify, never re-run searches
       const followup = repairFollowup("register-digest:late-bind", { registerFindings: P.registerFindings, bind });
       const r = await runDigest(ctx, { force: true, followup, sessionKey: ctx.digestKey, trigger: "late-bind" });
       if (!r.ok) note(`late-bind re-digest failed (non-fatal — classification note will ride the report): ${r.fail}`);
@@ -10111,8 +10135,8 @@ export function reconstructCtx(job, opts) {   // @internal
   // register funnels, doubt-closure, narrative-refutation).
   //
   // NON-FATAL, and that is a deliberate call about a PRODUCTION path. attachSearchPolicy throws on
-  // three shapes (a selector-carrying job with no frozen sidecar, a corrupt sidecar, a pipeline this
-  // build cannot execute) and repairStale calls this function. Before today a repair ran with these
+  // three shapes (no frozen sidecar, which this function has already refused above, a corrupt sidecar,
+  // a pipeline this build cannot execute) and repairStale calls this function. Before today a repair ran with these
   // fields simply UNSET, so letting a throw out would turn a run this build has always repaired into a
   // run it refuses — a regression dressed as strictness, and the knockout guard eight lines above
   // already tolerates the corrupt-sidecar case explicitly. Adding the field can only improve the
@@ -10309,8 +10333,8 @@ function experimentEngineName() {
  *
  * `pipeline()` takes a run slot, so a clearance is visible to `deployRefusal` and an hourly deploy defers
  * over it. A draw is a direct invocation and took nothing, so the guard saw an idle box and a tick could
- * fast-forward the checkout, reinstall and restart the units under a running experiment. Measured by the
- * test lane: the only thing protecting a replication was somebody stopping the deploy timer by hand,
+ * fast-forward the checkout, reinstall and restart the units under a running experiment. Measured in testing:
+ * the only thing protecting a replication was somebody stopping the deploy timer by hand,
  * which made that hold load-bearing without anyone having decided it should be.
  *
  * IT TAKES ITS OWN LOCK, NOT A RUN SLOT. A run slot is admission-controlled against

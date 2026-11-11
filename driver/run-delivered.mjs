@@ -41,8 +41,14 @@ export async function deliveryEndState({ P, agent, ctx, job, run }, helpers) {
   // and the same terminal, so the two deliveries cannot drift apart. `verdict` is the review's sign-off word, or null.
   async function publishAndDeliver(verdict) {
     let published;
+    // PUBLISHED ONCE, and a resume delivers what was published. `.published` holds the whole publish result, as the
+    // Knockout's does, because the delivery below reads more of it than the link: the workbook's file name for the
+    // covering email's download link, the report's caption for the run record, and the pool folder the delivered state
+    // is stamped on. It used to keep four fields, so a run stopped between the publish and its delivered status sent
+    // its covering email without the workbook link, kept no caption and left its pool copy unstamped.
     if (existsSync(join(run.runDir, ".published"))) {
-      published = JSON.parse(readFileSync(join(run.runDir, ".published"), "utf8"));
+      const { ts: _publishedAt, ...stored } = JSON.parse(readFileSync(join(run.runDir, ".published"), "utf8"));
+      published = stored;
       note(`publish skip — already published → ${published.url}`);
     } else {
       // THE LAST READ OF THE STOP FLAG, and it sits HERE rather than above the branch: a run that has
@@ -70,8 +76,7 @@ export async function deliveryEndState({ P, agent, ctx, job, run }, helpers) {
         // materialized into run.runDir/_records by the lint-pass assembleRunRecords). NOT the pool dir.
         runDir: run.runDir,
       });
-      sentinel(run.runDir, ".published", { runId: published.runId, url: published.url, counts: published.counts,
-        clientGate: published.clientGate });   // machine-QC record (observability) — decides nothing
+      sentinel(run.runDir, ".published", published);
       // WHAT THE TWO GATES EACH SAID, in the run's own log, under names that say whose they are.
       // `.published` carries `clientGate.released` beside `counts.gateViolations`, which are the verdicts
       // of DIFFERENT gates: the first is the client-export refusal (evaluateClientGate), the second is the

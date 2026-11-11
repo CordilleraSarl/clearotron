@@ -19,15 +19,7 @@
 //     A THROW SITE THAT KNOWS ITS OWN CLASS MUST STAMP IT (`failClass`, see StageFailure). Unstamped,
 //     the ladder can only guess from the reason text, and the guess for anything the regexes do not
 //     recognise is UNKNOWN — which buys a park. Every throw in this file was written while the lane had
-//     no ladder and stamping was therefore free to skip; that is no longer true;
-//
-// A NOTE ON THE ISSUE NUMBER, BECAUSE THE HISTORY AND THE SOURCE DISAGREE AND ONLY ONE CAN BE FIXED.
-// The commit that landed this ladder says "". That is the WRONG issue — 1886 is
-// about doctrine resolution and has nothing to do with this lane. The work was authorised against the
-// plan of record, 1889, which lists it by name. The commit message cannot be edited once pushed and
-// history is not rewritten to tidy a citation, so the wrong number stands in the log forever; the
-// references in this file are corrected and this comment is the reconciliation. A reader who greps the
-// history for 1886 and lands here is in the right place and the number that brought them is not.
+//     no ladder and stamping was therefore free to skip; that is no longer true.
 import { atomicWrite, paths } from "./run-record.mjs";
 import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, rmSync, renameSync, readdirSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
@@ -49,14 +41,14 @@ import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, k
 import { kebabCollisions, reportIdentityFor, CAPABILITY_SKIPPED_CAUSE, CAPABILITY_SKIPPED_NOTE } from "./search-policy.mjs";
 import { countPreflight, countRegisterHits, countedMarks, resolveCountExecutor } from "./register-count.mjs";
 import { recordsPreflight, listedMarks } from "./register-records.mjs";
-import { knockoutQuestionPlan, knockoutBandPath, knockoutBandBlocks, knockoutProposals, knockoutRecordsDoc, knockoutAxis, openingQid, questionPlanPath,
+import { knockoutQuestionPlan, knockoutBandPath, knockoutBandBlocks, knockoutProposals, knockoutRecordsDoc, knockoutAxis, questionPlanPath,
   readingTableLines, appendQuestionReceipts, resolveQuestionExecutor, writeFixtureMarker, addedClassQuestions, formsOfName, formQid, countRowsOf, foldFormCounts, unfoldFormCounts, withCitedFilings, withHeldGoods } from "./knockout-register-read.mjs";
 import { capabilitiesFor } from "./register-capabilities.mjs";
 // — the ONE binding of the office split to this box's env, shared with the plan lane.
 import { registerUnavailableOffices } from "./register-unreachable.mjs";
 import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";   // — this run's record log
 import { beginAnswerMemory } from "../providers/_shared/answer-memory.mjs";
-import { validators as koValidators, validateMergedFindings, worstBand, registerSurfacedFilings, raterCaveats, SURVIVOR_BOUNDARY_RE, REGISTER_LANE_FILE, PERMITTED_SOURCES } from "./verify-knockout.mjs";
+import { validateMergedFindings, worstBand, registerSurfacedFilings, raterCaveats, SURVIVOR_BOUNDARY_RE, REGISTER_LANE_FILE, PERMITTED_SOURCES } from "./verify-knockout.mjs";
 import { KNOCKOUT_CARD_ORDER } from "./findings-model.mjs";
 import { reviewDispatch, applyKnockoutReview, knockoutReviewFile, rewritesThatSurvive } from "./knockout-review-record.mjs";
 import { chunkBasePath, correctionAnswers, correctionOutcomes, correctionWork, correctionWorkPath, keepChunkBases, knockoutCorrectionFile, movedOutsideScope, readCorrectionWork, restoreChunkBases, rollBackName, sameFinding } from "./knockout-correction-record.mjs";
@@ -74,12 +66,14 @@ import { rollupTokens, stampTokenRollup } from "./tokens.mjs";
 import { recordRunConsumption } from "./consumption-ledger.mjs";
 // The scoped owner lookup a promoted register filing is owed. Bounded, deduplicated
 // per owner, and structurally unable to withhold a report.
-import { ownersOwedACheck, runOwnerChecks } from "./owner-use-check.mjs";
+import { composeOwnerQuery, ownerPayloadFile, ownersOwedACheck, runOwnerChecks } from "./owner-use-check.mjs";
+import { isResearchAnswer } from "./research-answers.mjs";
 
 const DRIVER_DIR = dirname(fileURLToPath(import.meta.url));
 export const TRIAGE_FRAMEWORK = "skills/clearance-search/risk-framework-triage.md";
 
-// sentinel/archive mirror pipeline.mjs's private helpers (cross-referenced there) — byte-faithful.
+// sentinel and archive are this lane's own. The clearance's archive (pipeline.mjs) also settles any pending what-if
+// before it moves the run; this one does not.
 const sentinel = (runDir, name, obj) => atomicWrite(join(runDir, name), JSON.stringify({ ts: new Date().toISOString(), ...obj }, null, 2) + "\n");
 function archive(run) {
   try { mkdirSync(dirname(run.archiveDir), { recursive: true }); renameSync(run.runDir, run.archiveDir); return run.archiveDir; }
@@ -488,6 +482,36 @@ export function koStaleness(runDir, label, now) {   // @internal
   if (!Array.isArray(stamp?.inputs) || !stamp.inputs.length) return { stale: true, reason: "no record of the inputs it was produced from", changed: [] };
   const d = diffFingerprint(stamp.inputs, now);
   return d.stale ? { stale: true, reason: "an input changed since it ran", changed: d.changed } : { stale: false, changed: [] };
+}
+
+/**
+ * Which owner checks this run already holds an answer to, and which it must still ask. PURE but for reads of the
+ * answers' own files.
+ *
+ * AN OWNER CHECK IS PAID FOR, AND ITS ANSWER DOES NOT CHANGE WITHIN THE RUN (2026-11-11), as a register answer does
+ * not. So a resume asks again only what the run holds no answer to. A held row answers an owed check only when it is
+ * the same question: the same name, owner, filings and classes, the same words put to the provider at the same depth,
+ * and an answer whose payload is still under research/ beside it. Anything else is unfinished work and is asked: a
+ * failed check, a check with no row, a row whose payload is gone, and an owner or filing that changed. A changed
+ * owner does not inherit another owner's answer. A held row is returned as it was written, its time and its sources
+ * included, so what the rating reads is the evidence the run paid for.
+ */
+export function heldOwnerChecks(priorRows, owed, { runDir, preset }) {   // @internal
+  const sameSet = (a, b) => Array.isArray(a) && Array.isArray(b) && a.length === b.length
+    && [...a].map(String).sort().join("\u0000") === [...b].map(String).sort().join("\u0000");
+  const rows = Array.isArray(priorRows) ? priorRows : [];
+  const held = new Map();
+  const ask = [];
+  owed.forEach((o, i) => {
+    const payloadFile = ownerPayloadFile(o);
+    const row = rows.find((r) => r?.ok === true && r.mark === o.mark && r.owner === o.owner
+      && sameSet(r.recordIds, o.recordIds) && sameSet(r.classes, o.classes)
+      && r.query === composeOwnerQuery(o) && r.preset === preset && r.payloadFile === payloadFile);
+    let answer = null;
+    try { answer = row ? readFileSync(join(runDir, "research", payloadFile), "utf8") : null; } catch { answer = null; }
+    if (row && isResearchAnswer(answer)) held.set(i, row); else ask.push(o);
+  });
+  return { held, ask };
 }
 
 async function koStage(name, ctx, { chunkNo = null, msgCtx = {} } = {}) {
@@ -1178,11 +1202,17 @@ export async function knockoutInner(ctx, job, opts = {}) {
             try {
               const owed = ownersOwedACheck(recDoc);
               if (owed.length) {
-                const checks = await runOwnerChecks({
-                  owners: owed, exec: sweep.exec, runDir: run.runDir, ledgerPath: K.ownerCheckLedger,
+                // A resume asks only the checks the run holds no answer to (heldOwnerChecks).
+                let prior = [];
+                try { prior = JSON.parse(readFileSync(K.ownerChecks, "utf8")).checks ?? []; } catch { /* first pass */ }
+                const { held, ask } = heldOwnerChecks(prior, owed, { runDir: run.runDir, preset: KNOCKOUT_WEB.questionPreset });
+                const asked = ask.length ? await runOwnerChecks({
+                  owners: ask, exec: sweep.exec, runDir: run.runDir, ledgerPath: K.ownerCheckLedger,
                   rawDir: paths(run.runDir).webResults, preset: KNOCKOUT_WEB.questionPreset,
                   concurrency: 3,   // step 3 — the same constant as the sibling calls above
-                });
+                }) : [];
+                const answers = new Map(ask.map((o, j) => [o, asked[j]]));
+                const checks = owed.map((o, i) => held.get(i) ?? answers.get(o));
                 atomicWrite(K.ownerChecks, JSON.stringify({ schema: 1, checks }, null, 2) + "\n");
                 runLog(run.runDir, {
                   event: "knockout-owner-checks", owners: owed.length,
@@ -1190,6 +1220,8 @@ export async function knockoutInner(ctx, job, opts = {}) {
                   // The count is logged because the ruling is about COST: one promoted filing on the
                   // issue's run means one query. A number climbing here is the bound having widened.
                   unanswered: checks.filter((c) => !c.ok).length,
+                  // Answers the run already held, so asked nothing for: `asked` is what this pass paid for.
+                  reused: held.size, asked: ask.length,
                 });
               } else {
                 runLog(run.runDir, { event: "knockout-owner-checks", owners: 0, answered: 0, unanswered: 0,
@@ -1459,7 +1491,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
         recordRunConsumption(ctx, { phase: "delivered", tokens: stampTokenRollup(run.runDir, "delivered") });
     } },
     { name: "deliver", run: async () => {
-        // 5 — delivery handoff (byte-faithful to pipelineInner's packet contract; cross-ref pipeline.mjs)
+        // 5 — delivery handoff, to the clearance's packet contract (run-delivered.mjs)
         koStep(ctx, "Sending to you");
         // qcFlags: the projected predelivery-lint lines publishKnockout just computed and recorded — the
         // cover note enumerates exactly what the workbook does (A10, extended to this lane 2026-07-31).

@@ -164,7 +164,7 @@ export function replayRun(runDir) {
     catch (e) { v = { ok: false, reason: `validator_threw:${e.message}` }; }
     out[`registerUnit:${basename(f, ".md")}`] = verdict(v);
   }
-  // pre-delivery lint replay (the NAME(S) / client-summary class) — mirrors pipeline.mjs lintNow()
+  // pre-delivery lint replay (the NAME(S) / client-summary class) — mirrors lintNow() in steps/delivery.mjs
   const reportPath = join(runDir, "report.md");
   if (existsSync(reportPath)) {
     try {

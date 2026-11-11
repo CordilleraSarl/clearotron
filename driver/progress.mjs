@@ -16,6 +16,7 @@
 import { readdirSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path"; import { STUDIO_SEGMENT_RE } from "../shared/pre-rename-spellings.mjs";
 import { sepClass, notSepClass } from "../shared/path-seps.mjs";   // a Windows path is built with "\"
+import { isStopReason, stopReason } from "../shared/stop-reason.mjs";   // a stopped run's line is the stop's own reason
 import { DRIVER_DIR, atomicWrite, readJson } from "./run-record.mjs";
 import { config } from "./driver.config.mjs";
 import { batchMarkName } from "./mark-name.mjs";
@@ -468,7 +469,9 @@ function currentStepOf(step) {
 // The archive lives UNDER studioRoot (studioRoot/archive/...), so a recursive walk of studioRoot finds
 // both in-flight and delivered/failed runs. Cap depth (status.json only sits at the run-dir level) and
 // skip the high-churn leaf dirs for speed.
-const SKIP_DIRS = new Set([DRIVER_DIR, "register-units", "queue", "_history", "_experiments", "_known-conflicts"]);   // the old per-mark recall store, left on disk by its removal, holds no status.json
+// `_records` holds a run's fetched register records, about 2,100 files on a large run, and never a status.json; no
+// run, customer or date folder is named with a leading underscore, so skipping it changes nothing the walk finds.
+const SKIP_DIRS = new Set([DRIVER_DIR, "register-units", "queue", "_history", "_experiments", "_known-conflicts", "_records"]);   // the old per-mark recall store, left on disk by its removal, holds no status.json
 const MAX_RUNS = 12;
 
 function findStatusFiles(root, depth, acc) {
@@ -532,6 +535,13 @@ export function lineFor(s) {
     // Visible-but-non-blocking: the next runner activation reclaims and resumes it — but if none comes
     // (unit disabled, manual runner), a human owns it, so the line must never read as quietly settled.
     return `- ${head} — ⏸ PARKED (runner stopped mid-run${s.parkedKind ? `: ${s.parkedKind}` : ""}) at ${s.lastStage ?? stepTxt} — resumes on the next runner activation; if none is coming, resume it by hand`;
+  }
+  if (s.state === "cancelled") {
+    // A STOPPED RUN SAYS SO, in the words the stop already wrote: "stopped by request at ⟨stage⟩ via ⟨route⟩ (asked
+    // ⟨time⟩)", the same for both products. With no line of its own it fell through to "running", and a stopped run
+    // read as a live one that never finished. A status that holds no such reason gets the same sentence from the stage
+    // it records, from the same composer.
+    return `- ${head} — ${isStopReason(s.reason) ? s.reason : stopReason({ stage: s.failedStage ?? s.lastStage })}`;
   }
   if (s.state === "postponed") {
     // rate-limit pause: alive + auto-resuming — never render as "running" (would hide the pause + ETA).

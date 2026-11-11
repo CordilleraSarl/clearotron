@@ -14,7 +14,6 @@
 // per-stage `stallSec` (the standalone engine's zero-streamed-tokens watchdog) so deep thinking is not
 // false-killed by the tight global default. Models are friendly aliases; gateway.resolveModel() maps to full ids.
 
-import { basename } from "node:path";
 import { researchAnsweredBlock, NO_SEARCH_RESULT, RESEARCH_AFTER_REVIEW_MD } from "./research-answers.mjs"; import { reviewResearchLine } from "./research-checks.mjs"; import { savedFindingsBlock } from "./saved-findings-block.mjs";   // the research an earlier attempt got, and the findings it saved, handed to a later one
 import { awaitsReadingTurn } from "../providers/_shared/plan-guards.mjs";   // — a guard the dictation misreads is a question the model never knows it may ask
 import { isNonLatinTerm } from "../providers/_shared/script-form.mjs";
@@ -26,7 +25,6 @@ import { REGISTER_AXES, decideAxes } from "./coverage-ledger.mjs";
 // — the digest dispatch asks the SAME question verify.mjs asks ("does this run owe a form or a
 // prose table?") of the SAME file, so the instruction and the gate cannot disagree. Reading it here is
 // the point: a boolean threaded through ctx would drift the moment one call site forgot to set it.
-import { coverageFormStamp } from "./coverage-form-io.mjs";
 // The unit note's transport owns its repair tail — see UNIT_NOTE_REPAIR_TAIL. Acyclic: that module
 // imports node builtins and shared/driver-dir only.
 import { UNIT_NOTE_REPAIR_TAIL } from "./register-unit-record.mjs";
@@ -37,10 +35,8 @@ import { meaningSweepReceiptsInstruction } from "./connotation-search.mjs";   //
 import { frameworkFor, workedExamplesFor, materialBandPhrase } from "./framework.mjs"; import { methodDictation, inputsShape } from "./framework-method.mjs";
 import { requiredScriptsFor } from "./registration-scripts.mjs";   // item 21 — which scripts a territory registers marks in
 import { resolveTerritories, defaultJurisdictionsLine, narrowingOrderLine } from "./effective-scope.mjs";   // the ONE territory ladder (the geography stamp included) + the defaults-never-widen rule (2160)
-import { editRepairTail } from "./repair-contract.mjs";
-import { reportIdentityFor } from "./search-policy.mjs";
 import { profileSelectionDirective } from "./profile-selection.mjs";   //  lever 3 — driver selection  //  — the one product-name resolver
-import { FINDINGS_SCHEMA_VERSION, OFF_FIELD_GROUNDS, POSITION_REQUIRED_DISPOSITIONS, DISPOSITIONS } from "./findings-model.mjs";   // — the dictated findings contract version + off-field's declared grounds; — and the disposition vocabulary itself, which was typed out here while its two neighbours were interpolated
+import { FINDINGS_SCHEMA_VERSION, OFF_FIELD_GROUNDS, POSITION_REQUIRED_DISPOSITIONS } from "./findings-model.mjs";   // — the dictated findings contract version + off-field's declared grounds; — and the disposition vocabulary itself, which was typed out here while its two neighbours were interpolated
 import { STATEMENT_CLAUSE_MAX } from "./findings-model.mjs";   // — the ask is dictated against the clause that clips it
 // The ledger's closed vocabularies, so the dispatch cannot teach an order or a member the code refuses.
 import { SCOPE_LAYERS, SCOPE_STATUSES } from "./scope-ledger.mjs";
@@ -2475,7 +2471,7 @@ export const STAGES = {
       // section (and _driver/register-positions.json) is the exact-identity projection. "Owner
       // clustering" as arithmetic is no longer your job; residual folds that ARE judgment
       // (related-owner, brand-family) remain yours, stated with their reasoning.
-      `Apply the relevance gate, opposition, Option-D, merch sweep, applicant own-rights sweep when priority is live. Sheet-1 rows follow the shape's POSITIONS (one row per position, citing AT LEAST ONE constituent record URI — listing all of them is better but one is sufficient), never one row per registration of the same right. Union + reconcile the Coverage ledger against the materially-matters list.`,
+      `Apply the relevance gate, opposition, Option-D and merch sweep. When priority is live, look the applicant up in the held band with \`band_lookup\` by owner. An empty lookup establishes neither that the applicant has no filings nor that no owner search ran. Sheet-1 rows follow the shape's POSITIONS (one row per position; \`uri\` carries exactly one constituent; any one ends the whole position), never one row per registration of the same right. Union + reconcile the Coverage ledger against the materially-matters list.`,
       // P2-A (charter P2a): the retrieved→judgment reconciliation — the driver joins every screened-live
       // dominant-element record against your endings after EVERY digest pass; an unended POSITION blocks
       // delivery. ONE contract, ONE unit (review problem 2): the join groups records by the same
@@ -3613,7 +3609,7 @@ export const STAGES = {
       // rule bans, and e2e has twice measured a seat obeying the prose while holding the tool.
       //
       // EACH FIELD CARRIES ITS OWN IMPERATIVE IN ITS OWN SENTENCE.
-      `Hand the shell back by calling the \`record_report_overview\` tool. There is no file to write and no front-matter to type: the driver renders the shell — every front-matter key it already holds, the \`# Actions\` section and the optional \`# Methodology\` note — from the values you send, and assembles the cards around it. Do NOT author any \`## <owner> — <MARK>\` card and do not think about a \`# Marks\` heading; each card is rendered separately. Risk scoring is unchanged.`,
+      `Hand the shell back by calling the \`record_report_overview\` tool. There is no file to write and no front-matter to type: the driver renders the shell — every front-matter key it already holds and the \`# Actions\` section — from the values you send, and assembles the cards around it. Do NOT author any \`## <owner> — <MARK>\` card and do not think about a \`# Marks\` heading; each card is rendered separately. Risk scoring is unchanged.`,
       // TRANSFORM, NOT FREE-GENERATION (Fix B1 — carried from main's report-synthesis): the shell RESHAPES the
       // settled synthesis, it never re-derives. Applied here to overall_caption + # Actions.
       `TRANSFORM, NOT FREE-GENERATION: overall_caption and # Actions draw ONLY on the settled synthesis narrative ${P.narrative} (and findings.json ${P.findings}) — introduce NO finding, owner, or claim that is not already there, NEVER re-compute a band, and never let a claim outrun its evidence (a verified-from-record fact stays fact; an inferred-from-signal claim reads AS an inference — "on the available signals…" — never flattened to bald fact). WHERE THE SETTLED NARRATIVE REASONED MORE THAN ONE RATIFIED FORM OF THE NAME, CARRY ITS PER-FORM READ THROUGH — the overall_caption says which form the decisive conflicts turn on, or that the reads are the same for both, in the narrative's own words. Do not flatten two reads into one undifferentiated statement: that loses the distinction the client ratified both forms to get. This is a transform of what the narrative already settled, not a second rating, and the band is unchanged — one overall band as today.`,
@@ -3665,7 +3661,7 @@ export const STAGES = {
       `overall_caption VOICE: write plain CONSEQUENCE + the FACT that conditions it, with ZERO risk codes — no retired "Level C" / "Composite 3" codes, no bare dispute-type tokens, no engineering register ("axes", "Option D", query/fetch counts). Say what it MEANS and what STATE OF THE WORLD determines exposure ("one owner holds a near-identical mark for the same goods and is likely to object — no coexistence or consent appears on the record searched"), not the code. NOTE the shape of that example (§L): the conditioning fact is scoped to what this run SAW. Never write "consent is not in hand" or "coexistence is not in place" — the client may hold either, and no search this run ran could see it. FACTS THAT CONDITION, NEVER ADVICE: the caption names the driver + what conditions reliance; it NEVER prescribes a step ("narrow the goods", "seek consent before filing") and never uses advice grammar ("we recommend", "the practical path is") — the forward asks are code-built from the findings.json actions register, and a caption that repeats them as instructions is a defect. No terse code tag anywhere — the driver renders each card's risk chip from its record; captions carry plain consequence only. And do NOT LEAD the caption with a coverage gap — lead with the substantive risk and the driving finding; a genuinely un-cleared dangerous slice is named in the risk read as analysis (and a genuine human-only step rides the actions register), never the headline and never a closeable-search caveat.`,
       // judgment-relocation (2026-06-23): the Korvane-headline fix — lead with the GENUINE top risk, not a partner.
       `LEAD WITH THE GENUINE TOP RISK: the caption + the order of # Actions must headline the conflict that actually drives the verdict (the bare / near-identical mark in a core class whose owner can and would block — disposition adversarial, the most severe band). Do NOT lead with a commercial partner / coexistence-relationship finding just because it is prominent or familiar — that finding is surfaced RISK-FIRST: the band consequence leads and the conditioning FACTS follow ("a rated <band> conflict — the coexistence is documented and neither party has challenged it; continuing it is the client's commercial call" — §L: say what "undisturbed" MEANS, in plain words; a right or an arrangement is never described as "undisturbed" on a reader surface); a path/response clause ("the realistic path is …", "the practical path is …") is retired voice — it may never appear, never LEAD a finding's line and never stand in for its rating. It is not the headline unless it genuinely IS the top risk. Reflect the synthesis prioritisation; never re-order by who the reader recognises.`,
-      `There are no sections for you to lay out and no headings to emit — the driver renders them. Send \`actions\` (the checks and what they found) and, only when there is a genuine scope note to make, \`methodology\`. Coverage is built deterministically from the typed coverage[] states in findings.json and is never yours. Mark an internal-only note by sending that bullet with \`internal: true\`; do not type a ::p:: marker.`,
+      `There are no sections for you to lay out and no headings to emit — the driver renders them. Send \`actions\` (the checks and what they found). Coverage is built deterministically from the typed coverage[] states in findings.json and is never yours. Mark an internal-only note by sending that bullet with \`internal: true\`; do not type a ::p:: marker.`,
       // spec 64 — "### Only you can close these" is NO LONGER authored here: the driver CODE-BUILDS it
       // at assembly from the findings.json typed actions register (the same data the verdict derives
       // from), so the ask list, the "subject to" line, the email box and the disposition can never
@@ -3679,11 +3675,6 @@ export const STAGES = {
       // T6 (J9) — the delivery lint's constraints, stated at DRAFT time so the first
       // generation passes (the lint-repair redo was a deterministic ~2-generation tax on 83% of runs).
       `LINT CONTRACTS (the delivery lint fails a shell that breaks these — write them right the first time): (1) never state a numeric registration count for an owner that differs from the finding set's registration list — unsure ⇒ name the owner without a count; (2) findings marked withdrawn in findings.json DO NOT EXIST for this report — never mention them; (3) never pair a WIPO/Madrid registration with "worldwide"/"global" language — name the designated countries or omit the reach claim.`,
-      // CHANGE 1 (telemetry strip) — Methodology is OPTIONAL and telemetry-free. No run telemetry (query/fetch
-      // counts, variant counts, platform/storefront counts, cell-matrix sizes, "remainder clean" enumerations,
-      // axis mechanics), and no confirmed-clean / clean-check enumeration list — those live in the run-dir / audit,
-      // and coverage states render from typed coverage[]. Methodology is a SHORT plain-English scope note or nothing.
-      `# METHODOLOGY (OPTIONAL) — emit it ONLY if there is a genuine plain-English scope note a reviewer needs (e.g. "register + marketplace + general web; transliteration variants searched; foreign-platform direct search not run"). Do NOT write a telemetry block: NO query/fetch/variant/platform counts, NO "[N] storefronts … remainder clean ([cells]-cell matrix)" line, NO axis mechanics, and NO enumeration of what came back confirmed-clean or what clean-checks were run. If there is no real scope note to make, OMIT the section entirely. NEVER put any of this in overall_caption.`,
       // P6 §7 — the caption obeyed "3 sentences" with three 60-word sentences. The cap is code-enforced
       // (card-budget.mjs foldCaption); the WORD budget is the thing that was missing, and it stays prompt-side.
       `overall_caption is HARD-CAPPED at 3 sentences — a verdict, not a recap; COUNT and trim before emitting. The cap is the FOLD POINT, not the target: write to about 20-25 words a sentence (roughly 75 words for the whole caption). Three sixty-word sentences pass the count and defeat it.`,

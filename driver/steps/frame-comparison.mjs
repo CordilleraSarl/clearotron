@@ -356,7 +356,7 @@ export async function runFrameComparison({ P, axes, ctx, dispatchPlanQids, flush
         // refresh the receipt, re-merge the named band. No LLM sweep turn, no session needed, and the
         // detail-fetch ceiling concern retires with the arm (the executor batch-screens, never
         // detail-fetches; the enumerate ceiling bounds records). The unit .md prose stays as-is —
-        // audit-only; where it differs from the band, the band wins. The ONE warm re-digest below is
+        // audit-only; where it differs from the band, the band wins. The ONE re-digest follow-up below is
         // where judgment reasons over the completed band, unchanged.
         if (regDirectives.length && dispatchArmAvailable) {
           regArm = "dispatch";
@@ -596,8 +596,8 @@ export async function runFrameComparison({ P, axes, ctx, dispatchPlanQids, flush
           // be true again: every register directive would fall through to `regNoSession`, become a
           // disclosed deferral, and a dominant-element deferral is a CLEAR→CONDITIONAL clamp input —
           // verdicts moving on runs that used to ship CLEAR, with no test failing. The guard existed
-          // because this arm's close was only real once a warm re-digest reconciled it, and it needed a
-          // live digest session to resume; after the move there is nothing to reconcile into, because the
+          // because this arm's close was only real once a re-digest follow-up reconciled it, and it needed a
+          // digest that had already run; after the move there is nothing to reconcile into, because the
           // digest has not run and will read the swept unit on its first pass. This arm is unreachable on
           // the dispatch-lane providers (dispatchArmAvailable wins above whenever CLEAROTRON_PLAN_DISPATCH is
           // on and the provider exposes executePlan, which is production today) — it is the lane for a
@@ -654,7 +654,7 @@ export async function runFrameComparison({ P, axes, ctx, dispatchPlanQids, flush
         // (Register-only never reaches this arm: source-layer directives are dropped before `firing`.)
         if (srcDirectives.length) note(`frame-reopen: ${srcDirectives.length} source-channel directive(s) disclosed as open rows, not swept`);
 
-        // ONE warm re-digest if a register axis materially changed (re-derives register-coverage-ledger.json,
+        // ONE re-digest follow-up if a register axis materially changed (re-derives register-coverage-ledger.json,
         // and surfaces the newly-enumerated conflicts as findings — this block runs BEFORE synthesis).
         // T1 (J2/G8): the re-digest honors the block's NON-FATAL contract — the old must here
         // killed a full run on a re-digest timeout AFTER the sweeps had already landed (the F5
