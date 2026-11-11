@@ -3059,7 +3059,7 @@ function runLedger(runDir) {
   }
 
   // A GRADED RUN WHOSE NARRATIVE THE DEPTH CHECK COULD NOT READ delivered with the depth rules applied to
-  // nothing. The receipt says so in a check of its own, and nothing a test lane reads carried it: the
+  // nothing. The receipt says so in a check of its own, and nothing a tester reads carried it: the
   // client's mail holds no machine-check lines, and the workbook's Machine Checks sheet is for the reviewing
   // lawyer. Read from either shape a receipt carries, the check object or the stored list of failing ids.
   const lint = readJson(join(dd, "predelivery-lint.json"));

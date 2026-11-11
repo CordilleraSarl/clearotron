@@ -34,7 +34,7 @@
 // PURE except `heldRecordProvenance` and `readRunCallRows`, which read the run's files.
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import { normalizeRecordUri, readRecordArtifacts, forEachLedgerLine, recordBodyHasContent } from "./registry-fidelity.mjs";
+import { normalizeRecordUri, readRecordArtifacts, forEachLedgerLine, recordBodyHasContent, lineMayMatchRun } from "./registry-fidelity.mjs";
 import { recordGoodsProvenance } from "./record-goods.mjs";
 import { runPrefixSpellings } from "../shared/pre-rename-spellings.mjs";
 import { driverDir, paths, readJson } from "./run-record.mjs";
@@ -129,7 +129,11 @@ const inRun = (row, runPrefix) => !runPrefix || runPrefixSpellings(runPrefix).so
 /** This run's rows of the register call ledger. A missing file is no rows; one that cannot be read says so. IMPURE. */
 export function readRunCallRows(callLogPath, runPrefix) {
   const rows = [];
+  // The call log is shared by every run on the machine: a line naming none of this run's prefix spellings is
+  // skipped before it is parsed. With no prefix every row is the run's, so every line is read.
+  const mayMatch = runPrefix ? lineMayMatchRun(runPrefix) : () => true;
   const read = forEachLedgerLine(callLogPath, (line) => {
+    if (!mayMatch(line)) return;
     let row; try { row = JSON.parse(line); } catch { return; }
     if (inRun(row, runPrefix)) rows.push(row);
   });

@@ -597,11 +597,11 @@ jobs:
       # with those same two names. A dispatched run's checks are not credited to the pull request; only
       # the `pull_request` run's are, and that is the run sitting parked.
       #
-      # SO THE PROCESS OF RECORD IS ONE LANE APPROVAL PER CUT, AND THE GUARD NAMES IT. The step after
-      # this one prints the run id and the command; whoever is on shift runs it. That is a lane's act,
-      # not the owner's — his ruling was that no click of his stands between a merge and the registry,
-      # and none does. Routed 2026-09-05. Do not spend work removing it until there is a way to have the
-      # bot's own pull-request run start without a credential.
+      # SO THE PROCESS OF RECORD IS ONE MAINTAINER APPROVAL PER CUT, AND THE GUARD NAMES IT. The step
+      # after this one prints the run id and the command; whoever is cutting the release runs it. That is
+      # a maintainer's act, not the owner's: the owner ruled that no click of his stands between a merge
+      # and the registry, and none does. Decided 2026-09-05. Do not spend work removing it until there is
+      # a way to have the bot's own pull-request run start without a credential.
       #
       # AND IT IS ONE PER VERSION BRANCH, NOT ONE PER RELEASE. Every push to main re-runs `changeset
       # version` and force-updates this branch, so the head moves and the new head parks again. Measured

@@ -34,7 +34,7 @@
 // that is fixed, which is precisely the class this file was written about. A comment asserting a
 // structural fact outlives the fact, and the assertion is what makes it dangerous rather than merely old.
 //
-// Found by the test lane driving `render-units.mjs --apply` into a scratch destination and reading
+// Found by driving `render-units.mjs --apply` into a scratch destination and reading
 // `PORTAL_MCP_URL=http://127.0.0.1:18790` out of the result — driven, not read.
 //
 // ── THE CLASS ────────────────────────────────────────────────────────────────────────────────────────
