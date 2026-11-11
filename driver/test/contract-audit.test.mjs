@@ -638,8 +638,9 @@ test("E3: the backlog is explicit, named, and each entry says which move removes
   // diff as this conversion's proof would be reading the wrong instrument. The pin moving by exactly
   // four, with each row named at its retirement site, is the proof.
   // 51 -> 48: the three send stages' dictated-line-shape rows left with the stages themselves.
-  assert.equal(E3_BACKLOG.length, 44,
-    `the backlog is ${E3_BACKLOG.length}, pinned at 44. SHRUNK? good — regenerate contract-e3-baseline.json in the same commit so the ceiling drops with it, and say at the entry site what removed it. GROWN? a new dictated structure was registered rather than converted; that is a decision, so make it visible here.`);
+  // 44 -> 43: the placement manual's skill-file key list for placements.json left with its dictation.
+  assert.equal(E3_BACKLOG.length, 43,
+    `the backlog is ${E3_BACKLOG.length}, pinned at 43. SHRUNK? good — regenerate contract-e3-baseline.json in the same commit so the ceiling drops with it, and say at the entry site what removed it. GROWN? a new dictated structure was registered rather than converted; that is a decision, so make it visible here.`);
   for (const e of E3_BACKLOG) {
     assert.ok(e.stage && e.where && e.evidence, "a backlog entry that does not name its site is not a backlog entry");
     assert.ok(E3_BACKLOG_KINDS.includes(e.kind), `unknown E3 kind ${e.kind}`);

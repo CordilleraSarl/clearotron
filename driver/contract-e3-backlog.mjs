@@ -307,15 +307,9 @@ export const E3_BACKLOG = [
     reparsedBy: "driver/placement-form.mjs / driver/placement-model.mjs via validators.placement",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
-  {
-    stage: "placement-inquiry",
-    kind: "exactly-these-keys",
-    where: "driver/skills/placement-inquiry/SKILL.md:54-62",
-    surface: "skill-file",
-    evidence: "**2. The structured mirror** `…/placements.json` … `{\"schema_version\":1,\"placements\":[...]}`, ONE object per placed candidate, keys EXACTLY `{\"mark\",\"owner\",\"jurisdiction\",\"records\",\"tier\",\"reason\"}` plus the optional `\"borderline\"` … `tier` — EXACTLY one of `headline-candidate` / `sheet-2` / `watch",
-    reparsedBy: "driver/placement-model.mjs. AND IT IS STALE: #562 made placements.json driver-rendered, and placement-inquiry's message in stages.mjs says \"DO NOT WRITE placements.json (the driver renders it from this form)\" — the skill file the stage is ordered to \"read and follow exactly\" dictates the key set of a file the message forbids it to write. Two contracts in one dispatch",
-    removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
-  },
+  // placement-inquiry "exactly-these-keys" in the skill file — DELETED with its dictation, 2026-11-11. The row quoted
+  // the manual's "structured mirror" key list for placements.json. The manual now describes the placement form the
+  // step fills in and says the driver renders placements.json from it, so the skill file dictates no key list.
   {
     stage: "placement-inquiry",
     kind: "dictated-line-shape",
@@ -878,6 +872,8 @@ export const E3_SURFACE_CENSUS = Object.freeze({
   // 30 -> 28: the use-check and own-rights rows are deleted with their dictation; the writer records them as fields.
   "stage-message": 28,
   "tool-response": 1,
-  "skill-file": 15,
+  // 15 -> 14: the placement manual's "structured mirror" key list is deleted with its dictation; the driver renders
+  // placements.json from the form the step fills in.
+  "skill-file": 14,
   "driver-written-form": 0,
 });
