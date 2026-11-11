@@ -1149,6 +1149,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-keeps-the-order-it-was-accepted-on.test.mjs": {
+          "tests": 2,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-name-can-answer-by-class-group.test.mjs": {
           "tests": 15,
           "asserts": 50,
