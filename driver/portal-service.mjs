@@ -1206,6 +1206,24 @@ export function accountCapAdvice(posture) {
     + " --accounts <keys>` to make it two walls.";
 }
 
+/**
+ * The boot line about the Start button's key. The usual key, which may start and stop searches for named accounts
+ * until a known date, is said in plain words; any other key keeps the line that names each field, because what is
+ * unusual about it is what the reader needs to see (measured in a stranger walk of a beta, 2026-11-10: a newcomer's
+ * first `start` printed `ops token sub=portal verbs=start_run,stop_run accounts=generic`). Its first words stay
+ * "trigger lane", the phrase a journal is searched by. PURE.
+ */
+export function triggerLaneLine(posture, laneWired, expiry = "") {
+  const verbs = [...(posture?.verbs ?? [])].sort().join(",");
+  const plain = posture?.readable && posture.sub === "portal" && verbs === "start_run,stop_run" && posture.accountCapped
+    && posture.accounts.length > 0 && posture.expiresAt && !posture.expired && posture.daysLeft >= 0;
+  if (plain) {
+    return `trigger lane${laneWired ? "" : " (NOT WIRED — see above)"}: the Start button may start and stop searches for `
+      + `${posture.accounts.join(", ")}; its key expires ${posture.expiresAt.slice(0, 10)} (${posture.daysLeft} days)`;
+  }
+  return `trigger lane${laneWired ? "" : " (NOT WIRED — see above)"}: ops token sub=${posture?.sub ?? "-"} verbs=${posture?.verbs?.join(",") ?? "(full ops)"} accounts=${posture?.accounts?.join(",") ?? "UNCAPPED (every account)"}${expiry}${posture?.readable ? "" : " — token payload unreadable, posture unknown"}`;
+}
+
 export function opsTokenPosture(token, { now = Date.now() } = {}) {
   const none = { readable: false, scope: null, sub: null, verbs: null, accounts: null, accountCapped: false,
     expiresAt: null, daysLeft: null, expired: false, implausibleExp: false };
@@ -2484,7 +2502,7 @@ const PORT = PORT_CHOICE.port;
     const expiry = posture.expiresAt ? ` expires=${posture.expiresAt.slice(0, 10)} (${posture.daysLeft}d)` : " expires=UNKNOWN";
     // PREFIXED WHEN THE LANE IS DEAD, so this line cannot be read on its own as evidence of a working
     // lane — a journal is skimmed by grepping one phrase, and the phrase people grep is this one.
-    log(`trigger lane${laneWired ? "" : " (NOT WIRED — see above)"}: ops token sub=${posture.sub ?? "-"} verbs=${posture.verbs?.join(",") ?? "(full ops)"} accounts=${posture.accounts?.join(",") ?? "UNCAPPED (every account)"}${expiry}${posture.readable ? "" : " — token payload unreadable, posture unknown"}`);
+    log(triggerLaneLine(posture, laneWired, expiry));
     if (!posture.accountCapped) {
       // ── THE PRINTED COMMAND IS DERIVED FROM THE TOKEN IN HAND ──────────────────────────────────────
       //

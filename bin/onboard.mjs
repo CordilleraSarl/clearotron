@@ -2435,7 +2435,7 @@ export async function runCheck() {
     const inCheckout = (p) => isInsideCheckout(p, REPO);
     for (const [name, what] of [
       ["CLEAROTRON_CUSTOMERS_DIR", `customers resolve to the bundled demo roster IN ${THIS_TREE}`],
-      ["CLEAROTRON_INSTRUCTIONS_DIR", `doctrine resolves to the bundled files IN ${THIS_TREE}`],
+      ["CLEAROTRON_INSTRUCTIONS_DIR", `searches follow the product's own instructions, from ${THIS_TREE}`],
       ["PROFILE_REPO_ROOT", `the portal's profile editor commits INTO ${THIS_TREE}`],
     ]) {
       // — WHICH NAME THE READER IS TOLD IS NOT ONE QUESTION, IT IS TWO.
@@ -2525,7 +2525,7 @@ export async function runCheck() {
       if (hosted && !serviceKnown)
         info(`the units are installed but their environment could not be read (${unitEnv?.why ?? "no reason given"}) — `
           + "what the services resolve is not judged here, and the line above is this process's own answer");
-      info("what a RUN used is its own `profile-store` journal line — this command reports what the "
+      info("a search records which profiles it used in its own log — this command reports what the "
         + (hosted ? "units' file says, which the running services read at their own start"
           : `environment you are typing in and your environment file say, which \`${invoke("start")}\` reads at its own start`));
       // ── AND WHO IS ACTUALLY IN IT ─────────────────────────────────────────
