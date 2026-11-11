@@ -10142,20 +10142,15 @@ export function reconstructCtx(job, opts) {   // @internal
   ctx.gridSpecPath = existsSync(P.gridSpec) ? P.gridSpec : null;
   ctx.clHalfTerms = null;
   try {
-    // — armed on ALL THREE seat specs, never on the two grid halves alone. A run split under the
-    // pre-seat code has no meaning-seat spec on disk, and arming from a/b would dispatch a seat whose
-    // spec does not exist and kill the resume on a driver-written file. Missing ⇒ the split self-disarms
-    // to the single-member assembly, which is the rollback path this design already documents — and it
-    // is SAID, because an in-flight run silently changing shape across a deploy is exactly the kind of
-    // absence that reads as normal.
+    // — armed on ALL THREE seat specs, never on the two grid halves alone: arming from a/b would dispatch a
+    // seat whose spec does not exist. A split writes all three, so a run missing one did not split, and its
+    // routing stays unsplit. (A run split before the meaning seat existed had only a/b, and was named here;
+    // a run from an earlier build is no longer resumed.)
     if (GRID_SEATS.every((h) => existsSync(P.gridSpecHalf(h)))) {
       ctx.clHalfTerms = Object.fromEntries(GRID_HALVES.map((h) =>
         [h, JSON.parse(readFileSync(P.gridSpecHalf(h), "utf8")).terms ?? []]));
-    } else if (GRID_HALVES.every((h) => existsSync(P.gridSpecHalf(h)))) {
-      note(`common-law split: this run was split before the meaning seat existed (no ${basename(P.gridSpecHalf(MEANING_SEAT))}) — resuming on the single-member assembly`);
-      runLog(P.runDir, { event: "grid-split-skipped", reason: "pre-meaning-seat-split" });
     }
-  } catch { /* a torn/legacy half spec — the unsplit routing stands, as it did before */ }
+  } catch { /* a torn half spec — the unsplit routing stands */ }
   return ctx;
 }
 

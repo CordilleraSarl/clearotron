@@ -198,7 +198,7 @@ export const NOT_COUNTED_EVENTS = {
     "escalation-skipped", "experiment", "experiment-refused", "goods-held-whole-handed", 
     "form-neighbourhood-derived", "frame-diff", 
     "frame-diff-source-directives-dropped", "frame-reopen-reconcile-not-needed", "frame-reopen-skipped", "frame-web-grid",
-    "framework", "goods-evidence", "grid-ledger-saved", "grid-spec", "grid-split", "grid-split-skipped", "hit-list-minted",
+    "framework", "goods-evidence", "grid-ledger-saved", "grid-spec", "grid-split", "hit-list-minted",
     "house-element-ownership", "intake-artifacts", "intake-asks", "jurisdiction-scope", "jurisdiction-scope-register-deferred",
     "jx-aim-consumed", "jx-candidate-fold", "jx-nativeread", 
     "jx-serp-grid", "jx-serp-grid-overflow", "jx-serp-grid-spec", "jx-slices-stated",
