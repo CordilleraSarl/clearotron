@@ -161,7 +161,7 @@
         },
         "a-capability-is-named-before-the-report-names-it.test.mjs": {
           "tests": 6,
-          "asserts": 41,
+          "asserts": 42,
           "skips": 0,
           "todos": 0
         },
@@ -197,7 +197,7 @@
         },
         "a-case-law-source-with-no-known-site-says-it-is-optional.test.mjs": {
           "tests": 2,
-          "asserts": 8,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
@@ -3971,7 +3971,7 @@
         },
         "doctor-reads-only-the-ai-that-is-chosen.test.mjs": {
           "tests": 2,
-          "asserts": 23,
+          "asserts": 25,
           "skips": 2,
           "todos": 0
         },
@@ -7366,8 +7366,8 @@
           "todos": 0
         },
         "the-install-pages-describe-the-install-this-build-performs.test.mjs": {
-          "tests": 11,
-          "asserts": 87,
+          "tests": 12,
+          "asserts": 89,
           "skips": 0,
           "todos": 0
         },

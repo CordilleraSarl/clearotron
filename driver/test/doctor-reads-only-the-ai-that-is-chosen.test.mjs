@@ -98,6 +98,10 @@ test("with no AI chosen and Claude's program on the machine, doctor ticks no bil
       assert.doesNotMatch(out, /The engine program is installed/, `${what} sent the reader to prove an AI nobody chose:\n${out}`);
       assert.ok(section.includes(NO_AI), `${what} no longer says no AI is chosen:\n${section}`);
       assert.match(section, /MODE: demo — everything works except starting a NEW search\./, `${what} named no mode:\n${section}`);
+      // Nothing runs here, so nothing is "live right now": the line names the command that shows the example.
+      assert.match(section, /MODE: demo — everything works except starting a NEW search\. `[^`]*clearotron demo` shows the example report, its audit trail and the assistant connection, and needs no engine\./,
+        `${what}'s demo line is not the approved sentence:\n${section}`);
+      assert.doesNotMatch(section, /live right now/, `${what} calls something live on a machine running nothing:\n${section}`);
       assert.match(section, LEAVE_DEMO_NO_AI, `${what}'s way out of demo is not the one for no AI chosen:\n${section}`);
       assert.doesNotMatch(section, /Anthropic's CLI/, `${what}'s way out of demo named the default AI's program:\n${section}`);
     }

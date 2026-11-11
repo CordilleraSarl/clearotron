@@ -2119,8 +2119,10 @@ export async function runCheck() {
   // reason. Which engine is configured comes first now, and the binary is checked through THAT engine's
   // variable.
   // The mode of a machine that cannot start a search, said by both branches below that reach it.
-  const demoModeLine = () => "MODE: demo — everything works except starting a NEW search. The example report, its audit trail "
-    + `and the MCP connection are live right now; \`${reachableCommand("demo")}\` needs no engine.`;
+  // NOTHING IS LIVE WHILE NOTHING RUNS: the line said the example report and the connection were "live right now" on a
+  // machine running nothing (measured in a stranger walk of a beta, 2026-11-10). It names the command that shows them.
+  const demoModeLine = () => "MODE: demo — everything works except starting a NEW search. "
+    + `\`${reachableCommand("demo")}\` shows the example report, its audit trail and the assistant connection, and needs no engine.`;
   if (!serviceKnown) {
     info("the units' environment could not be read, so which AI the services run is not judged here — a failure to look, not a finding");
   } else if (engSel && !engSpec) {

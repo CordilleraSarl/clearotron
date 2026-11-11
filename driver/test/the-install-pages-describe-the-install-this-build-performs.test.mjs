@@ -382,3 +382,14 @@ test("the release notes say which machines a sentence holds on, where the code d
   assert.ok(warning, "the cloud note no longer warns about a cloud's own switch");
   assert.match(warning, /On a Claude install/, "the upgrade warning says a cloud's switch stops every search, and a Codex search reads no switch");
 });
+
+test("the pages say doctor contacts nothing outside this machine, not that it calls nobody", () => {
+  // Doctor opens one connection on this machine, to the client door's port, and asks this user's service manager
+  // about that door's service; it reaches nothing outside the machine (measured in a stranger walk of a beta,
+  // 2026-11-10). "Calls nobody" was not true of it.
+  for (const page of ["README.md", "INSTALL.md", "AGENTS.md"]) {
+    const text = flat(read(page));
+    assert.match(text, /[Ww]rites nothing and contacts nothing outside this machine/, `${page} does not say what doctor reaches`);
+    assert.doesNotMatch(text, /calls nobody/, `${page} still says doctor calls nobody`);
+  }
+});
