@@ -60,7 +60,8 @@ import { publishKnockout, composeKnockoutEmail, knockoutName } from "./publish/k
 import { writeRunStatus, readRunStatus, rollupStatus, identitySeed, recordTransition, resumeRecord } from "./progress.mjs";   // — the identity seed is shared; the stepper is not
 import { batchMarkName } from "./mark-name.mjs";
 import { runLog, note, outputMeta } from "./log.mjs";
-import { defaultTerritoryState } from "./effective-scope.mjs";   // the stored-defaults reading — one producer, shared with the clearance lane
+import { defaultTerritoryState } from "./effective-scope.mjs";
+import { keepsInstructedScope } from "./accepted-order.mjs";   // a resume rebuilt from status keeps the scope its order wrote, as a clearance does   // the stored-defaults reading — one producer, shared with the clearance lane
 import { whatsappRouting } from "./stages.mjs";
 import { rollupTokens, stampTokenRollup } from "./tokens.mjs";
 import { recordRunConsumption } from "./consumption-ledger.mjs";
@@ -942,7 +943,17 @@ export async function knockoutInner(ctx, job, opts = {}) {
           if (job.rawRequest) writeFileSync(P.inboundRequest, String(job.rawRequest));
           if (job.brief) writeFileSync(P.confirmationBrief, String(job.brief));
         } catch (e) { note(`intake artifact write failed (non-fatal): ${e.message}`); }
-        markRows = Array.isArray(job.marks)
+        // A RESUME REBUILT FROM STATUS KEEPS THE SCOPE ITS ORDER WROTE, as a clearance does (keepsInstructedScope). The
+        // rebuilt job knows the names and not each name's own classes or reference; the scope on disk does, and the
+        // count and the register reading ask with each name's own classes. So the names come from that scope.
+        let keptScope = null;
+        if (keepsInstructedScope({ jobRebuiltFromStatus: opts.jobRebuiltFromStatus === true, scopeOnDisk: existsSync(K.instructedScope) })) {
+          try { keptScope = JSON.parse(readFileSync(K.instructedScope, "utf8")); } catch { keptScope = null; }
+          if (!Array.isArray(keptScope?.marksDetailed) || !keptScope.marksDetailed.some((m) => m?.name)) keptScope = null;
+        }
+        markRows = keptScope
+          ? keptScope.marksDetailed.filter((m) => m?.name)
+          : Array.isArray(job.marks)
           ? job.marks.map((m) => (typeof m === "string" ? { name: m } : m)).filter((m) => m?.name)
           : [job.markName ?? job.name].filter(Boolean).map((name) => ({ name }));
         markNames = markRows.map((m) => String(m.name));
@@ -960,7 +971,8 @@ export async function knockoutInner(ctx, job, opts = {}) {
         if (koll.length)
           throw new StageFailure("knockout-scope", `marks ${koll.map(([a, b]) => `"${a}"/"${b}"`).join(", ")} collide to the same research key — reword or drop one and re-enqueue`, null,
             { failClass: "factual" });
-        try {
+        if (keptScope) note(`instructed scope kept as the order wrote it: this resume's job was rebuilt from status`);
+        else try {
           writeFileSync(K.instructedScope, JSON.stringify({
             marks: markNames, classes: job.classes ?? null, jurisdictions: job.jurisdictions ?? null,
             goods: job.goods ?? null, customer: job.customer ?? null,

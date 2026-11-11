@@ -45,6 +45,16 @@ export function orderSnapshot(job) {
 
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
+/**
+ * Does a run keep the instructed scope already on disk rather than write one from its job? Yes when its job was rebuilt
+ * from status and a scope is there. A rebuilt job holds what the run kept of the order, not the order: written from
+ * it, the scope could only lose what that reading leaves out, such as each name's own classes and reference. One
+ * decision for both products; each writes its own scope's shape when it does write. PURE.
+ */
+export function keepsInstructedScope({ jobRebuiltFromStatus = false, scopeOnDisk = false } = {}) {
+  return Boolean(jobRebuiltFromStatus && scopeOnDisk);
+}
+
 /** The order this run was accepted on, or null when the run holds none (an older run, or an unreadable file). */
 export function readAcceptedOrder(runDir) {
   const rec = readJsonOrNull(driverDir(String(runDir ?? ""), ACCEPTED_ORDER_FILE));
