@@ -1810,7 +1810,9 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // draws no rating. Not licence-only, so this constant moves with the other one.
 // Advanced again by the break recorded above the FROZEN constant: a territory the register could not search is not
 // drawn where it stands. Not licence-only, so this constant moves with the other one.
-const FROZEN_BEFORE_SPDX = "cfcaf5dfe6a5f81b111fd2ac412876703fc2a3014aeac3f8e85dd888ffa4fe18";
+// Advanced again by the break recorded above the FROZEN constant: the gauge's heading and its scale's name are two
+// blocks. Not licence-only, so this constant moves with the other one.
+const FROZEN_BEFORE_SPDX = "c2a20193dcfa57261f63e1ff9f4a34236c3ecec474aeb80b0241f1df19cf9fb0";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2811,7 +2813,24 @@ const FROZEN_BEFORE_SPDX = "cfcaf5dfe6a5f81b111fd2ac412876703fc2a3014aeac3f8e85d
 //      one line.
 //   2. Could it live in report.css or brand.mjs? No: it decides which countries are drawn.
 //   3. Why it had to move here: the section is composed in this file and nowhere else.
-const FROZEN = "1c6d57dd3ffda17bad650e0e23c3f147ab7c69b6dde4d5c34e1ab6cdaece7fb4";
+//
+// ── BREAK (2026-11-11 — the gauge's heading and the name of its scale are two blocks) ───────────────────────────────
+//
+// WHAT MOVED: the name of the scale the gauge prints was a span inside the "Overall risk" heading, so a copied or
+// extracted page read the two as one line, "Overall risk Generic default risk framework". The heading and the name
+// are now two blocks in one `gauge-head` wrapper, and a copied page keeps them apart (owner, 2026-11-11). The look is
+// unchanged: the spacing the span took from its parent moved to report.css. No sentence is added or removed; the
+// house scale's new title, "Standard risk scale", is its manifest's, and a run keeps the title it froze.
+//
+// THE THREE QUESTIONS.
+//   1. Reachable from republish? Yes, for every report with a framework. Measured: the four demo runs published
+//      through the previous tree and this one differ in the inlined stylesheet's gauge rules and, on the three
+//      clearance pages, in the gauge heading alone (+93 bytes a clearance page, +65 the Knockout page, which has no
+//      such heading). The demos keep the scale names their runs froze.
+//   2. Could it live in report.css or brand.mjs? The spacing did, in report.css. Which element holds the name could
+//      not: a stylesheet cannot split one element into two.
+//   3. Why it had to move here: the gauge is composed in this file and nowhere else.
+const FROZEN = "bb5a47605b59f7e6efb75c298b3db4022f554de3c228c347e90c6dbf94f70dce";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));
