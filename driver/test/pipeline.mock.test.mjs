@@ -2954,18 +2954,19 @@ test("the record can never explain a path the run did not take", async () => {
 // The record was written; nothing consulted it. A run whose dictated meaning sweep silently became the
 // legacy spec-less path delivered CLEAN, with common-law-path.json sitting on disk naming the downgrade.
 //
-// THE LEVER, and it is a real production shape rather than a synthetic one: a resume of a run with no
-// `_driver/profile.json`. attachProfile deliberately stays legacy on a sidecar-less resume (ctx.profile
-// = null), so profile.platforms is 0, no grid spec is authored, and a variant-carrying non-register-only
-// matter takes the spec-less path. A zero-platform profile is NOT this lever: an empty marketplace list
+// THE LEVER: a resume whose frozen profile carries no marketplace list at all. deriveGridSpec authors no grid
+// spec for it, so a variant-carrying non-register-only matter takes the spec-less path. (This used to be a resume
+// with no `_driver/profile.json`, which ran profile-free; such a resume is now refused, since its stage work cannot
+// be shown to be for the product ordered.) A zero-platform profile is NOT this lever: an empty marketplace list
 // is valid now and still writes a grid of the general-web cell and the meaning sweep — the arm after this
 // one pins that it does, and that it delivers without this clamp.
 test("a no-grid-spec downgrade on a variant-carrying manifest clamps CLEAR→CONDITIONAL and names the gap", async () => {
   const { res: r1 } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "joint synthesis narrative", CLEAROTRON_RECOVERY_MAX: "1" });
   assert.equal(r1.ok, false);
-  // a run created before the profile freeze existed: strip the sidecar the cold start minted
-  const { rmSync } = await import("node:fs");
-  rmSync(driverDir(r1.runDir, "profile.json"));
+  // a frozen profile that carries no marketplace list at all: the spec-less path's one remaining door
+  const frozen = JSON.parse(readFileSync(driverDir(r1.runDir, "profile.json"), "utf8"));
+  delete frozen.platforms;
+  writeFileSync(driverDir(r1.runDir, "profile.json"), JSON.stringify(frozen, null, 2) + "\n");
   delete process.env.MOCK_FAIL_STAGE;
   const codename = r1.runDir.split(/[\\/]/).pop().split("-").slice(3).join("-");
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);

@@ -394,7 +394,7 @@ export async function openRun({ job, opts }, helpers) {
 /** The stage work a run already holds, said in words, or null for none: its stage rows and its stage records. */
 function stageWorkIn(runDir) {
   let rows = 0, stamps = 0;
-  try { rows = readFileSync(driverDir(runDir, "run.jsonl"), "utf8").split("\n").filter((l) => /"event":"(stage|skip)"/.test(l)).length; } catch { /* no journal */ }
+  try { rows = readFileSync(paths(runDir).run, "utf8").split("\n").filter((l) => /"event":"(stage|skip)"/.test(l)).length; } catch { /* no journal */ }
   try { stamps = readdirSync(driverDir(runDir, "stage-inputs")).length; } catch { /* no records */ }
   return rows || stamps ? `${rows} stage row(s) and ${stamps} stage record(s)` : null;
 }
