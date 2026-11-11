@@ -206,7 +206,7 @@ export function undeclaredFieldsWarning(names) {
 // which is softer — and softer is why it would survive a reading and not a run.
 //
 // So the door owns the vocabulary and the framing builders read it. `driver/stages.mjs` still carries
-// its own correct copy (that file belongs to another lane's active work); the three are pinned against
+// its own correct copy; the three are pinned against
 // each other in driver/test/knockout-classes-predicate.test.mjs, so a copy that drifts is a red suite
 // rather than a prompt aimed at the wrong goods.
 export function requestNamesClasses(job) {

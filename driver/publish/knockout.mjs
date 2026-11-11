@@ -16,7 +16,7 @@ import { runKnockoutLint, deliveryFlagLines } from '../predelivery-lint.mjs';
 import { note } from '../log.mjs';
 import { addSheet } from './xlsx.mjs';
 import { COUNT_PREDICATES, COUNT_BASIS, countsForMark, countLine, countedMarks, variantFormsLine, disclosedFloor, moreThan, countNote } from '../register-count.mjs';
-import { RECORD_BASIS, noneCarriedForward, recordsForMark, recordsLine, listedMarks, normalizeRegisterRecordLinks } from '../register-records.mjs';
+import { noneCarriedForward, recordsForMark, recordsLine, normalizeRegisterRecordLinks } from '../register-records.mjs';
 import { reportIdentityFor, productCoverageNote, kebab } from '../search-policy.mjs';
 import { batchMarkName } from '../mark-name.mjs';
 import { renderKnockoutHtml, knockoutReportData } from './render-knockout.mjs';

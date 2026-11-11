@@ -3141,6 +3141,12 @@
           "skips": 0,
           "todos": 0
         },
+        "assembling-a-run-s-records-reads-the-log-once-and-rewrites-only-what-changed.test.mjs": {
+          "tests": 6,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
         "attributed-span.test.mjs": {
           "tests": 7,
           "asserts": 25,

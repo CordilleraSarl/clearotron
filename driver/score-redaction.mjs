@@ -227,8 +227,8 @@ export function protectedStrings(root) {
       if (bare.length >= 5 && !LEGAL_FORM.has(bare.toLowerCase())) { names.add(bare); if (!given.has(bare.toLowerCase())) derived.add(bare); }
     }
   }
-  // THE FLOOR STAYS AND THE CASE IT MISSES IS NAMED. A fleet decision on an internal page rather than
-  // this file's preference: keep the floor, and name the case it does not cover.
+  // THE FLOOR STAYS AND THE CASE IT MISSES IS NAMED. A maintainers' decision rather than this file's
+  // preference: keep the floor, and name the case it does not cover.
   //
   // WHAT IT BUYS: a two-character token is cheap to collide with, and every standalone occurrence of one
   // would go — including words of this harness's own vocabulary. Lowering the floor is a real option and
