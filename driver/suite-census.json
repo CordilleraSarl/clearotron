@@ -1229,7 +1229,7 @@
         },
         "a-knockout-stage-reuses-its-output-only-while-its-inputs-are-unchanged.test.mjs": {
           "tests": 5,
-          "asserts": 16,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },

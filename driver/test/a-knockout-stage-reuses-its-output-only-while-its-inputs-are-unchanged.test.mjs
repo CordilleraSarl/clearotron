@@ -105,7 +105,9 @@ test("a Knockout whose plan changed after its rating rates again, and says what 
 
 test("a Knockout stage that holds no record of what it read runs again, since its freshness is unknown", async () => {
   const { rows } = await resumedAfter("no-record", (dir) => {
-    for (const f of readdirSync(driverDir(dir, "stage-inputs"))) if (f.startsWith("knockout-assess")) rmSync(driverDir(dir, "stage-inputs", f));
+    const records = readdirSync(driverDir(dir, "stage-inputs")).filter((f) => f.startsWith("knockout-assess"));
+    assert.ok(records.length > 0, "premise: the first pass recorded what its rating read");
+    for (const f of records) rmSync(driverDir(dir, "stage-inputs", f));
   });
   assert.ok(ran(rows).includes("knockout-assess#0"), "an output with no record of its inputs is not reused");
   const stale = rows.find((r) => r.event === "stage-stale" && r.stage === "knockout-assess#0");
