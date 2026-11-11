@@ -744,6 +744,7 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
       ? rows.filter((r) => r && typeof r.area === 'string' && r.area.trim() && COVERAGE_AREA_STATES.includes(r.state))
       : [];
   }
+  coverage = withoutRepeatedRows(coverage);   // one recorded row, repeated, prints once (see withoutRepeatedRows)
   // PR-9 (E9) — the STRING PROJECTION for coverage_judgment stays. mark_assessment is NO LONGER
   // projected on the RENDER path (spec 2026-07-30 §3): render.mjs takes the structured object and shows
   // the one-sentence `read` with the typed rows collapsed. projectAssessmentField/projectMarkAssessment
@@ -2034,3 +2035,20 @@ export function setAsideRows(runDir, { findings = null } = {}) {
  */
 export const gateCouldNotEvaluate = (e, inputsAbsent = []) => ({ released: false, reasons: [], reasonCodes: ["gate-evaluation-error"],
   inputsAbsent, evaluationError: String(e?.message ?? e).slice(0, 80) });
+
+/**
+ * THE SAME RECORDED COVERAGE ROW, TWICE, IS ONE ROW. A run's record can carry one row repeated, its area, state and
+ * note all equal (measured on the full country demo, 2026-11-11: one Japanese spelling's row, twice), and the report,
+ * the data file and the workbook each printed it twice. Only an exact repeat goes, the first one kept in place: rows
+ * that differ in area, state or note stand, however alike they read (design's ruling, 2026-11-11). PURE.
+ */
+export function withoutRepeatedRows(rows) {
+  if (!Array.isArray(rows)) return rows;
+  const seen = new Set();
+  return rows.filter((r) => {
+    const key = JSON.stringify([r?.area ?? null, r?.state ?? null, r?.note ?? null]);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
