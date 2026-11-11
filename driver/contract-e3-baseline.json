@@ -128,8 +128,8 @@
       "dictated-line-shape": 5
     },
     "skills/placement-inquiry/SKILL.md": {
-      "literal-json-skeleton": 1,
-      "exactly-these-keys": 3,
+      "literal-json-skeleton": 0,
+      "exactly-these-keys": 2,
       "dictated-line-shape": 1
     },
     "skills/clearance-register/digest.md": {
@@ -190,6 +190,6 @@
   },
   "totals": {
     "stages": 41,
-    "files": 51
+    "files": 49
   }
 }
