@@ -323,10 +323,10 @@ archive somebody else owns. The workspace root defaults to `$HOME/trademark/work
 what `npx clearotron install` writes, so the wizard and the bare default agree.
 
 If you would rather not write this file by hand, `npx clearotron install` asks for a base directory, creates
-these paths under it, checks what it can check before it writes anything — one cheap engine turn, an
-EUIPO token exchange, and an offered (not assumed) Perplexity ping — and never touches a path you did not
-name. A paid register key is deliberately not probed: a call against a metered subscription is
-a charge you did not ask for, so that credential is written on your word. `clearotron doctor`
+these paths under it, and never touches a path you did not name. Before saving your settings, setup checks
+what it can: an offered engine turn, an EUIPO token exchange, and an offered Perplexity ping. It does not
+probe a paid register key. A call against a metered subscription is a charge you did not ask for, so that
+credential is written on your word. `clearotron doctor`
 reports what is set and what is missing, and writes nothing.
 
 Only the integrator-set knobs are shown — copy what you need:

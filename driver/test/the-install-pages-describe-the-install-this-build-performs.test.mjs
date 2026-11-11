@@ -409,7 +409,10 @@ test("the guides and the help say what the walk found, in the words approved for
   assert.match(flat(quick), /`clearotron doctor` reports the configuration without running an AI turn\. Add `--probe-engine` to run a proof turn\./);
   assert.doesNotMatch(flat(quick), /by running a turn rather than by finding the executable/, "the quickstart still says plain doctor runs a turn");
   assert.match(install, /`npm install -g clearotron`, then `clearotron install`\. For the beta,/);
-  assert.match(install, /checks what it can check before it writes anything — one cheap engine turn, an EUIPO token exchange, and an offered \(not assumed\) Perplexity ping — and never touches a path you did not name\./);
+  assert.match(install, /Before saving your settings, setup checks what it can: an offered engine turn, an EUIPO token exchange, and an offered Perplexity ping\. It does not probe a paid register key\./);
+  assert.match(install, /A call against a metered subscription is a charge you did not ask for, so that credential is written on your word\./,
+    "§3 lost why a paid register key is not probed");
+  assert.doesNotMatch(install, /checks what it can check before it writes anything/, "§3 still says setup checks before it writes anything");
   assert.doesNotMatch(install, /without billing you/, "§3 still calls the engine turn free");
   assert.match(install, /`~\/\.config\/clearotron\/running`, a folder holding one small file for each product running in a terminal\./);
   assert.match(install, /Delete the folder to remove it, and `~\/\.local\/share\/clearotron` too once it is empty\./);
