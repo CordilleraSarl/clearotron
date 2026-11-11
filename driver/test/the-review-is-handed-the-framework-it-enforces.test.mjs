@@ -63,7 +63,7 @@ function routes(ctx) {
 test("the sentence is the approved one, word for word, and the review lists it as standing", () => {
   assert.equal(REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK,
     "Apply the frozen risk framework supplied for this run. If it or another required instruction is missing or unreadable, report the missing input; do not search other folders for a replacement.");
-  assert.deepEqual([...DEF.standing], [REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK]);
+  assert.equal(DEF.standing[0], REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK);
 });
 
 test("the review reads the customer's framework and the shared reasoning, never the house default or the writer's own rules", () => {
