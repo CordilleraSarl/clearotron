@@ -2421,6 +2421,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-stage-standing-rule-reaches-every-session.test.mjs": {
+          "tests": 5,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "a-stale-classification-names-the-rows-that-moved.test.mjs": {
           "tests": 6,
           "asserts": 24,
@@ -7896,6 +7902,12 @@
         "the-review-counts-a-wider-answer-as-covering-a-market.test.mjs": {
           "tests": 2,
           "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-review-is-handed-the-framework-it-enforces.test.mjs": {
+          "tests": 5,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
