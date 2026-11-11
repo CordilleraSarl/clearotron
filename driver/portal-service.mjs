@@ -126,7 +126,7 @@ const INSTALL_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 const READ_OFF_NOTE = "Reading a brief is not available on this instance — set the search up below.";
 import { dirname, join, resolve as pathResolve } from "node:path";
-import { makePrincipal, genericOrgOf, principalView, seesEverything, PortalDeny } from "./portal-access.mjs";
+import { makePrincipal, genericOrgOf, seesEverything, PortalDeny } from "./portal-access.mjs";
 // — the THIRD identity source (after the CF Access edge and, until, the deleted bypass). It
 // decides nothing about access: it turns a passphrase into an email string, which then goes through
 // makePrincipal and assertPrincipal exactly as a Cloudflare-verified address does.
