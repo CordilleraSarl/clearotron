@@ -233,7 +233,7 @@ export function acceptUnitNote(params, { account = null, planned = null } = {}) 
   const nullResult = Boolean(params?.null_result);
   if (nullResult && account.blocks === 0) {
     // No search ran, so there is no result to call null: a clean negative over an empty band is the claim this lane exists to refuse.
-    return { ok: false, reason: `unit_null_result_unsearched:${axis} — no search ran on this axis, so it has no result to call null. Leave \`null_result\` unset and say in \`note\` why the axis has no work` };
+    return { ok: false, reason: `unit_null_result_unsearched:${axis} — no search ran on this axis, so it has no result to call null. Leave \`null_result\` unset and say in \`note\` why no search result is held` };
   }
   if (nullResult && account.records > 0) {
     // The one contradiction worth refusing: a null-result claim over a band that carried records.

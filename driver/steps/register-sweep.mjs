@@ -104,11 +104,6 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
       `the run assembled the ${clSplit ? "split" : "unsplit"} path but deriveGridSpec recorded "${d.reason}" (${d.path}) — the selector and its record have diverged, so no downstream common-law count can be trusted`,
       undefined, { failClass: "deterministic" });
   }
-  // An axis the frozen plan gives no work gets the honest empty band before its unit runs (register-unit-record.mjs).
-  if (ctx.registerPlan) {
-    const seeded = seedUnplannedBands(P.runDir, ctx.registerPlan, axes.filter((a) => a !== "saturation-probe"));
-    if (seeded.length) runLog(run.runDir, { event: "unit-band-seeded-empty", axes: seeded });
-  }
   const gather = clSplit
     ? [...GRID_SEATS.map((h) => ({ name: "common-law-half", axis: h })), ...axes.map((a) => ({ name: "register-unit", axis: a }))]
     : [...(runCommonLaw ? [{ name: "common-law" }] : []), ...axes.map((a) => ({ name: "register-unit", axis: a }))];
@@ -136,6 +131,12 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
   // opt out — their scenarios pre-date the code-side member and script the AGENT path (and an armed
   // real executor lane would dial the provider from a test). Production default is ON.
   const satProbeCodeSide = process.env.CLEAROTRON_SATPROBE_CODESIDE !== "0" && Boolean(planExec && ctx.registerPlan);
+  // An axis the frozen plan gives no work gets the honest empty band before its model unit runs (register-unit-record.mjs).
+  // The code-side saturation probe writes its own.
+  if (ctx.registerPlan) {
+    const seeded = seedUnplannedBands(P.runDir, ctx.registerPlan, axes.filter((a) => !(a === "saturation-probe" && satProbeCodeSide)));
+    if (seeded.length) runLog(run.runDir, { event: "unit-band-seeded-empty", axes: seeded });
+  }
   // The units this run records as unfinished are taken as their bands stand (unfinishedUnitAsItStands, above).
   const unfinishedUnits = new Set(readPartNotCompleted(run.runDir, "searches")?.unfinished_units ?? []);
   const [gatherResults, blindRes] = await Promise.all([
