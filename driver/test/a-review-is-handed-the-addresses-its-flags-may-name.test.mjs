@@ -201,3 +201,82 @@ test("the list and the accepted call belong to the review dispatch being acted o
   assert.equal(writeReviewAddresses(failing, { records: [unreadable], seq0: 3 }), null);
   assert.equal(listedAddresses(failing), null, "the earlier dispatch's list was left for this one to read");
 });
+
+// ── THE FAILED-LIST PATH: an earlier accepted review never stands in for the review being acted on ──────────────────────
+//
+// A dispatch whose list could not be written removes the earlier list. Reading every call from the first would then hand
+// the correction the earlier review's flags. So would a list whose removal failed too, which still names the earlier
+// dispatch. Each case seeds an earlier review dispatch with an accepted call, starts a later dispatch, and reads the flags
+// the correction would act on. The dispatch records are written as the gateway writes them, before the model runs, and
+// their times are set so the order does not depend on the clock's resolution.
+const { REVIEW_FILE } = await import("../narrative-refutation-record.mjs");
+const { recordDispatch, dispatchFileName } = await import("../dispatch-record.mjs");
+const { utimesSync } = await import("node:fs");
+const LATER_REVIEW = "CLEAR\n\nThe later review, written into the file by hand.\n";
+const at = (secondsAgo) => new Date(Date.now() - secondsAgo * 1000);
+
+function reviewDispatch(runDir, secondsAgo, message) {
+  recordDispatch(runDir, "narrative-refutation", { attempt: 1, message });
+  const t = at(secondsAgo);
+  utimesSync(driverDir(runDir, dispatchFileName("narrative-refutation", 1)), t, t);
+}
+
+function earlierReviewAccepted(label) {
+  const runDir = mkdtempSync(join(tmpdir(), `review-${label}-`));
+  writeReviewAddresses(runDir, { records: [BEFORE], seq0: 1 });
+  reviewDispatch(runDir, 120, "the earlier review");
+  const r = recordRefutation(runDir, { verdict: "CONDITIONAL", flags: [flag({})] }, { now: () => at(110).toISOString() });
+  assert.equal(r.refused, null);
+  return runDir;
+}
+
+test("a failed list write leaves the correction no earlier review's flags", async () => {
+  const { readAcceptedFlags } = await import("../narrative-refutation-record.mjs");
+  const runDir = earlierReviewAccepted("failed-write");
+  assert.deepEqual(readAcceptedFlags(runDir), [flag({})], "the earlier review's own flags, while it is the review in force");
+  const unreadable = { get findings() { throw new Error("the record could not be read"); } };
+  assert.equal(writeReviewAddresses(runDir, { records: [unreadable], seq0: 2 }), null);
+  reviewDispatch(runDir, 60, "the later review");
+  writeFileSync(join(runDir, REVIEW_FILE), LATER_REVIEW);
+  assert.equal(readAcceptedFlags(runDir), null, "with no list, the earlier review's call stood in for the later review");
+});
+
+test("a list whose removal failed after a failed write does not make the earlier review current", async () => {
+  const { readAcceptedFlags } = await import("../narrative-refutation-record.mjs");
+  const runDir = earlierReviewAccepted("failed-remove");
+  // The state both failures leave: the earlier dispatch's list, still readable, and a later dispatch under way.
+  assert.equal(listedAddresses(runDir).seq0, 1);
+  reviewDispatch(runDir, 60, "the later review");
+  writeFileSync(join(runDir, REVIEW_FILE), LATER_REVIEW);
+  assert.equal(readAcceptedFlags(runDir), null, "the stale list handed the correction the earlier review's flags");
+  // The later dispatch saving through the tool is the review in force, and its own flags are read.
+  const later = flag({ text: "The later review's flag on the coverage line." });
+  assert.equal(recordRefutation(runDir, { verdict: "CONDITIONAL", flags: [later] }).refused, null);
+  assert.deepEqual(readAcceptedFlags(runDir), [later]);
+});
+
+test("both failures, as they happen: a list that can be neither written nor removed", { skip: process.getuid?.() === 0 ? "a read-only folder does not stop root" : false }, async () => {
+  const { readAcceptedFlags } = await import("../narrative-refutation-record.mjs");
+  const { chmodSync } = await import("node:fs");
+  const runDir = earlierReviewAccepted("read-only");
+  const drv = driverDir(runDir);
+  // Only the list's two files are refused: the folder is read-only for the write and the removal, then writable again
+  // for the dispatch record, which the gateway writes on its own.
+  chmodSync(drv, 0o555);
+  try {
+    assert.equal(writeReviewAddresses(runDir, { records: [AFTER], seq0: 2 }), null, "the write did not fail");
+    assert.equal(listedAddresses(runDir)?.seq0, 1, "the earlier list was removed, so this does not test a failed removal");
+  } finally { chmodSync(drv, 0o755); }
+  reviewDispatch(runDir, 60, "the later review");
+  writeFileSync(join(runDir, REVIEW_FILE), LATER_REVIEW);
+  assert.equal(readAcceptedFlags(runDir), null);
+});
+
+test("with no dispatch record, the list alone decides, as before", async () => {
+  const { readAcceptedFlags, reviewDispatchBegan } = await import("../narrative-refutation-record.mjs");
+  const runDir = mkdtempSync(join(tmpdir(), "review-no-record-"));
+  writeReviewAddresses(runDir, { records: [BEFORE], seq0: 1 });
+  assert.equal(recordRefutation(runDir, { verdict: "CONDITIONAL", flags: [flag({})] }).refused, null);
+  assert.equal(reviewDispatchBegan(runDir), null);
+  assert.deepEqual(readAcceptedFlags(runDir), [flag({})]);
+});
