@@ -766,6 +766,8 @@ export function composeFollowup(name, ctx, { followup, extra = null, inputs = []
   return lines(
     skills.length ? readsForReference(skills) : "",
     followup,
+    // The rules a stage's opening message states for every session it opens, which a follow-up is too.
+    ...(STAGES[name]?.standing ?? []),
     clearedConstraint(cleared),
     extra || "",
     // A fresh session of the reading step or the writer is given placement's accepted set-asides as its first
@@ -864,6 +866,11 @@ const reportOverviewSkillReads = ({ profile }) =>
   ["skills/clearance-search/synthesis-rules.md", SPINE_DOC, frameworkFor(profile), "skills/clearance-search/delivery-contract.md", REPORT_PROSE];
 const reportCardSkillReads = ({ profile }) =>
   ["skills/clearance-search/delivery-contract.md", frameworkFor(profile), REPORT_PROSE];
+// Standing rules a stage's opening message states and every follow-up session repeats (`standing` on the stage,
+// read by composeFollowup). Approved word for word on 2026-11-11.
+// The writer's web checks go through the research tool, which keeps the record and the limits. On a test run with Codex,
+// a writer also tried to fetch pages with a script of its own.
+export const WEB_EVIDENCE_ONLY_THROUGH_RESEARCH = "Web evidence comes only through `perplexity_research`; do not fetch pages with a shell command or a script.";
 
 // spec-48 C1 — the territories whose legal system scopes the marketplace-risk directive, and whose
 // registration scripts set the script floor. THE SHARED LADDER (effective-scope.mjs resolveTerritories),
@@ -2736,6 +2743,7 @@ export const STAGES = {
     // depth target was silently absent on many runs. It is now in-context for every synthesis.
     skillReads: ["skills/clearance-search/synthesis-rules.md", "skills/clearance-search/firm-wide-reasoning.md", "skills/clearance-search/risk-framework.md", "skills/clearance-search/worked-examples.md", "skills/clearance-search/report-prose.md"],
     skillReadsFor: synthesisSkillReads,
+    standing: Object.freeze([WEB_EVIDENCE_ONLY_THROUGH_RESEARCH]),
     out: (P) => P.narrative,
     validate: validators.narrative,
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
@@ -2956,6 +2964,8 @@ export const STAGES = {
       // use-dependent finding above the framework's lowest band asserts a use-negative without a searched
       // source line. So actually run the query.
       `USE-CHECK (enforced): run the scoped use check (phase2-execution.md Step 3.5) on EVERY finding banded ${(framework && materialBandPhrase(framework)) || "medium risk or higher"} — the rungs this framework rates medium risk or higher; a lower rung is not checked — and ask in the SAME query for the owner's enforcement record (oppositions, disputes or court actions over this mark or a similar one). ${USE_CHECK_ANSWERS_HELD} After a completed search, use is "confirmed" or "not-confirmed", never "unknown". What the query finds about enforcement is a LEAD under ENFORCEMENT AUTHORITY below: enforcer basis "inferred-from-signal", its URL cited inline in that finding's prose; where it finds none, the enforcer is "low" with basis "inferred-from-signal" and the finding says the search found no enforcement record. ALSO, for EVERY finding whose mitigant/verdict turns on the ABSENCE of use (regardless of its band) ("not in actual use", "unused", "no marketplace use found", non-use revocation/cancellation as the mitigant), run ONE scoped \`perplexity_research\` query (owner + mark + the goods/field) unless an answer this run already holds answers that question, and record its result in that finding's use_check.source: <result URL | "perplexity_research — no result">. Mirror the result into the matching # Actions item (the deferred "confirm the owner's use" becomes a stated result). NEVER assert a use-negative you did not search — an inference from the owner's profile is not a searched result. ${NO_SEARCH_RESULT} ALSO populate that finding's use_check field in findings.json: {"source": "<the result URL | perplexity_research — no result>"}, and with a no-result also "question": "<the research question whose completed answer returned it, word for word as it was asked>" — the structured field is the authoritative cite the report renders from (the prose line is for narrative readability).`,
+      // The route for every web check above: the research tool, never a fetch of the stage's own (standing, so every follow-up repeats it).
+      WEB_EVIDENCE_ONLY_THROUGH_RESEARCH,
       // Spec-v3 A4 — ENFORCED the same way (validators.narrative): own-rights reliance needs its evidence.
       // PR-8 review fix: synthesis holds the FROZEN band, not the live register — and the band is class-
       // and mark-text-scoped to this matter's dispatched slices, so the client's OWN house-mark
