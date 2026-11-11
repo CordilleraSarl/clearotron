@@ -25,7 +25,8 @@ import "../shared/env-local.mjs";   // side effect: apply <repo>/.env when THIS 
 import "./engine/mcp/http-dispatcher.mjs"; import { readFileSync, existsSync, mkdirSync, writeFileSync, renameSync, copyFileSync, readdirSync, rmSync, statSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join, dirname, basename, resolve, relative } from "node:path";   // resolve: the resume line must work from any cwd
-import { driverDir, driverRel, ensureDriverDir } from "../shared/driver-dir.mjs";
+import { driverDir, driverFileName, driverRel, ensureDriverDir } from "../shared/driver-dir.mjs";
+import { DISPATCH_SUFFIX } from "./dispatch-record.mjs";   // a stage that was dispatched left its dispatch record
 import { REVIEWER_OPEN_QUESTIONS_FILE } from "./reviewer-open-points.mjs";   // the run-record file the reviewer's open points go to, and the only thing that reads them now
 import { goodsOf } from "./queue-markers.mjs";   // — one reading of "does this job name goods", shared with the intake gate
 import { fileURLToPath } from "node:url";
@@ -5115,6 +5116,18 @@ export function messageCtxFor(name, ctx) {   // @internal — driven by its test
 /** A stage's session key, which its retries extend with `-rerun<n>`. One statement, read where a stage is dispatched. */
 export const stageSessionKey = (ctx, name, keyAxis = "") => `clearance-${ctx.run.slug}-${ctx.run.codename}-${name}${keyAxis}`;   // @internal
 
+/**
+ * Was the stage `label` itself dispatched in this run? Its dispatch record is written as its turn starts, and its attempt
+ * journal as each attempt ends; either says the stage ran here. IMPURE (lists `_driver/`).
+ */
+function stageWasDispatched(runDir, label) {
+  let names = [];
+  try { names = readdirSync(driverDir(runDir)); } catch { return false; }
+  const journal = driverFileName(`${label}.jsonl`);
+  const dispatched = driverFileName(`${label}.attempt`);
+  return names.some((n) => n === journal || (n.startsWith(dispatched) && n.endsWith(`.${DISPATCH_SUFFIX}`)));
+}
+
 async function stageOnce(name, ctx, opts = {}) {
   const def = STAGES[name];
   if (!def) throw new Error(`unknown stage ${name}`);
@@ -5139,11 +5152,21 @@ async function stageOnce(name, ctx, opts = {}) {
   // declared, already logged per stage; this consults it. Keyed on CONTENT, so a pure crash-resume (no
   // input bytes changed) still skips exactly as cheaply as before.
   const declaredInputs = () => stageInputs(name, P, { axes: ctx.axes, axis: ctx.axis, registerOnly: ctx.registerOnly });
-  const freshness = forced ? { stale: false, changed: [] } : stageStaleness(P.runDir, label, declaredInputs());
+  // AN OUTPUT ITS STAGE MADE WITH NO RECORD OF WHAT IT READ IS NOT REUSED, as in the Knockout. A stage records what it
+  // read when it succeeds, so where the stage itself was dispatched and its output has no record, the stage stopped
+  // between writing the output and recording it, or ran before the record existed. Its freshness is unknown, so the
+  // stage runs again. The register answers it holds are not bought again: the executor reuses every answer the run
+  // holds to the same question. An output another step wrote, as the merge of the research halves writes the whole
+  // research output, was never this stage's to record, and is reused as before.
+  const unrecorded = !forced && Boolean(out) && existsSync(out) && !readStamp(P.runDir, label) && stageWasDispatched(P.runDir, label);
+  const freshness = forced ? { stale: false, changed: [] }
+    : unrecorded ? { stale: true, reason: "no record of the inputs it was produced from", changed: [] }
+    : stageStaleness(P.runDir, label, declaredInputs());
   if (freshness.stale) {
     const why = freshness.changed.map((c) => `${c.name} ${c.was ?? "(absent)"}→${c.now ?? "(absent)"}`).join(", ");
-    runLog(P.runDir, { event: "stage-stale", stage: label, changed: freshness.changed });
-    note(`[${label}] stale — ${freshness.changed.length} input(s) changed since this output was produced (${why}); recomputing`);
+    runLog(P.runDir, { event: "stage-stale", stage: label, changed: freshness.changed, ...(freshness.reason ? { reason: freshness.reason } : {}) });
+    note(freshness.reason ? `[${label}] stale — ${freshness.reason}; recomputing`
+      : `[${label}] stale — ${freshness.changed.length} input(s) changed since this output was produced (${why}); recomputing`);
   }
   // ── — AN UNDISCHARGED FLOOR DUTY IS PART OF "VALID" ──────────────────────────
   //

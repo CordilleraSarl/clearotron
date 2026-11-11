@@ -16,6 +16,7 @@
 
 import { mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync } from "node:fs";
 import { basename, dirname, join } from "node:path";
+import { createHash } from "node:crypto";
 import { nativeScriptIndexGap } from "./script-form.mjs"; import { floorOf, moreThan } from "../../shared/register-floor.mjs";
 import { entryTermIssues, goodsTermsList } from "./term-shape.mjs";
 import { awaitsReadingTurn, releasedFamiliesFile } from "./plan-guards.mjs";
@@ -451,6 +452,42 @@ export function makeExecutePlan(deps) {
     // and only that, asks it again (`reaskTimedOut` on the driver's own call context, which no tool argument
     // reaches), once per run (envelope-settle.mjs, settle_tried).
     let latestByQid = null;
+    // ── A QUESTION THIS RUN ALREADY HOLDS AN ANSWER TO IS NOT SENT AGAIN (ruled 2026-11-11) ─────────────────────────
+    // A register answer is paid for, and it does not change within the run. A unit runs its plan again when its pass was
+    // parked, when a stage whose record of what it read is missing runs again, or when a call is made twice; each of those
+    // sent every question again, answered or not. A held answer now stands for its question, from this axis's band or
+    // from a band a parked pass left, on three conditions. It answered the same question: each block records what was
+    // sent for it (`sent`, the provider and the query as built), and a question that would now send anything else is a
+    // new question. It completed: a failed answer, and a slice a check took out of the band, are unfinished work and are
+    // asked again. And the executor wrote it: a block with no record of what was sent cannot show it answered this
+    // question. A reused answer is not a new search, so it counts nothing against the follow-up allowance.
+    const sentKeyOf = (e) => {
+      try {
+        const query = withPlanRegions(buildEntryQuery(e, predicateParams(e), plan), plan);
+        return createHash("sha256").update(JSON.stringify({ provider: capabilities?.id ?? null, kind: e?.expected_kind === "count" ? "count" : "enumerate", query }))
+          .digest("hex").slice(0, 16);
+      } catch { return null; }   // a question that cannot be built is not matched to any answer
+    };
+    let completedOnRecord = null;
+    const answerOnRecord = (e) => {
+      const key = sentKeyOf(e);
+      if (!key) return null;
+      if (!completedOnRecord) {
+        completedOnRecord = new Map();
+        for (const band of bandsOnRecord()) {
+          try {
+            for (const b of asAnswers(band)) {
+              if (b?.qid && b.error !== true && (b.state === "enumerated" || b.state === "incomplete") && typeof b.sent === "string") {
+                const of = completedOnRecord.get(String(b.qid)) ?? [];
+                of.push(b);
+                completedOnRecord.set(String(b.qid), of);
+              }
+            }
+          } catch { /* no band, or one that cannot be read: nothing held from it */ }
+        }
+      }
+      return (completedOnRecord.get(String(e?.qid)) ?? []).filter((b) => b.sent === key).at(-1) ?? null;
+    };
     const timedOutBefore = (qid) => {
       if (!latestByQid) {
         latestByQid = new Map();
@@ -778,8 +815,15 @@ export function makeExecutePlan(deps) {
     const runEntry = async (e) => {
       const held = heldAnswer(e);
       if (held) {
-        blocks.push({ ...held, qid: e.qid, query: describeEntry(e) });
+        blocks.push({ ...held, qid: e.qid, query: describeEntry(e), ...(held.error ? {} : { sent: sentKeyOf(e) }) });
         stateByQid.set(e.qid, held.error ? "error" : held.state);
+        keepAnswersSoon();
+        return;
+      }
+      const kept = answerOnRecord(e);
+      if (kept) {
+        blocks.push({ ...kept });
+        stateByQid.set(e.qid, kept.state);
         keepAnswersSoon();
         return;
       }
@@ -799,8 +843,11 @@ export function makeExecutePlan(deps) {
           ...(Array.isArray(e.romanizedTerms) && e.romanizedTerms.length ? { romanized: e.romanizedTerms.map(String) } : {}),
           ...(room.retry ? { retry: `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}` } : {}) });
       }
+      const at = blocks.length;
       try {
         await dispatchEntry(e);
+        // What was sent is recorded on a completed answer only: a failed one is asked again whatever it records.
+        for (const b of blocks.slice(at)) if (b?.qid === e.qid && b.error !== true) b.sent = sentKeyOf(e);
       } catch (err) {
         // `describeEntry` is itself one of the things that can throw here, so the recovery block must
         // not depend on it succeeding — a backstop that can fail is not a backstop.
