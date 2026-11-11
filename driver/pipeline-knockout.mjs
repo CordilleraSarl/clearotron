@@ -325,9 +325,13 @@ async function correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, wor
   const outside = movedOutsideScope(work, corrected);
   const movedNames = [...new Set([...outside.marks, ...outside.blocks])];
 
-  // THE FIRST PASS'S REWRITES STILL STAND WHERE NO DEFECT REOPENED THE LINE. The second pass reads the record with them on it.
+  // THE FIRST PASS'S REWRITES STILL STAND ONLY ON A NAME THE CORRECTION DID NOT CHANGE. A rewrite on a changed name was
+  // written against the record as rated, and laid over the change it would put back the words the change replaced. With no
+  // comparison, no name is known to be unchanged. The second pass reads the record with the survivors on it, as it ships.
   let doc = corrected;
-  const { doc: rewritten, receipt } = applyKnockoutReview(corrected, rewritesThatSurvive(firstReview, correctedNames));
+  const survivors = rewritesThatSurvive(firstReview, outside.complete ? [...new Set([...correctedNames, ...movedNames])] : null);
+  const rewritesRetired = (firstReview?.rewrites?.length ?? 0) - survivors.rewrites.length;
+  const { doc: rewritten, receipt } = applyKnockoutReview(corrected, survivors);
   if (validateMergedFindings(run.runDir, rewritten, plan).ok) { doc = rewritten; atomicWrite(K.findings, JSON.stringify(doc, null, 2) + "\n"); }
 
   const answers = correctionAnswers(run.runDir, touched);
@@ -335,7 +339,7 @@ async function correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, wor
   const unresolved = unresolvedFlags(outcomes).map((r) => r.n);
   const notAnswered = work.defects.filter((x) => outcomes.find((o) => o.n === x.n)?.outcome === "not-answered");
   const held = { defects: work.defects, outcomes, failedChunks: failed, rolledBack, ...(gateCause ? { gateCause } : {}),
-    movedOutsideDefects: outside.moved, comparisonComplete: outside.complete };
+    movedOutsideDefects: outside.moved, comparisonComplete: outside.complete, rewritesRetired };
 
   const d = reviewDispatch(doc, plan);
   try {

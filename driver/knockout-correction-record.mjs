@@ -344,25 +344,29 @@ export function correctionOutcomes(work, after, answers = new Map()) {
 }
 
 /**
- * What moved under a name no defect concerns: its record, apart from a finding a defect names, or its block in the batch
- * summary, each with its before and after. The correction may reach such a name where its repair needs to, and says why in
- * its answers; the recheck reads every one listed here. `complete: false` when either record cannot be read: an absent record
- * cannot show that nothing moved, and the recheck then reads the whole batch. PURE.
+ * What moved under a name no defect concerns: its record, or its block in the batch summary, each with its before and after.
+ * The correction may reach such a name where its repair needs to, and says why in its answers; the recheck reads every one
+ * listed here. A finding a defect names, corrected where it prints on this name, is allowed, and it is listed all the same,
+ * with the defects whose finding it is: the review accounts for every name that changed. `complete: false` when either record
+ * cannot be read: an absent record cannot show that nothing moved, and the recheck then reads the whole batch. PURE.
  */
 export function movedOutsideScope(work, after) {
-  const concerned = new Set((work?.defects ?? []).map((d) => nameKey(d.mark)));
-  const named = (work?.defects ?? []).flatMap((d) => (d.names ? [d.names] : []));
-  const rest = (m) => (m ? JSON.stringify({ ...m, findings: (m.findings ?? []).filter((f) => !isNamedFinding(f, named)).map(withoutOrdinal) }) : null);
+  const defects = work?.defects ?? [];
+  const concerned = new Set(defects.map((d) => nameKey(d.mark)));
+  const shape = (m) => (m ? JSON.stringify({ ...m, findings: (m.findings ?? []).map(withoutOrdinal) }) : null);
+  const namedOn = (m, names) => JSON.stringify((m?.findings ?? []).filter((f) => sameFinding(f, names)).map(withoutOrdinal));
   const marks = [], blocks = [], moved = [];
   if (!Array.isArray(work?.rated?.marks) || !Array.isArray(after?.marks)) return { marks, blocks, moved, complete: false };
   for (const was of work.rated.marks) {
     if (concerned.has(nameKey(was?.name))) continue;
     const now = after.marks.find((m) => nameKey(m?.name) === nameKey(was?.name)) ?? null;
     const blockWas = summaryBlock(work.rated?.batch?.executiveSummary, was.name), blockNow = summaryBlock(after?.batch?.executiveSummary, was.name);
-    const record = rest(was) !== rest(now), block = blockWas !== blockNow;
+    const record = shape(was) !== shape(now), block = blockWas !== blockNow;
     if (record) marks.push(was.name);
     if (block) blocks.push(was.name);
-    if (record || block) moved.push({ name: was.name, before: { mark: was, block: blockWas }, after: { mark: now, block: blockNow } });
+    if (!record && !block) continue;
+    const linked = defects.filter((d) => d.names && namedOn(was, d.names) !== namedOn(now, d.names)).map((d) => d.n);
+    moved.push({ name: was.name, defects: linked, before: { mark: was, block: blockWas }, after: { mark: now, block: blockNow } });
   }
   return { marks, blocks, moved, complete: true };
 }
