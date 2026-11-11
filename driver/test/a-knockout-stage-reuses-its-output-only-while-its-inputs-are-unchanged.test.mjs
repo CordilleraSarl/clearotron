@@ -50,9 +50,10 @@ const EXECUTORS = {
   recordLister: async (term) => { registerCalls.list++; return { ok: true, total: null, records: term === "LANTERNWICK" ? [FILING] : [] }; },
   countExecutor: async () => { registerCalls.count++; return { ok: true, total: 3 }; },
   gridExecutor: async (spec) => answeredGrid(spec, [{ title: "Lanternwick candles", url: "https://example.test/lanternwick" }]),
-  sweepExecutor: async () => ({ ok: true, text: sweepSays.text }),
+  sweepExecutor: async (query) => (sweepSays.ownerFails && /^What goods or services does the company/.test(String(query))
+    ? { ok: false, cause: "the provider did not answer" } : { ok: true, text: sweepSays.text }),
 };
-const sweepSays = { text: "Brightmoor sells candles. https://example.test/brightmoor" };
+const sweepSays = { text: "Brightmoor sells candles. https://example.test/brightmoor", ownerFails: false };
 
 /** One pass of the Knockout lane over `dir`, archiving to `archiveDir`. */
 async function pass(codename, dir, archiveDir) {
@@ -197,9 +198,12 @@ test("a filing whose owner changed in the register's held answer rates again; no
   assert.deepEqual(calls, { list: 0, count: 0 });
 });
 
-test("an owner check that found something else rates again", async (t) => {
-  t.after(() => { sweepSays.text = "Brightmoor sells candles. https://example.test/brightmoor"; });
-  const { rows } = await resumedAfter("owner-moved", () => { sweepSays.text = "Brightmoor sells garden furniture. https://example.test/brightmoor"; });
+test("an owner check that answers on the resume, where the first pass got no answer, rates again", async (t) => {
+  // A held answer is never asked again (a-resumed-knockout-asks-no-owner-check-it-already-holds), so the check whose
+  // answer changes on a resume is the one the first pass did not get an answer to.
+  t.after(() => { sweepSays.ownerFails = false; });
+  sweepSays.ownerFails = true;
+  const { rows } = await resumedAfter("owner-moved", () => { sweepSays.ownerFails = false; });
   const stale = rows.find((r) => r.event === "stage-stale" && r.stage === "knockout-assess#0");
   // What a check found is its payload under research/, beside the record of the check in owner-checks.json.
   assert.ok(stale?.changed?.some((c) => c.name === "owner-checks.json" || /^owner-.+\.md$/.test(c.name)), `a changed owner check was not a change: ${JSON.stringify(stale)}`);

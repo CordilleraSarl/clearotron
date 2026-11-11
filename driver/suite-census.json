@@ -2061,6 +2061,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-resumed-knockout-asks-no-owner-check-it-already-holds.test.mjs": {
+          "tests": 7,
+          "asserts": 40,
+          "skips": 0,
+          "todos": 0
+        },
         "a-resumed-run-asks-the-step-when-the-shape-moved.test.mjs": {
           "tests": 3,
           "asserts": 13,
