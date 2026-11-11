@@ -29,8 +29,10 @@
 // references in this file are corrected and this comment is the reconciliation. A reader who greps the
 // history for 1886 and lands here is in the right place and the number that brought them is not.
 import { atomicWrite, paths } from "./run-record.mjs";
-import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, rmSync, renameSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, rmSync, renameSync, readdirSync } from "node:fs";
+import { join, dirname, basename } from "node:path";
+import { createHash } from "node:crypto";
+import { diffFingerprint, fingerprint, readStamp, writeFingerprint } from "./stage-freshness.mjs";   // a stage reuses its output only while what it read is unchanged
 import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
 import { fileURLToPath } from "node:url";
 
@@ -57,7 +59,7 @@ import { beginAnswerMemory } from "../providers/_shared/answer-memory.mjs";
 import { validators as koValidators, validateMergedFindings, worstBand, registerSurfacedFilings, raterCaveats, SURVIVOR_BOUNDARY_RE, REGISTER_LANE_FILE, PERMITTED_SOURCES } from "./verify-knockout.mjs";
 import { KNOCKOUT_CARD_ORDER } from "./findings-model.mjs";
 import { reviewDispatch, applyKnockoutReview, knockoutReviewFile, rewritesThatSurvive } from "./knockout-review-record.mjs";
-import { correctionAnswers, correctionOutcomes, correctionWork, correctionWorkPath, keepChunkBases, knockoutCorrectionFile, movedOutsideScope, readCorrectionWork, restoreChunkBases, rollBackName, sameFinding } from "./knockout-correction-record.mjs";
+import { chunkBasePath, correctionAnswers, correctionOutcomes, correctionWork, correctionWorkPath, keepChunkBases, knockoutCorrectionFile, movedOutsideScope, readCorrectionWork, restoreChunkBases, rollBackName, sameFinding } from "./knockout-correction-record.mjs";
 import { knockoutAssessSourceDefects } from "./knockout-assess-record.mjs";
 import { correctionsAppliedTable, unresolvedFlags } from "./corrections-feedforward.mjs";
 import { settledKnockoutReading } from "./knockout-register-record.mjs";
@@ -185,7 +187,15 @@ export function readBackLadder(sidecarPath) {   // exported for its test
  */
 async function knockoutReviewingPass({ ctx, run, K, merged, plan, chunks, composeRecord }) {
   // A ROUND ALREADY BEGUN GOES ON FROM WHERE IT STOOD: a resumed run must not check a half-corrected record as a first look.
-  const begun = readCorrectionWork(run.runDir);
+  // Unless the record it was begun on is gone: a chunk rated again on this pass, or a change in what the first review
+  // read, leaves its defects about a rating the run no longer holds. That round is set aside and the record is read afresh.
+  let begun = readCorrectionWork(run.runDir);
+  const obsolete = begun ? reviewRoundObsolete({ ctx, run, K }) : null;
+  if (obsolete) {
+    setAsideTheRound(run.runDir, begun, ctx.koRated ?? new Set(), obsolete);
+    merged = composeRecord();
+    begun = null;
+  }
   if (begun?.stoodDown) return merged;
   if (begun) return correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, work: begun, firstReview: readJsonOrNull(knockoutReviewFile(run.runDir)), merged });
   // A SOURCE THE RATING LOST STAYS OPEN: leaving a reference out does not support the claim it stood behind. It goes to the correction
@@ -247,6 +257,43 @@ async function knockoutReviewingPass({ ctx, run, K, merged, plan, chunks, compos
     unresolved: receipt.unresolved.length, refused: receipt.refused.length,
     excludedMarks: about.marks.length, excludedOwners: about.owners.length });
   return doc;
+}
+
+/**
+ * Is the review round this run began still about the record it holds? Not when a chunk was rated again on this pass, or
+ * when anything the first review read has changed other than the record and its message, which the round's own
+ * corrections change. With no record of what the first review read, its freshness is unknown, so the round is not kept.
+ * Returns why it is obsolete, or null.
+ */
+function reviewRoundObsolete({ ctx, run, K }) {
+  if (ctx.koRated?.size) return { why: "a chunk was rated again on this pass", chunks: [...ctx.koRated] };
+  const stamp = readStamp(run.runDir, "knockout-review");
+  if (!Array.isArray(stamp?.inputs) || !stamp.inputs.length) return { why: "no record of what the first review read" };
+  const notTheRoundsOwn = (e) => e.path !== K.findings && e.path !== "value:message";
+  const now = koReadsNow(KO_STAGES["knockout-review"], K, "knockout-review", "", ctx);
+  const d = diffFingerprint(stamp.inputs.filter(notTheRoundsOwn), now.filter(notTheRoundsOwn));
+  return d.stale ? { why: "what the first review read has changed", changed: d.changed } : null;
+}
+
+/**
+ * Set an obsolete review round aside, kept: each chunk it corrected goes back to its rating, except one rated again on
+ * this pass, which keeps its new rating; then the round's work, chunk bases, corrections and reviews move under
+ * `_driver/knockout-review-set-aside/`, so the next round keeps its own bases and its reviews run afresh.
+ */
+function setAsideTheRound(runDir, work, rated, why) {
+  const touched = chunksOf(work);
+  restoreChunkBases(runDir, touched.filter((c) => !rated.has(c)));
+  const dest = driverDir(runDir, "knockout-review-set-aside", new Date().toISOString().replace(/[:.]/g, "-"));
+  mkdirSync(dest, { recursive: true });
+  const moved = [];
+  for (const f of [correctionWorkPath(runDir), paths(runDir).knockoutCorrections, knockoutReviewFile(runDir, 0), knockoutReviewFile(runDir, 1),
+    ...touched.flatMap((c) => [chunkBasePath(runDir, c), knockoutCorrectionFile(runDir, c)])]) {
+    if (!existsSync(f)) continue;
+    renameSync(f, join(dest, basename(f)));
+    moved.push(basename(f));
+  }
+  runLog(runDir, { event: "knockout-review-round-set-aside", ...why, moved });
+  note(`reviewing pass: the round begun on the earlier rating is set aside (${why.why}); the record is read afresh`);
 }
 
 /** What the check compares: the source left out and the claim as it stood, beside the record it reads. */
@@ -354,6 +401,85 @@ async function correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, wor
   return doc;
 }
 
+// ── WHAT A STAGE READ, AND WHETHER ITS OUTPUT STILL STANDS ON IT ────────────────────────────────────────────────
+//
+// A Knockout stage reuses its output only while what it read is unchanged, through the clearance's own stamps
+// (stage-freshness.mjs). It records what it read as it starts (`koReadsNow`, from `reads` in KO_STAGES), and the record
+// is written once the stage has run, so it says what the output was based on. On a resume a changed input runs the
+// stage again, with a `stage-stale` row naming what changed.
+//
+// AN OUTPUT WITH NO RECORD IS NOT REUSED. Its freshness is unknown. A clearance reads a missing stamp as fresh, for runs
+// that predate its stamps; a Knockout has no such runs to keep, because a run from an earlier build is no longer
+// resumed, so reuse here needs the record. (A record that could not be written costs that stage one more run.)
+
+/** The files a folder holds now, as paths, sorted. A folder that cannot be read holds none. */
+function filesIn(dir) {
+  try { return readdirSync(dir, { withFileTypes: true }).filter((e) => e.isFile()).map((e) => join(dir, e.name)).sort(); } catch { return []; }
+}
+
+// THE REGISTER'S FILES ARE TAKEN AGAIN ON EVERY PASS, and each pass stamps them with when it took them. Measured on two
+// passes over one run with nothing changed, these differ in four places and nowhere else: the counts' and the
+// records' `takenAt`, a reused count's `reused` mark on its name, and each owner check's `ts` and `took_ms`. So these
+// three files are compared on what they say with exactly those four places set aside, through the freshness module's
+// projection, and the whole-file sha is still recorded beside it. Nothing else is set aside, at any depth: a count,
+// a filing, an owner or what an owner check found that changed is still a change.
+const WHEN_IT_WAS_TAKEN = {
+  "register-counts.json": ({ takenAt: _takenAt, ...doc }) => ({ ...doc, ...(Array.isArray(doc.marks) ? { marks: doc.marks.map((m) => {
+    if (!m || typeof m !== "object" || Array.isArray(m)) return m;
+    const { reused: _reused, ...rest } = m;
+    return rest;
+  }) } : {}) }),
+  "register-records.json": ({ takenAt: _takenAt, ...doc }) => doc,
+  "owner-checks.json": (doc) => ({ ...doc, ...(Array.isArray(doc.checks) ? { checks: doc.checks.map((c) => {
+    if (!c || typeof c !== "object" || Array.isArray(c)) return c;
+    const { ts: _ts, took_ms: _tookMs, ...rest } = c;
+    return rest;
+  }) } : {}) }),
+};
+/** What a retaken register file says, without when it was taken, as a short sha. null for any other file, or one that does not parse. */
+export function whatItSays(_label, absPath) {   // @internal
+  const without = WHEN_IT_WAS_TAKEN[basename(String(absPath ?? ""))];
+  if (!without) return null;
+  try {
+    const doc = JSON.parse(readFileSync(absPath, "utf8"));
+    if (!doc || typeof doc !== "object" || Array.isArray(doc)) return null;
+    return createHash("sha256").update(JSON.stringify(without(doc))).digest("hex").slice(0, 12);
+  } catch { return null; }
+}
+
+/**
+ * What stage `def` reads, as a fingerprint taken now: its files, the files its folders hold, its message, and, for a
+ * stage that rates, the framework deck the model is sent to. null when it declares none.
+ *
+ * THE DECK IS THE FILE THE MODEL READS. Its message names the deck by path, and the model reads it from whichever
+ * layer is in force: the deployment's private instructions first, then the shipped tree (`config.resolveSkillPath`,
+ * the same resolver the framework freeze uses). So the deck is recorded as that file's content, and which file is in
+ * force is recorded beside it: an edited private deck, or a private deck added or removed, is a change. The method
+ * is frozen with the run (`framework-method.json`) and declared with the frozen rules.
+ */
+export function koReadsNow(def, K, label, message, ctx = null) {   // @internal
+  const r = def?.reads?.(K) ?? null;
+  if (!r) return null;
+  const dirs = r.dirs ?? [];
+  const files = [...(r.files ?? []), ...dirs.flatMap(filesIn)];
+  const values = Object.fromEntries(dirs.map((d) => [`files under ${basename(d)}`, filesIn(d).map((p) => basename(p)).join("\n")]));
+  if (r.message) values.message = String(message ?? "");
+  if (r.deck && ctx?.frameworkPath) {
+    const deck = config.resolveSkillPath(ctx.frameworkPath);
+    files.push(deck);
+    values["deck in force"] = deck;
+  }
+  return fingerprint(files, { label, values, project: whatItSays });
+}
+
+/** Does the output of `label` still stand on what it read? PURE but for one read of its record. */
+export function koStaleness(runDir, label, now) {   // @internal
+  const stamp = readStamp(runDir, label);
+  if (!Array.isArray(stamp?.inputs) || !stamp.inputs.length) return { stale: true, reason: "no record of the inputs it was produced from", changed: [] };
+  const d = diffFingerprint(stamp.inputs, now);
+  return d.stale ? { stale: true, reason: "an input changed since it ran", changed: d.changed } : { stale: false, changed: [] };
+}
+
 async function koStage(name, ctx, { chunkNo = null, msgCtx = {} } = {}) {
   // — the stage's own start, captured before ANY work: before the existsSync, before the validator
   // read, before the message composition. states why on the spine — capture it after the await and
@@ -365,9 +491,12 @@ async function koStage(name, ctx, { chunkNo = null, msgCtx = {} } = {}) {
   const out = def.out(K, chunkNo ?? undefined);
   const label = chunkNo != null ? `${name}#${chunkNo}` : name;
   const model = process.env.CLEAROTRON_KNOCKOUT_MODEL || def.model;
+  const message = def.message({ ...ctx, K, chunkNo, ...msgCtx });
+  const readsNow = koReadsNow(def, K, label, message, ctx);
   if (existsSync(out)) {
     const v = def.validate(out, readFileSync(out, "utf8"));
-    if (v.ok) {
+    const fresh = v.ok && readsNow ? koStaleness(ctx.paths.runDir, label, readsNow) : { stale: false, changed: [] };
+    if (v.ok && !fresh.stale) {
       // Was `{event:"stage-skip"}`, which nothing read: mcp-server/lib/events.mjs classifies `stage` and
       // `skip` and dropped this lane on the floor, so a knockout run's stages were invisible in get_run
       // while the clearance spine's were not. Renamed rather than duplicated — no legacy path, and the
@@ -377,14 +506,14 @@ async function koStage(name, ctx, { chunkNo = null, msgCtx = {} } = {}) {
       recordTransition(ctx, name);   // as a clearance's stage records it: the stage the run is at, on a resume too
       return { ok: true, skipped: true };
     }
-    runLog(ctx.paths.runDir, { event: "stage-stale", stage: label, reason: v.reason });
+    runLog(ctx.paths.runDir, { event: "stage-stale", stage: label, reason: v.ok ? fresh.reason : v.reason, ...(fresh.changed.length ? { changed: fresh.changed } : {}) });
   }
   // The run is in this stage from the moment it dispatches, as a clearance's stage records it. The bare name, so a
   // batch's chunks are one stage. No Knockout stage has a step on the clearance's stepper, so this moves no step.
   recordTransition(ctx, name);
   const r = await runStage(label, {
     agent: ctx.agent,
-    message: def.message({ ...ctx, K, chunkNo, ...msgCtx }),
+    message,
     model, thinking: def.thinking,
     sessionKey: `clearance-${ctx.run.slug}-${ctx.run.codename}-${label}`,
     timeoutSec: def.timeoutSec, stallSec: def.stallSec,
@@ -403,6 +532,9 @@ async function koStage(name, ctx, { chunkNo = null, msgCtx = {} } = {}) {
     modelSelector: model,          // — what re-spawns the writer, beside what ran
     output: outputMeta(out), outputWritten: r.wrote ?? null, ...stageWallFields(tDispatch) });
   if (!r.ok) throw new StageFailure(label, r.fail ?? "failed", r.resetsAt);
+  if (readsNow) writeFingerprint(ctx.paths.runDir, label, readsNow);
+  // A chunk rated again on this pass makes any review round begun on the old rating obsolete (knockoutReviewingPass).
+  if (name === "knockout-assess") (ctx.koRated ??= new Set()).add(chunkNo);
   recordTransition(ctx, name);
   return r;
 }

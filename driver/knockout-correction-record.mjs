@@ -39,7 +39,7 @@ export const KNOCKOUT_CORRECTION_RE = /^knockout-correction-\d+\.json$/;
 
 /** The driver's own account of the round: the record the check read, and each defect with its address. */
 export const correctionWorkPath = (runDir) => paths(runDir).knockoutCorrectionWork;
-const chunkBasePath = (runDir, chunkNo) => driverDir(runDir, `knockout-correction-base-${Number(chunkNo)}.json`);
+export const chunkBasePath = (runDir, chunkNo) => driverDir(runDir, `knockout-correction-base-${Number(chunkNo)}.json`);
 const correctionCallDir = (runDir, chunkNo) => driverDir(runDir, join("knockout-correction-calls", `chunk-${Number(chunkNo)}`));
 
 const nameKey = (s) => String(s ?? "").trim().toLowerCase();

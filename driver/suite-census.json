@@ -161,7 +161,7 @@
         },
         "a-capability-is-named-before-the-report-names-it.test.mjs": {
           "tests": 6,
-          "asserts": 41,
+          "asserts": 42,
           "skips": 0,
           "todos": 0
         },
@@ -197,13 +197,13 @@
         },
         "a-case-law-source-with-no-known-site-says-it-is-optional.test.mjs": {
           "tests": 2,
-          "asserts": 8,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
         "a-change-a-reader-can-see-arrives-with-something-to-read.test.mjs": {
-          "tests": 35,
-          "asserts": 89,
+          "tests": 37,
+          "asserts": 101,
           "skips": 1,
           "todos": 0
         },
@@ -581,7 +581,7 @@
         },
         "a-declined-proof-still-shows-how-to-sign-in.test.mjs": {
           "tests": 3,
-          "asserts": 7,
+          "asserts": 8,
           "skips": 2,
           "todos": 0
         },
@@ -1233,6 +1233,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-stage-reuses-its-output-only-while-its-inputs-are-unchanged.test.mjs": {
+          "tests": 9,
+          "asserts": 41,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-web-sweep-runs-beside-its-register-reading.test.mjs": {
           "tests": 4,
           "asserts": 20,
@@ -1809,6 +1815,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-redone-register-reading-asks-nothing-already-answered.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "a-refusal-is-not-a-pass.test.mjs": {
           "tests": 6,
           "asserts": 10,
@@ -2037,6 +2049,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-report-is-republished-only-by-the-build-that-made-it.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
+          "skips": 1,
+          "todos": 0
+        },
         "a-report-prints-the-dates-of-its-record.test.mjs": {
           "tests": 4,
           "asserts": 14,
@@ -2202,6 +2220,12 @@
         "a-run-whose-register-reading-cannot-finish-delivers-what-it-holds.pipeline.test.mjs": {
           "tests": 3,
           "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-run-with-nothing-chosen-says-what-doctor-says.test.mjs": {
+          "tests": 4,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
@@ -3957,6 +3981,12 @@
           "skips": 0,
           "todos": 0
         },
+        "doctor-names-the-program-setup-installed.test.mjs": {
+          "tests": 4,
+          "asserts": 6,
+          "skips": 2,
+          "todos": 0
+        },
         "doctor-names-who-is-in-the-store.test.mjs": {
           "tests": 5,
           "asserts": 15,
@@ -3971,7 +4001,7 @@
         },
         "doctor-reads-only-the-ai-that-is-chosen.test.mjs": {
           "tests": 2,
-          "asserts": 23,
+          "asserts": 25,
           "skips": 2,
           "todos": 0
         },
@@ -4877,7 +4907,7 @@
         },
         "lane-depth-ask-vs-got.test.mjs": {
           "tests": 15,
-          "asserts": 57,
+          "asserts": 59,
           "skips": 0,
           "todos": 0
         },
@@ -5093,7 +5123,7 @@
         },
         "onboard-wizard.test.mjs": {
           "tests": 78,
-          "asserts": 303,
+          "asserts": 304,
           "skips": 4,
           "todos": 0
         },
@@ -6455,7 +6485,7 @@
         },
         "setup-asks-how-claude-is-paid.test.mjs": {
           "tests": 14,
-          "asserts": 97,
+          "asserts": 98,
           "skips": 4,
           "todos": 0
         },
@@ -6945,6 +6975,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-console-says-it-in-plain-words.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "the-containment-rule-does-not-depend-on-the-string-tmp.test.mjs": {
           "tests": 2,
           "asserts": 3,
@@ -7366,8 +7402,8 @@
           "todos": 0
         },
         "the-install-pages-describe-the-install-this-build-performs.test.mjs": {
-          "tests": 11,
-          "asserts": 87,
+          "tests": 13,
+          "asserts": 104,
           "skips": 0,
           "todos": 0
         },

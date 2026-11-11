@@ -17,7 +17,7 @@ import { CLAUDE, NO_TERMINAL as SKIP, MENU, ANY, CTRL_C, machine } from "./helpe
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const PROVE = "\\[Y/n\\] $";
-const RETRY = "Run the turn again \\[y/N\\] $";
+const RETRY = "Signed in\\? Run the turn now \\[y/N\\] $";
 const WAITS = "setup waits in this terminal, so run the commands below in a second one:";
 
 test("declining the turn on a subscription shows the sign-in, asks the retry, and a no goes on as before", { skip: SKIP }, () => {
@@ -25,7 +25,9 @@ test("declining the turn on a subscription shows the sign-in, asks the retry, an
   try {
     const out = m.setup([[MENU, "1\r"], [MENU, "\r"], [PROVE, "n\r"], [RETRY, "\r"], ["Continue with no engine configured\\? \\[Y/n\\] $", CTRL_C]]);
     assert.ok(out.includes(WAITS), `the failed turn's opening line is missing:\n${out}`);
-    assert.match(out, /if it is signed out: .*, then answer yes to "Run the turn again"\./, `the sign-in command is missing:\n${out}`);
+    assert.match(out, /if it is signed out: .*, then answer yes to "Run the turn now"\./, `the sign-in command is missing:\n${out}`);
+    // No turn ran, so nothing is asked to run "again".
+    assert.doesNotMatch(out, /Run the turn again/, `a declined turn is asked to run again:\n${out}`);
     assert.doesNotMatch(out, /Running one turn/, `the reader said no, and a turn ran:\n${out}`);
   } finally { m.done(); }
 });
@@ -43,6 +45,6 @@ test("under a key or a cloud account there is no sign-in to show, and the declin
   const src = readFileSync(join(HERE, "..", "..", "bin", "onboard.mjs"), "utf8");
   const at = src.indexOf("if (!await confirm(proveQuestion(");
   assert.ok(at > 0, "the proof question is not where this arm reads it");
-  assert.match(src.slice(at, at + 900), /if \(authPick\.id === "subscription"\) \{\s*for \(const line of signInHandOff\(eng, bin, authPick\.id\)\.lines\) info\(line\);/,
+  assert.match(src.slice(at, at + 900), /if \(authPick\.id === "subscription"\) \{\s*for \(const line of signInHandOff\(eng, bin, authPick\.id, \{ turnRan: false \}\)\.lines\) info\(line\);/,
     "the sign-in lines are no longer limited to a subscription");
 });

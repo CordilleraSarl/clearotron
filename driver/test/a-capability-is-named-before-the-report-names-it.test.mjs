@@ -64,15 +64,19 @@ test("arm 2 — readiness is enrolment, read off the filesystem, and says it is 
   const none = caseLawInventory(withCreds([]));
   assert.deepEqual(none.filter((r) => r.enrolment === "oauth").map((r) => r.configured), [false, false]);
 
-  const one = caseLawInventory(withCreds([CASELAW_BRIDGES[0]]));
+  // The source left unenrolled is one whose site this build records: a source with none names no enrolment, since it
+  // asks for no account it cannot say where to make (a-case-law-source-with-no-known-site-says-it-is-optional).
+  const [withSite, noSite] = ["courtlistener", "legaldatahunter"];
+  assert.deepEqual([...CASELAW_BRIDGES].sort(), [withSite, noSite].sort(), "the bridges changed; this arm needs repointing");
+  const one = caseLawInventory(withCreds([noSite]));
   const byId = new Map(one.map((r) => [r.provider, r]));
-  assert.equal(byId.get(CASELAW_BRIDGES[0]).configured, true, "a stored token is not read as enrolment");
-  assert.equal(byId.get(CASELAW_BRIDGES[0]).remedy, null, "an enrolled source still carries a remedy");
-  assert.equal(byId.get(CASELAW_BRIDGES[1]).configured, false);
+  assert.equal(byId.get(noSite).configured, true, "a stored token is not read as enrolment");
+  assert.equal(byId.get(noSite).remedy, null, "an enrolled source still carries a remedy");
+  assert.equal(byId.get(withSite).configured, false);
 
   // THE REMEDY NAMES SOMETHING THAT EXISTS. There is no login command in this repo — the enrolment is
   // the documented OAuth exchange — and a printed command that does not exist is its own defect.
-  const remedy = byId.get(CASELAW_BRIDGES[1]).remedy;
+  const remedy = byId.get(withSite).remedy;
   assert.match(remedy, /providers\/oauth-mcp-bridge\/README\.md/, "the remedy does not name the enrolment");
   assert.doesNotMatch(remedy, /login\.mjs|clearotron login/, "the remedy names a command this repo does not ship");
   assert.doesNotMatch(remedy, /set [A-Z_]{4,}/, "ADR-0003: setup is an OAuth flow, not a variable to set");

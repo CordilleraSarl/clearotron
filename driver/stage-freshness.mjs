@@ -66,8 +66,8 @@ export function shaOf(absPath) {
  * skeptic-flags file that did not exist when synthesis ran, and exists now, is new material.
  * PURE-ish (reads only the paths it is given).
  */
-export function fingerprint(inputPaths = [], { label = null, project = null } = {}) {
-  return [...new Set(inputPaths.filter(Boolean).map(String))].sort()
+export function fingerprint(inputPaths = [], { label = null, project = null, values = null } = {}) {
+  const files = [...new Set(inputPaths.filter(Boolean).map(String))].sort()
     .map((p) => {
       const e = { name: basename(p), path: p, sha: shaOf(p) };
       // — the PROJECTION, recorded beside the whole-file sha and never instead of it. Omitted
@@ -77,6 +77,11 @@ export function fingerprint(inputPaths = [], { label = null, project = null } = 
       if (typeof proj === "string" && proj) e.proj = proj;
       return e;
     });
+  // WHAT A STAGE READ THAT IS NOT A FILE: the message it was handed, which carries the order's own words, or the list
+  // of files a folder held. Each is recorded under `value:<name>` with the sha of its text, after the files, and is
+  // compared like a file. Omitted when none is given, so every caller that passes none writes exactly as before.
+  const named = values && typeof values === "object" ? Object.keys(values).sort() : [];
+  return [...files, ...named.map((k) => ({ name: k, path: `value:${k}`, sha: sha12(String(values[k] ?? "")) }))];
 }
 
 /**
@@ -115,10 +120,18 @@ export function diffFingerprint(recorded, current) {
 const stampPath = (runDir, label) => driverDir(runDir, STAMP_DIR, `${label.replace(/[^\w.:-]/g, "_")}.json`);
 
 /** Record the inputs a stage's CURRENT output was produced from. Best-effort; never throws. */
-export function writeStamp(runDir, label, inputPaths, { project = null } = {}) {
+export function writeStamp(runDir, label, inputPaths, { project = null, values = null } = {}) {
+  writeFingerprint(runDir, label, fingerprint(inputPaths, { label, project, values }));
+}
+
+/**
+ * Record a fingerprint taken earlier, as the stamp of `label`. A stage that rewrites one of its own inputs while it runs
+ * takes its fingerprint before it runs, so the stamp says what it was based on rather than what it left. Best-effort.
+ */
+export function writeFingerprint(runDir, label, inputs) {
   try {
     ensureDriverDir(runDir, STAMP_DIR);
-    writeFileSync(stampPath(runDir, label), JSON.stringify({ label, ts: new Date().toISOString(), inputs: fingerprint(inputPaths, { label, project }) }, null, 2) + "\n");
+    writeFileSync(stampPath(runDir, label), JSON.stringify({ label, ts: new Date().toISOString(), inputs }, null, 2) + "\n");
   } catch { /* a stamp we could not write just means "not stale" downstream — never worse than today */ }
 }
 
@@ -127,10 +140,10 @@ export function readStamp(runDir, label) {
 }
 
 /** Is this stage's output stale with respect to its declared inputs' current bytes? Never throws. */
-export function stageStaleness(runDir, label, inputPaths, { project = null } = {}) {
+export function stageStaleness(runDir, label, inputPaths, { project = null, values = null } = {}) {
   const stamp = readStamp(runDir, label);
   if (!stamp) return { stale: false, changed: [] };       // legacy / first run after this ships ⇒ today's behaviour
-  return diffFingerprint(stamp.inputs, fingerprint(inputPaths, { label, project }));
+  return diffFingerprint(stamp.inputs, fingerprint(inputPaths, { label, project, values }));
 }
 
 /**
