@@ -1711,7 +1711,7 @@ export const STAGES = {
         why: "The path is `out: (P) => P.commonLaw`, interpolated into the message by the driver; the summary's counts are the ledger's. No token speaks about the return message at all.",
       },
     },
-    message: ({ paths: P, gridVariants, profile, gridSpecPath, job, intakeAsks }) => {
+    message: ({ paths: P, profile, gridSpecPath, job, intakeAsks }) => {
       // C1 — weight the sweep where use creates RIGHTS (data-derived; "" when unknown)
       const systemScope = marketplaceScopeDirective(scopeTerritories(job, profile));
       // T9 (A2) — the OWNING stage finally receives its committed intake checks (the VENZY
@@ -1728,51 +1728,26 @@ export const STAGES = {
       // WRITES common-law-grid.json from the API response (no truncation, no dropped/mis-keyed cells), and
       // the model only judges the returned candidates. This is the structural cure for both the dense-marketplace
       // truncation and the NOVA PULSE dropped-cell failures (no tier bump would fix the output ceiling).
-      if (gridSpecPath) {
-        return lines(
-          reads(["skills/clearance-common-law/SKILL.md"]),
-          `Inputs: variant manifest ${P.variantManifest}; matter frame ${P.matterContext}.`,
-          systemScope,
-          asksBlock,
-          `Run the marketplace sweep via the DETERMINISTIC grid: call perplexity_research with enable_sandbox:true and grid_spec_path: ${gridSpecPath}. The tool runs EXACTLY the dictated term × platform grid and WRITES the complete ledger to ${P.commonLawGrid} itself.`,
-          `Do NOT author the grid program, do NOT save ${P.commonLawGrid} yourself, and do NOT re-emit the grid JSON in your message (re-emitting is exactly what truncated/dropped cells before). The tool returns only the candidate hits that need judgment.`,
-          `Judge each returned candidate into the fixed taxonomy and write your findings file to ${P.commonLaw} with its Findings, Negative-results matrix, Coverage ledger, and Audit trail sections. The driver validates grid completeness from the ledger the tool wrote — never from your prose.`,
-          // P2-C (Round-2 §8b leg 2) — receipts disposition is a dictated obligation, not skill-prose-only
-          // (the §7 lesson: prose-only contracts get skipped under output pressure; the evidence run listed
-          // its queries and still asserted clean past a recorded cultural-criticism receipt).
-          // — the obligation is unchanged; what was deleted is the TRANSCRIPTION it used to demand
-          // ("the query VERBATIM, one recorded result … title or URL copied exactly"). The driver writes
-          // the form; this names it and the two fields the seat owns, and nothing else.
-          meaningSweepReceiptsInstruction(),
-          CROSS_CHECK_HANDOFF,
-          writeReturn(P.commonLaw),
-        );
-      }
-      // WS-B: the platform grid is DICTATED from the customer profile (single source — the receipts
-      // gate's identity join validates the saved ledger against this same list); the batch ceiling is
-      // derived from the profile's cell floor (Ember Guard 2026-06-12: a 224-cell single grid call
-      // truncated mid-matrix — ~14×7=98 cells/call is the proven-safe budget, scaled per profile).
-      const batch = profile?.batchSize ?? 14;
+      // THE SWEEP RUNS ONLY FROM THE SPEC. A run that sends this stage always has one: every profile carries a platforms
+      // list (profiles.mjs, validateProfileShape), a matter with no variants stops at intake, and a spec that cannot be
+      // derived stops the run (deriveGridSpec). The branch that ordered a hand-written grid program for a run without one
+      // is gone with the program itself, which the manual no longer teaches; a dispatch is pointed at the run's own spec.
+      const specPath = gridSpecPath ?? P.gridSpec;
       return lines(
         reads(["skills/clearance-common-law/SKILL.md"]),
         `Inputs: variant manifest ${P.variantManifest}; matter frame ${P.matterContext}.`,
         systemScope,
         asksBlock,
-        `Run the marketplace sweep as the Step-2 search-as-code grid call (enable_sandbox: true, depth: "pro-search"); judge the per-cell candidates into the fixed taxonomy; the Negative-results matrix carries one receipt row per (variant × platform) cell.`,
-        profile?.platforms?.length ? lines(
-          `PLATFORMS (the grid sweeps EXACTLY these store domains for EVERY variant): ${profile.platforms.join(", ")} — plus ONE unrestricted general-web search per variant (platform name "web").`,
-          `The receipts gate validates every variant against THIS list (count AND identity) — never substitute platforms from memory or skill examples.`,
-        ) : "",
-        gridVariants?.length ? lines(
-          `GRID KEYS (the validator checks EXACTLY these ${gridVariants.length} terms — use each VERBATIM as its Negative-results matrix key; a " / "-packed key may instead carry full per-alternate rows):`,
-          ...gridVariants.map((v) => `- ${v}`),
-          ...(gridVariants.length > batch ? [
-            `BATCHING (MANDATORY at this size — one oversized grid call truncates and fails the run): split the keys into ${Math.ceil(gridVariants.length / batch)} batches of ≤${batch} variants, run ONE grid call per batch (same program, same platforms), and concatenate the matrices. Every batch's stdout is transcribed in full before the next call.`,
-          ] : []),
-          // Machine receipts (post-mortem §1b): the gate validates the saved stdout JSON by exact join on the
-          // keys above — not by re-reading the markdown matrix — whenever this file exists.
-          `MACHINE RECEIPTS (MANDATORY): save the grid call's stdout JSON VERBATIM to ${P.commonLawGrid} — the single stdout object, or a JSON ARRAY of the per-batch stdout objects in batch order when batched. Copy the JSON exactly as the tool returned it (no reformatting, no re-typing, no judging); the driver validates grid completeness from THIS file.`,
-        ) : "",
+        `Run the marketplace sweep via the DETERMINISTIC grid: call perplexity_research with enable_sandbox:true and grid_spec_path: ${specPath}. The tool runs EXACTLY the dictated term × platform grid and WRITES the complete ledger to ${P.commonLawGrid} itself.`,
+        `Do NOT author the grid program, do NOT save ${P.commonLawGrid} yourself, and do NOT re-emit the grid JSON in your message (re-emitting is exactly what truncated/dropped cells before). The tool returns only the candidate hits that need judgment.`,
+        `Judge each returned candidate into the fixed taxonomy and write your findings file to ${P.commonLaw} with its Findings, Negative-results matrix, Coverage ledger, and Audit trail sections. The driver validates grid completeness from the ledger the tool wrote — never from your prose.`,
+        // P2-C (Round-2 §8b leg 2) — receipts disposition is a dictated obligation, not skill-prose-only
+        // (the §7 lesson: prose-only contracts get skipped under output pressure; the evidence run listed
+        // its queries and still asserted clean past a recorded cultural-criticism receipt).
+        // — the obligation is unchanged; what was deleted is the TRANSCRIPTION it used to demand
+        // ("the query VERBATIM, one recorded result … title or URL copied exactly"). The driver writes
+        // the form; this names it and the two fields the seat owns, and nothing else.
+        meaningSweepReceiptsInstruction(),
         CROSS_CHECK_HANDOFF,
         writeReturn(P.commonLaw),
       );
