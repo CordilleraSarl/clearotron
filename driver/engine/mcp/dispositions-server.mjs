@@ -159,7 +159,7 @@ serve({
           // a time. The wording below is the refusal text, so the advertisement and the refusal now say
           // the same thing in the same words.
           segment_index: { type: "integer", description: "The NUMBER of the numbered passage you relied on, in the snippet of the receipt you ruled on (1, 2, …). Required for rows the answer marks as owing proof of reading." },
-          fragment: { type: "string", description: "OPTIONAL, and never refused — #1172. The driver extracts the quote it stores from `segment_index` ALONE, so pointing at the passage is the whole obligation. If a few characters of that passage come easily, send them and they are recorded as a transcription check; if the script is one you cannot reproduce, omit it and nothing is lost. Do not translate: a translation is not a copy, and an empty field is better than a wrong one." },
+          fragment: { type: "string", description: "OPTIONAL, and never refused. The driver extracts the quote it stores from `segment_index` ALONE, so pointing at the passage is the whole obligation. If a few characters of that passage come easily, send them and they are recorded as a transcription check; if the script is one you cannot reproduce, omit it and nothing is lost. Do not translate: a translation is not a copy, and an empty field is better than a wrong one." },
           // — THE HONEST EXIT. Declared here because a seat can only take an exit it can see: the
           // one row that killed a production run was refused 217 times by a seat that had no way to say
           // it could not rule, and the schema is the half its tool-calling binds to.
