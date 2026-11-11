@@ -616,7 +616,7 @@ export async function runVerdictGate({ P, agent, applyVerdictFrontMatter, correc
       // All three clamp sites emitted this event under one name with the same from/to, distinguishable
       // only by which optional payload key happened to be present. Two of them fired three milliseconds
       // apart on a production run — the first without `frameDeferred`, the second with it — which reads
-      // as one decision logged twice. It was two different decisions wearing one name, and the test lane
+      // as one decision logged twice. It was two different decisions wearing one name, and a tester
       // reasonably discounted one of them. `cause` makes the event self-describing.
       //
       // THE EVENT NAME IS DELIBERATELY NOT SPLIT. It is a true statement about the effect — the verdict

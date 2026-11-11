@@ -55,7 +55,7 @@
 // CACHE-BUSTED specifier so its module-level const is evaluated afresh, and process.env is restored
 // afterwards. Without the cache-bust it works exactly once per process and is wrong every time after —
 // which is worse than not working, because the wrong answer is a pass. The signature is misleading;
-// fixing it is a change to a file this lane does not own.
+// the fix belongs in driver.config.mjs, not in this wizard.
 
 import { spawnSync, execFileSync } from "node:child_process";   // — the wizard installs the engine when asked, and only when asked;
                                                                 // execFileSync is doctor's read-only `systemctl show`

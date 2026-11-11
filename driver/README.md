@@ -71,7 +71,14 @@ kind of thing a module is before you open it.
 | `engine/` | The swappable compute substrate (`engine/CONTRACT.md`). `anthropic-agent.mjs` is the production adapter (`claude -p`, stream-json, warm `--resume`); `registerEngine()`/`selectEngine()` key on `CLEAROTRON_AI`. `engine/mcp/` hosts the per-provider gather servers. |
 | `gateway.mjs` | `runStage()` — the engine-agnostic orchestration ladder: blocking call, output parse, file-truth gating, failure classification, bounded retries (fresh session key each), warm-resume. |
 | `stages.mjs` | The single per-stage table (agent/model-tier/thinking/timeout/skillReads/output/validator/message). Centralizes tiers (fixes the old cross-file drift). |
-| `pipeline.mjs` | The sequence: Phase-0 (code) → fan-out (batched) → fan-in barrier → placement → digest → skeptic+escalation → synthesis → (case-law) → refutation+verdict gate → publish+outbox → archive. CLI: `node pipeline.mjs --job <file.json>`. |
+| `pipeline.mjs` | The clearance run: the run slot, the preflight and the freezes, then its ordered steps, handed to `runShell` in `run-shell.mjs`. CLI: `node pipeline.mjs --job <file.json>`. |
+| `pipeline-knockout.mjs` | The Knockout run: its own steps, handed to the same `runShell`. |
+| `run-shell.mjs` | What every run does around its steps, for both products: it runs the steps in order, ends a failure through `run-failed.mjs` and a delivery through the product's ending. |
+| `run-failed.mjs` | The failure path of both products: postpone, stop, park for recovery or end, and the notice it sends. |
+| `run-delivered.mjs` | How a clearance ends delivered: the publish, the packet, the delivered state and the archive. |
+| `run-outcome.mjs` | How a run that cannot finish is described: the failure a stage raises, the designed refusal, and the packet that tells the requester. |
+| `run-park.mjs` | The one writer of `.postponed`, the marker a parked run resumes from. |
+| `run-record.mjs` | The one door to a run's files: where they are, and how they are read and written. |
 | `steps/` | One module for each phase of a run, called in order from `pipeline.mjs`, and `corrections.mjs`, the functions the correction phases share. This row is its front door, so it has no README of its own. |
 | `ladder/` | The stage ladder's steps, carved out of `gateway.mjs` `runStageLadder` one at a time; each file's header says which step it is. This row is its front door, so it has no README of its own. |
 | `phase0.mjs` | Pure: slug, codename (re-rolled on run-dir collision), run-dir, customer template. |
@@ -83,6 +90,7 @@ kind of thing a module is before you open it.
 | `profiles.mjs` + `profiles/` | Per-customer config: `profileKey`-then-forwarder-domain resolution, derived floor/batch, the run-frozen `_driver/profile.json` sidecar. Real customer bundles load from an EXTERNAL store via `CLEAROTRON_CUSTOMERS_DIR`; the repo ships `generic` + synthetic demo customers. See `profiles/README.md`. |
 | `coverage-ledger.mjs` | Machine coverage-ledger contract: strict JSON-mirror parser (token-first throws), prose parser, `REGISTER_AXES`/`decideAxes`. |
 | `enqueue-schema.mjs` | Job-file shape + `validateJob`. |
+| `portal-service.mjs` · `portal-routes/` · `portal-runs.mjs` · `portal-confirmation.mjs` | The portal: the service, its routes grouped one module per area (`portal-routes/README.md`), the runs a reader can see, and the token that confirms an order. |
 | `dev-portal.mjs` | Loopback-only dev-instance UI (static pool + `/profiles/*` proxy) for dry-run testing — see `../docs/E2E.md` Tier 1b. |
 | `systemd/*` | `clearotron-worker.service` is the live worker and what a deployment runs. The path/timer/oneshot drain units and the outbox-wake units beside them are RETIRED: the built-in worker replaced that posture. Their files stay until the production rebuild — `unit-inventory.mjs` records the ruling and the reason, and reports a retired unit's absence as expected rather than as a fault. They keep their original names because a deployed box still holds them under those names. |
 

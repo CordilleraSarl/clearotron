@@ -13,9 +13,8 @@
 // still ahead of us and a run as byte-identical "with every unit flag off"; both sentences outlived the
 // thing they described by naming a Phase-5 that has happened. There is no flag to turn off and no
 // byte-identical slice-1 run to fall back to — the consume seam is unconditional, gated only on
-// conditions a run already discloses. `laneEnvOn("zh")` is the one leg that stayed, and it stayed
-// because an incident kill is a switch someone would actually use; jxAimForSynthesis below carries that
-// reasoning where the seam is.
+// conditions a run already discloses. The per-language off switch that outlived them is retired too
+// (2026-11-11): no deployment set it, and a lane runs wherever the frozen lane decision carries it.
 //
 // Grid contract (slice 2): the driver DICTATES `_driver/jx/<lane>-grid-spec.json` (terms × platforms,
 // frozen on first dictation — a resume never re-dictates); a pure code-side executor fills every cell
@@ -37,7 +36,7 @@ import { LANGUAGE_LANES, SERP_LANES, isMirrorHost, canonicalTerm, jxBillingStamp
 import { jxKey, MAX_LANE_ATTEMPTS } from "./jx.mjs";
 import { abbrev } from "./repair-contract.mjs";
 import { kebab } from "./search-policy.mjs";
-import { SERP_PROVIDERS, JX_PROVIDERS, laneArmed } from "./driver.config.mjs";
+import { SERP_PROVIDERS, JX_PROVIDERS } from "./driver.config.mjs";
 import { findGridLedgerViolations, findPlatformIdentityViolations } from "./common-law-receipts.mjs";
 import { paths, readJson } from "./run-record.mjs";
 
@@ -51,10 +50,6 @@ export const SERP_GRID_DEADLINE_MS = 5 * 60_000;   // whole-grid wall clock (CLE
 export const NATIVEREAD_GRID_ROWS_CAP = 60;        // grid-findings rows inlined into the read payload (receipted cap)
 export const NATIVEREAD_SLICE_CAP = 12000; // chars of register-unit output inlined into the read payload
 const GAP_DEGRADE_FLOOR = 0.5;           // >50% gapped cells ⇒ the grid attempt DEGRADES (the GRID_COVERAGE_FLOOR idiom)
-
-// — ONE reader for the fail-open lane switch, shared with the slice statement that describes
-// what this executor did. They disagreed; the statement lost, and it shipped.
-const laneEnvOn = (lane) => laneArmed(lane);
 
 const jxDir = (runDir) => paths(runDir).jx;
 const unitsPath = (runDir) => join(jxDir(runDir), "units.json");
@@ -227,9 +222,8 @@ export async function runJxSerpGrid(ctx, job, opts = {}, { runLog = () => {}, no
   try {
     // item 8 — CLEAROTRON_JX_SERP_GRID is gone. It was a default-OFF arm on a unit that has run in
     // production since 2026-08-04, so it hid a live path behind a switch nobody outside this box could
-    // find. What remains are the conditions a run DISCLOSES: the lane not killed, a frozen lane
-    // decision, a SERP capability entry. Each already returns a cause that reaches the slice statement.
-    if (!laneEnvOn(lane)) return { ran: false, cause: `CLEAROTRON_NATIVE_LANGUAGE_${lane.toUpperCase()} off` };
+    // find. What remains are the conditions a run DISCLOSES: a frozen lane decision and a SERP capability
+    // entry. Each already returns a cause that reaches the slice statement.
     const laneDecision = ctx.jxLanes?.lanes?.[lane];
     if (!laneDecision) return { ran: false, cause: "no frozen zh lane decision (jurisdictions/policy)" };
     const serpSpec = SERP_LANES[lane];
@@ -494,7 +488,6 @@ export async function runJxNativeread(ctx, job, opts = {}, { runLog = () => {}, 
   const key = `nativeread:${lane}`;
   try {
     // item 8 — CLEAROTRON_JX_NATIVEREAD is gone, same reasoning as the grid above.
-    if (!laneEnvOn(lane)) return { ran: false, cause: `CLEAROTRON_NATIVE_LANGUAGE_${lane.toUpperCase()} off` };
     if (!ctx.jxLanes?.lanes?.[lane]) return { ran: false, cause: "no frozen zh lane decision (jurisdictions/policy)" };
     const st = unitState(run.runDir, key);
     if (st.skip) return { ran: false, cause: st.cause };
@@ -579,13 +572,8 @@ export async function runJxNativeread(ctx, job, opts = {}, { runLog = () => {}, 
  *  production since 2026-08-04, which is the definition of a dark switch: the shipped default described
  *  a configuration nobody ran.
  *
- *  `laneEnvOn("zh")` STAYS, and deleting it would have been the mistake. The CLEAROTRON_JX_LANES master leg
- *  was retired 2026-07-27 and the reason this leg was kept still holds: an incident kill must also
- *  silence a STALE artifact from an earlier run, not merely stop the next one. That is a switch someone
- *  WOULD use, once, in an incident — the opposite of a dark one — so item 12's remedy applies instead of
- *  item 8's: it is DECLARED rather than deleted. */
+ *  The per-language off switch that once silenced this too is retired (2026-11-11): no deployment set it. */
 export function jxAimForSynthesis(runDir) {
-  if (!laneEnvOn("zh")) return null;
   try {
     const a = readJson(join(jxDir(runDir), "aim-attention.json"));
     const n = (a?.items ?? []).length;

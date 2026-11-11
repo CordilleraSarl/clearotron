@@ -16,6 +16,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 import { STAGES, composeFollowup, WEB_EVIDENCE_ONLY_THROUGH_RESEARCH } from "../stages.mjs";
+import { toolGroupsForStage } from "../engine/mcp/gather-config.mjs";
 import { REPAIR_COMPOSERS, repairFollowup } from "../repair-composers.mjs";
 import { buildClaudeArgs } from "../engine/anthropic-agent.mjs";
 import { absolutizeSkillRefs as codexRewrite } from "../engine/common.mjs";
@@ -28,6 +29,15 @@ test("the writer's standing rule is the approved sentence, word for word", () =>
   assert.equal(WEB_EVIDENCE_ONLY_THROUGH_RESEARCH,
     "Web evidence comes only through `perplexity_research`; do not fetch pages with a shell command or a script.");
   assert.deepEqual([...STAGES.synthesis.standing], [WEB_EVIDENCE_ONLY_THROUGH_RESEARCH]);
+});
+
+test("every stage that holds the research tool carries the web rule, and no other stage does", () => {
+  const holders = Object.keys(STAGES).filter((n) => toolGroupsForStage(n).includes("perplexity"));
+  assert.ok(holders.length >= 4, `only ${holders.length} stages hold the research tool: the grant table was not read`);
+  for (const n of Object.keys(STAGES)) {
+    const has = (STAGES[n].standing ?? []).includes(WEB_EVIDENCE_ONLY_THROUGH_RESEARCH);
+    assert.equal(has, holders.includes(n), `${n}: ${holders.includes(n) ? "holds the research tool and is not told it is the only route" : "is told about a research tool it does not hold"}`);
+  }
 });
 
 test("every opening message of a stage with standing rules states each of them, under every context", () => {

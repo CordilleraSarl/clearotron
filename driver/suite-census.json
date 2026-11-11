@@ -1126,8 +1126,8 @@
           "todos": 0
         },
         "a-knockout-defect-reaches-the-step-that-can-repair-it.test.mjs": {
-          "tests": 32,
-          "asserts": 169,
+          "tests": 35,
+          "asserts": 197,
           "skips": 0,
           "todos": 0
         },
@@ -1477,6 +1477,12 @@
           "tests": 4,
           "asserts": 13,
           "skips": 0,
+          "todos": 0
+        },
+        "a-native-language-lane-has-no-off-switch.test.mjs": {
+          "tests": 4,
+          "asserts": 12,
+          "skips": 1,
           "todos": 0
         },
         "a-near-spelling-no-buyer-could-confuse-is-set-aside-with-its-reason.test.mjs": {
@@ -2464,8 +2470,8 @@
           "todos": 0
         },
         "a-stage-standing-rule-reaches-every-session.test.mjs": {
-          "tests": 5,
-          "asserts": 12,
+          "tests": 6,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -2919,6 +2925,12 @@
           "skips": 0,
           "todos": 0
         },
+        "an-axis-the-plan-gives-no-work-files-its-note-and-claims-no-result.test.mjs": {
+          "tests": 7,
+          "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
         "an-empty-config-store-overrides-nothing.test.mjs": {
           "tests": 5,
           "asserts": 29,
@@ -3138,6 +3150,12 @@
         "ask-ledger.test.mjs": {
           "tests": 26,
           "asserts": 119,
+          "skips": 0,
+          "todos": 0
+        },
+        "assembling-a-run-s-records-reads-the-log-once-and-rewrites-only-what-changed.test.mjs": {
+          "tests": 6,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
@@ -4817,7 +4835,7 @@
         },
         "jx-p4-units.test.mjs": {
           "tests": 25,
-          "asserts": 135,
+          "asserts": 136,
           "skips": 0,
           "todos": 0
         },
@@ -4829,13 +4847,13 @@
         },
         "jx-slice-statement.test.mjs": {
           "tests": 19,
-          "asserts": 67,
+          "asserts": 66,
           "skips": 0,
           "todos": 0
         },
         "jx-units.test.mjs": {
           "tests": 25,
-          "asserts": 164,
+          "asserts": 161,
           "skips": 0,
           "todos": 0
         },
@@ -4921,12 +4939,6 @@
           "tests": 15,
           "asserts": 59,
           "skips": 0,
-          "todos": 0
-        },
-        "lane-switch-one-reader.test.mjs": {
-          "tests": 5,
-          "asserts": 17,
-          "skips": 2,
           "todos": 0
         },
         "lane-wedge.test.mjs": {
@@ -5026,8 +5038,8 @@
           "todos": 0
         },
         "named-band-missing.test.mjs": {
-          "tests": 7,
-          "asserts": 24,
+          "tests": 8,
+          "asserts": 30,
           "skips": 0,
           "todos": 0
         },
@@ -6124,8 +6136,8 @@
           "todos": 0
         },
         "retry-backoff.test.mjs": {
-          "tests": 8,
-          "asserts": 33,
+          "tests": 9,
+          "asserts": 36,
           "skips": 0,
           "todos": 0
         },
@@ -6275,7 +6287,7 @@
         },
         "runner.jx-p4-e2e.test.mjs": {
           "tests": 2,
-          "asserts": 32,
+          "asserts": 31,
           "skips": 0,
           "todos": 0
         },

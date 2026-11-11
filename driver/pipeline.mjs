@@ -37,7 +37,7 @@ import { toolGroupsForStage as experimentToolGroups, buildGatherMcpConfig as exp
 import { readBestDraft, bestDraftDir } from "./best-draft.mjs";
 import { canonicalJurisdictionCode } from "./jurisdiction-codes.mjs";
 import { probeSeed as orderProbeSeed } from "./order-probe.mjs";   // item 11 — records which ordering arm a run ran under
-import { config, resolveModel, laneArmed } from "./driver.config.mjs";
+import { config, resolveModel } from "./driver.config.mjs";
 import { registerAdapter } from "./engine/run-choices.mjs";   // the run's register adapter, from ctx.register
 import { codexSandboxBypassed } from "./engine/openai-agent.mjs";        // — a replay is refused where nothing keeps a stage's commands out of the answers it replays
 import { buildRunContext, deriveSlug, kebab } from "./phase0.mjs";
@@ -7932,10 +7932,9 @@ export function decideZhScopeHonesty(opts = {}) {   // @internal
 /** Did the zh candidate lane actually RUN on this run? Mirrors the jx-units gating legs exactly
  *  (jx-units.mjs runJxSerpGrid/runJxNativeread): the frozen policy must carry the jxLanes component
  *  (the product carries the native-language investigation, or a saved search bought it), at least one of
- *  the two unit switches must be on, the per-lane switch must not be killed, and the frozen lane decision
+ *  the two unit switches must be on, and the frozen lane decision
  *  sidecar must carry the zh lane. Any leg missing ⇒ the lane did not run (a product without the
- *  investigation, an incident kill, or no lane in the
- *  frozen decision) — the honesty row is owed. Reads the SIDECAR rather than ctx.jxLanes: at delivery
+ *  investigation, or no lane in the frozen decision) — the honesty row is owed. Reads the SIDECAR rather than ctx.jxLanes: at delivery
  *  time on a resume the fold block may never have re-attached it, and the frozen decision on disk is
  *  the single authority anyway.
  *
@@ -7945,10 +7944,9 @@ export function decideZhScopeHonesty(opts = {}) {   // @internal
  *  legs outright would report "ran" from a frozen lane DECISION alone, suppressing the disclosure on a
  *  run whose units never executed; keeping a leg on a variable nothing sets any more would read false
  *  forever and tell every client the lane did not run, including the runs where it did. So the legs
- *  track the switches that SURVIVE, which is what "mirrors the jx-units gating legs" has to mean. */
-export function scriptLaneRanOnRun(runDir, lane, { searchPolicy = null, env = process.env } = {}) {   // @internal
+ *  track what the units themselves check, which is what "mirrors the jx-units gating legs" has to mean. */
+export function scriptLaneRanOnRun(runDir, lane, { searchPolicy = null } = {}) {   // @internal
   if (!searchPolicy?.components?.jxLanes) return false;
-  if (!laneArmed(lane, env)) return false;   // — the shared fail-open reader
   let sidecar = null;
   try { sidecar = JSON.parse(readFileSync(paths(runDir).jxLanes, "utf8")); }
   catch { return false; }   // sidecar absent/corrupt ⇒ no frozen lane decision ⇒ the lane did not run
@@ -10760,7 +10758,11 @@ export function retiredFlagRefusal(argv) {   // @internal
 // a line that dates every retirement to the first one is worse than a line with no date at all.
 const RETIRED_ENV = {
   CLEAROTRON_KNOCKOUT_MODE: ["2026-07-27", "knockout availability is a property of the BUILD and the wired provider (search-policy.mjs BUILT)"], CLEAROTRON_KNOCKOUT_RECORD_CAP: ["2026-11-05", "a knockout reads the lists its reading step selects, in full; there is no record cap"],
-  CLEAROTRON_JX_LANES: ["2026-07-27", "the jx lane decision is frozen into the run's search policy; the per-lane CLEAROTRON_NATIVE_LANGUAGE_<XX> switches are still live"],
+  CLEAROTRON_JX_LANES: ["2026-07-27", "the jx lane decision is frozen into the run's search policy"],
+  // The per-language off switch: no deployment set it, and a lane in the frozen lane decision always runs.
+  CLEAROTRON_NATIVE_LANGUAGE_ZH: ["2026-11-11", "a native-language lane runs wherever the run's frozen lane decision carries it; there is no per-language off switch"],
+  CLEAROTRON_NATIVE_LANGUAGE_JA: ["2026-11-11", "a native-language lane runs wherever the run's frozen lane decision carries it; there is no per-language off switch"],
+  CLEAROTRON_NATIVE_LANGUAGE_KO: ["2026-11-11", "a native-language lane runs wherever the run's frozen lane decision carries it; there is no per-language off switch"],
   CLEAROTRON_RECIPES_MODE: ["2026-07-27", "a saved search is honoured wherever it resolves"],
 
   // ── ─────────────────────────────────────────────────────────────────────────────────────

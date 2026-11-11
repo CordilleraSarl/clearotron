@@ -523,7 +523,7 @@ export const OWNER_SWEEP_STEERING = `OWNER COVERAGE on this lane: an owner's mar
 // judgment reads the deterministic SHAPE whole and looks up the records it chooses through the band
 // tools, on the record — every lookup lands in the run's reading audit. This replaces the improvised,
 // unlogged shell-slicing of a multi-megabyte file that no Read call could ever take whole.
-export const BAND_READING_CONTRACT = `THE REGISTER BAND — how you read it: call `+"`band_shape`"+` FIRST (the deterministic shape of the merged band: totals, mechanical similarity tiers, THE FLOORS — every live in-class identical/near-identical record, each marked on its line in the band — class/status/registry/recency census, owner concentrations, the `+"`incomplete`"+` crowd descriptors, and the blind spots the shape mechanically cannot see). A large shape is served in parts, each naming the next call. Then pull exactly the records and slices your reasoning needs via `+"`band_lookup`"+` (filter by owner / class / tier / qid / slice / text / goods; matching un-enumerated crowds ride along so a counted-only zone can never read as a clean) and `+"`band_record`"+` (the official registry record fetched into this run, when one exists). Every floor has a fate on the form. A crowd descriptor is an open slice for judgment to act on (cleared / material-gap), never a cleared slice by default; the shape's tiers are mechanical string classes, never a relevance or risk call — both of those remain yours. Do NOT slice band or shape files with shell tools: the band tools are the reading layer, and they keep the reading on the record.`;
+export const FLOOR_FATE_ORDER = "Every floor has a fate on the form."; export const BAND_READING_HEAD = `THE REGISTER BAND — how you read it: call `+"`band_shape`"+` FIRST (the deterministic shape of the merged band: totals, mechanical similarity tiers, THE FLOORS — every live in-class identical/near-identical record, each marked on its line in the band — class/status/registry/recency census, owner concentrations, the `+"`incomplete`"+` crowd descriptors, and the blind spots the shape mechanically cannot see). A large shape is served in parts, each naming the next call. Then pull exactly the records and slices your reasoning needs via `+"`band_lookup`"+` (filter by owner / class / tier / qid / slice / text / goods; matching un-enumerated crowds ride along so a counted-only zone can never read as a clean) and `+"`band_record`"+` (the official registry record fetched into this run, when one exists).`; export const BAND_READING_STANDARDS = `A crowd descriptor is an open slice for judgment to act on (cleared / material-gap), never a cleared slice by default; the shape's tiers are mechanical string classes, never a relevance or risk call — both of those remain yours. Do NOT slice band or shape files with shell tools: the band tools are the reading layer, and they keep the reading on the record.`; export const BAND_READING_CONTRACT = `${BAND_READING_HEAD} ${FLOOR_FATE_ORDER} ${BAND_READING_STANDARDS}`;
 
 /**
  * `borderline` on a placement entry is an INTERNAL adjudication flag: placement declaring that its own
@@ -1576,6 +1576,8 @@ export const STAGES = {
   },
 
   "common-law": {
+    // Every stage that holds the research tool takes its web evidence through it alone (approved 2026-11-11; see synthesis).
+    standing: Object.freeze([WEB_EVIDENCE_ONLY_THROUGH_RESEARCH]),
     // stallSec is REQUIRED here, like the sibling sweep stage `register-unit` (timeoutSec 1200 / stallSec
     // 900): common-law's first action is the long perplexity_research grid sweep, during which the model
     // streams 0 tokens while blocked on the tool. Without a per-stage override it falls back to the global
@@ -1745,6 +1747,7 @@ export const STAGES = {
         // the form; this names it and the two fields the seat owns, and nothing else.
         meaningSweepReceiptsInstruction(),
         CROSS_CHECK_HANDOFF,
+        WEB_EVIDENCE_ONLY_THROUGH_RESEARCH,
         writeReturn(P.commonLaw),
       );
     },
@@ -1759,6 +1762,8 @@ export const STAGES = {
   // single-member deterministic branch above. The driver merges the two halves' findings + ledgers into
   // the canonical files in code (pipeline.mjs), so downstream never sees half artifacts.
   "common-law-half": {
+    // Every stage that holds the research tool takes its web evidence through it alone (approved 2026-11-11; see synthesis).
+    standing: Object.freeze([WEB_EVIDENCE_ONLY_THROUGH_RESEARCH]),
     // Same resourcing rationale as "common-law" above: the sweep streams 0 tokens while blocked on the
     // grid tool, so the stall override is REQUIRED. The wall stays 2250 even though a half grid is ~half
     // the cells — the wall exists to stop killing legitimate work, and a dense-matter half plus the
@@ -1889,6 +1894,7 @@ export const STAGES = {
         // half rather than on the obligations.
         meaningSweepReceiptsInstruction({ lead: "MEANING-SWEEP RECEIPTS — THIS IS THE WORK.", findingsTail: false }),
         `Then write ${P.commonLawHalf(half)}: a short report of the sweep under a "Findings" heading — every LOADED reading as its own finding, with the receipt behind it — and an "Audit trail" section saying which queries ran and what each returned. The driver renders the disposition TABLE from your recorded rulings, so do not hand-write that table.`,
+        WEB_EVIDENCE_ONLY_THROUGH_RESEARCH,
         writeReturn(P.commonLawHalf(half)),
       );
       // Instructed checks are receipts executed ONCE per run — half "a" is the designated owner (the
@@ -1925,6 +1931,7 @@ export const STAGES = {
         // the seat must be told that recording nothing is then the right outcome.
         meaningSweepReceiptsInstruction({ mayOwnNoQueries: true }),
         CROSS_CHECK_HANDOFF,
+        WEB_EVIDENCE_ONLY_THROUGH_RESEARCH,
         writeReturn(P.commonLawHalf(half)),
       );
     },
@@ -2141,7 +2148,7 @@ export const STAGES = {
       // A seat-typed count beside a tool-written band is two authorings of one fact, and the failure mode
       // is the quiet one: the note says nine enumerated queries, the band holds eight, and nothing compares
       // them. Deriving removes the disagreement rather than detecting it.
-      `FILE THIS AXIS'S AUDIT NOTE WITH \`record_unit_note\`. THE DISPATCH NAMES NO PATH FOR IT, deliberately — the driver writes this axis's note from what you send and you never open it, so there is no path here for you to hold. THE COUNTS ARE NOT YOURS TO TYPE: queries enumerated, incomplete blocks and records carried forward are taken from the band, so the note and the band cannot disagree. Send only what the band cannot say — \`null_result\` if this axis genuinely found nothing (refused against a band that carries records), and \`note\`, ONE short observation an auditor would want, in a lawyer's words. Still NO coverage-limited/confirmed-clean/deferred rows and NO clearance verdict: those are judgment's, Layer B. Call it AFTER the band exists — a note over a band that has not been written is refused by name, because an account of a sweep that has not happened is not a short note, it is a wrong one.`,
+      `FILE THIS AXIS'S AUDIT NOTE WITH \`record_unit_note\`. THE DISPATCH NAMES NO PATH FOR IT, deliberately — the driver writes this axis's note from what you send and you never open it, so there is no path here for you to hold. THE COUNTS ARE NOT YOURS TO TYPE: queries enumerated, incomplete blocks and records carried forward are taken from the band, so the note and the band cannot disagree. Send only what the band cannot say — \`null_result\` if this axis genuinely found nothing (refused against a band that carries records), and \`note\`, ONE short observation an auditor would want, in a lawyer's words. Still NO coverage-limited/confirmed-clean/deferred rows and NO clearance verdict: those are judgment's, Layer B. Call it AFTER the band exists (on a plan run with no entries for this axis, the driver has written it empty) — a note over a band that has not been written is refused by name, because an account of a sweep that has not happened is not a short note, it is a wrong one.`,
       CROSS_CHECK_HANDOFF, DECIDE_WAITING_FAMILIES,   // withheld-families.mjs
       // THE CLOSING LINE SPLITS WITH THE LANE, because what the seat owes splits with it. Under the
       // supplemental-lane contract the seat writes NOTHING — the band is the tools' and the note is the
@@ -3082,7 +3089,7 @@ export const STAGES = {
       // finding carried both: the class of finding most likely to be challenged was the only class with
       // no reasoning structure. The validator now rejects the omission on every disposition that reaches
       // a reader; this states what an off-field one has to say.
-      `- legal_position / practical_position (BOTH, on EVERY finding — adversarial, coexistence-partner, distinguished AND off-field alike; there is no disposition that carries a label without a stated ground): the two reads, SEPARATED — never blurred, never averaged. legal_position = ONE-TWO sentences of the LEGAL read alone: mark similarity × goods/services proximity × the senior right's scope, under the framework's own definitions (high similarity + high goods proximity = HIGH legal risk, whatever the owner's posture). practical_position = ONE-TWO sentences of the enforcement REALITY: owner posture and capability, marketplace presence, coexistence history, a delisted retailer / no visible revenue — practical facts stated ALONGSIDE the legal read. The band is what the framework's own method yields from BOTH positions as IT states them; a practical fact NEVER discounts the legal read in-line ("high similarity but the owner looks dormant, so call it low" is the averaging this field split forbids — write the high legal read, write the dormancy as practical, and let the framework's stated method produce the band). FACTS THAT CONDITION, NEVER ADVICE (the overall_caption rule, same voice): they state what IS, never a step to take. WHO READS THEM DEPENDS ON THE FINDING (#1339 D3): a RATED finding gets a report-card, and that card is the client's single authored wording, written FROM these fields — so write them TIGHT, the reads and the facts that carry them, never a second client paragraph the report will not print beside the card. An OFF-FIELD finding gets NO card, and there these two fields ARE what the client reads. NEVER prescribe ("narrow the goods", "seek consent before filing", "file first", "add a disclaimer") and NEVER use advice grammar ("we recommend", "you should", "the practical path is") — every forward ask lives in the actions register, code-built from it; a prescription typed here is a delivery defect the lint flags. ON AN OFF-FIELD FINDING the two reads are the same two reads, sized to the negative: legal_position states the legal read that makes this NOT a rated conflict (what the senior right actually covers, and where its scope stops short of ours); practical_position states the enforcement reality behind that (who the owner is, what they actually trade in, whether they have ever asserted). "Off-field" is a conclusion, and a conclusion states its ground.`,
+      `- legal_position / practical_position (BOTH, on EVERY finding — adversarial, coexistence-partner, distinguished AND off-field alike; there is no disposition that carries a label without a stated ground): the two reads, SEPARATED — never blurred, never averaged. legal_position = ONE-TWO sentences of the LEGAL read alone: mark similarity × goods/services proximity × the senior right's scope, under the framework's own definitions (high similarity + high goods proximity = HIGH legal risk, whatever the owner's posture). practical_position = ONE-TWO sentences of the enforcement REALITY: owner posture and capability, marketplace presence, coexistence history, a delisted retailer / no visible revenue — practical facts stated ALONGSIDE the legal read. The band is what the framework's own method yields from BOTH positions as IT states them; a practical fact NEVER discounts the legal read in-line ("high similarity but the owner looks dormant, so call it low" is the averaging this field split forbids — write the high legal read, write the dormancy as practical, and let the framework's stated method produce the band). FACTS THAT CONDITION, NEVER ADVICE (the overall_caption rule, same voice): they state what IS, never a step to take. WHO READS THEM DEPENDS ON THE FINDING: a RATED finding gets a report-card, and that card is the client's single authored wording, written FROM these fields — so write them TIGHT, the reads and the facts that carry them, never a second client paragraph the report will not print beside the card. An OFF-FIELD finding gets NO card, and there these two fields ARE what the client reads. NEVER prescribe ("narrow the goods", "seek consent before filing", "file first", "add a disclaimer") and NEVER use advice grammar ("we recommend", "you should", "the practical path is") — every forward ask lives in the actions register, code-built from it; a prescription typed here is a delivery defect the lint flags. ON AN OFF-FIELD FINDING the two reads are the same two reads, sized to the negative: legal_position states the legal read that makes this NOT a rated conflict (what the senior right actually covers, and where its scope stops short of ours); practical_position states the enforcement reality behind that (who the owner is, what they actually trade in, whether they have ever asserted). "Off-field" is a conclusion, and a conclusion states its ground.`,
       // requirement 2 — the label follows the argument. off-field had been carrying TWO different
       // claims under one token; the author now declares which, and a field claim is checked against the
       // finding's own goods meter (findings-model.validateOffFieldGround).
@@ -3373,7 +3380,7 @@ export const STAGES = {
     // The live read, which every recheck and review after a repair is pointed at too (resolveSkillReads): the run's own
     // framework and the shared reasoning beside the two manuals above (reviewSkillReads).
     skillReadsFor: reviewSkillReads,
-    standing: Object.freeze([REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK]),
+    standing: Object.freeze([REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK, WEB_EVIDENCE_ONLY_THROUGH_RESEARCH]),
     out: (P) => P.seniorEyeReview,
     validate: validators.seniorEyeReview,
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
@@ -3431,6 +3438,7 @@ export const STAGES = {
     message: ({ paths: P, intakeAsks, job, profile, registerOnly, profileSelection, placementFloorDecisions, writerExclusions, reviewAddressLines, researchChecks }) => lines(
       reads(reviewSkillReads({ profile, job })),
       REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK,
+      WEB_EVIDENCE_ONLY_THROUGH_RESEARCH,
       // lever 3 — WHICH FINDINGS EARN A GROUNDED PROFILE, chosen by the DRIVER and listed by
       // ordinal. The band is on findings.json before this stage is dispatched, so there is nothing for
       // the seat to judge: unlisted work is never asked for. Empty when every finding is profiled —
@@ -3782,7 +3790,7 @@ export const STAGES = {
       // the knob that fails ONE card used to key on `report-cards/2.md`, a path this dispatch no longer
       // names at all.
       `THIS TURN IS BOUND TO CARD ${axis}. Send \`ordinal\`: "${axis}" — the tool refuses a payload naming any other card, and you hold no other finding's record.`,
-      `Send \`full_detail\` — one entry per item, each \`{text, lead, internal}\`. \`text\` is your sentence; \`lead\` is a one-word lead-in ("Portfolio", "Risk assessment", "Enforcement") sent as the word ALONE — the driver renders the bold and the full stop. §L: the entry carrying the risk read is led "Risk assessment", NEVER "Legal lever", which reads as leverage the client can pull rather than the assessment it is. THAT ENTRY IS REQUIRED, and the tool refuses the card without it (reportcard_read_lead_missing): the report suppresses the record's own legal and practical reads wherever this bullet is present, so a card that omits it — or marks it internal — reaches the client with no risk read at all, and nothing downstream recovers it. NO "Filing" BULLET (#1339 D3, ruled): the driver already renders every registration from the FETCHED record — number, classes, status, filing and registration years, jurisdiction, designations, priority — so a typed filing bullet is that same fact retyped by a seat nothing can transposition-check. State a filing fact only where it carries the read you are making. Every other lead is optional. Mark an internal-only note with \`internal: true\`; do not type a \`::p::\` marker — the driver places it where the render splits.`,
+      `Send \`full_detail\` — one entry per item, each \`{text, lead, internal}\`. \`text\` is your sentence; \`lead\` is a one-word lead-in ("Portfolio", "Risk assessment", "Enforcement") sent as the word ALONE — the driver renders the bold and the full stop. §L: the entry carrying the risk read is led "Risk assessment", NEVER "Legal lever", which reads as leverage the client can pull rather than the assessment it is. THAT ENTRY IS REQUIRED, and the tool refuses the card without it (reportcard_read_lead_missing): the report suppresses the record's own legal and practical reads wherever this bullet is present, so a card that omits it — or marks it internal — reaches the client with no risk read at all, and nothing downstream recovers it. NO "Filing" BULLET (ruled): the driver already renders every registration from the FETCHED record — number, classes, status, filing and registration years, jurisdiction, designations, priority — so a typed filing bullet is that same fact retyped by a seat nothing can transposition-check. State a filing fact only where it carries the read you are making. Every other lead is optional. Mark an internal-only note with \`internal: true\`; do not type a \`::p::\` marker — the driver places it where the render splits.`,
       // T7 (E5) — the MATCHED grounded profile arrives INLINE (deterministic join), replacing
       // the old "if the file exists, fish in it" discretion that missed cards on copper-spire.
       caseLawProfile ? lines(
@@ -4623,9 +4631,9 @@ export const BAND_READING_STAGES = new Set(["placement-inquiry", "register-diges
 export const GROUP_READING_STAGES = new Set(["placement-inquiry"]);
 // The contract as the stages after placement read it: without "Every floor has a fate on the form.", which is an
 // order to placement, whose form it names. The digest and synthesis owe no floor a fate (the owner's ruling,
-// 2026-10-14). Removed from the one contract, never restated, so the two cannot drift apart.
-export const FLOOR_FATE_ORDER = "Every floor has a fate on the form.";
-export const BAND_READING_CONTRACT_AFTER_PLACEMENT = BAND_READING_CONTRACT.replace(` ${FLOOR_FATE_ORDER}`, "");
+// 2026-10-14). Built from the contract's other two parts, never restated, so the two cannot drift apart.
+// FLOOR_FATE_ORDER is declared with the contract, which is built from it and its two other parts.
+export const BAND_READING_CONTRACT_AFTER_PLACEMENT = `${BAND_READING_HEAD} ${BAND_READING_STANDARDS}`;
 
 // The register reading step's order on the waiting families. One constant, because the cross-check
 // follow-up reads it word for word (repair-composers.mjs); declared last so no line above it moves.
@@ -4706,9 +4714,9 @@ export const WRITER_STARTS_FROM_THE_WORK = lines(
 );
 // The band as the writer is told of it: what the tools are for, never a read it owes. The contract the steps before it
 // read begins "call `band_shape` FIRST" and says each part of a large shape names the next call. The standards that
-// contract sets for any reading are kept word for word, cut from it so the two cannot drift apart. The name keeps
+// contract sets for any reading are kept word for word: the contract is built from them, so the two cannot drift apart. The name keeps
 // "BAND_READING_CONTRACT" in it: the stages that read the band are found by it (BAND_READING_STAGES, band-size.mjs).
-export const BAND_READING_STANDARDS = BAND_READING_CONTRACT.slice(BAND_READING_CONTRACT.indexOf("A crowd descriptor is an open slice"));
+// BAND_READING_STANDARDS is one of the contract's three parts, declared with it; nothing cuts it from the whole.
 export const BAND_READING_CONTRACT_FOR_THE_WRITER = "THE REGISTER BAND: Use the band tools (`band_shape`, `band_lookup`, `band_record`) when a specific assessment needs evidence beyond the material handed to you. The available groups and pages are ways to find that evidence, not a list you must read to completion. "
   + BAND_READING_STANDARDS;
 // An answer the run already holds can be a finding's check (ruled 2026-10-27): a use-check source needs evidence, not

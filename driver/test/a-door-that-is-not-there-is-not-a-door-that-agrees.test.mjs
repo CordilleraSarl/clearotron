@@ -39,15 +39,15 @@ const OTHER = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
 /** The owner's measured field set, encoded the way the edge encodes it. */
 const metaToken = (over = {}) => {
   const payload = {
-    type: "meta", aud: AUD, hostname: "mcp.cordillera.ch", redirect_url: "/mcp",
+    type: "meta", aud: AUD, hostname: "mcp.example.test", redirect_url: "/mcp",
     auth_status: "NONE", service_token_status: false, ...over,
   };
   const b64 = (o) => Buffer.from(JSON.stringify(o), "utf8").toString("base64url");
   return `${b64({ alg: "HS256", typ: "JWT" })}.${b64(payload)}.c2ln`;
 };
 
-const loginUrl = ({ kid = AUD, meta = metaToken(), team = "cordillera" } = {}) => {
-  const u = new URL(`https://${team}.cloudflareaccess.com${ACCESS_LOGIN_PATH}mcp.cordillera.ch`);
+const loginUrl = ({ kid = AUD, meta = metaToken(), team = "example-team" } = {}) => {
+  const u = new URL(`https://${team}.cloudflareaccess.com${ACCESS_LOGIN_PATH}mcp.example.test`);
   if (kid) u.searchParams.set("kid", kid);
   if (meta) u.searchParams.set("meta", meta);
   u.searchParams.set("redirect_url", "/mcp");
@@ -59,7 +59,7 @@ test("the audience is read from the redirect an unauthenticated caller is handed
   assert.equal(r.kind, "read", `the audience was not read out of a well-formed Access challenge: ${r.why}`);
   assert.equal(r.aud, AUD, "the audience read is not the one the token carries");
   assert.equal(r.kid, AUD, "the `kid` cross-check value was not captured");
-  assert.equal(r.hostname, "mcp.cordillera.ch", "the hostname the edge named was dropped");
+  assert.equal(r.hostname, "mcp.example.test", "the hostname the edge named was dropped");
 });
 
 test("the two sources are cross-checked, and a disagreement is reported rather than resolved", () => {
@@ -80,7 +80,7 @@ test("a hostname that is not Access-fronted is its own verdict, and never a pass
   for (const [what, probe] of [
     ["a plain 200 with no redirect", { status: 200, location: "" }],
     ["a redirect somewhere else entirely", { status: 302, location: "https://example.test/sign-in?kid=" + AUD }],
-    ["a redirect to the same host's own page", { status: 302, location: "https://mcp.cordillera.ch/login" }],
+    ["a redirect to the same host's own page", { status: 302, location: "https://mcp.example.test/login" }],
   ]) {
     const r = readAudience(probe);
     assert.equal(r.kind, "not-fronted", `${what} did not read as an absent edge`);
@@ -126,7 +126,7 @@ test("a mismatch names BOTH values, because a reader told only that two things d
   assert.equal(v.ok, false);
   assert.match(v.message, new RegExp(OTHER), "the configured audience is not named");
   assert.match(v.message, new RegExp(AUD), "the audience the edge issues is not named");
-  assert.match(v.message, /mcp\.cordillera\.ch/, "the hostname the mismatch is about is not named");
+  assert.match(v.message, /mcp\.example\.test/, "the hostname the mismatch is about is not named");
   assert.ok(!/audience mismatch\.?$/i.test(v.message), "the verdict is the bare phrase this arm exists to forbid");
 });
 
@@ -171,7 +171,7 @@ test("agreement is the ONLY verdict that reads as ok", () => {
 test("the probe asks once, does not follow the redirect, and hands back failure rather than throwing", async () => {
   const seen = [];
   const res = await probeAudience({
-    url: "https://mcp.cordillera.ch/mcp",
+    url: "https://mcp.example.test/mcp",
     fetchImpl: async (u, opts) => { seen.push({ u, redirect: opts.redirect }); return { status: 302, headers: { get: () => loginUrl() } }; },
   });
   assert.equal(seen.length, 1, "the probe asked more than once");
@@ -180,7 +180,7 @@ test("the probe asks once, does not follow the redirect, and hands back failure 
   assert.equal(res.status, 302);
   assert.match(res.location, /cdn-cgi\/access\/login/);
 
-  const failed = await probeAudience({ url: "https://mcp.cordillera.ch/mcp", fetchImpl: async () => { throw new Error("ECONNREFUSED"); } });
+  const failed = await probeAudience({ url: "https://mcp.example.test/mcp", fetchImpl: async () => { throw new Error("ECONNREFUSED"); } });
   assert.ok(failed.error, "a fetch that threw did not come back as an error the caller can report");
   assert.equal(readAudience(failed).kind, "unreachable", "a failed probe does not read as a could-not-look");
 
@@ -192,7 +192,7 @@ test("the probe asks once, does not follow the redirect, and hands back failure 
 test("the probe is bounded, and the bound is the caller's to set", async () => {
   const started = Date.now();
   const res = await probeAudience({
-    url: "https://mcp.cordillera.ch/mcp",
+    url: "https://mcp.example.test/mcp",
     timeoutMs: 40,
     fetchImpl: (u, opts) => new Promise((_, rej) => opts.signal.addEventListener("abort", () => rej(opts.signal.reason ?? new Error("aborted")))),
   });
@@ -288,12 +288,12 @@ test("doctor does not call a stale audience healthy when the two agree", async (
 // The responses below are RECORDED from those real hostnames, not authored: a hand-written Access
 // stand-in is what produced both the over-claim and the over-correction this family has already paid for.
 const REAL = {
-  // trademark.cordillera.ch — the browser-facing portal
-  browser: { status: 302, location: "https://cordillera-ch.cloudflareaccess.com/cdn-cgi/access/login/trademark.cordillera.ch?kid=abc&meta=x.y.z", wwwAuthenticate: "", viaEdge: true },
-  // mcp.cordillera.ch/mcp — Managed OAuth on an API path, RFC 9728 style
+  // portal.example.test — the browser-facing portal
+  browser: { status: 302, location: "https://example-team.cloudflareaccess.com/cdn-cgi/access/login/portal.example.test?kid=abc&meta=x.y.z", wwwAuthenticate: "", viaEdge: true },
+  // mcp.example.test/mcp — Managed OAuth on an API path, RFC 9728 style
   api: { status: 401, location: "", viaEdge: true,
-    wwwAuthenticate: 'Bearer realm="OAuth", error="invalid_token", error_description="Missing or invalid access token", resource_metadata="https://mcp.cordillera.ch/.well-known/cloudflare-access-protected-resource/mcp"' },
-  // agent-mcp.cordillera.ch/mcp — the legacy door whose origin is gone
+    wwwAuthenticate: 'Bearer realm="OAuth", error="invalid_token", error_description="Missing or invalid access token", resource_metadata="https://mcp.example.test/.well-known/cloudflare-access-protected-resource/mcp"' },
+  // agent-mcp.example.test/mcp — the legacy door whose origin is gone
   originDown: { status: 502, location: "", wwwAuthenticate: "", viaEdge: true },
   // a hostname genuinely behind nothing
   bare: { status: 200, location: "", wwwAuthenticate: "", viaEdge: false },

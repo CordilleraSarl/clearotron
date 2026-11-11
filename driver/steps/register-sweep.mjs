@@ -31,6 +31,7 @@ import { validators } from "../verify.mjs";
 import { closureBlocksOf } from "../web-grid.mjs";
 import { readWithheldFamilies, releasedFamilyQids } from "../withheld-families.mjs";
 import { existsSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import { seedUnplannedBands } from "../register-unit-record.mjs";
 import { join } from "node:path";
 
 /**
@@ -130,6 +131,12 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
   // opt out — their scenarios pre-date the code-side member and script the AGENT path (and an armed
   // real executor lane would dial the provider from a test). Production default is ON.
   const satProbeCodeSide = process.env.CLEAROTRON_SATPROBE_CODESIDE !== "0" && Boolean(planExec && ctx.registerPlan);
+  // An axis the frozen plan gives no work gets the honest empty band before its model unit runs (register-unit-record.mjs).
+  // The code-side saturation probe writes its own.
+  if (ctx.registerPlan) {
+    const seeded = seedUnplannedBands(P.runDir, ctx.registerPlan, axes.filter((a) => !(a === "saturation-probe" && satProbeCodeSide)));
+    if (seeded.length) runLog(run.runDir, { event: "unit-band-seeded-empty", axes: seeded });
+  }
   // The units this run records as unfinished are taken as their bands stand (unfinishedUnitAsItStands, above).
   const unfinishedUnits = new Set(readPartNotCompleted(run.runDir, "searches")?.unfinished_units ?? []);
   const [gatherResults, blindRes] = await Promise.all([

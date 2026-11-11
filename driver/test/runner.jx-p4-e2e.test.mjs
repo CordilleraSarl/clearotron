@@ -173,49 +173,33 @@ test("phase-4 e2e: shadow units run on fixtures — grid receipted + gate green,
   assert.equal(JSON.parse(readFileSync(join(rd, "status.json"), "utf8")).state, "delivered");
 });
 
-test("the lane kill switch: the SAME process with CLEAROTRON_NATIVE_LANGUAGE_ZH at the EXPLICIT '0' spelling grows NO _driver/jx dir, and SAYS the lane was killed", async () => {
-  // WHAT CHANGED AND WHAT DID NOT. This arm set the two per-slice arms to "0" and asserted the run was
-  // byte-identical to one with them unset. item 8 deleted both, so that exact claim is untestable
-  // and — more to the point — no longer true of the switch that remains. CLEAROTRON_NATIVE_LANGUAGE_ZH is fail-OPEN:
-  // unset means ARMED. "0" and unset are OPPOSITES here, so inheriting the old title would have quietly
-  // relabelled a narrower property with a stronger name.
-  //
-  // The hazard the old arm existed for DOES survive and is still worth a test: the off idiom is spelled,
-  // not implied, and a reader that treats a non-empty string as truthy silently arms a lane an operator
-  // switched off. laneArmed matches OFF_WORDS {0, off, false, no}; "0" is the documented spelling and is
-  // the one exercised here.
-  //
-  // The second half is the part the old arm got backwards for the new world. It asserted SILENCE — no
-  // skip rows — because an unarmed opt-in has nothing to say. A killed lane is not an idle lane:
-  // shipped a client a coverage statement reading "off in this run's own environment" for a lane that
-  // had dispatched, and the fix was that the run records what it did and did not search. Silence about a
-  // killed lane is the same defect from the other side, so this asserts the kill is RECORDED.
+test("the retired lane switch: the SAME process with CLEAROTRON_NATIVE_LANGUAGE_ZH at '0' still runs the zh lane's deep slices", async () => {
+  // This arm once held the kill: "0" grew no _driver/jx dir and the lane was recorded as killed. The
+  // per-language off switch is retired (2026-11-11): no deployment set it, and the owner ruled it removed.
+  // A box whose environment file still carries the line must get the same run as any other, so the arm
+  // now sets it and asserts the lane ran.
   process.env.CLEAROTRON_NATIVE_LANGUAGE_ZH = "0";
-  writeFileSync(join(FIXTURES, "quietwave.zh.json"), JSON.stringify({ candidates: [
-    { term: "静浪", romanization: "JING LANG", kind: "semantic", rationale: "meaning translation" },
-  ] }));
-  writeFileSync(join(Q, "p4-off.json"), JSON.stringify({
-    id: "p4-off", msgId: "<p4off@x>", forwarder: "dev", forwarderDomain: "example.com",
-    product: "multi-country-focus-search", nativeLanguage: true, ref: "TMP9301", markName: "QUIETWAVE",
-    classes: [3], goods: "cosmetics", jurisdictions: ["CN", "JP"],
-  }));
-  await main({ once: true });
-  // — BEFORE the assertions below. A run that never started leaves its
-  // reason in the packets beside the queue; without this the counts below report it as a
-  // product defect.
-  refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.jx-p4-e2e.test.mjs");
-  assert.ok(existsSync(join(Q, "p4-off.done")));
-  const rd = findRun("quietwave")[0];
-  assert.ok(rd, "control run dir found");
-  assert.ok(existsSync(driverDir(rd, "jx-lanes.json")), "slice 1 still runs — killing zh does not kill the lane machinery");
-  assert.ok(!existsSync(driverDir(rd, "jx")), "no Phase-4 artifacts at all with the zh lane killed — slices 2 and 3 are zh-only by construction");
-  const events = readFileSync(driverDir(rd, "run.jsonl"), "utf8");
-  assert.ok(!events.includes("jx-serp-grid-done") && !events.includes("jx-nativeread-done"),
-    "and nothing ran — a killed lane dispatches no unit");
-  // THE KILL IS ON THE RECORD. The lane sidecar is what the coverage statement is derived from, so a
-  // killed lane that simply vanishes from it would deliver as though zh had never been in scope.
-  const lanes = JSON.parse(readFileSync(driverDir(rd, "jx-lanes.json"), "utf8"));
-  assert.ok("zh" in (lanes.lanes ?? {}),
-    `the zh lane must still be DECLARED after being killed — dropping it makes an unsearched lane indistinguishable from an out-of-scope one: ${JSON.stringify(lanes)}`);
-  assert.equal(JSON.parse(readFileSync(join(rd, "status.json"), "utf8")).state, "delivered");
+  try {
+    writeFileSync(join(FIXTURES, "quietwave.zh.json"), JSON.stringify({ candidates: [
+      { term: "静浪", romanization: "JING LANG", kind: "semantic", rationale: "meaning translation" },
+    ] }));
+    writeFileSync(join(Q, "p4-off.json"), JSON.stringify({
+      id: "p4-off", msgId: "<p4off@x>", forwarder: "dev", forwarderDomain: "example.com",
+      product: "multi-country-focus-search", nativeLanguage: true, ref: "TMP9301", markName: "QUIETWAVE",
+      classes: [3], goods: "cosmetics", jurisdictions: ["CN", "JP"],
+    }));
+    await main({ once: true });
+    // — BEFORE the assertions below. A run that never started leaves its reason in the packets beside the
+    // queue; without this the counts below report it as a product defect.
+    refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.jx-p4-e2e.test.mjs");
+    assert.ok(existsSync(join(Q, "p4-off.done")));
+    const rd = findRun("quietwave")[0];
+    assert.ok(rd, "the run dir is found");
+    const lanes = JSON.parse(readFileSync(driverDir(rd, "jx-lanes.json"), "utf8"));
+    assert.ok("zh" in (lanes.lanes ?? {}), `the zh lane is declared: ${JSON.stringify(lanes)}`);
+    assert.ok(existsSync(driverDir(rd, "jx")), "the retired switch still stopped the zh lane's deep slices");
+    const slices = lanes.fold?.slices ?? {};
+    assert.ok(!Object.values(slices).some((sl) => sl?.state === "not-armed"), `a slice was recorded as switched off: ${JSON.stringify(slices)}`);
+    assert.equal(JSON.parse(readFileSync(join(rd, "status.json"), "utf8")).state, "delivered");
+  } finally { delete process.env.CLEAROTRON_NATIVE_LANGUAGE_ZH; }
 });
