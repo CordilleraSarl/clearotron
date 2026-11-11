@@ -30,7 +30,7 @@ import { parsePrRiskResults, connotationObligations, renderConnotationObligation
 import { obligationsSidecarPath } from "../../disposition-tool.mjs";
 import { writeGridProvenance } from "./grid-provenance.mjs";   // — what served the grid, beside the ledger
 import { insideRun } from "../../../shared/inside-run.mjs";   // a path a tool is handed is served only inside this run
-import { keepResearchAnswer, isResearchAnswer, replayAnswersFrom, researchReplayOn, savedResearchAnswer } from "../../research-answers.mjs";   // each answer's text, kept for a later attempt of its stage; a replay answers from them
+import { keepResearchAnswer, isResearchAnswer, replayAnswersFrom, researchReplayOn, savedResearchAnswer, researchRequestKey, heldAnswerToRequest } from "../../research-answers.mjs";   // each answer's text, kept for a later attempt of its stage, which is answered from it; a replay answers from them
 
 const API_KEY = process.env.PERPLEXITY_API_KEY || "";
 
@@ -307,8 +307,17 @@ async function research(params) {
   // setting decided it rather than the question.
   const asked = { task, depth: depth ?? null, preset, ...(PINNED_QUESTION_PRESET ? { pinned: true } : {}), allow_fetch, enable_sandbox,
     ...(domain_filter ? { domain_filter } : {}), ...(modelOverride ? { model: modelOverride } : {}) };
+  const body = buildRequestBody({ task, preset, allowFetch: allow_fetch, domainFilter: domain_filter, modelOverride, enableSandbox: enable_sandbox, responseSchema: response_schema, schemaName: schema_name });
+  // A QUESTION THIS STAGE ALREADY GOT AN ANSWER TO IS NOT SENT AGAIN (research-answers.mjs): the same request, from
+  // this stage or a retry of it, answered by what the run kept. It is logged as a lookup is, marked as reused, so the
+  // run's record says which questions were paid for on this pass.
+  const request = researchRequestKey(body);
+  const held = heldAnswerToRequest(RUN_DIR, SESSION, request);
+  if (held) {
+    logCall("perplexity_research", asked, { ok: true, bytes: held.text.length, reused: true });
+    return held.text;
+  }
   try {
-    const body = buildRequestBody({ task, preset, allowFetch: allow_fetch, domainFilter: domain_filter, modelOverride, enableSandbox: enable_sandbox, responseSchema: response_schema, schemaName: schema_name });
     const data = await callAgentAPI(API_KEY, body);
     keepRaw("question", { task, preset }, data);
     const text = enable_sandbox ? formatSandboxResponse(data, preset) : formatResponse(data, preset);
@@ -317,7 +326,7 @@ async function research(params) {
     logCall("perplexity_research", asked, isResearchAnswer(text)
       ? { ok: true, bytes: String(text ?? "").length, citations: citationCount(data) }
       : { ok: false, error: String(text ?? "").slice(0, 200) });
-    keepResearchAnswer(RUN_DIR, { session: SESSION, agent: AGENT, task, preset, text });
+    keepResearchAnswer(RUN_DIR, { session: SESSION, agent: AGENT, task, preset, request, text });
     return text;
   } catch (err) {
     // A FAILED LOOKUP IS LOGGED TOO, and that is the half that matters most: without it, "the search

@@ -1,6 +1,6 @@
 ---
 name: clearance-common-law
-description: Common-law / marketplace execution for the v3 preliminary trademark search workflow. **Invoked exclusively by the `clearance-search` orchestrator** — do not call directly. Reads the variant manifest produced by `clearance-variants` and runs structured Perplexity research across the DICTATED platform list plus general web, social, e-commerce, and industry press. Produces a common-law findings file consumed by the orchestrator for synthesis and Excel assembly. Runs alongside `clearance-register`.
+description: Common-law / marketplace execution for the v3 preliminary trademark search workflow. **Run by the driver** — do not call directly. Reads the variant manifest produced by `clearance-variants` and runs structured Perplexity research across the DICTATED platform list plus general web, social, e-commerce, and industry press. Produces a common-law findings file consumed by the orchestrator for synthesis and Excel assembly. Runs alongside `clearance-register`.
 ---
 
 ## Spawned session
@@ -127,7 +127,7 @@ not need to match the template's wording, and you will not be failed for choosin
 
 ## Summary
 
-- Perplexity calls executed: 4 (1 grid + 1 famous-mark + 2 follow-ups)
+- Perplexity calls executed: 3 (1 grid + 2 follow-ups)
 - Mandatory platforms covered: [N]/[N] (every dictated platform)
 - Findings surfaced: 12 risk-relevant + 3 competitor intel + 1 PR risk
 - Open verification flags: 2
@@ -200,8 +200,7 @@ and `rows`, one entry per obligation:
 - `ruling` — exactly one of `benign`, `off-topic`, `loaded`, `inconclusive`;
 - `note` — one line: what the receipt says and why it reads that way. An `inconclusive` row's note owes
   something different — what you could not establish, and what a human should look at;
-- `segment_index` and `fragment` — **both required on every row the tool's answer marks as owing them**,
-  and only those. They are TWO SEPARATE JOBS and supplying one is not supplying the other:
+- `segment_index` — **required on every row the tool's answer marks as owing it**, and only those; `fragment` is optional:
   - `segment_index` says **which** passage. The receipt you ruled on carries its snippet split into
     numbered passages; give the number of the one you relied on. It is checked only for being in range,
     so there is always an answer.
@@ -219,9 +218,7 @@ and `rows`, one entry per obligation:
   **alongside** your `ruling` and `note`, not in place of them. The row is then recorded as undecided,
   with your sentence shown to the reviewing lawyer in place of proof, and the stage completes instead of
   stalling on it.
-  **Try first.** Pointing at a passage is checked only for being in range, and a fragment only for
-  occurring in the passage you named — a few characters is enough and any passage with text in it will
-  do. A row where some passage is quotable is a row you can discharge, and one production run spent 217
+  **Try first.** Pointing at a passage is checked only for being in range, and any passage with text in it will do. A fragment is recorded, never refused. A row where some passage is quotable is a row you can discharge, and one production run spent 217
   calls on a receipt that was quotable seven different ways. `obstacle` is for the receipt that genuinely
   offers nothing, not for the one that is awkward.
 
@@ -342,9 +339,8 @@ Record each on its own line as CROSS-CHECK REQUIRED: <what> — <why>, mark in c
 | Call # | Type | Prompt summary | Results returned |
 |---|---|---|---|
 | 1 | Grid (sandbox) | Search-as-code grid: 9 variants × 7 platforms + extras | 63 cells, 0 gaps, 487 candidates recorded; 12 risk-relevant after judgment |
-| 2 | Famous-mark | None flagged in manifest | (not run) |
-| 3 | Follow-up | Brightwick gaming portfolio + "sharpening your aim" deeper trace | 3 additional findings |
-| 4 | Follow-up | Veltrona pulse-aim portfolio | 2 additional findings |
+| 2 | Follow-up | Brightwick gaming portfolio + "sharpening your aim" deeper trace | 3 additional findings |
+| 3 | Follow-up | Veltrona pulse-aim portfolio | 2 additional findings |
 
 ### Open verification flags
 
@@ -385,18 +381,15 @@ Transliteration variants are included in the instructed grid like every other va
 > program, you do **NOT** save `common-law-grid.json` (saving it yourself —
 > re-emitting ~100 cells through your turn output — is exactly what truncated/dropped cells before), and
 > you do **NOT** re-emit the grid JSON. The tool returns the candidate hits that need judgment.
-> **This mode changes ONLY the Step-2 grid mechanics — nothing else about common-law.** You STILL run
-> **Step 3 (the famous-mark check)**, then judge all candidates — the meaning questions' answers among them — into
+> **This mode changes ONLY the Step-2 grid mechanics — nothing else about common-law.** You STILL do **Step 3 (judge the flagged elements' grid results)**, then judge all candidates — the meaning questions' answers among them — into
 > the taxonomy (Step 4) and write the COMPLETE findings file with every section (Findings, famous-mark, Negative
-> results matrix, Coverage ledger, Audit trail). Skipping Step 3 leaves the deliverable missing a core search
-> layer. The only things you skip are authoring the grid program and
+> results matrix, Coverage ledger, Audit trail). Skipping Step 3 leaves the famous-mark section unjudged. The only things you skip are authoring the grid program and
 > saving the grid ledger — the tool owns those.
 
-The tool returns the program's stdout JSON (`cells` + `extras` + `gaps`) and the program code as an
-audit receipt. **Trademark-register lookups stay out of scope** — the grid only searches
+The tool writes the grid ledger and returns how many cells it holds and the candidates to judge. **Trademark-register lookups stay out of scope** — the grid only searches
 marketplaces/web (the register layer is `clearance-register`'s).
 
-### Step 3 — Famous-mark check (1 per flagged element)
+### Step 3 — Famous-mark judgment, from the grid's results
 
 The manifest's Elements table marks under `Famous-mark check` each element that may also be a well-known brand, band, celebrity, sports team, entertainment property or cultural icon. The grid searched each of them on the general web, so ask no separate question. For each flagged element whose general-web cell your grid ran, judge from its results whether it is a famous mark and whether its fame reaches the client's goods, and record that judgment in the famous-mark section with the results it rests on.
 

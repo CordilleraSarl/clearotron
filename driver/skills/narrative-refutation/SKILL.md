@@ -1,6 +1,6 @@
 ---
 name: narrative-refutation
-description: Downstream refutation step that reads the orchestrator's final narrative against the underlying findings files (matter-context, register-findings, common-law-findings, placement-recommendations) and flags tier inversions, missing named owners, confabulated attributions, headline-candidate promotions without commercial-relevance reasoning, overconfident negatives, and procedural assertions (deadlines, registry statistics, routes) made without a verification basis. Produces the reviewer-eye-review file (senior-eye-review.md, the internal filename) with a verdict (CLEAR / CONDITIONAL / BLOCKING) and itemised flags with quoted source text per flag. Invoke between narrative synthesis (Step 4 end) and Phase 3 delivery.
+description: Downstream refutation step that reads the run's final narrative against the underlying findings files (matter-context, register-findings, common-law-findings, placement-recommendations) and flags tier inversions, missing named owners, confabulated attributions, headline-candidate promotions without commercial-relevance reasoning, overconfident negatives, and procedural assertions (deadlines, registry statistics, routes) made without a verification basis. Produces the reviewer-eye-review file (senior-eye-review.md, the internal filename) with a verdict (CLEAR / CONDITIONAL / BLOCKING) and itemised flags with quoted source text per flag. Invoke between narrative synthesis (Step 4 end) and Phase 3 delivery.
 ---
 
 Does the report answer the client's question: who could object, how strong they are, what the client should do? Are the marks a lawyer would list present, and is each position written from the record that matters? Answer that before any check on wording.
@@ -18,8 +18,6 @@ This is structured refutation, not approval. Your job is to find what's wrong, n
 ## When invoked
 
 Spawned between Step 4 synthesis (narrative composition) and Phase 3 delivery. Different session, clean context. Reads multiple inputs, writes one output. A CONDITIONAL or BLOCKING verdict sends your flags to one targeted correction by the writer, then one recheck. The report is always delivered, with unresolved points kept in the run record for the reviewing lawyer.
-
-The orchestrator (`clearance-search`) spawns this worker at the equivalent step. Reusable by a future clearance-search at the equivalent step.
 
 ## Model
 
@@ -390,7 +388,7 @@ forbids a word, and a word list would catch the brand and miss the next coinage.
 
 ## Refutation posture
 
-- **Default refute, not approve.** A clean review with no flags is rare; if you find nothing, write one paragraph explaining why the narrative is genuinely consistent with the files.
+- **Default refute, not approve.** Send CLEAR with no flags only after checking every applicable failure mode in this manual against the held record. Include the required plan audit.
 - **Ask "what is missing or wrong here?", never "is this probably right?".** Dumb questions are welcome — if a conclusion looks off on its face (the client's own partner as the top conflict; "clean worldwide" when material jurisdictions were deferred; a famous one-letter neighbour never searched as a mark), ask it and make the narrative defend it. Forcing the answer is the point. **"Consistent with the previous step" and "the rule said so" are not defences.**
 - **Quote the source.** Every flag includes the narrative text + the underlying-file text it contradicts. No hand-wave critiques.
 - **Be specific about the correction.** For each flag, suggest the minimum-change fix — exactly one of: **correct the statement to what the evidence supports; demote the tier; remove the sentence; verify-flag for re-check.** A caveat or hedge is not a repair: an unsupported statement is corrected or removed, never softened.
@@ -425,10 +423,6 @@ Total flag count is NOT itself a blocking criterion. A run with many flags that 
 - **Use `matter-frame`'s material-jurisdiction list as your coverage checklist.** Confirm that the run searched every jurisdiction it called material — by its own question, by a complete worldwide answer, or inside the count of a crowd the identical mark's narrowing left — or honestly deferred it. Check the grounds of validated placement decisions against the evidence; flag an unsupported decision.
 - **Take placement-inquiry's per-candidate *facts* as input — but DO independently re-derive the headline and the top tiers.** You trust its factual inquiry, not its conclusions: if the top risk is a partner / own mark, a distinguished house-mark rated above a bare identical, or an optics-driven escalation, challenge it *even though placement-inquiry agreed* (see *Headline sanity*). Consistency with an upstream step is never, by itself, a defence.
 - **Don't soften your verdict to avoid recomposition.** If something's wrong, say BLOCKING.
-
-## Length target
-
-~500-1500 words depending on flag count. Verdict + each flag specified concretely.
 
 ## Failure fallback
 

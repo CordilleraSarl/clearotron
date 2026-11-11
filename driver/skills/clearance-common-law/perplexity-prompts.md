@@ -21,8 +21,7 @@ query is recorded, and a clean PR claim with no recorded search is rejected (`co
 
 ### What comes back, and what you do with it
 
-The tool returns: the stdout JSON (cells + extras + gaps) → the **SANDBOX PROGRAM audit receipt**
-(the exact code that ran) → a metadata footer. Then:
+The tool writes the grid ledger, then returns how many cells it holds and the candidates to judge. Then:
 
 0. The grid ledger common-law-grid.json is written by the tool. Do not write it.
 1. **Judge each cell's candidates yourself** — identical / confusingly similar / conceptually
@@ -32,9 +31,7 @@ The tool returns: the stdout JSON (cells + extras + gaps) → the **SANDBOX PROG
    blank.
 3. **Every `gaps` entry becomes a `coverage-limited` ledger row** (the cell did NOT run — that is
    unsearched, never clean).
-4. **The program code goes in the audit trail** (fenced block or summarized reference with the cell
-   count) — it is the proof of what executed.
-5. If the tool returns `ERROR: sandbox was not used` or a stdout-parse error, retry the call once;
+4. If the tool returns `ERROR: sandbox was not used` or a stdout-parse error, retry the call once;
    if it persists, follow the skill's Failure protocol (no findings file, declare the failure).
 
 ## Follow-up calls

@@ -2511,6 +2511,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-stage-run-again-is-answered-what-it-already-asked.test.mjs": {
+          "tests": 5,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
         "a-stage-standing-rule-reaches-every-session.test.mjs": {
           "tests": 6,
           "asserts": 14,

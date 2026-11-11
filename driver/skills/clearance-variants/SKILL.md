@@ -1,6 +1,6 @@
 ---
 name: clearance-variants
-description: Shared strategy + variant generation for the v3 preliminary trademark search workflow. **Invoked exclusively by the `clearance-search` orchestrator** as the first stage of any v3 clearotron run — do not call directly. Classifies the proposed mark into one of six analytical archetypes, derives a risk theory from that classification, then generates the variant set whose axes are shaped by the archetype. Emits a markdown variant manifest consumed by both common-law (`clearance-common-law`) and register (`clearance-register`) execution skills.
+description: Shared strategy + variant generation for the v3 preliminary trademark search workflow. **Run by the driver** as the first stage of any v3 clearotron run — do not call directly. Classifies the proposed mark into one of six analytical archetypes, derives a risk theory from that classification, then generates the variant set whose axes are shaped by the archetype. Emits a markdown variant manifest consumed by both common-law (`clearance-common-law`) and register (`clearance-register`) execution skills.
 ---
 
 ## Contents
@@ -205,7 +205,7 @@ N/A — single-mark request.
 
 - Reason through archetype, risk theory and distinctiveness in this turn. The tool has no field for them, so what you hand back is the dominant element, elements, variants and scope ledger. `Primary` is one of the six; `Modifiers` is a comma-separated list or "None"; `Boundary note` is freeform explanation if relevant.
 - **Risk theory** is 2–4 sentences in prose. Describes where conflicts concentrate. Downstream skills read this for relevance gating.
-- **Distinctiveness & registrability** names the **dominant element** (the spine the register sweep + synthesis ranking centre on) plus the advisory spectrum read and any obvious flags. The orchestrator surfaces it as a "Proposed-mark assessment" line in the narrative + an Excel header block; the register/common-law layers centre their searches on the dominant element.
+- **Distinctiveness & registrability** names the **dominant element** (the spine the register sweep + synthesis ranking centre on) plus the advisory spectrum read and any obvious flags. Reason about distinctiveness when generating the variants. The tool records the dominant element and variants, not a distinctiveness assessment. Synthesis makes that assessment from the supplied forms and held evidence. The register/common-law layers centre their searches on the dominant element.
 - **Element table** has stable columns. The contract is the header line.
 - **Variant table** uses `Category | Value | Rationale`. Variant categories are shaped by archetype — which categories fire is the archetype's call, but a fired category is never *silently* omitted: the `### Scope ledger` section below records every category's disposition.
 - **The scope ledger** is MANDATORY and you send it as `scope_ledger` rows on the `record_clearance_variants` call — `{layer, item, status, reason, reopen_trigger}`. The driver renders the table (stable columns `Layer | Item | Status | Reason | Reopen trigger`) and writes `scope-ledger.json` from the same rows; you never lay out a table. It spans the FOUR scope layers an independent reviewer tests — `variant`, `field`, `source`, `jurisdiction` — so an omission in any of them is recorded, not just dropped variant categories. `Status` is exactly `applied` or `dropped`. Rows to include:
@@ -310,7 +310,7 @@ The `phonetic` / `visual-substitution` / `numeric-substitution` / typographic ro
 
 | Archetype | Core categories (in priority order) |
 |---|---|
-| Coined word | phonetic, visual-substitution [see *Visual / typographic-neighbour rules*], numeric-substitution (leet), foreign-transliteration (worldwide/multi-region scope), compound-token-split |
+| Coined word | phonetic, visual [see *Visual / typographic-neighbour rules*], numeric (leet), transliteration (worldwide/multi-region scope), composite (whole-mark token separation) |
 | Descriptive compound | element-solo + compound-phrase, stem-formative on each element, plural-root, semantic-neighbours of distinctive anchor |
 | Slogan | family-patterns (`X * Y`, `* YOUR Y`, `X YOUR *`), verb-swap (replace lead verb with adjacent verbs in same semantic field), preposition swap (YOUR → THE/A/MY/OUR), slang spellings, co-brand wildcards (`* [SLOGAN]`, `[SLOGAN] *`), phrase-substitution (full morphological variants) |
 | Acronym / initialism | letter-collision (the acronym itself), expansion-form (search the expanded phrase), ambiguity-check (other meanings of the same letters) |
