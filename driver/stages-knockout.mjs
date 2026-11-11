@@ -16,7 +16,7 @@ import { kebab, PRODUCT_POLICIES } from "./search-policy.mjs";
 import { requestNamesClasses } from "./enqueue-schema.mjs";
 import { knockoutAssessChunkFile } from "./knockout-assess-record.mjs";
 import { chunkScope, knockoutCorrectionFile, sameFinding, validateKnockoutCorrectionFile } from "./knockout-correction-record.mjs";
-import { methodDictation, inputsShape } from "./framework-method.mjs";
+import { FROZEN_METHOD_FILE, methodDictation, inputsShape } from "./framework-method.mjs";
 import { knockoutReviewFile, validateKnockoutReviewFile } from "./knockout-review-record.mjs";
 import { knockoutRegisterFile, validateKnockoutRegisterFile } from "./knockout-register-record.mjs";
 import { narrowingOrderLine } from "./effective-scope.mjs";
@@ -261,12 +261,30 @@ export function koSteps({ registerProbe = false } = {}) {
 }
 
 // ── Stage defs ───────────────────────────────────────────────────────────────────────────────────────
+// ── WHAT EACH STAGE READS, SO A RESUME CAN TELL WHETHER ITS OUTPUT STILL STANDS ─────────────────────────────────
+//
+// A Knockout stage reuses its output only while what it read is unchanged, as a clearance stage does (stage-freshness.mjs).
+// `reads` names the files a stage reads, read off its message: the files the message names, and the frozen files it
+// rates or frames under. `dirs` are folders it may read any file of, recorded as the files they hold, so a research
+// payload added or removed is a change. `message: true` records the message itself, which carries what the order and
+// the frozen profile said in their own words (goods, instructions, territories, the profile's industry and classes),
+// and the defects or table a second look is given. The correction does not record its message: it is composed from the
+// chunk the correction rewrites, so it would read the correction's own edit as a change. What it was based on is in the
+// correction work, which holds the rated record and every defect, and in the first review.
+//
+// A stage that rates, reviews or corrects also reads the framework: its band words and order (`framework.json`) and its
+// method (`framework-method.json`), both frozen with the run, and its deck, the prose the model reasons with. `deck: true`
+// records the deck as the file the model is sent to, from the layer in force (pipeline-knockout.mjs koReadsNow).
+const asRequested = (K) => [K.inboundRequest, K.confirmationBrief];
+const frozenRules = (K) => [paths(K.runDir).profile, paths(K.runDir).framework, driverDir(K.runDir, FROZEN_METHOD_FILE)];
+
 export const KO_STAGES = {
   "knockout-frame": {
     model: "opus", thinking: "high", timeoutSec: 420, stallSec: 300,
     skillReads: ["skills/knockout-frame/SKILL.md"],
     out: (K) => K.plan,
     validate: koValidators.knockoutPlan,
+    reads: (K) => ({ files: [K.instructedScope, ...asRequested(K), paths(K.runDir).profile], message: true }),
     message: ({ K, job, profile }) => lines(
       reads(["skills/knockout-frame/SKILL.md"]),
       // ── NO DEPTH NUMBER ──────────────────────────────────────────────────────
@@ -328,6 +346,7 @@ export const KO_STAGES = {
     skillReads: ["skills/knockout-register-read/SKILL.md"],
     out: (K) => K.registerReading,
     validate: validateKnockoutRegisterFile,
+    reads: (K) => ({ files: [K.instructedScope, K.inboundRequest, K.plan, paths(K.runDir).profile], message: true }),
     message: ({ K, job = {}, profile = null, readingLines = [], providerDoc = null, inScope = null }) => lines(
       reads(["skills/knockout-register-read/SKILL.md", providerDoc].filter(Boolean)),
       `You are reading the register for a KNOCKOUT batch, name by name. You rate nothing; the step after you rates what you carry forward, with your reasons.`,
@@ -373,6 +392,8 @@ export const KO_STAGES = {
     // out/validate are per-CHUNK; the merged knockout-findings.json is validated separately in code.
     out: (K, chunkNo) => K.assessChunk(chunkNo),
     validate: koValidators.knockoutAssessChunk,
+    reads: (K) => ({ files: [K.plan, K.instructedScope, ...asRequested(K), ...frozenRules(K), K.registerRecords, K.registerCounts, K.ownerChecks],
+      dirs: [K.researchDir], message: true, deck: true }),
     message: ({ K, job, chunkNo, chunkMarks, chunkTotal, framework, frameworkPath, probeNote, frameworkMethod }) => lines(
       // The deck path comes from ctx (attachKnockoutFramework resolves it once, on the fresh and the
       // resume path both) — never recomputed here, because "which deck" is one decision.
@@ -537,6 +558,8 @@ export const KO_STAGES = {
     // A later pass reads the corrected record, under its own artifact: `knockout-review#1`.
     out: (K, pass) => (pass ? knockoutReviewFile(K.runDir, pass) : K.review),
     validate: validateKnockoutReviewFile,
+    reads: (K) => ({ files: [K.findings, K.plan, ...asRequested(K), ...frozenRules(K), K.registerRecords, K.ownerChecks],
+      dirs: [K.researchDir], message: true, deck: true }),
     // ── THE MESSAGE PROMISES A TABLE ONLY WHEN IT HAS ONE ──────────────────────────
     //
     // `evidenceLines` is the driver's measurement, passed at dispatch. Two things follow, and the arms
@@ -600,6 +623,8 @@ export const KO_STAGES = {
     skillReads: ["skills/knockout-assess/SKILL.md", "skills/clearance-search/firm-wide-reasoning.md"],
     out: (K, chunkNo) => knockoutCorrectionFile(K.runDir, chunkNo),
     validate: validateKnockoutCorrectionFile,
+    reads: (K) => ({ files: [paths(K.runDir).knockoutCorrectionWork, knockoutReviewFile(K.runDir, 0), K.plan, K.instructedScope,
+      ...asRequested(K), ...frozenRules(K), K.registerRecords, K.ownerChecks], dirs: [K.researchDir], deck: true }),
     message: ({ K, job = {}, chunkNo, work = null, chunkMarks = [], frameworkPath = null, frameworkMethod = null }) => {
       const asRated = (() => { try { return JSON.parse(readFileSync(K.assessChunk(chunkNo), "utf8")); } catch { return null; } })();
       const scope = chunkScope(work, chunkNo, asRated);
