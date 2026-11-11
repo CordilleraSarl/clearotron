@@ -75,7 +75,7 @@ test("the fence defaults to the units' value and an operator's OWN decision surv
 
 test("the summary names BOTH doors, their ports, and who each is for", () => {
   // The ambiguity is what cost the leg: "MCP is running" says nothing on a box with two of them.
-  assert.match(START_SRC, /Engine door.*Staff\./s, "the staff door must be named as a door, and as staff's");
+  assert.match(START_SRC, /Engine door.*For your staff, not clients\./s, "the staff door must be named as a door, and as staff's");
   assert.match(START_SRC, /Client door/, "the client door must be named as a door");
   assert.match(START_SRC, /a client's assistant connects here/,
     "each door must say who it is for, not merely that it exists");

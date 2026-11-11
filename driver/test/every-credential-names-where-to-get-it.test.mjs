@@ -56,13 +56,15 @@ test("a source whose site this build KNOWS names it, in the remedy itself", () =
   assert.match(cl.remedy, /oauth-mcp-bridge\/README\.md/, "the document that completes the enrolment is no longer named");
 });
 
-test("a source whose site this build does NOT know says so, and invents nothing", () => {
+test("a source whose site this build does NOT know asks for no account, and invents nothing", () => {
   // The half that is a finding rather than a fix. If somebody later writes a URL here it must come from
   // a measurement, not from this arm going quiet — so the arm asserts the absence AND the sentence.
   const ldh = enrollable().find((r) => r.provider === "legaldatahunter");
   assert.ok(ldh, "legaldatahunter is no longer a bridge; this arm needs repointing");
   assert.doesNotMatch(ldh.remedy, URL_RE, `a URL appeared for a source this repository records no site for:\n${ldh.remedy}`);
-  assert.match(ldh.remedy, /records no site/i, "the row does not say the site is unknown; it just omits it");
+  // It used to say the site was unknown and then ask for an account anyway (measured in a stranger walk of a beta,
+  // 2026-11-10). With no site to name, it asks for none.
+  assert.doesNotMatch(ldh.remedy, /account/i, "the row asks for an account it cannot say where to make");
   assert.match(ldh.remedy, /^Optional, and not set up\./, "the reader is not told the source is optional instead of searching");
 });
 

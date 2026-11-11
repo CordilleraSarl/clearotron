@@ -424,6 +424,20 @@ export function cannotSearchYet(missing, install = "clearotron install", how = n
 }
 
 /**
+ * What `clearotron run` says before anything else when the install cannot run a search: doctor's sentence for the
+ * same install, from the same composer. Null when no order-time setting is missing, or when what is missing has no
+ * phrase; then the run's own doors speak, as before.
+ *
+ * Measured in a stranger walk of a beta, 2026-11-10: with no AI chosen, setup, doctor and the portal said "no AI is
+ * chosen", and the run refused by naming the default AI's program and its setting, which nobody had chosen, and did
+ * not mention the missing register. PURE.
+ */
+export function commandLineRefusal(env = {}, tables = {}, install = "clearotron install") {
+  const gap = whatIsMissing(missingRequirements(env, tables).atOrder);
+  return gap ? cannotSearchYet(gap, install) : null;
+}
+
+/**
  * The order-time refusal, in two vocabularies, from ONE list.
  *
  * `operator` NAMES THE VARIABLES AND THE FILE, because the person reading it can go and set them.

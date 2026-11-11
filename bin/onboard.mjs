@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// clearotron install / clearotron doctor — one install from a fresh clone to a first real run.
+// clearotron install / clearotron doctor — one install, from nothing to a first real run.
 //
 //   npx clearotron install                    the wizard: one decision at a time, Enter takes the default
 //   npx clearotron doctor                     report what this machine is configured for. Writes NOTHING.
@@ -843,6 +843,26 @@ export async function askSignIn(io, { localAccount = "user", existing = null } =
 }
 
 /**
+ * Doctor's line for each AI program setup installed, for a machine where no AI is chosen: a reader who declined
+ * setup's trial turn has a program and no AI, and the guides say doctor prints its path (measured in a stranger
+ * walk of a beta, 2026-11-10: it printed none). Claude's program signs in by being run; Codex's by its `login`.
+ * `resolve` is driver.config.mjs's resolveEngineProgram, a parameter so the lines can be driven. PURE given it.
+ */
+export function installedProgramLines(env = process.env, { resolve: find = resolveEngineProgram } = {}) {
+  const lines = [];
+  for (const [id, eng] of Object.entries(ENGINE_BINARIES)) {
+    const r = find(id, { env });
+    if (r?.source !== "installed" || !r.resolved) continue;
+    const own = /^run `[^`]+`$/.test(String(eng.signIn ?? ""));
+    const signIn = own
+      ? `R${namingProgram(eng.signIn, eng, { source: "installed", path: r.resolved }).slice(1)} once in a terminal to sign in.`
+      : "Run it once in a terminal to sign in.";
+    lines.push(`${eng.product}'s program, installed by setup: ${r.resolved}. ${signIn}`);
+  }
+  return lines;
+}
+
+/**
  * An engine binary, resolved the way the engine resolves it — and the trap that resolution carries.
  *
  * Was `resolveClaudeBin`. The body never had anything claude-specific in it; the NAME was the last place
@@ -918,7 +938,7 @@ export function proofFailureLine(v, product) {
  * what to check, so it says how to change what the turn ran on instead. A sign-in the subscription uses
  * would not be used under either, so no token is offered there.
  */
-export function signInHandOff(eng, bin, billing) {
+export function signInHandOff(eng, bin, billing, { turnRan = true } = {}) {
   if (billing === "cloud") return { lines: ["if you fixed the cloud's sign-in on this machine, answer yes below; to change the answers "
     + "above, answer no and pick the engine again."], captureToken: false };
   if (billing === "api-key") return { lines: ["to give a different key, answer no below and pick the engine again."], captureToken: false };
@@ -926,8 +946,10 @@ export function signInHandOff(eng, bin, billing) {
   // not as "sign in": these lines follow every failed turn, a spent quota as much as a sign-out. And the yes
   // it asks for is the retry's, named. On Claude a token question follows the retry, and it wants a no after a
   // browser sign-in.
+  // AFTER A DECLINE NO TURN HAS RUN, so the question is the turn "now", not "again" (measured in a stranger walk of a
+  // beta, 2026-11-10: the reader was asked to run again a turn they had just declined).
   const lines = ["setup waits in this terminal, so run the commands below in a second one:",
-    `if it is signed out: ${namingProgram(eng.signIn, eng, bin)}, then answer yes to "Run the turn again".`];
+    `if it is signed out: ${namingProgram(eng.signIn, eng, bin)}, then answer yes to "${turnRan ? "Run the turn again" : "Run the turn now"}".`];
   // Codex's headless sign-in runs HERE, so it names the copy that runs here. Claude's token can be made on
   // any machine, so its command keeps the bare word, and this machine's copy is named beside it.
   if (eng.headless) {
@@ -2097,8 +2119,10 @@ export async function runCheck() {
   // reason. Which engine is configured comes first now, and the binary is checked through THAT engine's
   // variable.
   // The mode of a machine that cannot start a search, said by both branches below that reach it.
-  const demoModeLine = () => "MODE: demo — everything works except starting a NEW search. The example report, its audit trail "
-    + `and the MCP connection are live right now; \`${reachableCommand("demo")}\` needs no engine.`;
+  // NOTHING IS LIVE WHILE NOTHING RUNS: the line said the example report and the connection were "live right now" on a
+  // machine running nothing (measured in a stranger walk of a beta, 2026-11-10). It names the command that shows them.
+  const demoModeLine = () => "MODE: demo — new searches are unavailable. "
+    + `\`${reachableCommand("demo")}\` shows the example report, its audit trail and the assistant connection, and needs no engine.`;
   if (!serviceKnown) {
     info("the units' environment could not be read, so which AI the services run is not judged here — a failure to look, not a finding");
   } else if (engSel && !engSpec) {
@@ -2115,6 +2139,7 @@ export async function runCheck() {
     const noAiChosen = !servicesRead("CLEAROTRON_AI");
     if (noAiChosen) info(`CLEAROTRON_AI is not set, so no AI is chosen, `
       + `and a search is refused until one is. \`${invoke("install")}\` asks which AI to use.`);
+    if (noAiChosen) for (const line of installedProgramLines()) info(line);
     else info(`CLEAROTRON_AI is not set — the code default is ${DEFAULT_ENGINE_ID}, and one engine serves every stage of every run on this machine`);
     // AND NOTHING BELOW IT IS READ OFF THE DEFAULT (engineChosen, above the opening): no program, no payment
     // and no turn, which would all describe an AI nobody chose. The machine is in demo mode, and the way out
@@ -2143,7 +2168,7 @@ export async function runCheck() {
     // asked to check.
     //
     // It is the same short call setup's engine menu already makes (menuVersion): `--version`, two
-    // seconds, no session and no network. That is within "calls nobody" — what that promises is no
+    // seconds, no session and no network. That is within "contacts nothing outside this machine" — what that promises is no
     // provider call and no spend, not that nothing on this machine may be asked its own version.
     const versionOf = (b) => {
       if (b.version) return b.version;
@@ -2410,7 +2435,7 @@ export async function runCheck() {
     const inCheckout = (p) => isInsideCheckout(p, REPO);
     for (const [name, what] of [
       ["CLEAROTRON_CUSTOMERS_DIR", `customers resolve to the bundled demo roster IN ${THIS_TREE}`],
-      ["CLEAROTRON_INSTRUCTIONS_DIR", `doctrine resolves to the bundled files IN ${THIS_TREE}`],
+      ["CLEAROTRON_INSTRUCTIONS_DIR", `searches follow the product's own instructions, from ${THIS_TREE}`],
       ["PROFILE_REPO_ROOT", `the portal's profile editor commits INTO ${THIS_TREE}`],
     ]) {
       // — WHICH NAME THE READER IS TOLD IS NOT ONE QUESTION, IT IS TWO.
@@ -2500,7 +2525,7 @@ export async function runCheck() {
       if (hosted && !serviceKnown)
         info(`the units are installed but their environment could not be read (${unitEnv?.why ?? "no reason given"}) — `
           + "what the services resolve is not judged here, and the line above is this process's own answer");
-      info("what a RUN used is its own `profile-store` journal line — this command reports what the "
+      info("a search records which profiles it used in its own log — this command reports what the "
         + (hosted ? "units' file says, which the running services read at their own start"
           : `environment you are typing in and your environment file say, which \`${invoke("start")}\` reads at its own start`));
       // ── AND WHO IS ACTUALLY IN IT ─────────────────────────────────────────
@@ -4318,8 +4343,8 @@ try {
       // or a cloud account there is no sign-in to show.
       let provedAfterAll = false;
       if (authPick.id === "subscription") {
-        for (const line of signInHandOff(eng, bin, authPick.id).lines) info(line);
-        provedAfterAll = await confirm("Fixed it? Run the turn again", false);
+        for (const line of signInHandOff(eng, bin, authPick.id, { turnRan: false }).lines) info(line);
+        provedAfterAll = await confirm("Signed in? Run the turn now", false);
       }
       // A WAY ON WITHOUT AN AI, BEFORE THE MENU. A declined proof went straight back to the menu, so a reader
       // taking every default went round the same setup again. The question the no-program path already asks

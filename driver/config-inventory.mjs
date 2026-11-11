@@ -417,10 +417,10 @@ export function caseLawInventory(env = process.env) {
         // NOBODY TO ASK, SO SAY WHAT IS TRUE INSTEAD: the source is optional. This sent the reader to
         // "whoever provisioned the bridge", and an install of one's own has nobody in that role (measured on
         // a fresh install of a beta, 2026-11-04). Without it a Full country search runs and discloses the gap.
-        : `Optional, and not set up. This build records no site to create an account at. A Full country `
-          + `search runs without it, and its report discloses the case-law gap instead of reporting no `
-          + `adverse case law. With an account, follow providers/oauth-mcp-bridge/README.md, which ends by `
-          + `writing ${tokenFile}.`,
+        // NOR ASK FOR AN ACCOUNT IT CANNOT NAME A SITE FOR (measured in a stranger walk of a beta, 2026-11-10): the
+        // account sentence goes until the product can name where one is made.
+        : `Optional, and not set up. A Full country search runs without it, and its report discloses the case-law `
+          + `gap instead of reporting no adverse case law.`,
     };
   });
 

@@ -161,7 +161,7 @@
         },
         "a-capability-is-named-before-the-report-names-it.test.mjs": {
           "tests": 6,
-          "asserts": 41,
+          "asserts": 42,
           "skips": 0,
           "todos": 0
         },
@@ -197,7 +197,7 @@
         },
         "a-case-law-source-with-no-known-site-says-it-is-optional.test.mjs": {
           "tests": 2,
-          "asserts": 8,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
@@ -581,7 +581,7 @@
         },
         "a-declined-proof-still-shows-how-to-sign-in.test.mjs": {
           "tests": 3,
-          "asserts": 7,
+          "asserts": 8,
           "skips": 2,
           "todos": 0
         },
@@ -1146,6 +1146,12 @@
         "a-knockout-is-scored-on-the-channels-it-cites.test.mjs": {
           "tests": 4,
           "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-knockout-keeps-the-order-it-was-accepted-on.test.mjs": {
+          "tests": 2,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
@@ -2086,9 +2092,9 @@
           "todos": 0
         },
         "a-review-is-handed-the-addresses-its-flags-may-name.test.mjs": {
-          "tests": 14,
-          "asserts": 60,
-          "skips": 0,
+          "tests": 19,
+          "asserts": 76,
+          "skips": 1,
           "todos": 0
         },
         "a-review-saved-as-a-file-meets-the-rules-the-typed-route-keeps.pipeline.test.mjs": {
@@ -2196,6 +2202,12 @@
         "a-run-whose-register-reading-cannot-finish-delivers-what-it-holds.pipeline.test.mjs": {
           "tests": 3,
           "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-run-with-nothing-chosen-says-what-doctor-says.test.mjs": {
+          "tests": 4,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
@@ -2424,6 +2436,12 @@
         "a-stage-reads-only-its-own-folders.test.mjs": {
           "tests": 9,
           "asserts": 32,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-stage-standing-rule-reaches-every-session.test.mjs": {
+          "tests": 5,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -3419,7 +3437,7 @@
         },
         "common-law-receipts.test.mjs": {
           "tests": 42,
-          "asserts": 148,
+          "asserts": 145,
           "skips": 0,
           "todos": 0
         },
@@ -3951,6 +3969,12 @@
           "skips": 0,
           "todos": 0
         },
+        "doctor-names-the-program-setup-installed.test.mjs": {
+          "tests": 4,
+          "asserts": 6,
+          "skips": 2,
+          "todos": 0
+        },
         "doctor-names-who-is-in-the-store.test.mjs": {
           "tests": 5,
           "asserts": 15,
@@ -3965,7 +3989,7 @@
         },
         "doctor-reads-only-the-ai-that-is-chosen.test.mjs": {
           "tests": 2,
-          "asserts": 23,
+          "asserts": 25,
           "skips": 2,
           "todos": 0
         },
@@ -5087,7 +5111,7 @@
         },
         "onboard-wizard.test.mjs": {
           "tests": 78,
-          "asserts": 303,
+          "asserts": 304,
           "skips": 4,
           "todos": 0
         },
@@ -5531,7 +5555,7 @@
         },
         "profiles.test.mjs": {
           "tests": 49,
-          "asserts": 273,
+          "asserts": 272,
           "skips": 0,
           "todos": 0
         },
@@ -6449,7 +6473,7 @@
         },
         "setup-asks-how-claude-is-paid.test.mjs": {
           "tests": 14,
-          "asserts": 97,
+          "asserts": 98,
           "skips": 4,
           "todos": 0
         },
@@ -6939,6 +6963,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-console-says-it-in-plain-words.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "the-containment-rule-does-not-depend-on-the-string-tmp.test.mjs": {
           "tests": 2,
           "asserts": 3,
@@ -7360,8 +7390,8 @@
           "todos": 0
         },
         "the-install-pages-describe-the-install-this-build-performs.test.mjs": {
-          "tests": 11,
-          "asserts": 87,
+          "tests": 13,
+          "asserts": 104,
           "skips": 0,
           "todos": 0
         },
@@ -7902,6 +7932,12 @@
         "the-review-counts-a-wider-answer-as-covering-a-market.test.mjs": {
           "tests": 2,
           "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-review-is-handed-the-framework-it-enforces.test.mjs": {
+          "tests": 5,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
