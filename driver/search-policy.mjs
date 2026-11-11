@@ -529,10 +529,9 @@ export const BUILT = { knockout: true, jxLanes: true, registerProbe: true };
 // dir answering with a demo roster. Deleting the switch is the fix that cannot recur; plumbing a
 // snapshot into each new caller is the one that waits for the next caller.
 //
-// An incident kill did not go away with them: `CLEAROTRON_NATIVE_LANGUAGE_<code>` is fail-OPEN by construction
-// (`?? "1"` — on unless explicitly "0"), so a lane can still be silenced without a deploy, and it works
-// the same in every process whether or not it has an environment. That is the shape to copy if another
-// one is ever genuinely needed. `BUILT` remains one edit away for machinery that truly is unfinished.
+// The last of them, the per-language off switch `CLEAROTRON_NATIVE_LANGUAGE_<code>`, is retired too
+// (2026-11-11): no deployment set it, and the owner ruled it removed. `BUILT` remains one edit away for
+// machinery that truly is unfinished.
 
 // Admission gate over a RESOLVED policy: null = runnable, else a clarify message. Split from resolution so
 // the runner can distinguish "which product is this" (resolveSearchPolicy) from "may it run HERE, NOW".

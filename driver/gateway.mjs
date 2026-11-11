@@ -13,7 +13,6 @@ import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "no
 import { join, dirname, basename } from "node:path";
 import { driverDir, readJson } from "./run-record.mjs";   //
 import { NO_SEARCH_RESULT, RESEARCH_CORRECTION } from "./research-answers.mjs";   // a search that did not answer supplies no result
-import { tmpdir } from "node:os";
 import { config, envOn, envGateOn } from "./driver.config.mjs";
 import { stageLog, runLog, note, outputMeta } from "./log.mjs";
 // — the closed disposition set has ONE author; this file dictates it and must not retype it.
@@ -265,7 +264,7 @@ import { undispatchableFiringDirectives } from "./frame-diff-model.mjs";
 import { witnessStageMethodology, describeMethodologyDrift } from "./methodology-witness.mjs";
 // — the meaning-sweep form and its accumulator. Both PURE and acyclic: connotation-search.mjs
 // imports nothing, disposition-union.mjs imports only it, and neither reaches back here.
-import { parsePrRiskResults, connotationObligations, parseDispositionForm, rulingsProse, CONNOTATION_FORM_TOKEN_SRC,
+import { parsePrRiskResults, connotationObligations, parseDispositionForm, CONNOTATION_FORM_TOKEN_SRC,
   CONNOTATION_UNMATCHED_MARK, CONNOTATION_NO_RESEMBLANCE_MARK, CONNOTATION_FORM_TOKEN_RE } from "./connotation-search.mjs";
 import { unionDispositionForm, formSidecarPath } from "./disposition-union.mjs";
 import { unionCoverageForm } from "./coverage-union.mjs";
@@ -862,12 +861,6 @@ async function runStageLadder(name, opts, stageHome = null, engine = selectEngin
       note(`[${name}] CANCELLED by user — not dispatching attempt ${attempt}`);
       throw new RunCancelled(name, readCancel(runDir));
     }
-    // D3: inter-attempt backoff (see retryBackoffMs) — a retry dispatched the same second it failed
-    // tends to re-hit the same still-booting gateway / still-overloaded provider. Attempt 1 never waits.
-    if (attempt > 1) {
-      const backoff = retryBackoffMs();
-      if (backoff > 0) { note(`[${name}] retry backoff ${backoff}ms before attempt ${attempt}`); await sleep(backoff); }
-    }
     // Warm patch retry: resume the COMPLETED failed session with only the fix instruction (see design note
     // above warmEligible). Otherwise: fresh key + full corrective message (Fix B), exactly as before.
     // — the warm patch is VETOED, not de-allowlisted, and the veto keys on the DIRECT STATE:
@@ -884,6 +877,18 @@ async function runStageLadder(name, opts, stageHome = null, engine = selectEngin
     if (warm) warmUsed = true;
     else if (vetoedResume && !warmUsed && process.env.CLEAROTRON_WARM_RETRY !== "0" && warmEligible(lastFail, lastJson))
       note(`[${name}] attempt ${attempt - 1} left this stage's meaning population with ZERO ruled rows (${String(lastFail).slice(0, 100)}) — a resumed session re-reads its own output and cannot rule what it did not rule; SKIPPING the warm patch and dispatching attempt ${attempt} FRESH (the warm attempt is not spent: a partial failure later in this ladder still gets it)`);
+    // D3: inter-attempt backoff (see retryBackoffMs) — a retry dispatched the same second it failed
+    // tends to re-hit the same still-booting gateway / still-overloaded provider. Attempt 1 never waits.
+    // NOT WHEN THE TURN FINISHED AND ONLY THE VALIDATOR REFUSED IT: nothing in the environment failed, so
+    // the wait buys nothing and costs the stage its length on the critical path. Known positively, by the
+    // predicate the warm patch already uses (the turn's status ok, a validator refusal); a spawn,
+    // transport or kill failure still waits.
+    if (attempt > 1) {
+      const validatorOnly = warmEligible(lastFail, lastJson);
+      const backoff = validatorOnly ? 0 : retryBackoffMs();
+      if (validatorOnly) note(`[${name}] no retry backoff before attempt ${attempt}: attempt ${attempt - 1} finished and only the validator refused it`);
+      else if (backoff > 0) { note(`[${name}] retry backoff ${backoff}ms before attempt ${attempt}`); await sleep(backoff); }
+    }
     // Snapshot each expected artifact at THIS attempt's start. TWO readers, one base — so they can never
     // disagree about what this dispatch emitted:
     //   · AD-4 emitted-vs-landed telemetry — `wrote` says whether this dispatch WROTE its artifact, as

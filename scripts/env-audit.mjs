@@ -59,8 +59,8 @@ const asList = process.argv.includes("--list");
 //
 // `resolveAuthMode({env = process.env})` reads `env.CODEX_API_KEY`. Textually there is no
 // `process.env.` before the name, so the `process.env`-only scanner recorded nothing — and this is not
-// an oddity, it is the refactor this repository keeps choosing (`laneArmed(lane, env)`,
-// `deriveJxSliceStatement({env})`). Every such conversion silently removed its variables from
+// an oddity, it is the refactor this repository keeps choosing (a pure function handed `env`, as
+// `resolveAuthMode` is). Every such conversion silently removed its variables from
 // governance: the guard went QUIET rather than red, which is the failure class ADR-0002 exists to end.
 // Seven product names were invisible, two of them deciding billing.
 //
