@@ -11114,6 +11114,12 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   });
 
   try {
+    // A NEW RUN ON AN INSTALL THAT CANNOT SEARCH YET is refused in doctor's words, before the doors ask for a
+    // program nobody chose (driver/run-requirements.mjs, commandLineRefusal). A resume keeps the engine it recorded.
+    if (!a.codename && !a.experiment) {
+      const notYet = commandLineRefusal(process.env, await runTables(), reachableCommand("install"));
+      if (notYet) throw new Error(notYet);
+    }
     const res = a.experiment ? await runExperiment(job, opts) : await pipeline(job, opts);
     settled = true;
     if (!res.ok) advise({ result: res, codename: res.codename ?? opts.__runRef?.codename ?? null });
@@ -11523,3 +11529,7 @@ export function reassembleFromTheRecord(P, findings, depth) {   // @internal
   assembleReportMd(P, findings, plan.assembledOrdinals, { grouped: plan.groupedMembers, byRight: plan.byRight });
   return plan;
 }
+
+// Hoisted, so placed last: an import at the top would move every line citation into this file.
+import { commandLineRefusal } from "./run-requirements.mjs";
+import { runTables } from "./order-tables.mjs";

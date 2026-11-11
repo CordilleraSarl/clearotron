@@ -2193,6 +2193,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-run-with-nothing-chosen-says-what-doctor-says.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-running-demo-connects-by-its-folder.test.mjs": {
           "tests": 7,
           "asserts": 38,
