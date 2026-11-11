@@ -343,7 +343,7 @@ export function recordRefutation(runDir, received, { now = () => new Date().toIS
  *   unreadable payload the capture failed or the file is truncated
  *   `accepted: false`  the tool REFUSED this call — the review was never rendered
  *   `accepted: null`   the capture ran and the validator did not return, so nothing knows the outcome
- *   earlier dispatch   the call was received before the latest review dispatch began
+ *   earlier dispatch   the call was captured before the latest review dispatch began
  *
  * ✕ THE REFUSED CASE IS WHY THIS EXISTS RATHER THAN A BARE JSON READ. The payload is written before
  * validation, so a refused call leaves a complete, well-formed, entirely authoritative-looking record of
@@ -364,14 +364,15 @@ export function readAcceptedFlags(runDir) {
   // AND THE CALL IS FROM THE REVIEW DISPATCH NOW IN FORCE, known without the list. A list that could not be written leaves
   // no start, and one whose removal also failed still names an earlier dispatch: either way an earlier review's accepted
   // call is in reach. Every review dispatch writes its first attempt's record before the model runs (gateway.mjs,
-  // recordDispatch), so a call received before the latest one began belongs to an earlier review, and the correction takes
+  // recordDispatch), so a call captured before the latest one began belongs to an earlier review, and the correction takes
   // the rendered review through its recorded fallback instead. With no record (CLEAROTRON_DISPATCH_RECORD off, or a write
-  // that failed) the list alone decides, as it did before.
+  // that failed) the list alone decides, as it did before. The capture's file time is read, not the `receivedAt` inside it:
+  // a replay that serves a saved call copies the file when the dispatch runs, and keeps the saved run's `receivedAt`.
   const dir0 = String(runDir ?? "");
   const accepted = readAcceptedReviewSince(dir0, listedAddresses(dir0)?.seq0 ?? 0);
   if (!accepted) return null;
   const began = reviewDispatchBegan(dir0);
-  if (began != null && !(Date.parse(accepted.receivedAt ?? "") >= began)) return null;
+  if (began != null && !(capturedAt(accepted.file) >= began)) return null;
   return accepted.flags;
 }
 
@@ -380,8 +381,13 @@ export function readAcceptedFlags(runDir) {
  * written, which is before the model ran. null when there is no such record or it cannot be read. Never throws.
  */
 export function reviewDispatchBegan(runDir) {
-  try { return statSync(driverDir(String(runDir ?? ""), driverFileName(dispatchFileName("narrative-refutation", 1)))).mtimeMs; }
+  try { return Math.floor(statSync(driverDir(String(runDir ?? ""), driverFileName(dispatchFileName("narrative-refutation", 1)))).mtimeMs); }
   catch { return null; }
+}
+
+/** When a call's capture file was last written, in whole epoch milliseconds, or NaN when it cannot be read. Never throws. */
+function capturedAt(file) {
+  try { return Math.floor(statSync(file).mtimeMs); } catch { return Number.NaN; }
 }
 
 /**
@@ -417,8 +423,7 @@ export function readAcceptedReviewSince(runDir, seq0) {
     try { doc = readJson(c.file); } catch { continue; }
     if (doc?.accepted !== true) continue;
     const p = doc?.params ?? {};
-    return { seq: c.seq, verdict: p.verdict ?? null, flags: Array.isArray(p.flags) ? p.flags : [], planAudit: p.plan_audit ?? null,
-      receivedAt: typeof doc?.receivedAt === "string" ? doc.receivedAt : null };
+    return { seq: c.seq, verdict: p.verdict ?? null, flags: Array.isArray(p.flags) ? p.flags : [], planAudit: p.plan_audit ?? null, file: c.file };
   }
   return null;
 }

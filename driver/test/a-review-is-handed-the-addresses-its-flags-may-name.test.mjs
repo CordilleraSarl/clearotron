@@ -209,7 +209,7 @@ test("the list and the accepted call belong to the review dispatch being acted o
 // dispatch. Each case seeds an earlier review dispatch with an accepted call, starts a later dispatch, and reads the flags
 // the correction would act on. The dispatch records are written as the gateway writes them, before the model runs, and
 // their times are set so the order does not depend on the clock's resolution.
-const { REVIEW_FILE } = await import("../narrative-refutation-record.mjs");
+const { REVIEW_FILE, refutationCallPaths } = await import("../narrative-refutation-record.mjs");
 const { recordDispatch, dispatchFileName } = await import("../dispatch-record.mjs");
 const { utimesSync } = await import("node:fs");
 const LATER_REVIEW = "CLEAR\n\nThe later review, written into the file by hand.\n";
@@ -225,8 +225,10 @@ function earlierReviewAccepted(label) {
   const runDir = mkdtempSync(join(tmpdir(), `review-${label}-`));
   writeReviewAddresses(runDir, { records: [BEFORE], seq0: 1 });
   reviewDispatch(runDir, 120, "the earlier review");
-  const r = recordRefutation(runDir, { verdict: "CONDITIONAL", flags: [flag({})] }, { now: () => at(110).toISOString() });
+  const r = recordRefutation(runDir, { verdict: "CONDITIONAL", flags: [flag({})] });
   assert.equal(r.refused, null);
+  const t = at(110);
+  utimesSync(join(refutationCallPaths(runDir).dir, "call-001.json"), t, t);
   return runDir;
 }
 
@@ -270,6 +272,16 @@ test("both failures, as they happen: a list that can be neither written nor remo
   reviewDispatch(runDir, 60, "the later review");
   writeFileSync(join(runDir, REVIEW_FILE), LATER_REVIEW);
   assert.equal(readAcceptedFlags(runDir), null);
+});
+
+test("a saved call a replay copies in while the dispatch runs is that dispatch's, whatever time the call itself records", async () => {
+  const { readAcceptedFlags } = await import("../narrative-refutation-record.mjs");
+  const runDir = mkdtempSync(join(tmpdir(), "review-replay-"));
+  writeReviewAddresses(runDir, { records: [BEFORE], seq0: 1 });
+  reviewDispatch(runDir, 60, "the review");
+  // The saved run's own receipt time, days before this dispatch, as a copied capture keeps it.
+  assert.equal(recordRefutation(runDir, { verdict: "CONDITIONAL", flags: [flag({})] }, { now: () => at(3 * 86400).toISOString() }).refused, null);
+  assert.deepEqual(readAcceptedFlags(runDir), [flag({})]);
 });
 
 test("with no dispatch record, the list alone decides, as before", async () => {
