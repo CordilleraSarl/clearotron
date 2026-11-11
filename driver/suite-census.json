@@ -1840,8 +1840,8 @@
           "todos": 0
         },
         "a-redone-register-reading-asks-nothing-already-answered.test.mjs": {
-          "tests": 3,
-          "asserts": 9,
+          "tests": 7,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },

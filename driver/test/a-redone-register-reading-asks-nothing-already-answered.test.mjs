@@ -12,7 +12,7 @@
 // choose to ask.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";
@@ -100,3 +100,71 @@ for (const id of REGISTERS) {
     assert.ok(sent.every((s) => s.classes.map(String).includes("32")), `${id}: and nothing that was answered: ${JSON.stringify(sent)}`);
   });
 }
+
+// ── AN ANSWER STANDS ONLY FOR THE QUESTION IT ANSWERED ───────────────────────────────────────────────────────────────
+// The plan is written again on every pass from the framed names, and a name's own questions keep their ids when the
+// frame changes what they ask. A held answer is reused only where the question now sends what it sent then.
+const planOf = (dir) => JSON.parse(readFileSync(questionPlanPath(dir), "utf8"));
+const ownQuestions = (dir) => planOf(dir).entries.filter((e) => e.axis === knockoutAxis(NAME)).map((e) => e.qid);
+const askPlan = (run, lister) => executeQuestionsWithLister(lister, { plan_path: questionPlanPath(run.dir), axis: knockoutAxis(NAME),
+  output_path: knockoutBandPath(run.dir, NAME), qids: ownQuestions(run.dir) });
+function rewritePlan(dir, change) {
+  const plan = planOf(dir);
+  change(plan.entries.find((e) => e.axis === knockoutAxis(NAME)));
+  writeFileSync(questionPlanPath(dir), JSON.stringify(plan));
+}
+
+for (const id of REGISTERS) {
+  test(`${id}: a question whose words changed under the same id is asked again, and nothing else is`, async () => {
+    const run = runFor(id);
+    const { sent, lister } = standIn();
+    await askPlan(run, lister);
+    assert.ok(sent.length > 0, `premise: the plan's own question was put to ${id}`);
+    const [qid] = ownQuestions(run.dir);
+    rewritePlan(run.dir, (e) => { e.term = `${NAME} TONIC`; });
+    sent.length = 0;
+    await askPlan(run, lister);
+    assert.deepEqual(sent.map((s) => s.term), [`${NAME} TONIC`], `${id}: the changed question is asked, once: ${JSON.stringify(sent)}`);
+    const block = JSON.parse(readFileSync(knockoutBandPath(run.dir, NAME), "utf8")).find((b) => b.qid === qid);
+    assert.equal(block.query.term, `${NAME} TONIC`, "and its answer replaces the old question's");
+  });
+}
+
+test("a plan written again in the same words asks nothing", async () => {
+  const run = runFor("signa");
+  const { sent, lister } = standIn();
+  await askPlan(run, lister);
+  assert.ok(sent.length > 0, "premise: the plan's own question was asked");
+  rewritePlan(run.dir, (e) => { e.origin = "plan"; });
+  sent.length = 0;
+  await askPlan(run, lister);
+  assert.deepEqual(sent, [], `a question asking what it asked before was sent again: ${JSON.stringify(sent)}`);
+});
+
+test("a question asked over other goods or regions under the same id is asked again", async () => {
+  for (const [what, change] of [["goods", (e) => { e.goods_text = ["tonic water"]; }], ["regions", (e) => { e.regions = ["EM"]; }]]) {
+    const run = runFor("signa");
+    const { sent, lister } = standIn();
+    await askPlan(run, lister);
+    rewritePlan(run.dir, change);
+    sent.length = 0;
+    await askPlan(run, lister);
+    assert.equal(sent.length, 1, `${what}: the changed question is asked, once: ${JSON.stringify(sent)}`);
+  }
+});
+
+test("an answer that records nothing of what was asked is asked again, once", async () => {
+  const run = runFor("signa");
+  const { sent, lister } = standIn();
+  await askPlan(run, lister);
+  const band = JSON.parse(readFileSync(knockoutBandPath(run.dir, NAME), "utf8"));
+  assert.ok(band.length > 0 && band.every((b) => typeof b.sent === "string"), "premise: every answer records what was sent for it");
+  writeFileSync(knockoutBandPath(run.dir, NAME), JSON.stringify(band.map(({ sent: _s, ...b }) => b)));
+  const before = sent.length;
+  sent.length = 0;
+  await askPlan(run, lister);
+  assert.equal(sent.length, before, "a held answer that cannot show its question is asked again");
+  sent.length = 0;
+  await askPlan(run, lister);
+  assert.deepEqual(sent, [], "and once answered with its question recorded, it is not asked a third time");
+});
