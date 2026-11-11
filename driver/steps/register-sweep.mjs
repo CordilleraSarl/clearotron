@@ -31,6 +31,7 @@ import { validators } from "../verify.mjs";
 import { closureBlocksOf } from "../web-grid.mjs";
 import { readWithheldFamilies, releasedFamilyQids } from "../withheld-families.mjs";
 import { existsSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import { seedUnplannedBands } from "../register-unit-record.mjs";
 import { join } from "node:path";
 
 /**
@@ -102,6 +103,11 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
     if (!agrees) throw new StageFailure("grid-spec",
       `the run assembled the ${clSplit ? "split" : "unsplit"} path but deriveGridSpec recorded "${d.reason}" (${d.path}) — the selector and its record have diverged, so no downstream common-law count can be trusted`,
       undefined, { failClass: "deterministic" });
+  }
+  // An axis the frozen plan gives no work gets the honest empty band before its unit runs (register-unit-record.mjs).
+  if (ctx.registerPlan) {
+    const seeded = seedUnplannedBands(P.runDir, ctx.registerPlan, axes.filter((a) => a !== "saturation-probe"));
+    if (seeded.length) runLog(run.runDir, { event: "unit-band-seeded-empty", axes: seeded });
   }
   const gather = clSplit
     ? [...GRID_SEATS.map((h) => ({ name: "common-law-half", axis: h })), ...axes.map((a) => ({ name: "register-unit", axis: a }))]
