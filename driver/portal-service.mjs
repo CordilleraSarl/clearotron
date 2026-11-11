@@ -126,7 +126,7 @@ const INSTALL_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 const READ_OFF_NOTE = "Reading a brief is not available on this instance — set the search up below.";
 import { dirname, join, resolve as pathResolve } from "node:path";
-import { makePrincipal, genericOrgOf, principalView, seesEverything, PortalDeny } from "./portal-access.mjs";
+import { makePrincipal, genericOrgOf, seesEverything, PortalDeny } from "./portal-access.mjs";
 // — the THIRD identity source (after the CF Access edge and, until, the deleted bypass). It
 // decides nothing about access: it turns a passphrase into an email string, which then goes through
 // makePrincipal and assertPrincipal exactly as a Cloudflare-verified address does.
@@ -1206,6 +1206,24 @@ export function accountCapAdvice(posture) {
     + " --accounts <keys>` to make it two walls.";
 }
 
+/**
+ * The boot line about the Start button's key. The usual key, which may start and stop searches for named accounts
+ * until a known date, is said in plain words; any other key keeps the line that names each field, because what is
+ * unusual about it is what the reader needs to see (measured in a stranger walk of a beta, 2026-11-10: a newcomer's
+ * first `start` printed `ops token sub=portal verbs=start_run,stop_run accounts=generic`). Its first words stay
+ * "trigger lane", the phrase a journal is searched by. PURE.
+ */
+export function triggerLaneLine(posture, laneWired, expiry = "") {
+  const verbs = [...(posture?.verbs ?? [])].sort().join(",");
+  const plain = posture?.readable && posture.sub === "portal" && verbs === "start_run,stop_run" && posture.accountCapped
+    && posture.accounts.length > 0 && posture.expiresAt && !posture.expired && posture.daysLeft >= 0;
+  if (plain) {
+    return `trigger lane${laneWired ? "" : " (NOT WIRED — see above)"}: the Start button may start and stop searches for `
+      + `${posture.accounts.join(", ")}; its key expires ${posture.expiresAt.slice(0, 10)} (${posture.daysLeft} days)`;
+  }
+  return `trigger lane${laneWired ? "" : " (NOT WIRED — see above)"}: ops token sub=${posture?.sub ?? "-"} verbs=${posture?.verbs?.join(",") ?? "(full ops)"} accounts=${posture?.accounts?.join(",") ?? "UNCAPPED (every account)"}${expiry}${posture?.readable ? "" : " — token payload unreadable, posture unknown"}`;
+}
+
 export function opsTokenPosture(token, { now = Date.now() } = {}) {
   const none = { readable: false, scope: null, sub: null, verbs: null, accounts: null, accountCapped: false,
     expiresAt: null, daysLeft: null, expired: false, implausibleExp: false };
@@ -1572,7 +1590,7 @@ ${error ? `<p class="err">${escHtml(error)}</p>` : ""}
   <button type="submit">Sign in</button>
 </form>
 <details class="fold"><summary><span>Administrator help</span><svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6"/></svg></summary>
-<p class="hint">The passphrase was printed once when this ${escHtml(BRAND.name)} first started. Lost it? Run
+<p class="hint">The passphrase was printed once, when this ${escHtml(BRAND.name)} first started or was last reset. Lost it? Run
 <code>${escHtml(reset)}</code> on the machine running this portal. It prints a new one, once, for the same user.</p>
 <p class="hint">A key from <code>${escHtml(bareInvocation("key"))} issue</code> is for an AI assistant, not for this page.</p>
 <p class="hint">To add people, put it behind a login system such as your company single sign-on. <a href="${escHtml(LOGIN_IN_FRONT_DOC)}" target="_blank" rel="noreferrer">How to set that up</a></p>
@@ -2484,7 +2502,7 @@ const PORT = PORT_CHOICE.port;
     const expiry = posture.expiresAt ? ` expires=${posture.expiresAt.slice(0, 10)} (${posture.daysLeft}d)` : " expires=UNKNOWN";
     // PREFIXED WHEN THE LANE IS DEAD, so this line cannot be read on its own as evidence of a working
     // lane — a journal is skimmed by grepping one phrase, and the phrase people grep is this one.
-    log(`trigger lane${laneWired ? "" : " (NOT WIRED — see above)"}: ops token sub=${posture.sub ?? "-"} verbs=${posture.verbs?.join(",") ?? "(full ops)"} accounts=${posture.accounts?.join(",") ?? "UNCAPPED (every account)"}${expiry}${posture.readable ? "" : " — token payload unreadable, posture unknown"}`);
+    log(triggerLaneLine(posture, laneWired, expiry));
     if (!posture.accountCapped) {
       // ── THE PRINTED COMMAND IS DERIVED FROM THE TOKEN IN HAND ──────────────────────────────────────
       //

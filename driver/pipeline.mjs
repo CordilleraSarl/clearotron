@@ -201,7 +201,7 @@ import { JURISDICTION_ADAPTERS, LANGUAGE_LANES, scopeJurisdictions as jxScopeJur
 // parseBlindFrameModel nor dominantElementFromManifest is called from this file any more.
 import { recordedScopeLedgerRows } from "./clearance-variants-record.mjs";
 import { renderFormNeighbourhoodJson, parseFormNeighbourhoodJson, dispatchedQueriesFromBand, formGapDirectives, markText } from "./form-neighbourhood.mjs"; import { loadOrdinaryWords } from "./ordinary-words.mjs";
-import { classifyFailureReason, createRepairLedger, TRANSIENT_RE, retryCannotHelpWith, isContentShapedFail, isFallbackEligible } from "./repairs.mjs";
+import { createRepairLedger, TRANSIENT_RE, retryCannotHelpWith, isContentShapedFail, isFallbackEligible } from "./repairs.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { isCancelled } from "./cancel.mjs";   // stop-by-user: a distinct class, never classified as a failure; isCancelled is the resume door's own refusal (2155)
 import { BRAND } from "../shared/brand.mjs";   // — the operator name a client is told to expect, from the tenant seam
@@ -11108,6 +11108,12 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   });
 
   try {
+    // A NEW RUN ON AN INSTALL THAT CANNOT SEARCH YET is refused in doctor's words, before the doors ask for a
+    // program nobody chose (driver/run-requirements.mjs, commandLineRefusal). A resume keeps the engine it recorded.
+    if (!a.codename && !a.experiment) {
+      const notYet = commandLineRefusal(process.env, await runTables(), reachableCommand("install"));
+      if (notYet) throw new Error(notYet);
+    }
     const res = a.experiment ? await runExperiment(job, opts) : await pipeline(job, opts);
     settled = true;
     if (!res.ok) advise({ result: res, codename: res.codename ?? opts.__runRef?.codename ?? null });
@@ -11517,3 +11523,7 @@ export function reassembleFromTheRecord(P, findings, depth) {   // @internal
   assembleReportMd(P, findings, plan.assembledOrdinals, { grouped: plan.groupedMembers, byRight: plan.byRight });
   return plan;
 }
+
+// Hoisted, so placed last: an import at the top would move every line citation into this file.
+import { commandLineRefusal } from "./run-requirements.mjs";
+import { runTables } from "./order-tables.mjs";

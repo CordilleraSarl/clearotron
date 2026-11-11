@@ -39,7 +39,7 @@
 // ── IT WRITES, WHICH IS WHY IT IS NEVER DEFAULT ─────────────────────────────────────────────────────
 //
 // Every successful registration CREATES AN OAUTH CLIENT on the operator's account. INSTALL.md promises
-// `doctor` "reads; writes nothing, calls nobody", and that sentence is load-bearing — it is why a
+// `doctor` "reads; writes nothing and contacts nothing outside this machine", and that sentence is load-bearing — it is why a
 // reader runs `doctor` on a production box without thinking about it. So this is opt-in at the command
 // line, it says what it is about to create before it creates it, and it reports what it left behind.
 

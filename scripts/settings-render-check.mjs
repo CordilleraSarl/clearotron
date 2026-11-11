@@ -391,7 +391,7 @@ const SPEC = {
   blurLine: 'On the top bar. It covers every mark and company on screen, and an open report whole. It stays as you left it on this computer.',
   // The sign-in page's wording is the owner's, approved 2026-09-19 and used verbatim.
   identity: (email) => `This Clearotron has one user: ${email}. Enter its passphrase.`,
-  reset: 'The passphrase was printed once when this Clearotron first started. Lost it? Run clearotron passphrase --reset on the machine running this portal. It prints a new one, once, for the same user.',
+  reset: 'The passphrase was printed once, when this Clearotron first started or was last reset. Lost it? Run clearotron passphrase --reset on the machine running this portal. It prints a new one, once, for the same user.',
   key: 'A key from clearotron key issue is for an AI assistant, not for this page.',
   addPeople: 'To add people, put it behind a login system such as your company single sign-on. How to set that up',
 }

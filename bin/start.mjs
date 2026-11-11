@@ -13,6 +13,7 @@
 //                                        n+1 and the client door n+2 unless each is set explicitly
 //   npx clearotron start --demo           the demo posture: own data directory, nothing persisted
 //   npx clearotron start --no-worker      do not drain the queue here; run the worker yourself
+//   npx clearotron start --background     run as services that survive closing the terminal; `clearotron stop` stops them
 //   npx clearotron start --help
 //
 // It is NOT `npm run example`. Demo replays a frozen example report with no credentials, no model and no
@@ -415,13 +416,13 @@ export function clientDoorDownLines({ host, port, exited }) {
  */
 export const DEMO_ROUTINE_LINES = [
   /^auth ON — /,
-  /^key path: none configured /,
+  /^key path: none \(TRADEMARK_MCP_KEY_SOCKET is not set\)/,
   /^roster: \d+ customer\(s\) from /,
   /^This is `clearotron demo`: /,
   /^listening on http:\/\//,
   /^audit log: /,
   /^trigger lane: the engine door takes an access key, and this portal holds one\.$/,
-  /^trigger lane: ops token sub=/,
+  /^trigger lane: the Start button may start and stop searches for /,
   /^settings surface ON — /,
   /^saved searches ON — /,
   /^brief reading OFF — this is the demo/,
@@ -1615,7 +1616,7 @@ if (isMain) {
         write: (f, text) => writeFileSync(f, text, { mode: 0o600 }),
         read: (f) => readFileSync(f, "utf8"),
       });
-      if (r.created) say(`  created        ${denylist} (the revocation list — a key revoked before it existed was not revoked at all)`);
+      if (r.created) say(`  created        ${denylist} (the list of keys you have revoked)`);
     } catch (e) {
       // FATAL, and this is the one place that judgement belongs. A door that cannot consult its
       // revocation list is a door that cannot be revoked from, and starting it anyway is the failure
@@ -2617,7 +2618,7 @@ if (isMain) {
     // A door that exited printed why; one still up when the wait ran out printed nothing, and is not sent there.
     for (const line of clientDoorDownLines({ host: HOST, port: ports.client, exited: clientDoor?.child?.exitCode !== null })) say(line);
   }
-  say(`  Engine door  http://${HOST}:${ports.mcp}/mcp   — the portal's Start button calls this. Staff.`);
+  say(`  Engine door  http://${HOST}:${ports.mcp}/mcp   — the portal's Start button calls this. For your staff, not clients.`);
   say("");
   // ── WHAT `status` AND `stop` READ ABOUT THIS START ───────────────────────────────────────────────
   //

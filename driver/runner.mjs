@@ -2423,7 +2423,7 @@ export async function watch({
   beatEveryMs = WATCH_TICK_MS,
   startBeating = (fn, everyMs) => { const t = setInterval(fn, everyMs); t.unref?.(); return () => clearInterval(t); },
 } = {}) {
-  note(`[runner] watch: polling every ${Math.round(tickMs / 1000)}s (no systemd here); a due park or an unclaimed job is picked up on the next tick. Ctrl-C to stop.`);
+  note(`[runner] watch: checking every ${Math.round(tickMs / 1000)}s for a search to start or to resume. Ctrl-C to stop.`);
   for (let n = 0; ; n++) {
     if (stopped()) break;
     // One bad tick must never end the loop — that would put us back where a laptop started, with nothing

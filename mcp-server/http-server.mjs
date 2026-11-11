@@ -249,7 +249,7 @@ if (isMain) {
   // does not have the feature" looking identical, which is the confusion this issue is about.
   log(KEY_SOCKET
     ? `key path: ${KEY_SOCKET} (mode ${KEY_SOCKET_MODE.toString(8)} once open) — a scoped access key is accepted HERE and nowhere else; the network door never honours one`
-    : "key path: none configured (TRADEMARK_MCP_KEY_SOCKET unset) — a program on this box holding an access key has no door on this process");
+    : "key path: none (TRADEMARK_MCP_KEY_SOCKET is not set), so a program on this machine cannot use an access key here; the client door accepts them");
 
   // ── THE ROSTER THIS PROCESS CAN ACTUALLY SEE ──────────────────────────────────────────────────────
   //

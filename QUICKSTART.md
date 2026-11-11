@@ -32,8 +32,8 @@ it from, and closing the window stops it.
 ## Install
 
 ```bash
-npx clearotron install  # offers to install the reasoning program if the machine has none, and shows you how to sign it in
-clearotron doctor --probe-engine
+npx clearotron install  # in a terminal: it asks one question at a time, offers to install the reasoning program if the machine has none, and shows you how to sign it in
+clearotron doctor  # reads only; add --probe-engine to spend one cheap turn proving the AI
 ```
 
 `install` puts the program under `~/.local` and needs no root, and every command after it here uses the
@@ -44,9 +44,9 @@ That installs the stable release. For the newest beta, run `npx clearotron@beta 
 [docs/RELEASES.md](docs/RELEASES.md) says what each one promises.
 
 `doctor` is the one to read. It checks that the reasoning program is there, on `PATH` or as the copy
-setup installed; that it is signed in, by running a turn rather than by finding the executable; and
-that your register credential resolves. An executable that is signed out passes every other check and
-fails at the first stage.
+setup installed, and that your register credential resolves. `clearotron doctor` reports the
+configuration without running an AI turn. Add `--probe-engine` to run a proof turn. An executable that is
+signed out passes every other check and fails at the first stage.
 
 ## Run one
 

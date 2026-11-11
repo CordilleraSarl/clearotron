@@ -41,7 +41,7 @@ npm install                    # every workspace
 npm run build:ui               # the browser bundle is not committed — build it once
 npm test                       # the offline suite — no credentials, no network
 npx clearotron demo            # replays finished clearances into a local portal; runs until stopped (--no-open: no browser)
-npx clearotron doctor          # in this clone: reports what this machine is configured for; writes nothing, calls nobody
+npx clearotron doctor          # in this clone: reports what this machine is configured for; writes nothing and contacts nothing outside this machine
 node scripts/markdown-link-check.mjs    # every relative markdown link resolves
 node mcp-server/smoke.mjs      # drives the real MCP server against a fixture
 ```
@@ -108,7 +108,7 @@ Read https://clearotron.ai/try/ (or https://clearotron.ai/llms.txt) and explain 
 | Verb | What it does |
 |---|---|
 | `install` | configure this install — one question at a time, nothing written until each answer checks out |
-| `doctor` | report what this machine is configured for. Writes nothing, calls nobody |
+| `doctor` | report what this machine is configured for. Writes nothing and contacts nothing outside this machine |
 | `demo` | replay a finished example clearance and serve it. No keys, no model, no account |
 | `start` | start the product — the portal, the engine door, the client door and the worker — and print one address to open |
 | `stop` | stop the background product and give the box back — connect's door is not touched |

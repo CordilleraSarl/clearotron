@@ -18,14 +18,14 @@ const START = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "bin", "
 // Every line a fresh demo's three services printed, measured 2026-11-06, with its folder written as /tmp/trademark-demo.
 const HEALTHY = [
   "[trademark-artifacts-http] auth ON — access key required on every request (no auth proxy in front), loopback only, allowedHosts=[127.0.0.1:18861, localhost:18861]",
-  "[trademark-artifacts-http] key path: none configured (TRADEMARK_MCP_KEY_SOCKET unset) — a program on this box holding an access key has no door on this process",
+  "[trademark-artifacts-http] key path: none (TRADEMARK_MCP_KEY_SOCKET is not set), so a program on this machine cannot use an access key here; the client door accepts them",
   "[trademark-artifacts-http] roster: 2 customer(s) from /tmp/trademark-demo/config/profiles — [demo-brand-owner, generic]",
   "[trademark-artifacts-http] This is `clearotron demo`: it carries Demo Brand Owner, rating under its own framework, with 1 project, and 4 finished clearance reports ready to open. Nothing here is configured against a real customer, and nothing needs to be.",
   "[trademark-artifacts-http] listening on http://127.0.0.1:18861/mcp — READ-ONLY staff surface, firmDomains=[], auth ON (access key)",
   "[portal-service] auth ON — local sign-in, one user (demo@localhost), loopback only",
   "[portal-service] audit log: /tmp/trademark-demo/portal-audit.log — every admin write, refusal and 500 lands here (PORTAL_AUDIT overrides). The journal carries startup and fatals only; a save that a client reported as failed is answerable from that file, not from here.",
   "[portal-service] trigger lane: the engine door takes an access key, and this portal holds one.",
-  "[portal-service] trigger lane: ops token sub=portal verbs=start_run,stop_run accounts=demo-brand-owner,generic expires=2026-12-06 (29d)",
+  "[portal-service] trigger lane: the Start button may start and stop searches for demo-brand-owner, generic; its key expires 2026-12-06 (29 days)",
   "[portal-service] settings surface ON — store=/tmp/trademark-demo/config/profiles (CLEAROTRON_CUSTOMERS_DIR)",
   "[portal-service] This is `clearotron demo`: it carries Demo Brand Owner, rating under its own framework, with 1 project, and 4 finished clearance reports ready to open. Nothing here is configured against a real customer, and nothing needs to be.",
   "[portal-service] saved searches ON — store=/tmp/trademark-demo/config/recipes repo=/tmp/trademark-demo/config",
