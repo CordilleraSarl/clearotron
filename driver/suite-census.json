@@ -1114,8 +1114,8 @@
           "todos": 0
         },
         "a-knockout-defect-reaches-the-step-that-can-repair-it.test.mjs": {
-          "tests": 33,
-          "asserts": 185,
+          "tests": 35,
+          "asserts": 197,
           "skips": 0,
           "todos": 0
         },
