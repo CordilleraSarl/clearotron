@@ -483,6 +483,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-coverage-row-recorded-twice-prints-once.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "a-credential-file-is-written-one-way.test.mjs": {
           "tests": 4,
           "asserts": 13,
