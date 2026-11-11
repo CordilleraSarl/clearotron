@@ -6130,8 +6130,8 @@
           "todos": 0
         },
         "retry-backoff.test.mjs": {
-          "tests": 8,
-          "asserts": 33,
+          "tests": 9,
+          "asserts": 36,
           "skips": 0,
           "todos": 0
         },
