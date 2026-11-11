@@ -743,8 +743,8 @@ export function normalizeSearchResponse(body, echoQuery, { goodsWhole = false } 
 
 // ── Mock fixtures — TEST-ONLY, and reachable from nothing a run can start ───────────────────
 //
-// THIS HEADER USED TO ADVERTISE AN ENVIRONMENT VARIABLE, `CLAWDI_SIGNA_MOCK`. There was never such a
-// variable: two occurrences in the whole tree, both comments, zero reads. Following the line produced a
+// THIS HEADER USED TO ADVERTISE A MOCK SWITCH IN THE ENVIRONMENT. There was never such a variable:
+// two occurrences in the whole tree, both comments, zero reads. Following the line produced a
 // run that died at preflight in seconds, and it cost a real investigation — found while looking for a
 // register path that needs no credential, to inject faults into.
 //

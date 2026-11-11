@@ -168,8 +168,12 @@ off-gateway and never took a lane, so by the end it governed an empty set. Compu
 
 ## 3 — The stage sequence
 
-Everything below happens inside one `pipelineInner()` call (`pipeline.mjs`), inside one big
-try/catch whose catch is the recovery machinery (§5). Before any model spend: run slot, register
+Everything below is the clearance's steps. `pipelineInner()` (`pipeline.mjs`) hands them, in order, to
+`runShell` (`run-shell.mjs`): intake, register-sweep, frame-comparison, placement-and-digest,
+skeptic-and-follow-up, synthesis, correction-cycle, verdict-gate, overview-and-cards and delivery, one
+module each under `steps/`. A step that throws ends through `run-failed.mjs`, the recovery machinery
+(§5). A delivered run ends through `run-delivered.mjs`. A Knockout hands its own steps to the same
+`runShell` from `pipeline-knockout.mjs`. Before the first step and before any model spend: run slot, register
 credential preflight (fail-fast — a resume without the provider credential must not burn stages),
 profile freeze to `_driver/profile.json`, framework freeze, instructed-scope record, and status
 seeding. Frozen sidecars are never silently re-derived; a corrupt one crashes loudly by design.

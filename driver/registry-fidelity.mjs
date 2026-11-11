@@ -15,7 +15,7 @@
 // ordering, and renewal/expiry cycle arithmetic (renewals fall at year 10/20/… from registration — the
 // check that catches "registration 2013 … renewed 2025" from the document alone).
 
-import { writeFileSync, mkdirSync, existsSync, readdirSync, openSync, readSync, closeSync } from "node:fs"; import { runPrefixSpellings } from "../shared/pre-rename-spellings.mjs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, openSync, readSync, closeSync } from "node:fs"; import { runPrefixSpellings } from "../shared/pre-rename-spellings.mjs";
 import { join } from "node:path";
 import { ledgerPath, runRecordLogPath, ledgerDeprecationNotice, retiredGlobalRecordLogNotice }
   from "../providers/_shared/ledger-path.mjs";
@@ -37,6 +37,16 @@ function stripGatewayNs(s) {
 function rowMatchesRun(row, runPrefix) {
   return runPrefixSpellings(runPrefix).some((rp) => stripGatewayNs(row.sessionKey).startsWith(rp)
       || stripGatewayNs(row.sessionId ?? "").startsWith(rp));   // either spelling: a run resumed across the rename
+}
+// A line that holds none of the run's prefix spellings cannot be one of its rows, so it is skipped before it
+// is parsed. The call log is shared by every run on the machine, and most of its lines belong to other runs.
+// The test is safe only while each spelling is text that JSON writes unescaped; a prefix with any other
+// character keeps the old path and parses every line.
+export function lineMayMatchRun(runPrefix) {
+  if (!runPrefix) return () => false;
+  const spellings = runPrefixSpellings(runPrefix);
+  if (!spellings.every((rp) => /^[A-Za-z0-9._:-]+$/.test(rp))) return () => true;
+  return (line) => spellings.some((rp) => line.includes(rp));
 }
 
 
@@ -140,14 +150,25 @@ const keepRecord = (map, uri, body) => { if (recordBodyHasContent(body) || !reco
 // read failure rather than an empty map, and the failure travels to the caller as `ledgerError`.
 export function collectRecordBodies(recordLogPath, runPrefix) {
   const map = new Map();
-  noteLedger(forEachLedgerLine(recordLogPath, (line) => {
+  walkRunRows(recordLogPath, runPrefix, (row) => foldBody(map, row));
+  return map;
+}
+
+// Each row of a log that belongs to the run, parsed, in file order. A read failure is noted for the caller.
+function walkRunRows(path, runPrefix, onRow) {
+  const mayMatch = lineMayMatchRun(runPrefix);
+  noteLedger(forEachLedgerLine(path, (line) => {
+    if (!mayMatch(line)) return;
     let row;
     try { row = JSON.parse(line); } catch { return; }
     if (!runPrefix || !rowMatchesRun(row, runPrefix)) return;
-    const body = Array.isArray(row.body) ? row.body[0] : row.body;
-    if (row.target && body && typeof body === "object") keepRecord(map, String(row.target).toLowerCase(), body);
+    onRow(row);
   }));
-  return map;
+}
+
+function foldBody(map, row) {
+  const body = Array.isArray(row.body) ? row.body[0] : row.body;
+  if (row.target && body && typeof body === "object") keepRecord(map, String(row.target).toLowerCase(), body);
 }
 
 // WP-receipts (2026-07-05): the fetch RECEIPT per record URI — when the record was pulled and under
@@ -156,35 +177,41 @@ export function collectRecordBodies(recordLogPath, runPrefix) {
 export function collectRecordReceipts(recordLogPath, runPrefix) {   // — no default; see above
   const map = new Map();
   const real = new Set();   // the records whose receipt is from a body carrying the record, which a placeholder's never replaces
-  noteLedger(forEachLedgerLine(recordLogPath, (line) => {
-    let row;
-    try { row = JSON.parse(line); } catch { return; }
-    if (!runPrefix || !rowMatchesRun(row, runPrefix)) return;
-    if (!row.target || !row.ts) return;
-    const key = String(row.target).toLowerCase();
-    const full = recordBodyHasContent(row.body);
-    if (!full && real.has(key)) return;
-    if (full) real.add(key);
-    map.set(key, { fetched_at: String(row.ts), context: stripGatewayNs(row.sessionKey ?? "") || null });
-  }));
+  walkRunRows(recordLogPath, runPrefix, (row) => foldReceipt(map, real, row));
   return map;
+}
+
+function foldReceipt(map, real, row) {
+  if (!row.target || !row.ts) return;
+  const key = String(row.target).toLowerCase();
+  const full = recordBodyHasContent(row.body);
+  if (!full && real.has(key)) return;
+  if (full) real.add(key);
+  map.set(key, { fetched_at: String(row.ts), context: stripGatewayNs(row.sessionKey ?? "") || null });
+}
+
+// The bodies and the receipts from ONE pass over the record log: the same two maps the two readers above
+// return, for the price of one read.
+export function collectRecordBodiesAndReceipts(recordLogPath, runPrefix) {
+  const bodies = new Map();
+  const receipts = new Map();
+  const real = new Set();
+  walkRunRows(recordLogPath, runPrefix, (row) => { foldBody(bodies, row); foldReceipt(receipts, real, row); });
+  return { bodies, receipts };
 }
 
 // Per-URI fetch call metadata (http_status / ok / cache_hit) from the CALL ledger the plugin already
 // writes — joined into receipts.json so "verified" is provable with the transport outcome attached.
 export function collectFetchCallMeta(callLogPath, runPrefix) {
   const map = new Map();
-  noteLedger(forEachLedgerLine(callLogPath, (line) => {
-    let row;
-    try { row = JSON.parse(line); } catch { return; }
-    if (!runPrefix || !rowMatchesRun(row, runPrefix)) return;
+  walkRunRows(callLogPath, runPrefix, (row) => {
     if (row.tool !== "record_fetch" || !row.target) return;
     map.set(String(row.target).toLowerCase(), {
       ...(row.http_status !== undefined ? { http_status: row.http_status } : {}),
       ...(row.ok !== undefined ? { ok: row.ok } : {}),
       ...(row.cache_hit !== undefined ? { cache_hit: row.cache_hit } : {}),
     });
-  }));
+  });
   return map;
 }
 
@@ -192,7 +219,11 @@ export function collectFetchCallMeta(callLogPath, runPrefix) {
 // verifies against ("identifiers in the report match the record-fetch artifact field-for-field").
 // V4-1: each artifact embeds its `_uri` so the run dir is a READABLE record set (the filename squash is
 // lossy for hyphenated ids); readRecordArtifacts below re-derives legacy filenames best-effort.
-export function writeRecordArtifacts(runDir, recordsByUri, receiptsByUri = null) {
+//
+// `onDisk` is what readRecordArtifactFiles read from this run dir just before. A file whose name and text
+// already match what would be written is left as it is: the largest runs assemble their records 8 to 14
+// times, and rewriting every file each time wrote the whole set again.
+export function writeRecordArtifacts(runDir, recordsByUri, receiptsByUri = null, onDisk = null) {
   if (!recordsByUri?.size) return 0;
   const dir = join(runDir, "_records");
   mkdirSync(dir, { recursive: true });
@@ -203,7 +234,10 @@ export function writeRecordArtifacts(runDir, recordsByUri, receiptsByUri = null)
     // legacy readers): a FRESH receipt for this uri wins; otherwise a receipt already embedded in the
     // body (an inherited artifact) survives the rewrite — the run dir stays self-contained.
     const receipt = receiptsByUri?.get(uri);
-    try { writeFileSync(join(dir, name), JSON.stringify({ ...body, _uri: uri, ...(receipt ? { _receipt: receipt } : {}) }, null, 2) + "\n"); n++; } catch { /* best-effort */ }
+    const text = JSON.stringify({ ...body, _uri: uri, ...(receipt ? { _receipt: receipt } : {}) }, null, 2) + "\n";
+    const held = onDisk?.get(uri);
+    if (held && held.file === name && held.text === text) { n++; continue; }
+    try { writeFileSync(join(dir, name), text); n++; } catch { /* best-effort */ }
   }
   return n;
 }
@@ -212,17 +246,25 @@ export function writeRecordArtifacts(runDir, recordsByUri, receiptsByUri = null)
 // embedded key; legacy artifacts (pre-V4) re-derive `/mark/<cc>/<rest>` from `<cc>-<rest>.json`.
 export function readRecordArtifacts(runDir) {
   const map = new Map();
+  for (const [uri, { body }] of readRecordArtifactFiles(runDir, false)) map.set(uri, body);
+  return map;
+}
+
+// The same read, keeping for each record the file it came from and, when asked, the text that file held,
+// so writeRecordArtifacts can tell which files already hold what it would write.
+export function readRecordArtifactFiles(runDir, keepText = true) {
+  const map = new Map();
   const dir = join(runDir, "_records");
   let files;
   try { files = readdirSync(dir); } catch { return map; }
   for (const f of files.filter((x) => x.endsWith(".json")).sort()) {
-    let body;
-    try { body = readJson(join(dir, f)); } catch { continue; }
+    let text, body;
+    try { text = readFileSync(join(dir, f), "utf8"); body = JSON.parse(text); } catch { continue; }
     if (!body || typeof body !== "object" || Array.isArray(body)) continue;
     const uri = typeof body._uri === "string" && body._uri
       ? body._uri.toLowerCase()
       : `/mark/${f.slice(0, 2)}/${f.slice(3, -5)}`.toLowerCase();
-    map.set(uri, body);
+    map.set(uri, { body, file: f, text: keepText ? text : null });
   }
   return map;
 }
@@ -258,16 +300,17 @@ export function assembleRunRecords(runDir, runPrefix,
   // any other service account, splitting the provider ledger — plus the legacy name/dir fallbacks.
   callLogPath = ledgerPath("call")) {
   lastLedgerError = null;                      // this assembly's own verdict, not a previous one's
-  const fromRunDir = readRecordArtifacts(runDir);
-  const fromLedger = collectRecordBodies(recordLogPath, runPrefix);
+  const onDisk = readRecordArtifactFiles(runDir);
+  const fromRunDir = new Map([...onDisk].map(([uri, { body }]) => [uri, body]));
+  const { bodies: fromLedger, receipts: fromLedgerReceipts } = collectRecordBodiesAndReceipts(recordLogPath, runPrefix);
   const records = new Map(fromRunDir);
   for (const [uri, body] of fromLedger) keepRecord(records, uri, body);
   // WP-receipts: receipts assemble the same way the records do — artifact-embedded ones (inherited run
   // dir) ∪ this-session ledger rows (fresh fetch wins) — so a re-assembled run dir keeps its proof.
   const receipts = new Map();
   for (const [uri, body] of fromRunDir) if (body?._receipt && typeof body._receipt === "object") receipts.set(uri, body._receipt);
-  for (const [uri, receipt] of collectRecordReceipts(recordLogPath, runPrefix)) receipts.set(uri, receipt);
-  writeRecordArtifacts(runDir, records, receipts);
+  for (const [uri, receipt] of fromLedgerReceipts) receipts.set(uri, receipt);
+  writeRecordArtifacts(runDir, records, receipts, onDisk);
   // — the ledger's own verdict travels with the result. A caller that cannot tell "no records were
   // fetched" from "the ledger could not be read" will report the second as the first, which is what let
   // a 641 MB file silently empty every run's record set for hours.

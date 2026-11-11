@@ -84,7 +84,7 @@ export function opsTokenFor({ bootToken, roster, mint }) {
 // `EnvironmentFile=%h/.env`, and `childEnv` passes the same value to the portal child — so this process
 // has held the signing secret on both start paths for as long as both have existed. The comment has been
 // corrected in place rather than left to be trusted.
-import { mintToken, loadGrants, addressesInGrants } from "../shared/scope.mjs";
+import { mintToken, addressesInGrants } from "../shared/scope.mjs";
 import { withCompany } from "../shared/grants-edit.mjs";
 import { resolvePort } from "../shared/listen.mjs";   // — the port SOURCE, decided once
 import { fileURLToPath } from "node:url";
@@ -133,10 +133,9 @@ import { makePrincipal, genericOrgOf, seesEverything, PortalDeny } from "./porta
 import { readLocalCredential, establishCredential, checkPassphrase, mintSession, verifySession,
   makeAttemptLimiter, credentialPathFor,
   localCredentialHandoff, firstRunCredentialLines, passphraseResetCommand, signInResetCommand } from "./portal-local-auth.mjs";   
-import { loadRecipes, PRODUCT_POLICIES, gateResolvedPolicy, productAvailability, UNAVAILABLE_NOTE } from "./search-policy.mjs";
+import { loadRecipes, PRODUCT_POLICIES, productAvailability, UNAVAILABLE_NOTE } from "./search-policy.mjs";
 import { PLAN_MAX_NAME_LENGTH } from "./register-plan.mjs";   // — the budget the screen states
 import { productRows } from "./product-rows.mjs";
-import { resolveEffectiveScope } from "./effective-scope.mjs";
 import { readFlagSnapshot, builtFor, registerCanCountFor, registerTerritoriesFor, registerLabelFor, caseLawReadyFor } from "./flag-snapshot.mjs";
 import { isDemo, demoPostureLine } from "./demo-posture.mjs";   
 import { orderTimeRefusal } from "./run-requirements.mjs";   // the runner's own test for "can this install run a search"
