@@ -366,29 +366,38 @@ async function correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, wor
     }
     if (!corrected) return standDown("correction-refused-by-the-merged-gate", { reason: gateCause });
   }
+  // A CHANGE OUTSIDE THE DEFECTS IS RECORDED AND RECHECKED, as a clearance records it (design ruling, 2026-11-10: the
+  // Knockout corrects the clearance's way). It no longer stands the correction down: each moved name is kept with its
+  // before and after, and the recheck reads it. A comparison that could not be made sends the recheck to the whole batch.
   const outside = movedOutsideScope(work, corrected);
-  if (outside.marks.length || outside.blocks.length) return standDown("correction-moved-what-no-defect-named", { outside });
+  const movedNames = [...new Set([...outside.marks, ...outside.blocks])];
 
-  // THE FIRST PASS'S REWRITES STILL STAND WHERE NO DEFECT REOPENED THE LINE. The second pass reads the record with them on it.
+  // THE FIRST PASS'S REWRITES STILL STAND ONLY ON A NAME THE CORRECTION DID NOT CHANGE. A rewrite on a changed name was
+  // written against the record as rated, and laid over the change it would put back the words the change replaced. With no
+  // comparison, no name is known to be unchanged. The second pass reads the record with the survivors on it, as it ships.
   let doc = corrected;
-  const { doc: rewritten, receipt } = applyKnockoutReview(corrected, rewritesThatSurvive(firstReview, correctedNames));
+  const survivors = rewritesThatSurvive(firstReview, outside.complete ? [...new Set([...correctedNames, ...movedNames])] : null);
+  const rewritesRetired = (firstReview?.rewrites?.length ?? 0) - survivors.rewrites.length;
+  const { doc: rewritten, receipt } = applyKnockoutReview(corrected, survivors);
   if (validateMergedFindings(run.runDir, rewritten, plan).ok) { doc = rewritten; atomicWrite(K.findings, JSON.stringify(doc, null, 2) + "\n"); }
 
   const answers = correctionAnswers(run.runDir, touched);
   const outcomes = correctionOutcomes(work, doc, answers);
   const unresolved = unresolvedFlags(outcomes).map((r) => r.n);
   const notAnswered = work.defects.filter((x) => outcomes.find((o) => o.n === x.n)?.outcome === "not-answered");
-  const held = { defects: work.defects, outcomes, failedChunks: failed, rolledBack, ...(gateCause ? { gateCause } : {}) };
+  const held = { defects: work.defects, outcomes, failedChunks: failed, rolledBack, ...(gateCause ? { gateCause } : {}),
+    movedOutsideDefects: outside.moved, comparisonComplete: outside.complete, rewritesRetired };
 
   const d = reviewDispatch(doc, plan);
   try {
-    await koStage("knockout-review", ctx, { chunkNo: 1, msgCtx: { ...d.msgCtx, recheckTable: correctionsAppliedTable(outcomes) } });
+    await koStage("knockout-review", ctx, { chunkNo: 1, msgCtx: { ...d.msgCtx, recheckTable: correctionsAppliedTable(outcomes),
+      movedNames, comparisonComplete: outside.complete } });
   } catch (e) {
     if (e instanceof StageFailure && (e.rateLimited || e.resetsAt)) throw e;
     // NOBODY READ THE CORRECTED RECORD, so nothing here can call a defect answered.
     const reason = String(e?.message ?? e).slice(0, 200);
     keepRecord({ ...held, recheck: "failed", failure: reason, open: asOpen(work.defects, "not-rechecked", "recheck-failed") });
-    log("recheck-failed", { applied: receipt.applied, unresolved: unresolved.length, reason });
+    log("recheck-failed", { applied: receipt.applied, unresolved: unresolved.length, reason, movedOutsideDefects: movedNames.length, comparisonComplete: outside.complete });
     return doc;
   }
   const second = readJsonOrNull(knockoutReviewFile(run.runDir, 1));
@@ -397,7 +406,8 @@ async function correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, wor
   keepRecord({ ...held, recheck: "ran", open });
   const again = applyKnockoutReview(doc, second ?? {});
   if (validateMergedFindings(run.runDir, again.doc, plan).ok) { doc = again.doc; atomicWrite(K.findings, JSON.stringify(doc, null, 2) + "\n"); }
-  log("corrected", { applied: receipt.applied + again.receipt.applied, unresolved: unresolved.length, open: open.length, failedChunks: failed.length, rolledBack: rolledBack.length });
+  log("corrected", { applied: receipt.applied + again.receipt.applied, unresolved: unresolved.length, open: open.length, failedChunks: failed.length, rolledBack: rolledBack.length,
+    movedOutsideDefects: movedNames.length, comparisonComplete: outside.complete });
   return doc;
 }
 
