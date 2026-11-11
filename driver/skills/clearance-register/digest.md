@@ -270,8 +270,7 @@ the legal/commercial answer honestly admits more than one defensible call — "c
 client's commercial call"; "get a second opinion on the EU class-25 angle"; an unsettled dispute-type) is the
 lawyer's product: it is **surfaced as reasoning and it SHIPS** (carry placement-inquiry's `### Open questions`
 into the synthesis narrative). It is **not** a coverage gap — it does NOT set `sufficient:false`. The test: *is the
-uncertainty about whether I LOOKED, or about what the COMPLETE picture MEANS?* Whether-I-looked → a coverage gap
-(`coverage-limited` → CONDITIONAL); what-it-means → open judgment, ships. Do not throw the second out with the first.
+uncertainty about whether I LOOKED, or about what the COMPLETE picture MEANS?* Whether-I-looked → a coverage gap (`coverage-limited`, weighed in `coverage_judgment`); what-it-means → open judgment, ships. Do not throw the second out with the first.
 
 **Axis labelling is the driver's on every row the driver wrote — and yours on every row you add.** Each
 driver row already carries its axis and its coverage unit, composed by the driver from the plan entry the
@@ -533,7 +532,7 @@ This skill's universal logic — per-axis funnel, status filter, relevance gate,
 
 **Digest mode:**
 - [ ] Candidates placement carried forward read through the band tools, and accepted set-asides carried forward with their grounds and exceptions under the placement rules; any missing/unreadable band ruled a coverage failure (`coverage-limited`/`deferred` → CONDITIONAL), never called clean off the prose digest; identical-match test run over the band; class-25 merch slice checked in the band (or its absence written as an open Coverage row)
-- [ ] **Band reconciled against the expectation for THIS mark** — saturated field with no enumerated exact-owner slice, and no narrowed list that was read answering it, ruled a material gap (`coverage-limited` → CONDITIONAL), anything famous-missing surfaced, partner-as-headline flagged for de-prioritisation
+- [ ] **Band reconciled against the expectation for THIS mark** — saturated field with no enumerated exact-owner slice, and no narrowed list that was read answering it, ruled a material gap (`coverage-limited`, weighed in `coverage_judgment`), anything famous-missing surfaced, partner-as-headline flagged for de-prioritisation
 - [ ] `matter-context.md` read and informing placement (jurisdiction attribution, off-field framing, watchlist seeds)
 - [ ] `placement-recommendations.md` read and informing tiering; each candidate's graduated outcome adopted or counter-reasoned with audit-trail justification; its coverage-commands/open-questions carried forward
 - [ ] Per-jurisdiction sub-query attribution (`_query`) carried forward in the findings file's audit trail

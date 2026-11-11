@@ -326,7 +326,7 @@ Per mark, in the manifest:
 | 1 | 1+ | Yes | Recipe 1 (compound tagline) |
 | 0 | 1+ | No | Recipe 3 (single descriptive word, crowded) |
 | **0** | **2+** | **Yes** | **Recipe 6 (multi-word descriptive tagline)** |
-| 0 | 0 | — | edge case — apply general 7-step from SKILL.md |
+| 0 | 0 | — | no recipe fits — start from *Read the identical mark first* in SKILL.md, then search each manifest variant |
 | Any | Any with translit-* variants | — | Add Recipe 5 alongside |
 | Any | Any owned element `saturation: high`/`very-high` | — | Add Recipe 7 alongside (primary-sweep unit — the dangerous-category named enumeration) |
 
