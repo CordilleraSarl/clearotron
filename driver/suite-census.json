@@ -285,6 +285,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-clearance-stage-whose-output-has-no-record-runs-again.pipeline.test.mjs": {
+          "tests": 2,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "a-client-cell-carries-no-raw-engine-words.test.mjs": {
           "tests": 5,
           "asserts": 18,
@@ -1932,6 +1938,12 @@
         "a-register-unit-follow-up-carries-the-one-market-list-and-the-classes.test.mjs": {
           "tests": 4,
           "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-register-unit-run-again-buys-no-answer-the-run-holds.test.mjs": {
+          "tests": 7,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },

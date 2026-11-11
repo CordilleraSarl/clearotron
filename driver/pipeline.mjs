@@ -5148,11 +5148,19 @@ async function stageOnce(name, ctx, opts = {}) {
   // declared, already logged per stage; this consults it. Keyed on CONTENT, so a pure crash-resume (no
   // input bytes changed) still skips exactly as cheaply as before.
   const declaredInputs = () => stageInputs(name, P, { axes: ctx.axes, axis: ctx.axis, registerOnly: ctx.registerOnly });
-  const freshness = forced ? { stale: false, changed: [] } : stageStaleness(P.runDir, label, declaredInputs());
+  // AN OUTPUT WITH NO RECORD OF WHAT IT WAS MADE FROM IS NOT REUSED, as in the Knockout. A stage records what it read when
+  // it succeeds, so an output with no record is one whose stage stopped between writing it and recording it, or one
+  // made before the record existed. Its freshness is unknown, so the stage runs again. The register answers it holds
+  // are not bought again: the executor reuses every answer the run holds to the same question.
+  const unrecorded = !forced && Boolean(out) && existsSync(out) && !readStamp(P.runDir, label);
+  const freshness = forced ? { stale: false, changed: [] }
+    : unrecorded ? { stale: true, reason: "no record of the inputs it was produced from", changed: [] }
+    : stageStaleness(P.runDir, label, declaredInputs());
   if (freshness.stale) {
     const why = freshness.changed.map((c) => `${c.name} ${c.was ?? "(absent)"}→${c.now ?? "(absent)"}`).join(", ");
-    runLog(P.runDir, { event: "stage-stale", stage: label, changed: freshness.changed });
-    note(`[${label}] stale — ${freshness.changed.length} input(s) changed since this output was produced (${why}); recomputing`);
+    runLog(P.runDir, { event: "stage-stale", stage: label, changed: freshness.changed, ...(freshness.reason ? { reason: freshness.reason } : {}) });
+    note(freshness.reason ? `[${label}] stale — ${freshness.reason}; recomputing`
+      : `[${label}] stale — ${freshness.changed.length} input(s) changed since this output was produced (${why}); recomputing`);
   }
   // ── — AN UNDISCHARGED FLOOR DUTY IS PART OF "VALID" ──────────────────────────
   //
