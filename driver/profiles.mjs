@@ -167,7 +167,7 @@ export function gridCellBudget(profile) {
   return profile?.marketplaceDensity === "dense" ? DENSE_GRID_CELLS : SAFE_GRID_CELLS;
 }
 
-// floor = store platforms + the general-web cell (the +1; perplexity-prompts.md: one unrestricted
+// floor = store platforms + the general-web cell (the +1; `webGridOf` in web-grid.mjs adds one unrestricted
 // web search per variant, platform name "web").
 export function derivedFloor(profile) {
   return (profile?.platforms?.length ?? 6) + 1;

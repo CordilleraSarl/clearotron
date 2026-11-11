@@ -99,11 +99,12 @@ test("the four refusals on the finding sentence no longer call it one-clause, as
   }
 });
 
+// With the framework the review applies and the shared reasoning between them: the house default here, as no profile names one.
 test("the reviewer reads the prose manual whose rules it enforces, on its first dispatch and on every follow-up", () => {
   const first = STAGES["narrative-refutation"].message({ paths: paths("/r"), job: {}, profile: null, framework: null }).split("\n")[0];
-  assert.equal(first, "First, read and follow exactly: skills/narrative-refutation/SKILL.md, skills/clearance-search/report-prose.md.");
+  assert.equal(first, "First, read and follow exactly: skills/narrative-refutation/SKILL.md, skills/clearance-search/risk-framework.md, skills/clearance-search/firm-wide-reasoning.md, skills/clearance-search/report-prose.md.");
   const follow = composeFollowup("narrative-refutation", { profile: null, job: {} }, { followup: "the instruction" }).split("\n")[0];
-  assert.equal(follow, "METHODOLOGY (reference — this is a correction to work that already exists, NOT an instruction to redo the stage): this stage is held to skills/narrative-refutation/SKILL.md, skills/clearance-search/report-prose.md. Re-read whatever the instruction below turns on.");
+  assert.equal(follow, "METHODOLOGY (reference — this is a correction to work that already exists, NOT an instruction to redo the stage): this stage is held to skills/narrative-refutation/SKILL.md, skills/clearance-search/risk-framework.md, skills/clearance-search/firm-wide-reasoning.md, skills/clearance-search/report-prose.md. Re-read whatever the instruction below turns on.");
 });
 
 test("the prose manual names the finding sentence and its two-sentence limit where it lists what a reader sees first", () => {

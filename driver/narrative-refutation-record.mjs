@@ -34,12 +34,13 @@
 // `n` is the render's, taken from array order. A seat-supplied number is a value that can disagree with
 // the list it labels — duplicated, skipped, or renumbered by a corrective pass — and nothing downstream
 // would notice. Removing the field removes the defect (the doubt-closure `file_index` rule).
-import { writeFileSync, existsSync, readFileSync, readdirSync } from "node:fs";
+import { writeFileSync, existsSync, readFileSync, readdirSync, statSync } from "node:fs";
+import { dispatchFileName } from "./dispatch-record.mjs";
 import { captureCall, mergeCapture, nextSeq } from "./call-capture.mjs";
 import { join } from "node:path";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 import { parseVerdict, countCitedDefects, parseCorrections, parseCorrectionKinds, correctionFlagContent, CORRECTION_KINDS, SECTION_HEADING_RE } from "./verify.mjs";
-import { driverDir, paths, readJson } from "./run-record.mjs";
+import { driverDir, driverFileName, paths, readJson } from "./run-record.mjs";
 import { REVIEW_ADDRESSES_FILE, resolveDeclared } from "./review-addresses.mjs";
 
 export const REVIEW_FILE = "senior-eye-review.md";
@@ -336,12 +337,13 @@ export function recordRefutation(runDir, received, { now = () => new Date().toIS
  * THE ACCEPTED FLAGS, AS TYPED — the input T3b keys targeted fixes off.
  *
  * Returns the flag objects the tool ACCEPTED, or `null` when there is nothing trustworthy to return.
- * Null covers four different states on purpose, and every one of them means "do not act on this":
+ * Null covers five different states on purpose, and every one of them means "do not act on this":
  *
  *   no payload         the stage never called the tool
  *   unreadable payload the capture failed or the file is truncated
  *   `accepted: false`  the tool REFUSED this call — the review was never rendered
  *   `accepted: null`   the capture ran and the validator did not return, so nothing knows the outcome
+ *   earlier dispatch   the call was captured before the latest review dispatch began
  *
  * ✕ THE REFUSED CASE IS WHY THIS EXISTS RATHER THAN A BARE JSON READ. The payload is written before
  * validation, so a refused call leaves a complete, well-formed, entirely authoritative-looking record of
@@ -358,8 +360,34 @@ export function readAcceptedFlags(runDir) {
   // the rendered parse. The calls read start at the dispatch that wrote the address list (`seq0`), so a later dispatch
   // with no accepted call returns null, and its correction takes the logged parse, rather than an earlier review's
   // flags. A refused or unreadable call is passed over, never returned.
-  const accepted = readAcceptedReviewSince(runDir, listedAddresses(runDir)?.seq0 ?? 0);
-  return accepted ? accepted.flags : null;
+  //
+  // AND THE CALL IS FROM THE REVIEW DISPATCH NOW IN FORCE, known without the list. A list that could not be written leaves
+  // no start, and one whose removal also failed still names an earlier dispatch: either way an earlier review's accepted
+  // call is in reach. Every review dispatch writes its first attempt's record before the model runs (gateway.mjs,
+  // recordDispatch), so a call captured before the latest one began belongs to an earlier review, and the correction takes
+  // the rendered review through its recorded fallback instead. With no record (CLEAROTRON_DISPATCH_RECORD off, or a write
+  // that failed) the list alone decides, as it did before. The capture's file time is read, not the `receivedAt` inside it:
+  // a replay that serves a saved call copies the file when the dispatch runs, and keeps the saved run's `receivedAt`.
+  const dir0 = String(runDir ?? "");
+  const accepted = readAcceptedReviewSince(dir0, listedAddresses(dir0)?.seq0 ?? 0);
+  if (!accepted) return null;
+  const began = reviewDispatchBegan(dir0);
+  if (began != null && !(capturedAt(accepted.file) >= began)) return null;
+  return accepted.flags;
+}
+
+/**
+ * When the latest dispatch of the review stage began, in epoch milliseconds: the time its first attempt's record was
+ * written, which is before the model ran. null when there is no such record or it cannot be read. Never throws.
+ */
+export function reviewDispatchBegan(runDir) {
+  try { return Math.floor(statSync(driverDir(String(runDir ?? ""), driverFileName(dispatchFileName("narrative-refutation", 1)))).mtimeMs); }
+  catch { return null; }
+}
+
+/** When a call's capture file was last written, in whole epoch milliseconds, or NaN when it cannot be read. Never throws. */
+function capturedAt(file) {
+  try { return Math.floor(statSync(file).mtimeMs); } catch { return Number.NaN; }
 }
 
 /**
@@ -395,7 +423,7 @@ export function readAcceptedReviewSince(runDir, seq0) {
     try { doc = readJson(c.file); } catch { continue; }
     if (doc?.accepted !== true) continue;
     const p = doc?.params ?? {};
-    return { seq: c.seq, verdict: p.verdict ?? null, flags: Array.isArray(p.flags) ? p.flags : [], planAudit: p.plan_audit ?? null };
+    return { seq: c.seq, verdict: p.verdict ?? null, flags: Array.isArray(p.flags) ? p.flags : [], planAudit: p.plan_audit ?? null, file: c.file };
   }
   return null;
 }

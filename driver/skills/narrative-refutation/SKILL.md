@@ -317,7 +317,6 @@ For each candidate `placement-inquiry` placed at **out-of-scope-filtered** or **
 
 - Does the narrative's structure reflect `matter-context`'s framing (sector / client / jurisdictions)?
 - Does the narrative carry forward the `matter-frame`'s off-field reasoning in its treatment of borderline candidates?
-- Does the methodology section reference `placement-inquiry`'s audit-tab output (Out-of-Scope items + reasoning)?
 - FLAG any major framework break.
 
 ### Actions-register coherence (the disposition is derived from the typed actions)

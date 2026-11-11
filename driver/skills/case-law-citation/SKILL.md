@@ -107,7 +107,7 @@ what you did not search.
 The wired sources give citation *networks*, not editorial treatment flags. Achievable, honest handling:
 date-stamp every decision and surface later citing decisions where the tools allow. Do not imply a
 decision is still good law, and do not tag its standing either: no citator is wired, so such a tag is
-true of every citation always — the report's methodology states what ran, once.
+true of every citation always.
 
 ## Coverage gaps — state them
 
