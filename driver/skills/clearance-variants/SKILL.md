@@ -317,6 +317,8 @@ The `phonetic` / `visual-substitution` / `numeric-substitution` / typographic ro
 | Device-led | dominant verbal-element variants (if any); image search handled separately in register via image fetch |
 | Famous-element-masked | (modifier) Flag elements for the famous-mark check; the common-law grid searches them on the general web, and the common-law step judges the results. Standard variants for the mark's primary archetype |
 
+The table says what to generate. Send each variant under one of the eleven category names listed below.
+
 **Modifier categories** (when applicable):
 
 | Category | Notes |
