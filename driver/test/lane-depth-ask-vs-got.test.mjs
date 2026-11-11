@@ -98,7 +98,15 @@ test("asked full on a lane THIS BUILD has no deep slice for — a different caus
   assert.equal(v.ja.shortfall, true);
   assert.equal(v.ja.cause, "not-built-for-lane",
     "a lane the build cannot run deep must not be reported as a deployment that failed to arm one");
-  assert.match(v.ja.why, /zh-only/);
+  // What a client reads under "Left open" (the owner's sentence, 2026-11-11): the depth asked for is not in this
+  // version, what ran, and what did not, with no name from the code.
+  assert.equal(v.ja.why, "The requested full-depth Japanese-language search is not available in this version. Only the candidate search ran; the deeper web search and native-language review were not performed.");
+  const ko = deriveLaneDepthVerdicts({
+    sidecar: sidecarWith({ ko: { depth: "full", jurisdictions: ["KR"] } }),
+    slices: { candidates: { slice: 1, state: "ran", lanes: { ko: "ran" } } },
+  });
+  assert.equal(ko.ko.why, "The requested full-depth Korean-language search is not available in this version. Only the candidate search ran; the deeper web search and native-language review were not performed.");
+  assert.doesNotMatch(`${v.ja.why} ${ko.ko.why}`, /JX_SLICES|SERP_LANES|slice|\blane\b|\bzh\b|\bja\b|\bko\b/, "the sentence names something only the code's authors use");
 });
 
 test("asked full and NOTHING is established — the flag fires and `ran` is null, never candidates", () => {

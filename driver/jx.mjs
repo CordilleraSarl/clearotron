@@ -215,9 +215,9 @@ export function deriveLaneDepthVerdicts({ sidecar, slices } = {}) {
       // that ran nothing is not established, whatever this build carries for it.
       if (!deep.length && ran === "candidates") {
         cause = "not-built-for-lane";
-        why = `this build carries no deep slice for the ${lane} lane — the SERP grid and native read are zh-only `
-          + `(JX_SLICES, SERP_LANES), so \`full\` cannot be delivered here by any environment. The lane ran as a `
-          + `slice-1 candidate lane, which is what it ships as.`;
+        // THE CLIENT READS THIS UNDER "LEFT OPEN": the owner's sentence (2026-11-11), said only where the candidates ran.
+        why = `The requested full-depth ${languageOfLane(lane)}-language search is not available in this version. `
+          + `Only the candidate search ran; the deeper web search and native-language review were not performed.`;
       } else if (ran === null) {
         cause = "not-established";
         why = `${deep.length ? `the deep slice(s) ${deepStates.map((d) => `${d.name}=${d.state ?? "no record"}`).join(", ")} did not state that they ran, and ` : ""}`
@@ -615,4 +615,9 @@ export async function runJxCandidateFold(ctx, job, opts = {}, { runLog = () => {
     note(`jx lanes skipped (${String(e?.message ?? e).slice(0, 120)}) — never-kill; the Latin plan stands`);
     return { folded: 0, cause: String(e?.message ?? e).slice(0, 200) };
   }
+}
+
+/** A lane's language as a client reads it ("Japanese"), from the lane's own label ("Japanese-script deepening"). PURE. */
+function languageOfLane(lane) {
+  return String(LANGUAGE_LANES[lane]?.label ?? "").replace(/-script deepening$/, "") || lane;
 }
