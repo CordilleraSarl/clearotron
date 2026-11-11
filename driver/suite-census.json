@@ -2505,6 +2505,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-stopped-run-reads-as-stopped-in-the-run-list.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "a-stopped-run-records-what-it-spent.test.mjs": {
           "tests": 3,
           "asserts": 17,
