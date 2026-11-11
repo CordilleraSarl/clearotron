@@ -283,7 +283,7 @@ export const E3_BACKLOG = [
   {
     stage: "register-unit",
     kind: "exactly-these-keys",
-    where: "driver/stages.mjs:4111 (the frame-reopen / scoped-retry message builder). A second number stood here and had been stale for some time: it pointed at a contract-element description rather than a builder, at its old line and at every mechanical shift of it. Two candidate builders sit beside 4164 and picking one would be a guess, so the wrong pointer is removed rather than moved a third time — one accurate citation beats one accurate and one invented.",
+    where: "driver/stages.mjs:4106 (the frame-reopen / scoped-retry message builder). A second number stood here and had been stale for some time: it pointed at a contract-element description rather than a builder, at its old line and at every mechanical shift of it. Two candidate builders sit beside 4164 and picking one would be a guess, so the wrong pointer is removed rather than moved a third time — one accurate citation beats one accurate and one invented.",
     surface: "stage-message",
     evidence: "Every block you append MUST carry \"state\":\"enumerated\" (ONLY if paged to has_more:false) or \"state\":\"incomplete\" — EXACTLY those two strings … (re-dispatch builders, which REPLACE def.message)",
     reparsedBy: "driver/named-band.mjs parseNamedBand. Scope warning: these builders replace def.message on every escalation / envelope-close / frame-reopen dispatch, so an E3 lint that walks STAGES[*].message only never sees them",
@@ -652,7 +652,7 @@ export const E3_BACKLOG = [
   {
     stage: "narrative-refutation",
     kind: "dictated-line-shape",
-    where: "driver/stages.mjs:4695",
+    where: "driver/stages.mjs:4690",
     surface: "stage-message",
     // RE-QUOTED BY CONVERSION 9. The LINE-TOKEN half is gone — no "anywhere on the line", no "[kind: …]
     // token", no "a line with no token is treated as fact", because a kind is a typed field now and an
@@ -752,7 +752,7 @@ export const E3_BACKLOG = [
   {
     stage: "report-card",
     kind: "literal-json-skeleton",
-    where: "driver/stages.mjs:3799",
+    where: "driver/stages.mjs:3794",
     surface: "stage-message",
     evidence: "The finding's OWN record — the ONLY source for this card …:\\n```json\\n<JSON.stringify(finding, null, 2)>\\n```",
     reparsedBy: "none — this is the INPUT side, and that is why it belongs in the survey: a full JSON object rendered into the prompt is exactly the mechanism #850 proves produced R-RECEIPT (the model pattern-matches a shown shape). E3's clause 1 as written (\"a code fence or inline example showing the exact object shape the model must emit\") does not reach an injected record, so the lint needs an explicit rule for shown-but-not-owed structure",
