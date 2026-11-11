@@ -16,7 +16,7 @@ of the framework in force (`risk-framework.md` house default, or the profile-sel
 **Banding by disposition (placement only — never the rating).** Each finding's `disposition` sets where the driver places it: adversarial among the conflicts, coexistence-partner and distinguished under notable but manageable, off-field as awareness. It never changes the band.
 
 **Distil for the reviewing lawyer (the one reader).** Lead with the decision: `overall_caption` is at most 3 sentences of plain legal English.
-`# Actions` lists the open external checks — both surface above the fold.
+The driver renders the open external checks from the `actions` register — both surface above the fold.
 The card's risk chip is code-built from the finding's `band` + disposition; the typed `net` and
 `overall_caption` are plain legal English: the consequence and the fact that conditions it, with no risk codes and no step to take — never
 engineering/pipeline register. "Full detail" is collapsed.
@@ -61,16 +61,15 @@ detail — **detail level only, never the top-line summary**. **Show what common
 the marketplace / meaning search surfaced or strengthened this finding — it is *why* some conflicts lead at all
 (e.g. an active competitor found selling under the mark in our field) — say so in one plain clause in Full
 detail: what the marketplace/meaning check actually *found* for THIS mark. And keep what was **checked**
-(searched and found) separate from what is only **assumed** or still **to-do** — a not-yet-run check is carried
-as an explicit "not yet verified" or a `# Actions` open item, never dressed up as a result.
+(searched and found) separate from what is only **assumed** or still **to-do** — a not-yet-run check that a search can answer is closed in the run or kept as an internal note; a step only a human can take is a typed entry in the `actions` register. Neither is dressed up as a result. Unsearched or incomplete work remains recorded as such, with any material limit reflected in the advice.
 
 **Coverage = open items, not a telemetry panel.** Coverage is drawn **only** from the typed `coverage[]` array in
 `findings.json` (states: `confirmed-clean` / `coverage-limited` / `open` / `not-searched` / `note`), which the
 render turns into the coverage panel deterministically. `report-overview` does **not** author a `# Coverage`
 section or enumerate confirmed-clean areas / clean-checks in prose. doc-35 close-the-loop: a `coverage[]` area
 that is `open` / `not-searched` / `coverage-limited` and **search-reachable** is CLOSED in the run or an INTERNAL
-reviewer note — it does NOT surface as a client `# Actions` item; a genuinely **un-cleared dangerous slice** the
-search could not close is stated in the **risk read as analysis** (it also clamps the verdict to CONDITIONAL),
+reviewer note — it does NOT become a client action; a genuinely **un-cleared dangerous slice** the
+search could not close is stated in the **risk read as analysis** (its effect on the advice is reasoned in `coverage_judgment`),
 never a client "gap we should close" caveat. A forward step a human must take is a typed entry in the `actions` register, written in synthesis and rendered by code. The shell's `actions` carry results only. `confirmed-clean` / `note` areas are not gaps and are not actions. The
 `overall_caption` never **leads** with a coverage gap — it leads with the substantive risk.
 
