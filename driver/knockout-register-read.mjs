@@ -26,6 +26,7 @@
 
 import { appendFileSync, mkdirSync, readdirSync, renameSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
+import { createHash } from "node:crypto";
 
 import { kebab } from "./search-policy.mjs";
 import { resolveRegions } from "./register-plan.mjs";
@@ -638,17 +639,6 @@ export async function executeQuestionsWithLister(lister, { plan_path: planPath, 
   if (!asked.length) return { type: "text", text: `ERROR: the plan carries no entries for axis "${axis}".` };
   let band = [];
   try { const had = readJson(outputPath); if (Array.isArray(had)) band = had; } catch { /* first write */ }
-  // NEVER PAID FOR TWICE (2026-11-11). A register answer is paid for, and it does not change within the run. So a
-  // question this run already holds an answer to is not sent again, whoever asks it and however often: a resume, a
-  // step run again, or the code asking what the plan owes on every pass. Its answer stands in the band. A failed
-  // answer is no answer, so that question is asked again, as finishing the run would ask it.
-  const answered = new Map(band.filter((b) => b?.qid && b.error !== true).map((b) => [String(b.qid), b]));
-  const held = asked.filter((e) => answered.has(String(e.qid)));
-  const entries = asked.filter((e) => !answered.has(String(e.qid)));
-  const states = Object.fromEntries(held.map((e) => [e.qid, answered.get(String(e.qid)).state ?? "held"]));
-  if (!entries.length) return { type: "text", text: JSON.stringify({ skipped: [], held: held.map((e) => e.qid), states }) };
-  const owned = new Set(entries.map((e) => String(e.qid)));
-  const blocks = [];
   // What the name's own question was asked over: a question over other classes is a narrower one, and is keyed as one.
   let nameClasses = null;
   try {
@@ -656,20 +646,39 @@ export async function executeQuestionsWithLister(lister, { plan_path: planPath, 
     nameClasses = (frozen?.entries ?? []).find((f) => f?.axis === axis && f?.provenance === "mark" && !f?.added_class_reason)?.nice_classes ?? null;
   } catch { nameClasses = null; }
   const sameClasses = (a) => JSON.stringify([...(a ?? [])].map(String).sort()) === JSON.stringify([...(nameClasses ?? [])].map(String).sort());
+  /** What one question sends the register, term by term. */
+  const sentFor = (e) => (Array.isArray(e?.terms) ? e.terms : [e?.term]).map((term) => ({ term, classes: sameClasses(e.nice_classes) ? [] : (e.nice_classes ?? []),
+    regions: e.regions ?? [], matchMode: MATCH_MODES[e?.predicate] ?? "default", goods: e.goods_text ?? null, scoped: true }));
+  const sentKey = (e) => createHash("sha256").update(JSON.stringify(sentFor(e))).digest("hex").slice(0, 16);
+  // NEVER PAID FOR TWICE (2026-11-11). A register answer is paid for, and it does not change within the run. So a
+  // question this run already holds an answer to is not sent again, whoever asks it and however often: a resume, a
+  // step run again, or the code asking what the plan owes on every pass. Its answer stands in the band. A failed
+  // answer is no answer, so that question is asked again, as finishing the run would ask it.
+  //
+  // AN ANSWER STANDS ONLY FOR THE QUESTION IT ANSWERED. The plan is written again on every pass from the framed names,
+  // and a name's own questions keep their ids when the frame changes their words or classes. So each block records
+  // what was sent for it (`sent`), and a held answer stands only where the question now sends exactly that. A block
+  // that records nothing of what was sent cannot show it answered this question, so the question is asked again.
+  const answered = new Map(band.filter((b) => b?.qid && b.error !== true).map((b) => [String(b.qid), b]));
+  const holds = (e) => answered.get(String(e.qid))?.sent === sentKey(e);
+  const held = asked.filter(holds);
+  const entries = asked.filter((e) => !holds(e));
+  const states = Object.fromEntries(held.map((e) => [e.qid, answered.get(String(e.qid)).state ?? "held"]));
+  if (!entries.length) return { type: "text", text: JSON.stringify({ skipped: [], held: held.map((e) => e.qid), states }) };
+  const owned = new Set(entries.map((e) => String(e.qid)));
+  const blocks = [];
   for (const e of entries) {
-    const terms = Array.isArray(e?.terms) ? e.terms : [e?.term];
-    const base = { qid: e.qid, query: { term: e.term ?? null, terms: e.terms ?? null, predicate: e.predicate ?? null } };
+    const base = { qid: e.qid, query: { term: e.term ?? null, terms: e.terms ?? null, predicate: e.predicate ?? null }, sent: sentKey(e) };
     const rows = [];
     const seen = new Set();
     const warnings = [];
     let total = 0;
     let failure = null;
     if (e?.unsupported) failure = String(e.unsupported_reason ?? "this register cannot express this question");
-    for (const t of failure ? [] : terms) {
+    for (const { term: t, ...asks } of failure ? [] : sentFor(e)) {
       let r;
       try {
-        r = await lister(t, { classes: sameClasses(e.nice_classes) ? [] : (e.nice_classes ?? []), regions: e.regions ?? [],
-          matchMode: MATCH_MODES[e?.predicate] ?? "default", goods: e.goods_text ?? null, scoped: true });
+        r = await lister(t, asks);
       } catch (err) { r = { ok: false, reason: `record listing threw: ${String(err?.message ?? err).slice(0, 200)}` }; }
       if (!r?.ok || !Array.isArray(r?.records)) { failure = String(r?.reason ?? "the question was not answered"); break; }
       total += Number.isFinite(r.total) ? r.total : r.records.length;
