@@ -250,7 +250,7 @@ test("the real sign-in page is read, in every state it is served in", async () =
   // The three sentences the owner approved for this page, as the approved list writes them.
   for (const s of [
     `This Clearotron has one user: ${HOLE}. Enter its passphrase.`,
-    `The passphrase was printed once when this Clearotron first started. Lost it? Run ${HOLE} on the machine running this portal. It prints a new one, once, for the same user.`,
+    `The passphrase was printed once, when this Clearotron first started or was last reset. Lost it? Run ${HOLE} on the machine running this portal. It prints a new one, once, for the same user.`,
     `A key from ${HOLE} is for an AI assistant, not for this page.`,
   ]) assert.ok(texts.includes(s), `not read from the sign-in page: ${s}\nread: ${texts.join(" | ")}`);
   assert.ok(texts.includes(`You are signed in as ${HOLE}.`), "the signed-in state is not read");

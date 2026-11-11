@@ -6,7 +6,7 @@
 // One phase of a run, moved out of pipelineInner unchanged. `helpers` are functions still held in pipeline.mjs, handed in
 // because this module must not import that one back; each moves here when the other phases that share it have moved.
 import { ensureDriverDir } from "../../shared/driver-dir.mjs";
-import { orderSnapshot } from "../accepted-order.mjs";
+import { orderSnapshot, retainAcceptedOrder } from "../accepted-order.mjs";
 import { recordSpan } from "../attributed-span.mjs";
 import { config, preflightCredentials, preflightEngineBinary, preflightFreeSpace, preflightResearchCredential, REGISTER_PROVIDER } from "../driver.config.mjs";
 import { engineProvenance } from "../engine-build.mjs";
@@ -350,6 +350,14 @@ export async function openRun({ job, opts }, helpers) {
   // every place that reads a register for this run takes, never the process's setting.
   const ctx = { paths: P, job, run, agent, stateReset: isResume, register: registerForRun(run.runDir) };
   opts.__ctx = ctx;   // P2 — the outer wrapper reconciles this pass's stamps in its finally, success or failure
+  // THE ORDER AS IT WAS ACCEPTED, kept whole with the run before anything can fail, for both products: a resume or a
+  // stage replay given no job file runs on the order and not on what status kept of it (accepted-order.mjs). Written
+  // once; an order given again by a resume's job file is kept beside it when it differs, and a job this run rebuilt is
+  // never kept. It was written in the clearance's own steps, after a Knockout had already gone its own way, so a
+  // Knockout kept no order and a hand resume of a batch of several marks, rebuilt from status, was refused.
+  try {
+    retainAcceptedOrder(run.runDir, acceptedOrder, { explicit: opts.explicitJob === true, rebuilt: opts.jobRebuiltFromStatus === true });
+  } catch (e) { note(`accepted-order write failed (non-fatal): ${e.message}`); }
   // WS-B: freeze the customer profile into the sidecar before ANY validated stage — early stages'
   // idempotency re-validation and the receipts gate must all see the same per-run values. Minted on
   // COLD starts only: a resumed pre-WS-B run stays legacy end to end (retro-minting would apply the
@@ -363,5 +371,5 @@ export async function openRun({ job, opts }, helpers) {
   // acceptance 5 — recorded on EVERY run, ungraded included: "which ladder applied" must be a
   // read, never an inference from which product the job asked for.
   runLog(run.runDir, depthLadderEvent(ctx));
-  return { P, acceptedOrder, agent, ctx, isResume, run };
+  return { P, agent, ctx, isResume, run };
 }

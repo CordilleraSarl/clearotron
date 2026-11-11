@@ -924,7 +924,7 @@ export function validateJob(job, { atClaim = false } = {}) {
       job.deadline = new Date(t).toISOString();
     }
   }
-  if (!job.ref && !job.tmp) warnings.push("no ref/tmp (TMP Reference No.) — proceeding with no reference");
+  if (!job.ref && !job.tmp) warnings.push("No reference number was given, so this search has none.");
   // Repair-first phase 3 (the teal-causeway msgId defect): a 32-hex msgId is the SANITIZED HASH base
   // (the job-id derivation), not a Graph message id — the delivery send-tool's inReplyTo lookup will fail and the
   // notice/delivery falls back off the client thread. Never blocks (still deliverable via fallback);

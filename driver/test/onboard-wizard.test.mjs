@@ -1128,8 +1128,9 @@ test("--check names the MODE on a machine with no engine, and does not send the 
     assert.equal(r.code, 0, r.out);
 
     assert.match(r.out, /MODE: demo/, `--check no longer names the mode:\n${r.out}`);
-    assert.match(r.out, /everything works except starting a NEW search/,
-      "the demo line stopped saying what DOES work, which is the half a reader is deciding on");
+    assert.match(r.out, /MODE: demo — new searches are unavailable\. `[^`]*clearotron demo` shows the example report/,
+      "the demo line stopped saying what a reader can still do, which is the half a reader is deciding on");
+    assert.doesNotMatch(r.out, /everything works/, "the demo line still claims everything works");
     assert.match(r.out, /To leave demo: run `[^`]*clearotron install`/, "nothing tells the reader how to leave demo mode");
     assert.doesNotMatch(r.out, /add --probe-engine to spend one cheap turn/,
       "the engine-present advice is being printed on a box with no engine");

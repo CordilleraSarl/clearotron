@@ -14,7 +14,7 @@ and is what you want when you are working in this tree.
 | File | Shipped verb | In a checkout | Cost |
 |---|---|---|---|
 | `example.mjs` | `clearotron demo` | `npx clearotron demo` | Free. No credentials, no model, no engine, no register call. |
-| `onboard.mjs` | `clearotron install` | `npm run setup` | **Spends one cheap engine turn.** `clearotron doctor` writes nothing and calls nobody. |
+| `onboard.mjs` | `clearotron install` | `npm run setup` | **Spends one cheap engine turn.** `clearotron doctor` writes nothing and contacts nothing outside this machine. |
 | `start.mjs` | `clearotron start` | `npm start` | Free to start. What it starts can spend — see below. |
 | `uspto-sync.mjs` | `clearotron sync` | `npm run sync:uspto` | Not billed, but 41.5 GB of download and about nine hours of indexing. |
 | `signa-sync.mjs` | — | `node bin/signa-sync.mjs` | One vendor read (`GET /v1/offices`, paged). Needs `SIGNA_API_KEY`. |

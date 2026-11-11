@@ -110,7 +110,7 @@ import { placedUriRows, standingSetAside, placementSetAsideGrounds, placementFlo
 export { placementSetAsideGrounds, placementFloorDecisionLines, placementSetAsideLines, placementAuditRows, placementRecallEndings,
   standingPlacementDecisions, writePlacementDecisions } from "./placement-decisions.mjs";
 import { readPlacementForm, readPlacementFormInput, writePlacementForm } from "./placement-form-io.mjs";
-import { retainAcceptedOrder, rebuildRunOrder } from "./accepted-order.mjs";   // the order a run was accepted on, kept with it from intake
+import { rebuildRunOrder } from "./accepted-order.mjs";   // the order a run was accepted on, kept with it from intake (steps/open-run.mjs)
 import { buildSelectionIndex, setAsideKeysOf, ownerFates, servedLines, lineKey } from "./placement-form.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree, matterSiblings, findStrayMatterSiblings } from "./stray-artifacts.mjs";   // — a run dir holds no document no stage dictated; — nor does the doctrine tree
 import { resolveProfile, loadProfiles, resolveEffectiveProfile, derivedFloor, derivedBatchSize, gridBatchFor, applicantMatchesProfile, NEUTRAL_DELIVERY, recipeProseGuard, withRunPlatforms } from "./profiles.mjs";   // adds profileStoreResolution — the CONFIG store's identity, beside the doctrine tree's
@@ -201,7 +201,7 @@ import { JURISDICTION_ADAPTERS, LANGUAGE_LANES, scopeJurisdictions as jxScopeJur
 // parseBlindFrameModel nor dominantElementFromManifest is called from this file any more.
 import { recordedScopeLedgerRows } from "./clearance-variants-record.mjs";
 import { renderFormNeighbourhoodJson, parseFormNeighbourhoodJson, dispatchedQueriesFromBand, formGapDirectives, markText } from "./form-neighbourhood.mjs"; import { loadOrdinaryWords } from "./ordinary-words.mjs";
-import { classifyFailureReason, createRepairLedger, TRANSIENT_RE, retryCannotHelpWith, isContentShapedFail, isFallbackEligible } from "./repairs.mjs";
+import { createRepairLedger, TRANSIENT_RE, retryCannotHelpWith, isContentShapedFail, isFallbackEligible } from "./repairs.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { isCancelled } from "./cancel.mjs";   // stop-by-user: a distinct class, never classified as a failure; isCancelled is the resume door's own refusal (2155)
 import { BRAND } from "../shared/brand.mjs";   // — the operator name a client is told to expect, from the tenant seam
@@ -9381,7 +9381,7 @@ export function instructedScopeOf(job) {
 
 async function pipelineInner(job, opts = {}) {
   // The order, the run directory, the resume checks and the context (steps/open-run.mjs).
-  const { P, acceptedOrder, agent, ctx, isResume, run } = await openRun({ job, opts }, { attachProfile, attachSearchPolicy, depthLadderEvent, findRunDate, resumeStopRefusal });
+  const { P, agent, ctx, isResume, run } = await openRun({ job, opts }, { attachProfile, attachSearchPolicy, depthLadderEvent, findRunDate, resumeStopRefusal });
   // ── Phase 2a dispatch: a knockout-pipeline policy runs the SLIM lane (pipeline-knockout.mjs) —
   // lazy import (a clearance run never loads it; also breaks the static cycle). Placed INSIDE the
   // run slot + pipeline()'s rate-limit postpone catch, with profile+policy frozen; the knockout lane
@@ -9536,12 +9536,6 @@ async function pipelineInner(job, opts = {}) {
       event: "intake-artifacts", rawRequest: Boolean(job.rawRequest), brief: Boolean(job.brief),
     });
   } catch (e) { note(`intake artifact write failed (non-fatal): ${e.message}`); }
-  // THE ORDER AS IT WAS ACCEPTED, kept whole with the run before any stage can fail, so a resume or a stage replay
-  // given no job file runs on the order and not on what status kept of it (accepted-order.mjs). Written once; an order
-  // given again by a resume's job file is kept beside it when it differs, and a job this run rebuilt is never kept.
-  try {
-    retainAcceptedOrder(run.runDir, acceptedOrder, { explicit: opts.explicitJob === true, rebuilt: opts.jobRebuiltFromStatus === true });
-  } catch (e) { note(`accepted-order write failed (non-fatal): ${e.message}`); }
   // WS2 (B3) — the code-authoritative INSTRUCTED SCOPE: what the job fields actually said,
   // written before any model breathes on them. The matter frame must quote these verbatim (the
   // frame validator compares against THIS file, never against the frame's own paraphrase) —
@@ -11114,6 +11108,12 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   });
 
   try {
+    // A NEW RUN ON AN INSTALL THAT CANNOT SEARCH YET is refused in doctor's words, before the doors ask for a
+    // program nobody chose (driver/run-requirements.mjs, commandLineRefusal). A resume keeps the engine it recorded.
+    if (!a.codename && !a.experiment) {
+      const notYet = commandLineRefusal(process.env, await runTables(), reachableCommand("install"));
+      if (notYet) throw new Error(notYet);
+    }
     const res = a.experiment ? await runExperiment(job, opts) : await pipeline(job, opts);
     settled = true;
     if (!res.ok) advise({ result: res, codename: res.codename ?? opts.__runRef?.codename ?? null });
@@ -11523,3 +11523,7 @@ export function reassembleFromTheRecord(P, findings, depth) {   // @internal
   assembleReportMd(P, findings, plan.assembledOrdinals, { grouped: plan.groupedMembers, byRight: plan.byRight });
   return plan;
 }
+
+// Hoisted, so placed last: an import at the top would move every line citation into this file.
+import { commandLineRefusal } from "./run-requirements.mjs";
+import { runTables } from "./order-tables.mjs";
