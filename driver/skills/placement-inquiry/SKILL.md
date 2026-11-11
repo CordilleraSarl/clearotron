@@ -19,7 +19,7 @@ The funnel hands you the named band unjudged; it decided *nothing* about relevan
 
 ## When invoked
 
-After register-unit workers and common-law workers have returned their findings (Phase 2 Step 2B end), BEFORE the digest worker (`clearance-register` MODE B) spawns to tier candidates. One Opus call (inline by the orchestrator), reads matter-context.md + the band shape, then the records its order and your judgment call for (through the band tools) + the common-law findings.
+After register-unit workers and common-law workers have returned their findings (Phase 2 Step 2B end), BEFORE the digest worker (`clearance-register` MODE B) spawns to tier candidates. One stage, run by the driver. It reads matter-context.md + the band shape, then the records its order and your judgment call for (through the band tools) + the common-law findings.
 
 ## Inputs you receive
 
@@ -47,7 +47,7 @@ It is how the validator finds your tier sections.
 **Word the headings however reads best.** The anchor is the contract; the heading text is yours. The
 order above is still the order to write them in, but you will not be failed for choosing other words.
 
-**2. The structured mirror** `placements.json`, at the path your task message names — the four tier sections as data: `{"schema_version":1,"placements":[...]}`, ONE object per placed candidate, keys EXACTLY `{"mark","owner","jurisdiction","records","tier","reason"}` plus the optional `"borderline"`:
+**2. The placement form**, at the path your task message names: one row per placed candidate, in the four tiers. The form states its own field rules, and the driver renders `placements.json` from it; do not write that file. What each field carries:
 
 - `mark` / `owner` — verbatim as in your md entry (downstream joins on mark + owner + jurisdiction)
 - `jurisdiction` — the office/territory; `""` where none applies

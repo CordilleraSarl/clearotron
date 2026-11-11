@@ -1,6 +1,6 @@
 ---
 name: clearance-variants
-description: Shared strategy + variant generation for the v3 preliminary trademark search workflow. **Invoked exclusively by the `clearance-search` orchestrator** as the first stage of any v3 clearotron run — do not call directly. Classifies the proposed mark into one of six analytical archetypes, derives a risk theory from that classification, then generates the variant set whose axes are shaped by the archetype. Emits a markdown variant manifest consumed by both common-law (`clearance-common-law`) and register (`clearance-register`) execution skills.
+description: Shared strategy + variant generation for the v3 preliminary trademark search workflow. **Run by the driver** as the first stage of any v3 clearotron run — do not call directly. Classifies the proposed mark into one of six analytical archetypes, derives a risk theory from that classification, then generates the variant set whose axes are shaped by the archetype. Emits a markdown variant manifest consumed by both common-law (`clearance-common-law`) and register (`clearance-register`) execution skills.
 ---
 
 ## Contents
@@ -310,7 +310,7 @@ The `phonetic` / `visual-substitution` / `numeric-substitution` / typographic ro
 
 | Archetype | Core categories (in priority order) |
 |---|---|
-| Coined word | phonetic, visual-substitution [see *Visual / typographic-neighbour rules*], numeric-substitution (leet), foreign-transliteration (worldwide/multi-region scope), compound-token-split |
+| Coined word | phonetic, visual [see *Visual / typographic-neighbour rules*], numeric (leet), transliteration (worldwide/multi-region scope), composite (whole-mark token separation) |
 | Descriptive compound | element-solo + compound-phrase, stem-formative on each element, plural-root, semantic-neighbours of distinctive anchor |
 | Slogan | family-patterns (`X * Y`, `* YOUR Y`, `X YOUR *`), verb-swap (replace lead verb with adjacent verbs in same semantic field), preposition swap (YOUR → THE/A/MY/OUR), slang spellings, co-brand wildcards (`* [SLOGAN]`, `[SLOGAN] *`), phrase-substitution (full morphological variants) |
 | Acronym / initialism | letter-collision (the acronym itself), expansion-form (search the expanded phrase), ambiguity-check (other meanings of the same letters) |

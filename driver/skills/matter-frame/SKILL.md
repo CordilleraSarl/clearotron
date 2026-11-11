@@ -11,13 +11,13 @@ This is structured inquiry, not rule application. You are reasoning, not classif
 
 ## When invoked
 
-Phase 0 of any trademark search workflow, after the request has been parsed (mark, classes, manner of use, client, requester) and before variants generation. One Opus inline call, no tool budget, no spawned workers.
+Phase 0 of any trademark search workflow, after the request has been parsed (mark, classes, manner of use, client, requester) and before variants generation.
 
-Invoked from `clearance-search` (orchestrator) at Phase 0, before `clearance-variants`. Reusable by a future clearance-search at the equivalent step.
+The driver runs it at Phase 0, before `clearance-variants`.
 
 ## Inputs you receive
 
-From the orchestrator's spawn task / Phase 0 context:
+From the dispatch:
 
 - Mark name(s)
 - Proposed Nice classes
@@ -150,7 +150,7 @@ VERBATIM; nothing else asks what the name means:
 
 ## Length target
 
-500-1000 words. Long enough to be useful; short enough that the orchestrator can re-read it at every downstream step without context bloat.
+500-1000 words. Long enough to be useful; short enough for every later stage to read whole.
 
 ## Failure fallback
 

@@ -25,7 +25,7 @@ test("the web and register manuals set no call budget", () => {
   // per-unit table of calls — one of the numbers the ruling takes out — so deleting that table turned a
   // successful repair into "the manuals were read" failing. A canary keyed on the thing being removed
   // fires when the work is done, which is the one time it must not.
-  assert.ok(manuals["clearance-common-law/SKILL.md"].includes("Step 3 — Famous-mark check")
+  assert.ok(manuals["clearance-common-law/SKILL.md"].includes("Step 3 — Famous-mark")
     && manuals["clearance-register/SKILL.md"].includes("## Tool call budget — and why it is NOT a sufficiency lever"),
     "guard: the manuals were read");
   for (const [name, text] of Object.entries(manuals)) {
