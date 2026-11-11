@@ -5093,7 +5093,7 @@
         },
         "onboard-wizard.test.mjs": {
           "tests": 78,
-          "asserts": 303,
+          "asserts": 304,
           "skips": 4,
           "todos": 0
         },
@@ -7373,7 +7373,7 @@
         },
         "the-install-pages-describe-the-install-this-build-performs.test.mjs": {
           "tests": 13,
-          "asserts": 102,
+          "asserts": 104,
           "skips": 0,
           "todos": 0
         },
