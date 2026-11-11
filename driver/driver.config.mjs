@@ -87,28 +87,6 @@ export const envOn = (name, env = process.env) => {
   return v != null && v !== "" && !OFF_WORDS.has(String(v).trim().toLowerCase());
 };
 
-/** ONE reader for `CLEAROTRON_NATIVE_LANGUAGE_<CODE>`, and the reason it is not just `envGateOn` is the `env` argument.
- *
- *  FAIL-OPEN BY DOCTRINE, not by preference: kill switches are retired, availability is BUILT-only, and
- *  the switches that remain fail open (search-policy.mjs states it — "`CLEAROTRON_NATIVE_LANGUAGE_<code>` is fail-OPEN
- *  by construction (`?? "1"` — on unless explicitly \"0\")"). A built lane arms unless somebody
- *  explicitly silenced it.
- *
- * — this exists because the flag had FOUR readers and one of them defaulted the other way.
- *  jx-units.mjs and jx.mjs each carried a private `laneEnvOn` (default ON) while the slice-statement
- *  path at jx.mjs:104/121 used the default-OFF `envOn`. With CLEAROTRON_NATIVE_LANGUAGE_ZH unset — which is its state
- *  on every box — the executor armed the lane, dispatched 42 SERP cells and got a provider quota
- *  refusal, while the delivered coverage statement said the lane was "off in this run's own
- *  environment". Same value, computed twice, two answers, and the false one is the one that rendered.
- *
- *  Takes `env` because deriveJxSliceStatement is pure and threads one; `envGateOn` reads process.env
- *  directly and cannot serve a pure caller.
- */
-export const laneArmed = (lane, env = process.env) => {
-  const v = env?.[`CLEAROTRON_NATIVE_LANGUAGE_${String(lane ?? "").toUpperCase()}`];
-  return v == null || v === "" || !OFF_WORDS.has(String(v).trim().toLowerCase());
-};
-
 /** Default-ON gate (`X=0` / `X=off` disables it). Unset or empty ⇒ true. */
 export const envGateOn = (name) => {
   const v = process.env[name];

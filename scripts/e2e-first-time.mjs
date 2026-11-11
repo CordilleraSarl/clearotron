@@ -318,7 +318,8 @@ export const OUTSIDE_THE_RUN = ["whatif-memo"];
 const NAMES_A_FRESH_DISPATCH = new Set(["lane-wedge-retry", "stage-floor-duty-rerun"]);
 
 // A native-language unit that did not run for a reason the design gives. Any other cause, a degraded or
-// deferred unit, a throw or a corrupt fixture among them, is a failure.
+// deferred unit, a throw or a corrupt fixture among them, is a failure. The first pattern is the retired
+// per-language off switch: a run from before its retirement (2026-11-11) can still carry that cause.
 const DESIGNED_JX_CAUSES = [/^CLEAROTRON_NATIVE_LANGUAGE_\w+ off$/, /^no frozen \S+ lane decision/, /^no SERP capability entry/,
   /^already ran \(frozen\)$/, /^already folded \(frozen\)$/, /^no lanes in scope/, /^frozen decision has no lanes$/,
   /^no in-scope classes/, /^no terms to dictate/];
