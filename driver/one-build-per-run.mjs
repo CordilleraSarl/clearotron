@@ -46,3 +46,17 @@ export function crossBuildResumeRefusal(runDir, { current = engineProvenance().e
     })();
   return why && `resume refused: ${why}. A run is finished on the build it started on and is not resumed after an update; start a new run.`;
 }
+
+/**
+ * Why `pool-admin republish` may not re-render this archived run on the running build, as one sentence, or null when
+ * it may. The run's stored page stays as it is: only a re-render through today's publisher is refused, so a report
+ * from an earlier version is never rewritten by code it was not made with (design's ruling, 2026-11-11). The demo's
+ * player and the bench's comparison call the publisher directly and are not this door. A run that recorded no build,
+ * and an install that cannot name its own, cannot show the run was made here, so both refuse. `current` is injected
+ * for tests; callers leave it to the running build.
+ */
+export function crossBuildRepublishRefusal(runDir, { current = engineProvenance().engineHead } = {}) {
+  const started = startedOnBuild(runDir);
+  if (current && started === current) return null;
+  return "This report was created by a different Clearotron build. Its saved report remains available; this build cannot republish it.";
+}

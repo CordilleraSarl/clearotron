@@ -2031,6 +2031,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-report-is-republished-only-by-the-build-that-made-it.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-report-prints-the-dates-of-its-record.test.mjs": {
           "tests": 4,
           "asserts": 14,
