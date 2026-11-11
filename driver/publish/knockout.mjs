@@ -915,7 +915,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     // it BOTH marks of a batch resolved to the run-level URL, which resolveReportFile answers null
     // for by design (a batch has no run-level document) — so every per-mark link 404'd, and the
     // clearances row printed a fallback saying the report was with us for a final read.
-    reports: reports.map(({ mark, slug, file, dataFile, band }) => ({ mark, slug, file, dataFile, band })),
+    reports: reports.map(({ mark, slug, file, dataFile, band, url }) => ({ mark, slug, file, dataFile, band, url })),
   } });
   await refreshStaffPages({ regenSurfaces, poolRoot, skipRegen, runDir });
   // `url` IS NULL FOR A BATCH, and that is the honest answer rather than a convenient one. A multi-name

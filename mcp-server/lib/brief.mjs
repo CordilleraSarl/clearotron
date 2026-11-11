@@ -29,9 +29,14 @@
 // can give. An absence is reported as an absence. Read-only.
 
 import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { parseReport } from "./driver.mjs";
 import { readReportData, productIdentityFor } from "./runs.mjs";
-import { readJson } from "../../driver/run-record.mjs";
+import { readJson, readJsonOrNull } from "../../driver/run-record.mjs";
+
+// THE LINE FOR A SCREENED NAME WITH NO DATA FILE, beside its report link: the brief cannot read its rating, and says so
+// rather than leaving the name out. PROPOSED, awaiting design's yes; modelled on the approved run-level line below.
+const NO_DATA_FOR_NAME = "_No published data file for this name — its rating is in its report._";
 
 // Drop internal-only context (::p:: marker) and the leading risk-formula clause ("Level N Risk = … →").
 // APPLIED ONLY TO report.md-DERIVED TEXT (the archived-run fallback below). Strings out of report-data.json
@@ -77,6 +82,13 @@ export function buildBrief(run) {
   // The knockout shape carries no `kind` at all and is told apart by `marks[]` — the same discrimination
   // portal-service.mjs makes. Both lanes stamp `schema: 'report-data/1'`, so the schema string cannot.
   const koDocs = docs.filter((d) => d?.kind !== "clearance" && Array.isArray(d?.marks));
+  // A NAME WHOSE DATA FILE COULD NOT BE WRITTEN IS STILL A NAME SCREENED. A Knockout batch publishes every name's
+  // report when one name's data file fails, and lists that name in meta.reports with no data file. Read from the
+  // data files alone, the brief left the name out and nothing said another was screened.
+  const koMeta = clearance || !run.poolDir ? null : readJsonOrNull(join(run.poolDir, "meta.json"));
+  const briefed = new Set(koDocs.flatMap((d) => (d.marks ?? []).map((m) => m.name)));
+  const koWithoutData = (Array.isArray(koMeta?.reports) ? koMeta.reports : [])
+    .filter((r) => r?.mark && !r.dataFile && !briefed.has(r.mark));
   const delivered = run.state === "delivered" || Boolean(run.deliveredAt);
   const lines = [];
 
@@ -133,8 +145,8 @@ export function buildBrief(run) {
       for (const c of conditions) lines.push(`- ${c}`);
     }
     if (clearance.url) lines.push("", `Report: ${clearance.url}`);
-  } else if (koDocs.length) {
-    source = "report-data";
+  } else if (koDocs.length || koWithoutData.length) {
+    source = koDocs.length ? "report-data" : "report-list";
     // A batch writes one file per name, each with that name's own band and its own report link — so the
     // link belongs on the mark line, not on the run.
     const summary = koDocs.map((d) => d.summary).find(Boolean);
@@ -164,6 +176,9 @@ export function buildBrief(run) {
           lines.push(`  - ${who}${f.net ? `: ${f.net}` : ""}`.trimEnd());
         }
       }
+    }
+    for (const r of koWithoutData) {
+      lines.push(`- **${r.mark}** — ${NO_DATA_FOR_NAME}${r.url ? ` Report: ${r.url}` : ""}`);
     }
     const caveats = [...new Set(koDocs.flatMap((d) => d.caveats ?? []).filter(Boolean))];
     if (caveats.length) {

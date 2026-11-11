@@ -12,8 +12,9 @@
 
 import { test, before } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, writeFileSync, copyFileSync, mkdtempSync, rmSync } from "node:fs";
 import { join } from "node:path";
+import { tmpdir } from "node:os";
 import { buildFixture, buildRichRun, buildKnockoutRun, buildInFlightRun, RUN_ID, RUN_ID2, RUN_ID_KO, RUN_ID_FLIGHT, POOL } from "./_fixture.mjs";
 
 const MODEL_ID = /(anthropic|claude|sonnet|opus|haiku|gemini|deepseek|gpt)/i;
@@ -155,6 +156,38 @@ test("buildBrief: a delivered knockout BATCH answers as delivered, per name, wit
   assert.match(b.brief, /report\/tmpkock1-halcyon-2026-08-04-brass-lantern\/halcyona/);
   assert.match(b.brief, /Live EU registration in class 9\./);
   assert.doesNotMatch(b.brief, MODEL_ID);
+});
+
+test("buildBrief: a batch name whose data file could not be written is still briefed, with its report link", () => {
+  // A Knockout batch publishes every name's report when one name's data file cannot be written, and lists that name
+  // in meta.reports with no data file. The brief used to name only the names with a data file.
+  const r = runs.resolveRun(RUN_ID_KO);
+  const pool = mkdtempSync(join(tmpdir(), "brief-missing-data-"));
+  try {
+    for (const f of ["report-data-project-halcyon.json", "report-data-halcyona.json"]) copyFileSync(join(r.poolDir, f), join(pool, f));
+    const link = `https://clearotron.example/portal/report/${RUN_ID_KO}/halcyonex/`;
+    const reports = [
+      { mark: "PROJECT HALCYON", slug: "project-halcyon", file: "report-project-halcyon.html", dataFile: "report-data-project-halcyon.json" },
+      { mark: "HALCYONA", slug: "halcyona", file: "report-halcyona.html", dataFile: "report-data-halcyona.json" },
+      { mark: "HALCYONEX", slug: "halcyonex", file: "report-halcyonex.html", dataFile: null, url: link },
+    ];
+    writeFileSync(join(pool, "meta.json"), JSON.stringify({ runId: RUN_ID_KO, reports }));
+    const b = brief.buildBrief({ ...r, poolDir: pool });
+    assert.match(b.brief, /- \*\*PROJECT HALCYON\*\* — High/, "a name with a data file reads as before");
+    assert.match(b.brief, /- \*\*HALCYONA\*\* — Low\./, "a name with a data file reads as before");
+    const line = b.brief.split("\n").find((l) => l.startsWith("- **HALCYONEX**"));
+    assert.ok(line, `the name with no data file was left out:\n${b.brief}`);
+    assert.ok(line.includes("No published data file for this name"), line);
+    assert.ok(line.endsWith(`Report: ${link}`), `its report link is missing: ${line}`);
+    // EVERY name's file missing: the batch is still briefed name by name, never as nothing published.
+    for (const f of ["report-data-project-halcyon.json", "report-data-halcyona.json"]) rmSync(join(pool, f));
+    writeFileSync(join(pool, "meta.json"), JSON.stringify({ runId: RUN_ID_KO, reports: reports.map((x) => ({ ...x, dataFile: null })) }));
+    const none = brief.buildBrief({ ...r, poolDir: pool });
+    for (const name of ["PROJECT HALCYON", "HALCYONA", "HALCYONEX"]) {
+      assert.ok(none.brief.split("\n").some((l) => l.startsWith(`- **${name}** — _No published data file`)), `${name} was left out:\n${none.brief}`);
+    }
+    assert.doesNotMatch(none.brief, /none of its published output can be read/, "a batch with reports read as one with nothing");
+  } finally { rmSync(pool, { recursive: true, force: true }); }
 });
 
 test("readReportData: a multi-mark batch is read as every one of its files", () => {
