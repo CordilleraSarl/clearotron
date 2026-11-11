@@ -22,9 +22,7 @@ The risk-framework calibration rules originated in a common-law-only context. Wi
 
 ### RF-15 update (was: "Register Risk Estimate")
 
-**v2 (common-law only):** *"Register Risk Estimate (purple bullet, mandatory for Composite 2+). Estimate whether register filings are likely based on how common/commercial the phrase is."*
-
-**v3 (register included):** estimation becomes confirmation when register actually ran. Replace the purple bullet with one of four states:
+When the register ran, the note confirms rather than estimates. Write one of four states:
 
 | State | Wording |
 |---|---|
@@ -58,7 +56,7 @@ Note: revocability does NOT automatically change the band. It is a mitigating fa
 
 Total worldwide filing count is NOT a risk factor. Risk is assessed per owner/mark combination, not aggregated across all filings.
 
-If 27 identical filings exist across 27 unrelated owners, each is assessed independently — the count does not raise the composite. Document the volume as context in `coverage.read`: "[N] exact-match filings found across [M] unique owners — each assessed independently; volume not used as a risk multiplier."
+If 27 identical filings exist across 27 unrelated owners, each is assessed independently — the count does not raise the band. Document the volume as context in `coverage.read`: "[N] exact-match filings found across [M] unique owners — each assessed independently; volume not used as a risk multiplier."
 
 High filing volume in a field is evidence of crowding (see *Crowded field analysis* under Firm-wide reasoning discipline below), which if anything reduces the enforcement power of any individual holder — it is a neutral-to-mitigating signal, not an elevation signal.
 
