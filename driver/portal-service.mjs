@@ -1590,7 +1590,7 @@ ${error ? `<p class="err">${escHtml(error)}</p>` : ""}
   <button type="submit">Sign in</button>
 </form>
 <details class="fold"><summary><span>Administrator help</span><svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6"/></svg></summary>
-<p class="hint">The passphrase was printed once when this ${escHtml(BRAND.name)} first started. Lost it? Run
+<p class="hint">The passphrase was printed once, when this ${escHtml(BRAND.name)} first started or was last reset. Lost it? Run
 <code>${escHtml(reset)}</code> on the machine running this portal. It prints a new one, once, for the same user.</p>
 <p class="hint">A key from <code>${escHtml(bareInvocation("key"))} issue</code> is for an AI assistant, not for this page.</p>
 <p class="hint">To add people, put it behind a login system such as your company single sign-on. <a href="${escHtml(LOGIN_IN_FRONT_DOC)}" target="_blank" rel="noreferrer">How to set that up</a></p>
