@@ -2025,22 +2025,14 @@ export function attachSearchPolicy(ctx, job, { write = true } = {}) {   // @inte
   const sidecarPath = paths(ctx.paths.runDir).searchPolicy;
   let raw = null;
   try { raw = readFileSync(sidecarPath, "utf8"); } catch { /* ENOENT — genuinely absent */ }
-  // A job that names NO SELECTOR at all. It reads `product`/`recipeKey`, which are the two selectors on
-  // the wire; it used to read `searchLevel`, which DELETED — so it evaluated true for every job,
-  // including one that spelled out `product: "full-country-search"`, and the guard below was unreachable.
-  const noSelector = !job?.recipeKey && !job?.product;
   if (raw != null) {
     try { ctx.searchPolicy = JSON.parse(raw); }
     catch (e) { throw new Error(`_driver/search-policy.json is corrupt (${e.message}) — investigate; the frozen policy is never silently re-derived`); }
   } else if (!write) {
-    // pre-spine run read-only (reconstructCtx / legacy resume): implicitly a clearotron — the only shape that
-    // existed. It names a RETIRED row on purpose: this branch describes a run that already happened, and
-    // RETIRED_POLICIES exists so an archived run re-renders under the name it was sold under. But ONLY
-    // for a selector-less job: a selector-carrying job with no frozen sidecar must never be assumed into
-    // a clearance (review 2026-07-17 — the crash-reclaim/reconstruct window).
-    if (!noSelector)
-      throw new Error(`run dir has no frozen search policy but the job names a selector (product=${JSON.stringify(job?.product ?? null)}, recipeKey=${JSON.stringify(job?.recipeKey ?? null)}) — refusing the legacy-implicit clearotron assumption; re-dispatch cold so the policy is minted`);
-    ctx.searchPolicy = { schema: 1, level: "clearance", pipeline: "clearance", stageLabel: "Depth 4", components: {}, recipe: null, origins: { level: "legacy-implicit" } };
+    // NO FROZEN PRODUCT, AND THIS CALLER MAY NOT FREEZE ONE. A run froze its product before its first stage, so it has
+    // none to read. A resume finishes the opening first (steps/open-run.mjs finishTheOpening), so a reader here never
+    // assumes one: this used to read the absence as a run from before the freeze and name a retired clearance.
+    throw new Error("_driver/search-policy.json is absent — the run stopped before its product was frozen, and this reader does not settle one");
   } else {
     let resolved;
     // force:true — the recipe store is written by a LIVE service; a long-lived driver process must see a
@@ -10113,8 +10105,8 @@ export function reconstructCtx(job, opts) {   // @internal
   // register funnels, doubt-closure, narrative-refutation).
   //
   // NON-FATAL, and that is a deliberate call about a PRODUCTION path. attachSearchPolicy throws on
-  // three shapes (a selector-carrying job with no frozen sidecar, a corrupt sidecar, a pipeline this
-  // build cannot execute) and repairStale calls this function. Before today a repair ran with these
+  // three shapes (no frozen sidecar, which this function has already refused above, a corrupt sidecar,
+  // a pipeline this build cannot execute) and repairStale calls this function. Before today a repair ran with these
   // fields simply UNSET, so letting a throw out would turn a run this build has always repaired into a
   // run it refuses — a regression dressed as strictness, and the knockout guard eight lines above
   // already tolerates the corrupt-sidecar case explicitly. Adding the field can only improve the

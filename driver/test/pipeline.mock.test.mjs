@@ -1017,20 +1017,23 @@ test("WS-B corrupt sidecar: resume fails LOUDLY and never silently re-derives th
   assert.equal(readFileSync(sidecarPath, "utf8"), "{corrupt", "the corrupt sidecar is evidence — never overwritten");
 });
 
-test("WS-B pre-WS-B resume: a sidecar-less run resumes LEGACY end to end — no retro-mint, no identity join", async () => {
+test("WS-B: a resume that finds stage work but no frozen profile is refused, never run profile-free or retro-minted", async () => {
+  // A run froze its profile before its first stage, and a run from an earlier build is no longer resumed, so a run
+  // with stage work and no profile has lost the record its work was done under. Running it profile-free read a missing
+  // record as a deliberate order with no account; minting one now would claim the work was done under it. Refused.
   const { res: r1 } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_FAIL_STAGE: "joint synthesis narrative", CLEAROTRON_RECOVERY_MAX: "1" });
   assert.equal(r1.ok, false);
-  // simulate a run created before this deploy: strip the sidecar the cold start minted
   const { rmSync } = await import("node:fs");
   rmSync(driverDir(r1.runDir, "profile.json"));
   delete process.env.MOCK_FAIL_STAGE;
   const codename = r1.runDir.split(/[\\/]/).pop().split("-").slice(3).join("-");
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
-  const r2 = await pipeline(JOB, { codename });
-  assert.equal(r2.ok, true, JSON.stringify(r2));
-  assert.ok(!existsSync(driverDir(r2.runDir, "profile.json")), "no sidecar retro-minted into a legacy run");
-  const events = readFileSync(driverDir(r2.runDir, "run.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
-  assert.equal(events.filter((e) => e.event === "profile").length, 1, "only the original cold-start freeze event (run 1)");
+  let r2;
+  try { r2 = await pipeline(JOB, { codename }); } catch (e) { r2 = { ok: false, threw: String(e?.message ?? e) }; }
+  assert.notEqual(r2.ok, true, JSON.stringify(r2));
+  assert.ok(!existsSync(driverDir(r1.runDir, "profile.json")), "no profile minted under work already done");
+  const said = [JSON.stringify(r2), readFileSync(join(r1.runDir, "status.json"), "utf8")].join("\n");
+  assert.match(said, /holds stage work/, "the refusal says why");
 });
 
 // ── Hotfix 2026-07-06: a legacy slug store must never brick the matter ────────────────────────────────
