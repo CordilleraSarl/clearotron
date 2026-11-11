@@ -485,9 +485,9 @@ export const INNER_CODES = Object.freeze([
   { code: "quote_unbound", mints: ["driver/connotation-search.mjs:2113"], rollsUpTo: ["connotation_quote_unbound"],
     why: "The ruled-but-unbound row. Projected as `unbound` in connotationDispositionFail() in verify.mjs, and reported only once nothing is unruled." },
   { code: "token_absent", mints: ["driver/connotation-search.mjs:2140"], rollsUpTo: ["connotation_token_absent"],
-    why: "#592 split this out of no_ruling. Row-level only: connotationDispositionFail() in verify.mjs never reports it as a top-level token, so PROGRESS_TOKENS in repairs.mjs has no row for it." },
+    why: "#592 split this out of no_ruling. Row-level only: connotationDispositionFail() in verify.mjs never reports it as a top-level token, so PROGRESS_TOKENS declared in repairs.mjs has no row for it." },
   { code: "cite_absent", mints: ["driver/connotation-search.mjs:2149"], rollsUpTo: ["connotation_cite_absent"],
-    why: "#592, as token_absent: row-level only, never a top-level token, and no row in PROGRESS_TOKENS in repairs.mjs." },
+    why: "#592, as token_absent: row-level only, never a top-level token, and no row in PROGRESS_TOKENS declared in repairs.mjs." },
   { code: "no_ruling", mints: ["driver/connotation-search.mjs:2156"], rollsUpTo: ["connotation_no_ruling"],
     why: "The residual the other two split off from, and it has representatives — see the mint site. Declared as a corrective token in PROGRESS_TOKENS in repairs.mjs and in stages.mjs's E1 rows, always namespaced." },
   // THE ONE THAT IS RENAMED, NOT NAMESPACED — and it is the reason this table stores the composite as
