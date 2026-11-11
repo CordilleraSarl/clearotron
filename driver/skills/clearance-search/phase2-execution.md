@@ -159,9 +159,7 @@ is not a reason to skip it, and "the rule said so" is not an answer.
   clean negative? Is a material jurisdiction that no question reached at all missing from the ledger? One covered
   by a complete worldwide answer, or left in a crowd's count by the identical mark's narrowing, is accounted for
   and needs no row of its own. A deferred row treated as clean is a recall gap — flag it.
-- **Registrability flag:** did `clearance-variants` name the dominant element + give the proposed-mark
-  distinctiveness read (spectrum + deceptive/offensive, or "plainly distinctive"), and is it carried
-  into the deliverable?
+- **Registrability flag:** did `clearance-variants` name the dominant element? Do the supplied forms and held evidence raise a distinctiveness or deceptive/offensive concern that synthesis must assess? Surface the concern and its evidence for synthesis to carry into `mark_assessment`. Synthesis follows this check; do not flag its assessment as missing here or expect a distinctiveness assessment in the variant manifest.
 
 The skeptic **surfaces flags only and recommends re-runs** via its `escalations` entries — it does not re-run anything
 itself. **The driver decides** (in code) off those entries: a flag that a worker *shortcut the process* (missed an

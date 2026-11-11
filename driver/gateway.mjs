@@ -2342,11 +2342,12 @@ const REPAIR_HINTS = [
     // exactly the moment it is rewriting the section the rule governs. The dispatch blocks now share a
     // single literal; this is its third reader, so a change to the grading reaches the repair turn too
     // instead of leaving it teaching the previous version.
-    return `your review lacks the section titled exactly "PLAN-EXECUTION CHECK". Add it: audit the ` +
+    return `your review carries a plan audit: audit the ` +
       `driver-fed plan-execution receipt, under the same grading you were given with it — ` +
       `${PLAN_AUDIT_CLASSES} — flagging a clean claim that rests on class (1), a class (2) fringe ` +
       `claimed searched-clean, and a class (3) slice the narrative shows no materiality reasoning for. ` +
-      `Keep the verdict (CLEAR / CONDITIONAL / BLOCKING) on the FIRST line and the rest of your review intact`;
+      `Send it as \`plan_audit\` in a new \`record_narrative_refutation\` call, or, if you saved the review by ` +
+      `rewriting its file, as the section titled exactly "PLAN-EXECUTION CHECK". Keep your verdict and flags as they were`;
   } },
   { code: "coverage_no_status", when: /coverage_no_status/, hint(lastFail) {
     // — THE HINT NO LONGER EXPLAINS A TRANSCRIPTION REQUIREMENT, BECAUSE THERE IS NOT ONE.
