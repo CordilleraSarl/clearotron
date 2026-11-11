@@ -8111,8 +8111,20 @@ export function injectLaneDepthCoverage(P, runDir, note) {   // @internal
     const added = [];
     for (const [lane, v] of owed) {
       const label = LANGUAGE_LANES[lane]?.label ?? `${lane} lane`;
-      const area = `Native-language investigation depth / ${lane}`;
-      if (doc.coverage.some((c) => String(c?.area ?? "").toLowerCase() === area.toLowerCase())) continue;
+      // A LANE THIS VERSION HAS NO DEEPER SEARCH FOR, WHOSE CANDIDATES RAN, IS TOLD IN THE OWNER'S TWO SENTENCES ALONE.
+      // `jx.mjs` writes them as this cause's `why`, and the reader gets them as they are, under a label in words: no
+      // opening that restates them in the code's terms, and no closing line about verdicts, which belongs to the run's
+      // own coverage judgment. Every other cause keeps the fuller note below.
+      const plain = v.cause === "not-built-for-lane" && v.ran === "candidates" && typeof v.why === "string" && v.why;
+      const language = String(LANGUAGE_LANES[lane]?.label ?? "").replace(/-script deepening$/, "") || lane;   // as jx.mjs names it
+      const area = plain ? `${language}-language search depth` : `Native-language investigation depth / ${lane}`;
+      const areas = [area, `Native-language investigation depth / ${lane}`, `${language}-language search depth`].map((a) => a.toLowerCase());
+      if (doc.coverage.some((c) => areas.includes(String(c?.area ?? "").toLowerCase()))) continue;
+      if (plain) {
+        doc.coverage.push({ area, state: "coverage-limited", note: v.why.trim() });
+        added.push(lane);
+        continue;
+      }
       // THE SENTENCE NAMES THE ASK, WHAT RAN, AND THE REMEDY — and the remedy differs by cause, which
       // is why the verdict carries one. "This build has no deep slice for the lane" and "the switch was
       // off on this deployment" produce the same shortfall and opposite next steps, and a row that said
