@@ -545,7 +545,7 @@ export function makeExecutePlan(deps) {
       keepTimer.unref?.();
     };
     const dispatchEntry = async (e) => {
-      const base = { qid: e.qid, query: describeEntry(e), sent: sentKeyOf(e) };
+      const base = { qid: e.qid, query: describeEntry(e) };
       const timedOut = tctx?.reaskTimedOut === true ? null : timedOutBefore(e.qid);
       if (timedOut) {
         blocks.push({ ...timedOut });
@@ -815,7 +815,7 @@ export function makeExecutePlan(deps) {
     const runEntry = async (e) => {
       const held = heldAnswer(e);
       if (held) {
-        blocks.push({ ...held, qid: e.qid, query: describeEntry(e), sent: sentKeyOf(e) });
+        blocks.push({ ...held, qid: e.qid, query: describeEntry(e), ...(held.error ? {} : { sent: sentKeyOf(e) }) });
         stateByQid.set(e.qid, held.error ? "error" : held.state);
         keepAnswersSoon();
         return;
@@ -843,8 +843,11 @@ export function makeExecutePlan(deps) {
           ...(Array.isArray(e.romanizedTerms) && e.romanizedTerms.length ? { romanized: e.romanizedTerms.map(String) } : {}),
           ...(room.retry ? { retry: `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}` } : {}) });
       }
+      const at = blocks.length;
       try {
         await dispatchEntry(e);
+        // What was sent is recorded on a completed answer only: a failed one is asked again whatever it records.
+        for (const b of blocks.slice(at)) if (b?.qid === e.qid && b.error !== true) b.sent = sentKeyOf(e);
       } catch (err) {
         // `describeEntry` is itself one of the things that can throw here, so the recovery block must
         // not depend on it succeeding — a backstop that can fail is not a backstop.

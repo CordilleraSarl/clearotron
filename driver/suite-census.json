@@ -9583,7 +9583,7 @@
         },
         "providers/_shared/test/a-follow-up-answered-before-a-park-counts-once-after-the-resume.test.mjs": {
           "tests": 4,
-          "asserts": 14,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
