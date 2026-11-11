@@ -918,7 +918,7 @@ export function proofFailureLine(v, product) {
  * what to check, so it says how to change what the turn ran on instead. A sign-in the subscription uses
  * would not be used under either, so no token is offered there.
  */
-export function signInHandOff(eng, bin, billing) {
+export function signInHandOff(eng, bin, billing, { turnRan = true } = {}) {
   if (billing === "cloud") return { lines: ["if you fixed the cloud's sign-in on this machine, answer yes below; to change the answers "
     + "above, answer no and pick the engine again."], captureToken: false };
   if (billing === "api-key") return { lines: ["to give a different key, answer no below and pick the engine again."], captureToken: false };
@@ -926,8 +926,10 @@ export function signInHandOff(eng, bin, billing) {
   // not as "sign in": these lines follow every failed turn, a spent quota as much as a sign-out. And the yes
   // it asks for is the retry's, named. On Claude a token question follows the retry, and it wants a no after a
   // browser sign-in.
+  // AFTER A DECLINE NO TURN HAS RUN, so the question is the turn "now", not "again" (measured in a stranger walk of a
+  // beta, 2026-11-10: the reader was asked to run again a turn they had just declined).
   const lines = ["setup waits in this terminal, so run the commands below in a second one:",
-    `if it is signed out: ${namingProgram(eng.signIn, eng, bin)}, then answer yes to "Run the turn again".`];
+    `if it is signed out: ${namingProgram(eng.signIn, eng, bin)}, then answer yes to "${turnRan ? "Run the turn again" : "Run the turn now"}".`];
   // Codex's headless sign-in runs HERE, so it names the copy that runs here. Claude's token can be made on
   // any machine, so its command keeps the bare word, and this machine's copy is named beside it.
   if (eng.headless) {
@@ -4318,8 +4320,8 @@ try {
       // or a cloud account there is no sign-in to show.
       let provedAfterAll = false;
       if (authPick.id === "subscription") {
-        for (const line of signInHandOff(eng, bin, authPick.id).lines) info(line);
-        provedAfterAll = await confirm("Fixed it? Run the turn again", false);
+        for (const line of signInHandOff(eng, bin, authPick.id, { turnRan: false }).lines) info(line);
+        provedAfterAll = await confirm("Signed in? Run the turn now", false);
       }
       // A WAY ON WITHOUT AN AI, BEFORE THE MENU. A declined proof went straight back to the menu, so a reader
       // taking every default went round the same setup again. The question the no-program path already asks

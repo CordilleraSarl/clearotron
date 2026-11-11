@@ -581,7 +581,7 @@
         },
         "a-declined-proof-still-shows-how-to-sign-in.test.mjs": {
           "tests": 3,
-          "asserts": 7,
+          "asserts": 8,
           "skips": 2,
           "todos": 0
         },
@@ -6449,7 +6449,7 @@
         },
         "setup-asks-how-claude-is-paid.test.mjs": {
           "tests": 14,
-          "asserts": 97,
+          "asserts": 98,
           "skips": 4,
           "todos": 0
         },
