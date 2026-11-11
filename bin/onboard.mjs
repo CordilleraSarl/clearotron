@@ -843,6 +843,26 @@ export async function askSignIn(io, { localAccount = "user", existing = null } =
 }
 
 /**
+ * Doctor's line for each AI program setup installed, for a machine where no AI is chosen: a reader who declined
+ * setup's trial turn has a program and no AI, and the guides say doctor prints its path (measured in a stranger
+ * walk of a beta, 2026-11-10: it printed none). Claude's program signs in by being run; Codex's by its `login`.
+ * `resolve` is driver.config.mjs's resolveEngineProgram, a parameter so the lines can be driven. PURE given it.
+ */
+export function installedProgramLines(env = process.env, { resolve: find = resolveEngineProgram } = {}) {
+  const lines = [];
+  for (const [id, eng] of Object.entries(ENGINE_BINARIES)) {
+    const r = find(id, { env });
+    if (r?.source !== "installed" || !r.resolved) continue;
+    const own = /^run `[^`]+`$/.test(String(eng.signIn ?? ""));
+    const signIn = own
+      ? `R${namingProgram(eng.signIn, eng, { source: "installed", path: r.resolved }).slice(1)} once in a terminal to sign in.`
+      : "Run it once in a terminal to sign in.";
+    lines.push(`${eng.product}'s program, installed by setup: ${r.resolved}. ${signIn}`);
+  }
+  return lines;
+}
+
+/**
  * An engine binary, resolved the way the engine resolves it — and the trap that resolution carries.
  *
  * Was `resolveClaudeBin`. The body never had anything claude-specific in it; the NAME was the last place
@@ -2117,6 +2137,7 @@ export async function runCheck() {
     const noAiChosen = !servicesRead("CLEAROTRON_AI");
     if (noAiChosen) info(`CLEAROTRON_AI is not set, so no AI is chosen, `
       + `and a search is refused until one is. \`${invoke("install")}\` asks which AI to use.`);
+    if (noAiChosen) for (const line of installedProgramLines()) info(line);
     else info(`CLEAROTRON_AI is not set — the code default is ${DEFAULT_ENGINE_ID}, and one engine serves every stage of every run on this machine`);
     // AND NOTHING BELOW IT IS READ OFF THE DEFAULT (engineChosen, above the opening): no program, no payment
     // and no turn, which would all describe an AI nobody chose. The machine is in demo mode, and the way out

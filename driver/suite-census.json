@@ -3951,6 +3951,12 @@
           "skips": 0,
           "todos": 0
         },
+        "doctor-names-the-program-setup-installed.test.mjs": {
+          "tests": 4,
+          "asserts": 6,
+          "skips": 2,
+          "todos": 0
+        },
         "doctor-names-who-is-in-the-store.test.mjs": {
           "tests": 5,
           "asserts": 15,
