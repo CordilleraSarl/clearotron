@@ -2889,6 +2889,12 @@
           "skips": 0,
           "todos": 0
         },
+        "an-axis-the-plan-gives-no-work-files-its-note-and-claims-no-result.test.mjs": {
+          "tests": 5,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
         "an-empty-config-store-overrides-nothing.test.mjs": {
           "tests": 5,
           "asserts": 29,
