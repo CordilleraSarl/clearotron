@@ -20,6 +20,7 @@ import { methodDictation, inputsShape } from "./framework-method.mjs";
 import { knockoutReviewFile, validateKnockoutReviewFile } from "./knockout-review-record.mjs";
 import { knockoutRegisterFile, validateKnockoutRegisterFile } from "./knockout-register-record.mjs";
 import { narrowingOrderLine } from "./effective-scope.mjs";
+import { REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK } from "./stages.mjs";
 export { kebab };   // one definition (search-policy) — re-exported for the lane's existing imports
 
 const lines = (...xs) => xs.filter(Boolean).join("\n");
@@ -551,6 +552,7 @@ export const KO_STAGES = {
       // THE CLIENT'S QUESTION LEADS, in the owner's words (ruling 2026-09-24), ahead of the rewrite job.
       `Does the report answer the client's question: who could object, how strong they are, what the client should do? Are the marks a lawyer would list present, and is each position written from the record that matters? Answer that before any check on wording.`,
       reads(["skills/knockout-assess/SKILL.md", "skills/clearance-search/firm-wide-reasoning.md", "skills/clearance-search/report-prose.md", frameworkPath].filter(Boolean)),
+      REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK,
       `You are the INDEPENDENT CHECK on a knockout screen: another step rated this batch. Check what the client is told against the request, the framework and the evidence, then check its wording. You change no band and no finding yourself.`,
       `Apply the frozen framework, the knockout assessment manual and shared firm-wide reasoning. Read report-prose.md for writing standards; its links do not import clearance-only finding or placement rules into this screen. An unidentified owner is an explicit evidence gap, not by itself grounds to remove or lower a finding's band. Never invent attribution or a right; explain what the held evidence supports and what remains uncertain.`,
       requestLine(K, (at) => `The client's request, as it arrived: ${at}`, (at) => `The available brief: ${at}. The original request is not held here.`),
@@ -610,6 +612,7 @@ export const KO_STAGES = {
       const named = new Set(scope.defects.map((d) => d.mark));
       return lines(
         reads(["skills/knockout-assess/SKILL.md", frameworkPath, "skills/clearance-search/firm-wide-reasoning.md"].filter(Boolean)),
+        REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK,
         `An independent check read this rated batch and raised the defects below. Repair what the evidence supports, and nothing else.`,
         requestLine(K,
           (at) => `THE CLIENT'S OWN REQUEST, VERBATIM: ${at}. Read it before you rate. Its stated goods, services, and intended use lead over the plan; the customer's profile fills gaps. Keep a guessed use as a possibility. Do not use that guess to narrow the instructed scope or lower a rating.`,

@@ -38,6 +38,7 @@ const { applyCorrectionCall, chunkScope, correctionOutcomes, correctionWork, kno
 const { knockoutAssessChunkFile } = await import("../knockout-assess-record.mjs");
 const { acceptKnockoutReview, knockoutReviewFile, recordKnockoutReview, rewritesThatSurvive, validateKnockoutReviewFile } = await import("../knockout-review-record.mjs");
 const { KO_STAGES, koPaths } = await import("../stages-knockout.mjs");
+const { REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK } = await import("../stages.mjs");
 const { registerLaneState, REGISTER_LANE_FILE } = await import("../verify-knockout.mjs");
 
 const NAME = "QUILLBRAE", SIBLING = "MOSSVALE";
@@ -595,6 +596,29 @@ test("the correction's dispatch names each defect, in the chunk's own numbering"
   assert.ok(msg.includes("A filing held for this batch may bear on more than one name. Weigh it against the particular name and its instructed scope, and cite its held recordId and source. Keep where it was found: using that filing does not mean its original search answered this name's register question."));
   assert.match(msg, /quillbrae\.md/);
   assert.doesNotMatch(msg, /mossvale\.md/, "a name no defect names is not reopened");
+});
+
+// THE KNOCKOUT'S CHECK AND ITS CORRECTION APPLY THE FRAMEWORK THEY ARE HANDED, as the clearance's review does. The sentence
+// was approved word for word for the clearance review and then for these two stages; it is the one constant, stated once.
+test("the first look, the recheck and the correction each name the frozen framework and state the approved sentence once", () => {
+  const FW = "skills/clearance-search/risk-framework-invented-owner.md";
+  const dir = mkdtempSync(join(tmpdir(), "ko-framework-"));
+  const chunkFile = join(dir, "knockout-assess-0.json");
+  writeFileSync(chunkFile, JSON.stringify(rated()));
+  const w = work([{ kind: "band", mark: NAME, finding: 1, problem: "The first conflict is rated too low.", rests_on: ["/mark/em/x"] }]);
+  const K = { runDir: dir, findings: join(dir, "findings.json"), researchDir: join(dir, "research"), assessChunk: () => chunkFile, plan: join(dir, "plan.json"), research: (k) => join(dir, "research", `${k}.md`),
+    registerRecords: join(dir, "absent"), inboundRequest: join(dir, "absent"), confirmationBrief: join(dir, "absent"), ownerChecks: join(dir, "absent") };
+  const sessions = {
+    "the first look": KO_STAGES["knockout-review"].message({ K, frameworkPath: FW }),
+    "the recheck": KO_STAGES["knockout-review"].message({ K, frameworkPath: FW, recheckTable: "| # | kind |", movedNames: [SIBLING] }),
+    "the correction": KO_STAGES["knockout-correct"].message({ K, frameworkPath: FW, chunkNo: 0, work: w, chunkMarks: [{ name: NAME }, { name: SIBLING }] }),
+  };
+  for (const [label, msg] of Object.entries(sessions)) {
+    assert.equal(String(msg).split(REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK).length - 1, 1, `${label}: the sentence is not stated exactly once`);
+    assert.ok(String(msg).includes(FW), `${label}: the frozen framework is not named`);
+  }
+  assert.equal(REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK,
+    "Apply the frozen risk framework supplied for this run. If it or another required instruction is missing or unreadable, report the missing input; do not search other folders for a replacement.");
 });
 
 test("the recheck is told the names the correction moved outside its defects, or to read the whole batch when they could not be compared", () => {
