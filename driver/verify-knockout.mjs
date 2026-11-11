@@ -152,7 +152,7 @@ export function knockoutReceipts(runDir, marks) {
 // rating field is a second vocabulary waiting to happen, which is exactly what rules out.
 //
 // THE SET IS ONE WORD, and it is one word because ONE is what the doctrine attests. knockout-assess
-// SKILL.md exemplifies "Medium (low)" and calibration rule 4 says enforcer profiling "can cap a middle
+// SKILL.md exemplifies "Moderate (low)" and calibration rule 4 says enforcer profiling "can cap a middle
 // band at its '(low)' qualifier". Nothing in the doctrine, and no artifact in this repo, carries any
 // other value. So the qualifier can SOFTEN a band and never sharpen it — minting "high" or "mid" to make
 // the set look like a scale would be this build inventing vocabulary in the change that forbids it.

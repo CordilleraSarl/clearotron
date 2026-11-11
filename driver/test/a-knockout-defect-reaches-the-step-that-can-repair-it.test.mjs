@@ -224,12 +224,12 @@ test("an answer by class group reaches the report and the email, a name with non
   const mail = readFileSync(join(r.dir, "email-body.md"), "utf8");
   assert.match(mail, /Manageable<\/b> — Classes 9, 28; <b[^>]*>Low<\/b> — Classes 3, 21/, "the email says each group's band and classes");
 
-  const moved = [{ band: "High", classes: [9] }, { band: "Medium", classes: [28] }, { band: "Low", classes: [3, 21] }];
+  const moved = [{ band: "High", classes: [9] }, { band: "Moderate", classes: [28] }, { band: "Low", classes: [3, 21] }];
   const c = await knockout("resplit", { MOCK_KO_CLASS_GROUPS: JSON.stringify({ [NAME]: split }), MOCK_KO_MATERIAL: JSON.stringify([DEFECT]), MOCK_KO_CORRECTED_BAND: "High", MOCK_KO_CORRECTED_GROUPS: JSON.stringify(moved) });
   assert.equal(c.review.outcome, "corrected", JSON.stringify(c.review));
-  assert.deepEqual(c.of(c.findings, NAME).classGroups.map((g) => g.band), ["High", "Medium", "Low"]);
-  assert.deepEqual(chips(reports("resplit").name).slice(0, 3), [["High", "9"], ["Medium", "28"], ["Low", "3, 21"]], "the report reads the corrected split");
-  assert.match(readFileSync(join(c.dir, "email-body.md"), "utf8"), /High<\/b> — Classes 9; <b[^>]*>Medium<\/b> — Classes 28; <b[^>]*>Low<\/b> — Classes 3, 21/);
+  assert.deepEqual(c.of(c.findings, NAME).classGroups.map((g) => g.band), ["High", "Moderate", "Low"]);
+  assert.deepEqual(chips(reports("resplit").name).slice(0, 3), [["High", "9"], ["Moderate", "28"], ["Low", "3, 21"]], "the report reads the corrected split");
+  assert.match(readFileSync(join(c.dir, "email-body.md"), "utf8"), /High<\/b> — Classes 9; <b[^>]*>Moderate<\/b> — Classes 28; <b[^>]*>Low<\/b> — Classes 3, 21/);
 });
 
 test("a correction that moves the rating and leaves the groups behind is refused, so the two cannot disagree on the page", async () => {
