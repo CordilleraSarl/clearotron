@@ -270,7 +270,7 @@ function reviewRoundObsolete({ ctx, run, K }) {
   const stamp = readStamp(run.runDir, "knockout-review");
   if (!Array.isArray(stamp?.inputs) || !stamp.inputs.length) return { why: "no record of what the first review read" };
   const notTheRoundsOwn = (e) => e.path !== K.findings && e.path !== "value:message";
-  const now = koReadsNow(KO_STAGES["knockout-review"], K, "knockout-review", "");
+  const now = koReadsNow(KO_STAGES["knockout-review"], K, "knockout-review", "", ctx);
   const d = diffFingerprint(stamp.inputs.filter(notTheRoundsOwn), now.filter(notTheRoundsOwn));
   return d.stale ? { why: "what the first review read has changed", changed: d.changed } : null;
 }
@@ -418,28 +418,58 @@ function filesIn(dir) {
 }
 
 // THE REGISTER'S FILES ARE TAKEN AGAIN ON EVERY PASS, and each pass stamps them with when it took them. Measured on two
-// passes over one run with nothing changed: the counts and the records differ only in `takenAt`, a count the pass
-// reused only in its `reused` mark, and each owner check only in its `ts` and `took_ms`. So these three are compared
-// on what they say, with those four fields set aside, through the freshness module's projection; the whole-file sha
-// is still recorded beside it. A count, a filing or an owner check that changed is still a change.
-const RETAKEN_EVERY_PASS = new Set(["register-counts.json", "register-records.json", "owner-checks.json"]);
-const WHEN_IT_WAS_TAKEN = new Set(["takenAt", "ts", "took_ms", "reused"]);
-const withoutWhen = (v) => (Array.isArray(v) ? v.map(withoutWhen)
-  : v && typeof v === "object" ? Object.fromEntries(Object.entries(v).filter(([k]) => !WHEN_IT_WAS_TAKEN.has(k)).map(([k, x]) => [k, withoutWhen(x)])) : v);
+// passes over one run with nothing changed, these differ in four places and nowhere else: the counts' and the
+// records' `takenAt`, a reused count's `reused` mark on its name, and each owner check's `ts` and `took_ms`. So these
+// three files are compared on what they say with exactly those four places set aside, through the freshness module's
+// projection, and the whole-file sha is still recorded beside it. Nothing else is set aside, at any depth: a count,
+// a filing, an owner or what an owner check found that changed is still a change.
+const WHEN_IT_WAS_TAKEN = {
+  "register-counts.json": ({ takenAt: _takenAt, ...doc }) => ({ ...doc, ...(Array.isArray(doc.marks) ? { marks: doc.marks.map((m) => {
+    if (!m || typeof m !== "object" || Array.isArray(m)) return m;
+    const { reused: _reused, ...rest } = m;
+    return rest;
+  }) } : {}) }),
+  "register-records.json": ({ takenAt: _takenAt, ...doc }) => doc,
+  "owner-checks.json": (doc) => ({ ...doc, ...(Array.isArray(doc.checks) ? { checks: doc.checks.map((c) => {
+    if (!c || typeof c !== "object" || Array.isArray(c)) return c;
+    const { ts: _ts, took_ms: _tookMs, ...rest } = c;
+    return rest;
+  }) } : {}) }),
+};
 /** What a retaken register file says, without when it was taken, as a short sha. null for any other file, or one that does not parse. */
 export function whatItSays(_label, absPath) {   // @internal
-  if (!RETAKEN_EVERY_PASS.has(basename(String(absPath ?? "")))) return null;
-  try { return createHash("sha256").update(JSON.stringify(withoutWhen(JSON.parse(readFileSync(absPath, "utf8"))))).digest("hex").slice(0, 12); } catch { return null; }
+  const without = WHEN_IT_WAS_TAKEN[basename(String(absPath ?? ""))];
+  if (!without) return null;
+  try {
+    const doc = JSON.parse(readFileSync(absPath, "utf8"));
+    if (!doc || typeof doc !== "object" || Array.isArray(doc)) return null;
+    return createHash("sha256").update(JSON.stringify(without(doc))).digest("hex").slice(0, 12);
+  } catch { return null; }
 }
 
-/** What stage `def` reads, as a fingerprint taken now: its files, the files its folders hold, and its message. null when it declares none. */
-export function koReadsNow(def, K, label, message) {   // @internal
+/**
+ * What stage `def` reads, as a fingerprint taken now: its files, the files its folders hold, its message, and, for a
+ * stage that rates, the framework deck the model is sent to. null when it declares none.
+ *
+ * THE DECK IS THE FILE THE MODEL READS. Its message names the deck by path, and the model reads it from whichever
+ * layer is in force: the deployment's private instructions first, then the shipped tree (`config.resolveSkillPath`,
+ * the same resolver the framework freeze uses). So the deck is recorded as that file's content, and which file is in
+ * force is recorded beside it: an edited private deck, or a private deck added or removed, is a change. The method
+ * is frozen with the run (`framework-method.json`) and declared with the frozen rules.
+ */
+export function koReadsNow(def, K, label, message, ctx = null) {   // @internal
   const r = def?.reads?.(K) ?? null;
   if (!r) return null;
   const dirs = r.dirs ?? [];
+  const files = [...(r.files ?? []), ...dirs.flatMap(filesIn)];
   const values = Object.fromEntries(dirs.map((d) => [`files under ${basename(d)}`, filesIn(d).map((p) => basename(p)).join("\n")]));
   if (r.message) values.message = String(message ?? "");
-  return fingerprint([...(r.files ?? []), ...dirs.flatMap(filesIn)], { label, values, project: whatItSays });
+  if (r.deck && ctx?.frameworkPath) {
+    const deck = config.resolveSkillPath(ctx.frameworkPath);
+    files.push(deck);
+    values["deck in force"] = deck;
+  }
+  return fingerprint(files, { label, values, project: whatItSays });
 }
 
 /** Does the output of `label` still stand on what it read? PURE but for one read of its record. */
@@ -462,7 +492,7 @@ async function koStage(name, ctx, { chunkNo = null, msgCtx = {} } = {}) {
   const label = chunkNo != null ? `${name}#${chunkNo}` : name;
   const model = process.env.CLEAROTRON_KNOCKOUT_MODEL || def.model;
   const message = def.message({ ...ctx, K, chunkNo, ...msgCtx });
-  const readsNow = koReadsNow(def, K, label, message);
+  const readsNow = koReadsNow(def, K, label, message, ctx);
   if (existsSync(out)) {
     const v = def.validate(out, readFileSync(out, "utf8"));
     const fresh = v.ok && readsNow ? koStaleness(ctx.paths.runDir, label, readsNow) : { stale: false, changed: [] };
