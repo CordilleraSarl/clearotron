@@ -576,3 +576,16 @@ test("the correction's dispatch names each defect, in the chunk's own numbering"
   assert.match(msg, /quillbrae\.md/);
   assert.doesNotMatch(msg, /mossvale\.md/, "a name no defect names is not reopened");
 });
+
+test("the recheck is told the names the correction moved outside its defects, or to read the whole batch when they could not be compared", () => {
+  const K = { runDir: "/nonexistent/ko", findings: "/nonexistent/ko/findings.json", researchDir: "/nonexistent/ko/research", registerRecords: "/nonexistent/absent", inboundRequest: "/nonexistent/absent", confirmationBrief: "/nonexistent/absent", review: "/nonexistent/ko/review.json" };
+  const MOVED = `THE CORRECTION ALSO CHANGED THESE NAMES, WHICH NO DEFECT NAMED: "${SIBLING}". Read each changed finding, answer and summary block against its evidence, and say whether the change is defended. A change that is not defended is a material defect.`;
+  const WHOLE = "THE DRIVER COULD NOT COMPARE THE NAMES NO DEFECT NAMED. Recheck the whole corrected batch, not only the names the defects concern.";
+  const second = (extra) => String(KO_STAGES["knockout-review"].message({ K, recheckTable: "| # | kind |", ...extra }));
+  assert.ok(second({ movedNames: [SIBLING] }).includes(MOVED));
+  assert.ok(!second({ movedNames: [SIBLING] }).includes(WHOLE), "a completed comparison asked for the whole batch");
+  assert.ok(second({ comparisonComplete: false }).includes(WHOLE));
+  assert.ok(!second({}).includes("THE CORRECTION ALSO CHANGED"), "a recheck with nothing moved was told something moved");
+  const first = String(KO_STAGES["knockout-review"].message({ K, movedNames: [SIBLING], comparisonComplete: false }));
+  assert.ok(!first.includes(MOVED) && !first.includes(WHOLE), "the first look carries the recheck's lines");
+});
