@@ -141,6 +141,27 @@ test("tests and documents alone need no note — the exemption, against the pack
   } finally { repo.clean(); }
 });
 
+test("a helper under a test folder is a test, as the package's `**/test/` exclusion says, and a folder merely named like one is not", () => {
+  // Measured 2026-11-11: read as a plain prefix, `**/test/` matched nothing, and 47 helpers under `driver/test/`
+  // that npm never packs were asked for a release note.
+  const files = JSON.parse(execFileSync("node",
+    ["-e", "process.stdout.write(JSON.stringify(require('./package.json').files))"],
+    { cwd: ROOT, encoding: "utf8" }));
+  assert.ok(files.includes("!**/test/"), "the package no longer excludes test folders by `**/test/` — re-read this arm");
+  assert.equal(shipsCode("driver/test/instruction-read-map.mjs", files), false, "a test helper was counted as shipped code");
+  assert.equal(shipsCode("driver/test/helpers/home.mjs", files), false, "a nested test helper was counted as shipped code");
+  assert.equal(shipsCode("mcp-server/test/fixtures/x.mjs", files), false, "another package's test helper was counted as shipped code");
+  // THE CONTROLS: shipped code beside them still counts, and so does a folder whose name only ends in "test".
+  assert.equal(shipsCode("driver/pipeline.mjs", files), true, "shipped code stopped counting");
+  assert.equal(shipsCode("driver/latest/x.mjs", files), true, "a folder whose name ends in `test` was read as a test folder");
+  const repo = repoWith({ "driver/test/helpers/a-helper.mjs": "export const h = 1;\n" });
+  try {
+    const r = run(repo);
+    assert.equal(r.code, 0, `a test helper alone was made to write a release note:\n${r.said}`);
+    assert.match(r.said, /0 ship as code/);
+  } finally { repo.clean(); }
+});
+
 test("the version pull request's own shape is silent, without a carve-out for it", () => {
   // What `changeset version` does: consumes the notes, moves versions, writes changelogs. It changes no
   // shipped code, so the rule answers on its own and nothing here names that branch.

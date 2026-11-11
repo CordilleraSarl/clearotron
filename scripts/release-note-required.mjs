@@ -180,15 +180,22 @@ export function shipsCode(path, files) {
   return shipped;
 }
 
-/** The small slice of glob the `files` list actually uses: a directory prefix, and star wildcards. */
+/**
+ * The small slice of glob the `files` list actually uses: a directory prefix, and star wildcards.
+ *
+ * A DIRECTORY PATTERN WITH A STAR is everything under every directory it matches, as npm reads it:
+ * `**\/test/` excludes a helper under `driver/test/` as well as a `*.test.mjs` file. Read as a plain
+ * prefix it matched nothing, and 47 helpers npm never packs were asked for a release note (measured
+ * against `npm pack --dry-run`, 2026-11-11).
+ */
 function matches(path, glob) {
-  if (glob.endsWith("/")) return path.startsWith(glob);
-  if (!glob.includes("*")) return path === glob || path.startsWith(`${glob}/`);
+  const dir = glob.endsWith("/");
+  if (!glob.includes("*")) return dir ? path.startsWith(glob) : path === glob || path.startsWith(`${glob}/`);
   const re = new RegExp("^" + glob
     .replace(/[.+^${}()|[\]\\]/g, "\\$&")
     .replace(/\*\*\//g, "(?:.*/)?")
     .replace(/\*\*/g, ".*")
-    .replace(/(?<!\.)\*/g, "[^/]*") + "$");
+    .replace(/(?<!\.)\*/g, "[^/]*") + (dir ? "" : "$"));
   return re.test(path);
 }
 
