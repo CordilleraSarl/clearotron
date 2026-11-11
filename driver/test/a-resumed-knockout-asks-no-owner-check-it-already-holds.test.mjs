@@ -48,7 +48,8 @@ const OWNER_QUESTION = /^What goods or services does the company "([^"]+)"/;
 
 // The register's questions and the research provider's are counted apart: they are two bills.
 const registerCalls = { list: 0, count: 0 };
-const research = { sent: [], ownerFails: false };
+const CANDLES = "Brightmoor sells candles. https://example.test/brightmoor";
+const research = { sent: [], ownerFails: false, says: CANDLES };
 const EXECUTORS = {
   recordLister: async (term) => { registerCalls.list++; return { ok: true, total: null, records: term === "LANTERNWICK" ? [FILING] : [] }; },
   countExecutor: async () => { registerCalls.count++; return { ok: true, total: 3 }; },
@@ -56,7 +57,7 @@ const EXECUTORS = {
   sweepExecutor: async (query) => {
     research.sent.push(String(query));
     if (research.ownerFails && OWNER_QUESTION.test(String(query))) return { ok: false, cause: "the provider did not answer" };
-    return { ok: true, text: "Brightmoor sells candles. https://example.test/brightmoor" };
+    return { ok: true, text: research.says };
   },
 };
 /** The owners named by the owner questions sent since the counter was last cleared. */
@@ -111,6 +112,15 @@ test("a Knockout resumed with nothing changed asks the research provider nothing
   assert.deepEqual(ownerCheckRow(rows), { ...ownerCheckRow(rows), owners: 1, answered: 1, unanswered: 0, reused: 1, asked: 0 }, JSON.stringify(ownerCheckRow(rows)));
   assert.deepEqual(ran(rows), [], "with the answer unchanged, nothing is rated again");
   assert.deepEqual(register, { list: 0, count: 0 }, "and the register is asked nothing either, counted apart");
+});
+
+test("a resume whose owner lookup would now answer in other words asks nothing and rates nothing again", async (t) => {
+  // A live answer is not the same bytes twice. Asked again, the owner's answer would come back in other words, its
+  // file under research/ would change, and every rating that reads that folder would run again, the review with it.
+  t.after(() => { research.says = CANDLES; });
+  const { rows, owners } = await resumedAfter("other-words", () => { research.says = "Brightmoor makes candles and diffusers. https://example.test/brightmoor"; });
+  assert.deepEqual({ ownerQuestions: owners.length, ratedAgain: ran(rows) }, { ownerQuestions: 0, ratedAgain: [] },
+    "the resume bought the owner's answer again, and the new words re-rated the batch");
 });
 
 test("an owner check that did not answer is asked again on the resume, once, and its answer rates again", async (t) => {
