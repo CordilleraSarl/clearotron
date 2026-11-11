@@ -135,7 +135,9 @@ test("EVERY driver-written form is wired into a writeReturn call", (t) => {
   // above it are — its dispatch names no output path, because the driver renders the findings document
   // off `record_register_digest`. One conversion, one call, exactly as the paragraph above predicts, and
   // the floor is lowered by that one rather than re-fitted to the current count.
-  assert.ok(calls.length >= 14, `expected every dispatch's closing call, found ${calls.length}`);
+  // 14 -> 13: common-law's second `writeReturn(P.commonLaw)` went with the branch that ordered a hand-written grid
+  // program for a run with no spec. The stage still closes with one, on the only branch it has now.
+  assert.ok(calls.length >= 13, `expected every dispatch's closing call, found ${calls.length}`);
 
   const unwired = declared.filter((f) => !calls.some((c) => c.includes(`P.${f}`)));
   assert.deepEqual(unwired, [],
@@ -181,6 +183,8 @@ test("no dispatch names a form it was not given — the no-form path stays reach
   // 7 -> 6 at conversion 11: register-digest's bare `writeReturn(P.registerFindings)` went the same way.
   // The floor is lowered by the ONE call that moved, in the same commit, never re-derived from the
   // current count — a floor re-fitted to whatever the tree happens to say would ratify a silent drop.
-  assert.ok(bare >= 6,
+  // 6 -> 5: common-law's second bare `writeReturn(P.commonLaw)` went with its spec-less branch. The stage still
+  // takes the untouched path through the one call it keeps.
+  assert.ok(bare >= 5,
     `most seats have no form and must still take the untouched path — found ${bare} bare calls`);
 });
