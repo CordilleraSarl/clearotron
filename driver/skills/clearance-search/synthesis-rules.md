@@ -381,8 +381,7 @@ the report renders it as "The mark itself" at the top of both report variants). 
 reviewing lawyer to assess), frames the report, and **never moves any band**.
 
 - **Distinctiveness** — the spectrum read (coined / arbitrary / suggestive / descriptive) in the applicant's
-  field, the dominant element, any obvious registrability flag — and the **per-market read of the
-  translated/transliterated forms** from the variant manifest's *Distinctiveness & registrability* section
+  field, the dominant element, any obvious registrability flag — and the per-market read you make here from the manifest's translated/transliterated forms and the held evidence
   ("descriptive once translated in <market>" is exactly the kind of point this block exists to carry).
 - **Connotation & meaning** — what the mark reads as, **English AND non-English** (the meaning sweep incl.
   the non-Latin/translated bucket): a loaded / subcultural / offensive secondary reading surfaced honestly —
