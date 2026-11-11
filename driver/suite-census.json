@@ -8085,6 +8085,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-roster-line-says-what-is-read-and-who-is-refused.test.mjs": {
+          "tests": 2,
+          "asserts": 2,
+          "skips": 0,
+          "todos": 0
+        },
         "the-ruled-reading-paragraph-reaches-the-sweep-and-the-write-up.test.mjs": {
           "tests": 2,
           "asserts": 7,

@@ -137,3 +137,10 @@ export function demoPostureLine(env = process.env, { roster, projects } = {}) {
     ? " Nothing here is configured against a real customer, and nothing needs to be." : "";
   return `${head}: it carries ${carries}, and ${reports} ready to open.${unreal}`;
 }
+
+/** The boot line for a door reading the company folder that ships with this install. PURE. */
+export function bundledRosterLine(count) {
+  return `CLEAROTRON_CUSTOMERS_DIR is unset, so start_run reads the ${count} companies in the folder that ships with this install `
+    + "(driver/profiles). A company absent from that folder is refused with \"names no known customer\". If its profile is in a "
+    + "separate config store, set CLEAROTRON_CUSTOMERS_DIR to that store's profiles directory.";
+}
