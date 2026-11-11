@@ -387,11 +387,15 @@ test("the pages say doctor contacts nothing outside this machine, not that it ca
   // Doctor opens one connection on this machine, to the client door's port, and asks this user's service manager
   // about that door's service; it reaches nothing outside the machine (measured in a stranger walk of a beta,
   // 2026-11-10). "Calls nobody" was not true of it.
-  for (const page of ["README.md", "INSTALL.md", "AGENTS.md"]) {
+  for (const page of ["README.md", "INSTALL.md", "AGENTS.md", "bin/README.md"]) {
     const text = flat(read(page));
     assert.match(text, /[Ww]rites nothing and contacts nothing outside this machine/, `${page} does not say what doctor reaches`);
     assert.doesNotMatch(text, /calls nobody/, `${page} still says doctor calls nobody`);
   }
+  const help = read("bin/clearotron.mjs");
+  assert.match(help, /doctor: {2}"report what this machine is configured for\. Writes nothing and contacts nothing outside this machine"/,
+    "`clearotron --help` does not say what doctor reaches");
+  assert.doesNotMatch(help, /calls nobody/, "`clearotron --help` still says doctor calls nobody");
 });
 
 test("the guides and the help say what the walk found, in the words approved for them", () => {
@@ -401,6 +405,9 @@ test("the guides and the help say what the walk found, in the words approved for
   const quick = read("QUICKSTART.md"), install = flat(read("INSTALL.md"));
   assert.match(quick, /^clearotron doctor {2}# reads only; add --probe-engine to spend one cheap turn proving the AI$/m);
   assert.doesNotMatch(quick, /^clearotron doctor --probe-engine$/m, "the quickstart still sends a newcomer straight to a turn that spends");
+  // Plain doctor runs no turn; only --probe-engine does.
+  assert.match(flat(quick), /`clearotron doctor` reports the configuration without running an AI turn\. Add `--probe-engine` to run a proof turn\./);
+  assert.doesNotMatch(flat(quick), /by running a turn rather than by finding the executable/, "the quickstart still says plain doctor runs a turn");
   assert.match(install, /`npm install -g clearotron`, then `clearotron install`\. For the beta,/);
   assert.match(install, /checks what it can check before it writes anything — one cheap engine turn, an EUIPO token exchange, and an offered \(not assumed\) Perplexity ping — and never touches a path you did not name\./);
   assert.doesNotMatch(install, /without billing you/, "§3 still calls the engine turn free");

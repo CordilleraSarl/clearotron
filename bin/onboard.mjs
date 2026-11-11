@@ -2168,7 +2168,7 @@ export async function runCheck() {
     // asked to check.
     //
     // It is the same short call setup's engine menu already makes (menuVersion): `--version`, two
-    // seconds, no session and no network. That is within "calls nobody" — what that promises is no
+    // seconds, no session and no network. That is within "contacts nothing outside this machine" — what that promises is no
     // provider call and no spend, not that nothing on this machine may be asked its own version.
     const versionOf = (b) => {
       if (b.version) return b.version;
