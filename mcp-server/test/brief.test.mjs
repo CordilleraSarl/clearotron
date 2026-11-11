@@ -171,6 +171,7 @@ test("buildBrief: a batch name whose data file could not be written is still bri
       { mark: "HALCYONA", slug: "halcyona", file: "report-halcyona.html", dataFile: "report-data-halcyona.json" },
       { mark: "HALCYONEX", slug: "halcyonex", file: "report-halcyonex.html", dataFile: null, url: link },
     ];
+    for (const x of reports) writeFileSync(join(pool, x.file), "<html>the published report</html>");
     writeFileSync(join(pool, "meta.json"), JSON.stringify({ runId: RUN_ID_KO, reports }));
     const b = brief.buildBrief({ ...r, poolDir: pool });
     assert.match(b.brief, /- \*\*PROJECT HALCYON\*\* — High/, "a name with a data file reads as before");
@@ -187,6 +188,10 @@ test("buildBrief: a batch name whose data file could not be written is still bri
       assert.ok(none.brief.split("\n").some((l) => l.startsWith(`- **${name}** — _No published data file`)), `${name} was left out:\n${none.brief}`);
     }
     assert.doesNotMatch(none.brief, /none of its published output can be read/, "a batch with reports read as one with nothing");
+    // THE CONTROL: a name whose report was not published either gets no line saying its rating is in its report.
+    rmSync(join(pool, "report-halcyonex.html"));
+    const noReport = brief.buildBrief({ ...r, poolDir: pool });
+    assert.ok(!noReport.brief.split("\n").some((l) => l.startsWith("- **HALCYONEX**")), `a line points at a report that is not there:\n${noReport.brief}`);
   } finally { rmSync(pool, { recursive: true, force: true }); }
 });
 

@@ -35,7 +35,7 @@ import { readReportData, productIdentityFor } from "./runs.mjs";
 import { readJson, readJsonOrNull } from "../../driver/run-record.mjs";
 
 // THE LINE FOR A SCREENED NAME WITH NO DATA FILE, beside its report link: the brief cannot read its rating, and says so
-// rather than leaving the name out. PROPOSED, awaiting design's yes; modelled on the approved run-level line below.
+// rather than leaving the name out. Design's wording (2026-11-11), printed only where the name's report was published.
 const NO_DATA_FOR_NAME = "_No published data file for this name — its rating is in its report._";
 
 // Drop internal-only context (::p:: marker) and the leading risk-formula clause ("Level N Risk = … →").
@@ -88,7 +88,9 @@ export function buildBrief(run) {
   const koMeta = clearance || !run.poolDir ? null : readJsonOrNull(join(run.poolDir, "meta.json"));
   const briefed = new Set(koDocs.flatMap((d) => (d.marks ?? []).map((m) => m.name)));
   const koWithoutData = (Array.isArray(koMeta?.reports) ? koMeta.reports : [])
-    .filter((r) => r?.mark && !r.dataFile && !briefed.has(r.mark));
+    .filter((r) => r?.mark && !r.dataFile && !briefed.has(r.mark))
+    // THE SENTENCE SAYS THE RATING IS IN THE REPORT, so it is said only of a report that is there.
+    .filter((r) => typeof r.file === "string" && r.file && existsSync(join(run.poolDir, r.file)));
   const delivered = run.state === "delivered" || Boolean(run.deliveredAt);
   const lines = [];
 
