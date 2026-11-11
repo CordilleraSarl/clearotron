@@ -464,13 +464,14 @@ function materialFault(m, merged, runDir) {
 }
 
 /**
- * The rewrites of a first pass that still have a line to land on after a correction: those on a name no defect named, and the
- * standing caveats. A corrected name is renumbered and reworded, and the batch summary with it, so the second pass reads those
- * afresh. PURE.
+ * The rewrites of a first pass that still have a line to land on after a correction: those on a name the correction did not
+ * change, and the standing caveats. A changed name, whether a defect named it or the correction reached it, is renumbered and
+ * reworded, and the batch summary with it, so the second pass reads those afresh. `changedNames` null means the correction's
+ * reach could not be compared: no rewrite on a name is taken to be independent of it, and only the caveats stand. PURE.
  */
-export function rewritesThatSurvive(review, correctedNames) {
-  const corrected = new Set([...correctedNames].map((n) => String(n ?? "").trim().toLowerCase()));
-  const stands = (r) => r?.at?.field === "batch.standardCaveats" || (r?.at?.mark != null && !corrected.has(String(r.at.mark).trim().toLowerCase()));
+export function rewritesThatSurvive(review, changedNames) {
+  const corrected = changedNames == null ? null : new Set([...changedNames].map((n) => String(n ?? "").trim().toLowerCase()));
+  const stands = (r) => r?.at?.field === "batch.standardCaveats" || (corrected != null && r?.at?.mark != null && !corrected.has(String(r.at.mark).trim().toLowerCase()));
   return { ...review, rewrites: (review?.rewrites ?? []).filter(stands) };
 }
 

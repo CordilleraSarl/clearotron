@@ -1126,8 +1126,8 @@
           "todos": 0
         },
         "a-knockout-defect-reaches-the-step-that-can-repair-it.test.mjs": {
-          "tests": 32,
-          "asserts": 169,
+          "tests": 35,
+          "asserts": 197,
           "skips": 0,
           "todos": 0
         },
@@ -2464,8 +2464,8 @@
           "todos": 0
         },
         "a-stage-standing-rule-reaches-every-session.test.mjs": {
-          "tests": 5,
-          "asserts": 12,
+          "tests": 6,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -2916,6 +2916,12 @@
         "an-audit-that-no-longer-describes-the-run-is-never-published-as-current.test.mjs": {
           "tests": 3,
           "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-axis-the-plan-gives-no-work-files-its-note-and-claims-no-result.test.mjs": {
+          "tests": 7,
+          "asserts": 33,
           "skips": 0,
           "todos": 0
         },
@@ -5026,8 +5032,8 @@
           "todos": 0
         },
         "named-band-missing.test.mjs": {
-          "tests": 7,
-          "asserts": 24,
+          "tests": 8,
+          "asserts": 30,
           "skips": 0,
           "todos": 0
         },

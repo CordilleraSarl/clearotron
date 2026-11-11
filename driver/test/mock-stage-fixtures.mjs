@@ -2760,7 +2760,16 @@ export function applyStageWrites(msg, argv) {
     const raised = pass ? process.env.MOCK_KO_MATERIAL_OPEN : process.env.MOCK_KO_MATERIAL;
     const material = raised ? JSON.parse(raised) : [];
     const reads = pass ? ((JSON.parse(readFileSync(join(runDir, "knockout-findings.json"), "utf8")).marks ?? []).map((m) => `${m.name}: ${m.rating}`).join("; ")) : "the report answers the client's question";
-    const verdict = recordKnockoutReview(runDir, { first_question: `mock review: ${reads}`, material, declined }, { boundOrdinal: pass });
+    // MOCK_KO_REWRITE_AT=<name>: the first look also rewrites that name's first line the dispatch offers, so a test can see
+    // whether that old rewrite lands over what a correction then changed there.
+    const rewrites = [];
+    if (!pass && process.env.MOCK_KO_REWRITE_AT) {
+      for (const m of msg.matchAll(/address (\{"field":[^}]*\})/g)) {
+        let at; try { at = JSON.parse(m[1]); } catch { continue; }
+        if (at.mark === process.env.MOCK_KO_REWRITE_AT && JSON.stringify(at) !== JSON.stringify(declined[0].at)) { rewrites.push({ at, text: "An old rewrite from the first look.", why: "mock review: plainer" }); break; }
+      }
+    }
+    const verdict = recordKnockoutReview(runDir, { first_question: `mock review: ${reads}`, material, declined, ...(rewrites.length ? { rewrites } : {}) }, { boundOrdinal: pass });
     if (!verdict.written) return `mock knockout-review: the transport refused the composed call — ${verdict.refused ?? verdict.write_failed}`;
     return "mock knockout review ok";
   }
