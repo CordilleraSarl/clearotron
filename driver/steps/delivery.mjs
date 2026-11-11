@@ -357,7 +357,7 @@ export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontM
       // surface. Keyed on the ARTIFACT rather than on the label, so conversions 5 and 6 inherit it.
       const redo = async (label, failures, key, model, thinking, file, more = {}) => {
         if (!failures.length || !key) return;
-        note(`pre-delivery lint: ${failures.length} failed check(s) on ${label} — one warm named-correction redo`);
+        note(`pre-delivery lint: ${failures.length} failed check(s) on ${label} — one named-correction redo, sent as a follow-up`);
         const toolWritten = file ? toolWrittenArtifact(file) : null;
         const r = await stage(label, ctx, {
           force: true, sessionKey: key, model, thinking, trigger: "lint-repair",
@@ -401,7 +401,7 @@ export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontM
         // message (which carries its write mandate) on a cold session with no prior card in context, and
         // isolation from the contaminated rendering is the entire point — patching the bad card would
         // preserve exactly what the re-render exists to discard. The redo() ladder below is the opposite
-        // case (a warm resume of a session that owns its file) and patches.
+        // case (a follow-up to the stage that owns its file) and patches.
         const why = targets.cards.get(ord).map((x) => x.detail).filter(Boolean);
         const rc = await stage("report-card", { ...ctx, axis: String(ord), finding: f }, {
           force: true, trigger: "lint-repair",

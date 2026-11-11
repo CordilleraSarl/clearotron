@@ -19,5 +19,5 @@ export async function runPlacementAndDigest({ checkLateBind, ctx }, helpers) {
   await asPartNotCompleted("assessment", async () => must(placementPass, "placement-inquiry"));
   await checkLateBind("pre-digest");   // B5b checkpoint 2: a bind here rides the digest message as a re-classification block
   const digestKey = (await asPartNotCompleted("assessment", async () => must(await runDigest(ctx), "register-digest"))).sessionKey;
-  ctx.digestKey = digestKey;           // B5b: the warm-redigest late-bind path resumes this session
+  ctx.digestKey = digestKey;           // B5b: the late-bind re-digest follow-up is sent under this key, as a fresh session
 }

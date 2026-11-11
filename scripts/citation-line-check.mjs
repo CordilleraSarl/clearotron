@@ -853,7 +853,7 @@ export function constructRange(body, sym) {
   // THE FIX IS INDENTATION-AWARE AND NOT "TOP-LEVEL ONLY", and the issue's criterion 1 says top-level, so
   // the deviation is stated here rather than left for a reader to reconcile against the diff. Top-level
   // only would have ended each span at the next column-0 declaration, which for a symbol declared INSIDE
-  // a function is the rest of the file: `isDegenerate` in pipeline.mjs would own 2,163 lines and `asOf`
+  // a function is the rest of the file: `isDegenerate`, then in pipeline.mjs and now in steps/verdict-gate.mjs, would own 2,163 lines and `asOf`
   // in publish/index.mjs 516. A span that swallows its neighbours reports nothing and reads as a pass —
   // criterion 2's failure mode arriving as a green tick. Measured against a sibling instead:
   //

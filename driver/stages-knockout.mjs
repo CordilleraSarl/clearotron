@@ -115,7 +115,6 @@ export function koPaths(runDir) {
     assessChunk: (n) => knockoutAssessChunkFile(runDir, n),
     instructedScope: paths(runDir).instructedScope,
     // The client's own words, written at intake as on the clearance lane (stages.mjs, the same two names).
-    inboundRequest: paths(runDir).inboundRequest,
     confirmationBrief: paths(runDir).confirmationBrief,
     // as on the clearance lane, and apart from instructed-scope.json for the same reason: the frame
     // quotes that file's values verbatim. Written at intake, read by no stage.

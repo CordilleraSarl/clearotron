@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // jx-units.mjs — the Phase-4 Stage-1.5 SHADOW units (spec 10.5/10.6): the zh SERP platform grid
-// (slice 2) and jx-nativeread:zh (slice 3). Called from two never-kill blocks in pipelineInner;
+// (slice 2) and jx-nativeread:zh (slice 3). Called from two never-kill blocks, in the intake and synthesis steps;
 // everything here degrades and receipts — nothing throws past its own boundary.
 //
 // ARTIFACT BOUNDARY (was the "ship dark" invariant, and it outlived the switches): every artifact these

@@ -258,7 +258,7 @@ export function describeSkillsStore(result) {
  * The run-door preflight. Shaped like `preflightFreeSpace`: returns `{ result, warning }` and throws
  * ONLY in hard mode, so an existing deployment behaves exactly as it did before this landed.
  *
- * Called from `pipelineInner` beside the binary, disk and credential preflights — once per run, before
+ * Called from the run's opening (`steps/open-run.mjs`) beside the binary, disk and credential preflights — once per run, before
  * any spend. Deliberately NOT inside `config.resolveSkillPath`: that runs per file per stage and the
  * gateway re-derives the resolver on every dispatch, so a git call there would run hundreds of times
  * mid-run to re-answer a question about the door.

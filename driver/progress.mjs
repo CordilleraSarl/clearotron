@@ -469,7 +469,9 @@ function currentStepOf(step) {
 // The archive lives UNDER studioRoot (studioRoot/archive/...), so a recursive walk of studioRoot finds
 // both in-flight and delivered/failed runs. Cap depth (status.json only sits at the run-dir level) and
 // skip the high-churn leaf dirs for speed.
-const SKIP_DIRS = new Set([DRIVER_DIR, "register-units", "queue", "_history", "_experiments", "_known-conflicts"]);   // the old per-mark recall store, left on disk by its removal, holds no status.json
+// `_records` holds a run's fetched register records, about 2,100 files on a large run, and never a status.json; no
+// run, customer or date folder is named with a leading underscore, so skipping it changes nothing the walk finds.
+const SKIP_DIRS = new Set([DRIVER_DIR, "register-units", "queue", "_history", "_experiments", "_known-conflicts", "_records"]);   // the old per-mark recall store, left on disk by its removal, holds no status.json
 const MAX_RUNS = 12;
 
 function findStatusFiles(root, depth, acc) {

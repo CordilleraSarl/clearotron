@@ -19,15 +19,7 @@
 //     A THROW SITE THAT KNOWS ITS OWN CLASS MUST STAMP IT (`failClass`, see StageFailure). Unstamped,
 //     the ladder can only guess from the reason text, and the guess for anything the regexes do not
 //     recognise is UNKNOWN — which buys a park. Every throw in this file was written while the lane had
-//     no ladder and stamping was therefore free to skip; that is no longer true;
-//
-// A NOTE ON THE ISSUE NUMBER, BECAUSE THE HISTORY AND THE SOURCE DISAGREE AND ONLY ONE CAN BE FIXED.
-// The commit that landed this ladder says "". That is the WRONG issue — 1886 is
-// about doctrine resolution and has nothing to do with this lane. The work was authorised against the
-// plan of record, 1889, which lists it by name. The commit message cannot be edited once pushed and
-// history is not rewritten to tidy a citation, so the wrong number stands in the log forever; the
-// references in this file are corrected and this comment is the reconciliation. A reader who greps the
-// history for 1886 and lands here is in the right place and the number that brought them is not.
+//     no ladder and stamping was therefore free to skip; that is no longer true.
 import { atomicWrite, paths } from "./run-record.mjs";
 import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, rmSync, renameSync, readdirSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
@@ -49,14 +41,14 @@ import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, k
 import { kebabCollisions, reportIdentityFor, CAPABILITY_SKIPPED_CAUSE, CAPABILITY_SKIPPED_NOTE } from "./search-policy.mjs";
 import { countPreflight, countRegisterHits, countedMarks, resolveCountExecutor } from "./register-count.mjs";
 import { recordsPreflight, listedMarks } from "./register-records.mjs";
-import { knockoutQuestionPlan, knockoutBandPath, knockoutBandBlocks, knockoutProposals, knockoutRecordsDoc, knockoutAxis, openingQid, questionPlanPath,
+import { knockoutQuestionPlan, knockoutBandPath, knockoutBandBlocks, knockoutProposals, knockoutRecordsDoc, knockoutAxis, questionPlanPath,
   readingTableLines, appendQuestionReceipts, resolveQuestionExecutor, writeFixtureMarker, addedClassQuestions, formsOfName, formQid, countRowsOf, foldFormCounts, unfoldFormCounts, withCitedFilings, withHeldGoods } from "./knockout-register-read.mjs";
 import { capabilitiesFor } from "./register-capabilities.mjs";
 // — the ONE binding of the office split to this box's env, shared with the plan lane.
 import { registerUnavailableOffices } from "./register-unreachable.mjs";
 import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";   // — this run's record log
 import { beginAnswerMemory } from "../providers/_shared/answer-memory.mjs";
-import { validators as koValidators, validateMergedFindings, worstBand, registerSurfacedFilings, raterCaveats, SURVIVOR_BOUNDARY_RE, REGISTER_LANE_FILE, PERMITTED_SOURCES } from "./verify-knockout.mjs";
+import { validateMergedFindings, worstBand, registerSurfacedFilings, raterCaveats, SURVIVOR_BOUNDARY_RE, REGISTER_LANE_FILE, PERMITTED_SOURCES } from "./verify-knockout.mjs";
 import { KNOCKOUT_CARD_ORDER } from "./findings-model.mjs";
 import { reviewDispatch, applyKnockoutReview, knockoutReviewFile, rewritesThatSurvive } from "./knockout-review-record.mjs";
 import { chunkBasePath, correctionAnswers, correctionOutcomes, correctionWork, correctionWorkPath, keepChunkBases, knockoutCorrectionFile, movedOutsideScope, readCorrectionWork, restoreChunkBases, rollBackName, sameFinding } from "./knockout-correction-record.mjs";
@@ -80,7 +72,8 @@ import { isResearchAnswer } from "./research-answers.mjs";
 const DRIVER_DIR = dirname(fileURLToPath(import.meta.url));
 export const TRIAGE_FRAMEWORK = "skills/clearance-search/risk-framework-triage.md";
 
-// sentinel/archive mirror pipeline.mjs's private helpers (cross-referenced there) — byte-faithful.
+// sentinel and archive are this lane's own. The clearance's archive (pipeline.mjs) also settles any pending what-if
+// before it moves the run; this one does not.
 const sentinel = (runDir, name, obj) => atomicWrite(join(runDir, name), JSON.stringify({ ts: new Date().toISOString(), ...obj }, null, 2) + "\n");
 function archive(run) {
   try { mkdirSync(dirname(run.archiveDir), { recursive: true }); renameSync(run.runDir, run.archiveDir); return run.archiveDir; }
@@ -1498,7 +1491,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
         recordRunConsumption(ctx, { phase: "delivered", tokens: stampTokenRollup(run.runDir, "delivered") });
     } },
     { name: "deliver", run: async () => {
-        // 5 — delivery handoff (byte-faithful to pipelineInner's packet contract; cross-ref pipeline.mjs)
+        // 5 — delivery handoff, to the clearance's packet contract (run-delivered.mjs)
         koStep(ctx, "Sending to you");
         // qcFlags: the projected predelivery-lint lines publishKnockout just computed and recorded — the
         // cover note enumerates exactly what the workbook does (A10, extended to this lane 2026-07-31).
