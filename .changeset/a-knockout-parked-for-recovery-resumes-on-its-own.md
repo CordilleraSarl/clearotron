@@ -2,4 +2,4 @@
 "clearotron-driver": patch
 ---
 
-Fixed: A knockout search paused to recover from a failure now resumes on its own in every case, rather than in some cases waiting for someone to restart it.
+Fixed: A Knockout search paused to recover from a failure now retains the information needed to resume automatically. Previously, missing information could leave it waiting for someone to restart it.
