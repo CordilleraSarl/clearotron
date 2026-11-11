@@ -16,6 +16,7 @@
 import { readdirSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path"; import { STUDIO_SEGMENT_RE } from "../shared/pre-rename-spellings.mjs";
 import { sepClass, notSepClass } from "../shared/path-seps.mjs";   // a Windows path is built with "\"
+import { isStopReason, stopReason } from "../shared/stop-reason.mjs";   // a stopped run's line is the stop's own reason
 import { DRIVER_DIR, atomicWrite, readJson } from "./run-record.mjs";
 import { config } from "./driver.config.mjs";
 import { batchMarkName } from "./mark-name.mjs";
@@ -534,6 +535,13 @@ export function lineFor(s) {
     // Visible-but-non-blocking: the next runner activation reclaims and resumes it — but if none comes
     // (unit disabled, manual runner), a human owns it, so the line must never read as quietly settled.
     return `- ${head} — ⏸ PARKED (runner stopped mid-run${s.parkedKind ? `: ${s.parkedKind}` : ""}) at ${s.lastStage ?? stepTxt} — resumes on the next runner activation; if none is coming, resume it by hand`;
+  }
+  if (s.state === "cancelled") {
+    // A STOPPED RUN SAYS SO, in the words the stop already wrote: "stopped by request at ⟨stage⟩ via ⟨route⟩ (asked
+    // ⟨time⟩)", the same for both products. With no line of its own it fell through to "running", and a stopped run
+    // read as a live one that never finished. A status that holds no such reason gets the same sentence from the stage
+    // it records, from the same composer.
+    return `- ${head} — ${isStopReason(s.reason) ? s.reason : stopReason({ stage: s.failedStage ?? s.lastStage })}`;
   }
   if (s.state === "postponed") {
     // rate-limit pause: alive + auto-resuming — never render as "running" (would hide the pause + ETA).

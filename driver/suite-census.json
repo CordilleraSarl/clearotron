@@ -285,6 +285,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-clearance-resumed-after-it-published-sends-the-same-cover-note.test.mjs": {
+          "tests": 1,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "a-client-cell-carries-no-raw-engine-words.test.mjs": {
           "tests": 5,
           "asserts": 18,
@@ -1834,8 +1840,8 @@
           "todos": 0
         },
         "a-redone-register-reading-asks-nothing-already-answered.test.mjs": {
-          "tests": 3,
-          "asserts": 9,
+          "tests": 7,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -2088,6 +2094,18 @@
         "a-research-answer-is-kept-in-the-run-for-a-later-attempt-of-its-stage.test.mjs": {
           "tests": 3,
           "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-resume-settles-the-product-its-first-pass-did-not.test.mjs": {
+          "tests": 6,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-resumed-knockout-asks-no-owner-check-it-already-holds.test.mjs": {
+          "tests": 8,
+          "asserts": 41,
           "skips": 0,
           "todos": 0
         },
@@ -2497,6 +2515,12 @@
           "tests": 4,
           "asserts": 11,
           "skips": 1,
+          "todos": 0
+        },
+        "a-stopped-run-reads-as-stopped-in-the-run-list.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
+          "skips": 0,
           "todos": 0
         },
         "a-stopped-run-records-what-it-spent.test.mjs": {
@@ -6449,7 +6473,7 @@
         },
         "search-policy-freeze.test.mjs": {
           "tests": 7,
-          "asserts": 28,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },

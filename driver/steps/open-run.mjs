@@ -5,8 +5,8 @@
 //
 // One phase of a run, moved out of pipelineInner unchanged. `helpers` are functions still held in pipeline.mjs, handed in
 // because this module must not import that one back; each moves here when the other phases that share it have moved.
-import { ensureDriverDir } from "../../shared/driver-dir.mjs";
-import { orderSnapshot, retainAcceptedOrder } from "../accepted-order.mjs";
+import { driverDir, ensureDriverDir } from "../../shared/driver-dir.mjs";
+import { orderSnapshot, readAcceptedOrder, retainAcceptedOrder } from "../accepted-order.mjs";
 import { recordSpan } from "../attributed-span.mjs";
 import { config, preflightCredentials, preflightEngineBinary, preflightFreeSpace, preflightResearchCredential, REGISTER_PROVIDER } from "../driver.config.mjs";
 import { engineProvenance } from "../engine-build.mjs";
@@ -21,7 +21,7 @@ import { policyFor } from "../search-policy.mjs";
 import { preflightSkillsStore } from "../skills-store-provenance.mjs";
 import { assertTierSanity, paths } from "../stages.mjs";
 import { stampTokenRollup } from "../tokens.mjs";
-import { existsSync, mkdirSync, readFileSync, rmSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
 
 export async function openRun({ job, opts }, helpers) {
@@ -359,17 +359,61 @@ export async function openRun({ job, opts }, helpers) {
     retainAcceptedOrder(run.runDir, acceptedOrder, { explicit: opts.explicitJob === true, rebuilt: opts.jobRebuiltFromStatus === true });
   } catch (e) { note(`accepted-order write failed (non-fatal): ${e.message}`); }
   // WS-B: freeze the customer profile into the sidecar before ANY validated stage — early stages'
-  // idempotency re-validation and the receipts gate must all see the same per-run values. Minted on
-  // COLD starts only: a resumed pre-WS-B run stays legacy end to end (retro-minting would apply the
-  // identity join to a grid the worker was never dictated).
-  attachProfile(ctx, job, { write: !isResume });
-  // Search-depth spine — freeze WHICH product shape this run is BEFORE the framework freeze (Phase 2a:
-  // the knockout lane selects a different fallback framework, so the dispatch must happen first; the
-  // policy freeze reads only ctx.profile). Cold-start mint only, like the profile freeze: a resumed
-  // pre-spine run reads as legacy-implicit clearotron, never retro-minted.
-  attachSearchPolicy(ctx, job, { write: !isResume });
+  // idempotency re-validation and the receipts gate must all see the same per-run values. Then freeze WHICH product
+  // shape this run is, BEFORE the framework freeze (Phase 2a: the knockout lane selects a different fallback framework,
+  // so the dispatch must happen first; the policy freeze reads only ctx.profile). A resume reads both as frozen, and
+  // finishes either one its first pass left unfrozen (finishTheOpening).
+  if (isResume) finishTheOpening(ctx, job, run, { attachProfile, attachSearchPolicy });
+  else {
+    attachProfile(ctx, job);
+    attachSearchPolicy(ctx, job);
+  }
   // acceptance 5 — recorded on EVERY run, ungraded included: "which ladder applied" must be a
   // read, never an inference from which product the job asked for.
   runLog(run.runDir, depthLadderEvent(ctx));
   return { P, agent, ctx, isResume, run };
+}
+
+// ── A RESUME FINISHES THE OPENING ITS FIRST PASS LEFT UNFINISHED ─────────────────────────────────────────────────────
+//
+// A run freezes its account profile and then its product as it opens, before any stage. A first pass that stopped
+// before either freeze (the profile could not be read, the product could not be resolved, or the process ended in
+// between) left a run with nothing frozen in its place. Its resume used to read that absence as a run from before the
+// freezes: no profile, and a clearance under a retired product name, whatever the client ordered.
+//
+// A resume now finishes the opening the way a fresh start does, from the order the run kept when it was accepted and
+// the profile it froze: the profile if it is missing, then the product. If what stopped the first pass still holds,
+// the resume stops with the same reason. Three things refuse instead of guessing:
+//   · no kept order: nothing says what was ordered, and today's job may not be it;
+//   · stage work already in the run with nothing frozen: that work cannot be shown to be for the product ordered;
+//   · a frozen file that does not read: a corrupt record is not an absent one, and is never replaced (the attach
+//     functions refuse it).
+// The order is the authority, not the resume's job: a resume given a different job file does not choose the product.
+// A frozen profile is never resolved again, so an account default changed since the run opened does not reach it.
+
+/** The stage work a run already holds, said in words, or null for none: its stage rows and its stage records. */
+function stageWorkIn(runDir) {
+  let rows = 0, stamps = 0;
+  try { rows = readFileSync(paths(runDir).run, "utf8").split("\n").filter((l) => /"event":"(stage|skip)"/.test(l)).length; } catch { /* no journal */ }
+  try { stamps = readdirSync(driverDir(runDir, "stage-inputs")).length; } catch { /* no records */ }
+  return rows || stamps ? `${rows} stage row(s) and ${stamps} stage record(s)` : null;
+}
+
+function finishTheOpening(ctx, job, run, { attachProfile, attachSearchPolicy }) {
+  const profileHeld = existsSync(paths(run.runDir).profile), productHeld = existsSync(paths(run.runDir).searchPolicy);
+  let order = null;
+  if (!profileHeld || !productHeld) {
+    const missing = !profileHeld ? "its account profile" : "its product";
+    order = readAcceptedOrder(run.runDir);
+    if (!order) throw new Error(`resume refused: run ${run.codename} stopped before ${missing} was settled, and it keeps no order it was accepted on to settle it from, so what was ordered is not known — enqueue the order again`);
+    const work = stageWorkIn(run.runDir);
+    if (work) throw new Error(`resume refused: run ${run.codename} holds stage work (${work}) but ${missing} was never frozen, so that work cannot be shown to be for the product ordered — enqueue the order again`);
+  }
+  // Each from a copy of the kept order, so nothing the attach functions fold into a job reaches the kept order.
+  attachProfile(ctx, profileHeld ? job : orderSnapshot(order), { write: !profileHeld });
+  if (!productHeld) attachSearchPolicy(ctx, orderSnapshot(order), { write: true });
+  // The product as frozen, read back the way every resume reads it, so its saved scope folds into this run's job.
+  attachSearchPolicy(ctx, job, { write: false });
+  if (order) runLog(run.runDir, { event: "opening-finished-on-resume", profile: profileHeld ? "frozen" : "resolved from the kept order",
+    product: productHeld ? "frozen" : "resolved from the kept order", level: ctx.searchPolicy?.level ?? null });
 }
