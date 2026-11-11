@@ -14,7 +14,7 @@ the filings the reading step carried forward, what it set aside, and the owner s
 
 **Rate in the frozen framework's words** (`_driver/framework.json`: the customer's own ladder when
 configured, else the house triage ladder). State the band WORD. The only sub-gradation is
-`ratingQualifier: "low"`. It CAPS a band ("Medium (low)", calibration rule 4) and there is no other value:
+`ratingQualifier: "low"`. It CAPS a band ("Moderate (low)", calibration rule 4) and there is no other value:
 a band that needs sharpening is the band above it, stated as that word.
 
 ## Per mark — the mandatory sequence
@@ -48,7 +48,7 @@ a band that needs sharpening is the band above it, stated as that word.
 
 ## Calibration rules (they override gut instinct)
 
-1. **Class-specific ratings are mandatory** at the framework's material bands: "Medium (Classes 9,
+1. **Class-specific ratings are mandatory** at the framework's material bands: "Moderate (Classes 9,
    25, 28, 41)", never a bare band — `classesDriving` carries the class list.
    Use `classGroups` when separating the requested goods changes the advice under the frozen framework.
    Different band words or qualifiers alone do not require a split. Where a split is needed, record one row

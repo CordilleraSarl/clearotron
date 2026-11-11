@@ -5981,7 +5981,7 @@
         },
         "render.test.mjs": {
           "tests": 164,
-          "asserts": 686,
+          "asserts": 687,
           "skips": 0,
           "todos": 0
         },

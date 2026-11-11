@@ -291,11 +291,11 @@ function frameworkGauge(fm, findings, coverage = [], fourAnswers = null, opts = 
   // a vocabulary ("Manageable", "Moderate") that is meaningless without the framework in force, and the
   // one place that named it sat several screens down at the end of a long document. The footer line stays:
   // it is the printed page's provenance, and the complaint was that the framework was named ONLY there.
-  // Styling is in report.css (.gauge .label .gauge-fw), which is not frozen — only this text had to move.
+  // Styling is in report.css (.gauge .gauge-head); the name is its own block so a copied page keeps it apart from the heading.
   // frameworkGauge ONLY: the legacy `gauge()` branch below has no manifest to name, so it stays
   // byte-identical for every archived run that has no framework sidecar.
   return `<div class="panel gauge">
-    <div class="label">Overall risk<span class="gauge-fw">${esc(FRAMEWORK.title)}</span></div>
+    <div class="gauge-head"><div class="label">Overall risk</div><div class="gauge-fw">${esc(FRAMEWORK.title)}</div></div>
     <div class="scale" style="background:${grad}">${marker}</div>
     <div class="ticks">${ticks}</div>
     <div class="gconc">${conc}</div>
