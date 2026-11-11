@@ -266,15 +266,18 @@ export function normalizeSearchResponse(body, echoQuery, matchMode) {
   };
 }
 
-// ── Search (with per-run dedup) ───────────────────────────────────────────────
-// The plugin runs in the long-lived gateway daemon, so this module-level Map persists across tool
-// calls within a run. A run issues the SAME search more than once (~12% of this build's baseline run
-// were exact-duplicate sweeps — the name sweep and the JP and CN transliteration sweeps, each issued twice),
-// invisible to telemetry because the dup counter watched record_fetch only. We cache the normalized
-// result keyed on the GATEWAY session key (per-run, unique → no cross-run collision) + the FULL
-// canonical upstream query tail (so a different page / field-set is NOT a dup). On an exact repeat we
-// return the byte-identical cached payload and meter it cache_hit:true (counted, billed-as-saved).
-// Floor-neutral: identical query+params ⇒ identical upstream results.
+// ── Search (with a per-process, per-session dedup) ─────────────────────────────────────────────────
+// This module-level Map lives as long as the process that loaded this module, and its key starts with
+// the caller's session key. One register server is started per stage session (driver/engine/mcp/
+// register-server.mjs), so it catches a repeat within one session, or within the driver's own calls under
+// one session key. A question asked again by another stage, another axis or a repair dispatch reaches the
+// register again: this is not a run-wide memory (providers/_shared/answer-memory.mjs holds that, for the
+// registers it lists). A session does issue the SAME search more than once (~12% of an older build's
+// baseline run were exact-duplicate sweeps — the name sweep and the JP and CN transliteration sweeps, each
+// issued twice), invisible to telemetry because the dup counter watched record_fetch only. The key is the
+// session key + the FULL canonical upstream query tail (so a different page / field-set is NOT a dup). On
+// an exact repeat we return the byte-identical cached payload and meter it cache_hit:true (counted,
+// billed-as-saved). Floor-neutral: identical query+params ⇒ identical upstream results.
 const SEARCH_CACHE = new Map();
 const SEARCH_CACHE_MAX = 2000; // bounded over daemon lifetime; eviction only ever costs a re-fetch, never recall.
 
@@ -295,7 +298,7 @@ export async function doSearch(sessionKey, params, tctx) {
   const fieldList = Array.isArray(params.fields) && params.fields.length > 0 ? params.fields : DEFAULT_SEARCH_FIELDS;
   urlParams.set("fieldsInclude", fieldList.join(","));
 
-  // Dedup key: per-run scope (gateway sessionKey) + the exact canonical query tail actually sent
+  // Dedup key: the caller's session key + the exact canonical query tail actually sent
   // upstream (urlParams captures query+limit+page+sort+ascending+fieldsInclude after defaulting).
   const cacheKey = `${tctx?.sessionKey ?? ""}|${urlParams.toString()}`;
   const callTctx = { ...tctx, target: queryStr.slice(0, 200) };
