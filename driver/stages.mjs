@@ -866,11 +866,24 @@ const reportOverviewSkillReads = ({ profile }) =>
   ["skills/clearance-search/synthesis-rules.md", SPINE_DOC, frameworkFor(profile), "skills/clearance-search/delivery-contract.md", REPORT_PROSE];
 const reportCardSkillReads = ({ profile }) =>
   ["skills/clearance-search/delivery-contract.md", frameworkFor(profile), REPORT_PROSE];
+// THE REVIEW READS WHAT IT ENFORCES. Its manual judges a rating on the framework's own method, at the framework's
+// lowest band and under the framework in force, and its standing lines hold a pharma matter to the field module. It was
+// handed none of them: on a test run with Codex, a review that had not been given the framework went looking for one in
+// folders outside its run. So it reads the writer's own resolved framework and the shared reasoning, and the field module
+// on a pharma matter. The writer's level-specific rules (synthesis-rules.md) and its worked examples stay the writer's.
+const reviewSkillReads = ({ profile, job }) => [
+  "skills/narrative-refutation/SKILL.md", frameworkFor(profile), SPINE_DOC,
+  ...(pharmaMatter(job) ? ["skills/clearance-search/field-doctrine-pharma.md"] : []),
+  REPORT_PROSE,
+];
+
 // Standing rules a stage's opening message states and every follow-up session repeats (`standing` on the stage,
 // read by composeFollowup). Approved word for word on 2026-11-11.
 // The writer's web checks go through the research tool, which keeps the record and the limits. On a test run with Codex,
 // a writer also tried to fetch pages with a script of its own.
 export const WEB_EVIDENCE_ONLY_THROUGH_RESEARCH = "Web evidence comes only through `perplexity_research`; do not fetch pages with a shell command or a script.";
+// The review applies the framework it is handed, and says so when an input is missing rather than looking elsewhere.
+export const REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK = "Apply the frozen risk framework supplied for this run. If it or another required instruction is missing or unreadable, report the missing input; do not search other folders for a replacement.";
 
 // spec-48 C1 — the territories whose legal system scopes the marketplace-risk directive, and whose
 // registration scripts set the script floor. THE SHARED LADDER (effective-scope.mjs resolveTerritories),
@@ -3386,6 +3399,10 @@ export const STAGES = {
     // The reviewer reads the prose manual whose rules it enforces (approved 2026-10-02): the 25-word limit and
     // the word list it applies come from there, and so does the finding sentence's two-sentence limit.
     skillReads: ["skills/narrative-refutation/SKILL.md", "skills/clearance-search/report-prose.md"],
+    // The live read, which every recheck and review after a repair is pointed at too (resolveSkillReads): the run's own
+    // framework and the shared reasoning beside the two manuals above (reviewSkillReads).
+    skillReadsFor: reviewSkillReads,
+    standing: Object.freeze([REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK]),
     out: (P) => P.seniorEyeReview,
     validate: validators.seniorEyeReview,
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
@@ -3440,8 +3457,9 @@ export const STAGES = {
         why: "the items are code-found and driver-fed, so the FINDING is mechanical; what the model owes is the flag, the quote and the verdict consequence. NO TOKEN — unlike the plan-execution table, this driver-fed block has no section gate at all",
       },
     },
-    message: ({ paths: P, intakeAsks, job, registerOnly, profileSelection, placementFloorDecisions, writerExclusions, reviewAddressLines, researchChecks }) => lines(
-      reads(["skills/narrative-refutation/SKILL.md", "skills/clearance-search/report-prose.md"]),
+    message: ({ paths: P, intakeAsks, job, profile, registerOnly, profileSelection, placementFloorDecisions, writerExclusions, reviewAddressLines, researchChecks }) => lines(
+      reads(reviewSkillReads({ profile, job })),
+      REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK,
       // lever 3 — WHICH FINDINGS EARN A GROUNDED PROFILE, chosen by the DRIVER and listed by
       // ordinal. The band is on findings.json before this stage is dispatched, so there is nothing for
       // the seat to judge: unlisted work is never asked for. Empty when every finding is profiled —
