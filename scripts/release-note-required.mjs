@@ -117,8 +117,12 @@
 //     commit cannot answer for itself;
 //   - the reason is read by NO_NOTE itself, so the two forms cannot drift. Empty, or a dash, is refused;
 //   - one commit takes one answer: two lines naming the same commit are both refused, even when they agree;
-//   - an answer naming a commit that owes none (it ships no code, carries a note, or gives its own reason)
-//     is refused as stale. An answer ignored in silence reads as though it did something.
+//   - an answer naming a commit that owes none because it carries a note or gives its own reason is
+//     refused as stale. An answer ignored in silence reads as though it did something;
+//   - an answer naming a commit that ships no code is printed as answering nothing, and not refused. What
+//     ships is read off the package's own list, so a file can stop counting after an answer was written for
+//     it, in history nobody may rewrite (measured 2026-11-11: two answers for test helpers, once `**/test/`
+//     was read as npm reads it). A mistyped sha gains nothing from this: the commit that was meant still owes.
 // Every answer taken is printed with the sha that gave it, and every refused answer fails the check and
 // names the commit that carries it. The answering commit is read like any other: one that ships no code,
 // such as an empty commit, owes nothing of its own.
@@ -275,6 +279,7 @@ const shipped = (paths, files) => paths.filter((p) => !NEVER_A_NOTE.some((re) =>
  *   withdrawals:Array<{sha:string, subject:string, note:string, by:string, reason:string}>,
  *   answered:Array<{sha:string, subject:string, by:string, reason:string}>,
  *   refusedAnswers:Array<{sha:string, subject:string, text:string, problem:string}>,
+ *   unneeded:Array<{sha:string, by:string, said:string}>,
  *   owed:Array<{sha:string, subject:string, why:"no-note"|"prose"|"bare-none"|"names-a-missing-note"|"note-withdrawn-unsaid",
  *   paths?:string[], text?:string, by?:string}>}}
  */
@@ -326,7 +331,7 @@ export function commitVerdicts({ commits = [], files = [], atHead = null, isAnce
   });
   // AND A NAME THE HEAD STILL CARRIES WAS NEVER WITHDRAWN AT ALL: the release assembles what the head has.
   if (presentNames) for (const name of [...withdrawn.keys()]) if (presentNames.has(name)) withdrawn.delete(name);
-  const declined = [], owed = [], withdrawals = [], answered = [];
+  const declined = [], owed = [], withdrawals = [], answered = [], unneeded = [];
   const { answers, refused: refusedAnswers } = readAnswers(commits, isAncestor);
   const used = new Set();
   for (const [i, c] of commits.entries()) {
@@ -379,8 +384,10 @@ export function commitVerdicts({ commits = [], files = [], atHead = null, isAnce
   }
   // AN ANSWER THAT ANSWERED NOTHING IS REFUSED, NOT IGNORED (see the header).
   const owing = new Set(owed.map((o) => o.sha));
+  const shipsNothing = new Set(commits.filter((c) => !shipped(c.paths, files).length).map((c) => c.sha));
   for (const [sha, a] of answers) {
     if (used.has(sha)) continue;
+    if (shipsNothing.has(sha)) { unneeded.push({ sha, by: a.by, said: a.note ?? a.reason }); continue; }
     refusedAnswers.push({ sha: a.by, subject: a.subject, text: a.text,
       problem: owing.has(sha)
         ? (a.note
@@ -388,7 +395,7 @@ export function commitVerdicts({ commits = [], files = [], atHead = null, isAnce
           : `names ${sha.slice(0, 7)}, which owes a note this line cannot give: an answer covers only a bare \`none\``)
         : `names ${sha.slice(0, 7)}, which owes no answer: it ships no code, carries a note, or gives its own reason` });
   }
-  return { visible, notes, declined, withdrawals, owed, answered, refusedAnswers };
+  return { visible, notes, declined, withdrawals, owed, answered, refusedAnswers, unneeded };
 }
 
 const argAfter = (flag) => {
@@ -455,7 +462,7 @@ function main() {
   }
   // ANCESTRY FROM GIT, NEVER TIMESTAMPS: an answer must come from a commit the named one is an ancestor of.
   const isAncestor = (a, b) => { try { git("merge-base", "--is-ancestor", a, b); return true; } catch { return false; } };
-  const { visible, notes, declined, withdrawals, owed, answered, refusedAnswers } = commitVerdicts({ commits, files, atHead, isAncestor });
+  const { visible, notes, declined, withdrawals, owed, answered, refusedAnswers, unneeded } = commitVerdicts({ commits, files, atHead, isAncestor });
   console.log(`release-note-required: ${changed.length} changed file(s) against ${base}`
     + `${head === "HEAD" ? "" : ` (head ${head})`}; `
     + `${visible.length} ship as code; ${notes.length} release note(s) in the range; ${commits.length} commit(s) read`
@@ -478,6 +485,9 @@ function main() {
     console.log(a.note
       ? `  ${a.sha.slice(0, 7)} said ${a.said === "none" ? "a bare `none`" : `"${a.said}"`}, which ${a.by.slice(0, 7)} answers with ${a.note}`
       : `  ${a.sha.slice(0, 7)} said a bare \`none\`, which ${a.by.slice(0, 7)} answers: ${a.reason}`);
+  }
+  for (const u of unneeded) {
+    console.log(`  ${u.sha.slice(0, 7)} ships no code, so ${u.by.slice(0, 7)} answers for nothing it owed: ${u.said}`);
   }
   if (!owed.length && !refusedAnswers.length) return;
   if (refusedAnswers.length) {
