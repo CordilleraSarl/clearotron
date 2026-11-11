@@ -111,7 +111,7 @@ import { placedUriRows, standingSetAside, placementSetAsideGrounds, placementFlo
 export { placementSetAsideGrounds, placementFloorDecisionLines, placementSetAsideLines, placementAuditRows, placementRecallEndings,
   standingPlacementDecisions, writePlacementDecisions } from "./placement-decisions.mjs";
 import { readPlacementForm, readPlacementFormInput, writePlacementForm } from "./placement-form-io.mjs";
-import { rebuildRunOrder } from "./accepted-order.mjs";   // the order a run was accepted on, kept with it from intake (steps/open-run.mjs)
+import { keepsInstructedScope, rebuildRunOrder } from "./accepted-order.mjs";   // the order a run was accepted on, kept with it from intake (steps/open-run.mjs)
 import { buildSelectionIndex, setAsideKeysOf, ownerFates, servedLines, lineKey } from "./placement-form.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree, matterSiblings, findStrayMatterSiblings } from "./stray-artifacts.mjs";   // — a run dir holds no document no stage dictated; — nor does the doctrine tree
 import { resolveProfile, loadProfiles, resolveEffectiveProfile, derivedFloor, derivedBatchSize, gridBatchFor, applicantMatchesProfile, NEUTRAL_DELIVERY, recipeProseGuard, withRunPlatforms } from "./profiles.mjs";   // adds profileStoreResolution — the CONFIG store's identity, beside the doctrine tree's
@@ -11321,7 +11321,7 @@ function orphanAreaLabel(qid, axis, plan) {
  * with no scope yet, writes as before. PURE.
  */
 export function instructedScopeToWrite(job, { jobRebuiltFromStatus = false, scopeOnDisk = false } = {}) {   // @internal
-  return jobRebuiltFromStatus && scopeOnDisk ? null : instructedScopeOf(job);
+  return keepsInstructedScope({ jobRebuiltFromStatus, scopeOnDisk }) ? null : instructedScopeOf(job);
 }
 
 // ── THE SALVAGE FOR A FOREIGN RECORD LINK: BLANK IT, RE-CHECK, DELIVER ──────────────────────────────────
