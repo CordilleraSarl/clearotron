@@ -58,6 +58,7 @@ import { config } from '../driver.config.mjs';
 import { isEntrypoint } from "../../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { envFrom } from "../../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
 import { readJson } from "../run-record.mjs";
+import { crossBuildRepublishRefusal } from "../one-build-per-run.mjs";
 
 // One derivation, not a second copy of the literal: config.poolRoot IS the answer, and it refuses when
 // CLEAROTRON_REPORTS_DIR is unset. This file used to spell `|| '/srv/trademark-archive'` itself, which
@@ -166,6 +167,10 @@ async function doRepublish({ runId, meta, pool, runDir, skipRegen = false }) {
     if (found.length > 1) throw new Error(`ambiguous archives for ${runId}: ${found.join(', ')} — pass --run-dir.`);
     runDir = found[0];
   }
+  // A REPORT IS RE-RENDERED ONLY BY THE BUILD THAT MADE IT (one-build-per-run.mjs). rerender-all lists a refused run
+  // as skipped, and its stored page stands.
+  const refused = crossBuildRepublishRefusal(runDir);
+  if (refused) throw new Error(refused);
   // Which publisher this run's shape calls for is republishRun's decision, read off the run's own meta —
   // NOT an assumption made here. This function used to call publishReport unconditionally, which meant a
   // knockout run could not be re-rendered at all: it has no report.md, so it died on the shape check with
