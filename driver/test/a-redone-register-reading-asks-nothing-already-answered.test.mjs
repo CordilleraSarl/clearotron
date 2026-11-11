@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// A REDONE REGISTER READING ASKS NOTHING ALREADY ANSWERED, ON EVERY REGISTER (his 1097, 2026-11-11: never pay twice).
+// A REDONE REGISTER READING ASKS NOTHING ALREADY ANSWERED, ON EVERY REGISTER (2026-11-11). A register answer is paid
+// for, and it does not change within the run, so the run never pays for it twice.
 //
 // A Knockout's register reading runs again on a resume only when something it read has changed: the order's words, the
 // plan, a count it reads, or its own record of what it read. The redone reading asks through the same propose tool and

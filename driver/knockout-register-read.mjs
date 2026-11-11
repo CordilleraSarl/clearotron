@@ -638,10 +638,10 @@ export async function executeQuestionsWithLister(lister, { plan_path: planPath, 
   if (!asked.length) return { type: "text", text: `ERROR: the plan carries no entries for axis "${axis}".` };
   let band = [];
   try { const had = readJson(outputPath); if (Array.isArray(had)) band = had; } catch { /* first write */ }
-  // NEVER PAID FOR TWICE (his 1097, 2026-11-11). A question this run already holds an answer to is not sent again,
-  // whoever asks it and however often: a resume, a step run again, or the code asking what the plan owes on every pass.
-  // Its answer stands in the band. A failed answer is no answer, so that question is asked again, as finishing the run
-  // would ask it.
+  // NEVER PAID FOR TWICE (2026-11-11). A register answer is paid for, and it does not change within the run. So a
+  // question this run already holds an answer to is not sent again, whoever asks it and however often: a resume, a
+  // step run again, or the code asking what the plan owes on every pass. Its answer stands in the band. A failed
+  // answer is no answer, so that question is asked again, as finishing the run would ask it.
   const answered = new Map(band.filter((b) => b?.qid && b.error !== true).map((b) => [String(b.qid), b]));
   const held = asked.filter((e) => answered.has(String(e.qid)));
   const entries = asked.filter((e) => !answered.has(String(e.qid)));

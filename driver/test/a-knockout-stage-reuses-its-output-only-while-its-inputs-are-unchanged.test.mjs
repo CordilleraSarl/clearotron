@@ -44,7 +44,7 @@ const { whatItSays } = await import("../pipeline-knockout.mjs");
 const FILING = { record_id: "tm_1", mark_text: "LANTERNWICK", owner_name: "Brightmoor Candle Co", status: "Registered", classes: [4] };
 const JOB = { markName: "LANTERNWICK", marks: [{ name: "LANTERNWICK" }], classes: [4], jurisdictions: ["EU"], forwarder: "jordan" };
 // EVERY QUESTION PUT TO THE REGISTER IS COUNTED, a listing and a count alike: a step run again on a resume must pay for
-// nothing the run already holds (his 1097, the never-pay-twice rule).
+// nothing the run already holds: a register answer is paid for, and it does not change within the run.
 const registerCalls = { list: 0, count: 0 };
 const EXECUTORS = {
   recordLister: async (term) => { registerCalls.list++; return { ok: true, total: null, records: term === "LANTERNWICK" ? [FILING] : [] }; },
