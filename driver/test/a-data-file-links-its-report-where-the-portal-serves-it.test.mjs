@@ -7,9 +7,8 @@
 // A clearance's data file named its report by the pool's directory layout, `<origin>/<runId>/report.html`,
 // and the assistant's brief prints that link for a client's assistant to put in its mail. Production serves
 // that address as "not found" (the owner's test, recorded beside reportRouteFor in publish/index.mjs); the
-// email, the run record and a Knockout's data file already name the portal route. The owner ruled on
-// 2026-11-11 that the clearance's data file names the route too. Both products are driven, so the two
-// cannot drift apart again.
+// email, the run record and a Knockout's data file already name the portal route, and now the clearance's
+// data file names it too. Both products are driven, so the two cannot drift apart again.
 //
 // SAFETY: driver.config reads env at module load and its pool-root default is the real archive, so the
 // env is pinned before any product module is imported.

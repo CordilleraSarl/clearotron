@@ -1292,7 +1292,7 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
     // WHICH BUILD produced this, read once for every surface that records it. null off a git checkout.
     engineCommit: engineCommit(),
     // THE REPORT'S LINK, ONE WAY: the portal route the email, the run record and the data file all name. The data file
-    // used to name the pool path, which production serves as "not found" (owner's ruling 2026-11-11: the route).
+    // used to name the pool path, which production serves as "not found" (see reportRouteFor).
     reportRoute: reportRouteFor(poolUrl, runId),
 
     // The product's stage label as frozen with the run, which meta.json keeps; `stageLabel` above is today's registry's.
