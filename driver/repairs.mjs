@@ -819,7 +819,7 @@ export function createRepairLedger(runDir, { log } = {}) {
     // `effect` is the caller's measured answer to "did it close?", because THIS is not the layer that
     // can know — only the caller re-joins. It is `{asked, closed}`; a caller that does not measure gets
     // `effect: "unmeasured"` in the row rather than silence, so the row never reads as a verified repair
-    // by omission. pipeline.mjs's `bandChanged` (10147) already had this shape right
+    // by omission. `bandChanged` (steps/skeptic-and-follow-up.mjs) already had this shape right
     // (`outcome === "ok" && bandAfter != null && bandBefore !== bandAfter`); this makes it the rule rather
     // than one site's good judgment. CITED BY SYMBOL, not by number alone: the old citation pointed at a
     // `writeFileSync` three thousand lines away, and the number had been wrong long enough that the blank

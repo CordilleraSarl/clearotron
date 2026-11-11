@@ -1214,7 +1214,7 @@ export const SERP_PROVIDERS = {
 // citation ships UNVERIFIED — a degradation that must surface at run START (and on resume), never be
 // discovered at delivery (the teal-bastion cascade: a resume inherited artifacts but not CORSEARCH_SESSION_KEY).
 // Provider-agnostic — reads the active adapter's `credEnv`, never a baked-in provider name. Throws; the
-// caller (pipelineInner) lets it abort the run before any model spend.
+// caller (the run's opening, `steps/open-run.mjs`) lets it abort the run before any model spend.
 /**
  * Which of a provider's required credential variables are missing. EVERY variable, not just `credEnv`.
  *
@@ -1310,7 +1310,7 @@ export function preflightCredentials(env = process.env) {
 // note on missingCredentials above says one predicate exists so they cannot drift apart again.
 /**
  * Refuse, before any spend, a product whose unregistered-use half cannot run. Throws, like
- * preflightCredentials, and is called at the same door in pipelineInner — before buildRunContext, so the
+ * preflightCredentials, and is called at the same door in the run's opening (`steps/open-run.mjs`) — before buildRunContext, so the
  * throw rides the queue-level `intake-<base>.prerun-failed` packet lane with no run dir behind it.
  *
  * Takes the resolved POLICY rather than the product string: the caller already has it (it computes the
@@ -1797,7 +1797,7 @@ export function resolveEngineProgram(engine, { env = process.env, enginesDir = u
 /**
  * Refuse a run whose engine program cannot be found or run, or is written as a relative path.
  *
- * Throws, like preflightCredentials, and is called at the same door — pipelineInner, before the run
+ * Throws, like preflightCredentials, and is called at the same door — the run's opening, before the run
  * context is built. Returns {engine, binEnv, bin, resolved, source, version} when the program is usable:
  * the answer of resolveEngineProgram above, which every other reader asks too.
  *
@@ -1965,7 +1965,7 @@ export function freeSpacePlan({ freeBytes, needBytes, path }) {
 
 /**
  * Refuse a run that has nowhere to write. Throws, like preflightCredentials and preflightEngineBinary,
- * and is called at the same door — pipelineInner, before the run context is built.
+ * and is called at the same door — the run's opening, before the run context is built.
  *
  * UNCONDITIONAL, like preflightEngineBinary and unlike preflightCredentials. Every lane writes a run
  * directory: a knockout does, a run with an injected recordFetcher does, a resume does. There is no

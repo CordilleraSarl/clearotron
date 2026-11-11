@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // jx.mjs — the Stage-1.5 jx orchestration (Phase 2b slice 1): the frozen lane decision, the
 // candidate-generation executor chain, and the register-plan fold. Called from ONE never-kill block
-// in pipelineInner (after attachRegisterPlan, before decideAxes) — everything here degrades and
+// in the intake step (`steps/intake.mjs`, after attachRegisterPlan, before decideAxes) — everything here degrades and
 // logs; only the pipeline's own plan-write is load-bearing.
 //
 // The fold contract (the pattern the recall probes used until the recall store was removed):
@@ -354,7 +354,7 @@ export function jxPlanEntries({ lane, laneDecision, candidates, inScopeClasses, 
 }
 
 /**
- * The whole slice, one never-kill call from pipelineInner. Requires ctx.registerPlan + the jxLanes
+ * The whole slice, one never-kill call from the intake step (`steps/intake.mjs`). Requires ctx.registerPlan + the jxLanes
  * component on the frozen policy (the caller checks the component; this checks env + lanes + resume
  * state). Returns { folded, cause? } for the pipeline's log line — it NEVER throws.
  */

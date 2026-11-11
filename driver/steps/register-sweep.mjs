@@ -693,9 +693,10 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
     try {
       if (qids?.length) {
         // `readRegisterBands` directly, not the `readBands` helper further down: that one is declared
-        // in an inner block and is not in this closure's scope. Same read, same arguments.
+        // in an inner block and is not in this closure's scope. Only this axis's band: the executor writes no
+        // other, and every qid it was sent is this axis's.
         const landed = new Set();
-        for (const arr of Object.values(readRegisterBands(P, ctx.axes ?? []) ?? {}))
+        for (const arr of Object.values(readRegisterBands(P, [a]) ?? {}))
           for (const b of arr ?? []) if (b && typeof b.qid === "string" && b.qid && b.error !== true) landed.add(b.qid);
         effect = { asked: qids.length, closed: qids.filter((q) => landed.has(q)).length };
       }
@@ -1255,13 +1256,13 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
           continue;
         }
         runLog(run.runDir, { event: "plan-qids-missing", axis: a, qids: entries.map((e) => e.qid), action: "warm-followup" });
-        note(`register-unit ${a}: ${entries.length} dictated plan entr${entries.length === 1 ? "y" : "ies"} unexecuted — one warm followup`);
+        note(`register-unit ${a}: ${entries.length} dictated plan entr${entries.length === 1 ? "y" : "ies"} unexecuted — one followup`);
         const followup = repairFollowup("register-unit:plan-join", { axis: a, registerPlan: P.registerPlan, bandPath: P.registerBand(a), entries });
         // Repair-first: the followup's own failure no longer hard-throws here (the old
         // register-unit:<axis>(plan-join) must()) — the fan-in throw below is the single authority,
         // carrying the per-slice provider evidence and the honest failClass.
         const wf = await stage("register-unit", { ...ctx, axis: a }, { force: true, followup, sessionKey: unitKey[a], trigger: "plan-join" });
-        if (!wf.ok) note(`register-unit ${a}: warm plan-join followup failed (${wf.fail}) — the plan-unexecuted StageFailure below holds the line`);
+        if (!wf.ok) note(`register-unit ${a}: plan-join followup failed (${wf.fail}) — the plan-unexecuted StageFailure below holds the line`);
       }
       joinRes = holdStickyGaps(joinPlanToBands(ctx.registerPlan, readBands(), joinOptions(ctx)));
       deriveNamedBand(ctx);   // the followup appended band blocks — re-merge so Layer B reads them

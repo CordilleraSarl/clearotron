@@ -21,7 +21,7 @@ export async function runSynthesis({ P, checkLateBind, ctx, job, opts, run }, he
   // case-law and refutation are independent siblings of synthesis (case-law reads narrative.md;
   // refutation reads the source files, NOT case-law), so they run concurrently — saves ~one stage's
   // wall. The verdict-gated corrective re-synthesis below stays strictly AFTER this join.
-  await checkLateBind("pre-synthesis");   // B5b checkpoint 3: a bind here re-classifies via one warm re-digest
+  await checkLateBind("pre-synthesis");   // B5b checkpoint 3: a bind here re-classifies via one re-digest follow-up
   // D2 — surface provider enforcement telemetry (onomaticsAggression / onomaticsOppositions
   // on fetched records) as a structured aim-attention artifact for synthesis. Best-effort; NEVER a
   // rating rule (explicitly not the rejected escalation filter) — absence writes nothing.
@@ -87,7 +87,7 @@ export async function runSynthesis({ P, checkLateBind, ctx, job, opts, run }, he
 
   // A2/A4 — the v3 evidence gates (verified-needs-source, symmetric use-check, client-tier
   // join) key on the schema_version the artifact DECLARES; a down-level emission on a fresh run
-  // would silently disengage them. Demand the dictated version ONCE (warm resume); a still-down-
+  // would silently disengage them. Demand the dictated version ONCE (one follow-up, a fresh session); a still-down-
   // level file is logged loudly and rides on — deliver-always, weaker-gates-visible.
   const readSchemaVersion = () => {
     try { return parseFindingsJsonLenient(readFileSync(P.findings, "utf8")).schemaVersion ?? 1; } catch { return null; }
@@ -126,7 +126,7 @@ export async function runSynthesis({ P, checkLateBind, ctx, job, opts, run }, he
   // spec 64 — the typed forward-action register. The disposition derivation (legalActions arm of the
   // deliver-conditional floor) keys on actions[]; a v4 emission that omits the field entirely would
   // silently disengage it — the exact CLEAR-despite-conditions bug this ships to fix. Same posture as
-  // the schema-downlevel demand above: ONE warm re-demand, only when synthesis actually RAN this turn
+  // the schema-downlevel demand above: ONE follow-up re-demand, only when synthesis actually RAN this turn
   // (a resumed pre-change artifact keeps its shape — logged loudly, gates degrade); still-absent
   // after the demand is logged and rides on (deliver-always, the reviewer's actions-unregistered flag
   // and the predelivery coherence lint remain the nets).

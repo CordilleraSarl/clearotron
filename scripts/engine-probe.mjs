@@ -15,7 +15,7 @@
 // CAN this box run a turn that uses a tool, and under the billing mode it thinks it is using.
 //
 // It had no way to be asked. Its only callers were `bin/onboard.mjs` (the setup wizard, which asks it
-// once, inside a flow) and `preflightEngineTurn` in `pipeline.mjs` (which asks it at the start of a run,
+// once, inside a flow) and `preflightEngineTurn` in `driver/engine/probe.mjs` (which asks it at the start of a run,
 // when the question is already being answered the expensive way). needed it standalone to check
 // API billing without paying for a clearance, and that is a permanent want, not that issue's want.
 //

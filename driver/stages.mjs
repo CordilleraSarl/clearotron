@@ -14,7 +14,6 @@
 // per-stage `stallSec` (the standalone engine's zero-streamed-tokens watchdog) so deep thinking is not
 // false-killed by the tight global default. Models are friendly aliases; gateway.resolveModel() maps to full ids.
 
-import { basename } from "node:path";
 import { researchAnsweredBlock, NO_SEARCH_RESULT, RESEARCH_AFTER_REVIEW_MD } from "./research-answers.mjs"; import { reviewResearchLine } from "./research-checks.mjs"; import { savedFindingsBlock } from "./saved-findings-block.mjs";   // the research an earlier attempt got, and the findings it saved, handed to a later one
 import { awaitsReadingTurn } from "../providers/_shared/plan-guards.mjs";   // — a guard the dictation misreads is a question the model never knows it may ask
 import { isNonLatinTerm } from "../providers/_shared/script-form.mjs";
@@ -26,7 +25,6 @@ import { REGISTER_AXES, decideAxes } from "./coverage-ledger.mjs";
 // — the digest dispatch asks the SAME question verify.mjs asks ("does this run owe a form or a
 // prose table?") of the SAME file, so the instruction and the gate cannot disagree. Reading it here is
 // the point: a boolean threaded through ctx would drift the moment one call site forgot to set it.
-import { coverageFormStamp } from "./coverage-form-io.mjs";
 // The unit note's transport owns its repair tail — see UNIT_NOTE_REPAIR_TAIL. Acyclic: that module
 // imports node builtins and shared/driver-dir only.
 import { UNIT_NOTE_REPAIR_TAIL } from "./register-unit-record.mjs";
@@ -37,10 +35,8 @@ import { meaningSweepReceiptsInstruction } from "./connotation-search.mjs";   //
 import { frameworkFor, workedExamplesFor, materialBandPhrase } from "./framework.mjs"; import { methodDictation, inputsShape } from "./framework-method.mjs";
 import { requiredScriptsFor } from "./registration-scripts.mjs";   // item 21 — which scripts a territory registers marks in
 import { resolveTerritories, defaultJurisdictionsLine, narrowingOrderLine } from "./effective-scope.mjs";   // the ONE territory ladder (the geography stamp included) + the defaults-never-widen rule (2160)
-import { editRepairTail } from "./repair-contract.mjs";
-import { reportIdentityFor } from "./search-policy.mjs";
 import { profileSelectionDirective } from "./profile-selection.mjs";   //  lever 3 — driver selection  //  — the one product-name resolver
-import { FINDINGS_SCHEMA_VERSION, OFF_FIELD_GROUNDS, POSITION_REQUIRED_DISPOSITIONS, DISPOSITIONS } from "./findings-model.mjs";   // — the dictated findings contract version + off-field's declared grounds; — and the disposition vocabulary itself, which was typed out here while its two neighbours were interpolated
+import { FINDINGS_SCHEMA_VERSION, OFF_FIELD_GROUNDS, POSITION_REQUIRED_DISPOSITIONS } from "./findings-model.mjs";   // — the dictated findings contract version + off-field's declared grounds; — and the disposition vocabulary itself, which was typed out here while its two neighbours were interpolated
 import { STATEMENT_CLAUSE_MAX } from "./findings-model.mjs";   // — the ask is dictated against the clause that clips it
 // The ledger's closed vocabularies, so the dispatch cannot teach an order or a member the code refuses.
 import { SCOPE_LAYERS, SCOPE_STATUSES } from "./scope-ledger.mjs";

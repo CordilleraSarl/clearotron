@@ -711,7 +711,7 @@ function preRunFailNotify(agentId, base, job, reason) {
   return Boolean(p);
 }
 
-// B3 — guaranteed failure-notice backstop for PRE-TRY throws. pipelineInner's run-level catch owns every
+// B3 — guaranteed failure-notice backstop for PRE-TRY throws. The run-level catch in `runShell` owns every
 // failure inside its try{} (it RETURNS {ok:false, failedStage, …} after notifying — the
 // _driver/failure.json + outbox packet); a throw that reaches runPrepared's catch instead (res.failedStage
 // unset) came from the SETUP code before that try — corrupt profile sidecar, missing framework manifest,

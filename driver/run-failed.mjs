@@ -38,7 +38,7 @@ export async function endTheFailedRun({ P, agent, ctx, e, job, run, product = CL
   // RATE-LIMIT POSTPONE (re-throw): a 429 session-cap is NOT a terminal failure — RE-THROW it so pipeline()'s
   // outer catch parks the run resumable (.postponed, no .failed, no notify-fail) and the runner auto-resumes
   // after the cap window, vs stranding every completed stage and forcing a ~$40 cold re-run. This catch wraps
-  // the ENTIRE stage sequence (try at the top of pipelineInner), so without this guard a rate-limited
+  // the ENTIRE stage sequence (the try in `runShell`, run-shell.mjs), so without this guard a rate-limited
   // StageFailure is swallowed HERE and the postpone path (pipeline() catch + postponeRun + runner
   // .resumePostponed) is unreachable — the exact bug behind the 2026-06-22 register-stage 429 hard-fails.
   if (e instanceof StageFailure && e.rateLimited) throw e;
@@ -277,7 +277,13 @@ export async function endTheFailedRun({ P, agent, ctx, e, job, run, product = CL
     note(`${tag} RECOVERABLE failure in ${run.codename} at ${failedStage} — parking for AUTO-RECOVERY, ${laneLabel} lane ${laneAttempt}/${decision.laneCeiling} (defect budget ${recoveryLanes.defect.attempts}/${recoveryMax} spent; resumes ~${recoveryWaitMin}min${capSchedule ? ` on the ${recoveryWaitBasis === "provider" ? "provider's stated reset" : "cap ladder"}` : ""}; valid stages skip on resume): ${String(reason).slice(0, 160)}`);
     // no fromStage: the failed-stage label can be decorated ("synthesis(blocking)") and is not a
     // resume key — plain idempotent resume re-runs exactly the invalid/missing outputs.
-    try { writePark(run.runDir, { kind: "recovery", recoveryResumesAt, postponedAt: new Date().toISOString(), codename: run.codename, job, agent, attempt, reason: String(reason).slice(0, 300), sig: failSig.sig, class: failClass, lane }, { job, agent, codename: run.codename }); } catch { /* best-effort */ }
+    try { writePark(run.runDir, { kind: "recovery", recoveryResumesAt, postponedAt: new Date().toISOString(), codename: run.codename, job, agent, attempt, reason: String(reason).slice(0, 300), sig: failSig.sig, class: failClass, lane }, { job, agent, codename: run.codename }); }
+    catch (err) {
+      // The marker is how the runner finds a parked run again. A park that could not write it is said, where a reader
+      // of the run looks, so a run that never comes back is not a silence.
+      note(`${tag} park marker NOT written for ${run.codename}: ${String(err?.message ?? err).slice(0, 160)} — the runner cannot resume this run from it`);
+      try { runLog(run.runDir, { event: "park-marker-unwritten", kind: "recovery", cause: String(err?.message ?? err).slice(0, 200) }); } catch { /* the note is the record */ }
+    }
     // recoveryHistory is the repeat-signature memory AND the lane ledger: append-only, one row per
     // park, read back on the next failure so an identical defect is never bought twice and so each
     // lane's spend is recomputed from the record rather than from a second counter that could drift

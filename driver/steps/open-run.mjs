@@ -309,7 +309,7 @@ export async function openRun({ job, opts }, helpers) {
   //
   // HERE, and not at publish. The pool copy has carried the sha since — but only for a run that
   // PUBLISHED, and only in the pool, which is not the run dir that gets archived. A run that fails, is
-  // aborted, or is preserved by the e2e lane carries nothing. This line is the first thing written after
+  // aborted, or is kept for testing carries nothing. This line is the first thing written after
   // the run dir exists, so every one of those keeps its attribution.
   //
   // WHAT IT STILL CANNOT COVER, said rather than discovered: a throw BEFORE the run dir is minted — the

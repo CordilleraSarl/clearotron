@@ -271,7 +271,6 @@ export function paths(runDir) {
     deadlineEnrich: p(driverRel("deadline-enrich.json")),
     declinations: p(driverRel("declinations.json")),
     declinationSpec: p(driverRel("declination-spec.json")),
-    defaultTerritories: p(driverRel("default-territories.json")),
     delivery: p(driverRel("delivery.json")),
     deliveryStale: p(driverRel("delivery-stale.json")),
     doubtClosureSpec: p(driverRel("doubt-closure-spec.json")),
