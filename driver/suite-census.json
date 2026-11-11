@@ -285,6 +285,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-clearance-resumed-after-it-published-sends-the-same-cover-note.test.mjs": {
+          "tests": 1,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "a-client-cell-carries-no-raw-engine-words.test.mjs": {
           "tests": 5,
           "asserts": 18,
