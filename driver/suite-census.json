@@ -5537,7 +5537,7 @@
         },
         "profiles.test.mjs": {
           "tests": 49,
-          "asserts": 273,
+          "asserts": 272,
           "skips": 0,
           "todos": 0
         },
