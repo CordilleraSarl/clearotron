@@ -1580,6 +1580,8 @@ export const STAGES = {
   },
 
   "common-law": {
+    // Every stage that holds the research tool takes its web evidence through it alone (approved 2026-11-11; see synthesis).
+    standing: Object.freeze([WEB_EVIDENCE_ONLY_THROUGH_RESEARCH]),
     // stallSec is REQUIRED here, like the sibling sweep stage `register-unit` (timeoutSec 1200 / stallSec
     // 900): common-law's first action is the long perplexity_research grid sweep, during which the model
     // streams 0 tokens while blocked on the tool. Without a per-stage override it falls back to the global
@@ -1749,6 +1751,7 @@ export const STAGES = {
         // the form; this names it and the two fields the seat owns, and nothing else.
         meaningSweepReceiptsInstruction(),
         CROSS_CHECK_HANDOFF,
+        WEB_EVIDENCE_ONLY_THROUGH_RESEARCH,
         writeReturn(P.commonLaw),
       );
     },
@@ -1763,6 +1766,8 @@ export const STAGES = {
   // single-member deterministic branch above. The driver merges the two halves' findings + ledgers into
   // the canonical files in code (pipeline.mjs), so downstream never sees half artifacts.
   "common-law-half": {
+    // Every stage that holds the research tool takes its web evidence through it alone (approved 2026-11-11; see synthesis).
+    standing: Object.freeze([WEB_EVIDENCE_ONLY_THROUGH_RESEARCH]),
     // Same resourcing rationale as "common-law" above: the sweep streams 0 tokens while blocked on the
     // grid tool, so the stall override is REQUIRED. The wall stays 2250 even though a half grid is ~half
     // the cells — the wall exists to stop killing legitimate work, and a dense-matter half plus the
@@ -1893,6 +1898,7 @@ export const STAGES = {
         // half rather than on the obligations.
         meaningSweepReceiptsInstruction({ lead: "MEANING-SWEEP RECEIPTS — THIS IS THE WORK.", findingsTail: false }),
         `Then write ${P.commonLawHalf(half)}: a short report of the sweep under a "Findings" heading — every LOADED reading as its own finding, with the receipt behind it — and an "Audit trail" section saying which queries ran and what each returned. The driver renders the disposition TABLE from your recorded rulings, so do not hand-write that table.`,
+        WEB_EVIDENCE_ONLY_THROUGH_RESEARCH,
         writeReturn(P.commonLawHalf(half)),
       );
       // Instructed checks are receipts executed ONCE per run — half "a" is the designated owner (the
@@ -1929,6 +1935,7 @@ export const STAGES = {
         // the seat must be told that recording nothing is then the right outcome.
         meaningSweepReceiptsInstruction({ mayOwnNoQueries: true }),
         CROSS_CHECK_HANDOFF,
+        WEB_EVIDENCE_ONLY_THROUGH_RESEARCH,
         writeReturn(P.commonLawHalf(half)),
       );
     },
@@ -3377,7 +3384,7 @@ export const STAGES = {
     // The live read, which every recheck and review after a repair is pointed at too (resolveSkillReads): the run's own
     // framework and the shared reasoning beside the two manuals above (reviewSkillReads).
     skillReadsFor: reviewSkillReads,
-    standing: Object.freeze([REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK]),
+    standing: Object.freeze([REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK, WEB_EVIDENCE_ONLY_THROUGH_RESEARCH]),
     out: (P) => P.seniorEyeReview,
     validate: validators.seniorEyeReview,
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
@@ -3435,6 +3442,7 @@ export const STAGES = {
     message: ({ paths: P, intakeAsks, job, profile, registerOnly, profileSelection, placementFloorDecisions, writerExclusions, reviewAddressLines, researchChecks }) => lines(
       reads(reviewSkillReads({ profile, job })),
       REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK,
+      WEB_EVIDENCE_ONLY_THROUGH_RESEARCH,
       // lever 3 — WHICH FINDINGS EARN A GROUNDED PROFILE, chosen by the DRIVER and listed by
       // ordinal. The band is on findings.json before this stage is dispatched, so there is nothing for
       // the seat to judge: unlisted work is never asked for. Empty when every finding is profiled —
