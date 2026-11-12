@@ -97,6 +97,11 @@ function stripHtml(s) {
 // "April 2014", "MAY 2026" — dates pass the Title-Case-multi-word shape but are never entities.
 const DATE_TOKEN_RE = /^(january|february|march|april|may|june|july|august|september|october|november|december)(\s+\d{1,4})?$/i;
 
+// A PRODUCT TIER IS A LABEL, NOT A PARTY. An action about the client's own range wrote "Tier 1", and the report's
+// check named it as a party no finding identifies. The label is the word with a number or a single letter, as
+// "Level 3" is vocabulary. The word on its own, or with a name after it, stays a candidate: a company can carry it.
+const TIER_LABEL_RE = /^tier (?:\d+|[a-z])$/;
+
 // Proper-name candidates in a text span: ALL-CAPS tokens (RTVE, IKEA, SATIN & BRONZE) and Title-Case
 // multi-word names (High 5 Games). Single Title-Case words are excluded (too noisy).
 export function properNameCandidates(text, extraVocab = null, { actionBullets = false, territories = false } = {}) {
@@ -114,6 +119,7 @@ export function properNameCandidates(text, extraVocab = null, { actionBullets = 
   const isVocab = (tok) => {
     const n = norm(tok);
     if (inList(n)) return true;              // whole-phrase entries ("apple app store", "epic games store")
+    if (TIER_LABEL_RE.test(n)) return true;
     return n.split(" ").every((w) => !w || inList(w) || /^\d+$/.test(w));
   };
   // norm-keyed so "AMAZON SILK" and "Amazon Silk" are ONE candidate; the mixed-case form wins the display
@@ -129,6 +135,9 @@ export function properNameCandidates(text, extraVocab = null, { actionBullets = 
   // ("Trademark Register") into a phantom company. An entity name is always on one line in these surfaces.
   for (const m of t.matchAll(/\b([A-Z][A-Z0-9]{2,}(?:[ \t]*[&+][ \t]*[A-Z][A-Z0-9]{1,})*(?:[ \t]+[A-Z][A-Z0-9]{2,})*)\b/g)) {
     const tok = m[1].trim();
+    // this pattern stops before the number, so "TIER 3" reaches here as "TIER"; the label is read with what follows
+    const next = (t.slice(m.index + m[0].length).match(/^[ \t]+(?:\d+|[A-Za-z])\b/) ?? [""])[0];
+    if (TIER_LABEL_RE.test(norm(`${tok}${next}`))) continue;
     if (!isVocab(tok) && norm(tok).length >= 3) add(tok);
   }
   // — A BULLET'S OPENING VERB IS NOT A NAME. The action list flagged "Instruct Japanese", which is

@@ -88,6 +88,17 @@ test("a territory's short name is a territory, beside full country names or alon
   assert.deepEqual(properNameCandidates("Search the UAE registers.", null, { territories: false }), ["UAE"]);
 });
 
+test("a product tier is a label, not a party, and a party named beside it is still named", () => {
+  const tier = lint("- Decide whether the Tier 1 range launches before filing.");
+  for (const id of [EMAIL, REPORT]) assert.equal(on(tier, id)?.pass, true, `${id} named a tier label as a party`);
+  const beside = lint("- Agree the Tier 2 range with Corvane Retail before filing.");
+  for (const id of [EMAIL, REPORT]) assert.deepEqual(on(beside, id)?.orphans, ["Corvane Retail"], `${id} lost the party beside the tier`);
+  assert.deepEqual(properNameCandidates("Launch the TIER 3 range, then the Tier B range."), [], "the label in capitals, or with a letter");
+  // The word on its own, or with a name after it, is still a candidate: a company can carry it.
+  assert.deepEqual(properNameCandidates("Confirm TIER holds no licence."), ["TIER"]);
+  assert.deepEqual(properNameCandidates("Write to Tier Ostlund Holdings first."), ["Tier Ostlund Holdings"]);
+});
+
 test("a verb opening an item is dropped, and the name after it is still read", () => {
   // The party after the verb is carded: nothing is named, on either surface.
   const carded = lint("- Clear Ostrava Kites's prior use before filing.\n- Clear Brannick Tooling's licence before filing.");
