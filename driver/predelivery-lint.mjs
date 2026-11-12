@@ -32,6 +32,7 @@ import { writeUpViolations, writeUpMessage } from "./narrative-write-ups.mjs";  
 import { findRegistryArithmeticIssues, findRegistryViolations, splitBlocks, normalizeRecordUri } from "./registry-fidelity.mjs";
 import { recordGoods, untaggedIsEnglish } from "./record-goods.mjs";   // a held record's goods, read as the band reads them
 import { parseFront } from "./publish/parse.mjs";
+import { clearedNames } from "./publish/search-depth.mjs"; // the web and marketplace names the delivered page lists
 import { citedFindingNumbers } from "./finding-citations.mjs";   // every written form of a citation, read one way
 export { citedFindingNumbers };
 import { CLIENT_TIER_BY_COMPOSITE, joinFindingToBlock, parseBlockOrd, worstLiveBand, NO_RATED_CONFLICTS, deriveActionConditions, isUnconditionalProceed, verdictStance, statedConditions, joinAskToAnswer, projectAssessmentField, POSITION_REQUIRED_DISPOSITIONS, OFF_FIELD_GROUNDS, FINDINGS_SCHEMA_VERSION, netChainMarkers, STATEMENT_CLAUSE_MAX } from "./findings-model.mjs";
@@ -200,6 +201,45 @@ export function templateChecks({ headerName, ratedNames, searchedNames }) {
       isSearched ? "" : `risk rating attached to "${rn}", which is not a searched name — adverse marks belong in the analysis text, not the name-rating position`));
   }
   return out;
+}
+
+// THE LINES THE DELIVERED PAGE DRAWS FROM THE RECORD, OUTSIDE report.md, THAT CAN NAME A PARTY. The page (render.mjs)
+// draws the coverage rows that are not clean under "What was searched", less a driver-composed follow-up row that another
+// row already restates, and the first PAGE_WEB_NAMES_SHOWN web and marketplace names under "Also considered". A party
+// named only in a row the page hides is not shown to the reader, so the page's rules are applied here exactly. They are
+// copied rather than imported: importing the page renderer would hand every tool server that loads this lint the
+// branding settings the renderer reads. The test a-party-the-page-shows-is-introduced-to-the-reader renders a page and
+// holds this copy to it, the hidden follow-up row included.
+export const PAGE_WEB_NAMES_SHOWN = 8;
+const PAGE_FOLLOW_UP_PREFIX = "Follow-up / ";
+const PAGE_AXIS_LABELLED = /\s\/\s/;
+const PAGE_COV_STOPWORDS = new Set(["the", "a", "an", "as", "for", "of", "in", "on", "and", "or", "to", "is",
+  "was", "it", "its", "this", "that", "with", "by", "at", "be", "been", "run", "search", "searched"]);
+const pageCovWords = (t) => new Set(String(t || "").toLowerCase().match(/[a-z0-9]+/g)?.filter((w) => !PAGE_COV_STOPWORDS.has(w)) ?? []);
+/** The coverage rows the page draws: not clean, and not a follow-up row another open row restates (render.mjs dedupeFollowUps). PURE. */
+function pageDrawnCoverage(coverage) {
+  const open = (Array.isArray(coverage) ? coverage : []).filter((c) => c && typeof c === "object" && c.state !== "confirmed-clean");
+  const composed = (c) => String(c?.area || "").startsWith(PAGE_FOLLOW_UP_PREFIX);
+  const written = open.filter((c) => !composed(c));
+  if (!written.length) return open;
+  return open.filter((c) => {
+    if (!composed(c)) return true;
+    const directive = pageCovWords(String(c.note || "").split("\u2014")[0]);
+    if (!directive.size) return true;
+    return !written.some((w) => {
+      if (w?.state === "confirmed-clean") return false;
+      if (PAGE_AXIS_LABELLED.test(String(w?.area || ""))) return false;
+      const theirs = pageCovWords(w.area);
+      return [...directive].every((word) => theirs.has(word));
+    });
+  });
+}
+/** Every line the page draws from the record that can name a party: the drawn coverage rows, and the names it lists. PURE. */
+export function pageNameLines({ coverage = [], webNames = [] } = {}) {
+  return [
+    ...pageDrawnCoverage(coverage).map((c) => `${c.area ?? ""} ${c.note ?? ""}`),
+    ...(Array.isArray(webNames) ? webNames : []).slice(0, PAGE_WEB_NAMES_SHOWN).map((w) => String(w?.title ?? "")),
+  ];
 }
 
 // Reference integrity (A2 + V4-3): no owner/mark named in the ASK bucket ("Only you can close") that is
@@ -2472,7 +2512,19 @@ export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, 
       ...(searchedNames ?? []),
       ...((findings ?? []).map((f) => f?.mark).filter(Boolean)),
     ])];
-    checks.push(...referenceChecks({ actionsText: onlyYou, fullSurface: reportMd, searchedNames, surface: "report", extraVocab, markNames, structural: actionsExpected === true }));
+    // THE PAGE INTRODUCES A PARTY THAT report.md DOES NOT CARRY. The delivered page draws the coverage rows the run left
+    // open, and the web and marketplace names it considered, from the record, outside report.md. A party named only there
+    // was read as unintroduced on both surfaces: measured in testing, 2026-11-12, the email's flag told its reader to look
+    // in the report for a marketplace item the report's open coverage row and names list both showed. Both checks now read
+    // those lines as the page draws them. A run with no record or no audit adds nothing.
+    const onThePage = (() => {
+      let coverage = [];
+      try { coverage = JSON.parse(findingsRaw)?.coverage ?? []; } catch { /* no record: the page draws no row from it */ }
+      let webNames = [];
+      try { webNames = auditMd ? clearedNames(auditMd).web : []; } catch { /* an unreadable audit lists no names */ }
+      return pageNameLines({ coverage, webNames }).join("\n");
+    })();
+    checks.push(...referenceChecks({ actionsText: onlyYou, fullSurface: reportMd, searchedNames, surface: "report", extraVocab, markNames, structural: actionsExpected === true, introducedIn: onThePage }));
     // V4-5 (+ PR-3): with a typed register the reachability check asserts over the STORE the
     // rendered lines are code-built from; the prose scan remains the legacy fallback.
     checks.push(...actionsReachabilityChecks({ onlyYouText: onlyYou, actionsRegister, findings }));
@@ -2506,7 +2558,7 @@ export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, 
       const reportZone = onlyYouZone(reportMd);
       checks.push(...referenceChecks({
         actionsText: emailZone, fullSurface: [emailZone, parseFront(String(reportMd)).fm.overall_caption, clientSummaryMd].filter(Boolean).join("\n"), searchedNames, surface: "email", extraVocab, markNames, structural: actionsExpected === true,
-        introducedIn: reportZone ? String(reportMd).replace(reportZone, " ") : "",
+        introducedIn: [reportZone ? String(reportMd).replace(reportZone, " ") : "", onThePage].join("\n"),
       }).map((c) => ({ ...c, id: `${c.id}:email` })));
     }
   }
