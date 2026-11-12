@@ -1369,7 +1369,7 @@ export const STAGES = {
       },
       "Distinctiveness & registrability read — spectrum placement per market language, descriptive/generic/laudatory/geographic/deceptive/offensive flags, acquired-distinctiveness note": {
         class: "judgment", tokens: [],
-        why: "an advisory legal read that reaches the client-facing report; prose-only, no structured slot, no token",
+        why: "reasoned while the variants are generated, to steer them; no artifact carries it, and the read the report shows is the writer's own mark assessment, made from the manifest's forms and the run's evidence; prose-only, no structured slot, no token",
       },
       "elements[].famous_mark_flag — the elements Step 2's famous-mark check flags": {
         class: "judgment", tokens: [],
