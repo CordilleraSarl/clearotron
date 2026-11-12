@@ -1644,10 +1644,6 @@ export const STAGES = {
         class: "judgment", tokens: ["missing"],
         why: "#850 rules audit-trail prose J. Recorded for E7: the call count and the per-call result count are in the ledger and in _driver/tool-calls.jsonl, so only the prompt-summary column is authored.",
       },
-      "Grid program receipt — paste the SANDBOX PROGRAM block from the tool result verbatim into the audit trail": {
-        class: "mechanical:tool-written", tokens: [],
-        why: "Verbatim re-emission of a block the tool already returned and, on the deterministic branch, already wrote. No validator token speaks about it — a gap, and an instance of exactly the shape #850 says escapes a stages.mjs-only reading.",
-      },
       "Summary section — Perplexity calls executed, mandatory platforms covered N/N, findings surfaced, open flags": {
         class: "mechanical:code-extracted", tokens: [],
         why: "Every number is a count over the ledger the tool wrote and the findings rows the model typed; the driver can derive all four. No token speaks about it.",
