@@ -16,6 +16,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { driverSource } from "./driver-source.mjs";
 
 import { parseVersion, probeCliVersion, forgetCliVersions } from "../engine/cli-version.mjs";
 import { olderThanFloor } from "../driver.config.mjs";
@@ -166,7 +167,7 @@ test("the attempt record carries the version AND its probe state, on both rows",
   // Textual, because the alternative is driving a real dispatch. What it pins is that the probe state
   // travels beside the value: a record with a null version and no probe field cannot be told apart from
   // one written before the gauge existed, which is the distinction the whole field exists for.
-  const src = readFileSync(join(ROOT, "driver", "gateway.mjs"), "utf8");
+  const src = driverSource("gateway.mjs");
   const rows = [...src.matchAll(/cliVersion: cli\.version, cliVersionProbe: cli\.probe/g)];
   assert.equal(rows.length, 2,
     "both attempt rows must carry it — one carries the row the run record reads, the other the telemetry");
@@ -194,7 +195,7 @@ test("the attempt record carries the version AND its probe state, on both rows",
 // built inside a dispatch this suite cannot drive, and the fields must reach BOTH row sites. The
 // comparison itself is a real unit below.
 test("the floor comparison reaches the record, at both row sites", () => {
-  const src = readFileSync(join(ROOT, "driver", "gateway.mjs"), "utf8");
+  const src = driverSource("gateway.mjs");
   assert.equal([...src.matchAll(/cliBelowFloor: cli\.belowFloor/g)].length, 2,
     "a run whose program is behind the floor must say so on both attempt rows, or the fact exists nowhere");
   assert.equal([...src.matchAll(/cliFloor: cli\.floor/g)].length, 2,

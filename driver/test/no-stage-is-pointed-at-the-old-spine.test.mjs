@@ -17,7 +17,7 @@ import { join, dirname, resolve, relative } from "node:path";
 import { DRIVER, SKILLS, everyModelStageDispatch } from "./model-stage-dispatches.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 
-const SPINE = resolve(SKILLS, "clearance-search", "SKILL.md");
+const SPINE = resolve(DRIVER, "..", "docs", "architecture", "retired-manuals", "clearance-search-spine.md");
 const flat = (rel) => readFileSync(join(SKILLS, rel), "utf8").replace(/\s+/g, " ");
 
 test("no chain of links from a file any stage declares reaches the spine", () => {
@@ -54,7 +54,7 @@ test("the unit brief names the active provider and no sub-budget, and the web ma
 });
 
 test("the spine says no stage reads it, and its lines follow the ruled method", () => {
-  const spine = flat("clearance-search/SKILL.md");
+  const spine = readFileSync(SPINE, "utf8").replace(/\s+/g, " ");
   for (const now of [
     "and is NOT read by the integrator agent. No stage reads this file; each stage's message names the manual it reads.",
     "## Register sources — the active vendor is the source of truth",

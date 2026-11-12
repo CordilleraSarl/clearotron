@@ -19,14 +19,9 @@
 // the line" is not; and only one of them is a clean. Collapsing them is the ENOENT-is-not-EACCES shape:
 // an absence that cannot say why is indistinguishable from a choice.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
 import { channelsDiagnosis, gridChannels, channelsFromMatterContext, CHANNEL_STATES } from "../scope-ledger.mjs";
-
-const HERE = dirname(fileURLToPath(import.meta.url));
-
 const CASES = {
   "no-document": "",
   "no-line": "## Client and sector\n\nProse, but no channels line anywhere.",
@@ -77,7 +72,7 @@ test("a partly-usable line is NAMED, not all-rejected — one good channel is no
 test("the diagnosis is WIRED into the fallback — not merely exported", () => {
   // Presence is not firing. The function could be complete and tested while pipeline.mjs still called
   // the old one and every real run stayed silent.
-  const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   // WIRED THROUGH THE CHANNEL RULE NOW, which is where both readings live: the diagnosis is what
   // gridChannels returns alongside the channels, so the four silences still reach the run's own record
   // while the choice of channels is made in one place for every profile.

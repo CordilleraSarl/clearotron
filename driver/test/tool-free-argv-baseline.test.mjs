@@ -30,6 +30,7 @@
 // own stage's expectation and leaves the other ten byte-identical, or it widened a surface it never
 // mentioned.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { buildGatherMcpConfig, allowedToolsFor, toolGroupsForStage, TOOL_FREE_STAGES, RECORDING_STAGES, recordAxisFor, seatWritesForGroups, PER_CHUNK_STAGES, PER_AXIS_STAGES } from "../engine/mcp/gather-config.mjs";
 import { buildClaudeArgs } from "../engine/anthropic-agent.mjs";
@@ -505,10 +506,10 @@ test("the resolution above still matches the gateway's — a paraphrase that dri
   // inside a 200-line function that cannot be called from here. That makes it a DUPLICATE, and a
   // duplicate is only as good as this check: the gateway must still gate on groups.length and still feed
   // buildGatherMcpConfig + allowedToolsFor.
-  const src = readFileSync(new URL("../gateway.mjs", import.meta.url), "utf8");
+  const src = driverSource("gateway.mjs");
   assert.match(src, /const groups = toolGroupsForStage\(name\);/, "the gateway no longer resolves groups by stage name this way");
   assert.match(src, /if \(groups\.length\) \{/, "the gateway no longer gates the whole grant on groups.length — the baseline's premise moved");
-  assert.match(src, /gatherAllowedTools = allowedToolsFor\(groups\)/, "the gateway no longer derives the allowlist from the groups");
+  assert.match(src, /gatherAllowedTools = allowedToolsFor\(groups[,)]/, "the gateway no longer derives the allowlist from the groups");
 });
 
 test("⭐ THE ARGV DIFFERENTIAL — doubt-closure gained all three flags and NO retrieval server, and the mechanical scope is now empty", () => {

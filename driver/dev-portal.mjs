@@ -44,6 +44,7 @@ import { readFlagSnapshot, registerTerritoriesFor } from "./flag-snapshot.mjs";
 import { builtFor, registerCanCountFor } from "./flag-snapshot.mjs";
 import { productAvailability, UNAVAILABLE_NOTE, PRODUCT_POLICIES } from "./search-policy.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
+import { readJson } from "./run-record.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const LOOPBACK = new Set(["127.0.0.1", "::1"]);
@@ -142,7 +143,7 @@ function scanRuns(workspaceRoot) {
   const out = [];
   const readRun = (dir, slug, runName, archived) => {
     try {
-      const s = JSON.parse(readFileSync(join(dir, "status.json"), "utf8"));
+      const s = readJson(join(dir, "status.json"));
       out.push({ runId: s.runId ?? `${slug}-${runName}`, slug: s.slug ?? slug, codename: s.codename ?? null,
         agent: s.agent ?? null, state: s.state ?? null, stepN: s.stepN ?? null, stepLabel: s.stepLabel ?? null,
         stepTotal: s.stepTotal ?? null, signoff: s.review?.signoff ?? s.verdict ?? null, tier: s.tier ?? null, sendPending: s.sendPending ?? null,

@@ -26,12 +26,12 @@
 // widening need none. The reading step decides now; every proposal is minted or refused on its own
 // merits. `mintSupplementalEntries` still takes a cap from a caller that sets one, and none does.
 //
-// Pure orchestration with injected IO/executor (deps) so it tests offline; the corsearch-server handler
+// Pure orchestration with injected IO/executor (deps) so it tests offline; the corsearch mount's handler
 // binds the live doExecutePlan.
 
-import { readFileSync, writeFileSync, renameSync, existsSync, mkdirSync } from "node:fs";
+import { writeFileSync, renameSync, existsSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { driverDir } from "../../../shared/driver-dir.mjs";   //
+import { paths, readJson } from "../../run-record.mjs";   //
 import { PLAN_PREDICATES, PLAN_MAX_OR_WIDTH, PLAN_MAX_NAME_LENGTH, planExactOrWidth, planPhoneticOrWidth, fingerprint, exactOperatorEntries, ownerIntersectionGap, goodsTextGap, resolveRegions, houseElementOf, withoutHouseElementTerms, containsFormSubstitution } from "../../register-plan.mjs";
 import { entryTermIssues } from "../../../providers/_shared/term-shape.mjs";
 import { OUTSTANDING_REASON, runDriverDirOf } from "../../../providers/_shared/follow-up-searches.mjs";
@@ -416,7 +416,7 @@ export async function proposeSupplemental(params, tctx, deps) {
   // unchanged.
   let planRegions = [], planClasses = [], house = null, bound = { addedClasses: [], addedClassQuestions: [] }, scriptMarkets = null, scriptQuestionsAsked = [];
   try {
-    const frozen = JSON.parse(readFileSync(driverDir(dirname(dirname(outPath)), "register-plan.json"), "utf8"));
+    const frozen = readJson(paths(dirname(dirname(outPath))).registerPlan);
     house = houseElementOf(frozen);
     bound = addedClassBound(frozen);
     if (Array.isArray(frozen?.script_markets)) { scriptMarkets = frozen.script_markets; scriptQuestionsAsked = Array.isArray(frozen?.script_questions_asked) ? frozen.script_questions_asked : []; }
@@ -429,7 +429,7 @@ export async function proposeSupplemental(params, tctx, deps) {
   let supp = { schema: "register-plan/1", plan_version: 1, derived_from: { job_key: `supplemental:${axis}`, variants_fingerprint: "supplemental" }, regions: planRegions, entries: [] };
   if (existsSync(suppPath)) {
     try {
-      const prior = JSON.parse(readFileSync(suppPath, "utf8"));
+      const prior = readJson(suppPath);
       if (prior && Array.isArray(prior.entries)) supp = { ...prior, regions: (Array.isArray(prior.regions) && prior.regions.length) ? prior.regions : planRegions };
     } catch { /* a torn supplemental file is rebuilt — minted qids are deterministic, nothing is lost */ }
   }
@@ -558,7 +558,7 @@ export async function proposeSupplemental(params, tctx, deps) {
   // inheritance above — the executor reads suppPath FROM DISK, so an in-memory-only backfill would
   // leave a reused-qid re-execution running region-less again.
   const staleOnDisk = existsSync(suppPath) && planRegions.length && !(() => {
-    try { const d = JSON.parse(readFileSync(suppPath, "utf8")); return Array.isArray(d?.regions) && d.regions.length; }
+    try { const d = readJson(suppPath); return Array.isArray(d?.regions) && d.regions.length; }
     catch { return false; }
   })();
   // PR-6 (C1 — persist what evaporates): rejections used to live ONLY in this tool's response text.
@@ -586,7 +586,7 @@ export async function proposeSupplemental(params, tctx, deps) {
   let reusedHeld = [];
   try {
     const own = new Map();
-    const { blocks } = bandWithSlicesOut(JSON.parse(readFileSync(outPath, "utf8")), slicesTakenOutByAxis(dirname(dirname(outPath))).get(axis));
+    const { blocks } = bandWithSlicesOut(readJson(outPath), slicesTakenOutByAxis(dirname(dirname(outPath))).get(axis));
     for (const b of blocks) if (b?.qid) own.set(String(b.qid), b);
     reusedHeld = reused.filter((q) => { const b = own.get(String(q)); return b && b.error !== true && !enrichedQids.includes(q) && !staleOnDisk; });
   } catch { reusedHeld = []; }
@@ -610,7 +610,7 @@ export async function proposeSupplemental(params, tctx, deps) {
   const refusedHere = outstanding.filter((q) => mintedHere.has(q));
   if (refusedHere.length) {
     let cur = supp;
-    try { cur = JSON.parse(readFileSync(suppPath, "utf8")); } catch { /* the in-memory plan is what was written */ }
+    try { cur = readJson(suppPath); } catch { /* the in-memory plan is what was written */ }
     const gone = new Set(refusedHere);
     cur = withRejected({ ...cur, entries: (Array.isArray(cur?.entries) ? cur.entries : []).filter((e) => !gone.has(e?.qid)) },
       // The markets and goods ride on the row: the ask ledger keeps one ask per (issue, proposal), and the compact
@@ -627,7 +627,7 @@ export async function proposeSupplemental(params, tctx, deps) {
   // read the results BACK FROM THE BAND — the reasoning payload is never model-transcribed
   const results = {};
   try {
-    const band = JSON.parse(readFileSync(outPath, "utf8"));
+    const band = readJson(outPath);
     const blocks = Array.isArray(band) ? band : [];
     for (const b of blocks) {
       if (!b || typeof b !== "object" || !b.qid || !(qids.includes(b.qid) || reusedHeld.includes(b.qid))) continue;

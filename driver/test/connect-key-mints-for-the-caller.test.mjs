@@ -19,9 +19,10 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { driverSource } from "./driver-source.mjs";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
-const SERVICE = readFileSync(join(REPO, "driver", "portal-service.mjs"), "utf8");
+const SERVICE = driverSource("portal-service.mjs");
 const ROUTE = SERVICE.slice(
   SERVICE.indexOf('parts[2] === "connect-key"'),
   SERVICE.indexOf("// /portal/connect-help"),

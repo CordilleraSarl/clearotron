@@ -10,6 +10,7 @@
 // call clean, the verdict is held off CLEAR over it, the workbook carries the shipped "Register" row, and the page
 // chips none of their territories "Nothing found". Every mark and owner is invented.
 import { pinEnv, envFrom } from "../../shared/env-aliases.mjs";
+import { driverSource } from "./driver-source.mjs";
 import { mkdtempSync as __mkdtemp } from "node:fs";
 import { tmpdir as __tmpdir } from "node:os";
 import { join as __join } from "node:path";
@@ -253,7 +254,7 @@ test("the park's renames are put back where nothing has been written since, so t
 });
 
 test("the wiring: a disclosed axis is neither re-dispatched nor re-run, the park names its axes and renames, and the catch puts them back", () => {
-  const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.match(src, /const dispatched = disclosedAxes\.has\(a\) \? null : await dispatchPlanQids\(a, null, "taint-dispatch"\);/, "a disclosed axis is re-dispatched");
   assert.match(src, /if \(!digestLocked && !disclosedAxes\.has\(a\) && repairLedger\.canAttempt\("taint-rerun"/, "a disclosed axis is re-run");
   assert.match(src, /\{ notCompletedPart: "searches", taintedAxes: toPark, undoRenames \}/, "the park does not name its axes and renames on the failure");

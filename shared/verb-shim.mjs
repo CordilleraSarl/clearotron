@@ -121,7 +121,7 @@ export function inspectShim(path, { installDir = INSTALL_DIR, read = readHead } 
  * AN EMPTY PATH ENTRY MEANS THE CURRENT DIRECTORY, and it is skipped deliberately: a form that resolves
  * only from where the reader happens to be standing is the defect, not a way of satisfying it.
  */
-export function pathPosition(dir, env = process.env, { exists } = {}) {
+export function pathPosition(dir, env = process.env, { exists, same = () => false } = {}) {
   const entries = String(env?.PATH ?? "").split(delimiter).filter(Boolean).map((d) => resolve(d));
   const want = dir ? resolve(dir) : null;
   const onPath = want !== null && entries.includes(want);
@@ -129,7 +129,9 @@ export function pathPosition(dir, env = process.env, { exists } = {}) {
   if (onPath && exists) {
     for (const d of entries) {
       if (d === want) break;
-      if (exists(join(d, "clearotron"))) { shadowedBy = join(d, "clearotron"); break; }
+      // THE FIRST ONE FOUND IS THE ONE THE SHELL RUNS, so the search stops there either way; it shadows this
+      // install only when it is a different program. `same` says whether it leads to this install.
+      if (exists(join(d, "clearotron"))) { if (!same(join(d, "clearotron"))) shadowedBy = join(d, "clearotron"); break; }
     }
   }
   return { onPath, shadowedBy };

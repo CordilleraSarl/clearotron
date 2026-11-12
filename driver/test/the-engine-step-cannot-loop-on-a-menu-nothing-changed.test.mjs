@@ -333,7 +333,8 @@ test("the re-probe's default is NO, because a YES default is the trap #1907 clos
 });
 
 test("declining says what it costs, and lands on the menu that has the way out", () => {
-  const at = src.indexOf(RETRY);
+  // The last one: a declined proof asks the same question earlier in the file, and this arm is about a failed turn.
+  const at = src.lastIndexOf(RETRY);
   assert.notEqual(at, -1, `anchor missing: ${RETRY} is not in bin/onboard.mjs`);
   const branch = src.slice(at, at + 700);
   assert.match(branch, /continue engine/, "declining must return to the menu, not fall through as if proven");

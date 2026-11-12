@@ -10,7 +10,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { companyRead } from '../src/contract/api.ts'
+import { companyRead, mustPickCompany } from '../src/contract/api.ts'
 import type { Result } from '../src/contract/api.ts'
 
 test('a read for a company not yet picked is answered here and never sent', async () => {
@@ -25,6 +25,20 @@ test('a read for a company not yet picked is answered here and never sent', asyn
   assert.equal(sent, 1)
 })
 
+test('a login waits for a company unless the server can resolve one for it, as the server decides', () => {
+  // The server resolves a read that names no company only for a login holding exactly one. Asked of "sees
+  // every company" alone, a client holding several was not waiting: measured in the composer render check,
+  // 2026-11-07, New clearance sent its four reads with none named, and the server refuses each.
+  const me = (accounts: readonly string[], allAccounts = false) => ({ accounts, allAccounts })
+  assert.equal(mustPickCompany(me([], true), null), true, 'a reader who sees every company')
+  assert.equal(mustPickCompany(me(['coastline', 'harbourline']), null), true, 'a client holding two companies')
+  assert.equal(mustPickCompany(me([]), null), true, 'a login holding no company of its own')
+  // THE CONTROLS: one company is resolved by the server, and a company picked is a company named.
+  assert.equal(mustPickCompany(me(['coastline']), null), false, 'a client holding one company')
+  assert.equal(mustPickCompany(me(['coastline', 'harbourline']), 'harbourline'), false, 'a company picked')
+  assert.equal(mustPickCompany(me([], true), 'coastline'), false, 'a company picked by a reader who sees every one')
+})
+
 test('every company read on the four company screens waits for the company', () => {
   // The screens are .tsx, which this suite cannot render, so the wiring is read off their source: each
   // company read named here goes through `companyRead`, given the screen's own `needsOwner`.
@@ -34,7 +48,7 @@ test('every company read on the four company screens waits for the company', () 
   }
   for (const [file, reads] of Object.entries(SCREENS)) {
     const text = src(file)
-    assert.match(text, /const needsOwner = ctx\.me\.allAccounts && account === null/,
+    assert.match(text, /const needsOwner = mustPickCompany\(ctx\.me, account\)/,
       `${file} no longer says when it is waiting for a company, so this check reads nothing there`)
     const bare = text.match(/useLoad\(\(\) => api\.(?:searches|profile|projects|usage|savedSearches)\(account\)/g) ?? []
     assert.deepEqual(bare, [], `${file} sends a company read before a company is picked`)

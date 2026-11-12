@@ -92,7 +92,7 @@
 //                               as correct to the citation check. It only became visible when an edit
 //                               above moved :2029 onto a closing brace, which is the one case that check
 //                               can see.)
-//   · pipeline.mjs `seniorGap` is read by the coverage floor in the same block, off the
+//   · steps/verdict-gate.mjs `seniorGap` is read by the coverage floor in the same block, off the
 //                               `ctx.seniorRights` it was computed from. (CITED BY SYMBOL AND NO LINE,
 //                               deliberately: the line number here was :11252, which was already
 //                               pointing at the crowd-context adapter and not at `seniorGap` at all —
@@ -231,6 +231,7 @@
 //   with rather than left implicit in a sampling decision.
 
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { readFileSync, mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -242,7 +243,7 @@ import { runEconomics } from "../run-economics.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
-const src = (f) => readFileSync(join(DRIVER, f), "utf8");
+const src = (f) => driverSource(f);
 
 /** The adjudication set, re-derived. Never a list — the population moved twice on its own thread. */
 const structureSites = () => nonEmpty(sweep(), "travelling-predicates sweep()")
@@ -265,7 +266,7 @@ const structureSites = () => nonEmpty(sweep(), "travelling-predicates sweep()")
 const RULED = new Map([
   ["band-shape.mjs", 7], ["commonlaw-carry.mjs", 1], ["findings-model.mjs", 1],
   ["form-neighbourhood.mjs", 4], ["gateway.mjs", 2], ["grounds-grammar.mjs", 1],
-  ["pipeline.mjs", 3], ["publish/render.mjs", 1], ["publish/xlsx.mjs", 2],
+  ["pipeline.mjs", 2], ["steps/verdict-gate.mjs", 1], ["publish/render.mjs", 1], ["publish/xlsx.mjs", 2],
   ["reference-score.mjs", 3], ["registry-fidelity.mjs", 2], ["repair-scope.mjs", 4],
   ["portal-config-view.mjs", 1], ["publish/search-depth.mjs", 2], ["goods-evidence.mjs", 1],
   ["knockout-register-read.mjs", 4],

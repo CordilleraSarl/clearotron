@@ -1045,19 +1045,19 @@ test("the card header shows the contentious MARK + the classes it matched in (no
 
 // ---- A1: a review-killed (withdrawn) finding renders NOWHERE; internal bar notes the kill ----
 test("spec-48 A1 + spec-49 T4: a withdrawn finding appears NOWHERE on either report variant (receipt lives on the audit workbook)", () => {
-  const killed = { ordinal: 3, mark: "KESTRELION", owner: { name: "Kestrel Lifesciences", country: "IN", registrations: [] },
+  const killed = { ordinal: 3, mark: "KESTRELION", owner: { name: "the owner of the withdrawn mark", country: "IN", registrations: [] },
     composite: 4, level: "D", dispute_type: "head-on", disposition: "withdrawn",
     withdrawn_reason: "review flag: confabulated attribution",
     meters: { mark_similarity: meter("high"), goods_proximity: meter("high"), use: meter("unknown", "inferred-from-signal"), enforcer: meter("unknown", "inferred-from-signal") },
     quadrant: { x: 0.9, y: 0.9 }, source: { source_type: "common-law-web", resolved_link: "" } };
   const internal = renderHtml(parsedOf(REPORT), [...FINDINGS, killed], COVERAGE, {});
   assert.doesNotMatch(internal, /id="c3"/, "no card for the withdrawn ordinal");
-  assert.doesNotMatch(internal, /KESTRELION/.source ? /class="who">Kestrel Lifesciences/ : /x/, "no rights-holder row");
+  assert.doesNotMatch(internal, /KESTRELION/.source ? /class="who">the owner of the withdrawn mark/ : /x/, "no rights-holder row");
   assert.doesNotMatch(internal, /href="#c3"/, "no scatter/panel drill-through");
   // T4: the withdrawal receipt lives on audit.xlsx (Disposition column + Review receipts),
   // not on a report banner — the mark now appears NOWHERE on either report variant.
   assert.doesNotMatch(internal, /Withdrawn by review/);
-  assert.doesNotMatch(internal, /KESTRELION|Kestrel Lifesciences/, "the internal report never resurrects the kill either");
+  assert.doesNotMatch(internal, /KESTRELION|the owner of the withdrawn mark/, "the internal report never resurrects the kill either");
   // one report: a stale opts.client is inert, and the kill holds on it identically
   const stale = renderHtml(parsedOf(REPORT), [...FINDINGS, killed], COVERAGE, { client: true });
   assert.equal(stale, internal, "opts.client no longer forks the render");
@@ -1672,12 +1672,15 @@ test("the verdict lists every condition under its own lede, and no count stands 
 // what this adds is the name where the ladder is actually read.
 test("the gauge names the framework whose ladder it is printing, right above the ticks", () => {
   const html = renderHtml(parsedOf(REPORT), BAND_FINDINGS, [], { framework: MATRIX_MANIFEST, runId: "r" });
-  const label = html.match(/<div class="label">Overall risk[\s\S]*?<\/div>/)[0];
-  assert.match(label, /<span class="gauge-fw">Demo Brand Owner risk framework<\/span>/,
-    "the manifest's own name for itself, in the gauge's heading");
+  const head = html.match(/<div class="gauge-head">[\s\S]*?<\/div><\/div>/)[0];
+  assert.match(head, /<div class="gauge-fw">Demo Brand Owner risk framework<\/div>/,
+    "the manifest's own name for itself, under the gauge's heading");
+  // KEPT APART WHEN COPIED (the owner's ruling, 2026-11-11): the heading and the name are separate blocks,
+  // so a copied or extracted page does not run "Overall risk" into the scale's name.
+  assert.match(head, /<div class="label">Overall risk<\/div><div class="gauge-fw">/, "the name is inside the heading again");
   // BESIDE the ticks, not merely somewhere on the page: the whole complaint is distance.
   const gauge = html.match(/<div class="panel gauge">[\s\S]*?<div class="ticks">/)[0];
-  assert.match(gauge, /<span class="gauge-fw">/, "the name sits inside the gauge panel, above the scale and the ticks");
+  assert.match(gauge, /<div class="gauge-fw">/, "the name sits inside the gauge panel, above the scale and the ticks");
   // ONE name for one framework. A second, composed short form here would rebuild in another corner.
   // ONE NAME FOR ONE FRAMEWORK, and the count moved when the footer stopped restating it. The footer
   // carried "Risk bands (Demo Brand Owner risk framework): …" plus a sentence explaining the
@@ -1695,7 +1698,7 @@ test("the legacy gauge names nothing — an archived run with no manifest is byt
   const legacy = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "r" });
   // The MARKUP, not the document: `.gauge-fw` is also a selector in the inlined report.css, so a bare
   // /gauge-fw/ would match the stylesheet and pass for the wrong reason on a page that emitted the span.
-  assert.doesNotMatch(legacy, /<span class="gauge-fw">/, "no framework ⇒ no name, and no empty span where one would go");
+  assert.doesNotMatch(legacy, /<div class="gauge-fw">|<span class="gauge-fw">/, "no framework ⇒ no name, and no empty block where one would go");
   assert.match(legacy, /<div class="label">Overall risk<\/div>/, "the legacy heading is untouched");
 });
 

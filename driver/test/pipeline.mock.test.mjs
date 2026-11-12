@@ -4,6 +4,7 @@
 // Offline driver dry-run: runs the WHOLE pipeline against a mock engine (no billable calls).
 // Asserts stage sequence, the fan-in barrier, skeptic escalation, the verdict gate, and sentinels.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import { refusalsFor } from "../synthesis-record.mjs";   // the run's record that a defect was refused and restated
 // THE AGENT IS PINNED BECAUSE THE PATH IS THE AGENT'S (ruling 563). The studio paths these fixtures
 // build resolve under `config.defaultAgent`, which reads CLEAROTRON_DEFAULT_AGENT. Until that ruling one
@@ -888,7 +889,7 @@ test("screen-gate: one mode filter, one helper, BOTH gate checks — the ION pro
   // re-check called the helper raw. The cure was structural — every gate read goes through
   // `enforcedViolations`, which owns the filter — so this asserts the structure rather than a run,
   // WITH a control that fails if it is reading the wrong text.
-  const SRC = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  const SRC = driverSource("pipeline.mjs");
   const from = SRC.indexOf("const checkScreenGate = ()");
   // ANCHORED ON THE PROSE, NOT THE SPEC NUMBER. The end marker used to read "// spec-66: AFTER any
   // settlement/late flush"; the cut strips a spec reference out of a comment and left "//: AFTER any
@@ -1016,20 +1017,23 @@ test("WS-B corrupt sidecar: resume fails LOUDLY and never silently re-derives th
   assert.equal(readFileSync(sidecarPath, "utf8"), "{corrupt", "the corrupt sidecar is evidence — never overwritten");
 });
 
-test("WS-B pre-WS-B resume: a sidecar-less run resumes LEGACY end to end — no retro-mint, no identity join", async () => {
+test("WS-B: a resume that finds stage work but no frozen profile is refused, never run profile-free or retro-minted", async () => {
+  // A run froze its profile before its first stage, and a run from an earlier build is no longer resumed, so a run
+  // with stage work and no profile has lost the record its work was done under. Running it profile-free read a missing
+  // record as a deliberate order with no account; minting one now would claim the work was done under it. Refused.
   const { res: r1 } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_FAIL_STAGE: "joint synthesis narrative", CLEAROTRON_RECOVERY_MAX: "1" });
   assert.equal(r1.ok, false);
-  // simulate a run created before this deploy: strip the sidecar the cold start minted
   const { rmSync } = await import("node:fs");
   rmSync(driverDir(r1.runDir, "profile.json"));
   delete process.env.MOCK_FAIL_STAGE;
   const codename = r1.runDir.split(/[\\/]/).pop().split("-").slice(3).join("-");
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
-  const r2 = await pipeline(JOB, { codename });
-  assert.equal(r2.ok, true, JSON.stringify(r2));
-  assert.ok(!existsSync(driverDir(r2.runDir, "profile.json")), "no sidecar retro-minted into a legacy run");
-  const events = readFileSync(driverDir(r2.runDir, "run.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
-  assert.equal(events.filter((e) => e.event === "profile").length, 1, "only the original cold-start freeze event (run 1)");
+  let r2;
+  try { r2 = await pipeline(JOB, { codename }); } catch (e) { r2 = { ok: false, threw: String(e?.message ?? e) }; }
+  assert.notEqual(r2.ok, true, JSON.stringify(r2));
+  assert.ok(!existsSync(driverDir(r1.runDir, "profile.json")), "no profile minted under work already done");
+  const said = [JSON.stringify(r2), readFileSync(join(r1.runDir, "status.json"), "utf8")].join("\n");
+  assert.match(said, /holds stage work/, "the refusal says why");
 });
 
 // ── Hotfix 2026-07-06: a legacy slug store must never brick the matter ────────────────────────────────
@@ -2396,37 +2400,47 @@ function ledgerSets(raw) {
   return { cells: cells.sort(), gaps: gaps.sort(), prRisk: prRisk.sort() };
 }
 
-// ── THE SURVIVING UNSPLIT LEVERS, and which of them a test can actually drive ─────────────────────
+// ── THE SURVIVING UNSPLIT LEVER, and how a test drives it ────────────────────────────────────────
 //
 // The settings cull deleted CLEAROTRON_COMMONLAW_SPLIT, and with it the only way to ask for the single-member
-// assembly by flipping one variable. Two levers still reach that assembly, both production shapes
-// rather than switches (pipeline.mjs deriveGridSpec), and they are NOT interchangeable here:
+// assembly by flipping one variable. One lever still reaches that assembly, a production shape rather than a
+// switch (pipeline.mjs deriveGridSpec):
 //
-//   single-term-grid   a grid carrying fewer than 2 terms. NOT CONSTRUCTIBLE IN THIS HARNESS, and that
-//                      is written down rather than left to look covered: the variant manifest carries a
-//                      completeness floor (verify.mjs refuses a fresh manifest missing a core, phonetic
-//                      or visual member), so a one-variant manifest fails its gate before any grid is
-//                      authored. Reaching this lever needs new fixture machinery, not a new env value.
-//   resumed-unsplit    a resume of a run whose findings were produced BEFORE the split existed: a valid
-//                      common-law-findings.md with no half artifacts beside it. This is the back-compat
-//                      path and it is what the tests below drive.
+//   single-term-grid   a grid carrying fewer than 2 terms. A one-variant manifest cannot be MINTED here
+//                      (verify.mjs's completeness floor refuses a fresh manifest missing a core, phonetic
+//                      or visual member), but a resume READS the manifest off disk rather than re-minting
+//                      it, so the fixture builds the shape there.
 //
-// The fixture builds that on-disk shape the only honest way — run until after the merge, then remove the
-// half artifacts an older build would never have written, then resume. It does NOT re-run the grid (the
-// point of the lever is that re-running would re-spend it), so it yields an unsplit ASSEMBLY, never a
-// second independent ledger.
-async function resumedUnsplitRun(extra = {}) {
+// A resume of a run whose findings predate the split used to reach it too, and was the lever these tests
+// drove. That arm is gone: a run from an earlier build is no longer resumed.
+//
+// The fixture: run until after the merge, remove every common-law artifact the gather wrote (halves AND
+// canonical, so the gather is cold and runs again), trim the manifest to its first variant, then resume.
+// The resume authors a one-term grid and gathers it on the single member.
+async function singleTermGridRun(extra = {}) {
   const { res: seed } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
     MOCK_FAIL_STAGE: "joint synthesis narrative", CLEAROTRON_RECOVERY_MAX: "1", ...extra });
   assert.equal(seed.ok, false, `the seed run must run the split and stop AFTER the merge: ${JSON.stringify(seed)}`);
-  assert.ok(existsSync(join(seed.runDir, "common-law-findings.md")),
-    "the seed run must have merged its halves — without the canonical findings file there is no pre-split shape to resume");
-  const half = (h) => [`common-law-findings.half-${h}.md`, `common-law-grid.half-${h}.json`,
-    `common-law-dispositions.half-${h}.json`, driverRel(`grid-spec.half-${h}.json`)];
   assert.ok(existsSync(join(seed.runDir, `common-law-findings.half-${MEANING_SEAT}.md`)),
-    "…and it must really have SPLIT — if no half artifact exists the fixture removes nothing and proves nothing");
+    "the seed must really have SPLIT — if no half artifact exists the fixture removes nothing and proves nothing");
   const { rmSync } = await import("node:fs");
-  for (const h of ["a", "b", MEANING_SEAT]) for (const f of half(h)) rmSync(join(seed.runDir, f), { force: true });
+  for (const h of ["a", "b", MEANING_SEAT])
+    for (const f of [`common-law-findings.half-${h}.md`, `common-law-grid.half-${h}.json`,
+      `common-law-dispositions.half-${h}.json`, driverRel(`grid-spec.half-${h}.json`)])
+      rmSync(join(seed.runDir, f), { force: true });
+  // With the canonical findings on disk the gather is warm and never runs again; a grid that has not
+  // been swept carries no receipt for having closed it either.
+  for (const f of ["common-law-findings.md", "common-law-grid.json", "common-law-dispositions.json", driverRel("coverage-closure.json")])
+    rmSync(join(seed.runDir, f), { force: true });
+  const manifestPath = join(seed.runDir, "variant-manifest.md");
+  const rows = readFileSync(manifestPath, "utf8").split("\n");
+  const head = rows.findIndex((l) => /^### Variants/.test(l));
+  assert.ok(head >= 0, "the manifest has no Variants heading — this fixture is trimming a shape that moved");
+  const dataRows = [];
+  for (let i = head + 1; i < rows.length && !/^### /.test(rows[i]); i += 1)
+    if (/^\| /.test(rows[i]) && !/^\|\s*Value\s*\|/.test(rows[i]) && !/^\|[-\s|]+\|$/.test(rows[i])) dataRows.push(i);
+  assert.ok(dataRows.length > 1, `the manifest carries ${dataRows.length} variant row(s) — nothing to trim, so the single-term arm would not be exercised`);
+  writeFileSync(manifestPath, rows.filter((_, i) => !dataRows.slice(1).includes(i)).join("\n"));
   // READ THE JOURNAL FROM THE RUN DIR THE CALL RETURNED, never from a path captured earlier: a run that
   // DELIVERS is archived, so `seed.runDir` is an empty directory by the time the resume finishes and the
   // same read that worked before it succeeded returns ENOENT after. Three populations, one name.
@@ -2470,9 +2484,9 @@ test("A1 split: the merged canonical ledger accounts for exactly the DICTATED gr
   // change is about. This asserted split-vs-unsplit over the same six terms, and the second run was
   // obtained with CLEAROTRON_COMMONLAW_SPLIT="off". Item 8 deleted that switch, so the same call now returns
   // ANOTHER SPLIT RUN and deepEqual compares a run against itself — passing, forever, asserting nothing.
-  // Neither surviving lever can stand in: single-term-grid is unconstructible here, and resumed-unsplit
-  // keeps the findings it resumed instead of re-running the grid. There is no second independent ledger
-  // over these terms to compare against any more, and pretending otherwise is worse than saying so.
+  // The surviving lever cannot stand in: single-term-grid gathers a grid of one term, not these six.
+  // There is no second independent ledger over these terms to compare against any more, and pretending
+  // otherwise is worse than saying so.
   //
   // What the comparison stood IN FOR is checkable directly, against a stronger reference than a second
   // run that could carry the same bug: the merge must account for every cell the DICTATED spec demands —
@@ -2501,19 +2515,21 @@ test("A1 split: the merged canonical ledger accounts for exactly the DICTATED gr
   assert.equal(splitEv.connotationOwner, MEANING_SEAT);
 });
 
-test("A1 split pre-split resume: the single-member assembly is restored VERBATIM (member list shape, no half artifacts)", async () => {
-  // Was "flag-off". The flag is deleted; the ASSEMBLY it selected is not, and this is the lever that
-  // still reaches it — a resume of a run whose findings predate the split. The properties are the ones
-  // the flag-off arm asserted, because they are properties of the assembly, not of the switch.
-  const { res, events } = await resumedUnsplitRun();
+test("A1 split, single-term grid: the gather runs the single member (member list shape, no half artifacts)", async () => {
+  // Was the pre-split resume, and before that "flag-off". Both levers are gone; the ASSEMBLY they selected
+  // is not, and a single-term grid is the lever that still reaches it. The properties are the ones those
+  // arms asserted, because they are properties of the assembly, not of the lever.
+  const { res, events } = await singleTermGridRun();
   assert.equal(res.ok, true, JSON.stringify(res));
   const rec = JSON.parse(readFileSync(driverDir(res.runDir, "common-law-path.json"), "utf8"));
   assert.equal(rec.path, "unsplit");
   assert.deepEqual(rec.members, ["common-law"], "the original single common-law member, by name");
+  const gathered = stageOrder(events).filter((s) => s.startsWith("common-law"));
+  assert.ok(gathered.includes("common-law"), `the resume really gathered on the single member: ${gathered.join(", ")}`);
+  assert.ok(!gathered.some((s) => s.startsWith("common-law-half:")), "and dispatched no half-member");
   assert.ok(!events.some((e) => e.event === "grid-split" || e.event === "common-law-merged"),
-    "no split machinery fired ON THE RESUME — the seed's own rows are excluded by construction, see resumedUnsplitRun");
-  // The half artifacts the fixture removed must STAY removed: re-authoring them is the re-spend the
-  // lever exists to prevent, and it would be invisible in the delivered report.
+    "no split machinery fired ON THE RESUME — the seed's own rows are excluded by construction, see singleTermGridRun");
+  // The fixture removed the seed's half artifacts; a single-member gather writes none of its own.
   for (const h of ["a", "b", MEANING_SEAT])
     for (const f of [`common-law-findings.half-${h}.md`, `common-law-grid.half-${h}.json`, driverRel(`grid-spec.half-${h}.json`)])
       assert.ok(!existsSync(join(res.runDir, f)), `no half artifact ${f}`);
@@ -2860,7 +2876,6 @@ test("the basis derivation runs at both seams, and no third synthesis pass runs 
 // THE SELECTOR, named:
 //   a spec is authored at all  ⟸ !registerOnly && gridVariants.length && profile.platforms.length
 //   then, only if a spec exists ⟸ gridSpec.terms.length >= 2
-//                              && !resumedUnsplit
 //
 // The settings cull deleted the `config.commonLawSplit` conjunct (CLEAROTRON_COMMONLAW_SPLIT). That is worth
 // reading against the incident above rather than skipping: the flag was the obvious suspect BOTH times
@@ -2894,16 +2909,16 @@ test("an UNSPLIT run records WHICH surviving term decided it — the branch that
   // Was the flag-off branch. the property was never about the flag: it is that a run which did NOT
   // split says so, and says why, on the path that used to emit nothing at all. Deleting the switch
   // removed one reason from the conjunction and left the property untouched.
-  const { res, events } = await resumedUnsplitRun();
+  const { res, events } = await singleTermGridRun();
   assert.equal(res.ok, true, JSON.stringify(res));
   const rec = readPathRecord(res.runDir);
   assert.equal(rec.path, "unsplit", "the record agrees with the assembly");
-  assert.equal(rec.reason, "resumed-unsplit", "and names WHICH term of the conjunction decided it");
-  assert.match(rec.detail, /re-spend/i, "carrying what the term MEANS, not merely its slug — the detail is what a reader of the run acts on");
+  assert.equal(rec.reason, "single-term-grid", "and names WHICH term of the conjunction decided it");
+  assert.match(rec.detail, /nothing to partition/i, "carrying what the term MEANS, not merely its slug — the detail is what a reader of the run acts on");
   assert.deepEqual(rec.members, ["common-law"], "naming the single-member assembly");
   const ev = events.filter((e) => e.event === "common-law-path");
   assert.equal(ev.length, 1, "exactly one path event per run — the journal carries it too, for a reader who has no run dir");
-  assert.equal(ev[0].reason, "resumed-unsplit");
+  assert.equal(ev[0].reason, "single-term-grid");
 });
 
 test("the record can never explain a path the run did not take", async () => {
@@ -2918,7 +2933,7 @@ test("the record can never explain a path the run did not take", async () => {
   // asserting, and nothing goes red to say so. Both paths are named explicitly now.
   const runs = [
     { label: "split", get: async () => (await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced" })).res },
-    { label: "unsplit (resumed-unsplit)", get: async () => (await resumedUnsplitRun()).res },
+    { label: "unsplit (single-term-grid)", get: async () => (await singleTermGridRun()).res },
   ];
   const seen = new Set();
   for (const { label, get } of runs) {
@@ -2939,18 +2954,19 @@ test("the record can never explain a path the run did not take", async () => {
 // The record was written; nothing consulted it. A run whose dictated meaning sweep silently became the
 // legacy spec-less path delivered CLEAN, with common-law-path.json sitting on disk naming the downgrade.
 //
-// THE LEVER, and it is a real production shape rather than a synthetic one: a resume of a run with no
-// `_driver/profile.json`. attachProfile deliberately stays legacy on a sidecar-less resume (ctx.profile
-// = null), so profile.platforms is 0, no grid spec is authored, and a variant-carrying non-register-only
-// matter takes the spec-less path. A zero-platform profile is NOT this lever: an empty marketplace list
+// THE LEVER: a resume whose frozen profile carries no marketplace list at all. deriveGridSpec authors no grid
+// spec for it, so a variant-carrying non-register-only matter takes the spec-less path. (This used to be a resume
+// with no `_driver/profile.json`, which ran profile-free; such a resume is now refused, since its stage work cannot
+// be shown to be for the product ordered.) A zero-platform profile is NOT this lever: an empty marketplace list
 // is valid now and still writes a grid of the general-web cell and the meaning sweep — the arm after this
 // one pins that it does, and that it delivers without this clamp.
 test("a no-grid-spec downgrade on a variant-carrying manifest clamps CLEAR→CONDITIONAL and names the gap", async () => {
   const { res: r1 } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "joint synthesis narrative", CLEAROTRON_RECOVERY_MAX: "1" });
   assert.equal(r1.ok, false);
-  // a run created before the profile freeze existed: strip the sidecar the cold start minted
-  const { rmSync } = await import("node:fs");
-  rmSync(driverDir(r1.runDir, "profile.json"));
+  // a frozen profile that carries no marketplace list at all: the spec-less path's one remaining door
+  const frozen = JSON.parse(readFileSync(driverDir(r1.runDir, "profile.json"), "utf8"));
+  delete frozen.platforms;
+  writeFileSync(driverDir(r1.runDir, "profile.json"), JSON.stringify(frozen, null, 2) + "\n");
   delete process.env.MOCK_FAIL_STAGE;
   const codename = r1.runDir.split(/[\\/]/).pop().split("-").slice(3).join("-");
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
@@ -3004,17 +3020,17 @@ test("a company with no marketplaces still searches the web and the meanings, an
   assert.equal(v.kinds?.commonLawDowngrade ?? false, false, "no downgrade for a sweep that ran");
   assert.ok(!events.some((e) => e.event === "common-law-downgrade-clamp"), "and none was recorded");
 });
-test("a legitimate unsplit path is NOT a failure: a pre-split resume still delivers CLEAR", async () => {
+test("a legitimate unsplit path is NOT a failure: a single-term grid still delivers CLEAR", async () => {
   // "Deliberately NOT proposed: making the unsplit path itself a failure. It is the legitimate rollback
-  // path." The flag was one legitimate reason to be unsplit and is deleted; resumed-unsplit is another,
-  // and the clamp must still discriminate. THIS ARM IS THE PAIR to the no-grid-spec arm above — that one
+  // path." The flag was one legitimate reason to be unsplit and is deleted, and so is a pre-split resume;
+  // a single-term grid is the reason that remains, and the clamp must still discriminate. THIS ARM IS THE PAIR to the no-grid-spec arm above — that one
   // asserts the clamp FIRES, this one that it does not fire on a legitimate reason. Delete either and
   // "clamps CLEAR→CONDITIONAL" stops being a claim about discrimination and becomes one about a constant.
-  const { res } = await resumedUnsplitRun();
+  const { res } = await singleTermGridRun();
   assert.equal(res.ok, true, JSON.stringify(res));
   const rec = readPathRecord(res.runDir);
   assert.equal(rec.path, "unsplit");
-  assert.equal(rec.reason, "resumed-unsplit", "unsplit for a legitimate reason — not the spec-less downgrade");
+  assert.equal(rec.reason, "single-term-grid", "unsplit for a legitimate reason — not the spec-less downgrade");
   const v = JSON.parse(readFileSync(driverDir(res.runDir, "verdict.json"), "utf8"));
   assert.equal(v.verdict, "CLEAR", "the documented rollback path must not be clamped");
   assert.ok(!v.kinds?.commonLawDowngrade, "and carries no downgrade kind");
@@ -3028,7 +3044,7 @@ test("a legitimate unsplit path is NOT a failure: a pre-split resume still deliv
 // on the dependency-repair.test.mjs precedent (its 15a and 15b tests), because the failure being guarded is a future edit
 // quietly demoting it back to a recorded row, not a particular run.
 test("selector/record disagreement FAULTS, and the record is written BEFORE the throw", async () => {
-  const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   // ANCHORED ON THE PROSE, NOT THE ISSUE NUMBER. The heading carried a bare issue reference and the cut
   // strips those out of comments, so the old anchor stopped existing. This arm's vacuity control caught
   // it — an uncontrolled slice on a missing anchor is not an error, it is a window from the end of the

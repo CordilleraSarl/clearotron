@@ -4,87 +4,91 @@
 // turn, joins the fan-out in code (the fan-in barrier), gates on the refutation
 // verdict, and never parks (there is no LLM continuation decision anywhere). CLI: `node pipeline.mjs --job <file.json>`.
 
+import { writePark } from "./run-park.mjs";
+import { CLEARANCE_ENDING } from "./run-failed.mjs";
+import { runShell } from "./run-shell.mjs";
+import { deliveryEndState } from "./run-delivered.mjs";
+import { StageFailure, buildFailurePacket, isDesignedRefusal, stageWallFields, terminalReasonFields } from "./run-outcome.mjs";
+import { correctionNamedLines, correctionNamedOrdinals, correctionNamedSet, correctionReading, correctionRows, enforceCorrectionsReachFindings, flagOrdinals, recordCorrectionsBasis, repairUnnamedRemovals, rollbackCorrectivePass, runPostRepairCorrection, useThePipeline } from "./steps/corrections.mjs";
+import { runDelivery } from "./steps/delivery.mjs";
+import { runOverviewAndCards } from "./steps/overview-and-cards.mjs";
+import { runVerdictGate } from "./steps/verdict-gate.mjs";
+import { openRun } from "./steps/open-run.mjs";
+import { runIntake } from "./steps/intake.mjs";
+import { runPlacementAndDigest } from "./steps/placement-and-digest.mjs";
+import { runRegisterSweep } from "./steps/register-sweep.mjs";
+import { runSynthesis } from "./steps/synthesis.mjs";
+import { runFrameComparison } from "./steps/frame-comparison.mjs";
+import { runSkepticAndFollowUp } from "./steps/skeptic-and-follow-up.mjs";
+import { runCorrectionCycle } from "./steps/correction-cycle.mjs";
 import "../shared/env-local.mjs";   // side effect: apply <repo>/.env when THIS file is the CLI entry (never on library import)
-import "./engine/mcp/http-dispatcher.mjs"; import { recordStatusesFromFindings } from "./common-law-coverage-status.mjs";   // side effect: raise undici headersTimeout (code-side fetches); the second records a common-law ledger's statuses in code
-import { readFileSync, existsSync, mkdirSync, writeFileSync, renameSync, copyFileSync, readdirSync, rmSync, statSync } from "node:fs";
+import "./engine/mcp/http-dispatcher.mjs"; import { readFileSync, existsSync, mkdirSync, writeFileSync, renameSync, copyFileSync, readdirSync, rmSync, statSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join, dirname, basename, resolve, relative } from "node:path";   // resolve: the resume line must work from any cwd
-import { driverDir, driverRel, ensureDriverDir } from "../shared/driver-dir.mjs";
+import { driverDir, driverFileName, driverRel, ensureDriverDir } from "../shared/driver-dir.mjs";
+import { DISPATCH_SUFFIX } from "./dispatch-record.mjs";   // a stage that was dispatched left its dispatch record
 import { REVIEWER_OPEN_QUESTIONS_FILE } from "./reviewer-open-points.mjs";   // the run-record file the reviewer's open points go to, and the only thing that reads them now
 import { goodsOf } from "./queue-markers.mjs";   // — one reading of "does this job name goods", shared with the intake gate
-import { terminalClampDecision, orderClausesForLede, clientConditions, clauseForDefect, gapPositivelyClosed, verdictWithoutTheClosedGap, verdictWhenTheStepsAreWithdrawn, jointUnaccounted } from "./terminal-clamp.mjs";   // — deliver and clamp, never withhold
-import { recordSpan } from "./attributed-span.mjs";   // — driver work the decomposition can attribute
 import { fileURLToPath } from "node:url";
-import { runStage, correctionHint, gridLedgerNameFor, draftCarryEligible, toolWrittenArtifact, selectEngine, saidBackOnly } from "./gateway.mjs";
+import { runStage, draftCarryEligible, toolWrittenArtifact, selectEngine, saidBackOnly } from "./gateway.mjs";
 // — the arm's TOOL WIRING, for its context receipt. Read through the same two functions the
 // gateway dispatches with, never re-derived: a receipt that described a second computation would be
 // describing a dispatch that did not happen.
 import { toolGroupsForStage as experimentToolGroups, buildGatherMcpConfig as experimentMcpConfig, allowedToolsFor as experimentAllowedTools } from "./engine/mcp/gather-config.mjs";
 import { readBestDraft, bestDraftDir } from "./best-draft.mjs";
-import { canonicalJurisdictionCode, isKnownJurisdictionCode } from "./jurisdiction-codes.mjs";
+import { canonicalJurisdictionCode } from "./jurisdiction-codes.mjs";
 import { probeSeed as orderProbeSeed } from "./order-probe.mjs";   // item 11 — records which ordering arm a run ran under
-import { config, resolveModel, activeProvider, preflightCredentials, preflightResearchCredential, preflightEngineBinary, preflightFreeSpace, envGateOn, laneArmed, UNREACHABLE_SENIOR_POLICY } from "./driver.config.mjs";
-import { fallbackNoteFor } from "./numeric-setting.mjs";   // — the one allowed fallback says so, by name, in the run record
-import { preflightSkillsStore } from "./skills-store-provenance.mjs";   // — the doctrine this run will be rated under must be reproducible
-import { engineProvenance } from "./engine-build.mjs";                  // — …and which engine loaded it, at run START
-import { preflightEngineTurn } from "./engine/probe.mjs";               // — …and the engine can complete a turn, not merely exist
+import { config, resolveModel } from "./driver.config.mjs";
+import { registerAdapter } from "./engine/run-choices.mjs";   // the run's register adapter, from ctx.register
 import { codexSandboxBypassed } from "./engine/openai-agent.mjs";        // — a replay is refused where nothing keeps a stage's commands out of the answers it replays
-import { RECORDS_MODES, savedRecordFetch, heldRegisterCredentials } from "./record-replay.mjs";   // an offline resume answers a record fetch from the run's own records
-import { rankClusterLegs, verdictDrivingFindings } from "./senior-rights.mjs";
 import { buildRunContext, deriveSlug, kebab } from "./phase0.mjs";
-import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveTier, lines, whatsappRouting,
-  chainEntries, stageOrdinal, stageInputs, stageOutputs, dependencyOrder, REGISTER_AXES, REGISTER_ENUMERATE_TOOL,
-  buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenFollowup,
-  buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
+import { crossBuildResumeRefusal } from "./one-build-per-run.mjs";   // a run is finished on the build it started on (owner, 2026-11-09)
+import { paths, STAGES, axisTier, decideAxes, assertEffectiveTier, lines, whatsappRouting, chainEntries, stageOrdinal, stageInputs, dependencyOrder, REGISTER_AXES, REGISTER_ENUMERATE_TOOL, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, providerMeta, inquiryRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal, stagesRefusingBand } from "./band-size.mjs";
 import { handResearchAnswers, RESEARCH_ANSWERS_FILE, RESEARCH_REPLAY_FILE, replayAnswersFile, savedResearchCount, runResearchAnswers, researchAnswerKey, handResearchAfterReview } from "./research-answers.mjs";   // the research a stage's earlier attempts got, handed to a later one; a replay of it
-import { IDENTITY_FILE as REPORT_IDENTITY_FILE, renderReportOverview } from "./report-overview-record.mjs";
-import { writePartNotCompleted, readPartNotCompleted, clearPartNotCompleted, clearPartsNotCompleted, NOT_COMPLETED_DIR, slicesNotYetRecorded, axesNotYetDisclosed, unitsNotYetRecorded } from "./parts-not-completed.mjs";
+import { IDENTITY_FILE as REPORT_IDENTITY_FILE } from "./report-overview-record.mjs";
+import { readPartNotCompleted, NOT_COMPLETED_DIR } from "./parts-not-completed.mjs";
 import { renderUnitNote, readBandAccount } from "./register-unit-record.mjs";   // a unit that could not finish, its note rendered from its band
 import { bandWithSlicesOut, slicesTakenOutByAxis } from "../shared/slices-taken-out.mjs";   // a band read with the slices a check could not prove ran taken out
 import { dispatchRows, clearedSignatures } from "./seat-attempts.mjs";
 import { CONTEXT_DERIVATIONS, DISPATCH_EXTRAS, INLINE_CONTEXT, sandboxManifest, sandboxGaps, derivationsFor } from "./stage-context.mjs";   // — what a stage is actually handed
 import { derivedStateOf, recordedDerivedState, replayOfDerivation } from "./derived-state.mjs";   // the register picture a dispatch was handed, so a replay can be checked against it
-import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections, validators, findReviewerCoherenceFlags, lateReviewAgainst, VERDICT_RANK } from "./verify.mjs";
-import { readAcceptedFlags, nextRefutationSeq, readAcceptedReviewSince, settleRecheckSave, REVIEW_EXCLUSIONS_FILE, listedExclusionPositions } from "./narrative-refutation-record.mjs";   // T3b — the typed flags, not the re-parse
-import { evidenceClaimViolations, evidenceClaimTable } from "./evidence-claim-invariant.mjs";   //
-import { buildCorrectionsApplied, correctionsWorklist, correctionsAppliedTable, correctionScope, flaggedPositions, scopeDrift, unresolvedFlags, reportLines, linesOf, REPORT_LINE_KEY, REPORT_LINE_LABEL, answersLeftBehind } from "./corrections-feedforward.mjs";
-import { correctionTargets, deliveredOutcomes } from "./corrections-delivered.mjs";   // whether each correction reached the record the report was built from
-import { parseCoverageLedgerJson, parseCoverageLedgerFull, deriveCoverageStatus, classTokensFromScopeText, coerceToolAbsenceDeferred, applyTaintDeferred, decideRegisterGap, splitDeferredByCloseability, heldForNothingToSend, formRowUnitKey, coverageLedgerTableRows, coverageUnitLabel, NON_MATERIAL_AXES, COVERAGE_STATUSES } from "./coverage-ledger.mjs";
+import { parseVerdict, parseCorrectionKinds, parseCorrections, validators } from "./verify.mjs";
+import { nextRefutationSeq, readAcceptedReviewSince, REVIEW_EXCLUSIONS_FILE } from "./narrative-refutation-record.mjs";   // T3b — the typed flags, not the re-parse
+import { unresolvedFlags, reportLines } from "./corrections-feedforward.mjs";
+import { deliveredOutcomes } from "./corrections-delivered.mjs";   // whether each correction reached the record the report was built from
+import { parseCoverageLedgerJson, parseCoverageLedgerFull, classTokensFromScopeText, coerceToolAbsenceDeferred, applyTaintDeferred, splitDeferredByCloseability, formRowUnitKey, coverageLedgerTableRows, coverageUnitLabel } from "./coverage-ledger.mjs";
 import { receiptSettled, readEnvelopeDecision, settleReceipt, settledDeferralsSection, readStickyGaps } from "./envelope-settle.mjs";
-import { readRegisterTaint, readActiveTaintAxes } from "./register-taint.mjs";
-import { parseNamedBand, mergeNamedBands, findCollapsedBands, quarantineUnknownStates, taintQuarantineCleanBlocks, bandRecords } from "./named-band.mjs";
+import { readActiveTaintAxes } from "./register-taint.mjs";
+import { parseNamedBand, mergeNamedBands, quarantineUnknownStates, bandRecords } from "./named-band.mjs";
 import { recordOriginsFor, activeRecordOrigins } from "./record-origins.mjs"; import { recordBlanking, FOREIGN_HOST_TOKEN } from "./foreign-record-links.mjs";
 import { REGISTER_PROVIDER } from "./driver.config.mjs";
-import { noteRegisterServed, registersServedFrom, providerUsageCaveat } from "./register-served.mjs";   // which registers actually served this run — noted eagerly from the dispatch's own resolver, and reconciled at publish against the ledger rows, which carry the vendor per call
-import { FACTS_FILE as DIGEST_FACTS_FILE, ACCOUNTING_STAMP as DIGEST_ACCOUNTING_STAMP, recordedFindingUris,
-  digestAccountingGap, digestBatchBrief, batchesOf } from "./register-digest-record.mjs";   // conversion 11 — the render's facts sidecar and the accounting era stamp
+import { noteRegisterServed } from "./register-served.mjs";   // which registers actually served this run — noted eagerly from the dispatch's own resolver, and reconciled at publish against the ledger rows, which carry the vendor per call
+import { FACTS_FILE as DIGEST_FACTS_FILE, ACCOUNTING_STAMP as DIGEST_ACCOUNTING_STAMP, digestAccountingGap, digestBatchBrief, batchesOf } from "./register-digest-record.mjs";   // conversion 11 — the render's facts sidecar and the accounting era stamp
 import { buildBandShape, dominantElementComposites, deriveRegisterPositions, floorTierByMark, floorMarkKey, isLiveRecord } from "./band-shape.mjs";   // PR-8 — the deterministic reading layer; P2-A — candidates + positions
 import { deriveOwnerScreen, ownerScreenNegative } from "./owner-screen.mjs";   // P2-B — the owner×element screen's own receipt
 import { reconcileRecall, parseFindingsEndings, parseCrowdRulings, readOkRecordUris,
   unprovableRecordBases, applyDerivedBases,
   carryRecallFollowup, unendedSignature, recallReconciliationEvent, RECALL_RECONCILIATION_SCHEMA_VERSION } from "./recall-reconciliation.mjs";   // P2-A — the recall spine
-import { buildCrowdContext, CROWD_CONTEXT_AXIS } from "./crowd-context.mjs";
-import { writeUpForm, gradedWriteUpRung } from "./write-up-form.mjs";   // §8/§9 — which findings earn a full card
+import { writeUpForm } from "./write-up-form.mjs";   // §8/§9 — which findings earn a full card
 import { shortEntryBody, groupEntries, buildGradedEntriesSection } from "./write-up-render.mjs";
-import { undoneSearchesNote, compileRegisterPlan, parseRegisterPlan, resolvePlanAgainstStore, joinPlanToBands, crowdNarrowing, marketStepMarkets, blocksByQidOf, deriveCoverageSkeleton, validatePlanFeasibility, feasibilityMessages, foldSupplementalEntries, withheldFamilyTwins, pendingRequiredQids, refuseWithheldFamilies, partitionFoldDirectives, screenThenCap, fullyDeferredAxes, variantTermIssue, searchedJurisdictionsFromPlan, PLAN_AUDIT_HEAD, PLAN_AUDIT_CLASSES, deferExhaustedProviderErrors, ladderExhaustedQids, isProviderHardErrorReason } from "./register-plan.mjs";
+import { compileRegisterPlan, parseRegisterPlan, resolvePlanAgainstStore, joinPlanToBands, crowdNarrowing, marketStepMarkets, blocksByQidOf, deriveCoverageSkeleton, validatePlanFeasibility, feasibilityMessages, foldSupplementalEntries, fullyDeferredAxes, variantTermIssue, PLAN_AUDIT_HEAD, PLAN_AUDIT_CLASSES, deferExhaustedProviderErrors, ladderExhaustedQids } from "./register-plan.mjs";
 // — ONE binding of the office split to this box's env, shared with Depth 2's two lanes.
 import { registerCapabilities, registerUnavailableOffices } from "./register-unreachable.mjs";
 import { parseVariantManifestModel, famousMarkElements } from "./variant-manifest-model.mjs";
-import { meaningAnglesFromMatterContext, meaningAnglesAssertedNone, findConnotationViolations, parsePrRiskResults, connotationReasonKey, parseDispositionForm, renderDispositionTable, connotationObligations, CONNOTATION_FORM_TOKEN_SRC, CONNOTATION_UNRULED_REASONS, connotationAuditCounts, DECLINED_RULING } from "./connotation-search.mjs";
+import { meaningAnglesFromMatterContext, meaningAnglesAssertedNone, findConnotationViolations, parsePrRiskResults, connotationReasonKey, parseDispositionForm, CONNOTATION_FORM_TOKEN_SRC, CONNOTATION_UNRULED_REASONS, connotationAuditCounts, DECLINED_RULING } from "./connotation-search.mjs";
 // — the merge unions the halves' forms into the canonical one, with the same code the gateway unions
 // an attempt with. PURE and acyclic.
-import { unionDispositionForm, outstandingRows, formSidecarPath } from "./disposition-union.mjs";
+import { formSidecarPath } from "./disposition-union.mjs";
 import { foldCallVerdicts, partitionUnruledByLedger, detectRulingDrift, ledgerReasonHistogram, ledgerRows, ledgerUnattributed } from "./disposition-call.mjs";
 import { readCallVerdicts, callVerdictLedgerExists, callRecordPaths } from "./disposition-tool.mjs";
 import { classifyGroundsNote } from "./grounds-grammar.mjs";   // — a charged rating carries its grounds
 // — the register coverage form: the driver writes it before the digest dispatches, renders the
 // `## Coverage ledger` table and the machine ledger FROM it after the pass, and unions it across passes.
 import { documentCoverage, renderDocumentCoverageSection, spliceDocumentCoverage } from "./document-coverage.mjs";   //
-import { buildCoverageAbsenceForm, coverageAbsenceGaps, coverageFormAbsence, coverageFormBrief, renderCoverageAbsenceSection, renderCoverageLedgerSection, spliceCoverageLedger, renderCoverageLedgerJsonFromForm, unitLabel, buildCoverageForm, formLedgerRows, isLayerRow, nationalRegistersNotSearched, nationalRegistersNote, orderFormName } from "./coverage-form.mjs";
+import { buildCoverageAbsenceForm, coverageFormAbsence, coverageFormBrief, renderCoverageAbsenceSection, renderCoverageLedgerSection, spliceCoverageLedger, renderCoverageLedgerJsonFromForm, unitLabel, buildCoverageForm, formLedgerRows, isLayerRow, nationalRegistersNotSearched, nationalRegistersNote, orderFormName } from "./coverage-form.mjs";
 import { unionCoverageForm } from "./coverage-union.mjs";
-import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, readCoverageFormInput, waitingFamilyStates, writeCoverageForm } from "./coverage-form-io.mjs";
+import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, waitingFamilyStates, writeCoverageForm } from "./coverage-form-io.mjs";
 import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
-import { heldAnswers, refuseHeldQuestions, countedOnLists, refuseCountedOnList } from "./engine/mcp/held-answers.mjs";   // one answer per question per run, in the re-sweep too
 import { readOutstanding, FOLLOW_UP_SEARCH_LIMIT, followUpSearchesSent } from "../providers/_shared/follow-up-searches.mjs";
 // The plan join's options, one place: the families the reading turn released, the follow-ups the run's
 // safety net did not send, which join as questions not asked rather than missing (follow-up-searches.mjs), and the run's
@@ -103,16 +107,15 @@ export const mainMarketsOf = (ctx) => {   // @internal
 const joinOptions = (ctx) => ({ released: releasedFamilyQids(ctx.paths.runDir),
   outstanding: new Set(readOutstanding(driverDir(ctx.paths.runDir)).map((r) => String(r.qid))), mainMarkets: mainMarketsOf(ctx) });
 import { unionPlacementForm } from "./placement-union.mjs";
-import { placedUriRows, standingSetAside, placementSetAsideGrounds, placementFloorDecisionLines, placementSetAsideLines, placementAuditRows,
-  placementRecallEndings, writePlacementDecisions, rankingNow, rankedRecords, recordsReRanked, rankingToJson, rankingFromJson } from "./placement-decisions.mjs";   // placement's standing decisions, one check for every reader
+import { placedUriRows, standingSetAside, placementSetAsideGrounds, placementFloorDecisionLines, placementSetAsideLines, placementAuditRows, placementRecallEndings, writePlacementDecisions, rankingNow, rankingToJson } from "./placement-decisions.mjs";   // placement's standing decisions, one check for every reader
 export { placementSetAsideGrounds, placementFloorDecisionLines, placementSetAsideLines, placementAuditRows, placementRecallEndings,
   standingPlacementDecisions, writePlacementDecisions } from "./placement-decisions.mjs";
 import { readPlacementForm, readPlacementFormInput, writePlacementForm } from "./placement-form-io.mjs";
-import { orderSnapshot, retainAcceptedOrder, rebuildRunOrder } from "./accepted-order.mjs";   // the order a run was accepted on, kept with it from intake
+import { keepsInstructedScope, rebuildRunOrder } from "./accepted-order.mjs";   // the order a run was accepted on, kept with it from intake (steps/open-run.mjs)
 import { buildSelectionIndex, setAsideKeysOf, ownerFates, servedLines, lineKey } from "./placement-form.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree, matterSiblings, findStrayMatterSiblings } from "./stray-artifacts.mjs";   // — a run dir holds no document no stage dictated; — nor does the doctrine tree
-import { resolveProfile, loadProfiles, resolveEffectiveProfile, derivedFloor, derivedBatchSize, gridBatchFor, applicantMatchesProfile, NEUTRAL_DELIVERY, deliveryForRun, recipeProseGuard, withRunPlatforms, profileStoreResolution } from "./profiles.mjs";   // adds profileStoreResolution — the CONFIG store's identity, beside the doctrine tree's
-import { resolveSearchPolicy, gateResolvedPolicy, loadRecipes, policyFor, isRegisterOnly, reportIdentityFor, depthFor } from "./search-policy.mjs";
+import { resolveProfile, loadProfiles, resolveEffectiveProfile, derivedFloor, derivedBatchSize, gridBatchFor, applicantMatchesProfile, NEUTRAL_DELIVERY, recipeProseGuard, withRunPlatforms } from "./profiles.mjs";   // adds profileStoreResolution — the CONFIG store's identity, beside the doctrine tree's
+import { resolveSearchPolicy, gateResolvedPolicy, loadRecipes, isRegisterOnly, depthFor, productKeyOf } from "./search-policy.mjs";
 import { profileOrdinals } from "./profile-selection.mjs";   // lever 3 — driver selection
 // THE OFFERING'S own sentence about where the native-language investigation can be bought. It reaches a
 // CLIENT REPORT through the script-scope coverage row, which is why it is imported rather than typed:
@@ -120,52 +123,41 @@ import { profileOrdinals } from "./profile-selection.mjs";   // lever 3 — driv
 import { NATIVE_LANGUAGE_REMEDY } from "./products.mjs";
 import { resolveTerritories, defaultTerritoryState, clientMarkets, orderTerritories, narrowingMarkets } from "./effective-scope.mjs";   // the ONE territory ladder (the geography stamp included) + the stored-defaults reading
 import { acquireSlot, releaseSlot } from "./slot-lock.mjs";
-import { mintSupplementalEntries, withRejected } from "./engine/mcp/supplemental.mjs";
-import { runLog, note, fileMeta, outputMeta, stageLog } from "./log.mjs"; import { plainDirective, deferralCoverageRow, plainDeferralReason } from "./deferral-row.mjs"; import { degradedParts, writeDegradedParts, PART_NAMES, NOT_COMPLETED } from "./degraded-parts.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
+import { withRejected } from "./engine/mcp/supplemental.mjs";
+import { runLog, note, fileMeta, outputMeta, stageLog } from "./log.mjs"; import { plainDirective, deferralCoverageRow, plainDeferralReason } from "./deferral-row.mjs"; import { PART_NAMES, NOT_COMPLETED } from "./degraded-parts.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
 import { deriveScopeFacts } from "./scope-facts.mjs";
-import { documentGrowth } from "./gate-metrics.mjs";
-import { editRepairTail, abbrev } from "./repair-contract.mjs";
+import { abbrev } from "./repair-contract.mjs";
 import { repairFollowup } from "./repair-composers.mjs";
-import { seedRunStatus, recordTransition, writeRunStatus, readRunStatus, rollupStatus, atomicWrite, finalStepFields, terminalRunState, signoffPatch, readSignoff } from "./progress.mjs";
-import { batchMarkName } from "./mark-name.mjs";
+import { seedRunStatus, recordTransition, writeRunStatus, rollupStatus, terminalRunState, signoffPatch, readSignoff } from "./progress.mjs";
+import { atomicWrite } from "./run-record.mjs";
 import { writeOutboxPacket } from "./outbox.mjs";
-import { publishReport, composeEmailHtml, deliverySubject } from "./publish/index.mjs";
-import { parseCaseLawProfiles, joinCaseLawProfiles } from "./publish/parse.mjs"; import { emailConditionsOfReport } from "./publish/email-conditions.mjs";   // what the cover email carries, for the delivery check
-import { buildAuditMd, parseSpineFindingBlocks } from "./publish/audit-from-spine.mjs";
-import { deriveRegisterPresence } from "./publish/register-presence.mjs";   // — the audit stores every live in-scope record
+import { parseCaseLawProfiles, joinCaseLawProfiles } from "./publish/parse.mjs"; import { buildAuditMd } from "./publish/audit-from-spine.mjs";
 import { lastAcceptedMatterFrame, withFrameClasses, frameIdentifiedClassRows, frameHouseElementCandidate, readInstructedScope } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed; and the classes it judged necessary beyond the instructed ones, each with its reason, which the plan compile gives one identical-mark question apiece (decision 18)
 import { bandShapeGoods, instructedOrder, goodsEvidence } from "./record-goods.mjs";   // — the band's goods, read from the run's own records, so the shape can sort by the client's goods
-import { frameWebChoiceFor, frameAskedForWebGrid, webGridOf, closureBlocksOf } from "./web-grid.mjs";   // — the web grid the matter frame decides: its stores, its forms, what it set aside
-import { romanizedTermsFromPlan, mintSupplementalQid, stableStringify } from "./register-plan.mjs";
+import { frameWebChoiceFor, frameAskedForWebGrid, webGridOf } from "./web-grid.mjs";   // — the web grid the matter frame decides: its stores, its forms, what it set aside
+import { mintSupplementalQid, stableStringify } from "./register-plan.mjs";
 import { excludeHouseElement, verifyHouseElementOwnership, resolveRegions as resolvePlanRegions, HOUSE_ELEMENT_RECEIPT, rowOutsideProviderOffices } from "./register-plan.mjs";
 import { capabilitiesFor } from "./register-capabilities.mjs";
-import { waitingCrossCheck, undecidedCrossChecks, withoutWait } from "./cross-check-wait.mjs";   // the cross-checks wait for the reading step   // 647 — the client's own element leaves the conflict analysis only on a verified receipt
 import { resolveRecordExecutor } from "./register-records.mjs";   // — the stamp the late lanes never met
 import { slimLine, crowdLine } from "./hit-list.mjs";   // — the list the run works from; crowds ride it as a sibling array
-import { mintCrossCheckDoubts, mintContradictionDoubts, stitchDoubts, applyClosure } from "./doubt-ledger.mjs";   // doubt-stitch + doubt-closure (2026-07-22)
+import { stitchDoubts } from "./doubt-ledger.mjs";   // doubt-stitch + doubt-closure (2026-07-22)
 // Conversion 6: the two line-form parsers are no longer on the live path — the seat sends typed
 // rows and the driver applies THOSE. `parseClosureLines`/`parseAskClosureLines` are still exported and
 // still tested: an archived run's doubt-closure.md is a hand-typed artifact and stays readable, which
 // is the archive rule — a new way in, never a replacement.
-import { readAcceptedClosures } from "./doubt-closure-tool.mjs";
-import { CLOSURE_EVIDENCE_FILES } from "./doubt-closure-call.mjs";
-import { doubtsForClosure, doubtSelectionNote } from "./doubt-selection.mjs";   // doubt-closure selection
-import { deriveAsks, applyAskClosure, finalizeOpenHandoffs, summarizeAsks } from "./ask-ledger.mjs";
 import { pendingWhatIf, claimWhatIf, finishWhatIf, whatIfRefusal } from "./whatif-queue.mjs";   // a queued job is settled before its run archives   // PR-6 — every ask ends (2026-07-29)
-import { mintPresenceDoubts } from "./presence-reconciliation.mjs";   // presence-or-reason (2026-07-22 — the unjoined-Sheet-2 leak)
-import { escalatedAxes } from "./skeptic-record.mjs";   // THE escalation parse — shared with the record_skeptic transport so the rendered shape and this read cannot drift
 // — every placed candidate ends somewhere a reader can see; the ones that do not are counted by name
-import { PLACEMENT_CARRY_SCHEMA_VERSION, reconcilePlacementCarry, placementCarryEvent, mintPlacementCarryDoubts, entryUris, parseCarrySurfaces, classifyPlacement } from "./placement-carry.mjs";
-import { FLOOR_DUTY_SCHEMA_VERSION, reconcileFloorDuty, floorDutyEvent, armFloorDuty, floorDutyArmed, floorDutyBlock, floorDutyClosed, floorDutyBlocksSkip } from "./floor-duty.mjs";   // — the era stamp that turns disclosure into a delivery floor
-import { synthesisDutyForRun, snapshotSynthesisBase, restoreSynthesisBase, rebaseSynthesis, lastAcceptedCall, acceptSynthesis, driverReadsFor, handSavedFindings } from "./synthesis-record.mjs";   // — the duty checked against the DELIVERED document; the merge base a corrective pass holds and puts back
-import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, mintRecordCarryDoubts, recordCarryDoubtsAgain, bandRecordUri, placementIndex, findingUris , silentlyLostFindings, statedDivergenceFindings } from "./record-carry.mjs"; import { pickingExits, notesExits, notesPageRows, exitsForLog } from "./hand-off-exits.mjs";
+import { PLACEMENT_CARRY_SCHEMA_VERSION, reconcilePlacementCarry, placementCarryEvent, entryUris, parseCarrySurfaces, classifyPlacement } from "./placement-carry.mjs";
+import { FLOOR_DUTY_SCHEMA_VERSION, reconcileFloorDuty, floorDutyEvent, armFloorDuty, floorDutyArmed, floorDutyBlock, floorDutyBlocksSkip } from "./floor-duty.mjs";   // — the era stamp that turns disclosure into a delivery floor
+import { snapshotSynthesisBase, restoreSynthesisBase, rebaseSynthesis, lastAcceptedCall, acceptSynthesis, driverReadsFor, handSavedFindings } from "./synthesis-record.mjs";   // — the duty checked against the DELIVERED document; the merge base a corrective pass holds and puts back
+import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, recordCarryDoubtsAgain, bandRecordUri, placementIndex, findingUris } from "./record-carry.mjs"; import { notesPageRows } from "./hand-off-exits.mjs";
 import { reconcileSurfaceDuty, surfaceDutyNote } from "./surface-duty.mjs";   // item 3 — silence at the findings surface, read off the rows above
 import { DISCARD_LEDGER_NAME, seamRows, appendDiscardRows, foldDiscardLedger } from "./record-discard.mjs";
 import { citedFindingNumbers } from "./finding-citations.mjs";   // the findings an exclusion's ground cites
-import { deriveGoodsEvidence, recordGoodsEvidence, heldRecordProvenance, heldBodiesOf, recordFetchOutcomes, readRunCallRows, recordReads, linesRead, registerCallAccount, readGoodsEvidence, readGoodsEvidenceAsWritten, GOODS_EVIDENCE_FILE, GOODS_EVIDENCE_AS_WRITTEN_FILE, goodsFromLabel } from "./goods-evidence.mjs";   // — what each band record's goods rest on, written beside the shape and served by no band tool
+import { deriveGoodsEvidence, recordGoodsEvidence, heldRecordProvenance, heldBodiesOf, recordFetchOutcomes, readRunCallRows, recordReads, linesRead, registerCallAccount, readGoodsEvidence, GOODS_EVIDENCE_FILE, GOODS_EVIDENCE_AS_WRITTEN_FILE, goodsFromLabel } from "./goods-evidence.mjs";   // — what each band record's goods rest on, written beside the shape and served by no band tool
 import { readDeclinations, declinationCallPaths } from "./declination-tool.mjs";   // — synthesis's own stated declines
 import { seamReasonFor } from "./declination-call.mjs";   // — the per-record judgment, pure and separately tested
-import { traceCommonLawCarry, commonLawCarryEvent, mintCommonLawCarryDoubts, reconciliationVerdict, planVsExecutedChannels, CL_STAGES } from "./commonlaw-carry.mjs";
+import { traceCommonLawCarry, commonLawCarryEvent, reconciliationVerdict, planVsExecutedChannels, CL_STAGES } from "./commonlaw-carry.mjs";
 // — the committed ratchet floor. Read at module load like any other frozen contract object; a
 // missing or unparseable floor yields state "no-floor" rather than a throw, because a run must not die
 // because its ratchet lost its baseline.
@@ -173,39 +165,31 @@ const COMMONLAW_CARRY_FLOOR = (() => {
   try { return JSON.parse(readFileSync(new URL("./commonlaw-carry-floor.json", import.meta.url), "utf8")); }
   catch { return null; }
 })();
-import { accountRemedyTerms, domClosedOverAccounted, remedyAccountingEvent, mintRemedyAccountingDoubts, SETTLED_CLASSES } from "./remedy-accounting.mjs";   // — every remedy term ends accounted (2026-08-03)
-import { tallyRegisterCalls, DEFAULT_LEDGER_PATH, countLaneCalls } from "./provider-usage.mjs";
+import { DEFAULT_LEDGER_PATH } from "./provider-usage.mjs";
 // — the run's own record log. Every driver-side register call that can write a record BODY carries
 // this path, because this process runs several runs' pipelines at once and a global address would file
 // one run's evidence under another.
 import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";
-import { beginAnswerMemory, endAnswerMemory } from "../providers/_shared/answer-memory.mjs";
-import { findScreenGateViolations, findScreenGateParseGaps, screenGateZeroCause, screenGateEvidence, policedDropUris } from "./screen-gate.mjs";
-import { emptyQueue, coerceQueue, mintItem, pendingItems, markFlushed, receiptKeyFor,
-  buildFlushFollowup, runPostFlushGateRepair } from "./digest-queue.mjs";   // (t1cd) — the digest-trigger funnel
-import { foldFindingsFile, foldAfterSave, openPass, modelRecordPath, snapshotFold, restoreFold, readFold, keptModelOrdinal, citingModelOrdinal, FOLD_FILE } from "./record-fold.mjs";   // the folded record from the delivery seam on
-import { writeStamp, stageStaleness, restamp, restampStage, staleOnPath, reconcileStamps, shaOf, readStamp } from "./stage-freshness.mjs";
-import { locateReportFaults, reportPartsOf, overviewCitationFault, writersCitationFaults } from "./repair-targets.mjs";   // a delivery-check fault reaches the part of the report that holds it
-import { parseManifestVariants, variantsParseFailure, findCoverageLimitedCells, partitionClosableCells, findSimilarListingSignals,
-  GRID_HALVES, GRID_SEATS, MEANING_SEAT, splitGridSpec, halfOfTerm, balanceClosureCells, mergeGrids, mergeCommonLawFindings, openChannelRows,
-  findDroppedConnotationQueries, findErroredConnotationQueries, findGridCandidateOmissions } from "./common-law-receipts.mjs";
+import { beginAnswerMemory } from "../providers/_shared/answer-memory.mjs";
+import { screenGateEvidence, policedDropUris } from "./screen-gate.mjs";
+import { emptyQueue, coerceQueue, mintItem, pendingItems, markFlushed, receiptKeyFor } from "./digest-queue.mjs";   // (t1cd) — the digest-trigger funnel
+import { foldFindingsFile, foldAfterSave, openPass, modelRecordPath, snapshotFold, readFold, keptModelOrdinal } from "./record-fold.mjs";   // the folded record from the delivery seam on
+import { addressListLines, writeReviewAddresses } from "./review-addresses.mjs";   // the parts of the report each review dispatch may address
+import { writeStamp, stageStaleness, restamp, restampStage, reconcileStamps, shaOf, readStamp, writeFindings, settleOneShotStamp, projectStageInput } from "./stage-freshness.mjs";
+import { parseManifestVariants, GRID_HALVES, GRID_SEATS, MEANING_SEAT, splitGridSpec, openChannelRows } from "./common-law-receipts.mjs";
 import { stampTokenRollup } from "./tokens.mjs";
 import { recordRunConsumption } from "./consumption-ledger.mjs";
-import { quoteForJob, reconcileTurnaround } from "./run-quote.mjs";
-import { assembleRunRecords, recordBodyHasContent, readRecordArtifacts, findRegistryArithmeticIssues, findRegistryViolations, applyRegistryCorrections, extractEnforcerSignals, collectOppositionDeadlines, normalizeRecordUri } from "./registry-fidelity.mjs";
-import { recallReceiptForOwnCompany } from "./recall-receipt.mjs";   // a past run's recall receipt, as one company's audit may list it
-import { runLint, flagLines, properNameCandidates, OVERVIEW_CITATION_ID, goodsRepairLine } from "./predelivery-lint.mjs";
+import { quoteForJob, logTurnaroundReconciliation } from "./run-quote.mjs";
+import { assembleRunRecords, readRecordArtifacts, findRegistryArithmeticIssues, findRegistryViolations, collectOppositionDeadlines, normalizeRecordUri } from "./registry-fidelity.mjs";
 import { parsePlacementsJson } from "./placement-model.mjs";   // B2 — the structured tier mirror; the lint reads it only to flag an EMPTY one
-import { readAnchors } from "./anchor-reader.mjs";
-import { findEngagementReceipts } from "./engagement-receipt.mjs";
 import { plainRegisterFlags, SENTENCE_WORD_LIMIT } from "./plain-register.mjs";
-import { snapshotRepairBase, readRepairBase, repairBasePath, changedContent, isEmptyChange, restingOn, scopeItems, anyRenumbered, classifyPoints, changedInputsOf, listForReview, writePostRepairRecord, postRepairRecordPath, NARRATIVE_PROSE, sectionText } from "./repair-scope.mjs";
-import { parseFindingsJson, parseFindingsJsonLenient, consolidateFindings, deriveDisplayVerdict, bindRecommendation, compareBlockingPower, inDispositionMode, DISPOSITION_GROUP, deriveActionConditions, cardedParties, actionPartyReferences, quarantinedConditionRows, salvageRepairTargets, riskStatement, verdictStance, remapActionOrdinals, joinAskToAnswer, stripAskLabel, bandBorderlineDeclarations, reasonedNegativeGroups, blankForeignRecordLinks } from "./findings-model.mjs";
+import { readRepairBase, repairBasePath, changedContent, isEmptyChange, restingOn, scopeItems, classifyPoints, changedInputsOf, listForReview, writePostRepairRecord, postRepairRecordPath } from "./repair-scope.mjs";
+import { parseFindingsJson, parseFindingsJsonLenient, compareBlockingPower, inDispositionMode, DISPOSITION_GROUP, deriveActionConditions, cardedParties, actionPartyReferences, salvageRepairTargets, joinAskToAnswer, stripAskLabel, reasonedNegativeGroups, blankForeignRecordLinks } from "./findings-model.mjs";
 import { foldCaption, foldCardRead } from "./card-budget.mjs";
 // S2 — the report card's mechanical frame, composed from the record instead of dictated (see below).
 import { carriesOwnFrame, composeCard } from "./card-frame.mjs";
 import { parseFrameworkManifest, loadFrameworkManifest, frameworkFor, manifestPathFor, DEFAULT_FRAMEWORK } from "./framework.mjs";
-import { attachFrameworkMethod, loadFrameworkMethod, methodPathFor, FROZEN_METHOD_FILE } from "./framework-method.mjs";
+import { attachFrameworkMethod, methodPathFor, FROZEN_METHOD_FILE } from "./framework-method.mjs";
 import { renderScopeLedgerJson, scopeLedgerJsonFromRows, gridChannels, parseScopeLedgerJson, scopeJurisdictions, droppedVariantFamilies } from "./scope-ledger.mjs";
 // qw/cn-scope-honesty — the zh-lane capability tables + the requested-scope resolver, for the plain-clearotron
 // honesty row/note. jx-lanes.mjs is a PURE zero-import leaf (data + decisions, no env/fs), so a static
@@ -216,23 +200,16 @@ import { JURISDICTION_ADAPTERS, LANGUAGE_LANES, scopeJurisdictions as jxScopeJur
 // — the two reads that used to sit inline here (blind model, then the manifest's prose line) moved
 // into boundDominantElementFrom, so the driver's bind and the record tool's bind are ONE body. Neither
 // parseBlindFrameModel nor dominantElementFromManifest is called from this file any more.
-import { boundDominantElementFrom } from "./frame-diff-record.mjs";
 import { recordedScopeLedgerRows } from "./clearance-variants-record.mjs";
-import { parseFrameDiff, applyDominantBackstop, firingDirectives, reopenKey, alreadyAttemptedReopen, partitionFiring, frameResidualGaps, jurisdictionScopeFlags, deriveDirectiveRemedy, addedClassBound, remedyProposals, firingDirectivesLenient } from "./frame-diff-model.mjs";
-import { verifyRegisterDirectiveClose } from "./close-verify.mjs";
 import { renderFormNeighbourhoodJson, parseFormNeighbourhoodJson, dispatchedQueriesFromBand, formGapDirectives, markText } from "./form-neighbourhood.mjs"; import { loadOrdinaryWords } from "./ordinary-words.mjs";
-import { findRecallFloorViolations, findReviewFreshnessViolation, findSeedNeutralityViolations, findProbativeGradingViolations, findStatusHonestyViolation, findDeadlineUrgencyMiss, findUnresolvedDisagreements, findOrphanVerificationFlags, findUncrossCheckedDemotions } from "./reasoning-tripwires.mjs";
-import { findRuleShapeFlags } from "./rule-shape.mjs";
-import { failureSignature, classifyFailureReason, decideRecovery, createRepairLedger, countTrailingStageStrikes, countRecoveryLanes, weatherCeilingFor, TRANSIENT_RE, REFUSAL_TERMINAL_KIND, fanInMissingEvidence, retryCannotHelpWith, unnamedStructuredFailure, classificationSource, isCapPark, capParkSchedule, capWaitFrom, humanWait } from "./repairs.mjs";
-import { caseLawInventory } from "./config-inventory.mjs";   // — the deployment's own case-law sources
-import { caseLawSourceRows } from "./case-law-sources.mjs";  // one author for the shape the stage is handed
-import { writeSettleStamp } from "./settle-stamp.mjs";   // — the pool copy's own terminal state
+import { createRepairLedger, retryCannotHelpWith, isContentShapedFail, isFallbackEligible } from "./repairs.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
-import { RunCancelled, isCancelled, assertNotCancelledBeforePublish } from "./cancel.mjs";   // stop-by-user: a distinct class, never classified as a failure; isCancelled is the resume door's own refusal (2155)
-import { BRAND } from "../shared/brand.mjs";   // — the operator name a client is told to expect, from the tenant seam
-import { CLIENT_ACTION, assessmentNotCompletedNote } from "../shared/client-failure-note.mjs";   // — the action, worded once; this surface names the mark itself
-import { stopReason } from "../shared/stop-reason.mjs";   // — one builder, four cancel sites
+import { isCancelled } from "./cancel.mjs";   // stop-by-user: a distinct class, never classified as a failure; isCancelled is the resume door's own refusal (2155)
 import { reachableCommand } from "../shared/invocation.mjs";   // — a printed command the reader can type later, from anywhere
+export { StageFailure, buildFailurePacket, isDesignedRefusal, stageWallFields, terminalReasonFields };   // moved to run-outcome.mjs; importers read them here as before
+export { correctionReading, correctionRows, flagOrdinals, recordCorrectionsBasis, repairUnnamedRemovals, rollbackCorrectivePass };   // moved to steps/corrections.mjs; importers read them here as before
+export { isContentShapedFail, isFallbackEligible };   // moved to repairs.mjs; importers read them here as before
+export { logTurnaroundReconciliation };   // moved to run-quote.mjs; importers read it here as before
 
 // Fix-1 (deterministic common-law closure): the lanes that dictate a supplementary grid SPEC (the driver
 // writes the spec, the plugin writes the ledger, the driver folds it in code). One tag per lane so
@@ -262,7 +239,7 @@ function noteAdapter(ctx, adapter) {
 }
 
 async function defaultRecordFetcher(uri, ctx) {
-  return noteAdapter(ctx, activeProvider()).recordFetch(uri, ctx);
+  return noteAdapter(ctx, registerAdapter(ctx.register)).recordFetch(uri, ctx);
 }
 
 /**
@@ -345,50 +322,6 @@ export function connotationRemedyToken(err) {   // @internal
   return null;
 }
 
-export class StageFailure extends Error {
-  // opts (repair-first, 2026-07-05): `failClass` — "transient" | "deterministic" | "factual" — set by
-  // throw sites that KNOW the ground truth (e.g. fan-in reading the band's provider error blocks,
-  // screen-gate's could-not-fetch, a reasoned reviewer BLOCKING). It always wins over the text-based
-  // classifyFailureReason guess in the run-level catch. `repairs` — the bounded repairs attempted at
-  // the point of defect before throwing, carried into the failure packet so the notice can say what
-  // the machine already tried. Both optional and backward compatible.
-  // `reasonCodes` (A4, 2026-07-28 postmortem): stable machine codes for throw sites that enumerate their defects
-  // (the client gate). The recovery ladder signs the sorted unique code SET instead of the prose, so a
-  // reason list that grows or rewords between attempts can never re-arm a per-signature park budget.
-  // `quantity`: the failure's progress count — how many of the thing are still wrong — stamped by
-  // a throw site that KNOWS it exactly (the stage ladder, from the validator's own count), so the
-  // run-level catch never has to re-derive it from prose. null = this failure carries no such count;
-  // never 0, which would mean "nothing left" — the shape of a pass. Recording only: nothing decides on it.
-  constructor(stage, reason, resetsAt, opts = {}) {
-    super(`${stage}: ${reason}`); this.stage = stage; this.reason = reason; this.resetsAt = resetsAt; this.rateLimited = reason === "rate_limited";
-    this.failClass = opts.failClass; this.repairs = Array.isArray(opts.repairs) ? opts.repairs : [];
-    this.reasonCodes = Array.isArray(opts.reasonCodes) ? opts.reasonCodes : [];
-    this.quantity = Number.isFinite(opts.quantity) ? opts.quantity : null;
-    // `detail`: the OPEN-SET payload — a validator reason, a query list, a provider string — kept
-    // OUT of `reason` so a renderer can show the sentence and hide the payload. The portal used to print
-    // the whole interpolated string to a user: "merged half-grids failed the canonical validator
-    // (connotation_undisposed:KIN-ZY wikipedia, …)". A stage-internal concept, a validator enum and six
-    // raw search queries in four scripts, on a card whose reader needs one fact: it failed and it cannot
-    // be resumed from here.
-    //
-    // A THROW SITE THAT MOVES ITS PAYLOAD HERE MUST STAMP `quantity`. repairs.mjs progressQuantity reads
-    // the convergence census out of the message prose; take the census out of the message without
-    // stamping the count and `progress.kind` becomes "unknown", a run converging 29 → 11 reads as
-    // plateaued, and its recovery ladder ends early. Silent — the run just stops, having looked stuck.
-    // That is exactly what `quantity` was added for: the site that KNOWS the count states it.
-    this.detail = typeof opts.detail === "string" && opts.detail.trim() ? opts.detail.trim() : null;
-    // `refusal`: THIS THROW IS A REFUSAL THE PRODUCT IS DESIGNED TO MAKE, not a fault. Only a
-    // preflight that declines an ORDER against THIS DEPLOYMENT, before any spend, may stamp it — see
-    // REFUSAL_TERMINAL_KIND in repairs.mjs for the boundary. It is a boolean and not a free-form kind
-    // string on purpose: the throw site states the FACT, the terminal writer names the record, and a
-    // call site cannot invent a fifth spelling of "refused" that no sink knows how to read.
-    this.refusal = opts.refusal === true;
-  }
-}
-
-/** Is this the product declining an order, rather than the engine failing? PURE — both lanes ask it. */
-export const isDesignedRefusal = (e) => e instanceof StageFailure && e.refusal === true;
-
 // judgment-relocation (revised 2026-06-24, senior lawyer): there is NO judgment-driven halt state. A run only ever
 // stops-without-delivering on a TECHNICAL problem (StageFailure → .failed) or pauses on a rate-limit cap
 // (.postponed, auto-resumes). When the lawyer (synthesis) judges a material slice not fully cleared, the run
@@ -397,36 +330,8 @@ export const isDesignedRefusal = (e) => e instanceof StageFailure && e.refusal =
 // the funnel enumerates the dangerous named band COMPLETELY (the fan-in band gate guarantees it crossed), so a
 // conditional covers a genuine residual the lawyer flagged, not a sampled-and-hidden miss.
 
-// Failure causes that are TRANSIENT INFRASTRUCTURE (provider overload / idle-timeout / transport) — the only
-// ones a caller may re-run without risking a quality drop, because a repeat is the actual remedy and it
-// CANNOT paper over a recall gap. Everything NOT matched here is a content/coverage failure (validator
-// reject, missing output, unparseable, self-reported incomplete) — those never earn a re-run beyond the
-// same-model ladder inside runStage; they hard-stop, loudly. ⚠️ `status_timeout` is the 2026-06-07
-// incident itself (the gateway's ~120s LLM idle-timeout surfaced as a clean-JSON status:"timeout" → the soft
-// `status_<json.status>` bucket) and MUST stay eligible.
-//
-// NAME: the model-failover chain this predicate was written for is deleted. The predicate is not —
-// it is live at the common-law half-join below and it is what `isContentShapedFail` is defined against.
-// Renaming it would touch the retry-ladder tests, so the name stays and this note says why.
-const FALLBACK_ELIGIBLE = [
-  /^timeout$/, /^lane_wedge$/, /^embedded_fallback$/, /^nonzero_exit/,
-  /^status_timeout$/, /^status_overloaded$/, /^status_error$/, /^status_aborted$/, /^status_rate_limited$/,
-];
-export function isFallbackEligible(fail) {   // @internal
-  return Boolean(fail) && FALLBACK_ELIGIBLE.some((re) => re.test(fail));
-}
-
-// A5 strike predicate — is this run.jsonl stage-row failure a CONTENT verdict (counts toward the
-// invalid-artifact strike cap) rather than infra weather (breaks the streak)? isFallbackEligible alone
-// is NOT enough: it matches only the transient-infrastructure token set, but the trail also carries
-// transient shapes that set does not match — `rate_limited` (the subscription 5h cap), bare
-// `unparseable_json`, and prose transport causes from code-side units ("… direct execution failed:
-// HTTP 502 …"). repairs.mjs's own doctrine says those are sampling noise, not a content verdict — so
-// anything classifyFailureReason calls transient breaks the streak too. Exported so the strike tests
-// exercise THIS predicate, not a hand-rolled stand-in.
-export function isContentShapedFail(fail) {   // @internal
-  return classifyFailureReason(String(fail ?? "")) !== "transient" && !isFallbackEligible(fail);
-}
+// The predicates that tell a transient failure from a content verdict, isFallbackEligible and isContentShapedFail,
+// live in repairs.mjs, beside the classifier they are defined against. Both run endings read them there.
 
 // The prose Coverage-ledger parser moved to coverage-ledger.mjs (the registerFindings validator
 // mirror-checks prose against JSON, and verify cannot import pipeline) — re-exported for callers/tests.
@@ -455,12 +360,12 @@ export function loadCoverageLedger(runDir) {   // @internal
   // pass was kill-touched (register-taint.mjs) is downgraded to deferred at the same choke point, so the
   // envelope re-runs it and the verdict floor clamps over it, whatever the prose self-reported.
   const relabel = (rows) => relabelCoverageRows(runDir, rows);
-  const jsonPath = join(runDir, "register-coverage-ledger.json");
+  const jsonPath = paths(runDir).registerCoverageLedger;
   if (existsSync(jsonPath)) {
     try { return { rows: relabel(parseCoverageLedgerJson(readFileSync(jsonPath, "utf8"))), source: "machine", dropped: [] }; }
     catch (e) { note(`loadCoverageLedger: machine ledger unreadable (${String(e.message).slice(0, 80)}) — prose fallback`); }
   }
-  const findingsPath = join(runDir, "register-findings.md");
+  const findingsPath = paths(runDir).registerFindings;
   if (!existsSync(findingsPath)) return { rows: [], source: "none", dropped: [] };
   const { rows, dropped } = parseCoverageLedgerFull(readFileSync(findingsPath, "utf8"));
   return { rows: relabel(rows), source: "prose", dropped };
@@ -782,7 +687,7 @@ export function settleDerivedBases(ctx, at) {   // @internal
       } else {
         const next = applyDerivedBases(onDisk, demotions);
         applied = next.applied;
-        atomicWrite(P.findings, JSON.stringify(next.doc, null, 2) + "\n");
+        writeFindings(P.runDir, next.doc, { why: "derived-bases-demoted", settles: [] });
         // THE HELD BASE TAKES THE SAME DEMOTIONS. Every accepted synthesis patch merges onto
         // `_driver/synthesis-calls/accepted.json` and re-renders the findings it does not name from there, so a
         // demotion written to this file alone came back with the next patch, and the evidence check then told
@@ -948,7 +853,7 @@ export function remergeIfBandsMoved(ctx, why, { refusing = (bytes) => stagesRefu
 }
 
 /** Where the records a refused merge left out are kept, for the recall gate. */
-const refusedRecordsPath = (P) => driverDir(P.runDir, "band-refused-records.json");
+const refusedRecordsPath = (P) => paths(P.runDir).bandRefusedRecords;
 
 /**
  * THE RECORDS A REFUSED MERGE LEAVES OUT: the ids the band merged again holds and the band standing does not, added to
@@ -1084,7 +989,7 @@ function deriveOwnerScreenArtifact(ctx, band) {
     const deferredByQid = new Map((readPlanExecution(ctx)?.deferred ?? [])
       .map((d) => [String(d?.qid ?? ""), String(d?.reason ?? "")]).filter(([q]) => q));
     let caps = null;
-    try { caps = registerCapabilities(); } catch { /* unknown provider — the screen still reports states */ }
+    try { caps = registerCapabilities(ctx.register); } catch { /* unknown provider — the screen still reports states */ }
     const screen = deriveOwnerScreen(ctx.registerPlan.entries ?? [], blocks, band?.enumerated ?? [],
       { deferredByQid, capabilities: caps });
     if (!screen.owners.length) return null;   // no incumbent lane on this matter — nothing to receipt
@@ -1452,56 +1357,48 @@ function deriveGridSpec(ctx) {
     // level), connotation queries partitioned the same way (each owned by exactly one half; the merge's
     // concat+dedup restores the full receipt set), each half writing its OWN ledger. The halves merge in
     // CODE into the canonical common-law-grid.json at gather fan-in, before anything downstream reads it.
-    // Self-disarm cases (single-member assembly kept VERBATIM): a single-term grid (nothing to
-    // partition); and a resume of a PRE-SPLIT run — a valid common-law-findings.md with no half files on
-    // disk means the grid already ran unsplit, and re-running it as halves would re-spend the full grid.
+    // Self-disarm case (single-member assembly kept VERBATIM): a single-term grid, which has nothing to
+    // partition.
     //
-    // item 8 deleted the `flag-off` case with CLEAROTRON_COMMONLAW_SPLIT. The two above are why the
-    // ASSEMBLY stays: they reach it without any switch, and each records its own reason.
+    // item 8 deleted the `flag-off` case with CLEAROTRON_COMMONLAW_SPLIT. A resume of a PRE-SPLIT run (a
+    // valid common-law-findings.md with no half files beside it) also kept the single-member assembly, and
+    // that case is gone too: a run from an earlier build is no longer resumed, and a current run whose
+    // grid has two or more terms splits on its first pass, from frozen inputs a resume derives the same
+    // grid from. The single-term grid is why the ASSEMBLY stays: it reaches it without any switch, and
+    // records its own reason.
     const splitTerms = gridSpec.terms.length;
     if (splitTerms < 2)
       ctx.clSplitDecision = { path: "unsplit", reason: "single-term-grid",
         detail: `the grid carries ${splitTerms} term(s) — there is nothing to partition into two halves`,
         terms: splitTerms };
     if (splitTerms >= 2) {
-      const resumedUnsplit = existsSync(P.commonLaw)
-        && !GRID_SEATS.some((h) => existsSync(P.commonLawHalf(h)))
-        && validators.commonLaw(P.commonLaw, readFileSync(P.commonLaw, "utf8")).ok;
-      if (resumedUnsplit) {
-        note("common-law split: resuming a pre-split run (valid single-member findings, no half artifacts) — keeping the single-member assembly");
-        runLog(P.runDir, { event: "grid-split-skipped", reason: "resumed-unsplit" });
-        ctx.clSplitDecision = { path: "unsplit", reason: "resumed-unsplit",
-          detail: "a valid single-member common-law-findings.md is on disk with no half artifacts beside it — the grid already ran unsplit and re-running it as halves would re-spend the whole grid",
-          terms: splitTerms };
-      } else {
-        const halves = splitGridSpec(gridSpec, {
-          outputPaths: Object.fromEntries(GRID_SEATS.map((h) => [h, P.commonLawGridHalf(h)])),
-          // — dictated, so the grid tool names the same file the validator reads.
-          dispositionsPaths: Object.fromEntries(GRID_SEATS.map((h) => [h, P.commonLawDispositionsHalf(h)])),
-        });
-        for (const h of GRID_SEATS) atomicWrite(P.gridSpecHalf(h), JSON.stringify(halves[h], null, 2) + "\n");
-        // THE FRAME NAMED NO MEANING QUESTION, so the meaning seat has nothing to search. Its ledger is the
-        // empty one the grid tool would have written, written here, so the merge and every check downstream
-        // read a sweep of zero queries rather than a missing file; the seat is told not to run the tool.
-        if (halves[MEANING_SEAT]?.connotation?.none_named === true)
-          atomicWrite(P.commonLawGridHalf(MEANING_SEAT), JSON.stringify({ cells: [], extras: { pr_risk: [] }, gaps: [] }, null, 2) + "\n");
-        ctx.clHalfTerms = { a: halves.a.terms, b: halves.b.terms };
+      const halves = splitGridSpec(gridSpec, {
+        outputPaths: Object.fromEntries(GRID_SEATS.map((h) => [h, P.commonLawGridHalf(h)])),
+        // — dictated, so the grid tool names the same file the validator reads.
+        dispositionsPaths: Object.fromEntries(GRID_SEATS.map((h) => [h, P.commonLawDispositionsHalf(h)])),
+      });
+      for (const h of GRID_SEATS) atomicWrite(P.gridSpecHalf(h), JSON.stringify(halves[h], null, 2) + "\n");
+      // THE FRAME NAMED NO MEANING QUESTION, so the meaning seat has nothing to search. Its ledger is the
+      // empty one the grid tool would have written, written here, so the merge and every check downstream
+      // read a sweep of zero queries rather than a missing file; the seat is told not to run the tool.
+      if (halves[MEANING_SEAT]?.connotation?.none_named === true)
+        atomicWrite(P.commonLawGridHalf(MEANING_SEAT), JSON.stringify({ cells: [], extras: { pr_risk: [] }, gaps: [] }, null, 2) + "\n");
+      ctx.clHalfTerms = { a: halves.a.terms, b: halves.b.terms };
 
-        ctx.clSplitDecision = { path: "split", reason: "armed",
-          detail: `${splitTerms} dictated terms, not a pre-split resume — the grid runs as ${GRID_SEATS.length} concurrent half-members`,
-          terms: splitTerms,
-          halves: Object.fromEntries(GRID_SEATS.map((h) => [h, halves[h]?.terms?.length ?? 0])) };
-        //: connotation_<h> = 0 on the non-owning half is the ASSERTED ownership receipt, not a
-        // missing sweep. The count that means "no meaning sweep was dictated at all" is the `grid-spec`
-        // event's own `connotation:` field above; a reader comparing the two can tell them apart.
-        // — connotation_a / connotation_b are now BOTH zero by construction, and that pair is the
-        // regression signal this issue asked for: the gate that fired on 13 of 14 first attempts cannot
-        // fire on a seat that owes nothing. connotation_m is where the sweep went.
-        runLog(P.runDir, { event: "grid-split", terms_a: halves.a.terms.length, terms_b: halves.b.terms.length,
-          connotation_a: halves.a.connotation.queries.length, connotation_b: halves.b.connotation.queries.length,
-          connotation_m: halves[MEANING_SEAT].connotation.queries.length,
-          connotationOwner: MEANING_SEAT });
-      }
+      ctx.clSplitDecision = { path: "split", reason: "armed",
+        detail: `${splitTerms} dictated terms, not a pre-split resume — the grid runs as ${GRID_SEATS.length} concurrent half-members`,
+        terms: splitTerms,
+        halves: Object.fromEntries(GRID_SEATS.map((h) => [h, halves[h]?.terms?.length ?? 0])) };
+      //: connotation_<h> = 0 on the non-owning half is the ASSERTED ownership receipt, not a
+      // missing sweep. The count that means "no meaning sweep was dictated at all" is the `grid-spec`
+      // event's own `connotation:` field above; a reader comparing the two can tell them apart.
+      // — connotation_a / connotation_b are now BOTH zero by construction, and that pair is the
+      // regression signal this issue asked for: the gate that fired on 13 of 14 first attempts cannot
+      // fire on a seat that owes nothing. connotation_m is where the sweep went.
+      runLog(P.runDir, { event: "grid-split", terms_a: halves.a.terms.length, terms_b: halves.b.terms.length,
+        connotation_a: halves.a.connotation.queries.length, connotation_b: halves.b.connotation.queries.length,
+        connotation_m: halves[MEANING_SEAT].connotation.queries.length,
+        connotationOwner: MEANING_SEAT });
     }
   }
 }
@@ -1651,6 +1548,10 @@ for (const x of DISPATCH_EXTRAS) {
     throw new Error(`[stage-context] dispatch extra "${x.id}" is declared but has no builder in pipeline.mjs DISPATCH_EXTRA_BUILDERS — a sandboxed ${x.stage} would run without its driver-computed block`);
 }
 
+// The case-law profiles joined to the findings as they stand: the profiles carry the writer's numbers, and after a
+// grouping the delivered record has its own (joinCaseLawProfiles).
+const caseLawJoin = (P, findings) => joinCaseLawProfiles(parseCaseLawProfiles(readFileSync(P.caseLaw, "utf8")), findings, readFold(P.runDir)?.map?.modelToFolded ?? null);
+
 // The runnable half of INLINE_CONTEXT. Reads the CANONICAL run (`ctx.paths`), because that is the run
 // pipelineInner would have been reading when it built this payload.
 const INLINE_RESOLVERS = {
@@ -1665,7 +1566,7 @@ const INLINE_RESOLVERS = {
     let caseLawProfile = null;
     try {
       if (finding && existsSync(P.caseLaw))
-        caseLawProfile = joinCaseLawProfiles(parseCaseLawProfiles(readFileSync(P.caseLaw, "utf8")), findings).get(ord) ?? null;
+        caseLawProfile = caseLawJoin(P, findings).get(ord) ?? null;
     } catch { /* no case-law layer — production passes null here too */ }
     return { finding, caseLawProfile };
   },
@@ -1847,9 +1748,9 @@ export function decideCaseLaw({ job, narrative, policy } = {}) {   // @internal
   const requested = job?.caseLaw === true || policy?.caseLaw === true;
   const m = CASE_LAW_TRIGGERS.exec(String(narrative ?? ""));
   const detected = Boolean(m);
-  // `product` and `level` are one value under two keys — search-policy.mjs writes both, and archived runs
-  // carry `level`. Read both so a resumed pre-rename run is not silently ineligible.
-  const product = String(policy?.product ?? policy?.level ?? "").trim() || null;
+  // The product is `level` on a run's frozen policy and `product` on a bare selector; productKeyOf reads either
+  // (search-policy.mjs), so a resumed run and a bare selector name the same product.
+  const product = productKeyOf(policy) || null;
   const eligible = product === CASE_LAW_PRODUCT;
   const called = requested || detected;
   return {
@@ -1959,7 +1860,7 @@ export function profileShaOf(frozen) {   // @internal
 }
 
 function attachProfile(ctx, job, { write = true } = {}) {
-  const sidecarPath = driverDir(ctx.paths.runDir, "profile.json");
+  const sidecarPath = paths(ctx.paths.runDir).profile;
   let raw = null;
   try { raw = readFileSync(sidecarPath, "utf8"); } catch { /* ENOENT — genuinely absent */ }
   if (raw != null) {
@@ -2034,7 +1935,7 @@ function attachProfile(ctx, job, { write = true } = {}) {
 // declares, judged by that version's gates. Corrupt ⇒ fail loud (driver-written, same as profile.json).
 const DRIVER_DIR = dirname(fileURLToPath(import.meta.url));
 function attachFramework(ctx, { write = true } = {}) {
-  const sidecarPath = driverDir(ctx.paths.runDir, "framework.json");
+  const sidecarPath = paths(ctx.paths.runDir).framework;
   let raw = null;
   try { raw = readFileSync(sidecarPath, "utf8"); } catch { /* ENOENT — genuinely absent */ }
   const methodPath = driverDir(ctx.paths.runDir, FROZEN_METHOD_FILE);
@@ -2045,15 +1946,18 @@ function attachFramework(ctx, { write = true } = {}) {
     ctx.frameworkMethod = attachFrameworkMethod({ frozenPath: methodPath, manifest: ctx.framework, minted: false });
     return;
   }
-  // No frozen profile (a pre-WS-B resume, or a codename re-dispatch into a dir with no sidecar): the
-  // framework in force is still the GENERIC DEFAULT — doc 50 has no framework-less runs. frameworkFor(null)
-  // resolves it; a genuinely-legacy run's v3 artifacts never consult the minted manifest (version-gated).
+  // NO FROZEN FRAMEWORK. It is frozen before the first stage, so a run without one ran no stage, and a
+  // read-only caller has nothing to rebuild. (A run from before the framework freeze was given one here,
+  // resolved in memory; a run from an earlier build is no longer resumed.)
+  if (!write) throw new Error("_driver/framework.json is absent — the run stopped before its framework was frozen, so it ran no stage and there is nothing to rebuild");
+  // A cold start, or a resume of a first pass that stopped before this freeze: the framework in force is
+  // resolved from the frozen profile and minted now, as the cold path does. With no profile it is the
+  // GENERIC DEFAULT — doc 50 has no framework-less runs, and frameworkFor(null) resolves it.
   const fwPath = frameworkFor(ctx.profile);
   // config.skillsRoot, NOT DRIVER_DIR: the profile's framework may live in the deployment's config
   // store (CLEAROTRON_INSTRUCTIONS_DIR), which is also the root the AGENT resolves the same path against.
   const manifest = loadFrameworkManifest((rel) => config.resolveSkillPath(rel), fwPath);   // throws framework_manifest_missing — a deploy defect, loud
   ctx.framework = manifest;
-  if (!write) { ctx.frameworkMethod = loadFrameworkMethod((rel) => config.resolveSkillPath(rel), fwPath, manifest); return; }
   // The method is frozen BEFORE the manifest: a run interrupted between the two writes has no manifest,
   // so its resume mints both again. The other order would leave a manifest with no method beside it,
   // which the resume branch above reads as a framework that states none.
@@ -2118,25 +2022,17 @@ export function foldRecipeScope(job, searchPolicy) {   // @internal
 }
 
 export function attachSearchPolicy(ctx, job, { write = true } = {}) {   // @internal
-  const sidecarPath = driverDir(ctx.paths.runDir, "search-policy.json");
+  const sidecarPath = paths(ctx.paths.runDir).searchPolicy;
   let raw = null;
   try { raw = readFileSync(sidecarPath, "utf8"); } catch { /* ENOENT — genuinely absent */ }
-  // A job that names NO SELECTOR at all. It reads `product`/`recipeKey`, which are the two selectors on
-  // the wire; it used to read `searchLevel`, which DELETED — so it evaluated true for every job,
-  // including one that spelled out `product: "full-country-search"`, and the guard below was unreachable.
-  const noSelector = !job?.recipeKey && !job?.product;
   if (raw != null) {
     try { ctx.searchPolicy = JSON.parse(raw); }
     catch (e) { throw new Error(`_driver/search-policy.json is corrupt (${e.message}) — investigate; the frozen policy is never silently re-derived`); }
   } else if (!write) {
-    // pre-spine run read-only (reconstructCtx / legacy resume): implicitly a clearotron — the only shape that
-    // existed. It names a RETIRED row on purpose: this branch describes a run that already happened, and
-    // RETIRED_POLICIES exists so an archived run re-renders under the name it was sold under. But ONLY
-    // for a selector-less job: a selector-carrying job with no frozen sidecar must never be assumed into
-    // a clearance (review 2026-07-17 — the crash-reclaim/reconstruct window).
-    if (!noSelector)
-      throw new Error(`run dir has no frozen search policy but the job names a selector (product=${JSON.stringify(job?.product ?? null)}, recipeKey=${JSON.stringify(job?.recipeKey ?? null)}) — refusing the legacy-implicit clearotron assumption; re-dispatch cold so the policy is minted`);
-    ctx.searchPolicy = { schema: 1, level: "clearance", pipeline: "clearance", stageLabel: "Depth 4", components: {}, recipe: null, origins: { level: "legacy-implicit" } };
+    // NO FROZEN PRODUCT, AND THIS CALLER MAY NOT FREEZE ONE. A run froze its product before its first stage, so it has
+    // none to read. A resume finishes the opening first (steps/open-run.mjs finishTheOpening), so a reader here never
+    // assumes one: this used to read the absence as a run from before the freeze and name a retired clearance.
+    throw new Error("_driver/search-policy.json is absent — the run stopped before its product was frozen, and this reader does not settle one");
   } else {
     let resolved;
     // force:true — the recipe store is written by a LIVE service; a long-lived driver process must see a
@@ -2427,9 +2323,9 @@ export function writeRegisterDigestFacts(ctx, trigger) {   // @internal
       identity: {
         mark: ctx.job?.markName ?? ctx.run?.slug ?? null,
         date: ctx.job?.filedDate ?? ctx.run?.startedAt?.slice?.(0, 10) ?? null,
-        provider: REGISTER_PROVIDER ?? null,
+        provider: (ctx.register ?? REGISTER_PROVIDER) ?? null,
       },
-      recordHost: recordOriginsFor(REGISTER_PROVIDER)?.[0] ?? "",
+      recordHost: recordOriginsFor(ctx.register ?? REGISTER_PROVIDER)?.[0] ?? "",
       counts: digestSummaryCounts(ctx, slim.length),
       auditRows: digestAuditRows(ctx),
       readIds,
@@ -2464,7 +2360,7 @@ export function writeRegisterDigestFacts(ctx, trigger) {   // @internal
 function digestSummaryCounts(ctx, enumerated) {
   const P = ctx.paths;
   const out = [];
-  const exec = safeReadJson(driverDir(P.runDir, "plan-execution.json"));
+  const exec = safeReadJson(paths(P.runDir).planExecution);
   const entries = Array.isArray(exec?.skeleton) ? exec.skeleton : [];
   // ── NO TOOL NAME IS SPELLED HERE, AND THAT IS A CONSTRAINT RATHER THAN A STYLE CHOICE ────────────
   //
@@ -2503,7 +2399,7 @@ function digestSummaryCounts(ctx, enumerated) {
 /** The `### Audit trail` rows — per-unit search / detail-fetch counts with the driver's `_query` stamp. */
 function digestAuditRows(ctx) {
   const P = ctx.paths;
-  const exec = safeReadJson(driverDir(P.runDir, "plan-execution.json"));
+  const exec = safeReadJson(paths(P.runDir).planExecution);
   const rows = [];
   for (const e of Array.isArray(exec?.skeleton) ? exec.skeleton : []) {
     rows.push({ unit: e?.axis ?? e?.qid ?? "—", searches: e?.searches ?? e?.pages ?? 0,
@@ -2619,7 +2515,7 @@ export function deriveFormNeighbourhood(ctx) {   // @internal — exported for i
     const mark = ctx.job.marks ?? ctx.job.markName ?? ctx.job.name ?? "";
     // The active register's own declaration: `false` leaves the mixed-alphabet look-alike spellings out of
     // the band and lists them as not searched, with the reason its index gives. Undeclared changes nothing.
-    const caps = registerCapabilities();
+    const caps = registerCapabilities(ctx.register);
     const mixedScriptQuery = caps?.mixedScriptQuery ?? null;
     const ow = loadOrdinaryWords("en"), json = renderFormNeighbourhoodJson(manifestMd, { markets, droppedAxes, model, mark, ordinaryWords: ow.words, mixedScriptQuery, nativeScriptIndex: caps?.nativeScriptIndex ?? null });   // an unloadable word list removes nothing
     const tmp = P.formNeighbourhood + ".tmp";
@@ -2736,10 +2632,10 @@ async function verifyAndRecordHouseElement(ctx, opts = {}) {
     // the free-text one. Both, because a profile may be absent on a one-off matter and a customer string
     // may be a person where the filings are held by a company.
     const owners = [...new Set([...(ctx.profile?.selfExclusionOwners ?? []), ctx.job?.customer].map((o) => String(o ?? "").trim()).filter(Boolean))];
-    const caps = registerCapabilities();
+    const caps = registerCapabilities(ctx.register);
     const { regions } = resolvePlanRegions(registerJurisdictions(ctx.job, ctx.profile), caps);
     const rec = resolveRecordExecutor({
-      lister: opts?.recordLister ?? null, adapter: noteAdapter(ctx, activeProvider()),
+      lister: opts?.recordLister ?? null, adapter: noteAdapter(ctx, registerAdapter(ctx.register)),
       agentId: ctx.agentId ?? null, sessionKey: `clearance-${ctx.run.slug}-${ctx.run.codename}`,
       recordLog: runRecordLogPath(P.runDir),
       fixtureDir: ctx.job?.registerFixtures?.records ?? null,
@@ -2780,10 +2676,6 @@ function attachRegisterPlan(ctx, { frozenOnly = false } = {}) {
     // parseRegisterPlan throws token-first on corruption — the frozen plan is never silently re-derived
     ctx.registerPlan = parseRegisterPlan(readFileSync(P.registerPlan, "utf8"));
     runLog(P.runDir, { event: "register-plan", source: "frozen", version: ctx.registerPlan.plan_version, entries: ctx.registerPlan.entries.length });
-    // Repair-first D: a FROZEN plan failing feasibility (a pre-split legacy shape) is logged and
-    // CONTINUES — never brick an in-flight resume; the executor chunks defensively regardless.
-    const frozenIssues = validatePlanFeasibility(ctx.registerPlan, { capabilities: registerCapabilities() });
-    if (frozenIssues.length) runLog(P.runDir, { event: "register-plan-infeasible", source: "frozen", issues: feasibilityMessages(frozenIssues).slice(0, 6) });
     logFullyDeferredAxes(ctx.registerPlan, P, "frozen");
     return;
   }
@@ -2845,11 +2737,11 @@ function attachRegisterPlan(ctx, { frozenOnly = false } = {}) {
       // jurisdictions are translated into its office vocabulary (EU→EM on Compumark), and a predicate
       // it cannot express is stamped `unsupported` (→ an error:true block → a deferred coverage row)
       // instead of quietly compiling into a weaker search.
-      capabilities: registerCapabilities(),
+      capabilities: registerCapabilities(ctx.register),
       // — the offices this contract covers that THIS BOX cannot reach (a composed provider with an
       // unconfigured member). Split out at compile so the reachable half still executes and the rest
       // rides the plan as a disclosed deferral, never as a silently narrower search.
-      unavailableOffices: registerUnavailableOffices(),
+      unavailableOffices: registerUnavailableOffices(registerCapabilities(ctx.register)),
     });
     // REQUIREMENT 3 — the element is still checked ONCE, as a confirmation of the client's own live
     // registrations rather than as a conflict sweep, so the exclusion is evidenced on the report by a
@@ -2895,7 +2787,7 @@ function attachRegisterPlan(ctx, { frozenOnly = false } = {}) {
   //     loud ONLY for freshly-authored entries — the whole plan on a fresh mint, ONLY the `added`
   //     entries on an extension. Inherited/reused entries are history, never a fresh compiler bug:
   //     log-only, never brick a matter over its own store.
-  const allIssues = validatePlanFeasibility(plan, { capabilities: registerCapabilities() });
+  const allIssues = validatePlanFeasibility(plan, { capabilities: registerCapabilities(ctx.register) });
   if (allIssues.length) {
     const freshQids = new Set(action === "minted" ? plan.entries.map((e) => e.qid) : (added ?? []).map((e) => e.qid));
     const terminalIssues = allIssues.filter((i) => i.severity === "unexecutable" && freshQids.has(i.entry));
@@ -3115,7 +3007,7 @@ export function depthLadderEvent(ctx) {   // @internal
   return {
     event: "depth-ladder",
     // `level` is what the frozen policy calls it; see depthFor()'s note.
-    product: String(ctx?.searchPolicy?.level ?? ctx?.searchPolicy?.product ?? "") || null,
+    product: productKeyOf(ctx?.searchPolicy) || null,
     source: depth?.source ?? null,
     // the row, spread flat so a jq over run.jsonl reads one field per setting
     ...(depth ? Object.fromEntries(Object.entries(depth).filter(([k]) => k !== "source")) : {}),
@@ -3375,7 +3267,7 @@ const bandRecordIds = (band) => [...new Set((band?.enumerated ?? []).map((r) => 
 function recordPlacementBandIds(P) {
   try {
     const ids = bandRecordIds(safeReadJson(P.registerNamedBand)).sort();
-    atomicWrite(driverDir(P.runDir, "placement-band-ids.json"), JSON.stringify({ count: ids.length, ids }) + "\n");
+    atomicWrite(paths(P.runDir).placementBandIds, JSON.stringify({ count: ids.length, ids }) + "\n");
   } catch (e) { runLog(P.runDir, { event: "placement-band-ids-failed", reason: String(e?.message ?? e).slice(0, 120) }); }
 }
 
@@ -3385,7 +3277,7 @@ function recordPlacementBandIds(P) {
  * a count that moved is not a record placement has not seen. PURE over the run's files.
  */
 export function lateRecordIds(P) {   // @internal — driven by its test with a run's own files
-  const seen = safeReadJson(driverDir(P.runDir, "placement-band-ids.json"));
+  const seen = safeReadJson(paths(P.runDir).placementBandIds);
   if (!Array.isArray(seen?.ids)) return [];
   const had = new Set(seen.ids);
   return bandRecordIds(safeReadJson(P.registerNamedBand)).filter((id) => !had.has(id));
@@ -3652,7 +3544,7 @@ export function writerExclusions(P) {   // @internal — driven by its test with
     } catch { return empty("unreadable"); }
     // The goods state each record was given on the writer's list, where the list carries one.
     const goodsOf = new Map();
-    for (const r of safeReadJson(driverDir(P.runDir, "declination-spec.json"))?.rows ?? [])
+    for (const r of safeReadJson(paths(P.runDir).declinationSpec)?.rows ?? [])
       for (const m of [r, ...(Array.isArray(r?.members) ? r.members : [])]) if (m?.uri) goodsOf.set(key(m.uri), m.goods ?? null);
     const bandOf = new Map();
     for (const row of rows) for (const m of (Array.isArray(row?.members) && row.members.length ? row.members : [row])) bandOf.set(key(m?.uri), m);
@@ -3711,7 +3603,7 @@ export const revisedCitesNote = (ords) => `; that ground cites ${ords.length ===
 export const withdrawnExclusionLine = (x) => `- ${x.mark ?? "(unnamed)"}${x.owner ? ` — ${x.owner}` : ""} (${(x.members ?? [x.uri]).join(", ")}): excluded at the full review, now delivered as a finding`;
 
 /** What the full review was shown, kept for the reviews after it; and what the last review was shown, for its flags. */
-export const reviewExclusionsPaths = (P) => ({ full: driverDir(P.runDir, "review-exclusions-full.json"), shown: driverDir(P.runDir, REVIEW_EXCLUSIONS_FILE) });
+export const reviewExclusionsPaths = (P) => ({ full: paths(P.runDir).reviewExclusionsFull, shown: driverDir(P.runDir, REVIEW_EXCLUSIONS_FILE) });
 
 /**
  * THE LIST A REVIEW IS GIVEN, and the record of it. The full review gets every exclusion. A later review (the recheck
@@ -3815,7 +3707,7 @@ export function prepareDeclinationSpec(ctx, P) {   // @internal
     // whatever list the spec file carries, and a repair or corrective pass re-prepares because the
     // findings may have moved. Left in place, a list from an earlier pass would bind a pass whose own
     // prompt carries none: the order enforced, and missing from the prompt.
-    try { rmSync(driverDir(P.runDir, "declination-spec.json"), { force: true }); } catch { /* absent is the goal */ }
+    try { rmSync(paths(P.runDir).declinationSpec, { force: true }); } catch { /* absent is the goal */ }
     delete ctx.findingsSurface;
     return;
   }
@@ -3824,7 +3716,7 @@ export function prepareDeclinationSpec(ctx, P) {   // @internal
   try {
     ensureDriverDir(P.runDir);
     const read = surfaceGoodsEvidence(ctx, P, rows);
-    atomicWrite(driverDir(P.runDir, "declination-spec.json"),
+    atomicWrite(paths(P.runDir).declinationSpec,
       JSON.stringify({ ts: new Date().toISOString(), rows: withGoodsStates(ctx, P, rows, read), scope: { marks: scope.marks ?? [], classes: scope.classes ?? [] } }, null, 2) + "\n");
     ctx.findingsSurface = withGoodsFrom(ctx, P, rows, read);
   } catch (e) {
@@ -3841,7 +3733,7 @@ export function prepareDeclinationSpec(ctx, P) {   // @internal
  * record every record it delivered as discarded — the defect rebuilt one seam later.
  */
 /** Where the ranking the writer last read is kept, for the sentence on records re-ranked after it wrote. */
-const rankingReadByWriterPath = (P) => driverDir(P.runDir, "ranking-read-by-writer.json");
+const rankingReadByWriterPath = (P) => paths(P.runDir).rankingReadByWriter;
 /** Keeps where each record stood when a writer's pass completed. Never throws. */
 function keepRankingReadByWriter(P) {
   try { atomicWrite(rankingReadByWriterPath(P), JSON.stringify(rankingToJson(rankingNow(P)), null, 2) + "\n"); }
@@ -3947,8 +3839,8 @@ export function deriveRecordCarry(ctx, trigger, { findings = null } = {}) {   //
       placements,
       registerFindingsText: existsSync(P.registerFindings) ? readFileSync(P.registerFindings, "utf8") : "",
       findings: deliveredFindings,
-      outcomes: parseStageOutcomes(safeReadText(driverDir(P.runDir, "run.jsonl"))),
-      planExecution: safeReadJson(driverDir(P.runDir, "plan-execution.json")),
+      outcomes: parseStageOutcomes(safeReadText(paths(P.runDir).run)),
+      planExecution: safeReadJson(paths(P.runDir).planExecution),
       ledger: foldDiscardLedger(safeReadText(driverDir(P.runDir, DISCARD_LEDGER_NAME))),
       // — read the sibling traces OFF DISK rather than threading state through the run: what is
       // on disk at publish is exactly what this run produced, and a declaration derived from anything
@@ -4000,7 +3892,7 @@ export function deriveRecordCarry(ctx, trigger, { findings = null } = {}) {   //
       //    "verdict failed (non-fatal)" — the sentence a malformed artifact would also produce. A reader
       //    seeing it has no way to tell "the ratchet ran and could not judge" from "the ratchet has never
       //    run". Ten pool traversals, ten failures, zero successes, and nobody could see it.
-      // 2. IT REPORTED ONLY TO STDERR. `note()` is stderr-only (log.mjs:61). Nothing reached run.jsonl,
+      // 2. IT REPORTED ONLY TO STDERR. `note()` in `log.mjs` is stderr-only. Nothing reached run.jsonl,
       //    the run dir, or any audited artifact — so no consumer we have could ever have noticed.
       //
       // ReferenceError is the ONLY hard discriminator, and the narrowness is deliberate. TypeError is
@@ -4185,7 +4077,7 @@ function deriveCommonLawCarry(ctx, trigger, { slice = "common-law", gridPath = n
       // ALL THREE labels. A split run logs `common-law-half:a` / `:b` and never `common-law`; asking for
       // `["common-law"]` alone finds no events and every candidate on every split run reads
       // stage-incomplete — a loud wrong answer on the common path.
-      outcomes: parseStageOutcomes(safeReadText(driverDir(P.runDir, "run.jsonl")), CL_STAGES),
+      outcomes: parseStageOutcomes(safeReadText(paths(P.runDir).run), CL_STAGES),
       consumed, slice,
     });
     write(artifact);
@@ -5092,7 +4984,7 @@ function writeSatProbeAuditNote({ ctx, out, bandPath, entries }) {
 // force-re-run completed stages on resume. Idempotent merge; non-fatal like every _driver sidecar.
 function recordStageContract(runDir, name, contract) {
   try {
-    const p = driverDir(runDir, "stage-contracts.json");
+    const p = paths(runDir).stageContracts;
     let cur = {};
     try { cur = JSON.parse(readFileSync(p, "utf8")) ?? {}; } catch { /* first write */ }
     const next = { ...cur, [name]: { ...(cur[name] ?? {}), ...contract } };
@@ -5190,11 +5082,22 @@ function clearedForSeat(runDir, label) {
  * that never set one. The reading step and the writer read placement's accepted set-asides the same way. Every
  * other stage composes from the context as it is.
  */
+/**
+ * The address list a whole review is handed, written where its recording tool reads it: the writer's accepted record
+ * and the findings file together, so an ordinal from either numbering resolves, and the accepted narrative's sections.
+ * IMPURE.
+ */
+function reviewAddressesFor(P) {
+  const accepted = lastAcceptedCall(P.runDir);
+  return writeReviewAddresses(P.runDir, { records: [accepted?.findings, safeReadJson(P.findings)], narratives: [accepted?.narrative],
+    seq0: nextRefutationSeq(P.runDir) });
+}
 export function messageCtxFor(name, ctx) {   // @internal — driven by its test
   if (!ctx?.paths) return ctx;
   // The review is also pointed at the research behind the findings' use checks, where the writer's record wrote it.
   if (name === "narrative-refutation") return { ...ctx, placementFloorDecisions: placementFloorDecisionLines(ctx.paths),
     writerExclusions: writerExclusionBlock(ctx.paths, { review: "full" }),
+    reviewAddressLines: addressListLines(reviewAddressesFor(ctx.paths)),
     researchChecks: ctx.paths.researchChecks && existsSync(ctx.paths.researchChecks) ? ctx.paths.researchChecks : null };
   // The reading step and the writer are told placement's accepted set-asides the same way, read when the message is built.
   if (name === "register-digest") return { ...ctx, placementSetAsides: placementSetAsideLines(ctx.paths) };
@@ -5212,6 +5115,18 @@ export function messageCtxFor(name, ctx) {   // @internal — driven by its test
 
 /** A stage's session key, which its retries extend with `-rerun<n>`. One statement, read where a stage is dispatched. */
 export const stageSessionKey = (ctx, name, keyAxis = "") => `clearance-${ctx.run.slug}-${ctx.run.codename}-${name}${keyAxis}`;   // @internal
+
+/**
+ * Was the stage `label` itself dispatched in this run? Its dispatch record is written as its turn starts, and its attempt
+ * journal as each attempt ends; either says the stage ran here. IMPURE (lists `_driver/`).
+ */
+function stageWasDispatched(runDir, label) {
+  let names = [];
+  try { names = readdirSync(driverDir(runDir)); } catch { return false; }
+  const journal = driverFileName(`${label}.jsonl`);
+  const dispatched = driverFileName(`${label}.attempt`);
+  return names.some((n) => n === journal || (n.startsWith(dispatched) && n.endsWith(`.${DISPATCH_SUFFIX}`)));
+}
 
 async function stageOnce(name, ctx, opts = {}) {
   const def = STAGES[name];
@@ -5237,11 +5152,21 @@ async function stageOnce(name, ctx, opts = {}) {
   // declared, already logged per stage; this consults it. Keyed on CONTENT, so a pure crash-resume (no
   // input bytes changed) still skips exactly as cheaply as before.
   const declaredInputs = () => stageInputs(name, P, { axes: ctx.axes, axis: ctx.axis, registerOnly: ctx.registerOnly });
-  const freshness = forced ? { stale: false, changed: [] } : stageStaleness(P.runDir, label, declaredInputs());
+  // AN OUTPUT ITS STAGE MADE WITH NO RECORD OF WHAT IT READ IS NOT REUSED, as in the Knockout. A stage records what it
+  // read when it succeeds, so where the stage itself was dispatched and its output has no record, the stage stopped
+  // between writing the output and recording it, or ran before the record existed. Its freshness is unknown, so the
+  // stage runs again. The register answers it holds are not bought again: the executor reuses every answer the run
+  // holds to the same question. An output another step wrote, as the merge of the research halves writes the whole
+  // research output, was never this stage's to record, and is reused as before.
+  const unrecorded = !forced && Boolean(out) && existsSync(out) && !readStamp(P.runDir, label) && stageWasDispatched(P.runDir, label);
+  const freshness = forced ? { stale: false, changed: [] }
+    : unrecorded ? { stale: true, reason: "no record of the inputs it was produced from", changed: [] }
+    : stageStaleness(P.runDir, label, declaredInputs());
   if (freshness.stale) {
     const why = freshness.changed.map((c) => `${c.name} ${c.was ?? "(absent)"}→${c.now ?? "(absent)"}`).join(", ");
-    runLog(P.runDir, { event: "stage-stale", stage: label, changed: freshness.changed });
-    note(`[${label}] stale — ${freshness.changed.length} input(s) changed since this output was produced (${why}); recomputing`);
+    runLog(P.runDir, { event: "stage-stale", stage: label, changed: freshness.changed, ...(freshness.reason ? { reason: freshness.reason } : {}) });
+    note(freshness.reason ? `[${label}] stale — ${freshness.reason}; recomputing`
+      : `[${label}] stale — ${freshness.changed.length} input(s) changed since this output was produced (${why}); recomputing`);
   }
   // ── — AN UNDISCHARGED FLOOR DUTY IS PART OF "VALID" ──────────────────────────
   //
@@ -5762,192 +5687,6 @@ function must(r, name) {
   return r;
 }
 
-// T5 + repair-first phase 3 — the CODE-authored failure packet, extracted and exported (tests +
-// the runner's re-park cap reuse it). The email/WhatsApp copy is keyed on terminalKind and QUOTES the
-// machine reason VERBATIM: teal-causeway's notice claimed a "systemic (credentials/provider/config)"
-// cause for a deterministic 414, and its confirmation brief invented a "corrupted query IDs" story —
-// the notice now says only what the machine knows, and says it in the machine's own words.
-/**
- * — the three terminal-reason fields status.json carries, as ONE decision in one place.
- *
- * `reason` is capped at 200 because it rides the ping. On the 2026-08-12 round that cap fell exactly
- * where the provider's verbatim error begins: status.json ended on
- * "provider error on the count probe (after one in-tool retry): " with nothing after the colon, while
- * the journal held `HTTP 400: APPLICANT_NAME - The system did not recognize the syntax`. The failure
- * taxonomy sends a diagnosing agent to status.json, so for that failure it was the one place the answer
- * was not — and the round read the cause as ABSENT and reasoned about the absence as if it were the
- * defect.
- *
- * `reasonDetail` could not have covered it: that field carries `StageFailure.detail`, and the fan-in
- * throw passes none. Widening the 200 cap was rejected — it is load-bearing for the ping, and the next
- * message longer than whatever number replaced it would reopen this silently.
- *
- * So the cut is made VISIBLE and the tail kept beside it. `reasonTruncated` is present on every terminal
- * failure, true or false: "no reasonFull key" and "nothing was cut" must be distinguishable, or an
- * absence reads as an empty cause — which is the whole defect, one level along. PURE.
- *
- * — VISIBLE IN THE STRING, not only in a sibling key. `reason` was a bare slice, so a cut sentence
- * read as a finished one. Three failed runs of 2026-08-19 ended theirs mid-path — ".../studio/clearance-se"
- * — and the reader who stat'd that directory got ENOENT and diagnosed a working mechanism as a broken
- * one. Nothing had been lost: `reasonFull` carried the whole path on all three and `reasonTruncated` was
- * true on all three. The field that gets read FIRST simply never said it was short. `abbrev` is this
- * repo's marker for exactly that — repair-contract.mjs: "COMPLETE, or VISIBLY MARKED as incomplete" —
- * and its ellipsis rides INSIDE the bound, so `reason` is still 200 characters and still load-bearing
- * for the ping. `truncated` is computed from the cap rather than from a length comparison against the
- * marked string, so the fact stays true of the SOURCE and not of whatever the marker did to it.
- */
-export function terminalReasonFields(reason, { cap = 200, fullCap = 4000 } = {}) {
-  const full = String(reason ?? "").replace(/\s+/g, " ").trim();
-  const truncated = full.length > cap;
-  return { reason: abbrev(full, cap), reasonTruncated: truncated, reasonFull: truncated ? abbrev(full, fullCap) : null };
-}
-
-// (enforcement check E11 in the family) — `reasonDetail` and `reasonQuantity` are PACKET FIELDS.
-//
-// The merge gate computes WHICH dictated connotation query dropped and hands it over as StageFailure.detail
-// with the count as `quantity`. Before this, neither reached this packet: on E2E's preserved R1 run of 2026-08-13
-// `_driver/failure.json` carried reason/reasonVerbatim/failClass/terminalKind and no payload at all, so the
-// operator was told one query had dropped and never which one — E2E had to replay
-// findDroppedConnotationQueries against the preserved artifacts to name it. `reasonDetail` already reached
-// status.json; `reasonQuantity` reached neither file.
-//
-// Both are written UNCONDITIONALLY as string|null and number|null. Never omitted, never 0: "no key" and
-// "this failure carries no count" are different facts, the same distinction `reasonTruncated` is written on
-// every terminal failure to preserve. And per the payload stays OUT of the sentence — `whatsappText`
-// and the CLIENT body are untouched; the staff body gets it in its own <pre>, beside the verbatim reason
-// that body already quotes.
-export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortReason, reasonVerbatim, sig, failClass, terminalKind, repairs = [], priorAttempts = 0, reasonDetail = null, reasonQuantity = null, capWait = null }) {
-  const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;");
-  const detail = typeof reasonDetail === "string" && reasonDetail.trim() ? reasonDetail.trim() : null;
-  const quantity = Number.isFinite(reasonQuantity) ? reasonQuantity : null;
-  // WHAT FAILED, named as ALL of it. A knockout batch is one job, one run and one price over up to
-  // eight names, and this said "IRONWHISK" for a batch of three — the requester was told one name had
-  // failed and that nothing was delivered. Both honest readings cost money: that the other two came
-  // through (they did not), or that re-ordering the named one is the fix (it re-runs one and silently
-  // drops two). The SUCCESS packet from the same lane has always stated the count, which is what makes
-  // this a defect rather than a house style.
-  //
-  // `job.marks` and the shared composer (progress.mjs), so the notice, the run's own status.json and the
-  // delivered meta all spell one fact one way. A clearance job carries a single name and composes to
-  // exactly what it did before.
-  const mark = batchMarkName(job.marks, job.markName ?? job.name ?? job.ref ?? "the matter");
-  const KIND_SENTENCES = {
-    deterministic: "The same defect reproduces on every attempt — a code or data fix is needed; retrying will not help.",
-    "repeat-signature": "The retry failed IDENTICALLY to the first attempt — further retries cannot help; a code or data fix is needed.",
-    factual: "A factual gap the machinery could not close — this is a human decision, not a retry.",
-    "non-recoverable": "A credentials/configuration cause — fix the environment, then re-trigger the run.",
-    exhausted: `Automatic recovery is exhausted after ${priorAttempts} attempt${priorAttempts === 1 ? "" : "s"} — the cause looks systemic (provider/environment), not a bad sample.`,
-    // The weather lane ran out: the run's own output was never the problem, an upstream provider was
-    // still overloaded or refusing after the whole waiting ladder. Say that, so nobody goes hunting
-    // for a defect in the run — and say that a re-trigger is the right move once the far end is back.
-    // Deliberately COUNTLESS: `priorAttempts` is the run's TOTAL park count across both lanes, so
-    // quoting it here as "waiting attempts" would re-conflate the two budgets in the one sentence that
-    // exists to keep them apart. The surrounding copy already reports the honest total.
-    "weather-exhausted": "An upstream provider stayed overloaded or unreachable through every waiting attempt this run had — nothing in the run itself failed a check. Re-trigger once the provider is healthy.",
-    // — THE ONE KIND THAT IS NOT A FAULT. Every sentence above explains a break; this one has to
-    // say that nothing broke, or the copy re-tells the lie the terminalKind was added to stop. The
-    // remedy is never "re-trigger" and never "a code fix" — it is the order or the deployment, and the
-    // verbatim reason below this line names which.
-    [REFUSAL_TERMINAL_KIND]: "Nothing failed. This deployment does not serve the search that was ordered, and said so before any work was done — the reason below names what is missing and what to change. Re-running it unchanged returns the same answer.",
-  };
-  // ── A CAP DEATH IS A SUBSCRIPTION OUTCOME, NOT AN OUTAGE (the fourth ask) ─────────────────────────
-  //
-  // The weather lane carries BOTH an overloaded provider and a usage cap, and its one sentence
-  // described the first: "stayed overloaded or unreachable … Re-trigger once the provider is healthy."
-  // Told to somebody whose subscription cap has not reset, every clause of that is wrong — the provider
-  // was healthy and answering, re-triggering now hits the same cap, and "overloaded" points the reader
-  // at an availability problem they cannot act on.
-  //
-  // The owner pre-committed the wording watching a capped run: a cap death is reported as a
-  // SUBSCRIPTION OUTCOME, NEVER AS AN ENGINE FINDING. So this names the cap, states how long the run
-  // actually held out before giving up, and says plainly that nothing about the run or the mark
-  // produced it.
-  //
-  // The elapsed wait matters as much as the cause. The cap ladder now reaches ~11h, so "3 automatic
-  // recovery attempts" — which is all the surrounding copy reports — reads as a run that gave up
-  // quickly when it waited most of a day. A reader deciding whether to re-trigger needs the hours.
-  //
-  // Falls back to the weather sentence when the history carries no cap park, so an actual outage is
-  // still described as one. capWait is null in that case BY CONSTRUCTION (capWaitFrom returns null
-  // rather than a zeroed object), which is what keeps this branch from claiming a cap that never was.
-  const capLine = capWait && terminalKind === "weather-exhausted"
-    ? `A provider's usage cap was still in force after ${humanWait(capWait.waitedMin)} of waiting across ${capWait.parks} attempt${capWait.parks === 1 ? "" : "s"} — a subscription outcome, not a finding about the run or the mark. Nothing in the run itself failed a check.${capWait.statedResets ? " The provider stated its own reset time and the run waited for it." : ""} Re-trigger once the cap has reset.`
-    : null;
-  const kindLine = capLine ?? KIND_SENTENCES[terminalKind] ?? "The run stopped on a technical failure; the run directory is preserved for diagnosis.";
-  const attempted = repairs.length
-    ? `<p>What the machine already attempted:</p><ul>${repairs.map((r) => `<li>${esc(r.repair)} → ${esc(r.outcome)}${r.target ? ` (${esc(r.target)})` : ""}</li>`).join("")}</ul>`
-    : "";
-  // — a designed refusal is REFUSED, not FAILED, in every string this packet composes. The packet
-  // is a sink an operator reads before any other: it is the email, and it is the WhatsApp line. Stamping
-  // the kind and leaving "❌ … FAILED at …" on the wire would leave the discriminator true in a field
-  // and false in the only sentence anybody sees.
-  const refused = terminalKind === REFUSAL_TERMINAL_KIND;
-  const retryHint = refused
-    ? "nothing to fix in the engine — change the order or configure this deployment"
-    : terminalKind === "deterministic" || terminalKind === "repeat-signature"
-      ? "retrying will not help — needs a code/data fix" : "needs human attention";
-  // The payload block, staff body only. "Which one" is the question the reason cannot answer: the
-  // sentence says "dropped 1 dictated connotation query", the payload names the query. Empty when the
-  // throw site carried no detail — an absent block, never a heading over nothing. A refusal carries no
-  // dropped-query detail, so the block renders only on the failure branch below.
-  const detailBlock = detail
-    ? `<p>Which one${quantity === null ? "" : ` (${quantity})`}:</p><pre style="white-space:pre-wrap">${esc(detail)}</pre>`
-    : "";
-  // CLIENT-STARTED runs (2026-07-29 hardening): the email lane routes to job.forwarderEmail, and for a
-  // clientPrincipal run that address IS the client. The verbatim machine reason (String(e?.stack ?? e)
-  // upstream — absolute paths, module names, provider error text) is exactly what every client-facing
-  // listing already redacts (sanitizeRunForClient / CLIENT_FAILURE_NOTE); the failure EMAIL was the one
-  // client surface still quoting it. The client gets the same neutral notice the listings use; the
-  // verbatim reason, repairs and retry hints stay on the packet fields + WhatsApp (staff surfaces).
-  const clientRun = job.clientPrincipal === true;
-  // — WHAT FAILED, named as the thing that was ORDERED. These four strings said "Preliminary
-  // clearance" whatever the request was, so a Knockout search that died at the sweep told its requester
-  // a preliminary clearance had failed — a product they did not buy, under a name the offering no longer
-  // sells.
-  //
-  // `job.product` and not the run's frozen policy, deliberately: a failure packet is built at points
-  // where no policy has resolved (an admission refusal, a crash before the sidecar is written), and
-  // `job.product` is the ORDER — which is exactly what a failure notice is about. An absent or unknown
-  // token resolves to null, and the sentences fall back to naming no product rather than the wrong one.
-  const ordered = reportIdentityFor(job.product ?? null).identity;
-  const orderedIs = ordered ? `The ${ordered}` : "The search";
-  const orderedFor = ordered ? `${ordered} — ${mark}` : mark;
-  return {
-    // `failed: true` and `kind: "run-failed"` (added by both callers) are UNCHANGED on a refusal, and
-    // deliberately: they are the packet's ROUTING — "this run delivered nothing, send the no-delivery
-    // notice" — and every relay, the outbox and docs/DELIVERY.md are built on them. `refused` is the
-    // discriminator beside them, written true OR false on every packet for the reason: an absent key
-    // must not be the only thing separating "not a refusal" from "a packet written before the field
-    // existed".
-    runId, agent, failed: true, refused,
-    forwarder: job.forwarder, forwarderEmail: job.forwarderEmail, msgId: job.msgId,
-    conversationId: job.conversationId ?? null,
-    subject: clientRun
-      ? `${orderedFor} — search ${refused ? "not started" : "stopped"}, nothing delivered`
-      : `${orderedFor} — run ${refused ? "REFUSED" : "FAILED"}, nothing delivered`,
-    emailBodyHtml: clientRun
-      // — the owner's failed-run ruling. This said "<BRAND> has been notified
-      // and will follow up. Nothing is needed from your side." Nobody had been notified; the box has no
-      // outbox. And a client told there is nothing for them to do does not tell their operator, which
-      // was the only action that would have moved it — so the sentence did not merely overclaim, it
-      // stopped the thing that would have helped. One author for all three client surfaces now.
-      ? `<p>${esc(orderedIs)} for <b>${esc(mark)}</b> ${refused ? "was not started, and nothing was delivered" : "stopped before it finished, and nothing was delivered"}.</p><p>${esc(CLIENT_ACTION)}</p>`
-      : refused
-        ? `<p>${esc(orderedIs)} for <b>${esc(mark)}</b> was REFUSED at stage <b>${esc(failedStage)}</b> before any work was done, and NOTHING was delivered.</p><p>${esc(kindLine)}</p><p>The driver reported, verbatim:</p><pre style="white-space:pre-wrap">${esc(reasonVerbatim)}</pre><p>The run directory is preserved; this is not a defect to diagnose.</p>`
-        : `<p>${esc(orderedIs)} for <b>${esc(mark)}</b> FAILED at stage <b>${esc(failedStage)}</b>${priorAttempts ? ` after <b>${priorAttempts} automatic recovery attempt${priorAttempts === 1 ? "" : "s"}</b>` : ""} and NOTHING was delivered.</p><p>${esc(kindLine)}</p><p>The driver reported, verbatim:</p><pre style="white-space:pre-wrap">${esc(reasonVerbatim)}</pre>${detailBlock}${attempted}<p>The run directory is preserved for diagnosis; re-trigger the run when the cause is addressed.</p>`,
-    // THE NOTICE GOES TO WHOEVER ASKED, as the completion notice does (whatsappRouting, stages.mjs): the requester's own
-    // number where one is held, the gap stated where none is, and the operator's copy beside it. It went to the agent's
-    // number, which every user of a deployment shares, so the operator was told of a failure the requester never heard.
-    ...whatsappRouting(job, agent),
-    whatsappText: refused
-      ? `⛔ Clearotron search for ${mark} REFUSED at ${failedStage} [${terminalKind}]: ${shortReason} — nothing was delivered and nothing broke; ${retryHint}.`
-      : `❌ Clearotron search for ${mark} FAILED at ${failedStage}${priorAttempts ? ` after ${priorAttempts} automatic recovery attempt${priorAttempts === 1 ? "" : "s"}` : ""}${terminalKind ? ` [${terminalKind}]` : ""}: ${shortReason} — nothing was delivered; ${retryHint}.`,
-    markName: job.markName ?? job.name ?? null, failedStage, reason: shortReason,
-    reasonVerbatim, failureSignature: sig, failClass, terminalKind, repairs, recoveryAttempts: priorAttempts,
-    reasonDetail: detail, reasonQuantity: quantity,
-  };
-}
-
 // A3 — last-resort QUARANTINE for the synthesis findings.json. Reached ONLY after stage()'s full retry ladder
 // (incl. the A2 corrective hints) has failed, so it never short-circuits a fixable run. It fires ONLY for a
 // PER-FINDING shape defect (an `invalid_file:…:finding_*` token — NOT a top-level `findings_*`/unparseable
@@ -6132,7 +5871,7 @@ export function extractRulingsTail(placementMd, { cap = 8000 } = {}) {   // @int
 // A1 (F1): a correction must reach EVERY surface the client sees. The narrative alone is
 // not enough — report cards, the landscape and the client summary render from findings.json, so a
 // corrective pass that re-emits only the narrative lets a killed/mis-attributed card resurrect on
-// the delivered page (the VENZY "Kestrel Lifesciences" case). The followup therefore mandates BOTH
+// the delivered page (the VENZY case). The followup therefore mandates BOTH
 // files; the driver-side freshness gate below makes it enforceable.
 // AD-2 A9 (E2E-R2): the dispatch carries placement's rulings tail AS DATA — computed things reach
 // the next stage as data, not prose. A warm resume must not depend on the rulings having survived
@@ -6159,114 +5898,6 @@ export function stageCharter(stageName, depth) {   // @internal
   // sections only (design, 2026-11-06). The placement inquiry's rung still rides every dispatch of that stage.
   const directive = stageName === "placement-inquiry" ? inquiryRungDirective(depth) : "";
   return directive ? `\n\n${directive}` : "";
-}
-
-/**
- * — `depth` IS A PARAMETER because the corrective pass re-emits the WHOLE narrative and was the
- * only synthesis dispatch that did not carry the depth rung. The fresh dispatch carried it once; this
- * one carried it zero times, and the file that ships is the one this pass writes. The delivered
- * narrative then did the thing the rung forbids — full prose accounts for conflicts the rung excludes.
- *
- * A re-emission that is not told the rung is not a repair of the rung's output. It is a fresh write
- * under the default contract, wearing the corrective pass's name.
- */
-/** A flag's position ids as the review's list keys them; null when it names none. PURE. */
-const positionIdsOf = (ids, listed) => {
-  if (!Array.isArray(ids) || !ids.length) return null;
-  const out = [...new Set(ids.map((p) => listed?.get(String(normalizeRecordUri(p) ?? "")) ?? String(normalizeRecordUri(p) ?? p)))];
-  return out.length ? out : null;
-};
-
-/**
- * WHAT A FLAG IS ABOUT, READ ONE WAY FOR THE CORRECTION AND ITS RECHECK (ruled 2026-10-30). A finding flag names its
- * findings; a flag on a writer's exclusion names its positions; a flag about the document names the passage, section or
- * coverage claim in its text, and carries no finding ordinal, which is normal for it. That is a declared target, `[]`,
- * as the rendered review's `[on: -]` already reads, so a document flag no longer opens every finding for revision. A flag
- * whose target cannot be read, one with no text, stays `null`, which leaves the pass open: an unidentified target is not
- * a document one. PURE.
- */
-export const flagOrdinals = (f) => (Array.isArray(f?.on) && f.on.length ? f.on : String(f?.text ?? "").trim() ? [] : null);   // @internal
-
-/**
- * The review's flags as the correction and its recheck read them: from the typed call the review recorded, or, for a
- * review that has none (an archived run, a review the tool refused), parsed from its rendered document. Both read a flag's
- * target the same way. IMPURE (reads the run's accepted call and its exclusions list).
- */
-export function correctionRows(P, review, typed = readAcceptedFlags(P?.runDir)) {   // @internal
-  if (!typed) return parseCorrections(review);
-  const listed = listedExclusionPositions(P.runDir);
-  return typed.map((f, i) => ({
-    n: i + 1, kind: f.kind, text: f.text, fix: f.fix ?? null,
-    ordinals: flagOrdinals(f),
-    // A writer's excluded position, as the review's list keys it, whichever of its record ids the flag named.
-    positions: positionIdsOf(f.positions, listed),
-  }));
-}
-
-/** The scope with each named position's mark, owner and id, as the corrective pass is told them. IMPURE (reads the run). */
-function withPositionLabels(scope, P) {
-  if (!scope?.positions?.length) return scope;
-  const shown = safeReadJson(reviewExclusionsPaths(P).shown);
-  const byUri = new Map((Array.isArray(shown?.positions) ? shown.positions : []).map((p) => [p.uri, p]));
-  // Its row in the list `record_declination` reads, prepared again before this pass, so keeping an exclusion names the row.
-  const spec = safeReadJson(driverDir(P.runDir, "declination-spec.json"))?.rows;
-  const rowOf = (u) => (Array.isArray(spec) ? spec.findIndex((r) => r?.kind !== "page" && String(normalizeRecordUri(r?.uri) ?? "") === u) : -1);
-  const label = (u) => { const p = byUri.get(u); const i = rowOf(u); return `${p?.mark ?? "(unnamed)"}${p?.owner ? ` — ${p.owner}` : ""} (${u})${i >= 0 ? `, row ${i}` : ""}`; };
-  return { ...scope, positionLabels: scope.positions.map(label) };
-}
-
-/**
- * The review as the correction reads it, once: the pieces of its message, and the excluded positions its flags name,
- * which its dispatch also hands the writer's save (synthesis-record.mjs, `correctionPositions`), so the positions the
- * message names are the positions the save may add a finding for. IMPURE (reads the run).
- */
-export function correctionReading(P) {   // @internal
-  const review = existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "";
-  const rulingsTail = extractRulingsTail(existsSync(P.placement) ? readFileSync(P.placement, "utf8") : "");
-  // — THE FLAGS ARRIVE AS A TYPED WORKLIST, not only as a wall of prose. The reviewer already
-  // declares each flag's kind and taught it all four; the first run after that deployed came back
-  // with four kinds populated across twelve lines. The raw review still rides below — this is a better
-  // index of the same evidence, and dropping the prose would lose the reasoning the flags rest on.
-  // ── T3b: THE TYPED FLAGS ARE THE WORKLIST'S SOURCE, NOT THE RENDERED PROSE ──────────────────────
-  //
-  //. The comment above says the flags "arrive as a typed worklist" — they did not.
-  // `parseCorrections` re-reads the DOCUMENT the driver had just rendered from those very values, so a
-  // flag the parse misses is a defect the reviewer named and the corrective pass never sees. That parse
-  // is what conversion 9 removed the need for: since the reviewer records typed values, the flags exist
-  // as data a few hundred milliseconds earlier, and reading them back out of markdown re-introduces the
-  // one failure the conversion closed.
-  //
-  // ✕ THE FALLBACK IS EXPLICIT AND RECORDED, NOT SILENT. `readAcceptedFlags` returns null for a run with
-  // no accepted call — an archived run, a resume across the conversion, or a review the tool REFUSED —
-  // and those runs still have a rendered document that the old parse reads correctly. So the parse stays
-  // as the second source rather than being deleted. What it must never be is invisible: a reader who
-  // cannot tell which source produced a worklist cannot tell a missed flag from an absent one, so the
-  // choice is written to the run log with the count each source yielded.
-  const typed = readAcceptedFlags(P.runDir);
-  const rows = correctionRows(P, review, typed);
-  if (P.runDir) {
-    try {
-      runLog(P.runDir, {
-        event: "corrective-worklist-source",
-        source: typed ? "typed-call" : "rendered-parse",
-        flags: rows.length,
-        // BOTH counts, always, so a divergence is visible in the record rather than inferable. If the
-        // typed source is in use and the parse would have found fewer, that difference IS the defect this
-        // change exists to close, and a reader should be able to see it without re-running anything.
-        parsedWouldFind: parseCorrections(review).length,
-      });
-    } catch { /* telemetry only — a log that cannot be written never blocks a repair */ }
-  }
-  const worklist = correctionsWorklist(rows);
-  // — THE SCOPE BLOCK, and it is the whole saving. The corrective pass costs 683 s on a delivered
-  // run because it re-emits the entire narrative and the entire findings.json; on that run exactly ONE
-  // finding moved. When every flag declares which finding it is about, the pass is told so, and told
-  // that nothing else may move. When any flag declares nothing, this is "" and the dispatch is
-  // byte-identical to the one before this existed — the narrowing is bought by the reviewer's own
-  // declaration, never assumed on its behalf. The positions the flags named ride either way, with their rows.
-  const named = flaggedPositions(rows);
-  const scope = withPositionLabels({ ...correctionScope(rows), ...(named.length ? { positions: named } : {}) }, P);
-  return { review, rulingsTail, worklist, scope, positions: named };
 }
 
 export function correctionsExtra(P, depth = null, framework = null, reading = correctionReading(P)) {   // @internal
@@ -6302,42 +5933,10 @@ export function correctiveCycleSettledDecision(receipt, current) {   // @interna
 // their recompute needs pipeline order and keeps the park path. Pure so the partition tests offline.
 // `client-summary` left this alternation on 2026-08-01 with the stage — nothing generates that label
 // on a live pass any more, so it can never appear in a stale set the delivery tail must repair.
-/**
- * follow-up (2026-08-04) — account for a SANCTIONED in-pass rewrite in a ONE-SHOT stage's stamp.
- *
- * A one-shot stage reads its evidence at a fixed seam and has no in-process re-run: frame-diff's own
- * contract says "NO in-process re-diff". When a later arm legitimately rewrites an artifact such a
- * stage declared, there is no repair to schedule — the delivery precondition simply reads it stale and
- * parks the run, which pays a park plus a full re-drive to re-dispatch a stage whose every consumer
- * already ran. `restampStage` is the sanctioned-rewrite mechanism (the settlement flush's own idiom);
- * this wraps it so every call site says WHICH artifacts moved and WHY, in one place.
- *
- * NARROW ON PURPOSE. `files` is the list the calling arm actually rewrote, never "everything this stage
- * declares": blessing the whole declaration would quietly widen the grant every time an input is added,
- * and a blind-frame model or a manifest that moves between passes is NEW MATERIAL that must still force
- * the diff (the copper-vault catch).
- *
- * AND IT IS NOT SILENT WHEN IT MATCHES NOTHING. Every `files` entry is a literal path whose declaration
- * lives in stages.mjs; moved frame-diff's list and turned an existing restamp call into a
- * guaranteed no-op that nothing recorded. A file this label does not declare now lands a `restamp-miss`
- * row in run.jsonl — the absence becomes a finding, and the next input-list move cannot go unnoticed.
- * Logged rather than thrown: the freshness module is best-effort by contract, and killing a run over
- * bookkeeping would trade a cheap park for a dead one.
- */
-export function settleOneShotStamp(runDir, label, files, why) {   // @internal
-  const changed = [], missed = [];
-  for (const f of files.filter(Boolean)) {
-    const r = restampStage(runDir, label, f, { project: projectStageInput });
-    if (r.changed) changed.push(f);
-    if (r.stamped && !r.matched) missed.push(f);
-  }
-  for (const f of missed) {
-    runLog(runDir, { event: "restamp-miss", stage: label, path: f, why });
-    note(`stage-freshness: restamp of ${label} against ${basename(f)} matched nothing — ${label} does not declare that file (${why}); the compensating rewrite is aimed at nothing`);
-  }
-  if (changed.length) runLog(runDir, { event: "one-shot-stamp-settled", stage: label, why, changed });
-  return { changed, missed };
-}
+// The record's one writer settles a one-shot stage's stamp, and the stamp compares a report card by its
+// own finding: both now live beside the stamps in stage-freshness.mjs, and are re-exported here for the
+// callers and tests that import them from this file.
+export { settleOneShotStamp, projectStageInput };   // @internal
 
 // item 15a — the UPSTREAM repair arms. One entry per stage label that can turn up stale on the delivery
 // path and is not a delivery-tail surface. Each re-runs exactly the stage the pipeline would have run,
@@ -6354,40 +5953,6 @@ export function settleOneShotStamp(runDir, label, files, why) {   // @internal
 // register-digest routes through runDigest, never a bare stage(): a bare call leaves the old machine
 // ledger outvoting the rewritten prose (the WS-A finding), which would make the "repair" produce a run
 // whose JSON and prose disagree.
-// ── — WHAT A STAGE COMPARES INSTEAD OF THE WHOLE FILE ──────────────────────────────────────────
-// A `report-card:N` declares findings.json and READS NONE OF IT: its finding arrives inline on the
-// message as ctx.finding, and the file is declared so the freshness gate sees it move at all. So a
-// sanctioned late arm that edits ONE finding — corrective synthesis, a verdict recheck — moved the
-// whole-file sha and made all 26 cards read stale at the delivery gate. The tail repair then re-derived
-// them: 496,327 output tokens, 48.0M cache read, 43 dispatches of which 33 were repeats, 1h29m. A third
-// of that run's output and 29% of its wall clock, re-deriving work already on disk and already valid.
-//
-// The projection is EXACTLY WHAT THE STAGE WAS FED — the finding object at that ordinal, serialized the
-// way the card's own message serializes it. Deliberately not canonicalized: the message renders the raw
-// object, so a key reordering genuinely changes what the model saw and must genuinely read as stale.
-//
-// A NULL PROJECTION IS A FALLBACK, NEVER A PASS. Ordinal absent from the current file, an unreadable or
-// rejected findings.json, any throw — all return null, the compare falls back to the whole-file sha, and
-// the card stays stale. Ordinals are safe to key on because consolidateFindingsFile RENUMBERS before the
-// cards are dispatched, and a renumber that moves a finding away from ordinal N changes N's projection,
-// which is correctly stale.
-//
-// This is NOT the settleOneShotStamp blessing warns about: nothing is declared settled and no
-// artifact is blessed past a live consumer. And it narrows what is COMPARED, never what is DECLARED —
-// narrowing the declaration would let a card be repaired ahead of its stale upstream, which is the one
-// thing item 15a exists to prevent, and dependency-repair.test.mjs pins that edge.
-export function projectStageInput(label, absPath) {   // @internal
-  if (typeof label !== "string" || !label.startsWith("report-card:")) return null;
-  if (basename(String(absPath ?? "")) !== "findings.json") return null;
-  const ord = Number(label.slice("report-card:".length));
-  if (!Number.isFinite(ord)) return null;
-  try {
-    const doc = parseFindingsJsonLenient(readFileSync(absPath, "utf8"));
-    const f = (doc?.findings ?? []).find((x) => Number(x?.ordinal) === ord);
-    if (!f) return null;
-    return createHash("sha256").update(JSON.stringify(f)).digest("hex").slice(0, 12);
-  } catch { return null; }
-}
 
 // ── — the meaning-receipts audit, and it MUST survive a terminal run ───────────────────────────
 // The gate now distinguishes a receipt the model never addressed (blocking) from one it addressed in a
@@ -6750,7 +6315,7 @@ export function recordConnotationAudit(run, P) {   // @internal
       // is the whole failure being fixed. Unreadable prior ⇒ this pass's own numbers, never zero.
       peak: (() => {
         let prior = {};
-        try { prior = JSON.parse(readFileSync(driverDir(run.runDir, "connotation-receipts.json"), "utf8"))?.peak ?? {}; } catch { /* first pass, or unreadable — this pass IS the peak */ }
+        try { prior = JSON.parse(readFileSync(paths(run.runDir).connotationReceipts, "utf8"))?.peak ?? {}; } catch { /* first pass, or unreadable — this pass IS the peak */ }
         const worst = (k, now) => Math.max(Number(prior?.[k]) || 0, Number(now) || 0);
         return { dispositionsThatDidNotBind: worst("dispositionsThatDidNotBind", didNotBind),
           obligationsNeverAddressed: worst("obligationsNeverAddressed", neverAddressed),
@@ -6765,9 +6330,9 @@ export function recordConnotationAudit(run, P) {   // @internal
           ledgerCalls: worst("ledgerCalls", ledgerCalls) };
       })(),
     };
-    const tmp = driverDir(run.runDir, "connotation-receipts.json.tmp");
+    const tmp = paths(run.runDir).connotationReceiptsJson;
     writeFileSync(tmp, JSON.stringify(audit, null, 2) + "\n");
-    renameSync(tmp, driverDir(run.runDir, "connotation-receipts.json"));
+    renameSync(tmp, paths(run.runDir).connotationReceipts);
     runLog(run.runDir, { event: "connotation-receipts", recordedQueries, distinctReasons: reasonKeys.size,
       dispositionsThatDidNotBind: didNotBind, obligationsNeverAddressed: neverAddressed,
       seats: seats.map((x) => `${x.seat}:${x.source}`) });
@@ -6905,207 +6470,16 @@ export function snapshotFindingsForCorrections(P, runDir) {   // @internal
   const model = { raw: modelRaw, sha: modelRaw === raw ? sha : createHash("sha256").update(modelRaw).digest("hex") };
   const fold = snapshotFold(runDir);
   try {
-    const tmp = driverDir(runDir, "findings-pre-corrective.json.tmp");
+    const tmp = paths(runDir).findingsPreCorrectiveJson;
     // PR-4 (snapshot-before-overwrite): store the FULL pre-corrective text, not just its sha — a
     // sha proves the file changed but cannot show WHAT the corrective pass changed; that run's
     // pre-corrective findings were unrecoverable for exactly this reason. Findings are small (KBs);
     // the audit value of the diff dwarfs the bytes.
     writeFileSync(tmp, JSON.stringify({ ts: new Date().toISOString(), sha, text: raw }, null, 2));
-    renameSync(tmp, driverDir(runDir, "findings-pre-corrective.json"));
+    renameSync(tmp, paths(runDir).findingsPreCorrective);
   } catch { /* advisory sidecar */ }
   return { raw, sha, model, fold, base: snapshotSynthesisBase(runDir) };
 }
-/**
- *, T3b — THE CORRECTIVE PASS FAILED VALIDATION. RESTORE THE LAST GOOD STATE.
- *
- * Owner decision, 2026-08-26, put to him as a client outcome with options: a targeted fix that fails
- * validation is DISCARDED — the report never ships text a repair degraded.
- *
- * ── WHAT HAPPENED BEFORE THIS, WHICH IS WORSE THAN SHIPPING DEGRADED TEXT ────────────────────────
- *
- * `must(correctivePass, …)` threw. Nothing between it and the run-level catch caught it, so a
- * corrective synthesis that could not produce a document its validators accept KILLED THE RUN: the
- * client received no report at all, on a matter where the only defect was that a repair of an
- * already-delivered draft did not take. The pre-corrective findings were sitting on disk in full the
- * whole time — `snapshotFindingsForCorrections` writes the TEXT, not just a sha, and has since PR-4.
- *
- * So the rollback is not only "don't ship the degraded version". It is the difference between a report
- * and no report, which is the order of preference this product works to: avoid, then recover inside the
- * run, then deliver always.
- *
- * ── WHAT IS ROLLED BACK TO, AND WHY IT IS A GOOD STATE ───────────────────────────────────────────
- *
- * The findings.json the reviewer read. It passed synthesis's own validators when it was written, and it
- * is the document every earlier stage's output was checked against. It is not a guess at a good state;
- * it is the last one this run demonstrated.
- *
- * The narrative beside it and the transport's merge base come back with it, whether or not findings.json
- * moved: a pass can save a narrative change alone, and a base left at the failed pass's record is what the
- * next patch would merge onto, which applies the discarded pass again. The snapshot holds both
- * (`snapshotFindingsForCorrections`); a snapshot taken without them leaves both files as they are.
- *
- * ── TWO CASES THAT MUST STILL THROW, BECAUSE SWALLOWING THEM LOSES MORE THAN IT SAVES ────────────
- *
- *   rate-limited   The run is PARKED and auto-resumes after the cap resets, with every stage intact.
- *                  Rolling back and delivering here would spend the client's report to avoid a wait,
- *                  and the corrective pass would never be retried at all.
- *   no snapshot    There is no last good state — the run had no findings.json before the pass. An
- *                  absence is a finding, not a pass: with nothing to restore, delivering would ship
- *                  whatever the failed pass left behind, which is exactly the text the owner ruled out.
- *
- * Returns the rollback record, or null to mean "this one still throws".
- */
-export function rollbackCorrectivePass(P, runDir, pre, fail) {   // @internal
-  if (fail?.fail === "rate_limited" || fail?.resetsAt) return null;
-  if (!pre?.raw) return null;
-  let now = null;
-  try { now = readFileSync(P.findings, "utf8"); } catch { /* the pass may have left nothing readable */ }
-  const nowSha = now == null ? null : createHash("sha256").update(now).digest("hex");
-  const changed = nowSha !== pre.sha;
-  if (changed) {
-    // Atomic, like every other write to this file: a half-restored findings.json is a worse state than
-    // either of the two this is choosing between.
-    atomicWrite(P.findings, pre.raw);
-    if (pre.fold) restoreFold(runDir, pre.fold);   // the record the model wrote and the map, as they stood
-  }
-  // `restored` keeps speaking for findings.json alone; what happened to the narrative and the base is its own field.
-  const base = restoreSynthesisBase(runDir, pre.base);
-  const record = { ts: new Date().toISOString(), reason: String(fail?.fail ?? "failed").slice(0, 200),
-    restored: changed, preSha: pre.sha, failedSha: nowSha, ...(base ? { base } : {}) };
-  try { atomicWrite(driverDir(runDir, "corrective-rollback.json"), JSON.stringify(record, null, 2) + "\n"); }
-  catch { /* sidecar is best-effort; the runLog event below is the record that decides */ }
-  return record;
-}
-
-/**
- * THE FLOOR UNDER A CORRECTIVE PASS: nothing leaves the findings record without
- * somebody having said so.
- *
- * WHAT THIS IS A BACKSTOP FOR, and why it is not the fix. A corrective pass resent a whole document
- * holding the four findings it was correcting; fifteen went, and the result validated, so every gate
- * downstream read a clean run. The CAUSE was that the seat could not send a targeted edit at all — the
- * tool schema required both halves of the call and declared no patch field, while the prompt demanded
- * one. That is fixed at the schema, and a targeted edit cannot remove a finding: an ordinal names one to
- * replace and there is no shape that deletes. This runs underneath, for the whole-document path that
- * remains reachable.
- *
- * REPAIR AND DELIVER, decided under authority the owner delegated in session on 2026-08-27.
- * The three alternatives were weighed and written down: rolling back gives the client every finding but
- * none of the reviewer's corrections — one silent loss traded for another; printing the removals as open
- * points tells the client about a hole instead of filling it; holding the report is against the standing
- * deliver-always ruling. Repair keeps the corrections AND restores what vanished unexplained, so the
- * client gets a complete corrected report and there is no hole to print.
- *
- * WHOLE FROM THE SNAPSHOT, NEVER RE-DERIVED — the owner's condition, and the reason this reads
- * `JSON.parse(pre.raw)` rather than a normalized view. A restored finding is the exact object the
- * reviewer read. Re-deriving one would be this function inventing evidence.
- *
- * NAMED MEANS NAMED BY A FLAG, and both spellings count: a flag that carries `on` names ordinals, and a
- * flag that carries none is matched against the marks the review names. A removal the reviewer asked for
- * stays removed — that is a judgment, and this function has no business reversing it. What it reverses
- * is a removal NOBODY STATED, which is by construction one nobody reviewed.
- *
- * EVERY FIRING IS A DEFECT SIGNAL. After the schema fix this should be zero: the run log carries the
- * event so e2e can assert exactly that, and a non-zero count is a report of the fix not holding rather
- * than of this backstop working.
- *
- * @returns {null | {restoredFindings: {ordinal: *, mark: *}[], restoredKeys: string[], restoredRows: {register: string, key: string}[], leftRemoved: {ordinal: *, mark: *}[]}}
- */
-export function repairUnnamedRemovals(P, runDir, pre, namedOrdinals, namedMarks, namedLines = []) {   // @internal
-  if (!pre?.raw) return null;                                   // nothing held — nothing to compare against
-  // In the model's numbering: the flags name its ordinals, and a folded record renumbers, so a finding
-  // removed from the folded record would shift every ordinal after it (record-fold.mjs).
-  let preDoc = null, postDoc = null, postRaw = null;
-  try { preDoc = JSON.parse(pre.model?.raw ?? pre.raw); } catch { return null; }
-  try { postRaw = readFileSync(modelRecordPath(runDir, P.findings), "utf8"); postDoc = JSON.parse(postRaw); } catch { return null; }
-  if (!preDoc || !postDoc || typeof postDoc !== "object") return null;
-
-  const norm = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
-  const marks = new Set((namedMarks ?? []).map(norm).filter(Boolean));
-  const ordinals = new Set((namedOrdinals ?? []).map((o) => String(o)));
-  const wasNamed = (f) => ordinals.has(String(f?.ordinal))
-    || [f?.mark, f?.owner?.name].some((n) => { const v = norm(n); return v && marks.has(v); });
-
-  const preList = Array.isArray(preDoc.findings) ? preDoc.findings : [];
-  const postList = Array.isArray(postDoc.findings) ? postDoc.findings : [];
-  const held = new Set(postList.map((f) => String(f?.ordinal)));
-  const restoredFindings = [], leftRemoved = [];
-  for (const f of preList) {
-    if (held.has(String(f?.ordinal))) continue;
-    (wasNamed(f) ? leftRemoved : restoredFindings).push(f);
-  }
-
-  // A KEY, NOT A TYPED LIST. Derived by comparing the two documents, so a register added next year is
-  // covered the day it exists — a list of key names here would be a second place to remember.
-  const restoredKeys = Object.keys(preDoc).filter((k) => !(k in postDoc));
-
-  // ROWS OF A REGISTER, NOT ONLY WHOLE REGISTERS. A pass rewriting a coverage note or an action sends the
-  // complete array in its PATCH, and a patch REPLACES the stored register — so a row the seat left out is
-  // a row deleted, and nothing downstream objects unless the slice was a limited one. A row no flag named
-  // is restored whole, keyed as `reportLines` keys it; a row the reviewer named stays out, as a named
-  // finding does.
-  const lineKeys = new Set(namedLines ?? []);
-  const restoredRows = [];
-  const rowsBack = {};
-  for (const [reg, keyOf] of Object.entries(REPORT_LINE_KEY)) {
-    if (!Array.isArray(preDoc[reg]) || !Array.isArray(postDoc[reg])) continue;
-    const have = new Set(postDoc[reg].map(keyOf));
-    const back = preDoc[reg].filter((r) => !have.has(keyOf(r)) && !lineKeys.has(keyOf(r)));
-    if (!back.length) continue;
-    rowsBack[reg] = back;
-    for (const r of back) restoredRows.push({ register: reg, key: keyOf(r), label: REPORT_LINE_LABEL[reg](r) });
-  }
-
-  if (!restoredFindings.length && !restoredKeys.length && !restoredRows.length) return null;
-
-  // ONE RESTORATION, applied to a record in the model's numbering: the file's here, and the merge base's
-  // below. Whatever a record already holds stays as it holds it; only what came back is added.
-  const byOrdinal = new Map(preList.map((f, i) => [String(f?.ordinal), i]));
-  const restoreInto = (doc) => {
-    const merged = { ...doc };
-    for (const k of restoredKeys) if (!(k in merged)) merged[k] = preDoc[k];
-    for (const [reg, back] of Object.entries(rowsBack)) {
-      // In the snapshot's order, the post-pass version of every row it kept, then any row the pass added.
-      const keyOf = REPORT_LINE_KEY[reg];
-      const now = Array.isArray(doc[reg]) ? doc[reg] : [];
-      const post = new Map(now.map((r) => [keyOf(r), r]));
-      const restored = new Set(back);
-      const inPre = new Set(preDoc[reg].map(keyOf));
-      merged[reg] = [
-        ...preDoc[reg].flatMap((r) => restored.has(r) ? [r] : post.has(keyOf(r)) ? [post.get(keyOf(r))] : []),
-        ...now.filter((r) => !inPre.has(keyOf(r))),
-      ];
-    }
-    if (restoredFindings.length) {
-      // Back in the order the reviewer read them, by ordinal — a restored finding appended to the end
-      // would be a different document from the one that was correct.
-      const list = Array.isArray(doc.findings) ? doc.findings : [];
-      const has = new Set(list.map((f) => String(f?.ordinal)));
-      merged.findings = [...list, ...restoredFindings.filter((f) => !has.has(String(f?.ordinal)))]
-        .sort((a, b) => (byOrdinal.get(String(a?.ordinal)) ?? 0) - (byOrdinal.get(String(b?.ordinal)) ?? 0));
-    }
-    return merged;
-  };
-  const merged = restoreInto(postDoc);
-  const brief = (f) => ({ ordinal: f?.ordinal ?? null, mark: f?.mark ?? null });
-  const record = {
-    ts: new Date().toISOString(),
-    restoredFindings: restoredFindings.map(brief),
-    restoredKeys,
-    restoredRows,
-    leftRemoved: leftRemoved.map(brief),
-  };
-  atomicWrite(P.findings, JSON.stringify(merged, null, 2) + "\n");
-  foldAfterSave(runDir, P.findings);   // after the seam the repaired record is folded again, as a save's is
-  // THE MERGE BASE TAKES THE SAME RESTORATION. The patch that follows (the corrections gate's re-emit) merges
-  // onto the base and re-renders the file from it, so a restore written to the file alone is dropped again.
-  // The edit is judged as a call is; a refusal leaves the base as it was, and the record says so.
-  record.base = rebaseSynthesis(runDir, restoreInto);
-  try { atomicWrite(driverDir(runDir, "corrective-repair.json"), JSON.stringify(record, null, 2) + "\n"); }
-  catch { /* sidecar is best-effort; the runLog event is the record that decides */ }
-  return record;
-}
-
 /**
  * THE REPAIR'S RUN-LOG ROW, built from what `repairUnnamedRemovals` returned. PURE.
  *
@@ -7172,72 +6546,6 @@ export function restoredFindingsTable(repair) {   // @internal
   ].join("\n");
 }
 
-function correctionNamedOrdinals(P) {
-  const out = [];
-  try {
-    // `P.reviewFlags`: the pass after a delivery-check repair applies a LATER review's flags, which
-    // `readAcceptedFlags` (the first review's call) cannot see. Absent everywhere else.
-    const typed = Array.isArray(P.reviewFlags) ? P.reviewFlags : readAcceptedFlags(P.runDir);
-    if (typed) { for (const f of typed) if (Array.isArray(f?.on)) out.push(...f.on); return out; }
-  } catch { /* fall through to the rendered parse, exactly as the worklist does */ }
-  try {
-    const review = existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "";
-    for (const r of parseCorrections(review)) if (Array.isArray(r?.ordinals)) out.push(...r.ordinals);
-  } catch { /* no ordinals — every removal is then judged by mark alone */ }
-  return out;
-}
-
-/**
- * The non-finding lines the review's flags name or quote, as `reportLines` keys — matched against the
- * PRE-corrective document, for the reason the names are: a removed row is absent from the post file.
- *
- * ── THIS JOIN DECIDES A RESTORATION, AND ITS TWO FAILURE DIRECTIONS ARE OPPOSITE ─────────────────────
- *
- * `linesOf` applies no correction anywhere — but these keys become `namedLines`, and `repairUnnamedRemovals`
- * keeps a removed row OUT when its key is among them. So a prose match decides whether a row the pass
- * deleted comes back:
- *
- *   a MISS  → the row is restored although the reviewer asked for it to go: the driver overrides a
- *             judgment that was made, and the reviewer sees it named as restored and can say so again.
- *   a FALSE HIT → an accidental deletion stays deleted: the row leaves the client's report and the
- *             restored-lines section says nothing, because the driver believed it was asked for.
- *
- * The second is the worse one and it is the same bet the backstop already makes by mark for findings.
- * What keeps it bounded is that the reviewer is told: every restored row prints in the re-read section,
- * so an override is visible, and a flag whose wording missed still leaves its own row in the observation
- * table as unresolved. `namesLine` wants the label's shape — "the coverage line for <area>" — so a flag
- * writing "the US coverage note" misses unless it also quoted eight running words of the line.
- */
-function correctionNamedLines(P, doc0) {
-  try {
-    const review = existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "";
-    const lines = reportLines(doc0);
-    return [...new Set(parseCorrections(review).flatMap((r) => linesOf(r?.text, lines).map((l) => l.key)))];
-  } catch { return []; }   // no review read — every row removal is then unnamed, and restored
-}
-
-/**
- * @param {*} doc0 the findings document to match the review's names against. DEFAULTS to the file on
- *   disk, which is right for the staleness check — but WRONG for judging a removal: a finding that was
- *   removed is not in the post-pass document, so its mark could never be found there and every named
- *   removal would read as unnamed. The repair path passes the PRE-corrective document for that reason.
- */
-function correctionNamedSet(P, doc0 = null) {
-  const review = existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "";
-  let doc = doc0;
-  if (!doc) { try { doc = parseFindingsJsonLenient(readFileSync(P.findings, "utf8")); } catch { return []; } }
-  const norm = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
-  const known = new Map();
-  for (const f of doc?.findings ?? []) {
-    for (const name of [f.mark, f.owner?.name]) { const n = norm(name); if (n) known.set(n, name); }
-  }
-  const named = new Set();
-  for (const tok of properNameCandidates(review)) {
-    const n = norm(tok);
-    for (const [k, orig] of known) if (n && (k === n || k.includes(n) || n.includes(k))) named.add(orig);
-  }
-  return [...named];
-}
 // ── THE REVIEW AFTER A DELIVERY-CHECK REPAIR, AND ITS ONE CORRECTION ─────────────────────────────────────
 //
 // When the delivery check finds a fault in the narrative, the writer repairs its record and the narrative's
@@ -7418,9 +6726,9 @@ export function unreadRecordReview(runDir) {   // @internal
   catch { return false; }
 }
 
-const reviewBeforeRepairPath = (runDir) => driverDir(runDir, "review-before-repair.md");
-const reviewAfterRepairPath = (runDir) => driverDir(runDir, "review-after-repair.md");
-const postRepairCorrectionsPath = (runDir) => driverDir(runDir, "post-repair-corrections.json");
+const reviewBeforeRepairPath = (runDir) => paths(runDir).reviewBeforeRepair;
+const reviewAfterRepairPath = (runDir) => paths(runDir).reviewAfterRepair;
+const postRepairCorrectionsPath = (runDir) => paths(runDir).postRepairCorrections;
 const scopeRecord = (scope, items) => ({
   findingOnly: Boolean(scope.findingOnly),
   changed: { findings: scope.changed.findings.map((f) => ({ ordinal: f.ordinal, change: f.change, fields: f.fields })),
@@ -7455,6 +6763,9 @@ async function runPostRepairReview(ctx, P, run, scope) {
     findings: P.findings, ...list, registerOnly: Boolean(ctx.registerOnly), job: ctx.job ?? {},
     skepticFlags: P.skepticFlags, frameReopenReceipt: P.frameReopenReceipt, floorDecisions: placementFloorDecisionLines(P),
     writerExclusions: writerExclusionBlock(P, { review: "later" }),
+    // The record after the repair, and each changed finding by its ordinal, so a finding the repair removed is nameable.
+    reviewAddresses: writeReviewAddresses(runDir, { records: [scope.after?.findings, { findings: scope.changed.findings }],
+      narratives: [scope.after?.narrative], seq0 }),
   });
   const { text: blocks } = composeDispatchExtra("narrative-refutation", ctx, { skip: ["refute-plain-register"] });
   const t0 = Date.now();
@@ -7519,7 +6830,7 @@ async function runWholeReviewForRecord(ctx, P, run, scope, rerun) {
 }
 
 /** Where the state the review after a repair reads is kept whole, before the review and its correction run. */
-const postRepairStatePath = (runDir) => driverDir(runDir, "post-repair-state.json");
+const postRepairStatePath = (runDir) => paths(runDir).postRepairState;
 
 /**
  * THE STATE THE REVIEW AFTER A REPAIR READS, KEPT WHOLE before the review and its correction can lose any of it: the
@@ -7540,35 +6851,6 @@ function retainStateBeforeReview(runDir, P) {
     runLog(runDir, { event: "post-repair-state-not-kept", reason: String(e?.message ?? e).slice(0, 160) });
     return false;
   }
-}
-
-/**
- * THE TRUSTED STATE BEFORE THE CORRECTION AFTER A POST-REPAIR REVIEW, for its rollback, from the first source that
- * stands, in this order:
- *   1. the findings record as it stands, with its fold, narrative and base (the usual snapshot);
- *   2. the state kept whole before the review (`retainStateBeforeReview`), byte for byte;
- *   3. the save the review read (`before`, read before the correction starts), rebuilt through the driver's own
- *      acceptance, never from a save the correction may write afterwards;
- *   4. the save kept from before the delivery-check repair, rebuilt the same way.
- * A save that the run's CURRENT duty refuses is not lost: it was accepted when it was made, and the records owed since
- * are evidence added later. It is rebuilt with the duty set aside and marked so (`duty: "relaxed"`); once the correction
- * settles, the writer's duty is judged again on the record that stands, and names what it leaves unaccounted in the
- * approved sentence. A save that cannot be read, or that
- * the acceptance refuses for anything else, is not a source. Null only when none of the four stands. Never throws.
- */
-function trustedStateBeforeCorrection(Pv, runDir, before) {
-  const held = snapshotFindingsForCorrections(Pv, runDir);
-  if (held) return held;
-  const sha = (t) => createHash("sha256").update(t).digest("hex");
-  try {
-    const k = JSON.parse(readFileSync(postRepairStatePath(runDir), "utf8"));
-    if (typeof k?.findings === "string" && typeof k.narrative === "string" && typeof k.accepted === "string") {
-      const h = sha(k.findings);
-      return { raw: k.findings, sha: h, model: { raw: k.findings, sha: h }, fold: k.fold ?? null,
-        base: { accepted: k.accepted, narrative: k.narrative }, from: "state-before-the-review" };
-    }
-  } catch { /* no state kept, or it does not read: the saves below */ }
-  return recordFromTheSaves(Pv, runDir, before);
 }
 
 /**
@@ -7609,8 +6891,8 @@ function recordFromTheSaves(Pv, runDir, before) {
 async function restoreTheRecordThatPassed(ctx, P, runDir, check) {
   const pre = recordFromTheSaves(P, runDir, lastAcceptedCall(runDir));
   if (!pre?.raw) return null;
-  try { copyFileSync(P.findings, driverDir(runDir, "findings-broken-at-delivery.json")); } catch { /* the evidence is best-effort */ }
-  atomicWrite(P.findings, pre.raw);
+  try { copyFileSync(P.findings, paths(runDir).findingsBrokenAtDelivery); } catch { /* the evidence is best-effort */ }
+  writeFindings(runDir, pre.raw, { why: "record-that-passed-restored", settles: [] });
   restoreSynthesisBase(runDir, pre.base);
   try { foldAfterSave(runDir, P.findings); } catch (e) { note(`[core-artifact] the restored record could not be folded (${String(e?.message ?? e).slice(0, 100)})`); }
   try { await ctx.afterSynthesisSave?.(); } catch (e) { note(`[core-artifact] the seam's writes could not be made again over the restored record (${String(e?.message ?? e).slice(0, 100)})`); }
@@ -7636,179 +6918,6 @@ export function correctionsTheRestoreLacks(runDir, from) {   // @internal
     return [...new Set((rec.rows ?? []).filter((r) => CORRECTION_CHANGED.has(r?.outcome)).flatMap(named)
       .map((t) => String(t ?? "").trim()).filter(Boolean))];
   } catch { return []; }
-}
-
-/**
- * A FAILED CORRECTION AFTER A POST-REPAIR REVIEW NEVER ENDS THE RUN (the owner's ruling of 2026-10-19: a run is never
- * held). The trusted state comes back whole: the record, its narrative and the merge base, then the fold and the seam's
- * writes made again over a record rebuilt from a save, as after any save, so the delivered verdict is derived from the
- * record that stands. The correction's points stay in the run's open-questions record. A rate-limited correction is
- * not waited for either: it is rolled back as a failed one is, since the report it would correct is already reviewed,
- * and waiting for the reset would hold the run.
- *
- * WITH NO TRUSTED STATE, THIS PASS DOES NOT DELIVER THE ASSESSMENT. That is the precise limit: the record, the state
- * kept whole before the review, the save the review read and the save kept from before the repair are all unreadable
- * or refused, a storage failure. Nothing the failed pass wrote is adopted: the narrative and the base
- * go back to what they were, and the failed pass's record is set aside under `_driver/` as evidence. A pass that went on from there delivered a
- * report with no findings, labelled with the verdict as it stood (measured on the mock pipeline, 2026-10-19): a clear
- * result over a record nobody can read. So the failure is the assessment not completed (parts-not-completed.mjs): once
- * its recovery is spent, the run delivers what it holds without the assessment. Returns the rollback record, or null
- * for this case.
- */
-async function recoverFromFailedCorrection(ctx, Pv, runDir, pre, pass, { baseBefore, findingsBefore }) {
-  // A rate limit is a failure of this pass like any other here: the shared rollback would leave it to wait.
-  const failure = pass?.fail === "rate_limited" || pass?.resetsAt ? { fail: "rate_limited, not waited for" } : pass;
-  if (pre?.raw) {
-    const rollback = rollbackCorrectivePass(Pv, runDir, pre, failure);
-    if (rollback && pre.from) rollback.from = pre.from;
-    if (rollback && pre.duty) rollback.duty = pre.duty;
-    if (rollback && (pre.from === "accepted-save" || pre.from === "save-before-the-repair")) {
-      // A record rebuilt from a save is folded, and given the seam's writes, as the save itself was.
-      try { foldAfterSave(runDir, Pv.findings); } catch (e) { note(`[post-repair] the restored record could not be folded (${String(e?.message ?? e).slice(0, 100)})`); }
-      try { await ctx.afterSynthesisSave?.(); } catch (e) { note(`[post-repair] the seam's writes could not be made again over the restored record (${String(e?.message ?? e).slice(0, 100)})`); }
-    }
-    return rollback;
-  }
-  // NO TRUSTED STATE: nothing the failed pass wrote is adopted, and the pass ends as it always did.
-  const base = restoreSynthesisBase(runDir, baseBefore);
-  let findings = "unchanged";
-  if (!findingsBefore) {
-    let now = null;
-    try { now = readFileSync(Pv.findings, "utf8"); } catch { now = null; }
-    // Set aside, never deleted: the failed pass's record stays beside the run's record for whoever diagnoses the run.
-    if (now != null) {
-      try { renameSync(Pv.findings, driverDir(runDir, "findings-failed-correction.json")); findings = "set-aside"; }
-      catch { try { rmSync(Pv.findings, { force: true }); findings = "removed"; } catch { findings = "failed"; } }
-    }
-  }
-  runLog(runDir, { event: "post-repair-correction-unrecoverable", reason: String(failure?.fail ?? "failed").slice(0, 200), findings, ...(base ? { base } : {}) });
-  note(`[post-repair] the correction after the review of the repair failed with no trusted state to restore (the record and both saves unreadable) — nothing it wrote is kept, and this pass does not deliver a report without its record`);
-  return null;
-}
-
-/**
- * The one correction after that review: every accepted point goes to it, whatever its class, and nothing
- * reviews it again. It runs the first correction's own backstops — the rollback, the put-back of a removal no
- * flag named, the follow-up when a correction missed the findings — on a view of the run's paths that points at
- * the review after the repair, and records what each flag led to beside the first correction's record.
- */
-async function runPostRepairCorrection(ctx, P, run, { rec, items, points, grounds = false, whole = false, synthesisRef }) {
-  const runDir = run.runDir;
-  const Pv = { ...P, seniorEyeReview: reviewAfterRepairPath(runDir), correctionsApplied: postRepairCorrectionsPath(runDir), reviewFlags: rec.flags };
-  const named = [...new Set(points.filter((x) => x.target.kind !== "none").map((x) => x.target.label))];
-  const rows = rec.flags.map((f, i) => ({ n: i + 1, kind: f.kind, text: f.text, fix: f.fix ?? null, ordinals: flagOrdinals(f) }));
-  const review = readFileSync(Pv.seniorEyeReview, "utf8");
-  const rulingsTail = extractRulingsTail(existsSync(P.placement) ? readFileSync(P.placement, "utf8") : "");
-  // The writer's own record, in the numbering of the items and of the patch, while the delivery fold is in force.
-  const followup = repairFollowup("synthesis:post-repair-corrective", {
-    narrative: P.narrative, findings: modelRecordPath(runDir, P.findings), placement: P.placement, rulingsTail,
-    items: named, renumbered: anyRenumbered(items), worklist: correctionsWorklist(rows, { afterRepair: true }), review, whole,
-  });
-  const before = lastAcceptedCall(runDir);
-  // What stood before the correction, held before it can alter any of it: the files as they are, for a pass that
-  // fails with no trusted state to restore, and the trusted state itself.
-  const baseBefore = snapshotSynthesisBase(runDir);
-  const findingsBefore = (() => { try { readFileSync(Pv.findings); return true; } catch { return false; } })();
-  const pre = trustedStateBeforeCorrection(Pv, runDir, before);
-  prepareDeclinationSpec(ctx, P);
-  const pass = await stage("synthesis", ctx, { force: true, followup: followup + stageCharter("synthesis", ctx.depth, ctx.framework), sessionKey: synthesisRef.key,
-    model: synthesisRef.model, thinking: synthesisRef.thinking, trigger: "post-repair-corrective" });
-  recordSynthesisSeam(ctx, pass, "post-repair-corrective");
-  const rollback = pass.ok ? null : await recoverFromFailedCorrection(ctx, Pv, runDir, pre, pass, { baseBefore, findingsBefore });
-  if (rollback) {
-    runLog(runDir, { event: "corrective-rollback", reason: rollback.reason, restored: rollback.restored, pass: "post-repair", from: rollback.from ?? "record",
-      ...(rollback.duty ? { duty: rollback.duty } : {}) });
-    note(`[post-repair] the correction after the review of the repair failed (${rollback.reason}) — the record it started from is back, and the run delivers with the points recorded`);
-  } else {
-    await asPartNotCompleted("assessment", async () => must(pass, "synthesis(post-repair)"));
-    let preDocForNames = null;
-    try { preDocForNames = pre ? parseFindingsJsonLenient(pre.raw) : null; } catch { /* fall back to the file */ }
-    const repaired = repairUnnamedRemovals(Pv, runDir, pre, correctionNamedOrdinals(Pv), correctionNamedSet(Pv, preDocForNames), correctionNamedLines(Pv, preDocForNames));
-    if (repaired) runLog(runDir, removalRepairedRow(repaired));
-    await enforceCorrectionsReachFindings(ctx, Pv, pre, { synthesisKey: synthesisRef.key, synthesisModel: synthesisRef.model, synthesisThinking: synthesisRef.thinking });
-  }
-  let applied = null;
-  try {
-    const preDoc = pre ? parseFindingsJsonLenient(pre.model?.raw ?? pre.raw) : null;
-    let postDoc = null;
-    try { postDoc = parseFindingsJsonLenient(readFileSync(modelRecordPath(runDir, P.findings), "utf8")); } catch { /* shape defects ride the normal ladder */ }
-    const after = lastAcceptedCall(runDir);
-    const sections = points.filter((x) => x.target.kind === "section").map((x) => {
-      const sec = NARRATIVE_PROSE.find((y) => y.key === x.target.key);
-      return { n: x.n, label: x.target.label, before: sectionText(sec?.read(before?.narrative)), after: sectionText(sec?.read(after?.narrative)) };
-    });
-    applied = buildCorrectionsApplied(rows, preDoc, postDoc, { sections });
-    // `grounds`: the review these rows answer hardened the run's verdict, so its points are that verdict's grounds.
-    atomicWrite(Pv.correctionsApplied, JSON.stringify({ ts: new Date().toISOString(), pass: "post-repair", ...(grounds ? { grounds: true } : {}),
-      rows: applied, classes: points.map((x) => ({ n: x.n, class: x.class, target: x.target.label })) }, null, 2) + "\n");
-    const outcomes = applied.reduce((a, x) => ((a[x.outcome] = (a[x.outcome] ?? 0) + 1), a), {});
-    runLog(runDir, { event: "post-repair-fix-pass", handed: rows.length, ok: Boolean(pass.ok), rolledBack: Boolean(rollback), outcomes });
-  } catch (e) {
-    note(`[post-repair] the observation of the correction could not be built (${String(e?.message ?? e).slice(0, 100)}) — its points print as not checked`);
-    runLog(runDir, { event: "post-repair-fix-pass", handed: rows.length, ok: Boolean(pass.ok), rolledBack: Boolean(rollback), observation: false });
-  }
-  return { ran: true, ok: Boolean(pass.ok), rollback, applied };
-}
-
-// `resume.correction` is the first correction's (see its dispatch), handed on by that caller alone: the correction after
-// the review of a repair shares this follow-up and is handed no positions.
-async function enforceCorrectionsReachFindings(ctx, P, pre, resume) {
-  if (!pre) return;                                            // no findings.json before the pass — nothing to enforce
-  const { run } = ctx;
-  const named = correctionNamedSet(P);
-  const readState = () => {
-    let raw = null, corrections = null;
-    // the record the model wrote: a change the fold hides is still a change it made (record-fold.mjs)
-    try { raw = readFileSync(modelRecordPath(run.runDir, P.findings), "utf8"); } catch { return { stale: false }; }
-    try { corrections = parseFindingsJsonLenient(raw).corrections; } catch { /* shape defects ride the normal ladder */ }
-    const sha = createHash("sha256").update(raw).digest("hex");
-    return { stale: named.length > 0 && sha === (pre.model?.sha ?? pre.sha) && !(corrections && corrections.applied), sha };
-  };
-  if (!readState().stale) return answerFollowsCorrection(ctx, P, pre, resume);
-  note(`[corrections] findings.json unchanged after the corrective pass (review names: ${named.join(", ")}) — demanding the re-emit`);
-  await stage("synthesis", ctx, {
-    force: true, sessionKey: resume.synthesisKey, model: resume.synthesisModel, thinking: resume.synthesisThinking,
-    trigger: "corrective-findings",
-    ...(resume.correction ? { correction: resume.correction } : {}),
-    // The writer's own record while a fold is in force, as the correction's own message names it (`correctionsExtra`).
-    followup: repairFollowup("synthesis:corrective-findings", { findings: modelRecordPath(run.runDir, P.findings), named, seniorEyeReview: P.seniorEyeReview, adds: Boolean(resume.correction) }) + stageCharter("synthesis", ctx.depth, ctx.framework),
-  });
-  if (readState().stale) {
-    runLog(run.runDir, { event: "corrective-findings-stale", named });
-    note(`[corrections] findings.json STILL stale — internal report ships; client export will hold (corrections-state)`);
-    try {
-      const tmp = driverDir(run.runDir, "corrections-state.json.tmp");
-      writeFileSync(tmp, JSON.stringify({ ts: new Date().toISOString(), stale: named }, null, 2));
-      renameSync(tmp, driverDir(run.runDir, "corrections-state.json"));
-    } catch { /* sidecar is best-effort; the runLog event stands */ }
-  }
-}
-
-// THE ANSWERS FOLLOW THE FINDINGS THEY NAME, asked once, as the gate's one repair. A correction that moved findings an
-// answer citing findings may depend on (`answersLeftBehind`) is handed those findings and the answers that may miss them.
-// The writer updates the answers that depend on them or says why not in the corrections note; nothing is forced. Run
-// only where the findings did reach the record: where they did not, the re-emit above is the one repair, and it may
-// update the answers in the same PATCH. What remains afterwards is recorded, not judged; the recheck reads the answers.
-async function answerFollowsCorrection(ctx, P, pre, resume) {
-  const { run } = ctx;
-  const leftBehind = () => {
-    try {
-      return answersLeftBehind(JSON.parse(pre.model?.raw ?? pre.raw), JSON.parse(readFileSync(modelRecordPath(run.runDir, P.findings), "utf8")),
-        ctx.framework?.bands);
-    } catch { return []; }   // an unreadable record is the ladder's business, not this check's
-  };
-  const answers = leftBehind();
-  if (!answers.length) return;
-  runLog(run.runDir, { event: "corrective-answers-left-behind", answers });
-  note(`[corrections] ${answers.length} answer(s) in four_answers may miss findings the correction moved (${answers.map((a) => a.answer).join(", ")}) — asking once`);
-  await stage("synthesis", ctx, {
-    force: true, sessionKey: resume.synthesisKey, model: resume.synthesisModel, thinking: resume.synthesisThinking,
-    trigger: "corrective-answers",
-    followup: repairFollowup("synthesis:corrective-answers", { findings: modelRecordPath(run.runDir, P.findings), answers }) + stageCharter("synthesis", ctx.depth, ctx.framework),
-  });
-  const still = leftBehind();
-  runLog(run.runDir, { event: "corrective-answers-after", answers: still });
-  if (still.length) note(`[corrections] ${still.map((a) => a.answer).join(", ")} still name(s) the findings as before — recorded; any reason the writer gave is in the corrections note, and the recheck reads the answers`);
 }
 
 // (T3a, ruling 2026-08-26 — "Deliver always, with open points printed. The refusal on a blocking
@@ -8480,9 +7589,9 @@ async function deriveIntakeAsks(ctx) {
   if (asks == null) { runLog(run.runDir, { event: "intake-asks-missing" }); asks = []; }
   ctx.intakeAsks = asks;
   try {
-    const tmp = driverDir(run.runDir, "intake-asks.json.tmp");
+    const tmp = paths(run.runDir).intakeAsksJson;
     writeFileSync(tmp, JSON.stringify({ ts: new Date().toISOString(), asks }, null, 2));
-    renameSync(tmp, driverDir(run.runDir, "intake-asks.json"));
+    renameSync(tmp, paths(run.runDir).intakeAsks);
   } catch { /* best-effort sidecar; ctx carries the rows for this run */ }
   // item 14a — UNCONDITIONAL, like every other AD-4 counter. This was the last one still written inside
   // an `if`, and it is a bad one to leave: "the requester asked for nothing in particular" and "nobody
@@ -8689,7 +7798,7 @@ export function stampCoverageJudgmentRows(P, runDir, note, ctx) {   // @internal
     runLog(runDir, { event: "coverage-judgment-rows", judgment: true, rows: rows.length, discarded, changed });
     if (!changed) return;                                           // already exact — leave the bytes alone
     parseFindingsJson(JSON.stringify(next));                        // re-validate the shape (throws → catch keeps original)
-    atomicWrite(P.findings, `${JSON.stringify(next, null, 2)}\n`);
+    writeFindings(runDir, next, { why: "coverage-judgment-rows", settles: [] });
     note(`[coverage-judgment] rows[] written from the ledger + the plan-execution receipt: ${rows.length} open slice(s)${discarded ? `; ${discarded} authored row(s) replaced` : ""}`);
   } catch (e) {
     note(`[coverage-judgment] rows[] stamp skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
@@ -8699,7 +7808,7 @@ export function stampCoverageJudgmentRows(P, runDir, note, ctx) {   // @internal
 
 export function injectDeferralCoverage(P, runDir, note) {   // @internal — exported so a second pass is testable without a run
   try {
-    const rp = driverDir(runDir, "frame-reopen.json");
+    const rp = paths(runDir).frameReopenReceipt;
     if (!existsSync(rp) || !existsSync(P.findings)) return;
     const deferrals = JSON.parse(readFileSync(rp, "utf8"))?.deferrals ?? [];
     if (!deferrals.length) return;
@@ -8735,7 +7844,7 @@ export function injectDeferralCoverage(P, runDir, note) {   // @internal — exp
     }
     if (!added) return;
     parseFindingsJson(JSON.stringify(doc));                    // re-validate the shape (throws → catch keeps original)
-    atomicWrite(P.findings, `${JSON.stringify(doc, null, 2)}\n`);   // B5 — a crash mid-write must never leave a truncated findings.json
+    writeFindings(runDir, doc, { why: "deferral-coverage-rows", settles: [] });   // B5 — a crash mid-write must never leave a truncated findings.json
     note(`[frame-reopen] injected ${added} deferral coverage row(s) — the reader sees every unclosed directive`);
   } catch (e) {
     note(`[frame-reopen] coverage injection skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
@@ -8838,10 +7947,9 @@ export function decideZhScopeHonesty(opts = {}) {   // @internal
 /** Did the zh candidate lane actually RUN on this run? Mirrors the jx-units gating legs exactly
  *  (jx-units.mjs runJxSerpGrid/runJxNativeread): the frozen policy must carry the jxLanes component
  *  (the product carries the native-language investigation, or a saved search bought it), at least one of
- *  the two unit switches must be on, the per-lane switch must not be killed, and the frozen lane decision
+ *  the two unit switches must be on, and the frozen lane decision
  *  sidecar must carry the zh lane. Any leg missing ⇒ the lane did not run (a product without the
- *  investigation, an incident kill, or no lane in the
- *  frozen decision) — the honesty row is owed. Reads the SIDECAR rather than ctx.jxLanes: at delivery
+ *  investigation, or no lane in the frozen decision) — the honesty row is owed. Reads the SIDECAR rather than ctx.jxLanes: at delivery
  *  time on a resume the fold block may never have re-attached it, and the frozen decision on disk is
  *  the single authority anyway.
  *
@@ -8851,12 +7959,11 @@ export function decideZhScopeHonesty(opts = {}) {   // @internal
  *  legs outright would report "ran" from a frozen lane DECISION alone, suppressing the disclosure on a
  *  run whose units never executed; keeping a leg on a variable nothing sets any more would read false
  *  forever and tell every client the lane did not run, including the runs where it did. So the legs
- *  track the switches that SURVIVE, which is what "mirrors the jx-units gating legs" has to mean. */
-export function scriptLaneRanOnRun(runDir, lane, { searchPolicy = null, env = process.env } = {}) {   // @internal
+ *  track what the units themselves check, which is what "mirrors the jx-units gating legs" has to mean. */
+export function scriptLaneRanOnRun(runDir, lane, { searchPolicy = null } = {}) {   // @internal
   if (!searchPolicy?.components?.jxLanes) return false;
-  if (!laneArmed(lane, env)) return false;   // — the shared fail-open reader
   let sidecar = null;
-  try { sidecar = JSON.parse(readFileSync(driverDir(runDir, "jx-lanes.json"), "utf8")); }
+  try { sidecar = JSON.parse(readFileSync(paths(runDir).jxLanes, "utf8")); }
   catch { return false; }   // sidecar absent/corrupt ⇒ no frozen lane decision ⇒ the lane did not run
   if (!sidecar?.lanes?.[lane]) return false;
   // WHAT "RAN" MEANS IS PER-LANE, and this is a rule table rather than a parameter because the lanes
@@ -8944,7 +8051,7 @@ export function injectScriptScopeCoverage(P, runDir, note, { searchPolicy = null
     }
     if (!added.length) return;
     parseFindingsJson(JSON.stringify(doc));                    // re-validate the shape (throws → catch keeps original)
-    atomicWrite(P.findings, `${JSON.stringify(doc, null, 2)}\n`);   // B5 — never a truncated findings.json
+    writeFindings(runDir, doc, { why: "script-scope-coverage-row", settles: [] });   // B5 — never a truncated findings.json
     note(`[script-scope] injected the Stage-1.5 honesty coverage row for ${added.join(", ")} — in-scope territory on a run whose ${added.length === 1 ? "lane" : "lanes"} did not run (coverage-limited: a disclosed limit, never a verdict clamp)`);
   } catch (e) {
     note(`[script-scope] coverage injection skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
@@ -8959,7 +8066,7 @@ export function injectScriptScopeCoverage(P, runDir, note, { searchPolicy = null
  * which a plain clearance never imports.
  */
 export async function localLanguageStateOf(runDir) {   // @internal
-  if (!existsSync(driverDir(runDir, "jx-lanes.json"))) return null;
+  if (!existsSync(paths(runDir).jxLanes)) return null;
   const { laneDepthOfRun } = await import("./jx.mjs");
   const { localLanguageDepth } = await import("./publish/search-depth.mjs");
   const read = (f) => { try { return JSON.parse(readFileSync(driverDir(runDir, f), "utf8")); } catch { return null; } };
@@ -8993,7 +8100,7 @@ export function injectLaneDepthCoverage(P, runDir, note) {   // @internal
   try {
     if (!existsSync(P.findings)) return;
     let sidecar = null;
-    try { sidecar = JSON.parse(readFileSync(driverDir(runDir, "jx-lanes.json"), "utf8")); }
+    try { sidecar = JSON.parse(readFileSync(paths(runDir).jxLanes, "utf8")); }
     catch { return; }   // no lane on this run, or no frozen decision — nothing to disclose
     const verdicts = sidecar?.fold?.depth;
     if (!verdicts || typeof verdicts !== "object") return;
@@ -9004,8 +8111,20 @@ export function injectLaneDepthCoverage(P, runDir, note) {   // @internal
     const added = [];
     for (const [lane, v] of owed) {
       const label = LANGUAGE_LANES[lane]?.label ?? `${lane} lane`;
-      const area = `Native-language investigation depth / ${lane}`;
-      if (doc.coverage.some((c) => String(c?.area ?? "").toLowerCase() === area.toLowerCase())) continue;
+      // A LANE THIS VERSION HAS NO DEEPER SEARCH FOR, WHOSE CANDIDATES RAN, IS TOLD IN THE OWNER'S TWO SENTENCES ALONE.
+      // `jx.mjs` writes them as this cause's `why`, and the reader gets them as they are, under a label in words: no
+      // opening that restates them in the code's terms, and no closing line about verdicts, which belongs to the run's
+      // own coverage judgment. Every other cause keeps the fuller note below.
+      const plain = v.cause === "not-built-for-lane" && v.ran === "candidates" && typeof v.why === "string" && v.why;
+      const language = String(LANGUAGE_LANES[lane]?.label ?? "").replace(/-script deepening$/, "") || lane;   // as jx.mjs names it
+      const area = plain ? `${language}-language search depth` : `Native-language investigation depth / ${lane}`;
+      const areas = [area, `Native-language investigation depth / ${lane}`, `${language}-language search depth`].map((a) => a.toLowerCase());
+      if (doc.coverage.some((c) => areas.includes(String(c?.area ?? "").toLowerCase()))) continue;
+      if (plain) {
+        doc.coverage.push({ area, state: "coverage-limited", note: v.why.trim() });
+        added.push(lane);
+        continue;
+      }
       // THE SENTENCE NAMES THE ASK, WHAT RAN, AND THE REMEDY — and the remedy differs by cause, which
       // is why the verdict carries one. "This build has no deep slice for the lane" and "the switch was
       // off on this deployment" produce the same shortfall and opposite next steps, and a row that said
@@ -9021,7 +8140,7 @@ export function injectLaneDepthCoverage(P, runDir, note) {   // @internal
     }
     if (!added.length) return;
     parseFindingsJson(JSON.stringify(doc));                    // re-validate the shape (throws → catch keeps original)
-    atomicWrite(P.findings, `${JSON.stringify(doc, null, 2)}\n`);   // B5 — never a truncated findings.json
+    writeFindings(runDir, doc, { why: "lane-depth-coverage-row", settles: [] });   // B5 — never a truncated findings.json
     note(`[lane-depth] injected the depth-shortfall coverage row for ${added.join(", ")} — configured full, delivered less (coverage-limited: a disclosed limit, never a verdict clamp)`);
   } catch (e) {
     note(`[lane-depth] coverage injection skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
@@ -9095,7 +8214,7 @@ function recordScreenGateEvidence(ctx, { runPrefix, before, heldBeforeGate, held
       reading_note: "A drop with no recorded read has no band_record open or search-answer serve, and no lookup, part of the shape or page of a group serving its line, in the reading log for the reading step. The log is best-effort: this does not show the goods were never read.",
       ...(before.error ? { snapshot_error: before.error } : {}), ...(calls.error ? { call_ledger_error: calls.error } : {}) };
     ensureDriverDir(P.runDir);
-    atomicWrite(driverDir(P.runDir, "screen-gate-evidence.json"), JSON.stringify({ ts: new Date().toISOString(), ...doc }, null, 2) + "\n");
+    atomicWrite(paths(P.runDir).screenGateEvidence, JSON.stringify({ ts: new Date().toISOString(), ...doc }, null, 2) + "\n");
     runLog(P.runDir, { event: "screen-gate-evidence", ...ev.counts, unnamed: ev.unnamed, fetches: ev.fetches,
       alternatives: ev.alternatives, gate_calls: gateCalls });
   } catch (e) {
@@ -9112,7 +8231,7 @@ function recordScreenGateEvidence(ctx, { runPrefix, before, heldBeforeGate, held
 export function loadScreenGateUnresolved(runDir, ctx = {}) {   // @internal
   if (Array.isArray(ctx.screenGateUnresolved) && ctx.screenGateUnresolved.length) return ctx.screenGateUnresolved;
   try {
-    const rows = JSON.parse(readFileSync(driverDir(runDir, "screen-gate-unresolved.json"), "utf8"))?.unresolved;
+    const rows = JSON.parse(readFileSync(paths(runDir).screenGateUnresolved, "utf8"))?.unresolved;
     return Array.isArray(rows) ? rows : [];
   } catch { return []; }   // absent/corrupt sidecar ⇒ no disclosure owed on this path
 }
@@ -9141,7 +8260,7 @@ export function injectScreenGateCoverage(P, runDir, note, ctx = {}) {   // @inte
     }
     if (!added) return;
     parseFindingsJson(JSON.stringify(doc));                    // re-validate the shape (throws → catch keeps original)
-    atomicWrite(P.findings, `${JSON.stringify(doc, null, 2)}\n`);   // B5 — never a truncated findings.json
+    writeFindings(runDir, doc, { why: "screen-gate-coverage-rows", settles: [] });   // B5 — never a truncated findings.json
     note(`[screen-gate] injected ${added} unexamined-drop coverage row(s) — the reader sees every mark the run could not examine`);
   } catch (e) {
     note(`[screen-gate] coverage injection skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
@@ -9180,9 +8299,9 @@ export function enrichFindingDeadlines(P, runDir, note, { nowMs = Date.now(), wi
     }
     if (!enriched.length) return;
     parseFindingsJson(JSON.stringify(doc));                    // re-validate the shape (throws → catch keeps original)
-    atomicWrite(P.findings, `${JSON.stringify(doc, null, 2)}\n`);   // B5 — a crash mid-write must never leave a truncated findings.json
+    writeFindings(runDir, doc, { why: "finding-deadlines", settles: [] });   // B5 — a crash mid-write must never leave a truncated findings.json
     const base = rebaseEnrichedDeadlines(runDir, enriched);   // a later patch keeps what the file now carries
-    atomicWrite(driverDir(runDir, "deadline-enrich.json"), JSON.stringify({ schema_version: 1, ts: new Date().toISOString(), judged_at: new Date(nowMs).toISOString(), enriched, base }, null, 2) + "\n");
+    atomicWrite(paths(runDir).deadlineEnrich, JSON.stringify({ schema_version: 1, ts: new Date().toISOString(), judged_at: new Date(nowMs).toISOString(), enriched, base }, null, 2) + "\n");
     note(`[deadline-enrich] ${enriched.length} finding(s) gained the register's own opposition window (${enriched.map((e) => `${e.mark}: ${e.date}`).join("; ").slice(0, 140)}) — a recorded deadline never silently disappears`);
   } catch (e) {
     note(`[deadline-enrich] skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
@@ -9729,6 +8848,8 @@ export const CORRECTIONS_DELIVERED_FILE = "corrections-delivered.json";
 // Whether the recheck after the correction saved an accepted review (`read`) or not (`unread`, with why), with the
 // entry verdict and the verdict that stood. An unread recheck is a correction nobody verified.
 export const CORRECTIVE_RECHECK_FILE = "corrective-recheck.json";
+// The correction functions in steps/corrections.mjs read these from here, handed in once as this file loads.
+useThePipeline({ CORRECTIONS_DELIVERED_FILE, asPartNotCompleted, extractRulingsTail, must, postRepairCorrectionsPath, postRepairStatePath, prepareDeclinationSpec, recordFromTheSaves, recordSynthesisSeam, removalRepairedRow, reviewAfterRepairPath, reviewExclusionsPaths, safeReadJson, snapshotFindingsForCorrections, stage, stageCharter });
 
 /**
  * Where the review from before the correction stands when the recheck after it saved none, as `{review, inPlace}`: the
@@ -9741,31 +8862,21 @@ export const CORRECTIVE_RECHECK_FILE = "corrective-recheck.json";
  * the whole review then put back. Other bytes in place mean another review was saved over it, through the tool or by
  * rewriting the file, and its points are its own. The one such review that did not read the corrected record is a
  * narrowed review that hardened the verdict and stays in place: the earlier review is then the one kept beside it, and
- * the correction's rows are still its flags. A record with no sha, from an earlier version, builds as it was.
+ * the correction's rows are still its flags.
  */
 function earlierReviewNotRechecked(P) {
   try {
     const runDir = dirname(P.report);
     const recheck = JSON.parse(readFileSync(driverDir(runDir, CORRECTIVE_RECHECK_FILE), "utf8"));
-    if (recheck?.status !== "unread" || !recheck.reviewSha) return null;
+    if (recheck?.status !== "unread") return null;
     const named = (file) => relative(runDir, file).replace(/\\/g, "/");
     const inPlace = shaOf(P.seniorEyeReview);
     if (inPlace === recheck.reviewSha) return { review: named(P.seniorEyeReview), inPlace: true };
-    const narrowed = JSON.parse(readFileSync(driverDir(runDir, "post-repair-review.json"), "utf8"));
+    const narrowed = JSON.parse(readFileSync(paths(runDir).postRepairReview, "utf8"));
     const kept = reviewBeforeRepairPath(runDir);
     return narrowed?.status === "read" && narrowed.whole !== true && inPlace === shaOf(reviewAfterRepairPath(runDir)) && shaOf(kept) === recheck.reviewSha
       ? { review: named(kept), inPlace: false } : null;
   } catch { return null; }
-}
-
-/** Keep the basis at the corrective pass, from the two records the applied table was built from. Throws on a write failure; the caller is never-kill. */
-export function recordCorrectionsBasis(runDir, rows, preDoc, postDoc) {   // @internal
-  const basis = correctionTargets(rows, preDoc, postDoc);
-  atomicWrite(driverDir(runDir, CORRECTIONS_DELIVERED_FILE), JSON.stringify({
-    _provenance: "whether each reviewer correction reached the record the report was built from: the basis is kept at the corrective pass, and every assembly reads it against the delivered record (corrections-delivered.mjs)",
-    basisAt: new Date().toISOString(), basis,
-  }, null, 2) + "\n");
-  return basis;
 }
 
 /**
@@ -9819,7 +8930,7 @@ export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRi
     const fdoc = (P.findings && existsSync(P.findings)) ? parseFindingsJsonLenient(readFileSync(P.findings, "utf8")) : null;
     if (Array.isArray(fdoc?.askAnswers)) {
       let intakeAsks = [];
-      try { intakeAsks = JSON.parse(readFileSync(driverDir(P.runDir, "intake-asks.json"), "utf8")).asks ?? []; } catch { /* refless run — register order alone */ }
+      try { intakeAsks = JSON.parse(readFileSync(paths(P.runDir).intakeAsks, "utf8")).asks ?? []; } catch { /* refless run — register order alone */ }
       const ansSection = buildAskAnswersSection(fdoc.askAnswers, intakeAsks);
       const hasAuthoredAns = /^###\s+Answers to your instructions\b/m.test(overview);
       if (hasAuthoredAns) {
@@ -9907,7 +9018,7 @@ export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRi
     // the run's own records (_driver/post-repair-review.json); the printed line adds nothing.
     // Where that review hardened the verdict its points are the verdict's grounds, and print even when changed.
     try {
-      const doc = JSON.parse(readFileSync(driverDir(dirname(P.report), "post-repair-corrections.json"), "utf8"));
+      const doc = JSON.parse(readFileSync(paths(dirname(P.report)).postRepairCorrections, "utf8"));
       const after = doc?.rows;
       if (Array.isArray(after) && after.length) applied = [...(applied ?? []), ...after.map((r) => ({ ...r, later: true, ...(doc.grounds === true ? { ground: true } : {}) }))];
     } catch { /* no correction after a repair on this run */ }
@@ -9915,8 +9026,8 @@ export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRi
     // and nothing on a resume repeats it. Its points are not shown closed, so they print through the same rule.
     try {
       const runDir = dirname(P.report);
-      const rec = JSON.parse(readFileSync(driverDir(runDir, "post-repair-review.json"), "utf8"));
-      if (rec?.status === "read" && !existsSync(driverDir(runDir, "post-repair-corrections.json"))) {
+      const rec = JSON.parse(readFileSync(paths(runDir).postRepairReview, "utf8"));
+      if (rec?.status === "read" && !existsSync(paths(runDir).postRepairCorrections)) {
         const rows = (Array.isArray(rec.points) ? rec.points : []).filter((x) => String(x?.text ?? "").trim())
           .map((x) => ({ text: String(x.text), kind: x.kind ?? null, outcome: "not-checkable", later: true }));
         if (rows.length) applied = [...(applied ?? []), ...rows];
@@ -10025,7 +9136,7 @@ export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRi
   // the report.
   try {
     ensureDriverDir(P.runDir);
-    writeFileSync(driverDir(P.runDir, "card-folds.json"), `${JSON.stringify({ schema: 1, folds }, null, 2)}\n`);
+    writeFileSync(paths(P.runDir).cardFolds, `${JSON.stringify({ schema: 1, folds }, null, 2)}\n`);
   } catch { /* observability only */ }
   // Whether each reviewer correction reached the record this report was built from: rewritten on every
   // assembly, like the fold record above, so the last assembly's answer stands. Nothing without a basis.
@@ -10144,6 +9255,10 @@ export async function pipeline(job, opts = {}) {
     // stage are intact, so park it resumable and let the runner auto-resume after resetsAt (vs burning a
     // ~$40 cold re-run, and vs the futile fallback cascade). Any OTHER failure propagates unchanged.
     if (e instanceof StageFailure && e.rateLimited) return postponeRun(e, opts.__runRef, { job, agent: opts.agent ?? config.defaultAgent, ctx: opts.__ctx });
+    // A RESUME THIS RUNNER CANNOT SERVE: the run started on an engine or a register this runner does not serve, and
+    // the resume stopped before anything was spent or cleared. It parks, and resumes by itself on a runner that
+    // serves its choice; it never switches to this runner's.
+    if (isRunChoiceUnavailable(e)) return parkForRunChoice(e, { job, agent: opts.agent ?? config.defaultAgent });
     throw e;
   } finally {
     reconcilePassStamps(opts.__runRef, opts.__ctx);
@@ -10152,74 +9267,29 @@ export async function pipeline(job, opts = {}) {
   }
 }
 
-// The run.jsonl `stage` row's inputs[]: each DECLARED input's fingerprint plus `read` — did the settled
-// turn actually open it? Exported and dependency-free (paths + the dispatch's own facts) so the honesty
-// rule below is testable without a paid dispatch.
-//
-// `read` is THREE-VALUED and the null cases carry the whole point (post-merge audit of):
-//   true  — the engine's reads gauge saw this exact path opened. Evidence; never downgraded.
-//   false — the turn was offered this file and demonstrably did not open it. Only claimable when the
-//           dispatch really offered it AND the gauge is complete.
-//   null  — nothing can be claimed. Three ways to get here, all of them real:
-//             · the engine has no reads gauge at all (reads == null — the openai-agent shape);
-//             · the settled attempt was a WARM PATCH: a warm-resume shape, arrived at from the
-//               other direction — the CALLER asked for a fresh dispatch and the gateway's retry ladder
-//               turned attempt N into a session resume carrying only the fix instruction (gateway.mjs,
-//               `warm`). The declared inputs were offered on attempt 1 and NOT re-offered on the settled
-//               one, so an absent path there says nothing about whether the stage read it. Without this
-//               arm the row asserted `read:false` for a file the run can PROVE it opened on attempt 1,
-//               and — worse after AD-4 — stamped `followup:false, readsTruncated:false` beside it, i.e.
-//               an affirmative "the gauge was trustworthy". warmEligible fires on a shape recorded at
-//               ~43% of the archive corpus, so this is the common path, not an edge case;
-//             · the gauge was CAPPED (readsTruncated): the list is a prefix, so an absent path proves
-//               nothing at all.
-// A FOLLOWUP used to be a fourth arm and is not one (A-1). The reasoning was "it resumes a session that
-// already holds the files" — which the engines do not do: `resumeRef` is passed only on a warm retry and
-// neither engine reads `sessionKey`, so a followup dispatch is attempt 1 of a fresh session that WAS
-// offered its declared inputs. Its gauge is as groundable as any other cold dispatch's, and nulling it
-// erased the measurement on exactly the population worth measuring. The caller still journals `followup`
-// on the row, so the two populations remain separable by a reader.
-// A `false` that is really "we could not tell" is the same defect class AD-4 exists to retire — and it
-// lands in exactly the D-item record the charter routes into P2-A ("the stage largely COULD NOT read —
-// fix the lookup before diagnosing discipline"). Its mirror image is just as bad and is what this change
-// removes: a `null` that is really "we could tell, and it did not".
-// ── — A COMPLETION ROW STATES ONE INSTANT, AND A WAVE NEEDS TWO ─────────────────────────────────
-// Every wave member DOES emit a completion line — `runBatched` calls `stage()` per member and `stageOnce`
-// writes its `{event:"stage"}` row unconditionally. What no row carries is a START. `appendLine` stamps
-// exactly one instant, `ts`, at append time, which for a completion row is the END.
-//
-// Serially that is enough: the previous row's `ts` is a usable start proxy, so a stage's wall reads off
-// the journal as [previous row, own row]. A WAVE destroys the proxy — N members are dispatched at one
-// instant and their rows interleave by completion order, so the row before member k's row belongs to a
-// sibling — and nothing replaced it. Each member's wall then degenerates to [0, the wave's own wall],
-// which is verbatim what the closing round had to report: "between 0 and 10 minutes, and the journal does
-// not say which. An absence, not a zero."
-//
-// The per-attempt log does not rescue it. `_driver/<stage>.jsonl` carries `wall`, but that is EXEC ONLY —
-// `laneWaitMs` is a separate field by design, and the freshness check, the snapshot, the validator and the
-// in-dispatch form repairs all sit outside it — and it carries no start instant either, so a stage cannot
-// be placed on the run's timeline from it and sibling overlap stays uncomputable.
-//
-// THE FIELD NAMES ARE LOAD-BEARING.
-//   NOT `startedAt` — `status.json.startedAt` already means the RUN's first-ever start. It is
-//     append-only-by-deletion, it is backfilled by a script that SCANS run.jsonl, and run-quote,
-//     consumption-ledger, run-economics and the e2e ledger all read it. A stage-scoped `startedAt` on the
-//     rows that backfill scans makes a turnaround number quietly wrong months later.
-//   NOT `wall` — that name already means exec-only seconds on the per-attempt row. Two surfaces spelling
-//     two different facts the same way is how this class of defect gets rebuilt.
-//
-// `wallSec` is redundant with the pair by construction and is written anyway: the machine writes what must
-// be exact, and a reader must not have to subtract ISO strings by hand. One site computes all three, so
-// they cannot drift, and the tests assert that identity.
-//
-// THE ROW STATES FACTS AND JUDGES NOTHING. No `onCriticalPath`, no `boundedTheWave`. Which member bounded
-// a wave is an inference from overlapping intervals and it belongs to the reader.
-export function stageWallFields(tDispatch, tSettled = Date.now()) {
-  return {
-    dispatchedAt: new Date(tDispatch).toISOString(),
-    settledAt: new Date(tSettled).toISOString(),
-    wallSec: (tSettled - tDispatch) / 1000,
-  };
+// The signal a resume raises when its recorded engine or register cannot be served here. Matched by its name and the
+// fields the park needs, so the park does not depend on which module defines the signal.
+export function isRunChoiceUnavailable(e) {   // @internal
+  return e?.name === "RunChoiceUnavailable" && typeof e.run?.runDir === "string" && Boolean(e.dependency);
+}
+
+/**
+ * Park a resume whose recorded choice this runner cannot serve. The marker states what the run waits on and what
+ * ends the wait, as a rate-limit park does, with no clock of its own: the runner's due time is the park plus its
+ * backoff, and the re-dispatch parks again until a runner serves the choice. Nothing was spent, so no cost rows.
+ */
+export function parkForRunChoice(e, { job, agent }) {   // @internal
+  const { runDir, codename = null } = e.run;
+  try {
+    writePark(runDir, { kind: "run-choice", resetsAt: null, postponedAt: new Date().toISOString(), dependency: e.dependency,
+      waitingOn: e.waitingOn ?? null, resolvedBy: e.resolvedBy ?? null }, { job, agent, codename });
+  } catch (err) {
+    // The returned park still tells this runner; a later runner finds the run only by its marker, so its loss is said.
+    note(`[pipeline] park marker NOT written for ${codename ?? "run"}: ${String(err?.message ?? err).slice(0, 160)}`);
+    try { runLog(runDir, { event: "park-marker-unwritten", kind: "run-choice", cause: String(err?.message ?? err).slice(0, 200) }); } catch { /* the note is the record */ }
+  }
+  note(`[pipeline] PARKED ${codename ?? "run"}: ${String(e.message).slice(0, 300)}`);
+  return { ok: false, postponed: true, resetsAt: null, parkedFor: e.dependency, codename, runDir };
 }
 
 export function journalStageInputs(paths = [], { reads = null, readsTruncated = null, warm = false } = {}) {   // @internal
@@ -10243,36 +9313,8 @@ export function journalStageInputs(paths = [], { reads = null, readsTruncated = 
   });
 }
 
-// Quoted-vs-actual turnaround, written at every terminal of the CLEARANCE pipeline in this file — all
-// five of them: delivered, cancelled, rate-limit-postponed, recovery-parked, failed. (The call-site census
-// test greps this file, and that is the scope it can police.) Two terminals elsewhere are deliberately
-// NOT covered and must not be read as covered: the knockout lane's delivered/cancelled/failed exits
-// (pipeline-knockout.mjs) — a knockout run never computes a quote, so there is no quoted figure to
-// reconcile against and every field but the wall would be null — and the runner's `parked-for-human`
-// grace-exit (runner.mjs parkInFlightForHuman), which is a SIGTERM handler with no ctx and no quote in
-// hand. Extending to either is a change of shape, not a call site; until then this is the honest scope.
-//
-// AD-4 surfaced this only at the delivered terminal, so a run that failed, parked for auto-recovery or
-// postponed on a rate-limit cap recorded nothing at all — and "we never measured this run" was byte-for-byte
-// the same as "this run did not deliver", the exact three-valuedness the package exists to enforce. The row
-// now always carries `state`: delivered | failed | recovery-parked | rate-limit-postponed | cancelled. A run
-// legitimately writes SEVERAL of these across its life (a park is the terminal of an INVOCATION, not of the
-// run) — they are append-only and the LAST row is the run's outcome; the earlier ones are the honest record
-// of how long each leg took. HOURS ONLY: the tokens-only directive holds and no currency appears here.
-// Best-effort telemetry — this must never affect a delivery, a failure notice or a park.
-export function logTurnaroundReconciliation(runDir, quote, state) {   // @internal
-  if (!runDir) return null;
-  try {
-    let startedAt = null;
-    // status.json `startedAt` is written once at seed and a resume deliberately never touches it, so the
-    // figure is the run's TRUE wall — see reconcileTurnaround on what that includes.
-    try { startedAt = JSON.parse(readFileSync(join(runDir, "status.json"), "utf8"))?.startedAt ?? null; } catch { /* no status yet — actualHours stays null */ }
-    const ta = reconcileTurnaround({ quote: quote ?? null, startedAt });
-    runLog(runDir, { event: "turnaround-reconciliation", state, ...ta });
-    note(`turnaround (${state}): quoted ${ta.quotedHours != null ? `${ta.quotedHours}h` : "(never sized)"}, actual ${ta.actualHours != null ? `${ta.actualHours}h` : "(no startedAt)"}${ta.ratio != null ? ` — ${ta.ratio}× the quote` : ""}${ta.actualHoursIncludesParked ? " [wall since start, includes rate-limit postpones and recovery parks]" : ""}`);
-    return ta;
-  } catch { return null; /* telemetry best-effort — never affects a run's terminal */ }
-}
+// logTurnaroundReconciliation, the quoted-against-actual row each run ending writes, lives in run-quote.mjs beside
+// reconcileTurnaround.
 
 // The two sentences a rate-limit park owes its reader, in ONE place. They are written into the `.postponed`
 // sentinel for whoever reads the run dir AND printed by the CLI for whoever is watching the terminal, and a
@@ -10303,10 +9345,15 @@ function postponeRun(e, run, meta = {}) {
       try { return Number(JSON.parse(readFileSync(join(run.runDir, ".postponed"), "utf8"))?.probeAttempt) || 0; }
       catch { return 0; }
     })();
-    try { sentinel(run.runDir, ".postponed", { kind: "rate-limit", resetsAt, postponedAt: new Date().toISOString(), fromStage: e.stage, codename, job: meta.job ?? null, agent: meta.agent ?? null,
+    try { writePark(run.runDir, { kind: "rate-limit", resetsAt, postponedAt: new Date().toISOString(), fromStage: e.stage, codename, job: meta.job ?? null, agent: meta.agent ?? null,
       probeAttempt: priorProbe + 1,
       waitingOn: PARK_WAITING_ON,
-      resolvedBy: PARK_RESOLVED_BY }); } catch { /* best-effort */ }
+      resolvedBy: PARK_RESOLVED_BY }, { job: meta.job, agent: meta.agent, codename }); }
+    catch (err) {
+      // The marker is how the runner resumes the run once the limit resets; a run whose marker is lost is said to be.
+      note(`[pipeline] park marker NOT written for ${codename ?? "run"}: ${String(err?.message ?? err).slice(0, 160)} — the runner cannot resume this run from it`);
+      try { runLog(run.runDir, { event: "park-marker-unwritten", kind: "rate-limit", cause: String(err?.message ?? err).slice(0, 200) }); } catch { /* the note is the record */ }
+    }
     // Flip the dashboard status.json state -> "postponed" (best-effort; the .postponed marker is the
     // source of truth). Routed through writeRunStatus so the terminal-state guard applies here too.
     try {
@@ -10366,296 +9413,21 @@ export function instructedScopeOf(job) {
 }
 
 async function pipelineInner(job, opts = {}) {
-  // The order as it arrived, before anything below folds its scope or settles its fields (accepted-order.mjs).
-  const acceptedOrder = orderSnapshot(job);
-  assertTierSanity();
-  // The engine binary, first and UNCONDITIONALLY — before the register preflight, which two lanes skip.
-  // Every lane spawns the engine: a knockout does, and so does a run with an injected recordFetcher. So
-  // unlike the credential check below this one has no exemption, because there is no shape of run that
-  // can proceed without it. It reads the filesystem and never spawns (driver.config.preflightEngineBinary).
-  preflightEngineBinary();
-  // — there is somewhere to write, checked the same way, at the same door and for the same reason.
-  // UNCONDITIONAL like the binary check above and unlike the credential check below: every lane writes a
-  // run directory, so there is no shape of run that is exempt. A full disk fails as "artifact absent" at
-  // whatever stage reads the truncated file next — a stage unrelated to the cause, after the spend that
-  // produced it — which is indistinguishable from a real engine or provider fault.
-  //
-  // A DISK IT CANNOT MEASURE IS NOT A PASS. Said out loud rather than swallowed (bin/uspto-sync.mjs's
-  // precedent), because a guard whose silence reads as success is a guard that has stopped existing.
-  const disk = preflightFreeSpace(process.env, opts.studioRoot ?? null);
-  if (disk.warning) console.error(disk.warning);
-  // — and the DOCTRINE it will be rated under is a tree somebody else can check out. A store on a
-  // feature branch, or with uncommitted edits under the served path, produces a report graded against
-  // prose that matches no commit anywhere; the run reads normally and nothing errors. Same door, same
-  // reason as the three above, and the same three outcomes as the publication gate — could-not-determine
-  // is not a pass. WARNS by default and throws only under CLEAROTRON_SKILLS_STORE_STRICT: an existing
-  // deployment must behave exactly as it did before this landed. The result is stamped into the run's
-  // run.jsonl below, once there is a run dir to stamp it into.
-  const skillsStore = preflightSkillsStore();
-  if (skillsStore.warning) console.error(skillsStore.warning);
-  // doc-27 Item 2: fail fast on a missing register credential, BEFORE any model spend AND before a run
-  // dir exists (the pre-try throw rides the QUEUE-level packet lane, `intake-<base>.prerun-failed`, since
-  // re-routed it — there is no run dir to write a run-level packet into) — covers cold runs AND
-  // resumes. Skip when a recordFetcher is injected (tests / alt fetchers), and skip for jobs whose
-  // EXPLICIT selector names a knockout-pipeline product: that lane has no register machinery (review
-  // 2026-07-17 — demanding an unused register key blocked knockout on clean envs). It used to preflight
-  // its own SWEEP credential inside knockoutInner; since acceptance 6 it resolves a SKIP there
-  // instead and discloses the half it did not run, so no research door is owed here either — see the
-  // note on preflightResearchCredential below, which is gated on the component, not on this selector.
-  // A knockout reached via recipe/profile default still passes through this preflight (resolution needs
-  // the frozen profile, which needs the run dir) — on a register-credentialed deployment that is a no-op.
-  //
-  // READS `job.product`. It read the DELETED `job.searchLevel`, so it was false for every job and the
-  // 2026-07-17 regression was silently back: a knockout dispatched on a clean env demanded a register
-  // credential its lane never uses, and failed before any run dir existed.
-  const jobPolicy = policyFor(String(job.product ?? "").trim().toLowerCase());
-  const koSelector = jobPolicy?.pipeline === "knockout";
-  // AN OFFLINE RESUME ANSWERS ITS RECORD FETCHES FROM THE RUN'S OWN RECORDS (`--records replay`, record-replay.mjs), so
-  // it needs no register key and refuses to start while one is set: a stage's register tools read the same key.
-  if (opts.records != null && !RECORDS_MODES.includes(opts.records))
-    throw new Error(`--records: unknown value "${opts.records}" — one of: ${RECORDS_MODES.join(", ")}`);
-  if (opts.records === "replay") {
-    const held = heldRegisterCredentials(activeProvider());
-    if (held.length)
-      throw new Error(`--records replay: ${held.join(" + ")} is set, so a stage's register tools could still reach the register — unset it for this resume, which answers every record fetch from the run's own records`);
-    opts.recordFetcher ??= (uri) => savedRecordFetch(opts.__runRef?.runDir, uri);
-  }
-  if (!opts.recordFetcher && !koSelector) preflightCredentials();
-  // -6 — and the RESEARCH credential, for the products that cannot deliver their answer without it.
-  //
-  // NOT gated on `koSelector`, and that is not an oversight: the predicate inside is
-  // `components.commonLawGrid === true`, which no knockout row carries, so a second knockout test here
-  // would say the discriminator is insufficient when it is exactly sufficient. Gated on `recordFetcher`
-  // like its two siblings, because that lane is the injected-fetcher lane and its exemption is the
-  // established one — a fixture clearance holds no live credential of any kind.
-  //
-  // This moves a failure earlier; it does not add one. Without it the run spends every register stage
-  // and dies at the grid, which is `research` in perplexity-server.mjs handing the model an ERROR string per
-  // call — the shape named "degrades every mark per-call and the batch dies all-failed only AFTER
-  // the paid frame turn" when it removed the knockout's refusal for the same reason in the other
-  // direction. ADR-0003 carries the ruling for both lanes.
-  if (!opts.recordFetcher) preflightResearchCredential(jobPolicy);
-  // — and the engine can COMPLETE A TURN, not merely be a file on disk. built the probe and
-  // wired it to `npm run setup`; a box that passed setup on Monday and signed out on Tuesday still gets
-  // caught at stage one, ninety minutes and a run directory later, wearing the shape of a model fault.
-  //
-  // LAST OF THE FOUR DOORS, because it is the only one that SPENDS: the binary, the free space and the
-  // register credential all refuse for nothing, so each gets its chance first and this one never runs for
-  // a fault a cheaper check would have named. Still BEFORE buildRunContext, which is the whole property —
-  // refused before a run directory, a frozen profile or a status sidecar exists. AWAITED: a floating
-  // promise is no refusal at all.
-  //
-  // IT REFUSES ONLY A CONFIGURATION FAULT, and fails open on everything else (probeVerdictLane). An
-  // upstream overload or a spent quota is not this box's defect and the run handles it better than the
-  // door can — the rate-limit park carries the provider's own resetsAt and resumes itself, and the
-  // recovery ladder's weather lane exists so a 529 does not spend the defect budget. Refusing there would
-  // replace a park that recovers with a terminal failure and a human.
-  //
-  // GATED like the credential check, not like the binary check, and that is the ruling rather than
-  // this file's: lanes with an injected recordFetcher and explicitly-selected knockout products do not
-  // pay for the turn. Both of those lanes DO spawn the engine (preflightEngineBinary's header says so in
-  // as many words), so the exemption is narrower than the reasoning that produced it — recorded on the
-  // issue rather than quietly widened here.
-  //
-  // The verdict is stamped into run.jsonl below, once there is a run dir to stamp it into — a fail-open
-  // that leaves no record is a check that has stopped existing.
-  let engineTurn = null;
-  // — the preflight is one of the two silences the D8 addendum found outside every stage, so it is
-  // TIMED here and WRITTEN further down, beside the verdict, for the reason the paragraph above already
-  // gives: there is no run dir yet. A span written here names `run` before it exists.
-  let engineTurnStartedMs = null, engineTurnEndedMs = null;
-  if (!opts.recordFetcher && !koSelector) {
-    engineTurnStartedMs = Date.now();
-    // `opts.engineTurnWait` stands in for the door's wait before it checks a locked sign-in refresh again,
-    // in tests; a run passes none and waits.
-    engineTurn = await preflightEngineTurn({ wait: opts.engineTurnWait });
-    engineTurnEndedMs = Date.now();
-    if (engineTurn.warning) console.error(engineTurn.warning);
-  }
-  const agent = opts.agent ?? config.defaultAgent;
-  // Run-dir + archive root follow the executing agent's workspace (passed by the runner from the queue it
-  // claimed); default to the legacy agent's. ctx.agent makes every stage — including the notify SEND — run as this agent.
-  // opts.codename rebuilds a DICTATED run identity. Two callers use it: RESUME (re-drive an existing run
-  // so idempotency reuses the prior, valid stages) and the runner's dispatch PRE-MINT (B1 — opts.minted:
-  // a FRESH identity, minted freshness-aware and persisted to the queue sidecar BEFORE any spend, so a
-  // crash-reclaim resumes this exact run instead of re-minting). Only a RESUME expects an existing run
-  // dir; a minted dispatch is a cold start in every other respect. The resume date is read off disk (not
-  // defaulted to today) so a resume works on any day after the original run.
-  const isResume = Boolean(opts.codename) && !opts.minted;
-  const resumeDate = isResume ? (opts.date ?? findRunDate(job, opts.codename, opts.studioRoot ?? config.studioRoot)) : opts.date;
-  if (isResume && !resumeDate)
-    throw new Error(`resume: no live run-dir for codename "${opts.codename}" (a delivered run is archived — use --experiment/compare instead)`);
-  const run = buildRunContext(job, { studioRoot: opts.studioRoot, archiveRoot: opts.archiveRoot, codename: opts.codename, date: resumeDate });
-  opts.__runRef = run;   // expose the run identity so pipeline()'s rate-limit catch can postpone+resume it
-  const P = paths(run.runDir);
-  if (opts.records === "replay") runLog(run.runDir, { event: "records-replay", why: "every record fetch is answered from this run's saved records; nothing is sent to the register" });
-
-  // RESUME guard: refuse to clobber a delivered run, and clear the stale .failed sentinel so a clean resume
-  // doesn't read as failed. (Fresh runs — including minted dispatches — never enter here.)
-  if (isResume) {
-    // A4 — "delivered" is not only the `.delivered` sentinel (written LAST): the delivery tail commits
-    // `_driver/delivery.json` + status.state "delivered" (report published, packet + outbox marker dropped)
-    // sub-seconds earlier. A crash in that window leaves a live dir with no sentinel; re-handing it off rm's
-    // .sent + receipts and re-sends → a duplicate report. Refuse on ANY of the three (the runner's reclaim
-    // router consults the SAME check — runDirDelivered — and marks such a dir .done rather than resuming).
-    const deliveredMarker = existsSync(join(run.runDir, ".delivered")) ? ".delivered"
-      : existsSync(driverDir(run.runDir, "delivery.json")) ? "_driver/delivery.json"
-      : (() => { try { return JSON.parse(readFileSync(join(run.runDir, "status.json"), "utf8"))?.state === "delivered" ? "status delivered" : null; } catch { return null; } })();
-    if (deliveredMarker) {
-      // `noResume`: the run identity EXISTS here — opts.__runRef was set just above — so the CLI's
-      // exit advice would otherwise print a `--resume` command that lands right back on this same refusal.
-      // The message already names the remedy; the flag is how the CLI knows not to contradict it.
-      const err = new Error(`resume refused: run ${run.codename} already delivered (${deliveredMarker} present) — re-run a stage with --experiment instead`);
-      err.noResume = true;
-      throw err;
-    }
-    // ── — A STOPPED RUN IS REFUSED WHILE ITS EVIDENCE IS STILL ON DISK ──────
-    //
-    // ORDER IS THE ENTIRE FIX, and it goes here rather than in the watcher above it. The three rmSync
-    // calls below are LOAD-BEARING for the legitimate path — a crash-postponed resume genuinely needs
-    // `.failed`/`.postponed`/`.parked` gone — so they cannot simply be dropped. What was wrong is that
-    // they ran BEFORE anything asked whether this run had been stopped, and the clearing is what made
-    // the next pass blind: on the measured run the first resume erased the markers and reset the record,
-    // and the second resume nine minutes later arrived at a run dir that no longer said it was over.
-    // One resurrection is a missing check; two is a missing check that destroyed the evidence of itself.
-    //
-    // The delivered branch above is the same rule for a different terminal, and this is the rest of the
-    // class it only covered one member of. `.cancel` is the REQUEST and a terminal status is the
-    // SETTLEMENT: either is a decision this path must not overrule, and stop_run writes only the first
-    // of them for a run that was still running when Stop was pressed.
-    //
-    // `noResume` for the same reason the delivered branch sets it: the run identity exists here, so the
-    // CLI's exit advice would otherwise print a `--resume` that lands straight back on this refusal.
-    const stopped = resumeStopRefusal(run.runDir);
-    if (stopped) {
-      const err = new Error(`resume refused: run ${run.codename} was stopped — ${stopped}. Nothing was cleared and nothing resumes; start a new run instead.`);
-      err.noResume = true;
-      throw err;
-    }
-    try { rmSync(join(run.runDir, ".failed")); } catch { /* absent is fine */ }
-    try { rmSync(join(run.runDir, ".postponed")); } catch { /* absent is fine — a queue-lane resume leaves no run-dir sentinel behind (2026-07-04 auto-recovery) */ }
-    try { rmSync(join(run.runDir, ".parked")); } catch { /* absent is fine — the grace-exit park sentinel is non-blocking BY DESIGN (a systemd restart is the normal SIGTERM case) */ }
-    note(`resuming ${run.codename} — cleared .failed; idempotency skips completed (valid) stages`);
-    // ── item 4 — SAY WHICH ENGINES THIS RUN HAS USED, AT EVERY RESUME ───────
-    //
-    // THE "STATED" READING, taken deliberately over the issue's alternative ("refused"). A refusal on
-    // engine mismatch is a new way for the product to withhold a report, and what the client receives
-    // is not a dev decision — it goes to the owner with options. Stating it costs nothing and is the
-    // half that was actually missing.
-    //
-    // WHY IT WAS MISSING, measured on that run's preserved artifact: `tokens.byEngine` is stamped at
-    // TERMINALS only (delivered, failed, cancelled, postponed, recovery-parked). That run resumed twice
-    // and reached no terminal — it was stopped by moving its directory — so its byEngine still reads
-    // openai-agent/openai/code, summing exactly to `total`, with none of the anthropic work the resumes
-    // did. The artifact a reader opens says "clean codex run". The issue predicted byEngine "will show
-    // both"; it does not, because nothing re-stamped it. A resume is precisely the moment the engine can
-    // change, so it is the moment worth recording — and it re-states everything the PREVIOUS resume did.
-    //
-    // Re-uses the one stamping function rather than adding a call site of its own kind: it fires at
-    // every terminal already, and tokens.mjs's own comment names "seven new call sites is how one gets
-    // missed". Non-fatal by construction (rollupTokens is all-zero without telemetry and never throws).
-    stampTokenRollup(run.runDir, "resumed");
-  }
-
-  ensureDriverDir(run.runDir);
-  mkdirSync(join(run.runDir, "register-units"), { recursive: true });
-  // — the doctrine store's identity, beside the run it served. The door already printed any warning
-  // to stderr, but a journal line is not the run record: methodology-witness.mjs records WHICH FILES each
-  // stage read, and this records whether the tree they came from is one anybody can check out. Written on
-  // both lanes (before the knockout dispatch below) and best-effort — bookkeeping never kills a run.
-  try {
-    const s = skillsStore.result;
-    runLog(run.runDir, { event: "skills-store", outcome: s.outcome, situation: s.situation, findings: s.findings,
-      store: s.store, repoRoot: s.repoRoot, branch: s.branch, head: s.head, detail: s.detail });
-  } catch { /* best-effort */ }
-  // ── THE PROFILE HALF OF THE SAME QUESTION ──────────────────────────────────
-  //
-  // The line above says which DOCTRINE tree served this run. Nothing said which CUSTOMER CONFIG store
-  // did, and that is the gap a day of rounds rode in on: the executing process held none of the store
-  // directories, every customer silently resolved to the bundled demo roster, and the scenario assert
-  // built to catch exactly that passed on every round — it checked the frozen framework was NON-EMPTY,
-  // and a bundled demo framework is non-empty.
-  //
-  // Written beside its sibling and best-effort for the same reason: a run record that can kill a run is
-  // worse than no run record. `bundled-fallback` is `outcome: pass` — it is a legitimate install on
-  // Generic defaults, and the point was never to refuse it but to make it SAY so.
-  try {
-    const pr = profileStoreResolution();
-    runLog(run.runDir, { event: "profile-store", outcome: pr.outcome, situation: pr.situation,
-      findings: pr.findings, store: pr.store, readRoots: pr.readRoots, detail: pr.detail });
-  } catch { /* best-effort */ }
-  // — WHICH ENGINE THIS RUN LOADED, beside the doctrine store whose commit sits one line up. Those
-  // two `head`s are different repositories, which is the whole reason this event names its key
-  // `engineHead`: reading the store's commit as the engine's is the mistake that produced two near-miss
-  // wrong certifications in two days, and wore `status:regressed` on a run that predates its fix.
-  //
-  // HERE, and not at publish. The pool copy has carried the sha since — but only for a run that
-  // PUBLISHED, and only in the pool, which is not the run dir that gets archived. A run that fails, is
-  // aborted, or is preserved by the e2e lane carries nothing. This line is the first thing written after
-  // the run dir exists, so every one of those keeps its attribution.
-  //
-  // WHAT IT STILL CANNOT COVER, said rather than discovered: a throw BEFORE the run dir is minted — the
-  // credential and disk preflights, the class `preRunFailNotify` exists for. There is no `_driver/` to
-  // write into, so those stay unattributable by construction, and the queue-level packet they do write
-  // is a notice rather than a provenance record.
-  //
-  // A RESUME WRITES ITS OWN ROW. `run.jsonl` already carries one `start` event per segment
-  // (backfill-started-at.test.mjs drives four), and a resumed segment can genuinely load different code
-  // from the segment that began the run. Two rows that disagree is a FACT about the run, not a defect:
-  // read the last one for what produced the delivered artifact, and read them all to see a mid-run
-  // upgrade. Best-effort like its neighbour — bookkeeping never kills a run.
-  try {
-    const e = engineProvenance();
-    runLog(run.runDir, { event: "engine-build", outcome: e.outcome, engineHead: e.engineHead,
-      engineBranch: e.engineBranch, engineDirt: e.engineDirt, detail: e.detail });
-    if (e.outcome !== "clean") note(`[engine-build] ${e.detail}`);
-  } catch { /* best-effort */ }
-  // — the engine-turn door's verdict, beside the run it let through. A refusal never reaches here (it
-  // throws before any of this exists), so this row answers the two questions that survive: did the door
-  // run at all on this lane, and — when it failed open on weather — WHAT it decided to let past. Without
-  // it a proceeded-past-weather run is indistinguishable on the record from one that probed clean. A door
-  // that checked twice, because the first check met a locked sign-in refresh, says so beside the second.
-  try {
-    if (engineTurn) runLog(run.runDir, { event: "engine-turn-probe", ok: engineTurn.ok === true,
-      engine: engineTurn.engine ?? null, mode: engineTurn.mode ?? null, basis: engineTurn.basis ?? null,
-      lane: engineTurn.ok === true ? "ok" : "weather", detail: engineTurn.detail ?? null,
-      ...(engineTurn.recheckedAfter ? { recheckedAfter: engineTurn.recheckedAfter } : {}) });
-    // — and the same probe as a SPAN the wall decomposition can attribute. Same measurement, second
-    // reader: the row above goes to run.jsonl, which that instrument skips by name.
-    if (engineTurn) recordSpan(run.runDir, "engine-turn", { startedMs: engineTurnStartedMs, endedMs: engineTurnEndedMs },
-      { ok: engineTurn.ok === true, engine: engineTurn.engine ?? null, basis: engineTurn.basis ?? null });
-  } catch { /* best-effort */ }
-  // stateReset (A5): the resume guard above DELIBERATELY cleared terminal sentinels, so the status
-  // seeds below (clearance seedRunStatus / knockout's own seed) may reopen a terminal state — that
-  // authority is threaded, never ambient (writeRunStatus refuses a terminal→running flip without it).
-  const ctx = { paths: P, job, run, agent, stateReset: isResume };
-  opts.__ctx = ctx;   // P2 — the outer wrapper reconciles this pass's stamps in its finally, success or failure
-  // WS-B: freeze the customer profile into the sidecar before ANY validated stage — early stages'
-  // idempotency re-validation and the receipts gate must all see the same per-run values. Minted on
-  // COLD starts only: a resumed pre-WS-B run stays legacy end to end (retro-minting would apply the
-  // identity join to a grid the worker was never dictated).
-  attachProfile(ctx, job, { write: !isResume });
-  // Search-depth spine — freeze WHICH product shape this run is BEFORE the framework freeze (Phase 2a:
-  // the knockout lane selects a different fallback framework, so the dispatch must happen first; the
-  // policy freeze reads only ctx.profile). Cold-start mint only, like the profile freeze: a resumed
-  // pre-spine run reads as legacy-implicit clearotron, never retro-minted.
-  attachSearchPolicy(ctx, job, { write: !isResume });
-  // acceptance 5 — recorded on EVERY run, ungraded included: "which ladder applied" must be a
-  // read, never an inference from which product the job asked for.
-  runLog(run.runDir, depthLadderEvent(ctx));
+  // The order, the run directory, the resume checks and the context (steps/open-run.mjs).
+  const { P, agent, ctx, isResume, run } = await openRun({ job, opts }, { attachProfile, attachSearchPolicy, depthLadderEvent, findRunDate, resumeStopRefusal });
   // ── Phase 2a dispatch: a knockout-pipeline policy runs the SLIM lane (pipeline-knockout.mjs) —
   // lazy import (a clearance run never loads it; also breaks the static cycle). Placed INSIDE the
   // run slot + pipeline()'s rate-limit postpone catch, with profile+policy frozen; the knockout lane
-  // owns its own framework freeze, status stepper, delivery handoff and failure tail (no recovery
-  // ladder — a knockout re-run is ~$2). attachSearchPolicy already refused any pipeline this build
-  // cannot execute, so reaching this branch means the lane is available.
+  // owns its own framework freeze, status stepper and delivery handoff, and ends a failed run through
+  // the clearance's own failure path (run-failed.mjs). attachSearchPolicy already refused any pipeline
+  // this build cannot execute, so reaching this branch means the lane is available.
   if (ctx.searchPolicy?.pipeline === "knockout") {
     const { knockoutInner } = await import("./pipeline-knockout.mjs");
     return await knockoutInner(ctx, job, opts);
   }
-  // doc 50 — freeze the framework-in-force's manifest beside it. write:true even on resume: a run frozen
-  // BEFORE doc 50 backfills its framework sidecar from the frozen frameworkPath (deploy-boundary case) so
-  // the v4 gates always have vocabulary; a run that already has one reads it verbatim (never re-derived).
+  // doc 50 — freeze the framework-in-force's manifest beside it. A resume reads the frozen one verbatim
+  // (never re-derived); a resume whose first pass stopped before this line mints it now, as that pass would
+  // have.
   attachFramework(ctx);
   // A pass opens before the delivery seam: until this pass's seam folds the record, a save writes the
   // model's record as it is (record-fold.mjs).
@@ -10702,7 +9474,8 @@ async function pipelineInner(job, opts = {}) {
     }
     return r.minted;
   };
-  // The settlement flush: ONE warm re-digest carrying every queued segment (plus the frame-reopen
+  // The settlement flush: ONE re-digest follow-up (a fresh session carrying its whole message, as every follow-up
+  // is; stages.mjs, followup composition) carrying every queued segment (plus the frame-reopen
   // segment when that block fired), sectioned, ending with the standard FULL re-emission contract.
   // Timeout ⇒ one retry on a fresh session, on the same model (the legacy frame-reopen re-digest's own
   // recovery). A flush that still fails leaves its items PENDING (durable — the late flush or the next
@@ -10797,12 +9570,6 @@ async function pipelineInner(job, opts = {}) {
       event: "intake-artifacts", rawRequest: Boolean(job.rawRequest), brief: Boolean(job.brief),
     });
   } catch (e) { note(`intake artifact write failed (non-fatal): ${e.message}`); }
-  // THE ORDER AS IT WAS ACCEPTED, kept whole with the run before any stage can fail, so a resume or a stage replay
-  // given no job file runs on the order and not on what status kept of it (accepted-order.mjs). Written once; an order
-  // given again by a resume's job file is kept beside it when it differs, and a job this run rebuilt is never kept.
-  try {
-    retainAcceptedOrder(run.runDir, acceptedOrder, { explicit: opts.explicitJob === true, rebuilt: opts.jobRebuiltFromStatus === true });
-  } catch (e) { note(`accepted-order write failed (non-fatal): ${e.message}`); }
   // WS2 (B3) — the code-authoritative INSTRUCTED SCOPE: what the job fields actually said,
   // written before any model breathes on them. The matter frame must quote these verbatim (the
   // frame validator compares against THIS file, never against the frame's own paraphrase) —
@@ -10867,7 +9634,7 @@ async function pipelineInner(job, opts = {}) {
     } else if (action === "digest-message") {
       ctx.lateBind = bind;                          // the digest stage message carries the re-classification block
     } else if (action === "warm-redigest") {
-      // exclusion IS a filter: one warm reconciliation on the digest session — re-classify, never re-run searches
+      // exclusion IS a filter: one reconciliation follow-up of the digest step, in a fresh session — re-classify, never re-run searches
       const followup = repairFollowup("register-digest:late-bind", { registerFindings: P.registerFindings, bind });
       const r = await runDigest(ctx, { force: true, followup, sessionKey: ctx.digestKey, trigger: "late-bind" });
       if (!r.ok) note(`late-bind re-digest failed (non-fatal — classification note will ride the report): ${r.fail}`);
@@ -10915,7 +9682,7 @@ async function pipelineInner(job, opts = {}) {
   runLog(run.runDir, { event: "start", agent, resume: isResume, fromStage: opts.fromStage ?? null, job: { id: job.id, slug: run.slug, codename: run.codename, customer: run.customer, forwarder: job.forwarder } });
   // THE SIGNA RUN MEMORY'S ATTEMPT (providers/_shared/answer-memory.mjs): whatever an earlier attempt held
   // is dropped, so a resume asks the register again, and the mode is fixed for this attempt.
-  ctx.answerMemory = beginAnswerMemory(run.runDir, REGISTER_PROVIDER);
+  ctx.answerMemory = beginAnswerMemory(run.runDir, ctx.register ?? REGISTER_PROVIDER);
   if (ctx.answerMemory.applies)
     runLog(run.runDir, { event: "answer-memory", mode: ctx.answerMemory.mode, ...(ctx.answerMemory.unknown ? { unrecognised: ctx.answerMemory.unknown } : {}) });
   if (ctx.answerMemory.unknown) note(`answer memory: ${ctx.answerMemory.switch}="${ctx.answerMemory.unknown}" is not off, watch or on, so this register's default applies (${ctx.answerMemory.mode})`);
@@ -10936,7681 +9703,117 @@ async function pipelineInner(job, opts = {}) {
   if (ctx.quote) runLog(run.runDir, { event: "quote", ...ctx.quote });
   note(`\n=== clearotron-driver: ${run.slug} / ${run.date}-${run.codename} (agent=${agent}) ===`);
 
-  // ── PUBLISHING AND DELIVERING: ONE PATH, FOR EVERY RUN THAT DELIVERS ─────────────────────────────────
-  //
-  // The run's last steps, from publishing the report to the delivered state, the packet and the archive. A run whose
-  // overall assessment completed reaches them at the end of the stage sequence. A run whose assessment could not be
-  // completed reaches them from deliverWithoutTheAssessment below, with no verdict: the same publish, the same packet
-  // and the same terminal, so the two deliveries cannot drift apart. `verdict` is the review's sign-off word, or null.
-  async function publishAndDeliver(verdict) {
-    let published;
-    if (existsSync(join(run.runDir, ".published"))) {
-      published = JSON.parse(readFileSync(join(run.runDir, ".published"), "utf8"));
-      note(`publish skip — already published → ${published.url}`);
-    } else {
-      // THE LAST READ OF THE STOP FLAG, and it sits HERE rather than above the branch: a run that has
-      // already published has delivered, and refusing at that point would record a delivered run as
-      // cancelled — the same defect pointed the other way.
-      assertNotCancelledBeforePublish(run.runDir, "clearance");
-      // Same fact, same moment, same words as the knockout lane: past this line a stop cannot prevent
-      // delivery, and the screen is told so rather than working it out.
-      writeRunStatus(ctx, { stoppable: false });
-      // THE PARTS THAT FAILED AND STILL SHIP (ruling 498): read from the run as it stands now, so a failure a
-      // retry or a resume recovered writes nothing, and written for the audit workbook in the shipped
-      // deferral row's words. The run's record keeps each raw cause; the reader's cell never carries one.
-      try {
-        const localLanguage = await localLanguageStateOf(run.runDir);
-        const degraded = writeDegradedParts(run.runDir, degradedParts(run.runDir, { localLanguage }));
-        runLog(run.runDir, { event: "degraded-parts", parts: degraded.parts.map((d) => ({ part: d.part, cause: d.cause })) });
-      } catch (e) { runLog(run.runDir, { event: "degraded-parts-failed", cause: String(e?.message ?? e).slice(0, 200) }); }
-      published = await publishReport({
-        runId: `${run.slug}-${run.date}-${run.codename}`, codename: run.codename,
-        reportMd: P.report, auditMd: P.audit, findingsJson: P.findings, poolRoot: config.poolRoot, poolUrl: config.poolUrl,
-        // WS-B/D3: the resolved account key (frozen sidecar) buckets the per-customer portal index and
-        // stamps meta.json; delivery selects the render/banner variant. Both default safe for old sidecars.
-        customerKey: ctx.profile?.profileKey ?? "generic", delivery: deliveryForRun(ctx),
-        // Instance #6 — the source run dir whose _records/ the render reads identifiers from (records were
-        // materialized into run.runDir/_records by the lint-pass assembleRunRecords). NOT the pool dir.
-        runDir: run.runDir,
-      });
-      sentinel(run.runDir, ".published", { runId: published.runId, url: published.url, counts: published.counts,
-        clientGate: published.clientGate });   // machine-QC record (observability) — decides nothing
-      // WHAT THE TWO GATES EACH SAID, in the run's own log, under names that say whose they are.
-      // `.published` carries `clientGate.released` beside `counts.gateViolations`, which are the verdicts
-      // of DIFFERENT gates: the first is the client-export refusal (evaluateClientGate), the second is the
-      // audit workbook's own build check (validateAudit), which is advisory by design and decides nothing
-      // about the release. Read as one gate they contradict each other — released, with a list of
-      // violations beside it — and a delivered run shipped looking exactly like that. Named separately
-      // here, with the advisory COUNT and the absences the gate did not close on, so the log a person
-      // reads after a run answers "what did the checks say" without opening the sentinel and knowing
-      // which field belongs to which gate.
-      runLog(run.runDir, { event: "publish-gates",
-        clientExport: published.clientGate?.released === false ? "closed" : "released",
-        clientExportReasons: published.clientGate?.reasons ?? [],
-        releasedDespiteAbsentInputs: (published.clientGate?.notClosing ?? []).map((n) => n.input),
-        auditWorkbookAdvisory: published.counts?.gateViolations?.length ?? 0,
-        // A workbook that failed to build cannot say so itself, so its failure is recorded here. Without
-        // these two fields the advisory's 0 read as a clean workbook when there was none.
-        auditWorkbook: published.auditFile ? "built" : published.auditError ? "failed" : "not built",
-        auditWorkbookError: published.auditError ? String(published.auditError).slice(0, 300) : null });
-      note(`published → ${published.url}`);
-    }
-    // Lifecycle honesty (charter P1 §4): publish is CODE, not a stage() call, so nothing ever advanced the
-    // displayed step past "Drafting the report" — advance it here (monotonic; the delivered terminal below
-    // completes the stepper). The skip branch advances too: a resumed run with .published is equally at 8/9.
-    recordTransition(ctx, "publish");
-    // ONE report: the two-bit delivery (clientReady/defects) is deleted. The machine-QC result is
-    // telemetry — the reviewer reads it on the audit workbook. A4: the
-    // stable reason codes still ride the event, so a classifier reading the spine never hashes prose.
-    if (published.clientGate && published.clientGate.released === false) {
-      runLog(run.runDir, { event: "machine-qc-failed", reasons: (published.clientGate.reasons ?? []).map(String), ...(published.clientGate.reasonCodes?.length ? { reasonCodes: published.clientGate.reasonCodes } : {}),
-        ...(published.clientGate.evaluationError ? { evaluationError: published.clientGate.evaluationError } : {}) });
-      note(`machine QC failed (${(published.clientGate.reasons ?? []).length} check(s)) — recorded on the audit workbook; the report is delivered as usual: ${(published.clientGate.reasons ?? []).join("; ")}`);
-    }
-    ctx.publishedUrl = published.url;
-    writeRunStatus(ctx, { url: published.url });
+  // How the run ends delivered (run-delivered.mjs).
+  const { deliverWithoutTheAssessment, publishAndDeliver } = await deliveryEndState({ P, agent, ctx, job, run }, { applyScopeFrontMatterOf, archive, assessmentCoverageOfRun, localLanguageStateOf, reportIdentityRecord, searchLogAuditMd, sentinel, setAsideTheAssessment, writeScopeFactsOf });
 
-    // Provider-usage rollup — billing-grade per-run Corsearch call counts from the plugin chokepoint
-    // ledger (every API call flows through it; all of a run's calls are done by the time we publish).
-    // Best-effort: a telemetry rollup must never affect a delivered run. `duplicate_fetches[_same/cross]`
-    // measures the Workstream-B dedup opportunity (and which scope matters) directly from data.
-    let providerTally = null;
-    try {
-      const provider = activeProvider().id;
-      const usage = tallyRegisterCalls(DEFAULT_LEDGER_PATH, `clearance-${run.slug}-${run.codename}-`);
-      // ── A WHOLE-RUN TALLY FILED UNDER ONE REGISTER SAYS SO WHEN THE RUN SERVED MORE THAN ONE ──────
-      //
-      // This label is resolved HERE, at publish, while the tally it labels spans the whole run. On a run
-      // whose register changed part-way that key is whichever register happened to be active at publish,
-      // and every call is filed under it — the confident-and-wrong shape the served field exists to end.
-      //
-      // The key's SHAPE is untouched because a ledger reads this map. What is added is the caveat, in the
-      // same record, so the two register fields in one status cannot silently disagree: the served list
-      // says two, and this says the tally covers both and could only be filed under one. Splitting the
-      // tally by register is a second question and is not answered here.
-      // ── THE LEDGER IS WHAT KNOWS, SO ASK IT BEFORE READING THE RECORD ───────────────────────────
-      //
-      // `registersServed` was written from ONE place: the adapter wrapper the record fetcher, the record
-      // lister and a gated plan executor pass through. A clearance that takes counts and never fetches a
-      // record went through none of them and recorded no register at all — the run could not say which
-      // vendor answered it, and `registersServedFrom` returned [] for a run that had called a register
-      // hundreds of times.
-      //
-      // Every one of those calls wrote a ledger row, and every row carries the vendor that produced it, so
-      // the tally just computed already holds the answer per call. Noting them here is not a second source
-      // of truth competing with the first: it is the same memoised setter, which unions and writes only on
-      // change, so the eager note during the run and this reconciliation at publish cannot disagree.
-      //
-      // WHY NOT `activeProvider()` HERE. That resolves the register active at publish, which is the
-      // confident-and-wrong answer this whole field exists to end — and on a run that changed register it
-      // would name one vendor while the rows name two. The rows are per call; the resolver is per moment.
-      for (const id of usage.providers) noteRegisterServed(run.runDir, id);
-      const served = registersServedFrom(readRunStatus(run.runDir));
-      const spans = providerUsageCaveat(served);
-      runLog(run.runDir, { event: "provider-usage", provider, ...(served.length > 1 ? { spans: served } : {}), ...usage });
-      writeRunStatus(ctx, { providerUsage: { [provider]: usage }, ...spans });
-      providerTally = { [provider]: usage };
-      // AD-4: the line prints the complete by_tool census, not a hand-picked subset — the R2 run printed
-      // "search=0" while 286 execute_plan calls carried the whole register workload, and the subset read
-      // as "no searches happened". An unclassified count is called out loudly: it means the KINDS list in
-      // provider-usage.mjs has fallen behind a tool name again.
-      const byTool = Object.entries(usage.by_tool ?? {}).map(([k, v]) => `${k}=${v}`).join(" ") || "(none)";
-      // …and the LEDGER's own state rides the same line (post-merge audit, problem 4). A missing or
-      // mis-pointed call ledger used to print `total=0 ((none))` — a clean-looking measurement of a
-      // measurement that never happened. `total=0` is only believable when the ledger was read.
-      // The PATH is named here and only here: note() is the driver's own stderr, internal by construction,
-      // while the tally itself rides status.json and the MCP tool responses (see emptyTally's ledger note).
-      const led = usage.ledger ?? null;
-      const ledgerNote = !led ? ""
-        : !led.configured ? " ledger=NOT-CONFIGURED — the zeros above are NOT a measurement"
-        : !led.present ? ` ledger=MISSING (${DEFAULT_LEDGER_PATH}) — the zeros above are NOT a measurement`
-        : !led.readable ? ` ledger=UNREADABLE (${DEFAULT_LEDGER_PATH}) — the zeros above are NOT a measurement`
-        : ` ledger=read ${led.rowsScanned} row(s)`;
-      note(`${provider} calls: total=${usage.total} (${byTool})${usage.unclassified ? ` UNCLASSIFIED=${usage.unclassified} — a tool name the KINDS list doesn't know` : ""} retries=${usage.retries} errors=${usage.errors} dup_fetch=${usage.duplicate_fetches} [same=${usage.duplicate_fetches_same_session} cross=${usage.duplicate_fetches_cross_session}]${ledgerNote}`);
-    } catch (e) {
-      note(`provider-usage rollup failed (non-fatal): ${e.message}`);
-    }
-
-    // Register calls are the SECOND cost axis and may dominate the LLM one at some depths, so the ledger
-    // row carries both or it cannot answer "what did this run cost us" on its own.
-    recordRunConsumption(ctx, { phase: "delivered", tokens: stampTokenRollup(run.runDir, "delivered"), providerUsage: providerTally });
-
-    // AD-4 — quoted-vs-actual turnaround. The consumption row already pairs the two figures on one line
-    // (quote + wallSec); nothing ever computed the comparison, which is how "quoted 1.5h, took 5.68h"
-    // stayed a forensic discovery instead of a logged fact. Unconditional: a missing quote is recorded as
-    // quotedHours:null (the run was never sized), never as silence. Every OTHER terminal writes the same
-    // row with its own `state` — see logTurnaroundReconciliation.
-    logTurnaroundReconciliation(run.runDir, ctx.quote, "delivered");
-
-    // C — compose the email body in CODE: a single inline-HTML fragment (the cover note — headline
-    // tier, the report link, and any surviving machine-check/scope/verdict flags). The mail tool passes
-    // a fully-HTML body through unchanged. The notify leaf only sends it
-    // verbatim. Non-fatal: the report is already published.
-    const emailNames = [...new Set([job.markName, job.name,
-      ...(Array.isArray(job.marks) ? job.marks.map((m) => m?.name) : [])].filter(Boolean))];
-    // — THE PRODUCT NAME, off the run's own frozen policy row, for the cover note and the subject.
-    // The same resolver the report itself renders from, so the covering email and the document cannot
-    // name two different products. Null on a run with no sidecar ⇒ both surfaces say nothing rather
-    // than asserting one.
-    const emailProductName = reportIdentityFor(ctx.searchPolicy ?? null).identity;
-    // A2 — thread the code-carried verdict + its conditions into the e-mail composer.
-    let emailVerdictOpts = { productName: emailProductName ?? undefined };
-    // SPREAD, never reassign: this used to replace the whole object, which would now drop productName
-    // above on every run that has a verdict sidecar — i.e. on every healthy run, and on no test.
-    try { const v = JSON.parse(readFileSync(driverDir(run.runDir, "verdict.json"), "utf8")); emailVerdictOpts = { ...emailVerdictOpts, verdict: v.verdict, conditions: clientConditions(v), tier: v.tier, statement: v.statement ?? null }; } catch { /* legacy path — no row */ }
-    // wp50 — thread the findings too: the table overlay's rating cells are code-bound to the canonical
-    // ratings (joinFindingToBlock), never the summary's own words.
-    try { emailVerdictOpts.findings = parseFindingsJsonLenient(readFileSync(P.findings, "utf8"))?.findings ?? undefined; } catch { /* no findings — table falls back to the summary words */ }
-    // doc 50 — the run's band ladder: the email table colours + sorts by the framework in force's own
-    // vocabulary (one framework's "Medium", the house's "Moderate", another's five bands) instead of the fixed table.
-    if (ctx.framework) emailVerdictOpts.bands = ctx.framework.bands.map((b) => ({ label: b.label, tone: b.tone }));
-    // ONE report (spec 2026-07-30 §6): the cover note is a cover note — verdict, one-line summary, link.
-    // A10 (addendum, 2026-07-30) NARROWS the old "machine-QC never on the email" rule rather than
-    // restating it: surviving predelivery machine-check failures are enumerated on BOTH delivery
-    // surfaces — the workbook Summary and this cover note — because deleted the closed-gate block
-    // that used to carry them and they were left living only in a _driver sink nobody reads. What the
-    // rule still forbids is the ENGINE'S OWN WORDS getting there: composeEmailHtml enumerates
-    // predelivery-lint's code-owned projection (deliveryFlagLines), never the checks' raw `detail` —
-    // this mail is addressed to job.forwarderEmail, which on a client-principal run is the client.
-    // THE REVIEWER'S OPEN POINTS NO LONGER RIDE THE EMAIL (owner ruling, 2026-10-01). This line read them
-    // out of the run record and handed them to the cover, which is how the sentence naming the independent
-    // reviewer reached a client after the 2026-09-24 ruling had already taken it off the report page: the
-    // section stopped being spliced into the body and started being posted to the email instead. Measured
-    // on the last thirty days of production, the report carries neither the heading nor that sentence since
-    // that ruling, and the email carries both. The record is still written beside the report for the
-    // reviewing lawyer; nothing reads it onto a client surface.
-    writeFileSync(P.emailBody, composeEmailHtml(P.report, published.url, published.auditFile, emailNames, deliveryForRun(ctx), emailVerdictOpts));
-    // ctx.verdict is set BEFORE the packet is composed, because the packet's copy reads it.
-    ctx.verdict = verdict;
-    // DELIVERY (Phase 2). The driver writes a self-contained delivery packet and leaves
-    // status.sendPending; the integrator sends off it. The report is ALREADY published by this point,
-    // so nothing here can lose it. There is no second delivery mode and no send stage: what used to sit
-    // behind `CLEAROTRON_DELIVERY=stage` asked a gateway agent to send the mail and a chat ping, and that
-    // gateway is not part of this product.
-    {
-      const mark = job.markName ?? job.name ?? job.ref ?? "the matter";
-      const ref = job.ref ? ` (${job.ref})` : "";
-      const vtag = emailVerdictOpts.tier ? ` Overall risk: ${emailVerdictOpts.tier}.` : "";   // the rating, never the reviewer's sign-off word (ruled 2026-09-22)
-      // self-contained packet (the email body HTML is embedded so the courier needs no path resolution
-      // across the archive move). The courier sends EXACTLY this — same subject, text and recipient the
-      // deleted send stages composed, now composed in code.
-      // ONE report: the packet carries no readiness bits — every delivered run routes the same way.
-      const packet = {
-        // ONE canonical runId form (charter P1 §3): `<slug>-<date>-<codename>` — the same id status.json,
-        // the pool and the knockout lane carry ("one format across every consumer"). The packet's runId
-        // NAMES the outbox marker below, and the dateless `<slug>-<codename>` form this lane used to mint
-        // is what split one delivery into TWO markers two minutes apart (the outbox rescan re-drops from
-        // status.runId, saw no marker under the dated name, and minted a second one — the 2026-07-19
-        // runId-form split recurring). resolveRun still accepts the dateless legacy form for historical
-        // packets; the .sent orphan guard (outbox-backoff.mjs) stays as defence and matches both forms.
-        runId: `${run.slug}-${run.date}-${run.codename}`, agent,
-        forwarder: job.forwarder, forwarderEmail: job.forwarderEmail, msgId: job.msgId,
-        conversationId: job.conversationId ?? null,   // reply-lane fallback when msgId is not a Graph id
-        subject: deliverySubject(emailProductName, job),
-        emailBodyHtml: readFileSync(P.emailBody, "utf8"),
-        // — the notice goes to whoever ASKED, with the operator's copy beside it and a
-        // stated reason when no number is held. It used to go to AGENT_WHATSAPP[agent], which is the
-        // operator on every run because every user shares one agent id.
-        ...whatsappRouting(job, agent),
-        whatsappText: `✅ Clearotron search for ${mark}${ref} is done.${vtag} Report: ${published.url}`,
-        url: published.url, verdict, markName: job.markName ?? job.name ?? null,
-      };
-      // A NEW send supersedes any previous one: .sent is PER-SEND idempotence, not per-run-lifetime.
-      // A run that terminally failed (notice sent → .sent written) and was then resumed to success
-      // would otherwise be SKIPPED by clearotron-deliver's .sent guard — the report would never send.
-      // The stale failure packet goes too, so the run dir tells exactly one delivery story. B4: the
-      // per-channel send receipts are per-SEND state exactly like .sent — a stale email receipt from
-      // the superseded send would make clearotron-deliver skip THIS packet's email, so they reset together.
-      try { rmSync(join(run.runDir, ".sent")); } catch { /* none */ }
-      try { rmSync(driverDir(run.runDir, "send-receipts.json"), { force: true }); } catch { /* none */ }
-      try { rmSync(driverDir(run.runDir, "failure.json")); } catch { /* none */ }
-      writeFileSync(driverDir(run.runDir, "delivery.json"), JSON.stringify(packet, null, 2) + "\n");
-      note(`delivery: handoff → wrote _driver/delivery.json (the forwarding agent's completion-watch sends email${packet.whatsappTo ? " + WhatsApp" : ""})`);
-      // Workstream B — instant delivery: drop a marker in the fixed outbox so the prelim-outbox.path unit
-      // wakes the forwarder agent NOW (vs ≤55m on the HEARTBEAT completion-watch, which stays as the
-      // backstop). The marker only names the agent to wake; status.sendPending + the run's .sent guard
-      // remain the source of truth, so a lost/cleared marker never double-sends nor loses a delivery.
-      // Best-effort — a marker-write failure must never break the run (the backstop still delivers).
-      try {
-        mkdirSync(config.outboxDir, { recursive: true });
-        writeFileSync(join(config.outboxDir, `${packet.runId}.pending`), `${agent}\n`);
-        note(`delivery: outbox marker → ${join(config.outboxDir, `${packet.runId}.pending`)} (instant wake)`);
-      } catch (e) {
-        note(`delivery: outbox marker write skipped (${String(e.message).slice(0, 100)}) — HEARTBEAT backstop still delivers`);
-      }
-    }
-
-    // Final status BEFORE archive so the renamed status.json carries the delivered state into the archive;
-    // then rebuild STATUS.md (which scans the archive too).
-    // spec 64 — the delivered status carries THE one risk statement too, so the run-status surface can
-    // speak the same sentence as every other surface (never a bare "CLEAR" beside an index "High").
-    // ONE report: the terminal state is "delivered", full stop — the delivery.{clientReady,defects}
-    // second bit is deleted with the split it narrated (machine QC lives on the workbook + telemetry).
-    // Lifecycle honesty (charter P1 §4): the terminal state advances the stepper — a delivered run with
-    // .published + .delivered on disk must never read "7/9" on any status surface (nothing runs after
-    // the packet, so no stage transition would ever finish the display sequence). finalStepFields ⇒ 9/9.
-    const deliveredAt = new Date().toISOString();
-    writeRunStatus(ctx, { state: "delivered", ...signoffPatch(verdict), statement: emailVerdictOpts.statement ?? undefined, caption: published.caption ?? undefined, url: published.url, deliveredAt, sendPending: true, ...finalStepFields() });
-    // — THE POOL COPY LEARNS ITS OWN TERMINAL STATE, HERE AND NOWHERE ELSE.
-    // `meta.json` cannot carry this: it is composed inside publish, before this line runs, so the state
-    // did not exist yet when it was written. This is the one moment where the terminal state and the
-    // pool directory are both in hand. Best-effort by construction — the report is already published
-    // and the run is already settled, so a failure to stamp is logged and the delivery proceeds.
-    const stamp = writeSettleStamp(published.poolRunDir, { state: "delivered", signoff: verdict, deliveredAt, runId: published.runId ?? run.runId, lane: "clearance" });
-    if (!stamp.written) note(`delivery: settle stamp not written (${stamp.reason})`);
-    endAnswerMemory(run.runDir);   // the held answers do not travel into the archive
-    const archived = archive(run);
-    rollupStatus(run.studioRoot);
-    // `notified: "pending"` and `sendPending: true` unconditionally, which is what the KNOCKOUT lane has
-    // always written one file over. They used to be three-valued because a send STAGE could report
-    // success, failure or "no chat binding" here; with the packet as the only lane the integrator owns
-    // the outcome, and a field that can hold exactly one value is not evidence of anything. `notifiedChat`
-    // is gone for the same reason rather than pinned to false — a key that is always there and always
-    // says no reads as a measurement.
-    sentinel(archived ?? run.runDir, ".delivered", { verdict, url: published.url, notified: "pending", archived, sendPending: true });
-    note(`=== DELIVERED (verdict ${verdict}) → ${published.url}${archived ? ` — archived → ${archived}` : ""} ===\n`);
-    return { ok: true, verdict, url: published.url, runDir: archived ?? run.runDir };
-  }
-
-  // ── WHEN THE OVERALL ASSESSMENT COULD NOT BE COMPLETED, THE RUN DELIVERS WHAT IT HOLDS ──────────────────────
-  //
-  // Reached from the synthesis site on the pass that resumes a run whose synthesis failed once its recovery was spent:
-  // the catch recorded the assessment as not completed and parked the run (parts-not-completed.mjs). The run holds
-  // everything except the assessment, and delivers the same page, workbook and email, built from that:
-  //   · every assessment artifact an earlier pass left is set aside, so no rejected draft and no earlier verdict can
-  //     reach a surface, and the run's status drops the rating it may still carry;
-  //   · the audit is the search log the run holds, without the records the assessment would have rated and without
-  //     placement's set-asides, which beside no finding would read as a list of only dismissals;
-  //   · the coverage rows are the register's own coverage ledger, each with its recorded status;
-  //   · report.md carries the run's identity and, as its conclusion, the one sentence for this state and the shipped
-  //     action line, which the page, the email and the run list all read;
-  //   · the workbook's "Findings" row says the part was not completed (degraded-parts.mjs).
-  // Then it publishes and delivers as every run does. A failure from here on is an ordinary failure: the record exists,
-  // so the catch does not route it again, and the run ends with the stop notice.
-  async function deliverWithoutTheAssessment(open) {
-    note(`[assessment] the overall assessment was not completed at ${open.stage ?? "an unrecorded stage"} — delivering what the run holds, with the gap stated`);
-    const setAside = setAsideTheAssessment(P, run.runDir);
-    writeRunStatus(ctx, { tier: null, statement: null, ...signoffPatch(null) });
-    let audit = null;
-    try {
-      const a = searchLogAuditMd(P);
-      writeFileSync(P.audit, a.md);
-      audit = a.counts;
-    } catch (e) { runLog(run.runDir, { event: "audit-build-failed", reason: String(e?.message ?? e).slice(0, 160) }); }
-    const coverageRows = assessmentCoverageOfRun(run.runDir);
-    atomicWrite(driverDir(run.runDir, NOT_COMPLETED_DIR, "assessment-coverage.json"), JSON.stringify({ rows: coverageRows }, null, 2) + "\n");
-    writeFileSync(P.report, renderReportOverview({ overall_caption: assessmentNotCompletedNote(), handling_note: null, actions: [], methodology: null },
-      reportIdentityRecord(job, ctx, run.runDir, null)));
-    writeScopeFactsOf(ctx, P, run.runDir);
-    applyScopeFrontMatterOf(P, run.runDir);
-    runLog(run.runDir, { event: "assessment-not-completed-delivery", stage: open.stage ?? null, sig: open.sig ?? null,
-      setAside, coverageRows: coverageRows.length, audit });
-    return await publishAndDeliver(null);
-  }
-
-  try {
-    // Phase 0 done in code (slug/codename/run-dir/customer). Phase 1+2 stages:
-    must(await stage("matter-frame", ctx), "matter-frame");
-    await deriveIntakeAsks(ctx);   // A6: freeze the intake-ask register (one save-only followup if the section is missing)
-    must(await stage("clearance-variants", ctx), "clearance-variants");
-    deriveScopeLedgerJson(ctx);   // frame-omission design: code-derive scope-ledger.json from the validated prose (never-kill)
-    deriveFormNeighbourhood(ctx); // mechanical FORM band: code-derive form-neighbourhood.json from the manifest's distinctive element(s) — the model-free form floor the register funnel searches (never-kill)
-    await verifyAndRecordHouseElement(ctx, opts);   // ask the register who owns the frame's proposed house element, BEFORE the plan is compiled from it
-    attachRegisterPlan(ctx);      // WS2 (B3): compile/freeze/reuse the deterministic register plan (flag-gated; frozen plan wins on resume; never-kill on mint)
-
-    // Phase 2b slice 1 — the jx candidate fold (the native-language investigation): native-script
-    // register candidates for the
-    // frozen policy's jxLanes component, folded run-local onto the transliteration-numeric axis so the
-    // unit spawn (axis-from-plan below), coverage skeleton, taint chain and clean gates inherit with
-    // zero new wiring. Lazy import (a plain clearotron never loads jx machinery — byte-identical off);
-    // never-kill inside runJxCandidateFold (a degraded lane logs + receipts, the Latin plan stands).
-    if (ctx.searchPolicy?.components?.jxLanes && ctx.registerPlan) {
-      const { runJxCandidateFold } = await import("./jx.mjs");
-      const jxr = await runJxCandidateFold(ctx, job, opts,
-        { runLog: (d, row) => runLog(d, row), note, inScopeClasses: inScopeClassList(job, ctx.profile).map(String) });
-      if (jxr.cause && !jxr.folded) runLog(run.runDir, { event: "jx-candidate-fold-skipped", cause: jxr.cause });
-    }
-
-    const manifestForAxes = readFileSync(P.variantManifest, "utf8");
-    const axes = decideAxes(manifestForAxes);
-    // WS2 (B3) — in plan mode the PLAN is the search authority: any axis it carries entries
-    // for must spawn, or its qids would read as unexecuted at fan-in for a unit that never existed.
-    if (ctx.registerPlan) for (const a of new Set(ctx.registerPlan.entries.map((e) => e.axis))) {
-      if (!axes.includes(a)) { axes.push(a); runLog(run.runDir, { event: "axis-from-plan", axis: a }); }
-    }
-    // Grid key dictation + batching (2026-06-12, Ember Guard truncation): the common-law message hands
-    // the worker the EXACT matrix keys the receipts gate will demand (dictate, don't infer — kills the
-    // key-mismatch class) and a batch plan sized under the measured-safe grid (~105 cells/call): the
-    // 224-cell single call truncated mid-matrix and correctly hard-failed three times.
-    ctx.gridVariants = parseManifestVariants(manifestForAxes);
-    // — ZERO VARIANTS IS AN ANSWER OR A FAILURE, AND THE DIFFERENCE DECIDES A DELIVERED CLEARANCE.
-    // Zero here silently disarms the split at the guard below (`ctx.gridVariants?.length`), the run takes
-    // the legacy spec-less path, and it delivers CLEAN over a dictated meaning sweep that never ran. That
-    // is what happened on 2026-08-15: 84 variants written, 0 reachable, clean delivery.
-    //
-    // The parser cannot tell "this matter has no variants" from "I could not find the table" — but this
-    // caller can, because the audit reports what it SAW. Loud, and deterministic: the manifest is on disk
-    // and a re-sample re-derives the identical failure, so the ladder has nothing to offer it.
-    {
-      const why = variantsParseFailure(manifestForAxes);
-      if (why) throw new StageFailure("variants", why, undefined, { failClass: "deterministic" });
-    }
-    ctx.axes = axes;
-    // Register-only (2026-07-21): the clearance shape with its unregistered-use half removed. ONE
-    // predicate, read from the FROZEN policy, joined by everything below — the grid spec, the gather
-    // fan-out, the three grid-assuming recovery passes, the stage prompts and the risk statement's
-    // basis. An archived run whose frozen policy predates the component reads as grid-ran, unchanged.
-    const runCommonLaw = !ctx.registerOnly;   // derived once at policy freeze, so a resume carries it too
-    if (!runCommonLaw) runLog(run.runDir, { event: "register-only", commonLawGrid: false });
-    runLog(run.runDir, { event: "axes", axes });
-    note(`gather axes: ${axes.join(", ")}${runCommonLaw ? " + common-law" : " (register only — no common-law / marketplace grid)"}`);
-
-    deriveGridSpec(ctx);   // — the grid contract is a NAMED derivation the --experiment rig replays
-
-    // Phase 4 slice 2 — the zh SERP platform grid. item 8 removed the CLEAROTRON_JX_SERP_GRID arm;
-    // the condition that remains is the one the run already discloses, the product carrying jxLanes.
-    // Never-kill inside runJxSerpGrid; runs pre-gather so its findings exist for the nativeread unit,
-    // and the unit itself still refuses on a killed lane, an absent lane decision or no SERP capability
-    // — each with a cause that reaches the slice statement.
-    if (ctx.searchPolicy?.components?.jxLanes) {
-      const { runJxSerpGrid } = await import("./jx-units.mjs");
-      const sg = await runJxSerpGrid(ctx, job, opts, { runLog: (d, row) => runLog(d, row), note });
-      if (sg.cause && !sg.ran) runLog(run.runDir, { event: "jx-serp-grid-skipped", cause: sg.cause });
-    }
-
-    // Step 2A/2B — fan-out (batched ≤ gatherConcurrency) then the code-side fan-in barrier.
-    // Property 1 (frame-omission design): the BLIND re-derivation runs as a sibling of the WHOLE gather,
-    // not as a gather member — it reads only the raw instruction (no tool calls), so under the turn cap it
-    // slots in as a gather unit frees and finishes inside the slowest gather member's wall (≈ zero added
-    // critical-path latency). NON-FATAL: a flake notes-and-skips (frame-diff then sees no blind model and
-    // is skipped) and never rejects the Promise.all that carries the $40 gather.
-    // A1 SPLIT: when armed (ctx.clHalfTerms — flag on + dictated spec + ≥2 terms + not a pre-split
-    // resume), the single common-law member becomes TWO concurrent half-grid members (the half id rides
-    // the member's axis field, exactly like a register unit's axis). Flag off / self-disarmed keeps the
-    // original single-member assembly VERBATIM below — that branch IS the rollback path.
-    const clSplit = Boolean(ctx.clHalfTerms);
-    // — RECORD THE CHOICE, HERE, where both paths converge. Not inside deriveGridSpec's arming
-    // block: that block does not execute at all on the spec-less path, which is exactly the path the
-    // 2026-08-11 codex R2 run took, and a record that only exists when the split arms cannot explain a
-    // run that did not split. `decided` is derived from ctx.clHalfTerms — the same value the assembly
-    // below branches on — so the file can never disagree with what the run actually did.
-    {
-      const d = ctx.clSplitDecision ?? { path: "unsplit", reason: "not-recorded", detail: "deriveGridSpec did not run on this path", flag: null, terms: null };
-      // The recorded reason and the assembly are derived from DIFFERENT things — the reason from which
-      // branch of deriveGridSpec ran, the path from ctx.clHalfTerms. A disagreement means the record is
-      // explaining a path the run did not take, which is worse than no record at all: it is a confident
-      // wrong answer to the exact question was opened to answer. Never silent.
-      const agrees = (d.path === "split") === clSplit;
-      const decision = { ...d, path: clSplit ? "split" : "unsplit",
-        members: clSplit ? GRID_SEATS.map((h) => `common-law-half:${h}`) : (runCommonLaw ? ["common-law"] : []),
-        ...(agrees ? {} : { reason: "selector-record-disagreement", recorded_reason: d.reason,
-          detail: `the run assembled the ${clSplit ? "split" : "unsplit"} path but deriveGridSpec recorded "${d.reason}" (${d.path}) — the selector and its record have diverged and the recorded reason cannot be trusted` }) };
-      atomicWrite(P.commonLawPath, JSON.stringify(decision, null, 2) + "\n");
-      runLog(run.runDir, { event: "common-law-path", path: decision.path, reason: decision.reason, terms: decision.terms, ...(agrees ? {} : { disagreement: true, recorded_reason: d.reason }) });
-      note(`common-law path: ${decision.path} — ${decision.detail}`);
-      // (3) — AND THEN STOP. A disagreement was recorded and the run carried on, which left the
-      // one artifact opened to answer "which path did this take" saying, in effect, "I do not know" —
-      // while every downstream common-law count was assembled anyway and delivered as if it did.
-      //
-      // ORDER IS THE WHOLE POINT: the write, the journal row and the note all run FIRST. A throw above
-      // them would kill the run with nothing on disk to diagnose from, which is the failure mode this
-      // record exists to prevent, arriving through the guard meant to enforce it.
-      //
-      // THIS CANNOT FIRE ON ANY PATH THE ENGINE HAS TODAY, and that is stated rather than glossed: both
-      // sides of `agrees` descend from the single deriveGridSpec(ctx) call ~30 lines above — every arm
-      // that records path "split" also sets ctx.clHalfTerms, and every arm that does not, does not — so
-      // they cannot disagree. The `?? { reason: "not-recorded" }` default has no live producer either
-      // (the only other ctx builder, reconstructCtx, feeds repairStale and the --experiment rig, and
-      // neither reaches this line). It buys a tripwire for the refactor that splits those two
-      // derivations, and nothing before then. Deterministic: a re-sample re-derives the identical
-      // divergence, so the retry ladder has nothing to offer it.
-      if (!agrees) throw new StageFailure("grid-spec",
-        `the run assembled the ${clSplit ? "split" : "unsplit"} path but deriveGridSpec recorded "${d.reason}" (${d.path}) — the selector and its record have diverged, so no downstream common-law count can be trusted`,
-        undefined, { failClass: "deterministic" });
-    }
-    const gather = clSplit
-      ? [...GRID_SEATS.map((h) => ({ name: "common-law-half", axis: h })), ...axes.map((a) => ({ name: "register-unit", axis: a }))]
-      : [...(runCommonLaw ? [{ name: "common-law" }] : []), ...axes.map((a) => ({ name: "register-unit", axis: a }))];
-    // The common-law member's result, BY NAME. It was read as gatherResults[0] in four places, which was
-    // only ever correct because the member is built first and always present — drop it for a register-only
-    // run and [0] silently becomes a register unit, and the grid-ledger pass below would then send a
-    // grid-ledger save followup addressed to the common-law session into it rather than skip (its guard is
-    // gridVariants × !skipped × no-ledger, and gridVariants comes from the manifest either way).
-    const clIndex = gather.findIndex((g) => g.name === "common-law");
-    const clMember = () => (clIndex >= 0 ? gatherResults[clIndex] : null);
-    // The plan-direct executor, resolved ONCE for the code-side saturation-probe unit here AND the
-    // fan-in repair kit below (same precedence: injected test executor > provider lane > null when
-    // dispatch is off / the provider has no adapter). See runSaturationProbeCodeSide for why the
-    // saturation-probe member bypasses the agent whenever this lane and a frozen plan exist — the
-    // agent member below stays the verbatim fallback (and the mock harness's default path).
-    // CLEAROTRON_PLAN_DISPATCH is a default-ON gate. It used to test `!== "off"` alone, so the `=0` idiom
-    // that governance documents for it — and that every sibling gate on that line honours — left the
-    // lane fully ARMED. envGateOn accepts both spellings rather than switching to a bare `!== "0"`:
-    // deployments and 15 test files already say "off", and breaking that would arm dispatch silently,
-    // which is the same bug in the other direction.
-    const planExec = opts.planExecutor
-      ?? (envGateOn("CLEAROTRON_PLAN_DISPATCH") && activeProvider().executePlan
-        ? (args, c) => noteAdapter(c ?? ctx, activeProvider()).executePlan(args, c) : null);
-    // Kill switch CLEAROTRON_SATPROBE_CODESIDE=0 (the inline `!== "0"` pattern): legacy mock harnesses
-    // opt out — their scenarios pre-date the code-side member and script the AGENT path (and an armed
-    // real executor lane would dial the provider from a test). Production default is ON.
-    const satProbeCodeSide = process.env.CLEAROTRON_SATPROBE_CODESIDE !== "0" && Boolean(planExec && ctx.registerPlan);
-    // The units this run records as unfinished are taken as their bands stand (unfinishedUnitAsItStands, above).
-    const unfinishedUnits = new Set(readPartNotCompleted(run.runDir, "searches")?.unfinished_units ?? []);
-    const [gatherResults, blindRes] = await Promise.all([
-      runBatched(gather, config.gatherConcurrency, (g) =>
-        g.name === "register-unit" && unfinishedUnits.has(g.axis)
-          ? unfinishedUnitAsItStands({ ...ctx, axis: g.axis })
-          : g.name === "register-unit" && g.axis === "saturation-probe" && satProbeCodeSide
-          ? runSaturationProbeCodeSide({ ...ctx, axis: g.axis }, planExec)
-          : stage(g.name, { ...ctx, axis: g.axis })),
-      stage("blind-frame", ctx).catch((e) => ({ ok: false, fail: String(e?.message ?? e) })),
-    ]);
-    if (!clSplit && clMember()?.ok) recordStatusesFromFindings(P.commonLaw); if (!blindRes.ok) {
-      note(`blind-frame failed (non-fatal — no frame-diff/reopen this run): ${blindRes.fail}`);
-      runLog(run.runDir, { event: "blind-frame-skipped", reason: blindRes.fail });
-    }
-    // T1 (J1c) — terminal quarantine BEFORE the must barrier: after the stage's own retry
-    // ladder (which now carries a warm re-emit demand naming the fix), a run must never die on a
-    // model-authored VOCABULARY miss in the band. The driver repairs the band in code (qid-less
-    // unknown-state blocks → honest `incomplete` descriptors judgment reads like any crowd), then
-    // re-judges with the SAME stage validator; on a pass the member is recovered. A qid-stamped
-    // unknown state (tool bug) or any other defect falls through to must() unchanged.
-    for (let i = 0; i < gather.length; i++) {
-      const g = gather[i], r = gatherResults[i];
-      // register units only — under the A1 split the common-law halves ALSO carry an axis (the half id),
-      // and their quarantine lane is the dedicated half fan-in below, never the register band repair.
-      if (g.name !== "register-unit" || r?.ok || !/named_band_state_invalid/.test(String(r?.fail ?? ""))) continue;
-      const bandPath = P.registerBand(g.axis);
-      try {
-        const { blocks, quarantined } = quarantineUnknownStates(readFileSync(bandPath, "utf8"));
-        if (!quarantined.length) continue;   // not a qid-less vocabulary miss — fail as before
-        writeFileSync(`${bandPath}.tmp`, JSON.stringify(blocks, null, 2) + "\n");
-        renameSync(`${bandPath}.tmp`, bandPath);
-        const v = validators.registerUnit(P.registerUnit(g.axis), readFileSync(P.registerUnit(g.axis), "utf8"));
-        if (!v.ok) { note(`register-unit ${g.axis}: band still invalid after quarantine (${v.reason}) — failing as before`); continue; }
-        runLog(run.runDir, { event: "named-band-state-quarantined", axis: g.axis, states: quarantined.map((q) => q.state), queries: quarantined.map((q) => q.query.slice(0, 60)) });
-        note(`register-unit ${g.axis}: quarantined ${quarantined.length} unknown-state judgment block(s) → incomplete descriptors (recovered; judgment weighs the descriptors)`);
-        gatherResults[i] = { ...r, ok: true, fail: null, bandQuarantined: true };
-      } catch (e) {
-        note(`register-unit ${g.axis}: band quarantine not applicable (${String(e.message).slice(0, 100)}) — failing as before`);
-      }
-    }
-    // ── A1 split fan-in step 1: half-failure quarantine (mirrors the band-quarantine above) ──────────
-    // ONE half failing on TRANSIENT INFRASTRUCTURE (isFallbackEligible — its retry ladder already ran
-    // out) must not kill the gather the other half completed: the merge below records every cell the
-    // failed half owned as an HONEST GAP against the FULL spec — never a thinner-but-valid ledger, every
-    // dictated cell stays accounted — and those gaps ride the existing coverage-closure pass (the error
-    // text deliberately reads non-mechanical, so they partition CLOSABLE and get the in-loop close
-    // attempt; whatever survives ships as the attempted-and-unreachable disclosure). CELLS only: the
-    // half's dictated CONNOTATION queries have no gap vocabulary, so the merge gate below runs a
-    // per-query identity join and fails TRANSIENT when any are unrecorded — a quarantine survives to
-    // the closure pass only when the failed half's meaning receipts made it into its ledger. A CONTENT failure
-    // (validator reject — e.g. a dropped dictated cell) and a both-halves failure fall through to must()
-    // unchanged: those are quality gates, and quarantining them would be the false-clean disease.
-    const clHalves = clSplit ? Object.fromEntries(GRID_SEATS.map((h, i) => {
-      const r = gatherResults[i];
-      return [h, { i, ok: !!r?.ok, skipped: !!r?.skipped, sessionKey: r?.sessionKey, fail: r?.fail ?? null, quarantined: false }];
-    })) : null;
-    if (clSplit) {
-      const failed = GRID_SEATS.filter((h) => !clHalves[h].ok);
-      if (failed.length === 1 && isFallbackEligible(clHalves[failed[0]].fail)) {
-        const h = failed[0];
-        clHalves[h].quarantined = true;
-        gatherResults[clHalves[h].i] = { ...gatherResults[clHalves[h].i], ok: true, fail: null, clHalfQuarantined: true };
-        note(`common-law-half:${h} failed on transient infrastructure (${clHalves[h].fail}) — quarantined: its cells merge as honest gaps and ride the coverage-closure pass`);
-        runLog(run.runDir, { event: "common-law-half-quarantined", half: h, fail: String(clHalves[h].fail).slice(0, 140) });
-      }
-    }
-    // The engine's own re-issue, spent at most once per run — the bound spans BOTH the half-stage
-    // hook below and the merge gate's disclosure, so a run never buys the same search twice.
-    let clConnotationReissueSpent = false;
-    // ── THE MEANING HALF FELL SHORT BY A SEARCH OR TWO: RE-ISSUE, THEN DELIVER ───────────────────
-    //
-    // This is where the clearance actually died. The half's own validator refuses when a dictated
-    // meaning search is missing from its receipts, and every attempt refused identically — eight of
-    // them — so the run was thrown away with fifty-nine of sixty searches done and recorded.
-    //
-    // Quarantine above cannot help here: that is for a half that failed wholesale on transient
-    // infrastructure, where re-running the half converges. This half SUCCEEDED at almost everything.
-    // So the engine re-issues the missing searches itself, through the same provider, and re-judges the
-    // half on its own artifact. If they landed, the half is simply valid and nothing is disclosed.
-    //
-    // If they did not, the half is accepted WITH THE SHORTFALL RECORDED — an honest gap per unfinished
-    // search, carrying its term, which the merge gate then discloses and the coverage row reads. That is
-    // the owner's ruling of 2026-09-17 and it is not the false-clean the gates guard: false-clean is
-    // silence, and this says on the client's own page which search did not complete.
-    if (clSplit && !clHalves[MEANING_SEAT].ok && /connotation_query_unrecorded/.test(String(clHalves[MEANING_SEAT].fail ?? ""))) {
-      const h = MEANING_SEAT;
-      let short = [];
-      try {
-        const spec = JSON.parse(readFileSync(P.gridSpecHalf(h), "utf8"));
-        const halfLedger = JSON.parse(readFileSync(P.commonLawGridHalf(h), "utf8"));
-        short = findDroppedConnotationQueries(spec, halfLedger);
-        if (short.length) {
-          runLog(run.runDir, { event: "connotation-reissue", half: h, count: short.length });
-          note(`the meaning half recorded all but ${short.length} of its dictated searches — the engine re-issues `
-            + `${short.length === 1 ? "it" : "them"} itself rather than asking for the sweep again`);
-          clConnotationReissueSpent = true;
-          const reissuer = opts.connotationReissuer ?? defaultConnotationReissuer;
-          const r = await reissuer(short, { spec, rawPath: driverDir(run.runDir, "web-results", `connotation-reissue-${h}-${Date.now()}.json`) });
-          runLog(run.runDir, { event: "connotation-reissue-result", ok: !!r?.ok,
-            recovered: Array.isArray(r?.rows) ? r.rows.length : 0,
-            cause: r?.ok ? null : String(r?.cause ?? "").slice(0, 160) });
-          const rows = (r?.ok && Array.isArray(r.rows)) ? r.rows : [];
-          halfLedger.extras = halfLedger.extras ?? {};
-          halfLedger.extras.pr_risk = [...(Array.isArray(halfLedger.extras.pr_risk) ? halfLedger.extras.pr_risk : []), ...rows];
-          const stillShort = findDroppedConnotationQueries(spec, halfLedger);
-          if (stillShort.length) {
-            halfLedger.gaps = Array.isArray(halfLedger.gaps) ? halfLedger.gaps : [];
-            for (const q of stillShort)
-              halfLedger.gaps.push({ term: q, platform: "connotation",
-                error: "the search did not complete after a re-ask and a re-issue by the engine" });
-            runLog(run.runDir, { event: "connotation-unfinished-disclosed", count: stillShort.length, half: h });
-            note(`${stillShort.length} dictated meaning quer${stillShort.length === 1 ? "y" : "ies"} did not complete — `
-              + "recorded as honest gaps and DISCLOSED on the coverage row; the run delivers the rest");
-          }
-          atomicWrite(P.commonLawGridHalf(h), JSON.stringify(halfLedger, null, 2) + "\n");
-          // The half is accepted on its re-judged artifact. Same shape as quarantine above: the stage is
-          // not re-run and the model is not asked again.
-          clHalves[h].ok = true;
-          gatherResults[clHalves[h].i] = { ...gatherResults[clHalves[h].i], ok: true, fail: null, clHalfShortfall: stillShort.length };
-        }
-      } catch (err) {
-        runLog(run.runDir, { event: "connotation-reissue-failed", error: String(err?.message ?? err).slice(0, 160) });
-      }
-    }
-    // A REGISTER UNIT THAT WROTE NO RESULT is the searches not completed, after every other member has been held to its
-    // own failure as before (unfinishedUnitAsItStands, above). A rate limit keeps its own path.
-    const unfinished = gather.map((g, i) => i).filter((i) => gather[i].name === "register-unit" && gather[i].axis
-      && !gatherResults[i]?.ok && !gatherResults[i]?.resetsAt && !existsSync(P.registerUnit(gather[i].axis)));
-    gather.forEach((g, i) => { if (!unfinished.includes(i)) must(gatherResults[i], g.name + (g.axis ? `:${g.axis}` : "")); });
-    if (unfinished.length) {
-      const axesOut = unfinished.map((i) => gather[i].axis), first = gatherResults[unfinished[0]];
-      throw Object.assign(new StageFailure(`register-unit:${axesOut[0]}`, first?.fail ?? "failed", undefined, { quantity: first?.quantity }),
-        { notCompletedPart: "searches", unfinishedUnits: axesOut,
-          excludedSlices: axesOut.flatMap((a) => slicesUnitNeverReached(P, ctx.registerPlan, a)) });
-    }
-    // winning session key per axis → a later escalation resumes the EXACT key the unit succeeded on.
-    // (register units only — a common-law half's axis is its half id, tracked in clHalves, never here.)
-    const unitKey = {};
-    gather.forEach((g, i) => { if (g.name === "register-unit" && g.axis) unitKey[g.axis] = gatherResults[i].sessionKey; });
-
-    // ── A1 split fan-in step 2: merge the half artifacts into the canonical pair ─────────────────────
-    // The two plugin-written half ledgers merge in CODE (mergeGrids — cells union by term|platform, gaps
-    // recomputed against the FULL canonical spec, extras.pr_risk concat+dedup) into the ONE canonical
-    // common-law-grid.json, and the half findings concatenate into the ONE canonical common-law-
-    // findings.md, so EVERYTHING downstream (fan-in barrier, receipts/connotation gates, closure,
-    // synthesis, replay) reads exactly the artifacts a single-member run would have written. Re-run after
-    // every routed half followup (closure / frame-reopen) — the half files stay the source of truth and
-    // the canonical pair is always derived, which also makes the merge resume-idempotent.
-    const mergeCommonLawArtifacts = !clSplit ? null : ({ discloseUnfinished = false } = {}) => { for (const h of GRID_HALVES) recordStatusesFromFindings(P.commonLawHalf(h), { half: h });   // each half's ledger statuses, recorded by code where the seat made no call (ruling 2026-10-01)
-      // Each half's coverage truth = its plugin-written main ledger FOLDED with any plugin-written
-      // supplementary sibling(s) the closure lane produced. Returns the batches as an ARRAY (mergeGrids'
-      // batchesOf flattens it, cells union across all of them); a missing/corrupt main leaves its cells to
-      // re-derive as gaps exactly as before. The supplementary siblings are existsSync-guarded so the
-      // FAN-IN merge (which runs BEFORE any supplementary exists) never throws (caveat 2). Only the plugin
-      // writes these files — never an agent — so a parse here is defensive, not a live failure mode.
-      const readHalfLedger = (h) => {
-        const batches = [];
-        try { batches.push(JSON.parse(readFileSync(P.commonLawGridHalf(h), "utf8"))); } catch { /* main missing/corrupt → its cells re-derive as gaps */ }
-        for (const tag of CL_SUPP_TAGS) {
-          const sp = P.commonLawGridSupp(h, tag);
-          if (existsSync(sp)) { try { batches.push(JSON.parse(readFileSync(sp, "utf8"))); } catch { /* a corrupt supp sibling contributes nothing; its cells stay gaps */ } }
-        }
-        return batches.length ? batches : null;
-      };
-      // GRID halves only: halfErrors attributes uncovered CELLS to the seat that owed them, and gaps are
-      // term x platform. The meaning seat owns no terms, so it can never be the owner of a gap — a
-      // quarantined meaning seat surfaces through the per-query identity join below instead, which is the
-      // gate that can actually see a missing meaning receipt.
-      const halfErrors = Object.fromEntries(GRID_HALVES.filter((h) => clHalves[h].quarantined)
-        .map((h) => [h, `half-${h} gather member did not complete: ${String(clHalves[h].fail).slice(0, 120)}`]));
-      const fullSpec = JSON.parse(readFileSync(ctx.gridSpecPath, "utf8"));
-      // — three seats, two merges. mergeGrids returns the same {cells, extras, gaps} shape its
-      // batchesOf() accepts, so the meaning seat folds in by chaining rather than by widening a signature
-      // the guards are written against. It contributes no cells and no gaps — only its
-      // extras.pr_risk, which after this change IS the merged meaning receipt set, because both grid
-      // halves carry zero queries and the plugin's own hasConn gate writes them none.
-      const mergedGrid = mergeGrids(
-        mergeGrids(readHalfLedger("a"), readHalfLedger("b"), { spec: fullSpec, halfErrors }),
-        readHalfLedger(MEANING_SEAT), { spec: fullSpec, halfErrors });
-      atomicWrite(P.commonLawGrid, JSON.stringify(mergedGrid, null, 2) + "\n");   // B5 — the canonical ledger is never seen torn
-      // part 2 — the grid is on disk and the spec has been since dispatch, so plan-vs-executed is
-      // answerable HERE, roughly two hours before publish derives it. Reported, never gated.
-      noteChannelCoverageAtStageExit(P, mergedGrid);
-      // ── — CARRY THE STRUCTURED DISPOSITIONS THROUGH THE MERGE, AND RENDER THE PROSE FROM THEM ──
-      // Only CONNOTATION_HALF owns meaning queries, so in practice one half writes this file — but the
-      // union is over BOTH, because keying the merge on which half is supposed to own it is exactly the
-      // invariant that breaks silently when CONNOTATION_HALF is flipped (its own doc block calls that a
-      // wall-clock choice, correctness-neutral — it must stay one).
-      //
-      // Not carrying it is the shape: both halves pass, the canonical gate re-runs the PROSE join
-      // over a document whose dispositions live in structure, and the merge fails a run that was correct.
-      // — THE CANONICAL FORM IS THE UNION OF THE HALVES', OVER THE MERGED OBLIGATION SET. The rows
-      // are regenerated from the MERGED ledger, so the canonical form carries exactly what the canonical
-      // validator will judge — including any recurrence receipt that clears the floor only once both
-      // halves' queries are counted (the superadditive case CONNOTATION_HALF exists to make impossible,
-      // and which this would surface honestly rather than silently drop).
-      const mergedOb = connotationObligations(parsePrRiskResults(JSON.stringify(mergedGrid)));
-      const halfRows = [];
-      for (const h of GRID_SEATS) {
-        // B — the halves' rulings live in their ACCUMULATORS in `_driver/` (the tool's one copy); the
-        // seat-facing mirrors died with the form path and are written by nobody.
-        const dp = formSidecarPath(P.commonLawDispositionsHalf(h));
-        if (!existsSync(dp)) continue;
-        try { halfRows.push(...(parseDispositionForm(readFileSync(dp, "utf8")).rows ?? [])); }
-        catch { /* a half's unreadable form leaves its obligations undischarged — a finding, never a silent pass */ }
-      }
-      // Both halves, never only CONNOTATION_HALF: keying the merge on which half is SUPPOSED to own the
-      // sweep is exactly the invariant that breaks silently when that constant is flipped, and its own
-      // doc block calls the flip correctness-neutral. It must stay one.
-      // — THE HALVES ARRIVE THROUGH THE PRIOR CHANNEL, NOT THE SEAT ONE, AND THE PARK IS WHY.
-      //
-      // This used to be `({ rows: [] }, { rows: halfRows }, …)`: empty prior, halves fed as the seat's
-      // submission. It cost a clearance. `unionDispositionForm` reconstructs a park from exactly two
-      // places — `s.obstacle`, a LIVE submission field that is deliberately never persisted into a form,
-      // or `p.parked` from the prior. Handed a persisted form on the seat side with an empty prior, both
-      // miss, and the else branch clears `parked`, `parked_kind`, `parked_reason` and `parked_refusals`.
-      // A row the seat had correctly declared unquotable arrived at the canonical validator as a ruled
-      // row still owing a quote, `isRuled` refused it, and the run died deterministic with no recovery.
-      // Any park erases this way, not only the declared kind — an exhausted park at the bound vanished
-      // identically from the day the park shipped.
-      //
-      // NOT FIXED BY READING `s.parked`, and that is the binding constraint rather than a preference: the
-      // seat must not be able to park a row by asserting it in a submission. Every widening of what the
-      // seat side may set is a widening of what a model can claim about its own work.
-      //
-      // The prior channel is the TRUSTED one and already carries everything needed. Half forms are
-      // driver-written, `seatFields(p, row)` carries their rulings by the same `pOk` path, and
-      // syncDispositionForm() in gateway.mjs already unions this exact shape — prior-only, `{ rows: null }` submitted — on
-      // every attempt. So this is that mode, not a new one.
-      //
-      // ONE METRIC MOVES, deliberately: with no submission, `carried` counts every ruled row, because
-      // "rows this attempt's own submission would not have carried" is all of them when there is no
-      // submission. Same at the gateway call, for the same reason.
-      const merged = mergedOb.queries.length
-        ? unionDispositionForm({ rows: halfRows }, { rows: null }, mergedOb, { generatedFrom: "common-law-grid.json" })
-        : null;
-      if (merged) {
-        const json = JSON.stringify(merged.form, null, 2) + "\n";
-        // ONE copy: the canonical ACCUMULATOR in `_driver/`. The canonical validator reads exactly this —
-        // it is the era stamp the arm keys on, and the copy no seat can delete. The seat-facing mirror
-        // (and the preserve-the-submission write that guarded it) died with the form path: no seat ever
-        // writes at the canonical dispositions path, so there is no submission to preserve and no second
-        // copy to keep in step.
-        atomicWrite(formSidecarPath(P.commonLawDispositions), json);
-      }
-      // The rendered table is DRIVER-RENDERED from the form, with the receipt titles and URLs taken
-      // from the tool-written ledger — so the document gains a complete table that no model had to
-      // transcribe, and the seats' own narrative and Findings ride through the concatenation untouched.
-      const dispositionTable = merged ? renderDispositionTable(merged.form.rows, mergedOb) : "";
-      atomicWrite(P.commonLaw, mergeCommonLawFindings(GRID_SEATS.map((h) => ({
-        half: h,
-        content: existsSync(P.commonLawHalf(h)) ? readFileSync(P.commonLawHalf(h), "utf8") : null,
-        error: halfErrors[h] ?? null,
-      }))) + (dispositionTable ? `\n${dispositionTable}` : ""));
-      runLog(run.runDir, { event: "common-law-merged", cells: mergedGrid.cells.length, gaps: mergedGrid.gaps.length,
-        pr_risk: Array.isArray(mergedGrid.extras?.pr_risk) ? mergedGrid.extras.pr_risk.length : 0 });
-      // CONVERGE (2026-07-13): the SAME canonical gate runs on EVERY re-merge — the fan-in below AND the
-      // reopen/closure supplementary re-merges (which used to re-derive the canonical pair with NO
-      // connotation re-check, laundering a supplementary fold past the gate the fan-in enforces). Reusing
-      // the fan-in gate here (never a new cycle) guarantees a re-merge can never ship a merged pair the
-      // unsplit path would have rejected.
-      // The canonical validator over the MERGED artifacts is the same gate a single-member run passes at
-      // its stage boundary (full-spec exact join, platform identity, the connotation receipt) — run it in
-      // code so the split can never ship a merged pair the unsplit path would have rejected.
-      const anyQuarantined = GRID_SEATS.some((h) => clHalves[h].quarantined);
-      const v = validators.commonLaw(P.commonLaw, readFileSync(P.commonLaw, "utf8"));
-      // — THE CLASS IS DERIVED FROM WHAT THE VALIDATOR SAID, AND IT USED TO BE DECIDED BEFORE IT
-      // SPOKE. This was `anyQuarantined ? "transient" : "deterministic"`, computed two lines ABOVE the
-      // call, so `v.reason` never reached the classification and EVERY unquarantined merge failure was
-      // deterministic — parkBudget 0, no recovery — whatever had actually gone wrong. Two of two
-      // clearances died that way in one round, and the proof the class was wrong came from production:
-      // `connotation_call_partial` RECOVERED at a half hours earlier on the same engine family and
-      // killed a run at the merge, same token, because only one of the two paths asks.
-      //
-      // Quarantine stays an input and keeps its own answer: a quarantined half is re-run fresh by the
-      // park loop, which is a fact about the RUN and not about the reason. Everything else goes through
-      // the same router the rest of the engine uses, so the merge stops being the one seat that answers
-      // from its own state.
-      //
-      // Most validator reasons land on `unknown` — the regexes name weather and defects, not validator
-      // tokens — which is ONE park, not a free retry loop, and the same treatment the dropped-query
-      // branch below already gives an explained failure. A genuine dead end still terminates; it does so
-      // after one dictated repair instead of before it.
-      const clFailClass = anyQuarantined ? "transient" : classifyFailureReason(v.reason);
-      // — the sentence and the payload are separate fields. `quantity` is stamped from the
-      // validator's own count, because taking the census out of the message would otherwise blind the
-      // convergence ledger (see StageFailure's `detail`).
-      if (!v.ok) throw new StageFailure("common-law", "merged half-grids failed the canonical validator", undefined,
-        { failClass: clFailClass, detail: v.reason, quantity: v.quantity });
-      // CONNOTATION completeness — the validator above cannot carry this under the split: its
-      // connotation gate is COUNT-based (any one recorded query passes it), so a quarantined half's
-      // dictated meaning queries would vanish silently — never re-routed, nowhere disclosed — while the
-      // surviving half's receipts keep the count positive: the exact gang-slang-near-miss false-clean
-      // class the gate exists to prevent. The per-query identity join closes that hole: every dictated
-      // query must be recorded in the merged extras.pr_risk[], or the merge gate fails.
-      //
-      // (The previous note here said a dropped query is "never a gap row (gaps are term×platform only)".
-      // That is not true and it was the stated justification for the failClass below: mergeGrids' non-spec
-      // union branch re-adds any gap whose platform is not in the spec, so an honestly-thrown connotation
-      // query DOES arrive as `{ term: <query>, platform: "connotation", error }`. We were discarding the
-      // one signal that distinguishes weather from a defect.)
-      //
-      // HOW MANY ATTEMPTS THE FAILURE GETS, and why it is not one number:
-      //   quarantined half   → transient  — the park loop re-runs that half fresh, the surviving half's
-      //                                     artifacts are kept, and the re-merge converges.
-      //   both halves ok, query THREW and said so
-      //                      → unknown    — one park. Most likely one web request failing inside a plugin
-      //                                     that otherwise completed; worth exactly one retry. If it throws
-      //                                     again the run still dies, which is correct.
-      //   both halves ok, query VANISHED  → deterministic — no receipt, no gap row, nothing: the plugin's
-      //                                     own per-query contract was not honoured. Retrying a defect
-      //                                     buys nothing, and this is the original reasoning, intact.
-      //
-      // What does NOT change: an errored query still FAILS this gate. A meaning check that did not
-      // complete cannot back a clean reputational read, and counting it as searched to keep the run alive
-      // would launder a real hole into a clean receipt — a worse defect than the one being fixed. The old
-      // behaviour was zero retries after full spend, with a re-run that failed identically; the new
-      // behaviour is one retry, then the same honest death.
-      const dropped = findDroppedConnotationQueries(fullSpec, mergedGrid);
-      if (dropped.length && discloseUnfinished) {
-        // ── THE LAST STEP OF THE OWNER'S RULING: a run that completed 59 of 60 dictated searches
-        // DELIVERS, and says on the client's own page that it was partial and for which term.
+  // The clearance's own steps, in order, run by run-shell.mjs. A value one step hands a later one is held here, between
+  // them; a step that returns a result ends the run with it. A failure in any step ends through run-failed.mjs.
+  let axes, runCommonLaw, planExec, unitKey, dispatchPlanQids, synthesisKey, synthesisModel, synthesisThinking, coverageJudgment, reviewOpen, firstRef, runState, correctiveEntryVerdict, correctiveCycleSettled, correctiveRecheckOk, applyCoverageFloor, clampOnTheFloorDuty, clampOnTheWritersDuty, deliverAndClamp, followTheRecordsActions, saveTheLabel, saveTheOwedLabel, writeVerdictSidecar, applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, findingsForCards, groupedMembers, overviewOpen, rebuildTheDeliveredRecord, restoreTheBrokenRecord, rov, writeScopeFacts, writeUps;
+  return await runShell({ P, agent, ctx, job, run }, { ending: CLEARANCE_ENDING, helpers: { recordConnotationAudit, sentinel, undoTaintRenames }, steps: [
+    { name: "intake", run: async () => {
+        // The matter frame, its variants and the plan (steps/intake.mjs).
+        ({ axes, runCommonLaw } = await runIntake({ P, ctx, job, opts, run }, { StageFailure, attachRegisterPlan, deriveFormNeighbourhood, deriveGridSpec, deriveIntakeAsks, deriveScopeLedgerJson, inScopeClassList, must, stage, verifyAndRecordHouseElement }));
+    } },
+    { name: "register-sweep", run: async () => {
+        // The register and unregistered-use searches and their fan-in (steps/register-sweep.mjs).
+        ({ planExec, unitKey, dispatchPlanQids } = await runRegisterSweep({ P, agent, axes, ctx, job, opts, run, runCommonLaw }, { CL_SUPP_TAGS, StageFailure, connotationRemedyToken, defaultConnotationReissuer, deriveNamedBand, foldSupplementalProposals, holdStickyGapsIn, inScopeClassList, isFallbackEligible, joinOptions, mergeRegisterBands, must, noteAdapter, noteChannelCoverageAtStageExit, readPlanExecution, readRegisterBands, recordConnotationAudit, remergeIfBandsMoved, resultsPerCellOf, runBatched, runSaturationProbeCodeSide, slicesUnitNeverReached, stage, taintDisposition, taintParkJudgmentArtifacts, takeSlicesOutOfTheBand, unfinishedUnitAsItStands, writePlanExecutionReceipt }));
+    } },
+    { name: "frame-comparison", run: async () => {
+        // The blind frame compared with what the run scoped, and the reopen (steps/frame-comparison.mjs).
+        await runFrameComparison({ P, axes, ctx, dispatchPlanQids, flushDigestQueue, job, mintDigestWork, planExec, run, runCommonLaw, unitKey }, { bandBytesOf, deriveNamedBand, forceFromActive, inScopeClassList, joinOptions, loadCoverageLedger, mechanicalFormGapDirectives, readRegisterBands, refreshSupplementalExecution, remergeIfBandsMoved, settleOneShotStamp, stage });
+    } },
+    { name: "placement-and-digest", run: async () => {
+        // Step 2C placement → Step 2D digest
         //
-        // This is NOT the false-clean the note below guards against, and the difference is the whole
-        // reason it is allowed here. False-clean is SILENCE — a hole counted as searched, nobody able to
-        // see what was not done. This records each unfinished query as an honest gap carrying its own
-        // term, which is the vocabulary the note above says dictated queries did not have, and that gap
-        // is what the coverage row reads. A reader is told the investigation was partial and which term
-        // did not complete.
+        // THE PASS THAT RESUMES A RUN WHOSE ASSESSMENT COULD NOT BE COMPLETED delivers what the run holds, here, at the
+        // assessment's first step and before anything that exists only to feed it runs. See deliverWithoutTheAssessment.
+        const assessmentOpen = readPartNotCompleted(run.runDir, "assessment");
+        if (assessmentOpen) return await deliverWithoutTheAssessment(assessmentOpen);
+        // Placement and the register write-up (steps/placement-and-digest.mjs).
+        await runPlacementAndDigest({ checkLateBind, ctx }, { asPartNotCompleted, assertReceiptSettled, must, recordPlacementPass, runDigest, stage });
+    } },
+    { name: "skeptic-and-follow-up", run: async () => {
+        // The skeptic, and the searches and rechecks that follow it (steps/skeptic-and-follow-up.mjs).
+        await runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQids, flushDigestQueue, job, mintDigestWork, opts, planExec, run, unitKey }, { askableOf, bandBytesOf, capabilityGapAxes, defaultRecordFetcher, deriveBandShape, deriveNamedBand, envelopeDecision, envelopeHeldNote, escalationHeldNote, findFloorBreaches, forceFromActive, isInactiveAxisRow, lateRecordIds, loadCoverageLedger, officeGapOf, readFloorAxes, readPlanExecution, recordPlacementPass, recordScreenGateEvidence, refreshSupplementalExecution, remergeIfBandsMoved, runBatched, screenGateSnapshot, settleOneShotStamp, skepticDeferralExtra, stage, stickyGapUnits });
+    } },
+    { name: "synthesis", run: async () => {
+        // The writer, the case-law grounding and the first review (steps/synthesis.mjs).
+        ({ synthesisKey, synthesisModel, synthesisThinking, coverageJudgment, reviewOpen, firstRef } = await runSynthesis({ P, checkLateBind, ctx, job, opts, run }, { asPartNotCompleted, composeDispatchExtra, decideCaseLaw, goodsEvidenceForTheWriter, keepGoodsEvidenceAsWritten, prepareDeclinationSpec, quarantineSynth, readCoverageJudgment, recordSynthesisSeam, refute, settleDerivedBases, stage, stageCharter }));
+
+        // Step 4.7 — the code-side verdict gate
+        // — the classifier is handed the FAILURE, not a statement about the ladder. The
+        // condition leads the sentence: `recoveryLaneOf` reads the reason text, and a park bought because an
+        // upstream provider was rate-limiting is WEATHER, not a defect. The ladder's own summary stays, after
+        // it, because "this had already exhausted retries and fallback" is still what a reader needs next.
+        // The fallback branch is deliberate and not decoration: when the ladder truly recorded no condition,
+        // saying so is honest, and inventing one would be the same guess in a more confident voice.
+        if (!firstRef.ok)
+          throw Object.assign(new StageFailure("narrative-refutation", firstRef.fail
+            ? `${firstRef.fail} — the refutation ladder exhausted retries and fallback on it`
+            : "failed after retries + fallback (the ladder recorded no condition)"), { notCompletedPart: "review" });
+        runState = { verdict: firstRef.verdict };   // null where the review was not completed: no sign-off, the band alone
+        runLog(run.runDir, { event: "verdict", verdict: runState.verdict });
+        writeRunStatus(ctx, signoffPatch(runState.verdict));
+        note(`refutation verdict: ${runState.verdict}`);
+        // qw/typed-correction-kinds — TELEMETRY ONLY (data first; the corrective-skip decision is a
+        // separate owner-gated build): partition the review's flagged-correction lines by their
+        // self-declared [kind: …] tokens (verify.parseCorrectionKinds — closed enum, author-declared,
+        // untyped/unknown ⇒ `fact` fail-safe) and record the histogram in run.jsonl. ZERO behavior
+        // change by construction: the corrective/recheck flow below reads only `verdict`, never these
+        // counts, and a read/parse defect can never touch the verdict gate.
+        // AD-4 (instrumentation house rule): the event is written UNCONDITIONALLY. The R2 evidence run logged
+        // an all-zero histogram against a BLOCKING verdict, and nothing said whether the reviewer really flagged
+        // zero correction lines or the read/parse quietly failed (the old catch logged NOTHING). Now: `verdict`
+        // rides the row (an all-zero histogram on CONDITIONAL/BLOCKING is legible as the anomaly it is), and a
+        // read/parse failure is a recorded fact (ok:false + the error) instead of silence.
+        // — `kindChannelOk` IS A SECOND FACT, AND IT NEEDED ITS OWN KEY.
         //
-        // It is reached ONLY after the bounded attempts are spent: the model's single routed remedy and
-        // the engine's own re-issue of the search. On the first pass this branch does not exist — the
-        // gate throws exactly as before and the park loop gets its retries. Disclosure is the last
-        // resort, never the first answer.
-        const errored = findErroredConnotationQueries(fullSpec, mergedGrid);
-        const explained = new Set(errored.map((e) => e.query));
-        const gaps = Array.isArray(mergedGrid.gaps) ? mergedGrid.gaps : (mergedGrid.gaps = []);
-        for (const q of dropped) {
-          if (explained.has(q)) continue;          // the provider already said why; its row stands
-          gaps.push({ term: q, platform: "connotation",
-            error: "the search did not complete after a re-ask and a re-issue by the engine" });
-        }
-        // THE CANONICAL LEDGER IS WRITTEN ABOVE, BEFORE THIS GATE RUNS, so mutating the merged object
-        // here reaches nothing: the report reads the file. Re-write it with the gaps in place, or the
-        // disclosure exists only in memory and the coverage row has nothing to read — which is the
-        // silent half of the very defect this branch exists to prevent.
-        atomicWrite(P.commonLawGrid, JSON.stringify(mergedGrid, null, 2) + "\n");
-        runLog(run.runDir, { event: "connotation-unfinished-disclosed", count: dropped.length,
-          explained: errored.length, terms: dropped.length });
-        note(`${dropped.length} dictated meaning quer${dropped.length === 1 ? "y" : "ies"} did not complete after `
-          + "the bounded attempts — recorded as honest gaps and DISCLOSED on the coverage row; the run delivers");
-        return { mergedGrid, fullSpec, connotationUnfinished: dropped.slice() };
-      }
-      if (dropped.length) {
-        const errored = findErroredConnotationQueries(fullSpec, mergedGrid);
-        const allExplained = errored.length === dropped.length;
-        const dropClass = anyQuarantined ? clFailClass : (allExplained ? "unknown" : "deterministic");
-        const detail = allExplained
-          ? `threw and were recorded as gaps (${errored.map((e) => `${e.query}: ${e.error}`).join("; ").slice(0, 160)})`
-          : `never executed, and a count-based connotation gate cannot see it (${dropped.join("; ").slice(0, 160)})`;
-        // — same split: the count is part of the sentence (a reader can act on "3 queries"), the
-        // queries themselves are the payload. `quantity` is the drop count, which is what converges.
-        throw new StageFailure("common-law",
-          `merged half-grids dropped ${dropped.length} dictated connotation quer${dropped.length === 1 ? "y" : "ies"}`,
-          undefined, { failClass: dropClass, detail, quantity: dropped.length });
-      }
-      return { mergedGrid, fullSpec };
-    };
-    // ── P2-C (§8b leg 2) — the merge-gate connotation failure gets ONE routed model turn before it may
-    // be terminal (2026-07-31 review round). With both halves completed (no quarantine), a merged doc
-    // failing connotation_no_ruling / connotation_form_damaged is a DOC defect — a clean bottom
-    // line in one half over receipts recorded in a half that never wrote its rows — at seats whose warm
-    // sessions are still open. mergeCommonLawArtifacts throws it failClass "deterministic", and
-    // decideRecovery gives deterministic failures parkBudget 0 ("never parked at all"), so without this
-    // channel the FIRST such run dies .failed at the merge after a full paid gather while gateway.mjs's
-    // connotation correction hints are never shown to any model. Remedy: route a followup to each usable
-    // half whose OWN recorded receipts are among the violations (the routed-half-followup channel — the
-    // closure/frame-reopen precedent), carrying the exact correction hint; each half's re-emit is
-    // re-judged by validators.commonLawHalf, then ONE re-merge decides. Bounded to a single remedy round
-    // per run — a re-merge that still fails throws the same honest death (the original reasoning stands:
-    // retrying a defect buys nothing; this is one dictated repair, not a retry). Quarantined-half shapes
-    // keep their transient park path untouched (the remedy never runs for them).
-    let clConnotationRemedySpent = false;
-    /**
-     * THE ENGINE'S OWN ATTEMPT, THEN DELIVERY WITH THE GAP DISCLOSED.
-     *
-     * Reached only after the model has had its single routed repair turn. The engine re-issues the
-     * missing searches itself through the same provider, appends whatever comes back to the half's own
-     * ledger, and re-merges. If the searches are there now, the run is simply clean and nothing is
-     * disclosed. If they are still missing, the run DELIVERS and the coverage row says the investigation
-     * was partial and which term did not complete.
-     *
-     * A clearance that completed 59 of 60 dictated searches used to throw the whole report away. The
-     * failure it is replacing is not a quality gate doing its job: the work was done, one search of
-     * sixty did not land, and the client lost everything including the 59.
-     */
-    const reissueThenDisclose = async (e) => {
-      if (!clConnotationReissueSpent) {
-        clConnotationReissueSpent = true;
-        let missing = [];
+        // `ok` here has always meant "the file was read and parsed without throwing". It cannot also carry
+        // "the reviewer's kind channel produced something", and overloading it would have been the cheaper
+        // change and the wrong one: the two are false in different situations and a reader cannot tell which
+        // from one boolean.
+        //
+        // The distinction is the whole. A review where every parsed line landed on the `fact`
+        // fail-safe reads, in the counts alone, exactly like a review whose flags were all genuinely
+        // factual — and on the run that found this, `fact: 10` on a BLOCKING verdict was the former and
+        // looked entirely reasonable. The all-zero histogram AD-4 above made legible is the easy case;
+        // `untyped === total` is the one that was not, and now it is a recorded fact rather than an
+        // inference a reader has to make by comparing two other numbers.
         try {
-          const spec = JSON.parse(readFileSync(P.gridSpecHalf(MEANING_SEAT), "utf8"));
-          const merged = JSON.parse(readFileSync(P.commonLawGrid, "utf8"));
-          missing = findDroppedConnotationQueries(spec, merged);
-          if (missing.length) {
-            runLog(run.runDir, { event: "connotation-reissue", count: missing.length });
-            note(`${missing.length} dictated meaning quer${missing.length === 1 ? "y" : "ies"} missing after the `
-              + "model's one repair turn — the engine re-issues them itself through the same tool");
-            const reissuer = opts.connotationReissuer ?? defaultConnotationReissuer;
-            const r = await reissuer(missing, { spec, rawPath: driverDir(run.runDir, "web-results", `connotation-reissue-${Date.now()}.json`) });
-            runLog(run.runDir, { event: "connotation-reissue-result", ok: !!r?.ok,
-              recovered: Array.isArray(r?.rows) ? r.rows.length : 0,
-              cause: r?.ok ? null : String(r?.cause ?? "").slice(0, 160) });
-            if (r?.ok && r.rows?.length) {
-              // Append into the half's OWN ledger, so the ordinary re-merge picks them up and nothing
-              // downstream needs to know this call happened.
-              const half = JSON.parse(readFileSync(P.commonLawGridHalf(MEANING_SEAT), "utf8"));
-              half.extras = half.extras ?? {};
-              half.extras.pr_risk = [...(Array.isArray(half.extras.pr_risk) ? half.extras.pr_risk : []), ...r.rows];
-              atomicWrite(P.commonLawGridHalf(MEANING_SEAT), JSON.stringify(half, null, 2) + "\n");
-            }
-          }
-        } catch (err) {
-          // Never fatal: a re-issue that cannot even be attempted leaves the run exactly where it was,
-          // and the disclosure below is what the ruling actually guarantees.
-          runLog(run.runDir, { event: "connotation-reissue-failed", error: String(err?.message ?? err).slice(0, 160) });
-        }
-        try { return mergeCommonLawArtifacts(); } catch { /* still short — disclose below */ }
-      }
-      return mergeCommonLawArtifacts({ discloseUnfinished: true });
-    };
-    const mergeWithConnotationRemedy = !clSplit ? null : async () => {
-      try { return mergeCommonLawArtifacts(); }
-      catch (e) {
-        // — `quote_unbound` joins the two here or the remedy channel does not open for it: a merged
-        // doc failing ONLY on a quote would throw "deterministic", get parkBudget 0, and die at the merge
-        // after a full paid gather with no model ever shown the correction hint. Same defect class as the
-        // one this channel was built for, and the token that describes it is the newest one.
-        // — THE TOKEN IS READ FROM THE DETAIL AS WELL AS THE MESSAGE, AND WITHOUT THAT THIS WHOLE
-        // CHANNEL WAS DEAD. It matched `e.message` alone. StageFailure builds that as `${stage}: ${reason}`,
-        // and moved the open-set payload OUT of `reason` into `detail` so a renderer could show the
-        // sentence and hide the payload — so from that split onward the message read
-        // "common-law: merged half-grids failed the canonical validator" and carried no token at all.
-        // `!tok` was therefore true on EVERY merge-validator failure: this remedy re-threw before it
-        // opened, and the run died on a token whose own error text carried the recovery instruction.
-        // Measured on the two failures that prompted this — token in `e.message`: null; in `e.detail`:
-        // `connotation_quote_unbound:quote_unbound=3;…` and `connotation_call_partial:2 rows still
-        // outstanding`.
-        //
-        // A converted field takes its guards QUIET, not red, and a recovery path is a reader too. The
-        // message half is kept rather than replaced: an archived or re-thrown failure that still carries
-        // the token inline must keep opening this channel.
-        const tok = connotationRemedyToken(e);
-        const anyQuarantined = GRID_SEATS.some((h) => clHalves[h].quarantined);
-        // A quarantined half keeps its transient park path: that half is re-run whole and the re-merge
-        // converges, so there is nothing here to disclose yet.
-        // THE DROPPED-QUERY FAILURE CARRIES NO FORM TOKEN, and matching on the form tokens alone is why
-        // this channel never opened for it: `connotationRemedyToken` reads the connotation FORM
-        // vocabulary, and "merged half-grids dropped N dictated connotation queries" is not in it. The
-        // run therefore died at the merge with the recovery path sitting unused beside it.
-        const droppedQueries = /dropped \d+ dictated connotation quer/i.test(String(e?.message ?? ""));
-        if (anyQuarantined) throw e;
-        if (droppedQueries) return await reissueThenDisclose(e);
-        if (!tok) throw e;
-        // ── ONE RE-ASK OF THE MODEL, THEN THE ENGINE TAKES OVER ──────────────────────────────────
-        // The loop stops being a loop. The model gets exactly one routed repair turn; after that the
-        // engine re-issues the search itself and, failing that, the run delivers with the gap disclosed.
-        // Before this, a second arrival here re-threw and the clearance died after a full paid gather.
-        if (clConnotationRemedySpent) return await reissueThenDisclose(e);
-        clConnotationRemedySpent = true;
-        runLog(run.runDir, { event: "connotation-remedy", detail: tok.slice(0, 200) });
-        // — WHICH HALVES OWE ROWS, READ FROM THE FORM. This used to re-derive the violation set here,
-        // a SECOND derivation of what the gate had just computed — and one that ran without the seats'
-        // rulings passed in, so it read structurally-discharged obligations as violations and returned a
-        // SUPERSET of the halves that actually owed anything. The canonical form already carries every row
-        // and every ruling; an outstanding row's own queries name the halves to route to.
-        let needy = new Set();
-        try {
-          const mergedOb = connotationObligations(parsePrRiskResults(readFileSync(P.commonLawGrid, "utf8")));
-          // B — the canonical rulings live in the ACCUMULATOR (the merge's one write); the seat-facing
-          // mirror died with the form path.
-          const form = parseDispositionForm(readFileSync(formSidecarPath(P.commonLawDispositions), "utf8")).rows;
-          for (const row of outstandingRows({ rows: form }, mergedOb))
-            for (const q of (row.kind === "recurrence" ? (row.queries ?? []) : [row.query])) if (q) needy.add(q);
-        } catch { /* unreadable merged pair or no form — fall through; the re-merge below re-throws honestly */ }
-        const usable = (h) => Boolean(clHalves[h].sessionKey && !clHalves[h].quarantined);
-        // — ONE seat owns the whole sweep, so the remedy has exactly one address. Routing over the
-        // grid halves would send a form-repair turn into two seats that were never given a meaning query
-        // and hold no form to open — a message with no work in it, twice, on the critical path.
-        await runBatched([MEANING_SEAT], config.gatherConcurrency, async (h) => {
-          if (!usable(h)) return;
-          let owned = [];
-          try { owned = parsePrRiskResults(readFileSync(P.commonLawGridHalf(h), "utf8")).filter((e2) => e2.results.length); }
-          catch { /* no seat ledger → nothing owed here */ }
-          if (!owned.some((e2) => needy.has(e2.query))) return;
-          // B — THE REPAIR IS A TOOL CALL, and the tail must order exactly that. A tail ordering
-          // targeted edits to any file would be the two halves of one message disagreeing about where
-          // the work lands — the routing gap closed, kept closed under the typed transport.
-          const followup = repairFollowup("common-law-half:connotation-remedy", { findingsFile: P.commonLawHalf(h), gridSpecPath: P.gridSpecHalf(h), tok });
-          const r = await stage("common-law-half", { ...ctx, axis: h }, { force: true, followup, sessionKey: clHalves[h].sessionKey, trigger: "connotation-remedy" });
-          if (!r.ok) note(`connotation remedy (half ${h}) failed mechanically (${r.fail}) — the re-merge below decides`);
-        });
-        try { return mergeCommonLawArtifacts(); }
-        catch (e2) { return await reissueThenDisclose(e2); }
-      }
-    };
-    if (clSplit) await mergeWithConnotationRemedy();
-    recordConnotationAudit(run, P);
-    // ── repair-first (2026-07-05): the plan-direct-execute repair kit for the fan-in gates below. The
-    // provider adapter re-runs dictated slices as pure code at the gate (no agent turn, no gateway lane);
-    // the tool's qid-ownership merge preserves untargeted/judgment blocks. Tests inject opts.planExecutor
-    // (or set CLEAROTRON_PLAN_DISPATCH=off) so the offline mock never dials the live provider. Budgets live in
-    // the persistent repair ledger (_driver/repairs.json); the epoch (plan_version:recoveryAttempts)
-    // re-arms them when the input legitimately changed (a plan extension, a fresh recovery attempt).
-    // (planExec itself is resolved once, above the gather — the code-side saturation-probe unit shares it.)
-    const repairLedger = ctx.repairLedger ?? (ctx.repairLedger = createRepairLedger(run.runDir, { log: (o) => runLog(run.runDir, o) }));
-    const repairEpoch = (() => {
-      const att = (() => { try { return Number(JSON.parse(readFileSync(join(run.runDir, "status.json"), "utf8")).recoveryAttempts) || 0; } catch { return 0; } })();
-      return `${ctx.registerPlan?.plan_version ?? 0}:${att}`;
-    })();
-    const fanInRepairs = [];
-    const dispatchPlanQids = async (a, qids, repairId, max = 1) => {
-      if (!planExec || !ctx.registerPlan) return null;
-      // A qid this run has accepted as a capability gap is never sent to the provider again, under any plan
-      // version (envelope-settle.mjs stickyGapsAfter). A whole-axis dispatch becomes the axis's other qids;
-      // the executor's qid-ownership merge keeps the gap's own block as it stands.
-      const sticky = readStickyGaps(P);
-      if (sticky.size) {
-        const wanted = qids?.length ? qids : (ctx.registerPlan.entries ?? []).filter((e) => e.axis === a).map((e) => e.qid);
-        const held = wanted.filter((q) => sticky.has(q));
-        if (held.length) {
-          runLog(run.runDir, { event: "plan-qids-sticky-gap", axis: a, qids: held, action: repairId });
-          qids = wanted.filter((q) => !sticky.has(q));
-          if (!qids.length) return null;
-        }
-      }
-      if (!repairLedger.canAttempt(repairId, a, { max, epoch: repairEpoch })) return null;
-      note(`register-unit ${a}: ${repairId} — direct executor dispatch (code, no agent turn) for ${qids?.length ?? "all"} dictated slice(s)`);
-      let outcome;
-      // — the clock starts at the DISPATCH, not at the bookkeeping after it. These calls sit
-      // between stages, so on the D8 measurement their time landed in "outside any stage": 220s of one
-      // 6m45s seam was three of them, against 1.1s of driver compute in the same window.
-      const dispatchStartedMs = Date.now();
-      try {
-        // The envelope close's own dispatch is the one rung that asks a question that timed out at the gateway again
-        // (execute-plan.mjs, timedOutBefore); every other dispatch leaves its timeout standing.
-        const r = await planExec({ planPath: P.registerPlan, axis: a, outputPath: P.registerBand(a), ...(qids?.length ? { qids } : {}) },
-          { agentId: agent, sessionKey: `clearance-${run.slug}-${run.codename}-register-unit-${a}`, recordLog: runRecordLogPath(run.runDir),
-            ...(repairId === "early-envelope-close" ? { reaskTimedOut: true } : {}) });
-        outcome = r?.ok ? "ok" : `failed: ${String(r?.cause ?? "unknown").slice(0, 140)}`;
-      } catch (err) { outcome = `threw: ${String(err?.message ?? err).slice(0, 140)}`; }
-      // — MEASURE WHETHER THE HOLE CLOSED, not whether the phone was answered. `outcome` is the
-      // executor call returning; on a delivered run all five of these read "ok" while the deferred set
-      // they were repairing grew 4 → 7. The bands are already on disk at this point, so the answer costs
-      // one read: of the qids we ASKED for, how many now own a band block that is not an error?
-      // Best-effort by construction — a repair that worked must never be reported as failed because the
-      // measurement threw, so an unreadable band yields "unmeasured" rather than a zero, which would be
-      // a confident wrong value of exactly the kind this issue is about.
-      let effect;
-      try {
-        if (qids?.length) {
-          // `readRegisterBands` directly, not the `readBands` helper further down: that one is declared
-          // in an inner block and is not in this closure's scope. Same read, same arguments.
-          const landed = new Set();
-          for (const arr of Object.values(readRegisterBands(P, ctx.axes ?? []) ?? {}))
-            for (const b of arr ?? []) if (b && typeof b.qid === "string" && b.qid && b.error !== true) landed.add(b.qid);
-          effect = { asked: qids.length, closed: qids.filter((q) => landed.has(q)).length };
-        }
-      } catch { effect = undefined; }
-      const dispatchEndedMs = Date.now();
-      repairLedger.record(repairId, a, outcome, { epoch: repairEpoch, effect, max, durationMs: dispatchEndedMs - dispatchStartedMs });
-      // …and the same span where the decomposition can see it. `register-repair` is the stage label it
-      // will print, because that instrument takes the label from the filename.
-      recordSpan(run.runDir, "register-repair", { startedMs: dispatchStartedMs, endedMs: dispatchEndedMs },
-        { repair: repairId, target: a, outcome: String(outcome), asked: effect?.asked ?? null, closed: effect?.closed ?? null });
-      if (effect && effect.closed < effect.asked)
-        note(`register-unit ${a}: ${repairId} dispatched ${outcome} but closed ${effect.closed} of ${effect.asked} slice(s) — the call returning is not the hole closing`);
-      fanInRepairs.push({ repair: repairId, target: a, outcome, effect: effect ?? null });
-      return outcome;
-    };
-    // barrier: every expected file present + valid. "Expected" is what the FROZEN POLICY dictated —
-    // a register-only run has no common-law member, so demanding its findings file here would fail
-    // every such run at the barrier. The list must never be narrowed for any other reason: this is
-    // the gate that stops a report shipping over an artifact a stage was supposed to write and did not.
-    for (const f of [...(runCommonLaw ? [P.commonLaw] : []), ...axes.map((a) => P.registerUnit(a))]) {
-      if (!existsSync(f)) throw new StageFailure("fan-in", `missing ${f}`);
-    }
-    // THE SLICES A CHECK COULD NOT PROVE RAN, ONCE ITS RECOVERY WAS SPENT: each is taken out of its axis's band and
-    // delivered as an open row, before the band's checks and the plan join read the band. The checks below name the
-    // slices they fail on, and the run-level catch records them (parts-not-completed.mjs).
-    const searchesOpen = readPartNotCompleted(run.runDir, "searches");
-    if (Array.isArray(searchesOpen?.slices) && searchesOpen.slices.length) {
-      const taken = takeSlicesOutOfTheBand(P, searchesOpen.slices);
-      runLog(run.runDir, { event: "searches-not-completed-delivery", slices: searchesOpen.slices.length, taken: taken.length,
-        reasons: [...new Set(searchesOpen.slices.map((s) => s.reason))] });
-      note(`register: ${searchesOpen.slices.length} slice(s) a check could not prove ran are taken out of the band and delivered as open rows`);
-    }
-    // judgment-relocation LINCHPIN (2026-06-24): the load-bearing funnel artifact is the COMPLETE NAMED BAND
-    // (register-units/<axis>-band.json) — the real material that crosses the lifted firewall. A unit that RAN
-    // THIS process (unitKey[a] set) MUST have written it; a missing band would merge to empty and let a clean
-    // ship over an UN-searched band (the firewall silently failing — the exact disease). Hard-require it for
-    // freshly-run axes, as a TECHNICAL fan-in failure (retryable), never a silent pass. A resume PAST gather
-    // (unitKey unset for an axis) stays lenient — deriveNamedBand handles a legacy/archived band-less run.
-    // T3 (H3) — the resume-past-gather leniency is TIGHTENED: post- every unit writes a band
-    // (the executor writes even error blocks), so on a resumed run where ANY band file exists, an axis
-    // with none is a coverage hole, not a legacy artifact. Only a ZERO-band run (true pre-band legacy /
-    // archived) keeps the lenient path. copper-spire's shipping path was exactly fail → manual resume →
-    // resumed-past leniency → degrade-with-note → ship.
-    const anyBands = axes.some((x) => existsSync(P.registerBand(x)));
-    const unprovenBands = [];   // every axis whose band the ledger cannot evidence, failed on together below
-    const collapsedSlices = [];   // every axis's qid-stamped slices that claimed hits and carried no record, likewise
-    for (const a of axes) {
-      if ((unitKey[a] || anyBands) && !existsSync(P.registerBand(a)))
-        throw new StageFailure("fan-in", `missing named band for axis "${a}" — the funnel produced no complete band (a clean can never ship over an unsearched band)`, undefined, { detail: `${P.registerBand(a)}${unitKey[a] ? "" : " — resumed-past axis on a run that carries bands: a hole, not legacy"}` });
-      // FIX backstop: a COLLAPSED slice (enumerated, total_hits>0, ZERO records) is the firewall silently
-      // failing in the other direction — a clean shipping over a dangerous slice that WAS searched but lost.
-      // Terminal immediately for freshly-run axes (the validator ladder above already gave the slice a re-run).
-      // Fresh-axes-only (unitKey set) → never runs in replay, so no historical-verdict flip from the backstop;
-      // the deterministic, floor-safe validators.registerUnit gate carries replay.
-      if (unitKey[a] && existsSync(P.registerBand(a))) {
-        const readCollapsed = () => { try { return findCollapsedBands(readFileSync(P.registerBand(a), "utf8")); } catch { return []; /* parse defect handled at the stage validator */ } };
-        let collapsed = readCollapsed();
-        // Repair-first A2: a collapsed DICTATED slice (qid-stamped) gets ONE direct re-execution — the
-        // tool rewrites that slice's block from a fresh enumeration, no agent turn. Judgment (qid-less)
-        // collapsed slices already had their re-run via the validator ladder — they stay terminal.
-        const collapsedQids = collapsed.map((x) => x.qid).filter(Boolean);
-        if (collapsedQids.length && (await dispatchPlanQids(a, collapsedQids, "collapsed-reexecute")) === "ok") collapsed = readCollapsed();
-        // The collapsed slices are the searches not completed, failed on with every axis's below. One with no qid is named by
-        // its query, and its block becomes a deferred block on that query.
-        if (collapsed.length) collapsedSlices.push({ axis: a, collapsed });
-      }
-      // ── band-truth gate (2026-07-14, teal-foundry): the band must be EVIDENCED, not just well-formed ──
-      // A qid-stamped band whose unit lane logged ZERO real provider calls was AUTHORED, not executed —
-      // the exact fabrication that shipped 07-06 (ashen-causeway), 07-07 (teal-lattice, a CLEAR) and
-      // 07-13 (teal-foundry): the model skipped its one register_execute_plan call and hand-wrote
-      // plausible blocks. Forged qids satisfy every content gate, and the plan-execution receipt derives
-      // from the band itself — so the judge here is the provider call LEDGER, code-written at the plugin
-      // chokepoint, outside the model's reach. Repair-first: ONE direct re-execution rebuilds the band
-      // from the frozen plan (real calls, real data — the qid-ownership merge overwrites every forged
-      // dictated block); fail-closed only when that too cannot be evidenced. Scoped to fresh axes
-      // (unitKey — same as the collapsed gate; a resumed skip recovers the winning lane key, so resumed
-      // forged runs are caught too) with dictated entries and a qid-carrying band. A null count = the
-      // ledger file is absent (hermetic tests, fresh installs) — the gate cannot judge and skips.
-      // Kill switch CLEAROTRON_BAND_TRUTH_GATE=0 (the inline `!== "0"` pattern): hermetic test harnesses
-      // opt out (their runs never touch the provider, so the production ledger can never evidence them);
-      // production default is ON.
-      if (process.env.CLEAROTRON_BAND_TRUTH_GATE !== "0"
-        && unitKey[a] && existsSync(P.registerBand(a)) && (ctx.registerPlan?.entries ?? []).some((e) => e?.axis === a)) {
-        const laneKey = `clearance-${run.slug}-${run.codename}-register-unit-${a}`;
-        // A slice taken out of the band, or one the provider could not express, is a deferred block that made no call.
-        const qidBlocks = (() => {
-          try { const b = JSON.parse(readFileSync(P.registerBand(a), "utf8")); return Array.isArray(b) ? b.filter((x) => x && typeof x === "object" && x.qid && !(x.error === true && x.deferred === true)) : []; }
-          catch { return []; /* parse defects are the stage validator's problem, not this gate's */ }
-        })();
-        const bandHasQids = qidBlocks.length > 0;
-        if (bandHasQids && countLaneCalls(laneKey) === 0) {
-          note(`register-unit ${a}: band carries qid blocks but its lane logged ZERO provider calls — authored, not executed; direct re-execution from the frozen plan`);
-          runLog(run.runDir, { event: "band-truth-gate", axis: a, lane: laneKey, calls: 0 });
-          const outcome = await dispatchPlanQids(a, null, "unverified-band-reexecute");
-          const callsNow = countLaneCalls(laneKey);
-          if (outcome === "ok" || (callsNow ?? 0) > 0) {
-            runLog(run.runDir, { event: "band-truth-rebuilt", axis: a, outcome, calls: callsNow ?? 0 });
-            note(`register-unit ${a}: band re-executed from the frozen plan (dispatch ${outcome ?? "unavailable"}, ${callsNow ?? 0} ledger call(s)) — fan-in continues over executor data`);
-          } else {
-            unprovenBands.push({ axis: a, laneKey, reexecution: outcome, qids: qidBlocks.map((x) => x.qid) });
-          }
-        }
-      }
-    }
-    // THE SLICES THE BAND'S CHECKS COULD NOT PROVE RAN, failed on together, so one park takes every axis's. They are the
-    // searches not completed: once this is terminal they are taken out of the band and delivered as open rows, each with
-    // its shipped reason. A band no ledger call evidences reads "nothing in the run's own record confirms it was
-    // searched"; a slice that claimed hits and carried no record reads "it could not be completed this run". A slice that
-    // is both keeps the first.
-    const notCompleted = [
-      ...unprovenBands.flatMap((u) => u.qids.map((qid) => ({ axis: u.axis, qid, reason: plainDeferralReason("not-verified-closed") }))),
-      ...collapsedSlices.flatMap((c) => c.collapsed.map((x) => (x.qid ? { axis: c.axis, qid: x.qid, reason: plainDeferralReason("collapsed-slice") }
-        : { axis: c.axis, query: String(x.query ?? ""), reason: plainDeferralReason("collapsed-slice") }))),
-    ];
-    if (unprovenBands.length) {
-      const [first] = unprovenBands, more = unprovenBands.length - 1;
-      throw Object.assign(new StageFailure("fan-in", `fabricated named band for ${more ? `${unprovenBands.length} axes` : `axis "${first.axis}"`} — qid-stamped blocks, ZERO provider calls in the ledger, re-execution not evidenced (a clean can never ship over an unexecuted band)`,
-        undefined, { failClass: "deterministic", repairs: fanInRepairs,
-          detail: `${P.registerBand(first.axis)} — lane "${first.laneKey}", re-execution ${first.reexecution ?? "no executor lane"}${more ? `; ${more} more axis(es): ${unprovenBands.slice(1).map((u) => u.axis).join(", ")}` : ""}` }),
-        { notCompletedPart: "searches", excludedSlices: notCompleted });
-    }
-    if (collapsedSlices.length) {
-      const [{ axis: a, collapsed }] = collapsedSlices;
-      const n = collapsedSlices.reduce((k, c) => k + c.collapsed.length, 0);
-      throw Object.assign(new StageFailure("fan-in", `collapsed named band for axis "${a}" — ${n} enumerated slice(s) claimed hits but carried ZERO records into the band (a clean can never ship over a collapsed slice)`,
-        undefined, { failClass: "deterministic", repairs: fanInRepairs,
-          detail: `${P.registerBand(a)} — ${collapsed.slice(0, 6).map((x) => `${(x.query || "slice").slice(0, 40)}~${x.total_hits}`).join("; ")}${collapsedSlices.length > 1 ? `; and on ${collapsedSlices.length - 1} more axis(es)` : ""}` }),
-        { notCompletedPart: "searches", excludedSlices: notCompleted });
-    }
-
-    // ── timeout-taint chain (copper-lattice 2026-07-08): unfinished ⇒ deferred ⇒ recover ⇒ converge ──────
-    // A register-unit pass SIGKILLed at the wall leaves partial band writes the merge preserves; the
-    // same-stage retry then "succeeds" by validating the poisoned band — the false 0/clean never THREW, so
-    // nothing recovered it. The chain, per tainted axis (register-taint.mjs reads the per-attempt jsonl —
-    // durable across --resume):
-    //   T0  quarantine floor — every qid-less enumerated-with-zero-records block becomes an honest
-    //       `incomplete` descriptor marked `(taint)` (never-silent-clean holds even if every re-run fails);
-    //   T0.5 deterministic repair of the dictated half — one whole-axis execute_plan re-dispatch;
-    //   T1  ONE fresh in-loop re-run (fresh session, never warm — doc-44: never warm-resume a killed
-    //       session; the envelope, a warm resume, stays the second net); attempt-1-clean supersedes.
-    // Still tainted on a MATERIAL axis → pre-synthesis: rename the tainted artifacts (so the resume
-    // genuinely re-executes, not skip-validates) and THROW transient — the run-level park loop re-runs and
-    // converges, repeat-signature → the honest failure notice. Post-synthesis (narrative locked): DISCLOSE —
-    // `taint:<axis>` joins escalation-state failed[] (client export withheld) and the ledger relabel
-    // (loadCoverageLedger → applyTaintDeferred) + registerGap clamp carry the verdict. NO KILL SWITCH:
-    // it had one, nothing ever set it — not a deployment, not CI, not the config store, not a test —
-    // so the off-path was never exercised by anything and is gone. The block stays a block because
-    // what it declares must not leak into the scope around it.
-    {
-      const taint0 = readRegisterTaint(run.runDir, axes);
-      const taintedNow = axes.filter((a) => taint0[a]?.tainted);
-      if (taintedNow.length) {
-        const recoveryAttempts = (() => { try { return Number(JSON.parse(readFileSync(join(run.runDir, "status.json"), "utf8")).recoveryAttempts) || 0; } catch { return 0; } })();
-        // The axes whose recovery is spent: the searches record lists them, and each is read as it stands and disclosed.
-        const disclosedAxes = new Set(Array.isArray(searchesOpen?.disclosed_axes) ? searchesOpen.disclosed_axes : []);
-        const axesRec = {};
-        const digestLocked = existsSync(P.narrative);   // synthesis done — the audit spine is locked; disclose, never mutate under it
-        for (const a of taintedNow) {
-          const repairs = [];
-          let quarantined = 0;
-          // T0 — quarantine floor (unconditional, idempotent, code-only)
-          try {
-            if (existsSync(P.registerBand(a))) {
-              const q = taintQuarantineCleanBlocks(readFileSync(P.registerBand(a), "utf8"));
-              if (q.quarantined.length) {
-                writeFileSync(`${P.registerBand(a)}.tmp`, JSON.stringify(q.blocks, null, 2) + "\n");
-                renameSync(`${P.registerBand(a)}.tmp`, P.registerBand(a));
-                quarantined = q.quarantined.length;
-                note(`register-unit ${a}: taint-quarantined ${quarantined} self-reported-clean judgment block(s) → incomplete descriptors`);
-                runLog(run.runDir, { event: "taint-quarantine", axis: a, blocks: quarantined });
-              }
-            }
-          } catch (e) { note(`register-unit ${a}: taint quarantine not applicable (${String(e.message).slice(0, 100)})`); }
-          // T0.5 — deterministic re-execution of the dictated half (repair-ledger bounded). Not for an axis the searches
-          // record discloses: its recovery is spent, and its band is read as the last pass left it.
-          const dispatched = disclosedAxes.has(a) ? null : await dispatchPlanQids(a, null, "taint-dispatch");
-          if (dispatched) repairs.push(`taint-dispatch:${dispatched}`);
-          // T1 — ONE fresh in-loop re-run, pre-synthesis only (a fresh full pass on the stage's one model)
-          // — held until the real result is in hand; see the push below the taint re-read.
-          let taintRerunDispatch = null;
-// — ONE ceiling, named once and read by BOTH ends. A literal repeated at the record site is a
-          // second statement of the same rule, and two ends stating the same rule is how they drift apart.
-          const taintRerunMax = 1;
-          if (!digestLocked && !disclosedAxes.has(a) && repairLedger.canAttempt("taint-rerun", a, { max: taintRerunMax, epoch: repairEpoch })) {
-            note(`register-unit ${a}: taint-rerun — one fresh re-run (fresh session; a killed session is never warm-resumed)`);
-            const r = await stage("register-unit", { ...ctx, axis: a },
-              { force: true, trigger: "taint-rerun", sessionKey: `clearance-${run.slug}-${run.codename}-register-unit-${a}-taint-rerun-${recoveryAttempts}` });
-            repairLedger.record("taint-rerun", a, r.ok ? "ok" : `failed: ${String(r.fail ?? "unknown").slice(0, 100)}`, { epoch: repairEpoch, max: taintRerunMax });
-            repairs.push(`taint-rerun:${r.ok ? "ok" : `failed: ${String(r.fail ?? "unknown").slice(0, 60)}`}`);
-            if (r.ok && r.sessionKey) unitKey[a] = r.sessionKey;
-            taintRerunDispatch = r.ok ? "ok" : `failed: ${String(r.fail ?? "unknown").slice(0, 100)}`;
-          }
-          const after = readRegisterTaint(run.runDir, [a])[a];
-          // ── — `outcome` SAID THE CALL RETURNED, AND THE ROW REACHES A FAILURE PACKET ───────────
-          //
-          // `r.ok` is whether the re-run CALL came back, not whether the taint cleared — and this row
-          // travels as `repairs:` on a StageFailure, so a reader of that packet saw `outcome: "ok"` for an
-          // axis still tainted. The same shape found on `repair-attempted.outcome`.
-          //
-          // `outcome` KEEPS ITS MEANING rather than being renamed: `repairs.mjs:131` documents
-          // `axisOutcome` as "the AXIS's repair-attempt outcome", and `fanInMissingEvidence` uses it to say
-          // what a repair HIT when a slice landed nothing of its own. That reading is correct and consumed
-          // correctly; renaming would churn a documented vocabulary across two producers, a map and a
-          // parameter, to fix a field that is not the one lying.
-          //
-          // So the row gains the result as a SIBLING — the other remedy — and the push moves below the
-          // taint re-read so there IS a result to state. `cleared` is the same fact `axesRec[a].status`
-          // records two lines down, from this same read.
-          if (taintRerunDispatch !== null) {
-            fanInRepairs.push({ repair: "taint-rerun", target: a, outcome: taintRerunDispatch,
-              cleared: !after?.tainted });
-          }
-          axesRec[a] = {
-            status: after?.tainted ? "active" : "resolved",
-            evidence: (after?.tainted ? after.evidence : taint0[a].evidence).slice(0, 8),
-            quarantinedBlocks: quarantined,
-            repairs,
-            ...(after?.tainted ? {} : { resolvedBy: "taint-rerun", resolvedAt: new Date().toISOString() }),
-          };
-        }
-        try {
-          const tp = driverDir(run.runDir, "register-taint.json");
-          writeFileSync(`${tp}.tmp`, JSON.stringify({ schema_version: 1, ts: new Date().toISOString(), axes: axesRec }, null, 2) + "\n");
-          renameSync(`${tp}.tmp`, tp);
-        } catch (e) { note(`register-taint receipt write failed (non-fatal): ${String(e.message).slice(0, 80)}`); }
-        const stillTainted = Object.entries(axesRec)
-          .filter(([a, v]) => v.status === "active" && !NON_MATERIAL_AXES.includes(String(a).toLowerCase()))
-          .map(([a]) => a);
-        // Disclosed: every axis once synthesis is done, and an axis the searches record lists once its recovery is spent.
-        // Parked: the rest, while the run can still re-run them.
-        const { disclose: toDisclose, park: toPark } = taintDisposition(stillTainted, { digestLocked, disclosedAxes });
-        if (toDisclose.length) {
-          // DISCLOSE — the sanctioned lever once synthesis is done, and once an axis's recovery is spent: the client
-          // export is withheld until the search is re-run to closure (the same class as a failed escalation/envelope),
-          // the internal report ships CONDITIONAL via the ledger relabel + registerGap clamp.
-          try {
-            const escPath = driverDir(run.runDir, "escalation-state.json");
-            let esc = {}; try { esc = JSON.parse(readFileSync(escPath, "utf8")); } catch { /* fresh */ }
-            const failed = Array.isArray(esc.failed) ? esc.failed : [];
-            for (const a of toDisclose) if (!failed.includes(`taint:${a}`)) failed.push(`taint:${a}`);
-            atomicWrite(escPath, JSON.stringify({ ...esc, ts: new Date().toISOString(), failed }, null, 2) + "\n");   // B5 — the client-gate reads this: never truncated
-          } catch (e) { note(`taint disclose: escalation-state append failed (${String(e.message).slice(0, 80)})`); }
-          // Receipt status → "disclosed": the LEDGER keeps treating the axis as a gap (deferred → clamp +
-          // client-gate withhold) but the digest validator stays quiet — a locked narrative is never
-          // forced into a rewrite loop (see register-taint.mjs status contract).
-          try {
-            const tp = driverDir(run.runDir, "register-taint.json");
-            const rec = JSON.parse(readFileSync(tp, "utf8"));
-            for (const a of toDisclose) if (rec?.axes?.[a]) rec.axes[a] = { ...rec.axes[a], status: "disclosed" };
-            writeFileSync(`${tp}.tmp`, JSON.stringify(rec, null, 2) + "\n"); renameSync(`${tp}.tmp`, tp);
-          } catch (e) { note(`register-taint receipt disclose update failed (non-fatal): ${String(e.message).slice(0, 80)}`); }
-          runLog(run.runDir, { event: "taint-disclose", axes: toDisclose });
-          note(`timeout-taint on ${toDisclose.join(", ")} ${digestLocked ? "past the locked audit spine" : "with its recovery spent"} — disclosed: client export withheld, verdict clamps CONDITIONAL (internal report still ships)`);
-        }
-        if (toPark.length) {
-          // PARK — the converging outer net. Rename (never delete — forensics) so stageOnce's
-          // exists-and-validates skip MISSES and the resume genuinely re-executes the tainted units;
-          // drop the plan-execution receipt so the re-join runs over the fresh bands; a digest already
-          // derived from tainted material is renamed too, else its skip would ship stale rows. The renames ride the
-          // failure: once its recovery is spent, the run-level catch puts them back and the axes are disclosed instead.
-          const undoRenames = [];
-          const parkRename = (f) => {
-            try { if (existsSync(f)) { renameSync(f, `${f}.tainted-${recoveryAttempts}`); undoRenames.push({ from: f, to: `${f}.tainted-${recoveryAttempts}` }); } }
-            catch { /* best-effort */ }
-          };
-          for (const a of toPark) for (const f of [P.registerUnit(a), P.registerBand(a)]) parkRename(f);
-          try { if (existsSync(P.planExecution)) rmSync(P.planExecution); } catch { /* best-effort */ }
-          for (const f of taintParkJudgmentArtifacts(P, run.runDir)) parkRename(f);
-          runLog(run.runDir, { event: "taint-park", axes: toPark, attempt: recoveryAttempts });
-          throw Object.assign(new StageFailure(`register-unit:${toPark[0]}`,
-            `register slice timeout-tainted and unrecovered — an unfinished pass cannot ship self-reported clean (axes: ${toPark.join(", ")})`,
-            undefined, { failClass: "transient", repairs: fanInRepairs }),
-            { notCompletedPart: "searches", taintedAxes: toPark, undoRenames });
-        }
-      }
-    }
-
-    // judgment-relocation (2026-06-23): MERGE the per-axis COMPLETE NAMED BANDS into one (register-named-band.json)
-    // so the lifted firewall carries the real material into Layer B (placement / digest / synthesis read it as a
-    // declared stage input). T3: a band that survived the recovery ladder still malformed FAILS the run
-    // inside deriveNamedBand — judgment must never reason over receipts it cannot read. Re-run on every
-    // re-enumeration pass below.
-    // Repair-first A3: before that terminal, a malformed DICTATED axis gets ONE whole-axis direct
-    // re-execution — the tool's merge rewrites every dictated block (fresh-writes over an unparseable
-    // file, trading unsalvageable qid-less judgment blocks for a readable dictated band). Only THIS
-    // fan-in call carries the repair; later deriveNamedBand calls re-merge post-repair bands.
-    try { deriveNamedBand(ctx); }
-    catch (e) {
-      if (!(e instanceof StageFailure) || !ctx.registerPlan || !planExec) throw e;
-      const { invalid } = mergeRegisterBands(P, axes);
-      const planAxes = new Set(ctx.registerPlan.entries.map((x) => x.axis));
-      const targets = invalid.map((x) => x.axis).filter((x) => planAxes.has(x));
-      let repaired = false;
-      for (const a of targets) if ((await dispatchPlanQids(a, null, "band-reexecute")) === "ok") repaired = true;
-      if (!repaired) throw e;
-      deriveNamedBand(ctx);   // still malformed → throws for real this time
-    }
-
-    // ── common-law → register cross-check (copper-lattice recovery net #3) ───────────────────────────
-    // Option-D Triggers 1/4 (phase2-execution.md) as CODE: a common-law hit carrying the
-    // "Similar listing(s) found" receipt (or an <x>-of-record owner in a findings block) mints
-    // deterministic register queries — an owner-field sweep per extracted owner, a contains sweep per
-    // owner-less mark — folded into the frozen plan as qid'd entries (plan_version bump). The join
-    // below then sees them MISSING and the plan-direct-execute dispatch runs them as pure code; they
-    // land qid-stamped in the primary-sweep band, skeleton-tracked and receipt-durable. Bounded at the
-    // Option-D cap (10, ranked verified-use-with-URL > owner > term-only), overflow LOGGED never
-    // silent; deterministic qids make the fold resume-idempotent. NEVER-KILL: a parse miss degrades to
-    // a logged skip. Receipt: _driver/register-xcheck.json (the demotion tripwire's substrate).
-    if (ctx.registerPlan) {
-      try {
-        const receiptPath = driverDir(run.runDir, "register-xcheck.json");
-        const prior = existsSync(receiptPath) ? JSON.parse(readFileSync(receiptPath, "utf8")) : null;
-        const signals = findSimilarListingSignals(readFileSync(P.commonLaw, "utf8"));
-        const ranked = [
-          ...signals.filter((s) => s.owner && s.url),
-          ...signals.filter((s) => s.owner && !s.url),
-          ...signals.filter((s) => !s.owner),
-        ];
-        const inScope = inScopeClassList(job, ctx.profile).map(Number).filter(Number.isFinite);
-        const XCHECK_CAP = 10;
-        const candidates = [], candDirectives = [], overflow = [];
-        const seen = new Set();
-        const mintedQids = new Set();   // qid uniqueness inside the lane — the fold below dedupes on it
-        for (const s of ranked) {
-          const term = (s.owner ?? s.markText ?? s.term ?? "").trim();
-          if (!term || !inScope.length) continue;
-          const key = `${s.owner ? "owner" : "mark"}:${term.toLowerCase()}`;
-          if (seen.has(key)) continue;
-          seen.add(key);
-          // IDENTITY, NOT A DISPLAY SLUG — AND ON BOTH ROW TYPES. `kebab()` NFKD-decomposes and turns
-          // every combining mark into a hyphen, so distinct katakana marks minted ONE qid and
-          // foldSupplementalEntries, which dedupes on qid, dropped the rest with nothing in refused[]
-          // and nothing on the receipt: marks nobody searched, and nothing saying so.
-          //
-          // The owner side is fixed with it, deliberately. The exemption below withholds the ROMANISATION
-          // from owner rows — a term rule, about what goes out in the query. A qid is an identity and
-          // decides whether a row survives at all, so a colliding owner qid drops a distinct owner into
-          // the substrate findUncrossCheckedDemotions then reads as if it were whole.
-          //
-          // THE NET IS A SECOND DEFECT, not a precaution. termIdentity falls back to the fingerprint only
-          // when the Latin fold is EMPTY, so a Latin term returns its long fold and this site truncates at
-          // 40 — two ordinary corporate names sharing a 40-character prefix collide today. Two classes,
-          // two changes. Latin qids that do not collide are byte-unchanged, so no existing entry moves.
-          const qid = mintSupplementalQid({ prefix: s.owner ? "xcheck-owner" : "xcheck-mark", term, used: mintedQids });
-          // — CARRY THE ROMANISATION THE PLAN ALREADY HOLDS. This lane mints outside
-          // the compiler's push(), so its entries never met romanStamp: a non-Latin term arrived bare and
-          // was refused by the capability gap while the same plan held its romanisation on the entries
-          // that answered it. An owner row is exempt — an owner NAME is not mark text and the executor
-          // drops the carrier on an owner query, exactly as romanStamp itself decides.
-          candidates.push(waitingCrossCheck({ qid, axis: "primary-sweep", predicate: s.owner ? "owner" : "default", term, nice_classes: inScope.map(String), regions: [], ...(s.owner ? {} : (() => { const r = romanizedTermsFromPlan(ctx.registerPlan, term); return r ? { romanizedTerms: r } : {}; })()), expected_kind: "enumerate" }));
-          candDirectives.push({ qid, owner: s.owner ?? null, markText: s.markText ?? null, source: { term: s.term ?? null, platform: s.platform ?? null, url: s.url ?? null } });
-        }
-        // — THIS IS THE LANE THAT KILLED R2b. `findSimilarListingSignals` takes a negative-results
-        // matrix row's first cell VERBATIM (the finding arm strips `[*_\`]`, the matrix arm strips
-        // nothing), so a grouping HEADING in that table became `{predicate:"default", term:"**Core
-        // (BIOVELTRIN, …, etc.)**"}` and folded into a plan the freeze lint had already passed. The
-        // screen is inside foldSupplementalEntries; here the refused rows are moved out of directives[]
-        // and into the receipt's own refused[], where the ask ledger renders them as OPEN asks. Owner
-        // rows are exempt from the term rules, so findUncrossCheckedDemotions keeps its whole substrate.
-        // ── — THE CAP COUNTS QUERIES, NOT CANDIDATES ────────────────────────────
-        //
-        // The cap used to fill from the raw candidate list while the duplicate screen ran AFTER it, so
-        // an entry the fold was going to refuse still consumed a slot, and a genuinely new term behind
-        // it was logged "assess manually" instead of being searched.
-        //
-        // AND THE COLLISION IS THE EXPECTED CASE, not an ordering accident. The terms most likely to be
-        // refused as duplicates are the mark itself and its nearest forms — exactly what the common-law
-        // pass surfaces FIRST, so they arrive at the front of `ranked` and take the earliest slots.
-        // Measured on a live run: cap 10, six directives kept, FOUR slots spent on entries this very
-        // fold then discarded, and six real terms pushed out behind them.
-        //
-        // SCREEN FIRST, THEN COUNT. The fold is pure — it derives its sets from `plan.entries` on each
-        // call and returns a NEW plan rather than mutating one — so probing with the full candidate
-        // list costs nothing, and it is what makes the batch-internal dedup visible before the cap is
-        // spent. The fold's refusal logic is untouched: it is right about every row it refuses, and
-        // only the ORDER of screening and counting moves.
-        const screened = screenThenCap(ctx.registerPlan, candidates, XCHECK_CAP);
-        const entries = screened.entries;
-        // Overflow now holds GENUINE excess only: a term is over-cap because ten real queries were
-        // minted ahead of it, never because a slot was burned on a row nobody dispatched.
-        for (const e of screened.overflow)
-          overflow.push({ term: e.term, reason: `cap ${XCHECK_CAP} reached — assess manually` });
-        const folded = foldSupplementalEntries(ctx.registerPlan, entries);   // PURE — safe above the guard
-        const entryQids = new Set(entries.map((e) => e.qid));
-        const { kept } = partitionFoldDirectives(candDirectives.filter((d) => entryQids.has(d.qid)), folded.refused);
-        // The refusals are still RECORDED, across the WHOLE candidate list. They render as asks a reader
-        // adjudicates, and screening further down the list must not quietly drop the disclosure for rows
-        // the cap never reached — a fix that searched more while disclosing less would be a bad trade.
-        const { refused: refusedDirectives } = partitionFoldDirectives(candDirectives, screened.refused);
-        // Computed over the KEPT set, so the resume guard below compares like with like on every attempt.
-        const dirKey = kept.map((d) => d.qid).sort().join(",");
-        const priorKey = Array.isArray(prior?.directives) ? prior.directives.map((d) => d.qid).sort().join(",") : null;
-        if (candidates.length && dirKey !== priorKey) {
-          const { plan, added } = folded;
-          if (added.length) {
-            writeFileSync(`${P.registerPlan}.tmp`, JSON.stringify(plan, null, 2) + "\n");
-            renameSync(`${P.registerPlan}.tmp`, P.registerPlan);
-            ctx.registerPlan = plan;   // run-local only — no slug-store write-back (clearances run once; senior lawyer 2026-07-10)
-            runLog(run.runDir, { event: "register-xcheck", minted: added.length, overflow: overflow.length });
-            note(`common-law→register cross-check: ${added.length} register quer${added.length === 1 ? "y" : "ies"} minted (cap ${XCHECK_CAP}${overflow.length ? `, ${overflow.length} over-cap logged` : ""})`);
-          }
-        }
-        if (refusedDirectives.length) {
-          runLog(run.runDir, { event: "register-xcheck-refused", refused: refusedDirectives.length,
-            qids: refusedDirectives.map((d) => d.qid).slice(0, 6) });
-          note(`common-law→register cross-check: ${refusedDirectives.length} signal(s) REFUSED as un-searchable terms — recorded in _driver/register-xcheck.json refused[], never dispatched`);
-        }
-        // THE CROSS-CHECKS WAIT FOR THE READING STEP (cross-check-wait.mjs). Minted after it decided its plan,
-        // they are put to it once more, in its own session. Whatever it leaves undecided — all of them when
-        // that session cannot be asked — runs as code, as before the wait, and the receipt says so.
-        let decided = prior?.decided ?? null;
-        const waiting = undecidedCrossChecks(ctx.registerPlan, { released: releasedFamilyQids(run.runDir), withheld: readWithheldFamilies(run.runDir) });
-        if (waiting.length) {
-          const axis = "primary-sweep";
-          let asked = false;
-          // A follow-up that throws is one that could not be asked: the questions must still run below.
-          if (unitKey[axis]) try {
-            const byQid = new Map(ctx.registerPlan.entries.map((e) => [e.qid, e]));
-            const from = new Map([...(Array.isArray(prior?.directives) ? prior.directives : []), ...kept].map((d) => [d.qid, d.source?.url ?? null]));
-            const followup = repairFollowup("register-unit:xcheck-decide", { axis, registerPlan: P.registerPlan, bandPath: P.registerBand(axis), entries: waiting.map((q) => ({ ...byQid.get(q), from: from.get(q) ?? null })),
-              job: ctx.job, profile: ctx.profile, supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane });
-            const r = await stage("register-unit", { ...ctx, axis }, { force: true, followup, sessionKey: unitKey[axis], trigger: "xcheck-decide" });
-            asked = r?.ok === true;
-            remergeIfBandsMoved(ctx, "xcheck-decide");
-          } catch (e) { runLog(run.runDir, { event: "register-xcheck-decide-failed", fail: String(e?.message ?? e).slice(0, 160) }); }
-          const released = releasedFamilyQids(run.runDir), withheld = readWithheldFamilies(run.runDir);
-          const ran = undecidedCrossChecks(ctx.registerPlan, { released, withheld });
-          if (ran.length) {
-            const plan = withoutWait(ctx.registerPlan, ran);
-            writeFileSync(`${P.registerPlan}.tmp`, JSON.stringify(plan, null, 2) + "\n");
-            renameSync(`${P.registerPlan}.tmp`, P.registerPlan);
-            ctx.registerPlan = plan;
-            note(`common-law→register cross-check: ${ran.length} quer${ran.length === 1 ? "y" : "ies"} the reading step did not decide`
-              + `${asked ? "" : " (its session could not be asked)"} run as code, as before the wait`);
-          }
-          decided = { asked, released: waiting.filter((q) => released.has(q)), withheld: waiting.filter((q) => withheld[q]), ran_undecided: ran };
-          runLog(run.runDir, { event: "register-xcheck-decided", ...decided });
-        }
-        writeFileSync(`${receiptPath}.tmp`, JSON.stringify({ schema_version: 1, ts: new Date().toISOString(), cap: XCHECK_CAP, directives: kept, overflow, ...(refusedDirectives.length ? { refused: refusedDirectives } : {}), ...(decided ? { decided } : {}) }, null, 2) + "\n");
-        renameSync(`${receiptPath}.tmp`, receiptPath);
-      } catch (e) {
-        note(`common-law→register cross-check skipped (${String(e.message).slice(0, 100)}) — never-kill`);
-      }
-    }
-
-    // WS2 (B3) — the plan⇄band IDENTITY JOIN (plan mode only; legacy runs have no plan and skip).
-    // Every guard-active plan entry must own a band block carrying its qid. A missing qid gets ONE
-    // targeted followup on the owning axis's winning key dictating exactly the unexecuted entries;
-    // whatever is still missing is a StageFailure — a clean can never ship over a slice the PLAN dictated
-    // and nothing ran (the F2/F3 seam). The receipt (_driver/plan-execution.json, incl. the code-derived
-    // coverage skeleton) is what the digest ledger gate and the refutation plan-audit read.
-    if (ctx.registerPlan) {
-      // copper-lattice re-route: fold the propose-tool's per-axis supplemental plans BEFORE the join —
-      // a folded qid with no band block joins MISSING and rides the same dispatch/followup/StageFailure
-      // ladder as a dictated entry (plan_version growth also invalidates a stale clean receipt below).
-      foldSupplementalProposals(ctx);
-      const readBands = () => readRegisterBands(P, axes);
-      const writeExecution = (joinRes) => writePlanExecutionReceipt(ctx, joinRes);
-      // ── Settle the receipt's deferrals HERE, before anything expensive reads them ──────────────────
-      // On the R2 evidence run the receipt recorded three refused slices at 11:47:26 and the envelope
-      // decided about them at 12:31:22 — with placement (626s), a digest attempt GUARANTEED to fail its
-      // coverage_clean_deferred validator (810s), its retry (697s) and the skeptic (335s) in between.
-      // made that decision read the deferral's own reason instead of the clock; this makes it happen
-      // before the work that depends on it. Zero model turns: the only close mechanism here is the code
-      // executor, and nothing in this lane consults a deadline (see envelope-settle.mjs).
-      const settleEnvelopeAtReceipt = async (source) => {
-        const receipt = readPlanExecution(ctx);
-        if (!receipt) return null;
-        // A suspect deferral is nearly always an executor MIS-STAMP (deterministic refusals go to
-        // `deferred`, transients to `missing`, and the fan-in ladder above already closed-or-killed
-        // `missing`). One budgeted attempt each, through the same repair ledger every other lane uses —
-        // so a mis-stamp cannot quietly become permanent, and a real gap costs one executor call.
-        const doc = await settleReceipt({
-          P, plan: ctx.registerPlan, receipt,
-          dispatch: planExec ? async (axis, qids) => {
-            runLog(run.runDir, { event: "plan-qids-deferred-suspect", axis, qids, action: "early-envelope-close" });
-            await dispatchPlanQids(axis, qids, "early-envelope-close", 2);
-          } : null,
-          rejoin: planExec ? async () => {
-            writeExecution(joinPlanToBands(ctx.registerPlan, readBands(), joinOptions(ctx)));
-            deriveNamedBand(ctx);   // a close landed band blocks — re-merge so Layer B reads them
-            return readPlanExecution(ctx);
-          } : null,
-        });
-        runLog(run.runDir, { event: "envelope-decision-early", source, deferred: (receipt.deferred ?? []).length,
-          accepted: doc.accepted.length, closed: doc.closed.length, close_failed: doc.close_failed.length });
-        if (doc.accepted.length)
-          note(`register plan: ${doc.accepted.length} deferred slice(s) ACCEPTED as provider capability gaps before placement — `
-            + `they are disclosed, never retried, and no stage will be asked to close them: `
-            + doc.accepted.slice(0, 3).map((a2) => a2.qid).join(", "));
-        return doc;
-      };
-      // Hung on ctx so a downstream guard settles through the SAME lane, executor included. Without this
-      // the guard would still settle (settleReceipt works dispatch-less), but a mis-stamped deferral it
-      // met would be recorded ended without ever being tried.
-      ctx.settleEnvelope = settleEnvelopeAtReceipt;
-      // A CLEAN execution receipt for THIS plan version is durable: judgment-lane band re-emits
-      // (escalation / frame-reopen warm re-runs) happen AFTER the join and may not carry the qid
-      // stamps forward — the receipt, written at the moment of execution, remains the truth of
-      // what Phase A ran. Re-join only when no clean receipt exists for this version (fresh runs)
-      // or the plan grew (extension bumps plan_version → the new entries must execute + re-join).
-      let priorReceipt = null;
-      try { priorReceipt = JSON.parse(readFileSync(P.planExecution, "utf8")); } catch { /* none yet */ }
-      if (priorReceipt && priorReceipt.plan_version === ctx.registerPlan.plan_version
-          && Array.isArray(priorReceipt.missing) && priorReceipt.missing.length === 0) {
-        ctx.planExecution = priorReceipt;
-        runLog(run.runDir, { event: "plan-execution", reused: true, executed: priorReceipt.executed?.length ?? 0 });
-        // The seam a resume sails through. On the evidence run the 15:47:37 resume reused a clean receipt
-        // and then re-decided the envelope from scratch an hour later — because the decision had only ever
-        // been a log line. Settling here is idempotent and makes the decision durable.
-        if (!receiptSettled(P, priorReceipt).settled) await settleEnvelopeAtReceipt("receipt-reuse");
-      } else {
-      // A qid this run has accepted as a capability gap does not ride the ladder again. It leaves `missing`
-      // for `deferred` with the reason it was accepted under, before any dispatch or followup reads the
-      // join, so neither the direct executor nor the plan-join followup re-dictates it.
-      const holdStickyGaps = (j) => {
-        const held = holdStickyGapsIn(j, readStickyGaps(P));
-        if (held !== j) runLog(run.runDir, { event: "plan-qids-sticky-gap", qids: j.missing.filter((q) => !held.missing.includes(q)), action: "held-from-missing" });
-        return held;
-      };
-      let joinRes = holdStickyGaps(joinPlanToBands(ctx.registerPlan, readBands(), joinOptions(ctx)));
-      const missingEntriesByAxis = () => {
-        const byQid = new Map(ctx.registerPlan.entries.map((e) => [e.qid, e]));
-        const m = new Map();
-        for (const qid of joinRes.missing) {
-          const e = byQid.get(qid);
-          if (!m.has(e.axis)) m.set(e.axis, []);
-          m.get(e.axis).push(e);
-        }
-        return m;
-      };
-      // ── repair-first A1 (2026-07-05): code first, agent second, throw with evidence third. The
-      // direct executor dispatch closes missing dictated slices in seconds with no agent turn (the
-      // Open Country class: two 414-killed form slices burned 3 parks + an LLM followup that
-      // re-derived the same failure). The LLM followup below survives as the FALLBACK for providers
-      // without an executePlan adapter, or a dispatch that itself failed at the transport level.
-      if (joinRes.missing.length && planExec) {
-        for (const [a, entries] of missingEntriesByAxis()) {
-          const qids = entries.map((e) => e.qid);
-          runLog(run.runDir, { event: "plan-qids-missing", axis: a, qids, action: "plan-direct-execute" });
-          await dispatchPlanQids(a, qids, "plan-direct-execute", 2);
-        }
-        joinRes = holdStickyGaps(joinPlanToBands(ctx.registerPlan, readBands(), joinOptions(ctx)));
-        if (!joinRes.missing.length) deriveNamedBand(ctx);   // dispatch landed blocks — re-merge so Layer B reads them
-      }
-      if (joinRes.missing.length) {
-        for (const [a, entries] of missingEntriesByAxis()) {
-          if (!unitKey[a]) {
-            // T1 (J6): a resumed-past axis has no live session, but register_execute_plan needs
-            // no session context — ONE fresh tool-only call converts the transient into recovery. The
-            // plan-unexecuted StageFailure below still holds the line for a genuine hole.
-            runLog(run.runDir, { event: "plan-qids-missing", axis: a, qids: entries.map((e) => e.qid), action: "fresh-execute-plan" });
-            note(`register-unit ${a}: ${entries.length} dictated plan entr${entries.length === 1 ? "y" : "ies"} unexecuted on a resumed-past axis — one fresh execute_plan-only call`);
-            const freshMsg = repairFollowup("register-unit:plan-join-fresh", { axis: a, registerPlan: P.registerPlan, bandPath: P.registerBand(a), entries });
-            const rf = await stage("register-unit", { ...ctx, axis: a }, { force: true, freshMessage: freshMsg, sessionKey: `clearance-${ctx.run.slug}-${ctx.run.codename}-register-unit-${a}-plan-join-fresh`, trigger: "plan-join-fresh" });
-            if (!rf.ok) note(`register-unit ${a}: fresh execute_plan call failed (${rf.fail}) — the plan-unexecuted StageFailure below holds the line`);
-            continue;
-          }
-          runLog(run.runDir, { event: "plan-qids-missing", axis: a, qids: entries.map((e) => e.qid), action: "warm-followup" });
-          note(`register-unit ${a}: ${entries.length} dictated plan entr${entries.length === 1 ? "y" : "ies"} unexecuted — one warm followup`);
-          const followup = repairFollowup("register-unit:plan-join", { axis: a, registerPlan: P.registerPlan, bandPath: P.registerBand(a), entries });
-          // Repair-first: the followup's own failure no longer hard-throws here (the old
-          // register-unit:<axis>(plan-join) must()) — the fan-in throw below is the single authority,
-          // carrying the per-slice provider evidence and the honest failClass.
-          const wf = await stage("register-unit", { ...ctx, axis: a }, { force: true, followup, sessionKey: unitKey[a], trigger: "plan-join" });
-          if (!wf.ok) note(`register-unit ${a}: warm plan-join followup failed (${wf.fail}) — the plan-unexecuted StageFailure below holds the line`);
-        }
-        joinRes = holdStickyGaps(joinPlanToBands(ctx.registerPlan, readBands(), joinOptions(ctx)));
-        deriveNamedBand(ctx);   // the followup appended band blocks — re-merge so Layer B reads them
-      }
-      const skeleton = writeExecution(joinRes);
-      // — the RECEIPT is the authority, not the local join. writeExecution may have moved a
-      // ladder-spent, provider-hard-errored qid from `missing` to `deferred`; reading its own write back
-      // is what makes the throw below agree with the file every downstream gate reads. Taking the
-      // conversion at the writer and forgetting it here would throw over a slice the receipt discloses.
-      if (ctx.planExecution) joinRes = { ...joinRes, missing: ctx.planExecution.missing ?? [], deferred: ctx.planExecution.deferred ?? [] };
-      // A DEFERRED slice is a capability gap the active provider cannot close (register-plan.mjs
-      // joinPlanToBands): re-running it would produce the identical refusal, so it is NOT missing and
-      // must not ride the ladder into the StageFailure below. It is also NOT executed — the coverage
-      // skeleton marks the axis `deferred` and findUnexecutedCleanClaims refuses a `confirmed-clean`
-      // claim over it, so the gap is disclosed rather than closed. Loud in the log and the note, never a
-      // silent narrowing.
-      // The rows are excluded here and announced by their own note: they are NOT slices the provider
-      // cannot express — it accepted them and then failed — and one note claiming both would make the
-      // run's own record of WHY a territory went unsearched wrong.
-      // And the slices a check could not prove ran, taken out of the band (searchesOpen above): announced on their own.
-      const takenOut = new Set((Array.isArray(searchesOpen?.slices) ? searchesOpen.slices : []).map((s) => s.qid));
-      const capabilityDeferred = (joinRes.deferred ?? []).filter((d) => !isProviderHardErrorReason(d.reason) && !takenOut.has(d.qid));
-      if (capabilityDeferred.length) {
-        runLog(run.runDir, { event: "plan-qids-deferred", count: capabilityDeferred.length,
-          qids: capabilityDeferred.slice(0, 8).map((d) => d.qid) });
-        note(`register plan: ${capabilityDeferred.length} dictated slice(s) DEFERRED — the active register provider cannot express them, `
-          + `so they were never searched and cannot be read as clean: ${capabilityDeferred.slice(0, 3).map((d) => `${d.qid} ← ${String(d.reason).slice(0, 120)}`).join("; ")}`);
-      }
-      // — THE CENSUS IS RECORDED BEFORE THE THROW, NOT AFTER IT. The `plan-execution` runLog below
-      // carries `unplanned`, and it sat two lines past the throw: on every run that PARKED here — the only
-      // runs anyone diagnoses — the number was computed and discarded. `missing` and `unplanned` together
-      // are the fingerprint that separates this park's two causes (see the evidence block below), so the
-      // one row that could tell them apart was unreachable on exactly the path that needed it. Same class
-      // as /: the data existed, the reporting did not.
-      // ONE read of the bands for the census, the error quotes and the landed counts. Reading them twice
-      // would let the census and the classification disagree about the same files, and the whole point of
-      // both is that they are the record of one moment.
-      const bands = readBands() ?? {};
-      const landedByAxis = new Map();
-      for (const [axis, blocks] of Object.entries(bands))
-        landedByAxis.set(axis, (blocks ?? []).filter((b) => b && typeof b.qid === "string" && b.qid).length);
-      runLog(run.runDir, { event: "plan-execution-census", executed: joinRes.executed.length, missing: joinRes.missing.length,
-        skipped: joinRes.skipped.length, deferred: (joinRes.deferred ?? []).length, unplanned: joinRes.unplanned.length,
-        unplannedQids: joinRes.unplanned.slice(0, 8).map((u) => u.qid),
-        landed: [...landedByAxis].map(([a, n]) => `${a}:${n}`) });
-      if (joinRes.missing.length) {
-        // The old throw was a lie of omission ("own no band block") — the provider's VERBATIM error for
-        // each missing slice sits in the band's error blocks. Quote it, so the terminal diagnosis (and
-        // the recovery classifier) see the actual cause: teal-causeway's three parks never surfaced the
-        // HTTP 414 that was in the band file the whole time.
-        const errByQid = new Map();
-        for (const bandBlocks of Object.values(bands)) for (const b of bandBlocks) if (b && b.qid && b.error && b.reason) errByQid.set(b.qid, String(b.reason));
-        const axisOutcome = new Map(fanInRepairs.map((r) => [r.target, r.outcome]));
-        const byQid = new Map(ctx.registerPlan.entries.map((e) => [e.qid, e]));
-        // — the decision is `fanInMissingEvidence` in repairs.mjs, next to TRANSIENT_RE and
-        // DETERMINISTIC_RE. It reads per-slice evidence and falls back to the axis's repair outcome ONLY
-        // when that axis landed no qid-stamped block at all; see its comment for why the old unconditional
-        // fallback inverted the signal. The detail sentence and the failClass come out of the same pass.
-        const { rows, failClass } = fanInMissingEvidence(joinRes.missing, {
-          ownError: errByQid, axisOutcome, landedByAxis, axisOf: (qid) => byQid.get(qid)?.axis,
-        });
-        const detail = rows.slice(0, 6).map((r) => {
-          // The quote is always shown; what CHANGES is whether it is presented as this slice's cause.
-          // An axis outcome on an axis that landed other blocks is context — a repair was tried and this
-          // is what it hit — and saying so is the difference between informing a reader and misleading
-          // the ladder. The 414 that teal-causeway lost still reaches the terminal either way.
-          if (r.source === "axis-context") return `${r.qid} ← no error of its own; axis "${r.axis}" repair hit: ${r.quote.slice(0, 140)} (axis landed other blocks — context, not this slice's cause)`;
-          if (r.quote) return `${r.qid} ← ${r.quote.slice(0, 160)}`;
-          return `${r.qid} ← no error block and no repair outcome — nothing ran this slice`;
-        });
-        // Once their recovery is spent, these are the searches not completed: each is added to its axis's band as the
-        // executor's deferred block and delivered as an open row, reading that it was planned and never reached the
-        // register (parts-not-completed.mjs).
-        throw Object.assign(new StageFailure("fan-in", `register plan unexecuted after direct dispatch + followup — ${joinRes.missing.length} dictated qid(s) own no band block: ${detail.join("; ")}${joinRes.missing.length > 6 ? " …" : ""} (a clean can never ship over a slice the plan dictated and nothing ran)`, undefined,
-          // `quantity` is the missing count — what CONVERGES across attempts (5 → 3 → 1 is a run closing
-          // on the hole; 5 → 5 → 5 is one that has stopped). repairs.mjs progressQuantity cannot read it
-          // out of this prose: its census table is an allowlist and this template is not in it, so the
-          // ladder has been reading `unknown` here and a converging run looked plateaued.
-          { failClass, repairs: fanInRepairs, quantity: joinRes.missing.length }),
-          { notCompletedPart: "searches", excludedSlices: joinRes.missing.map((qid) => ({ axis: byQid.get(qid)?.axis, qid, reason: plainDeferralReason("slice-not-landed") }))
-            .filter((x) => x.axis) });
-      }
-      runLog(run.runDir, { event: "plan-execution", executed: joinRes.executed.length, skipped: joinRes.skipped.length, unplanned: joinRes.unplanned.length,
-        awaiting: joinRes.awaiting?.length ?? 0, asked: joinRes.asked?.length ?? 0,
-        axes: skeleton.map((s) => `${s.axis}:${s.state}`) });
-      // Decide the deferrals now — before placement-inquiry, which on the evidence run started one second
-      // after this point on inputs the run had just recorded as unfinished.
-      await settleEnvelopeAtReceipt("fan-in");
-      }
-    }
-
-    // Machine-receipts contract gate (post-mortem §1b): a FRESH common-law run under a dictated key list
-    // must save the grid stdout JSON (the validator already exact-joins it when present). A resumed run
-    // that skipped the stage is exempt (archived/pre-machine-receipts artifacts are legacy by design).
-    // One followup on the winning session asks for just the save; still missing ⇒ the run fails —
-    // a new run silently on the legacy prose path would be the inference disease growing back.
-    // A1 split: this lane is single-member only BY CONSTRUCTION — each half validator is ledger-or-fail
-    // (its spec sidecar always dictates the grid), and mergeCommonLawArtifacts just wrote the canonical
-    // ledger in code (a quarantined half's cells are already accounted as gaps), so under the split a
-    // missing canonical ledger cannot reach here.
-    if (!clSplit) {
-      const cl = clMember();
-      if (cl && ctx.gridVariants?.length && !cl.skipped && !existsSync(P.commonLawGrid)) {
-        runLog(run.runDir, { event: "grid-ledger-missing", action: "warm-followup" });
-        note("common-law: grid ledger missing after a fresh run — one warm save-followup");
-        const followup = ctx.gridSpecPath
-          ? repairFollowup("common-law:grid-ledger", { gridLedger: P.commonLawGrid, gridSpecPath: ctx.gridSpecPath })
-          : repairFollowup("common-law:grid-ledger-no-spec", { gridLedger: P.commonLawGrid });
-        must(await stage("common-law", ctx, { force: true, followup, sessionKey: cl.sessionKey, trigger: "grid-ledger" }), "common-law(grid-ledger)");
-        if (!existsSync(P.commonLawGrid)) throw new StageFailure("common-law", "grid ledger never saved (machine-receipts contract)");
-        runLog(run.runDir, { event: "grid-ledger-saved", recovered: true });
-      }
-    }
-
-    // ── V4-4: coverage closure — a gap the machine can close itself never ships as a recommendation ──
-    // At the point the run consumes the common-law findings on its way to synthesis (fresh, resumed, or
-    // skipped — V4-1 semantics: this operates on the FILE, not on session events). Coverage-limited cells
-    // not exempted by a mechanical-error gap/ledger entry get ONE corrective followup on the stage's
-    // winning session, dictating exactly the missing variant×platform cells (batched at the profile-
-    // derived ceiling, the convention). Whatever survives ships as a GENUINE attempted-and-unreachable front-matter
-    // note with a priced offer — never as a "commission a re-run" recommendation (the S&I line-154
-    // failure: the system knew the 91 missing cells, could close them for ~$0.12, and told the lawyer to
-    // commission the work instead). The receipt (_driver/coverage-closure.json) is also the narrative
-    // validator's conditional substrate. Idempotent across resumes: a receipt whose requested set equals
-    // the current closable set means the pass already ran — don't re-spend; keep the note.
-    // Cell source: the machine grid ledger's gaps when present (the substrate — each gap carries
-    // the program's own error string), else the sanctioned prose vocabulary (inherited/legacy artifacts).
-    // Register-only skips the pass entirely: with no grid there are no cells to close, and the fallback
-    // prose path would read a common-law findings file that was never written.
-    if (runCommonLaw) {
-      // P2-A candidate-cardinality CENSUS (review problems 1 + 9) — the ONLY arm: how many hit cells
-      // were received by a zero-candidates "No results" receipt. Advisory by construction, because
-      // `candidates[]` is raw unjudged web-search output and relevance is the model's judgment; the
-      // first cut gated on it and failed the delivered evidence run 221×. Asserted every run (0 is a
-      // real answer, per the house rule) so drift in receipt vocabulary is watchable without a
-      // brittle prose gate deciding deliveries. Matrix COMPLETENESS stays hard-gated in verify.mjs.
-      try {
-        if (existsSync(P.commonLawGrid) && existsSync(P.commonLaw)) {
-          const om = findGridCandidateOmissions(readFileSync(P.commonLawGrid, "utf8"), readFileSync(P.commonLaw, "utf8"));
-          runLog(run.runDir, { event: "common-law-candidates", denied: om.denied.length,
-            sample: om.denied.slice(0, 3).map((v) => `${v.term}×${v.platform}(${v.candidates})`) });
-          if (om.denied.length) note(`common-law candidates: ${om.denied.length} hit cell(s) received by a "No results" row (advisory census — relevance is the model's judgment; the honest form is "No similar listings (N candidates reviewed)")`);
-        }
-      } catch (e) { note(`common-law candidate census skipped (${String(e?.message ?? e).slice(0, 80)}) — never-kill`); }
-      const closureReceiptPath = driverDir(run.runDir, "coverage-closure.json");
-      const cellsOf = () => {
-        const txt = readFileSync(P.commonLaw, "utf8");
-        let cells;
-        try {
-          const ledgerRaw = existsSync(P.commonLawGrid) ? readFileSync(P.commonLawGrid, "utf8") : null;
-          cells = findCoverageLimitedCells(txt, ledgerRaw);
-        } catch { cells = findCoverageLimitedCells(txt); }   // unparseable ledger → prose fallback (the stage validator owns that failure)
-        return partitionClosableCells(txt, cells);
-      };
-      let { exempt, closable } = cellsOf();
-      const cellKey = (c) => `${c.variant} × ${c.platform}`;
-      // A CHANNEL THE FRAME-DIFF NAMED IS NOT FOLDED IN HERE. It is disclosed as an open row, never swept (the
-      // frame-reopen above defers it as a channel never swept), so this pass closes grid cells and nothing else.
-      // The signature keeps its second slot, empty, so a receipt written for the same cells still matches.
-      const priorReceipt = existsSync(closureReceiptPath) ? JSON.parse(readFileSync(closureReceiptPath, "utf8")) : null;
-      const closureSig = JSON.stringify([closable.map(cellKey).sort(), []]);
-      const alreadyAttempted = priorReceipt && (priorReceipt.sig === closureSig ||
-        // back-compat: a pre-doc-35 receipt keyed only on the cell set
-        (priorReceipt.sig == null &&
-          JSON.stringify((priorReceipt.requested ?? []).map(cellKey).sort()) === JSON.stringify(closable.map(cellKey).sort())));
-      // SIZED BY THE CELLS A CLOSURE GRID RUNS, as the main grid is (gridBatchFor): its spec carries only the
-      // platforms of the cells it closes.
-      const closureBatch = (cells) => gridBatchFor(ctx.profile, new Set(cells.map((c) => c.platform)).size);
-      if (closable.length && !alreadyAttempted) {
-        const requested = closable;
-        const variants = [...new Set(closable.map((c) => c.variant))];
-        const batchSize = closureBatch(closable);
-        const batches = Math.max(1, Math.ceil(variants.length / batchSize));
-        const gridCalls = batches;   // grid call(s) (tokens-only: no $ estimate)
-        note(`coverage closure: ${closable.length} machine-closable cell(s) — one supplementary grid pass (${gridCalls} grid call(s))`);
-        // Fix-1: the driver DICTATES a supplementary grid SPEC for a set of closable cells (a subset of the
-        // canonical grid) and the PLUGIN writes the ledger from the API response — never an agent hand-append
-        // (the grid_ledger_unparseable class). Connotation is OMITTED (caveat 4): meaning was swept in the
-        // main gather and the identity join (findDroppedConnotationQueries) lives at the canonical fan-in,
-        // which ran already — a supp spec must never re-run it. The driver folds the plugin-written ledger in
-        // code below (mergeGrids: union cells, extras.pr_risk survives, gaps recomputed against the full spec).
-        const buildSuppSpec = (cells, half) => {
-          const spec = {
-            terms: [...new Set(cells.map((c) => c.variant))],
-            platforms: [...new Set(cells.map((c) => c.platform))],
-            // A grid the frame decided is blocks, so its gaps are too: re-running them as one product would
-            // ask cells the grid never dictated. One product still reads exactly as before.
-            ...closureBlocksOf(cells),
-            output_path: P.commonLawGridSupp(half, "closure"),
-            batch: batchSize,
-            ledger_required: true,
-            ...(half ? { half } : {}),
-            ...resultsPerCellOf(ctx.searchPolicy),
-          };
-          atomicWrite(P.gridSpecSupp(half, "closure"), JSON.stringify(spec, null, 2) + "\n");
-          return spec;
-        };
-        if (!clSplit) {
-          const suppSpec = closable.length ? buildSuppSpec(closable, null) : null;
-          const followup = repairFollowup("common-law:coverage-closure", { findingsFile: P.commonLaw, suppSpec, suppSpecPath: P.gridSpecSupp(null, "closure"), closable, cellKey });
-          const r = await stage("common-law", ctx, { force: true, followup, sessionKey: clMember()?.sessionKey, trigger: "coverage-closure" });
-          if (!r.ok) note(`coverage closure pass failed mechanically (${r.fail}) — surviving cells ship as the genuine limitation`);
-          // Fold AFTER the stage returns ok (caveat 3): the stage re-validated the UNCHANGED canonical ledger
-          // (the plugin never touched it — it wrote only the supp), so grid_ledger_unparseable is structurally
-          // impossible on this lane. Now union the plugin-written supp into the canonical in code. The full spec
-          // is read from the stable _driver/grid-spec.json (resume-safe — ctx.gridSpecPath may be null on a
-          // resume where the gather-spec block did not re-run). A missing supp/spec/canonical skips the fold:
-          // the closable cells then stay plugin-recorded gaps → closable → ship as an honest limitation (never
-          // silently closed). mergeGrids is union-only, so a re-fold on resume is idempotent.
-          if (r.ok && suppSpec) {
-            const specPath = ctx.gridSpecPath || P.gridSpec;   // — the declared path, not a second literal
-            if (existsSync(suppSpec.output_path) && existsSync(P.commonLawGrid) && existsSync(specPath)) {
-              try {
-                const fullSpec = JSON.parse(readFileSync(specPath, "utf8"));
-                const merged = mergeGrids(JSON.parse(readFileSync(P.commonLawGrid, "utf8")), JSON.parse(readFileSync(suppSpec.output_path, "utf8")), { spec: fullSpec });
-                atomicWrite(P.commonLawGrid, JSON.stringify(merged, null, 2) + "\n");   // B5 — the canonical ledger is never seen torn
-                runLog(run.runDir, { event: "common-law-supp-folded", lane: "coverage-closure", cells: merged.cells.length, gaps: merged.gaps.length });
-              } catch (e) { note(`coverage closure: supplementary fold skipped (${String(e.message).slice(0, 80)}) — closable cells stay disclosed gaps`); }
-            }
-          }
-        } else {
-          // A1 SPLIT — followup ROUTING: each closable cell goes to the half-session that OWNS its term
-          // (the deterministic partition, via ctx.clHalfTerms); a cell whose owner half has no usable
-          // session this process (quarantined) re-routes to the OTHER live half — any live common-law
-          // session can run a dictated supplementary cell, and the merge unions by term|platform
-          // regardless of which half's ledger carries it. Every followup targets the HALF artifacts (the
-          // halves stay the source of truth); the code re-merge below refreshes the canonical pair before
-          // cellsOf() re-reads it.
-          const usable = (h) => Boolean(clHalves[h].sessionKey && !clHalves[h].quarantined);
-          // item 25 — the closure set is partitioned EVENLY at dispatch, not routed through halfOfTerm.
-          //
-          // halfOfTerm is right for the FRESH gather: it is a pure function of the term, every followup
-          // finds its work by asking it, and the two halves come out 1.4x apart. It is wrong here. The
-          // reopen re-runs a SUBSET chosen by what failed, and that subset does not respect the term
-          // partition at all — on the evidence run one half drew 857s of closure work and the other 100s,
-          // because the closable cells happened to belong to one side.
-          //
-          // So the reopen partitions what it is actually re-running, deterministically (sorted by cell
-          // key, dealt round-robin), and records the partition. halfOfTerm is untouched and nothing
-          // durable is written: a followup can still find its work because it DICTATES its cells by name.
-          // This is the balance the N-worker queue was proposed for, without spending the pure partition
-          // every followup depends on.
-          const usableHalves = GRID_HALVES.filter(usable);
-          const bal = balanceClosureCells(closable, usableHalves, cellKey);
-          const cellJobs = Object.fromEntries(GRID_HALVES.map((h) => [h, bal.assigned[h] ?? []]));
-          for (const cell of bal.unassigned)
-            note(`coverage closure: no usable common-law half-session for ${cellKey(cell)} — ships as the genuine limitation`);
-          if (closable.length)
-            runLog(run.runDir, { event: "closure-partition", cells: closable.length,
-              per_half: Object.fromEntries(GRID_HALVES.map((h) => [h, cellJobs[h].length])),
-              unassigned: bal.unassigned.length });
-          // CONCURRENCY (2026-07-13): the two half followups run CONCURRENTLY on their OWN half keys,
-          // each a fresh session (the same runBatched fan-out that dispatched the half gather members) — the halves are
-          // independent, so serializing them only doubled the closure wall.
-          await runBatched(GRID_HALVES, config.gatherConcurrency, async (h) => {
-            const cells = cellJobs[h];
-            if (!cells.length) return;
-            const suppSpec = buildSuppSpec(cells, h);
-            const followup = repairFollowup("common-law-half:coverage-closure", { findingsFile: P.commonLawHalf(h), gridSpecPath: P.gridSpecHalf(h), suppSpec, suppSpecPath: P.gridSpecSupp(h, "closure"), cells, cellKey });
-            const r = await stage("common-law-half", { ...ctx, axis: h }, { force: true, followup, sessionKey: clHalves[h].sessionKey, trigger: "coverage-closure" });
-            if (!r.ok) note(`coverage closure pass (half ${h}) failed mechanically (${r.fail}) — surviving cells ship as the genuine limitation`);
-          });
-          // The plugin wrote each half's supplementary ledger; the extended readHalfLedger folds it with the
-          // UNCHANGED main half ledger (both plugin-written) into the canonical pair — fold-after-stage, so the
-          // stage re-validated the untouched main ledger and grid_ledger_unparseable is impossible on this lane.
-          // (Through the connotation-remedy wrapper: a closure re-emit that dropped the disposition rows gets
-          // its one routed repair here too, if the fan-in round did not already spend it.)
-          await mergeWithConnotationRemedy();   // the halves changed — re-derive the canonical pair before re-reading
-        }
-        ({ exempt, closable } = cellsOf());
-        const receipt = { ts: new Date().toISOString(), requested: requested, sig: closureSig,
-          closed: requested.length - closable.length, remaining: closable, exempt, gridCalls };
-        writeFileSync(closureReceiptPath, JSON.stringify(receipt, null, 2) + "\n");
-        runLog(run.runDir, { event: "coverage-closure", requested: requested.length,
-          closed: receipt.closed, remaining: closable.length, exempt: exempt.length, gridCalls });
-      } else if (closable.length || exempt.length) {
-        runLog(run.runDir, { event: "coverage-closure", requested: 0, closed: 0,
-          remaining: closable.length, exempt: exempt.length, gridCalls: 0,
-          reason: alreadyAttempted ? "already attempted this gap set" : "all gaps exempt (mechanical failures)" });
-      }
-      if (closable.length || exempt.length) {
-        // Tokens-only (owner directive 2026-07-11): the offer names the work (grid calls), never a $ figure.
-        const batchesLeft = Math.max(1, Math.ceil([...new Set(closable.map((c) => c.variant))].length / closureBatch(closable)));
-        const offer = ` — closable on instruction (${batchesLeft} supplementary grid call(s))`;
-        ctx.coverageNote = `marketplace cells not executed: ${[...closable, ...exempt].map(cellKey).join("; ")}` +
-          (closable.length ? ` — attempted in-loop and still unreachable${offer}` : "") +
-          (exempt.length ? ` (${exempt.length} cell(s) behind a mechanical platform failure — see the Coverage ledger)` : "");
-      }
-    }
-
-    // ── Property 1+2 (frame-omission design): the blind frame-diff + the reopen channel ────────────────
-    // The blind-frame stage re-derived the threat model STARVED of the matter frame (gather, parallel with
-    // the sweeps). Diff that cold model against what the run ACTUALLY scoped/searched (frame-diff), and act
-    // on the gaps: a targeted SUPPLEMENTAL SWEEP of the missing variant/field/source, then ONE re-digest
-    // followup — generalizing the screen-gate's re-digest channel from commission (a drop without a
-    // fetch) to OMISSION (a layer never scoped). Bounded exactly like escalation/envelope/coverage-closure:
-    // an idempotency receipt (set-equality on the firing directives), ONE re-digest per pass, a byte-diff
-    // guard, NO in-process re-diff, one-shot (CLEAROTRON_FRAME_REOPEN_MAX). Same digest-lock as escalation:
-    // never re-fire past synthesis on a resume (the directives still compute + flag + clamp, but the
-    // sweep/re-digest do not run — they would corrupt the audit spine). The whole block is NON-FATAL.
-    //
-    // (2026-08-03): THIS BLOCK MOVED, from below the screen-gate to here — above placement-inquiry and
-    // below coverage-closure. What it does is unchanged; WHEN it runs is the change, and the reason is that
-    // placement used to be dispatched twice (once on the pre-reopen band, once again by the reopen itself).
-    // The frame settles first, placement runs once on the settled frame. It stays BELOW coverage-closure
-    // deliberately: above it, the dormant doc-35 source-channel arm (which reads _driver/frame-reopen.json
-    // and would find it present for the first time) wakes up on every run with an un-swept channel. That is
-    // a real lever and a real behaviour change, and it is a separate decision — kept dead exactly as today.
-    //
-    // ZERO SEMANTICS (the review question this block has lost seven bugs to): after the move, "the reopen
-    // produced no directives" and "the reopen never ran" must not read alike. Every ending below logs, and
-    // they are distinct in run.jsonl: no blind model ⇒ `frame-diff-skipped` reason:"no-blind-model"; the
-    // stage failed ⇒ `frame-diff-skipped` reason:<the failure>; the stage ran and the frame is settled ⇒
-    // `frame-diff` with firing:0 and no reopen event; the reopen ran ⇒ `frame-reopen` (or
-    // `frame-reopen-skipped`) carrying domClosed. An absent `frame-diff` event means the block did not
-    // execute — it never means a clean diff.
-    ctx.frameReopenGap = false;
-    if (!existsSync(P.blindFrameModel)) {
-      // blind-frame failed or was never run: there is no cold model to diff against, so no frame question
-      // is asked this run. Recorded, because the alternative is an artifact set in which "asked and clean"
-      // and "never asked" look identical.
-      runLog(run.runDir, { event: "frame-diff-skipped", reason: "no-blind-model" });
-    }
-    if (existsSync(P.blindFrameModel)) {
-      const fd = await stage("frame-diff", ctx);
-      let parsed = null;
-      if (!fd.ok) {
-        note(`frame-diff failed (non-fatal — no reopen this run): ${fd.fail}`);
-        runLog(run.runDir, { event: "frame-diff-skipped", reason: fd.fail });
-        // P2-B (the ask contract's other half): far less dies silently. frame-diff is non-fatal, so an
-        // exhausted repair ladder used to leave NO trace at all — and when the exhausted defect is
-        // `framediff_directive_undispatchable` the stage was in the middle of raising a real omission
-        // it could not state as a search. That is precisely the ask the lawyer must still see. Write
-        // the reopen receipt with the deferral so the existing disclosure spine picks it up
-        // (frameResidualGaps → the report's material gaps, and the ask ledger's frame-diff lane).
-        //
-        // ONE ROW PER OMISSION (2026-07-31 review round). This wrote a single row scraped out of
-        // `fd.fail` — and `fd.fail` is a 160-char slice (verify.mjs) of a message that may name four
-        // omissions, so three of four vanished: no coverage row, no ask, no trace. Silent recall loss
-        // on the exact path built to prevent it. The offenders are therefore re-derived from the
-        // ARTIFACT the stage last saved, which names all of them and names them untruncated. Chain,
-        // in order: recompute from disk → scrape the (truncated) token → one generic row. The last
-        // two exist because the artifact can be missing or itself unreadable at exhaustion, and a
-        // disclosure that only fires on a well-formed artifact is not a disclosure.
-        //
-        // THE CLAIM'S OWN LIMIT, stated rather than left implied (N3, 2026-07-31 second review round):
-        // this gates on `fd.fail` — the LAST attempt's token. A ladder whose earlier attempts raised
-        // `framediff_directive_undispatchable` but whose final attempt failed for some other reason
-        // (a structural or schema defect on the re-save) leaves this block unentered and discloses
-        // nothing. So "nothing dies silently" would be an overclaim: what is true is that the ONE
-        // ending this branch was built for — the ladder exhausting ON the undispatchable defect — no
-        // longer loses its omissions, and that it loses none of them rather than three of four.
-        // Widening it to any attempt in the ladder means carrying the token forward through
-        // stageOnce's attempt loop, which is a change to the stage contract, not to this branch.
-        if (/framediff_directive_undispatchable/.test(String(fd.fail ?? ""))) {
-          try {
-            const rp = driverDir(run.runDir, "frame-reopen.json");
-            const prior = existsSync(rp) ? JSON.parse(readFileSync(rp, "utf8")) : {};
-            // EVERY firing directive, not only the offenders: when this stage fails, `parsed` stays
-            // null and the whole reopen block below is skipped, so a firing directive that WAS
-            // dispatchable dies here just as silently as one that was not. The 2026-07-29 artifact
-            // has five firing directives and four offenders — disclosing four would still drop one.
-            // The two endings are stamped differently, because they are different facts.
-            let offenders = [];
-            if (existsSync(P.frameDiffModel)) {
-              try { offenders = firingDirectivesLenient(readFileSync(P.frameDiffModel, "utf8")); }
-              catch { /* fall through to the scrape */ }
-            }
-            if (!offenders.length) {
-              // the token carries the items pipe-separated ahead of the " — " (undispatchableThrow),
-              // so even the truncated string usually yields the first two or three by name.
-              const head = (String(fd.fail).match(/framediff_directive_undispatchable:([^\n]*)/) || [, ""])[1].split(" — ")[0];
-              offenders = head.split(" | ").map((s) => s.trim()).filter((s) => s && !/^\+\d+ more$/.test(s)).map((item) => ({ item, why: "x" }));
-            }
-            if (!offenders.length) offenders = [{ item: "frame-diff directive", why: "x" }];
-            atomicWrite(rp, JSON.stringify({
-              ts: new Date().toISOString(), requested: [], swept: [], ...prior,
-              deferrals: [...(Array.isArray(prior.deferrals) ? prior.deferrals : []), ...offenders.map((o) => ({
-                directive: String(o.item || "frame-diff directive").slice(0, 200),
-                reason: o.why
-                  ? "frame-diff could not state this omission as a dispatchable search (undispatchable directive; the repair ladder exhausted) — it is an OPEN question, not a searched clean"
-                  : "frame-diff raised this omission but the stage's repair ladder exhausted before any directive could be dispatched — it is an OPEN question, not a searched clean",
-              }))],
-            }, null, 2) + "\n");
-            runLog(run.runDir, { event: "frame-diff-undispatchable-disclosed", count: offenders.length,
-              undispatchable: offenders.filter((o) => o.why).length, items: offenders.slice(0, 8).map((o) => String(o.item).slice(0, 120)) });
-          } catch (e) { note(`frame-diff undispatchable disclosure failed (non-fatal): ${String(e.message).slice(0, 80)}`); }
-        }
-      } else if (existsSync(P.frameDiffModel)) {
-        try { parsed = parseFrameDiff(readFileSync(P.frameDiffModel, "utf8")); }
-        catch (e) {
-          note(`frame-diff model unparseable post-validate (non-fatal): ${String(e.message).slice(0, 80)}`);
-          // zero semantics: the stage PASSED its validator and its model still would not parse here.
-          // That left a note and nothing machine-readable, so the run recorded a frame question that was
-          // asked, produced nothing, and looked exactly like one that came back clean.
-          runLog(run.runDir, { event: "frame-diff-skipped", reason: `model-unparseable: ${String(e.message).slice(0, 80)}` });
-        }
-      } else if (fd.ok) {
-        // the stage reported success and wrote no structured model at all — the same silence, recorded.
-        runLog(run.runDir, { event: "frame-diff-skipped", reason: "no-frame-diff-model" });
-      }
-      if (parsed) {
-        // The dominant element the spine test runs against — the backstop forces the gap TRUE on any
-        // directive that lands on it (dictate-don't-infer). THE ORDER IS THE FIX:
-        //
-        //   1-2. the driver's OWN copies, via boundDominantElement — blind-frame-model.json, then the
-        //        manifest's "Dominant element:" line.
-        //   3.   the frame-diff document's own field, LAST.
-        //
-        // Rung 3 used to be rung 1, and that was the defect: the seat was told to echo the blind model's
-        // spine verbatim, and the driver then preferred the echo over both copies it already held. A
-        // transcription slip retargeted this test — the gate that can clamp a CLEAR verdict — with no
-        // token speaking about it.
-        //
-        // It survives as the LAST rung rather than being deleted, and only the archive can reach it: the
-        // tool has no `dominant_element` property, so on any run this build dispatches the field in
-        // `parsed` is the driver's own stamp. On a REPLAYED archive written under the dictation it is the
-        // seat's echo, and reading it there is what stops an archived verdict flipping when the run's
-        // other artifacts are missing or unparseable — the anchor rule, a new way in and never a
-        // replacement.
-        let dominantEl = boundDominantElementFrom(P).value;
-        if (!dominantEl) dominantEl = String(parsed.dominant_element ?? "").trim();
-        const { directives: blindDirectives, dominant_element_gap } = applyDominantBackstop(parsed, dominantEl);
-        // FORM-axis regrounding: merge the MECHANICAL form-coverage gaps (a deterministically-generated near-form
-        // the funnel never dispatched) into the SAME directive set as the blind frame-diff. They ride the same
-        // supplemental-sweep + clamp channel — but they are found by the deterministic oracle, not a peer LLM that
-        // shares the generator's blind spot. This is what makes a missing first-consonant-swap neighbour (the
-        // gang-slang near-miss class) fire reliably.
-        const mechDirectives = mechanicalFormGapDirectives(ctx);
-        if (mechDirectives.length) runLog(run.runDir, { event: "form-oracle-gap", missing: mechDirectives.length, items: mechDirectives.slice(0, 6).map((d) => d.item) });
-        const directives = blindDirectives.concat(mechDirectives);
-        // Register-only: source-layer directives are "this channel was never searched" observations, and on
-        // this product NO common-law channel is searched — that is the thing bought, not an omission. They
-        // must not FIRE, because an unswept firing directive becomes a frame DEFERRAL, and a frame deferral
-        // is a CLEAR→CONDITIONAL clamp input: every register-only run would clamp through the back door.
-        // Dropped at the source so the receipt, the coverage rows and the clamp all agree; the absence is
-        // carried by the risk statement's basis clause and the coverage section instead.
-        const firingAll = firingDirectives(directives);
-        const firing = runCommonLaw ? firingAll : firingAll.filter((d) => d.layer !== "source");
-        if (firingAll.length !== firing.length)
-          runLog(run.runDir, { event: "frame-diff-source-directives-dropped", reason: "register-only", dropped: firingAll.length - firing.length });
-        // judgment-relocation (2026-06-23): the auto-forced "bare-exact-anchor enumeration invariant" was REMOVED.
-        // It re-parsed the prose Coverage ledger (findFloorShapeGaps (d)) to FORCE a match_mode:exact reopen when
-        // the dominant element's name-list looked "open" — a sufficiency call the driver made from a label. Under
-        // the band flow the funnel ENUMERATES the named band (or marks it `incomplete`), and the lawyer reads the
-        // COMPLETE band; if a material slice is not fully cleared the run ships CONDITIONAL (coverage_judgment
-        // sufficient:false → the deliver-conditional clamp), never an in-machine reopen. The frame-diff below
-        // still fires for genuine STRUCTURAL omissions (a variant/field/source never scoped at all) — that is an
-        // omission check, not an in-machine "good enough" judgment.
-        runLog(run.runDir, { event: "frame-diff", directives: directives.length, firing: firing.length, dominant_element_gap });
-
-        // Round 2 Change 1d — jurisdiction scope check (CODE backstop, both directions). Scope from the
-        // scope-ledger (applied jurisdiction rows), searched from the coverage-ledger units. A worldwide sweep
-        // covers the in-scope set (no under-coverage) but on a narrow scope is itself over-reach the skill must
-        // bound (1c); a scope-bounded run that misses an in-scope territory → under-coverage (discloses below).
-        try {
-          let scopeJ = [];
-          try { scopeJ = scopeJurisdictions(parseScopeLedgerJson(readFileSync(P.scopeLedger, "utf8"))); } catch { /* no/legacy scope ledger → skip */ }
-          if (scopeJ.length) {
-            // item 13 — SEARCHED TERRITORIES COME FROM THE EXECUTION RECORD, not from ledger prose.
-            //
-            // This read `extractSearchedJurisdictions(...)` over the coverage ledger's text. narrowed
-            // that scan to tokens that ARE known jurisdiction codes, which fixed the mark-fragment case
-            // ("KIN ZY" → ZY) and left the worse half standing: SA, AG, KG, SL and SE are all real
-            // jurisdiction codes AND all ordinary European company suffixes, so an owner written
-            // "… GmbH & Co. KG" still put Kyrgyzstan in the searched set. There is no token list that
-            // separates those readings, because they are the same token.
-            //
-            // A territory is now claimed as searched only when an EXECUTED query names it —
-            // register-plan.json entries carry `regions[]`, plan-execution.json carries `executed[].qid`,
-            // and the join is the whole derivation. Unresolvable (no plan, no receipt) yields the EMPTY
-            // set, so every in-scope territory stays eligible for the underCoverage disclosure: the
-            // failure direction is over-disclosure, which a reader resolves, never a silent clean over a
-            // territory nobody queried.
-            let planDoc = null, execDoc = null;
-            try { planDoc = ctx.registerPlan ?? JSON.parse(readFileSync(P.registerPlan, "utf8")); } catch { /* no plan on this run */ }
-            try { execDoc = JSON.parse(readFileSync(P.planExecution, "utf8")); } catch { /* no receipt on this run */ }
-            const sj = searchedJurisdictionsFromPlan(planDoc, execDoc);
-            const ledgerWorldwide = (() => {
-              // `worldwide` stays a PROSE reading, and only this one: it can only ever WIDEN what the run
-              // claims, and 1c already treats a worldwide claim on a narrow scope as over-reach to bound.
-              // It never marks a specific territory searched, so the collision above cannot ride it.
-              try {
-                return (loadCoverageLedger(run.runDir).rows ?? []).some((r) =>
-                  /\b(worldwide|global|all[- ]?jurisdic)/i.test(`${r?.unit ?? ""} ${r?.scope ?? ""}`));
-              } catch { return false; }
-            })();
-            sj.worldwide = ledgerWorldwide;
-            if (!sj.resolved) {
-              runLog(run.runDir, { event: "searched-jurisdictions-unresolved", scope: scopeJ });
-              note(`jurisdiction-scope: no plan/execution record to trace searched territories to — every in-scope `
-                + `territory stays eligible for the under-coverage disclosure (item 13: unresolvable means unsearched)`);
-            } else {
-              runLog(run.runDir, { event: "searched-jurisdictions", from: "plan-execution", jurisdictions: sj.jurisdictions });
-            }
-            // CODE-DERIVED subtraction (review findings 1/10/14). `sj` is read out of the MODEL's
-            // coverage-ledger prose, which cannot know that the compiler dropped a jurisdiction the
-            // active register provider does not cover — the model was never told. The plan's
-            // `deferred_coverage` is the code's own record of exactly that, so subtract it here and
-            // clear `worldwide`: a sweep that structurally could not reach a territory is not
-            // worldwide, whatever the prose says. Without this the partial-coverage case ships a
-            // clean over a territory that was never queried.
-            const planDeferred = new Set(ctx.registerDeferredJurisdictions ?? []);
-            // both sides are canonical (A12): sj.jurisdictions from the fold above, planDeferred from
-            // registerDeferredCoverage — the subtraction can no longer miss on a UK/GB or EU/EM spelling.
-            const searched = sj.jurisdictions.filter((j) => !planDeferred.has(canonicalJurisdictionCode(j)));
-            const worldwide = sj.worldwide && !planDeferred.size;
-            if (planDeferred.size) runLog(run.runDir, { event: "jurisdiction-scope-register-deferred", deferred: [...planDeferred] });
-            const jflags = worldwide
-              ? { overReach: [], underCoverage: [], worldwide: true }
-              : jurisdictionScopeFlags({ scopeJurisdictions: scopeJ, searched });
-            if (jflags.underCoverage.length || jflags.overReach.length || jflags.worldwide) {
-              ctx.jurisdictionScope = { scope: scopeJ, ...jflags };
-              runLog(run.runDir, { event: "jurisdiction-scope", scope: scopeJ, searched, worldwide: worldwide || undefined, register_deferred: planDeferred.size ? [...planDeferred] : undefined, overReach: jflags.overReach, underCoverage: jflags.underCoverage });
-              if (jflags.underCoverage.length) note(`jurisdiction-scope: in-scope territory(ies) unsearched — ${jflags.underCoverage.join(", ")} (will disclose)`);
-              if (jflags.overReach.length) note(`jurisdiction-scope: out-of-scope territory(ies) searched — ${jflags.overReach.join(", ")} (Change 1c: bound the sweep to scope)`);
-              if (jflags.worldwide && scopeJ.length) note(`jurisdiction-scope: a worldwide sweep ran on a scope of ${scopeJ.join(", ")} — covers recall, but Change 1c bounds the sweep to scope`);
-            }
-          }
-        } catch (e) { note(`jurisdiction-scope check skipped (non-fatal): ${String(e.message).slice(0, 80)}`); }
-
-        const reopenReceiptPath = driverDir(run.runDir, "frame-reopen.json");
-        const priorReceipt = existsSync(reopenReceiptPath) ? JSON.parse(readFileSync(reopenReceiptPath, "utf8")) : null;
-        const already = alreadyAttemptedReopen(priorReceipt, firing);
-        const reopenDisabled = process.env.CLEAROTRON_FRAME_REOPEN === "0" || Number(process.env.CLEAROTRON_FRAME_REOPEN_MAX ?? 1) < 1;
-        const digestLockedReopen = existsSync(P.narrative) && !forceFromActive(ctx, "synthesis");
-        // C2 (PR-6): the digest lock exists to protect the audit spine from a WARM re-run rewriting
-        // register-findings.md past synthesis — it was never a reason to strand a PURE-CODE sweep.
-        // The dispatch arm (structured remedies → mint → fold → deterministic executor → per-directive
-        // verify → placement refresh) only writes the band + plan receipts, which stage-freshness
-        // exists to reconcile — so it runs UNDER the lock, and its reconcile segment rides the
-        // EXISTING bounded late flush instead of an inline pre-synthesis re-digest. The warm arms
-        // (register warm-resume, common-law source sweeps) stay locked, by design.
-        const dispatchArmAvailable = !!(ctx.registerPlan?.contract?.supplemental_lane && axes.includes("primary-sweep") && planExec);
-        let domClosed = false;
-        // 6/7 (ask ledger): the receipt records per-directive minted qids (so "executed" is COMPUTED
-        // from the plan-execution join, never asserted) and which directives the form-oracle injected
-        // (their ask rows are born in form-neighbourhood, not the blind diff).
-        const reopenQids = {};
-        const reopenBorn = {};
-        for (const d of mechDirectives) reopenBorn[reopenKey(d)] = "form-neighbourhood";
-        // — the receipt's per-TERM half. `directive_qids` above records qid STRINGS; `remedy_terms`
-        // records what each term ASKED and what came back, so a term that ran and returned nothing is
-        // distinguishable from one that never ran. Passed in EXPLICITLY rather than computed here: the
-        // demotion paths below rewrite this receipt from a closure decision and have no band blocks in
-        // scope, and a field that silently disappears on one write path is the AD-4 defect
-        // (`x:0` vs `x:null` must differ by value, never by presence). The demote paths carry the SAME
-        // rows forward unchanged, deliberately — a failed re-digest demotes CLOSURE, not searchedness:
-        // a query that ran still ran.
-        const writeReopenReceipt = (swept, deferrals, dom, partials = [], accounting = null, answered = [], withheld = []) => {
-          try {
-            writeFileSync(reopenReceiptPath, JSON.stringify({
-              ts: new Date().toISOString(), requested: firing.map(reopenKey),
-              swept, deferrals, remaining: deferrals.map((x) => x.directive),
-              ...(partials.length ? { partials } : {}),
-              // a closed directive whose slice the fold refused as already-asked, with the plan row that answered it
-              ...(answered.length ? { answered_elsewhere: answered } : {}),
-              // a closed directive with a slice settled by the reading turn's judgment: the slice and the family
-              // it repeats, and nothing else. The reason stays on the turn's own record.
-              ...(withheld.length ? { withheld_by_judgment: withheld } : {}),
-              dominant_element_gap, domClosed: dom,
-              directive_qids: reopenQids, born: reopenBorn,
-              remedy_terms: accounting?.computable === true ? accounting.rows : null,
-              remedy_accounting: accounting?.computable === true
-                ? { schema_version: accounting.schema_version, totals: accounting.totals, out_of_scope: accounting.out_of_scope }
-                : null,
-            }, null, 2) + "\n");
-          } catch (e) { note(`frame-reopen receipt write failed (non-fatal): ${e.message}`); }
-        };
-
-        if (firing.length && !already && !reopenDisabled && (!digestLockedReopen || dispatchArmAvailable)) {
-          const regDirectives = firing.filter((d) => d.layer === "variant" || d.layer === "field");
-          const srcDirectives = firing.filter((d) => d.layer === "source");
-          const changedAxes = [];
-
-          // CLOSURE-FIRST (register). The dominant-element crowd lives on the register and a Corsearch sweep is
-          // far cheaper than the common-law grid, so by DEFAULT we try to CLOSE it: re-cover the dominant element
-          // and fold the new band blocks into the axis band.json (judgment-relocation: the funnel emits band
-          // blocks, NOT a clearance verdict / floor row). WHICH tool does the covering is the lane's call — the
-          // dispatch arm below is pure code, the warm-resume arm proposes on the lane and enumerates off it.
-          // "Closure" here = the funnel did new work (regChanged) and deriveNamedBand re-merges the fuller band;
-          // whether that band is SUFFICIENT is judgment's call (coverage_judgment), never a floor-row label.
-          let regChanged = false, regMechFail = null, regNoSession = false;
-          // Fix 2 — the register close is now VERIFIED per directive, not swept on a byte-diff. `regArm`
-          // records which arm ran; `regSwept` holds the reopenKeys that a re-run of the dispatch detectors
-          // confirmed genuinely searched (dispatch arm only); `regDeferReason` carries the honest reason a
-          // directive stayed open. The warm-resume arm keeps its axis-level byte-diff (no per-qid mapping).
-          let regArm = null;
-          const regSwept = new Set();
-          const regDeferReason = new Map();
-          // — WHAT THE FOLD REFUSED, AND WHICH KIND OF REFUSAL IT WAS. Read by the remedy accounting
-          // below, which otherwise requires every minted qid to land and so records a term as
-          // dispatch-failed when the fold refused its slice as a duplicate of a question the plan had
-          // already asked and answered. A fold-refused qid can never land, by construction — the
-          // re-attempt above deliberately filters it out — so only the accounting was still waiting
-          // for it. qid -> { kind, twin }.
-          const regFoldRefusals = new Map();
-          // Partial mints must not read as full sweeps: when SOME of a directive's remedy proposals mint
-          // and a sibling is refused by the shape lint, the directive can still verify-closed on the
-          // minted subset — the refusal is disclosed per directive (receipt `partials` row on a close,
-          // folded into the defer reason otherwise), never dropped into the aggregate count alone.
-          const regPartialMint = new Map();
-          const regAnsweredBy = new Map();   // reopenKey → the plan rows that answered its slices the fold refused as already-asked
-          const regWithheldBy = new Map();   // reopenKey → its slices refused as families the reading turn withheld, with each family
-          // — the per-TERM rows the remedy ledger accounts. One row per remedy term per directive,
-          // recorded at the mint seam (the only place the term→qid mapping exists) so the receipt can
-          // later say what each term asked and what came back. reopenKey → [{term, predicates, qids,
-          // dispatch_reason}].
-          const regTermRows = new Map();
-          // The last plan-execution join the dispatch arm computed ({executedQids, blocksByQid}) — the
-          // SAME join the per-directive verify reads, hoisted so the term ledger below cannot disagree
-          // with it about what executed. Null on every non-dispatch arm.
-          let regLastJoin = null;
-          // copper-lattice re-route (supplemental_lane contract): the blind frame-diff already carries
-          // the TERMS (judgment chose WHAT at the frame layer) — the sweep itself is clerical, so it is
-          // pure code: mint supplemental plan entries from the directives, dispatch the deterministic
-          // executor (count-first, ceiling, error stamping — code writes the band, qids stamped), fold +
-          // refresh the receipt, re-merge the named band. No LLM sweep turn, no session needed, and the
-          // detail-fetch ceiling concern retires with the arm (the executor batch-screens, never
-          // detail-fetches; the enumerate ceiling bounds records). The unit .md prose stays as-is —
-          // audit-only; where it differs from the band, the band wins. The ONE warm re-digest below is
-          // where judgment reasons over the completed band, unchanged.
-          if (regDirectives.length && dispatchArmAvailable) {
-            regArm = "dispatch";
-            const a = "primary-sweep";
-            const inScope = inScopeClassList(job, ctx.profile);
-            // Part A — thread a STRUCTURED remedy per directive rather than guessing term:d.item +
-            // nice_classes:inScope. deriveDirectiveRemedy honours an agent-emitted directive.remedy, else
-            // derives one: a FIELD (class-gap) directive → the dominant element × the classes named in its
-            // item label (RUN1: HALCYON × Cl.35/38); a variant near-form → the near-form × the in-scope
-            // classes (today's behaviour). A field directive with no parseable classes has NO code remedy —
-            // searching the dominant element in the matter's own classes just re-runs the primary sweep, so
-            // it is DISCLOSED (regDeferReason), never minted-and-swept blind.
-            const existingQids = new Set(ctx.registerPlan.entries.map((e) => e.qid));
-            // The frame's added classes, from the frozen plan: each costs one question, the identical mark in it, which the
-            // plan already asks, so no remedy puts an added class on another question (deriveDirectiveRemedy).
-            const classBound = addedClassBound(ctx.registerPlan);
-            const directiveQids = new Map();       // reopenKey -> [qid]
-            const directiveIntended = new Map();   // reopenKey -> intended nice_classes[]
-            const allMinted = [];
-            const allRejected = [];
-            let rejectedN = 0;
-            for (const d of regDirectives) {
-              const key = reopenKey(d);
-              const remedy = deriveDirectiveRemedy(d, { dominantElement: dominantEl, inScope, ...classBound });
-              if (!remedy || !remedy.terms.length || !remedy.nice_classes.length) {
-                directiveQids.set(key, []);
-                // Per-case wording (A2): the variant fallback now also DISCLOSES a label-shaped item
-                // (term-shape lint) — dispatching the display label verbatim was the 2026-07-28
-                // nil-search class ("Reverse-order WAVO composites (…)" searched as exact → 0 → read
-                // as clean). The remedy contract (SKILL.md) is the fix the wording points at.
-                regDeferReason.set(key, String(d.layer ?? "").toLowerCase() === "field"
-                  ? "no-code-remedy: a field class-gap with no searchable term×class pair (closing it in the matter's own classes only re-runs the primary sweep — disclosed)"
-                  : "no-code-remedy: the directive's item is a label, not a mark-shaped search term (a literal dispatch would be a nil search reading as clean) — disclosed; a directive that knows its terms must carry a structured remedy{terms, nice_classes}");
-                //: a directive with no derivable remedy still NAMED something to search. It gets a
-                // term row carrying its own item, so "the reopen restated this and nothing ran" is on the
-                // record rather than inferable only from a deferral reason.
-                regTermRows.set(key, [{ term: String(d.item ?? ""), predicates: [], qids: [], dispatch_reason: regDeferReason.get(key) }]);
-                continue;
-              }
-              directiveIntended.set(key, remedy.nice_classes);
-              const base = { nice_classes: remedy.nice_classes, regions: remedy.regions, rationale: `frame-reopen ${d.layer}: ${String(d.observation ?? "").slice(0, 120)}` };
-              const proposals = remedyProposals(remedy, d, base);
-              const { minted, rejected } = mintSupplementalEntries(a, proposals, {
-                existingQids, perCall: proposals.length,
-                axisMax: ctx.registerPlan.entries.length + allMinted.length + proposals.length, existingCount: 0,
-                capabilities: registerCapabilities(), priorityClasses: inScope,
-              });
-              rejectedN += rejected.length;
-              allRejected.push(...rejected);
-              for (const m of minted) existingQids.add(m.qid);
-              directiveQids.set(key, minted.map((m) => m.qid));
-              reopenQids[key] = minted.map((m) => m.qid);
-              allMinted.push(...minted);
-              // Every firing directive must END recorded: a directive whose EVERY proposal the mint
-              // refused (the term-shape ladder) would otherwise fall out of both regSwept and the
-              // defer map — an unrecorded ending, the exact ashen-lattice failure partitionFiring
-              // exists to prevent. Disclose it with the mint's own reason. A PARTIAL refusal (some
-              // proposals minted, a sibling refused) is recorded too — a close on the minted subset
-              // must state what it did NOT search for the directive.
-              if (!minted.length && rejected.length)
-                regDeferReason.set(key, `proposals-rejected: ${String(rejected[0].issue ?? "").slice(0, 200)}`);
-              else if (rejected.length)
-                regPartialMint.set(key, `${minted.length} of ${proposals.length} remedy proposal(s) minted; ${rejected.length} refused at the mint: ${String(rejected[0].issue ?? "").slice(0, 200)}`);
-              // — the term rows. A PARTIAL mint is exactly the case the aggregate counts hide: the
-              // directive can still verify-closed on the terms that minted while a sibling term was
-              // refused and never searched. Per term, the qids it owns (or the mint's own refusal
-              // reason) are recorded here, so that sibling has a row of its own instead of living only
-              // inside a directive-level partials note.
-              regTermRows.set(key, remedy.terms.map((t) => {
-                const mine = minted.filter((m) => String(m.term ?? "") === t);
-                const refused = rejected.filter((r) => String(r?.proposal?.term ?? "") === t);
-                return {
-                  term: t,
-                  predicates: mine.map((m) => String(m.predicate ?? "")),
-                  qids: mine.map((m) => m.qid),
-                  dispatch_reason: mine.length ? null
-                    : refused.length ? `proposals-rejected: ${String(refused[0].issue ?? "").slice(0, 300)}`
-                      : "no supplemental entry minted for this term (the mint returned neither an entry nor a refusal for it)",
-                };
-              }));
-            }
-            if (rejectedN) note(`frame-reopen: ${rejectedN} directive-minted proposal(s) rejected`);
-            // PR-6 (C1 — persist what evaporates): the mint-seam rejections land in the SAME per-axis
-            // supplemental-plan sidecar the propose-tool uses (rejected[] beside entries[]) — the ask
-            // ledger reads them there; nothing lives only in a note line. Best-effort, never a kill.
-            if (allRejected.length) {
-              try {
-                const suppPath = join(run.runDir, "register-units", `${a}-supplemental-plan.json`);
-                let suppDoc = { schema: "register-plan/1", plan_version: 1, derived_from: { job_key: `supplemental:${a}`, variants_fingerprint: "supplemental" }, regions: ctx.registerPlan?.regions ?? [], entries: [] };
-                if (existsSync(suppPath)) {
-                  try { const prior = JSON.parse(readFileSync(suppPath, "utf8")); if (prior && Array.isArray(prior.entries)) suppDoc = prior; } catch { /* torn — rebuilt */ }
-                }
-                suppDoc = withRejected(suppDoc, allRejected, { ts: new Date().toISOString(), origin: "frame-reopen" });
-                mkdirSync(dirname(suppPath), { recursive: true });
-                writeFileSync(`${suppPath}.tmp`, JSON.stringify(suppDoc, null, 2) + "\n");
-                renameSync(`${suppPath}.tmp`, suppPath);
-              } catch (e) { note(`frame-reopen: rejected[] sidecar write failed (non-fatal): ${String(e.message).slice(0, 80)}`); }
-            }
-            note(`frame-reopen: ${regDirectives.length} register omission(s) → ${allMinted.length} supplemental entr${allMinted.length === 1 ? "y" : "ies"} minted (structured remedy), dispatched as pure code (no agent sweep)`);
-            const beforeBand = existsSync(P.registerBand(a)) ? readFileSync(P.registerBand(a), "utf8") : null;
-            if (allMinted.length) {
-              // A QUESTION THE READING TURN WITHHELD IS NOT ASKED AGAIN HERE. The fold lets a question through
-              // when it matches a waiting family, because the reading turn's own ask is what the family waits
-              // for; this sweep asks on nobody's judgment, so its exact repeat of a family the turn withheld is
-              // refused before the fold, with the family as its twin and the turn's recorded reason. The record
-              // is read here, at the fold, so a family the turn has since released is asked as before.
-              const withheldTwins = withheldFamilyTwins(ctx.registerPlan, readWithheldFamilies(run.runDir), releasedFamilyQids(run.runDir));
-              const { kept: toFold, refused: withheldRefused } = refuseWithheldFamilies(allMinted, withheldTwins, ctx.registerPlan);
-              // ONE ANSWER PER QUESTION PER RUN (held-answers.mjs): a question another worker or pass has answered is
-              // refused as already asked, its twin the row that answered it, and the directive is checked on that row.
-              let toFoldHeld = toFold, heldRefused = [];
-              try {
-                const planRegions = (ctx.registerPlan.regions ?? []).map(String);
-                ({ kept: toFoldHeld, refused: heldRefused } = refuseHeldQuestions(toFold, heldAnswers(run.runDir, { planRegions, withheld: readWithheldFamilies(run.runDir) }), planRegions));
-              } catch { toFoldHeld = toFold; heldRefused = []; }   // an economy: without it every question is folded as before
-              // A SPELLING THE READING TURN LEFT ON A LIST IT READ, with its count, is left there (held-answers.mjs): the
-              // re-sweep's question on it is checked on the list's row instead of being asked again.
-              let listRefused = [];
-              try {
-                const planRegions = (ctx.registerPlan.regions ?? []).map(String);
-                ({ kept: toFoldHeld, refused: listRefused } = refuseCountedOnList(toFoldHeld, countedOnLists(run.runDir, { planRegions }), planRegions));
-              } catch { listRefused = []; }   // without it the spelling is asked as before
-              const folded = foldSupplementalEntries(ctx.registerPlan, toFoldHeld);
-              const { plan, added } = folded;
-              const refused = [...withheldRefused, ...heldRefused, ...listRefused, ...folded.refused];
-              if (added.length) {
-                writeFileSync(`${P.registerPlan}.tmp`, JSON.stringify(plan, null, 2) + "\n");
-                renameSync(`${P.registerPlan}.tmp`, P.registerPlan);
-                ctx.registerPlan = plan;
-              }
-              // — expected to hold only the two refusals that mean the question is settled already: a
-              // duplicate of the plan's own question, and a family the reading turn withheld. Every other kind
-              // is a term mintSupplementalEntries should have caught (it runs entryTermIssues at the mint, and
-              // its rejects are already in the sidecar above). Logged anyway, because that is a belief about
-              // two screens agreeing, and the day they stop agreeing this is the only place that would say so.
-              if (refused.length) {
-                for (const r of refused) if (r?.qid) regFoldRefusals.set(r.qid, { kind: r.kind ?? null, twin: r.twin ?? null, reason: r.reason ?? null });
-                // THE REASON THE FOLD GAVE IS LOGGED, not just the qid it refused. The fold is the only
-                // place that knows WHY, and for a duplicate it knows WHICH plan row already holds the
-                // answer. Logging the qid alone threw that away: recovering it on one run meant
-                // re-deriving the twin from a shared identity hash by hand, and a receipt that cannot
-                // say why a slice is missing reads as an engine fault whatever the cause was.
-                runLog(run.runDir, { event: "frame-reopen-fold-refused", refused: refused.length,
-                  qids: refused.map((r) => r.qid).slice(0, 6),
-                  kinds: refused.reduce((a, r) => { const k = r.kind ?? "unstated"; a[k] = (a[k] ?? 0) + 1; return a; }, {}),
-                  rows: refused.slice(0, 6).map((r) => ({ qid: r.qid, kind: r.kind ?? null, twin: r.twin ?? null, issue: r.issue ?? null })) });
-                // ONE NOTE PER KIND, because they are three different findings and only one of them is a
-                // wiring fault. A duplicate-question refusal is the fold working: the question is already
-                // in the plan and its existing row carries the coverage. An identity collision or a
-                // malformed term IS the mint screen and the fold screen disagreeing, because the mint
-                // runs entryTermIssues and should have caught it.
-                // A withheld family's refusal is neither: it is the reading turn's decision standing, recorded on
-                // the run log row above with its kind and its family, and settled by that turn's reason.
-                const dupes = refused.filter((r) => r.kind === "duplicate-question");
-                const onLists = refused.filter((r) => r.kind === "counted-on-list");
-                const faults = refused.filter((r) => !["duplicate-question", "withheld-by-judgment", "counted-on-list"].includes(r.kind));
-                if (dupes.length) note(`frame-reopen: ${dupes.length} minted entr${dupes.length === 1 ? "y" : "ies"} refused at the fold as already-asked — the plan row${dupes.length === 1 ? "" : "s"} ${dupes.map((r) => `"${r.twin ?? "(twin unstated)"}"`).join(", ")} carr${dupes.length === 1 ? "ies" : "y"} that coverage; the term is answered, not unsearched`);
-                if (onLists.length) note(`frame-reopen: ${onLists.length} minted entr${onLists.length === 1 ? "y" : "ies"} not asked: ${onLists.length === 1 ? "it names a spelling" : "each names a spelling"} the run counted on a list the reading turn read, and is checked on that list's row (${[...new Set(onLists.map((r) => `"${r.twin}"`))].join(", ")})`);
-                if (faults.length) note(`frame-reopen: ${faults.length} minted entr${faults.length === 1 ? "y" : "ies"} REFUSED at the fold (${[...new Set(faults.map((r) => r.kind ?? "unstated"))].join(", ")}) — the mint screen and the fold screen disagree, which is a wiring finding`);
-              }
-              // Dispatch → derive band → VERIFY per directive (qid-landed + non-collapse + class-scope).
-              // A byte-changed band with only a wrong-scope/empty/error block closes NOTHING.
-              const dispatchAndVerify = async (qids) => {
-                // NOTHING ADDED, NOTHING REPEATED. The executor reads an empty question list as every entry on the
-                // axis, so a fold that refused every slice (the plan's own questions, or families the reading
-                // turn withheld) handed the whole primary sweep back to the executor to run again. It now sends
-                // only the axis's required questions that have not landed (pendingRequiredQids), so a required
-                // search still gets its retry and nothing landed is asked twice. The verify below reads the join
-                // either way, so a refused slice is still checked through its twin or its family.
-                let send = qids;
-                if (!send.length) send = pendingRequiredQids(ctx.registerPlan, a, readRegisterBands(P, axes), releasedFamilyQids(ctx.paths.runDir));
-                const outcome = send.length ? await dispatchPlanQids(a, send, "frame-reopen-sweep", 2) : "ok";
-                refreshSupplementalExecution(ctx);
-                try { deriveNamedBand(ctx); } catch (e) { regMechFail = `named-band:${String(e.message).slice(0, 80)}`; }
-                const bands = readRegisterBands(P, axes);
-                const executedQids = new Set(joinPlanToBands(ctx.registerPlan, bands, joinOptions(ctx)).executed.map((x) => x.qid));
-                // every axis's blocks: a slice refused as already answered is checked on its twin, which may be another axis's row
-                const blocksByQid = blocksByQidOf(bands);
-                return { outcome, executedQids, blocksByQid };
-              };
-              // A slice the fold refused as already-asked is checked on the row that answered it, as the remedy
-              // term ledger reads it; the directive it closes names that row in the receipt.
-              const verifyOne = (d, ev) => {
-                const v = verifyRegisterDirectiveClose({
-                  qids: directiveQids.get(reopenKey(d)) ?? [], intendedClasses: directiveIntended.get(reopenKey(d)) ?? [],
-                  executedQids: ev.executedQids, blocksByQid: ev.blocksByQid, foldRefusals: regFoldRefusals,
-                });
-                if (v.closed && v.answered_by) regAnsweredBy.set(reopenKey(d), v.answered_by);
-                if (v.closed && v.withheld_by_judgment) regWithheldBy.set(reopenKey(d), v.withheld_by_judgment);
-                return v;
-              };
-              const mintedDirectives = regDirectives.filter((d) => (directiveQids.get(reopenKey(d)) ?? []).length);
-              let ev = await dispatchAndVerify(added);
-              regLastJoin = ev;
-              let outcome = ev.outcome;
-              const retryTargets = [];
-              for (const d of mintedDirectives) {
-                const v = verifyOne(d, ev);
-                if (v.closed) regSwept.add(reopenKey(d));
-                else { regDeferReason.set(reopenKey(d), v.reason); retryTargets.push(d); }
-              }
-              // Part B — re-attempt ONCE (owner: re-attempt-once-then-disclose). The remedy carried the
-              // correct scope from attempt 1, so this recovers a transient (an error / collapsed / unlanded
-              // slice), never re-runs a wrong query. dispatchPlanQids' own repair ledger (max 2) refuses a
-              // third — so this cannot loop or thrash the paid pass.
-              //
-              // ONLY THE FAILING DIRECTIVES' OWN ENTRIES GO AGAIN. A directive that verified closed on the first
-              // attempt is not asked twice: re-sending its qids re-fetches records the run already holds, and
-              // on a register that bills per request it pays for them again.
-              if (retryTargets.length) {
-                const retryQids = [...new Set(retryTargets.flatMap((d) => directiveQids.get(reopenKey(d)) ?? []))]
-                  .filter((q) => added.includes(q));
-                note(`frame-reopen: ${retryTargets.length} directive(s) not verified-closed — ONE re-attempt of their own ${retryQids.length} entr${retryQids.length === 1 ? "y" : "ies"} with the same structured remedy`);
-                runLog(run.runDir, { event: "frame-reopen-reattempt", directives: retryTargets.map(reopenKey), qids: retryQids });
-                if (retryQids.length) {
-                  ev = await dispatchAndVerify(retryQids);
-                  regLastJoin = ev;
-                  outcome = ev.outcome ?? outcome;
-                  for (const d of retryTargets) {
-                    const v = verifyOne(d, ev);
-                    if (v.closed) { regSwept.add(reopenKey(d)); regDeferReason.delete(reopenKey(d)); }
-                    else regDeferReason.set(reopenKey(d), v.reason);
-                  }
-                }
-              }
-              const afterBand = existsSync(P.registerBand(a)) ? readFileSync(P.registerBand(a), "utf8") : null;
-              if (afterBand !== beforeBand) changedAxes.push(a);   // the band changed ⇒ re-digest to reconcile
-              if (regSwept.size) regChanged = true;                // ≥1 directive genuinely closed
-              if (outcome !== "ok" && !regMechFail) regMechFail = `dispatch:${String(outcome ?? "unavailable").slice(0, 100)}`;
-              if (!regSwept.size) note(`frame-reopen: ${a} — no register directive verified-closed after the dispatched sweep (deferring the remainder)`);
-            } else {
-              note(`frame-reopen: ${a} — no code-closeable register directive this pass (all disclosed)`);
-            }
-            // — the `&& ctx.digestKey` guard is GONE, and dropping it is required for this arm to
-            // survive the move rather than optional. ctx.digestKey is assigned where register-digest runs,
-            // which is now BELOW this seam, so on a fresh run it is undefined and the condition could never
-            // be true again: every register directive would fall through to `regNoSession`, become a
-            // disclosed deferral, and a dominant-element deferral is a CLEAR→CONDITIONAL clamp input —
-            // verdicts moving on runs that used to ship CLEAR, with no test failing. The guard existed
-            // because this arm's close was only real once a warm re-digest reconciled it, and it needed a
-            // live digest session to resume; after the move there is nothing to reconcile into, because the
-            // digest has not run and will read the swept unit on its first pass. This arm is unreachable on
-            // the dispatch-lane providers (dispatchArmAvailable wins above whenever CLEAROTRON_PLAN_DISPATCH is
-            // on and the provider exposes executePlan, which is production today) — it is the lane for a
-            // provider without an executor and for the offline mock harness.
-          } else if (regDirectives.length && axes.includes("primary-sweep") && unitKey["primary-sweep"]) {
-            regArm = "resume";
-            const a = "primary-sweep";
-            const regDom = regDirectives.filter((d) => d.severity === "dominant-element");
-            const beforeUnit = existsSync(P.registerUnit(a)) ? readFileSync(P.registerUnit(a), "utf8") : null;
-            const beforeBand = bandBytesOf(P, a);   // a sweep that adds blocks moves the band, whatever it does to the notes
-            note(`frame-reopen: ${regDirectives.length} register omission(s) → resuming ${a} to ${regDom.length ? "ENUMERATE the dominant-element floor to exhaustion" : "fold in a targeted supplemental sweep"}`);
-            // Lane flag read from the SAME key the tool exclusion keys on (see the stage dispatcher) —
-            // this arm is reachable on a lane run whenever the code-side dispatch arm above could not
-            // take it (no executePlan adapter, or CLEAROTRON_PLAN_DISPATCH=off).
-            const followup = repairFollowup("register-unit:frame-reopen-directive", { paths: P, axis: a, directives: regDirectives,
-              supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane, job: ctx.job, profile: ctx.profile });
-            const r = await stage("register-unit", { ...ctx, axis: a }, { force: true, followup, sessionKey: unitKey[a], trigger: "frame-reopen" });
-            if (r.ok) {
-              if (readFileSync(P.registerUnit(a), "utf8") !== beforeUnit || bandBytesOf(P, a) !== beforeBand) { changedAxes.push(a); regChanged = true; }
-              else note(`frame-reopen: ${a} unchanged after the supplemental sweep`);
-            } else {
-              regMechFail = r.fail; note(`frame-reopen: ${a} supplemental sweep failed mechanically (${r.fail})`);
-              // doc-44: a core coverage sweep must NOT be one-shot-then-abandon. On a TIMEOUT (the followup used its
-              // own attempts, its extended retry included, and still hit the wall), do ONE fresh, SCOPED re-sweep of the SAME
-              // near-form threats on a fresh session: the stage's one model and the gateway's retries, as any fresh
-              // stage gets. There is no second model or provider. Scoped (not the whole axis) + bounded detail-fetch so it
-              // fits the budget. Still fails ⇒ fall through to the deferral exactly as before.
-              if (/timeout/.test(String(regMechFail))) {
-                note(`frame-reopen: ${a} timed out — ONE fresh SCOPED retry on a fresh session (same model, the gateway's retries)`);
-                const retryMsg = repairFollowup("register-unit:frame-reopen-retry", { paths: P, axis: a, directives: regDirectives,
-                  supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane, job: ctx.job, profile: ctx.profile });
-                const r2 = await stage("register-unit", { ...ctx, axis: a }, { force: true, freshMessage: retryMsg, sessionKey: `clearance-${ctx.run.slug}-${ctx.run.codename}-register-unit-${a}-reopen-retry`, trigger: "frame-reopen-retry" });
-                if (r2.ok && existsSync(P.registerUnit(a)) && (readFileSync(P.registerUnit(a), "utf8") !== beforeUnit || bandBytesOf(P, a) !== beforeBand)) {
-                  changedAxes.push(a); regChanged = true; regMechFail = null;
-                  note(`frame-reopen: ${a} fresh scoped retry closed the gap`);
-                } else if (!r2.ok) {
-                  regMechFail = r2.fail; note(`frame-reopen: ${a} fresh scoped retry also failed (${r2.fail}) — deferring`);
-                } else {
-                  note(`frame-reopen: ${a} fresh scoped retry ran but band unchanged — deferring`);
-                }
-              }
-            }
-          } else if (regDirectives.length) {
-            regNoSession = true;
-            note(`frame-reopen: ${regDirectives.length} register omission(s) — no resumable primary-sweep/digest session in this process`);
-          }
-          if (regArm === "resume") remergeIfBandsMoved(ctx, "frame-reopen");
-
-          // A SOURCE DIRECTIVE NAMING A CHANNEL IS DISCLOSED, NEVER SWEPT. The frame-diff manual says so ("disclosed
-          // rather than swept blind — they end as an open coverage row"), and this arm used to do the opposite: it
-          // resumed the web-search sessions to sweep the channel for every variant. No web-search session is resumed
-          // for a channel now. Each source directive is deferred as a channel never swept, so it reaches the reader as
-          // an open row in the shipped words, and the coverage closure below no longer folds it in either.
-          // (Register-only never reaches this arm: source-layer directives are dropped before `firing`.)
-          if (srcDirectives.length) note(`frame-reopen: ${srcDirectives.length} source-channel directive(s) disclosed as open rows, not swept`);
-
-          // ONE warm re-digest if a register axis materially changed (re-derives register-coverage-ledger.json,
-          // and surfaces the newly-enumerated conflicts as findings — this block runs BEFORE synthesis).
-          // T1 (J2/G8): the re-digest honors the block's NON-FATAL contract — the old must here
-          // killed a full run on a re-digest timeout AFTER the sweeps had already landed (the F5
-          // 48%-timeout class). One retry on a fresh session, same model, on a timeout; still failing ⇒
-          // the swept register directives are DEMOTED back to deferrals (open coverage row + the
-          // CLEAR→CONDITIONAL clamp — "can't close → disclose") and the run continues on the prior digest.
-          // CROWDED-FIELD FIX (teal-gantry, 2026-07-21) — RETIRED BY, and this is the whole win.
-          // The arms above regenerate the register band by ENUMERATING the dominant-element crowd. Until
-          // 2026-08-03 placement-inquiry had already run on the PRE-enumeration band, so the reopen had to
-          // dispatch placement a SECOND time or the P2 delivery-freshness gate would (correctly) refuse a
-          // report whose placement predated the crowd it was assembled over. That second dispatch was the
-          // single largest avoidable cost in the run — 87,031 + 112,991 output tokens across two placement
-          // passes on the preserved R2 VENZY run, roughly 27 minutes of wall-clock at ~70 tok/s for the
-          // second one alone. The frame now settles ABOVE placement, so there is nothing to refresh:
-          // placement has not run yet and will read the enumerated band on its one and only dispatch.
-          // deriveNamedBand has already re-merged (the dispatch arm calls it; the warm-resume arm's fold
-          // lands in the unit file placement reads).
-          //
-          // NOTHING replaces it on a RESUME either, and nothing needs to: a resume whose placement artifact
-          // is inherited-fresh has that artifact declared stale by stage-freshness the moment these sweeps
-          // move register-named-band.json or a register-units/*.md (stageInputs["placement-inquiry"]), and
-          // placement re-runs a few lines below because the seam is now downstream of the sweep. The
-          // freshness gate stops being a wall to route around and becomes the mechanism.
-          //
-          // THE DIGEST QUEUE IS DELIBERATELY NOT SETTLED HERE ON A FRESH RUN. The reconcile segment asks
-          // judgment to re-read changed units "against your prior findings" — at this seam on a fresh run
-          // there ARE no prior findings: register-digest has not run. Minting it would queue a meaningless
-          // segment that buys a whole extra Opus pass at the standalone flush below; flushing it would set
-          // ctx.digestSettled over an empty queue and strand escalation's and envelope's later mints —
-          // staleness at the delivery gate, i.e. a parked run. So both the mint and the flush are gated on
-          // the digest having ALREADY produced findings, which is true only on a resume. On a fresh run the
-          // digest simply reads the settled band on its first pass, which is what makes the reconcile
-          // unnecessary rather than merely skipped.
-          const digestAlreadyRan = existsSync(P.registerFindings);
-          // The reconcile segment — shared verbatim between the legacy frame-reopen re-digest (funnel
-          // OFF) and the settlement flush's frame-reopen section (funnel ON).
-          const reopenSections = (changedAxes.length && digestAlreadyRan) ? [{
-            trigger: "frame-reopen",
-            text: lines(
-              `These register units just folded in supplemental sweeps from a blind frame re-derivation: ${changedAxes.join(", ")}. Re-read only those updated unit files, reconcile your prior findings and the Coverage ledger against them, and revise only what the new coverage requires.`,
-            ),
-          }] : [];
-          if (changedAxes.length && !digestAlreadyRan)
-            runLog(run.runDir, { event: "frame-reopen-reconcile-not-needed", axes: changedAxes,
-              reason: "the digest has not run yet at this seam — it reads the settled band on its first pass" });
-          if (!digestAlreadyRan) {
-            // nothing to reconcile and nothing to flush: leave ctx.digestSettled false so the standalone
-            // settlement seam (post escalation / envelope / screen-gate) still settles the queue it owns.
-          } else if (digestLockedReopen) {
-            // C2 (PR-6): under the digest lock the dispatch arm's results are already merged into the
-            // band; the RECONCILE (judgment re-reading the changed units against its findings) cannot
-            // run as an inline pre-synthesis flush — synthesis already ran. Mint the reconcile
-            // segment as a durable queue item and ride the EXISTING bounded late flush at the
-            // standalone settlement seam below (at most one per pass; receipts survive resume). A
-            // late-flush failure leaves the item PENDING (durable — the next resume's flush gets one
-            // more chance); the residue is visible: the ask ledger carries the reopen rows and the
-            // frameReopenGap clamp stands until the gap genuinely closes. NO findings addendum — a
-            // spliced delta was rejected long ago (silent-corruption class); the flush re-emits whole.
-            if (reopenSections.length) {
-              mintDigestWork("frame-reopen", firing.map(reopenKey), reopenSections[0].text);
-            }
-          } else if (reopenSections.length || pendingItems(ctx.digestQueue).length) {
-            //: THE PRE-SYNTHESIS SETTLEMENT FLUSH. The frame-reopen re-digest already sat at
-            // the last seam before synthesis, so it becomes the settlement point: ONE consolidated
-            // followup = the frame-reopen segment (if any) + every queued segment (escalation /
-            // envelope / screen-gate), each clearly sectioned, ending with the standard full
-            // re-emission contract. Timeout retry + failure semantics ride flushDigestQueue.
-            const fr = await flushDigestQueue("pre-synthesis", reopenSections);
-            ctx.digestSettled = true;
-            const rd = fr.result ?? { ok: true };
-            if (!rd.ok && changedAxes.length) {
-              note(`frame-reopen: re-digest failed (${rd.fail}) — swept register coverage demoted to deferrals (disclose, never kill the run here)`);
-              runLog(run.runDir, { event: "frame-reopen-redigest-failed", fail: String(rd.fail).slice(0, 120) });
-              regChanged = false;
-              // Fix 2 — the dispatch arm's per-directive closures are only as good as the re-digest that
-              // reconciled them into findings; on a re-digest failure demote every verified-closed directive
-              // back to a disclosed deferral (never a swept-but-unreconciled close).
-              for (const k of [...regSwept]) regDeferReason.set(k, `redigest-fail:${String(rd.fail).slice(0, 60)}`);
-              regSwept.clear();
-              regMechFail = regMechFail || `redigest-fail:${String(rd.fail).slice(0, 80)}`;
-            }
-          }
-
-          // CLOSURE READ — Fix 2 (close-the-loop): a register directive is swept only when the SPECIFIC
-          // re-search VERIFIED (dispatch arm: regSwept holds the per-directive verified-closed keys — the
-          // minted qids landed as executed, non-collapsed, right-scope blocks). A byte-changed band that only
-          // holds a wrong-scope/empty/error block closes nothing → the directive is a disclosed deferral.
-          // WARM-RESUME arm (the un-dispatched providers — clarivate/signa, or CLEAROTRON_PLAN_DISPATCH=off): the
-          // agent owns the sweep and stamps NO deterministic searched-scope evidence (the followup writes no
-          // [cl …] tag), so a byte-diff cannot prove the intended classes were searched. Reading the band's
-          // record classes is NOT proof of scope — the RUN1 dominant element surfaced via 9/28/41/42
-          // CO-CLASSIFICATION, so records carry class 35/38 even when 35/38 were never searched. Therefore a
-          // DOMINANT-ELEMENT directive is UNVERIFIABLE on this arm and stays a disclosed deferral (the clamp
-          // holds — "can't verify → disclose", never a false close). Non-dominant register omissions keep the
-          // axis byte-diff (lower stakes, not a clamp input — broadening them would manufacture false defers).
-          // Whether the now-searched band is COMPLETE enough is judgment's call downstream (coverage_judgment).
-          const { swept, deferrals } = partitionFiring(firing,
-            (d) => d.layer === "source" ? false
-                 : regArm === "dispatch" ? regSwept.has(reopenKey(d))
-                 : d.severity === "dominant-element" ? false
-                 : regChanged,
-            (d) => {
-              if (d.layer === "source") return "source-not-swept";
-              if (regArm === "dispatch") {
-                const base = regDeferReason.get(reopenKey(d)) || "not-verified-closed";
-                const partial = regPartialMint.get(reopenKey(d));
-                return partial ? `${base}; ${partial}` : base;
-              }
-              if (regNoSession) return "no-resumable-session";
-              if (regMechFail) return `mechanical-fail:${regMechFail}`;
-              if (d.severity === "dominant-element" && regChanged)
-                return "resume-arm-unverifiable: the warm-resume arm has no deterministic searched-scope evidence — a bare unit byte-diff cannot confirm the dominant element was searched in the intended classes (disclose, never a false close)";
-              return "unchanged-after-resume";
-            });
-          // — THE REMEDY TERM LEDGER, built before the closure read because the closure read now
-          // depends on it. Every term a firing directive restated ends in one of six named states, and
-          // `searched-empty` carries the executed query and its counted zero — the state that used to
-          // leave no trace anywhere. Non-fatal end to end: a ledger that cannot build leaves the
-          // receipt's fields NULL (never absent) and the closure read falls back to its prior rule,
-          // because a join that could not run is not evidence of a gap.
-          //
-          // Only the DISPATCH arm owns term rows. The warm-resume arm hands the sweep to an agent that
-          // stamps no per-query receipt, so there is nothing to account and saying so is the honest
-          // answer — those directives are listed in `out_of_scope` with the reason, never counted as
-          // searched. (That arm already refuses to close a dominant-element directive at all, so no
-          // closure claim rests on the silence.)
-          let remedyAccounting = null;
-          try {
-            const termRows = regArm === "dispatch"
-              ? regDirectives.flatMap((d) => (regTermRows.get(reopenKey(d)) ?? []).map((r) => ({
-                  directive: reopenKey(d), layer: d.layer, severity: d.severity, ...r })))
-              : [];
-            const outOfScope = [
-              ...srcDirectives.map((d) => ({ directive: reopenKey(d), layer: d.layer,
-                reason: "source-channel directive — disclosed as an open row and never swept, so it has no term unit and no per-query record to account" })),
-              ...(regArm === "dispatch" ? [] : regDirectives.map((d) => ({ directive: reopenKey(d), layer: d.layer,
-                reason: `register directive handled by the ${regArm ?? "no"} arm, which stamps no per-slice execution receipt — no term-level record exists to account` }))),
-            ];
-            remedyAccounting = accountRemedyTerms({
-              terms: termRows,
-              blocksByQid: regLastJoin?.blocksByQid ?? new Map(),
-              executedQids: regLastJoin?.executedQids ?? new Set(),
-              foldRefusals: regFoldRefusals,
-              outOfScope,
-            });
-          } catch (e) {
-            remedyAccounting = null;
-            runLog(run.runDir, { event: "remedy-accounting-failed", error: String(e?.message ?? e).slice(0, 200) });
-          }
-          runLog(run.runDir, remedyAccountingEvent({ trigger: "frame-reopen", artifact: remedyAccounting,
-            reason: remedyAccounting ? null : "the remedy term ledger did not build" }));
-          if (remedyAccounting?.computable) {
-            const t = remedyAccounting.totals;
-            note(`frame-reopen remedy ledger: ${t.terms} term(s) — ${t.found} found, ${t.searched_empty} searched-empty (query + counted zero recorded), ${t.not_dispatched} never dispatched, ${t.dispatch_failed} dispatch-failed, ${t.unaccounted} unaccounted`);
-          }
-          // THE CLOSURE READ —: `domClosed` is computable only over the ACCOUNTED set. A
-          // dominant-element directive must be verified-closed AND every term it restated must be
-          // `found` or `searched-empty`. One term that never ran, or ran into a shape the record cannot
-          // read, and the dominant-element gap is NOT closed — because it demonstrably is not.
-          const domRead = domClosedOverAccounted({ directives, swept, accounting: remedyAccounting, reopenKeyOf: reopenKey });
-          domClosed = domRead.domClosed;
-          if (domRead.blockedBy.length) {
-            runLog(run.runDir, { event: "frame-reopen-dom-unaccounted", blocked_by: domRead.blockedBy });
-            note(`frame-reopen: the dominant-element directive verified-closed but ${domRead.blockedBy.length} of its remedy term(s) are unaccounted (${domRead.blockedBy.map((b) => `${b.term}=${b.class}`).join(", ")}) — domClosed stays FALSE; the clamp holds until the record can show every term ran`);
-          }
-          // A directive verified-closed on a PARTIAL mint carries its refusal into the receipt: the
-          // ending states "closed on N of M remedy proposals; K refused: <reason>", never a bare close.
-          const partials = swept.filter((k) => regPartialMint.has(k))
-            .map((k) => ({ directive: k, note: `verified-closed on the minted subset — ${regPartialMint.get(k)}` }));
-          const answered = swept.filter((k) => regAnsweredBy.has(k)).map((k) => ({ directive: k, slices: regAnsweredBy.get(k) }));
-          const withheldBy = swept.filter((k) => regWithheldBy.has(k)).map((k) => ({ directive: k, slices: regWithheldBy.get(k) }));
-          writeReopenReceipt(swept, deferrals, domClosed, partials, remedyAccounting, answered, withheldBy);
-          runLog(run.runDir, { event: "frame-reopen", requested: firing.length, swept: swept.length, deferred: deferrals.length, remaining: deferrals.length, dominant_element_gap, domClosed });
-          // C2 (review fix, 2026-07-29) — the redigest-fail demotion invariant, LOCKED path. The
-          // unlocked path demotes verified-closed directives inline when its pre-synthesis flush
-          // fails (above); under the lock the reconcile rides the LATE flush AFTER this receipt is
-          // written and the clamp released, so the demotion is a hook flushDigestQueue's failure
-          // branch invokes (envelopeFlushVerify shape). It moves every swept key back to a disclosed
-          // deferral (redigest-fail:<reason>), rewrites the receipt with domClosed:false, and re-arms
-          // ctx.frameReopenGap — the CLEAR clamp holds until the enumerated crowd actually reaches
-          // the findings. Registered only when a frame-reopen reconcile item is actually pending
-          // (queue-keyed, so a mint no-op on an already-pending item still gets its demotion).
-          if (digestLockedReopen && swept.length && pendingItems(ctx.digestQueue).some((i) => i.trigger === "frame-reopen")) {
-            const layerByKey = new Map(firing.map((d) => [reopenKey(d), d.layer]));
-            const closedKeys = [...swept];
-            const priorDeferrals = [...deferrals];
-            //: the term ledger rides the demotion UNCHANGED. A failed re-digest demotes CLOSURE,
-            // not searchedness — the queries still ran and their results are still what they were, so
-            // dropping the rows here would delete a true record to reflect a false one. (The sibling
-            // crash-window arm below gets this for free: it rewrites the prior receipt by spread.)
-            const demoteAccounting = remedyAccounting;
-            ctx.frameReopenFlushDemote = (fail) => {
-              const reason = `redigest-fail:${String(fail ?? "late flush failed").slice(0, 60)}`;
-              const demoted = priorDeferrals.concat(closedKeys.map((k) => ({ directive: k, layer: layerByKey.get(k) ?? "variant", reason })));
-              writeReopenReceipt([], demoted, false, [], demoteAccounting);
-              ctx.frameReopenGap = dominant_element_gap;
-              runLog(run.runDir, { event: "frame-reopen-redigest-failed", pass: "late", fail: String(fail ?? "").slice(0, 120), demoted: closedKeys });
-              note(`frame-reopen: the late flush failed — ${closedKeys.length} verified-closed directive(s) demoted to disclosed deferrals (${reason}); the frameReopenGap clamp stands until the reconcile genuinely lands`);
-            };
-          }
-        } else if (firing.length && already && priorReceipt) {
-          // a prior pass already attempted EXACTLY this firing set — its receipt is authoritative for closure.
-          domClosed = priorReceipt.domClosed === true;
-          note(`frame-reopen: ${firing.length} directive(s) — already attempted this set (prior outcome stands: dominant gap ${domClosed ? "closed" : "open"})`);
-          runLog(run.runDir, { event: "frame-reopen-skipped", firing: firing.length, reason: "already-attempted", dominant_element_gap, domClosed });
-          // C2 (review fix, 2026-07-29) — crash-window arm of the redigest-fail demotion: a prior
-          // locked pass verified its closes and wrote the swept receipt, then died BEFORE its late
-          // flush landed (the reconcile item is still pending). This pass trusts the receipt and the
-          // clamp stays released while the flush retries below — so if THAT flush fails too, demote
-          // from the prior receipt exactly as the in-pass hook does (fields preserved; only the
-          // partition and domClosed change). A flush success clears the hook and the prior closes
-          // stand reconciled.
-          if ((priorReceipt.swept ?? []).length && pendingItems(ctx.digestQueue).some((i) => i.trigger === "frame-reopen")) {
-            const layerByKey = new Map(firing.map((d) => [reopenKey(d), d.layer]));
-            ctx.frameReopenFlushDemote = (fail) => {
-              const reason = `redigest-fail:${String(fail ?? "late flush failed").slice(0, 60)}`;
-              const demoted = [...(priorReceipt.deferrals ?? []),
-                ...(priorReceipt.swept ?? []).map((k) => ({ directive: k, layer: layerByKey.get(k) ?? "variant", reason }))];
-              try {
-                writeFileSync(reopenReceiptPath, JSON.stringify({ ...priorReceipt, ts: new Date().toISOString(),
-                  swept: [], deferrals: demoted, remaining: demoted.map((x) => x.directive), domClosed: false }, null, 2) + "\n");
-              } catch (e) { note(`frame-reopen receipt demotion write failed (non-fatal): ${e.message}`); }
-              ctx.frameReopenGap = priorReceipt.dominant_element_gap === true;
-              runLog(run.runDir, { event: "frame-reopen-redigest-failed", pass: "late", fail: String(fail ?? "").slice(0, 120), demoted: priorReceipt.swept });
-              note(`frame-reopen: the late flush failed — ${(priorReceipt.swept ?? []).length} previously verified-closed directive(s) demoted to disclosed deferrals (${reason}); the frameReopenGap clamp re-arms`);
-            };
-          }
-        } else if (firing.length) {
-          // disabled / digest-locked on a resume past synthesis: cannot act this run — every firing directive is
-          // a documented DEFERRAL (it still escalates+discloses below; only the sweep itself cannot run here).
-          const why = reopenDisabled ? "frame-reopen-disabled" : digestLockedReopen ? "digest-locked-resume" : "no-actionable-sweep";
-          const { deferrals } = partitionFiring(firing, () => false, () => why);
-          writeReopenReceipt([], deferrals, false);
-          note(`frame-reopen: ${firing.length} directive(s) not swept — ${why}`);
-          runLog(run.runDir, { event: "frame-reopen-skipped", firing: firing.length, reason: why, dominant_element_gap, domClosed: false });
-        }
-
-        // Property 2 — a dominant-element gap the reopen did NOT close blocks a clean finding (clamp below,
-        // alongside the coverage-honesty floor). This is the gap the register coverage ledger cannot itself
-        // represent (an off-fielded cluster, an unsearched channel) — so it is a SEPARATE clamp input.
-        ctx.frameReopenGap = dominant_element_gap && !domClosed;
-        refreshSupplementalExecution(ctx);   // the reopen arms fold/dispatch supplementals — keep the receipt current
-        if (ctx.frameReopenGap) note(`frame-reopen: dominant-element gap stands (unclosed) — will clamp a CLEAR verdict to CONDITIONAL`);
-        // — the reopen's own sweeps just rewrote the band and the unit notes that frame-diff declares
-        // as inputs, and frame-diff is ONE-SHOT by contract ("NO in-process re-diff"), so it cannot be
-        // re-run to catch up. Without this, a pass that crashed between here and the end-of-pass reconcile
-        // would resume with frame-diff SKIPPED (⇒ on the delivery path via ctx.skippedStages) and STALE
-        // against artifacts its own sweep moved — and frame-diff has no UPSTREAM_STALE_REPAIR entry, so
-        // that parks the run. Best-effort by construction: a miss just leaves the delivery gate as strict
-        // as it is today.
-        //
-        // COMMON-LAW JOINED THIS LIST ON 2026-08-04, when the source-layer arm above still resumed the
-        // common-law session and re-saved common-law.md. That arm no longer sweeps (a channel is disclosed,
-        // never swept), so the reopen does not move the file now; it stays listed because frame-diff
-        // declares it, and a file that did not move fingerprints the same on both sides. The seam below
-        // covers the arms that run after placement; this one covers the crash window between the sweeps
-        // and that seam.
-        // P.commonLaw unconditionally: stageInputs["frame-diff"] declares it on every run type, and an
-        // absent file fingerprints as absent on both sides — a register-only run is a no-op here.
-        settleOneShotStamp(run.runDir, "frame-diff",
-          [P.registerNamedBand, ...(axes ?? []).map((a) => P.registerUnit(a)), P.commonLaw],
-          "frame-reopen-sweeps");
-      }
-    }
-
-    // Step 2C placement → Step 2D digest
-    //
-    // THE PASS THAT RESUMES A RUN WHOSE ASSESSMENT COULD NOT BE COMPLETED delivers what the run holds, here, at the
-    // assessment's first step and before anything that exists only to feed it runs. See deliverWithoutTheAssessment.
-    const assessmentOpen = readPartNotCompleted(run.runDir, "assessment");
-    if (assessmentOpen) return await deliverWithoutTheAssessment(assessmentOpen);
-    await assertReceiptSettled(ctx, "placement-inquiry");
-    // Placement and the register write-up are the assessment's first two steps. A failure of either, a band too large
-    // to dispatch over included, is named as the assessment, as synthesis's own is below.
-    const placementPass = await asPartNotCompleted("assessment", () => stage("placement-inquiry", ctx));
-    // What THIS pass did, recorded before anything else can overwrite placements.json, and ahead of `must`
-    // deliberately: a pass that failed or skipped on a partial artifact is exactly the pass whose account is
-    // worth having, and `must` throws. The delivery gate's repeat of this stage records through the same helper.
-    recordPlacementPass(ctx, placementPass);
-    await asPartNotCompleted("assessment", async () => must(placementPass, "placement-inquiry"));
-    await checkLateBind("pre-digest");   // B5b checkpoint 2: a bind here rides the digest message as a re-classification block
-    const digestKey = (await asPartNotCompleted("assessment", async () => must(await runDigest(ctx), "register-digest"))).sessionKey;
-    ctx.digestKey = digestKey;           // B5b: the warm-redigest late-bind path resumes this session
-
-    // Step 2.6 skeptic → code-decided escalation. The skeptic poses its flags as a QUESTION back to each
-    // flagged unit, which RESUMES its own session (warm cache, same model) and defends-or-adjusts in place —
-    // it does NOT redo the search from scratch on a fresh opus session. This is both cheaper (a follow-up turn
-    // on the cached thread vs. a cold full opus re-run — the old path's dominant cost) and better (the unit
-    // argues from the evidence it already gathered). Opus judgment still happens once, at the re-digest.
-    // B1: the skeptic is a fresh-eyes audit that can only ADD escalations — its absence == the (common)
-    // clean-skeptic path. A gemini-flash outage must NOT bin the completed gather+digest, so it is NON-FATAL:
-    // on failure we proceed with no escalation. (Coverage/judgment stages stay fatal; this is the one exception.)
-    const skepticData = skepticDeferralExtra(ctx);
-    const sk = await stage("skeptic", ctx, skepticData ? { extra: skepticData } : {});
-    let flags = "";
-    if (sk.ok) {
-      flags = readFileSync(P.skepticFlags, "utf8");
-    } else {
-      note(`skeptic failed (non-fatal — proceeding with no escalation): ${sk.fail}`);
-      runLog(run.runDir, { event: "skeptic-skipped", reason: sk.fail });
-    }
-    // Which axes to re-run is decided by STRUCTURED tokens the skeptic emits — one `ESCALATE: <axis>` line per
-    // axis with a material unresolved gap — NOT by substring-matching its prose (which both false-triggered on
-    // incidental mentions and missed gaps phrased without the axis name). `flags` (the full prose) is still
-    // passed into the follow-ups as context. No flags (clean OR skipped) ⇒ no escalation.
-    //
-    // The parse itself MOVED to skeptic-record.mjs (same regex, one function): the record_skeptic
-    // transport renders the ESCALATE lines and re-reads them through the same `escalatedAxes` this
-    // dispatch runs, so the rendered shape and this read cannot drift — the dictated-shape-with-a-
-    // forgotten-reparser seam, closed by having exactly one parser.
-    const escalate = escalatedAxes(flags, axes);
-    // D3 — the escalation-risk SHADOW loop (risk-tag parse + would-skip telemetry for the
-    // never-enabled CLEAROTRON_ESCALATION_FILTER) is DELETED; every ESCALATE line still re-runs its axis.
-    // Audit-trail-aware escalation skip (Lever 4). A skeptic flag against an axis whose coverage-ledger
-    // row(s) are ALL `coverage-limited` is a DOCUMENTED/ACCEPTED structural limit (a crowd recorded with its
-    // count) — a warm re-run cannot close it; it
-    // would only re-spend the fat gather context (the ~343K cold-write) + a 2nd Opus re-digest for no recall
-    // gain, so we skip it. CONSERVATIVE predicate: skip ONLY when the axis owns ≥1 ledger row AND every owned
-    // row is `coverage-limited` (a `deferred` row = real outstanding work → re-run closes it; a `confirmed-clean`
-    // row still flagged = a fresh-eyes catch the ledger calls clean → escalate). An axis with no parseable
-    // ledger row is never skipped. Escalating needlessly only wastes money; skipping a real gap loses recall —
-    // when in doubt, escalate. (Ungated build; A/B to ship — assert only documented-accepted gaps are skipped.)
-    const ledger = loadCoverageLedger(run.runDir).rows;   // WS-A: machine ledger when present, else prose
-    // A2 — the capability-gap inputs the skip below decides on, read once (same authority-then-prose
-    // ordering as the envelope: the receipt indicts an axis, the row reason splits inside it).
-    const escalationReceipt = readPlanExecution(ctx);
-    const escalationGapAxes = capabilityGapAxes(ctx.registerPlan, escalationReceipt);
-    // — the floor axes this mark designated, and the axes whose floor work was excused rather than
-    // executed. Read once, beside the other inputs the skip decides on, in the same authority ordering.
-    const floorBreachAxes = new Set(findFloorBreaches(ledger, readFloorAxes(P)).map((b) => b.axis));
-    const escalationFullyDeferred = new Set((ctx.registerPlan ? fullyDeferredAxes(ctx.registerPlan) : []).map((a) => String(a.axis).toLowerCase()));
-    const codeSideEscalations = [];   // A6 — code-side axes a skeptic flag landed on; they get a deterministic recheck below, never a silent skip
-    const escalateGated = escalate.filter((a) => {
-      // a code-side / resumed-past unit has NO session to warm-resume (unitKey null) — and for
-      // saturation-probe there is nothing to defend anyway: the band is a code-executed count table.
-      if (a === "saturation-probe" && !unitKey[a]) {
-        note(`escalation skipped ${a} — code-executed axis, no unit session to resume (counts are mechanical) — deterministic recheck follows`);
-        runLog(run.runDir, { event: "escalation-skipped", axis: a, reason: "code-side unit (no session)" });
-        codeSideEscalations.push(a);
-        return false;
-      }
-      const owned = ledger.filter((r) => r.axis === a.toLowerCase());
-      // — THE FLOOR TERM IS ON BOTH SKIP BRANCHES, AND ON THIS ONE THAT IS AN EXTENSION rather than
-      // a restoration. Stated plainly because it is the one place this PR goes past what removed:
-      // the retired `!floorBreachAxes.has(a)` sat on the capability-gap branch below and only there.
-      //
-      // Leaving this branch unheld would be internally incoherent. An axis whose rows are ALL
-      // `coverage-limited` is the PUREST case of the loophole — everything excused, nothing executed — and
-      // `computeOpenFloors` already discloses it as an unmet floor. So the run would state an open floor on
-      // the delivered report and, in the same breath, have decided not to pursue it: flagged and not
-      // pursued, which is half the ruling and the confusing half.
-      //
-      // It also follows this gate's own doctrine, written above: "Escalating needlessly only wastes money;
-      // skipping a real gap loses recall — when in doubt, escalate."
-      if (owned.length > 0 && owned.every((r) => r.status === "coverage-limited") && !floorBreachAxes.has(a.toLowerCase())) {
-        note(`escalation skipped ${a} — coverage ledger documents an accepted limit (no closeable gap)`);
-        runLog(run.runDir, { event: "escalation-skipped", axis: a, reason: "documented coverage-limit" });
-        return false;
-      }
-      // A2 — the code gate behind the prompt line: an axis whose ONLY outstanding work is a
-      // capability-gap deferral has nothing a warm re-run can reach. The skeptic escalated exactly
-      // this on the evidence run (it re-derived the ledger out of a 103 KB prose document and got it
-      // wrong), and the re-run then re-derived the provider's deterministic refusal at full price.
-      // Same conservative shape as the coverage-limited skip: the receipt must indict the axis AND
-      // every outstanding row must state the gap.
-      //
-      // ⚠ THE HOLD, and this is the one site where the search floor changes what the pipeline DOES rather
-      // than what it reports. retired the ⭐ mechanism and this condition WIDENED as a consequence —
-      // the old `&& !floorBreachAxes.has(a)` term PREVENTED the skip, so dropping it made an axis whose
-      // only outstanding work is a capability-gap deferral skippable even where floor work had been
-      // excused rather than executed. restores the term against the typed designation.
-      //
-      // The direction is the point: a floor breach does not force a re-run, it withholds a SKIP. An axis
-      // that could not be fully checked is never quietly closed — it stays flagged and pursued. And with
-      // no designation `floorBreachAxes` is empty, so this reads exactly as it does today on every run
-      // that designates no floor.
-      if (owned.length > 0 && !floorBreachAxes.has(a.toLowerCase())) {
-        const split = splitDeferredByCloseability(ledger, a, escalationGapAxes,
-          { fullyDeferred: escalationFullyDeferred.has(a.toLowerCase()), heldUnits: stickyGapUnits(P), uncovered: officeGapOf(ctx.registerPlan), askable: askableOf(escalationReceipt) });
-        const openNonDeferred = owned.some((r) => r.status !== "deferred" && r.status !== "coverage-limited");
-        if (split.held.length > 0 && split.closeable.length === 0 && !openNonDeferred) {
-          // Held only because none of its rows has a question left to send is not a capability gap, and says so.
-          const nothingToSend = heldForNothingToSend(split);
-          note(nothingToSend
-            ? `escalation skipped ${a} — no question is left to send, so a re-run cannot close it (the gap stays open and disclosed)`
-            : `escalation skipped ${a} — capability-gap deferral: the active register provider cannot express those slices, so a re-run re-derives the same refusal (the gap stays open and disclosed)`);
-          runLog(run.runDir, { event: "escalation-skipped", axis: a,
-            reason: nothingToSend ? "no question left to send (nothing a re-run can close)" : "capability-gap deferral (nothing a re-run can close)" });
-          return false;
-        }
-      }
-      return true;
-    });
-    // Escalation is a PRE-synthesis digest refinement (re-run the flagged axis → re-digest). Once synthesis has
-    // produced narrative.md, the digest it consumed is locked in — so on a RESUME past synthesis we must NOT
-    // re-fire it: a cold-session re-run would re-spend Corsearch and could rewrite register-findings.md, which
-    // would corrupt the audit spine the deliverable is built from. V4-1: the lock is "will synthesis run for
-    // THIS delivery" — an inherited narrative.md that --from synthesis is about to force-re-run does NOT lock
-    // (the stale-proxy bug: forks never closed closable digest work).
-    const digestLocked = existsSync(P.narrative) && !forceFromActive(ctx, "synthesis");
-    // ── A6 (hardening 8, 2026-07-28 postmortem): a skeptic flag on a CODE-SIDE axis used to END at the skip
-    // event — no deterministic re-run, no recorded ending (it fired 2× on the 2026-07-28 postmortem run, silently). The
-    // axis is fully dictated, so the honest cheap answer IS code: re-dispatch its frozen plan qids ONCE
-    // through the deterministic executor (count probes — seconds, no session, no agent turn). A band
-    // that comes back changed makes the digest stale w.r.t. its declared inputs, so stage-staleness
-    // forces the re-digest deterministically — no new trigger is invented here. With no dispatch lane
-    // (no executor adapter / no frozen plan / repair budget spent) the skip is recorded
-    // judged-immaterial WITH its reason, so the escalation has an ending either way. Runs under the
-    // same digest lock as the warm escalation arm: past synthesis, a band mutation belongs to the
-    // frame-reopen/digest-queue lanes, not here.
-    for (const a of codeSideEscalations) {
-      if (digestLocked) {
-        runLog(run.runDir, { event: "escalation-recheck", axis: a, dispatched: false, reason: "digest-locked (post-synthesis) — a band mutation here would bypass the digest lock" });
-        continue;
-      }
-      if (!planExec || !ctx.registerPlan) {
-        runLog(run.runDir, { event: "escalation-recheck", axis: a, dispatched: false, reason: "judged-immaterial: no deterministic dispatch lane (no executor/frozen plan) — the gathered counts stand" });
-        continue;
-      }
-      const bandBefore = (() => { try { return readFileSync(P.registerBand(a), "utf8"); } catch { return null; } })();
-      const outcome = await dispatchPlanQids(a, null, "escalation-recheck", 1);
-      const bandAfter = (() => { try { return readFileSync(P.registerBand(a), "utf8"); } catch { return null; } })();
-      const bandChanged = outcome === "ok" && bandAfter != null && bandBefore !== bandAfter;
-      runLog(run.runDir, { event: "escalation-recheck", axis: a, dispatched: outcome != null, outcome: outcome ?? "repair-budget-exhausted", bandChanged });
-      if (bandChanged) {
-        try { deriveNamedBand(ctx); } catch (err) { note(`escalation-recheck ${a}: band re-merge failed (${String(err?.message ?? err).slice(0, 100)}) — the digest will re-merge on its own pass`); }
-        // The changed counts must REACH the digest THIS pass, not by ambush at delivery: minting digest
-        // work rides the same pre-synthesis settlement flush as the warm escalation lane above. Leaving
-        // it to the delivery-freshness gate alone (register-digest is on staleOnPath) means synthesis
-        // and the cards get built from the PRE-recheck digest, delivery blocks as stale, and the run
-        // pays a park + a full back-half recompute — the exact re-drive cascade the funnel
-        // exists to prevent — for what one flush section reconciles in-pass.
-        mintDigestWork("escalation-recheck", [a], lines(
-          `A skeptic flag on the code-executed ${a} axis triggered a deterministic recheck: its frozen plan queries were re-dispatched and the fresh counts CHANGED the crowd band. Re-read that axis's updated unit file and count band, reconcile your prior findings against the fresh counts, and revise only what the changed band requires.`,
-        ));
-        note(`escalation-recheck ${a}: fresh dispatch changed the band — re-digest queued for the settlement flush`);
-      }
-    }
-    if (escalateGated.length && !digestLocked) {
-      // Fix 3: re-run flagged axes CONCURRENTLY (was a sequential await-per-axis loop, ~19 min → ~6 min),
-      // reusing the gather pass's runBatched fan-out at config.gatherConcurrency (≤ gateway maxConcurrent —
-      // proven by the first gather pass). Each axis is independent: it resumes its OWN session key
-      // (unitKey[a]) and writes its OWN unit file, so there is no shared mutable state — the only join is the
-      // escalated[] collection, which stays deterministic because runBatched writes results by index.
-      const escResults = await runBatched(escalateGated, config.gatherConcurrency, async (a) => {
-        // WS4: snapshot the unit file BEFORE the escalated re-run. A warm "defend-in-place" that re-emits a
-        // byte-identical file leaves the digest's inputs unchanged, so re-firing the Opus re-digest for it is
-        // provably wasted spend (the re-digest's own followup says "re-read only those updated unit files").
-        // Only axes whose unit file MATERIALLY changed stay in escalated[]; content-compare is conservative —
-        // any byte difference re-fires, so a genuine recall fix is never skipped. Floor-neutral.
-        const beforeUnit = existsSync(P.registerUnit(a)) ? readFileSync(P.registerUnit(a), "utf8") : null;
-        const beforeBand = bandBytesOf(P, a);   // a narrow sub-query adds blocks to the band, whatever it does to the notes
-        note(`skeptic escalated ${a} → resuming its session to defend/adjust (warm, same tier)`);
-        let followup = repairFollowup("register-unit:escalation", { paths: P, axis: a, flags,
-          supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane, job: ctx.job, profile: ctx.profile });
-        // A2, per-row: the skip above only catches an axis whose ENTIRE outstanding work is held (a
-        // capability gap, or nothing left to send). An axis is often escalated for a good reason (a flagged confirmed-clean row)
-        // while ALSO carrying held rows — and the resumed unit must not be left to think those are
-        // work it failed to do. Name them, exactly as the envelope's close followup does.
-        const escHeld = splitDeferredByCloseability(ledger, a, escalationGapAxes,
-          { fullyDeferred: escalationFullyDeferred.has(a.toLowerCase()), heldUnits: stickyGapUnits(P), uncovered: officeGapOf(ctx.registerPlan), askable: askableOf(escalationReceipt) }).held;
-        followup += escalationHeldNote(escHeld);
-        // No opts.model → stays on this axis's original tier (axisTier: sonnet/haiku); the followup is a fresh
-        // session, so no cache rides on it. sessionKey: unitKey[a] names the EXACT key the unit won on. force bypasses idempotency.
-        const r = await stage("register-unit", { ...ctx, axis: a }, { force: true, followup, sessionKey: unitKey[a], trigger: "escalation" });
-        if (!r.ok) return { axis: a, changed: false, ok: false };
-        const afterUnit = readFileSync(P.registerUnit(a), "utf8");
-        const changed = afterUnit !== beforeUnit || bandBytesOf(P, a) !== beforeBand;
-        if (!changed) {
-          note(`escalation ${a}: unit defended in place (unchanged) — Opus re-digest not needed`);
-          runLog(run.runDir, { event: "escalation-noop", axis: a });
-        }
-        return { axis: a, changed, ok: true };
-      });
-      const escalated = escResults.filter((e) => e.changed).map((e) => e.axis);
-      remergeIfBandsMoved(ctx, "escalation");
-      // W-3 input (D1): persist the escalation outcome so the client-export gate can WITHHOLD when a
-      // load-bearing escalation the system ITSELF raised did not complete. requested = axes attempted this
-      // session; failed = those whose register-unit stage returned !r.ok (never ran to a result). The
-      // documented-coverage-limit skips (escalate − escalateGated) are accepted limits, never "failed".
-      try {
-        atomicWrite(driverDir(run.runDir, "escalation-state.json"), JSON.stringify({   // B5 — the client-gate reads this: never truncated
-          ts: new Date().toISOString(),
-          requested: escalateGated,
-          completed: escResults.filter((e) => e.ok).map((e) => e.axis),
-          failed: escResults.filter((e) => !e.ok).map((e) => e.axis),
-        }, null, 2) + "\n");
-      } catch (e) { note(`escalation-state write failed (non-fatal): ${e.message}`); }
-      refreshSupplementalExecution(ctx);   // escalation followups may have PROPOSED supplementals — account for them
-      if (escalated.length) {
-        runLog(run.runDir, { event: "skeptic-escalation", escalated });
-        const escalationSegment = lines(
-          `The Step-2.6 skeptic flagged the issues below, and these register units have just defended/revised in place: ${escalated.join(", ")}. Re-read only those updated unit files, reconcile your prior findings against them, and revise only what these flags and the new coverage require.`,
-          ``,
-          flags,
-        );
-        //: the unit defend/adjust work above is KEPT; only the opus re-digest is deferred to
-        // the pre-synthesis settlement flush. Keyed on the escalated axis set — a resume re-entering
-        // this block with the same set no-ops (the receipt survives the resume).
-        mintDigestWork("escalation", escalated, escalationSegment);
-      }
-    }
-
-    // ── Spec A3: deadline-envelope — close unmet must-search floor obligations IN-LOOP when time allows ──
-    // Floor obligations = `deferred` Coverage-ledger rows (planned but never run — incl. material
-    // jurisdictions the digest reconciliation found unsearched). `coverage-limited` rows are documented
-    // accepted limits (Lever 4) — a re-run cannot close them, so they are not floors here. Close mechanics
-    // mirror the skeptic-escalation block above: a followup on the owning unit's winning key,
-    // byte-diff guard, ONE re-digest for materially-changed axes. Same audit-spine lock: never re-fire
-    // past synthesis. The decision (envelope arithmetic + choice) is always logged; whatever remains
-    // unclosed at delivery is stated in the report with its MECHANICAL cause (front-matter, code-built).
-    //
-    // funnel trade (owner-accepted): with escalation+envelope COALESCED into one settlement
-    // flush, this decision reads the FRESH digest's ledger (exactly as on runs with no escalation) —
-    // the escalation re-digest no longer runs first, so a NEW `deferred` row that escalation-changed
-    // units would have surfaced via that re-digest is not visible to THIS envelope pass. That miss is
-    // NOT silent: the flushed digest re-emits the Coverage ledger, and any still-open deferred row
-    // surfaces at delivery via computeOpenFloors → envelope_note (front-matter) and the U1 floor.
-    ctx.envelopeNote = null;
-    {
-      const ledgerNow = loadCoverageLedger(run.runDir).rows;   // WS-A: machine ledger when present, else prose
-      const axesLc = axes.map((x) => x.toLowerCase());
-      // Floors = `deferred` rows. The ⭐-breach union is retired — see the note where
-      // `findFloorBreaches` used to live.
-      const deferredAxes = [...new Set(ledgerNow.filter((r) => r.status === "deferred").map((r) => r.axis))]
-        .filter((a) => axesLc.includes(a))
-        // a code-side saturation-probe has no unit session to warm-resume, and its dictated entries were
-        // executor-run to completion — a "deferred" sat-probe row can only be ledger prose; skip the arm.
-        .filter((a) => a !== "saturation-probe" || unitKey[a]);
-      // A2 — split each axis's floor obligations into what a re-run can close and what it never can.
-      // The plan-execution receipt is the authority (capabilityGapAxes); the row reason only splits
-      // INSIDE an indicted axis. An axis with nothing closeable is HELD: never re-run, never closed by
-      // time, still deferred, still an open floor, still disclosed.
-      const envelopeReceipt = readPlanExecution(ctx);
-      const gapAxes = capabilityGapAxes(ctx.registerPlan, envelopeReceipt);
-      const fullyDeferred = new Set((ctx.registerPlan ? fullyDeferredAxes(ctx.registerPlan) : []).map((a) => String(a.axis).toLowerCase()));
-      const stickyUnitsNow = stickyGapUnits(P);   // a gap this run already accepted is held whatever its row's reason says
-      const closeabilityByAxis = new Map(deferredAxes.map((a) => [a,
-        splitDeferredByCloseability(ledgerNow, a, gapAxes, { fullyDeferred: fullyDeferred.has(String(a).toLowerCase()), heldUnits: stickyUnitsNow,
-          uncovered: officeGapOf(ctx.registerPlan), askable: askableOf(envelopeReceipt) })]));
-      const heldAxes = deferredAxes.filter((a) => {
-        const s = closeabilityByAxis.get(a);
-        // The `!hasBreach &&` term is retired with the ⭐ floor: it kept an axis carrying a
-        // mislabelled floor row out of the HELD set, because such a row is work a re-run can do rather
-        // than a capability refusal. With no breaches to find, the split alone decides.
-        return s.held.length > 0 && s.closeable.length === 0;
-      });
-      const closeableAxes = deferredAxes.filter((a) => !heldAxes.includes(a));
-      const estCloseSec = closeableAxes.length
-        ? closeableAxes.length * (STAGES["register-unit"].timeoutSec / 2) + STAGES["register-digest"].timeoutSec / 2
-        : 0;
-      const decision = envelopeDecision({ deferredAxes, deadline: job.deadline ?? null, now: Date.now(), estCloseSec, heldAxes });
-      // unconditional telemetry (AD-4): held/held_rows are written on every run, empty included, so
-      // "nothing was held" is a recorded answer and not an absent field.
-      // `floorBreaches` is GONE from this event. Its only consumer was pipeline.mock.test.mjs's
-      // C-2 arm, which retires in the same diff; ask-ledger.mjs reads `reason`/`axes`/`unverified` here and
-      // is untouched.
-      runLog(run.runDir, { event: "envelope-decision", deferredAxes, estCloseSec, deadline: job.deadline ?? null,
-        held_rows: heldAxes.map((a) => ({ axis: a, rows: (closeabilityByAxis.get(a)?.held ?? []).map((r) => ({ unit: r.unit, reason: String(r.reason ?? "").slice(0, 200) })) })),
-        ...decision });
-      // An axis held only because none of its rows has a question left to send is not a capability gap: the client's
-      // note below names the capability-held axes alone, and the open-floor line discloses the rest.
-      const nothingToSendOnly = (a) => heldForNothingToSend(closeabilityByAxis.get(a));
-      for (const a of heldAxes) {
-        note(nothingToSendOnly(a)
-          ? `envelope: ${a} HELD — no question is left to send, so a re-run cannot close it; the floor stays open and ships disclosed`
-          : `envelope: ${a} HELD — a capability-gap deferral is never closeable by time; the floor stays open and ships disclosed`);
-      }
-      // V4-1: same digest-lock semantics as the escalation block — a --from synthesis fork's inherited
-      // narrative does not lock the digest (synthesis is about to re-run over it).
-      const digestLockedEnv = existsSync(P.narrative) && !forceFromActive(ctx, "synthesis");
-      if (closeableAxes.length && decision.close && !digestLockedEnv) {
-        const closeResults = await runBatched(closeableAxes, config.gatherConcurrency, async (a) => {
-          const beforeUnit = existsSync(P.registerUnit(a)) ? readFileSync(P.registerUnit(a), "utf8") : null;
-          const beforeBand = bandBytesOf(P, a);   // a close that runs the deferred slices adds blocks to the band
-          // quote the axis's own deferred ledger rows + ⭐-floor breach rows verbatim so the unit closes
-          // exactly what was deferred (or mislabelled away). WS-A: the quoted rows come from the SAME
-          // loadCoverageLedger read the gate decided on — never a separate prose grep that could diverge.
-          // A2: a HELD row (capability gap) is excluded from the quoted work and named separately — the
-          // unit must not be asked to close what the provider cannot express, and must not delete the row.
-          const split = closeabilityByAxis.get(a) ?? { closeable: [], held: [] };
-          const rows = split.closeable
-            .map((r) => `| ${r.unit} | deferred | ${r.reason} |`).join("\n");
-          const heldRows = envelopeHeldNote(split.held);
-          note(`envelope: closing deferred coverage on ${a} (deadline permits — ${decision.reason})`);
-          // What the re-opened unit is asked to close, and what it is told to leave: the record of the split
-          // this close acted on, so a gap handed back as work is visible in the run's own log.
-          runLog(run.runDir, { event: "envelope-close-rows", axis: a,
-            closeable: split.closeable.map((r) => String(r.unit ?? "")), held: split.held.map((r) => String(r.unit ?? "")) });
-          const followup = repairFollowup("register-unit:envelope-close", { paths: P, axis: a, rows: rows + heldRows,
-            supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane, job: ctx.job, profile: ctx.profile });
-          const r = await stage("register-unit", { ...ctx, axis: a }, { force: true, followup, sessionKey: unitKey[a], trigger: "envelope" });
-          if (!r.ok) return { axis: a, changed: false, fail: r.fail };
-          const afterUnit = readFileSync(P.registerUnit(a), "utf8");
-          return { axis: a, changed: afterUnit !== beforeUnit || bandBytesOf(P, a) !== beforeBand, fail: null };
-        });
-        remergeIfBandsMoved(ctx, "envelope");
-        const closedChanged = closeResults.filter((e) => e.changed).map((e) => e.axis);
-        const closeFails = closeResults.filter((e) => e.fail);
-        if (closedChanged.length) {
-          // The reconcile segment — shared verbatim between the legacy immediate re-digest (funnel OFF)
-          // and the queued settlement-flush section (funnel ON).
-          const envelopeSegment = `These register units just CLOSED their deferred Coverage-ledger work (deadline-envelope rule): ${closedChanged.join(", ")}. Re-read only those updated unit files, reconcile your prior findings and the Coverage ledger against them, and revise only what the new coverage requires.`;
-          // Post-re-digest bookkeeping, shared by both paths (funnel ON runs it after the settlement
-          // flush lands — the detectors are meaningless before the re-emitted ledger exists):
-          // (1) Timeout-taint resolution: an envelope close that CHANGED the axis is the sanctioned closer for
-          //     its deferred rows — judgment engaged with the honest taint reason and re-emitted. Mark the
-          //     receipt resolved FIRST (before the verify read below), else loadCoverageLedger would re-relabel
-          //     the freshly-closed rows and the verify would read them as still-open.
-          // (2) Fix 2 (close-the-loop, #7) — the envelope quoted the EXACT deferred rows + ⭐-floor breaches to
-          //     close, then logged `envelope-closed` on a byte-diff, telling the audit trail those floors closed
-          //     even when the search re-emitted without actually resolving them (RUN1: the incumbent-class /
-          //     opposition floors "closed" then shipped still-open). Re-run the SAME detectors on the RE-DIGESTED
-          //     ledger and log as closed ONLY the axes whose specific breach/deferral is gone; the rest are
-          //     recorded `unverified`. The still-open floors are DISCLOSED by the existing computeOpenFloors →
-          //     envelope_note path at delivery (deliver-always; disclose > false-clean), so this arm never
-          //     withholds and never mutates that disclosure — it only stops the audit trail claiming a false close.
-          //     No re-attempt here: a second paid envelope pass is thrash, and (unlike the register arm) there is
-          //     no structured remedy to correct the query with — an honest disclosure is the close.
-          const verifyEnvelopeClosure = () => {
-            try {
-              const tp = driverDir(run.runDir, "register-taint.json");
-              if (existsSync(tp)) {
-                const rec = JSON.parse(readFileSync(tp, "utf8"));
-                let touched = false;
-                for (const a of closedChanged) {
-                  if (rec?.axes?.[a]?.status === "active") {
-                    rec.axes[a] = { ...rec.axes[a], status: "resolved", resolvedBy: "envelope", resolvedAt: new Date().toISOString() };
-                    touched = true;
-                  }
-                }
-                if (touched) { writeFileSync(`${tp}.tmp`, JSON.stringify(rec, null, 2) + "\n"); renameSync(`${tp}.tmp`, tp); }
-              }
-            } catch (e) { note(`register-taint receipt update failed (non-fatal): ${String(e.message).slice(0, 80)}`); }
-            const ledgerAfter = loadCoverageLedger(run.runDir).rows;
-            const deferredAfter = new Set(ledgerAfter.filter((r) => r.status === "deferred" && !isInactiveAxisRow(r) && axesLc.includes(r.axis)).map((r) => r.axis));
-            // The breach half is retired: an axis is unverified when a deferral survives the
-            // re-digest. `envelope-closed`'s `unverified` list keeps its meaning for ask-ledger.mjs.
-            const envUnverified = closedChanged.filter((a) => deferredAfter.has(a));
-            const envVerified = closedChanged.filter((a) => !envUnverified.includes(a));
-            runLog(run.runDir, { event: "envelope-closed", axes: envVerified, ...(envUnverified.length ? { unverified: envUnverified } : {}) });
-            if (envUnverified.length) note(`envelope: ${envUnverified.join(", ")} re-emitted but the floor is NOT closed (breach/deferral still present after the re-digest) — will ship disclosed, not marked closed`);
-          };
-          //: the unit closes above are KEPT; the opus re-digest coalesces into the settlement
-          // flush. Keyed on the deferred-row set this decision fired over (a resume re-entering with
-          // the same open rows no-ops); the closure verification runs after the flush lands.
-          mintDigestWork("envelope",
-            ledgerNow.filter((r) => r.status === "deferred").map((r) => `${r.axis}/${r.unit}`),
-            envelopeSegment);
-          ctx.envelopeFlushVerify = verifyEnvelopeClosure;
-        }
-        if (closeFails.length) {
-          ctx.envelopeNote = closeFails.map((e) =>
-            `deferred coverage on ${e.axis} not closed — close attempt failed mechanically (${e.fail})`).join("; ");
-          // T3 (H3): a MECHANICAL close-fail of a system-raised envelope close is the same
-          // class as a failed escalation — "the main search didn't finish". It lands in the SAME sink
-          // the client-gate preflight reads (additive; a prose note alone let it ship finished-looking).
-          try {
-            const p = driverDir(run.runDir, "escalation-state.json");
-            const cur = existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : { requested: [], completed: [] };
-            const failed = [...new Set([...(cur.failed ?? []), ...closeFails.map((e) => `envelope:${e.axis}`)])];
-            atomicWrite(p, JSON.stringify({ ...cur, ts: new Date().toISOString(), failed }, null, 2) + "\n");   // B5 — the client-gate reads this: never truncated
-          } catch (e) { note(`escalation-state append failed (non-fatal): ${e.message}`); }
-        }
-      } else if (closeableAxes.length) {
-        ctx.envelopeNote = digestLockedEnv
-          ? `deferred coverage (${closeableAxes.join(", ")}) not closed — resume past synthesis locks the digest (re-running would corrupt the audit spine)`
-          : `deferred coverage (${closeableAxes.join(", ")}) not closed — ${decision.reason}`;
-      }
-      // A2 — held axes are DISCLOSED, never silently absent: the note is what the report's front matter
-      // renders, and a gap nothing can close is precisely the gap the lawyer must be told about. It
-      // rides beside any close note rather than replacing it.
-      // The account is the owner's sentences (approved 2026-10-30): the searches the register refused during the run apart
-      // from the ones it does not support, each refused one with the register's recorded answer, read from the receipt.
-      const capabilityHeldAxes = heldAxes.filter((a) => !nothingToSendOnly(a));
-      if (capabilityHeldAxes.length) {
-        const heldNote = undoneSearchesNote(ctx.registerPlan, envelopeReceipt, capabilityHeldAxes);
-        ctx.envelopeNote = ctx.envelopeNote ? `${ctx.envelopeNote}; ${heldNote}` : heldNote;
-      }
-      refreshSupplementalExecution(ctx);   // envelope closes may have PROPOSED supplementals — account for them
-    }
-
-    // Fix 1b — Finding-1 acceptance gate. An in-scope-live mark may NOT be goods/field-dropped on the batch
-    // row alone; such a drop must rest on a record_fetch of the real goods. We parse the FINAL
-    // register-findings negative-results drops (after any escalation re-digest above rewrote the file) and
-    // cross-check each in-scope-live goods/field drop's URI against the run's record_fetch ledger. A violation
-    // is the exact CN-pair failure mode. On a resume past synthesis the findings are already final, so
-    // re-checking them here is still correct.
-    //
-    // RECOVER-THEN-DISCLOSE (completes the Fix-3 escalation): the gate is correct and must never be silenced,
-    // but the flagged marks are FETCHABLE — a high-conflict run (KINETIC) where the digest took the
-    // name-inferred shortcut on a few marks should SELF-HEAL, not die. So on the first violation we do ONE
-    // followup re-digest that forces the worker to record_fetch the flagged URIs and re-decide on their
-    // REAL goods (mirrors the coverage-ledger recoverCoverageLedger / candidate-self followup pattern, on the
-    // WINNING digest key; a fresh session, so the message names the findings it re-decides). Whatever is STILL
-    // violating after that one recovery pass is disclosed as unexamined + clamps the verdict (owner
-    // decision 2026-07-22 — the terminal branch below); the gate never silently passes a drop.
-    {
-      const runPrefix = `clearance-${run.slug}-${run.codename}-`;
-      // Re-read the findings + recompute the fetched universe on EACH check (the recovery re-digest rewrites
-      // the findings AND may record_fetch the flagged URIs — both must be picked up on the post-recovery
-      // check). V4-1: the fetched universe is the DELIVERED ARTIFACT SET's records (run-dir _records/ ∪ this
-      // session's ledger rows) — not the session-prefixed ledger alone. A failed fetch is not a retrieval, and a
-      // body that carries no record is not one either (ruled 2026-10-18): neither answers the gate, so such a drop
-      // gets the gate's own recovery fetch and, failing that, its disclosure. A valid copy the run already holds
-      // still answers it, whatever a later attempt did. A call the register answered `ok` is no record on its own:
-      // every register files the body it fetched, and a 200 carrying an empty record files an empty one, so the
-      // body is what is read, never the call's status.
-      const fetchedUniverse = () => new Set(
-        [...assembleRunRecords(run.runDir, runPrefix).records].filter(([, body]) => recordBodyHasContent(body)).map(([uri]) => uri));
-      const checkScreenGate = () => {
-        const findings = existsSync(P.registerFindings) ? readFileSync(P.registerFindings, "utf8") : "";
-        return findScreenGateViolations(findings, fetchedUniverse());
-      };
-
-      // PARSE-GAP LEDGER (2026-07-21): records the gate is blind to because URI_RE's `[a-z]{2}` cannot read
-      // their jurisdiction segment (/mark/int/ Madrid, /mark/uss/ US state). NEVER fatal and never a
-      // violation — they would be unclearable, since no re-digest can satisfy a parser that cannot read the
-      // answer. Logged so the exposure is measurable before and after the coordinated URI-grammar fix.
-      {
-        const gaps = findScreenGateParseGaps(existsSync(P.registerFindings) ? readFileSync(P.registerFindings, "utf8") : "");
-        if (gaps.length) {
-          runLog(run.runDir, { event: "screen-gate-parse-gap", count: gaps.length, refs: gaps.map((g) => g.ref) });
-          note(`screen-gate: ${gaps.length} goods-drop record reference(s) our URI grammar cannot parse (${[...new Set(gaps.map((g) => g.ref.split("/")[2]))].join(", ")}) — not policed this run; see the URI-grammar fix`);
-        }
-      }
-
-      // UNNAMED-DROP ARM — OBSERVE MODE (2026-07-21, approved gating). A goods/field drop naming no record
-      // anywhere is the same disease as the NR10 batch, but the measured population is large (19 of 35
-      // goods-drop rows in the delivered archive), so arming it terminal blind would fail most runs on a
-      // repair path whose model compliance is untested. It runs observe-only through the fresh-mark
-      // validation run and the replays, and the observation answers the question that decides the
-      // semantics — TRACEABILITY, not row shape:
-      //   (a) the row dismisses records named NOWHERE in the run's artifacts → NR10's disease → terminal
-      //       the day this arms;
-      //   (b) the row is a slice-level screen over a band whose members ARE enumerated with URIs elsewhere
-      //       in the run (the "204 NODE + 5 OWED + 50 OED scanned" field-screen shape) → auditable
-      //       record-by-record, just not in the drop row. Forcing 470 rows for a crowd screen the band
-      //       already enumerates would be the rule outstripping what judgment needs.
-      // So we record, per unnamed row, whether the run enumerated anything under that row's search term.
-      // Never fatal, and deliberately NOT deciding the semantics here — this collects the evidence the
-      // proposal is built from. Set CLEAROTRON_SCREEN_GATE_UNNAMED=enforce to arm it terminal.
-      const unnamedArmed = String(process.env.CLEAROTRON_SCREEN_GATE_UNNAMED ?? "").toLowerCase() === "enforce";
-      {
-        const unnamed = checkScreenGate().filter((v) => !v.uri);
-        if (unnamed.length) {
-          // The run's enumerated material: which slices (`_query`) produced records, and how many.
-          let byQuery = new Map(), totalEnumerated = 0;
-          try {
-            const band = JSON.parse(readFileSync(P.registerNamedBand, "utf8"));
-            for (const r of (band?.enumerated ?? [])) {
-              const q = String(r?._query ?? "").toLowerCase();
-              byQuery.set(q, (byQuery.get(q) ?? 0) + 1);
-              totalEnumerated++;
-            }
-          } catch { /* no band on this path — the rows still log, with no traceability evidence */ }
-          const words = (s) => String(s ?? "").toLowerCase().match(/[a-z0-9]{3,}/g) ?? [];
-          const rows = unnamed.map((v) => {
-            const terms = words(v.notes.split(";")[0]).concat(words(v.mark));
-            let traceable = 0;
-            for (const [q, n] of byQuery) if (terms.some((t) => q.includes(t))) traceable += n;
-            return { mark: v.mark.slice(0, 40), result: v.result.slice(0, 40),
-              notes: v.notes.replace(/\s+/g, " ").slice(0, 160),
-              enumeratedUnderTerm: traceable, class: traceable > 0 ? "b:slice-over-enumerated-band" : "a:named-nowhere" };
-          });
-          runLog(run.runDir, { event: "screen-gate-unnamed-observed", mode: unnamedArmed ? "enforce" : "observe",
-            count: rows.length, totalEnumerated,
-            classA: rows.filter((r) => r.class.startsWith("a")).length,
-            classB: rows.filter((r) => r.class.startsWith("b")).length, rows });
-          note(`screen-gate: ${rows.length} goods-drop row(s) name no record (${rows.filter((r) => r.class.startsWith("a")).length} traceable nowhere, ${rows.filter((r) => r.class.startsWith("b")).length} over an enumerated band) — ${unnamedArmed ? "ENFORCING" : "observe-only this run"}`);
-        }
-      }
-
-      // Observe mode: the unnamed rows are logged above and dropped from the ENFORCED set, so only NAMED
-      // records (the multi-URI policing that ships terminal now) can fail a run.
-      //
-      // ION/copper-foundry 2026-07-22: this filter used to be applied inline to the FIRST check only, and
-      // the post-repair re-check below called checkScreenGate() raw — so an unnamed row that observe mode
-      // had just excluded came back and killed the run in the terminal branch. The run log for that run
-      // says `mode:"observe"` and the failure detail says "drop row names no record URI", which is the
-      // unnamed branch: it died on a rule the same function had declared non-enforcing four lines earlier.
-      //
-      // Worse, an unnamed row is UNFIXABLE on that path by construction — the repair loop below skips it
-      // (`if (!v.uri) continue` — the driver cannot fetch what nobody named), so once it reaches the
-      // re-check it fails every time. Observe mode was the only thing holding it, and it was dropped at
-      // exactly the point where it was load-bearing. Any run with one unnamed goods-drop row plus at least
-      // one named violation (ION had eleven) dies here.
-      //
-      // One filter, one helper, both call sites. The mode is a property of the RUN, not of a call site.
-      const enforcedViolations = () => {
-        const v = checkScreenGate();
-        return unnamedArmed ? v : v.filter((x) => x.uri);
-      };
-      //: AFTER any settlement/late flush lands a digest, re-run this gate in code over the
-      // flushed findings (cheap — the re-emitted file may carry a NEW drop row without a fetch
-      // receipt) with at most ONE bounded code-fetch repair round; survivors are FLAGGED, never
-      // looped on and never a delivery gate (the disclose-clamp arm below already ran, immediately, at
-      // the mechanism). Registered here so the flush (which runs later, at the frame-reopen seam)
-      // reuses the exact same check + fetched-universe closure as the gate itself.
-      ctx.screenGateRecheck = async (pass) => {
-        const fetcher = opts.recordFetcher ?? defaultRecordFetcher;
-        const { violations: leftover, failures: postFlushFailures } = await runPostFlushGateRepair({
-          check: enforcedViolations,
-          fetcher: (uri) => fetcher(uri, { agentId: agent, sessionKey: `${runPrefix}screen-gate-refetch`, recordLog: runRecordLogPath(run.runDir) }),
-          log: (row) => runLog(run.runDir, { pass, ...row }),
-        });
-        const sidecar = driverDir(run.runDir, "screen-gate-unresolved.json");
-        if (leftover.length) {
-          note(`screen-gate (post-flush): ${leftover.length} drop row(s) still lack a fetch receipt after one code-fetch repair round — flagged (bounded; never a loop)`);
-          // Re-stamp the disclosure to the CURRENT leftover set — the flush may have corrected some
-          // rows while new ones appeared; the floor and the sidecar must describe what is true now.
-          // A row already disclosed keeps its original (more specific) fetch-failure cause.
-          const priorCause = new Map((ctx.screenGateUnresolved ?? []).map((u) => [u.uri ?? u.mark, u]));
-          // — the PROVIDER's own words first. `runPostFlushGateRepair` now returns what each fetch
-          // said instead of discarding it, so a row disclosed on this path names the register's error
-          // rather than the driver's generic string. `cause_source` says which of the three it is,
-          // because "the provider refused" and "the fetch reported ok and the gate still cannot see the
-          // record" have completely different fixes and used to print identically.
-          ctx.screenGateUnresolved = leftover.map((v) => {
-            const key = v.uri ?? v.mark;
-            const fresh = v.uri ? postFlushFailures?.get(v.uri) : null;
-            const prior = priorCause.get(key);
-            if (fresh) return { mark: v.mark, uri: v.uri ?? null, cause: fresh, cause_source: "provider" };
-            // An earlier pass's cause keeps the source it was given: a refusal is the provider's on that earlier
-            // pass, and a fetch that reported success, or a row naming no record, stays what it was.
-            if (prior?.cause) return { mark: v.mark, uri: v.uri ?? null, cause: prior.cause,
-              cause_source: !prior.cause_source || prior.cause_source === "provider" ? "provider-earlier-pass" : prior.cause_source };
-            return {
-              mark: v.mark, uri: v.uri ?? null,
-              cause: v.uri
-                // The fetch did NOT fail. That is the 641-mark class — a case-fold, a granularity or a
-                // record-log write loss — and calling it "not retrievable" sent a whole run chasing the
-                // provider while the records sat in _records/ the entire time.
-                ? "the record_fetch reported success and the gate still cannot see this record — NOT a provider failure; look at the run's own record set before raising it with the vendor"
-                : "drop row names no record URI — the dismissal cannot be examined or audited",
-              cause_source: v.uri ? "driver-fetch-reported-ok" : "no-uri",
-            };
-          });
-          atomicWrite(sidecar, JSON.stringify({ ts: new Date().toISOString(), unresolved: ctx.screenGateUnresolved }, null, 2) + "\n");
-        } else {
-          // HEALED AT THE FLUSH: the settled digest re-justified (or the repair fetch grounded) every
-          // formerly-unexamined drop. A healed gap must not keep clamping — clear the in-process floor
-          // input AND the durable sidecar, exactly like the mechanism's own recovered branch.
-          if (Array.isArray(ctx.screenGateUnresolved) && ctx.screenGateUnresolved.length) {
-            ctx.screenGateUnresolved = null;
-            rmSync(sidecar, { force: true });
-            runLog(run.runDir, { event: "screen-gate-clean", recovered: true, pass });
-          }
-        }
-      };
-      let violations = enforcedViolations();
-      // What the gate's answer stood on before it fetched anything, and each fetch it makes: the evidence below.
-      const heldBeforeGate = fetchedUniverse();
-      const gateBefore = screenGateSnapshot(ctx, runPrefix);
-      const gateFetched = new Map();
-      if (violations.length) {
-        // REPAIR-OR-DISCLOSE, NEVER BLOCK (2026-06-18). The digest intermittently drops an in-scope-live mark on
-        // goods WITHOUT record_fetching it, and a generic re-digest re-runs identically (the model skips the same
-        // fetch) — so the old warm-re-fetch could not repair it and the run HARD-HALTED (no report). A production
-        // report must ALWAYS ship. So: (1) the DRIVER fetches the flagged URIs in CODE (the V4-2 record-closure
-        // pattern — deterministic, no agent turn, no model-compliance dependency); the plugin chokepoint writes
-        // them to the ledger+records so the gate's fetched-universe picks them up. (2) Best-effort, re-decide those
-        // rows on the now-fetched goods via the digest session. (3) Whatever STILL cannot be retrieved is an
-        // irreducible examination gap (dead/404 record, provider error) → DISCLOSE it + CLAMP the verdict (the
-        // coverage-honesty floor below) and DELIVER. The gate's intent (no SILENT drop of an in-scope mark) is
-        // preserved by loud disclosure, never by withholding the report.
-        // uris self-describe (2026-07-29): an unnamed drop row used to ride as a bare `null`, forcing
-        // every event consumer to null-guard. Stamp `unnamed:<mark>` — the digest-queue keyParts shape.
-        runLog(run.runDir, { event: "screen-gate-violation", count: violations.length, uris: violations.map((v) => v.uri ?? `unnamed:${v.mark}`), action: "driver-refetch" });
-        note(`screen-gate: ${violations.length} in-scope-live goods/field drop(s) not record_fetched — DRIVER code-fetch + re-decide (no hard-halt)`);
-        const fetcher = opts.recordFetcher ?? defaultRecordFetcher;
-        const fetchFailures = new Map();
-        for (const v of violations) {
-          if (!v.uri) continue;                                // an unnamed drop — the driver cannot fetch what nobody named; the re-digest below must name it
-          try {
-            const r = await fetcher(v.uri, { agentId: agent, sessionKey: `${runPrefix}screen-gate-refetch`, recordLog: runRecordLogPath(run.runDir) });
-            if (!r?.ok) fetchFailures.set(v.uri, r?.cause ?? "record_fetch returned not-ok");
-            gateFetched.set(v.uri, { ok: r?.ok === true, cause: r?.ok ? null : (r?.cause ?? "record_fetch returned not-ok") });
-          } catch (e) { fetchFailures.set(v.uri, String(e?.message ?? e).slice(0, 120)); gateFetched.set(v.uri, { ok: false, cause: String(e?.message ?? e).slice(0, 120) }); }
-        }
-        // The re-decide text — shared verbatim between the legacy immediate re-digest (funnel OFF) and
-        // the queued settlement-flush section (funnel ON).
-        const redecideLines = [
-          `RE-DECIDE EACH on its fetched goods: keep it as a conflict/finding if in-field; otherwise record the drop with a fetched-goods justification (never a name/owner-inferred guess).`,
-          ...violations.map((v) => v.uri
-            ? `- ${v.uri} (${v.mark})${fetchFailures.has(v.uri) ? " [record UNRETRIEVABLE — note it as an unverified drop]" : ""}`
-            : `- (${v.mark}) [this drop row names NO record URI — name the record you dropped, one row per record, or restore the candidate]`),
-          // ONE RECORD PER ROW: a shared rationale over several records is not a decision about any of them.
-          `ONE ROW PER RECORD: if any row above covers several records, split it — each record gets its own row, its own fetched goods, and its own reason. A rationale shared across a batch is not a decision about any of its members.`,
-        ];
-        //: the driver code-fetch above is KEPT (and is what actually clears the gate — the
-        // comment below); the re-decide re-digest exists only to re-justify drop rows on real goods,
-        // so it queues for the settlement flush instead of firing its own opus pass. Keyed on the
-        // violating URI set (a resume re-seeing the same rows no-ops). Deliberately NOT a tailed
-        // "ONLY those rows corrected" wording — the flush ends with the standard FULL
-        // re-emission contract (the falcon tripwire).
-        mintDigestWork("screen-gate", violations.map((v) => v.uri ?? `unnamed:${v.mark}`), lines(
-          `The driver has record_fetched the marks below — their REAL goods/services are in the run's record set.`,
-          ...redecideLines,
-        ));
-
-        violations = enforcedViolations();
-        if (violations.length) {
-          // Irreducible: an in-scope-LIVE mark was dropped on goods and its official record could not be
-          // retrieved (the code-fetch failed too) — so the drop cannot be examined. This reverses the
-          // fail-loud arm that stood here ("it should just mark it as
-          // unexamined — couldn't fetch or something. NOT failed"): an unexamined drop ships as a LOUD
-          // unexamined disclosure — a per-mark coverage row on the report plus the coverage-honesty
-          // floor's CONDITIONAL clamp — never a dead run. The fail was costing whole reports over
-          // provider 404s the machinery can do nothing about; the
-          // disclosure+clamp keeps the gate's real intent (nobody relies on that mark as clean) while the
-          // report still ships. ctx feeds the floor in-process; the sidecar is the durable copy so a
-          // crash between here and delivery cannot lose the disclosure (the floor re-reads it on resume).
-          // — same three-way split as the post-flush writer. On THIS path the provider's cause was
-          // already available in `fetchFailures`; what was missing is that the generic fallback fired
-          // silently when the fetch had reported ok, which is a completely different defect and used to
-          // read identically. 62 rows on R1 carried one string across six jurisdictions.
-          ctx.screenGateUnresolved = violations.map((v) => {
-            const cause = v.uri ? fetchFailures.get(v.uri) : null;
-            if (cause) return { mark: v.mark, uri: v.uri, cause, cause_source: "provider" };
-            return {
-              mark: v.mark, uri: v.uri ?? null,
-              cause: v.uri
-                ? "the record_fetch reported success and the gate still cannot see this record — NOT a provider failure; look at the run's own record set before raising it with the vendor"
-                : "drop row names no record URI — the dismissal cannot be examined or audited",
-              cause_source: v.uri ? "driver-fetch-reported-ok" : "no-uri",
-            };
-          });
-          atomicWrite(driverDir(run.runDir, "screen-gate-unresolved.json"),
-            JSON.stringify({ ts: new Date().toISOString(), unresolved: ctx.screenGateUnresolved }, null, 2) + "\n");
-          runLog(run.runDir, { event: "screen-gate-unresolved", count: violations.length, uris: violations.map((v) => v.uri),
-            action: "disclose-clamp", failures: [...fetchFailures.entries()].map(([uri, cause]) => ({ uri, cause })) });
-          note(`screen-gate: ${violations.length} in-scope-live mark(s) could not be record_fetched after the driver fetch — the run CONTINUES with each disclosed as unexamined (coverage row + CONDITIONAL clamp; owner decision 2026-07-22, never a dead run).`);
-        } else {
-          // Recovered — and a PRIOR pass's disclosure sidecar (a crash-resume where the record now
-          // fetches or the re-decide landed) must go with it: a healed gap must not keep clamping.
-          rmSync(driverDir(run.runDir, "screen-gate-unresolved.json"), { force: true });
-          runLog(run.runDir, { event: "screen-gate-clean", recovered: true });
-        }
-      } else {
-        rmSync(driverDir(run.runDir, "screen-gate-unresolved.json"), { force: true });   // same healed-gap cleanup as the recovered branch
-        // — THE ZERO NAMES ITS OWN CAUSE. This branch fired on the CI red where screen-gate minted
-        // no digest work: the gate found no violations, logged that it was clean, and said nothing about
-        // WHY — so "the findings file was not there" and "the findings are fine" left identical records.
-        // Nothing about the gate's behaviour changes here; the next occurrence just arrives diagnosed.
-        const fPresent = existsSync(P.registerFindings);
-        runLog(run.runDir, { event: "screen-gate-clean",
-          ...screenGateZeroCause({ findingsPresent: fPresent,
-            findingsContent: fPresent ? readFileSync(P.registerFindings, "utf8") : "", unnamedArmed }) });
-      }
-      recordScreenGateEvidence(ctx, { runPrefix, before: gateBefore, heldBeforeGate, heldAfterGate: fetchedUniverse(), gateFetched });
-    }
-
-    // ──: STANDALONE SETTLEMENT / LATE FLUSH ───────────────────────────────────────────────────
-    // When the frame-reopen block fired nothing (clean diff, no blind model, receipt-skipped, disabled)
-    // but the queue is non-empty, the settlement flush still runs HERE — the same seam, before synthesis.
-    // Empty queue + no reopen ⇒ zero digest passes at this point.
-    //
-    // DIGEST-LOCKED (a resume past synthesis): escalation/envelope never ran (their digestLocked guards
-    // stay exactly as today), so any pending item here is a POST-SYNTHESIS trigger — today that is the
-    // screen-gate on a resumed run (whose legacy re-digest at the gate ALSO ran past synthesis), plus
-    // anything a failed pre-synthesis flush left pending. Those get AT MOST ONE bounded LATE flush per
-    // pass, at this same seam — deliberately BEFORE the back half's skip evaluation, so the
-    // stage-freshness staleness recompute of skeptic/synthesis/cards happens once, in-pass, instead of
-    // stale-blocking delivery into another park/resume cycle. Receipts still hold: a flushed item can
-    // never re-fire on any later resume.
-    if (!ctx.digestSettled) {
-      const digestLockedFlush = existsSync(P.narrative) && !forceFromActive(ctx, "synthesis");
-      // ── LATE EVIDENCE IS ASSESSED BEFORE THE READING STEP'S LAST PASS AND THE WRITER (owner's ruling, 2026-10-19) ──
-      // A record the band gained after placement's pass (a unit's re-run, the code-side recheck) is placed or set aside
-      // by placement itself, through its own stage, before the flush below hands the reading step the placements and
-      // before the writer reads them. The form is a union, so every row placement accepted stands. Only ids placement
-      // never read run it again: a band whose counts alone moved costs nothing. Every path that grows the band after
-      // placement queues the reading step's re-run, so the flush below follows; one that did not is recorded.
-      if (!digestLockedFlush) {
-        const late = lateRecordIds(P);
-        if (late.length) {
-          runLog(run.runDir, { event: "late-evidence", records: late.length });
-          note(`late evidence: ${late.length} record(s) reached the band after placement's pass — placement assesses them before the reading step's next pass and the writer`);
-          // A PASS THAT FAILS, OR IS REFUSED BEFORE IT STARTS, DOES NOT END THE RUN HERE. A run is never held for a recovery
-          // that could not run (the owner's ruling of 2026-10-19): placement's earlier account stands, and the floor and the
-          // recall gate state what it leaves open. The stage can throw before it dispatches, as it does for a band past the
-          // size ceiling, so the throw is caught and recorded as the failure it is.
-          let pass;
-          try { pass = recordPlacementPass(ctx, await stage("placement-inquiry", ctx, { force: true, trigger: "late-evidence" }), "late-evidence"); }
-          catch (e) { pass = { ok: false, fail: String(e?.message ?? e) }; }
-          if (!pass?.ok) {
-            runLog(run.runDir, { event: "late-evidence-failed", records: late.length, fail: String(pass?.fail ?? "failed").slice(0, 200) });
-            ctx.latePassFailed = { records: late.length, fail: String(pass?.fail ?? "failed").slice(0, 200) };   // the attempt, for the delivery record
-            note(`late evidence: placement's pass did not complete (${String(pass?.fail ?? "").slice(0, 100)}) — its earlier account stands, and the floor and the recall gate state what it leaves open`);
-          }
-          if (!pendingItems(ctx.digestQueue).length) runLog(run.runDir, { event: "late-evidence-no-digest-work", records: late.length });
-        }
-      }
-      if (!digestLockedFlush) await flushDigestQueue("pre-synthesis");
-      else if (pendingItems(ctx.digestQueue).length) await flushDigestQueue("late");
-      ctx.digestSettled = true;
-    }
-
-    // ── follow-up (2026-08-04): SETTLE THE ONE-SHOT FRAME STAMP ──────────────────────────────────
-    // THE LAST SEAM AT WHICH THE BAND AND THE UNITS CAN STILL MOVE. Three arms between frame-diff's seam
-    // and here rewrite artifacts it declares, and none of them could account for it: the escalation
-    // recheck's deriveNamedBand re-merge (register-named-band.json), the skeptic escalation's forced
-    // register-unit re-runs and the envelope close's forced register-unit re-runs (register-units/*.md).
-    // re-aimed stageInputs["frame-diff"] at exactly those artifacts and re-aimed nothing else, so on
-    // a RESUME that re-enters with frame-diff fresh and narrative.md absent — a recovery park or a
-    // rate-limit postpone anywhere between the frame seam and synthesis — frame-diff SKIPPED (⇒ on the
-    // delivery path via ctx.skippedStages), one of those arms moved its inputs, the delivery precondition
-    // read it stale, and with no UPSTREAM_STALE_REPAIR entry the run PARKED. A fresh run never saw it:
-    // frame-diff RUNS there, so it is never on the delivery path.
-    //
-    // Restamp rather than repair, because a re-diff cannot be the remedy: the stage is one-shot by
-    // contract, and every consumer of its output ran before this line. The rewrites are also the SAFE
-    // direction — the arms close coverage, so a diff taken over the earlier band can only over-report
-    // omissions, never miss one.
-    //
-    // NOT gated on ctx.digestSettled: settling the stamp is idempotent and must happen on every pass that
-    // reaches this seam, including one whose queue was already drained by an earlier pass.
-    settleOneShotStamp(run.runDir, "frame-diff",
-      [P.registerNamedBand, ...(axes ?? []).map((a) => P.registerUnit(a))], "pre-synthesis-register-arms");
-
-    // ── crowd-context (2026-07-22): the counts a lawyer closes a crowd doubt with ─────────────────────
-    // Runs at ONE seam — after the frame-reopen block (so the ledger read reflects any reopen re-digest)
-    // and before synthesis (its only consumer). When the coverage ledger holds a MATERIAL slice the
-    // funnel could not enumerate to has_more:false (the exact shape the COVERAGE JUDGMENT dictation
-    // routes to sufficient:false), the driver gathers the affirmative crowded-field evidence a lawyer
-    // closes that doubt with: per-term live counts, the same counts restricted to the in-scope classes,
-    // and the exact/near-identical subset FULLY enumerated when it is small enough — the dangerous
-    // category actually seen. The artifact is EVIDENCE to judgment, never a gate: no count decides
-    // anything here, the digest/ledger/band are never touched (the queries round-trip a STANDALONE
-    // plan/band pair under _driver/), and every failure is non-fatal by contract — log
-    // `crowd-context-failed` and continue; an absent artifact leaves synthesis's material-slice ⇒
-    // sufficient:false path exactly as it was. The executor is the SAME provider executePlan lane the
-    // code-side saturation-probe and the fan-in repair kit dispatch through (planExec, resolved once
-    // above the gather) — injected, so the module tests against a stub and no new provider surface exists.
-    try {
-      // crash-resume idempotency (mirrors stageOnce's skip): a prior pass's artifact is reused, never
-      // re-bought — re-running would re-spend provider calls and churn synthesis's input fingerprint.
-      if (existsSync(P.crowdContext)) {
-        try {
-          const prior = JSON.parse(readFileSync(P.crowdContext, "utf8"));
-          ctx.crowdContext = { slices: (prior.slices ?? []).length };
-          runLog(run.runDir, { event: "crowd-context", reused: true, slices: ctx.crowdContext.slices, output: outputMeta(P.crowdContext) });
-        } catch { /* unreadable prior artifact — rebuild below */ }
-      }
-      if (!ctx.crowdContext && planExec && ctx.registerPlan) {
-        // the planExec-lane adapter: entries → standalone plan file → provider executePlan → band blocks.
-        // Own files under _driver/ (crowd-context-plan/-band.json) so the frozen register plan and the
-        // axis bands are never written; blocks come back qid-stamped exactly like every executor band.
-        const ccExecutor = async (entries) => {
-          const ccPlanPath = driverDir(run.runDir, "crowd-context-plan.json");
-          const ccBandPath = driverDir(run.runDir, "crowd-context-band.json");
-          atomicWrite(ccPlanPath, JSON.stringify({
-            schema_version: 1,
-            purpose: "crowd-context evidence queries — driver-minted, standalone; never part of the frozen register plan",
-            regions: ctx.registerPlan?.regions ?? [], entries,
-          }, null, 2) + "\n");
-          const r = await planExec({ planPath: ccPlanPath, axis: CROWD_CONTEXT_AXIS, outputPath: ccBandPath },
-            { agentId: ctx.agent, sessionKey: `clearance-${run.slug}-${run.codename}-crowd-context`, recordLog: runRecordLogPath(run.runDir) });
-          if (!r?.ok) throw new Error(String(r?.cause ?? "crowd-context plan execution failed").slice(0, 200));
-          const blocks = JSON.parse(readFileSync(ccBandPath, "utf8"));
-          return Array.isArray(blocks) ? blocks : [];
-        };
-        const cc = await buildCrowdContext({
-          ledger: loadCoverageLedger(run.runDir).rows,   // fresh read — post-reopen/re-digest, same source as every gate
-          planContext: { entries: ctx.registerPlan.entries ?? [], niceClasses: ctx.registerPlan.nice_classes ?? [], regions: ctx.registerPlan.regions ?? [] },
-          executor: ccExecutor,
-          capabilities: registerCapabilities(),   // the contains floor, read the way the plan compile reads it
-          note: (m) => note(m),
-          log: (row) => runLog(run.runDir, row),   // the orchestrator's own crowd-context-failed row lands in run.jsonl
-        });
-        if (cc) {
-          atomicWrite(P.crowdContext, JSON.stringify(cc.json, null, 2) + "\n");
-          atomicWrite(P.crowdContextMd, cc.md);
-          ctx.crowdContext = { slices: cc.stats.slices };
-          runLog(run.runDir, { event: "crowd-context", ...cc.stats, output: outputMeta(P.crowdContext) });
-          note(`crowd-context: gathered ${cc.stats.terms} per-term count(s) over ${cc.stats.slices} material slice(s); ${cc.stats.enumerated_subsets} exact/near-identical subset(s) fully enumerated (${cc.stats.enumerated_records} record(s) seen)`);
-          // PR-8 — re-derive the band shape now that crowd-context exists: its crowds[] rows carry the
-          // crowd_context_slice join (compose with the artifact, never change it), and synthesis reads
-          // the shape. The band itself is unchanged — this only re-projects it with the new evidence.
-          try { deriveBandShape(ctx, JSON.parse(readFileSync(P.registerNamedBand, "utf8"))); }
-          catch { /* no merged band on this path (legacy/register-gap) — the pre-existing shape stands */ }
-        }
-      }
-    } catch (e) {
-      // never-kill: absence of crowd context must never block or degrade a run — disclose and continue.
-      note(`crowd-context failed (non-fatal — synthesis proceeds without it): ${String(e?.message ?? e).slice(0, 120)}`);
-      runLog(run.runDir, { event: "crowd-context-failed", fail: String(e?.message ?? e).slice(0, 200) });
-    }
-
-    // Steps 3/3.5/4 synthesis → optional 4.5 case-law grounding ∥ Step 4.7 refutation.
-    // case-law and refutation are independent siblings of synthesis (case-law reads narrative.md;
-    // refutation reads the source files, NOT case-law), so they run concurrently — saves ~one stage's
-    // wall. The verdict-gated corrective re-synthesis below stays strictly AFTER this join.
-    await checkLateBind("pre-synthesis");   // B5b checkpoint 3: a bind here re-classifies via one warm re-digest
-    // D2 — surface provider enforcement telemetry (onomaticsAggression / onomaticsOppositions
-    // on fetched records) as a structured aim-attention artifact for synthesis. Best-effort; NEVER a
-    // rating rule (explicitly not the rejected escalation filter) — absence writes nothing.
-    try {
-      const { records } = assembleRunRecords(run.runDir, `clearance-${run.slug}-${run.codename}-`);
-      const signals = extractEnforcerSignals(records);
-      if (signals.length) {
-        writeFileSync(`${P.enforcerSignals}.tmp`, JSON.stringify({ signals }, null, 2) + "\n");
-        renameSync(`${P.enforcerSignals}.tmp`, P.enforcerSignals);
-        ctx.enforcerSignals = signals.length;
-        runLog(run.runDir, { event: "enforcer-signals", records: signals.length });
-      }
-    } catch (e) { note(`enforcer-signals extraction skipped (non-fatal): ${String(e.message).slice(0, 80)}`); }
-    // Phase 4 slice 3 — jx-nativeread:zh (SHADOW): the lane model reads the code-inlined zh evidence
-    // slice (register unit output + candidates + CNIPA notes + judged grid findings) and writes the
-    // aim-attention artifact under _driver/jx/. Runs post-gather so the slice exists; never-kill.
-    // item 8 — the CLEAROTRON_JX_NATIVEREAD and CLEAROTRON_JX_CONSUME arms are gone. What is left is the
-    // product carrying jxLanes; jxAimForSynthesis still returns null on a KILLED lane or an artifact
-    // with no items, so a run that has nothing to consume still leaves ctx.jxAim unset and the synthesis
-    // message byte-identical. The unit itself refuses with a stated cause on every other condition.
-    if (ctx.searchPolicy?.components?.jxLanes) {
-      const { runJxNativeread, jxAimForSynthesis } = await import("./jx-units.mjs");
-      const nr = await runJxNativeread(ctx, job, opts, { runLog: (d, row) => runLog(d, row), note });
-      if (nr.cause && !nr.ran) runLog(run.runDir, { event: "jx-nativeread-skipped", cause: nr.cause });
-      const aim = jxAimForSynthesis(run.runDir);
-      if (aim) { ctx.jxAim = aim.count; runLog(run.runDir, { event: "jx-aim-consumed", items: aim.count }); }
-    }
-    // — the FRESH dispatch carries the driver-computed structural blocks, through the same
-    // composer `refute()` uses.
-    //
-    // WHICH OTHER SYNTHESIS DISPATCHES CARRY THEM, stated from the code rather than from the premise
-    // this comment used to assert. The first cut said `stageOnce` ignores `extra` when `followup` is
-    // set, and that the resumed seat already holds the blocks. BOTH ARE FALSE and the file says so:
-    // pipeline.mjs's `stageOnce` passes `extra` into `composeFollowup` on the followup arm and appends
-    // it on the cold arm — A-1 changed that deliberately, because the old drop-it behaviour rested on
-    // the same wrong premise — and composeFollowup's own doc block records that a followup dispatch is
-    // NOT a resumed session but a fresh attempt 1, so it holds nothing of its own.
-    //
-    // The true reason the followups do not carry the blocks is simply that they pass no `extra`:
-    // they are targeted corrections to work that exists, and their message is the correction. That is a
-    // live choice, not a mechanism that forbids it — the corrective re-synthesis below could be given
-    // the blocks by passing `extra`, and if a corrective pass is ever found rewriting a coverage claim
-    // it cannot support, that is the lever. The stale-repair entry in UPSTREAM_STALE_REPAIR is a COLD
-    // dispatch and now composes them, for the reason recorded there.
-    prepareDeclinationSpec(ctx, P);   // — the findings-surface list, printed forward and written for the tool
-    const { text: synthExtra } = composeDispatchExtra("synthesis", ctx);
-    // THE OVERALL ASSESSMENT'S OWN FAILURE IS NAMED WHERE IT IS THROWN. Only this call: the corrective and post-repair
-    // passes below run on a record that exists, and their failures are theirs. A failure named here, once its recovery
-    // is spent, is recorded as the assessment not completed and delivered without it (the run-level catch), never
-    // ended on.
-    // The goods evidence this writer is given is kept as written by its stage (around `stage`), and kept here too where
-    // the record comes from the salvage after a failed dispatch: a re-emit, or the record taken with its foreign links
-    // blanked, completes the record that dispatch wrote on that evidence.
-    const writersEvidence = goodsEvidenceForTheWriter("synthesis", ctx);
-    const synth = await asPartNotCompleted("assessment", async () =>
-      quarantineSynth(await stage("synthesis", ctx, synthExtra ? { extra: synthExtra } : {}), ctx, "synthesis"));   // A3: last-resort quarantine instead of must(); A4: one targeted re-emit inside
-    keepGoodsEvidenceAsWritten(ctx, synth, writersEvidence);
-    recordSynthesisSeam(ctx, synth);   // half one — which surfaced records this pass delivered, and which it did not
-    // The corrective re-synthesis is dispatched on the WINNING attempt's key AND model/thinking. A followup's first
-    // attempt starts fresh, and it never resumes the synthesis session (no engine resumes by key); but if synthesis
-    // fell over to a cross-provider model, a dispatch on the base model would correct a record another model wrote.
-    const synthesisKey = synth.sessionKey, synthesisModel = synth.model, synthesisThinking = synth.thinking;
-
-    // A2/A4 — the v3 evidence gates (verified-needs-source, symmetric use-check, client-tier
-    // join) key on the schema_version the artifact DECLARES; a down-level emission on a fresh run
-    // would silently disengage them. Demand the dictated version ONCE (warm resume); a still-down-
-    // level file is logged loudly and rides on — deliver-always, weaker-gates-visible.
-    const readSchemaVersion = () => {
-      try { return parseFindingsJsonLenient(readFileSync(P.findings, "utf8")).schemaVersion ?? 1; } catch { return null; }
-    };
-    const declaredSv = readSchemaVersion();
-    // doc 50 — the dictation demands schema_version 4 (band-rated under the framework in force).
-    // The demand fires ONLY when synthesis actually RAN this turn: a skip-resumed stage (a parked run
-    // whose prior v3 findings.json still validates on the legacy path) keeps its declared version —
-    // forcing a mid-run contract switch across the deploy boundary would burn a followup fighting
-    // the run's own frozen artifact. Logged loudly instead; that run's gates judge it as v3.
-    if (declaredSv !== null && declaredSv < 4 && synth.skipped) {
-      note(`[findings] schema_version ${declaredSv} retained on a resumed run (pre-doc-50 artifact) — v${declaredSv} gates apply; no re-emit demanded`);
-      runLog(run.runDir, { event: "findings-schema-legacy", declared: declaredSv });
-    }
-    if (declaredSv !== null && declaredSv < 4 && !synth.skipped) {
-      note(`[findings] schema_version ${declaredSv} < 4 — the dictated band rating is missing; demanding the re-emit`);
-      // This one keeps the FULL re-emission on purpose, against the targeted-edit rule the other corrective
-      // followups now follow. A down-level file is not a valid document with one defect in it — it is the
-      // WRONG CONTRACT throughout: every rated object's vocabulary changes, the retired composite/level/
-      // dispute_type keys come out, and a new top-level field goes in. There is no small set of named lines
-      // to patch, so a whole-file emission is the honest shape of the work rather than an expensive way to
-      // avoid one. Do not "fix" this to an Edit on a later sweep.
-      await stage("synthesis", ctx, {
-        force: true, sessionKey: synthesisKey, model: synthesisModel, thinking: synthesisThinking,
-        trigger: "schema-downlevel",
-        followup: repairFollowup("synthesis:schema-downlevel", {
-          findings: P.findings, declaredSv,
-          frameworkKey: ctx.framework?.framework_key ?? "house-default",
-          bandLabels: (ctx.framework?.bands ?? []).map((b) => b.label),
-        }) + stageCharter("synthesis", ctx.depth, ctx.framework),
-      });
-      const afterSv = readSchemaVersion();
-      if (afterSv !== null && afterSv < 3) runLog(run.runDir, { event: "findings-schema-downlevel", declared: afterSv });
-    }
-
-    // spec 64 — the typed forward-action register. The disposition derivation (legalActions arm of the
-    // deliver-conditional floor) keys on actions[]; a v4 emission that omits the field entirely would
-    // silently disengage it — the exact CLEAR-despite-conditions bug this ships to fix. Same posture as
-    // the schema-downlevel demand above: ONE warm re-demand, only when synthesis actually RAN this turn
-    // (a resumed pre-change artifact keeps its shape — logged loudly, gates degrade); still-absent
-    // after the demand is logged and rides on (deliver-always, the reviewer's actions-unregistered flag
-    // and the predelivery coherence lint remain the nets).
-    const readActionsPresence = () => {
-      try {
-        const d = parseFindingsJsonLenient(readFileSync(P.findings, "utf8"));
-        return { sv: d.schemaVersion ?? 1, hasActions: Array.isArray(d.actions), quarantined: d.actionsQuarantined ?? [] };
-      } catch { return null; }
-    };
-    const actionsProbe = readActionsPresence();
-    if (actionsProbe && actionsProbe.sv >= 4 && !actionsProbe.hasActions && synth.skipped) {
-      note(`[findings] actions[] absent on a resumed run (pre-spec-64 artifact) — the actions floor is disengaged for this run; no re-emit demanded`);
-      runLog(run.runDir, { event: "findings-actions-legacy" });
-    }
-    if (actionsProbe && actionsProbe.sv >= 4 && !actionsProbe.hasActions && !synth.skipped) {
-      note(`[findings] actions[] missing — the dictated forward-action register is absent; demanding the re-emit`);
-      await stage("synthesis", ctx, {
-        force: true, sessionKey: synthesisKey, model: synthesisModel, thinking: synthesisThinking,
-        trigger: "actions-missing",
-        followup: repairFollowup("synthesis:actions-missing", { findings: P.findings, narrative: P.narrative }) + stageCharter("synthesis", ctx.depth, ctx.framework),
-      });
-      const after = readActionsPresence();
-      if (after && !after.hasActions) runLog(run.runDir, { event: "findings-actions-absent" });
-    }
-    // A lenient-dropped action is NEVER silent: a lost condition could flip the derived disposition.
-    if (actionsProbe?.quarantined?.length)
-      runLog(run.runDir, { event: "findings-actions-quarantined", n: actionsProbe.quarantined.length, errors: actionsProbe.quarantined.map((q) => String(q.error ?? "").slice(0, 80)) });
-
-    // ── P2-A (charter P2c) — READ-BEFORE-RATE, DERIVED ────────────────────────────────────────
-    // `basis: "verified-from-record"` means THE RUN CAN PROVE IT. The model never self-attests a read.
-    // So the driver writes the field: every meter citing a register record the reading log cannot back
-    // is demoted to `inferred-from-signal` here, in code, at the moment the claim would otherwise stand.
-    //
-    // WHAT THIS REPLACED, and why the replacement is not weaker. Until this was a THIRD SYNTHESIS
-    // PASS: the same join, computed, then handed back to the model as a warm resume that re-read the
-    // records and re-rated the meters. It cost 771.7 / 510.8 / 535.9 s on three of the round's four
-    // runs — ~10 serial minutes each — and returned `violations: 0` every time. It was a correct
-    // mechanism paying for a whole extra synthesis to re-assert what the log already knew.
-    //
-    // It also could not see two things a derivation sees for free:
-    //   · it ran ONCE, before refutation. Re-derived on the four delivered findings.json files it
-    //     measured, its own counts do not hold: 35→37, 28→31, 37→38, 41→40. Stamps entered the
-    //     deliverable after the only pass that policed them.
-    //   · `off_disk` was never a violation, so a stamp citing a record the run never fetched AT ALL was
-    //     waved through. the 2026-08-10 R6 shipped on {"stamped":19,"read":0,"off_disk":19,"violations":0}.
-    //
-    // The rating stays the lawyer's — nothing here re-rates, re-bands or withholds. Only the evidence
-    // LABEL moves, and only downward, to what the machine can show. Never-kill: a settle that cannot
-    // read its own inputs logs and rides on, exactly as the pass did.
-    settleDerivedBases(ctx, "post-synthesis");
-
-    let narrative = readFileSync(P.narrative, "utf8");
-
-    // ── judgment-relocation (revised 2026-06-24): the COVERAGE SUFFICIENCY signal — deliver-conditional, never
-    // command/halt. Layer B (synthesis) read the COMPLETE named band + the `incomplete` crowd descriptors and
-    // emitted coverage_judgment {sufficient, reason} into findings.json. Its ONLY effect on the run is the
-    // VERDICT: sufficient:false (the lawyer judged a material slice not fully cleared) clamps CLEAR→CONDITIONAL
-    // with an honest flag in the verdict block below, then DELIVERS. There is NO funnel re-search re-loop (slow +
-    // fragile mid-pipeline) and NO no-deliver halt (a lawyer always gets something unless a TECHNICAL failure
-    // occurs). The dangerous named band is already enumerated to completeness (the fan-in band gate guarantees
-    // it crossed), so a conditional here covers a GENUINE residual the lawyer flagged, not a sampled-and-hidden
-    // miss. An immaterial `incomplete` (off-field noise crowd) → sufficient:true → no clamp → deliver clean.
-    const coverageJudgment = readCoverageJudgment(P);
-    if (coverageJudgment.present)
-      runLog(run.runDir, { event: "coverage-judgment", sufficient: coverageJudgment.sufficient, reason: coverageJudgment.reason.slice(0, 120) });
-
-    // ── Customer-unknown runs (2026-06-18): NO candidate-self gate. A missing applicant is non-blocking and
-    // never special-cases the report — an identical/near-identical hit is an ordinary finding at its real
-    // tier, counted in the overall rating, carrying only a neutral "if this is the applicant's own prior
-    // filing, disregard" note (instructed in the synthesis/report stage prompts, stages.mjs). The old gate
-    // that re-synthesised "is this you?" treatment and went fatal on survival was removed: downranking an
-    // identical hit and excluding it from the rating could bury a real conflict, and a missing applicant
-    // must never fail the run. (Late-bind still re-classifies the applicant's own marks out of the adverse
-    // tiers when a customer arrives mid-run — see the matter-frame/digest re-classification followups.)
-    const caseLaw = decideCaseLaw({ job, narrative, policy: ctx.searchPolicy });
-    const needCaseLaw = caseLaw.run;
-    // — WRITTEN UNCONDITIONALLY (the AD-4 instrumentation house rule), because the state worth
-    // recording is now the one where the stage does NOT run. A row emitted only when it runs cannot
-    // distinguish "the reading called for case law and this product does not carry it" from "nothing
-    // called for it", and the first of those is the observation the ruling asked to keep.
-    //
-    // The territories ride along, read from the frozen instructed scope rather than re-derived: what a
-    // later reader wants is "a case-law question exists in territory X", and X is not reconstructable
-    // from this row otherwise. This is `_driver/` data. It reaches no report and no email — no wording
-    // enters a deliverable that the owner has not agreed, and that includes a sentence built from this.
-    runLog(run.runDir, {
-      event: "case-law-decision", run: caseLaw.run, requested: caseLaw.requested, detected: caseLaw.detected,
-      eligible: caseLaw.eligible, product: caseLaw.product, trigger: caseLaw.trigger, declined: caseLaw.declined,
-      jurisdictions: (() => { try { return JSON.parse(readFileSync(P.instructedScope, "utf8"))?.jurisdictions ?? null; } catch { return null; } })(),
-    });
-    if (caseLaw.declined)
-      note(`[case-law] the draft narrative turns on "${caseLaw.trigger}", and a ${caseLaw.product ?? "run with no resolved product"} does not carry the case-law reading — recorded, not run`);
-    if (needCaseLaw) runLog(run.runDir, { event: "case-law-trigger", requested: caseLaw.requested, detected: caseLaw.detected });
-    // T7 (E5): feed the finding index so the case-law stage stamps "- ord:" on each grounded
-    // profile — the render + report-card joins become deterministic (copper-spire's prompt-fished join
-    // reached 2 of 3 cards).
-    try {
-      const fdoc = parseFindingsJsonLenient(readFileSync(P.findings, "utf8"));
-      ctx.findingsIndex = (fdoc?.findings ?? []).filter((f) => f.disposition !== "withdrawn")
-        .map((f) => ({ ordinal: f.ordinal, mark: f.mark, owner: f.owner?.name ?? null }));
-    } catch { ctx.findingsIndex = []; }
-    // — WHICH CASE-LAW SOURCES THIS DEPLOYMENT HAS, handed to the stage inline.
-    // The seat's tool layer reports an un-enrolled bridge as a CONFIGURED server that closed the
-    // connection, because the bridges are declared to every case-law session regardless of enrolment and
-    // exit at start-up for want of a token. That wording is true of the plumbing and false of the
-    // deployment, and it is where a delivered report's "sources unreachable — infrastructure gap" came
-    // from on a box that had never enrolled either source. Read from the SAME inventory the portal's
-    // product card reads, so the two surfaces cannot give a client two accounts of one fact. Best-effort:
-    // an inventory that cannot be read hands the stage nothing, and the dictation then says nothing about
-    // sources rather than asserting a readiness nobody measured.
-    try {
-      // COMPOSED BY THE MODULE THAT READS IT. This mapping used to be inline here
-      // and rebuilt by hand in an arm — two authors for one shape, and the arm's copy went stale the
-      // moment this one gained a field, while still passing. `caseLawSourceRows` is now the only place
-      // it is written, and it carries `checked` so an UNREADABLE credential reaches the composer as a
-      // could-not-look rather than as a source this deployment does not have.
-      ctx.caseLawSources = caseLawSourceRows(caseLawInventory(process.env));
-    } catch { ctx.caseLawSources = []; }
-    // THE FIRST REVIEW, WHERE IT COULD NOT BE COMPLETED (parts-not-completed.mjs). Its recovery was spent, so the report
-    // delivers the rated findings with the band alone and no verdict sentence, as a review that signs nothing already
-    // renders. No sign-off is recorded, because nobody gave one, and the corrective pass, which answers a review's
-    // flags, has none to answer. The workbook's shipped "Machine QC" row records the review as not completed: it reads
-    // the review's last attempt, which failed, and nothing runs it again on this pass.
-    const reviewOpen = readPartNotCompleted(run.runDir, "review");
-    if (reviewOpen) runLog(run.runDir, { event: "review-not-completed-delivery", stage: reviewOpen.stage ?? null });
-    const [caseLawRes, firstRef] = await Promise.all([
-      needCaseLaw ? stage("case-law", ctx) : Promise.resolve(null),   // non-fatal: a citation gap degrades, not blocks
-      reviewOpen ? Promise.resolve({ ok: true, verdict: null, notCompleted: true }) : refute(ctx),
-    ]);
-    if (caseLawRes && !caseLawRes.ok) note(`case-law grounding failed (non-fatal): ${caseLawRes.fail}`);
-
-    // Step 4.7 — the code-side verdict gate
-    // — the classifier is handed the FAILURE, not a statement about the ladder. The
-    // condition leads the sentence: `recoveryLaneOf` reads the reason text, and a park bought because an
-    // upstream provider was rate-limiting is WEATHER, not a defect. The ladder's own summary stays, after
-    // it, because "this had already exhausted retries and fallback" is still what a reader needs next.
-    // The fallback branch is deliberate and not decoration: when the ladder truly recorded no condition,
-    // saying so is honest, and inventing one would be the same guess in a more confident voice.
-    if (!firstRef.ok)
-      throw Object.assign(new StageFailure("narrative-refutation", firstRef.fail
-        ? `${firstRef.fail} — the refutation ladder exhausted retries and fallback on it`
-        : "failed after retries + fallback (the ladder recorded no condition)"), { notCompletedPart: "review" });
-    let verdict = firstRef.verdict;   // null where the review was not completed: no sign-off, the band alone
-    runLog(run.runDir, { event: "verdict", verdict });
-    writeRunStatus(ctx, signoffPatch(verdict));
-    note(`refutation verdict: ${verdict}`);
-    // qw/typed-correction-kinds — TELEMETRY ONLY (data first; the corrective-skip decision is a
-    // separate owner-gated build): partition the review's flagged-correction lines by their
-    // self-declared [kind: …] tokens (verify.parseCorrectionKinds — closed enum, author-declared,
-    // untyped/unknown ⇒ `fact` fail-safe) and record the histogram in run.jsonl. ZERO behavior
-    // change by construction: the corrective/recheck flow below reads only `verdict`, never these
-    // counts, and a read/parse defect can never touch the verdict gate.
-    // AD-4 (instrumentation house rule): the event is written UNCONDITIONALLY. The R2 evidence run logged
-    // an all-zero histogram against a BLOCKING verdict, and nothing said whether the reviewer really flagged
-    // zero correction lines or the read/parse quietly failed (the old catch logged NOTHING). Now: `verdict`
-    // rides the row (an all-zero histogram on CONDITIONAL/BLOCKING is legible as the anomaly it is), and a
-    // read/parse failure is a recorded fact (ok:false + the error) instead of silence.
-    // — `kindChannelOk` IS A SECOND FACT, AND IT NEEDED ITS OWN KEY.
-    //
-    // `ok` here has always meant "the file was read and parsed without throwing". It cannot also carry
-    // "the reviewer's kind channel produced something", and overloading it would have been the cheaper
-    // change and the wrong one: the two are false in different situations and a reader cannot tell which
-    // from one boolean.
-    //
-    // The distinction is the whole. A review where every parsed line landed on the `fact`
-    // fail-safe reads, in the counts alone, exactly like a review whose flags were all genuinely
-    // factual — and on the run that found this, `fact: 10` on a BLOCKING verdict was the former and
-    // looked entirely reasonable. The all-zero histogram AD-4 above made legible is the easy case;
-    // `untyped === total` is the one that was not, and now it is a recorded fact rather than an
-    // inference a reader has to make by comparing two other numbers.
-    try {
-      const ck = parseCorrectionKinds(readFileSync(P.seniorEyeReview, "utf8"));
-      runLog(run.runDir, { event: "correction-kinds", ok: true, kindChannelOk: ck.ok !== false, verdict,
-        counts: ck.counts, untyped: ck.untyped, total: ck.total, ...(ck.why ? { kindChannelWhy: ck.why } : {}) });
-    } catch (e) {
-      // The key rides BOTH arms: written only on success, its absence on a failed row would read as
-      // "the channel was fine", which is precisely the inference this issue exists to stop.
-      try { runLog(run.runDir, { event: "correction-kinds", ok: false, kindChannelOk: false, verdict, error: String(e?.message ?? e).slice(0, 160) }); }
-      catch { /* telemetry best-effort — never-kill */ }
-    }
-
-    // AD-2 A1 (E2E-R2, recovery granularity) — the corrective cycle fires ONCE per settled
-    // review/narrative state. Both legs below run `force:true` (they bypass the stage-freshness skip
-    // by design), so on EVERY resume of a CONDITIONAL/BLOCKING run the cycle used to re-fire: two
-    // opus-class calls that re-emit the narrative + findings, staling the whole delivery tail behind
-    // them — which is how a stale-artifact recovery became a full pipeline re-run (34% of E2E-R2).
-    // The completion receipt records the exact review + narrative bytes the cycle settled; a resume
-    // whose bytes are unchanged skips both legs (`verdict` on such a pass is already the post-recheck
-    // verdict — refute() parsed it off the very review the receipt fingerprints). Either file moving
-    // re-arms the cycle. findings.json is deliberately NOT keyed: four sanctioned driver-owned
-    // mutators rewrite it after this point on every pass (the restamp class — injectDeferralCoverage /
-    // enrichFindingDeadlines / consolidateFindingsFile / the coverage-floor clamp), so keying on it
-    // would re-arm the settled cycle on every resume, the exact cost this receipt kills. Whether the
-    // corrections REACHED findings.json is enforced inside the cycle (enforceCorrectionsReachFindings
-    // + the verdict-recheck), never by this receipt.
-    const correctiveCyclePath = driverDir(run.runDir, "corrective-cycle.json");
-    const correctiveCycleShas = () => ({ review: shaOf(P.seniorEyeReview), narrative: shaOf(P.narrative) });
-    const correctiveEntryVerdict = verdict;   // the recheck reassigns `verdict`; the receipt keys on the entry gate
-    let correctiveCycleSettled = false;
-    let correctiveRecheckOk = false;
-    if (correctiveEntryVerdict === "CONDITIONAL" || correctiveEntryVerdict === "BLOCKING") {
-      let cycleReceipt = null;
-      try { cycleReceipt = JSON.parse(readFileSync(correctiveCyclePath, "utf8")); } catch { /* no receipt — the cycle runs */ }
-      correctiveCycleSettled = correctiveCycleSettledDecision(cycleReceipt, correctiveCycleShas());
-      if (correctiveCycleSettled) {
-        runLog(run.runDir, { event: "corrective-cycle-settled", verdict, receiptTs: cycleReceipt?.ts ?? null });
-        note(`corrective cycle already settled for these exact review/narrative bytes — not re-firing (a stale-artifact recovery re-does what went stale, never the settled corrective loop)`);
-      }
-    }
-    // One corrective re-synthesis on CONDITIONAL/BLOCKING, feeding the reviewer's flags back in, dispatched on the
-    // WINNING synthesis attempt's key, model and thinking, so the model that wrote a fallback-won synthesis corrects
-    // it. Its first attempt is a fresh turn handed the flags and the inputs; it never resumes the synthesis session.
-    let correctionsApplied = null;   // — the driver's flag-by-flag observation, shared by both legs
-    let evidenceViolations = [];     // — claims that moved against their own evidence, carried to the recheck
-    let correctionsScope = null;     // — the declared per-finding scope, and whether the pass held to it
-    let correctiveRollback = null;   // T3b — set when the corrective pass failed and the last good findings came back
-    let correctiveRepair = null;     // — set when the driver put back a removal no flag named
-    if (!correctiveCycleSettled && (verdict === "CONDITIONAL" || verdict === "BLOCKING")) {   // T3: the quarantine path is terminal now — the corrective pass always runs
-      const preCorrective = snapshotFindingsForCorrections(P, run.runDir);                     // A1
-      // — re-prepared, not reused. The findings surface cannot move between these two passes today
-      // (nothing writes placements.json or register-findings.md between them — checked), so this rewrites
-      // the same list. It is here anyway, because the alternative is an invariant a future change breaks
-      // silently: if the surface ever did move, the corrective's `row_index` would point into the previous
-      // pass's list and a declination would land on the wrong record.
-      prepareDeclinationSpec(ctx, P);
-      // THE CORRECTION RIDES ITS OWN DISPATCH: the excluded positions its flags name go to the writer's save with this
-      // dispatch, its retries and the follow-up below, and with no other. The message names the same positions.
-      const reading = correctionReading(P);
-      const correction = { positions: reading.positions };
-      const correctivePass = await stage("synthesis", ctx, { force: true, followup: correctionsExtra(P, ctx.depth, ctx.framework, reading), correction, sessionKey: synthesisKey, model: synthesisModel, thinking: synthesisThinking, trigger: "corrective" });
-      // half one — the corrective pass rewrites findings.json under a closed minimal-edit contract,
-      // so it is the pass most likely to change one record's fate. Its own account, at its own moment; the
-      // winner rule in record-discard.mjs lets this carry cancel an earlier discard.
-      recordSynthesisSeam(ctx, correctivePass, "corrective");
-      // T3b — a corrective pass that cannot produce a valid document no longer kills the run. The
-      // pre-corrective findings come back and the run delivers, with the reviewer's objections printed
-      // by `buildReviewerOpenPointsSection` — which is the other half of the same owner decision and is
-      // what makes this honest rather than quiet. `must` still runs where the rollback declines.
-      correctiveRollback = correctivePass.ok
-        ? null
-        : rollbackCorrectivePass(P, run.runDir, preCorrective, correctivePass);
-      if (correctiveRollback) {
-        runLog(run.runDir, { event: "corrective-rollback", reason: correctiveRollback.reason,
-          restored: correctiveRollback.restored, verdict });
-        note(`[corrections] the corrective pass failed (${correctiveRollback.reason}) — `
-          + `${correctiveRollback.restored ? "findings.json restored to the version the reviewer read" : "findings.json was never changed"}`
-          + `; the run delivers with the reviewer's points printed rather than failing`);
-      } else {
-        // The rollback declined: a rate limit, which waits, or no record from before the pass to trust, which is the
-        // assessment not completed, as for the correction after the review of a repair.
-        await asPartNotCompleted("assessment", async () => must(correctivePass, `synthesis(${verdict.toLowerCase()})`));
-        // ── — THE THIRD BRANCH, AND IT IS ON THE SUCCESS SIDE ON PURPOSE ─────────
-        //
-        // A repair is not a rollback and must never be reached by falling through to one. The rollback
-        // branch above deliberately skips both the corrections-reached-findings gate and the reviewer's
-        // re-read, because what it delivers is the PRE-corrective document — the exact bytes the
-        // reviewer already read, so there is nothing new to re-read. A repaired document is the
-        // opposite: it is a document nobody has seen, assembled by the driver from two sources.
-        //
-        // So it stays here, before the gate, with `correctiveRollback` still null — which is what makes
-        // the reviewer's re-read run over it. That dispatch is guarded on `!correctiveRollback`, so a
-        // repair hung off the rollback side would have inherited the skip silently and shipped a
-        // driver-assembled document no reviewer ever saw. Every check the successful branch runs, the
-        // repair branch runs, on the repaired bytes.
-        //
-        // NAMED AGAINST THE PRE-CORRECTIVE DOCUMENT. A removed finding is absent from the post-pass
-        // file, so matching the review's names against that file would find none of them and call every
-        // named removal unnamed.
-        let preDocForNames = null;
-        try { preDocForNames = preCorrective ? parseFindingsJsonLenient(preCorrective.raw) : null; } catch { /* fall back to the file */ }
-        const repaired = repairUnnamedRemovals(P, run.runDir, preCorrective,
-          correctionNamedOrdinals(P), correctionNamedSet(P, preDocForNames), correctionNamedLines(P, preDocForNames));
-        correctiveRepair = repaired;   // carried to the reviewer's re-read, which must know these are the DRIVER's
-        if (repaired) {
-          // A DEFECT SIGNAL, not a success. After the schema fix a corrective pass sends a targeted edit
-          // and cannot remove a finding at all, so e2e asserts this count is ZERO — a firing reports the
-          // primary fix not holding, never this backstop working.
-          runLog(run.runDir, removalRepairedRow(repaired));   // with `base`: whether the merge base took the restore
-          note(`[corrections] the corrective pass removed ${repaired.restoredFindings.length} finding(s) `
-            + `no flag named — restored whole from the pre-corrective snapshot: `
-            + `${repaired.restoredFindings.map((f) => `#${f.ordinal} ${f.mark}`).join(", ")}`
-            + (repaired.restoredKeys.length ? `; and ${repaired.restoredKeys.length} top-level register(s): ${repaired.restoredKeys.join(", ")}` : "")
-            + (repaired.restoredRows.length ? `; and ${repaired.restoredRows.length} row(s): ${repaired.restoredRows.map((r) => r.key).join(", ")}` : "")
-            + (repaired.leftRemoved.length ? `. ${repaired.leftRemoved.length} removal(s) the reviewer DID name stay removed.` : "")
-            + " The reviewer re-reads the repaired document before it ships.");
-        }
-        await enforceCorrectionsReachFindings(ctx, P, preCorrective, { synthesisKey, synthesisModel, synthesisThinking, correction });   // A1 freshness gate
-      }
-      // — WHAT THE DRIVER OBSERVED, flag by flag, written before the recheck is dispatched. The
-      // recheck's whole cost is re-reading two documents to work out whether its own corrections landed;
-      // the driver already holds the pre-corrective findings snapshot and the post-pass file, so it can
-      // answer that from evidence and leave the reviewer the part only it can do — judging whether what
-      // changed is RIGHT. NEVER-KILL: a table that cannot be built just means the recheck reads as it
-      // always did, which is today's behaviour exactly.
-      try {
-        const rows = correctionRows(P, readFileSync(P.seniorEyeReview, "utf8"));   // the same reading of each flag as the correction's
-        const preDoc = preCorrective ? parseFindingsJsonLenient(preCorrective.model?.raw ?? preCorrective.raw) : null;   // the flags name the model's ordinals, so both sides are the record the model wrote (record-fold.mjs)
-        let postDoc = null;
-        try { postDoc = parseFindingsJsonLenient(readFileSync(modelRecordPath(run.runDir, P.findings), "utf8")); } catch { /* shape defects ride the normal ladder */ }
-        correctionsApplied = buildCorrectionsApplied(rows, preDoc, postDoc);
-        // — A CLAIM MAY NOT OUTLIVE ITS EVIDENCE, AND A DEMOTED STAMP MAY NOT COME BACK.
-        //
-        // Same two documents, one more question. The pass that fixes the reviewer's flags is the pass
-        // most likely to break the join between a claim and its support, and on the run this was found
-        // on it did both: four meters lost their basis while the band held (one with a byte-identical
-        // claim, one that GREW by 243 characters as its citation was deleted), and six stamps the
-        // driver had demoted minutes earlier as `record-on-disk-never-read` came back as
-        // `verified-from-record` with no register call in between.
-        //
-        // RECORDED, AND CARRIED TO THE RECHECK — never a refusal here, for the reason the table above
-        // is not one either: the reviewer is about to read both documents and is better placed than a
-        // diff to say whether a change was right. A gate here would also spend a dispatch on the stage
-        // this seam exists to make cheaper. ``'s correct-or-escalate is satisfied by escalating to
-        // the seat that can judge it.
-        try {
-          let demotions = [];
-          try { demotions = JSON.parse(readFileSync(P.basisDerivation, "utf8"))?.rows ?? []; }
-          catch { /* no derivation record — stated below, never inferred as "clean" */ }
-          const ec = evidenceClaimViolations({ before: preDoc?.findings, after: postDoc?.findings, demotions });
-          evidenceViolations = ec.violations;
-          runLog(run.runDir, { event: "evidence-claim-invariant", violations: ec.violations.length,
-            byArm: ec.violations.reduce((a, v) => ({ ...a, [v.arm]: (a[v.arm] ?? 0) + 1 }), {}),
-            snapshots: ec.snapshots });
-          if (ec.violations.length) {
-            atomicWrite(driverDir(run.runDir, "evidence-claim-violations.json"),
-              JSON.stringify({ ts: new Date().toISOString(), ...ec }, null, 2) + "\n");
-            note(`#1557: ${ec.violations.length} claim(s) moved against their own evidence in the corrective pass — `
-              + ec.violations.slice(0, 3).map((v) => `${v.finding}/${v.meter} (${v.arm})`).join("; ")
-              + `${ec.violations.length > 3 ? ` …${ec.violations.length - 3} more` : ""}`);
-          }
+          const ck = parseCorrectionKinds(readFileSync(P.seniorEyeReview, "utf8"));
+          runLog(run.runDir, { event: "correction-kinds", ok: true, kindChannelOk: ck.ok !== false, verdict: runState.verdict,
+            counts: ck.counts, untyped: ck.untyped, total: ck.total, ...(ck.why ? { kindChannelWhy: ck.why } : {}) });
         } catch (e) {
-          runLog(run.runDir, { event: "evidence-claim-invariant", ok: false, why: String(e?.message ?? e).slice(0, 160) });
+          // The key rides BOTH arms: written only on success, its absence on a failed row would read as
+          // "the channel was fine", which is precisely the inference this issue exists to stop.
+          try { runLog(run.runDir, { event: "correction-kinds", ok: false, kindChannelOk: false, verdict: runState.verdict, error: String(e?.message ?? e).slice(0, 160) }); }
+          catch { /* telemetry best-effort — never-kill */ }
         }
-        // — what the DECLARED scope was and whether the pass honoured it. Recorded, never refused:
-        // a gate here costs a whole extra dispatch on the stage this change exists to make cheaper, and
-        // the reviewer is about to read the table anyway — it is better placed than a diff to say
-        // whether a knock-on edit was right. `unbound` is the `cite_unbound` shape one gate over and
-        // would earn a refusal if it recurs; this round measures whether it does.
-        correctionsScope = scopeDrift(rows, preDoc, postDoc);
-        atomicWrite(P.correctionsApplied, JSON.stringify({ ts: new Date().toISOString(), verdict,
-          scope: correctionsScope, rows: correctionsApplied }, null, 2) + "\n");
-        const by = correctionsApplied.reduce((a, r) => (a[r.outcome] = (a[r.outcome] ?? 0) + 1, a), {});
-        runLog(run.runDir, { event: "corrections-applied", flags: correctionsApplied.length, outcomes: by,
-          scoped: correctionsScope.scoped, named: correctionsScope.named.length,
-          movedOutsideScope: correctionsScope.moved.length, unboundOrdinals: correctionsScope.unbound.length });
-        // The basis for the delivery check each assembly makes (recordCorrectionsDelivered): what each flag
-        // changed in the fields a report prints from the record, from the same two records. Its own file.
-        try { recordCorrectionsBasis(run.runDir, correctionsApplied, preDoc, postDoc); }
-        catch (e) {
-          try { rmSync(driverDir(run.runDir, CORRECTIONS_DELIVERED_FILE), { force: true }); } catch { /* best-effort */ }
-          note(`[corrections] the delivery basis could not be kept (${String(e?.message ?? e).slice(0, 100)}) — this pass has no delivery record`);
-        }
-      } catch (e) {
-        // A basis from an earlier pass would be read against this pass's report as if it were this pass's.
-        try { rmSync(driverDir(run.runDir, CORRECTIONS_DELIVERED_FILE), { force: true }); } catch { /* best-effort */ }
-        correctionsApplied = null;
-        note(`[corrections] the applied table could not be built (${String(e?.message ?? e).slice(0, 100)}) — the recheck reads both files, as before`);
-        runLog(run.runDir, { event: "corrections-applied-failed", error: String(e?.message ?? e).slice(0, 160) });
-      }
-    }
-    // T3b — NO RECHECK AFTER A ROLLBACK. The document is byte-identical to the one the reviewer just
-    // read, so a recheck spends a dispatch to re-derive the verdict it already gave. The entry verdict
-    // stands, which is also the fail-safe direction this block uses everywhere else.
-    if (!correctiveRollback && !correctiveCycleSettled && (verdict === "CONDITIONAL" || verdict === "BLOCKING")) {
-      // A1: re-check after the corrective pass with a lean follow-up on the refutation's winning key and model —
-      // NOT a full re-run of the stage, and NOT the base model when another model won. The follow-up's first
-      // attempt starts fresh, and it never resumes the refutation's session (no engine resumes by key). (With no
-      // winning key, as on a crash-resume skip, a clean forced re-run on the same model.)
-      // A1: the recheck also runs on the CONDITIONAL path (the VENZY shipping path — previously the
-      // corrective output was never re-verified there) and reads the updated FINDINGS too, since the client
-      // surfaces render from findings.json, not the narrative. Failure falls back to the ENTRY verdict
-      // (CONDITIONAL stays CONDITIONAL; BLOCKING stays BLOCKING — the established fail-safe direction).
-      const entryVerdict = verdict;
-      // — the observed table rides as DATA. It never replaces the reviewer's judgement and it never
-      // asserts a correction was RIGHT; it says what moved, so the reviewer argues with evidence instead
-      // of with its own memory of two long documents.
-      const appliedTable = correctionsApplied ? correctionsAppliedTable(correctionsApplied) : "";
-      const restoredTable = restoredFindingsTable(correctiveRepair);
-      // — CARRIED, not merely recorded. The first cut of this feature wrote the violations to an
-      // artifact and said in its own comment that they were carried to the recheck; nothing read the
-      // file, the seat holds no tool that could, and the note beside the write is stderr. An escalation
-      // that reaches no reader is a log line.
-      const evidenceTable = evidenceClaimTable(evidenceViolations);
-      // T1 (J3): EVERY path that rewrites the review must re-demand the PLAN-EXECUTION CHECK
-      // section — the validator requires it whenever the receipt exists, and the copper-spire recheck
-      // rewrite dropped it (the reviewer complied with the lean followup, then failed the validator).
-      const planAuditCarry = (ctx.registerPlan && existsSync(P.planExecution))
-        ? `Your rewritten review MUST again contain the section titled exactly "PLAN-EXECUTION CHECK" — carry your prior section forward, updated for the corrected narrative/findings (the deterministic validator requires it whenever the plan-execution receipt exists).`
-        : "";
-      const recheckSeq0 = nextRefutationSeq(run.runDir);
-      const reviewShaBefore = shaOf(P.seniorEyeReview);
-      let reviewBefore = null;
-      try { reviewBefore = readFileSync(P.seniorEyeReview, "utf8"); } catch { reviewBefore = null; }
-      const rc = firstRef.key
-        ? await stage("narrative-refutation", ctx, {
-            force: true, sessionKey: firstRef.key, model: firstRef.model, thinking: firstRef.thinking, trigger: "verdict-recheck",
-            // The record its flags and the table above number, which is the writer's own while a fold is in force: a
-            // correction that saved nothing leaves the earlier pass's fold standing (record-fold.mjs).
-            followup: repairFollowup("narrative-refutation:verdict-recheck", {
-              narrative: P.narrative, findings: modelRecordPath(run.runDir, P.findings), seniorEyeReview: P.seniorEyeReview,
-              correctionsScope, appliedTable, restoredTable, evidenceTable, planAuditCarry,
-              writerExclusions: writerExclusionBlock(P, { review: "later", named: correctionsScope?.positions ?? [] }),
-            }),
-          })
-        : await stage("narrative-refutation", ctx, { force: true, model: firstRef.model, thinking: firstRef.thinking, trigger: "verdict-recheck", ...(planAuditExtra(ctx) ? { extra: planAuditExtra(ctx) } : {}) });
-      // A RECHECK COUNTS ONLY WHEN THIS DISPATCH SAVED A REVIEW. A reviewer whose every save was refused writes
-      // nothing, and the stage still reads ok on the review that stands from before the correction, so its verdict and
-      // its points would pass as the review of the corrected record, and the receipt would stop a resume from finishing
-      // a verification nobody made. Such a recheck is a failed one: the entry verdict stands, the record says the
-      // correction was not verified, no receipt is written, and the earlier review stays in place as the earlier review.
-      //
-      // TWO WAYS TO SAVE, BOTH COUNTED, UNDER ONE SET OF RULES. The message above orders the review file rewritten, and a
-      // seat may do that or record the review through its tool; both are seen on test runs. So a save is an accepted tool
-      // call made since this dispatch began, or review bytes that differ from the ones before it and that the tool's rules
-      // would accept (settleRecheckSave). A refused rewrite gives way to the accepted call or to the earlier review, and
-      // reads as no save. A byte-identical rewrite reads as no save, which costs only a cycle run again on a resume: the
-      // same bytes carry the same verdict.
-      const recheckSave = settleRecheckSave(run.runDir, { before: reviewBefore, stageOk: rc.ok === true, seq0: recheckSeq0 });
-      if (recheckSave.restore != null) {
-        try { atomicWrite(P.seniorEyeReview, recheckSave.restore); }
-        catch (e) { note(`[corrections] the review could not be put back after the recheck (${String(e?.message ?? e).slice(0, 100)})`); }
-      }
-      if (recheckSave.refused) runLog(run.runDir, { event: "verdict-recheck-file-save-refused", refused: recheckSave.refused, seq0: recheckSeq0, entryVerdict });
-      const recheckRead = recheckSave.read;
-      if (rc.ok && !recheckRead) {
-        runLog(run.runDir, { event: "verdict-recheck-unread", fail: recheckSave.fail, seq0: recheckSeq0, entryVerdict });
-        note(`[corrections] the recheck after the correction recorded no review it could accept (${recheckSave.fail}) — the correction is not verified, the entry verdict (${entryVerdict}) stands, and the review in place is the one from before the correction`);
-      }
-      // What stands is what was decided, so a put-back that could not be written never reads a refused verdict back.
-      verdict = recheckRead ? (parseVerdict(recheckSave.restore ?? readFileSync(P.seniorEyeReview, "utf8")) ?? entryVerdict) : entryVerdict;
-      correctiveRecheckOk = rc.ok === true && Boolean(recheckRead);
-      try {
-        atomicWrite(driverDir(run.runDir, CORRECTIVE_RECHECK_FILE), JSON.stringify({ ts: new Date().toISOString(),
-          status: correctiveRecheckOk ? "read" : "unread", by: recheckRead?.by ?? null, entryVerdict, verdict, seq0: recheckSeq0, seq: recheckRead?.seq ?? null,
-          reviewSha: reviewShaBefore,   // the review this recheck found: earlierReviewNotRechecked tells it from any saved later
-          ...(correctiveRecheckOk ? {} : { fail: rc.ok ? recheckSave.fail : String(rc.fail ?? "failed").slice(0, 160) }) }, null, 2) + "\n");
-      } catch (e) { note(`[corrections] the recheck's record could not be written (${String(e?.message ?? e).slice(0, 100)}) — the run log still holds the outcome`); }
-      runLog(run.runDir, { event: "verdict-2", verdict, read: correctiveRecheckOk });
-      writeRunStatus(ctx, signoffPatch(verdict));
-    }
-    // AD-2 A1 — the completion receipt, written ONLY when the cycle finished with a verified recheck:
-    // a fallen-back recheck kept the entry verdict WITHOUT re-verifying, and cementing that would stop
-    // a resume from finishing the verification it still owes (so that path re-fires, exactly as today).
-    // Best-effort: a failed write just means the cycle may re-fire on a resume — never worse than today.
-    if (!correctiveCycleSettled && correctiveRecheckOk
-        && (correctiveEntryVerdict === "CONDITIONAL" || correctiveEntryVerdict === "BLOCKING")) {
-      try {
-        writeFileSync(`${correctiveCyclePath}.tmp`, JSON.stringify({
-          ts: new Date().toISOString(), entryVerdict: correctiveEntryVerdict, verdict, shas: correctiveCycleShas(),
-        }, null, 2) + "\n");
-        renameSync(`${correctiveCyclePath}.tmp`, correctiveCyclePath);
-        runLog(run.runDir, { event: "corrective-cycle-receipt", entryVerdict: correctiveEntryVerdict, verdict });
-      } catch (e) { note(`corrective-cycle receipt write failed (non-fatal — the cycle may re-fire on a resume): ${String(e?.message || e).slice(0, 100)}`); }
-    }
+    } },
+    { name: "correction-cycle", run: async () => {
+        // The correction after the review and the recheck of it (steps/correction-cycle.mjs).
+        const correctionCycle = await runCorrectionCycle({ ctx, run, P, verdict: runState.verdict, firstRef, synthesisKey, synthesisModel, synthesisThinking }, { CORRECTIONS_DELIVERED_FILE, CORRECTIVE_RECHECK_FILE, asPartNotCompleted, correctionNamedLines, correctionNamedOrdinals, correctionNamedSet, correctionReading, correctionRows, correctionsExtra, correctiveCycleSettledDecision, enforceCorrectionsReachFindings, must, planAuditExtra, prepareDeclinationSpec, recordCorrectionsBasis, recordSynthesisSeam, removalRepairedRow, repairUnnamedRemovals, restoredFindingsTable, rollbackCorrectivePass, snapshotFindingsForCorrections, stage, writerExclusionBlock });
+        runState.verdict = correctionCycle.verdict;
+        ({ correctiveEntryVerdict, correctiveCycleSettled, correctiveRecheckOk } = correctionCycle);
+    } },
+    { name: "verdict-gate", run: async () => {
+        // The verdict's floors and terminal guards (steps/verdict-gate.mjs).
+        // applyVerdictFrontMatter is declared further down, so it goes in by name, read when called.
+        ({ applyCoverageFloor, clampOnTheFloorDuty, clampOnTheWritersDuty, deliverAndClamp, followTheRecordsActions, saveTheLabel, saveTheOwedLabel, writeVerdictSidecar } = await runVerdictGate({ P, agent, applyVerdictFrontMatter: (...a) => applyVerdictFrontMatter(...a), correctiveCycleSettled, correctiveEntryVerdict, correctiveRecheckOk, coverageJudgment, ctx, opts, run, runState }, { StageFailure, actionsRegisterListed, conditionsFollowingTheRecord, defaultRecordFetcher, enrichFindingDeadlines, lateRecordsUnaddressed, loadCoverageLedger, loadScreenGateUnresolved, owedUrisFor, planAuditExtra, refusedRecordsLeftOut, registerGapConditions, safeReadJson, saveWithRetries, stage, withdrawByToken }));
 
-    // U1 — coverage-honesty floor (Appendix A tripwire #2). The reviewer verdict is empirically noisy
-    // (it flips on byte-identical input), so the honest-status signal is derived from the coverage
-    // LEDGER alone, never from the verdict. A run can be only as CLEAR as the layers it actually ran:
-    // if a layer MATERIAL to this matter is coverage-limited / deferred (saturation-probe excluded by
-    // contract — count-only ⇒ limited by definition), the run cannot ship CLEAR. We only ever RAISE
-    // CLEAR→CONDITIONAL — never lower, never manufacture BLOCKING — and we do it AFTER the reviewer's
-    // corrective ladder has settled, so it forces an honest delivered status without firing an empty
-    // corrective re-synthesis (the gap is a search-execution reality, not a narrative the model can fix).
-    // This is the deterministic backstop under the reviewer's LLM-level coverage-overclaim rule.
-    // judgment-relocation (revised 2026-06-24): the deliver-conditional verdict floor. The funnel's old
-    // search-shape coverage-honesty clamp (findFloorShapeGaps, deleted) is gone — sufficiency is the lawyer's
-    // call, not a re-parse of the prose ledger. Three honest, NON-WITHHOLDING reasons can clamp a clean run
-    // CLEAR→CONDITIONAL (deliver the report, carry the gap in the status — never command a re-loop, never halt):
-    //   • coverageInsufficient — the lawyer (synthesis coverage_judgment.sufficient:false) judged a MATERIAL
-    //     register slice not fully cleared. This is the deliver-conditional realisation of "command or halt":
-    //     we neither re-search nor stop — we ship a CONDITIONAL with the lawyer's reason. Safe because the
-    //     dangerous named band was enumerated to completeness (fan-in band gate); the conditional covers a
-    //     genuine residual, not a hidden miss.
-    //   • frameResidual — a STRUCTURAL omission the blind frame-diff found and the reopen could not close.
-    //   • screenGateGap — an in-scope-live mark whose record could not be retrieved (could-not-examine).
-    // A GENUINE open judgment (the search IS complete; the legal/commercial call is genuinely arguable) is NOT a
-    // clamp — it ships as reasoning in the report (the lawyer's product), never as a status caveat.
-    // ── WP-receipts W3 — the senior-right closure ("verify the right that matters", senior lawyer 2026-07-05).
-    // For the handful of findings that DRIVE the delivered verdict, the verified basis must be the
-    // cluster's SENIOR live right, never an arbitrary leg (VENZY: the report read "verified" off the
-    // junior AE 2015 leg while the senior TR 2009 registration was never pulled). Seniority is ranked
-    // in CODE from artifacts the run already holds (fetched records → register-index screen facts);
-    // when the senior leg is absent from the record set, ONE targeted driver fetch closes it — the
-    // same code-fetch seam as the screen-gate/V4-2 closures. Zero new provider calls to IDENTIFY the
-    // senior leg; worst case one redirect-fetch per verdict-driving finding, steady-state zero once
-    // the digest prompt redirect lands the senior leg first. Single-leg clusters are trivially
-    // satisfied (their one fetched leg IS the senior right) — the guarantee targets multi-leg owners.
-    ctx.seniorRights = null;
-    // D1 fail-closed — record whether the live arm below OWES the receipt: the arming condition
-    // (frozen framework + v4 findings) is flagged the moment it is established, so a closure that
-    // throws AFTER arming still surfaces in predelivery-lint as expected-but-absent (before D1 a
-    // crashed closure left no rows and the lint's presence-gated check silently passed). The
-    // replay harness never sets the flag — archived runs never grow the failure.
-    ctx.seniorRightsExpected = false;
-    if (ctx.framework) {
-      try {
-        const srDoc = existsSync(P.findings) ? parseFindingsJsonLenient(readFileSync(P.findings, "utf8")) : null;
-        if (srDoc && (srDoc.schemaVersion ?? 1) >= 4 && srDoc.findings?.length) {
-          ctx.seniorRightsExpected = true;
-          const driving = verdictDrivingFindings(srDoc.findings, ctx.framework);
-          const indexByUri = new Map();
-          try {
-            const band = JSON.parse(readFileSync(P.registerNamedBand, "utf8"));
-            for (const r of band?.enumerated ?? []) {
-              const uri = String(r?.record_id ?? "").toLowerCase();
-              if (uri) indexByUri.set(uri, { applicationDate: r?.screen?.applicationDate, registrationDate: r?.screen?.registrationDate,
-                status: r?.screen?.status ?? r?.status, live_status: r?.screen?.live_status });
-            }
-          } catch { /* no merged band (legacy run) — fetched-record facts alone rank */ }
-          const srPrefix = `clearance-${run.slug}-${run.codename}-`;
-          let srRecords = assembleRunRecords(run.runDir, srPrefix).records;
-          const srFetcher = opts.recordFetcher ?? defaultRecordFetcher;
-          const srLedger = ctx.repairLedger ?? (ctx.repairLedger = createRepairLedger(run.runDir, { log: (o) => runLog(run.runDir, o) }));
-          const rows = [];
-          for (const f of driving) {
-            const regs = f?.owner?.registrations ?? [];
-            if (regs.length < 2) { rows.push({ ordinal: f.ordinal, mark: f.mark, applicable: false, reason: regs.length ? "single leg — seniority trivial" : "no register legs (use/marketplace evidence path)" }); continue; }
-            const { senior, unrankable, excluded } = rankClusterLegs(regs, indexByUri, srRecords);
-            if (!senior) { rows.push({ ordinal: f.ordinal, mark: f.mark, applicable: true, seniorUri: null, verified: false, unrankable, excludedDead: excluded.length }); continue; }
-            let verified = srRecords.has(senior.uri);
-            let fetchFailureCause = null;
-// — ONE ceiling, named once and read by BOTH ends. A literal repeated at the record site is a
-            // second statement of the same rule, and two ends stating the same rule is how they drift apart.
-            const seniorFetchMax = 1;
-            if (!verified && srLedger.canAttempt("senior-right-fetch", senior.uri, { max: seniorFetchMax })) {
-              note(`senior-right closure: fetching the SENIOR leg ${senior.uri} for "${f.mark}" (the verified basis must be the senior right, never an arbitrary leg)`);
-              let outcome = "failed";
-              try {
-                const rf = await srFetcher(senior.uri, { agentId: agent, sessionKey: `${srPrefix}senior-right`, recordLog: runRecordLogPath(run.runDir) });
-                outcome = rf?.ok ? "ok" : `failed: ${String(rf?.cause ?? "unknown").slice(0, 140)}`;
-                if (!rf?.ok) fetchFailureCause = String(rf?.cause ?? "unreachable").slice(0, 200);
-              } catch (err) { outcome = `threw: ${String(err?.message ?? err).slice(0, 140)}`; fetchFailureCause = String(err?.message ?? err).slice(0, 200); }
-              srLedger.record("senior-right-fetch", senior.uri, outcome, { max: seniorFetchMax });
-              srRecords = assembleRunRecords(run.runDir, srPrefix).records;
-              verified = srRecords.has(senior.uri);
-            } else if (!verified) {
-              fetchFailureCause = "fetch budget exhausted on a prior attempt";
-            }
-            rows.push({ ordinal: f.ordinal, mark: f.mark, applicable: true, seniorUri: senior.uri, rankedFrom: senior.source, verified, ...(fetchFailureCause ? { fetchFailureCause } : {}), excludedDead: excluded.length });
-          }
-          ctx.seniorRights = { schema_version: 1, policy: UNREACHABLE_SENIOR_POLICY, rows };
-          writeFileSync(driverDir(run.runDir, "senior-rights.json"), JSON.stringify(ctx.seniorRights, null, 2) + "\n");
-          runLog(run.runDir, { event: "senior-rights", driving: driving.length, applicable: rows.filter((r) => r.applicable).length,
-            verified: rows.filter((r) => r.verified).length, open: rows.filter((r) => r.applicable && !r.verified).length });
-        }
-      } catch (e) {
-        note(`senior-right closure skipped (${String(e?.message ?? e).slice(0, 100)}) — the render/lint surfaces stay code-owned either way`);
-      }
-    }
-
-    // The register's own opposition windows reach the findings BEFORE any deadline judgment (the bands
-    // are settled by now; the corrective ladder above re-emitted findings last).
-    enrichFindingDeadlines(P, run.runDir, note);
-
-    // ── P2-A pre-verdict floor: the reconciliation's hard discrepancy list ─────────────────────────
-    // screened-live dominant-element candidates ∖ endings is read here as it always was, and it no longer THROWS:
-    // the owner's ruling of 2026-10-19 that a run is never held replaces the Round-2 rule that this one class never
-    // ships. The run first recovers what it can in-run (the digest seam's followups; placement assessing late
-    // evidence before the writer); whatever is still unended ships NAMED, through the terminal guards' deliver-and-clamp
-    // (`clampOnTheRecallGate`, beside the floor duty's clamp below), never as a run that delivers nothing.
-
-    // ── — THE TERMINAL GUARDS DELIVER AND CLAMP; THEY DO NOT WITHHOLD ───────────
-    //
-    // Ruling, 2026-08-27, verbatim intent: **reports always ship**. When a terminal guard finds
-    // the report incomplete at delivery, the engine sends it with the gap patched conservatively and
-    // the defect named in the run record. It never withholds.
-    //
-    // The two checks below USED TO THROW. Both were right about the defect and wrong about the remedy:
-    // a guard that stops a report marks where a fix is missing, it is not itself the fix. The cost was
-    // measured rather than argued — a live clearance run died at delivery after 5.55 hours because the
-    // floor duty found ONE undischarged record, and the client received nothing at all instead of a
-    // report naming one gap.
-    //
-    // NOTHING NEW IS BUILT HERE. `clampReasons`/`clampClauses`/`clampKinds` and the CLEAR→CONDITIONAL
-    // clamp already run twenty lines below this point for the coverage floor; these declarations simply
-    // move ABOVE the two checks so both can reach them. The conversion is a routing change.
-    let clampReasons = [];                                       // A2/D1 — persisted below
-    let clampClauses = [];
-    let clampKinds = {};
-    // — which clause texts came from a TERMINAL GUARD. The lede question: a guard's
-    // disclosure must not silently outrank the opinion's own condition clauses just because the guards
-    // run earlier in this function. The sidecar write sorts guard clauses AFTER the opinion's, stated
-    // there; this set is how it tells them apart without a parallel index to keep aligned.
-    const guardClauses = new Set();
-    // THE ACCEPTED ASSESSMENT: the result the review reached, before any guard or floor clamped it. It moves with the
-    // review alone (the degenerate re-ask, a late review that is harsher), and a gap a guard judged again finds closed is
-    // withdrawn against it (ruled 2026-10-19).
-    let assessed = verdict;
-    let restoredClear = false;   // a closed gap took this run back to CLEAR, so a later writer's judgment meets the floor again
-    // THE REASONS THE RECORD'S OWN ACTIONS PUT IN THE LIST, by the floor's legal-actions arm, so the list can follow the
-    // record when a repair in the delivery check rewrites, withdraws or adds a step (conditionsFollowingTheRecord).
-    let recordConditionReasons = new Set();
-    // WHAT A WITHDRAWAL OF THOSE STEPS NEEDS TO GIVE THE REVIEW'S CLEAR BACK (verdictWhenTheStepsAreWithdrawn): that the
-    // steps raised the result, that none was ever dropped as unreadable, when a readable record last held none of them,
-    // and when a correction in the delivery check was last rejected.
-    let stepsRaisedTheResult = false;
-    let stepsUnreadable = false;
-    let stepsWithdrawnAt = null;
-    let correctionRejectedAt = null;
-    const DROPPED_CONDITIONS_REASON = "a forward legal step this opinion named could not be recorded, so the conditions listed here are incomplete";
-
-    /**
-     * Deliver, clamp conservatively, and name the defect in the run record.
-     *
-     * CONSERVATIVE means one direction only: CLEAR becomes CONDITIONAL. A verdict already at
-     * CONDITIONAL or BLOCKING is never relaxed — a clamp may add caution and may never remove it.
-     *
-     * The defect goes to the RUN RECORD (`runLog`) as well as the reader-facing note, because the R2
-     * scorer keys on the run record and this is what preserves its reads: what used to be a terminal
-     * failure event is now a delivered-with-defect event, and both are visible to the same consumer.
-     */
-    // THE DECISION IS `terminalClampDecision`, CALLED NOT COPIED — it lives in terminal-clamp.mjs so
-    // the arms can drive it, for the reason floor-duty.mjs states about its own predicate: inline, it
-    // could only be pinned by source text, and a source-text pin cannot tell an armed check from one
-    // somebody disarmed while leaving its words in place. This closure is the wiring: run record, note,
-    // clamp lists, status. The judgement is all in the module.
-    const deliverAndClamp = ({ event, defect, reason, clause, detail = {}, again = false, statedElsewhere = false }) => {
-      // A GUARD JUDGED AGAIN in this run says nothing new when its judgment is unchanged, and otherwise replaces its
-      // earlier clause of the same kind, so a record is never counted twice and no count stands from an earlier pass.
-      if (again && clampReasons.includes(String(reason ?? "").trim())) return;
-      if (again) replaceClauses(String(defect ?? "").split(":")[0]);
-      // — reason and clause are SEPARATE inputs now: the run record and the ops note keep
-      // the token sentence; the clause list (which riskStatement renders into the client's Verdict row)
-      // receives only the reader's sentence. terminalClampDecision refuses a fused clause by shape.
-      const d = terminalClampDecision({ verdict, defect, reason, clause, detail });
-      runLog(run.runDir, { event, ...d.record });
-      note(d.reason);
-      // A gap stated in another entry's sentence keeps its reason for the run record, and its clause is that sentence's.
-      const stored = statedElsewhere ? null : d.clause;
-      if (!clampReasons.includes(d.reason)) { clampClauses.push(stored); clampReasons.push(d.reason); guardClauses.add(stored); }
-      if (d.clamped) {
-        runLog(run.runDir, { event: "terminal-guard-clamp", defect: d.record.defect, from: verdict, to: d.verdict });
-        verdict = d.verdict;
-        writeRunStatus(ctx, signoffPatch(verdict));
-      }
-    };
-
-    // A CLAUSE JUDGED AGAIN REPLACES THE ONE IT REPEATS. A guard judged a second time in this run, after a repeat or a
-    // re-run, withdraws its earlier clause of the same kind before it states the current one, so a record is never
-    // counted twice and a count never stands from an earlier judgment. Returns how many entries it withdrew.
-    const replaceClauses = (token, { event = "guard-clause-replaced" } = {}) => {
-      const w = withdrawByToken(clampReasons, clampClauses, guardClauses, token);
-      if (!w.withdrawn) return 0;
-      clampReasons = w.reasons;
-      clampClauses = w.clauses;
-      runLog(run.runDir, { event, token, withdrawn: w.withdrawn });
-      return w.withdrawn;
-    };
-
-    // A GAP JUDGED AGAIN AND POSITIVELY CLOSED takes its own clause with it, and the result is recomputed from the
-    // accepted assessment and the conditions still standing (ruled 2026-10-19). Only a CONDITIONAL that this run's
-    // guards alone made goes back to CLEAR, and that CLEAR then meets the same deliver-conditional floor any CLEAR meets.
-    // A gap whose account is absent, unreadable or not computable is not closed: its clause stands.
-    const withdrawClosedGap = (token) => {
-      if (!replaceClauses(token, { event: "guard-gap-closed" })) return;
-      const now = verdictWithoutTheClosedGap({ verdict, assessed, reasons: clampReasons });
-      if (now === verdict) return;
-      runLog(run.runDir, { event: "verdict-recomputed-gap-closed", token, from: verdict, to: now });
-      note(`the ${token.split("_")[0]} gap this run named is closed, and nothing else conditions the result — ${verdict} goes back to ${now}, the result the review reached`);
-      verdict = now;
-      restoredClear = now === "CLEAR";
-      writeRunStatus(ctx, signoffPatch(verdict));
-      applyCoverageFloor();   // the floor any CLEAR meets: the opinion's forward actions, the coverage gaps
-    };
-
-    // THE RECALL GATE, DELIVERED AND CLAMPED (the owner's ruling of 2026-10-19: a run is never held). A retrieved record still
-    // ending nowhere a reader can see after the run's recovery ships named, in the approved sentence for the same state,
-    // counted in records out of the records the gate weighed. A record another clause already names (the writer's duty,
-    // the floor) is left to it, so no record is counted twice. Returns the count it clamped on, or 0.
-    // THE RECALL GATE'S GAP AS IT STANDS, judged and not yet clamped, so the writer's duty can be stated with it.
-    const recallGapNow = (duty = null) => {
-      const rec = safeReadJson(P.recallReconciliation);
-      const computable = rec?.computable === true;
-      // A record the writer's duty or the floor's clamp already names is left to that clause: one record, one sentence.
-      // The floor's rows count only where its clamp fires, so a record is never left unnamed by both.
-      const floorNames = floorDutyBlock(safeReadJson(P.floorDuty), { armed: floorDutyArmed(run.runDir) })
-        ? (safeReadJson(P.floorDuty)?.rows ?? []).filter((r) => r?.disposition !== "accounted").map((r) => String(r?.record_id ?? "").toLowerCase())
-        : [];
-      const alreadyNamed = new Set([...(duty?.computable === true ? duty.unaccounted : []).map((u) => String(u?.uri ?? "").toLowerCase()), ...floorNames]);
-      // A RECORD A REFUSED MERGE LEFT OUT IS UNREAD, and it is counted here, in the same sentence, out of a total that
-      // includes it: the band could not take it without passing the size its readers can be dispatched over.
-      const left = refusedRecordsLeftOut(P);
-      // A RECORD NO PLACEMENT PASS READ, and that the report does not address, is counted in the same sentence: the band
-      // gained it after placement's last pass, and the pass that would have assessed it did not complete.
-      const late = lateRecordsUnaddressed(P, alreadyNamed);
-      const unended = (computable ? rec.unended ?? [] : []).filter((u) => !(u.candidate_records ?? [u.record_id])
-        .some((x) => alreadyNamed.has(String(x).toLowerCase())));
-      const weighedIds = new Set(unended.flatMap((u) => u.candidate_records ?? [u.record_id]).map((x) => String(x).toLowerCase()));
-      const records = [...new Set([...weighedIds, ...left, ...late])];
-      // Out of the records the gate weighed or, where it could weigh none, the records the band holds; and the records
-      // left out besides. A late record outside the records the gate weighed is added to the total; where the gate
-      // weighed none, the band's count already holds it.
-      const base = computable ? Number(rec.totals?.candidates ?? 0) : (safeReadJson(P.registerNamedBand)?.enumerated ?? []).length;
-      const weighed = base + left.length + (computable ? late.filter((id) => !weighedIds.has(id)).length : 0);
-      // The same population by id, where the gate kept it: what a sentence stated with the writer's duty counts once.
-      const population = computable
-        ? (Array.isArray(rec.candidate_ids) ? [...rec.candidate_ids, ...left, ...late] : null)
-        : [...(safeReadJson(P.registerNamedBand)?.enumerated ?? []).map((r) => String(r?.record_id ?? "").toLowerCase()), ...left];
-      return { rec, computable, left, late, unended, records, base, weighed, population };
-    };
-    // THE RECALL GATE, DELIVERED AND CLAMPED (the owner's ruling of 2026-10-19: a run is never held). A retrieved record still
-    // ending nowhere a reader can see after the run's recovery ships named, in the approved sentence for the same state,
-    // counted in records out of the records the gate weighed. A record another clause already names (the writer's duty,
-    // the floor) is left to it, so no record is counted twice. Where the writer's duty names records too, the one sentence
-    // is the duty's, stated with these (`joint`). Returns the count it clamped on, or 0.
-    const clampOnTheRecallGate = (duty = null, { again = false, gap = recallGapNow(duty), joint = null } = {}) => {
-      const { rec, computable, left, late, unended, records, base, weighed } = gap;
-      if (!left.length && !late.length && (!computable || !((rec.totals?.unended ?? 0) > 0))) {
-        if (again && gapPositivelyClosed("recall_reconciliation_unended", { recall: rec, leftOut: [...left, ...late] })) withdrawClosedGap("recall_reconciliation_unended");
-        return 0;
-      }
-      // Every record the gate would name is named by a clause standing now: its own earlier clause goes, so the record
-      // is counted once. The gap is not closed, and the result is not recomputed.
-      if (again && !records.length && unended.length < (rec?.unended ?? []).length) replaceClauses("recall_reconciliation_unended", { event: "guard-clause-named-elsewhere" });
-      if (!records.length || !(weighed > 0)) return 0;
-      const sample = [...unended.slice(0, 4).map((u) => `${u.mark_text} (${u.record_id})`), ...left.slice(0, 2), ...late.slice(0, 2)].join("; ");
-      deliverAndClamp({
-        event: "recall-reconciliation-unended-delivered",
-        defect: `recall_reconciliation_unended:${records.length}`,
-        detail: { positions: unended.length, records: records.length, candidates: base, refused: left.length, late: late.length, ...(joint ? { stated_with_duty: joint } : {}) },
-        reason: `recall_reconciliation_unended:${records.length} of ${weighed} record(s) — retrieved and screened in-scope-live on the dominant element but ending nowhere a reader can see (no finding row, no drop row, no counted crowd ruling) after the run's recovery${left.length ? `, ${left.length} of them found by a unit's re-run and left out of a band its readers could not have been dispatched over` : ""}${late.length ? `, ${late.length} of them reaching the band after placement's last pass, whose pass to assess them did not complete` : ""}: ${sample}. The report ships with these named rather than being withheld.${joint ? ` Stated with the writer's duty, once, as ${joint.n} of ${joint.m} record(s).` : ""}`,
-        again,
-        clause: clauseForDefect("recall_reconciliation_unended", records.length, weighed),
-        statedElsewhere: Boolean(joint),
-      });
-      return records.length;
-    };
-    // ── — THE DECLINATION DUTY, CHECKED AGAINST THE DELIVERED DOCUMENT ────────────────────────
-    //
-    // A SECOND NET OVER ONE REACHABLE PATH, and it exists because I argued it could not fire and was
-    // wrong. The acceptance boundary refuses a call that leaves a carried record with no exit, and the
-    // argument was that nothing could then reach delivery unaccounted. The corrective pass is the state
-    // that enumeration missed: `prepareDeclinationSpec` runs again before it over a surface that can
-    // have grown, so it is ordered against a LARGER owed set; if that call is refused,
-    // `rollbackCorrectivePass` restores the pre-corrective findings and — by T3b's ruling,
-    // deliberately — the run DELIVERS. What ships then satisfied the OLD owed set, and no acceptance
-    // boundary ever saw a call about the records added since, because the only call ordered against them
-    // was the one that was refused.
-    //
-    // JUDGED AGAIN after the delivery check repeats placement or re-runs the writer, with `again`: a gap that remains
-    // replaces its earlier clause with the current count, and a gap positively closed withdraws it (withdrawClosedGap).
-    //
-    // NO ERA STAMP, and it needs none: an archived run carries no declination spec, so `owed` is null,
-    // the reconcile is `computable:false` and this never blocks. Archive compatibility by construction.
-    const clampOnTheWritersDuty = ({ again = false } = {}) => {
-      const duty = synthesisDutyForRun(run.runDir);
-      // THE TWO GAPS STATED ONCE when both name records: the approved sentence, with each record counted once out of the
-      // records either required to be assessed (ruled 2026-10-19). The run record keeps each gap's own counts.
-      const gap = recallGapNow(duty);
-      // THE DUTY IS THE ENTRY'S, AND THE READER IS TOLD ITS RECORDS: every record of each entry left unaccounted, out of
-      // the records the owed entries hold (a duty with no record counts is a row per record, as before).
-      const dutyIds = duty?.computable === true ? duty.unaccounted.flatMap((u) => (Array.isArray(u.uris) ? u.uris : [u.uri])) : [];
-      const recordsOpen = duty?.records?.unaccounted ?? dutyIds.length;
-      const recordsOwed = duty?.records?.owed ?? duty?.totals?.owed;
-      const joint = duty?.computable === true && duty.unaccounted.length
-        ? jointUnaccounted({ dutyIds, owedIds: owedUrisFor(run.runDir), recallIds: gap.records, weighedIds: gap.population })
-        : null;
-      if (duty?.computable === true && duty.unaccounted.length) {
-        const sample = duty.unaccounted.slice(0, 4).map((u) => `${u.mark ? `${u.mark} ` : ""}(${u.uri})`).join("; ");
-        // DELIVERS AND CLAMPS. It used to throw. The defect is real and stays
-        // named — a record the run judged worth a reader's attention reached the document unaccounted —
-        // but naming it to nobody was the worse outcome of the two.
-        deliverAndClamp({
-          event: "synthesis-duty-undischarged",
-          defect: `synthesis_unaccounted_delivered:${recordsOpen}`,
-          detail: { unaccounted: recordsOpen, owed: recordsOwed, uris: dutyIds.slice(0, 6) },
-          reason: `synthesis_unaccounted_delivered:${recordsOpen} of ${recordsOwed} record(s) reached the findings surface and the delivered document accounts for none of them — neither a finding that names them nor a declination with a ground: ${sample}${duty.unaccounted.length > 4 ? " …" : ""}. The report ships with this named rather than being withheld; these records are open points a reader must weigh.${joint ? ` Stated with the recall gate's records, once, as ${joint.n} of ${joint.m} record(s).` : ""}`,
-          again,
-          // — the READER's sentence: what is open, in a lawyer's nouns. Counts survive;
-          // the token, the record ids and the engine's nouns stay in `reason` and the run record.
-          // COMPOSED BY THE AUTHORITY, NOT SPELLED HERE. The same sentence has to be reachable from a
-          // run that stored no clause, where these two objects are long gone and only the reason's own
-          // counts survive; `terminal-clamp.mjs` composes it from the counts either way, so the fresh
-          // run and the republished archive cannot drift apart.
-          clause: joint ? clauseForDefect("synthesis_unaccounted_delivered", joint.n, joint.m)
-            : clauseForDefect("synthesis_unaccounted_delivered", recordsOpen, recordsOwed),
-        });
-      } else if (again && gapPositivelyClosed("synthesis_unaccounted_delivered", { duty })) withdrawClosedGap("synthesis_unaccounted_delivered");
-      const recall = clampOnTheRecallGate(duty, { again, gap, joint });   // the recall gate's gap, beside the writer's duty
-      return { duty, recall };
-    };
-    // ── — THE FLOOR DUTY, DISCLOSED AND CLAMPED AT DELIVERY (it BLOCKED until) ───
-    //
-    // The floors are placement-inquiry's one UNCAPPED obligation — every live in-class identical or
-    // near-identical record, listed individually — and the duty has been measured and never enforced.
-    // Measured on two delivered runs before it was even derived: 45 of 207 floors on one and 99 of 225
-    // on the next never reached the placement form, every one a LIVE filing.
-    //
-    // ARMED BY THE STAMP, NOT BY THE ARTIFACT'S PRESENCE. Across the 24 run directories on the test box,
-    // 19 carry no floor-duty artifact at all — and on this box "absent" means a knockout run far more
-    // often than an old one, so absence cannot be read as either "clean" or "old". The stamp is written
-    // only by a placement pass that actually ran under the code carrying the order.
-    //
-    // IT COUNTS THE SEAT'S OWN SHARE. A floor row the band gave no record id is undischarged and
-    // UNANSWERABLE — no seat behaviour could have closed it, and the repair it implies can be performed
-    // by nobody. Blocking on it would fail a run for a band defect under a rule about seat behaviour, so
-    // it is disclosed in the message and excluded from the count that blocks. That is a stated limit,
-    // not an oversight: if the unanswerable count is ever the large one, it wants its own issue against
-    // the band rather than a wider floor here.
-    //
-    // NO REPAIR RUNG, deliberately and on a measurement (ruling relayed 2026-08-27). Every
-    // registered repair composer belongs to another stage; placement has none, and building one is a
-    // larger piece of work than this floor. The blast radius said it could wait: on the day this was
-    // written today's run discharged all 60 of its floors, and the only two runs with undischarged rows
-    // carried 5 and 9 out of 222 and 352. A rung is a follow-up, never a precondition.
-    // THE FLOOR DUTY'S CLAMP, callable: applied where the terminal checks run, and again to a placement pass the
-    // delivery gate repeats, whose account the report is then rebuilt from. Returns the block it clamped on, or null.
-    const clampOnTheFloorDuty = ({ again = false } = {}) => {
-      // THE PREDICATE IS `floorDutyBlock`, called not copied — it lives in floor-duty.mjs so the arms can
-      // DRIVE it. Inline here it could only be pinned by source text, and a source-text pin cannot tell
-      // an armed check from one somebody disarmed while leaving its words in place.
-      const block = floorDutyBlock(safeReadJson(P.floorDuty), { armed: floorDutyArmed(run.runDir) });
-      if (block) {
-        // DELIVERS AND CLAMPS. This threw until a live clearance run died at
-        // delivery after 5.55 hours on ONE undischarged floor row — the guard's first real catch,
-        // working exactly as built, and the client received nothing instead of a report naming one gap.
-        // The era stamp still gates it: `floorDutyArmed` means a placement pass ran under the code
-        // carrying the order, so an archived run neither blocks nor is now accused of a defect.
-        deliverAndClamp({
-          event: "floor-duty-undischarged",
-          defect: `floor_duty_undischarged:${block.undischarged}`,
-          detail: { undischarged: block.undischarged, floors: block.floors, named_without_ground: block.named_without_ground ?? 0, unanswerable: block.unanswerable ?? 0 },
-          reason: `floor_duty_undischarged:${block.undischarged} of ${block.floors} floor row(s) — every floor is a LIVE in-class identical or near-identical record and the duty is uncapped: each is placed at any tier, or named by its record id with a one-line ground. These came back neither: ${block.sample}${block.undischarged > 4 ? " …" : ""}`
-            + `${block.named_without_ground ? ` (${block.named_without_ground} named with no ground)` : ""}`
-            + `${block.unanswerable ? ` — a further ${block.unanswerable} floor row(s) carry no record id at all and are excluded from this count: the band gave the seat nothing to name, so those are a band defect and not this seat's to answer` : ""}`
-            + `. The report ships with these named rather than being withheld.`,
-          again,
-          // — the READER's sentence. "Floor row" is an engine noun; what the fact IS for a
-          // lawyer: live registrations identical or near-identical to the mark that the report does not
-          // individually address. Counts survive; token, ids and engine nouns stay in `reason`.
-          // Composed by the authority in `terminal-clamp.mjs` for the reason the sibling site above
-          // gives: a republished pre-split run has to reach the same sentence from the counts alone.
-          clause: clauseForDefect("floor_duty_undischarged", block.undischarged, block.floors),
-        });
-      } else if (again && gapPositivelyClosed("floor_duty_undischarged", { floorClosed: floorDutyClosed(safeReadJson(P.floorDuty), { armed: floorDutyArmed(run.runDir) }) }))
-        withdrawClosedGap("floor_duty_undischarged");
-      return block;
-    };
-    {
-      clampOnTheWritersDuty();   // the writer's duty and, beside it, the recall gate (defined above the floor's block)
-
-      clampOnTheFloorDuty();
-    }
-
-    // PR-3 (report voice) — the factual open-state clause per reason, INDEX-ALIGNED with clampReasons.
-    // The legalActions arm pushes the author's typed `condition` clause (fact voice) where one exists;
-    // the machinery arm's reasons are already factual states. riskStatement prefers these for its
-    // "conditional on:" lede; verdict.json.reasons stays the ask texts every other consumer renders.
-    // (All three now DECLARED ABOVE the terminal checks — — so those can clamp
-    // rather than throw. Nothing about their use here changed.)
-    // Extracted into a callable (repair-first A5): the degenerate-reviewer re-ask below can flip a
-    // stale BLOCKING to CLEAR — that outcome must pass the SAME deliver-conditional floor, never
-    // bypass it because the clamp already ran once.
-    const applyCoverageFloor = () => {
-    // Each entry is the floors' state, so delivery reads only a floor that threw since the last of these.
-    runLog(run.runDir, { event: "verdict-floors-pass" });
-    // review fix: the machinery arm below must judge the verdict AS IT ENTERED the floor —
-    // when the legalActions arm clamps CLEAR→CONDITIONAL first, the machinery gaps (coverage, frame,
-    // screen-gate, senior, registerGap) must still be computed and APPENDED, or a run
-    // with both a condition action and an unfinished register slice would disclose only the condition.
-    const entryVerdict = verdict;
-    // spec 64 — the legalActions arm: the opinion's OWN typed condition actions (findings.json
-    // actions[], CONDITION_KINDS) are a verdict input, independent of the machinery clamps below.
-    // This is the CLEAR-despite-"consent before filing" fix (copper-causeway / ashen-gantry): the
-    // reviewer verdict is QC-flag semantics — once its flags are fixed the recheck legitimately
-    // returns CLEAR — so the demanded legal acts must gate HERE, derived from the data the author
-    // typed, never from a keyword grep over prose. Applies on CLEAR *and* CONDITIONAL (an already-
-    // conditional run gets its conditions RECORDED — never again kinds:{} reasons:[] under a report
-    // naming forward acts); BLOCKING stays the fail arm untouched. Never lowers. A parse failure
-    // here is noted loudly and rides on (never-kill) — the predelivery verdict-actions-coherence
-    // lint re-reads the same data independently and is the second net.
-    try {
-      if (verdict === "CLEAR" || verdict === "CONDITIONAL") {
-        const fdoc = existsSync(P.findings) ? parseFindingsJsonLenient(readFileSync(P.findings, "utf8")) : null;
-        const { conditions, conditionClauses } = deriveActionConditions(fdoc?.actions, fdoc?.findings);
-        if (conditions.length) {
-          const fresh = conditions.filter((c) => !clampReasons.includes(c));
-          clampKinds.legalActions = true;
-          // pairwise push — clampClauses stays index-aligned with clampReasons across re-entries
-          // (the degenerate re-ask re-runs this floor; dedup is by the reason TEXT for both).
-          for (const c of fresh) clampClauses.push(conditionClauses[conditions.indexOf(c)] ?? c);
-          clampReasons.push(...fresh);
-          for (const c of fresh) recordConditionReasons.add(c);
-          if (verdict === "CLEAR") {
-            runLog(run.runDir, { event: "coverage-floor-clamp", cause: "forward-actions", from: "CLEAR", to: "CONDITIONAL", legalActions: conditions.length });
-            note(`deliver-conditional floor: the opinion names ${conditions.length} forward legal action(s) a human must take (${conditions[0].slice(0, 140)}${conditions.length > 1 ? `; +${conditions.length - 1} more` : ""}) — clamping CLEAR→CONDITIONAL (spec 64: the disposition is derived from the findings' named actions).`);
-            verdict = "CONDITIONAL";
-            stepsRaisedTheResult = true;
-            writeRunStatus(ctx, signoffPatch(verdict));
-          } else if (fresh.length) {
-            runLog(run.runDir, { event: "verdict-conditions-recorded", legalActions: fresh.length });
-          }
-        }
-        // ── — THE CONDITIONS THAT NEVER REACHED THE LIST ──────────────────────────────────────
-        //
-        // `conditions` above is what SURVIVED the lenient parse. An action that failed validateAction
-        // is not in it, and until this arm existed that was the whole defect: one unknown key on a
-        // senior-clearance row took a run from CLEAR→CONDITIONAL to CLEAR, because the floor and the
-        // sidecar's own coherence check both read the post-quarantine list and were blind to the drop
-        // for the same reason. The defect and the relaxation were the same event.
-        //
-        // The clamp is deliberately NOT a run failure. The lenient path exists to salvage a run whose
-        // corrective ladder is spent, and a delivered opinion that says "there are conditions, and one
-        // of them could not be stated" is worth more to the reader than no opinion. What it must never
-        // do is read as complete — so the reason says INCOMPLETE in the client's own words, and the
-        // engine-side detail (ids, defect tokens) rides the note and the log where an engineer reads.
-        const droppedConditions = quarantinedConditionRows(fdoc?.actionsQuarantined);
-        if (droppedConditions.length) stepsUnreadable = true;   // a step nobody can read is never shown withdrawn
-        const droppedReason = DROPPED_CONDITIONS_REASON;
-        // ONCE, not once per entry. This floor is re-entered — the degenerate re-ask and the delivery
-        // block both call it again — so the reason, the clause and the telemetry are guarded by the
-        // reason's own presence. An event emitted on every re-entry would inflate any count keyed on
-        // it, which is how a log line stops being a measurement.
-        if (droppedConditions.length && !clampReasons.includes(droppedReason)) {
-          clampKinds.actionsDropped = true;
-          clampClauses.push(droppedReason);
-          clampReasons.push(droppedReason);
-          recordConditionReasons.add(droppedReason);
-          runLog(run.runDir, { event: "verdict-conditions-dropped", n: droppedConditions.length,
-            ids: droppedConditions.map((q) => q.id), kinds: droppedConditions.map((q) => q.kind),
-            errors: droppedConditions.map((q) => String(q.error ?? "").slice(0, 80)) });
-          note(`deliver-conditional floor: ${droppedConditions.length} action(s) the opinion typed were dropped by the parser and may have conditioned this result (${droppedConditions.map((q) => `${q.kind ?? "kind-unreadable"}#${q.id ?? "?"}`).join(", ")}) — the verdict cannot be CLEAR over a condition nobody can read.`);
-        }
-        // The CLAMP is outside that guard on purpose: a re-ask can flip a clamped verdict back to CLEAR,
-        // and it must meet this floor again with the reason already recorded.
-        if (droppedConditions.length && verdict === "CLEAR") {
-          runLog(run.runDir, { event: "coverage-floor-clamp", cause: "dropped-actions", from: "CLEAR", to: "CONDITIONAL", actionsDropped: droppedConditions.length });
-          verdict = "CONDITIONAL";
-          writeRunStatus(ctx, signoffPatch(verdict));
-        }
-      }
-    } catch (e) { note(`legal-actions floor skipped (${String(e.message).slice(0, 80)}) — never-kill; the predelivery coherence lint is the second net`); }
-    // ── — THE RECORDED DOWNGRADE, READ ──────────────────────────────────────────────────────────
-    //
-    // wrote this record deliberately and wrote it well. Nothing read it. A run whose dictated
-    // meaning sweep silently became the legacy spec-less path delivered CLEAN — no clamp, no coverage
-    // flag, nothing on the report — while `_driver/common-law-path.json` sat on disk naming the
-    // downgrade and the term of the selector that caused it. Being right is not the same as being read.
-    //
-    // THE LIVE SHAPE THIS CATCHES: a resume of a run with no `_driver/profile.json`. attachProfile
-    // stays legacy on a sidecar-less resume (ctx.profile = null, deliberately — retro-minting would
-    // apply the identity join to a grid the worker was never dictated), so profile.platforms is 0, the
-    // grid spec is never authored, and a variant-carrying non-register-only matter takes the spec-less
-    // path. made the OTHER zeroing (a manifest whose variants do not parse) loud; this is the term
-    // of the same conjunction that stayed silent.
-    //
-    // IT SITS IN ITS OWN try, NOT inside the legal-actions block above: that block's catch would
-    // swallow this reader whenever deriveActionConditions threw, and a downgrade lost because an
-    // unrelated parse failed is the same silence one layer along.
-    //
-    // The predicate is deliberately narrow — the four other decision arms (flag-off, single-term-grid,
-    // resumed-unsplit, register-only) are legitimate paths and must not clamp. The unsplit path is the
-    // documented rollback and is NOT a failure; the defect is the silence, so this records and clamps
-    // rather than throwing.
-    try {
-      if (verdict === "CLEAR" || verdict === "CONDITIONAL") {
-        let rec = null;
-        try { rec = JSON.parse(readFileSync(P.commonLawPath, "utf8")); }
-        catch { /* legacy run — the record predates, or this pass never reached the gather */ }
-        const down = (rec && rec.path === "unsplit" && rec.reason === "no-grid-spec"
-          && rec.spec_inputs?.registerOnly === false && (rec.spec_inputs?.gridVariants ?? 0) > 0) ? rec : null;
-        const clReason = down && `the dictated meaning sweep did not run: ${down.spec_inputs.gridVariants} variant(s) were written for it and no grid spec was authored, so the common-law layer ran on the legacy spec-less path and the unregistered-use coverage is not the coverage the plan dictated`;
-        // RECORD ONCE. This floor is re-entered (the degenerate re-ask, the lint repair and the
-        // post-consolidation delivery block all call it again), so the reason guards itself by presence
-        // — an event emitted per re-entry stops being a measurement.
-        if (clReason && !clampReasons.includes(clReason)) {
-          clampKinds.commonLawDowngrade = true;
-          clampClauses.push(clReason); clampReasons.push(clReason);   // machinery reasons ARE factual open-states — clause == reason
-          runLog(run.runDir, { event: "common-law-downgrade-clamp", reason: down.reason,
-            gridVariants: down.spec_inputs.gridVariants, profilePlatforms: down.spec_inputs.profilePlatforms });
-          note(`deliver-conditional floor: ${clReason} — clamping CLEAR→CONDITIONAL so the delivered status carries the gap.`);
-        }
-        // THE CLAMP IS A SEPARATE `if` ON PURPOSE, exactly as the dropped-conditions clamp below is: a
-        // re-ask can flip a clamped verdict back to CLEAR, and it must meet this floor again with the
-        // reason ALREADY recorded. Folding these two into one guard would let the second pass skip on
-        // the dedup and deliver CLEAR — the precise defect this issue is about.
-        if (clReason && verdict === "CLEAR") { verdict = "CONDITIONAL"; writeRunStatus(ctx, signoffPatch(verdict)); }
-      }
-    } catch (e) {
-      note(`common-law downgrade floor skipped (${String(e.message).slice(0, 80)}) — never-kill`);
-      // Nothing else would clamp this: the audit workbook names it (degraded-parts.mjs, checks).
-      try { runLog(run.runDir, { event: "verdict-floor-failed", floor: "common-law", fail: String(e?.message ?? e).slice(0, 200) }); }
-      catch { /* the note above still stands */ }
-    }
-    if (entryVerdict === "CLEAR") {
-      const frameGap = ctx.frameReopenGap === true;
-      let frameDeferrals = [];
-      try { const rp = driverDir(run.runDir, "frame-reopen.json"); const rec = existsSync(rp) ? JSON.parse(readFileSync(rp, "utf8")) : null; frameDeferrals = Array.isArray(rec?.deferrals) ? rec.deferrals : []; } catch { /* best-effort */ }
-      const frameResidual = frameGap || frameDeferrals.length > 0;
-      // This arm's producer went live (it had none since the initial port):
-      // the unresolved set comes from ctx when THIS session's gate disclosed it, else from the durable
-      // sidecar (the resume shape — the gate disclosed, the process died, and this pass reached the
-      // floor without re-entering the gate).
-      const sgUnresolved = loadScreenGateUnresolved(run.runDir, ctx);
-      const screenGateGap = sgUnresolved.length > 0;
-      const coverageInsufficient = coverageJudgment.present && coverageJudgment.sufficient === false;
-      // WP-receipts W4 — the "clamp" arm of UNREACHABLE_SENIOR_POLICY (OFF by default: the senior lawyer decided
-      // open-item, 2026-07-05 — a stated qualification, never a rule-driven verdict change). Built so
-      // flipping the policy is one config line, not a code round.
-      const seniorGap = UNREACHABLE_SENIOR_POLICY === "clamp"
-        && (ctx.seniorRights?.rows ?? []).some((r) => r.applicable && !r.verified);
-      // Unfinished-register clamp (copper-lattice 2026-07-08; ON by default, CLEAROTRON_REGISTER_GAP_CLAMP=0
-      // is rollback-only): a MATERIAL register slice that never (fully) ran is an EXECUTION fact, not a
-      // sufficiency judgment — the screenGateGap class ("could not examine"), read deterministically from
-      // the taint-relabelled ledger + the taint receipt, independent of the LLM's
-      // coverage_judgment (whose absent-⇒-sufficient default is the hole this closes). deferred rows only;
-      // coverage-limited stays an accepted limit.
-      const regGap = process.env.CLEAROTRON_REGISTER_GAP_CLAMP !== "0"
-        ? decideRegisterGap(loadCoverageLedger(run.runDir).rows, { taintAxes: readActiveTaintAxes(run.runDir) })
-        : { gap: false, deferred: [], taintAxes: [] };
-      const registerGap = regGap.gap === true;
-      // T3 (H4, an owner-approved doctrine flip): the D1 `artifactInvalid`
-      // clamp input + kinds.artifact are DELETED — a compromised machine artifact now FAILS the run
-      // upstream (deriveNamedBand / the register-digest terminals) instead of shipping a
-      // finished-looking CONDITIONAL over unreadable receipts. What remains here are the honest
-      // sanctioned clamps: the lawyer's own sufficiency call, a disclosed frame residual, a
-      // could-not-examine record, and an unfinished register slice — CONDITIONAL carries
-      // lawyer-judged/disclosed residue only.
-      if (coverageInsufficient || frameResidual || screenGateGap || seniorGap || registerGap) {
-        // THESE SENTENCES REACH A CLIENT AND THEY ARE NOT OURS TO WRITE (owner, 2026-09-17). One of
-        // them — the screen-gate line, which says a mark "could not be record_fetched" — carried an
-        // engine identifier into the list a client reads as the conditions on their result, by a route
-        // `terminalClampDecision` guards and this one did not. A reader's sentence for it was written
-        // here and refused: the objection was the class, not the wording. RULED 2026-09-18, design item
-        // 25 — cut the clause: it stays in the run record and leaves the client's result entirely, with
-        // NOTHING written in its place. That is what the `null` clause below means.
-        const reasons = [], clauseOf = new Map();   // run-record reason → the client's clause: the same words, with any engine token taken out
-        const machinery = (reason, clause = reason) => { reasons.push(reason); clauseOf.set(reason, clause); };
-        if (coverageInsufficient) machinery(`the lawyer judged a material slice not fully cleared: ${coverageJudgment.reason || "register coverage gap"}`);
-        // The frame comparison's reason is the engine's account of its own steps: it stays in the run record, and the
-        // client's conditions get nothing in its place (ruled 2026-10-13, as the screen-gate line below).
-        if (frameGap) machinery("the blind frame-diff flagged a dominant-element omission the reopen pass did not close", null);
-        else if (frameDeferrals.length) machinery(`follow-ups left open this run: ${frameDeferrals.map((d) => plainDirective(d.directive)).slice(0, 3).join(", ")}`);
-        if (screenGateGap) machinery(`${sgUnresolved.length} in-scope mark(s) dropped on goods could not be record_fetched (unverified): ${sgUnresolved.map((g) => g.mark).join(", ")}`, null);   // run record ONLY: no client clause (ruled 2026-09-18)
-        if (seniorGap) machinery(`the oldest registration in a verdict-driving family could not be retrieved (policy: clamp): ${(ctx.seniorRights?.rows ?? []).filter((r) => r.applicable && !r.verified).map((r) => r.mark).join(", ")}`);
-        if (registerGap) {
-          for (const { reason, clause } of registerGapConditions(regGap)) machinery(reason, clause);
-          // (the deferred and cut-down register lines: registerGapConditions, at the end of this file)
-        }
-        // ── THE THIRD CLAMP SITE NAMES ITSELF, AND NAMES WHICH OF ITS SIX INPUTS FIRED ────────────────
-        //
-        // All three clamp sites emitted this event under one name with the same from/to, distinguishable
-        // only by which optional payload key happened to be present. Two of them fired three milliseconds
-        // apart on a production run — the first without `frameDeferred`, the second with it — which reads
-        // as one decision logged twice. It was two different decisions wearing one name, and the test lane
-        // reasonably discounted one of them. `cause` makes the event self-describing.
-        //
-        // THE EVENT NAME IS DELIBERATELY NOT SPLIT. It is a true statement about the effect — the verdict
-        // was clamped — and something downstream may already count clamps in aggregate. A discriminator is
-        // additive; three names would not be.
-        //
-        // This site is itself six causes under one name, so it also lists WHICH fired rather than
-        // leaving a reader to key on field presence and guess.
-        const clampInputs = Object.entries({
-          coverageInsufficient, frameGap, frameDeferred: frameDeferrals.length,
-          screenGate: screenGateGap ? sgUnresolved.length : 0, seniorRight: seniorGap,
-          registerGap,
-        }).filter(([, v]) => Boolean(v)).map(([k]) => k);
-        runLog(run.runDir, { event: "coverage-floor-clamp", cause: "coverage", causes: clampInputs, from: "CLEAR", to: "CONDITIONAL", coverageInsufficient: coverageInsufficient || undefined, frameGap: frameGap || undefined, frameDeferred: frameDeferrals.length || undefined, screenGate: screenGateGap ? sgUnresolved.length : undefined, seniorRight: seniorGap || undefined, registerGap: registerGap ? { deferred: regGap.deferred.length, taint: regGap.taintAxes.length } : undefined });
-        note(`deliver-conditional floor: ${reasons.join("; ")} — clamping CLEAR→CONDITIONAL so the delivered status carries the gap (never withheld, never halted).`);
-        verdict = "CONDITIONAL";
-        // APPEND (dedup by exact text) — the legalActions arm may already have recorded conditions,
-        // and this callable runs more than once (degenerate re-ask, lint repair, post-consolidation).
-        const freshMachinery = reasons.filter((r) => !clampReasons.includes(r));
-        clampClauses.push(...freshMachinery.map((r) => (clauseOf.has(r) ? clauseOf.get(r) : r)));   // the clause is the reason less any engine token; null = the run record's alone
-        clampReasons.push(...freshMachinery);
-        // The reason KINDS distinguish coverage/frame/screen-gate/senior-right/register residue for the
-        // report bound line and the client conditions row (merged — legalActions survives).
-        clampKinds = { ...clampKinds, coverage: coverageInsufficient || undefined, frame: frameResidual || undefined, screenGate: screenGateGap || undefined, seniorRight: seniorGap || undefined, registerGap: registerGap || undefined };
-        writeRunStatus(ctx, signoffPatch(verdict));
-      }
-    }
-    };
-    applyCoverageFloor();
-    // A2 / T2 — the delivered verdict + its DERIVED display fields (tier/badge/gauge
-    // off the worst live composite) become THE code-carried authority every downstream surface joins
-    // (report hero + gauge via driver-owned front-matter, composeEmailHtml, meta.json) instead of
-    // each surface re-deriving its own idea of the bound —
-    // copper-spire's three-way label contradiction was exactly three surfaces with three authorities.
-    // MANDATORY now (was best-effort): the sidecar IS the single authority; a failed write is a run
-    // failure, never a silent fallback to divergent labels. Re-invoked after findings consolidation
-    // (the delivery block) so the sidecar always reflects the FINAL findings set.
-    const composeVerdictSidecar = () => {
-      let findingsArr = [], sv = 1, actionsArr = null, actionsDropped = [];
-      try {
-        const doc = parseFindingsJsonLenient(readFileSync(P.findings, "utf8"));
-        findingsArr = doc?.findings ?? [];
-        sv = doc?.schemaVersion ?? 1;
-        actionsArr = doc?.actions ?? null;
-        actionsDropped = quarantinedConditionRows(doc?.actionsQuarantined);
-      } catch { /* no findings — derive off none */ }
-      // spec 64 — belt-and-braces: the sidecar is THE authority every surface joins; writing CLEAR
-      // while the findings carry live condition actions is the exact incoherence the derivation
-      // exists to prevent. Fail loud (StageFailure at the call sites) — never write the contradiction.
-      const actionConditions = deriveActionConditions(actionsArr, findingsArr).conditions;
-      if (verdict === "CLEAR" && actionConditions.length)
-        throw new Error(`verdict CLEAR with ${actionConditions.length} live condition action(s) — applyCoverageFloor must re-derive before the sidecar writes`);
-      // — AND THE SAME INVARIANT OVER THE ONES THAT WERE DROPPED. This check read the SURVIVING
-      // actions, so it was blind to a quarantined condition in exactly the way the floor above was —
-      // two independent guards, one blind spot, because both consumed the same lossy parse. A guard
-      // that fails the way the thing it guards fails is not a second net.
-      if (verdict === "CLEAR" && actionsDropped.length)
-        throw new Error(`verdict CLEAR with ${actionsDropped.length} DROPPED condition action(s) (${actionsDropped.map((q) => `${q.kind ?? "kind-unreadable"}#${q.id ?? "?"}`).join(", ")}) — a condition nobody can read is still a condition; applyCoverageFloor must clamp before the sidecar writes`);
-      // — A BLOCKING VERDICT CARRIES ITS GROUNDS, OR THIS WRITE REFUSES.
-      //
-      // `applyCoverageFloor` populates clampReasons/clampKinds on CLEAR and CONDITIONAL only — "BLOCKING
-      // stays the fail arm untouched" — so every BLOCKING sidecar shipped `reasons: []` and `kinds: {}`:
-      // the decision without its grounds, in the artifact whose entire purpose is carrying them. The prose
-      // survived in senior-eye-review.md, so nothing was lost that time; a consumer of verdict.json alone
-      // (dashboard, gate, downstream stage) saw an ungrounded BLOCKING.
-      //
-      // THE GROUNDS WERE ALREADY PARSED. `parseCorrections` is imported by this file and already walks the
-      // review for exactly these lines — it is what the corrective pass is handed at :10242. Nothing needed
-      // extracting; the two halves simply were never joined. No third copy of that walk is made here, which
-      // is the rule verify.mjs states beside `countCitedDefects` ("the line walk is countCitedDefects's,
-      // verbatim, so 'a correction line' means the same thing to both").
-      //
-      // NO CLIENT SURFACE MOVES. `riskStatement` and `bindRecommendation` both return a fixed string on
-      // BLOCKING and never read `reasons`; `deriveDisplayVerdict` passes them through to `conditions` and
-      // takes tier/badge/gauge from the findings. And post- a BLOCKING run does not reach delivery
-      // at all. This changes the record and nothing a client reads.
-      //
-      // A DEGENERATE REVIEW STILL WRITES A REASON, and this ordering is deliberate: the sidecar is written
-      // HERE, before the degenerate-BLOCKING re-ask below gets its one chance to repair a review that cited
-      // nothing. Throwing on the empty case would turn a recoverable reviewer defect into a StageFailure
-      // that ends the run before the repair it already has. So the empty case states ITSELF as the ground —
-      // "the reviewer cited nothing" is a fact about this run, and an empty array is not.
-      // LOCAL TO THIS WRITE, never pushed into clampReasons/clampKinds — and that is the whole care in it.
-      // `clampReasons` outlives the call, and the degenerate re-ask below can flip this same run to CLEAR
-      // and write again. Grounds pushed into the shared array would ride into the CLEAR sidecar as its
-      // `reasons`: a verdict claiming conditions it does not have, which is this PR's own defect arriving
-      // through its own fix. On every non-BLOCKING verdict these are pass-throughs.
-      let blockingGrounds = [];
-      let reviewerCited = false;
-      if (verdict === "BLOCKING") {
-        let cited = [];
-        try { cited = parseCorrections(readFileSync(P.seniorEyeReview, "utf8")).map((r) => r.text).filter(Boolean); }
-        catch { /* unreadable or absent review — the fallback ground below is the honest record of that */ }
-        reviewerCited = cited.length > 0;
-        blockingGrounds = (reviewerCited
-          ? cited.slice(0, 12).map((t) => t.slice(0, 300))
-          : ["the reviewer refused to sign and cited no file-anchored defect — a degenerate review, recorded as the ground rather than left as an empty array"]
-        ).filter((g) => !clampReasons.includes(g));
-      }
-      // — the lede is the opinion's, by decision: orderClausesForLede (terminal-clamp.mjs)
-      // sorts guard clauses after the opinion's condition clauses, reasons reordered in step. The
-      // rationale lives on the function so the arms can DRIVE it rather than pin this call site's text.
-      const { clauses: orderedClauses, reasons: orderedReasons } = orderClausesForLede(clampClauses, clampReasons, guardClauses);
-      const reasonsOut = blockingGrounds.length ? [...orderedReasons, ...blockingGrounds] : orderedReasons;
-      // — AND EACH APPENDED GROUND CARRIES AN EXPLICIT NULL CLAUSE, which is what puts it in the
-      // run record ALONE. The block above says "no client surface moves", and that was true of the
-      // statement and the bound recommendation, both fixed strings on BLOCKING. It was never true of the
-      // CONDITIONS LIST: `clientConditions` walks the reasons and prints any reason that has no clause
-      // and no engine token, so on a delivered BLOCKING run the reviewer's own cited correction lines
-      // printed to the client as their conditions — 8 of the 13 conditions on the run this was measured
-      // on (2026-09-20). A stored null is the shipped way to say "recorded, not rendered", and the
-      // arrays stay index-aligned because `orderClausesForLede` returns them the same length.
-      const clausesOut = blockingGrounds.length
-        ? [...orderedClauses, ...blockingGrounds.map(() => null)]
-        : orderedClauses;
-      const kindsOut = verdict === "BLOCKING" ? { ...clampKinds, reviewerCited } : clampKinds;
-      // The invariant itself, stated over the value that is WRITTEN rather than over the branch that fills
-      // it — a guard that only holds while the code above is remembered is not a guard. Unreachable today
-      // by construction, which is the intended shape: a BLOCKING with an empty reasons array is
-      // structurally impossible, and any future path that reintroduces one dies here instead of shipping.
-      if (verdict === "BLOCKING" && !reasonsOut.length)
-        throw new Error("verdict BLOCKING with no reasons — a blocking decision without its grounds; verdict.json is the artifact whose whole purpose is carrying them");
-      // doc 50 — a v4 record derives off the run's FROZEN framework (band words); deriveDisplayVerdict
-      // fail-louds if banded findings arrive with no manifest (never silently badge a rated matter LOW).
-      const derived = deriveDisplayVerdict({ verdict, reasons: reasonsOut, kinds: kindsOut, findings: findingsArr,
-        manifest: sv >= 4 ? ctx.framework : null });
-      // spec 64 — THE one risk statement: composed ONCE here (band word + stance clause from the same
-      // sidecar fields), consumed verbatim by every surface (index / status / report hero / email /
-      // xlsx) so severity and disposition can never contradict across pages. PR-3 (report voice): a
-      // CONDITIONAL statement reads "<Tier> — conditional on: <factual open-state> (and N more)." —
-      // clampClauses carries the fact-voice clauses; the structured `stance` field is what every
-      // consumer keys on (never the statement's wording — the magic-string coupling is retired).
-      const statement = riskStatement({ tier: derived.tier, verdict, reasons: reasonsOut, clauses: clausesOut,
-        basis: isRegisterOnly(ctx.searchPolicy) ? "register-only" : null });
-      return { derived, statement, doc: { ts: new Date().toISOString(), verdict, reasons: reasonsOut, clauses: clausesOut, kinds: kindsOut,
-        tier: derived.tier, badge: derived.badge, gaugeIndex: derived.gaugeIndex, maxComposite: derived.maxComposite,
-        band: derived.band ?? null, statement, stance: verdictStance(verdict) } };
-    };
-    // The label, composed above and written here. Composing is apart so the delivery check can show the stages it re-runs
-    // the label it could not yet save.
-    const writeVerdictSidecar = () => {
-      const { derived, statement, doc } = composeVerdictSidecar();
-      const tmp = driverDir(run.runDir, "verdict.json.tmp");
-      writeFileSync(tmp, JSON.stringify(doc, null, 2));
-      renameSync(tmp, driverDir(run.runDir, "verdict.json"));
-      // — THE STATUS RECORD CARRIES THE BAND AND THE SENTENCE, so a reader of the run does not
-      // have to reach for `verdict` to say something about the outcome. `verdict` is the gate's decision
-      // (CLEAR / CONDITIONAL / BLOCKING) and is engine vocabulary; the band and the composed statement are
-      // what every client surface already speaks. Measured 2026-09-20: an assistant summarising a run read
-      // `verdict` and told the client "BLOCKING" beside a Medium rating, because status.json held no band.
-      writeRunStatus(ctx, { tier: derived.tier ?? null, statement: statement ?? null });
-      return derived;
-    };
-    // THE LABEL, SAVED AGAIN IN THE DELIVERY CHECK, WITHOUT ENDING THE RUN (2026-10-19). After a clamp there the label
-    // has to reach every surface the report is published from, and they all read it from the one file. A save that
-    // fails is tried again. One that still fails is owed: the stages the check re-runs are shown the label as composed,
-    // and the save is made once more before anything is published, so no surface is built from the label settled
-    // before the clamp. Returns whether it is saved.
-    let labelOwed = null;
-    let rankingBeforeRepeat = null;   // where each record stood before the delivery check repeated placement
-    const saveTheLabel = (why) => {
-      const saved = saveWithRetries(() => writeVerdictSidecar());
-      if (saved.ok) {
-        if (saved.attempts > 1) runLog(run.runDir, { event: "verdict-write-retried", why, attempts: saved.attempts });
-        try { displayVerdict = JSON.parse(readFileSync(driverDir(run.runDir, "verdict.json"), "utf8")); } catch { /* the label is re-read at reassembly */ }
-        return true;
-      }
-      labelOwed = labelOwed ?? why;
-      runLog(run.runDir, { event: "verdict-write-deferred", why, attempts: saved.attempts, fail: String(saved.error?.message ?? saved.error).slice(0, 160) });
-      note(`delivery: the label could not be saved ${why} (${String(saved.error?.message ?? saved.error).slice(0, 100)}) — it is saved again before the report is published`);
-      try { displayVerdict = composeVerdictSidecar().doc; } catch { /* composed again when it is saved */ }
-      return false;
-    };
-    // THE LABEL OWED IS SAVED before anything is published from it, and the report's own label follows it. Only a run
-    // directory that refuses every save of it ends the run, and then nothing the run writes can be published.
-    const saveTheOwedLabel = () => {
-      if (!labelOwed) return;
-      const owed = labelOwed;
-      labelOwed = null;
-      if (!saveTheLabel(`${owed}, saved again before delivery`))
-        throw new StageFailure("verdict", `the run directory refused every save of the result's label (${owed}) — no surface can be published with it`);
-      applyVerdictFrontMatter();
-    };
-    // THE CONDITIONS FOLLOW THE RECORD AFTER A REPAIR IN THE DELIVERY CHECK. Every surface reads the list from the label,
-    // and the list states the record's forward legal steps as the record stands: a repair that rewrites, withdraws or
-    // adds one moves the list with it, in the record's own words. The result moves only where the floor any result meets
-    // moves it: a CLEAR the repaired steps now condition becomes CONDITIONAL, and nothing is relaxed. A BLOCKING result
-    // states no step of its own, so only a list already stating the record's steps follows it. The caller saves the
-    // label. Returns whether the list, its kinds or the result changed.
-    const followTheRecordsActions = (why) => {
-      if (verdict === "BLOCKING" && !recordConditionReasons.size) return false;
-      let raw = null, fdoc = null;
-      try { if (existsSync(P.findings)) { raw = readFileSync(P.findings, "utf8"); fdoc = parseFindingsJsonLenient(raw); } }
-      catch { fdoc = null; }
-      if (!fdoc) return false;   // no record to read: the list stands as stated, and the coherence checks judge it
-      const { conditions, conditionClauses } = deriveActionConditions(fdoc.actions, fdoc.findings);
-      const now = conditions.map((c) => ({ reason: c, clause: conditionClauses[conditions.indexOf(c)] ?? c }));
-      const dropped = quarantinedConditionRows(fdoc.actionsQuarantined).length > 0;
-      if (dropped && recordConditionReasons.has(DROPPED_CONDITIONS_REASON)) now.push({ reason: DROPPED_CONDITIONS_REASON, clause: DROPPED_CONDITIONS_REASON });
-      const state = () => JSON.stringify([clampReasons, clampClauses, Boolean(clampKinds.legalActions), Boolean(clampKinds.actionsDropped)]);
-      const stood = state(), was = verdict;
-      const f = conditionsFollowingTheRecord({ reasons: clampReasons, clauses: clampClauses, fromRecord: recordConditionReasons, now });
-      clampReasons = f.reasons;
-      clampClauses = f.clauses;
-      recordConditionReasons = f.held;
-      if (!conditions.length) delete clampKinds.legalActions;
-      if (!dropped) delete clampKinds.actionsDropped;
-      // A WITHDRAWAL IS POSITIVE ONLY ON A RECORD WHOSE ACTIONS REGISTER IS A LIST that holds none of the steps. A missing
-      // or malformed register, or one with an entry dropped as unreadable, withdraws nothing.
-      if (f.held.size || conditions.length || dropped) stepsWithdrawnAt = null;
-      else if (f.withdrawn.length) stepsWithdrawnAt = actionsRegisterListed(raw) ? new Date().toISOString() : null;
-      // The floor runs again only where the repaired steps reach it, as the coherence repair runs it.
-      if (state() !== stood || (verdict === "CLEAR" && (conditions.length || dropped))) applyCoverageFloor();
-      restoreTheReviewsClear();
-      if (state() === stood && verdict === was) return false;
-      runLog(run.runDir, { event: "verdict-conditions-followed", why, withdrawn: f.withdrawn.length, added: f.added.length,
-        restated: f.restated.length, conditions: recordConditionReasons.size, from: was, to: verdict });
-      note(`the conditions follow the record ${why} (${f.withdrawn.length} withdrawn, ${f.added.length} added, ${f.restated.length} restated${verdict === was ? "" : `; ${was} → ${verdict}`})`);
-      return true;
-    };
-    // A CORRECTION THAT WITHDREW EVERY STEP THAT ALONE MADE THE RESULT CONDITIONAL gives the review's CLEAR back, once the
-    // review of that change has been read and no correction since was rejected (the owner's decision, 2026-11-04). The
-    // result is recomputed as a closed gap's is, and that CLEAR meets the floor any CLEAR meets. The caller saves the label.
-    const restoreTheReviewsClear = () => {
-      let review = null;
-      try { review = JSON.parse(readFileSync(postRepairRecordPath(run.runDir), "utf8")); } catch { review = null; }
-      const now = verdictWhenTheStepsAreWithdrawn({ verdict, assessed, reasons: clampReasons, raisedBySteps: stepsRaisedTheResult,
-        stepsUnreadable, withdrawnAt: stepsWithdrawnAt, reviewReadAt: review?.status === "read" ? review.ts : null,
-        reviewUnread: review?.status === "unread", correctionRejectedAt,
-        // The correction of the first review owed a recheck the cycle did not get accepted: the assessment is not verified.
-        recheckUnaccepted: (correctiveEntryVerdict === "CONDITIONAL" || correctiveEntryVerdict === "BLOCKING") && !correctiveCycleSettled && !correctiveRecheckOk });
-      if (now === verdict) return false;
-      runLog(run.runDir, { event: "verdict-recomputed-steps-withdrawn", from: verdict, to: now, withdrawnAt: stepsWithdrawnAt, reviewReadAt: review?.ts ?? null });
-      note(`every forward legal step that made the result conditional was withdrawn, the review of that change was read, and nothing else conditions the result — ${verdict} goes back to ${now}, the result the review reached`);
-      verdict = now;
-      restoredClear = now === "CLEAR";
-      stepsRaisedTheResult = false;
-      writeRunStatus(ctx, signoffPatch(verdict));
-      applyCoverageFloor();   // the floor any CLEAR meets
-      return true;
-    };
-    try { writeVerdictSidecar(); }
-    catch (e) { throw new StageFailure("verdict", `verdict sidecar write failed (the single label authority): ${String(e.message).slice(0, 120)}`); }
-
-    // T3a, ruling 2026-08-26 — "Deliver always, with open points printed. The refusal on a blocking
-    // review goes." This REVERSES T3 (H3/H5), whose flip to fail-on-BLOCKING is itself recorded
-    // itself an owner-approved decision. Both are his; this is the standing one, and the
-    // history is kept here rather than deleted because a reader who finds only one of them will conclude
-    // the code drifted from its contract. (It did not; driver/skills/clearance-search/SKILL.md was the stale half, and this
-    // change makes it true again.)
-    //
-    // COPPER-SPIRE IS STILL ANSWERED, AND NOT BY REFUSING. That failure was a BLOCKING verdict reaching
-    // delivery and then CONTRADICTING its own client summary — a report that reads finished while the
-    // reviewer refused. "Never ships" and "never ships LOOKING FINISHED" were treated as one requirement
-    // for a year; they are two, and only the second was load-bearing. The open-points section at the top
-    // of the body is what carries it now.
-    //
-    // The corrective ladder above is still the fix arm and still runs first. What changed is what happens
-    // when it is exhausted: the reviewing lawyer gets the best draft the run could produce with its weak
-    // spots named, instead of nothing.
-    if (verdict === "BLOCKING") {
-      // Repair-first A5 (2026-07-05): the reviewer verdict is documented noisy (the U1 comment above —
-      // "flips on byte-identical input"), so before the terminal the gate refuses a DEGENERATE artifact:
-      // a carried BLOCKING whose own file no longer says BLOCKING (the copper-spire shape — a failed
-      // re-check silently kept the stale entry verdict while the review on disk said CLEAR), or a
-      // BLOCKING citing ZERO defects (nothing exists for the corrective ladder to fix). ONE forced-fresh
-      // re-ask demands the verdict + file-anchored defects. A REASONED blocking is never re-rolled —
-      // this repair refuses self-contradiction; it cannot overrule the reviewer.
-      // ✕ CONVERSION 9 PRE-EMPTS ONE OF THE TWO SHAPES AND NOT THE OTHER, so this branch stays and the
-      // reason is written down rather than left for somebody to re-derive from an arm that never fires.
-      //
-      //   countCitedDefects === 0   PRE-EMPTED. `record_narrative_refutation` refuses a BLOCKING with an
-      //                             empty `flags` array in the turn it is typed, so no review this driver
-      //                             RENDERS can carry that shape. It survives only on a file the tool did
-      //                             not write — a run resumed across the conversion, or an archived
-      //                             review re-read from disk.
-      //   parseVerdict(md) !== "BLOCKING"   NOT PRE-EMPTED, and it is the copper-spire shape this repair
-      //                             was built for: the run CARRIES BLOCKING while the file on disk says
-      //                             something else. That is a disagreement between the carried entry
-      //                             verdict and a later render, and no per-call validation can see it —
-      //                             each call was individually valid.
-      //
-      // So the repair is narrower than it was and is not dead. Deleting it would take the shape that
-      // still occurs along with the one that no longer does.
-      const readReview = () => { try { return readFileSync(P.seniorEyeReview, "utf8"); } catch { return ""; } };
-      const isDegenerate = (md) => parseVerdict(md) !== "BLOCKING" || countCitedDefects(md) === 0;
-      const reviewMd = readReview();
-      const reviewLedger = ctx.repairLedger ?? (ctx.repairLedger = createRepairLedger(run.runDir, { log: (o) => runLog(run.runDir, o) }));
-// — ONE ceiling, named once and read by BOTH ends. A literal repeated at the record site is a
-      // second statement of the same rule, and two ends stating the same rule is how they drift apart.
-      const degenerateReaskMax = 1;
-      if (isDegenerate(reviewMd) && reviewLedger.canAttempt("reviewer-degenerate-reask", run.codename, { max: degenerateReaskMax })) {
-        runLog(run.runDir, { event: "reviewer-degenerate", fileVerdict: parseVerdict(reviewMd) ?? "unparseable", citedDefects: countCitedDefects(reviewMd) });
-        note(`verdict: BLOCKING is DEGENERATE (file says ${parseVerdict(reviewMd) ?? "unparseable"}, ${countCitedDefects(reviewMd)} cited defect(s)) — one forced-fresh re-ask demanding cited defects`);
-        const rr = await stage("narrative-refutation", ctx, {
-          force: true, trigger: "degenerate-reask",
-          extra: lines(
-            `Write your review with the verdict (CLEAR / CONDITIONAL / BLOCKING) on the FIRST line.`,
-            `If your verdict is BLOCKING: cite at least one concrete, file-anchored defect per blocking reason (name the file and the exact claim). A BLOCKING with no cited defects is invalid output.`,
-            planAuditExtra(ctx) || "",
-          ),
-        });
-        reviewLedger.record("reviewer-degenerate-reask", run.codename, rr.ok ? "ok" : `failed: ${rr.fail}`, { max: degenerateReaskMax });
-        if (rr.ok) {
-          verdict = parseVerdict(readReview()) ?? "BLOCKING";
-          assessed = verdict;   // the re-asked review is the assessment now
-          runLog(run.runDir, { event: "verdict-3", verdict, trigger: "degenerate-reask" });
-          writeRunStatus(ctx, signoffPatch(verdict));
-          applyCoverageFloor();   // a re-asked CLEAR passes the same deliver-conditional floor
-          try { writeVerdictSidecar(); }
-          catch (e) { throw new StageFailure("verdict", `verdict sidecar write failed (the single label authority): ${String(e.message).slice(0, 120)}`); }
-        }
-      }
-      if (verdict === "BLOCKING") {
-        // ── T3a — THE RUN DELIVERS. Ruling 2026-08-26, verbatim: "Deliver always, with open
-        // points printed. The refusal on a blocking review goes." ──────────────────────────────────
-        //
-        // What stood here threw, and its reasoning was T3: "a report the reviewer will not
-        // stand behind never ships looking finished." That decision was the owner's and it is now
-        // reversed by the owner. Both are his; this is the standing one.
-        //
-        // THE OBJECTION THAT REASONING ANSWERED IS STILL ANSWERED, AND NOT BY THIS BRANCH. Its worry
-        // was copper-spire: a BLOCKING verdict reaching delivery and then CONTRADICTING its own client
-        // summary — a report that reads finished while the reviewer refused. That is exactly what
-        // `buildReviewerOpenPointsSection` prevents, at the top of the body, code-built from the review
-        // rather than from any seat's account of it. "Never ships" and "never ships LOOKING FINISHED"
-        // were treated as one requirement; they are two, and only the second was ever load-bearing.
-        //
-        // The corrective ladder above is still the fix arm and still runs first. What changes is only
-        // what happens when it is exhausted: the reviewing lawyer receives the best draft the run could
-        // produce with its weak spots named, instead of nothing at all.
-        runLog(run.runDir, {
-          event: "verdict-blocking-delivered",
-          citedDefects: countCitedDefects(readReview()),
-          degenerate: isDegenerate(readReview()),
-        });
-        note(`verdict: BLOCKING stands after the corrective pass + re-check — the report DELIVERS, with the reviewer's open points recorded for the reviewing lawyer (${countCitedDefects(readReview())} cited defect(s)); the reviewing lawyer is the backstop`);
-      }
-    }
-
-    // R.1 primitive #3 (engagement receipt) is computed later, in the pre-delivery block, together with
-    // F2 rule-shape + B2b reviewer self-coherence into ONE _driver/reasoning-integrity.json sidecar — that
-    // point has report.md + senior-eye-review.md on disk too, so the single writer carries all three signals.
-
-    // Phase 3 — delivery (v14 post-mortem fix). One LLM step curates the report; the audit, the page render,
-    // and the email body are deterministic CODE; a tiny LLM step only SENDS. Each step is independent — a
-    // failure in the audit or the email never loses the report.
-
-    // B1 — the report is rendered in TWO isolated parts, then ASSEMBLED by the driver (was ONE pass over every
-    // card → the ashen-lattice cross-contamination). (1) report-overview: the cross-finding shell (front-matter +
-    // Actions/Coverage/Methodology). (2) report-card per full-prose finding, each from ITS OWN record only — so a
-    // card can never carry another finding's body. Then deterministic assembly (render.mjs fills any gap
-    // structured-only). Each stage is file-gated/resumable; per-card sessions feed the lint repair below.
-    // C2 — fold same-owner+same-mark duplicate filings into one finding BEFORE the overview + cards read
-    // findings.json, so the whole delivery phase (and the published copy) sees the single consolidated set.
-    // THE SEAM'S WRITES ARE ONE CLOSURE, so they can run again: a synthesis save after this point rewrites
-    // findings.json from the seat's own call, and every write below went with it (`stage()` re-runs them).
-    const seamWrites = async () => {
-    // A pass follows each rewrite of findings.json and adds the rows below again, so delivery reads only the adders
-    // that failed since the last of these.
-    runLog(run.runDir, { event: "coverage-rows-pass" });
-    injectDeferralCoverage(P, run.runDir, note); injectMeaningGapCoverage(P, run.runDir, note);   // A3: unclosed reopen directives, and meaning searches that did not complete, become reader-visible coverage rows first
-    // qw/cn-scope-honesty — the sibling injection: a CN-family-scope run whose zh lane did not run
-    // discloses what the native-language investigation would have searched, and where it is offered
-    // (coverage-limited: never clamps, never gates).
-    // — every candidate lane in LANGUAGE_LANES, not zh alone. A JP- or KR-scoped run without the
-    // investigation now states the Japanese/Korean-script equivalents it did not search, exactly as a
-    // CN-scoped one has always stated the Chinese ones.
-    // — the run STATES which jx slices it executed, derived from the per-unit records and the
-    // frozen lane decision. Minted HERE and not at the fold, because the fold runs before both retrieval
-    // slices (grid at ~:5857, nativeread at ~:8503) and a writer inside it could only ever say
-    // "candidates". This is the first point after slice 3 that every resume reaches. Never-kill.
-    // GUARDED on the SAME condition as every other jx site (:5833, :5870, :8515). Without it this ran on
-    // every clearance, including the ones that never had a jx lane — and both R2 runs of the 2026-08-09
-    // round carry no _driver/jx-lanes.json at all. On those the writer would reach its absent arm and
-    // print "NOT writing one", which reads as a withheld action on a run where absence is simply normal.
-    // That is the absent-vs-failed conflation this tranche exists to remove; a lazy import also keeps a
-    // plain clearotron byte-identical, which is why the sibling sites are shaped this way.
-    let localLanguage = null;
-    if (ctx.searchPolicy?.components?.jxLanes) {
-      try {
-        const { stateJxSlices } = await import("./jx.mjs");
-        stateJxSlices(run.runDir, { note, runLog });
-      } catch (e) { note(`jx slice statement skipped (${String(e?.message ?? e).slice(0, 100)}) — never-kill`); }
-      try { localLanguage = await localLanguageStateOf(run.runDir); } catch { localLanguage = null; }
-    }
-    injectScriptScopeCoverage(P, run.runDir, note, { searchPolicy: ctx.searchPolicy, job, profile: ctx.profile, localLanguage });
-    // — AFTER stateJxSlices, and the order is load-bearing: this reads `fold.depth`, which the call
-    // above mints. Before it, every run would look like one that never stated a verdict. Its sibling one
-    // line up covers the lane that did not run; this covers the lane that ran short of what was bought.
-    injectLaneDepthCoverage(P, run.runDir, note);
-    // The third sibling: each mark the screen-gate disclosed as unexamined
-    // gets its own reader-visible coverage row (guarded on the ctx/sidecar unresolved set; idempotent by
-    // mark+uri). The CONDITIONAL clamp came from applyCoverageFloor's screenGateGap arm above, never
-    // from these coverage-limited rows.
-    injectScreenGateCoverage(P, run.runDir, note, ctx);
-    // — the fourth sibling, and the one that REPLACES rather than adds: coverage_judgment.rows
-    // is derived from the machine ledger and the plan-execution receipt instead of retyped by the seat.
-    // Same seam and same reason as injectDeferralCoverage above — every synthesis re-run has settled, so
-    // a re-emit cannot clobber it; and it lands before report-overview and the cards, which are stamped
-    // afterwards and therefore never read it as staleness.
-    stampCoverageJudgmentRows(P, run.runDir, note, ctx);
-    consolidateFindingsFile(P, note, ctx.framework);
-    // The conditions too: a save that rewrote, withdrew or added a forward legal step moves the list with it.
-    followTheRecordsActions("after a save of the record");
-    // T2: consolidation can change the live composite set — re-derive the sidecar so every
-    // surface joins the FINAL findings (the sidecar must never describe a superseded set).
-    // review fix: consolidation can also surface CONDITIONS the floor never saw (a lenient-
-    // quarantined action healed by the strict rewrite, or a transient read failure at floor time) —
-    // the sidecar's CLEAR-with-conditions throw then re-runs the FLOOR once instead of bricking a
-    // delivery the later lint repair was built to heal.
-    try { writeVerdictSidecar(); }
-    catch (e) {
-      note(`verdict sidecar refresh: ${String(e.message).slice(0, 100)} — re-deriving the floor once`);
-      applyCoverageFloor();
-      try { writeVerdictSidecar(); }
-      catch (e2) { throw new StageFailure("verdict", `verdict sidecar refresh failed after consolidation: ${String(e2.message).slice(0, 120)}`); }
-    }
-    };
-    // THE RECORD THE CARDS ARE BUILT ON CARRIES EVERY DEMOTION. The derivation settled the record after the first
-    // synthesis save; a corrective pass saves again before this seam, and a whole re-send brings back every stamp it had
-    // demoted. Built on those, every card whose finding carried one read as stale after the derivation before delivery
-    // demoted them again, and was rebuilt with the overview for a finding nothing had changed. Settled here, once more,
-    // before the overview and the cards; idempotent on a record that already carries every demotion.
-    settleDerivedBases(ctx, "seam");
-    await seamWrites();
-    // Every write above is idempotent: each injection skips a row the record already carries, the stamp
-    // replaces its rows, and the fold leaves a folded record as it is.
-    ctx.afterSynthesisSave = async () => {
-      note(`[seam] a synthesis save after the seam rewrote findings.json — re-applying the seam's writes`);
-      runLog(run.runDir, { event: "seam-reapplied", after: "synthesis-save" });
-      rewriteFromBeforeTheSeam(ctx);   // the basis derivation and the deadline enrichment, as the pass made them
-      await seamWrites();
-    };
-    // wp50/wi2 — the overview PROSE must speak the derived tier (VENZY: caption said "High risk" while
-    // every code surface said VERY HIGH). Thread the just-refreshed sidecar into the stage prompt; the
-    // deterministic backstop is predelivery-lint's overallTierChecks.
-    let displayVerdict = null;
-    try { displayVerdict = JSON.parse(readFileSync(driverDir(run.runDir, "verdict.json"), "utf8")); } catch { /* legacy — prompt line omitted */ }
-    // ── CONVERSION 4 — THE DRIVER'S OWN FRONT-MATTER RECORD ──────────────────────────────────────
-    //
-    // Nine of report-overview.md's ten front-matter keys are values the driver already holds and used to
-    // hand the seat in the dispatch so the seat could type them back into a file the driver then parsed.
-    // They are written here, from the same `job` object `frontMatterIdentity` read, at the same point in
-    // the run — so the record and the old dictation cannot disagree about what the values were.
-    //
-    // NOT added to `_driver/instructed-scope.json`, and that is a live guard rather than a preference:
-    // `validators.matterContext` compares the matter frame against EVERY VALUE in that file, so a key
-    // added there becomes a value the FRAME must quote verbatim. Conversion 4 would have failed a
-    // different stage's validator, on a field neither stage is about.
-    //
-    // `classes` is the INSTRUCTED list, which is what the seat typed too. applyScopeFrontMatter still
-    // stamps the authoritative `classes_line` from _driver/scope-facts.json at assembly (that sidecar is
-    // written after this stage runs, so it cannot be read here), and applyVerdictFrontMatter still stamps
-    // overall_label/overall_badge. This removes the SEAT from those keys; it does not touch the driver's
-    // own authority over them.
-    try {
-      ensureDriverDir(run.runDir);
-      writeFileSync(join(run.runDir, REPORT_IDENTITY_FILE), JSON.stringify(reportIdentityRecord(job, ctx, run.runDir, displayVerdict), null, 2) + "\n");
-    } catch (e) { note(`report identity write failed (non-fatal — the shell renders the keys it has): ${e.message}`); }
-    // THE REPORT OVERVIEW, WHERE IT COULD NOT BE COMPLETED (parts-not-completed.mjs). Its recovery was spent, so the report
-    // delivers its rating and its cards without the overview's conclusion, and the workbook's shipped "Summary" row says
-    // so. The shell the overview would have written is the driver's own, with the run's identity and no conclusion, and
-    // no overview is dispatched again on this pass: not here, not by the lint's redo, not by the delivery check's repair.
-    const overviewOpen = readPartNotCompleted(run.runDir, "overview");
-    if (overviewOpen) {
-      writeFileSync(P.reportOverview, renderReportOverview({ overall_caption: null, handling_note: null, actions: [], methodology: null },
-        reportIdentityRecord(job, ctx, run.runDir, displayVerdict)));
-      runLog(run.runDir, { event: "overview-not-completed-delivery", stage: overviewOpen.stage ?? null });
-    }
-    const rov = overviewOpen ? null
-      : await asPartNotCompleted("overview", async () => must(await stage("report-overview", { ...ctx, displayVerdict }, {}), "report-overview"));   // T3a: a BLOCKING run now DELIVERS; its open points are rendered at assembly, not dispatched here
-    const findingsRead = readFindingsForReport(P);
-    const findingsForCards = findingsRead.findings;
-    //: a rejected findings.json is a defect, not an emptiness. Say so HERE, where the file was read,
-    // with the validator's own token — the card loop below can only observe the consequence.
-    if (findingsRead.rejected) note(`findings.json is present and REJECTED by the strict parser (${findingsRead.rejected}) — joining ${findingsForCards.length} finding(s) leniently for the card match; the delivery guard still refuses`);
-    // P2 clause 3 — assigned in the lint block below, consumed by the freshness precondition before the
-    // client gate. Declared here so both live in the same scope regardless of the lint block's nesting.
-    let staleStages = [];
-    let staleOnTheDeliveryPath = () => staleStages;   // the same question, asked again: set where the lint block asks it
-    // ── §9 — THE CARD SET IS `fullProseOrdinals ∧ form === "full"` ───────────────────────────
-    //
-    // On one country every form is `full`, so this reduces to `fullProseOrdinals` — the same list, in the
-    // same order, dispatching the same cards. That is the byte-identical argument in its structural form
-    // rather than as a diff someone has to re-run.
-    //
-    // On a graded product the findings that drop out are NOT lost: they render as a short entry or a
-    // grouped line, built code-side from the typed `net` already in findings.json. What they stop costing
-    // is a card DISPATCH — a paid model turn per mark — which is the whole saving §8 claims.
-    //
-    // The floor tier joins on `mark_text` (see floorTierByMark): joining on `mark` returns a clean,
-    // plausible zero, and a zero here means every floor row quietly loses the full card the owner made
-    // non-negotiable. An absent band-shape yields an empty map and every finding reads as holding no
-    // floor — which is what it did before this existed.
-    // The plan is made in one place (planWriteUps), the same way here and wherever a later save changes the record:
-    // the full cards in the record's order, then the remainder, in the same order, for the short-entry and grouped-row
-    // render below.
-    const writeUps = planWriteUps(findingsForCards, ctx.depth, safeReadJson(P.bandShape));
-    const { cardOrdinals, entryOrdinals } = writeUps;
-    // §9 — WRITTEN ON EVERY GRADED PRODUCT, INCLUDING ONE WHOSE ENTRY COUNT IS 0. The old gate was
-    // `entryOrdinals.length`, which conflated two different empties: one country is empty BY CONSTRUCTION
-    // (every form is `full`, so the row would report the product's own definition back), while a graded run
-    // where every finding earned a card is empty AS A MEASUREMENT — a fact about that run's population, and
-    // the exact shape the ladder is asked to justify. Under the old gate that measurement was indistinguishable
-    // from a run predating the gauge. Gate on the rung, never on the count. My defect, from this section.
-    if (gradedWriteUpRung(ctx.depth))
-      runLog(run.runDir, { event: "write-up-forms", full: cardOrdinals.length, entry: entryOrdinals.length,
-        depth: ctx.depth?.source ?? null });
-    if (cardOrdinals.length) mkdirSync(P.reportCardsDir, { recursive: true });
-    // T7 (E5): each card gets ITS matched grounded case-law profile INLINE — the old
-    // "if the file exists, fish in it" instruction was model-discretionary and missed cards.
-    let caseLawByOrd = new Map();
-    try {
-      if (existsSync(P.caseLaw)) caseLawByOrd = joinCaseLawProfiles(parseCaseLawProfiles(readFileSync(P.caseLaw, "utf8")), findingsForCards);
-    } catch { /* no case-law layer */ }
-    // A2 — cards are isolated BY DESIGN (each sees ONLY its own finding and writes its own
-    // P.reportCard(ord) file), so they fan out like the gather members instead of paying 8–14 serial
-    // LLM walls. The first card runs alone to warm the shared prompt-prefix cache; the rest batch at
-    // gatherConcurrency. A failed card stays non-fatal (render shows it structured-only) and never
-    // fails a sibling — renderCard resolves on rc.fail, it never throws. assembleReportMd runs
-    // strictly after every card settles; the lint-repair re-render loop below stays serial.
-    const cardFindings = findingsForCards.filter((f) => cardOrdinals.includes(f.ordinal));   // secondary findings render structured-only (no LLM call)
-    // A CONTENT failure stays non-fatal: the render shows that finding structured-only, which is a
-    // thinner card, not a missing one. A RATE LIMIT is not a content failure — it is the engine's
-    // session cap, and swallowing it ships a report whose cards are thin because we were throttled,
-    // with nothing saying so. Every other stage routes that to the postpone lane and delivers complete
-    // later; cards were the exception only because the fan-out was too narrow to hit it often. Collected
-    // here and raised after the fan-out settles, so one throttled card cannot abandon its siblings.
-    const cardRateLimited = [];
-    const renderCard = async (f) => {
-      const rc = await stage("report-card", { ...ctx, axis: String(f.ordinal), finding: f, caseLawProfile: caseLawByOrd.get(f.ordinal) ?? null }, {});
-      if (rc.ok) return;
-      if (rc.fail === "rate_limited" && !existsSync(P.reportCard(String(f.ordinal)))) {
-        cardRateLimited.push({ ordinal: f.ordinal, resetsAt: rc.resetsAt ?? null });
-        return;
-      }
-      note(`report-card[${f.ordinal}] failed (non-fatal — render shows it structured-only): ${rc.fail}`);
-    };
-    if (cardFindings.length) await renderCard(cardFindings[0]);
-    // — THE ONE SETTING ALLOWED TO FALL BACK IS NOT ALLOWED TO DO IT QUIETLY. Every
-    // other numeric setting refuses a value it cannot parse, by name, at the read. This one is read
-    // mid-run and is not grade-moving, so refusing would turn a delivering search into a refusal over an
-    // operator's typo — the run continues on the default instead. It says so here, once, in the run's own
-    // record: a fallback nobody can see is how a deployment ends up running on a number nobody chose,
-    // which is the same defect one register quieter.
-    const cardCapNote = fallbackNoteFor("CLEAROTRON_CARD_CONCURRENCY");
-    if (cardCapNote) note(`[config] ${cardCapNote}`);
-    await runBatched(cardFindings.slice(1), config.cardConcurrency, renderCard);
-    if (cardRateLimited.length) {
-      const earliest = cardRateLimited.map((c) => c.resetsAt).filter(Boolean).sort()[0] ?? null;
-      runLog(run.runDir, { event: "report-cards-rate-limited", count: cardRateLimited.length,
-        ordinals: cardRateLimited.map((c) => c.ordinal), resetsAt: earliest });
-      // Resumable by construction: the cards that DID land are file-gated and skip on the resume, so
-      // the postpone costs only what the cap actually blocked.
-      throw new StageFailure("report-card", "rate_limited", earliest);
-    }
-    // ── §8 — THE TWO GRADED FORMS, WRITTEN CODE-SIDE ────────────────────────────────────────
-    //
-    // Every entry finding is either a SHORT ENTRY (its own card file, composed from the typed `net` — no
-    // dispatch) or a member of a GROUP (a line in the sibling section below). §8 sets the minimum group
-    // size at two and renders the remainder as short entries, so `singles` is exactly that remainder.
-    //
-    // WORLDWIDE GROUPS BY THE RIGHT, multi-country by territory. The flag is derived from the depth row
-    // rather than a product name so the two cannot drift: the worldwide row is the one whose prose rung
-    // is `adversarial`, multi-country's is `adversarial+floors`, and both come from the same table.
-    //
-    // The bodies are written to the SAME card files a dispatched card would use, so `assembleReportMd`
-    // frames them with the same composer and the ordinal binding is untouched. What they never get is a
-    // model turn — the whole saving.
-    const { entryFindings, byRight, entrySingles } = writeUps;
-    writeShortEntries(P, entrySingles);
-    // Assembly sees full cards AND short entries; the DISPATCH set and the freshness stage list stay
-    // `cardOrdinals`, because a short entry has no stage and never had one.
-    const { assembledOrdinals, groupedMembers } = writeUps;
-    if (entryFindings.length)
-      note(`write-up forms: ${cardOrdinals.length} full card(s), ${entrySingles.length} short entr(y/ies), ${groupedMembers.length} grouped line(s)`);
-    assembleReportMd(P, findingsForCards, assembledOrdinals, { grouped: groupedMembers, byRight });
-    // The client-summary inclusion scope (WP-56 A4) and its _driver/client-summary-scope.json sidecar
-    // are DELETED with the stage (2026-08-01) — they existed only to dictate which cards that stage
-    // had to carry. verify.mjs's checkClientSummaryJoin still reads the sidecar when replaying an
-    // archived run that has one; a live run writes none, and that check already skips when it is absent.
-
-    // The WS1c failover-transparency stamp (`failoverModel` + `failover_note` into report.md front-matter,
-    // rendered by composeEmailHtml as a "Model failover:" line) stood here and is DELETED. It could
-    // never fire: it read ctx.failovers, which only a fired chain rung ever wrote, and the chain had exactly
-    // one rung. No code path can put a failover note in a report now — that is the point of the issue.
-
-    // T2 (H5) — the report's overall label/badge/recommendation are DRIVER-OWNED, derived from
-    // the verdict sidecar: the model-authored fm.overall_label was the second verdict authority that let
-    // the hero contradict the reviewer verdict AND the client tier. Kept as a closure because a lint-repair
-    // redo re-emits report.md, so every driver-owned front-matter field is re-applied after it.
-    const applyVerdictFrontMatter = () => {
-      let v = null;
-      try { v = JSON.parse(readFileSync(driverDir(run.runDir, "verdict.json"), "utf8")); } catch { return; }
-      if (!v?.tier) return;
-      const fields = { overall_label: v.tier, overall_badge: v.badge };
-      try {
-        const fmBlock = readFileSync(P.report, "utf8").match(/^---\n([\s\S]*?)\n---\n/)?.[1] ?? "";
-        const rec = fmBlock.match(/^recommendation:\s*(.+)$/m)?.[1];
-        if (rec != null) {
-          const bound = bindRecommendation(rec, v.verdict, v.reasons);
-          if (bound !== rec.trim()) fields.recommendation = bound;
-        }
-      } catch { /* report absent — injectFrontMatter no-ops anyway */ }
-      const wrote = injectFrontMatter(P.report, fields, run.runDir);
-      if (wrote) runLog(run.runDir, { event: "verdict-frontmatter", tier: v.tier, badge: v.badge, verdict: v.verdict });
-    };
-    applyVerdictFrontMatter();
-    // compute-don't-author (PR-4) — the masthead's SCOPE line is DRIVER-OWNED, like the verdict labels
-    // above: the model-typed `classes:` value was the second scope authority that let the masthead say
-    // "searched" over a class three machine stores called dispatched-but-not-enumerated (the 2026-07-28 postmortem run).
-    // writeScopeFacts derives _driver/scope-facts.json (pure join: instructed-scope × frozen plan ×
-    // band states × coverage ledger — scope-facts.mjs); applyScopeFrontMatter overwrites `classes:`
-    // and injects `coverage_line:` from it. Recomputed + re-applied after every lint-repair
-    // reassembly (same discipline as applyVerdictFrontMatter); ZERO render.mjs change — the frozen
-    // renderer keeps rendering fm.classes verbatim, we changed WHO AUTHORS the value.
-    const writeScopeFacts = () => writeScopeFactsOf(ctx, P, run.runDir);
-    const applyScopeFrontMatter = () => applyScopeFrontMatterOf(P, run.runDir);
-    writeScopeFacts();
-    applyScopeFrontMatter();
-    // T9 (K3) — DISCLOSE which profile/framework rated this run (+ the verifiable sha).
-    // Methodology identity, not QC — it renders on the internal report, the client summary footer
-    // and the email ( F7: nothing disclosed which framework rated a run, so K1 was untestable).
-    // PR-11: ONE closure, like its applyVerdictFrontMatter / applyScopeFrontMatter
-    // siblings. The lint-repair reassembly branch below re-applies the same driver-owned front matter, and
-    // it used to do it from a VERBATIM PASTE of this block ~500 lines away — two copies that had to be
-    // edited in lockstep forever, with nothing to catch a drift.
-    const applyRatedUnderFrontMatter = () => {
-      const pr = ctx.profile;
-      if (pr?.name || pr?.profileKey) {
-        // doc 50 — say WHICH of the two is in force in words a human notices: the customer's own
-        // framework (title + file) or the Generic default. The manifest title comes from the frozen
-        // framework sidecar, so the disclosure can never drift from what actually rated the run.
-        // — THIS LINE IS READ BY A LAWYER, AND IT SHIPPED A HASH AND A FILENAME. It rendered as
-        // "… · custom framework: <title> (risk-framework-<slug>.md) · profile e186ce0adbfc". The sha is
-        // telemetry — it identifies a config revision to us and nothing at all to the reader — and the
-        // filename is the title again in machine form. Both are DROPPED from the client surface; both
-        // are still recorded, in `run.jsonl`'s methodology-witness and `_driver/methodology-read.json`,
-        // which is where anyone asking "which revision rated this run" is actually looking.
-        const fw = pr.frameworkPath
-          ? `custom framework: ${ctx.framework?.title ?? basename(String(pr.frameworkPath))}`
-          : "generic default framework";
-        injectFrontMatter(P.report, { rated_under: `${pr.name ?? pr.profileKey} · ${fw}` }, run.runDir);
-        // spec 62 — beside the framework disclosure, name WHICH PROJECT rated this run (the customer's own
-        // display name in parentheses), plus the per-field configuration-provenance rows (rendered internal-only
-        // in the scope fold). Omitted entirely for a no-project run (pr.projectKey absent).
-        if (pr.projectKey) {
-          injectFrontMatter(P.report, { run_under_project: `${pr.projectName ?? pr.projectKey} (${pr.name ?? pr.profileKey})` }, run.runDir);
-          const originRows = originRowsForReport(pr);
-          if (originRows.length) injectFrontMatter(P.report, { origins_json: JSON.stringify(originRows) }, run.runDir);
-        }
-      }
-    };
-    applyRatedUnderFrontMatter();
-
-    // A1b (the client-summary stage dispatch) is RETIRED 2026-08-01. Its output reached no reader
-    // after the one-report collapse, and it was not free: on the R2 evidence run it burned 931s over
-    // five dispatches, three of them failing identically until the ladder exhausted.
-    // composeEmailHtml now takes its headline tier from the verdict sidecar and its conditions from
-    // the report's own `# Actions`.
-
-    // A FINDINGS RECORD BROKEN AFTER SYNTHESIS PASSED IT IS RESTORED, NOT ENDED ON. It is checked as the delivery
-    // gate checks it, before the audit and the delivery checks are built from it, and again at that gate. A broken record
-    // comes back from the last save that passed (restoreTheRecordThatPassed). A save rebuilt with the duty set aside is
-    // judged again here, as after a rollback, and the corrections a save from before the repair lacks close the client
-    // export (correctionsTheRestoreLacks). With no save to restore, the failure is the assessment not completed: its
-    // recovery re-runs synthesis, which a broken record does not let skip, and once that is spent the run delivers
-    // without the assessment. Returns the restore, or null where no save passes.
-    const restoreTheBrokenRecord = async (failures, where) => {
-      const restored = await restoreTheRecordThatPassed(ctx, P, run.runDir, (raw) => { parseFindingsJsonLenient(raw); });
-      if (!restored) {
-        note(`core-artifact (${where}): ${failures.join("; ")} — no save passes either, so the assessment is not completed`);
-        return null;
-      }
-      const lacks = correctionsTheRestoreLacks(run.runDir, restored.from);
-      if (lacks.length) {
-        // Joined to what the state already holds: an earlier correction's names stay in the reason.
-        const at = driverDir(run.runDir, "corrections-state.json");
-        const held = (() => { try { const s = JSON.parse(readFileSync(at, "utf8"))?.stale; return Array.isArray(s) ? s : []; } catch { return []; } })();
-        try { atomicWrite(at, JSON.stringify({ ts: new Date().toISOString(), stale: [...new Set([...held, ...lacks])] }, null, 2)); }
-        catch { /* the event below records it */ }
-      }
-      runLog(run.runDir, { event: "core-artifact-restored", where, from: restored.from, duty: restored.duty, ...(lacks.length ? { correctionsLacked: lacks.length } : {}) });
-      note(`core-artifact (${where}): ${failures.join("; ")} — the record is restored from the ${restored.from}, and the run delivers from it`);
-      if (restored.duty === "relaxed") {
-        const was = verdict, stood = JSON.stringify(clampReasons);
-        clampOnTheWritersDuty({ again: true });
-        if ((JSON.stringify(clampReasons) !== stood || verdict !== was) && saveTheLabel("after the record was restored")) applyVerdictFrontMatter();
-      }
-      return restored;
-    };
-    if (existsSync(P.findings)) {
-      let broken = null;
-      try { parseFindingsJsonLenient(readFileSync(P.findings, "utf8")); } catch (e) { broken = `findings.json — ${String(e.message).replace(/\s+/g, " ").slice(0, 140)}`; }
-      if (broken) {
-        runLog(run.runDir, { event: "core-artifact-invalid", failures: [broken], where: "delivery-checks" });
-        if (!(await restoreTheBrokenRecord([broken], "delivery-checks")))
-          throw Object.assign(new StageFailure("core-artifact-gate", `a core machine artifact is invalid and cannot ship: ${broken}`), { notCompletedPart: "assessment" });
-      }
-    }
-
-    // A2 — full audit: DETERMINISTIC CODE (parse the spine tables → audit.md, count-guarded). Replaces the LLM
-    // audit-emit (output varied 47↔69 on identical input). NON-FATAL: if it fails, the report still ships (publish
-    // renders the report with no xlsx when audit.md is absent), and the audit self-recovers on a re-run.
-    // `rebuildTheDeliveredRecord` is set by the block once the audit is written: the delivery check calls it after a repair.
-    let rebuildTheDeliveredRecord = null;
-    let auditWrittenThisPass = false, earlierPairKept = null;
-    try {
-      // One resolution per claim: hand the builder the run's OWN dispositions so a withdrawn conflict reads
-      // as withdrawn on the audit surface too (it already does on report + client summary). Best-effort —
-      // a malformed findings.json is validators.findings' business and must never cost us the audit.
-      let auditRunFindings = null, auditRunActions = [], auditRunCoverage = [];
-      try {
-        if (existsSync(P.findings)) {
-          const parsed = parseFindingsJsonLenient(readFileSync(P.findings, "utf8"));
-          auditRunFindings = parsed.findings;
-          auditRunActions = parsed.actions ?? [];
-          auditRunCoverage = parsed.coverage ?? [];   // presence-or-reason: coverage-row areas join the delivered set
-        }
-      } catch { /* stamping is skipped; the audit still builds */ }
-
-      // HALF TWO, and the ONLY place this artifact is authored. Here because `auditRunFindings` is
-      // parsed immediately above, so the findings this joins against demonstrably exist — the property
-      // the digest-time derivation could not have and did not check. Everything downstream (the doubt
-      // mint below, the predelivery lint's `recordCarry` arms) reads THIS artifact rather than deriving
-      // its own: two derivations from different inputs is what let the doubt ledger be roughly right
-      // while the artifact and every lint arm were inverted.
-      // A resumed pass writes both again: what the earlier pass wrote is kept under _history first.
-      earlierPairKept = keepDeliveredRecordAsHistory(P, "earlier-pass");
-      deriveRecordCarry(ctx, "publish", { findings: auditRunFindings ?? [] });
-      // ── — AND NOW THE JOIN BETWEEN THE TWO ARTIFACTS THAT WERE EACH RIGHT ────────
-      //
-      // `recall-reconciliation.json` measured the DIGEST and reported `unended: 0`; the artifact written
-      // one line above measured REASONS and reported `unreasoned: 0`. Both true. Between them a position
-      // the digest ended as a FINDING was dropped at placement with `reason_source: "step-silent"` and
-      // the client lost the mark. Nothing read one against the other, so nothing could see it.
-      //
-      // HERE, for the same reason moved the carry here: this is where the findings demonstrably
-      // exist and where the artifact it joins has just been authored. Best-effort and never fatal — this
-      // seam does not gate delivery (that is the pre-verdict floor's job), it makes the loss SAYABLE.
-      try {
-        const silent = silentlyLostFindings({
-          reconciliation: safeReadJson(P.recallReconciliation),
-          carryRows: safeReadJson(P.recordCarry)?.rows ?? null,
-          // — the INDEPENDENT population, read from the typed calls by other code.
-          // Without it a reconciliation looking at an entirely different set answers "clean".
-          digestFindingUris: recordedFindingUris(P.runDir),
-        });
-        runLog(P.runDir, { event: "silently-lost-findings", computable: silent.computable,
-          reason: silent.reason, population_empty: silent.population_empty === true,
-          checked: silent.checked, matched: silent.matched, lost: silent.lost.length,
-          marks: silent.lost.map((l) => l.mark).filter(Boolean).slice(0, 10) });
-        if (silent.lost.length) {
-          note(`recall: ${silent.lost.length} position(s) the digest ended as FINDINGS reached no client `
-            + `surface and no step said why — ${silent.lost.map((l) => `${l.mark ?? l.uri} (${l.reason})`).join("; ")}`);
-        }
-        // ── AND THE STATED CASE, WHICH IS THE ONE THAT REACHED A CLIENT ────────────────────────────
-        //
-        // Same inputs, same seam, same best-effort contract — a second call rather than a widened first
-        // one, because the sibling's population boundary is deliberate and correct. It covers a
-        // finding-ending followed by SILENCE; this covers one followed by a SENTENCE.
-        //
-        // On a delivered R2 run the sibling logged `checked:5 matched:5 lost:0` — correctly — on a
-        // delivery missing two marks from the lawyer's final list, one rated HIGH. They were dropped with
-        // a reason, so they were outside its population by design. A drop with a reason nobody verifies
-        // is not accounted for; it is unexamined with a paper trail, and that delivery carried 66 of them.
-        const stated = statedDivergenceFindings({
-          reconciliation: safeReadJson(P.recallReconciliation),
-          carryRows: safeReadJson(P.recordCarry)?.rows ?? null,
-          digestFindingUris: recordedFindingUris(P.runDir),
-        });
-        runLog(P.runDir, { event: "stated-divergence-findings", computable: stated.computable,
-          reason: stated.reason, population_empty: stated.population_empty === true,
-          checked: stated.checked, matched: stated.matched, diverged: stated.diverged.length,
-          marks: stated.diverged.map((d) => d.mark).filter(Boolean).slice(0, 10) });
-        if (stated.diverged.length) {
-          note(`recall: ${stated.diverged.length} position(s) the digest ended as FINDINGS are absent from `
-            + "the findings and were dropped with a STATED reason pointing at another artifact — "
-            + stated.diverged.map((d) => `${d.mark ?? d.uri} (${d.reason}${d.cites_artifact ? ` → ${d.cites_artifact.join(", ")}` : ""})`).join("; "));
-        }
-      } catch (e) { /* never mask a delivery */ }
-      // — the common-law path, and the jx zh slice on the same tracer. `consumed` used to read
-      // CLEAROTRON_JX_CONSUME, which decided whether a zh candidate could reach a finding at all: with it
-      // off every candidate was `shadow:not-consumed`, a configuration boundary rather than a judgment.
-      // item 8 deleted the switch, and had already recorded production running with it ON —
-      // so `consumed` is now unconditionally true, which is the state that comment said we were leaving
-      // for. An armed slice flows through the ordinary reason classes with no second code path, and
-      // `shadow:not-consumed` becomes unreachable rather than merely unused.
-      deriveCommonLawCarry(ctx, "publish");
-      if (existsSync(P.jxZhGrid)) {
-        deriveCommonLawCarry(ctx, "publish", {
-          slice: "jx-zh-grid", gridPath: P.jxZhGrid, outPath: P.jxZhCarry,
-          consumed: true,
-        });
-      }
-      // THE HAND-OFFS' EXITS WITH NO GROUND, read off the record trace written just above and the findings
-      // parsed before them: a record that left the picking step, and a page the web notes marked as a
-      // candidate or conflict that no delivered finding cites, each with nothing saying why. A page the web
-      // step only read is not owed a ground, so the grid's rows are not counted here. It reports and never
-      // gates, and a missing trace says so by name rather than counting zero.
-      try {
-        const exits = { picking: pickingExits(safeReadJson(P.recordCarry)),
-          notes: notesExits(existsSync(P.commonLaw) ? readFileSync(P.commonLaw, "utf8") : null, auditRunFindings, readDeclinations(P.runDir).byPage) };
-        runLog(P.runDir, { event: "reasonless-exits", lane: "clearance", ...exitsForLog(exits) });
-        if (exits.picking.exits || exits.notes.exits) {
-          note(`hand-offs: ${exits.picking.exits} record(s) of ${exits.picking.owners ?? 0} owner(s) left the picking step `
-            + `with no ground; ${exits.notes.exits} page(s) the web notes marked as candidates or conflicts reached no delivered `
-            + `finding and no step said why`);
-        }
-      } catch { /* never mask a delivery */ }
-
-      const registerFindingsText = readFileSync(P.registerFindings, "utf8");
-      const commonLawText = existsSync(P.commonLaw) ? readFileSync(P.commonLaw, "utf8") : "";
-
-      // Doubt stitching (2026-07-22 — the copper-gantry defect): mint every doubt the run RAISED (the
-      // gathers' dictated `CROSS-CHECK REQUIRED:` hand-off lines; asserted⇄refuted contradiction pairs
-      // among the audit's own Findings blocks) and stitch each to a resolution the run ALREADY produced
-      // (a findings.json disposition/action, a coverage-ledger row, a register-findings answer/watchlist
-      // line). Pure join-and-record: nothing re-searches, nothing retries, and an unstitchable doubt
-      // ships VISIBLY as OPEN in the audit's # Doubt Ledger — delivery is never gated on a doubt.
-      // NON-FATAL end to end: a failure here logs `doubts-failed` and the audit builds without a ledger.
-      let runDoubts = null;
-      // — one row per mint that actually dropped something: {source, minted, omitted}. Empty on
-      // the overwhelming majority of runs, and an empty array renders nothing at all.
-      const doubtTruncations = [];
-      // ── PR-6: the ASK LEDGER (2026-07-29) — every question the run asked ITSELF ends: executed
-      // (COMPUTED from the plan-execution join, never asserted), judged-immaterial with reasons, or
-      // recovery (loudly handed over). Derived HERE, at the audit seam, as a deterministic join over
-      // the ten birth-places' own receipts (ask-ledger.mjs documents the list). Open rows ride the
-      // SAME doubt-closure stage below (dictated ASK line-form; IMMATERIAL always available — the
-      // terminating move); still-open rows ship VISIBLY OPEN. Never a gate, no count thresholds, and
-      // no cost figure anywhere near closure. NON-FATAL end to end (`asks-failed`).
-      let runAsks = null;
-      const askTs = new Date().toISOString();
-      try {
-        const readJson = (p) => { try { return existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : null; } catch { return null; } };
-        const runEvents = (() => {
-          try {
-            return readFileSync(driverDir(run.runDir, "run.jsonl"), "utf8").split("\n")
-              .filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
-          } catch { return []; }
-        })();
-        const unitsDirForAsks = join(run.runDir, "register-units");
-        const supplementalPlans = existsSync(unitsDirForAsks)
-          ? readdirSync(unitsDirForAsks).filter((n) => n.endsWith("-supplemental-plan.json")).sort().map((n) => {
-              const doc = readJson(join(unitsDirForAsks, n));
-              return { axis: n.replace(/-supplemental-plan\.json$/, ""), entries: doc?.entries ?? [], rejected: doc?.rejected ?? [] };
-            })
-          : [];
-        runAsks = deriveAsks({
-          intakeAsks: ctx.intakeAsks ?? readJson(driverDir(run.runDir, "intake-asks.json"))?.asks ?? [],
-          reportMd: existsSync(P.report) ? readFileSync(P.report, "utf8") : "",
-          escalationState: readJson(driverDir(run.runDir, "escalation-state.json")),
-          events: runEvents,
-          frameReopen: readJson(driverDir(run.runDir, "frame-reopen.json")),
-          screenGateUnresolved: readJson(driverDir(run.runDir, "screen-gate-unresolved.json"))?.unresolved ?? null,
-          supplementalPlans,
-          xcheck: readJson(driverDir(run.runDir, "register-xcheck.json")),
-          recall: recallReceiptForOwnCompany(readJson(driverDir(run.runDir, "register-recall.json"))),   // never another company's recall line
-          withheldFamilies: readWithheldFamilies(run.runDir),   // the reading turn's reasons, for a frame ask its judgment settled
-          planExecution: ctx.planExecution ?? readJson(P.planExecution),
-        }, { ts: askTs });
-      } catch (e) {
-        runAsks = null;   // the audit builds ask-less, exactly like a legacy caller
-        runLog(run.runDir, { event: "asks-failed", error: e.message });
-      }
-      try {
-        const doubts = [
-          ...mintCrossCheckDoubts(commonLawText, basename(P.commonLaw)),
-          ...mintContradictionDoubts(parseSpineFindingBlocks(registerFindingsText, commonLawText)),
-        ];
-        // register unit digests carry the register-side hand-off lines (one file per axis)
-        const unitsDir = join(run.runDir, "register-units");
-        if (existsSync(unitsDir)) {
-          for (const f of readdirSync(unitsDir).filter((n) => n.endsWith(".md")).sort()) {
-            doubts.push(...mintCrossCheckDoubts(readFileSync(join(unitsDir, f), "utf8"), `register-units/${f}`));
-          }
-        }
-        // coverage rows: the machine mirror when it survived (best-effort — a missing/invalid ledger
-        // just means one fewer resolution source, never a failed stitch pass)
-        let coverageRows = [];
-        try {
-          if (existsSync(P.registerCoverageLedger)) {
-            const rows = JSON.parse(readFileSync(P.registerCoverageLedger, "utf8"));
-            if (Array.isArray(rows)) coverageRows = rows;
-          }
-        } catch { /* prose-only run — findings + register-findings joins still stitch */ }
-        // Presence-or-reason (2026-07-22 — the unjoined-Sheet-2 leak): every digest row the funnel
-        // rated on-field (the Risk-relevant / Incumbent-context sheets) must end in PRESENCE on a
-        // delivered surface or a RECORDED reason; synthesis's drop stands, but a silent drop mints a
-        // doubt into the same stitch → doubt-closure → # Doubt Ledger chain as every other family.
-        doubts.push(...mintPresenceDoubts(registerFindingsText, {
-          findings: { findings: auditRunFindings ?? [], actions: auditRunActions, coverage: auditRunCoverage },
-          coverageRows, sourceName: basename(P.registerFindings),
-        }));
-        // — the placement→digest carry join's two unanswered classes. Derived HERE against
-        // `registerFindingsText`, the findings file that actually shipped, NOT read back from
-        // _driver/placement-carry.json. The artifact is a per-PASS record and register-findings.md is
-        // rewritten after the last digest pass by the corrective and lint-repair paths, so minting
-        // from it would put losses in the Doubt Ledger of a run that closed them — a false loss on a
-        // clean delivery, which is worse than the silence this whole join replaces. The artifact stays
-        // the history; the doubt is decided against the delivered text. Both classes mint and they stay
-        // APART: `uncarried` is a loss, `unclassified` is the join saying it cannot tell — folding the
-        // second into the first, or dropping it, would rebuild the silent drop one level up. A run with
-        // no placements.json mints nothing, exactly as before.
-        try {
-          const placedNow = parsePlacementsJson(readFileSync(P.placementModel, "utf8")).placements;
-          doubts.push(...mintPlacementCarryDoubts(
-            reconcilePlacementCarry({ placements: placedNow, registerFindingsText }),
-            { sourceName: basename(P.placementModel) },
-          ));
-        } catch { /* absent, pre-B2 or malformed — validators.placement's business, not this mint's */ }
-        // — the seam before that one: a RETRIEVED record that reached a step obliged to speak
-        // about it and got no ground from anybody. Re-derived against the delivered findings text for
-        // exactly the reason the carry mint above is, and capped, because this list is unbounded by
-        // construction (a wholly failed digest could put every placed record in it and drown the
-        // ledger) — the artifact always carries the full list, and the cap reports what it omitted so
-        // the truncation is itself visible. `stage-incomplete` drops mint NOTHING here: those carry a
-        // structural reason already, and the run.jsonl row plus the note carry that fact.
-        // — READ, no longer re-derived. This mint used to build its own trace from `auditRunFindings`,
-        // which made it correct-by-construction while `_driver/record-carry.json` — written back at
-        // register-digest time, before findings.json existed — was inverted, and the predelivery lint reads
-        // the artifact. So the doubt ledger has been roughly right and every lint arm wrong on the same
-        // run. One derivation, written once above, consumed by both.
-        try {
-          const rc = safeReadJson(P.recordCarry);
-          if (rc?.computable === true) {
-            const minted = mintRecordCarryDoubts(rc);
-            doubts.push(...minted.doubts);
-            // — the note STAYS (it is the live operator's line) and it is no longer the only
-            // record. `note` writes the run log, which is purged with the run dir, so on a delivered
-            // run a ledger sitting at exactly the cap read as a complete one. The row below travels
-            // to the audit, which is retained.
-            if (minted.omitted) {
-              doubtTruncations.push({ source: "record-carry", minted: minted.minted, omitted: minted.omitted });
-              note(`record-carry: ${minted.omitted} further unreasoned drop(s) beyond the ${minted.minted} minted are in _driver/record-carry.json .unreasoned but NOT in the doubt ledger`);
-            }
-          }
-        } catch { /* no band this run — a register-less matter mints nothing, exactly as before */ }
-        // — the same, one path over. Read from the artifact for the same reason: two derivations
-        // from different inputs is how the register half came to have a right doubt ledger and a wrong
-        // artifact on the same run.
-        for (const p of [P.commonLawCarry, P.jxZhCarry]) {
-          try {
-            const cc = safeReadJson(p);
-            if (cc?.computable !== true) continue;
-            const minted = mintCommonLawCarryDoubts(cc);
-            doubts.push(...minted.doubts);
-            //, one path over — and the SLICE is carried, because this mint runs per slice and a
-            // reader told "12 omitted" twice with no slice cannot tell two truncations from one.
-            if (minted.omitted) {
-              doubtTruncations.push({ source: `commonlaw-carry (${cc.slice})`, minted: minted.minted, omitted: minted.omitted });
-              note(`commonlaw-carry (${cc.slice}): ${minted.omitted} further unreasoned drop(s) beyond the ${minted.minted} minted are in ${basename(p)} .unreasoned but NOT in the doubt ledger`);
-            }
-          } catch { /* no common-law pass this run — a register-only matter mints nothing */ }
-        }
-        // — the remedy terms the reopen could not put on the record. Read back from the receipt
-        // (unlike the placement carry, which re-derives against the delivered findings): this ledger is
-        // a record of what the EXECUTOR did, and nothing after the reopen can retroactively make an
-        // undispatched term dispatched, so the receipt is the authority and re-deriving would need band
-        // blocks the audit seam has no reason to hold. A `searched-empty` term mints nothing — it is
-        // answered — and nor does one the reading turn's recorded judgment settled (SETTLED_CLASSES). A run
-        // with no reopen, or a legacy receipt with no term rows, mints nothing.
-        try {
-          const fr = JSON.parse(readFileSync(driverDir(run.runDir, "frame-reopen.json"), "utf8"));
-          if (Array.isArray(fr?.remedy_terms)) {
-            doubts.push(...mintRemedyAccountingDoubts(
-              { not_accounted: fr.remedy_terms.filter((r) => !SETTLED_CLASSES.includes(r?.class)) },
-              { sourceName: "_driver/frame-reopen.json" },
-            ));
-          }
-        } catch { /* no reopen this run, or an unreadable receipt — the reopen's own arms already disclosed */ }
-        runDoubts = stitchDoubts(doubts, {
-          findings: { findings: auditRunFindings ?? [], actions: auditRunActions },
-          coverageRows, registerFindingsText,
-        });
-
-        // T2c — settle-by-citation (doubt-closure): ONE bounded sonnet/low pass over the doubts the
-        // stitch left OPEN. Unconditional (kill switch deleted post-E2E 2026-07-22) — deliberately: it fires
-        // only when opens exist, costs one cheap non-looping call, gates nothing, and offline evidence
-        // (6 archived runs) says ~75% of stitch-open doubts had an on-disk answer the deterministic
-        // join could not reach — while a genuinely unresolved doubt still ships OPEN, which is exactly
-        // what OPEN should mean. The stage may only POINT: every SETTLED citation is re-verified
-        // VERBATIM by code (applyClosure) against the three files it was allowed to cite; an
-        // unverifiable quote leaves its doubt OPEN + a LOUD `doubt-closure-unverified` event. Stage
-        // failure/timeout ⇒ doubts ship open exactly as without the stage (never a delivery gate).
-        let closureStats = null;
-        const openAfterStitch = runDoubts.filter((d) => d.status === "open");
-        // PR-6: still-open ASK rows ride the SAME closure pass — one stage, two dictated line-forms.
-        // The stage can never assert "executed" (that is computed from the plan-execution join); it
-        // may only end an ask as IMMATERIAL by pointing at a verbatim on-disk quote, or leave it
-        // OPEN with a one-line recovery recommendation the ledger records as the handoff.
-        const openAsksForStage = (runAsks ?? []).filter((a) => !a.ending);
-        if (openAfterStitch.length || openAsksForStage.length) {
-          try {
-            // — DRIVER SELECTION, on the PLACEMENT TIER both mints already hold. Inert today:
-            // every product row still reads `every-doubt`, so `ids` is null and every open doubt is
-            // dispatched exactly as before — byte-identical, not merely equivalent.
-            //
-            // The key is the tier and NOT the band of the finding the doubt is about, because that
-            // second key cannot bind: stitchDoubts settles every finding-joining doubt before this
-            // stage, so what arrives here has no finding and no band. That is asserted in
-            // doubt-closure-grading-cannot-bind.test.mjs and measured at 0 of 420 open doubts on 28
-            // delivered runs. The tier comes from the carry artifact instead, which the stitch cannot
-            // have consumed — 199 of the same 420 carry one.
-            const doubtSel = doubtsForClosure({
-              doubts: openAfterStitch,
-              doubtClosure: ctx.depth?.doubtClosure ?? null,
-            });
-            // RECORDED ON EVERY RUN, cut or no cut. The keyless count is what says whether this
-            // selection is worth having: if most doubts carry no tier, the cut saves nothing and should
-            // not be given a value. A count written only when the cut is live could never answer that —
-            // it would need the cut to exist to measure whether the cut is worth existing.
-            runLog(run.runDir, { event: "doubt-selection", of: doubtSel.total, selected: doubtSel.ids?.length ?? doubtSel.total,
-              keyed: doubtSel.keyed, keyless: doubtSel.keyless, dropped: doubtSel.dropped,
-              cut: ctx.depth?.doubtClosure ?? null, cutState: doubtSel.cutState });
-            const noteLine = doubtSelectionNote(doubtSel);
-            if (noteLine) note(`[pipeline] ${noteLine}`);
-            const dispatchDoubts = doubtSel.ids
-              ? openAfterStitch.filter((d) => doubtSel.ids.includes(d.id))
-              : openAfterStitch;
-            ctx.openDoubts = dispatchDoubts.map((d) => ({ id: d.id, birth: d.birth, subject: d.subject }));
-            ctx.openAsks = openAsksForStage.map(openAskForClosure);
-            // THE SPEC SIDECAR, WRITTEN BEFORE THE DISPATCH. The seat supplies none of its own context:
-            // the ids it may speak about and the files it may cite are the driver's, so a doubt it was not
-            // given is refused by name and a file it was not given cannot be expressed at all. Both
-            // ledgers' ids ride ONE list because one call answers both — the row's `kind` says which.
-            // CLOSURE_EVIDENCE_FILES is imported, never re-listed here: `file_index` is a POSITION, so a
-            // second copy of this array drifting would verify every citation against the wrong file.
-            // `bornIn` carries each DOUBT's birth artifact so the tool can refuse a circular citation
-            // inside the seat's own turn (doubt-ledger.applyClosure refuses it again either way). Asks
-            // are absent from the map on purpose: an ask is a question about a probe or directive, not
-            // a claim lifted out of an artifact, so it has no source to be circular with.
-            writeFileSync(driverDir(run.runDir, "doubt-closure-spec.json"), `${JSON.stringify({
-              // The SAME set the dispatch carries. Listing openAfterStitch here while dispatching a
-              // subset would tell the seat it may speak about ids it was never shown.
-              openIds: [...dispatchDoubts.map((d) => d.id), ...openAsksForStage.map((a) => a.ask_id)],
-              allowedFiles: CLOSURE_EVIDENCE_FILES,
-              bornIn: Object.fromEntries(dispatchDoubts
-                .filter((d) => d?.birth?.artifact)
-                .map((d) => [d.id, d.birth.artifact])),
-            }, null, 2)}\n`);
-            const dc = await stage("doubt-closure", ctx);
-            if (dc.ok) {
-              // the citable set is CLOSED: exactly the three files the stage message named — a line
-              // citing any other file simply never verifies (and is logged unverified, never followed).
-              const fileTexts = {
-                "findings.json": existsSync(P.findings) ? readFileSync(P.findings, "utf8") : "",
-                "register-findings.md": registerFindingsText,
-                "register-coverage-ledger.json": existsSync(P.registerCoverageLedger) ? readFileSync(P.registerCoverageLedger, "utf8") : "",
-              };
-              // APPLIED FROM THE RECORDED ROWS, not from a re-read of the artifact. The rows are what the
-              // tool accepted — already checked against these same files at call time — so the parse that
-              // used to sit here is gone, and with it the failure mode that made this conversion worth
-              // doing: `parseClosureLines` was STRICT, and a line it could not match produced NOTHING and
-              // left its doubt open, byte-identical to a doubt the seat looked at and honestly left open.
-              // Nothing counted it and nothing could. The union is over every accepted file, so a batch
-              // split across calls or a repair re-dispatch is one ledger, not the last call's slice.
-              const acc = readAcceptedClosures(run.runDir);
-              if (acc.unreadable) note(`doubt-closure: ${acc.unreadable} recorded call file(s) unreadable — their rows are NOT applied; the doubts they answered ship OPEN`);
-              const applied = applyClosure(runDoubts, acc.doubt, fileTexts);
-              runDoubts = applied.doubts;
-              closureStats = { settledByStage: applied.settledByStage, unverified: applied.unverified.length };
-              for (const u of applied.unverified) runLog(run.runDir, { event: "doubt-closure-unverified", ...u });
-              if (runAsks) {
-                const askApplied = applyAskClosure(runAsks, acc.ask, fileTexts, { ts: askTs });
-                runAsks = askApplied.asks;
-                for (const u of askApplied.unverified) runLog(run.runDir, { event: "ask-closure-unverified", ...u });
-                // Option A: a recall ask whose mark is not in the delivered findings
-                // did NOT close. Each one is a mark the run found and the client was not shown, so it is
-                // recorded by name rather than left to be inferred from an ask that merely stayed open.
-                // ✕ NOT written into findings.json here. See the sidecar's own note: a row appended after
-                // the drafting stage would carry no band and no reasoning.
-                for (const c of askApplied.carryIntoFindings ?? [])
-                  runLog(run.runDir, { event: "ask-closure-mark-owed", ...c });
-                if (askApplied.carryIntoFindings?.length)
-                  writeFileSync(driverDir(run.runDir, "marks-owed-a-finding.json"),
-                    JSON.stringify({
-                      _provenance: "recall asks that could not close because the mark they found is absent from findings.json — owner ruling 2026-09-07, Option A, worded about the MARK",
-                      _notWritten: "these are NOT appended to findings.json: a finding carries a band, a net line and a legal position, and a row minted here would carry none of them. The repair belongs where the findings are authored.",
-                      count: askApplied.carryIntoFindings.length,
-                      marks: askApplied.carryIntoFindings,
-                    }, null, 2) + "\n");
-              }
-            } else {
-              note(`doubt-closure failed (non-fatal — the open doubts/asks ship OPEN, as without the stage): ${dc.fail}`);
-            }
-          } catch (e) {
-            note(`doubt-closure errored (non-fatal — the open doubts/asks ship OPEN, as without the stage): ${e.message}`);
-          }
-        }
-
-        const settled = runDoubts.filter((d) => d.status === "checked-and-settled").length;
-        writeFileSync(driverDir(run.runDir, "doubts.json"),
-          JSON.stringify({ minted: runDoubts.length, settled, open: runDoubts.length - settled,
-            // — recorded here too so the live sidecar and the delivered audit cannot disagree
-            // about whether the mint truncated. Omitted entirely when nothing was dropped.
-            ...(doubtTruncations.length ? { truncated: doubtTruncations } : {}),
-            ...(closureStats ?? {}), doubts: runDoubts }, null, 2));
-        runLog(run.runDir, { event: "doubts", minted: runDoubts.length, settled, open: runDoubts.length - settled, ...(closureStats ?? {}) });
-      } catch (e) {
-        runDoubts = null;   // the audit builds ledger-less, exactly like a legacy caller
-        runLog(run.runDir, { event: "doubts-failed", error: e.message });
-      }
-
-      // PR-6: persist the ask ledger (its own try — a doubts failure above must not cost the asks,
-      // and vice versa; open rows just skipped closure and ship OPEN with their handoffs).
-      if (runAsks) {
-        try {
-          runAsks = finalizeOpenHandoffs(runAsks);
-          const askSummary = summarizeAsks(runAsks);
-          writeFileSync(driverDir(run.runDir, "asks.json"),
-            JSON.stringify({ ...askSummary, asks: runAsks }, null, 2) + "\n");
-          runLog(run.runDir, { event: "asks", ...askSummary });
-          note(`ask ledger: ${askSummary.total} ask(s) — ${askSummary.executed} executed, ${askSummary.immaterial} judged immaterial, ${askSummary.recovery} handed over, ${askSummary.open} OPEN`);
-        } catch (e) {
-          runAsks = null;
-          runLog(run.runDir, { event: "asks-failed", error: e.message });
-        }
-      }
-
-      // PR-8 — the reading audit: what judgment actually looked up (band-server appends every lookup to
-      // _driver/reading-log.jsonl). Passed on any run that derived a band shape — an EMPTY array renders
-      // the honest zero ("no lookups recorded"), because a band-consuming stage that read nothing is a
-      // fact the audit must show, not hide. Legacy runs (no shape) pass null → no section, byte-identical.
-      const readingLog = readReadingLog(P);
-      // item 33 — hand the builder the machine grid so the common-law search log is derived from the
-      // tool-written per-term cells rather than from a heading the tagger has to match. Absent (pre-grid
-      // archive, register-only run) it falls back to the prose tables, which is honest: those runs have
-      // no machine record. Read here rather than inside the builder to keep that module IO-free.
-      let commonLawGrid = null;
-      try { commonLawGrid = existsSync(P.commonLawGrid) ? readFileSync(P.commonLawGrid, "utf8") : null; } catch { /* no grid — prose path */ }
-      // — the Register Presence store: every live, matter-in-scope enumerated record,
-      // whatever its screen verdict, into the one artifact that survives the purge. Derived, not fatal:
-      // a run with no band (register-less, legacy) legitimately builds its audit without the section, and
-      // the run log says which happened rather than letting the absence read as a pass.
-      let registerPresence = null;
-      if (existsSync(P.registerNamedBand)) {
-        try {
-          let dominantElement = null;
-          try { dominantElement = parseVariantManifestModel(readFileSync(P.variantManifestModel, "utf8")).dominant_element; }
-          catch { /* prose-only manifest — the store still derives, the dominant column reads null */ }
-          let scopeClasses = [];
-          try { scopeClasses = inScopeClassList(ctx.job, ctx.profile).map(String); }
-          catch { scopeClasses = (ctx.job?.classes ?? []).map(String); }
-          // The matter's territories: the resolved ladder when it answers (worldwide = NO restriction,
-          // never a fallback), else the frame's own recorded scope — R14's shape: nothing instructed,
-          // scope inferred by the frame — else no restriction (the inclusive direction for a store).
-          const resolved = resolveTerritories(ctx.job, ctx.profile);
-          let scopeTerritories = null;
-          if (resolved.geographyMode !== "worldwide") {
-            scopeTerritories = resolved.jurisdictions?.length ? resolved.jurisdictions
-              : (lastAcceptedMatterFrame(run.runDir)?.scope_jurisdictions ?? null);
-          }
-          registerPresence = deriveRegisterPresence(JSON.parse(readFileSync(P.registerNamedBand, "utf8")),
-            { dominantElement, scopeClasses, scopeTerritories });
-          runLog(run.runDir, { event: "register-presence", rows: registerPresence.rows.length,
-            territories: registerPresence.scope.territories, classes: registerPresence.scope.classes,
-            dominantElement: registerPresence.dominant_element });
-        } catch (e) {
-          registerPresence = null;
-          runLog(run.runDir, { event: "register-presence-failed", error: String(e?.message ?? e).slice(0, 200) });
-        }
-      } else {
-        runLog(run.runDir, { event: "register-presence-skipped", reason: "no register-named-band.json" });
-      }
-      const a = buildAuditMd(registerFindingsText, commonLawText,
-        { findings: auditRunFindings, doubts: runDoubts, asks: runAsks, readingLog, commonLawGrid, doubtTruncations, registerPresence,
-          placementRows: placementAuditRows(P) });
-      if (!a.counts.findings) throw new Error("0 findings parsed from the spine tables");  // count-guard
-      writeFileSync(P.audit, a.md);
-      auditWrittenThisPass = true;
-      runLog(run.runDir, { event: "audit", ...a.counts });   // — counts now carry doubtsOmitted
-      // The trace and the Audit Trail, written again over a repair (`rebuildDeliveredRecord`), from the inputs this
-      // pass built them from; the doubts minted from the trace follow the trace written again.
-      rebuildTheDeliveredRecord = (trigger) => rebuildDeliveredRecord(ctx,
-        { commonLawText, doubts: runDoubts, asks: runAsks, commonLawGrid, doubtTruncations, registerPresence }, trigger);
-      note(`audit (code): ${a.counts.findings} findings, ${a.counts.negatives} negatives, ${a.counts.audit} audit-trail${a.counts.withdrawnStamped ? `, ${a.counts.withdrawnStamped} withdrawn-stamped` : ""}${a.counts.resolutionStamped ? `, ${a.counts.resolutionStamped} resolution-stamped` : ""}${runDoubts ? `, doubts ${a.counts.doubtsSettled} settled / ${a.counts.doubtsOpen} open` : ""}${a.counts.presenceRows != null ? `, register presence ${a.counts.presenceRows} row(s)` : ""}`);
-    } catch (e) {
-      note(`audit build failed (NON-FATAL — report still ships, audit will regenerate on re-run): ${e.message}`);
-      // A findings record with no finding row trips the count guard, and on a clean run it can: that is recorded apart,
-      // as a note on the run's content, and only a build that broke is recorded as a failure.
-      const noFindings = /^0 findings parsed from the spine tables/.test(String(e?.message ?? ""));
-      runLog(run.runDir, { event: noFindings ? "audit-not-built-no-findings" : "audit-build-failed", reason: String(e?.message ?? e).slice(0, 160) });
-      // An audit an earlier pass wrote describes that pass, not this one: the report ships without it, kept under _history.
-      if (!auditWrittenThisPass) withdrawSupersededAudit(P, "audit-build-failed", { keep: !earlierPairKept });
-    }
-
-    // ── Spec A1 + A2: pre-delivery verification — pure code, before ANYTHING outward-facing. Per the
-    // user-amended design it NEVER withholds: every check lands in the receipt artifact; failing checks on a
-    // drafting surface get ONE warm named-correction redo (the model re-types, this code re-judges); whatever
-    // still fails ships as a visible plain-language flag at the top of the email + report. (Deviation from
-    // the spec's "blocks delivery", approved 2026-06-10: delivering nothing is worse than delivering good
-    // work with one clearly-labelled defect — and code-produced defects would deadlock a block.)
-    {
-      const lintPrefix = `clearance-${run.slug}-${run.codename}-`;
-      // V4-1: the gates evaluate the artifact set assembled for THIS delivery — run-dir _records/
-      // (inherited or prior-session) ∪ this-session ledger rows — never the session-prefixed ledger
-      // alone (empty on a fork ⇒ the vacuous registry pass that shipped a false citation).
-      let assembled = assembleRunRecords(run.runDir, lintPrefix);
-      runLog(run.runDir, { event: "record-artifacts", count: assembled.records.size,
-        fromRunDir: assembled.fromRunDir, fromLedgerThisSession: assembled.fromLedger,
-        ...(assembled.ledgerError ? { ledgerError: assembled.ledgerError } : {}),
-        ...(assembled.callLedgerError ? { callLedgerError: assembled.callLedgerError } : {}),
-        ...(assembled.fetchedWithoutRecord ? { fetchedWithoutRecord: assembled.fetchedWithoutRecord,
-          unrecordedFetches: assembled.unrecordedFetches.slice(0, 20) } : {}) });
-      // — AN UNREADABLE LEDGER IS A FINDING, NOT A ZERO. The record ledger outgrew Node's maximum
-      // string length and every read returned empty from a file that was present, readable and correct;
-      // the run then assembled no records at all and nothing downstream said so — the fetch-receipt join
-      // had an empty set and raised no flag, so a run with no records read exactly like a clean one.
-      if (assembled.ledgerError)
-        note(`[records] the fetch ledger could NOT be read (${assembled.ledgerError}) — this run's record set is EMPTY for that reason, `
-          + `not because nothing was fetched; every verified-from-record claim will be unprovable and #563 will demote it`);
-      // — THE RECORD LOG IS THIS RUN'S NOW, so an empty one is the ORDINARY state of a run before
-      // its first fetch and can no longer be read as "something is wrong". These two lines are what stop
-      // that from making an evidence hole invisible.
-      if (assembled.callLedgerError)
-        note(`[records] the CALL ledger could not be read (${assembled.callLedgerError}) — so this run cannot be checked for `
-          + `fetches whose record body is missing; treat a clean record set as unverified, not as proven`);
-      if (assembled.fetchedWithoutRecord)
-        note(`[records] ${assembled.fetchedWithoutRecord} record fetch(es) succeeded this run and their bodies are NOT in the run's `
-          + `record set (${assembled.unrecordedFetches.slice(0, 5).join(", ")}${assembled.fetchedWithoutRecord > 5 ? ", …" : ""}) — `
-          + `the bodies were written somewhere this run does not read; every verified-from-record claim resting on them is unprovable`);
-
-      // V4-2 — registry-evidence closure: every /mark/ URI cited on a delivered surface owes its record
-      // to this run's set. ONE bounded driver-code fetch pass for the absentees (no agent turn, no
-      // command lane); a record that cannot be fetched ships as the failing registry-record-coverage
-      // flag with its mechanical cause. The plugin chokepoint writes the record log, so re-assembly
-      // materializes _records/<id>.json for the auditor.
-      const recordFetchFailures = new Map();
-      {
-        const surfacesText = [P.report].filter(existsSync)
-          .map((f) => readFileSync(f, "utf8")).join("\n");
-        const cited = new Set((surfacesText.match(CITED_URI_RE) ?? []).map((u) => u.toLowerCase()));
-        // AND THE FINDINGS' OWN REGISTRATIONS, because the report is not a complete list of them. A
-        // register that publishes no page per record prints no record address at all, so on those runs
-        // the set built from the report above is EMPTY, this pass never runs, and bindFindingsToRecords
-        // and joinEvidenceStatus have nothing to compare the cards against — every card then prints the
-        // owner, status and dates as the model wrote them, and the only place that says so is the audit
-        // workbook's "Record retrieved?" column. Measured over 45 days of test runs: six of nine runs on
-        // such a register held no record at all, their findings citing 7 to 90 registrations each, while
-        // every run on a register that does publish pages held 112 to 5,038. The findings name the
-        // registrations whatever the register does. findingUris is the one derivation of that (it reads
-        // owner.registrations[].uri and normalizes to the same lowercased /mark/ path this set keys on),
-        // so this is the same question asked of a second source, not a second answer to it.
-        for (const uri of findingUris(parseFindingsJsonLenient(
-          existsSync(P.findings) ? readFileSync(P.findings, "utf8") : "").findings ?? []).keys()) cited.add(uri);
-        const missing = [...cited].filter((u) => !assembled.records.has(u)).sort();
-        if (missing.length) {
-          note(`registry-record closure: ${missing.length} cited record(s) absent from the run's set — targeted fetch`);
-          const fetcher = opts.recordFetcher ?? defaultRecordFetcher;
-          for (const uri of missing) {
-            const r = await fetcher(uri, { agentId: "clearotron-driver", sessionKey: `${lintPrefix}record-closure`, recordLog: runRecordLogPath(run.runDir) });
-            if (!r.ok) recordFetchFailures.set(uri, r.cause);
-          }
-          assembled = assembleRunRecords(run.runDir, lintPrefix);   // pick up the closure fetches
-          runLog(run.runDir, { event: "registry-record-closure", cited: cited.size, missing,
-            fetched: missing.length - recordFetchFailures.size,
-            failed: [...recordFetchFailures.entries()].map(([uri, cause]) => ({ uri, cause })) });
-        }
-      }
-
-      const searchedNames = [...new Set([job.markName, job.name,
-        ...(Array.isArray(job.marks) ? job.marks.map((m) => m?.name) : [])].filter(Boolean))];
-      const lintNow = () => {
-        const reportMd = existsSync(P.report) ? readFileSync(P.report, "utf8") : "";
-        const narrativeMd = existsSync(P.narrative) ? readFileSync(P.narrative, "utf8") : ""; // R.1: narrative plumbing
-        // One resolution per claim: audit.md is built just above this block, so it is on disk here.
-        const auditMd = existsSync(P.audit) ? readFileSync(P.audit, "utf8") : "";
-        // Re-assemble per lint: a repair redo may have re-emitted surfaces and the closure pass may have
-        // grown the set — every re-lint must see the CURRENT record set, not a block-entry snapshot.
-        assembled = assembleRunRecords(run.runDir, lintPrefix);
-        // doc-31 counts-from-the-finding-set: pass the model's findings so the lint can flag a prose registration
-        // count that undershoots what the finding set lists. Malformed findings.json is already a validators.findings
-        // fail upstream — a parse miss here just skips the count check (never a double-throw).
-        // ION/copper-foundry (2026-07-22): the RAW text is kept as well as the parsed doc, so the
-        // permission-prose check can read coverage[] notes — the parsed findings array never carries them.
-        // The read happens before the parse, so a malformed findings.json is still scanned for the claim.
-        // ACCEPTED FLOOR, stated plainly because the opposite is easy to assume: on the incident run itself
-        // this surface was CLEAN. The false claim lived in register-units/*.json, _driver/register-plan.json,
-        // the register coverage ledger and skeptic-flags.md — none of which runLint scans. Guarding the four
-        // delivered surfaces is the scope here; widening it to the internal register surfaces is its own change.
-        let lintFindings = null, lintSv = 1, lintMarkAssessment = null, lintActions = null, lintFindingsRaw = "", lintAskAnswers = null, lintFourAnswers = null;
-        try {
-          if (existsSync(P.findings)) {
-            lintFindingsRaw = readFileSync(P.findings, "utf8");
-            const doc = parseFindingsJson(lintFindingsRaw);
-            lintFindings = doc.findings; lintSv = doc.schemaVersion ?? 1; lintMarkAssessment = doc.markAssessment ?? null;
-            lintActions = doc.actions ?? null;   // spec 64 — the typed register joins the coherence checks
-            lintAskAnswers = doc.askAnswers ?? null;   // PR-9 — the intake-ask lint judges the JOIN on v5 runs
-            lintFourAnswers = doc.fourAnswers ?? null;   // P5 — the four answers join the content-model presence checks
-          }
-        } catch {
-          // — the strict parse throwing used to leave lintFindings null, and EVERY findings-based
-          // content-model check then emitted nothing at all. So on exactly the runs where the contract
-          // was missed — the ones that exhaust the corrective ladder and proceed on the lenient doc —
-          // the lint was silent about it, and silence read as a clean surface. Fall back to the same
-          // lenient parse the delivery path itself used: the checks judge the record that ships.
-          try { if (lintFindingsRaw) {
-            const soft = parseFindingsJsonLenient(lintFindingsRaw);
-            lintFindings = soft.findings; lintSv = soft.schemaVersion ?? 1; lintMarkAssessment = soft.markAssessment ?? null;
-            lintActions = soft.actions ?? null; lintAskAnswers = soft.askAnswers ?? null; lintFourAnswers = soft.fourAnswers ?? null;
-          } } catch { /* validators.findings owns the unparseable case */ }
-        }
-        // The narrative's finding headings are in the model's numbering: once the record is folded, its
-        // write-ups join the record the model wrote (record-fold.mjs).
-        let lintNarrativeFindings = null;
-        const lintModelAt = modelRecordPath(run.runDir, P.findings);
-        if (lintModelAt !== P.findings) {
-          try { lintNarrativeFindings = parseFindingsJsonLenient(readFileSync(lintModelAt, "utf8")).findings; } catch { lintNarrativeFindings = null; }
-        }
-        // wp50/wi2 — the sidecar tier joins the lint so overall-level prose can't contradict it.
-        let lintVerdict = null;
-        try { lintVerdict = JSON.parse(readFileSync(driverDir(run.runDir, "verdict.json"), "utf8")); } catch { /* legacy */ }
-        // B2 — placements.json joins the lint ONLY so an empty mirror surfaces as a flag (the parser no
-        // longer throws on it). Absent (every archived run) or malformed (validators.placement owns that
-        // case) ⇒ null ⇒ no check is emitted.
-        let lintPlacements = null;
-        try { lintPlacements = parsePlacementsJson(readFileSync(P.placementModel, "utf8")).placements; } catch { /* absent or malformed — not this lint's business */ }
-        // — the retrieval→findings trace joins the lint so an unreasoned drop, and a drop that is
-        // really an incomplete upstream stage, are both stated on the delivery surface a human reads.
-        // Read back from the artifact the run already wrote (unlike the doubt mint, which re-derives):
-        // this is the lint reporting what the run recorded, and re-reading a 10 MB band at the lint
-        // seam to restate it would buy nothing. Absent (every archived run) ⇒ null ⇒ no check emitted.
-        const lintRecordCarry = safeReadJson(P.recordCarry);
-        // — the common-law and jx slice traces, which nothing downstream read. The SAME pair the
-        // reconciliation siblings use at the derive seam, so a third list cannot drift from those two.
-        const lintCommonLawCarries = [P.commonLawCarry, P.jxZhCarry].map((f) => safeReadJson(f)).filter(Boolean);
-        return runLint({
-          // `clientSummaryMd` is deliberately NOT passed (2026-08-01): the stage is retired and a live
-          // run writes no client-summary.md. Every client-summary-capable check in predelivery-lint.mjs
-          // is presence-gated and simply emits nothing here; they stay alive for replay-archive.mjs,
-          // which passes the archived summary.
-          reportMd, narrativeMd, auditMd, recordsByUri: assembled.records, searchedNames,
-          // What each record's goods rested on when the writer wrote, and the records whose whole text a delivery repair
-          // was already handed: a finding written on goods the register cut, whose whole body the run holds now. The
-          // evidence is the copy kept when the writer was dispatched cold, which no later band merge rewrites; a run that
-          // kept none, written before the copy existed, is read on the evidence as it stands.
-          goodsEvidence: readGoodsEvidenceAsWritten(run.runDir) ?? readGoodsEvidence(run.runDir), goodsHanded: readGoodsHanded(run.runDir),
-          // The overview as its writer wrote it, read for a citation of a finding the report does not carry; and the
-          // conditions the email carries, as the email composes them.
-          overviewMd: (() => { try { return readFileSync(P.reportOverview, "utf8"); } catch { return null; } })(), emailConditions: emailConditionsOfReport(reportMd, lintVerdict?.verdict),
-          fetchFailures: recordFetchFailures, findings: lintFindings, narrativeFindings: lintNarrativeFindings, findingsRaw: lintFindingsRaw, actionsRegister: lintActions, verdictDoc: lintVerdict,
-          // WP-56 B2 — fresh v4 runs expect the standing mark-assessment (structural banner flag when
-          // absent). The replay harness's runLint call never passes this, so archived runs never flip.
-          markAssessment: lintMarkAssessment, markAssessmentExpected: lintSv >= 4,
-          // P5 — fresh v5 runs expect the content model (legal/practical split, manageable categories,
-          // four answers). Structural banner flags when absent; the replay harness never passes this.
-          fourAnswers: lintFourAnswers, contentModelExpected: lintSv >= 5,
-          // — the DECLARED version, so the lint can say when a fresh run is behind the dictated
-          // contract and the v6 parser gates never engaged. Live runs only: the replay harness passes
-          // nothing here, so archived runs never grow the check.
-          findingsSchemaVersion: lintSv,
-          placements: lintPlacements,   // B2 — flag-only: an empty structured mirror is stated, never a validator kill
-          recordCarry: lintRecordCarry,   // — flag-only: an unreasoned drop, and an upstream-absent one, are named on the delivery surface
-          commonLawCarries: lintCommonLawCarries,   // — a lane that flagged its own trace wrong reaches the delivery surface
-          actionsExpected: lintSv >= 4,   // spec 64 — a fresh v4 run without the register ships a visible structural flag
-          seniorRights: ctx.seniorRights?.rows ?? (() => { try { return JSON.parse(readFileSync(driverDir(run.runDir, "senior-rights.json"), "utf8")).rows; } catch { return null; } })(),   // WP-receipts W4
-          seniorRightsExpected: ctx.seniorRightsExpected === true,   // D1 — expected-but-absent is a failing structural check, never a silent pass
-          manifest: lintSv >= 4 ? ctx.framework : null,   // doc 50: v4 tier words judged in the frozen framework's vocabulary
-          intakeAsks: ctx.intakeAsks ?? (() => { try { return JSON.parse(readFileSync(driverDir(run.runDir, "intake-asks.json"), "utf8")).asks; } catch { return []; } })(),   // A6
-          askAnswers: lintAskAnswers,   // PR-9 — present ⇒ the intake-ask check judges the deterministic join, not fuzzy containment
-          cardFolds: (() => { try { return JSON.parse(readFileSync(driverDir(run.runDir, "card-folds.json"), "utf8")).folds; } catch { return null; } })(),   // PR-9 — fold observability (flag-only)
-          extraPlatformNames: ctx.profile?.platforms ?? [],   // WS-B: profile marketplaces are run vocabulary
-          // the SAME structure the masthead's coverage_line is stamped from
-          // (scope-facts.json, written by writeScopeFacts). Passing the sidecar rather than re-deriving
-          // is the point of the issue: the stamped line and the prose check now answer to one searched
-          // set, so they cannot state two different answers about what was searched. Absent sidecar ⇒
-          // null ⇒ the check emits nothing at all, rather than a pass it cannot justify.
-          searchedJurisdictions: (() => {
-            try { return JSON.parse(readFileSync(P.scopeFacts, "utf8")).searched_jurisdictions ?? null; }
-            catch { return null; }
-          })(),
-          // compose guarantees the NAME(S) cell via the searched-name fallback, and code (not the model)
-          // builds the per-name rating rows — so these reflect the DELIVERED state (regressions are caught
-          // by the publish unit tests; the receipt still names every check).
-          // 2026-08-01: this used to read `shape.headerName || …`, where shape came from
-          // clientSummaryShape(csMd) — a model-authored header on the retired client summary. With that
-          // surface gone the fallback IS the value, and it is the better one: the searched names are
-          // code-carried, so templateChecks now judges against what the run actually searched.
-          headerName: searchedNames.join(" / "),
-          ratedNames: searchedNames,
-          // P2-B — the owner×element screen's receipt arms the named-competitor checks. Absent (a
-          // matter with no incumbent lane, or an archived run) ⇒ neither check is emitted at all.
-          ownerScreen: ownerScreenForDelivery(ctx),
-          depth: ctx.depth,   // — the narrative depth rules are a per-product row; absent ⇒ no check
-          // — the corpora the party-fact rule partitions. The GRID is material about parties; the
-          // fetched records' goods wording is a claim about a registration's scope and is read only from
-          // `recordsByUri` above. Absent (an archived run, or a register-only matter with no grid) ⇒ the
-          // check emits nothing at all rather than a passing row, because there is nothing to test against.
-          commonLawGrid: safeReadJson(P.commonLawGrid),
-          matterContext: (() => { try { return readFileSync(P.matterContext, "utf8"); } catch { return ""; } })(),
-          clientPartyName: ctx.profile?.name ?? null,
-        });
-      };
-      // — the LAST settle, after refutation and the corrective pass. The audit this replaced ran
-      // ONCE, before refutation, and its own numbers prove that was too early: re-derived on the four
-      // delivered findings.json files it measured, the verified-stamp counts came out 35→37, 28→31,
-      // 37→38, 41→40. Two stamps entered R1's deliverable AFTER the only pass that checked
-      // them. A derivation is cheap enough to run at every seam, so it runs at the last one too.
-      settleDerivedBases(ctx, "pre-delivery");
-      let lint = lintNow();
-      // spec 64 — CODE-FIRST repair for a verdict/actions/statement incoherence: the defect is a
-      // derivation/staleness bug (the sidecar disagrees with the final findings), so the fix is to
-      // RE-DERIVE (applyCoverageFloor + writeVerdictSidecar) and re-lint — never an LLM redo, and never
-      // an edit to the actions. One attempt; a residual failure ships as the structural banner flag.
-      if (lint.failures.some((f) => f.id === "verdict-actions-coherence" || f.id === "verdict-actions-stale" || f.id === "statement-tier" || f.id === "statement-unconditional" || f.id === "statement-stance" || f.id === "statement-conditional-form")) {
-        const beforeVerdict = verdict;
-        followTheRecordsActions("in the delivery check's re-derive");   // a stale step goes, as a missing one arrives
-        applyCoverageFloor();
-        try { writeVerdictSidecar(); }
-        catch (e) { throw new StageFailure("verdict", `verdict sidecar re-derive failed (spec-64 coherence repair): ${String(e.message).slice(0, 120)}`); }
-        if (verdict !== beforeVerdict) writeRunStatus(ctx, signoffPatch(verdict));
-        runLog(run.runDir, { event: "verdict-rederive-repair", from: beforeVerdict, to: verdict });
-        lint = lintNow();
-      }
-      const initialFailures = lint.failures;
-      const repaired = [];
-      // doc-27 Item 1b ("close the loop"): deterministic registry auto-correction. The registry-record-match
-      // guard holds the fetched record's true value, so for numeric identifiers code overwrites the stated
-      // value FROM the record (and logs it) rather than relying on the model to re-type it. Run it (a) BEFORE
-      // the redo, so the redo only sees residuals (status/arithmetic/reference) and (b) AFTER the redo, since a
-      // redo re-emits the WHOLE file and could reintroduce a wrong identifier — the record-true value is the
-      // LAST word. PR-4: STATUS TOKENS joined the corrected set (label/parenthetical positions, polarity
-      // contradiction only — applyRegistryCorrections); free status prose stays redo territory.
-      // `registryCorrections` is DEDUPED on push so a revert→
-      // re-correct cycle does not double-count the audit trail; the re-lint fires whenever the file changed.
-      const registryCorrections = [];
-      const autoCorrectRegistry = () => {
-        if (!lint.failures.some((f) => f.id === "registry-record-match")) return;
-        let changed = false, newly = 0;
-        for (const [file, surface] of [[P.report, "report"]]) {
-          if (!existsSync(file)) continue;
-          const before = readFileSync(file, "utf8");
-          const { text: after, corrections } = applyRegistryCorrections(before, assembled.records);
-          if (corrections.length && after !== before) {
-            writeFileSync(file, after);
-            // THE CORRECTION MUST NOT READ AS STALENESS. `report.md` is watched by the freshness
-            // gate on the delivery path, so rewriting it here moves a sha the
-            // freshness gate is watching, and the gate then blocks delivery with "the report was
-            // assembled from material that has since changed". That is a deadlock rather than a delay:
-            // on resume assembleReportMd re-runs unconditionally from the UNCORRECTED card files, this
-            // corrector re-applies the byte-identical fix, the failure signature is identical, and the
-            // second occurrence is repeat-signature TERMINAL. The client gets nothing, after a fully
-            // paid search, because we fixed a registration number for them.
-            //
-            // restamp() exists for exactly this class and says so — "a post-stage mutator rewrote
-            // absPath — account for it everywhere it is recorded, so the change does not read as
-            // staleness no recompute could settle". The front-matter injectors already use it the same
-            // way (injectFrontMatter). Scoped to THIS file only: a blanket restamp would blind the gate
-            // to genuinely stale material, which is the failure it exists to catch.
-            restamp(run.runDir, file, { project: projectStageInput });
-            changed = true;
-            for (const c of corrections) {
-              const key = `${surface}|${c.field}|${c.uri}|${c.from}|${c.to}`;
-              if (!registryCorrections.some((e) => `${e.surface}|${e.field}|${e.uri}|${e.from}|${e.to}` === key)) {
-                registryCorrections.push({ ...c, surface });
-                newly++;
-              }
-            }
-          }
-        }
-        if (changed) {
-          if (newly) runLog(run.runDir, { event: "registry-auto-correct", count: newly,
-            corrections: registryCorrections.slice(-newly).map((c) => `${c.surface}/${c.field}: "${c.from}"→"${c.to}" (${c.uri})`) });
-          lint = lintNow();   // re-judge against the corrected surfaces (the file changed)
-        }
-      };
-      autoCorrectRegistry();
-      // RETIRED 2026-08-01 with the client-summary stage: the deterministic client-tier auto-correct
-      // ( A2 / F4), the recommendation-bound auto-bind ( T2 / H5) and the BOUNDARY
-      // LADDER above them — auto-correct → one forced cold re-emit with the verdict sidecar dictated
-      // → a hard deterministic StageFailure — are all DELETED. This is not a gate weakening: the
-      // ladder guarded a client-facing surface that no longer ships anywhere. What still guards the
-      // report the client actually reads is unchanged — the code-built verdict-bound row
-      // (composeEmailHtml opts.verdict, from _driver/verdict.json), the pre-delivery lint below, and
-      // the client gate. On the R2 evidence run this ladder was where the cost landed: three
-      // byte-identical failures before it exhausted.
-      // The writer's accepted record as it stood just before the delivery-check repair, kept only when that
-      // repair runs: the review after the repair is handed what changed between the two (repair-scope.mjs).
-      let repairBaseKept = false;
-      if (lint.failures.length) {
-        runLog(run.runDir, { event: "predelivery-lint-failed", failures: lint.failures.map((f) => f.id) });
-        const bySurface = (s) => lint.failures.filter((f) => f.surface === s || (s === "report" && f.surface === "all"));
-        // STRUCTURAL failures (a 404'd/un-fetchable cited record — registry-record-coverage marked `structural`
-        // by the lint) cannot be repaired by re-emitting a drafting surface, so they NEVER trigger a warm redo:
-        // they already ship as a visible flag (standing delivery philosophy), and a redo is doomed (the record
-        // does not exist). TONICA/ashen-keystone burned ~14 min re-emitting 35KB of report.md for a GB record that
-        // 404'd. modelFixable = the residue an LLM redo can actually fix; a structural-only surface skips the redo.
-        const modelFixable = (failures) => failures.filter((f) => !f.structural);
-        // CONVERSION 4 — THE LINT-REPAIR RUNG IS A REPAIR SURFACE, AND IT COMPOSES ITS OWN
-        // FOLLOWUP. gateway.mjs's warm patch and cold corrective both consult TOOL_WRITTEN_ARTIFACTS and
-        // turn a repair into a CALL; this ladder did not, so the first shell repair after the conversion
-        // would have handed a seat `editRepairTail`'s "TARGETED EDITS … using the Edit tool" for an
-        // artifact whose only writer is the driver — an order it cannot obey, because the conversion took
-        // `Write` and `Edit` out of its grant. Same class as the ten anchor sites and the max-tokens
-        // corrective before it: a retirement reaches the first-attempt surfaces and misses a correction
-        // surface. Keyed on the ARTIFACT rather than on the label, so conversions 5 and 6 inherit it.
-        const redo = async (label, failures, key, model, thinking, file, more = {}) => {
-          if (!failures.length || !key) return;
-          note(`pre-delivery lint: ${failures.length} failed check(s) on ${label} — one warm named-correction redo`);
-          const toolWritten = file ? toolWrittenArtifact(file) : null;
-          const r = await stage(label, ctx, {
-            force: true, sessionKey: key, model, thinking, trigger: "lint-repair",
-            followup: repairFollowup("*:lint-repair", { label, file, toolWritten, failures, ...more })
-              + stageCharter(label, ctx.depth, ctx.framework),
-          });
-          if (r.ok) repaired.push(label);
-        };
-        // A citation of a withdrawn or absent finding in the overview's own prose is the overview's to remove, in the
-        // words its repair is given (repair-targets.mjs), so its check's failure is not placed a second time below.
-        const reportFixable = modelFixable(bySurface("report")).filter((f) => f.id !== OVERVIEW_CITATION_ID);
-        const reportParts = reportPartsOf(P, findingsForCards, writeUps);
-        const overviewCites = overviewCitationFault(lint.failures);
-        const reportStructuralOnly = bySurface("report").filter((f) => f.structural);
-        if (reportStructuralOnly.length && !reportFixable.length && !overviewCites) {
-          runLog(run.runDir, { event: "lint-redo-skipped-structural", surface: "report", failures: reportStructuralOnly.map((f) => f.id) });
-          note(`pre-delivery lint: report failure(s) are structural (un-fetchable record) — shipping as flags, no doomed redo`);
-        }
-        // B1 — report.md is ASSEMBLED, not one session: a failure keyed to a finding ordinal (e.g. a
-        // finding-provenance bleed) re-renders THAT card alone, FRESH (isolated from its own record, so the bleed
-        // cannot recur); a shell failure (no ordinal) re-runs report-overview. Then re-assemble. Bounded: one pass.
-        let reassembled = false;
-        // Each fault goes to the part that holds it (repair-targets.mjs): a card's to that card, with the detail its
-        // check gives on that card alone; the overview's to the overview; and a fault only the lines composed from the
-        // record hold to the writer's repair below, since the record is the writer's, and so does one a register of the
-        // record holds. One no single part holds keeps the overview's repair.
-        const targets = locateReportFaults(reportFixable, reportParts);
-        const shellFixable = [...targets.overview, ...(overviewCites ? [overviewCites] : [])];
-        if (reportFixable.length || overviewCites) runLog(run.runDir, { event: "report-repair-targets", cards: [...targets.cards.keys()],
-          overview: shellFixable.map((f) => f.id), stamped: targets.stamped.map((f) => f.id), record: targets.record.map((f) => f.id),
-          unlocated: targets.unlocated.map((f) => f.id) });
-        const badOrdinals = [...targets.cards.keys()];
-        for (const ord of badOrdinals) {
-          const f = findingsForCards.find((x) => x.ordinal === ord);
-          if (!f) continue;
-          // The card is re-rendered FRESH, and for a provenance bleed that IS the repair — isolation from the
-          // record it was contaminated by. For a PROSE defect (permission-prose) it is not: nothing about the
-          // finding changed, so a silent regeneration is free to write the same sentence again. Hand the card
-          // its own failing details, the way the retired client-summary re-emit handed over the verdict authority.
-          // Write mode: this stays a FULL WRITE, and not by omission. `extra` rides the card stage's OWN
-          // message (which carries its write mandate) on a cold session with no prior card in context, and
-          // isolation from the contaminated rendering is the entire point — patching the bad card would
-          // preserve exactly what the re-render exists to discard. The redo() ladder below is the opposite
-          // case (a warm resume of a session that owns its file) and patches.
-          const why = targets.cards.get(ord).map((x) => x.detail).filter(Boolean);
-          const rc = await stage("report-card", { ...ctx, axis: String(ord), finding: f }, {
-            force: true, trigger: "lint-repair",
-            ...(why.length ? { extra: lines(
-              `The deterministic pre-delivery lint failed these checks on the previous rendering of THIS card:`,
-              ...why.map((d) => `- ${d}`),
-              `Fix ONLY what the checks name; change nothing else about the card.`,
-            ) } : {}),
-          });
-          if (rc.ok) { repaired.push(`report-card:${ord}`); reassembled = true; }
-        }
-        if (shellFixable.length && rov) { await redo("report-overview", shellFixable, rov.sessionKey, rov.model, rov.thinking, P.reportOverview); if (repaired.includes("report-overview")) reassembled = true; }
-        // — THE NARRATIVE REDO ROUTE. The same mechanism report-overview already has, re-aimed at
-        // the seat that wrote narrative.md. Without it a depth check could only FLAG, and a flag on a
-        // narrative that broke the rules is the run shipping the defect with a note attached. ONE followup
-        // pass, named violations; a second overrun ships and the lint row is the record.
-        //
-        // A FAULT IN A LINE COMPOSED FROM THE RECORD (a finding's own sentence, a short entry, a grouped line) is the
-        // writer's too: no card or overview repair can change what the renderer stamps from the record. It joins the
-        // narrative's faults in the writer's one repair, each named by the finding that owns it, in the numbering the
-        // writer's save takes. Its consumers then rebuild, and its change is reviewed, as for any repair of the record.
-        // A fault a register of the record holds (the four answers citing a finding the review withdrew) joins it, one
-        // line per withdrawn finding it cites, in that numbering.
-        const fold = readFold(run.runDir);
-        const sentenceFixable = targets.stamped.flatMap((f) => (f.parts ?? []).map((x) => ({ ...f, finding: keptModelOrdinal(fold, x.ordinal), detail: x.detail })));
-        const recordFixable = targets.record.flatMap((f) => writersCitationFaults(f, (o) => keptModelOrdinal(fold, o)));
-        // A finding named for goods the register cut, whose whole text the run holds now, is named in the writer's
-        // numbering, in the line's own words: it opens with the finding it names, so the list puts no "finding N:" before it.
-        // Under a fold the report displays the text of the member the fold kept, and the citation of the record can come
-        // from another member: the line then names both, so the repair reaches the text the report displays (design,
-        // 2026-11-04). Where the fold cannot be read, or no member is read citing the record, the line is not handed: a
-        // member is never guessed, and the run records each finding left unhanded.
-        const foldUnreadable = fold == null && existsSync(driverDir(run.runDir, FOLD_FILE));
-        let writersFindings = null;   // the writer's record, read once and only for a goods line
-        const writersRecord = () => {
-          if (writersFindings) return writersFindings;
-          try { writersFindings = parseFindingsJsonLenient(readFileSync(modelRecordPath(run.runDir, P.findings), "utf8")).findings ?? []; }
-          catch { writersFindings = []; }
-          return writersFindings;
-        };
-        const citesRecord = (wf, uri) => (Array.isArray(wf?.owner?.registrations) ? wf.owner.registrations : [])
-          .some((reg) => normalizeRecordUri(reg?.uri ?? reg) === uri);
-        const goodsUnhanded = [];
-        const inWritersNumbering = (f) => {
-          if (!String(f.id).startsWith("goods-held-whole:")) return f;
-          const shown = foldUnreadable ? null : keptModelOrdinal(fold, f.ordinal);
-          const citing = shown == null ? null : citingModelOrdinal(fold, f.ordinal, f.uri, writersRecord(), citesRecord);
-          const detail = goodsRepairLine({ shown, citing, uri: f.uri, goods: f.goods, state: f.state });
-          if (detail == null) { goodsUnhanded.push({ id: f.id, why: shown == null ? "fold-not-read" : "no-member-read-citing" }); return null; }
-          return { ...f, detail };
-        };
-        const narrativeFixable = [...modelFixable(bySurface("narrative")).map(inWritersNumbering).filter(Boolean), ...sentenceFixable, ...recordFixable];
-        if (goodsUnhanded.length) runLog(run.runDir, { event: "goods-held-whole-not-handed", unhanded: goodsUnhanded });
-        if (narrativeFixable.length && synthesisKey) repairBaseKept = snapshotRepairBase(run.runDir);
-        // A writer fault with no writer session to repair it is not repaired, and the run says so.
-        if (narrativeFixable.length && !synthesisKey)
-          runLog(run.runDir, { event: "lint-redo-skipped", surface: "writer", why: "no-writer-session", failures: narrativeFixable.map((f) => f.id) });
-        if (narrativeFixable.length) await redo("synthesis", narrativeFixable, synthesisKey, synthesisModel, synthesisThinking, P.narrative,
-          { findings: modelRecordPath(run.runDir, P.findings), narrative: P.narrative });
-        // The records whose whole goods text this repair was handed, kept so the check after it does not name them again.
-        const goodsHandedNow = narrativeFixable.filter((f) => String(f.id).startsWith("goods-held-whole:")).map((f) => f.uri);
-        if (goodsHandedNow.length && repaired.includes("synthesis")) {
-          try {
-            recordGoodsHanded(run.runDir, goodsHandedNow);
-            runLog(run.runDir, { event: "goods-held-whole-handed", records: [...new Set(goodsHandedNow)].sort() });
-          } catch (e) { note(`pre-delivery lint: the records handed their whole goods text were not recorded: ${e?.message ?? e}`); }
-        }
-        if (reassembled) assembleReportMd(P, findingsForCards, assembledOrdinals, { grouped: groupedMembers, byRight });
-        // The client-summary redo arm is retired with the stage (2026-08-01). Its `email`-surface
-        // failures have not gone unowned: the `:email` reference check now runs over the report-derived
-        // cover text (predelivery-lint.mjs runLint), and those failures ship as visible flags on the
-        // cover note itself — the A10 enumeration block — exactly like every other unrepaired check.
-        if (repaired.length) {
-          // a redo/reassembly rewrote report.md — re-apply every driver-owned front-matter field
-          applyVerdictFrontMatter();
-          writeScopeFacts();            // compute-don't-author: re-derive (a repair pass may follow a coverage change) …
-          applyScopeFrontMatter();      // … and re-stamp the driver-owned scope line over the re-emitted masthead
-          applyRatedUnderFrontMatter();  // … and the profile/framework/project disclosure (PR-11: one closure, was a paste)
-          // T2: the derived label/badge/bound recommendation too
-          lint = lintNow();
-          autoCorrectRegistry();        // doc-27 Item 1b: a re-emission may have reintroduced a wrong identifier — overwrite from the record again
-        }
-      }
-      // THE GOODS REFRESH'S OUTCOME, kept in the run record whatever this pass did (predelivery-lint.mjs,
-      // goodsHeldWholeChecks): the findings named for the repair, those still saying their goods are cut or unread after
-      // it, and the check's own count of the ones that no longer say so.
-      try {
-        const rows = (lint?.checks ?? []).filter((c) => /^goods-held-whole(?::|-unresolved:|$)/.test(String(c.id)));
-        if (rows.some((c) => c.id !== "goods-held-whole") || readGoodsHanded(run.runDir).size)
-          runLog(run.runDir, { event: "goods-held-whole",
-            named: rows.filter((c) => c.id.startsWith("goods-held-whole:")).map((c) => c.id.slice("goods-held-whole:".length)),
-            unresolved: rows.filter((c) => c.id.startsWith("goods-held-whole-unresolved:")).map((c) => c.id.slice("goods-held-whole-unresolved:".length)),
-            summary: rows.find((c) => c.id === "goods-held-whole")?.detail ?? null });
-      } catch { /* the run record's row is best-effort; the check's own rows are in the receipt below */ }
-      // The receipt artifact — ALWAYS written, pass or fail (spec A2's auditor evidence).
-      // V4-1: the receipt states the ARTIFACT SET evaluated — surfaces, record set + sources, and the
-      // stage labels this session inherited via skip — so an auditor can see the gates ran over
-      // inherited content (check counts alone cannot betray a vacuous pass).
-      // P2 clause 3 — the DELIVERY PRECONDITION, computed here so it lands IN the receipt below.
-      // A report may only ship when nothing it was built from has moved underneath it. Computed before the
-      // receipt write (not after) because `gate-metrics.mjs` reads this sink POST-publish for the
-      // lint-repair-tax metric: recording the verdict here means no consumer can read the failure list of
-      // a stale-blocked run and mistake it for a delivery-quality signal. The receipt itself stays
-      // ALWAYS-WRITTEN (spec A2 auditor evidence) — blocking a run must not cost us the evidence of why.
-      // The cards on the path are the ones the record owes as it stands, read again each time the path is judged: a
-      // synthesis save after the cards can add a finding that is owed one, or withdraw one whose card is owed no longer.
-      const deliveryPathStages = () => [...new Set([
-        ...(ctx.skippedStages ?? []), "register-digest", "synthesis", "narrative-refutation",
-        "report-overview", ...owedCardOrdinals(P, ctx.depth).map((o) => `report-card:${o}`),
-      ])];
-      const deliveryInputsFor = (label) => {
-        const bare = label.replace(/:.*$/, "");
-        const axis = label.includes(":") ? label.slice(label.indexOf(":") + 1) : null;
-        try { return stageInputs(bare, P, { axes: ctx.axes, axis, registerOnly: ctx.registerOnly }); } catch { return []; }
-      };
-      // A part not completed has no stage to be stale: the overview's shell is the driver's own, the review is not run
-      // again, and nothing re-runs either.
-      const deliveryPathNow = () => deliveryPathStages().filter((l) => !(overviewOpen && l === "report-overview")
-        && !(reviewOpen && l === "narrative-refutation"));
-      staleOnTheDeliveryPath = () => [...staleOnPath(run.runDir, deliveryPathNow(), deliveryInputsFor, { project: projectStageInput }),
-        ...cardsNeverBuilt(P, ctx.depth, cardOrdinals)];   // a finding a later save added is owed its one card call
-      staleStages = staleOnTheDeliveryPath();
-      // A DELIVERY-CHECK REPAIR THAT CHANGED ONLY THE FINDINGS RECORD leaves the narrative's bytes, and so the
-      // reviewer, fresh — the reviewer does not declare findings.json. The change is still content no review has
-      // read, so the reviewer is queued for the review after a repair, marked as the record's change.
-      if (repairBaseKept && !staleStages.some((s2) => s2.label === "narrative-refutation")) {
-        if (recordChangeOwesReview(run.runDir)) {
-          // At the FRONT, so the dependency order below puts it after the writer and ahead of the overview and the
-          // cards, which then rebuild from whatever its correction changes.
-          staleStages.unshift({ label: "narrative-refutation", changed: [{ name: basename(P.findings), via: "repair-record" }] });
-          runLog(run.runDir, { event: "post-repair-review-queued", why: "the repair changed the findings record only" });
-        }
-      }
-      // A RESUME AFTER SUCH A CHANGE WENT UNREVIEWED: its record queues the reviewer again, so this pass reviews it.
-      if (unreadRecordReview(run.runDir) && !staleStages.some((s2) => s2.label === "narrative-refutation")) {
-        staleStages.unshift({ label: "narrative-refutation", changed: [{ name: basename(P.findings), via: "repair-record" }] });
-        runLog(run.runDir, { event: "post-repair-review-queued", why: "a change to the findings record went unreviewed" });
-      }
-      // ── AD-2 A1 (E2E-R2, ordering) — repair-owned staleness is re-done IN-PASS, never parked. The
-      // pre-delivery repair can move an input under the tail this pass already built (the observed
-      // case: the report-overview lint redo rewrote findings.json, staling every report card + the
-      // client summary), and the only remedy used to be the stale throw below — a full park/resume
-      // cycle that re-drove the whole pipeline to re-render a handful of cards (34% of the E2E-R2
-      // run). The stale GUARD stays — it was RIGHT to block — but a staleness confined to the stages
-      // THIS pass generates (report-overview / report-card:N) is re-done here, from
-      // the CURRENT inputs, exactly once; whatever is still stale after the re-do falls through to
-      // the guard unchanged. Any upstream label in the set (register-digest, synthesis, …) keeps the
-      // park path untouched: those recomputes need pipeline order.
-      const staleRepaired = [];
-      // ── item 15a — REPAIR IN DEPENDENCY ORDER, never suppress all repair because one label is upstream ──
-      //
-      // This used to run only when EVERY stale label was in the delivery tail: one upstream label and the
-      // whole pass parked, re-driving the entire pipeline to rebuild a handful of surfaces. The ruling is
-      // that mixed staleness is repaired in dependency order — upstream first, then what depends on it,
-      // then the independent tails. The thing that must never happen is repairing a TAIL while its
-      // UPSTREAM is still stale, and ordering prevents that; suppressing everything does not, it just
-      // moves the same work into a resume.
-      //
-      // The order is derived from the two declaration maps (stages.mjs dependencyOrder over stageOutputs ×
-      // stageInputs), never hand-written — which is why 15c had to land first: without knowing who WROTE
-      // the artifact that moved there is no order to repair in.
-      //
-      // Still ONE bounded pass, exactly as before: each label is re-done at most once, and whatever is
-      // still stale afterwards blocks at the guard below. Nothing here weakens that guard.
-      if (staleStages.length) {
-        const ordered = dependencyOrder(staleStages.map((s2) => s2.label), P, { axes: ctx.axes });
-        staleStages = ordered.map((l) => staleStages.find((s2) => s2.label === l)).filter(Boolean);
-        const upstreamCount = partitionDeliveryStale(staleStages).upstream.length;
-        runLog(run.runDir, { event: "delivery-stale-repair", stages: staleStages.map((s2) => s2.label), upstream: upstreamCount, order: ordered });
-        note(`delivery: ${staleStages.length} stale stage(s)${upstreamCount ? ` (${upstreamCount} upstream)` : ""} — re-doing them in-pass in DEPENDENCY ORDER (${ordered.join(" → ")}); what went stale, never a pipeline restart`);
-        // The whole point is that the staled consumers rebuild from the MOVED input: re-read the
-        // findings as they now stand — the pre-repair snapshot this pass rendered from is the past.
-        let readNow = readFindingsForReport(P);
-        let findingsNow = readNow.findings;
-        let ordinalsNow = fullProseOrdinals(findingsNow);
-        if (readNow.rejected) note(`stale-repair: findings.json is present and REJECTED by the strict parser (${readNow.rejected}) — ${findingsNow.length} finding(s) still join by ordinal; this rejection is the run's defect, not a missing finding`);
-        let caseLawNow = new Map();
-        try {
-          if (existsSync(P.caseLaw)) caseLawNow = joinCaseLawProfiles(parseCaseLawProfiles(readFileSync(P.caseLaw, "utf8")), findingsNow);
-        } catch { /* no case-law layer */ }
-        let reassemble = false;
-        // THE LATE VERDICT, ONE RULE FOR BOTH REVIEWS THIS LOOP CAN RUN — the whole review and the review after
-        // a delivery-check repair. A late review may only harden the run's verdict, and a softer one is logged,
-        // never adopted. Returns what it found, so the review after a repair can keep the review whose verdict
-        // the run carries in senior-eye-review.md.
-        const adoptLateReview = (reviewNow, stageLabel) => {
-          const { hardened, softened: reviewSays } = lateReviewAgainst(verdict, reviewNow);
-          // A late review harsher than the assessment is a ground of its own: a gap closed later never lifts it.
-          const says = parseVerdict(reviewNow);
-          if ((VERDICT_RANK[says] ?? -1) > (VERDICT_RANK[assessed] ?? -1)) assessed = says;
-          // A REVIEW THAT SOFTENED IS NOT ADOPTED, AND THE RUN SAYS SO. The ratchet below only
-          // tightens, so a re-review that comes back softer leaves the settled verdict in force while
-          // senior-eye-review.md, rewritten by this repair, opens with the softer word. That is the
-          // design; recording nothing was the defect: a reader of the run found two answers and no
-          // line saying which one governs (measured in testing, 2026-09-23: BLOCKING recorded, CONDITIONAL on disk).
-          if (reviewSays) {
-            runLog(run.runDir, { event: "verdict-softening-not-adopted", was: verdict, reviewSays, stage: stageLabel });
-            note(`stale-repair: the reviewer now returns ${reviewSays}; the run keeps ${verdict}, because a late re-review may only harden the verdict — senior-eye-review.md now disagrees with verdict.json, and verdict.json governs`);
-          }
-          if (hardened) {
-            // ── T3a — THE LATE VERDICT IS ADOPTED, NOT THROWN, AND ADOPTION IS THE WHOLE JOB ──
-            //
-            // built the throw here because a late hardening was an input the gate had been
-            // DENIED: the verdict settles thousands of lines earlier, nothing re-reads the review,
-            // so a reviewer refusing to sign DURING this repair "is written to disk and never
-            // heard". Measured on `bf21580e` — the narrative printed a registration date of
-            // 1 March 2011 against a record reading 25 February 2011, the reviewer said so, and
-            // the run delivered anyway.
-            //
-            // DELETING THE THROW WITHOUT A DESTINATION RE-OPENS EXACTLY THAT HOLE, and that is
-            // why this branch is not the same edit as the gate's. The owner's ruling removes the
-            // REFUSAL; it does not say the reviewer stops being heard. So the late verdict is
-            // adopted as the run's own and everything derived from it is rebuilt:
-            //
-            //   · `verdict` and status.json      — the run's own record
-            //   · verdict.json                   — "the single label authority" (its words)
-            //   · `reassemble`                   — assembleReportMd re-runs, so the open-points
-            //                                      section is built from THIS review, and
-            //                                      applyVerdictFrontMatter re-reads the sidecar
-            //                                      and re-stamps overall_label / overall_badge
-            //
-            // Without the sidecar write the report would ship BADGED WITH THE VERDICT SETTLED
-            // BEFORE THE REVIEWER HARDENED — refused by the reviewer, labelled CONDITIONAL. That
-            // is worse than either behaviour this replaces, and it is `bf21580e`'s shape one
-            // layer up: the reviewer's word on disk and the client's document disagreeing.
-            //
-            // `verdictHardenedTo` still ratchets ONE WAY, so a review that SOFTENED during the
-            // repair still cannot lift a clamp. This branch only ever tightens.
-            runLog(run.runDir, { event: "verdict-hardened-by-repair", was: verdict, now: hardened, stage: stageLabel, adopted: true });
-            note(`stale-repair: the reviewer returned ${hardened} — adopting it as the run's verdict (the one settled earlier was decided against a review this repair has since rewritten) and rebuilding the label from it`);
-            verdict = hardened;
-            writeRunStatus(ctx, signoffPatch(verdict));
-            try { writeVerdictSidecar(); }
-            catch (e) { throw new StageFailure("verdict", `verdict sidecar write failed (the single label authority): ${String(e.message).slice(0, 120)}`); }
-            reassemble = true;
-          }
-          return { hardened, softened: reviewSays };
-        };
-        const processedLabels = new Set();   // the labels this loop has re-done, for the re-queue after a correction
-        const requeuedLabels = new Set();
-        const repairFailed = new Map();   // label → why its re-run in this loop did not complete
-        // A CHANGED DECISION IS READ AGAIN IN THIS PASS. A repeated placement pass whose decisions moved leaves the reading
-        // step, the writer and the review stale, and each of them leaves what reads it stale in turn. They are queued here,
-        // in dependency order after the stage that moved them, each re-done at most once more; one already queued runs where
-        // it stands, and a stage stale before the repair for the same reasons is not the repair's. The reviewer gets the whole
-        // review and its one correction, and the writer is judged again against its duty and the recall gate. The pass
-        // then ends with all of them rebuilt from the decision that stands. The guard below used to park the run on them,
-        // and the resume re-ran them, until the owner's ruling of 2026-10-19 that a run is never held. A stage still stale
-        // after its re-run still falls to the guard: no approved sentence states that case yet.
-        const chain = new Set();
-        const staleNow = () => staleOnPath(run.runDir, deliveryPathStages(), deliveryInputsFor, { project: projectStageInput });
-        const queueWhatItLeftStale = (s2, before) => {
-          const at = staleStages.indexOf(s2) + 1;
-          const left = whatTheRepairLeftStale({ before, after: staleNow(), repaired: s2.label,
-            ahead: new Set(staleStages.slice(at).map((x) => x.label)), processed: processedLabels, requeued: requeuedLabels });
-          for (const l of left.chain) chain.add(l);
-          for (const l of left.requeue) requeuedLabels.add(l);
-          if (!left.queue.length) return;
-          const rest = [...staleStages.slice(at), ...left.queue];
-          const order = [...new Set(dependencyOrder(rest.map((x) => x.label), P, { axes: ctx.axes }))];   // each label once
-          staleStages.splice(at, staleStages.length - at, ...order.map((l) => rest.find((x) => x.label === l)).filter(Boolean));
-          runLog(run.runDir, { event: "delivery-stale-requeued", after: s2.label, stages: left.queue.map((x) => x.label) });
-        };
-        // A STAGE STALE ON WHAT PLACEMENT WROTE IS THE CHAIN'S FROM THE START, whoever moved it: the decisions written
-        // again when the shape is derived again, or a late pass whose readers had already run, as much as this check's
-        // own repeat. Its re-run is followed, and a re-run that does not complete delivers.
-        const placementWrote = new Set([...stageOutputs("placement-inquiry", P, { axes: ctx.axes }).map((f) => basename(f)), basename(P.placementDecisions)]);
-        for (const l of stagesStaleOnPlacement(staleStages, placementWrote)) chain.add(l);
-        for (const s2 of staleStages) {
-          processedLabels.add(s2.label);
-          if (s2.label === "report-overview") {
-            const r = await stage("report-overview", { ...ctx, displayVerdict }, { force: true, trigger: "stale-repair" });
-            if (r.ok) { staleRepaired.push(s2.label); reassemble = true; }
-            else note(`stale-repair: report-overview re-emit failed (${r.fail}) — stays stale, the guard below decides`);
-          } else if (s2.label === "narrative-refutation"
-              && (chain.has(s2.label) || postRepairScope(run.runDir, P, s2, { staleRepaired, baseKept: repairBaseKept }).mode !== "whole"
-                || queuedForTheRecordOnly(s2) || unreadRecordReview(run.runDir))) {
-            // A REVIEWER A CHANGED DECISION QUEUED is given the whole review and its one correction here, as the pass that
-            // re-ran it on a resume gave it a review and a correction.
-            // THE REVIEW AFTER A DELIVERY-CHECK REPAIR (see runPostRepairReview). Reached where the scope is certain, and
-            // where a change to the record, or one an earlier review could not read, is reviewed whole: that review's
-            // flags go to the same one correction. Every other staleness of the reviewer takes the arm below, as before.
-            // A CHANGE NO REVIEW READ IS REVIEWED WHOLE, whatever this pass's own repair changed: the base this pass
-            // kept follows the earlier change, so a narrowed review would read only the later one, and saving the same
-            // values again would settle a stamp over a change nobody read.
-            const unreadOnEntry = unreadRecordReview(run.runDir);
-            const narrowedScope = postRepairScope(run.runDir, P, s2, { staleRepaired, baseKept: repairBaseKept });
-            const scope = unreadOnEntry && narrowedScope.mode !== "whole" ? { mode: "whole", why: "an earlier change went unreviewed" } : narrowedScope;
-            if (scope.mode === "none") {
-              // A FILE WRITTEN AGAIN WITH THE SAME VALUES IS NOT A CHANGE: no review runs, and the reviewer's stamp
-              // takes the rewrite as accounted for, so the delivery guard does not block on it.
-              settleOneShotStamp(run.runDir, "narrative-refutation", [P.narrative], "repair-changed-no-content");
-              runLog(run.runDir, { event: "post-repair-review-not-needed", why: scope.why });
-              note(`[post-repair] the repair saved the same values again — no review needed`);
-              staleRepaired.push(s2.label);
-              continue;
-            }
-            const rerun = () => UPSTREAM_STALE_REPAIR[s2.label](ctx, { displayVerdict });
-            // THE STATE THIS REVIEW READS IS KEPT WHOLE before it runs, so a correction that fails after it has a trusted
-            // state to come back to even where the record itself is lost meanwhile.
-            retainStateBeforeReview(run.runDir, P);
-            // A scope that cannot be narrowed is reviewed whole at once, and its record lists no change it could compare.
-            let review = scope.mode === "whole"
-              // A resume reviews the change its earlier record names, so that record says what the change was.
-              ? await runWholeReviewForRecord(ctx, P, run, { ...scope, changed: scope.changed ?? NO_CHANGE,
-                findingOnly: unreadRecordFindingOnly(run.runDir) ?? queuedForTheRecordOnly(s2) }, rerun)
-              : await runPostRepairReview(ctx, P, run, scope);
-            // A narrowed review that could not be read falls back to the whole review, whose points go to the same one
-            // correction below: neither the stamp of a findings-only change nor that of a stage that ends ok on the
-            // earlier review's file can show the change unread. When the whole review cannot be read either, its
-            // record keeps the change no review read; the record holds nothing (see `unreadRecordReview`).
-            if (!review.reviewed && scope.mode !== "whole") review = await runWholeReviewForRecord(ctx, P, run, scope, rerun);
-            if (!review.reviewed) continue;
-            staleRepaired.push(s2.label);
-            reassemble = true;
-            // senior-eye-review.md HOLDS THE REVIEW WHOSE VERDICT THE RUN CARRIES. A narrowed review that hardened
-            // the verdict stays in place, so the open questions print its grounds; otherwise the whole review goes
-            // back, and the narrowed one is kept under _driver/.
-            const { hardened } = adoptLateReview(review.reviewText, s2.label);
-            if (!hardened) review.putBack();
-            if (review.rec.flags.length) {
-              const pass = await runPostRepairCorrection(ctx, P, run, { rec: review.rec, items: review.items, points: review.points,
-                grounds: Boolean(hardened), whole: review.base?.whole === true, synthesisRef: { key: synthesisKey, model: synthesisModel, thinking: synthesisThinking } });
-              if (!pass.ok) correctionRejectedAt = new Date().toISOString();   // a rejected correction gives no result back
-              // NOTHING REVIEWS THE CORRECTION: the reviewer's stamp takes what it changed as accounted for, and so
-              // does the first cycle's receipt, so a resume re-fires neither.
-              settleOneShotStamp(run.runDir, "narrative-refutation", [P.narrative], "post-repair-fix");
-              try {
-                const at = driverDir(run.runDir, "corrective-cycle.json");
-                let receipt = null;
-                try { receipt = JSON.parse(readFileSync(at, "utf8")); } catch { receipt = null; }
-                atomicWrite(at, JSON.stringify({ ...(receipt ?? { entryVerdict: verdict }), ts: new Date().toISOString(), verdict,
-                  shas: { review: shaOf(P.seniorEyeReview), narrative: shaOf(P.narrative) }, settledBy: "post-repair-cycle" }, null, 2) + "\n");
-              } catch (e) { note(`[post-repair] the cycle receipt could not be rewritten (${String(e?.message ?? e).slice(0, 100)}) — a resume may re-fire the first correction`); }
-              // ITS CONSUMERS REBUILD FROM WHAT IT WROTE: re-read the findings, and queue the overview and any card it
-              // left stale that this loop has not queued already.
-              readNow = readFindingsForReport(P);
-              findingsNow = readNow.findings;
-              ordinalsNow = fullProseOrdinals(findingsNow);
-              try {
-                if (existsSync(P.caseLaw)) caseLawNow = joinCaseLawProfiles(parseCaseLawProfiles(readFileSync(P.caseLaw, "utf8")), findingsNow);
-              } catch { /* no case-law layer */ }
-              // After a correction, and after a rollback that rebuilt the record from a save, what reads the record is
-              // rebuilt from it; a rollback that put the same bytes back leaves nothing stale, and queues nothing.
-              if (pass.ok || pass.rollback) {
-                // A label not queued yet is appended; one this loop already re-done is re-queued ONCE, so the
-                // pass stays bounded and still ends with every surface rebuilt from the corrected record.
-                const queued = new Set(staleStages.map((x) => x.label));
-                // A finding the correction's save added is owed its one card call, as after any later save.
-                for (const x of [...staleOnPath(run.runDir, deliveryPathStages(), deliveryInputsFor, { project: projectStageInput }),
-                  ...cardsNeverBuilt(P, ctx.depth, cardOrdinals)]) {
-                  if (!(x.label === "report-overview" || x.label.startsWith("report-card:"))) continue;
-                  if (!queued.has(x.label)) { staleStages.push(x); queued.add(x.label); }
-                  else if (processedLabels.has(x.label) && !requeuedLabels.has(x.label)) { requeuedLabels.add(x.label); staleStages.push(x); }
-                }
-              }
-              // THE WRITER'S DUTY, JUDGED AGAIN ONCE THE CORRECTION HAS SETTLED, rollback included. The terminal guards judged
-              // it on the record before this correction. A correction that rolled back restores a record that the duty as it
-              // now stands may not be met by: a save restored as accepted work, or records owed since the save was made. The
-              // approved clause names what it leaves unaccounted, and a gap it closed withdraws its clause, as after the
-              // writer's re-run in this loop; the label is saved again before anything is published.
-              {
-                const was = verdict, stood = JSON.stringify(clampReasons);
-                const judged = clampOnTheWritersDuty({ again: true });
-                if (restoredClear && verdict === "CLEAR") applyCoverageFloor();
-                if (JSON.stringify(clampReasons) !== stood || verdict !== was) saveTheLabel("after the correction after a post-repair review");
-                runLog(run.runDir, { event: "writer-duty-after-correction", was, now: verdict, rolledBack: Boolean(pass.rollback),
-                  owed: judged.duty?.computable === true ? judged.duty.totals?.owed ?? null : null,
-                  unaccounted: judged.duty?.computable === true ? judged.duty.unaccounted.length : null, recall: judged.recall });
-              }
-            }
-            continue;
-          } else if (UPSTREAM_STALE_REPAIR[s2.label]) {
-            // The upstream arm (item 15a). Each of these re-runs the SAME stage the pipeline would have
-            // run, forced, with a `stale-repair` trigger so the telemetry says why. Dependency order put
-            // it ahead of anything that reads what it writes, so the tail arms below rebuild from the
-            // repaired artifact rather than from the one that moved.
-            const reviewSeq0 = s2.label === "narrative-refutation" ? nextRefutationSeq(run.runDir) : null;
-            const staleBefore = s2.label === "placement-inquiry" || chain.has(s2.label) ? staleNow() : null;   // what was stale before this one
-            if (s2.label === "placement-inquiry" && !rankingBeforeRepeat) rankingBeforeRepeat = rankingNow(P);   // as the writer last read it
-            const r = await UPSTREAM_STALE_REPAIR[s2.label](ctx, { displayVerdict });
-            // NOT A PASS: a reviewer that ends with no accepted call reads ok whenever the earlier review's file
-            // stands, and its stamp is refreshed over the change it never read. The record says so, the run delivers,
-            // and a resume for any other cause reviews the change whole.
-            if (r?.ok && s2.label === "narrative-refutation" && !readAcceptedReviewSince(run.runDir, reviewSeq0)) {
-              writePostRepairRecord(run.runDir, { status: "unread", whole: true, findingOnly: queuedForTheRecordOnly(s2), by: "stale-repair", fail: "no-accepted-call" });
-              runLog(run.runDir, { event: "post-repair-review", read: false, whole: true, fail: "no-accepted-call" });
-              note(`stale-repair: the reviewer's re-run recorded no review — the change it was queued for is unreviewed; the run's record says so, and the run delivers`);
-            } else if (r?.ok) {
-              staleRepaired.push(s2.label);
-              reassemble = true;
-              // THE FLOOR, APPLIED AGAIN TO THE PLACEMENT THE REPORT IS NOW BUILT FROM. The delivery floor was judged on
-              // the placement account before this repair; the repeated pass has recorded its own floor duty, and the
-              // stages after it rebuild from it in this loop. The same rule is applied to that account, through the
-              // same clamp, so the delivered verdict, its floor and its record describe one pass. It only tightens.
-              if (s2.label === "placement-inquiry") {
-                const was = verdict, stood = JSON.stringify(clampReasons);
-                clampOnTheFloorDuty({ again: true });
-                clampOnTheWritersDuty({ again: true });   // the recall gate leaves out the floor that now stands
-                // A save that fails here is tried again, then owed, never the end of the run: see saveTheLabel.
-                if (JSON.stringify(clampReasons) !== stood || verdict !== was) saveTheLabel("after the repeated placement pass");
-                runLog(run.runDir, { event: "floor-duty-after-repair", was, now: verdict });
-              }
-              // A whole review that is read reviews the change an earlier unread one left: its record says so, and
-              // its points stand under the late-review rule below, as any whole review's do. (The arm above has
-              // already set aside a stage that read ok without an accepted review.)
-              if (s2.label === "narrative-refutation" && unreadRecordReview(run.runDir))
-                writePostRepairRecord(run.runDir, { status: "read", whole: true, by: "stale-repair" });
-              // its consumers rebuild from what it JUST wrote — re-read, do not carry the pre-repair copy
-              readNow = readFindingsForReport(P);
-              findingsNow = readNow.findings;
-              ordinalsNow = fullProseOrdinals(findingsNow);
-              try {
-                if (existsSync(P.caseLaw)) caseLawNow = joinCaseLawProfiles(parseCaseLawProfiles(readFileSync(P.caseLaw, "utf8")), findingsNow);
-              } catch { /* no case-law layer */ }
-              for (const owed of cardsNeverBuilt(P, ctx.depth, cardOrdinals)) if (!staleStages.some((x) => x.label === owed.label)) staleStages.push(owed);
-              // — AND THE REVIEW IS ALSO SOMETHING THIS PASS JUST WROTE.
-              //
-              // The re-reads above are the artifacts a repaired stage's CONSUMERS need. narrative-refutation
-              // has no consumer here: what it authors is senior-eye-review.md, whose first line is the
-              // verdict that decides whether this run may deliver at all — and that verdict was settled
-              // thousands of lines earlier, at the gate. Nothing re-reads it, so a reviewer that refuses to
-              // sign DURING this repair is written to disk and never heard.
-              //
-              // Measured on `bf21580e` (round of 2026-08-23): verdict-2 CONDITIONAL at 00:22:11;
-              // `delivery-stale-repair` at 00:38:35 naming narrative-refutation; the review landing BLOCKING
-              // at 00:52:01; delivered. The narrative printed a registration date of 1 March 2011 against a
-              // fetched record reading 25 February 2011 — the reviewer said so, in the document nobody read.
-              //
-              // NOT a "stop on BLOCKING" check bolted beside the gate. The gate's own terminal is correct and
-              // stays where it is; this restores the input it was denied. `verdictHardenedTo` ratchets one
-              // way, so a review that softened during the repair cannot lift a clamp.
-              if (s2.label === "narrative-refutation") {
-                adoptLateReview(existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "", s2.label);
-              }
-              // THE WRITER, JUDGED AGAIN WHEN A CHANGED DECISION RE-RAN IT. Its duty and the recall gate were judged on the
-              // writer before it; a gap this one opens is named through the same clamps, and one already named stays named.
-              // The label is saved again as the floor's is above, through saveTheLabel.
-              if (s2.label === "synthesis") keepRankingReadByWriter(P);   // where each record stood as this writer read it
-              if (s2.label === "synthesis" && chain.has(s2.label)) {
-                const was = verdict, stood = JSON.stringify(clampReasons);
-                const judged = clampOnTheWritersDuty({ again: true });
-                // A CLEAR a closed gap gave back meets the floor again on what this writer now says: its forward actions
-                // are a ground of their own.
-                if (restoredClear && verdict === "CLEAR") applyCoverageFloor();
-                if (JSON.stringify(clampReasons) !== stood || verdict !== was) saveTheLabel("after the writer's re-run");
-                runLog(run.runDir, { event: "writer-duty-after-repair", was, now: verdict,
-                  owed: judged.duty?.computable === true ? judged.duty.totals?.owed ?? null : null,
-                  unaccounted: judged.duty?.computable === true ? judged.duty.unaccounted.length : null, recall: judged.recall });
-              }
-              if (staleBefore) queueWhatItLeftStale(s2, staleBefore);
-            } else {
-              repairFailed.set(s2.label, String(r?.fail ?? "failed").slice(0, 200));
-              note(`stale-repair: ${s2.label} re-run failed (${r?.fail}) — stays stale, the guard below decides`);
-            }
-          } else if (s2.label.startsWith("report-card:")) {
-            const ord = Number(s2.label.slice("report-card:".length));
-            const f = findingsNow.find((x) => x.ordinal === ord);
-            if (!f || !ordinalsNow.includes(ord)) {
-              // — name the CAUSE, not the symptom. This line ran 26 times on R1 while all 26 findings
-              // sat in the file, because the strict parser's rejection had been converted into zero
-              // findings upstream. A card with no finding and a file that was refused are different
-              // problems with different fixes, and the run must not describe one as the other.
-              note(readNow.rejected
-                ? `stale-repair: ${s2.label} cannot be repaired because findings.json was REJECTED (${readNow.rejected}) — the finding may well be present; fix the rejection, not the card`
-                : `stale-repair: ${s2.label} has no full-prose finding in the current findings.json — stays stale, the guard below decides`);
-              continue;
-            }
-            const rc2 = await stage("report-card", { ...ctx, axis: String(ord), finding: f, caseLawProfile: caseLawNow.get(ord) ?? null }, { force: true, trigger: "stale-repair" });
-            if (rc2.ok) { staleRepaired.push(s2.label); reassemble = true; }
-            else note(`stale-repair: ${s2.label} re-render failed (${rc2.fail}) — stays stale, the guard below decides`);
-          }
-        }
-        if (reassemble) {
-          reassembleFromTheRecord(P, findingsNow, ctx.depth);   // the plan the first assembly used, made from the record as it stands
-          applyVerdictFrontMatter();      // the reassembly rewrote report.md — re-apply every driver-owned
-                                          // field, exactly as the lint-repair branch above does
-          writeScopeFacts();
-          applyScopeFrontMatter();
-          applyRatedUnderFrontMatter();
-          // A repair that re-ran a stage the trace and the Audit Trail report has both written again, before the lint
-          // below reads the trace. A rebuild that fails withdraws the audit written before the repair, as a failed first
-          // build ships none.
-          if (rebuildTheDeliveredRecord && staleRepaired.some((l) => REBUILDS_THE_DELIVERED_RECORD.has(l))) {
-            const rebuilt = rebuildTheDeliveredRecord("stale-repair");
-            if (!rebuilt.ok) note(`stale-repair: the audit could not be written again (${String(rebuilt.reason).slice(0, 100)}) — the one written before the repair is withdrawn and kept under _history; the report ships without an audit`);
-          }
-        }
-        // The AD-2 in-pass stale-repair arm for client-summary is retired with the stage
-        // (2026-08-01): nothing generates that label, so it can never turn up stale here.
-        // Re-judge the repaired surfaces exactly as the lint-repair branch does, then RE-ASK the
-        // freshness question — one bounded pass; anything still stale blocks below, exactly as before.
-        lint = lintNow();
-        autoCorrectRegistry();
-        staleStages = staleOnPath(run.runDir, deliveryPathNow(), deliveryInputsFor, { project: projectStageInput });
-        // A REPAIR WHOSE REVIEW COULD NOT BE READ IS NOT REVIEWED, and its record says so (`unreadRecordReview`). The guard
-        // is never handed that record: a run is not held on an unread review (owner's ruling, 2026-10-19). What the guard
-        // reads here is staleness alone, as in the released engine.
-        // A CHANGED DECISION STILL UNREAD AFTER ITS RE-RUN IS DELIVERED, NOT HELD (the owner's ruling of 2026-10-19 that a
-        // run is never held). When every stage still stale is one the changed decision left stale and whose re-run in
-        // this pass did not complete, the run delivers what it has. The writer's duty and the recall gate are judged
-        // again on the writer delivered, and name in their approved sentences what they find. Staleness for any other
-        // reason still falls to the guard.
-        // LATE RECORDS NO PLACEMENT PASS COULD ASSESS ARE DELIVERED, NOT HELD (ruled 2026-10-19). The band gained records
-        // after placement's last pass, and neither the pass that would have assessed them nor the delivery check's repeat
-        // of placement completed. The report stands as the last accepted passes built it. An account from before the late
-        // records cannot show they were assessed, so the floor and the recall gate are judged again on the band as it
-        // stands, and the late records the report does not address are counted in the approved sentence for records
-        // neither addressed nor set aside. The attempts and the records are kept in the run record.
-        const unassessed = repairFailed.has("placement-inquiry") ? lateRecordIds(P) : [];
-        if (unassessed.length && staleStages.some((x) => x.label === "placement-inquiry")
-          && staleStages.every((x) => x.label === "placement-inquiry" || chain.has(x.label))) {
-          const was = verdict, stood = JSON.stringify(clampReasons);
-          clampOnTheFloorDuty({ again: true });
-          const judged = clampOnTheWritersDuty({ again: true });
-          if ((JSON.stringify(clampReasons) !== stood || verdict !== was) && saveTheLabel("after late records went unassessed")) applyVerdictFrontMatter();
-          runLog(run.runDir, { event: "late-evidence-unassessed-delivered", was, now: verdict, records: unassessed.length, ids: unassessed.slice(0, 20),
-            stated: judged.recall, latePass: ctx.latePassFailed ?? null, repeat: repairFailed.get("placement-inquiry") });
-          note(`late evidence: ${unassessed.length} record(s) reached the band after placement's last pass, and neither its pass for them nor the delivery check's repeat completed — the run delivers what the last accepted passes built, and the approved clauses state what is open`);
-          staleStages = staleStages.filter((x) => x.label !== "placement-inquiry");
-        }
-        if (staleStages.length && staleStages.every((x) => chain.has(x.label))) {
-          const was = verdict, named = clampReasons.length, stood = JSON.stringify(clampReasons);
-          clampOnTheWritersDuty({ again: true });
-          // THE RECORDS RE-RANKED SINCE THE WRITER LAST WROTE, in the owner's words of 2026-10-19. The report states the
-          // ranking the writer last read; the audit trail, written again after the repeat, states the one that stands.
-          const readByWriter = rankingFromJson(safeReadJson(rankingReadByWriterPath(P))) ?? rankingBeforeRepeat;
-          if (readByWriter && staleStages.some((x) => x.label === "synthesis")) {
-            const now = rankingNow(P), n = recordsReRanked(readByWriter, now);
-            const m = Math.max(rankedRecords(readByWriter), rankedRecords(now), n);
-            if (n > 0) deliverAndClamp({
-              event: "ranking-changed-unread-delivered",
-              defect: `ranking_changed_unread:${n}`,
-              detail: { records: n, of: m },
-              reason: `ranking_changed_unread:${n} of ${m} record(s) — the delivery check's repeat of placement changed where these records stand, and the writer's re-run for the change did not complete, so the report gives the ranking it last read and the audit trail the one that stands. The report ships with this named rather than being withheld.`,
-              clause: clauseForDefect("ranking_changed_unread", n, m),
-            });
-          }
-          if ((JSON.stringify(clampReasons) !== stood || verdict !== was) && saveTheLabel("after a changed decision went unread")) applyVerdictFrontMatter();
-          runLog(run.runDir, { event: "changed-decision-unread-delivered", was, now: verdict, named: clampReasons.length - named,
-            stages: staleStages.map((x) => ({ label: x.label, changed: (x.changed ?? []).map((c) => c.name) })) });
-          note(`stale-repair: ${staleStages.map((x) => x.label).join(", ")} could not be re-run for the changed decision — the run delivers, and the approved clauses name what they find`);
-          staleStages = [];
-        }
-        saveTheOwedLabel();   // before anything is published from it
-        note(`stale-repair: re-did ${staleRepaired.length} stage(s) in-pass (${staleRepaired.join(", ") || "none"}) — ${staleStages.length ? `${staleStages.length} still stale, the delivery guard blocks` : "the delivery path is fresh"}`);
-      }
-      // THE CONDITIONS FOLLOW THE RECORD AS IT IS DELIVERED, whichever repair above moved it last, and the label owed is
-      // saved before the receipt below and anything published from it. A list that moved is judged again.
-      if (followTheRecordsActions("as the record is delivered")) {
-        saveTheLabel("as the record is delivered");
-        applyVerdictFrontMatter();
-        lint = lintNow();
-      }
-      saveTheOwedLabel();
-      // P2 — record the delivery-BLOCKING stale labels the moment they are known (not only at the throw
-      // below), so ANY later exit from this pass — the staleness throw, a core-artifact throw between here
-      // and it, an auto-recovery park — carries the set into reconcilePassStamps. Reconcile must leave these
-      // stamps stale (see reconcileStamps' `exclude`), else it erases the block and the resume ships stale.
-      if (staleStages.length) ctx.deliveryBlockingStale = new Set(staleStages.map((s2) => s2.label));
-      try {
-        writeFileSync(driverDir(run.runDir, "predelivery-lint.json"), JSON.stringify({
-          ts: new Date().toISOString(),
-          checks: lint.checks, failures: lint.failures.map((f) => f.id),
-          staleStages,   // P2: non-empty ⇒ this run was blocked on freshness, not on lint quality
-          staleRepaired,   // AD-2 A1: delivery-tail stages re-done IN-PASS after a repair moved their input
-
-          initialFailures: initialFailures.map((f) => f.id), repaired,
-          registryCorrections,   // doc-27 Item 1b: deterministic record-true overwrites applied before/after the redo
-          artifactSet: {
-            surfaces: [P.report].filter(existsSync).map(fileMeta),   // client-summary retired 2026-08-01 — one delivered surface
-            recordUris: [...assembled.records.keys()].sort(),
-            recordSources: { fromRunDir: assembled.fromRunDir, fromLedgerThisSession: assembled.fromLedger },
-            recordFetchFailures: [...recordFetchFailures.entries()].map(([uri, cause]) => ({ uri, cause })),
-            skippedStages: ctx.skippedStages ?? [],
-          },
-        }, null, 2) + "\n");
-      } catch (e) { note(`lint receipt write failed (non-fatal): ${e.message}`); }
-      // F1 + F2 — reasoning-integrity OBSERVABILITY: per-finding engagement receipts (does
-      // each Composite≥3 finding cite any of its own field anchors?) + rule-shape flags (a rating decided
-      // by a cutoff/blanket rule), written to an INTERNAL sidecar and surfaced on the INTERNAL report only
-      // (publishReport → opts.integrityFlags). GOODHART GUARD: this is observability the reviewer reads while
-      // curating, NEVER a gate — nothing retries or blocks on it (§0(a)/§6).
-      try {
-        const narrativeMd = existsSync(P.narrative) ? readFileSync(P.narrative, "utf8") : "";
-        const reportMd = existsSync(P.report) ? readFileSync(P.report, "utf8") : "";
-        const anchors = readAnchors({
-          registerFindingsMd: existsSync(P.registerFindings) ? readFileSync(P.registerFindings, "utf8") : "",
-          matterContextMd: existsSync(P.matterContext) ? readFileSync(P.matterContext, "utf8") : "",
-          variantManifestMd: existsSync(P.variantManifest) ? readFileSync(P.variantManifest, "utf8") : "",
-        });
-        const receipts = findEngagementReceipts(narrativeMd, anchors);
-        const bland = receipts.filter((r) => !r.citesOwnAnchor);
-        const ruleShape = findRuleShapeFlags(`${narrativeMd}\n${reportMd}`, { disputeTypes: (ctx.frameworkMethod?.inputs ?? []).flatMap((i) => i.values) });   // the run's own dispute types, where its framework states a method
-        const reviewMd = existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "";
-        // B2b — reviewer self-coherence over senior-eye-review.md (same internal sidecar/banner).
-        const reviewerCoherence = findReviewerCoherenceFlags(reviewMd);
-
-        // v5 Appendix-A reasoning tripwire net — the thin MECHANICAL catch under the recall / coverage /
-        // honesty PRINCIPLES (skills/*). Same INTERNAL-observability posture as F1/F2/B2: a staff lawyer curates, it
-        // never blind-redoes a surface, and each reads ONLY mechanical artifacts — never the noisy reviewer
-        // verdict. (The U1 status-FORCING already happened at the verdict clamp above; here it is the
-        // surface-honesty backstop + the recorded receipt.) Flag-and-deliver: a trip is surfaced, never withheld.
-        const registerFindingsMd = existsSync(P.registerFindings) ? readFileSync(P.registerFindings, "utf8") : "";
-        const commonLawMd = existsSync(P.commonLaw) ? readFileSync(P.commonLaw, "utf8") : "";
-        const matterContextMd = existsSync(P.matterContext) ? readFileSync(P.matterContext, "utf8") : "";
-        const placementMd = existsSync(P.placement) ? readFileSync(P.placement, "utf8") : "";
-        let parsedFindings = null;
-        try { if (existsSync(P.findings)) parsedFindings = parseFindingsJson(readFileSync(P.findings, "utf8")); }
-        catch { /* malformed findings.json is already a validators.findings fail upstream — don't double-throw here */ }
-        // AD-4 (instrumentation house rule) — record WHICH inputs this pass could actually read. Every
-        // "" fallback above makes a missing file indistinguishable from an empty one, which is exactly how
-        // the R2 evidence run's engagement total flapped 13→0 between two emissions (tripwires 9 both
-        // times) with nothing saying the second pass simply could not see the narrative. A zero with
-        // inputs.narrative:false is "not recorded"; a zero with inputs.narrative:true is "did not happen".
-        const inputsRead = {
-          narrative: existsSync(P.narrative), report: existsSync(P.report),
-          review: existsSync(P.seniorEyeReview), registerFindings: existsSync(P.registerFindings),
-          commonLaw: existsSync(P.commonLaw), matterContext: existsSync(P.matterContext),
-          placement: existsSync(P.placement),
-          findings: parsedFindings != null,
-        };
-        const inScopeClasses = inScopeClassList(job, ctx.profile);   // #2 — full Nice set (top-level + per-mark), incl. services
-        const carriedMarks = (parsedFindings?.findings ?? []).map((f) => f.mark);
-        // A3 — the frame residual (an unclosed dominant-element crowd + every deferred frame directive) joins
-        // the coverage gaps fed to the status-honesty signal, so the delivered headline cannot read clean while
-        // the dominant-element crowd is unfinished (and the caption is promoted to disclose it, below).
-        let frameReopenReceipt = null;
-        try { const rp = driverDir(run.runDir, "frame-reopen.json"); frameReopenReceipt = existsSync(rp) ? JSON.parse(readFileSync(rp, "utf8")) : null; } catch { /* best-effort */ }
-        // copper-lattice net #3 — the cross-check tripwire's substrate (only-if-present)
-        let xcheckReceipt = null;
-        try { const xp = driverDir(run.runDir, "register-xcheck.json"); xcheckReceipt = existsSync(xp) ? JSON.parse(readFileSync(xp, "utf8")) : null; } catch { /* best-effort */ }
-        const carriedOwners = (parsedFindings?.findings ?? []).flatMap((f) => [f?.owner, f?.owner_name, f?.owner?.name]).filter((x) => typeof x === "string" && x);
-        const executedQids = (ctx.planExecution?.executed ?? []).map((x) => x.qid);
-        const regLedgerRows = loadCoverageLedger(run.runDir).rows;
-        // judgment-relocation (2026-06-23): the search-shape gate (findFloorShapeGaps) was DELETED here too —
-        // sufficiency is judgment's call (coverage_judgment), not a re-parse of the ledger at the surface. This
-        // status-honesty tripwire stays an INTERNAL observability backstop over the genuine ledger gaps
-        // (deferred / coverage-limited rows) + the structural frame residual + an unsearched in-scope jurisdiction
-        // — it never clamps the verdict (the verdict clamp above is retired); it only flags the reviewer.
-        const materialGaps = deriveCoverageStatus([
-          ...regLedgerRows,
-          ...(commonLawMd ? findCoverageLimitedCells(commonLawMd).map((c) => ({ axis: "common-law", status: "coverage-limited", unit: `${c.variant} × ${c.platform}` })) : []),
-        ]).materialGaps.concat(frameResidualGaps(frameReopenReceipt))
-          // Round 2 Change 1d — an in-scope jurisdiction the run never searched is a recall gap: it joins the
-          // status-honesty signal + the disclosed caption (escalate + disclose, never withhold), like the frame residual.
-          .concat((ctx.jurisdictionScope?.underCoverage ?? []).map((j) => ({ unit: `in-scope jurisdiction unsearched: ${j}`, status: "frame-gap", reason: "an instructed / effective-in-scope territory was not searched this run" })))
-          // M6 — A DECLARED ABSENCE IS A MATERIAL GAP, and it has to be added HERE because it is
-          // invisible everywhere else: the form carries no rows, so `deriveCoverageStatus` above returns
-          // `{complete: true}` over it and the status-honesty surface would see a run with nothing
-          // outstanding. The declaration reads correctly to the lawyer and says nothing to the machine
-          // unless this line exists.
-          .concat(coverageAbsenceGaps(readCoverageForm(run.runDir, coverageFormStamp(run.runDir).formName).parsed));
-        const tripwires = {
-          recallFloor: findRecallFloorViolations(registerFindingsMd, { carriedMarks, searchedNames, inScopeClasses }),   // S1
-          reviewFreshness: findReviewFreshnessViolation(reviewMd, { upstreamTexts: [registerFindingsMd, commonLawMd, placementMd] }), // U2
-          seedNeutrality: findSeedNeutralityViolations([{ name: "matter-context", text: matterContextMd }, { name: "placements", text: placementMd }]), // S2
-          probativeGrading: parsedFindings ? findProbativeGradingViolations(parsedFindings) : [],   // U3
-          // The matrix-ceiling tripwire is retired: a framework that states a table now holds each rating to it (framework-method.mjs).
-          // U1 (surface backstop). The scan surface NARROWS to report.md on 2026-08-01: client-summary.md
-          // was the second half of this concat and no longer exists. The report is the one delivered
-          // document, so nothing a reader sees escapes the check — it just has one surface to read now.
-          statusHonesty: findStatusHonestyViolation(materialGaps, reportMd),
-          // #6/#7/#8 grading tripwires (non-blocking, escalate-and-disclose): a near-term client deadline that
-          // must surface as an ACTION; a placement disagreement the digest left unresolved; a register finding
-          // with no grounding record (orphan). All read STRUCTURED artifacts (findings.json / the digest table).
-          deadlineUrgency: parsedFindings ? findDeadlineUrgencyMiss(parsedFindings, { nowMs: Date.now() }) : [],   // #6
-          unresolvedDisagreements: findUnresolvedDisagreements(registerFindingsMd),   // #7
-          orphanFindings: parsedFindings ? findOrphanVerificationFlags(parsedFindings) : [],   // #8
-          // copper-lattice net #3 — a same-field in-use common-law hit demoted without an executed
-          // register cross-check receipt (S1 sibling; receipt-gated ⇒ replay-pure).
-          crosscheckMissing: findUncrossCheckedDemotions(commonLawMd ? findSimilarListingSignals(commonLawMd) : [],
-            { carriedOwners, carriedMarks, xcheckReceipt, executedQids }),
-          // PR-4 — document-growth trips off the append-only spine (the stage choke point logs them; both
-          // the lint-repair and corrective loops are covered because the trip keys on TRIGGER). Internal
-          // observability like every tripwire: the reviewer sees which repair pass ADDED material.
-          documentGrowth: documentGrowth(run.runDir)?.trips ?? [],
-        };
-        const tripFlags = [
-          ...tripwires.recallFloor.map((v) => `recall-floor: ${v.why}`),
-          ...tripwires.crosscheckMissing.map((v) => `crosscheck-missing: ${v.why.replace(/^crosscheck-missing:\s*/, "")}`),
-          // doc-35 T4: review-freshness (U2) grades the engine's own QC RITUAL ("the review re-read its own
-          // inputs"), a process metric not a matter fact — dropped from the reviewer surface.
-          ...tripwires.seedNeutrality.map((v) => `seed-neutrality: ${v.where} carries ${v.why}`),
-          ...tripwires.probativeGrading.map((v) => `probative-grading: ${v.why}`),
-          ...(tripwires.statusHonesty && !tripwires.statusHonesty.pass ? [`status-honesty: ${tripwires.statusHonesty.detail}`] : []),
-          ...tripwires.deadlineUrgency.map((v) => `deadline-urgency: ${v.why}`),
-          ...tripwires.unresolvedDisagreements.map((v) => `disagreement-unresolved: ${v.why}`),
-          ...tripwires.orphanFindings.map((v) => `orphan-finding: ${v.why}`),
-          ...tripwires.documentGrowth.map((t) => `document-growth: ${t.stage} grew ${t.growthPct}% (${t.before} → ${t.after} bytes) under trigger "${t.trigger}" — a repair defends or corrects, it does not add; review what the pass appended`),
-        ];
-
-        writeFileSync(driverDir(run.runDir, "reasoning-integrity.json"), JSON.stringify({
-          ts: new Date().toISOString(),
-          inputs: inputsRead,   // AD-4: which substrates this pass could read — a 0 below is only a 0 when its input was true
-          engagement: { total: receipts.length, blandCount: bland.length, bland: bland.map((r) => r.finding), receipts },
-          ruleShape, reviewerCoherence, tripwires, tripFlags,
-          registryCorrections,   // doc-27 Item 1b: surfaced on the INTERNAL banner so the reviewer sees what code fixed from the record
-        }, null, 2) + "\n");
-        // AD-4: the run.jsonl event is UNCONDITIONAL (it used to fire only when something flagged, so a
-        // clean pass and a never-ran pass looked identical to a run.jsonl reader) and carries the
-        // inputs-read map, so the 13→0 flap shape self-explains on the row that shows the 0.
-        runLog(run.runDir, { event: "reasoning-integrity", ok: true, bland: bland.length, total: receipts.length, ruleShape: ruleShape.length, reviewerCoherence: reviewerCoherence.length, tripwires: tripFlags.length, inputs: inputsRead });
-        if (bland.length || ruleShape.length || reviewerCoherence.length || tripFlags.length) {
-          note(`reasoning-integrity (observability, non-blocking — for the reviewer to eyeball): ${bland.length}/${receipts.length} finding(s) cite no field anchor; ${ruleShape.length} rule-shape; ${reviewerCoherence.length} reviewer-coherence; ${tripFlags.length} v5 tripwire(s)${tripFlags.length ? ` — ${tripFlags.map((f) => f.split(":")[0]).join(", ")}` : ""}.`);
-        }
-      } catch (e) {
-        // AD-4: a failed integrity pass is a recorded fact, not a stderr aside — the old note-only catch is
-        // exactly the "not recorded reads as clean" shape this package retires.
-        try { runLog(run.runDir, { event: "reasoning-integrity", ok: false, error: String(e?.message ?? e).slice(0, 160) }); } catch { /* best-effort */ }
-        note(`reasoning-integrity (non-fatal): ${e.message}`);
-      }
-      // Surviving failures + any unclosed envelope gap ride the report front-matter as code-built flags —
-      // rendered as the banner at the top of the email and the report page. Single-line, length-capped.
-      const flags = flagLines(lint.failures);
-      const fmFields = {};
-      // A1 (residual leak closed): lint_flags must NOT ride report.md front-matter — report.md is copied
-      // verbatim into the client-reachable pool dir (publish/index.mjs copyRO), so a front-matter lint
-      // flag is a latent client leak even though the rendered client HTML strips it. The flags live ONLY
-      // in the internal _driver/predelivery-lint.json sink (written just above); publishReport reads that
-      // sink and surfaces them on the INTERNAL report render alone (opts.lintFlags), never the client one.
-      // B5b checkpoint 4: a customer named after the narrative existed binds as a DELIVERY NOTE, never silently.
-      await checkLateBind("pre-delivery");
-      if (ctx.lateBindNote) fmFields.late_bind_note = ctx.lateBindNote;
-      // V4-4: surviving coverage gaps ship as the attempted-and-unreachable note with the priced offer.
-      if (ctx.coverageNote) fmFields.coverage_note = ctx.coverageNote.slice(0, 600);
-      // T4 (H1/H2): the screen_gate_note / frame_reopen_note / machine_ledger_note front-matter
-      // injections are DEAD — their only renderer was the retired review bar, and their SUBSTANCE
-      // already reaches the reader honestly: the verdict clamp reasons (hero bound line + email
-      // conditions row) carry the screen-gate and frame residues, injectDeferralCoverage puts the
-      // unclosed directives in the coverage rows, and the machine-ledger degrade rides status.json /
-      // the run log / the audit workbook's Review-receipts sheet.
-      // Doc-17 C-2: open floors at delivery = deferred rows ∪ surviving ⭐-floor breaches (the label
-      // never demotes floor work). Stated with the mechanical cause, never silently shipped.
-      const ledgerLoadFinal = loadCoverageLedger(run.runDir);   // WS-A: third gate consumer — same source as the other two
-      let ledgerFinal = ledgerLoadFinal.rows;
-      // T3 (H3, the owner-refined line): the machine-ledger DEGRADE is
-      // sanctioned only while the gates could actually READ coverage — the prose table is the source
-      // of truth and its rows kept every gate functioning. A run whose coverage-honesty floor had
-      // ZERO usable rows (machine mirror unavailable AND the prose parse yielded nothing) has no
-      // functioning coverage receipts at all — it FAILS instead of stamping a verdict over unread
-      // coverage (the retired D1 clamp used to ship this as a finished-looking CONDITIONAL).
-      // THE FORM BOTH LEDGERS ARE RENDERED FROM, BEFORE THE RUN IS ENDED FOR WANT OF EITHER. The machine ledger
-      // and the prose table are renders of the driver's coverage form, whose statuses the write-up recorded. With both
-      // renders unreadable, the form's ruled rows still let the coverage-honesty floor run, through the same relabels,
-      // so the run is not ended with no report over a render it lost. With no ruled row there either, see below.
-      if (ctx.machineLedgerNote && ledgerLoadFinal.source !== "machine" && ledgerFinal.length === 0 && existsSync(P.registerFindings)) {
-        const formRows = formLedgerRows(readCoverageForm(run.runDir).rows ?? []);
-        if (formRows.length) {
-          ledgerFinal = relabelCoverageRows(run.runDir, formRows);
-          runLog(run.runDir, { event: "coverage-ledger-from-form", rows: ledgerFinal.length, note: abbrev(String(ctx.machineLedgerNote), 200) });
-          note(`coverage ledger: the machine ledger and the prose table are unreadable — the coverage floor reads the coverage form's ${formRows.length} ruled row(s)`);
-        } else
-          // With no ruled row anywhere, no verdict can ship over coverage nobody read (spec-49 T3), and the run is not
-          // ended for it either: the failure is the assessment's, recorded as not completed and delivered without it.
-          throw Object.assign(new StageFailure("coverage-ledger", `no readable coverage ledger — ${abbrev(String(ctx.machineLedgerNote), 200)}; the prose table yielded zero rows${ledgerLoadFinal.dropped?.length ? ` (${ledgerLoadFinal.dropped.length} unclassifiable)` : ""} — the coverage-honesty floor cannot run, so no verdict can ship`), { notCompletedPart: "assessment" });
-      }
-      // — the designation comes from the VALIDATED model, not the rendered manifest. `manifestFinal`
-      // is gone from this call: it was the retired mechanism's text-scanning input and reading it here
-      // again would be the token matching that made the original impossible to carry forward.
-      const openFloors = computeOpenFloors(ledgerFinal, readFloorAxes(P));
-      if (openFloors.length) {
-        fmFields.envelope_note = ctx.envelopeNote
-          ?? `floor work still open at delivery: ${openFloors.join("; ")} — still recorded open after the in-loop close attempt (see envelope events in the run log)`;
-      }
-      // WS-A machine-ledger degrade: the receipt stays on the AUDIT lane (status.json via writeRunStatus,
-      // the run log, and the workbook's Review-receipts sheet) — no longer a report front-matter caveat.
-      // Disk backstop: a quarantined .invalid.json with no live note (crash-resume edge) still records.
-      if (!ctx.machineLedgerNote && ledgerLoadFinal.source !== "machine"
-          && existsSync(P.registerCoverageLedger.replace(/\.json$/, ".invalid.json"))) {
-        ctx.machineLedgerNote = "machine coverage ledger was quarantined earlier in this run (register-coverage-ledger.invalid.json) — coverage gates read the prose table";
-        writeRunStatus(ctx, { machineLedgerNote: ctx.machineLedgerNote });
-      }
-      if (Object.keys(fmFields).length) {
-        injectFrontMatter(P.report, fmFields, run.runDir);
-        runLog(run.runDir, { event: "delivery-flags", lint: flags.length, envelope: Boolean(fmFields.envelope_note), machineLedger: Boolean(ctx.machineLedgerNote) });
-      }
-      note(`pre-delivery lint: ${lint.checks.length} checks, ${lint.failures.length} failing${repaired.length ? ` (repaired: ${repaired.join(", ")})` : ""}${fmFields.envelope_note ? " + envelope gap stated" : ""}`);
-    }
-
-    // item 10 — the band declarations this run made, recorded once against the SETTLED findings (after
-    // every deterministic mutator has run, so the ordinals are the delivered ones). Same shape and same
-    // discipline as the placement-borderline row: COUNT AND MARKS ONLY — the two readings live in the
-    // finding's own prose, and a declaration has no more business in a log row than in the report. Silent
-    // when nothing is declared, and on every archived / pre-field run. Its first reader is the round's own
-    // revert criterion: "a record the framework decides clearly" only means something once the records it
-    // does NOT decide are marked as such. Best-effort — observability never blocks a delivery.
-    try {
-      const settled = parseFindingsJsonLenient(readFileSync(P.findings, "utf8")).findings ?? [];
-      const declared = bandBorderlineDeclarations(settled);
-      if (declared.length)
-        runLog(run.runDir, {
-          event: "band-borderline", count: declared.length,
-          marks: declared.slice(0, 8).map((f) => f.mark),
-          between: [...new Set(declared.map((f) => f.borderline_between.join("|")))].slice(0, 8),
-        });
-    } catch { /* absent or malformed — the core-artifact gate immediately below is what owns that */ }
-
-    // doc-44 Fix C — machine-file DELIVERY gate (mechanism + a pluggable core-artifact seam). A top-level-invalid
-    // CORE machine artifact must NOT ship: it is repaired UPSTREAM (the synthesis quarantine + the corrective
-    // must() re-synthesis already fail a top-level-invalid findings.json), and THIS is the final backstop before
-    // publish so nothing invalid slips through a post-synthesis mutation. Never quarantine-and-ship: a broken
-    // findings.json is restored from the last save that passed (restoreTheRecordThatPassed), and with none to restore
-    // the failure is the assessment not completed. We validate with the LENIENT parser so a legitimate PER-FINDING quarantine
-    // (one bad finding dropped, the rest shipped) still passes — THAT (whether a dropped finding is a core failure)
-    // is a POLICY call the definition-of-done (spec 45) owns, not this gate. The CORE_ARTIFACTS list is the SEAM:
-    // spec 45 owns its contents; it is seeded with the machine findings file doc-44 names. This enforces machine-
-    // file INTEGRITY only — it does NOT set the completed/conditional/failed verdict rule (spec 45 owns that).
-    const CORE_ARTIFACTS = [
-      { name: "findings.json", path: P.findings, validate: (raw) => { parseFindingsJsonLenient(raw); } },   // ← spec 45 owns this list
-    ];
-    const coreInvalid = [];
-    for (const art of CORE_ARTIFACTS) {
-      if (!existsSync(art.path)) continue;   // absent ≠ invalid (a degraded/legacy run legitimately has no machine file)
-      try { art.validate(readFileSync(art.path, "utf8")); }
-      catch (e) { coreInvalid.push(`${art.name} — ${String(e.message).replace(/\s+/g, " ").slice(0, 140)}`); }
-    }
-    if (coreInvalid.length) {
-      runLog(run.runDir, { event: "core-artifact-invalid", failures: coreInvalid });
-      // The record, broken after the delivery checks first read it, is restored as it is there (restoreTheBrokenRecord),
-      // and what was built from it is judged again against the record that stands: the freshness check below parks a
-      // stage it left stale, and the resumed pass rebuilds it.
-      const failure = new StageFailure("core-artifact-gate", `a core machine artifact is invalid and cannot ship: ${coreInvalid.join("; ")}`);
-      if (!coreInvalid.every((f) => f.startsWith("findings.json "))) throw failure;   // only the findings record is the assessment's
-      if (!(await restoreTheBrokenRecord(coreInvalid, "delivery-gate"))) throw Object.assign(failure, { notCompletedPart: "assessment" });
-      staleStages = staleOnTheDeliveryPath();
-    }
-
-    // P2 clause 3 — FRESHNESS PRECONDITION, immediately before the client gate. copper-vault's gate
-    // passed a byte-identical client summary an hour after rejecting it, because its OTHER input moved
-    // underneath a frozen deliverable. A gate whose subject can change without the deliverable changing
-    // is not a gate — so nothing is asked of the gate until every stage on the delivery path is fresh
-    // with respect to its declared inputs. Deterministic; same failure shape as the other delivery gates.
-    if (staleStages.length) {
-      const detail = staleStages.map((s2) => `${s2.label} (${s2.changed.map((c) => c.name).join(", ")})`).join("; ");
-      runLog(run.runDir, { event: "delivery-stale-blocked", stages: staleStages });
-      note(`delivery: ${staleStages.length} stage(s) on the delivery path are stale w.r.t. their inputs — ${detail}`);
-      // item 15b — WRITE DOWN WHAT IS STALE, so the recovery has something to aim at.
-      //
-      // A `stale` failClass parks and the resume re-enters the pipeline from the top. That is correct and
-      // safe, and it is also the whole 34% recovery phase: the run walks every stage to discover, one skip
-      // at a time, what this pass already knew by name. The set is recorded here — in dependency order, so
-      // the reader and the repair agree about what has to happen first — and `repairStale()` below runs
-      // exactly it. Best-effort: the sidecar is an accelerator, never the authority. Absent or unreadable,
-      // the ordinary resume does what it has always done.
-      try {
-        const dir = driverDir(run.runDir);
-        mkdirSync(dir, { recursive: true });
-        const tmp = join(dir, "delivery-stale.json.tmp");
-        writeFileSync(tmp, JSON.stringify({
-          ts: new Date().toISOString(),
-          labels: dependencyOrder(staleStages.map((s2) => s2.label), P, { axes: ctx.axes }),
-          changed: Object.fromEntries(staleStages.map((s2) => [s2.label, (s2.changed ?? []).map((c) => c.name)])),
-        }, null, 2));
-        renameSync(tmp, join(dir, "delivery-stale.json"));
-      } catch { /* accelerator only — the resume stands without it */ }
-      // failClass "stale": the remedy is a DETERMINISTIC recompute of the stale stage(s) (a resume recomputes
-      // them — the stamps were left stale for exactly this, see reconcileStamps' exclude), so this must not be
-      // starved by the shared one-park "unknown" budget. The repeat-signature backstop still caps it.
-      // THE REPEAT IS GIVEN ONE MORE ASSEMBLY, NOT THE STOP NOTICE. A first staleness parks and the resume repairs
-      // it, as always. Where the repeat would end the run, the check is named as its own part: the run parks once more,
-      // and the resumed pass repairs and checks again from the material as it then stands. Still stale then, it ends as
-      // it always did; this check never delivers past staleness.
-      throw Object.assign(new StageFailure("delivery", `the report was assembled from material that has since changed: ${detail} — re-run needed (nothing published)`, undefined, { failClass: "stale" }), { notCompletedPart: "delivery" });
-    }
-
-    // The changed-material check passed: a record the last pass left for it is answered.
-    if (readPartNotCompleted(run.runDir, "delivery")) {
-      clearPartNotCompleted(run.runDir, "delivery");
-      runLog(run.runDir, { event: "part-completed", part: "delivery" });
-    }
-
-    // ONE report (spec 2026-07-30 §5) — the client gate's preflight is gone with the readiness state it
-    // chose. publishReport still runs the evaluateClientGate machine checks (they are real: arithmetic,
-    // record fidelity, stale corrections) but their result lands on the AUDIT WORKBOOK + meta.json + the
-    // machine-qc-failed telemetry event below — it decides nothing about who may read, and there is no
-    // client export to withhold. A defect that changes the LEGAL ANSWER is the verdict clamp's job and
-    // rides the report as a fact about the mark (a CONDITIONAL/BLOCKING verdict), never as a warning
-    // about the document.
-    // B — publish: DETERMINISTIC CODE → cannot hang. The durable deliverable: the report ships even if the audit
-    // failed above (publishReport renders report.html regardless; the xlsx is best-effort inside it).
-    return await publishAndDeliver(verdict);
-  } catch (e) {
-    // RATE-LIMIT POSTPONE (re-throw): a 429 session-cap is NOT a terminal failure — RE-THROW it so pipeline()'s
-    // outer catch parks the run resumable (.postponed, no .failed, no notify-fail) and the runner auto-resumes
-    // after the cap window, vs stranding every completed stage and forcing a ~$40 cold re-run. This catch wraps
-    // the ENTIRE stage sequence (try at the top of pipelineInner), so without this guard a rate-limited
-    // StageFailure is swallowed HERE and the postpone path (pipeline() catch + postponeRun + runner
-    // .resumePostponed) is unreachable — the exact bug behind the 2026-06-22 register-stage 429 hard-fails.
-    if (e instanceof StageFailure && e.rateLimited) throw e;
-    // — RECORD THE TWO NUMBERS ON THE WAY DOWN. A run that still goes terminal at the meaning
-    // gate never reaches the merge seam, and its failure token carries only the BLOCKING count by
-    // design. Recorded only where the gate passed, "dispositions that did not bind" would be missing
-    // from precisely the runs that need explaining — and that count is what the boundary gets tuned
-    // against. Reads whatever is on disk (merged pair, else each half's, else its preserved best
-    // draft) and can never mask the failure it is describing.
-    try { recordConnotationAudit(run, P); } catch { /* observability must never mask the failure */ }
-    // ── STOPPED BY THE USER ──────────────────────────────────────────────────────────────────────
-    // Terminal, and deliberately NOT routed through anything below. Two reasons:
-    //
-    //   1. decideRecovery would park it. A cancel carries no failure signature, so the class guess
-    //      lands on "unknown", which buys one recovery park — the run would write `.postponed` and the
-    //      runner would auto-resume it two minutes later and keep billing.
-    //   2. The failure packet would tell them their search BROKE. buildFailurePacket's copy is
-    //      "❌ Clearotron search for X FAILED at Y", pushed to the customer over the outbox. Someone who
-    //      pressed Stop must never be told something went wrong; they already know what happened.
-    //
-    // Partial work is not deliverable, so nothing is published — but the spend up to this point is
-    // real, which is why this leaves a row rather than vanishing.
-    if (e instanceof RunCancelled) {
-      note(`[pipeline] STOPPED ${run.codename} at ${e.stage} by user request${e.requestedAt ? ` (asked ${e.requestedAt})` : ""} — terminal, nothing delivered`);
-      try { sentinel(run.runDir, ".cancelled", { stage: e.stage, requestedAt: e.requestedAt, via: e.via }); } catch { /* best-effort */ }
-      try { runLog(run.runDir, { event: "cancelled", stage: e.stage, requestedAt: e.requestedAt, via: e.via }); } catch { /* best-effort */ }
-      try { stampTokenRollup(run.runDir, "cancelled"); } catch { /* best-effort — a stop still spent what it spent */ }
-      logTurnaroundReconciliation(run.runDir, ctx?.quote, "cancelled");   // a stop still consumed wall
-      writeRunStatus(ctx, { state: "cancelled", failedStage: e.stage,
-        reason: stopReason({ stage: e.stage, via: e.via, requestedAt: e.requestedAt }) });
-      // `failedStage` non-null satisfies the runner's backstop predicate, so it does not overwrite
-      // this with a spurious "pre-run" failure notice.
-      //
-      // — `reason` USED TO STAY NULL HERE, on the ground that "there is no fault". That was true
-      // and it was answering a different question: `state` already carries whether there was a fault,
-      // and what `reason` owes is why the run ENDED. A stop has an answer to that, and it is the one
-      // fact that tells this apart from a crash for anyone holding status.json alone — which is what
-      // the portal and every metrics reader hold. Five of five cancelled runs on the test box read
-      // `reason: null`, with the provenance sitting unreachable in the `.cancelled` sidecar beside them.
-      return { ok: false, cancelled: true, failedStage: e.stage, codename: run?.codename ?? null, runDir: run.runDir };
-    }
-    // judgment-relocation (revised 2026-06-24): there is NO judgment-driven halt terminal. A run only stops
-    // without delivering on a TECHNICAL failure (below) or pauses on a rate-limit (.postponed, above). A
-    // material coverage gap the lawyer flagged ships as a CONDITIONAL (the deliver-conditional clamp earlier),
-    // never a no-deliver halt — a lawyer always gets a report unless something technically broke.
-    const reason = e instanceof StageFailure ? e.reason : String(e?.stack ?? e);
-    // — the OPEN-SET payload, kept apart from the sentence all the way to the status file, so the
-    // portal can render one and put the other behind a disclosure. Null on every failure that carries
-    // none, and on every non-StageFailure throw.
-    const reasonDetail = e instanceof StageFailure ? e.detail : null;
-    const failedStage = e?.stage ?? "pipeline";
-    // ── 2026-07-04 (senior lawyer, production doctrine): AUTOMATIC RUN-LEVEL RECOVERY ─────────────────
-    // A business-critical report must converge to an honest delivery WITHOUT a human re-trigger. The
-    // VENZY bake run proved the gap: the corrective re-synthesis exhausted its in-stage ladder on
-    // model vocabulary misses and the run went TERMINAL — dead until someone noticed, even though a
-    // fresh resume (new sampling, valid stages skipped) converges with high probability. So a
-    // recoverable failure PARKS the run on the SAME self-contained .postponed machinery the
-    // rate-limit path uses (runner's self-resume watcher re-invokes pipeline(); idempotency skips
-    // every valid stage; ONLY the broken segment re-runs), with bounded attempts + escalating backoff.
-    // Recovery can never ship garbage: every resume passes the same validators, reviewer and gates.
-    //
-    // ── repair-first phase 2 (2026-07-05, senior lawyer): recovery is CLASS-AWARE — parks are only bought
-    // where a fresh re-sample is the plausible remedy. TRANSIENT keeps the full ladder; UNKNOWN gets
-    // exactly one park (the VENZY doctrine above — one fresh sample often converges); DETERMINISTIC
-    // and FACTUAL get none (their repairs already ran at the point of defect; a re-sample re-derives
-    // the same failure). And the universal backstop: a failure whose SIGNATURE already parked once is
-    // re-hitting the same wall — terminal immediately, whatever the class guess said. Open Country
-    // (TMP8729, 2026-07-05) is the proof case: the identical 414-shaped fan-in failure was bought 3×
-    // (~77 min) before a terminal with a WRONG "systemic cause" diagnosis. Non-recoverable by denylist
-    // only: credential/config/job-shape failures, where a retry is provably futile.
-    const NON_RECOVERABLE_RE = /credential|CORSEARCH_(USER|PASS|TOKEN)|missing register credential|invalid job|job file|profile\.json is corrupt/i;
-    const recoveryMax = Math.max(0, Number(process.env.CLEAROTRON_RECOVERY_MAX ?? 3));
-    const RECOVERY_BACKOFF_MIN = [2, 15, 60];   // attempt N resumes after BACKOFF[N-1] minutes (last repeats)
-    const statusSnapshot = (() => { try { return JSON.parse(readFileSync(join(run.runDir, "status.json"), "utf8")) ?? {}; } catch { return {}; } })();
-    const priorAttempts = Number(statusSnapshot.recoveryAttempts) || 0;
-    const recoveryHistory = Array.isArray(statusSnapshot.recoveryHistory) ? statusSnapshot.recoveryHistory : [];
-    // ── two park lanes (2026-07-29) ─────────────────────────────────────────────────────────────────
-    // `recoveryAttempts` stays the TOTAL park count and keeps every meaning it already had (the repair
-    // ledger's epoch, the taint-rerun session key, the ".tainted-N" forensic suffix, the failure
-    // notice's "after N automatic recovery attempts"). What changed is which counter the run-level
-    // CEILING is measured against: upstream weather draws on its own bounded lane so it can no longer
-    // spend the budget reserved for the run's own recoverable defects. Both lane counts are read back
-    // off the append-only park history, so there is one source of truth and nothing to drift.
-    const laneCounts = countRecoveryLanes(recoveryHistory, { total: priorAttempts });
-    const weatherCeiling = weatherCeilingFor(recoveryMax);
-    // A4: sign on the throw site's stable reason CODES when it carries them (the client gate) — the
-    // sorted unique code set, so prose drift between attempts can never re-arm a per-signature budget.
-    const failSig = failureSignature(failedStage, reason, { codes: e instanceof StageFailure ? e.reasonCodes : undefined });
-    let failClass = (e instanceof StageFailure && e.failClass) || classifyFailureReason(String(reason));
-    // BUILD A (owner-ruled 2026-08-19) — NAME the source when the validator already named it.
-    // Three sources, in precedence order, and the ordering is the whole design:
-    //   throw-site       the stage stamped its own class. It counted the things; nothing outranks it.
-    //   validator-token  the reason carries an ALLOWLISTED validator token (PROGRESS_TOKENS, via
-    //                    progressQuantity). This is the case the issue was filed on: a structured
-    //                    reason a validator emitted, landing on the catch-all with nothing recording
-    //                    that it had. The classifier now says where the name came from.
-    //   reason-text      neither — the generic regex read, which is a guess and is labelled as one.
-    //
-    // SCOPED TO `quantityToken`, NOT to `kindToken`, and that is deliberate. `kindToken` is any leading
-    // `word:` prefix (`^([a-z][a-z0-9_]*)\s*:`), not a vocabulary — `invalid_file:<path>` is 71 of 76
-    // recorded stage failures and no validator named it. Treating a prefix as a validator's name would
-    // silence the detector on precisely the shape it was widened to catch, and it would do it by
-    // relabelling rather than by understanding anything.
-    //
-    // CHANGES NO BUDGET, structurally rather than by care: `decideRecovery` takes no `classSource`
-    // argument at all, so there is no branch for this to reach. The 2026-08-13 correction on the issue
-    // withdrew the trend rule — R6's flat 74 → 74 was a stage about to succeed — and B stays unruled.
-    let classSource = classificationSource({
-      stamped: Boolean(e instanceof StageFailure && e.failClass), quantityToken: failSig.quantityToken });
-    // ── A5 invalid-artifact strikes (2026-07-28 postmortem backstop) ────────────────────────────────────────────
-    // A stage that keeps producing an INVALID output can loop forever: the idempotency skip can't fire
-    // over an invalid artifact, so every resume re-runs it, and the reclaim/self-resume lanes keep the
-    // resumes coming (the 2026-07-28 postmortem run: common-law-half:a re-failed validation on every resume while the
-    // surface said "running 7/9"). Three TRAILING CONSECUTIVE content-shaped failures of ONE stage in
-    // the append-only run.jsonl spine mean re-sampling has disproved itself — the failure is
-    // deterministic in practice whatever the text guess says (parkBudget 0 ⇒ terminal WITH artifacts,
-    // terminalKind "invalid-artifact-loop"). Content-shaped ONLY (isContentShapedFail: transient-classified
-    // OR fallback-eligible failures break the streak): a flapping provider, a rate-limit postpone trail, or
-    // a timeout streak never converts — waiting is a real remedy there. A throw-site FACTUAL
-    // stamp outranks the strike relabel (it is already terminal, and its kind is the truer diagnosis).
-    const INVALID_ARTIFACT_STRIKE_CAP = 3;
-    let strikeTerminalKind = null;
-    if (run?.runDir && failClass !== "factual") {
-      try {
-        const rows = readFileSync(driverDir(run.runDir, "run.jsonl"), "utf8").trim().split("\n")
-          .map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
-        const strikes = countTrailingStageStrikes(rows, failedStage, { isContentShaped: isContentShapedFail });
-        if (strikes >= INVALID_ARTIFACT_STRIKE_CAP) {
-          strikeTerminalKind = "invalid-artifact-loop";
-          failClass = "deterministic";
-          classSource = "invalid-artifact-strikes";
-          runLog(run.runDir, { event: "invalid-artifact-strikes", stage: failedStage, strikes, cap: INVALID_ARTIFACT_STRIKE_CAP });
-          note(`[pipeline] ${failedStage} has produced ${strikes} consecutive invalid/failed outputs — terminal (invalid-artifact-loop), artifacts kept for diagnosis`);
-        }
-      } catch { /* the strike backstop must never mask the original failure */ }
-    }
-    const attemptedRepairs = e instanceof StageFailure && e.repairs?.length ? e.repairs : undefined;
-    // — the progress quantity, UN-TRUNCATED, reaching the break/park comparison. The throw site's
-    // stamp wins (it counted the things); the allowlisted text read of the full reason is the fallback
-    // for throw sites that only have prose. null = ABSENT, never zero. `quantitySource` names which,
-    // exactly like `classSource` above — a number in a ledger is worth less than a number that says
-    // where it came from. The comparison RECORDS this; no branch of it reads the value ( owns policy).
-    const stampedQuantity = e instanceof StageFailure && Number.isFinite(e.quantity) ? e.quantity : null;
-    const quantity = stampedQuantity ?? failSig.quantity;
-    const quantitySource = quantity === null ? null : stampedQuantity !== null ? "throw-site" : "reason-text";
-    const decision = decideRecovery({
-      failClass, sig: failSig.sig, reason: String(reason), history: recoveryHistory, priorAttempts, recoveryMax,
-      nonRecoverable: NON_RECOVERABLE_RE.test(String(reason)), hasRunDir: Boolean(run?.runDir),
-      weatherAttempts: laneCounts.weather, defectAttempts: laneCounts.defect, weatherCeiling, quantity,
-    });
-    // The stamped kind: the strike relabel names the loop precisely; otherwise the decision's own kind.
-    const terminalKind = decision.recoverable ? null : (strikeTerminalKind ?? decision.terminalKind);
-    if (run?.runDir) {
-      try {
-        runLog(run.runDir, { event: "recovery-classified", sig: failSig.sig, class: failClass, stage: failedStage, classSource, priorAttempts, parkBudget: decision.parkBudget, lane: decision.lane, laneAttempts: decision.laneAttempts, laneCeiling: decision.laneCeiling, ...(terminalKind ? { terminalKind } : {}), ...(failSig.codes?.length ? { reasonCodes: failSig.codes } : {}), ...(attemptedRepairs ? { repairs: attemptedRepairs } : {}),
-          //: what the comparison SAW — this failure's count, the last count for the same signature,
-          // and the direction between them. "unknown" whenever either side is absent.
-          quantity, quantitySource, progress: decision.progress,
-          //: the NAME of the structured token in the reason, or null. It comes from failSig — i.e.
-          // from progressQuantity over the reason text — regardless of which source won the VALUE above.
-          // The run this issue was filed on logged quantitySource:"throw-site", so a token threaded only
-          // through the stamp path would have been null on exactly that run.
-          reasonToken: failSig.quantityToken });
-      } catch { /* observability must never mask the failure */ }
-      // — THE CLASSIFIER GAP, MADE INTO AN EVENT. The classifier returning "unknown" over a reason
-      // a validator structured is a gap in classifyFailureReason, not an unknowable failure, and until
-      // now it was legible only to somebody reading run.jsonl by hand. Emitted beside the classification
-      // and NOT through the stderr-only note path, which is a family records as still live.
-      // It changes nothing about the decision above: the class, the lane and the budget are already set.
-      try {
-        // — the KIND rides beside the quantity token, and either one makes the failure nameable.
-        // Both keys are written unconditionally as value-or-null: "this failure had no kind" and "this
-        // build does not record kinds" are different facts, and a key present only when it is populated
-        // makes its absence a claim.
-        if (unnamedStructuredFailure({ failClass, classSource, token: failSig.quantityToken, kind: failSig.kindToken })) {
-          runLog(run.runDir, { event: "classifier-gap", stage: failedStage, sig: failSig.sig,
-            token: failSig.quantityToken ?? null, kind: failSig.kindToken ?? null, quantity, class: failClass });
-        }
-      } catch { /* never mask the failure */ }
-    }
-    if (decision.recoverable) {
-      const attempt = priorAttempts + 1;
-      // The rung follows THIS SIGNATURE's own park count, not the run-global attempt: a repeated
-      // transient (a provider outage that has not ended) must wait longer each time — 2 → 15 → 60 —
-      // while an unrelated first-time defect later in the run still gets the short first rung rather
-      // than inheriting an earlier defect's escalation.
-      const rung = Math.min(decision.sigAttempts ?? (attempt - 1), RECOVERY_BACKOFF_MIN.length - 1);
-      const backoffMin = RECOVERY_BACKOFF_MIN[rung];
-      // A4 field split (2026-07-28 postmortem): a recovery park writes `recoveryResumesAt` and STOPS writing
-      // `resetsAt` — resetsAt keeps its one documented meaning (the rate-limit cap-reset clock), so a
-      // reader can no longer mistake a recovery backoff for a provider cap. Status also actively clears
-      // any lingering resetsAt from an earlier rate-limit park on the same run.
-      //
-      // The lane split does NOT get its own clock field, and that is the honest choice. `resetsAt`
-      // means one thing — a provider TOLD us when its cap window reopens — and a weather park has no
-      // such promise: nobody said when the overload ends, the 2/15/60 ladder is our own guess, which
-      // is precisely what `recoveryResumesAt` means. So a weather park writes `recoveryResumesAt` like
-      // any other recovery park, still leaves `resetsAt` null, and the record says WHICH lane bought
-      // the wait in `recoveryLane` instead of implying a provider clock that does not exist.
-      // A CAP PARK IS NOT A STAGE FAILING, and the 2/15/60 ladder cannot survive one.
-      // A cap that classifies `rate_limited` already takes the postpone path and waits for its stated
-      // reset. One that does NOT lands here, where two things used to go wrong: the provider's own reset
-      // hint was dropped even though StageFailure carries it all the way to this site, and the ladder
-      // topped out at 60 minutes, so six probes covered ~3 hours and a daily cap outlived every one of
-      // them. Cap parks now ride their own ladder (15/30/60/120/240) and a STATED reset time beats it.
-      const capResetHint = (e instanceof StageFailure && e.resetsAt) || null;
-      const capPark = isCapPark(reason, capResetHint);
-      const capSchedule = capPark
-        ? capParkSchedule({ resetsAt: capResetHint, attempts: decision.sigAttempts ?? (attempt - 1) })
-        : null;
-      const recoveryResumesAt = capSchedule
-        ? capSchedule.resumesAt
-        : new Date(Date.now() + backoffMin * 60000).toISOString();
-      // What the wait was bought on: "provider" = its own clock said so, "ladder" = our guess. Same
-      // honesty rule the adapters apply to resetsAtBasis — a reader must be able to tell a stated fact
-      // from an inference, or the record quietly upgrades one into the other.
-      const recoveryWaitBasis = capSchedule ? capSchedule.basis : "ladder";
-      const recoveryWaitMin = capSchedule ? capSchedule.waitMin : backoffMin;
-      const lane = decision.lane;
-      const laneAttempt = (decision.laneAttempts ?? 0) + 1;
-      const laneLabel = lane === "weather" ? "upstream weather" : "defect";
-      // Both counters, always both, whichever lane was charged — a reader must be able to see that the
-      // defect budget is intact while weather is being spent (that is the whole point of the split).
-      const recoveryLanes = {
-        weather: { attempts: laneCounts.weather + (lane === "weather" ? 1 : 0), ceiling: weatherCeiling },
-        defect: { attempts: laneCounts.defect + (lane === "defect" ? 1 : 0), ceiling: recoveryMax },
-      };
-      note(`[pipeline] RECOVERABLE failure in ${run.codename} at ${failedStage} — parking for AUTO-RECOVERY, ${laneLabel} lane ${laneAttempt}/${decision.laneCeiling} (defect budget ${recoveryLanes.defect.attempts}/${recoveryMax} spent; resumes ~${recoveryWaitMin}min${capSchedule ? ` on the ${recoveryWaitBasis === "provider" ? "provider's stated reset" : "cap ladder"}` : ""}; valid stages skip on resume): ${String(reason).slice(0, 160)}`);
-      // no fromStage: the failed-stage label can be decorated ("synthesis(blocking)") and is not a
-      // resume key — plain idempotent resume re-runs exactly the invalid/missing outputs.
-      try { sentinel(run.runDir, ".postponed", { kind: "recovery", recoveryResumesAt, postponedAt: new Date().toISOString(), codename: run.codename, job, agent, attempt, reason: String(reason).slice(0, 300), sig: failSig.sig, class: failClass, lane }); } catch { /* best-effort */ }
-      // recoveryHistory is the repeat-signature memory AND the lane ledger: append-only, one row per
-      // park, read back on the next failure so an identical defect is never bought twice and so each
-      // lane's spend is recomputed from the record rather than from a second counter that could drift
-      // (writeRunStatus shallow-merges, so the full array is passed each time).
-      // — a PARKED run is the one a reader diagnoses from status.json alone, and this cut at 200
-      // and said nothing. `recovering` is not terminal, so it was never covered by the terminal
-      // fields; the reader's problem is identical either way — a sentence that stops mid-thought with
-      // no key admitting it stopped. Same three fields, same function, so the two cannot drift.
-      writeRunStatus(ctx, { state: "recovering", recoveryAttempts: attempt, recoveryMax, failedStage,
-        ...terminalReasonFields(reason),
-        recoveryResumesAt, resetsAt: null,
-        recoveryLane: lane, recoveryLanes,
-        //: the row carries the park's progress QUANTITY, so the next failure's comparison can see
-        // 9 → 6 (converging) where the signature alone shows only "the same defect again". Written
-        // unconditionally as number|null — a row that says null means "this failure had no count", which
-        // is a different fact from a pre-change row that has no such key at all.
-        //
-        //: `quantityToken` and `classSource` ride beside it, written unconditionally as value|null
-        // for the same reason. This row is the ONLY one of the three records here that repair-digest.mjs
-        // reads — runLog writes run.jsonl, which that module never opens — so without these two fields
-        // the classifier gap would be recorded and still unreportable, which is this issue's own defect
-        // committed inside its own fix. `classSource` rides too rather than a pre-computed verdict, so
-        // the digest applies the SAME exported predicate the pipeline applies instead of guessing from
-        // half the inputs. It also makes the epoch legible: a row with no `classSource` KEY predates
-        // this field and was never measured, which is a different fact from a row that says "no gap".
-        recoveryHistory: [...recoveryHistory, { sig: failSig.sig, stage: failedStage, class: failClass, lane, attempt, quantity, quantityToken: failSig.quantityToken ?? null, kindToken: failSig.kindToken ?? null, classSource, ts: new Date().toISOString(),
-        // THE SAME FACTS THE RUN LOG ALREADY GETS, in the record that SURVIVES.
-        // The auto-recovery-parked event below carries capPark/basis/waitMin and says in its own note
-        // that a cap has to be legible or nobody can tell a stated reset from our ladder's guess. But
-        // run.jsonl is not what the terminal reads: status.json's recoveryHistory is the only record
-        // that survives a park/resume, so the cap died with the run log and the failure notice could
-        // only ever say 'a provider was overloaded'. Spread the same way, ABSENT on a non-cap park
-        // rather than false, for the reason stated below: a row that says nothing is honest about not
-        // having looked; `capPark: false` claims we checked.
-        ...(capSchedule ? { capPark: true, recoveryWaitBasis, recoveryWaitMin } : {}) }] });
-      rollupStatus(run.studioRoot);
-      runLog(run.runDir, { event: "auto-recovery-parked", stage: failedStage, attempt, of: recoveryMax, lane, laneAttempt, laneOf: decision.laneCeiling, recoveryResumesAt, reason: String(reason).slice(0, 200), sig: failSig.sig, class: failClass,
-        // a cap park has to be legible in the record, or the next reader diagnosing
-        // "why did this wait 21 hours" cannot tell a provider's stated reset from our own ladder guess.
-        // Absent on a non-cap park rather than false: a row that says nothing is honest about not having
-        // looked, while `capPark: false` would read as "we checked and it was not one".
-        ...(capSchedule ? { capPark: true, recoveryWaitBasis, recoveryWaitMin, capResetHint: capResetHint ?? null } : {}) });
-      logTurnaroundReconciliation(run.runDir, ctx?.quote, "recovery-parked");
-      recordRunConsumption(ctx, { phase: "recovery-park", tokens: stampTokenRollup(run.runDir, "recovery-park") });
-      // the return's `resetsAt` is the runner's due-clock contract (parkPostponed meta / postponedDueAt),
-      // not a status surface — it stays under the machinery name deliberately.
-      return { ok: false, postponed: true, recovery: true, attempt, resetsAt: recoveryResumesAt, codename: run.codename, runDir: run.runDir };
-    }
-    // ── A COVERED PART WHOSE RECOVERY IS SPENT IS DELIVERED WITHOUT, NOT ENDED ON ────────────────────────
-    //
-    // A failure the throw site named as a covered part (`notCompletedPart`, parts-not-completed.mjs) reaches here once
-    // the decision above has nothing left to buy: every recovery lane spent, a repeated signature, or a deterministic
-    // refusal such as a band too large to dispatch. The run holds everything but that part, so it is not ended with the
-    // stop notice: the part is recorded as not completed, and the run parks for an immediate resume. The resumed pass
-    // reaches the part, finds the record, and delivers without it, with the gap stated.
-    //
-    // ONCE PER PART: a part whose record already exists is not routed again, so a failure on the pass that delivers
-    // without it ends the run below, as every failure did. Written before `.failed` and before the failure packet, so
-    // a run that delivers carries neither. A rate limit and a stop never reach this line (both are handled above), and
-    // a storage failure is not a covered part: no throw site names one.
-    const coveredPart = e instanceof StageFailure ? (e.notCompletedPart ?? null) : null;
-    const heldRecord = coveredPart && run?.runDir ? readPartNotCompleted(run.runDir, coveredPart) : null;
-    // THE SEARCHES' RECORD GROWS: a failure is routed again while it names a slice the record does not hold yet.
-    const addedSlices = coveredPart === "searches" ? slicesNotYetRecorded(heldRecord, e.excludedSlices) : [];
-    const addedAxes = coveredPart === "searches" ? axesNotYetDisclosed(heldRecord, e.taintedAxes) : [];
-    const addedUnits = coveredPart === "searches" ? unitsNotYetRecorded(heldRecord, e.unfinishedUnits) : [];
-    if (coveredPart && run?.runDir && (coveredPart === "searches" ? addedSlices.length + addedAxes.length + addedUnits.length > 0 : !heldRecord)) {
-      let parked = null;
-      try {
-        // A TIMED-OUT AXIS IS READ AS THE LAST PASS LEFT IT: the park renamed its unit, band and digest so a resume would
-        // run it again, and with its recovery spent nothing will, so they are put back.
-        if (addedAxes.length) undoTaintRenames(e.undoRenames);
-        writePartNotCompleted(run.runDir, coveredPart, { stage: failedStage, reason: String(reason), sig: failSig.sig, terminalKind,
-          ...(coveredPart === "searches" ? { slices: [...(Array.isArray(heldRecord?.slices) ? heldRecord.slices : []), ...addedSlices],
-            disclosedAxes: [...(Array.isArray(heldRecord?.disclosed_axes) ? heldRecord.disclosed_axes : []), ...addedAxes],
-            unfinishedUnits: [...(Array.isArray(heldRecord?.unfinished_units) ? heldRecord.unfinished_units : []), ...addedUnits] } : {}) });
-        const resumesAt = new Date().toISOString();
-        // The payload the runner's self-resume needs (job, agent, codename), and the recovery kind, whose stated
-        // clock it keeps exactly: now. No recovery attempt is counted, because nothing is being retried.
-        sentinel(run.runDir, ".postponed", { kind: "recovery", recoveryResumesAt: resumesAt, postponedAt: resumesAt,
-          codename: run.codename, job, agent, attempt: priorAttempts, reason: String(reason).slice(0, 300), sig: failSig.sig,
-          class: failClass, notCompleted: coveredPart });
-        // The cause's payload rides beside the sentence, as on the stop it replaces, so the record still points at it.
-        writeRunStatus(ctx, { state: "recovering", failedStage, ...terminalReasonFields(reason), recoveryResumesAt: resumesAt, resetsAt: null,
-          reasonDetail: reasonDetail ? abbrev(String(reasonDetail).replace(/\s+/g, " ").trim(), 600) : null });
-        rollupStatus(run.studioRoot);
-        runLog(run.runDir, { event: "part-not-completed", part: coveredPart, stage: failedStage, sig: failSig.sig, class: failClass,
-          terminalKind: terminalKind ?? null, resumesAt });
-        logTurnaroundReconciliation(run.runDir, ctx?.quote, "recovery-parked");
-        recordRunConsumption(ctx, { phase: "recovery-park", tokens: stampTokenRollup(run.runDir, "recovery-park") });
-        note(`[pipeline] ${failedStage} could not be completed once its recovery was spent — recorded as the ${coveredPart} not completed; the run resumes now and delivers what it holds`);
-        parked = { ok: false, postponed: true, recovery: true, attempt: priorAttempts, resetsAt: resumesAt, codename: run.codename, runDir: run.runDir };
-      } catch (rErr) {
-        note(`[pipeline] the ${coveredPart} could not be recorded as not completed (${String(rErr?.message ?? rErr).slice(0, 120)}) — the run ends with the stop notice`);
-      }
-      if (parked) return parked;
-    }
-    // A RUN THAT ENDS WITH THE STOP NOTICE CARRIES NO RECORD OF A PART NOT COMPLETED: nothing was delivered without it,
-    // and a later resume should try the part again.
-    if (run?.runDir) clearPartsNotCompleted(run.runDir);
-    // Both lane ceilings end the run, and both say so. "weather-exhausted" is the honest terminal for
-    // a provider that was still refusing after the whole weather ladder — the run did not break, the
-    // far end never came back, and the notice must not read as a defect in the run's own output.
-    if ((decision.terminalKind === "exhausted" || decision.terminalKind === "weather-exhausted") && recoveryMax > 0) {
-      runLog(run.runDir, { event: "auto-recovery-exhausted", attempts: priorAttempts, of: recoveryMax, lane: decision.lane, laneAttempts: decision.laneAttempts, laneOf: decision.laneCeiling });
-    }
-    sentinel(run.runDir, ".failed", { stage: failedStage, reason, recoveryAttempts: priorAttempts, sig: failSig.sig, class: failClass, terminalKind });
-    runLog(run.runDir, { event: "failed", stage: failedStage, reason, sig: failSig.sig, class: failClass, terminalKind });
-    logTurnaroundReconciliation(run.runDir, ctx?.quote, "failed");   // a run that never delivered still burned wall
-    // Record the failure in status FIRST (so the on-demand STATUS.md surfaces it even if the ping can't fire —
-    // e.g. a gateway-wide outage where the agent send itself would also fail). reason is truncated for the ping.
-    // terminalKind (A5): "failed with artifacts" is not a new enum — it is `failed` + the stamped kind
-    // (invalid-artifact-loop | reclaim-exhausted | exhausted | …), so every status reader can say WHY the
-    // run ended without parsing sentinels.
-    const { reason: shortReason, reasonTruncated, reasonFull } = terminalReasonFields(reason);
-    // — THE TAXONOMY'S NAMED SOURCE MUST CONTAIN THE CAUSE.
-    //
-    // `reason` is capped at 200 because it rides the ping. On the 2026-08-12 round that cap fell exactly
-    // where the provider's verbatim error begins: status.json read
-    //   "…1 dictated qid(s) own no band block: incumbent-class:owner:… ← provider error on the count
-    //    probe (after one in-tool retry): "
-    // — ending on the colon, with nothing after it. The journal had
-    // `HTTP 400: APPLICANT_NAME - The system did not recognize the syntax`, but the failure taxonomy
-    // sends a diagnosing agent to status.json, and for this failure it was the one place the answer was
-    // not. It produced a wrong finding in the round itself: the cause was read as ABSENT, and an absent
-    // error string was then reasoned about as if it were the defect.
-    //
-    // `reasonDetail` could not cover it. That field carries `StageFailure.detail`, and the fan-in throw
-    // passes none — so for the failure that exposed this, the only carrier was the truncated `reason`.
-    // Widening the 200 cap was the rejected alternative: it is load-bearing for the ping, and the next
-    // message longer than whatever new number is chosen would reopen this silently.
-    //
-    // So the cut is made VISIBLE and the tail is kept beside it. `reasonTruncated` is written on every
-    // terminal failure, true or false, because "no reasonFull key" and "nothing was cut" have to be
-    // distinguishable — an absence must read as an absence, never as an empty cause.
-    // — `reasonDetail` rides beside `reason`, never inside it. abbrev, not a bare slice: a cut that
-    // reads as a word is worse than one that reads as a cut, and this one is read by an engineer
-    // chasing a defect.
-    // — one spelling of the payload for BOTH sinks. status.json already carried `reasonDetail`;
-    // `_driver/failure.json` carried neither it nor the count, and `reasonQuantity` reached
-    // no file at all — so the operator read "dropped 1 dictated connotation query" and had to replay the
-    // gate against the preserved artifacts to learn which one. Derived once here and passed to both
-    // writers, so the notice and the status file can never disagree about the payload.
-    const reasonDetailField = reasonDetail ? abbrev(String(reasonDetail).replace(/\s+/g, " ").trim(), 600) : null;
-    writeRunStatus(ctx, { state: "failed", failedStage, reason: shortReason, terminalKind,
-      reasonTruncated, reasonFull,
-      // number|null, written on every terminal failure like reasonTruncated: null means THIS failure
-      // carries no count, which is a different fact from a status file with no such key. Never 0.
-      reasonDetail: reasonDetailField, reasonQuantity: quantity });
-    // A terminal failure spent everything up to the break — and carries the run's worst retry waste.
-    // Stamped AFTER the state write so a status reader never sees tokens without knowing the run failed.
-    recordRunConsumption(ctx, { phase: "failed", tokens: stampTokenRollup(run.runDir, "failed") });
-    rollupStatus(run.studioRoot);
-    // Best-effort failure notice — must NEVER throw or mask the original failure. The failure event
-    // rides the outbox like every other event (the engine has no message tool; a chat-ping stage on it
-    // would burn a turn and fail) — the never-silent guarantee, headless form (docs/DELIVERY.md
-    // run-failed packet; the level-triggered *.pending watch keeps it alive until ack_event).
-    // failPingSent records which lane WROTE the packet. It no longer decides whether the notice is
-    // owed: a failure arms sendPending either way (below), because mark_sent is the only clear and it
-    // settles a failure.json on the same evidence a delivery needs. ONE SEND PATH, ruled 2026-09-12.
-    let failPingSent = false;
-    {
-      try {
-        const runId = `${run.slug}-${run.date}-${run.codename}`;   // ONE canonical runId form (charter P1 §3) — matches status.runId
-        const mark = job.markName ?? job.name ?? job.ref ?? "the matter";
-        // The packet carries the FULL code-authored notice (terminal-kind sentence, verbatim
-        // machine reason, attempted repairs, burned recovery attempts) — the courier relays it verbatim,
-        // so the requester reads the honest diagnosis, not a thin one-liner. `text` stays as the short
-        // WhatsApp-sized fallback for legacy relays.
-        const rich = buildFailurePacket({
-          runId, agent, job, failedStage, shortReason,
-          reasonVerbatim: String(reason).slice(0, 1000), sig: failSig.sig, failClass,
-          terminalKind: terminalKind ?? null, repairs: attemptedRepairs ?? [],
-          priorAttempts,
-          // Read off the park history rather than recomputed: the history is what survived the parks.
-          capWait: capWaitFrom(Array.isArray(statusSnapshot?.recoveryHistory) ? statusSnapshot.recoveryHistory : []),
-          reasonDetail: reasonDetailField, reasonQuantity: quantity,   // — the payload reaches the notice
-        });
-        const packet = {
-          kind: "run-failed", ...rich,
-          markName: job.markName ?? job.name ?? null, reason: shortReason,
-          text: rich.whatsappText,
-          // machine fields (repair-digest's primary source — the.failed sentinel stays the fallback)
-          failureSignature: failSig.sig, recoveryAttempts: priorAttempts,
-        };
-        ensureDriverDir(run.runDir);
-        writeFileSync(driverDir(run.runDir, "failure.json"), JSON.stringify(packet, null, 2) + "\n");
-        failPingSent = Boolean(writeOutboxPacket(`${runId}.failed`, packet));
-      } catch (evErr) {
-        note(`failure event packet threw (swallowed): ${evErr?.message ?? evErr}`);
-      }
-    }
-    // T5 (J5) — the failure NOTICE rides the SAME guaranteed lane as success delivery: a
-    // CODE-authored packet (_driver/failure.json) + sendPending + the outbox wake marker, consumed by
-    // the completion-watch → clearotron-deliver skill exactly like a delivery packet. This makes the
-    // notice failure-independent: no WhatsApp binding, a handoff-mode engine, or a dead ping stage can
-    // no longer silence it ( F9: teal-keystone died silently on exactly that). Best-effort —
-    // packet-write trouble must never mask the original failure; the .failed sentinel + status.json
-    // remain the durable record either way.
-    //
-    // OWED EITHER WAY, AND EXACTLY ONE MARKER. A failed run used to read sendPending:false whenever the
-    // packet write SUCCEEDED, so the owed-run scan could not see it and the notice waited on a reader of
-    // the outbox instead. Now the flag is armed on both lanes. What is NOT duplicated is the marker: the
-    // primary lane's packet IS one, because writeOutboxPacket("<runId>.failed") lands
-    // `<runId>.failed.pending` and the *.pending watch already matches it. Arming a second
-    // `<runId>.pending` beside it would leave a file mark_sent does not clear — it clears `<id>.pending`
-    // for each id the run was known by, not this suffixed form — and the sweep re-arms off whatever is
-    // on disk, which is how a permanent SEND PENDING was born. So: the flag always, the packet and the
-    // marker only when nothing wrote them.
-    // THE RECORD OF AN OBLIGATION MUST NOT BE CONTINGENT ON THE ACTION IT OBLIGES. The flag says
-    // somebody is owed a notice. Setting it downstream of the attempt to deliver that notice means it is
-    // only set when the delivery path already worked — the case that needed it least. This block did
-    // exactly that for one revision: `writeOutboxPacket` swallows its own failure and returns null, so
-    // an unwritable outbox fell to the branch below, where the RAW marker write threw and took the flag
-    // with it. The run then ended failed and NOT owed, in the one condition where the flag is the only
-    // thing that could still record the obligation. Order, therefore: supersede the old send's guards,
-    // arm the flag, and only then attempt the writes that can fail.
-    try { rmSync(join(run.runDir, ".sent")); } catch { /* none */ }
-    try { rmSync(driverDir(run.runDir, "send-receipts.json"), { force: true }); } catch { /* none */ }
-    // A fresh notice supersedes an older send's .sent marker AND its per-channel receipts (a resumed run
-    // that fails again must still notify on every channel, not be skip-guarded by the earlier send's).
-    // Both are best-effort removals above, so neither can keep the flag below from being written.
-    try { writeRunStatus(ctx, { sendPending: true }); } catch (sErr) {
-      note(`failure notice could NOT be recorded as owed (${String(sErr?.message ?? sErr).slice(0, 100)}) — the run directory is unwritable, so nothing here can say a notice is outstanding`);
-    }
-    try {
-      if (!failPingSent) {
-        const packet = buildFailurePacket({
-          runId: `${run.slug}-${run.date}-${run.codename}`, agent, job, failedStage, shortReason,   // canonical runId form (charter P1 §3)
-          reasonVerbatim: String(reason).slice(0, 1000), sig: failSig.sig, failClass, terminalKind,
-          repairs: attemptedRepairs ?? [], priorAttempts,
-          reasonDetail: reasonDetailField, reasonQuantity: quantity,   // — the BACKSTOP notice carries it too
-        });
-        writeFileSync(driverDir(run.runDir, "failure.json"), JSON.stringify(packet, null, 2) + "\n");
-        mkdirSync(config.outboxDir, { recursive: true });
-        writeFileSync(join(config.outboxDir, `${packet.runId}.pending`), `${agent}\n`);
-      }
-      note(`failure notice OWED (${failPingSent ? "event lane wrote the packet" : "handoff wrote the packet"}) — mark_sent is the only clear`);
-    } catch (nfErr) {
-      // NOT "status.json remains the record" — that sentence was here and it was false on exactly the
-      // path that reaches this catch, because the flag was written after the throw. It is written before
-      // it now, so the record genuinely does stand, and saying which part failed is what keeps the next
-      // reader looking in the right place.
-      note(`failure notice is owed but its packet/marker could not be written (${String(nfErr?.message ?? nfErr).slice(0, 100)}) — status.json carries the obligation; the outbox does not`);
-    }
-    note(`=== FAILED ${run.codename} at ${failedStage}: ${reason} ===\n`);
-    // `codename` matches the three sibling terminals (postpone, recovery park, cancelled). Without it
-    // the CLI could not name the run to resume at the one terminal where resuming is the whole remedy.
-    //
-    // `terminalKind`: the RETURN is a sink. runner.mjs's queue terminal stringifies this object
-    // whole into `<base>.failed.result`, and that file is what scripts/e2e.mjs reads when the run dir
-    // cannot be reached — `terminalKind: st?.terminalKind ?? result?.terminalKind ?? null`. The second
-    // half of that expression could never fire, on either lane, because neither terminal returned the
-    // field it had already computed. It costs one word to stop computing a diagnostic and dropping it.
-    return { ok: false, failedStage, reason, terminalKind, codename: run.codename, runDir: run.runDir };
-  }
+        // R.1 primitive #3 (engagement receipt) is computed later, in the pre-delivery block, together with
+        // F2 rule-shape + B2b reviewer self-coherence into ONE _driver/reasoning-integrity.json sidecar — that
+        // point has report.md + senior-eye-review.md on disk too, so the single writer carries all three signals.
+    } },
+    { name: "overview-and-cards", run: async () => {
+        // The report's overview and its cards (steps/overview-and-cards.mjs).
+        ({ applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, findingsForCards, groupedMembers, overviewOpen, rebuildTheDeliveredRecord, restoreTheBrokenRecord, rov, writeScopeFacts, writeUps } = await runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWritersDuty, ctx, followTheRecordsActions, job, run, runState, saveTheLabel, writeVerdictSidecar }, { StageFailure, applyScopeFrontMatterOf, asPartNotCompleted, assembleReportMd, caseLawJoin, consolidateFindingsFile, correctionsTheRestoreLacks, deriveCommonLawCarry, deriveRecordCarry, inScopeClassList, injectDeferralCoverage, injectFrontMatter, injectLaneDepthCoverage, injectMeaningGapCoverage, injectScreenGateCoverage, injectScriptScopeCoverage, keepDeliveredRecordAsHistory, localLanguageStateOf, must, openAskForClosure, originRowsForReport, planWriteUps, readFindingsForReport, readReadingLog, rebuildDeliveredRecord, reportIdentityRecord, restoreTheRecordThatPassed, rewriteFromBeforeTheSeam, runBatched, safeReadJson, settleDerivedBases, stage, stampCoverageJudgmentRows, withdrawSupersededAudit, writeScopeFactsOf, writeShortEntries }));
+    } },
+    { name: "delivery", run: async () => {
+        // The checks before delivery, their repairs, and the publish (steps/delivery.mjs).
+        return await runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, checkLateBind, clampOnTheFloorDuty, clampOnTheWritersDuty, ctx, deliverAndClamp, findingsForCards, followTheRecordsActions, groupedMembers, job, opts, overviewOpen, publishAndDeliver, rebuildTheDeliveredRecord, restoreTheBrokenRecord, reviewOpen, rov, run, runState, saveTheLabel, saveTheOwedLabel, synthesisKey, synthesisModel, synthesisThinking, writeScopeFacts, writeUps, writeVerdictSidecar }, { CITED_URI_RE, NO_CHANGE, REBUILDS_THE_DELIVERED_RECORD, StageFailure, UPSTREAM_STALE_REPAIR, assembleReportMd, cardsNeverBuilt, caseLawJoin, computeOpenFloors, defaultRecordFetcher, fullProseOrdinals, inScopeClassList, injectFrontMatter, keepRankingReadByWriter, lateRecordIds, loadCoverageLedger, owedCardOrdinals, ownerScreenForDelivery, partitionDeliveryStale, postRepairScope, queuedForTheRecordOnly, rankingReadByWriterPath, readFindingsForReport, readFloorAxes, readGoodsHanded, reassembleFromTheRecord, recordChangeOwesReview, recordGoodsHanded, relabelCoverageRows, retainStateBeforeReview, runPostRepairCorrection, runPostRepairReview, runWholeReviewForRecord, safeReadJson, settleDerivedBases, stage, stageCharter, stagesStaleOnPlacement, unreadRecordFindingOnly, unreadRecordReview, whatTheRepairLeftStale });
+    } },
+  ] });
 }
 
 // ── A DELIVERY WITHOUT THE OVERALL ASSESSMENT: WHAT IT SETS ASIDE AND WHAT IT READS ───────────────────────────────
@@ -18763,7 +9966,7 @@ export function reportIdentityRecord(job, ctx, runDir, displayVerdict = null) { 
     client: job.customer ?? ctx.profile?.name ?? null,
     use: job.goods ?? null,
     classes: Array.isArray(job.classes) ? job.classes.join(", ") : (job.classes ?? null),
-    run: [runDate, PROVIDER_META.label].filter(Boolean).join(" · ") + (clRan ? " + common-law" : ""),
+    run: [runDate, providerMeta(ctx?.register ?? REGISTER_PROVIDER).label].filter(Boolean).join(" · ") + (clRan ? " + common-law" : ""),
     overall_label: displayVerdict?.tier ?? null,
     overall_badge: displayVerdict?.badge ?? null,
   };
@@ -18878,14 +10081,20 @@ export function resumeJobRefusal(job, slug) {   // @internal
 export function reconstructCtx(job, opts) {   // @internal
   const run = resolveRun(job, opts);
   const P = paths(run.runDir);
+  // A run that froze no search policy stopped before its first stage (the policy is frozen as the run
+  // opens), so it has nothing to repair or --experiment on, and reading it as a clearance could hand a
+  // Knockout batch the clearance's framework. (A run from before the policy freeze was read as a clearance
+  // here; a run from an earlier build is no longer resumed.)
+  if (!existsSync(paths(run.runDir).searchPolicy))
+    throw new Error(`run ${run.codename} froze no search policy — it stopped before its first stage, so there is nothing to repair or --experiment on`);
   // A KNOCKOUT run has none of the clearance stages this tooling drives — and letting it through would
   // mint the clearance DEFAULT_FRAMEWORK into a triage-graded run (review 2026-07-17). A knockout redo
   // is a re-enqueue (~$2), not a stage surgery.
   try {
-    const sp = JSON.parse(readFileSync(driverDir(run.runDir, "search-policy.json"), "utf8"));
+    const sp = JSON.parse(readFileSync(paths(run.runDir).searchPolicy, "utf8"));
     if (sp?.pipeline === "knockout")
       throw new Error(`run ${run.codename} is a KNOCKOUT batch — it has no clearance stages to repair or --experiment; re-enqueue the batch instead`);
-  } catch (e) { if (/KNOCKOUT batch/.test(String(e?.message))) throw e; /* no/corrupt sidecar ⇒ legacy clearance run */ }
+  } catch (e) { if (/KNOCKOUT batch/.test(String(e?.message))) throw e; /* a corrupt sidecar: attachSearchPolicy below notes it */ }
   // ctx.job is a SHALLOW COPY: attachSearchPolicy (below) folds the frozen recipe's scope INTO the job
   // (foldRecipeScope mutates job.platforms/classes). The fold is right — it is what the cold path's
   // stages saw — but reconstructCtx was side-effect-free on its argument and stays that way.
@@ -18938,8 +10147,8 @@ export function reconstructCtx(job, opts) {   // @internal
   // register funnels, doubt-closure, narrative-refutation).
   //
   // NON-FATAL, and that is a deliberate call about a PRODUCTION path. attachSearchPolicy throws on
-  // three shapes (a selector-carrying job with no frozen sidecar, a corrupt sidecar, a pipeline this
-  // build cannot execute) and repairStale calls this function. Before today a repair ran with these
+  // three shapes (no frozen sidecar, which this function has already refused above, a corrupt sidecar,
+  // a pipeline this build cannot execute) and repairStale calls this function. Before today a repair ran with these
   // fields simply UNSET, so letting a throw out would turn a run this build has always repaired into a
   // run it refuses — a regression dressed as strictness, and the knockout guard eight lines above
   // already tolerates the corrupt-sidecar case explicitly. Adding the field can only improve the
@@ -18970,20 +10179,15 @@ export function reconstructCtx(job, opts) {   // @internal
   ctx.gridSpecPath = existsSync(P.gridSpec) ? P.gridSpec : null;
   ctx.clHalfTerms = null;
   try {
-    // — armed on ALL THREE seat specs, never on the two grid halves alone. A run split under the
-    // pre-seat code has no meaning-seat spec on disk, and arming from a/b would dispatch a seat whose
-    // spec does not exist and kill the resume on a driver-written file. Missing ⇒ the split self-disarms
-    // to the single-member assembly, which is the rollback path this design already documents — and it
-    // is SAID, because an in-flight run silently changing shape across a deploy is exactly the kind of
-    // absence that reads as normal.
+    // — armed on ALL THREE seat specs, never on the two grid halves alone: arming from a/b would dispatch a
+    // seat whose spec does not exist. A split writes all three, so a run missing one did not split, and its
+    // routing stays unsplit. (A run split before the meaning seat existed had only a/b, and was named here;
+    // a run from an earlier build is no longer resumed.)
     if (GRID_SEATS.every((h) => existsSync(P.gridSpecHalf(h)))) {
       ctx.clHalfTerms = Object.fromEntries(GRID_HALVES.map((h) =>
         [h, JSON.parse(readFileSync(P.gridSpecHalf(h), "utf8")).terms ?? []]));
-    } else if (GRID_HALVES.every((h) => existsSync(P.gridSpecHalf(h)))) {
-      note(`common-law split: this run was split before the meaning seat existed (no ${basename(P.gridSpecHalf(MEANING_SEAT))}) — resuming on the single-member assembly`);
-      runLog(P.runDir, { event: "grid-split-skipped", reason: "pre-meaning-seat-split" });
     }
-  } catch { /* a torn/legacy half spec — the unsplit routing stands, as it did before */ }
+  } catch { /* a torn half spec — the unsplit routing stands */ }
   return ctx;
 }
 
@@ -19050,10 +10254,9 @@ export async function repairStale(job, opts = {}) {   // @internal
   const ctx = reconstructCtx(job, opts);
   const P = ctx.paths;
   let rec = null;
-  try { rec = JSON.parse(readFileSync(driverDir(P.runDir, "delivery-stale.json"), "utf8")); } catch { return null; }
+  try { rec = JSON.parse(readFileSync(paths(P.runDir).deliveryStale, "utf8")); } catch { return null; }
   const labels = Array.isArray(rec?.labels) ? rec.labels : [];
   if (!labels.length) return null;
-  attachFramework(ctx, { write: true });
   await attachJxAim(ctx);   // the aim count the cold pass sets, as --experiment sets it on its rebuilt context
   // RE-DERIVE THE ORDER rather than trusting the file's. The recorded order was right when it was
   // written, and a code change since could have moved an edge — the file names WHAT, the live graph says
@@ -19142,8 +10345,8 @@ function experimentEngineName() {
  *
  * `pipeline()` takes a run slot, so a clearance is visible to `deployRefusal` and an hourly deploy defers
  * over it. A draw is a direct invocation and took nothing, so the guard saw an idle box and a tick could
- * fast-forward the checkout, reinstall and restart the units under a running experiment. Measured by the
- * test lane: the only thing protecting a replication was somebody stopping the deploy timer by hand,
+ * fast-forward the checkout, reinstall and restart the units under a running experiment. Measured in testing:
+ * the only thing protecting a replication was somebody stopping the deploy timer by hand,
  * which made that hold load-bearing without anyone having decided it should be.
  *
  * IT TAKES ITS OWN LOCK, NOT A RUN SLOT. A run slot is admission-controlled against
@@ -19359,7 +10562,7 @@ async function runExperimentInner(job, opts) {
   // The receipt says `dispatched-cold`, never `dispatched-warm`, so the two cannot be read as one another.
   const P = shadowCtx.paths;
   const correctiveReady = correctiveReadiness({
-    preCorrective: existsSync(driverDir(shadowDir, "findings-pre-corrective.json")),
+    preCorrective: existsSync(paths(shadowDir).findingsPreCorrective),
     reviewerVerdict: existsSync(P.seniorEyeReview),
   });
   const whichPass = correctivePassState({ trigger: opts.dispatchTrigger ?? null, ready: correctiveReady.ready });
@@ -19465,7 +10668,7 @@ async function runExperimentInner(job, opts) {
         sha: meta.sha, shaCanonical: canonicalisedSha(inSandbox, shadowDir, ctx.paths.runDir) };
     }),
   };
-  try { atomicWrite(driverDir(shadowDir, "experiment-context.json"), JSON.stringify(receipt, null, 2) + "\n"); }
+  try { atomicWrite(paths(shadowDir).experimentContext, JSON.stringify(receipt, null, 2) + "\n"); }
   catch (e) { note(`--experiment: context receipt write failed (${String(e?.message ?? e).slice(0, 80)}) — the arm still runs, its context is just unstated`); }
   // — the same correction on the experiment EVENT: tier and engine, never a
   // vendor-namespaced id this site cannot know.
@@ -19582,7 +10785,11 @@ export function retiredFlagRefusal(argv) {   // @internal
 // a line that dates every retirement to the first one is worse than a line with no date at all.
 const RETIRED_ENV = {
   CLEAROTRON_KNOCKOUT_MODE: ["2026-07-27", "knockout availability is a property of the BUILD and the wired provider (search-policy.mjs BUILT)"], CLEAROTRON_KNOCKOUT_RECORD_CAP: ["2026-11-05", "a knockout reads the lists its reading step selects, in full; there is no record cap"],
-  CLEAROTRON_JX_LANES: ["2026-07-27", "the jx lane decision is frozen into the run's search policy; the per-lane CLEAROTRON_NATIVE_LANGUAGE_<XX> switches are still live"],
+  CLEAROTRON_JX_LANES: ["2026-07-27", "the jx lane decision is frozen into the run's search policy"],
+  // The per-language off switch: no deployment set it, and a lane in the frozen lane decision always runs.
+  CLEAROTRON_NATIVE_LANGUAGE_ZH: ["2026-11-11", "a native-language lane runs wherever the run's frozen lane decision carries it; there is no per-language off switch"],
+  CLEAROTRON_NATIVE_LANGUAGE_JA: ["2026-11-11", "a native-language lane runs wherever the run's frozen lane decision carries it; there is no per-language off switch"],
+  CLEAROTRON_NATIVE_LANGUAGE_KO: ["2026-11-11", "a native-language lane runs wherever the run's frozen lane decision carries it; there is no per-language off switch"],
   CLEAROTRON_RECIPES_MODE: ["2026-07-27", "a saved search is honoured wherever it resolves"],
 
   // ── ─────────────────────────────────────────────────────────────────────────────────────
@@ -19723,10 +10930,11 @@ const USAGE = "usage: node pipeline.mjs --job <file.json> [--agent <id>]\n" +
 // holding slot-0, and `knockoutInner`'s identity seed was never reached, which is why the run dir
 // had no status.json and read as in-flight forever.
 //
-// WRAPPING IS THE FIX RATHER THAN MOVING THE FIVE SHARED SYMBOLS OUT of this file. Moving them removes
-// this one back-edge; this removes the CLASS — module evaluation now completes before the run starts, so
-// ANY module lazily imported during a run may import this one without deadlocking. The next lazy import
-// added to a stage would otherwise have rebuilt the same trap, silently.
+// WRAPPING IS THE FIX, AND MOVING THE FIVE SHARED SYMBOLS WAS NOT. Moving them removes one back-edge; this
+// removes the CLASS — module evaluation now completes before the run starts, so ANY module lazily imported
+// during a run may import this one without deadlocking. The next lazy import added to a stage would otherwise
+// have rebuilt the same trap, silently. The five have since moved to run-outcome.mjs anyway, for load weight
+// and testability, and the Knockout pipeline no longer imports this file; the wrap still guards the class.
 //
 // `.catch` mirrors the inner catch below rather than relying on an unhandled rejection: a throw before the
 // try block (argument parsing, a retired-flag refusal) would otherwise exit through Node's default handler
@@ -19760,6 +10968,19 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   // person typing a command must not become a new precondition for the ones that are not.
   try { void config.poolRoot; }
   catch (e) { console.error(`error: ${e.message}`); process.exit(2); }
+
+  // ── A RUN IS FINISHED ON THE BUILD IT STARTED ON, FROM THE COMMAND LINE TOO ───────────────────────────
+  //
+  // The runner's resumes refuse a run that started on another build (one-build-per-run.mjs). `--resume`, with
+  // `--from` or `--experiment` or neither, is the same door typed by a person, and it carried a run from an
+  // earlier version onto this one. Each branch below asks it of the run folder as soon as it has found one,
+  // before the order is rebuilt or anything is written, and refuses in the runner's words. With no run folder
+  // there is nothing to ask: the resume itself refuses that, by name. `pipeline()` stays unchecked as a
+  // library, because the bench resumes saved copies on new code to measure what a change does.
+  const refuseAcrossBuilds = (runDir) => {
+    const refused = crossBuildResumeRefusal(runDir);
+    if (refused) { console.error(`error: ${refused}`); process.exit(2); }
+  };
 
   // — reading the job file used to sit OUTSIDE the try below, so a path typo or a stray comma
   // exited on a raw V8 stack trace: a non-clean exit with no honest message, and the one shape of
@@ -19796,6 +11017,7 @@ if (isEntrypoint(import.meta.url)) void (async () => {
       console.error("       pass --job <file.json> if the run lives somewhere this cannot see.");
       process.exit(2);
     }
+    refuseAcrossBuilds(found.dir);
     let status = null;
     try { status = JSON.parse(readFileSync(join(found.dir, "status.json"), "utf8")); }
     catch (e) { console.error(`error: cannot read ${join(found.dir, "status.json")} — ${e.message}`); process.exit(2); }
@@ -19804,7 +11026,7 @@ if (isEntrypoint(import.meta.url)) void (async () => {
     // can ride on this install (jobFromStatus says why it may not).
     let roster = null;
     try { roster = loadProfiles(); } catch { /* the run context reads the roster again, and refuses with its reason */ }
-    const frozen = { profile: safeReadJson(driverDir(found.dir, "profile.json")), searchPolicy: safeReadJson(driverDir(found.dir, "search-policy.json")), roster };
+    const frozen = { profile: safeReadJson(paths(found.dir).profile), searchPolicy: safeReadJson(paths(found.dir).searchPolicy), roster };
     // The order the run kept at intake, else an older run's retained queue entry, else the rebuild from status
     // (accepted-order.mjs says which, and why a queue entry was refused).
     orderRecovery = rebuildRunOrder({ runDir: found.dir, status, scope, profile: frozen.profile,
@@ -19827,6 +11049,12 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   } else {
     try { job = JSON.parse(readFileSync(a.job, "utf8")); }
     catch (e) { console.error(`error: cannot read job file ${a.job} — ${e.message}`); process.exit(2); }
+    if (a.codename) {
+      // The live run the resume will open, by the lookup the resume itself makes.
+      const studioRoot = a.agent ? config.studioRootForAgent(a.agent) : config.studioRoot;
+      const date = findRunDate(job, a.codename, studioRoot);
+      if (date) refuseAcrossBuilds(join(studioRoot, deriveSlug(job), `${date}-${a.codename}`));
+    }
   }
   // Manual runs: if --agent is given, root the run-dir in that agent's workspace too (mirrors the runner).
   const base = a.agent
@@ -19868,7 +11096,7 @@ if (isEntrypoint(import.meta.url)) void (async () => {
       // face A5 exists to end, and the resume line would name a run the resume guard refuses outright.
       // Same two markers the resume guard consults, checked inline rather than imported.
       const delivered = Boolean(run?.runDir) &&
-        (existsSync(join(run.runDir, ".delivered")) || existsSync(driverDir(run.runDir, "delivery.json")));
+        (existsSync(join(run.runDir, ".delivered")) || existsSync(paths(run.runDir).delivery));
       if (run?.runDir && !delivered) {
         try {
           writeFileSync(join(run.runDir, ".parked"), JSON.stringify({ kind: "cli-signal", signal: sig, codename: run.codename, agent: opts.agent ?? config.defaultAgent, ts: new Date().toISOString() }, null, 2) + "\n");
@@ -19918,6 +11146,12 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   });
 
   try {
+    // A NEW RUN ON AN INSTALL THAT CANNOT SEARCH YET is refused in doctor's words, before the doors ask for a
+    // program nobody chose (driver/run-requirements.mjs, commandLineRefusal). A resume keeps the engine it recorded.
+    if (!a.codename && !a.experiment) {
+      const notYet = commandLineRefusal(process.env, await runTables(), reachableCommand("install"));
+      if (notYet) throw new Error(notYet);
+    }
     const res = a.experiment ? await runExperiment(job, opts) : await pipeline(job, opts);
     settled = true;
     if (!res.ok) advise({ result: res, codename: res.codename ?? opts.__runRef?.codename ?? null });
@@ -20009,7 +11243,7 @@ export function injectMeaningGapCoverage(P, runDir, note) {   // @internal — e
     }
     if (!added) return;
     parseFindingsJson(JSON.stringify(doc));                    // re-validate the shape (throws → catch keeps original)
-    atomicWrite(P.findings, `${JSON.stringify(doc, null, 2)}\n`);
+    writeFindings(runDir, doc, { why: "meaning-gap-coverage-rows", settles: [] });
     note(`[common-law] ${added} meaning search(es) that did not complete now reach the report's coverage`);
     runLog(runDir, { event: "meaning-gap-coverage", added });
   } catch (e) {
@@ -20053,7 +11287,7 @@ export function rewriteFromBeforeTheSeam(ctx) {   // @internal
  */
 function deadlineClockOf(runDir) {
   try {
-    const at = Date.parse(JSON.parse(readFileSync(driverDir(runDir, "deadline-enrich.json"), "utf8"))?.judged_at);
+    const at = Date.parse(JSON.parse(readFileSync(paths(runDir).deadlineEnrich, "utf8"))?.judged_at);
     return Number.isFinite(at) ? at : Date.now();
   } catch { return Date.now(); }
 }
@@ -20099,7 +11333,7 @@ function orphanAreaLabel(qid, axis, plan) {
  * with no scope yet, writes as before. PURE.
  */
 export function instructedScopeToWrite(job, { jobRebuiltFromStatus = false, scopeOnDisk = false } = {}) {   // @internal
-  return jobRebuiltFromStatus && scopeOnDisk ? null : instructedScopeOf(job);
+  return keepsInstructedScope({ jobRebuiltFromStatus, scopeOnDisk }) ? null : instructedScopeOf(job);
 }
 
 // ── THE SALVAGE FOR A FOREIGN RECORD LINK: BLANK IT, RE-CHECK, DELIVER ──────────────────────────────────
@@ -20118,7 +11352,7 @@ export function foreignRecordLinksBlanked(r, ctx, name) {   // exported for its 
   try { doc = JSON.parse(readFileSync(ctx.paths.findings, "utf8")); } catch { return false; }
   const { doc: repaired, blanked, kept } = blankForeignRecordLinks(doc, activeRecordOrigins());
   if (!blanked.length) return false;
-  atomicWrite(ctx.paths.findings, JSON.stringify(repaired, null, 2) + "\n");
+  writeFindings(ctx.paths.runDir, repaired, { why: "foreign-record-links-blanked", settles: [] });
   recordBlanking(ctx.paths.runDir, { stage: name, layer: "salvage", blanked, kept, fail });
   note(`[${name}] ${blanked.length} record link(s) on a host this register does not publish were blanked by the driver; the originals are in _driver/foreign-record-links.json`);
   const def = STAGES[name];
@@ -20207,7 +11441,7 @@ const REBUILDS_THE_DELIVERED_RECORD = new Set(["placement-inquiry", "register-di
  * them too. Returns the directory, or null when there was nothing to keep. Best-effort, like every snapshot.
  */
 export function keepDeliveredRecordAsHistory(P, reason) {   // @internal — driven by its test with a run's own files
-  const files = [P.audit, P.recordCarry, driverDir(P.runDir, "doubts.json")].filter((f) => existsSync(f));
+  const files = [P.audit, P.recordCarry, paths(P.runDir).doubts].filter((f) => existsSync(f));
   if (!files.length) return null;
   try {
     const ts = new Date().toISOString().replace(/[:.]/g, "-");
@@ -20251,7 +11485,7 @@ export function withdrawSupersededAudit(P, reason, { keep = true } = {}) {   // 
 
 /** The doubt ledger on disk, written again with the doubts the rebuilt audit carries; what it said of the closure stays. */
 function writeDoubtLedgerAgain(P, doubts, truncated) {
-  const path = driverDir(P.runDir, "doubts.json");
+  const path = paths(P.runDir).doubts;
   const earlier = safeReadJson(path) ?? {};
   const settled = doubts.filter((d) => d?.status === "checked-and-settled").length;
   const { doubts: _d, minted: _m, settled: _s, open: _o, truncated: _t, ...closure } = earlier;
@@ -20327,3 +11561,7 @@ export function reassembleFromTheRecord(P, findings, depth) {   // @internal
   assembleReportMd(P, findings, plan.assembledOrdinals, { grouped: plan.groupedMembers, byRight: plan.byRight });
   return plan;
 }
+
+// Hoisted, so placed last: an import at the top would move every line citation into this file.
+import { commandLineRefusal } from "./run-requirements.mjs";
+import { runTables } from "./order-tables.mjs";

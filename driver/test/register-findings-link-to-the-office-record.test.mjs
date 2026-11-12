@@ -40,20 +40,21 @@ const EXPECTED = [
   ["au", SIGNA("au", "2145673", "2145673"), "AU 2145673", "https://search.ipaustralia.gov.au/trademarks/search/view/2145673"],
   ["ca", SIGNA("ca", "1834521", "TMA1024576"), "CA 1834521", "https://ised-isde.canada.ca/cipo/trademark-search/1834521-00?lang=eng"],
   ["ch", SIGNA("ch", "12345/2020", "7634210"), "CH 12345/2020", "https://www.swissreg.ch/database-client/register/detail?type=trademark&lang=en&no=12345%2F2020"],
+  ["es", SIGNA("es", "2345678 M", "2345678 M"), "ES M2345678", "https://ceo.oepm.es/detalleExpediente?numExp=M2345678"],
   ["eu", SIGNA("eu", "018165108", "018165108", { filingRoute: "direct_regional" }), "EU 018165108", "https://euipo.europa.eu/eSearch/#details/trademarks/018165108"],
   ["fr", SIGNA("fr", "FR4123456", "FR4123456"), "FR4123456", "https://data.inpi.fr/marques/FR4123456"],
   ["gb", SIGNA("gb", "UK00003456789", "UK00003456789"), "UK00003456789", "https://trademarks.ipo.gov.uk/ipo-tmcase/page/Results/1/UK00003456789"],
+  ["mx", SIGNA("mx", "2345678", "1987654", { applicationDate: "2021-03-04" }), "MX 2345678", "https://marcia.impi.gob.mx/marcas/search/details/RM202102345678"],
   ["no", SIGNA("no", "202012345", "312456"), "NO 202012345", "https://services.patentstyret.no/search-details/trademark/202012345-312456?lang=en"],
   ["se", SIGNA("se", "2020-12345", "578291"), "SE 2020-12345", "https://search.prv.se/#/trademark/2020-12345"],
   ["us", SIGNA("us", "88123456", "5847291"), "US 88123456", "https://tsdr.uspto.gov/#caseNumber=88123456&caseType=SERIAL_NO&searchType=statusSearch"],
   ["wo", SIGNA("wo", "1543782", "1543782", { filingRoute: "madrid_ir" }), "WO 1543782", "https://www3.wipo.int/madrid/monitor/en/showData.jsp?ID=ROM.1543782"],
 ];
 
-// Offices the vendor lists as live for which no address has yet been checked against a real record. The
-// vendor added Spain and Mexico before the 2026-11-02 sync. Until an address is checked, their records
-// take the register's own link where it gives one, and are otherwise cited by number under the sentence
-// for an office the table does not hold. Saying they publish no page would be false: both offices do.
-const AWAITING_AN_ADDRESS = ["es", "mx"];
+// Offices the vendor lists as live for which no address has yet been checked against a real record. Until one is,
+// their records take the register's own link where it gives one, and are otherwise cited by number under the
+// sentence for an office the table does not hold. None is awaiting one today.
+const AWAITING_AN_ADDRESS = [];
 
 test("the table speaks for exactly the offices the vendor lists as live, less those awaiting an address", () => {
   const live = SIGNA_OFFICE_SNAPSHOT.offices.filter((o) => o.status === "live").map((o) => o.jurisdiction.toLowerCase()).sort();
@@ -63,7 +64,8 @@ test("the table speaks for exactly the offices the vendor lists as live, less th
 });
 
 test("an office awaiting an address is cited by number and says so, unless the register gives its page", () => {
-  for (const o of AWAITING_AN_ADDRESS) {
+  // "zz" stands for an office the vendor lists before the table holds it, so the arm runs with none awaiting.
+  for (const o of [...AWAITING_AN_ADDRESS, "zz"]) {
     const rec = SIGNA(o, "1234567", null);
     assert.deepEqual(officeRecordLink(rec), { office: o, label: `${o.toUpperCase()} 1234567`, href: null, reason: "unknown-office" }, o);
     assert.deepEqual(officeReasonSentences(new Map([[`/mark/${o}/x`, officeRecordLink(rec)]])),
@@ -83,6 +85,19 @@ test("Singapore publishes no page for a single record: no link, and the reason s
     { office: "sg", label: "SG 40202012345Y", href: null, reason: "no-page" });
 });
 
+test("Brazil and Italy publish no page for a single record either: cited by number, and the reason says so", () => {
+  assert.deepEqual(officeRecordLink(SIGNA("br", "912345678", null)), { office: "br", label: "BR 912345678", href: null, reason: "no-page" });
+  assert.deepEqual(officeRecordLink(SIGNA("it", "302021000123456", null)), { office: "it", label: "IT 302021000123456", href: null, reason: "no-page" });
+});
+
+test("Spain drops the vendor's check digit and puts the letter first; Mexico needs the filing year and pads the file number", () => {
+  assert.equal(officeRecordLink(SIGNA("es", "2345678 M7", null)).href, "https://ceo.oepm.es/detalleExpediente?numExp=M2345678");
+  assert.equal(officeRecordLink(SIGNA("es", "2345678 N", null)).href, null, "only a national mark is addressed");
+  assert.equal(officeRecordLink(SIGNA("mx", "24621", null, { applicationDate: "1968-05-02" })).href, "https://marcia.impi.gob.mx/marcas/search/details/RM196800024621");
+  assert.deepEqual([officeRecordLink(SIGNA("mx", "2345678", "1987654")).href, officeRecordLink(SIGNA("mx", "2345678", "1987654")).reason], [null, "unaddressable"],
+    "with no filing date there is no year, so no link");
+});
+
 test("the only reshaping is the padding and prefix the office's own format defines", () => {
   assert.equal(officeRecordLink(SIGNA("ch", "8133/2025", null)).href, "https://www.swissreg.ch/database-client/register/detail?type=trademark&lang=en&no=08133%2F2025");
   assert.equal(officeRecordLink(SIGNA("eu", "18165108", null)).href, "https://euipo.europa.eu/eSearch/#details/trademarks/018165108");
@@ -94,8 +109,8 @@ test("the only reshaping is the padding and prefix the office's own format defin
 test("a number in any other form gets no link, at every office with a page", () => {
   const off = [
     SIGNA("au", "A2145673", null), SIGNA("ca", "TMA1024576", null), SIGNA("ch", "12345-2020", null),
-    SIGNA("eu", "EU018165108", null), SIGNA("fr", "20/4123456", null), SIGNA("gb", "345678", "345678"),
-    SIGNA("no", "12345", null), SIGNA("se", "2020/12345", null), SIGNA("us", "5847291", null),
+    SIGNA("es", "M-2345678", null), SIGNA("eu", "EU018165108", null), SIGNA("fr", "20/4123456", null), SIGNA("gb", "345678", "345678"),
+    SIGNA("mx", "RM202102345678", null, { applicationDate: "2021-03-04" }), SIGNA("no", "12345", null), SIGNA("se", "2020/12345", null), SIGNA("us", "5847291", null),
     SIGNA("wo", "R123", "R123", { filingRoute: "madrid_ir" }),
   ];
   assert.deepEqual(off.map((r) => r.office), EXPECTED.map(([o]) => o), "one malformed number per office with a page");
@@ -325,10 +340,10 @@ test("offices the table holds no address for share one sentence, after the per-o
   const { byUri } = recordLinksFor(CM_FINDINGS, CM_RECORDS, recordOriginsFor("clarivate"));
   assert.deepEqual(officeReasonSentences(byUri), ["CN, JP: we hold no page address for these registers, so their registrations are cited by number."]);
   const one = (office, reason) => ({ office, label: `${office.toUpperCase()} 1`, href: null, reason });
-  const mixed = new Map([["a", one("cn", "unknown-office")], ["b", one("sg", "no-page")], ["c", one("jp", "unknown-office")], ["d", one("br", "unknown-office")]]);
+  const mixed = new Map([["a", one("cn", "unknown-office")], ["b", one("sg", "no-page")], ["c", one("jp", "unknown-office")], ["d", one("kr", "unknown-office")]]);
   assert.deepEqual(officeReasonSentences(mixed), [
     "Singapore: the register publishes no page for a single record, so its registrations are cited by number.",
-    "BR, CN, JP: we hold no page address for these registers, so their registrations are cited by number.",
+    "CN, JP, KR: we hold no page address for these registers, so their registrations are cited by number.",
   ]);
   assert.deepEqual(officeReasonSentences(new Map([["a", one("cn", "unknown-office")]])),
     ["CN: we hold no page address for this register, so its registrations are cited by number."], "one such office keeps the singular");

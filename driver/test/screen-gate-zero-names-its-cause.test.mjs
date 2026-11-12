@@ -20,6 +20,7 @@
 // demands all three mints, and the gate still behaves exactly as it did.
 
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { screenGateZeroCause, findScreenGateViolations } from "../screen-gate.mjs";
@@ -145,7 +146,7 @@ test("NO SECOND PARSER: the row count comes from findScreenGateViolations itself
 
 test("the pipeline's clean branch actually carries the cause", () => {
   // The helper being right is worth nothing if the gate still logs a bare event. This pins the wiring.
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   const at = src.indexOf('event: "screen-gate-clean",\n');
   assert.ok(at > 0, 'the gate\'s clean log moved — this assertion is measuring nothing');
   assert.match(src.slice(at, at + 400), /screenGateZeroCause\(\{/,
@@ -177,7 +178,7 @@ test("the cause REACHES THE CI LOG — a discriminator that stops at run.jsonl h
 test("there are exactly THREE screen-gate-clean writers and only ONE of them is a zero", () => {
   // If a fourth appears without a cause, the gate0 line silently starts reporting `undefined` again and
   // the recovered branch above stops covering the population. This is the tripwire for that.
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   const sites = [...src.matchAll(/event: "screen-gate-clean"/g)];
   assert.equal(sites.length, 3, "a screen-gate-clean writer was added or removed — re-check the gate0 rendering");
   const zero = sites.filter((m) => !/^,\s*recovered/.test(src.slice(m.index + 'event: "screen-gate-clean"'.length, m.index + 60)));
@@ -188,7 +189,7 @@ test("the gate's BEHAVIOUR is unchanged — this is instrumentation, not a loose
   // The forbidden outcome on this issue is making the funnel assertion pass by weakening it. Nothing
   // here touches when the gate mints, discloses or clamps: the helper is only ever called on the branch
   // that already decided there were no violations.
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   const calls = [...src.matchAll(/screenGateZeroCause\(/g)];
   assert.equal(calls.length, 1, "the cause helper reached a second site — it belongs only on the clean branch");
   const before = src.slice(0, calls[0].index);

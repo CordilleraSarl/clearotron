@@ -37,6 +37,7 @@
 // the wrong file — the sibling guard learned that by matching a `required:` array inside the comment
 // documenting its removal.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { readFileSync } from "node:fs";
@@ -142,7 +143,7 @@ function orderedFieldsFor(tool) {
   // substring match read an order for the second as an order for the first.
   const named = new RegExp(`(?<![a-z0-9_])${tool}(?![a-z0-9_])`);
   for (const file of [...ORDER_SOURCES, ...(MANUAL_ORDERS[tool] ? [MANUAL_ORDERS[tool]] : [])]) {
-    const src = readFileSync(join(DRIVER, file), "utf8");
+    const src = driverSource(file);
     src.split("\n").forEach((line, i) => {
       if (!named.test(line)) return;
       if (/^\s*\/\//.test(line)) return;

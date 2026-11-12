@@ -13,6 +13,7 @@
 //                                        n+1 and the client door n+2 unless each is set explicitly
 //   npx clearotron start --demo           the demo posture: own data directory, nothing persisted
 //   npx clearotron start --no-worker      do not drain the queue here; run the worker yourself
+//   npx clearotron start --background     run as services that survive closing the terminal; `clearotron stop` stops them
 //   npx clearotron start --help
 //
 // It is NOT `npm run example`. Demo replays a frozen example report with no credentials, no model and no
@@ -415,13 +416,13 @@ export function clientDoorDownLines({ host, port, exited }) {
  */
 export const DEMO_ROUTINE_LINES = [
   /^auth ON — /,
-  /^key path: none configured /,
+  /^key path: none \(TRADEMARK_MCP_KEY_SOCKET is not set\)/,
   /^roster: \d+ customer\(s\) from /,
   /^This is `clearotron demo`: /,
   /^listening on http:\/\//,
   /^audit log: /,
   /^trigger lane: the engine door takes an access key, and this portal holds one\.$/,
-  /^trigger lane: ops token sub=/,
+  /^trigger lane: the Start button may start and stop searches for /,
   /^settings surface ON — /,
   /^saved searches ON — /,
   /^brief reading OFF — this is the demo/,
@@ -991,14 +992,44 @@ export function childEnv({ ports, paths, user, portalSecret, tokenSecret, opsTok
 // the wrong direction. Re-exported so every existing reader keeps working.
 export { mergeEnvFile } from "../shared/env-file-merge.mjs";
 
+/**
+ * The supervisor's writers, which stop at a terminal that has gone.
+ *
+ * CLOSING THE WINDOW TURNED THE TEARDOWN INTO A LOOP (measured on Linux, 2026-11-10). The hangup reached
+ * the teardown, whose first act is a line on the screen. The write failed (EIO from a hung-up terminal,
+ * EPIPE from a closed pipe), and with no listener on the stream the failure became an uncaught exception.
+ * Its handler wrote the exception to the same dead terminal, which failed again, on the next tick, without
+ * end. The services had already been told to stop, so they stopped, but the timers the teardown waits on
+ * never ran: this process held a full core, ignored SIGTERM because it was already stopping, and left the
+ * demo's folder and its running record behind.
+ *
+ * Each stream now has a listener, so a failed write is an event rather than an exception, and a stream
+ * that has failed once is written to no more: there is nobody left to read it. Per stream, because
+ * `start | head` closes stdout alone, and the refusals on stderr still have a reader.
+ */
+export function terminalWriters({ stdout = process.stdout, stderr = process.stderr } = {}) {
+  const gone = new Set();
+  const writer = (stream) => {
+    stream.on("error", () => { gone.add(stream); });
+    return (text) => { if (!gone.has(stream)) stream.write(text); };
+  };
+  const toOut = writer(stdout);
+  const toErr = stderr === stdout ? toOut : writer(stderr);
+  return {
+    say: (s = "") => toOut(`${s}\n`),
+    err: (s) => toErr(`${s}\n`),
+    toErr,
+    gone: (stream = stdout) => gone.has(stream),
+  };
+}
+
 
 // ── everything below runs only as a command ──────────────────────────────────────────────────────────
 
 const isMain = isEntrypoint(import.meta.url);
 if (isMain) {
   const argv = process.argv.slice(2);
-  const say = (s = "") => process.stdout.write(`${s}\n`);
-  const err = (s) => process.stderr.write(`${s}\n`);
+  const { say, err, toErr } = terminalWriters();
   // Flipped at the first state-changing act (the third criterion): a refusal AFTER
   // writes must say what survives and that re-running is safe — the reader's only question at that
   // moment, and one the screen never answered while the writes sat above the port probe.
@@ -1585,7 +1616,7 @@ if (isMain) {
         write: (f, text) => writeFileSync(f, text, { mode: 0o600 }),
         read: (f) => readFileSync(f, "utf8"),
       });
-      if (r.created) say(`  created        ${denylist} (the revocation list — a key revoked before it existed was not revoked at all)`);
+      if (r.created) say(`  created        ${denylist} (the list of keys you have revoked)`);
     } catch (e) {
       // FATAL, and this is the one place that judgement belongs. A door that cannot consult its
       // revocation list is a door that cannot be revoked from, and starting it anyway is the failure
@@ -1805,16 +1836,16 @@ if (isMain) {
   // snapshot could not be written", naming a deployed server's archive path, followed by the portal
   // saying its configuration page cannot answer. Exactly the reader the paragraph above names.
   //
-  // ONLY IN DEMO MODE. On a real start an operator's own `CLEAROTRON_REPORTS_DIR` deliberately wins
-  // over the computed path (see the resolution site), and forcing `paths.pool` here would overrule
-  // them. `envs.worker` is the shared block — the install's paths in both spellings and nothing
-  // else — so engine and provider identity still resolve from the real environment and report,
-  // honestly, that a demo carries no credentials.
+  // A REAL START HANDS IT THE SAME PATHS, for the same reason. On an install with no settings yet, the
+  // snapshot read an environment that named no pool and printed the hosted-archive refusal on the first
+  // screen, while every service this command started had been handed the install's pool. An operator's own
+  // `CLEAROTRON_REPORTS_DIR` still wins: `startPaths` applies it before anything here reads `paths.pool`.
+  // A reader that resolves no paths of its own (doctor, the services, the commands) still meets the refusal.
+  // `envs.worker` is the shared block — the install's paths in both spellings and nothing else — so engine
+  // and provider identity still resolve from the real environment and report, honestly, what is missing.
   try {
     const { writeFlagSnapshot } = await import("../driver/flag-snapshot.mjs");
-    const { path } = await writeFlagSnapshot(DEMO
-      ? { quiet: true, env: { ...process.env, ...envs.worker }, poolRoot: paths.pool }
-      : { quiet: true });
+    const { path } = await writeFlagSnapshot({ quiet: true, env: { ...process.env, ...envs.worker }, poolRoot: paths.pool });
     say(`  configuration snapshot: ${path}`);
   } catch (e) {
     err(`  WARNING: the configuration snapshot could not be written (${String(e?.message ?? e)}).`);
@@ -2268,10 +2299,10 @@ if (isMain) {
   // last lines put on the screen before the sentence that points at them, so nothing that explains a failure stays only in the file.
   const DEMO_STARTUP_LOG = DEMO ? join(paths.base, "startup.log") : null;
   const fileDemoLine = (line) => {
-    try { appendFileSync(DEMO_STARTUP_LOG, `${line}\n`); } catch { process.stderr.write(`${line}\n`); return; }
-    if (demoLineOnScreen(line)) process.stderr.write(`${line}\n`);
+    try { appendFileSync(DEMO_STARTUP_LOG, `${line}\n`); } catch { err(line); return; }
+    if (demoLineOnScreen(line)) err(line);
   };
-  const showFiledTail = (rec) => { if (DEMO) for (const line of rec.tail) process.stderr.write(`${line}\n`); };
+  const showFiledTail = (rec) => { if (DEMO) for (const line of rec.tail) err(line); };
   const start = (name, script, env, { args = [], fatal = true, clientDoor = false } = {}) => {
     const child = spawn(process.execPath, [join(REPO, script), ...args], {
       cwd: REPO,
@@ -2310,7 +2341,7 @@ if (isMain) {
     const keep = (line) => { if (line.trim()) tail.push(line); while (tail.length > 12) tail.shift(); };
     child.stderr?.setEncoding("utf8");
     child.stderr?.on("data", (chunk) => {
-      if (!DEMO) process.stderr.write(chunk);
+      if (!DEMO) toErr(chunk);
       const parts = (pending + String(chunk)).split("\n");
       pending = parts.pop() ?? "";
       for (const line of parts) { keep(line); if (DEMO) fileDemoLine(line); }
@@ -2587,7 +2618,7 @@ if (isMain) {
     // A door that exited printed why; one still up when the wait ran out printed nothing, and is not sent there.
     for (const line of clientDoorDownLines({ host: HOST, port: ports.client, exited: clientDoor?.child?.exitCode !== null })) say(line);
   }
-  say(`  Engine door  http://${HOST}:${ports.mcp}/mcp   — the portal's Start button calls this. Staff.`);
+  say(`  Engine door  http://${HOST}:${ports.mcp}/mcp   — the portal's Start button calls this. For your staff, not clients.`);
   say("");
   // ── WHAT `status` AND `stop` READ ABOUT THIS START ───────────────────────────────────────────────
   //

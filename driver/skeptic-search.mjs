@@ -35,7 +35,7 @@
 // 0, lines_scanned: N }` — a measured zero, from an instrument the answer itself shows can count.
 import { readFileSync, realpathSync, statSync } from "node:fs";
 import { resolve, sep, isAbsolute } from "node:path";
-import { DRIVER_DIR } from "../shared/driver-dir.mjs";   //
+import { DRIVER_DIR } from "./run-record.mjs";   //
 import { answerBudget } from "../shared/answer-parts.mjs";   // the reply size this server was given
 import { RESEARCH_ANSWERS_MD, RESEARCH_AFTER_REVIEW_MD } from "./research-answers.mjs";   // the two artifacts whose lines come back whole
 

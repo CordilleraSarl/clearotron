@@ -28,8 +28,8 @@
 // reached 39 wrong in the first place.
 
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -39,7 +39,7 @@ const SYMBOL_CITE = /\b[A-Za-z_$][A-Za-z0-9_$]*\(\)\s+in\s+[A-Za-z0-9._-]+\.mjs|
 const MARKER = "[citation unverified]";
 
 function whyStrings() {
-  return readFileSync(STAGES_SRC, "utf8").split("\n")
+  return driverSource("stages.mjs").split("\n")
     .map((text, i) => ({ line: i + 1, text }))
     .filter((r) => /^\s*why: "/.test(r.text));
 }
@@ -101,7 +101,7 @@ test("a converted citation names no line — the number is the part that goes st
 test("the marker is spelled ONE way, so it can be found and worked off", () => {
   // A backlog nobody can enumerate is not a backlog. Variants like "[unverified citation]" would leave
   // rows out of every count, and this is a list somebody has to finish.
-  const src = readFileSync(STAGES_SRC, "utf8");
+  const src = driverSource("stages.mjs");
   const variants = [...src.matchAll(/\[[^\]]*\bunverified\b[^\]]*\]/g)].map((m) => m[0]);
   const distinct = [...new Set(variants)];
   assert.deepEqual(distinct.filter((v) => v !== MARKER), [],

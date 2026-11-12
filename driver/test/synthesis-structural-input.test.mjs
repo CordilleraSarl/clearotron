@@ -18,6 +18,7 @@
 // → the receipt shape `writePlanExecutionReceipt` writes) rather than hand-typed, because a hand-typed
 // receipt certifies the shape you imagined instead of the one a run produces.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, chmodSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -470,7 +471,7 @@ test("a findings surface that empties between passes removes the list the earlie
 });
 
 test("the stale-repair and corrective passes both rebuild the list before they dispatch synthesis", () => {
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.match(src, /synthesis: \(ctx\) => \{ prepareDeclinationSpec\(ctx, ctx\.paths\); return repairStage\("synthesis"\)\(ctx\); \}/,
     "the stale-repair arm rebuilds it, so an emptied surface empties its list");
   const corrective = src.slice(src.indexOf("const preCorrective = snapshotFindingsForCorrections("),

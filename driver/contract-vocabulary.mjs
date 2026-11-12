@@ -17,7 +17,7 @@
 //
 //   D1 verify.mjs connotationDispositionFail   fail(`connotation_${reason}:…`)   — reason is a member of CALL_REASON_SET
 //   D2 verify.mjs checkFindingsSibling  fail(String(e.message)…)  — parseFindingsJson throws token-first
-//   D3 verify.mjs:1259   checkJson: fail(String(e.message)…)   — FIVE parsers reach this one site
+//   D3 verify.mjs:1270   checkJson: fail(String(e.message)…)   — FIVE parsers reach this one site
 //   D4 verify.mjs  parseCoverageLedgerJson, same shape
 //   D5 verify.mjs validators.registerFindings  fail(`${unaccounted[0].token}:…`)  — token minted in a DATA ROW
 //   D6 verify.mjs validators.registerFindings  fail(`${violations[0].token}…`)  — findUnexecutedCleanClaims() in register-plan.mjs
@@ -341,7 +341,7 @@ export const ARM1_EXEMPTIONS = [
  * STAGE-UNREACHABLE VALIDATORS — not exemptions, a SCOPE statement.
  *
  * verify.mjs wires four validators no STAGES entry reaches: findings, report, audit,
- * clientSummary. They are NOT dead code — replay-archive.mjs:128 replayRun and check() in mcp-server/lib/coverage.mjs
+ * clientSummary. They are NOT dead code — replay-archive.mjs:130 replayRun and check() in mcp-server/lib/coverage.mjs
  * index validators[key] dynamically and the MCP server declares `audit` required — but no stage dispatches
  * them, so their tokens are unaccountable BY CONSTRUCTION with respect to a stage partition. The
  * client-summary STAGE was deleted 2026-08-01 (no line to cite: the stage is gone) and its validator outlived it.
@@ -431,7 +431,7 @@ export const TRIPWIRE_OUT_OF_SCOPE = [
   {
     prefix: "framework_",
     site: "driver/framework.mjs, driver/framework-method.mjs",
-    reason: "parseFrameworkManifest's throws never reach a stage: verify.mjs:70 readRunFramework wraps the call and returns {invalid:true}, and verify.mjs:1180 checkFindingsSibling emits its OWN token (framework_manifest_unreadable) instead. The family is unreachable by construction. parseFrameworkMethod's `framework_method_*` throws take the same road: readFrozenMethod wraps the parse and returns {invalid}, and checkFindingsSibling emits its own `framework_method_unreadable`.",
+    reason: "parseFrameworkManifest's throws never reach a stage: verify.mjs:70 readRunFramework wraps the call and returns {invalid:true}, and verify.mjs:1197 checkFindingsSibling emits its OWN token (framework_manifest_unreadable) instead. The family is unreachable by construction. parseFrameworkMethod's `framework_method_*` throws take the same road: readFrozenMethod wraps the parse and returns {invalid}, and checkFindingsSibling emits its own `framework_method_unreadable`.",
   },
   {
     prefix: "register_plan_",
@@ -485,11 +485,11 @@ export const INNER_CODES = Object.freeze([
   { code: "quote_unbound", mints: ["driver/connotation-search.mjs:2113"], rollsUpTo: ["connotation_quote_unbound"],
     why: "The ruled-but-unbound row. Projected as `unbound` in connotationDispositionFail() in verify.mjs, and reported only once nothing is unruled." },
   { code: "token_absent", mints: ["driver/connotation-search.mjs:2140"], rollsUpTo: ["connotation_token_absent"],
-    why: "#592 split this out of no_ruling. Row-level only — PROGRESS_TOKENS declared in repairs.mjs says so in as many words: `never a top-level token`." },
+    why: "#592 split this out of no_ruling. Row-level only: connotationDispositionFail() in verify.mjs never reports it as a top-level token, so PROGRESS_TOKENS declared in repairs.mjs has no row for it." },
   { code: "cite_absent", mints: ["driver/connotation-search.mjs:2149"], rollsUpTo: ["connotation_cite_absent"],
-    why: "#592, as token_absent. PROGRESS_TOKENS declared in repairs.mjs: `row-level only — never a top-level token`." },
+    why: "#592, as token_absent: row-level only, never a top-level token, and no row in PROGRESS_TOKENS declared in repairs.mjs." },
   { code: "no_ruling", mints: ["driver/connotation-search.mjs:2156"], rollsUpTo: ["connotation_no_ruling"],
-    why: "The residual the other two split off from, and it has representatives — see the mint site. Declared as a corrective token at repairs.mjs:308 and in stages.mjs's E1 rows, always namespaced." },
+    why: "The residual the other two split off from, and it has representatives — see the mint site. Declared as a corrective token in PROGRESS_TOKENS in repairs.mjs and in stages.mjs's E1 rows, always namespaced." },
   // THE ONE THAT IS RENAMED, NOT NAMESPACED — and it is the reason this table stores the composite as
   // data rather than deriving it. Every derivation anyone would write is `connotation_` + the code, and
   // for this row that produces `connotation_no_recorded_queries`, which nothing mints and nothing covers.
@@ -560,6 +560,8 @@ export const COVERED_SOURCES = [
   "verify.mjs", "gateway.mjs",
   "common-law-receipts.mjs", "connotation-search.mjs",
   "disposition-union.mjs", "record-origins.mjs",
+  // The door to a run's files. It mints no token today; reading it means a parser added there is seen.
+  "run-record.mjs",
   // B — verify.mjs reaches the typed transport's audit and its path resolver, so the tripwire reads both.
   // `disposition-call-audit.mjs` is where the four transport reasons live as literals; without it here
   // that family could grow a fifth member no vocabulary row covers, and nothing would notice.

@@ -17,12 +17,12 @@
 // what the run simply does not hold.
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 import { foldDiacritics } from "./form-neighbourhood.mjs";
 import { parseVariantManifestModel } from "./variant-manifest-model.mjs";
 import { canonicalJurisdictionCode } from "./jurisdiction-codes.mjs";
 import { savedStatusPages, savedPageStatement, usSerialOf } from "./saved-register-pages.mjs";
+import { paths, readJson } from "./run-record.mjs";
 
 /**
  * The registers whose language is English (ruled 2026-10-12): there, a goods statement with no language tag
@@ -218,7 +218,7 @@ export function bandGoodsIndex(runDir) {
     const goods = recordGoods(body, { english: untaggedIsEnglish(key) });
     if (goods.length) index.set(key, goods);
   };
-  const ledger = driverDir(runDir, "register-record-bodies.jsonl");
+  const ledger = paths(runDir).registerRecordBodies;
   if (existsSync(ledger)) {
     let text = "";
     try { text = readFileSync(ledger, "utf8"); } catch { text = ""; }
@@ -233,7 +233,7 @@ export function bandGoodsIndex(runDir) {
     let names = [];
     try { names = readdirSync(dir).filter((n) => n.endsWith(".json")); } catch { names = []; }
     for (const n of names) {
-      try { const body = JSON.parse(readFileSync(join(dir, n), "utf8")); take(body?._uri ?? body?.uri, body); } catch { /* unreadable: skip */ }
+      try { const body = readJson(join(dir, n)); take(body?._uri ?? body?.uri, body); } catch { /* unreadable: skip */ }
     }
   }
   return index;
@@ -399,7 +399,7 @@ export function goodsWordMatcher(words) {
  */
 export function instructedOrder(P, job = null) {
   let scope = null;
-  try { scope = JSON.parse(readFileSync(P.instructedScope, "utf8")); } catch { scope = null; }
+  try { scope = readJson(P.instructedScope); } catch { scope = null; }
   const order = { ...(job ?? {}) };
   for (const k of ["goods", "jurisdictions", "geography"]) if (scope?.[k] != null) order[k] = scope[k];
   return order;
@@ -424,7 +424,7 @@ export function bandShapeGoods(P, records = []) {
   try { if (existsSync(P.variantManifestModel)) model = parseVariantManifestModel(readFileSync(P.variantManifestModel, "utf8")); } catch { model = null; }
   let searched = "";
   try {
-    const plan = JSON.parse(readFileSync(P.registerPlan, "utf8"));
+    const plan = readJson(P.registerPlan);
     searched = String((plan?.entries ?? []).find((e) => /\+goods($|-)/.test(String(e?.qid ?? "")))?.term ?? "");
   } catch { searched = ""; }
   const manifestDominant = String(model?.dominant_element ?? "");

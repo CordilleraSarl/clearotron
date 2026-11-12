@@ -7,7 +7,7 @@
 // spec.output_path itself (never round-trips the grid through the model's bounded turn output).
 import { existsSync, readFileSync, writeFileSync, mkdirSync, appendFileSync } from "node:fs";
 import { dirname, basename } from "node:path";
-import { driverDir } from "../../../shared/driver-dir.mjs";   //
+import { driverDir, paths, readJson } from "../../run-record.mjs";   //
 import { underStudioSegment } from "../../../shared/path-seps.mjs";   // Windows builds the path with "\"
 import { serve } from "./stdio-server.mjs";
 import { answerBudget } from "../../../shared/answer-parts.mjs";
@@ -30,7 +30,7 @@ import { parsePrRiskResults, connotationObligations, renderConnotationObligation
 import { obligationsSidecarPath } from "../../disposition-tool.mjs";
 import { writeGridProvenance } from "./grid-provenance.mjs";   // — what served the grid, beside the ledger
 import { insideRun } from "../../../shared/inside-run.mjs";   // a path a tool is handed is served only inside this run
-import { keepResearchAnswer, isResearchAnswer, replayAnswersFrom, researchReplayOn, savedResearchAnswer } from "../../research-answers.mjs";   // each answer's text, kept for a later attempt of its stage; a replay answers from them
+import { keepResearchAnswer, isResearchAnswer, replayAnswersFrom, researchReplayOn, savedResearchAnswer, researchRequestKey, heldAnswerToRequest } from "../../research-answers.mjs";   // each answer's text, kept for a later attempt of its stage, which is answered from it; a replay answers from them
 
 const API_KEY = process.env.PERPLEXITY_API_KEY || "";
 
@@ -68,7 +68,7 @@ const AGENT = process.env.CLEAROTRON_GATHER_AGENT || "";
 function logCall(tool, args, result) {
   if (!RUN_DIR) return;
   try {
-    const p = driverDir(RUN_DIR, "reading-log.jsonl");
+    const p = paths(RUN_DIR).readingLog;
     mkdirSync(dirname(p), { recursive: true });
     appendFileSync(p, JSON.stringify({
       ts: new Date().toISOString(), tool, args, ...result,
@@ -85,7 +85,7 @@ function logCall(tool, args, result) {
 const PINNED_QUESTION_PRESET = (() => {
   if (!RUN_DIR) return null;
   try {
-    const p = JSON.parse(readFileSync(driverDir(RUN_DIR, "search-policy.json"), "utf8"))?.web?.questionPreset;
+    const p = readJson(paths(RUN_DIR).searchPolicy)?.web?.questionPreset;
     return typeof p === "string" && isKnownPreset(p) ? p : null;
   } catch { return null; }
 })();
@@ -238,7 +238,7 @@ async function research(params) {
     if (RUN_DIR && !insideRun(RUN_DIR, grid_spec_path))
       return "ERROR: grid_spec_path is outside this run's folder. The driver writes the spec inside the run; use the path it gave you.";
     let spec;
-    try { spec = validateGridSpec(JSON.parse(readFileSync(grid_spec_path, "utf8"))); }
+    try { spec = validateGridSpec(readJson(grid_spec_path)); }
     catch (err) { return `ERROR: grid_spec_path unreadable/invalid (${err.message}). The driver writes this file; do not hand-author it.`; }
     if (RUN_DIR && !insideRun(RUN_DIR, spec.output_path))
       return requiredLedgerRefusal("ERROR: the grid spec's output_path is outside this run's folder. The driver writes the spec inside the run; use the path it gave you.", { spec, gridSpecPath: grid_spec_path });
@@ -307,8 +307,17 @@ async function research(params) {
   // setting decided it rather than the question.
   const asked = { task, depth: depth ?? null, preset, ...(PINNED_QUESTION_PRESET ? { pinned: true } : {}), allow_fetch, enable_sandbox,
     ...(domain_filter ? { domain_filter } : {}), ...(modelOverride ? { model: modelOverride } : {}) };
+  const body = buildRequestBody({ task, preset, allowFetch: allow_fetch, domainFilter: domain_filter, modelOverride, enableSandbox: enable_sandbox, responseSchema: response_schema, schemaName: schema_name });
+  // A QUESTION THIS STAGE ALREADY GOT AN ANSWER TO IS NOT SENT AGAIN (research-answers.mjs): the same request, from
+  // this stage or a retry of it, answered by what the run kept. It is logged as a lookup is, marked as reused, so the
+  // run's record says which questions were paid for on this pass.
+  const request = researchRequestKey(body);
+  const held = heldAnswerToRequest(RUN_DIR, SESSION, request);
+  if (held) {
+    logCall("perplexity_research", asked, { ok: true, bytes: held.text.length, reused: true });
+    return held.text;
+  }
   try {
-    const body = buildRequestBody({ task, preset, allowFetch: allow_fetch, domainFilter: domain_filter, modelOverride, enableSandbox: enable_sandbox, responseSchema: response_schema, schemaName: schema_name });
     const data = await callAgentAPI(API_KEY, body);
     keepRaw("question", { task, preset }, data);
     const text = enable_sandbox ? formatSandboxResponse(data, preset) : formatResponse(data, preset);
@@ -317,7 +326,7 @@ async function research(params) {
     logCall("perplexity_research", asked, isResearchAnswer(text)
       ? { ok: true, bytes: String(text ?? "").length, citations: citationCount(data) }
       : { ok: false, error: String(text ?? "").slice(0, 200) });
-    keepResearchAnswer(RUN_DIR, { session: SESSION, agent: AGENT, task, preset, text });
+    keepResearchAnswer(RUN_DIR, { session: SESSION, agent: AGENT, task, preset, request, text });
     return text;
   } catch (err) {
     // A FAILED LOOKUP IS LOGGED TOO, and that is the half that matters most: without it, "the search

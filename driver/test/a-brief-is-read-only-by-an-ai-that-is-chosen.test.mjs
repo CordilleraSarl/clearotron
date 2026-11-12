@@ -26,14 +26,13 @@ import { fileURLToPath } from "node:url";
 import { makeJxTurnRunner } from "../engine/jx-turn.mjs";
 import { whatIsMissing } from "../run-requirements.mjs";
 import { withFreePorts, saidPortWasTaken } from "./helpers/free-port.mjs";
-import { channelPackage } from "../../shared/permanent-install.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, "..", "..");
 const NO_AI = "no AI is chosen";
-// THE DOCTOR ON THIS INSTALL'S CHANNEL: `npx clearotron doctor` on the stable, `npx clearotron@beta doctor` on a beta.
-const OFF_LINE = "[portal-service] brief reading OFF — no AI is chosen. Describe-it stays disabled; "
-  + `\`npx ${channelPackage()} doctor\` reports the engine's auth state.`;
+// THE DOCTOR AS THIS INSTALL IS REACHED, which depends on how the supervisor was started, so the command is matched
+// by its verb (portal-service.test.mjs holds the forms).
+const OFF_LINE = /^\[portal-service\] brief reading OFF — no AI is chosen\. Describe-it stays disabled; `[^`]*clearotron doctor` reports the engine's auth state\.$/;
 const SKIP = process.platform === "win32" && "the stand-ins are shell scripts, and Windows starts none";
 
 /** A `claude` in `dir` that logs each start and then answers as mock-claude.mjs, which is signed in. */
@@ -120,7 +119,7 @@ test("a start with no AI chosen says its brief reader is off, in the line the po
     const said = run.said();
     const line = said.match(SAID)?.[0];
     assert.ok(line, `the portal said nothing about its brief reader:\n${said.slice(-3000)}`);
-    assert.equal(line, OFF_LINE, "the portal does not say its brief reader is off, and why, in its own line");
+    assert.match(line, OFF_LINE, "the portal does not say its brief reader is off, and why, in its own line");
     assert.doesNotMatch(said, /brief reading ON/, "the portal can read a brief with an AI nobody chose");
     assert.deepEqual(claude.started(), [], "the start ran the program of an AI nobody chose");
   } finally {

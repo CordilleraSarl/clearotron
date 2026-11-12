@@ -14,9 +14,7 @@
 // per-stage `stallSec` (the standalone engine's zero-streamed-tokens watchdog) so deep thinking is not
 // false-killed by the tight global default. Models are friendly aliases; gateway.resolveModel() maps to full ids.
 
-import { join, basename } from "node:path";
-import { driverRel } from "../shared/driver-dir.mjs";   //
-import { researchAnsweredBlock, NO_SEARCH_RESULT, RESEARCH_AFTER_REVIEW_MD } from "./research-answers.mjs"; import { reviewResearchLine, RESEARCH_CHECKS_FILE } from "./research-checks.mjs"; import { savedFindingsBlock } from "./saved-findings-block.mjs";   // the research an earlier attempt got, and the findings it saved, handed to a later one
+import { researchAnsweredBlock, NO_SEARCH_RESULT, RESEARCH_AFTER_REVIEW_MD } from "./research-answers.mjs"; import { reviewResearchLine } from "./research-checks.mjs"; import { savedFindingsBlock } from "./saved-findings-block.mjs";   // the research an earlier attempt got, and the findings it saved, handed to a later one
 import { awaitsReadingTurn } from "../providers/_shared/plan-guards.mjs";   // — a guard the dictation misreads is a question the model never knows it may ask
 import { isNonLatinTerm } from "../providers/_shared/script-form.mjs";
 import { latinQuestionsOfRomanisedForm } from "./register-plan.mjs";   // sentence 3 — the Latin question a script question repeats
@@ -27,7 +25,6 @@ import { REGISTER_AXES, decideAxes } from "./coverage-ledger.mjs";
 // — the digest dispatch asks the SAME question verify.mjs asks ("does this run owe a form or a
 // prose table?") of the SAME file, so the instruction and the gate cannot disagree. Reading it here is
 // the point: a boolean threaded through ctx would drift the moment one call site forgot to set it.
-import { coverageFormStamp } from "./coverage-form-io.mjs";
 // The unit note's transport owns its repair tail — see UNIT_NOTE_REPAIR_TAIL. Acyclic: that module
 // imports node builtins and shared/driver-dir only.
 import { UNIT_NOTE_REPAIR_TAIL } from "./register-unit-record.mjs";
@@ -38,10 +35,8 @@ import { meaningSweepReceiptsInstruction } from "./connotation-search.mjs";   //
 import { frameworkFor, workedExamplesFor, materialBandPhrase } from "./framework.mjs"; import { methodDictation, inputsShape } from "./framework-method.mjs";
 import { requiredScriptsFor } from "./registration-scripts.mjs";   // item 21 — which scripts a territory registers marks in
 import { resolveTerritories, defaultJurisdictionsLine, narrowingOrderLine } from "./effective-scope.mjs";   // the ONE territory ladder (the geography stamp included) + the defaults-never-widen rule (2160)
-import { editRepairTail } from "./repair-contract.mjs";
-import { reportIdentityFor } from "./search-policy.mjs";
 import { profileSelectionDirective } from "./profile-selection.mjs";   //  lever 3 — driver selection  //  — the one product-name resolver
-import { FINDINGS_SCHEMA_VERSION, OFF_FIELD_GROUNDS, POSITION_REQUIRED_DISPOSITIONS, DISPOSITIONS } from "./findings-model.mjs";   // — the dictated findings contract version + off-field's declared grounds; — and the disposition vocabulary itself, which was typed out here while its two neighbours were interpolated
+import { FINDINGS_SCHEMA_VERSION, OFF_FIELD_GROUNDS, POSITION_REQUIRED_DISPOSITIONS } from "./findings-model.mjs";   // — the dictated findings contract version + off-field's declared grounds; — and the disposition vocabulary itself, which was typed out here while its two neighbours were interpolated
 import { STATEMENT_CLAUSE_MAX } from "./findings-model.mjs";   // — the ask is dictated against the clause that clips it
 // The ledger's closed vocabularies, so the dispatch cannot teach an order or a member the code refuses.
 import { SCOPE_LAYERS, SCOPE_STATUSES } from "./scope-ledger.mjs";
@@ -134,203 +129,7 @@ export function synthesisRegisterRecordLines({ dispatchBlocks, paths: P, registe
   ];
 }
 
-// Absolute run-dir file paths. The agent write tool gets ABSOLUTE paths; the driver checks the same
-// absolute paths with existsSync. Skill reads stay workspace-relative (skills/ lives in the agent workspace).
-export function paths(runDir) {
-  const p = (f) => join(runDir, f);
-  return {
-    runDir,
-    matterContext: p("matter-context.md"),
-    inboundRequest: p("inbound-request.txt"),       // A5 — the verbatim forwarded request, untouched
-    confirmationBrief: p("confirmation-brief.md"),  // B1 — the intake brief exactly as sent to the requester
-    customerBind: p("customer-bind.json"),          // B5b — late-bound applicant {customer, exclusions[]} dropped by the forwarding agent
-    variantManifest: p("variant-manifest.md"),
-    // WS2 (B2) — the structured sibling the register-plan compiler consumes
-    variantManifestModel: p("variant-manifest.json"),
-    scopeLedger: p("scope-ledger.json"),           // CODE-DERIVED from the manifest's `### Scope ledger` (frame-omission design)
-    formNeighbourhood: p("form-neighbourhood.json"), // CODE-DERIVED mechanical FORM band (edit-1 ∪ phonetic-family ∪ visual-confusable ∪ transliteration ∪ spacing-punctuation) — the model-free variant floor the register funnel searches, plus the `variant_floor` block marking which terms code generated and which the model added
-    // Property 1 — the frame-STARVED cold re-derivation. The STRUCTURED model is the stage's ONLY output
-    //: the prose twin `blind-frame.md` was retired because nothing in the repo ever read it — not
-    // frame-diff, not the driver, not a renderer, on any run type. Archived runs keep their copy on disk;
-    // no code path opens it, so replay over them is unaffected.
-    blindFrameModel: p("blind-frame-model.json"),  // the frame-diff and the reopen gate consume this
-    frameDiff: p("frame-diff.md"),                 // the blind-model-vs-actual-scope diff (prose reasoning)
-    frameDiffModel: p("frame-diff.json"),          // its STRUCTURED reopen directives + dominant_element_gap (CODE consumes this)
-    commonLaw: p("common-law-findings.md"),
-    commonLawGrid: p("common-law-grid.json"),       // machine receipts — the grid call's stdout JSON, saved verbatim
-    // A1 SPLIT — the per-half stage artifacts (half ∈ {"a","b"}): each concurrent half-grid member reads its
-    // own spec sidecar, writes its own findings + ledger, and the driver merges them into the canonical
-    // commonLaw/commonLawGrid pair above (common-law-receipts.mergeGrids / mergeCommonLawFindings).
-    commonLawHalf: (half) => p(`common-law-findings.half-${half}.md`),
-    commonLawGridHalf: (half) => p(`common-law-grid.half-${half}.json`),
-    // — the seat's meaning-sweep dispositions, STRUCTURED. One row per recorded query: the query, the
-    // id of the receipt it was ruled on, and the ruling. The prose disposition table in the canonical
-    // findings file is RENDERED from this by the driver, so no identifier is ever retyped to prove a
-    // receipt was read — the failure that cost ten of fourteen refusals on the 2026-08-06 evidence.
-    commonLawDispositionsHalf: (half) => p(`common-law-dispositions.half-${half}.json`),
-    commonLawDispositions: p("common-law-dispositions.json"),
-    // The CANONICAL grid spec the driver dictates (the validator/receipts join and the coverage-closure
-    // recompute all key on it). It was the one grid artifact reached by a path LITERAL rather than
-    // through paths() — which is how the --experiment sandbox came to have no idea it existed, and why
-    // the stageInputs drift guard, whose matcher is derived from these paths, could not see it
-    // either. Declared here, used from here.
-    gridSpec: p(driverRel("grid-spec.json")),
-    gridSpecHalf: (half) => p(driverRel(`grid-spec.half-${half}.json`)),
-    // — which common-law path this run took and which term of the selector decided it. Written on
-    // EVERY run, split or not: the 2026-08-12 round could not explain why two builds took different
-    // paths because the unsplit path emitted nothing at all, and "no event" is not a record.
-    commonLawPath: p(driverRel("common-law-path.json")),
-    // Closure/frame-reopen top-ups: the driver dictates a supplementary grid SPEC (its own output_path)
-    // and the PLUGIN writes the supplementary LEDGER — the same deterministic write the initial gather
-    // uses, never an agent hand-append. `tag` names the lane (only "closure" today; frame-reopen source
-    // channels stay prose/byte-diff). Split → per-half siblings the extended readHalfLedger folds; non-
-    // split (half=null) → a sibling of the canonical ledger the driver folds via mergeGrids in code. The
-    // driver owns these names so the agent never invents (and never corrupts) a canonical/half ledger.
-    commonLawGridSupp: (half, tag) => p(half ? `common-law-grid.half-${half}.supp-${tag}.json` : `common-law-grid.supp-${tag}.json`),
-    gridSpecSupp: (half, tag) => p(driverRel(half ? `grid-spec.half-${half}.supp-${tag}.json` : `grid-spec.supp-${tag}.json`)),
-    registerUnit: (axis) => p(join("register-units", `${axis}.md`)),
-    // judgment-relocation (2026-06-23): the COMPLETE NAMED BAND the funnel emits per axis (a JSON ARRAY of
-    // {state:"enumerated"|"incomplete", …} blocks from register_enumerate — see named-band.mjs). This is what
-    // crosses the lifted firewall: the real material judgment reads, NOT a pre-pruned digest.
-    registerBand: (axis) => p(join("register-units", `${axis}-band.json`)),
-    registerNamedBand: p("register-named-band.json"),   // the driver-merged UNION of every axis band (mergeNamedBands)
-    // — the SLIM HIT LIST, a third projection of the merged band, written in the same
-    // pass as the shape and the owner screen and for the same reason: a stage must never read a list
-    // older than the band it was derived from.
-    registerHitList: p("register-hit-list.json"),
-    // PR-8 (reading layer) — the deterministic band SHAPE, derived by the driver after every named-band
-    // re-merge (band-shape.mjs): mechanical tiers + the unconditional floors + census + blind spots.
-    // Judgment reads the md whole (band_shape tool / <256KB Read) and looks records up via the band
-    // tools; machine checks keep reading the complete band above.
-    bandShape: p(driverRel("band-shape.json")),
-    bandShapeMd: p("band-shape.md"),
-    researchChecks: p(RESEARCH_CHECKS_FILE),   // the research behind the findings' use checks, written by the writer's record for the review
-    readingLog: p(driverRel("reading-log.jsonl")),   // band-server appends every lookup — audit.md "# Reading audit" renders from it
-    // P2-A (the recall spine) — three driver-derived sidecars:
-    // the retrieved→judgment reconciliation (recall-reconciliation.mjs join, re-derived after EVERY
-    // digest pass; an unended position ships named and clamps the verdict), the exact-identity positions projection (charter
-    // P2d — same right → one position, territories listed; the band stays per-registration), and the
-    // read-before-rate join (charter P2c — verified-from-record stamps × _records × reading log).
-    recallReconciliation: p(driverRel("recall-reconciliation.json")),
-    // — the placement→digest carry join: every candidate placement-inquiry placed ends on a
-    // findings surface, in a Negative-results drop row, or in a Disagreement-resolutions row, and
-    // the ones that end nowhere are counted BY NAME. The band-keyed joins above cannot see a
-    // common-law-shaped placement (records:[] ⇒ no uri ⇒ no band row), which is the class of
-    // candidate the digest drops silently. Disclosure only — it never re-tiers and never gates.
-    placementCarry: p(driverRel("placement-carry.json")),
-    surfaceDuty: p(driverRel("surface-duty.json")),   // item 3
-    // — THE FLOOR DUTY. Every floor row (live, in-class, identical/near-identical) either comes
-    // back on the placement form by record id or it does not, and until this artifact existed nothing
-    // asked. Measured on two delivered runs: 45 of 207 and 99 of 225 never reached the form, all live.
-    // Disclosure only — it never re-tiers, never gates and never sends a followup.
-    floorDuty: p(driverRel("floor-duty.json")),
-    // — the RETRIEVAL→findings trace, one row per retrieved register record: did it become a
-    // finding, and if not, which seam it stopped at, on what ground, and WHERE THAT GROUND WAS
-    // AUTHORED. The carry join above starts one seam too late — it can only speak about candidates
-    // placement already selected — and the seam that lost the jx lane's own target (ten banded 澜珀
-    // registrations, four REGISTERED, none reaching any placement) is the one before it. Disclosure
-    // only: it never re-retrieves, never keeps a record the funnel dropped, and never gates.
-    recordCarry: p(driverRel("record-carry.json")),
-    // — the common-law path's own trace. A SIBLING of record-carry.json, not a widening: the two
-    // join on different keys (a canonical `/mark` uri there, a canonicalised URL here) and one file
-    // holding both is how the key decision gets reversed later.
-    commonLawCarry: p(driverRel("commonlaw-carry.json")),
-    jxZhCarry: p(driverRel("jx", "zh-carry.json")),
-    jxZhGrid: p(driverRel("jx", "zh-grid.json")),
-    registerPositions: p(driverRel("register-positions.json")),
-    // — RENAMED from read-verification.json with the pass it recorded. The old artifact was the
-    // receipt of a model turn that re-asserted its own stamps; this is the machine's own derivation
-    // record: every meter whose `verified-from-record` claim the reading log could not support, and
-    // what it became. Written on EVERY settle, empty arrays and all, so a reader can tell "nothing was
-    // demoted" from "nobody looked".
-    basisDerivation: p(driverRel("basis-derivation.json")),
-    // P2-B (charter P2b) — the owner×element screen's own receipt: one row per watchlist owner
-    // saying whether its slice enumerated, what it attributed, or the mechanical reason it did NOT
-    // run. A projection (plan × plan-execution × band), never a coverage authority.
-    ownerScreen: p(driverRel("owner-screen.json")),
-    placement: p("placement-recommendations.md"),
-    // B2 (charter 2026-07-31) — the STRUCTURED mirror of placement's four tier sections: one entry per
-    // candidate {mark, owner, jurisdiction, records[], tier, reason} (reason = a short paragraph, the
-    // stated reasoning downstream argues with — see placement-model.mjs). The rulings tail (band
-    // reconciliation, disagreements, coverage rulings, open questions) stays PROSE in the md above.
-    placementModel: p("placements.json"),
-    // — the seat's own form. `placements.json` beside it is now DRIVER-RENDERED from this file's
-    // accumulated rows, so the two are no longer two copies of one judgment: this is what the seat writes
-    // and that is what the driver publishes.
-    placementForm: p("placement-form.json"),
-    // — placement's set-asides that stand on the run's files, as the reading step and the writer are told them: one
-    // entry per decision, with its ground, the records it covers and its exceptions. Driver-written after every
-    // placement pass, with no clock in it, so it changes only when a decision does; both stages declare it.
-    placementDecisions: p(driverRel("placement-decisions.json")),
-    // — the driver's own flag-by-flag account of the corrective pass: which findings each reviewer
-    // flag names, and whether any of them actually moved. Handed to the recheck as data so it argues
-    // with evidence rather than re-reading two documents to re-derive what the driver already knows.
-    correctionsApplied: p(driverRel("corrections-applied.json")),
-    registerFindings: p("register-findings.md"),
-    registerCoverageLedger: p("register-coverage-ledger.json"), // WS-A machine contract — the digest's JSON mirror of the Coverage ledger
-    skepticFlags: p("skeptic-flags.md"),
-    frameReopenReceipt: p(driverRel("frame-reopen.json")),   // A3 — the reopen receipt is a first-class judgment input
-    // (t1cd) — the digest-trigger funnel's durable work queue (digest-queue.mjs): mechanisms
-    // mint re-digest work here instead of calling the digest; written atomically on every mint/flush
-    // and loaded on resume BEFORE the trigger blocks run, so per-mechanism bounds survive resumes.
-    digestQueue: p(driverRel("digest-queue.json")),
-    // WS2 (B3) — the frozen deterministic search plan + its execution receipt + the
-    // code-authoritative instructed scope (what the JOB fields said, before any model breathed on them)
-    registerPlan: p(driverRel("register-plan.json")),
-    enforcerSignals: p(driverRel("enforcer-signals.json")),   // D2 — provider enforcement telemetry (aim-attention)
-    // crowd-context (2026-07-22) — driver-gathered crowded-field EVIDENCE over material un-enumerated
-    // slices (per-term live counts, in-scope-class counts, the fully-enumerated exact/near-identical
-    // subset). OPTIONAL synthesis input: evidence to the coverage judgment, never a gate; absent on any
-    // run without a qualifying slice (or whose evidence pass failed) and the run is unaffected.
-    crowdContext: p(driverRel("crowd-context.json")),
-    crowdContextMd: p("crowd-context.md"),   // the readable mirror the lawyer actually reads
-    planExecution: p(driverRel("plan-execution.json")),
-    // What was DECIDED about the receipt's deferrals, and when — kept apart from plan-execution.json,
-    // which is an execution-FACTS receipt several validators fail-closed on. See envelope-settle.mjs.
-    envelopeDecision: p(driverRel("envelope-decision.json")),
-    instructedScope: p(driverRel("instructed-scope.json")), defaultTerritories: p(driverRel("default-territories.json")),   // the stored account defaults the engine cannot search — written at intake, read by no stage (pipeline.mjs writes it)
-    // compute-don't-author — the per-class scope truth (scope-facts.mjs): instructed × frozen plan ×
-    // band states × coverage ledger. The masthead classes/coverage_line are stamped FROM this sidecar.
-    scopeFacts: p(driverRel("scope-facts.json")),
-    // D1 — arms the registerFindings off-enum status gate; — the SAME sentinel carries the coverage
-    // form's era stamp (`form_required`/`form_path`). One file, two facts, written by runDigest before
-    // every digest pass it dispatches and BEFORE the form itself, so a failed form write fails closed.
-    coverageEnum: p(driverRel("coverage-enum.json")),
-    // — the seat-facing coverage form. DICTATED here so the stray-artifact sweep knows the
-    // driver put it there; the accumulator beside it in `_driver/` is derived from this name.
-    narrative: p("narrative.md"),
-    findings: p("findings.json"),  // Phase 1 — the per-finding machine contract; synthesis mirrors its RATED findings into this JSON, the report/Excel render consume it
-    caseLaw: p("case-law-findings.md"),
-    // — the RETRIEVAL RECORD beside the prose. Until this existed, `case-law-findings.md` was the
-    // only artifact case law produced and its whole contract was a non-empty check, so "the sweep ran"
-    // and "the dive read something" were unanswerable and the record trace had nothing to join to.
-    caseLawCitations: p("case-law-citations.json"),
-    seniorEyeReview: p("senior-eye-review.md"),
-    // delivery contract (file-gated; rendered to the page by the pure-code publish step)
-    report: p("report.md"),       // CODE (assembleReportMd) — the assembled client report (overview + per-card)
-    reportOverview: p("report-overview.md"),        // CODE (report-overview-record.mjs) since conversion 4 — the driver renders the shell off the record_report_overview call; NO card bodies
-    reportCardsDir: p("report-cards"),              // B1 — per-finding card files (one isolated LLM call each)
-    reportCard: (ord) => p(join("report-cards", `${ord}.md`)),  // B1 — LLM (report-card): ONE card from finding[ord]'s own record
-    audit: p("audit.md"),         // CODE (buildAuditMd from the spine) — full audit record
-    // THE SEAT WRITES THIS ONE, so it cannot live in `_driver/`. That write boundary makes
-    // `<runDir>/_driver/**` a tree a seat may NEVER write into (`authorityTrees()` in authority-trees.mjs, `live: true`) —
-    // and this stage's dispatch handed the seat a path inside it. The deny fires, the seat writes the
-    // only place it can (the run root), the validator looks in `_driver/` and reports `missing_file`,
-    // and the escalation ladder burns out on an artifact that exists. Two consecutive rounds died this
-    // way with 3 attempts each. Of the 27 P paths under `_driver/`, this was the ONLY stage output —
-    // every other one is driver-authored, which is what that tree is for.
-    doubtClosure: p("doubt-closure.md"),   // LLM (doubt-closure) — one dictated SETTLED/OPEN line per stitch-open doubt; code re-verifies every quote
-    // RETIRED STAGE, ARCHIVE READ HANDLE (2026-08-01). No stage writes this any more — the
-    // `client-summary` stage is deleted. The path constant is KEPT because it is how archived runs'
-    // client-summary.md is still reached: mcp-server's read_artifact (name "clientSummary"),
-    // lib/coverage.mjs artifactStatus, and lib/brief.mjs (which prefers the client-voiced summary over
-    // the report cards) all resolve it through paths(). Deleting the entry would not delete those
-    // reads — it would leave them resolving `undefined`, which existsSync() turns into a silent miss
-    // rather than an error, so the archive would quietly read as having no summary.
-    clientSummary: p("client-summary.md"),
-    emailBody: p("email-body.md"), // CODE (composeEmailHtml) — the inline-HTML reply (review headline + client table + link)
-  };
-}
+export { paths } from "./run-record.mjs";
 
 // Forwarding agent → the chat number it is bound to. A ROUTING KEY, and since that is ALL it is:
 // nothing in this repo sends a message, so this table's only job is to put a `whatsappTo` field on the
@@ -502,11 +301,11 @@ const PROVIDER = REGISTER_PROVIDER;
 // the provider half is this label. It was a driver fact the seat retyped out of the dispatch; the driver
 // stamps it now, and it reads the label from here rather than re-deriving it from CLEAROTRON_DATABASE
 // — a second derivation of a provider name is how a masthead ends up naming a register the run never used.
-export const PROVIDER_META = PROVIDERS[PROVIDER] ?? {
-  label: PROVIDER ?? "(none configured)",
+export const providerMeta = (register) => PROVIDERS[register] ?? {   // a run's register (ctx.register), or the machine's
+  label: register ?? "(none configured)",
   skillDoc: null,
   hasPublicRecordUrl: true,
-};
+}; export const PROVIDER_META = providerMeta(PROVIDER);
 
 // ---- message builders (faithful to the spawn briefs in phase2-execution.md; the leaf reads the skill for detail) ----
 export const lines = (...a) => a.filter(Boolean).join("\n");
@@ -724,7 +523,7 @@ export const OWNER_SWEEP_STEERING = `OWNER COVERAGE on this lane: an owner's mar
 // judgment reads the deterministic SHAPE whole and looks up the records it chooses through the band
 // tools, on the record — every lookup lands in the run's reading audit. This replaces the improvised,
 // unlogged shell-slicing of a multi-megabyte file that no Read call could ever take whole.
-export const BAND_READING_CONTRACT = `THE REGISTER BAND — how you read it: call `+"`band_shape`"+` FIRST (the deterministic shape of the merged band: totals, mechanical similarity tiers, THE FLOORS — every live in-class identical/near-identical record, each marked on its line in the band — class/status/registry/recency census, owner concentrations, the `+"`incomplete`"+` crowd descriptors, and the blind spots the shape mechanically cannot see). A large shape is served in parts, each naming the next call. Then pull exactly the records and slices your reasoning needs via `+"`band_lookup`"+` (filter by owner / class / tier / qid / slice / text / goods; matching un-enumerated crowds ride along so a counted-only zone can never read as a clean) and `+"`band_record`"+` (the official registry record fetched into this run, when one exists). Every floor has a fate on the form. A crowd descriptor is an open slice for judgment to act on (cleared / material-gap), never a cleared slice by default; the shape's tiers are mechanical string classes, never a relevance or risk call — both of those remain yours. Do NOT slice band or shape files with shell tools: the band tools are the reading layer, and they keep the reading on the record.`;
+export const FLOOR_FATE_ORDER = "Every floor has a fate on the form."; export const BAND_READING_HEAD = `THE REGISTER BAND — how you read it: call `+"`band_shape`"+` FIRST (the deterministic shape of the merged band: totals, mechanical similarity tiers, THE FLOORS — every live in-class identical/near-identical record, each marked on its line in the band — class/status/registry/recency census, owner concentrations, the `+"`incomplete`"+` crowd descriptors, and the blind spots the shape mechanically cannot see). A large shape is served in parts, each naming the next call. Then pull exactly the records and slices your reasoning needs via `+"`band_lookup`"+` (filter by owner / class / tier / qid / slice / text / goods; matching un-enumerated crowds ride along so a counted-only zone can never read as a clean) and `+"`band_record`"+` (the official registry record fetched into this run, when one exists).`; export const BAND_READING_STANDARDS = `A crowd descriptor is an open slice for judgment to act on (cleared / material-gap), never a cleared slice by default; the shape's tiers are mechanical string classes, never a relevance or risk call — both of those remain yours. Do NOT slice band or shape files with shell tools: the band tools are the reading layer, and they keep the reading on the record.`; export const BAND_READING_CONTRACT = `${BAND_READING_HEAD} ${FLOOR_FATE_ORDER} ${BAND_READING_STANDARDS}`;
 
 /**
  * `borderline` on a placement entry is an INTERNAL adjudication flag: placement declaring that its own
@@ -913,12 +712,12 @@ const inputsForReference = (paths, { changedInputs = null } = {}) => changedInpu
 // SKILL.md chose its own framing on purpose — matter-frame's is explicitly "enrichment, not authority".
 //
 // So these are declared here, measured the same way, and emitted into no prompt. `resolveAlsoReads` has
-// exactly one consumer: driver/test/skill-instruction-load.mjs.
+// two consumers, both tests: driver/test/instruction-read-map.mjs and a-skill-that-points-at-a-sibling.test.mjs.
 //
 // DECLARED PER SKILL, NOT PER STAGE, because that is the shape of the fact. Two stages read
 // clearance-register/SKILL.md and both therefore carry its companions; declaring the pair twice is how the
 // two drift. A stage picks these up by reading the SKILL.md they belong to, which is also what makes the
-// guard in skill-instruction-load.test.mjs able to check the list against the documents themselves.
+// guard in a-skill-that-points-at-a-sibling.test.mjs able to check the list against the documents themselves.
 export const SKILL_COMPANIONS = Object.freeze({
   "matter-frame": Object.freeze(["watchlist-reference.md"]),
   "clearance-common-law": Object.freeze(["perplexity-prompts.md"]),
@@ -963,6 +762,8 @@ export function composeFollowup(name, ctx, { followup, extra = null, inputs = []
   return lines(
     skills.length ? readsForReference(skills) : "",
     followup,
+    // The rules a stage's opening message states for every session it opens, which a follow-up is too.
+    ...(STAGES[name]?.standing ?? []),
     clearedConstraint(cleared),
     extra || "",
     // A fresh session of the reading step or the writer is given placement's accepted set-asides as its first
@@ -1061,6 +862,24 @@ const reportOverviewSkillReads = ({ profile }) =>
   ["skills/clearance-search/synthesis-rules.md", SPINE_DOC, frameworkFor(profile), "skills/clearance-search/delivery-contract.md", REPORT_PROSE];
 const reportCardSkillReads = ({ profile }) =>
   ["skills/clearance-search/delivery-contract.md", frameworkFor(profile), REPORT_PROSE];
+// THE REVIEW READS WHAT IT ENFORCES. Its manual judges a rating on the framework's own method, at the framework's
+// lowest band and under the framework in force, and its standing lines hold a pharma matter to the field module. It was
+// handed none of them: on a test run with Codex, a review that had not been given the framework went looking for one in
+// folders outside its run. So it reads the writer's own resolved framework and the shared reasoning, and the field module
+// on a pharma matter. The writer's level-specific rules (synthesis-rules.md) and its worked examples stay the writer's.
+const reviewSkillReads = ({ profile, job }) => [
+  "skills/narrative-refutation/SKILL.md", frameworkFor(profile), SPINE_DOC,
+  ...(pharmaMatter(job) ? ["skills/clearance-search/field-doctrine-pharma.md"] : []),
+  REPORT_PROSE,
+];
+
+// Standing rules a stage's opening message states and every follow-up session repeats (`standing` on the stage,
+// read by composeFollowup). Approved word for word on 2026-11-11.
+// The writer's web checks go through the research tool, which keeps the record and the limits. On a test run with Codex,
+// a writer also tried to fetch pages with a script of its own.
+export const WEB_EVIDENCE_ONLY_THROUGH_RESEARCH = "Web evidence comes only through `perplexity_research`; do not fetch pages with a shell command or a script.";
+// The review applies the framework it is handed, and says so when an input is missing rather than looking elsewhere.
+export const REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK = "Apply the frozen risk framework supplied for this run. If it or another required instruction is missing or unreadable, report the missing input; do not search other folders for a replacement.";
 
 // spec-48 C1 — the territories whose legal system scopes the marketplace-risk directive, and whose
 // registration scripts set the script floor. THE SHARED LADDER (effective-scope.mjs resolveTerritories),
@@ -1757,6 +1576,8 @@ export const STAGES = {
   },
 
   "common-law": {
+    // Every stage that holds the research tool takes its web evidence through it alone (approved 2026-11-11; see synthesis).
+    standing: Object.freeze([WEB_EVIDENCE_ONLY_THROUGH_RESEARCH]),
     // stallSec is REQUIRED here, like the sibling sweep stage `register-unit` (timeoutSec 1200 / stallSec
     // 900): common-law's first action is the long perplexity_research grid sweep, during which the model
     // streams 0 tokens while blocked on the tool. Without a per-stage override it falls back to the global
@@ -1888,7 +1709,7 @@ export const STAGES = {
         why: "The path is `out: (P) => P.commonLaw`, interpolated into the message by the driver; the summary's counts are the ledger's. No token speaks about the return message at all.",
       },
     },
-    message: ({ paths: P, gridVariants, profile, gridSpecPath, job, intakeAsks }) => {
+    message: ({ paths: P, profile, gridSpecPath, job, intakeAsks }) => {
       // C1 — weight the sweep where use creates RIGHTS (data-derived; "" when unknown)
       const systemScope = marketplaceScopeDirective(scopeTerritories(job, profile));
       // T9 (A2) — the OWNING stage finally receives its committed intake checks (the VENZY
@@ -1905,52 +1726,28 @@ export const STAGES = {
       // WRITES common-law-grid.json from the API response (no truncation, no dropped/mis-keyed cells), and
       // the model only judges the returned candidates. This is the structural cure for both the dense-marketplace
       // truncation and the NOVA PULSE dropped-cell failures (no tier bump would fix the output ceiling).
-      if (gridSpecPath) {
-        return lines(
-          reads(["skills/clearance-common-law/SKILL.md"]),
-          `Inputs: variant manifest ${P.variantManifest}; matter frame ${P.matterContext}.`,
-          systemScope,
-          asksBlock,
-          `Run the marketplace sweep via the DETERMINISTIC grid: call perplexity_research with enable_sandbox:true and grid_spec_path: ${gridSpecPath}. The tool runs EXACTLY the dictated term × platform grid and WRITES the complete ledger to ${P.commonLawGrid} itself.`,
-          `Do NOT author the grid program, do NOT save ${P.commonLawGrid} yourself, and do NOT re-emit the grid JSON in your message (re-emitting is exactly what truncated/dropped cells before). The tool returns only the candidate hits that need judgment.`,
-          `Judge each returned candidate into the fixed taxonomy and write your findings file to ${P.commonLaw} with its Findings, Negative-results matrix, Coverage ledger, and Audit trail sections. The driver validates grid completeness from the ledger the tool wrote — never from your prose.`,
-          // P2-C (Round-2 §8b leg 2) — receipts disposition is a dictated obligation, not skill-prose-only
-          // (the §7 lesson: prose-only contracts get skipped under output pressure; the evidence run listed
-          // its queries and still asserted clean past a recorded cultural-criticism receipt).
-          // — the obligation is unchanged; what was deleted is the TRANSCRIPTION it used to demand
-          // ("the query VERBATIM, one recorded result … title or URL copied exactly"). The driver writes
-          // the form; this names it and the two fields the seat owns, and nothing else.
-          meaningSweepReceiptsInstruction(),
-          CROSS_CHECK_HANDOFF,
-          writeReturn(P.commonLaw),
-        );
-      }
-      // WS-B: the platform grid is DICTATED from the customer profile (single source — the receipts
-      // gate's identity join validates the saved ledger against this same list); the batch ceiling is
-      // derived from the profile's cell floor (Ember Guard 2026-06-12: a 224-cell single grid call
-      // truncated mid-matrix — ~14×7=98 cells/call is the proven-safe budget, scaled per profile).
-      const batch = profile?.batchSize ?? 14;
+      // THE SWEEP RUNS ONLY FROM THE SPEC. A run that sends this stage always has one: every profile carries a platforms
+      // list (profiles.mjs, validateProfileShape), a matter with no variants stops at intake, and a spec that cannot be
+      // derived stops the run (deriveGridSpec). The branch that ordered a hand-written grid program for a run without one
+      // is gone with the program itself, which the manual no longer teaches; a dispatch is pointed at the run's own spec.
+      const specPath = gridSpecPath ?? P.gridSpec;
       return lines(
         reads(["skills/clearance-common-law/SKILL.md"]),
         `Inputs: variant manifest ${P.variantManifest}; matter frame ${P.matterContext}.`,
         systemScope,
         asksBlock,
-        `Run the marketplace sweep as the Step-2 search-as-code grid call (enable_sandbox: true, depth: "pro-search"); judge the per-cell candidates into the fixed taxonomy; the Negative-results matrix carries one receipt row per (variant × platform) cell.`,
-        profile?.platforms?.length ? lines(
-          `PLATFORMS (the grid sweeps EXACTLY these store domains for EVERY variant): ${profile.platforms.join(", ")} — plus ONE unrestricted general-web search per variant (platform name "web").`,
-          `The receipts gate validates every variant against THIS list (count AND identity) — never substitute platforms from memory or skill examples.`,
-        ) : "",
-        gridVariants?.length ? lines(
-          `GRID KEYS (the validator checks EXACTLY these ${gridVariants.length} terms — use each VERBATIM as its Negative-results matrix key; a " / "-packed key may instead carry full per-alternate rows):`,
-          ...gridVariants.map((v) => `- ${v}`),
-          ...(gridVariants.length > batch ? [
-            `BATCHING (MANDATORY at this size — one oversized grid call truncates and fails the run): split the keys into ${Math.ceil(gridVariants.length / batch)} batches of ≤${batch} variants, run ONE grid call per batch (same program, same platforms), and concatenate the matrices. Every batch's stdout is transcribed in full before the next call.`,
-          ] : []),
-          // Machine receipts (post-mortem §1b): the gate validates the saved stdout JSON by exact join on the
-          // keys above — not by re-reading the markdown matrix — whenever this file exists.
-          `MACHINE RECEIPTS (MANDATORY): save the grid call's stdout JSON VERBATIM to ${P.commonLawGrid} — the single stdout object, or a JSON ARRAY of the per-batch stdout objects in batch order when batched. Copy the JSON exactly as the tool returned it (no reformatting, no re-typing, no judging); the driver validates grid completeness from THIS file.`,
-        ) : "",
+        `Run the marketplace sweep via the DETERMINISTIC grid: call perplexity_research with enable_sandbox:true and grid_spec_path: ${specPath}. The tool runs EXACTLY the dictated term × platform grid and WRITES the complete ledger to ${P.commonLawGrid} itself.`,
+        `Do NOT author the grid program, do NOT save ${P.commonLawGrid} yourself, and do NOT re-emit the grid JSON in your message (re-emitting is exactly what truncated/dropped cells before). The tool returns only the candidate hits that need judgment.`,
+        `Judge each returned candidate into the fixed taxonomy and write your findings file to ${P.commonLaw} with its Findings, Negative-results matrix, Coverage ledger, and Audit trail sections. The driver validates grid completeness from the ledger the tool wrote — never from your prose.`,
+        // P2-C (Round-2 §8b leg 2) — receipts disposition is a dictated obligation, not skill-prose-only
+        // (the §7 lesson: prose-only contracts get skipped under output pressure; the evidence run listed
+        // its queries and still asserted clean past a recorded cultural-criticism receipt).
+        // — the obligation is unchanged; what was deleted is the TRANSCRIPTION it used to demand
+        // ("the query VERBATIM, one recorded result … title or URL copied exactly"). The driver writes
+        // the form; this names it and the two fields the seat owns, and nothing else.
+        meaningSweepReceiptsInstruction(),
         CROSS_CHECK_HANDOFF,
+        WEB_EVIDENCE_ONLY_THROUGH_RESEARCH,
         writeReturn(P.commonLaw),
       );
     },
@@ -1965,6 +1762,8 @@ export const STAGES = {
   // single-member deterministic branch above. The driver merges the two halves' findings + ledgers into
   // the canonical files in code (pipeline.mjs), so downstream never sees half artifacts.
   "common-law-half": {
+    // Every stage that holds the research tool takes its web evidence through it alone (approved 2026-11-11; see synthesis).
+    standing: Object.freeze([WEB_EVIDENCE_ONLY_THROUGH_RESEARCH]),
     // Same resourcing rationale as "common-law" above: the sweep streams 0 tokens while blocked on the
     // grid tool, so the stall override is REQUIRED. The wall stays 2250 even though a half grid is ~half
     // the cells — the wall exists to stop killing legitimate work, and a dense-matter half plus the
@@ -2095,6 +1894,7 @@ export const STAGES = {
         // half rather than on the obligations.
         meaningSweepReceiptsInstruction({ lead: "MEANING-SWEEP RECEIPTS — THIS IS THE WORK.", findingsTail: false }),
         `Then write ${P.commonLawHalf(half)}: a short report of the sweep under a "Findings" heading — every LOADED reading as its own finding, with the receipt behind it — and an "Audit trail" section saying which queries ran and what each returned. The driver renders the disposition TABLE from your recorded rulings, so do not hand-write that table.`,
+        WEB_EVIDENCE_ONLY_THROUGH_RESEARCH,
         writeReturn(P.commonLawHalf(half)),
       );
       // Instructed checks are receipts executed ONCE per run — half "a" is the designated owner (the
@@ -2131,6 +1931,7 @@ export const STAGES = {
         // the seat must be told that recording nothing is then the right outcome.
         meaningSweepReceiptsInstruction({ mayOwnNoQueries: true }),
         CROSS_CHECK_HANDOFF,
+        WEB_EVIDENCE_ONLY_THROUGH_RESEARCH,
         writeReturn(P.commonLawHalf(half)),
       );
     },
@@ -2148,7 +1949,7 @@ export const STAGES = {
     // Every follow-up is a fresh session that calls the same register tools, so its methodology line also names the
     // active provider's manual, which holds THIS provider's tool names and operator vocabulary and which the opening
     // message tells the first session to read and follow.
-    followupSkillReads: () => (PROVIDER_META.skillDoc ? [PROVIDER_META.skillDoc] : []),
+    followupSkillReads: (ctx) => (providerMeta(ctx?.register ?? PROVIDER).skillDoc ? [providerMeta(ctx?.register ?? PROVIDER).skillDoc] : []),
     out: (P, axis) => P.registerUnit(axis),
     validate: validators.registerUnit,
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
@@ -2219,7 +2020,7 @@ export const STAGES = {
         why: "The path is `out: (P, axis) => P.registerUnit(axis)`, pre-bound by the driver; all three counts are aggregates over the band the tool wrote. No token speaks about the return message.",
       },
     },
-    message: ({ paths: P, axis, job, profile, registerPlan, capabilities = registerCapabilities() }) => {
+    message: ({ paths: P, axis, job, profile, registerPlan, register = PROVIDER, capabilities = registerCapabilities(register) }) => {
     // Lever-1 data plane (2026-06-24): hand the funnel a COPYABLE in-scope Nice-class array. The NOVA PULSE timeout
     // proved skill prose alone is not enough — the funnel HAD [9,28,41,42] in matter-context and still ran
     // all-class enumerations (10k-record flood) because nice_classes read as optional. Pin it in the task.
@@ -2250,19 +2051,19 @@ export const STAGES = {
       // told it holds tools its grant does not carry. The composer derives the list from the same table
       // that does the excluding, and returns NULL — not an empty sentence — when the provider cannot be
       // resolved, which is the path `--experiment` takes.
-      grantVocabularySentence(),
-      `You are register UNIT mode, axis = "${axis}". Active register provider: ${PROVIDER_META.label}.`
+      grantVocabularySentence(register),
+      `You are register UNIT mode, axis = "${axis}". Active register provider: ${providerMeta(register).label}.`
       // A provider with no vocabulary doc is a provider this seat cannot be briefed on. Emitting the
       // sentence with a null path in it would instruct the model to read a file that does not exist,
       // which it resolves by carrying on unbriefed — indistinguishable from choosing not to read.
-      + (PROVIDER_META.skillDoc
+      + (providerMeta(register).skillDoc
         // "(EUIPO = free EU cross-check, available alongside)" used to sit at the end of this sentence.
         // It described the credential-blind attach, which is gone: EUIPO is a register PROVIDER
         // now, so when it is active it IS `${PROVIDER_META.label}` and there is nothing "alongside".
         // Leaving the clause in would tell every unit on every vendor that a second EU source was
         // available to it, and a unit that believes it has a cross-check it does not have will report
         // agreement it never obtained.
-        ? ` Read and follow ${PROVIDER_META.skillDoc} for THIS provider's exact tool names + operator vocabulary; use only that provider's register tools. There is exactly ONE register in this run — if its coverage does not reach a territory the matter needs, that is a DEFERRED coverage row you disclose, never a gap you fill from somewhere else.`
+        ? ` Read and follow ${providerMeta(register).skillDoc} for THIS provider's exact tool names + operator vocabulary; use only that provider's register tools. There is exactly ONE register in this run — if its coverage does not reach a territory the matter needs, that is a DEFERRED coverage row you disclose, never a gap you fill from somewhere else.`
         : " NO provider vocabulary doc is registered for it, so there is nothing to read for its tool names — treat that as a fault and say so rather than improvising an operator vocabulary."),
       `Inputs: variant manifest ${P.variantManifest}; matter frame ${P.matterContext}.`,
       planEntries.length
@@ -2347,7 +2148,7 @@ export const STAGES = {
       // A seat-typed count beside a tool-written band is two authorings of one fact, and the failure mode
       // is the quiet one: the note says nine enumerated queries, the band holds eight, and nothing compares
       // them. Deriving removes the disagreement rather than detecting it.
-      `FILE THIS AXIS'S AUDIT NOTE WITH \`record_unit_note\`. THE DISPATCH NAMES NO PATH FOR IT, deliberately — the driver writes this axis's note from what you send and you never open it, so there is no path here for you to hold. THE COUNTS ARE NOT YOURS TO TYPE: queries enumerated, incomplete blocks and records carried forward are taken from the band, so the note and the band cannot disagree. Send only what the band cannot say — \`null_result\` if this axis genuinely found nothing (refused against a band that carries records), and \`note\`, ONE short observation an auditor would want, in a lawyer's words. Still NO coverage-limited/confirmed-clean/deferred rows and NO clearance verdict: those are judgment's, Layer B. Call it AFTER the band exists — a note over a band that has not been written is refused by name, because an account of a sweep that has not happened is not a short note, it is a wrong one.`,
+      `FILE THIS AXIS'S AUDIT NOTE WITH \`record_unit_note\`. THE DISPATCH NAMES NO PATH FOR IT, deliberately — the driver writes this axis's note from what you send and you never open it, so there is no path here for you to hold. THE COUNTS ARE NOT YOURS TO TYPE: queries enumerated, incomplete blocks and records carried forward are taken from the band, so the note and the band cannot disagree. Send only what the band cannot say — \`null_result\` if this axis genuinely found nothing (refused against a band that carries records), and \`note\`, ONE short observation an auditor would want, in a lawyer's words. Still NO coverage-limited/confirmed-clean/deferred rows and NO clearance verdict: those are judgment's, Layer B. Call it AFTER the band exists (on a plan run with no entries for this axis, the driver has written it empty) — a note over a band that has not been written is refused by name, because an account of a sweep that has not happened is not a short note, it is a wrong one.`,
       CROSS_CHECK_HANDOFF, DECIDE_WAITING_FAMILIES,   // withheld-families.mjs
       // THE CLOSING LINE SPLITS WITH THE LANE, because what the seat owes splits with it. Under the
       // supplemental-lane contract the seat writes NOTHING — the band is the tools' and the note is the
@@ -2670,7 +2471,7 @@ export const STAGES = {
       // section (and _driver/register-positions.json) is the exact-identity projection. "Owner
       // clustering" as arithmetic is no longer your job; residual folds that ARE judgment
       // (related-owner, brand-family) remain yours, stated with their reasoning.
-      `Apply the relevance gate, opposition, Option-D, merch sweep, applicant own-rights sweep when priority is live. Sheet-1 rows follow the shape's POSITIONS (one row per position, citing AT LEAST ONE constituent record URI — listing all of them is better but one is sufficient), never one row per registration of the same right. Union + reconcile the Coverage ledger against the materially-matters list.`,
+      `Apply the relevance gate, opposition, Option-D and merch sweep. When priority is live, look the applicant up in the held band with \`band_lookup\` by owner. An empty lookup establishes neither that the applicant has no filings nor that no owner search ran. Sheet-1 rows follow the shape's POSITIONS (one row per position; \`uri\` carries exactly one constituent; any one ends the whole position), never one row per registration of the same right. Union + reconcile the Coverage ledger against the materially-matters list.`,
       // P2-A (charter P2a): the retrieved→judgment reconciliation — the driver joins every screened-live
       // dominant-element record against your endings after EVERY digest pass; an unended POSITION blocks
       // delivery. ONE contract, ONE unit (review problem 2): the join groups records by the same
@@ -2933,6 +2734,7 @@ export const STAGES = {
     // depth target was silently absent on many runs. It is now in-context for every synthesis.
     skillReads: ["skills/clearance-search/synthesis-rules.md", "skills/clearance-search/firm-wide-reasoning.md", "skills/clearance-search/risk-framework.md", "skills/clearance-search/worked-examples.md", "skills/clearance-search/report-prose.md"],
     skillReadsFor: synthesisSkillReads,
+    standing: Object.freeze([WEB_EVIDENCE_ONLY_THROUGH_RESEARCH]),
     out: (P) => P.narrative,
     validate: validators.narrative,
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
@@ -3152,7 +2954,9 @@ export const STAGES = {
       // WS2 (spec 11) — ENFORCED, not advisory: validators.narrative HARD-REJECTS this file if a
       // use-dependent finding above the framework's lowest band asserts a use-negative without a searched
       // source line. So actually run the query.
-      `USE-CHECK (enforced): run the scoped use check (phase2-execution.md Step 3.5) on EVERY finding banded ${(framework && materialBandPhrase(framework)) || "medium risk or higher"} — the rungs this framework rates medium risk or higher; a lower rung is not checked — and ask in the SAME query for the owner's enforcement record (oppositions, disputes or court actions over this mark or a similar one). ${USE_CHECK_ANSWERS_HELD} After a completed search, use is "confirmed" or "not-confirmed", never "unknown". What the query finds about enforcement is a LEAD under ENFORCEMENT AUTHORITY below: enforcer basis "inferred-from-signal", its URL cited inline in that finding's prose; where it finds none, the enforcer is "low" with basis "inferred-from-signal" and the finding says the search found no enforcement record. ALSO, for EVERY finding whose mitigant/verdict turns on the ABSENCE of use (regardless of its band) ("not in actual use", "unused", "no marketplace use found", non-use revocation/cancellation as the mitigant), run ONE scoped \`perplexity_research\` query (owner + mark + the goods/field) unless an answer this run already holds answers that question, and END that finding's actual-use line with a literal "- **Use-check source:** <result URL | "perplexity_research — no result">" line. Mirror the result into the matching # Actions item (the deferred "confirm the owner's use" becomes a stated result). NEVER assert a use-negative you did not search — an inference from the owner's profile is not a searched result. ${NO_SEARCH_RESULT} ALSO populate that finding's use_check field in findings.json: {"source": "<the result URL | perplexity_research — no result>"}, and with a no-result also "question": "<the research question whose completed answer returned it, word for word as it was asked>" — the structured field is the authoritative cite the report renders from (the prose line is for narrative readability).`,
+      `USE-CHECK (enforced): run the scoped use check (phase2-execution.md Step 3.5) on EVERY finding banded ${(framework && materialBandPhrase(framework)) || "medium risk or higher"} — the rungs this framework rates medium risk or higher; a lower rung is not checked — and ask in the SAME query for the owner's enforcement record (oppositions, disputes or court actions over this mark or a similar one). ${USE_CHECK_ANSWERS_HELD} After a completed search, use is "confirmed" or "not-confirmed", never "unknown". What the query finds about enforcement is a LEAD under ENFORCEMENT AUTHORITY below: enforcer basis "inferred-from-signal", its URL cited inline in that finding's prose; where it finds none, the enforcer is "low" with basis "inferred-from-signal" and the finding says the search found no enforcement record. ALSO, for EVERY finding whose mitigant/verdict turns on the ABSENCE of use (regardless of its band) ("not in actual use", "unused", "no marketplace use found", non-use revocation/cancellation as the mitigant), run ONE scoped \`perplexity_research\` query (owner + mark + the goods/field) unless an answer this run already holds answers that question, and record its result in that finding's use_check.source: <result URL | "perplexity_research — no result">. Mirror the result into the matching # Actions item (the deferred "confirm the owner's use" becomes a stated result). NEVER assert a use-negative you did not search — an inference from the owner's profile is not a searched result. ${NO_SEARCH_RESULT} ALSO populate that finding's use_check field in findings.json: {"source": "<the result URL | perplexity_research — no result>"}, and with a no-result also "question": "<the research question whose completed answer returned it, word for word as it was asked>" — the structured field is the authoritative cite the report renders from (the prose line is for narrative readability).`,
+      // The route for every web check above: the research tool, never a fetch of the stage's own (standing, so every follow-up repeats it).
+      WEB_EVIDENCE_ONLY_THROUGH_RESEARCH,
       // Spec-v3 A4 — ENFORCED the same way (validators.narrative): own-rights reliance needs its evidence.
       // PR-8 review fix: synthesis holds the FROZEN band, not the live register — and the band is class-
       // and mark-text-scoped to this matter's dispatched slices, so the client's OWN house-mark
@@ -3165,7 +2969,7 @@ export const STAGES = {
       // the instructed-check treatment: an open row naming the missing owner query for the escalation
       // lane / supplemental mint. own-rights.mjs accepts any text after "Own-rights source:", so the
       // validator contract is unchanged.
-      `OWN-RIGHTS (enforced): if ANY finding's clearance reasoning relies on the client's own house mark / franchise root ("the prefix is the client's own registered mark"), run ONE own-portfolio check over the run's FROZEN register material — band_lookup with owner:<the applicant/house-mark owner> (plus band_record for any registration you cite) — and END that finding's reasoning with a literal "- **Own-rights source:** <record URI(s) | "no applicant-owned registrations in the searched register material">" line citing the record URIs the lookup returned. KNOW WHAT THE NEGATIVE MEANS: the searched material covers only this matter's dispatched slices (its classes, its mark texts), so an empty owner lookup is NEVER evidence the client's registrations do not exist — a house mark's own registrations usually live in the client's home classes under mark text no slice here covers. NEVER write "no registrations found" or any other portfolio-wide register-negative, and never leave the reasoning leaning on the unverified reliance: write the honest scoped negative, let the finding stand or fall without the crutch, AND record the un-run owner query (owner + house root + its home classes/key jurisdictions) as an open Coverage/open-item row so the escalation lane can propose it through the supplemental mint — the same treatment every instructed check the frozen material cannot answer gets. The affiliate-exclusion mandate covers CONFLICTS only — it never suppresses this supporting-evidence check. ALSO populate that finding's own_rights field in findings.json: {"source": "<comma-separated record URIs | no applicant-owned registrations in the searched register material>"} — the structured field is the authoritative cite.`,
+      `OWN-RIGHTS (enforced): if ANY finding's clearance reasoning relies on the client's own house mark / franchise root ("the prefix is the client's own registered mark"), run ONE own-portfolio check over the run's FROZEN register material — band_lookup with owner:<the applicant/house-mark owner> (plus band_record for any registration you cite) — and record its result in that finding's own_rights.source: <record URI(s) | "no applicant-owned registrations in the searched register material"> citing the record URIs the lookup returned. KNOW WHAT THE NEGATIVE MEANS: the searched material covers only this matter's dispatched slices (its classes, its mark texts), so an empty owner lookup is NEVER evidence the client's registrations do not exist — a house mark's own registrations usually live in the client's home classes under mark text no slice here covers. NEVER write "no registrations found" or any other portfolio-wide register-negative, and never leave the reasoning leaning on the unverified reliance: write the honest scoped negative, let the finding stand or fall without the crutch, AND record the un-run owner query (owner + house root + its home classes/key jurisdictions) as an open Coverage/open-item row so the escalation lane can propose it through the supplemental mint — the same treatment every instructed check the frozen material cannot answer gets. The affiliate-exclusion mandate covers CONFLICTS only — it never suppresses this supporting-evidence check. ALSO populate that finding's own_rights field in findings.json: {"source": "<comma-separated record URIs | no applicant-owned registrations in the searched register material>"} — the structured field is the authoritative cite.`,
       // CHANGE 5c (attribution source) — a named-entity attribution that is NOT itself a registry / common-law
       // record fact needs a source or it does not ship. (BEST EFFORT: the doc-30 Fix B exact spec is not in the
       // repo — this enforces the principle, not a verbatim spec; see residualIssues.)
@@ -3285,7 +3089,7 @@ export const STAGES = {
       // finding carried both: the class of finding most likely to be challenged was the only class with
       // no reasoning structure. The validator now rejects the omission on every disposition that reaches
       // a reader; this states what an off-field one has to say.
-      `- legal_position / practical_position (BOTH, on EVERY finding — adversarial, coexistence-partner, distinguished AND off-field alike; there is no disposition that carries a label without a stated ground): the two reads, SEPARATED — never blurred, never averaged. legal_position = ONE-TWO sentences of the LEGAL read alone: mark similarity × goods/services proximity × the senior right's scope, under the framework's own definitions (high similarity + high goods proximity = HIGH legal risk, whatever the owner's posture). practical_position = ONE-TWO sentences of the enforcement REALITY: owner posture and capability, marketplace presence, coexistence history, a delisted retailer / no visible revenue — practical facts stated ALONGSIDE the legal read. The band is what the framework's own method yields from BOTH positions as IT states them; a practical fact NEVER discounts the legal read in-line ("high similarity but the owner looks dormant, so call it low" is the averaging this field split forbids — write the high legal read, write the dormancy as practical, and let the framework's stated method produce the band). FACTS THAT CONDITION, NEVER ADVICE (the overall_caption rule, same voice): they state what IS, never a step to take. WHO READS THEM DEPENDS ON THE FINDING (#1339 D3): a RATED finding gets a report-card, and that card is the client's single authored wording, written FROM these fields — so write them TIGHT, the reads and the facts that carry them, never a second client paragraph the report will not print beside the card. An OFF-FIELD finding gets NO card, and there these two fields ARE what the client reads. NEVER prescribe ("narrow the goods", "seek consent before filing", "file first", "add a disclaimer") and NEVER use advice grammar ("we recommend", "you should", "the practical path is") — every forward ask lives in the actions register, code-built from it; a prescription typed here is a delivery defect the lint flags. ON AN OFF-FIELD FINDING the two reads are the same two reads, sized to the negative: legal_position states the legal read that makes this NOT a rated conflict (what the senior right actually covers, and where its scope stops short of ours); practical_position states the enforcement reality behind that (who the owner is, what they actually trade in, whether they have ever asserted). "Off-field" is a conclusion, and a conclusion states its ground.`,
+      `- legal_position / practical_position (BOTH, on EVERY finding — adversarial, coexistence-partner, distinguished AND off-field alike; there is no disposition that carries a label without a stated ground): the two reads, SEPARATED — never blurred, never averaged. legal_position = ONE-TWO sentences of the LEGAL read alone: mark similarity × goods/services proximity × the senior right's scope, under the framework's own definitions (high similarity + high goods proximity = HIGH legal risk, whatever the owner's posture). practical_position = ONE-TWO sentences of the enforcement REALITY: owner posture and capability, marketplace presence, coexistence history, a delisted retailer / no visible revenue — practical facts stated ALONGSIDE the legal read. The band is what the framework's own method yields from BOTH positions as IT states them; a practical fact NEVER discounts the legal read in-line ("high similarity but the owner looks dormant, so call it low" is the averaging this field split forbids — write the high legal read, write the dormancy as practical, and let the framework's stated method produce the band). FACTS THAT CONDITION, NEVER ADVICE (the overall_caption rule, same voice): they state what IS, never a step to take. WHO READS THEM DEPENDS ON THE FINDING: a RATED finding gets a report-card, and that card is the client's single authored wording, written FROM these fields — so write them TIGHT, the reads and the facts that carry them, never a second client paragraph the report will not print beside the card. An OFF-FIELD finding gets NO card, and there these two fields ARE what the client reads. NEVER prescribe ("narrow the goods", "seek consent before filing", "file first", "add a disclaimer") and NEVER use advice grammar ("we recommend", "you should", "the practical path is") — every forward ask lives in the actions register, code-built from it; a prescription typed here is a delivery defect the lint flags. ON AN OFF-FIELD FINDING the two reads are the same two reads, sized to the negative: legal_position states the legal read that makes this NOT a rated conflict (what the senior right actually covers, and where its scope stops short of ours); practical_position states the enforcement reality behind that (who the owner is, what they actually trade in, whether they have ever asserted). "Off-field" is a conclusion, and a conclusion states its ground.`,
       // requirement 2 — the label follows the argument. off-field had been carrying TWO different
       // claims under one token; the author now declares which, and a field claim is checked against the
       // finding's own goods meter (findings-model.validateOffFieldGround).
@@ -3309,7 +3113,7 @@ export const STAGES = {
       `- meters: {"mark_similarity":{...},"goods_proximity":{...},"use":{...},"enforcer":{...}} — all four present, each {"token","basis","source"}. token — EACH SET IS CLOSED AND EACH IS STATED ON ITS OWN LINE, so read the one you are filling in: mark_similarity = high | medium | low. goods_proximity = high | medium | low. enforcer = high | medium | low | unknown. use = confirmed | not-confirmed | unknown. NEVER write "unknown", "n/a", "unclear", "tbd" or "none" as the token on mark_similarity or goods_proximity — those two carry no indeterminate value, the file is REJECTED for it, and a clearance has already lost eleven minutes to that one word. Where goods proximity is genuinely open — a broad specification, the actual trade unstated, classes that neither meet nor plainly diverge — that is still a judgement you can make from the wording in front of you: pick the closest band ("medium" is the honest middle), and say in that finding's own reason and prose that the specification leaves it open and why. Rating it is not a claim to certainty; refusing to rate it is not a move you have. These are the COARSE 3-pip strengths — the precise position lives in quadrant. basis: verified-from-record (asserted from a fetched record/filing) or inferred-from-signal (reasoned from a proxy, e.g. "uses a good law firm"); the enforcer's basis is the one the report surfaces as "verified" vs "inferred" (B1 — never present inferred as fact). source (spec-48 A4): MANDATORY whenever basis is "verified-from-record" — the /mark/… record URI or the exact URL the claim actually rests on (the validator REJECTS a bare verified stamp: finding_basis_source_missing); omit it (or "") on inferred-from-signal. The driver machine-joins each source to the run's fetch receipts and presents an unjoined "verified" as assumed — so name the real source, never a plausible one. SENIOR-RIGHT SOURCE (WP-receipts, 2026-07-05): when a finding's owner holds SEVERAL registrations of the same mark, the verified source must be the SENIOR live leg — the earliest applicationDate among live legs, registered before pending (the batch-screen rows carry the dates). Never cite a junior leg as the verified basis when a senior live leg exists in the cluster; the driver's senior-right closure will fetch and re-bind it anyway, so citing the junior leg only wastes a fetch.`,
       `- quadrant: {"x","y"} numbers in [0,1]. x = goods/services proximity (0 = distant, 1 = identical). y = mark similarity (0 = distinct, 1 = identical).`,
       `- source: {"source_type","resolved_link"}. source_type EXACTLY one of: register-vendor / register-euipo / common-law-marketplace / common-law-web / case-law (the finding's ACTUAL source — a common-law finding never wears a register tag, E2). resolved_link = the record URL you ACTUALLY fetched/cited for this finding (the same link in your Record line), or "" if none.`,
-      `coverage[]: ONE object per coverage AREA, EXACTLY {"area","state","note"}. area = the area name (e.g. "register / EU", "common-law / US marketplace"). state EXACTLY one of: confirmed-clean / coverage-limited / open / not-searched / note. note = a short qualifier (or ""). Write area + note in PLAIN client English — a lawyer reads this panel. NO internal engine idioms: never "slice", "crossed into the band", "null class/owner/status", "unadjudicable", "enumerated-empty", "in-scope subset", "reopen pass", or cell-matrix / saturation / fetch-count telemetry. Say what was and was not searched, and why, in words a client understands.`,
+      `coverage[]: ONE object per coverage AREA, EXACTLY {"area","state","note"}. area = the area name (e.g. "register / EU", "common-law / US marketplace"). state EXACTLY one of: confirmed-clean / coverage-limited / open / not-searched / note. note = a short qualifier (or ""). Write area + note in PLAIN client English — a lawyer reads this panel. NO internal engine idioms: never "slice", "crossed into the band", "null class/owner/status", "unadjudicable", "enumerated-empty", "in-scope subset", "reopen pass", or cell-matrix / saturation / fetch-count telemetry. Say what was and was not searched, and why, in words a client understands. A lead the common-law worker listed under Consumer-confusion risks that meets the inclusion rule in synthesis-rules.md is a finding even when its owner cannot be verified: set \`owner.name\` to "Unverified", say in the finding what remains to be established, and do not record it only as an open coverage row.`,
       // P6 (charter §7 "Coverage prose is the worst offender and nothing governs it") — the coverage
       // lane's own prose contract. Two of the four longest sentences in the delivered report were
       // coverage/gap prose, and NOTHING governed it: the code-stamped `coverage_line:` front-matter
@@ -3375,7 +3179,7 @@ export const STAGES = {
       // re-loop and NO no-deliver halt: a lawyer always gets a report unless something technically breaks.
       // WP-56 B2 — the standing "mark itself" read: every report carries it whether or not the brief asks
       // (a staff lawyer, teal-lattice). Typed field → code-rendered at the TOP of the report on both variants.
-      `MARK ASSESSMENT (MANDATORY top-level field of the findings record you send): emit "mark_assessment": {"distinctiveness":"<1-2 sentences>","connotation":"<1-2 sentences>"} — your standing read of the APPLICANT'S OWN mark, in your own lawyer voice. §L BUDGET: ONE OR TWO SENTENCES EACH, and the detail goes into the typed rows of the STRUCTURED FORM below rather than into a longer paragraph — the block ran 854 words on the delivered report and its job is two short reads. CONNOTATION LEADS WITH THE FLAGGED READING: if a loaded, subcultural or offensive secondary reading surfaced, it is the FIRST thing the field says; when the sweep genuinely came back clean, state that once as a data point and STOP. Never open with a list of what the mark is NOT ("no offensive reading, no gang association, no adverse political connotation, no…") — an inventory of absent problems is the most recognisable machine tell there is, and it buries the one reading that matters when there is one. It is advisory (for the reviewing lawyer to assess), frames the report, and NEVER moves any band or rating. distinctiveness: where the mark sits on the spectrum (coined / arbitrary / suggestive / descriptive) in the applicant's field, its dominant element, any obvious registrability flag (descriptive / generic / laudatory / geographic / deceptive — or "plainly distinctive, no flag"), AND the per-market read of the manifest's translated/transliterated forms (the variant manifest's "Distinctiveness & registrability" section is your input — carry its judgment forward or better it: e.g. "descriptive once translated in <market>"). connotation: what the mark READS as — English AND non-English (the meaning sweep's results incl. the non-Latin/translated forms): any loaded / subcultural / offensive secondary reading, or the clean result stated as a DATA POINT ("no adverse readings surfaced across <the languages/scripts searched>") — never an unsearched assertion, never a sweep dump. Plain client English ("coined and strong"). Real PR/reputational HITS still live in their own section — this block is the standing read, not the incident report. STRUCTURED FORM (preferred when your read carries per-class / per-market / counter-registration detail): either field may instead be an OBJECT {"read":"<1-2 SHORT sentences — the consequence for the client, e.g. \\"A weak name to own. SLUSH is simply what the product is, so the whole mark rests on WAVO.\\">","spectrum":"<the one-line placement>","per_class":[{"class":"5","note":"…"}],"per_market":[{"market":"CN","note":"…"}],"counter_registrations":[{"mark":"…","uri":"/mark/…","note":"…"}],"acquired":"<optional>","note":"<optional residual>"} — typed rows instead of one wall paragraph. ALWAYS include "read" on the structured form: it is the ONLY prose the reader sees up front (the report collapses the rows behind toggles; the audit workbook renders the rows in full). NEVER pack per-class/per-market rows into a single prose string when you have them as rows.`,
+      `MARK ASSESSMENT (MANDATORY top-level field of the findings record you send): emit "mark_assessment": {"distinctiveness":"<1-2 sentences>","connotation":"<1-2 sentences>"} — your standing read of the APPLICANT'S OWN mark, in your own lawyer voice. §L BUDGET: ONE OR TWO SENTENCES EACH, and the detail goes into the typed rows of the STRUCTURED FORM below rather than into a longer paragraph — the block ran 854 words on the delivered report and its job is two short reads. CONNOTATION LEADS WITH THE FLAGGED READING: if a loaded, subcultural or offensive secondary reading surfaced, it is the FIRST thing the field says; when the sweep genuinely came back clean, state that once as a data point and STOP. Never open with a list of what the mark is NOT ("no offensive reading, no gang association, no adverse political connotation, no…") — an inventory of absent problems is the most recognisable machine tell there is, and it buries the one reading that matters when there is one. It is advisory (for the reviewing lawyer to assess), frames the report, and NEVER moves any band or rating. distinctiveness: where the mark sits on the spectrum (coined / arbitrary / suggestive / descriptive) in the applicant's field, its dominant element, any obvious registrability flag (descriptive / generic / laudatory / geographic / deceptive — or "plainly distinctive, no flag"), AND the per-market read of the manifest's translated/transliterated forms (the variant manifest carries no distinctiveness read, so make that read here: e.g. "descriptive once translated in <market>"). connotation: what the mark READS as — English AND non-English (the meaning sweep's results incl. the non-Latin/translated forms): any loaded / subcultural / offensive secondary reading, or the clean result stated as a DATA POINT ("no adverse readings surfaced across <the languages/scripts searched>") — never an unsearched assertion, never a sweep dump. Plain client English ("coined and strong"). Real PR/reputational HITS still live in their own section — this block is the standing read, not the incident report. STRUCTURED FORM (preferred when your read carries per-class / per-market / counter-registration detail): either field may instead be an OBJECT {"read":"<1-2 SHORT sentences — the consequence for the client, e.g. \\"A weak name to own. SLUSH is simply what the product is, so the whole mark rests on WAVO.\\">","spectrum":"<the one-line placement>","per_class":[{"class":"5","note":"…"}],"per_market":[{"market":"CN","note":"…"}],"counter_registrations":[{"mark":"…","uri":"/mark/…","note":"…"}],"acquired":"<optional>","note":"<optional residual>"} — typed rows instead of one wall paragraph. ALWAYS include "read" on the structured form: it is the ONLY prose the reader sees up front (the report collapses the rows behind toggles; the audit workbook renders the rows in full). NEVER pack per-class/per-market rows into a single prose string when you have them as rows.`,
       // P5 (charter 2026-07-30 + Round-2 §4) — the four answers as DATA where computable. Judgment
       // tokens are lawyer-authored with a stated basis, never a computed score (ROUND2-FINDINGS B11);
       // an answer the run cannot ground is OMITTED, never faked — the narrative carries the honest
@@ -3573,6 +3377,10 @@ export const STAGES = {
     // The reviewer reads the prose manual whose rules it enforces (approved 2026-10-02): the 25-word limit and
     // the word list it applies come from there, and so does the finding sentence's two-sentence limit.
     skillReads: ["skills/narrative-refutation/SKILL.md", "skills/clearance-search/report-prose.md"],
+    // The live read, which every recheck and review after a repair is pointed at too (resolveSkillReads): the run's own
+    // framework and the shared reasoning beside the two manuals above (reviewSkillReads).
+    skillReadsFor: reviewSkillReads,
+    standing: Object.freeze([REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK, WEB_EVIDENCE_ONLY_THROUGH_RESEARCH]),
     out: (P) => P.seniorEyeReview,
     validate: validators.seniorEyeReview,
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
@@ -3627,15 +3435,17 @@ export const STAGES = {
         why: "the items are code-found and driver-fed, so the FINDING is mechanical; what the model owes is the flag, the quote and the verdict consequence. NO TOKEN — unlike the plan-execution table, this driver-fed block has no section gate at all",
       },
     },
-    message: ({ paths: P, intakeAsks, job, registerOnly, profileSelection, placementFloorDecisions, writerExclusions, researchChecks }) => lines(
-      reads(["skills/narrative-refutation/SKILL.md", "skills/clearance-search/report-prose.md"]),
+    message: ({ paths: P, intakeAsks, job, profile, registerOnly, profileSelection, placementFloorDecisions, writerExclusions, reviewAddressLines, researchChecks }) => lines(
+      reads(reviewSkillReads({ profile, job })),
+      REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK,
+      WEB_EVIDENCE_ONLY_THROUGH_RESEARCH,
       // lever 3 — WHICH FINDINGS EARN A GROUNDED PROFILE, chosen by the DRIVER and listed by
       // ordinal. The band is on findings.json before this stage is dispatched, so there is nothing for
       // the seat to judge: unlisted work is never asked for. Empty when every finding is profiled —
       // which is the one-country product always, and any run whose cut keeps everything.
       profileSelectionDirective(profileSelection),
       `Adversarially refute the narrative ${P.narrative} against the source files: register findings ${P.registerFindings}${registerOnly ? "" : `, common-law ${P.commonLaw}`}, placements ${P.placement} (structured tiers + reasons: ${P.placementModel}), matter frame ${P.matterContext}.`,
-      ...refutationStandingLines({ registerOnly, job, floorDecisions: placementFloorDecisions, writerExclusions }),
+      ...refutationStandingLines({ registerOnly, job, floorDecisions: placementFloorDecisions, writerExclusions, addressLines: reviewAddressLines }),
       // PR-8: the reviewer verifies register claims against the RECORD, on the record — the same
       // read-only band tools the drafting stages used, every lookup logged to the reading audit.
       // The skeptic's shipped sentence, word for word: a granted tool is named, or the seat cannot know it holds it.
@@ -3799,7 +3609,7 @@ export const STAGES = {
       // rule bans, and e2e has twice measured a seat obeying the prose while holding the tool.
       //
       // EACH FIELD CARRIES ITS OWN IMPERATIVE IN ITS OWN SENTENCE.
-      `Hand the shell back by calling the \`record_report_overview\` tool. There is no file to write and no front-matter to type: the driver renders the shell — every front-matter key it already holds, the \`# Actions\` section and the optional \`# Methodology\` note — from the values you send, and assembles the cards around it. Do NOT author any \`## <owner> — <MARK>\` card and do not think about a \`# Marks\` heading; each card is rendered separately. Risk scoring is unchanged.`,
+      `Hand the shell back by calling the \`record_report_overview\` tool. There is no file to write and no front-matter to type: the driver renders the shell — every front-matter key it already holds and the \`# Actions\` section — from the values you send, and assembles the cards around it. Do NOT author any \`## <owner> — <MARK>\` card and do not think about a \`# Marks\` heading; each card is rendered separately. Risk scoring is unchanged.`,
       // TRANSFORM, NOT FREE-GENERATION (Fix B1 — carried from main's report-synthesis): the shell RESHAPES the
       // settled synthesis, it never re-derives. Applied here to overall_caption + # Actions.
       `TRANSFORM, NOT FREE-GENERATION: overall_caption and # Actions draw ONLY on the settled synthesis narrative ${P.narrative} (and findings.json ${P.findings}) — introduce NO finding, owner, or claim that is not already there, NEVER re-compute a band, and never let a claim outrun its evidence (a verified-from-record fact stays fact; an inferred-from-signal claim reads AS an inference — "on the available signals…" — never flattened to bald fact). WHERE THE SETTLED NARRATIVE REASONED MORE THAN ONE RATIFIED FORM OF THE NAME, CARRY ITS PER-FORM READ THROUGH — the overall_caption says which form the decisive conflicts turn on, or that the reads are the same for both, in the narrative's own words. Do not flatten two reads into one undifferentiated statement: that loses the distinction the client ratified both forms to get. This is a transform of what the narrative already settled, not a second rating, and the band is unchanged — one overall band as today.`,
@@ -3851,7 +3661,7 @@ export const STAGES = {
       `overall_caption VOICE: write plain CONSEQUENCE + the FACT that conditions it, with ZERO risk codes — no retired "Level C" / "Composite 3" codes, no bare dispute-type tokens, no engineering register ("axes", "Option D", query/fetch counts). Say what it MEANS and what STATE OF THE WORLD determines exposure ("one owner holds a near-identical mark for the same goods and is likely to object — no coexistence or consent appears on the record searched"), not the code. NOTE the shape of that example (§L): the conditioning fact is scoped to what this run SAW. Never write "consent is not in hand" or "coexistence is not in place" — the client may hold either, and no search this run ran could see it. FACTS THAT CONDITION, NEVER ADVICE: the caption names the driver + what conditions reliance; it NEVER prescribes a step ("narrow the goods", "seek consent before filing") and never uses advice grammar ("we recommend", "the practical path is") — the forward asks are code-built from the findings.json actions register, and a caption that repeats them as instructions is a defect. No terse code tag anywhere — the driver renders each card's risk chip from its record; captions carry plain consequence only. And do NOT LEAD the caption with a coverage gap — lead with the substantive risk and the driving finding; a genuinely un-cleared dangerous slice is named in the risk read as analysis (and a genuine human-only step rides the actions register), never the headline and never a closeable-search caveat.`,
       // judgment-relocation (2026-06-23): the Korvane-headline fix — lead with the GENUINE top risk, not a partner.
       `LEAD WITH THE GENUINE TOP RISK: the caption + the order of # Actions must headline the conflict that actually drives the verdict (the bare / near-identical mark in a core class whose owner can and would block — disposition adversarial, the most severe band). Do NOT lead with a commercial partner / coexistence-relationship finding just because it is prominent or familiar — that finding is surfaced RISK-FIRST: the band consequence leads and the conditioning FACTS follow ("a rated <band> conflict — the coexistence is documented and neither party has challenged it; continuing it is the client's commercial call" — §L: say what "undisturbed" MEANS, in plain words; a right or an arrangement is never described as "undisturbed" on a reader surface); a path/response clause ("the realistic path is …", "the practical path is …") is retired voice — it may never appear, never LEAD a finding's line and never stand in for its rating. It is not the headline unless it genuinely IS the top risk. Reflect the synthesis prioritisation; never re-order by who the reader recognises.`,
-      `There are no sections for you to lay out and no headings to emit — the driver renders them. Send \`actions\` (the checks and what they found) and, only when there is a genuine scope note to make, \`methodology\`. Coverage is built deterministically from the typed coverage[] states in findings.json and is never yours. Mark an internal-only note by sending that bullet with \`internal: true\`; do not type a ::p:: marker.`,
+      `There are no sections for you to lay out and no headings to emit — the driver renders them. Send \`actions\` (the checks and what they found). Coverage is built deterministically from the typed coverage[] states in findings.json and is never yours. Mark an internal-only note by sending that bullet with \`internal: true\`; do not type a ::p:: marker.`,
       // spec 64 — "### Only you can close these" is NO LONGER authored here: the driver CODE-BUILDS it
       // at assembly from the findings.json typed actions register (the same data the verdict derives
       // from), so the ask list, the "subject to" line, the email box and the disposition can never
@@ -3865,11 +3675,6 @@ export const STAGES = {
       // T6 (J9) — the delivery lint's constraints, stated at DRAFT time so the first
       // generation passes (the lint-repair redo was a deterministic ~2-generation tax on 83% of runs).
       `LINT CONTRACTS (the delivery lint fails a shell that breaks these — write them right the first time): (1) never state a numeric registration count for an owner that differs from the finding set's registration list — unsure ⇒ name the owner without a count; (2) findings marked withdrawn in findings.json DO NOT EXIST for this report — never mention them; (3) never pair a WIPO/Madrid registration with "worldwide"/"global" language — name the designated countries or omit the reach claim.`,
-      // CHANGE 1 (telemetry strip) — Methodology is OPTIONAL and telemetry-free. No run telemetry (query/fetch
-      // counts, variant counts, platform/storefront counts, cell-matrix sizes, "remainder clean" enumerations,
-      // axis mechanics), and no confirmed-clean / clean-check enumeration list — those live in the run-dir / audit,
-      // and coverage states render from typed coverage[]. Methodology is a SHORT plain-English scope note or nothing.
-      `# METHODOLOGY (OPTIONAL) — emit it ONLY if there is a genuine plain-English scope note a reviewer needs (e.g. "register + marketplace + general web; transliteration variants searched; foreign-platform direct search not run"). Do NOT write a telemetry block: NO query/fetch/variant/platform counts, NO "[N] storefronts … remainder clean ([cells]-cell matrix)" line, NO axis mechanics, and NO enumeration of what came back confirmed-clean or what clean-checks were run. If there is no real scope note to make, OMIT the section entirely. NEVER put any of this in overall_caption.`,
       // P6 §7 — the caption obeyed "3 sentences" with three 60-word sentences. The cap is code-enforced
       // (card-budget.mjs foldCaption); the WORD budget is the thing that was missing, and it stays prompt-side.
       `overall_caption is HARD-CAPPED at 3 sentences — a verdict, not a recap; COUNT and trim before emitting. The cap is the FOLD POINT, not the target: write to about 20-25 words a sentence (roughly 75 words for the whole caption). Three sixty-word sentences pass the count and defeat it.`,
@@ -3985,7 +3790,7 @@ export const STAGES = {
       // the knob that fails ONE card used to key on `report-cards/2.md`, a path this dispatch no longer
       // names at all.
       `THIS TURN IS BOUND TO CARD ${axis}. Send \`ordinal\`: "${axis}" — the tool refuses a payload naming any other card, and you hold no other finding's record.`,
-      `Send \`full_detail\` — one entry per item, each \`{text, lead, internal}\`. \`text\` is your sentence; \`lead\` is a one-word lead-in ("Portfolio", "Risk assessment", "Enforcement") sent as the word ALONE — the driver renders the bold and the full stop. §L: the entry carrying the risk read is led "Risk assessment", NEVER "Legal lever", which reads as leverage the client can pull rather than the assessment it is. THAT ENTRY IS REQUIRED, and the tool refuses the card without it (reportcard_read_lead_missing): the report suppresses the record's own legal and practical reads wherever this bullet is present, so a card that omits it — or marks it internal — reaches the client with no risk read at all, and nothing downstream recovers it. NO "Filing" BULLET (#1339 D3, ruled): the driver already renders every registration from the FETCHED record — number, classes, status, filing and registration years, jurisdiction, designations, priority — so a typed filing bullet is that same fact retyped by a seat nothing can transposition-check. State a filing fact only where it carries the read you are making. Every other lead is optional. Mark an internal-only note with \`internal: true\`; do not type a \`::p::\` marker — the driver places it where the render splits.`,
+      `Send \`full_detail\` — one entry per item, each \`{text, lead, internal}\`. \`text\` is your sentence; \`lead\` is a one-word lead-in ("Portfolio", "Risk assessment", "Enforcement") sent as the word ALONE — the driver renders the bold and the full stop. §L: the entry carrying the risk read is led "Risk assessment", NEVER "Legal lever", which reads as leverage the client can pull rather than the assessment it is. THAT ENTRY IS REQUIRED, and the tool refuses the card without it (reportcard_read_lead_missing): the report suppresses the record's own legal and practical reads wherever this bullet is present, so a card that omits it — or marks it internal — reaches the client with no risk read at all, and nothing downstream recovers it. NO "Filing" BULLET (ruled): the driver already renders every registration from the FETCHED record — number, classes, status, filing and registration years, jurisdiction, designations, priority — so a typed filing bullet is that same fact retyped by a seat nothing can transposition-check. State a filing fact only where it carries the read you are making. Every other lead is optional. Mark an internal-only note with \`internal: true\`; do not type a \`::p::\` marker — the driver places it where the render splits.`,
       // T7 (E5) — the MATCHED grounded profile arrives INLINE (deterministic join), replacing
       // the old "if the file exists, fish in it" discretion that missed cards on copper-spire.
       caseLawProfile ? lines(
@@ -4826,9 +4631,9 @@ export const BAND_READING_STAGES = new Set(["placement-inquiry", "register-diges
 export const GROUP_READING_STAGES = new Set(["placement-inquiry"]);
 // The contract as the stages after placement read it: without "Every floor has a fate on the form.", which is an
 // order to placement, whose form it names. The digest and synthesis owe no floor a fate (the owner's ruling,
-// 2026-10-14). Removed from the one contract, never restated, so the two cannot drift apart.
-export const FLOOR_FATE_ORDER = "Every floor has a fate on the form.";
-export const BAND_READING_CONTRACT_AFTER_PLACEMENT = BAND_READING_CONTRACT.replace(` ${FLOOR_FATE_ORDER}`, "");
+// 2026-10-14). Built from the contract's other two parts, never restated, so the two cannot drift apart.
+// FLOOR_FATE_ORDER is declared with the contract, which is built from it and its two other parts.
+export const BAND_READING_CONTRACT_AFTER_PLACEMENT = `${BAND_READING_HEAD} ${BAND_READING_STANDARDS}`;
 
 // The register reading step's order on the waiting families. One constant, because the cross-check
 // follow-up reads it word for word (repair-composers.mjs); declared last so no line above it moves.
@@ -4874,13 +4679,13 @@ export const writerExclusionLines = (block) => {
     ...(reference.length ? [WRITER_EXCLUSIONS_REFERENCE, ...reference] : [])];
 };
 
-export const refutationStandingLines = ({ registerOnly = false, job = {}, floorDecisions = null, writerExclusions = null } = {}) => [
+export const refutationStandingLines = ({ registerOnly = false, job = {}, floorDecisions = null, writerExclusions = null, addressLines = [] } = {}) => [
   PLACEMENT_BORDERLINE_NOTE,
   `REGISTER VERIFICATION TOOLS: you hold the read-only band tools — band_shape (the deterministic shape of the complete register band, including floors marked on their lines; crowded groups may show only their first page), band_lookup (pull any record the narrative relies on or omits) and band_record (the official registry record fetched this run). Check the narrative's register assertions against them. Each floor must be rated in the narrative, reasoned away in it, or accounted for by a decision listed below: placement's decisions on the floors, or the writer's exclusions of positions placement retained. A floor that is none of these is a FLAGGED CORRECTION. Check each of placement's listed decisions against the evidence, and flag one only when you can name the evidence against its ground or the error in its reasoning. The writer's exclusions are listed after them, under their own standard. They are read-only and logged; you hold no live register tools (by design, never an outage).`,
   // The validated decisions themselves, written by the driver from the placement form (pipeline.mjs
   // placementFloorDecisionLines); none stands where the list is empty.
   ...(Array.isArray(floorDecisions) && floorDecisions.length ? floorDecisions : ["(none)"]),
-  ...writerExclusionLines(writerExclusions),
+  ...writerExclusionLines(writerExclusions), ...(addressLines ?? []),
   `Re-read any of this run's own artifacts with the \`search_run_artifacts\` tool — ONE file per call, named relative to the run directory (e.g. "register-findings.md"), with \`terms\` as literal substrings OR-matched per line.`,
   registerOnly ? REGISTER_ONLY_NOTE : "",
   pharmaMatter(job) ? `This is a PHARMA matter (Nice 5 / pharma goods): verify the narrative honoured the pharma field module (skills/clearance-search/field-doctrine-pharma.md) — therapeutic-area goods discipline (same therapeutic area ≈ proximate goods regardless of formulation), NO-USE never softens a pharma risk (pipelines run 5-10 years pre-launch), and practitioner/pharmacist confusion including handwriting/verbal look-alikes was weighed. A violation is a FLAGGED CORRECTION.` : "",
@@ -4889,7 +4694,7 @@ export const refutationOpenItemsLine = (P) =>
   `Also verify against ${P.skepticFlags} and ${P.frameReopenReceipt} (JSON "deferrals"): every skeptic flag and every reopen deferral must be either visible as a coverage[]/narrative open item or explicitly reasoned immaterial — one that appears in neither place is a FLAGGED CORRECTION. Files absent ⇒ skip.`;
 export const REFUTATION_RECORDING_LINES = Object.freeze([
   `RECORD YOUR REVIEW WITH \`record_narrative_refutation\`. THE DISPATCH NAMES NO FILE FOR YOU TO WRITE, deliberately — the driver renders the review from what you send, so a flag the corrective ladder cannot parse cannot be written. You hold no Write or Edit tool for it and nothing you write by hand is read.`,
-  `WHAT THE CALL TAKES: \`verdict\` (CLEAR / CONDITIONAL / BLOCKING) and \`flags\`, one entry per flag. Each flag carries \`kind\`, \`text\` (one line, naming the file and the exact claim), optionally \`fix\` (one line — the targeted edit that would settle it) and optionally \`on\` (the finding ordinals it is about) and optionally \`positions\` (the record ids of the writer's excluded positions it is about, as their list names them). Omit both for a flag about the document. You do NOT number the flags: render order is the numbering.`,
+  `WHAT THE CALL TAKES: \`verdict\` (CLEAR / CONDITIONAL / BLOCKING) and \`flags\`, one entry per flag. Each flag carries \`kind\`, \`text\` (one line, naming the file and the exact claim), optionally \`fix\` (one line — the targeted edit that would settle it) and optionally \`on\` (the finding ordinals it is about) and optionally \`positions\` (the record ids of the writer's excluded positions it is about, as their list names them) and optionally \`lines\` (the addresses of the other parts of the report it is about, copied from the address list). Omit all three for a flag about the document as a whole. You do NOT number the flags: render order is the numbering.`,
   `TYPE EACH CORRECTION: \`kind\` is ONE of coverage-disposition | fact | rating | narrative — pick the one your own legal read says the correction IS: coverage-disposition (a coverage row / disposition placement is wrong or dishonest), fact (a factual defect — record values, owners, statuses, dates, grounding), rating (a band/rating you challenge), narrative (prose, structure or voice of the narrative). DECLARE the kind from what the correction is about, never from how severe it is.`,
   `A BLOCKING verdict REQUIRES at least one flag. A refusal to sign that names nothing is refused by the call itself, in this turn, rather than at the gate — where its only repair is one forced re-ask of this whole stage.`,
 ]);
@@ -4909,9 +4714,9 @@ export const WRITER_STARTS_FROM_THE_WORK = lines(
 );
 // The band as the writer is told of it: what the tools are for, never a read it owes. The contract the steps before it
 // read begins "call `band_shape` FIRST" and says each part of a large shape names the next call. The standards that
-// contract sets for any reading are kept word for word, cut from it so the two cannot drift apart. The name keeps
+// contract sets for any reading are kept word for word: the contract is built from them, so the two cannot drift apart. The name keeps
 // "BAND_READING_CONTRACT" in it: the stages that read the band are found by it (BAND_READING_STAGES, band-size.mjs).
-export const BAND_READING_STANDARDS = BAND_READING_CONTRACT.slice(BAND_READING_CONTRACT.indexOf("A crowd descriptor is an open slice"));
+// BAND_READING_STANDARDS is one of the contract's three parts, declared with it; nothing cuts it from the whole.
 export const BAND_READING_CONTRACT_FOR_THE_WRITER = "THE REGISTER BAND: Use the band tools (`band_shape`, `band_lookup`, `band_record`) when a specific assessment needs evidence beyond the material handed to you. The available groups and pages are ways to find that evidence, not a list you must read to completion. "
   + BAND_READING_STANDARDS;
 // An answer the run already holds can be a finding's check (ruled 2026-10-27): a use-check source needs evidence, not

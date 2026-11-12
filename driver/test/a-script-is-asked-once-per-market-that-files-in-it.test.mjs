@@ -131,8 +131,9 @@ test("the pipeline hands the compiler the frame's markets", () => {
   assert.ok(src.slice(at, at + 4000).includes("marketList: narrowingMarkets(instructedOrder(ctx.paths, ctx.job), ctx.profile)"),
     "the compile is not given the one market list");
   // The frame is accepted before the plan compiles, or there would be no markets to hand over.
-  const frame = src.indexOf('must(await stage("matter-frame", ctx), "matter-frame")');
-  const attach = src.indexOf("attachRegisterPlan(ctx);");
+  const intake = read("steps/intake.mjs");
+  const frame = intake.indexOf('must(await stage("matter-frame", ctx), "matter-frame")');
+  const attach = intake.indexOf("attachRegisterPlan(ctx);");
   assert.ok(frame > 0 && attach > frame, "the plan compiles before the matter frame is accepted");
 });
 

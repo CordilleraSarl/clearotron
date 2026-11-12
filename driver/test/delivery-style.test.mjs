@@ -5,6 +5,7 @@
 // the rating — so it carries the anti-rule guard and must never reach synthesis (where Level/Composite
 // are set).
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -61,7 +62,7 @@ test("no dead knob: both curation stages (report-overview/-card) consume profile
   const { readFileSync } = await import("node:fs");
   const { fileURLToPath } = await import("node:url");
   const { dirname, join: pjoin } = await import("node:path");
-  const src = readFileSync(pjoin(dirname(fileURLToPath(import.meta.url)), "..", "stages.mjs"), "utf8");
+  const src = driverSource("stages.mjs");
   const hits = (src.match(/profile\?\.delivery\?\.style/g) || []).length;
   // Was 3 until 2026-08-01; `client-summary` was the third and is retired.
   assert.ok(hits >= 2, `expected delivery.style consumed in the 2 curation stages, found ${hits}`);

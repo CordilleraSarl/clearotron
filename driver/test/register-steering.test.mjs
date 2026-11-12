@@ -18,6 +18,7 @@
 // structurally: the source guard at the bottom fails if a register_enumerate literal reappears anywhere
 // in pipeline.mjs outside a comment, so a future inline dispatch cannot ship an order to call it.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { STAGES, REGISTER_ENUMERATE_TOOL, SUPPLEMENTAL_LANE_STEERING, OWNER_SWEEP_STEERING,
@@ -210,9 +211,9 @@ test("the register_execute_plan tool DESCRIPTION agrees with the lane — it rid
   // — and corsearch's (the DEFAULT provider) told it to "add judgment extras as separate register_enumerate
   // calls appended without a qid", i.e. use the tool the stage message had just called absent BY DESIGN and
   // hand-append blocks band_block_unplanned kills. Clarivate already named the propose tool; they agree now.
-  // Read as TEXT, never imported: these files are executable stdio servers.
-  for (const f of ["corsearch-server.mjs", "clarivate-server.mjs"]) {
-    const src = readFileSync(new URL(`../engine/mcp/${f}`, import.meta.url), "utf8");
+  // Read as TEXT, never imported.
+  for (const f of ["corsearch/src/mount.js", "clarivate/src/mount.js"]) {
+    const src = readFileSync(new URL(`../../providers/${f}`, import.meta.url), "utf8");
     const desc = (src.split(`name: "register_execute_plan"`)[1] ?? "").split("inputSchema:")[0];
     assert.ok(desc.includes("description:"), `${f} declares register_execute_plan with a description`);
     assert.doesNotMatch(desc, /register_enumerate/, `${f} — the executor must not point judgment extras at the tool the lane removes`);
@@ -279,7 +280,7 @@ test("SOURCE GUARD: no register_enumerate literal survives outside a comment in 
   // comment on a code line is deliberately NOT stripped, so the guard cannot be dodged with one. Only the
   // two real comment openers are stripped — a leading `*` was too broad (a markdown-style bullet inside a
   // multi-line prompt template would have been read as a JSDoc continuation and skipped).
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   const offenders = src.split("\n")
     .map((line, i) => [i + 1, line])
     .filter(([, line]) => !/^\s*(\/\/|\/\*)/.test(line))

@@ -57,21 +57,20 @@ test("asked full and the deep slices RAN — no shortfall, and `ran` says full",
   assert.equal(v.zh.cause, null);
 });
 
-test("asked full, the arms were off, candidates ran — REQUESTED-FULL-RAN-CANDIDATES", () => {
+test("asked full, the deep slices refused, candidates ran — REQUESTED-FULL-RAN-CANDIDATES", () => {
   const v = deriveLaneDepthVerdicts({
     sidecar: sidecarWith({ zh: laneAsking("full") }),
-    slices: slicesWhere({ serp: "not-armed", native: "not-armed" }),
+    slices: slicesWhere({ serp: "refused", native: "refused" }),
   });
   assert.equal(v.zh.asked, "full");
   assert.equal(v.zh.ran, "candidates");
   assert.equal(v.zh.shortfall, true);
   assert.equal(v.zh.cause, "requested-full-ran-candidates");
-  // The reader is not sent to the artifact to find out WHICH switch was off — the rule for
-  // degradedCause, applied to the field beside it.
-  assert.match(v.zh.why, /serp-grid not-armed/);
-  assert.match(v.zh.why, /nativeread not-armed/);
-  assert.match(v.zh.why, /an env arm is off on this deployment, not a fault in the run/,
-    "the cause must distinguish a deployment that did not arm the slice from a run that failed it");
+  // The reader is not sent to the artifact to find out WHICH slice fell short — the rule for
+  // degradedCause, applied to the field beside it. No switch arms a slice, so none is named.
+  assert.match(v.zh.why, /serp-grid refused/);
+  assert.match(v.zh.why, /nativeread refused/);
+  assert.doesNotMatch(v.zh.why, /env arm/, "the cause names a switch that no longer exists");
 });
 
 test("ONE deep slice running is enough to have delivered full — the arms are independent", () => {
@@ -98,7 +97,15 @@ test("asked full on a lane THIS BUILD has no deep slice for — a different caus
   assert.equal(v.ja.shortfall, true);
   assert.equal(v.ja.cause, "not-built-for-lane",
     "a lane the build cannot run deep must not be reported as a deployment that failed to arm one");
-  assert.match(v.ja.why, /zh-only/);
+  // What a client reads under "Left open" (the owner's sentence, 2026-11-11): the depth asked for is not in this
+  // version, what ran, and what did not, with no name from the code.
+  assert.equal(v.ja.why, "The requested full-depth Japanese-language search is not available in this version. Only the candidate search ran; the deeper web search and native-language review were not performed.");
+  const ko = deriveLaneDepthVerdicts({
+    sidecar: sidecarWith({ ko: { depth: "full", jurisdictions: ["KR"] } }),
+    slices: { candidates: { slice: 1, state: "ran", lanes: { ko: "ran" } } },
+  });
+  assert.equal(ko.ko.why, "The requested full-depth Korean-language search is not available in this version. Only the candidate search ran; the deeper web search and native-language review were not performed.");
+  assert.doesNotMatch(`${v.ja.why} ${ko.ko.why}`, /JX_SLICES|SERP_LANES|slice|\blane\b|\bzh\b|\bja\b|\bko\b/, "the sentence names something only the code's authors use");
 });
 
 test("asked full and NOTHING is established — the flag fires and `ran` is null, never candidates", () => {

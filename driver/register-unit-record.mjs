@@ -29,11 +29,11 @@
 // is absent — which `pipeline.mjs` stamps unconditionally on every fresh run. That branch is the
 // resume-and-replay compatibility path for pre-flag plans and archived runs, kept deliberately, and it
 // is left exactly as it is.
-import { writeFileSync, mkdirSync, readFileSync, appendFileSync } from "node:fs";
+import { writeFileSync, mkdirSync, readFileSync, appendFileSync, existsSync, renameSync } from "node:fs";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join, dirname, basename } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";
 import { refuseUndeclared as refuseUndeclaredShared, keepIfAbsent, lastAccepted, acceptedEnvelope } from "./preserve-merge.mjs";
+import { paths, readJson } from "./run-record.mjs";
 
 /**
  * THE REPAIR TAIL FOR THIS STAGE'S BESPOKE FOLLOWUPS — one implementation, used by all of them.
@@ -77,7 +77,7 @@ export function unitPaths(runDir, axis) {
  * writer per file, and an interleaved append from six units would be a journal nobody can attribute.
  */
 export function unitCallPaths(runDir, axis) {
-  const dir = driverDir(runDir, "register-unit-calls");
+  const dir = paths(runDir).registerUnitCalls;
   // PER AXIS, and the accepted base with it: the driver dispatches one seat per axis, so a base keyed
   // on the run would let one axis's repair inherit another axis's note.
   return { dir, payload: join(dir, `${axis}.json`), accepted: join(dir, `${axis}-accepted.json`), refusals: join(dir, `${axis}-refusals.jsonl`) };
@@ -111,9 +111,41 @@ export function bandAccount(band) {
   return acct;
 }
 
+/**
+ * THE HONEST EMPTY BAND FOR AN AXIS THE PLAN GIVES NO WORK. On a plan run the driver sends a unit for every axis the
+ * manifest's markers suggest, and the frozen plan can hold no entries for one of them. The plan executor refuses an empty
+ * axis, so such a unit had no band, and its note was then refused as an account of nothing, though no work was owed. The
+ * driver writes the band empty before the unit runs, as it already does for the code-side saturation probe: zero planned
+ * entries and zero blocks, consistently. A band already there is never touched, so a resumed unit keeps its own. Returns
+ * the axes seeded. IMPURE.
+ */
+export function seedUnplannedBands(runDir, plan, axes) {
+  if (!Array.isArray(plan?.entries)) return [];
+  const planned = new Set(plan.entries.map((e) => e?.axis));
+  const seeded = [];
+  for (const axis of axes ?? []) {
+    if (planned.has(axis)) continue;
+    const { dir, band } = unitPaths(runDir, axis);
+    if (existsSync(band)) continue;
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(`${band}.tmp`, "[]\n");
+    renameSync(`${band}.tmp`, band);
+    seeded.push(axis);
+  }
+  return seeded;
+}
+
+/** How many entries the frozen plan holds for this axis, or null on a run without a readable plan. Never throws. */
+export function plannedEntries(runDir, axis) {
+  try {
+    const plan = readJson(paths(String(runDir ?? "")).registerPlan);
+    return Array.isArray(plan?.entries) ? plan.entries.filter((e) => e?.axis === axis).length : null;
+  } catch { return null; }
+}
+
 /** Read and account for this axis's band, or null when it cannot be read. */
 export function readBandAccount(runDir, axis) {
-  try { return bandAccount(JSON.parse(readFileSync(unitPaths(runDir, axis).band, "utf8"))); }
+  try { return bandAccount(readJson(unitPaths(runDir, axis).band)); }
   catch { return null; }
 }
 
@@ -127,10 +159,13 @@ export function readBandAccount(runDir, axis) {
  * /not applicable|n\/a|no .*(hits|results)/ — so the null-result render says "no results" in those
  * words rather than hoping a shorter note happens to match.
  */
-export function renderUnitNote({ axis, account, nullResult = false, note = "" } = {}) {
+export function renderUnitNote({ axis, account, nullResult = false, note = "", planned = null } = {}) {
   const a = account ?? { blocks: 0, enumerated: 0, incomplete: 0, unknown: 0, records: 0 };
   const out = [`# Register unit — ${axis}`, ""];
-  if (nullResult) {
+  // No instructed work, told apart from unfinished instructed work: the frozen plan gave this axis nothing, and nothing ran.
+  if (planned === 0 && a.blocks === 0) {
+    out.push("No searches were planned for this axis.", "");
+  } else if (nullResult) {
     out.push(`This axis returned no results: ${a.enumerated} enumerated quer${a.enumerated === 1 ? "y" : "ies"} carried no records.`, "");
   } else {
     out.push(`Searched this axis over ${a.blocks} band block${a.blocks === 1 ? "" : "s"}: `
@@ -185,7 +220,7 @@ export function mergeUnitNoteCall(stored, received) {
   };
 }
 
-export function acceptUnitNote(params, { account = null } = {}) {
+export function acceptUnitNote(params, { account = null, planned = null } = {}) {
   const axis = String(params?.axis ?? "").trim();
   if (!axis) return { ok: false, reason: "unit_axis_missing: `axis` names which unit this note is for — the driver dispatches one seat per axis and the note is filed under that name" };
   if (!account) {
@@ -196,11 +231,15 @@ export function acceptUnitNote(params, { account = null } = {}) {
     return { ok: false, reason: `unit_note_shape:${axis} — \`note\` is one short observation, a single paragraph. The counts are the driver's; this is for what the counts cannot say` };
   }
   const nullResult = Boolean(params?.null_result);
+  if (nullResult && account.blocks === 0) {
+    // No search ran, so there is no result to call null: a clean negative over an empty band is the claim this lane exists to refuse.
+    return { ok: false, reason: `unit_null_result_unsearched:${axis} — no search ran on this axis, so it has no result to call null. Leave \`null_result\` unset and say in \`note\` why no search result is held` };
+  }
   if (nullResult && account.records > 0) {
     // The one contradiction worth refusing: a null-result claim over a band that carried records.
     return { ok: false, reason: `unit_null_result_contradicted:${axis}:${account.records} — you declared this axis a null result and its band carries ${account.records} record(s). The band is what the lawyer reads; a note that calls it empty is the claim this lane cannot afford to get wrong` };
   }
-  const content = renderUnitNote({ axis, account, nullResult, note: note ?? "" });
+  const content = renderUnitNote({ axis, account, nullResult, note: note ?? "", planned });
   // The shipped floor, checked here so a drift surfaces as a refusal the seat sees rather than as a
   // stage failure the driver reports about a file it wrote itself.
   const floor = /not applicable|n\/a|no .*(hits|results)/i.test(content) ? 40 : 80;
@@ -236,7 +275,7 @@ export function recordUnitNote(runDir, received, { now = () => new Date().toISOS
     return { written: null, refused: undeclared, captured: closeCapture({ ok: false, refused: undeclared }), capture_failed: captureFailed };
   }
   const call = mergeUnitNoteCall(lastAcceptedUnitNote(dir0, axis), received);
-  const v = acceptUnitNote(call, { account: readBandAccount(dir0, axis) });
+  const v = acceptUnitNote(call, { account: readBandAccount(dir0, axis), planned: plannedEntries(dir0, axis) });
   if (!v.ok) {
     // BEST-EFFORT, and it must stay that way: a journal write that failed a refusal would turn a defect
     // the seat can fix into one it cannot see. The refusal is the return value; this is the audit trail.

@@ -17,7 +17,7 @@
     },
     "common-law": {
       "literal-json-skeleton": 0,
-      "exactly-these-keys": 2,
+      "exactly-these-keys": 0,
       "dictated-line-shape": 0
     },
     "common-law-half": {
@@ -105,7 +105,7 @@
     "skills/clearance-variants/transliteration-scripts.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 0,
-      "dictated-line-shape": 1
+      "dictated-line-shape": 0
     },
     "skills/blind-frame/SKILL.md": {
       "literal-json-skeleton": 4,
@@ -115,25 +115,25 @@
     "skills/clearance-common-law/SKILL.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 1,
-      "dictated-line-shape": 2
+      "dictated-line-shape": 1
     },
     "skills/clearance-register/SKILL.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 0,
-      "dictated-line-shape": 3
+      "dictated-line-shape": 2
     },
     "skills/clearance-register/unit.md": {
       "literal-json-skeleton": 5,
       "exactly-these-keys": 0,
-      "dictated-line-shape": 6
+      "dictated-line-shape": 5
     },
     "skills/placement-inquiry/SKILL.md": {
-      "literal-json-skeleton": 1,
-      "exactly-these-keys": 3,
+      "literal-json-skeleton": 0,
+      "exactly-these-keys": 2,
       "dictated-line-shape": 1
     },
     "skills/clearance-register/digest.md": {
-      "literal-json-skeleton": 1,
+      "literal-json-skeleton": 0,
       "exactly-these-keys": 1,
       "dictated-line-shape": 4
     },
@@ -150,7 +150,7 @@
     "skills/clearance-search/synthesis-rules.md": {
       "literal-json-skeleton": 1,
       "exactly-these-keys": 1,
-      "dictated-line-shape": 2
+      "dictated-line-shape": 1
     },
     "skills/clearance-search/firm-wide-reasoning.md": {
       "literal-json-skeleton": 0,
@@ -165,7 +165,7 @@
     "skills/clearance-search/worked-examples.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 0,
-      "dictated-line-shape": 1
+      "dictated-line-shape": 0
     },
     "skills/clearance-search/report-prose.md": {
       "literal-json-skeleton": 0,
@@ -175,21 +175,21 @@
     "skills/case-law-citation/SKILL.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 1,
-      "dictated-line-shape": 1
+      "dictated-line-shape": 0
     },
     "skills/narrative-refutation/SKILL.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 2,
-      "dictated-line-shape": 1
+      "dictated-line-shape": 0
     },
     "skills/clearance-search/delivery-contract.md": {
       "literal-json-skeleton": 0,
-      "exactly-these-keys": 1,
-      "dictated-line-shape": 1
+      "exactly-these-keys": 0,
+      "dictated-line-shape": 0
     }
   },
   "totals": {
-    "stages": 43,
-    "files": 62
+    "stages": 41,
+    "files": 49
   }
 }

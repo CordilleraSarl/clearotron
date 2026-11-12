@@ -9,17 +9,15 @@
 // the run went on to fetch it whole, and nothing read the finding again. The check names each such finding, with the
 // whole statements, for the writer's one repair at that check. Every name here is invented.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { readFileSync, writeFileSync, mkdtempSync, mkdirSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
 import { goodsHeldWholeChecks, claimsGoodsCut, goodsRepairLine } from "../predelivery-lint.mjs";
 import { citingModelOrdinal, keptModelOrdinal, foldFindingsFile, readFold, modelRecordPath } from "../record-fold.mjs";
 import { synthesisFindings } from "./mock-stage-fixtures.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
-
-const HERE = dirname(fileURLToPath(import.meta.url));
 const URI = "/mark/us/tm_invented-velquarin";
 const OTHER = "/mark/us/tm_invented-other";
 const C42 = "Providing scientific research in the field of invented compounds; providing information about invented compounds";
@@ -90,7 +88,7 @@ test("a record handed to the repair is not handed again, and its outcome is kept
 
 test("the delivery check is given what the writer had and what was handed, and its repair names the writer's numbering", () => {
   // The lint is called inline in pipeline.mjs, so its wiring is pinned in the source.
-  const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.match(src, /goodsEvidence: readGoodsEvidenceAsWritten\(run\.runDir\) \?\? readGoodsEvidence\(run\.runDir\), goodsHanded: readGoodsHanded\(run\.runDir\),/,
     "the check is not given the goods evidence as the writer had it");
   assert.match(src, /const foldUnreadable = fold == null && existsSync\(driverDir\(run\.runDir, FOLD_FILE\)\);/);

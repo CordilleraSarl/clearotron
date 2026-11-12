@@ -73,12 +73,17 @@ test("a report folder created under a set-GID pool root keeps the set-GID bit an
 });
 
 test("both publishers create the report folder with the run-folder mode, and neither chmods it", () => {
+  // Code only: shell.mjs names the old `grpRead(poolRunDir, …)` 403 bug in a comment, which is history, not a call.
+  const code = (rel) => readFileSync(join(ROOT, rel), "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/(^|[^:])\/\/.*$/gm, "$1");
+  const shell = code("driver/publish/shell.mjs");
+  const creates = shell.match(/mkdirSync\(poolRunDir,[^)]*\)/g) ?? [];
+  assert.equal(creates.length, 1, `shell.mjs: expected one place that creates the report folder, found ${creates.length}`);
+  assert.match(creates[0], /mode: RUN_DIR_MODE/, `shell.mjs creates the report folder without the run-folder mode: ${creates[0]}`);
+  for (const rel of ["driver/publish/shell.mjs", "driver/publish/index.mjs", "driver/publish/knockout.mjs"]) {
+    assert.doesNotMatch(code(rel), /chmodSync\(poolRunDir|grpRead\(poolRunDir/, `${rel} changes the report folder's mode after creating it`);
+  }
   for (const rel of ["driver/publish/index.mjs", "driver/publish/knockout.mjs"]) {
-    // Code only: index.mjs names the old `grpRead(poolRunDir, …)` 403 bug in a comment, which is history, not a call.
-    const src = readFileSync(join(ROOT, rel), "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/(^|[^:])\/\/.*$/gm, "$1");
-    const creates = src.match(/mkdirSync\(poolRunDir,[^)]*\)/g) ?? [];
-    assert.equal(creates.length, 1, `${rel}: expected one place that creates the report folder, found ${creates.length}`);
-    assert.match(creates[0], /mode: RUN_DIR_MODE/, `${rel} creates the report folder without the run-folder mode: ${creates[0]}`);
-    assert.doesNotMatch(src, /chmodSync\(poolRunDir|grpRead\(poolRunDir/, `${rel} changes the report folder's mode after creating it`);
+    assert.match(code(rel), /openPoolRun\(poolRoot, runId[,)]/, `${rel} does not open the report folder through the shell`);
+    assert.doesNotMatch(code(rel), /mkdirSync\(poolRunDir/, `${rel} creates the report folder itself`);
   }
 });

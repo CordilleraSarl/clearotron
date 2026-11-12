@@ -73,8 +73,8 @@ test("a batch still has NO run-level document, and asking for one still resolves
 
 test("the publisher writes the slug it computed — it was being thrown away one line from its use", () => {
   const t = src("driver/publish/knockout.mjs");
-  assert.match(t, /reports: reports\.map\(\(\{ mark, slug, file, dataFile, band \}\) => \(\{ mark, slug, file, dataFile, band \}\)\)/,
-    "meta.json's reports[] carries the slug; without it every consumer downstream is guessing");
+  assert.match(t, /reports: reports\.map\(\(\{ mark, slug, file, dataFile, band, url \}\) => \(\{ mark, slug, file, dataFile, band, url \}\)\)/,
+    "meta.json's reports[] carries the slug and the link; without them every consumer downstream is guessing");
 });
 
 test("the clearances row opens a run that has reports, however many", () => {

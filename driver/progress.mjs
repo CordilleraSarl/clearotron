@@ -13,10 +13,11 @@
 // Both writes are atomic (temp + rename) and idempotent — status is DERIVED from the current run, never
 // blindly incremented — so the resumable pipeline can re-drive a run without corrupting either file.
 
-import { readFileSync, writeFileSync, renameSync, unlinkSync, readdirSync, statSync, existsSync } from "node:fs";
+import { readdirSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path"; import { STUDIO_SEGMENT_RE } from "../shared/pre-rename-spellings.mjs";
 import { sepClass, notSepClass } from "../shared/path-seps.mjs";   // a Windows path is built with "\"
-import { DRIVER_DIR } from "../shared/driver-dir.mjs";   //
+import { isStopReason, stopReason } from "../shared/stop-reason.mjs";   // a stopped run's line is the stop's own reason
+import { DRIVER_DIR, atomicWrite, readJson } from "./run-record.mjs";
 import { config } from "./driver.config.mjs";
 import { batchMarkName } from "./mark-name.mjs";
 import { runLog, note } from "./log.mjs";
@@ -135,21 +136,7 @@ export function finalStepFields() {
 
 function nowISO() { return new Date().toISOString(); }
 
-// Exported (B5): pipeline.mjs routes findings.json, sentinels, front-matter and escalation-state
-// through this same idiom — the tmp lives in the TARGET's directory (a sibling name), so the rename
-// never crosses a device; a reader sees the old complete file or the new one, never a truncation.
-export function atomicWrite(file, text) {
-  // unique tmp name: concurrent runs (WS-C) can rollup the same STATUS.md — a shared .tmp would
-  // cross-rename/ENOENT between writers (content is derived-from-disk either way, so last-writer-wins
-  // on the RENAME is fine; the tmp file itself must not be shared).
-  const tmp = `${file}.${process.pid}.${Date.now().toString(36)}.tmp`;
-  writeFileSync(tmp, text);
-  try { renameSync(tmp, file); }
-  catch (e) {
-    try { unlinkSync(tmp); } catch { /* cleanup is best-effort — the rename failure is the real error */ }
-    throw e;
-  }
-}
+export { atomicWrite };   // until every importer takes it from the door
 
 function statusPath(runDir) { return join(runDir, "status.json"); }
 
@@ -159,7 +146,7 @@ function statusPath(runDir) { return join(runDir, "status.json"); }
  * a second copy of where status.json lives.
  */
 export function readRunStatus(runDir) {
-  try { return JSON.parse(readFileSync(statusPath(runDir), "utf8")); }
+  try { return readJson(statusPath(runDir)); }
   catch { return {}; }
 }
 
@@ -397,10 +384,21 @@ export function identitySeed() {
 // threads __stateReset because the resume guard has deliberately cleared a terminal sentinel. The
 // review/failedStage/reason resets stay (a resumed run owes a fresh outcome);
 // recoveryAttempts/recoveryHistory stay OUT of the seed (they are the park budget's memory).
+/**
+ * What a run's seed records about which pass this is: a fresh run is attempt 1; a resume records its own clock and
+ * counts itself, and threads __stateReset because the resume guard has deliberately cleared a terminal sentinel.
+ * Both products' seeds spread it. Reads status.json, so it is read before the seed writes.
+ */
+export function resumeRecord(runDir, resume) {
+  if (!resume) return { attempts: 1 };
+  const prior = readRunStatus(runDir);
+  return { resumedAt: nowISO(), attempts: (Number(prior.attempts) || 1) + 1, __stateReset: true };
+}
+
 export function seedRunStatus(ctx, { resume = false } = {}) {
   const { job, run, agent } = ctx;
   const first = stepForStage("matter-frame");
-  const prior = resume ? readRunStatus(run.runDir) : {};
+  const pass = resumeRecord(run.runDir, resume);
   writeRunStatus(ctx, {
     schema: 1,
     id: job.id,
@@ -434,9 +432,7 @@ export function seedRunStatus(ctx, { resume = false } = {}) {
     failedStage: null,
     reason: null,
     deliveredAt: null,
-    ...(resume
-      ? { resumedAt: nowISO(), attempts: (Number(prior.attempts) || 1) + 1, __stateReset: true }
-      : { attempts: 1 }),
+    ...pass,
   }, null, { critical: true });   // door B — the clearance lane's identity seed, same rule
 }
 
@@ -473,7 +469,9 @@ function currentStepOf(step) {
 // The archive lives UNDER studioRoot (studioRoot/archive/...), so a recursive walk of studioRoot finds
 // both in-flight and delivered/failed runs. Cap depth (status.json only sits at the run-dir level) and
 // skip the high-churn leaf dirs for speed.
-const SKIP_DIRS = new Set([DRIVER_DIR, "register-units", "queue", "_history", "_experiments", "_known-conflicts"]);   // the old per-mark recall store, left on disk by its removal, holds no status.json
+// `_records` holds a run's fetched register records, about 2,100 files on a large run, and never a status.json; no
+// run, customer or date folder is named with a leading underscore, so skipping it changes nothing the walk finds.
+const SKIP_DIRS = new Set([DRIVER_DIR, "register-units", "queue", "_history", "_experiments", "_known-conflicts", "_records"]);   // the old per-mark recall store, left on disk by its removal, holds no status.json
 const MAX_RUNS = 12;
 
 function findStatusFiles(root, depth, acc) {
@@ -538,6 +536,13 @@ export function lineFor(s) {
     // (unit disabled, manual runner), a human owns it, so the line must never read as quietly settled.
     return `- ${head} — ⏸ PARKED (runner stopped mid-run${s.parkedKind ? `: ${s.parkedKind}` : ""}) at ${s.lastStage ?? stepTxt} — resumes on the next runner activation; if none is coming, resume it by hand`;
   }
+  if (s.state === "cancelled") {
+    // A STOPPED RUN SAYS SO, in the words the stop already wrote: "stopped by request at ⟨stage⟩ via ⟨route⟩ (asked
+    // ⟨time⟩)", the same for both products. With no line of its own it fell through to "running", and a stopped run
+    // read as a live one that never finished. A status that holds no such reason gets the same sentence from the stage
+    // it records, from the same composer.
+    return `- ${head} — ${isStopReason(s.reason) ? s.reason : stopReason({ stage: s.failedStage ?? s.lastStage })}`;
+  }
   if (s.state === "postponed") {
     // rate-limit pause: alive + auto-resuming — never render as "running" (would hide the pause + ETA).
     const when = s.resetsAt ? ` — resumes ${String(s.resetsAt).replace("T", " ").slice(0, 16)} UTC` : " — resumes when the cap resets";
@@ -556,7 +561,7 @@ export function rollupStatus(studioRoot) {
     const byRun = new Map();
     for (const f of files) {
       let s;
-      try { s = JSON.parse(readFileSync(f, "utf8")); } catch { continue; }
+      try { s = readJson(f); } catch { continue; }
       // THE ROLLUP SETTLES FROM THE SAME STORE mark_sent writes (audit item 7): `.sent` beside
       // status.json is the primary settle receipt, and mark_sent's sendPending flip is best-effort —
       // a flip that failed left STATUS.md shouting "SEND PENDING" over a run whose .sent guard was

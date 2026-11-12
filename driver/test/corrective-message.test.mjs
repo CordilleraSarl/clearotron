@@ -25,9 +25,9 @@ test("attempt >1 after a content failure → appends a CORRECTION naming the rea
   assert.match(mm, /CORRECTION:/);
 });
 
-test("reason-aware hint: a use_check_missing failure tells synthesis to add the Use-check source line", () => {
+test("reason-aware hint: a use_check_missing failure tells synthesis to record the use-check source", () => {
   const m = correctiveMessage("Synthesize.", 2, "invalid_file:run/narrative.md:use_check_missing:Finding 1 — Myrkur", "/x/clearance-search/run/narrative.md");
-  assert.match(m, /Use-check source:/);
+  assert.match(m, /`use_check\.source`/);
   assert.match(m, /perplexity_research/);
   assert.match(m, /use_check_missing/);            // the raw reason still rides in
   // a register-digest STRUCTURAL failure gets the sections hint instead. emits `findings-heading`
@@ -88,10 +88,12 @@ test("J1b: named_band_state_invalid names the bad state, dictates the in-place q
   assert.match(m, /NOT re-call register_execute_plan/, "the executor merge preserves the defect — the retry must not re-invoke it");
 });
 
-test("J3b: plan_audit_missing dictates the exact section title and keeps the verdict-first shape", async () => {
+test("J3b: plan_audit_missing asks for the audit on the typed route or as the exact section, and keeps verdict and flags", async () => {
   const m = correctiveMessage("Refute.", 2, "invalid_file:run/senior-eye-review.md:plan_audit_missing", "/x/run/senior-eye-review.md");
-  assert.match(m, /"PLAN-EXECUTION CHECK"/, "the exact required section title is dictated");
-  assert.match(m, /FIRST line/, "the verdict-first contract is restated");
+  assert.match(m, /"PLAN-EXECUTION CHECK"/, "the exact required section title is dictated for a review saved by rewriting its file");
+  assert.match(m, /make sure your review carries a plan audit: audit the /, "the hint does not read as the end state its wrapper asks for");
+  assert.match(m, /`plan_audit` in a new `record_narrative_refutation` call/, "the typed route is not named");
+  assert.match(m, /Keep your verdict and flags as they were/, "the review's verdict and flags are not kept")
   // — the grading is asserted BY THE LITERAL, not by a phrase retyped here. This line used to read
   // `/skipped fringe is sanctioned/`, which is the same defect the hint had: a fourth copy of one rule,
   // in a test, quietly deciding what "sanctioned" means. Now the repair turn and the two dispatch blocks
@@ -200,7 +202,7 @@ test("A6: max_tokens_no_output wrapping a content fail → the correction names 
   // a wrapped invalid_file keeps its reason-aware hint too
   const v = correctiveMessage(BASE, 2, "max_tokens_no_output:invalid_file:run/narrative.md:use_check_missing:F1", "/x/clearance-search/run/narrative.md");
   assert.match(v, /maximum output-token ceiling/);
-  assert.match(v, /Use-check source:/, "the content hint derivation reads the INNER fail");
+  assert.match(v, /`use_check\.source`/, "the content hint derivation reads the INNER fail");
 });
 
 test("A6: the BARE max_tokens_no_output fault (transport-shaped turn) still gets a correction naming the fix", () => {

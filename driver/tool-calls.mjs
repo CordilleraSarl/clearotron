@@ -32,10 +32,10 @@
 
 import { readFileSync, existsSync } from "node:fs";
 
-import { driverDir } from "../shared/driver-dir.mjs";   //
+import { paths } from "./run-record.mjs";
 
 /** Where the MCP servers write it. One per run, beside the other _driver artifacts. */
-export const toolCallsPath = (runDir) => driverDir(String(runDir ?? ""), "tool-calls.jsonl");
+export const toolCallsPath = (runDir) => paths(String(runDir ?? "")).toolCalls;
 
 /**
  * Every call that STARTED and never SETTLED, newest first.

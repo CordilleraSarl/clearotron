@@ -31,8 +31,8 @@
 // wrong `false` is therefore an OUTAGE, while a wrong `true` is the status quo this defect already
 // describes. So a path is outside only when BOTH the lexical reading and the symlink-resolved one say so:
 // `resolve()` alone is lexical, and these stores are routinely reached through symlinked paths
-// (`/opt/cordillera/...`), where a store genuinely inside the repository resolves to a string that does
-// not look like it.
+// (a packaged deployment's path), where a store genuinely inside the repository resolves to a string
+// that does not look like it.
 //
 // A path that cannot be read falls back to its own lexical form, NOT to "contained". A store directory
 // that does not exist yet is still misconfigured if it names another tree — the service would create it
@@ -187,7 +187,7 @@ export function makeCommittableAudit({ auditPath, repoRoot }) {
   // lexical reading first and falls back to the symlink-resolved one; a path that cannot be read falls
   // back to its own lexical form. The store DIRECTORY exists, so it resolves. The audit file does not
   // exist yet at wiring time, so it does not — and under a store reached through a symlink (every
-  // `/opt/cordillera/...` deployment) the resolved repo root and the unresolved file path have nothing
+  // packaged deployment's path) the resolved repo root and the unresolved file path have nothing
   // in common. The guard one screen up would pass, this would answer `false`, no row would ever be
   // staged, and NOTHING WOULD RED: the failure is a return value nobody asserts on. Measured, before
   // the arm below existed: boot guard true, file-level test false, same two directories.

@@ -33,7 +33,7 @@ test("refless job → ok:true with a proceed-with-default warning (§B2: ref nev
   // — the owner's wording. "a refless slug" named an internal artefact at a reader
   // who has no idea a slug exists; the warning is the driver's and the UI shows it verbatim, so the
   // string changed HERE rather than being translated at one of the two surfaces that print it.
-  assert.match(v.warnings.join(" "), /proceeding with no reference/);
+  assert.match(v.warnings.join(" "), /No reference number was given, so this search has none\./);
   assert.doesNotMatch(v.warnings.join(" "), /refless slug/, "the internal word is gone from what a reader sees");
 });
 

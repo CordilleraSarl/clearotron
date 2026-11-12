@@ -8,6 +8,7 @@
 // delivered BLOCKING, beside a report rating of Medium; the delivery email's banner said the same. Both
 // reached for the gate's word because it was the only outcome word recorded where they look.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -81,7 +82,7 @@ test("a run recorded before the band was written still shows one, read from its 
 });
 
 test("the driver records the band and the sentence on the run's status", () => {
-  const src = readFileSync(join(ROOT, "driver", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.match(src, /writeRunStatus\(ctx, \{ tier: derived\.tier \?\? null, statement: statement \?\? null \}\)/,
     "status.json carries no band, so every summary must reach for the gate's word again");
 });

@@ -22,9 +22,10 @@
 // Lives in the run-lock dir because that is already the one directory every process in an install shares
 // — the same place `acquireRunSlot` coordinates the concurrency cap.
 
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { writeFileSync, mkdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { procStarttime } from "./claim-liveness.mjs";
+import { readJson } from "./run-record.mjs";
 
 export const HEARTBEAT_FILE = "worker.heartbeat";
 
@@ -60,7 +61,7 @@ export function beat(dir, { now = Date.now(), pid = process.pid, starttimeOf = p
  */
 export function workerAlive(dir, { now = Date.now(), staleMs = 3 * 90_000, starttimeOf = procStarttime } = {}) {
   let rec;
-  try { rec = JSON.parse(readFileSync(heartbeatPath(dir), "utf8")); } catch { return false; }
+  try { rec = readJson(heartbeatPath(dir)); } catch { return false; }
   if (!rec || typeof rec.pid !== "number" || typeof rec.at !== "number") return false;
   if (now - rec.at > staleMs) return false;
   // A recycled pid is the case the birth stamp exists for: the number is live and belongs to something

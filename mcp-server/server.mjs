@@ -26,9 +26,8 @@ import {
   ListResourcesRequestSchema, ReadResourceRequestSchema, ListResourceTemplatesRequestSchema,
   ListPromptsRequestSchema, GetPromptRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync } from "node:fs";
 import { join, basename } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
 import { fileURLToPath } from "node:url";
 
 import { enumerateRuns, resolveRun, runAccountKey, runOrganisation, runProfileFacts, productIdentityFor, unreadableRunsReason } from "./lib/runs.mjs";
@@ -93,6 +92,7 @@ import { instructionsFor } from "./lib/instructions.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { BRAND } from "../shared/brand.mjs";   // — the operator name a client is told to expect, from the tenant seam
 import { productIdentity } from "../shared/product-identity.mjs";   // AGPL §13 — one answer, three surfaces
+import { driverDir, readJson } from "../driver/run-record.mjs";
 
 const NS = "trademark-artifacts";
 const log = (...a) => process.stderr.write(`[${NS}] ${a.join(" ")}\n`);
@@ -129,7 +129,7 @@ function artifactPath(run, name) {
   // That is the defect this issue is about, reappearing one layer down. Returning null instead makes the
   // tool refuse the name and name the artifacts this run actually has.
   if (isKnockoutRun(run)) return knockoutArtifactPath(run, name);
-  if (name === "run.jsonl" || name === "telemetry/run.jsonl") return driverDir(runDir, "run.jsonl");
+  if (name === "run.jsonl" || name === "telemetry/run.jsonl") return paths(runDir).run;
   if (REGISTER_AXES.includes(name)) return P.registerUnit(name);
   // validate the axis against the known set — never let a "registerUnit:../../x" escape the run-dir
   if (name.startsWith("registerUnit:")) { const ax = name.split(":")[1]; return REGISTER_AXES.includes(ax) ? P.registerUnit(ax) : null; }
@@ -148,7 +148,7 @@ function listArtifacts(run) {
   for (const [k, v] of Object.entries(P)) { if (k === "runDir" || typeof v === "function") continue; if (existsSync(v)) out.push({ name: k, file: basename(v) }); }
   for (const ax of REGISTER_AXES) { const p = P.registerUnit(ax); if (existsSync(p)) out.push({ name: `registerUnit:${ax}`, file: basename(p) }); }
   if (existsSync(join(run.runDir, "status.json"))) out.push({ name: "status.json", file: "status.json" });
-  if (existsSync(driverDir(run.runDir, "run.jsonl"))) out.push({ name: "run.jsonl", file: "_driver/run.jsonl" });
+  if (existsSync(paths(run.runDir).run)) out.push({ name: "run.jsonl", file: "_driver/run.jsonl" });
   return out;
 }
 
@@ -250,7 +250,7 @@ function runSummary(run) {
 function channelState(runDir) {
   const legacySent = existsSync(join(runDir, ".sent"));
   let receipts = {};
-  try { receipts = JSON.parse(readFileSync(driverDir(runDir, "send-receipts.json"), "utf8")) ?? {}; }
+  try { receipts = readJson(paths(runDir).sendReceipts) ?? {}; }
   catch { /* absent (fresh/legacy run) or unreadable — fall back to the .sent marker alone */ }
   const chan = (key, idField) => ({
     sent: Boolean(receipts[key]) || legacySent,

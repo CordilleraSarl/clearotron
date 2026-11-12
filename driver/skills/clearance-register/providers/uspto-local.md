@@ -134,30 +134,6 @@ follows [../SKILL.md](../SKILL.md) → *Coverage ledger*.
 The same rule covers the two capability gaps above: a phonetic slice and an internal-wildcard pattern are
 `deferred`, not `coverage-limited` and never clean.
 
-## Provenance
-
-Built against USPTO's *Trademark Applications DTD V2.0*; status codes enumerated from the office's status
-code table. Predicate behaviour, class canonicalisation, the chunk-boundary and freshness refusals, and
-the `match_mode` translation are each covered by tests under `providers/uspto-local/test/`, run against
-fixtures written to the DTD's element names.
-
-**The empirical-verification checklist in [README.md](README.md) is NOT complete, and the reason is
-recorded rather than glossed.** Bulk download needs a free USPTO account with ID.me identity
-verification, which has not been obtained yet, so no real bulk file has been ingested. Verified against
-fixtures; **unverified against real data**:
-
-- whether `ownerCountry` and the status date are populated in practice, or mostly absent
-- the real delta cadence — if the office publishes weekly rather than daily, the 24-hour freshness rule
-  refuses every count and the threshold is wrong, not the data
-- `nativeScriptIndex` — **declared `null` (undeclared), not `false`**. Nobody has probed the tokenizer
-  against non-Latin filings. Until someone does, a non-Latin term defers and is disclosed; it is not
-  answered by its romanisation. Guessing `false` here would silently romanise every such term.
-- the true record count and the measured build time at full scale
-
-Treat each as an open question, not a settled fact. An unprobed capability is declared `null` for exactly
-this reason: an absent field and a declared "we do not know" read identically to a human, and only one of
-them is honest.
-
 ## Record base host
 
 `https://tsdr.uspto.gov`

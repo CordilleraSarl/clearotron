@@ -49,9 +49,9 @@
 // Writing a second application path would be the second writer, one artifact earlier.
 import { readFileSync, writeFileSync, mkdirSync, appendFileSync, readdirSync } from "node:fs";
 import { join, basename } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
 import { acceptClosureCall, toClosureLines, MAX_CLOSURES_PER_CALL } from "./doubt-closure-call.mjs";
 import { idSetHash as idSetHashOf, priorCallWithIdSet as priorCallWithIdSetIn } from "./call-repeat.mjs";   //
+import { driverDir, readJson } from "./run-record.mjs";
 
 const CALLS_DIR = "doubt-closure-calls";
 const ARTIFACT = "doubt-closure.md";   // conversion 6 — the driver's render, read by validators.doubtClosure
@@ -294,7 +294,7 @@ export function readAcceptedClosures(runDir) {
   try { names = readdirSync(dir).filter((f) => /^accepted-\d+\.json$/.test(f)).sort(); } catch { return out; }
   for (const n of names) {
     try {
-      const doc = JSON.parse(readFileSync(join(dir, n), "utf8"));
+      const doc = readJson(join(dir, n));
       if (Array.isArray(doc?.lines?.doubt)) out.doubt.push(...doc.lines.doubt);
       if (Array.isArray(doc?.lines?.ask)) out.ask.push(...doc.lines.ask);
       out.files++;

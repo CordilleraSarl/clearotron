@@ -31,6 +31,7 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createServer, request as httpRequest } from "node:http";
+import { driverSource } from "./driver-source.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const { makeHttpHandler, makePortalService, resetDoctrineStoreCache } = await import("../portal-service.mjs");
@@ -77,7 +78,7 @@ test("the endpoint and the publisher import the same stamp, so they cannot drift
   // The join the acceptance criterion is really about, asserted at the source rather than by comparing
   // two runtime values that happen to agree today. A shape test would pass on a re-derived sha.
   const publisher = readFileSync(join(ROOT, "driver/publish/index.mjs"), "utf8");
-  const portal = readFileSync(join(ROOT, "driver/portal-service.mjs"), "utf8");
+  const portal = driverSource("portal-service.mjs");
   for (const [what, src] of [["the publisher", publisher], ["the portal", portal]]) {
     // widened the character class, not the subject. This guard is about the JOIN — that both
     // sites call engine-build's own function rather than re-deriving a sha — and added sibling
@@ -89,7 +90,9 @@ test("the endpoint and the publisher import the same stamp, so they cannot drift
       `${what} no longer imports engineCommit from engine-build.mjs — if either grows its own, /health `
       + `stops being a statement about the run that pool meta will record`);
   }
-  assert.match(publisher, /engineCommit: engineCommit\(\)/, "and the publisher still stamps it into meta.json");
+  // The report document reads the stamp once, and meta.json takes it from the document.
+  assert.match(publisher, /engineCommit: engineCommit\(\)/, "the publisher's report document reads engine-build's own stamp");
+  assert.match(publisher, /\n    engineCommit: doc\.engineCommit,\n/, "and the publisher still stamps it into meta.json");
 });
 
 test("health answers BEFORE identity — any account can confirm a deploy with no grant", async () => {
@@ -134,7 +137,7 @@ test("the store answer has a bounded staleness — the engine's cache rule does 
   // engine-build.mjs caches for the life of the process and says why: code cannot change under a
   // running process. Doctrine CAN — a config deploy re-renders the overlay in place while the portal
   // keeps running — so a store sha cached the same way would answer with what was there at boot.
-  const src = readFileSync(join(ROOT, "driver/portal-service.mjs"), "utf8");
+  const src = driverSource("portal-service.mjs");
   const m = /const STORE_TTL_MS = ([\d_]+);/.exec(src);
   assert.ok(m, "the store answer has no declared TTL — then its staleness is unbounded and unstated");
   const ttl = Number(m[1].replace(/_/g, ""));

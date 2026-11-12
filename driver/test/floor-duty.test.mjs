@@ -14,13 +14,13 @@
 // (a line-wrap split "Unity\nTechnologies"; a prefix list omitted `phonetic`). The ruling of
 // 2026-08-20 narrowed the duty to a ROW ON A FORM, which is why nothing here reads prose.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { reconcileFloorDuty, floorDutyEvent, FLOOR_DUTY_SCHEMA_VERSION, armFloorDuty, floorDutyArmed, FLOOR_DUTY_STAMP, floorDutyBlock, floorDutyBlocksSkip, FLOOR_DUTY_STAGE } from "../floor-duty.mjs";
 import { readFileSync, mkdtempSync, rmSync, existsSync, writeFileSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { driverDir } from "../../shared/driver-dir.mjs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 
 const floor = (id, over = {}) => ({
   record_id: id, mark_text: "NOVAPULSO", owner_name: "Someone Ltd", registry: "CN",
@@ -179,7 +179,7 @@ test("malformed inputs do not throw", () => {
 // that a MISSING input routes to `notComputable` rather than to a reconcile over `[]` — which would
 // write "0 floors, 0 unanswered" and read as a clean floor. That inversion is the whole risk, so the
 // guards are asserted to exist, WITH a control that fails if this test is looking at the wrong text.
-const PIPELINE = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "pipeline.mjs"), "utf8");
+const PIPELINE = driverSource("pipeline.mjs");
 const DERIVE = PIPELINE.slice(PIPELINE.indexOf("function deriveFloorDuty"),
   PIPELINE.indexOf("function derivePlacementCarry"));
 
@@ -432,7 +432,7 @@ test("the SKIP CONDITION ITSELF consults the duty — calling the predicate is n
   //
   // That is the shape this whole issue is about, reproduced inside its own fix: a thing that is measured
   // and a thing that decides, drifting apart. So the assertion is on the CONDITION, not on the call.
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.match(src, /floorDutyBlocksSkip\(/, "pipeline.mjs no longer calls the shared predicate");
 
   // ✕ TWO LINES MATCH `if (!forced &&` — the generic stage skip and register-unit's own code-side one.

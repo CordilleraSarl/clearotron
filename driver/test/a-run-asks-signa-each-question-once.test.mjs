@@ -8,7 +8,7 @@
 //
 // THE CHANGE, and what each arm below holds it to:
 //   · a memory at the one HTTP chokepoint, in the run's `_driver/` folder, so the driver and the tool
-//     servers share it; one attempt long; `off` by default, `watch` asks every time and records whether
+//     servers share it; one attempt long; `on` by default, `watch` asks every time and records whether
 //     the held answer matched (total, id set and id order apart), `on` answers from it;
 //   · only complete answers are kept, and never a failure;
 //   · a knockout lists first and takes the identical and close counts from the listing's totals, because
@@ -90,10 +90,10 @@ const ask = (d, body = SEARCH) => signaFetch("key", BASE, "/v1/trademarks", { me
 
 // ── the switch and the attempt ──────────────────────────────────────────────────────────────────────
 
-test("the switch: unset is off, the three words are themselves, anything else is off and named", () => {
-  assert.deepEqual(answerMemoryMode({}), { mode: "off", unknown: null });
+test("the switch: unset is on, the three words are themselves, anything else is on and named", () => {
+  assert.deepEqual(answerMemoryMode({}), { mode: "on", unknown: null });
   for (const m of ["off", "watch", "on"]) assert.equal(answerMemoryMode({ CLEAROTRON_SIGNA_ANSWER_MEMORY: m.toUpperCase() }).mode, m);
-  assert.deepEqual(answerMemoryMode({ CLEAROTRON_SIGNA_ANSWER_MEMORY: "yes" }), { mode: "off", unknown: "yes" });
+  assert.deepEqual(answerMemoryMode({ CLEAROTRON_SIGNA_ANSWER_MEMORY: "yes" }), { mode: "on", unknown: "yes" });
   assert.equal(answerMemoryMode({ CLEAROTRON_SIGNA_ANSWER_MEMORY: "on" }, "corsearch").mode, "off", "another register has no memory");
 });
 
@@ -104,7 +104,7 @@ test("an attempt begins a folder for watch or on, only for this register, and dr
   assert.equal(existsSync(folder), false, "another register's run folder is exactly as before");
   assert.equal(beginAnswerMemory(d, "signa", { env: { CLEAROTRON_SIGNA_ANSWER_MEMORY: "watch" } }).mode, "watch");
   writeFileSync(join(folder, "left-by-the-last-attempt.json.gz"), "x");
-  assert.equal(beginAnswerMemory(d, "signa", { env: {} }).mode, "off");
+  assert.equal(beginAnswerMemory(d, "signa", { env: { CLEAROTRON_SIGNA_ANSWER_MEMORY: "off" } }).mode, "off");
   assert.equal(existsSync(folder), false, "a new attempt never inherits an earlier attempt's answers");
 });
 

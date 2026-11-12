@@ -29,8 +29,8 @@
 // A census alone would have passed the whole time: the call site existed and was declared. A
 // behavioural test alone covers the three modes someone thought of. Neither is the guard on its own.
 import { test } from "node:test";
-import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import assert from "node:assert/strict";
 import { fileURLToPath } from "node:url";
 import { unionDispositionForm } from "../disposition-union.mjs";
 import { connotationObligations, obligationRows } from "../connotation-search.mjs";
@@ -47,7 +47,7 @@ const CALL_SITES = [
   { file: "gateway.mjs", route: "prior-rows",
     why: "prior-only regeneration on every attempt: no submission and no ledger, so the park is already on "
        + "the accumulator rows and the union's whole job is to carry it" },
-  { file: "pipeline.mjs", route: "prior-rows",
+  { file: "register-sweep.mjs", route: "prior-rows",
     why: "#1277 — the half→canonical merge, same prior-only mode. It passed the halves as the SUBMITTED "
        + "argument, which is not a trusted prior, and every park on them was erased at the merge" },
 ];
@@ -59,7 +59,7 @@ test("every call site of the union is declared, with the route its park travels 
   const tracked = trackedFiles(GUARD, { root: ROOT, pathspec: ["*.mjs"] });
   if (tracked === null) return ctx.skip(skipReason(GUARD));
   const files = tracked.map((f) => f.trim()).filter(Boolean).filter((f) => !f.startsWith("test/"));
-  const read = (f) => readFileSync(new URL(f, new URL("../", import.meta.url)), "utf8");
+  const read = (f) => readFileSync(new URL(f, new URL("../", import.meta.url)), "utf8");   // each file alone: this walks every file, so a moved site is attributed to where it now is
   // Comments stripped first: this file and the union's own header discuss the call sites at length, and
   // counting a comment as a call site is the inversion the tripwire already had to fix once.
   const codeOf = (src) => src.replace(/\/\*[\s\S]*?\*\//g, "")

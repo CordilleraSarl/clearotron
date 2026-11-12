@@ -7,10 +7,11 @@
 // and skips: not-due (backoff window open), pre-fix sentinels (no resume payload), and already-terminal runs.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync, utimesSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
+import { startedOnThisBuild } from "./started-on-this-build.mjs";   // the row a run writes when it starts
 
 // set the workspace root BEFORE driver.config.mjs loads (via the dynamic runner import below), so config.workspaceRoot freezes to our temp dir
 const ROOT = mkdtempSync(join(tmpdir(), "clearotron-resume-"));
@@ -21,7 +22,7 @@ process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 const mkRun = (agent, slug, run) => {
   const d = join(ROOT, `workspace-${agent}`, "studio", "clearance-search", slug, run);
   mkdirSync(d, { recursive: true });
-  return d;
+  return startedOnThisBuild(d);
 };
 const past = new Date(Date.now() - 60_000).toISOString();
 const future = new Date(Date.now() + 3_600_000).toISOString();
@@ -102,4 +103,31 @@ test("resumeRunDirOrphans: throwing resume re-parks with a reparks count, termin
   assert.equal(status.state, "failed");
   assert.equal(status.failedStage, "self-resume");
   assert.ok(!existsSync(join(runDir, ".postponed")), "no further re-park at the cap");
+});
+
+// A RUN THAT PARKS AFTER IT PUBLISHED IS RESUMED LIKE ANY OTHER PARK.
+//
+// A run publishes, then fails in a later delivery step (the email compose, the packet write) and parks for recovery.
+// Its folder holds `.published` and, newer, `.postponed`. The watcher read `.published` as "this run moved on" and
+// never resumed it, so the run sat parked with its report published and no notice sent. Only a park older than the
+// publish means that: a resume deletes the park it resumes, so such a park is stale.
+test("scanDueRunDirOrphans: a park written after the publish is resumed; a park older than the publish is not", async () => {
+  const { scanDueRunDirOrphans, publishedSincePark } = await import("../runner.mjs");
+  const at = (path, ms) => utimesSync(path, new Date(ms), new Date(ms));
+  const now = Date.now();
+
+  const after = mkRun("mailagent", "mark-h", "2026-11-10-cobalt");
+  writeFileSync(join(after, ".published"), "{}"); at(join(after, ".published"), now - 120_000);
+  writeFileSync(join(after, ".postponed"), payload({ codename: "cobalt" })); at(join(after, ".postponed"), now - 60_000);
+
+  const before = mkRun("mailagent", "mark-i", "2026-11-10-garnet");
+  writeFileSync(join(before, ".postponed"), payload({ codename: "garnet" })); at(join(before, ".postponed"), now - 120_000);
+  writeFileSync(join(before, ".published"), "{}"); at(join(before, ".published"), now - 60_000);
+
+  const found = scanDueRunDirOrphans().map((o) => o.codename);
+  assert.ok(found.includes("cobalt"), `the run that parked after publishing was not resumed: ${found.join(", ")}`);
+  assert.equal(found.includes("garnet"), false, "a park older than the publish is stale, and stays where it is");
+
+  assert.equal(publishedSincePark(join(after, ".nothing-here"), join(after, ".postponed")), false, "no publish, nothing to compare");
+  assert.equal(publishedSincePark(join(after, ".published"), join(after, ".no-park")), true, "an unreadable time reads as moved on");
 });

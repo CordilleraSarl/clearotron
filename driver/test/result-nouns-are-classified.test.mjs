@@ -16,6 +16,7 @@
 // a sentence. `ObjectExpression` properties only, never `ObjectPattern`, so a destructuring
 // `list_searches({ runId, outcome })` is a read and not a write.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -62,7 +63,7 @@ function derive() {
   if (!tracked) return null;
   assert.ok(tracked.length > 0, "the tracked-file scan returned no .mjs files — an empty corpus makes every count below zero for the wrong reason");
   // `_driver` artifact keys, read from where the path table is built rather than listed here.
-  const stages = readFileSync(join(ROOT, "driver", "stages.mjs"), "utf8");
+  const stages = driverSource("stages.mjs");
   const driverKeys = new Set([...stages.matchAll(/^\s+([a-zA-Z_]\w*):\s*p\(driverRel\(/gm)].map((m) => m[1]));
   assert.ok(driverKeys.size > 0, "no `p(driverRel(…))` path keys were found — the write-site half cannot discriminate");
 
@@ -75,7 +76,7 @@ function derive() {
   for (const f of tracked) {
     if (/(^|\/)tests?\//.test(f) || f.startsWith("node_modules/")) continue;
     let src; try { src = readFileSync(join(ROOT, f), "utf8"); } catch { continue; }
-    if (!/driverDir\(|run\.jsonl|atomicWrite\(/.test(src)) continue;
+    if (!/driverDir\(|\bpaths\(|run\.jsonl|atomicWrite\(/.test(src)) continue;
     let ast; try { ast = acorn.parse(src, { ecmaVersion: "latest", sourceType: "module", locations: true }); } catch { continue; }
     for (const t of nounSites(ast)) bump(f, t.split("@")[0]).sites.add(t);
     walk(ast, (n) => {
@@ -87,7 +88,8 @@ function derive() {
         const first = n.arguments[0];
         if (!first) return;
         const viaDriverDir = JSON.stringify(first).includes('"name":"driverDir"');
-        const pKey = first.type === "MemberExpression" && first.object?.name === "P" ? first.property?.name : null;
+        const viaPaths = first.object?.name === "P" || (first.object?.type === "CallExpression" && first.object.callee?.name === "paths");
+        const pKey = first.type === "MemberExpression" && viaPaths ? first.property?.name : null;
         if (viaDriverDir || (pKey && driverKeys.has(pKey))) args = n.arguments.slice(1);
       }
       if (!args) return;

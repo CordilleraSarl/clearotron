@@ -22,7 +22,7 @@ import "../shared/env-local.mjs";   // side effect: apply <repo>/.env when THIS 
 import "./engine/mcp/http-dispatcher.mjs";   // side effect: raise undici headersTimeout (code-side fetches)
 import { readdirSync, renameSync, existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync, rmSync, statSync } from "node:fs";
 import { join, dirname, basename } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
-import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
+import { crossBuildResumeRefusal } from "./one-build-per-run.mjs";   // a run is finished on the build it started on (owner, 2026-11-09)
 // The queue's filename vocabulary, in ONE place — the rule, extended by to the prose-sidecar and
 // claim-sidecar names, because a harness check retyped four of them from memory and false-alarmed on the
 // other nine. Behaviour here is unchanged: the same object and the same three suffixes, sourced.
@@ -65,7 +65,7 @@ import { drainWhatIfQueues, liveRunDirs } from "./whatif-worker.mjs";
 // throw. A self-contained LEGACY job (prose inline in the JSON, no sidecars) assembles unchanged: the overlay
 // loop is a no-op. A present, non-empty sidecar overrides the manifest's value for that field (sidecar wins).
 function assembleJob(procPath, qdir, base) {
-  const job = JSON.parse(readFileSync(procPath, "utf8"));
+  const job = readJson(procPath);
   // Prose sidecars share the job's BARE base (<id>.markName.md, …). A manifest mis-named `<id>.manifest.json`
   // — an observed forwarding-agent fumble (live, 2026-06-19) — leaves `base` as "<id>.manifest", so the
   // bare-base sidecars stop matching and the mark name never overlays → the job parks "missing mark name(s)".
@@ -267,7 +267,7 @@ export function checkRunCaps({ account, caps, queueDirs, inHandTagged = true, no
       let files = [];
       try { files = readdirSync(qd).filter(isLiveQueueMarker); } catch { continue; }
       for (const f of files) {
-        try { const j = JSON.parse(readFileSync(join(qd, f), "utf8")); if (inLane(j.profileKey, j.tenant)) queued++; }
+        try { const j = readJson(join(qd, f)); if (inLane(j.profileKey, j.tenant)) queued++; }
         catch { /* mid-rename / prose sidecar — skip */ }
       }
     }
@@ -552,6 +552,7 @@ import { procStarttime, parseClaimSidecar, claimAgeMs, claimerIsAlive } from "./
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { beat } from "./worker-heartbeat.mjs";   // — is anything draining this install
 import { BRAND } from "../shared/brand.mjs";   // — the operator name in the allowance note, from the tenant seam
+import { ensureDriverDir, paths, readJson } from "./run-record.mjs";   // — one definition of where `_driver/` is
 export { procStarttime, parseClaimSidecar, claimAgeMs, claimerIsAlive };
 
 // — a queue running WITHOUT the birth stamp says so, once, out loud. Where no stamp can be read
@@ -567,7 +568,7 @@ export function claimToken(pid = process.pid) {
   if (!st && !starttimeGapAnnounced) {
     starttimeGapAnnounced = true;
     note("[runner] no birth stamp for this pid on this host — neither /proc/<pid>/stat nor `ps` " +
-      "answered, so claims record a BARE PID and the #665 PID-reuse " +
+      "answered, so claims record a BARE PID and the PID-reuse " +
       "defence is inactive. Fail-safe direction (a claim whose liveness cannot be proved counts as " +
       "ALIVE): no run is ever double-claimed and no lawyer double-delivered to. What is lost: a " +
       "`.processing` held by a RECYCLED pid is not freed by liveness and waits for the max-claim-age " +
@@ -710,7 +711,7 @@ function preRunFailNotify(agentId, base, job, reason) {
   return Boolean(p);
 }
 
-// B3 — guaranteed failure-notice backstop for PRE-TRY throws. pipelineInner's run-level catch owns every
+// B3 — guaranteed failure-notice backstop for PRE-TRY throws. The run-level catch in `runShell` owns every
 // failure inside its try{} (it RETURNS {ok:false, failedStage, …} after notifying — the
 // _driver/failure.json + outbox packet); a throw that reaches runPrepared's catch instead (res.failedStage
 // unset) came from the SETUP code before that try — corrupt profile sidecar, missing framework manifest,
@@ -735,7 +736,7 @@ async function backstopFailureNotice({ res, job, agentId, base, codename, studio
     const owned = codename ? findRunDirFor({ codename, slug, studioRoot, archiveRoot }) : null;
     if (!owned) { preRunFailNotify(agentId, base, job, shortReason); return; }
     if (owned.kind === "archived" || existsSync(join(owned.dir, ".delivered"))) return;   // report already delivered
-    if (existsSync(driverDir(owned.dir, "failure.json"))) return;                   // already noticed
+    if (existsSync(paths(owned.dir).failure)) return;                   // already noticed
     const packet = buildFailurePacket({
       // canonical runId form (charter P1 §3): `<slug>-<date>-<codename>` — owned.dir's leaf IS
       // "<date>-<codename>", so the dated id is derivable even here (matches status.runId + rescan).
@@ -745,13 +746,13 @@ async function backstopFailureNotice({ res, job, agentId, base, codename, studio
     // same per-send invariant as the pipeline's failure path: a fresh notice supersedes an older .sent
     // and its per-channel receipts (B4 — stale receipts would make clearotron-deliver skip this notice)
     try { rmSync(join(owned.dir, ".sent"), { force: true }); } catch { /* none */ }
-    try { rmSync(driverDir(owned.dir, "send-receipts.json"), { force: true }); } catch { /* none */ }
+    try { rmSync(paths(owned.dir).sendReceipts, { force: true }); } catch { /* none */ }
     ensureDriverDir(owned.dir);
-    writeFileSync(driverDir(owned.dir, "failure.json"), JSON.stringify(packet, null, 2) + "\n");
+    writeFileSync(paths(owned.dir).failure, JSON.stringify(packet, null, 2) + "\n");
     // status flip mirrors the pipeline path (best-effort — packet + marker are the guaranteed lane)
     try {
       const sp = join(owned.dir, "status.json");
-      const s = JSON.parse(readFileSync(sp, "utf8"));
+      const s = readJson(sp);
       writeFileSync(sp, JSON.stringify({ ...s, state: "failed", failedStage: "pre-run", reason: shortReason, reasonTruncated, reasonFull, sendPending: true }, null, 2) + "\n");
     } catch { /* a pre-seed throw leaves no status.json — the packet still notifies */ }
     mkdirSync(config.outboxDir, { recursive: true });
@@ -1079,6 +1080,18 @@ export function parkCause(res = {}) {
 // CONCURRENTLY across a queue's prepared jobs — each owns its own .processing/.pid + run dir, and the
 // matter-dedup was already settled serially in claimAndPrep. The run-slot cap (acquireRunSlot) bounds how
 // many pipelines actually run at once.
+/** The refusal for resuming this claim's run on the running build, recorded in the run's log, or null. */
+function resumeRefusalFor({ job, identity, studioRoot, archiveRoot }) {
+  const owned = findRunDirFor({ codename: identity.codename, slug: deriveSlug(job), dateISO: identity.dateISO ?? null, studioRoot, archiveRoot });
+  if (!owned?.dir) return null;   // no run folder: the pipeline's own resume refuses that, by name
+  const refused = crossBuildResumeRefusal(owned.dir);
+  if (refused) {
+    note(`[runner] ${identity.codename}: ${refused}`);
+    try { runLog(owned.dir, { event: "resume-refused", reason: refused }); } catch { /* the queue's failure record carries it too */ }
+  }
+  return refused;
+}
+
 async function runPrepared({ procPath, base, job }, qdir, agentId, resumeMeta = null) {
   const studioRoot = config.studioRootForAgent(agentId);
   const archiveRoot = config.archiveRootForAgent(agentId);
@@ -1107,13 +1120,16 @@ async function runPrepared({ procPath, base, job }, qdir, agentId, resumeMeta = 
   // whole recovery. Stated plainly because the previous wording said the dir "certainly exists", and an
   // arm built on that claim reddened main for one commit.
   inFlightRuns.set(procPath, { slug: deriveSlug(job), codename: identity.codename, dateISO: identity.dateISO ?? null, agentId, studioRoot, archiveRoot });
+  // A POSTPONED CLAIM OR A CRASH RECLAIM OF A RUN STARTED ON ANOTHER BUILD IS REFUSED here, before the pipeline is
+  // entered, and the refusal takes the failure path below like any other, the client's notice included.
+  const refused = resumeMeta ? resumeRefusalFor({ job, identity, studioRoot, archiveRoot }) : null;
   let res;
   try {
     // Run as the forwarding agent, with the run-dir + archive rooted in THAT agent's workspace (so the
     // agent's sandboxed write tool can reach them). Delivery still publishes to the central pool. resumeMeta
     // (set by resumePostponed / the crash-reclaim) reuses the prior codename's valid stages via the pipeline
     // resume path; a fresh job dispatches its pre-minted identity as a cold start (minted:true).
-    res = await pipeline(job, {
+    res = refused ? { ok: false, reason: refused } : await pipeline(job, {
       agent: agentId, studioRoot, archiveRoot,
       // A2 — pass the dispatch-persisted dateISO so the RESUME targets the EXACT `${dateISO}-${codename}`
       // run dir. Without it the pipeline re-resolves the date via a date-agnostic findRunDate() that could
@@ -1468,7 +1484,7 @@ export function claimDuePostponed(qdir) {
   for (const f of readdirSync(qdir).filter((f) => f.endsWith(".postponed"))) {
     const base = f.replace(/\.postponed$/, "");
     let meta = {};
-    try { meta = JSON.parse(readFileSync(join(qdir, `${base}.postponed.meta`), "utf8")); } catch { /* missing meta -> resume now (fail-open) */ }
+    try { meta = readJson(join(qdir, `${base}.postponed.meta`)); } catch { /* missing meta -> resume now (fail-open) */ }
     if (postponedDueAt(meta, config.rateLimitDefaultBackoffMs) > now) continue;   // window not elapsed yet
     // STOPPED WHILE PARKED. This is the resume path that most needs the check: a rate-limit park can
     // sit for hours, which is exactly when someone gives up and presses Stop — and a park has no turn
@@ -1571,7 +1587,7 @@ function queueOwnedCodenames() {
     try {
       for (const f of readdirSync(q)) {
         if (!f.endsWith(".postponed.meta") && !f.endsWith(".processing.meta")) continue;
-        try { const m = JSON.parse(readFileSync(join(q, f), "utf8")); if (m?.codename) owned.add(m.codename); } catch { /* skip */ }
+        try { const m = readJson(join(q, f)); if (m?.codename) owned.add(m.codename); } catch { /* skip */ }
       }
     } catch { /* queue dir absent */ }
   }
@@ -1602,7 +1618,7 @@ function queueTerminalCodenames() {
     try {
       for (const f of readdirSync(q)) {
         if (!suffixes.some((sfx) => f.endsWith(sfx))) continue;
-        try { const m = JSON.parse(readFileSync(join(q, f), "utf8")); if (m?.codename) settled.add(m.codename); } catch { /* skip */ }
+        try { const m = readJson(join(q, f)); if (m?.codename) settled.add(m.codename); } catch { /* skip */ }
       }
     } catch { /* queue dir absent */ }
   }
@@ -1646,7 +1662,16 @@ export function resumeClaimIsAbandoned(resumingPath, now = Date.now(), {
 // needs to see it once would be the person least able to find it.
 const announcedTerminalSkips = new Set();
 
-export function scanDueRunDirOrphans(now = Date.now()) {
+/** Is there a `.published` at `publishedPath` written no earlier than the park at `parkPath`? Unreadable reads as yes. */
+export function publishedSincePark(publishedPath, parkPath) {
+  if (!existsSync(publishedPath)) return false;
+  try { return statSync(publishedPath).mtimeMs >= statSync(parkPath).mtimeMs; } catch { return true; }
+}
+
+/** Every run folder this watcher will resume on its own, due now or later: what an update has to wait for. */
+export const parkedRunDirOrphans = (now = Date.now()) => scanDueRunDirOrphans(now, { dueOnly: false });
+
+export function scanDueRunDirOrphans(now = Date.now(), { dueOnly = true } = {}) {
   const owned = queueOwnedCodenames();
   const settled = queueTerminalCodenames();
   const out = [];
@@ -1688,11 +1713,18 @@ export function scanDueRunDirOrphans(now = Date.now()) {
         // `.resuming` stays in this list for the ORDINARY path: a live self-resume must not be re-fired.
         // It is excluded only when this run IS the abandoned claim recovered above, which is the whole
         // of the change — the fail-safe polarity is unchanged and an unprovable claim still counts alive.
-        const inFlight = [".delivered", ".failed", ".published", ".resuming", ".cancelled", ".cancel"]
+        //
+        // `.published` skips only when it is at least as new as the park. A run that published and then failed in a
+        // later delivery step parks like any other, and its `.published` is older than the park: the resume finds the
+        // record and delivers it without publishing again. A resume deletes the park it resumes (steps/open-run.mjs),
+        // so a park older than the publish is one this watcher must leave alone, as it always has. An unreadable time
+        // reads as moved on.
+        const inFlight = [".delivered", ".failed", ".resuming", ".cancelled", ".cancel"]
           .filter((m) => !(abandoned && m === ".resuming"));
         if (inFlight.some((m) => existsSync(join(runDir, m)))) continue;
+        if (publishedSincePark(join(runDir, ".published"), sentPath)) continue;
         let sent;
-        try { sent = JSON.parse(readFileSync(sentPath, "utf8")); } catch { continue; }
+        try { sent = readJson(sentPath); } catch { continue; }
         if (!sent.job || !sent.agent || !sent.codename) continue;          // pre-fix sentinel without payload — leave for manual handling
         if (owned.has(sent.codename)) continue;                            // the queue owns this resume — don't double-fire
         // ── — THE OTHER TWO WAYS A STOP IS SPELLED ──────────────────────────
@@ -1721,7 +1753,7 @@ export function scanDueRunDirOrphans(now = Date.now()) {
           }
           continue;
         }
-        if (postponedDueAt(sent, config.rateLimitDefaultBackoffMs) > now) continue;   // backoff window not elapsed
+        if (dueOnly && postponedDueAt(sent, config.rateLimitDefaultBackoffMs) > now) continue;   // backoff window not elapsed
         out.push({ runDir, sentPath, job: sent.job, agent: sent.agent, codename: sent.codename, fromStage: sent.fromStage ?? null, reparks: Number(sent.reparks) || 0, payload: sent });
       }
     }
@@ -1783,13 +1815,19 @@ export async function resumeRunDirOrphans(orphans, { runPipeline = pipeline } = 
     // already on disk, and threading them would put the same fact in two places to disagree.
     try {
       let sent = {};
-      try { sent = JSON.parse(readFileSync(claimPath, "utf8")); } catch { /* pre-fix sentinel — log what we have */ }
+      try { sent = readJson(claimPath); } catch { /* pre-fix sentinel — log what we have */ }
       runLog(o.runDir, { event: "park-resumed", via: "run-dir-sentinel",
         probeAttempt: Number(sent?.probeAttempt) || 0, parkedAt: sent?.postponedAt ?? null,
         kind: sent?.kind ?? null, fromStage: o.fromStage ?? sent?.fromStage ?? null });
     } catch { /* spine append is best-effort */ }
     note(`[runner] self-resuming run-dir POSTPONED ${o.codename} (agent=${o.agent} from=${o.fromStage ?? "auto"}; window elapsed)`);
     try {
+      // A run started on another build is not resumed, and a re-park cannot change that, so the refusal is final at once.
+      const refused = crossBuildResumeRefusal(o.runDir);
+      if (refused) {
+        try { runLog(o.runDir, { event: "resume-refused", reason: refused }); } catch { /* the .failed sentinel below carries it */ }
+        throw Object.assign(new Error(refused), { final: true });
+      }
       await runPipeline(o.job, {
         agent: o.agent, codename: o.codename, fromStage: o.fromStage ?? undefined,
         studioRoot: config.studioRootForAgent(o.agent), archiveRoot: config.archiveRootForAgent(o.agent),
@@ -1802,8 +1840,8 @@ export async function resumeRunDirOrphans(orphans, { runPipeline = pipeline } = 
       // it goes terminal (.failed + status), the same honest circuit breaker the pipeline itself uses.
       const reparks = (Number(o.reparks) || 0) + 1;
       const REPARK_MAX = 3;
-      if (reparks >= REPARK_MAX) {
-        const reasonText = `self-resume errored ${reparks}× — last: ${String(err?.message ?? err).slice(0, 300)}`;
+      if (err?.final || reparks >= REPARK_MAX) {
+        const reasonText = err?.final ? String(err.message) : `self-resume errored ${reparks}× — last: ${String(err?.message ?? err).slice(0, 300)}`;
         // — derived ONCE, outside both best-effort try blocks below, because both sinks need it:
         // the status write and the failure notice. Computing it inside the status `try` scoped it away
         // from the packet, which is the shape that had the packet re-cutting the string on its own.
@@ -1813,7 +1851,7 @@ export async function resumeRunDirOrphans(orphans, { runPipeline = pipeline } = 
           writeFileSync(join(o.runDir, ".failed"), JSON.stringify({ stage: "self-resume", reason: reasonText, reparks, ts: new Date().toISOString() }, null, 2) + "\n");
           try {
             const statusPath = join(o.runDir, "status.json");
-            const status = JSON.parse(readFileSync(statusPath, "utf8"));
+            const status = readJson(statusPath);
             // — cut VISIBLY. This is a terminal status write and it carried a bare 200-char slice,
             // so the cap that hides a cause hid it here too — and reasonText has already lost its own
             // tail to a 300-char slice one level up, which is the second cut nobody was told about.
@@ -1829,12 +1867,12 @@ export async function resumeRunDirOrphans(orphans, { runPipeline = pipeline } = 
               // string with a bare slice, so the notice and status.json could disagree about whether the
               // sentence was finished. One cap, one marker, both sinks.
               failedStage: "self-resume", shortReason: rt.reason, reasonVerbatim: reasonText,
-              terminalKind: "exhausted", priorAttempts: reparks,
+              terminalKind: err?.final ? undefined : "exhausted", priorAttempts: reparks,
             });
             try { rmSync(join(o.runDir, ".sent"), { force: true }); } catch { /* none */ }
-            try { rmSync(driverDir(o.runDir, "send-receipts.json"), { force: true }); } catch { /* none */ }
+            try { rmSync(paths(o.runDir).sendReceipts, { force: true }); } catch { /* none */ }
             ensureDriverDir(o.runDir);
-            writeFileSync(driverDir(o.runDir, "failure.json"), JSON.stringify(packet, null, 2) + "\n");
+            writeFileSync(paths(o.runDir).failure, JSON.stringify(packet, null, 2) + "\n");
             mkdirSync(config.outboxDir, { recursive: true });
             writeFileSync(join(config.outboxDir, `${packet.runId}.pending`), `${o.agent}\n`);
           } catch { /* notice best-effort — .failed + status remain the record */ }
@@ -1880,10 +1918,10 @@ async function claimAndRun(jsonFile, qdir, agentId) {
  *  Exported for the test; returns what it did so callers can log it. */
 export function armUnannouncedDelivery(runDir, label = "") {
   try {
-    if (!existsSync(driverDir(runDir, "delivery.json"))) return "no-packet";
+    if (!existsSync(paths(runDir).delivery)) return "no-packet";
     if (existsSync(join(runDir, ".sent"))) return "already-sent";
     let status = {};
-    try { status = JSON.parse(readFileSync(join(runDir, "status.json"), "utf8")); } catch { /* absent/corrupt ⇒ treat as unarmed */ }
+    try { status = readJson(join(runDir, "status.json")); } catch { /* absent/corrupt ⇒ treat as unarmed */ }
     if (status?.sendPending === true) return "already-pending";
     const merged = { ...status, state: "delivered", sendPending: true, updatedAt: new Date().toISOString() };
     const tmp = join(runDir, `status.json.${process.pid}.${Date.now().toString(36)}.tmp`);
@@ -1901,8 +1939,8 @@ export function armUnannouncedDelivery(runDir, label = "") {
 
 export function runDirDelivered(dir) {
   if (existsSync(join(dir, ".delivered"))) return true;
-  if (existsSync(driverDir(dir, "delivery.json"))) return true;
-  try { return JSON.parse(readFileSync(join(dir, "status.json"), "utf8"))?.state === "delivered"; } catch { return false; }
+  if (existsSync(paths(dir).delivery)) return true;
+  try { return readJson(join(dir, "status.json"))?.state === "delivered"; } catch { return false; }
 }
 
 // B1 — where (if anywhere) a codename's run already lives on disk. The live leaf is "<date>-<codename>";
@@ -2023,7 +2061,7 @@ function reclaimOrphanedClaims(qdir, agentId) {
       continue;
     }
     let meta = null;
-    try { meta = JSON.parse(readFileSync(`${procPath}.meta`, "utf8")); } catch { /* no/corrupt meta — legacy fresh re-claim */ }
+    try { meta = readJson(`${procPath}.meta`); } catch { /* no/corrupt meta — legacy fresh re-claim */ }
     if (meta?.codename) {
       let job = null;
       try { job = assembleJob(procPath, qdir, base); } catch { /* malformed manifest — the .json path fails it at intake properly */ }
@@ -2085,9 +2123,9 @@ function reclaimOrphanedClaims(qdir, agentId) {
               priorAttempts: priorReclaims,
             });
             try { rmSync(join(owned.dir, ".sent"), { force: true }); } catch { /* none */ }
-            try { rmSync(driverDir(owned.dir, "send-receipts.json"), { force: true }); } catch { /* none */ }
+            try { rmSync(paths(owned.dir).sendReceipts, { force: true }); } catch { /* none */ }
             ensureDriverDir(owned.dir);
-            writeFileSync(driverDir(owned.dir, "failure.json"), JSON.stringify(packet, null, 2) + "\n");
+            writeFileSync(paths(owned.dir).failure, JSON.stringify(packet, null, 2) + "\n");
             mkdirSync(config.outboxDir, { recursive: true });
             writeFileSync(join(config.outboxDir, `${packet.runId}.pending`), `${agentId}\n`);
           } catch (e) { note(`[runner] ${base} reclaim-terminal bookkeeping failed (non-fatal — the queue marker still ends it): ${e?.message ?? e}`); }
@@ -2268,7 +2306,7 @@ function hasQueuedWork() {
         // postponedDueAt is the single source of truth, so the idle gate and the resume gate never disagree
         // (a null-resetsAt run is NOT yet work until its postponedAt backoff elapses).
         if (f.endsWith(".postponed")) {
-          try { const m = JSON.parse(readFileSync(join(q, `${f}.meta`), "utf8")); return postponedDueAt(m, config.rateLimitDefaultBackoffMs) <= now; }
+          try { const m = readJson(join(q, `${f}.meta`)); return postponedDueAt(m, config.rateLimitDefaultBackoffMs) <= now; }
           catch { return true; }
         }
         return false;
@@ -2385,7 +2423,7 @@ export async function watch({
   beatEveryMs = WATCH_TICK_MS,
   startBeating = (fn, everyMs) => { const t = setInterval(fn, everyMs); t.unref?.(); return () => clearInterval(t); },
 } = {}) {
-  note(`[runner] watch: polling every ${Math.round(tickMs / 1000)}s (no systemd here); a due park or an unclaimed job is picked up on the next tick. Ctrl-C to stop.`);
+  note(`[runner] watch: checking every ${Math.round(tickMs / 1000)}s for a search to start or to resume. Ctrl-C to stop.`);
   for (let n = 0; ; n++) {
     if (stopped()) break;
     // One bad tick must never end the loop — that would put us back where a laptop started, with nothing

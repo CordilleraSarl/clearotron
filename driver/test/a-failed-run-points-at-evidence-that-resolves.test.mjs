@@ -25,7 +25,7 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, statSync, readFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, statSync, readFileSync, readdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -91,8 +91,12 @@ test("the marker rides INSIDE the bound — `reason` is still the 200 the ping i
 //     gets ENOENT. That was a property of EVERY throw; it was pinned on the one site that happened to
 //     have it. Pinned across the corpus below, it outlives any single site.
 test("no StageFailure interpolates an artifact path into `reason` — the cap severs it there", () => {
-  const pl = source("driver/pipeline.mjs");
-  const sites = [...pl.matchAll(/throw new StageFailure\(/g)].map((m) => pl.slice(m.index, m.index + 500));
+  // A run's throws live in the pipeline and in the phase modules carved out of it; each file is read alone.
+  const files = ["driver/pipeline.mjs", ...readdirSync(join(ROOT, "driver/steps")).filter((f) => f.endsWith(".mjs")).map((f) => `driver/steps/${f}`)];
+  const sites = files.flatMap((f) => {
+    const pl = source(f);
+    return [...pl.matchAll(/throw new StageFailure\(/g)].map((m) => pl.slice(m.index, m.index + 500));
+  });
   // FLOOR. A walk that finds nothing reports clean, and this file exists because a clean report over an
   // empty population is how stayed invisible in the first place.
   assert.ok(sites.length >= 20,

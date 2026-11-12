@@ -825,7 +825,8 @@ export function synthesisFindings(runDir = null, msg = "") {
   const text = synthesisFindingsInner(runDir, badFinding, actionsAbsent, { actionBroken, askAnswerBad });
   // MOCK_LINT_REPAIR_ACTIONS — the writer's delivery-check repair edits the record's forward legal steps, as a repair
   // that withdraws findings or restates a step does: "rewrite" restates action 1's open-state clause, "drop" removes
-  // action 1, "add" adds a step where the record had none. Keyed on the repair message, so every earlier save carries
+  // action 1, "add" adds a step where the record had none. MOCK_ACTION_CITES=<ordinals> sets what MOCK_ACTIONS=condition's step
+  // cites. Keyed on the repair message, so every earlier save carries
   // the steps as MOCK_ACTIONS wrote them.
   if (!process.env.MOCK_LINT_REPAIR_ACTIONS || !WRITER_LINT_REPAIR.test(msg)) return text;
   const doc = JSON.parse(text);
@@ -836,6 +837,8 @@ export function synthesisFindings(runDir = null, msg = "") {
   if (!Array.isArray(doc.actions) || !doc.actions.length) return text;
   if (process.env.MOCK_LINT_REPAIR_ACTIONS === "rewrite") doc.actions[0] = { ...doc.actions[0], condition: "Consent from Mystery Owner LLC to the filing in the US is not yet in hand." };
   if (process.env.MOCK_LINT_REPAIR_ACTIONS === "drop") doc.actions = doc.actions.slice(1).map((a, i) => ({ ...a, id: i + 1 }));
+  // "uncite" — the step stands on what survives: the withdrawn finding's number comes off it and nothing else changes.
+  if (process.env.MOCK_LINT_REPAIR_ACTIONS === "uncite") doc.actions = doc.actions.map((a) => ({ ...a, ordinals: a.ordinals.filter((o) => String(o) !== String(process.env.MOCK_RECORD_WITHDRAWS)) }));
   return JSON.stringify(doc);
 }
 function synthesisFindingsInner(runDir = null, badFinding = false, actionsAbsent = false, { actionBroken = false, askAnswerBad = false } = {}) {
@@ -979,7 +982,8 @@ function synthesisFindingsInner(runDir = null, badFinding = false, actionsAbsent
       : {}),
     ...(actionsAbsent ? {} : {
       actions: process.env.MOCK_ACTIONS === "condition"
-        ? [{ id: 1, kind: "consent", text: "Obtain consent from Mystery Owner LLC before filing in the US.", ordinals: [1] }]
+        ? [{ id: 1, kind: "consent", text: "Obtain consent from Mystery Owner LLC before filing in the US.",
+            ordinals: process.env.MOCK_ACTION_CITES ? process.env.MOCK_ACTION_CITES.split(",").map(Number) : [1] }]
         // — the SAME condition action with one unknown key, HEALED only by the repair turn that
         // names the actions register. Before that leg existed this shape exhausted the stage: the lane
         // admitted the failure and had no material to describe it with. The knob heals on the repair
@@ -1987,6 +1991,12 @@ export function applyStageWrites(msg, argv) {
           verdict: "The identical registration in the searched class drives the read, and the position is adverse on the current filing.",
           coverage: { read: reco },
       };
+      // MOCK_CORRECTION_MOVES=<ordinal> — a scoped correction also changes that finding's practical position, a finding
+      // its flags do not name, so a test can see what the clearance does with a move outside the declared scope.
+      if (process.env.MOCK_CORRECTION_MOVES && /SCOPE — THE REVIEWER DECLARED WHICH FINDINGS ITS FLAGS ARE ABOUT/.test(msg)) {
+        const moved = (doc.findings ?? []).find((f) => String(f.ordinal) === process.env.MOCK_CORRECTION_MOVES.trim());
+        if (moved) moved.practical_position = `${moved.practical_position ?? ""} The mock correction also moved this position.`.trim();
+      }
       // MOCK_CORRECTION_MARKS=<text> — the correction after a post-repair review writes this text into finding 1's `net`
       // and the verdict section, so a test can tell that save from every other; keyed on the correction's own opening.
       if (process.env.MOCK_CORRECTION_MARKS && /After the delivery check, that record was repaired/.test(msg)) {
@@ -2231,9 +2241,21 @@ export function applyStageWrites(msg, argv) {
       // MOCK_VERDICT_DEFECTS held the bullet lines the seat used to WRITE. Each becomes one flag. `fact`
       // is the right default and not a shrug: every scenario that sets this knob names something the
       // narrative got wrong against the file, which is that kind's definition.
+      // MOCK_VERDICT_FLAG_ON=<ordinal>[,…] has every flag declare those findings in `on`, so the correction is scoped.
+      const flagOn = String(process.env.MOCK_VERDICT_FLAG_ON ?? "").split(",").map((o) => Number(o.trim())).filter((o) => Number.isInteger(o) && o > 0);
+      // MOCK_VERDICT_FLAG_LINES=listed:<n> has every flag declare the n-th part (1-based) of the address list the
+      // dispatch wrote into the run (review-addresses.mjs); any other value is sent as the address itself.
+      const flagLines = (() => {
+        const want = String(process.env.MOCK_VERDICT_FLAG_LINES ?? "").trim();
+        if (!want) return [];
+        const m = want.match(/^listed:(\d+)$/);
+        if (!m) return [want];
+        try { return [JSON.parse(readFileSync(driverDir(runDir, "review-addresses.json"), "utf8")).lines[Number(m[1]) - 1].address]; }
+        catch { return ["(no address list in the run)"]; }
+      })();
       const flags = String(process.env.MOCK_VERDICT_DEFECTS ?? "")
         .split("\n").map((l) => l.replace(/^[-*]\s*/, "").trim()).filter(Boolean)
-        .map((text) => ({ kind: "fact", text }));
+        .map((text) => ({ kind: "fact", text, ...(flagOn.length ? { on: flagOn } : {}), ...(flagLines.length ? { lines: flagLines } : {}) }));
       let r = send({ verdict, flags, plan_audit: planAudit });
 
       // ── THE SEAT CORRECTS IN THE TURN, WHICH IS THE WHOLE POINT OF REFUSING AT THE CALL ────────────
@@ -2738,7 +2760,16 @@ export function applyStageWrites(msg, argv) {
     const raised = pass ? process.env.MOCK_KO_MATERIAL_OPEN : process.env.MOCK_KO_MATERIAL;
     const material = raised ? JSON.parse(raised) : [];
     const reads = pass ? ((JSON.parse(readFileSync(join(runDir, "knockout-findings.json"), "utf8")).marks ?? []).map((m) => `${m.name}: ${m.rating}`).join("; ")) : "the report answers the client's question";
-    const verdict = recordKnockoutReview(runDir, { first_question: `mock review: ${reads}`, material, declined }, { boundOrdinal: pass });
+    // MOCK_KO_REWRITE_AT=<name>: the first look also rewrites that name's first line the dispatch offers, so a test can see
+    // whether that old rewrite lands over what a correction then changed there.
+    const rewrites = [];
+    if (!pass && process.env.MOCK_KO_REWRITE_AT) {
+      for (const m of msg.matchAll(/address (\{"field":[^}]*\})/g)) {
+        let at; try { at = JSON.parse(m[1]); } catch { continue; }
+        if (at.mark === process.env.MOCK_KO_REWRITE_AT && JSON.stringify(at) !== JSON.stringify(declined[0].at)) { rewrites.push({ at, text: "An old rewrite from the first look.", why: "mock review: plainer" }); break; }
+      }
+    }
+    const verdict = recordKnockoutReview(runDir, { first_question: `mock review: ${reads}`, material, declined, ...(rewrites.length ? { rewrites } : {}) }, { boundOrdinal: pass });
     if (!verdict.written) return `mock knockout-review: the transport refused the composed call — ${verdict.refused ?? verdict.write_failed}`;
     return "mock knockout review ok";
   }
@@ -2776,6 +2807,16 @@ export function applyStageWrites(msg, argv) {
     const chunkSummary = `${held.chunkSummary}\n\n${names.map((n) => `## ${n}\nRated ${band} on the conflict the check named.`).join("\n\n")}`;
     const verdict = recordKnockoutCorrection(runDir, { answers: answering.map((d) => ({ defect: d.n, outcome: "changed", why: "mock correction: the evidence supports the defect" })), chunkSummary, marks }, { boundOrdinal: boundChunk });
     if (!verdict.written) return `mock knockout-correct: the transport refused the composed call — ${verdict.refused ?? verdict.write_failed}`;
+    // MOCK_KO_CORRECTION_MOVES=<name> then changes that name's opening read in the chunk file itself, past the call: a
+    // move no defect concerns that the call never saw and the merged gate accepts, which only the check after composing
+    // can catch.
+    const moves = process.env.MOCK_KO_CORRECTION_MOVES;
+    if (moves) {
+      const file = join(runDir, `knockout-assess-${Number(boundChunk)}.json`);
+      const chunk = JSON.parse(readFileSync(file, "utf8"));
+      const other = chunk.marks.find((m) => m.name === moves);
+      if (other) { other.assessment = `${other.assessment} A sentence no defect asked for.`; writeFileSync(file, JSON.stringify(chunk, null, 2)); }
+    }
     return "mock knockout correction ok";
   }
   // Repair-first A4: the single-artifact findings repair names ONLY findings.json ("Fix ONLY these

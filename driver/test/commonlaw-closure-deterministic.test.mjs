@@ -9,6 +9,7 @@
 // the mock only ever wrote VALID ledger JSON; these tests inject the exact malformed shape and prove the
 // driver no longer depends on any agent-authored ledger JSON.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, chmodSync, readFileSync, existsSync, readdirSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -65,7 +66,7 @@ const hasUnparseable = (events) => events.some((e) => /grid_ledger_unparseable/.
 
 // ── guard (test c): the append instruction is GONE; the cell arm dictates a driver-written supp spec ─────
 test("guard: no lane instructs an agent ledger append; the closure cell arm dictates grid_spec_path", async () => {
-  const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.doesNotMatch(src, /APPEND the supplementary call/, "the agent-authored ledger append is deleted from every lane");
   // dynamic: a split run with closable cells routes the closure followup through a supplementary grid spec
   const { messages } = await run({ MOCK_CL_GAPS: "1" }, "guard");
@@ -119,7 +120,7 @@ async function runNonSplitClosure(id) {
   for (const k of KNOBS) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),
-    CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
+    CLEAROTRON_MAX_RETRIES: "0", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
     CLEAROTRON_REGISTER_RECORD_LOG: join(root, "records.jsonl"), MOCK_CALL_LOG: callLog, MOCK_CLAUDE_CALL_LOG: callLog,
     MOCK_CL_GAPS: "1", MOCK_FAIL_STAGE: "joint synthesis narrative",
     // A recovery park: a synthesis failure whose recovery is spent is delivered without the assessment, so the seed is

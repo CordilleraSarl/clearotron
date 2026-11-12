@@ -55,7 +55,7 @@ burned it.
   signed-out API caller gets the same 401 the edge produces for a missing JWT.
 - `GET /portal/api/searches?account=` — registry levels + the company's saved recipes.
 - `POST /portal/api/run/plan` — the **confirmation gate**: validation, the registry-derived
-  stage label (never a company's recipe label), mark count, turnaround hint, the standing caveat, and
+  stage label (never a company's recipe label), mark count, turnaround hint, and
   a 10-minute HMAC `confirmationToken` bound to the fields of the server-stamped job that fix scope,
   cost and identity (`jobHashOf`: marks, markName, classes, goods, product/recipeKey), the confirming
   identity, and a ONE-SHOT jti. Jurisdictions are deliberately OUTSIDE the hash, so the plan step can

@@ -57,8 +57,9 @@ test("the knockout's rating instructions carry no page list and no set-aside rul
     assert.doesNotMatch(text, /EACH MARK'S PAGES/, "the page list is out of the rating step");
     assert.doesNotMatch(text, /setAside/, "the set-aside rule is out of the rating step");
     assert.doesNotMatch(text, /https:\/\/apps\.example\.org\/app\/7/, "no research page is listed to the rater");
-    assert.ok(text.includes(`Both are optional and both are joined against the filings you were given, so an id we do not hold is refused by name. A filing you did not weigh simply gets no row: do not invent a read to fill one, and never write "not weighed" as a read.`),
-      "the filing lines read as they did before the hand-off lines");
+    // The approved evidence-field sentence, as the manual states it, and the ID check kept beside it.
+    assert.ok(text.includes("Omit these fields when their information does not apply. When a finding's reasoning uses a held filing, record its ID in `weighedFilings`. When you weigh a filing without making it a finding, record the read in `registerReads`. Never invent a read or citation to fill a field. Both are joined against the filings you were given, so an id we do not hold is refused by name."),
+      "the filing lines do not carry the approved evidence-field sentence");
   } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
 
@@ -74,7 +75,7 @@ test("sentence 6 stays in the clearance's picking step; the knockout manual reco
   // below is a positive `includes`, and a positive cannot be broken by ADDING text, so a per-page
   // accounting paragraph could be added beside the section and pass all of them.
   assert.doesNotMatch(md, /EACH MARK'S PAGES/, "the page list stays out of the manual too, not only out of the dispatch");
-  assert.ok(md.includes("**Both are optional, and omitting them is always safe.**"), "the filing lines read as before");
+  assert.ok(md.includes("Omit these fields when their information does not apply."), "the filing lines say when to omit them");
   const placement = readFileSync(join(DRIVER, "skills", "placement-inquiry", "SKILL.md"), "utf8");
   assert.equal(placement.split(SENTENCE_6).length - 1, 1, "and it stays, once, in the clearance's picking step");
 

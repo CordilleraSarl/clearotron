@@ -19,9 +19,9 @@
 //
 // `atWriteSite` is how many of a pair's sites sit inside a call that actually writes one of those two
 // artifact families — `runLog`/`stageLog`/`log`/`appendLine`/`recordSpan`, or `writeFileSync`/
-// `atomicWrite` against a `driverDir()` path or a `P.<key>` built with `driverRel()`. A pair with zero is
-// REPORTED, never dropped: it is a result noun in a module that writes these artifacts, and the reason it
-// is out of scope is a fact worth stating rather than a filter nobody can see.
+// `atomicWrite` against a `driverDir()` path, or a `P.<key>` or `paths(run).<key>` built with `driverRel()`.
+// A pair with zero is REPORTED, never dropped: it is a result noun in a module that writes these artifacts,
+// and the reason it is out of scope is a fact worth stating rather than a filter nobody can see.
 //
 // ── WHAT THIS CANNOT SEE, SO THE NUMBER IS NOT READ AS COVERAGE ─────────────────────────────────────
 //
@@ -70,23 +70,39 @@ export const RESULT_NOUN_FIELDS = Object.freeze([
       + "the record had no line a reader meets first, `applied` after the rewrite passed the merged gate and was "
       + "written, and the `keep()` forms after the artifact or the gate refused it. Every one is a fact "
       + "about what already happened to the record, never the return of the call being logged" },
-  { file: "driver/pipeline.mjs", noun: "closed", sites: 6, atWriteSite: 4, verdict: "result",
+  { file: "driver/steps/register-sweep.mjs", noun: "closed", sites: 6, atWriteSite: 4, verdict: "result",
     why: "closure counts derived from the landed set (`qids.filter(q => landed.has(q)).length`) and from the receipt" },
-  { file: "driver/pipeline.mjs", noun: "executed", sites: 4, atWriteSite: 3, verdict: "result",
+  { file: "driver/steps/register-sweep.mjs", noun: "executed", sites: 3, atWriteSite: 3, verdict: "result",
     why: "lengths of the executed set as the join computed it" },
-  { file: "driver/pipeline.mjs", noun: "outcome", sites: 12, atWriteSite: 6, verdict: "result",
+  { file: "driver/pipeline.mjs", noun: "executed", sites: 1, atWriteSite: 0, verdict: "result",
+    why: "lengths of the executed set as the join computed it" },
+  { file: "driver/steps/frame-comparison.mjs", noun: "outcome", sites: 1, atWriteSite: 0, verdict: "result",
+    why: "the frame-reopen sweep hands back what dispatchPlanQids answered for the axis, in process; nothing writes it under this name" },
+  { file: "driver/steps/skeptic-and-follow-up.mjs", noun: "outcome", sites: 1, atWriteSite: 1, verdict: "result",
+    why: "the escalation recheck logs what dispatchPlanQids answered for the axis, or that the repair budget was spent" },
+  { file: "driver/steps/skeptic-and-follow-up.mjs", noun: "recovered", sites: 2, atWriteSite: 2, verdict: "result",
+    why: "each sits on the branch reached only after the screen gate read clean again" },
+  { file: "driver/steps/register-sweep.mjs", noun: "outcome", sites: 4, atWriteSite: 2, verdict: "result",
+    why: "what a fan-in repair's dispatch answered for the axis, logged beside the slices it closed, which are counted apart" },
+  { file: "driver/steps/open-run.mjs", noun: "outcome", sites: 3, atWriteSite: 3, verdict: "result",
+    why: "the skills-store, profile-store and engine-build receipts, each logging the result its own check returned" },
+  { file: "driver/pipeline.mjs", noun: "outcome", sites: 3, atWriteSite: 0, verdict: "result",
     why: "the one member that reported an invocation — taint-rerun's `r.ok ? \"ok\" : …`, which travels on a StageFailure packet — now carries a `cleared` sibling read from the taint, the remedy 10/5 -> 11/6 at the profile-store receipt's `outcome: pr.outcome`. Classified by READING ITS WRITING SITE, which is profiles.mjs and not this file: the value is one of three literals chosen by a situation the resolver decided (`overlay` and `bundled-fallback` are `pass`, `env-arrived-late` is `blocked`), never a call's return read as a verdict. `bundled-fallback` being `pass` is the point of the whole receipt — a legitimate install that nobody was told about is what this row says out loud. 11/6 -> 12/6 at the reviewing lawyer's record, where a read review whose one correction never ran prints its points with `outcome: \"not-checkable\"`: a literal the situation decides (no correction is on record to compare), never a call's return." },
   { file: "driver/pipeline.mjs", noun: "permanent", sites: 1, atWriteSite: 1, verdict: "result",
     why: "`permanent.length` — a count of the classified set" },
-  { file: "driver/pipeline.mjs", noun: "recovered", sites: 5, atWriteSite: 5, verdict: "result",
+  { file: "driver/steps/register-sweep.mjs", noun: "recovered", sites: 3, atWriteSite: 3, verdict: "result",
     why: "each sits on a branch reached only after the gap was cleared; one follows a `throw` that guarantees the ledger exists. "
       + "The two newest record what an engine-side re-issue of a missing meaning search actually brought back, counted off the rows "
       + "in hand at the write site rather than from anything the call promised — an attempt that recovered nothing writes 0, which "
       + "is the fact the disclosure downstream depends on" },
-  { file: "driver/pipeline.mjs", noun: "settled", sites: 6, atWriteSite: 4, verdict: "result",
-    why: "counts off the union and the doubt ledger" },
-  { file: "driver/pipeline.mjs", noun: "verified", sites: 4, atWriteSite: 2, verdict: "result",
-    why: "two sites, both measured states rather than calls returning. (1) `rows.filter(r => r.verified).length`, where each row's flag is `srRecords.has(senior.uri)` — a lookup, not a call. (2) the house-element ownership row's `verified: receipt.verified`, which the verifier sets only where a returned register record matched the client's own name AND was live AND carried an instructed class; the lookup CALL returning is a separate field on the same receipt (`reason`), and an unanswered lookup writes this false" },
+  { file: "driver/pipeline.mjs", noun: "settled", sites: 4, atWriteSite: 2, verdict: "result",
+    why: "counts off the union" },
+  { file: "driver/steps/overview-and-cards.mjs", noun: "settled", sites: 2, atWriteSite: 2, verdict: "result",
+    why: "counts off the doubt ledger" },
+  { file: "driver/pipeline.mjs", noun: "verified", sites: 1, atWriteSite: 1, verdict: "result",
+    why: "a measured state rather than a call returning. The house-element ownership row's `verified: receipt.verified`, which the verifier sets only where a returned register record matched the client's own name AND was live AND carried an instructed class; the lookup CALL returning is a separate field on the same receipt (`reason`), and an unanswered lookup writes this false" },
+  { file: "driver/steps/verdict-gate.mjs", noun: "verified", sites: 3, atWriteSite: 1, verdict: "result",
+    why: "a measured state rather than a call returning. `rows.filter(r => r.verified).length`, where each row's flag is `srRecords.has(senior.uri)` — a lookup, not a call" },
   { file: "driver/repairs.mjs", noun: "closed", sites: 2, atWriteSite: 1, verdict: "result",
     why: "`effect.closed`, measured against `effect.asked`" },
   { file: "driver/repairs.mjs", noun: "outcome", sites: 1, atWriteSite: 1, verdict: "result",
@@ -107,6 +123,7 @@ export const RESULT_NOUN_FIELDS = Object.freeze([
   { file: "driver/remedy-accounting.mjs", noun: "executed", sites: 1, atWriteSite: 0, verdict: "out-of-scope" },
   { file: "driver/runner.mjs", noun: "recovered", sites: 1, atWriteSite: 0, verdict: "out-of-scope" },
   { file: "driver/skills-store-provenance.mjs", noun: "outcome", sites: 6, atWriteSite: 0, verdict: "out-of-scope" },
+  { file: "driver/stage-freshness.mjs", noun: "settled", sites: 1, atWriteSite: 0, verdict: "out-of-scope" },
   { file: "driver/status-snapshot.mjs", noun: "outcome", sites: 1, atWriteSite: 0, verdict: "out-of-scope" },
   { file: "mcp-server/lib/events.mjs", noun: "recovered", sites: 1, atWriteSite: 0, verdict: "out-of-scope" },
   // Read at the writing site, as this table requires. All three sites are in `knockoutSearches`, a

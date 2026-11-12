@@ -21,8 +21,9 @@
 // pipeline-knockout.mjs, which are the code that writes them.
 
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, existsSync, readdirSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, readdirSync } from "node:fs";
 import { basename, join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { claimLockPath } from "../runner.mjs";
@@ -542,7 +543,7 @@ test("every outbox packet the driver writes is named `intake-<queueBase>.…` or
   const files = ["runner.mjs", "pipeline.mjs", "pipeline-knockout.mjs", "outbox-backoff.mjs"];
   const names = [];
   for (const f of files) {
-    const src = readFileSync(new URL(`../${f}`, import.meta.url), "utf8");
+    const src = driverSource(f);
     for (const m of src.matchAll(/writeOutboxPacket\(\s*`([^`]+)`/g)) names.push(`${f}: ${m[1]}`);
     // the wake markers, written straight into the outbox dir
     for (const m of src.matchAll(/config\.outboxDir,\s*`([^`]+)\.pending`/g)) names.push(`${f}: ${m[1]}`);

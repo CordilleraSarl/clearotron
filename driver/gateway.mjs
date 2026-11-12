@@ -11,18 +11,20 @@
 // nothing and stops the next reader looking for a gateway.
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
+import { driverDir, readJson } from "./run-record.mjs";   //
 import { NO_SEARCH_RESULT, RESEARCH_CORRECTION } from "./research-answers.mjs";   // a search that did not answer supplies no result
-import { tmpdir } from "node:os";
-import { config, resolveModel, modelFamily, modelSnapshotKind, envOn, envGateOn, preflightEngineBinary, olderThanFloor, ENGINE_BINARIES } from "./driver.config.mjs";
-import { probeCliVersion } from "./engine/cli-version.mjs";
+import { config, envOn, envGateOn } from "./driver.config.mjs";
 import { stageLog, runLog, note, outputMeta } from "./log.mjs";
 // — the closed disposition set has ONE author; this file dictates it and must not retype it.
 import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS } from "./findings-model.mjs";
 import { frozenSnapshot, describeDrift } from "./run-integrity.mjs";   // — the frozen judged-by set across a seat turn
 import { isCancelled, readCancel, RunCancelled } from "./cancel.mjs";
-import { anthropicAgentEngine } from "./engine/anthropic-agent.mjs";
-import { openaiAgentEngine, makeCodexHome, releaseCodexHome } from "./engine/openai-agent.mjs";
+import { engineForRun, selectEngine, modelIdOf } from "./engine/registry.mjs";
+import { timeoutCause, turnFailure, nameTheFailure } from "./ladder/turn-failure.mjs";
+import { modelGauge, servingProgram } from "./ladder/model-gauge.mjs";
+import { rescueAttempt } from "./ladder/rescue.mjs";
+import { nextRung } from "./ladder/next-rung.mjs";
+import { stageTools } from "./ladder/stage-tools.mjs";
 import { resolveAuthMode } from "./engine/auth.mjs";
 // ABBREVIATED_VALUE_NOTE is no longer imported: it explained the "…" marker on a value the model
 // had to reproduce EXACTLY, and the only messages that rendered one were the connotation arms telling a
@@ -227,7 +229,7 @@ export function toolWrittenArtifact(p) {
     ?? TOOL_WRITTEN_PATTERNS.find((r) => r.re.test(base))
     ?? null;
 }
-import { buildGatherMcpConfig, allowedToolsFor, toolGroupsForStage, recordAxisFor, seatWritesForGroups, withSendUntil } from "./engine/mcp/gather-config.mjs";
+import { withSendUntil } from "./engine/mcp/gather-config.mjs";
 import { sendReserveMs } from "../providers/_shared/send-until.mjs";   // each turn's plan calls stop sending ahead of its deadline
 import { everyToolCallRefused } from "./engine/tool-refusal.mjs";   // one definition, shared with the engine probe
 export { everyToolCallRefused };
@@ -244,7 +246,7 @@ import { KNOCKOUT_RECHECK_RE, knockoutReviewFile, knockoutReviewRefusalsFor } fr
 import { profilesStoreDir } from "./profiles.mjs";
 // The supplemental lane's single source (stages.mjs). The import is acyclic — stages.mjs reads
 // verify/coverage-ledger/config/framework and never reaches back here.
-import { REGISTER_ENUMERATE_TOOL, SUPPLEMENTAL_LANE_STEERING, GROUP_READING_STAGES } from "./stages.mjs";
+import { REGISTER_ENUMERATE_TOOL, SUPPLEMENTAL_LANE_STEERING } from "./stages.mjs";
 // The ONE kill-class discriminator (timeout/status_timeout fails, exit 137, killed, hard-wall/stall
 // signals; lane_wedge and rate_limited deliberately excluded). Reused verbatim so "a kill" means the
 // same thing to the exit-1 rescue below as it does to the register taint chain that reads the very
@@ -262,7 +264,7 @@ import { undispatchableFiringDirectives } from "./frame-diff-model.mjs";
 import { witnessStageMethodology, describeMethodologyDrift } from "./methodology-witness.mjs";
 // — the meaning-sweep form and its accumulator. Both PURE and acyclic: connotation-search.mjs
 // imports nothing, disposition-union.mjs imports only it, and neither reaches back here.
-import { parsePrRiskResults, connotationObligations, parseDispositionForm, rulingsProse, CONNOTATION_FORM_TOKEN_SRC,
+import { parsePrRiskResults, connotationObligations, parseDispositionForm, CONNOTATION_FORM_TOKEN_SRC,
   CONNOTATION_UNMATCHED_MARK, CONNOTATION_NO_RESEMBLANCE_MARK, CONNOTATION_FORM_TOKEN_RE } from "./connotation-search.mjs";
 import { unionDispositionForm, formSidecarPath } from "./disposition-union.mjs";
 import { unionCoverageForm } from "./coverage-union.mjs";
@@ -290,30 +292,11 @@ import { PLAN_AUDIT_CLASSES } from "./register-plan.mjs";   // — the repair tu
 // was — CLEAROTRON_GATHER_CONCURRENCY x CLEAROTRON_MAX_CONCURRENT_RUNS, and pipeline.acquireRunSlot, which is
 // the OTHER user of slot-lock.mjs and is untouched.
 
-export function isEmbeddedFallback(json, stderr = "") {
-  const m = json?.meta ?? json?.result?.meta ?? {};
-  return m.transport === "embedded" || m.fallbackFrom === "gateway" || /EMBEDDED FALLBACK/.test(stderr);
-}
+// What a settled turn's failure is called lives in ladder/turn-failure.mjs, and what the ladder does after it in
+// ladder/next-rung.mjs, both carved out of the stage ladder below; these are re-exported so every importer is unchanged.
+export { isEmbeddedFallback, isTimeout, timeoutCause, isLaneWedge, classifyWedge, isOverloaded, attemptTimedOut } from "./ladder/turn-failure.mjs";
+export { warmHardWallStop } from "./ladder/next-rung.mjs";
 
-// A gateway turn that ran out of time. Three signals: (1) execFile hit its hard kill (timeoutSec+60);
-// (2) the gateway hit its OWN turn timeout, after which the CLI auto-falls-back to embedded and that
-// attempt errors — surfacing as `EmbeddedAttemptSessionTakeoverError` / "request timed out" on a
-// nonzero exit (the v14 delivery failure, previously mislabelled `nonzero_exit_1`); (3) any nonzero
-// exit whose wall already reached the configured budget. Distinguished from transient errors so the
-// retry policy can give a slow stage ONE longer shot instead of 3 identical doomed attempts.
-export const isTimeout = (facts) => timeoutCause(facts) !== null;
-export function timeoutCause({ killed, code, wall, stderr = "", timeoutSec }) {   // which signal fired, or null
-  if (killed) return "killed";
-  if (/EmbeddedAttemptSessionTakeoverError|request timed out|\bETIMEDOUT\b/i.test(stderr)) return "stderr";
-  return code !== 0 && wall >= timeoutSec ? "wall" : null;
-}
-
-// A LANE WEDGE: a timeout whose turn moved ZERO tokens — the gateway never admitted it to a command lane (the
-// serial `main` lane saturated by the heartbeat sweep). The real signature (teal-bastion 2026-06-15) is a
-// hard-kill timeout with a NULL usage envelope, so we key on "fail is a timeout AND no tokens moved" rather than
-// on a parsed 0-usage object. A slow-but-working model that times out returns a status_timeout envelope WITH
-// usage (admitted) → NOT a wedge. Kept pure + exported so the classifier is unit-tested (it must not misfire on
-// admitted turns, and it MUST fire on the null-usage hard-kill that the production incident actually produced).
 /**
  * Did this attempt spend its whole derived budget, exit cleanly, and still fail? PURE.
  *
@@ -345,21 +328,6 @@ export function spentBudgetCleanly({ fail, killed, code, wall, derivedLimitSec }
   return wall >= derivedLimitSec;
 }
 
-export function isLaneWedge(fail, usage) {
-  if (fail !== "timeout") return false;
-  const moved = (usage?.input || 0) + (usage?.output || 0) + (usage?.cacheRead || 0) + (usage?.cacheWrite || 0);
-  return moved === 0;
-}
-
-// Final wedge classification at the runStage call site. A 0-token timeout LOOKS like a wedge (isLaneWedge), but a
-// HARD-WALL kill (signals.hardWall — the turn ran the full timeout+60 and was SIGKILLed) is a genuine over-budget
-// grind, NOT a saturated command lane; labelling it `lane_wedge` wastes a 2-cycle chain retry on a turn that won't
-// fit. Keep `lane_wedge` only for a STALL (signals.stalled) or a truly-silent non-hard-wall null-usage kill; a
-// hard-wall kill stays `timeout` (gets at most ONE extended shot, then the deferral). PURE + exported for test.
-export function classifyWedge(fail, usage, signals) {
-  if (isLaneWedge(fail, usage) && !signals?.hardWall) return "lane_wedge";
-  return fail;
-}
 
 // ── — THE RATE, DERIVED ONCE ──────────────────────────────────────────────────────────────────
 //
@@ -462,31 +430,7 @@ export function tokensPerSec(usage, wall) {
   return Math.round((out / w) * 100) / 100;
 }
 
-// #5b — stop a WARM attempt after ONE try when it ran to the HARD WALL. The warm patch is the one rung that resumes
-// a session: it is passed the session that just produced a content failure. If that resumed turn was SIGKILLed at
-// the full timeout+60 wall (signals.hardWall, NOT a 0-token stall), break and let the caller record the
-// coverage-limited deferral. A warm attempt can itself time out; warmEligible() only stops the attempt AFTER a
-// timeout from being warm. A FOLLOWUP IS NOT STOPPED HERE. It is a new stage() call, attempt 1, with no resumeRef,
-// so it is a fresh session with its own wall. This rule used to stop it too, on the premise that it resumed an
-// already-loaded session, and that premise was false; it now gets the one extended retry any fresh dispatch gets.
-// Measured 2026-11-05 over saved runs: no follow-up attempt and no warm attempt had timed out, so neither form of
-// the rule had decided a run. A STALL (no hardWall) is NOT stopped here: it keeps its one retry at the same budget,
-// since a transient stall can clear. PURE + exported for test: the live path needs a wall-clock kill.
-export function warmHardWallStop({ fail, warm, signals }) {
-  return fail === "timeout" && Boolean(warm) && Boolean(signals?.hardWall);
-}
 
-// D3 — Anthropic overload (HTTP 529 / overloaded_error). Through claude -p a 529 surfaces as a FAILED
-// turn (nonzero exit) whose result text/stderr carries the overloaded_error envelope — classified
-// generically it looked like `nonzero_exit_1` and the ladder re-attempted INSTANTLY, hammering an API
-// that just said "go away" (and burning the retry budget in seconds — the 04:30 restart-window shape).
-// Detect it and reclassify to `status_overloaded`, the token the normalized --json envelope already
-// produces for the same condition: the stage fails on its one model (there is no model cascade), and
-// TRANSIENT_RE routes that failure to the recovery park (.postponed + escalating backoff) — the
-// existing machinery owns the re-attempt; runStage breaks its own ladder on it (mirrors lane_wedge).
-// The 529 match is deliberately ANCHORED (api error / http prefix, or overload vocabulary within the
-// same line) so a stray "529" in ordinary output never misroutes a real content failure. PURE + exported.
-const OVERLOAD_RE = /overloaded_error|"type"\s*:\s*"overloaded"|\bapi[ _]?error:?\s*529\b|\bhttp\s*529\b|\b529\b[^\n]{0,120}overloaded|overloaded[^\n]{0,120}\b529\b/i;
 // ── — THE CAUSE HAS TO SURVIVE THE DIGEST, AND `slice(-3)` IS WHY IT DID NOT ──────────────────────
 //
 // Both attempt records kept the LAST three non-empty stderr lines. That is the wrong end for the failure
@@ -511,10 +455,6 @@ export function streamDigest(text, { keep = STREAM_DIGEST_KEEP } = {}) {
   return [...lines.slice(0, keep), `… ${dropped} line(s) elided …`, ...lines.slice(-keep)].join(" ⏎ ");
 }
 
-export function isOverloaded({ json, stdout = "", stderr = "" } = {}) {
-  if (json?.status === "overloaded") return true;
-  return OVERLOAD_RE.test(`${stdout}\n${stderr}`);
-}
 
 // D3 — inter-attempt retry backoff. The ladder used to re-dispatch the SAME SECOND an attempt failed,
 // so a failure caused by the environment (the 04:30 gateway restart, a still-booting gateway, a
@@ -545,74 +485,12 @@ export function payloadText(json) {
   return (json?.result?.payloads ?? []).map((p) => p?.text ?? "").join("\n").trim();
 }
 
-// ── — WALL RESCUE QUIESCENCE. How long every declared artifact must have been UNTOUCHED when the
-// turn settled, for its write to count as provably COMPLETE rather than possibly torn.
-//
-// The torn-write window is [watchdog decision, child death]: one poll tick plus the SIGTERM→SIGKILL
-// escalation (engine/common.mjs killEscalateMs, default 5000ms). 60s is that window with an order of
-// magnitude to spare, and the incident clears it by another: on the 2026-08-04 R1 run the
-// placement artifact's last write was 13:58:46Z and the wall kill was 14:15:00Z — 974 seconds quiet.
-//
-// This is the ONE fact a shape validator cannot supply, and it is the entire reason this rescue may do
-// what the exit-1 rescue must not. Setting it to 0 is NOT tuning — it deletes the only completeness
-// evidence and would rescue post-merge audit 2's torn draft. Disarm with CLEAROTRON_WALL_RESCUE=0 instead.
-const wallRescueQuiesceMs = () => 60000;   // step 3 — was a knob; no environment ever set it
-const wallRescueEnabled = () => !/^(0|off|false|no)$/i.test(String(process.env.CLEAROTRON_WALL_RESCUE ?? "").trim());
 
 // ── Engine seam (CLEAROTRON_AI) ──────────────────────────────────────────────────────────────────
-// The 14 stages run on the anthropic-agent engine (`claude -p` off-gateway with the stall-watchdog; see
-// engine/CONTRACT.md). Its runTurn() returns the normalized tuple runStage consumes
-// ({code,killed,wall,stdout,stderr,laneWaitMs,json,usage,sessionRef,signals}); all the
-// classification/retry/warm logic below is engine-agnostic. There is no second exec path beside it —
-// the comms one-shots that used to have one now write outbox packets and spawn nothing.
-//
-// Engine registry (provider adapters). The driver orchestration + the classification/retry/warm ladder are
-// ENGINE-AGNOSTIC: everything provider-specific lives behind an engine's runTurn() → the normalized tuple. So
-// provider CHOICE (e.g. Anthropic → OpenAI) = which adapter is registered and selected via CLEAROTRON_AI —
-// NOT a model-name swap: each provider needs its own agentic-runtime adapter (MCP/tools/skills/streaming/resume).
-// One is implemented today: `anthropic-agent` (`claude -p`, off-gateway). Adding e.g. `openai-agent` = write
-// engine/openai-agent.mjs implementing the same runTurn() contract (engine/CONTRACT.md §1), registerEngine() it,
-// and select it via CLEAROTRON_AI — runStage is untouched. (The legacy gateway-bin engine removed in the
-// extraction was a *runtime*, not a provider choice, and coupled the driver to one integrator platform.) An
-// unknown CLEAROTRON_AI fails loud — no silent wrong-provider run. There are no comms stages: every
-// requester-facing event is an outbox packet (docs/DELIVERY.md).
-const ENGINES = new Map([
-  [anthropicAgentEngine.name, anthropicAgentEngine],
-  [openaiAgentEngine.name, openaiAgentEngine],   // second provider adapter (codex exec) — CLEAROTRON_AI=openai-agent
-]);
-export const DEFAULT_ENGINE = anthropicAgentEngine.name;   // "anthropic-agent" — production default UNCHANGED
-/**
- * The ids this registry actually holds — read-only, so a SECOND list can be pinned against the first
- * rather than drifting away from it in silence. `ENGINE_BINARIES` in driver.config names the
- * binary variable per engine and the wizard builds its menu from it; without this, "the wizard offers
- * an engine the driver does not ship" and "the driver ships an engine setup cannot reach" are both
- * invisible until a reader picks the row that does not exist. Same guarantee the register-provider
- * list already has (onboard-wizard.test.mjs, "a new adapter must not be invisible to setup").
- */
-export function registeredEngines() { return [...ENGINES.keys()]; }
-export function registerEngine(engine) {
-  if (!engine?.name || typeof engine.runTurn !== "function") throw new Error("registerEngine: expected an { name, runTurn } engine adapter");
-  ENGINES.set(engine.name.toLowerCase(), engine);
-}
-/**
- * The engine for this activation. PROCESS-WIDE, and the missing parameter is the point.
- *
- * This took a `_stageName` it ignored, under a call-site comment reading "per-stage: CLEAROTRON_AI base,
- * comms forced to the gateway, override-able". None of that existed: no per-stage override, no comms
- * forcing, no per-job override. `CLEAROTRON_AI` is read from the process env at every activation and
- * governs every stage of every job in it.
- *
- * A comment describing a capability that does not exist is worse than no comment — it gets believed and
- * planned against, and the plan only fails once someone tries to use it. Corrected rather than built:
- * per-stage selection is an architecture change (a job spec would have to carry the engine, and the
- * routing would have to survive resume), not a comment fix.
- *
- * WHAT THE ABSENCE COSTS, stated so a round plan does not discover it mid-round: **an A/B cannot run
- * both engines concurrently on one instance.** Comparing codex against anthropic means flipping
- * CLEAROTRON_AI and running sequentially, or standing up a second instance with its own env, pool and
- * ports. The same absence blocks routing the refutation reviewer to a different engine for family
- * diversity (ENGINE-OPENAI-ADAPTER §6). Recorded in docs/E2E.md, which is where a round plan looks.
- */
+// Which adapters exist and which one this activation runs are engine/registry.mjs's; the gateway asks it
+// and names no engine. Re-exported here, so every importer of these names is unchanged.
+export { DEFAULT_ENGINE, registeredEngines, registerEngine, selectEngine } from "./engine/registry.mjs";
+
 // — THE ENGINE'S OWN WRITE GUARANTEE, for the run record.
 //
 // The boundary is enforced on the anthropic path and absent on the codex path, and until now nothing
@@ -627,13 +505,6 @@ export const writeBoundaryOf = (engine) => {
   const v = String(engine?.writeBoundary ?? "").trim();
   return v || "undeclared";
 };
-
-export function selectEngine() {
-  const id = (process.env.CLEAROTRON_AI || DEFAULT_ENGINE).toLowerCase();
-  const engine = ENGINES.get(id);
-  if (!engine) throw new Error(`CLEAROTRON_AI="${id}" is not a registered engine adapter (available: ${[...ENGINES.keys()].join(", ")}). Implement one and registerEngine() it — see engine/CONTRACT.md.`);
-  return engine;
-}
 
 // ── B — THE MEANING-SWEEP ACCUMULATOR IS REGENERATED AND COUNTED BEFORE IT IS JUDGED ───────────────
 //
@@ -691,7 +562,7 @@ export function syncDispositionForm(files) {
       const dir = dirname(String(f)), half = m[1] ?? null;
       const specPath = driverDir(dir, seat.spec(half));
       let spec = null;
-      try { spec = JSON.parse(readFileSync(specPath, "utf8")); }
+      try { spec = readJson(specPath); }
       catch {
         // No spec sidecar ⇒ a pre-change archived resume: nothing dictated, nothing owed, nothing to count.
         // A spec that EXISTS and does not parse is a different fact: the stage owes a sweep whose state
@@ -700,9 +571,6 @@ export function syncDispositionForm(files) {
         return existsSync(specPath) ? { countable: false } : null;
       }
       const formPath = spec?.connotation?.dispositions_path;
-      // No dictated path ⇒ a pre-change spec (an archived run being resumed). Nothing to count, and the
-      // gate has nothing to judge either — the two agree by construction.
-      if (!formPath || spec?.connotation?.disposition_required !== true) return null;
       let recorded = null;
       try { recorded = parsePrRiskResults(readFileSync(join(dir, seat.ledger(half)), "utf8")); }
       catch { return { countable: false }; }   // owes a sweep; the ledger — the obligations' source — is unreadable
@@ -848,22 +716,23 @@ export function syncPlacementForm(files) {
 // Anthropic needs none of this: `claude -p --resume` resolves against an ambient store nothing wipes,
 // which is precisely why warm resume worked there and not here.
 export async function runStage(name, opts) {
-  const engineForHome = selectEngine();
-  let stageCodexHome = null;
-  if (engineForHome?.name === "openai-agent") {
-    try { stageCodexHome = makeCodexHome(`stage-${String(name).replace(/[^a-z0-9-]/gi, "_")}-`); }
-    catch { stageCodexHome = null; }   // fall back to the engine's own per-turn home rather than fail a stage
+  // The run's own engine: the one it recorded when it started, or the machine's for a run with no record.
+  const engineForHome = engineForRun(opts?.runDir);
+  let stageHome = null;
+  if (engineForHome?.makeStageHome) {
+    try { stageHome = engineForHome.makeStageHome(name); }
+    catch { stageHome = null; }   // fall back to the engine's own per-turn home rather than fail a stage
   }
   try {
-    return await runStageLadder(name, opts, stageCodexHome);
+    return await runStageLadder(name, opts, stageHome, engineForHome);
   } finally {
     // Deleted when the LADDER settles — every resume that needed it has happened by then. Best-effort:
     // a home we cannot remove must never turn a completed stage into a failure.
-    if (stageCodexHome) releaseCodexHome(stageCodexHome);
+    if (stageHome) engineForHome.releaseStageHome(stageHome);
   }
 }
 
-async function runStageLadder(name, opts, stageCodexHome = null) {
+async function runStageLadder(name, opts, stageHome = null, engine = selectEngine()) {
   const {
     agent = config.defaultAgent,
     message,
@@ -903,53 +772,16 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
   // agrees with the toolset the attempt actually gets, instead of contradicting the base prompt.
   const supplementalLane = Array.isArray(excludeTools) && excludeTools.includes(REGISTER_ENUMERATE_TOOL);
 
-  const engine = selectEngine();   // process-wide, not per-stage — see selectEngine
   // Billing-mode (auth) resolution — fail LOUD if a mode claims API billing but has no key (fixes the
   // anthropic silent-fallthrough WITHOUT editing anthropic-agent.mjs), and give the stamp its value. Frozen
   // per run (env-derived). The throw is caught by pipelineInner's terminal catch and turned into a run
   // FAILURE carrying the named auth error on the guaranteed failure-packet lane (verified) — loud + named,
   // NOT a silent mis-bill. (Same catch as the unknown-engine throw above.)
   const auth = resolveAuthMode({ engineName: engine.name });
-  // Two INDEPENDENT engine capability flags (both default ON for an engine that declares neither, so the
-  // anthropic engine — which sets neither — behaves exactly as before). A future adapter can opt out of
-  // either without the other:
-  let gatherMcpConfig, gatherAllowedTools, engineSkillsDir, engineSkillsGrantRoots, engineResolveSkill;
-  // — the DECLARATION half of the run-dir read grant. `null` means this stage has no recording
-  // row to declare anything, and the adapter treats unknown as "keep the grant" — so a stage the
-  // gateway says nothing about is unaffected by that change.
-  let gatherSeatWrites = null;
-  // (a) Skills plumbing (usesSkillsDir): a CLI-agentic engine resolves the stage prompts' `skills/…` refs
-  // against its neutral cwd (a tmpdir) and confines file tools to cwd + --add-dir roots, so hand it the
-  // compute-skills dir (config.skillsDir — the driver-co-located tree) + this run's dir so it can absolutize
-  // the refs and grant read(skills)/write(runDir). The agent's own workspace is no longer involved.
-  if (engine.usesSkillsDir !== false) {
-    engineSkillsDir = config.skillsDir;
-    engineSkillsGrantRoots = config.skillsGrantRoots;   // layered skills: BOTH roots reach the seat, resolve overlay-first
-    engineResolveSkill = (rel) => config.resolveSkillPath(rel);
-  }
-  // (b) Gather tools (usesGatherMcp): a gather stage gets its tool group's MCP servers + allowedTools;
-  // tool-free judgment stages get none (lean context). Both current engines get the SAME claude-shaped
-  // mcpConfig; a codex engine translates it to config.toml internally, so gather-config.mjs is untouched.
-  if (engine.usesGatherMcp !== false) {
-    const groups = toolGroupsForStage(name);
-    if (groups.length) {
-      // The bound card index rides the same label the grant was resolved from — derived by the SAME
-      // declared rule (`perAxis`), never by a second string-sniff that could disagree with it.
-      const cfg = buildGatherMcpConfig(groups, { sessionKey, agent, runDir, recordAxis: recordAxisFor(name)?.axis,
-        bandGroups: GROUP_READING_STAGES.has(name), correctionPositions: correction?.positions ?? null });
-      gatherMcpConfig = cfg ? JSON.stringify(cfg) : undefined;
-      gatherAllowedTools = allowedToolsFor(groups);
-      gatherSeatWrites = seatWritesForGroups(groups);   // — the SAME derivation allowedToolsFor uses
-      // Per-stage exclusion (copper-lattice re-route): a supplemental-lane register unit loses
-      // register_enumerate — its judgment additions go through register_propose_supplemental, so the
-      // free-enumerate hand-transcription lane cannot silently return. Group-level removal is
-      // infeasible (synthesis + legacy no-plan units share the group); the validator is the backstop.
-      if (Array.isArray(excludeTools) && excludeTools.length && gatherAllowedTools) {
-        const drop = new Set(excludeTools);
-        gatherAllowedTools = gatherAllowedTools.split(" ").filter((t) => !drop.has(t)).join(" ");
-      }
-    }
-  }
+  // The stage's tool servers, allowed tools, skills folder and read grants, by the engine's two capability flags
+  // (ladder/stage-tools.mjs).
+  const { gatherMcpConfig, gatherAllowedTools, gatherSeatWrites, engineSkillsDir, engineSkillsGrantRoots, engineResolveSkill } =
+    stageTools({ engine, name, sessionKey, agent, runDir, correction, excludeTools });
   // EACH TURN'S OWN COPY of the stage's tool config, carrying that turn's time to stop sending: ahead of the turn's
   // deadline by the reserve, so a plan call returns what it holds while the turn can still write it (send-until.mjs).
   const turnConfig = (sec) => withSendUntil(gatherMcpConfig, Date.now() + sec * 1000 - sendReserveMs(sec));
@@ -986,29 +818,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
   // entitled to on attempt 2.
   let formRepairsUsed = 0;
   let attempt = 0;
-  // criterion 1 — A WARM TURN THAT NEVER REACHED THE MODEL DOES NOT COST A RUNG, ONCE.
-  //
-  // Measured before this existed: a warm turn returning `usage: null` and `runId: null` — the
-  // startup-death shape, exit 1 under a second, zero tokens — still advanced the ladder. A stage with
-  // three attempts spent one on a turn that did nothing, which is the defect this issue names: "a
-  // warm-patch attempt either reaches the model or does not consume a ladder rung."
-  //
-  // THE BOUND IS THE WHOLE DESIGN. Refunding unconditionally lets a warm turn that never lands loop
-  // until the wall. ONE free rung per ladder is the concession; a second zero-usage warm turn in the
-  // same ladder is charged, and the record says so rather than leaving the difference to be inferred.
-  //
-  // PROVISIONAL, and deliberately one line to change: the number below is a routed parameter (2026-08-22),
-  // not a measured optimum. Nobody has yet counted how often a second free rung would have
-  // converted, and until someone does, 1 is the smallest concession that closes the defect.
-  //
-  // THE CHARGING BRANCH CANNOT FIRE TODAY, and that is stated rather than left to be discovered. `warm`
-  // requires `!warmUsed` and `warmUsed` is set the moment one fires, so a ladder gets AT MOST ONE warm
-  // turn — there can be no second zero-usage warm turn to charge. This counter is therefore defence, not
-  // arithmetic anyone reaches: it keeps the bound LOCAL and explicit, so that if the one-warm-per-ladder
-  // invariant is ever relaxed, the refund does not silently become unbounded along with it. Deriving the
-  // bound from `warmUsed` instead would have coupled a rung policy to an unrelated rule and hidden the
-  // dependency. The arms pin the invariant as the premise rather than pretending to exercise the branch.
-  const WARM_ZERO_USAGE_FREE_RUNGS = 1;
+  // A warm turn that never reached the model costs no rung, once per ladder: WARM_ZERO_USAGE_FREE_RUNGS in ladder/next-rung.mjs.
   let rungsRefunded = 0;
   let timeoutRetriesUsed = 0;   // a slow stage gets ONE longer shot, then we stop (don't burn 3× the budget)
   let effTimeout = timeoutSec;  // bumped ×1.5 for the single timeout retry
@@ -1051,12 +861,6 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
       note(`[${name}] CANCELLED by user — not dispatching attempt ${attempt}`);
       throw new RunCancelled(name, readCancel(runDir));
     }
-    // D3: inter-attempt backoff (see retryBackoffMs) — a retry dispatched the same second it failed
-    // tends to re-hit the same still-booting gateway / still-overloaded provider. Attempt 1 never waits.
-    if (attempt > 1) {
-      const backoff = retryBackoffMs();
-      if (backoff > 0) { note(`[${name}] retry backoff ${backoff}ms before attempt ${attempt}`); await sleep(backoff); }
-    }
     // Warm patch retry: resume the COMPLETED failed session with only the fix instruction (see design note
     // above warmEligible). Otherwise: fresh key + full corrective message (Fix B), exactly as before.
     // — the warm patch is VETOED, not de-allowlisted, and the veto keys on the DIRECT STATE:
@@ -1073,6 +877,18 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     if (warm) warmUsed = true;
     else if (vetoedResume && !warmUsed && process.env.CLEAROTRON_WARM_RETRY !== "0" && warmEligible(lastFail, lastJson))
       note(`[${name}] attempt ${attempt - 1} left this stage's meaning population with ZERO ruled rows (${String(lastFail).slice(0, 100)}) — a resumed session re-reads its own output and cannot rule what it did not rule; SKIPPING the warm patch and dispatching attempt ${attempt} FRESH (the warm attempt is not spent: a partial failure later in this ladder still gets it)`);
+    // D3: inter-attempt backoff (see retryBackoffMs) — a retry dispatched the same second it failed
+    // tends to re-hit the same still-booting gateway / still-overloaded provider. Attempt 1 never waits.
+    // NOT WHEN THE TURN FINISHED AND ONLY THE VALIDATOR REFUSED IT: nothing in the environment failed, so
+    // the wait buys nothing and costs the stage its length on the critical path. Known positively, by the
+    // predicate the warm patch already uses (the turn's status ok, a validator refusal); a spawn,
+    // transport or kill failure still waits.
+    if (attempt > 1) {
+      const validatorOnly = warmEligible(lastFail, lastJson);
+      const backoff = validatorOnly ? 0 : retryBackoffMs();
+      if (validatorOnly) note(`[${name}] no retry backoff before attempt ${attempt}: attempt ${attempt - 1} finished and only the validator refused it`);
+      else if (backoff > 0) { note(`[${name}] retry backoff ${backoff}ms before attempt ${attempt}`); await sleep(backoff); }
+    }
     // Snapshot each expected artifact at THIS attempt's start. TWO readers, one base — so they can never
     // disagree about what this dispatch emitted:
     //   · AD-4 emitted-vs-landed telemetry — `wrote` says whether this dispatch WROTE its artifact, as
@@ -1143,7 +959,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // written to disk before the comparison, so the thing being watched cannot reach it. See
     // run-integrity.mjs for why it is not a manifest file and why the append-only journals are excluded.
     const integrityBefore = frozenSnapshot(runDir);
-    const turn = await engine.runTurn({ agent, sessionKey: key, message: effMessage, grantDispatch: base, model, thinking, timeoutSec: effTimeout, resumeRef: warm ? lastSessionRef : undefined, codexHome: stageCodexHome, mcpConfig, allowedTools: gatherAllowedTools, seatWrites: gatherSeatWrites, skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
+    const turn = await engine.runTurn({ agent, sessionKey: key, message: effMessage, grantDispatch: base, model, thinking, timeoutSec: effTimeout, resumeRef: warm ? lastSessionRef : undefined, stageHome, mcpConfig, allowedTools: gatherAllowedTools, seatWrites: gatherSeatWrites, skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
       progressFiles: files,   // the no-progress watchdog's artifact-advance signal (anthropic-agent; other adapters ignore it)
       // The raw stream of this session, beside its dispatch record (engine/session-record.mjs). The engines
       // keep it while the disk has room and say on the tuple's `stream` what landed.
@@ -1217,79 +1033,10 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
       return { fail: null, quantity: null, file: null, graded: null };
     };
 
-    // ── corruption 3 — WHAT WAS ASKED FOR vs WHAT ACTUALLY RAN ─────────────────────────────────
-    //
-    // Until this landed, every model figure on every record was a pure function of the REQUESTED alias:
-    // `resolveModel(model)` / `engine.resolveModelId(model)`, computed here without ever looking at the
-    // provider's answer. So `--model gemini` logged `google/gemini-3.1-pro-preview` and ran sonnet (the
-    // engine's alias table substituted, silently), a haiku stage that bounced to sonnet logged haiku,
-    // and every attribution downstream — the A/B arm's manifest, tokens.mjs' per-model rollup, the
-    // billing classes — was keyed to a model that had not run. Patching the log would not have fixed
-    // it; the log was already saying what the code believed.
-    //
-    // TWO FIELDS, NEVER COLLAPSED INTO ONE:
-    //   modelUsed   — the requested resolution, unchanged in meaning and value: run-economics.mjs and
-    //                 tokens.mjs both read it, and a field that quietly changes meaning is its own corruption.
-    //   modelActual — the id the WIRE reported (engine tuple `modelWire`), or NULL when the stream never
-    //                 said: an engine that does not emit one (codex), a turn killed before any event, a
-    //                 spawn error. It NEVER falls back to the requested alias, and `modelBasis` ("actual" or
-    //                 "unknown") never dresses a requested value as an observed one. `providerReported` is
-    //                 the provider word the same stream gave (tuple `providerWire`), null on the same terms.
-    const modelRequested = engine.resolveModelId ? engine.resolveModelId(model) : resolveModel(model);
-    const modelActual = (typeof turn.modelWire === "string" && turn.modelWire) ? turn.modelWire : null;
-    const modelBasis = modelActual ? "actual" : "unknown";
-    const providerReported = (typeof turn.providerWire === "string" && turn.providerWire) ? turn.providerWire : null;
-    // WHETHER THE OBSERVED ID NAMES A FIXED BUILD. `modelBasis: "actual"` says the provider answered,
-    // not that the answer is pinned: two of the three tiers come back as undated aliases the provider
-    // may repoint, and recorded beside a dated one they read identically. null when there is nothing to
-    // judge, never collapsed into "alias".
-    const modelSnapshot = modelSnapshotKind(modelActual);
-    // WHICH BUILD OF THE TOOL SERVED THIS TURN. `modelSnapshot` above answers "did the model move";
-    // this answers "did the tool move", and the two have one symptom — a run whose judgment differs from
-    // last week's. Captured at dispatch rather than read back afterwards, because the binary a reader
-    // could probe later is not necessarily the one that ran.
-    //
-    // Written as an object with its own `probe` field, so an unreadable version is a RECORDED state
-    // rather than a missing one. Omitting it on failure would collapse "asked and could not say" into
-    // "written before anybody asked", which is the distinction the field exists for. One spawn per
-    // binary per process; a probe never throws, because taking down a dispatch to record a version
-    // would be a worse defect than the gap it closes.
-    // `source` says WHICH copy served (explicit / path / installed), and it is attached here, outside the
-    // probe's cache: that cache is keyed by the file, and one file can be reached by more than one route.
-    const cli = (() => {
-      try {
-        const pre = preflightEngineBinary(process.env);
-        const probed = probeCliVersion(pre?.resolved ?? null);
-        // ── THE FLOOR, COMPARED WHERE THE RUN CAN SEE IT ────────────────────────────────────────
-        //
-        // The build declares a minimum version for each engine's program, and until now nothing
-        // compared a running copy against it. The floor was passed to the installer, so a copy this
-        // product installs cannot land beneath it — but resolution walks PATH first and takes the
-        // first hit, so a copy already on the machine wins and was never measured against anything.
-        // That is the common case, not the edge one: most machines have their own copy. A stage then
-        // runs on a program below the floor and is served whatever that program serves, silently.
-        //
-        // RECORDED, NOT REFUSED. Refusing here would stop every run on any machine whose copy is
-        // behind — including ones already deployed and working — and that is a decision about those
-        // deployments rather than a defect fix. What was missing is the fact, so the fact is what is
-        // written: an operator, and anyone reading the run afterwards, can now see it. Whether it
-        // should also refuse is a separate question and is not answered here.
-        //
-        // THREE-VALUED and written unconditionally, like the model fields below: true, false, or null
-        // when either side names no version this build can compare — an unknown is an unknown, never
-        // an all-clear. The floor itself rides along so the record says what it was measured against
-        // rather than leaving a later reader to guess which build's floor applied.
-        const floor = ENGINE_BINARIES[pre?.engine]?.floor ?? null;
-        const belowFloor = floor ? olderThanFloor(probed?.version ?? null, floor) : null;
-        return { ...probed, source: pre?.source ?? null, floor, belowFloor };
-      } catch (e) { return { version: null, probe: "unreadable", why: String(e?.message ?? e).slice(0, 160), source: null, floor: null, belowFloor: null }; }
-    })();
+    // What the turn asked for against what the wire reported, and which program served it (ladder/model-gauge.mjs).
+    const { modelRequested, modelActual, modelBasis, providerReported, modelSnapshot, famRequested, famActual, modelMismatch } = modelGauge(engine, model, turn);
+    const cli = servingProgram();
     if (modelActual) lastModelWire = modelActual;                       // — never overwritten with null
-    // The comparison is by FAMILY (driver.config modelFamily), because `--model haiku` legitimately comes
-    // back as `claude-haiku-4-5-20251001`. THREE-VALUED: null when either side names no family this
-    // build recognises — an unknown is recorded as unknown and never as agreement.
-    const famRequested = modelFamily(modelRequested), famActual = modelFamily(modelActual);
-    const modelMismatch = (famRequested && famActual) ? famRequested !== famActual : null;
 
     let fail = null;
     let stampedQuantity = null;   //: a validator's own exact count, when it stamped one (see below)
@@ -1297,12 +1044,8 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // A TURN THAT COMPLETED IS JUDGED ON WHAT IT WROTE, whatever its stderr says about a request inside it
     // (attemptTimedOut). Which signal fired is kept on the row either way.
     const timedOutBy = timeoutCause({ killed, code, wall, stderr, timeoutSec: effTimeout });
-    if (attemptTimedOut({ cause: timedOutBy, code, json })) fail = "timeout";
-    else if (isEmbeddedFallback(json, stderr)) fail = "embedded_fallback";
-    else if (code !== 0) fail = `nonzero_exit_${code}`;
-    else if (!json) fail = "unparseable_json";
-    else if (json.status !== "ok") fail = `status_${json.status}`;
-    else {
+    fail = turnFailure({ timedOutBy, code, json, stderr });
+    if (fail === null) {
       const j = judgeArtifacts();
       fail = j.fail; stampedQuantity = j.quantity; failingFile = j.file; lastGraded = j.graded ?? lastGraded;
     }
@@ -1369,7 +1112,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
       // under the run dir to win the grant back, and warmPatchMessage renders the target through rel();
       // a relative path there would silently strip the write root off the one turn that needs it most.
       const rt = await engine.runTurn({ agent, sessionKey: key, message: repairMessage, model, thinking,
-        timeoutSec: effTimeout, resumeRef: repairRef, codexHome: stageCodexHome, mcpConfig: turnConfig(effTimeout), allowedTools: gatherAllowedTools,
+        timeoutSec: effTimeout, resumeRef: repairRef, stageHome, mcpConfig: turnConfig(effTimeout), allowedTools: gatherAllowedTools,
         skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
         progressFiles: files, streamFile: streamFilePath(runDir, name, attempt, formRepairsUsed + 1) });
       repairRef = rt.sessionRef ?? repairRef;
@@ -1404,7 +1147,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         // last line of the stage's telemetry (compare.mjs reads exactly that line).
         stageLog(runDir, name, {
           attempt, key, agent, model,
-          modelUsed: (lastModelUsed = engine.resolveModelId ? engine.resolveModelId(model) : resolveModel(model)),
+          modelUsed: (lastModelUsed = modelIdOf(engine, model)),
           // Same billing stamp as the attempt row, written on the same terms — see the note there.
           engine: engine.name, writeBoundary: writeBoundaryOf(engine), authMode: auth.mode, apiBilled: auth.apiBilled === true, cloud: auth.cloud ?? null,
           code: rt.code, wall: rt.wall, timeoutSec: effTimeout,
@@ -1446,7 +1189,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
           runLog(runDir, {
             event: "form-repair", stage: name, attempt, repair: formRepairsUsed, of: MAX_FORM_REPAIRS,
             fail: triggeredBy, outcome, landed, ok: outcome === "repaired",
-            model: engine.resolveModelId ? engine.resolveModelId(model) : resolveModel(model),
+            model: modelIdOf(engine, model),
           });
         } catch { /* telemetry best-effort — never fail a turn over a journal line */ }
       }
@@ -1456,32 +1199,8 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
       // doctrine, applied inside the dispatch). In all three the ORIGINAL fail goes to the ladder.
       if (outcome !== "moved") break;
     }
-    // Exit-1 adapter truth (charter P1 §2): the claude CLI reports a provider error on the FINAL assistant
-    // message (an HTTP 500 after the work was done) as subtype:"success" + is_error:true, which the adapter
-    // rightly converts to a nonzero exit — but by then the turn's Write already landed the artifact, and
-    // re-running finished work burned ~35 min on the R-round evidence run. So before a nonzero exit is
-    // accepted as failure, judge the ARTIFACT exactly as the skip path does (exists + validates), with one
-    // extra requirement the skip path doesn't need: the file must have been WRITTEN by THIS ATTEMPT
-    // (differs from the attempt-start snapshot) — an inherited/stale file, and equally an EARLIER
-    // ATTEMPT's file, never rescues a failed turn.
-    //
-    // A KILL ANYWHERE IN THIS LADDER CLOSES THE RESCUE (post-merge audit 2, 2026-07-31). The design
-    // always said the rescue "never applies to a kill — a cut-down turn's artifact may be mid-write";
-    // testing only the CURRENT attempt's `killed` honoured that one attempt at a time, so attempt 1 =
-    // kill that wrote a torn partial + attempt 2 = nonzero exit shipped the partial as stage truth.
-    // Both legs of the fix are needed, because they refuse different things:
-    //   · the per-attempt snapshot refuses an EARLIER attempt's bytes outright;
-    //   · `killSeen` refuses this attempt's own write once a kill has torn the file underneath it —
-    //     freshness is `stat differs`, i.e. a MUTATION, never a proof of complete rewrite (a patch, an
-    //     append, or a Write killed mid-flush all satisfy it), and a stage `validate` is a SHAPE check,
-    //     not a completeness proof: the audit repro is a torn draft that passes its own validator.
-    // Only register stages carry a backstop for this (register-taint.mjs, on these very rows);
-    // synthesis / narrative / cards / digest have none, and synthesis is where the evidence run took its
-    // 137 hard-wall kill. This does NOT touch the plain retry ladder register-taint's corpus audit found
-    // benign (kill → fresh full redo that EXITS CLEAN): that turn reports completion and is gated on its
-    // final state by the normal success path above. The rescue is the opposite case by construction — the
-    // turn did not report completion, and completeness of its write is exactly what is unknown.
-    // Still never applies to a rate-limit rejection either (0 tokens, nothing written).
+    // Whether this attempt's own artifacts answer its failure is ladder/rescue.mjs (rescueAttempt), with why a kill
+    // anywhere in this ladder closes the exit-1 rescue; `killClass` and `killSeen` carry that kill to it.
     const killClass = isTaintRow({ fail, code, killed, signals: turn.signals });
     // ONE artifact judgement, shared by both rescues below (the rule: never a second, drifting copy of
     // the contract). Present + written by THIS attempt (the per-attempt snapshot — an inherited file and
@@ -1510,95 +1229,10 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         return true;
       });
     };
-    let rescued = null;
-    let quiescentMs = null;   //: how long the artifact had been untouched when the turn settled
-    let rescueRefused = null; //: WHICH of the rescue's four causes refused — on the row, not only in a note
-    let rescueRefusedFile = null, rescueRefusedReason = null;   //: and which file, and on what
     let attemptRefusals = null;   //: this dispatch's refusals of a tool-written artifact, on a timeout
-    if (fail && /^nonzero_exit_/.test(fail) && files.length) {
-      if (killClass || killSeen) {
-        note(`[${name}] ${fail} with a kill-class attempt in this ladder — the exit-1 rescue stays CLOSED (a killed turn's artifact may be torn mid-write and a validator cannot prove it whole); failing honestly instead`);
-      } else if (attemptWroteTruth()) {
-        rescued = fail;
-        fail = null;
-        note(`[${name}] ${rescued} but every expected artifact is present, fresh and valid — accepting the artifact as stage truth (a final-message provider error must not re-run finished work)`);
-      }
-    }
-    // ── — THE WALL RESCUE ────────────────────────────────────────────────────────────────────
-    //
-    // A stage SIGKILLed at its hard wall AFTER it had already written a complete, valid artifact is a
-    // stage that SUCCEEDED. Measured on R1 2026-08-04: placement-inquiry walled twice (1861s/1800s and
-    // 2760s/2700s, both `wrote: true`, the second `noChange: true`), parked the run — and the resume two
-    // minutes later SKIPPED it, because pipeline.mjs's skip predicate found the artifact present and
-    // passing its own validator. 77 minutes of dispatch, 335,782 output tokens and one park out of a
-    // budget of three, all spent after the deliverable was finished.
-    //
-    // WHY THIS MAY DO WHAT THE EXIT-1 RESCUE ABOVE MUST NOT. That refusal is not wrong and is not being
-    // reversed: post-merge audit 2 pinned a torn draft that CLEARS its own shape validator, and
-    // `stat differs` is a mutation, never a proof of complete rewrite. What this arm adds is the one
-    // fact neither has — QUIESCENCE. The torn-write window is [watchdog decision, child death]: a poll
-    // tick plus the SIGTERM→SIGKILL escalation, single-digit seconds. An artifact that had been
-    // untouched for a full minute when the turn settled was not being written when the turn was killed.
-    // On the incident the margin was 974 seconds. On the audit's repro it is zero, which is why that
-    // fixture still fails exactly as it did.
-    //
-    // AND IT ADMITS NOTHING THE RESUME WOULD REFUSE. The skip predicate accepts these same bytes minutes
-    // later on the same disk; this only stops the run paying a second wall, a park and a resume to reach
-    // the same answer. The resume's `!freshness.stale` arm is deliberately NOT copied: it compares
-    // declared inputs against a stamp written only on success, so at kill time it is not merely
-    // unnecessary but meaningless — and the stage cannot be stale against inputs it has just this moment
-    // read and acted on.
-    //
-    // A stage with no validator, or whose artifact fails it, or which never wrote, is untouched.
-    else if (fail === "timeout" && turn.signals?.hardWall && files.length && validate && wallRescueEnabled()) {
-      // — A FILE THAT COULD NOT BE STAT'ED IS NAMED, WITH WHY, rather than folded into a number. It
-      // used to be a -1 in `quiescentMs` and the cause `artifact-unreadable`, and the commonest way to get
-      // there is not a filesystem fault at all: the turn was killed before it wrote. Measured on two
-      // stages of one run, 2026-09-10: both rows read `wrote: false`, `quiescentMs: -1`,
-      // `artifact-unreadable`, for files that did not exist. An ABSENT file (ENOENT) is its own cause now;
-      // `artifact-unreadable` stays for a stat that fails any other way, with its error code. Rows
-      // written before this change say `artifact-unreadable` for both.
-      //
-      // `quiescentMs` IS A MEASUREMENT OR IT IS ABSENT. With a file unstat'able there is no quiescence of
-      // the set to measure, so it stays null and the row omits it: a -1 reads as a number to anything that
-      // averages or compares it. An mtime that lands after the settle instant (written in that same
-      // instant, or a clock step) measures 0 rather than a negative; it is the under-quiescence case.
-      let missing = null;
-      const quiet = [];
-      for (const f of files) {
-        try { quiet.push(Math.max(0, settledAt - statSync(f).mtimeMs)); }
-        catch (e) { if (!missing) missing = { file: rel(f), code: String(e?.code ?? "unknown") }; }
-      }
-      quiescentMs = missing || !quiet.length ? null : Math.min(...quiet);
-      const bar = wallRescueQuiesceMs();
-      const why = {};
-      if (quiescentMs !== null && quiescentMs >= bar && attemptWroteTruth(why)) {
-        rescued = fail;
-        fail = null;
-        note(`[${name}] hard-wall kill at ${Math.round(wall)}s, but every expected artifact was written by this attempt, passes its validator and had been untouched for ${Math.round(quiescentMs / 1000)}s when the turn settled — the stage FINISHED and the wall is a fact about the dispatch, not a failure of the stage (the resume's skip path would accept these same bytes)`);
-      } else {
-        // Said out loud, because "the rescue considered it and refused" and "the rescue never looked"
-        // must not be the same silence. This is the file that reads an absence as a diagnosis otherwise.
-        //
-        // — AND SAID ON THE ROW, not only in a note. The note goes to the operator's console; the
-        // JOURNAL is what a later round reads, and `rescued: null` reads identically for all three
-        // refusal causes. Measured on the 2026-08-09 R1: placement-inquiry was killed at its
-        // hard wall having WRITTEN its artifact and lain quiescent for 371 s against a 60 s bar — so the
-        // rescue was refused on the third cause, its validator — and 31 minutes of finished work were
-        // discarded and re-run cold. `grep -c rescue run.jsonl` on that run returns 0. Nothing in the
-        // record said why, and reconstructing it took a file-mtime comparison against a preserved run dir.
-        rescueRefused = missing ? (missing.code === "ENOENT" ? "artifact-absent" : "artifact-unreadable")
-          : quiescentMs < bar ? "under-quiescence"
-          : "not-written-by-this-attempt-or-invalid";
-        // — AND WHICH FILE, AND ON WHAT: an unstat'able file with its error code; under the bar, the file
-        // touched last (`quiescentMs` carries the number); otherwise the first file the artifact judgement
-        // failed, with its cause — `absent`, `not-written-by-this-attempt`, or the validator's own reason.
-        if (missing) { rescueRefusedFile = missing.file; rescueRefusedReason = missing.code; }
-        else if (quiescentMs < bar) rescueRefusedFile = rel(files[quiet.indexOf(quiescentMs)]);
-        else { rescueRefusedFile = why.file ?? null; rescueRefusedReason = why.reason ?? why.cause ?? null; }
-        note(`[${name}] hard-wall kill at ${Math.round(wall)}s — wall rescue REFUSED (${rescueRefused}: ${rescueRefusedFile ?? "no file named"}${rescueRefusedReason ? `, ${rescueRefusedReason}` : quiescentMs < bar ? `, touched ${Math.round(quiescentMs / 1000)}s before the kill, under the ${Math.round(bar / 1000)}s bar` : ""}); failing honestly as timeout`);
-      }
-    }
+    const rescue = rescueAttempt({ fail, files, killClass, killSeen, signals: turn.signals, validate, wall, settledAt, name, rel, wroteTruth: attemptWroteTruth });
+    fail = rescue.fail;
+    const { rescued, quiescentMs, rescueRefused, rescueRefusedFile, rescueRefusedReason } = rescue;
     // — WHAT A KILLED ATTEMPT WAS DOING, where its transport kept a record. A tool-written artifact's
     // refusal journal says how many times this attempt sent its record and was told no, and the reason the
     // last time. The missing-file row has carried that last reason since the journal existed; a timeout row
@@ -1609,68 +1243,8 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // the rescue above needs it; the two can never disagree in reach — isTaintRow excludes lane_wedge, and
     // a wedge is a `timeout` fail that breaks the ladder immediately, so no later attempt exists to judge.
     if (killClass) killSeen = true;
-    // Lane-wedge reclassification (see isLaneWedge): a 0-token timeout is a saturated command lane, not a slow
-    // model. Becoming `lane_wedge` makes the retry policy skip the wasteful extended shot; stage() (pipeline.mjs)
-    // waits for the lane to clear and dispatches the stage again on its one model (a shared lane is not
-    // model-specific). teal-bastion 2026-06-15.
-    // See classifyWedge: a 0-token timeout is a saturated-lane wedge UNLESS it's a hard-wall over-budget kill.
-    fail = classifyWedge(fail, usage, turn.signals);
-    // D3: an Anthropic 529/overload hides inside the generic transport tokens (nonzero_exit_1 through
-    // claude -p) — reclassify to status_overloaded so it stops the same-model ladder below and rides the
-    // recovery park instead. Only the transport shapes are eligible: a timeout/wedge has
-    // its own policy, and a content failure must never be laundered into a transient by a stray match.
-    if (fail && /^(nonzero_exit_|status_error$|unparseable_json$)/.test(fail) && isOverloaded({ json, stdout: turn.stdout, stderr })) fail = "status_overloaded";
-    // Rate-limit / session-cap (429): the standalone engine maps EVERY tier to the one Claude subscription, so
-    // a re-run on any tier is futile — classify distinctly (NOT in FALLBACK_ELIGIBLE) and carry resetsAt so the
-    // pipeline POSTPONES the run to resetsAt instead of failing it. (Overrides the nonzero_exit_1 a 429 shows as.)
-    // Guarded on `fail`: a turn whose finished, validated artifact was just accepted (the exit-1 rescue above)
-    // stays accepted — the NEXT stage's first turn hits the same cap at 0 tokens spent and postpones cleanly.
-    if (turn.signals?.rateLimited && fail) fail = "rate_limited";
-    // AN ENGINE WHOSE SIGN-IN EXPIRED IS NAMED, not left as `nonzero_exit_1`. codex fails its refresh in
-    // seconds with a bare exit code while `codex login status` still reports the user signed in, so the
-    // one thing that fixes it has to be in the failure itself. AFTER the rate limit, which wins when both
-    // appear: a postponed run resumes on its own, and a signed-out one cannot. The sentence rides after
-    // the colon, as `model_mismatch:` carries its detail, so no run-level classifier needs a new token.
-    else if (turn.signals?.signedOut && fail) fail = `engine_signed_out: ${turn.signals.signedOut}`;
-    // AND ONE WHOSE TOOLS WERE ALL REFUSED IS NAMED, not left as the missing file the refusal caused. The
-    // turn reported success and the stage failed for want of what its tools would have produced; a
-    // `missing_file` reads as a model that did not write, and sends the reader to the wrong place. The
-    // sentence says what fixes this host. After the sign-in, which is the more basic fault when both appear.
-    else if (turn.signals?.toolsRefused && fail) fail = `engine_tools_refused: ${turn.signals.toolsRefused}`;
-    // A6 (addendum 2026-07-30): stop_reason max_tokens with ZERO usable output is a DETECTED FAULT with a
-    // name — never a silent paid retry. The turn ran to its output-token ceiling and the artifact never
-    // landed (a content fail on a "successful" turn), or the turn itself died at the ceiling (transport
-    // shapes) — either way the CAUSE is the output budget, and an unnamed retry just re-buys the same
-    // wall. Naming it here makes the stage-log row carry the fault (counted per attempt), routes
-    // correctiveMessage to the shrink-your-output correction, and arms the A4 identical-signature break
-    // on a second identical hit. The content detail stays appended (hint derivation and the
-    // coverage-quarantine joins still read it); the transport shapes go BARE — their tokens
-    // (nonzero_exit / unparseable_json) read as TRANSIENT to the run-level classifier (repairs.mjs
-    // TRANSIENT_RE is substring-matched) and would silently re-arm the full recovery ladder for a
-    // deterministic ceiling fault. Never fires on a rescued turn (fail is already null) nor on the
-    // kill/wedge/overload/rate-limit classes (each keeps its own policy).
-    if (fail && json?.stopReason === "max_tokens" && /^(missing_file:|invalid_file:|nonzero_exit_|status_error$|unparseable_json$)/.test(fail)) {
-      const named = /^(missing_file:|invalid_file:)/.test(fail) ? `max_tokens_no_output:${fail}` : "max_tokens_no_output";
-      note(`[${name}] DETECTED FAULT: stop_reason=max_tokens with no usable output (${fail}) → ${named}`);
-      fail = named;
-    }
-
-    // corruption 3, THE ENFORCEMENT — a turn that ran a different model than it was told to is a
-    // FAILED turn, not a successful one with an interesting note. Everything the stage produced is
-    // attributed to the wrong model, so accepting it would put the corruption on the record permanently
-    // (the artifact lands, the row says haiku, sonnet wrote it).
-    //
-    // Deliberately scoped to `!fail`: a turn that already failed keeps its own cause, because `timeout`
-    // and `rate_limited` drive retry policies this must not override. `modelMismatch` is journalled on
-    // the row either way, so the mismatch is never lost — only the classification defers.
-    //
-    // Default-ON gate through `envGateOn` (the rule): `CLEAROTRON_MODEL_WIRE_CHECK=0` disarms it without
-    // a deploy if a provider ever starts reporting an id this build's family regex misreads. Disarming
-    // silences the REFUSAL, never the record — `modelActual`/`modelMismatch` keep landing on every row.
-    if (modelMismatch === true && !fail && envGateOn("CLEAROTRON_MODEL_WIRE_CHECK")) {
-      fail = `model_mismatch:${famRequested}->${famActual}`;
-      note(`[${name}] MODEL MISMATCH: asked for ${modelRequested} (${famRequested}), the wire says ${modelActual} (${famActual}) — failing the turn. An unhonoured model override is an error, not a substitution; every number attributed to this turn would name the wrong model.`);
-    }
+    fail = nameTheFailure(fail, { usage, json, stdout: turn.stdout, stderr, signals: turn.signals, name,
+      gauge: { modelMismatch, famRequested, famActual, modelRequested, modelActual } });
 
     // AD-4 house rule — both computed UNCONDITIONALLY, three-valued on purpose:
     //   wrote: did THIS attempt move any expected artifact? true/false when the stage has expected files,
@@ -1963,245 +1537,13 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     lastSessionRef = turn.sessionRef ?? lastSessionRef;   // anthropic warm-resume target for the next attempt
     note(`[${name}] attempt ${attempt} FAILED: ${fail}${quantity === null ? "" : ` (count ${quantity}${noChange ? ", unchanged" : ""})`}`);
 
-    // A4 (addendum 2026-07-30): a byte-identical CONTENT failure signature on consecutive attempts is a
-    // proven-deterministic defect — the previous attempt already carried this exact validator string and
-    // the corrective/warm re-dispatch reproduced it byte-for-byte, so another paid turn cannot converge
-    // (VENZY/E2E-R2: 63% of the run was correction, much of it re-buying identical failures). Stop NOW
-    // and park honestly: the run-level recovery ladder (classifyFailureReason → one "unknown" park →
-    // repeat-signature terminal) owns what happens next, with proper accounting — that lane's single
-    // fresh sample replaces the blind third attempt this used to buy. Scoped to the content classes
-    // (missing_file / invalid_file / max_tokens_no_output — same stage, same validator string); every
-    // transport class keeps its own policy (timeout's single extended shot, and the
-    // wedge/overload breaks above and below).
-    //
-    // BUILD 2 — A4's PREMISE FAILS ON EXACTLY ONE ATTEMPT, AND IT IS THE ONE IT USUALLY FIRES ON.
-    // "Another paid turn cannot converge" assumes the two consecutive attempts are independent samples.
-    // A warm patch is not a sample: it RESUMES the session that produced the previous failure (key =
-    // lastKey, resumeRef = lastSessionRef), so a session that wrote a document with zero rulings writes
-    // it again. It has no capacity to disagree with itself, and its repeat proves nothing about whether
-    // a fresh dispatch would converge.
-    //
-    // The 2026-08-07 round measured both sides of this on the meaning-sweep stage. Where it cost a run:
-    // fresh ruled 0 of 72 → warm ruled 0 of 72, byte-identical, the artifact never rewritten → A4 broke
-    // the ladder at 2 of 3 with attempt 3's budget unspent → RECOVERABLE park, ~90s, one of three defect
-    // lanes → the recovery lane then re-dispatched FRESH and ruled 69 of 72. Two dispatches and a park to
-    // reach the attempt the ladder still had in hand. The control is the run whose warm attempt MOVED
-    // (78 unruled → 1): the string changed, A4 never fired, and cold attempt 3 cleared it in the ladder.
-    //
-    // So: discard the SESSION, not the ladder. Fall through to attempt N+1, which is necessarily FRESH
-    // (`warmUsed` is already spent, so `warm` cannot be true again) and carries the full corrective
-    // message. Three existing bounds keep this finite and none of them is new or relaxed here:
-    //   1. `warmUsed` caps warm at ONE attempt per stage run, and `warm` is this escalation's trigger —
-    //      so the escalation can fire at most once per ladder, structurally. It is never reset below.
-    //   2. `while (attempt < maxRetries + 1)` is untouched: the ceiling stays 3 attempts in production.
-    //   3. The guard below only escalates when a further attempt already exists. With no budget left the
-    //      break happens exactly as it does today, terminal signal intact.
-    // Worst case: fresh(X) → warm(X, escalate) → fresh(X) → A4 fires normally (attempt 3 is not warm) →
-    // terminal at 3 attempts.
-    //
-    // The escalated dispatch does NOT re-buy the paid sweep: perplexity-server short-circuits on a
-    // complete recorded ledger ("the sweep is a fact of this run, not of this attempt"), and the seat
-    // opens a form already carrying every prior ruling.
-    //
-    // NOT de-allowlisting the connotation family from WARM_ELIGIBLE_RE instead: on the same round another
-    // clearance cleared 61 unruled → 0 on a warm attempt 2. That lane works, and removing it would cost
-    // every run that converges on it. This refuses to treat a warm no-op as proof, and nothing more.
-    const identicalContent = /^(missing_file:|invalid_file:|max_tokens_no_output)/.test(fail)
-      && attemptFails.length >= 2 && attemptFails[attemptFails.length - 2] === fail;
-    // ── — THE ESCALATION IS FOR A SEAT THAT PRODUCED SOMETHING ───────────────────────────────
-    //
-    // BUILD 2 (above) buys ONE fresh attempt after a warm repeat, because a resumed session cannot
-    // disagree with itself and its repeat proves nothing about a fresh dispatch. Measured, that is true
-    // of a seat whose output was WRONG and false of a seat that wrote nothing at all:
-    //
-    //   invalid_file repeated (the seat produced something)   fresh attempt 3 converged  9 of 9
-    //   missing_file repeated (the seat produced nothing)     fresh attempt 3 converged  0 of 6
-    //
-    // The second case cost ~3.4 min and ~19k output tokens per affected run for an attempt that has never
-    // once converged. So the escalation keeps its budget where it pays and stops buying the case where it
-    // does not. This is the deterministic-vs-transient line asked for, drawn on what the record
-    // already shows before attempt 3 is spent — not a shorter ladder, which would hide the escalation
-    // rather than decide it.
-    //
-    // A CHANGED FAILURE IS NEVER CUT, and that is structural rather than a second condition:
-    // `identicalContent` requires this attempt's failure to repeat the previous one byte-for-byte, so a
-    // run that moved missing_file → invalid_file never reaches here at all. Two of the measured runs did
-    // exactly that, with real quantity — precisely where the ladder earns its keep.
-    //
-    // `noChange` says the same thing one line up and is NOT read here on purpose: it is RECORDING ONLY,
-    // and no break/park/terminate decision reads it ( owns that policy). `identicalContent` is the
-    // live signal this branch already decides on, so the rule needs no new input.
-    //
-    // SIX IS SIX, and all of it from the test box. If a fresh attempt 3 ever converges after a
-    // produced-nothing repeat, this is the line to revisit — the note below names the case in the run log
-    // so that event is findable rather than silent.
-    const producedNothing = /^missing_file:/.test(fail);
-    // (round 2) — THE CUT WAS RECORDED AND THE BREAK BESIDE IT WAS NOT, SO THE PATHOLOGY SURVIVED.
-    //
-    // The comment below says a decision that prevents an attempt must leave a trace. It shipped attached
-    // to ONE of the two branches that prevent one. Measured on a delivered run of the test instance (engine 734689e8): the
-    // marker `escalationDeclined` appears in ZERO files anywhere in the workspace, because the cut also
-    // requires `warm` and that run's attempt rows carry no `warm` field at all — while `"warm"` appears
-    // in 98 jsonl files instance-wide, so the absence is the run's, not the field's. With `warm` falsy
-    // the run fell through to the pre-existing `else if (identicalContent)` break, which stopped attempt
-    // 3 exactly as the cut would have and recorded NOTHING: its note is gated on `warm`, and note() is
-    // stderr regardless.
-    //
-    // `warm` is CORRECT on the cut and is not an accidental narrowing of the decision: the thing being
-    // declined is the warm→fresh escalation, which only exists on a warm attempt. On a cold path there is
-    // no escalation to decline — the ladder simply breaks. What was narrowed with it was the RECORDING,
-    // and both branches end the same way, with budget still in hand.
-    //
-    // ONE STATEMENT, so a third branch cannot arrive recording a fourth shape. `wouldHaveBeenAttempt` is
-    // the number when budget remained and NULL when the ladder was genuinely spent — that is the whole
-    // difference between a choice and an ending, and a row that printed `attempt + 1` unconditionally
-    // would claim a prevented attempt that never existed.
-    // THE RUN SPINE, NOT THE SEAT JSONL — and the first cut had this wrong.
-    //
-    // `_driver/<stage>.jsonl` IS THE ATTEMPT LEDGER. Nothing states that in one place, and it is relied on
-    // everywhere: convergence-ledger derives quantities per row, warm-retry and retry-backoff count rows as
-    // attempts, seat-attempts.mjs claims any row carrying `{attempt:int≥1, key, status}` as a dispatch for
-    // seat-retry-report's statistics. A decision is not an attempt, and filing one there put a row with no
-    // quantity into ledgers that derive quantities — four test files caught it the moment this fired on a
-    // path that is actually common. The escalation cut merged into that file first and had the same fault
-    // latent: it fires only on warm produced-nothing, so nothing had reached it yet.
-    //
-    // `run.jsonl` is where this codebase already files the things that are NOT attempts — `form-repair`
-    // above, `repair-attempted`, `engine-turn-probe`. It is durable, it is one file per run, and it is the
-    // one the wall decomposition deliberately skips. Findable was the requirement; the seat ledger was
-    // never what made it so.
-    const recordAttemptPrevented = (decision, rule) => {
-      try {
-        runLog(runDir, {
-          event: "attempt-prevented", stage: name, attempt, of: maxRetries + 1, decision, rule,
-          fail: String(fail).slice(0, 200),
-          warm: Boolean(warm), producedNothing,
-          // The whole difference between a CHOICE and an ENDING. Null when the ladder was genuinely spent:
-          // printing `attempt + 1` there claims a prevented attempt that never existed, and every count
-          // taken off these rows would be high by exactly the runs that had nothing left to prevent.
-          // Null and PRESENT — an omitted key cannot be told from a row written before this existed.
-          wouldHaveBeenAttempt: attempt < maxRetries + 1 ? attempt + 1 : null,
-        });
-      } catch { /* telemetry best-effort — never fail a turn over a journal line */ }
-    };
-    // criterion 1 — the rung decision, recorded on BOTH branches.
-    //
-    // `usage == null && runId == null` is the seat never having answered: no token count and no run
-    // identity, which together mean the turn died before the model saw it. Either alone is weaker —
-    // a turn can legitimately report no usage on some paths — so both are required.
-    const zeroUsageWarm = Boolean(warm) && fail && usage == null && json?.runId == null;
-    if (zeroUsageWarm) {
-      const free = rungsRefunded < WARM_ZERO_USAGE_FREE_RUNGS;
-      if (free) rungsRefunded++;
-      note(`[${name}] attempt ${attempt} [warm patch] returned no usage and no runId — it never reached the model`
-        + (free ? `; NOT charging the ladder a rung for it (${rungsRefunded}/${WARM_ZERO_USAGE_FREE_RUNGS} free rungs used)`
-          : `; CHARGING it — the ladder has already refunded ${rungsRefunded}, and a second one would let a warm turn that never lands loop`));
-      try {
-        runLog(runDir, { event: "warm-rung", stage: name, attempt, of: maxRetries + 1 + rungsRefunded,
-          rung_free: free,
-          reason: free ? "warm turn never reached the model" : "second zero-usage warm turn",
-          free_rungs_used: rungsRefunded, free_rungs_max: WARM_ZERO_USAGE_FREE_RUNGS,
-          fail: String(fail).slice(0, 200) });
-      } catch { /* telemetry best-effort — never fail a turn over a journal line */ }
-    }
-    // Exactly one row per prevented attempt: the warm produced-nothing case satisfies the cut AND then
-    // falls into the break below, and two rows for one decision would double every count taken off them.
-    const cutFired = identicalContent && producedNothing && warm && attempt < maxRetries + 1;
-    if (cutFired) {
-      note(`[${name}] attempt ${attempt} [warm patch] reproduced attempt ${attempt - 1}'s failure byte-for-byte and the seat produced NOTHING either time (${fail.slice(0, 140)}) — NOT escalating to a fresh attempt ${attempt + 1}: measured 0 of 6 convergences on this shape. A seat whose output was merely wrong still escalates.`);
-      // THE CUT IS RECORDED, NOT JUST NOTED. `note` is stderr only (log.mjs) and reaches no artifact, so
-      // the run record held no trace of a decision that PREVENTS an attempt — and because the cut
-      // returns, the prevented attempt never runs. n=6 would therefore be permanent: a seat or model
-      // change that made attempt 3 worth buying again could not be noticed, because nothing anywhere
-      // counts how often the cut fired or on what. Its own row in the seat's attempt jsonl, where every
-      // attempt already lives, is the smallest thing that makes it findable.
-      //
-      // FINDABILITY ONLY. This samples nothing: the prevented attempt is still prevented, and the row
-      // records the case rather than the counterfactual. Re-opening the question needs a deliberate
-      // measurement, not a quiet retry ladder that buys one anyway.
-      recordAttemptPrevented("escalation-declined:produced-nothing", "#1062");
-    }
-    if (identicalContent && !producedNothing && warm && attempt < maxRetries + 1) {
-      warmEscalatedAt = attempt + 1;
-      note(`[${name}] attempt ${attempt} [warm patch] reproduced attempt ${attempt - 1}'s failure byte-for-byte (${fail.slice(0, 140)}) — a resumed session cannot disagree with itself; DISCARDING that session and escalating attempt ${attempt + 1} to a FRESH dispatch (the recovery lane's fresh sample, bought here without the park)`);
-    } else if (identicalContent) {
-      // — NOT said when the break was a CHOICE. A produced-nothing repeat reaches here with budget
-      // still in hand, and "there is no attempt left" would be false: the attempt exists and was
-      // deliberately not spent. Its own note above says which case this is.
-      if (warm && !producedNothing) note(`[${name}] the warm patch reproduced its own failure and there is no attempt left to escalate to (attempt ${attempt} of ${maxRetries + 1}) — breaking; the fresh sample falls to the recovery lane`);
-      note(`[${name}] attempt ${attempt} failed BYTE-IDENTICALLY to attempt ${attempt - 1} (${fail.slice(0, 140)}) — breaking the ladder: same stage, same validator string, further retries are provably futile`);
-      // RECORDED, on the path the cut does not reach. This break is the PRE-EXISTING rule and this change
-      // does not re-decide it: my 0-of-6 measurement is about the warm→fresh escalation and licenses
-      // nothing about a cold break. It makes the population countable, which is what a later ruling on
-      // that question would need and could not have had.
-      if (!cutFired) recordAttemptPrevented("ladder-break:identical-signature", "#460");
-      // A said-back refusal the step left as it was: the pass stands, below, with what it left open recorded.
-      if (SAID_BACK_OPEN_RE.test(fail)) break;
-      return { ok: false, attempts: attempt, fail, sessionKey: key, modelWire: lastModelWire, modelUsed: lastModelUsed, attemptFails: [...attemptFails], identicalSignature: true, warmEscalated: warmEscalatedAt > 0 || undefined, quantity, noChange, reads, readsTruncated, warm, wrote, formRepairs: formRepairsUsed };
-    }
-
-    // Lane-wedge: the turn never got a command lane (0 tokens). The extended ×1.5 shot can't help (it produced
-    // nothing), and another attempt on a SHARED lane cannot help — so stop here and hand it on fast. The
-    // lane-wedge retry in stage() (pipeline.mjs) waits for the lane to clear and dispatches the stage again.
-    if (fail === "lane_wedge") break;
-    //: a model mismatch is a CONFIGURATION fault, not a transient. The next attempt sends the same
-    // argv to the same provider and gets the same substitution, so retrying only buys the wrong model
-    // twice. Break immediately and let the stage fail with the mismatch named on every row.
-    if (fail.startsWith("model_mismatch:")) {
-      note(`[${name}] model mismatch is deterministic — breaking the ladder (a retry re-buys the same wrong model)`);
-      break;
-    }
-    // A sign-in that could not be refreshed refuses every attempt the same way: the next one sends the
-    // same credential and gets the same 401, seconds apart. Break, and let the stage fail with it named.
-    if (fail.startsWith("engine_signed_out:")) {
-      note(`[${name}] the engine's sign-in could not be refreshed — breaking the ladder (a retry re-sends the same credential)`);
-      break;
-    }
-    // EVERY TOOL CALL THE TURN MADE WAS REFUSED. On some hosts codex's own sandbox refuses the stage's
-    // tool servers while the turn reports success, and the stage then fails for want of what the tools
-    // would have produced. The next attempt spawns the same sandbox and is refused the same way, so a
-    // retry re-buys the refusal: measured at three paid attempts per stage on a production run before the
-    // identical-failure break stopped it. Break on the first. A turn where any call completed is not this.
-    if (everyToolCallRefused(turn)) {
-      note(`[${name}] every tool call this turn made was refused (${turn.mcpToolCallsRefused}) — breaking the ladder (a retry is refused the same way)`);
-      break;
-    }
-    // D3: overload (529 / status_overloaded) — stop the ladder here: an in-ladder re-attempt hammers an
-    // API that just said it is overloaded, seconds apart, on the SAME model. Breaking hands the failure
-    // to the existing machinery: the stage fails on its one model (there is no model cascade), and that
-    // failure parks the run for recovery with escalating backoff (TRANSIENT_RE → .postponed).
-    if (fail === "status_overloaded") break;
-    // Rate-limit: do NOT retry (every retry hits the same capped subscription) and do NOT fall back — return
-    // immediately so the pipeline can postpone + auto-resume after the window. resetsAt rides the result.
-    if (fail === "rate_limited") return { ok: false, attempts: attempt, fail, resetsAt: turn.signals?.resetsAt, sessionKey: key, modelWire: lastModelWire, modelUsed: lastModelUsed, attemptFails: [...attemptFails], quantity, noChange, reads, readsTruncated, warm, wrote, formRepairs: formRepairsUsed };
-    // Timeout-aware retry: a genuinely over-budget/hung stage will just re-time-out on an identical
-    // attempt (the v14 delivery burned 3 × 600s). Give it exactly ONE longer shot, then stop.
-    if (fail === "timeout") {
-      // A WARM attempt, the one rung that resumes a session, that ran to its HARD WALL breaks after this attempt,
-      // and the caller records the coverage-limited DEFERRAL (which the gate clamps CLEAR→CONDITIONAL). A
-      // FOLLOWUP is a fresh session and is not stopped here: it takes the one extended retry below, as any fresh
-      // dispatch does. Until 2026-11-05 a followup stopped here too, on the false premise that it resumed a loaded
-      // session. See warmHardWallStop.
-      if (warmHardWallStop({ fail, warm, signals: turn.signals })) {
-        note(`[${name}] warm attempt hit the hard wall — breaking (recording the deferral)`);
-        break;
-      }
-      if (timeoutRetriesUsed >= 1) {
-        note(`[${name}] second timeout — stopping (won't finish on a 3rd identical attempt)`);
-        break;
-      }
-      timeoutRetriesUsed++;
-      // Stall honesty (charter P1 §1): a STALL kill (byte-silent or no-progress — signals.stalled) is NOT
-      // "the stage needed more time" — the R-round evidence retry did the identical work in 369s after a
-      // 1500s stall burn. Retry ONCE at the SAME budget; extending would only extend the next stall's burn.
-      // A hard-wall kill (a genuine over-budget grind) keeps the single 1.5× extended shot.
-      if (turn.signals?.stalled) {
-        note(`[${name}] stall kill${turn.signals?.noProgress ? " (no-progress watchdog)" : ""} → one retry at the SAME ${effTimeout}s budget (a stall is not a slow turn)`);
-      } else {
-        effTimeout = Math.round(timeoutSec * 1.5);
-        note(`[${name}] timeout → one extended retry at ${effTimeout}s`);
-      }
-    }
+    // What the ladder does next after this failure — escalate, retry, break, or return — is ladder/next-rung.mjs.
+    const next = nextRung({ fail, warm, attempt, maxRetries, attemptFails, usage, json, turn, signals: turn.signals, runDir, name, timeoutSec,
+      saidBackOpen: SAID_BACK_OPEN_RE.test(fail), warmEscalatedAt, rungsRefunded, timeoutRetriesUsed, effTimeout });
+    ({ warmEscalatedAt, rungsRefunded, timeoutRetriesUsed, effTimeout } = next);
+    if (next.rung === "identical") return { ok: false, attempts: attempt, fail, sessionKey: key, modelWire: lastModelWire, modelUsed: lastModelUsed, attemptFails: [...attemptFails], identicalSignature: true, warmEscalated: warmEscalatedAt > 0 || undefined, quantity, noChange, reads, readsTruncated, warm, wrote, formRepairs: formRepairsUsed };
+    if (next.rung === "rate-limited") return { ok: false, attempts: attempt, fail, resetsAt: turn.signals?.resetsAt, sessionKey: key, modelWire: lastModelWire, modelUsed: lastModelUsed, attemptFails: [...attemptFails], quantity, noChange, reads, readsTruncated, warm, wrote, formRepairs: formRepairsUsed };
+    if (next.rung === "break") break;
   }
   // A SAID-BACK REFUSAL NEVER WITHHOLDS THE REPORT (reports always ship, ruled 2026-08-27). The placement form's
   // refusals refuse the pass so that a corrective turn carries them to the step, which is the only way back to it
@@ -2409,14 +1751,16 @@ export const heldSynthesisRecord = (files) => {
   return Boolean(f) && existsSync(synthesisCallPaths(dirname(f)).accepted);
 };
 
-export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.json", supplementalLane = false, undispatchable = [], toolWritten = null, heldRecord = false, adds = false } = {}) {
-  // The repair act, for the hints that name one. Kept to a single sentence and a single decision so a
-  // new hint has one thing to append rather than a branch to reproduce.
-  const resaveClause = toolWritten
-    ? `Fix exactly that and send the corrected values — the driver re-derives this file and the prose table together from your \`${toolWritten}\` call, so there is nothing here for you to save`
-    : `Fix exactly that, re-save the COMPLETE JSON file, and leave the prose table unchanged`;
-  let hint = "the required output file is actually written and contains every required section IN FULL";
-  if (CLEARANCE_FINDINGS_TOKEN_RE.test(lastFail)) {
+// ── THE REPAIR HINTS: ONE ROW PER FAILURE, READ IN ORDER ─────────────────────────────────────────
+//
+// Each row names the failure it answers (`code`), the pattern that recognises that failure in the
+// failure string (`when`), and the end state the corrective turn is told to reach (`hint`). The FIRST row
+// whose pattern matches answers, so the order is part of the table: a row that must sit above another
+// says so in its own comments, as the findings row does above the coverage rows. A failure no row
+// recognises gets REPAIR_HINT_DEFAULT. `failureCode` names the row a failure selects, so a test or a
+// record can say which repair a turn was handed without matching the sentence.
+const REPAIR_HINTS = [
+  { code: "findings_contract", when: CLEARANCE_FINDINGS_TOKEN_RE, hint(lastFail, { heldRecord, adds }) {
     // The per-finding machine contract (findings-model.mjs). MUST sit ABOVE the coverage_ branch — a
     // findings_coverage_* token would otherwise route to the (wrong) coverage-ledger hint. The structural
     // "findings-heading" token has no underscore after "findings", so it never matches this branch.
@@ -2467,7 +1811,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
         `findings are NOT rated and carry NO band. The top level carries "rated_under_framework" = the ` +
         `framework key you were told to rate under, verbatim.`;
     }
-    hint = `findings.json is a JSON OBJECT { schema_version, rated_under_framework, findings[], coverage[], context_notes[] } ` +
+    return `findings.json is a JSON OBJECT { schema_version, rated_under_framework, findings[], coverage[], context_notes[] } ` +
       `(schema_version 5 additionally allows top-level ask_answers[] = [{ask, answer}], structured mark_assessment fields, ` +
       // review — coverage_judgment.rows USED TO BE LISTED HERE as a key the model may emit, and
       // this is the message the seat reads at the moment it is REPAIRING findings.json: the one turn
@@ -2512,19 +1856,21 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       (USE_CHECK_TOKEN_RE.test(lastFail) ? useCheckCorrection(heldRecord, adds)
         : heldRecord && !VERSION_FAILURE_RE.test(lastFail) ? heldRecordRetry(adds)
         : `Fix exactly that, re-save the COMPLETE findings.json, and leave the narrative prose unchanged`);
-  } else if (/coverage_status_offenum/.test(lastFail)) {
+  } },
+  { code: "coverage_status_offenum", when: /coverage_status_offenum/, hint(lastFail) {
     // D1 — the off-enum PROSE Status cell (distinct from coverage_status_invalid, which is the JSON
     // mirror's token): the defect lives in register-findings.md's own Coverage-ledger table, so the
     // repair is a one-cell prose relabel — never a JSON re-save. MUST sit above the JSON-mirror
     // coverage_ branch so the shared substring never routes this to the wrong file.
     const det = (lastFail.match(/\(axis ([a-z-]+)/) || [])[1] || "";   // the status text itself may carry parens — anchor on the token's own "(axis …" tail
-    hint = `every row of the prose Coverage ledger's Status column is EXACTLY one bare token of ` +
+    return `every row of the prose Coverage ledger's Status column is EXACTLY one bare token of ` +
       `confirmed-clean / coverage-limited / deferred${det ? ` (the off-enum row is on axis ${det})` : ""}. ` +
       `Relabel the offending Status cell(s) to the honest enum token and move any qualifier or commentary ` +
       `("N/A", "confirmed", "not-searched (…)", ✅, bolding) into the Reason column — an axis that was not ` +
       `applicable or not searched is an honest \`deferred\` with the reason stated. Leave every other row ` +
       `and section unchanged`;
-  } else if (/coverage_(ledger_unparseable|ledger_empty|axis_invalid|axis_missing|status_invalid|key_unknown|mirror_missing)/.test(lastFail)) {
+  } },
+  { code: "coverage_ledger_shape", when: /coverage_(ledger_unparseable|ledger_empty|axis_invalid|axis_missing|status_invalid|key_unknown|mirror_missing)/, hint(lastFail, { resaveClause }) {
     // Map #3 — `mirror_missing` is LEGACY and never fires anymore (the JSON is code-derived from the prose,
     // so the prose↔JSON cross-check was retired); the alternation keeps it only to give a sane hint to any
     // in-flight pre-Map-#3 run that might surface it. The structure tokens (unparseable/empty/axis_*/status_*/
@@ -2539,7 +1885,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     // retry was told to redo the very derivation that failed, so it looped until the attempts ran out.
     // The validator's own message carries the allowed list; quote it back rather than re-deriving it here.
     const allowedAxes = (lastFail.match(/\(not in: ([^)]+)\)/) || [])[1] || "";
-    hint = `register-coverage-ledger.json is a JSON ARRAY mirroring the prose Coverage ledger — one object ` +
+    return `register-coverage-ledger.json is a JSON ARRAY mirroring the prose Coverage ledger — one object ` +
       `per table row with EXACTLY the keys {"axis","scope","status","reason"}: axis = lowercase text left of ` +
       `the first " / " of the Coverage-unit cell, and it must be ` +
       (allowedAxes ? `EXACTLY one of the run's active axes (${allowedAxes})` : `one of the run's ACTIVE AXES`) +
@@ -2550,21 +1896,24 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       `verbatim right side; status = EXACTLY one bare token of confirmed-clean / coverage-limited / deferred ` +
       `(a qualifier like "(count-only, saturated)" moves into reason). The failed check was: ${tok}. ` +
       resaveClause;
-  } else if (/use_check_missing/.test(lastFail)) {
-    hint = "every Composite-3-or-higher finding whose risk turns on the owner's actual use ENDS with a " +
-      "\"**Use-check source:** <result URL | 'perplexity_research — no result'>\" line — run the scoped marketplace " +
-      "use-check (owner + mark + goods/field) and cite its result, or state the honest 'no result'; never assert a " +
-      "use-negative you did not search";
-  } else if (/connotation_form_damaged/.test(lastFail)) {
+  } },
+  { code: "use_check_missing", when: /use_check_missing/, hint(lastFail) {
+    return "every finding the failed check names by number, a finding at a material band whose owner's use is recorded as " +
+      "confirmed or not-confirmed, carries the cite of record in its `use_check.source`: a result URL, or " +
+      "'perplexity_research — no result'. Run the scoped marketplace use-check (owner + mark + goods/field) and record " +
+      "its result there, or record the honest 'no result'; never assert a use-negative you did not search";
+  } },
+  { code: "connotation_form_damaged", when: /connotation_form_damaged/, hint(lastFail) {
     // The accumulator is DRIVER-WRITTEN, so a damaged row is a narrow, nameable fault: a row's recorded
     // receipt is no longer one of that row's own candidates (the ledger regenerates candidates every
     // pass, so a top-up can orphan a recorded id). The remedy is ONE tool call about the named row —
     // never a file edit; the seat writes no dispositions file.
-    hint = "every recorded row's receipt is one of THAT ROW's own listed candidates. Re-send ONLY the " +
+    return "every recorded row's receipt is one of THAT ROW's own listed candidates. Re-send ONLY the " +
       "named row(s) through the `record_dispositions` tool with `receipt_index` set to the POSITION of " +
       "the candidate you ruled on in that row's own list (1, 2, …) — never a typed id. Your other rows " +
       "are recorded and KEPT; do not re-send them and do not write any file";
-  } else if (/connotation_quote_unbound/.test(lastFail)) {
+  } },
+  { code: "connotation_quote_unbound", when: /connotation_quote_unbound/, hint(lastFail) {
     // — THE ARM THAT MAKES THE LOOP ESCAPABLE. Its own token and its own remedy, deliberately not
     // folded into the no-ruling arm below: the seat this fires on HAS ruled, and telling it to add a
     // ruling is the message R6 received four times before the run died. Every one of those attempts was
@@ -2600,7 +1949,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     //
     // Each field carries its own imperative in its own sentence — measured a field phrased outside one
     // as written 0 of 9 times against 74 of 74 when imperative-carried.
-    hint = "every row owing proof of reading carries BOTH fields. Give `segment_index` — the NUMBER of the " +
+    return "every row owing proof of reading carries BOTH fields. Give `segment_index` — the NUMBER of the " +
       `passage you relied on, in the numbered passages of the receipt you ruled on. And copy \`fragment\` — a ` +
       `few characters taken EXACTLY out of that same passage, in whatever script it is written in. ` +
       `${rowTok ? `The failure names the row (${rowTok}) and every other row is already accepted` : "The failure names the rows"} — ` +
@@ -2608,11 +1957,12 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       `through the \`record_dispositions\` tool (keep \`row_index\`, \`ruling\` and ` +
       `\`note\` as you had them) — never write or edit any file. ` +
       `You are POINTING at the passage, not reproducing it — short and exact beats long and approximate. ${where}`;
-  } else if (/connotation_call_never_made/.test(lastFail)) {
+  } },
+  { code: "connotation_call_never_made", when: /connotation_call_never_made/, hint(lastFail) {
     // B — rows are owed and no `record_dispositions` call was ever STARTED this run. The one thing R6's
     // dead attempts were never told was WHERE the gate was counting; under the typed transport the
     // answer is a TOOL, and this arm names it. — composed into `Fix exactly this: ensure <hint>.`.
-    hint = "every meaning obligation is recorded through the `record_dispositions` tool. NOTHING has been " +
+    return "every meaning obligation is recorded through the `record_dispositions` tool. NOTHING has been " +
       "recorded this run — no call was ever made — and rulings written into your findings prose, or into " +
       "any file, are not read by this check and cannot make it pass. Call `record_dispositions` now with " +
       "`grid_spec_path` (the driver-written spec path your grid instructions name) and `rows`: one entry " +
@@ -2622,43 +1972,37 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       "outstanding and which rows still owe proof of reading — a `segment_index` and a `fragment`. " +
       "Rule from what the receipts say, never from memory, " +
       "and carry any loaded reading into Findings as well";
-  } else if (/connotation_call_truncated/.test(lastFail)) {
+  } },
+  { code: "connotation_call_truncated", when: /connotation_call_truncated/, hint(lastFail) {
     // B — a call STARTED and never returned: a driver-side or transport fault, NOT a fault in the
     // rulings. The one message a seat must never take from this is "re-derive your rulings".
-    hint = "the `record_dispositions` call(s) that never returned are re-sent AS THEY WERE. This is NOT a " +
+    return "the `record_dispositions` call(s) that never returned are re-sent AS THEY WERE. This is NOT a " +
       "fault in your rulings — a call was killed in flight before its rows were recorded, which is the " +
       "driver's fault, not yours. Do not re-derive or change any ruling: call `record_dispositions` again " +
       "with the same rows for whatever the tool's answer still lists as outstanding, and stop when it " +
       "reports nothing outstanding";
-  } else if (/connotation_call_schema_violation/.test(lastFail)) {
+  } },
+  { code: "connotation_call_schema_violation", when: /connotation_call_schema_violation/, hint(lastFail) {
     // B — calls arrived and not one row was accepted from any of them: the payload SHAPE is wrong. The
     // remedy is the shape, never the rulings — the tool's own answer named each refusal in-turn.
-    hint = "the `record_dispositions` payload has the right SHAPE — the rulings themselves are not in " +
+    return "the `record_dispositions` payload has the right SHAPE — the rulings themselves are not in " +
       "question. `rows` must be an ARRAY of objects, each with `row_index` (the obligation's NUMBER in the " +
       "obligations block) as an INTEGER, `ruling`, `note`, and `receipt_index` as an INTEGER position " +
       "(1, 2, …) — never a typed id of any kind, never a query string, never a string index, never extra " +
       "fields. Re-send your rulings with the corrected " +
       "shape; the tool's answer names each refusal and what is still outstanding";
-  } else if (/connotation_(no_ruling|token_absent|cite_absent)/.test(lastFail)) {
-    // READER TOLERANCE, not a live path: this engine's gate can no longer mint these three — any unruled
-    // residual surfaces as a call token (the audit runs whenever rows are owed). What CAN still carry
-    // one is the recorded lastFail of a run parked under the previous engine and resumed on this one,
-    // and the golden-rule boundary is exactly that parsing history is fine. The remedy under this
-    // engine is the same as call_partial's: record the remainder through the tool.
-    hint = "every remaining meaning obligation is recorded through the `record_dispositions` tool — " +
-      "never by writing or editing any file. Everything already recorded is KEPT. Call " +
-      "`record_dispositions` with rows for the obligations still outstanding; the tool's answer lists " +
-      "them, marks which still owe a `segment_index` and a `fragment`, and reports when nothing remains";
-  } else if (/connotation_call_partial/.test(lastFail)) {
+  } },
+  { code: "connotation_call_partial", when: /connotation_call_partial/, hint(lastFail) {
     // B — rows landed and obligations remain. What is recorded is KEPT; the remedy is the remainder.
-    hint = "every remaining meaning obligation is recorded through the `record_dispositions` tool. " +
+    return "every remaining meaning obligation is recorded through the `record_dispositions` tool. " +
       "Everything you already recorded is KEPT — do not re-send it and do not re-derive it. Call " +
       "`record_dispositions` with rows for ONLY the obligations the failure counts as outstanding " +
       "(the tool's answer lists them and marks which still owe a `segment_index` and a `fragment`), and " +
       "stop when it reports nothing " +
       "outstanding. Rule from what the receipts say, never from memory, and carry any loaded reading " +
       "into Findings as well";
-  } else if (/meaning_angles_missing|matterframe_meaning_angles/.test(lastFail)) {
+  } },
+  { code: "meaning_angles_missing", when: /meaning_angles_missing|matterframe_meaning_angles/, hint(lastFail) {
     // P2-C (Round-2 §8b): the matter frame's derived-connotation angles are required on fresh runs.
     //
     // CONVERSION 2 — THIS ORDERED A HAND-WRITE AND NOW ORDERS A CALL. It ended "Re-save the COMPLETE file
@@ -2669,7 +2013,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     //
     // The ANGLES themselves are described in the same words as before: what the seat has to decide has not
     // changed, only how it hands the decision over.
-    hint = "the matter frame must carry the per-matter meaning/connotation angles — derived from the mark's " +
+    return "the matter frame must carry the per-matter meaning/connotation angles — derived from the mark's " +
       "OWN semantic field and this matter's market/industry (cultural origin and communities the word " +
       "evokes, charged historical/political associations of the term or its imagery, category-specific " +
       "controversy for these goods) — short queries, each anchored on the mark's element(s); they are the " +
@@ -2678,14 +2022,16 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       "empty array ONLY when the mark is a coined term with no real-word semantic field to probe. The call " +
       "replaces the stored frame, so send the whole frame again, not only the angles — the driver renders " +
       "the file and there is nothing for you to save";
-  } else if (/own_rights_missing/.test(lastFail)) {
-    hint = "every finding whose clearance reasoning relies on the client's own house mark / franchise root ENDS " +
+  } },
+  { code: "own_rights_missing", when: /own_rights_missing/, hint(lastFail) {
+    return "every finding whose clearance reasoning relies on the client's own house mark / franchise root ENDS " +
       "with an \"**Own-rights source:** <record URI(s) | 'no applicant-owned registrations in the searched register material'>\" line — " +
       "run ONE owner-scoped band_lookup over the run's frozen register material (plus band_record for any cite) and cite the record URIs, " +
       "or state the honest SCOPED negative (never a portfolio-wide 'no registrations found' — the frozen material covers only this " +
       "matter's dispatched slices), adjust the reasoning to stand without the crutch, and record the missing owner query as an open " +
       "Coverage/open-item row for the escalation lane; the affiliate-exclusion mandate covers CONFLICTS, never this supporting evidence";
-  } else if (/blindframe_/.test(lastFail)) {
+  } },
+  { code: "blindframe", when: /blindframe_/, hint(lastFail) {
     // Property 1 (frame-omission design): the blind-frame stage's STRUCTURED MODEL, which since is
     // the stage's whole output — there is no prose companion to leave alone. A JSON-defect repair on a
     // clean turn: warm-eligible (WARM_ELIGIBLE_RE), and warmPatchMessage aims it at the file itself
@@ -2696,13 +2042,14 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     // act the grant denies: a failure on obedience, mid-round, on the first repair rung that fires. Same
     // shape as the ten anchor sites, caught before it shipped rather than after. The one-change
     // invariant covers a dictation AND the ladder that corrects it.
-    hint = `the model is a set of VALUES you hand to the \`record_blind_frame\` tool: dominant_element, ` +
+    return `the model is a set of VALUES you hand to the \`record_blind_frame\` tool: dominant_element, ` +
       `variants[] (each {value, direction (add|drop|phonetic|homophone|neighbour|composite), rationale}), ` +
       `fields[] (each {goods, on_field — a JSON boolean, rationale}), sources[] (each {channel, rationale}) ` +
       `and ranking_basis (goods-overlap | class-number). The failed check was: ${tok}. Call ` +
       `\`record_blind_frame\` again with the corrected values — everything that already validated can be ` +
       `sent as it was. Do not write or edit any file: blind-frame-model.json is the driver's to write`;
-  } else if (/framediff_directive_undispatchable/.test(lastFail)) {
+  } },
+  { code: "framediff_directive_undispatchable", when: /framediff_directive_undispatchable/, hint(lastFail, { undispatchable }) {
     // P2-B (charter P2e — the ask contract). This is the ONE frame-diff defect whose repair is not
     // "re-save the JSON": a firing directive named a thing to search in words nothing can dispatch.
     // The refusal used to arrive hours later at reopen, after this session had exited — so it arrives
@@ -2724,7 +2071,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       // reproduce; both were cut with no marker. Same class as the recurrence receipt.
       ? offenders.map((o, i) => `  ${i + 1}. "${abbrev(String(o.item), 120)}" — ${abbrev(String(o.why || "not dispatchable as written"), 260)}`).join("\n")
       : `  (the saved frame-diff.json could not be re-read — re-check EVERY firing directive yourself)`;
-    hint = `${offenders.length || "one or more"} of your FIRING directives (severity dominant-element or material) ask for a search the driver cannot dispatch. ` +
+    return `${offenders.length || "one or more"} of your FIRING directives (severity dominant-element or material) ask for a search the driver cannot dispatch. ` +
       `EVERY ONE of them is listed here, and ALL of them must be fixed in ONE re-save — the repair ladder counts ATTEMPTS, not directives, ` +
       `so fixing only the first will exhaust it and lose the whole reopen pass:\n${enumerated}\n` +
       //, third conversion — THE ORDER IS A CALL, NOT A RE-SAVE. This read "re-save the COMPLETE
@@ -2737,7 +2084,8 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       `and the dominant element is then the term. Do NOT delete any directive and do NOT downgrade one to "minor" to make this pass: ` +
       `a real omission that cannot be searched must still be raised — but it has to say what the search IS. Send the whole diff again, ` +
       `not only the corrected directives — the call replaces the stored model`;
-  } else if (/framediff_/.test(lastFail)) {
+  } },
+  { code: "framediff", when: /framediff_/, hint(lastFail) {
     const tok = (lastFail.match(/framediff_[a-z_]+(?::[^\s)]*)?/) || ["frame-diff defect"])[0];
     //, third conversion — the shape hint stays (it is what the values must satisfy) and the ORDER
     // changes. The seat sends `directives[]` and `dominant_element_gap` as values; the driver serializes
@@ -2751,41 +2099,46 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     // the field back into existence one rung down from the dispatch that stopped asking. This is the third
     // repair surface a frame-diff change has had to sweep; see recording-agreement.mjs on why the sweep is
     // never optional.
-    hint = `the structured diff is { schema_version, directives[], ` +
+    return `the structured diff is { schema_version, directives[], ` +
       `dominant_element_gap (a JSON boolean) } — send directives:[] for a clean diff. Each directive is ` +
       `{layer (variant|field|source), item, observation, severity (dominant-element|material|minor)}. ` +
       `The dominant element itself is the driver's — it is bound from the blind model, not sent by you. ` +
       `The failed check was: ${tok}. Send the corrected diff in one \`record_frame_diff\` call — the driver ` +
       `writes frame-diff.json and renders the prose from it, so there is nothing for you to save`;
-  } else if (/receipts_short/.test(lastFail)) {
+  } },
+  { code: "receipts_short", when: /receipts_short/, hint(lastFail) {
     const shorts = (lastFail.match(/receipts_short:([^\s]+)/) || [])[1] || "";
-    hint = `the Negative-results matrix accounts for EVERY (variant × platform) grid cell — these variants are ` +
+    return `the Negative-results matrix accounts for EVERY (variant × platform) grid cell — these variants are ` +
       `short (variant:rows/expected): ${shorts}. Re-transcribe their cells from the grid call's stdout JSON ` +
       `(every cell needs a receipt row: "No results" / "No similar listings (N candidates reviewed)" / ` +
       `"Similar listing(s) found — see Findings" / "not executed — coverage-limited"); re-run the grid call ` +
       `only if those cells are genuinely absent from its output`;
-  } else if (/grid_ledger_unparseable/.test(lastFail)) {
-    hint = `${gridLedgerName} is the grid call's stdout JSON saved VERBATIM — a single stdout object, or a ` +
+  } },
+  { code: "grid_ledger_unparseable", when: /grid_ledger_unparseable/, hint(lastFail, { gridLedgerName }) {
+    return `${gridLedgerName} is the grid call's stdout JSON saved VERBATIM — a single stdout object, or a ` +
       `JSON ARRAY of the per-batch stdout objects in batch order, each with its cells[] (and gaps[]) intact. ` +
       `Re-save the file exactly as the tool returned it — no reformatting, no re-typing, no judging. If the ` +
       `saved file is TRUNCATED mid-string (an unterminated value near the end), your single call's stdout ` +
       `EXCEEDED the output budget: re-run the grid SPLIT into MORE, SMALLER batches (fewer variants per call) ` +
       `and save each batch's stdout as its own element of the JSON array — never try to re-emit one oversized object.`;
-  } else if (/grid_join_missing/.test(lastFail)) {
+  } },
+  { code: "grid_join_missing", when: /grid_join_missing/, hint(lastFail, { gridLedgerName }) {
     const shorts = (lastFail.match(/grid_join_missing:([^\s]+)/) || [])[1] || "";
-    hint = `the saved ${gridLedgerName} must account for EVERY dictated (variant × platform) grid cell — ` +
+    return `the saved ${gridLedgerName} must account for EVERY dictated (variant × platform) grid cell — ` +
       `these variants are short (variant:cells/expected): ${shorts}. Append the missing cells' grid stdout to ` +
       `the JSON (make the file a JSON array of stdout objects if it is not already), re-running ONLY the cells ` +
       `genuinely absent from the prior output; then make sure the Negative-results matrix matches`;
-  } else if (/platforms_missing/.test(lastFail)) {
+  } },
+  { code: "platforms_missing", when: /platforms_missing/, hint(lastFail, { gridLedgerName }) {
     // capture to end-of-string: real manifest variants are multi-word, a [^\s]+ capture would chop
     // "PROJECT NOVA PULSE:itch.io+…" at the first space and dictate a garbage cell list.
     const det = (lastFail.match(/platforms_missing:(.+)$/s) || [])[1] || "";
-    hint = `the grid must sweep EVERY platform DICTATED in your task message's PLATFORMS list — never a ` +
+    return `the grid must sweep EVERY platform DICTATED in your task message's PLATFORMS list — never a ` +
       `remembered or skill-example list. These variants are missing dictated platforms ` +
       `(variant:domain+domain): ${det}. Run exactly those missing (variant × platform) cells, append their ` +
       `stdout to ${gridLedgerName}, and account for them in the Negative-results matrix`;
-  } else if (/connotation_query_unrecorded/.test(lastFail)) {
+  } },
+  { code: "connotation_query_unrecorded", when: /connotation_query_unrecorded/, hint(lastFail, { gridLedgerName }) {
     // — THE TOKEN THAT HAD NO HINT, and the absence is what made the failure
     // permanent rather than merely wrong.
     //
@@ -2835,7 +2188,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     // opposite repairs, and a re-worded label with a stale matcher here keeps sending the wrong one.
     const anyUnmatched = String(dropped).includes(CONNOTATION_UNMATCHED_MARK);
     const anyUnresembled = String(dropped).includes(CONNOTATION_NO_RESEMBLANCE_MARK);
-    hint = anyUnmatched && !anyUnresembled
+    return anyUnmatched && !anyUnresembled
       ? `these dictated meaning queries ARE recorded in ${gridLedgerName} extras.pr_risk[] under a ` +
         `different wording, which is why the driver cannot match them: ${dropped}. Do NOT re-run them — ` +
         `the search already ran and its results are already in the ledger. EDIT each row's \`query\` ` +
@@ -2855,10 +2208,11 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       `reworded query reads as one you never ran. Touch ONLY the listed queries and leave every other ` +
       `recorded row exactly as it is. Where a query is marked \`[unmatched; nearest recorded: …]\` the ` +
       `driver has already found its row for you: edit that row's \`query\` and do not search again`;
-  } else if (/connotation_search_missing/.test(lastFail)) {
+  } },
+  { code: "connotation_search_missing", when: /connotation_search_missing/, hint(lastFail) {
     // — was "your PR / reputational section claims a clean meaning … but the ledger recorded ZERO
     // searches", which under the `ensure` prefix instructed the model to make the unbacked claim.
-    hint = "a clean-meaning claim has the sweep behind it — yours does not: your PR / reputational section " +
+    return "a clean-meaning claim has the sweep behind it — yours does not: your PR / reputational section " +
       "claims a clean meaning (None identified / no gang / no offensive " +
       "association / affirmative sweep) but the grid ledger's extras.pr_risk recorded ZERO connotation searches. " +
       "Run the CONNOTATION / MEANING sweep — the mark AND its near-forms on the general web (Urban Dictionary, " +
@@ -2866,7 +2220,8 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       "zero-result ones) into extras.pr_risk, and cite a `Connotation-search source:` line in the PR section. A " +
       "dictionary gloss is never a clearance (a mark can read as a benign given name yet sit one letter off \"Mara\", a street-gang label). You may " +
       "instead report a real connotation hit — but a clean claim needs the search behind it";
-  } else if (/named_band_collapsed/.test(lastFail)) {
+  } },
+  { code: "named_band_collapsed", when: /named_band_collapsed/, hint(lastFail, { supplementalLane }) {
     const slices = (lastFail.match(/named_band_collapsed:(.+)$/s) || [])[1] || "";
     // The diagnosis is lane-independent; the REPAIR is not. This hint rides correctiveMessage, so it is
     // appended to the register-unit stage message itself — and on the supplemental lane that message has
@@ -2876,7 +2231,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     const diagnosis = `your named band has a COLLAPSED enumerated slice — a block that claimed hits (total_hits>0) but ` +
       `carried ZERO records (slice~claimed-hits): ${slices}. The funnel enumerated the slice yet nothing reached ` +
       `the band — a clean can never ship over a searched-but-lost slice. `;
-    hint = supplementalLane
+    return supplementalLane
       ? diagnosis +
         `On this run the TOOLS own every band block: if the collapsed slice belongs to a DICTATED plan entry ` +
         `(it carries a qid from the frozen plan), close it by calling register_execute_plan ONCE with the exact ` +
@@ -2894,7 +2249,8 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
         `has_more:false, and APPEND its records as an "enumerated" block (every record with its screening facts). ` +
         `If the slice is genuinely a crowd you cannot exhaust, write an honest "incomplete" block (count + sample + ` +
         `reason) — NEVER an empty "enumerated" block`;
-  } else if (/intake_ask_unanswered/.test(lastFail)) {
+  } },
+  { code: "intake_ask_unanswered", when: /intake_ask_unanswered/, hint(lastFail) {
     // T9 (A2): the committed-check completion gate — every frozen intake ask needs its line.
     const det = (lastFail.match(/intake_ask_unanswered:(\d+):of:(\d+)/) || []);
     // RE-AIMED AT THE CALL. This ordered the seat to "End the narrative with the
@@ -2906,14 +2262,15 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     // The SUBSTANCE is unchanged, because none of it was wrong: answer from the gather stages' actual
     // results, and an un-run check gets the honest not-executed line plus an open coverage row rather
     // than silence. What moves is where the answer goes.
-    hint = `your record is missing ${det[1] ?? "some"} of the ${det[2] ?? "frozen"} intake-ask answers. ` +
+    return `your record is missing ${det[1] ?? "some"} of the ${det[2] ?? "frozen"} intake-ask answers. ` +
       `Send one \`ask_answers\` entry per frozen ask (_driver/intake-asks.json) on the findings record you ` +
       `hand to \`record_synthesis\` — the ask VERBATIM as it was given to you, and the ANSWER ALONE: the ` +
       `driver renders the labelled line into the narrative and the report from those entries, so there is ` +
       `no section for you to write and nothing you write by hand is read. ` +
       `Answer from the gather stages' actual results (the owning stage was instructed to run each check); an ` +
       `un-run check gets the honest "NOT executed this run — <reason>" answer plus an open coverage[] row — never silence`;
-  } else if (/\btool_timeout:/.test(lastFail)) {
+  } },
+  { code: "tool_timeout", when: /\btool_timeout:/, hint(lastFail) {
     // — THE SAME ABSENT BAND, AND THE OPPOSITE INSTRUCTION.
     //
     // `named_band_missing`'s hint below tells the model it never made its call. When the call WAS made
@@ -2926,24 +2283,26 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     // dies again the honest audit note IS the answer. Nothing here asks for a shorter or cheaper call —
     // no model gets a time budget, and the cap that killed it is the bridge's, fixed in this issue's
     // other half.
-    hint = `your dictated register tool call was MADE and never RETURNED — it was still running when ` +
+    return `your dictated register tool call was MADE and never RETURNED — it was still running when ` +
       `the bridge killed it, so the band was never written. This is NOT a missing-structure defect and ` +
       `NOT something you did wrong. Call register_execute_plan ONCE more with the exact ` +
       `{"plan_path", "axis", "output_path"} from your stage instructions. If it is killed again, do ` +
       `NOT author band blocks by hand and do NOT narrate coverage you did not get — the driver's own call ` +
       `log records that the call never returned`;
-  } else if (/named_band_missing/.test(lastFail)) {
+  } },
+  { code: "named_band_missing", when: /named_band_missing/, hint(lastFail) {
     // 2026-07-14 (copper-keystone): the unit's .md narrated success but the band file was NEVER WRITTEN —
     // the model skipped its one register_execute_plan call and fabricated the narrative. Unlike the
     // defective-block repairs below, the fix here IS re-calling the tool: with no existing blocks there
     // is nothing the qid-ownership merge could wrongly preserve, and a hand-authored band fails the stage.
-    hint = `your unit's NAMED BAND file (<axis>-band.json beside your .md) was NEVER WRITTEN — the ` +
+    return `your unit's NAMED BAND file (<axis>-band.json beside your .md) was NEVER WRITTEN — the ` +
       `load-bearing artifact is absent, so the stage cannot pass no matter what the .md says. Produce it ` +
       `NOW by CALLING register_execute_plan ONCE with the exact {"plan_path", "axis", "output_path"} ` +
       `from your stage instructions — the TOOL executes the dictated entries and writes the band itself, ` +
       `qid-stamped. Do NOT author band blocks by hand (a hand-authored band fails the stage), do NOT ` +
       `re-do your digest prose, and NEVER claim the band was written without the tool call actually made`;
-  } else if (/named_band_(state_invalid|block_invalid|unparseable)/.test(lastFail)) {
+  } },
+  { code: "named_band_shape", when: /named_band_(state_invalid|block_invalid|unparseable)/, hint(lastFail, { supplementalLane }) {
     // T1 (J1b): the copper-spire killer. The generic hint never named the fix, and re-calling
     // register_execute_plan cannot repair a model-authored block (its merge PRESERVES qid-less blocks) —
     // so every retry deterministically re-failed. Name the exact repair.
@@ -2958,7 +2317,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     const bandDiagnosis = `your band JSON has a defective MODEL-AUTHORED block${badState ? ` (state "${badState}")` : ""}. ` +
       `The ONLY legal states are "enumerated" (paged to has_more:false, records carried) and "incomplete" ` +
       `(count + sample + reason) — there is no "verified"/"checked"/"complete"/"clean" state. `;
-    hint = supplementalLane
+    return supplementalLane
       ? bandDiagnosis +
         `On this run the TOOLS own every block, so a hand-authored one is the defect itself — not something to ` +
         `repair into shape (the next pass rejects any qid-less block outright). DELETE the offending qid-less ` +
@@ -2973,7 +2332,8 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
         `file and REWRITE the offending qid-less block(s) IN PLACE to the correct state (records present ⇒ ` +
         `"enumerated"; otherwise an honest "incomplete" descriptor). NEVER touch a qid-stamped block, and do ` +
         `NOT re-call register_execute_plan to fix this — its merge preserves your defective block verbatim`;
-  } else if (/plan_audit_missing/.test(lastFail)) {
+  } },
+  { code: "plan_audit_missing", when: /plan_audit_missing/, hint(lastFail) {
     // T1 (J3b): the reviewer omitted the deterministic plan audit — the validator requires the
     // exact section title whenever the plan-execution receipt exists.
     // — THE GRADING IS QUOTED, NOT PARAPHRASED. What stood here restated the three classes in its
@@ -2982,12 +2342,14 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     // exactly the moment it is rewriting the section the rule governs. The dispatch blocks now share a
     // single literal; this is its third reader, so a change to the grading reaches the repair turn too
     // instead of leaving it teaching the previous version.
-    hint = `your review lacks the section titled exactly "PLAN-EXECUTION CHECK". Add it: audit the ` +
+    return `your review carries a plan audit: audit the ` +
       `driver-fed plan-execution receipt, under the same grading you were given with it — ` +
       `${PLAN_AUDIT_CLASSES} — flagging a clean claim that rests on class (1), a class (2) fringe ` +
       `claimed searched-clean, and a class (3) slice the narrative shows no materiality reasoning for. ` +
-      `Keep the verdict (CLEAR / CONDITIONAL / BLOCKING) on the FIRST line and the rest of your review intact`;
-  } else if (/coverage_no_status/.test(lastFail)) {
+      `Send it as \`plan_audit\` in a new \`record_narrative_refutation\` call, or, if you saved the review by ` +
+      `rewriting its file, as the section titled exactly "PLAN-EXECUTION CHECK". Keep your verdict and flags as they were`;
+  } },
+  { code: "coverage_no_status", when: /coverage_no_status/, hint(lastFail) {
     // — THE HINT NO LONGER EXPLAINS A TRANSCRIPTION REQUIREMENT, BECAUSE THERE IS NOT ONE.
     // What stood here were two arms (coverage_deferred_unaccounted and coverage_clean_unverified_
     // incomplete) whose entire content was instructions for reproducing an identifier: "each qid must
@@ -3015,7 +2377,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       : unset && !badAxis
         ? `row(s) of your coverage form carry no status this gate accepts`
         : `row(s) of your coverage form were refused`;
-    hint = `${lead}: ${abbrev(rows, 200) || "see the failure"}. ` +
+    return `${lead}: ${abbrev(rows, 200) || "see the failure"}. ` +
       `The driver computed every obligation and every identifier in it — the coverage unit, the query id, the hit ` +
       `count, the unaccounted classes and terms, each deferred slice's own receipt reason. Record the named row(s) ` +
       `through the \`record_coverage\` tool — {"row_id","status","reason"} per row, never by writing or editing any ` +
@@ -3031,7 +2393,8 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       `slices that genuinely enumerated to has_more:false STAY confirmed-clean — do not downgrade them, that trades ` +
       `one false claim for another. Everything already recorded is kept. Do NOT re-run ` +
       `searches yourself and do NOT hand-write a Coverage ledger table — the driver renders it from what the tool records`;
-  } else if (/coverage_form_axis_invalid/.test(lastFail)) {
+  } },
+  { code: "coverage_form_axis_invalid", when: /coverage_form_axis_invalid/, hint(lastFail) {
     // fix round — THE HINT NAMES THE CELL AND QUOTES THE ALLOWED SET, which is the whole of the
     // 2026-07-30 lesson recorded on the `coverage_axis_invalid` arm above: "the retry was told to redo
     // the very derivation that failed, so it looped until the attempts ran out … The validator's own
@@ -3049,7 +2412,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     // correctionHint caller passes ONE validator reason (verify returns a single fail object), so no
     // fail string carries two coverage tokens for an earlier arm to match first.
     const rows = (lastFail.match(/coverage_form_axis_invalid:[^;]*;([^\n]*)/) || [])[1] || "";
-    hint = `row(s) YOU ADDED to the coverage form carry an "axis" outside the register-axis vocabulary, which ` +
+    return `row(s) YOU ADDED to the coverage form carry an "axis" outside the register-axis vocabulary, which ` +
       `is CLOSED: ${abbrev(rows, 220) || "see the failure"}. Each entry above is the row's id followed by the value ` +
       `that was rejected — "axis=<empty>" means that row has no "axis" at all. ` +
       `Re-send each of those rows through the \`record_coverage\` tool — {"kind":"seat","axis","unit","status",` +
@@ -3065,18 +2428,20 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       `The rows the DRIVER wrote already carry a correct axis: do not touch them — every "status" and "reason" ` +
       `already recorded is kept. Do NOT re-run any search, do NOT write or edit any file, and do NOT hand-write a ` +
       `Coverage ledger table — the driver renders it from what the tool records`;
-  } else if (/coverage_form_damaged/.test(lastFail)) {
+  } },
+  { code: "coverage_form_damaged", when: /coverage_form_damaged/, hint(lastFail) {
     // Typed transport: the seat holds no writer onto the accumulator, so a damaged one is the driver's
     // own serialization or filesystem at fault — never the seat's JSON. The repair is still a tool
     // call, because record_coverage rewrites the accumulator whole from the regenerated rows plus the
     // call: statuses in the unreadable copy cannot be carried, so the seat re-sends its rulings.
     const detail = (lastFail.match(/coverage_form_damaged:form_damaged=\d+;([^\n]*)/) || [])[1] || "";
-    hint = `the driver's coverage accumulator could not be read${detail ? ` (${abbrev(detail, 120)})` : ""} — a ` +
+    return `the driver's coverage accumulator could not be read${detail ? ` (${abbrev(detail, 120)})` : ""} — a ` +
       `driver-side fault, not your JSON (you never write this file). Re-record your statuses through the ` +
       `\`record_coverage\` tool — {"row_id","status","reason"} per obligation row — which rewrites the record ` +
       `from the driver's own rows plus your call. Statuses in the unreadable copy cannot be read, so re-send ` +
       `every ruling the tool's answer still lists as outstanding. Never write or edit any file`;
-  } else if (/coverage_form_(missing|empty)/.test(lastFail)) {
+  } },
+  { code: "coverage_form_missing", when: /coverage_form_(missing|empty)/, hint(lastFail) {
     // Named for readability in the journal, not because a model can act on either: both mean the DRIVER
     // did not write the form it stamped as required — absent in one case, present with no obligations in
     // it in the other. Deliberately out of the warm allowlist, and for the same reason: a resumed seat
@@ -3084,7 +2449,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     // fix a driver bug. `coverage_form_empty` is matched HERE rather than by the `coverage_no_status`
     // arm above so an empty form never reads to the seat as rows it forgot to fill in.
     const empty = /coverage_form_empty/.test(lastFail);
-    hint = `the driver-written coverage form is ${empty ? "present but carries no rows" : "absent"} although this run ` +
+    return `the driver-written coverage form is ${empty ? "present but carries no rows" : "absent"} although this run ` +
       `requires one. This is a DRIVER defect, not something your turn can repair: write your findings as normal and ` +
       `report the ${empty ? "empty" : "missing"} form in your final message`;
   // ── — THE TWO ARMS BELOW SERVE THE UNSTAMPED (PROSE) ERA, AND THEY ARE BACK BECAUSE THEIR
@@ -3100,18 +2465,20 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
   // `coverage_clean_deferred` gets NO arm: its token is folded into the superset above and nothing emits
   // it any more, and an arm for a token nobody emits is what the closed-vocabulary rule refuses to leave
   // lying around.
-  } else if (/coverage_deferred_unaccounted/.test(lastFail)) {
+  } },
+  { code: "coverage_deferred_unaccounted", when: /coverage_deferred_unaccounted/, hint(lastFail) {
     //: the accounting requirement, not the clean-claim gate. The distinction matters in the hint —
     // this fires when the ledger is SILENT about a deferred qid, so telling the model to "correct its
     // clean claim" would send it looking for a row that does not exist. The qids ride in the token.
     const [, ax = "", qids = ""] = lastFail.match(/coverage_deferred_unaccounted:([^:\s)]+):?([^\s)]*)/) || [];
-    hint = `your Coverage ledger does not account for ${qids ? `these DEFERRED slice(s): ${qids}` : "every DEFERRED slice"} ` +
+    return `your Coverage ledger does not account for ${qids ? `these DEFERRED slice(s): ${qids}` : "every DEFERRED slice"} ` +
       `on ${ax ? `axis "${ax}"` : "a dictated axis"}. The active register provider cannot express those queries at all, ` +
       `so they were never searched and nothing can make them run — the plan recorded that before this stage began. ` +
       `Each qid must appear VERBATIM in a row on its own axis with Status "deferred" (or "coverage-limited"), quoting ` +
       `the receipt's mechanical reason. A ledger that says nothing about a slice the plan could not run is incomplete ` +
       `output, not a clean one; treat the gap as an OPEN, disclosed question for the lawyer`;
-  } else if (/coverage_clean_unverified_incomplete/.test(lastFail)) {
+  } },
+  { code: "coverage_clean_unverified_incomplete", when: /coverage_clean_unverified_incomplete/, hint(lastFail) {
     // The discriminated incomplete gate (copper-lattice): clean claimed over a multi-term OR-stack
     // crowd whose per-term truth is not fully accounted. Relabel — the re-enumeration is the driver's.
     // ION/copper-foundry: the repair is now a DISCLOSURE, not a mass downgrade — the gate joins the
@@ -3139,7 +2506,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
         ? `these terms of its OR-stack are neither verified-zero nor individually enumerated nor themselves ` +
           `crowds: ${terms}`
         : `part of it is neither verified-zero nor enumerated nor itself a crowd`;
-    hint = `${ax ? `axis "${ax}"` : "an axis"} has ONE undisclosed incomplete block and this is it: ` +
+    return `${ax ? `axis "${ax}"` : "an axis"} has ONE undisclosed incomplete block and this is it: ` +
       `${qid ? `qid ${qid}` : "the block named in the failure"}${hits ? ` (${hits} hits)` : ""}. ${what} — and no ` +
       `Coverage-ledger row discloses it, so that axis's confirmed-clean rows swallow it. Give THAT block its ` +
       `OWN coverage-limited (or deferred) row on this axis. The gate recognises the disclosure by exactly two ` +
@@ -3149,49 +2516,74 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       `that genuinely enumerated to has_more:false STAY confirmed-clean: do not downgrade them, that trades one ` +
       `false claim for another. Correct exactly that row and change nothing else. Do NOT re-run searches ` +
       `yourself — the driver owns the re-run`;
-  } else if (/coverage_clean_unexecuted/.test(lastFail)) {
+  } },
+  { code: "coverage_clean_unexecuted", when: /coverage_clean_unexecuted/, hint(lastFail) {
     // T1 (J6): the F3 gate — a clean claim over a slice the plan-execution receipt says never ran.
     const ax = (lastFail.match(/coverage_clean_unexecuted:([^\s)]+)/) || [])[1] || "";
-    hint = `the plan-execution receipt says ${ax ? `axis "${ax}"` : "a dictated axis"} did NOT fully execute, ` +
+    return `the plan-execution receipt says ${ax ? `axis "${ax}"` : "a dictated axis"} did NOT fully execute, ` +
       `yet your findings claim it clean. Either the claim is wrong — correct it to an honest ` +
       `coverage-limited/deferred row carrying the mechanical reason from the receipt — or the coverage ` +
       `actually ran and your ledger row mis-states it: fix the row to match the receipt. A clean can never ` +
       `rest on a slice the plan dictated and nothing ran`;
-  } else if (/band_block_unplanned/.test(lastFail)) {
+  } },
+  { code: "band_block_unplanned", when: /band_block_unplanned/, hint(lastFail) {
     // copper-lattice re-route: a hand-authored band block under the supplemental_lane contract.
     const qs = (lastFail.match(/band_block_unplanned:([^\s)]+)/) || [])[1] || "";
-    hint = `this run's register plan carries the supplemental_lane contract: EVERY band block is written by ` +
+    return `this run's register plan carries the supplemental_lane contract: EVERY band block is written by ` +
       `a TOOL and carries a qid — you never author band blocks. The qid-less block(s) (${abbrev(qs, 100)}) came ` +
       `from a hand append. REMOVE them from the band file, then re-run their queries the sanctioned way: ` +
       `register_propose_supplemental with the same query as a proposal (the tool executes it and merges the ` +
       `band itself, qid-stamped). Leave every qid-stamped block untouched`;
-  } else if (/coverage_clean_tainted/.test(lastFail)) {
+  } },
+  { code: "coverage_clean_tainted", when: /coverage_clean_tainted/, hint(lastFail) {
     // Timeout-taint gate (copper-lattice): a clean claim over an axis whose winning register-unit pass
     // was cut down mid-work. The repair is a RELABEL, never a re-search — the re-run is the driver's job
     // (taint chain / envelope), the digest's job is the honest status.
     const ax = (lastFail.match(/coverage_clean_tainted:([^\s)]+)/) || [])[1] || "";
-    hint = `the register-unit pass that produced ${ax ? `axis "${ax}"` : "a tainted axis"} was killed at the ` +
+    return `the register-unit pass that produced ${ax ? `axis "${ax}"` : "a tainted axis"} was killed at the ` +
       `timeout wall mid-work (the per-attempt log is code-truth you cannot argue with), so its self-reported ` +
       `clean is unverified. Relabel that axis's confirmed-clean Coverage-ledger row(s) to deferred with the ` +
       `reason "timeout-tainted pass — self-reported clean downgraded pending re-run", and change nothing ` +
       `else. Do NOT re-run searches yourself — the driver owns the re-run`;
-  } else if (/declared_unavailable/.test(lastFail)) {
-    hint = "you never write a fallback/partial findings file: if the perplexity_research tool returned results, write " +
+  } },
+  { code: "declared_unavailable", when: /declared_unavailable/, hint(lastFail) {
+    return "you never write a fallback/partial findings file: if the perplexity_research tool returned results, write " +
       "the COMPLETE findings file from them; if the tool is genuinely failing after retries, write NO findings file " +
       "at all and report the tool failure with diagnostics in your final message (the driver fails the run — a report " +
       "must never ship without its marketplace layer)";
-  } else if (/findings\+ledger|no_coverage_status_row/.test(lastFail)) {
+  } },
+  { code: "coverage_status_row", when: /findings\+ledger|no_coverage_status_row/, hint(lastFail) {
     // — `findings+ledger` IS BACK IN THIS ALTERNATION. The first cut of this build removed it on
     // the reading that the seat never writes a Coverage-ledger table any more; that is true only on a
     // run the driver stamped as form-required, and the stamp is conditional. On an unstamped run
     // validators.registerFindings demands the table exactly as it did before and emits this label,
     // so dropping the arm left the one lane that can still fire it with a generic hint.
-    hint = "the file has a findings heading plus a Coverage ledger with a status row (confirmed-clean / coverage-limited / deferred)";   // the common-law clause went with that lane's status gate (ruling 2026-10-01)
-  } else if (/negative-results|coverage-ledger|audit-trail|findings-heading/.test(lastFail)) {
-    hint = "the findings file carries ALL required sections: a findings heading, the Negative results matrix " +
+    return "the file has a findings heading plus a Coverage ledger with a status row (confirmed-clean / coverage-limited / deferred)";   // the common-law clause went with that lane's status gate (ruling 2026-10-01)
+  } },
+  { code: "prose_sections", when: /negative-results|coverage-ledger|audit-trail|findings-heading/, hint(lastFail) {
+    return "the findings file carries ALL required sections: a findings heading, the Negative results matrix " +
       "(every variant × platform row), the Coverage ledger with a status row, and the Audit trail call log";
-  }
-  return hint;
+  } },
+];
+
+const REPAIR_HINT_DEFAULT = "the required output file is actually written and contains every required section IN FULL";
+
+/** The code of the repair hint a failure string selects, or null when it gets the default. PURE. */
+export function failureCode(lastFail) {   // @internal — driven by its test
+  return REPAIR_HINTS.find((row) => row.when.test(lastFail))?.code ?? null;
+}
+
+/** Every row's code, in the order the rows are read. */
+export const REPAIR_HINT_CODES = Object.freeze(REPAIR_HINTS.map((row) => row.code));   // @internal — driven by its test
+
+export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.json", supplementalLane = false, undispatchable = [], toolWritten = null, heldRecord = false, adds = false } = {}) {
+  // The repair act, for the hints that name one. Kept to a single sentence and a single decision so a
+  // new hint has one thing to append rather than a branch to reproduce.
+  const resaveClause = toolWritten
+    ? `Fix exactly that and send the corrected values — the driver re-derives this file and the prose table together from your \`${toolWritten}\` call, so there is nothing here for you to save`
+    : `Fix exactly that, re-save the COMPLETE JSON file, and leave the prose table unchanged`;
+  const row = REPAIR_HINTS.find((r) => r.when.test(lastFail));
+  return row ? row.hint(lastFail, { resaveClause, gridLedgerName, supplementalLane, undispatchable, toolWritten, heldRecord, adds }) : REPAIR_HINT_DEFAULT;
 }
 
 // ── the DEFERRED-SLICE BLOCK IS GONE ──────────────────────────────────────────────────────
@@ -3773,14 +3165,3 @@ function toolCallCounts(turn) {
     toolCallsErroredByName: errored && typeof errored === "object" && !Array.isArray(errored) ? { ...errored } : null };
 }
 
-/**
- * IS THIS ATTEMPT A TIMEOUT? A kill and a run past the limit with a non-zero exit always are. A timed-out request named
- * in stderr is one only when the turn did not complete: a turn that exited 0 with its engine's status ok outlived the
- * request, which was a call inside it (a web lookup, a tool), and is judged on what it wrote like any finished turn.
- * Recorded as a timeout, it was run again whole: on one test run a writer finished in 14.7 minutes of its 43, exited 0
- * with its output written, and paid a second attempt of 20.3 minutes. `cause` is `timeoutCause`'s answer. PURE.
- */
-export function attemptTimedOut({ cause, code, json }) {
-  if (!cause) return false;
-  return !(cause === "stderr" && code === 0 && json?.status === "ok");
-}

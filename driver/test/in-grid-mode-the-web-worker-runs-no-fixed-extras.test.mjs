@@ -17,11 +17,11 @@ import { fileURLToPath } from "node:url";
 const manual = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-common-law", "SKILL.md"), "utf8")
   .replace(/>\s/g, " ").replace(/\s+/g, " ");
 
-test("grid mode runs the famous-mark check and judges the meaning answers with every other candidate", () => {
-  assert.ok(manual.includes("You STILL run **Step 3 (the famous-mark check)**, then judge all candidates — the meaning questions' answers among "
+test("grid mode judges the flagged elements' grid results and the meaning answers with every other candidate", () => {
+  assert.ok(manual.includes("You STILL do **Step 3 (judge the flagged elements' grid results)**, then judge all candidates — the meaning questions' answers among "
     + "them — into the taxonomy (Step 4) and write the COMPLETE findings file with every section (Findings, famous-mark, Negative results matrix, "
-    + "Coverage ledger, Audit trail). Skipping Step 3 leaves the deliverable missing a core search layer."));
-  assert.ok(manual.includes("- The meaning questions the frame wrote, as the grid spec carries them."));
+    + "Coverage ledger, Audit trail). Skipping Step 3 leaves the famous-mark section unjudged."));
+  assert.ok(!manual.includes("- The meaning questions the frame wrote"), "the web manual still fills a hand-authored grid program");
   for (const gone of ["the **extras** (competitor-intel / PR-risk / crowded-field)", "pre-delivery lint will HOLD client export",
     "competitor-intel probes from the manifest's watchlists"])
     assert.ok(!manual.includes(gone), `the web manual still says "${gone}"`);

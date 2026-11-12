@@ -18,10 +18,10 @@
 //   3. createRepairLedger — persistent per-run attempt bookkeeping (_driver/repairs.json) so a
 //      park/resume can never re-arm an exhausted repair and repairs can never loop.
 
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { writeFileSync, mkdirSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join, dirname } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
+import { paths, readJson } from "./run-record.mjs";
 
 // ── the terminal kind that is not a failure ───────────────────────────────────────────────
 //
@@ -302,8 +302,6 @@ export function bareStage(stage) {
 // The table is an ALLOWLIST, not a find-a-digit heuristic: a bare \d+ grab would read the exit code out
 // of nonzero_exit_1, or the ordinal out of finding_use_check_missing:12, and call it progress. An entry
 // joins this table only with the throw site's literal template in hand and a test.
-const OVERFLOW_RE = /\(\+(\d+) more\)\s*$/;
-const overflowOf = (tail) => { const m = OVERFLOW_RE.exec(tail.trim()); return m ? Number(m[1]) : 0; };
 
 // verify.mjs connotationDispositionFail, since:
 //   `connotation_no_ruling:no_ruling=<n>;<row-id> [<query|receipt>],…[ (+N more)]`
@@ -311,10 +309,8 @@ const overflowOf = (tail) => { const m = OVERFLOW_RE.exec(tail.trim()); return m
 //   `connotation_quote_unbound:quote_unbound=<n>;<row-id> [<query>] <state> <R-id>,…[ (+N more)]`
 // The leading CAUSE CENSUS is the exact count stamped at the throw site, so the total is the sum of its
 // numbers — no comma-splitting, and therefore immune to the over-count a query containing a comma used to
-// cause. LEGACY SHAPES still parse and must: this text path exists for the run-level catch, which sees
-// prose only, and a resumed or archived run can still carry a pre-change token
-// (`connotation_undisposed:<census>;…`, `<q1,q2,…>[ (+N more)]`). A stale token that stopped counting
-// would read as a MISSING quantity, which is what a converged run looks like.
+// cause. A tail with no census is ABSENT: every token in the table below is written with one, and a run
+// is only ever continued on the build that started it, so no older shape reaches this reader.
 // The validator's exact count still rides as `quantity` at the throw site and always wins.
 const CENSUS_RE = /^((?:[a-z_]+=\d+)(?:,[a-z_]+=\d+)*)(?:[;\s]|$)/;
 function undisposedCount(tail) {
@@ -325,19 +321,7 @@ function undisposedCount(tail) {
     // ABSENT, not converged (see the ABSENT IS NOT ZERO block above).
     return total || null;
   }
-  const overflow = overflowOf(tail);
-  const listed = tail.replace(OVERFLOW_RE, "").trim();
-  const named = listed ? listed.split(",").map((s) => s.trim()).filter(Boolean).length : 0;
-  // The token cannot fire with zero outstanding rows, so a zero here means the string reaching us
-  // was cut short of its payload — ABSENT, not converged.
-  return named ? named + overflow : null;
-}
-// A pre-change archived token: `connotation_recurrent_uncited:<one result, ≤80 chars>[ (+N more)]` — ONE
-// named result plus the overflow. Never split on commas: that payload is a copied result title, not a
-// joined list. Nothing emits this shape any more; it is kept so a resumed run's own history still counts.
-function recurrentCount(tail) {
-  const named = tail.replace(OVERFLOW_RE, "").trim();
-  return named ? 1 + overflowOf(tail) : null;
+  return null;
 }
 
 // FIRST MATCH WINS, so the live tokens lead. Every entry's `count` reads a census when there is one, and
@@ -345,28 +329,10 @@ function recurrentCount(tail) {
 const PROGRESS_TOKENS = [
   { token: "connotation_no_ruling", count: undisposedCount },        //, live
   { token: "connotation_form_damaged", count: undisposedCount },     //, live
-  // — the three states split out of `connotation_no_ruling`, and they are here for the reason the
-  // block above states rather than for symmetry: a token with no entry returns null from
-  // progressQuantity, `progress.kind` becomes "unknown", and a seat converging 75 → 40 → 0 reads as
-  // stuck — so the ladder breaks on the attempt that was working. Same census shape (`<reason>=<n>;`),
-  // so the same counter. FIRST MATCH WINS on indexOf and none of these three names contains another,
-  // so position among themselves is free; they sit with their family because a token added away from
-  // this comment is a token added without it in view.
-  // `form_untouched` signs the POPULATION, not 1 — verify.mjs emits `form_untouched=<row count>` for
-  // exactly this reader, so a 75-row failure followed by `token_absent=40` reads as convergence and not
-  // as a 40x regression.
-  // RETIRED, kept so archived and replayed runs still count. `form_untouched` left CONNOTATION_REASONS
-  // with the hand-edited form path (owner ruling 2026-08-17, recorded at contract-vocabulary.mjs:85) and
-  // nothing emits it now; its subject matter is `call_never_made`. Delete the ENTRY and a resumed run's
-  // own history stops counting — a dead allowlist row costs nothing, a missing one costs a ladder.
-  { token: "connotation_form_untouched", count: undisposedCount },   //, retired 2026-08-17
-  // — same census shape (`<reason>=<n>;`) and the same counter. It signs the POPULATION for the
-  // reason stated just above: an unparseable submission recorded nothing, so every obligation is still
-  // owed, and `=1` here would make the next attempt's real progress read as a regression. FIRST MATCH
-  // WINS on indexOf and neither this name nor `connotation_form_untouched` contains the other.
-  { token: "connotation_form_unparseable", count: undisposedCount }, //, retired 2026-08-17 (as above)
+  // A token with no entry here returns null from progressQuantity, `progress.kind` becomes "unknown", and a
+  // seat converging 75 → 40 → 0 reads as stuck — so the ladder breaks on the attempt that was working.
   // B — the four TRANSPORT states. Same census shape (`<reason>=<n>;`), so the same counter. Three of them
-  // sign the POPULATION for the reason the two blocks above give: when a call never landed, nothing was
+  // sign the POPULATION: when a call never landed, nothing was
   // recorded, every obligation is still owed, and `=1` would make the next attempt's real progress read as
   // a regression.
   //
@@ -380,18 +346,9 @@ const PROGRESS_TOKENS = [
   { token: "connotation_call_truncated", count: undisposedCount },
   { token: "connotation_call_schema_violation", count: undisposedCount },
   { token: "connotation_call_partial", count: undisposedCount },
-  // A DIFFERENT KIND OF STALE from the two above, and the distinction is the whole point of writing it
-  // down. `token_absent` and `cite_absent` are still LIVE row-level reasons (CONNOTATION_REASONS carries
-  // both; findConnotationViolations still pushes them) — but they never mint a TOP-LEVEL fail token any
-  // more. connotationDispositionFail reports the four call_* transport states, then form_damaged, then
-  // quote_unbound, and returns null; under the typed transport an unruled residual surfaces as a call
-  // state instead. So these two can only ever match an ARCHIVED reason string, and a test pinning either
-  // as a live token would pin nothing. Kept for exactly that archived traffic.
-  { token: "connotation_token_absent", count: undisposedCount },     //, row-level only — never a top-level token
-  { token: "connotation_cite_absent", count: undisposedCount },      //, row-level only — never a top-level token
   //. Without an entry here the quote ladder's residual is invisible: progressQuantity returns null,
   // `progress.kind` becomes "unknown", and a run converging 3 → 1 → 0 reads as stuck — the silent failure
-  // the block above describes, on the one token added since it was written. Same census shape, so the
+  // the head of this table describes, on the one token added since it was written. Same census shape, so the
   // same counter. FIRST MATCH WINS on `indexOf` and this name contains neither of the two above it, so
   // the position is free; it sits with its family because a token added away from them is a token added
   // without this comment in view.
@@ -407,8 +364,6 @@ const PROGRESS_TOKENS = [
   { token: "coverage_form_axis_invalid", count: undisposedCount },   // fix round, live
   { token: "coverage_no_status", count: undisposedCount },           //, live
   { token: "coverage_form_damaged", count: undisposedCount },        //, live
-  { token: "connotation_undisposed", count: undisposedCount },       // pre-, archived runs only
-  { token: "connotation_recurrent_uncited", count: recurrentCount }, // pre-, archived runs only
 ];
 
 // The reason must arrive UNTRUNCATED — feed this the fail string as thrown, never a display slice.
@@ -471,6 +426,37 @@ export function failureSignature(stage, reason, { codes } = {}) {
   return { sig, stage: s, norm, quantity, quantityToken, kindToken };
 }
 
+// Failure causes that are TRANSIENT INFRASTRUCTURE (provider overload / idle-timeout / transport) — the only
+// ones a caller may re-run without risking a quality drop, because a repeat is the actual remedy and it
+// CANNOT paper over a recall gap. Everything NOT matched here is a content/coverage failure (validator
+// reject, missing output, unparseable, self-reported incomplete) — those never earn a re-run beyond the
+// same-model ladder inside runStage; they hard-stop, loudly. ⚠️ `status_timeout` is the 2026-06-07
+// incident itself (the gateway's ~120s LLM idle-timeout surfaced as a clean-JSON status:"timeout" → the soft
+// `status_<json.status>` bucket) and MUST stay eligible.
+//
+// NAME: the model-failover chain this predicate was written for is deleted. The predicate is not —
+// it is live at the common-law half-join (steps/register-sweep.mjs) and it is what `isContentShapedFail` is defined against.
+// Renaming it would touch the retry-ladder tests, so the name stays and this note says why.
+const FALLBACK_ELIGIBLE = [
+  /^timeout$/, /^lane_wedge$/, /^embedded_fallback$/, /^nonzero_exit/,
+  /^status_timeout$/, /^status_overloaded$/, /^status_error$/, /^status_aborted$/, /^status_rate_limited$/,
+];
+export function isFallbackEligible(fail) {   // @internal
+  return Boolean(fail) && FALLBACK_ELIGIBLE.some((re) => re.test(fail));
+}
+
+// A5 strike predicate — is this run.jsonl stage-row failure a CONTENT verdict (counts toward the
+// invalid-artifact strike cap) rather than infra weather (breaks the streak)? isFallbackEligible alone
+// is NOT enough: it matches only the transient-infrastructure token set, but the trail also carries
+// transient shapes that set does not match — `rate_limited` (the subscription 5h cap), bare
+// `unparseable_json`, and prose transport causes from code-side units ("… direct execution failed:
+// HTTP 502 …"). This module's own doctrine says those are sampling noise, not a content verdict — so
+// anything classifyFailureReason calls transient breaks the streak too. Exported so the strike tests
+// exercise THIS predicate, not a hand-rolled stand-in.
+export function isContentShapedFail(fail) {   // @internal
+  return classifyFailureReason(String(fail ?? "")) !== "transient" && !isFallbackEligible(fail);
+}
+
 // ── invalid-artifact strikes (A5, 2026-07-28 postmortem) ───────────────────────────────────────────────────
 // A stage that repeatedly produces an INVALID output never went terminal: the idempotency skip can't
 // fire over an invalid artifact, so every resume re-ran it — and with the reclaim/resume lanes feeding
@@ -478,7 +464,7 @@ export function failureSignature(stage, reason, { codes } = {}) {
 // every resume while the operator watched "running 7/9"). This counts the TRAILING CONSECUTIVE failed
 // executions of one stage from the append-only run.jsonl spine ("stage" events only — skips and other
 // stages are transparent). Only CONTENT-SHAPED failures count (the caller passes an isContentShaped
-// predicate — pipeline's isContentShapedFail: not transient-classified AND not fallback-eligible): a
+// predicate — isContentShapedFail, below: not transient-classified AND not fallback-eligible): a
 // flapping provider, a rate-limit trail, or a timeout streak must never convert to deterministic —
 // waiting/re-sampling is a real remedy there, and any infra-shaped failure in the trail breaks the
 // streak. A success ends the streak too, by definition.
@@ -794,9 +780,9 @@ export function repairVerdict(row, { max = 1 } = {}) {
 }
 
 export function createRepairLedger(runDir, { log } = {}) {
-  const file = driverDir(runDir, "repairs.json");
+  const file = paths(runDir).repairs;
   const load = () => {
-    try { return JSON.parse(readFileSync(file, "utf8")) ?? {}; } catch { return {}; }
+    try { return readJson(file) ?? {}; } catch { return {}; }
   };
   const save = (o) => {
     mkdirSync(dirname(file), { recursive: true });
@@ -833,7 +819,7 @@ export function createRepairLedger(runDir, { log } = {}) {
     // `effect` is the caller's measured answer to "did it close?", because THIS is not the layer that
     // can know — only the caller re-joins. It is `{asked, closed}`; a caller that does not measure gets
     // `effect: "unmeasured"` in the row rather than silence, so the row never reads as a verified repair
-    // by omission. pipeline.mjs's `bandChanged` (10147) already had this shape right
+    // by omission. `bandChanged` (steps/skeptic-and-follow-up.mjs) already had this shape right
     // (`outcome === "ok" && bandAfter != null && bandBefore !== bandAfter`); this makes it the rule rather
     // than one site's good judgment. CITED BY SYMBOL, not by number alone: the old citation pointed at a
     // `writeFileSync` three thousand lines away, and the number had been wrong long enough that the blank

@@ -36,7 +36,7 @@
 
 import { useState } from 'react'
 import type { Product, SavedSearchRow } from '../contract/api.ts'
-import { api, companyRead, isOk, notCommitted } from '../contract/api.ts'
+import { api, companyRead, mustPickCompany, isOk, notCommitted } from '../contract/api.ts'
 import { statusFor, isUsable, displayLabel, versionLabel, sortSavedSearches } from '../contract/savedSearches.ts'
 import type { SavedSearchStatus } from '../contract/savedSearches.ts'
 import { draftFromSaved } from '../contract/composerProduct.ts'
@@ -53,7 +53,7 @@ export function SavedSearches({ ctx }: { readonly ctx: ShellContext }) {
   // sees that client's saved searches, and a single-account client sends null and has it resolved
   // server-side. This screen never decides tenancy; it only says who it is asking about.
   const account = ctx.owner
-  const needsOwner = ctx.me.allAccounts && account === null
+  const needsOwner = mustPickCompany(ctx.me, account)
 
   const { result, reload } = useLoad(() => companyRead(needsOwner, () => api.savedSearches(account)), [account, needsOwner])
   // The OFFERING, for the "Builds on" column. A separate call because it is a different question — what

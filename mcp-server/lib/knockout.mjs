@@ -24,13 +24,12 @@
 //
 // AND THE RULE THAT MATTERS MOST: a projection with no knockout equivalent returns a STATED refusal, never
 // an empty list. `[]` reads as "we looked and found nothing" — that reading is the whole incident above.
-import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { existsSync, readdirSync } from "node:fs";
 import { basename, join } from "node:path";
 
 import { koPaths, addressListedFilings, declaredRecordOrigins } from "./driver.mjs";
-import { driverDir } from "../../shared/driver-dir.mjs";
+import { paths, readJsonOrNull } from "../../driver/run-record.mjs";
 
-const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
 
 /**
  * Is this run a knockout? Answered from DISK, never from a stored lane string.
@@ -47,7 +46,7 @@ export function isKnockoutRun(run) {
 
 /** The assessment artifact, parsed. `null` when the run has not reached the assess stage (or it failed). */
 export function knockoutDoc(run) {
-  return run?.runDir ? readJson(koPaths(run.runDir).findings) : null;
+  return run?.runDir ? readJsonOrNull(koPaths(run.runDir).findings) : null;
 }
 
 const marksOf = (doc) => (Array.isArray(doc?.marks) ? doc.marks : []);
@@ -86,7 +85,7 @@ export function knockoutArtifacts(run) {
     { name: "registerCounts", file: basename(K.registerCounts), path: K.registerCounts },
     { name: "registerRecords", file: basename(K.registerRecords), path: K.registerRecords },
     { name: "sweepLedger", file: basename(K.sweepLedger), path: K.sweepLedger },
-    { name: "runLog", file: "run.jsonl", path: driverDir(run.runDir, "run.jsonl") },
+    { name: "runLog", file: "run.jsonl", path: paths(run.runDir).run },
   ].map((a) => ({ name: a.name, file: a.file, exists: existsSync(a.path) }));
 
   // The published half. A knockout's report lives in the pool and NOWHERE in the run dir, so a list built
@@ -126,7 +125,7 @@ export function knockoutArtifactPath(run, name) {
   const direct = {
     frame: K.frame, plan: K.plan, findings: K.findings, assessment: K.assessment,
     registerCounts: K.registerCounts, registerRecords: K.registerRecords,
-    sweepLedger: K.sweepLedger, "run.jsonl": driverDir(run.runDir, "run.jsonl"),
+    sweepLedger: K.sweepLedger, "run.jsonl": paths(run.runDir).run,
   }[name];
   if (direct) return direct;
   if (name?.startsWith("research:")) return K.research(name.slice("research:".length));
@@ -206,7 +205,7 @@ const knockoutNegatives = (doc) => marksOf(doc).flatMap((m) =>
  */
 export function knockoutEvidence(run) {
   const doc = knockoutDoc(run);
-  const recordsDoc = readJson(koPaths(run.runDir).registerRecords);
+  const recordsDoc = readJsonOrNull(koPaths(run.runDir).registerRecords);
   // EACH FILING ADDRESSED AS PUBLISH ADDRESSES IT, keyed on the sidecar's own register. On a register with
   // no record pages of its own, the listing's link is the engine's handle, `/mark/<office>/<id>`, which a
   // reader can open nowhere, and the report never shows it for a filing with an office number: it gives the
@@ -285,7 +284,7 @@ export function knockoutSearches(run) {
   }
   // The register lane's own asked-and-unanswered terms, when it ran. `terms[].ok === false` is a search
   // that did NOT answer — reporting it as a clean no-hit would be the un-run check dressed as a negative.
-  const recordsDoc = readJson(koPaths(run.runDir).registerRecords);
+  const recordsDoc = readJsonOrNull(koPaths(run.runDir).registerRecords);
   for (const entry of (Array.isArray(recordsDoc?.marks) ? recordsDoc.marks : [])) {
     for (const t of (Array.isArray(entry.terms) ? entry.terms : [])) {
       searches.push({
@@ -329,8 +328,8 @@ export function knockoutCoverage(run) {
         + `${(m.findings ?? []).length} conflict(s) recorded, ${(m.negatives ?? []).length} search(es) recorded as returning nothing.`,
   }));
 
-  const recordsDoc = readJson(koPaths(run.runDir).registerRecords);
-  const countsDoc = readJson(koPaths(run.runDir).registerCounts);
+  const recordsDoc = readJsonOrNull(koPaths(run.runDir).registerRecords);
+  const countsDoc = readJsonOrNull(koPaths(run.runDir).registerCounts);
   if (recordsDoc || countsDoc) {
     areas.push({
       area: "Register",

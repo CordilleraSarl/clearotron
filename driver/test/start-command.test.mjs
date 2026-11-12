@@ -23,6 +23,7 @@ import { listenErrorMessage } from "../../shared/listen.mjs";
 import { snapshot, unchanged } from "./secret-file-compare.mjs";   // — the repo's .env is compared, never rendered
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+import { driverSource } from "./driver-source.mjs";
 
 const plan = (ports) => childEnv({
   ports,
@@ -246,8 +247,8 @@ test("the launcher SEEDS THE POOL, and does it through the same publisher the de
 // a drain they had to have read about. These arms pin the two properties that make the worker safe rather
 // than the fact that it exists: it cannot widen concurrency, and it cannot take the portal down.
 
-const bodyOf = (f) => readFileSync(join(REPO, f), "utf8")
-  .split("\n").filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l)).join("\n");
+const codeOf = (text) => text.split("\n").filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l)).join("\n");
+const bodyOf = (f) => codeOf(readFileSync(join(REPO, f), "utf8"));
 
 test("the worker gets the install's paths — including the run-lock dir, which is what bounds concurrency", () => {
   const envs = plan({ mcp: 18801, portal: 18802 });
@@ -318,7 +319,7 @@ test("the portal is told about a worker ONLY when this launcher supervises one",
 });
 
 test("the portal only relabels a queued row on an EXPLICIT no — never on 'not known'", () => {
-  const src = bodyOf("driver/portal-service.mjs");
+  const src = codeOf(driverSource("portal-service.mjs"));
   // `draining` is tri-state on purpose: true (a worker beat recently), false (we are supervising one and it
   // is gone), null (nobody told us — every deployment that is not a local install). Only false may relabel.
   assert.match(src, /draining === false \? "Waiting for a worker" : "Waiting to start"/,
@@ -396,10 +397,10 @@ test("Refs tracker issue 2015 the demo hands the snapshot writer its own pool an
   const callAt = src.search(/writeFlagSnapshot\s*\(/);
   assert.ok(callAt > 0, "no writeFlagSnapshot call in bin/start.mjs — this arm has lost its subject");
   const call = src.slice(callAt, callAt + 320);
-  assert.match(call, /\bDEMO\b/,
-    "the snapshot call no longer distinguishes the demo. A demo writes no .env, so this process carries "
-    + "no pool, config.poolRoot throws by name, and the demo's configuration page goes back to saying it "
-    + "cannot answer — on the one install whose reader has never run anything");
+  // EVERY START HANDS THEM OVER NOW, the demo among them. A real start on an install with no settings yet met the
+  // same refusal on its first screen, so the call no longer asks which kind of start it is (design, 2026-11-11). An
+  // operator's own pool still wins: `startPaths` applies it before `paths.pool` is read. What this arm guards is
+  // unchanged: the call hands over the pool and the environment, or a demo's snapshot is not written.
   assert.match(call, /poolRoot:\s*paths\.pool/,
     "the demo's call hands over no poolRoot, so the writer falls back to config.poolRoot and throws");
   assert.match(call, /env:\s*\{[^}]*envs\.worker/,
@@ -466,7 +467,7 @@ test("the ops token start mints carries EVERY write verb the portal actually cal
   // calls are two spellings of one contract; this arm joins them at the source so the next verb the
   // portal grows reds the tree until the mint knows it.
   const start = readFileSync(join(REPO, "bin", "start.mjs"), "utf8");
-  const portal = readFileSync(join(REPO, "driver", "portal-service.mjs"), "utf8");
+  const portal = driverSource("portal-service.mjs");
   const mintMatch = start.match(/mintToken\(\{\s*scope:\s*"ops"[\s\S]*?verbs:\s*\[([^\]]*)\]/);
   assert.ok(mintMatch, "start.mjs no longer mints the portal ops token with an explicit verbs list — re-aim this arm");
   const minted = [...mintMatch[1].matchAll(/"([a-z_]+)"/g)].map((m) => m[1]);

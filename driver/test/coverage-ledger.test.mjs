@@ -4,8 +4,9 @@
 // JSON parser (token-first throws), the registerFindings machine-vs-legacy dispatch (validator NEVER
 // throws), and prose↔JSON gate-decision equivalence over the digest.md fixture rows.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { mkdtempSync, writeFileSync, readFileSync, mkdirSync } from "node:fs";
+import { mkdtempSync, writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { tmpdir } from "node:os";
@@ -64,7 +65,7 @@ test("item 13 — unresolvable means UNSEARCHED, never a fallback to prose", () 
 });
 
 test("item 13 — the prose derivation is gone and must not come back", () => {
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.ok(!/export function extractSearchedJurisdictions/.test(src), "the function is deleted, not merely unused");
   assert.doesNotMatch(src, /matchAll\(\/\b\(EU\|EUTM\|\[A-Z\]\{2\}\)\b\/g\)/,
     "and no two-letter scan over ledger text replaces it");

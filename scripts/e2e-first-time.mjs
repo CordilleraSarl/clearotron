@@ -79,7 +79,7 @@ export const COUNTED_EVENTS = {
   "coverage-row-not-added": FAILED, "verdict-floor-failed": FAILED,
   "floor-duty-failed": FAILED, "frame-reopen-redigest-failed": FAILED, "goods-evidence-failed": FAILED, "placement-decisions-failed": FAILED, "placement-band-ids-failed": FAILED, "late-evidence-failed": FAILED, "band-refused-records-failed": FAILED, "verdict-write-deferred": FAILED, "ranking-read-by-writer-failed": FAILED, "audit-rebuild-failed": FAILED, "audit-build-failed": FAILED, "write-up-goods-from-failed": FAILED, "declination-goods-states-failed": FAILED, "review-exclusions-write-failed": FAILED, "house-element-ownership-failed": FAILED,
   "intake-asks-missing": FAILED, "invalid-artifact-strikes": FAILED, "knockout-band-checks-inert": FAILED,
-  "knockout-in-use-as-unanswered": FAILED, "knockout-ladder-unreadable": FAILED, "knockout-method-checks-inert": FAILED,
+  "knockout-in-use-as-unanswered": FAILED, "knockout-method-checks-inert": FAILED,
   "knockout-owner-checks-failed": FAILED, "knockout-register-records-failed": FAILED, "knockout-register-read-failed": FAILED, "knockout-sweep-outage": FAILED,
   "machine-qc-failed": FAILED, "named-band-invalid": FAILED, "owner-screen-failed": FAILED, "placement-carry-failed": FAILED,
   "plan-qids-provider-hard-error-deferred": FAILED, "predelivery-lint-failed": FAILED, "probe-over-cap-unreadable": FAILED,
@@ -107,6 +107,13 @@ export const COUNTED_EVENTS = {
   "degraded-parts-failed": FAILED,
   // A store publishing found unreadable, or one delivery read and a republish found missing: its only record.
   "degraded-parts-at-publish": FAILED,
+  // A part publishing could not write, and the report shipped without it. A clearance's workbook is counted by its
+  // `publish-gates` row below, so only a Knockout's counts here.
+  "workbook-not-built": { kind: FAILED, when: (e) => /^knockout-audit-/.test(String(e.file ?? "")) },
+  "data-file-not-written": FAILED,
+  "staff-pages-not-refreshed": FAILED,
+  // A run started on another build that the runner would not resume: the run ends here.
+  "resume-refused": FAILED,
   // A workbook that failed to build is recorded only here.
   "publish-gates": { kind: FAILED, when: (e) => e.auditWorkbook === "failed" },
   // the plain-English pass rewrote the rater's text, or failed and shipped it unrewritten
@@ -123,6 +130,8 @@ export const COUNTED_EVENTS = {
     { kind: FAILED, when: (e) => e.outcome === "repair-budget-exhausted" }],
   "skills-store": { kind: FAILED, when: (e) => e.outcome !== "pass" },
   "profile-store": { kind: FAILED, when: (e) => e.outcome !== "pass" },
+  // a cold start that could not record the engine and register the run belongs to
+  "run-choices": { kind: FAILED, when: (e) => e.state === "not-written" },
   "registry-record-closure": { kind: FAILED, when: (e) => (Array.isArray(e.failed) ? e.failed.length : 0) > 0 },
   "silently-lost-findings": { kind: FAILED, when: (e) => Number(e.lost) > 0 },
   "correction-kinds": { kind: FAILED, when: (e) => e.ok === false },
@@ -164,7 +173,7 @@ export const COUNTED_EVENTS = {
   "jx-entry-refused": REFUSED, "knockout-register-records-refused": REFUSED, "register-xcheck-refused": REFUSED,
   "supplemental-fold-refused": REFUSED, "verdict-softening-not-adopted": REFUSED, "named-band-remerge-over-ceiling": REFUSED, "register-recall-refused": REFUSED,
   "auto-recovery-exhausted": RECOVERY, "auto-recovery-parked": RECOVERY, "corrective-rollback": RECOVERY,
-  "parked-for-human": RECOVERY, "postponed": RECOVERY, "recovery-parked": RECOVERY, "taint-park": RECOVERY,
+  "parked-for-human": RECOVERY, "postponed": RECOVERY, "taint-park": RECOVERY, "run-choices-park": RECOVERY,
   // a covered part whose recovery was spent, parked to be delivered without (driver/parts-not-completed.mjs)
   "part-not-completed": RECOVERY,
   "cancelled": "cancelled", "failed": "run failed", "form-repair": "form repair turn",
@@ -189,7 +198,7 @@ export const NOT_COUNTED_EVENTS = {
     "escalation-skipped", "experiment", "experiment-refused", "goods-held-whole-handed", 
     "form-neighbourhood-derived", "frame-diff", 
     "frame-diff-source-directives-dropped", "frame-reopen-reconcile-not-needed", "frame-reopen-skipped", "frame-web-grid",
-    "framework", "goods-evidence", "grid-ledger-saved", "grid-spec", "grid-split", "grid-split-skipped", "hit-list-minted",
+    "framework", "goods-evidence", "grid-ledger-saved", "grid-spec", "grid-split", "hit-list-minted",
     "house-element-ownership", "intake-artifacts", "intake-asks", "jurisdiction-scope", "jurisdiction-scope-register-deferred",
     "jx-aim-consumed", "jx-candidate-fold", "jx-nativeread", 
     "jx-serp-grid", "jx-serp-grid-overflow", "jx-serp-grid-spec", "jx-slices-stated",
@@ -222,7 +231,7 @@ export const NOT_COUNTED_EVENTS = {
     "scope-facts", "scope-frontmatter", "scope-ledger-derived", "scope-ledger-skipped", "screen-gate-clean", "screen-gate-evidence",
     "seam-reapplied", "search-policy", "searched-jurisdictions", "senior-rights", "skip",
     "stage-contract", "stage-limit-derived", "stage-stamps-reconciled", "start", "supplemental-fold", "token-rollup",
-    "turnaround-reconciliation", "verdict", "verdict-conditions-followed", "verdict-conditions-recorded", "verdict-floors-pass", "verdict-frontmatter",
+    "turnaround-reconciliation", "unit-band-seeded-empty", "verdict", "verdict-conditions-followed", "verdict-conditions-recorded", "verdict-floors-pass", "verdict-frontmatter",
     "verdict-recomputed-steps-withdrawn", "whatif-settled-on-archive", "write-up-forms",
   ],
   "a note about the answer's content that changes nothing in the run; the quality read judges it": [
@@ -242,8 +251,8 @@ export const NOT_COUNTED_EVENTS = {
     "corrective-answers-after", "corrective-answers-left-behind", "corrective-cycle-receipt", "corrective-cycle-settled", "corrective-findings-stale", "coverage-absence-rendered",
     "coverage-closure", "coverage-ledger-recovered", "delivery-stale-repair", "delivery-stale-requeued", "envelope-close-rows", "escalation-noop", "floor-duty-after-repair", "writer-duty-after-repair", "writer-duty-after-correction", "guard-clause-replaced", "guard-gap-closed", "verdict-recomputed-gap-closed", "guard-clause-named-elsewhere", "audit-rebuilt", "audit-withdrawn", "record-carry-doubts-again",
     "finding-reemit", "findings-actions-absent", "findings-schema-downlevel", "form-oracle-gap", "frame-reopen",
-    "frame-reopen-reattempt", "grid-ledger-missing", "knockout-assess-invalidated", "lint-redo-skipped", "lint-redo-skipped-structural",
-    "meaning-gap-coverage", "park-resumed", "plan-qids-sticky-gap", "recall-reconciliation-unended",
+    "frame-reopen-reattempt", "grid-ledger-missing", "knockout-assess-invalidated", "knockout-review-round-set-aside", "lint-redo-skipped", "lint-redo-skipped-structural",
+    "meaning-gap-coverage", "opening-finished-on-resume", "park-marker-unwritten", "park-resumed", "plan-qids-sticky-gap", "recall-reconciliation-unended",
     "recovery-classified", "record-discard", "report-repair-targets", "screen-gate-unresolved", "skeptic-escalation", "stage-stale",
     "stale-repair-entry", "taint-disclose", "unsettled-inputs", "verdict-2", "verdict-3", "verdict-recheck-file-save-refused", "verdict-recheck-unread",
   ],
@@ -309,7 +318,8 @@ export const OUTSIDE_THE_RUN = ["whatif-memo"];
 const NAMES_A_FRESH_DISPATCH = new Set(["lane-wedge-retry", "stage-floor-duty-rerun"]);
 
 // A native-language unit that did not run for a reason the design gives. Any other cause, a degraded or
-// deferred unit, a throw or a corrupt fixture among them, is a failure.
+// deferred unit, a throw or a corrupt fixture among them, is a failure. The first pattern is the retired
+// per-language off switch: a run from before its retirement (2026-11-11) can still carry that cause.
 const DESIGNED_JX_CAUSES = [/^CLEAROTRON_NATIVE_LANGUAGE_\w+ off$/, /^no frozen \S+ lane decision/, /^no SERP capability entry/,
   /^already ran \(frozen\)$/, /^already folded \(frozen\)$/, /^no lanes in scope/, /^frozen decision has no lanes$/,
   /^no in-scope classes/, /^no terms to dictate/];

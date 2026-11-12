@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // jx.mjs — the Stage-1.5 jx orchestration (Phase 2b slice 1): the frozen lane decision, the
 // candidate-generation executor chain, and the register-plan fold. Called from ONE never-kill block
-// in pipelineInner (after attachRegisterPlan, before decideAxes) — everything here degrades and
+// in the intake step (`steps/intake.mjs`, after attachRegisterPlan, before decideAxes) — everything here degrades and
 // logs; only the pipeline's own plan-write is load-bearing.
 //
 // The fold contract (the pattern the recall probes used until the recall store was removed):
@@ -14,7 +14,6 @@
 // zero new wiring. What they carry is the ROMANISATION, not the characters — see jxPlanEntries.
 import { readFileSync, writeFileSync, renameSync, appendFileSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
 import { decideJxLanes, candidateRefusal, canonicalTerm, romanizationSpellings, LANGUAGE_LANES, jxBillingStamp, jxModelFields } from "./jx-lanes.mjs";
 import { cnipaSubgroupsForClasses, cnipaEditionLabel } from "./jx-subclass.mjs";   // — replaces the hand-written seed table
 import { kebab } from "./search-policy.mjs";
@@ -70,70 +69,53 @@ export const jxFoldLaneRecord = ({ cause = null, ...rest } = {}) => ({
 // FIVE STATES, NOT THREE, AND THE TWO EXTRA ONES ARE THE HONEST ONES.
 //   ran             a durable record says it completed        (units[k].done === true / lane not degraded)
 //   gapped          a durable record says it degraded         (carries degradedCause and attempts)
-//   not-armed       the env switch that gates it is off
 //   refused         armed, no durable record, and a captured cause says why it declined structurally
 //   not-established none of the above settles it — an absence, stated as one, never defaulted to a pass
 //
-// `refused` has to stay distinct from `not-armed` or the record lies about the switch: pipeline.mjs
-// gated the nativeread block on one arm while the unit refused on another, so a skip event could exist
-// for a slice that was never armed. item 8 deleted every one of those arms and the divergence with
-// them. Arming is still read from the ENV — CLEAROTRON_NATIVE_LANGUAGE_<code>, the one switch that survives — never from
-// the presence of an event; the event supplies the `why` and nothing else.
+// No switch arms or silences a lane. The per-language off switch was the last one, and it is retired
+// (2026-11-11): a lane in the frozen lane decision runs, and what it did is read from durable state; an
+// event supplies the `why` and nothing else.
 export const JX_SLICES = [
   { name: "candidates", slice: 1, unit: null },
   { name: "serp-grid", slice: 2, unit: "serp-grid:zh", lane: "zh" },
   { name: "nativeread", slice: 3, unit: "nativeread:zh", lane: "zh" },
 ];
 
-import { laneArmed } from "./driver.config.mjs";
+import { driverDir, paths, readJson } from "./run-record.mjs";
 
 /**
  * Derive the run's slice statement from durable state. PURE — no clock, no fs; `sidecar` is the parsed
  * jx-lanes.json, `units` the parsed _driver/jx/units.json (or null), `causes` a {sliceName: string} map
  * of skip reasons lifted from run.jsonl for DECORATION only.
  */
-export function deriveJxSliceStatement({ sidecar, units = null, env = process.env, causes = {} } = {}) {
+export function deriveJxSliceStatement({ sidecar, units = null, causes = {} } = {}) {
   const unitRows = (units && typeof units === "object" ? units.units : null) ?? {};
   const declaredLanes = Object.keys(sidecar?.lanes ?? {});
   const foldLanes = sidecar?.fold?.lanes ?? {};
   const slices = {};
   for (const s of JX_SLICES) {
     if (s.slice === 1) {
-      // Slice 1 is the only multi-lane slice, so it rolls up — and it never overstates: EVERY armed lane
+      // Slice 1 is the only multi-lane slice, so it rolls up — and it never overstates: EVERY lane
       // must be present and healthy for "ran". One gapped lane makes the whole slice gapped.
       const lanes = {};
       for (const l of declaredLanes) {
-        // — laneArmed, NOT envOn: envOn is the default-OFF opt-in reader, and reading a
-        // fail-open lane switch through it made every unset lane read "not-armed" on a run where
-        // the executor had armed it and dispatched.
-        if (!laneArmed(l, env)) { lanes[l] = "not-armed"; continue; }
         const rec = foldLanes[l];
         lanes[l] = rec == null ? "not-established" : rec.degraded === true ? "gapped" : "ran";
       }
-      const live = Object.values(lanes).filter((v) => v !== "not-armed");
+      const live = Object.values(lanes);
       const state = !declaredLanes.length ? "not-established"
-        : !live.length ? "not-armed"
         : live.includes("not-established") ? "not-established"
         : live.includes("gapped") ? "gapped" : "ran";
       const gapped = Object.entries(lanes).filter(([, v]) => v === "gapped").map(([l]) => l);
       slices[s.name] = { slice: 1, state, lanes, basis: "_driver/jx-lanes.json:fold.lanes",
-        why: state === "ran" ? `every armed lane (${live.length}) carries a fold record stating degraded:false`
-          : state === "not-armed" ? "no lane is armed in this run's own environment"
+        why: state === "ran" ? `every lane (${live.length}) carries a fold record stating degraded:false`
           : state === "gapped" ? `lane(s) ${gapped.join(", ")} degraded — see fold.lanes[].degradedCause`
-          : "an armed lane carries no fold record at all — the receipt was never written" };
+          : "a lane carries no fold record at all — the receipt was never written" };
       continue;
     }
-    // item 8 — the per-slice CLEAROTRON_JX_* arms are gone, so "armed" is now the ONE condition that
-    // survives: the lane not killed. That warning still applies to how it is read — laneArmed is the
-    // fail-open reader, and reading it through the old default-OFF `envOn` made every unset lane report
-    // not-armed on a run that had dispatched.
-    const armed = laneArmed(s.lane, env);
     const rec = unitRows[s.unit];
     const base = { slice: s.slice, lane: s.lane, unit: s.unit };
-    if (!armed) {
-      slices[s.name] = { ...base, state: "not-armed", basis: `env CLEAROTRON_NATIVE_LANGUAGE_${String(s.lane).toUpperCase()}`,
-        why: `CLEAROTRON_NATIVE_LANGUAGE_${String(s.lane).toUpperCase()} off in this run's own environment when the statement was minted — the lane was killed, not merely idle` };
-    } else if (rec && rec.degraded === true) {
+    if (rec && rec.degraded === true) {
       slices[s.name] = { ...base, state: "gapped", attempts: rec.attempts ?? null,
         basis: `_driver/jx/units.json:units["${s.unit}"]`, why: String(rec.degradedCause ?? "degraded, cause not recorded").slice(0, 300) };
     } else if (rec && rec.done === true) {
@@ -175,10 +157,10 @@ export function deriveJxSliceStatement({ sidecar, units = null, env = process.en
 //
 // The deep slices are zh-ONLY by construction: JX_SLICES pins `lane: "zh"` on both slice 2 and slice 3,
 // and SERP_LANES has a single row. So `laneDepth.ja = "full"` asks for something THIS BUILD DOES NOT
-// HAVE, which no environment can arm; `laneDepth.zh = "full"` on a box with CLEAROTRON_NATIVE_LANGUAGE_ZH off
-// asks for something the build has and the deployment did not turn on. Same printed shortfall, opposite
-// remedies — one is "buy/build the slice", the other is "arm the switch" — so they are separate causes
-// and never one token.
+// HAVE, which no environment can arm; `laneDepth.zh = "full"` whose deep slices did not run asks for
+// something the build has and the run did not deliver. Same printed shortfall, opposite remedies — one
+// is "buy/build the slice", the other is "find out why it did not run" — so they are separate causes and
+// never one token.
 //
 // ZERO IS NOT A PASS, in the shape this file already uses everywhere else: a lane whose slices settle to
 // nothing readable reports `ran: null` and the flag still fires. "Could not establish that full ran" is
@@ -215,9 +197,9 @@ export function deriveLaneDepthVerdicts({ sidecar, slices } = {}) {
       // that ran nothing is not established, whatever this build carries for it.
       if (!deep.length && ran === "candidates") {
         cause = "not-built-for-lane";
-        why = `this build carries no deep slice for the ${lane} lane — the SERP grid and native read are zh-only `
-          + `(JX_SLICES, SERP_LANES), so \`full\` cannot be delivered here by any environment. The lane ran as a `
-          + `slice-1 candidate lane, which is what it ships as.`;
+        // THE CLIENT READS THIS UNDER "LEFT OPEN": the owner's sentence (2026-11-11), said only where the candidates ran.
+        why = `The requested full-depth ${languageOfLane(lane)}-language search is not available in this version. `
+          + `Only the candidate search ran; the deeper web search and native-language review were not performed.`;
       } else if (ran === null) {
         cause = "not-established";
         why = `${deep.length ? `the deep slice(s) ${deepStates.map((d) => `${d.name}=${d.state ?? "no record"}`).join(", ")} did not state that they ran, and ` : ""}`
@@ -225,8 +207,7 @@ export function deriveLaneDepthVerdicts({ sidecar, slices } = {}) {
           + `this run's own record. Not reported as candidates: that would be a claim no artifact supports.`;
       } else {
         cause = "requested-full-ran-candidates";
-        why = `asked for full and ran candidates only — ${deepStates.map((d) => `${d.name} ${d.state ?? "no record"}`).join(", ")}`
-          + `${deepStates.some((d) => d.state === "not-armed") ? " (an env arm is off on this deployment, not a fault in the run)" : ""}`;
+        why = `asked for full and ran candidates only — ${deepStates.map((d) => `${d.name} ${d.state ?? "no record"}`).join(", ")}`;
       }
     }
     out[lane] = { asked, ran, shortfall, cause, why,
@@ -250,19 +231,18 @@ export function deriveLaneDepthVerdicts({ sidecar, slices } = {}) {
  * @param {object|null} sidecar  parsed _driver/jx-lanes.json
  * @param {object|null} units    parsed _driver/jx/units.json, or null
  */
-export function laneDepthOfRun({ sidecar, units = null, env = process.env } = {}) {
+export function laneDepthOfRun({ sidecar, units = null } = {}) {
   const stamped = sidecar?.fold?.depth;
   if (stamped && typeof stamped === "object" && !Array.isArray(stamped)) return stamped;
-  return deriveLaneDepthVerdicts({ sidecar, slices: deriveJxSliceStatement({ sidecar, units, env }) });
+  return deriveLaneDepthVerdicts({ sidecar, slices: deriveJxSliceStatement({ sidecar, units }) });
 }
 
 const flag = (name) => ["1", "true", "yes", "on"].includes(String(process.env[name] ?? "").trim().toLowerCase());
-// — the private copy is gone; laneArmed (driver.config.mjs) is the one reader.
 
 // ── The frozen lane decision: minted once (cold), read verbatim forever (a resume NEVER re-decides —
 // the freezeProfile doctrine). Plain-clearotron runs never reach this (the caller gates on the component).
 export function attachJxLanes(ctx) {
-  const sidecarPath = driverDir(ctx.run.runDir, "jx-lanes.json");
+  const sidecarPath = paths(ctx.run.runDir).jxLanes;
   let raw = null;
   try { raw = readFileSync(sidecarPath, "utf8"); } catch { /* ENOENT — cold start */ }
   if (raw != null) {
@@ -284,7 +264,7 @@ export function attachJxLanes(ctx) {
 
 // ── Executor chain (the knockout resolveSweepExecutor idiom): injected (tests) → CLEAROTRON_JX_FIXTURES
 // (the $0 dev seam: <mark-kebab>.<lane>.json {candidates:[…]}) → the live JX_PROVIDERS completions.
-export function resolveJxExecutor(opts) {
+export function resolveJxExecutor(opts, { runDir = null } = {}) {
   if (typeof opts?.jxExecutor === "function") return { exec: opts.jxExecutor, source: "injected" };
   const fixDir = process.env.CLEAROTRON_JX_FIXTURES;
   if (fixDir) {
@@ -299,7 +279,7 @@ export function resolveJxExecutor(opts) {
       },
     };
   }
-  return { source: "engine", exec: (args) => JX_PROVIDERS.completions.generate(args) };
+  return { source: "engine", exec: (args) => JX_PROVIDERS.completions.generate({ ...args, runDir }) };
 }
 
 /** Pure: candidates → validated plan entries for the lane. Refusals are RETURNED (the caller logs
@@ -354,7 +334,7 @@ export function jxPlanEntries({ lane, laneDecision, candidates, inScopeClasses, 
 }
 
 /**
- * The whole slice, one never-kill call from pipelineInner. Requires ctx.registerPlan + the jxLanes
+ * The whole slice, one never-kill call from the intake step (`steps/intake.mjs`). Requires ctx.registerPlan + the jxLanes
  * component on the frozen policy (the caller checks the component; this checks env + lanes + resume
  * state). Returns { folded, cause? } for the pipeline's log line — it NEVER throws.
  */
@@ -365,15 +345,15 @@ export function jxPlanEntries({ lane, laneDecision, candidates, inScopeClasses, 
  *
  * READS THE SIDECAR FROM DISK, never ctx.jxLanes — the same reason injectScriptScopeCoverage gives: at
  * delivery on a resume the fold block may never have re-attached it. Deriving from durable state alone
- * (units.json + the frozen sidecar + env) makes this a pure function of the disk, callable from any late
+ * (units.json + the frozen sidecar) makes this a pure function of the disk, callable from any late
  * point without having to prove every resume path traverses the jx blocks.
  *
  * NEVER re-derives `lanes` or `scope`: attachJxLanes freezes those and throws on a corrupt sidecar, so an
  * unreadable one here NOTES AND RETURNS WITHOUT WRITING rather than minting a second opinion.
  */
-export function stateJxSlices(runDir, { env = process.env, note = () => {}, runLog = () => {} } = {}) {
+export function stateJxSlices(runDir, { note = () => {}, runLog = () => {} } = {}) {
   try {
-    const sidecarPath = driverDir(runDir, "jx-lanes.json");
+    const sidecarPath = paths(runDir).jxLanes;
     // ABSENT AND UNPARSEABLE ARE NOT THE SAME FACT, and the first cut printed one sentence for both.
     // A run with no jx lane has no sidecar, and that is normal — saying "NOT writing one" there reads as
     // a withheld action. A sidecar that EXISTS and does not parse is a real defect in a driver-written
@@ -385,20 +365,20 @@ export function stateJxSlices(runDir, { env = process.env, note = () => {}, runL
     try { sidecar = JSON.parse(raw); }
     catch (e) { note(`jx slice statement: _driver/jx-lanes.json EXISTS and does not parse (${String(e?.message ?? e).slice(0, 80)}) — NOT writing one; the lane decision is frozen and is not this writer's to re-derive`); return { stated: false, reason: "unparseable" }; }
     let units = null;
-    try { units = JSON.parse(readFileSync(driverDir(runDir, "jx", "units.json"), "utf8")); } catch { /* no retrieval slices ran — absence is read below, never as a pass */ }
+    try { units = readJson(driverDir(runDir, "jx", "units.json")); } catch { /* no retrieval slices ran — absence is read below, never as a pass */ }
     const causes = {};
     try {
-      for (const line of readFileSync(driverDir(runDir, "run.jsonl"), "utf8").split("\n")) {
+      for (const line of readFileSync(paths(runDir).run, "utf8").split("\n")) {
         if (!line.includes("-skipped")) continue;
         let row; try { row = JSON.parse(line); } catch { continue; }
         if (row?.event === "jx-serp-grid-skipped" && row.cause) causes["serp-grid"] = row.cause;
         if (row?.event === "jx-nativeread-skipped" && row.cause) causes.nativeread = row.cause;
       }
     } catch { /* decoration only — a missing journal changes no STATE, only a `why` */ }
-    const { executes, slices } = deriveJxSliceStatement({ sidecar, units, env, causes });
+    const { executes, slices } = deriveJxSliceStatement({ sidecar, units, causes });
     // — the per-lane ask-vs-got verdict, minted HERE and not at the scorer, for the reason the whole
-    // seam exists: a reader that derives it on the fly can only speak for the box it is run on, and the
-    // arms are environment. Stated at delivery, from this run's own env, it becomes a fact of the run.
+    // seam exists: a reader that derives it on the fly can only speak for the box it is run on. Stated at
+    // delivery, it becomes a fact of the run.
     const depth = deriveLaneDepthVerdicts({ sidecar, slices });
     // Idempotent: a delivered-then-resumed run leaves the artifact byte-identical rather than restamping.
     // `depth` JOINS the comparison rather than riding along: without it a run stamped before has a
@@ -427,14 +407,14 @@ export function stateJxSlices(runDir, { env = process.env, note = () => {}, runL
 export async function runJxCandidateFold(ctx, job, opts = {}, { runLog = () => {}, note = () => {}, inScopeClasses = [] } = {}) {
   const { run } = ctx;
   try {
-    // (the CLEAROTRON_JX_LANES master leg was retired 2026-07-27 — the frozen lane decision below and the
-    // per-lane CLEAROTRON_NATIVE_LANGUAGE_<code> switch are the controls; availability is settled before we get here)
+    // (the frozen lane decision below is the control: the CLEAROTRON_JX_LANES master leg was retired 2026-07-27 and the
+    // per-language off switch 2026-11-11; availability is settled before we get here)
     const { minted } = attachJxLanes(ctx);
     const lanes = ctx.jxLanes?.lanes ?? {};
-    const laneKeys = Object.keys(lanes).filter((l) => LANGUAGE_LANES[l] && laneArmed(l));   // — the shared reader
+    const laneKeys = Object.keys(lanes).filter((l) => LANGUAGE_LANES[l]);
     if (!laneKeys.length) return { folded: 0, cause: minted ? "no lanes in scope (jurisdictions/policy)" : "frozen decision has no lanes" };
 
-    const receiptPath = driverDir(run.runDir, "jx-lanes.json");
+    const receiptPath = paths(run.runDir).jxLanes;
     const prior = ctx.jxLanes;
     // an empty class scope can only fold entries parseRegisterPlan would REJECT on the next resume
     // (register_plan_classes_missing — the run bricks). Degrade the whole fold instead (review 2026-07-18).
@@ -496,8 +476,8 @@ export async function runJxCandidateFold(ctx, job, opts = {}, { runLog = () => {
     }
     const repairedFold = repairReceipt();
 
-    const { exec, source } = resolveJxExecutor(opts);
-    const ledgerPath = driverDir(run.runDir, "jx-completions.jsonl");
+    const { exec, source } = resolveJxExecutor(opts, { runDir: run.runDir });
+    const ledgerPath = paths(run.runDir).jxCompletions;
     const markName = job.markName ?? job.name;
     const productContext = String(job.goods ?? ctx.profile?.industry ?? "").slice(0, 300);
     // — spread the PRIOR fold FIRST. `executes`/`slices` are minted at delivery, after this
@@ -615,4 +595,9 @@ export async function runJxCandidateFold(ctx, job, opts = {}, { runLog = () => {
     note(`jx lanes skipped (${String(e?.message ?? e).slice(0, 120)}) — never-kill; the Latin plan stands`);
     return { folded: 0, cause: String(e?.message ?? e).slice(0, 200) };
   }
+}
+
+/** A lane's language as a client reads it ("Japanese"), from the lane's own label ("Japanese-script deepening"). PURE. */
+function languageOfLane(lane) {
+  return String(LANGUAGE_LANES[lane]?.label ?? "").replace(/-script deepening$/, "") || lane;
 }

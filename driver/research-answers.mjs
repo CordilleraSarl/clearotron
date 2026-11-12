@@ -28,7 +28,7 @@
 import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { basename, dirname, join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";
+import { driverDir, paths, readJson } from "./run-record.mjs";
 
 export const RESEARCH_ANSWERS_FILE = "research-answers.jsonl";
 
@@ -50,16 +50,48 @@ export const isResearchAnswer = (text) => typeof text === "string" && text.trim(
 
 /**
  * Keep one research answer beside its question, under the run's `_driver/`. Nothing is kept for a reply that is not an
- * answer, or outside a run. Best-effort: a failed write never fails a lookup. IMPURE.
+ * answer, or outside a run. `request` is the fingerprint of the request that got it (`researchRequestKey`). Best-effort:
+ * a failed write never fails a lookup. IMPURE.
  */
-export function keepResearchAnswer(runDir, { session = null, agent = null, task, preset = null, text }) {
+export function keepResearchAnswer(runDir, { session = null, agent = null, task, preset = null, request = null, text }) {
   if (!runDir || !isResearchAnswer(text) || typeof task !== "string" || !task.trim()) return;
   try {
     const p = driverDir(runDir, RESEARCH_ANSWERS_FILE);
     mkdirSync(dirname(p), { recursive: true });
     appendFileSync(p, JSON.stringify({ ts: new Date().toISOString(), ...(session ? { session } : {}), ...(agent ? { agent } : {}),
-      task, ...(preset ? { preset } : {}), text }) + "\n");
+      task, ...(preset ? { preset } : {}), ...(request ? { request } : {}), text }) + "\n");
   } catch { /* best-effort — a failed write must never break a lookup */ }
+}
+
+// ── A STAGE RUN AGAIN IS ANSWERED WHAT IT ALREADY ASKED ───────────────────────────────────────────────────────────────
+//
+// A stage runs again after a retry, a park, a correction or a stale input, and each time it sent its research questions
+// again: the run kept their answers but answered from them only in a replay. A research answer is paid for, so a
+// question the stage already got an answer to is answered from that answer and not sent again.
+//
+// ONLY THE SAME REQUEST. The fingerprint is the whole request the service would be sent: the question's words, the tier
+// it resolved to, its tools and filters, the model, a response schema and the instructions. A question worded
+// differently, asked at another depth or with another option, is a new question; so is one the product now asks with
+// different instructions. ONLY THE SAME STAGE: its session and its retries (`sameStageSession`), never another stage's
+// answer. ONLY AN ANSWER: a failed call or an unreadable reply was never kept, so it is asked again. An answer kept
+// before the fingerprint existed carries none, and is asked again.
+
+/** The fingerprint of one research request: the body the service would be sent. PURE. */
+export const researchRequestKey = (body) => createHash("sha256").update(JSON.stringify(body ?? null)).digest("hex").slice(0, 24);
+
+/**
+ * The latest answer this stage already holds to exactly this request, or null. `sessionKey` is the asking session; every
+ * session of its stage counts. IMPURE (reads the record).
+ * @returns {{ text: string, ts: string, session: string }|null}
+ */
+export function heldAnswerToRequest(runDir, sessionKey, request) {
+  if (!runDir || !sessionKey || typeof request !== "string" || !request) return null;
+  let found = null;
+  for (const row of rows(driverDir(runDir, RESEARCH_ANSWERS_FILE))) {
+    if (row?.request !== request || !sameStageSession(row.session, sessionKey) || !isResearchAnswer(row.text)) continue;
+    if (!found || String(row.ts ?? "") >= found.ts) found = { text: row.text, ts: String(row.ts ?? ""), session: row.session };
+  }
+  return found;
 }
 
 /**
@@ -194,7 +226,7 @@ export const researchReplayOn = (runDir) => Boolean(runDir) && existsSync(driver
 /** The answers file a replay answers from, as its marker names it, or null: then it answers nothing. IMPURE. */
 export function replayAnswersFrom(runDir) {
   try {
-    const from = JSON.parse(readFileSync(driverDir(runDir, RESEARCH_REPLAY_FILE), "utf8"))?.answersFrom;
+    const from = readJson(driverDir(runDir, RESEARCH_REPLAY_FILE))?.answersFrom;
     return typeof from === "string" && from.trim() ? from : null;
   } catch { return null; }
 }
@@ -265,7 +297,7 @@ export function heldResearchAnswers(runDir, sessionKey = null) {
   for (const r of kept) if (own(r?.session) && typeof r.task === "string" && isResearchAnswer(r.text)) put(r.task, oneLine(r.text), "asked");
   // A replayed answer is the run's own, read from the copy of its answers the replay's marker names, outside the arm.
   const replayFrom = replayAnswersFrom(runDir);
-  for (const r of rows(driverDir(runDir, "reading-log.jsonl"))) {
+  for (const r of rows(paths(runDir).readingLog)) {
     if (r?.tool !== "perplexity_research" || r.ok !== true || !own(r.session) || r.args?.grid || typeof r.args?.task !== "string") continue;
     const text = (r.args.replay && replayFrom ? savedResearchAnswer(replayFrom, r.args.task)?.text : null)
       ?? kept.filter((x) => typeof x?.task === "string" && x.task.trim() === r.args.task.trim() && isResearchAnswer(x.text)).pop()?.text ?? null;

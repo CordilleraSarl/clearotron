@@ -291,11 +291,11 @@ function frameworkGauge(fm, findings, coverage = [], fourAnswers = null, opts = 
   // a vocabulary ("Manageable", "Moderate") that is meaningless without the framework in force, and the
   // one place that named it sat several screens down at the end of a long document. The footer line stays:
   // it is the printed page's provenance, and the complaint was that the framework was named ONLY there.
-  // Styling is in report.css (.gauge .label .gauge-fw), which is not frozen — only this text had to move.
+  // Styling is in report.css (.gauge .gauge-head); the name is its own block so a copied page keeps it apart from the heading.
   // frameworkGauge ONLY: the legacy `gauge()` branch below has no manifest to name, so it stays
   // byte-identical for every archived run that has no framework sidecar.
   return `<div class="panel gauge">
-    <div class="label">Overall risk<span class="gauge-fw">${esc(FRAMEWORK.title)}</span></div>
+    <div class="gauge-head"><div class="label">Overall risk</div><div class="gauge-fw">${esc(FRAMEWORK.title)}</div></div>
     <div class="scale" style="background:${grad}">${marker}</div>
     <div class="ticks">${ticks}</div>
     <div class="gconc">${conc}</div>
@@ -1088,12 +1088,20 @@ function clearedGroupsHtml(searchDepth, auditFile) {
   }).join('');
 }
 
+// THE RUN'S OWN COMMON-LAW SEARCH RECORD, named in words. A row the assessing model backed with the run's own search
+// ledger carries that file's name where a web address would be, and the page printed it as a link to nowhere. Only a
+// reference positively identified as that ledger is renamed; any other source keeps its exact reference until a
+// truthful label exists for it. The run's record and the audit keep the original reference.
+const RUN_COMMON_LAW_RECORD = /^(?:\.\/)?(?:_driver\/)?common-law-grid(?:\.half-[a-z0-9]+)?\.json$/i;
+const RUN_COMMON_LAW_RECORD_LABEL = "the run's own common-law search record";
+
 function webNamesHtml(searchDepth) {
   const web = (searchDepth && searchDepth.cleared && searchDepth.cleared.web) || [];
   if (!web.length) return '';
   const shown = web.slice(0, NAMES_CAP);
   const rows = shown.map((w) => `<div class="crow"><span class="cm-mark">${esc(w.title || '')}</span>${
-    w.url ? `<a class="curl" href="${escAttr(w.url)}">${esc(String(w.url).replace(/^https?:\/\//, '').replace(/\/$/, ''))}</a>` : '<span class="cwho"></span>'}</div>`).join('');
+    w.url && RUN_COMMON_LAW_RECORD.test(String(w.url).trim()) ? `<span class="curl">${esc(RUN_COMMON_LAW_RECORD_LABEL)}</span>`
+    : w.url ? `<a class="curl" href="${escAttr(w.url)}">${esc(String(w.url).replace(/^https?:\/\//, '').replace(/\/$/, ''))}</a>` : '<span class="cwho"></span>'}</div>`).join('');
   return `<details class="cgroup"><summary><span class="gname">Web and marketplace names</span><span class="gcount">${
     web.length.toLocaleString('en-GB')} ${web.length === 1 ? 'name' : 'names'}</span></summary><div class="gbody">${rows}</div></details>`;
 }

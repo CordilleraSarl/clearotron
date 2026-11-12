@@ -134,23 +134,6 @@ function remedy(said) {
   return said.slice(from, to === -1 ? undefined : to);
 }
 
-/**
- * The POOL-ROOT WARNING alone — the one line, bounded at both ends.
- *
- * BOUNDED BECAUSE AN UNBOUNDED WINDOW ALREADY LIED. This took `said.slice(indexOf(…))` and read the
- * first 1200 characters of it, which runs off the end of the warning and into the refusal below — so
- * reverting the pool-root site to its wizard-only text left this arm GREEN, matching the CLI's path in
- * the OTHER site's remedy. The plant that was supposed to prove the arm proved the arm instead. One
- * line, ended where the product ends it.
- */
-function poolWarning(said) {
-  const m = /the configuration snapshot could not be written \((.*)\)\.$/m.exec(said);
-  assert.ok(m,
-    `this drive never printed the pool-root warning, so there was nothing here to measure:\n`
-    + said.slice(0, 900));
-  return m[1];
-}
-
 /** The file this process reports READING, taken off its own loader line — never composed by this test. */
 function readItsEnvFile(d) {
   return assertReadItsEnvFile(d.said, d.envFile);
@@ -219,19 +202,57 @@ test("a command that read no env file of its own names none — it does not comp
     `it named no file at all. The units' file is still an honest address here and must be given:\n${block}`);
 });
 
-test("the pool-root refusal on the same screen names the file too — the class is not one site", { skip: NO_BACKGROUND_FORM_ON_WINDOWS }, () => {
-  // THE DIFFERENT MEMBER. This message comes from `driver.config.mjs`, not from `start`, and reaches
-  // this screen as a warning two lines above the refusal the issue names. It offered `install` and
-  // nothing else, so its reader had the identical dead end.
-  const warn = poolWarning(reachedTheRefusal(READ));
-  assert.ok(warn.includes(READ.envFile),
-    `the pool-root refusal still offers only the wizard, which its reader here cannot run:\n${warn}`);
+// THE POOL-ROOT REFUSAL, ON READERS THAT RESOLVE NO PATHS OF THEIR OWN. `start` used to meet it too, writing its
+// configuration snapshot from an environment that named no pool; it now hands the snapshot the paths it hands its
+// services, so the refusal reaches its first screen no more. Two readers still meet it, and are where it is read now:
+// `doctor`, which prints it whole, and the development portal, a declared command that refuses at boot with no pool
+// and records the file it read, so its refusal can name that file.
+function driveReader(args, extra = {}) {
+  const home = mkdtempSync(join(tmpdir(), "ct202-reader-"));
+  mkdirSync(join(home, ".config", "clearotron"), { recursive: true });
+  const envFile = join(home, ".config", "clearotron", ".env");
+  writeFileSync(envFile, "PORTAL_LOCAL_USER=drive@localhost\n");
+  const env = handRunEnv({ HOME: home, USERPROFILE: home, CLEAROTRON_DATABASE: undefined, CLEAROTRON_AI: undefined,
+    CLEAROTRON_CLAUDE_PATH: undefined, CLEAROTRON_REPORTS_DIR: undefined, ...extra });
+  const r = spawnSync(process.execPath, args, { encoding: "utf8", timeout: 120_000, env });
+  return { envFile, said: `${r.stdout ?? ""}${r.stderr ?? ""}`, clean: () => rmSync(home, { recursive: true, force: true }) };
+}
+const DOCTOR = [join(ROOT, "bin", "onboard.mjs"), "--check"];
+const DEV_PORTAL = [join(ROOT, "driver", "dev-portal.mjs")];
+
+/** The pool-root refusal as a reader prints it: from its variable's name to the end of its line. */
+function poolRefusal(said) {
+  const m = /CLEAROTRON_REPORTS_DIR is not set, and it has NO default\..*$/m.exec(said);
+  assert.ok(m, `this drive never printed the pool-root refusal, so there was nothing here to measure:\n${said.slice(0, 900)}`);
+  return m[0];
+}
+
+test("start hands its snapshot the paths it hands its services, so its screen carries no pool-root refusal", { skip: NO_BACKGROUND_FORM_ON_WINDOWS }, () => {
+  const said = reachedTheRefusal(READ);
+  assert.doesNotMatch(said, /the configuration snapshot could not be written/,
+    `start still wrote its snapshot without the paths it resolved:\n${said.slice(0, 900)}`);
+  assert.doesNotMatch(said, /CLEAROTRON_REPORTS_DIR is not set, and it has NO default/);
 });
 
-test("and it names none of its own when the process read no file", { skip: NO_BACKGROUND_FORM_ON_WINDOWS }, () => {
-  const warn = poolWarning(reachedTheRefusal(UNREAD));
-  assert.ok(!warn.includes(UNREAD.envFile),
-    `it named a file this process never read:\n${warn}`);
+test("doctor, which resolves no paths, still prints the pool-root refusal", () => {
+  const d = driveReader(DOCTOR);
+  try { poolRefusal(d.said); } finally { d.clean(); }
+});
+
+test("the pool-root refusal names the file the reader read", () => {
+  const d = driveReader(DEV_PORTAL);
+  try {
+    const refusal = poolRefusal(d.said);
+    assert.ok(refusal.includes(d.envFile), `the pool-root refusal offers only the wizard, which a scripted reader cannot run:\n${refusal}`);
+  } finally { d.clean(); }
+});
+
+test("and it names none of its own when the reader read no file", () => {
+  const d = driveReader(DEV_PORTAL, { CLEAROTRON_NO_ENV_FILE: "1" });
+  try {
+    const refusal = poolRefusal(d.said);
+    assert.ok(!refusal.includes(d.envFile), `it named a file this process never read:\n${refusal}`);
+  } finally { d.clean(); }
 });
 
 test("the load-bearing premise, driven: `clearotron install` refuses when stdin is not a terminal", () => {

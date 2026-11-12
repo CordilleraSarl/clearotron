@@ -8,7 +8,8 @@
 // narrative reviewer would block delivery. On that path the task message dictates the terms as its GRID KEYS, so the
 // manual names those; the field search runs once, for the mark, where the frame names a field outside the customer's
 // own; and the reviewer flags in the audit workbook rather than blocks. This holds the ruled lines and that the old
-// ones are gone.
+// ones are gone. The hand-authored grid program and its task template were later removed from both files, so the grid
+// runs only from the spec the driver writes; that removal is held here too.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -20,22 +21,22 @@ const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
 const manual = flat("SKILL.md");
 const prompts = flat("perplexity-prompts.md");
 
-test("the legacy grid takes the terms the task message's GRID KEYS names", () => {
-  assert.ok(manual.includes("- The terms your task message's GRID KEYS names (the program's SEARCH TERMS array)"));
-  assert.ok(prompts.includes("SEARCH TERMS ([N]): [JSON array of the terms your task message's GRID KEYS names]"));
+test("no manual teaches a hand-authored grid program, and neither takes every variant", () => {
+  assert.ok(!manual.includes("- The terms your task message's GRID KEYS names"), "the web manual still fills a grid program's terms");
+  assert.ok(!prompts.includes("SEARCH TERMS ([N])"), "the grid prompt still carries the program's task template");
+  for (const [name, text] of [["web manual", manual], ["grid prompt", prompts]])
+    assert.ok(!text.includes('depth: "pro-search"'), `the ${name} still sets the program's depth`);
   assert.ok(!manual.includes("ALL variants from the Variants table"), "the web manual still takes every variant");
   assert.ok(!prompts.includes("every variant from the manifest's Variants table"), "the grid prompt still takes every variant");
 });
 
-test("the field search runs once, for the mark, where the frame names a field outside the customer's own", () => {
-  assert.ok(manual.includes("- **Field-scoped general search** — when the frame names a field outside the customer's own (the profile's "
-    + "industry — e.g. a collaboration or goods outside it), a general internet search **scoped to the collaborated / actual goods** is "
-    + "also run (e.g. a gaming × pizza collab → search the web generally for *pizza*). Extend with field-scoped cells when the frame names "
-    + "a field outside the customer's own. Scope to the specific goods the brief instructs — not a fixed per-field platform list"));
-  assert.ok(manual.includes("- **Field-scoped general-web cell (when the frame names a field outside the customer's own):** one extra cell "
-    + "for the mark combined with the collaborated / actual goods the brief instructs — e.g. for a gaming × pizza collab, a "
-    + "`\"<mark> pizza\"` cell."));
-  assert.ok(prompts.includes("Where the frame names a field outside the customer's own, run one general-web search of the mark combined with"));
+test("the field search is a targeted follow-up where the frame names a field outside the customer's own", () => {
+  assert.ok(manual.includes("- **Field-scoped general search** — the grid has no cell for a field outside the customer's own (the profile's "
+    + "industry — e.g. a collaboration or goods outside it). A search scoped to those goods is made only as a targeted follow-up, under the "
+    + "rule above, when its answer could change what you tell the client. "
+    + "Scope to the specific goods the brief instructs — not a fixed per-field platform list"));
+  assert.ok(!manual.includes("Field-scoped general-web cell"), "the web manual still dictates a cell the grid does not build");
+  assert.ok(!prompts.includes("web-field:"), "the grid prompt still dictates a cell the grid does not build");
   for (const gone of ["the matter goes outside the customer's core field", "is also mandatory", "one extra cell per term", "`\"<term> pizza\"` cells"])
     assert.ok(!manual.includes(gone), `the web manual still says "${gone}"`);
   for (const gone of ["the matter goes outside the customer's core field", "for each search term run one general-web search of the term"])

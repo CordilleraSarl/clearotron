@@ -1,24 +1,15 @@
 ---
 name: clearance-register
-description: Register-side execution for the v3 preliminary trademark search workflow. **Invoked exclusively by the `clearance-search` orchestrator** — do not call directly. Runs in one of two modes the orchestrator selects via the spawn task. **Unit mode (the FUNNEL — Layer A):** execute ONE register search axis (saturation / primary-sweep / transliteration-numeric / incumbent-class) against the variant manifest — ENUMERATE each named query to completion via `register_enumerate` (the completeness primitive that owns the page loop), describe saturation crowds as count-only incomplete descriptors, and write the COMPLETE NAMED BAND (`register-units/<axis>-band.json`) carrying every record with its status; the funnel never samples or self-accepts; only the raw character-noise pile dies in this session. **Digest mode (judgment — Layer B):** read the candidates placement carried forward, and their evidence, through the band tools (`band_shape` / `band_lookup` / `band_record` — every call on the run's reading audit; never by slicing band files), run the cross-cutting judgment (relevance, identical-match + cross-class merchandising, owner aggregation, watchlists, stealth-filer + Option-D cross-checks, opposition), decide sufficiency, and hand the register-side findings back as typed rows — the driver renders the document the orchestrator synthesises from; the seat writes no file.
+description: Register-side execution for the v3 preliminary trademark search workflow. **Invoked exclusively by the `clearance-search` orchestrator** — do not call directly. Runs in one of two modes the orchestrator selects via the spawn task. **Unit mode (the FUNNEL — Layer A):** execute ONE register search axis (saturation / primary-sweep / transliteration-numeric / incumbent-class) against the variant manifest — on a plan run the tools named in the opening message run every query and write the COMPLETE NAMED BAND (`register-units/<axis>-band.json`) carrying every record with its status, and on the no-plan path you enumerate through `register_enumerate`; saturation crowds are count-only incomplete descriptors; the funnel never samples or self-accepts; only the raw character-noise pile dies in this session. **Digest mode (judgment — Layer B):** read the candidates placement carried forward, and their evidence, through the band tools (`band_shape` / `band_lookup` / `band_record` — every call on the run's reading audit; never by slicing band files), run the cross-cutting judgment (relevance, identical-match + cross-class merchandising, owner aggregation, watchlists, stealth-filer + Option-D cross-checks, opposition), decide sufficiency, and hand the register-side findings back as typed rows — the driver renders the document the orchestrator synthesises from; the seat writes no file.
 ---
 
 ## Spawned session
 
-Invoked from `clearance-search` (the orchestrator) as an **isolated depth-2 worker**, in one of two
-modes. **This skill never spawns sub-agents** — the orchestrator owns all dispatch. (This is
-deliberate: the announce/completion chain supports one nesting level — `main → orchestrator →
-workers` — so every register worker is a flat depth-2 sibling of the common-law worker, not a nested
-sub-tree.)
-
-Two modes, chosen by the orchestrator and stated in the spawn `task`:
+The driver dispatches you in one of two modes, named in your opening message.
 
 - **Unit mode (the FUNNEL — Layer A)** — the task names ONE axis (`saturation-probe` | `primary-sweep` |
   `transliteration-numeric` | `incumbent-class`), the variant manifest path, archetype + risk theory,
-  active provider, target classes / jurisdiction / industry. The worker runs that axis only — it
-  ENUMERATES each named query to completion via `register_enumerate` (or reports honest `incomplete`),
-  describes saturation crowds as count-only descriptors, and writes the named-band array
-  `register-units/<axis>-band.json`. Only the raw character-noise pile stays in this session;
+  active provider, target classes / jurisdiction / industry. The worker runs that axis only. On a run whose plan carries the supplemental lane, the tools your opening message names run every query and write the band, and you hand-write no band; `register_enumerate` exists only on the no-plan path (no plan compiled), where you enumerate each named query to completion or report honest `incomplete`. Saturation crowds are count-only descriptors. Only the raw character-noise pile stays in this session;
   the **complete named band + crowd descriptors** cross the firewall as the band JSON.
 - **Digest mode (judgment — Layer B)** — the task gives the paths to the per-axis prose digests (audit
   summaries) and the manifest; the driver has already MERGED the per-axis bands into the run's complete
@@ -33,11 +24,10 @@ theory), the `matter-context.md` at `studio/clearance-search/<slug>/<date>/matte
 **Digest mode also reads**: `placement-recommendations.md` at `studio/clearance-search/<slug>/<date>/placement-recommendations.md` (Touchpoint 2 per-candidate placements — informs digest tiering), and its structured mirror `placements.json` beside it (one `{mark, owner, jurisdiction, records, tier, reason}` entry per candidate; when present, the authoritative per-candidate tier record — the md carries the rulings tail as prose).
 
 Writes:
-- Unit mode — TWO artifacts, both gate-checked, neither optional. `studio/clearance-search/<slug>/<date>/register-units/<axis>.md` is the stage's DECLARED OUTPUT: the driver fails the pass outright when it is absent, and the digest worker reads it as an input. `studio/clearance-search/<slug>/<date>/register-units/<axis>-band.json` is the COMPLETE named band — a JSON array of `enumerated` / `incomplete` blocks (see `unit.md` → *Named-band artifact*) — carrying every record and no clearance verdict. The md narrates and proves nothing on its own: an md narrating a completed sweep while the band its plan entries call for is missing is refused as `named_band_missing`. In plan mode `register_execute_plan` writes the band itself and you never hand-write its blocks.
+- Unit mode — TWO artifacts, both gate-checked, neither optional. On a plan run, on an axis with no work and no planned entries, the driver writes the band empty and you write no block. `studio/clearance-search/<slug>/<date>/register-units/<axis>.md` is the stage's DECLARED OUTPUT: the driver renders it from your `record_unit_note` call and fails the pass outright when it is absent, and the digest worker reads it as an input. `studio/clearance-search/<slug>/<date>/register-units/<axis>-band.json` is the COMPLETE named band — a JSON array of `enumerated` / `incomplete` blocks (see `unit.md` → *Named-band artifact*) — carrying every record and no clearance verdict. The md narrates and proves nothing on its own: an md narrating a completed sweep while the band its plan entries call for is missing is refused as `named_band_missing`. In plan mode `register_execute_plan` writes the band itself and you never hand-write its blocks.
 - Digest mode: you write no file. The driver renders `studio/clearance-search/<slug>/<date>/register-findings.md` from what you send. Coverage statuses are NOT a file you write: they ride the `record_coverage` tool into a driver-held record, and the driver renders the `## Coverage ledger` table and its JSON mirror from it (see *Coverage ledger* below and `digest.md` → *Coverage ledger*).
 
-Returns to the orchestrator: your **final session message** — a 2–3 line summary (counts + the
-absolute path of the file you wrote). Keep raw character-noise records out of the message and out of any
+Returns to the orchestrator: your **final session message** — a 2–3 line summary of counts. Keep raw character-noise records out of the message and out of any
 upward summary; keep clearance verdicts out of the unit message (verdicts are Layer B's).
 
 Companion files:
@@ -47,18 +37,12 @@ Companion files:
 - [providers/corsearch.md](providers/corsearch.md) — Corsearch-specific operator vocabulary
 - [providers/clarivate.md](providers/clarivate.md) — Clarivate-specific operator vocabulary + its capability gaps
 
-## Trigger
-
-Called by `clearance-search` after `clearance-variants` has produced the manifest. The orchestrator spawns
-the unit-mode workers and the common-law worker together, then spawns the digest-mode worker once the
-unit digests exist. Not invoked directly by operators.
-
 ## Model
 
-Set by the orchestrator per mode (set `model` explicitly on the spawn — omitting it mis-tiers):
+Set by the orchestrator per mode:
 
 - Unit mode — `saturation-probe` uses `haiku`, with thinking off, for count-only work. `primary-sweep` uses `opus`, with adaptive thinking, to run the plan, read its answers, and decide which further searches could change the advice. `transliteration-numeric` and `incumbent-class` use `sonnet`, with adaptive thinking.
-- **Digest mode** — **`opus`**, thinking medium.
+- **Digest mode** — The driver selects the model.
 
 Register units execute searches and decide which further questions could change the advice. The primary sweep uses the judgment model for that decision. The digest assesses the evidence carried forward. The driver selects each stage's model; a unit does not choose its own replacement.
 
@@ -76,8 +60,7 @@ Never tag it in the findings.
 
 ## Tool call budget — and why it is NOT a sufficiency lever
 
-The funnel runs each named query through **`register_enumerate`**, which owns the page loop and pages to
-`has_more:false`. **A budget ceiling is therefore NOT a "searched enough" knob and NEVER a reason to sample,
+On a run whose plan carries the supplemental lane, the tools named in your dispatch run every query and write the band; `register_enumerate` exists only on the no-plan path (no plan compiled). **A budget ceiling is therefore NOT a "searched enough" knob and NEVER a reason to sample,
 top-N, or self-accept a slice.** The narrowing steps bound the searching: each keeps the limits before it, and
 they end. A crowd still a crowd after the last step is recorded with its count, never cut further. A saturation crowd is **described** with one
 count-only call (`limit:1`), not enumerated. The failure mode of the old funnel — deep-paging a
@@ -86,7 +69,7 @@ saturated raw pile — does **not** exist: crowds are descriptors, named slices 
 **A genuine resource/time limit produces an `incomplete` block, never a sufficiency accept.** If
 `register_enumerate` hits the provider 5000-record window or a resource ceiling on a slice, it returns
 `{state:"incomplete", …, reason}` — the funnel writes that block verbatim and **stops there for that slice**.
-That `incomplete` is the signal to **judgment (Layer B)**, which decides whether the crowd is material and either **commands a narrower named enumeration** by the narrowing steps (which the funnel then runs) or **records the crowd with its count and moves on**. The
+The unit narrows a crowd or records it with its count. A `sufficient:false` does not re-search; a `deferred` row may be re-run by the driver. The
 funnel never converts a resource limit into a clean negative and never re-adds a record/count ceiling that
 says "searched N, ship clean".
 
@@ -141,10 +124,10 @@ its own count. A narrowing that does not name what it replaced leaves the crowd 
 
 
 **The per-major and per-jurisdiction named queries are breadth, not a budgeted sufficiency allowance.** Each
-in-scope major (US/EU/UK/CN/JP) and each material jurisdiction the matter-frame declared is **part of the in-scope sweep** — and when the region-scoped in-scope sweep (Recipe 1 Step 2) returns `enumerated`
+in-scope major (US/EU/UK/CN/JP) and each material jurisdiction the matter-frame declared is **part of the in-scope sweep** — and when the region-scoped in-scope sweep (Recipe 7 Step 2) returns `enumerated`
 (complete), that complete set provably contains every in-scope slice, so the per-major/per-jurisdiction slices
 are taken from it **machine-side by `jurisdictions`**, NOT re-run as redundant per-major `register_enumerate`
-calls (Recipe 1 §2b/§2c — this drops the per-jurisdiction call-count + timeout fragility). When the in-scope sweep returns `incomplete` as a crowd, narrow it by the steps in *Read the identical mark first*: their market step uses the one list your opening message names, and a major or material jurisdiction the list does not name is not asked on its own; it stays in the crowd's count. Either way no slice is sampled; the manifest/matter-frame chose the breadth (judgment, upstream). There is **no "ring-fenced allowance" that breadth
+calls (Recipe 7 §2b/§2c — this drops the per-jurisdiction call-count + timeout fragility). When the in-scope sweep returns `incomplete` as a crowd, narrow it by the steps in *Read the identical mark first*: their market step uses the one list your opening message names, and a major or material jurisdiction the list does not name is not asked on its own; it stays in the crowd's count. Either way no slice is sampled; the manifest/matter-frame chose the breadth (judgment, upstream). There is **no "ring-fenced allowance" that breadth
 yields to** any more (that was a sufficiency trade — breadth-vs-coverage), because no slice is sampled: every
 named query enumerates or returns `incomplete`. If a declared jurisdiction's query genuinely cannot run
 (provider error), it surfaces as an `incomplete` block (a could-not-reach gap for judgment), never a silent
@@ -167,9 +150,9 @@ category is **structurally impossible** now: there is no sampling verb in the fu
 `incomplete` block verbatim** and letting judgment act on it.
 
 - **Provider session-key invalid** → halt; surface to orchestrator with one-line diagnostic (no band can be written).
-- **A named slice cannot be enumerated** (provider 5000-record window, resource ceiling, persistent provider error) → `register_enumerate` returns `{state:"incomplete", …, reason}`; **write that block verbatim.** Do NOT narrow-and-call-clean and do NOT fabricate an empty. The `incomplete` block (a could-not-reach / crowd signal) crosses to judgment, which commands a narrower named enumeration by the narrowing steps, or records it and moves on: a crowd with its count, a failed search as a gap.
+- **A named slice cannot be enumerated** (provider 5000-record window, resource ceiling, persistent provider error) → `register_enumerate` returns `{state:"incomplete", …, reason}`; **write that block verbatim.** Do NOT narrow-and-call-clean and do NOT fabricate an empty. The `incomplete` block (a could-not-reach / crowd signal) crosses to judgment. The unit narrows a crowd or records it with its count. A `sufficient:false` does not re-search; a `deferred` row may be re-run by the driver.
 - **Rate-limit signal (429 or sustained 5xx)** → handled inside the primitive (back off); a persistent failure surfaces as an `incomplete` block with the error in `reason`.
-- **A unit's axis is not applicable** to this manifest (e.g. transliteration-numeric with an English-only mark) → write a single "not applicable" `incomplete` block (`reason:"not applicable — <why>"`, `total_hits:0`) so the band file lands, and return cleanly. Do NOT fabricate work.
+- **A unit's axis has no work** in this manifest (e.g. transliteration-numeric with an English-only mark) and no entries in the frozen plan → write no block, send `record_unit_note` with a `note` saying why, leave `null_result` unset, and return. Do NOT fabricate work. For a run without a frozen plan, follow *No work on this axis* in `unit.md`.
 ## Coverage = the band blocks (the funnel emits NO clearance verdict)
 
 A negative is only as good as the search behind it — and under the two-layer split the **funnel proves the
@@ -188,7 +171,7 @@ states, and **the state IS the coverage signal**:
   could not reach its data (provider error, tool absent) OR is a count-only crowd descriptor. **The funnel
   never grades an `incomplete` as an "accepted limit" vs a "closeable gap"** — that grading was a sufficiency
   judgment (is this gap OK to ship over?) and now belongs to **judgment (Layer B)**: the lawyer reads the
-  `incomplete` block (its `total_hits` / `sample` / `reason`), decides whether it is material, and either **commands a narrower named enumeration** by the narrowing steps (which the funnel runs) or **records it with its count and moves on**. The funnel's job
+  `incomplete` block (its `total_hits` / `sample` / `reason`), decides whether it is material. The unit narrows a crowd or records it with its count. A `sufficient:false` does not re-search; a `deferred` row may be re-run by the driver. The funnel's job
   is only to surface the `incomplete` honestly — count + sample + reason — never to decide it is tolerable.
 
 **The exact name-list is read first, and narrowed when it crowds.** The dominant element's `match_mode:exact`
@@ -211,8 +194,7 @@ the band files), reconciles against `matter-context`'s materially-matters list, 
 coverage unit, and **decides sufficiency** there.
 Synthesis emits the rolled-up signal in `findings.json` (`coverage_judgment` — `{sufficient, reason}`):
 `sufficient:false` (a material slice not fully cleared) clamps the verdict CLEAR→CONDITIONAL and the named gap
-ships as an open item — the report still delivers. `sufficient:true` → deliver clean. **There is no re-search
-re-loop and no halt** (a lawyer always gets a report unless something technically breaks); a missing band is the
+ships as an open item — the report still delivers. `sufficient:true` → deliver clean. A `sufficient:false` does not re-search; a `deferred` row may be re-run by the driver. A missing band is the
 one hard stop — the driver fails fan-in on it, so a clean can never ship over an unsearched band. **The funnel
 writes no `coverage_judgment` and no clean verdict** — it hands up the complete band + honest `incomplete`s and
 lets judgment decide.

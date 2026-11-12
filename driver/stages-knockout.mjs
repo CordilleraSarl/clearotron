@@ -5,6 +5,7 @@
 // kept in its OWN table: the knockout lane is a different product shape (a 5–15 mark triage batch), and
 // its stages must never leak into the clearance STAGE_ORDER. New-named stages get [] MCP tool groups
 // automatically (gather-config prefix map — the matter-frame precedent), so frame/assess run lean.
+import { paths } from "./run-record.mjs";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
@@ -15,10 +16,11 @@ import { kebab, PRODUCT_POLICIES } from "./search-policy.mjs";
 import { requestNamesClasses } from "./enqueue-schema.mjs";
 import { knockoutAssessChunkFile } from "./knockout-assess-record.mjs";
 import { chunkScope, knockoutCorrectionFile, sameFinding, validateKnockoutCorrectionFile } from "./knockout-correction-record.mjs";
-import { methodDictation, inputsShape } from "./framework-method.mjs";
+import { FROZEN_METHOD_FILE, methodDictation, inputsShape } from "./framework-method.mjs";
 import { knockoutReviewFile, validateKnockoutReviewFile } from "./knockout-review-record.mjs";
 import { knockoutRegisterFile, validateKnockoutRegisterFile } from "./knockout-register-record.mjs";
 import { narrowingOrderLine } from "./effective-scope.mjs";
+import { REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK } from "./stages.mjs";
 export { kebab };   // one definition (search-policy) — re-exported for the lane's existing imports
 
 const lines = (...xs) => xs.filter(Boolean).join("\n");
@@ -64,8 +66,8 @@ export function koPaths(runDir) {
     review: knockoutReviewFile(runDir),
     // Depth 2: the code-authoritative count sidecar + its per-call receipts. Both live under
     // _driver/ — they are the driver's own measurements, never a model's output.
-    registerCounts: driverDir(runDir, "register-counts.json"),
-    countLedger: driverDir(runDir, "register-count.jsonl"),
+    registerCounts: paths(runDir).registerCounts,
+    countLedger: paths(runDir).registerCount,
     // part 5 — the filings behind the narrow counts, beside the counts they explain. Because the
     // MCP server serves run artifacts generically, landing it here makes the filings queryable over MCP
     // with no MCP-side work at all. Its receipts ride the count lane's ledger file and are the ONLY
@@ -73,18 +75,18 @@ export function koPaths(runDir) {
     // cost", and the two lanes are told apart by a key the older lines simply do not have. The count
     // rows were left exactly as they were rather than gaining a matching marker: their shape is pinned
     // byte-for-byte by register-count.test.mjs, and a discriminator only one side needs is enough.
-    registerRecords: driverDir(runDir, "register-records.json"),
+    registerRecords: paths(runDir).registerRecords,
     // THE READING STEP'S RECORD, a model output and so at the run root: what it carried forward, set aside and did not
     // ask. The questions and their rows are the register tool's, in the bands under `register-units/`.
     registerReading: knockoutRegisterFile(runDir),
-    inboundRequest: join(runDir, "inbound-request.txt"),
+    inboundRequest: paths(runDir).inboundRequest,
     // The scoped owner lookups this run owes its promoted filings, and their receipts. Both under `_driver/` because both are the DRIVER's own measurement of a call it made — the
     // rule stated fourteen lines above. The seat reads the payloads under research/, never these.
-    ownerChecks: driverDir(runDir, "owner-checks.json"),
-    ownerCheckLedger: driverDir(runDir, "owner-check.jsonl"),
+    ownerChecks: paths(runDir).ownerChecks,
+    ownerCheckLedger: paths(runDir).ownerCheck,
     researchDir: join(runDir, "research"),
     research: (markKebab) => join(runDir, "research", `${markKebab}.md`),
-    sweepLedger: driverDir(runDir, "knockout-sweep.jsonl"),
+    sweepLedger: paths(runDir).knockoutSweep,
     // What each web call returned, verbatim, one file per call: the pages a search reached, which the ledger
     // above and the payload under research/ do not carry. A directory, because every `_driver/*.jsonl` is
     // read as a stage log. The driver's own record of a call it made, so under `_driver/`.
@@ -111,18 +113,13 @@ export function koPaths(runDir) {
     // driver would write where the pipeline does not read and every arm on both sides would stay green.
     // One producer, imported.
     assessChunk: (n) => knockoutAssessChunkFile(runDir, n),
-    // The pre-relocation location, for READS ONLY. A run that got its chunks written before the move — or
-    // through the Bash bypass — must still resume without re-dispatching a paid stage, so the reader falls
-    // back to this and nothing ever writes it again. Delete once no resumable run predates the move.
-    assessChunkLegacy: (n) => driverDir(runDir, `knockout-assess-${n}.json`),
-    instructedScope: driverDir(runDir, "instructed-scope.json"),
+    instructedScope: paths(runDir).instructedScope,
     // The client's own words, written at intake as on the clearance lane (stages.mjs, the same two names).
-    inboundRequest: join(runDir, "inbound-request.txt"),
-    confirmationBrief: join(runDir, "confirmation-brief.md"),
+    confirmationBrief: paths(runDir).confirmationBrief,
     // as on the clearance lane, and apart from instructed-scope.json for the same reason: the frame
     // quotes that file's values verbatim. Written at intake, read by no stage.
-    defaultTerritories: driverDir(runDir, "default-territories.json"),
-    emailBody: join(runDir, "email-body.md"),
+    defaultTerritories: paths(runDir).defaultTerritories,
+    emailBody: paths(runDir).emailBody,
   };
 }
 
@@ -264,12 +261,30 @@ export function koSteps({ registerProbe = false } = {}) {
 }
 
 // ── Stage defs ───────────────────────────────────────────────────────────────────────────────────────
+// ── WHAT EACH STAGE READS, SO A RESUME CAN TELL WHETHER ITS OUTPUT STILL STANDS ─────────────────────────────────
+//
+// A Knockout stage reuses its output only while what it read is unchanged, as a clearance stage does (stage-freshness.mjs).
+// `reads` names the files a stage reads, read off its message: the files the message names, and the frozen files it
+// rates or frames under. `dirs` are folders it may read any file of, recorded as the files they hold, so a research
+// payload added or removed is a change. `message: true` records the message itself, which carries what the order and
+// the frozen profile said in their own words (goods, instructions, territories, the profile's industry and classes),
+// and the defects or table a second look is given. The correction does not record its message: it is composed from the
+// chunk the correction rewrites, so it would read the correction's own edit as a change. What it was based on is in the
+// correction work, which holds the rated record and every defect, and in the first review.
+//
+// A stage that rates, reviews or corrects also reads the framework: its band words and order (`framework.json`) and its
+// method (`framework-method.json`), both frozen with the run, and its deck, the prose the model reasons with. `deck: true`
+// records the deck as the file the model is sent to, from the layer in force (pipeline-knockout.mjs koReadsNow).
+const asRequested = (K) => [K.inboundRequest, K.confirmationBrief];
+const frozenRules = (K) => [paths(K.runDir).profile, paths(K.runDir).framework, driverDir(K.runDir, FROZEN_METHOD_FILE)];
+
 export const KO_STAGES = {
   "knockout-frame": {
     model: "opus", thinking: "high", timeoutSec: 420, stallSec: 300,
     skillReads: ["skills/knockout-frame/SKILL.md"],
     out: (K) => K.plan,
     validate: koValidators.knockoutPlan,
+    reads: (K) => ({ files: [K.instructedScope, ...asRequested(K), paths(K.runDir).profile], message: true }),
     message: ({ K, job, profile }) => lines(
       reads(["skills/knockout-frame/SKILL.md"]),
       // ── NO DEPTH NUMBER ──────────────────────────────────────────────────────
@@ -331,6 +346,7 @@ export const KO_STAGES = {
     skillReads: ["skills/knockout-register-read/SKILL.md"],
     out: (K) => K.registerReading,
     validate: validateKnockoutRegisterFile,
+    reads: (K) => ({ files: [K.instructedScope, K.inboundRequest, K.plan, paths(K.runDir).profile], message: true }),
     message: ({ K, job = {}, profile = null, readingLines = [], providerDoc = null, inScope = null }) => lines(
       reads(["skills/knockout-register-read/SKILL.md", providerDoc].filter(Boolean)),
       `You are reading the register for a KNOCKOUT batch, name by name. You rate nothing; the step after you rates what you carry forward, with your reasons.`,
@@ -376,6 +392,8 @@ export const KO_STAGES = {
     // out/validate are per-CHUNK; the merged knockout-findings.json is validated separately in code.
     out: (K, chunkNo) => K.assessChunk(chunkNo),
     validate: koValidators.knockoutAssessChunk,
+    reads: (K) => ({ files: [K.plan, K.instructedScope, ...asRequested(K), ...frozenRules(K), K.registerRecords, K.registerCounts, K.ownerChecks],
+      dirs: [K.researchDir], message: true, deck: true }),
     message: ({ K, job, chunkNo, chunkMarks, chunkTotal, framework, frameworkPath, probeNote, frameworkMethod }) => lines(
       // The deck path comes from ctx (attachKnockoutFramework resolves it once, on the fresh and the
       // resume path both) — never recomputed here, because "which deck" is one decision.
@@ -443,9 +461,9 @@ export const KO_STAGES = {
       // a finding with no register evidence. Omitting either field is always safe: the card keeps its
       // neutral line, which describes the card and is true.
       registerRecordHeld(K)
-        ? `WHEN YOU WEIGH ONE OF THOSE FILINGS, SAY SO BY ITS OWN ID — copy "recordId" verbatim from the file above. "registerReads" on the MARK: rows of ${frameworkMethod ? "{recordId, read, band?, inputs?}" : "{recordId, read, band?}"} for a filing you weighed that did NOT become a findings[] record; "read" is what you concluded about THAT filing — how its goods meet the goods the client asked about, whether it bears on the rating, and why — and it prints on that filing's card in the reader's own report. "band" is OPTIONAL and is your rating of THAT filing on its own, in the framework's band words: send it whenever you formed a view on the filing itself, because a registered right left unbanded is the only card on the page with no rating while softer uses beside it carry one, which reads as though the registration mattered least. Omit it and your read still prints, claiming no rating.${frameworkMethod ? ' A row that carries "band" also carries "inputs", the framework\'s own inputs for that filing; a row with no band carries none.' : ""} "weighedFilings" on a FINDING: the recordIds whose evidence your reasoning for that conflict actually used, because the report derives that finding's source labelling from it. Both are optional and both are joined against the filings you were given, so an id we do not hold is refused by name. A filing you did not weigh simply gets no row: do not invent a read to fill one, and never write "not weighed" as a read.`
+        ? `WHEN YOU WEIGH ONE OF THOSE FILINGS, SAY SO BY ITS OWN ID — copy "recordId" verbatim from the file above. "registerReads" on the MARK: rows of ${frameworkMethod ? "{recordId, read, band?, inputs?}" : "{recordId, read, band?}"} for a filing you weighed that did NOT become a findings[] record; "read" is what you concluded about THAT filing — how its goods meet the goods the client asked about, whether it bears on the rating, and why — and it prints on that filing's card in the reader's own report. "band" is OPTIONAL and is your rating of THAT filing on its own, in the framework's band words: send it whenever you formed a view on the filing itself, because a registered right left unbanded is the only card on the page with no rating while softer uses beside it carry one, which reads as though the registration mattered least. Omit it and your read still prints, claiming no rating.${frameworkMethod ? ' A row that carries "band" also carries "inputs", the framework\'s own inputs for that filing; a row with no band carries none.' : ""} "weighedFilings" on a FINDING: the recordIds whose evidence your reasoning for that conflict actually used, because the report derives that finding's source labelling from it. Omit these fields when their information does not apply. When a finding's reasoning uses a held filing, record its ID in \`weighedFilings\`. When you weigh a filing without making it a finding, record the read in \`registerReads\`. Never invent a read or citation to fill a field. Both are joined against the filings you were given, so an id we do not hold is refused by name.`
         : "",
-      `The FROZEN framework in force (rate in ITS band vocabulary, highest→lowest ${framework.bands.map((b) => b.label).join(" · ")}): ${driverDir(K.runDir, "framework.json")}`,
+      `The FROZEN framework in force (rate in ITS band vocabulary, highest→lowest ${framework.bands.map((b) => b.label).join(" · ")}): ${paths(K.runDir).framework}`,
       frameworkMethod ? methodDictation(frameworkMethod) : "",
       frameworkMethod ? `- inputs: ${inputsShape(frameworkMethod)} — the framework's own inputs for this finding, each one of the values it lists, reasoned in its order before the band. On every rated finding.` : "",
       // A seam for a note about Depth 2, and it stays UNUSED on purpose (2026-07-22). The counts
@@ -540,6 +558,8 @@ export const KO_STAGES = {
     // A later pass reads the corrected record, under its own artifact: `knockout-review#1`.
     out: (K, pass) => (pass ? knockoutReviewFile(K.runDir, pass) : K.review),
     validate: validateKnockoutReviewFile,
+    reads: (K) => ({ files: [K.findings, K.plan, ...asRequested(K), ...frozenRules(K), K.registerRecords, K.ownerChecks],
+      dirs: [K.researchDir], message: true, deck: true }),
     // ── THE MESSAGE PROMISES A TABLE ONLY WHEN IT HAS ONE ──────────────────────────
     //
     // `evidenceLines` is the driver's measurement, passed at dispatch. Two things follow, and the arms
@@ -550,16 +570,20 @@ export const KO_STAGES = {
     // exists to stop. A record the driver's read flags nowhere is handed its first-read lines instead,
     // by the owner's ruling of 2026-10-10, so both branches have rows under them; a record with no such
     // line is not dispatched at all.
-    message: ({ K, frameworkPath = null, evidenceLines = [], firstReadLines = [], exclusionNote = "", recheckTable = "", sourceAnswers = [] }) => lines(
+    message: ({ K, frameworkPath = null, evidenceLines = [], firstReadLines = [], exclusionNote = "", recheckTable = "", sourceAnswers = [], movedNames = [], comparisonComplete = true }) => lines(
       // THE CLIENT'S QUESTION LEADS, in the owner's words (ruling 2026-09-24), ahead of the rewrite job.
       `Does the report answer the client's question: who could object, how strong they are, what the client should do? Are the marks a lawyer would list present, and is each position written from the record that matters? Answer that before any check on wording.`,
       reads(["skills/knockout-assess/SKILL.md", "skills/clearance-search/firm-wide-reasoning.md", "skills/clearance-search/report-prose.md", frameworkPath].filter(Boolean)),
+      REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK,
       `You are the INDEPENDENT CHECK on a knockout screen: another step rated this batch. Check what the client is told against the request, the framework and the evidence, then check its wording. You change no band and no finding yourself.`,
       `Apply the frozen framework, the knockout assessment manual and shared firm-wide reasoning. Read report-prose.md for writing standards; its links do not import clearance-only finding or placement rules into this screen. An unidentified owner is an explicit evidence gap, not by itself grounds to remove or lower a finding's band. Never invent attribution or a right; explain what the held evidence supports and what remains uncertain.`,
       requestLine(K, (at) => `The client's request, as it arrived: ${at}`, (at) => `The available brief: ${at}. The original request is not held here.`),
       recheckTable
         ? [`THIS IS THE SECOND LOOK. An earlier check raised the defects below. The table says what the driver saw of each, including any the rating step did not answer, and the record you are reading is the record as it now stands.`,
           recheckTable,
+          // What the correction changed under names no defect named, and a comparison the driver could not make, read in full.
+          movedNames.length ? `THE CORRECTION ALSO CHANGED THESE NAMES, WHICH NO DEFECT NAMED: ${movedNames.map((n) => `"${n}"`).join(", ")}. Read each changed finding, answer and summary block against its evidence, and say whether the change is defended. A change that is not defended is a material defect.` : "",
+          comparisonComplete ? "" : `THE DRIVER COULD NOT COMPARE THE NAMES NO DEFECT NAMED. Recheck the whole corrected batch, not only the names the defects concern.`,
           `Recheck every material defect raised by the first review, every changed answer and summary, and any other conclusion that the changes could affect. Unchanged text does not by itself establish that a conclusion is unaffected. Consult the whole held batch and its evidence where needed; if you cannot bound the effects of a change, check the full batch. Keep unresolved defects visible and report any additional material defect you discover. Do not restart a prose edit of accepted text outside the affected scope.`,
           `A changed finding or band must agree with its name's basis, factors, opening read and block in the batch summary. There is no further correction after this one, so send as \`material\` only what is still wrong; it stays on the record for the reviewing lawyer.`].join("\n")
         : [
@@ -603,6 +627,8 @@ export const KO_STAGES = {
     skillReads: ["skills/knockout-assess/SKILL.md", "skills/clearance-search/firm-wide-reasoning.md"],
     out: (K, chunkNo) => knockoutCorrectionFile(K.runDir, chunkNo),
     validate: validateKnockoutCorrectionFile,
+    reads: (K) => ({ files: [paths(K.runDir).knockoutCorrectionWork, knockoutReviewFile(K.runDir, 0), K.plan, K.instructedScope,
+      ...asRequested(K), ...frozenRules(K), K.registerRecords, K.ownerChecks], dirs: [K.researchDir], deck: true }),
     message: ({ K, job = {}, chunkNo, work = null, chunkMarks = [], frameworkPath = null, frameworkMethod = null }) => {
       const asRated = (() => { try { return JSON.parse(readFileSync(K.assessChunk(chunkNo), "utf8")); } catch { return null; } })();
       const scope = chunkScope(work, chunkNo, asRated);
@@ -610,12 +636,13 @@ export const KO_STAGES = {
       const named = new Set(scope.defects.map((d) => d.mark));
       return lines(
         reads(["skills/knockout-assess/SKILL.md", frameworkPath, "skills/clearance-search/firm-wide-reasoning.md"].filter(Boolean)),
+        REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK,
         `An independent check read this rated batch and raised the defects below. Repair what the evidence supports, and nothing else.`,
         requestLine(K,
           (at) => `THE CLIENT'S OWN REQUEST, VERBATIM: ${at}. Read it before you rate. Its stated goods, services, and intended use lead over the plan; the customer's profile fills gaps. Keep a guessed use as a possibility. Do not use that guess to narrow the instructed scope or lower a rating.`,
           (at) => `AVAILABLE BRIEF: ${at}. The original request is not held here. Read the brief before you rate, keep its stated scope, and distinguish supplied facts from inferred uses. Do not lower a rating on a guessed use.`),
         `The record as rated: ${K.assessChunk(chunkNo)}. The ordinals you use are the ones in that file.`,
-        `The batch plan: ${K.plan}. The frozen framework's bands: ${driverDir(K.runDir, "framework.json")}.`,
+        `The batch plan: ${K.plan}. The frozen framework's bands: ${paths(K.runDir).framework}.`,
         `Each name's research payload: ${chunkMarks.filter((m) => named.has(m.name)).map((m) => K.research(kebab(m.name))).join(" · ")}. The batch's other recorded research payloads are under ${K.researchDir}.`,
         existsSync(K.ownerChecks) ? `The recorded owner checks, with the owner and filing each belongs to: ${K.ownerChecks}.` : "",
         existsSync(K.registerRecords) ? `The filings this run read: ${K.registerRecords}. \`read_register_list\` reads any question's whole list by qid, and fetches nothing.` : "",
@@ -625,7 +652,7 @@ export const KO_STAGES = {
         `A DEFECT IS ANOTHER READER'S FINDING, NOT AN ORDER. Check it against the evidence. Where it holds, repair the finding or the rating. Where it does not, leave the record and say why.`,
         frameworkMethod ? methodDictation(frameworkMethod) : "",
         frameworkMethod ? `- inputs: ${inputsShape(frameworkMethod)} — the framework's own inputs for this finding, each one of the values it lists, reasoned in its order before the band. On every rated finding.` : "",
-        `HAND BACK BY CALLING \`record_knockout_correction\`, sending only what changes. THERE IS NO FILE FOR YOU TO WRITE. For a name: the fields that change. A finding goes back whole under its ordinal, and a new one takes the next ordinal. A name no defect concerns stays unchanged. Within an affected name, repair the findings and dependent answers needed to resolve the defect, and explain their connection to it. Leave unrelated findings unchanged.`,
+        `HAND BACK BY CALLING \`record_knockout_correction\`, sending only what changes. THERE IS NO FILE FOR YOU TO WRITE. For a name: the fields that change. A finding goes back whole under its ordinal, and a new one takes the next ordinal. Change a name no defect concerns only for a finding it shares with a name you repair, or an answer that depends on your repair; a shared rating alone is not such a dependency. List each finding you change or remove there in that defect's \`findings\`, and say why. Within an affected name, repair the findings and dependent answers needed to resolve the defect, and explain their connection to it. Leave unrelated findings unchanged.`,
         `A filing held for this batch may bear on more than one name. Weigh it against the particular name and its instructed scope, and cite its held recordId and source. Keep where it was found: using that filing does not mean its original search answered this name's register question.`,
         `${CITED_URL_RULE} ${SIBLING_SOURCE}`,
         OWNER_SOURCE,

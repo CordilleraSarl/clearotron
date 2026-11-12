@@ -369,6 +369,14 @@ export function whatIsMissing(rows = []) {
 }
 
 /**
+ * The order-time rows a person is told to set. With no AI chosen, the program and payment rows are the default AI's,
+ * which nobody chose, for the reason `whatIsMissing` gives: choosing an AI is what settles them.
+ */
+export function rowsToName(rows = []) {
+  return rows.some((r) => r.about === "ai") ? rows.filter((r) => r.about !== "program" && r.about !== "payment") : rows;
+}
+
+/**
  * What the person who runs the install is told to do, for how the refusing process runs (the owner's words,
  * 2026-11-07). `how` is driver/how-it-runs.mjs's answer. The portal and the run's refusal say the same remedy;
  * `it` names the refusing process where the remedy speaks of it ("the portal", "this runner"), and `install` is
@@ -413,6 +421,20 @@ export function cannotSearchYet(missing, install = "clearotron install", how = n
   const head = `This install cannot run a search yet: ${missing}.`;
   const remedy = remedyFor(how, { install });
   return remedy ? `${head} ${remedy}` : `${head} Run \`${install}\` in a terminal to set it up.`;
+}
+
+/**
+ * What `clearotron run` says before anything else when the install cannot run a search: doctor's sentence for the
+ * same install, from the same composer. Null when no order-time setting is missing, or when what is missing has no
+ * phrase; then the run's own doors speak, as before.
+ *
+ * Measured in a stranger walk of a beta, 2026-11-10: with no AI chosen, setup, doctor and the portal said "no AI is
+ * chosen", and the run refused by naming the default AI's program and its setting, which nobody had chosen, and did
+ * not mention the missing register. PURE.
+ */
+export function commandLineRefusal(env = {}, tables = {}, install = "clearotron install") {
+  const gap = whatIsMissing(missingRequirements(env, tables).atOrder);
+  return gap ? cannotSearchYet(gap, install) : null;
 }
 
 /**

@@ -16,9 +16,7 @@ workflow — never both.)
 | `register_propose_supplemental` | Judgment-addition queries: CODE mints, executes and writes the band | `axis`, `output_path`, `proposals[]` |
 
 Auth: `Authorization: Bearer <SIGNA_API_KEY>`. There is **no** batch-screen tool and **no** clearance tool
-(`/v1/analysis/clearance` 404s) — so the spine's batch-screen step is skipped under Signa; detail-fetch
-candidates directly (per `unit.md` step 5). Screening needs no extra call either way: the search row already
-carries status and classes.
+(`/v1/analysis/clearance` 404s). There is no batch-screen tool here; the search row already carries status and classes.
 
 **Do not page or plan by hand.** `register_enumerate` owns the page loop and returns a completeness state;
 `register_execute_plan` runs every dictated entry for an axis. A hand-assembled band is not a band.
@@ -99,7 +97,7 @@ Signa's nested record; the full upstream record is under `_raw`):
 `filingRoute` is what lets a finding say which register a right sits on. Use it rather than inferring the
 route from the office code.
 
-## Coverage — Signa's live office set (13) + the disclosure rule
+## Coverage — Signa's live office set (15) + the disclosure rule
 
 Derived from `GET /v1/offices` and committed as a snapshot (`providers/signa/src/offices.generated.js`), so
 a change in what we claim to search arrives as a reviewable diff:
@@ -119,8 +117,10 @@ a change in what we claim to search arrives as a reviewable diff:
 | Sweden | `prv` | SE |
 | Spain OEPM | `es` | ES |
 | Mexico IMPI | `mx` | MX |
+| Brazil INPI | `br` | BR |
+| Italy UIBM | `it` | IT |
 
-**Each of the thirteen is searched as a TERRITORY, not as one register.** The adapter sends
+**Each of the fifteen is searched as a TERRITORY, not as one register.** The adapter sends
 `filters.jurisdictions` + `territory_match: "protection"` — every right with effect there, whatever
 register it sits on — rather than `filters.offices`, which searches the national register alone. The
 difference is not a margin. On the same term:
@@ -140,32 +140,13 @@ force there, and a finding may sit on any layer of it.
 
 **NOT covered: China (CNIPA), Germany, Japan, Korea, Benelux, and other nationals.** The territory
 expansion above does not change this and must not be read as widening it: `SIGNA_OFFICE_KEYS` maps only
-these thirteen, an unmapped region abandons the translation, and a territory the vendor does not index is
+these fifteen, an unmapped region abandons the translation, and a territory the vendor does not index is
 not reachable by asking the question a different way. A Madrid designation of Germany is found only when
 Germany is the territory searched, and it cannot be. For any matter jurisdiction outside this set, give
 that slice a `deferred` coverage-form row (the register sweep **cannot reach** it on Signa) — disclose
 it; no search on this register can close it, so it is not escalated, and it is never clean. This follows
 the keystone doctrine in `../SKILL.md` → *Coverage ledger*: a could-not-reach gap is **`deferred`**,
 open and disclosed, never `coverage-limited` (a searched-but-unexhausted DATA limit a re-run cannot close).
-
-**A territory search reaches every register that binds the territory — national, regional and Madrid.**
-The executor sends `filters.jurisdictions` with `territory_match: "protection"`, not `filters.offices`, so a
-French slice returns the EU trade marks and the Madrid designations that block use in France alongside the
-French national marks. On the same term:
-
-| what the executor sends | national | regional | Madrid |
-|---|---|---|---|
-| `filters.offices: ["inpi-fr"]` (the shape this doc used to describe) | yes | **none** | **none** |
-| `filters.jurisdictions: ["FR"]`, `territory_match: "protection"` | yes | yes | yes |
-
-It is ONE call, not three. A territory under no regional register — Switzerland — gains no regional rows either
-way and still reaches its Madrid layer, which is what shows `protection` adds a LAYER rather than just more
-rows.
-
-**So do not disclose an office-scoped shortfall here; there is not one.** This paragraph described the
-earlier behaviour and outlived it: the executor changed and the doctrine did not, which is the same skew
-that left the grant at two tools while the server served four. The residual gap is the office set above —
-a territory OUTSIDE the thirteen, which gets the `deferred` row the previous paragraph specifies.
 
 ## Record base host
 

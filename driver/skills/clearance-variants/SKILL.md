@@ -1,6 +1,6 @@
 ---
 name: clearance-variants
-description: Shared strategy + variant generation for the v3 preliminary trademark search workflow. **Invoked exclusively by the `clearance-search` orchestrator** as the first stage of any v3 clearotron run — do not call directly. Classifies the proposed mark into one of six analytical archetypes, derives a risk theory from that classification, then generates the variant set whose axes are shaped by the archetype. Emits a markdown variant manifest consumed by both common-law (`clearance-common-law`) and register (`clearance-register`) execution skills.
+description: Shared strategy + variant generation for the v3 preliminary trademark search workflow. **Run by the driver** as the first stage of any v3 clearotron run — do not call directly. Classifies the proposed mark into one of six analytical archetypes, derives a risk theory from that classification, then generates the variant set whose axes are shaped by the archetype. Emits a markdown variant manifest consumed by both common-law (`clearance-common-law`) and register (`clearance-register`) execution skills.
 ---
 
 ## Contents
@@ -54,7 +54,7 @@ These are starting points. A mark can fit a primary archetype and pick up one or
 | # | Archetype | Signature | Risk concentrates in |
 |---|---|---|---|
 | 1 | **Coined word** | Invented term, no real-world meaning (e.g., LUMENGARDE, XYRELL, KODAK) | Phonetic / visual variants; transliteration; leet substitution; coined-word collisions in unrelated industries; phoneme expansion |
-| 2 | **Descriptive compound** | Multiple real words combining to describe goods/services (e.g., "Arcade Party", "Cavern Crates", "Jelly Royale") | Element-by-element analysis; semantic neighbours; common-combination saturation; crowded-field documentation |
+| 2 | **Descriptive compound** | Multiple real words combining to describe goods/services (e.g., "Cavern Crates") | Element-by-element analysis; semantic neighbours; common-combination saturation; crowded-field documentation |
 | 3 | **Slogan** | Imperative or grammatically-complete phrase (e.g., "SET YOUR PACE", "SHARPEN YOUR AIM", "JUST DO IT") | Family patterns (`X YOUR PACE`, `SET * PACE`, `SET YOUR *`); verb-swap variants; slang spellings; co-brand wildcards. Tiered: identical/near-identical → same-structure-close-concept → conceptual customisation |
 | 4 | **Acronym / initialism** | Short letter strings (e.g., "RAIZ8", "CYC", "EA") | Letter-collision searches in target classes; expansion forms (what does it spell out?); ambiguity with stock acronyms |
 | 5 | **Device-led** | Figurative/logo dominant, verbal element secondary or absent | Image searches; dominant verbal element (if any); design-code searches. Often layered as a modifier on top of a primary archetype |
@@ -72,6 +72,10 @@ If a mark genuinely doesn't fit any archetype, document the reasoning and fall b
 `variant-manifest.md`, written by the driver from your `record_clearance_variants` call. Markdown by design. Consumed by both downstream skills.
 
 ### Format
+
+Reason through archetype, risk theory and distinctiveness in this turn. The tool has no field for them, so what you hand back is the dominant element, elements, variants and scope ledger.
+
+This shows how the reasoning runs. The tool takes the dominant element, elements, variants and scope ledger.
 
 ```markdown
 # Variant manifest — Dusk: Tales of Lumengarde (2026-05-11)
@@ -138,25 +142,25 @@ ratified one, and a model-authored variant claiming the same standing is precise
 exists to check. Do not work around the refusal by stripping punctuation out of a real mark — that
 silently narrows what was searched, and the deferred row is the honest outcome.
 
-| Category | Value | Rationale | Verify? |
-|---|---|---|---|
-| exact-phrase | Dusk: Tales of Lumengarde | full mark | |
-| exact-element | LUMENGARDE | distinctive anchor — primary register vector | |
-| exact-element | DUSK | common element — single-word coverage hunt | |
-| exact-element | TALES | common element — single-word coverage hunt | |
-| plural-root | LEGEND | tokeniser superset | |
-| phonetic | EVERLITE | homophone, distinctive element | |
-| phonetic | EVRLIGHT | vowel drop | |
-| numeric-substitution | EV3RLIGHT | leet on distinctive element | |
-| compound | Lumengarde | tokenisation split | |
-| translit-jp-katakana | エバーライト | distinctive element in JP | ✅ |
-| translit-zh-phonetic | 艾佛莱特 | sound-alike (Ài fó lái tè) | ✅ |
-| translit-zh-meaning | 永光 · 长明 · 恒光 | meaning SET — everyday-first, then literal/adjacent (never one guess); derive the set per concept (not a fixed list), and keep the everyday member even when its count is saturated — cf. COLORA → 色彩 in *Meaning-translation rules* | ✅ |
-| translit-kr | 에버라이트 | hangul phonetic | ✅ |
-| translit-ar | إيفرلايت | phonetic abjad | ✅ |
-| translit-cy | Эверлайт | phonetic Cyrillic | ✅ |
+| Category | Value | Rationale |
+|---|---|---|
+| exact-phrase | Dusk: Tales of Lumengarde | full mark |
+| exact-element | LUMENGARDE | distinctive anchor — primary register vector |
+| exact-element | DUSK | common element — single-word coverage hunt |
+| exact-element | TALES | common element — single-word coverage hunt |
+| plural-root | LEGEND | tokeniser superset |
+| phonetic | EVERLITE | homophone, distinctive element |
+| phonetic | EVRLIGHT | vowel drop |
+| numeric-substitution | EV3RLIGHT | leet on distinctive element |
+| compound | Lumengarde | tokenisation split |
+| translit-jp-katakana | エバーライト | distinctive element in JP |
+| translit-zh-phonetic | 艾佛莱特 | sound-alike (Ài fó lái tè) |
+| translit-zh-meaning | 永光 · 长明 · 恒光 | meaning SET — everyday-first, then literal/adjacent (never one guess); derive the set per concept (not a fixed list), and keep the everyday member even when its count is saturated — cf. COLORA → 色彩 in *Meaning-translation rules* |
+| translit-kr | 에버라이트 | hangul phonetic |
+| translit-ar | إيفرلايت | phonetic abjad |
+| translit-cy | Эверлайт | phonetic Cyrillic |
 
-(✅ = requires human verification when this variant produces a hit — transliteration plausibility is the staff lawyer's call.)
+Every row of category transliteration needs human confirmation on a hit; there is no column to tick.
 
 ### Scope ledger
 
@@ -199,11 +203,11 @@ N/A — single-mark request.
 
 ### Format notes for downstream skills
 
-- **Archetype section** is the spine — both downstream skills read it first. `Primary` is one of the six; `Modifiers` is a comma-separated list or "None"; `Boundary note` is freeform explanation if relevant.
+- Reason through archetype, risk theory and distinctiveness in this turn. The tool has no field for them, so what you hand back is the dominant element, elements, variants and scope ledger. `Primary` is one of the six; `Modifiers` is a comma-separated list or "None"; `Boundary note` is freeform explanation if relevant.
 - **Risk theory** is 2–4 sentences in prose. Describes where conflicts concentrate. Downstream skills read this for relevance gating.
-- **Distinctiveness & registrability** names the **dominant element** (the spine the register sweep + synthesis ranking centre on) plus the advisory spectrum read and any obvious flags. The orchestrator surfaces it as a "Proposed-mark assessment" line in the narrative + an Excel header block; the register/common-law layers centre their searches on the dominant element.
+- **Distinctiveness & registrability** names the **dominant element** (the spine the register sweep + synthesis ranking centre on) plus the advisory spectrum read and any obvious flags. Reason about distinctiveness when generating the variants. The tool records the dominant element and variants, not a distinctiveness assessment. Synthesis makes that assessment from the supplied forms and held evidence. The register/common-law layers centre their searches on the dominant element.
 - **Element table** has stable columns. The contract is the header line.
-- **Variant table** uses `Category | Value | Rationale | Verify?`. Variant categories are shaped by archetype — which categories fire is the archetype's call, but a fired category is never *silently* omitted: the `### Scope ledger` section below records every category's disposition.
+- **Variant table** uses `Category | Value | Rationale`. Variant categories are shaped by archetype — which categories fire is the archetype's call, but a fired category is never *silently* omitted: the `### Scope ledger` section below records every category's disposition.
 - **The scope ledger** is MANDATORY and you send it as `scope_ledger` rows on the `record_clearance_variants` call — `{layer, item, status, reason, reopen_trigger}`. The driver renders the table (stable columns `Layer | Item | Status | Reason | Reopen trigger`) and writes `scope-ledger.json` from the same rows; you never lay out a table. It spans the FOUR scope layers an independent reviewer tests — `variant`, `field`, `source`, `jurisdiction` — so an omission in any of them is recorded, not just dropped variant categories. `Status` is exactly `applied` or `dropped`. Rows to include:
   - **variant** rows — one per variant category considered: `phonetic`, `foreign-transliteration`, `numeric-substitution`, `visual-substitution` (the space-split/join + typographic-neighbour mechanic; an upstream brief's "separator-spacing" maps here), `compound` (compound-token-split), `translation` (literal-meaning), and `plural-root` (the shortest morphological / drop-letter root of the dominant element — applied when the mark is a plural/compound, dropped with a reopen trigger when it is not). `numeric-substitution` and `foreign-transliteration` are matter-profile-driven; the row NAMES that decision either way.
   - **field** rows — each on-field boundary you keep (goods-overlap with the product) and each adjacent sector you push off-field, by goods-overlap reasoning (not class number alone).
@@ -266,12 +270,7 @@ If ANY element triggers questions 2–4:
 
 ### Step 3 — Saturation signal per element + risk theory
 
-For each element, classify volume baseline:
-
-- **low** — distinctive, coined, unusual. Primary register vector.
-- **borderline** — common English but not dominant. Primary register vector with stringent filters.
-- **high** — common word, broad use. Demote to count-only macro probe; single-word coverage hunt only.
-- **very-high** — saturated. Macro count + selective inspection only.
+Send kind: distinctive, common or saturated-common.
 
 **Saturation narrows the search; it never drops a variant.** These ratings tell the downstream register search how to *probe* a token (class-scope the in-scope slice and enumerate it) — post-funnel the register layer enumerates the dangerous band for the **distinctive anchor** and its forms; a **common** component (a stripped common word, not the distinctive anchor) it **counts**, not enumerates, handing that count up as dilution (a hyper-common word is dilution the lawyer uses, never a coverage gap). A `high` / `very-high` rating is **never** grounds to omit the element from the manifest, to collapse or skip its meaning / transliteration set, or to pre-judge its crowd clean. (See the Step-4 generation boundary.)
 
@@ -280,7 +279,7 @@ For each element, classify volume baseline:
 **Dominant element + proposed-mark registrability read** (feeds the synthesis spine and the deliverable; the staff lawyer's "flag obvious issues"):
 
 1. **Name the dominant (distinctive) element** — strip descriptive / non-distinctive elements (a descriptive prefix, generic category words). The whole search and the downstream conflict-ranking centre on it (the staff lawyer: *"a descriptive prefix is not something anyone can monopolise"* — so a mark of the shape "PROJECT X" centres on **X**). If the whole mark is the distinctive unit (a coined word), say so.
-   - **Then name the FORMATIVE ROOT** — the shortest distinctive stem a *family* of marks would share, after stripping weak/separable affixes (a descriptive prefix like BIO-/VET-/NEURO-/PHARMA-, a plural/inflectional `-S`, a laudatory `-PRO`/`-PLUS`). For **BIOVELTRIN** the dominant element is **VELTRIN** but the formative root is **VELTRI** — and the conflicts are the VELTRI **family** (VELTRI DIAGNOSTICS, VELTRI GENETICS), which do **not** contain the full "VELTRIN". The root is what the register's exact-in-class-live floor searches as a *substring/contains* predicate, so a one-letter-off family member is never missed. **Emit it on its own line — `Formative root: <root>`** (the driver's coverage gate reads it; it CARRIES BOTH the root and the full element, so a conservative strip never loses coverage). When the dominant element is itself the irreducible root (XYRELL, THORNMANTLE), set `Formative root:` equal to it.
+   - **Then name the FORMATIVE ROOT** — the shortest distinctive stem a *family* of marks would share, after stripping weak/separable affixes (a descriptive prefix like BIO-/VET-/NEURO-/PHARMA-, a plural/inflectional `-S`, a laudatory `-PRO`/`-PLUS`). For **BIOVELTRIN** the dominant element is **VELTRIN** but the formative root is **VELTRI** — and the conflicts are the VELTRI **family** (VELTRI DIAGNOSTICS, VELTRI GENETICS), which do **not** contain the full "VELTRIN". The root is what the register's exact-in-class-live floor searches as a *substring/contains* predicate, so a one-letter-off family member is never missed. **The tool has no root field: write `Formative root: <root>.` in a variant's rationale, ending that statement with a full stop** (the driver reads that phrase from the rendered manifest; it CARRIES BOTH the root and the full element, so a conservative strip never loses coverage). When the dominant element is itself the irreducible root (XYRELL, THORNMANTLE), set `Formative root:` equal to it.
 2. **Place the proposed mark on the distinctiveness spectrum** — Generic → Descriptive → Suggestive → Arbitrary → Fanciful — read **in each relevant market language** (a term arbitrary in English may be descriptive in French/German). Flag, advisory ("the staff lawyer to assess"), any **obvious** registrability problem: clearly **descriptive / generic / laudatory / geographic** for the goods (laudatory & geographic sit at the Descriptive end), and **always** flag if the mark is **deceptive or offensive** (offensive also feeds the PR/reputational section). Stay **silent** when the mark is plainly distinctive (coined / arbitrary) — this is a lightweight flag, not a full registrability opinion. **Descriptive is a flag, not a veto:** a descriptive mark can still register, and a prior descriptive mark stays protectable, where it has **acquired distinctiveness / secondary meaning** through use — so when you flag descriptiveness, also note whether there's evidence of acquired distinctiveness (long / well-known use; the common-law layer surfaces it). A descriptive mark with secondary meaning gets narrower-but-real protection — flag both sides for the staff lawyer.
 
 **Now write the risk theory** (2–4 sentences). Where does risk concentrate for THIS mark, given archetype + saturation + incumbents + dual-meaning concerns? The risk theory is the bridge between archetype and variant generation — and the relevance signal the downstream register skill reads to gate candidates.
@@ -291,7 +290,7 @@ The variant categories are shaped by the archetype. Don't generate every categor
 
 **The generation boundary (read first — it governs every axis and every bound below).** This step's only question about any candidate form is: ***could a real conflict plausibly take this shape?*** Generate every form a real collision could take; the ONLY valid reason to drop a form is that a real conflict could **not** take it (ungrammatical, semantically broken, not market-realistic — a collision-plausibility call, which is yours to make). **Never drop a plausible form because the search would be crowded, saturated, or noisy, or because the term is common / descriptive / generic.** Noise is no longer yours to manage: the register funnel enumerates the dangerous band **class-scoped** and hands any residual crowd to judgment ([clearance-register register-recipes.md](../clearance-register/register-recipes.md)) — generating a noisy-but-plausible form is safe by construction. A *"would drown in noise" / "too saturated to be worth it" / "descriptive, so skip it"* reason on a **dropped** row is the boundary violation this step must never commit. Saturation is a signal to the downstream search to **narrow** (class-scope the token and enumerate); it is never a reason to drop a variant here.
 
-**The FORM axis is now mechanically COMPLETE — you do not own form coverage.** The driver generates the *complete* form neighbourhood of the distinctive element(s) **deterministically, with no model in the loop** — every edit-1 spelling/sound/transposition, the phonetic-key vowel family (the ZYLOMA/ZILIMA class), visual / homoglyph look-alikes, and cross-script transliterations — into `form-neighbourhood.json`, which the register funnel searches as the authoritative **form floor**. This exists because a *guessed* form set is never complete: for an anchor like `VELTRIS` a model thinks of `ZELTRIS` but not `MELTRIS` (the same single edit), and the vendor's own phonetic/fuzzy modes cannot reach a first-consonant swap either (live-verified on a production matter — the missed first-consonant-swap neighbour existed as 69 live records yet Corsearch's complete in-class phonetic band for the anchor excluded it). The machine closes that lottery. **So your FORM-axis job is JUDGMENT, not enumeration:**
+**The FORM axis is now mechanically COMPLETE — you do not own form coverage.** The driver generates the *complete* form neighbourhood of the distinctive element(s) **deterministically, with no model in the loop** — every edit-1 spelling/sound/transposition, the phonetic-key vowel family (the ZYLOMA/ZILIMA class), visual / homoglyph look-alikes, and cross-script transliterations — into `form-neighbourhood.json`, which the register funnel searches as the authoritative **form floor**. This exists because a *guessed* form set is never complete: for an anchor like `VELTRIS` a model thinks of `ZELTRIS` but not `MELTRIS` (the same single edit), and the vendor's own phonetic/fuzzy modes cannot reach a first-consonant swap either. The machine closes that lottery. **So your FORM-axis job is JUDGMENT, not enumeration:**
 1. **Name the distinctive element + formative root precisely** (Step 3) — this is the *one* input the mechanical band seeds from; get the token right and the complete neighbourhood follows.
 2. **Flag the high-salience look-alikes** — a real word or a known/famous mark the anchor sits an edit or homophone away from (SONICA→SONIC) — for **risk RANKING**. The machine generates the *string*; it cannot know SONIC is Sega's. This is salience, not coverage.
 3. **Own the meaning / translit axis** (below) — connotation and translation are *not* mechanically enumerable; they remain yours.
@@ -311,12 +310,14 @@ The `phonetic` / `visual-substitution` / `numeric-substitution` / typographic ro
 
 | Archetype | Core categories (in priority order) |
 |---|---|
-| Coined word | phonetic, visual-substitution [see *Visual / typographic-neighbour rules*], numeric-substitution (leet), foreign-transliteration (worldwide/multi-region scope), compound-token-split |
+| Coined word | phonetic, visual [see *Visual / typographic-neighbour rules*], numeric (leet), transliteration (worldwide/multi-region scope), composite (whole-mark token separation) |
 | Descriptive compound | element-solo + compound-phrase, stem-formative on each element, plural-root, semantic-neighbours of distinctive anchor |
 | Slogan | family-patterns (`X * Y`, `* YOUR Y`, `X YOUR *`), verb-swap (replace lead verb with adjacent verbs in same semantic field), preposition swap (YOUR → THE/A/MY/OUR), slang spellings, co-brand wildcards (`* [SLOGAN]`, `[SLOGAN] *`), phrase-substitution (full morphological variants) |
 | Acronym / initialism | letter-collision (the acronym itself), expansion-form (search the expanded phrase), ambiguity-check (other meanings of the same letters) |
 | Device-led | dominant verbal-element variants (if any); image search handled separately in register via image fetch |
-| Famous-element-masked | (modifier) per-element famous-mark Perplexity query; standard variants for the mark's primary archetype |
+| Famous-element-masked | (modifier) Flag elements for the famous-mark check; the common-law grid searches them on the general web, and the common-law step judges the results. Standard variants for the mark's primary archetype |
+
+The table says what to generate. Send each variant under one of the eleven category names listed below.
 
 **Modifier categories** (when applicable):
 
@@ -339,7 +340,7 @@ Drop ungrammatical or semantically broken strings. Default: generate liberally; 
 
 For any slogan, generate all reasonable wildcard patterns:
 
-- `[WORD1] * [WORD3]` (one slot wild)
+- `[WORD1] * [WORD3]` (one slot wild). The plan cannot search a star between words. It defers this term, and the deferred row tells the reader the middle-slot family went unsearched, so send it for that record.
 - `* [WORD2] [WORD3]` (left wild)
 - `[WORD1] [WORD2] *` (right wild)
 - For 3-word slogans, also: `* [WORD2] *` (two slots wild)
@@ -370,9 +371,9 @@ The phonetic axis catches *sound-alikes*. This axis catches *look-alikes* — an
 - **glyph swaps** (symbol-for-letter, distinct from sound-led leet): `FENR1Q`, `F3NRIQ`, `FENRI@`
 - **adjacent-key transposition:** `FNERIQ`, `FENIRQ`
 
-**Wire neighbours into the famous-mark check:** every neighbour that is a real word or a plausible brand goes into the per-element famous-mark Perplexity call (see *Famous-mark Perplexity calls needed*). If it resolves to a famous / in-field mark, carry it as a **must-search** variant with the `rationale` naming the owner (e.g. "SONIC — Sega's famous mark, one letter from the anchor").
+**Wire neighbours into the famous-mark check:** Flag elements for the famous-mark check; the common-law grid searches them on the general web, and the common-law step judges the results. If a neighbour that is a real word or a plausible brand resolves to a famous / in-field mark, carry it as a **must-search** variant with the `rationale` naming the owner (e.g. "SONIC — Sega's famous mark, one letter from the anchor").
 
-**Bounds:** generate **liberally but capped at ~6–10 neighbour strings**, prioritised by "would a consumer or a squatter plausibly use this, or is it a known mark" — drop only **implausible strings** (not a form a real look-alike could take), never a plausible one for being noisy. **Distinctive-anchor marks only:** for a *saturated common-word* element the look-alike axis is low-value on **collision-plausibility** grounds — a look-alike of a common word is itself another common word with no distinctive owner to confuse (NOT because the result would be crowded) — so drop it on that ground and name it in the ledger; skip for slogans (the family-pattern wildcards already cover structural neighbours). These are `match_mode: default` register sweeps (and direct common-law searches); they ride the existing `primary-sweep` register unit, not a new axis.
+**Bounds:** generate **liberally but capped at ~6–10 neighbour strings**, prioritised by "would a consumer or a squatter plausibly use this, or is it a known mark" — drop only **implausible strings** (not a form a real look-alike could take), never a plausible one for being noisy. **Distinctive-anchor marks only:** for a *saturated common-word* element the look-alike axis is low-value on **collision-plausibility** grounds — a look-alike of a common word is itself another common word with no distinctive owner to confuse (NOT because the result would be crowded) — so drop it on that ground and name it in the ledger. Send at least one visual variant on every mark; the floor refuses a manifest without one. These are `match_mode: default` register sweeps (and direct common-law searches); they ride the existing `primary-sweep` register unit, not a new axis.
 
 **Meaning-translation rules** (any market where the mark carries real meaning — CJK especially):
 
@@ -380,14 +381,14 @@ A mark with semantic content collides in a non-Latin market through the **word a
 
 - **Never collapse the set to one technical guess** — one "precise/specific" rendering is the old single-guess miss. Generate the set.
 - **Never drop the everyday member because its count looks saturated or "descriptive"** — that is the Step-4 generation boundary violation. Saturation is narrowed downstream by class-scoped enumeration in the register layer ([transliteration-scripts.md](transliteration-scripts.md) · [register-recipes.md](../clearance-register/register-recipes.md)), never by abandoning the word here.
-- Tag CJK meaning rows `translit-zh-meaning` (the downstream class-scope gate keys on the `-meaning` sense); flag `Verify? ✅`.
+- Send category transliteration for script and meaning rows; say in the rationale whether phonetic or meaning. The eleven names: `core`, `phonetic`, `visual`, `transliteration`, `numeric`, `composite`, `other`, `exact-phrase`, `exact-element`, `plural-root`, `formative-family`.
 - *Illustration of the principle (NOT a fixed list — derive the set from the concept):* COLORA → CN **色彩 / 颜色** (everyday "colour") → **色域** (technical "gamut") → **彩度 / 色相** (adjacent). What generalises is the market-realistic question above — to any market (a German `FARBE`-type everyday form; a "descriptive" compound the model would otherwise drop), not these characters. The full script reference is [transliteration-scripts.md](transliteration-scripts.md), now read alongside this skill.
 
 **Rules:**
 
 - Every variant gets `rationale` filled in.
 - Every phonetic, transliteration and visual-substitution `Value` is that form's **root**, not the full form (*Formative-family rules* above). A row still carrying the full form has not had the strip applied — the core rows carrying the mark as filed are the exception, and they stay whole.
-- Foreign transliterations get `Verify? ✅` — Claude generates them; the staff lawyer confirms plausibility on hit.
+- Every row of category transliteration needs human confirmation on a hit; there is no column to tick.
 - For single-jurisdiction scopes (US-only, UK-only), skip transliteration unless the mark is itself non-Latin.
 
 **Then send the scope-ledger rows (MANDATORY).** They record what you considered across the FOUR scope layers an independent reviewer tests — variant, field, source, jurisdiction — so an omission in any of them is a named decision, never a silent drop. One `{layer, item, status, reason, reopen_trigger}` per decision; `status` is `applied` or `dropped`. The driver renders them as the `### Scope ledger` table and writes the machine ledger from the same rows.
@@ -407,10 +408,10 @@ These rows ARE the variants-stage coverage statement — phrase each `reason` as
 
 ### Step 5 — Watchlists (per-matter, configurable)
 
-Per request, populate three lists:
+Send enforcers, competitors and the frame's seeds in `watchlist_owners`; do not send brand owners.
 
-- **aggressive_enforcers** — entities known to oppose or litigate broadly. **No roster ships here.** Take them from the run manifest's own list, from matter-frame's watchlist reference (a deployment replaces it with its own), and from the requesting lawyer.
-- **major_brand_owners** — context-relevant brand giants for the matter's sector, from those same three sources. A roster held in doctrine goes stale and reaches deployments that never chose it.
+- **aggressive_enforcers** — entities known to oppose or litigate broadly. **No roster ships here.** Until a deployment ships its own reference, name seeds from the matter and the request.
+- **major_brand_owners** — context-relevant brand giants for the matter's sector. Until a deployment ships its own reference, name seeds from the matter and the request. A roster held in doctrine goes stale and reaches deployments that never chose it.
 - **competitors** — client's direct competitors in target industry.
 
 **Mandatory client-exclusion rule:** if the request identifies a client, DROP that company's name from ALL three lists before emitting the manifest. The client's own marks must not auto-flag as conflicts.
@@ -448,7 +449,7 @@ Used by `clearance-search` to flag cross-mark risks in synthesis.
 | exact-phrase | quoted search string | `match_mode: exact` |
 | exact-element | quoted search string | `match_mode: default` |
 | plural-root | element search | `match_mode: default` on root form |
-| phonetic | Perplexity sound-alike search | `match_mode: phonetic` (+ `<provider>_expand_phoneme` if available) |
+| phonetic | Perplexity sound-alike search | `match_mode: phonetic` (+ the provider's phoneme expansion if available) |
 | numeric-substitution | direct platform search for substituted form | `match_mode: default` on substituted form |
 | visual-substitution (typographic neighbour) | direct platform search for the neighbour string | `match_mode: default` on the neighbour string |
 | foreign-transliteration | Perplexity search on transliterated form (platforms supporting non-Latin) | `match_mode: default` on transliterated form |
@@ -470,8 +471,8 @@ Downstream skills do NOT generate their own variants — the manifest is authori
 - [ ] Variants generated across archetype-appropriate axes
 - [ ] **`scope_ledger` rows sent** — `{layer, item, status, reason, reopen_trigger}` across variant (incl. `plural-root`) + field (on/off-field by goods-overlap) + source (channels swept/set-aside) + jurisdiction (on a worldwide order one `applied` worldwide row; otherwise one `applied` row per instructed territory, one `dropped` row per territory considered and excluded) layers; every `dropped` row carries its reopen trigger; numeric-substitution + transliteration decision named either way
 - [ ] Foreign transliterations generated, one per market the frame names whose buyers read a non-Latin script
-- [ ] Verify? column ticked on transliteration rows
+- [ ] Every row of category transliteration needs human confirmation on a hit; there is no column to tick.
 - [ ] Watchlists populated (with client-exclusion applied)
-- [ ] Famous-mark Perplexity calls flagged (or "None")
+- [ ] Flag elements for the famous-mark check; the common-law grid searches them on the general web, and the common-law step judges the results.
 - [ ] Cross-mark themes captured (multi-mark only)
 - [ ] Manifest handed back by calling the `record_clearance_variants` tool, and the tool accepted it

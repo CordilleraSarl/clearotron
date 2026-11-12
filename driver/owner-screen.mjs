@@ -33,9 +33,6 @@
 
 import { recordQids } from "./named-band.mjs"; import { moreThan } from "../shared/register-floor.mjs";
 
-/** Owner-slice states. `enumerated` is the only one that can carry a negative. */
-export const OWNER_SLICE_STATES = ["enumerated", "crowd", "not-run", "missing"];
-
 const str = (v) => String(v ?? "").trim();
 const norm = (s) => str(s).toLowerCase();
 
@@ -193,12 +190,5 @@ export function unscreenedOwners(screen) {
     if (o.state === "enumerated") continue;
     out.set(norm(o.owner), { state: o.state, reason: o.reason ?? null, qid: o.qid });
   }
-  return out;
-}
-
-/** Every owner the screen knows about, lowercased → the row. PURE. */
-export function screenedOwnerIndex(screen) {
-  const out = new Map();
-  for (const o of screen?.owners ?? []) out.set(norm(o.owner), o);
   return out;
 }

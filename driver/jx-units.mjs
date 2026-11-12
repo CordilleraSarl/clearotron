@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // jx-units.mjs — the Phase-4 Stage-1.5 SHADOW units (spec 10.5/10.6): the zh SERP platform grid
-// (slice 2) and jx-nativeread:zh (slice 3). Called from two never-kill blocks in pipelineInner;
+// (slice 2) and jx-nativeread:zh (slice 3). Called from two never-kill blocks, in the intake and synthesis steps;
 // everything here degrades and receipts — nothing throws past its own boundary.
 //
 // ARTIFACT BOUNDARY (was the "ship dark" invariant, and it outlived the switches): every artifact these
@@ -13,9 +13,8 @@
 // still ahead of us and a run as byte-identical "with every unit flag off"; both sentences outlived the
 // thing they described by naming a Phase-5 that has happened. There is no flag to turn off and no
 // byte-identical slice-1 run to fall back to — the consume seam is unconditional, gated only on
-// conditions a run already discloses. `laneEnvOn("zh")` is the one leg that stayed, and it stayed
-// because an incident kill is a switch someone would actually use; jxAimForSynthesis below carries that
-// reasoning where the seam is.
+// conditions a run already discloses. The per-language off switch that outlived them is retired too
+// (2026-11-11): no deployment set it, and a lane runs wherever the frozen lane decision carries it.
 //
 // Grid contract (slice 2): the driver DICTATES `_driver/jx/<lane>-grid-spec.json` (terms × platforms,
 // frozen on first dictation — a resume never re-dictates); a pure code-side executor fills every cell
@@ -31,15 +30,15 @@
 // enforces record_uri ∈ the inlined slice (else the item demotes to a lead); severity_hint is a
 // triage hint and NEVER sets a band — Claude stays the sole rating authority.
 
-import { readFileSync, writeFileSync, renameSync, appendFileSync, mkdirSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, renameSync, appendFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
 import { LANGUAGE_LANES, SERP_LANES, isMirrorHost, canonicalTerm, jxBillingStamp, jxModelFields } from "./jx-lanes.mjs";
 import { jxKey, MAX_LANE_ATTEMPTS } from "./jx.mjs";
 import { abbrev } from "./repair-contract.mjs";
 import { kebab } from "./search-policy.mjs";
-import { SERP_PROVIDERS, JX_PROVIDERS, laneArmed } from "./driver.config.mjs";
+import { SERP_PROVIDERS, JX_PROVIDERS } from "./driver.config.mjs";
 import { findGridLedgerViolations, findPlatformIdentityViolations } from "./common-law-receipts.mjs";
+import { paths, readJson } from "./run-record.mjs";
 
 export const MAX_UNIT_ATTEMPTS = 3;      // degraded-unit retries across resumes (repairable, never terminal)
 export const SERP_TERM_CAP = 12;         // terms per grid — 12 × 7 cells = 84 paid calls, the hard ceiling
@@ -52,17 +51,13 @@ export const NATIVEREAD_GRID_ROWS_CAP = 60;        // grid-findings rows inlined
 export const NATIVEREAD_SLICE_CAP = 12000; // chars of register-unit output inlined into the read payload
 const GAP_DEGRADE_FLOOR = 0.5;           // >50% gapped cells ⇒ the grid attempt DEGRADES (the GRID_COVERAGE_FLOOR idiom)
 
-// — ONE reader for the fail-open lane switch, shared with the slice statement that describes
-// what this executor did. They disagreed; the statement lost, and it shipped.
-const laneEnvOn = (lane) => laneArmed(lane);
-
-const jxDir = (runDir) => driverDir(runDir, "jx");
+const jxDir = (runDir) => paths(runDir).jx;
 const unitsPath = (runDir) => join(jxDir(runDir), "units.json");
 const atomic = (path, obj) => { writeFileSync(`${path}.tmp`, JSON.stringify(obj, null, 2) + "\n"); renameSync(`${path}.tmp`, path); };
 
 // ── Per-unit resume state (the jx.mjs fold state machine, per unit key like "serp-grid:zh") ─────────
 function readUnits(runDir) {
-  try { return JSON.parse(readFileSync(unitsPath(runDir), "utf8")); } catch { return { schema: 1, units: {} }; }
+  try { return readJson(unitsPath(runDir)); } catch { return { schema: 1, units: {} }; }
 }
 function writeUnit(runDir, key, record) {
   mkdirSync(jxDir(runDir), { recursive: true });
@@ -141,7 +136,7 @@ function foldRetryable(ctx, lane) {
 // …and so does what the turn said about the model: the id it reported, or that it ran and named none —
 // see jxModelFields in jx-lanes.mjs.
 function ledgerRow(runDir, row) {
-  try { appendFileSync(driverDir(runDir, "jx-completions.jsonl"), JSON.stringify(row) + "\n"); } catch { /* receipts best-effort */ }
+  try { appendFileSync(paths(runDir).jxCompletions, JSON.stringify(row) + "\n"); } catch { /* receipts best-effort */ }
 }
 
 const runPrefix = (run) => `clearance-${run?.slug ?? "run"}-${run?.codename ?? "local"}-`;
@@ -160,7 +155,7 @@ export function resolveSerpExecutor(opts, { mark, lane }) {
       exec: async ({ term, platform }) => {
         try {
           if (!table) {
-            const parsed = JSON.parse(readFileSync(join(fixDir, `${kebab(mark)}.${lane}.serp.json`), "utf8"));
+            const parsed = readJson(join(fixDir, `${kebab(mark)}.${lane}.serp.json`));
             table = {};
             for (const c of parsed?.cells ?? []) table[`${canonicalTerm(c.term)}|${c.platform}`] = Array.isArray(c.hits) ? c.hits : [];
             dflt = Array.isArray(parsed?.default?.hits) ? parsed.default.hits : undefined;
@@ -175,7 +170,7 @@ export function resolveSerpExecutor(opts, { mark, lane }) {
   return { source: "serpapi", exec: (args) => SERP_PROVIDERS.serpapi.search(args) };
 }
 
-export function resolveJudge(opts, { mark, lane }) {
+export function resolveJudge(opts, { mark, lane, runDir = null }) {
   if (typeof opts?.jxJudge === "function") return { exec: opts.jxJudge, source: "injected" };
   const fixDir = process.env.CLEAROTRON_JX_FIXTURES;
   if (fixDir) {
@@ -183,17 +178,17 @@ export function resolveJudge(opts, { mark, lane }) {
       source: `fixtures:${fixDir}`,
       exec: async ({ hits }) => {
         try {
-          const parsed = JSON.parse(readFileSync(join(fixDir, `${kebab(mark)}.${lane}.judge.json`), "utf8"));
+          const parsed = readJson(join(fixDir, `${kebab(mark)}.${lane}.judge.json`));
           const byId = new Map((parsed?.judgments ?? []).map((j) => [j.id, j]));
           return { ok: true, judgments: hits.map((h) => byId.get(h.id)).filter(Boolean), tookMs: 0 };
         } catch (e) { return { ok: false, cause: `judge fixture missing/corrupt: ${abbrev(String(e.message), 120)}` }; }
       },
     };
   }
-  return { source: "engine", exec: (args) => JX_PROVIDERS.judge.judge(args) };
+  return { source: "engine", exec: (args) => JX_PROVIDERS.judge.judge({ ...args, runDir }) };
 }
 
-export function resolveNativeread(opts, { mark, lane }) {
+export function resolveNativeread(opts, { mark, lane, runDir = null }) {
   if (typeof opts?.nativereadExecutor === "function") return { exec: opts.nativereadExecutor, source: "injected" };
   const fixDir = process.env.CLEAROTRON_JX_FIXTURES;
   if (fixDir) {
@@ -201,13 +196,13 @@ export function resolveNativeread(opts, { mark, lane }) {
       source: `fixtures:${fixDir}`,
       exec: async () => {
         try {
-          const parsed = JSON.parse(readFileSync(join(fixDir, `${kebab(mark)}.${lane}.read.json`), "utf8"));
+          const parsed = readJson(join(fixDir, `${kebab(mark)}.${lane}.read.json`));
           return { ok: true, items: Array.isArray(parsed?.items) ? parsed.items : [], tookMs: 0 };
         } catch (e) { return { ok: false, cause: `nativeread fixture missing/corrupt: ${abbrev(String(e.message), 120)}` }; }
       },
     };
   }
-  return { source: "engine", exec: (args) => JX_PROVIDERS.nativeread.read(args) };
+  return { source: "engine", exec: (args) => JX_PROVIDERS.nativeread.read({ ...args, runDir }) };
 }
 
 // Bounded local pool (runBatched is pipeline-local; 10 lines beat an export churn).
@@ -227,9 +222,8 @@ export async function runJxSerpGrid(ctx, job, opts = {}, { runLog = () => {}, no
   try {
     // item 8 — CLEAROTRON_JX_SERP_GRID is gone. It was a default-OFF arm on a unit that has run in
     // production since 2026-08-04, so it hid a live path behind a switch nobody outside this box could
-    // find. What remains are the conditions a run DISCLOSES: the lane not killed, a frozen lane
-    // decision, a SERP capability entry. Each already returns a cause that reaches the slice statement.
-    if (!laneEnvOn(lane)) return { ran: false, cause: `CLEAROTRON_NATIVE_LANGUAGE_${lane.toUpperCase()} off` };
+    // find. What remains are the conditions a run DISCLOSES: a frozen lane decision and a SERP capability
+    // entry. Each already returns a cause that reaches the slice statement.
     const laneDecision = ctx.jxLanes?.lanes?.[lane];
     if (!laneDecision) return { ran: false, cause: "no frozen zh lane decision (jurisdictions/policy)" };
     const serpSpec = SERP_LANES[lane];
@@ -244,7 +238,7 @@ export async function runJxSerpGrid(ctx, job, opts = {}, { runLog = () => {}, no
     // Dictation — frozen on first write (a resume re-USES the spec; re-dictating after a variant regen
     // would re-key the join and re-bill settled cells).
     let spec = null;
-    try { spec = JSON.parse(readFileSync(specPath, "utf8")); } catch { /* cold — dictate below */ }
+    try { spec = readJson(specPath); } catch { /* cold — dictate below */ }
     if (!spec && foldRetryable(ctx, lane))
       return { ran: false, cause: "slice-1 fold degraded but retryable — deferring grid dictation to a resume (the candidates are the lane's point; no attempt burned)" };
     if (!spec) {
@@ -383,7 +377,7 @@ export async function runJxSerpGrid(ctx, job, opts = {}, { runLog = () => {}, no
     });
 
     // The judge — classification only, chunked, degrade-to-unjudged (the grid + receipts stand).
-    const { exec: judgeExec, source: judgeSource } = resolveJudge(opts, { mark: markName, lane });
+    const { exec: judgeExec, source: judgeSource } = resolveJudge(opts, { mark: markName, lane, runDir: run.runDir });
     const judged = [];
     let judgeDegraded = null;
     for (let at = 0; at < judgeable.length && !judgeDegraded; at += 40) {
@@ -438,6 +432,12 @@ export async function runJxSerpGrid(ctx, job, opts = {}, { runLog = () => {}, no
 const URI_RE = /https?:\/\/[^\s|)\]"'<>]+/g;
 const normUri = (u) => String(u).replace(/[.,;:!?]+$/, "");
 
+// The rows the cap keeps. The grid is in cell order, which says nothing about relevance, so use a reader could flag sat
+// past the cap on most saved runs (measured in testing, 2026-11-09). The judge's own classes come first, then anything
+// it could not judge, then the rest; within a class the grid's order stands.
+const GRID_ROW_RANK = new Map([["use-evidence", 0], ["listing-candidate", 1], ["unjudged", 2]]);
+const gridRowRank = (f) => GRID_ROW_RANK.get(f?.classification) ?? 3;
+
 /** Assemble the code-inlined zh evidence slice + the fetched-URI set it carries (pure over inputs). */
 export function buildNativereadPayload({ registerSliceText = "", candidates = [], cnipaSubgroups = [], gridFindings = [] }) {
   const sections = [];
@@ -452,7 +452,7 @@ export function buildNativereadPayload({ registerSliceText = "", candidates = []
   }
   let gridRowsDropped = 0;
   if (gridFindings.length) {
-    const rows = gridFindings.slice(0, NATIVEREAD_GRID_ROWS_CAP);
+    const rows = [...gridFindings].sort((a, b) => gridRowRank(a) - gridRowRank(b)).slice(0, NATIVEREAD_GRID_ROWS_CAP);
     gridRowsDropped = gridFindings.length - rows.length;
     sections.push("## Platform grid findings (judged)\n"
       + rows.map((f) => `- [${f.classification}] "${f.title}" — ${f.url} (term ${f.term} on ${f.platform})${f.note ? ` — ${f.note}` : ""}`).join("\n")
@@ -488,7 +488,6 @@ export async function runJxNativeread(ctx, job, opts = {}, { runLog = () => {}, 
   const key = `nativeread:${lane}`;
   try {
     // item 8 — CLEAROTRON_JX_NATIVEREAD is gone, same reasoning as the grid above.
-    if (!laneEnvOn(lane)) return { ran: false, cause: `CLEAROTRON_NATIVE_LANGUAGE_${lane.toUpperCase()} off` };
     if (!ctx.jxLanes?.lanes?.[lane]) return { ran: false, cause: "no frozen zh lane decision (jurisdictions/policy)" };
     const st = unitState(run.runDir, key);
     if (st.skip) return { ran: false, cause: st.cause };
@@ -514,12 +513,12 @@ export async function runJxNativeread(ctx, job, opts = {}, { runLog = () => {}, 
     try { registerSliceText = readFileSync(join(run.runDir, "register-units", "transliteration-numeric.md"), "utf8"); } catch { /* unit may not exist */ }
     const fold = ctx.jxLanes?.fold?.lanes?.[lane] ?? {};
     let gridFindings = [];
-    try { gridFindings = JSON.parse(readFileSync(join(jxDir(run.runDir), `${lane}-grid-findings.json`), "utf8"))?.findings ?? []; } catch { /* grid unit may be off */ }
+    try { gridFindings = readJson(join(jxDir(run.runDir), `${lane}-grid-findings.json`))?.findings ?? []; } catch { /* grid unit may be off */ }
     const { payload, uris, sections, gridRowsDropped } = buildNativereadPayload({
       registerSliceText, candidates: fold.accepted ?? [], cnipaSubgroups: fold.cnipaSubgroups ?? [], gridFindings });
     if (!sections) return { ran: false, cause: "no zh evidence to read (no register slice, candidates or grid findings)" };
 
-    const { exec, source } = resolveNativeread(opts, { mark: markName, lane });
+    const { exec, source } = resolveNativeread(opts, { mark: markName, lane, runDir: run.runDir });
     const started = Date.now();
     let r;
     try { r = await exec({ mark: markName, lane, payload }); }
@@ -573,15 +572,10 @@ export async function runJxNativeread(ctx, job, opts = {}, { runLog = () => {}, 
  *  production since 2026-08-04, which is the definition of a dark switch: the shipped default described
  *  a configuration nobody ran.
  *
- *  `laneEnvOn("zh")` STAYS, and deleting it would have been the mistake. The CLEAROTRON_JX_LANES master leg
- *  was retired 2026-07-27 and the reason this leg was kept still holds: an incident kill must also
- *  silence a STALE artifact from an earlier run, not merely stop the next one. That is a switch someone
- *  WOULD use, once, in an incident — the opposite of a dark one — so item 12's remedy applies instead of
- *  item 8's: it is DECLARED rather than deleted. */
+ *  The per-language off switch that once silenced this too is retired (2026-11-11): no deployment set it. */
 export function jxAimForSynthesis(runDir) {
-  if (!laneEnvOn("zh")) return null;
   try {
-    const a = JSON.parse(readFileSync(join(jxDir(runDir), "aim-attention.json"), "utf8"));
+    const a = readJson(join(jxDir(runDir), "aim-attention.json"));
     const n = (a?.items ?? []).length;
     return n ? { count: n } : null;
   } catch { return null; }

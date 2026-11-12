@@ -58,7 +58,7 @@ import { recordClosures } from "../../doubt-closure-tool.mjs";
 import { MAX_CLOSURES_PER_CALL, CLOSURE_KINDS } from "../../doubt-closure-call.mjs";
 import { readFileSync, existsSync } from "node:fs"; import { FROZEN_METHOD_FILE } from "../../framework-method.mjs";
 import { join } from "node:path";
-import { driverDir } from "../../../shared/driver-dir.mjs";   //
+import { driverDir, readJson } from "../../run-record.mjs";   //
 import { VARIANT_CATEGORIES } from "../../variant-manifest-model.mjs";
 import { DIFF_LAYERS, DIFF_SEVERITIES } from "../../frame-diff-model.mjs";
 import { REGISTER_AXES } from "../../coverage-ledger.mjs";
@@ -207,7 +207,7 @@ const CLOSURE_SPEC = "doubt-closure-spec.json";
  * file disagreeing is the whole failure this transport exists to remove.
  */
 function loadClosureSpec(runDir) {
-  const spec = JSON.parse(readFileSync(driverDir(runDir, CLOSURE_SPEC), "utf8"));
+  const spec = readJson(driverDir(runDir, CLOSURE_SPEC));
   const allowedFiles = Array.isArray(spec?.allowedFiles) ? spec.allowedFiles : [];
   const fileTexts = {};
   for (const name of allowedFiles) {
@@ -1022,7 +1022,8 @@ serve({
               kind: { type: "string", enum: [...CORRECTION_KINDS], description: "Which kind of defect this is. You declare it from your own read; code only partitions the closed set, never a keyword grep over your prose." },
               text: { type: "string", description: "One line, naming the file and the exact claim. A flag that opens as a list item or heading is refused — the driver renders the list." },
               fix: { type: "string", description: "Optional. One line describing the targeted edit that would settle it." },
-              on: { type: "array", items: { type: "integer" }, description: "The finding ordinals this flag is about, 1-based. Omit for a flag about the document rather than a finding." },
+              on: { type: "array", items: { type: "integer" }, description: "The finding ordinals this flag is about, 1-based. Omit for a flag about the document rather than a finding. An ordinal that names no finding this review was handed is refused." },
+              lines: { type: "array", items: { type: "string" }, description: "The address of each part of the report this flag is about that is not a finding: a coverage line, an action, a mark assessment read or a narrative section. Copy each address from the address list in the dispatch. An address not on that list is refused. If none of the flag's targets has a listed address, omit `lines` and name the targets in `text`." },
               positions: { type: "array", items: { type: "string" }, description: "The record id of each excluded position this flag is about, exactly as the writer's exclusions list names it. A flag about an exclusion needs no finding ordinal." },
             },
           },
@@ -1258,7 +1259,7 @@ serve({
               registerEstimate: { type: "string" },
               parodyNote: { type: ["string", "null"] },
               crowdedField: { type: "boolean" },
-              purpleNotes: { type: "array", items: { type: "string" }, description: "Reviewer notes appear on the report page and are removed on export." },
+              purpleNotes: { type: "array", items: { type: "string" }, description: "The report never prints a note; it reaches the audit workbook and the assistant." },
               // — DECLARED HERE OR IT IS FOLKLORE.
               //
               // Both fields were built end to end for — instructed in the dispatch,
@@ -1445,8 +1446,8 @@ serve({
     schemaNow: (schema) => knockoutAssessSchemaFor(schema, process.env.CLEAROTRON_BAND_RUN_DIR),
     description:
       "Hand back your repair of the defects you were given, as VALUES, sending only what changes. The driver merges it onto " +
-      "the chunk it holds and checks the result as it checks a rated chunk. It refuses a change to a name no defect concerns, " +
-      "a moved finding no answer accounts for, and a rating that moves without its dependent answers. A repair turn may send " +
+      "the chunk it holds and checks the result as it checks a rated chunk. It refuses a change to a name no defect concerns, except a finding a defect names that also stands on that name. " +
+      "It refuses a moved finding no answer accounts for, and a rating that moves without its dependent answers. A repair turn may send " +
       "only what it corrects, and what it has repaired is kept.",
     inputSchema: {
       type: "object",

@@ -16,7 +16,7 @@
 // merged back in. A silent restore would leave the user believing they removed something they did not.
 
 import { useEffect, useMemo, useState } from 'react'
-import { api, companyRead, isOk, notCommitted, saveFailureText } from '../contract/api.ts'
+import { api, companyRead, mustPickCompany, isOk, notCommitted, saveFailureText } from '../contract/api.ts'
 import type { ProjectDetail, ProjectSummary } from '../contract/api.ts'
 import { projectFields, fieldInput, boxValue, isSet, applyField, stripCodeOwned, revokedPlatforms, choiceLabel, fieldNotices } from '../contract/profileFields.ts'
 import { FieldNotices } from '../components/FieldNotices.tsx'
@@ -38,7 +38,7 @@ export function Projects({ ctx }: { readonly ctx: ShellContext }) {
   // project's settings stay readable, and no control is drawn that would only refuse.
   const mayChange = canManage(ctx.me)
   const account = ctx.owner
-  const needsOwner = ctx.me.allAccounts && account === null
+  const needsOwner = mustPickCompany(ctx.me, account)
   // `/portal/brand/projects?project=<key>` opens straight onto one project.
   //
   // Read once as the INITIAL state rather than held as a second source of truth: after that the user's

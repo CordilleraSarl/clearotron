@@ -8,6 +8,7 @@
 // unended after the follow-up ships named and clamps the verdict. The manual and the write-up's message now say both;
 // what they ask of the write-up is unchanged. This holds the ruled lines and that the old ones are gone.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -28,7 +29,7 @@ test("a position with no ending is delivered stated, in the manual and in the wr
   assert.ok(digest.includes("Drop it and the ruling covers nothing, and the run delivers with those positions stated as unended."));
   for (const gone of ["then the run **blocks delivery**", "and delivery blocks over a ruling you did make", "the ruling covers nothing and the run blocks delivery"])
     assert.ok(!digest.includes(gone), `the write-up's manual still says "${gone}"`);
-  const stage = readFileSync(join(DRIVER, "stages.mjs"), "utf8");
+  const stage = driverSource("stages.mjs");
   assert.ok(stage.includes("the driver's reconciliation gate re-checks after every rewrite, and the run delivers with any unended position stated."));
   assert.ok(!stage.includes("an unended position blocks delivery"), "the write-up's message still says an unended position blocks delivery");
   assert.ok(STAGES["register-digest"], "guard: the write-up stage is defined");

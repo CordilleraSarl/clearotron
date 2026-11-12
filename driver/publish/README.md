@@ -22,9 +22,13 @@ Several modules here are read from outside the publish step: `../portal-service.
 
 ## Start here
 
-**`index.mjs`** — `publishReport()` is the whole step in one function: what gets written into the pool
-run dir, which run-side stores are read (the closed table in `publish-inputs.mjs`, where absent, damaged
-and read are three different facts), and `evaluateClientGate()`, the one allowed hard structural refusal.
+**`index.mjs`** — the clearance publish step in two halves. `readClearanceDocument()` reads the run once
+into the report document: every fact a surface prints, which run-side stores were read (the closed table in
+`publish-inputs.mjs`, where absent, damaged and read are three different facts), and `evaluateClientGate()`,
+the one allowed hard structural refusal. Where two surfaces state one fact two ways, each way is its own
+field. `publishReport()` writes the pool run dir from that document. `coverNoteOptions()` reads the cover
+note's options from the run's frozen files, for the document and for the delivery's email.
+`knockout.mjs` is built the same way: `readKnockoutDocument()`, then `publishKnockout()`.
 
 **`render.mjs`** — but read `../test/render-frozen.test.mjs` first. The renderer is pinned by a sha256
 over its exact bytes, because `republishRun` re-renders reports already delivered to clients through it.
@@ -35,14 +39,15 @@ Editing it is a decision to argue for in the commit message; almost every visual
 
 | File | Role |
 |---|---|
-| `index.mjs` | `publishReport` — the clearance publish step; also `regenIndex` (staff + per-customer pool indexes), the email composers and `riskTier`/`TONE_TIER` |
+| `index.mjs` | `readClearanceDocument` and `publishReport` — the clearance publish step; also `regenIndex` (staff + per-customer pool indexes), the email composers, `coverNoteOptions` and `riskTier`/`TONE_TIER` |
 | `render.mjs` | `report.md` + `findings.json` → `report.html`. FROZEN — see above |
 | `parse.mjs` | The presentation-agnostic `report.md` parse the clearance renderer and the audit workbook build from |
 | `publish-inputs.mjs` | The closed table of run-side stores publish reads, and what an absent one means |
 | `report-data.mjs` | `report-data.json` for a clearance run — the client cut by construction, pure (no IO) |
 | `xlsx.mjs` | The four-tab audit workbook (exceljs, loaded lazily) |
 | `audit-from-spine.mjs` | Builds the `audit.md` contract from the spine's markdown tables — no LLM, count-guarded |
-| `knockout.mjs` | The knockout publisher: per-mark reports, its workbook, its cover note |
+| `knockout.mjs` | The knockout publisher: `readKnockoutDocument`, then per-mark reports, its workbook, its cover note |
+| `shell.mjs` | What publishing does whichever report it is: the run's pool folder and its writers, a part that fails without stopping the report, `meta.json` last with the index refresh, and the staff pages |
 | `render-knockout.mjs` | The knockout report's HTML. A sibling of `render.mjs`; imports nothing from it |
 | `report-registry.mjs` | Template name → publisher, and `republishRun` |
 | `archive-tags.mjs` | The pool's `archive-tags.json` visibility sidecar, and its single writer |

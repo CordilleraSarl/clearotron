@@ -26,7 +26,7 @@ const REVIEW_OPENING = [
   "Everything else stands as this run's earlier reviews left it. Do not flag a statement that rests on no changed item.",
   "From your own manual, skills/narrative-refutation/SKILL.md, use only the checks that bear on these items. Its whole-report checks, its length target for a review and its expectation that a clean review is rare belong to the full review, not to this one. A clean result is a normal outcome here.",
   "Check each changed item against the evidence named for it, and each statement that rests on a changed item against the new values.",
-  "Say what each flag is about. For a finding, put its number from the list below in `on`. For a writer's exclusion, put a record id from its entry in `positions`. For anything else, begin the flag's text with the item's name exactly as the list gives it, for example: the coverage line for \"<area>\".",
+  "Say what each flag is about. For a finding, put its number from the list below in `on`. For a writer's exclusion, put a record id from its entry in `positions`. For a coverage line, an action, a mark assessment read or a narrative section with a listed address, put that address in `lines`. For anything else, begin the flag's text with the item's name exactly as the list gives it.",
 ];
 const RENUMBERED = "Where a finding below shows two numbers, put the first in `on`. The second is its number in findings.json.";
 const VERDICT = "Your verdict is about the repair. CLEAR: what changed is sound, and every statement that rests on a changed item still holds. CONDITIONAL: a flag needs a correction. BLOCKING: the change makes the report unsafe to sign, under your manual's verdict logic.";
@@ -100,8 +100,8 @@ test("its closing line says which files the repair changed; every other dispatch
   const ctx = { profile: null, job: {} };
   const out = composeFollowup("narrative-refutation", ctx, { followup: "the review", inputs: ["narrative.md", "register-findings.md"], changedInputs: ["narrative.md", "findings.json"] }).split("\n");
   assert.equal(out.at(-1), "YOUR DECLARED INPUTS, on disk — this dispatch is a fresh session and does not carry them. Since this run's last review, the repair has changed narrative.md and findings.json where listed above; your other inputs have not changed. Open the ones the instruction above turns on (and only those): narrative.md, register-findings.md.");
-  assert.equal(out[0], "METHODOLOGY (reference — this is a correction to work that already exists, NOT an instruction to redo the stage): this stage is held to skills/narrative-refutation/SKILL.md, skills/clearance-search/report-prose.md. Re-read whatever the instruction below turns on.",
-    "it opens with the line every follow-up opens with, naming both manuals");
+  assert.equal(out[0], "METHODOLOGY (reference — this is a correction to work that already exists, NOT an instruction to redo the stage): this stage is held to skills/narrative-refutation/SKILL.md, skills/clearance-search/risk-framework.md, skills/clearance-search/firm-wide-reasoning.md, skills/clearance-search/report-prose.md. Re-read whatever the instruction below turns on.",
+    "it opens with the line every follow-up opens with, naming its manuals");
   const plain = composeFollowup("narrative-refutation", ctx, { followup: "the re-check", inputs: ["narrative.md"] }).split("\n");
   assert.equal(plain.at(-1), "YOUR DECLARED INPUTS, on disk — this dispatch is a fresh session and does not carry them, so open the ones the instruction above turns on (and only those): narrative.md.");
 });
@@ -153,7 +153,7 @@ test("the first full review's message still opens with its whole-review order: i
   // The run directory's paths are joined for the platform, so on Windows the narrative is `\r\narrative.md`.
   const P = paths("/r");
   const msg = STAGES["narrative-refutation"].message({ paths: P, intakeAsks: [], job: {}, registerOnly: false, profileSelection: null });
-  assert.match(msg, /^First, read and follow exactly: skills\/narrative-refutation\/SKILL\.md, skills\/clearance-search\/report-prose\.md\.\n/);
+  assert.match(msg, /^First, read and follow exactly: skills\/narrative-refutation\/SKILL\.md, skills\/clearance-search\/risk-framework\.md, skills\/clearance-search\/firm-wide-reasoning\.md, skills\/clearance-search\/report-prose\.md\.\n/);
   assert.match(msg, new RegExp(`\\nAdversarially refute the narrative ${P.narrative.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")} against the source files:`));
   for (const l of REFUTATION_RECORDING_LINES) assert.ok(msg.includes(l));
 });

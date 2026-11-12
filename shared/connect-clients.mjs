@@ -114,7 +114,7 @@ const TRY_IT = "Try it: in your assistant, ask **“Show my recent Clearotron cl
 // NEITHER ROUTE IS DELETED. A bare self-hosted install with no provider in front is the key door, and it
 // is the only route that works there. A hosted deployment may run a key door too, as a separate host
 // (`keyAddress`), for assistants that cannot follow a browser sign-in: see `keySteps` below.
-export const DOOR_KINDS = Object.freeze(["sign-in", "key"]);
+
 // NO HINT UNDER THE SIGN-IN DOOR'S FIRST STEP. There was one — "No key: this connector signs you in
 // through your browser, and the sign-in is the authentication your assistant is asking about." — and the
 // approved design (2026-09-16) removes it rather than rewording it: the sign-in step says the same thing

@@ -35,7 +35,7 @@
 
 import { test, after } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, rmSync, readFileSync, readdirSync } from "node:fs";
+import { existsSync, mkdtempSync, rmSync, readFileSync, readdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -289,11 +289,10 @@ test("the free tier conforms, composed over both real members", async () => {
 const DRIVEN = ["corsearch", "clarivate", "euipo", "uspto-local", "free-tier"];
 
 test("every provider exposing register_batch_screen is driven above — no silent skips", () => {
-  const dir = join(ROOT, "driver", "engine", "mcp");
+  const dir = join(ROOT, "providers");
   const exposing = readdirSync(dir)
-    .filter((f) => f.endsWith("-server.mjs"))
-    .filter((f) => readFileSync(join(dir, f), "utf8").includes('name: "register_batch_screen"'))
-    .map((f) => f.replace(/-server\.mjs$/, ""));
+    .filter((p) => existsSync(join(dir, p, "src", "mount.js")))
+    .filter((p) => readFileSync(join(dir, p, "src", "mount.js"), "utf8").includes('name: "register_batch_screen"'));
   assert.ok(exposing.length >= 5, `only ${exposing.length} server(s) matched — the grep itself has gone stale`);
   assert.deepEqual([...exposing].sort(), [...DRIVEN].sort(),
     "a provider exposing the neutral tool but not driven here would be free to answer in its own "
@@ -308,7 +307,7 @@ test("a provider with no batch-screen tool declares the absence rather than bein
   // never reach.
   const signa = await import("../../signa/src/core.js");
   assert.equal(typeof signa.doBatchScreen, "undefined", "signa exports no batch screen");
-  const src = readFileSync(join(ROOT, "driver", "engine", "mcp", "signa-server.mjs"), "utf8");
+  const src = readFileSync(join(ROOT, "providers", "signa", "src", "mount.js"), "utf8");
   assert.ok(!src.includes("register_batch_screen"), "…and its server exposes none");
   const { CAPABILITIES } = await import("../../signa/src/capabilities.js");
   assert.equal(CAPABILITIES.screenSource, "search-row",
@@ -393,9 +392,9 @@ test("audit: register_search has no split — every provider answers `results`",
     assert.match(src, /\n\s*results:/, `${p}: doSearch answers results[]`);
   }
   // And the driver reads exactly that name — the contract is only real if the consumer agrees.
-  const cfg = readFileSync(join(ROOT, "driver", "driver.config.mjs"), "utf8");
+  const cfg = readFileSync(join(ROOT, "providers", "_shared", "records-from-search.mjs"), "utf8");
   assert.match(cfg, /Array\.isArray\(parsed\?\.results\)/,
-    "driver.config.mjs reads `results` — if the providers ever renamed it this is where the zero appears");
+    "the record listing reads `results` — if the providers ever renamed it this is where the zero appears");
 });
 
 test("audit: register_enumerate's list name follows `state` — the split is inside the tool", async () => {

@@ -9,8 +9,8 @@
 // and not carried at all by a dispatch nobody checked.
 
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import { profileOrdinals, profileSelectionDirective, bandRank } from "../profile-selection.mjs";
 import { depthFor } from "../search-policy.mjs";
 
@@ -89,7 +89,7 @@ test("THE CALL SITE computes it on ctx, so the recheck sends the SAME list", () 
   // A verdict-recheck resumes the same session. If it re-derived the selection it could hand that
   // session a different list than the one it was given — the two-dispatches-disagreeing shape this
   // issue is made of. Set once on ctx, read by every dispatch of the stage.
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.match(src, /\bctx\.profileSelection = reviewProfileSelection\(ctx\)/,
     "nothing computes the profile selection onto ctx");
   // An --experiment review arm is told the same list, from the same function, set once on its own context.

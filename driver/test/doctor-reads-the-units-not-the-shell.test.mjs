@@ -517,6 +517,38 @@ test("the agreement line says which environment it compared, and what it cannot 
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
+test("with no units, the agreement line reads the environment file `start` hands the services", () => {
+  // Measured in a stranger walk of a beta, 2026-11-10: on an install with no units, the store named only in
+  // `~/.config/clearotron/.env`, doctor said the services resolve profiles from that store, and two lines
+  // later ticked "the settings surface and the run roster resolve to one store" naming the package's
+  // bundled roster, read from this command's own environment. `start` loads that file and its services
+  // inherit it, so the check compares what they read.
+  const home = mkdtempSync(join(tmpdir(), "f34-local-"));
+  const store = join(home, "trademark", "config", "profiles");
+  mkdirSync(store, { recursive: true });
+  const envFile = join(home, ".config", "clearotron", ".env");
+  mkdirSync(dirname(envFile), { recursive: true });
+  writeFileSync(envFile, `CLEAROTRON_CUSTOMERS_DIR=${store}\n`);
+  try {
+    const r = doctor(home);
+    assert.match(r.out, /the services resolve profiles from/, `anti-vacuity: doctor did not read the environment file:\n${r.out}`);
+    const line = r.out.split("\n").find((l) => /resolve to one store/.test(l)) ?? "";
+    assert.ok(line, `doctor printed no agreement line:\n${r.out}`);
+    assert.ok(line.includes(`(${store})`), `the agreement line names a store the services do not read: ${line}`);
+    assert.ok(line.includes(envFile), `the agreement line does not say it read the environment file: ${line}`);
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+test("THE CONTROL — with no units and no environment file, the agreement line still says it read this command's environment", () => {
+  const home = mkdtempSync(join(tmpdir(), "f34-local-bare-"));
+  try {
+    const r = doctor(home);
+    const line = r.out.split("\n").find((l) => /resolve to one store/.test(l)) ?? "";
+    assert.ok(line, `doctor printed no agreement line:\n${r.out}`);
+    assert.match(line, /read from this command's environment/, `the line names a file that does not exist: ${line}`);
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
 // ── WHICH ACCOUNTS DOCTOR SAYS THIS INSTALL HAS ─────────────────────────────────────────────────────
 //
 // Measured on a fresh 0.2.2 install: `1 brand owner(s) resolve here: demo-brand-owner (DEMO DATA)`, and

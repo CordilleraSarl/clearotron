@@ -11,7 +11,7 @@ import "./http-dispatcher.mjs";   // side effect: raise undici headersTimeout fo
 import { createInterface } from "node:readline";
 import { appendFileSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
-import { driverDir } from "../../../shared/driver-dir.mjs";   //
+import { paths } from "../../run-record.mjs";   //
 import { answerBudget, answerPieces, servedPart, partNotHeld, takePart, heldAnswers, withAnswerPart } from "../../../shared/answer-parts.mjs";
 
 // ── half 2 — THE TOOL CALL LOG, so a killed call is a FACT and not an inference ────────────────
@@ -38,7 +38,7 @@ import { answerBudget, answerPieces, servedPart, partNotHeld, takePart, heldAnsw
 // failed write costs this diagnostic and nothing else.
 const toolLogPath = () => {
   const dir = process.env.CLEAROTRON_BAND_RUN_DIR;
-  return dir ? driverDir(dir, "tool-calls.jsonl") : null;
+  return dir ? paths(dir).toolCalls : null;
 };
 
 // WHAT GOES IN: the tool's name, the sequence number that pairs the two lines, and — for the plan tools
@@ -106,9 +106,9 @@ export function serve({ name, version = "0.1.0", tools = [], noteFor = null }) {
   // reaches the open world. A stock server carries them on every tool; ours carried none.
   //
   // ✕ THIS IS NOT THE ESTABLISHED CAUSE OF THE CODEX REFUSALS, and nothing here may be read as one. The
-  // universal claim — "codex cannot call any MCP tool" — was WITHDRAWN on 1968 by the lane that filed
-  // it: real codex completed 1,292 MCP calls across three pre-rebuild runs. What differs after the
-  // 2026-08-24 rebuild is open under. The probe below is ONE measurement on ONE CLI
+  // universal claim — "codex cannot call any MCP tool" — was WITHDRAWN by those who made it: real
+  // codex completed 1,292 MCP calls across three pre-rebuild runs. What differs after the 2026-08-24
+  // rebuild is still open. The probe below is ONE measurement on ONE CLI
   // version, recorded so nobody re-derives it. It is a candidate, not a finding, and this fix does not
   // rest on it.
   //

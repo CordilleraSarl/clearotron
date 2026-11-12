@@ -18,8 +18,9 @@
 // other path already handled it. A cancel that could be undone by a resume two minutes later is the
 // failure mode this whole file exists to prevent.
 
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { readJson } from "./run-record.mjs";
 
 export const CANCEL_MARKER = ".cancel";
 
@@ -33,7 +34,7 @@ export function isCancelled(runDir) {
 
 /** The cancel record, or null. Best-effort: a corrupt marker still means CANCELLED (isCancelled is the gate). */
 export function readCancel(runDir) {
-  try { return JSON.parse(readFileSync(cancelPath(runDir), "utf8")); } catch { return null; }
+  try { return readJson(cancelPath(runDir)); } catch { return null; }
 }
 
 /**

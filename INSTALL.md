@@ -121,7 +121,7 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
   Which register you pick is the first real decision, and the tiers are not equally easy to reach.
   [providers/README.md](providers/README.md) is the canonical ladder and
   [ADR-0001](docs/decisions/0001-register-ladder.md) is the reasoning. The short version: **Signa** is
-  the recommended route (one self-serve key, thirteen offices), **`free-tier`** is EU + US with no vendor
+  the recommended route (one self-serve key, fifteen offices), **`free-tier`** is EU + US with no vendor
   contract but a 41.5 GB build for the US half (§3a), and **Corsearch / Clarivate** are the widest
   coverage on a vendor-issued credential. Whatever the chosen register cannot reach becomes a disclosed
   deferred-coverage row rather than a silent gap, at every tier.
@@ -147,7 +147,7 @@ testing, or while a stable is being prepared; it built and the suite passed, and
 register through it.
 
 **npm's global form works too**, where npm's global directory is yours to write:
-`npm install -g clearotron`, then `npx clearotron install`. For the beta,
+`npm install -g clearotron`, then `clearotron install`. For the beta,
 `npm install -g clearotron@beta`, then `clearotron install`. On a Linux Node from the distribution or
 NodeSource that directory is `/usr`, owned by root, and npm refuses with `EACCES`. Do not answer that
 with `sudo`; install under your home instead: `npm install -g clearotron --prefix ~/.local`, or
@@ -172,7 +172,7 @@ mkdir ~/app && cd ~/app
 npm init -y
 npm install /path/to/clearotron-<version>.tgz
 npx clearotron install         # the wizard
-npx clearotron doctor          # reads; writes nothing, calls nobody
+npx clearotron doctor          # reads; writes nothing and contacts nothing outside this machine
 ```
 
 `npx` works from `~/app` because npm links a **dependency's** `bin` into the consuming project — the
@@ -209,7 +209,7 @@ folder §2 had you create, `~/app`: delete that folder. On those two routes setu
 
 **The reasoning program, if setup installed it.** Setup puts Claude Code or the Codex CLI in one folder,
 `~/.local/share/clearotron/engines`, or where `CLEAROTRON_ENGINES_DIR` points. Delete the folder to
-remove it.
+remove it, and `~/.local/share/clearotron` too once it is empty.
 
 **What the reasoning program keeps for itself.** Claude Code keeps its sign-in and settings in
 `~/.claude` and `~/.claude.json`, and setup's engine check creates them if they were not there.
@@ -224,8 +224,8 @@ Any `npm install` also keeps what it downloaded in npm's cache, `~/.npm/_cacache
 
 **The settings, and the keys.** `~/.config/clearotron/.env` holds this install's signing secrets, so
 deleting it invalidates every key it ever issued. Beside it: `~/.config/clearotron/token-denylist`, the
-list of keys you revoked, and `~/.config/clearotron/running`, which records a product running in a
-terminal and is rewritten on every start.
+list of keys you revoked, and `~/.config/clearotron/running`, a folder holding one small file for each
+product running in a terminal.
 
 **Your work.** The install keeps it all under one directory, `~/trademark` by default — wherever
 `CLEAROTRON_REPORTS_DIR`'s parent points if you moved it:
@@ -323,10 +323,10 @@ archive somebody else owns. The workspace root defaults to `$HOME/trademark/work
 what `npx clearotron install` writes, so the wizard and the bare default agree.
 
 If you would rather not write this file by hand, `npx clearotron install` asks for a base directory, creates
-these paths under it, checks what it can check without billing you before it writes anything, and never
-touches a path you did not name — an engine turn, an EUIPO token exchange, and an offered (not assumed)
-Perplexity ping. A paid register key is deliberately not probed: a call against a metered subscription is
-a charge you did not ask for, so that credential is written on your word. `clearotron doctor`
+these paths under it, and never touches a path you did not name. Before saving your settings, setup checks
+what it can: an offered engine turn, an EUIPO token exchange, and an offered Perplexity ping. It does not
+probe a paid register key. A call against a metered subscription is a charge you did not ask for, so that
+credential is written on your word. `clearotron doctor`
 reports what is set and what is missing, and writes nothing.
 
 Only the integrator-set knobs are shown — copy what you need:

@@ -22,15 +22,13 @@
 // smaller than "unsearched marks". Recording that here because the issue's own severity was corrected
 // on the thread, and an arm that overstates its defect teaches the next reader to discount it.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 
-import { readFileSync } from "node:fs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
 
 import { screenThenCap, foldSupplementalEntries } from "../register-plan.mjs";
 
-const PIPELINE = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "pipeline.mjs"), "utf8");
+const PIPELINE = driverSource("pipeline.mjs");
 
 const CAP = 10;
 

@@ -45,7 +45,6 @@
 import { writeFileSync, appendFileSync, mkdirSync, readFileSync, existsSync, renameSync, rmSync } from "node:fs";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join, dirname } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";
 import { parseFindingsJson, COVERAGE_AREA_STATES, topKeysForVersion, validateFindingForSave, isUseCheckNoResult, findingOrdinalInvalid } from "./findings-model.mjs";
 import { heldResearchAnswers, isResearchAnswer, questionKey, NO_SEARCH_RESULT } from "./research-answers.mjs";   // a "no result" names a question that completed
 import { writeResearchChecks } from "./research-checks.mjs";   // the research behind the use checks, written for the review
@@ -59,6 +58,7 @@ import { foldAfterSave } from "./record-fold.mjs";   // once the delivery seam i
 import { SAVED_FINDINGS_FILE } from "./saved-findings-block.mjs";   // the file a later attempt is handed the saved findings in
 import { runLog } from "./log.mjs";   // what the transport read a call as goes to the run's record, never to the model's answer
 import { recordOriginsOr, blankOnRepeat, recordBlanking, FOREIGN_HOST_TOKEN } from "./foreign-record-links.mjs";   // a foreign record link: refused once, then blanked
+import { driverDir, paths, readJson } from "./run-record.mjs";
 export const NARRATIVE_FILE = "narrative.md";
 export const FINDINGS_FILE = "findings.json";
 
@@ -67,7 +67,7 @@ export const NARRATIVE_SECTIONS = ["verdict", "coverage", "spine", "calibration"
 
 /** Where the call's evidence lives — the driver's own record of what the seat handed it. */
 export function synthesisCallPaths(runDir) {
-  const dir = driverDir(runDir, "synthesis-calls");
+  const dir = paths(runDir).synthesisCalls;
   // TWO FILES, AND THE SPLIT IS LOAD-BEARING. `payload` is what ARRIVED, written before the decision —
   // the forensic record, including calls that were refused. `accepted` is the last call that PASSED,
   // and it is the merge base a repair patches onto. Reading the forensic file as the merge base would
@@ -314,7 +314,7 @@ const withoutUseCheck = (f) => { const { use_check: _taken, ...rest } = f; retur
 /** What a repeat took off, kept beside the run with one run-log row. Never throws. */
 function recordNoResultRemoval(runDir, { layer, removed, now }) {
   try {
-    appendFileSync(driverDir(runDir, "no-result-removed.jsonl"), removed.map((r) => JSON.stringify({ at: now(), stage: "synthesis", layer, ...r })).join("\n") + "\n");
+    appendFileSync(paths(runDir).noResultRemoved, removed.map((r) => JSON.stringify({ at: now(), stage: "synthesis", layer, ...r })).join("\n") + "\n");
   } catch { /* the file is forensics; the run-log row below is the record */ }
   try { runLog(runDir, { event: "no-result-without-a-completed-search-removed", stage: "synthesis", layer, ordinals: removed.map((r) => r.ordinal ?? null) }); }
   catch { /* a log that cannot be written must not stop the record it describes */ }
@@ -494,7 +494,7 @@ export function acceptSynthesis(params, { asks = [], ledger = null, manifest = n
 export function lastAcceptedCall(runDir) {
   try {
     const { accepted } = synthesisCallPaths(String(runDir ?? ""));
-    return JSON.parse(readFileSync(accepted, "utf8"))?.params ?? null;
+    return readJson(accepted)?.params ?? null;
   } catch { return null; }
 }
 
@@ -960,14 +960,14 @@ function frozenMethodFor(dir0, manifest) {
 export function driverReadsFor(runDir) {
   const dir0 = String(runDir ?? "");
   const read = (name) => {
-    try { return JSON.parse(readFileSync(driverDir(dir0, name), "utf8")); }
+    try { return readJson(driverDir(dir0, name)); }
     catch { return null; }
   };
   // The digest's coverage ledger sits in the RUN ROOT, not under `_driver/` — it is the WS-A machine
   // contract the digest publishes, and the writer is one of its readers.
   const readLedger = (d) => {
     try {
-      const doc = JSON.parse(readFileSync(join(d, "register-coverage-ledger.json"), "utf8"));
+      const doc = readJson(join(d, "register-coverage-ledger.json"));
       return Array.isArray(doc) ? doc : (Array.isArray(doc?.rows) ? doc.rows : null);
     } catch { return null; }
   };

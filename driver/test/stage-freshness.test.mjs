@@ -5,7 +5,7 @@
 // Pure/offline: a temp run dir, real files, no gateway and no network.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, mkdirSync, readdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
@@ -13,6 +13,7 @@ import { tmpdir } from "node:os";
 import {
   fingerprint, diffFingerprint, shaOf,
   writeStamp, readStamp, stageStaleness, restamp, restampStage, clearStamp, staleOnPath, reconcileStamps,
+  writeFindings, settleOneShotStamp, projectStageInput,
 } from "../stage-freshness.mjs";
 
 function runDir() {
@@ -350,4 +351,71 @@ test("a post-stage mutator accounts for the projection too, not only the whole-f
   reconcileStamps(dir, () => [fp], null, { project: cardProject });
   assert.ok(readStamp(dir, "card:1").inputs[0].proj, "the reconciled stamp still carries a projection");
   assert.deepEqual(staleOnPath(dir, ["card:1"], () => [fp], { project: cardProject }), []);
+});
+
+// ── findings.json: one write ───────────────────────────────────────────────
+const runRows = (d) => (existsSync(driverDir(d, "run.jsonl"))
+  ? readFileSync(driverDir(d, "run.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l)) : []);
+
+test("writeFindings writes an object the way every site did and text exactly as given, and a write that settles nothing touches no stamp and logs nothing", () => {
+  const d = runDir();
+  const file = join(d, "findings.json");
+  const doc = { findings: [{ ordinal: 1, mark: "NOVAPULSE" }] };
+  write(file, "{}\n");
+  writeStamp(d, "skeptic", [file]);
+  const before = readFileSync(driverDir(d, "stage-inputs", "skeptic.json"), "utf8");
+
+  assert.equal(writeFindings(d, doc, { why: "probe" }).file, file);
+  assert.equal(readFileSync(file, "utf8"), JSON.stringify(doc, null, 2) + "\n", "an object is written as the sites wrote it");
+  const saved = '{"findings":[]}';
+  writeFindings(d, saved, { why: "restore" });
+  assert.equal(readFileSync(file, "utf8"), saved, "text is written byte for byte, with no newline added");
+
+  assert.deepEqual(readdirSync(d).filter((n) => n.endsWith(".tmp")), [], "the atomic write leaves no temporary file");
+  assert.equal(readFileSync(driverDir(d, "stage-inputs", "skeptic.json"), "utf8"), before, "no stamp moved");
+  assert.equal(stageStaleness(d, "skeptic", [file]).stale, true, "so the stage that read the file reads it as moved");
+  assert.deepEqual(runRows(d), [], "a write that settles nothing adds no run.jsonl row");
+  rmSync(d, { recursive: true, force: true });
+});
+
+test("writeFindings settles each named one-shot stage, and a stage that does not declare the file is recorded as a miss", () => {
+  const d = runDir();
+  const file = join(d, "findings.json");
+  const other = join(d, "register-findings.md");
+  write(file, "{}\n");
+  write(other, "digest");
+  writeStamp(d, "narrative-refutation", [file]);
+  writeStamp(d, "frame-diff", [other]);
+
+  const r = writeFindings(d, { findings: [] }, { why: "probe-settle", settles: ["narrative-refutation", "frame-diff"] });
+  assert.deepEqual(r.settled["narrative-refutation"], { changed: [file], missed: [] });
+  assert.deepEqual(r.settled["frame-diff"], { changed: [], missed: [file] });
+  assert.equal(stageStaleness(d, "narrative-refutation", [file]).stale, false, "the settled stage reads the new bytes as accounted for");
+
+  const rows = runRows(d);
+  assert.deepEqual(rows.filter((e) => e.event === "one-shot-stamp-settled").map((e) => [e.stage, e.why]), [["narrative-refutation", "probe-settle"]]);
+  assert.deepEqual(rows.filter((e) => e.event === "restamp-miss").map((e) => [e.stage, e.path, e.why]), [["frame-diff", file, "probe-settle"]]);
+  rmSync(d, { recursive: true, force: true });
+});
+
+test("settleOneShotStamp keeps a report card's projection current, and the projection reads only a card's own finding", () => {
+  const d = runDir();
+  const file = join(d, "findings.json");
+  const demo = JSON.parse(readFileSync(new URL("../../demo/full-country-search/run/findings.json", import.meta.url), "utf8"));
+  assert.deepEqual(demo.findings.map((f) => f.ordinal), [1, 2], "premise: the demo's record holds findings 1 and 2");
+  write(file, JSON.stringify(demo));
+  writeStamp(d, "report-card:2", [file], { project: projectStageInput });
+  const proj = readStamp(d, "report-card:2").inputs[0].proj;
+  assert.match(proj, /^[0-9a-f]{12}$/);
+
+  demo.findings[0].mark = `${demo.findings[0].mark} EDITED`;
+  write(file, JSON.stringify(demo));
+  assert.equal(stageStaleness(d, "report-card:2", [file], { project: projectStageInput }).stale, false, "another finding's edit does not stale card 2");
+  settleOneShotStamp(d, "report-card:2", [file], "probe");
+  assert.equal(readStamp(d, "report-card:2").inputs[0].proj, proj, "card 2's finding did not change, so neither did its projection");
+
+  assert.equal(projectStageInput("synthesis", file), null, "only a report card is projected");
+  assert.equal(projectStageInput("report-card:2", join(d, "narrative.md")), null, "only findings.json is projected");
+  assert.equal(projectStageInput("report-card:9", file), null, "an ordinal absent from the file falls back to the whole file");
+  rmSync(d, { recursive: true, force: true });
 });

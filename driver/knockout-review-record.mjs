@@ -43,7 +43,6 @@
 // its own accepted call, bound by the ordinal in its label, so nothing the first pass sent carries into it.
 import { writeFileSync, readFileSync, existsSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
-import { driverDir, DRIVER_DIR } from "../shared/driver-dir.mjs";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { refuseUndeclared as refuseUndeclaredShared, lastAccepted, acceptedEnvelope } from "./preserve-merge.mjs";
 import { knockoutVisibleProse } from "./predelivery-lint.mjs";   // the walk is the authority on what a reader sees
@@ -52,6 +51,7 @@ import { plainRegisterFlags } from "./plain-register.mjs";        // the pinned 
 // for saying WHICH line was probably meant; it never decides whether an address resolves.
 import { queryKey } from "./connotation-search.mjs";
 import { PERMITTED_SOURCES, registerRecordIdsHeld, urlHeldFor } from "./verify-knockout.mjs";
+import { DRIVER_DIR, driverDir, paths as runPaths, readJson } from "./run-record.mjs";
 
 const SCHEMA_VERSION = 1;
 
@@ -115,7 +115,7 @@ export const MATERIAL_KINDS = Object.freeze({ band: false, missing: true, exclus
 
 /** One file per call, refusals included, beside the other transports' capture directories. A later pass keeps its own. */
 export function knockoutReviewCallPaths(runDir, pass = 0) {
-  const dir = pass ? driverDir(runDir, join("knockout-review-calls", `pass-${Number(pass)}`)) : driverDir(runDir, "knockout-review-calls");
+  const dir = pass ? driverDir(runDir, join("knockout-review-calls", `pass-${Number(pass)}`)) : runPaths(runDir).knockoutReviewCalls;
   return { dir, accepted: join(dir, "accepted.json"), refusals: join(dir, "refusals.jsonl") };
 }
 
@@ -413,7 +413,7 @@ export function validateKnockoutReviewFile(file, text) {
     return { ok: false, reason: `the merged record is not on disk at ${findingsFile}, so no address could be checked` };
   }
   let merged;
-  try { merged = JSON.parse(readFileSync(findingsFile, "utf8")); }
+  try { merged = readJson(findingsFile); }
   catch (e) { return { ok: false, reason: `the merged record will not parse, so no address could be checked: ${e.message}` }; }
   const fault = joinFault(doc, merged, runDir);
   return fault ? { ok: false, reason: fault } : { ok: true };
@@ -457,20 +457,21 @@ function materialFault(m, merged, runDir) {
   // one name. A question the run asked is held too, by its qid. Anything else is refused, in words about those sources and not the run.
   const records = registerRecordIdsHeld(runDir);
   let questions = new Set();
-  try { questions = new Set((JSON.parse(readFileSync(driverDir(runDir, "register-records.json"), "utf8")).marks ?? []).flatMap((e) => (e?.terms ?? []).map((t) => String(t?.qid ?? "")))); } catch { questions = new Set(); }
+  try { questions = new Set((readJson(runPaths(runDir).registerRecords).marks ?? []).flatMap((e) => (e?.terms ?? []).map((t) => String(t?.qid ?? "")))); } catch { questions = new Set(); }
   const urlHeld = urlHeldFor(runDir);
   const stranger = (m.rests_on ?? []).find((r) => !records.has(r) && !questions.has(r) && !urlHeld(r));
   return stranger ? `the material row on "${m.mark}" rests on "${stranger}", which is not traceable to ${PERMITTED_SOURCES}, or a question this run asked. Copy a recordId, question qid, or URL from what this run holds.` : null;
 }
 
 /**
- * The rewrites of a first pass that still have a line to land on after a correction: those on a name no defect named, and the
- * standing caveats. A corrected name is renumbered and reworded, and the batch summary with it, so the second pass reads those
- * afresh. PURE.
+ * The rewrites of a first pass that still have a line to land on after a correction: those on a name the correction did not
+ * change, and the standing caveats. A changed name, whether a defect named it or the correction reached it, is renumbered and
+ * reworded, and the batch summary with it, so the second pass reads those afresh. `changedNames` null means the correction's
+ * reach could not be compared: no rewrite on a name is taken to be independent of it, and only the caveats stand. PURE.
  */
-export function rewritesThatSurvive(review, correctedNames) {
-  const corrected = new Set([...correctedNames].map((n) => String(n ?? "").trim().toLowerCase()));
-  const stands = (r) => r?.at?.field === "batch.standardCaveats" || (r?.at?.mark != null && !corrected.has(String(r.at.mark).trim().toLowerCase()));
+export function rewritesThatSurvive(review, changedNames) {
+  const corrected = changedNames == null ? null : new Set([...changedNames].map((n) => String(n ?? "").trim().toLowerCase()));
+  const stands = (r) => r?.at?.field === "batch.standardCaveats" || (corrected != null && r?.at?.mark != null && !corrected.has(String(r.at.mark).trim().toLowerCase()));
   return { ...review, rewrites: (review?.rewrites ?? []).filter(stands) };
 }
 
@@ -581,7 +582,7 @@ export function recordKnockoutReview(runDir, received, { boundOrdinal = null, no
   }
 
   // Where the record is on disk the seat hears the join now, in its turn. Where it is not, the stage's own check says it could not look.
-  const held = (() => { try { return JSON.parse(readFileSync(join(dir, "knockout-findings.json"), "utf8")); } catch { return null; } })();
+  const held = (() => { try { return readJson(join(dir, "knockout-findings.json")); } catch { return null; } })();
   const fault = held ? joinFault(verdict.model, held, dir) : null;
   if (fault) {
     journal(fault);

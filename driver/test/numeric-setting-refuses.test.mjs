@@ -19,10 +19,9 @@
 // the range I wanted" would change behaviour nobody asked to change.
 
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 
@@ -31,9 +30,6 @@ import { NUMERIC_SETTING_DEFAULTS, numericSetting, resolveNumericSetting, fallba
 import { acquireSlot, freeSlots } from "../slot-lock.mjs";
 import { statusSnapshot } from "../status-snapshot.mjs";
 import { concurrentRunsCap } from "../portal-service.mjs";
-
-const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
-
 /** accessor → the variable it reads. The pairing is the thing under test: a getter reading the wrong
  *  name would still return a number, and every value assertion below would still pass. */
 const ACCESSORS = {
@@ -140,7 +136,7 @@ test("the pipeline actually EMITS that line — the note is wired, not merely av
   // A helper nothing calls discloses nothing. The one consumer is the card fan-out, so the assertion is
   // against the source that calls it: an exported sentence with no caller is the shape that passes its
   // own unit test and ships silence.
-  const src = readFileSync(join(DRIVER, "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.match(src, /fallbackNoteFor\("CLEAROTRON_CARD_CONCURRENCY"\)/,
     "the card fan-out must ask for the disclosure");
   assert.match(src, /if \(cardCapNote\) note\(/,
@@ -185,7 +181,7 @@ test("ONE definition of each default — no read site carries its own copy any m
   const FILES = ["driver.config.mjs", "pipeline.mjs", "portal-service.mjs", "status-snapshot.mjs", "runner.mjs"];
   const NAMES = Object.keys(NUMERIC_SETTING_DEFAULTS);
   for (const f of FILES) {
-    const src = readFileSync(join(DRIVER, f), "utf8");
+    const src = driverSource(f);
     src.split("\n").forEach((line, i) => {
       if (/^\s*(\/\/|\*|\/\*)/.test(line)) return;                       // the docblocks discuss the old shape
       for (const name of NAMES) {

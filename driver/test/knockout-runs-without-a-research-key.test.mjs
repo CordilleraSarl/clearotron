@@ -145,8 +145,8 @@ test("a keyless screen LAUNCHES — it passes the preflight that used to kill it
     // NO sweepExecutor injected — that is the whole point: the lane must reach the real resolver and
     // find the skip. The counter IS injected, so the register half runs at $0 and the screen has
     // something to deliver, which is what makes this a degrade rather than an empty result.
-    const RES = await knockoutInner(ctx, job, { countExecutor: async () => ({ ok: true, total: 0 }) })
-      .catch((e) => { console.error("DEBUG threw:", e && e.stack ? e.stack.slice(0,1200) : String(e)); return null; });
+    // A throw fails the test with its own stack.
+    const RES = await knockoutInner(ctx, job, { countExecutor: async () => ({ ok: true, total: 0 }) });
 
     // What is asserted is that the run got PAST the preflight and recorded a not-attempted sweep. The
     // old behaviour threw at `knockout-preflight`, before any of this existed.

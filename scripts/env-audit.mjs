@@ -59,8 +59,8 @@ const asList = process.argv.includes("--list");
 //
 // `resolveAuthMode({env = process.env})` reads `env.CODEX_API_KEY`. Textually there is no
 // `process.env.` before the name, so the `process.env`-only scanner recorded nothing — and this is not
-// an oddity, it is the refactor this repository keeps choosing (`laneArmed(lane, env)`,
-// `deriveJxSliceStatement({env})`). Every such conversion silently removed its variables from
+// an oddity, it is the refactor this repository keeps choosing (a pure function handed `env`, as
+// `resolveAuthMode` is). Every such conversion silently removed its variables from
 // governance: the guard went QUIET rather than red, which is the failure class ADR-0002 exists to end.
 // Seven product names were invisible, two of them deciding billing.
 //
@@ -324,6 +324,9 @@ export function isProductFile(rel) {
   // when this was added: HOME, PATH, TMPDIR and that delay were all the checks read, and the first three
   // stay product, because shipping code reads them too.
   if (/^scripts\/[a-z0-9-]+-render-check\.mjs$/.test(rel)) return false;
+  // THE SECRET SCANNER'S DOWNLOAD. CI passes it the version, hash and cache folder, and the package does not
+  // ship it, so a row for those in `.env.example` would hand an operator settings nothing they run reads.
+  if (rel === "scripts/secret-scanner-fetch.mjs") return false;
   return true;
 }
 
@@ -432,7 +435,7 @@ export function declaredEffects(rows) {
 }
 
 export function auditEnv(root = ROOT) {
-  const tracked = trackedFiles("env-audit (#692 governance ratchet)", { root });
+  const tracked = trackedFiles("env-audit (governance ratchet)", { root });
   if (!tracked) return null;
   const files = tracked.filter((f) => CODE_RE.test(f) && !f.startsWith("node_modules/"));
 
@@ -736,7 +739,7 @@ const TOKEN_RE = /[A-Z][A-Z0-9_]*/g;
  * function until review.
  */
 export function auditCatalogue(root = ROOT) {
-  const tracked = trackedFiles("env-audit (#1426 catalogue ratchet)", { root });
+  const tracked = trackedFiles("env-audit (catalogue ratchet)", { root });
   if (!tracked) return null;
   const file = ".env.example";
   if (!existsSync(join(root, file)))
