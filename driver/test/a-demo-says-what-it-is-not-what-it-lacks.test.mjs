@@ -144,8 +144,8 @@ test("arm 4 — both processes answer from ONE composer, in different processes"
   }
   // AND THE WARNINGS SURVIVE for the reader they were written for. An arm that only checked the demo
   // branch would pass on a tree that deleted them.
-  assert.match(read("../../mcp-server/http-server.mjs"), /Every real customer will be refused/,
-    "the roster warning was silenced rather than re-aimed");
+  assert.match(read("../../mcp-server/http-server.mjs"), /log\(bundledRosterLine\(roster\.length\)\)/,
+    "the roster line was silenced rather than re-aimed");
   assert.match(read("../portal-service.mjs"), /SYNTHETIC framework as though it were the customer's own/,
     "the overlay warning was silenced rather than re-aimed — it is the one that must stay loud");
 
