@@ -2007,6 +2007,10 @@ export function releasedFamilyRows(runDir) {
  * report carries, read from the run when not passed. A withdrawn finding is not one of them, so a position only it
  * names stays set aside. A position is the declination spec's row, with every record of its entry; with no spec, only
  * the declined record itself is matched. Pages are listed as before.
+ *
+ * A LEAD WHOSE OWNER IS UNIDENTIFIED IS NOT SET ASIDE. It is declined only so that its page, source and ground stay
+ * keyed in the run's record; the lead itself is open, and the reader meets it in the actions and in the open coverage
+ * row of its area. Listed here it would read as settled, so this sheet leaves it out.
  */
 export function setAsideRows(runDir, { findings = null } = {}) {
   try {
@@ -2019,9 +2023,10 @@ export function setAsideRows(runDir, { findings = null } = {}) {
     }
     const ended = recordsOfDeliveredPositions(read('declination-spec.json')?.rows ?? [], [...findingUris(delivered.filter((f) => f?.disposition !== 'withdrawn')).keys()]);
     const label = (x) => [x.mark, x.owner].filter((v) => typeof v === 'string' && v.trim()).join(' — ') || x.uri;
+    const settled = (x) => x?.reason !== 'owner-unidentified';
     return [
-      ...[...d.byUri.entries()].filter(([u]) => !ended.has(u)).map(([, x]) => ({ area: `Set aside: ${label(x)}`, note: String(x.grounds ?? '') })),
-      ...[...d.byPage.values()].map((x) => ({ area: `Set aside: ${x.url ?? x.page}`, note: String(x.grounds ?? '') })),
+      ...[...d.byUri.entries()].filter(([u, x]) => !ended.has(u) && settled(x)).map(([, x]) => ({ area: `Set aside: ${label(x)}`, note: String(x.grounds ?? '') })),
+      ...[...d.byPage.values()].filter(settled).map((x) => ({ area: `Set aside: ${x.url ?? x.page}`, note: String(x.grounds ?? '') })),
     ];
   } catch { return []; }
 }

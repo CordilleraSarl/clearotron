@@ -142,8 +142,15 @@ For each candidate the narrative tiers as headline-candidate, or rates in the fr
 - **Awareness noise:** an `off-field` item that is not a major brand / active dispute / well-known
   enforcer, **FLAG** — commercial awareness is majors only.
 - **Common-law under-machinery:** a common-law finding left unrated, half-metered, or missing the
-  legal/practical split a register finding of the same weight carries, **FLAG** — same machinery,
-  separate section.
+  legal/practical split a register finding of the same weight carries, **FLAG** — same machinery, separate
+  section. One conflict is unrated by rule: an otherwise eligible one whose proprietor no source the run
+  holds identifies in the role that matters — a filing's owner or applicant in the fetched register
+  record, or the party behind a use, shown in that role by the source the common-law record cites. A
+  brand, a title, a seller label or the worker's assertion alone is a name, not an identification. Such a
+  conflict is not a finding; it belongs in the actions as an open identification step. **FLAG** the
+  reverse instead: such a conflict delivered with a band, as an off-field item or as a clean negative, or
+  an otherwise eligible conflict left unrated solely because its normalised owner field is empty when a
+  held record identifies the relevant proprietor.
 - **Four-answers disagreement:** a `four_answers` token or read that contradicts the findings/bands it
   cites (e.g. `third_party_rights: weak` over a live High-band adversarial finding), **FLAG as
   [kind: rating]**.
@@ -157,9 +164,9 @@ For each candidate placed at **headline-candidate** in `placement-recommendation
 ### Confabulated-attribution checks
 
 For each named owner / attribution in the narrative ("developed by X", "owned by Y", "watchlist includes Z"):
-- Find the source in the underlying files (`register-findings`, `common-law-findings`, `placement-recommendations`, `matter-context`'s named seeds)
+- Find the source in the underlying files (`register-findings`, `common-law-findings`, `placement-recommendations`, `matter-context`'s named seeds, or the fetched register record itself under `_records/`)
 - If the attribution isn't in any source file, **FLAG as confabulated attribution**
-- **Specifically: gaming-title developers and publishers must trace to common-law-findings' `developer_of_record` / `publisher_of_record` fields.** Do not accept narrative attributions that aren't in the inventory.
+- **Specifically: an attribution must trace to a source for its role, not only for its name.** A fetched register record under `_records/` establishes that filing's owner or applicant, and nothing more. Gaming-title developers and publishers must trace to common-law-findings' `developer_of_record` / `publisher_of_record` fields. Do not accept a narrative attribution that isn't in the inventory, and do not accept a filing's owner or applicant as a title's developer or publisher because both name a party.
 - **Registry identifiers: when a record was FETCHED for a finding, "matches the upstream prose"
   is NOT verification.** Serial/application numbers, registration numbers, filing/registration/renewal
   dates, and status for that finding must match the fetched record itself (the run archives each record
