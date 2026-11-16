@@ -71,6 +71,43 @@ export function listedExclusionPositions(runDir) {
 }
 
 /**
+ * THE POSITIONS A FINDING NOW DELIVERS, by each of their record ids: record id → `{uri, ordinals}`, the position's own id
+ * and the findings that deliver it. A later review is listed these as "excluded at the full review, now delivered as a
+ * finding" (pipeline.mjs writerExclusionBlock), so a flag may name one, and it is a flag on that finding: no exclusion
+ * stands for it to be about. Empty for the full review, for a record written before these were kept, or one that cannot
+ * be read, so such a flag is refused as before. Never throws.
+ */
+export function listedWithdrawnPositions(runDir) {
+  const out = new Map();
+  try {
+    const doc = readJson(driverDir(String(runDir ?? ""), REVIEW_EXCLUSIONS_FILE));
+    for (const p of Array.isArray(doc?.withdrawn) ? doc.withdrawn : []) {
+      if (!p?.uri) continue;
+      const entry = { uri: p.uri, ordinals: (Array.isArray(p.ordinals) ? p.ordinals : []).filter((n) => Number.isInteger(n) && n >= 1) };
+      for (const m of [p.uri, ...(Array.isArray(p.members) ? p.members : [])]) { const k = String(normalizeRecordUri(m) ?? ""); if (k) out.set(k, entry); }
+    }
+  } catch { /* nothing kept: the flag is checked against the standing exclusions alone */ }
+  return out;
+}
+
+/**
+ * A flag's positions read against both lists: each standing exclusion stays a position, and each position a finding now
+ * delivers becomes that finding's ordinal in `ordKey` (`on` for the tool's values, `ordinals` for a parsed file). A
+ * delivered position whose finding has no ordinal stays a position. Returns the flag, or `{unknown}` naming the first id
+ * on neither list. PURE.
+ */
+function onDeliveredFindings(f, ordKey, positionsListed, withdrawnListed) {
+  const k = (p) => String(normalizeRecordUri(p) ?? "");
+  const unknown = f.positions.find((p) => !positionsListed?.get(k(p)) && !withdrawnListed?.get(k(p)));
+  if (unknown != null) return { unknown };
+  const ords = f.positions.flatMap((p) => (positionsListed?.get(k(p)) ? [] : withdrawnListed.get(k(p)).ordinals));
+  const kept = f.positions.filter((p) => positionsListed?.get(k(p)) || !withdrawnListed.get(k(p)).ordinals.length);
+  if (!ords.length) return { flag: f };
+  const { positions: _drop, ...rest } = f;
+  return { flag: { ...rest, [ordKey]: [...new Set([...(Array.isArray(f[ordKey]) ? f[ordKey] : []), ...ords])], ...(kept.length ? { positions: kept } : {}) } };
+}
+
+/**
  * The address list the last review dispatch wrote (review-addresses.mjs): the finding ordinals and the other parts of
  * the report that review was handed. null when none was written or it does not read back, so `on` is checked as it
  * always was and an address in `lines` has nothing to resolve against. Never throws.
@@ -162,8 +199,11 @@ const textDefect = (t) => {
  *
  * `receiptPresent` is the DRIVER's read, never a parameter of the call: whether the audit section is
  * owed is a fact about the run, and a seat that could assert it could waive its own audit.
+ *
+ * `withdrawnListed` is the driver's read too (listedWithdrawnPositions): the positions a later review was told a finding
+ * now delivers. A flag naming one is rendered as a flag on that finding.
  */
-export function acceptRefutation(params, { receiptPresent = false, positionsListed = null, addresses = null } = {}) {
+export function acceptRefutation(params, { receiptPresent = false, positionsListed = null, withdrawnListed = null, addresses = null } = {}) {
   const verdict = params?.verdict;
   const flags = params?.flags;
   const planAudit = params?.plan_audit;
@@ -213,7 +253,7 @@ export function acceptRefutation(params, { receiptPresent = false, positionsList
       if (!Array.isArray(f.positions) || !f.positions.length || f.positions.some((p) => typeof p !== "string" || !p.trim())) {
         return { ok: false, reason: `refutation_flag_positions_invalid:${i} — \`positions\` is an array of record ids from the writer's exclusions list, or omit it` };
       }
-      const unknown = f.positions.find((p) => !positionsListed?.get(String(normalizeRecordUri(p) ?? "")));
+      const { unknown } = onDeliveredFindings(f, "on", positionsListed, withdrawnListed);
       if (unknown != null) {
         return { ok: false, reason: `refutation_flag_position_unlisted:${i}:${String(unknown).slice(0, 80)} — name a position by a record id the writer's exclusions list gives for it` };
       }
@@ -226,9 +266,14 @@ export function acceptRefutation(params, { receiptPresent = false, positionsList
     return { ok: false, reason: "refutation_plan_audit_shape: `plan_audit` is an array of lines" };
   }
 
-  // A position is rendered as the list keys it, whichever of its record ids the flag named.
-  const byPosition = (p) => positionsListed.get(String(normalizeRecordUri(p) ?? ""));
-  const rendered = flags.map((f) => (Array.isArray(f?.positions) ? { ...f, positions: [...new Set(f.positions.map(byPosition))] } : f));
+  // A position is rendered as the list keys it, whichever of its record ids the flag named; one a finding now delivers is
+  // rendered as that finding.
+  const byPosition = (p) => { const k = String(normalizeRecordUri(p) ?? ""); return positionsListed?.get(k) ?? withdrawnListed?.get(k)?.uri ?? k; };
+  const rendered = flags.map((f) => {
+    if (!Array.isArray(f?.positions)) return f;
+    const g = onDeliveredFindings(f, "on", positionsListed, withdrawnListed).flag;
+    return Array.isArray(g.positions) ? { ...g, positions: [...new Set(g.positions.map(byPosition))] } : g;
+  });
   const content = renderRefutation(verdict, rendered, planAudit);
 
   // ── THE ROUND-TRIP. Rendered bytes → the four shipped parsers → exactly what was asked for. ───────
@@ -307,6 +352,7 @@ export function recordRefutation(runDir, received, { now = () => new Date().toIS
   // reason and it survives — then rewritten with the verdict once there is one.
   capture({ accepted: null, refusedReason: null });
   const verdict = acceptRefutation(received, { receiptPresent: planReceiptPresent(dir0), positionsListed: listedExclusionPositions(dir0),
+    withdrawnListed: listedWithdrawnPositions(dir0),
     addresses: listedAddresses(dir0) });
   capture({ accepted: Boolean(verdict.ok), refusedReason: verdict.ok ? null : verdict.reason });
   if (!verdict.ok) {
@@ -460,10 +506,12 @@ export function planAuditLines(reviewMd) {
 
 /**
  * The typed values of a review saved as a file, as `{ok: true, verdict, flags, planAudit}`, or `{ok: false, reason}` with
- * the token the tool refuses the same review with. `receiptPresent` and `positionsListed` are the driver's reads, as for
- * acceptRefutation. PURE.
+ * the token the tool refuses the same review with. `receiptPresent`, `positionsListed` and `withdrawnListed` are the
+ * driver's reads, as for acceptRefutation, and a flag on a position a finding now delivers is read as a flag on that
+ * finding. The file keeps the reviewer's words: no correction is routed by a later review's positions (the correction
+ * after a repair's review is handed none). PURE.
  */
-export function acceptReviewFile(content, { receiptPresent = false, positionsListed = null } = {}) {
+export function acceptReviewFile(content, { receiptPresent = false, positionsListed = null, withdrawnListed = null } = {}) {
   const text = String(content ?? "");
   const verdict = parseVerdict(text);
   if (!REVIEW_VERDICTS.includes(verdict)) return { ok: false, reason: `refutation_verdict_invalid:${String(verdict).slice(0, 40)}` };
@@ -472,8 +520,10 @@ export function acceptReviewFile(content, { receiptPresent = false, positionsLis
   for (let i = 0; i < flags.length; i++) {
     if (!String(flags[i].text ?? "").trim()) return { ok: false, reason: `refutation_flag_text_empty:${i}` };
     if ((flags[i].ordinals ?? []).some((n) => n < 1)) return { ok: false, reason: `refutation_flag_on_invalid:${i}` };
-    const unknown = (flags[i].positions ?? []).find((p) => !positionsListed?.get(String(normalizeRecordUri(p) ?? "")));
+    if (!Array.isArray(flags[i].positions) || !flags[i].positions.length) continue;
+    const { unknown, flag } = onDeliveredFindings(flags[i], "ordinals", positionsListed, withdrawnListed);
     if (unknown != null) return { ok: false, reason: `refutation_flag_position_unlisted:${i}:${String(unknown).slice(0, 80)}` };
+    flags[i] = flag;
   }
   const planAudit = planAuditLines(text);
   if (receiptPresent && !planAudit.length) return { ok: false, reason: "refutation_plan_audit_missing" };
@@ -499,7 +549,7 @@ export function settleRecheckSave(runDir, { before = null, stageOk = false, seq0
   try { now = readFileSync(join(dir0, REVIEW_FILE), "utf8"); } catch { now = null; }
   const earlierBack = before != null && now !== before ? before : null;
   if (!stageOk) return { read: null, fail: null, refused: null, restore: earlierBack };
-  const rules = { receiptPresent: planReceiptPresent(dir0), positionsListed: listedExclusionPositions(dir0) };
+  const rules = { receiptPresent: planReceiptPresent(dir0), positionsListed: listedExclusionPositions(dir0), withdrawnListed: listedWithdrawnPositions(dir0) };
   const call = readAcceptedReviewSince(dir0, seq0);
   const typed = call ? acceptRefutation({ verdict: call.verdict, flags: call.flags, plan_audit: call.planAudit }, rules) : null;
   const saved = typed?.ok ? typed.content : null;

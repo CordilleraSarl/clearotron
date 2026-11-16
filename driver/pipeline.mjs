@@ -3605,7 +3605,8 @@ export function withGoodsStates(ctx, P, rows, read = null) {   // @internal — 
  * so its record is expected, and a missing one is "unreadable" (ruled 2026-10-30). A finding the report carries ends a
  * position whatever the ledger still holds; a withdrawn one ends only a position the writer never declined.
  *
- * `delivered` is every record the findings the report carries name, and `findings` each finding's owner and
+ * `delivered` is every record the findings the report carries name, `deliveredBy` the ordinal of the finding that carries
+ * each, and `findings` each finding's owner and
  * fingerprint, withdrawn ones included, for a later review to establish from the findings themselves which exclusions a
  * finding now delivers and which a changed finding touches; both are null where the findings cannot be read.
  *
@@ -3616,7 +3617,7 @@ export function withGoodsStates(ctx, P, rows, read = null) {   // @internal — 
  * already holds is compared; nothing is fetched for it. IMPURE.
  */
 export function writerExclusions(P) {   // @internal — driven by its test with a run's own files
-  const empty = (state) => ({ state, positions: [], undecided: 0, delivered: null, findings: null });
+  const empty = (state) => ({ state, positions: [], undecided: 0, delivered: null, deliveredBy: null, findings: null });
   try {
     if (!P?.placementModel || !existsSync(P.placementModel)) return empty("unreadable");
     let placements;
@@ -3626,10 +3627,13 @@ export function writerExclusions(P) {   // @internal — driven by its test with
     const key = (u) => String(normalizeRecordUri(u) ?? "");
     const declined = readDeclinations(P.runDir);
     if (existsSync(declinationCallPaths(P.runDir, 0).ledger) && !declined.present) return empty("unreadable");
-    let delivered, withdrawn, findings;
+    let delivered, withdrawn, findings, deliveredBy;
     try {
       const found = parseFindingsJsonLenient(readFileSync(P.findings, "utf8"))?.findings ?? [];
-      [delivered, withdrawn] = [true, false].map((live) => new Set([...findingUris(found.filter((f) => (f?.disposition !== "withdrawn") === live)).keys()].map(key)));
+      // Each delivered record with the finding that carries it, as the findings the review reads number it.
+      deliveredBy = new Map([...findingUris(found.filter((f) => f?.disposition !== "withdrawn")).entries()].map(([u, v]) => [key(u), v?.ordinal ?? null]));
+      delivered = new Set(deliveredBy.keys());
+      withdrawn = new Set([...findingUris(found.filter((f) => f?.disposition === "withdrawn")).keys()].map(key));
       // Each finding as the writer numbered it. A later review's comparison and a ground's "finding 9" both read the
       // writer's numbering, and from the delivery seam on findings.json is the folded, renumbered record (record-fold.mjs).
       const modelAt = modelRecordPath(P.runDir, P.findings);
@@ -3669,7 +3673,7 @@ export function writerExclusions(P) {   // @internal — driven by its test with
     for (const p of positions) p.evidence = createHash("sha256").update(stableStringify(p.members.map((u) => ({ uri: u,
       record: recordContent(band.get(u) ?? bandOf.get(u)), body: bodies.get(u) ?? null, goodsState: goodsOf.get(u) ?? null }))))
       .digest("hex").slice(0, 16);
-    return { state: undecided ? "unreadable" : positions.length ? "listed" : "none", positions, undecided, delivered, findings };
+    return { state: undecided ? "unreadable" : positions.length ? "listed" : "none", positions, undecided, delivered, deliveredBy, findings };
   } catch { return empty("unreadable"); }
 }
 
@@ -3741,7 +3745,10 @@ export function writerExclusionBlock(P, { review = "full", named = [] } = {}) { 
       shown = x.positions.filter(checked).map((p) => (restsOn(p).length ? { ...p, revisedCites: restsOn(p) } : p));
       reference = x.positions.filter((p) => !checked(p));
       const now = new Set(x.positions.map((p) => p.uri));
-      withdrawn = full.positions.filter((p) => p?.uri && !now.has(p.uri) && (p.members ?? [p.uri]).some((u) => x.delivered?.has(u)));
+      withdrawn = full.positions.filter((p) => p?.uri && !now.has(p.uri) && (p.members ?? [p.uri]).some((u) => x.delivered?.has(u)))
+        // WITH THE FINDING THAT NOW DELIVERS IT, so a flag the review places on it reads as a flag on that finding
+        // (narrative-refutation-record.mjs listedWithdrawnPositions). The line the review reads is unchanged.
+        .map((p) => ({ ...p, ordinals: [...new Set((p.members ?? [p.uri]).map((u) => x.deliveredBy?.get(u)).filter(Number.isInteger))] }));
       changedOnly = true;
       // A record from before the answers were kept is read by time: what the run obtained after it was written.
       const had = Array.isArray(full.research) ? new Set(full.research) : null;
@@ -3752,7 +3759,8 @@ export function writerExclusionBlock(P, { review = "full", named = [] } = {}) { 
   try {
     ensureDriverDir(P.runDir);
     const record = JSON.stringify({ ts: new Date().toISOString(), review, state: x.state, positions: x.positions, findings: x.findings,
-      research: held.map(researchAnswerKey), shown: shown.map((p) => p.uri), reference: reference.map((p) => p.uri) }, null, 2) + "\n";
+      research: held.map(researchAnswerKey), shown: shown.map((p) => p.uri), reference: reference.map((p) => p.uri),
+      withdrawn: withdrawn.map((p) => ({ uri: p.uri, members: p.members ?? [p.uri], ordinals: p.ordinals })) }, null, 2) + "\n";
     if (review === "full") atomicWrite(at.full, record);
     atomicWrite(at.shown, record);
   } catch (e) { runLog(P.runDir, { event: "review-exclusions-write-failed", reason: String(e?.message ?? e).slice(0, 160) }); }
