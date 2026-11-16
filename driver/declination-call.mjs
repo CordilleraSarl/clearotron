@@ -58,7 +58,8 @@
 // is the judgment the rule leaves to the lawyer, and a tool that guessed at it would be making the
 // legal call this comment says it does not make. The narrow half is enforced and the wide half is left
 // where it belongs. The seat keeps every non-discretionary route: `duplicate-of-delivered` and
-// `own-right` are bookkeeping about the deliverable, not claims about relevance, and neither is refused
+// `own-right` are bookkeeping about the deliverable, and `owner-unidentified` records that no source the
+// run holds identifies the proprietor. None of the three is a claim about relevance, and none is refused
 // on any record.
 //
 // A refusal is actionable INSIDE the turn — the answer names the row and says which fact contradicts
@@ -102,8 +103,9 @@ export const MAX_DECLINATIONS_PER_CALL = 40;
 //
 // `discretionary` marks a reason that ASSERTS SOMETHING ABOUT THE RECORD'S RELEVANCE. Those are the only
 // ones any refusal below can fire on, because they are the only ones a fact from the job can contradict.
-// The other two say something about the DELIVERABLE — this record is already in it, or it is ours — and
-// no class list or mark string can disagree with either.
+// The other three say something about the DELIVERABLE or about what the run holds — this record is already
+// in it, it is ours, or nothing held identifies who stands behind it — and no class list or mark string
+// can disagree with any of them.
 export const DECLINATION_REASONS = Object.freeze({
   "unrelated-goods": {
     discretionary: true,
@@ -139,6 +141,16 @@ export const DECLINATION_REASONS = Object.freeze({
     discretionary: false,
     rules: "the applicant's own or affiliated record (`own_rights` is a finding field)",
     gloss: "the record or page belongs to the applicant or an affiliate, so it is not a conflict to report",
+  },
+  // AN UNKNOWN OWNER IS NOT A LOW RISK. A lead that meets the inclusion rule but whose proprietor no source the
+  // run holds identifies in the role that matters carries no band: it leaves as an open identification action
+  // and a named open coverage row. The action has no field for a source, so this declination is where the
+  // page, its source and what it does not show are kept, keyed by the page.
+  "owner-unidentified": {
+    discretionary: false,
+    rules: 'synthesis-rules.md, "Common-law source attribution — never confabulate the owner/seller"',
+    gloss: "nothing the run holds identifies who owns this record or page in the role that matters — a name "
+      + "alone does not — so it carries no band and leaves as an open identification action instead of a finding",
   },
 });
 
