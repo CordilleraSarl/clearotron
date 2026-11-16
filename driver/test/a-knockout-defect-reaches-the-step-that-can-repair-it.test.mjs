@@ -411,7 +411,8 @@ test("a line a defect names may be corrected on every name it prints on, and not
 });
 
 test("a refused change to another name says what it owes there, and a name outside the chunk is told so", () => {
-  assert.match(applyShared({ marks: [{ name: SIBLING, findings: [{ ...finding(2, "THREE", "Low"), note: "x" }] }] }).reason, new RegExp(`: ${REFUSAL.replace(/[.;`]/g, "\\$&")}$`));
+  const refused = applyShared({ marks: [{ name: SIBLING, findings: [{ ...finding(2, "THREE", "Low"), note: "x" }] }] }).reason;
+  assert.ok(refused.endsWith(`: ${REFUSAL}`), `the refusal does not end with the shared sentence: ${refused}`);
   assert.match(applyShared({ marks: [{ name: "ABSENT", findings: [finding(1, "ONE")] }] }).reason, /this name is not in the chunk you were handed/);
 });
 
