@@ -1124,6 +1124,10 @@ export function reportCardFixture(out) {
  * is now unreachable from the seat's side. The knobs still drive a fail-closed run; what moved is which
  * artifact is missing when it fails, and named-band-missing.test.mjs states that at its arms.
  */
+/** The follow-up spellings MOCK_ESCALATION_PROPOSES_ERRORED proposes, and the outage the register answers them with. */
+export const MOCK_ERRORED_FOLLOW_UP_TERMS = ["QZELVORA", "QZELVORI", "QZELVORU"];
+export const MOCK_OUTAGE_REASON = "provider error (after one in-tool retry): provider error on the count probe before enumeration: HTTP 503: service unavailable";
+
 export function mockUnitBandWrite(runDir, axis, msg = "") {
   const bandPath = join(runDir, "register-units", `${axis}-band.json`);
   mkdirSync(dirname(bandPath), { recursive: true });
@@ -1155,6 +1159,18 @@ export function mockUnitBandWrite(runDir, axis, msg = "") {
     const block = fresh.find((b) => b?.state === "enumerated" && Array.isArray(b.records));
     if (block) { block.records.push({ record_id: "/mark/us/90000077", mark_text: process.env.MOCK_ESCALATION_ADDS_MARK || "NOVAPULSE", classes: [9], status: "Registered",
       owner_name: "Second Owner GmbH", owner_country: "US", screen_verdict: "surface:in-scope-live" }); block.total_hits = block.records.length; }
+  }
+  // MOCK_ESCALATION_PROPOSES_ERRORED=<axis>: the first warm re-run of that axis proposes three follow-up questions, filed
+  // beside the band where the propose tool files them, and the register answers each with an outage: the blocks are what
+  // the tool's own ask leaves in the band. Minted by the real mint, so the fold takes them as it takes the tool's.
+  if (reRun && process.env.MOCK_ESCALATION_PROPOSES_ERRORED === axis) {
+    const sidecar = join(dirname(bandPath), `${axis}-supplemental-plan.json`);
+    if (!existsSync(sidecar)) {
+      const { minted } = mintSupplementalEntries(axis, MOCK_ERRORED_FOLLOW_UP_TERMS.map((term) => ({ predicate: "exact", term, nice_classes: ["9"], rationale: "mock escalation: a narrower spelling" })), {});
+      writeFileSync(sidecar, JSON.stringify({ schema: "register-plan/1", plan_version: 1, derived_from: { job_key: `supplemental:${axis}`, variants_fingerprint: "supplemental" },
+        regions: [], rejected: [], entries: minted }));
+      for (const e of minted) fresh.push({ state: "incomplete", qid: e.qid, query: `${axis} / ${e.term}`, total_hits: 0, fetched: 0, sample: [], error: true, reason: MOCK_OUTAGE_REASON });
+    }
   }
   const freshQids = new Set(fresh.filter((b) => b && b.qid).map((b) => b.qid));
   let kept = [];

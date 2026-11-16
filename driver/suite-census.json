@@ -915,6 +915,18 @@
           "skips": 0,
           "todos": 0
         },
+        "a-follow-up-question-the-register-errored-on-does-not-park-the-run.pipeline.test.mjs": {
+          "tests": 2,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-follow-up-question-the-register-errored-on-is-asked-again-in-the-same-pass.test.mjs": {
+          "tests": 10,
+          "asserts": 45,
+          "skips": 0,
+          "todos": 0
+        },
         "a-follow-up-re-runs-only-what-is-missing.test.mjs": {
           "tests": 4,
           "asserts": 9,
