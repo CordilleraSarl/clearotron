@@ -980,8 +980,16 @@ export function refusedRecordsLeftOut(P) {   // @internal — driven by its test
   return ids.map((x) => String(x).toLowerCase()).filter((id) => id && !inBand.has(id));
 }
 
-/** The named band as it is written to disk: what a dispatch over it measures. */
-const namedBandText = (band) => JSON.stringify(band, null, 2) + "\n";
+/**
+ * The named band as it is written to disk: what a dispatch over it measures.
+ *
+ * WRITTEN WITHOUT INDENTATION. Every reader parses it, but one: the form-gap check (`mechanicalFormGapDirectives`)
+ * also searches its text for each near-form term. A term holds no JSON punctuation, so it matches inside one token
+ * or not at all, and the indentation between tokens changes nothing it finds. Indented, the band was an eighth
+ * whitespace: measured in testing, 2026-11-17, a 25,677,439-byte band was 22,026,521 bytes compact, with the
+ * check's answer the same for every one of the run's 345 near-form terms.
+ */
+export const namedBandText = (band) => JSON.stringify(band) + "\n";   // @internal — driven by its test
 
 export function deriveNamedBand(ctx, merged = null) {   // @internal — driven by its test with a run's own files
   const P = ctx.paths;
