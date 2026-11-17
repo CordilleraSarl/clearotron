@@ -77,7 +77,7 @@ test("the neutral env var still wins, and a legacy name beside it changes nothin
 
 test("an empty or whitespace env value is NOT a setting — it falls through", () => {
   const { legacy } = home({ "corsearch-records.jsonl": "x" });
-  const r = resolveLedger("record", { CLEAROTRON_REGISTER_RECORD_LOG: "   ", CLEAROTRON_REGISTER_RECORD_LOG: "" });
+  const r = resolveLedger("record", { CLEAROTRON_REGISTER_RECORD_LOG: "" });
   assert.equal(r.path, join(legacy, "corsearch-records.jsonl"),
     "an exported-but-blank var must not point the ledger at the empty string");
   restore();

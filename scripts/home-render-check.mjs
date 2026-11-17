@@ -464,7 +464,7 @@ for (const [name, spec] of Object.entries(STATES)) {
           say(false, `${name}/${theme}: Home never settled within 20s after ${after} — `
             + `readyState=${seen.ready || '(unknown)'} path=${seen.url || '(unknown)'} `
             + `.home2=${seen.home} staleDoc=${seen.stale} lastSize=${seen.size}. `
-            + `The wait is a deadline on a settling page, not a fixed sleep (#1854).`)
+            + `The wait is a deadline on a settling page, not a fixed sleep.`)
           return false
         }
         await new Promise((r) => setTimeout(r, 60))

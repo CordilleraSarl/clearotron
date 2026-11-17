@@ -14,13 +14,13 @@
 // still never shipped. The arms below read the dispatch sites out of the source.
 
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import { stageCharter } from "../pipeline.mjs";
 import { proseRungDirective, inquiryRungDirective } from "../stages.mjs";
 import { depthFor } from "../search-policy.mjs";
 
-const SRC = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+const SRC = driverSource("pipeline.mjs");
 const WORLDWIDE = "global-preliminary-search", ONE = "full-country-search";
 const depth = (p) => depthFor({ product: p });
 

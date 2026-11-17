@@ -34,6 +34,7 @@
 //   B7  the recheck keeps the wide re-read when the scope is declared → arm 7
 //   B8  a declared ordinal loses to the prose name match              → arm 8
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { parseCorrections } from "../verify.mjs";
 import { correctionScope, scopeDrift, buildCorrectionsApplied, ordinalsOf } from "../corrections-feedforward.mjs";
@@ -167,7 +168,7 @@ test("arm 8 — a DECLARED ordinal beats the prose name match that missed six of
 
 function readSrc() {
   const { readFileSync } = require("node:fs");
-  return readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  return driverSource("pipeline.mjs");
 }
 import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);

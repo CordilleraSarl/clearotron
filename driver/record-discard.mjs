@@ -53,7 +53,7 @@
 
 import { appendFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
+import { driverDir } from "./run-record.mjs";   //
 
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 
@@ -71,9 +71,6 @@ export const DISCARD_LEDGER_NAME = "record-discard.jsonl";
  * one decision, and two copies of a decision are how they come to disagree.
  */
 export const DISCARD_SEAMS = ["placement", "digest", "synthesis"];
-
-/** What a pass did with a record. `carried` cancels an earlier `discarded` at the same seam. */
-export const DISCARD_VERDICTS = ["carried", "discarded"];
 
 const clip = (s, n = 300) => {
   const t = String(s ?? "").replace(/\s+/g, " ").trim();

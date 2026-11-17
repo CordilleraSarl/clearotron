@@ -56,7 +56,7 @@ const nameOf = (r) => r?.name ?? "(unnamed)";
  *
  * A GUARD THAT ONLY NAMES THE PROBLEM COSTS THE READER THE SAME HOUR EVERY TIME. This one fires on
  * every version pull request — the bot parks under the narrowest policy this repository can set — so it
- * is read often, and by whoever is on shift rather than by whoever built it. The run id is the only
+ * is read often, and by whoever is cutting the release rather than by whoever built it. The run id is the only
  * thing that is not already in the sentence.
  */
 const howToClear = (repo, runs) => {

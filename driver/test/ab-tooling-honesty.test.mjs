@@ -16,6 +16,7 @@
 //
 // Fully offline ($0): the mock `claude` binary and the mock pipeline, same harness uses.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { MODELS } from "../driver.config.mjs";   // — a tier is recorded as what the catalog says, not a second copy
 import { mkdtempSync, chmodSync, readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from "node:fs";
@@ -186,7 +187,7 @@ test("corruption 2 drift guard: no production dispatch may pass an `extra` for a
   // catch this corruption, which is the other one: a dispatch site that composes a block the registry
   // never heard of. Walking the source is how the codebase already guards verify.mjs's sidecars
   // (experiment-context.test.mjs " drift guard"), for the same reason — the call sites are the fact.
-  const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   // `stage("<name>", …` / `await stage("<name>", …` call sites whose options object carries `extra:`.
   const sites = [];
   const re = /\bstage\(\s*"([a-z-]+)"\s*,/g;

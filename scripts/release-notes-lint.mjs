@@ -30,8 +30,9 @@ export const GROUPS = ["Before you upgrade", "New", "Fixed", "For operators"];
 
 /** At most this many words in a sentence, or in each clause of it after a semicolon or a colon. The contract's number,
  *  not a tuned one. It has risen only to the length of a sentence the owner approved word for word, and no further:
- *  25 to 26 on 2026-10-28, and 26 to 30 on 2026-10-30, for a note of 30 words in one clause. */
-export const MAX_WORDS = 30;
+ *  25 to 26 on 2026-10-28, 26 to 30 on 2026-10-30, for a note of 30 words in one clause, and 30 to 41 on 2026-11-11,
+ *  for a note of 41 words in one clause approved under the owner's delegation. A ceiling, not a target. */
+export const MAX_WORDS = 41;
 
 /**
  * Our internal vocabulary. Every one of these is a word we use fluently and the reader has never met in

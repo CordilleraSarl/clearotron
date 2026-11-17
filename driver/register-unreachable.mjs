@@ -27,9 +27,10 @@ import { PROVIDERS, activeProvider, missingCredentials } from "./driver.config.m
 import { capabilitiesFor } from "./register-capabilities.mjs";
 import { unavailableOffices } from "./register-availability.mjs";
 
-/** The ACTIVE provider's contract, or null. Never throws — an unwired provider is not this file's error. */
-export function registerCapabilities() {
-  try { return capabilitiesFor(activeProvider().id); } catch { return null; }
+/** A register's contract: the run's (`ctx.register`), or the machine's when none is named; null when unknown. Never
+ *  throws — an unwired provider is not this file's error. */
+export function registerCapabilities(register = null) {
+  try { return capabilitiesFor(register ?? activeProvider().id); } catch { return null; }
 }
 
 /**

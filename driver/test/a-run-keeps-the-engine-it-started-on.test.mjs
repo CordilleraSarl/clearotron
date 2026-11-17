@@ -1,0 +1,255 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
+//
+// A RUN KEEPS THE ENGINE IT STARTED ON.
+//
+// The engine used to be read from the machine's setting at every activation, so a run parked on one engine and
+// resumed after the setting changed carried on under the other. A run now records its engine and register when it
+// starts, and every turn it runs goes to the recorded engine. A run with no record runs on the machine's engine as
+// before and is given no record after the fact. A recorded engine this driver cannot serve stops the stage by name;
+// no turn reaches another engine in its place. The probe engines here are invented.
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { driverDir } from "../../shared/driver-dir.mjs";
+import { pinEnv } from "../../shared/env-aliases.mjs";
+
+process.env.CORSEARCH_SESSION_KEY ||= "test-offline";
+const ROOT = mkdtempSync(join(tmpdir(), "run-keeps-engine-"));
+pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
+pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", join(ROOT, "pool"));
+process.env.CLEAROTRON_RETRY_BACKOFF_MS = "0";
+const GW = await import("../gateway.mjs");
+const RC = await import("../engine/run-choices.mjs");
+
+const turns = [];
+let stageFile = null;   // the file the stage under test expects; each probe turn writes it, as a writer would
+for (const name of ["probe-started", "probe-machine"]) {
+  GW.registerEngine({ name, async runTurn() {
+    turns.push(name);
+    writeFileSync(stageFile, "# Narrative\n\nAn invented narrative.\n");
+    return { code: 0, killed: false, wall: 1, stdout: "", stderr: "", laneWaitMs: 0,
+      json: { status: "ok", runId: `${name}-1` }, usage: { input: 10, output: 5 }, sessionRef: `${name}-s` };
+  } });
+}
+
+// A record as a run that started on a probe engine would hold. Written directly: the record module takes only an
+// engine this driver ships, and the probes are registered for this test alone.
+const writeRecord = (runDir, engine) =>
+  writeFileSync(driverDir(runDir, RC.RUN_CHOICES_FILE), JSON.stringify({ schema: 1, engine, register: null }));
+const newRun = (tag) => {
+  const runDir = mkdtempSync(join(ROOT, `${tag}-`));
+  mkdirSync(driverDir(runDir), { recursive: true });
+  return runDir;
+};
+const withEnv = async (vars, fn) => {
+  const prev = {};
+  for (const [k, v] of Object.entries(vars)) { prev[k] = process.env[k]; pinEnv(process.env, k, String(v)); }
+  try { return await fn(); } finally { for (const [k, v] of Object.entries(prev)) pinEnv(process.env, k, v); }
+};
+// One stage on `runDir`, with the machine set to probe-machine. The turn writes the stage's file, so the stage passes.
+async function stageOn(runDir) {
+  const out = join(runDir, "narrative.md");
+  stageFile = out;
+  turns.length = 0;
+  const r = await withEnv({ CLEAROTRON_AI: "probe-machine", CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0" }, () =>
+    GW.runStage("synthesis", { agent: "mailagent", message: "go", model: "haiku", sessionKey: "clearance-keeps", timeoutSec: 60,
+      runDir, expectFile: [out] }));
+  return { r, turns: [...turns] };
+}
+
+test("the record holds the engine and register names only, and a second write keeps the first", () => {
+  const runDir = newRun("record");
+  const first = RC.recordRunChoices(runDir, { engine: "Anthropic-Agent", register: "corsearch" });
+  assert.deepEqual(first, { written: true, state: "recorded", engine: "anthropic-agent", register: "corsearch" });
+  assert.deepEqual(JSON.parse(readFileSync(driverDir(runDir, RC.RUN_CHOICES_FILE), "utf8")),
+    { schema: 1, engine: "anthropic-agent", register: "corsearch" }, "nothing beyond the two names is written");
+  const again = RC.recordRunChoices(runDir, { engine: "openai-agent", register: null });
+  assert.equal(again.written, false);
+  assert.equal(again.engine, "anthropic-agent", "a run's first choice is never rewritten");
+  assert.deepEqual(RC.readRunChoices(runDir), { state: "recorded", engine: "anthropic-agent", register: "corsearch" });
+});
+
+test("only an engine this driver ships and a known register can be recorded, so no other string reaches the record", () => {
+  const runDir = newRun("refused");
+  assert.throws(() => RC.recordRunChoices(runDir, { engine: "invented-credential-value", register: "corsearch" }), /not an engine this driver ships/);
+  assert.throws(() => RC.recordRunChoices(runDir, { engine: "openai-agent", register: "invented-credential-value" }), /not a register this driver knows/);
+  assert.deepEqual(RC.readRunChoices(runDir), { state: "none" }, "a refused write leaves no record");
+  assert.equal(RC.recordRunChoices(runDir, { engine: "openai-agent", register: null }).register, null,
+    "a machine with no register set is recorded as having none");
+});
+
+test("a record that does not read back is named as unreadable, not taken as absent", () => {
+  const bad = newRun("unparsed");
+  writeFileSync(driverDir(bad, RC.RUN_CHOICES_FILE), "{ not json");
+  assert.equal(RC.readRunChoices(bad).state, "unreadable");
+  const blank = newRun("blank");
+  writeFileSync(driverDir(blank, RC.RUN_CHOICES_FILE), JSON.stringify({ schema: 1, engine: "", register: "corsearch" }));
+  assert.deepEqual(RC.readRunChoices(blank), { state: "unreadable", detail: "names no engine" });
+  assert.deepEqual(RC.readRunChoices(null), { state: "none" });
+});
+
+test("a run that recorded its engine runs every turn on it after the machine's setting changed", async () => {
+  const runDir = newRun("started");
+  writeRecord(runDir, "probe-started");
+  const { r, turns: served } = await stageOn(runDir);
+  assert.equal(r?.ok, true, `the stage failed: ${r?.fail ?? "(no fail recorded)"}`);
+  assert.deepEqual(served, ["probe-started"], "a turn went to the machine's engine instead of the run's");
+});
+
+test("a run with no record runs on the machine's engine, as before, and is given no record", async () => {
+  const runDir = newRun("unrecorded");
+  const { r, turns: served } = await stageOn(runDir);
+  assert.equal(r?.ok, true, `the stage failed: ${r?.fail ?? "(no fail recorded)"}`);
+  assert.deepEqual(served, ["probe-machine"]);
+  assert.deepEqual(RC.readRunChoices(runDir), { state: "none" }, "running a stage wrote a record the run never made");
+});
+
+test("a recorded engine this driver cannot serve, or an unreadable record, stops the stage by name and runs no turn", async () => {
+  const gone = newRun("gone");
+  writeFileSync(driverDir(gone, RC.RUN_CHOICES_FILE), JSON.stringify({ schema: 1, engine: "probe-retired", register: "corsearch" }));
+  await assert.rejects(stageOn(gone), /started on the "probe-retired" engine, which this driver does not have registered.*rather than switch to probe-machine/);
+  assert.deepEqual(turns, [], "a turn reached the machine's engine in the run's place");
+  const bad = newRun("bad");
+  writeFileSync(driverDir(bad, RC.RUN_CHOICES_FILE), "{ not json");
+  await assert.rejects(stageOn(bad), /engine record \(_driver\/run-choices\.json\) does not parse/);
+  assert.deepEqual(turns, []);
+});
+
+test("a run's jurisdiction lanes follow its recorded engine too, so its lanes and its stages never split", async () => {
+  const { makeJxTurnRunner } = await import("../engine/jx-turn.mjs");
+  const runTurn = async () => ({ code: 0, json: { status: "ok" }, stdout: "" });
+  const env = { CLEAROTRON_AI: "openai-agent" };
+  const started = newRun("jx-started");
+  RC.recordRunChoices(started, { engine: "anthropic-agent", register: null });
+  assert.equal((await makeJxTurnRunner({ env, runTurn, runDir: started })).engine, "anthropic-agent");
+  assert.equal((await makeJxTurnRunner({ env, runTurn, runDir: newRun("jx-unrecorded") })).engine, "openai-agent",
+    "a run with no record takes the machine's engine");
+  assert.equal((await makeJxTurnRunner({ env, runTurn })).engine, "openai-agent", "a caller with no run is unchanged");
+  const unshipped = newRun("jx-unshipped");
+  writeRecord(unshipped, "probe-started");
+  assert.match((await makeJxTurnRunner({ env, runTurn, runDir: unshipped })).error ?? "",
+    /started on the "probe-started" engine, which this driver does not ship; the jx lanes keep that engine/);
+  const bad = newRun("jx-bad");
+  writeFileSync(driverDir(bad, RC.RUN_CHOICES_FILE), "{ not json");
+  assert.match((await makeJxTurnRunner({ env, runTurn, runDir: bad })).error ?? "", /engine record does not parse/);
+});
+
+test("each live jurisdiction lane hands its run to the turn runner", async () => {
+  const { resolveJxExecutor } = await import("../jx.mjs");
+  const { resolveJudge, resolveNativeread } = await import("../jx-units.mjs");
+  // A recorded engine this driver does not ship is refused before any turn, so the cause shows the run arrived.
+  const runDir = newRun("jx-lanes");
+  writeRecord(runDir, "probe-started");
+  const saved = process.env.CLEAROTRON_JX_FIXTURES;
+  delete process.env.CLEAROTRON_JX_FIXTURES;
+  try {
+    const lanes = [
+      ["completions", resolveJxExecutor({}, { runDir }), { mark: "PROJECT NOVAPULSE", productContext: "", lane: "zh" }],
+      ["judge", resolveJudge({}, { mark: "PROJECT NOVAPULSE", lane: "zh", runDir }), { mark: "PROJECT NOVAPULSE", hits: [] }],
+      ["nativeread", resolveNativeread({}, { mark: "PROJECT NOVAPULSE", lane: "zh", runDir }), { mark: "PROJECT NOVAPULSE", lane: "zh", payload: "" }],
+    ];
+    for (const [kind, { exec, source }, args] of lanes) {
+      assert.equal(source, "engine", `${kind}: not the live lane`);
+      const r = await exec(args);
+      assert.equal(r.ok, false);
+      assert.match(r.cause, new RegExp(`^jx ${kind}: this run started on the "probe-started" engine`), `${kind}: the run did not reach the runner`);
+    }
+  } finally { if (saved !== undefined) process.env.CLEAROTRON_JX_FIXTURES = saved; }
+});
+
+test("a run's register names its register tool server and the tools it grants, decided once from the run's record", async () => {
+  const { buildGatherMcpConfig, allowedToolsFor, toolGroupsForStage } = await import("../engine/mcp/gather-config.mjs");
+  const { REGISTER_PROVIDER } = await import("../driver.config.mjs");
+  const groups = toolGroupsForStage("register-unit:primary-sweep");
+  const other = REGISTER_PROVIDER === "signa" ? "euipo" : "signa";
+  const recorded = newRun("register-recorded");
+  RC.recordRunChoices(recorded, { engine: "anthropic-agent", register: other });
+  assert.equal(RC.registerForRun(recorded), other);
+  const cfg = buildGatherMcpConfig(groups, { sessionKey: "k", agent: "a", runDir: recorded });
+  assert.equal(cfg.mcpServers.register.env.CLEAROTRON_DATABASE, other, "the tool server reads the run's register");
+  const unrecorded = newRun("register-unrecorded");
+  assert.equal(RC.registerForRun(unrecorded), REGISTER_PROVIDER ?? null, "a run with no record is served the machine's");
+  const machine = buildGatherMcpConfig(groups, { sessionKey: "k", agent: "a", runDir: unrecorded });
+  assert.equal(machine.mcpServers.register.env.CLEAROTRON_DATABASE ?? null, REGISTER_PROVIDER ?? null);
+  assert.notDeepEqual(cfg.mcpServers.register.args, machine.mcpServers.register.args, "two registers, two tool servers");
+  assert.equal(allowedToolsFor(groups, { register: REGISTER_PROVIDER }), allowedToolsFor(groups), "naming the machine's register changes nothing");
+});
+
+test("a run's record receipts name the register it recorded; a run with no record names the machine's, as before", async () => {
+  const { assembleRunRecords } = await import("../registry-fidelity.mjs");
+  const { paths } = await import("../run-record.mjs");
+  const { REGISTER_PROVIDER } = await import("../driver.config.mjs");
+  const other = REGISTER_PROVIDER === "signa" ? "euipo" : "signa";
+  const PREFIX = "clearance-qzorvak-2026-11-10-test-";
+  const receiptsOf = (runDir) => {
+    const log = join(runDir, "_driver", "register-record-bodies.jsonl");
+    writeFileSync(log, JSON.stringify({ ts: "2026-11-10T10:00:00Z", sessionKey: `${PREFIX}register-digest`, target: "/mark/eu/q1",
+      body: { statusText: "Registered", classList: ["9"] } }) + "\n");
+    assembleRunRecords(runDir, PREFIX, log, join(runDir, "no-call-ledger.jsonl"));
+    return JSON.parse(readFileSync(paths(runDir).receipts, "utf8")).receipts.map((r) => r.provider);
+  };
+  const recorded = newRun("receipts-recorded");
+  RC.recordRunChoices(recorded, { engine: "anthropic-agent", register: other });
+  assert.deepEqual(receiptsOf(recorded), [other]);
+  const pinned = process.env.CLEAROTRON_DATABASE;
+  assert.deepEqual(receiptsOf(newRun("receipts-unrecorded")), [pinned ? pinned.toLowerCase() : null]);
+});
+
+test("a register unit is briefed on its run's register: its name, its manual and its grant", async () => {
+  const { STAGES, PROVIDER_META, providerMeta } = await import("../stages.mjs");
+  const { REGISTER_PROVIDER, PROVIDERS } = await import("../driver.config.mjs");
+  const other = REGISTER_PROVIDER === "signa" ? "euipo" : "signa";
+  const PATHS = { variantManifest: "vm.json", matterContext: "mc.md", registerBand: (a) => `band-${a}.json`,
+    registerUnit: (a) => `unit-${a}.md`, registerPlan: "plan.json" };
+  const PLAN = { plan_version: 1, regions: [], entries: [{ qid: "primary-sweep:exact:qzorvak", axis: "primary-sweep",
+    predicate: "exact", term: "QZORVAK", nice_classes: ["9"], expected_kind: "enumerate" }] };
+  const message = (extra) => STAGES["register-unit"].message({ paths: PATHS, axis: "primary-sweep",
+    job: { ref: "N-1", markName: "QZORVAK", classes: [9], goods: "computer game software" }, profile: {}, registerPlan: PLAN, ...extra });
+  const onOther = message({ register: other });
+  assert.match(onOther, new RegExp(`Active register provider: ${PROVIDERS[other].label}\\.`));
+  assert.ok(onOther.includes(providerMeta(other).skillDoc), "the unit is told to read its run's register manual");
+  assert.equal(message({}), message({ register: REGISTER_PROVIDER }), "a run that names no register is briefed on the machine's, as before");
+  assert.deepEqual(PROVIDER_META, providerMeta(REGISTER_PROVIDER));
+  assert.deepEqual(STAGES["register-unit"].followupSkillReads({ register: other }), [providerMeta(other).skillDoc]);
+});
+
+test("a run's register adapter is the named register's, or the machine's when none is named", async () => {
+  const { activeProvider, PROVIDERS } = await import("../driver.config.mjs");
+  assert.equal(RC.registerAdapter("signa"), PROVIDERS.signa);
+  assert.equal(RC.registerAdapter(null), activeProvider());
+  assert.throws(() => RC.registerAdapter("invented-register"), /unknown register "invented-register"/);
+});
+
+test("a report's identity line names the register its run recorded", async () => {
+  const { reportIdentityRecord } = await import("../pipeline.mjs");
+  const { REGISTER_PROVIDER, PROVIDERS } = await import("../driver.config.mjs");
+  const { PROVIDER_META } = await import("../stages.mjs");
+  const other = REGISTER_PROVIDER === "signa" ? "euipo" : "signa";
+  const runDir = newRun("identity");
+  const job = { ref: "N-1", markName: "QZORVAK" };
+  assert.equal(reportIdentityRecord(job, { register: other, registerOnly: true }, runDir).run, PROVIDERS[other].label);
+  assert.equal(reportIdentityRecord(job, { registerOnly: true }, runDir).run, PROVIDER_META.label, "a context with no register names the machine's, as before");
+});
+
+test("the register door: a register that is not the machine's is checked on a copy naming it, and parks on refusal, Knockout included", () => {
+  const base = Object.freeze({ CLEAROTRON_DATABASE: "corsearch", OTHER: "kept" });
+  const on = (register) => ({ state: "recorded", engine: "anthropic-agent", register });
+  const door = (recorded, o = {}) => RC.registerDoor(recorded, { machineRegister: "corsearch", env: base, ...o });
+  // The machine's own register: checked as it is, and a refusal fails as before; a Knockout skips the door as it always has.
+  assert.deepEqual(door(on("corsearch")), { env: base, parks: false });
+  assert.equal(door(on("corsearch"), { knockout: true }), null);
+  assert.deepEqual(door({ state: "none" }), { env: base, parks: false }, "a run with no record meets the machine's door");
+  // Another register: checked on a copy that names it, and a refusal parks, for a Knockout too.
+  for (const knockout of [false, true]) {
+    const d = door(on("signa"), { knockout });
+    assert.equal(d?.parks, true, `knockout=${knockout}: a refusal would not park`);
+    assert.deepEqual(d.env, { CLEAROTRON_DATABASE: "signa", OTHER: "kept" });
+    assert.notEqual(d.env, base, "the door was handed the shared environment");
+  }
+  assert.equal(base.CLEAROTRON_DATABASE, "corsearch", "the shared environment changed");
+  // Injected record fetches (an offline replay) skip the door whatever the register.
+  assert.equal(door(on("signa"), { fetchesInjected: true }), null);
+});

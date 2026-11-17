@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 import test from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -173,7 +174,7 @@ test("with no class added, a remedy is asked as the directive dictates", () => {
 
 test("the pipeline's re-sweep reads the bound off the plan", () => {
   // The re-sweep is a block inside the pipeline with no seam of its own, so its two wiring points are read off the source.
-  const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.match(src, /const classBound = addedClassBound\(ctx\.registerPlan\);/, "the re-sweep does not read the bound off the plan");
   assert.match(src, /deriveDirectiveRemedy\(d, \{ dominantElement: dominantEl, inScope, \.\.\.classBound \}\)/,
     "the re-sweep's remedy does not take the bound");

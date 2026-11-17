@@ -20,6 +20,7 @@
 // queueOwnedCodenames, so cancelling in the queue was the act that HANDED the run to the run-dir
 // watcher. The strongest stop an operator could write made the resurrection more likely.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -222,10 +223,9 @@ test("WIRING: the door refuses BEFORE it clears any marker", async () => {
   // Stated as what it is: an ORDER assertion over the source, because the two behaviours it separates
   // are a throw and three rmSync calls in one function, and no return value distinguishes them. The
   // order is the entire fix — the refusal is worth nothing if it runs after the evidence is gone.
-  const { readFileSync: rd } = await import("node:fs");
   const { fileURLToPath } = await import("node:url");
   const { dirname } = await import("node:path");
-  const src = rd(join(dirname(fileURLToPath(import.meta.url)), "..", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   const refusal = src.indexOf("const stopped = resumeStopRefusal(run.runDir);");
   const clearing = src.indexOf('rmSync(join(run.runDir, ".failed"))');
   assert.ok(refusal > 0, "the resume door stopped consulting resumeStopRefusal");
@@ -287,8 +287,7 @@ test("item 4: a resume re-states the engines the run has used, so a two-engine r
 test("item 4 WIRING: the resume path re-stamps, and does so AFTER the stop refusal", async () => {
   // Order matters here too, for a different reason than arm 13: stamping a run we are about to refuse
   // would write to the record of a run nobody is resuming.
-  const { readFileSync: rd } = await import("node:fs");
-  const src = rd(join(dirnameOf(import.meta.url), "..", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   const refusal = src.indexOf("const stopped = resumeStopRefusal(run.runDir);");
   const stamp = src.indexOf('stampTokenRollup(run.runDir, "resumed")');
   assert.ok(stamp > 0, "the resume stopped re-stating its engines — a two-engine run goes invisible again");

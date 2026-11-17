@@ -31,7 +31,7 @@ export const manifestPathFor = (fwPath) => String(fwPath).replace(/\.md$/, ".man
 // {
 //   "schema_version": 1,
 //   "framework_key":  "house-default",            // the rated_under_framework tripwire token
-//   "title":          "Generic default risk framework",
+//   "title":          "Standard risk scale",
 //   "source_deck":    "<the deck of record this transcribes>",
 //   "entity_label":   "the company",              // how the deck names the client side in prose
 //   "bands":          [{ "label": "Very High", "tone": "severe" }, ...],   // ordered highest → lowest

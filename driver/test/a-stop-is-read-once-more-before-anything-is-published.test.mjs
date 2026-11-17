@@ -17,8 +17,9 @@
 // is the shape this whole defect had.
 
 import test from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { mkdtempSync, writeFileSync, readFileSync } from "node:fs";
+import { mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -56,7 +57,7 @@ test("BOTH lanes perform the read, and the clearance lane does it after the alre
   // THE WIRING, WHICH IS THE HALF THE DEFECT ACTUALLY WAS. The gateway's read existed and was correct;
   // nothing asked it late enough. A test of the helper alone would have passed throughout.
   const ko = readFileSync(join(ROOT, "pipeline-knockout.mjs"), "utf8");
-  const cl = readFileSync(join(ROOT, "pipeline.mjs"), "utf8");
+  const cl = driverSource("pipeline.mjs");
 
   for (const [name, src, lane] of [["pipeline-knockout.mjs", ko, "knockout"], ["pipeline.mjs", cl, "clearance"]]) {
     const call = src.indexOf(`assertNotCancelledBeforePublish(run.runDir, "${lane}")`);

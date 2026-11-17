@@ -102,13 +102,13 @@ test("a follow-up whose slice was taken out counts again when sent again, so the
 
   await send();
   assert.equal(followUpSearchesSent(driverDir(f.run)).sent, FOLLOW_UP_SEARCH_LIMIT, "guard: the first asking filled the net");
-  assert.equal((await send()).outstanding, undefined, "guard: with nothing taken out, the answered follow-up is sent again uncounted");
-  assert.equal(asked.length, 2, "guard: the answered follow-up was asked again");
+  assert.equal((await send()).outstanding, undefined, "guard: with nothing taken out, the answered follow-up is held, uncounted");
+  assert.equal(asked.length, 1, "guard: the answered follow-up's held answer cost no call");
 
   takeOut(f.run, ["sup:a"]);
   assert.ok(JSON.parse(readFileSync(f.band, "utf8")).find((b) => b.qid === "sup:a")?.records?.length, "guard: the band still holds the slice's records");
   assert.deepEqual((await send()).outstanding, ["sup:a"], "a follow-up whose slice was taken out was read as answered, and the full net sent it");
-  assert.equal(asked.length, 2, "the register was asked past the full net");
+  assert.equal(asked.length, 1, "the register was asked past the full net");
 });
 
 test("a child is not released by a parent whose slice was taken out", async (t) => {

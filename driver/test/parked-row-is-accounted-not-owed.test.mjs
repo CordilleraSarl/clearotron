@@ -26,12 +26,12 @@
 // forever and guarding nothing. A hand-built row would have made these tests the same shape: passing
 // against a state the production path cannot produce.
 import { test } from "node:test";
+import { readFileSync } from "node:fs";
 import assert from "node:assert/strict";
 import { connotationObligations, obligationRows, findConnotationViolations,
   CONNOTATION_REASONS, CONNOTATION_UNRULED_REASONS } from "../connotation-search.mjs";
 import { unionDispositionForm } from "../disposition-union.mjs";
 import { validateDispositionCall } from "../disposition-call.mjs";
-import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
 
@@ -204,7 +204,7 @@ test("THE READER TRIPWIRE — a new module that reads row state must be taught t
   // so the arithmetic assertion at the foot of this test exists to catch it.
   const codeOf = (src) => src.replace(/\/\*[\s\S]*?\*\//g, "")
     .split("\n").map((l) => l.replace(/\/\/.*$/, "")).join("\n");
-  const read = (f) => readFileSync(new URL(f, new URL("../", import.meta.url)), "utf8");
+  const read = (f) => readFileSync(new URL(f, new URL("../", import.meta.url)), "utf8");   // each file alone: this walks every file, so a moved site is attributed to where it now is
   const matched = files.filter((f) => PATTERN.test(read(f)));
   const base = (f) => f.split("/").pop();
   const readers = matched.filter((f) => PATTERN.test(codeOf(read(f)))).map(base).sort();
@@ -216,7 +216,7 @@ test("THE READER TRIPWIRE — a new module that reads row state must be taught t
   // disposition row.
   const READERS = [
     "connotation-search.mjs", "disposition-tool.mjs", "disposition-union.mjs",
-    "gateway.mjs", "pipeline.mjs", "stages.mjs", "verify.mjs",
+    "gateway.mjs", "pipeline.mjs", "register-sweep.mjs", "stages.mjs", "verify.mjs",
   ];
   // Every one of these names the vocabulary in prose and reads no row. coverage-form.mjs is the one the
   // hand enumeration called a reader: it DOES import from connotation-search.mjs, but the import is
@@ -224,7 +224,7 @@ test("THE READER TRIPWIRE — a new module that reads row state must be taught t
   // and only the second one has to know about parks.
   const PROSE = [
     "case-law-ledger.mjs", "common-law-receipts.mjs", "contract-vocabulary.mjs", "coverage-form.mjs",
-    "disposition-call-audit.mjs", "doubt-closure-tool.mjs", "repairs.mjs",
+    "disposition-call-audit.mjs", "doubt-closure-tool.mjs",
   ];
 
   assert.deepEqual(readers, READERS,

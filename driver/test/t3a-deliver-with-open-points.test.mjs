@@ -11,18 +11,16 @@
 // rendered report is read. This file carries the two halves that arm cannot reach: the section builder's
 // own vocabulary, and a SOURCE-LEVEL check on the late-hardening branch.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { readFileSync, writeFileSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { fileURLToPath } from "node:url";
 import { join, dirname } from "node:path";
 import { buildReviewerOpenPointsSection, assembleReportMd } from "../pipeline.mjs";
 import { REVIEWER_OPEN_QUESTIONS_FILE } from "../reviewer-open-points.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { paths as stagePaths } from "../stages.mjs";
-
-const HERE = dirname(fileURLToPath(import.meta.url));
-const pipelineSrc = () => readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+const pipelineSrc = () => driverSource("pipeline.mjs");
 
 const review = (verdict, ...flags) =>
   [verdict, "", "## Flags", "", ...flags.map((f, i) => `${i + 1}. [kind: fact] [on: -] ${f}`)].join("\n");
@@ -270,12 +268,12 @@ test("T3a: the late-hardening branch adopts the verdict, rewrites the label auth
   assert.ok(close > at, "the branch's closing brace was not found — the bound would silently widen");
   const body = src.slice(at, close);
 
-  assert.match(body, /\bverdict = hardened;/,
+  assert.match(body, /\brunState\.verdict = hardened;/,
     "the hardened verdict must become the run's own — without this the ratchet computes a value nobody uses");
   assert.match(body, /writeVerdictSidecar\(\)/,
     "verdict.json is 'the single label authority' in its own words; leave it stale and applyVerdictFrontMatter "
     + "re-stamps the report with the verdict the reviewer has since hardened away from");
-  assert.match(body, /writeRunStatus\(ctx, signoffPatch\(verdict\)\)/, "and the run's own record follows it, as the reviewer's sign-off");
+  assert.match(body, /writeRunStatus\(ctx, signoffPatch\(runState\.verdict\)\)/, "and the run's own record follows it, as the reviewer's sign-off");
   assert.match(body, /reassemble = true;/,
     "assembleReportMd must re-run, or the open-points section is built from the review this repair replaced");
   assert.doesNotMatch(body, /throw new StageFailure\("verdict",\s*\n?\s*`reviewer verdict/,

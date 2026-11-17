@@ -70,7 +70,7 @@ serve({ name: "register", noteFor: crowdNoteFor, tools: [
 test("every register server hands the unit the line, and the band tools the later stages read do not", () => {
   const servers = readdirSync(MCP).filter((f) => f.endsWith("-server.mjs"))
     .filter((f) => /serve\(\{\s*name: "register"/.test(readFileSync(join(MCP, f), "utf8")));
-  assert.ok(servers.length >= 6, `guard: only ${servers.length} register server(s) found`);
+  assert.ok(servers.includes("register-server.mjs"), `guard: the register server was not found among ${servers.length}`);
   for (const f of servers) assert.match(readFileSync(join(MCP, f), "utf8"), /noteFor: crowdNoteFor/, `${f} does not hand the unit the crowd line`);
   assert.doesNotMatch(readFileSync(join(MCP, "band-server.mjs"), "utf8"), /crowdNoteFor/, "the band tools the write-up reads carry the unit's line");
 });

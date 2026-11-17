@@ -61,7 +61,7 @@ function argsAt(code, open) {
  */
 function availabilitySites() {
   const files = [
-    "driver/portal-service.mjs", "driver/door-gates.mjs", "driver/dev-portal.mjs",
+    "driver/portal-service.mjs", "driver/portal-routes/run.mjs", "driver/door-gates.mjs", "driver/dev-portal.mjs",
     "driver/runner.mjs", "driver/pipeline.mjs", "driver/search-policy.mjs",
     "mcp-server/lib/options.mjs", "mcp-server/lib/plan.mjs",
   ];

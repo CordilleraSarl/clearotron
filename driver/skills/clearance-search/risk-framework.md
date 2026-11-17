@@ -6,7 +6,7 @@
 - **Entity in prose:** "the company" (generic).
 - **Materiality threshold:** the client's defined materiality threshold; **default $1 million** where the client has not defined one.
 
-*A rubric to be reasoned with — not paraphrased away and not reduced to a lookup.* This framework RATES the matter (doc 50): reason each conflict through the band definitions below — Legal position first, then Practical position, then Potential consequences — and the band follows the words. A conflict the company clearly wins with no material risk is **not a rated conflict** (there is no "Low" band; see `synthesis-rules.md`). The engine applies this framework on an advisory basis; the senior lawyer makes the final determination. The firm-wide reasoning discipline — the consumer-confusion gate, the dominant-element rule, crowded-field handling, G&S discipline — lives in [`synthesis-rules.md`](synthesis-rules.md) and applies under every framework.
+*A rubric to be reasoned with — not paraphrased away and not reduced to a lookup.* This framework RATES the matter (doc 50): reason each conflict through the band definitions below — Legal position first, then Practical position, then Potential consequences — and the band follows the words. A conflict the company clearly wins with no material risk is **not a rated conflict** (there is no "Low" band; see `synthesis-rules.md`). The engine applies this framework on an advisory basis; the senior lawyer makes the final determination. The firm-wide reasoning discipline — the consumer-confusion gate, the dominant-element rule, crowded-field handling, G&S discipline — lives in [`firm-wide-reasoning.md`](firm-wide-reasoning.md) and applies under every framework.
 
 ## VERY HIGH RISK
 

@@ -180,6 +180,18 @@ function readerEnv(env) {
   return { ...env, PATH: path.split(delimiter).filter((d) => !/[\\/]_npx[\\/]/.test(d)).join(delimiter) };
 }
 
+/**
+ * Does the `clearotron` at `path` lead to THIS install? A link npm made to its executable, or our shim naming
+ * it. Run from a project that installed the package, as INSTALL §2 has a tarball installed, npm puts that
+ * project's `node_modules/.bin` first on the PATH of what it runs, and the `clearotron` there is a link to
+ * this very install. It was reported as "a different `clearotron` earlier on your PATH" (measured in a
+ * stranger walk of a beta, 2026-11-10), and the commands after it named a full path where the bare name works.
+ */
+const leadsHere = (installDir, io) => (path) => {
+  const { kind } = inspectShim(path, io.read ? { installDir, read: io.read } : { installDir });
+  return kind === "ours" || kind === "npm-link";
+};
+
 export function invocationForm(env = process.env, io = FS, installDir = INSTALL_DIR) {
   const dir = shimDir(env);
   const path = shimPath(env);
@@ -191,7 +203,7 @@ export function invocationForm(env = process.env, io = FS, installDir = INSTALL_
     ? inspectShim(path, io.read ? { installDir, read: io.read } : { installDir })
     : { kind: "absent-or-unreadable", installDir: null };
   if (shim.kind === "ours" && shim.interpreterMissing !== true) {
-    const { onPath, shadowedBy } = pathPosition(dir, readerEnv(env), { exists: io.exists });
+    const { onPath, shadowedBy } = pathPosition(dir, readerEnv(env), { exists: io.exists, same: leadsHere(installDir, io) });
     if (onPath && !shadowedBy) {
       return { form: "bare", prefix: "", shim: path, dir, onPath: true, shadowedBy: null, staleInterpreter: null };
     }
@@ -208,7 +220,7 @@ export function invocationForm(env = process.env, io = FS, installDir = INSTALL_
   // disk would answer differently on a box that really has a global install — the reason the FS note at
   // the top of this file gives for injecting both halves.
   if (globalExe && shim.kind !== "ours" && io.exists(globalExe)) {
-    const { onPath, shadowedBy } = pathPosition(globalDir, readerEnv(env), { exists: io.exists });
+    const { onPath, shadowedBy } = pathPosition(globalDir, readerEnv(env), { exists: io.exists, same: leadsHere(installDir, io) });
     if (onPath && !shadowedBy) {
       return { form: "bare", prefix: "", shim: globalExe, dir: globalDir, onPath: true, shadowedBy: null, staleInterpreter: null, via: "global" };
     }

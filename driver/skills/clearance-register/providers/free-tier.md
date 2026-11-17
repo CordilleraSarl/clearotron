@@ -99,25 +99,6 @@ One clearance asks both sources. EUIPO's count probe is a search request against
 allowance; the US index is a local file and takes only time. Where a count is available it spans
 both offices and is reported as one number — or as `null` when one of them could not answer.
 
-## Provenance
-
-**Derived, not probed.** This adapter runs no transport of its own: every wire fact belongs to
-`providers/euipo/src/capabilities.js` and `providers/uspto-local/src/capabilities.js`, both of which
-carry their own probe evidence, and this contract is **computed** from them pointwise-weakest at module
-load. Nothing here is hand-copied, so it cannot fall behind its members — the derivation is pinned by
-`providers/free-tier/test/composite.test.mjs`.
-
-What IS this adapter's own, and is tested rather than inherited:
-
-- the routing (office → source, from the record id and from `regions[]`)
-- the merge arithmetic — totals, `has_more`, band state, and the refusals above
-- the requirement that **both** members be configured, enforced at preflight by name
-
-**Not yet exercised end to end.** No complete matter has run through this register. Both members' seams
-are verified — EUIPO live against production — but the local US index needs a built index, which needs a
-USPTO API key. Until that exists, a free-tier run refuses at preflight naming `USPTO_LOCAL_DB`, and that
-refusal is the correct behaviour rather than a half-tier sweep.
-
 ## Record base host
 
 **Two, because this is two registers.** A record from the EU member carries the EUIPO host

@@ -124,7 +124,7 @@ function runWrapper(vars, { report }) {
 
 test("an inherited engine path is DELETED in both spellings, and the bare name resolves to the stub", () => {
   const r = runWrapper(
-    { CLEAROTRON_CLAUDE_PATH: "/usr/local/bin/claude", CLEAROTRON_CLAUDE_PATH: "/usr/bin/claude" },
+    { CLEAROTRON_CLAUDE_PATH: "/usr/bin/claude" },
     { report: WHICH.replace("WHAT", '{legacy: process.env.CLEAROTRON_CLAUDE_PATH ?? null, current: process.env.CLEAROTRON_CLAUDE_PATH ?? null, resolved: which("claude")}') },
   );
   assert.ok(r.report, `the child never reported; wrapper exited ${r.code}\n${r.all.slice(0, 800)}`);

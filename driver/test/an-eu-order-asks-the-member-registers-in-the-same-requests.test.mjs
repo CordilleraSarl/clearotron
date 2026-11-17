@@ -47,7 +47,8 @@ test("on Signa an EU order reaches the member registers the provider covers, in 
 test("an EU order resolved twice asks the same registers", () => {
   for (const caps of [PROVIDER_CAPABILITIES.clarivate, signa]) {
     const once = resolveRegions(["EU"], caps).regions;
-    assert.deepEqual(resolveRegions(once, caps).regions, once, `${caps.id}: a resolved EU plan grew when resolved again`);
+    // The set, not the order: an office key that is also a country code keeps its place on the second pass.
+    assert.deepEqual([...resolveRegions(once, caps).regions].sort(), [...once].sort(), `${caps.id}: a resolved EU plan grew when resolved again`);
   }
 });
 

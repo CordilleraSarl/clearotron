@@ -1,0 +1,87 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
+#
+# What a push to a release line changed in what a run does. It drives the mock pipeline on the commit before
+# the push and on the pushed commit, with the network refused, and prints one line per changed module, naming
+# the area that owns it and any changed line no scenario ran. The detail is an artifact.
+#
+# IT REPORTS AND DOES NOT JUDGE, so it is not a required check: a green job means it looked, whatever it found,
+# and a red job means it could not look. A cancelled push's change would never be reported, so nothing cancels.
+name: Behaviour snapshot
+
+on:
+  push:
+    branches: ['next-*']
+  workflow_dispatch:
+
+concurrency:
+  group: behaviour-snapshot-${{ github.sha }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  compare:
+    name: What this push changed in a run
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22.23.2'
+          cache: npm
+
+      - run: npm ci --no-audit --no-fund
+
+      # A new branch has no previous commit to read, and neither does a dispatch: both compare with where the
+      # branch left main.
+      - name: Choose the commit to compare with
+        id: base
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          if [ -n "${BEFORE:-}" ] && ! [[ "$BEFORE" =~ ^0+$ ]] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            base="$BEFORE"
+          else
+            base="$(git merge-base origin/main HEAD)"
+          fi
+          echo "sha=$base" >> "$GITHUB_OUTPUT"
+          echo "comparing $base with $GITHUB_SHA"
+
+      - name: Install the commit before
+        env:
+          BASE: ${{ steps.base.outputs.sha }}
+        run: |
+          set -euo pipefail
+          git worktree add --detach "$RUNNER_TEMP/base" "$BASE"
+          if git diff --quiet "$BASE" HEAD -- package-lock.json; then
+            ln -s "$GITHUB_WORKSPACE/node_modules" "$RUNNER_TEMP/base/node_modules"
+          else
+            (cd "$RUNNER_TEMP/base" && npm ci --no-audit --no-fund --ignore-scripts)
+          fi
+
+      - name: Record the commit before
+        run: node driver/test/snapshot/behaviour-snapshot.mjs record --repo "$RUNNER_TEMP/base" --out "$RUNNER_TEMP/snapshot-base" --jobs 4
+
+      - name: Record the pushed commit
+        run: node driver/test/snapshot/behaviour-snapshot.mjs record --out "$RUNNER_TEMP/snapshot-head" --jobs 4
+
+      - name: Compare
+        env:
+          BASE: ${{ steps.base.outputs.sha }}
+        run: node driver/test/snapshot/behaviour-snapshot.mjs compare "$RUNNER_TEMP/snapshot-base" "$RUNNER_TEMP/snapshot-head" --from "$BASE" --to "$GITHUB_SHA" --detail "$RUNNER_TEMP/behaviour-snapshot-detail.txt"
+
+      - name: Keep the detail
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: behaviour-snapshot-detail
+          path: ${{ runner.temp }}/behaviour-snapshot-detail.txt
+          if-no-files-found: ignore
+          retention-days: 14

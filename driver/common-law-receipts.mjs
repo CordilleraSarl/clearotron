@@ -17,7 +17,7 @@
 // have MORE rows per variant, never fewer).
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   // — one definition of where a run's _driver/ is
+import { driverDir } from "./run-record.mjs";   // — one definition of where a run's _driver/ is
 
 export const MIN_CELLS_PER_VARIANT = 7;
 
@@ -881,7 +881,7 @@ export function mergeCommonLawFindings(parts) {
 // FALSE against the real ledger, and the arm failed the very run it was derived from:
 //
 //   • `candidates[]` is RAW, UNJUDGED web-search output — the grid program records up to 8 candidates
-//     per cell "without judging similarity" (skills/clearance-common-law/perplexity-prompts.md), and the
+//     per cell, unjudged (`buildGridProgramTask`, providers/perplexity/src/core.js), and the
 //     filtering is explicitly the model's. The real cell `CORAL FREEZE × vitaminshoppe.com` holds three:
 //     a BCAA how-to video, a Hawaiian shaved-ice supplement and a Dallas store-locator page. The
 //     model's "No results" means "no relevant listing", and no deterministic test can tell that page

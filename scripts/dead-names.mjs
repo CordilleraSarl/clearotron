@@ -32,7 +32,7 @@ import { trackedFiles } from "../shared/tracked-files.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-export const GUARD = "dead-names (#853)";
+export const GUARD = "dead-names";
 
 /**
  * The dead names, as the issue defines them. `\blore\b` is the loose arm and it is why the exemptions
@@ -97,7 +97,7 @@ function main() {
   const hits = deadNameHits(corpus);
   const payload = { files: corpus.length, hits, exemptions: EXEMPTIONS };
   if (process.argv.includes("--json")) { console.log(JSON.stringify(payload, null, 2)); process.exit(hits.length ? 1 : 0); }
-  console.log(`dead names (#853) — ${corpus.length} tracked file(s), ${hits.length} hit(s)`);
+  console.log(`dead names — ${corpus.length} tracked file(s), ${hits.length} hit(s)`);
   for (const h of hits) console.log(`  ${h.file}:${h.line}\n    ${h.text}`);
   for (const e of EXEMPTIONS) console.log(`\n  exempt: ${e.file}\n    ${e.why}`);
   process.exit(hits.length ? 1 : 0);

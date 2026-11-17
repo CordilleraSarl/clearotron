@@ -10,16 +10,14 @@
 // its twin, and its directive is checked on the list's row. Held on the re-sweep's own functions, on a run folder
 // written the way the run writes it. Every mark here is invented.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 import { countedOnLists, refuseCountedOnList } from "../engine/mcp/held-answers.mjs";
 import { verifyRegisterDirectiveClose } from "../close-verify.mjs";
 import { classifyRemedyTerm } from "../remedy-accounting.mjs";
-
-const HERE = dirname(fileURLToPath(import.meta.url));
 const AXIS = "primary-sweep";
 const LIST = { qid: `${AXIS}:exact:veltris+form`, axis: AXIS, predicate: "exact", provenance: "floor",
   terms: ["VELTRIS", "VELTRISS", "WELTRIS", "VELTRYS"], nice_classes: ["9", "41"], regions: [] };
@@ -89,7 +87,7 @@ test("the refused re-ask is checked on the list's row, by the directive and by t
 
 test("the pipeline's re-sweep refuses those re-asks before its fold", () => {
   // The re-sweep is a block inside the pipeline with no seam of its own, so its wiring is read off the source.
-  const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.match(src, /refuseCountedOnList\(toFoldHeld, countedOnLists\(run\.runDir, \{ planRegions \}\), planRegions\)/);
   assert.match(src, /const refused = \[\.\.\.withheldRefused, \.\.\.heldRefused, \.\.\.listRefused, \.\.\.folded\.refused\];/);
 });

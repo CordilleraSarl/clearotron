@@ -20,6 +20,7 @@ import { DEMO_WITHHELD_TOOLS, TOOL_SCOPES, visibleTools } from "../../shared/sco
 import { bindDemoConnection } from "../../shared/demo-connection.mjs";
 import { connectOffers } from "../../shared/connect-clients.mjs";
 import { installPaths } from "../../bin/start.mjs";
+import { driverSource } from "./driver-source.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const SERVE = join(ROOT, "mcp-server", "serve.mjs");
@@ -140,7 +141,7 @@ test("a demo that is gone refuses in one line, and serves nothing else in its pl
 test("each surface that prints a demo's line says it is a demo's", () => {
   const read = (f) => readFileSync(join(ROOT, f), "utf8");
   assert.match(read("bin/start.mjs"), /stdioConnectOffer\(\{[^\n]*demo: DEMO/, "start's banner does not");
-  const portal = read("driver/portal-service.mjs");
+  const portal = driverSource("portal-service.mjs");
   assert.match(portal, /stdioConnectOffer\(\{[^\n]*demo: isDemo\(process\.env\)/, "the portal's route does not");
   assert.match(portal, /stdioConnectFor\(shape, \{[^\n]*demo: isDemo\(process\.env\)/, "the portal's rows do not");
   assert.match(portal, /nameClaude: claudeNamer\(\),\s*demo: isDemo\(process\.env\)/, "the portal's offers do not");

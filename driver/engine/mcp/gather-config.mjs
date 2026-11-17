@@ -10,6 +10,7 @@
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { requireRegisterProvider } from "../../driver.config.mjs";
+import { recordedRegister } from "../run-choices.mjs";   // the register a run recorded, which serves it
 import { fixtureRecordsDir } from "../../register-fixture-marker.mjs";
 import { ledgerPath, runRecordLogPath } from "../../../providers/_shared/ledger-path.mjs";
 import { CORRECTION_POSITIONS_ENV } from "./correction-positions.mjs";   // the positions a correction hands its save
@@ -55,14 +56,14 @@ const REGISTER_TOOLS = [
 // names exist" and the INTERSECTION for "what every provider grants", without re-introducing the
 // default deleted.
 export const REGISTER_SERVERS = {
-  corsearch: { script: "corsearch-server.mjs", tools: REGISTER_TOOLS },
+  corsearch: { script: "register-server.mjs", args: ["corsearch"], tools: REGISTER_TOOLS },
   // clarivate: 7 of the 8. `register_expand_phoneme` is ABSENT ON PURPOSE — the ranked-similarity
   // surface that would preview phoneme variants is not available on this provider (HTTP 403),
   // and doctrine 2 forbids stubbing it with something weaker. Phonetic SEARCH still works
   // (match_mode:"phonetic"); only the variant PREVIEW is unavailable. The gap is declared in
   // providers/clarivate/src/capabilities.js (phonemeExpansion:false) and pinned by
   // test/engine.gather.test.mjs, so it can never become a silent omission.
-  clarivate: { script: "clarivate-server.mjs", tools: REGISTER_TOOLS.filter((t) => t !== "register_expand_phoneme") },
+  clarivate: { script: "register-server.mjs", args: ["clarivate"], tools: REGISTER_TOOLS.filter((t) => t !== "register_expand_phoneme") },
   // signa: 5 of the 8, and the grant is what the server SERVES. It was 2 until and 4 until.
   // The 2 was set on 2026-07-21 by 7ef96c7c when signa really was the thin provider — and it never
   // moved again. The five
@@ -118,7 +119,7 @@ export const REGISTER_SERVERS = {
   //     " signa's core still carries NO figurative data" in driver/test/register-capabilities.test.mjs
   //     reds if a vienna/figurative field appears in providers/signa/src or if hasPublicRecordUrl goes
   //     true. If it reds, re-read this reason before you touch the test.
-  signa:     { script: "signa-server.mjs",
+  signa:     { script: "register-server.mjs", args: ["signa"],
     tools: ["register_search", "register_record_fetch", "register_enumerate", "register_execute_plan",
       "register_propose_supplemental"] },
   // euipo: 7 of the 8, the same count as clarivate and for the same missing tool.
@@ -132,7 +133,7 @@ export const REGISTER_SERVERS = {
   // only {imageFormat, viennaClasses} with no bytes and no URL, which reads like an empty field.
   // `GET /trademarks/{n}/image` answers 200 with real image bytes. The tool serves the Vienna
   // figurative-element codes — the comparable data — rather than the bytes.
-  euipo:     { script: "euipo-server.mjs",     tools: REGISTER_TOOLS.filter((t) => t !== "register_expand_phoneme") },
+  euipo:     { script: "register-server.mjs", args: ["euipo"],     tools: REGISTER_TOOLS.filter((t) => t !== "register_expand_phoneme") },
   // uspto-local: 6 of the 8, and the only provider here that is a FILE rather than an API — the guard
   // it fails on is USPTO_LOCAL_DB, not a key. Two tools are absent on purpose, neither stubbed:
   //   register_image_fetch    — the USPTO bulk product is text. It carries the drawing CODE (hence
@@ -142,7 +143,7 @@ export const REGISTER_SERVERS = {
   //     slice is stamped unsupported at compile time and disclosed as a deferred coverage row.
   // Both gaps are declared in providers/uspto-local/src/capabilities.js and the exact six are pinned by
   // test/engine.gather.test.mjs, so neither can become a silent omission.
-  "uspto-local": { script: "uspto-local-server.mjs",
+  "uspto-local": { script: "register-server.mjs", args: ["uspto-local"],
     tools: REGISTER_TOOLS.filter((t) => t !== "register_expand_phoneme" && t !== "register_image_fetch") },
   // free-tier: EUIPO + the local US index as ONE register — 7 of the 8. The surface is the UNION
   // of what its members can serve, not the intersection, because a tool one member serves is still a
@@ -153,7 +154,7 @@ export const REGISTER_SERVERS = {
   //   register_expand_phoneme — ABSENT, and here the intersection and the union agree: NEITHER member
   //     has a phonetic surface, so predicates.phonetic is null and a phonetic slice defers rather than
   //     degrading into a contains under the phonetic name.
-  "free-tier": { script: "free-tier-server.mjs",
+  "free-tier": { script: "register-server.mjs", args: ["free-tier"],
     tools: REGISTER_TOOLS.filter((t) => t !== "register_expand_phoneme") },
 };
 
@@ -793,19 +794,19 @@ export function providerUnavailableRegisterTools(provider = null) {
   return new Set(REGISTER_TOOLS.filter((t) => !served.has(t)));
 }
 
-function registerEntry() {
+function registerEntry(register = null) {
   // `|| "corsearch"` lived here too — a SECOND silent default, behind the first one, so fixing
   // driver.config alone would have left the gather stages resolving to a vendor we hold no licence
   // with. requireRegisterProvider throws instead, with the same message the driver gives.
-  const p = requireRegisterProvider();
+  const p = register ?? requireRegisterProvider();
   const entry = REGISTER_SERVERS[p];
-  if (!entry) throw new Error(`[gather-config] no MCP server built for REGISTER_PROVIDER="${p}" yet — wrap providers/${p}/src/core like corsearch-server.mjs (pure glue, exposing the register_* names), then add it to REGISTER_SERVERS.`);
+  if (!entry) throw new Error(`[gather-config] no MCP server built for REGISTER_PROVIDER="${p}" yet — wrap providers/${p}/src/core in a mount.js like corsearch's (pure glue, exposing the register_* names), then add it to REGISTER_SERVERS.`);
   return entry;
 }
 
 // Resolve a local key to its {script, tools}. `register` is dynamic; everything else is static LOCAL.
-function localEntry(key) {
-  return key === "register" ? registerEntry() : LOCAL[key];
+function localEntry(key, register = null) {
+  return key === "register" ? registerEntry(register) : LOCAL[key];
 }
 
 // group → { localKeys[], bridgeKeys[], extraTools[] }
@@ -879,7 +880,7 @@ export const claudeToolAnswerBytes = (env = process.env) =>
 // The mcp-config server env carries ONLY the per-run, non-secret values (session key + ledger paths +
 // agent + the run dir the band tools serve, and the answer size above). Creds (CORSEARCH_SESSION_KEY /
 // PERPLEXITY_API_KEY / EUIPO_*) are inherited from the engine env.
-function serverEnv({ sessionKey, agent, runDir, recordAxis, bandGroups = false, correctionPositions = null }) {
+function serverEnv({ sessionKey, agent, runDir, recordAxis, bandGroups = false, correctionPositions = null, register = null }) {
   const e = {};
   // — see buildGatherMcpConfig: a register server without a run is refused there, so by the time
   // the record-log line below runs, `runDir` is present for every config that could use it.
@@ -898,7 +899,10 @@ function serverEnv({ sessionKey, agent, runDir, recordAxis, bandGroups = false, 
   // — THE RUN'S REGISTER, so a recording tool gates a record link at the call as verify.mjs gates the
   // saved file (record-origins.mjs). Handed over explicitly: Codex gives a server only its own `env` and
   // the names it forwards, so a value left to inheritance reaches a Claude server and never a Codex one.
-  if (process.env.CLEAROTRON_DATABASE) e.CLEAROTRON_DATABASE = process.env.CLEAROTRON_DATABASE;
+  // The run's recorded register (engine/run-choices.mjs), which each tool server reads as its own; the machine's, as
+  // before, for a run with no record.
+  const reg = register ?? process.env.CLEAROTRON_DATABASE;
+  if (reg) e.CLEAROTRON_DATABASE = reg;
   // — the ledger paths are RESOLVED HERE and handed to the child explicitly, not forwarded as raw
   // env. Two reasons, and the second is the one that kept this rename parked for months:
   //   · the old line was `if (process.env[v]) e[v] = …`, and NO box sets those vars — prod, test and dev
@@ -948,7 +952,8 @@ export function withSendUntil(mcpConfigJson, sendUntilMs) {
   return JSON.stringify(cfg);
 }
 
-export function buildGatherMcpConfig(groups = [], { sessionKey, agent, runDir, recordAxis, bandGroups = false, correctionPositions = null } = {}) {
+export function buildGatherMcpConfig(groups = [], { sessionKey, agent, runDir, recordAxis, bandGroups = false, correctionPositions = null,
+  register = recordedRegister(runDir) } = {}) {
   const localKeys = new Set(), bridgeKeys = new Set();
   for (const g of groups) { const r = resolveGroup(g); r.local.forEach((k) => localKeys.add(k)); r.bridges.forEach((k) => bridgeKeys.add(k)); }
   const mcpServers = {};
@@ -972,14 +977,14 @@ export function buildGatherMcpConfig(groups = [], { sessionKey, agent, runDir, r
   // is the more fundamental refusal and the one an operator acts on, so it must still come out ahead of
   // this one — a box with neither a provider nor a run should be told about the provider.
   if (localKeys.has("register")) {
-    localEntry("register");
+    localEntry("register", register);
     if (!runDir) {
       throw new Error("gather-config: a register server needs the run it is fetching for — record bodies "
         + "belong to their run, and the box-global ledger is retired. Pass runDir.");
     }
   }
-  const env = serverEnv({ sessionKey, agent, runDir, recordAxis, bandGroups, correctionPositions });
-  for (const k of localKeys) mcpServers[k] = { command: NODE, args: [join(MCP_DIR, localEntry(k).script)], env };
+  const env = serverEnv({ sessionKey, agent, runDir, recordAxis, bandGroups, correctionPositions, register });
+  for (const k of localKeys) mcpServers[k] = { command: NODE, args: [join(MCP_DIR, localEntry(k, register).script), ...(localEntry(k, register).args ?? [])], env };
   // A FIXTURE RUN NEVER REACHES A LIVE REGISTER, and its job says so: the same key serves its canned answers.
   if (localKeys.has("register") && runDir && fixtureRecordsDir(runDir)) mcpServers.register.args = [join(MCP_DIR, "fixture-register-server.mjs")];
   // — THE BRIDGES GET THE AUDIT ENV, AND ONLY THAT. Until now they were spawned with no env at
@@ -1518,7 +1523,7 @@ export const RECORDING_STAGES_KEEPING_RETRIEVAL = Object.freeze(
   Object.keys(RECORDING).filter((k) => RECORDING[k].keepsRetrieval === true).sort(),
 );
 
-export function allowedToolsFor(groups = []) {
+export function allowedToolsFor(groups = [], { register = null } = {}) {
   // — THE SEED IS NO LONGER UNCONDITIONAL. `Read` always; `Write`/`Edit` only where some group's seat
   // still authors a file. A recording row that declares `seatWrites: false` has its artifact written by the
   // driver, so the hand-write tools are a superseded path left executable — and this is the seeding that
@@ -1535,7 +1540,7 @@ export function allowedToolsFor(groups = []) {
   const tools = seatWritesForGroups(groups) ? new Set(["Read", "Write", "Edit"]) : new Set(["Read"]);
   for (const g of groups) {
     const r = resolveGroup(g);
-    for (const k of r.local) (r.only ?? localEntry(k).tools).forEach((t) => tools.add(`mcp__${k}__${t}`));
+    for (const k of r.local) (r.only ?? localEntry(k, register).tools).forEach((t) => tools.add(`mcp__${k}__${t}`));
     for (const k of r.bridges) tools.add(`mcp__${k}__*`);    // whole bridge server (its tools are namespaced)
     r.extra.forEach((t) => tools.add(t));
   }

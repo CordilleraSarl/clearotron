@@ -79,13 +79,15 @@ const MATTER_FULL = Object.freeze({
 });
 
 /** A unit-note run needs its axis band on disk — the counts are the driver's, not the seat's. */
-function unitRun(axis = "primary-sweep") {
+function unitRun(axis = "primary-sweep", blocks = { records: [{ record_id: "/mark/us/88888888", status: "live" }, { record_id: "/mark/us/99999999", status: "live" }] }) {
   const d = runDir();
   const band = unitPaths(d, axis).band;
   mkdirSync(dirname(band), { recursive: true });
-  writeFileSync(band, JSON.stringify({ records: [{ record_id: "/mark/us/88888888", status: "live" }, { record_id: "/mark/us/99999999", status: "live" }] }));
+  writeFileSync(band, JSON.stringify(blocks));
   return d;
 }
+// A search that ran and found nothing: the one band a null-result claim may stand on.
+const SEARCHED_EMPTY = [{ qid: "primary-sweep:invented", state: "enumerated", records: [] }];
 const UNIT_FULL = Object.freeze({
   axis: "primary-sweep",
   note: "The band is dominated by one owner's family, which is why the crowd read is narrower than the raw count suggests.",
@@ -148,7 +150,7 @@ test("unit-note: a partial keeps the seat's observation and its null-result clai
   // AND THE REASON null_result MATTERS MORE THAN A LOST DATUM: dropped, it defaults to false, so "this
   // axis found nothing" becomes "no claim made" — and `unit_null_result_contradicted`, the guard that
   // refuses a null-result claim over a band carrying records, cannot fire on a claim that is not there.
-  const d2 = unitRun();
+  const d2 = unitRun("primary-sweep", SEARCHED_EMPTY);
   assert.equal(recordUnitNote(d2, { ...UNIT_FULL, null_result: true, note: "No results on this axis; the band is empty." }).refused,
     null, "a legitimate null-result call was refused — the fixture, not the code");
   assert.equal(recordUnitNote(d2, { axis: "primary-sweep" }).refused, null);

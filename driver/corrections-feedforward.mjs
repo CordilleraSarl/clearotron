@@ -349,7 +349,9 @@ export function buildCorrectionsApplied(rows, preDoc, postDoc, { sections = null
     // note, an action or the mark assessment is about that line, and a mark or owner named inside the
     // line it quotes is incidental. Asked only where no ordinal was declared: a declaration still wins.
     const sec = !declaredOrds.length ? (sections ?? []).find((x) => x.n === r.n) ?? null : null;
-    const hit = preDoc && !declaredOrds.length && !sec ? linesOf(r.text, preLines) : [];
+    // A flag that declared its parts by address is bound to those lines; only a flag that declared none is matched by prose.
+    const declaredLines = (Array.isArray(r.lines) ? r.lines : []).map((a) => preLines.find((l) => l.key === a)).filter(Boolean);
+    const hit = preDoc && !declaredOrds.length && !sec ? (declaredLines.length ? declaredLines : linesOf(r.text, preLines)) : [];
     const targets = declaredOrds.length ? declaredOrds.map(label)
       : sec ? [sec.label]
       : hit.length ? hit.map((l) => l.label) : targetsOf(r.text, known);

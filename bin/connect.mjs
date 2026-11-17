@@ -58,7 +58,7 @@ import { invocationPrefix } from "../shared/invocation.mjs";
 import { BRAND } from "../shared/brand.mjs";
 import { mintToken, tokenId, resolvePerson, loadGrants } from "../shared/scope.mjs";
 import { envFrom } from "../shared/env-aliases.mjs";
-import { atomicWrite } from "../driver/progress.mjs";
+import { atomicWrite } from "../driver/run-record.mjs";
 // — F40. SERVER_INSTALL_SET is what `bin/start.mjs` re-exports as
 // BACKGROUND_UNITS; taken from shared/ so this verb does not reach into another bin/ entry point.
 import { SERVER_INSTALL_SET, unitHealthVerdict } from "../shared/server-units.mjs";

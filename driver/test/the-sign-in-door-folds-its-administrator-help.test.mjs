@@ -39,7 +39,7 @@ test("the administrator's two lines sit in a fold that renders closed, behind a 
   assert.ok(body.indexOf('<details class="fold">') > body.indexOf("</form>"), "the fold is not under the button");
   assert.equal(flat(/<summary>([\s\S]*?)<\/summary>/.exec(fold[1])?.[1] ?? ""), "Administrator help");
   const inside = flat(fold[1]);
-  assert.match(inside, /The passphrase was printed once when this Clearotron first started\. Lost it\? Run clearotron passphrase --reset on the machine running this portal\. It prints a new one, once, for the same user\. A key from clearotron key issue is for an AI assistant, not for this page\. To add people/,
+  assert.match(inside, /The passphrase was printed once, when this Clearotron first started or was last reset\. Lost it\? Run clearotron passphrase --reset on the machine running this portal\. It prints a new one, once, for the same user\. A key from clearotron key issue is for an AI assistant, not for this page\. To add people/,
     "the fold's lines are not the owner's words, in his order");
   assert.match(inside, /To add people, put it behind a login system such as your company single sign-on\. How to set that up/);
   // Nothing of it is left outside the fold, where it would lead again.

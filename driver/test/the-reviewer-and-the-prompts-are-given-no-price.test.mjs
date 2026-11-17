@@ -16,10 +16,10 @@ import { fileURLToPath } from "node:url";
 const DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "skills");
 const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
 
-test("the web prompts name the deepest tier, not the most expensive, and a footer without its cost", () => {
+test("the web prompts name the deepest tier, not the most expensive, and price nothing the tool returns", () => {
   const prompts = flat("clearance-common-law/perplexity-prompts.md");
-  assert.ok(prompts.includes("routes grid-shaped prompts to the deepest tier)."));
-  assert.ok(prompts.includes("→ a metadata footer. Then:"));
+  assert.ok(prompts.includes("Do not pass depth. The run's search setting decides the tier of every follow-up; the grid runs on its own tier."));
+  assert.ok(prompts.includes("The tool writes the grid ledger, then returns how many cells it holds and the candidates to judge. Then:"));
   for (const gone of ["most expensive tier", "(tokens, cost)"])
     assert.ok(!prompts.includes(gone), `the web prompts still say "${gone}"`);
 });
@@ -39,7 +39,7 @@ test("phase two prices no re-run and no audit", () => {
 });
 
 test("the old spine names a register vendor, not a paid one, and sets no tool-call budget", () => {
-  const spine = flat("clearance-search/SKILL.md");
+  const spine = flat("../../docs/architecture/retired-manuals/clearance-search-spine.md");
   assert.ok(spine.includes("Your tool surface binds **one register vendor** plus"));
   assert.ok(spine.includes("- **Register vendor = the register source of truth**"));
   for (const gone of ["one paid register vendor", "**Paid vendor", "## Tool call budget", "(#tool-call-budget)", "usage-billed", "billing-tier ceiling"])

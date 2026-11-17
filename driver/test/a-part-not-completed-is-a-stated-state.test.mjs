@@ -8,6 +8,7 @@
 // "Findings" row, the publisher's coverage rows and its silence about any rating. A damaged record still states the
 // part as not completed, an unknown part cannot be recorded, and a run with no record publishes as it always did.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -138,7 +139,7 @@ test("the coverage form's rows are relabelled as every ledger is, and the floor'
   assert.deepEqual(relabelCoverageRows(dir, rows).map((r) => r.status), loadCoverageLedger(dir).rows.map((r) => r.status), "the two sources are relabelled differently");
   // The run reaches this only with no ruled row in either render and none in the form: no verdict can ship over coverage
   // nobody read, and the failure is the assessment's, so the run delivers without it instead of ending.
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   const at = src.indexOf('event: "coverage-ledger-from-form"');
   assert.ok(at > 0, "the form fallback is gone");
   const tail = src.slice(at, src.indexOf("\n      }\n", at));

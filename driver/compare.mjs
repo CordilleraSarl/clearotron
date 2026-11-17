@@ -11,7 +11,7 @@
 
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { join, basename, isAbsolute } from "node:path";
-import { driverDir, driverFileName } from "../shared/driver-dir.mjs";   //
+import { driverDir, driverFileName } from "./run-record.mjs";   //
 import { fileURLToPath } from "node:url";
 import { STAGES, paths } from "./stages.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings

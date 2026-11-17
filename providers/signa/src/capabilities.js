@@ -68,9 +68,6 @@ export const SIGNA_OFFICE_KEYS = Object.freeze(Object.fromEntries(
     .map((o) => [o.key, o.jurisdiction]),
 ));
 
-/** The snapshot's own date, so a disclosure can say how old our coverage claim is. */
-export const SIGNA_OFFICES_FETCHED_AT = SIGNA_OFFICE_SNAPSHOT.fetched_at;
-
 /**
  * The row bound past which an OWNER-SCOPED band cannot be paged — 400.
  *

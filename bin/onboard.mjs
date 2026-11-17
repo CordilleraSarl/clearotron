@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// clearotron install / clearotron doctor — one install from a fresh clone to a first real run.
+// clearotron install / clearotron doctor — one install, from nothing to a first real run.
 //
 //   npx clearotron install                    the wizard: one decision at a time, Enter takes the default
 //   npx clearotron doctor                     report what this machine is configured for. Writes NOTHING.
@@ -55,7 +55,7 @@
 // CACHE-BUSTED specifier so its module-level const is evaluated afresh, and process.env is restored
 // afterwards. Without the cache-bust it works exactly once per process and is wrong every time after —
 // which is worse than not working, because the wrong answer is a pass. The signature is misleading;
-// fixing it is a change to a file this lane does not own.
+// the fix belongs in driver.config.mjs, not in this wizard.
 
 import { spawnSync, execFileSync } from "node:child_process";   // — the wizard installs the engine when asked, and only when asked;
                                                                 // execFileSync is doctor's read-only `systemctl show`
@@ -243,7 +243,7 @@ export const cloudAccount = (cloud) =>
 export const servedLine = (v) => (v?.served || v?.provider)
   ? `served by ${v.served ?? "a model the program did not name"}${v.provider ? `; the program names its provider "${v.provider}"` : ""}.`
   : null;
-import { runRequiredNames, missingRequirements, billingRefusalWords, whatIsMissing, cannotSearchYet, REGISTER_ENV, ENGINE_ENV } from "../driver/run-requirements.mjs";   // the order-time gate's own question, asked here rather than restated
+import { runRequiredNames, missingRequirements, billingRefusalWords, whatIsMissing, rowsToName, cannotSearchYet, REGISTER_ENV, ENGINE_ENV } from "../driver/run-requirements.mjs";   // the order-time gate's own question, asked here rather than restated
 import { pinEnv, envFrom } from "../shared/env-aliases.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 // one synopsis reader for every verb that prints one.
@@ -843,6 +843,26 @@ export async function askSignIn(io, { localAccount = "user", existing = null } =
 }
 
 /**
+ * Doctor's line for each AI program setup installed, for a machine where no AI is chosen: a reader who declined
+ * setup's trial turn has a program and no AI, and the guides say doctor prints its path (measured in a stranger
+ * walk of a beta, 2026-11-10: it printed none). Claude's program signs in by being run; Codex's by its `login`.
+ * `resolve` is driver.config.mjs's resolveEngineProgram, a parameter so the lines can be driven. PURE given it.
+ */
+export function installedProgramLines(env = process.env, { resolve: find = resolveEngineProgram } = {}) {
+  const lines = [];
+  for (const [id, eng] of Object.entries(ENGINE_BINARIES)) {
+    const r = find(id, { env });
+    if (r?.source !== "installed" || !r.resolved) continue;
+    const own = /^run `[^`]+`$/.test(String(eng.signIn ?? ""));
+    const signIn = own
+      ? `R${namingProgram(eng.signIn, eng, { source: "installed", path: r.resolved }).slice(1)} once in a terminal to sign in.`
+      : "Run it once in a terminal to sign in.";
+    lines.push(`${eng.product}'s program, installed by setup: ${r.resolved}. ${signIn}`);
+  }
+  return lines;
+}
+
+/**
  * An engine binary, resolved the way the engine resolves it — and the trap that resolution carries.
  *
  * Was `resolveClaudeBin`. The body never had anything claude-specific in it; the NAME was the last place
@@ -918,7 +938,7 @@ export function proofFailureLine(v, product) {
  * what to check, so it says how to change what the turn ran on instead. A sign-in the subscription uses
  * would not be used under either, so no token is offered there.
  */
-export function signInHandOff(eng, bin, billing) {
+export function signInHandOff(eng, bin, billing, { turnRan = true } = {}) {
   if (billing === "cloud") return { lines: ["if you fixed the cloud's sign-in on this machine, answer yes below; to change the answers "
     + "above, answer no and pick the engine again."], captureToken: false };
   if (billing === "api-key") return { lines: ["to give a different key, answer no below and pick the engine again."], captureToken: false };
@@ -926,8 +946,10 @@ export function signInHandOff(eng, bin, billing) {
   // not as "sign in": these lines follow every failed turn, a spent quota as much as a sign-out. And the yes
   // it asks for is the retry's, named. On Claude a token question follows the retry, and it wants a no after a
   // browser sign-in.
+  // AFTER A DECLINE NO TURN HAS RUN, so the question is the turn "now", not "again" (measured in a stranger walk of a
+  // beta, 2026-11-10: the reader was asked to run again a turn they had just declined).
   const lines = ["setup waits in this terminal, so run the commands below in a second one:",
-    `if it is signed out: ${namingProgram(eng.signIn, eng, bin)}, then answer yes to "Run the turn again".`];
+    `if it is signed out: ${namingProgram(eng.signIn, eng, bin)}, then answer yes to "${turnRan ? "Run the turn again" : "Run the turn now"}".`];
   // Codex's headless sign-in runs HERE, so it names the copy that runs here. Claude's token can be made on
   // any machine, so its command keeps the bare word, and this machine's copy is named beside it.
   if (eng.headless) {
@@ -1575,13 +1597,21 @@ const TURN_KEPT_ITS_FILES = "Clearotron wrote nothing; the AI program's test tur
  * (`turnRan`). The settings file is only ever written at the end, so that part stays true, and the line
  * says what does stay. "Nothing was written." is kept for the cancel where it is still true.
  */
-export function cancelledLine({ copy = null, engine = null, turnRan = false } = {}) {
-  if (!copy && !engine) return `cancelled. ${turnRan ? TURN_KEPT_ITS_FILES : "Nothing was written."}`;
+export function cancelledLine(left = {}) {
+  return `cancelled. ${whatSetupLeft(left) ?? "Nothing was written."}`;
+}
+
+/**
+ * What setup has already put on the machine when it stops early, or null when that is nothing. A cancel says it,
+ * and so do the two refusals after the engine step, which said "Nothing has been written." whatever had run.
+ */
+export function whatSetupLeft({ copy = null, engine = null, turnRan = false } = {}) {
+  if (!copy && !engine) return turnRan ? TURN_KEPT_ITS_FILES : null;
   const stays = copy && engine
     ? `clearotron ${copy.version} stays installed in ${copy.prefix}, and ${engine.vendor}'s CLI in ${engine.dir}.`
     : copy ? `clearotron ${copy.version} stays installed in ${copy.prefix}.`
       : `${engine.vendor}'s CLI stays installed in ${engine.dir}.`;
-  return `cancelled. No settings were written. ${stays}${turnRan ? " The AI program's test turn keeps its own files." : ""}`;
+  return `No settings were written. ${stays}${turnRan ? " The AI program's test turn keeps its own files." : ""}`;
 }
 export async function runCheck() {
   say("\n  Trademark clearance engine — configuration check\n");
@@ -1853,8 +1883,9 @@ export async function runCheck() {
     if (!serviceKnown) {
       info("the units' environment could not be read, so what a search would be refused for is NOT checked here — a failure to look is not a clean result");
     } else if (atOrder.length) {
-      blocking(`a search is refused until ${atOrder.length === 1 ? "this is" : "these are"} set in ${serviceEnvLabel}: ${atOrder.map((r) => r.name).join(", ")}`);
-      for (const r of atOrder) info(`  ${r.name} — ${r.why}`);
+      const named = rowsToName(atOrder);
+      blocking(`a search is refused until ${named.length === 1 ? "this is" : "these are"} set in ${serviceEnvLabel}: ${named.map((r) => r.name).join(", ")}`);
+      for (const r of named) info(`  ${r.name} — ${r.why}`);
     } else ok(`nothing a search is refused for at order time is missing from ${serviceEnvLabel}`);
   };
   const sayResearch = () => {
@@ -2088,8 +2119,10 @@ export async function runCheck() {
   // reason. Which engine is configured comes first now, and the binary is checked through THAT engine's
   // variable.
   // The mode of a machine that cannot start a search, said by both branches below that reach it.
-  const demoModeLine = () => "MODE: demo — everything works except starting a NEW search. The example report, its audit trail "
-    + `and the MCP connection are live right now; \`${reachableCommand("demo")}\` needs no engine.`;
+  // NOTHING IS LIVE WHILE NOTHING RUNS: the line said the example report and the connection were "live right now" on a
+  // machine running nothing (measured in a stranger walk of a beta, 2026-11-10). It names the command that shows them.
+  const demoModeLine = () => "MODE: demo — new searches are unavailable. "
+    + `\`${reachableCommand("demo")}\` shows the example report, its audit trail and the assistant connection, and needs no engine.`;
   if (!serviceKnown) {
     info("the units' environment could not be read, so which AI the services run is not judged here — a failure to look, not a finding");
   } else if (engSel && !engSpec) {
@@ -2106,6 +2139,7 @@ export async function runCheck() {
     const noAiChosen = !servicesRead("CLEAROTRON_AI");
     if (noAiChosen) info(`CLEAROTRON_AI is not set, so no AI is chosen, `
       + `and a search is refused until one is. \`${invoke("install")}\` asks which AI to use.`);
+    if (noAiChosen) for (const line of installedProgramLines()) info(line);
     else info(`CLEAROTRON_AI is not set — the code default is ${DEFAULT_ENGINE_ID}, and one engine serves every stage of every run on this machine`);
     // AND NOTHING BELOW IT IS READ OFF THE DEFAULT (engineChosen, above the opening): no program, no payment
     // and no turn, which would all describe an AI nobody chose. The machine is in demo mode, and the way out
@@ -2134,7 +2168,7 @@ export async function runCheck() {
     // asked to check.
     //
     // It is the same short call setup's engine menu already makes (menuVersion): `--version`, two
-    // seconds, no session and no network. That is within "calls nobody" — what that promises is no
+    // seconds, no session and no network. That is within "contacts nothing outside this machine" — what that promises is no
     // provider call and no spend, not that nothing on this machine may be asked its own version.
     const versionOf = (b) => {
       if (b.version) return b.version;
@@ -2401,7 +2435,7 @@ export async function runCheck() {
     const inCheckout = (p) => isInsideCheckout(p, REPO);
     for (const [name, what] of [
       ["CLEAROTRON_CUSTOMERS_DIR", `customers resolve to the bundled demo roster IN ${THIS_TREE}`],
-      ["CLEAROTRON_INSTRUCTIONS_DIR", `doctrine resolves to the bundled files IN ${THIS_TREE}`],
+      ["CLEAROTRON_INSTRUCTIONS_DIR", `searches follow the product's own instructions, from ${THIS_TREE}`],
       ["PROFILE_REPO_ROOT", `the portal's profile editor commits INTO ${THIS_TREE}`],
     ]) {
       // — WHICH NAME THE READER IS TOLD IS NOT ONE QUESTION, IT IS TWO.
@@ -2491,7 +2525,7 @@ export async function runCheck() {
       if (hosted && !serviceKnown)
         info(`the units are installed but their environment could not be read (${unitEnv?.why ?? "no reason given"}) — `
           + "what the services resolve is not judged here, and the line above is this process's own answer");
-      info("what a RUN used is its own `profile-store` journal line — this command reports what the "
+      info("a search records which profiles it used in its own log — this command reports what the "
         + (hosted ? "units' file says, which the running services read at their own start"
           : `environment you are typing in and your environment file say, which \`${invoke("start")}\` reads at its own start`));
       // ── AND WHO IS ACTUALLY IN IT ─────────────────────────────────────────
@@ -2601,8 +2635,17 @@ export async function runCheck() {
           // What it CAN catch is a second source in the CODE: a resurrected PROFILE_DIR, a bundled
           // directory that moves under one caller and not the other. That is the regression it is for,
           // and the sentence now says so instead of implying the larger claim.
-          ok(`the settings surface and the run roster resolve to one store (${surface.dir}), read from `
-            + `${hosted && serviceKnown ? serviceEnvFile : "this command's environment"} — they share a `
+          //
+          // WITH NO UNITS, THE STORE NAMED IS THE SERVICES'. They are `start`'s children and get the variable
+          // from the environment file, which this process does not load. Named from this process alone, the
+          // line ticked the bundled roster two lines below the one naming the configured store (measured in a
+          // stranger walk of a beta, 2026-11-10). The comparison above stays on this process, where both
+          // readers really ran; one variable means it holds for the services' value as well.
+          const named = !hosted && svcCustomers?.from === serviceEnvLabel
+            ? { dir: svcCustomers.v, from: serviceEnvFile }
+            : { dir: surface.dir, from: hosted && serviceKnown ? serviceEnvFile : "this command's environment" };
+          ok(`the settings surface and the run roster resolve to one store (${named.dir}), read from `
+            + `${named.from} — they share a `
             + "variable, so this catches a second store appearing in the code, not two environments disagreeing");
         }
       } catch (e) {
@@ -4043,6 +4086,7 @@ let aborted = null;
 const installedCopy = process.env.CLEAROTRON_RELOCATED === "1" ? { version: ownVersion(), prefix: permanentPrefix() } : null;
 let installedEngine = null;
 let setupTurnRan = false;
+const leftSoFar = () => ({ copy: installedCopy, engine: installedEngine, turnRan: setupTurnRan });
 try {
   say("\n  Trademark clearance engine — setup\n");
   say("  One question at a time. Enter takes the default in brackets.");
@@ -4293,12 +4337,23 @@ try {
     // saves nothing.
     for (const line of proofPreamble({ product: eng.product, billing: authPick.id })) info(line);
     if (!await confirm(proveQuestion({ product: eng.product, billing: authPick.id }), true)) {
+      // A SUBSCRIPTION STILL NEEDS ITS SIGN-IN, whether or not the reader wanted the turn: a decline used to end
+      // with no sign-in command at all, though the guide says setup shows one. These are the lines a failed turn
+      // prints, in the same words, and the question they name by its words follows them, default no. Under a key
+      // or a cloud account there is no sign-in to show.
+      let provedAfterAll = false;
+      if (authPick.id === "subscription") {
+        for (const line of signInHandOff(eng, bin, authPick.id, { turnRan: false }).lines) info(line);
+        provedAfterAll = await confirm("Signed in? Run the turn now", false);
+      }
       // A WAY ON WITHOUT AN AI, BEFORE THE MENU. A declined proof went straight back to the menu, so a reader
       // taking every default went round the same setup again. The question the no-program path already asks
       // offers the way on; no returns to the menu, with this pick its default, and only that answer says so.
-      if (await confirm("Continue with no engine configured?", true)) { sayNoEngine(); break engine; }
-      info("Not proven, so not written. Pick again — the last row configures no engine at all.");
-      continue;
+      if (!provedAfterAll) {
+        if (await confirm("Continue with no engine configured?", true)) { sayNoEngine(); break engine; }
+        info("Not proven, so not written. Pick again — the last row configures no engine at all.");
+        continue;
+      }
     }
     // A TOKEN PASTED BELOW IS SAVED ONLY WITH THE TURN IT PROVED. It was written into the settings as it was
     // pasted, so a reader whose turn still failed, and who then went on without an AI, had it saved unproved.
@@ -4498,7 +4553,7 @@ try {
     if (v.ok) ok("EUIPO issued a token — the credential works.");
     else {
       problem(`EUIPO refused: ${v.error}`);
-      say("\n  Nothing has been written. Re-run setup with a working credential.");
+      say(`\n  ${whatSetupLeft(leftSoFar()) ?? "Nothing has been written."} Re-run setup with a working credential.`);
       aborted = "euipo";
       throw new Error("euipo");
     }
@@ -4802,7 +4857,7 @@ try {
     if (pf.ok) ok(registerCheckPassed(pf.result.provider, pf.result.checked.join(" + ")));
     else {
       problem(pf.error);
-      say("\n  Nothing has been written.");
+      say(`\n  ${whatSetupLeft(leftSoFar()) ?? "Nothing has been written."}`);
       aborted = "preflight";
       throw new Error("preflight");
     }
@@ -5026,7 +5081,7 @@ try {
     // has been written before the single atomic rename at the end, but setup's own copy, the AI's program
     // and a test turn's files may already be on the machine, and the line names each one that is.
     const msg = /Ctrl\+[CD]|closed|aborted/i.test(String(e?.message ?? e))
-      ? cancelledLine({ copy: installedCopy, engine: installedEngine, turnRan: setupTurnRan })
+      ? cancelledLine(leftSoFar())
       : String(e?.message ?? e);
     console.error(`\nsetup: ${msg}\n`);
     rl.close();

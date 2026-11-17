@@ -12,8 +12,8 @@
 // dir, and the two false-positive classes it caught (status.json, and the obligations receipts)
 // existed precisely because I had not looked.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import { join, sep } from "node:path";
 import { paths } from "../stages.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree } from "../stray-artifacts.mjs";
@@ -172,7 +172,7 @@ test("the snapshot walks nested directories, and an unreadable one is not a thro
 });
 
 test("the sweep is wired, reports LOUDLY, and can never cost a run", () => {
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.match(src, /function sweepStrayArtifacts\(ctx, stageName\) \{\n  sweepDoctrineTree\(ctx, stageName\)/,
     "it runs on the same seam as the run-dir sweep — after every stage");
   const fn = src.slice(src.indexOf("function sweepDoctrineTree"), src.indexOf("function sweepStrayArtifacts"));

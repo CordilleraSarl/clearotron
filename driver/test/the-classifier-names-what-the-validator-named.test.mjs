@@ -34,6 +34,8 @@ import { aggregateFailureRecurrence, renderFailureRecurrence } from "../repair-d
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const src = (f) => readFileSync(join(ROOT, "driver", f), "utf8");
+// The run-level failure path: pipeline.mjs and run-failed.mjs, where its catch moved.
+const failurePath = () => src("pipeline.mjs") + "\n" + src("run-failed.mjs");
 
 // ── THE DERIVATION ────────────────────────────────────────────────────────────────────────────────
 
@@ -85,7 +87,7 @@ test("the gap detector goes quiet for a NAMED token, and only for that reason", 
 // ── THE CALL SITE, WHICH IS WHERE THE LAST ONE OF THESE WENT WRONG ───────────────────────────────
 
 test("the pipeline DERIVES classSource from the helper — one rule, not two copies", () => {
-  const p = src("pipeline.mjs");
+  const p = failurePath();
   assert.match(p, /classSource = classificationSource\(/,
     "the pipeline no longer derives classSource from the shared helper, so the precedence rule now has "
     + "a second copy that can disagree with the tested one");
@@ -101,7 +103,7 @@ test("the strike relabel STILL outranks everything — the caller's deliberate o
   // `invalid-artifact-loop` is a terminal diagnosis reached from the run's own spine, and it is applied
   // after this. If build A had been written to win there, three consecutive invalid artifacts would
   // start reporting as a validator-named failure and the terminal would lose its name.
-  const p = src("pipeline.mjs");
+  const p = failurePath();
   const helperAt = p.indexOf("classSource = classificationSource(");
   const strikeAt = p.indexOf('classSource = "invalid-artifact-strikes"');
   assert.ok(helperAt > 0 && strikeAt > 0, "one of the two assignment sites is gone — this arm is reading nothing");
@@ -113,7 +115,7 @@ test("the park row carries the KIND token too, or the digest half of the detecto
   // The digest never opens run.jsonl; the recoveryHistory park row is its only carrier. Before this it
   // carried `quantityToken` alone, so the digest could only ever ask half the question — harmless while
   // every structured reason was `reason-text`, and fatal once a token implies NOT-a-gap.
-  assert.match(src("pipeline.mjs"), /kindToken: failSig\.kindToken \?\? null/,
+  assert.match(failurePath(), /kindToken: failSig\.kindToken \?\? null/,
     "the archived park row dropped kindToken, so a kind-only gap can never be reported downstream");
   assert.match(src("repair-digest.mjs"), /unnamedStructuredFailure\(\{[^}]*kind: row\.kindToken/,
     "the digest still decides the gap question without the kind half the pipeline passes");

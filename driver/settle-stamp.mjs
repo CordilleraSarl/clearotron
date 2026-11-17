@@ -28,8 +28,9 @@
 // `writeRO` does, and never touches the directory. Writing into a pool run dir after publish is already
 // how the product works — pool-admin.mjs rewrites `meta.json` there long after the run settles.
 
-import { writeFileSync, readFileSync, chmodSync } from "node:fs";
+import { writeFileSync, chmodSync } from "node:fs";
 import { join } from "node:path";
+import { readJson } from "./run-record.mjs";
 
 /** The stamp's filename inside the pool run directory. One name, read and written from here only. */
 export const SETTLE_FILE = "settle.json";
@@ -87,7 +88,7 @@ export function writeSettleStamp(poolRunDir, { state, signoff = null, tier = nul
 export function readSettleStamp(dir) {
   if (!dir) return null;
   try {
-    const s = JSON.parse(readFileSync(join(dir, SETTLE_FILE), "utf8"));
+    const s = readJson(join(dir, SETTLE_FILE));
     if (!s || typeof s !== "object" || Array.isArray(s)) return null;
     if (s.schema_version !== SETTLE_SCHEMA_VERSION) return null;
     if (typeof s.state !== "string" || !s.state) return null;
@@ -132,5 +133,5 @@ export function backfillSettleStamp(poolRunDir, runDir, { readStatus = defaultRe
 
 function defaultReadStatus(runDir) {
   if (!runDir) return null;
-  try { return JSON.parse(readFileSync(join(runDir, "status.json"), "utf8")); } catch { return null; }
+  try { return readJson(join(runDir, "status.json")); } catch { return null; }
 }

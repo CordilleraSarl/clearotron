@@ -265,7 +265,8 @@ test("the closing line has exactly ONE author, and it is writeReturn", () => {
 test("the backlog is explicit, named, and each entry says which move removes it", () => {
   assert.ok(TOOL_ORDER_BACKLOG.length > 0, "an empty backlog would mean #865's two members were silently fixed here");
   for (const b of TOOL_ORDER_BACKLOG) {
-    assert.match(b.closes, /#865/, "every excused pair names the issue that closes it");
+    // The public tree carries the reason, never a tracker address, so a newer row states the condition it resolves on.
+    assert.match(b.closes, /#865|resolves on/, "every excused pair names the issue or the condition that closes it");
     assert.ok(b.stage && b.tool && b.site);
     assert.ok(!grantedToolsFor(b.stage).has(b.tool),
       `${b.stage} now HOLDS ${b.tool} — the backlog entry is stale and must be deleted, not carried`);

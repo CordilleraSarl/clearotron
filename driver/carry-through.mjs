@@ -38,9 +38,9 @@
 
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import { readJsonOrNull } from "./run-record.mjs";
 
 const readText = (p) => { try { return readFileSync(p, "utf8"); } catch { return ""; } };
-const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
 
 export const ARRIVAL_ARTIFACTS = ["findings.json", "narrative.md", "placements.json"];
 
@@ -191,7 +191,7 @@ export function carryThrough(runDir) {
  * traced back to that axis contradicts it. The trace is the axis band file that names the URI.
  */
 export function coverageConflicts(runDir, lost) {
-  const ledger = readJson(join(runDir, "register-coverage-ledger.json"));
+  const ledger = readJsonOrNull(join(runDir, "register-coverage-ledger.json"));
   if (!Array.isArray(ledger)) return { computable: false, reason: "register-coverage-ledger.json is absent or not a list", conflicts: [] };
   const unitsDir = join(runDir, "register-units");
   if (!existsSync(unitsDir)) return { computable: false, reason: "register-units/ is absent, so a lost record cannot be traced to an axis", conflicts: [] };

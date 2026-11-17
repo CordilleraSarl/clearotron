@@ -2983,13 +2983,13 @@ export function searchedJurisdictionsFromPlan(plan, execution) {
 // They live HERE, with the derivation, rather than in pipeline.mjs: `pipeline.mjs` imports
 // `gateway.mjs`, so the gateway cannot import back from it, and this module is already imported by both.
 export const PLAN_AUDIT_HEAD =
-  `DETERMINISTIC PLAN-EXECUTION CHECK (spec-48 WS2 / spec-49 doctrine): this run executed a FROZEN register plan; the code-derived receipt below states what actually ran.`;
+  `DETERMINISTIC PLAN-EXECUTION CHECK: this run executed a FROZEN register plan; the code-derived receipt below states what actually ran.`;
 // T8 (G5, doctrine): the old directive graded EVERY crowd/incomplete/skipped slice under a clean
 // claim as a mechanical BLOCKING flag — the rejected PR- shape (a state label driving the verdict).
 // Graded: only a slice that NEVER RAN blocks; a sanctioned skip and a crowd descriptor are JUDGMENT
 // inputs — the seat reasons over them, it never manufactures a verdict from a label.
 export const PLAN_AUDIT_CLASSES =
-  `THE FOUR CLASSES, GRADED: (1) a slice listed MISSING NEVER RAN — nothing resting on it may be stated as searched-clean, and nothing may describe what such a search would have shown; (2) a crowd-gated SKIPPED fringe is SANCTIONED (#361 — its parent proved intractable): the parent crowd is dilution context, never a searched-clean slice; (3) a CROWD/INCOMPLETE descriptor is a signal FOR JUDGMENT and never a verdict input — the lawyer's materiality reasoning over it STANDS (off-field, dilution evidence), and a state label never manufactures a CONDITIONAL by itself; (4) a waiting family nobody asked (ruling 204) is in one of two states. AWAITING JUDGMENT while the reading turn can still ask it: a question still open to you. WITHHELD BY JUDGMENT once the reading turn chose not to ask it and recorded why: a settled judgment, not an open question. Either way it has no parent crowd, says nothing about the field, and nothing resting on it may be stated as searched-clean.`;
+  `THE FOUR CLASSES, GRADED: (1) a slice listed MISSING NEVER RAN — nothing resting on it may be stated as searched-clean, and nothing may describe what such a search would have shown; (2) a crowd-gated SKIPPED fringe is SANCTIONED (its parent proved intractable): the parent crowd is dilution context, never a searched-clean slice; (3) a CROWD/INCOMPLETE descriptor is a signal FOR JUDGMENT and never a verdict input — the lawyer's materiality reasoning over it STANDS (off-field, dilution evidence), and a state label never manufactures a CONDITIONAL by itself; (4) a waiting family nobody asked (ruling 204) is in one of two states. AWAITING JUDGMENT while the reading turn can still ask it: a question still open to you. WITHHELD BY JUDGMENT once the reading turn chose not to ask it and recorded why: a settled judgment, not an open question. Either way it has no parent crowd, says nothing about the field, and nothing resting on it may be stated as searched-clean.`;
 
 export function deriveCoverageSkeleton(plan, join) {
   const missing = new Set(join.missing);

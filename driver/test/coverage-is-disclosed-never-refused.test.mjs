@@ -31,6 +31,7 @@ import { TURNAROUND_QUOTE, leversFromResolved, quoteEffort } from "../effort-mod
 import { registerCoverageCause } from "../register-coverage.mjs";
 import { PROMPT_TERRITORIES } from "../compose-read.mjs";
 import { PRODUCTS } from "../products.mjs";
+import { driverSource } from "./driver-source.mjs";
 
 // A register reaching a real but partial set — the owner's case in shape if not in name.
 const PARTIAL = ["United States", "European Union", "Germany", "France", "United Kingdom"];
@@ -123,28 +124,27 @@ test("arm 7 — the menus say nothing about coverage and both review steps still
   //
   // Read at source, because the failure is a door that never asks the question — there is nothing to
   // observe at runtime on a deployment whose register reaches everything.
+  const at = (rel) => readFileSync(fileURLToPath(new URL(rel, import.meta.url)), "utf8");
   const menus = {
-    "the portal's product menu": "../portal-service.mjs",
-    "the MCP product menu": "../../mcp-server/lib/options.mjs",
+    "the portal's product menu": driverSource("portal-service.mjs"),
+    "the MCP product menu": at("../../mcp-server/lib/options.mjs"),
   };
-  for (const [door, rel] of Object.entries(menus)) {
-    const src = readFileSync(fileURLToPath(new URL(rel, import.meta.url)), "utf8");
+  for (const [door, src] of Object.entries(menus)) {
     assert.match(src, /coverageNote: null/, `${door} composes a coverage sentence onto a product row again`);
   }
   // PINNED ON THE FIELD, NOT ON THE ABSENCE OF A CALL. portal-service still calls coverageDisclosure for
   // its review step, so "does this file mention it" cannot tell the menu from the review step. The
   // count is what separates them: one call, and it is the reviewing one.
-  const portal = readFileSync(fileURLToPath(new URL("../portal-service.mjs", import.meta.url)), "utf8");
+  const portal = driverSource("portal-service.mjs");
   assert.equal((portal.match(/coverageDisclosure\(/g) ?? []).length, 1,
     "the portal asks twice, so the menu is composing the sentence the ruling took off the row");
   // AND THE REVIEW STEPS STILL ASK. A client committing to a worldwide search on a partial register is
   // owed what it will reach, at the moment the money goes — the one place this sentence was never ruled
   // out of.
-  for (const [door, rel] of Object.entries({
-    "the portal's review step": "../portal-service.mjs",
-    "the MCP plan door": "../../mcp-server/lib/plan.mjs",
+  for (const [door, src] of Object.entries({
+    "the portal's review step": driverSource("portal-service.mjs"),
+    "the MCP plan door": at("../../mcp-server/lib/plan.mjs"),
   })) {
-    const src = readFileSync(fileURLToPath(new URL(rel, import.meta.url)), "utf8");
     assert.match(src, /coverageDisclosure\(/, `${door} commits a client without saying what the register reaches`);
   }
 

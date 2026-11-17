@@ -5,7 +5,7 @@
 // exact server/tool wiring. Two inputs, both produced today by the gateway gather block:
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { tomlString } from "../../../shared/toml-string.mjs"; import { driverDir } from "../../../shared/driver-dir.mjs";
+import { tomlString } from "../../../shared/toml-string.mjs"; import { driverDir } from "../../run-record.mjs";
 
 //   • mcpConfig     — the claude-shaped JSON string `{mcpServers:{name:{command,args,env,connectionTimeoutMs?}}}`
 //                     (buildGatherMcpConfig → JSON.stringify)

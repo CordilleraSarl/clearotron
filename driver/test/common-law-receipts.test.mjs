@@ -184,18 +184,20 @@ test("substring coverage: a fully-receipted variant covers a LONGER manifest var
   assert.equal(findReceiptViolations(m, neither).length, 2, "the substring itself short ⇒ both fail — coverage never thins");
 });
 
-test("grid-key dictation: the common-law message hands the worker the exact keys + a batch plan over 14", async () => {
+// The keys and the batches are the spec's and the tool's: the driver writes the spec, the tool runs exactly its grid in
+// batches of its own, and writes the ledger. The stage never orders a hand-written grid program, which the manual no
+// longer teaches, and a run that sends it always has a spec (deriveGridSpec), so it is pointed at that spec.
+test("the common-law stage always runs the sweep from the run's spec, and orders no hand-written grid", async () => {
   const { STAGES, paths } = await import("../stages.mjs");
   const P = paths("/tmp/x");
-  const few = STAGES["common-law"].message({ paths: P, gridVariants: ["Alpha", "Beta"] });
-  assert.match(few, /GRID KEYS \(the validator checks EXACTLY these 2 terms/);
-  assert.match(few, /- Alpha\n- Beta/);
-  assert.ok(!/BATCHING/.test(few), "small grids run as one call");
-  const many = STAGES["common-law"].message({ paths: P, gridVariants: Array.from({ length: 32 }, (_, i) => `V${i}`) });
-  assert.match(many, /BATCHING \(MANDATORY/);
-  assert.match(many, /3 batches of ≤14/);
-  const none = STAGES["common-law"].message({ paths: P });
-  assert.ok(!/GRID KEYS/.test(none), "no manifest-derived keys → message unchanged (back-compat)");
+  const named = STAGES["common-law"].message({ paths: P, gridSpecPath: "/tmp/x/_driver/grid-spec.json" });
+  const unnamed = STAGES["common-law"].message({ paths: P });
+  for (const [label, msg, spec] of [["a spec on the context", named, "/tmp/x/_driver/grid-spec.json"], ["no spec on the context", unnamed, P.gridSpec]]) {
+    assert.ok(msg.includes(`grid_spec_path: ${spec}`), `${label}: the sweep is not pointed at the run's spec`);
+    assert.match(msg, /Do NOT author the grid program/, `${label}: the stage no longer says the program is not the seat's`);
+    for (const retired of [/search-as-code/, /pro-search/, /GRID KEYS/, /BATCHING/, /MACHINE RECEIPTS/])
+      assert.doesNotMatch(msg, retired, `${label}: the retired hand-written grid order is back (${retired})`);
+  }
 });
 
 // ── A1 SPLIT: the deterministic term partition + the half-grid merge ────────────────────────────────────

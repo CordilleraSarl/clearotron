@@ -365,14 +365,29 @@ export function parseCaseLawProfiles(mdText) {
   });
 }
 
-// Join parsed profiles to findings: exact ordinal first, then normalized mark+owner containment.
-export function joinCaseLawProfiles(profiles, findings) {
+// Join parsed profiles to findings: exact ordinal first, across every finding, then normalized mark+owner containment
+// for the findings still without one, so a name match never takes a profile stamped for a later finding. A profile
+// carries the number in the writer's record; `modelToFolded` (record-fold.mjs) is the map to the delivered record when
+// findings were grouped. A number the map does not know is treated as no number. Two filings grouped into one finding
+// can each have a profile: the finding takes one, a decision over a "no precedent", and neither is left for another.
+export function joinCaseLawProfiles(profiles, findings, modelToFolded = null) {
   const norm = (s) => String(s ?? '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  const delivered = (ord) => {
+    if (ord == null || !modelToFolded) return ord;
+    const folded = modelToFolded[String(ord)];
+    return folded == null ? null : Number(folded);
+  };
   const byOrdinal = new Map();
-  const unclaimed = [...(profiles ?? [])];
+  let unclaimed = (profiles ?? []).map((p) => ({ ...p, ord: delivered(p.ord) }));
   for (const f of (findings ?? [])) {
-    let ix = unclaimed.findIndex((p) => p.ord != null && p.ord === f.ordinal);
-    if (ix < 0) ix = unclaimed.findIndex((p) => {
+    const stamped = unclaimed.filter((p) => p.ord != null && p.ord === f.ordinal);
+    if (!stamped.length) continue;
+    byOrdinal.set(f.ordinal, stamped.find((p) => !p.none) ?? stamped[0]);
+    unclaimed = unclaimed.filter((p) => !stamped.includes(p));
+  }
+  for (const f of (findings ?? [])) {
+    if (byOrdinal.has(f.ordinal)) continue;
+    const ix = unclaimed.findIndex((p) => {
       const pm = norm(p.mark), fm2 = norm(f.mark), po = norm(p.owner), fo = norm(f.owner?.name);
       const markHit = pm && fm2 && (pm.includes(fm2) || fm2.includes(pm));
       const ownerHit = po && fo && (po.includes(fo) || fo.includes(po));

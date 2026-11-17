@@ -38,10 +38,10 @@ import { deriveJxSliceStatement, stateJxSlices, JX_SLICES } from "../jx.mjs";
 import { decideJxLanes } from "../jx-lanes.mjs";
 import { readJxLanes } from "../reference-score.mjs";
 
-// item 8 deleted CLEAROTRON_JX_SERP_GRID / _NATIVEREAD / _CONSUME. The lane switch is the only one
-// left, and it is fail-open, so "everything armed" is now simply an environment that kills nothing.
-const ON = { CLEAROTRON_NATIVE_LANGUAGE_ZH: "1" };
-/** The lane killed — the one remaining way to make a slice read `not-armed`. */
+// item 8 deleted CLEAROTRON_JX_SERP_GRID / _NATIVEREAD / _CONSUME, and the per-language off switch is
+// retired too (2026-11-11). No environment arms or silences a slice; ON is any environment.
+const ON = {};
+/** The retired per-language switch, set as a box that never deleted the line would set it: it changes nothing. */
 const LANE_OFF = { CLEAROTRON_NATIVE_LANGUAGE_ZH: "0" };
 const sidecarOf = (lanes = { zh: {} }, fold = { zh: { degraded: false } }) => ({
   schema: 1, lanes, scope: ["CN"], fold: { executor: "x", lanes: fold, foldedAt: "2026-08-09T00:00:00Z" },
@@ -76,13 +76,11 @@ test("R6's shape: retrieval slices that did not run ⇒ executes is exactly 'can
   assert.match(slices["serp-grid"].why, /CANNOT be established/);
 });
 
-test("item 8 — a KILLED lane is the one thing that still reads not-armed, and it names itself", () => {
-  const { executes, slices } = deriveJxSliceStatement({ sidecar: sidecarOf(), env: LANE_OFF });
-  assert.equal(executes, "none", "killing the lane stops slice 1 too — there is no partial kill any more");
-  assert.equal(slices["serp-grid"].state, "not-armed");
-  assert.match(slices["serp-grid"].basis, /^env CLEAROTRON_NATIVE_LANGUAGE_ZH/,
-    "the basis names the switch that actually decided it, not a deleted one");
-  assert.match(slices["serp-grid"].why, /the lane was killed, not merely idle/);
+test("the retired lane switch reads as nothing: no slice is ever not-armed, set or unset", () => {
+  const off = deriveJxSliceStatement({ sidecar: sidecarOf(), env: LANE_OFF });
+  assert.deepEqual(off, deriveJxSliceStatement({ sidecar: sidecarOf(), env: ON }), "the retired switch moved the statement");
+  assert.equal(off.executes, "candidates", "the fold ran, whatever the old switch says");
+  assert.ok(!Object.values(off.slices).some((sl) => sl.state === "not-armed"), "a slice reads as switched off, and nothing switches it");
 });
 
 test("a GAPPED grid is not named in executes — 49/49 gapped is not 'it executed'", () => {
@@ -107,18 +105,14 @@ test("executes is NEVER the empty string — `exists` would pass on one", () => 
   assert.notEqual(executes, "");
 });
 
-test("armed-but-refused is NOT not-armed — arming is read from the ENV, never from a skip event", () => {
-  // The flag disagreement this was written for is gone with the arms ( item 8): the pipeline block
-  // and the unit now share one condition, so they cannot disagree. The RULE it protects is not gone —
-  // arming is read from the environment and never inferred from the presence of a skip event — and a
-  // killed lane with a skip event beside it is still the case that would break it.
-  const notArmed = deriveJxSliceStatement({
+test("no unit record and a captured structural cause ⇒ refused, quoting it, whatever the retired switch says", () => {
+  // No switch arms a slice any more, so the state is read from the unit record and the run's own skip
+  // events alone. The retired per-language switch, set, changes nothing.
+  const withOldSwitch = deriveJxSliceStatement({
     sidecar: sidecarOf(), env: { CLEAROTRON_NATIVE_LANGUAGE_ZH: "0" },
     causes: { nativeread: "no zh evidence to read — slice 2 recorded nothing" },
   });
-  assert.equal(notArmed.slices.nativeread.state, "not-armed",
-    "the lane was killed — the record must say so, not report a structural refusal it never reached");
-  // Armed, no unit record, but a captured structural cause ⇒ refused, quoting it.
+  assert.equal(withOldSwitch.slices.nativeread.state, "refused", "the retired switch still decided the state");
   const refused = deriveJxSliceStatement({
     sidecar: sidecarOf(), env: ON, causes: { nativeread: "no zh evidence to read — slice 2 recorded nothing" },
   });
@@ -233,13 +227,11 @@ test("the run.jsonl skip cause decorates a refusal and never decides a state", (
   const dir = runDir(t, { journal });
   stateJxSlices(dir, { env: ON });
   assert.equal(readSidecar(dir).fold.slices.nativeread.state, "refused", "armed + a cause = refused");
-  // item 8 — the second half of this test used to set the per-slice arm off. That arm is deleted,
-  // so the switch that can still contradict the journal is the lane kill, and the rule is the same one:
-  // a skip EVENT never promotes a slice the environment says was never reached.
+  // No switch can contradict the journal any more: the retired lane switch, set, gives the same record.
   const dir2 = runDir(t, { journal });
   stateJxSlices(dir2, { env: LANE_OFF });
-  assert.equal(readSidecar(dir2).fold.slices.nativeread.state, "not-armed",
-    "same journal, lane killed — the EVENT must not promote it to a structural refusal");
+  assert.equal(readSidecar(dir2).fold.slices.nativeread.state, "refused",
+    "same journal, the retired switch set — the record must not move");
 });
 
 // ── The scorer keeps run-level and per-lane apart ──────────────────────────────────────────────────

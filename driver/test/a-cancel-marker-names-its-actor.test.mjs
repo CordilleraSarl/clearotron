@@ -25,6 +25,7 @@ import { fileURLToPath } from "node:url";
 
 import { requestCancel, readCancel, isCancelled, UNATTRIBUTED, CANCEL_MARKER } from "../cancel.mjs";
 import { attributionOf, UNIDENTIFIED } from "../../shared/scope.mjs";
+import { driverSource } from "./driver-source.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
@@ -153,7 +154,7 @@ test("WIRING — the engine reads the delegate and the portal actually sends it"
   assert.match(ops, /attributionOf\(scope, args\.onBehalfOf\)/,
     "stop_run stopped reading the delegate — every UI stop goes back to naming the machine");
 
-  const portal = readSrc(join(ROOT, "driver", "portal-service.mjs"), "utf8");
+  const portal = driverSource("portal-service.mjs");
   // added `immediate` to this call, so the literal moved. The PROPERTY is what
   // this arm is for and it is unchanged: whatever else the stop lane forwards, it forwards the human the
   // portal verified — the engine sees one shared ops token, so this argument is the only thing that can

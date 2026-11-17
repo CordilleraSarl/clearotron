@@ -221,7 +221,11 @@ export function setupNames(root = ROOT) {
   // `tokenEnv` joined the row shape with (the headless sign-in's captured token —
   // the wizard writes it through a COMPUTED key, `candidate[eng.headless.tokenEnv]`, so the literal
   // candidate-write matchers above cannot see it; the table field is the one derivable spelling).
-  for (const m of cfg.matchAll(/(?:env|authEnv|apiKeyEnv|credEnv|tokenEnv):\s*"([A-Z][A-Z0-9_]*)"/g)) seed.add(m[1]);
+  // Each register states its credential in its own adapter, which PROVIDERS lists.
+  const providersDir = join(root, "providers");
+  const adapters = existsSync(providersDir) ? readdirSync(providersDir).map((p) => join(providersDir, p, "src", "adapter.js")).filter((f) => existsSync(f)) : [];
+  for (const text of [cfg, ...adapters.map((f) => readFileSync(f, "utf8"))])
+    for (const m of text.matchAll(/(?:env|authEnv|apiKeyEnv|credEnv|tokenEnv):\s*"([A-Z][A-Z0-9_]*)"/g)) seed.add(m[1]);
   // THE NAMES A HELPER RETURNS AND THE WIZARD MERGES IN. The sign-in step hands back the `.env` keys it
   // wants written, and the wizard writes them with `Object.assign(candidate, await askSignIn(…))`. None of
   // the matchers above sees a key inside a returned object, so both names that step writes — the address

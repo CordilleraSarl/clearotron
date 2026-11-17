@@ -11,6 +11,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { makePrincipal, assertPrincipal, genericOrgOf, seesEverything, mayRun, mayManage } from "../portal-access.mjs";
+import { driverSource } from "./driver-source.mjs";
 
 // The worked example: two organisations, one company, four people. Kay has access to everything; Pat runs
 // and manages Southbank; Dee runs, in Southbank and in Northwind's company Harbour; Tam views Harbour and
@@ -205,6 +206,6 @@ test("the verifier ASKS at verify time — a resolver nothing calls would leave 
   assert.match(src, /allowedNow\(\)\.includes\(email\)/, "the union branch no longer consults the resolver");
   assert.match(src, /const okAdded = !okDomain && !okEmail && typeof allowedNow === "function"/,
     "the resolver is consulted before the env lists, so it could widen a door the environment closed");
-  const portal = readFileSync(new URL("../portal-service.mjs", import.meta.url), "utf8");
+  const portal = driverSource("portal-service.mjs");
   assert.match(portal, /allowedNow: \(\) => addressesInGrants\(\)/, "the portal builds its verifier without the guest list");
 });

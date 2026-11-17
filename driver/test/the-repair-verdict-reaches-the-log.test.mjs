@@ -30,8 +30,9 @@
 // times. That is the arm that tells a working emission from a broken one.
 
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync } from "node:fs";
+import { mkdtempSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
@@ -44,7 +45,7 @@ const dir = () => mkdtempSync(join(tmpdir(), "repair-verdict-1495-"));
 
 /** Every `.record(` call in the pipeline, with the argument text that follows it. */
 function recordSites() {
-  const src = readFileSync(join(ROOT, "driver", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   const out = [];
   for (const m of src.matchAll(/\.record\(\s*("([^"]+)"|[A-Za-z_$][\w$]*)([\s\S]{0,400}?)\);/g))
     out.push({ id: m[2] ?? m[1], args: m[3], line: src.slice(0, m.index).split("\n").length });
@@ -81,7 +82,7 @@ test("each repair's two ends read the SAME ceiling expression", () => {
   // Pairs them by repair id rather than trusting that a nearby `max` is the right one. The sites with a
   // literal id are checkable this way; the one whose id is a variable (`dispatchPlanQids`) takes the
   // ceiling from its own parameter, so both ends already read one name by construction.
-  const src = readFileSync(join(ROOT, "driver", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   const ceilings = new Map();
   for (const m of src.matchAll(/\.canAttempt\(\s*"([^"]+)"[\s\S]{0,200}?\bmax:\s*([A-Za-z_$][\w$]*|\d+)/g))
     ceilings.set(m[1], m[2]);

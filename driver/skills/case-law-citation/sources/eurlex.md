@@ -3,20 +3,19 @@
 EUR-Lex translation of the universal grounding logic in `../SKILL.md`. Use for **EU trademark case
 law — Court of Justice (CJEU) and General Court judgments** (likelihood of confusion under
 **Art. 8(1)(b) EUTMR**, enforcer profiling, distinctiveness). This is the dedicated EU court layer
-that Legal Data Hunter only covers patchily; run it for EU findings **in addition to** LDH and
-de-duplicate by CELEX / ECLI.
+that Legal Data Hunter only covers patchily. Where both return one judgment, de-duplicate by CELEX / ECLI.
 
 **No dedicated MCP, by design.** Unlike `courtlistener.md` / `legaldatahunter.md`, this adapter does
-**not** call a `eurlex__*` server. EU judgments are published verbatim and anonymously on EUR-Lex, so
-this adapter drives the agent's existing **`WebFetch`** tool against a stable, account-free URL. The
+**not** call a `eurlex__*` server. EU judgments are published verbatim and anonymously on EUR-Lex, at a stable, account-free URL.
+Fetch the page with the web-fetch tool your session provides. The
 fetch-before-cite spine is unchanged — you still read every holding from the document you fetched.
 
 ## Tool reference
 
 | Tool | Use in this skill |
 |---|---|
-| `WebFetch` | **Fetch the full judgment** (Step 3) from the verified EUR-Lex URL below. Read the holding, ECLI, and parties from the returned text. |
-| `perplexity_research` *(or `legaldatahunter__search`)* | **Lead-finding only** — to discover a candidate case name / number when the finding doesn't already name one. A lead is **not** an authority; you must still fetch the judgment before citing. |
+| The web-fetch tool your session provides | **Fetch the full judgment** (Step 3) from the verified EUR-Lex URL below. Read the holding, ECLI, and parties from the returned text. |
+| `legaldatahunter__search` | **Lead-finding only** — to discover a candidate case name / number when the finding doesn't already name one. A lead is **not** an authority; you must still fetch the judgment before citing. |
 
 ## The fetch pattern (live-verified 2026-06-05)
 
@@ -56,12 +55,10 @@ successfully fetch and verify.
 
 ## Coverage and scope — state it honestly
 
-- **CJEU + General Court judgments**, full text, no account. This is the EU court gap CourtListener
-  (US-federal only) cannot reach and LDH covers only partially.
+- **CJEU + General Court judgments**, full text, no account. This is the EU court gap CourtListener (US only) cannot reach and LDH covers only partially.
 - **No native keyword search here.** This adapter is strongest when you already have a case
-  **name or number** (from the finding, from LDH, or from a `perplexity_research` lead). For open-ended
-  "find any EU precedent on X" discovery with no lead, recall is weak — say so, and lean on LDH /
-  perplexity for the lead, then fetch the verbatim judgment here. (A dedicated EU case-law search tool
+  **name or number** (from the finding, or from an LDH lead). For open-ended
+  "find any EU precedent on X" discovery with no lead, recall is weak — say so, and lean on LDH for the lead, then fetch the verbatim judgment here. (A dedicated EU case-law search tool
   would close this gap; none is wired today.)
 - **Not** the EUIPO administrative layer: **EUIPO Boards-of-Appeal decisions** have no API wired here and are
   not searched — report that as a coverage gap. EUIPO *register* lookups are a different layer

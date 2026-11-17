@@ -44,7 +44,7 @@
 
 import { writeFileSync, readFileSync, rmSync } from "node:fs";
 import { spawnSync } from "node:child_process";
-import { driverDir } from "../../shared/driver-dir.mjs";
+import { driverDir } from "../run-record.mjs";
 import { procStarttime, parseClaimSidecar } from "../claim-liveness.mjs";
 import { endWindowsTree } from "./engine-spawn.mjs";   // Windows has no process group to signal
 

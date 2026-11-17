@@ -23,7 +23,7 @@
 
 /**
  * Why every search is refused over how this machine is set to pay, as the driver classifies it
- * (`billingRefusalReason` in driver/config-inventory.mjs, which lists the kinds). Names only: settings,
+ * (`billingRefusalReason` in driver/engine/auth.mjs, which lists the kinds). Names only: settings,
  * and clouds by the name a reader knows them by. Never the value of a setting.
  *
  * `kind` IS A STRING, NOT A UNION, ON PURPOSE. A kind this build does not know is a refusal all the same,
@@ -280,9 +280,12 @@ export function engineNotice({ programDisputed }: { readonly programDisputed: bo
     headline: NO_ENGINE,
     // SETUP INSTALLS THE PROGRAM NOW. This said "install a reasoning CLI and sign in, then run the setup
     // wizard again", from before setup offered the install itself; it now names setup as the one step.
-    before: 'Everything else works — the example report, its audit trail and the assistant connection are '
-      + 'live right now. The setup wizard offers to install a reasoning CLI if this machine has none, and asks '
-      + 'how it is paid for. To start new searches, run the setup wizard',
+    // THE FIRST SENTENCE SAYS WHAT A DEMO CAN DO, NOT THAT SOMETHING IS RUNNING. It said the example report, its
+    // audit trail and the assistant connection were "live right now", which this screen cannot know: it is shown
+    // from the demo mode alone. The approved words are the ones doctor uses.
+    before: 'Demo mode — new searches are unavailable. The example report, its audit trail and the assistant '
+      + 'connection need no engine. The setup wizard offers to install a reasoning CLI if this machine has none, '
+      + 'and asks how it is paid for. To start new searches, run the setup wizard',
     namesSetupCommand: true,
     // THE MISSING SENTENCE. This reading was taken when the engine last started and is never refreshed,
     // so a reader who installs the CLI and comes back sees exactly this notice again with nothing on the

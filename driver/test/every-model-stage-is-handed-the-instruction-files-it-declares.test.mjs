@@ -46,9 +46,6 @@ const NAMED_NOT_DECLARED = Object.freeze({
   // The active register provider's operator manual, which the search unit's opening message names beside
   // its two declared files. Its follow-ups name it too, through the stage's `followupSkillReads` (packet row D11).
   "register-unit": () => [`skills/clearance-register/providers/${requireRegisterProvider()}.md`],
-  // The pharma field doctrine, which the reviewer's opening message names on a matter in the pharma class.
-  // The writer declares it (resolveSkillReads); the reviewer does not, so its re-check is not pointed at it.
-  "narrative-refutation@pharma matter": () => ["skills/clearance-search/field-doctrine-pharma.md"],
 });
 
 const dispatches = () => everyModelStageDispatch(RUN);

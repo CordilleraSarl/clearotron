@@ -110,7 +110,7 @@ try {
     const m = JSON.parse(readFileSync(mf, "utf8"));
     if (m.license !== "AGPL-3.0-only" || !/[Cc]lean-room/.test(m.description ?? "")) {
       fail(`${d} is NOT the clean-room replacement (license=${m.license}) — the unlicensed buffers@0.1.1 `
-         + "reached a consumer tree, which is the whole reason vendor/buffers exists (#854)");
+         + "reached a consumer tree, which is the whole reason vendor/buffers exists");
     }
   }
   if (dirs.length && process.exitCode !== 1) ok(`all ${dirs.length} \`buffers\` in the tree are the clean-room replacement`);

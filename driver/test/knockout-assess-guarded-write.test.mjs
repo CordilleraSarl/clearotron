@@ -33,6 +33,8 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const RUN = resolve("/RUN");
 const K = koPaths(RUN);
 const TREES = authorityTrees({ runDir: RUN });
+/** Where a chunk was written before it moved to the run root, under the guarded `_driver/` tree. Nothing reads or writes it now. */
+const PRE_MOVE_CHUNK = (n) => driverDir(RUN, `knockout-assess-${n}.json`);
 // Every path below is built with `join`, so "inside the guarded tree" is a prefix ending in this
 // platform's separator, not in `/`.
 
@@ -41,7 +43,7 @@ const TREES = authorityTrees({ runDir: RUN });
 test("the boundary REFUSES the old path and ALLOWS the new one — asserted against denyReason itself", () => {
   // Both directions. Only asserting the new path is allowed would pass just as well if denyReason had
   // stopped denying anything at all, which is the failure mode a boundary test exists to exclude.
-  const legacy = K.assessChunkLegacy(0);
+  const legacy = PRE_MOVE_CHUNK(0);
   const now = K.assessChunk(0);
   assert.ok(denyReason(legacy, TREES), `POSITIVE CONTROL: ${legacy} must still be refused — the guard is intact`);
   assert.equal(denyReason(now, TREES), null, `${now} must be writable, or the relocation fixes nothing`);
@@ -50,7 +52,7 @@ test("the boundary REFUSES the old path and ALLOWS the new one — asserted agai
 test("the new path is outside the guarded tree, the legacy one inside — by construction, not by string", () => {
   const guarded = driverDir(resolve(RUN));
   assert.ok(!K.assessChunk(0).startsWith(guarded + sep), "the chunk must not live under _driver/");
-  assert.ok(K.assessChunkLegacy(0).startsWith(guarded + sep), "the legacy path is the pre-relocation one and must still name _driver/");
+  assert.ok(PRE_MOVE_CHUNK(0).startsWith(guarded + sep), "the control: the pre-move path is under _driver/");
   assert.equal(K.assessChunk(3), join(RUN, "knockout-assess-3.json"), "the run root, with the chunk number preserved");
 });
 
@@ -61,7 +63,6 @@ test("verify-knockout's chunk-number parse survives the move — it anchors on t
   const re = /knockout-assess-(\d+)\.json$/;
   assert.equal(Number(K.assessChunk(0).match(re)?.[1]), 0);
   assert.equal(Number(K.assessChunk(11).match(re)?.[1]), 11);
-  assert.equal(Number(K.assessChunkLegacy(2).match(re)?.[1]), 2, "…and still recovers it from an archived run's path");
 });
 
 test("the DICTATION names NO path and orders the CALL — the write order is gone, not relocated", () => {
@@ -78,24 +79,22 @@ test("the DICTATION names NO path and orders the CALL — the write order is gon
   // the driver writes the chunk. The two paths are still checked BOTH ways so this cannot pass by the
   // dictation having gone empty or generic.
   assert.ok(!text.includes(K.assessChunk(0)), "the seat is still told a path to write — the conversion moved the order rather than removing it");
-  assert.ok(!text.includes(K.assessChunkLegacy(0)), "the seat is told the guarded path");
+  assert.ok(!text.includes(PRE_MOVE_CHUNK(0)), "the seat is told the guarded path");
   assert.match(text, /record_knockout_assess/, "the dictation names no record tool — the seat is told neither where to write nor what to call");
   assert.doesNotMatch(text, /\bWrite the STRICT JSON\b/, "the write order survives in the dictation");
 });
 
-// ── THE READER KEEPS ARCHIVED RUNS RESUMABLE ────────────────────────────────────────────────────────
+// ── THE READER READS THE ONE PATH ───────────────────────────────────────────────────────────────────
 
-test("the reader prefers the new path and falls back to the legacy one", () => {
-  // A run whose chunks were written before the move — or through the bypass closed — must resume
-  // without re-dispatching a PAID stage. Source-bound, because the read sits inside an async pipeline
+test("the reader reads, and the invalidation clears, the run-root chunk alone", () => {
+  // Chunks written before the move belonged to runs from earlier builds, which are no longer resumed, so
+  // nothing falls back to the pre-move path. Source-bound, because the read sits inside an async pipeline
   // function that cannot be driven from here.
   const src = readFileSync(join(HERE, "..", "pipeline-knockout.mjs"), "utf8");
-  assert.match(src, /existsSync\(K\.assessChunk\(c\)\) \? K\.assessChunk\(c\) : K\.assessChunkLegacy\(c\)/,
-    "the read no longer falls back — a resumed pre-move run would re-pay for its chunks");
-  assert.match(src, /for \(const f of \[K\.assessChunk\(c\), K\.assessChunkLegacy\(c\)\]\) if \(existsSync\(f\)\) rmSync\(f\)/,
-    "invalidation must clear BOTH, or a stale legacy chunk is read through the fallback and the re-sweep is billed for nothing");
-  assert.match(src, /existsSync\(K\.assessChunk\(c\)\) \|\| existsSync\(K\.assessChunkLegacy\(c\)\)/,
-    "the staleness check must see both locations");
+  assert.match(src, /const chunkPath = K\.assessChunk\(c\);/, "the read names the run-root chunk");
+  assert.match(src, /existsSync\(K\.assessChunk\(c\)\)\) \{\s*try \{ rmSync\(K\.assessChunk\(c\)\);/, "the invalidation clears it");
+  assert.doesNotMatch(src + readFileSync(join(HERE, "..", "stages-knockout.mjs"), "utf8"), /assessChunkLegacy/,
+    "a pre-move path is read or cleared again");
 });
 
 // ── THE CLASS, SO IT CANNOT COME BACK ───────────────────────────────────────────────────────────────

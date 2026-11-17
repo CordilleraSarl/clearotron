@@ -28,9 +28,7 @@ part of grounding — do not use them here.
 - **US federal and state court opinions**, including the **Court of Appeals for the Federal Circuit
   (CAFC)** — where trademark *appeals* land. Filter to CAFC with the court field (`court=cafc`) when the
   question is a TM appeal.
-- **NOT TTAB.** Raw TTAB administrative proceedings (oppositions, cancellations, ex parte) are **not**
-  here — that is TTABVUE, a separate source not yet wired. When a finding needs TTAB, say so as a
-  coverage gap; do not imply CourtListener covered it.
+- **TTAB coverage is not established by the jurisdiction listing.** Verify any decision actually retrieved; do not treat the listing as coverage of oppositions, cancellations, or ex parte proceedings. TTABVUE is a separate source not wired into this stage. Where required TTAB material remains unverified, keep that gap explicit.
 - US only. For EU / Swiss / non-US, use `legaldatahunter.md` instead.
 
 ## Query vocabulary

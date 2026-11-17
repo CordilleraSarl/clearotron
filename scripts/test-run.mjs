@@ -102,9 +102,9 @@ const REAL_TMP = process.env.CT_TEST_TMP_BASE || tmpdir();
 // temp root that is perfectly contained.
 //
 // IT ONLY EVER WORKED BY WAY OF THE LITERAL `/tmp`. In CI `TMPDIR` is unset, every root is under `/tmp`,
-// and the literal in `PLATFORM_TMP` below covered the sibling. On a box whose temp directory is anywhere
-// else — this one exports `TMPDIR=/mnt/datadisk1/tmp` — nothing in the list covered it, so ten arms that
-// drive the runner recursively failed here and passed in CI on the same commit. The guard was not
+// and the literal in `PLATFORM_TMP` below covered the sibling. On a machine whose `TMPDIR` points
+// outside `/tmp`, nothing in the list covered it, so ten arms that drive the runner recursively failed
+// there and passed in CI on the same commit. The guard was not
 // protecting a differently-rooted box at all; it was refusing it.
 //
 // So this is read ONCE, at the outermost run, before `TMPDIR` is rewritten, and passed down untouched.
@@ -316,7 +316,7 @@ if (missingDeps.length) {
   console.error(``);
   console.error(`  A fresh 'git worktree add' has no node_modules. Running anyway would report ~190`);
   console.error(`  tests that never executed as ~295 failed assertions, which reads as code defects and`);
-  console.error(`  makes a clean-looking baseline diff out of a suite that was never run. #535.`);
+  console.error(`  makes a clean-looking baseline diff out of a suite that was never run.`);
   process.exit(1);
 }
 
@@ -383,7 +383,7 @@ const DATA_PLANE_VARS = Object.freeze([
 // minted yet at this point, but it is created UNDER one of these, so a value pointing inside it passes.
 //
 // THE PLATFORM TEMP DIRECTORY IS IN THIS LIST SEPARATELY FROM `tmpdir()`, and the first draft of this
-// guard was wrong for want of it: this box exports `TMPDIR=/mnt/datadisk1/tmp`, so `tmpdir()` answers
+// guard was wrong for want of it: on a machine whose `TMPDIR` points outside `/tmp`, `tmpdir()` answers
 // that and a perfectly contained `/tmp/...` value was REFUSED. A guard that refuses correct work gets
 // removed, and then nothing is guarded at all — the false refusal is the expensive direction here, not
 // the missed one, because the value this is protecting against is somebody's live estate under /home

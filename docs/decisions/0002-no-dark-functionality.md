@@ -89,3 +89,8 @@ the run that are already disclosed.
 **The `resumed-unsplit` arm can retire** once no box can still hold a run whose findings predate the
 split. Nobody has measured that and this addendum does not ask for it now; the condition is written
 down so the question can be asked later rather than rediscovered.
+
+**Retired, 2026-11-11.** A run from an earlier build is no longer resumed, so runs left from earlier
+builds no longer reach this code. A current run whose grid has two or more terms splits on its first
+pass, and a resume derives the same grid from the run's frozen inputs, so no current run reaches the arm
+either. The single-member assembly stays for `single-term-grid`, which its tests now drive.

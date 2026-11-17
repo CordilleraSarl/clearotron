@@ -10,7 +10,7 @@
     "agent-trailer",
     "machine-trailer"
   ],
-  "total": 12,
+  "total": 11,
   "files": {
     "driver/test/a-bare-reference-added-in-a-diff-is-refused.test.mjs": [
       0,
@@ -82,17 +82,6 @@
       0,
       2,
       0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "providers/signa/src/core.js": [
-      0,
-      0,
-      1,
       0,
       0,
       0,

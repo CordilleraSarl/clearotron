@@ -15,6 +15,7 @@
 // deadlock the registry auto-corrector had to be dug out of.
 
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -154,7 +155,7 @@ test("IT DOES NOT TOUCH THE FRESHNESS GATE — recording and gating are differen
   witnessStageMethodology(b.runDir, "synthesis", msg(FRAMEWORK, RULES), b.resolve);
   assert.ok(!existsSync(driverDir(b.runDir, "stage-inputs")), "no freshness stamp was written or touched");
 
-  const stages = readFileSync(new URL("../stages.mjs", import.meta.url), "utf8");
+  const stages = driverSource("stages.mjs");
   const map = stages.slice(stages.indexOf("stageInputs"));
   const declared = map.slice(0, map.indexOf("\n}"));
   assert.ok(declared.length > 200, "captured the real input map, not an empty slice");

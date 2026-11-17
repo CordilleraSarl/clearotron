@@ -17,14 +17,9 @@
 // The run is cited by DATE, not codename: a run codename is a client identifier and this tree is
 // de-identified by design. The figures below are counts, which identify nobody.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
 import { commonLawCarryChecks, runLint } from "../predelivery-lint.mjs";
-
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
-
 /** The shape that sets `degenerate`: nothing reached a finding, yet the findings cite this lane. */
 const degenerateSlice = (over = {}) => ({
   slice: "jx-zh-grid", computable: true, consumed: true, stage_completed: true,
@@ -113,7 +108,7 @@ test("the pipeline actually LOADS both carry artifacts and passes them", () => {
   // The last link, and the one that was missing. runLint takes `commonLawCarries` as a parameter, so
   // a caller that never reads those files leaves every arm above unreachable on a real run — the
   // component tests would stay green and the defect would be untouched.
-  const src = readFileSync(join(ROOT, "driver", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
 
   // ANCHOR ON THE SEAM'S OWN BINDING, NOT ON THE EXPRESSION.: the first version of this arm
   // grepped the whole file for `[P.commonLawCarry, P.jxZhCarry].map(…)`, and that expression is

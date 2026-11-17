@@ -63,7 +63,7 @@ test("NO writer of a terminal or parked reason cuts with a bare slice", () => {
   // redden on unrelated records and get relaxed by the next person who hit it, which is worse than a
   // narrow guard that holds.
   const STATUS_WRITE = /writeRunStatus\(|state:\s*"(failed|recovering)"|"status\.json"/;
-  for (const f of ["driver/runner.mjs", "driver/pipeline.mjs", "driver/pipeline-knockout.mjs"]) {
+  for (const f of ["driver/runner.mjs", "driver/pipeline.mjs", "driver/run-failed.mjs", "driver/run-delivered.mjs", "driver/pipeline-knockout.mjs"]) {
     const lines = code(f).split("\n");
     lines.forEach((line, i) => {
       if (!/\breason\w*\s*:\s*[^,]*\.slice\(0,\s*200\)/.test(line)) return;
@@ -84,7 +84,7 @@ test("all four repaired sites use the ONE function, so they cannot drift from it
   // pre-run, self-resume, queue-reclaim: three call sites in the runner.
   const calls = (runner.match(/terminalReasonFields\(/g) ?? []).length;
   assert.ok(calls >= 3, `only ${calls} terminalReasonFields call(s) in the runner — expected the three repaired writers`);
-  assert.match(code("driver/pipeline.mjs"), /state: "recovering"[\s\S]{0,200}\.\.\.terminalReasonFields\(reason\)/,
+  assert.match(code("driver/run-failed.mjs"), /state: "recovering"[\s\S]{0,200}\.\.\.terminalReasonFields\(reason\)/,
     "the parked state is the one a reader diagnoses from status.json alone, and it must carry the fields too");
 });
 

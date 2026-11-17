@@ -17,15 +17,13 @@
 // what a draw IS in order to fix what a guard can see. `draw` is a separate prefix in the same directory:
 // the deploy guard counts it, and nothing else does.
 import test from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { mkdtempSync, writeFileSync, rmSync, readFileSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
+import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { fileURLToPath } from "node:url";
 import { liveRunHolds, deployRefusal } from "../deploy-live-run-guard.mjs";
 import { acquireSlot, releaseSlot, freeSlots } from "../slot-lock.mjs";
-
-const HERE = dirname(fileURLToPath(import.meta.url));
 const lockDir = () => mkdtempSync(join(tmpdir(), "draw-lock-"));
 
 test("A LIVE DRAW REFUSES A DEPLOY, exactly as a live clearance does", () => {
@@ -102,7 +100,7 @@ test("runExperiment wraps its body so a THROW still releases the lock", () => {
   // is the shape: the acquire is outside the try and the release is in a `finally`, which is the same
   // idiom `pipeline()`/`pipelineInner()` already uses in that file. Without the finally, a draw that
   // throws leaves a live-pid lock behind and the next hourly deploy defers on a draw that ended.
-  const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   const i = src.indexOf("export async function runExperiment(job, opts) {");
   assert.ok(i > 0, "runExperiment must still be the exported entry point");
   const body = src.slice(i, src.indexOf("\n}\n", i));

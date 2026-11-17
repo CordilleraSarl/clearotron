@@ -1,6 +1,6 @@
 {
   "_README": [
-    "#1010 — THE SUITE'S SELF-CENSUS. Minted and checked by shared/suite-census.mjs's ONE counter, so the",
+    "THE SUITE'S SELF-CENSUS. Minted and checked by shared/suite-census.mjs's ONE counter, so the",
     "minting side cannot drift from the checking side and manufacture its own findings.",
     "",
     "Collection is a glob, so a test file that is DELETED or RENAMED out of it simply stops being",
@@ -69,6 +69,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-behaviour-snapshot-reports-a-changed-prompt-and-a-reordered-stage.test.mjs": {
+          "tests": 6,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "a-below-deprecation-refuses-a-tagged-version.test.mjs": {
           "tests": 4,
           "asserts": 5,
@@ -130,8 +136,8 @@
           "todos": 0
         },
         "a-cancelled-setup-names-what-stays.test.mjs": {
-          "tests": 6,
-          "asserts": 14,
+          "tests": 7,
+          "asserts": 19,
           "skips": 5,
           "todos": 0
         },
@@ -155,7 +161,7 @@
         },
         "a-capability-is-named-before-the-report-names-it.test.mjs": {
           "tests": 6,
-          "asserts": 41,
+          "asserts": 42,
           "skips": 0,
           "todos": 0
         },
@@ -191,13 +197,13 @@
         },
         "a-case-law-source-with-no-known-site-says-it-is-optional.test.mjs": {
           "tests": 2,
-          "asserts": 8,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
         "a-change-a-reader-can-see-arrives-with-something-to-read.test.mjs": {
-          "tests": 35,
-          "asserts": 89,
+          "tests": 37,
+          "asserts": 101,
           "skips": 1,
           "todos": 0
         },
@@ -232,8 +238,8 @@
           "todos": 0
         },
         "a-citation-of-a-withdrawn-finding-is-repaired-by-the-part-that-wrote-it.test.mjs": {
-          "tests": 7,
-          "asserts": 30,
+          "tests": 10,
+          "asserts": 50,
           "skips": 0,
           "todos": 0
         },
@@ -270,6 +276,30 @@
         "a-clean-knockout-hands-the-reviewer-its-first-read-lines.test.mjs": {
           "tests": 6,
           "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-clear-from-a-review-asked-again-keeps-the-conditions-still-standing.pipeline.test.mjs": {
+          "tests": 3,
+          "asserts": 26,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-clearance-footer-names-the-scale-its-gauge-names.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-clearance-resumed-after-it-published-sends-the-same-cover-note.test.mjs": {
+          "tests": 1,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-clearance-stage-whose-output-has-no-record-runs-again.pipeline.test.mjs": {
+          "tests": 2,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -401,7 +431,7 @@
         },
         "a-correction-hands-its-positions-to-the-save.test.mjs": {
           "tests": 6,
-          "asserts": 23,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -471,6 +501,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-coverage-row-recorded-twice-prints-once.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "a-credential-file-is-written-one-way.test.mjs": {
           "tests": 4,
           "asserts": 13,
@@ -480,6 +516,12 @@
         "a-credential-is-not-a-wired-lane.test.mjs": {
           "tests": 10,
           "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-cross-check-already-in-the-plan-stays-on-the-receipt.test.mjs": {
+          "tests": 6,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -549,6 +591,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-data-file-links-its-report-where-the-portal-serves-it.test.mjs": {
+          "tests": 1,
+          "asserts": 2,
+          "skips": 0,
+          "todos": 0
+        },
         "a-decision-the-repeated-placement-pass-changes-is-the-one-delivered.pipeline.test.mjs": {
           "tests": 3,
           "asserts": 48,
@@ -559,6 +607,12 @@
           "tests": 4,
           "asserts": 7,
           "skips": 0,
+          "todos": 0
+        },
+        "a-declined-proof-still-shows-how-to-sign-in.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
+          "skips": 2,
           "todos": 0
         },
         "a-deduped-read-must-exist-on-the-card.test.mjs": {
@@ -772,8 +826,8 @@
           "todos": 0
         },
         "a-failed-run-resumes-from-the-command-line.test.mjs": {
-          "tests": 4,
-          "asserts": 14,
+          "tests": 10,
+          "asserts": 34,
           "skips": 0,
           "todos": 0
         },
@@ -918,6 +972,12 @@
         "a-full-country-card-keeps-what-the-multi-country-card-shows.test.mjs": {
           "tests": 2,
           "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-full-depth-search-this-version-cannot-run-is-left-open-in-two-sentences.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
@@ -1090,8 +1150,14 @@
           "todos": 0
         },
         "a-knockout-defect-reaches-the-step-that-can-repair-it.test.mjs": {
-          "tests": 28,
-          "asserts": 154,
+          "tests": 35,
+          "asserts": 197,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-knockout-email-names-the-product-its-report-names.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
@@ -1119,6 +1185,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-keeps-the-order-it-was-accepted-on.test.mjs": {
+          "tests": 2,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-name-can-answer-by-class-group.test.mjs": {
           "tests": 15,
           "asserts": 50,
@@ -1134,6 +1206,12 @@
         "a-knockout-part-that-failed-as-a-whole-is-in-its-audit-workbook.test.mjs": {
           "tests": 8,
           "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-knockout-publishes-once.test.mjs": {
+          "tests": 2,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },
@@ -1167,6 +1245,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-records-each-pass-as-a-clearance-does.test.mjs": {
+          "tests": 1,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-refusal-is-routed-as-the-knockout-records.test.mjs": {
           "tests": 2,
           "asserts": 6,
@@ -1179,9 +1263,21 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-resumed-from-status-keeps-the-scope-its-order-wrote.test.mjs": {
+          "tests": 3,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-run-with-no-method-is-not-offered-inputs.test.mjs": {
           "tests": 2,
           "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-knockout-stage-reuses-its-output-only-while-its-inputs-are-unchanged.test.mjs": {
+          "tests": 9,
+          "asserts": 41,
           "skips": 0,
           "todos": 0
         },
@@ -1248,6 +1344,12 @@
         "a-layer-row-names-every-register-not-searched.test.mjs": {
           "tests": 7,
           "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-lead-that-loses-its-rating-keeps-its-identification-step.test.mjs": {
+          "tests": 3,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -1413,6 +1515,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-native-language-lane-has-no-off-switch.test.mjs": {
+          "tests": 4,
+          "asserts": 12,
+          "skips": 1,
+          "todos": 0
+        },
         "a-near-spelling-no-buyer-could-confuse-is-set-aside-with-its-reason.test.mjs": {
           "tests": 5,
           "asserts": 25,
@@ -1433,7 +1541,7 @@
         },
         "a-new-run-folder-is-closed-to-other-accounts.test.mjs": {
           "tests": 5,
-          "asserts": 9,
+          "asserts": 11,
           "skips": 5,
           "todos": 0
         },
@@ -1497,6 +1605,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-parked-run-carries-what-resumes-it.test.mjs": {
+          "tests": 7,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
         "a-part-not-completed-is-a-stated-state.test.mjs": {
           "tests": 6,
           "asserts": 37,
@@ -1509,9 +1623,21 @@
           "skips": 0,
           "todos": 0
         },
+        "a-part-that-fails-to-publish-leaves-the-report-delivered.test.mjs": {
+          "tests": 6,
+          "asserts": 48,
+          "skips": 0,
+          "todos": 0
+        },
         "a-partial-payload-cannot-delete-what-it-omits.test.mjs": {
           "tests": 12,
           "asserts": 49,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-party-the-page-shows-is-introduced-to-the-reader.test.mjs": {
+          "tests": 6,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
@@ -1665,6 +1791,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-rate-limit-with-no-reset-postpones-a-knockout.test.mjs": {
+          "tests": 2,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "a-rated-conflict-carries-its-framework-inputs.test.mjs": {
           "tests": 3,
           "asserts": 21,
@@ -1713,6 +1845,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-recheck-may-flag-a-position-the-correction-delivered.test.mjs": {
+          "tests": 3,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "a-record-a-unit-re-run-finds-reaches-the-named-band.pipeline.test.mjs": {
           "tests": 6,
           "asserts": 56,
@@ -1743,6 +1881,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-redone-register-reading-asks-nothing-already-answered.test.mjs": {
+          "tests": 7,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
         "a-refusal-is-not-a-pass.test.mjs": {
           "tests": 6,
           "asserts": 10,
@@ -1768,9 +1912,9 @@
           "todos": 0
         },
         "a-refusal-names-the-file-when-the-command-it-offers-cannot-be-run.test.mjs": {
-          "tests": 8,
-          "asserts": 16,
-          "skips": 7,
+          "tests": 10,
+          "asserts": 18,
+          "skips": 6,
           "todos": 0
         },
         "a-refusal-names-what-resolves-it.test.mjs": {
@@ -1854,6 +1998,12 @@
         "a-register-unit-follow-up-carries-the-one-market-list-and-the-classes.test.mjs": {
           "tests": 4,
           "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-register-unit-run-again-buys-no-answer-the-run-holds.test.mjs": {
+          "tests": 7,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -1971,6 +2121,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-report-is-republished-only-by-the-build-that-made-it.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
+          "skips": 1,
+          "todos": 0
+        },
         "a-report-prints-the-dates-of-its-record.test.mjs": {
           "tests": 4,
           "asserts": 14,
@@ -1989,9 +2145,27 @@
           "skips": 0,
           "todos": 0
         },
+        "a-resume-settles-the-product-its-first-pass-did-not.test.mjs": {
+          "tests": 6,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-resumed-knockout-asks-no-owner-check-it-already-holds.test.mjs": {
+          "tests": 8,
+          "asserts": 41,
+          "skips": 0,
+          "todos": 0
+        },
         "a-resumed-run-asks-the-step-when-the-shape-moved.test.mjs": {
           "tests": 3,
           "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-resumed-run-keeps-the-engine-it-started-on.pipeline.test.mjs": {
+          "tests": 8,
+          "asserts": 43,
           "skips": 0,
           "todos": 0
         },
@@ -2011,6 +2185,12 @@
           "tests": 7,
           "asserts": 13,
           "skips": 0,
+          "todos": 0
+        },
+        "a-review-is-handed-the-addresses-its-flags-may-name.test.mjs": {
+          "tests": 19,
+          "asserts": 76,
+          "skips": 1,
           "todos": 0
         },
         "a-review-saved-as-a-file-meets-the-rules-the-typed-route-keeps.pipeline.test.mjs": {
@@ -2034,6 +2214,24 @@
         "a-run-asks-signa-each-question-once.test.mjs": {
           "tests": 17,
           "asserts": 73,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-run-file-is-named-through-the-records-door.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 1,
+          "todos": 0
+        },
+        "a-run-is-finished-on-the-build-it-started-on.test.mjs": {
+          "tests": 5,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-run-keeps-the-engine-it-started-on.test.mjs": {
+          "tests": 14,
+          "asserts": 55,
           "skips": 0,
           "todos": 0
         },
@@ -2103,6 +2301,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-run-with-nothing-chosen-says-what-doctor-says.test.mjs": {
+          "tests": 4,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "a-running-demo-connects-by-its-folder.test.mjs": {
           "tests": 7,
           "asserts": 38,
@@ -2130,6 +2334,12 @@
         "a-save-that-cannot-commit-says-so.test.mjs": {
           "tests": 4,
           "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-scheduled-publish-builds-the-commit-its-decision-read.test.mjs": {
+          "tests": 3,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -2325,6 +2535,18 @@
           "skips": 0,
           "todos": 0
         },
+        "a-stage-run-again-is-answered-what-it-already-asked.test.mjs": {
+          "tests": 5,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-stage-standing-rule-reaches-every-session.test.mjs": {
+          "tests": 6,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "a-stale-classification-names-the-rows-that-moved.test.mjs": {
           "tests": 6,
           "asserts": 24,
@@ -2334,6 +2556,12 @@
         "a-state-change-from-another-site-is-refused.test.mjs": {
           "tests": 15,
           "asserts": 70,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-step-whose-only-support-was-withdrawn-stays-off-the-page.test.mjs": {
+          "tests": 3,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
@@ -2347,6 +2575,18 @@
           "tests": 4,
           "asserts": 11,
           "skips": 1,
+          "todos": 0
+        },
+        "a-stopped-run-reads-as-stopped-in-the-run-list.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-stopped-run-records-what-it-spent.test.mjs": {
+          "tests": 3,
+          "asserts": 17,
+          "skips": 0,
           "todos": 0
         },
         "a-stopped-run-says-why-it-stopped.test.mjs": {
@@ -2631,6 +2871,12 @@
           "skips": 5,
           "todos": 0
         },
+        "a-workbook-is-compared-by-its-contents.test.mjs": {
+          "tests": 3,
+          "asserts": 3,
+          "skips": 0,
+          "todos": 0
+        },
         "a-worldwide-order-is-never-framed-as-the-account-defaults.test.mjs": {
           "tests": 4,
           "asserts": 14,
@@ -2760,6 +3006,12 @@
         "an-audit-that-no-longer-describes-the-run-is-never-published-as-current.test.mjs": {
           "tests": 3,
           "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-axis-the-plan-gives-no-work-files-its-note-and-claims-no-result.test.mjs": {
+          "tests": 7,
+          "asserts": 33,
           "skips": 0,
           "todos": 0
         },
@@ -2985,6 +3237,12 @@
           "skips": 0,
           "todos": 0
         },
+        "assembling-a-run-s-records-reads-the-log-once-and-rewrites-only-what-changed.test.mjs": {
+          "tests": 6,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
         "attributed-span.test.mjs": {
           "tests": 7,
           "asserts": 25,
@@ -3166,8 +3424,8 @@
           "todos": 0
         },
         "case-law-join.test.mjs": {
-          "tests": 2,
-          "asserts": 10,
+          "tests": 6,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -3274,9 +3532,9 @@
           "todos": 0
         },
         "closing-the-terminal-stops-what-start-started.test.mjs": {
-          "tests": 2,
-          "asserts": 6,
-          "skips": 1,
+          "tests": 5,
+          "asserts": 20,
+          "skips": 2,
           "todos": 0
         },
         "cn-scope-honesty.test.mjs": {
@@ -3305,7 +3563,7 @@
         },
         "common-law-receipts.test.mjs": {
           "tests": 42,
-          "asserts": 148,
+          "asserts": 145,
           "skips": 0,
           "todos": 0
         },
@@ -3443,7 +3701,7 @@
         },
         "convergence-ledger.test.mjs": {
           "tests": 10,
-          "asserts": 60,
+          "asserts": 59,
           "skips": 0,
           "todos": 0
         },
@@ -3460,14 +3718,14 @@
           "todos": 0
         },
         "corrective-cycle.test.mjs": {
-          "tests": 16,
-          "asserts": 156,
+          "tests": 18,
+          "asserts": 167,
           "skips": 0,
           "todos": 0
         },
         "corrective-message.test.mjs": {
           "tests": 22,
-          "asserts": 107,
+          "asserts": 109,
           "skips": 0,
           "todos": 0
         },
@@ -3718,8 +3976,8 @@
           "todos": 0
         },
         "designed-refusal.test.mjs": {
-          "tests": 10,
-          "asserts": 67,
+          "tests": 11,
+          "asserts": 83,
           "skips": 0,
           "todos": 0
         },
@@ -3837,6 +4095,12 @@
           "skips": 0,
           "todos": 0
         },
+        "doctor-names-the-program-setup-installed.test.mjs": {
+          "tests": 4,
+          "asserts": 6,
+          "skips": 2,
+          "todos": 0
+        },
         "doctor-names-who-is-in-the-store.test.mjs": {
           "tests": 5,
           "asserts": 15,
@@ -3851,13 +4115,13 @@
         },
         "doctor-reads-only-the-ai-that-is-chosen.test.mjs": {
           "tests": 2,
-          "asserts": 23,
+          "asserts": 25,
           "skips": 2,
           "todos": 0
         },
         "doctor-reads-the-units-not-the-shell.test.mjs": {
-          "tests": 45,
-          "asserts": 128,
+          "tests": 47,
+          "asserts": 134,
           "skips": 3,
           "todos": 0
         },
@@ -4133,7 +4397,7 @@
         },
         "engine.common.test.mjs": {
           "tests": 18,
-          "asserts": 55,
+          "asserts": 54,
           "skips": 0,
           "todos": 0
         },
@@ -4145,7 +4409,7 @@
         },
         "engine.gather.test.mjs": {
           "tests": 20,
-          "asserts": 116,
+          "asserts": 117,
           "skips": 0,
           "todos": 0
         },
@@ -4245,6 +4509,12 @@
           "skips": 0,
           "todos": 0
         },
+        "every-manual-is-read-and-names-what-exists.test.mjs": {
+          "tests": 9,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "every-model-stage-is-handed-its-tools-on-both-engines.test.mjs": {
           "tests": 6,
           "asserts": 11,
@@ -4271,6 +4541,12 @@
         },
         "every-recording-stage-has-a-mock-that-calls-its-tool.test.mjs": {
           "tests": 2,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "every-repair-hint-row-is-reachable.test.mjs": {
+          "tests": 3,
           "asserts": 5,
           "skips": 0,
           "todos": 0
@@ -4547,7 +4823,7 @@
         },
         "health-carries-the-build.test.mjs": {
           "tests": 6,
-          "asserts": 16,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
@@ -4564,8 +4840,8 @@
           "todos": 0
         },
         "hints-state-the-requirement.test.mjs": {
-          "tests": 5,
-          "asserts": 12,
+          "tests": 4,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
@@ -4583,7 +4859,7 @@
         },
         "identity-seed-before-refusal.test.mjs": {
           "tests": 5,
-          "asserts": 10,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
@@ -4642,8 +4918,8 @@
           "todos": 0
         },
         "jx-p4-units.test.mjs": {
-          "tests": 24,
-          "asserts": 131,
+          "tests": 25,
+          "asserts": 136,
           "skips": 0,
           "todos": 0
         },
@@ -4655,19 +4931,19 @@
         },
         "jx-slice-statement.test.mjs": {
           "tests": 19,
-          "asserts": 67,
+          "asserts": 66,
           "skips": 0,
           "todos": 0
         },
         "jx-units.test.mjs": {
           "tests": 25,
-          "asserts": 164,
+          "asserts": 161,
           "skips": 0,
           "todos": 0
         },
         "knockout-assess-guarded-write.test.mjs": {
           "tests": 8,
-          "asserts": 24,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
@@ -4684,9 +4960,9 @@
           "todos": 0
         },
         "knockout-ladder-observable.test.mjs": {
-          "tests": 7,
-          "asserts": 15,
-          "skips": 1,
+          "tests": 6,
+          "asserts": 14,
+          "skips": 0,
           "todos": 0
         },
         "knockout-record-link-host.test.mjs": {
@@ -4696,8 +4972,8 @@
           "todos": 0
         },
         "knockout-recovery-ladder.test.mjs": {
-          "tests": 7,
-          "asserts": 20,
+          "tests": 10,
+          "asserts": 43,
           "skips": 0,
           "todos": 0
         },
@@ -4745,14 +5021,8 @@
         },
         "lane-depth-ask-vs-got.test.mjs": {
           "tests": 15,
-          "asserts": 57,
+          "asserts": 59,
           "skips": 0,
-          "todos": 0
-        },
-        "lane-switch-one-reader.test.mjs": {
-          "tests": 5,
-          "asserts": 17,
-          "skips": 2,
           "todos": 0
         },
         "lane-wedge.test.mjs": {
@@ -4852,8 +5122,8 @@
           "todos": 0
         },
         "named-band-missing.test.mjs": {
-          "tests": 7,
-          "asserts": 24,
+          "tests": 8,
+          "asserts": 30,
           "skips": 0,
           "todos": 0
         },
@@ -4961,7 +5231,7 @@
         },
         "onboard-wizard.test.mjs": {
           "tests": 78,
-          "asserts": 303,
+          "asserts": 304,
           "skips": 4,
           "todos": 0
         },
@@ -5135,7 +5405,7 @@
         },
         "pipeline.mock.test.mjs": {
           "tests": 102,
-          "asserts": 865,
+          "asserts": 868,
           "skips": 0,
           "todos": 0
         },
@@ -5296,8 +5566,8 @@
           "todos": 0
         },
         "portal-service.test.mjs": {
-          "tests": 136,
-          "asserts": 732,
+          "tests": 138,
+          "asserts": 745,
           "skips": 1,
           "todos": 0
         },
@@ -5405,7 +5675,7 @@
         },
         "profiles.test.mjs": {
           "tests": 49,
-          "asserts": 273,
+          "asserts": 272,
           "skips": 0,
           "todos": 0
         },
@@ -5710,8 +5980,8 @@
           "todos": 0
         },
         "register-findings-link-to-the-office-record.test.mjs": {
-          "tests": 23,
-          "asserts": 71,
+          "tests": 25,
+          "asserts": 77,
           "skips": 0,
           "todos": 0
         },
@@ -5819,7 +6089,7 @@
         },
         "render.test.mjs": {
           "tests": 164,
-          "asserts": 686,
+          "asserts": 687,
           "skips": 0,
           "todos": 0
         },
@@ -5950,8 +6220,8 @@
           "todos": 0
         },
         "retry-backoff.test.mjs": {
-          "tests": 8,
-          "asserts": 33,
+          "tests": 9,
+          "asserts": 36,
           "skips": 0,
           "todos": 0
         },
@@ -6012,6 +6282,12 @@
         "run-quote.test.mjs": {
           "tests": 14,
           "asserts": 43,
+          "skips": 0,
+          "todos": 0
+        },
+        "run-record.test.mjs": {
+          "tests": 5,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -6095,13 +6371,13 @@
         },
         "runner.jx-p4-e2e.test.mjs": {
           "tests": 2,
-          "asserts": 32,
+          "asserts": 31,
           "skips": 0,
           "todos": 0
         },
         "runner.knockout-e2e.test.mjs": {
           "tests": 3,
-          "asserts": 125,
+          "asserts": 127,
           "skips": 0,
           "todos": 0
         },
@@ -6142,8 +6418,8 @@
           "todos": 0
         },
         "runner.self-resume.test.mjs": {
-          "tests": 2,
-          "asserts": 18,
+          "tests": 3,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
@@ -6257,7 +6533,7 @@
         },
         "search-policy-freeze.test.mjs": {
           "tests": 7,
-          "asserts": 28,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },
@@ -6317,7 +6593,7 @@
         },
         "setup-asks-how-claude-is-paid.test.mjs": {
           "tests": 14,
-          "asserts": 97,
+          "asserts": 98,
           "skips": 4,
           "todos": 0
         },
@@ -6436,8 +6712,8 @@
           "todos": 0
         },
         "stage-freshness.test.mjs": {
-          "tests": 23,
-          "asserts": 60,
+          "tests": 26,
+          "asserts": 79,
           "skips": 0,
           "todos": 0
         },
@@ -6461,7 +6737,7 @@
         },
         "start-command.test.mjs": {
           "tests": 28,
-          "asserts": 124,
+          "asserts": 123,
           "skips": 0,
           "todos": 0
         },
@@ -6807,6 +7083,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-console-says-it-in-plain-words.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "the-containment-rule-does-not-depend-on-the-string-tmp.test.mjs": {
           "tests": 2,
           "asserts": 3,
@@ -6814,9 +7096,9 @@
           "todos": 0
         },
         "the-copy-npx-fetched-does-not-shadow-the-installed-command.test.mjs": {
-          "tests": 3,
-          "asserts": 9,
-          "skips": 3,
+          "tests": 5,
+          "asserts": 14,
+          "skips": 5,
           "todos": 0
         },
         "the-corrections-section-is-an-allowlist.test.mjs": {
@@ -7228,8 +7510,8 @@
           "todos": 0
         },
         "the-install-pages-describe-the-install-this-build-performs.test.mjs": {
-          "tests": 11,
-          "asserts": 87,
+          "tests": 13,
+          "asserts": 104,
           "skips": 0,
           "todos": 0
         },
@@ -7319,7 +7601,7 @@
         },
         "the-legacy-web-path-searches-what-the-frame-names.test.mjs": {
           "tests": 3,
-          "asserts": 11,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -7773,6 +8055,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-review-is-handed-the-framework-it-enforces.test.mjs": {
+          "tests": 5,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
         "the-review-is-told-the-floors-placement-set-aside.test.mjs": {
           "tests": 11,
           "asserts": 30,
@@ -7869,6 +8157,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-runs-own-common-law-search-record-is-named-in-words.test.mjs": {
+          "tests": 3,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "the-runtime-floor-is-read-not-restated.test.mjs": {
           "tests": 10,
           "asserts": 26,
@@ -7915,6 +8209,12 @@
           "tests": 1,
           "asserts": 4,
           "skips": 2,
+          "todos": 0
+        },
+        "the-secret-scanner-comes-from-a-kept-copy.test.mjs": {
+          "tests": 5,
+          "asserts": 15,
+          "skips": 0,
           "todos": 0
         },
         "the-settings-surface-reads-the-customer-store.test.mjs": {
@@ -8439,6 +8739,12 @@
           "skips": 0,
           "todos": 0
         },
+        "what-an-engine-stamp-means.test.mjs": {
+          "tests": 1,
+          "asserts": 3,
+          "skips": 0,
+          "todos": 0
+        },
         "what-doctor-passes-a-search-accepts.test.mjs": {
           "tests": 15,
           "asserts": 49,
@@ -8460,6 +8766,12 @@
         "whatif-queue.test.mjs": {
           "tests": 13,
           "asserts": 36,
+          "skips": 0,
+          "todos": 0
+        },
+        "with-no-ai-chosen-doctor-asks-for-no-programs-path.test.mjs": {
+          "tests": 3,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },
@@ -8625,8 +8937,8 @@
           "todos": 0
         },
         "brief.test.mjs": {
-          "tests": 15,
-          "asserts": 70,
+          "tests": 16,
+          "asserts": 78,
           "skips": 0,
           "todos": 0
         },
@@ -8924,8 +9236,8 @@
       "ext": "ts",
       "perFile": {
         "aScreenAwaitingACompanyAsksNothing.test.ts": {
-          "tests": 2,
-          "asserts": 7,
+          "tests": 3,
+          "asserts": 13,
           "skips": 0,
           "todos": 0
         },
@@ -8997,7 +9309,7 @@
         },
         "composerProduct.test.ts": {
           "tests": 37,
-          "asserts": 146,
+          "asserts": 149,
           "skips": 0,
           "todos": 0
         },
@@ -9080,8 +9392,8 @@
           "todos": 0
         },
         "guard.test.ts": {
-          "tests": 16,
-          "asserts": 47,
+          "tests": 17,
+          "asserts": 50,
           "skips": 0,
           "todos": 0
         },
@@ -9385,7 +9697,7 @@
         },
         "providers/_shared/test/a-follow-up-answered-before-a-park-counts-once-after-the-resume.test.mjs": {
           "tests": 4,
-          "asserts": 14,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },

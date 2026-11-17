@@ -27,6 +27,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createServer, request as httpRequest } from "node:http";
 import { execFileSync } from "node:child_process";
+import { driverSource } from "./driver-source.mjs";
 
 // `await import`, not a static one. `engineCommitDate` is added by the change under test, and a static
 // import of a name the module does not export yet fails at LINK time — the file would report as one
@@ -127,7 +128,7 @@ test("health and the surface check read ONE box rule, so they cannot drift apart
   // allowlist written out inline in live-surface-check, and a second copy in the endpoint would have
   // been correct on the day it was written.
   const surface = readFileSync(join(ROOT, "scripts/live-surface-check.mjs"), "utf8");
-  const portal = readFileSync(join(ROOT, "driver/portal-service.mjs"), "utf8");
+  const portal = driverSource("portal-service.mjs");
   for (const [what, src] of [["the surface check", surface], ["the portal", portal]]) {
     assert.match(src, /import \{[^}]*\bdeploymentBox\b[^}]*\} from ['"][^'"]*deployment-box\.mjs['"]/,
       `${what} no longer imports the shared box rule — an inline allowlist is a second derivation, and `

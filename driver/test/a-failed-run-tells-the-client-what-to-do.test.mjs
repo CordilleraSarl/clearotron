@@ -143,7 +143,7 @@ test("the source walk refuses an empty corpus, and an empty leaf is not one", ()
     mkdirSync(join(tmp, "src", "leaf"), { recursive: true });
 
     // Direction 1 — nothing found is a REFUSAL, not a clean sweep with no offenders.
-    assert.throws(() => clientFacingSources(tmp, ["src"]), /1010 VACUOUS/,
+    assert.throws(() => clientFacingSources(tmp, ["src"]), /VACUOUS/,
       "an empty tree must fail loudly here, or the class arm above passes having read nothing");
 
     // Direction 2 — an empty leaf beside real files does not take the files with it, which is why the

@@ -48,7 +48,6 @@ export const ENV = {
 //
 // This list was surfaced to the model as a tool-schema enum until, so a model could pick a value
 // the schema advertised and get a 400 back. The neutral server now offers `queryableStatuses`.
-export const MARK_FEATURES = ["WORD", "FIGURATIVE", "SHAPE_3D", "COLOUR", "SOUND", "HOLOGRAM", "OLFACTORY", "POSITION", "PATTERN", "MOTION", "MULTIMEDIA", "OTHER"];
 export const STATUSES = ["RECEIVED", "UNDER_EXAMINATION", "APPLICATION_PUBLISHED", "REGISTRATION_PENDING", "REGISTERED", "WITHDRAWN", "REFUSED", "OPPOSITION_PENDING", "APPEALED", "CANCELLATION_PENDING", "CANCELLED", "SURRENDERED", "EXPIRED", "APPEALABLE", "START_OF_OPPOSITION_PERIOD", "ACCEPTANCE_PENDING", "ACCEPTED", "REMOVED_FROM_REGISTER"];
 
 // In-memory token cache, keyed by clientId. Cleared on process restart.
@@ -76,7 +75,7 @@ function hostsFor(cfg, where) {
       `[euipo] ${where}: EUIPO_ENVIRONMENT is not set and there is NO default. It selects which EU `
       + "corpus this call searches, and the two are not interchangeable: `production` is the register; "
       + "`sandbox` is a frozen snapshot plus synthetic rows. Resolve the config through core.js's "
-      + "resolveConfig, which refuses the same way (#1149 item 2, ADR-0001).",
+      + "resolveConfig, which refuses the same way (ADR-0001).",
     );
   }
   if (!ENV[environment]) {

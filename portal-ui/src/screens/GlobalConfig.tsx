@@ -45,6 +45,7 @@ import {
   engineCapabilityRows, providerCategories, setupGuideUrl, signInRow, type SetupGuide,
 } from '../contract/installationSettings.ts'
 import { Icon } from '../components/Icon.tsx'
+import { Ticked } from '../components/Ticked.tsx'
 import { PageHeader } from '../components/PageHeader.tsx'
 import { useLoad } from '../state/useApi.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
@@ -280,14 +281,16 @@ function Row({
       </div>
       {detail ? <p className="cfg-note mono">{detail}</p> : null}
       {note ? <p className="cfg-note">{note}</p> : null}
+      {/* A FAULT'S BACKTICKS ARE A COMMAND TO TYPE, drawn as code as New clearance draws the same command.
+          Printed as text, the Engine row showed the reader the backticks themselves around the setup command. */}
       {faults.map((f, i) =>
         guide && i === faults.length - 1 ? (
           <div className="cfg-act" key={f}>
-            <p className="cfg-note bad">{f}</p>
+            <p className="cfg-note bad"><Ticked text={f} /></p>
             <GuideButton guide={guide} repo={repo} />
           </div>
         ) : (
-          <p className="cfg-note bad" key={f}>{f}</p>
+          <p className="cfg-note bad" key={f}><Ticked text={f} /></p>
         ),
       )}
     </div>

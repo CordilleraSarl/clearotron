@@ -113,7 +113,7 @@ packet-sender; the driver does not change.
 ## The engine seam
 
 One stage execution = one `runStage()` call = one engine invocation. Everything provider-specific
-lives behind the seam (`engine/CONTRACT.md`; selection in `gateway.mjs` `selectEngine()`). Engine
+lives behind the seam (`engine/CONTRACT.md`; selection in `engine/registry.mjs` `selectEngine()`). Engine
 choice is **process-wide**: `CLEAROTRON_AI` is read at every activation and governs every stage of
 every job in it. There is no per-stage, per-job or comms-specific override, so comparing the two
 engines means flipping the variable and running sequentially, or standing up a second instance.
@@ -266,12 +266,20 @@ All paths relative to [`driver/`](../../driver/). The load-bearing seven are mar
 | Module | Role |
 |---|---|
 | ● `runner.mjs` | Queue drain: claims, dedup, parks, orphan reclaim, admission budget, graceful stop. |
-| ● `pipeline.mjs` | The run: stage sequence, fan-in gates, clamps, delivery, recovery. The largest module in the tree; [03](03-run-lifecycle.md) is its map. |
+| ● `pipeline.mjs` | The clearance run: the run slot, the preflight and the freezes, then its ordered steps (`steps/`), handed to `runShell`. The largest module in the tree; [03](03-run-lifecycle.md) is its map. |
 | ● `stages.mjs` | The clearance lane's per-stage declaration table (tier/model, thinking, timeout + stall, skill reads, output, validator) + stage messages. Not the only one: the knockout lane keeps `KO_STAGES` in its own table. |
 | ● `gateway.mjs` | `runStage()`: attempt ladder, warm patch, file-truth gating, fail taxonomy, engine selection, turn/ping lanes. |
 | ● `engine/` | The engine seam: `CONTRACT.md`, `anthropic-agent.mjs`, `openai-agent.mjs`, `common.mjs` (shared spawn/watchdog substrate), `mcp/` (engine-local gather servers). |
 | ● `verify.mjs` | Structural validators for every stage output + `parseVerdict` (the verdict gate's parser). |
 | ● `driver.config.mjs` | Env → config resolution: paths, caps, engine + register-provider selection, credential preflight. |
+| `steps/` | The clearance's steps, one module each, in the order `pipeline.mjs` hands them to `runShell`: intake, register sweep, frame comparison, placement and digest, skeptic and follow-up, synthesis, correction cycle, verdict gate, overview and cards, delivery. `corrections.mjs` holds what the correction steps share. |
+| `run-shell.mjs` | What every run does around its steps, the same for a clearance and a Knockout: it runs a product's steps in order, ends a failure through `run-failed.mjs` and a delivery through the product's ending. |
+| `run-failed.mjs` | The failure path of both products: postpone, stop, park for recovery or end, and the notice it sends. |
+| `run-delivered.mjs` | How a clearance ends delivered: the publish, the packet, the delivered state and the archive. |
+| `run-outcome.mjs` | How a run that cannot finish is described: the failure a stage raises, the designed refusal, and the packet that tells the requester. |
+| `run-park.mjs` | The one writer of `.postponed`, the marker a parked run resumes from. |
+| `run-record.mjs` | The one door to a run's files: where they are, and how they are read and written. |
+| `portal-service.mjs` · `portal-routes/` · `portal-runs.mjs` · `portal-confirmation.mjs` | The portal: the service, its routes grouped one module per area ([`portal-routes/README.md`](../../driver/portal-routes/README.md)), the runs a reader can see, and the token that confirms an order. |
 | `pipeline-knockout.mjs` · `stages-knockout.mjs` · `verify-knockout.mjs` | The knockout (triage) lane: its own run body, its own stage table (`KO_STAGES`) and its own validators. `pipeline()` dispatches into it on a knockout policy, so its stages can never leak into the clearance `STAGE_ORDER`. |
 | `phase0.mjs` | Pure run identity: slug, codename, dates, run/archive dirs. |
 | `enqueue-schema.mjs` | Job-file shape, `validateJob` classification (reject/clarify/run). |

@@ -18,6 +18,7 @@ import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { fileURLToPath } from "node:url";
 import { todayISO } from "../phase0.mjs";
 import { deadClaimToken } from "./claim-fixtures.mjs";   // — pid+starttime, never a bare pid
+import { startedOnThisBuild } from "./started-on-this-build.mjs";   // the row a run writes when it starts
 process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 
@@ -67,6 +68,7 @@ async function seedOrphan(root, { reclaims }) {
   const dateISO = todayISO();
   const runDir = join(studioFor(root), slug, `${dateISO}-${codename}`);
   mkdirSync(driverDir(runDir), { recursive: true });
+  startedOnThisBuild(runDir);
   writeFileSync(join(runDir, "status.json"), JSON.stringify({
     runId: `${slug}-${dateISO}-${codename}`, slug, codename, date: dateISO, agent: "intake-agent",
     state: "running", stepN: 7, stepTotal: 9, stepLabel: "Drafting the report", updatedAt: new Date().toISOString(),

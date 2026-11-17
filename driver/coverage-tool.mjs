@@ -29,7 +29,7 @@
 
 import { readFileSync, writeFileSync, mkdirSync, appendFileSync } from "node:fs";
 import { join, basename } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
+import { driverDir } from "./run-record.mjs";   //
 import { coverageFormAbsence, formRowKey } from "./coverage-form.mjs";
 import { unionCoverageForm, outstandingCoverageRows } from "./coverage-union.mjs";
 import { coverageFormStamp, coverageFormInput, coverageFormPaths, readCoverageForm, writeCoverageForm } from "./coverage-form-io.mjs";

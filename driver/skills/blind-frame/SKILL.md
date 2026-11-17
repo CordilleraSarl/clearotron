@@ -1,6 +1,6 @@
 ---
 name: blind-frame
-description: The frame-STARVED independent re-derivation for the v3 preliminary trademark search workflow. **Invoked exclusively by the `clearance-search` orchestrator/driver**, in parallel with the gather sweeps — do not call directly. Reads ONLY the raw instruction (mark, goods, classes, territories, manner of use) and NOT the matter frame, then re-derives the threat model cold across four layers — element + neighbours both directions, field by goods-overlap, sources by real channel, ranking by goods-overlap — and emits a structured model the frame-diff stage diffs against what the run actually scoped. Its job is to test the frame, not to reason inside it.
+description: The frame-STARVED independent re-derivation for the v3 preliminary trademark search workflow. **Run by the driver**, in parallel with the gather sweeps — do not call directly. Reads ONLY the raw instruction (mark, goods, classes, territories, manner of use) and NOT the matter frame, then re-derives the threat model cold across four layers — element + neighbours both directions, field by goods-overlap, sources by real channel, ranking by goods-overlap — and emits a structured model the frame-diff stage diffs against what the run actually scoped. Its job is to test the frame, not to reason inside it.
 ---
 
 ## Purpose
@@ -63,7 +63,6 @@ The tool takes these values, and the shape below is what it validates them again
 
 ```json
 {
-  "schema_version": 1,
   "dominant_element": "the spine, verbatim",
   "variants": [
     {"value": "VELTRI", "direction": "drop", "rationale": "drop the trailing N — VELTRIN→VELTRI"}

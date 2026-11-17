@@ -18,7 +18,7 @@
 // CLEAROTRON_GATHER_SESSION_KEY / CLEAROTRON_GATHER_AGENT (attribution for the reading log).
 import { readFileSync, readdirSync, appendFileSync, existsSync, mkdirSync } from "node:fs";
 import { join, dirname } from "node:path";
-import { driverDir } from "../../../shared/driver-dir.mjs";   //
+import { paths, readJson } from "../../run-record.mjs";   //
 import { serve } from "./stdio-server.mjs";
 import { answerBudget, quotedBytes } from "../../../shared/answer-parts.mjs";
 import { classifyRecord, prepareTargets, SHAPE_TIERS, isLiveRecord, niceClassKey, withoutPlacementOrders } from "../../band-shape.mjs";
@@ -34,9 +34,9 @@ const SESSION = process.env.CLEAROTRON_GATHER_SESSION_KEY || "";
 const AGENT = process.env.CLEAROTRON_GATHER_AGENT || "";
 
 const bandPath = () => join(RUN_DIR, "register-named-band.json");
-const shapeJsonPath = () => driverDir(RUN_DIR, "band-shape.json");
+const shapeJsonPath = () => paths(RUN_DIR).bandShape;
 const shapeMdPath = () => join(RUN_DIR, "band-shape.md");
-const readingLogPath = () => driverDir(RUN_DIR, "reading-log.jsonl");
+const readingLogPath = () => paths(RUN_DIR).readingLog;
 // — THE RUN'S OWN RECORD LEDGER, which this tool did not know about.
 //
 // A fetch writes here; `_records/` is populated from it by a union that does not run until the END of
@@ -48,7 +48,7 @@ const readingLogPath = () => driverDir(RUN_DIR, "reading-log.jsonl");
 //
 // Run-scoped by construction, so no prefix filter is needed: this file lives in the run dir and every
 // line in it belongs to this run.
-const recordLedgerPath = () => driverDir(RUN_DIR, "register-record-bodies.jsonl");
+const recordLedgerPath = () => paths(RUN_DIR).registerRecordBodies;
 
 /**
  * The record body this run has already fetched, or null.
@@ -88,7 +88,7 @@ function logRead(tool, args, result) {
   } catch { /* best-effort — a log failure must never break a lookup */ }
 }
 
-const loadJson = (p) => JSON.parse(readFileSync(p, "utf8"));
+const loadJson = (p) => readJson(p);
 
 // ── bounded serving: the transport cap is TOKENS, not the 256KB Read cap ─────────────────────────────────
 // The engine carries a tool result over MCP, and claude -p caps one tool output at
@@ -232,7 +232,7 @@ function resolveRecordFile(dir, uri) {
   for (const f of files) {
     if (!f.toLowerCase().startsWith(base + "-")) continue;   // an instance suffix, or an unrelated id
     let body;
-    try { body = JSON.parse(readFileSync(join(dir, f), "utf8")); } catch { continue; }
+    try { body = readJson(join(dir, f)); } catch { continue; }
     if (typeof body?._uri === "string" && normalizeRecordUri(body._uri) === canon)
       confirmed.push({ file: join(dir, f), uri: body._uri });
   }

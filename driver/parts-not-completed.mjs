@@ -24,7 +24,7 @@
 // A pure leaf: node:fs, node:path, shared/driver-dir.mjs and shared/slices-taken-out.mjs (node:fs and the same) only.
 import { readFileSync, writeFileSync, renameSync, rmSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";
+import { driverDir, ensureDriverDir } from "./run-record.mjs";
 // Where the record sits is stated with the band readers outside the driver, which read the searches' record too.
 import { NOT_COMPLETED_DIR, notCompletedPath } from "../shared/slices-taken-out.mjs";
 

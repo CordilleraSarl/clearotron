@@ -18,6 +18,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync } from 
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";
+import { startedOnThisBuild } from "./started-on-this-build.mjs";   // the row a run writes when it starts
 
 
 const MIN = 60 * 1000;
@@ -102,6 +103,7 @@ const orphanPark = (extra = {}) => {
   const root = mkdtempSync(join(tmpdir(), "clearotron-1732-"));
   const runDir = join(root, "run");
   mkdirSync(driverDir(runDir, "."), { recursive: true });
+  startedOnThisBuild(runDir);
   const sentPath = join(runDir, ".postponed");
   writeFileSync(sentPath, JSON.stringify({
     postponedAt: new Date(Date.now() - 90 * MIN).toISOString(),
@@ -139,6 +141,7 @@ test("a pre-fix run-dir sentinel with no probeAttempt still records the wake", a
   const root = mkdtempSync(join(tmpdir(), "clearotron-1732-old-"));
   const runDir = join(root, "run");
   mkdirSync(driverDir(runDir, "."), { recursive: true });
+  startedOnThisBuild(runDir);
   const sentPath = join(runDir, ".postponed");
   writeFileSync(sentPath, "not json at all");
 

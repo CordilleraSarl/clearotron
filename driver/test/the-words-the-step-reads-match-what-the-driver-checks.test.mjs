@@ -11,6 +11,7 @@
 // was never told about, or believes a floor answered that the floor duty still counts as open. These arms
 // tie each sentence to the check it describes. Every mark, owner and goods line is invented.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { buildBandShape, deriveRegisterPositions, CROWDED_GROUP_RECORDS, groupPageCall } from "../band-shape.mjs";
@@ -19,7 +20,7 @@ import { unionPlacementForm } from "../placement-union.mjs";
 import { goodsWordCounter, goodsWordsMatched } from "../record-goods.mjs";
 
 const MANUAL = readFileSync(new URL("../skills/placement-inquiry/SKILL.md", import.meta.url), "utf8");
-const DICTATION = readFileSync(new URL("../stages.mjs", import.meta.url), "utf8").split("\n").filter((l) => /EACH LINE THE SHAPE LISTS|ONE ROW PER GROUP/.test(l)).join("\n");
+const DICTATION = driverSource("stages.mjs").split("\n").filter((l) => /EACH LINE THE SHAPE LISTS|ONE ROW PER GROUP/.test(l)).join("\n");
 const CONTRACTS = [...Object.values(SET_ASIDE_ROW_CONTRACT), ...Object.values(SET_ASIDE_GROUP_CONTRACT), PLACEMENT_FORM_PROVENANCE]
   .filter((v) => typeof v === "string").join("\n");
 
@@ -113,7 +114,7 @@ test("the fallback names its words as the register search's, and (c)'s heading n
 
 test("the three places that ask for product words ask for whole words in the singular, never a stem", () => {
   const RECORDING = readFileSync(new URL("../engine/mcp/recording-server.mjs", import.meta.url), "utf8");
-  const STAGES = readFileSync(new URL("../stages.mjs", import.meta.url), "utf8");
+  const STAGES = driverSource("stages.mjs");
   const VARIANTS = readFileSync(new URL("../skills/clearance-variants/SKILL.md", import.meta.url), "utf8");
   for (const [where, text] of [["recording tool", RECORDING], ["dictation", STAGES], ["variants manual", VARIANTS]]) {
     assert.doesNotMatch(text, /the stem that matches/, `the ${where} still asks for a stem`);

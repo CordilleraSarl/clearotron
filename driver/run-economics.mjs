@@ -102,12 +102,13 @@
 
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir, labelOfDriverFile } from "../shared/driver-dir.mjs";   //
 import { runLog, note } from "./log.mjs";
 import { writeRunStatus } from "./progress.mjs";
 // tokens.mjs imports this module too (isCodeSide, stampRunEconomics). The cycle is safe because each side
 // reads the other's bindings only inside functions, never while the module is loading.
-import { isAttemptRow, modelKey } from "./tokens.mjs";
+import { isAttemptRow, modelKey } from "./attempt-rows.mjs";
+import { vendorOf } from "./engine/stamps.mjs";
+import { driverDir, labelOfDriverFile, paths, readJson } from "./run-record.mjs";
 
 /**
  * The provider's separately-priced token kinds, in the driver's own `usage` vocabulary (gateway.mjs /
@@ -232,26 +233,7 @@ function foldBilling(bucketMap, rec, cls) {
 // what was stamped; `vendors` carries who was billed; `mixedVendors` flags the second, which is the one
 // the owner rules on.
 //
-// A CLOSED TABLE, NOT A PREFIX RULE. `anthropic-*` → anthropic is shorter and would silently adopt any
-// future engine whose name began that way, which is how a vendor claim becomes a guess. An engine this
-// table does not know is reported BY NAME and blocks the single-vendor claim, because "I do not know who
-// billed this" and "one vendor" are different answers and only one of them is safe to print.
-//
-// THE NATIVE-LANGUAGE ROWS STAMP THE VENDOR ITSELF. jxBillingStamp (jx-lanes.mjs) writes as the row's
-// engine the provider the engine door resolved, `anthropic` or `openai` (engine/auth.mjs), so those two
-// names are engines this table must place. Without them an Anthropic-only run with a native-language turn
-// named `anthropic` as an engine that bills to no vendor, in the same sentence that named anthropic as its
-// one vendor. Two exact names, still a closed table.
-export const ENGINE_VENDORS = Object.freeze({
-  "anthropic-agent": "anthropic",
-  "anthropic-direct": "anthropic",
-  "anthropic-completions": "anthropic",
-  "openai-agent": "openai",
-  "anthropic": "anthropic",
-  "openai": "openai",
-});
-/** The vendor an engine bills to, or null when the table does not name one. */
-export const vendorOf = (engine) => ENGINE_VENDORS[String(engine ?? "")] ?? null;
+// THE ENGINE-TO-VENDOR TABLE is `vendorOf` in engine/stamps.mjs, with what else each stamp means.
 
 // ── WHAT THE RUN CANNOT SAY ABOUT ITSELF ──────────────────────────────────────────────────
 //
@@ -364,7 +346,7 @@ function readRows(path) {
 // recomputed weeks later reads the same number the requester was shown. The knockout lane computes no
 // quote at all and legitimately has no row.
 function readQuote(runDir) {
-  const rows = readRows(driverDir(runDir, "run.jsonl"));
+  const rows = readRows(paths(runDir).run);
   if (!rows) return null;
   for (let i = rows.length - 1; i >= 0; i--) if (rows[i]?.event === "quote") {
     const { event, ts, ...q } = rows[i];
@@ -374,7 +356,7 @@ function readQuote(runDir) {
 }
 
 function readStatus(runDir) {
-  try { return JSON.parse(readFileSync(join(runDir, "status.json"), "utf8")) ?? null; }
+  try { return readJson(join(runDir, "status.json")) ?? null; }
   catch { return null; }
 }
 
@@ -589,7 +571,7 @@ export function runEconomics(runDir, { now = null, bytesPerOutputToken = BYTES_P
     runDir,
     // The instrument's own weakness, on every record it writes. See the header.
     modelBasis: "requested",
-    modelBasisNote: "this record's billing classes key on the dispatch row's `modelUsed`, which is resolved from the REQUESTED alias. Since #238 the rows ALSO carry `modelActual`/`modelBasis`/`modelMismatch` — the provider's own answer, or an explicit unknown — and an unhonoured override now fails the turn instead of being billed here silently. Switching this module to a per-record actual basis is #240's work",
+    modelBasisNote: "this record's billing classes key on the dispatch row's `modelUsed`, which is resolved from the REQUESTED alias. The rows ALSO carry `modelActual`/`modelBasis`/`modelMismatch` — the provider's own answer, or an explicit unknown — and an unhonoured override now fails the turn instead of being billed here silently. Switching this module to a per-record actual basis is still to do",
     billingClasses: BILLING_CLASSES,
     telemetryPresent: files != null,
     dispatchCensus: census,
@@ -621,7 +603,7 @@ export function stampRunEconomics(runDir, phase, { now = Date.now() } = {}) {   
   if (!runDir) return null;
   try {
     const econ = runEconomics(runDir, { now });
-    try { writeFileSync(driverDir(runDir, "economics.json"), JSON.stringify({ phase, ...econ }, null, 2) + "\n"); }
+    try { writeFileSync(paths(runDir).economics, JSON.stringify({ phase, ...econ }, null, 2) + "\n"); }
     catch { /* best-effort */ }
     const summary = {
       phase,

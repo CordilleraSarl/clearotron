@@ -49,6 +49,9 @@ export default [
     // Explicit, not defaulted: ESLint 10 turns this on at "warn" unless told otherwise, and it then
     // reported three directives as unused for the reason given above.
     linterOptions: { reportUnusedDisableDirectives: "off" },
-    rules: { "no-undef": "error" },
+    // A SECOND RULE, ON THE SAME TERMS: `no-dupe-keys`. A key set twice in one object literal keeps only the last
+    // value, so the first is dead text a reader trusts. The backlog was two, in two path tables, each set twice to
+    // the same value; both were fixed in the commit that added this, so it certifies nothing.
+    rules: { "no-undef": "error", "no-dupe-keys": "error" },
   },
 ];

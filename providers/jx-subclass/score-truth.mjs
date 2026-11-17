@@ -6,7 +6,8 @@ import { DatabaseSync } from "node:sqlite";
 import { readFileSync } from "node:fs";
 import { resolveGood, resolveCnGood } from "./terms.mjs";
 
-const KEY = process.argv[2] ?? "/mnt/datadisk1/tmp/haiku-subclass-probe/subclass-truth.json";
+const KEY = process.argv[2];
+if (!KEY) { console.error("usage: node score-truth.mjs <answer-key.json>"); process.exit(2); }
 const db = new DatabaseSync("similar-groups.db", { readOnly: true });
 const items = JSON.parse(readFileSync(KEY, "utf8"));
 const codes = db.prepare("SELECT DISTINCT code FROM group_code WHERE basic_no = ? AND office = 'CN'");

@@ -38,8 +38,9 @@ function reviewerMessage() {
 
 test("the reviewer's dispatch opens by ordering its manual read, before any instruction of its own", () => {
   const first = reviewerMessage().split("\n").find((l) => l.trim());
-  // Its own manual first, then the prose manual whose rules it enforces (approved 2026-10-02).
-  assert.equal(first, `First, read and follow exactly: ${MANUAL}, skills/clearance-search/report-prose.md.`,
+  // Its own manual first, then the framework it applies and the shared reasoning (the house default here, as no profile
+  // names a framework), then the prose manual whose rules it enforces (approved 2026-10-02).
+  assert.equal(first, `First, read and follow exactly: ${MANUAL}, skills/clearance-search/risk-framework.md, skills/clearance-search/firm-wide-reasoning.md, skills/clearance-search/report-prose.md.`,
     "an instruction placed ahead of the manual would lead the brief instead of the owner's question");
 });
 
@@ -55,7 +56,8 @@ test("both engines resolve the manual order to the same file", () => {
   const skillsDir = "/store/skills";
   const resolved = absolutizeSkillRefs(reviewerMessage(), skillsDir);
   // Joined with this machine's `join`, so a Windows prompt names the file with its own separator.
-  assert.ok(resolved.includes(`First, read and follow exactly: ${join("/store", MANUAL)}, ${join("/store", "skills/clearance-search/report-prose.md")}.`), resolved);
+  const files = [MANUAL, "skills/clearance-search/risk-framework.md", "skills/clearance-search/firm-wide-reasoning.md", "skills/clearance-search/report-prose.md"];
+  assert.ok(resolved.includes(`First, read and follow exactly: ${files.map((f) => join("/store", f)).join(", ")}.`), resolved);
   for (const engine of ["anthropic-agent.mjs", "openai-agent.mjs"]) {
     const src = readFileSync(join(DRIVER, "engine", engine), "utf8");
     assert.match(src, /absolutizeSkillRefs\(message, skillsDir, resolveSkill\)/,

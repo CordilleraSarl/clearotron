@@ -105,6 +105,11 @@ test("corrective plumbing: named_band_missing is warm-eligible and its patch mes
 });
 
 // ── (3) end-to-end through the mock pipeline ─────────────────────────────────────────────────────────
+//
+// The arms below skip the band on primary-sweep, an axis the mock's frozen plan gives work. They used
+// transliteration-numeric, which that plan gives none: the driver now writes such an axis's band empty
+// before its unit runs, so a unit there that writes no block is the correct behaviour, and the last arm
+// in this section holds that it delivers.
 
 const JOB = {
   id: "test-job-nbm", msgId: "<nbm@x>", forwarder: "requester", forwarderDomain: "example.com",
@@ -126,12 +131,12 @@ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", ...env,
 }
 
 test("e2e: a unit that skips its band is FAILED AT THE STAGE and healed by the corrective retry — run delivers", async () => {
-  const { res, events } = await runMockPipeline({ MOCK_NO_BAND_ONCE: "transliteration-numeric", CLEAROTRON_MAX_RETRIES: "1" });
+  const { res, events } = await runMockPipeline({ MOCK_NO_BAND_ONCE: "primary-sweep", CLEAROTRON_MAX_RETRIES: "1" });
   assert.equal(res.ok, true, JSON.stringify({ ok: res.ok, fail: res.fail, stage: res.failedStage }));
-  const ev = events.find((e) => e.event === "stage" && e.stage === "register-unit:transliteration-numeric");
+  const ev = events.find((e) => e.event === "stage" && e.stage === "register-unit:primary-sweep");
   assert.ok(ev?.ok, "unit ultimately ok");
   assert.ok((ev.attempts ?? 1) >= 2, `caught at the producer and retried (attempts=${ev.attempts})`);
-  assert.ok(existsSync(join(res.runDir, "register-units", "transliteration-numeric-band.json")), "band present after heal");
+  assert.ok(existsSync(join(res.runDir, "register-units", "primary-sweep-band.json")), "band present after heal");
 });
 
 // ── THE SIGNATURE MOVED, AND THE SUBJECT DID NOT ───────────────────────────────
@@ -157,7 +162,7 @@ test("e2e: a unit that NEVER writes its band fails AT THE STAGE, naming the band
   // persistent MOCK_NO_BAND: even the warm-patch repair arm (which fires regardless of the retry
   // budget — the designed heal lane) cannot conjure the band → the stage must fail-close at the
   // producer with the fabrication signature, where pre-PR the run sailed to fan-in and died terminal.
-  const { res, events } = await runMockPipeline({ MOCK_NO_BAND: "transliteration-numeric", CLEAROTRON_MAX_RETRIES: "0" });
+  const { res, events } = await runMockPipeline({ MOCK_NO_BAND: "primary-sweep", CLEAROTRON_MAX_RETRIES: "0" });
   assert.equal(res.ok, false);
   assert.equal(res.postponed, true, `the run did not park to deliver without the unit: ${JSON.stringify(res).slice(0, 300)}`);
   const record = JSON.parse(readFileSync(driverDir(res.runDir, "not-completed", "searches.json"), "utf8"));
@@ -166,10 +171,22 @@ test("e2e: a unit that NEVER writes its band fails AT THE STAGE, naming the band
   // AND THE ABSENCE IS STILL REPORTED, so the two halves cannot drift apart into a reason that names a
   // cause for an artifact nobody said was missing.
   // Either separator: the named path is native, and Windows joins it with backslashes.
-  assert.match(why, /missing_file:.*register-units[\\/]transliteration-numeric\.md/,
+  assert.match(why, /missing_file:.*register-units[\\/]primary-sweep\.md/,
     "the absent artifact is named beside its cause");
-  assert.equal(record.stage, "register-unit:transliteration-numeric", "the failure is at the unit, where a retry CAN help — not the fan-in terminal");
-  assert.deepEqual(record.unfinished_units, ["transliteration-numeric"], "the unit is not recorded as one to deliver without");
-  const ev = events.find((e) => e.event === "stage" && e.stage === "register-unit:transliteration-numeric");
+  assert.equal(record.stage, "register-unit:primary-sweep", "the failure is at the unit, where a retry CAN help — not the fan-in terminal");
+  assert.deepEqual(record.unfinished_units, ["primary-sweep"], "the unit is not recorded as one to deliver without");
+  const ev = events.find((e) => e.event === "stage" && e.stage === "register-unit:primary-sweep");
   assert.equal(ev?.ok, false, "stage event records the unit failure");
+});
+
+test("e2e: a unit on an axis the plan gives no work writes no block, files its note over the band the driver wrote, and the run delivers", async () => {
+  const { res, events } = await runMockPipeline({ MOCK_NO_BAND: "transliteration-numeric", CLEAROTRON_MAX_RETRIES: "0" });
+  assert.equal(res.ok, true, JSON.stringify({ ok: res.ok, fail: res.fail, stage: res.failedStage }));
+  const seeded = events.find((e) => e.event === "unit-band-seeded-empty");
+  assert.ok(seeded?.axes?.includes("transliteration-numeric"), `the driver did not write the empty band: ${JSON.stringify(seeded)}`);
+  assert.ok(!seeded.axes.includes("primary-sweep"), "an axis with planned searches was given an empty band");
+  assert.equal(readFileSync(join(res.runDir, "register-units", "transliteration-numeric-band.json"), "utf8"), "[]\n");
+  assert.match(readFileSync(join(res.runDir, "register-units", "transliteration-numeric.md"), "utf8"), /No searches were planned for this axis\./);
+  const ev = events.find((e) => e.event === "stage" && e.stage === "register-unit:transliteration-numeric");
+  assert.equal(ev?.ok, true, "the unit failed for want of a band no work called for");
 });

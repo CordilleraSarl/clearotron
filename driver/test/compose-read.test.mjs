@@ -11,6 +11,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { driverSource } from "./driver-source.mjs";
 
 const { boundRead, makeComposeReader, makeReadBudget, systemPrompt, READ_SCHEMA, PROMPT_TERRITORIES, MAX_BRIEF,
   readShapeErrors, jsonFromTurnText } =
@@ -265,7 +266,7 @@ test("the portal asks the door for SONNET WITH THINKING OFF, never the jx lanes'
   //
   // Source-level because the construction happens at portal boot behind an env-dependent adapter load;
   // what is pinned is the REQUEST, which is the part a future edit would get wrong.
-  const src = readFileSync(new URL("../portal-service.mjs", import.meta.url), "utf8");
+  const src = driverSource("portal-service.mjs");
   const at = src.indexOf("makeJxTurnRunner({");
   assert.notEqual(at, -1, "the portal must build its reader through the shared engine door");
   const call = src.slice(at, at + 200);
@@ -280,7 +281,7 @@ test("the portal asks the door for SONNET WITH THINKING OFF, never the jx lanes'
 });
 
 test("the disabled sentence stopped promising a switch nobody flipped", () => {
-  const src = readFileSync(new URL("../portal-service.mjs", import.meta.url), "utf8");
+  const src = driverSource("portal-service.mjs");
   // ANCHORED ON THE CONSTANT, not on the file. A whole-file scan for the old wording redded on the
   // COMMENT that quotes it while explaining why it went — the same shape as a guard that reads a skip
   // call out of the paragraph describing it. The history is worth keeping in the file; what must not

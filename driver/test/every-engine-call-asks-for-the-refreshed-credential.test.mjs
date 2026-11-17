@@ -21,9 +21,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { driverSource } from "./driver-source.mjs";
 
 test("no engine call passes the credential minted at boot", () => {
-  const src = readFileSync(new URL("../portal-service.mjs", import.meta.url), "utf8");
+  const src = driverSource("portal-service.mjs");
 
   // Each `mcpToolCall({ ... })` the bootstrap makes, with the tool it names and the credential it hands
   // over. Matched per call rather than as one blob, so a file with two calls cannot pass on the strength

@@ -46,7 +46,7 @@
 
 import { realpathSync, statSync } from "node:fs";
 import { resolve, win32, posix } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
+import { driverDir } from "./run-record.mjs";   //
 
 /**
  * Is `child` inside `root` — by path segment, never by string prefix? PURE.

@@ -181,7 +181,7 @@ test("warmEligible truth table + patch message carries the reason-aware hint", (
   assert.equal(warmEligible("timeout", okJson), false);
   assert.equal(warmEligible(undefined, okJson), false);
   assert.match(warmPatchMessage("invalid_file:x:use_check_missing:F1", ["/r/clearance-search/x/narrative.md"]),
-    /Use-check source/);
+    /`use_check\.source`/);
 });
 
 test("WS-A: coverage_* and grid_* JSON defects are warm-eligible (each joined the allowlist with this test)", () => {

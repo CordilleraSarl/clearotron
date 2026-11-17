@@ -135,9 +135,9 @@ export function scopeJurisdictions(job, profile) {
  *
  * Depth: the customer's jxPolicy.laneDepth[lane] when set ("off" excludes the lane); else
  * "candidates" — the component being selected means the customer bought deepening. `depth` records
- * the depth the CONFIG ASKED FOR and nothing else: no code reads it to gate a slice. The retrieval
- * slices arm on CLEAROTRON_NATIVE_LANGUAGE_<code> alone since item 8 deleted the per-slice arms (driver/jx.mjs
- * JX_SLICES, driver/jx-units.mjs), which are env and therefore not this pure module's business.
+ * the depth the CONFIG ASKED FOR and nothing else: no code reads it to gate a slice. No switch arms the
+ * retrieval slices: the per-slice arms and the per-language off switch are both retired (driver/jx.mjs
+ * JX_SLICES, driver/jx-units.mjs).
  *
  * THIS RECORD DOES NOT SAY WHAT EXECUTED. It is frozen at mint, before any slice runs, so the
  * per-lane `executes: "candidates"` it used to carry was a constant asserting that slices 2–3 do not

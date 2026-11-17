@@ -118,7 +118,7 @@ The seam is real but has known single-vendor assumptions outside it. The full pa
    zero. `modelWire` is the same discipline for the model gauge: the served id the turn OBSERVED on the
    wire, or `null` — never the alias you asked for. The gateway derives `modelActual` / `modelBasis` /
    `modelMismatch` from it, so an adapter that never sets it stamps every row `unknown`.
-3. Register it: add the adapter to the `ENGINES` map in `gateway.mjs` (or call `registerEngine()`),
+3. Register it: add the adapter to the `ENGINES` map in `engine/registry.mjs` (or call `registerEngine()`),
    and add its binary to `ENGINE_BINARIES` in `driver.config.mjs` so the setup wizard can offer it —
    the two lists are pinned against each other, because "the wizard offers an engine the driver does
    not ship" and "the driver ships an engine setup cannot reach" are both invisible otherwise. Then
@@ -138,10 +138,10 @@ The reasoning layer dictates what it needs; a thin adapter supplies it. Concrete
    normalization, record normalization into the provider-neutral fields the driver reads
    (`REC` accessors in `registry-fidelity.mjs` — application/registration numbers, dates,
    `statusClass`, proprietor, designations).
-2. **Engine-local MCP server**: wrap the core like `engine/mcp/corsearch-server.mjs` (~130 lines); add
-   it to `REGISTER_SERVERS` in `gather-config.mjs` (`registerEntry()` **throws loudly** for any provider
+2. **The tools**: wrap the core in `providers/<id>/src/mount.js`, like corsearch's (~130 lines); the one
+   register server mounts it by name. Add it to `REGISTER_SERVERS` in `gather-config.mjs` (`registerEntry()` **throws loudly** for any provider
    without a built server — a provider flip without the server breaks every register unit, loudly).
-3. **Driver config**: a `PROVIDERS` entry in `driver.config.mjs` (label, credential env name,
+3. **Driver adapter**: `providers/<id>/src/adapter.js`, listed in `PROVIDERS` in `driver.config.mjs` (label, credential env name,
    `recordFetch` + `executePlan` adapters, public-record-URL capability) — the credential is
    preflighted at run start. Add the id to `KNOWN_REGISTER_PROVIDERS` too, or the error message that
    tells an operator what to set will omit it. Selection is `CLEAROTRON_DATABASE` in every

@@ -34,12 +34,14 @@
 // `n` is the render's, taken from array order. A seat-supplied number is a value that can disagree with
 // the list it labels — duplicated, skipped, or renumbered by a corrective pass — and nothing downstream
 // would notice. Removing the field removes the defect (the doubt-closure `file_index` rule).
-import { writeFileSync, mkdirSync, existsSync, readFileSync, readdirSync } from "node:fs";
+import { writeFileSync, existsSync, readFileSync, readdirSync, statSync } from "node:fs";
+import { dispatchFileName } from "./dispatch-record.mjs";
 import { captureCall, mergeCapture, nextSeq } from "./call-capture.mjs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 import { parseVerdict, countCitedDefects, parseCorrections, parseCorrectionKinds, correctionFlagContent, CORRECTION_KINDS, SECTION_HEADING_RE } from "./verify.mjs";
+import { driverDir, driverFileName, paths, readJson } from "./run-record.mjs";
+import { REVIEW_ADDRESSES_FILE, resolveDeclared } from "./review-addresses.mjs";
 
 export const REVIEW_FILE = "senior-eye-review.md";
 
@@ -48,7 +50,7 @@ export const REVIEW_VERDICTS = ["CLEAR", "CONDITIONAL", "BLOCKING"];
 
 /** Where the call's evidence lives — the driver's own record of what the seat handed it. */
 export function refutationCallPaths(runDir) {
-  const dir = driverDir(runDir, "refutation-calls");
+  const dir = paths(runDir).refutationCalls;
   return { dir, payload: join(dir, "call-001.json") };
 }
 
@@ -60,7 +62,7 @@ export function refutationCallPaths(runDir) {
 export const REVIEW_EXCLUSIONS_FILE = "review-exclusions.json";
 export function listedExclusionPositions(runDir) {
   try {
-    const doc = JSON.parse(readFileSync(driverDir(String(runDir ?? ""), REVIEW_EXCLUSIONS_FILE), "utf8"));
+    const doc = readJson(driverDir(String(runDir ?? ""), REVIEW_EXCLUSIONS_FILE));
     const out = new Map();
     for (const p of Array.isArray(doc?.positions) ? doc.positions : [])
       for (const m of [p?.uri, ...(Array.isArray(p?.members) ? p.members : [])]) { const k = String(normalizeRecordUri(m) ?? ""); if (k && p?.uri) out.set(k, p.uri); }
@@ -68,9 +70,60 @@ export function listedExclusionPositions(runDir) {
   } catch { return null; }
 }
 
+/**
+ * THE POSITIONS A FINDING NOW DELIVERS, by each of their record ids: record id → `{uri, ordinals}`, the position's own id
+ * and the findings that deliver it. A later review is listed these as "excluded at the full review, now delivered as a
+ * finding" (pipeline.mjs writerExclusionBlock), so a flag may name one, and it is a flag on that finding: no exclusion
+ * stands for it to be about. Empty for the full review, for a record written before these were kept, or one that cannot
+ * be read, so such a flag is refused as before. Never throws.
+ */
+export function listedWithdrawnPositions(runDir) {
+  const out = new Map();
+  try {
+    const doc = readJson(driverDir(String(runDir ?? ""), REVIEW_EXCLUSIONS_FILE));
+    for (const p of Array.isArray(doc?.withdrawn) ? doc.withdrawn : []) {
+      if (!p?.uri) continue;
+      const entry = { uri: p.uri, ordinals: (Array.isArray(p.ordinals) ? p.ordinals : []).filter((n) => Number.isInteger(n) && n >= 1) };
+      for (const m of [p.uri, ...(Array.isArray(p.members) ? p.members : [])]) { const k = String(normalizeRecordUri(m) ?? ""); if (k) out.set(k, entry); }
+    }
+  } catch { /* nothing kept: the flag is checked against the standing exclusions alone */ }
+  return out;
+}
+
+/**
+ * A flag's positions read against both lists: each standing exclusion stays a position, and each position a finding now
+ * delivers becomes that finding's ordinal in `ordKey` (`on` for the tool's values, `ordinals` for a parsed file). A
+ * delivered position whose finding has no ordinal stays a position. Returns the flag, or `{unknown}` naming the first id
+ * on neither list. PURE.
+ */
+function onDeliveredFindings(f, ordKey, positionsListed, withdrawnListed) {
+  const k = (p) => String(normalizeRecordUri(p) ?? "");
+  const unknown = f.positions.find((p) => !positionsListed?.get(k(p)) && !withdrawnListed?.get(k(p)));
+  if (unknown != null) return { unknown };
+  const ords = f.positions.flatMap((p) => (positionsListed?.get(k(p)) ? [] : withdrawnListed.get(k(p)).ordinals));
+  const kept = f.positions.filter((p) => positionsListed?.get(k(p)) || !withdrawnListed.get(k(p)).ordinals.length);
+  if (!ords.length) return { flag: f };
+  const { positions: _drop, ...rest } = f;
+  return { flag: { ...rest, [ordKey]: [...new Set([...(Array.isArray(f[ordKey]) ? f[ordKey] : []), ...ords])], ...(kept.length ? { positions: kept } : {}) } };
+}
+
+/**
+ * The address list the last review dispatch wrote (review-addresses.mjs): the finding ordinals and the other parts of
+ * the report that review was handed. null when none was written or it does not read back, so `on` is checked as it
+ * always was and an address in `lines` has nothing to resolve against. Never throws.
+ */
+export function listedAddresses(runDir) {
+  try {
+    const doc = readJson(driverDir(String(runDir ?? ""), REVIEW_ADDRESSES_FILE));
+    if (!Array.isArray(doc?.ordinals) || !Array.isArray(doc?.lines)) return null;
+    return { ordinals: doc.ordinals.filter((n) => Number.isInteger(n)), lines: doc.lines.filter((l) => typeof l?.address === "string"),
+      seq0: Number.isInteger(doc.seq0) ? doc.seq0 : null };
+  } catch { return null; }
+}
+
 /** Whether this run has a plan-execution receipt, which is what makes the audit section mandatory. */
 export function planReceiptPresent(runDir) {
-  try { return existsSync(driverDir(String(runDir ?? ""), "plan-execution.json")); }
+  try { return existsSync(paths(String(runDir ?? "")).planExecution); }
   catch { return false; }
 }
 
@@ -98,7 +151,9 @@ export function renderRefutation(verdict, flags, planAudit) {
       // A flag about a writer's exclusion names its position; the token is written only then, so a review without one
       // renders as it always did.
       const positions = Array.isArray(f.positions) && f.positions.length ? ` [positions: ${f.positions.join(", ")}]` : "";
-      out.push(`${i + 1}. [kind: ${f.kind}] [on: ${on}]${positions} ${f.text}`);
+      // The same for the report's other parts: the token is written only for a flag that declared some.
+      const lines = Array.isArray(f.lines) && f.lines.length ? ` [lines: ${f.lines.join(", ")}]` : "";
+      out.push(`${i + 1}. [kind: ${f.kind}] [on: ${on}]${positions}${lines} ${f.text}`);
       if (f.fix) out.push(`   Fix: ${f.fix}`);
       out.push("");
     });
@@ -144,8 +199,11 @@ const textDefect = (t) => {
  *
  * `receiptPresent` is the DRIVER's read, never a parameter of the call: whether the audit section is
  * owed is a fact about the run, and a seat that could assert it could waive its own audit.
+ *
+ * `withdrawnListed` is the driver's read too (listedWithdrawnPositions): the positions a later review was told a finding
+ * now delivers. A flag naming one is rendered as a flag on that finding.
  */
-export function acceptRefutation(params, { receiptPresent = false, positionsListed = null } = {}) {
+export function acceptRefutation(params, { receiptPresent = false, positionsListed = null, withdrawnListed = null, addresses = null } = {}) {
   const verdict = params?.verdict;
   const flags = params?.flags;
   const planAudit = params?.plan_audit;
@@ -176,12 +234,26 @@ export function acceptRefutation(params, { receiptPresent = false, positionsList
       if (!Array.isArray(f.on) || f.on.some((n) => !Number.isInteger(n) || n < 1)) {
         return { ok: false, reason: `refutation_flag_on_invalid:${i} — \`on\` is an array of finding ordinals (1-based), or omit it for a flag about the document rather than a finding` };
       }
+      // An ordinal is resolved against the findings this review was handed, when the dispatch listed them.
+      const r = addresses ? resolveDeclared(addresses, { on: f.on }) : { ok: true };
+      if (!r.ok) {
+        return { ok: false, reason: `refutation_flag_on_unknown:${i}:${r.value} — finding ${r.value} is not among the findings this review was handed; use the correct listed ordinal, or omit \`on\` if the flag is not about a finding` };
+      }
+    }
+    if (f?.lines != null) {
+      if (!Array.isArray(f.lines) || !f.lines.length || f.lines.some((l) => typeof l !== "string" || !l.trim())) {
+        return { ok: false, reason: `refutation_flag_lines_invalid:${i} — \`lines\` is an array of addresses from the dispatch's address list, or omit it` };
+      }
+      const r = resolveDeclared(addresses ?? { ordinals: [], lines: [] }, { lines: f.lines });
+      if (!r.ok) {
+        return { ok: false, reason: `refutation_flag_line_unlisted:${i}:${String(r.value).slice(0, 80)} — name a part of the report by an address the dispatch's address list gives${r.near ? `; the list gives "${r.near}"` : ""}` };
+      }
     }
     if (f?.positions != null) {
       if (!Array.isArray(f.positions) || !f.positions.length || f.positions.some((p) => typeof p !== "string" || !p.trim())) {
         return { ok: false, reason: `refutation_flag_positions_invalid:${i} — \`positions\` is an array of record ids from the writer's exclusions list, or omit it` };
       }
-      const unknown = f.positions.find((p) => !positionsListed?.get(String(normalizeRecordUri(p) ?? "")));
+      const { unknown } = onDeliveredFindings(f, "on", positionsListed, withdrawnListed);
       if (unknown != null) {
         return { ok: false, reason: `refutation_flag_position_unlisted:${i}:${String(unknown).slice(0, 80)} — name a position by a record id the writer's exclusions list gives for it` };
       }
@@ -194,9 +266,14 @@ export function acceptRefutation(params, { receiptPresent = false, positionsList
     return { ok: false, reason: "refutation_plan_audit_shape: `plan_audit` is an array of lines" };
   }
 
-  // A position is rendered as the list keys it, whichever of its record ids the flag named.
-  const byPosition = (p) => positionsListed.get(String(normalizeRecordUri(p) ?? ""));
-  const rendered = flags.map((f) => (Array.isArray(f?.positions) ? { ...f, positions: [...new Set(f.positions.map(byPosition))] } : f));
+  // A position is rendered as the list keys it, whichever of its record ids the flag named; one a finding now delivers is
+  // rendered as that finding.
+  const byPosition = (p) => { const k = String(normalizeRecordUri(p) ?? ""); return positionsListed?.get(k) ?? withdrawnListed?.get(k)?.uri ?? k; };
+  const rendered = flags.map((f) => {
+    if (!Array.isArray(f?.positions)) return f;
+    const g = onDeliveredFindings(f, "on", positionsListed, withdrawnListed).flag;
+    return Array.isArray(g.positions) ? { ...g, positions: [...new Set(g.positions.map(byPosition))] } : g;
+  });
   const content = renderRefutation(verdict, rendered, planAudit);
 
   // ── THE ROUND-TRIP. Rendered bytes → the four shipped parsers → exactly what was asked for. ───────
@@ -220,6 +297,12 @@ export function acceptRefutation(params, { receiptPresent = false, positionsList
   }
   if ((kinds?.untyped ?? 0) !== 0) {
     return { ok: false, reason: `refutation_roundtrip_untyped:${kinds.untyped} — every flag was typed in the call, so a line landing on the \`fact\` fail-safe means the token did not render onto it` };
+  }
+  // The addresses a flag declared must read back off its line as declared, or the correction would bind it to other parts.
+  const parsed = parseCorrections(content);
+  const lost = rendered.findIndex((f, i) => JSON.stringify([...new Set(f.lines ?? [])]) !== JSON.stringify(parsed[i]?.lines ?? []));
+  if (lost !== -1) {
+    return { ok: false, reason: `refutation_roundtrip_lines:${lost} — the rendered line does not carry back the addresses the call declared; the \`[lines:]\` channel did not survive the render` };
   }
 
   // `flags` stays a COUNT because that is what its readers assert; `acceptedFlags` is the array itself.
@@ -268,7 +351,9 @@ export function recordRefutation(runDir, received, { now = () => new Date().toIS
   // Written first so a call that CRASHES the validator still leaves its input — that was the original
   // reason and it survives — then rewritten with the verdict once there is one.
   capture({ accepted: null, refusedReason: null });
-  const verdict = acceptRefutation(received, { receiptPresent: planReceiptPresent(dir0), positionsListed: listedExclusionPositions(dir0) });
+  const verdict = acceptRefutation(received, { receiptPresent: planReceiptPresent(dir0), positionsListed: listedExclusionPositions(dir0),
+    withdrawnListed: listedWithdrawnPositions(dir0),
+    addresses: listedAddresses(dir0) });
   capture({ accepted: Boolean(verdict.ok), refusedReason: verdict.ok ? null : verdict.reason });
   if (!verdict.ok) {
     return { written: null, refused: verdict.reason, captured: captureFailed ? null : payload, capture_failed: captureFailed };
@@ -298,12 +383,13 @@ export function recordRefutation(runDir, received, { now = () => new Date().toIS
  * THE ACCEPTED FLAGS, AS TYPED — the input T3b keys targeted fixes off.
  *
  * Returns the flag objects the tool ACCEPTED, or `null` when there is nothing trustworthy to return.
- * Null covers four different states on purpose, and every one of them means "do not act on this":
+ * Null covers five different states on purpose, and every one of them means "do not act on this":
  *
  *   no payload         the stage never called the tool
  *   unreadable payload the capture failed or the file is truncated
  *   `accepted: false`  the tool REFUSED this call — the review was never rendered
  *   `accepted: null`   the capture ran and the validator did not return, so nothing knows the outcome
+ *   earlier dispatch   the call was captured before the latest review dispatch began
  *
  * ✕ THE REFUSED CASE IS WHY THIS EXISTS RATHER THAN A BARE JSON READ. The payload is written before
  * validation, so a refused call leaves a complete, well-formed, entirely authoritative-looking record of
@@ -315,12 +401,39 @@ export function recordRefutation(runDir, received, { now = () => new Date().toIS
  * it is looking at.
  */
 export function readAcceptedFlags(runDir) {
-  const { payload } = refutationCallPaths(String(runDir ?? ""));
-  let doc;
-  try { doc = JSON.parse(readFileSync(payload, "utf8")); } catch { return null; }
-  if (doc?.accepted !== true) return null;
-  const flags = doc?.params?.flags;
-  return Array.isArray(flags) ? flags : null;
+  // THE NEWEST ACCEPTED CALL OF THE REVIEW BEING ACTED ON, not the first capture. A review refused once and accepted on
+  // its next call left its accepted flags in `call-002.json`, and reading `call-001.json` alone sent that correction to
+  // the rendered parse. The calls read start at the dispatch that wrote the address list (`seq0`), so a later dispatch
+  // with no accepted call returns null, and its correction takes the logged parse, rather than an earlier review's
+  // flags. A refused or unreadable call is passed over, never returned.
+  //
+  // AND THE CALL IS FROM THE REVIEW DISPATCH NOW IN FORCE, known without the list. A list that could not be written leaves
+  // no start, and one whose removal also failed still names an earlier dispatch: either way an earlier review's accepted
+  // call is in reach. Every review dispatch writes its first attempt's record before the model runs (gateway.mjs,
+  // recordDispatch), so a call captured before the latest one began belongs to an earlier review, and the correction takes
+  // the rendered review through its recorded fallback instead. With no record (CLEAROTRON_DISPATCH_RECORD off, or a write
+  // that failed) the list alone decides, as it did before. The capture's file time is read, not the `receivedAt` inside it:
+  // a replay that serves a saved call copies the file when the dispatch runs, and keeps the saved run's `receivedAt`.
+  const dir0 = String(runDir ?? "");
+  const accepted = readAcceptedReviewSince(dir0, listedAddresses(dir0)?.seq0 ?? 0);
+  if (!accepted) return null;
+  const began = reviewDispatchBegan(dir0);
+  if (began != null && !(capturedAt(accepted.file) >= began)) return null;
+  return accepted.flags;
+}
+
+/**
+ * When the latest dispatch of the review stage began, in epoch milliseconds: the time its first attempt's record was
+ * written, which is before the model ran. null when there is no such record or it cannot be read. Never throws.
+ */
+export function reviewDispatchBegan(runDir) {
+  try { return Math.floor(statSync(driverDir(String(runDir ?? ""), driverFileName(dispatchFileName("narrative-refutation", 1)))).mtimeMs); }
+  catch { return null; }
+}
+
+/** When a call's capture file was last written, in whole epoch milliseconds, or NaN when it cannot be read. Never throws. */
+function capturedAt(file) {
+  try { return Math.floor(statSync(file).mtimeMs); } catch { return Number.NaN; }
 }
 
 /**
@@ -338,8 +451,8 @@ export function nextRefutationSeq(runDir) {
 /**
  * THE LAST ACCEPTED REVIEW CALL FROM `seq0` ON, AS TYPED: `{seq, verdict, flags, planAudit}`, or null.
  *
- * The review after a delivery-check repair is a later call than the first review's, so `readAcceptedFlags`
- * (which opens the first call) cannot read it. A refused or unfinished call is skipped, as it is there: null
+ * The review after a delivery-check repair is a later dispatch than the first review, and its caller names that
+ * dispatch's `seq0` itself (`readAcceptedFlags` takes it from the address list). A refused or unfinished call is skipped: null
  * means there is no review from that dispatch the driver can act on, and its caller says so rather than
  * reading anything else in its place. Never throws.
  */
@@ -353,10 +466,10 @@ export function readAcceptedReviewSince(runDir, seq0) {
     .sort((a, b) => b.seq - a.seq);
   for (const c of calls) {
     let doc;
-    try { doc = JSON.parse(readFileSync(c.file, "utf8")); } catch { continue; }
+    try { doc = readJson(c.file); } catch { continue; }
     if (doc?.accepted !== true) continue;
     const p = doc?.params ?? {};
-    return { seq: c.seq, verdict: p.verdict ?? null, flags: Array.isArray(p.flags) ? p.flags : [], planAudit: p.plan_audit ?? null };
+    return { seq: c.seq, verdict: p.verdict ?? null, flags: Array.isArray(p.flags) ? p.flags : [], planAudit: p.plan_audit ?? null, file: c.file };
   }
   return null;
 }
@@ -393,10 +506,12 @@ export function planAuditLines(reviewMd) {
 
 /**
  * The typed values of a review saved as a file, as `{ok: true, verdict, flags, planAudit}`, or `{ok: false, reason}` with
- * the token the tool refuses the same review with. `receiptPresent` and `positionsListed` are the driver's reads, as for
- * acceptRefutation. PURE.
+ * the token the tool refuses the same review with. `receiptPresent`, `positionsListed` and `withdrawnListed` are the
+ * driver's reads, as for acceptRefutation, and a flag on a position a finding now delivers is read as a flag on that
+ * finding. The file keeps the reviewer's words: no correction is routed by a later review's positions (the correction
+ * after a repair's review is handed none). PURE.
  */
-export function acceptReviewFile(content, { receiptPresent = false, positionsListed = null } = {}) {
+export function acceptReviewFile(content, { receiptPresent = false, positionsListed = null, withdrawnListed = null } = {}) {
   const text = String(content ?? "");
   const verdict = parseVerdict(text);
   if (!REVIEW_VERDICTS.includes(verdict)) return { ok: false, reason: `refutation_verdict_invalid:${String(verdict).slice(0, 40)}` };
@@ -405,8 +520,10 @@ export function acceptReviewFile(content, { receiptPresent = false, positionsLis
   for (let i = 0; i < flags.length; i++) {
     if (!String(flags[i].text ?? "").trim()) return { ok: false, reason: `refutation_flag_text_empty:${i}` };
     if ((flags[i].ordinals ?? []).some((n) => n < 1)) return { ok: false, reason: `refutation_flag_on_invalid:${i}` };
-    const unknown = (flags[i].positions ?? []).find((p) => !positionsListed?.get(String(normalizeRecordUri(p) ?? "")));
+    if (!Array.isArray(flags[i].positions) || !flags[i].positions.length) continue;
+    const { unknown, flag } = onDeliveredFindings(flags[i], "ordinals", positionsListed, withdrawnListed);
     if (unknown != null) return { ok: false, reason: `refutation_flag_position_unlisted:${i}:${String(unknown).slice(0, 80)}` };
+    flags[i] = flag;
   }
   const planAudit = planAuditLines(text);
   if (receiptPresent && !planAudit.length) return { ok: false, reason: "refutation_plan_audit_missing" };
@@ -432,7 +549,7 @@ export function settleRecheckSave(runDir, { before = null, stageOk = false, seq0
   try { now = readFileSync(join(dir0, REVIEW_FILE), "utf8"); } catch { now = null; }
   const earlierBack = before != null && now !== before ? before : null;
   if (!stageOk) return { read: null, fail: null, refused: null, restore: earlierBack };
-  const rules = { receiptPresent: planReceiptPresent(dir0), positionsListed: listedExclusionPositions(dir0) };
+  const rules = { receiptPresent: planReceiptPresent(dir0), positionsListed: listedExclusionPositions(dir0), withdrawnListed: listedWithdrawnPositions(dir0) };
   const call = readAcceptedReviewSince(dir0, seq0);
   const typed = call ? acceptRefutation({ verdict: call.verdict, flags: call.flags, plan_audit: call.planAudit }, rules) : null;
   const saved = typed?.ok ? typed.content : null;
@@ -445,18 +562,4 @@ export function settleRecheckSave(runDir, { before = null, stageOk = false, seq0
   if (file.ok) return { read: { by: "file", seq: null }, fail: null, refused: null, restore: null };
   if (byTool) return { read: byTool, fail: null, refused: file.reason, restore: saved };
   return { read: null, fail: `file-save-refused:${file.reason}`, refused: file.reason, restore: earlierBack };
-}
-
-/** Read back what was written — the verdict view of the stored file, through the one parse. */
-export function readRecordedVerdict(runDir) {
-  try { return parseVerdict(readFileSync(join(String(runDir ?? ""), REVIEW_FILE), "utf8")); }
-  catch { return null; }
-}
-
-/** The flag lines as the corrective ladder sees them — through the shipped selector, not a local one. */
-export function readRecordedFlagLines(runDir) {
-  try {
-    return readFileSync(join(String(runDir ?? ""), REVIEW_FILE), "utf8")
-      .split("\n").map((l) => correctionFlagContent(l)).filter(Boolean);
-  } catch { return null; }
 }

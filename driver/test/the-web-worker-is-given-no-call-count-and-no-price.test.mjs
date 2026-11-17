@@ -17,8 +17,8 @@ const manual = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", 
   .replace(/\s+/g, " ");
 
 test("the web manual asks one grid call per mark and a follow-up only where it could change the advice", () => {
-  assert.ok(manual.includes("One grid call per mark, as dictated. Ask a targeted follow-up when its answer could change what you tell the client, "
-    + "and a famous-mark query when the manifest flags one."));
+  assert.ok(manual.includes("One grid call per mark, as dictated. Ask a targeted follow-up when its answer could change what you tell the client. "
+    + "The grid already searches each flagged element on the general web; judge its results."));
   for (const gone of ["calls: **5**", "Per workflow run total: **15**"])
     assert.ok(!manual.includes(gone), `the web manual still sets a call count: "${gone}"`);
 });

@@ -2,11 +2,9 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // §8/§9 — which write-up form a finding earns, and the three things that must never move.
 import test from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { writeUpForm, gradedWriteUpRung } from "../write-up-form.mjs";
-import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
-import { join, dirname } from "node:path";
 import { PRODUCT_POLICIES, depthFor } from "../search-policy.mjs";
 
 const DISPOSITIONS = ["adversarial", "coexistence-partner", "distinguished", "off-field"];
@@ -96,7 +94,7 @@ test("the write-up-forms JOURNAL ROW is gated on the RUNG, never on the entry co
   // ladder has to justify. The shipped sample run is exactly that shape: all ten prose-bearing findings
   // are `adversarial`, so a graded run over it authors every card and the old gate journalled NOTHING,
   // indistinguishable from a run predating the gauge.
-  const src = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   const block = src.slice(Math.max(0, src.indexOf('event: "write-up-forms"') - 700), src.indexOf('event: "write-up-forms"'));
   assert.ok(/if \(gradedWriteUpRung\(ctx\.depth\)\)/.test(block),
     "the write-up-forms row is no longer gated by gradedWriteUpRung — re-read the gate before changing it");

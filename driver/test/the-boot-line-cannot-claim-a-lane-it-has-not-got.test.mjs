@@ -17,8 +17,9 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { driverSource } from "./driver-source.mjs";
 
-const SRC = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "portal-service.mjs"), "utf8");
+const SRC = driverSource("portal-service.mjs");
 
 test("the bootstrap can say NOT WIRED, and names which half is missing", () => {
   assert.match(SRC, /trigger lane: NOT WIRED/,

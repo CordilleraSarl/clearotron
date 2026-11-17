@@ -42,6 +42,14 @@ switch (process.env.MOCK_MODE) {
     ok(); break;
   }
   case "ok": ok(); break;
+  case "crashonce": {
+    const cFile = process.env.MOCK_COUNT_FILE;
+    const n = (existsSync(cFile) ? Number(readFileSync(cFile, "utf8")) : 0) + 1;
+    writeFileSync(cFile, String(n));
+    if (n === 1) { process.stderr.write("mock: the program could not start\\n"); process.exit(1); }
+    writeFileSync(process.env.MOCK_OUT_FILE, "recovered\\n");
+    ok(); break;
+  }
   case "err529":
     process.stderr.write('API Error: 529 {"type":"error","error":{"type":"overloaded_error","message":"Overloaded"}}\\n');
     process.exit(1);
@@ -105,7 +113,7 @@ test("retryBackoffMs: default 20s; env knob overrides; explicit 0 disables; garb
 });
 
 test("backoff IS observed between attempts (a retry waits the configured window before dispatching)", async () => {
-  process.env.MOCK_MODE = "flake";                       // attempt 1 fails missing_file → attempt 2 recovers
+  process.env.MOCK_MODE = "crashonce";                   // attempt 1 fails in the environment → attempt 2 recovers
   process.env.CLEAROTRON_RETRY_BACKOFF_MS = "300";
   const t0 = Date.now();
   const r = await stage();
@@ -113,6 +121,16 @@ test("backoff IS observed between attempts (a retry waits the configured window 
   assert.equal(r.ok, true);
   assert.equal(r.attempts, 2, "one retry ran");
   assert.ok(elapsed >= 300, `the inter-attempt backoff elapsed (${elapsed}ms >= 300ms)`);
+});
+
+test("a retry after a finished turn the validator refused does not wait — nothing in the environment failed", async () => {
+  process.env.MOCK_MODE = "flake";                       // attempt 1 finishes and writes nothing: missing_file → attempt 2 recovers
+  process.env.CLEAROTRON_RETRY_BACKOFF_MS = "5000";
+  const t0 = Date.now();
+  const r = await stage();
+  assert.equal(r.ok, true);
+  assert.equal(r.attempts, 2, "one retry ran");
+  assert.ok(Date.now() - t0 < 5000, `the retry waited the backoff after a validator refusal (${Date.now() - t0}ms)`);
 });
 
 test("attempt 1 NEVER waits — a first-try success under the 20s default finishes fast", async () => {

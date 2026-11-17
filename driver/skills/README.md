@@ -40,8 +40,9 @@ instead; and `clearance-search/templates/search-request-form.html`, named only i
   (`CLEAROTRON_INSTRUCTIONS_DIR`) wins per file, this tree is the fallback, and a configured-but-unreadable overlay throws
   rather than silently falling back to the Generic defaults.
 - `../methodology-witness.mjs` — records the sha of every file each stage read, per run.
-- `../test/skill-contract-enumerations.test.mjs` and `../test/prose-voice.test.mjs` read these files rather than a
-  copy: what a skill teaches vs. what the code enforces, and the house prose contract.
+- `../test/every-manual-is-read-and-names-what-exists.test.mjs` and `../test/prose-voice.test.mjs` read these files
+  rather than a copy: that every manual is read by a stage and names only tools and files that exist, and the house
+  prose contract.
 
 ## The provider boundary
 
@@ -60,10 +61,9 @@ are clean. The authoring rules and the empirical-verification checklist a new pr
 
 ## Where to start
 
-`clearance-search/SKILL.md` — the orchestrator's own skill, and the one file describing the whole workflow end to end.
-Then `clearance-register/SKILL.md`, the more elaborated of the two execution skills: a spine plus per-mode files
+`clearance-register/SKILL.md`, the more elaborated of the two execution skills: a spine plus per-mode files
 (`unit.md`, `digest.md`) and per-provider files (`providers/`). The other, `clearance-common-law`, is one spine plus
-`perplexity-prompts.md`, its two grid modes (deterministic `grid_spec_path` dispatch vs. the legacy authored
-program) being sections inside it — the per-mode split and `providers/` are register-only, not a shape every
+`perplexity-prompts.md` — the per-mode split and `providers/` are register-only, not a shape every
 execution skill shares. `clearance-search/phase2-execution.md` is methodology, not sequencing — the pipeline is
-sequenced in code, in `../stages.mjs` and `../pipeline.mjs`.
+sequenced in code, in `../stages.mjs` and `../pipeline.mjs`. The old orchestrator manual is kept as a record at
+[clearance-search-spine.md](../../docs/architecture/retired-manuals/clearance-search-spine.md); no stage reads it.

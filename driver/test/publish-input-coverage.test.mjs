@@ -19,6 +19,7 @@ import { fileURLToPath } from "node:url";
 import {
   PUBLISH_INPUTS, NOT_READ_BY_NAME, CALLER_SUPPLIED, readStore, requiredAbsent, assertPublishInputCoverage,
 } from "../publish/publish-inputs.mjs";
+import { runFilesNamedIn } from "./driver-source.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
@@ -103,16 +104,20 @@ test("requiredAbsent: only a store ruled `required` closes, and today that set i
 // publish/index.mjs no longer reads, and does publish/index.mjs read a store the table does not name.
 //
 // SCOPE, stated so nobody reads more into a green run than it earns: this matches .json/.md string
-// literals inside publishReport's body by FILENAME. It cannot see a path built from a variable, and it
+// literals inside the publish step's two bodies by FILENAME — readClearanceDocument, which reads the run,
+// and publishReport, which writes what it read. It cannot see a path built from a variable, and it
 // does not verify which base directory a read uses. It is a rot alarm on the table, not a proof of
 // completeness.
 const publishSource = () => {
   const src = readFileSync(join(HERE, "..", "publish", "index.mjs"), "utf8");
-  const start = src.indexOf("export async function publishReport");
-  assert.ok(start > 0, "publishReport must be findable in the source — if this fails the scan below is vacuous");
-  const end = src.indexOf("\n}\n", start);
-  assert.ok(end > start, "publishReport's body must be delimitable");
-  return src.slice(start, end);
+  const body = (name) => {
+    const start = src.indexOf(`export async function ${name}`);
+    assert.ok(start > 0, `${name} must be findable in the source — if this fails the scan below is vacuous`);
+    const end = src.indexOf("\n}\n", start);
+    assert.ok(end > start, `${name}'s body must be delimitable`);
+    return src.slice(start, end);
+  };
+  return `${body("readClearanceDocument")}\n${body("publishReport")}`;
 };
 
 // Artifacts publishReport WRITES into the pool (or reads back out of it). Not run-side inputs, so not
@@ -145,7 +150,7 @@ test("source scan: publishReport reads no store the table does not declare — a
 });
 
 test("source scan: no DEAD key — every declared store is still read by publishReport", () => {
-  const body = publishSource();
+  const body = publishSource() + "\n" + runFilesNamedIn(publishSource()).join("\n");
   const dead = Object.keys(PUBLISH_INPUTS).filter((k) => !body.includes(basename(k)));
   assert.deepEqual(dead, [],
     "publish-inputs.mjs declares a store publishReport no longer reads — a dead key is how a table stops describing the code");

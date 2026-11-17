@@ -48,11 +48,3 @@ export function exitFor({ failed = 0, couldNotLook = 0 } = {}) {
   if (couldNotLook) return 3;
   return 0;
 }
-
-/** What each code means, for a caller printing it or a reader wondering. Keyed by the code itself. */
-export const EXIT_MEANING = Object.freeze({
-  0: "every surface was read and none disagreed",
-  1: "a surface drifted — redeploy; the report names which",
-  2: "the instance did not say where its pool or its doors are, so nothing was examined",
-  3: "nothing drifted, and a surface could not be read — nothing is known about it either way",
-});

@@ -19,7 +19,7 @@ on every place you name for it (task 2d), and keeps what each search returned, w
    classes apply to which mark.
 2. **Product/industry context** — one plain sentence of what the client is doing (drives which
    marketplaces matter: gaming → Steam/Epic/app stores; physical goods → Amazon + category sites).
-2b. **`contextFraming` — what THIS name is for, per mark, and it is a rating input.**
+2b. **`contextFraming` — one sentence: what THIS name is for and what it reads as. The rater weighs the stated manner of use with it; a framing alone never sets a band.**
    One sentence per mark saying how the client intends to USE that particular name — a character name,
    a location name, a biome feature, an achievement title, a product line, a service tier. Where the
    requester declared a use per name, carry THEIR words for it; where they declared only a batch-level

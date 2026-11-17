@@ -66,10 +66,6 @@ export const RECORD_CARRY_SCHEMA_VERSION = 4;
  *                  clean run came to read as a total loss. Legitimate for a run archived before  and
  *                  for the probe; a fresh run reporting it is a defect, flagged by the predelivery lint.
  */
-export const TRACE_BASES = ["recorded", "reconstructed"];
-
-/** How far a record got. Ordered; index = distance travelled. */
-export const REACH_STAGES = ["retrieved", "screened", "placed", "findings-surface", "finding"];
 
 /**
  * WHERE THE REASON WAS AUTHORED — the ruling's "weigh where the reason is authored", made a field so a
@@ -84,9 +80,6 @@ export const REACH_STAGES = ["retrieved", "screened", "placed", "findings-surfac
  *   absent           nothing attests anything. THE DEFECT the run reports.
  */
 export const REASON_SOURCES = ["step-structural", "step-stated", "step-silent", "absent"];
-
-/** The seam a record failed to cross. `null` when it became a finding. */
-export const SEAMS = ["screen", "placement", "digest", "synthesis"];
 
 /**
  * WHAT THIS TRACE COVERS AND WHAT IT DOES NOT — carried IN THE ARTIFACT, not just in a PR body.
@@ -431,8 +424,6 @@ const bump = (o, k) => { o[k] = (o[k] ?? 0) + 1; };
  * checked first because execute-plan.mjs writes it ALONGSIDE `error`, never instead of it, and the
  * capability gap is the more specific fact. PURE.
  */
-export const SLICE_CLASSES = ["counted-not-fetched", "capability-gap", "provider-error", "count-unavailable"];
-
 // — the fourth class. `counted-not-fetched` claimed the run HAS a count, which for a slice the
 // register refused to size is the same false claim removed, wearing the new machine field. This
 // one is distinct from the two refusals above: the slice DID run and may have returned records — it is

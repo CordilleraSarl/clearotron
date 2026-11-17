@@ -70,9 +70,8 @@ test("the cause is redacted on the way into the sentence, as it is into the reco
 
 test("DEGRADED and NOT RUN stay distinguishable — one word must not stand for both", () => {
   const ran = composer("jx serp grid", "degraded", "42/42 cells gapped: provider down", "attempt 1/3");
-  // The reason a lane can carry today, not the deleted per-slice arm: item 8 left CLEAROTRON_NATIVE_LANGUAGE_ZH
-  // as the only switch that can make a slice NOT RUN, so that is the cause the composer is handed.
-  const never = composer("jx serp grid", "NOT RUN", "CLEAROTRON_NATIVE_LANGUAGE_ZH off", "never-kill");
+  // A reason a lane can carry today: no frozen lane decision. No switch can make a slice NOT RUN any more.
+  const never = composer("jx serp grid", "NOT RUN", "no frozen zh lane decision (jurisdictions/policy)", "never-kill");
   assert.match(ran, /degraded/);
   assert.match(never, /NOT RUN/);
   assert.notEqual(ran.replace(/degraded/, ""), never.replace(/NOT RUN/, ""),

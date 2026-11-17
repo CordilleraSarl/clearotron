@@ -39,10 +39,12 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { StageFailure } from "../pipeline.mjs";
 import { progressQuantity } from "../repairs.mjs";
+import { driverSource } from "./driver-source.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const src = (rel) => readFileSync(join(HERE, "..", "..", rel), "utf8");
-const live = (rel) => src(rel).split("\n").filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l.trim())).join("\n");
+const liveOf = (text) => text.split("\n").filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l.trim())).join("\n");
+const live = (rel) => liveOf(src(rel));
 
 // The string from the delivered card, shortened to the same shape. Synthetic marks.
 const DELIVERED = "merged half-grids failed the canonical validator (connotation_undisposed:KIN-ZY wikipedia, VENZ VET meaning slang (+1 more))";
@@ -102,8 +104,8 @@ test("arm 4 — the payload is its own field, from the throw site to the status 
   assert.equal(e.detail, "connotation_undisposed:KIN-ZY wikipedia", "…and the payload is beside it");
   assert.ok(!e.reason.includes("connotation_undisposed"), "THE ENGINE HALF: no interpolation at the throw site");
 
-  const pl = live("driver/pipeline.mjs");
-  assert.match(pl, /StageFailure\("common-law", "merged half-grids failed the canonical validator", undefined,\s*\{ failClass: clFailClass, detail: v\.reason, quantity: v\.quantity \}\)/,
+  const pl = ["driver/pipeline.mjs", "driver/run-failed.mjs"].map(live).join("\n");   // the run-level catch moved to run-failed.mjs
+  assert.match(live("driver/steps/register-sweep.mjs"), /StageFailure\("common-law", "merged half-grids failed the canonical validator", undefined,\s*\{ failClass: clFailClass, detail: v\.reason, quantity: v\.quantity \}\)/,
     "the canonical-validator throw must pass the reason as `detail`, never inside the message");
   // moved the abbrev off the writeRunStatus literal into `reasonDetailField`, because the same
   // payload now goes to _driver/failure.json as well and the two sinks must not spell it two ways.
@@ -130,7 +132,7 @@ test("arm 5 — taking the census out of the message does NOT blind the converge
 });
 
 test("arm 6 — a client session sees neither the reason nor the payload", () => {
-  const t = live("driver/portal-service.mjs");
+  const t = liveOf(driverSource("portal-service.mjs"));
   assert.match(t, /reason: CLIENT_FAILURE_NOTE, reasonDetail: null, reasonRedacted: true/,
     "the redaction must take the new field with it — a second field carrying the engine's raw words "
     + "would walk straight past the note that replaced the first");

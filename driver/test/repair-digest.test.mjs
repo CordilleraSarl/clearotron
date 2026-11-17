@@ -5,14 +5,12 @@
 // parks count from recoveryHistory even on a run that recovered, and an empty window renders as an
 // explicit all-clear line.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname } from "node:path";
+import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
-import { fileURLToPath } from "node:url";
-
-const HERE = dirname(fileURLToPath(import.meta.url));
 import { aggregateFailureRecurrence, failureEventsForRun, renderFailureRecurrence } from "../repair-digest.mjs";
 import { failureSignature } from "../repairs.mjs";
 
@@ -268,7 +266,7 @@ test("WIRING (source) — the park row pipeline.mjs WRITES carries the keys this
   // zero classifier gaps forever. That is the exact shape of defect is about.
   //
   // It does NOT prove the values are right at run time, and no offline test in this repo can.
-  const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   const at = src.indexOf("recoveryHistory: [...recoveryHistory,");
   assert.ok(at > 0, "the park write moved — this guard needs re-aiming, not deleting");
   const row = src.slice(at, src.indexOf("}]", at) + 2);

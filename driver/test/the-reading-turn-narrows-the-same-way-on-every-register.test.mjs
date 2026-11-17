@@ -27,10 +27,10 @@ const REGISTERS = ["clarivate", "corsearch", "signa", "euipo", "free-tier", "usp
 /** The proposal item schema a register's server actually serves. A timeout FAILS, never returns empty. */
 function servedProposal(server) {
   return new Promise((resolve, reject) => {
-    const p = spawn(process.execPath, [join(MCP, `${server}-server.mjs`)], { stdio: ["pipe", "pipe", "ignore"],
+    const p = spawn(process.execPath, [join(MCP, "register-server.mjs"), server], { stdio: ["pipe", "pipe", "ignore"],
       env: { ...process.env, CLEAROTRON_BAND_RUN_DIR: join(MCP, ".no-such-run") } });
     let buf = "";
-    const timer = setTimeout(() => { p.kill(); reject(new Error(`${server}-server.mjs did not answer tools/list`)); }, 20000);
+    const timer = setTimeout(() => { p.kill(); reject(new Error(`${server}: the register server did not answer tools/list`)); }, 20000);
     p.stdout.setEncoding("utf8");
     p.stdout.on("data", (d) => {
       buf += d;
@@ -40,7 +40,7 @@ function servedProposal(server) {
         clearTimeout(timer); p.kill();
         const tool = (m.result?.tools ?? []).find((t) => t.name === "register_propose_supplemental");
         return tool ? resolve(tool.inputSchema.properties.proposals.items.properties)
-          : reject(new Error(`${server}-server.mjs serves no register_propose_supplemental`));
+          : reject(new Error(`${server}: the register server serves no register_propose_supplemental`));
       }
     });
     const send = (o) => p.stdin.write(JSON.stringify(o) + "\n");

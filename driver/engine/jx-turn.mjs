@@ -132,15 +132,23 @@ export async function makeJxTurnRunner({
   thinking = JX_THINKING,
   // Names the lane in the one message a caller shows a human when the configuration refuses.
   lane = "the jx lanes",
+  // The run the lanes serve. A run that recorded its engine when it started keeps it here as its stages do
+  // (engine/run-choices.mjs), so its lanes never run on another engine. Absent, or a run with no record: the
+  // machine's setting, read as below.
+  runDir = null,
 } = {}) {
+  const rec = runDir ? (await import("./run-choices.mjs")).readRunChoices(runDir) : { state: "none" };
+  if (rec.state === "unreadable") return { error: `this run's engine record ${rec.detail}, so ${lane} do not run on the machine's engine in its place` };
+  if (rec.state === "recorded" && !ENGINE_BINARIES[rec.engine])
+    return { error: `this run started on the "${rec.engine}" engine, which this driver does not ship; ${lane} keep that engine rather than switch` };
   // NO AI CHOSEN IS NOT THE DEFAULT AI. With CLEAROTRON_AI unset this door resolved the code's default, so an
   // install with no AI chosen got a turn runner on that AI's program, billed to whatever it was signed in to:
   // the portal booted "brief reading ON — engine=anthropic-agent", and Describe-it would have spent a turn
   // there (measured on a fresh install of 0.5.1-beta.0, 2026-11-07). A search with no AI chosen is refused at
   // order time, before a lane could ask; the portal's reader asks at boot. So the door refuses here, in the
   // order-time gate's own words, and reads the setting as that gate reads it: blank is not chosen.
-  if (!String(env.CLEAROTRON_AI ?? "").trim()) return { error: whatIsMissing([{ about: "ai" }]) };
-  const id = String(env.CLEAROTRON_AI).trim().toLowerCase();
+  if (rec.state !== "recorded" && !String(env.CLEAROTRON_AI ?? "").trim()) return { error: whatIsMissing([{ about: "ai" }]) };
+  const id = rec.state === "recorded" ? rec.engine : String(env.CLEAROTRON_AI).trim().toLowerCase();
   if (!ENGINE_BINARIES[id]) return { error: `CLEAROTRON_AI=${id} is not an engine this driver ships` };
 
   let auth;

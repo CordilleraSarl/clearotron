@@ -14,13 +14,13 @@
 
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { readCapped } from "./util.mjs";
 import { stepForStage } from "./driver.mjs";
+import { paths } from "../../driver/run-record.mjs";
 
 export function readEvents(runDir) {
   try {
-    return readCapped(driverDir(runDir, "run.jsonl"))
+    return readCapped(paths(runDir).run)
       .trim().split("\n").map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
   } catch { return []; }
 }

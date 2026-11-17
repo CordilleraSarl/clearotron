@@ -12,6 +12,7 @@
 // Measured cost of not doing this, on ee4ea93: a cold followup opened 4/40 and 3/43 of its declared inputs
 // across two runs, where a cold fresh dispatch opened 62/112 and 67/104.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import { STAGES, paths, stageInputs, composeFollowup, resolveSkillReads } from "../stages.mjs";
@@ -118,7 +119,7 @@ test("A-1 — resolveSkillReads equals what message() emits, for every stage, un
 });
 
 test("A-1 — the profile-aware stages resolve the CUSTOMER's framework, not the static default", () => {
-  for (const name of ["synthesis", "report-overview", "report-card"]) {
+  for (const name of ["synthesis", "report-overview", "report-card", "narrative-refutation"]) {
     const resolved = resolveSkillReads(name, { profile: CUSTOM, job: {} });
     assert.ok(resolved.includes(CUSTOM.frameworkPath),
       `${name}: a followup must point at the customer's own framework`);
@@ -138,7 +139,7 @@ test("A-1 — the profile-aware stages resolve the CUSTOMER's framework, not the
 // same pattern this repo already uses to pin `warm: r.warm` reaching journalStageInputs. Without it,
 // reverting one line in pipeline.mjs passes every test in this file.
 test("A-1 — stageOnce composes the followup instead of replacing the message", () => {
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.doesNotMatch(src, /const message = opts\.followup \?\? opts\.freshMessage \?\?/,
     "the replace-wholesale form must not come back");
   assert.match(src, /composeFollowup\(name, ctx, \{/, "stageOnce routes the patch branch through the composer");

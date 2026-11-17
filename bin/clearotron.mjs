@@ -70,7 +70,7 @@ export const VERBS = {
 
 export const SUMMARY = {
   install: "configure this install — one question at a time, nothing written until each answer checks out",
-  doctor:  "report what this machine is configured for. Writes nothing, calls nobody",
+  doctor:  "report what this machine is configured for. Writes nothing and contacts nothing outside this machine",
   demo:    "replay a finished example clearance and serve it. No keys, no model, no account",
   start:   "start the product — the portal, the engine door, the client door and the worker — and print one address to open",
   stop:    "stop the background product and give the box back — connect's door is not touched",

@@ -24,10 +24,10 @@
 // are PRODUCTION, into anything that imports it.
 import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir, labelOfDriverFile } from "../shared/driver-dir.mjs";   // a card's label carries a colon, which Windows writes %3A
 import { deferralCoverageRow } from "./deferral-row.mjs";
 import { PUBLISH_INPUTS, readStore } from "./publish/publish-inputs.mjs";
 import { readPartNotCompleted } from "./parts-not-completed.mjs";
+import { driverDir, labelOfDriverFile, paths, readJson } from "./run-record.mjs";   // a card's label carries a colon, which Windows writes %3A
 
 // The name each part is given: a label the report or the workbook already prints. Never a new phrase.
 export const PART_NAMES = {
@@ -196,7 +196,7 @@ function register(runDir, log) {
     (searches.disclosed_axes ?? []).length ? `the pass on ${searches.disclosed_axes.join(", ")} timed out, read as it stands with its clean claims open` : "",
   ].filter(Boolean).join("; ") + `: ${searches.reason ?? "no cause recorded"}` }, "the searches"]);
   let reopen = null;
-  try { reopen = JSON.parse(readFileSync(driverDir(runDir, "frame-reopen.json"), "utf8")); } catch { reopen = null; }
+  try { reopen = readJson(paths(runDir).frameReopenReceipt); } catch { reopen = null; }
   if (reopen?.dominant_element_gap === true && reopen?.domClosed !== true)
     failed.push([{ fail: "the omission the blind frame comparison flagged was not closed by the reopen pass" }, "the dominant-element crowd"]);
   if (!failed.length) return null;
@@ -286,7 +286,7 @@ export function recordsState(runDir) {
   if (!files.length) return "absent";
   for (const f of files) {
     try {
-      const body = JSON.parse(readFileSync(join(runDir, "_records", f), "utf8"));
+      const body = readJson(join(runDir, "_records", f));
       if (body && typeof body === "object" && !Array.isArray(body)) return "read";
     } catch { /* the next file */ }
   }
@@ -325,7 +325,7 @@ function coverageRows(runDir, log) {
 function evidenceStamps(runDir, log) {
   const threw = failedStep(log, "basis-derivation", "basis-derivation-failed");
   let record = null;
-  try { record = JSON.parse(readFileSync(driverDir(runDir, "basis-derivation.json"), "utf8")); } catch { record = null; }
+  try { record = readJson(paths(runDir).basisDerivation); } catch { record = null; }
   const standing = threw ? 0 : Number(record?.unwritable) || 0;
   if (!threw && !standing) return null;
   return { part: "evidence-stamps", name: RULED_WORDS.officialRecords, reason: NOT_COMPLETED,
@@ -342,7 +342,7 @@ const CHECKS = [assessment, overview, courtDecisions, searchLog, register, local
  * already carries that input's failure. PURE apart from reading `runDir`.
  */
 export function degradedParts(runDir, opts = {}) {
-  const log = readJsonl(driverDir(runDir, "run.jsonl"));
+  const log = readJsonl(paths(runDir).run);
   return CHECKS.map((check) => check(runDir, log, opts)).filter(Boolean);
 }
 
@@ -375,7 +375,7 @@ export function writeDegradedParts(runDir, parts) {
 /** The rows written at delivery, or [] for a run that wrote none (every run before this change). */
 export function readDegradedPartRows(runDir) {
   try {
-    const rows = JSON.parse(readFileSync(driverDir(runDir, DEGRADED_PARTS_FILE), "utf8"))?.rows;
+    const rows = readJson(driverDir(runDir, DEGRADED_PARTS_FILE))?.rows;
     return Array.isArray(rows) ? rows.filter((r) => r && typeof r.area === "string" && typeof r.note === "string") : [];
   } catch { return []; }
 }
@@ -439,7 +439,7 @@ export function storeStates(base) {
 /** The store states delivery recorded, or null for a run delivered before it recorded them. */
 export function readDeliveredStores(runDir) {
   try {
-    const stores = JSON.parse(readFileSync(driverDir(runDir, DEGRADED_PARTS_FILE), "utf8"))?.stores;
+    const stores = readJson(driverDir(runDir, DEGRADED_PARTS_FILE))?.stores;
     return stores && typeof stores === "object" && !Array.isArray(stores) ? stores : null;
   } catch { return null; }
 }
@@ -478,11 +478,11 @@ export function mergeDegradedRows(...lists) {
 // The listing of filings and the owner lookups each end in one run-log event, a success or a failure, and
 // the last of the pair is the step's state at delivery, so a resume that succeeded clears it. The
 // plain-language review logs its outcome; the three that ship the rater's wording unreviewed are failures.
-const REVIEW_FAILED = ["stage-failed", "artifact-unreadable", "rewrite-refused-by-the-merged-gate", "correction-failed", "correction-refused-by-the-merged-gate", "correction-moved-what-no-defect-named", "recheck-failed"];
+const REVIEW_FAILED = ["stage-failed", "artifact-unreadable", "rewrite-refused-by-the-merged-gate", "correction-failed", "correction-refused-by-the-merged-gate", "recheck-failed"];
 
 /** Which of the knockout's whole steps ended failed, each with its raw cause for the run's record. */
 export function knockoutStepFailures(runDir) {
-  const log = readJsonl(driverDir(runDir, "run.jsonl"));
+  const log = readJsonl(paths(runDir).run);
   const listing = lastEvent(log, ["knockout-register-records", "knockout-register-records-refused", "knockout-register-records-failed"]);
   const owners = failedStep(log, "knockout-owner-checks", "knockout-owner-checks-failed");
   const review = lastEvent(log, ["knockout-review"]);

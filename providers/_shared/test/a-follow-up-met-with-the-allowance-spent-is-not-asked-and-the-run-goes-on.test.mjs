@@ -138,13 +138,13 @@ test("two workers sending at once share the one count, and none sends past it", 
   assert.equal(followUpSearchesSent(f.driver).sent, LIMIT);
 });
 
-test("a follow-up asked again counts once, and the full net still sends it", async (t) => {
+test("a follow-up asked again counts once, and its held answer stands without a second send, with the net full", async (t) => {
   const f = runFolder(t, { sent: LIMIT - 1 });
   const { executePlan, asked } = executor();
   await execute(executePlan, f, [followUp("sup:a", "QZORVA")]);
   assert.equal(followUpSearchesSent(f.driver).sent, LIMIT, "guard: the first asking filled the net");
   const { reply, band } = await execute(executePlan, f, [followUp("sup:a", "QZORVA")]);
-  assert.deepEqual(asked, ["QZORVA", "QZORVA"], "the question asked again was not sent");
+  assert.deepEqual(asked, ["QZORVA"], "the question asked again was bought again, though the run held its answer");
   assert.equal(followUpSearchesSent(f.driver).sent, LIMIT, "the question asked again was counted again");
   assert.equal(reply.outstanding, undefined, "the full net held back a question it had already counted");
   assert.deepEqual(band.map((b) => b.qid), ["sup:a"]);

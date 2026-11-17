@@ -34,6 +34,9 @@ import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins E
 
 const MCP = fileURLToPath(new URL("../engine/mcp/", import.meta.url));
 
+/** Where a register provider states its tools, relative to the server directory. */
+const mountOf = (provider) => `../../../providers/${provider}/src/mount.js`;
+
 /** The tool NAMES a server script registers, read from its `tools:` declaration. */
 function toolsRegisteredBy(script) {
   const src = readFileSync(join(MCP, script), "utf8");
@@ -123,7 +126,7 @@ test("REGISTER servers: every registered tool is granted, or its absence is a wr
   const surprises = [];
   const seen = [];
   for (const [provider, entry] of Object.entries(REGISTER_SERVERS)) {
-    const registered = toolsRegisteredBy(entry.script);
+    const registered = toolsRegisteredBy(mountOf(provider));
     assert.ok(registered.length > 0, `${entry.script}: registered no tools — the scan broke`);
     seen.push(provider);
     const stated = REGISTER_UNGRANTED_ON_PURPOSE[provider] ?? {};
@@ -144,7 +147,7 @@ test("REGISTER servers: every registered tool is granted, or its absence is a wr
 test("…and a REGISTER grant row cannot name a tool its module does not serve", () => {
   const phantom = [];
   for (const [provider, entry] of Object.entries(REGISTER_SERVERS)) {
-    const registered = new Set(toolsRegisteredBy(entry.script));
+    const registered = new Set(toolsRegisteredBy(mountOf(provider)));
     for (const t of entry.tools) if (!registered.has(t)) phantom.push(`${provider}: grants ${t}, which ${entry.script} does not serve`);
   }
   assert.deepEqual(phantom, [],
@@ -162,7 +165,7 @@ test("…and a REGISTER exemption row is still REAL — for a provider that exis
   for (const [provider, rows] of Object.entries(REGISTER_UNGRANTED_ON_PURPOSE)) {
     const entry = REGISTER_SERVERS[provider];
     assert.ok(entry, `${provider} carries exemption rows but is no longer a register provider — delete them`);
-    const registered = new Set(toolsRegisteredBy(entry.script));
+    const registered = new Set(toolsRegisteredBy(mountOf(provider)));
     for (const t of Object.keys(rows)) {
       assert.ok(registered.has(t), `${provider}: ${t} is stated ungranted-on-purpose but ${entry.script} no longer serves it — delete the row`);
       assert.ok(!entry.tools.includes(t), `${provider}: ${t} carries an ungranted-on-purpose row but the grant row NAMES it — the row is false; delete it in the commit that granted it`);

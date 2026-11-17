@@ -33,7 +33,7 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
+import { driverDir } from "./run-record.mjs";   //
 import { WITNESS_FILE } from "./methodology-witness.mjs";       // — named by its writer, never retyped
 import { DISPATCH_SUFFIX } from "./dispatch-record.mjs";        // — the dispatch record's own suffix
 

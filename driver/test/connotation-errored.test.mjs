@@ -22,9 +22,8 @@
 // alive would launder a real hole into a clean receipt — worse than the defect being fixed.
 
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
 import { findDroppedConnotationQueries, findErroredConnotationQueries } from "../common-law-receipts.mjs";
 
 const SPEC = { connotation: { queries: ["SATIN STEEL slang meaning", "SATIN STEEL offensive connotation"] } };
@@ -109,7 +108,7 @@ test("THE GATE'S CLASSIFICATION: explained ⇒ one retry, unexplained ⇒ still 
   // closure and cannot be imported. What matters is that the three cases stay distinct: a quarantined half
   // keeps its transient ladder, a fully-explained drop drops to `unknown` (one park), and anything
   // unexplained keeps `deterministic` (zero). Collapsing them back to one class is how this returns.
-  const src = readFileSync(fileURLToPath(new URL("../pipeline.mjs", import.meta.url)), "utf8");
+  const src = driverSource("pipeline.mjs");
   const gate = src.slice(src.indexOf("const dropped = findDroppedConnotationQueries(fullSpec, mergedGrid);"));
   const body = gate.slice(0, gate.indexOf("return { mergedGrid, fullSpec };"));
   assert.ok(body.includes("findErroredConnotationQueries"), "the gate consults the gap rows");
@@ -124,7 +123,7 @@ test("the false justification is corrected in place, not merely deleted", () => 
   // than by the absence of the old phrase, because the new comment quotes that phrase in order to correct
   // it; a bare absence check would fail on its own citation, and deleting the sentence would leave the
   // next reader to rediscover the same wrong conclusion from the same code.
-  const src = readFileSync(fileURLToPath(new URL("../pipeline.mjs", import.meta.url)), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.match(src, /That is not true and it was the stated justification/,
     "the comment says plainly that the old claim was false");
   assert.match(src, /non-spec\s*\n?\s*\/\/ union branch re-adds any gap whose platform is not in the spec/,

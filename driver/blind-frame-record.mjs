@@ -27,16 +27,16 @@
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
 import { refuseUndeclared as refuseUndeclaredShared, keepIfAbsent, lastAccepted, acceptedEnvelope } from "./preserve-merge.mjs";
 import { parseBlindFrameModel } from "./blind-frame-model.mjs";
+import { paths } from "./run-record.mjs";
 
 export const MODEL_FILE = "blind-frame-model.json";
 const SCHEMA_VERSION = 1;
 
 /** Where the call's evidence lives — the driver's own record of what the seat handed it. */
 export function blindFrameCallPaths(runDir) {
-  const dir = driverDir(runDir, "blind-frame-calls");
+  const dir = paths(runDir).blindFrameCalls;
   return { dir, payload: join(dir, "call-001.json"), accepted: join(dir, "accepted.json") };
 }
 

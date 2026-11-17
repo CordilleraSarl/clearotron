@@ -15,9 +15,9 @@
 // that list prints and the reviewer is asked to repeat, so a flag can be joined back to its item.
 import { readFileSync, writeFileSync, renameSync, rmSync, mkdirSync } from "node:fs";
 import { join, dirname } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";
 import { synthesisCallPaths } from "./synthesis-record.mjs";
 import { REPORT_LINE_KEY, REPORT_LINE_LABEL } from "./corrections-feedforward.mjs";
+import { paths, readJson } from "./run-record.mjs";
 
 const isObj = (v) => v != null && typeof v === "object" && !Array.isArray(v);
 const collapse = (s) => String(s).replace(/\s+/g, " ").trim();
@@ -281,11 +281,11 @@ export function snapshotRepairBase(runDir) {
 
 /** The kept base's params, or null. Never throws. */
 export function readRepairBase(runDir) {
-  try { return JSON.parse(readFileSync(repairBasePath(runDir), "utf8"))?.params ?? null; } catch { return null; }
+  try { return readJson(repairBasePath(runDir))?.params ?? null; } catch { return null; }
 }
 
 /** The review after a repair's own record: what it was handed, how each point was classed, what the pass did. */
-export function postRepairRecordPath(runDir) { return driverDir(String(runDir ?? ""), "post-repair-review.json"); }
+export function postRepairRecordPath(runDir) { return paths(String(runDir ?? "")).postRepairReview; }
 
 export function writePostRepairRecord(runDir, rec) {
   try { writeAtomic(postRepairRecordPath(runDir), JSON.stringify({ ts: new Date().toISOString(), ...rec }, null, 2) + "\n"); return true; }

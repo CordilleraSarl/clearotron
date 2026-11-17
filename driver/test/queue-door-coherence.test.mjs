@@ -82,7 +82,7 @@ test("an undeclared field is NAMED, where it was silently dropped before", () =>
   assert.deepEqual(undeclaredJobFields({ ...RUNNABLE, mysteryField: true }), ["mysteryField"]);
   const w = undeclaredFieldsWarning(["mysteryField"]);
   assert.match(w, /mysteryField/);
-  assert.match(w, /#1085/, "the warning must carry the issue, or the next reader has a name and no story");
+  assert.match(w, /DECLARED_JOB_FIELDS does not/, "the warning must say which table lacks the name, or the next reader has a name and no story");
   assert.match(w, /Declare them|stop writing/i, "and both remedies, because which one is right is not decided here");
 });
 

@@ -1,11 +1,8 @@
 # Phase 2 — methodology (the deterministic driver runs the orchestration)
 
 > **The clearance-search pipeline is sequenced in code by the deterministic driver** (`driver/`,
-> source of truth `stages.mjs`). The old LLM-orchestrator's `sessions_spawn`/`sessions_yield`/Wait-state/
-> `NO_REPLY` machinery has been removed — the driver runs each stage as one blocking engine turn and
-> joins the fan-out in code, so it cannot park. This file is the per-step **methodology**: the judgment each
-> stage applies. The driver's skeptic stage reads **Step 2.6**; the synthesis stage follows **Steps 3/3.5/3.6/4**;
-> the case-law stage follows **Step 4.5**; the refutation gate uses **Step 4.7**. Model tiers live in `stages.mjs`,
+> source of truth `stages.mjs`). This file is the per-step **methodology**: the judgment each
+> stage applies. Only the skeptic stage reads this file, at Step 2.6. The synthesis stage is referred to Step 3.5. The other sections are reference. Model tiers live in `stages.mjs`,
 > not here.
 
 ## Contents
@@ -22,7 +19,6 @@
 - [Step 4 — Joint synthesis](#step-4--joint-synthesis)
 - [Step 4.5 — Case-law grounding](#step-45--case-law-grounding)
 - [Step 4.7 — Touchpoint 3: narrative-refutation](#step-47--touchpoint-3-narrative-refutation)
-- [Step 5 — Cross-mark references (multi-mark only)](#step-5--cross-mark-references-multi-mark-only)
 
 ## Step 1 — Variants
 
@@ -109,7 +105,7 @@ Two classes of gap are **not** escalation triggers:
   such a slice as clean, that IS a flag; it is never an escalation.
 
 Escalate only genuinely closeable gaps (a `deferred` row the table lists as CLOSEABLE, or a new concern on a
-`confirmed-clean` row). The driver enforces both skips too, but keep the `ESCALATE:` list clean.
+`confirmed-clean` row). The driver enforces both skips too, but keep the `escalations` list clean.
 
 **A saturated everyday-word translation IS recoverable — narrow it to the field by class (replaces the old
 re-run-the-specific-concept-rendering move).** When a unit digest records `translit-too-generic` (the
@@ -121,10 +117,10 @@ predicate, **never** goods-vocabulary words ANDed into the search text) and enum
 is the carve-out from the rule just above: a meaning slice left `coverage-limited` **without the class-scoped
 enumeration attempt** is NOT an accepted structural limit — it is exactly the closeable gap to escalate; only a
 slice that WAS class-scoped and enumerated, then ran into a documented limit, is the accepted `coverage-limited`
-that does not re-trigger.) Do **NOT** swap the everyday word for a narrower / more specific rendering. Emit
-`ESCALATE: transliteration-numeric — risk: coverage-gap — saturated meaning token not class-scoped; re-run
-class-scoped enumeration (token × in-scope nice-class × region)`.
-`translit-underretrieved` (near-zero count) stays a separate escalation: re-render / re-check completeness. (Do
+that does not re-trigger.) Do **NOT** swap the everyday word for a narrower / more specific rendering. Send an
+`escalations` entry with axis `transliteration-numeric` and the reason: saturated meaning token not class-scoped; re-run
+class-scoped enumeration (token × in-scope nice-class × region). The driver decides whether the gap can be closed; a gap it does not close stays disclosed.
+`translit-underretrieved` is a context note; escalate only where the table lists a gap that can still be searched. (Do
 NOT escalate when a translation is genuinely distinctive and merely found little — that is a complete axis, not a
 gap.)
 
@@ -144,8 +140,7 @@ is not a reason to skip it, and "the rule said so" is not an answer.
   sweep was missed, or because the field is genuinely clear?
 - Register-specific: are the audit trail + negative-results matrix present, do the per-unit counts
   reconcile, **and did the register-findings file actually get written (file-truth precondition — synthesis must read the file,
-  not inline output)?** Common-law-specific: are the dictated platforms **plus the field-scoped general search for any collaborated / non-gaming goods** and any
-  famous-mark flags covered, with a negative-results matrix?
+  not inline output)?** Common-law-specific: are the dictated platforms covered, any field-scoped follow-up the step chose to make recorded with its receipt, and the flagged elements' grid results judged, with a negative-results matrix?
 - **Self-conflict / partner:** is any headline or high-rated conflict the applicant's **own** mark, an
   affiliate's, or a named **partner** in `matter-context`? A partner / own mark is a coexistence-or-business
   question, not an adversarial conflict — if one is driving the risk, flag it (the canonical "why is the
@@ -164,24 +159,14 @@ is not a reason to skip it, and "the rule said so" is not an answer.
   clean negative? Is a material jurisdiction that no question reached at all missing from the ledger? One covered
   by a complete worldwide answer, or left in a crowd's count by the identical mark's narrowing, is accounted for
   and needs no row of its own. A deferred row treated as clean is a recall gap — flag it.
-- **Registrability flag:** did `clearance-variants` name the dominant element + give the proposed-mark
-  distinctiveness read (spectrum + deceptive/offensive, or "plainly distinctive"), and is it carried
-  into the deliverable?
+- **Registrability flag:** did `clearance-variants` name the dominant element? Do the supplied forms and held evidence raise a distinctiveness or deceptive/offensive concern that synthesis must assess? Surface the concern and its evidence for synthesis to carry into `mark_assessment`. Synthesis follows this check; do not flag its assessment as missing here or expect a distinctiveness assessment in the variant manifest.
 
-The skeptic **surfaces flags only and recommends re-runs** via its `ESCALATE:` lines — it does not re-run anything
-itself. **The driver decides** (in code) off those lines: a flag that a worker *shortcut the process* (missed an
-axis with no reason, under-probed a high-value category, mis-calibrated risk) → the flagged unit **RESUMES its own
-session** (the driver sends the skeptic's concerns as a follow-up under the unit's existing session key, on the
-**same model** it ran on). The unit keeps its full prior context — its searches, coverage ledger, and fetched
-records — and is asked to **defend its finding from that evidence or run only the narrow missing sub-query and
-revise**, then re-emit its file. It does **not** redo the search from scratch, and it is **not** switched to a
-fresh `opus` session (that would cold-cache the whole thread — cache is model-specific — for no quality gain over
-arguing from the evidence already in hand). **A `deferred`
+The skeptic **surfaces flags only and recommends re-runs** via its `escalations` entries — it does not re-run anything
+itself. **The driver decides** (in code) off those entries: a flag that a worker *shortcut the process* (missed an
+axis with no reason, under-probed a high-value category, mis-calibrated risk) → a flagged unit gets a fresh turn with the skeptic's concerns and its own band, and defends its finding or runs only the missing sub-query. **A `deferred`
 coverage-ledger row the table lists as CLOSEABLE is exactly this kind of documented-reason gap** — the owning
 unit resumes and runs the missing question. A deferral the table marks NOT CLOSEABLE is not re-run. This is the
-recall-recovery loop: a *visible* deferral is recoverable; a silent one is not. **If a register unit is re-run,
-the register digest is re-run** (also a resume of its own session) over the refreshed unit digests (the prior
-digest consumed the stale set); if the flag is about the digest's own judgment, re-run the digest alone.
+recall-recovery loop: a *visible* deferral is recoverable; a silent one is not. A re-run unit's digest is re-run; if the flag is about the digest's own judgment, re-run the digest alone.
 
 A worker that did the work properly and validly found little is **not** re-run — thinness alone is a question, not
 a quota; never manufacture make-work to hit a number. At most one re-run per worker; if still short, proceed but
@@ -198,23 +183,19 @@ Read both findings files. Apply four explicit rules tied to the staff lawyer's s
 | # | Trigger | Action | Owned by |
 |---|---|---|---|
 | 1 | Every common-law owner found | Check register for any trademark filings by that owner in target classes | **CODE (2026-07-10):** the driver's cross-check dispatcher mints an `xcheck-owner-*` plan entry per extracted owner from the "Similar listing(s) found" receipts and executes it deterministically (`_driver/register-xcheck.json` is the receipt); verify the receipt in synthesis |
-| 2 | Every register stealth-filer pattern (law firm as owner) | One common-law query for the underlying client's marketplace use | Dispatch to `clearance-common-law` |
-| 3 | Every watchlist-hit owner appearing in register but NOT in common-law | One common-law query for that owner's marketplace activity | Dispatch to `clearance-common-law` |
+| 2 | Every register stealth-filer pattern (law firm as owner) | One common-law query for the underlying client's marketplace use | recorded by the digest; not run |
+| 3 | Every watchlist-hit owner appearing in register but NOT in common-law | One common-law query for that owner's marketplace activity | recorded by the digest; not run |
 | 4 | Every common-law finding without a register tie | One register query for the entity name | **CODE (2026-07-10):** the same dispatcher mints an `xcheck-mark-*` contains entry per owner-less similar-listing mark; anything the receipts show over-cap or unparsed, dispatch via the register supplemental lane (`register_propose_supplemental`) |
 
 **All four triggers fire deterministically when their condition is met.** Triggers 1/4 are now code-fired
 (the dispatcher's cap + overflow log mirror the rules below; the `crosscheck-missing` tripwire flags any
 owner-carrying hit demoted without an executed receipt). The cap N=10 is overflow protection, not a stop-early heuristic. If cap-overflow occurs, log the skipped cross-checks in the Audit Trail with the specific reason — do NOT silently skip lower-ranked triggers.
 
-**Cap:** N=10 total cross-checks across all 4 triggers. Rank by signal strength when over-cap:
-1. Watchlist hits (aggressive enforcers > competitors > major brand owners)
-2. Commercial-use indicators (active marketplace use stronger signal than passing mention)
-3. Stealth-filer patterns (law firm as owner is high-signal)
-4. Everything else
+The driver ranks its cross-checks (a verified use with a URL, then an owner, then a bare term) and logs what exceeds the cap of 10.
 
 Cap-overflow MUST be flagged in the deliverable audit trail with a specific reason ("would have triggered cross-check on owner X but cap reached after 10 — the staff lawyer to assess manually").
 
-Every cross-check (including "checked, found nothing") logged in the unified audit trail as proof-of-work. The collaborator value-add (vs assistant) is in this section: synthesis can be decisive ("HP uses, does not register → Level 2 B") rather than tentative ("recommend the staff lawyer check HP register").
+Every cross-check (including "checked, found nothing") logged in the unified audit trail as proof-of-work. The collaborator value-add (vs assistant) is in this section: synthesis can be decisive ("HP uses, does not register → a common-law conflict, banded in the framework's words") rather than tentative ("recommend the staff lawyer check HP register").
 
 ## Step 3.5 — Actual-use and enforcement check (mandatory for register hits rated medium risk or higher)
 
@@ -222,28 +203,19 @@ For **every register finding** advisory-rated on a rung **the framework rates me
 
 Apply the existing triggers for actual-use, enforcement, and owner checks after the relevant legal assessment. First use a suitable answer already held by this run, including an earlier stage or attempt, where it answers the same owner, mark, goods, territory, and material time question. A source requirement is not a requirement for a new call. One answer may support several findings only where it answers each finding's question. Ask only what remains unanswered and record the result against every finding it supports.
 
-Example: a JELLY register hit owned by Jellycat (a toy company) for Class 9 video game software — check whether Jellycat actually sells or markets video games under JELLY. If they don't (their commercial use is toys), note the filed-vs-used distinction in Key Factors and weigh it as a Stage-2 factor together with revocation-vulnerability — no automatic downgrade (see `synthesis-rules.md` → *Actual-use assessment results*).
-
 **Mechanics:**
 
 - Scope the marketplace query tightly to the search's field (gaming, fintech, whatever the clearance targets), not the owner's full portfolio.
 - Record the check and its result in the Audit Trail with Source Layer = "Cross-pollination".
 - If actual use in the relevant field is **confirmed,** the register finding's risk weight stands.
-- If actual use in the relevant field is **not found** (despite the filing), do **NOT** automatically downgrade — weigh the lack of field use as a Stage-2 factor together with revocation-vulnerability (`synthesis-rules.md` → *Actual-use assessment results* / *Rule on downgrade quantum*), and note in Key Factors: "Register filing claims [field] but no marketplace use identified — filed-vs-used noted; weighed with revocability."
+- If actual use in the relevant field is **not found** (despite the filing), do **NOT** automatically downgrade — weigh the lack of field use as a Stage-2 factor together with revocation-vulnerability (`synthesis-rules.md` → *Actual-use assessment results* / *Rule on downgrade quantum*), and note in `legal_position` and `practical_position`: "Register filing claims [field] but no marketplace use identified — filed-vs-used noted; weighed with revocability."
 - This check measures *use in the field*, not registry status: a renewal / re-registration / "Registered" status is administrative upkeep, not marketplace use, and does not satisfy the actual-use check or defeat a non-use mitigant (see `synthesis-rules.md` → "Administrative liveness is not market use").
 - Owner-portfolio-bound common-law checks already counted in this step count toward the Option D cap (Step 3).
 - **Enforcement the query finds is a lead, not a verified authority** (the ENFORCEMENT AUTHORITY rule in the stage message): it informs the enforcer meter with basis `inferred-from-signal`, and its URL is cited inline in the finding's prose. If the query finds no enforcement record, the enforcer is `low` with basis `inferred-from-signal`, and the finding says the search found none. The enforcer stays `unknown`, and nothing is claimed, only when the query could not run.
 
-**Output contract — ENFORCED by the driver (spec 11), not optional.** For every Composite 3+ finding whose
+**Output contract — ENFORCED by the driver (spec 11), not optional.** For every finding, at any band, whose
 mitigant or verdict turns on the **absence** of use (it says the mark is "not in actual use" / "unused" / has
-"no marketplace use found", or names non-use revocation/cancellation as the mitigant), the finding's actual-use line
-MUST end with a literal source line:
-
-> `- **Use-check source:** <the perplexity_research result URL> — <one-clause finding>`
-
-If the marketplace query genuinely returned nothing, write the honest value verbatim:
-
-> `- **Use-check source:** perplexity_research — no result`
+"no marketplace use found", or names non-use revocation/cancellation as the mitigant), record its result in that finding's `use_check.source`: <result URL | "perplexity_research — no result">.
 
 The driver checks the structured finding record. A required use-check source belongs in that record. An unknown use
 status does not require an invented source. The reviewer checks whether the available evidence supports the claim.
@@ -256,7 +228,7 @@ enforcement question unknown. Never describe the unanswered question as a search
 enforcement, and do not infer a low enforcement likelihood from that failure. Record no-result only when a completed
 search actually returned no result. Preserve unaffected findings and complete the report from the evidence available.
 
-This check is mandatory and applies to Composite 3+ register findings only — lower-rated register hits don't justify the cost.
+This check applies on every rung the stage message names, and to any finding whose mitigant turns on the absence of use, at any band.
 
 ## Step 3.6 — Owner workup (mandatory for high-risk findings)
 
@@ -284,8 +256,8 @@ revocability reads (`synthesis-rules.md`). This step adds what the register laye
 **Two non-inheritances from Step 3.5** (so the two steps don't blur):
 - Do **not** apply Step 3.5's tight "use in *our* field only" scoping — the owner workup is deliberately
   about the owner's *whole* posture and *their own* use of the term, not just the clearance field.
-- Do **not** apply Step 3.5's mechanical one-composite-level downgrade. This step's output is a
-  **practical-likelihood statement**, not a score move; it feeds the finding's business read and the net
+- Do **not** move the finding's band in this step. This step's output is a
+  **practical-likelihood statement**, not a band move; it feeds the finding's business read and the net
   rating (Step 4 / `synthesis-rules.md`), where the weighing happens.
 
 **Output:** a practical-likelihood statement in the finding's business read ("how likely is this owner to
@@ -302,15 +274,10 @@ For **each finding** in the combined findings set (common-law + register, both l
 
 **Source of truth (file-truth precondition).** Build every Findings row from `studio/clearance-search/<slug>/<date>/register-findings.md` and `studio/clearance-search/<slug>/<date>/common-law-findings.md`. Do **NOT** assemble the Findings sheet / Excel from inline digest output — if the register-findings file is not present the synthesis is not ready (the driver re-runs the digest). *(Prior-incident anchor: a run where the register layer found an identical-mark registration, but with no register-findings file written it never reached the deliverable — the deliverable is built from files, not inline payloads.)*
 
-Every assessment must be labeled: **Advisory — preliminary assessment for the reviewing lawyer.**
 
 The staff lawyer makes the final determination. The skill's role is to surface the facts, apply the framework systematically, and flag what matters — not to make conclusive legal judgments.
 
-Per-finding output (added to a unified row in the Findings sheet):
-- Advisory Risk Level (A–E)
-- Advisory Dispute Type
-- Advisory Composite Score (1–5)
-- Key Factors (elevation + mitigation factors observed)
+Per-finding output is the band in the framework's words, with the legal and practical positions, which carry the elevation and mitigation factors observed.
 - Cross-Mark Reference (if applicable)
 
 ## Step 4.5 — Case-law grounding
@@ -326,33 +293,18 @@ to ground, supply:
 
 The result is a **grounded profile** per finding (on-point authorities with court / date / one-line holding /
 stable id, or an explicit "no on-point precedent found"), optionally written to
-`studio/clearance-search/<slug>/<date>/case-law-findings.md`. Fold the grounded profiles into Key Factors + the
+`studio/clearance-search/<slug>/<date>/case-law-findings.md`. Fold the grounded profiles into `legal_position` and `practical_position` + the
 narrative. Do NOT ground every finding — it is cost-prohibitive and low-signal — but DO ground watchlist hits
 unless the digest's own evidence already grounds them concretely (e.g. opposition data pulled directly).
 
-**Integrity gate:** case-law citation is the highest-stakes hallucination surface in the workflow. If a grounded
-profile cites anything not fetched this session, or invents a holding, the run is treated as failed and the
-grounding is re-run escalated to `opus`. (The `case-law-citation` skill's own evals — jurisdiction routing,
-fetch-before-cite, refusal-to-fabricate — gate whether Sonnet is trusted here; see its SKILL.md.)
+**Integrity gate:** A citation not fetched this session is a defect; the driver's retrieval record is the check.
 
 ## Step 4.7 — Touchpoint 3: narrative-refutation
 
-After synthesis composes the narrative and case-law grounding is folded in, `narrative-refutation` refutes the
-narrative against the underlying source files and writes `senior-eye-review.md` with a verdict. **Phase 3 reads
+`narrative-refutation` runs beside case-law grounding, after synthesis. **Phase 3 reads
 the verdict** (the driver decides this in code):
 
 - **CLEAR** → proceed to delivery.
-- **CONDITIONAL** → apply the suggested narrative edits (each flag in `senior-eye-review.md` carries a minimum-change correction); record the corrections in the workflow audit summary; proceed to delivery.
-- **BLOCKING** → re-do synthesis applying the refutation's corrections; re-run `narrative-refutation` once on the corrected narrative. If the second pass also returns BLOCKING, the report **delivers**, with the reviewer's open points recorded for the reviewing lawyer — ruling 2026-08-26: "Deliver always, with open points printed. The refusal on a blocking review goes." The driver decides this in code; do not halt.
+- **CONDITIONAL or BLOCKING** → the flags go to one targeted correction and one recheck. The report delivers either way, with unresolved points recorded for the reviewing lawyer.
 
 *(Why this lives between synthesis and delivery: the agent that just composed the narrative cannot reliably refute its own work — tier inversions, confabulated attributions, and overconfident negatives slip through when the same agent both writes and reviews. A fresh-context refutation reading the narrative against the source files catches these before delivery.)*
-
-## Step 5 — Cross-mark references (multi-mark only)
-
-Runs **ONCE**, after all marks have completed Steps 2–4.5. Review findings across all marks and identify:
-
-1. **Shared findings:** a single entity/finding relevant to more than one proposed mark (e.g., "Prize Crate Retail" is relevant to both "PRIZE CRATE" and "CAVERN CRATES")
-2. **Pattern findings:** recurring themes across marks (e.g., "the 'prize' prefix is crowded across all gaming platforms")
-3. **Compound risk:** where the combination of marks might amplify risk (e.g., using both "PRIZE CRATE" and "CAVERN CRATES" increases the chance of a dispute with Prize Crate Retail)
-
-For each cross-reference: note which marks are affected, describe the connection, flag any compounding risk. Cross-references appear in the narrative summary and as a note in the Findings sheet.

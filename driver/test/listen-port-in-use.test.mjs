@@ -165,7 +165,7 @@ function portalEnv(port) {
     PORTAL_AUTH_MODE: "local",
     PORTAL_LOCAL_USER: "dev@local",
     PORTAL_LOCAL_CREDENTIAL: join(mkdtempSync(join(tmpdir(), "listen-cred-")), "credential.json"),
-    CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined,
+    CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined,
     PORTAL_SECRET: "listen-test-secret",
     CLEAROTRON_ACCESS_FILE: grants,
     CLEAROTRON_REPORTS_DIR: mkdtempSync(join(tmpdir(), "listen-pool-")),
@@ -182,7 +182,7 @@ function recipeEnv(port) {
   mkdirSync(dir, { recursive: true });
   return {
     RECIPE_AUTH_DISABLED: "1", RECIPE_DEV: "1",
-    CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined,
+    CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined,
     CLEAROTRON_RECIPES_DIR: dir, RECIPE_REPO_ROOT: root,
     RECIPE_HOST: "127.0.0.1", RECIPE_PORT: String(port),
   };
@@ -197,7 +197,7 @@ function profileEnv(port) {
   mkdirSync(dir, { recursive: true });
   return {
     PROFILE_AUTH_DISABLED: "1", PROFILE_DEV: "1",
-    CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined,
+    CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined,
     CLEAROTRON_CUSTOMERS_DIR: dir, PROFILE_REPO_ROOT: root,
     PROFILE_HOST: "127.0.0.1", PROFILE_PORT: String(port),
   };
@@ -251,7 +251,7 @@ const MCP_SITES = [
       return {
         TRADEMARK_MCP_HTTP_HOST: "127.0.0.1", TRADEMARK_MCP_HTTP_PORT: String(port),
         TRADEMARK_MCP_AUTH_DISABLED: "1", TRADEMARK_MCP_DEV: "1",
-        CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined,
+        CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined,
         CLEAROTRON_ACCESS_FILE: grants,
         CLEAROTRON_REPORTS_DIR: mkdtempSync(join(tmpdir(), "listen-mcp-pool-")),
         CLEAROTRON_WORK_DIR: mkdtempSync(join(tmpdir(), "listen-mcp-ws-")),
@@ -264,7 +264,7 @@ const MCP_SITES = [
     env: (port) => ({
       CLIENT_MCP_HTTP_HOST: "127.0.0.1", CLIENT_MCP_HTTP_PORT: String(port),
       CLIENT_MCP_AUTH_DISABLED: "1", CLIENT_MCP_DEV: "1",
-      CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined,
+      CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined,
       TRADEMARK_MCP_TOKEN_SECRET: "listen-test-token-secret",
       CLEAROTRON_REPORTS_DIR: mkdtempSync(join(tmpdir(), "listen-cmcp-pool-")),
       CLEAROTRON_WORK_DIR: mkdtempSync(join(tmpdir(), "listen-cmcp-ws-")),

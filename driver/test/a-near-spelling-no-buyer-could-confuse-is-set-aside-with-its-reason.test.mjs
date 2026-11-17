@@ -59,7 +59,7 @@ test("sentence 2 is in the register unit's manual as written, and nothing there 
   assert.ok(digest.includes(READER_SENTENCE), "the reader's sentence is not in digest.md");
   // The gate's two absolute sentences point at it, so the manual does not say field-irrelevance is the only drop.
   assert.ok(digest.includes("genuine field-irrelevance (the goods/services are commercially unrelated), or a near spelling's sign (below);"));
-  assert.ok(digest.includes("drop only genuine field-irrelevance, or a near spelling on its sign (below) —"));
+  assert.ok(digest.includes("drop only genuine field-irrelevance, or a near spelling on its sign (below)."));
 });
 
 test("the digest's tool offers the sign ground the record accepts, and says what it means", () => {

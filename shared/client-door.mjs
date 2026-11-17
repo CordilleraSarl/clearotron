@@ -695,7 +695,7 @@ export function describeChange(plan, { applied = false, publicAddress = null, re
   // `publicAddress` is whatever the operator put in `CLEAROTRON_CLIENT_MCP_URL`, and a loopback value
   // is a thing an operator does set — it is the address that works for them at the keyboard. The
   // sentence below then made the exact claim the paragraph above says never to make wrongly, out of a
-  // value nobody had checked. Driven by the test lane on a real box.
+  // value nobody had checked. Driven on a real machine.
   //
   // So the claim is made from the address's HOST, not from the variable being non-empty. An address
   // that cannot be parsed is not claimed about either — the last branch already exists for that.

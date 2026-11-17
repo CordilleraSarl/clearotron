@@ -13,8 +13,8 @@
 // pinned to their pre-change literals and decideRecovery's verdict is asserted identical whatever the
 // quantity says. What the machinery should DO with a converging ladder is, and is not here.
 //
-// The fixture shape is the shipped one — verify.mjs connotationDispositionFail's own token, as it
-// appears in the in-repo real-run corpus (warm-retry.test.mjs). The run evidence behind those counts
+// The fixture shape is the shipped one — verify.mjs connotationDispositionFail's own template for the
+// transport state whose census is the RESIDUAL, `call_partial`. The run evidence behind those counts
 // is not in this repo, so the counts are the four ladders records, carried by the real token shape.
 import { test, beforeEach } from "node:test";
 import assert from "node:assert/strict";
@@ -36,23 +36,19 @@ process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 const { runStage } = await import("../gateway.mjs");
 
 // ── the shipped token, at an arbitrary count ─────────────────────────────────────────────────────
-// connotationDispositionFail lists whole query names up to ~120 chars and puts the rest in "(+N more)".
+// connotationDispositionFail stamps the residual as a census, then the audit's detail.
 const QUERIES = ["novapulse gang", "novapulse slang meaning"];
-const undisposed = (n) => `connotation_undisposed:${QUERIES.slice(0, Math.min(n, 2)).join(",")}${n > 2 ? ` (+${n - 2} more)` : ""}`;
+const undisposed = (n) => `connotation_call_partial:call_partial=${n};${QUERIES.join(",")}`;
 const REASON = (n) => `invalid_file:x/common-law-findings.half-b.md:${undisposed(n)}`;
 
 // ── part 1: the extractor ────────────────────────────────────────────────────────────────────────
 
-test("the count survives as a number: listed names + the overflow, from the untruncated reason", () => {
-  assert.deepEqual(progressQuantity(REASON(29)), { token: "connotation_undisposed", value: 29 });
-  assert.deepEqual(progressQuantity(REASON(2)), { token: "connotation_undisposed", value: 2 });
-  assert.deepEqual(progressQuantity(REASON(1)), { token: "connotation_undisposed", value: 1 });
+test("the count survives as a number, from the untruncated reason", () => {
+  assert.deepEqual(progressQuantity(REASON(29)), { token: "connotation_call_partial", value: 29 });
+  assert.deepEqual(progressQuantity(REASON(2)), { token: "connotation_call_partial", value: 2 });
+  assert.deepEqual(progressQuantity(REASON(1)), { token: "connotation_call_partial", value: 1 });
   // the wrapper the max_tokens fault adds never hides the token
   assert.equal(progressQuantity(`max_tokens_no_output:${REASON(11)}`).value, 11);
-  // the sibling token counts ONE named result plus its overflow — never split on commas, that payload
-  // is a copied result title
-  assert.deepEqual(progressQuantity("connotation_recurrent_uncited:Reuters, 2019: the slur explained (+3 more)"),
-    { token: "connotation_recurrent_uncited", value: 4 });
 });
 
 // ── item 2: the token now front-loads a per-cause CENSUS, and the census is the exact count ──────
@@ -61,21 +57,20 @@ test("the count survives as a number: listed names + the overflow, from the untr
 // (verify.mjs connotationDispositionFail). A wrong count here reads a converging run as plateaued and ends
 // its ladder early, which is silent: the run simply stops, having looked like it repeated itself.
 test("the cause census is the exact quantity — summed across causes, immune to a comma inside a query", () => {
-  const tok = (payload) => `invalid_file:x/common-law-findings.half-b.md:connotation_undisposed:${payload}`;
-  // both causes present: the total is the sum, whatever the named lists were budgeted down to
-  assert.deepEqual(
-    progressQuantity(tok('cite_too_short=8,cite_absent=4;cite_too_short:VENZY wikipedia [title "Harry Venzy"];cite_absent:VENZ gang (+10 more)')),
-    { token: "connotation_undisposed", value: 12 });
+  const tok = (payload) => `invalid_file:x/register-digest.md:coverage_no_status:${payload}`;
+  // both causes present: the total is the sum, whatever the sample list was budgeted down to
+  assert.deepEqual(progressQuantity(tok("open_clean=8,no_status=4;R-1 VENZY / goods (+11 more)")),
+    { token: "coverage_no_status", value: 12 });
   // one cause, fully listed, no overflow
-  assert.deepEqual(progressQuantity(tok("cite_absent=1;cite_absent:DAVENA gang")),
-    { token: "connotation_undisposed", value: 1 });
-  // THE SHAPE THE OLD COUNTER GOT WRONG: a query containing a comma. The census does not care.
-  assert.deepEqual(progressQuantity(tok('cite_absent=2;cite_absent:Reuters, 2019 slur coverage,BIO VELTRIN gang')),
-    { token: "connotation_undisposed", value: 2 });
-  // the LEGACY shape (archived runs, and any tail whose census was lost to a display slice) still counts
-  assert.deepEqual(progressQuantity(REASON(29)), { token: "connotation_undisposed", value: 29 });
+  assert.deepEqual(progressQuantity(tok("no_status=1;R-2 DAVENA / services")),
+    { token: "coverage_no_status", value: 1 });
+  // a sample containing a comma: the census does not care
+  assert.deepEqual(progressQuantity(tok("no_status=2;R-3 Reuters, 2019 coverage,R-4 BIO VELTRIN")),
+    { token: "coverage_no_status", value: 2 });
+  // a tail with no census is ABSENT: every token the table reads is written with one
+  assert.equal(progressQuantity(tok("R-3 Reuters, 2019 coverage,R-4 BIO VELTRIN")), null);
   // a zero census is malformed, and ABSENT is not zero
-  assert.equal(progressQuantity(tok("cite_absent=0;cite_absent:")), null);
+  assert.equal(progressQuantity(tok("no_status=0;")), null);
 });
 
 // ── — the newest token counts, or a converging quote ladder reads as stuck ───────────────────────
@@ -101,7 +96,7 @@ test("ZERO SEMANTICS: a failure with no quantity records ABSENT (null), never 0"
     assert.equal(progressQuantity(r), null, `${r} carries no progress quantity`);
   // a truncated payload is ABSENT too: the token cannot fire with zero receipts, so a zero here means
   // the string was cut short of its list — not that it converged.
-  assert.equal(progressQuantity("invalid_file:x/half-b.md:connotation_undisposed:"), null);
+  assert.equal(progressQuantity("invalid_file:x/half-b.md:connotation_call_partial:"), null);
   assert.equal(progressQuantity(null), null);
   // and the carrier keeps them apart: null is not 0
   assert.notEqual(progressQuantity(REASON(3)).value, null);
@@ -113,7 +108,7 @@ test("the signature is UNCHANGED — the quantity is the sole new discriminator"
   // Pinned to the pre-change literals. These are what the machinery signs; a diff that moves them moves
   // which runs go repeat-signature terminal, which is the decision and not this issue's.
   const sigs = [6, 9, 11, 25, 29].map((n) => failureSignature("common-law-half:b", REASON(n)).sig);
-  for (const s of sigs) assert.equal(s, "common-law-half:b|022c140ae114", "the sig still collapses the digit — unchanged");
+  for (const s of sigs) assert.equal(s, "common-law-half:b|8ea64df80acd", "the sig still collapses the digit — unchanged");
   // …and the count that the sig cannot see now rides beside it
   assert.deepEqual([6, 9, 11, 25, 29].map((n) => failureSignature("common-law-half:b", REASON(n)).quantity), [6, 9, 11, 25, 29]);
 });

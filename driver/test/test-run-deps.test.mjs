@@ -55,7 +55,7 @@ test("a workspace whose dependencies cannot resolve is REFUSED, not run blind", 
     assert.match(r.stderr, /undici/, "the missing dependency is named");
     assert.match(r.stderr, /exceljs/, "…all of them, not just the first");
     assert.match(r.stderr, /npm install/, "and the command that fixes it");
-    assert.match(r.stderr, /#535/, "and where the reasoning lives");
+    assert.match(r.stderr, /a suite that was never run/, "and why it refuses");
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 

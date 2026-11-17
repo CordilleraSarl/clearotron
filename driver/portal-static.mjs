@@ -22,7 +22,9 @@ import { createHash } from "node:crypto";
 import { readFileSync, statSync } from "node:fs";
 import { join, normalize, extname, sep } from "node:path";
 import { PRE_PAINT_SCRIPT } from "../shared/portal-tokens.mjs";
-import { SERVER_ROUTE_HEADS } from "./portal-service.mjs";
+
+// The first path segments the portal's server answers itself, so the static handler declines them.
+export const SERVER_ROUTE_HEADS = Object.freeze(["api", "report", "admin", "health", "login", "logout", "sign-out", "connect-help"]);
 
 const TYPES = {
   ".html": "text/html; charset=utf-8",

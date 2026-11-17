@@ -12,8 +12,8 @@
 // reports a broken instrument rather than a clean suite.
 
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import * as stages from "../stages.mjs";
 import { PRODUCT_POLICIES } from "../search-policy.mjs";
 
@@ -63,7 +63,7 @@ test("every rung is CALLED by a stage — a defined-but-unwired rung grades noth
   // THE DECLARATIONS COME OUT FIRST. Scanning the raw source counted `export function xRungDirective(depth)`
   // as a call, so every rung "passed" on its own definition and the arm could not go red at all — caught by
   // unwiring a live rung and watching this stay green.
-  const src = readFileSync(new URL("../stages.mjs", import.meta.url), "utf8")
+  const src = driverSource("stages.mjs")
     .split("\n").filter((l) => !/^export function \w+RungDirective\(/.test(l)).join("\n");
   for (const { name } of RUNGS) {
     if (CONVERTED[name] || RETIRED_RUNGS.has(name)) continue;   // asserted by the arms at the end of this file instead
@@ -173,7 +173,7 @@ test("a CONVERTED rung's replacement IS wired — 'uncalled' and 'converted' loo
   // The other half of the skip above. Skipping a converted rung there is only safe if something asserts
   // its replacement actually reached a dispatch — otherwise "we converted it" is a comment, and the
   // product runs ungraded with a tidy explanation for why nothing calls the old function.
-  const src = readFileSync(new URL("../stages.mjs", import.meta.url), "utf8");
+  const src = driverSource("stages.mjs");
   assert.ok(Object.keys(CONVERTED).length, "nothing is marked converted — this arm reads nothing");
   for (const [name, { to, from }] of Object.entries(CONVERTED)) {
     assert.ok(src.includes(from), `${name} is marked converted to ${to}, and stages.mjs does not import ${from}`);
@@ -184,9 +184,9 @@ test("a CONVERTED rung's replacement IS wired — 'uncalled' and 'converted' loo
 });
 
 test("a RETIRED rung is called by no stage — retired means gone from every dispatch, not merely unlisted", () => {
-  const src = readFileSync(new URL("../stages.mjs", import.meta.url), "utf8")
+  const src = driverSource("stages.mjs")
     .split("\n").filter((l) => !/^export function \w+RungDirective\(/.test(l)).join("\n");
-  const pipeline = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const pipeline = driverSource("pipeline.mjs");
   assert.ok(RETIRED_RUNGS.size, "nothing is marked retired — this arm reads nothing");
   for (const name of RETIRED_RUNGS) {
     assert.ok(RUNGS.some((r) => r.name === name), `${name} is marked retired and is no longer exported: drop it from RETIRED_RUNGS`);

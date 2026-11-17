@@ -21,8 +21,9 @@ import { SERVER_ROUTE_HEADS } from "../portal-service.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";   // — the corpus check goes through the ONE helper
 
 const HERE = dirname(fileURLToPath(import.meta.url));
+import { driverSource } from "./driver-source.mjs";
 const REPO = join(HERE, "..", "..");
-const SERVICE = readFileSync(join(REPO, "driver", "portal-service.mjs"), "utf8");
+const SERVICE = driverSource("portal-service.mjs");
 
 /**
  * Every portal and driver source file, as ONE walk shared by the two arms below.

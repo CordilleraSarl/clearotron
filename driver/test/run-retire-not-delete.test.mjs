@@ -38,10 +38,12 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { makePortalService } from "../portal-service.mjs";
 import { readArchivedSet, updateArchived, ARCHIVE_TAGS_FILE } from "../publish/archive-tags.mjs";
+import { driverSource } from "./driver-source.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const src = (rel) => readFileSync(join(HERE, "..", "..", rel), "utf8");
-const live = (rel) => src(rel).split("\n").filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l.trim())).join("\n");
+const codeOf = (text) => text.split("\n").filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l.trim())).join("\n");
+const live = (rel) => codeOf(src(rel));
 
 const poolWith = (runs = {}) => {
   const root = mkdtempSync(join(tmpdir(), "retire-pool-"));
@@ -194,7 +196,7 @@ test("arm 8 — retiring a run does NOT revoke its report link", async () => {
 });
 
 test("arm 9 — nothing on this path deletes anything, and the screen never offers to", () => {
-  const svc = live("driver/portal-service.mjs");
+  const svc = codeOf(driverSource("portal-service.mjs"));
   const at = svc.indexOf('parts[2] === "retired"');
   assert.ok(at > 0, "the route is where this test thinks it is");
   const route = svc.slice(at, at + 3000);

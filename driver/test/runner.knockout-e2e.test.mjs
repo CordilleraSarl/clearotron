@@ -296,7 +296,10 @@ test("a 3-mark knockout batch runs end to end: receipts, degrade, publish stamps
 
   // delivery handoff: the packet + outbox marker, email-free courier contract
   const packet = JSON.parse(readFileSync(driverDir(rd, "delivery.json"), "utf8"));
-  assert.match(packet.subject, /^Knockout trademark review — TMP9100 \(3 marks\)$/);
+  // The product is named as its report page names it, in the subject, the email's first line and the pool's record alike.
+  assert.match(packet.subject, /^Knockout search — TMP9100 \(3 marks\)$/);
+  assert.match(packet.emailBodyHtml, /Knockout search — TMP9100: <b>3 marks<\/b>, highest rating/, "the email's first line names the product");
+  assert.match(readFileSync(join(pool, poolRun.name, "report.md"), "utf8"), /^title: "KNOCKOUT SEARCH REPORT — /m, "the pool's record names it too");
   assert.ok(packet.emailBodyHtml.length > 100);
   assert.equal(packet.forwarder, "jordan");
   assert.ok(existsSync(join(OUTBOX, `${packet.runId}.pending`)), "outbox wake marker");

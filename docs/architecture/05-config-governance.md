@@ -125,8 +125,8 @@ has taken it.
 (`pipeline.mjs` `RETIRED_ENV`, `jx-units.mjs`) and nothing reads it, so renaming a dead name looked like
 handing an operator a name that warns about nothing. A decision of 2026-09-04 reversed that: the
 whole namespace carries one prefix, dead names included, because a tree spelled two ways costs more
-than a retired row spelled consistently. The per-lane `CLEAROTRON_NATIVE_LANGUAGE_<code>` switch in the same row **is** live and is
-fail-OPEN: unset means ON (§5.5).
+than a retired row spelled consistently. The per-lane `CLEAROTRON_NATIVE_LANGUAGE_<code>` switch in the same row was
+retired on 2026-11-11 (§5.5).
 
 Variables outside the install surface were left alone by the August rename — `CLEAROTRON_ENGINE_MAX_BUFFER`
 and its siblings were never in that window. **That separate decision was taken on 2026-09-04**: the rename
@@ -233,8 +233,9 @@ environment reads what the ACTIVE provider can actually do.
 
 ### 5.5 Search-depth spine — T3 (defaults OFF; arm deliberately)
 
-Per-lane `CLEAROTRON_NATIVE_LANGUAGE_<XX>` — `zh`, `ja` and `ko` all work (`LANGUAGE_LANES` in
-`driver/jx-lanes.mjs`); default on, set `0` to kill one lane — plus `CLEAROTRON_JX_SERP_DEADLINE_MS`.
+`CLEAROTRON_JX_SERP_DEADLINE_MS`. The per-lane `CLEAROTRON_NATIVE_LANGUAGE_<XX>` switch for `zh`, `ja` and `ko`
+was **retired on 2026-11-11**: no deployment set it, and a lane in the run's frozen lane decision always
+runs. A box that still sets it is warned that it does nothing (`pipeline.mjs` `RETIRED_ENV`).
 `CLEAROTRON_JX_SERP_GRID`, `CLEAROTRON_JX_NATIVEREAD` and `CLEAROTRON_JX_CONSUME` were **deleted by item 8**
 under ADR-0002: each was off here and on in production, so the shipped default described a
 configuration nobody ran. The slices now run on conditions a requester can already see.

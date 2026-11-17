@@ -201,7 +201,7 @@ if (isEntrypoint(import.meta.url)) {
     // the workflow file to find out what to substitute. A guard whose remedy has to be looked up is a
     // guard people delete (its own rule, applied to its own error message).
     console.error(`\nCHECK FAILED — ${grew.length} file(s) grew an assert site that never ran.\n\n`
-      + "READ EACH ONE FIRST. An arm that stopped asserting is the defect this exists to find (#1010);\n"
+      + "READ EACH ONE FIRST. An arm that stopped asserting is the defect this exists to find;\n"
       + "a new honest branch — a platform check, an else nobody takes here — is re-stamped deliberately:\n\n"
       + "  CT_COVERAGE_DIR=/tmp/cov npm run test:full\n"
       + "  npm run assert-census -- /tmp/cov/driver.lcov --apply\n\n"

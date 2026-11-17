@@ -14,7 +14,7 @@ the filings the reading step carried forward, what it set aside, and the owner s
 
 **Rate in the frozen framework's words** (`_driver/framework.json`: the customer's own ladder when
 configured, else the house triage ladder). State the band WORD. The only sub-gradation is
-`ratingQualifier: "low"`. It CAPS a band ("Medium (low)", calibration rule 4) and there is no other value:
+`ratingQualifier: "low"`. It CAPS a band ("Moderate (low)", calibration rule 4) and there is no other value:
 a band that needs sharpening is the band above it, stated as that word.
 
 ## Per mark — the mandatory sequence
@@ -48,7 +48,7 @@ a band that needs sharpening is the band above it, stated as that word.
 
 ## Calibration rules (they override gut instinct)
 
-1. **Class-specific ratings are mandatory** at the framework's material bands: "Medium (Classes 9,
+1. **Class-specific ratings are mandatory** at the framework's material bands: "Moderate (Classes 9,
    25, 28, 41)", never a bare band — `classesDriving` carries the class list.
    Use `classGroups` when separating the requested goods changes the advice under the frozen framework.
    Different band words or qualifiers alone do not require a split. Where a split is needed, record one row
@@ -134,8 +134,7 @@ were the hardest lines on the page.
 
 **Everything a reader sees before opening a fold is written for the client's business owner.** Ordinary
 nouns, one idea per sentence, no sentence over 25 words, the conclusion first. On this product that is:
-`chunkSummary`, `basis`, `factors`, `counterFactors`, `mitigation`, every finding's `net`, every
-`registerReads[].read`, the `purpleNotes`, and `standardCaveats`.
+`chunkSummary`, `basis`, `factors`, `counterFactors`, `mitigation`, every finding's `net`, every `registerReads[].read`, and `standardCaveats`.
 
 **Inside a fold the lawyer's vocabulary is allowed** where a plain word would lose precision — a
 finding's `basis`, the provenance, the long `assessment`. Even there, a term is explained the first time
@@ -185,9 +184,7 @@ the reader sees it. Write the one thing the scope block does not say, or write n
 
 **A note is verb-first, one line, and about one of two things.** Write each `purpleNotes` entry as an
 instruction to the reviewing lawyer, opening on the verb. Every note is about the REQUEST — what was
-asked, and whether it holds together — or about the NAME. The report prints the first kind at the top,
-above the conflicts, and the second under that name's cards, so a note that mixes the two lands in one
-place and reads oddly in it. Write two notes.
+asked, and whether it holds together — or about the NAME. The report never prints a note; it reaches the audit workbook and the assistant. The driver still sorts notes about the request from notes about the name, so name the request in a request note. Write two notes.
 
 A note about the request NAMES the request in the note — "the request", or "what we were asked". That is
 not a formality: the report sorts the two kinds by what the note talks about, so a request note that
@@ -296,12 +293,7 @@ A recorded owner check linked to a held filing is held evidence. You may cite a 
   actually used. The report derives the finding's source labelling from this, so list one only if you
   reasoned from it.
 
-**Both are optional, and omitting them is always safe.** A filing with no row keeps its card's standing
-line, which describes the card and claims nothing about the rating. So:
-
-> **Never invent a read to fill a row, and never write "not weighed" as a read.** A filing you did not
-> weigh simply gets no row. A row written to look complete would tell the reader the rating turned, or
-> did not turn, on a filing you never reasoned from.
+Omit these fields when their information does not apply. When a finding's reasoning uses a held filing, record its ID in `weighedFilings`. When you weigh a filing without making it a finding, record the read in `registerReads`. Never invent a read or citation to fill a field.
 
 ## Saying what you put down (`setAside`)
 
@@ -371,7 +363,7 @@ not look identical afterwards.
                "degraded": null } ] }
 ```
 
-**The finding record — closed keys, all nine, no others, and "inputs" where the framework states a method.** A key this list does not name is refused
+**The finding record — closed keys, ten in all, no others, "inputs" only where the framework states a method and "weighedFilings" only where you reasoned from a held filing.** A key this list does not name is refused
 (the validator is `findings-model.mjs validateKnockoutFinding`, and it runs at the chunk and again on
 the merged artifact):
 

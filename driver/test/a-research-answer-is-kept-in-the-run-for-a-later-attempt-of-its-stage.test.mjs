@@ -55,6 +55,6 @@ test("a stage's answers are its own session's and its retries', oldest first, th
 test("the research server keeps a free-form answer when it is returned, never on a failure and never from a grid", () => {
   const freeForm = SRC.slice(SRC.indexOf("if (!task || task.trim()"), SRC.indexOf("serve({"));
   const success = freeForm.slice(freeForm.indexOf("const text = "), freeForm.indexOf("return text;"));
-  assert.match(success, /keepResearchAnswer\(RUN_DIR, \{ session: SESSION, agent: AGENT, task, preset, text \}\);/, "the answer returned is not kept");
+  assert.match(success, /keepResearchAnswer\(RUN_DIR, \{ session: SESSION, agent: AGENT, task, preset, request, text \}\);/, "the answer returned is not kept with its request");
   assert.equal((SRC.match(/keepResearchAnswer\(/g) ?? []).length, 1, "an answer is kept from somewhere other than the returned free-form answer");
 });

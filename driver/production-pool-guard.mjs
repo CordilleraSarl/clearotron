@@ -52,7 +52,7 @@ export function productionPoolRefusal({ poolRoot, queueDir, productionPool = PRO
     return { refuse: true, reason:
       `CLEAROTRON_REPORTS_DIR is unset, and this tool will not guess. Unset is NOT "no pool": the driver's `
       + `fallback used to be ${productionPool}, which is PRODUCTION, and this refusal is what stood `
-      + `between a forgotten export and the client archive. #774 removed the fallback — the driver now `
+      + `between a forgotten export and the client archive. The fallback was removed — the driver now `
       + `refuses too — so both ends agree. Set an isolated dev pool before running anything here.` };
   }
   if (queueDir !== undefined && !set(queueDir)) {

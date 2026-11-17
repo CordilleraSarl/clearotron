@@ -86,7 +86,7 @@ const CONFIG_PARITY = {
 // Recorded as not covered, never silently absent — its own instruction.
 const NOT_COVERED = [
   "common law in a country that has none — Switzerland has no common-law rights system and none of the five points there, so the engine's behaviour when the grid has nothing to search is unexercised",
-  "the deliverable step — the client-format document produced at the lawyer's agent is outside tracker #462 and no scenario reaches it",
+  "the deliverable step — the client-format document produced at the lawyer's agent is out of scope here and no scenario reaches it",
   "lawyer reference answers for this mark — out of scope by the issue's own wording (comparisons, not gold), so scripts/score.mjs cannot be pointed at any of the five",
 ];
 

@@ -4,6 +4,7 @@
 // hand-off with no ground is counted — and a hand-off with no trace says so instead of counting zero. A page
 // the web step only read is not owed a ground, and the knockout is outside the check.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -121,7 +122,7 @@ test("a page the web notes marked and no delivered finding cites is an exit; a p
 });
 
 test("the clearance pipeline calls the check where its traces are written; the knockout lane keeps no page trace", () => {
-  const clearance = readFileSync(join(DRIVER, "pipeline.mjs"), "utf8");
+  const clearance = driverSource("pipeline.mjs");
   for (const call of ["pickingExits(safeReadJson(P.recordCarry))", "notesExits(existsSync(P.commonLaw)"]) {
     assert.ok(clearance.includes(call), `the clearance pipeline no longer calls ${call}`);
   }

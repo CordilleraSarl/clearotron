@@ -83,7 +83,7 @@ test("THE ANSWER'S SIZE, NEVER THE ANSWER", () => {
 
 test("SAME FILE, SAME RULE AS THE BAND SERVER — one pattern, not a second one", () => {
   for (const src of [BRIDGE, BAND]) {
-    assert.match(src, /"reading-log\.jsonl"/);
+    assert.match(src, /"reading-log\.jsonl"|\.readingLog\b/);
     assert.match(src, /best-effort/i, "a log failure must never break a lookup");
   }
   assert.match(BRIDGE, /if \(!AUDIT_RUN_DIR\) return;/, "no run dir, no line, never a throw");

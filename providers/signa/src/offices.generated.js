@@ -9,23 +9,25 @@
 // `status` is load-bearing: providers/signa/src/capabilities.js covers only the `live` ones. An office
 // that stops being live leaves the covered set on the next sync, and this diff is where that is seen.
 //
-// Fetched: 2026-11-02T18:18:06Z
+// Fetched: 2026-11-09T17:08:09.676Z
 export const SIGNA_OFFICE_SNAPSHOT = Object.freeze({
-  fetched_at: "2026-11-02T18:18:06Z",
+  fetched_at: "2026-11-09T17:08:09.676Z",
   source: "https://api.signa.so/v1/offices",
   offices: Object.freeze([
-    Object.freeze({"key":"cipo","code":"CA","jurisdiction":"CA","name":"Canadian Intellectual Property Office","status":"live","update_cadence":"weekly","total_marks":2191386,"last_synced_at":"2026-11-02T11:35:59.179Z","coverage":null}),
-    Object.freeze({"key":"es","code":"ES","jurisdiction":"ES","name":"Spanish Patent and Trademark Office","status":"live","update_cadence":"daily","total_marks":3804298,"last_synced_at":"2026-11-02T11:20:20.112Z","coverage":null}),
-    Object.freeze({"key":"euipo","code":"EM","jurisdiction":"EU","name":"European Union Intellectual Property Office","status":"live","update_cadence":"daily","total_marks":3264288,"last_synced_at":"2026-11-02T07:03:56.961Z","coverage":null}),
-    Object.freeze({"key":"inpi-fr","code":"FR","jurisdiction":"FR","name":"National Institute of Industrial Property (France)","status":"live","update_cadence":"weekly","total_marks":3537977,"last_synced_at":"2026-10-30T05:11:23.102Z","coverage":null}),
-    Object.freeze({"key":"ipau","code":"AU","jurisdiction":"AU","name":"IP Australia","status":"live","update_cadence":"daily","total_marks":2338559,"last_synced_at":"2026-11-01T21:14:20.272Z","coverage":null}),
-    Object.freeze({"key":"ipi","code":"CH","jurisdiction":"CH","name":"Swiss Federal Institute of Intellectual Property","status":"live","update_cadence":"daily","total_marks":1150611,"last_synced_at":"2026-11-02T15:01:33.190Z","coverage":null}),
-    Object.freeze({"key":"ipos","code":"SG","jurisdiction":"SG","name":"Intellectual Property Office of Singapore","status":"live","update_cadence":"daily","total_marks":882108,"last_synced_at":"2026-11-02T04:15:04.426Z","coverage":null}),
-    Object.freeze({"key":"mx","code":"MX","jurisdiction":"MX","name":"Mexican Institute of Industrial Property","status":"live","update_cadence":"daily","total_marks":3819551,"last_synced_at":"2026-11-01T20:25:40.757Z","coverage":null}),
-    Object.freeze({"key":"nipo","code":"NO","jurisdiction":"NO","name":"Norwegian Industrial Property Office","status":"live","update_cadence":"daily","total_marks":579877,"last_synced_at":"2026-11-02T04:16:36.648Z","coverage":null}),
-    Object.freeze({"key":"prv","code":"SE","jurisdiction":"SE","name":"Swedish Intellectual Property Office","status":"live","update_cadence":"daily","total_marks":612172,"last_synced_at":"2026-11-02T06:15:47.089Z","coverage":null}),
-    Object.freeze({"key":"ukipo","code":"GB","jurisdiction":"GB","name":"UK Intellectual Property Office","status":"live","update_cadence":"daily","total_marks":3686027,"last_synced_at":"2026-11-02T03:33:59.564Z","coverage":null}),
-    Object.freeze({"key":"uspto","code":"US","jurisdiction":"US","name":"United States Patent and Trademark Office","status":"live","update_cadence":"daily","total_marks":14403594,"last_synced_at":"2026-11-02T13:07:51.356Z","coverage":null}),
-    Object.freeze({"key":"wipo","code":"WO","jurisdiction":"WO","name":"World Intellectual Property Organization","status":"live","update_cadence":"weekly","total_marks":10474173,"last_synced_at":"2026-11-02T15:37:25.192Z","coverage":null}),
+    Object.freeze({"key":"br","code":"BR","jurisdiction":"BR","name":"National Institute of Industrial Property","status":"live","update_cadence":"weekly","total_marks":6686649,"last_synced_at":"2026-11-04T04:21:57.157Z","coverage":null}),
+    Object.freeze({"key":"cipo","code":"CA","jurisdiction":"CA","name":"Canadian Intellectual Property Office","status":"live","update_cadence":"weekly","total_marks":2196014,"last_synced_at":"2026-11-04T18:43:07.941Z","coverage":null}),
+    Object.freeze({"key":"es","code":"ES","jurisdiction":"ES","name":"Spanish Patent and Trademark Office","status":"live","update_cadence":"daily","total_marks":3805848,"last_synced_at":"2026-11-09T10:48:06.509Z","coverage":null}),
+    Object.freeze({"key":"euipo","code":"EM","jurisdiction":"EU","name":"European Union Intellectual Property Office","status":"live","update_cadence":"daily","total_marks":3268001,"last_synced_at":"2026-11-09T07:04:23.387Z","coverage":null}),
+    Object.freeze({"key":"inpi-fr","code":"FR","jurisdiction":"FR","name":"National Institute of Industrial Property (France)","status":"live","update_cadence":"weekly","total_marks":3540704,"last_synced_at":"2026-11-06T05:10:55.024Z","coverage":null}),
+    Object.freeze({"key":"ipau","code":"AU","jurisdiction":"AU","name":"IP Australia","status":"live","update_cadence":"daily","total_marks":2340293,"last_synced_at":"2026-11-06T21:14:47.784Z","coverage":null}),
+    Object.freeze({"key":"ipi","code":"CH","jurisdiction":"CH","name":"Swiss Federal Institute of Intellectual Property","status":"live","update_cadence":"daily","total_marks":1151487,"last_synced_at":"2026-11-09T15:01:41.616Z","coverage":null}),
+    Object.freeze({"key":"ipos","code":"SG","jurisdiction":"SG","name":"Intellectual Property Office of Singapore","status":"live","update_cadence":"daily","total_marks":882719,"last_synced_at":"2026-11-09T04:15:37.737Z","coverage":null}),
+    Object.freeze({"key":"it","code":"IT","jurisdiction":"IT","name":"Italian Patent and Trademark Office","status":"live","update_cadence":"daily","total_marks":1412133,"last_synced_at":"2026-11-07T15:17:14.632Z","coverage":null}),
+    Object.freeze({"key":"mx","code":"MX","jurisdiction":"MX","name":"Mexican Institute of Industrial Property","status":"live","update_cadence":"daily","total_marks":3827605,"last_synced_at":"2026-11-09T14:27:04.821Z","coverage":null}),
+    Object.freeze({"key":"nipo","code":"NO","jurisdiction":"NO","name":"Norwegian Industrial Property Office","status":"live","update_cadence":"daily","total_marks":580219,"last_synced_at":"2026-11-09T04:17:01.000Z","coverage":null}),
+    Object.freeze({"key":"prv","code":"SE","jurisdiction":"SE","name":"Swedish Intellectual Property Office","status":"live","update_cadence":"daily","total_marks":612368,"last_synced_at":"2026-11-09T06:15:14.253Z","coverage":null}),
+    Object.freeze({"key":"ukipo","code":"GB","jurisdiction":"GB","name":"UK Intellectual Property Office","status":"live","update_cadence":"daily","total_marks":3689256,"last_synced_at":"2026-11-09T03:33:30.676Z","coverage":null}),
+    Object.freeze({"key":"uspto","code":"US","jurisdiction":"US","name":"United States Patent and Trademark Office","status":"live","update_cadence":"daily","total_marks":14417219,"last_synced_at":"2026-11-09T13:07:06.310Z","coverage":null}),
+    Object.freeze({"key":"wipo","code":"WO","jurisdiction":"WO","name":"World Intellectual Property Organization","status":"live","update_cadence":"weekly","total_marks":16158125,"last_synced_at":"2026-11-06T15:50:37.634Z","coverage":null}),
   ]),
 });

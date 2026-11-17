@@ -35,10 +35,11 @@ import { fileURLToPath } from "node:url";
 import { makePortalService } from "../portal-service.mjs";
 import { readAcks, setAck, ACKNOWLEDGEABLE, ACKS_DIR } from "../portal-acks.mjs";
 import { readArchivedSet } from "../publish/archive-tags.mjs";
+import { driverSource } from "./driver-source.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const live = (rel) => readFileSync(join(HERE, "..", "..", rel), "utf8")
-  .split("\n").filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l.trim())).join("\n");
+const codeOf = (text) => text.split("\n").filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l.trim())).join("\n");
+const live = (rel) => codeOf(readFileSync(join(HERE, "..", "..", rel), "utf8"));
 
 // A pool of DELIVERED runs is no use here — the dashboard band is everything that is not delivered. The
 // state lives in status.json for a live run, so the fixture writes the workspace shape the scan reads.
@@ -211,7 +212,7 @@ test("arm 8 — the door is the only gate, and a junk id cannot become a path", 
   const ok = await svc.route("POST", "/portal/api/ack", { email: "c@demo-brand-owner.example" },
     { runId: "dead", state: "failed", acknowledged: true });
   assert.equal(ok.status, 200);
-  const route = live("driver/portal-service.mjs");
+  const route = codeOf(driverSource("portal-service.mjs"));
   assert.match(route, /parts\[1\] === "api" && parts\[2\] === "ack" && method === "POST"/,
     "under /portal/api — a pool-wide act would belong under /portal/admin and be audited");
   assert.deepEqual([...readArchivedSet(pool.root)], [], "and a client's dismissal writes no pool-wide tag");

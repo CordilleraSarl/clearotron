@@ -35,10 +35,11 @@
 // A model free-typing into `classes:` welded an engine clause onto a class list. Structured KEYS are the
 // allowlist; structured VALUES still have to be recognised, not trusted.
 
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { parseAudit, stripEngineInternals } from "./driver.mjs";
 import { readRecordArtifacts } from "../../driver/registry-fidelity.mjs";
+import { readJson } from "../../driver/run-record.mjs";
 
 // The client report's own display word per coverage state (publish/render.mjs COV_STATE). Carried here so
 // the connector and the PDF call the same state the same thing; a state absent from the map degrades to
@@ -81,7 +82,7 @@ const clean = (s) => {
 // below IS the rule, and it lives in exactly one place.
 function readFindingsJson(runDir) {
   try {
-    const doc = JSON.parse(readFileSync(join(runDir, "findings.json"), "utf8"));
+    const doc = readJson(join(runDir, "findings.json"));
     return (doc && typeof doc === "object" && !Array.isArray(doc)) ? doc : null;
   } catch { return null; }
 }

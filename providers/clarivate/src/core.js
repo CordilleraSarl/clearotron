@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // The Clarivate register adapter — pure logic + HTTP helpers + telemetry, with ZERO plugin-SDK or
 // TypeBox imports (node built-ins, global fetch and providers/_shared only). Everything this provider
-// does lives here: driver/engine/mcp/clarivate-server.mjs wraps the module as a standalone MCP server,
+// does lives here: src/mount.js wraps the module for the one register MCP server,
 // driver.config.mjs lazy-imports it for the in-process lanes, and the tests import it directly.
 //
 // PACKAGING NOTE: this core imports the shared ledger, screen primitives and enumerate kernel from
@@ -1587,19 +1587,6 @@ export async function resolveCompany(apiKey, base, { companyName, regions }, tct
     confidence: Number.isFinite(Number(c?.confidenceScore)) ? Number(c.confidenceScore) : null,
   })).filter((c) => c.applicant_name);
   return { ok: true, companies, reason: null };
-}
-
-export async function doResolveCompany(apiKey, base, params, tctx) {
-  const companyName = params?.company_name ?? params?.owner ?? null;
-  const out = await resolveCompany(apiKey, base, { companyName, regions: params?.regions }, tctx);
-  if (!out.ok) return { type: "text", text: `ERROR: clarivate_resolve_company — ${out.reason}` };
-  const threshold = Number.isFinite(Number(params?.min_confidence)) ? Number(params.min_confidence) : OWNER_RESOLUTION_MIN_CONFIDENCE;
-  return { type: "text", text: JSON.stringify({
-    company_name: companyName,
-    min_confidence: threshold,
-    accepted: out.companies.filter((c) => (c.confidence ?? 0) >= threshold).map((c) => c.applicant_name),
-    companies: out.companies,
-  }, null, 2) };
 }
 
 /**

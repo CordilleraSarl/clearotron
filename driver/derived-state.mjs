@@ -22,7 +22,7 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join, relative } from "node:path";
 import { CONTEXT_DERIVATIONS, derivationsFor } from "./stage-context.mjs";
-import { driverDir } from "../shared/driver-dir.mjs";
+import { paths } from "./run-record.mjs";
 
 /** A file's identity by content, or a directory's by its entries' names and sizes, recursively. `sha` null when absent. */
 function identityOf(path, runDir) {
@@ -65,7 +65,7 @@ const sameFiles = (a, b) => Array.isArray(a) && Array.isArray(b) && a.length ===
 /** The derived state recorded on the run's last dispatch of `label` with this trigger, or null when none was recorded. */
 export function recordedDerivedState(runDir, label, trigger = "fresh") {
   let rows = [];
-  try { rows = readFileSync(driverDir(runDir, "run.jsonl"), "utf8").split("\n"); } catch { return null; }
+  try { rows = readFileSync(paths(runDir).run, "utf8").split("\n"); } catch { return null; }
   let found = null;
   for (const line of rows) {
     if (!line.includes('"derivedState"')) continue;

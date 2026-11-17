@@ -17,6 +17,7 @@ import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { administratorContact } from "../../shared/brand.mjs";
+import { driverSource } from "./driver-source.mjs";
 
 // A file URL, not a path: the program below imports it, and on Windows an absolute path is not an
 // import specifier (its drive letter reads as a URL scheme).
@@ -63,7 +64,7 @@ test("the installation setting is the variable read at start-up, and unset is th
 test("the portal sends the contact on the same answer as the brand", () => {
   // Pinned at the source: the value differs only on an installation that set one, so a payload that
   // dropped it would keep every fixture-driven screen test green.
-  const svc = readFileSync(fileURLToPath(new URL("../portal-service.mjs", import.meta.url)), "utf8");
+  const svc = driverSource("portal-service.mjs");
   const me = svc.slice(svc.indexOf("brand: ORGANISATION_NAME"), svc.indexOf("brand: ORGANISATION_NAME") + 600);
   assert.ok(me.length > 0, "the /me payload moved — this arm is reading nothing");
   assert.match(me, /administratorContact: ADMINISTRATOR_CONTACT/, "the /me answer no longer carries the administrator contact");

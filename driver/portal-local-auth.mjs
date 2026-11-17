@@ -154,8 +154,7 @@ export function credentialPathFor(env = process.env, home = null) {
  * THE PRINTED LINE HAS TO RUN AS PRINTED. The demo keeps its credential inside its own base, and the
  * recovery line said `clearotron passphrase --reset` — which resolves the SHARED default, finds nothing
  * there, and exits 1 with "no credential exists yet" while the credential sits in the demo's directory
- * being read happily by the portal. Measured by the test lane, running the line exactly as the demo
- * printed it.
+ * being read happily by the portal. Measured by running the line exactly as the demo printed it.
  *
  * The verb keeps one rule — the environment variable — and the printer, which knows where it put the
  * file, names it. That also covers an operator who set `PORTAL_LOCAL_CREDENTIAL` themselves, who had

@@ -20,6 +20,7 @@
 // `deferred_coverage` shipped a false clean. A field is not a disclosure.
 
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 
 import { reachableRegions, unavailableOffices } from "../register-availability.mjs";
@@ -258,7 +259,7 @@ test("there is exactly one binding of the office split to the environment", asyn
   const COMMENT_LINE = /^\s*(\/\/|\/\*|\*)/;
   const binds = (src) => src.split("\n").filter((l) => !COMMENT_LINE.test(l)).join("\n").includes("requirementsFor:");
   const callers = ["pipeline.mjs", "pipeline-knockout.mjs", "register-unreachable.mjs", "register-count.mjs", "register-records.mjs"]
-    .filter((f) => binds(readFileSync(join(driver, f), "utf8")));
+    .filter((f) => binds(driverSource(f)));
   assert.deepEqual(callers, ["register-unreachable.mjs"],
     `the member→variable lookup must live in one file, found in: ${callers.join(", ")}`);
 });

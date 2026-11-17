@@ -43,7 +43,7 @@
 // sidecar writer in this directory follows.
 
 import { appendFileSync } from "node:fs";
-import { ensureDriverDir, driverDir } from "../shared/driver-dir.mjs";
+import { ensureDriverDir, driverDir } from "./run-record.mjs";
 
 /** The fields that would make a row a SEAT dispatch. Named so the guard and the writer cannot disagree. */
 export const DISPATCH_FIELDS = Object.freeze(["attempt", "key", "status"]);

@@ -82,7 +82,7 @@ if (!canWrite && !dryRun) {
   console.error(
     `No GitHub credential.\n\n` +
     `This host has neither an authenticated \`gh\` nor ${TOKEN_VAR} in its environment, so it cannot\n` +
-    `create an issue. That is the open question on #264 rather than a misconfiguration — see the header\n` +
+    `create an issue. That is an open question rather than a misconfiguration — see the header\n` +
     `of this file for the two ways to close it.\n\n` +
     `--dry-run works without a credential and prints what would be minted.`,
   );

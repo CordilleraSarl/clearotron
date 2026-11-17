@@ -186,6 +186,20 @@ test('a fresh composer has nothing to lose, and a saved one has nothing to lose 
   assert.equal(unsavedChanges({ current: EMPTY, empty: EMPTY, saved: TYPED, submitted: false }), false)
 })
 
+test('a form the screen filled itself is untouched until the reader changes it', () => {
+  // The composer preselects the search that fits a company's own places before anything is typed. That write
+  // made the draft differ from empty, and leaving a New clearance nobody had touched asked "Leave this page?".
+  const PRESELECTED = JSON.stringify({ names: [], product: 'multi-country-focus-search' })
+  const TYPED_OVER = JSON.stringify({ names: ['AQUAPLUS'], product: 'multi-country-focus-search' })
+  assert.equal(unsavedChanges({ current: PRESELECTED, empty: EMPTY, saved: null, submitted: false, untouched: PRESELECTED }), false,
+    'the screen\'s own preselection counted as the reader\'s work')
+  // THE CONTROL: a name typed over the preselection is the reader's, and leaving it must still ask.
+  assert.equal(unsavedChanges({ current: TYPED_OVER, empty: EMPTY, saved: null, submitted: false, untouched: PRESELECTED }), true,
+    'the untouched baseline switched the guard off for real work')
+  // And the composer hands the predicate that baseline.
+  assert.match(src('screens/NewClearance.tsx'), /untouched: autoDraft/, 'the composer no longer tells the guard what it filled itself')
+})
+
 test('useLoad clears on a DEPS change and keeps data across a reload', () => {
   // Two failures, one line apart in the source, and they pull in opposite directions.
   //

@@ -59,7 +59,9 @@
   /* the framework that owns the ticks, named where they are read. Normal case and un-tracked on
      purpose: `.label` is an uppercase eyebrow, and a proper name in the eyebrow's own letterforms reads
      as a second heading rather than as the thing being cited. */
-  .gauge .label .gauge-fw{display:block;margin-top:5px;font-size:11px;font-weight:600;letter-spacing:0;
+  .gauge .gauge-head{margin-bottom:18px}
+  .gauge .gauge-head .label{margin-bottom:0}
+  .gauge .gauge-fw{margin-top:5px;font-size:11px;font-weight:600;letter-spacing:0;
     text-transform:none;color:var(--slate)}
   .scale{position:relative;height:11px;border-radius:8px;margin:34px 0 10px;
     background:linear-gradient(90deg,var(--clear) 0%,var(--low) 26%,var(--med) 52%,var(--high) 79%,var(--severe) 100%)}

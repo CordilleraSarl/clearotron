@@ -152,10 +152,12 @@ test("tracker 97 a sentence a reader cannot hold in their head is refused, and t
   assert.deepEqual(offences(`Fixed: ${words(12)}: ${words(MAX_WORDS - 1)}.`), [], "a clause after a colon was counted with the one before it");
   assert.ok(findings(note(`Fixed: ${words(12)}: ${words(MAX_WORDS + 1)}.`)).some((f) => new RegExp(`at most ${MAX_WORDS} words`).test(f.rule)),
     "a long clause after the colon is still refused");
-  assert.ok(findings(note(`Fixed: ${words(17)} at 10:30 ${words(17)}.`)).some((f) => new RegExp(`at most ${MAX_WORDS} words`).test(f.rule)),
+  // The controls run two halves that together pass the ceiling, so they hold at whatever the ceiling is.
+  const half = Math.floor(MAX_WORDS / 2) + 1;
+  assert.ok(findings(note(`Fixed: ${words(half)} at 10:30 ${words(half)}.`)).some((f) => new RegExp(`at most ${MAX_WORDS} words`).test(f.rule)),
     "CONTROL: a colon with no space after it, as in a time, ends no clause");
-  assert.ok(findings(note(`Fixed: ${words(17)}, ${words(17)}.`)).some((f) => new RegExp(`at most ${MAX_WORDS} words`).test(f.rule)),
-    "CONTROL: a comma joins one clause, and 34 words of it are refused");
+  assert.ok(findings(note(`Fixed: ${words(half)}, ${words(half)}.`)).some((f) => new RegExp(`at most ${MAX_WORDS} words`).test(f.rule)),
+    "CONTROL: a comma joins one clause, and two halves of the ceiling in it are refused");
 });
 
 test("tracker 97 a note names a package that exists, decided when it is written rather than on main", () => {

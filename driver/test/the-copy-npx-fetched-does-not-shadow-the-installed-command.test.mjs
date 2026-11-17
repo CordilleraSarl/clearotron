@@ -14,7 +14,7 @@
 // stood in, npm's node-gyp-bin folder, then the reader's own PATH.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { delimiter, join } from "node:path";
 import { invocationForm } from "../../shared/invocation.mjs";
@@ -66,4 +66,40 @@ test("npm's global executable is not shadowed by the copy npx fetched either", {
   assert.equal(form.via, "global");
   assert.equal(form.shadowedBy, null, `npx's own folder was reported as shadowing npm's executable: ${form.shadowedBy}`);
   assert.equal(form.form, "bare");
+});
+
+// THE TARBALL ROUTE (INSTALL §2): `npm install <tarball>` in a project folder, then `npx clearotron install` there.
+// npm puts that project's `node_modules/.bin` first on the PATH of what it runs, and the `clearotron` in it is
+// npm's link to the very install the shim names. It leads here, so it shadows nothing.
+
+/** A project folder holding the package, with npm's link to it, and setup's shim naming that same install. */
+function tarballHome({ linkTo = null } = {}) {
+  const home = mkdtempSync(join(tmpdir(), "tarball-shadow-home-"));
+  const modules = join(home, "app", "node_modules");
+  const installDir = join(modules, "clearotron");
+  for (const pkg of [installDir, join(modules, "another-clearotron")]) {
+    mkdirSync(join(pkg, "bin"), { recursive: true });
+    writeFileSync(join(pkg, "bin", "clearotron.mjs"), "#!/usr/bin/env node\n");
+  }
+  mkdirSync(join(modules, ".bin"));
+  symlinkSync(join("..", linkTo ?? "clearotron", "bin", "clearotron.mjs"), join(modules, ".bin", "clearotron"));
+  const r = installShim({ env: { HOME: home }, installDir, nodePath: process.execPath });
+  assert.equal(r.ok, true, `the fixture could not write a shim: ${r.reason} ${r.detail}`);
+  return { home, installDir, dir: r.dir, projectBin: join(modules, ".bin") };
+}
+
+test("the project's own link to this install is not a different clearotron", { skip: NO_SHIM_ON_WINDOWS }, () => {
+  const { home, installDir, dir, projectBin } = tarballHome();
+  const env = { HOME: home, PATH: [projectBin, ...NPM_PREFIX, dir, "/usr/bin"].join(delimiter) };
+  const form = invocationForm(env, { exists: existsSync }, installDir);
+  assert.equal(form.shadowedBy, null, `npm's link to this same install was reported as a different clearotron: ${form.shadowedBy}`);
+  assert.equal(form.form, "bare");
+});
+
+test("a project link to a different install still shadows the shim", { skip: NO_SHIM_ON_WINDOWS }, () => {
+  const { home, installDir, dir, projectBin } = tarballHome({ linkTo: "another-clearotron" });
+  const env = { HOME: home, PATH: [projectBin, ...NPM_PREFIX, dir, "/usr/bin"].join(delimiter) };
+  const form = invocationForm(env, { exists: existsSync }, installDir);
+  assert.equal(form.shadowedBy, join(projectBin, "clearotron"), "a link to another install ahead of the shim must still demote the bare name");
+  assert.equal(form.form, "shim-path");
 });

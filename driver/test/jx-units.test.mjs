@@ -249,7 +249,7 @@ test("jxPlanEntries: the existing plan seeds dedup + cap — NFC/NFD one key; co
   assert.ok(longR.accepted[0].rationale.length <= 300, "fixture/injected rationale never bloats the sidecar unbounded");
 });
 
-test("runJxCandidateFold: folds run-local, receipts + ledger written; resume never re-bills; env kill = no-op", async () => {
+test("runJxCandidateFold: folds run-local, receipts + ledger written; resume never re-bills; the retired lane switch is no kill", async () => {
   process.env.CLEAROTRON_JX_LANES = "1";
   try {
     const { ctx, runDir } = mkCtx();
@@ -274,22 +274,19 @@ test("runJxCandidateFold: folds run-local, receipts + ledger written; resume nev
     assert.match(r2.cause ?? "", /already folded/);
   } finally { delete process.env.CLEAROTRON_JX_LANES; }
 
-  // Lane kill: nothing folded, no spend, plan byte-identical. The leg that used to be tested here was
-  // CLEAROTRON_JX_LANES (retired 2026-07-27 — it gated shipped machinery and read as OFF wherever there was no
-  // engine environment). CLEAROTRON_NATIVE_LANGUAGE_ZH is the surviving kill, and it is fail-open, so it means the same
-  // thing everywhere.
+  // The per-language off switch is retired (2026-11-11), as CLEAROTRON_JX_LANES was before it: a box that
+  // still sets it folds the lane all the same.
   const { ctx: ctx2 } = mkCtx();
-  const before = JSON.stringify(ctx2.registerPlan);
   process.env.CLEAROTRON_NATIVE_LANGUAGE_ZH = "0";
   try {
-    const r3 = await runJxCandidateFold(ctx2, ctx2.job, { jxExecutor: async () => { throw new Error("must not run"); } }, { inScopeClasses: ["9"] });
-    assert.equal(r3.folded, 0);
-    assert.match(r3.cause, /no lanes in scope|frozen decision has no lanes/);
-    assert.equal(JSON.stringify(ctx2.registerPlan), before, "the register plan is never rewritten with the lane killed");
+    let calls2 = 0;
+    const r3 = await runJxCandidateFold(ctx2, ctx2.job, { jxExecutor: async () => { calls2++; return { ok: true, candidates: [{ term: "诺瓦脉冲", romanization: "NUO WA MAI CHONG", kind: "phonetic", rationale: "r" }], tookMs: 5, usage: { input: 1, output: 1 } }; } }, { inScopeClasses: ["9"] });
+    assert.equal(calls2, 1, "the retired switch still stopped the lane");
+    assert.equal(r3.folded, 1);
   } finally { delete process.env.CLEAROTRON_NATIVE_LANGUAGE_ZH; }
 });
 
-test("runJxCandidateFold: a degraded lane logs + receipts and the run continues (never-kill); CLEAROTRON_NATIVE_LANGUAGE_ZH=0 kills just zh", async () => {
+test("runJxCandidateFold: a degraded lane logs + receipts and the run continues (never-kill)", async () => {
   process.env.CLEAROTRON_JX_LANES = "1";
   try {
     const { ctx, runDir } = mkCtx();
@@ -301,13 +298,7 @@ test("runJxCandidateFold: a degraded lane logs + receipts and the run continues 
     assert.equal(sidecar.fold.lanes.zh.degraded, true);
     assert.match(sidecar.fold.lanes.zh.degradedCause, /no api key/, "the cause survives on its own field");
     assert.ok(!existsSync(ctx.paths.registerPlan), "a fully-degraded lane folds nothing — the run-dir plan is never rewritten");
-    process.env.CLEAROTRON_NATIVE_LANGUAGE_ZH = "0";
-    const { ctx: c2, runDir: rd2 } = mkCtx();
-    const r2 = await runJxCandidateFold(c2, c2.job, { jxExecutor: async () => { throw new Error("must not run"); } }, { inScopeClasses: ["9"] });
-    assert.equal(r2.folded, 0);
-    assert.match(r2.cause, /no lanes/);
-    void rd2;
-  } finally { delete process.env.CLEAROTRON_JX_LANES; delete process.env.CLEAROTRON_NATIVE_LANGUAGE_ZH; }
+  } finally { delete process.env.CLEAROTRON_JX_LANES; }
 });
 
 test("resolveJxExecutor: injected wins; fixtures dir serves canned candidates; missing fixture degrades loudly", async () => {

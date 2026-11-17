@@ -22,10 +22,12 @@ pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", envFrom(process.env, "CLEAROTRON_R
 import { test, after } from "node:test";
 import assert from "node:assert/strict";
 import { PRODUCT_IDS } from "../products.mjs";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync, chmodSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, appendFileSync, readFileSync, existsSync, rmSync, chmodSync } from "node:fs";
+import { createServer } from "node:http";
 import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
+import { driverSource } from "./driver-source.mjs";
 
 
 // EVERY temp directory this file makes is removed — including ones created inside helpers, and ones
@@ -1586,7 +1588,6 @@ test("built-but-off and can't-be-built read differently — the Knockout search 
   // "none") cannot answer it however the switches are set. The portal learns that from the snapshot's
   // `built`, not from its own import, because it has no engine environment to work it out from.
   const { service } = world({
-    readBuilt: () => BUILT_ALL,
     readBuilt: () => ({ knockout: true, jxLanes: true, registerProbe: false }),
   });
   const res = await service.route("GET", "/portal/api/searches", CLIENT, {}, {});
@@ -2362,6 +2363,38 @@ test("mcp-access: NO LOG TO READ answers null, not false", async () => {
   }
 });
 
+test("mcp-access: the connector's door and its log are read once a minute, not once a request", async () => {
+  // Three screens call this route as they load. Both readings are cached for a minute, and the caches
+  // belong to the service: declared inside the request handler, each request started with an empty one,
+  // asked the door again (up to two seconds when it is slow) and read the log's tail again.
+  let doorHits = 0;
+  const door = createServer((req, res) => { doorHits++; res.writeHead(404); res.end(); });
+  await new Promise((done) => door.listen(0, "127.0.0.1", done));
+  const saved = process.env.TRADEMARK_MCP_AUDIT_LOG;
+  process.env.CLEAROTRON_CLIENT_MCP_URL = `http://127.0.0.1:${door.address().port}/mcp`;
+  const log = seedConnectorLog([{ ts: "2026-09-14T09:00:00Z", email: MULTI_CLIENT.email, method: "initialize" }]);
+  try {
+    const { service } = world();
+    const first = await service.route("GET", "/portal/api/mcp-access", CLIENT, {}, {});
+    assert.equal(first.json.aiConnected, false);
+    assert.equal(doorHits, 1, "the first load asks the door");
+    // The reader connects; within the minute the service answers from what it read.
+    appendFileSync(log, JSON.stringify({ ts: "2026-09-14T09:01:00Z", email: CLIENT.email, method: "initialize" }) + "\n");
+    const second = await service.route("GET", "/portal/api/mcp-access", CLIENT, {}, {});
+    assert.equal(doorHits, 1, "the second load asked the door again inside the minute");
+    assert.equal(second.json.aiConnected, false, "the second load read the log again inside the minute");
+    // Another service keeps its own caches: it asks the door and reads the log for itself.
+    const { service: other } = world();
+    const fresh = await other.route("GET", "/portal/api/mcp-access", CLIENT, {}, {});
+    assert.equal(doorHits, 2, "a second service answered from the first one's cache");
+    assert.equal(fresh.json.aiConnected, true);
+  } finally {
+    await new Promise((done) => door.close(done));
+    delete process.env.CLEAROTRON_CLIENT_MCP_URL;
+    if (saved === undefined) delete process.env.TRADEMARK_MCP_AUDIT_LOG; else process.env.TRADEMARK_MCP_AUDIT_LOG = saved;
+  }
+});
+
 test("mcp-access: THE LOCAL ROUTE'S RECORD ANSWERS ONLY WHERE THERE IS NO HOSTED DOOR", async () => {
   // A local record names nobody — that transport has no signed-in identity and none is invented. On a
   // laptop install the reader IS the operator, which is the same split the stdio offer already trusts,
@@ -2672,6 +2705,30 @@ test("/portal/api/me in a demo keeps New clearance's Review button on a machine 
   assert.equal(live.engineMode, "demo", "an install with no engine program no longer says so");
 });
 
+test("a demo order placed under Generic opens the finished example of that search, from what the visitor may open", async () => {
+  const w = world({ demo: true });
+  mkdirSync(join(w.poolRoot, "demo-multi"), { recursive: true });
+  writeFileSync(join(w.poolRoot, "demo-multi", "meta.json"), JSON.stringify({
+    runId: "demo-multi", customerKey: "demo-brand-owner", title: "VENQORI", kind: "clearance", overall: "LOW",
+    date: "2026-08-11", searchLevel: "multi-country-focus-search", clientGate: { released: true } }));
+  writeFileSync(join(w.poolRoot, "demo-multi", "report.html"), "<title>VENQORI</title>ok");
+  const body = { marks: [{ name: "IRONWHISK" }], classes: [8], goods: "kitchen tools",
+    product: "multi-country-focus-search", jurisdictions: ["European Union", "United States"], forwarder: "f", forwarderEmail: "f@example.test", account: "generic" };
+  const plan = await w.service.route("POST", "/portal/api/run/plan", STAFF, body, {});
+  assert.equal(plan.status, 200, JSON.stringify(plan.json));
+  const run = await w.service.route("POST", "/portal/api/run", STAFF, { ...body, confirmationToken: plan.json.confirmationToken }, {});
+  assert.equal(run.status, 200, JSON.stringify(run.json));
+  assert.equal(run.json.landedOn, "demo-multi");
+  assert.deepEqual(w.triggers, [], "a demo order reached the trigger seam");
+
+  // THE PRODUCT STILL DECIDES: a search the demo has no example of is refused, not answered with another search's report.
+  const none = { ...body, product: "full-country-search", jurisdictions: ["United States"] };
+  const plan2 = await w.service.route("POST", "/portal/api/run/plan", STAFF, none, {});
+  assert.equal(plan2.status, 200, JSON.stringify(plan2.json));
+  const refused = await w.service.route("POST", "/portal/api/run", STAFF, { ...none, confirmationToken: plan2.json.confirmationToken }, {});
+  assert.equal(refused.status, 409, JSON.stringify(refused.json));
+});
+
 test("/portal/api/me names the release channel this install came from, so a beta's setup command fetches the beta", async () => {
   // The no-engine notice named `npx clearotron install` on every install, and on a beta that fetches the
   // stable, whose setup then moves itself into ~/.local over the beta. The screen picks the command by this
@@ -2683,16 +2740,24 @@ test("/portal/api/me names the release channel this install came from, so a beta
   assert.ok(["beta", "latest"].includes(me.channel), `the channel is a word no screen knows: ${JSON.stringify(me.channel)}`);
 });
 
-test("the brief reader's off line sends the operator to the doctor on this install's channel", async () => {
-  // `npx clearotron doctor` fetches the stable, which on a beta reads the beta's install with the other code.
-  const { channelPackage } = await import("../../shared/permanent-install.mjs");
+test("the brief reader's off line sends the operator to the doctor this install is reached by", async () => {
+  // `npx clearotron doctor` fetches the stable, which on a beta reads the beta's install with the other code. A
+  // channel's package through npx was then named to a global install too, which has its own `clearotron` on PATH.
+  const { reachableCommand } = await import("../../shared/invocation.mjs");
   const { briefReadingOffLine } = await import("../portal-service.mjs");
-  assert.equal(briefReadingOffLine("no AI is chosen", "clearotron@beta"),
-    "brief reading OFF — no AI is chosen. Describe-it stays disabled; `npx clearotron@beta doctor` reports the engine's auth state.");
-  // THE CONTROL: on the stable the line is the one that shipped.
-  assert.equal(briefReadingOffLine("no AI is chosen", "clearotron"),
-    "brief reading OFF — no AI is chosen. Describe-it stays disabled; `npx clearotron doctor` reports the engine's auth state.");
-  assert.ok(briefReadingOffLine("x").includes(`\`npx ${channelPackage()} doctor\``), "the line names a package other than this install's");
+  assert.equal(briefReadingOffLine("no AI is chosen", "clearotron doctor"),
+    "brief reading OFF — no AI is chosen. Describe-it stays disabled; `clearotron doctor` reports the engine's auth state.");
+  assert.equal(briefReadingOffLine("no AI is chosen", "npx clearotron@0.6.0-beta.0 doctor"),
+    "brief reading OFF — no AI is chosen. Describe-it stays disabled; `npx clearotron@0.6.0-beta.0 doctor` reports the engine's auth state.");
+  assert.ok(briefReadingOffLine("x").includes(`\`${reachableCommand("doctor")}\``), "the line names a command other than the one doctor prints");
+  // THE CASE THE WALK MET: the supervisor was started through the `clearotron` on PATH and hands that down.
+  const was = process.env.CLEAROTRON_INVOKED_AS;
+  process.env.CLEAROTRON_INVOKED_AS = join(tmpdir(), "home", ".local", "bin", "clearotron");
+  try {
+    assert.equal(briefReadingOffLine("no AI is chosen"),
+      "brief reading OFF — no AI is chosen. Describe-it stays disabled; `clearotron doctor` reports the engine's auth state.",
+      "an install started through its own `clearotron` was sent somewhere else");
+  } finally { if (was === undefined) delete process.env.CLEAROTRON_INVOKED_AS; else process.env.CLEAROTRON_INVOKED_AS = was; }
 });
 
 test("an unreadable profile store costs a name, never the door", async () => {
@@ -3006,7 +3071,7 @@ test("the startup banner NAMES the audit log, in the place an operator actually 
   // The journal is what somebody tails when a client reports a failed save. It carried auth mode, the
   // ops-token posture, the saved-search store and the listen line — and no mention of the file holding
   // every admin write. Two investigations then spent themselves on an absence that was never a signal.
-  const src = readFileSync(new URL("../portal-service.mjs", import.meta.url), "utf8");
+  const src = driverSource("portal-service.mjs");
   assert.match(src, /log\(`audit log: \$\{auditPath\}/,
     "the banner stopped naming the audit log — the journal goes back to looking empty on a box that is recording everything");
   assert.match(src, /PORTAL_AUDIT overrides/, "…including how to point it somewhere else");

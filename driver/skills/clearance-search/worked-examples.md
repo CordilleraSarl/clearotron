@@ -2,7 +2,7 @@
   The depth target for per-finding reasoning and the executive summary. Reproduce this depth,
   structure and practical-risk reasoning; do not fill in a template. The band vocabulary these
   examples calibrate under is stated in risk-framework.md, and the reasoning discipline in
-  synthesis-rules.md.
+  firm-wide-reasoning.md.
 -->
 
 # Clearotron synthesis — gold-standard worked examples
@@ -44,7 +44,7 @@ Notice across all three:
   investigations would be needed"*: **reproduce the judgment, not that grammar.** In prose the same point is
   *"the Irish position turns on local examination practice this run could not reach"*; the ask itself is
   typed into the `actions` register, which code renders.
-- Risk labels: the **band word of the framework in force** — for these examples the house default deck ([`risk-framework.md`](risk-framework.md)): **Very High / High / Moderate / Manageable**, each set by the deck's likelihood-of-winning Legal position (prior owner very likely to win, no credible defences → Very High; likely to win, some credible defences but success not expected → High; likely to win, reasonable defences available → Moderate; prior rights owner likely to lose, good defences → Manageable — note that High and Moderate now share one legal sentence and are separated by defence strength and commercial overlap). A conflict the company clearly wins with no material risk is **not a rated conflict** and carries no band word. A short plain-words practical descriptor may follow the band in parentheses; numerals and letter codes never appear. The firm-wide reasoning discipline lives in [`synthesis-rules.md`](synthesis-rules.md).
+- Risk labels: the **band word of the framework in force** — for these examples the house default deck ([`risk-framework.md`](risk-framework.md)): **Very High / High / Moderate / Manageable**, each set by the deck's likelihood-of-winning Legal position (prior owner very likely to win, no credible defences → Very High; likely to win, some credible defences but success not expected → High; likely to win, reasonable defences available → Moderate; prior rights owner likely to lose, good defences → Manageable — note that High and Moderate now share one legal sentence and are separated by defence strength and commercial overlap). A conflict the company clearly wins with no material risk is **not a rated conflict** and carries no band word. A short plain-words practical descriptor may follow the band in parentheses; numerals and letter codes never appear. The firm-wide reasoning discipline lives in [`firm-wide-reasoning.md`](firm-wide-reasoning.md).
 
 ### Two calibration moves at the Manageable ↔ Moderate line (read as the move, not a rule)
 
@@ -57,11 +57,11 @@ Both are the same principle from opposite sides: **rate our use meeting their us
 
 ### Delivery prose & the table formula (spec 09)
 
-How findings are *written* on the client surfaces (the email table + the HTML report) — not how they're scored:
+How findings are written on the report (not how they are scored):
 
-1. Cut dead weight and throat-clearing; one idea per sentence; 3+ parallel items become a real list, never an inline `(a)…(b)…(c)` run. **Word budgets: ~20–25 words a sentence, ~80 a paragraph** — where code folds at a hard cap (3-sentence caption, 2-sentence read), that cap is the fold point, never the target.
+1. Cut dead weight and throat-clearing; one idea per sentence; 3+ parallel items become a real list, never an inline `(a)…(b)…(c)` run. **Word budgets: ~20–25 words a sentence, ~80 a paragraph** — the one hard cap is the 3-sentence caption; it is a limit, not a target.
 2. Verdict-first — lead with the line the reader can act on; numbers over superlatives; no intensifiers, no GPT-isms. **No disclaimers at all** (ruled): a real limit on the answer is a *fact*, stated once where it belongs, in consequence terms — not a caveat about the document.
-3. **The client-table bullet formula:** `<Band word> (+ optional short practical descriptor) → [one-line owner epithet] [Owner] owns [right] in [jurisdiction(s)] for [MARK] covering [paraphrased most-problematic overlap]. [practical chain → verdict].` (The band word is the framework in force's own vocabulary — here the house default's **Very High / High / Moderate / Manageable** — a plain word, never a numeral or letter code; an unrated clear win carries no band word at all.) Owner-first epithet does the relevance work; paraphrase G&S, never quote a spec; no second person / imperatives. **Depth-on-click, not length-on-screen:** every finding stays skimmable — the highest-risk one is the *clearest*, never the densest; heavier detail belongs in the drilldown, not a longer always-visible block.
+3. Each finding's sentence follows *The finding sentence* in synthesis-rules.md.
 4. **One reader, one posture — the hedge is the house register, not a table exception.** There is one report and one reader (the reviewing lawyer), so there is one voice: the calibrated register of an advisory preliminary assessment ("appears to be", "could likely be reduced in scope", "cannot be excluded"). It **survives everywhere** — no surface strips it to bald assertion, and no surface hedges *more* than another. (This item used to read "hedge exception (table only)", which made the cover note hedge harder than the report it covered; that was the two-audience premise, and it is retired.) The hedge is calibration and **never** a substitute for a fact the run holds: where the run has the record, state the record.
 5. **No prescriptions** (ruled 2026-07-30). Prose states the position, never the remedy — no "we recommend / advise / suggest", no "you should", no "the practical path is". Every forward step a human must take is a typed action in the `actions` register, which code renders.
 6. **Each fact once, at its rank.** A finding is written in its own row; the summary names the decisive one and no other; a later section cross-references by ordinal ("the three US class-32 rights — findings 1, 4 and 7") rather than retelling. The section spine already holds each fact once — use it.

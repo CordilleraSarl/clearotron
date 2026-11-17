@@ -217,12 +217,12 @@ test("a deployment that sets no socket is told it has no key path, rather than l
     CLEAROTRON_ACCESS_FILE: "/tmp/does-not-need-to-exist.json",
     TRADEMARK_MCP_KEY_SOCKET: "",
     CF_ACCESS_TEAM: "", CLEAROTRON_OIDC_AUDIENCE: "",
-  }, /key path: none configured/);
+  }, /key path: none \(/);
   try {
     assert.ok(r.matched, `the absent case must be a line too; stderr:\n${r.stderr}`);
     // Silence here would leave "this deployment has no key path" and "this build lacks the feature"
     // looking identical, which is the confusion the issue is about.
-    assert.match(r.stderr, /has no door on this process/);
+    assert.match(r.stderr, /so a program on this machine cannot use an access key here; the client door accepts them/);
   } finally { try { r.child?.kill(); } catch { /* gone */ } }
 });
 

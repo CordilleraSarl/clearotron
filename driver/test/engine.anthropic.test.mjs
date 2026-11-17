@@ -162,9 +162,7 @@ test("thinking → effort remap", () => {
 
 // A corruption found in review — `off` mapped to `low` here and `minimal` on codex, so at the bottom of the ladder
 // the two engines were a whole rung apart and a cross-engine effort comparison at `off` was off by one.
-// This is the drift test that keeps them one table: the same duplicate-plus-pin discipline
-// engine.common.test.mjs uses for WRITE_DISCIPLINE, because anthropic-agent.mjs deliberately imports
-// nothing but node built-ins and cannot share a leaf module.
+// This is the drift test that keeps them one table.
 test("`off` means ONE thing across both engines, and the tables may differ only at `max`", () => {
   for (const tier of CROSS_ENGINE_EFFORT_TIERS)
     assert.equal(EFFORT_TABLE[tier], CODEX_EFFORT_TABLE[tier],

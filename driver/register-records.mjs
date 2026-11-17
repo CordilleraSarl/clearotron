@@ -13,11 +13,11 @@
 // 3. NO JUDGMENT IS ADDED by code. The fields are what the register said: mark, owner, status, classes, territory, and
 //    the record's own address.
 
-import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { recordOriginsFor } from "./record-origins.mjs";           // — provider-derived, never CLEAROTRON_DATABASE
 import { recordGoods, rowGoods, untaggedIsEnglish } from "./record-goods.mjs";
+import { readJson } from "./run-record.mjs";
 
 /**
  * Was this listing made by the reading step? Its sentences say what that step did. A listing written before it keeps the
@@ -320,7 +320,7 @@ export function fixtureLister(dir) {
   return async (term, question = {}) => {
     const file = join(dir, fixtureFileName(term, question));
     let doc;
-    try { doc = JSON.parse(readFileSync(file, "utf8")); }
+    try { doc = readJson(file); }
     catch (e) { return { ok: false, records: null, reason: `record fixture missing for ${term}: ${e.message}` }; }
     if (!Array.isArray(doc?.records)) return { ok: false, records: null, reason: `record fixture for ${term} carries no records[]` };
     return { ok: true, records: doc.records, total: Number.isFinite(doc.total) ? doc.total : doc.records.length };

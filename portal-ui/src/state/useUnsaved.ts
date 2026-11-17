@@ -37,13 +37,20 @@ export function useUnsaved(dirty: boolean): void {
  * @param current    the draft as it stands, serialised
  * @param empty      a pristine draft, serialised — a fresh composer has no baseline but this
  * @param saved      what was last written down, serialised, or null if nothing has been
+ * AND A FORM THE SCREEN FILLED ITSELF IS STILL UNTOUCHED. The composer preselects the search that fits
+ * the company's own places on a form nobody has typed in, and that write made the draft differ from
+ * empty: leaving a New clearance the reader had not touched asked "Leave this page?". `untouched` is the
+ * draft as the screen left it before the reader did anything, and matching it is as clean as empty.
+ *
  * @param submitted  true once the search has been sent; there is nothing left to lose after that
+ * @param untouched  the draft as the screen itself filled it, before the reader did anything, or null
  */
 export function unsavedChanges(
-  { current, empty, saved, submitted }:
-  { readonly current: string; readonly empty: string; readonly saved: string | null; readonly submitted: boolean },
+  { current, empty, saved, submitted, untouched = null }:
+  { readonly current: string; readonly empty: string; readonly saved: string | null; readonly submitted: boolean;
+    readonly untouched?: string | null },
 ): boolean {
   if (submitted) return false
-  if (current === empty) return false
+  if (current === empty || current === untouched) return false
   return current !== saved
 }

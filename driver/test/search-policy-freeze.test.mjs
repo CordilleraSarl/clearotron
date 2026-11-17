@@ -56,22 +56,23 @@ test("a corrupt sidecar fails LOUD — the frozen policy is never silently re-de
   assert.throws(() => attachSearchPolicy(ctxFor(d), {}, { write: false }), /corrupt/);
 });
 
-test("legacy resume (no sidecar, read-only) is an implicit clearance and mints NOTHING — but only for selector-less jobs", () => {
-  const d = runDir();
-  const ctx = ctxFor(d);
-  attachSearchPolicy(ctx, {}, { write: false });
-  // THE LEGACY SHAPE KEEPS ITS OWN NAME. A run dir with no frozen sidecar predates the offering, and
-  // naming it as a product this build sells would claim it was one. `clearance` is a RETIRED row, still
-  // nameable, which is exactly what a run from before the offering needs.
-  assert.equal(ctx.searchPolicy.level, "clearance");
-  assert.equal(ctx.searchPolicy.origins.level, "legacy-implicit");
-  assert.ok(!existsSync(driverDir(d, "search-policy.json")), "read-only never retro-mints");
-  // A SELECTOR-CARRYING JOB MUST NOT BE ASSUMED INTO A CLEARANCE. The guard read the DELETED
-  // `job.searchLevel`, so it was true for every job and the product arm was unreachable — a job that
-  // spelled out `product: "full-country-search"` was assumed into a retired `clearance`. It reads the two
-  // selectors that exist now, and BOTH arms refuse.
-  assert.throws(() => attachSearchPolicy(ctxFor(runDir()), { product: "global-preliminary-search" }, { write: false }), /refusing the legacy-implicit/);
-  assert.throws(() => attachSearchPolicy(ctxFor(runDir()), { recipeKey: "quick" }, { write: false }), /refusing the legacy-implicit/);
+test("a read with no frozen product names none: no retired clearance is assumed, and nothing is minted", () => {
+  // A run froze its product before its first stage, and a run from an earlier build is no longer resumed, so a read
+  // that finds no product has nothing to describe. This read used to assume a retired clearance for a job that named no
+  // selector, and a resumed run was delivered under that name. A resume now finishes the opening first
+  // (steps/open-run.mjs); a reader that may not freeze one refuses, whatever the job names.
+  const none = runDir(), noneCtx = ctxFor(none);
+  assert.throws(() => attachSearchPolicy(noneCtx, {}, { write: false }), /search-policy\.json is absent/, "a job naming no product");
+  assert.equal(noneCtx.searchPolicy, undefined, "no retired clearance is assumed");
+  assert.ok(!existsSync(driverDir(none, "search-policy.json")), "a read-only reader never mints");
+  const named = runDir(), namedCtx = ctxFor(named);
+  assert.throws(() => attachSearchPolicy(namedCtx, { product: "global-preliminary-search" }, { write: false }), /search-policy\.json is absent/, "a job naming its product");
+  assert.equal(namedCtx.searchPolicy, undefined);
+  assert.ok(!existsSync(driverDir(named, "search-policy.json")));
+  const saved = runDir(), savedCtx = ctxFor(saved);
+  assert.throws(() => attachSearchPolicy(savedCtx, { recipeKey: "quick" }, { write: false }), /search-policy\.json is absent/, "a job naming a saved search");
+  assert.equal(savedCtx.searchPolicy, undefined);
+  assert.ok(!existsSync(driverDir(saved, "search-policy.json")));
 });
 
 test("attribution is SANITIZED at freeze: malformed parentRunId/enqueuedVia drop to null; portal route refuses", () => {

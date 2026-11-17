@@ -1202,6 +1202,22 @@ const ownerless = (await evalIn(`(async () => {
 ownerless.asked = gets.slice(ownerlessFrom)
   .filter((g) => /^\/portal\/api\/(?:searches|usage|config\/profile|config\/projects|config\/searches)(?:\?|$)/.test(g))
   .filter((g) => !/[?&]account=/.test(g))
+// AND A CLIENT WHO HOLDS TWO COMPANIES, not every one. Their access is a list, and the picker is theirs too:
+// the same reads, asked with no company named, would be refused the same way.
+meEngine = { accounts: ['coastline', 'harbourline'], accountNames: { coastline: 'Coastline', harbourline: 'Harbourline' },
+  permissions: { run: true, manage: false } }
+const clientFrom = gets.length
+await evalIn(`location.href = ${JSON.stringify(`http://127.0.0.1:${port}/portal/new`)}; 'go'`)
+await new Promise((r) => setTimeout(r, 1200))
+const twoCompanies = (await evalIn(`(async () => {
+  const t0 = Date.now();
+  while (Date.now() - t0 < 8000 && !/Pick a company to run this clearance on/.test(document.body.innerText)) await new Promise((r) => setTimeout(r, 60));
+  await new Promise((r) => setTimeout(r, 600));
+  return { choose: /Pick a company to run this clearance on|COMPANY\\s+Choose a company/.test(document.body.innerText) };
+})()`)).result?.result?.value ?? { fatal: 'evaluate returned nothing' }
+twoCompanies.asked = gets.slice(clientFrom)
+  .filter((g) => /^\/portal\/api\/(?:searches|usage|config\/profile|config\/projects|config\/searches)(?:\?|$)/.test(g))
+  .filter((g) => !/[?&]account=/.test(g))
 meEngine = {}
 rosterNow = null
 
@@ -1370,6 +1386,35 @@ const footerAgrees = (await evalIn(`(async () => {
 profileTerritories = []
 registerReach = undefined
 registerLabelNow = null
+
+// ── an untouched form over a company's own places has nothing to lose ─────────────────────────────────
+// The composer preselects the search that fits the company's places before anything is typed, and the unsaved
+// guard counted that write as the reader's: leaving an untouched New clearance asked "Leave this page?". The
+// page's own confirm is counted and answered "stay", so the control below runs on the same page.
+profileTerritories = ['EU', 'US', 'UK']
+const LEAVE_HELPERS = `
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const settle = async (pred, ms) => { const t0 = Date.now(); while (Date.now() - t0 < ms) { if (pred()) return true; await sleep(60); } return false; };
+  const asked = [];
+  window.confirm = (m) => { asked.push(String(m).split('\\n')[0]); return false; };
+  const away = () => [...document.querySelectorAll('a, button')].find((e) => /^Clearances$/.test((e.innerText || e.textContent || '').trim()));
+  // THE FLOOR: the screen did preselect a search, so the form is in the state this pass exists to measure.
+  if (!await settle(() => Boolean(document.querySelector('.pick-row-on')) && away(), 8000)) return { fatal: 'nothing was preselected, or there is no way away' };`
+const leaveFrom = async (typed) => {
+  await evalIn(`location.href = ${JSON.stringify(`http://127.0.0.1:${port}/portal/new`)}; 'go'`)
+  await new Promise((r) => setTimeout(r, 1400))
+  return (await evalIn(`(async () => { ${LEAVE_HELPERS}
+    ${typed ? `const box = document.querySelector('textarea[aria-label="Names to clear"]');
+    Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set.call(box, 'BRAVOLINE');
+    box.dispatchEvent(new Event('input', { bubbles: true }));
+    await sleep(300);` : ''}
+    away().click();
+    await sleep(500);
+    return { asked, at: location.pathname };
+  })()`)).result?.result?.value ?? { fatal: 'evaluate returned nothing' }
+}
+const leaving = { untouched: await leaveFrom(false), typed: await leaveFrom(true) }
+profileTerritories = []
 
 // ── a demo order lands on its report ────────────────────────────────────────────────────────────────
 // The order route answers a demo with the finished run it resolved to, and the composer opens it. It used
@@ -1774,6 +1819,16 @@ ok(!savedCodes.fatal && savedCodes.reason === 'because the company searches a re
 ok(!ownerless.fatal && ownerless.gate, `the composer did not draw the company picker for a reader with no company picked — ${JSON.stringify(ownerless)}`)
 ok(!ownerless.fatal && ownerless.asked.length === 0,
   `the composer sent company reads with no company named, each one a 400 from the real portal: ${JSON.stringify(ownerless.asked)}`)
+// AN UNTOUCHED FORM ASKS NOTHING ON THE WAY OUT, though the screen preselected a search over the company's
+// places; a name typed over it still asks. Without the control, a guard switched off would pass.
+ok(!leaving.untouched.fatal && leaving.untouched.asked?.length === 0 && leaving.untouched.at === '/portal/clearances',
+  `leaving an untouched New clearance asked, or did not leave — ${JSON.stringify(leaving.untouched)}`)
+ok(!leaving.typed.fatal && JSON.stringify(leaving.typed.asked) === '["Leave this page?"]' && leaving.typed.at === '/portal/new',
+  `leaving with a name typed did not ask "Leave this page?", or left anyway when told to stay — ${JSON.stringify(leaving.typed)}`)
+// AND A CLIENT HOLDING TWO COMPANIES, with neither picked, is asked to choose and asks the server nothing.
+ok(!twoCompanies.fatal && twoCompanies.choose, `the composer did not ask a client holding two companies to choose one — ${JSON.stringify(twoCompanies)}`)
+ok(!twoCompanies.fatal && twoCompanies.asked.length === 0,
+  `the composer sent company reads with no company named for a client holding two, each one a 400 from the real portal: ${JSON.stringify(twoCompanies.asked)}`)
 // A DEMO ORDER OPENS ITS REPORT, AND ASKS NOTHING ON THE WAY.
 ok(!landing.fatal && landing.landed === '/portal/result/demo-multi',
   `a demo order did not open the run it landed on — ${JSON.stringify(landing)}`)

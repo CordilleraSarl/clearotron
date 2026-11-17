@@ -157,6 +157,11 @@ export const TOOL_ORDER_BACKLOG = [
       + "spine's digest doctrine moves wholly into digest.md, or #865 scopes shared-spine text per seat — "
       + "and NOT by granting it: the funnel must never hold a writer into judgment's findings document, "
       + "which is the same rule that keeps record_coverage off its grant." },
+  { stage: "register-digest", tool: "record_unit_note", site: "driver/skills/clearance-register/SKILL.md",
+    closes: "the mirror of record_register_digest above: the spine's **Unit mode** bullet says the driver renders "
+      + "the unit's note from its `record_unit_note` call, in wording approved on 2026-11-11. register-digest reads "
+      + "the spine and is dispatched as JUDGMENT, which that bullet does not address. It resolves on the same "
+      + "condition as the rows above, and NOT by granting it: the judgment seat never writes a unit's note." },
   { stage: "skeptic", tool: "perplexity_research", site: "driver/skills/clearance-search/phase2-execution.md",
     closes: "#865 — skeptic holds NO retrieval tool ('new search work enters via the escalation lane, never "
       + "from this seat' — it converted to the RECORDING category, gaining record_skeptic plus the "

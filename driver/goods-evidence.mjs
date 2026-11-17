@@ -34,10 +34,10 @@
 // PURE except `heldRecordProvenance` and `readRunCallRows`, which read the run's files.
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import { normalizeRecordUri, readRecordArtifacts, forEachLedgerLine, recordBodyHasContent } from "./registry-fidelity.mjs";
+import { normalizeRecordUri, readRecordArtifacts, forEachLedgerLine, recordBodyHasContent, lineMayMatchRun } from "./registry-fidelity.mjs";
 import { recordGoodsProvenance } from "./record-goods.mjs";
-import { driverDir } from "../shared/driver-dir.mjs";
 import { runPrefixSpellings } from "../shared/pre-rename-spellings.mjs";
+import { driverDir, paths, readJson } from "./run-record.mjs";
 
 export const GOODS_EVIDENCE_SCHEMA_VERSION = 1;
 export const GOODS_EVIDENCE_FILE = "goods-evidence.json";
@@ -71,7 +71,7 @@ export function heldRecordProvenance(runDir) {
       session: facts.session ?? prev?.session ?? null, ts: facts.ts ?? prev?.ts ?? null, goods: recordGoodsProvenance(body) });
   };
   let text = "";
-  try { text = readFileSync(driverDir(runDir, "register-record-bodies.jsonl"), "utf8"); } catch { text = ""; }
+  try { text = readFileSync(paths(runDir).registerRecordBodies, "utf8"); } catch { text = ""; }
   for (const line of text.split("\n")) {
     if (!line.trim()) continue;
     let row; try { row = JSON.parse(line); } catch { continue; }
@@ -98,7 +98,7 @@ export function heldBodiesOf(runDir, uris) {
   if (!want.size) return out;
   // A ledger row is written with its `target` before its `body` (providers/_shared/ledger.mjs), so the first target
   // on a line is the row's own, and only the rows of the records asked about are parsed.
-  forEachLedgerLine(driverDir(runDir, "register-record-bodies.jsonl"), (line) => {
+  forEachLedgerLine(paths(runDir).registerRecordBodies, (line) => {
     const t = /"target":("(?:[^"\\]|\\.)*")/.exec(line);
     let target = null;
     try { target = t ? JSON.parse(t[1]) : null; } catch { target = null; }
@@ -112,7 +112,7 @@ export function heldBodiesOf(runDir, uris) {
   for (const uri of want) {
     const name = names.get(`${uri.replace(/^\/mark\//, "").replace(/[^a-z0-9]+/gi, "-")}.json`.toLowerCase());
     if (!name) continue;
-    let body; try { body = JSON.parse(readFileSync(join(runDir, "_records", name), "utf8")); } catch { continue; }
+    let body; try { body = readJson(join(runDir, "_records", name)); } catch { continue; }
     if (!body || typeof body !== "object" || Array.isArray(body)) continue;
     const { _uri, _receipt, ...rest } = body;
     if ((_uri == null || uriKey(_uri) === uri) && recordBodyHasContent(rest)) out.set(uri, rest);
@@ -129,7 +129,11 @@ const inRun = (row, runPrefix) => !runPrefix || runPrefixSpellings(runPrefix).so
 /** This run's rows of the register call ledger. A missing file is no rows; one that cannot be read says so. IMPURE. */
 export function readRunCallRows(callLogPath, runPrefix) {
   const rows = [];
+  // The call log is shared by every run on the machine: a line naming none of this run's prefix spellings is
+  // skipped before it is parsed. With no prefix every row is the run's, so every line is read.
+  const mayMatch = runPrefix ? lineMayMatchRun(runPrefix) : () => true;
   const read = forEachLedgerLine(callLogPath, (line) => {
+    if (!mayMatch(line)) return;
     let row; try { row = JSON.parse(line); } catch { return; }
     if (inRun(row, runPrefix)) rows.push(row);
   });
@@ -271,7 +275,7 @@ export function deriveGoodsEvidence({ records = [], goods = null, held = null, f
 const readDriverJson = (runDir, name) => {
   const p = driverDir(runDir, name);
   if (!existsSync(p)) return null;
-  try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; }
+  try { return readJson(p); } catch { return null; }
 };
 
 /** The record the run wrote, or null when there is none or it will not parse. IMPURE. */

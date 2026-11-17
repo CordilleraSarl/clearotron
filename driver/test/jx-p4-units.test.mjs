@@ -277,14 +277,16 @@ test("a unit that COMPLETED states degraded=false — done and healthy are separ
   });
 });
 
-test("serp grid: gates — lane killed / no lane decision each skip with zero artifacts", async () => {
-  // item 8 deleted the unit's own CLEAROTRON_JX_SERP_GRID arm, so the first leg is gone with it. The
-  // legs that remain are the ones a run DISCLOSES: the per-lane CLEAROTRON_NATIVE_LANGUAGE_<code> kill (fail-open, and
-  // the one switch item 8 keeps because an incident kill is not a dark switch) and the frozen lane
-  // decision. Both still refuse with a cause, which is what reaches the slice statement.
+test("serp grid: gates — no lane decision skips with zero artifacts, and the retired lane switch is no gate", async () => {
+  // item 8 deleted the unit's own CLEAROTRON_JX_SERP_GRID arm, and the per-language off switch is retired
+  // too (2026-11-11). The leg that remains is the one a run DISCLOSES: the frozen lane decision, which
+  // still refuses with a cause that reaches the slice statement.
   const ctx = mkCtx();
   await withEnv({ CLEAROTRON_NATIVE_LANGUAGE_ZH: "0" }, async () => {
-    assert.match((await units.runJxSerpGrid(ctx, ctx.job, {}, {})).cause, /CLEAROTRON_NATIVE_LANGUAGE_ZH off/);
+    const noLane = { ...ctx, jxLanes: { lanes: {} } };
+    const r = await units.runJxSerpGrid(noLane, ctx.job, {}, {});
+    assert.doesNotMatch(String(r.cause), /CLEAROTRON_NATIVE_LANGUAGE/, "the retired switch still gates the grid");
+    assert.match(r.cause, /no frozen zh lane/);
   });
   await withEnv({}, async () => {
     const noLane = { ...ctx, jxLanes: { lanes: {} } };
@@ -477,6 +479,17 @@ test("nativeread payload caps the grid section with a receipted drop count; grou
   assert.ok(uris.has("https://item.taobao.com/item/79"), "an omitted row's url still grounds — it WAS fetched");
 });
 
+test("nativeread payload keeps use and listing rows past the cap ahead of the rest, and the cap and the grid's order within a class stand", () => {
+  const row = (classification, i) => ({ classification, title: `${classification}-${i}`, url: `https://item.taobao.com/item/${classification}/${i}`, term: "诺瓦", platform: "taobao.com" });
+  const many = [...Array.from({ length: 70 }, (_, i) => row("unrelated", i)), row("listing-candidate", 0), row("unjudged", 0), row("use-evidence", 0), row("use-evidence", 1), row("news-editorial", 0)];
+  const { payload, uris, gridRowsDropped } = units.buildNativereadPayload({ registerSliceText: "", candidates: [], cnipaSubgroups: [], gridFindings: many });
+  const titles = [...payload.matchAll(/^- \[[^\]]+\] "([^"]+)"/gm)].map((m) => m[1]);
+  assert.deepEqual(titles.slice(0, 5), ["use-evidence-0", "use-evidence-1", "listing-candidate-0", "unjudged-0", "unrelated-0"]);
+  assert.equal(titles.length, units.NATIVEREAD_GRID_ROWS_CAP, "the cap moved");
+  assert.equal(gridRowsDropped, many.length - units.NATIVEREAD_GRID_ROWS_CAP);
+  assert.ok(uris.has("https://item.taobao.com/item/news-editorial/0"), "a row past the cap still grounds");
+});
+
 test("nativeread DEFERS while an armed serp grid is retryable-degraded; proceeds when the grid never wrote a record (structural skip)", async () => {
   await withEnv({ CLEAROTRON_JX_LANES: "1", CLEAROTRON_JX_NATIVEREAD: "1", CLEAROTRON_JX_SERP_GRID: "1" }, async () => {
     const ctx = mkCtx();
@@ -495,16 +508,14 @@ test("nativeread DEFERS while an armed serp grid is retryable-degraded; proceeds
   });
 });
 
-test("consume seam still honours the lane kill — an incident kill silences a STALE artifact", async () => {
-  // The reason this test exists survives the retirement of CLEAROTRON_JX_LANES: killing the lane must also
-  // stop an artifact written by an EARLIER run from reaching synthesis, not merely stop the next run.
-  // CLEAROTRON_NATIVE_LANGUAGE_ZH carries that now, and it is the better lever anyway — it is fail-open (`?? "1"`), so it
-  // means the same thing in a process with no environment, which the retired master switch did not.
+test("consume seam: no switch silences the artifact — the retired lane switch and the retired master switch decide nothing", async () => {
+  // The per-language off switch could once silence an artifact an earlier run wrote. It is retired
+  // (2026-11-11): no deployment set it, so what reaches synthesis is decided by the artifact alone.
   const ctx = mkCtx();
   mkdirSync(jxp(ctx), { recursive: true });
   writeFileSync(jxp(ctx, "aim-attention.json"), JSON.stringify({ schema: 1, items: [{ kind: "cultural-note", grounded: true }] }));
   await withEnv({ CLEAROTRON_NATIVE_LANGUAGE_ZH: "0" }, async () => {
-    assert.equal(units.jxAimForSynthesis(ctx.run.runDir), null, "lane killed ⇒ nothing surfaces, stale artifact or not");
+    assert.deepEqual(units.jxAimForSynthesis(ctx.run.runDir), { count: 1 }, "the retired lane switch still silenced the artifact");
   });
   await withEnv({}, async () => {
     assert.deepEqual(units.jxAimForSynthesis(ctx.run.runDir), { count: 1 },

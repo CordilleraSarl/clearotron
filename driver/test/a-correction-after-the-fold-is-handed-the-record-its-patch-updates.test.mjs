@@ -17,12 +17,12 @@
 // later pass opened with the correction re-armed. They then follow one correction through: an update and an addition,
 // what the recheck reads, the next fold, the cards and the workbook, and the same patch sent again.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { tmpdir } from "node:os";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { recordSynthesis, lastAcceptedCall } from "../synthesis-record.mjs";
 import { parseFindingsJsonLenient } from "../findings-model.mjs";
@@ -34,9 +34,6 @@ import { paths } from "../stages.mjs";
 import { correctionReading, correctionsExtra, correctionRows, correctiveCycleSettledDecision, snapshotFindingsForCorrections,
   writerExclusions, writerExclusionBlock, projectStageInput, reviewProfileSelection } from "../pipeline.mjs";
 import { synthesisFindings } from "./mock-stage-fixtures.mjs";
-
-const HERE = dirname(fileURLToPath(import.meta.url));
-
 const NARRATIVE = {
   spine: "Dominant-element analysis. The shared element carries both marks, and a register would weigh it first. "
     + "The conflicting registration covers the same distinctive element in the filed class, and the goods overlap.",
@@ -265,7 +262,7 @@ test("the review's list of findings to profile is read in the writer's numbering
 });
 
 test("the re-emit, the recheck and the correction after a repair's review are each handed the writer's record", () => {
-  const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.match(src, /repairFollowup\("synthesis:corrective-findings", \{ findings: modelRecordPath\(run\.runDir, P\.findings\),/,
     "the re-emit after a correction is pointed at another record");
   assert.match(src, /repairFollowup\("narrative-refutation:verdict-recheck", \{\s*narrative: P\.narrative, findings: modelRecordPath\(run\.runDir, P\.findings\),/,

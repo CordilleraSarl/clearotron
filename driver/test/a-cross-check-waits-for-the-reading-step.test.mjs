@@ -12,6 +12,7 @@
 // Driven through the real record tools, the real join and the real follow-up composer, on a plan written
 // to a run folder the way the lane writes it. Invented owners and marks throughout.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -22,6 +23,7 @@ import { recordReleasedFamilies, recordWithheldFamilies, releasedFamilyQids, rea
 import { joinPlanToBands } from "../register-plan.mjs";
 import { repairFollowup } from "../repair-composers.mjs";
 import { STAGES, DECIDE_WAITING_FAMILIES } from "../stages.mjs";
+import { registerMounts } from "./register-mounts.mjs";
 
 const AXIS = "primary-sweep";
 const xcheck = (qid, predicate, term) => waitingCrossCheck({ qid, axis: AXIS, predicate, term, nice_classes: ["9"], regions: [], expected_kind: "enumerate" });
@@ -94,15 +96,14 @@ test("the follow-up lists the questions and gives the reading step its own order
 });
 
 test("the follow-up hands a fresh session the plan, axis and band path the tool takes, ahead of the order", async () => {
-  const { readFileSync, readdirSync } = await import("node:fs");
+  const { readFileSync } = await import("node:fs");
   const entries = PLAN.entries.filter((e) => e.when);
   const text = repairFollowup("register-unit:xcheck-decide", { axis: AXIS, registerPlan: "/run/_driver/register-plan.json", bandPath: "/run/bands/primary-sweep.md", entries });
   const line = 'For `register_execute_plan`, use `plan_path: "/run/_driver/register-plan.json"`, `axis: "primary-sweep"`, and `output_path: "/run/bands/primary-sweep.md"`; pass only the qids you released.';
   assert.ok(text.includes(line), "the follow-up does not give the tool's three arguments their values");
   assert.ok(text.indexOf(line) < text.indexOf(DECIDE_WAITING_FAMILIES), "the arguments do not come before the order that uses them");
   // Each argument it names is one every register server's plan tool requires.
-  const mcp = new URL("../engine/mcp/", import.meta.url);
-  const servers = readdirSync(mcp).filter((f) => f.endsWith(".mjs")).map((f) => readFileSync(new URL(f, mcp), "utf8"))
+  const servers = registerMounts().map(({ path }) => readFileSync(path, "utf8"))
     .filter((s) => /name: "register_execute_plan"/.test(s));
   assert.ok(servers.length > 0, "no server defines the plan tool; re-read this check");
   for (const s of servers) {
@@ -110,7 +111,7 @@ test("the follow-up hands a fresh session the plan, axis and band path the tool 
     for (const k of ["plan_path", "axis", "output_path"]) assert.ok(required.includes(`"${k}"`), `${k} is not an argument the plan tool requires`);
   }
   // The caller supplies the run's own paths, not the composer's samples.
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   assert.match(src, /repairFollowup\("register-unit:xcheck-decide", \{ axis, registerPlan: P\.registerPlan, bandPath: P\.registerBand\(axis\),/,
     "the lane does not hand the follow-up the run's plan and band paths");
 });
@@ -119,7 +120,7 @@ test("the lane mints waiting, asks the reading step, runs what is left undecided
   // No mock run reaches this lane: the mock web findings name no owner or similar listing. So the wiring
   // is asserted where it lives, the way the repo pins other mid-run lanes.
   const { readFileSync } = await import("node:fs");
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const src = driverSource("pipeline.mjs");
   const lane = src.slice(src.indexOf("common-law → register cross-check (copper-lattice recovery net #3)"), src.indexOf("WS2 (B3) — the plan⇄band IDENTITY JOIN"));
   assert.ok(lane.length > 1000, "the cross-check lane moved; re-read this arm");
   assert.match(lane, /candidates\.push\(waitingCrossCheck\(\{ qid, axis: "primary-sweep"/, "the lane no longer mints its questions waiting");

@@ -23,9 +23,9 @@
 //
 // A pure leaf: node:fs, node:path and shared/driver-dir.mjs only, so the goods reader and the band tool server can
 // both import it.
-import { readFileSync, readdirSync } from "node:fs";
+import { readdirSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";
+import { paths, readJson } from "./run-record.mjs";
 
 // The research server's own name for a call's file: the time it was kept, with ":" and "." made "-", the server's
 // process id, and the number of the call.
@@ -101,7 +101,7 @@ export function statusPagesIn(result) {   // @internal — driven by its test
  */
 export function savedStatusPages(runDir) {
   if (!runDir) return () => new Map();
-  const dir = driverDir(runDir, "web-results");
+  const dir = paths(runDir).webResults;
   const read = new Map();
   return () => {
     let names = [];
@@ -109,7 +109,7 @@ export function savedStatusPages(runDir) {
     const pages = new Map();
     for (const name of names) {
       if (!read.has(name)) {
-        let result; try { result = JSON.parse(readFileSync(join(dir, name), "utf8")); } catch { continue; }
+        let result; try { result = readJson(join(dir, name)); } catch { continue; }
         read.set(name, statusPagesIn(result));
       }
       for (const { serial, goods } of read.get(name)) {

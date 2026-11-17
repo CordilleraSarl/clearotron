@@ -36,6 +36,7 @@ import { buildGatherMcpConfig, toolGroupsForStage, allowedToolsFor, withSendUnti
 import { GROUP_READING_STAGES } from "../stages.mjs";
 import { auditEnv, namesRead, envNameBindings, mergeEnvNameBindings } from "../../scripts/env-audit.mjs";
 import { pinEnv } from "../../shared/env-aliases.mjs";
+import { registerMounts } from "./register-mounts.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, "..", "..");
@@ -255,7 +256,8 @@ let serverReadsMemo = null;
 function serverReads() {
   if (serverReadsMemo) return serverReadsMemo;
   const mcp = join(ROOT, "driver", "engine", "mcp");
-  const servers = readdirSync(mcp).filter((f) => f.endsWith("-server.mjs")).map((f) => join(mcp, f));
+  const servers = [...readdirSync(mcp).filter((f) => f.endsWith("-server.mjs")).map((f) => join(mcp, f)),
+    ...registerMounts().map((m) => m.path)];
   const entries = [...servers, join(ROOT, "providers", "oauth-mcp-bridge", "bridge.mjs")];
   assert.ok(servers.length >= 15, `found only ${servers.length} tool servers — the directory moved?`);
   const files = closure(entries);

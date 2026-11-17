@@ -23,6 +23,11 @@ on:
   workflow_dispatch:
   workflow_call:
     inputs:
+      ref:
+        description: 'The commit to install and test. A scheduled release names the commit its decision read.'
+        type: string
+        required: false
+        default: ''
       # FROM THE RELEASE, ONLY THE PRODUCT CHECKS. The release passes nothing, so this reads true there and
       # the two suite jobs are skipped: a stable waits on the install, doctor, demo, Ctrl-C and clearance
       # jobs alone. On a push, the schedule or by hand there is no such input, a missing input reads as an
@@ -56,6 +61,8 @@ jobs:
       - run: git config --global core.autocrlf false
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref || github.sha }}
 
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -261,6 +268,8 @@ jobs:
       - run: git config --global core.autocrlf false
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref || github.sha }}
 
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -318,6 +327,8 @@ jobs:
       - run: git config --global core.autocrlf false
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7
+        with:
+          ref: ${{ inputs.ref || github.sha }}
 
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1   # v7
         with:

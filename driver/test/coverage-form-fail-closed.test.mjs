@@ -18,8 +18,9 @@
 // THREE STATES, AND THEY ARE NOT THE SAME FACT. This file pins all three, plus the write ORDER that makes
 // the third reachable at all.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, existsSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
@@ -32,11 +33,6 @@ import { unionCoverageForm } from "../coverage-union.mjs";
 import { coerceToolAbsenceDeferred } from "../coverage-ledger.mjs";
 import { coverageFormSidecarName, findCoverageFormViolations } from "../coverage-form.mjs";
 import { STAGES, paths } from "../stages.mjs";
-import { fileURLToPath } from "node:url";
-import { dirname } from "node:path";
-
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-
 // A preserved-shape run dir: the driver-written sidecars a fresh plan-mode run carries, with every mark,
 // owner and qid replaced by invented tokens (this repo is de-identified by design).
 const FINDINGS = "# Register findings\n\n## Findings — Mark: LUMEN\n\nbody text long enough to pass the "
@@ -129,7 +125,7 @@ test("M6 — THE DISPATCH HAS NO SECOND ARM, and the driver arms before it dispa
     // THE ORDERING IS THE SAFETY, so it is asserted against the source and not left to a comment. If a
     // future edit dispatches the digest without arming first, the unstamped validator arm becomes
     // reachable on a live run and the seat is handed an unclearable contract.
-    const src = readFileSync(join(ROOT, "pipeline.mjs"), "utf8");
+    const src = driverSource("pipeline.mjs");
     const arm = src.indexOf("armCoverageForm(P.runDir);");
     const gate = src.lastIndexOf("if (willRun) {", arm);
     assert.ok(gate >= 0 && arm > gate, "armCoverageForm runs inside the same willRun gate that dispatches the digest");

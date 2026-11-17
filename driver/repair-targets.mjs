@@ -85,17 +85,26 @@ const withdrawnCitationLine = (ordinal) => `Your text cites finding ${ordinal}, 
   + `Check the affected statement against the surviving assessment, and correct or remove it if unsupported. Keep unaffected text unchanged.`;
 
 /**
- * The faults the writer's repair is given for one a register of the record holds: one line per withdrawn finding it
- * cites, each named by the number the writer's record carries. The check judged the delivered record, which the fold
- * may have renumbered; `toModel` maps a delivered ordinal to the writer's, or to null for one the fold does not know,
- * which keeps its number as written. A citation of a finding the run does not have is not sent: the ruled line is for a
- * withdrawn one. PURE.
+ * The faults the writer's repair is given for one a register of the record holds, each finding named by the number the
+ * writer's record carries. The check judged the delivered record, which the fold may have renumbered; `toModel` maps a
+ * delivered ordinal to the writer's, or to null for one the fold does not know, which keeps its number as written.
+ * In the four answers each withdrawn finding gets its ruled line, and the findings the run does not have get the general
+ * instruction together, since the ruled line says "withdrew". A forward step gets the general instruction, with the
+ * step it concerns named, because the step's support is what is rechecked. PURE.
  */
 export function writersCitationFaults(fault, toModel) {
-  if (fault?.register !== "four_answers" || !Array.isArray(fault.cites)) return [fault];
-  const numbers = [...new Set(fault.cites.filter((c) => c.withdrawn).map((c) => toModel(c.ordinal) ?? c.ordinal))];
-  return numbers.map((ordinal) => ({ ...fault, cites: fault.cites.filter((c) => (toModel(c.ordinal) ?? c.ordinal) === ordinal),
-    detail: withdrawnCitationLine(ordinal) }));
+  if (!["four_answers", "actions"].includes(fault?.register) || !Array.isArray(fault.cites)) return [fault];
+  const number = (c) => toModel(c.ordinal) ?? c.ordinal;
+  if (fault.register === "actions") {
+    const seen = new Map(fault.cites.map((c) => [`${c.action}:${number(c)}`, { action: c.action, ordinal: number(c), withdrawn: Boolean(c.withdrawn) }]));
+    return [{ ...fault, detail: actionCitationDetail([...seen.values()]) }];
+  }
+  const withdrawnOnes = [...new Set(fault.cites.filter((c) => c.withdrawn).map(number))].map((ordinal) => ({ ...fault,
+    cites: fault.cites.filter((c) => c.withdrawn && number(c) === ordinal), detail: withdrawnCitationLine(ordinal) }));
+  const absent = fault.cites.filter((c) => !c.withdrawn);
+  if (!absent.length) return withdrawnOnes;
+  const numbers = [...new Set(absent.map(number))];
+  return [...withdrawnOnes, { ...fault, cites: absent, detail: overviewCitationDetail(numbers.map((ordinal) => ({ ordinal, withdrawn: false }))) }];
 }
 
 /**
@@ -121,6 +130,12 @@ const CITATION_CORRECTION = "The listed references point to findings that have b
   + "Reassess the affected answers, actions, and conclusions against the surviving findings. "
   + "Cite a surviving finding only where its evidence supports the statement; otherwise correct the statement. "
   + "Preserve unaffected work and record the corrections through the existing correction tool.";
+
+/** A forward step's citations in the same words, each reference naming the step that holds it. PURE. */
+function actionCitationDetail(cites) {
+  const each = cites.map((c) => `action ${c.action}, finding ${c.ordinal} (${c.withdrawn ? "withdrawn" : "absent"})`);
+  return `References: ${each.join("; ")}. ${CITATION_CORRECTION}`;
+}
 
 /** The overview's citation fault in words, for its repair. PURE. */
 export function overviewCitationDetail(cites) {

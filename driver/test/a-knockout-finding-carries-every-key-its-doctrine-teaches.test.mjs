@@ -56,11 +56,13 @@ test("the doctrine's example carries a whole finding and a whole register read",
 test("the doctrine's closed-key count is the number of keys its own example teaches", () => {
   // The count line said "all eight" beside an example with nine, and a seat reading "no others" had two
   // closed sets to choose between. Held to the example, so the sentence cannot fall behind it again.
-  const said = /closed keys, all (\w+), no others/.exec(DOCTRINE)?.[1];
+  const said = /closed keys, (\w+) in all, no others/.exec(DOCTRINE)?.[1];
   assert.ok(said, "the doctrine stopped stating its finding's closed-key count");
   const WORDS = { seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12 };
-  assert.equal(WORDS[said], Object.keys(TAUGHT).length,
-    `the doctrine says "all ${said}" and its example teaches ${Object.keys(TAUGHT).length}: ${Object.keys(TAUGHT).join(", ")}`);
+  // The count includes `inputs`, which the example omits because it is owed only where the framework states a method.
+  const taught = new Set([...Object.keys(TAUGHT), "inputs"]);
+  assert.equal(WORDS[said], taught.size,
+    `the doctrine says "${said} in all" and its example with inputs teaches ${taught.size}: ${[...taught].join(", ")}`);
 });
 
 test("the validator accepts a finding written exactly as the doctrine teaches, and keeps every key", () => {

@@ -37,7 +37,7 @@
 import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, renameSync, writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir, driverFileName } from "../shared/driver-dir.mjs";   //
+import { driverDir, driverFileName } from "./run-record.mjs";   //
 
 export const DISPATCH_SUFFIX = "dispatch.txt";
 

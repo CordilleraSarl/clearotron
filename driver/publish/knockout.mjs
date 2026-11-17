@@ -7,16 +7,16 @@
 // self-reported trail), meta.json batch stamps, and the email composer. Deliberately separate from publishReport (single-clearance-shaped); shares the exported
 // palette (TONE_TIER, resolved against the run's FROZEN framework) so driver and interactive output
 // can never drift and a knockout never reads the clearance composer's module state.
-import { readFileSync, writeFileSync, copyFileSync, mkdirSync, chmodSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { finishPoolRun, openPoolRun, refreshStaffPages } from './shell.mjs';
 import { plainDeferralReason, plainCause } from '../deferral-row.mjs'; import { knockoutStepFailures, PART_NAMES, RULED_WORDS, NOT_COMPLETED, linkNotOnRegisterSite } from '../degraded-parts.mjs'; import { ownersOwedACheck, composeOwnerQuery } from '../owner-use-check.mjs'; import { KNOCKOUT_WEB } from '../stages-knockout.mjs';   // — the reader's words for a search left open; and the parts that failed as a whole
 import { join } from 'node:path';
-import { driverDir, ensureDriverDir, RUN_DIR_MODE } from '../../shared/driver-dir.mjs';   //
 import { riskTier, TONE_TIER, regenIndex, regenSurfaces, auditRouteFor, markReportRouteFor, reportRouteFor } from './index.mjs';
 import { runKnockoutLint, deliveryFlagLines } from '../predelivery-lint.mjs';
 import { note } from '../log.mjs';
 import { addSheet } from './xlsx.mjs';
 import { COUNT_PREDICATES, COUNT_BASIS, countsForMark, countLine, countedMarks, variantFormsLine, disclosedFloor, moreThan, countNote } from '../register-count.mjs';
-import { RECORD_BASIS, noneCarriedForward, recordsForMark, recordsLine, listedMarks, normalizeRegisterRecordLinks } from '../register-records.mjs';
+import { noneCarriedForward, recordsForMark, recordsLine, normalizeRegisterRecordLinks } from '../register-records.mjs';
 import { reportIdentityFor, productCoverageNote, kebab } from '../search-policy.mjs';
 import { batchMarkName } from '../mark-name.mjs';
 import { renderKnockoutHtml, knockoutReportData } from './render-knockout.mjs';
@@ -27,7 +27,6 @@ import { servedModels } from '../tokens.mjs';
 import { knockoutFindingViews, knockoutFindingRange } from '../findings-model.mjs';
 import { knockoutReceipts, worstBand } from '../verify-knockout.mjs';
 
-const grpRead = (p, mode) => { try { chmodSync(p, mode); } catch { /* best-effort */ } };
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 // The http(s)-only link helpers that used to live here went with the MSO review table (2026-07-28) and
 // had no caller left: this module writes workbook CELLS and a cover note that links the report, never a
@@ -380,7 +379,19 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
 // The audit link used to be `url.replace(/report\.html$/, auditFile)`, a second derivation of a URL that
 // silently produced nothing the moment a report stopped being called `report.html`; a batch's documents
 // are `report-<slug>.html`, so that surgery would have shipped a broken workbook link on every batch.
-export function composeKnockoutEmail({ findings, framework, overall, reports = [], auditUrl = null, job, registerCounts = null, qcFlags = [] }) {
+/**
+ * THE NAME A KNOCKOUT'S EMAIL AND RECORD GIVE THE PRODUCT: the product's own, read from the run's frozen policy, as its report
+ * page and the staff list read it (owner's ruling, 2026-11-10). The subject, the email's first line and the pool's report.md
+ * title all take it from here. Null where the registry no longer names the level: each surface then says less, as a
+ * clearance's does, and never names a product the run may not have been.
+ */
+export const knockoutName = (searchPolicy) => reportIdentityFor(searchPolicy ?? null).identity || null;
+
+/** The pool's report.md title: the product's name in capitals where it has one, then the run. Staff read it. */
+export const knockoutRecordTitle = (searchPolicy, runId) =>
+  `${[knockoutName(searchPolicy)?.toUpperCase(), 'REPORT'].filter(Boolean).join(' ')} — ${runId}`;
+
+export function composeKnockoutEmail({ findings, framework, overall, reports = [], auditUrl = null, job, registerCounts = null, qcFlags = [], productName = null }) {
   const t = bandTier(framework, overall);
   const n = (findings.marks ?? []).length;
   const urlByMark = new Map((reports ?? []).map((r) => [r.mark, r.url]).filter(([, u]) => u));
@@ -388,7 +399,9 @@ export function composeKnockoutEmail({ findings, framework, overall, reports = [
   // says how to read the list instead: a "full report" link on a batch could only be one name standing
   // for all of them. A single-mark run keeps its head link exactly as before — same bytes, same place.
   const only = n === 1 ? urlByMark.get((findings.marks ?? [])[0]?.name) ?? null : null;
-  const head = `<p style="${FONT}">Knockout trademark review${job?.ref ? ` — ${esc(job.ref)}` : ''}: <b>${n} mark${n === 1 ? '' : 's'}</b>, ${n === 1 ? 'rating' : 'highest rating'} <b style="color:${t.txt}">${esc(overall ?? '')}</b>.`
+  // The product's name and the reference, each where there is one: a part left out leaves no dash or colon behind it.
+  const lead = [productName, job?.ref].filter(Boolean).map((p) => esc(p)).join(' — ');
+  const head = `<p style="${FONT}">${lead ? `${lead}: ` : ''}<b>${n} mark${n === 1 ? '' : 's'}</b>, ${n === 1 ? 'rating' : 'highest rating'} <b style="color:${t.txt}">${esc(overall ?? '')}</b>.`
     + (only ? ` <a href="${esc(only)}">Open the full report</a>${auditUrl ? ` · <a href="${esc(auditUrl)}">audit workbook</a>` : ''}.` : '')
     + (!only && n > 1 ? ` One report per name below${auditUrl ? `, and one <a href="${esc(auditUrl)}">audit workbook</a> for the batch` : ''}.` : '') + `</p>`;
   // — THE FIRST NON-BLANK, never element 0. `?? fallback` catches null and undefined
@@ -421,11 +434,15 @@ export function composeKnockoutEmail({ findings, framework, overall, reports = [
 }
 
 // ── The publisher ────────────────────────────────────────────────────────────────────────────────────
-// `delivery`: the run's frozen delivery overlay, threaded to the template so the knockout obeys the
-// SAME three-state confidentiality rule the clearance does. It defaults to null — the no-opinion state,
-// which renders the plain marking this template always printed — so the ~15 fixtures in
-// knockout-units.test.mjs that call this without one are unaffected by its arrival.
-export async function publishKnockout({ runId, codename, runDir, findings, plan, framework, overall, poolRoot, poolUrl, customerKey, searchPolicy, tokens, registerCounts = null, skipRegen = false, delivery = null }) {
+/**
+ * THE REPORT DOCUMENT FOR A KNOCKOUT: every fact the batch's surfaces print, read from the run once.
+ *
+ * It is read before anything is written to the pool, and each surface prints from it: the workbook, each name's page
+ * and data file, the pool's `report.md` and `meta.json`. It refuses a batch whose citations cannot be traced (the
+ * receipts door below), and it writes the run's own lint receipt, as the publisher always did. It writes nothing to
+ * the pool.
+ */
+export async function readKnockoutDocument({ runId, runDir, findings, plan, framework, overall, poolRoot, poolUrl, customerKey, searchPolicy, registerCounts = null }) {
   // ── THE RECEIPTS DOOR ───────────────────────────────────────────────────────────────────────
   // BEFORE anything is written, and it can refuse. The live lane already gates the merged artifact
   // (pipeline-knockout.mjs → validateMergedFindings), so on that path this is belt-and-braces; the path
@@ -451,36 +468,8 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   // A pass with nothing to check is not the same answer as a pass, so it is recorded rather than
   // assumed: `urls: 0` in the receipt below means no finding cited anything.
   note(`knockout receipts: ${receipts.checked.urls} citation(s) across ${receipts.checked.findings} finding(s) on ${receipts.checked.citing}/${receipts.checked.marks} mark(s) traced to held evidence`);
-  const poolRunDir = join(poolRoot, runId);
-  // Owner and group only: a mode given to mkdir, which keeps the set-GID the pool root passes down.
-  mkdirSync(poolRunDir, { recursive: true, mode: RUN_DIR_MODE });
-  const writeRO = (name, data) => { const p = join(poolRunDir, name); writeFileSync(p, data); grpRead(p, 0o640); };
-
-  // ── THE RUN'S WORKING RECORD TRAVELS WITH THE REPORT ──────────────────────────────────────────────
-  //
-  // The delivered directory held the report, its data and the workbook, and nothing the engine itself
-  // wrote. That is what the acceptance read needs to tell a line the ENGINE wrote from a line the
-  // RENDERER invented: without it the check can still place a line as report text or as a sanctioned
-  // label, so it passes — and cannot fail in the way it exists to fail. A clearance run's record is
-  // `audit.md` and `findings.json`; this lane's own names are these two, and they are copied rather
-  // than rebuilt so the pool carries the bytes the stages wrote.
-  //
-  // AN ABSENT ONE IS SAID, NOT SKIPPED. A run whose stage never wrote its assessment is a different
-  // thing from a run that wrote one, and a publisher that copies what it finds and says nothing about
-  // what it does not makes the two look identical to the next reader — which is the whole defect this
-  // closes, one directory along.
-  for (const name of ['knockout-findings.json', 'knockout-assessment.md']) {
-    const src = join(runDir, name);
-    if (existsSync(src)) {
-      const dest = join(poolRunDir, name);
-      copyFileSync(src, dest);
-      grpRead(dest, 0o640);
-    } else {
-      note(`knockout working record: ${name} is not in the run directory, so the delivered report has no engine text to be checked against`);
-    }
-  }
   // WHAT THE RECORD SAYS, NOT THE CLOCK (report-dates.mjs): a republish is neither a new search nor a new issue.
-  const dates = reportDates({ runDir, poolRunDir });
+  const dates = reportDates({ runDir, poolRunDir: join(poolRoot, runId) });
   const issued = zurichStamp(dates.issuedAt);
   const searched = zurichStamp(dates.searchedAt);
 
@@ -488,7 +477,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   // is the record of what the driver called, the other is the check that the findings cite what it held.
   let sweepReceipts = [];
   try {
-    sweepReceipts = readFileSync(driverDir(runDir, 'knockout-sweep.jsonl'), 'utf8').split('\n').filter(Boolean)
+    sweepReceipts = readFileSync(paths(runDir).knockoutSweep, 'utf8').split('\n').filter(Boolean)
       .map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
   } catch { /* fixture/degenerate runs may have none */ }
 
@@ -506,27 +495,27 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   // here so the decision has something to key on when it is made.
   let registerCountsUnreadable = false;
   if (!registerCounts) {
-    try { registerCounts = JSON.parse(readFileSync(driverDir(runDir, 'register-counts.json'), 'utf8')); }
-    catch { registerCounts = null; registerCountsUnreadable = existsSync(driverDir(runDir, 'register-counts.json')); }
+    try { registerCounts = readJson(paths(runDir).registerCounts); }
+    catch { registerCounts = null; registerCountsUnreadable = existsSync(paths(runDir).registerCounts); }
   }
   // part 5 — the filings sidecar, read the same way and for the same reason: the publisher renders
   // what the driver measured and wrote, and a republish of an archived run picks up the same file. An
   // absent sidecar publishes exactly the counts-only knockout, with no filings section anywhere.
   let registerRecords = null, registerRecordsUnreadable = false;
-  try { registerRecords = JSON.parse(readFileSync(driverDir(runDir, 'register-records.json'), 'utf8')); }
-  catch { registerRecords = null; registerRecordsUnreadable = existsSync(driverDir(runDir, 'register-records.json')); }
+  try { registerRecords = readJson(paths(runDir).registerRecords); }
+  catch { registerRecords = null; registerRecordsUnreadable = existsSync(paths(runDir).registerRecords); }
   // The owner lookups this run made, read the same tolerant way as the records above:
   // an archived run that predates the lane has no file, and its cards then render exactly as they were
   // delivered. The source line the report prints comes from HERE, not from anything the seat typed.
   let ownerChecks = [];
-  try { ownerChecks = JSON.parse(readFileSync(driverDir(runDir, 'owner-checks.json'), 'utf8')).checks ?? []; }
+  try { ownerChecks = readJson(paths(runDir).ownerChecks).checks ?? []; }
   catch { ownerChecks = []; }
   // The request the run was given, read the same tolerant way as the sidecars above and for the same
   // reason (A.1). It is what "About this request" states; a run archived before the
   // sidecar existed has none, and its page renders exactly as it was delivered.
   let instructedScope = null, scopeUnreadable = false;
-  try { instructedScope = JSON.parse(readFileSync(driverDir(runDir, 'instructed-scope.json'), 'utf8')); }
-  catch { instructedScope = null; scopeUnreadable = existsSync(driverDir(runDir, 'instructed-scope.json')); }
+  try { instructedScope = readJson(paths(runDir).instructedScope); }
+  catch { instructedScope = null; scopeUnreadable = existsSync(paths(runDir).instructedScope); }
   // The run's frozen method, where its framework states one (framework-method.mjs): the report card and
   // the workbook's band cell show the framework's inputs beside the band. A run that froze none — every
   // run before the method existed among them — renders the band alone, as it was delivered.
@@ -583,7 +572,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     qcFlags = deliveryFlagLines(lint.failures.filter((c) => c.surface === 'report'));
     try {
       ensureDriverDir(runDir);
-      writeFileSync(driverDir(runDir, 'predelivery-lint.json'), JSON.stringify({
+      writeFileSync(paths(runDir).predeliveryLint, JSON.stringify({
         ts: new Date().toISOString(),
         lane: 'knockout',
         checks: lint.checks, failures: lint.failures.map((f) => f.id),
@@ -616,19 +605,12 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   // A first web question whose answer is on disk and whose trail entry is not. Only the first question is
   // read: a second question's missing entry cannot be told from one that got no answer. A run with no
   // trail file at all was delivered before the trail existed, and republishes as it was delivered.
-  const keptATrail = existsSync(driverDir(runDir, 'knockout-sweep.jsonl'));
+  const keptATrail = existsSync(paths(runDir).knockoutSweep);
   const recordsNotKept = (keptATrail ? (plan?.marks ?? []) : []).map((m) => String(m?.name ?? '')).filter((name) => name
     && existsSync(join(runDir, 'research', `${kebab(name)}.md`))
     && !sweepReceipts.some((r) => r?.mark === name && !r.question))
     .map((mark) => ({ mark, preset: koPreset }));
-  const openPoints = (() => { try { return JSON.parse(readFileSync(driverDir(runDir, 'knockout-corrections.json'), 'utf8')).open ?? []; } catch { return []; } })();
-  const auditFile = `knockout-audit-${codename ?? runId}.xlsx`;
-  await buildKnockoutWorkbook(findings, sweepReceipts, join(poolRunDir, auditFile), registerCounts, qcFlags, framework, registerRecords, frameworkMethod, [...ownerChecks, ...lookupsNotRun], {
-    listing: registerRecords ? null : steps.listing, reading: steps.reading, review: steps.review, machineChecks: machineChecksFailed,
-    aboutThisRequest: scopeUnreadable ? { reason: NOT_COMPLETED } : null, droppedLinks: recordLinksDropped, recordsNotKept, openPoints,
-  });
-  grpRead(join(poolRunDir, auditFile), 0o640);
-
+  const openPoints = (() => { try { return readJson(paths(runDir).knockoutCorrections).open ?? []; } catch { return []; } })();
   // The run's report identity, off the SAME registry row that chose its machinery (search-policy.mjs
   // PRODUCT_POLICIES). Resolved from the frozen policy sidecar so an archived run re-renders under the
   // stage it was sold as, not under whatever today's registry calls that level.
@@ -700,10 +682,99 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   // because it is a property of the run. A read that throws records nothing rather than failing a publish.
   let served = null;
   try { served = runDir ? servedModels(runDir) : null; } catch { served = null; }
+  const statement = knockoutStatement(framework, findings.marks ?? []);
+  // THE NAME THE RUN IS ABOUT. This object carried `title` and no `markName` key at all, so the
+  // portal's displayName() fell through to `title` exactly as designed, and every delivered knockout row
+  // read "Knockout review — N marks" in a column whose whole job is to name a mark. A batch of them is a
+  // list of identical rows distinguishable only by run codename — two of them can be different marks for
+  // different purposes, and nothing on the page says which is which.
+  //
+  // The data was always there — status.json carries markName and marks[0].name sits in this very object.
+  // It was simply never lifted to the field the UI reads. This is NOT the documented back-fill case: that
+  // comment says null means "delivered before the stamp existed" and must never render as "no mark", but
+  // for the knockout lane null was not staleness, it was permanent.
+  //
+  // One rule, both shapes: one mark is the mark, several is the first plus a count. Never the run type.
+  // The rule itself now lives in mark-name.mjs, because this was one of TWO spellings of it — the live
+  // lane wrote "(+N marks)" onto status.json for the same batch, so a run changed its name at delivery
+  // and the browser, which threads reads on the name string, listed one batch as two different marks.
+  const markNames = (findings.marks ?? []).map((m) => m.name).filter(Boolean);
+  // WHICH ORGANISATION'S GENERIC this batch was filed under, read from the frozen sidecar exactly as the clearance
+  // publisher reads it. Absent on a company's batch and on one filed before organisations existed.
+  const organisation = (() => { try { const f = readJson(paths(runDir).profile); return typeof f?.organisation === 'string' && f.organisation ? f.organisation : undefined; } catch { return undefined; } })();
+  return {
+    receipts, dates, issued, searched, sweepReceipts, registerCounts, registerCountsUnreadable, registerRecords,
+    registerRecordsUnreadable, ownerChecks, instructedScope, scopeUnreadable, frameworkMethod, recordLinksDropped,
+    officeLinks, qcFlags, machineChecksFailed, steps, lookupsNotRun, recordsNotKept, openPoints, identity, probeRan,
+    markRows, single, origin, reportUrlFor, demoData, served, statement, markNames, organisation,
+    // WHICH BUILD produced this, read once for every surface that records it. null off a git checkout.
+    engineCommit: engineCommit(),
+    // FACTS THE SURFACES STATE TWO WAYS, each way named, so every surface prints what it printed before. Which way is
+    // right is for the owner to rule; nothing here chooses.
+    // The issue date: `issued` above is the firm's date and time (Europe/Zurich), which each name's page prints;
+    // meta.json keeps the date of the UTC instant, which differs from it near midnight.
+    issuedDateUtc: dates.issuedAt.slice(0, 10),
+    // The product's name in the run's record, with how many names, which meta.json and the staff index print; the
+    // pool's report.md and the email print fixed Knockout wording instead.
+    // The plural bug lived on this line: `${n} marks` with no guard, so every one-mark batch said
+    // "1 marks". The sibling statement writer above has always guarded it; this never did.
+    //
+    // AND IT SPELT THE PRODUCT BY HAND. The literal was "Knockout review" — a product
+    // retired — so every batch published under the live "Knockout search" stamped a name the offering
+    // no longer sells into its own record, and the staff pool index rendered it in the Mark column
+    // (publish/index.mjs anonMark(r.title)) on every knockout row, past and future. The identity is
+    // resolved twenty lines up from the run's own frozen policy; this is that same string. A level the
+    // registry cannot name says only how many marks, because a wrong product name is worse than none.
+    title: [identity.identity, `${markNames.length} mark${markNames.length === 1 ? '' : 's'}`]
+      .filter(Boolean).join(' — '),
+    // The batch's badge, read once for report.md's front matter and meta.json.
+    overallBadge: bandBadge(framework, overall),
+  };
+}
+
+// `delivery`: the run's frozen delivery overlay, threaded to the template so the knockout obeys the
+// SAME three-state confidentiality rule the clearance does. It defaults to null — the no-opinion state,
+// which renders the plain marking this template always printed — so the ~15 fixtures in
+// knockout-units.test.mjs that call this without one are unaffected by its arrival.
+export async function publishKnockout({ runId, codename, runDir, findings, plan, framework, overall, poolRoot, poolUrl, customerKey, searchPolicy, tokens, registerCounts: givenCounts = null, skipRegen = false, delivery = null }) {
+  // `givenCounts`: counts the lane already holds; the document reads the run's own when none are given.
+  const doc = await readKnockoutDocument({ runId, runDir, findings, plan, framework, overall, poolRoot, poolUrl, customerKey, searchPolicy, registerCounts: givenCounts });
+  const { receipts, dates, issued, searched, sweepReceipts, registerCounts, registerRecords, registerRecordsUnreadable,
+    ownerChecks, instructedScope, scopeUnreadable, frameworkMethod, recordLinksDropped, officeLinks, qcFlags,
+    machineChecksFailed, steps, lookupsNotRun, recordsNotKept, openPoints, identity, probeRan, markRows, single, origin,
+    reportUrlFor, demoData, served, statement, markNames, organisation, issuedDateUtc, title, overallBadge } = doc;
+  const { poolRunDir, writeRO, copyRO, buildWorkbook, writeDataFile } = openPoolRun(poolRoot, runId, { runDir });
+
+  // ── THE RUN'S WORKING RECORD TRAVELS WITH THE REPORT ──────────────────────────────────────────────
+  //
+  // The delivered directory held the report, its data and the workbook, and nothing the engine itself
+  // wrote. That is what the acceptance read needs to tell a line the ENGINE wrote from a line the
+  // RENDERER invented: without it the check can still place a line as report text or as a sanctioned
+  // label, so it passes — and cannot fail in the way it exists to fail. A clearance run's record is
+  // `audit.md` and `findings.json`; this lane's own names are these two, and they are copied rather
+  // than rebuilt so the pool carries the bytes the stages wrote.
+  //
+  // AN ABSENT ONE IS SAID, NOT SKIPPED. A run whose stage never wrote its assessment is a different
+  // thing from a run that wrote one, and a publisher that copies what it finds and says nothing about
+  // what it does not makes the two look identical to the next reader — which is the whole defect this
+  // closes, one directory along.
+  for (const name of ['knockout-findings.json', 'knockout-assessment.md']) {
+    const src = join(runDir, name);
+    if (existsSync(src)) {
+      copyRO(src, name);
+    } else {
+      note(`knockout working record: ${name} is not in the run directory, so the delivered report has no engine text to be checked against`);
+    }
+  }
+  // A workbook that cannot be built no longer stops the batch: every name's report ships, and nothing names the workbook.
+  const { auditFile, auditError } = await buildWorkbook(`knockout-audit-${codename ?? runId}.xlsx`, (at) => buildKnockoutWorkbook(findings, sweepReceipts, at, registerCounts, qcFlags, framework, registerRecords, frameworkMethod, [...ownerChecks, ...lookupsNotRun], {
+    listing: registerRecords ? null : steps.listing, reading: steps.reading, review: steps.review, machineChecks: machineChecksFailed,
+    aboutThisRequest: scopeUnreadable ? { reason: NOT_COMPLETED } : null, droppedLinks: recordLinksDropped, recordsNotKept, openPoints,
+  }));
+
   const reports = markRows.map((m) => {
     const slug = kebab(m.name);
     const file = single ? 'report.html' : `report-${slug}.html`;
-    const dataFile = single ? 'report-data.json' : `report-data-${slug}.json`;
     // The mark's own slice. Its band is the document's band — `overall` on a one-mark document is that
     // mark's rating, never the batch's worst, or a clean name would inherit a blocking name's colour.
     const one = {
@@ -748,25 +819,26 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     }));
     // The run as data — what the assistant drafts client-facing mail from, and the shape the portal's
     // native-render path has been reading for since before anything wrote it. One per report, so the
-    // native render of a per-mark document is that mark's data and not the batch's.
-    writeRO(dataFile, JSON.stringify(knockoutReportData(one, framework, {
+    // native render of a per-mark document is that mark's data and not the batch's. A data file that
+    // cannot be written leaves this name's report in place and the other names publishing; `dataFile`
+    // is null for it, so nothing points at a file that is not there.
+    const dataFile = writeDataFile(single ? 'report-data.json' : `report-data-${slug}.json`, () => knockoutReportData(one, framework, {
       runId, codename, overall: markBand, issued, registerCounts, registerRecords, ownerChecks, auditFile, customerKey, matter: runId, servedModels: served,
       identity: { ...identity, level: searchPolicy?.level ?? null },
       url: reportUrlFor(slug),
-    }), null, 2));
+    }));
     return { mark: m.name, slug, file, dataFile, url: reportUrlFor(slug), band: markBand ?? null };
   });
-  const statement = knockoutStatement(framework, findings.marks ?? []);
   // report.md — front-matter compatible with archive greps (title/matter/overall_label)
   //
   // — AND IT NAMES THE DOCUMENTS (knockoutDocumentRoutes, below).
   const routes = knockoutDocumentRoutes(reports, { auditFile });
   writeRO('report.md', [
     '---',
-    `title: "KNOCKOUT TRADEMARK REVIEW REPORT — ${runId}"`,
+    `title: "${knockoutRecordTitle(searchPolicy, runId)}"`,
     `matter: "${runId}"`,
     `overall_label: "${overall ?? ''}"`,
-    `overall_badge: "${bandBadge(framework, overall)}"`,
+    `overall_badge: "${overallBadge}"`,
     '---',
     '',
     // — THE CROSS-MARK SURFACE, MARKED. Acceptance 3 asks for the banner on "the
@@ -781,45 +853,17 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     String(findings.batch?.executiveSummary ?? ''),
     ...routes,
   ].join('\n'));
-  // THE NAME THE RUN IS ABOUT. This object carried `title` and no `markName` key at all, so the
-  // portal's displayName() fell through to `title` exactly as designed, and every delivered knockout row
-  // read "Knockout review — N marks" in a column whose whole job is to name a mark. A batch of them is a
-  // list of identical rows distinguishable only by run codename — two of them can be different marks for
-  // different purposes, and nothing on the page says which is which.
-  //
-  // The data was always there — status.json carries markName and marks[0].name sits in this very object.
-  // It was simply never lifted to the field the UI reads. This is NOT the documented back-fill case: that
-  // comment says null means "delivered before the stamp existed" and must never render as "no mark", but
-  // for the knockout lane null was not staleness, it was permanent.
-  //
-  // One rule, both shapes: one mark is the mark, several is the first plus a count. Never the run type.
-  // The rule itself now lives in mark-name.mjs, because this was one of TWO spellings of it — the live
-  // lane wrote "(+N marks)" onto status.json for the same batch, so a run changed its name at delivery
-  // and the browser, which threads reads on the name string, listed one batch as two different marks.
-  const markNames = (findings.marks ?? []).map((m) => m.name).filter(Boolean);
-  writeRO('meta.json', JSON.stringify({
+  const total = finishPoolRun({ writeRO, poolRoot, skipRegen, regenIndex, meta: {
     runId, codename: codename ?? '', matter: runId,
-    // The plural bug lived on this line: `${n} marks` with no guard, so every one-mark batch said
-    // "1 marks". The sibling statement writer above has always guarded it; this never did.
-    //
-    // AND IT SPELT THE PRODUCT BY HAND. The literal was "Knockout review" — a product
-    // retired — so every batch published under the live "Knockout search" stamped a name the offering
-    // no longer sells into its own record, and the staff pool index rendered it in the Mark column
-    // (publish/index.mjs anonMark(r.title)) on every knockout row, past and future. The identity is
-    // resolved twenty lines up from the run's own frozen policy; this is that same string. A level the
-    // registry cannot name says only how many marks, because a wrong product name is worse than none.
-    title: [identity.identity, `${markNames.length} mark${markNames.length === 1 ? '' : 's'}`]
-      .filter(Boolean).join(' — '),
+    title,   // the product's name and how many names (readKnockoutDocument)
     markName: batchMarkName(markNames) ?? undefined,
-    engineCommit: engineCommit(),
+    engineCommit: doc.engineCommit,
     // The models that served the batch, named as a client may read them (tokens.mjs servedModels). Absent when
     // nothing was read, so a meta from before the record keeps its shape; [] when turns ran and named none a client may read.
     servedModels: served ?? undefined,
     client: null, customerKey: customerKey || 'generic',
-    // WHICH ORGANISATION'S GENERIC this batch was filed under, read from the frozen sidecar exactly as
-    // the clearance publisher reads it. Absent on a company's batch and on one filed before
-    // organisations existed.
-    organisation: (() => { try { const f = JSON.parse(readFileSync(driverDir(runDir, 'profile.json'), 'utf8')); return typeof f?.organisation === 'string' && f.organisation ? f.organisation : undefined; } catch { return undefined; } })(),
+    // WHICH ORGANISATION'S GENERIC this batch was filed under (readKnockoutDocument).
+    organisation,
     issuedAt: dates.issuedAt,
     renderedAt: dates.renderedAt,
     kind: 'knockout-batch',
@@ -850,12 +894,15 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     // read it. The one `.run` reader in the tree parses report.html front matter and uses it as a DATE
     // fallback, so had this field ever been joined to that one it would have printed a product name where
     // a date belongs. The product is `meta.product`, written from the run's own frozen policy.
-    overall: overall ?? '', badge: bandBadge(framework, overall), date: dates.issuedAt.slice(0, 10),
+    overall: overall ?? '', badge: overallBadge, date: issuedDateUtc,
     auditFile, statement,
+    // WHY THERE IS NO WORKBOOK, when the build threw. Absent when it built, so such a meta is unchanged.
+    auditError: auditError ?? undefined,
     framework: framework ? { key: framework.framework_key, title: framework.title, custom: framework.framework_key !== 'house-triage', bands: framework.bands.map((b) => ({ label: b.label, tone: b.tone })) } : undefined,
     // Present ⇒ this run has a report-data.json beside its report. The portal reads this to tell a run it
     // could render natively from a legacy one; the field had readers long before it had a writer.
-    reportSchema: 'report-data/1',
+    // Stamped only when every name's data file wrote, as the clearance stamps it only when its one file wrote.
+    reportSchema: reports.every((r) => r.dataFile) ? 'report-data/1' : undefined,
     // WHICH DOCUMENTS THIS RUN PUBLISHED, and for which name. Every reader that has to open,
     // serve or link a knockout's reports takes the list from here rather than deriving a filename: the
     // naming rule (one mark ⇒ `report.html`, several ⇒ `report-<slug>.html`) is written ONCE, above, and
@@ -868,11 +915,9 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     // it BOTH marks of a batch resolved to the run-level URL, which resolveReportFile answers null
     // for by design (a batch has no run-level document) — so every per-mark link 404'd, and the
     // clearances row printed a fallback saying the report was with us for a final read.
-    reports: reports.map(({ mark, slug, file, dataFile, band }) => ({ mark, slug, file, dataFile, band })),
-  }, null, 2));
-
-  const total = skipRegen ? null : regenIndex(poolRoot);
-  if (!skipRegen) { try { await regenSurfaces(poolRoot); } catch { /* best-effort */ } }
+    reports: reports.map(({ mark, slug, file, dataFile, band, url }) => ({ mark, slug, file, dataFile, band, url })),
+  } });
+  await refreshStaffPages({ regenSurfaces, poolRoot, skipRegen, runDir });
   // `url` IS NULL FOR A BATCH, and that is the honest answer rather than a convenient one. A multi-name
   // knockout has no single report, so any one URL here would be the first name standing for all of them —
   // the defect exists to end, re-entering through the delivery packet. Readers take `reports`; a
@@ -888,8 +933,8 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   // DESTINATION exactly as dead — `<pool>/<runId>/<auditFile>` reaches no handler, on a batch and on a
   // single alike, which is every knockout ever delivered. `audit.xlsx` is the route literal; the portal
   // reads the run's real filename out of meta.json and sends it as the download name.
-  const auditUrl = auditRouteFor(origin, runId);
-  return { runId, auditFile, auditUrl, url, reports, poolRunDir, statement, total, qcFlags, receipts: receipts.checked };
+  const auditUrl = auditFile ? auditRouteFor(origin, runId) : null;
+  return { runId, auditFile, auditError, auditUrl, url, reports, poolRunDir, statement, total, qcFlags, receipts: receipts.checked };
 }
 
 /**
@@ -947,3 +992,4 @@ export function knockoutDocumentRoutes(reports, { auditFile = null } = {}) {
 import { addressListedFilings, reasonCellFor } from './office-record-links.mjs';
 import { reportDates, zurichStamp } from './report-dates.mjs';   // the dates a report prints, from its record
 import { declaredRecordOrigins } from '../record-origins.mjs';
+import { driverDir, ensureDriverDir, paths, readJson } from "../run-record.mjs";

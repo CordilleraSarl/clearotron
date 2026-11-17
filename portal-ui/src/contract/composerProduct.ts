@@ -674,8 +674,10 @@ export function blockers(
   // carrying territories the product cannot use.
   const resolves = product.geography !== 'worldwide, and nothing else'
   const named = resolves && !d.territories.length ? inheritedTerritories : d.territories
-  const countries = named.filter((t) => tierOf(t) === 'country')
-  const regions = named.filter((t) => tierOf(t) === 'region')
+  // A COMPANY'S OWN PLACES ARE CODES (EU, US, UK), and read by name only they were neither: a company holding
+  // only EU was not stopped from a one-country search. Read through `tierOfPlace`, as the recommendation is.
+  const countries = named.filter((t) => tierOfPlace(t) === 'country')
+  const regions = named.filter((t) => tierOfPlace(t) === 'region')
   switch (product.geography) {
     case 'worldwide, and nothing else':
       // Unreachable from this screen — the panel offers no picker at all for this product — and kept

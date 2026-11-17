@@ -16,6 +16,7 @@
 // So these arms are about delivery, not tidiness. The two that REFUSE to roll back matter as much as
 // the one that does: each names a state where swallowing the failure costs more than the throw.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, rmSync, writeFileSync, readFileSync, existsSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -27,7 +28,7 @@ import { paths as stagePaths } from "../stages.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const pipelineSrc = () => readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+const pipelineSrc = () => driverSource("pipeline.mjs");
 
 const GOOD = JSON.stringify({ schemaVersion: 2, findings: [{ ordinal: 1, mark: "NOVAPULSE", level: "C" }] }, null, 2) + "\n";
 const DEGRADED = JSON.stringify({ schemaVersion: 2, findings: [] }, null, 2) + "\n";

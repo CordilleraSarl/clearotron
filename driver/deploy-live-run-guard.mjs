@@ -26,6 +26,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { claimerIsAlive, parseClaimSidecar } from "./claim-liveness.mjs";
+import { liveQueueState } from "./queue-markers.mjs";
 
 /** A directory that is not there yet holds nothing; one we may not READ is a different answer entirely. */
 function listDir(dir) {
@@ -42,17 +43,26 @@ function listDir(dir) {
  *                                real, and a guard that reads one of them passes over work sitting in
  *                                the other.
  * @param {string}   a.lockDir    the run-slot lock dir — a slot file is held for the life of a pipeline.
- * @returns {{queued, claimed, stale, slots, unreadable}} — plain arrays, safe to print.
+ * @param {Array<{codename: string, runDir: string}>} a.parkedRunDirs  run folders the runner will resume on its
+ *                                own (runner.mjs `parkedRunDirOrphans`), passed in so this module stays light.
+ * @returns {{queued, claimed, stale, parked, slots, unreadable}} — plain arrays, safe to print.
+ *
+ * A PARKED RUN HOLDS THE DEPLOYMENT. It is part-way through a search and comes back on its own, and the owner's ruling
+ * of 2026-11-09 is that a search is not upgraded part-way: an update waits for it, as it waits for a running one.
  */
-export function liveRunHolds({ queueDirs = [], lockDir = null, isAlive = claimerIsAlive } = {}) {
-  const queued = [], claimed = [], stale = [], slots = [], unreadable = [];
+export function liveRunHolds({ queueDirs = [], lockDir = null, parkedRunDirs = [], isAlive = claimerIsAlive } = {}) {
+  const queued = [], claimed = [], stale = [], parked = [], slots = [], unreadable = [];
 
   for (const q of (Array.isArray(queueDirs) ? queueDirs : []).filter(Boolean)) {
     const { names, error } = listDir(q);
     if (error) { unreadable.push({ path: q, error }); continue; }
     for (const n of names) {
-      if (n.endsWith(".json") && !n.endsWith(".tmp")) { queued.push({ queue: q, id: n.replace(/\.json$/, "") }); continue; }
-      if (!n.endsWith(".processing")) continue;
+      const state = n.endsWith(".tmp") ? null : liveQueueState(n);
+      if (state === "json") { queued.push({ queue: q, id: n.replace(/\.json$/, "") }); continue; }
+      if (state === "postponed") { parked.push({ queue: q, id: n.replace(/\.postponed$/, "") }); continue; }
+      if (state !== "processing") continue;
+      // The claim lock is a `.processing` mid-rename, with no sidecar of its own yet: held, as the next line holds one with none.
+      if (!n.endsWith(".processing")) { claimed.push({ queue: q, id: n.replace(/\.processing\.claimed-\S+$/, ""), pid: null }); continue; }
       const id = n.replace(/\.processing$/, "");
       let rec = null;
       try { rec = parseClaimSidecar(readFileSync(join(q, `${n}.pid`), "utf8")); } catch { /* legacy claim, no sidecar */ }
@@ -79,7 +89,9 @@ export function liveRunHolds({ queueDirs = [], lockDir = null, isAlive = claimer
     }
   }
 
-  return { queued, claimed, stale, slots, unreadable };
+  for (const r of Array.isArray(parkedRunDirs) ? parkedRunDirs : []) parked.push({ runDir: r.runDir, id: r.codename });
+
+  return { queued, claimed, stale, parked, slots, unreadable };
 }
 
 /**
@@ -106,7 +118,7 @@ export function deployRefusal(holds, { override = "" } = {}) {
   const name = (rows, what) => rows?.length
     ? `${rows.length} ${what}: ${rows.slice(0, 6).map((r) => r.id ?? r.file ?? r.path).join(", ")}${rows.length > 6 ? `, +${rows.length - 6} more` : ""}`
     : null;
-  for (const [rows, what] of [[h.queued, "QUEUED"], [h.claimed, "CLAIMED and live"], [h.stale, "CLAIMED by a dead pid (a takeover will resume it)"], [h.slots, "run slot(s) held by a live pid"]]) {
+  for (const [rows, what] of [[h.queued, "QUEUED"], [h.claimed, "CLAIMED and live"], [h.stale, "CLAIMED by a dead pid (a takeover will resume it)"], [h.parked, "PARKED and resuming on their own"], [h.slots, "run slot(s) held by a live pid"]]) {
     const s = name(rows, what);
     if (s) parts.push(s);
   }

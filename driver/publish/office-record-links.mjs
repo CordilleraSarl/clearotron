@@ -49,6 +49,9 @@ export const OFFICE_RECORD_PAGES = Object.freeze({
   au: { name: "Australia", address: (r) => addressFrom([r.applicationNumber, r.registrationNumber], /^(\d{1,8})$/, (m) => ({
     number: m[1], href: `https://search.ipaustralia.gov.au/trademarks/search/view/${m[1]}` })) },
   // Opened a real record. `-00` is the extension CIPO gives the base application.
+  // INPI opens a record only inside a search session that starts at its sign-in page, at an internal id that is
+  // not the process number, so there is no address for one record. Checked 2026-11-10.
+  br: { name: "Brazil", address: null },
   ca: { name: "Canada", address: (r) => addressFrom([r.applicationNumber], /^([1-9]\d{0,6})(?:-(\d{2}))?$/, (m) => ({
     number: m[2] ? `${m[1]}-${m[2]}` : m[1], href: `https://ised-isde.canada.ca/cipo/trademark-search/${m[1]}-${m[2] ?? "00"}?lang=eng` })) },
   // Rendered in a browser: a real number draws the record, and one that does not exist draws the bare
@@ -58,6 +61,12 @@ export const OFFICE_RECORD_PAGES = Object.freeze({
     return { number: n, href: `https://www.swissreg.ch/database-client/register/detail?type=trademark&lang=en&no=${encodeURIComponent(n)}` };
   }) },
   // The address the EUIPO provider already links (providers/euipo/src/row.js).
+  // OEPM's file lookup, at this host since 2025-06-03. The office writes the modality letter before the seven digits;
+  // the vendor writes it after them, sometimes with the office's check digit, which the address does not take.
+  // Only a national mark (M) is addressed: no other modality was checked. Opened a real record on 2026-11-10: the
+  // page draws it with JavaScript, and the data request the page makes returned that record.
+  es: { name: "Spain", address: (r) => addressFrom([r.applicationNumber, r.registrationNumber], /^(\d{7})\s*M\d?$/i, (m) => ({
+    number: `M${m[1]}`, href: `https://ceo.oepm.es/detalleExpediente?numExp=M${m[1]}` })) },
   eu: { name: "European Union", address: (r) => addressFrom([r.applicationNumber], /^(\d{1,9})$/, (m) => {
     const n = pad(m[1], 9);
     return { number: n, href: `https://euipo.europa.eu/eSearch/#details/trademarks/${n}` };
@@ -77,6 +86,19 @@ export const OFFICE_RECORD_PAGES = Object.freeze({
   // The register's own search opens records at exactly this address: the application number, then the
   // registration number when there is one. Opened a real record. The older search.patentstyret.no
   // addresses now answer 410 Gone.
+  // UIBM shows a record only as the answer to a submitted search form; the same request as a link finds nothing, so
+  // there is no address for one record. Checked 2026-11-10.
+  it: { name: "Italy", address: null },
+  // IMPI's MARCia. The address is RM, the year the application was filed, and the application's file number in eight
+  // digits: a wrong year finds nothing, so a record with no filing date gets no link, and the registration number is
+  // never used, because it is a different number. RM is the prefix for a mark; the vendor's records carry marks, and
+  // say nothing of a slogan's or a trade name's prefix. Opened real records on 2026-11-10, filed in 1923, 1968 and
+  // 2021: the page draws each with JavaScript, and the data request the page makes returned it.
+  mx: { name: "Mexico", address: (r) => {
+    const year = /^(\d{4})-\d{2}-\d{2}/.exec(clean(r.applicationDate))?.[1];
+    return year ? addressFrom([r.applicationNumber], /^(\d{1,8})$/, (m) => ({
+      number: m[1], href: `https://marcia.impi.gob.mx/marcas/search/details/RM${year}${pad(m[1], 8)}` })) : null;
+  } },
   no: { name: "Norway", address: (r) => addressFrom([r.applicationNumber], /^((?:19|20)\d{7})$/, (m) => {
     const reg = /^\d{1,7}$/.test(clean(r.registrationNumber)) ? clean(r.registrationNumber) : null;
     return { number: m[1], href: `https://services.patentstyret.no/search-details/trademark/${m[1]}${reg ? `-${reg}` : ""}?lang=en` };

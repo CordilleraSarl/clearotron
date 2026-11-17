@@ -73,7 +73,7 @@ test("the guard is specific to auth-disabled — it does not break the authentic
     TRADEMARK_MCP_AUTH_DISABLED: "",
     TRADEMARK_MCP_DEV: "",
     CLEAROTRON_ACCESS_FILE: "",
-    CF_ACCESS_TEAM: "", CLEAROTRON_OIDC_AUDIENCE: "", CLEAROTRON_OIDC_AUDIENCE: "",
+    CF_ACCESS_TEAM: "", CLEAROTRON_OIDC_AUDIENCE: "",
     TRADEMARK_MCP_HTTP_PORT: "0",
   });
   assert.notEqual(r.code, 0, "it still refuses — but for the AUTH reason, not the grants one");

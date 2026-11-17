@@ -170,7 +170,7 @@ refuses on the same principle when the index is stale (two clocks, `FRESHNESS_HO
 
 - `../../driver/driver.config.mjs` — the `uspto-local` entry, lazily importing `src/core.js`; its
   `credEnv` is `USPTO_LOCAL_DB`, a path rather than a key.
-- `../../driver/engine/mcp/uspto-local-server.mjs` — six of the eight neutral `register_*` tools.
+- `src/mount.js` — six of the eight neutral `register_*` tools.
   `register_image_fetch` and `register_expand_phoneme` are absent: the bulk product is text, and
   `predicates.phonetic` is `null`, so a phonetic slice defers and is disclosed.
 - `../../driver/register-capabilities.mjs` — imports `src/capabilities.js` at module load, when there

@@ -229,6 +229,14 @@ test('an unset Where is the account\'s own territories, and the stop counts what
 
   // THE DEFAULT IS THE OLD READING, so a caller that passes no inherited list is unchanged.
   assert.match(blockers(draft({ product: MULTI.key }), MULTI, 1)[0]!, /reads a region, or two or more countries/)
+
+  // A COMPANY STORES ITS PLACES AS CODES, and the rules read them as places. Read by name only, a company
+  // holding only EU was not stopped from a one-country search, and one holding only US was not told it
+  // names one country.
+  assert.match(blockers(draft({ product: FULL.key }), FULL, 1, ['EU'])[0]!, /EU is a region/)
+  assert.match(blockers(draft({ product: MULTI.key }), MULTI, 1, ['US'])[0]!, /pick a Full country search to read US on its own/)
+  assert.deepEqual([...blockers(draft({ product: MULTI.key }), MULTI, 1, ['EU', 'US', 'JP'])], [],
+    'a region and two countries is what a Multi-country focus search reads')
 })
 
 test('each product refuses exactly the geography the offering says it refuses', () => {

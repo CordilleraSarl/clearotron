@@ -4,6 +4,7 @@
 // `profiles/<key>.context.md`, validated + attached at load, frozen into the sidecar, and fed to the
 // report-overview curation stage as CONTEXT (emphasis only, D1) — never to synthesis (the rating stage).
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -75,6 +76,6 @@ test("no dead knob: stages.mjs actually consumes profile.contextPack", async () 
   const { readFileSync } = await import("node:fs");
   const { fileURLToPath } = await import("node:url");
   const { dirname, join: pjoin } = await import("node:path");
-  const src = readFileSync(pjoin(dirname(fileURLToPath(import.meta.url)), "..", "stages.mjs"), "utf8");
+  const src = driverSource("stages.mjs");
   assert.ok(src.includes("profile?.contextPack"), "the context pack must have a live consumer in stages.mjs");
 });

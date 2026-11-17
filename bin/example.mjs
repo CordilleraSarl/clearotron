@@ -392,8 +392,8 @@ if (has("--once")) {
  *
  * "Removing the demo is one directory" is a promise, and it was not quite true before: 0.1.0 wrote the
  * sign-in credential to the shared default, `~/.cordillera/portal-local-credential.json`, so a reader
- * who removed the demo base left a passphrase behind — measured on a wiped machine by the test lane,
- * against the published 0.1.0 tarball. This tree writes it inside the base, and the revocation list with
+ * who removed the demo base left a passphrase behind — measured on a wiped machine, against the
+ * published 0.1.0 tarball. This tree writes it inside the base, and the revocation list with
  * it, so the promise holds now. Every install made with 0.1.0 still has the stray copy.
  *
  * ✕ NOT AN INSTRUCTION TO DELETE. That path is ALSO where a real, non-demo install keeps the passphrase

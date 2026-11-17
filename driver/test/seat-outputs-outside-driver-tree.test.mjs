@@ -31,6 +31,7 @@
 // census at the bottom fails if a stage table appears in a file the walk does not cover. An enumerated
 // check is blind to the move, and that census is the only thing that closes it.
 import { test } from "node:test";
+import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -113,7 +114,7 @@ function writeTargets(table) {
 
 /** The `writeReturn(X.key)` targets a file's dispatches hand the seat, resolved against the real paths. */
 function writeReturnTargets(table) {
-  const src = readFileSync(join(DRIVER, table.file), "utf8");
+  const src = driverSource(table.file);
   const targets = [];
   for (const m of src.matchAll(/writeReturn\(\s*([A-Z])\.([A-Za-z][A-Za-z0-9]*)/g)) {
     const value = table.P[m[2]];

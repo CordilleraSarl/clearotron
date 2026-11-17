@@ -61,8 +61,7 @@ intersection runs in **one call**.
 
 **1. `and` binds tighter than `or`.** `A or B and niceClasses=in=(9,42)` returns 109 hits;
 `(A or B) and niceClasses=in=(9,42)` returns 47. An unparenthesised OR-stack is a **different, wider
-query that answers HTTP 200 with plausible rows**. The plugin parenthesises every group; if you ever
-hand-write RSQL through the `rsql` escape hatch, do the same.
+query that answers HTTP 200 with plausible rows**. The plugin parenthesises every group.
 
 **2. `size` has a floor of 10.** Below it *every* request 400s, whatever the query — which reads
 exactly like "the query is unsupported" — so a 400 here is ambiguous by construction. Keep a

@@ -80,7 +80,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ```
 
-## @hono/node-server@2.1.5
+## @hono/node-server@2.1.8
 
 - **Licence declared:** `MIT`
 - **Repository:** https://github.com/honojs/node-server
@@ -2480,7 +2480,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-## hono@4.13.13
+## hono@4.13.18
 
 - **Licence declared:** `MIT`
 - **Repository:** https://github.com/honojs/hono
@@ -2781,7 +2781,7 @@ ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
 IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ```
 
-## jose@6.2.14
+## jose@6.2.15
 
 - **Licence declared:** `MIT`
 - **Repository:** panva/jose
@@ -6250,7 +6250,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
 
-## undici@7.30.1
+## undici@7.30.2
 
 - **Licence declared:** `MIT`
 - **Repository:** https://github.com/nodejs/undici

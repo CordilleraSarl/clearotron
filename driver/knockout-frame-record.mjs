@@ -44,7 +44,6 @@
 import { mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";
 import { refuseUndeclared as refuseUndeclaredShared, keepIfAbsent, lastAccepted, acceptedEnvelope } from "./preserve-merge.mjs";
 // The collision predicate itself, imported. See the duplication note above: two copies of a rule are how
 // two gates come to disagree about what they are enforcing.
@@ -52,6 +51,7 @@ import { kebabCollisions } from "./search-policy.mjs";
 // The plan's own checks for the web search's lists, one definition: the call is refused with the plan's
 // sentence, so the seat hears the rule once, in the same words, whichever door it reaches first.
 import { placesDefect, spellingsDefect, useKindDefect, alternativesDefect } from "./verify-knockout.mjs";
+import { paths as runPaths } from "./run-record.mjs";
 
 const SCHEMA_VERSION = 1;
 
@@ -67,7 +67,7 @@ export function knockoutFrameFiles(runDir) {
  * directory cannot be overwritten by a sibling.
  */
 export function knockoutFrameCallPaths(runDir) {
-  const dir = driverDir(runDir, "knockout-frame-calls");
+  const dir = runPaths(runDir).knockoutFrameCalls;
   return { dir, payload: join(dir, "call-001.json"), accepted: join(dir, "accepted.json"),
     refusals: join(dir, "refusals.jsonl") };
 }

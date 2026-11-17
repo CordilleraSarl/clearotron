@@ -20,6 +20,7 @@ import { connectOffers } from "../../shared/connect-clients.mjs";
 import { namingProgram } from "../engine/probe.mjs";
 import { ENGINE_BINARIES } from "../driver.config.mjs";
 import { withFreePorts, saidPortWasTaken } from "./helpers/free-port.mjs";
+import { driverSource } from "./driver-source.mjs";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const INSTALLED = "/h/.local/share/clearotron/engines/node_modules/@anthropic-ai/claude-code/cli.js";
@@ -82,8 +83,9 @@ test("the portal's page and `clearotron connect` name the installed copy, in the
   const wsl = disk({ stdioRoutes: routes({ wsl: { distro: "Ubuntu" } }), wsl: true, nameClaude: name });
   assert.ok(words(wsl).includes(`"text":"${INSTALLED} mcp add `), "the row run inside Linux kept the bare word");
   assert.match(words(wsl), /`claude mcp list`/, "the hint that serves both sides was rewritten for one");
-  for (const file of ["driver/portal-service.mjs", "bin/connect.mjs"])
-    assert.match(readFileSync(new URL(`../../${file}`, import.meta.url), "utf8"), /nameClaude: claudeNamer\(/, `${file} does not hand its offers the rewrite`);
+  for (const [file, text] of [["driver/portal-service.mjs", driverSource("portal-service.mjs")],
+    ["bin/connect.mjs", readFileSync(new URL("../../bin/connect.mjs", import.meta.url), "utf8")]])
+    assert.match(text, /nameClaude: claudeNamer\(/, `${file} does not hand its offers the rewrite`);
 });
 
 test("a real start, with Claude only in setup's engines folder, prints a connect line that names it", { timeout: 180000, skip: process.platform === "win32" ? "the planted copy is a POSIX script" : false }, async () => {

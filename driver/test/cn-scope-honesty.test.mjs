@@ -92,14 +92,15 @@ const POLICY_JX = { level: "clearance-jx", components: { jxLanes: true } };
 const POLICY_CLEARANCE = { level: "clearance", components: { jxLanes: false } };
 const ZH_SIDECAR = { schema: 1, lanes: { zh: { depth: "candidates", jurisdictions: ["CN"] } }, scope: ["CN"] };
 
-test("zhLaneRanOnRun: true only when component + a unit flag + lane flag + frozen zh decision ALL hold", () => {
+test("zhLaneRanOnRun: true only when component + a unit record + frozen zh decision ALL hold, and the retired lane switch changes nothing", () => {
   // THIS IS NOT A GATE — it decides whether a CLIENT REPORT says the Chinese lane was not searched. Both
   // answers are a statement of fact, so both can be wrong: report "ran" and a real coverage gap is hidden;
   // report "did not run" on a run that did and the report libels its own coverage.
   const ranGrid = mkRun({ laneSidecar: ZH_SIDECAR, units: RAN_GRID });
   assert.equal(zhLaneRanOnRun(ranGrid, { searchPolicy: POLICY_JX, env: JX_ON }), true);
   assert.equal(zhLaneRanOnRun(ranGrid, { searchPolicy: POLICY_CLEARANCE, env: JX_ON }), false, "plain clearotron never ran the lane, whatever is on disk");
-  assert.equal(zhLaneRanOnRun(ranGrid, { searchPolicy: POLICY_JX, env: { CLEAROTRON_NATIVE_LANGUAGE_ZH: "0" } }), false, "lane killed ⇒ did not run");
+  // The per-language off switch is retired: a box that still sets it ran the lane all the same.
+  assert.equal(zhLaneRanOnRun(ranGrid, { searchPolicy: POLICY_JX, env: { CLEAROTRON_NATIVE_LANGUAGE_ZH: "0" } }), true, "a retired switch still decided the report's row");
   const noSidecar = mkRun({ units: RAN_GRID });
   assert.equal(zhLaneRanOnRun(noSidecar, { searchPolicy: POLICY_JX, env: JX_ON }), false, "no frozen lane decision ⇒ did not run");
 
@@ -339,8 +340,8 @@ test("scriptLaneRanOnRun: zh keeps its unit legs; ja/ko run when the FOLD accept
   // ko: a frozen decision but an EMPTY fold ⇒ nothing was searched ⇒ the row is owed
   assert.equal(scriptLaneRanOnRun(dir, "ko", { searchPolicy: POLICY_JX, env: {} }), false,
     "a lane decision with an empty fold searched nothing — an absence is a finding");
-  // the per-lane env kill applies to every lane, by name
-  assert.equal(scriptLaneRanOnRun(dir, "ja", { searchPolicy: POLICY_JX, env: { CLEAROTRON_NATIVE_LANGUAGE_JA: "0" } }), false);
+  // the retired per-language switch changes nothing, for any lane
+  assert.equal(scriptLaneRanOnRun(dir, "ja", { searchPolicy: POLICY_JX, env: { CLEAROTRON_NATIVE_LANGUAGE_JA: "0" } }), true);
   // plain clearotron never ran any lane, whatever is on disk
   assert.equal(scriptLaneRanOnRun(dir, "ja", { searchPolicy: POLICY_CLEARANCE, env: {} }), false);
   // zh keeps its own rule, and item 8 changed what that rule READS rather than what it means: one

@@ -29,6 +29,7 @@ import { createServer } from "node:http";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { makeHttpHandler } from "../portal-service.mjs";
+import { driverSource } from "./driver-source.mjs";
 
 /** Drive one request against a real handler on a real socket, and read the headers a client would get. */
 async function drive({ route, path = "/portal/api/anything", accept = "application/json" }) {
@@ -88,8 +89,9 @@ test("the credential route still declares its own stricter policy", async () => 
   // The arm above proves a route's headers SURVIVE the writer. This proves the route still SENDS them:
   // together they close the gap, because either one alone goes green when the other half is deleted.
   // Read from the source rather than driven, because reaching that route needs a whole service.
-  const src = readFileSync(fileURLToPath(new URL("../portal-service.mjs", import.meta.url)), "utf8");
-  const i = src.indexOf("/portal/api/connect-key");
+  const src = driverSource("portal-service.mjs");
+  // Found by the route's own test of the path, which moves with the route; the path itself is also named in prose elsewhere.
+  const i = src.indexOf('parts[2] === "connect-key"');
   assert.ok(i > 0, "the credential route is gone from this file — this arm is now measuring nothing");
   const region = src.slice(i, i + 6000);
   assert.match(region, /"cache-control":\s*"no-store, no-cache, must-revalidate, private"/,
@@ -101,7 +103,7 @@ test("THE RULE LIVES AT THE WRITER, so a route added tomorrow cannot miss it", a
   // A per-route rule is one a new route forgets, silently, and nothing reports a header that was never
   // written. Asserted on the source because the property is about WHERE the rule is, which no single
   // driven response can distinguish from four routes that each happen to set it.
-  const src = readFileSync(fileURLToPath(new URL("../portal-service.mjs", import.meta.url)), "utf8");
+  const src = driverSource("portal-service.mjs");
   const writer = /const send = \(res, status, obj, extra = \{\}\) => \{[\s\S]*?\n  \};/.exec(src)?.[0] ?? "";
   assert.ok(writer, "the JSON writer is not where this arm expects it — re-point it before trusting a green");
   assert.match(writer, /"cache-control": "no-store"/, "the writer does not state a caching policy");

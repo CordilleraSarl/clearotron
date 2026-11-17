@@ -34,11 +34,11 @@
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
 // — ONE definition of "present but not a link", imported rather than restated. The rule belongs to
 // findings-model.mjs, which owns the record-URL contract; a second copy here would drift and the two
 // would then disagree about the same value while both reporting themselves clean.
 import { isDeadRecordLink } from "./findings-model.mjs";
+import { paths, readJson } from "./run-record.mjs";
 
 export const CARDS_DIR = "report-cards";
 const SCHEMA_VERSION = 1;
@@ -48,7 +48,7 @@ export const cardFile = (runDir, ordinal) => join(String(runDir ?? ""), CARDS_DI
 
 /** Where the call's evidence lives, PER ORDINAL — 26 cards mean 26 captures, never one overwritten. */
 export function reportCardCallPaths(runDir, ordinal) {
-  const dir = driverDir(String(runDir ?? ""), "report-card-calls");
+  const dir = paths(String(runDir ?? "")).reportCardCalls;
   return { dir, payload: join(dir, `call-${ordinal}.json`) };
 }
 
@@ -96,7 +96,7 @@ export function findingForOrdinal(runDir, ordinal) {
  */
 export function findingsDocFor(runDir, ordinal) {
   let doc;
-  try { doc = JSON.parse(readFileSync(join(String(runDir ?? ""), "findings.json"), "utf8")); }
+  try { doc = readJson(join(String(runDir ?? ""), "findings.json")); }
   catch { return { readable: false, finding: null }; }
   if (!doc || typeof doc !== "object") return { readable: false, finding: null };
   return { readable: true, finding: (doc.findings ?? []).find((f) => String(f?.ordinal) === String(ordinal)) ?? null };

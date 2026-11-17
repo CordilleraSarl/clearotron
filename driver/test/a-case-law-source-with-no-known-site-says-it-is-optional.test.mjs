@@ -29,6 +29,8 @@ test("a source with no recorded site is called optional, and the reader is sent 
   assert.match(ldh.remedy, /A Full country search runs without it/,
     `the row does not say what still runs without it:\n${ldh.remedy}`);
   assert.doesNotMatch(ldh.remedy, /https?:\/\//, `a URL appeared for a source this build records no site for:\n${ldh.remedy}`);
+  assert.equal(ldh.remedy, "Optional, and not set up. A Full country search runs without it, and its report discloses the "
+    + "case-law gap instead of reporting no adverse case law.", "the row is not the approved sentence");
 });
 
 test("the control: a source whose site is known still names it", () => {

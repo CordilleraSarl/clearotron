@@ -116,7 +116,7 @@ export function unitsActiveVerdict({ units, probe }) {
   // red on a deploy gate; it must also never pass silently. It is named, as itself, as a warn.
   if (by.unrecognised.length)
     return { state: "warn", message: `${by.unrecognised.map(label).join(", ")} — this check does not recognise that ActiveState. `
-      + `It is NOT being called a fault (that mistake is #425) and it is NOT being called healthy either: `
+      + `It is NOT being called a fault and it is NOT being called healthy either: `
       + `the vocabulary here is systemd 255's six documented states, and this box reports one that is not among them` };
 
   // A unit that reported no ActiveState at all did not answer. The bus WAS reachable (probe.ok above),
