@@ -6753,6 +6753,12 @@
           "skips": 0,
           "todos": 0
         },
+        "start-keeps-systemds-bus-error-out-of-its-output.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
+          "skips": 3,
+          "todos": 0
+        },
         "start-refuses-on-a-box-that-has-the-services.test.mjs": {
           "tests": 6,
           "asserts": 20,

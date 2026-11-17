@@ -353,20 +353,30 @@ export function clientDoorOwner({ probeCode = null, unitActive = null, unitPort 
 }
 
 /**
+ * `systemctl --user show <unit>`, its properties as an object. Its stderr is CAPTURED, never inherited:
+ * where the user bus cannot be reached, systemctl writes "Failed to connect to bus: No medium found", and
+ * an inherited stderr printed that line into start's own output with nothing around it. A read that fails
+ * still throws, so each caller keeps its own could-not-look answer.
+ */
+export function systemctlShow(unit, props, run = execFileSync) {
+  const out = run("systemctl", ["--user", "show", unit, ...props.flatMap((p) => ["-p", p])],
+    { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+  return Object.fromEntries(out.split("\n").filter(Boolean).map((l) => {
+    const i = l.indexOf("="); return [l.slice(0, i), l.slice(i + 1)];
+  }));
+}
+
+/**
  * The two reads `clientDoorOwner` needs, against the live box.
  *
  * `systemctl --user show` in THIS FILE'S shape and without `userBusEnv()` — see the note at the
  * daemon-reload below for why this file does not pass it yet. A read that throws answers `null`, which
  * `clientDoorOwner` turns into "unknown" and therefore into today's refusal.
  */
-function liveClientDoor(unitEnvFile = unitEnvPath(), run = execFileSync) {
+export function liveClientDoor(unitEnvFile = unitEnvPath(), run = execFileSync) {
   let unitActive = null, unitPort = null;
   try {
-    const out = run("systemctl", ["--user", "show", CLIENT_DOOR_UNIT, "-p", "ActiveState", "-p", "SubState"],
-      { encoding: "utf8" });
-    const f = Object.fromEntries(out.split("\n").filter(Boolean).map((l) => {
-      const i = l.indexOf("="); return [l.slice(0, i), l.slice(i + 1)];
-    }));
+    const f = systemctlShow(CLIENT_DOOR_UNIT, ["ActiveState", "SubState"], run);
     if (f.ActiveState !== undefined) unitActive = f.ActiveState === "active" && f.SubState === "running";
   } catch { /* null — a could-not-look, which refuses */ }
   try {
@@ -2241,8 +2251,7 @@ if (isMain) {
       const type = unitTypeOf(u);
       let f = {};
       try {
-        const out = execFileSync("systemctl", ["--user", "show", u, "-p", "ActiveState", "-p", "SubState", "-p", "NRestarts", "-p", "UnitFileState"], { encoding: "utf8" });
-        f = Object.fromEntries(out.trim().split("\n").map((l) => l.split("=")));
+        f = systemctlShow(u, ["ActiveState", "SubState", "NRestarts", "UnitFileState"]);
       } catch { /* unreadable state is reported below as not-running */ }
       const verdict = unitHealthVerdict({ type, activeState: f.ActiveState ?? null, subState: f.SubState ?? null,
         unitFileState: f.UnitFileState ?? null, nRestarts: f.NRestarts ?? 0 });
