@@ -59,8 +59,9 @@ export function customerStoreDir({ env = process.env, bundledDir } = {}) {
 export function customerStoreLine(label, { dir, source }) {
   return source === "configured"
     ? `${label} ON — store=${dir} (CLEAROTRON_CUSTOMERS_DIR)`
-    : `${label} ON — store=${dir} (BUNDLED DEMO ROSTER — CLEAROTRON_CUSTOMERS_DIR is unset, so no customer `
-      + "added to a config store is visible here)";
+    : `${label} ON — store=${dir}, the folder that ships with this install (CLEAROTRON_CUSTOMERS_DIR is unset). A company `
+      + "whose profile is in a separate config store is not shown here until CLEAROTRON_CUSTOMERS_DIR is set to that store's "
+      + "profiles directory.";
 }
 
 /**

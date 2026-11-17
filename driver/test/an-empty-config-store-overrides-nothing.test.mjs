@@ -217,7 +217,14 @@ test("the boot decision, driven over every shape it can meet", async () => {
 
   r = at({ profileRepoRoot: null });
   assert.equal(r.pin, null);
-  assert.match(r.line, /^WARNING: skills overlay unset/, "no config store at all is still the hosted defect, and still warned");
+  // NOTHING SET says what is read, what is not and the remedy, each setting for what it names, as a fresh local install
+  // needs it and a hosted one that left a setting out still reads it. Design's wording (2026-11-17).
+  assert.match(r.line, /^CLEAROTRON_INSTRUCTIONS_DIR and PROFILE_REPO_ROOT are unset, so risk frameworks are read from the files that ship with this install\./,
+    "no config store at all does not say what is read");
+  assert.match(r.line, /A framework kept only in a separate config store is not read/, "nor what is not read");
+  assert.match(r.line, /set CLEAROTRON_INSTRUCTIONS_DIR to its instruction folder, or PROFILE_REPO_ROOT to the store containing that folder as skills\.$/,
+    "nor the remedy, each setting for the folder it names");
+  assert.doesNotMatch(r.line, /WARNING|SYNTHETIC/, "a fresh install is warned as a misconfigured one");
 
   r = at({ explicit: "/srv/own", exists: () => true });
   assert.deepEqual(r, { pin: null, line: null }, "an overlay the operator set, and can be read, needs no line");

@@ -9,7 +9,7 @@
 // remedy for a company whose profile is in a separate store. The words are design's (2026-11-11), whole.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { bundledRosterLine } from "../demo-posture.mjs";
+import { bundledRosterLine, rosterCountLine } from "../demo-posture.mjs";
 
 test("the line is the approved one, with the count the door read", () => {
   assert.equal(bundledRosterLine(4),
@@ -20,4 +20,19 @@ test("the line is the approved one, with the count the door read", () => {
 
 test("it no longer says every real customer is refused", () => {
   assert.doesNotMatch(bundledRosterLine(4), /Every real customer|BUNDLED demo roster|WARNING/);
+});
+
+// One company is "the 1 company"; every other count keeps "companies". Design's wording (2026-11-17).
+test("one company reads as one company, and every other word is the approved line", () => {
+  assert.equal(bundledRosterLine(1), bundledRosterLine(4).replace("the 4 companies", "the 1 company"));
+  assert.match(bundledRosterLine(0), /reads the 0 companies in/);
+});
+
+// The door's count says where it read from: the store set, or the folder that ships with this install, by its path.
+test("the door's count names its folder, and counts one customer as one", () => {
+  assert.equal(rosterCountLine(["generic"], { configured: null, bundledDir: "/opt/app/driver/profiles" }),
+    "roster: 1 customer from the folder that ships with this install, /opt/app/driver/profiles (CLEAROTRON_CUSTOMERS_DIR is unset) — [generic]");
+  assert.equal(rosterCountLine(["acme", "generic"], { configured: "/srv/store/profiles", bundledDir: "/opt/app/driver/profiles" }),
+    "roster: 2 customers from /srv/store/profiles — [acme, generic]");
+  assert.doesNotMatch(rosterCountLine([], { bundledDir: "/opt/app/driver/profiles" }), /customer\(s\)|BUNDLED/);
 });

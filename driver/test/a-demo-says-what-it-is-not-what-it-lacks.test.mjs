@@ -147,7 +147,9 @@ test("arm 4 — both processes answer from ONE composer, in different processes"
   assert.match(read("../../mcp-server/http-server.mjs"), /log\(bundledRosterLine\(roster\.length\)\)/,
     "the roster line was silenced rather than re-aimed");
   assert.match(read("../portal-service.mjs"), /SYNTHETIC framework as though it were the customer's own/,
-    "the overlay warning was silenced rather than re-aimed — it is the one that must stay loud");
+    "the warning for a configured overlay that cannot be read was silenced — it is the one that must stay loud");
+  assert.match(read("../portal-service.mjs"), /line: posture \|\| UNSET_OVERLAY_LINE/,
+    "the line for an overlay nobody set was silenced rather than re-aimed");
 
   // ONE NAME. `PORTAL_DEMO` is retired, not joined: two names for one fact is how two subsystems come to
   // disagree about it, and the old one was already wrong for a process that is not the portal.
