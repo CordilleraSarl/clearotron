@@ -1,5 +1,65 @@
 # clearotron-driver
 
+## 0.6.0-beta.0
+
+### Minor Changes
+
+- Fixed: When setup stops at a refused register credential, it now says what it had already installed, instead of saying nothing was written.
+- New: Searches on the Signa register now reach Brazil and Italy, so an order naming either country is searched there rather than reported as not covered.
+- For operators: A run on Signa now reuses an answer it already holds instead of asking the register the same question again. Set `CLEAROTRON_SIGNA_ANSWER_MEMORY=off` to ask every time.
+
+### Patch Changes
+
+- Fixed: A summary panel citing a finding the search does not have, or a recommended step resting on a finding that is gone, is now sent back for correction before delivery.
+- Fixed: The report link in the assistant's summary of a clearance now opens the report in the portal. It used to point at an address the portal does not serve.
+- Fixed: In the demo, a search ordered under the default company now opens that search's finished example instead of being refused.
+- Fixed: The first `clearotron start` on a new install no longer warns that the reports folder is not set. It records its configuration with the folders it creates, as it already did for its services.
+- Fixed: When a client asks for a full-depth Japanese- or Korean-language search that this version cannot run, the report now says so in plain words.
+- Fixed: The assistant's summary of a Knockout batch now lists every name screened, with its report link, including a name whose data could not be saved.
+- Fixed: A Knockout correction can now update another screened name when the same finding or a dependent answer requires it. Those changes go to review instead of causing the correction to be discarded.
+- Fixed: A Knockout search now delivers each name's report when the audit workbook or one name's data file cannot be written, where before it delivered nothing. The run records which file is missing, and the report, its email and the run's record offer only the files that exist.
+- Fixed: A Knockout search's email now names the product as its report does. Its subject and first line say "Knockout search", where they said "Knockout trademark review".
+- For operators: When a Knockout search fails after retrying on its own, its failure notice now says how many automatic recovery attempts it made, as a clearance's does.
+- For operators: When a Knockout search fails, its failure notice now says why it stopped and whether retrying can help, in the sentences a clearance's notice already uses. The requester's copy is unchanged.
+- For operators: A Knockout search now keeps the order it was accepted on, as a clearance does. A batch of several marks can then be resumed from the command line without its job file; before, that resume was refused as a different matter.
+- Fixed: A Knockout search paused to recover from a failure now retains the information needed to resume automatically. Previously, missing information could leave it waiting for someone to restart it.
+- Fixed: A Knockout search that reaches the AI provider's usage limit while reading the register or correcting now pauses and resumes, as a clearance does. It no longer finishes without that step.
+- Fixed: When a Knockout search fails during a stage because a credential or configuration is invalid, it now stops retrying and sends the same failure notice as a clearance.
+- Fixed: Installed from a package file inside a project folder, setup and `clearotron doctor` no longer warn that a different `clearotron` is earlier on your PATH when it is the same install, and the commands they print use the plain `clearotron` name.
+- Fixed: The report and its email no longer flag a party named in a recommended step as unexplained when the report already shows that party among its open coverage items or its web and marketplace names.
+- Fixed: A recheck can now flag a previously excluded record that a correction added to the report, so that flag no longer leaves the delivery marked as unchecked.
+- Fixed: A report no longer reads as clear when a repeated review says so while an open point found by a check still stands; it now lists that point.
+- For operators: Re-rendering a published report now refuses one made by a different version of Clearotron, and leaves its saved report as it was.
+- Fixed: Where a web or marketplace name rests on the run's own common-law search record, the report now says so in words. It used to print that record's file name as a link that opened nothing.
+- Fixed: A clearance that resumes after its register cross-checks were added keeps them in its audit record.
+- Fixed: A clearance search that resumes now runs a step again when its saved work has no record of what it was made from. Running a register step again no longer pays again for answers the search already holds.
+- Fixed: A clearance interrupted just after its report was published now sends the same covering email when it resumes, with the link to download the audit workbook. Before, the resumed email left that link out.
+- Fixed: A Knockout search resumed without its original order now keeps each name's own classes and reference as the order gave them. Before, the resume could search a name across all the batch's classes instead.
+- Fixed: A Knockout search that resumes no longer searches the web again for what a filing's owner sells when it already holds that answer. Before, every resume paid for that search again.
+- Fixed: A Knockout search interrupted just after its report was published no longer publishes it a second time when it resumes; it delivers the report it already published, as a clearance does.
+- Fixed: A Knockout search that resumes after something a step read has changed, such as its plan, now runs that step again, as a clearance does. Before, it could deliver a rating of the earlier plan.
+- Fixed: A search that stops and resumes now continues on the register it started on, even if the register setting changed in between. If this server cannot use that register or AI engine, the search waits and resumes by itself on one that can.
+- Fixed: A search that stopped before its search type was settled now resumes as the search that was ordered, Knockout search included. Before, it could be delivered under the name of a search type no longer offered, or refused.
+- Fixed: A search that stops and resumes now finishes on the AI engine it started on, even if the engine setting changed in between. Before, a resumed search switched to whichever engine was set at the time, and its record did not say so.
+- Fixed: When the review flags a coverage line, a recommended step or a summary section, the correction now goes to that part by its address, not by matching words. A flag that names a finding the review was not given is sent back to the reviewer at once.
+- For operators: A run resumed outside the queue that pauses for an automatic retry after its report is published now resumes on its own. It used to stay paused until someone resumed it again.
+- Fixed: `clearotron run` on an install with no AI or register chosen now says what is missing and how to set it up, as `clearotron doctor` does. It used to name a program nobody had chosen.
+- Fixed: A search gap that a run recorded twice is now listed once in its report.
+- Fixed: A search step that runs again, after a retry or a resume, no longer sends a web research question it already has the answer to. Before, every rerun paid for those questions again.
+- For operators: A stopped clearance now records what it spent up to the stop in the account's usage and refreshes the run list, as a Knockout search does.
+- For operators: A search stopped by request now reads as stopped in the staff run list, with the reason its stop recorded. Before, it read as running until newer searches pushed it off the list.
+- For operators: `clearotron update` now waits while a search is parked, as it already waited for one that is running. A search started before an update is no longer resumed after it: it ends with the usual failure notice, and nothing is asked of the register again.
+- Fixed: Closing the terminal window that runs `clearotron start` or `clearotron demo` now stops it completely, as its banner says. It used to keep running at full processor use and leave the demo's folder behind.
+- Fixed: With no AI chosen, `clearotron doctor` no longer lists a program's path among what a search needs.
+- Fixed: When no AI is chosen, `clearotron doctor` now prints where setup installed the AI program and how to sign it in, as the guides say it does.
+- Fixed: When findings for the same conflict are grouped, each court decision now appears under its own finding.
+- Fixed: Installation settings now show the setup command for a missing engine program as a command, without the backticks around it.
+- Fixed: Knockout reports now call their scale the Knockout risk scale and its middle level Moderate, as clearance reports do, and clearance reports call theirs the Standard risk scale.
+- Fixed: Leaving New clearance before changing anything no longer asks whether to discard unsaved changes.
+- Fixed: New clearance now stops a search that a company's own territories cannot fill, as it already did for territories typed into the form.
+- New: A Spanish or Mexican registration found on the Signa register now links to the office's own page for that registration. Brazilian and Italian registrations are cited by number.
+- Fixed: In the demo, New clearance now says that new searches are unavailable and that the example report, its audit trail and the assistant connection need no engine, instead of saying they are live right now.
+
 ## 0.5.1
 
 ### Patch Changes
