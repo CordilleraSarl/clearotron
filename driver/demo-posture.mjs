@@ -138,9 +138,19 @@ export function demoPostureLine(env = process.env, { roster, projects } = {}) {
   return `${head}: it carries ${carries}, and ${reports} ready to open.${unreal}`;
 }
 
+/**
+ * The door's count of the companies it read, and from where: the store set, or the folder that ships with this install.
+ * One company is "1 customer". PURE.
+ */
+export function rosterCountLine(roster, { configured = null, bundledDir }) {
+  const n = roster.length;
+  const from = configured || `the folder that ships with this install, ${bundledDir} (CLEAROTRON_CUSTOMERS_DIR is unset)`;
+  return `roster: ${n} ${n === 1 ? "customer" : "customers"} from ${from} — [${roster.join(", ")}]`;
+}
+
 /** The boot line for a door reading the company folder that ships with this install. PURE. */
 export function bundledRosterLine(count) {
-  return `CLEAROTRON_CUSTOMERS_DIR is unset, so start_run reads the ${count} companies in the folder that ships with this install `
+  return `CLEAROTRON_CUSTOMERS_DIR is unset, so start_run reads the ${count} ${count === 1 ? "company" : "companies"} in the folder that ships with this install `
     + "(driver/profiles). A company absent from that folder is refused with \"names no known customer\". If its profile is in a "
     + "separate config store, set CLEAROTRON_CUSTOMERS_DIR to that store's profiles directory.";
 }

@@ -30,7 +30,7 @@ import { doorPostureVerdict } from "./door-posture.mjs";   // — say when this 
 // The local key door: a second listener on a unix socket, so a scoped access key has
 // a path that no tunnel can forward to and the TCP door never learns about keys.
 import { keyDoorRefusal, openKeyDoor, KEY_SOCKET_MODE } from "./key-socket.mjs";
-import { demoPostureLine, bundledRosterLine } from "../driver/demo-posture.mjs";   // — the two mis-aimed warnings answer from one place
+import { demoPostureLine, bundledRosterLine, rosterCountLine } from "../driver/demo-posture.mjs";   // — the two mis-aimed warnings answer from one place
 import { createServer } from "node:http";
 import { randomUUID } from "node:crypto";
 import { fileURLToPath } from "node:url";
@@ -275,11 +275,10 @@ if (isMain) {
   // A warning only. A roster this door cannot read must never stop it starting: the read-only tools
   // are useful without it, and failing closed here would turn a config slip into an outage.
   try {
-    const { loadProfiles } = await import("../driver/profiles.mjs");
+    const { loadProfiles, profilesStoreDir } = await import("../driver/profiles.mjs");
     const profiles = loadProfiles({ force: true });
     const roster = [...profiles.keys()].sort();
-    const where = envFrom(process.env, "CLEAROTRON_CUSTOMERS_DIR") || "(unset — BUNDLED demo roster at driver/profiles)";
-    log(`roster: ${roster.length} customer(s) from ${where} — [${roster.join(", ")}]`);
+    log(rosterCountLine(roster, { configured: envFrom(process.env, "CLEAROTRON_CUSTOMERS_DIR") || null, bundledDir: profilesStoreDir }));
     // — SAME FACT, DIFFERENT READER. A line about which companies a store refuses is
     // useless to a demo visitor, who has none and wants none; what a first-time reader needs
     // is what the demo IS. Composed once, in driver/demo-posture.mjs, because the other mis-aimed

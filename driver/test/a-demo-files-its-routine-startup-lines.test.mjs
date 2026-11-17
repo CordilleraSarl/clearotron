@@ -19,7 +19,7 @@ const START = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "bin", "
 const HEALTHY = [
   "[trademark-artifacts-http] auth ON — access key required on every request (no auth proxy in front), loopback only, allowedHosts=[127.0.0.1:18861, localhost:18861]",
   "[trademark-artifacts-http] key path: none (TRADEMARK_MCP_KEY_SOCKET is not set), so a program on this machine cannot use an access key here; the client door accepts them",
-  "[trademark-artifacts-http] roster: 2 customer(s) from /tmp/trademark-demo/config/profiles — [demo-brand-owner, generic]",
+  "[trademark-artifacts-http] roster: 2 customers from /tmp/trademark-demo/config/profiles — [demo-brand-owner, generic]",
   "[trademark-artifacts-http] This is `clearotron demo`: it carries Demo Brand Owner, rating under its own framework, with 1 project, and 4 finished clearance reports ready to open. Nothing here is configured against a real customer, and nothing needs to be.",
   "[trademark-artifacts-http] listening on http://127.0.0.1:18861/mcp — READ-ONLY staff surface, firmDomains=[], auth ON (access key)",
   "[portal-service] auth ON — local sign-in, one user (demo@localhost), loopback only",
