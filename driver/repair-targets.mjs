@@ -130,11 +130,14 @@ const CITATION_CORRECTION = "The listed references point to findings that have b
   + "Reassess the affected answers, actions, and conclusions against the surviving findings. "
   + "Cite a surviving finding only where its evidence supports the statement; otherwise correct the statement. "
   + "Preserve unaffected work and record the corrections through the existing correction tool.";
+// A forward step's repair adds design's instruction for the step itself (2026-11-17), word for word: a step is read by its
+// text and the parties it names as well as its citations. The overview's repair keeps the general instruction alone.
+const ACTION_REASSESSMENT = "Reassess the action's text as well as its citations, including each party it names. If its only support was withdrawn or rejected, remove the action; removing its citations or making it a run-level action does not preserve a valid basis. Where surviving evidence supports only part of an action, keep that part and remove the unsupported part, including names that belonged only to it. Do not restore a withdrawn finding or promote a declined record merely to introduce a name. Preserve any independently supported open identification task through the existing unidentified-proprietor route, with its held source and named open coverage row.";
 
 /** A forward step's citations in the same words, each reference naming the step that holds it. PURE. */
 function actionCitationDetail(cites) {
   const each = cites.map((c) => `action ${c.action}, finding ${c.ordinal} (${c.withdrawn ? "withdrawn" : "absent"})`);
-  return `References: ${each.join("; ")}. ${CITATION_CORRECTION}`;
+  return `References: ${each.join("; ")}. ${CITATION_CORRECTION} ${ACTION_REASSESSMENT}`;
 }
 
 /** The overview's citation fault in words, for its repair. PURE. */
