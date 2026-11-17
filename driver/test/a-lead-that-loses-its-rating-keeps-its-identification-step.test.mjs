@@ -3,10 +3,9 @@
 //
 // A LEAD THAT LOSES ITS RATING IN THE CORRECTION KEEPS ITS IDENTIFICATION STEP.
 //
-// A lead whose proprietor nothing the run holds identifies carries no band. It leaves as one run-level identification
-// step, an open coverage row of its area that names it, and a declination of its source as `owner-unidentified`. A
-// first draft can rate such a lead, and the correction then withdraws the rating and turns the step that cited it into
-// that identification step, under the same id, with no citation. The save keeps a step whose only support was withdrawn
+// A correction can withdraw a lead's rating because nothing the run holds identifies its proprietor, and turn the step
+// that cited the rating into a run-level step asking who stands behind the lead, under the same id, with no citation,
+// beside an open coverage row of its area that names the lead. The save keeps a step whose only support was withdrawn
 // off the page when a save uncites it; that hold must not take the identification step with it. A step that names a
 // party only the withdrawn finding carried is still held. Every mark and owner here is invented.
 import { test } from "node:test";
@@ -16,8 +15,6 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { recordSynthesis, FINDINGS_FILE } from "../synthesis-record.mjs";
-import { recordDeclinations, readDeclinations } from "../declination-tool.mjs";
-import { normalizeRecordUri } from "../registry-fidelity.mjs";
 import { buildOnlyYouSection } from "../pipeline.mjs";
 import { actionBoundLineChecks, referenceChecks, pageNameLines } from "../predelivery-lint.mjs";
 import { deriveActionConditions } from "../findings-model.mjs";
@@ -35,7 +32,6 @@ const LEAD_URI = "/mark/us/95000002";
 // The first draft rated the lead with an owner nobody had identified.
 const PARTIES = [["Halvorne Works", "TESSARIN"], ["Unverified", "VELLICOR QUEST"]];
 const WITHDREW = "The record names no applicant or proprietor, and no source the run holds identifies one, so the lead carries no band.";
-const GROUND = "The fetched record shows the mark and its class 9 goods; it names no applicant or proprietor, and no other held source does.";
 
 const FIRST_STEPS = [
   { id: 1, kind: "senior-clearance", text: "Clear TESSARIN with Halvorne Works before filing.", ordinals: [1] },
@@ -64,15 +60,13 @@ function firstRecord(owner) {
 const dirs = [];
 test.after(() => { for (const d of dirs) rmSync(d, { recursive: true, force: true }); });
 
-/** A run whose first draft rated the lead, with its source declined as `owner-unidentified` at the correction. */
+/** A run whose first draft rated the lead. */
 function rated(owner) {
   const dir = mkdtempSync(join(tmpdir(), "identification-step-"));
   dirs.push(dir);
   mkdirSync(driverDir(dir), { recursive: true });
   const first = firstRecord(owner);
   assert.equal(recordSynthesis(dir, { narrative: NARRATIVE, findings: first }).refused, null, "the first save was refused");
-  recordDeclinations({ runDir: dir, rows: [{ uri: LEAD_URI, mark: "VELLICOR QUEST", owner: "", classes: [9], status: "REGISTERED" }], scope: {} },
-    { declinations: [{ row_index: 0, reason: "owner-unidentified", grounds: GROUND }] });
   return { dir, first };
 }
 /** The correction, in one save: the lead's rating withdrawn, the steps and coverage rows as given. */
@@ -110,7 +104,6 @@ test("the step that cited the lead's withdrawn rating comes back as its identifi
   const ri = reference(after);
   assert.equal(ri.pass, true, `the page does not introduce the lead the step names: ${JSON.stringify(ri.orphans)}`);
   assert.ok(after.coverage.some((c) => c.state === "open" && c.note.includes(LEAD)), "the open coverage row naming the lead is gone");
-  assert.equal(readDeclinations(run.dir).byUri.get(normalizeRecordUri(LEAD_URI))?.reason, "owner-unidentified", "the lead's source is not held");
 });
 
 test("an identification step sent under a new id is the writer's as sent", () => {
