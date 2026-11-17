@@ -353,6 +353,25 @@ export function clientDoorOwner({ probeCode = null, unitActive = null, unitPort 
 }
 
 /**
+ * What `start` says about the grants file it wrote: the file first, then what was filed in it.
+ *
+ * THE FILE IS NAMED BEFORE "filed there". A file that already named this person, given an organisation for
+ * the first time, changed only the organisation; the line naming the file printed only when the file was
+ * created or a person was added, so "there" pointed at nothing (measured in testing, 2026-11-17).
+ */
+export function grantsFileLines({ existed, changed, path, user, organisation, organisations = 0, nameOne }) {
+  const lines = [];
+  if (!existed) lines.push(`  created        ${path} — ${user}: Run, Manage, access to everything`);
+  else if (changed.includes("person"))
+    lines.push(`  grants         ${path} named nobody, so ${user} was added: Run, Manage, access to everything`);
+  else if (changed.includes("organisation")) lines.push(`  grants         ${path}`);
+  if (changed.includes("organisation")) lines.push(`                 organisation "${organisation}", filed there — rename it there too`);
+  else if (changed.includes("person") && !organisations)
+    lines.push(`                 no organisation named yet — \`${nameOne}\` files the first one`);
+  return lines;
+}
+
+/**
  * `systemctl --user show <unit>`, its properties as an object. Its stderr is CAPTURED, never inherited:
  * where the user bus cannot be reached, systemctl writes "Failed to connect to bus: No medium found", and
  * an inherited stderr printed that line into start's own output with nothing around it. A read that fails
@@ -1587,12 +1606,9 @@ if (isMain) {
         try { atomicWrite(paths.grants, `${JSON.stringify(seeded.grants, null, 2)}\n`); }
         catch (e) { fatal(`could not write the grants file at ${paths.grants} (${String(e?.message ?? e)}).`); }
       }
-      if (!existing) say(`  created        ${paths.grants} — ${user}: Run, Manage, access to everything`);
-      else if (seeded.changed.includes("person"))
-        say(`  grants         ${paths.grants} named nobody, so ${user} was added: Run, Manage, access to everything`);
-      if (seeded.changed.includes("organisation")) say(`                 organisation "${organisation}", filed there — rename it there too`);
-      else if (seeded.changed.includes("person") && !Object.keys(seeded.grants.tenants ?? {}).length)
-        say(`                 no organisation named yet — \`${reachableCommand('start --organisation "<name>"')}\` files the first one`);
+      for (const line of grantsFileLines({ existed: Boolean(existing), changed: seeded.changed, path: paths.grants, user,
+        organisation, organisations: Object.keys(seeded.grants.tenants ?? {}).length,
+        nameOne: reachableCommand('start --organisation "<name>"') })) say(line);
       // REPORTED, NOT REPAIRED. A file that names other people is somebody's decision, and adding this
       // address to it would give access to everything to an address nobody enrolled.
       if (seeded.unadmitted)
