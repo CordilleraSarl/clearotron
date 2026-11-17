@@ -133,7 +133,7 @@ import { atomicWrite } from "./run-record.mjs";
 import { writeOutboxPacket } from "./outbox.mjs";
 import { parseCaseLawProfiles, joinCaseLawProfiles } from "./publish/parse.mjs"; import { buildAuditMd } from "./publish/audit-from-spine.mjs";
 import { lastAcceptedMatterFrame, withFrameClasses, frameIdentifiedClassRows, frameHouseElementCandidate, readInstructedScope } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed; and the classes it judged necessary beyond the instructed ones, each with its reason, which the plan compile gives one identical-mark question apiece (decision 18)
-import { bandShapeGoods, instructedOrder, goodsEvidence } from "./record-goods.mjs";   // — the band's goods, read from the run's own records, so the shape can sort by the client's goods
+import { bandShapeGoods, shapeGoodsTest, instructedOrder, goodsEvidence } from "./record-goods.mjs";   // — the band's goods, read from the run's own records, so the shape can sort by the client's goods
 import { frameWebChoiceFor, frameAskedForWebGrid, webGridOf } from "./web-grid.mjs";   // — the web grid the matter frame decides: its stores, its forms, what it set aside
 import { mintSupplementalQid, stableStringify } from "./register-plan.mjs";
 import { excludeHouseElement, verifyHouseElementOwnership, resolveRegions as resolvePlanRegions, HOUSE_ELEMENT_RECEIPT, rowOutsideProviderOffices } from "./register-plan.mjs";
@@ -450,7 +450,7 @@ export function takeSlicesOutOfTheBand(P, slices) {   // @internal
 // `named_band_*` tokens — a parse miss is a stage fail with the token, never a hard crash. mergeNamedBands
 // de-dups enumerated records by record_id and preserves every crowd descriptor. Returns the merged band
 // object {enumerated, crowds} plus { axes:[…], invalid:[{axis,reason}] } so the caller can flag a bad axis.
-export function mergeRegisterBands(P, axes = []) {   // @internal
+export function mergeRegisterBands(P, axes = [], { orderClasses = null, goodsTest = null } = {}) {   // @internal
   const recorded = recordedSlicesByAxis(P);
   const bands = [];
   const merged = [];
@@ -486,7 +486,7 @@ export function mergeRegisterBands(P, axes = []) {   // @internal
       invalid.push({ axis: a, reason: String(e.message).slice(0, 120) });
     }
   }
-  return { band: mergeNamedBands(bands), axes: merged, invalid };
+  return { band: mergeNamedBands(bands, { orderClasses, goodsTest }), axes: merged, invalid };
 }
 
 // Merge the per-axis bands and write the UNION to register-named-band.json (atomic temp+rename) so Layer B's
@@ -930,7 +930,7 @@ export function remergeIfBandsMoved(ctx, why, { refusing = (bytes) => stagesRefu
   const now = axisBandsFingerprint(P, ctx.axes);
   if (now === ctx.bandsMergedAt || now === ctx.bandsRefusedAt) return false;   // unmoved, or already refused as it stands
   try {
-    const merged = mergeRegisterBands(P, ctx.axes ?? []);
+    const merged = mergeRegisterBands(P, ctx.axes ?? [], bandTrim(ctx));
     if (!merged.invalid.length) {
       const bytes = Buffer.byteLength(namedBandText(merged.band));
       const stages = refusing(bytes);
@@ -994,7 +994,7 @@ export const namedBandText = (band) => JSON.stringify(band) + "\n";   // @intern
 export function deriveNamedBand(ctx, merged = null) {   // @internal — driven by its test with a run's own files
   const P = ctx.paths;
   const axes = ctx.axes ?? [];
-  const { band, axes: ok, invalid } = merged ?? mergeRegisterBands(P, axes);   // a caller that measured the merge first hands it in
+  const { band, axes: ok, invalid } = merged ?? mergeRegisterBands(P, axes, bandTrim(ctx));   // a caller that measured the merge first hands it in
   const mergedFrom = axisBandsFingerprint(P, axes);
   if (invalid.length) {
     const detail = invalid.map((x) => `${x.axis}:${x.reason}`).join("; ");
@@ -1190,8 +1190,7 @@ function deriveBandShape(ctx, band) {
     try { if (existsSync(P.crowdContext)) crowdContext = JSON.parse(readFileSync(P.crowdContext, "utf8")); }
     catch { /* evidence artifact unreadable — the shape's crowds simply carry no join */ }
     // The instructed classes and those the frame added for the client's own goods (decision 18, ruled 2026-09-21): a live identical record in either is a floor.
-    let inScopeClasses = []; try { inScopeClasses = inScopeClassList(ctx.job, ctx.profile).map(String); } catch { inScopeClasses = (ctx.job?.classes ?? []).map(String); }
-    inScopeClasses = withFrameClasses(inScopeClasses, P.runDir);
+    const inScopeClasses = bandClasses(ctx);
     // P2-A (charter P2d) — the exact-identity POSITIONS projection rides every shape derivation, so
     // the identity collapse exists BEFORE any digest reads the band. The detail index (registration
     // numbers, IR-base linkage, Madrid designations) comes from _records/ — the fields search rows
@@ -7618,6 +7617,21 @@ export function readFindingsForReport(P) {
 // The matter's FULL in-scope Nice-class set (incl. services 42/44) — declared classes (top-level OR per-mark)
 // else the profile defaults. The dangerous-band floor + its coverage gate must span ALL of these, never a
 // goods-only subset (the VELTRIPHEN services-class miss). Strings, deduped.
+/**
+ * The classes this run's band is read in: the instructed ones, then those the frame added for the client's own goods
+ * (decision 18). One answer for two readers: the band shape, where a live identical mark in any of them is a floor, and
+ * the merged band, which carries goods text for these classes only (named-band.mjs `rowAsHanded`). IMPURE: reads the
+ * accepted frame.
+ */
+// What the merge needs to set goods text aside: the order's classes, and the shape's goods-test words, whose answer
+// for the set-aside wording the merge keeps (named-band.mjs `rowAsHanded`). IMPURE: reads the run's frame and manifest.
+const bandTrim = (ctx) => ({ orderClasses: bandClasses(ctx), goodsTest: ctx?.paths ? shapeGoodsTest(ctx.paths) : null });
+
+export function bandClasses(ctx) {   // @internal — driven by its test
+  let classes = [];
+  try { classes = inScopeClassList(ctx?.job, ctx?.profile).map(String); } catch { classes = (ctx?.job?.classes ?? []).map(String); }
+  return withFrameClasses(classes, ctx?.paths?.runDir);
+}
 export function inScopeClassList(job, profile) {   // @internal — also read by scripts/register-plan-shape.mjs, which must resolve scope exactly as the run did
   const fromMarks = Array.isArray(job?.marks) ? job.marks.flatMap((m) => (Array.isArray(m?.classes) ? m.classes : [])) : [];
   const declared = [...(Array.isArray(job?.classes) ? job.classes : []), ...fromMarks];

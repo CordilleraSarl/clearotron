@@ -15,6 +15,7 @@
 // UNKNOWN IS NOT A MISMATCH. A record with no goods on file passes a goods filter, the way a record that
 // names no class passes the class scope (band-shape.mjs `inScope`): a filter must never hide a record for
 // what the run simply does not hold.
+import { createHash } from "node:crypto";
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
@@ -280,6 +281,14 @@ export function rowGoods(row, pages = null) {
     const page = mark && serial ? savedPageStatement(pages, serial, whole.classes[0], whole.text) : null;
     out.push(page ? { ...whole, text: page.text, page: { question: page.question } } : { ...whole, ...mark });
   }
+  // A CLASS WHOSE TEXT THE MERGED BAND SET ASIDE (named-band.mjs `rowAsHanded`, outside the order's classes) is an entry
+  // marked `setAside` with no text: the class is on the record, and its wording is not here, which establishes nothing
+  // about it. It is never the register listing no goods, and never a search not made.
+  // Where the merge saved the shape's own goods test's answer on the record's whole wording (`setAsideTestAnswer`), the
+  // entry carries it, and only a test on the same word list reads it (`goodsWordCounter`'s `setAsideTest`).
+  const aside = Array.isArray(row?.goods_set_aside?.classes) ? row.goods_set_aside.classes : [];
+  const test = row?.goods_set_aside?.test && typeof row.goods_set_aside.test === "object" ? row.goods_set_aside.test : null;
+  for (const n of aside) out.push({ classes: [String(n)], text: "", setAside: true, ...(test ? { test } : {}) });
   return out.length ? out : null;
 }
 
@@ -292,16 +301,19 @@ export const statementCut = (goods) => (goods ?? []).some((g) => g?.cut === true
 
 /** Is a statement of these goods one whose completeness is not established (`rowGoods`, `recordGoods`)? PURE. */
 export const completenessUnknown = (goods) => (goods ?? []).some((g) => g?.unknown === true);
-/** Could words cut off, or not shown, from these goods be the client's? Then a statement matching none is unknown. PURE. */
-const notWhole = (goods) => statementCut(goods) || completenessUnknown(goods);
+/** Was a class's wording set aside from the merged band (`rowGoods`)? Its words may be the client's. PURE. */
+export const statementSetAside = (goods) => (goods ?? []).some((g) => g?.setAside === true);
+/** Could words cut off, not shown, or set aside from these goods be the client's? Then a statement matching none is unknown. PURE. */
+const notWhole = (goods) => statementCut(goods) || completenessUnknown(goods) || statementSetAside(goods);
 
-/** How many records rest on each kind of goods evidence: a held body, a row's whole statements, a row's statements cut short or not established whole, or none. PURE. */
+/** How many records rest on each kind of goods evidence: a held body, a row's whole statements, a row's statements cut short or not established whole, a row whose other classes' wording was set aside, or none. PURE. */
 export function goodsEvidence(records, goods) {
-  const out = { held: 0, complete: 0, cut: 0, unknown: 0, none: 0 };
+  const out = { held: 0, complete: 0, cut: 0, unknown: 0, setAside: 0, none: 0 };
   for (const r of Array.isArray(records) ? records : []) {
     if (goods?.held?.(r)) { out.held++; continue; }
     const g = goods ? goods.of(r) : null;
-    if (!g) out.none++; else if (statementCut(g)) out.cut++; else if (completenessUnknown(g)) out.unknown++; else out.complete++;
+    if (!g) out.none++; else if (statementCut(g)) out.cut++; else if (completenessUnknown(g)) out.unknown++;
+    else if (statementSetAside(g)) out.setAside++; else out.complete++;
   }
   return out;
 }
@@ -338,13 +350,16 @@ export function goodsWordForms(word) {
  * word or phrase matches its singular and plural forms (`goodsWordForms`), at word boundaries, never as the
  * start of a longer word. PURE.
  */
-export function goodsWordCounter(words, { stems = false } = {}) {
+export function goodsWordCounter(words, { stems = false, setAsideTest = false, testKey = null } = {}) {
   // A phrase's words are separated by spaces or hyphens alike: "mobile phone" is "mobile-phone".
   const phrase = (w) => w.split(/[\s-]+/).filter(Boolean).map((x) => (stems ? `(?:${goodsWordForms(x).map(escape).join("|")})` : escape(x))).join("[\\s-]+");
-  const res = (Array.isArray(words) ? words : [words])
-    .map((w) => fold(w).trim()).filter(Boolean)
-    .map((w) => new RegExp(`(^|[^\\p{L}\\p{N}])${phrase(w)}($|[^\\p{L}\\p{N}])`, "u"));
+  const list = (Array.isArray(words) ? words : [words]).map((w) => fold(w).trim()).filter(Boolean);
+  const res = list.map((w) => new RegExp(`(^|[^\\p{L}\\p{N}])${phrase(w)}($|[^\\p{L}\\p{N}])`, "u"));
+  const key = setAsideTest ? (testKey ?? goodsTestKey(words, { stems })) : null;
   return (goods) => {
+    // A record whose wording the merge set aside is read on the answer the merge saved for this same list.
+    const saved = key ? savedAnswer(goods, key) : undefined;
+    if (saved !== undefined) return !res.length || saved == null ? null : list.filter((w) => saved.has(w)).length;
     const readable = (goods ?? []).filter((g) => g.en !== false);
     if (!res.length || !readable.length) return null;
     const text = fold(readable.map((g) => (g.alt ? `${g.text}\n${g.alt}` : g.text)).join("\n"));
@@ -352,6 +367,34 @@ export function goodsWordCounter(words, { stems = false } = {}) {
     return n === 0 && (classUnread(goods) || notWhole(goods)) ? null : n;
   };
 }
+
+/**
+ * THE SHAPE'S OWN TEST, ANSWERED ON THE WORDING THE MERGE HELD. Before a class's wording is set aside (named-band.mjs
+ * `rowAsHanded`), the merge runs the band shape's goods test (`shapeGoodsTest`) on the record's whole wording, every
+ * statement joined as the test joins them, and saves the answer on the record with a key for the word list: the words
+ * matched, an empty list for a known zero, or null where the test could not tell (wording cut, completeness not
+ * established, or a class in no language the engine reads). A test on that same list returns the saved answer for the
+ * record as a whole, so a phrase across the boundary of a removed statement is neither lost nor made. Any other list,
+ * such as a lookup's own goods words, is not answered, and a set-aside class stays "cannot tell" to it. The answer
+ * describes the wording at the merge: a register page the run saves later is read by `band_record`, not by it. PURE.
+ */
+export function goodsTestKey(words, { stems = false } = {}) {
+  const list = [...new Set((Array.isArray(words) ? words : [words]).map((w) => fold(w).trim()).filter(Boolean))].sort();
+  return createHash("sha256").update(JSON.stringify({ stems: Boolean(stems), words: list })).digest("hex").slice(0, 16);
+}
+export function setAsideTestAnswer(statements, { words = [], stems = false } = {}) {
+  const list = (Array.isArray(words) ? words : [words]).map((w) => String(w ?? "").trim()).filter(Boolean);
+  if (!list.length || !Array.isArray(statements) || !statements.length) return null;
+  return { key: goodsTestKey(list, { stems }), matched: goodsWordsMatched(list, { stems })(statements) };
+}
+// The answer the merge saved for a record, where it saved one for this word list: the folded words matched, or null
+// where the test could not tell. undefined where nothing was saved for this list, and the record is read as it stands.
+const savedAnswer = (goods, key) => {
+  const aside = (goods ?? []).filter((g) => g?.setAside === true);
+  if (!aside.length || !aside.every((g) => g?.test?.key === key)) return undefined;
+  const matched = aside[0].test.matched;
+  return Array.isArray(matched) ? new Set(matched.map((w) => fold(w).trim())) : null;
+};
 
 /**
  * Does a class of these goods have no statement the engine can read? A record whose readable statements match
@@ -375,10 +418,13 @@ export function classUnread(goods) {
  * null when the record has no goods on file or there are no words. A shape line shows them as "k of N:
  * the words", which is the goods ground made visible on the line. PURE.
  */
-export function goodsWordsMatched(words, { stems = false } = {}) {
+export function goodsWordsMatched(words, { stems = false, setAsideTest = false } = {}) {
   const list = (Array.isArray(words) ? words : [words]).map((w) => String(w ?? "").trim()).filter(Boolean);
+  const key = setAsideTest ? goodsTestKey(list, { stems }) : null;
   const tests = list.map((w) => [w, goodsWordCounter([w], { stems })]);
   return (goods) => {
+    const saved = key ? savedAnswer(goods, key) : undefined;
+    if (saved !== undefined) return !list.length || saved == null ? null : list.filter((w) => saved.has(fold(w).trim()));
     if (!list.length || !(goods ?? []).some((g) => g.en !== false)) return null;
     const hit = tests.filter(([, t]) => t(goods) === 1).map(([w]) => w);
     return hit.length === 0 && (classUnread(goods) || notWhole(goods)) ? null : hit;
@@ -419,9 +465,22 @@ export function instructedOrder(P, job = null) {
  * band's, so the shape tests goods whenever either is held. The saved pages are read once, for the first record with
  * no body held.
  */
-export function bandShapeGoods(P, records = []) {
+/**
+ * The words the band shape's goods test reads: the particular goods when the variants stage names them, as stems, else
+ * the goods words (ruled 2026-10-12), with the manifest they came from. The merge reads the same list, to record the
+ * test's answer for wording it sets aside (named-band.mjs `rowAsHanded`). IMPURE: reads the run's variant manifest.
+ */
+export function shapeGoodsTest(P) {
   let model = null;
   try { if (existsSync(P.variantManifestModel)) model = parseVariantManifestModel(readFileSync(P.variantManifestModel, "utf8")); } catch { model = null; }
+  const product = Array.isArray(model?.product_words) && model.product_words.length;
+  const words = product ? model.product_words : Array.isArray(model?.goods_words) ? model.goods_words : [];
+  // the word list the shape groups on is matched as stems, whichever source it came from
+  return { model, words, stems: true, source: product ? "product_words" : words.length ? "goods_words" : "none" };
+}
+
+export function bandShapeGoods(P, records = []) {
+  const { model, words, source, stems } = shapeGoodsTest(P);
   let searched = "";
   try {
     const plan = readJson(P.registerPlan);
@@ -429,16 +488,13 @@ export function bandShapeGoods(P, records = []) {
   } catch { searched = ""; }
   const manifestDominant = String(model?.dominant_element ?? "");
   const index = bandGoodsIndex(P.runDir);
-  // The particular goods when the variants stage names them, as stems, else the goods words (ruled 2026-10-12).
-  const product = Array.isArray(model?.product_words) && model.product_words.length;
-  const words = product ? model.product_words : Array.isArray(model?.goods_words) ? model.goods_words : [];
-  const stems = true;   // the word list the shape groups on is matched as stems, whichever source it came from
-  const hits = goodsWordCounter(words, { stems });
+  // A set-aside class is read through the answer the merge recorded for this same list (`setAsideTestAnswer`).
+  const hits = goodsWordCounter(words, { stems, setAsideTest: true });
   const held = (r) => goodsFor(index, r);
   let pages = null;
   const saved = () => (pages ??= savedStatusPages(P.runDir)());
   const rowsHold = Array.isArray(records) && records.some((r) => r && typeof r === "object" && rowGoods(r));
-  const goods = index.size || rowsHold ? { of: (r) => held(r) ?? rowGoods(r, saved()), held: (r) => held(r) != null, hits, matched: goodsWordsMatched(words, { stems }) } : null;
-  const goodsTest = { source: product ? "product_words" : words.length ? "goods_words" : "none", words };
+  const goods = index.size || rowsHold ? { of: (r) => held(r) ?? rowGoods(r, saved()), held: (r) => held(r) != null, hits, matched: goodsWordsMatched(words, { stems, setAsideTest: true }) } : null;
+  const goodsTest = { source, words };
   return { goods, goodsTest, goodsWordCount: words.length, dominantTerm: searched || manifestDominant, manifestDominant };
 }

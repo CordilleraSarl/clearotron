@@ -26,6 +26,7 @@
 // mid-word produces something READABLE and wrong. Importing a pure sibling keeps this module's
 // "no node imports → tests offline" invariant, exactly as connotation-search.mjs already does.
 import { abbrev } from "./repair-contract.mjs";
+import { rowGoods, setAsideTestAnswer } from "./record-goods.mjs";
 
 export const BAND_STATES = ["enumerated", "incomplete"];
 
@@ -307,7 +308,8 @@ export function bandCrowds(band) {
  * presence, positions and the recall reconciliation all read per-record), so a record surfaced by
  * four slices is still ONE record - it just now says all four.
  */
-export function mergeNamedBands(bands) {
+export function mergeNamedBands(bands, { orderClasses = null, goodsTest = null } = {}) {
+  const handed = (r) => rowAsHanded(r, { orderClasses, goodsTest });
   const byId = new Map();
   const enumerated = [];
   const crowds = [];
@@ -324,12 +326,12 @@ export function mergeNamedBands(bands) {
       if (prior) { stamp(prior, r); continue; }
       // `_qids`/`_queries` are seeded from this first copy's own provenance - a qid-less
       // (model-authored) block still gets no qid invented for it.
-      const rec = { ...rowAsHanded(r), _qids: [], _queries: [] };
+      const rec = { ...handed(r), _qids: [], _queries: [] };
       stamp(rec, r);
       if (id) byId.set(id, rec);
       enumerated.push(rec);
     }
-    for (const c of bandCrowds(band)) crowds.push(Array.isArray(c?.sample) ? { ...c, sample: c.sample.map(rowAsHanded) } : c);
+    for (const c of bandCrowds(band)) crowds.push(Array.isArray(c?.sample) ? { ...c, sample: c.sample.map(handed) } : c);
   }
   return { enumerated, crowds };
 }
@@ -351,16 +353,42 @@ export function mergeNamedBands(bands) {
  * testing, 2026-11-17: a 41.1 MB band refused placement at dispatch; the same band, kept to these fields, is 25.7 MB
  * with every class statement whole.
  *
+ * GOODS TEXT FOR THE ORDER'S CLASSES ONLY, for the same reason: goods text in other classes was the largest part of
+ * the band left after the raw trim. Given the order's classes, a class statement in any other class keeps its class
+ * number and loses its text, and the record says so: `goods_set_aside` names those classes
+ * and why, so a class number is never silently all that is left. Every record is treated alike, live or dead.
+ * Without the order's classes, every statement is kept.
+ *
+ * THE SHAPE'S ANSWER IS KEPT. Given the band shape's goods-test words (`goodsTest`, record-goods.mjs `shapeGoodsTest`),
+ * the record's whole wording is tested before any of it goes, every statement joined as the test joins them, and the
+ * answer rides in `goods_set_aside.test`: the words matched, or null where the test could not tell, with the list's key
+ * (`setAsideTestAnswer`). The shape then groups each record as the wording held at the merge would, and a test on any
+ * other list still cannot tell.
+ *
  * THE MERGED BAND ONLY. Each axis's band, the executor's record of what the register answered, keeps the whole row.
  * A reader that needs another field from the merged band adds it here. PURE.
  */
 export const RAW_FIELDS_READ = Object.freeze(["classifications", "office_code", "application_number", "registration_number",
   "ir_number", "filing_route", "office_url", "jurisdictions"]);
-export function rowAsHanded(r) {
+export const GOODS_SET_ASIDE_REASON = "outside the order's classes";
+export function rowAsHanded(r, { orderClasses = null, goodsTest = null } = {}) {
   if (!r || typeof r !== "object" || !r.raw || typeof r.raw !== "object" || Array.isArray(r.raw)) return r;
   const raw = {};
   for (const k of RAW_FIELDS_READ) if (Object.hasOwn(r.raw, k)) raw[k] = r.raw[k];
-  return { ...r, raw };
+  const order = Array.isArray(orderClasses) && orderClasses.length ? new Set(orderClasses.map((c) => String(c).trim())) : null;
+  if (!order || !Array.isArray(raw.classifications)) return { ...r, raw };
+  const setAside = [];
+  raw.classifications = raw.classifications.map((c) => {
+    if (!c || typeof c !== "object" || order.has(String(c.nice_class ?? "").trim())) return c;
+    if (typeof c.goods_services_text !== "string" || !c.goods_services_text) return c;
+    setAside.push(c.nice_class);
+    const { goods_services_text: _text, goods_services_text_truncated: _cut, goods_services_language: _lang, ...kept } = c;
+    return kept;
+  });
+  if (!setAside.length) return { ...r, raw };
+  // The answer on the whole row, as the test joins it, not on the set-aside statements alone.
+  const test = goodsTest?.words?.length ? setAsideTestAnswer(rowGoods(r), { words: goodsTest.words, stems: goodsTest.stems === true }) : null;
+  return { ...r, raw, goods_set_aside: { classes: setAside, reason: GOODS_SET_ASIDE_REASON, ...(test ? { test } : {}) } };
 }
 
 /** Every qid that surfaced a merged band record (the stamp union), first-seen first. PURE. */

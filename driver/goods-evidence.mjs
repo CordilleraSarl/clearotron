@@ -46,7 +46,7 @@ export const GOODS_EVIDENCE_FILE = "goods-evidence.json";
 // read later as an official record held whole. The driver keeps the record a cold dispatch of the writer was given
 // (pipeline.mjs, around `stage`), and the delivery check compares the findings with that copy: what they were written on.
 export const GOODS_EVIDENCE_AS_WRITTEN_FILE = "goods-evidence.as-written.json";
-export const GOODS_STATES = Object.freeze(["complete", "cut", "unknown", "absent", "unavailable", "not-held"]);
+export const GOODS_STATES = Object.freeze(["complete", "cut", "unknown", "set-aside", "absent", "unavailable", "not-held"]);
 
 const uriKey = (u) => normalizeRecordUri(u);
 // A register's own id for a record, as a fetch row names it where the provider logs its own id rather than the
@@ -196,14 +196,18 @@ const fetchOf = (fetches, uri) => fetches?.get?.(uriKey(uri)) ?? fetches?.get?.(
 export function recordGoodsEvidence(record, { goods = null, held = null, fetches = null } = {}) {
   const uri = uriKey(record?.record_id) || String(record?.record_id ?? "");
   const body = held?.get?.(uri) ?? null;
-  const statements = goods?.of ? goods.of(record) : null;
+  const all = goods?.of ? goods.of(record) : null;
+  // A class whose wording the merged band set aside is no statement: it is recorded beside the evidence, never read as
+  // the register listing no goods (record-goods.mjs `rowGoods`).
+  const setAside = (all ?? []).filter((g) => g?.setAside === true).flatMap((g) => g.classes ?? []);
+  const statements = all ? all.filter((g) => g?.setAside !== true) : null;
   const fromBody = typeof goods?.held === "function" ? goods.held(record) : Boolean(statements);
   const fetch = fetchOf(fetches, record?.record_id);
   const readable = statements?.length ? statements.some((g) => g?.en !== false) : null;
   const cut = (statements ?? []).some((g) => g?.cut === true);
   const unknown = (statements ?? []).some((g) => g?.unknown === true);
   const page = (statements ?? []).find((g) => g?.page)?.page ?? null;
-  const row = (state, source, basis, extra = null) => ({ uri, state, source, basis, ...extra, readable, held: body, fetch });
+  const row = (state, source, basis, extra = null) => ({ uri, state, source, basis, ...extra, ...(setAside.length ? { set_aside: setAside } : {}), readable, held: body, fetch });
   // The statements are a held body's where the reader says so; a reader that cannot tell reads bodies only.
   if (statements?.length && fromBody) {
     const op = body?.goods?.operation ?? "undocumented";
@@ -214,9 +218,9 @@ export function recordGoodsEvidence(record, { goods = null, held = null, fetches
   // A search answer's statements that a register page the run's research saved continues whole (record-goods.mjs
   // `rowGoods`). The record rests on that page once none is left cut or not established whole; where its classes were
   // continued from pages two questions saved, the question named is its first such class's.
-  if (statements?.length && page && !cut && !unknown) return row("complete", "register-page", "register-page-statement", { question: page.question });
-  if (statements?.length) return row(cut ? "cut" : unknown ? "unknown" : "complete", "search-row",
-    cut ? "register-flag" : unknown ? "default-answer-at-or-over-its-cut" : "default-answer-under-its-cut");
+  if (statements?.length && page && !cut && !unknown && !setAside.length) return row("complete", "register-page", "register-page-statement", { question: page.question });
+  if (statements?.length || setAside.length) return row(cut ? "cut" : unknown ? "unknown" : setAside.length ? "set-aside" : "complete", "search-row",
+    cut ? "register-flag" : unknown ? "default-answer-at-or-over-its-cut" : setAside.length ? "outside-the-order-classes" : "default-answer-under-its-cut");
   if (body) {
     // Lists no goods only where an operation whose goods are whole supplies the field and it is empty. A body with
     // no goods field, or from an operation the tree documents nowhere, establishes nothing about its goods.
@@ -242,10 +246,14 @@ export function goodsFromLabel(e) {
   if (e.source === "record-body") return e.state === "absent" ? "official record, no goods listed"
     : e.state === "cut" ? "official record, cut by the register"
     : e.state === "unknown" ? "official record, completeness not established" : "official record";
-  if (e.source === "search-row") return e.state === "cut" ? "search answer, cut by the register"
-    : e.state === "unknown" ? "search answer, completeness not established" : "search answer";
+  if (e.source === "search-row") return (e.state === "cut" ? "search answer, cut by the register"
+    : e.state === "unknown" ? "search answer, completeness not established" : "search answer") + setAsideNote(e.set_aside);
   return e.state === "unavailable" ? "fetch failed" : "nothing held";
 }
+
+/** The classes whose wording the merged band set aside, said after a search answer's label. PURE. */
+export const setAsideNote = (classes) => (Array.isArray(classes) && classes.length
+  ? `; the goods text of class${classes.length > 1 ? "es" : ""} ${classes.join(", ")} is set aside, outside the order's classes` : "");
 
 /** What the stages read for goods taken whole from a register page the run's research saved, naming the question. PURE. */
 export const registerPageLabel = (question) => `the register's own page, saved by research question ${question}`;

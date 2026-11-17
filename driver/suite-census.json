@@ -6993,6 +6993,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-band-carries-goods-text-for-the-orders-classes.test.mjs": {
+          "tests": 18,
+          "asserts": 74,
+          "skips": 0,
+          "todos": 0
+        },
         "the-band-is-written-compact-and-read-the-same.test.mjs": {
           "tests": 2,
           "asserts": 8,
