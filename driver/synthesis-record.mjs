@@ -57,6 +57,7 @@ import { findingUris } from "./record-carry.mjs";   // one derivation of "which 
 import { foldAfterSave } from "./record-fold.mjs";   // once the delivery seam is passed, the saved record is folded again
 import { SAVED_FINDINGS_FILE } from "./saved-findings-block.mjs";   // the file a later attempt is handed the saved findings in
 import { runLog } from "./log.mjs";   // what the transport read a call as goes to the run's record, never to the model's answer
+import { pageNameLines, stepPartyNames, textNamesParty } from "./predelivery-lint.mjs";   // a step's parties, read as the reference check reads them
 import { recordOriginsOr, blankOnRepeat, recordBlanking, FOREIGN_HOST_TOKEN } from "./foreign-record-links.mjs";   // a foreign record link: refused once, then blanked
 import { driverDir, paths, readJson } from "./run-record.mjs";
 export const NARRATIVE_FILE = "narrative.md";
@@ -951,21 +952,43 @@ export function mergeSynthesisPatch(stored, patch, { positions = null } = {}) {
  * finding, still cites to a withdrawn one, or leaves out is the writer's as sent. "Withdrawn" is read on the record the
  * save produces, so a save that withdraws a finding and uncites its step in one call is read the same way.
  *
+ * THE OPEN IDENTIFICATION STEP IS THE ONE EXCEPTION. A lead whose proprietor nothing the run holds identifies carries no
+ * band: it leaves as a run-level step naming the lead and what must be identified, with an open coverage row naming the
+ * lead and its source declined as `owner-unidentified`. A first draft can rate such a lead, and the correction then
+ * withdraws the rating and sends the step that cited it back as that identification step, under its own id, with no
+ * citation. Its support is then the open row, not the withdrawn rating. So a step the save uncites is the writer's as
+ * sent when a party it names is named by an open coverage row of the saved record, and no party it names is one that
+ * only a withdrawn finding carries, as owner or mark, and nothing else on the page introduces. A step that still names
+ * a withdrawn finding's party is held whole, with any identification it also carries. The names are read as the
+ * delivery check's reference check reads them (predelivery-lint.mjs).
+ *
  * `stored` and `saved` are the findings documents before and after the save. Returns `{actions, kept}`: `kept` names
  * each step held, as `{id, ordinals}`, and `actions` is the saved list with those steps' citations put back.
  */
 export function stepsOnWithdrawnSupport(stored, saved) {
   const actions = saved?.actions;
   if (!Array.isArray(actions) || !Array.isArray(stored?.actions)) return { actions, kept: [] };
-  const withdrawn = new Set((Array.isArray(saved?.findings) ? saved.findings : [])
-    .filter((f) => f?.disposition === "withdrawn").map((f) => f.ordinal));
+  const rows = Array.isArray(saved?.findings) ? saved.findings : [];
+  const withdrawn = new Set(rows.filter((f) => f?.disposition === "withdrawn").map((f) => f.ordinal));
   if (!withdrawn.size) return { actions, kept: [] };
   const before = new Map(stored.actions.filter((a) => Number.isInteger(a?.id)).map((a) => [a.id, a]));
+  const parties = (list) => list.flatMap((f) => [typeof f?.owner === "string" ? f.owner : f?.owner?.name, f?.mark])
+    .filter((t) => typeof t === "string" && t.trim()).join("\n");
+  const coverage = Array.isArray(saved?.coverage) ? saved.coverage : [];
+  const openRows = coverage.filter((c) => c?.state === "open").map((c) => `${c.area ?? ""} ${c.note ?? ""}`).join("\n");
+  const introduced = [...pageNameLines({ coverage }), parties(rows.filter((f) => f?.disposition !== "withdrawn"))].join("\n");
+  const withdrawnOnly = parties(rows.filter((f) => f?.disposition === "withdrawn"));
+  const identifies = (a) => {
+    const names = stepPartyNames(a);
+    return names.some((n) => textNamesParty(openRows, n))
+      && !names.some((n) => textNamesParty(withdrawnOnly, n) && !textNamesParty(introduced, n));
+  };
   const kept = [];
   const held = actions.map((a) => {
     const cited = Array.isArray(before.get(a?.id)?.ordinals) ? before.get(a.id).ordinals : [];
     if (!cited.length || !cited.every((n) => withdrawn.has(n))) return a;
     if (!Array.isArray(a?.ordinals) || a.ordinals.length) return a;
+    if (identifies(a)) return a;
     kept.push({ id: a.id, ordinals: [...cited] });
     return { ...a, ordinals: [...cited] };
   });
