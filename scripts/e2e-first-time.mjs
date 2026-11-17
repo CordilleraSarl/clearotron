@@ -158,6 +158,8 @@ export const COUNTED_EVENTS = {
   "knockout-next-step-removed": REPAIR, "recall-reconciliation-positions-rederived": REPAIR, "registry-auto-correct": REPAIR,
   "repair-attempted": REPAIR, "terminal-guard-clamp": REPAIR, "verdict-conditions-dropped": REPAIR, "foreign-record-links-blanked": REPAIR,
   "no-result-without-a-completed-search-removed": REPAIR,
+  // a save sent a step whose only support was withdrawn back with no citation, and the step kept its citations
+  "step-kept-on-withdrawn-support": REPAIR,
   "verdict-hardened-by-repair": REPAIR, "verdict-rederive-repair": REPAIR,
   // the coverage floor read the coverage form because both of its renders were unreadable
   "coverage-ledger-from-form": REPAIR,
