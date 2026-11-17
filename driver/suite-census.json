@@ -8421,6 +8421,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-writer-is-told-a-step-naming-a-party-needs-a-basis.test.mjs": {
+          "tests": 1,
+          "asserts": 2,
+          "skips": 0,
+          "todos": 0
+        },
         "the-writer-owes-positions-not-records.test.mjs": {
           "tests": 8,
           "asserts": 27,

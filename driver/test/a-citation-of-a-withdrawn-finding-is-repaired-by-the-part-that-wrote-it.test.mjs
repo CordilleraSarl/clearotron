@@ -76,6 +76,9 @@ async function runPipeline(engine, knobs) {
 const WRITER_LINE = "Your text cites finding 3, which the review withdrew. Remove that citation. Check the affected statement against the surviving assessment, and correct or remove it if unsupported. Keep unaffected text unchanged.";
 const OVERVIEW_LINE = "References: finding 3 (withdrawn). The listed references point to findings that have been withdrawn or are absent. Reassess the affected answers, actions, and conclusions against the surviving findings. Cite a surviving finding only where its evidence supports the statement; otherwise correct the statement. Preserve unaffected work and record the corrections through the existing correction tool.";
 const GENERAL = OVERVIEW_LINE.replace("References: finding 3 (withdrawn). ", "");
+// A step's repair carries the general instruction and then design's instruction for the step itself (2026-11-17).
+const STEP_REASSESSMENT = "Reassess the action's text as well as its citations, including each party it names. If its only support was withdrawn or rejected, remove the action; removing its citations or making it a run-level action does not preserve a valid basis. Where surviving evidence supports only part of an action, keep that part and remove the unsupported part, including names that belonged only to it. Do not restore a withdrawn finding or promote a declined record merely to introduce a name. Preserve any independently supported open identification task through the existing unidentified-proprietor route, with its held source and named open coverage row.";
+const STEP_GENERAL = `${GENERAL} ${STEP_REASSESSMENT}`;
 const ABSENT_LINE = (n) => `References: finding ${n} (absent). ${GENERAL}`;
 const saved = (runDir, name) => JSON.parse(readFileSync(driverDir(runDir, "synthesis-calls", name), "utf8")).params.findings;
 
@@ -131,7 +134,7 @@ for (const engine of Object.keys(ENGINES)) {
       assert.deepEqual(events.find((e) => e.event === "report-repair-targets")?.record, ["action-citations"], "the step's fault was not placed in the writer's record");
       assert.ok(repairsAfter(events, lintFailed).includes("synthesis"), "the repair did not go to the writer");
       const msg = dispatches(res.runDir, "synthesis").find((m) => m.includes("The deterministic pre-delivery checks found these faults"));
-      assert.ok(msg?.split("\n").includes(`- References: action 1, finding 3 (withdrawn). ${GENERAL}`), "the writer was not handed the step and its finding");
+      assert.ok(msg?.split("\n").includes(`- References: action 1, finding 3 (withdrawn). ${STEP_GENERAL}`), "the writer was not handed the step and its finding");
       assert.ok(!JSON.parse(readFileSync(driverDir(res.runDir, "predelivery-lint.json"), "utf8")).failures.includes("action-citations"), "the delivery check still finds the step");
       const before = saved(res.runDir, "accepted-before-repair.json"), after = saved(res.runDir, "accepted.json");
       assert.deepEqual(after.findings, before.findings, "the correction changed findings it was not asked to change");
@@ -197,12 +200,12 @@ test("a panel citing only findings the run lacks goes to the writer, in the gene
   assert.deepEqual(writersCitationFaults(c, () => null).map((f) => f.detail), [ABSENT_LINE(9)]);
 });
 
-test("a step citing a withdrawn or absent finding is named to the writer in the general instruction; a step on live findings is not", () => {
+test("a step citing a withdrawn or absent finding is named to the writer in the general instruction and the step's own; a step on live findings is not", () => {
   const findings = [{ ordinal: 1, disposition: "adversarial" }, { ordinal: 3, disposition: "withdrawn" }];
   const [c] = actionCitationChecks({ actionsRegister: [{ id: 1, ordinals: [1] }, { id: 2, ordinals: [3] }, { id: 3, ordinals: [1, 9] }], findings });
   assert.deepEqual([c.id, c.pass, c.register, c.structural], ["action-citations", false, "actions", undefined]);
   assert.deepEqual(writersCitationFaults(c, () => null).map((f) => f.detail),
-    [`References: action 2, finding 3 (withdrawn); action 3, finding 9 (absent). ${GENERAL}`]);
+    [`References: action 2, finding 3 (withdrawn); action 3, finding 9 (absent). ${STEP_GENERAL}`]);
   assert.deepEqual(actionCitationChecks({ actionsRegister: [{ id: 1, ordinals: [1] }, { id: 2, ordinals: [] }], findings }).map((x) => x.pass), [true], "a live or run-level step is a fault");
   assert.deepEqual(actionCitationChecks({ actionsRegister: null, findings }), [], "a record with no register is silent");
 });
