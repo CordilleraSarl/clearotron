@@ -324,14 +324,43 @@ export function mergeNamedBands(bands) {
       if (prior) { stamp(prior, r); continue; }
       // `_qids`/`_queries` are seeded from this first copy's own provenance - a qid-less
       // (model-authored) block still gets no qid invented for it.
-      const rec = { ...r, _qids: [], _queries: [] };
+      const rec = { ...rowAsHanded(r), _qids: [], _queries: [] };
       stamp(rec, r);
       if (id) byId.set(id, rec);
       enumerated.push(rec);
     }
-    for (const c of bandCrowds(band)) crowds.push(c);
+    for (const c of bandCrowds(band)) crowds.push(Array.isArray(c?.sample) ? { ...c, sample: c.sample.map(rowAsHanded) } : c);
   }
   return { enumerated, crowds };
+}
+
+/**
+ * THE REGISTER'S RAW ROW, AS FAR AS ANYTHING READS IT FROM THE MERGED BAND.
+ *
+ * A band record carries the register's whole search row as `raw` beside its normalised fields. No stage is served
+ * `raw`: the band tools strip it from every record they serve (`NOISE_KEYS`, engine/mcp/band-server.mjs). What reads
+ * it from the merged band reads these fields and no others:
+ *   · `classifications`, every class statement whole, with its cut flag and language (`rowGoods`, record-goods.mjs);
+ *   · `office_code` and `application_number`, the US status-page join (`usSerialOf`, saved-register-pages.mjs);
+ *   · `registration_number`, `ir_number`, `filing_route` and `office_url`, a row's own numbers and office page
+ *     (`neutralRow`, knockout-register-read.mjs);
+ *   · `jurisdictions`, the opposition dates (registry-fidelity.mjs).
+ *
+ * THE REST WAS SIZE AND NOTHING ELSE. A Signa row has 43 fields, its `derived` block alone 4.7 MiB over a 3,224-record
+ * band, and a band-reading stage's time limit is derived from the merged band's size (band-size.mjs). Measured in
+ * testing, 2026-11-17: a 41.1 MB band refused placement at dispatch; the same band, kept to these fields, is 25.7 MB
+ * with every class statement whole.
+ *
+ * THE MERGED BAND ONLY. Each axis's band, the executor's record of what the register answered, keeps the whole row.
+ * A reader that needs another field from the merged band adds it here. PURE.
+ */
+export const RAW_FIELDS_READ = Object.freeze(["classifications", "office_code", "application_number", "registration_number",
+  "ir_number", "filing_route", "office_url", "jurisdictions"]);
+export function rowAsHanded(r) {
+  if (!r || typeof r !== "object" || !r.raw || typeof r.raw !== "object" || Array.isArray(r.raw)) return r;
+  const raw = {};
+  for (const k of RAW_FIELDS_READ) if (Object.hasOwn(r.raw, k)) raw[k] = r.raw[k];
+  return { ...r, raw };
 }
 
 /** Every qid that surfaced a merged band record (the stamp union), first-seen first. PURE. */
