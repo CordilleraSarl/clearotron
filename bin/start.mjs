@@ -359,7 +359,7 @@ export function clientDoorOwner({ probeCode = null, unitActive = null, unitPort 
  * the first time, changed only the organisation; the line naming the file printed only when the file was
  * created or a person was added, so "there" pointed at nothing (measured in testing, 2026-11-17).
  */
-export function grantsFileLines({ existed, changed, path, user, organisation, organisations = 0, nameOne }) {
+export function grantsFileLines({ existed, changed, path, user, organisation, organisations = 0 }) {
   const lines = [];
   if (!existed) lines.push(`  created        ${path} — ${user}: Run, Manage, access to everything`);
   else if (changed.includes("person"))
@@ -367,7 +367,7 @@ export function grantsFileLines({ existed, changed, path, user, organisation, or
   else if (changed.includes("organisation")) lines.push(`  grants         ${path}`);
   if (changed.includes("organisation")) lines.push(`                 organisation "${organisation}", filed there — rename it there too`);
   else if (changed.includes("person") && !organisations)
-    lines.push(`                 no organisation named yet — \`${nameOne}\` files the first one`);
+    lines.push(`                 no organisation named yet — \`${reachableCommand('start --organisation "<name>"')}\` files the first one`);
   return lines;
 }
 
@@ -1607,8 +1607,7 @@ if (isMain) {
         catch (e) { fatal(`could not write the grants file at ${paths.grants} (${String(e?.message ?? e)}).`); }
       }
       for (const line of grantsFileLines({ existed: Boolean(existing), changed: seeded.changed, path: paths.grants, user,
-        organisation, organisations: Object.keys(seeded.grants.tenants ?? {}).length,
-        nameOne: reachableCommand('start --organisation "<name>"') })) say(line);
+        organisation, organisations: Object.keys(seeded.grants.tenants ?? {}).length })) say(line);
       // REPORTED, NOT REPAIRED. A file that names other people is somebody's decision, and adding this
       // address to it would give access to everything to an address nobody enrolled.
       if (seeded.unadmitted)

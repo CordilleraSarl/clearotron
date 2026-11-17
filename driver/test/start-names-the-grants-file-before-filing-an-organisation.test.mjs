@@ -15,10 +15,9 @@ import assert from "node:assert/strict";
 import { grantsFileLines, installerGrants } from "../../bin/start.mjs";
 
 const USER = "alex@a-firm.example-tld";
-const PATH = "/home/alex/trademark/config/grants.json";
-const NAME_ONE = 'clearotron start --organisation "<name>"';
+const PATH = "trademark/config/grants.json";
 const said = (existed, seeded, organisation) => grantsFileLines({ existed, changed: seeded.changed, path: PATH, user: USER,
-  organisation, organisations: Object.keys(seeded.grants.tenants ?? {}).length, nameOne: NAME_ONE });
+  organisation, organisations: Object.keys(seeded.grants.tenants ?? {}).length });
 
 test("an organisation added to a file that already names the installer is filed under the file's name", () => {
   const first = installerGrants(null, { user: USER, organisation: "" });
@@ -37,10 +36,10 @@ test("the other cases say what they said before", () => {
     '                 organisation "A Firm Sàrl", filed there — rename it there too',
   ]);
   const unnamed = installerGrants(null, { user: USER, organisation: "" });
-  assert.deepEqual(said(false, unnamed, ""), [
-    `  created        ${PATH} — ${USER}: Run, Manage, access to everything`,
-    `                 no organisation named yet — \`${NAME_ONE}\` files the first one`,
-  ]);
+  const unnamedLines = said(false, unnamed, "");
+  assert.equal(unnamedLines.length, 2);
+  assert.equal(unnamedLines[0], `  created        ${PATH} — ${USER}: Run, Manage, access to everything`);
+  assert.match(unnamedLines[1], /^ {17}no organisation named yet — `[^`]*start --organisation "<name>"` files the first one$/);
   const again = installerGrants(fresh.grants, { user: USER, organisation: "A Firm Sàrl" });
   assert.deepEqual(again.changed, [], "a start that changes nothing");
   assert.deepEqual(said(true, again, "A Firm Sàrl"), [], "says nothing about a file it did not change");
