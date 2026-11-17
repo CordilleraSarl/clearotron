@@ -250,6 +250,16 @@ export function pageNameLines({ coverage = [], webNames = [] } = {}) {
     ...(Array.isArray(webNames) ? webNames : []).slice(0, PAGE_WEB_NAMES_SHOWN).map((w) => String(w?.title ?? "")),
   ];
 }
+/** The parties a step names, read as the check below reads the step's line on the page: its text and condition. PURE. */
+export function stepPartyNames(step) {
+  const said = [step?.text, step?.condition].filter((t) => typeof t === "string" && t.trim()).join(" ");
+  return said ? properNameCandidates(`- ${said}`, null, { actionBullets: true, territories: true }) : [];
+}
+/** Whether `text` names the party `name`, read as the check below reads an introduction. PURE. */
+export function textNamesParty(text, name) {
+  const n = norm(name);
+  return Boolean(n) && norm(stripHtml(text)).includes(n);
+}
 
 // Reference integrity (A2 + V4-3): no owner/mark named in the ASK bucket ("Only you can close") that is
 // introduced nowhere else in the same surface (the RTVE failure). V4-3 precision, from the two real
