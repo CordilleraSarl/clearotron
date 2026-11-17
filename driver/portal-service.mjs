@@ -1304,12 +1304,15 @@ const STORE_TTL_MS = 30_000;
  *
  * `posture` is the demo's own sentence. In a demo it stands wherever this would otherwise say more.
  */
+export const UNSET_OVERLAY_LINE = "CLEAROTRON_INSTRUCTIONS_DIR and PROFILE_REPO_ROOT are unset, so risk frameworks are read from the files that ship with this install. A framework kept only in a separate config store is not read: the company's profile page says its framework could not be read, or shows a shipped framework of the same file name. To use that store, set CLEAROTRON_INSTRUCTIONS_DIR to its instruction folder, or PROFILE_REPO_ROOT to the store containing that folder as skills.";
 export function skillsOverlayAtBoot({ explicit = null, profileRepoRoot = null, readdir = readdirSync, exists = existsSync, posture = null } = {}) {
   const synthetic = "customer risk frameworks will resolve to this repo's demo fixtures and the Brand profile page will "
     + "show either \"could not be read\" or a SYNTHETIC framework as though it were the customer's own. "
     + "Set CLEAROTRON_INSTRUCTIONS_DIR (or PROFILE_REPO_ROOT) to the config store.";
   if (explicit) return { pin: null, line: exists(explicit) ? null : (posture || `WARNING: skills overlay unreadable (${explicit}) — ${synthetic}`) };
-  if (!profileRepoRoot) return { pin: null, line: posture || `WARNING: skills overlay unset — ${synthetic}` };
+  // NOTHING SET IS A FRESH LOCAL INSTALL as often as a hosted one that left a setting out, so the line says what is read,
+  // what is not, and the remedy, without a warning's prefix. Design's wording (2026-11-17).
+  if (!profileRepoRoot) return { pin: null, line: posture || UNSET_OVERLAY_LINE };
   const dir = join(profileRepoRoot, "skills");
   const nothing = (how) => posture || (`skills overlay: ${dir} ${how}, so this install overrides nothing and the product's own `
     + "instruction files are used. To override one, put the file there, commit it, set CLEAROTRON_INSTRUCTIONS_DIR to that folder, and restart.");

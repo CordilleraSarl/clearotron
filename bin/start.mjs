@@ -417,7 +417,7 @@ export function clientDoorDownLines({ host, port, exited }) {
 export const DEMO_ROUTINE_LINES = [
   /^auth ON — /,
   /^key path: none \(TRADEMARK_MCP_KEY_SOCKET is not set\)/,
-  /^roster: \d+ customer\(s\) from /,
+  /^roster: \d+ customers? from /,
   /^This is `clearotron demo`: /,
   /^listening on http:\/\//,
   /^audit log: /,

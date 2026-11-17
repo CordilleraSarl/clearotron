@@ -57,8 +57,11 @@ test("the startup line says WHICH store, and says when it is only the bundle", (
   assert.match(configured, /settings surface ON — store=\/srv\/store/);
   assert.match(configured, /CLEAROTRON_CUSTOMERS_DIR/, "and it names the knob that decided");
   const bundled = customerStoreLine("settings surface", { dir: BUNDLED, source: "bundled" });
-  assert.match(bundled, /BUNDLED DEMO ROSTER/,
+  assert.match(bundled, /, the folder that ships with this install \(CLEAROTRON_CUSTOMERS_DIR is unset\)\./,
     "a bundle fallback must SAY it is one — it is what a misconfigured deployment also looks like");
+  assert.match(bundled, /A company whose profile is in a separate config store is not shown here until CLEAROTRON_CUSTOMERS_DIR is set to that store's profiles directory\.$/,
+    "and what it does not show, with the remedy");
+  assert.doesNotMatch(bundled, /BUNDLED DEMO ROSTER/, "a fresh install's own folder is not called a demo roster");
   assert.notEqual(configured, bundled, "the two situations must not render the same line");
 });
 
@@ -201,7 +204,7 @@ test("a box that sets ONLY the retired name gets the bundle, not its old store",
     assert.match(b.said, /settings surface ON — store=/, "it still starts, and still says which store");
     assert.ok(!b.said.includes(`store=${store}`),
       `PROFILE_DIR must resolve nothing — the surface named the retired store [said=${safe(b.said).slice(-400)}]`);
-    assert.match(b.said, /BUNDLED DEMO ROSTER/,
+    assert.match(b.said, /the folder that ships with this install \(CLEAROTRON_CUSTOMERS_DIR is unset\)/,
       "and it must say the bundle is what it fell back to, rather than looking configured");
   } finally {
     try { child?.kill("SIGKILL"); } catch { /* gone */ }

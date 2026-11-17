@@ -11,7 +11,7 @@
     "the baseline tracks named elements, and a rename is a new name. Regenerate rather than work around it.",
     "Measured 139 of 287 declared elements."
   ],
-  "total": 105,
+  "total": 104,
   "byStage": {
     "matter-frame": [
       "### Intake asks line shape — rendered by the driver from intake_asks[]",
@@ -56,7 +56,6 @@
     ],
     "common-law": [
       "BATCHING — split the keys into ceil(N/batch) batches of <=batch variants and concatenate the matrices",
-      "Grid program receipt — paste the SANDBOX PROGRAM block from the tool result verbatim into the audit trail",
       "INSTRUCTED CHECKS — execute each as part of the sweep, or state honestly why it could not run",
       "INSTRUCTED CHECKS — the ask text the requester wrote, quoted back in the findings file with its receipt",
       "Summary section — Perplexity calls executed, mandatory platforms covered N/N, findings surfaced, open flags",

@@ -25,7 +25,7 @@ import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "
 import { dirname, join } from "node:path";
 
 export async function runFrameComparison({ P, axes, ctx, dispatchPlanQids, flushDigestQueue, job, mintDigestWork, planExec, run, runCommonLaw, unitKey }, helpers) {
-  const { bandBytesOf, deriveNamedBand, forceFromActive, inScopeClassList, joinOptions, loadCoverageLedger, mechanicalFormGapDirectives, readRegisterBands, refreshSupplementalExecution, remergeIfBandsMoved, settleOneShotStamp, stage } = helpers;
+  const { bandBytesOf, deriveNamedBand, forceFromActive, inScopeClassList, joinOptions, loadCoverageLedger, mechanicalFormGapDirectives, readRegisterBands, reaskFollowUpErrors, refreshSupplementalExecution, remergeIfBandsMoved, settleOneShotStamp, stage } = helpers;
   // ── Property 1+2 (frame-omission design): the blind frame-diff + the reopen channel ────────────────
   // The blind-frame stage re-derived the threat model STARVED of the matter frame (gather, parallel with
   // the sweeps). Diff that cold model against what the run ACTUALLY scoped/searched (frame-diff), and act
@@ -566,6 +566,7 @@ export async function runFrameComparison({ P, axes, ctx, dispatchPlanQids, flush
             // ONLY THE FAILING DIRECTIVES' OWN ENTRIES GO AGAIN. A directive that verified closed on the first
             // attempt is not asked twice: re-sending its qids re-fetches records the run already holds, and
             // on a register that bills per request it pays for them again.
+            let reattempted = [];   // the entries this re-attempt sent: each is a question asked again by code
             if (retryTargets.length) {
               const retryQids = [...new Set(retryTargets.flatMap((d) => directiveQids.get(reopenKey(d)) ?? []))]
                 .filter((q) => added.includes(q));
@@ -573,6 +574,7 @@ export async function runFrameComparison({ P, axes, ctx, dispatchPlanQids, flush
               runLog(run.runDir, { event: "frame-reopen-reattempt", directives: retryTargets.map(reopenKey), qids: retryQids });
               if (retryQids.length) {
                 ev = await dispatchAndVerify(retryQids);
+                if (ev.outcome === "ok") reattempted = retryQids;
                 regLastJoin = ev;
                 outcome = ev.outcome ?? outcome;
                 for (const d of retryTargets) {
@@ -582,6 +584,9 @@ export async function runFrameComparison({ P, axes, ctx, dispatchPlanQids, flush
                 }
               }
             }
+            // The receipt counts what the re-attempt asked again, and an entry that errored and was not re-attempted (its
+            // directive closed on another row) is asked again once, before the band is compared and the digest reads it.
+            await reaskFollowUpErrors(ctx, dispatchPlanQids, "frame-reopen", { reasked: reattempted });
             const afterBand = existsSync(P.registerBand(a)) ? readFileSync(P.registerBand(a), "utf8") : null;
             if (afterBand !== beforeBand) changedAxes.push(a);   // the band changed ⇒ re-digest to reconcile
             if (regSwept.size) regChanged = true;                // ≥1 directive genuinely closed

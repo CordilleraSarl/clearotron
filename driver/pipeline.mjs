@@ -550,7 +550,10 @@ export function stickyGapUnits(P) {   // @internal
   return new Set(rows.filter((r) => r?.kind === "deferred" && sticky.has(String(r.qid ?? ""))).map(formRowUnitKey));
 }
 
-export function writePlanExecutionReceipt(ctx, joinRes) {   // @internal
+// `reasked` names questions the run has just asked again by code (reaskFollowUpErrors) and `unsent` the ones it tried to
+// and could not send. The first are counted as through the ladder; the second never are, wherever the last receipt
+// listed them, so a receipt written again after a dispatch that sent nothing defers nothing.
+export function writePlanExecutionReceipt(ctx, joinRes, { reasked = [], unsent = [] } = {}) {   // @internal
   const P = ctx.paths;
   joinRes = holdStickyGapsIn(joinRes, readStickyGaps(P));
   // — the ONE place the receipt is written is the one place this decision is taken. The
@@ -574,8 +577,11 @@ export function writePlanExecutionReceipt(ctx, joinRes) {   // @internal
     // will recur byte-identically forever. `\bhttp\s?5\d\d\b` matched it, so seven slices on one axis
     // were filed ladder-spent with `permanent: 0` — a structural refusal recorded as weather.
     // `retryCannotHelpWith` keeps the old rule and adds the one that outranks it.
+    const exhausted = ladderExhaustedQids(prior);
+    for (const q of reasked ?? []) exhausted.add(String(q));
+    for (const q of unsent ?? []) exhausted.delete(String(q));
     const { join, converted } = deferExhaustedProviderErrors(
-      joinRes, readRegisterBands(P, ctx.axes ?? []), ladderExhaustedQids(prior),
+      joinRes, readRegisterBands(P, ctx.axes ?? []), exhausted,
       retryCannotHelpWith);
     if (converted.length) {
       joinRes = join;
@@ -801,6 +807,95 @@ export function refreshSupplementalExecution(ctx) {   // @internal
       runLog(ctx.paths.runDir, { event: "plan-execution-refresh", added: added.length });
     }
   } catch (e) { note(`supplemental receipt refresh skipped (${String(e.message).slice(0, 80)}) — never-kill`); }
+}
+
+/**
+ * The questions to ask again after a follow-up turn: each `missing` from the bands as they stand that holds a provider
+ * error the run reads as passing (an outage, a 5xx). Read off the bands, not off the last receipt's `missing`, because
+ * the refresh above writes a follow-up's new questions there without asking any of them again. Left out: a question
+ * with no answer of any kind (no error block), a sticky gap, a refusal retrying cannot help (deferred at once, by the
+ * writer's own test), and anything the receipt already defers. PURE but for the reads.
+ */
+function followUpErrorsToReask(ctx, bands) {
+  const P = ctx.paths;
+  const deferredNow = new Set((readPlanExecution(ctx)?.deferred ?? []).map((d) => String(d?.qid ?? "")));
+  const joined = holdStickyGapsIn(joinPlanToBands(ctx.registerPlan, bands, joinOptions(ctx)), readStickyGaps(P));
+  const { join: open } = deferExhaustedProviderErrors(joined, bands, new Set(), retryCannotHelpWith);
+  const causeOf = new Map();
+  for (const arr of Object.values(bands ?? {}))
+    for (const b of arr ?? []) if (b && typeof b.qid === "string" && b.qid && b.error === true && b.deferred !== true && b.reason) causeOf.set(b.qid, String(b.reason));
+  const axisOf = new Map((ctx.registerPlan.entries ?? []).map((e) => [e.qid, e.axis]));
+  return (open.missing ?? []).filter((q) => causeOf.has(q) && !deferredNow.has(q) && axisOf.get(q))
+    .map((q) => ({ qid: q, axis: axisOf.get(q), cause: causeOf.get(q) }));
+}
+
+/**
+ * A FOLLOW-UP TURN'S QUESTION THAT CAME BACK A PROVIDER ERROR IS ASKED AGAIN BY CODE BEFORE THE RUN GOES ON.
+ *
+ * An escalation, an envelope close or a frame reopen can propose register questions, and the tool that takes them asks
+ * them at once. When the register answers one with an error the run reads as passing, the question joins the receipt as
+ * `missing`, and the receipt defers a provider error only after the run has asked it again. Nothing asked it again
+ * before the reading step: the fan-in had already run its ladder. So the axis read `unexecuted`, the reading step's
+ * clean rows on that axis were refused on each attempt, and the run parked to have a resume ask what one code call
+ * could ask in the same pass. Measured on a test run of 2026-11-12: two axes, six questions, three asked per axis in
+ * 20 requests; the run spent 318 more across two resumes (120, 46 and 152) and still delivered with the gap.
+ *
+ * Each such question is now sent once more through the executor (code, no model turn), axis by axis, and the attempt
+ * and what it brought back are logged before the receipt is written. The receipt then counts the questions it sent as
+ * asked again: one the register now answers is executed; one that still errors is deferred with its error as the stated
+ * reason, under the rule every deferral of a provider error follows. A question the executor could not send (no
+ * executor, its repair budget spent, a dispatch that failed before the register answered) is not counted and stays
+ * `missing`. `reasked` names questions the caller has already asked again by code in this pass (the frame reopen
+ * re-attempts its own), counted without a third ask. A run on which no follow-up question errored sends nothing more.
+ * NEVER-KILL: returns null when there was nothing to ask, else what was sent and what came back.
+ */
+export async function reaskFollowUpErrors(ctx, dispatchPlanQids, site, { reasked = [] } = {}) {   // @internal
+  if (!ctx.registerPlan) return null;
+  refreshSupplementalExecution(ctx);
+  const P = ctx.paths;
+  try {
+    const pending = followUpErrorsToReask(ctx, readRegisterBands(P, ctx.axes ?? []));
+    if (!pending.length) return null;
+    const before = new Set((reasked ?? []).map(String));
+    const sent = pending.filter((q) => before.has(q.qid)).map((q) => q.qid);
+    const unsent = [];
+    const byAxis = new Map();
+    for (const q of pending) if (!before.has(q.qid)) { if (!byAxis.has(q.axis)) byAxis.set(q.axis, []); byAxis.get(q.axis).push(q.qid); }
+    const dispatches = [];
+    for (const [axis, qids] of byAxis) {
+      const dispatch = typeof dispatchPlanQids === "function" ? await dispatchPlanQids(axis, qids, `follow-up-reask:${site}`, 1) : null;
+      (dispatch === "ok" ? sent : unsent).push(...qids);
+      dispatches.push({ axis, qids, dispatch: dispatch ?? "not sent: no executor at this seam, or its repair budget is spent" });
+    }
+    // What came back, read off the bands before the receipt is written: the record of the attempt is the run log's.
+    const answeredNow = new Set(), errorNow = new Map();
+    for (const arr of Object.values(readRegisterBands(P, ctx.axes ?? [])))
+      for (const b of arr ?? []) {
+        if (!b || typeof b.qid !== "string" || !b.qid) continue;
+        if (b.error === true) errorNow.set(b.qid, String(b.reason ?? ""));
+        else answeredNow.add(b.qid);
+      }
+    const sentSet = new Set(sent);
+    const rows = [...new Set(pending.map((q) => q.axis))].map((axis) => {
+      const mine = pending.filter((q) => q.axis === axis).map((q) => q.qid);
+      const d = dispatches.find((x) => x.axis === axis);
+      const went = mine.filter((q) => sentSet.has(q));
+      return { axis, qids: mine.slice(0, 8), qids_omitted: Math.max(0, mine.length - 8),
+        dispatch: d ? String(d.dispatch).slice(0, 160) : "asked again by the caller in this pass",
+        sent: went.length, answered: went.filter((q) => answeredNow.has(q)).length,
+        still_erroring: went.filter((q) => errorNow.has(q) && !answeredNow.has(q)).length,
+        causes: [...new Set(went.filter((q) => errorNow.has(q)).map((q) => errorNow.get(q).slice(0, 160)))].slice(0, 3) };
+    });
+    runLog(P.runDir, { event: "follow-up-reask", site, rows });
+    if (!sent.length) return { site, sent, unsent, rows };
+    remergeIfBandsMoved(ctx, `follow-up-reask:${site}`);
+    writePlanExecutionReceipt(ctx, joinPlanToBands(ctx.registerPlan, readRegisterBands(P, ctx.axes ?? []), joinOptions(ctx)), { reasked: sent, unsent });
+    runLog(P.runDir, { event: "plan-execution-refresh", added: 0, reasked: sent.length, site });
+    return { site, sent, unsent, rows };
+  } catch (e) {
+    note(`follow-up re-ask (${site}) skipped (${String(e?.message ?? e).slice(0, 80)}) — never-kill`);
+    return null;
+  }
 }
 
 /** One axis band's bytes, or null where it has none: what a re-run's change is measured against. */
@@ -9728,7 +9823,7 @@ async function pipelineInner(job, opts = {}) {
     } },
     { name: "frame-comparison", run: async () => {
         // The blind frame compared with what the run scoped, and the reopen (steps/frame-comparison.mjs).
-        await runFrameComparison({ P, axes, ctx, dispatchPlanQids, flushDigestQueue, job, mintDigestWork, planExec, run, runCommonLaw, unitKey }, { bandBytesOf, deriveNamedBand, forceFromActive, inScopeClassList, joinOptions, loadCoverageLedger, mechanicalFormGapDirectives, readRegisterBands, refreshSupplementalExecution, remergeIfBandsMoved, settleOneShotStamp, stage });
+        await runFrameComparison({ P, axes, ctx, dispatchPlanQids, flushDigestQueue, job, mintDigestWork, planExec, run, runCommonLaw, unitKey }, { bandBytesOf, deriveNamedBand, forceFromActive, inScopeClassList, joinOptions, loadCoverageLedger, mechanicalFormGapDirectives, readRegisterBands, reaskFollowUpErrors, refreshSupplementalExecution, remergeIfBandsMoved, settleOneShotStamp, stage });
     } },
     { name: "placement-and-digest", run: async () => {
         // Step 2C placement → Step 2D digest
@@ -9742,7 +9837,7 @@ async function pipelineInner(job, opts = {}) {
     } },
     { name: "skeptic-and-follow-up", run: async () => {
         // The skeptic, and the searches and rechecks that follow it (steps/skeptic-and-follow-up.mjs).
-        await runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQids, flushDigestQueue, job, mintDigestWork, opts, planExec, run, unitKey }, { askableOf, bandBytesOf, capabilityGapAxes, defaultRecordFetcher, deriveBandShape, deriveNamedBand, envelopeDecision, envelopeHeldNote, escalationHeldNote, findFloorBreaches, forceFromActive, isInactiveAxisRow, lateRecordIds, loadCoverageLedger, officeGapOf, readFloorAxes, readPlanExecution, recordPlacementPass, recordScreenGateEvidence, refreshSupplementalExecution, remergeIfBandsMoved, runBatched, screenGateSnapshot, settleOneShotStamp, skepticDeferralExtra, stage, stickyGapUnits });
+        await runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQids, flushDigestQueue, job, mintDigestWork, opts, planExec, run, unitKey }, { askableOf, bandBytesOf, capabilityGapAxes, defaultRecordFetcher, deriveBandShape, deriveNamedBand, envelopeDecision, envelopeHeldNote, escalationHeldNote, findFloorBreaches, forceFromActive, isInactiveAxisRow, lateRecordIds, loadCoverageLedger, officeGapOf, readFloorAxes, readPlanExecution, reaskFollowUpErrors, recordPlacementPass, recordScreenGateEvidence, refreshSupplementalExecution, remergeIfBandsMoved, runBatched, screenGateSnapshot, settleOneShotStamp, skepticDeferralExtra, stage, stickyGapUnits });
     } },
     { name: "synthesis", run: async () => {
         // The writer, the case-law grounding and the first review (steps/synthesis.mjs).
