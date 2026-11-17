@@ -41,7 +41,7 @@
      The visible sentence loses its bottom margin (the fold row carries the spacing instead) so a folded
      caption occupies the same vertical run as an unfolded one. `details.sub-more` is styled here and NOT
      in the frozen renderer, and the existing @media print rule that forces every <details> open already
-     covers it — the exported PDF carries the whole caption, which is #470's rule for print. */
+     covers it — the exported PDF carries the whole caption, which is the rule for print. */
   details.sub-more{margin:0 0 30px;max-width:700px}
   details.sub-more>summary{cursor:pointer;list-style:none;font-size:12.5px;font-weight:700;
     letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
@@ -397,19 +397,19 @@
        hash pins the renderer's bytes and the render arms grep its HTML, and on screen a mis-ruled
        disclosure is correct. It is the private print control that walks a rendered page on both lanes
        and refuses a disclosure ruled by neither mechanism, and it runs by hand. Two folds have now
-       shipped mis-ruled and been caught there rather than in CI. `details.sub-more` (#470) was in NEITHER, so the exported PDF — the
+       shipped mis-ruled and been caught there rather than in CI. `details.sub-more` was in NEITHER, so the exported PDF — the
        client-facing legal document — printed an inert "MORE" label and a right-pointing COLLAPSED marker
        in the hero, directly above text that was already fully expanded. Measured in Chrome: the caption's
        own content was carried correctly and only the control leaked, which is why the commit that added
        the fold could check the half it thought about and ship the half it did not. */
     details.drill>summary,details.method>summary,details.sub-more>summary,
     /* An answer's "More" is a pure toggle: it carries no content of its own, so on paper it would be an
-       inert label over text the rule below has already expanded — the defect #470 shipped. */
+       inert label over text the rule below has already expanded — a defect that once shipped. */
     details.ans-more>summary{display:none!important}
     /* The caption fold made this line load-bearing for the document's CONTENT, not just its completeness. The
        legal/practical reads now live inside .drillbody, so without this rule the exported PDF would
        carry the one-line verdicts and none of the reasoning behind them. The export prints everything a
-       reader could open — ruled on #470, deliberately unchanged. Ticked-card selection (.print-hidden)
+       reader could open — a deliberate rule, unchanged. Ticked-card selection (.print-hidden)
        and internal notes (.int-note, hidden above) are the only two things print ever drops. */
     details>*:not(summary){display:block!important}
     details>summary{list-style:none;cursor:default}
@@ -465,7 +465,7 @@
   /* ── P5 (charter 2026-07-30) — content model: legal/practical split · manageable category · the
      four answers. This file is NOT hash-frozen; the render emits the markup, the rules live here. */
   /* the legal vs practical pair — two labelled reads, never blurred.
-     #470: these moved out of the card body and into the "Full detail & provenance" drawer, where they
+     These moved out of the card body and into the "Full detail & provenance" drawer, where they
      LEAD, so they are sized for the drawer's own reading text (.drillbody is 13.5px/1.62) instead of the
      tighter card body they used to sit in. The first block has no top margin — .drillbody's padding is
      the gap — and the last one is spaced off the structured <ul> that follows it. */
@@ -492,7 +492,7 @@
      browser's default weight, under the browser's default triangle, at the foot of a document whose
      every other section carries a numbered spine header. The section that states what the search did
      NOT cover was the one region on the page a reader's eye had no reason to stop at.
-     This is the styling half of #763 and it costs no hash bump — the markup is unchanged. */
+     This is the styling half of that change and it costs no hash bump — the markup is unchanged. */
   details.scope>summary{cursor:pointer;list-style:none;margin:22px 0 0;padding:12px 0 10px;
     border-top:1px solid var(--line);font-size:15px;font-weight:700;letter-spacing:-.01em;color:var(--ink)}
   details.scope>summary::-webkit-details-marker{display:none}

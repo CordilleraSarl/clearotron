@@ -4,6 +4,18 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.6.0-beta.1
+
+### Fixed
+
+- A follow-up register search that fails temporarily is retried before the clearance continues. If it still fails, the report identifies the unsearched work and its recorded cause.
+- A recommended step that names one of your own product tiers, such as "Tier 1", no longer leads the covering email and the audit workbook to say that the action list names a party no finding identifies.
+- With no company store set, the assistant connection now says at start how many companies it reads from the folder that ships with the install, and which are refused, instead of warning that every real customer will be refused.
+
+### For operators
+
+- Startup messages explain which bundled profile and framework files are in use and how to select a separate configuration store.
+
 ## 0.6.0-beta.0
 
 ### New

@@ -164,12 +164,14 @@ const NOISE_KEYS = new Set(["raw", "highlight", "score", "poca_scores", "onomati
 // the extra provenance is the answer ("which owner slice found this?"). The FILTER always reads the
 // band file itself, never this projection, so matching is unaffected either way.
 const singleton = (v, first) => !Array.isArray(v) || v.length <= 1 || (v.length === 1 && v[0] === first);
+// A record's set-aside is served as its classes and reason. The shape's recorded answer for that wording (`test`) is
+// read into `goods_words`, and is not served on its own.
 const project = (r) => Object.fromEntries(Object.entries(r).filter(([k, v]) => {
   if (NOISE_KEYS.has(k)) return false;
   if (k === "_qids") return !singleton(v, r?._qid);
   if (k === "_queries") return !singleton(v, r?._query);
   return true;
-}));
+}).map(([k, v]) => (k === "goods_set_aside" && v && typeof v === "object" ? [k, { classes: v.classes, reason: v.reason }] : [k, v])));
 
 const norm = (s) => String(s ?? "").trim().toLowerCase();
 // A3 (addendum 2026-07-30): the READER lowercases the incoming uri — reader-side ONLY. The archived
@@ -299,7 +301,7 @@ const shapeGoodsTest = () => {
   if (testCache) return testCache;
   let words = [];
   try { words = loadJson(shapeJsonPath()).groups?.goods_test?.words ?? []; } catch { words = []; }
-  testCache = { words, matched: goodsWordsMatched(words, { stems: true }) };
+  testCache = { words, matched: goodsWordsMatched(words, { stems: true, setAsideTest: true }) };
   return testCache;
 };
 // THE REGISTER'S OWN PAGES THE RUN'S RESEARCH SAVED (saved-register-pages.mjs), read again at the start of each lookup
@@ -560,9 +562,11 @@ function bandRecord(params = {}) {
     logRead("band_record", { record_id: uri }, { ok: false, reason: hit.miss, ...(failed ? { fetch_failed: true } : {}) });
     return { isError: true, text: `${why} ${rest}` };
   }
-  const goodsLines = statements.map((g) => JSON.stringify({ class: g.classes.join(",") || null, text: g.text,
-    goods_from: g.cut ? "search answer, cut by the register" : g.unknown ? "search answer, completeness not established"
-      : g.page ? registerPageLabel(g.page.question) : "search answer" }));
+  // A class whose goods text the merged band set aside is said as set aside, with no text: never an empty statement.
+  const goodsLines = statements.map((g) => JSON.stringify(g.setAside ? { class: g.classes.join(",") || null, text: null, goods_from: SET_ASIDE_FROM }
+    : { class: g.classes.join(",") || null, text: g.text,
+      goods_from: g.cut ? "search answer, cut by the register" : g.unknown ? "search answer, completeness not established"
+        : g.page ? registerPageLabel(g.page.question) : "search answer" }));
   const text = [why, ...goodsLines, rest].join("\n");
   const parts = splitAtLines(text, RESPONSE_CHARS);
   const wanted = Number(params.part ?? 1);
@@ -573,6 +577,9 @@ function bandRecord(params = {}) {
   return { isError: true, text: `[record ${uri} — part ${part}/${parts.length}]\n` + parts[part - 1]
     + (part < parts.length ? `\n[end of part ${part}/${parts.length} — part ${part + 1} is available with {"record_id": "${uri}", "part": ${part + 1}}]` : "") };
 }
+
+// What `band_record` says of a class whose goods text the merged band set aside (named-band.mjs `rowAsHanded`).
+const SET_ASIDE_FROM = "set aside from this run's band, outside the order's classes: not shown, and not the register listing no goods";
 
 // The band row a record id names, from the band file, read once per server. null where the band holds none.
 let bandRowsCache = null;
@@ -600,7 +607,7 @@ const GROUP_PAGES = process.env.CLEAROTRON_BAND_GROUPS === "1";
 // served the shape without them (the owner's ruling, 2026-10-14). Each is removed with the space before it, inside
 // its line, so no line moves and the line each listed mark is printed on, which `linesByPart` reads, still holds.
 // (band-shape.mjs `withoutPlacementOrders` removes them, with the shape's other placement-only orders and its group-page commands.)
-const LOOKUP_DESCRIPTION = "Look up enumerated records in this run's frozen register band (read-only; logged to the reading audit). Filters AND together: record_id (exact uri), owner (substring), nice_class, tier (identical|near-identical|same-family|other|unclassifiable — classified against the shape's frozen targets), qid (exact plan-entry id — the plan-execution ledger join; a record surfaced by several slices matches under EVERY one of them), query (the _query slice that surfaced the record), text (substring of mark_text), status (substring), live_only, goods (words: records whose goods contain any of them, as whole words, singular or plural; a record with no goods on file matches too), group (a, b, c, d, rest or no_goods: that list's lines in the shape's order, one per mark of an owner), limit (default 20, max 100), offset (default 0: where in the matching records or lines to start — a capped answer names the offset where the next page starts). On each record served, `goods_words` gives the client's goods words its goods hold, as the shape tests them (k of N: the words), or null where its goods cannot be read; `goods_from` says what those goods rest on: official record; official record, cut by the register; official record, completeness not established; official record, no goods listed; search answer; search answer, cut by the register; search answer, completeness not established; the register's own page, saved by research question <N>; fetch failed; or nothing held. The goods text is in band_record. Matching un-enumerated crowd descriptors ride along so a lookup can never mistake a counted-only zone for a clean.";
+const LOOKUP_DESCRIPTION = "Look up enumerated records in this run's frozen register band (read-only; logged to the reading audit). Filters AND together: record_id (exact uri), owner (substring), nice_class, tier (identical|near-identical|same-family|other|unclassifiable — classified against the shape's frozen targets), qid (exact plan-entry id — the plan-execution ledger join; a record surfaced by several slices matches under EVERY one of them), query (the _query slice that surfaced the record), text (substring of mark_text), status (substring), live_only, goods (words: records whose goods contain any of them, as whole words, singular or plural; a record with no goods on file matches too, and so does one with a class's goods text set aside where the rest holds none of the words), group (a, b, c, d, rest or no_goods: that list's lines in the shape's order, one per mark of an owner), limit (default 20, max 100), offset (default 0: where in the matching records or lines to start — a capped answer names the offset where the next page starts). On each record served, `goods_words` gives the client's goods words its goods hold, as the shape tests them (k of N: the words), or null where its goods cannot be read; `goods_from` says what those goods rest on: official record; official record, cut by the register; official record, completeness not established; official record, no goods listed; search answer; search answer, cut by the register; search answer, completeness not established; the register's own page, saved by research question <N>; fetch failed; or nothing held. The band row names omitted classes in `goods_set_aside`. When the goods served come from the trimmed search answer, `goods_from` names those omissions; a separately fetched official record may supply their wording. A saved goods-word result records the outcome of the shape's stated word test on the wording available when the band was merged. It supports grouping and order. It does not establish that the omitted goods are legally unrelated. `band_record` shows what wording is available to read now. The goods text is in band_record, except a set-aside class's text where no official record was fetched. Matching un-enumerated crowd descriptors ride along so a lookup can never mistake a counted-only zone for a clean.";
 const LOOKUP_GROUP_CLAUSE = "group (a, b, c, d, rest or no_goods: that list's lines in the shape's order, one per mark of an owner), ";
 const LOOKUP_OFFSET_GROUPS = "offset (default 0: where in the matching records or lines to start — a capped answer names the offset where the next page starts)";
 const LOOKUP_OFFSET_BAND = "offset (default 0: where in the matching records to start — a capped answer names the offset where the next page starts)";
@@ -633,7 +640,7 @@ serve({
     },
     {
       name: "band_record",
-      description: "The OFFICIAL registry record the driver fetched into this run's _records/ for a given record_id (/mark/... uri) — the fetched document itself, for detail the band row does not carry. Cite the uri in whatever form the band, the findings or the provider gave you: case, a wrapping provider URL and the registration-instance suffix are all resolved to the same document. Read-only: it never fetches. An unfetched record returns an honest miss listing what is on file, with the goods the register's search answer listed for it where it listed any; a record that IS on file but cannot be opened says so — both are gaps to state, never records without documents. Every call is logged to the reading audit.",
+      description: "The OFFICIAL registry record the driver fetched into this run's _records/ for a given record_id (/mark/... uri) — the fetched document itself, for detail the band row does not carry. Cite the uri in whatever form the band, the findings or the provider gave you: case, a wrapping provider URL and the registration-instance suffix are all resolved to the same document. Read-only: it never fetches. A fetched record is served whole, every class. An unfetched record returns an honest miss listing what is on file, with the goods the register's search answer listed for it where it listed any, except the text of a class outside the order's classes, which this run's band set aside and names as set aside; a record that IS on file but cannot be opened says so — both are gaps to state, never records without documents. Every call is logged to the reading audit.",
       inputSchema: { type: "object", required: ["record_id"], properties: { record_id: { type: "string", description: "the /mark/<cc>/<id> uri" }, part: { type: "number", description: "1-based part number when an oversize record is served in parts (default 1)" } } },
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
       handler: bandRecord,

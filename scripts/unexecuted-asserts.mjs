@@ -79,7 +79,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const CENSUS = join(ROOT, "driver", "unexecuted-asserts.json");
 
 const README = [
-  "#1010's FIFTH MEMBER — an arm that ran and asserted nothing. The other four move the file's text and",
+  "THE FIFTH MEMBER — an arm that ran and asserted nothing. The other four move the file's text and",
   "driver/suite-census.json counts it; a GATED arm — an early return behind a condition nobody satisfies —",
   "moves no token at all, so the suite passes, the census passes, and the arm asserts nothing.",
   "",
@@ -109,7 +109,7 @@ const README = [
   "   4  a comment at the site says the branch IS taken and it is not (portal-service's grants file,",
   "      profiles-page's anon config). The comment is the claim; the coverage is the measurement.",
   "",
-  "The last two groups are the instrument's first findings and are ON #1010's thread, not fixed here.",
+  "The last two groups are the instrument's first findings and are recorded for follow-up, not fixed here.",
   "",
   "RE-STAMP DELIBERATELY:  npm run assert-census -- <lcov> --apply",
 ];
