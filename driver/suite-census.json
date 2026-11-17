@@ -695,7 +695,7 @@
         },
         "a-demo-says-what-it-is-not-what-it-lacks.test.mjs": {
           "tests": 5,
-          "asserts": 32,
+          "asserts": 33,
           "skips": 0,
           "todos": 0
         },
@@ -912,6 +912,18 @@
         "a-floor-the-repeated-placement-pass-answers-is-withdrawn-and-the-result-recomputed.pipeline.test.mjs": {
           "tests": 2,
           "asserts": 28,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-follow-up-question-the-register-errored-on-does-not-park-the-run.pipeline.test.mjs": {
+          "tests": 2,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-follow-up-question-the-register-errored-on-is-asked-again-in-the-same-pass.test.mjs": {
+          "tests": 10,
+          "asserts": 45,
           "skips": 0,
           "todos": 0
         },
@@ -1642,8 +1654,8 @@
           "todos": 0
         },
         "a-party-the-report-introduces-is-introduced-to-the-email.test.mjs": {
-          "tests": 4,
-          "asserts": 13,
+          "tests": 5,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -3017,7 +3029,7 @@
         },
         "an-empty-config-store-overrides-nothing.test.mjs": {
           "tests": 5,
-          "asserts": 29,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },
@@ -6741,6 +6753,18 @@
           "skips": 0,
           "todos": 0
         },
+        "start-keeps-systemds-bus-error-out-of-its-output.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
+          "skips": 3,
+          "todos": 0
+        },
+        "start-names-the-grants-file-before-filing-an-organisation.test.mjs": {
+          "tests": 2,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "start-refuses-on-a-box-that-has-the-services.test.mjs": {
           "tests": 6,
           "asserts": 20,
@@ -6966,6 +6990,18 @@
         "the-audit-stores-register-presence.test.mjs": {
           "tests": 11,
           "asserts": 32,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-band-carries-goods-text-for-the-orders-classes.test.mjs": {
+          "tests": 18,
+          "asserts": 74,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-band-is-written-compact-and-read-the-same.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
@@ -7623,6 +7659,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-merged-band-carries-what-its-readers-read.test.mjs": {
+          "tests": 4,
+          "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
         "the-minters-read-the-published-tree.test.mjs": {
           "tests": 4,
           "asserts": 12,
@@ -8121,6 +8163,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-roster-line-says-what-is-read-and-who-is-refused.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "the-ruled-reading-paragraph-reaches-the-sweep-and-the-write-up.test.mjs": {
           "tests": 2,
           "asserts": 7,
@@ -8219,7 +8267,7 @@
         },
         "the-settings-surface-reads-the-customer-store.test.mjs": {
           "tests": 10,
-          "asserts": 43,
+          "asserts": 45,
           "skips": 0,
           "todos": 0
         },

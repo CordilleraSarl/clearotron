@@ -353,20 +353,49 @@ export function clientDoorOwner({ probeCode = null, unitActive = null, unitPort 
 }
 
 /**
+ * What `start` says about the grants file it wrote: the file first, then what was filed in it.
+ *
+ * THE FILE IS NAMED BEFORE "filed there". A file that already named this person, given an organisation for
+ * the first time, changed only the organisation; the line naming the file printed only when the file was
+ * created or a person was added, so "there" pointed at nothing (measured in testing, 2026-11-17).
+ */
+export function grantsFileLines({ existed, changed, path, user, organisation, organisations = 0 }) {
+  const lines = [];
+  if (!existed) lines.push(`  created        ${path} — ${user}: Run, Manage, access to everything`);
+  else if (changed.includes("person"))
+    lines.push(`  grants         ${path} named nobody, so ${user} was added: Run, Manage, access to everything`);
+  else if (changed.includes("organisation")) lines.push(`  grants         ${path}`);
+  if (changed.includes("organisation")) lines.push(`                 organisation "${organisation}", filed there — rename it there too`);
+  else if (changed.includes("person") && !organisations)
+    lines.push(`                 no organisation named yet — \`${reachableCommand('start --organisation "<name>"')}\` files the first one`);
+  return lines;
+}
+
+/**
+ * `systemctl --user show <unit>`, its properties as an object. Its stderr is CAPTURED, never inherited:
+ * where the user bus cannot be reached, systemctl writes "Failed to connect to bus: No medium found", and
+ * an inherited stderr printed that line into start's own output with nothing around it. A read that fails
+ * still throws, so each caller keeps its own could-not-look answer.
+ */
+export function systemctlShow(unit, props, run = execFileSync) {
+  const out = run("systemctl", ["--user", "show", unit, ...props.flatMap((p) => ["-p", p])],
+    { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+  return Object.fromEntries(out.split("\n").filter(Boolean).map((l) => {
+    const i = l.indexOf("="); return [l.slice(0, i), l.slice(i + 1)];
+  }));
+}
+
+/**
  * The two reads `clientDoorOwner` needs, against the live box.
  *
  * `systemctl --user show` in THIS FILE'S shape and without `userBusEnv()` — see the note at the
  * daemon-reload below for why this file does not pass it yet. A read that throws answers `null`, which
  * `clientDoorOwner` turns into "unknown" and therefore into today's refusal.
  */
-function liveClientDoor(unitEnvFile = unitEnvPath(), run = execFileSync) {
+export function liveClientDoor(unitEnvFile = unitEnvPath(), run = execFileSync) {
   let unitActive = null, unitPort = null;
   try {
-    const out = run("systemctl", ["--user", "show", CLIENT_DOOR_UNIT, "-p", "ActiveState", "-p", "SubState"],
-      { encoding: "utf8" });
-    const f = Object.fromEntries(out.split("\n").filter(Boolean).map((l) => {
-      const i = l.indexOf("="); return [l.slice(0, i), l.slice(i + 1)];
-    }));
+    const f = systemctlShow(CLIENT_DOOR_UNIT, ["ActiveState", "SubState"], run);
     if (f.ActiveState !== undefined) unitActive = f.ActiveState === "active" && f.SubState === "running";
   } catch { /* null — a could-not-look, which refuses */ }
   try {
@@ -417,7 +446,7 @@ export function clientDoorDownLines({ host, port, exited }) {
 export const DEMO_ROUTINE_LINES = [
   /^auth ON — /,
   /^key path: none \(TRADEMARK_MCP_KEY_SOCKET is not set\)/,
-  /^roster: \d+ customer\(s\) from /,
+  /^roster: \d+ customers? from /,
   /^This is `clearotron demo`: /,
   /^listening on http:\/\//,
   /^audit log: /,
@@ -1577,12 +1606,8 @@ if (isMain) {
         try { atomicWrite(paths.grants, `${JSON.stringify(seeded.grants, null, 2)}\n`); }
         catch (e) { fatal(`could not write the grants file at ${paths.grants} (${String(e?.message ?? e)}).`); }
       }
-      if (!existing) say(`  created        ${paths.grants} — ${user}: Run, Manage, access to everything`);
-      else if (seeded.changed.includes("person"))
-        say(`  grants         ${paths.grants} named nobody, so ${user} was added: Run, Manage, access to everything`);
-      if (seeded.changed.includes("organisation")) say(`                 organisation "${organisation}", filed there — rename it there too`);
-      else if (seeded.changed.includes("person") && !Object.keys(seeded.grants.tenants ?? {}).length)
-        say(`                 no organisation named yet — \`${reachableCommand('start --organisation "<name>"')}\` files the first one`);
+      for (const line of grantsFileLines({ existed: Boolean(existing), changed: seeded.changed, path: paths.grants, user,
+        organisation, organisations: Object.keys(seeded.grants.tenants ?? {}).length })) say(line);
       // REPORTED, NOT REPAIRED. A file that names other people is somebody's decision, and adding this
       // address to it would give access to everything to an address nobody enrolled.
       if (seeded.unadmitted)
@@ -2241,8 +2266,7 @@ if (isMain) {
       const type = unitTypeOf(u);
       let f = {};
       try {
-        const out = execFileSync("systemctl", ["--user", "show", u, "-p", "ActiveState", "-p", "SubState", "-p", "NRestarts", "-p", "UnitFileState"], { encoding: "utf8" });
-        f = Object.fromEntries(out.trim().split("\n").map((l) => l.split("=")));
+        f = systemctlShow(u, ["ActiveState", "SubState", "NRestarts", "UnitFileState"]);
       } catch { /* unreadable state is reported below as not-running */ }
       const verdict = unitHealthVerdict({ type, activeState: f.ActiveState ?? null, subState: f.SubState ?? null,
         unitFileState: f.UnitFileState ?? null, nRestarts: f.NRestarts ?? 0 });

@@ -117,15 +117,16 @@ const BASE = {
 test("boot names the roster and where it came from", async () => {
   const dir = profilesDir(["acme", "generic"]);
   const r = await boot({ ...BASE, CLEAROTRON_ACCESS_FILE: grantsFile(["acme"]), CLEAROTRON_CUSTOMERS_DIR: dir },
-    /roster: \d+ customer\(s\) from /);
-  assert.match(r.stderr, /roster: \d+ customer\(s\) from /);
+    /roster: \d+ customers? from /);
+  assert.match(r.stderr, /roster: \d+ customers? from /);
   assert.match(r.stderr, new RegExp(dir.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), "the DIRECTORY is named, because that is the thing that is usually wrong");
   assert.match(r.stderr, /acme/);
 });
 
 test("THE GUARD: an unset CLEAROTRON_CUSTOMERS_DIR is called out, not left to be discovered by a refused run", async () => {
+  // The count line names the unset store too, so the wait is for the sentence that carries the consequence.
   const r = await boot({ ...BASE, CLEAROTRON_ACCESS_FILE: grantsFile(["acme"]), CLEAROTRON_CUSTOMERS_DIR: "" },
-    /CLEAROTRON_CUSTOMERS_DIR is unset/);
+    /CLEAROTRON_CUSTOMERS_DIR is unset, so start_run reads/);
   assert.match(r.stderr, /WARNING/);
   assert.match(r.stderr, new RegExp(`CLEAROTRON_CUSTOMERS_DIR is unset`));
   // Must state the CONSEQUENCE. A warning naming a variable teaches nothing; one naming the symptom
@@ -154,10 +155,10 @@ test("a fully-covered roster is quiet", async () => {
     ...BASE,
     CLEAROTRON_ACCESS_FILE: grantsFile(["acme"]),
     CLEAROTRON_CUSTOMERS_DIR: profilesDir(["acme", "generic"]),
-  }, /roster: \d+ customer\(s\)/);
+  }, /roster: \d+ customers? /);
   assert.equal(/ABSENT from this roster/.test(r.stderr), false);
   assert.equal(/CLEAROTRON_CUSTOMERS_DIR is unset/.test(r.stderr), false);
-  assert.match(r.stderr, /roster: 2 customer\(s\)/, "still says what it can see — a silent check is one nobody trusts");
+  assert.match(r.stderr, /roster: 2 customers /, "still says what it can see — a silent check is one nobody trusts");
 });
 
 test("a tenant granted \"*\" contributes no keys, so it cannot manufacture a false warning", async () => {
@@ -167,7 +168,7 @@ test("a tenant granted \"*\" contributes no keys, so it cannot manufacture a fal
     ...BASE,
     CLEAROTRON_ACCESS_FILE: grantsFile("*"),
     CLEAROTRON_CUSTOMERS_DIR: profilesDir(["acme", "generic"]),
-  }, /roster: \d+ customer\(s\)/);
+  }, /roster: \d+ customers? /);
   assert.equal(/ABSENT from this roster/.test(r.stderr), false);
 });
 
@@ -180,14 +181,14 @@ test("a SLOW boot makes this file slower, never red — driven past the old 2.5s
   // server is slow — that would be a test of the box, and unreproducible besides.
   const slow = join(mkdtempSync(join(tmpdir(), "slow-boot-")), "slow.mjs");
   const AFTER_THE_OLD_KILL = 4000;
-  writeFileSync(slow, `setTimeout(() => { process.stderr.write("roster: 2 customer(s) from /somewhere\\n"); }, ${AFTER_THE_OLD_KILL});\n`
+  writeFileSync(slow, `setTimeout(() => { process.stderr.write("roster: 2 customers from /somewhere\\n"); }, ${AFTER_THE_OLD_KILL});\n`
     + "setInterval(() => {}, 1000);\n");   // and it does NOT exit, exactly like the real door
 
   const started = Date.now();
-  const r = await boot({}, /roster: \d+ customer\(s\) from /, { argv: [slow] });
+  const r = await boot({}, /roster: \d+ customers? from /, { argv: [slow] });
   const took = Date.now() - started;
 
-  assert.match(r.stderr, /roster: 2 customer\(s\)/,
+  assert.match(r.stderr, /roster: 2 customers /,
     `the line arrived after ${AFTER_THE_OLD_KILL}ms and was not captured — the wait is not waiting`);
   assert.ok(took >= AFTER_THE_OLD_KILL,
     `returned in ${took}ms, before the line could have been written — it did not wait for it`);

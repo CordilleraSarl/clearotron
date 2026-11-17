@@ -1369,7 +1369,7 @@ export const STAGES = {
       },
       "Distinctiveness & registrability read — spectrum placement per market language, descriptive/generic/laudatory/geographic/deceptive/offensive flags, acquired-distinctiveness note": {
         class: "judgment", tokens: [],
-        why: "an advisory legal read that reaches the client-facing report; prose-only, no structured slot, no token",
+        why: "reasoned while the variants are generated, to steer them; no artifact carries it, and the read the report shows is the writer's own mark assessment, made from the manifest's forms and the run's evidence; prose-only, no structured slot, no token",
       },
       "elements[].famous_mark_flag — the elements Step 2's famous-mark check flags": {
         class: "judgment", tokens: [],
@@ -1643,10 +1643,6 @@ export const STAGES = {
       "Audit trail — call log: per call, type, prompt summary, results returned": {
         class: "judgment", tokens: ["missing"],
         why: "#850 rules audit-trail prose J. Recorded for E7: the call count and the per-call result count are in the ledger and in _driver/tool-calls.jsonl, so only the prompt-summary column is authored.",
-      },
-      "Grid program receipt — paste the SANDBOX PROGRAM block from the tool result verbatim into the audit trail": {
-        class: "mechanical:tool-written", tokens: [],
-        why: "Verbatim re-emission of a block the tool already returned and, on the deterministic branch, already wrote. No validator token speaks about it — a gap, and an instance of exactly the shape #850 says escapes a stages.mjs-only reading.",
       },
       "Summary section — Perplexity calls executed, mandatory platforms covered N/N, findings surfaced, open flags": {
         class: "mechanical:code-extracted", tokens: [],

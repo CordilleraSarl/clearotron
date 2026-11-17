@@ -134,7 +134,7 @@ test("the record tool says a fetch failed only where the ledger records it, and 
   assert.equal(textOf(r[5]).split("\n")[0], `No official record is on file for "/mark/us/e8": a fetch of it failed this run. The register's search answer listed these goods. Their source and completeness are shown with each statement.`);
   assert.equal(r[4].result.isError, true, "it is still the miss of an official record");
   const list = (await session([INIT, { jsonrpc: "2.0", id: 2, method: "tools/list" }], env))[2].result.tools;
-  assert.ok(list.find((x) => x.name === "band_record").description.includes("Read-only: it never fetches. An unfetched record returns an honest miss listing what is on file, with the goods the register's search answer listed for it where it listed any; a record that IS on file but cannot be opened says so — both are gaps to state, never records without documents."));
+  assert.ok(list.find((x) => x.name === "band_record").description.includes("Read-only: it never fetches. A fetched record is served whole, every class. An unfetched record returns an honest miss listing what is on file, with the goods the register's search answer listed for it where it listed any, except the text of a class outside the order's classes, which this run's band set aside and names as set aside; a record that IS on file but cannot be opened says so — both are gaps to state, never records without documents."));
 });
 
 test("the write-up's list says what each record's goods rest on", () => {

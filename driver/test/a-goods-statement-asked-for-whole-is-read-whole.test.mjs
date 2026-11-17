@@ -26,7 +26,7 @@ test("an unflagged statement on a row asked for whole is whole, at any length", 
   assert.equal(completenessUnknown(g), false);
   assert.match(g[0].text, /all of the foregoing for invented uses$/, "the statement reads to its end");
   const of = (r) => rowGoods(r);
-  assert.deepEqual(goodsEvidence([row({ whole: true })], { of }), { held: 0, complete: 1, cut: 0, unknown: 0, none: 0 });
+  assert.deepEqual(goodsEvidence([row({ whole: true })], { of }), { held: 0, complete: 1, cut: 0, unknown: 0, setAside: 0, none: 0 });
 });
 
 test("a row from an answer that did not ask keeps the default answer's rule", () => {

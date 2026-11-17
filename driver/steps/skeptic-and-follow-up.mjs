@@ -22,7 +22,7 @@ import { STAGES, lines } from "../stages.mjs";
 import { existsSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 
 export async function runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQids, flushDigestQueue, job, mintDigestWork, opts, planExec, run, unitKey }, helpers) {
-  const { askableOf, bandBytesOf, capabilityGapAxes, defaultRecordFetcher, deriveBandShape, deriveNamedBand, envelopeDecision, envelopeHeldNote, escalationHeldNote, findFloorBreaches, forceFromActive, isInactiveAxisRow, lateRecordIds, loadCoverageLedger, officeGapOf, readFloorAxes, readPlanExecution, recordPlacementPass, recordScreenGateEvidence, refreshSupplementalExecution, remergeIfBandsMoved, runBatched, screenGateSnapshot, settleOneShotStamp, skepticDeferralExtra, stage, stickyGapUnits } = helpers;
+  const { askableOf, bandBytesOf, capabilityGapAxes, defaultRecordFetcher, deriveBandShape, deriveNamedBand, envelopeDecision, envelopeHeldNote, escalationHeldNote, findFloorBreaches, forceFromActive, isInactiveAxisRow, lateRecordIds, loadCoverageLedger, officeGapOf, readFloorAxes, readPlanExecution, reaskFollowUpErrors, recordPlacementPass, recordScreenGateEvidence, refreshSupplementalExecution, remergeIfBandsMoved, runBatched, screenGateSnapshot, settleOneShotStamp, skepticDeferralExtra, stage, stickyGapUnits } = helpers;
   // Step 2.6 skeptic → code-decided escalation. The skeptic poses its flags as a QUESTION back to each
   // flagged unit, which RESUMES its own session (warm cache, same model) and defends-or-adjusts in place —
   // it does NOT redo the search from scratch on a fresh opus session. This is both cheaper (a follow-up turn
@@ -227,7 +227,9 @@ export async function runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQ
         failed: escResults.filter((e) => !e.ok).map((e) => e.axis),
       }, null, 2) + "\n");
     } catch (e) { note(`escalation-state write failed (non-fatal): ${e.message}`); }
-    refreshSupplementalExecution(ctx);   // escalation followups may have PROPOSED supplementals — account for them
+    // Escalation followups may have PROPOSED supplementals: account for them, and ask again by code each one the register
+    // answered with an error the run reads as passing, before the reading step reads the axis (pipeline.mjs).
+    await reaskFollowUpErrors(ctx, dispatchPlanQids, "escalation");
     if (escalated.length) {
       runLog(run.runDir, { event: "skeptic-escalation", escalated });
       const escalationSegment = lines(
@@ -418,7 +420,10 @@ export async function runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQ
       const heldNote = undoneSearchesNote(ctx.registerPlan, envelopeReceipt, capabilityHeldAxes);
       ctx.envelopeNote = ctx.envelopeNote ? `${ctx.envelopeNote}; ${heldNote}` : heldNote;
     }
-    refreshSupplementalExecution(ctx);   // envelope closes may have PROPOSED supplementals — account for them
+    // Envelope closes may have PROPOSED supplementals: account for them. Where a close ran, each one the register answered
+    // with an error the run reads as passing is asked again by code first; past the digest lock nothing is sent.
+    if (closeableAxes.length && decision.close && !digestLockedEnv) await reaskFollowUpErrors(ctx, dispatchPlanQids, "envelope");
+    else refreshSupplementalExecution(ctx);
   }
 
   // Fix 1b — Finding-1 acceptance gate. An in-scope-live mark may NOT be goods/field-dropped on the batch

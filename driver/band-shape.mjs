@@ -713,6 +713,9 @@ function bindingOffices(territories, code) {
 // text. Then that text cut short for a line.
 const goodsReadText = (g) => (Array.isArray(g) ? g.map((x) => (typeof x === "string" ? x : x?.text)) : [typeof g === "string" ? g : g?.text])
   .filter((t) => typeof t === "string" && t.trim()).join("; ").replace(/\s+/g, " ").trim() || null;
+// Goods read off a search answer the merge trimmed carry an entry for each class whose description it set aside
+// (record-goods.mjs `rowGoods`); a held record's goods carry none.
+const descriptionsOmitted = (g) => Array.isArray(g) && g.some((x) => x?.setAside === true);
 export const FLOOR_GOODS_SHOWN = 140;
 function cutGoods(text) {
   const t = String(text ?? "");
@@ -761,7 +764,7 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
     // "On file" is a body `band_record` can open: goods read off the band row decide the group, never that.
     const onFile = goods?.held ? goods.held(r) : Boolean(g);
     const rec = { r, tier, hits, words, live, inScope: s, group, outside, floor, onFile, territories: ts, inMarket: ts.some((t) => market.has(t)),
-      ...(floor ? { read: goodsReadText(g) } : {}) };
+      ...(floor ? { read: goodsReadText(g), ...(descriptionsOmitted(g) ? { readOmits: true } : {}) } : {}) };
     const keys = typeof keysOf === "function" ? keysOf(r) : null;
     const ownerKey = keys?.owner ?? (normKey(r?.owner_name) ? `owner:${normKey(r?.owner_name)}` : `record:${String(r?.record_id ?? "").trim().toLowerCase()}`);
     const key = keys?.line ?? `line:${ownerKey}|${normMark(r?.mark_text) || String(r?.record_id ?? "").trim().toLowerCase()}`;
@@ -805,7 +808,11 @@ export function bandGroups(records, { classify, inScope, goods = null, dominantT
       floors: l.recs.filter((x) => x.floor).length,
       // A FLOOR IN (b) SHOWS THE GOODS THE TEST READ, cut short: a (b) line matched none of the client's words, so
       // without them a page of floors could not be judged without opening each record.
-      ...(group === "b" && known ? (() => { const read = l.recs.find((x) => x.floor && x.read)?.read; return read ? { floor_goods: cutGoods(read) } : {}; })() : {}),
+      // Where the wording quoted came from a search answer the merge trimmed, the line says the quotation is partial.
+      ...(group === "b" && known ? (() => {
+        const f = l.recs.find((x) => x.floor && x.read);
+        return f ? { floor_goods: cutGoods(f.read), ...(f.readOmits ? { floor_goods_omits: true } : {}) } : {};
+      })() : {}),
       ...(known ? {} : { goods_on_file: inGroup.some((x) => x.onFile) }),
       ...(offices.size && l.recs.every((x) => x.outside) ? { outside: true } : {}),
     };
@@ -917,6 +924,8 @@ export function buildBandShape(band, { crowdNarrowing = [], targets = [], inScop
     dominant_term: grouped.dominant_term, manifest_dominant: manifestDominant || null, goods_on_file: grouped.goods_on_file,
     markets: grouped.markets, territories: grouped.territories, territories_unread: grouped.territories_unread, outside: grouped.outside,
     goods_words_total: goodsWordCount || 0, goods_test: goodsTest ?? { source: goods ? "goods_words" : "none", words: [] },
+    // records whose set-aside wording the goods test read through the answer the merge saved for it
+    goods_saved_results: records.filter((r) => r?.goods_set_aside?.test).length,
     crowded_at: CROWDED_GROUP_RECORDS, first_page: ownerCap,
     a: groupOf("a"), b: groupOf("b"), c: groupOf("c"), d: groupOf("d"),
     rest: { records: grouped.by_group.rest.set_records, lines: rest.length, owners: ownersIn(rest), list: rest },
@@ -1159,6 +1168,11 @@ export function withoutPlacementOrders(text) {
   return t;
 }
 
+// What a goods-word answer the merge saved for set-aside wording is, said once beside the goods test it serves.
+// What a floor's quoted goods say where the quotation's source has class descriptions the merge set aside.
+export const FLOOR_QUOTE_OMITS = "Some class descriptions are omitted; this quotation is not the record's complete goods wording.";
+export const SAVED_GOODS_RESULT = "A saved goods-word result records the outcome of the shape's stated word test on the wording available when the band was merged. It supports grouping and order. It does not establish that the omitted goods are legally unrelated. `band_record` shows what wording is available to read now.";
+
 function renderGroupsMd(md, groups, rows = []) {
   md.push("", "## The band in the lawyer's order — for the client's goods first", "");
   if (groups.dominant_term && groups.manifest_dominant && normKey(groups.dominant_term) !== normKey(groups.manifest_dominant))
@@ -1172,6 +1186,9 @@ function renderGroupsMd(md, groups, rows = []) {
     : tested.source === "goods_words"
       ? `No product words were given, so the goods test reads each record's goods for the words the register search was narrowed by${named}. They include words other filings use for the same goods, so "for the client's goods" below is wider than the client's own product.`
       : "No goods words were given, so no record was tested on its goods.", "");
+  // Where the merge kept the test's answer for wording it set aside (named-band.mjs `rowAsHanded`), the summary says
+  // what that answer is and is not, beside the test it serves.
+  if (tested.source !== "none" && groups.goods_saved_results > 0) md.push(SAVED_GOODS_RESULT, "");
   if (groups.territories_unread?.length)
     md.push(`The order names ${groups.territories_unread.map((t) => `«${cell(t)}»`).join(", ")}, which the engine cannot read as a territory, so the list holds every register.`, "");
   else if (groups.territories?.length) md.push(`The list holds the order's territories: ${groups.territories.join(", ")}.`, "");
@@ -1188,13 +1205,14 @@ function renderGroupsMd(md, groups, rows = []) {
     if (tested.source === "none") return "—";
     if (l.goods_evidence === "cut") return "cut by the register, no goods word found";
     if (l.goods_evidence === "unknown") return l.goods_text === false ? "no goods text held; completeness not established" : "goods held; completeness not established";
+    if (l.goods_evidence === "set-aside") return "Some class descriptions were set aside; the retained wording does not settle the goods-word test.";
     if (l.goods_evidence === "absent") return "the register's record lists no goods";
     if (l.goods_evidence === "unavailable") return "fetch failed, no goods on file";
     if (l.goods_evidence === "complete") return "on file, not readable";
     return l.goods_on_file ? "on file, not readable" : "no goods on file";
   };
   const words = (l) => (l.goods_words == null ? unread(l)
-    : `${fmtN(l.goods_words.length)} of ${fmtN(total)}${l.goods_words.length ? `: ${l.goods_words.join(", ")}` : ""}${l.floor_goods ? ` «${l.floor_goods}»` : ""}`);
+    : `${fmtN(l.goods_words.length)} of ${fmtN(total)}${l.goods_words.length ? `: ${l.goods_words.join(", ")}` : ""}${l.floor_goods ? ` «${l.floor_goods}»${l.floor_goods_omits ? ` ${FLOOR_QUOTE_OMITS}` : ""}` : ""}`);
   const count = (grp) => `${fmtN(grp.records)} records in ${fmtN(grp.lines)} lines from ${fmtN(grp.owners)} owners`;
   const where = (l) => `${l.territories.join(",")}${l.outside ? " (outside the order)" : ""}`;
   const row = (l) => `| ${cell(l.mark)} | ${cell(l.owner_name)} | ${cell(l.classes.join(","))} | ${fmtN(l.live)} of ${fmtN(l.records)} | ${cell(where(l))} | ${cell(words(l))} | ${l.floors > 0 ? "yes" : "no"} | ${cell(l.record_id)} |`;
