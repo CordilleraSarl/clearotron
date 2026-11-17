@@ -256,7 +256,7 @@ const SHELL = `<!doctype html><html><head><meta charset="utf-8"><title>render-ch
       <h1 style="font-size:19px;margin:0">Mark</h1><span style="flex:1"></span>
       <button class="nav-item" id="exp" style="width:auto">Export</button></div></div>
     <div data-anon="mark" style="margin-top:12px">
-      <!-- The SAME sandbox Result.tsx sets, verbatim (#705). This shell exists to reproduce the portal's
+      <!-- The SAME sandbox Result.tsx sets, verbatim. This shell exists to reproduce the portal's
            report frame in a real browser, and a harness that sandboxes it more tightly than production
            cannot see a defect that only production's permissions expose — it can only invent one. -->
       <iframe id="f" src="rep.html" scrolling="auto"

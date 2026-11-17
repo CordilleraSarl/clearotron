@@ -600,8 +600,8 @@ table.data.fixed td:nth-child(2) {
 
 
 /* Under fixed layout a cell no longer widens for its content, so long unbroken text OVERFLOWS its column
-   instead of pushing it. Wrapping is the right failure for a mark or a status sentence; #280 sizes the
-   columns so the common case never reaches it. */
+   instead of pushing it. Wrapping is the right failure for a mark or a status sentence; the widths set on the
+   columns keep the common case from reaching it. */
 table.data.fixed td {
   overflow-wrap: anywhere;
 }

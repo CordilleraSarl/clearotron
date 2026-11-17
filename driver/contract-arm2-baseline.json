@@ -1,6 +1,6 @@
 {
   "_README": [
-    "#850 E2 arm 2 — 'a declared element no validator token speaks about'. THE RATCHET BASELINE.",
+    "E2 arm 2 — 'a declared element no validator token speaks about'. THE RATCHET BASELINE.",
     "Per stage, carrying the ELEMENT NAMES: this file IS the audit object, not a bare count, so a plateau",
     "is legible per stage and a reader can see WHICH elements no validator polices.",
     "CI fails on any PER-STAGE INCREASE (driver/test/contract-audit.test.mjs) — a new unpoliced element in",

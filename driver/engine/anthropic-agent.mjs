@@ -575,10 +575,10 @@ export const anthropicAgentEngine = {
       const maxBuffer = engineMaxBufferChars();
       let lastMove = Date.now();
       let lastProgress = Date.now();            // honest-progress clock: token movement / agent-loop steps / artifact writes ONLY
-      let firstOutputAt = null;                 // #1692/#1813 — first byte of the PROTOCOL (stdout only); until then every clock below is timing STARTUP
+      let firstOutputAt = null;                 // first byte of the PROTOCOL (stdout only); until then every clock below is timing STARTUP
       let atKill = null;                        // what the watchdog had seen when it decided to kill — recording only, see killDecision
       let silentIdleMs = null;                  // the no-progress clock at the watchdog's last look before the child spoke — recording only
-      const GRACE = spawnGraceMs();             // one source of the grace: common.mjs, where #1703 set it
+      const GRACE = spawnGraceMs();             // one source of the grace: common.mjs sets it
       let sawAnyEvent = false;                  // ANY parseable stream event (incl. system:init) — false on close = the CLI died before streaming (startup-class failure)
       let rateLimitEvent = null;   // a 429 session-cap rejection rides a `rate_limit_event` (status:"rejected" + resetsAt)
       // Streamed-usage accumulator: what the turn PROVABLY moved, observed from the stream itself, so a
@@ -849,7 +849,7 @@ export const anthropicAgentEngine = {
           // classification and no recovery park, or the turn never settles with its watchdog already gone.
           // Same belt-and-braces as the thinking gauge's `?.some?.()` on the line above.
           for (const b of Array.isArray(ev.message?.content) ? ev.message.content : []) {
-            if (b?.type === "tool_use") { toolCalls++; countTool(toolCallsByName, b?.name); }   // #1111 — every tool, not only Read; the count and its split by name
+            if (b?.type === "tool_use") { toolCalls++; countTool(toolCallsByName, b?.name); }   // every tool, not only Read; the count and its split by name
             if (b?.type === "tool_use" && b?.id != null) toolNameById.set(String(b.id), String(b?.name ?? "?"));
             if (b?.type === "tool_use" && COMMAND_TOOLS.includes(b?.name)) commandToolCalls++;
             if (b?.type === "tool_use" && FILE_WRITE_TOOLS.includes(b?.name) && b?.id != null) writeAsks.add(String(b.id));
@@ -1061,7 +1061,7 @@ export const anthropicAgentEngine = {
       const overflowKill = () => { if (overflow) return; overflow = true; killTree(); settle(1); };
       child.stdout.on("data", (d) => {
         if (settled || overflow) return;
-        if (firstOutputAt === null) firstOutputAt = Date.now();   // #1692 — the child has spoken; startup is over
+        if (firstOutputAt === null) firstOutputAt = Date.now();   // the child has spoken; startup is over
         chunkSeq += 1;                                            // see toolAskedChunk
         chunkBytes = d.length;
         chunkGapMs = prevChunkAt === null ? 0 : Date.now() - prevChunkAt;
@@ -1192,7 +1192,7 @@ export const anthropicAgentEngine = {
           // true = the 500-path cap dropped at least one further distinct file (so a `read:false` derived
           // from this list is unreliable and the consumer must downgrade it to "not observed").
           reads: [...reads], readsTruncated,
-          toolCalls, toolWaitMs: settledToolWaitMs,   // #1111 — two integers, no content
+          toolCalls, toolWaitMs: settledToolWaitMs,   // two integers, no content
           // The same calls by tool name (values sum to toolCalls), and what the session went through: every
           // result, cut, refusal and restart (session-record.mjs). `stream` is the raw stream's file and size,
           // or why it was not kept. Recording only — `failed` above still reads the last result alone.

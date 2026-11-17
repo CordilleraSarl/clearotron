@@ -1,6 +1,6 @@
 {
   "_README": [
-    "#703 — THE RECONCILIATION RATCHET. The floor a run's common-law carry must not fall below.",
+    "THE RECONCILIATION RATCHET. The floor a run's common-law carry must not fall below.",
     "",
     "WHAT IT RECORDS: what the contract CURRENTLY ACHIEVES, not what anyone hopes it achieves. It is",
     "seeded from a real delivered run, never from a fixture, because a floor invented at a desk ratchets",
@@ -13,7 +13,7 @@
     "A TRIP ANNOTATES, NEVER SUPPRESSES: the deliverable ships first. Below-floor means the ROUND cannot",
     "claim the contract held; it never means a client gets nothing.",
     "",
-    "MOVING IT UP IS THE POINT. When the seat-compliance work lands (the judgment half of #703 — why the",
+    "MOVING IT UP IS THE POINT. When the seat-compliance work lands (the judgment half of the ratchet — why the",
     "seat writes rows for 13% of cells when the dictation says one per cell), re-seed from the round that",
     "proves the improvement and record which run did it. A wave that ends with these numbers unmoved is a",
     "finding for the handover, not a footnote. Lowering the floor requires the same: a named run and a",
@@ -32,7 +32,7 @@
     "date": "2026-08-14",
     "round": "R1",
     "engine": "anthropic-agent",
-    "note": "First delivered R1 since 2026-08-09. Measured by the cell join recorded on #703 — 292 candidate-bearing cells, 39 carrying a negative row; 2116 retrieved candidates, 1609 with reason_source absent. by_joined_on {url 235, cell 272, none 1609} sums to 2116, so the accounting is complete over the full retrieved set."
+    "note": "First delivered R1 since 2026-08-09. Measured by a cell join — 292 candidate-bearing cells, 39 carrying a negative row; 2116 retrieved candidates, 1609 with reason_source absent. by_joined_on {url 235, cell 272, none 1609} sums to 2116, so the accounting is complete over the full retrieved set."
   },
   "candidates": {
     "min_rate": 0.239603,
