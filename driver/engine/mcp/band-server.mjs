@@ -164,12 +164,14 @@ const NOISE_KEYS = new Set(["raw", "highlight", "score", "poca_scores", "onomati
 // the extra provenance is the answer ("which owner slice found this?"). The FILTER always reads the
 // band file itself, never this projection, so matching is unaffected either way.
 const singleton = (v, first) => !Array.isArray(v) || v.length <= 1 || (v.length === 1 && v[0] === first);
+// A record's set-aside is served as its classes and reason. The shape's recorded answer for that wording (`test`) is
+// read into `goods_words`, and is not served on its own.
 const project = (r) => Object.fromEntries(Object.entries(r).filter(([k, v]) => {
   if (NOISE_KEYS.has(k)) return false;
   if (k === "_qids") return !singleton(v, r?._qid);
   if (k === "_queries") return !singleton(v, r?._query);
   return true;
-}));
+}).map(([k, v]) => (k === "goods_set_aside" && v && typeof v === "object" ? [k, { classes: v.classes, reason: v.reason }] : [k, v])));
 
 const norm = (s) => String(s ?? "").trim().toLowerCase();
 // A3 (addendum 2026-07-30): the READER lowercases the incoming uri — reader-side ONLY. The archived
@@ -299,7 +301,7 @@ const shapeGoodsTest = () => {
   if (testCache) return testCache;
   let words = [];
   try { words = loadJson(shapeJsonPath()).groups?.goods_test?.words ?? []; } catch { words = []; }
-  testCache = { words, matched: goodsWordsMatched(words, { stems: true }) };
+  testCache = { words, matched: goodsWordsMatched(words, { stems: true, setAsideTest: true }) };
   return testCache;
 };
 // THE REGISTER'S OWN PAGES THE RUN'S RESEARCH SAVED (saved-register-pages.mjs), read again at the start of each lookup
@@ -560,9 +562,11 @@ function bandRecord(params = {}) {
     logRead("band_record", { record_id: uri }, { ok: false, reason: hit.miss, ...(failed ? { fetch_failed: true } : {}) });
     return { isError: true, text: `${why} ${rest}` };
   }
-  const goodsLines = statements.map((g) => JSON.stringify({ class: g.classes.join(",") || null, text: g.text,
-    goods_from: g.cut ? "search answer, cut by the register" : g.unknown ? "search answer, completeness not established"
-      : g.page ? registerPageLabel(g.page.question) : "search answer" }));
+  // A class whose goods text the merged band set aside is said as set aside, with no text: never an empty statement.
+  const goodsLines = statements.map((g) => JSON.stringify(g.setAside ? { class: g.classes.join(",") || null, text: null, goods_from: SET_ASIDE_FROM }
+    : { class: g.classes.join(",") || null, text: g.text,
+      goods_from: g.cut ? "search answer, cut by the register" : g.unknown ? "search answer, completeness not established"
+        : g.page ? registerPageLabel(g.page.question) : "search answer" }));
   const text = [why, ...goodsLines, rest].join("\n");
   const parts = splitAtLines(text, RESPONSE_CHARS);
   const wanted = Number(params.part ?? 1);
@@ -573,6 +577,9 @@ function bandRecord(params = {}) {
   return { isError: true, text: `[record ${uri} — part ${part}/${parts.length}]\n` + parts[part - 1]
     + (part < parts.length ? `\n[end of part ${part}/${parts.length} — part ${part + 1} is available with {"record_id": "${uri}", "part": ${part + 1}}]` : "") };
 }
+
+// What `band_record` says of a class whose goods text the merged band set aside (named-band.mjs `rowAsHanded`).
+const SET_ASIDE_FROM = "set aside from this run's band, outside the order's classes: not shown, and not the register listing no goods";
 
 // The band row a record id names, from the band file, read once per server. null where the band holds none.
 let bandRowsCache = null;

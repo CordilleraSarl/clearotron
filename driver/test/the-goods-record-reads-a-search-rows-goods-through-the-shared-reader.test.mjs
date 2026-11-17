@@ -77,7 +77,7 @@ test("the shape's own count of the evidence and the run's record agree record fo
   const doc = deriveGoodsEvidence({ records: BAND, goods, held: heldRecordProvenance(runDir) });
   const count = (source, ...states) => doc.records.filter((r) => r.source === source && (!states.length || states.includes(r.state))).length;
   assert.deepEqual({ held: count("record-body", "complete", "cut", "unknown"), complete: count("search-row", "complete"), cut: count("search-row", "cut"),
-    unknown: count("search-row", "unknown"), none: count(null) + count("record-body", "absent") }, goodsEvidence(BAND, goods));
+    unknown: count("search-row", "unknown"), setAside: count("search-row", "set-aside"), none: count(null) + count("record-body", "absent") }, goodsEvidence(BAND, goods));
 });
 
 test("the derivation the pipeline runs writes the row's states, and its two events agree", (t) => {
@@ -92,7 +92,7 @@ test("the derivation the pipeline runs writes the row's states, and its two even
   assert.ok(shaped && recorded, "guard: both events were written");
   assert.equal(shaped.held, recorded.by_source["record-body"] - recorded.by_state.absent);
   assert.equal(shaped.none, recorded.by_source.none + recorded.by_state.absent);
-  assert.equal(shaped.complete + shaped.cut + shaped.unknown, recorded.by_source["search-row"]);
+  assert.equal(shaped.complete + shaped.cut + shaped.unknown + shaped.setAside, recorded.by_source["search-row"]);
   // The shape's lines carry the same state for the record each names, from the same derivation.
   const shape = JSON.parse(readFileSync(driverDir(runDir, "band-shape.json"), "utf8"));
   const stateOf = new Map(doc.records.map((r) => [r.uri, r.state]));
