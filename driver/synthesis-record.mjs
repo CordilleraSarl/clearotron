@@ -937,6 +937,42 @@ export function mergeSynthesisPatch(stored, patch, { positions = null } = {}) {
 }
 
 /**
+ * A STEP WHOSE ONLY SUPPORT WAS WITHDRAWN DOES NOT COME BACK AS A RUN-LEVEL STEP. PURE.
+ *
+ * A step whose cited findings are all withdrawn renders nowhere, and a step that cites none renders as a run-level step
+ * (findings-model.mjs deriveActionConditions). The delivery check sends a step resting on a withdrawn finding to the
+ * writer's repair, and the ruling for that repair is to cite a surviving finding where its evidence supports the step,
+ * or to correct the step, never to remove the broken link and keep the conclusion. In testing, 2026-11-17, the repair
+ * removed every citation of a step whose only support was withdrawn and kept the step, so the step reached the page as a
+ * run-level one, naming the parties of the withdrawn findings, which no card introduces.
+ *
+ * So a save that sends such a step back with no citation at all leaves it resting on the findings it cited: it stays off
+ * the page, as the withdrawn findings do, and the writer's text stays in the record. A step the save cites to a live
+ * finding, still cites to a withdrawn one, or leaves out is the writer's as sent. "Withdrawn" is read on the record the
+ * save produces, so a save that withdraws a finding and uncites its step in one call is read the same way.
+ *
+ * `stored` and `saved` are the findings documents before and after the save. Returns `{actions, kept}`: `kept` names
+ * each step held, as `{id, ordinals}`, and `actions` is the saved list with those steps' citations put back.
+ */
+export function stepsOnWithdrawnSupport(stored, saved) {
+  const actions = saved?.actions;
+  if (!Array.isArray(actions) || !Array.isArray(stored?.actions)) return { actions, kept: [] };
+  const withdrawn = new Set((Array.isArray(saved?.findings) ? saved.findings : [])
+    .filter((f) => f?.disposition === "withdrawn").map((f) => f.ordinal));
+  if (!withdrawn.size) return { actions, kept: [] };
+  const before = new Map(stored.actions.filter((a) => Number.isInteger(a?.id)).map((a) => [a.id, a]));
+  const kept = [];
+  const held = actions.map((a) => {
+    const cited = Array.isArray(before.get(a?.id)?.ordinals) ? before.get(a.id).ordinals : [];
+    if (!cited.length || !cited.every((n) => withdrawn.has(n))) return a;
+    if (!Array.isArray(a?.ordinals) || a.ordinals.length) return a;
+    kept.push({ id: a.id, ordinals: [...cited] });
+    return { ...a, ordinals: [...cited] };
+  });
+  return { actions: kept.length ? held : actions, kept };
+}
+
+/**
  * The DRIVER's reads, gathered in one place: what this run committed at intake, what its plan actually
  * executed, and the framework it froze.
  *
@@ -1146,6 +1182,9 @@ export function recordSynthesis(runDir, received, opts = {}) {
     }
     call = merged.merged;
   }
+  // A STEP WHOSE ONLY SUPPORT WAS WITHDRAWN keeps its citations when the save sends it back with none (`stepsOnWithdrawnSupport`).
+  const held = stored ? stepsOnWithdrawnSupport(stored.findings, call?.findings) : { kept: [] };
+  if (held.kept.length) call = { ...call, findings: { ...call.findings, actions: held.actions } };
 
   // A RECORD LINK ON A HOST THIS REGISTER DOES NOT PUBLISH is gated here as verify.mjs gates the saved
   // file. The run's first such call is refused, naming every finding, so the seat can fix them in this
@@ -1210,6 +1249,10 @@ export function recordSynthesis(runDir, received, opts = {}) {
   // The review is handed the research behind the use checks of the record that now stands (research-checks.mjs).
   writeResearchChecks(dir0, { findingsAt, held: heldAnswers, sessionKey });
   recordReading(true);
+  if (held.kept.length) {
+    try { runLog(dir0, { event: "step-kept-on-withdrawn-support", stage: "synthesis", seq: cap.seq ?? null, kept: held.kept }); }
+    catch { /* the record stands without its log row */ }
+  }
   // The parts this record took are consumed; a part saved after it waits for the next completing call.
   if (savedBefore.length) {
     try { appendFileSync(savedFindingsPath(dir0), JSON.stringify({ at: now(), consumed: true, findings: savedBefore.length }) + "\n"); }

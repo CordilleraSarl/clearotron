@@ -2559,6 +2559,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-step-whose-only-support-was-withdrawn-stays-off-the-page.test.mjs": {
+          "tests": 3,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
         "a-stop-is-read-once-more-before-anything-is-published.test.mjs": {
           "tests": 4,
           "asserts": 12,
