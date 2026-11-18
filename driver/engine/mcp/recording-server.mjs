@@ -39,7 +39,7 @@ import { serve } from "./stdio-server.mjs";
 import { recordSynthesis } from "../../synthesis-record.mjs";   // the writer
 import { correctionPositionsFrom } from "./correction-positions.mjs";   // the positions a correction's dispatch hands its save
 import { recordRegisterDigest } from "../../register-digest-record.mjs";   // conversion 11 — the findings document
-import { FINDING_KEYS_CURRENT, COVERAGE_AREA_STATES } from "../../findings-model.mjs";
+import { FINDING_KEYS_CURRENT, COVERAGE_AREA_STATES, KNOCKOUT_FINDING_KEYS } from "../../findings-model.mjs";
 import { recordBlindFrame } from "../../blind-frame-record.mjs";
 import { VARIANT_DIRECTIONS, RANKING_BASES } from "../../blind-frame-model.mjs";
 import { recordSkeptic } from "../../skeptic-record.mjs";
@@ -274,6 +274,46 @@ async function search_run_artifacts(params) {
   }
   return searchRunArtifacts(runDir, params);
 }
+
+// ── THE KNOCKOUT FINDING, DECLARED FROM ITS KEY LIST ─────────────────────────────────────────────────────
+//
+// The two tools that carry a Knockout finding list its keys from `KNOCKOUT_FINDING_KEYS`, the list the
+// recorder enforces, as `record_synthesis` lists the clearance's from its own ladder. Each tool keeps its own
+// schema for a key, because the model reads each one's words and they are not the same words. A key on the
+// list with no schema here is left out of what the tool lists, and the test that lists both tools names it.
+const KNOCKOUT_ASSESS_FINDING_FIELDS = {
+  ordinal: { type: "integer", minimum: 1, description: "Unique within the mark, most blocking first. The code renumbers contiguously; yours breaks ties inside a band. Never cite a finding by number in prose." },
+  name: { type: "string", description: "The CONFLICTING name, verbatim." },
+  owner: { type: "string" },
+  band: { type: "string" },
+  // The framework's inputs behind the band, when the framework states a method: required on every finding
+  // then, refused otherwise (findings-model.mjs validateKnockoutFinding).
+  inputs: { type: "object", additionalProperties: { type: "string" }, description: "The framework's own inputs for this finding, keyed by its labels, each one of the values it lists." },
+  net: { type: "string", description: "One conclusion sentence." },
+  type: { type: "string" },
+  evidence: { type: "array", items: { type: "string" } },
+  basis: { type: "string", description: "The ground THIS FINDING's band rests on — not the mark's `basis`, which is a different field one level up." },
+  // The ninth key. This schema once said "all eight, no others" and forbade it while the recorder enforced
+  // nine, two closed sets that disagreed; listing the keys from the recorder's own list ends that.
+  weighedFilings: {
+    type: "array", items: { type: "string" },
+    description: "The register record ids whose evidence THIS finding's reasoning actually used, copied verbatim from the filings you were given. The report derives this finding's source labelling from it, and the driver joins every id against the run's own record store — so a Register label can never appear on a finding with no register evidence. Optional; omit it rather than guessing.",
+  },
+};
+const KNOCKOUT_CORRECTION_FINDING_FIELDS = {
+  ordinal: { type: "integer", description: "An existing finding's ordinal, or the next one for a new finding." },
+  name: { type: "string", description: "The conflicting name, verbatim." },
+  owner: { type: "string", description: "The party behind it, or \"not established on the searched material\"." },
+  band: { type: "string", description: "A word from the framework's ladder." },
+  inputs: { type: "object", description: "The framework's own inputs for this finding, where it states a method." },
+  net: { type: "string", description: "One conclusion sentence." },
+  type: { type: "string", description: "Famous Brand, Active Business, Cultural Reference, Domain, Descriptive Use, Negative Association or Competitor Intelligence." },
+  evidence: { type: "array", items: { type: "string" }, description: "URLs held for this name." },
+  basis: { type: "string", description: "The ground the band rests on." },
+  weighedFilings: { type: "array", items: { type: "string" }, description: "The register record ids this finding's reasoning used." },
+};
+const knockoutFindingProperties = (fields) =>
+  Object.fromEntries(KNOCKOUT_FINDING_KEYS.filter((k) => k in fields).map((k) => [k, fields[k]]));
 
 serve({
   name: "recording",
@@ -1332,27 +1372,7 @@ serve({
                 items: {
                   type: "object", additionalProperties: false,
                   required: ["ordinal", "name"],
-                  properties: {
-                    ordinal: { type: "integer", minimum: 1, description: "Unique within the mark, most blocking first. The code renumbers contiguously; yours breaks ties inside a band. Never cite a finding by number in prose." },
-                    name: { type: "string", description: "The CONFLICTING name, verbatim." },
-                    owner: { type: "string" },
-                    band: { type: "string" },
-                    // The framework's inputs behind the band, when the framework states a method: required on
-                    // every finding then, refused otherwise (findings-model.mjs validateKnockoutFinding).
-                    inputs: { type: "object", additionalProperties: { type: "string" }, description: "The framework's own inputs for this finding, keyed by its labels, each one of the values it lists." },
-                    net: { type: "string", description: "One conclusion sentence." },
-                    type: { type: "string" },
-                    evidence: { type: "array", items: { type: "string" } },
-                    basis: { type: "string", description: "The ground THIS FINDING's band rests on — not the mark's `basis`, which is a different field one level up." },
-                    // — the ninth key, and the count above moved with it. The
-                    // recorder's own DECLARED list has carried this field since
-                    // while this object said eight and forbade it, so "all eight, no others" was a
-                    // closed set that disagreed with the closed set actually enforced.
-                    weighedFilings: {
-                      type: "array", items: { type: "string" },
-                      description: "The register record ids whose evidence THIS finding's reasoning actually used, copied verbatim from the filings you were given. The report derives this finding's source labelling from it, and the driver joins every id against the run's own record store — so a Register label can never appear on a finding with no register evidence. Optional; omit it rather than guessing.",
-                    },
-                  },
+                  properties: knockoutFindingProperties(KNOCKOUT_ASSESS_FINDING_FIELDS),
                 },
               },
             },
@@ -1493,18 +1513,9 @@ serve({
               findings: {
                 type: "array",
                 description: "Only the findings you change or add, each whole.",
-                items: { type: "object", required: ["ordinal", "name", "owner", "band", "net", "type", "evidence", "basis"], properties: {
-                  ordinal: { type: "integer", description: "An existing finding's ordinal, or the next one for a new finding." },
-                  name: { type: "string", description: "The conflicting name, verbatim." },
-                  owner: { type: "string", description: "The party behind it, or \"not established on the searched material\"." },
-                  band: { type: "string", description: "A word from the framework's ladder." },
-                  inputs: { type: "object", description: "The framework's own inputs for this finding, where it states a method." },
-                  net: { type: "string", description: "One conclusion sentence." },
-                  type: { type: "string", description: "Famous Brand, Active Business, Cultural Reference, Domain, Descriptive Use, Negative Association or Competitor Intelligence." },
-                  evidence: { type: "array", items: { type: "string" }, description: "URLs held for this name." },
-                  basis: { type: "string", description: "The ground the band rests on." },
-                  weighedFilings: { type: "array", items: { type: "string" }, description: "The register record ids this finding's reasoning used." },
-                } },
+                // The `required` list is kept as data: `inputs` and `weighedFilings` stay optional here, and no
+                // `additionalProperties: false`, because either change would alter what the model may send.
+                items: { type: "object", required: ["ordinal", "name", "owner", "band", "net", "type", "evidence", "basis"], properties: knockoutFindingProperties(KNOCKOUT_CORRECTION_FINDING_FIELDS) },
               },
               remove_findings: { type: "array", items: { type: "integer" }, description: "Ordinals the evidence shows should not be there." },
             },
