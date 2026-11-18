@@ -262,6 +262,7 @@ import { progressQuantity } from "./repairs.mjs";
 // SIBLING ARTIFACT rather than the fail string, because the fail string is cut at 160 chars.
 import { undispatchableFiringDirectives } from "./frame-diff-model.mjs";
 import { witnessStageMethodology, describeMethodologyDrift } from "./methodology-witness.mjs";
+import { measureManualsSeen } from "./manuals-seen.mjs";
 // — the meaning-sweep form and its accumulator. Both PURE and acyclic: connotation-search.mjs
 // imports nothing, disposition-union.mjs imports only it, and neither reaches back here.
 import { parsePrRiskResults, connotationObligations, parseDispositionForm, CONNOTATION_FORM_TOKEN_SRC,
@@ -968,8 +969,8 @@ async function runStageLadder(name, opts, stageHome = null, engine = selectEngin
     // precede its own settle, so they stay outside it.
     const dispatchedAt = Date.now();
     const mcpConfig = turnConfig(effTimeout);   // this turn's copy, with its time to stop sending
-    for (const line of describeMethodologyDrift(witnessStageMethodology(runDir, name, effMessage, engineResolveSkill)))
-      note(`[${name}] ${line}`);
+    const witnessed = witnessStageMethodology(runDir, name, effMessage, engineResolveSkill);
+    for (const line of describeMethodologyDrift(witnessed)) note(`[${name}] ${line}`);
     // — the frozen judged-by set, hashed into THIS PROCESS'S MEMORY before the seat runs. Never
     // written to disk before the comparison, so the thing being watched cannot reach it. See
     // run-integrity.mjs for why it is not a manifest file and why the append-only journals are excluded.
@@ -1466,6 +1467,9 @@ async function runStageLadder(name, opts, stageHome = null, engine = selectEngin
         // `spentBudgetCleanly`.
         budgetSpentCleanly: spentBudgetCleanly({ fail, killed, code, wall, derivedLimitSec: derivedLimit?.sec }),
         killedWhile: fail === "timeout" ? killedWhile(turn, stallSec ?? Number(process.env.CLEAROTRON_STALL_MS || 120000) / 1000) : null,   // how a hard-wall kill read; null for any other outcome
+        // The share of each told manual this turn's model was shown, read off its saved stream (manuals-seen.mjs); null
+        // where the stream cannot say. A resumed turn is shown only what it read after resuming, so read it beside `warm`.
+        manualsSeen: measureManualsSeen(turn, witnessed.told, engine.name),
         // AD-4 emitted-vs-landed, UNCONDITIONAL (was success-only, which made a failed attempt's mid-write
         // artifact invisible): `output` = what LANDED on disk after this attempt (null when the stage has no
         // expected file); `wrote` = whether THIS attempt emitted it (see the computation above the runDir
