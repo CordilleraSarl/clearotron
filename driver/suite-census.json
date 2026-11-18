@@ -8254,8 +8254,8 @@
           "todos": 0
         },
         "the-ruled-sentences-tests-hold-are-in-their-manuals.test.mjs": {
-          "tests": 3,
-          "asserts": 13,
+          "tests": 4,
+          "asserts": 18,
           "skips": 1,
           "todos": 0
         },

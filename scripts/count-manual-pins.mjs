@@ -11,12 +11,13 @@
 // WHY. A test that writes out a manual's sentence goes red when the sentence is reworded, so a ruled wording change in a
 // heavily pinned manual meant editing many test files. A manual whose pins are gathered keeps them in one fixture,
 // `driver/test/ruled-sentences-<manual>.mjs`, and the tests name them from there: a wording change is one edit. This shows
-// how far that has gone, manual by manual. Measured on 2026-11-18 before the first two were gathered: 18 test files held
-// sentences of clearance-register/unit.md and 12 held sentences of digest.md.
+// how far that has gone, manual by manual.
 //
 // WHAT IT SEES, said once. A string, or a chain of strings joined by `+`, of at least 25 characters and 4 words, found word
-// for word in the manual with its runs of white space read as one space. A string inside a comment or a regular expression
-// is not counted, and neither is one built from a variable, so the true count is at least this.
+// for word in the manual with its runs of white space read as one space, in a test file that names the manual: its folder,
+// and its file name unless that is SKILL.md. A test that never opens a manual and shares a string with it, a table header
+// or an example label, holds nothing of the manual. A string inside a comment or a regular expression is not counted, and
+// neither is one built from a variable, so the true count is at least this.
 import { readFileSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -30,6 +31,7 @@ const GUARD = "count-manual-pins";
 export const GATHERED = Object.freeze({
   "driver/skills/clearance-register/unit.md": "driver/test/ruled-sentences-unit.mjs",
   "driver/skills/clearance-register/digest.md": "driver/test/ruled-sentences-digest.mjs",
+  "driver/skills/clearance-common-law/SKILL.md": "driver/test/ruled-sentences-common-law.mjs",
 });
 
 const LIT = String.raw`"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'|\x60(?:\\.|[^\x60\\$\n])*\x60`;
@@ -55,17 +57,28 @@ export function heldStrings(text) {
   return out;
 }
 
-/** Per manual: `{ files: { test: count } }` for the test files that hold its sentences; null outside a checkout. */
+/** Whether a test file's text names this manual: its folder, and its file name unless that is SKILL.md. PURE. */
+export function namesManual(text, manual) {
+  const [folder, file] = String(manual).split("/").slice(-2);
+  return String(text).includes(folder) && (file === "SKILL.md" || String(text).includes(file));
+}
+
+/** Per manual: `{ files: { test: count } }` for the test files that name it and hold its sentences; null outside a checkout. */
 export function manualPins(manuals, root = ROOT) {
   const tracked = trackedFiles(GUARD, { root, pathspec: ["driver/test", "mcp-server/test", "driver/skills"] });
   if (tracked === null) return null;
   const tests = tracked.filter((f) => f.endsWith(".test.mjs"));
-  const held = new Map(tests.map((f) => [f, heldStrings(readFileSync(join(root, f), "utf8"))]));
+  const texts = new Map(tests.map((f) => [f, readFileSync(join(root, f), "utf8")]));
+  const held = new Map([...texts].map(([f, t]) => [f, heldStrings(t)]));
   const out = {};
   for (const m of manuals ?? tracked.filter((f) => f.endsWith(".md"))) {
     const text = flat(readFileSync(join(root, m), "utf8"));
     const files = {};
-    for (const [f, vs] of held) { const n = vs.filter((v) => text.includes(flat(v))).length; if (n) files[f] = n; }
+    for (const [f, vs] of held) {
+      if (!namesManual(texts.get(f), m)) continue;
+      const n = vs.filter((v) => text.includes(flat(v))).length;
+      if (n) files[f] = n;
+    }
     out[m] = { files };
   }
   return out;

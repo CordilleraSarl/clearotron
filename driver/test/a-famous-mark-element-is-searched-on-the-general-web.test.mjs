@@ -25,6 +25,7 @@ import { recordClearanceVariants, acceptClearanceVariants } from "../clearance-v
 import { parseVariantManifestModel, famousMarkElements } from "../variant-manifest-model.mjs";
 import { validateGridSpec, dictatedCells, buildGridProgramTask } from "../../providers/perplexity/src/core.js";
 import { findUnranDictatedCells } from "../common-law-receipts.mjs";
+import { COMMON_LAW_SENTENCES } from "./ruled-sentences-common-law.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = mkdtempSync(join(tmpdir(), "famous-mark-cells-"));
@@ -172,8 +173,8 @@ test("the variants step is asked for the flag in its own sentence, and its tool 
 
 test("the web step asks no famous-mark question: Step 3 judges the cells, and the template and its depth row are gone", () => {
   const cl = skill("clearance-common-law/SKILL.md");
-  assert.ok(cl.includes("The grid searched each of them on the general web, so ask no separate question."));
-  assert.ok(cl.includes("- The Elements table's `Famous-mark check` column — the elements Step 3 judges"));
+  assert.ok(cl.includes(COMMON_LAW_SENTENCES.theGridSearchedEachThem));
+  assert.ok(cl.includes(COMMON_LAW_SENTENCES.theElementsTableFamousMark));
   assert.doesNotMatch(cl, /Famous-mark Perplexity calls needed/, "the web step still waits on a section no manifest carries");
   assert.doesNotMatch(cl, /fire a lightweight fast query per element/);
   const prompts = skill("clearance-common-law/perplexity-prompts.md");

@@ -33,6 +33,7 @@ import { GRID_HALVES, splitGridTerms, mergeGrids, mergeCommonLawFindings } from 
 import { validators } from "../verify.mjs";
 import { paths } from "../stages.mjs";
 import { correctionHint } from "../gateway.mjs";
+import { COMMON_LAW_SENTENCES } from "./ruled-sentences-common-law.mjs";
 import { recordCoverageStatus, coverageStatusPath, coverageStatusAsData, findingsPathForSpec, COMMON_LAW_COVERAGE_STATUSES,
   recordStatusesFromFindings, ledgerStatuses, NOT_STATED } from "../common-law-coverage-status.mjs";
 
@@ -220,7 +221,7 @@ test("a record the seat made through the tool is never overwritten by code", () 
 });
 
 test("the ledger reader takes the first table under the heading, its header and separator skipped", () => {
-  const doc = ["## Findings", "| a | b |", "", "### Coverage ledger", "| Coverage unit | Status | Reason |", "|---|:---:|---|",
+  const doc = ["## Findings", "| a | b |", "", "### Coverage ledger", COMMON_LAW_SENTENCES.coverageUnitStatusReason, "|---|:---:|---|",
     "| dictated platform grid | confirmed-clean | full sweep |", "| non-Latin reach | Deferred | next pass |", "| app stores | complete | no word |",
     "", "### Audit trail", "| 1 | deferred | x |"].join("\n");
   assert.deepEqual(ledgerStatuses(doc), { "dictated platform grid": "confirmed-clean", "non-Latin reach": "deferred", "app stores": NOT_STATED });
