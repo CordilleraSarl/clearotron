@@ -99,6 +99,17 @@ export const WORKBOOK = Object.freeze({
     outcome: 'Not itemised',
     note: 'This run is not recorded as a register-only search, so what this tab lists is not the whole of what it searched. Its search log holds no per-term common-law rows, so the sweep cannot be set out term by term here. Read this tab as an incomplete record of the searching — never as evidence that no common-law search ran — and check any common-law line on "Coverage & gaps" against the run\'s own common-law record.',
   }),
+  // Findings: where a conflict was found, and the link to its source.
+  sourceLayer: Object.freeze({ caseLaw: 'Case-law', marketplace: 'Marketplace', web: 'Web' }),
+  view: 'View',
+  // Summary: the mark-assessment, coverage-judgment and corrections blocks.
+  markItself: 'The mark itself',
+  distinctiveness: 'Distinctiveness',
+  connotation: 'Connotation',
+  perClass: (cls) => `Class ${cls}`,
+  coexistingRegistration: 'Coexisting registration',
+  howCoverageWasJudged: 'How coverage was judged',
+  correctionsApplied: 'Review corrections applied',
   // Coverage & gaps: the state each area is in.
   state: Object.freeze({ clean: 'Clean', limited: 'Limited', open: 'Open', note: 'Note' }),
   // Summary: its labels and its sentences. A label under a heading is indented by the caller.
@@ -184,4 +195,30 @@ export const KNOCKOUT_WORKBOOK = Object.freeze({
   checksFlagged: 'Machine checks flagged',
   checksFlaggedCount: (n) => `${n} — enumerated below; the report was delivered as usual.`,
   check: (i) => `Check ${i}`,
+});
+
+/**
+ * The audit workbooks' tab names and column headers, keyed by the name the code builds each tab and row on, which is
+ * today's English. A translation changes the values and never the keys, because the rows are built on the keys.
+ */
+export const WORKBOOK_LABELS = Object.freeze({
+  sheets: Object.freeze(Object.fromEntries([
+    'Summary', 'Findings', 'What was searched', 'Coverage & gaps',
+    'Negative Results', 'Audit Trail', 'Working Notes', 'Register Counts', 'Register Filings', 'Machine Checks',
+  ].map((n) => [n, n]))),
+  columns: Object.freeze(Object.fromEntries([
+    // The clearance workbook.
+    'Field', 'Value',
+    '#', 'Conflicting mark', 'Owner', 'Country', 'Source', 'Class', 'Registration(s)', 'Status & key dates',
+    'Record retrieved?', 'Risk band', 'How we treated it', 'Mark similarity', 'Goods proximity', 'Use', 'Enforcer', 'Link',
+    'Search term / variant', 'Scope', 'Result', 'Outcome', 'Note',
+    'Area', 'State', 'What was done', "What's left",
+    // The Knockout workbook.
+    'Mark', 'Finding Reference', 'Finding Name', 'Band', 'Type', 'Net', 'Basis', 'Evidence',
+    'Search Term', 'Source / Context', 'Notes', 'Result Summary',
+    'Classes counted', 'Territories', 'Identical filings', 'Filings containing the name', 'Filings on close variations',
+    'Close variation forms', 'Register',
+    'Matched form', 'Trademark', 'Status', 'Classes', 'Territory', 'Filed', 'Registered', 'Record',
+    'Check', 'What it found',
+  ].map((h) => [h, h]))),
 });
