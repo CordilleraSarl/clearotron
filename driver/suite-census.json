@@ -1557,6 +1557,12 @@
           "skips": 5,
           "todos": 0
         },
+        "a-newcomer-is-told-node-first-and-handed-a-job-that-validates.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-next-step-the-model-writes-comes-off-at-publish.test.mjs": {
           "tests": 12,
           "asserts": 28,

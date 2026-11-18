@@ -55,6 +55,7 @@ Write `job.json`:
 ```json
 {
   "id": "job-2026-0001",
+  "ref": "TM-0001",
   "forwarder": "alex",
   "forwarderEmail": "alex@example.com",
   "marks": [{ "ref": "TM-0001", "name": "IRONWHISK", "classes": [9, 42] }],
