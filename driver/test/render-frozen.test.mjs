@@ -15,8 +15,9 @@
 // It replaced a sha256 over render.mjs's own bytes on 2026-11-18. That pin existed because pool-admin's republish
 // re-rendered archived runs, so any edit to the renderer rewrote reports already delivered, and reports already
 // delivered keep the layout they were issued with (owner, 2026-09-16). The republish path now refuses a run made by
-// another build (driver/one-build-per-run.mjs), so a renderer change reaches only reports rendered after it. The pin's
-// break lineage stays below, as the record of why the renderer is shaped as it is.
+// another build (driver/one-build-per-run.mjs), so a renderer change reaches only reports rendered after it; the arm
+// after the page guard holds that refusal. The pin's break lineage stays below, as the record of why the renderer is
+// shaped as it is.
 //
 // ── If the page guard fails ─────────────────────────────────────────────────────────────────────────
 // You changed what a delivered report shows. That is a decision, not a detail:
@@ -33,10 +34,12 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 import { demoReportPages } from "./snapshot/publish-compare.mjs";
+import { crossBuildRepublishRefusal } from "../one-build-per-run.mjs";
 import { inDispositionMode, DISPOSITION_BAND } from "../findings-model.mjs";   // #1100
 
 const at = (p) => fileURLToPath(new URL(p, import.meta.url));
@@ -2872,6 +2875,27 @@ test("the four demo runs publish the report pages the record holds", () => {
       `${sample}: the report page differs from the record. Read the header of this file, then re-stamp in the same `
       + `commit: ${restamp}`);
   }
+});
+
+// THE PREMISE THE GUARD ABOVE RESTS ON. The hash pin could retire only because republishing refuses a run made by
+// another build, so no renderer change reaches a report already delivered (design's confirmation, 2026-11-18). If that
+// refusal goes, this file is guarding the wrong thing. The fuller arms, the command-line door and the approved sentence
+// included, are in a-report-is-republished-only-by-the-build-that-made-it.test.mjs.
+test("a delivered run is never re-rendered by another build: a run from another build, or with no build record, refuses", () => {
+  const root = mkdtempSync(join(tmpdir(), "render-premise-"));
+  const runWith = (name, head) => {
+    const dir = join(root, name, "run");
+    mkdirSync(join(dir, "_driver"), { recursive: true });
+    if (head) writeFileSync(join(dir, "_driver", "run.jsonl"), `${JSON.stringify({ event: "engine-build", engineHead: head })}\n`);
+    return dir;
+  };
+  try {
+    const current = "a".repeat(40);
+    assert.ok(crossBuildRepublishRefusal(runWith("other", "b".repeat(40)), { current }), "a run made by another build was not refused");
+    assert.ok(crossBuildRepublishRefusal(runWith("none", null), { current }), "a run with no build record was not refused");
+    // THE CONTROL: the build that made the run may re-render it, so the two refusals above are about the build.
+    assert.equal(crossBuildRepublishRefusal(runWith("same", current), { current }), null);
+  } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
 // The client-safety transforms that MOVED out of the renderer (breaks three and four) must have exactly
