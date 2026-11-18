@@ -148,3 +148,40 @@ export const WORKBOOK = Object.freeze({
     recordRetrievedIs: 'whether the register entry itself was retrieved; where a record could not be retrieved, its details are shown unverified.',
   }),
 });
+
+/** The Knockout's audit workbook: its sheets' own words. A value a cell carries arrives formatted. */
+export const KNOCKOUT_WORKBOOK = Object.freeze({
+  noResults: 'No results found',
+  inUseAs: (use) => ` — in use as ${use}`,
+  callOk: (bytes) => `ok — ${bytes} bytes`,
+  failed: (reason) => `FAILED — ${reason}`,
+  setAside: (url) => `Set aside: ${url}`,
+  // Working Notes: why a point the run looked at again is still open, as the note's prefix.
+  openBecause: Object.freeze({
+    'not-corrected': 'Not corrected in this search: ',
+    'not-rechecked': 'Corrected, but not read again: ',
+    'not-answered': 'Not answered: ',
+  }),
+  internalNote: 'Internal note',
+  registerEstimate: 'Register estimate (model)',
+  // Register Counts and Register Filings.
+  notAvailable: 'not available',
+  allClasses: 'all classes',
+  worldwide: 'worldwide',
+  formsNotRecorded: 'not recorded — this search predates the close-variation column',
+  noCountRecorded: 'no count recorded',
+  containingSearch: 'containing search',
+  soundAlikeSearch: 'sound-alike search',
+  closeVariation: 'close variation',
+  identical: 'identical',
+  notListed: 'not listed',
+  noListingRecorded: 'no listing was recorded for this mark',
+  searchDidNotRun: 'the search did not run',
+  noneCarriedForward: 'none carried forward',
+  noneFound: 'none found',
+  cappedAt: (cap) => `capped at ${cap}`,
+  // Machine Checks.
+  checksFlagged: 'Machine checks flagged',
+  checksFlaggedCount: (n) => `${n} — enumerated below; the report was delivered as usual.`,
+  check: (i) => `Check ${i}`,
+});
