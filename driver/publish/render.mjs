@@ -546,8 +546,8 @@ const USE_EVIDENCE_LABEL = { inferred: 'inferred', 'not-checked': 'not checked' 
 // statuses that still say something).
 const useEvidence = (m) => [USE_EVIDENCE_LABEL[m?._status], USE_SOURCE_LABEL[m?._useSourceClass]].filter(Boolean).join(', ');
 // D7 — `use_check.source` carries exactly ONE legal "we searched and found nothing" value, and it
-// is a CODE-OWNED SENTINEL: stages.mjs dictates it, findings-model.mjs names it in two refusals, and
-// use-check.mjs wires it into validators.narrative as FATAL. It is not client prose and it is not a
+// is a CODE-OWNED SENTINEL: stages.mjs dictates it and findings-model.mjs names it in two refusals (a third
+// reader, use-check.mjs, was a dead gate and is deleted). It is not client prose and it is not a
 // pattern — it is an enum member with one spelling, so it is mapped here, at the render boundary, by
 // EXACT EQUALITY, exactly as EVIDENCE_LABEL maps `_status`. The sentinel itself does not move: archived
 // runs carry the old value forever and a fourth spelling of it would have to be accepted everywhere.

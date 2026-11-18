@@ -2683,8 +2683,8 @@ test("D5: the INTERNAL legacy Level/Composite chip is untouched — this is the 
 // ── D7: the tool name leaves the page, the sentinel stays where it is enforced ───────────────────
 //
 // `perplexity_research — no result` is the ONLY legal "we searched and found nothing" value for
-// use_check.source: stages.mjs dictates it, findings-model.mjs names it in two refusals, and
-// use-check.mjs wires it into validators.narrative as FATAL. It is mapped HERE, by exact equality, and
+// use_check.source: stages.mjs dictates it and findings-model.mjs names it in two refusals (use-check.mjs,
+// a dead gate that also named it, is deleted). It is mapped HERE, by exact equality, and
 // nowhere else — changing the sentinel would force every archived run and every check to accept two
 // spellings of one enum member, over a complaint that is only ever about the page.
 const NO_RESULT = "perplexity_research — no result";
