@@ -7257,6 +7257,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-cover-email-names-no-rating-scale.test.mjs": {
+          "tests": 1,
+          "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
         "the-cut-approves-its-own-parked-run.test.mjs": {
           "tests": 8,
           "asserts": 20,

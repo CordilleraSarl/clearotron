@@ -1900,8 +1900,8 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
       : (fm.overall_caption ? `<p style="margin:0 0 6px">${cell(fm.overall_caption)}</p>` : ''))
     + reportLink
     + (fm.handling_note ? `<p style="margin:0 0 8px;color:${EC.warning}"><b>Handling note:</b> ${cell(fm.handling_note)}</p>` : '')
-    // T9 (K3): methodology identity — which profile/framework rated this run (+ verifiable sha).
-    + (fm.rated_under ? `<p style="margin:0 0 6px;font-size:9.5pt;color:${EC.quiet}">Rated under: ${cell(fm.rated_under)}</p>` : '')
+    // No "Rated under" line: the report a client reads is cleaned of it, so the note covering it is too
+    // (2026-11-18). The scale stays named on the report's gauge and in the run's record.
     // compute-don't-author (PR-4, review issue 2): the per-class register-coverage truth is computed
     // by the driver (scope-facts.mjs) and stamped as `coverage_line:` front-matter — but the frozen
     // report renderer only renders known keys, so without THIS line the join never reached a surface
