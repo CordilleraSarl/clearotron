@@ -865,7 +865,8 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
     .map((o) => ({
       area: String(o.term ?? o.qid),
       state: 'not-searched',
-      note: `over the cap, never dispatched (${String(o.qid ?? 'no probe id recorded')})`,
+      // The probe id is the engine's: it stays in the receipt and the run record, and the cell gets nothing in its place.
+      note: 'over the cap, never dispatched',
     }));
   if (recallStore.state === 'damaged' && runDir) {
     try {

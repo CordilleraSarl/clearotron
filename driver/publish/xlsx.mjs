@@ -36,6 +36,10 @@ const WIDE = {
   'Search term / variant': 40, 'Scope': 20, 'Result': 24, 'Outcome': 24, 'Note': 60,
   // Coverage & gaps
   'Area': 40, 'State': 12, 'What was done': 60, "What's left": 60,
+  // The Knockout's sheets (knockout.mjs), whose long text wrapped in the 16-wide default: Findings, Negative Results,
+  // Audit Trail and Working Notes. One table for both workbooks, so a header means one width wherever it appears.
+  'Finding Name': 40, 'Type': 24, 'Net': 60, 'Basis': 60, 'Evidence': 60,
+  'Search Term': 40, 'Source / Context': 40, 'Notes': 60, 'Result Summary': 60,
 };
 const width = h => WIDE[h] || 16;
 
@@ -124,8 +128,16 @@ const regLabel = uri => { const c = uriCountry(uri); const n = uriNumber(uri); r
 // the four drivers keep their token but wear a PLAIN provenance tag: a value checked against the actual
 // register record or live listing reads "from source"; our own inference reads "our read". (This is the
 // verified/inferred basis already computed — relabelled, never recomputed.)
-const basisTag = b => b === 'verified-from-record' ? 'from source' : b === 'inferred-from-signal' ? 'our read' : '';
-const meterCell = m => m && m.token ? `${m.token}${basisTag(m.basis) ? ` · ${basisTag(m.basis)}` : ''}` : '';
+// THE TAG FOLLOWS THE PAGE. An unknown value was never checked, whatever its basis says, so it reads "not checked",
+// the page's word, on every driver. Use carries no verification word for a value read from the record: the page
+// prints none there (owner, 2026-08-31), because its receipt join cannot reach the use surface. An inferred Use value
+// keeps "our read". The other drivers keep "from source" and "our read", which is what the legend below explains.
+const basisTag = (b, driver) => b === 'verified-from-record' ? (driver === 'use' ? '' : 'from source') : b === 'inferred-from-signal' ? 'our read' : '';
+const meterCell = (m, driver) => {
+  if (!m || !m.token) return '';
+  const tag = m.token === 'unknown' ? 'not checked' : basisTag(m.basis, driver);
+  return `${m.token}${tag ? ` · ${tag}` : ''}`;
+};
 
 // disposition -> the plain "how we treated it" sentence.
 const TREATMENT = {
@@ -198,10 +210,10 @@ function findingRows(findings, fetchState, recordLinks = null, method = null) {
       'Risk band': f.band ? [f.band, inputsLine(method, f.inputs)].filter(Boolean).join(' · ') : '—',
       'How we treated it': treatmentCell(f),
       // context notes are NOT rated conflicts — the four drivers read n/a and the four-drivers gate skips them.
-      'Mark similarity': ctx ? 'n/a' : meterCell(f.meters?.mark_similarity),
-      'Goods proximity': ctx ? 'n/a' : meterCell(f.meters?.goods_proximity),
-      'Use': ctx ? 'n/a' : meterCell(f.meters?.use),
-      'Enforcer': ctx ? 'n/a' : meterCell(f.meters?.enforcer),
+      'Mark similarity': ctx ? 'n/a' : meterCell(f.meters?.mark_similarity, 'mark_similarity'),
+      'Goods proximity': ctx ? 'n/a' : meterCell(f.meters?.goods_proximity, 'goods_proximity'),
+      'Use': ctx ? 'n/a' : meterCell(f.meters?.use, 'use'),
+      'Enforcer': ctx ? 'n/a' : meterCell(f.meters?.enforcer, 'enforcer'),
       'Link': f.source?.resolved_link || linkCellFor(regs, recordLinks),   // the office's own page, or why there is none
     };
   });
@@ -893,11 +905,15 @@ export function validateAudit(wb, { findings = [], coverage = [], coverageJudgme
       if (/not retrieved/i.test(ret) && !/unverified/i.test(ret) && !/n\/a/i.test(ret) && !/read/i.test(ret)) {
         // "Not individually retrieved" is allowed; only a fetch-FAILURE must carry "unverified"
       }
-      // 5 — rated findings: four drivers each tagged from-source/our-read (context notes exempt).
+      // 5 — rated findings: each driver says how its value is evidenced, as the page does (context notes exempt). An
+      // unknown value reads "not checked"; a known Use value carries no "from source" (it may carry "our read"); a known
+      // value on the other three reads "from source" or "our read".
       if (!isCtx) {
         for (const [cc, label] of [[cMs, 'mark similarity'], [cGp, 'goods proximity'], [cUse, 'use'], [cEnf, 'enforcer']]) {
           const t = cellText(cc);
-          if (!/from source|our read/i.test(t)) v.push(`Findings "${mark}": ${label} driver not tagged from-source/our-read (got "${t}")`);
+          if (/^unknown\b/i.test(t)) { if (!/ · not checked$/i.test(t)) v.push(`Findings "${mark}": ${label} driver is unknown but not tagged not checked (got "${t}")`); }
+          else if (label === 'use') { if (/from source|not checked/i.test(t)) v.push(`Findings "${mark}": use driver carries a verification word the report does not print (got "${t}")`); }
+          else if (!/ · (?:from source|our read)$/i.test(t)) v.push(`Findings "${mark}": ${label} driver not tagged from-source/our-read (got "${t}")`);
         }
       }
     }
