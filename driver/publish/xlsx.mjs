@@ -19,6 +19,7 @@
 
 import { BRAND, WORKBOOK_COLOURS as WB } from '../../shared/brand.mjs';
 import { meterEvidence } from './evidence-words.mjs';
+import { WORKBOOK as W } from './strings.mjs';
 import { projectAssessmentField } from '../findings-model.mjs';
 import { inputsLine } from '../framework-method.mjs';
 import { deliveryVocabViolations } from '../predelivery-lint.mjs';
@@ -26,7 +27,7 @@ import { coverageUnitLabel } from '../coverage-ledger.mjs';
 
 const HEAD_FILL = WB.headerFill;
 // plain-English coverage-state fills (the state words are relabelled for the reader; the fills key off them).
-const STATE_FILL = { Clean: WB.stateClean, Limited: WB.stateLimited, Open: WB.stateOpen, Note: WB.stateNote };
+const STATE_FILL = { [W.state.clean]: WB.stateClean, [W.state.limited]: WB.stateLimited, [W.state.open]: WB.stateOpen, [W.state.note]: WB.stateNote };
 const WIDE = {
   // Summary
   'Field': 26, 'Value': 96,
@@ -57,7 +58,8 @@ const A10_UNPROJECTED = 'A machine check on the report did not pass.';
 // The Summary rows A10 owns. validateAudit holds these to a HARD standard (see there) — the general
 // BANNED scan over every cell stays advisory, because archived model-authored prose legitimately trips
 // it and a republish must not lose its workbook over a word in a finding.
-const A10_FIELD_RE = /^(?:Machine checks flagged|\s+Check \d+)$/;
+const reEscape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const A10_FIELD_RE = new RegExp(`^(?:${reEscape(W.summary.checksFlagged)}|\\s+${reEscape(W.summary.check)} \\d+)$`);
 
 // plainNote: fold the raw spine/model prose that reaches a reader cell down to plain English — strip markdown
 // emphasis and rewrite the few engineering phrases that leak through the search log ("has_more:false"). The
@@ -135,9 +137,6 @@ const uriCountry = uri => (String(uri || '').match(/\/mark\/([a-z]{2})\//i)?.[1]
 const uriNumber = uri => String(uri || '').match(/\/mark\/[a-z]{2,6}\/(.+)$/i)?.[1] || String(uri || '');
 const regLabel = uri => { const c = uriCountry(uri); const n = uriNumber(uri); return c ? `${c} ${n}` : n; };
 
-// the four drivers keep their token but wear a PLAIN provenance tag: a value checked against the actual
-// register record or live listing reads "from source"; our own inference reads "our read". (This is the
-// verified/inferred basis already computed — relabelled, never recomputed.)
 // THE CELL SAYS WHAT THE PAGE SAYS: the token, and the meter's evidence in the report's own words
 // (evidence-words.mjs). An unknown value nobody checked reads "not checked" where the page has no word for it.
 export const meterCell = (m, driver) => {
@@ -147,37 +146,32 @@ export const meterCell = (m, driver) => {
 };
 
 // disposition -> the plain "how we treated it" sentence.
-const TREATMENT = {
-  adversarial: 'On-field — stress-tested as the closest conflict',
-  'coexistence-partner': 'Coexistence partner — living alongside, kept manageable',
-  distinguished: 'Distinguished — weak shared element, kept manageable',
-  'off-field': 'Off-field — outside the risk zone',
-};
+const TREATMENT = W.treatment;
 const treatmentCell = f => f?.disposition === 'withdrawn'
-  ? `Withdrawn on review — ${plainNote(f.withdrawn_reason) || 'no reason recorded'}`
-  : (f?.isContextNote ? 'Noted for awareness — not a rated conflict' : (TREATMENT[f?.disposition] || ''));
+  ? W.withdrawn(plainNote(f.withdrawn_reason) || W.noReasonRecorded)
+  : (f?.isContextNote ? W.contextNote : (TREATMENT[f?.disposition] || ''));
 
 // Record retrieved? — the plain-English state of the register-record fetch for a finding, from the per-URI
 // fetch-state map ({retrieved | failed | not-attempted}). A common-law finding (no registrations) is
 // "n/a — live listing"; a failed fetch is VISIBLY unverified, never presented as confirmed.
 export function retrievedCell(f, fetchState) {   // @internal — driven by its test
   const regs = f?.owner?.registrations || [];
-  if (!regs.length) return 'n/a — live listing';
+  if (!regs.length) return W.liveListing;
   const st = uri => (fetchState && fetchState[String(uri || '').toLowerCase()]) || 'not-attempted';
   const states = regs.map(r => st(r.uri));
-  if (states.every(s => s === 'retrieved')) return 'Retrieved from the register';
+  if (states.every(s => s === 'retrieved')) return W.retrieved;
   const anyRead = states.some(s => s === 'retrieved');
   const anyFailed = states.some(s => s === 'failed');
   // no leg read: a fetch that FAILED (a 404) makes the registry values unverified — say so visibly; a leg
   // simply never pulled (off-field context) is the softer "not individually retrieved".
-  if (!anyRead) return anyFailed ? 'Not retrieved — details unverified' : 'Not individually retrieved';
+  if (!anyRead) return anyFailed ? W.notRetrievedUnverified : W.notIndividuallyRetrieved;
   // mixed — spell out which country legs were retrieved and which were not ("CA retrieved; US/AU not retrieved").
   const read = regs.filter(r => st(r.uri) === 'retrieved').map(r => uriCountry(r.uri)).filter(Boolean);
   const missing = regs.filter(r => st(r.uri) !== 'retrieved').map(r => uriCountry(r.uri)).filter(Boolean);
   const parts = [];
-  if (read.length) parts.push(`${read.join('/')} retrieved`);
-  if (missing.length) parts.push(`${missing.join('/')} not retrieved`);
-  return parts.join('; ') || 'Not individually retrieved';
+  if (read.length) parts.push(W.countriesRetrieved(read.join('/')));
+  if (missing.length) parts.push(W.countriesNotRetrieved(missing.join('/')));
+  return parts.join('; ') || W.notIndividuallyRetrieved;
 }
 
 // Status & key dates — a single representative line from the first registration whose record was read.
@@ -246,8 +240,8 @@ const EXCL = /excluded|dropped|off-field|out of scope|distribution-partner|relev
 // SAME WORKBOOK already shows a client on its Coverage & gaps tab: STATE_WORD maps the typed
 // `not-searched` coverage state to "Open". Reusing it keeps one vocabulary in front of the reader instead
 // of inventing a second for the same fact.
-const NOT_SEARCHED_OUTCOME = 'Open — not searched';
-const NOT_SEARCHED_RESULT = 'could not be searched';
+const NOT_SEARCHED_OUTCOME = W.outcome.notSearched;
+const NOT_SEARCHED_RESULT = W.couldNotBeSearched;
 
 // A row is not-searched when it SAYS SO IN A FIELD, not when its prose happens to match a pattern.
 // audit-from-spine.mjs stamps `searched:false` on every gaps[] row, because that function already knows
@@ -266,13 +260,13 @@ const outcomeFor = (result, note, row = null) => {
   const t = `${result} ${note}`;
   // Ahead of everything: a query that never ran cannot be a hit, an exclusion, or a clean sweep.
   if (notSearched(row, result, note)) return NOT_SEARCHED_OUTCOME;
-  if (HITY.test(t) && !/no (similar|active|products|results|relevant)/i.test(result)) return '→ Findings';
-  if (EXCL.test(t)) return 'Excluded';
+  if (HITY.test(t) && !/no (similar|active|products|results|relevant)/i.test(result)) return W.outcome.findings;
+  if (EXCL.test(t)) return W.outcome.excluded;
   // NO CATCH-ALL. `return 'No conflict'` as a fall-through was the defect: an unknown shape resolved to
   // the most reassuring answer available, so any Result this file has never seen became a closure claim.
   // An unrecognised row now says it is unrecognised, and a human reads the Result column beside it.
-  if (!String(result ?? '').trim()) return 'No conflict';
-  return /^(0|no |none\b|nothing\b|clean\b)/i.test(String(result).trim()) ? 'No conflict' : 'Recorded — read the Result';
+  if (!String(result ?? '').trim()) return W.outcome.noConflict;
+  return /^(0|no |none\b|nothing\b|clean\b)/i.test(String(result).trim()) ? W.outcome.noConflict : W.outcome.recorded;
 };
 
 // term -> did it become a surviving finding? A PROVABLE join, never a guessed number: the term shares a
@@ -295,7 +289,7 @@ function joinsFinding(term, findings, joinedTerms) {
   return false;
 }
 
-const COMMON_LAW_SECTION = 'COMMON-LAW  —  web / marketplace / social / product database';
+const COMMON_LAW_SECTION = W.commonLawSection;
 
 // register negatives are already one row per term in the spine; common-law negatives arrive per-platform and
 // collapse to one row per term with a distinct-surface count (the spec's dedup). The full per-surface grid
@@ -312,7 +306,7 @@ export function searchRows(auditParsed, { findings = [], joinedTerms = null, reg
   const push = r => rows.push({ '#': ++i, ...r, Result: readerWords(r.Result), Note: readerWords(r.Note) }); // plain words, after each branch below has classified its row from the engine's own
 
   if (reg.length) {
-    push({ 'Search term / variant': 'REGISTER  —  vendor register, worldwide', Scope: '', Result: '', Outcome: '', Note: '', _section: true });
+    push({ 'Search term / variant': W.registerSection, Scope: '', Result: '', Outcome: '', Note: '', _section: true });
     for (const n of reg) {
       const note = plainNote(n.notes);
       push({
@@ -354,7 +348,7 @@ export function searchRows(auditParsed, { findings = [], joinedTerms = null, reg
       const results = [...g.results];
       const anyHit = results.some(r => (HITY.test(r) || GRID_HIT.test(String(r).trim())) && !/^no /i.test(r));
       const n = g.plats.size;
-      const scope = n ? `~${n} surfaces` : '';
+      const scope = n ? W.surfaces(n) : '';
       // the deduped row lost its per-surface detail (that lives in the run's own grid); the Note states the
       // honest aggregate — how wide the sweep ran and where any hit went — never one cherry-picked surface
       // receipt (which, on a hit term, would read as "nothing found" beside a "found" result).
@@ -371,31 +365,26 @@ export function searchRows(auditParsed, { findings = [], joinedTerms = null, reg
       // a content-policy refusal will refuse again, a query that never ran may simply run.
       const said = gaps.map((s) => [s, g.gapReasons.get(s)]).filter(([, r]) => r);
       const silent = gaps.filter((s) => !g.gapReasons.has(s));
-      const reasonNote = said.length
-        ? ` The surface${said.length === 1 ? '' : 's'} gave a reason: ${said.map(([s, r]) => `${s} — ${r}`).join('; ')}.`
-        : '';
-      const silentNote = silent.length && said.length
-        ? ` ${silent.length} recorded no reason (${silent.slice(0, 4).join(', ')}${silent.length > 4 ? ', …' : ''}).`
-        : silent.length ? ' No reason was recorded for any of them.' : '';
-      const gapNote = gaps.length ? ` ${gaps.length} surface${gaps.length === 1 ? '' : 's'} could not be searched (${gaps.slice(0, 4).join(', ')}${gaps.length > 4 ? ', …' : ''}) — this term is NOT closed across them.${reasonNote}${silentNote}` : '';
-      const outcome = anyHit ? (joined ? '→ Findings' : 'Reviewed — not carried as a conflict')
+      const firstFour = (list) => `${list.slice(0, 4).join(', ')}${list.length > 4 ? ', …' : ''}`;
+      const reasonNote = said.length ? W.reasonsGiven(said.length, said.map(([s, r]) => `${s} — ${r}`).join('; ')) : '';
+      const silentNote = silent.length && said.length ? W.someGaveNoReason(silent.length, firstFour(silent))
+        : silent.length ? W.noneGaveAReason : '';
+      const gapNote = gaps.length ? `${W.notClosedAcross(gaps.length, firstFour(gaps))}${reasonNote}${silentNote}` : '';
+      const outcome = anyHit ? (joined ? W.outcome.findings : W.outcome.reviewed)
         : gaps.length && !ran ? NOT_SEARCHED_OUTCOME          // nothing ran at all: never a closure claim
-          : gaps.length ? 'No conflict — partial'             // some ran clean, some never ran: say both
-            : 'No conflict';
+          : gaps.length ? W.outcome.partial                   // some ran clean, some never ran: say both
+            : W.outcome.noConflict;
+      const across = ran ? `~${ran}` : 'the';
       const note = (anyHit
-        ? (joined
-          ? `Checked across ${ran ? `~${ran}` : 'the'} surfaces; similar listing(s) surfaced → see Findings`
-          : `Checked across ${ran ? `~${ran}` : 'the'} surfaces; listing(s) reviewed, none carried as a separate conflict`)
-        : ran
-          ? `Checked across ~${ran} surface${ran === 1 ? '' : 's'}; no listing found`
-          : `Not checked on any recorded surface`) + gapNote;
+        ? (joined ? W.checkedJoined(across) : W.checkedReviewed(across))
+        : ran ? W.checkedClean(ran) : W.checkedNowhere) + gapNote;
       push({
         'Search term / variant': plainNote(term), Scope: scope,
         // The all-clean row is unchanged — a workbook that annotates every clean line teaches the reader to
         // ignore the annotation. It says "of N" only when some surface did NOT run.
-        Result: anyHit ? 'similar listing(s) found'
+        Result: anyHit ? W.similarFound
           : !ran ? NOT_SEARCHED_RESULT
-            : gaps.length ? `0 — clean on ${ran} of ${n}` : '0 — clean',
+            : gaps.length ? W.cleanOn(ran, n) : W.clean,
         Outcome: outcome, Note: note,
       });
     }
@@ -410,9 +399,9 @@ export function searchRows(auditParsed, { findings = [], joinedTerms = null, reg
     // about what ran — only what this run's own search log does and does not hold.
     push({ 'Search term / variant': COMMON_LAW_SECTION, Scope: '', Result: '', Outcome: '', Note: '', _section: true });
     push({
-      'Search term / variant': "COMMON-LAW  —  not itemised in this search's search log",
-      Scope: '', Result: 'no per-term rows recorded', Outcome: 'Not itemised',
-      Note: 'This run is not recorded as a register-only search, so what this tab lists is not the whole of what it searched. Its search log holds no per-term common-law rows, so the sweep cannot be set out term by term here. Read this tab as an incomplete record of the searching — never as evidence that no common-law search ran — and check any common-law line on "Coverage & gaps" against the run\'s own common-law record.',
+      'Search term / variant': W.unlogged.term,
+      Scope: '', Result: W.unlogged.result, Outcome: W.unlogged.outcome,
+      Note: W.unlogged.note,
       _commonLawUnlogged: true,
     });
   }
@@ -421,17 +410,17 @@ export function searchRows(auditParsed, { findings = [], joinedTerms = null, reg
 
 // ── Coverage & gaps ─────────────────────────────────────────────────────────────────────────────────────
 const COVERAGE_COLS = ['Area', 'State', 'What was done', "What's left"];
-const STATE_WORD = { 'confirmed-clean': 'Clean', 'coverage-limited': 'Limited', open: 'Open', 'not-searched': 'Open', note: 'Note' };
+const STATE_WORD = { 'confirmed-clean': W.state.clean, 'coverage-limited': W.state.limited, open: W.state.open, 'not-searched': W.state.open, note: W.state.note };
 // A coverage row is open where this tab shows it Open or Limited. The Summary's count and its caveat read the same
 // rule, so a not-searched row, shown Open here, is never left out of the count the Summary leads with.
-const isOpenCoverage = (c) => STATE_WORD[c?.state] === 'Open' || STATE_WORD[c?.state] === 'Limited';
+const isOpenCoverage = (c) => STATE_WORD[c?.state] === W.state.open || STATE_WORD[c?.state] === W.state.limited;
 
 // split a coverage note into "what was done" / "what's left" at its natural prose seam. Open/limited areas
 // describe the residual after a "; " or " — "; a clean area is all done and has nothing left.
 function splitCoverageNote(note, state) {
   const n = plainNote(note);
   if (!n) return { done: '', left: '' };
-  if (state === 'Clean') return { done: n, left: '—' };
+  if (state === W.state.clean) return { done: n, left: '—' };
   const seam = n.search(/\s—\s|;\s/);
   if (seam > 0) {
     const done = n.slice(0, seam).trim();
@@ -439,12 +428,12 @@ function splitCoverageNote(note, state) {
     return { done, left: left || '—' };
   }
   // no clean seam — a residual-describing note reads as "what's left"; a clean note reads as "what was done".
-  return state === 'Open' || state === 'Limited' ? { done: '', left: n } : { done: n, left: '—' };
+  return state === W.state.open || state === W.state.limited ? { done: '', left: n } : { done: n, left: '—' };
 }
 
 function coverageRows(coverage) {
   return (coverage || []).map(c => {
-    const state = STATE_WORD[c.state] || 'Note';
+    const state = STATE_WORD[c.state] || W.state.note;
     // A row that says which cell its words belong in is not split: a reading turn's reason is one sentence,
     // and cut at its first `;` it read as half done and half left.
     const { done, left } = ('done' in c || 'left' in c)
@@ -465,6 +454,8 @@ function coverageOpen({ coverage = [], coverageJudgment = null, verdict = null, 
   return openState || judgeUnsure || verdictCoverage;
 }
 
+// A label under one of the Summary's headings is indented, as a spreadsheet has no other way to nest it.
+const IND = '   ';
 export function summaryRows(findings, coverage, fm, { mark, coverageJudgment, verdict, jurisdiction, registerOnly = false, commonLawUnlogged = false, clientGate = null, lintFailures = [], productName = null, degradedParts = [], assessmentNotCompleted = false } = {}) {
   const disp = d => findings.filter(f => f.disposition === d && !f.isContextNote).length;
   const rated = findings.filter(f => !f.isContextNote);
@@ -480,7 +471,7 @@ export function summaryRows(findings, coverage, fm, { mark, coverageJudgment, ve
   const caveat = (notCompletedRow && plainNote(notCompletedRow.note)) || plainNote(coverageJudgment?.reason) ||
     (coverage || []).find(isOpenCoverage)?.note ||
     (degradedParts || [])[0]?.note ||
-    'None — every search unit reached completion.';
+    W.summary.nothingOpen;
 
   const rows = [
     // — THE WORKBOOK NAMES THE SAME PRODUCT ITS REPORT DOES. This title was the literal
@@ -488,29 +479,29 @@ export function summaryRows(findings, coverage, fm, { mark, coverageJudgment, ve
     // search's workbook carried one name between them, and neither matched the masthead of the report
     // they were downloaded from. The workbook is a delivery surface: its link rides the same cover note
     // that reaches a client principal. Null ⇒ the neutral title, never a product the run did not run.
-    { Field: productName ? `${productName} — audit` : 'Search audit', Value: 'The full, downloadable record behind the report — what was searched, and what we concluded about each finding.', _title: true },
+    { Field: productName ? W.summary.title(productName) : W.summary.titleWithoutProduct, Value: W.summary.subtitle, _title: true },
     { Field: '', Value: '' },
-    { Field: 'Mark', Value: mark || fm.title || '' },
-    { Field: 'Matter', Value: fm.matter || '' },
-    { Field: 'Classes', Value: fm.classes || '' },
+    { Field: W.summary.mark, Value: mark || fm.title || '' },
+    { Field: W.summary.matter, Value: fm.matter || '' },
+    { Field: W.summary.classes, Value: fm.classes || '' },
     // compute-don't-author (PR-4, review issue 2): the driver-computed per-class register-coverage
     // line (scope-facts.mjs → `coverage_line:` front-matter) renders here so the workbook's headline
     // carries the honest per-class proportion ("Class 30: 76 of 99 slices fully searched — the
     // remaining 23 are non-Latin script forms", the spec-B4 plain form) beside the bare class
     // numbers. Conditional on the fm key: a republished ARCHIVED workbook (whose front-matter never
     // carried coverage_line) must not grow rows.
-    ...(fm.coverage_line ? [{ Field: 'Register coverage', Value: fm.coverage_line }] : []),
-    { Field: 'Jurisdiction', Value: jurisdiction || '' },
-    { Field: 'Searched', Value: fm.searched || fm.run || '' },
+    ...(fm.coverage_line ? [{ Field: W.summary.registerCoverage, Value: fm.coverage_line }] : []),
+    { Field: W.summary.jurisdiction, Value: jurisdiction || '' },
+    { Field: W.summary.searched, Value: fm.searched || fm.run || '' },
     // spec 64 — the old single row printed the severity TIER under the label "Verdict" (a reader saw
     // "Verdict: High" — vocabulary conflation). With a composed statement the summary carries two
     // labelled rows: the band word and THE one risk statement. A legacy run (no statement) keeps its
     // single original row byte-identically — a republished archived workbook must not grow rows.
     ...(assessmentNotCompleted ? []
       : verdict && verdict.statement
-        ? [{ Field: 'Risk band', Value: verdictWord }, { Field: 'Verdict', Value: verdict.statement, _verdict: true }]
-        : [{ Field: 'Verdict', Value: verdictWord, _verdict: true }]),
-    { Field: '⚠  One thing to check first', Value: caveat, _caveat: true },
+        ? [{ Field: W.summary.riskBand, Value: verdictWord }, { Field: W.summary.verdict, Value: verdict.statement, _verdict: true }]
+        : [{ Field: W.summary.verdict, Value: verdictWord, _verdict: true }]),
+    { Field: W.summary.checkFirst, Value: caveat, _caveat: true },
     // The gap "What was searched" had to DECLARE rather than list, said again where the reader starts.
     // It is set when that sheet found no per-term common-law rows on a run nothing records as
     // register-only, and it exists because the only signal for this used to be an advisory line on
@@ -525,7 +516,7 @@ export function summaryRows(findings, coverage, fm, { mark, coverageJudgment, ve
     // exist, because the same defect threw before writeFile, or it silently read as a complete
     // register-only search. Reproducing that byte-for-byte would be reproducing the defect.
     ...(commonLawUnlogged
-      ? [{ Field: '⚠  Common-law searching', Value: 'Not set out term by term in this workbook: this search\'s search log holds no per-term common-law rows, so "What was searched" lists the register terms only. Read that tab as an incomplete record of the searching, not as evidence that no common-law search ran, and check any common-law line on "Coverage & gaps" against the run\'s own common-law record.', _caveat: true }]
+      ? [{ Field: W.summary.commonLaw, Value: W.summary.commonLawUnlogged, _caveat: true }]
       : []),
     // ONE report (spec 2026-07-30 §5): the machine-QC checks enumerate their failures HERE — the
     // workbook is where they live now, and they decide nothing about who may read the report. The old
@@ -533,7 +524,7 @@ export function summaryRows(findings, coverage, fm, { mark, coverageJudgment, ve
     // are the checks' own plain-language lines (no internal vocabulary); plainNote() folds any
     // engineering residue. No failed checks ⇒ no row, byte-identical workbook (archived republish safe).
     ...(clientGate && clientGate.released === false
-      ? [{ Field: '⚠  Machine QC', Value: `${(clientGate.reasons ?? []).length || 'Some'} machine check(s) failed at publish — recorded here for review. ${((clientGate.reasons ?? []).map(r => plainNote(r)).join(' · ')) || 'the checks could not be evaluated'}`, _caveat: true }]
+      ? [{ Field: W.summary.machineQc, Value: W.summary.machineQcFailed((clientGate.reasons ?? []).length || W.summary.someChecks, ((clientGate.reasons ?? []).map(r => plainNote(r)).join(' · ')) || W.summary.checksNotEvaluated), _caveat: true }]
       : []),
     // A10 (addendum 2026-07-30) — the failing predelivery machine checks, ENUMERATED, whether or not
     // the gate closed: the workbook is the QC record the reviewing lawyer keeps, and a defect that
@@ -545,34 +536,34 @@ export function summaryRows(findings, coverage, fm, { mark, coverageJudgment, ve
     // principal — so the raw `detail` may not arrive here at all, and a caller that passes a check
     // object gets a neutral row rather than that object's prose. validateAudit holds the same line.
     ...(Array.isArray(lintFailures) && lintFailures.length
-      ? [{ Field: 'Machine checks flagged', Value: `${lintFailures.length} — enumerated below; the report was delivered as usual.`, _caveat: true },
-         ...lintFailures.map((f, i) => ({ Field: `   Check ${i + 1}`, Value: plainNote(typeof f === 'string' ? f : A10_UNPROJECTED), _caveat: true }))]
+      ? [{ Field: W.summary.checksFlagged, Value: W.summary.checksFlaggedCount(lintFailures.length), _caveat: true },
+         ...lintFailures.map((f, i) => ({ Field: `${IND}${W.summary.check} ${i + 1}`, Value: plainNote(typeof f === 'string' ? f : A10_UNPROJECTED), _caveat: true }))]
       : []),
     { Field: '', Value: '' },
-    { Field: 'By the numbers', Value: '', _head: true },
+    { Field: W.summary.byTheNumbers, Value: '', _head: true },
     ...(assessmentNotCompleted ? [] : [
-      { Field: '   Findings rated', Value: String(rated.length) },
-      { Field: '   On-field (the one stress-tested as closest)', Value: String(disp('adversarial')) },
-      { Field: '   Distinguished / manageable', Value: String(disp('distinguished')) },
-      { Field: '   Off-field (outside the risk zone)', Value: String(disp('off-field')) },
+      { Field: `${IND}${W.summary.findingsRated}`, Value: String(rated.length) },
+      { Field: `${IND}${W.summary.onField}`, Value: String(disp('adversarial')) },
+      { Field: `${IND}${W.summary.distinguished}`, Value: String(disp('distinguished')) },
+      { Field: `${IND}${W.summary.offField}`, Value: String(disp('off-field')) },
     ]),
-    { Field: '   Coverage areas assessed', Value: String((coverage || []).length) },
-    { Field: '   Open / limited coverage', Value: String(openCount) },
+    { Field: `${IND}${W.summary.areasAssessed}`, Value: String((coverage || []).length) },
+    { Field: `${IND}${W.summary.openOrLimited}`, Value: String(openCount) },
     { Field: '', Value: '' },
-    { Field: 'How to read this workbook', Value: '', _head: true },
+    { Field: W.summary.howToRead, Value: '', _head: true },
     ...(assessmentNotCompleted ? []
-      : [{ Field: '   Findings', Value: 'every conflicting mark we surfaced, our call on it, and the evidence behind each call.' }]),
+      : [{ Field: `${IND}${W.summary.findingsTab}`, Value: W.summary.findingsTabIs }]),
     // the third form is not cosmetic. "every search we ran — register and common-law — so you can see
     // we looked everywhere" is a claim ABOUT THIS SHEET, and on a run whose common-law sweep never
     // reached the search log the sheet does not carry it, so the sentence was simply false.
-    { Field: '   What was searched', Value: registerOnly
-      ? 'every search we ran. This was a REGISTER-ONLY search: trade mark registers were searched, marketplaces and common-law use were not.'
+    { Field: `${IND}${W.summary.searchedTab}`, Value: registerOnly
+      ? W.summary.searchedTabIsRegisterOnly
       : commonLawUnlogged
-        ? 'every register search we ran, term by term. The common-law searching is NOT set out here — see the caveat above — so this tab is not the whole record of what was searched.'
-        : 'every search we ran — register and common-law — so you can see we looked everywhere.' },
-    { Field: '   Coverage & gaps', Value: 'what is fully cleared and what is still open — read this first if you have a doubt.' },
-    { Field: '   Evidence tags', Value: "'verified' = checked against the register record we retrieved · 'not yet verified' = stated, but the record was not retrieved · 'inferred' = our own reading · 'not checked' = not checked" },
-    { Field: '   Record retrieved?', Value: 'whether the register entry itself was retrieved; where a record could not be retrieved, its details are shown unverified.' },
+        ? W.summary.searchedTabIsRegisterTerms
+        : W.summary.searchedTabIsEverything },
+    { Field: `${IND}${W.summary.coverageTab}`, Value: W.summary.coverageTabIs },
+    { Field: `${IND}${W.summary.evidenceTags}`, Value: W.summary.evidenceTagsAre },
+    { Field: `${IND}${W.summary.recordRetrieved}`, Value: W.summary.recordRetrievedIs },
   ];
   return rows;
 }
