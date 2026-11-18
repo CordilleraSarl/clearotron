@@ -113,8 +113,13 @@ export const ENGINE_TOKEN_RE = /\b\w+_\w+(?::\d+)?\b/;
  * sidecar, because the token shape above has no underscore to find in it. Kept to the coined names, measured
  * on every stored clause and reason of the saved runs: only that sentence matched. A phrase list over client
  * text can eat a real mark, so this one withholds a condition and never rewrites one.
+ *
+ * The coverage floor's three other sentences joined it on 2026-11-18: "the lawyer judged a material slice not fully
+ * cleared", "follow-ups left open this run" and "(policy: clamp)", which the floor now stores with no clause. Measured
+ * the same day over 231 stored verdicts on the test, pre-production and production installs and the demos: the
+ * three phrases matched 89 stored texts, and every one was one of those three sentences.
  */
-export const ENGINE_PHRASE_RE = /\b(?:frame[- ]diff|blind frame|re-?open(?:ing)? pass|frame[- ]reopen)\b/i;
+export const ENGINE_PHRASE_RE = /\b(?:frame[- ]diff|blind frame|re-?open(?:ing)? pass|frame[- ]reopen|material slice not fully cleared|follow-ups left open this run)\b|\(policy: clamp\)/i;
 
 /** Does a condition's text carry the engine's words? ONE test, read by every reader of a condition. PURE. */
 export const carriesEngineWords = (text) => ENGINE_TOKEN_RE.test(String(text ?? "")) || ENGINE_PHRASE_RE.test(String(text ?? ""));

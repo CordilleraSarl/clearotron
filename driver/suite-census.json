@@ -455,7 +455,7 @@
         },
         "a-correction-that-withdraws-every-step-gives-the-reviews-clear-back.pipeline.test.mjs": {
           "tests": 15,
-          "asserts": 68,
+          "asserts": 70,
           "skips": 0,
           "todos": 0
         },
@@ -911,7 +911,7 @@
         },
         "a-floor-the-repeated-placement-pass-answers-is-withdrawn-and-the-result-recomputed.pipeline.test.mjs": {
           "tests": 2,
-          "asserts": 28,
+          "asserts": 29,
           "skips": 0,
           "todos": 0
         },
@@ -7188,6 +7188,12 @@
         "the-courier-routes-every-event-and-only-its-own.test.mjs": {
           "tests": 4,
           "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-coverage-floors-own-sentences-stay-in-the-run-record.test.mjs": {
+          "tests": 4,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },

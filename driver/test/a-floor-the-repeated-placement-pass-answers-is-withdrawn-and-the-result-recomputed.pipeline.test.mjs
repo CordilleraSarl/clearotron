@@ -178,10 +178,14 @@ for (const [engine, env] of [["claude", {}], ["codex", ON_CODEX]]) {
     assert.ok(closed >= 0 && ev2.findIndex((e) => e.event === "coverage-floor-clamp") > closed,
       "the coverage judgment was not recorded after the floor's gap closed");
     sameEverywhere(run, "CONDITIONAL");
-    const coverage = verdict.clauses.filter((c) => /^the lawyer judged a material slice not fully cleared/.test(c));
-    assert.equal(coverage.length, 1, `the verdict on record does not carry the coverage judgment once: ${JSON.stringify(verdict.clauses)}`);
+    // The coverage judgment is the one reason that stands, and it is the run record's alone: the engine's sentence
+    // reaches no client surface, and nothing is written in its place (ruled 2026-09-18).
+    const coverage = verdict.reasons.filter((r) => /^the lawyer judged a material slice not fully cleared/.test(r));
+    assert.equal(coverage.length, 1, `the verdict on record does not carry the coverage judgment once: ${JSON.stringify(verdict.reasons)}`);
+    assert.equal(verdict.clauses[verdict.reasons.indexOf(coverage[0])], null, "a client clause was written for the coverage judgment");
     assert.ok(!verdict.clauses.includes(floorClause), "the verdict on record still carries the floor's clause");
-    assert.deepEqual(data.rating.conditions, verdict.clauses, "the delivered rating lists other conditions than the verdict on record");
-    assert.ok(html.includes(coverage[0]) && !html.includes(floorClause), "the report the client opens does not state the one condition that stands");
+    assert.deepEqual(data.rating.conditions, [], `the delivered rating lists a condition: ${JSON.stringify(data.rating.conditions)}`);
+    assert.ok(!html.includes(coverage[0]) && !html.includes("material slice") && !html.includes(floorClause),
+      "the report the client opens states the engine's sentence or the floor's clause");
   });
 }
