@@ -30,3 +30,19 @@ export const EMAIL = Object.freeze({
   // `domain` arrives with its own emphasis: <b>…</b> in the HTML note, **…** in the markdown one.
   accessNote: (domain) => `Access-controlled — sign in with a ${domain} account. Reply to this email with any questions.`,
 });
+
+/** The cover note that carries a Knockout to the lawyer: one line per searched name under a head. */
+export const KNOCKOUT_EMAIL = Object.freeze({
+  marks: (n) => `${n} mark${n === 1 ? '' : 's'}`,
+  rating: 'rating',
+  highestRating: 'highest rating',
+  openReport: 'Open the full report',
+  auditWorkbook: 'audit workbook',
+  onePerName: 'One report per name below',
+  // `link` is the audit workbook's own link, its words included.
+  batchWorkbook: (link) => `, and one ${link} for the batch`,
+  defaultCaveat: 'Ratings reflect our common law assessment. Register analysis may adjust ratings in either direction.',
+  classes: 'Classes',
+  manualCheck: 'manual verification recommended (automated research unavailable)',
+  openThisReport: 'open this report',
+});
