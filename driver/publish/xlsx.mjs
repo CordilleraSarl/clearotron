@@ -19,7 +19,7 @@
 
 import { BRAND, WORKBOOK_COLOURS as WB } from '../../shared/brand.mjs';
 import { meterEvidence } from './evidence-words.mjs';
-import { WORKBOOK as W } from './strings.mjs';
+import { WORKBOOK as W, WORKBOOK_LABELS as LABELS } from './strings.mjs';
 import { projectAssessmentField } from '../findings-model.mjs';
 import { inputsLine } from '../framework-method.mjs';
 import { deliveryVocabViolations } from '../predelivery-lint.mjs';
@@ -99,10 +99,11 @@ const nonEmptyColumns = (columns, rows) =>
   columns.filter(h => rows.some(r => !cellEmpty(r[h])));
 
 export function addSheet(wb, name, columns, rows, styleRow) {
-  const ws = wb.addWorksheet(name, { views: [{ state: 'frozen', ySplit: 1 }] });
+  // The tab and its headers read as the catalogue says; the code builds the rows on the keys.
+  const ws = wb.addWorksheet(LABELS.sheets[name] ?? name, { views: [{ state: 'frozen', ySplit: 1 }] });
   const cols = nonEmptyColumns(columns, rows);
   columns = cols.length ? cols : columns;   // never drop EVERY column (empty sheet keeps its headers)
-  ws.columns = columns.map(h => ({ header: h, key: h, width: width(h) }));
+  ws.columns = columns.map(h => ({ header: LABELS.columns[h] ?? h, key: h, width: width(h) }));
   const kept = new Set(columns);            // what SURVIVED the drop — the set every styler is held to
   const hr = ws.getRow(1);
   hr.eachCell(c => {
@@ -127,10 +128,10 @@ export function addSheet(wb, name, columns, rows, styleRow) {
 
 // source_type -> the plain word a lawyer reads. A register finding never wears a common-law label and back.
 const sourceWord = st => /^register/.test(st) ? 'Register'
-  : /^case-law/.test(st) ? 'Case-law'
-    : /marketplace/.test(st) ? 'Marketplace'
-      : /^common-law/.test(st) ? 'Web'
-        : st ? 'Web' : '';
+  : /^case-law/.test(st) ? W.sourceLayer.caseLaw
+    : /marketplace/.test(st) ? W.sourceLayer.marketplace
+      : /^common-law/.test(st) ? W.sourceLayer.web
+        : st ? W.sourceLayer.web : '';
 
 // /mark/ca/1693383 -> country "CA", number "1693383", "CA 1693383". Absent/odd shapes fall back gracefully.
 const uriCountry = uri => (String(uri || '').match(/\/mark\/([a-z]{2})\//i)?.[1] || '').toUpperCase();
@@ -577,32 +578,32 @@ export function summaryRows(findings, coverage, fm, { mark, coverageJudgment, ve
 function assessmentSummaryRows(ma) {
   if (!ma || (typeof ma.distinctiveness !== 'object' || ma.distinctiveness === null)
     && (typeof ma.connotation !== 'object' || ma.connotation === null)) return [];
-  const rows = [{ Field: '', Value: '' }, { Field: 'The mark itself', Value: '', _head: true }];
+  const rows = [{ Field: '', Value: '' }, { Field: W.markItself, Value: '', _head: true }];
   const field = (label, v) => {
     if (v == null) return;
     rows.push({ Field: `   ${label}`, Value: plainNote(projectAssessmentField(v)) });
     if (typeof v !== 'object') return;
     for (const r of (Array.isArray(v.per_class) ? v.per_class : []))
-      rows.push({ Field: `      Class ${String(r.class).trim()}`, Value: plainNote(r.note) });
+      rows.push({ Field: `      ${W.perClass(String(r.class).trim())}`, Value: plainNote(r.note) });
     for (const r of (Array.isArray(v.per_market) ? v.per_market : []))
       rows.push({ Field: `      ${plainNote(r.market)}`, Value: plainNote(r.note) });
     for (const r of (Array.isArray(v.counter_registrations) ? v.counter_registrations : []))
-      rows.push({ Field: '      Coexisting registration', Value: plainNote([r.mark, r.uri, r.owner, r.note].filter(Boolean).join(' — ')) });
+      rows.push({ Field: `      ${W.coexistingRegistration}`, Value: plainNote([r.mark, r.uri, r.owner, r.note].filter(Boolean).join(' — ')) });
   };
-  field('Distinctiveness', ma.distinctiveness);
-  field('Connotation', ma.connotation);
+  field(W.distinctiveness, ma.distinctiveness);
+  field(W.connotation, ma.connotation);
   return rows.length > 2 ? rows : [];
 }
 function coverageJudgmentSummaryRows(cj) {
   const rows = Array.isArray(cj?.rows) ? cj.rows : [];
   if (!rows.length) return [];
-  return [{ Field: '', Value: '' }, { Field: 'How coverage was judged', Value: '', _head: true },
+  return [{ Field: '', Value: '' }, { Field: W.howCoverageWasJudged, Value: '', _head: true },
     ...rows.map((r) => ({ Field: `   ${plainNote(r.areaLabel || r.area)}`, Value: plainNote(r.note) }))];
 }
 function correctionsSummaryRows(c) {
   const entries = Array.isArray(c?.entries) ? c.entries : [];
   if (!entries.length) return [];
-  return [{ Field: '', Value: '' }, { Field: 'Review corrections applied', Value: '', _head: true },
+  return [{ Field: '', Value: '' }, { Field: W.correctionsApplied, Value: '', _head: true },
     ...entries.map((r) => ({ Field: `   ${plainNote(r.entity)}`, Value: plainNote([r.disposition, r.note].filter(Boolean).join(' — ')) }))];
 }
 
@@ -665,7 +666,7 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
     if (kept.has('Link')) {
       const link = row.getCell('Link');
       const url = String(link.value || '').trim();
-      if (/^https?:\/\//i.test(url)) { link.value = { text: 'View', hyperlink: url }; link.font = { color: { argb: WB.link }, underline: true }; }
+      if (/^https?:\/\//i.test(url)) { link.value = { text: W.view, hyperlink: url }; link.font = { color: { argb: WB.link }, underline: true }; }
     }
     if (kept.has('Risk band')) {
       const band = row.getCell('Risk band');
@@ -719,7 +720,7 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
     sheets: wb.worksheets.map(w => w.name),
     findings: findings.length,
     coverage: coverage.length,
-    searched: wb.getWorksheet('What was searched')?.rowCount - 1 || 0,
+    searched: wb.getWorksheet(LABELS.sheets['What was searched'])?.rowCount - 1 || 0,
     gateViolations: gate.violations,
   };
 }
@@ -766,7 +767,7 @@ export function validateAudit(wb, { findings = [], coverage = [], coverageJudgme
   const sheets = wb.worksheets.map(w => w.name);
 
   // 1 — exactly four tabs, the four plain names, none saying "receipts".
-  const EXPECT = ['Summary', 'Findings', 'What was searched', 'Coverage & gaps'];
+  const EXPECT = ['Summary', 'Findings', 'What was searched', 'Coverage & gaps'].map((n) => LABELS.sheets[n]);
   if (sheets.length !== 4) v.push(`expected 4 tabs, got ${sheets.length} (${sheets.join(', ')})`);
   for (const name of EXPECT) if (!sheets.includes(name)) v.push(`missing tab "${name}"`);
 
@@ -795,7 +796,7 @@ export function validateAudit(wb, { findings = [], coverage = [], coverageJudgme
   // green while `HTTP 404 for uri=/mark/ch/06198` shipped in Summary r12. These rows are held to the
   // delivery house rules (predelivery-lint's list) AND to BANNED, and a hit is reported as a
   // violation the A10 tests assert to be empty.
-  const summaryWs = wb.getWorksheet('Summary');
+  const summaryWs = wb.getWorksheet(LABELS.sheets['Summary']);
   if (summaryWs) {
     summaryWs.eachRow((row, rn) => {
       const cellText = (c) => { const val = c.value; return val && typeof val === 'object' ? (val.text ?? val.hyperlink ?? (val.richText || []).map(r => r.text).join('')) : val; };
@@ -821,8 +822,8 @@ export function validateAudit(wb, { findings = [], coverage = [], coverageJudgme
     }
   }
 
-  const findWs = wb.getWorksheet('Findings');
-  const col = (ws, name) => { let idx = 0; ws.getRow(1).eachCell((c, i) => { if (c.value === name) idx = i; }); return idx; };
+  const findWs = wb.getWorksheet(LABELS.sheets['Findings']);
+  const col = (ws, name) => { let idx = 0; ws.getRow(1).eachCell((c, i) => { if (c.value === (LABELS.columns[name] ?? name)) idx = i; }); return idx; };
   // A column addSheet DROPPED has no index here — col() returns 0, and exceljs refuses column 0 as hard
   // as it refuses column 16385, so the gate threw on exactly the workbooks it exists to judge. Reading a
   // dropped column as an EMPTY cell is not a softening: every check below already treats "" as the
@@ -938,7 +939,7 @@ export function validateAudit(wb, { findings = [], coverage = [], coverageJudgme
   // gate is EXPORTED and a caller can hand it a workbook this builder did not assemble — a missing
   // block is still the right thing to say about such a workbook. Do not read its absence from the
   // build path as the check having been retired.
-  const searchWs = wb.getWorksheet('What was searched');
+  const searchWs = wb.getWorksheet(LABELS.sheets['What was searched']);
   if (searchWs) {
     const cTerm = col(searchWs, 'Search term / variant') || 2;
     let inCommon = false, sawCommon = false, commonTerms = 0;
@@ -955,7 +956,7 @@ export function validateAudit(wb, { findings = [], coverage = [], coverageJudgme
   }
 
   // 8/9 — Summary leads with verdict + caveat; and the headline is never clean while a unit did not finish.
-  const sumWs = wb.getWorksheet('Summary');
+  const sumWs = wb.getWorksheet(LABELS.sheets['Summary']);
   if (sumWs) {
     let hasVerdict = false, hasCaveat = false;
     sumWs.eachRow(row => {
@@ -967,7 +968,7 @@ export function validateAudit(wb, { findings = [], coverage = [], coverageJudgme
     if (!hasVerdict && !assessmentNotCompleted) v.push('Summary: no Verdict row');
     if (coverageOpen({ coverage, coverageJudgment, verdict, degradedParts })) {
       if (!hasCaveat) v.push('Summary: coverage is open but no caveat row (headline-honesty)');
-      const covWs = wb.getWorksheet('Coverage & gaps');
+      const covWs = wb.getWorksheet(LABELS.sheets['Coverage & gaps']);
       let openRow = false;
       // by header, not by position: a dropped column shifts the second column to a different question,
       // and this check must read the State word or read nothing (and then say the caveat is missing).
