@@ -6297,6 +6297,12 @@
           "skips": 1,
           "todos": 0
         },
+        "run-queue-help-does-not-invite-a-bare-run.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "run-quote.test.mjs": {
           "tests": 14,
           "asserts": 43,
