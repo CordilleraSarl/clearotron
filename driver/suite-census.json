@@ -5465,7 +5465,7 @@
         },
         "pipeline.mock.test.mjs": {
           "tests": 102,
-          "asserts": 868,
+          "asserts": 869,
           "skips": 0,
           "todos": 0
         },
@@ -6149,7 +6149,7 @@
         },
         "render.test.mjs": {
           "tests": 164,
-          "asserts": 687,
+          "asserts": 689,
           "skips": 0,
           "todos": 0
         },
