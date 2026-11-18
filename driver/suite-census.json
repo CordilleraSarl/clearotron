@@ -4685,7 +4685,7 @@
         },
         "every-workbook-label-is-in-the-catalogue.test.mjs": {
           "tests": 1,
-          "asserts": 4,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },

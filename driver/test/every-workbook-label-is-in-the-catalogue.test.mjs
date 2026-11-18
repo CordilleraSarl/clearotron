@@ -23,6 +23,7 @@ test("every tab and column header in the demo workbooks is a catalogue entry", a
   const r = spawnSync(process.execPath, [join(ROOT, "bin", "example.mjs"), "--once", "--pool", pool], { encoding: "utf8", timeout: 240_000 });
   assert.equal(r.status, 0, `the demo publisher failed:\n${r.stderr || r.stdout}`);
   const books = nonEmpty(readdirSync(pool, { recursive: true }).map(String).filter((n) => n.endsWith(".xlsx")), "the demo workbooks");
+  assert.equal(books.length, 4, `the demo published ${books.length} workbooks, not one per demo`);
   const ExcelJS = (await import("exceljs")).default;
   const sheets = new Set(Object.values(WORKBOOK_LABELS.sheets)), columns = new Set(Object.values(WORKBOOK_LABELS.columns));
   let seen = 0;
