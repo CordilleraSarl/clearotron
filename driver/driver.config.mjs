@@ -435,10 +435,11 @@ export const config = {
     // library reached by CLI entries AND by unit-booted services, and a service read no file of its own.
     // Null there is correct and says nothing — the wizard offer stands alone, as it did.
     const cliEnv = envFileRead();
+    // NO DEFAULT, AND WHY. Unset is not "no pool": this used to fall back to /srv/trademark-archive, a
+    // deployed server's real client archive, so a forgotten export published into somebody else's matter.
+    // That history stays here; the reader is told what to set.
     throw new Error(
-      `CLEAROTRON_REPORTS_DIR is not set, and it has NO default. Unset is not "no pool": this used to fall `
-      + "back to /srv/trademark-archive, a deployed server's real client archive, so a forgotten export "
-      + "published into somebody else's matter. Set it to the pool this install owns, e.g. "
+      "CLEAROTRON_REPORTS_DIR is not set, and it has no default. Set it to the folder this install publishes into, e.g. "
       + `CLEAROTRON_REPORTS_DIR=$HOME/trademark/pool — \`${invoke("install")}\` writes one for you`   // backticked: issue 1916 can return a `cd … && npx …` form, which runs into the next words unquoted
       + (cliEnv ? `, or set it by hand in ${cliEnv} — the file this command reads, and the wizard refuses `
         + `when stdin is not a terminal.` : "."),

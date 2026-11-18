@@ -585,7 +585,7 @@ function FrameworkBlock({
         <div className="fw-rows">
           {examples ? <Row label="Worked examples" value="Used when rating this company" /> : null}
           {entries.map((k) => (
-            <Row key={k} label={LABELS[k] ?? k} value={k === 'allowedRecipes' ? permitted : k === 'jxPolicy' ? jxPolicyValue(readOnly[k]) : readOnlyValue(readOnly[k])} />
+            <Row key={k} label={LABELS[k] ?? k} value={k === 'allowedRecipes' ? permitted : k === 'jxPolicy' ? jxPolicyValue(readOnly[k]) : k === 'runCaps' ? runCapsValue(readOnly[k]) : readOnlyValue(readOnly[k])} />
           ))}
         </div>
       ) : null}
@@ -608,6 +608,17 @@ const LABELS: Record<string, string> = {
   allowedRecipes: 'Permitted searches',
   jxPolicy: 'Jurisdiction policy',
   runCaps: 'Run limits',
+}
+
+/** The run limits in words: "Runs a day: 12 · Waiting at once: 2", each part only where the profile sets it. */
+function runCapsValue(v: unknown): string {
+  const caps = (v && typeof v === 'object' ? v : {}) as Record<string, unknown>
+  const n = (x: unknown) => (typeof x === 'number' && Number.isFinite(x) ? x : null)
+  const parts = [
+    n(caps['dailyRuns']) !== null ? `Runs a day: ${n(caps['dailyRuns'])}` : null,
+    n(caps['maxQueued']) !== null ? `Waiting at once: ${n(caps['maxQueued'])}` : null,
+  ].filter((p): p is string => p !== null)
+  return parts.length ? parts.join(' · ') : readOnlyValue(v)
 }
 
 function Row({ label, value }: { readonly label: string; readonly value: string }) {

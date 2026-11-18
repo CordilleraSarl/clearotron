@@ -10860,6 +10860,7 @@ function parseArgv(argv) {
     "--experiment": "experiment", "--model": "model", "--instructions": "instructions",
     "--label": "label", "--axis": "axis", "--dispatch-trigger": "dispatchTrigger", "--research": "research", "--records": "records" };
   for (let i = 0; i < argv.length; i++) {
+    if (argv[i] === "--help" || argv[i] === "-h") { o.help = true; continue; }
     const key = flags[argv[i]];
     if (!key) {
       throw new Error(argv[i].startsWith("-")
@@ -11029,6 +11030,8 @@ export function resumeAdvice({ result = null, error = null, signal = null, jobPa
   return lines;
 }
 
+// What a reader who typed `clearotron run` is told; the developer usage below stays for `node driver/pipeline.mjs`.
+const RUN_USAGE = "usage: clearotron run --job <file.json> — runs one clearance from a job file. An example job is examples/job.euipo.json.";
 const USAGE = "usage: node pipeline.mjs --job <file.json> [--agent <id>]\n" +
   "       [--resume <codename> [--from <stage>] [--records live|replay]]\n" +
   "       [--resume <codename> --experiment <stage> [--model <id>] [--instructions <text>] [--axis <axis>] [--label <text>] [--dispatch-trigger <t>] [--research live|replay]]\n" +
@@ -11076,7 +11079,9 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   let a;
   try { a = parseArgv(process.argv.slice(2)); }
   catch (e) { console.error(`error: ${e.message}`); console.error(USAGE); process.exit(2); }
-  if (!a.job && !a.codename) { console.error(USAGE); process.exit(2); }   // --resume alone rebuilds the job below
+  const usage = process.env.CLEAROTRON_INVOKED_AS ? RUN_USAGE : USAGE;   // reached through `clearotron run`, or directly
+  if (a.help) { console.log(usage); process.exit(0); }
+  if (!a.job && !a.codename) { console.error(usage); process.exit(2); }   // --resume alone rebuilds the job below
   // composition guards
   if (a.fromStage && !a.codename) { console.error("error: --from requires --resume <codename>"); process.exit(2); }
   if (a.experiment && !a.codename) { console.error("error: --experiment requires --resume <codename>"); process.exit(2); }

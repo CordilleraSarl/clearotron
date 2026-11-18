@@ -66,8 +66,8 @@ test("with no register chosen, the ending suggests the demo and no first real cl
   // The closing lines suggested `run --job` a few lines above the warning that `run` will refuse at its door.
   const also = ENDING.indexOf("Also: ");
   assert.ok(also > 0, "the ending's Also line is not where this arm reads it");
-  const block = ENDING.slice(ENDING.lastIndexOf("if (registerSelected) {", also), ENDING.indexOf("\n", ENDING.indexOf("} else say(", also)) + 1);
-  assert.match(block, /^if \(registerSelected\) \{\n[^\n]*no model calls;`\)\}`\);\n[^\n]*run --job[^\n]*\n\s*\} else say\([^\n]*replays a finished report with no keys and no model calls\.`\)\}`\);/,
+  const block = ENDING.slice(ENDING.lastIndexOf("if (registerSelected && spec?.euHalf !== false) {", also), ENDING.indexOf("\n", ENDING.indexOf("} else say(", also)) + 1);
+  assert.match(block, /^if \(registerSelected && spec\?\.euHalf !== false\) \{\n[^\n]*no model calls;`\)\}`\);\n[^\n]*run --job[^\n]*\n\s*\} else say\([^\n]*replays a finished report with no keys and no model calls\.`\)\}`\);/,
     `the first-clearance line is no longer printed only when a register is chosen: ${block}`);
 });
 

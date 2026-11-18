@@ -87,9 +87,10 @@ test('PLATFORMS IS A FLOOR: a project adds and can never revoke', () => {
   const customer = ['Amazon', 'eBay']
   const project = ['Etsy']
   assert.deepEqual(mergePlatforms(customer, project), ['Amazon', 'eBay', 'Etsy'])
-  // The documented defect: an overlay that omits one of the customer's marketplaces.
-  assert.deepEqual(revokedPlatforms(customer, ['Amazon']), ['eBay'],
-    'the one that would be lost is NAMED, so the user can act on it')
+  // A project whose list leaves out one of the company's marketplaces removes nothing: the engine unions the
+  // two, so the run still searches it, and the save is not refused for a removal that does not happen.
+  assert.deepEqual(revokedPlatforms(customer, ['Amazon']), [])
+  assert.deepEqual(mergePlatforms(customer, ['Amazon']), ['Amazon', 'eBay'], 'premise: the union keeps eBay')
   assert.deepEqual(revokedPlatforms(customer, ['Amazon', 'eBay', 'Etsy']), [])
 })
 
@@ -102,8 +103,8 @@ test('the floor is case-insensitive, and the CUSTOMER’s spelling wins', () => 
 test('an overlay that sets no platforms at all revokes nothing — it inherits', () => {
   // Distinct from setting an EMPTY list. Not overlaying the field means "use the customer's".
   assert.deepEqual(revokedPlatforms(['Amazon'], undefined), [])
-  // …whereas an explicitly empty list would drop both, and is reported as such.
-  assert.deepEqual(revokedPlatforms(['Amazon', 'eBay'], []), ['Amazon', 'eBay'])
+  // …and an explicitly empty list drops nothing either: the engine's union keeps the company's.
+  assert.deepEqual(revokedPlatforms(['Amazon', 'eBay'], []), [])
 })
 
 // ── what a project may touch at all ─────────────────────────────────────────────────────────────────

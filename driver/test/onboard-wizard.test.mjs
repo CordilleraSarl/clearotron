@@ -635,7 +635,7 @@ test("the line printed with the engine question names every way to pay that the 
   }
   // And it is what the wizard says, with the engine question, under its rows.
   const src = readFileSync(join(REPO, "bin", "onboard.mjs"), "utf8");
-  assert.match(src, /const pick = await choose\(ENGINE_QUESTION, options, engineMenuDefault\(options, lastPick\), PAY_PREAMBLE\);/);
+  assert.match(src, /const pick = await choose\(ENGINE_QUESTION, options, engineMenuDefault\(options, lastPick, found\), PAY_PREAMBLE\);/);
 });
 
 test("setup's proof turn pins the path of the copy it proves, and its advice still names the copy setup installed", async () => {
@@ -1294,9 +1294,9 @@ test("each engine's install offer states its measured size and how to remove it"
   // reason that has nothing to do with wording. The shape is what this arm is for; the figure belongs to
   // the engine table, and the arm above it already holds that the table carries one.
   assert.equal(installSizeLine(ENGINE_BINARIES["anthropic-agent"]),
-    `It takes about ${ENGINE_BINARIES["anthropic-agent"].installMB} MB. To remove it, delete that folder.`);
+    `It takes about ${ENGINE_BINARIES["anthropic-agent"].installMB} MB. To remove it, delete that folder. npm also keeps a copy of the download in its cache, \`~/.npm/_cacache\`; \`npm cache clean --force\` empties it.`);
   assert.equal(installSizeLine(ENGINE_BINARIES["openai-agent"]),
-    `It takes about ${ENGINE_BINARIES["openai-agent"].installMB} MB. To remove it, delete that folder.`);
+    `It takes about ${ENGINE_BINARIES["openai-agent"].installMB} MB. To remove it, delete that folder. npm also keeps a copy of the download in its cache, \`~/.npm/_cacache\`; \`npm cache clean --force\` empties it.`);
 });
 
 test("the size line is said after the folder is named and before the question, whose default stays No", () => {
@@ -1490,7 +1490,10 @@ test("every credential the wizard asks for names a URL a reader can open", () =>
   // "the vendor's site" without naming it, which is the finding.
   const withSignup = PROVIDERS.filter((p) => p.signup?.length);
   assert.ok(withSignup.length >= 2, `only ${withSignup.length} provider(s) carry a signup array — this scan would be free`);
-  for (const p of withSignup)
+  // A KEY THAT COMES THROUGH A SALES AGREEMENT HAS NO SIGNUP PAGE. Corsearch and Clarivate say exactly that, in the
+  // approved words (2026-11-18), and inventing an address for them would send the reader somewhere that issues nothing.
+  const throughAgreement = (p) => /^The key arrives through your \w+ sales agreement, not a signup form\.$/.test(p.signup.join(" "));
+  for (const p of withSignup.filter((x) => !throughAgreement(x)))
     assert.match(p.signup.join(" "), URL_RE,
       `${p.id}'s signup steps name no URL. "The vendor's site" is not an address, and the reader being `
       + "asked for a key is the one person who cannot be sent to a search engine");

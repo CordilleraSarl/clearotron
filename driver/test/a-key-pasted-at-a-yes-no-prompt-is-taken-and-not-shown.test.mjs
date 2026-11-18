@@ -120,7 +120,7 @@ test("setup wires it: one readline with no history, every yes/no through the fil
   assert.equal(src.split("await askYesNo(").length - 1, 1, "one yes/no read, and its one caller is confirmOrKey");
   assert.match(src, /const confirm = async \(q, def = true\) => \(await confirmOrKey\(q, def, \{ key: false \}\)\)\.yes;/,
     "every other yes/no question goes through the same read, so none of them can echo a key either");
-  assert.match(src, /const answer = await confirmOrKey\(`Enter a \$\{adapter\.label\} API key now\?`, true\);/,
+  assert.match(src, /const answer = await confirmOrKey\(`Enter a \$\{adapter\.label\} API key now\?`, table !== SERP_PROVIDERS\);/,
     "the research-key question is the one that takes a key as its answer");
   assert.match(src, /if \(answer\.value\) candidate\[name\] = answer\.value;/, "and a key given there is kept");
   assert.equal(src.split("createInterface(").length - 1, 1, "setup builds one readline");

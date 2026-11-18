@@ -172,7 +172,7 @@ const [verb, ...rest] = process.argv.slice(2);
   // A LIST, NOT A PROBE, and deliberately: asking a child whether it handles --help means RUNNING it,
   // and two of these verbs spend real money. The list is short, it sits beside VERBS, and a verb added
   // without an entry gets the dispatcher's answer -- which is the safe direction to be wrong in.
-  const HELP_FROM_CHILD = new Set(["install", "doctor", "demo", "start", "grant", "key", "passphrase", "sync", "update", "connect", "disconnect", "stop", "status"]);
+  const HELP_FROM_CHILD = new Set(["install", "doctor", "demo", "start", "grant", "key", "passphrase", "sync", "update", "connect", "disconnect", "stop", "status", "run"]);
   if ((rest.includes("--help") || rest.includes("-h")) && !HELP_FROM_CHILD.has(verb)) {
     console.log(`\n  ${invocationPrefix()}clearotron ${verb} — ${SUMMARY[verb]}\n`);
     console.log(`  Options after the verb are passed through to ${VERBS[verb][0]}, which has no --help of`);
