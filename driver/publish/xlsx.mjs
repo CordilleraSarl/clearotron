@@ -22,6 +22,7 @@ import { meterEvidence } from './evidence-words.mjs';
 import { projectAssessmentField } from '../findings-model.mjs';
 import { inputsLine } from '../framework-method.mjs';
 import { deliveryVocabViolations } from '../predelivery-lint.mjs';
+import { coverageUnitLabel } from '../coverage-ledger.mjs';
 
 const HEAD_FILL = WB.headerFill;
 // plain-English coverage-state fills (the state words are relabelled for the reader; the fills key off them).
@@ -449,7 +450,8 @@ function coverageRows(coverage) {
     const { done, left } = ('done' in c || 'left' in c)
       ? { done: plainNote(c.done ?? ''), left: plainNote(c.left ?? '') || '—' }
       : splitCoverageNote(c.note, state);
-    return { Area: plainNote(c.area), State: state, 'What was done': done, "What's left": left };
+    // An area the engine named by its axis reads the reader's label, as the Summary's slices do.
+    return { Area: plainNote(coverageUnitLabel(c.area)), State: state, 'What was done': done, "What's left": left };
   });
 }
 
@@ -708,7 +710,7 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
   addSheet(wb, 'Coverage & gaps', COVERAGE_COLS,
     [...coverageRows(coverage), ...coverageRows(degradedParts), ...coverageRows(contract?.droppedConditions || []),
      ...coverageRows(contract?.undispatchedProbes || []), ...coverageRows(contract?.withheldFamilies || []),
-     ...coverageRows(contract?.releasedFamilies || []), ...(contract?.setAside || []).map((s) => ({ Area: plainNote(s.area), State: 'Note', 'What was done': plainNote(s.note) || '—', "What's left": '—' }))], (row, _d, kept) => {
+     ...coverageRows(contract?.releasedFamilies || []), ...(contract?.setAside || []).map((s) => ({ Area: plainNote(coverageUnitLabel(s.area)), State: 'Note', 'What was done': plainNote(s.note) || '—', "What's left": '—' }))], (row, _d, kept) => {
     if (!kept.has('State')) return;
     const st = row.getCell('State'); const f = STATE_FILL[String(st.value).trim()];
     if (f) { st.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF' + f } }; st.font = { bold: true }; }
