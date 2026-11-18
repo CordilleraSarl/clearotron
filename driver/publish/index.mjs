@@ -1369,19 +1369,13 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // caveat banner (H1/H2); the receipts live on audit.xlsx. The machine QC above decides nothing
   // about this write.
   // homeHref — the floating "← All reports" pill returns to the listing (the staff index one level up).
-  // The floating cross-page nav on the INTERNAL report too (jump to Archive/Status from a report).
-  // '../' prefix — a report lives one level down at <pool>/<runId>/report.html; existence-gating stays poolRoot-
-  // absolute. portal-report.mjs strips the nav at serve time (it lists every customer key).
-  // anon:false — the demo-privacy toggle is a STAFF-INDEX feature (its __ANON__ config + overlay JS are
-  // injected there only); on a report page the button rendered "Privacy ON" while doing nothing. Omit it
-  // rather than wire the overlay in: client names saturate privileged report prose — a partial blur is a
-  // worse demo than no toggle.
-  const reportNav = siteNav(poolRoot, 'report', null, '../', { anon: false });
+  // NO SITE NAV IS BUILT FOR A REPORT. One was, from a walk of the pool on every publish, and handed to a
+  // renderer that never read it; reports published before that carry one, and the portal still strips it.
   // How much was read to reach the answer, written where the document holds it (an additive record: a publish never
   // fails for want of it).
   if (searchDepth) { try { writeRO('search-depth.json', JSON.stringify(searchDepth, null, 2)); } catch { /* additive */ } }
 
-  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, frameworkMethod, servedModels: served, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', nav: reportNav, chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion, searchDepth, assessmentNotCompleted }));
+  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, frameworkMethod, servedModels: served, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion, searchDepth, assessmentNotCompleted }));
   // ONE report (spec 2026-07-30 §5): report.client.html is no longer written. The knockout lane's own
   // collapse note is the precedent: "two renderings of one run is how the wrong link gets sent". The
   // client host serves the same report.html through the portal's readReport() (cleaning built in) — its

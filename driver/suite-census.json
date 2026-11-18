@@ -2139,6 +2139,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-report-canary-speaks-only-on-drift.test.mjs": {
+          "tests": 4,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "a-report-fault-reaches-the-part-that-holds-it.test.mjs": {
           "tests": 6,
           "asserts": 17,
