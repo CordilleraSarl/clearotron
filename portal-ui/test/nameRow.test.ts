@@ -47,7 +47,6 @@ const run = (over: Partial<Run> & { runId: string }): Run => ({
   tone: 'low',
   bands: LADDER,
   marks: [],
-  reportSchema: null,
   held: false,
   report: 'report.html',
   reports: [],

@@ -20,7 +20,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
-import { renderKnockoutHtml, knockoutReportData } from "../publish/render-knockout.mjs";
+import { renderKnockoutHtml } from "../publish/render-knockout.mjs";
+import { knockoutReportData } from "../publish/report-data.mjs";
 import { EXPORT_TOGGLE, EXPORT_MENU_JS } from "../publish/report-topbar.mjs";
 
 // Worst-first, and deliberately FOUR rungs with "Low" at the bottom: a ladder whose lowest rung is the

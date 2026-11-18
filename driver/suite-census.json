@@ -5579,7 +5579,7 @@
         },
         "portal-service.test.mjs": {
           "tests": 138,
-          "asserts": 745,
+          "asserts": 748,
           "skips": 1,
           "todos": 0
         },
@@ -6162,6 +6162,12 @@
         "report-card-validator-join.test.mjs": {
           "tests": 8,
           "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "report-data-matches-its-published-schema.test.mjs": {
+          "tests": 3,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
@@ -9309,7 +9315,7 @@
         },
         "api.test.ts": {
           "tests": 49,
-          "asserts": 199,
+          "asserts": 198,
           "skips": 0,
           "todos": 0
         },
