@@ -48,6 +48,12 @@ export function countryOf(office) {
   const code = normRegion(String(office ?? '').trim());
   return code ? regionName(code) : null;
 }
+// A logo is captioned with its register as a reader names it (EU, US, WIPO), not the office code the record
+// carries (EM for the EUIPO).
+const logoCaption = (office) => {
+  const code = normRegion(String(office ?? '').trim());
+  return code === 'WO' ? 'WIPO' : code || null;
+};
 const languageNames = new Intl.DisplayNames(['en'], { type: 'language' });
 const nameOf = (names, code) => {
   try { const n = names.of(code); return n && n !== code ? n : null; } catch { return null; }
@@ -148,6 +154,6 @@ export function registerRecordView(rec, { uri = '', receipt = null } = {}) {
   ];
   return {
     rows,
-    logo: { wanted: logoWanted(rec), caption: String(rec.office ?? '').trim().toUpperCase() || null, alt: mark && country ? logoAlt(mark, country) : null, href: link?.href ?? null },
+    logo: { wanted: logoWanted(rec), caption: logoCaption(rec.office), alt: mark && country ? logoAlt(mark, country) : null, href: link?.href ?? null },
   };
 }
