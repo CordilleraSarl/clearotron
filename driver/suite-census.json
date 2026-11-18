@@ -5493,6 +5493,18 @@
           "skips": 0,
           "todos": 0
         },
+        "pipeline.mock.common-law-path.test.mjs": {
+          "tests": 13,
+          "asserts": 82,
+          "skips": 0,
+          "todos": 0
+        },
+        "pipeline.mock.parks-and-split.test.mjs": {
+          "tests": 21,
+          "asserts": 191,
+          "skips": 0,
+          "todos": 0
+        },
         "pipeline.mock.registergap.test.mjs": {
           "tests": 4,
           "asserts": 19,
@@ -5505,15 +5517,27 @@
           "skips": 0,
           "todos": 0
         },
+        "pipeline.mock.report-and-envelope.test.mjs": {
+          "tests": 21,
+          "asserts": 192,
+          "skips": 0,
+          "todos": 0
+        },
         "pipeline.mock.test.mjs": {
-          "tests": 102,
-          "asserts": 869,
+          "tests": 25,
+          "asserts": 195,
           "skips": 0,
           "todos": 0
         },
         "pipeline.mock.withheldfamily.test.mjs": {
           "tests": 7,
           "asserts": 71,
+          "skips": 0,
+          "todos": 0
+        },
+        "pipeline.mock.zero-and-coverage.test.mjs": {
+          "tests": 22,
+          "asserts": 204,
           "skips": 0,
           "todos": 0
         },
@@ -6575,7 +6599,7 @@
         },
         "scope-facts.test.mjs": {
           "tests": 21,
-          "asserts": 83,
+          "asserts": 84,
           "skips": 0,
           "todos": 0
         },
@@ -7269,7 +7293,19 @@
           "skips": 0,
           "todos": 0
         },
+        "the-cover-email-names-no-rating-scale.test.mjs": {
+          "tests": 1,
+          "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
         "the-coverage-floors-own-sentences-stay-in-the-run-record.test.mjs": {
+          "tests": 4,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-coverage-line-states-the-register-services-reach.test.mjs": {
           "tests": 4,
           "asserts": 17,
           "skips": 0,
@@ -7944,6 +7980,12 @@
         "the-portal-shows-only-approved-strings.test.mjs": {
           "tests": 20,
           "asserts": 46,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-portal-strips-the-chrome-a-report-marks.test.mjs": {
+          "tests": 4,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },

@@ -11,7 +11,7 @@
 //
 // THE CHANGE: every register tool server declares `qids`; the plan-join follow-ups name exactly the missing
 // entries; a follow-up to an axis that has already run says not to call the tool without qids. The
-// dispatched prompts are pinned on the real pipeline in pipeline.mock.test.mjs and
+// dispatched prompts are pinned on the real pipeline in the pipeline.mock test files and
 // a-capability-gap-is-not-reopened.pipeline.test.mjs; this file pins the composers and the servers.
 //
 // Run:  node scripts/test-run.mjs node --test driver/test/a-follow-up-re-runs-only-what-is-missing.test.mjs

@@ -27,6 +27,8 @@
 
 import { classTokensFromScopeText, isCapabilityGapReason } from "./coverage-ledger.mjs";
 import { capabilitiesFor } from "./register-capabilities.mjs";
+import { registerReach } from "./register-reach.mjs";
+import { regionName } from "./publish/regions.mjs";
 
 const clsStr = (c) => String(c ?? "").trim();
 
@@ -66,7 +68,7 @@ const entryIsNonLatinScript = (e) => {
  * `classes_line`/`coverage_line` are null when there is genuinely nothing to compute — the caller
  * (applyScopeFrontMatter) then leaves the surface untouched rather than stamping an empty claim.
  */
-export function deriveScopeFacts({ instructedScope = null, plan = null, planExecution = null, coverageRows = [], withheldQids = [] } = {}) {
+export function deriveScopeFacts({ instructedScope = null, plan = null, planExecution = null, coverageRows = [], withheldQids = [], markets = [] } = {}) {
   const instructedClasses = (Array.isArray(instructedScope?.classes) ? instructedScope.classes : (plan?.nice_classes ?? []))
     .map(clsStr).filter((c) => c);
   const entries = Array.isArray(plan?.entries) ? plan.entries : [];
@@ -222,10 +224,13 @@ export function deriveScopeFacts({ instructedScope = null, plan = null, planExec
   const searched_jurisdictions = Array.isArray(plan?.regions) ? plan.regions.map(String) : [];
   const scope_basis = plan?.scope_basis === "worldwide" ? "worldwide" : null;
   const register_service = registerServiceOf(plan);
+  // A worldwide order's reach, against the markets the order is for (register-reach.mjs). Null for a named list, and for
+  // a service that declares no office list, which keep the lines they had.
+  const register_reach = scope_basis === "worldwide" ? registerReach(plan?.provider, markets) : null;
 
   const classes_line = instructedClasses.length ? instructedClasses.join(", ") : null;
   const coverage_line = instructedClasses.length && entries.length
-    ? buildCoverageLine(instructedClasses, per_class, { searched_jurisdictions, scope_basis, instructedScope, register_service })
+    ? buildCoverageLine(instructedClasses, per_class, { searched_jurisdictions, scope_basis, instructedScope, register_service, register_reach })
     : null;
 
   return {
@@ -237,6 +242,7 @@ export function deriveScopeFacts({ instructedScope = null, plan = null, planExec
     per_class,
     searched_jurisdictions,
     ...(scope_basis ? { scope_basis } : {}),
+    ...(register_reach ? { register_reach } : {}),
     classes_line,
     coverage_line,
   };
@@ -262,7 +268,7 @@ export function deriveScopeFacts({ instructedScope = null, plan = null, planExec
 // clause is word-for-word the same are stated ONCE, over the classes they are about. Nothing is pooled
 // and no number moves: the grouping is on the rendered text, so two classes only share a line when the
 // line they would each have printed is already the same string.
-function buildCoverageLine(classes, per_class, { searched_jurisdictions = [], scope_basis = null, instructedScope = null, register_service = null } = {}) {
+function buildCoverageLine(classes, per_class, { searched_jurisdictions = [], scope_basis = null, instructedScope = null, register_service = null, register_reach = null } = {}) {
   const sorted = [...classes].sort((a, b) => (Number(a) || 0) - (Number(b) || 0));
   const byBody = new Map();
   for (const c of sorted) {
@@ -275,7 +281,7 @@ function buildCoverageLine(classes, per_class, { searched_jurisdictions = [], sc
   // bodies A, B, A renders "Classes 5 and 32: A; Class 9: B", not A twice.
   const groups = [...byBody.entries()].map(([body, classes]) => ({ body, classes }));
   const head = (cs) => (cs.length === 1 ? `Class ${cs[0]}` : `Classes ${joinAnd(cs.map(String))}`);
-  return `${groups.map((g) => `${head(g.classes)}: ${g.body}`).join("; ")}${jurisdictionTail({ searched_jurisdictions, scope_basis, instructedScope, register_service })}`;
+  return `${groups.map((g) => `${head(g.classes)}: ${g.body}`).join("; ")}${jurisdictionTail({ searched_jurisdictions, scope_basis, instructedScope, register_service, register_reach })}`;
 }
 
 // One plain-language clause per class, routed on the COUNTS (state-agnostic), not on the state label.
@@ -359,17 +365,32 @@ const WORLDWIDE_TOKEN_RE = /^(worldwide|world|ww|global)$/i;
 // installation and 186 on another, and a reader can only tell which by being told the service. The name is
 // the provider's own label from its capabilities contract — the same name the order form shows — read off
 // the provider the frozen plan records. A plan that records none, or one this build does not know, keeps
-// the bare word: a guessed name would be worse than none. Never a list of offices, never a count.
+// the bare word: a guessed name would be worse than none.
+// AND NOW ITS REACH (owner, 2026-11-18, replacing "never a list of offices, never a count"): where the service
+// declares its office list, the line states how many offices it searched and names the order's markets outside them,
+// "registers: Signa, 15 offices; <the markets, by name> not covered", and ends after the count when none is.
+// THE ARTICLE, IN THIS LINE ONLY (owner, 2026-11-18). The shared country names carry none, so the approved line
+// "Japan, the Philippines, Indonesia and Vietnam not covered" printed "Philippines". A name that takes "the" in English
+// gets it here: a union or kingdom of states, a group of islands, a republic or territory named as one, and the plural
+// names. The test is on the name, not the code, so a name the shared table changes still reads right. Rows and
+// other surfaces keep the bare name.
+const TAKES_THE = /^(United |(Philippines|Bahamas|Gambia|Maldives|Comoros|Seychelles|European Union|Isle of Man)$)|(Islands|Republic|Netherlands|Territories|Territory)$/;
+const withArticle = (name) => (TAKES_THE.test(name) ? `the ${name}` : name);
+
 function registerServiceOf(plan) {
   if (!plan?.provider) return null;
   try { return capabilitiesFor(plan.provider).label ?? null; } catch { return null; }
 }
 
-function jurisdictionTail({ searched_jurisdictions = [], scope_basis = null, instructedScope = null, register_service = null } = {}) {
+function jurisdictionTail({ searched_jurisdictions = [], scope_basis = null, instructedScope = null, register_service = null, register_reach = null } = {}) {
   const list = (searched_jurisdictions.length
     ? searched_jurisdictions
     : (Array.isArray(instructedScope?.jurisdictions) ? instructedScope.jurisdictions : [])).map((j) => String(j).trim()).filter((j) => j);
   if (scope_basis === "worldwide" || list.some((j) => WORLDWIDE_TOKEN_RE.test(j))) {
+    if (register_reach) {
+      const outside = register_reach.uncovered.map((c) => withArticle(regionName(c)));
+      return ` · registers: ${register_reach.service}, ${register_reach.offices} office${register_reach.offices === 1 ? "" : "s"}${outside.length ? `; ${joinAnd(outside)} not covered` : ""}`;
+    }
     return ` · registers: worldwide${register_service ? ` (${register_service})` : ""}`;
   }
   if (!list.length) return "";

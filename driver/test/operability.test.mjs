@@ -209,7 +209,7 @@ test("AUDIT #175/N2 — every stage/skip row a RESUMED run writes satisfies the 
   // — THE BOUNDARIES MUST CONTAIN THE WORK, not merely exist. Every `attempt` row is journalled
   // DURING the stage it belongs to, so its append instant must fall inside that stage's interval. On this
   // harness the stages are sub-millisecond, so this arm cannot by itself catch a start captured too late
-  // — the containment-against-an-independent-clock arm in pipeline.mock.test.mjs (A2 report-cards) is
+  // — the containment-against-an-independent-clock arm in pipeline.mock.parks-and-split.test.mjs (A2 report-cards) is
     // what does that. Both are needed: this one is
   // universally quantified over the rows a real run wrote, that one has measurable time in it.
   const all = sinceLastStart(events(r2.runDir));
