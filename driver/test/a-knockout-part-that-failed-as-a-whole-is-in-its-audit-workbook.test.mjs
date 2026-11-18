@@ -106,7 +106,7 @@ test("a reading step that did not finish lists nothing further, keeps what it he
   assert.ok(filings.some((r) => r["Trademark"] === FILING.mark_text), `the filing the turn had read did not reach the record: ${JSON.stringify(filings)}`);
   const row = trail.find((r) => r["Source / Context"] === "Register");
   assert.ok(row, `no trail row says the reading did not finish: ${JSON.stringify(trail)}`);
-  assert.deepEqual([row["OK/Degraded"], row["Result Summary"]], ["Degraded", `FAILED — ${LEFT_OPEN}`]);
+  assert.equal(row["Result Summary"], `FAILED — ${LEFT_OPEN}`);
   assert.ok(!/EISDIR|illegal operation/i.test(JSON.stringify(trail)), "the raw cause reached a reader's cell");
 });
 
@@ -115,7 +115,7 @@ test("owner lookups that failed as a whole are each a Degraded row with the look
   const { trail } = await knockout("owners-failed", { plant: (dir) => mkdirSync(driverDir(dir, "owner-checks.json")) });
   const row = trail.find((r) => OWNER_QUESTION.test(r["Search Term"]));
   assert.ok(row, `no trail row for the owner lookup: ${JSON.stringify(trail)}`);
-  assert.equal(row["OK/Degraded"], "Degraded");
+  assert.ok(!("OK/Degraded" in row), "the engine's OK/Degraded column is back on the lawyer's sheet");
   assert.equal(row["Result Summary"], `FAILED — ${LEFT_OPEN}`);
 });
 
@@ -124,13 +124,13 @@ test("a web search whose trail entry was never written says its record was not k
   const { trail } = await knockout("trail-lost", { plant: (dir) => mkdirSync(driverDir(dir, "knockout-sweep.jsonl")) });
   const row = trail.find((r) => r["Result Summary"] === RULED_WORDS.recordNotKept);
   assert.ok(row, `no row for the search whose record was not kept: ${JSON.stringify(trail)}`);
-  assert.deepEqual([row["Mark"], row["Search Term"], row["OK/Degraded"]], ["LANTERNWICK", "—", "Degraded"]);
+  assert.deepEqual([row["Mark"], row["Search Term"]], ["LANTERNWICK", "—"]);
   assert.match(row["Source / Context"], /^perplexity \(.+\)$/);
 });
 
 test("THE CONTROL: a knockout whose steps all ran builds the workbook it built before", async () => {
   const { trail, filings } = await knockout("all-ran");
-  assert.ok(trail.length > 0 && trail.every((r) => r["OK/Degraded"] === "OK"), `the trail is not the clean run's: ${JSON.stringify(trail)}`);
+  assert.ok(trail.length > 0 && trail.every((r) => !/^FAILED/.test(r["Result Summary"])), `the trail is not the clean run's: ${JSON.stringify(trail)}`);
   assert.ok(filings.every((r) => r["Trademark"] !== "not available"), `the clean listing reads not available: ${JSON.stringify(filings)}`);
 });
 
@@ -145,10 +145,12 @@ async function book(degraded, registerRecords = null) {
 
 test("the review, the machine checks and the request's record are each one row, in the ruled words", async () => {
   const { trail } = await book({ review: { reason: "unfinished" }, machineChecks: { reason: "unfinished" }, aboutThisRequest: { reason: "unfinished" } });
-  assert.deepEqual(trail.map((r) => [r["Mark"], r["Search Term"], r["Source / Context"], r["Result Summary"], r["Finding Reference"], r["Sweep Call #"], r["Wall-time (s)"], r["OK/Degraded"]]), [
-    ["—", "—", "Plain-language review", `FAILED — ${LEFT_OPEN}`, "—", "—", "—", "Degraded"],
-    ["—", "—", "Machine Checks", `FAILED — ${LEFT_OPEN}`, "—", "—", "—", "Degraded"],
-    ["—", "—", "About this request", `FAILED — ${LEFT_OPEN}`, "—", "—", "—", "Degraded"],
+  // The three engine columns (the sweep's call number, its wall time, OK/Degraded) stay in the run record.
+  assert.deepEqual(trail.map((r) => Object.keys(r)), trail.map(() => ["Mark", "Search Term", "Source / Context", "Result Summary", "Finding Reference"]));
+  assert.deepEqual(trail.map((r) => [r["Mark"], r["Search Term"], r["Source / Context"], r["Result Summary"], r["Finding Reference"]]), [
+    ["—", "—", "Plain-language review", `FAILED — ${LEFT_OPEN}`, "—"],
+    ["—", "—", "Machine Checks", `FAILED — ${LEFT_OPEN}`, "—"],
+    ["—", "—", "About this request", `FAILED — ${LEFT_OPEN}`, "—"],
   ]);
 });
 

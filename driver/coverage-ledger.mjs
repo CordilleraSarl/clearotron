@@ -44,7 +44,7 @@ export const REGISTER_AXES = ["saturation-probe", "primary-sweep", "transliterat
 // a structural substitution on a grammar this module owns, not a search through text. The scope tail
 // rides verbatim, which is where a mark actually appears.
 export const AXIS_READER_LABEL = Object.freeze({
-  "primary-sweep": "main register sweep",
+  "primary-sweep": "main register search",
   "saturation-probe": "field-size count",
   "transliteration-numeric": "transliterations and numeric forms",
   "incumbent-class": "owner portfolio sweep",
