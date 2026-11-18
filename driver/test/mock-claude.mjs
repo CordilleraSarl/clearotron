@@ -446,12 +446,19 @@ if (process.env.MOCK_CLAUDE_USAGE_THEN_STALL) {
     // NOTHING and its test failed on a missing file rather than on a wrong measurement. The card index
     // now comes from the same place the tool's binding does: `CLEAROTRON_RECORD_AXIS`, in the resolved
     // --mcp-config the driver built for this turn.
+    // MOCK_TRACE_OVERVIEW=1 traces a report-overview turn too, named `overview`, and MOCK_OVERVIEW_DELAY_MS holds it
+    // before its writes, so a test can order the overview against the cards either way. Opt-in, so a test counting the
+    // cards it traced counts only cards. Known by its recording server in --mcp-config.
+    const isOverview = (() => {
+      try { const i = process.argv.indexOf("--mcp-config"); return Boolean(JSON.parse(process.argv[i + 1])?.mcpServers?.["recording-report-overview"]); }
+      catch { return false; }
+    })();
     const traceCard = process.env.MOCK_STAGE_TRACE
-      ? (msg.match(/\/report-cards\/(\d+)\.md/)?.[1] ?? boundRecordAxis(process.argv))
+      ? (isOverview ? (process.env.MOCK_TRACE_OVERVIEW ? "overview" : null) : (msg.match(/\/report-cards\/(\d+)\.md/)?.[1] ?? boundRecordAxis(process.argv)))
       : null;
     if (traceCard) {
       appendFileSync(process.env.MOCK_STAGE_TRACE, JSON.stringify({ card: traceCard, phase: "start", t: Date.now() }) + "\n");
-      const delay = Number(process.env.MOCK_STAGE_DELAY_MS || 0);
+      const delay = Number((isOverview ? process.env.MOCK_OVERVIEW_DELAY_MS : process.env.MOCK_STAGE_DELAY_MS) || 0);
       if (delay > 0) Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, delay);
     }
     const traceEnd = () => { if (traceCard) appendFileSync(process.env.MOCK_STAGE_TRACE, JSON.stringify({ card: traceCard, phase: "end", t: Date.now() }) + "\n"); };

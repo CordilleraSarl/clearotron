@@ -40,7 +40,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 
 import { basename, join } from "node:path";
 
 export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWritersDuty, ctx, followTheRecordsActions, job, run, runState, saveTheLabel, writeVerdictSidecar }, helpers) {
-  const { StageFailure, applyScopeFrontMatterOf, asPartNotCompleted, assembleReportMd, caseLawJoin, consolidateFindingsFile, correctionsTheRestoreLacks, deriveCommonLawCarry, deriveRecordCarry, inScopeClassList, injectDeferralCoverage, injectFrontMatter, injectLaneDepthCoverage, injectMeaningGapCoverage, injectScreenGateCoverage, injectScriptScopeCoverage, keepDeliveredRecordAsHistory, localLanguageStateOf, must, openAskForClosure, originRowsForReport, planWriteUps, readFindingsForReport, readReadingLog, rebuildDeliveredRecord, reportIdentityRecord, restoreTheRecordThatPassed, rewriteFromBeforeTheSeam, runBatched, safeReadJson, settleDerivedBases, stage, stampCoverageJudgmentRows, withdrawSupersededAudit, writeScopeFactsOf, writeShortEntries } = helpers;
+  const { StageFailure, applyScopeFrontMatterOf, asPartNotCompleted, assembleReportMd, caseLawJoin, consolidateFindingsFile, correctionsTheRestoreLacks, deriveCommonLawCarry, deriveRecordCarry, inScopeClassList, injectDeferralCoverage, injectFrontMatter, injectLaneDepthCoverage, injectMeaningGapCoverage, injectScreenGateCoverage, injectScriptScopeCoverage, keepDeliveredRecordAsHistory, localLanguageStateOf, must, openAskForClosure, originRowsForReport, planWriteUps, readFindingsForReport, readReadingLog, rebuildDeliveredRecord, reportIdentityRecord, restoreTheRecordThatPassed, rewriteFromBeforeTheSeam, safeReadJson, settleDerivedBases, stage, stampCoverageJudgmentRows, withdrawSupersededAudit, writeScopeFactsOf, writeShortEntries } = helpers;
   // Phase 3 — delivery (v14 post-mortem fix). One LLM step curates the report; the audit, the page render,
   // and the email body are deterministic CODE; a tiny LLM step only SENDS. Each step is independent — a
   // failure in the audit or the email never loses the report.
@@ -167,8 +167,30 @@ export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWri
       reportIdentityRecord(job, ctx, run.runDir, runState.displayVerdict)));
     runLog(run.runDir, { event: "overview-not-completed-delivery", stage: overviewOpen.stage ?? null });
   }
-  const rov = overviewOpen ? null
-    : await asPartNotCompleted("overview", async () => must(await stage("report-overview", { ...ctx, displayVerdict: runState.displayVerdict }, {}), "report-overview"));   // T3a: a BLOCKING run now DELIVERS; its open points are rendered at assembly, not dispatched here
+  // ── THE OVERVIEW AND THE CARDS RUN TOGETHER, UNDER ONE CAP ──────────────────────────────────────
+  //
+  // The cards waited for the overview to finish, and neither reads the other's output: the overview reads the
+  // narrative and the findings and writes only its prose and its accepted call (report-overview-record.mjs), and a
+  // card reads its finding and the case-law join. Measured on 18 production clearances: the first card started a
+  // median 0.9 minutes after the overview, which was the overview's own wall. So the overview starts here and the
+  // cards start beside it; nothing below until the join reads anything the overview writes.
+  //
+  // ONE CAP FOR THE STEP. The overview holds one of `cardConcurrency`'s sessions while it runs, so the engine never
+  // sees more of this step's sessions at once than it did, and with a cap of 1 the step runs serially as before.
+  //
+  // THE CARDS SETTLE BEFORE THE OVERVIEW'S OUTCOME IS READ. An overview that fails, a usage limit included, is raised
+  // at the join exactly as it was raised before the cards, after every card in flight has settled: no card is
+  // abandoned mid-call, and each card that landed is file-gated, so a resume skips it. A card set the overview's
+  // failure interrupted reads on resume as the same partial set a card-side limit leaves.
+  let free = config.cardConcurrency;
+  const waiting = [];
+  const withSession = async (fn) => {
+    if (free > 0) free -= 1; else await new Promise((r) => waiting.push(r));
+    try { return await fn(); } finally { const next = waiting.shift(); if (next) next(); else free += 1; }
+  };
+  const overviewDone = overviewOpen ? Promise.resolve(null)
+    : withSession(() => asPartNotCompleted("overview", async () => must(await stage("report-overview", { ...ctx, displayVerdict: runState.displayVerdict }, {}), "report-overview")));   // T3a: a BLOCKING run now DELIVERS; its open points are rendered at assembly, not dispatched here
+  overviewDone.catch(() => {});   // read at the join below; never an unhandled rejection while the cards run
   const findingsRead = readFindingsForReport(P);
   const findingsForCards = findingsRead.findings;
   //: a rejected findings.json is a defect, not an emptiness. Say so HERE, where the file was read,
@@ -216,7 +238,7 @@ export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWri
   // A2 — cards are isolated BY DESIGN (each sees ONLY its own finding and writes its own
   // P.reportCard(ord) file), so they fan out like the gather members instead of paying 8–14 serial
   // LLM walls. The first card runs alone to warm the shared prompt-prefix cache; the rest batch at
-  // gatherConcurrency. A failed card stays non-fatal (render shows it structured-only) and never
+  // `config.cardConcurrency` (CLEAROTRON_CARD_CONCURRENCY), shared with the overview while it runs. A failed card stays non-fatal (render shows it structured-only) and never
   // fails a sibling — renderCard resolves on rc.fail, it never throws. assembleReportMd runs
   // strictly after every card settles; the lint-repair re-render loop below stays serial.
   const cardFindings = findingsForCards.filter((f) => cardOrdinals.includes(f.ordinal));   // secondary findings render structured-only (no LLM call)
@@ -236,16 +258,27 @@ export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWri
     }
     note(`report-card[${f.ordinal}] failed (non-fatal — render shows it structured-only): ${rc.fail}`);
   };
-  if (cardFindings.length) await renderCard(cardFindings[0]);
-  // — THE ONE SETTING ALLOWED TO FALL BACK IS NOT ALLOWED TO DO IT QUIETLY. Every
-  // other numeric setting refuses a value it cannot parse, by name, at the read. This one is read
-  // mid-run and is not grade-moving, so refusing would turn a delivering search into a refusal over an
-  // operator's typo — the run continues on the default instead. It says so here, once, in the run's own
-  // record: a fallback nobody can see is how a deployment ends up running on a number nobody chose,
-  // which is the same defect one register quieter.
-  const cardCapNote = fallbackNoteFor("CLEAROTRON_CARD_CONCURRENCY");
-  if (cardCapNote) note(`[config] ${cardCapNote}`);
-  await runBatched(cardFindings.slice(1), config.cardConcurrency, renderCard);
+  // The warm-up card still runs alone among the cards, beside the overview only.
+  let cardsThrew = null;
+  try {
+    if (cardFindings.length) await withSession(() => renderCard(cardFindings[0]));
+    // — THE ONE SETTING ALLOWED TO FALL BACK IS NOT ALLOWED TO DO IT QUIETLY. Every
+    // other numeric setting refuses a value it cannot parse, by name, at the read. This one is read
+    // mid-run and is not grade-moving, so refusing would turn a delivering search into a refusal over an
+    // operator's typo — the run continues on the default instead. It says so here, once, in the run's own
+    // record: a fallback nobody can see is how a deployment ends up running on a number nobody chose,
+    // which is the same defect one register quieter.
+    const cardCapNote = fallbackNoteFor("CLEAROTRON_CARD_CONCURRENCY");
+    if (cardCapNote) note(`[config] ${cardCapNote}`);
+    // Every card settles, even when one throws, so none is left running behind the join.
+    const settled = await Promise.allSettled(cardFindings.slice(1).map((f) => withSession(() => renderCard(f))));
+    const threw = settled.find((r) => r.status === "rejected");
+    if (threw) throw threw.reason;
+  } catch (e) { cardsThrew = e; }
+  // THE JOIN. The overview's failure first, as when it ran before the cards; then a card that threw; then the cards'
+  // usage limits, collected over the fan-out.
+  const rov = await overviewDone;
+  if (cardsThrew) throw cardsThrew;
   if (cardRateLimited.length) {
     const earliest = cardRateLimited.map((c) => c.resetsAt).filter(Boolean).sort()[0] ?? null;
     runLog(run.runDir, { event: "report-cards-rate-limited", count: cardRateLimited.length,
