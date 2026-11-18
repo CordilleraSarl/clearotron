@@ -75,6 +75,11 @@ export function stripCssComments(css) {
   return out;
 }
 
+// THE PAGE'S OWN CHROME CARRIES ONE ATTRIBUTE, data-report-chrome: the sticky header (the bar, the export menu, the
+// section strip) on both reports, and the Knockout's theme button. The portal frames a report and removes that chrome,
+// and it found it by class names a re-skin could rename without a sound. An element carrying the attribute is the
+// renderer saying "this is mine, not the report's". No stylesheet selects on it, so it changes nothing a reader sees.
+
 /**
  * One report page. `title` is the page's own title as HTML, already escaped by its renderer; the shell adds the
  * product's name after it. `css` is the renderer's sheet, placed after the base sheet and before the dark and print

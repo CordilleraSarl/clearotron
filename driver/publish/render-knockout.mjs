@@ -1795,7 +1795,7 @@ ${filings}`
     title: `${productName ? `${esc(productName)} — ` : ''}${esc(title)}`,
     css: CHROME_CSS + '\n' + THEME_BTN_CSS + '\n' + KO_CSS,
     chromeHref,
-    body: `<div class="rep-stickyhead no-print">
+    body: `<div class="rep-stickyhead no-print" data-report-chrome>
 <div class="topbar no-print">
   ${homeHref ? `<a class="homebtn tb-back no-print" href="${escAttr(homeHref)}" title="All reports"><span aria-hidden="true">←</span> <span class="tb-back-lbl">All reports</span></a>` : ''}
   ${logoLockup({ mark: 20, tag: '' })}<span class="sp"></span>
@@ -1841,7 +1841,7 @@ ${filings}`
 </div>
 <!--SECTION-STRIP-->
 </div>
-<div class="fab-stack">${themeButton()}</div>
+<div class="fab-stack" data-report-chrome>${themeButton()}</div>
 <script>
 /* THE DOCUMENT'S OWN CONTROLS, and they are GLOBAL on purpose.
    The portal frames this document and drives it by postMessage. The bridge injected at serve time looks

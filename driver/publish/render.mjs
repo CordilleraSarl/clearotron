@@ -2766,7 +2766,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
     title: `${productName ? `${esc(productName)} — ` : ''}${esc(fm.title || '')}`,
     css: (linkChrome ? '' : NAV_SHEET) + '\n' + REP_OVERRIDE,
     chromeHref: opts.chromeHref,
-    body: `<div class="rep-stickyhead no-print">
+    body: `<div class="rep-stickyhead no-print" data-report-chrome>
 <div class="topbar no-print">
   ${/* ONE BAR (the 2026-09-16 report redesign). The site bar is not rendered on a report, so the brand belongs here:
        a reader met two stacked headers, and the lower one carried the only brand. */''}
