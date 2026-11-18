@@ -204,10 +204,14 @@ test("claude: a coverage judgment standing beside the withdrawn step keeps the r
   stepRaisedThenWithdrawn(run.events);
   assert.deepEqual(recomputed(run.events), []);
   sameEverywhere(run, "CONDITIONAL");
-  const left = clientConditions(run.label);
-  assert.equal(left.length, 1, `not one condition left: ${JSON.stringify(left)}`);
-  assert.match(left[0], /^the lawyer judged a material slice not fully cleared/);
+  // The coverage judgment is the one reason left, and it is the run record's alone: the engine's sentence reaches no
+  // client surface, and nothing is written in its place (ruled 2026-09-18).
+  const judged = (run.label.reasons ?? []).filter((r) => /^the lawyer judged a material slice not fully cleared/.test(r));
+  assert.equal(judged.length, 1, `the run record does not keep the coverage judgment once: ${JSON.stringify(run.label.reasons)}`);
+  assert.equal(run.label.clauses[run.label.reasons.indexOf(judged[0])], null, "a client clause was written for the coverage judgment");
+  assert.deepEqual(clientConditions(run.label), [], "the engine's sentence reached the client's conditions");
   assert.ok(!run.pages.join("\n").includes(STEP), "the page still states the withdrawn step");
+  assert.ok(!run.pages.join("\n").includes("material slice"), "the page still states the engine's sentence");
 });
 
 test("claude: a review that said CONDITIONAL is never lifted when the repair withdraws the step", async () => {

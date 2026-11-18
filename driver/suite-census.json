@@ -467,7 +467,7 @@
         },
         "a-correction-that-withdraws-every-step-gives-the-reviews-clear-back.pipeline.test.mjs": {
           "tests": 15,
-          "asserts": 68,
+          "asserts": 70,
           "skips": 0,
           "todos": 0
         },
@@ -923,7 +923,7 @@
         },
         "a-floor-the-repeated-placement-pass-answers-is-withdrawn-and-the-result-recomputed.pipeline.test.mjs": {
           "tests": 2,
-          "asserts": 28,
+          "asserts": 29,
           "skips": 0,
           "todos": 0
         },
@@ -1159,6 +1159,12 @@
           "tests": 2,
           "asserts": 4,
           "skips": 2,
+          "todos": 0
+        },
+        "a-knockout-card-cites-a-filing-as-its-office-does.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
           "todos": 0
         },
         "a-knockout-citation-the-run-does-not-hold-is-left-out-in-the-turn.test.mjs": {
@@ -2016,6 +2022,12 @@
         "a-register-floor-is-carried-and-never-a-zero.test.mjs": {
           "tests": 7,
           "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-register-key-reads-as-the-country-the-rows-name.test.mjs": {
+          "tests": 2,
+          "asserts": 4,
           "skips": 0,
           "todos": 0
         },
@@ -5489,7 +5501,7 @@
         },
         "pipeline.mock.test.mjs": {
           "tests": 25,
-          "asserts": 194,
+          "asserts": 195,
           "skips": 0,
           "todos": 0
         },
@@ -6016,8 +6028,8 @@
           "todos": 0
         },
         "regions.test.mjs": {
-          "tests": 5,
-          "asserts": 15,
+          "tests": 7,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
@@ -6179,7 +6191,7 @@
         },
         "render.test.mjs": {
           "tests": 164,
-          "asserts": 687,
+          "asserts": 689,
           "skips": 0,
           "todos": 0
         },
@@ -7254,6 +7266,12 @@
         "the-courier-routes-every-event-and-only-its-own.test.mjs": {
           "tests": 4,
           "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-coverage-floors-own-sentences-stay-in-the-run-record.test.mjs": {
+          "tests": 4,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
