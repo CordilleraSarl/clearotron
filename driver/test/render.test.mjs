@@ -1416,7 +1416,7 @@ test("doc-52: reading order + plain banner (from only-you) + ruled-out routing +
   assert.doesNotMatch(html, /and \d+ more/, "no condition hides behind a count");
   // ruled-out routing: UNTAMED (off-field, shares no word with NOVAPULSE) leaves the conflict bands
   assert.match(html, /<h2>Also considered<\/h2>/);
-  assert.match(html, /class="fnum">\d+<\/span><span class="who mark-first">UNTAMED/);
+  assert.match(html, /class="fnum">\d+<\/span><h3 class="who mark-first">UNTAMED/);
   assert.doesNotMatch(html, /Commercial awareness/, "the genre-neighbour is not surfaced as a conflict");
   // RE-POINTED. This asserted that the renderer REWROTE engine idioms out of a coverage note.
   // That mechanism is deleted: it was find-and-replace over a client-facing string, and is what it
@@ -2307,7 +2307,7 @@ test("§L: a same-element mark (token containment ≥4 chars) is NEVER silently 
   assert.match(html, /<h2>Also considered<\/h2>/);
   // The ruled-out list became cards under Also considered (the 2026-09-16 report redesign): the ordinal and the mark
   // are both still on the page, which is what keeps a numbering gap from reading as a lost finding.
-  assert.match(html, /class="fnum">3<\/span><span class="who mark-first">UNTAMED/, "the ruled-out ordinal stays accounted for");
+  assert.match(html, /class="fnum">3<\/span><h3 class="who mark-first">UNTAMED/, "the ruled-out ordinal stays accounted for");
 });
 
 // ── P5 (charter 2026-07-30, Reviewer §L) — content model on the render ──────────────────────────────────

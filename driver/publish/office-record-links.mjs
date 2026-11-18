@@ -256,7 +256,7 @@ export function officeReasonSentences(byUri) {
 /**
  * What a linked registration number opens, when one is linked, then the reasons per office, as the
  * knockout says them under its listed filings. They are the sentences the clearance says in Scope; its
- * renderer is frozen (render-frozen.test.mjs) and keeps its own copy of the first.
+ * renderer was hash-frozen when this was written (render-frozen.test.mjs) and keeps its own copy of the first.
  */
 export function officeLinkSentences(byUri) {
   if (!(byUri instanceof Map)) return [];
