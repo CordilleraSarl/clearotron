@@ -14,8 +14,18 @@
 // the provider decks from PROVIDERS, the knockout lane's framework deck from the profile, the what-if memo's
 // manual from its own dispatch.
 //
+// AND HOW MUCH THE MODEL IS HANDED BESIDE THE MANUALS. A stage's opening message is composed in stage code, and
+// each stage that records through a tool is handed that tool's schema; neither lives under `driver/skills/`, so the
+// manual bytes alone undercount what a seat reads. `houseDefault` gives, per stage under the house default, the
+// manual bytes, the composed message bytes, and the bytes of the stage's own recording tools as `tools/list` hands
+// them to an engine. Tools from the shared servers (band, register, research, coverage) are not the stage's own and
+// are not counted. Text the driver composes later in a run, repair and follow-up messages, is not counted either:
+// some of it is log text no model reads, and telling the two apart is not done here.
+//
 // Not a test file. The checks that fail on it are in every-manual-is-read-and-names-what-exists.test.mjs.
-import { existsSync, readFileSync, statSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import { existsSync, mkdtempSync, readFileSync, rmSync, statSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { dirname, join, posix } from "node:path";
 
 import { STAGES, paths, resolveAlsoReads, resolveSkillReads } from "../stages.mjs";
@@ -200,6 +210,45 @@ const bytesOf = (root, files) => files.reduce((a, f) => {
   return a + (existsSync(p) ? statSync(p).size : 0);
 }, 0);
 
+/**
+ * Each recording tool as an engine is handed it: name → bytes of its `tools/list` entry (name, description, input
+ * schema, annotations). Asked of the server itself, the way an engine asks, because a tool may state its schema for
+ * the run it serves; here that is an empty run folder. Throws when the server does not answer.
+ */
+export function recordingToolBytes() {
+  const run = mkdtempSync(join(tmpdir(), "read-map-tools-"));
+  try {
+    const r = spawnSync(process.execPath, [join(DRIVER, "engine", "mcp", "recording-server.mjs")], {
+      input: `${JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/list" })}\n`, encoding: "utf8",
+      env: { ...process.env, CLEAROTRON_BAND_RUN_DIR: run }, timeout: 60_000, maxBuffer: 64 * 1024 * 1024 });
+    const answer = String(r.stdout ?? "").split("\n").filter(Boolean)
+      .map((l) => { try { return JSON.parse(l); } catch { return null; } }).find((m) => m?.id === 1);
+    const tools = answer?.result?.tools;
+    if (!Array.isArray(tools) || !tools.length) throw new Error(`${GUARD}: the recording server listed no tools (${String(r.stderr ?? "").slice(0, 200)})`);
+    return new Map(tools.map((t) => [t.name, Buffer.byteLength(JSON.stringify(t))]));
+  } finally { rmSync(run, { recursive: true, force: true }); }
+}
+
+/** A stage's own recording tools: its row's tools on its own `recording-<stage>` server. */
+const ownRecordingTools = (stage) => (RECORDING_TOOLS[stage] ?? [])
+  .filter((t) => t.startsWith(`mcp__recording-${stage}__`)).map((t) => t.split("__").pop());
+
+/** Per stage under the house default: { stage, manualBytes, messageBytes, toolSchemaBytes, tools }. */
+export function houseDefaultFigures(root = ROOT, toolBytes = recordingToolBytes()) {
+  return everyModelStageDispatch(RUN).filter((d) => d.label === "house default" || d.label === "knockout").map((d) => {
+    const tools = ownRecordingTools(d.name);
+    const missing = tools.filter((t) => !toolBytes.has(t));
+    if (missing.length) throw new Error(`${GUARD}: ${d.name}'s recording tools ${missing.join(", ")} are not on the recording server`);
+    return {
+      stage: d.name,
+      manualBytes: bytesOf(root, [...new Set([...d.declared, ...skillRefsIn(d.message)])]),
+      messageBytes: Buffer.byteLength(d.message),
+      toolSchemaBytes: tools.reduce((a, t) => a + toolBytes.get(t), 0),
+      tools,
+    };
+  });
+}
+
 function main() {
   const map = readMap(ROOT);
   if (map === null) { console.error(`${GUARD}: no checkout to read the manuals from`); process.exit(2); }
@@ -209,6 +258,7 @@ function main() {
     pointedAtOnly: [...map.pointed].sort().map((file) => ({ file, bytes: size(file) })),
     forAReader: [...map.forReader].sort(),
     unread: map.unread.map((file) => ({ file, bytes: size(file) })),
+    houseDefault: houseDefaultFigures(ROOT),
   };
   if (process.argv.includes("--json")) { console.log(JSON.stringify(out, null, 2)); return; }
   for (const r of out.stages) console.log(`${r.stage}\t${r.context}\t${r.bytes}\t${r.files.map((f) => f.slice("skills/".length)).join(" ")}`);
@@ -218,6 +268,10 @@ function main() {
   for (const f of out.forAReader) console.log(`  ${f}`);
   console.log("\nREAD BY NOTHING:");
   for (const r of out.unread) console.log(`  ${r.file} ${r.bytes}`);
+  console.log("\nHOUSE DEFAULT, BYTES PER STAGE: manuals, composed message, own recording tools");
+  for (const r of out.houseDefault) console.log(`  ${r.stage}\t${r.manualBytes}\t${r.messageBytes}\t${r.toolSchemaBytes}`);
+  const sum = (k) => out.houseDefault.reduce((a, r) => a + r[k], 0);
+  console.log(`  all ${out.houseDefault.length} stages\t${sum("manualBytes")}\t${sum("messageBytes")}\t${sum("toolSchemaBytes")}`);
 }
 
 if (isEntrypoint(import.meta.url)) main();
