@@ -1621,7 +1621,7 @@ test("doc-54: Clear zero-state — no active tick, left-anchored clear pill", ()
   const html = renderHtml(parsedOf(REPORT), [], [], { framework: MATRIX_MANIFEST, verdictInfo: vi });
   const ticks = html.match(/<div class="ticks">([\s\S]*?)<\/div>/)[1];
   assert.doesNotMatch(ticks, /class="on"/, "no band tick is active in the zero-state");
-  assert.match(html, /class="marker" style="left:0;transform:none[^"]*"><div class="pill" style="background:var\(--clear\)">No rated conflicts<\/div>/);
+  assert.match(html, /class="marker" style="left:0;transform:none[^"]*"><div class="pill" style="background:var\(--clear\);color:var\(--clear-on\)">No rated conflicts<\/div>/);
 });
 
 test("doc-54: composite-tier sidecar on a framework run maps tone-nearest, never Clear (fail-loud floor)", () => {

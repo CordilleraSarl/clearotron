@@ -1,10 +1,13 @@
   /* Brand :root tokens live in shared/brand.mjs (REPORT_ROOT) and are prepended by render.mjs. */
+  /* GREY TEXT IS --slate. Every grey label here is 13px or smaller, and --faint scored 2.88:1 on the page, 2.66 on
+     --bg2 and 3.22 on a card, under the 4.5 small text needs; --slate scores 5.17 to 6.34, print white included.
+     --faint is left for rails and scrollbars, which are not text. Text on a band colour takes that band's --*-on. */
   *{box-sizing:border-box}
   @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.55;
     -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
   .wrap{max-width:1120px;margin:0 auto;padding:0 26px 110px}
-  .label{font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+  .label{font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--slate)}
   .mono{font-family:var(--mono)}
   a{color:var(--crimson);text-decoration:none}
   .print-hidden{display:none!important}
@@ -21,9 +24,9 @@
   .topbar{z-index:40;display:flex;align-items:center;gap:10px;padding:6px max(26px,calc((100% - 1120px)/2)) 8px}
   .wm{display:inline-flex;align-items:center;font-weight:900;font-size:15px;letter-spacing:.02em;color:var(--crimson)}
   .wm .ridge{margin-right:6px}
-  .wm small{color:var(--faint);font-weight:500;letter-spacing:.14em;text-transform:uppercase;font-size:9px;margin-left:8px}
+  .wm small{color:var(--slate);font-weight:500;letter-spacing:.14em;text-transform:uppercase;font-size:9px;margin-left:8px}
   .topbar .sp{flex:1}
-  .tb-risk{font-size:10.5px;font-weight:700;letter-spacing:.08em;color:#fff;background:var(--med);padding:4px 11px;border-radius:30px}
+  .tb-risk{font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--med-on);background:var(--med);padding:4px 11px;border-radius:30px}
   .tbbtn{font:inherit;font-size:12.5px;font-weight:700;border:1px solid var(--line2);background:var(--card);
     color:var(--ink);border-radius:30px;padding:7px 14px;cursor:pointer;transition:.15s;text-decoration:none;display:inline-block}
   .tbbtn:hover{border-color:var(--crimson);color:var(--crimson)}
@@ -44,7 +47,7 @@
      covers it — the exported PDF carries the whole caption, which is the rule for print. */
   details.sub-more{margin:0 0 30px;max-width:700px}
   details.sub-more>summary{cursor:pointer;list-style:none;font-size:12.5px;font-weight:700;
-    letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
+    letter-spacing:.06em;text-transform:uppercase;color:var(--slate)}
   details.sub-more>summary::-webkit-details-marker{display:none}
   details.sub-more>summary::before{content:"▸";margin-right:7px;display:inline-block;transition:.15s;color:var(--rose)}
   details.sub-more[open]>summary::before{transform:rotate(90deg)}
@@ -66,10 +69,10 @@
   .scale{position:relative;height:11px;border-radius:8px;margin:34px 0 10px;
     background:linear-gradient(90deg,var(--clear) 0%,var(--low) 26%,var(--med) 52%,var(--high) 79%,var(--severe) 100%)}
   .ticks{display:flex;justify-content:space-between;margin-top:13px}
-  .ticks span{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);flex:1;text-align:center}
+  .ticks span{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--slate);flex:1;text-align:center}
   .ticks span.on{color:var(--med)}
   .marker{position:absolute;top:-32px;left:52%;transform:translateX(-50%);text-align:center}
-  .marker .pill{font-weight:900;font-size:14px;letter-spacing:.02em;color:#fff;background:var(--med);
+  .marker .pill{font-weight:900;font-size:14px;letter-spacing:.02em;color:var(--med-on);background:var(--med);
     /* the glow is --med in DECIMAL (200,135,27 == #C8871B) — a hex grep will not find it; recolor with the ramp */
     padding:4px 13px;border-radius:30px;white-space:nowrap;box-shadow:0 5px 14px rgba(200,135,27,.4)}
   .marker .needle{width:2px;height:15px;background:var(--med);margin:4px auto 0;border-radius:2px}
@@ -78,7 +81,7 @@
   .facts{padding:4px 24px}
   .facts .row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
   .facts .row:last-child{border-bottom:0}
-  .facts .k{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+  .facts .k{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--slate)}
   .facts .v{font-size:13.5px;font-weight:700;text-align:right}
   .chip{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.03em;padding:3px 10px;border-radius:30px}
   .chip.open{background:var(--high-soft);color:var(--high-tx)}
@@ -121,7 +124,7 @@
   .panel.actions ul.answers li{margin:7px 0}
   .panel.actions details.ans-more{margin:3px 0 0}
   .panel.actions details.ans-more>summary{cursor:pointer;list-style:none;font-size:11px;font-weight:700;
-    letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
+    letter-spacing:.06em;text-transform:uppercase;color:var(--slate)}
   .panel.actions details.ans-more>summary::-webkit-details-marker{display:none}
   .panel.actions details.ans-more>summary::before{content:"\25b8";margin-right:6px;display:inline-block;transition:.15s;color:var(--rose)}
   .panel.actions details.ans-more[open]>summary::before{transform:rotate(90deg)}
@@ -163,7 +166,7 @@
   .sec{margin:56px 0 18px;display:flex;align-items:baseline;gap:15px;border-top:2px solid var(--ink);padding-top:14px}
   .sec .num{font-family:var(--mono);font-size:13px;color:var(--crimson);font-weight:600}
   .sec h2{font-weight:900;font-size:25px;margin:0;letter-spacing:-.015em}
-  .sec .note{margin-left:auto;font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--faint);text-transform:uppercase;align-self:flex-end}
+  .sec .note{margin-left:auto;font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--slate);text-transform:uppercase;align-self:flex-end}
 
   .landwrap{display:grid;grid-template-columns:1.5fr 1fr;gap:18px;align-items:start}
   @media(max-width:820px){.landwrap{grid-template-columns:1fr}}
@@ -172,7 +175,7 @@
   .land svg a{cursor:pointer}
   .keypanel{padding:16px 18px;display:flex;flex-direction:column}
   .keypanel .label{margin-bottom:6px}
-  .keyhint{font-size:11.5px;color:var(--faint);margin:0 0 12px}
+  .keyhint{font-size:11.5px;color:var(--slate);margin:0 0 12px}
   .keyrow{display:flex;align-items:center;gap:11px;padding:9px 8px;border-radius:10px;color:var(--ink);transition:.12s;border:1px solid transparent}
   .keyrow:hover{background:var(--bg2);border-color:var(--line)}
   .kn{flex:none;width:23px;height:23px;border-radius:50%;color:#fff;font-weight:900;font-size:12px;display:flex;align-items:center;justify-content:center}
@@ -181,7 +184,7 @@
   .kw .cm-mark{font-size:12px;padding:1px 7px}
   .kc{flex:none;font-size:10px;font-weight:700;letter-spacing:.03em;padding:3px 8px;border-radius:30px}
   .kc.med{background:var(--med-soft);color:var(--med-tx)} .kc.low{background:var(--clear-soft);color:var(--clear-tx)} .kc.off{background:#EDE6D9;color:var(--slate)}
-  .keyrow .arr{flex:none;color:var(--faint);font-size:13px;opacity:0;transition:.12s}
+  .keyrow .arr{flex:none;color:var(--slate);font-size:13px;opacity:0;transition:.12s}
   .keyrow:hover .arr{opacity:1}
   .legend{display:flex;flex-wrap:wrap;gap:14px;padding:8px 8px 4px;font-size:11px;color:var(--slate)}
   .legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:0}
@@ -194,7 +197,7 @@
   .cardhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px}
   .pick{display:inline-flex;align-items:center}
   .pick input{width:16px;height:16px;cursor:pointer;accent-color:var(--crimson)}
-  .fnum{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--faint)}
+  .fnum{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--slate)}
   .who{font-weight:900;font-size:19px;letter-spacing:-.01em}
   /* A card's title is its h3, so a reader can move between findings by heading. :where() keeps this at no
      specificity: it removes the browser's heading margin, size and weight, and every .who rule still wins. */
@@ -207,11 +210,11 @@
   .src.reg{background:#F3E7C9;color:#7a5a08}.src.cl{background:#DEE7E9;color:#2c5560}.src.both{background:var(--clear-soft);color:var(--clear-tx)}
   .tier{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;color:var(--med)}
   .tier .lv{color:#fff;border-radius:7px;padding:3px 8px;letter-spacing:.03em}
-  .tier.med .lv{background:var(--med)} .tier.low .lv{background:var(--low)} .tier.off .lv{background:var(--taupe)}
+  .tier.med .lv{background:var(--med);color:var(--med-on)} .tier.low .lv{background:var(--low);color:var(--low-on)} .tier.off .lv{background:var(--taupe)}
   .oneline{font-size:14.5px;color:var(--ink);margin:9px 0 16px;line-height:1.5}
   .meters{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
   @media(max-width:640px){.meters{grid-template-columns:repeat(2,1fr)}}
-  .meter .ml{font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);margin-bottom:7px}
+  .meter .ml{font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--slate);margin-bottom:7px}
   .pips{display:flex;gap:4px}
   .pips i{width:100%;height:5px;border-radius:3px;background:#E9E0D1}
   .pips.l3 i:nth-child(-n+3){background:var(--high)} .pips.l2 i:nth-child(-n+2){background:var(--med)} .pips.l1 i:nth-child(-n+1){background:var(--low)}
@@ -220,7 +223,7 @@
   /* D4 — the meter's SECOND position: how well the fact above it is evidenced. It is subordinate
      to .mv on purpose (lighter, smaller): the finding is the fact, the receipt is the footnote. It
      wraps inside its own 1fr grid track, so a long evidence clause costs height, never overflow. */
-  .mev{font-size:10px;color:var(--faint);margin-top:3px;font-weight:500;line-height:1.3}
+  .mev{font-size:10px;color:var(--slate);margin-top:3px;font-weight:500;line-height:1.3}
 
   details.drill{border-top:1px solid var(--line)}
   details.drill>summary{cursor:pointer;list-style:none;padding:13px 22px 13px 43px;font-size:11px;font-weight:700;
@@ -237,7 +240,7 @@
   .internal{background:#F6ECF7;border:1px dashed #C9A9CC;border-radius:9px;padding:9px 12px;margin-top:11px;font-size:12.5px;color:#6a2b6e}
   .internal .tag{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8a3a8f;display:block;margin-bottom:3px}
   /* (spec-49 T4: the collapsible QC-banner rules died with the quarantine/review banners.) */
-  .prov{margin-top:10px;font-size:12px;color:var(--faint);font-family:var(--mono)}
+  .prov{margin-top:10px;font-size:12px;color:var(--slate);font-family:var(--mono)}
 
   .card.compact .top{padding:15px 20px}
   .card.compact .who{font-size:16px}
@@ -252,11 +255,11 @@
   /* wp50/wi9 — neutral styling for routine next-steps/monitor rows (warn stays for genuine alarms) */
   .covcell.todo .ck{background:#8B94A6} .covcell.todo{border-color:var(--line);background:var(--bg2)}
   .covcell.info .ck{background:#A9B4C6} .covcell.info{border-color:var(--line)}
-  .covcell .cst{font-weight:600;color:var(--faint);font-size:11.5px}
+  .covcell .cst{font-weight:600;color:var(--slate);font-size:11.5px}
   .covnext{margin:16px 0 10px;font-size:13px;color:var(--slate)}
   /* The open rows' groups, each headed by its state word and count, styled as the "Left open" label above them. */
   .covgrp+.covgrp{margin-top:14px}
-  .covgh{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin:0 0 6px}
+  .covgh{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);margin:0 0 6px}
   .covgn{letter-spacing:.04em}
   .covlist{margin:4px 0 0;padding-left:18px;font-size:13px;color:var(--slate)}
   .covcell .ct{font-size:13px;font-weight:700;margin-bottom:2px}
@@ -265,12 +268,12 @@
   details.method{border:1px solid var(--line);border-radius:16px;background:var(--card);margin-top:16px;box-shadow:var(--shadow)}
   details.method>summary{cursor:pointer;list-style:none;padding:17px 22px;font-weight:700;font-size:14px}
   details.method>summary::-webkit-details-marker{display:none}
-  details.method>summary::after{content:"▾";float:right;color:var(--faint)}
+  details.method>summary::after{content:"▾";float:right;color:var(--slate)}
   details.method[open]>summary::after{content:"▴"}
   .method .mbody{padding:0 22px 20px;font-size:13px;color:var(--slate);line-height:1.62}
 
 
-  footer{margin-top:54px;padding-top:20px;border-top:2px solid var(--ink);font-size:12px;color:var(--faint);line-height:1.6;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+  footer{margin-top:54px;padding-top:20px;border-top:2px solid var(--ink);font-size:12px;color:var(--slate);line-height:1.6;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
   footer .wm{font-size:13px}
 
   /* ══ redesign (clearance report) ══════════════════════════════════════════════════════════════════
@@ -283,15 +286,15 @@
   .tb-back{font:inherit;font-size:12.5px;font-weight:700;border:1px solid var(--line2);background:var(--card);color:var(--ink);border-radius:30px;padding:6px 12px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
   .tb-back:hover{border-color:var(--crimson);color:var(--crimson)}
   .tb-matter{white-space:nowrap}
-  .tb-issued{font-size:11px;color:var(--faint);white-space:nowrap}
+  .tb-issued{font-size:11px;color:var(--slate);white-space:nowrap}
   .tb-menu{position:relative;display:inline-flex}
   .tb-menu .tbbtn{white-space:nowrap}
   .tb-pop{position:absolute;top:calc(100% + 8px);right:0;width:282px;max-width:88vw;background:var(--card);border:1px solid var(--line2);border-radius:14px;box-shadow:var(--shadow);padding:12px;z-index:50}
-  .tb-pop-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin:0 0 8px}
+  .tb-pop-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--slate);margin:0 0 8px}
   .tb-pop .util{width:100%;text-align:center;margin-bottom:7px;box-sizing:border-box}
   .tb-row{display:flex;gap:7px;margin-bottom:7px}.tb-row .util{flex:1;margin:0}
   .tb-sep{height:1px;background:var(--line);margin:2px 0 9px}
-  .tb-hint{font-size:11px;color:var(--faint);line-height:1.4;margin:2px 2px 0}
+  .tb-hint{font-size:11px;color:var(--slate);line-height:1.4;margin:2px 2px 0}
   @media(max-width:860px){.tb-matter{display:none}}
   @media(max-width:640px){.tb-issued{display:none}}
   @media(max-width:560px){.wm small{display:none}.tb-back-lbl{display:none}.tb-lbl{display:none}
@@ -313,15 +316,15 @@
   .gconc{margin-top:20px;border-top:1px solid var(--line)}
   .gconc .grow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
   .gconc .grow:last-child{border-bottom:0}
-  .gconc .gk{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+  .gconc .gk{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--slate)}
   .gconc .gv{font-size:13.5px;font-weight:700;text-align:right}
   .gconc .gv-rec{color:var(--med-tx)}
   .facts .row.jrow{flex-direction:column;align-items:flex-start;gap:8px}
   .jchips{display:flex;flex-wrap:wrap;gap:5px}
   .jchip{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--slate);background:var(--bg2);border:1px solid var(--line);padding:2px 7px;border-radius:5px}
-  .jchip.lim{color:var(--faint);border-style:dashed}
+  .jchip.lim{color:var(--slate);border-style:dashed}
   .jchip.ww{font-family:inherit;letter-spacing:.03em;color:var(--clear-tx,#2e6b32);background:var(--clear-soft,#EAF3E6);border-color:transparent}
-  .jnote{font-size:10.5px;color:var(--faint);line-height:1.4}
+  .jnote{font-size:10.5px;color:var(--slate);line-height:1.4}
 
   /* spec-49 T4 retired the review-notes caveat body; a later change retired the slim internal toolbar that
      survived it, because the Flag/Etch capture controls it hosted are gone. The .review rules stay:
@@ -354,7 +357,7 @@
   .keypanel::-webkit-scrollbar-track{background:transparent}
   .keypanel::-webkit-scrollbar-thumb{background:var(--faint);border-radius:5px}
   @supports not selector(::-webkit-scrollbar){
-    .keypanel{scrollbar-width:thin;scrollbar-color:var(--faint) transparent}}
+    .keypanel{scrollbar-width:thin;scrollbar-color:var(--slate) transparent}}
   .rrow{border-top:1px solid var(--line)}
   .rrow:first-of-type{border-top:0}
   .rrow>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:9px;padding:8px 4px}
@@ -495,7 +498,7 @@
   .fourans .fa-k{flex:0 0 172px;font-weight:700;color:var(--ink)}
   .fourans .fa-v{flex:1;color:var(--slate)}
   .fourans .fa-token{font-weight:700;color:var(--ink)}
-  .fourans .fa-basis{font-size:12px;color:var(--faint)}
+  .fourans .fa-basis{font-size:12px;color:var(--slate)}
   .fourans .fa-ords a{font-size:12px;margin-left:2px}
   .fourans ul.fa-obstacles{margin:6px 0 0;padding-left:18px}
   .fourans ul.fa-obstacles li{margin:0 0 4px;font-size:13px}
@@ -510,7 +513,7 @@
   details.scope>summary{cursor:pointer;list-style:none;margin:22px 0 0;padding:12px 0 10px;
     border-top:1px solid var(--line);font-size:15px;font-weight:700;letter-spacing:-.01em;color:var(--ink)}
   details.scope>summary::-webkit-details-marker{display:none}
-  details.scope>summary::before{content:"›";display:inline-block;width:16px;color:var(--faint);
+  details.scope>summary::before{content:"›";display:inline-block;width:16px;color:var(--slate);
     font-weight:700;transition:transform .12s ease}
   details.scope[open]>summary::before{transform:rotate(90deg)}
   details.scope>summary:hover{color:var(--med-tx,var(--ink))}
@@ -528,7 +531,7 @@
      so the page follows the theme rather than carrying a second palette. Layout only: every string on
      the page is the delivered file's own, a label from the specification, or a count. */
   .panel.about{margin:10px 0 18px;padding:12px 18px;max-width:900px}
-  .panel.about .label{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:6px}
+  .panel.about .label{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);margin-bottom:6px}
   .panel.about .row{display:grid;grid-template-columns:170px 1fr;gap:12px;padding:5px 0;border-top:1px solid var(--line);font-size:13.5px;line-height:1.5}
   /* The goods as registered and the record's own dates, inside a finding's Full detail fold on a full
      country search (the 2026-09-16 report redesign). Ported from the design with its fixed greys replaced by tokens.
@@ -537,11 +540,11 @@
      it that row sets the width of the whole fold. */
   .record{margin:6px 0 2px}
   .record .row{display:grid;grid-template-columns:150px 1fr;gap:12px;padding:4px 0;border-top:1px solid var(--line);font-size:13px;line-height:1.5}
-  .record .k{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);padding-top:3px}
+  .record .k{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--slate);padding-top:3px}
   .record .v{overflow-wrap:anywhere;word-break:break-word}
   @media(max-width:700px){.record .row{grid-template-columns:1fr;gap:2px}}
   .panel.about .row:first-of-type{border-top:0}
-  .panel.about .k{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);padding-top:3px}
+  .panel.about .k{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);padding-top:3px}
   .panel.about .v{color:var(--ink)}
   header.hero p.sub .fmark{font-weight:800;color:var(--ink)}
 
@@ -549,25 +552,25 @@
   .gconc .grow{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:start}
   .gconc .gv{text-align:left;display:block}
   .gconds-wrap{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:start;margin-top:10px}
-  .gconds-wrap .gk{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);padding-top:3px}
+  .gconds-wrap .gk{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);padding-top:3px}
   .gconds{margin:0;padding-left:18px;font-size:13px;line-height:1.45;font-weight:500}
   .gconds li{margin:3px 0}
   .gwhy{border-top:1px solid var(--line);margin:12px 0 0;padding:12px 0 0}
-  .gwhy .label{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:8px}
+  .gwhy .label{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);margin-bottom:8px}
   .gwhy .fa-row{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:start;padding:7px 0;font-size:13.5px;line-height:1.5}
-  .gwhy .fa-k{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);padding-top:3px}
+  .gwhy .fa-k{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);padding-top:3px}
   .fa-token{padding:2px 8px;border-radius:999px;color:#fff;font-weight:700}
-  .fa-token.tone-good{background:var(--clear)}.fa-token.tone-mid{background:var(--med)}.fa-token.tone-bad{background:var(--high)}
+  .fa-token.tone-good{background:var(--clear);color:var(--clear-on)}.fa-token.tone-mid{background:var(--med);color:var(--med-on)}.fa-token.tone-bad{background:var(--high);color:var(--high-on)}
   .fa-based{margin:4px 0 2px;font-size:12.5px;line-height:1.45;color:var(--slate)}
-  .fa-bk{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-right:6px}
+  .fa-bk{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);margin-right:6px}
   .gexp,.gconf{display:grid;grid-template-columns:150px 1fr;gap:14px;border-top:1px solid var(--line);margin-top:12px;padding-top:10px;font-size:13px;line-height:1.5}
-  .gexp .gk,.gconf .gk{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);padding-top:3px}
+  .gexp .gk,.gconf .gk{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);padding-top:3px}
   .gexp .gv,.gconf .gv{text-align:left}
-  .gframe{margin-top:10px;font-size:11.5px;color:var(--faint)}
+  .gframe{margin-top:10px;font-size:11.5px;color:var(--slate)}
 
   .panel.where{padding:10px 18px}
   .wrow{display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:13.5px}
-  .wrow .wname{font-weight:600}.wrow .rcode{font-weight:700;color:var(--faint);font-size:12px}
+  .wrow .wname{font-weight:600}.wrow .rcode{font-weight:700;color:var(--slate);font-size:12px}
   .wclean{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:10px 0 4px}
   .wk{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--clear);margin-right:8px}
   .wchip{padding:3px 9px;border-radius:999px;background:var(--clear-soft);color:var(--clear-tx);font:600 12px/1.4 var(--font)}
@@ -578,7 +581,7 @@
   .cardhead .who.mark-first{font-size:17px;font-weight:800}
   .cardhead .who .where{font-weight:500;color:var(--slate);font-size:14px}
   .owner-line{padding:0 16px 6px 16px;margin-top:-4px;font-size:13px;color:var(--slate)}
-  .owner-line .ok{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-right:6px}
+  .owner-line .ok{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);margin-right:6px}
 
   .panel.alsocons{padding:12px 18px}
   .card.ruled .rail{background:var(--tan)}.tier.ruled{background:var(--bg2);color:var(--slate)}
@@ -589,7 +592,7 @@
   .cgroups{margin:8px 0 0}
   .cgroup{margin:6px 0;background:var(--card);border-radius:12px;box-shadow:0 1px 2px rgba(37,9,2,.06)}
   .cgroup>summary{display:flex;align-items:center;gap:10px;padding:12px 18px;cursor:pointer;font:600 14px/1.3 var(--font);list-style:none}
-  .cgroup>summary::before{content:'▸';color:var(--faint);font-size:12px}
+  .cgroup>summary::before{content:'▸';color:var(--slate);font-size:12px}
   .cgroup[open]>summary::before{content:'▾'}
   .cgroup .gcount{margin-left:auto;color:var(--slate);font-weight:500;font-size:12.5px}
   .cgroup .gbody{padding:0 18px 12px}
@@ -600,7 +603,7 @@
 
   details.searched{margin:14px 0;background:var(--card);border-radius:12px;box-shadow:var(--shadow)}
   details.searched>summary{display:flex;align-items:center;gap:10px;padding:12px 18px;cursor:pointer;font:600 14px/1.3 var(--font);list-style:none}
-  details.searched>summary::before{content:'▸';color:var(--faint);font-size:12px}
+  details.searched>summary::before{content:'▸';color:var(--slate);font-size:12px}
   details.searched[open]>summary::before{content:'▾'}
   details.searched .gcount{margin-left:auto;color:var(--slate);font-weight:500;font-size:12.5px}
   details.searched .gbody{padding:0 18px 12px}
@@ -608,9 +611,9 @@
   details.searched .wstate{font-weight:600}
   details.searched .wnote{display:block;margin-top:4px;font-size:12.5px;line-height:1.45;color:var(--slate)}
   details.searched .row{display:grid;grid-template-columns:200px 1fr;gap:12px;padding:7px 0;border-top:1px solid var(--line);font-size:13.5px}
-  details.searched .k{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);padding-top:3px}
+  details.searched .k{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);padding-top:3px}
   .openrows,.provwrap{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
-  .openrows .rk,.provwrap .rk{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-bottom:6px}
+  .openrows .rk,.provwrap .rk{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);margin-bottom:6px}
   .provnote{margin:0;font-size:12.5px;line-height:1.5;color:var(--slate)}
   .topbar .tb-lockup{margin-right:10px;flex:0 0 auto}
   /* AFTER the rule it overrides, not beside its siblings at the breakpoint above: both selectors carry

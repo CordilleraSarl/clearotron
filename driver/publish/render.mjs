@@ -250,13 +250,14 @@ function frameworkGauge(fm, findings, coverage = [], fourAnswers = null, opts = 
   const tick = frameworkTickIndex(findings);
   const ticks = ladder.map((b, k) => `<span${k === tick ? ` class="on" style="color:var(${toneVar(b.tone)})"` : ''}>${esc(b.label)}</span>`).join('');
   const grad = `linear-gradient(90deg,var(--clear) 0%,${ladder.map((b, k) => `var(${toneVar(b.tone)}) ${pct(k)}`).join(',')})`;
-  const mv = tick == null ? 'var(--clear)' : `var(${toneVar(ladder[tick].tone)})`;
+  const stop = tick == null ? '--clear' : toneVar(ladder[tick].tone);
+  const mv = `var(${stop})`;
   const label = VERDICT_INFO?.tier || (tick == null ? 'Clear' : ladder[tick].label);
   // Zero-state marker parks LEFT-ANCHORED at the scale origin (transform:none) so a long pill
   // ("No rated conflicts") grows rightward over the scale instead of clipping off the page edge.
   const marker = tick == null
-    ? `<div class="marker" style="left:0;transform:none;text-align:left"><div class="pill" style="background:${mv}">${esc(label)}</div><div class="needle" style="background:${mv};margin-left:14px"></div></div>`
-    : `<div class="marker" style="left:${pct(tick)}"><div class="pill" style="background:${mv}">${esc(label)}</div><div class="needle" style="background:${mv}"></div></div>`;
+    ? `<div class="marker" style="left:0;transform:none;text-align:left"><div class="pill" style="background:${mv};color:var(${stop}-on)">${esc(label)}</div><div class="needle" style="background:${mv};margin-left:14px"></div></div>`
+    : `<div class="marker" style="left:${pct(tick)}"><div class="pill" style="background:${mv};color:var(${stop}-on)">${esc(label)}</div><div class="needle" style="background:${mv}"></div></div>`;
   // spec 64 — THE one risk statement (verdict.json.statement, composed once by the sidecar writer)
   // replaces the bare recommendation line when present: band + stance read as ONE labelled sentence.
   // Legacy sidecars (no statement) render today's line byte-identically.
@@ -651,7 +652,7 @@ function gauge(fm, findings, coverage = [], fourAnswers = null, opts = {}) {
   ].filter(Boolean).join('');
   return `<div class="panel gauge">
     <div class="label">Overall risk</div>
-    <div class="scale"><div class="marker" style="left:${STOP_LEFT[i]}"><div class="pill" style="background:var(${STOP_VAR[i]})">${label}</div><div class="needle" style="background:var(${STOP_VAR[i]})"></div></div></div>
+    <div class="scale"><div class="marker" style="left:${STOP_LEFT[i]}"><div class="pill" style="background:var(${STOP_VAR[i]});color:var(${STOP_VAR[i]}-on)">${label}</div><div class="needle" style="background:var(${STOP_VAR[i]})"></div></div></div>
     <div class="ticks">${ticks}</div>
     <div class="gconc">${conc}</div>
     ${ratingExtras(fm, findings, coverage, fourAnswers, opts, label)}
@@ -676,7 +677,7 @@ function facts(fm, findings, coverage) {
     fm.classes && `<div class="row"><span class="k">Classes</span><span class="v">${esc(fm.classes)}</span></div>`,
     chips ? `<div class="row jrow"><span class="k">Jurisdictions searched</span>${chips}</div>`
       : (fm.jurisdiction && `<div class="row"><span class="k">Jurisdictions searched</span><span class="v">${esc(fm.jurisdiction)}</span></div>`),
-    worst.length && `<div class="row"><span class="k">Highest exposure</span><span class="v">${worst.join(' ')} <span style="font-size:10.5px;color:var(--faint,#8a8a8a)">— from the highest-rated finding${worst.length > 1 || worstSet.length > 1 ? 's' : ''}</span></span></div>`,
+    worst.length && `<div class="row"><span class="k">Highest exposure</span><span class="v">${worst.join(' ')} <span style="font-size:10.5px;color:var(--slate)">— from the highest-rated finding${worst.length > 1 || worstSet.length > 1 ? 's' : ''}</span></span></div>`,
     (fm.run || fm.searched) && `<div class="row"><span class="k">Searched</span><span class="v"><span class="mono" style="font-size:12px">${esc(fm.searched || fm.run)}</span></span></div>`,
   ].filter(Boolean);
   return `<div class="panel facts">${rows.join('')}</div>`;
@@ -2794,8 +2795,8 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   ${logoLockup({ mark: 16, cls: 'tb-lockup' })}
   ${opts.homeHref ? `<a class="homebtn tb-back no-print" href="${escAttr(opts.homeHref)}" title="All reports"><span aria-hidden="true">←</span> <span class="tb-back-lbl">All reports</span></a>` : ''}
   <span class="sp"></span>
-  ${/* With no assessment there is no rating, and with no rating this pill falls back to the CLEAR stop. */''}${opts.assessmentNotCompleted === true ? '' : `<span class="tb-risk" style="background:var(${STOP_VAR[i]})">${riskLabel}</span>`}
-  <span class="mono tb-matter" style="font-size:11px;color:var(--faint)">${esc(fm.matter || opts.runId || '')}${fm.title ? ' / ' + esc(fm.title) : ''}</span>
+  ${/* With no assessment there is no rating, and with no rating this pill falls back to the CLEAR stop. */''}${opts.assessmentNotCompleted === true ? '' : `<span class="tb-risk" style="background:var(${STOP_VAR[i]});color:var(${STOP_VAR[i]}-on)">${riskLabel}</span>`}
+  <span class="mono tb-matter" style="font-size:11px;color:var(--slate)">${esc(fm.matter || opts.runId || '')}${fm.title ? ' / ' + esc(fm.title) : ''}</span>
   ${/* A DATE, NOT A TIMESTAMP. This read "Issued on 2026-09-17 · 08:36 GMT+2" — the minute the file
        was written, and the zone the machine that wrote it happened to be in. Neither tells a reader
        anything, and on work that spans days it implies a precision the work does not have. Every mock

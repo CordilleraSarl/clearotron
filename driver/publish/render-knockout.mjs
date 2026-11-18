@@ -191,7 +191,7 @@ function batchTitle(marks) {
 // group, in the order the merged gate left them, highest first. The same chip and the same line either way, so no
 // words are added. A mark with no groups, which is every archived run, keeps its markup byte for byte.
 function bandColumn(m, framework) {
-  const chip = (band, qualifier, classes) => `<span class="ko-band" style="background:var(${bandStop(framework, band)})">${esc(band ?? '—')}</span>
+  const chip = (band, qualifier, classes) => `<span class="ko-band" style="background:var(${bandStop(framework, band)});color:var(${bandStop(framework, band)}-on)">${esc(band ?? '—')}</span>
         ${qualifierHtml(qualifier)}
         ${classes?.length ? `<p class="ko-classes">Classes ${esc(classes.join(', '))}</p>` : ''}`;
   if (!Array.isArray(m.classGroups) || !m.classGroups.length) return chip(m.rating, m.ratingQualifier, m.classesSearched);
@@ -700,7 +700,7 @@ function findingBlock(v, framework, markIndex, method = null, cite = {}) {
           <div class="body">
             <div class="cardhead">
               <span class="fnum">${esc(v.ref)}</span><h3 class="who">${esc(v.name ?? 'Unnamed finding')}</h3>${
-    v.band ? `<span class="ko-findband" style="background:var(${stop})">${bandChipText(v.band, method, v.inputs)}</span>` : ''}${sourceChips(v)}
+    v.band ? `<span class="ko-findband" style="background:var(${stop});color:var(${stop}-on)">${bandChipText(v.band, method, v.inputs)}</span>` : ''}${sourceChips(v)}
               <button class="ask-fi no-print">\u2726 Ask AI about this finding</button>
             </div>
             ${meta ? `<p class="ko-findmeta">${meta}</p>` : ''}
@@ -1211,7 +1211,7 @@ function registerFindingBlock(v, markIndex, reads = null, framework = null, owne
           <div class="body">
             <div class="cardhead">
               <span class="fnum">${esc(v.ref)}</span><h3 class="who">${esc(r.mark ?? 'Unnamed filing')}</h3>${
-    band ? `<span class="ko-findband" style="background:var(${stop})">${bandChipText(band, method, row?.inputs)}</span>` : ''}<span class="src reg">Register</span>
+    band ? `<span class="ko-findband" style="background:var(${stop});color:var(${stop}-on)">${bandChipText(band, method, row?.inputs)}</span>` : ''}<span class="src reg">Register</span>
               <button class="ask-fi no-print">\u2726 Ask AI about this finding</button>
             </div>
             <p class="ko-findmeta">${meta}</p>
@@ -1416,12 +1416,13 @@ function koScale(framework, band) {
   const n = ladder.length;
   const idx = Math.max(0, ladder.findIndex((b) => b.toLowerCase() === String(band ?? '').trim().toLowerCase()));
   const pct = (k) => (n > 1 ? (k / (n - 1)) * 100 : 50);
-  const TONE = ['var(--clear)', 'var(--low)', 'var(--med)', 'var(--high)', 'var(--severe)'];
-  const tone = (k) => TONE[Math.round((k / Math.max(1, n - 1)) * (TONE.length - 1))];
+  const STOPS = ['--clear', '--low', '--med', '--high', '--severe'];
+  const stopAt = (k) => STOPS[Math.round((k / Math.max(1, n - 1)) * (STOPS.length - 1))];
+  const tone = (k) => `var(${stopAt(k)})`;
   const shift = (k) => (k === 0 ? '0' : k === n - 1 ? '-100%' : '-50%');
   return `<div class="kscale"><div class="kbar" style="background:linear-gradient(90deg,${
     ladder.map((b, k) => `${tone(k)} ${pct(k)}%`).join(',')})"><div class="kmarker" style="left:${pct(idx)}%;transform:translateX(${
-    idx === 0 ? '-12px' : idx === n - 1 ? 'calc(-100% + 12px)' : '-50%'})"><div class="kpill" style="background:${tone(idx)}">${
+    idx === 0 ? '-12px' : idx === n - 1 ? 'calc(-100% + 12px)' : '-50%'})"><div class="kpill" style="background:${tone(idx)};color:var(${stopAt(idx)}-on)">${
     esc(ladder[idx] || band || '')}</div><div class="kneedle" style="background:${tone(idx)}"></div></div></div><div class="kticks">${
     ladder.map((b, k) => `<span class="${k === idx ? 'on' : ''}" style="left:${pct(k)}%;transform:translateX(${shift(k)})${
       k === idx ? `;color:${tone(k)}` : ''}">${esc(b)}</span>`).join('')}</div></div>`;
@@ -1803,7 +1804,7 @@ ${filings}`
 <div class="topbar no-print">
   ${homeHref ? `<a class="homebtn tb-back no-print" href="${escAttr(homeHref)}" title="All reports"><span aria-hidden="true">←</span> <span class="tb-back-lbl">All reports</span></a>` : ''}
   ${logoLockup({ mark: 20, tag: '' })}<span class="sp"></span>
-  <span class="tb-risk" style="background:var(${overallStop})">${esc(overall ?? '—')}</span>
+  <span class="tb-risk" style="background:var(${overallStop});color:var(${overallStop}-on)">${esc(overall ?? '—')}</span>
   ${/* THE IDENTITY LINE NAMES THE MARK AND THE SEARCH, NOT THE RUN. It printed `matter || runId`,
        and the caller passes the runId AS the matter, so what a client read was the engine's own run
        identifier — on a real run a temporary-directory name carrying a capture suffix. It is ours, it
@@ -1813,7 +1814,7 @@ ${filings}`
        neither the line does not render. A run whose registry identity is missing is exactly the case
        that used to print the raw name, so falling back would keep the defect for the runs that have
        it. */''}
-  ${title || productName ? `<span class="mono tb-matter" style="font-size:11px;color:var(--faint)">${
+  ${title || productName ? `<span class="mono tb-matter" style="font-size:11px;color:var(--slate)">${
     [title, productName].filter(Boolean).map(esc).join(' / ')}</span>` : ''}
   ${issuedDate ? `<span class="mono tb-issued"><span aria-hidden="true">🗓 </span>Issued on ${esc(issuedDate)}</span>` : ''}
   ${/* THE EXPORT CONTROL, which this template had never emitted. The approved header carries it and the

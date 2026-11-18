@@ -477,6 +477,10 @@ export const REPORT_ROOT =
   // #860F09, so a High risk dot read as a Start button and needed a ring workaround). --accent /
   // --crimson / --maroon above are untouched. The gauge's stop order is clear→low→med→high→severe.
   `--clear:#5F8A64; --low:#8A9440; --med:#C8871B; --high:#B23A2E; --severe:#7C1E15;` +
+  // THE TEXT ON A BAND. A band pill printed white on every band, and white scored 3.03:1 on Medium, 3.29 on Low and
+  // 3.96 on Clear, under the 4.5 a 14px label needs. Each band names its own text: the ink on the three light bands,
+  // white on the two dark ones (WCAG 2.x: 4.74, 5.71, 6.20, 5.94, 10.23). No single colour clears all five.
+  `--clear-on:${P.ink}; --low-on:${P.ink}; --med-on:${P.ink}; --high-on:#fff; --severe-on:#fff;` +
   // Soft/text pairs: re-derived from the five bases by the rule in shared/tools/derive-band-pairs.mjs (same
   // hue, soft at L .895 / S×.78, text at L .275 / S×1.12). Every pair clears WCAG AA on its own chip.
   `--med-soft:#F4E8D4; --med-tx:#82550A; --clear-soft:#E0E8E1; --clear-tx:#38553B; --high-soft:#F1DAD8; --high-tx:#742018;` +
@@ -564,6 +568,9 @@ const REPORT_DARK_TOKENS =
   `--crimson:${P.crimson};--maroon:${D.crimsonDeep};--rose:${D.crimsonMid};--rose2:#cf8681;--tan:#c8b89a;--mark:${D.ink};` +
   `--crimson-deep:${D.crimsonDeep};--crimson-mid:${D.crimsonMid};` +
   `--clear:#7EA382;--low:#A8B25A;--med:#DDA13E;--high:#CA594E;--severe:#A22D22;` +
+  // The dark bands are lighter, so the light ink stays (it does not flip with the theme) and covers High too: white
+  // on dark High is 4.16, the ink 4.51. Severe keeps white (7.16).
+  `--clear-on:${P.ink};--low-on:${P.ink};--med-on:${P.ink};--high-on:${P.ink};--severe-on:#fff;` +
   `--med-soft:#352915;--med-tx:#E4BF81;--clear-soft:#212922;--clear-tx:#A7BEA9;--high-soft:#311B19;--high-tx:#D8938D;` +
   `--taupe:#8f8570;` +
   `--ma-toggle:#E8A87C;` +
