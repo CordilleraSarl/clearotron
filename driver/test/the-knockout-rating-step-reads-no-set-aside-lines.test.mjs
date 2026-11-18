@@ -27,12 +27,13 @@ import { ensureDriverDir } from "../../shared/driver-dir.mjs";
 import { KO_STAGES, koPaths } from "../stages-knockout.mjs";
 import { kebab } from "../search-policy.mjs";
 import { ASSESS_SENTENCES } from "./ruled-sentences-knockout-assess.mjs";
+import { INQUIRY_SENTENCES } from "./ruled-sentences-placement-inquiry.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 // Sentence 6 as the crowded-field method words it: its last sentence ("A record you do not carry is given a
 // ground; no record leaves without one") became the lawyer's own, because a listed owner's fate is now
 // written at the level she writes it, the group.
-const SENTENCE_6 = "Judge an owner's records as a set. Write the position from the record in the client's market and class, quoting its goods. Carry forward only what a lawyer would raise with the client. Write down what you set aside and why.";
+const SENTENCE_6 = INQUIRY_SENTENCES.judgeOwnerRecordsSetWrite;
 const PAYLOAD = "## Findings\n- **Near** — https://apps.example.org/app/7 — a game.\n## Sources\n- https://dict.example/word/near\n";
 
 function runWithResearch() {

@@ -16,6 +16,7 @@ import assert from "node:assert/strict";
 import { mkdtempSync, rmSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { INQUIRY_SENTENCES } from "./ruled-sentences-placement-inquiry.mjs";
 import { STAGES, paths, BAND_READING_STAGES, BAND_READING_CONTRACT, BAND_READING_CONTRACT_AFTER_PLACEMENT,
   BAND_READING_CONTRACT_FOR_THE_WRITER, BAND_READING_STANDARDS, WRITER_STARTS_FROM_THE_WORK, WRITER_RECORDS_AS_IT_GOES,
   USE_CHECK_ANSWERS_HELD } from "../stages.mjs";
@@ -50,7 +51,7 @@ test("the writer uses the band tools when an assessment needs them; it is no lon
   const text = messageOf(t, "synthesis");
   assert.ok(text.includes(`THE REGISTER BAND: ${BAND_USE} ${BAND_READING_STANDARDS}`));
   assert.equal(BAND_READING_CONTRACT_FOR_THE_WRITER, `THE REGISTER BAND: ${BAND_USE} ${BAND_READING_STANDARDS}`);
-  for (const order of ["call `band_shape` FIRST", "each naming the next call", "Then pull exactly the records"])
+  for (const order of ["call `band_shape` FIRST", INQUIRY_SENTENCES.eachNamingTheNextCall, "Then pull exactly the records"])
     assert.ok(!text.includes(order), `the writer is still told: ${order}`);
 });
 

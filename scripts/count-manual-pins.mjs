@@ -34,6 +34,7 @@ export const GATHERED = Object.freeze({
   "driver/skills/clearance-common-law/SKILL.md": "driver/test/ruled-sentences-common-law.mjs",
   "driver/skills/clearance-variants/SKILL.md": "driver/test/ruled-sentences-variants.mjs",
   "driver/skills/knockout-assess/SKILL.md": "driver/test/ruled-sentences-knockout-assess.mjs",
+  "driver/skills/placement-inquiry/SKILL.md": "driver/test/ruled-sentences-placement-inquiry.mjs",
 });
 
 const LIT = String.raw`"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'|\x60(?:\\.|[^\x60\\$\n])*\x60`;
