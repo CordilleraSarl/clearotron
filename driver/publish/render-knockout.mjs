@@ -53,7 +53,7 @@ const STRIP = Object.freeze([
 ]);
 import { COUNT_BASIS, COUNT_PREDICATES, countsForMark, countLine, variantFormsLine, disclosedFloor, moreThan, countNote } from '../register-count.mjs';
 import { recordBasisOf, readByJudgment, noneCarriedForward, NONE_CARRIED_FORWARD, recordsForMark, recordsLine } from '../register-records.mjs';
-import { officeLinkSentences } from './office-record-links.mjs';
+import { officeLinkSentences, officeRecordLink } from './office-record-links.mjs';
 import { knockoutFindingViews, splitKnockoutNotes, KNOCKOUT_CARD_ORDER } from '../findings-model.mjs';
 import { inputsLine } from '../framework-method.mjs';
 import { demoBannerHtml, servedModelsLine } from './render.mjs';   // — the SAME banner the clearance template renders, not a second wording
@@ -646,9 +646,35 @@ function bandChipText(band, method, inputs) {
   return line ? `${esc(band)} · ${esc(line)}` : esc(band);
 }
 
-function findingBlock(v, framework, markIndex, method = null) {
+// A CARD CITES A FILING THE WAY THE FILINGS TABLE DOES. A conflict card's evidence held the register vendor's record
+// path (/mark/em/…), which opens nothing and no register accepts, while the filings table on the same page printed the
+// same filing by office and number, linked where the office has a page. An entry naming a filing the run holds now
+// prints that table cell. An entry naming one it does not hold is read only where the run's register puts the office's
+// own number in the path: the EUIPO's application number and the USPTO's serial. Clarivate and Signa put their own
+// record id there and Corsearch its own id with a class suffix, and a vendor id printed as the office's number would be
+// a citation no office can find, so those print as before. A web address stays a link.
+const OWN_NUMBER_OFFICE = Object.freeze({ euipo: 'eu', 'uspto-local': 'us' });
+export function filingsByHandle(registerRecords) {
+  const byHandle = new Map();
+  for (const r of (registerRecords?.marks ?? []).flatMap((m) => m?.records ?? [])) {
+    if (r && typeof r === 'object' && r.recordId) byHandle.set(String(r.recordId).trim().toLowerCase(), r);
+  }
+  return byHandle;
+}
+function evidenceCell(u, { filings = null, provider = null } = {}) {
+  if (isHttpUrl(u)) return linkOrText(u);
+  const handle = String(u ?? '').trim();
+  const r = filings?.get(handle.toLowerCase());
+  if (r) return officeRecordCell(r, r.url ? linkOrText(r.url) : esc(r.recordId ?? handle));
+  const office = OWN_NUMBER_OFFICE[provider];
+  const own = office ? new RegExp(`^/mark/${office}/([A-Za-z0-9]+)$`, 'i').exec(handle) : null;
+  const link = own ? officeRecordLink({ office, applicationNumber: own[1] }) : null;
+  return link?.label ? officeRecordCell({ officeLink: link }, esc(handle)) : esc(handle);
+}
+
+function findingBlock(v, framework, markIndex, method = null, cite = {}) {
   const meta = [v.type, v.owner].filter(Boolean).map((s) => esc(s)).join(' · ');
-  const ev = v.evidence.map((u) => linkOrText(u)).join(' · ');
+  const ev = v.evidence.map((u) => evidenceCell(u, cite)).join(' · ');
   // THE CLEARANCE REPORT'S CARD, AND THE KNOCKOUT'S LOCATOR — both classes, deliberately. report.css
   // is already inlined here and already defines .card, .top, .rail, .cardhead,
   // .fnum and .who; this uses them rather than a parallel set, so a client who has read one report
@@ -1480,6 +1506,7 @@ function readBlock(m, framework) {
 }
 
 function analysisSection(marks, framework, { registerCounts = null, probeRan = false, registerRecords = null, ownerChecks = [], frameworkMethod = null, cardOrder = null } = {}) {
+  const cite = { filings: filingsByHandle(registerRecords), provider: registerRecords?.provider ?? null };
   const cards = marks.map((m, markIndex) => {
     const bullets = readBlock(m, framework);
     // — the promoted register filings, in the SAME list as the common-law conflicts. A name's filing evidence
@@ -1504,7 +1531,7 @@ function analysisSection(marks, framework, { registerCounts = null, probeRan = f
     // nothing anywhere saying so. findings-model.mjs's view reads both shapes and drops nothing.
     const views = knockoutFindingViews(m, { manifest: framework });
     const weighsAFiling = (v) => Array.isArray(v?.weighedFilings) && v.weighedFilings.length > 0;
-    const findsOf = (list) => list.map((v) => findingBlock(v, framework, markIndex, frameworkMethod)).join('');
+    const findsOf = (list) => list.map((v) => findingBlock(v, framework, markIndex, frameworkMethod, cite)).join('');
     // — THE REGISTER CARDS ARE INSIDE `body`, and that is the fall-through guard. A mark whose only
     // conflict is a filing on the register used to reach the sentence below and be published as clean.
     // The guard is deliberately TIGHT: a listed filing that is dead or out of the counted classes does

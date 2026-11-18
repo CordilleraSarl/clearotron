@@ -1233,7 +1233,10 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
   // the international registrations apart from them — and the per-country counts as chips under it, code
   // first and the name on hover. One country is named in the line instead ("141 records read in Japan"),
   // and draws no chips: a single chip would repeat the line.
-  const byC = c.recordsByCountry || {};
+  // A register's own key (EM, GB, INT) is read as the country the band rows name (EU, UK, WO), and two keys for one
+  // country are one count, so no chip repeats and Madrid records counted under INT join the international line.
+  const byC = {};
+  for (const [k, n] of Object.entries(c.recordsByCountry || {})) { const key = normRegion(k); byC[key] = (byC[key] || 0) + (Number(n) || 0); }
   const intl = Number(byC.WO) || 0;
   const countries = Object.entries(byC).filter(([k, n]) => k !== 'WO' && Number(n) > 0).sort((a, b) => b[1] - a[1]);
   const read = countries.reduce((t, [, n]) => t + Number(n), 0);
@@ -2853,16 +2856,13 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
 
   <footer>
     ${/* ONE CLIENT LINE, AND IT NAMES WHAT EACH DATE IS. It ran to four.
-         "Rated under" STAYS, and it is not an oversight: the document carries the reviewer's
-         provenance and portal-report strips that one line for every embedded reader at serve time,
-         which is stated there and held by an arm. Deleting it here would take provenance off the
-         reviewer's copy to save the portal a job it already does.
-         "Run under project" also STAYS on the document, for the same reason and with the same
-         remedy. It is internal provenance — an end-to-end arm reads it out of the published internal
-         report, through the front-matter seam — and it was reaching clients only because nothing
-         removed it at serve time. It does now, beside the provenance line, so the document keeps what
-         review needs and the client reads neither. Deleting it here would have taken provenance off
-         the internal copy to fix a leak that belongs in the same place the other one is fixed.
+         "Rated under" and "Run under project" are no longer written (owner, 2026-11-18). They were kept
+         on the document as the reviewer's provenance and stripped from it at serve time, but every
+         reader has reached a report through the portal since the 2026-07-20 cutover, so the lines
+         served nobody and stayed hidden only while a markup-matched strip kept matching. The same facts
+         stay in the run's own front matter (rated_under, run_under_project) and record. portal-report
+         keeps its two strips for stored reports that carry the lines, which are served from their own
+         bytes.
          The product name lead goes: the identity line already says which search this is.
          The run string is composed as "<date> · <provider>", and it was printed with neither part
          labelled, so a bare date sat next to a matter identifier meaning nothing in particular. It is
@@ -2891,11 +2891,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
         provider ? esc(provider) : '',
       ].filter(Boolean);
       const line = parts.length ? `${parts.join(' \u00b7 ')}.` : '';
-      // The reviewer's provenance rides BELOW the client line, where portal-report removes it.
-      // Both provenance lines ride BELOW the client line, where portal-report removes them.
-      return line
-        + (fm.rated_under ? `<br>Rated under: <span class="mono">${esc(fm.rated_under)}</span>.` : '')
-        + (fm.run_under_project ? `<br>Run under project: <span class="mono">${esc(fm.run_under_project)}</span>.` : '');
+      return line;
     })()}</span>
     ${logoLockup({ mark: 16 })}
   </footer>

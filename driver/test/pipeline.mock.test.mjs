@@ -223,7 +223,11 @@ test("spec 62 sidecar: a project-bearing job freezes the PROJECT's marketplaces 
   const { config: poolCfg } = await import("../driver.config.mjs");
   const { dirname: pdir, basename: pbase } = await import("node:path");
   const internal = readFileSync(join(poolCfg.poolRoot, `${pbase(pdir(res.runDir))}-${pbase(res.runDir)}`, "report.html"), "utf8");
-  assert.match(internal, /Run under project:\s*<span class="mono">Japan and Korea app launch \(Demo Brand Owner\)<\/span>/, "the internal report footer discloses the project");
+  // The project is the run's own record: its report.md front matter carries it, and the page no longer prints the
+  // line (owner, 2026-11-18).
+  assert.match(readFileSync(join(res.runDir, "report.md"), "utf8"), /^run_under_project:\s*Japan and Korea app launch \(Demo Brand Owner\)\s*$/m,
+    "the run's front matter does not record the project");
+  assert.doesNotMatch(internal, /Run under project:/, "the report still prints the project line");
   // THE ORIGIN TABLE IS OFF THE PAGE (the 2026-09-16 report redesign). It rendered inside the scope
   // fold, which the redesign deletes, and it was the one block in there labelled "(internal)" — the
   // same class as the reviewer notes that were ruled off the delivered page. It was never on export,
