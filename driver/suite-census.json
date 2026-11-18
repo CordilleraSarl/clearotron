@@ -963,6 +963,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-forwarded-report-carries-no-stylesheet-notes-and-no-stranded-heading.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "a-frame-call-with-places-per-name-passes-the-gate.test.mjs": {
           "tests": 2,
           "asserts": 7,
@@ -6161,7 +6167,7 @@
         },
         "render.test.mjs": {
           "tests": 164,
-          "asserts": 689,
+          "asserts": 690,
           "skips": 0,
           "todos": 0
         },

@@ -39,6 +39,43 @@ const PRINT_LIGHT = '\n@media print{' + REPORT_ROOT.replace(':root{', ':root[dat
 // surface; only the automatic part is gone.
 
 /**
+ * A stylesheet without its comments, for a page a client receives. The source files keep every comment: they carry
+ * the reasoning (a stylesheet's notes are for whoever edits it), and a client who views the source of a forwarded
+ * report would read internal process notes. A comment opener inside a quoted string or an unquoted url() is text, not
+ * a comment, and is kept as it is; a comment between two word characters leaves a space, so no two tokens merge.
+ * PURE.
+ */
+export function stripCssComments(css) {
+  const src = String(css ?? '');
+  let out = '';
+  for (let i = 0; i < src.length;) {
+    const ch = src[i];
+    if (ch === '"' || ch === "'") {                       // a quoted string, copied whole, escapes included
+      let j = i + 1;
+      while (j < src.length && src[j] !== ch) j += src[j] === '\\' ? 2 : 1;
+      out += src.slice(i, j + 1); i = j + 1; continue;
+    }
+    if (/^url\(/i.test(src.slice(i, i + 4)) && !/[\w-]/.test(src[i - 1] ?? '')) {   // url( … ), quoted or not
+      let j = i + 4, quote = null;
+      for (; j < src.length; j++) {
+        if (quote) { if (src[j] === '\\') j++; else if (src[j] === quote) quote = null; }
+        else if (src[j] === '"' || src[j] === "'") quote = src[j];
+        else if (src[j] === ')') break;
+      }
+      out += src.slice(i, j + 1); i = j + 1; continue;
+    }
+    if (ch === '/' && src[i + 1] === '*') {
+      const end = src.indexOf('*/', i + 2);
+      const next = end < 0 ? src.length : end + 2;
+      if (/[\w-]$/.test(out) && /^[\w-]/.test(src.slice(next, next + 1))) out += ' ';
+      i = next; continue;
+    }
+    out += ch; i++;
+  }
+  return out;
+}
+
+/**
  * One report page. `title` is the page's own title as HTML, already escaped by its renderer; the shell adds the
  * product's name after it. `css` is the renderer's sheet, placed after the base sheet and before the dark and print
  * rules. `chromeHref`, when given, links the pool's shared chrome sheet after the inline style, so the chrome stays
@@ -50,7 +87,7 @@ export function pageShell({ title, css, chromeHref, body }) {
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${title} · ${escHtml(BRAND.name)}</title>
 ${REPORT_FONT_STYLE}${FAVICON_LINK}${THEME_INIT_EXPLICIT}
-<style>${REPORT_BASE}\n${css}${REPORT_ROOT_DARK_EXPLICIT}${PRINT_LIGHT}</style>${chromeLinkTag}</head><body class="has-glow">
+<style>${stripCssComments(`${REPORT_BASE}\n${css}${REPORT_ROOT_DARK_EXPLICIT}${PRINT_LIGHT}`)}</style>${chromeLinkTag}</head><body class="has-glow">
 ${body}
 </body></html>`;
 }

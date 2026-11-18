@@ -442,6 +442,9 @@
        the first page. Measured under print emulation: `0px none` on screen, `1px solid` in print. */
     details.sub-more{border-top:0}
     .card,.rgroup,.rrow{break-inside:avoid}
+    /* A section heading stays with what follows it, so an exported page never ends on a heading whose content starts
+       the next. .sec is a flex row holding the h2, so the rule sits on the row and on the heading inside it. */
+    .sec,.sec h2{break-after:avoid}
   }
 
   /* ── P4 (spec 2026-07-30) — one spine + mark-itself disclosures + depth strip ─────────────────────

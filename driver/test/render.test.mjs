@@ -1368,7 +1368,13 @@ test("wp50: the # Actions panel renders — Answers first, buckets styled, ::p::
   assert.match(internal, /What happens next/, "doc-52 — the human-only bucket renders under its own section after the findings, headed as the board heads it");
   assert.match(internal, /Confirm whether the identical senior mark/, "the only-you forward decision rides through");
   // doc-52 — the Q&A leads (verdict block, top); "Checks we ran" moves to the collapsed Scope section (bottom)
-  assert.ok(internal.indexOf("Answers to your instructions") < internal.indexOf("Checks we ran"), "Q&A (verdict block) precedes Checks-we-ran (Scope)");
+  // This compared "Answers to your instructions" with "Checks we ran", and the only place on the page carrying both was
+  // one comment in the inlined stylesheet, so it read the comment and passed. The Checks-we-ran section went in the
+  // 2026-09-16 redesign and the stylesheet is now inlined without comments: the order checked is the answers before the
+  // human-only bucket, which renders after the findings, and the retired section is asserted gone.
+  const answersAt = internal.indexOf("Answers to your instructions"), nextAt = internal.indexOf("What happens next");
+  assert.ok(answersAt > 0 && nextAt > 0 && answersAt < nextAt, "Q&A (verdict block) precedes What happens next");
+  assert.doesNotMatch(internal, /Checks we ran/, "the retired Checks-we-ran section is back on the page");
   // ONE report: the ::p:: tail renders LABELLED [internal] for the reviewing reader; the raw marker
   // never survives; a stale opts.client is inert.
   assert.ok(!internal.includes("::p::"), "the raw marker never reaches any surface");
