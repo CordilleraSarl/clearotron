@@ -77,7 +77,9 @@ An `account` principal reaches **eighteen** tools, for its own companies only â€
 The evidence layer exists because a lawyer defending a filing decision needs the records
 under the report, not just its prose. It projects named structured fields and enums derived from
 them â€” `mcp-server/lib/evidence.mjs` states that there is no code path forwarding free prose, and
-that is the one declared exception to the scrub.
+that is the first declared exception to the scrub. The second, from 2026-11-18, is a cited register
+record's goods in the register's own words: `get_finding` carries them as `goodsAsRegistered` for the one
+register record its block names, copied from the record the run saved and passed through no scrub.
 
 **The audit chain is open by ruling, 2026-08-27**, with the call spend set aside. The same lawyer who
 needs the records also has to be able to show *how* the answer was reached, so the decision chain is

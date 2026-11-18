@@ -80,7 +80,7 @@ import { authorize, visibleTools, USER_ARTIFACTS, ACCOUNT_ARTIFACTS, accountMayR
 import { accountRun, accountTrace, accountTimeline, accountFinding, accountFindingList,
   accountWhatIfPlan, accountWhatIfQueued, accountWhatIfResult, CLIENT_FAILURE_NOTE as clientFailureNote } from "./lib/audit-view.mjs";
 import { scrubMarkdown, scrubBody, scrubFrontMatter, scrubCards } from "./lib/scrub.mjs";
-import { evidenceRecords, searchLog, coverageStatement } from "./lib/evidence.mjs";
+import { evidenceRecords, searchLog, coverageStatement, registrationGoods } from "./lib/evidence.mjs";
 // The knockout lane's projections. Every audit tool below branches on `isKnockoutRun` because the
 // clearance projections read artifacts this product does not write, and returned empty rather than saying
 // so.
@@ -438,7 +438,9 @@ const tools = {
     const run = mustRun(runId);
     const f = getFinding(run.P, id);
     if (!f) throw new Error(`finding "${id}" not found in ${runId}. Use list_findings to see ids (F#, NR#, AT#).`);
-    return f;
+    // The register record this block names, its goods in the register's own words (lib/evidence.mjs).
+    const goods = registrationGoods(run, f.url);
+    return goods ? { ...f, goodsAsRegistered: goods } : f;
   },
   trace({ runId, target, depth, shallow }) {
     const run = mustRun(runId);

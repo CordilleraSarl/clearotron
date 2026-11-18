@@ -11,7 +11,7 @@
 // connector: a signed-in client ACCOUNT can also reach the run's EVIDENCE — the records considered and the
 // searches run — which the report narrates but does not enumerate. That is deliberately more than the PDF,
 // because a lawyer defending a filing decision needs the records, and it is bounded by a different
-// mechanism (a structured-field projection, never prose) in lib/evidence.mjs. Read that file's header
+// mechanism (a structured-field projection, never the firm's prose; a cited record's goods travel in the register's own words) in lib/evidence.mjs. Read that file's header
 // before widening anything here; the line it draws is evidence vs METHOD, and method stays sealed.
 // publish/render.mjs no longer renders a Methodology section to the client (the 2026-09-16 report redesign) and
 // deliberately names the register provider (provenance honesty, receipts, enforcement telemetry). A scrubber
