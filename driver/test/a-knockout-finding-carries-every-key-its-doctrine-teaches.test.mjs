@@ -15,14 +15,15 @@
 //   - the recording transport refuses none of the doctrine's keys, and still refuses one it does not declare;
 //   - the chunk validator, the door where the refusal was measured, accepts a finding whose
 //     `weighedFilings` names a record the run holds, beside a register read that carries a band;
-//   - the tool schema declares exactly the validator's keys for a finding, and exactly the doctrine's keys
-//     for a register read.
+//   - both Knockout tools, as the server lists them, declare exactly the validator's keys for a finding,
+//     and the assess tool exactly the doctrine's keys for a register read.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { spawn } from "node:child_process";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { KNOCKOUT_FINDING_KEYS, validateKnockoutFinding } from "../findings-model.mjs";
 import { refuseUndeclared } from "../knockout-assess-record.mjs";
@@ -137,29 +138,59 @@ test("the chunk validator accepts a finding that names a filing it weighed, as t
   assert.match(stray.reason, /weighedFilings/, `refused for another reason: ${stray.reason}`);
 });
 
-// ── the tool schema: the third list, held to the other two ─────────────────────────────────────────
+// ── the tool schemas: the third list, held to the other two ────────────────────────────────────────
 
-/** The property names one `properties: {…}` block declares in the record_knockout_assess tool, after `anchor`. */
-function schemaProperties(anchor) {
-  const src = readFileSync(join(HERE, "..", "engine", "mcp", "recording-server.mjs"), "utf8");
-  const tool = src.slice(src.indexOf('name: "record_knockout_assess"'));
-  const block = tool.slice(tool.indexOf(anchor));
-  const props = block.slice(block.indexOf("properties: {"));
-  const names = [...props.slice(0, props.indexOf("\n                },")).matchAll(/^\s{20}(\w+):/gm)].map((m) => m[1]);
-  assert.ok(names.length >= 2, `no properties read after ${anchor}: the schema's layout moved, so this reads nothing`);
-  return names;
-}
-
-test("the tool schema declares exactly the validator's keys for a finding", () => {
-  assert.deepEqual(schemaProperties("findings: {").sort(), [...KNOCKOUT_FINDING_KEYS].sort());
+/**
+ * The tools the recording server lists, read over its own `tools/list` in a temporary home. It is started
+ * with no run, so each tool lists the schema it declares, `inputs` included: a run whose framework states
+ * no method would strip that key. The server cannot be imported without starting it, so it is spawned.
+ */
+const LISTED = await new Promise((resolve, reject) => {
+  const env = { ...process.env, HOME: mkdtempSync(join(tmpdir(), "ko-keys-home-")) };
+  delete env.CLEAROTRON_BAND_RUN_DIR;
+  const p = spawn(process.execPath, [join(HERE, "..", "engine", "mcp", "recording-server.mjs")], { stdio: ["pipe", "pipe", "ignore"], env });
+  let buf = "";
+  const timer = setTimeout(() => { p.kill(); reject(new Error("recording-server did not answer tools/list: could not look")); }, 20000);
+  p.on("error", (e) => { clearTimeout(timer); reject(e); });
+  p.stdout.setEncoding("utf8");
+  p.stdout.on("data", (d) => {
+    buf += d;
+    for (const line of buf.split("\n")) {
+      let m; try { m = JSON.parse(line); } catch { continue; }
+      if (m?.id !== 2) continue;
+      clearTimeout(timer); p.kill();
+      return Array.isArray(m.result?.tools) && m.result.tools.length ? resolve(m.result.tools)
+        : reject(new Error("recording-server listed no tools: a read of nothing is not a pass"));
+    }
+  });
+  const send = (o) => p.stdin.write(JSON.stringify(o) + "\n");
+  send({ jsonrpc: "2.0", id: 1, method: "initialize", params: { protocolVersion: "2024-11-05", capabilities: {}, clientInfo: { name: "ko-keys", version: "0" } } });
+  send({ jsonrpc: "2.0", id: 2, method: "tools/list", params: {} });
 });
 
-test("the tool schema declares exactly the doctrine's keys for a register read, band among them", () => {
+/** The property names a listed tool declares for one row of `marks[].<field>[]`. */
+function listedRowKeys(tool, field) {
+  const listed = LISTED.find((t) => t.name === tool);
+  assert.ok(listed, `${tool} is not listed`);
+  const props = listed.inputSchema?.properties?.marks?.items?.properties?.[field]?.items?.properties;
+  assert.ok(props && Object.keys(props).length >= 2, `${tool} lists no properties for a row of marks[].${field}: the schema's shape moved, so this reads nothing`);
+  return Object.keys(props);
+}
+
+test("both Knockout tools list exactly the validator's keys for a finding", () => {
+  // A key added to KNOCKOUT_FINDING_KEYS with no schema in either tool is missing from its listing, and
+  // fails here by name.
+  for (const tool of ["record_knockout_assess", "record_knockout_correction"]) {
+    assert.deepEqual(listedRowKeys(tool, "findings"), [...KNOCKOUT_FINDING_KEYS], `${tool} lists a finding's keys that differ from the validator's`);
+  }
+});
+
+test("the assess tool lists exactly the doctrine's keys for a register read, band among them", () => {
   // Plus `inputs`, and only it: the framework's own inputs beside a band, which a run is asked for only
   // where its framework states a method. The doctrine's worked example is written under a framework that
   // states none, so it cannot carry the key; the dispatch teaches it on the runs that owe it
   // (a-knockout-conflict-carries-its-framework-inputs.test.mjs, arm 5).
-  assert.deepEqual(schemaProperties("registerReads: {").sort(), [...Object.keys(TAUGHT_READ), "inputs"].sort());
+  assert.deepEqual(listedRowKeys("record_knockout_assess", "registerReads").sort(), [...Object.keys(TAUGHT_READ), "inputs"].sort());
   assert.ok(!("inputs" in TAUGHT_READ), "the doctrine's example now carries inputs: drop the addition above");
   assert.ok(Object.keys(TAUGHT_READ).includes("band"), "the doctrine no longer teaches a register read's band");
 });

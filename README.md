@@ -22,6 +22,8 @@ machine: no gateway, no platform, and nothing about the names you are clearing r
 
 ## Install
 
+Node 22.13 or newer, on macOS, Linux or Windows.
+
 **See it work first, with nothing installed.**
 
 ```bash
@@ -46,7 +48,7 @@ keeps it too, and says how to remove it.
 npx clearotron install
 ```
 
-Node 22.13 or newer, on macOS, Linux or Windows. It needs no root: it puts the program under `~/.local`, with the
+It needs no root: it puts the program under `~/.local`, with the
 `clearotron` command in `~/.local/bin`, then asks one question at a time and checks each credential
 before it saves it. Every command below uses the `clearotron` it installed — the same channel you
 installed from — so if `~/.local/bin` is not on your `PATH` yet, type the full path,

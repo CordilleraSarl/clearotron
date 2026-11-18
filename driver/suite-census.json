@@ -1187,7 +1187,7 @@
         },
         "a-knockout-finding-carries-every-key-its-doctrine-teaches.test.mjs": {
           "tests": 7,
-          "asserts": 18,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -1557,6 +1557,12 @@
           "skips": 5,
           "todos": 0
         },
+        "a-newcomer-is-told-node-first-and-handed-a-job-that-validates.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-next-step-the-model-writes-comes-off-at-publish.test.mjs": {
           "tests": 12,
           "asserts": 28,
@@ -1788,6 +1794,12 @@
         "a-queued-job-is-visible-before-a-worker-claims-it.test.mjs": {
           "tests": 6,
           "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-queued-order-wakes-the-watch-loop.test.mjs": {
+          "tests": 6,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
@@ -6303,6 +6315,12 @@
           "skips": 1,
           "todos": 0
         },
+        "run-queue-help-does-not-invite-a-bare-run.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "run-quote.test.mjs": {
           "tests": 14,
           "asserts": 43,
@@ -8340,6 +8358,12 @@
         "the-status-says-which-step-the-run-is-in-now.test.mjs": {
           "tests": 3,
           "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-suite-shards-by-measured-duration.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
