@@ -24,6 +24,7 @@ import { join, dirname } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { fileURLToPath } from "node:url";
 import { DIGEST_SENTENCES } from "./ruled-sentences-digest.mjs";
+import { INQUIRY_SENTENCES } from "./ruled-sentences-placement-inquiry.mjs";
 
 
 // EVERY temp directory this file makes is removed — including ones created inside helpers, and ones
@@ -80,7 +81,7 @@ const PLACEMENT_MD = [
   "## Headline candidates",
   "- LUMENGARDE — Acme (DK, cl. 9)",
   "",
-  "## Disagreements / flags surfaced to downstream",
+  INQUIRY_SENTENCES.disagreementsFlagsSurfacedDownstream,
   "- none",
   "",
   DIGEST_SENTENCES.coverageRulingsOpenQuestions,

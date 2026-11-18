@@ -15,6 +15,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildBandShape, CROWDED_GROUP_RECORDS, A_CROWDS_ROW_COVERS_A_READ_FLOOR } from "../band-shape.mjs";
 import { goodsWordCounter, goodsWordsMatched } from "../record-goods.mjs";
+import { INQUIRY_SENTENCES } from "./ruled-sentences-placement-inquiry.mjs";
 
 const rec = (id, owner) => ({ record_id: `/mark/eu/${id}`, mark_text: "Qzorvak", owner_name: owner, classes: ["9"], status: "registered", jurisdictions: ["EU"] });
 const goods = { of: () => [{ classes: ["9"], text: "printers" }], hits: goodsWordCounter(["game controllers", "joysticks"]), matched: goodsWordsMatched(["game controllers", "joysticks"]) };
@@ -32,7 +33,7 @@ test("a crowded (b) says its marks' goods name none of the client's product word
 test("the crowd's row covers a floor once its line is read and its goods are not the client's, in the contract and the manual", () => {
   assert.equal(A_CROWDS_ROW_COVERS_A_READ_FLOOR, "This row covers a floor only once you have read its line and its goods are not the client's goods.");
   const manual = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "placement-inquiry", "SKILL.md"), "utf8").replace(/\s+/g, " ");
-  assert.ok(manual.includes("only a crowd's row of a thousand records or more in (b) covers a floor."));
-  assert.ok(manual.includes("A shared class, or a match to a searched variant, is not on its own a reason to place a floor."));
+  assert.ok(manual.includes(INQUIRY_SENTENCES.onlyCrowdRowThousandRecords));
+  assert.ok(manual.includes(INQUIRY_SENTENCES.sharedClassMatchSearchedVariant));
   assert.ok(!manual.includes("identical marks for other goods"), "the placement manual still calls a goods-test miss other goods");
 });

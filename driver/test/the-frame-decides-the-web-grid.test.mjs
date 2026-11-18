@@ -24,6 +24,7 @@ import { frameWebChoice, frameAskedForWebGrid, webGridOf, closureBlocksOf, frame
 import { acceptMatterFrame } from "../matter-frame-record.mjs";
 import { validateGridSpec, dictatedCells, buildGridProgramTask, captureGridFromResponse } from "../../providers/perplexity/src/core.js";
 import { findUnranDictatedCells, splitGridSpec, mergeGrids } from "../common-law-receipts.mjs";
+import { COMMON_LAW_SENTENCES } from "./ruled-sentences-common-law.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = mkdtempSync(join(tmpdir(), "frame-web-grid-"));
@@ -294,8 +295,8 @@ test("the web sweep's manual no longer says every variant runs on every store", 
     "term-by-term", "each mandatory platform"])
     assert.equal(count(web, gone), 0, gone);
   assert.equal(count(skill("clearance-search/phase2-execution.md"), "the 6 gaming platforms"), 0, "the skeptic still checks a fixed store list");
-  for (const kept of ["- **The dictated platforms** — The grid spec names the stores; the tool runs them. Key rows by the term and platform on the candidates it returns. A gaming profile",
-    "6. **Negative results** — one row per grid cell", "- [ ] Negative results documented for every grid cell"])
+  for (const kept of [COMMON_LAW_SENTENCES.theDictatedPlatformsTheGrid,
+    COMMON_LAW_SENTENCES.negativeResultsOneRowPer, COMMON_LAW_SENTENCES.negativeResultsDocumentedForEvery])
     assert.equal(count(web, kept), 1, kept);
 });
 

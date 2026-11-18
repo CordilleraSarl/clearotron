@@ -36,11 +36,12 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { VARIANTS_SENTENCES } from "./ruled-sentences-variants.mjs";
 
 const DOCTRINE = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-variants", "SKILL.md");
 
 /** The clause that CARRIES the rule. Pinned on the rule, never on its example — an example may be reworded. */
-const RULE_CLAUSE = "The root strip applies to every variant you emit, not only to the dominant element.";
+const RULE_CLAUSE = VARIANTS_SENTENCES.theRootStripAppliesEvery;
 
 test("the rule is in the doctrine the variants seat actually reads", () => {
   const md = readFileSync(DOCTRINE, "utf8");
@@ -51,7 +52,7 @@ test("the rule is in the doctrine the variants seat actually reads", () => {
   // It must sit INSIDE the mandatory block, not merely somewhere in the file.
   const block = md.indexOf("**Formative-family rules**");
   assert.notEqual(block, -1, "the Formative-family rules block is gone — the rule's home no longer exists");
-  const next = md.indexOf("**Visual / typographic-neighbour rules**", block);
+  const next = md.indexOf(VARIANTS_SENTENCES.visualTypographicNeighbourRules, block);
   assert.ok(md.slice(block, next === -1 ? undefined : next).includes(RULE_CLAUSE),
     "the rule left the Formative-family rules block — that block is the one marked MANDATORY when a Formative root is named, and outside it the rule is advisory");
 });
@@ -153,7 +154,7 @@ test("the pre-send checklist carries the strip, so the rule has a home the seat 
   // own rows against before sending. A rule stated only in prose was read and not applied. Both homes,
   // or the second one is doing no work.
   const md = readFileSync(DOCTRINE, "utf8");
-  const rules = md.indexOf("- Every variant gets `rationale` filled in.");
+  const rules = md.indexOf(VARIANTS_SENTENCES.everyVariantGetsRationaleFilled);
   assert.notEqual(rules, -1, "the pre-send Rules checklist is gone — the rule's submit-time home no longer exists");
   const window = md.slice(rules, rules + 700);
   assert.match(window, /is that form's \*\*root\*\*, not the full form/,

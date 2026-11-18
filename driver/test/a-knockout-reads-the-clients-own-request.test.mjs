@@ -15,6 +15,7 @@ import { fileURLToPath } from "node:url";
 import { KO_STAGES, koPaths } from "../stages-knockout.mjs";
 import { validators as koValidators, alternativesDefect } from "../verify-knockout.mjs";
 import { acceptKnockoutFrame } from "../knockout-frame-record.mjs";
+import { ASSESS_SENTENCES } from "./ruled-sentences-knockout-assess.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const TEMP = [];
@@ -66,9 +67,9 @@ test("the manuals carry the same words as the messages", () => {
   assert.ok(frame.includes('Where the request does not state what a name is for, say so here and write what you infer as a possibility ("possibly a game title"), never as what the client intends.'));
   assert.ok(frame.includes('2f. **`alternatives` — where the request gives one item in more than one spelling or word order ("LAKE MOON / MOON LAKE"), list each form as written.**'));
   assert.ok(frame.includes('"alternatives": ['), "the output contract does not carry the key");
-  assert.ok(assess.includes("how its goods meet the goods the client asked about, whether it bears on the rating, and why."));
-  assert.ok(assess.includes("Use the missing-goods note only when no wording is held; open a shortened held record before concluding that wording is missing."));
-  assert.ok(assess.includes('"Goods wording is not held for this filing, so its relevance to the requested goods remains unresolved."'));
+  assert.ok(assess.includes(ASSESS_SENTENCES.howItsGoodsMeetThe2));
+  assert.ok(assess.includes(ASSESS_SENTENCES.useTheMissingGoodsNote));
+  assert.ok(assess.includes(ASSESS_SENTENCES.goodsWordingNotHeldFor));
   assert.ok(!assess.includes("Pull Acme Mapping's full goods list"), "the note that assumed the goods were never seen is still taught");
 });
 
