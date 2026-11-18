@@ -11,7 +11,7 @@
 // is (`review.signoff`), and the rating (`tier`) is the run's headline. Records written before the move
 // carry the old field, and every reader still reads them.
 //
-// The restore on a rebuilt run is held in pipeline.mock.test.mjs, beside the mock run it needs.
+// The restore on a rebuilt run is held in pipeline.mock.common-law-path.test.mjs, beside the mock run it needs.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";

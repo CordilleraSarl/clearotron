@@ -14,7 +14,7 @@
 // ── WHY THE LOCAL RUN WAS GREEN, WHICH IS THE PART WORTH ENCODING ───────────────────────────────────
 //
 // The affected set was chosen by grepping for files that REFERENCE the symbols the change edited. That
-// finds the grant tables and the agreement guards. It cannot find `pipeline.mock.test.mjs` or the e2e
+// finds the grant tables and the agreement guards. It cannot find the `pipeline.mock` test files or the e2e
 // splits, because they name none of those symbols — they merely DISPATCH the stage. For a stage
 // conversion the right selector is "what dispatches this stage", never "what imports what I edited", and
 // no amount of care about the first selector reaches the second.

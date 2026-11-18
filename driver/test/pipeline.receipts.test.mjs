@@ -9,7 +9,7 @@
 //    run can never silently ride the prose path. The pipeline's warm save-followup lane now serves only
 //    legacy spec-less runs (no dictated platforms) — for spec-carrying runs the stage's own corrective
 //    ladder carries the repair.
-// The happy path (ledger present + complete) is covered by pipeline.mock.test.mjs.
+// The happy path (ledger present + complete) is covered by the pipeline.mock test files.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, chmodSync, readFileSync } from "node:fs";
