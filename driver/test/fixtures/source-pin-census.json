@@ -1,0 +1,1201 @@
+{
+  "total": 299,
+  "files": {
+    "driver/test/a-backgrounded-install-can-actually-run-a-clearance.test.mjs": [
+      0,
+      2
+    ],
+    "driver/test/a-below-deprecation-refuses-a-tagged-version.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/a-cancel-marker-names-its-actor.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-cancelled-run-stays-cancelled.test.mjs": [
+      2,
+      0
+    ],
+    "driver/test/a-cancelled-setup-names-what-stays.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/a-capability-is-named-before-the-report-names-it.test.mjs": [
+      1,
+      2
+    ],
+    "driver/test/a-check-that-could-not-look-does-not-report-a-drift.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/a-claim-may-not-outlive-its-evidence.test.mjs": [
+      2,
+      0
+    ],
+    "driver/test/a-class-the-client-reaches-is-added-and-costs-one-question.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-cloud-billed-install-carries-its-cloud-to-the-services.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/a-company-can-be-given-a-framework-after-it-exists.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/a-company-created-in-the-browser-is-a-whole-company.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/a-correction-after-the-fold-is-handed-the-record-its-patch-updates.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-correction-carries-the-answer-that-names-its-findings.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-correction-hands-its-positions-to-the-save.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-coverage-row-not-added-or-a-check-that-threw-is-in-the-audit-workbook.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-cross-check-already-in-the-plan-stays-on-the-receipt.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-cross-check-waits-for-the-reading-step.test.mjs": [
+      2,
+      0
+    ],
+    "driver/test/a-cut-refuses-a-version-already-out.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/a-declined-proof-still-shows-how-to-sign-in.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/a-delivered-blocking-run-keeps-its-grounds-off-the-clients-conditions.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-demo-connection-stays-with-its-demo.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-demo-report-declares-itself.test.mjs": [
+      0,
+      3
+    ],
+    "driver/test/a-demo-sample-that-cannot-be-read-is-named.test.mjs": [
+      0,
+      2
+    ],
+    "driver/test/a-demo-stops-when-whatever-started-it-is-gone.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/a-door-that-is-not-there-is-not-a-door-that-agrees.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/a-draw-is-visible-to-the-deploy-guard.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-drop-with-a-stated-reason-is-checked.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-failed-repair-rolls-back.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-failed-run-resumes-from-the-command-line.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-failure-notice-goes-to-whoever-asked.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-finding-written-on-goods-the-register-cut-is-handed-the-whole-text.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-follow-up-re-runs-only-what-is-missing.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/a-han-mark-is-not-a-longer-mark.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/a-key-pasted-at-a-yes-no-prompt-is-taken-and-not-shown.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/a-key-the-demo-prints-signs-for-that-demo.test.mjs": [
+      0,
+      2
+    ],
+    "driver/test/a-late-review-that-softens-is-recorded-not-adopted.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-mark-too-short-for-contains-is-asked-exactly.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-mid-run-mint-cannot-lose-a-mark.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-name-documented-in-any-example-file-is-documented.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/a-new-install-signs-in-with-its-own-passphrase.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/a-packaged-install-names-its-commit-from-build-info.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/a-parked-cancel-frees-its-matter.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/a-parked-run-carries-what-resumes-it.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-part-not-completed-is-a-stated-state.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-pin-change-asks-for-a-bench-replay.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/a-placement-boundary-is-a-notice-not-a-failed-check.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/a-placement-pass-the-delivery-gate-repeats-is-recorded-like-the-first.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-printed-command-runs-from-where-the-reader-stands.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-question-that-timed-out-is-asked-again-once-at-the-envelope-close.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-read-the-engine-could-not-answer-names-the-check.test.mjs": [
+      1,
+      1
+    ],
+    "driver/test/a-reasoned-skip-is-neither-a-pass-nor-a-loss.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/a-refusal-means-nothing-without-its-control.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/a-register-manual-states-what-its-provider-declares.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/a-register-unit-follow-up-carries-the-one-market-list-and-the-classes.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-removed-control-does-not-delete-the-setting-behind-it.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/a-retry-asks-only-for-what-is-unanswered.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-run-records-the-tool-that-served-it.test.mjs": [
+      2,
+      1
+    ],
+    "driver/test/a-run-that-cannot-settle-says-so.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-run-whose-assessment-cannot-finish-delivers-what-it-holds.pipeline.test.mjs": [
+      2,
+      0
+    ],
+    "driver/test/a-running-demo-connects-by-its-folder.test.mjs": [
+      0,
+      2
+    ],
+    "driver/test/a-save-that-cannot-commit-says-so.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/a-search-a-check-cannot-prove-is-delivered-as-not-searched.pipeline.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-search-the-engine-chose-not-to-run-is-not-reported-as-unfinished.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-shared-proprietor-is-not-a-bucket-collision.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/a-skipped-question-is-not-an-answer.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/a-spelling-the-reading-turn-left-on-a-list-is-not-asked-again-by-the-re-sweep.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-stage-reads-only-its-own-folders.test.mjs": [
+      0,
+      3
+    ],
+    "driver/test/a-stop-is-read-once-more-before-anything-is-published.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-terminal-guard-delivers-and-clamps.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-warm-turn-that-never-landed-costs-no-rung.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-web-page-is-declined-like-a-record.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/a-worldwide-orders-scope-is-worldwide.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/ab-tooling-honesty.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/acknowledge-is-per-viewer.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/an-absent-portal-bundle-is-not-a-stale-one.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/an-account-is-never-created-unable-to-start.test.mjs": [
+      1,
+      2
+    ],
+    "driver/test/an-axis-the-plan-gives-no-work-files-its-note-and-claims-no-result.test.mjs": [
+      2,
+      0
+    ],
+    "driver/test/an-empty-config-store-overrides-nothing.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/an-experiment-receipt-names-its-engine.test.mjs": [
+      3,
+      0
+    ],
+    "driver/test/an-install-from-npx-moves-out-of-the-cache.test.mjs": [
+      0,
+      5
+    ],
+    "driver/test/an-install-that-cannot-search-refuses-the-order-at-review.test.mjs": [
+      1,
+      3
+    ],
+    "driver/test/an-observed-model-id-says-whether-it-is-pinned.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/an-ordered-field-is-a-field-the-tool-can-express.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/an-unended-position-is-delivered-stated.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/attributed-span.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/audit-grid-log.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/band-borderline.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/billing-composition-states-the-mix.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/both-doors-start-on-both-paths.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/bundle-rebuild-and-ports.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/caselaw-bridge-audit.test.mjs": [
+      0,
+      2
+    ],
+    "driver/test/channel-coverage-at-stage-exit.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/channel-fallback-silence.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/code-side-is-not-unknown.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/common-law-seat-tier.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/commonlaw-carry-degenerate-is-linted.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/commonlaw-closure-deterministic.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/commonlaw-reconciliation-callsite.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/compose-read.test.mjs": [
+      2,
+      1
+    ],
+    "driver/test/config-resolves-outside-the-checkout.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/connect-key-mints-for-the-caller.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/connect-prints-the-steps-it-already-holds.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/connect-reasons-about-the-running-product.test.mjs": [
+      0,
+      3
+    ],
+    "driver/test/connotation-errored.test.mjs": [
+      2,
+      0
+    ],
+    "driver/test/context-pack.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/contract-audit.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/corrections-are-the-reviewers-flags.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/coverage-form-fail-closed.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/coverage-is-disclosed-never-refused.test.mjs": [
+      3,
+      3
+    ],
+    "driver/test/coverage-ledger.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/ctrl-c-takes-the-demo-folder-with-it.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/dead-end-passage-is-named-not-blamed.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/declination-is-stated-not-inferred.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/delivery-style.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/demo-data-never-starts-a-real-clearance.test.mjs": [
+      0,
+      3
+    ],
+    "driver/test/dependency-repair.test.mjs": [
+      9,
+      0
+    ],
+    "driver/test/depth-ladder-rung-discipline.test.mjs": [
+      4,
+      0
+    ],
+    "driver/test/depth-ladder-table.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/disposition-dictation-binding.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/disposition-row-kinds-documented.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/disposition-set-has-one-author.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/doctor-before-the-first-start-says-what-start-creates.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/doubt-ledger-citations-are-anchored.test.mjs": [
+      2,
+      0
+    ],
+    "driver/test/e2e-assertions.test.mjs": [
+      0,
+      5
+    ],
+    "driver/test/e2e-scenario-ops.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/e2e-state-not-shape.test.mjs": [
+      1,
+      6
+    ],
+    "driver/test/e2e-turnaround-band.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/engine-probe-standalone.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/engine-probe.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/engine.anthropic.test.mjs": [
+      0,
+      2
+    ],
+    "driver/test/engine.codex-config.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/enqueue-into-an-unwatched-queue-says-so.test.mjs": [
+      0,
+      2
+    ],
+    "driver/test/enqueue-schema-class-inheritance.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/env-idiom.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/every-dispatch-carries-the-charter.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/every-engine-call-asks-for-the-refreshed-credential.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/every-hand-off-exit-is-counted.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/every-json-response-says-how-it-may-be-cached.test.mjs": [
+      2,
+      0
+    ],
+    "driver/test/every-own-pass-digest-is-declared.test.mjs": [
+      2,
+      0
+    ],
+    "driver/test/every-page-carries-its-own-fonts.test.mjs": [
+      0,
+      2
+    ],
+    "driver/test/experiment-tool-wiring.test.mjs": [
+      1,
+      1
+    ],
+    "driver/test/failure-packet.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/failure-text-not-engine-string.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/findings-gate-token.test.mjs": [
+      1,
+      2
+    ],
+    "driver/test/floor-duty.test.mjs": [
+      2,
+      0
+    ],
+    "driver/test/free-tier-credential-sites.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/health-carries-the-build.test.mjs": [
+      2,
+      1
+    ],
+    "driver/test/health-names-its-age-and-its-instance.test.mjs": [
+      1,
+      1
+    ],
+    "driver/test/instrumentation-house-rule.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/issuing-a-key-loads-the-install-it-is-issuing-for.test.mjs": [
+      0,
+      2
+    ],
+    "driver/test/jx-p4-units.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/knockout-sweep-outage.test.mjs": [
+      0,
+      2
+    ],
+    "driver/test/lane-depth-ask-vs-got.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/ledger-too-large.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/listen-port-in-use.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/matter-frame-record.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/merge-asks-the-recovery-question.test.mjs": [
+      2,
+      0
+    ],
+    "driver/test/meter-indeterminate.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/methodology-witness.test.mjs": [
+      1,
+      1
+    ],
+    "driver/test/no-client-surface-speaks-the-delivery-gates-word.test.mjs": [
+      1,
+      3
+    ],
+    "driver/test/nothing-a-command-awaits-imports-it-back.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/numeric-setting-refuses.test.mjs": [
+      2,
+      0
+    ],
+    "driver/test/onboard-wizard.test.mjs": [
+      0,
+      11
+    ],
+    "driver/test/one-clause-net.test.mjs": [
+      0,
+      4
+    ],
+    "driver/test/one-node-floor-read-in-one-place.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/order-probe.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/outbox-preflight.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/park-clock-names-its-kind.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/park-survives-the-half-merge.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/per-finding-objections.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/pipeline.mock.registergap.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/pipeline.mock.test.mjs": [
+      2,
+      0
+    ],
+    "driver/test/pipeline.resume-line.test.mjs": [
+      4,
+      1
+    ],
+    "driver/test/portal-access.test.mjs": [
+      1,
+      1
+    ],
+    "driver/test/portal-local-auth.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/portal-service.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/portal-static.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/portal-upstream.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/preflight-engine-binary.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/profiles.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/purge-fails-closed.test.mjs": [
+      0,
+      2
+    ],
+    "driver/test/queue-watch-verdict.test.mjs": [
+      0,
+      4
+    ],
+    "driver/test/recipe-extras-wire.test.mjs": [
+      0,
+      2
+    ],
+    "driver/test/recipe-service.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/reconcile-runs.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/record-links-honour-the-allowlist.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/reference-score.test.mjs": [
+      0,
+      3
+    ],
+    "driver/test/register-advertisement-vs-grant.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/register-office-split.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/register-provider-required.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/register-record-log-run-scoped.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/register-steering.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/registry-correct-freshness.test.mjs": [
+      2,
+      0
+    ],
+    "driver/test/release-pipeline.test.mjs": [
+      0,
+      2
+    ],
+    "driver/test/render-frozen.test.mjs": [
+      0,
+      5
+    ],
+    "driver/test/repair-composer-registry.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/repair-digest.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/repair-write-mode.test.mjs": [
+      2,
+      0
+    ],
+    "driver/test/repairs.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/report-card-record.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/report-frame-sandbox.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/report-registry.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/result-nouns-are-classified.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/retired-envelope-is-not-an-absent-value.test.mjs": [
+      0,
+      3
+    ],
+    "driver/test/roster-verdict.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/row-address-is-a-position.test.mjs": [
+      0,
+      2
+    ],
+    "driver/test/run-dir-grant-is-earned.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/run-integrity.test.mjs": [
+      0,
+      2
+    ],
+    "driver/test/run-quote.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/run-retire-not-delete.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/runner.watch-loop.test.mjs": [
+      0,
+      2
+    ],
+    "driver/test/screen-gate-zero-names-its-cause.test.mjs": [
+      3,
+      0
+    ],
+    "driver/test/script-floor.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/seat-outputs-outside-driver-tree.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/sent-clear-receipts.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/setup-asks-which-ai-runs-your-searches.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/setup-never-prints-a-piece-of-a-key.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/setup-promises-a-login-shell-only-when-one-adds-the-directory.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/setup-says-where-and-when-to-sign-in.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/setup-speaks-the-readers-words.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/similar-group-lookup-answers-by-name.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/skeptic-search.test.mjs": [
+      0,
+      2
+    ],
+    "driver/test/snapshot-pair-classification.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/stages-followup.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/start-command.test.mjs": [
+      2,
+      5
+    ],
+    "driver/test/start-refuses-on-a-box-that-has-the-services.test.mjs": [
+      0,
+      4
+    ],
+    "driver/test/status-and-stop-see-a-foreground-start.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/status-says-when-a-service-predates-its-config.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/stop-is-a-stop.test.mjs": [
+      0,
+      2
+    ],
+    "driver/test/stray-artifacts.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/suite-ledger-is-not-the-box-ledger.test.mjs": [
+      0,
+      2
+    ],
+    "driver/test/symbol-citation-survives-a-move.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/synthesis-structural-input.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/t3a-deliver-with-open-points.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/teardown-leaves-nothing-claimable.test.mjs": [
+      0,
+      2
+    ],
+    "driver/test/teardown-refuses-unread-terminals.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/the-administrator-contact-is-a-link-or-nothing.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/the-advice-fits-the-machine-it-is-printed-on.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/the-bar-names-no-organisation-nobody-named.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/the-boot-line-cannot-claim-a-lane-it-has-not-got.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/the-boot-line-says-which-door-it-found.test.mjs": [
+      0,
+      2
+    ],
+    "driver/test/the-caveat-is-owed-only-when-it-is-true.test.mjs": [
+      0,
+      3
+    ],
+    "driver/test/the-census-will-not-stamp-a-half-finished-merge.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/the-connect-line-names-the-claude-setup-installed.test.mjs": [
+      1,
+      2
+    ],
+    "driver/test/the-connect-route-has-one-author.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/the-corrective-pass-inherits-the-depth-rung.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/the-corrective-pass-names-what-it-removes.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/the-cut-approves-its-own-parked-run.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/the-demo-hands-its-runs-to-the-assistant.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/the-demo-offers-no-background-form.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/the-doors-comparison-knows-an-admit-case.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/the-doubt-carries-its-placement-tier.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/the-drain-check-names-this-deployments-drainer.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/the-driver-lists-the-profiles.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/the-engine-step-cannot-loop-on-a-menu-nothing-changed.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/the-first-hour-reads-true.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/the-form-offers-what-the-registers-search.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/the-goods-check-reads-the-evidence-the-writer-was-given.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/the-inventory-names-the-units-this-box-runs.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/the-minters-read-the-published-tree.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/the-narrative-is-checked-against-its-depth-rules.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/the-open-line-says-what-to-do-when-the-page-is-not-ours.test.mjs": [
+      0,
+      3
+    ],
+    "driver/test/the-passphrase-is-in-the-block-not-the-log.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/the-person-who-installs-is-a-person-not-a-domain.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/the-portal-asks-whether-its-engine-will-take-it.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/the-public-residue-is-a-floor.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/the-published-manifest-is-not-the-repos-manifest.test.mjs": [
+      0,
+      2
+    ],
+    "driver/test/the-record-cannot-contradict-itself.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/the-refusal-names-the-whole-remedy.test.mjs": [
+      0,
+      2
+    ],
+    "driver/test/the-repair-verdict-reaches-the-log.test.mjs": [
+      2,
+      0
+    ],
+    "driver/test/the-revisit-check-says-where-two-texts-differ.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/the-terminal-mark-is-the-svgs-geometry.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/the-two-env-files-are-named-where-they-appear.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/the-wider-families-wait-on-the-identical-question.test.mjs": [
+      0,
+      2
+    ],
+    "driver/test/the-words-the-step-reads-match-what-the-driver-checks.test.mjs": [
+      2,
+      5
+    ],
+    "driver/test/the-worker-holds-no-signing-key.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/the-writer-writes-from-the-work-it-is-handed.test.mjs": [
+      0,
+      2
+    ],
+    "driver/test/the-xcheck-cap-counts-queries.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/tool-free-argv-baseline.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/tool-schema-matches-accepted-shape.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/truncation-marks-the-cut.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/unit-pair-classification.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/unit-state-verdict.test.mjs": [
+      0,
+      2
+    ],
+    "driver/test/update-refuses-on-a-packaged-install.test.mjs": [
+      0,
+      6
+    ],
+    "driver/test/variant-category-brief.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/what-doctor-passes-a-search-accepts.test.mjs": [
+      0,
+      3
+    ],
+    "driver/test/withheld-states-its-scope.test.mjs": [
+      0,
+      1
+    ],
+    "driver/test/write-return-names-the-form.test.mjs": [
+      3,
+      0
+    ],
+    "driver/test/write-up-form.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/you-can-sign-out-of-the-mode-you-signed-in-to.test.mjs": [
+      1,
+      2
+    ],
+    "mcp-server/test/a-demo-names-no-tool-it-withholds.test.mjs": [
+      0,
+      1
+    ],
+    "mcp-server/test/account-whatif-queued.test.mjs": [
+      0,
+      2
+    ],
+    "mcp-server/test/describe-options.test.mjs": [
+      0,
+      2
+    ],
+    "mcp-server/test/events.test.mjs": [
+      0,
+      1
+    ],
+    "mcp-server/test/http-handler.test.mjs": [
+      0,
+      1
+    ],
+    "mcp-server/test/scrub.test.mjs": [
+      0,
+      2
+    ],
+    "mcp-server/test/the-knockout-stage-notes-match-the-pipeline.test.mjs": [
+      0,
+      1
+    ],
+    "mcp-server/test/the-package-starts-the-mcp-server.test.mjs": [
+      0,
+      1
+    ]
+  }
+}

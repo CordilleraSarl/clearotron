@@ -110,7 +110,7 @@ test("the fix did NOT move which engine Enter selects", () => {
   // RE-AIMED, NOT DELETED. On a later pass Enter now takes the AI the reader picked on the pass before (design's
   // ruling, 2026-11-05): going back to the menu after a failed turn must not change the AI under Enter. The first
   // pass is still row 0, and the default is never a row the reader did not pick.
-  assert.match(src, /choose\(ENGINE_QUESTION, options, engineMenuDefault\(options, lastPick\), PAY_PREAMBLE\)/,
+  assert.match(src, /choose\(ENGINE_QUESTION, options, engineMenuDefault\(options, lastPick, found\), PAY_PREAMBLE\)/,
     "the engine menu's default is no longer the reader's own earlier pick, or row 0");
   assert.match(src, /let lastPick = null;/, "the first pass no longer starts from row 0 — `onboard-wizard.test.mjs` fixes row 0 "
     + "as the production engine for the same reason");

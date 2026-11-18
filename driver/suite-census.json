@@ -310,8 +310,8 @@
           "todos": 0
         },
         "a-client-cell-carries-no-raw-engine-words.test.mjs": {
-          "tests": 5,
-          "asserts": 18,
+          "tests": 6,
+          "asserts": 21,
           "skips": 0,
           "todos": 0
         },
@@ -364,8 +364,8 @@
           "todos": 0
         },
         "a-command-printed-from-npx-outlives-the-cache.test.mjs": {
-          "tests": 3,
-          "asserts": 14,
+          "tests": 4,
+          "asserts": 16,
           "skips": 1,
           "todos": 0
         },
@@ -4378,8 +4378,8 @@
           "todos": 0
         },
         "effective-scope.test.mjs": {
-          "tests": 15,
-          "asserts": 44,
+          "tests": 16,
+          "asserts": 47,
           "skips": 0,
           "todos": 0
         },
@@ -4433,7 +4433,7 @@
         },
         "engine.anthropic.test.mjs": {
           "tests": 70,
-          "asserts": 263,
+          "asserts": 264,
           "skips": 2,
           "todos": 0
         },
@@ -4931,7 +4931,7 @@
         },
         "instrumentation-house-rule.test.mjs": {
           "tests": 17,
-          "asserts": 122,
+          "asserts": 125,
           "skips": 0,
           "todos": 0
         },
@@ -6664,8 +6664,8 @@
           "todos": 0
         },
         "setup-keeps-the-ai-you-picked-and-offers-a-way-on.test.mjs": {
-          "tests": 5,
-          "asserts": 17,
+          "tests": 6,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
@@ -8409,6 +8409,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-tests-that-pin-source-are-a-floor.test.mjs": {
+          "tests": 2,
+          "asserts": 9,
+          "skips": 1,
+          "todos": 0
+        },
         "the-title-and-attribution-sweep-takes-the-label.test.mjs": {
           "tests": 30,
           "asserts": 99,
@@ -8496,6 +8502,12 @@
         "the-workbook-summary-counts-every-row-it-shows-open.test.mjs": {
           "tests": 2,
           "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-workbook-tags-each-driver-as-the-page-does.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -9651,7 +9663,7 @@
         },
         "profileFields.test.ts": {
           "tests": 57,
-          "asserts": 190,
+          "asserts": 191,
           "skips": 0,
           "todos": 0
         },
@@ -9674,8 +9686,8 @@
           "todos": 0
         },
         "recommendSearch.test.ts": {
-          "tests": 7,
-          "asserts": 20,
+          "tests": 8,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
