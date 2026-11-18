@@ -294,7 +294,7 @@ All paths relative to [`driver/`](../../driver/). The load-bearing seven are mar
 | `rule-shape.mjs` · `reasoning-tripwires.mjs` · `gate-metrics.mjs` | Anti-threshold guard, integrity tripwires (observe-only), gate telemetry. |
 | `predelivery-lint.mjs` · `close-verify.mjs` · `screen-gate.mjs` | Pre-delivery checks, envelope close verification, screen-gate detection. |
 | `common-law-receipts.mjs` · `engagement-receipt.mjs` · `scope-ledger.mjs` | Receipt models for the marketplace grid, engagement, scope. |
-| `senior-rights.mjs` · `own-rights.mjs` · `use-check.mjs` | Rights closure, self-exclusion, use analysis. |
+| `senior-rights.mjs` | Rights closure. A finding's own-rights and use-check sources are fields of the findings record, checked by `verify.mjs`. |
 | `publish/` | Deterministic publication: HTML render, Excel audit workbook, pool admin, regions. |
 | `repairs.mjs` · `repair-digest.mjs` | Recovery decisions, repair budgets, repair digests. |
 | `tokens.mjs` · `provider-usage.mjs` · `progress.mjs` · `status-snapshot.mjs` · `run-activity.mjs` | Token rollup (successor to the deleted `cost.mjs`), billing-grade provider ledger, status surfaces. |

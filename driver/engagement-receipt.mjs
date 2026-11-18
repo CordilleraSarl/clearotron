@@ -12,7 +12,7 @@
 // optimises toward sprinkling anchor tokens into boilerplate without genuine engagement. The pipeline
 // writes the sidecar and moves on; nothing gates on it.
 //
-// Same enforcement substrate and block-scan shape as use-check.mjs / own-rights.mjs: PURE over the
+// The block-scan shape of the retired use-check and own-rights gates, now findings-record fields: PURE over the
 // narrative text (no node imports, tests offline); empty/missing input → no receipts, never throws.
 
 const STOP = new Set([
@@ -20,13 +20,13 @@ const STOP = new Set([
   "worldwide", "global", "mark", "marks", "your", "n/a", "none", "class", "classes",
 ]);
 
-// Composite digit from a finding block — same anchor as use-check.mjs.
+// Composite digit from a finding block — the anchor the retired use-check gate used.
 function parseComposite(block) {
   const m = block.match(/\bComposite\b[^\d\n]{0,14}(\d)/i);
   return m ? Number(m[1]) : null;
 }
 // A block is a rated FINDING if its heading names a Finding or its body carries the BOLD Composite
-// marker — same gate as use-check.mjs, so the "## Actions" / "## Bottom line" paraphrases (which mention
+// marker — the retired use-check gate's test, so the "## Actions" / "## Bottom line" paraphrases (which mention
 // composite in prose but not as the rated finding) never false-trigger.
 // EXPORTED so the write-up check identifies blocks by the same predicate this file already uses.
 // Two answers to "which blocks in narrative.md are per-finding write-ups" would drift, and the one that
