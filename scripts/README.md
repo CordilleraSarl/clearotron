@@ -19,7 +19,7 @@ The axis is *what the script assumes exists*, not where it happens to be run.
 | `clearances-render-check.mjs` | Checks the `/portal/clearances` columns hold together. Run by CI. |
 | `report-print-check.mjs` | Shows what the exported PDF actually renders under print media. Run by CI. |
 | `report-offline-render-check.mjs` | Opens every demo report, from disk and served under the portal's report policy, and every pool index, and fails on any request to another machine or an embedded font that did not load. Run by CI. |
-| `report-overflow-check.mjs` | Checks the same two kinds of report for sideways overflow on screen — the print check cannot see a width, because print sets the watermark to `display:none` and the watermark was the overflow. Run by CI. |
+| `report-overflow-check.mjs` | Checks the same two kinds of report for sideways overflow on screen — the print check cannot see a width, because print sets the watermark to `display:none` and the watermark was the overflow. Kept outside this repository. |
 | `portal-lifecycle-check.mjs` | Asks whether the portal names a brand owner and whether a person can manage their searches. Run by CI. |
 | `portal-strings.mjs` | Reads every string the portal can show out of its source, as a reader meets it. `--check <approved list>` refuses a string on a screen that is neither approved nor in `portal-ui/strings-backlog.json`; `--backlog-shrinks --base <ref>` refuses a backlog line the base did not have. The approved list is kept with the designs, outside this repository. CI runs the backlog half. |
 | `validate-profiles.mjs` | Validates a customer-config store's profile bundles. Read-only. |
@@ -30,7 +30,7 @@ The axis is *what the script assumes exists*, not where it happens to be run.
 | `score.mjs` | Scores a completed run against a reference answer. |
 | `compare.mjs` | Lays the E2E product-comparison scenarios side by side — the depth dial, the config layers, fan-out, native language, the deep end. Reads files only, prints no verdict, always exits 0. |
 | `feedback-mint.mjs` | The one file in the feedback feature that touches the network. |
-| `publication-scan.mjs` | Reads every blob in a repository's history and asks whether all of it can be public: retired identities, operator identity, secrets, withheld paths, the licence. Portable, but it needs the private roster to say anything real — a check it could not run fails the scan rather than passing. |
+| `publication-scan.mjs` | Reads every blob in a repository's history and asks whether all of it can be public: retired identities, operator identity, secrets, withheld paths, the licence. Portable, but it needs the private roster to say anything real — a check it could not run fails the scan rather than passing. Kept outside this repository. |
 | `mint-suite-census.mjs` | Re-stamps `driver/suite-census.json` — the persisted expectation that makes a DELETED, RENAMED or GUTTED test file visible. Dry-run by default;`--apply` writes it, and it prints removals and shrinkage first because a silently lowered ceiling is how a gutting gets laundered into a green suite. |
 | `merge-presence-check.mjs` | Re-states every merge in a window against the tree: did the merged content reach `main` and is it STILL there (proved by content, never by ancestry), and did the branch carry work the merge never took. Deliberately not a CI gate — it reads the forge. A branch that is simply gone makes the second question unanswerable, which is a non-zero exit, waived only by an explicit dated flag that is itself invalid once it covers nothing. |
 
@@ -88,7 +88,8 @@ or declared, with a reason, as one that cannot run in CI.
 
 **Three are declared**, and all three need something CI does not have: `live-surface-check.mjs` (a
 running deployment), `merge-presence-check.mjs` (a range that does not exist before the merge) and
-`deploy-drift-check.mjs` (a deployed host to compare against). Everything else runs.
+`deploy-drift-check.mjs` (a deployed host to compare against; kept outside this repository). Everything
+else runs.
 
 That includes `render-check.mjs`, which joined the blocking browser step, and `report-frame-check.mjs`.
 **This paragraph said the opposite until 2026-08-27** — it had them both on the declared list, left over
@@ -120,3 +121,144 @@ contributor tier, on machines where a `ulimit -v` makes Chrome dump core.
 these needs a path, it takes it as an argument or an environment variable and **refuses when it is
 absent**. Falling back to the production value means an unset variable — a fresh shell, a clone, a
 CI job — silently aims a real operation at live client matter.
+
+## Every script, by how it runs
+
+One row for every file in this folder, so a CI guard can be told from a tool somebody runs and from a
+one-off. What each does is in its own header. A test fails on a file this table does not list, and on a
+row that names a file this folder does not hold.
+
+- **CI**: a workflow runs it, directly or through an npm script.
+- **by hand**: something in the repository names it, a document, a test or another script, and a person runs it.
+- **one-off, named nowhere**: nothing in the repository refers to it. Ask whoever wrote it before retiring it.
+
+| Script | Runs |
+|---|---|
+| `added-reference-check.mjs` | CI |
+| `ai-page-render-check.mjs` | CI |
+| `ask-ai-render-check.mjs` | CI |
+| `authority-boundary-probe.mjs` | by hand, `npm run authority-probe` |
+| `backfill-started-at.mjs` | by hand |
+| `backup-recall-stores.mjs` | by hand |
+| `band-shape-probe.mjs` | by hand |
+| `bench-replay-request.mjs` | CI |
+| `carry-through.mjs` | by hand |
+| `census-merge-driver.mjs` | by hand |
+| `changelog-plain-language.mjs` | by hand |
+| `citation-anchor-report.mjs` | one-off, named nowhere |
+| `citation-drift-report.mjs` | by hand |
+| `citation-line-check.mjs` | CI |
+| `clearances-render-check.mjs` | CI |
+| `clone-recipe-check.mjs` | CI |
+| `compare.mjs` | by hand |
+| `composer-render-check.mjs` | CI |
+| `contract-dictation-scan.mjs` | by hand, `npm run contract-dictation` |
+| `dead-names.mjs` | by hand, `npm run retired-settings` |
+| `demo-evidence.mjs` | CI |
+| `deprecate-below.mjs` | CI |
+| `doctrine-report.mjs` | by hand, `npm run doctrine-report` |
+| `drain-preflight.mjs` | by hand, `npm run drain-preflight` |
+| `drive-env-check.mjs` | CI |
+| `e2e-first-time.mjs` | by hand |
+| `e2e-scenario-ops.mjs` | by hand |
+| `e2e-unread-terminals.mjs` | by hand |
+| `e2e.mjs` | by hand |
+| `engine-pins.mjs` | CI |
+| `engine-probe.mjs` | by hand, `npm run engine-probe` |
+| `env-audit.mjs` | by hand |
+| `env-classify.mjs` | by hand |
+| `feedback-mint.mjs` | by hand |
+| `freeze-example-run.mjs` | by hand |
+| `generated-files-are-current.mjs` | CI |
+| `hand-off-exits-probe.mjs` | one-off, named nowhere |
+| `head-arrived-gated.mjs` | one-off, named nowhere |
+| `headless-page.mjs` | by hand |
+| `home-render-check.mjs` | CI |
+| `import-cycle-check.mjs` | CI |
+| `live-surface-check.mjs` | by hand |
+| `main-health.mjs` | by hand |
+| `markdown-link-check.mjs` | CI |
+| `mcp-registry-listing.mjs` | CI |
+| `measure-test-durations.mjs` | by hand |
+| `merge-presence-check.mjs` | by hand |
+| `merge-shape-check.mjs` | by hand |
+| `mint-names-in-force.mjs` | by hand |
+| `mint-offered-territories.mjs` | by hand |
+| `mint-plugin-folder.mjs` | by hand |
+| `mint-public-residue.mjs` | by hand |
+| `mint-reference-strip-backlog.mjs` | by hand |
+| `mint-search-level-tags.mjs` | by hand |
+| `mint-suite-census.mjs` | CI |
+| `mint-writing-standard-backlog.mjs` | by hand |
+| `nightly-notice.mjs` | by hand |
+| `no-test-account-reaches-the-package.mjs` | CI |
+| `pack-publishable.mjs` | by hand |
+| `package-size-budget.mjs` | CI |
+| `placement-diff.mjs` | by hand |
+| `plain-language-rules.mjs` | by hand |
+| `portal-lifecycle-check.mjs` | CI |
+| `portal-strings.mjs` | CI |
+| `preinstall-node-check.mjs` | CI |
+| `purge-runs.mjs` | by hand |
+| `queue-inflight.mjs` | by hand |
+| `reconcile-runs.mjs` | by hand |
+| `record-carry-probe.mjs` | by hand |
+| `register-plan-shape.mjs` | by hand |
+| `release-approve-parked.mjs` | CI |
+| `release-artifact-seal.mjs` | CI |
+| `release-await-cut.mjs` | CI |
+| `release-bench-replay-check.mjs` | CI |
+| `release-code-scanning-check.mjs` | CI |
+| `release-completeness-check.mjs` | CI |
+| `release-cut-decision.mjs` | CI |
+| `release-dist-tag.mjs` | CI |
+| `release-duplicate-notes.mjs` | CI |
+| `release-entry-catch-up.mjs` | CI |
+| `release-install-check.mjs` | CI |
+| `release-note-required.mjs` | CI |
+| `release-notes-for.mjs` | CI |
+| `release-notes-lint.mjs` | CI |
+| `release-pre-gate.mjs` | CI |
+| `release-publish-guard.mjs` | CI |
+| `release-rehearsal-version.mjs` | CI |
+| `release-sbom.mjs` | CI |
+| `release-version-pr-checks.mjs` | CI |
+| `release-version.mjs` | CI |
+| `release-visible-check.mjs` | CI |
+| `render-brand-banner.mjs` | one-off, named nowhere |
+| `render-check.mjs` | CI |
+| `repo-writes.mjs` | by hand |
+| `report-frame-check.mjs` | CI |
+| `report-header-render-check.mjs` | CI |
+| `report-offline-render-check.mjs` | CI |
+| `report-print-check.mjs` | CI |
+| `report-screenshot.mjs` | by hand |
+| `report-sections-render-check.mjs` | CI |
+| `report-theme-render-check.mjs` | CI |
+| `retire-bare-refs.mjs` | by hand |
+| `revisit-render-check.mjs` | CI |
+| `score.mjs` | by hand |
+| `seat-retry-report.mjs` | by hand, `npm run retry-report` |
+| `secret-scanner-fetch.mjs` | CI |
+| `settings-render-check.mjs` | CI |
+| `spdx-headers.mjs` | CI |
+| `strip-titles-and-attributions.mjs` | by hand |
+| `strip-tracker-citations.mjs` | by hand |
+| `sync-e2e-store.mjs` | by hand |
+| `test-account-names.mjs` | by hand |
+| `test-durations-reporter.mjs` | by hand |
+| `test-durations.json` | by hand |
+| `test-fast.mjs` | by hand, `npm run test` |
+| `test-full.mjs` | CI |
+| `test-run.mjs` | CI |
+| `text-difference.mjs` | by hand |
+| `third-party-notices.mjs` | CI |
+| `travelling-predicates.mjs` | by hand |
+| `undeclared-field-census.mjs` | by hand |
+| `undeclared-key-census.mjs` | by hand |
+| `unexecuted-asserts.mjs` | by hand, `npm run assert-census` |
+| `validate-profiles.mjs` | by hand |
+| `verify-publishable.mjs` | by hand |
+| `write-build-info.mjs` | npm, before every pack |
+| `write-up-form-census.mjs` | by hand |
+| `writing-standard-check.mjs` | CI |
