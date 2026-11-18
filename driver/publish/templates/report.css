@@ -571,7 +571,7 @@
   .panel.where{padding:10px 18px}
   .wrow{display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:13.5px}
   .wrow .wname{font-weight:600}.wrow .rcode{font-weight:700;color:var(--slate);font-size:12px}
-  .wclean{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:10px 0 4px}
+  .wclean{display:flex;flex-wrap:wrap;gap:6px;align-items:baseline;padding:10px 0 4px}
   .wk{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--clear);margin-right:8px}
   .wchip{padding:3px 9px;border-radius:999px;background:var(--clear-soft);color:var(--clear-tx);font:600 12px/1.4 var(--font)}
   .wnames{margin:0;flex:1 1 320px;font-size:13.5px;line-height:1.55}
