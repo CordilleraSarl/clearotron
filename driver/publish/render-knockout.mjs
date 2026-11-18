@@ -64,7 +64,6 @@ import { EXPORT_TOGGLE, exportPopover, EXPORT_MENU_JS } from './report-topbar.mj
 // which is the thing providers/_shared/screen.mjs exists to prevent.
 import { makeClassifyStatus, isAllClass } from '../../providers/_shared/screen.mjs';
 import { saysSomethingNew } from '../../shared/says-something-new.mjs';
-import { isNextStepHeading } from '../knockout-next-step.mjs';
 import OFFERED from '../../shared/offered-territories.json' with { type: 'json' };   // the order form's own territory names
 import { normalizeTerritory } from '../../providers/_shared/territory-codes.mjs';   // a territory as written → its code
 
@@ -633,7 +632,7 @@ function whyBandFold(inner) {
 }
 
 /** The card fold's own word. Stated once so the renderer and its tests read the same string. */
-const WHY_BAND_LABEL = 'Why this band';
+const WHY_BAND_LABEL = 'Risk assessment';   // the clearance's word for the reasoning (owner, 2026-11-18, item 1140)
 
 /**
  * The band chip's text. A framework that states a method shows its inputs beside the band, in its own
@@ -709,7 +708,7 @@ function findingBlock(v, framework, markIndex, method = null, cite = {}) {
                  a clearance card, so a screen of many names reads as a screen. */''}
             ${(v.detail || ev) ? `<details class="drill"><summary>Full detail</summary><div class="drillbody">${
       whyBandFold(v.detail ? `<p class="ko-findbasis">${inlineMd(v.detail)}</p>` : '')}${
-      ev ? `<p class="ko-findev">Evidence: ${ev}</p>` : ''}</div></details>` : ''}
+      ev ? `<p class="ko-findev">Sources: ${ev}</p>` : ''}</div></details>` : ''}
           </div>
         </div>
       </div>`;
@@ -1428,42 +1427,12 @@ function koScale(framework, band) {
       k === idx ? `;color:${tone(k)}` : ''}">${esc(b)}</span>`).join('')}</div></div>`;
 }
 
-// WHAT HAPPENS NEXT, AS ITS OWN SECTION (the 2026-09-16 report redesign). The engine writes this paragraph part-way
-// down each mark's long assessment, under a heading of its own, where it rendered only inside a fold
-// that opens at the bottom of the screen. It is the one paragraph a reader acts on, so it closes the
-// page under its own heading.
-//
-// It MOVES, it is not copied: `splitOutcome` returns the assessment without it, and the fold renders
-// that remainder, so the words appear once.
-//
-// A RECORD WRITTEN SINCE 2026-09-19 NEVER REACHES THIS WITH ONE: the pipeline removes a next-step section
-// before it writes the record (`knockout-next-step.mjs`), and the heading test below is that module's, so
-// the two cannot come to disagree about what a next step is. What still draws the section is a record
-// written before then, re-rendered.
-//
-// THE HEADING IS THE MODEL'S OWN, so this hoists only the LAST block of the assessment. The assessing
-// skill fixes no heading vocabulary — it asks for sub-headers "where the content divides", and the
-// wording is written fresh each run. Matching a list of phrases anywhere in the document would let a
-// mark whose read happens to argue under "Recommendation" in the MIDDLE have that middle lifted to the
-// bottom, handing the client the engine's argument in an order the engine did not write, with nothing
-// going red. A trailing block is the one position where a move cannot reorder what is left. So the
-// phrase list only decides whether the last block is the outcome; anything earlier stays where it was
-// written, and the page renders the assessment whole.
-export function splitOutcome(assessment) {
-  const whole = String(assessment ?? '').trim();
-  const lines = whole.split('\n');
-  const heads = lines.map((l, i) => [l.trim(), i]).filter(([l]) => /^#{1,6}\s/.test(l));
-  const last = heads[heads.length - 1];
-  if (!last || !isNextStepHeading(last[0])) return { body: whole, outcome: '' };
-  const outcome = lines.slice(last[1] + 1).join('\n').trim();
-  if (!outcome) return { body: whole, outcome: '' };
-  return { body: lines.slice(0, last[1]).join('\n').trim(), outcome };
-}
-function markOutcomes(marks) {
-  return (marks ?? [])
-    .map((m) => ({ name: String(m?.name ?? '').trim(), text: splitOutcome(m?.assessment).outcome }))
-    .filter((o) => o.text);
-}
+// NO "WHAT HAPPENS NEXT" (design's rule, approved by the owner 2026-11-18). The section hoisted a next-step block out of
+// each name's assessment and drew it under its own heading. Since 2026-09-19 the pipeline takes that block off before it
+// writes the record (`knockout-next-step.mjs`), so no record written since carries one, and a Knockout leads to the
+// lawyer's choice of which names go on to a clearance, which each name's rating already states. The section and its
+// hoist are gone: an assessment renders whole, as written. A page delivered earlier keeps what it was delivered with;
+// the cross-build refusal guards it.
 
 function readBlock(m, framework, { opening = '' } = {}) {
   const factors = (m.factors ?? []).filter((s) => typeof s === 'string' && s.trim());
@@ -1471,15 +1440,16 @@ function readBlock(m, framework, { opening = '' } = {}) {
   const structured = Boolean(m.basis || factors.length || counter.length || m.mitigation);
   const bullets = (m.bullets ?? []).map((b) => `<li>${inlineMd(b)}</li>`).join('');
   if (!structured) return bullets ? `<ul class="ko-bul">${bullets}</ul>` : '';
-  const assessment = splitOutcome(m.assessment).body;
+  const assessment = String(m.assessment ?? '').trim();
   const band = String(m.rating ?? '').trim();
   const card = [
-    `<div class="label">Overall risk</div>`,
+    framework?.title
+      ? `<div class="gauge-head"><div class="label">Overall risk</div><div class="gauge-fw">${esc(framework.title)}</div></div>`
+      : `<div class="label">Overall risk</div>`,
     koScale(framework, band),
     m.basis ? `<p class="ko-basisline">${inlineMd(m.basis)}</p>` : '',
     factors.length ? `<div class="gwhy">${band ? `<div class="label">Why ${esc(band)}</div>` : ''}<ul class="ko-bul">${
       factors.map((f) => `<li>${inlineMd(f)}</li>`).join('')}</ul></div>` : '',
-    framework?.title ? `<div class="gframe">Rated on the ${esc(framework.title)}</div>` : '',
   ].filter(Boolean).join('');
   return [
     card ? `<div class="panel gauge ko-gauge">${card}</div>` : '',
@@ -1554,8 +1524,9 @@ function analysisSection(marks, framework, { registerCounts = null, probeRan = f
     // mark says "no adverse signals recorded" — a mark with nothing against it — so anything added to it
     // silently retires that sentence. Named ONCE: the read above carries it where it drew a card, and
     // the test for that reads the markup this same function just produced.
-    const frameworkLine = !body.includes('class="gframe"') && framework?.title && String(m.rating ?? '').trim()
-      ? `<div class="gframe">Rated on the ${esc(framework.title)}</div>` : '';
+    // The rating line reads as the clearance's does, "Overall risk" and the framework's name (owner, 2026-11-18, item 1141).
+    const frameworkLine = !body.includes('class="gauge-fw"') && framework?.title && String(m.rating ?? '').trim()
+      ? `<div class="ko-fwline"><div class="label">Overall risk</div><div class="gauge-fw">${esc(framework.title)}</div></div>` : '';
     return `<div class="ko-row">
       <div>
         <p class="ko-name">${esc(m.name)}</p>
@@ -1885,14 +1856,6 @@ ${EXPORT_MENU_JS}</script>
   ${onFieldSec}
   ${filingsSec}
 
-  ${(() => {
-    const outs = markOutcomes(marks);
-    if (!outs.length) return '';
-    const label = outs.length > 1;
-    const body = outs.map((o) => (label && o.name ? `<h3>${esc(o.name)}</h3>` : '') + mdParagraphs(o.text)).join('');
-    return `<div class="sec" id="next"><span class="num"></span><h2>What happens next</h2></div>
-  <div class="panel actions"><div class="actgrp act-you">${body}</div></div>`;
-  })()}
 
   ${/* The 2026-09-16 report redesign — the scope section and its fold are off the page: what a screen is and
        what it did not search is the narration the owner ruled out. */''}

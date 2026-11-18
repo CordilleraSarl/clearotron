@@ -7767,6 +7767,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-knockout-labels-read-as-the-clearances.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "the-knockout-names-every-ordered-territory.test.mjs": {
           "tests": 3,
           "asserts": 5,
@@ -7775,7 +7781,7 @@
         },
         "the-knockout-page-leads-with-the-read.test.mjs": {
           "tests": 39,
-          "asserts": 125,
+          "asserts": 122,
           "skips": 0,
           "todos": 0
         },

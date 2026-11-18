@@ -267,8 +267,8 @@ test("A.2 clause F: an archived run with bullets and NO assessment keeps the fol
 test("A.3: a card shows its one sentence and folds the paragraph that argues the band", () => {
   const html = RENDER([MARK({ findings: [FINDING()] })]);
   assert.match(html, /class="ko-findnet">A storefront trading under the same name/, "the net stays visible");
-  const fold = html.slice(html.indexOf("Why this band"));
-  assert.match(html, /<summary>Why this band<\/summary>/);
+  const fold = html.slice(html.indexOf("<summary>Risk assessment</summary>"));
+  assert.match(html, /<summary>Risk assessment<\/summary>/, "the fold takes the clearance's word (owner, 2026-11-18)");
   assert.ok(fold.includes("traded since 2019"), "the basis paragraph is inside the fold");
   // It still PRINTS: the fold wears ko-full, which openAll() and the beforeprint handler both reach.
   assert.match(html, /<details class="ko-full ko-why">/, "the fold opens for print like every other");
@@ -278,7 +278,7 @@ test("A.3: a finding with no basis renders no fold rather than an empty one", ()
   const bare = FINDING();
   delete bare.basis;
   const html = RENDER([MARK({ findings: [bare] })]);
-  assert.doesNotMatch(html, /Why this band/);
+  assert.doesNotMatch(html, /<details class="ko-full ko-why">/);
 });
 
 test("A.3: only an EXPLICIT lowest-rung band takes a filing off the page", () => {
@@ -351,26 +351,21 @@ test("A.3: a band this build cannot place on the ladder keeps its card", () => {
 
 // ── A.4 / A.5 — the reviewer's notes, and their absence from the export ──────────────────────────────
 
-// ── A.7 — what happens next, and the assessment it is taken from ────────────────────────────────────
+// ── A.7 — no "What happens next"; the assessment renders whole ─────────────────────────────────────
 //
-// THE PARAGRAPH MOVES; IT IS NOT COPIED. The first cut of this rendered the section from the assessment
-// and left the assessment whole, so the client read the same paragraph twice — once in the fold, once at
-// the foot. Nothing red: a spec check asking whether the section is PRESENT passes either way, and so
-// does every arm above. The arm that discriminates is a count.
+// The section that lifted a closing next-step block out of an assessment left the renderer (design's rule, approved by the
+// owner 2026-11-18): the pipeline takes such a block off every record before it is written. A record that still carries
+// one renders it where it was written, once.
 
 const SPLIT = "## The name\n\nA compound.\n\n## What drives the rating\n\nTwo storefronts.\n\n"
   + "## What to do with it\n\nProceed, and check the domain before filing.";
 
-test("A.7: the outcome paragraph closes the page, and is not also left in the fold", () => {
+test("A.7: no section of its own; a closing next-step block stays in the read, once, in its place", () => {
   const html = body(RENDER([MARK({ assessment: SPLIT })]));
-  assert.match(html, /<h2>What happens next<\/h2>/, "it has a section of its own");
+  assert.doesNotMatch(html, /<h2>What happens next<\/h2>/, "the section is gone");
   const once = (needle) => (html.split(needle).length - 1);
-  assert.equal(once("Proceed, and check the domain before filing."), 1,
-    "the paragraph appears exactly once on the page");
-  assert.equal(once("What to do with it"), 0, "and its heading went with it");
-  assert.equal(once("Two storefronts."), 1, "the rest of the assessment is untouched, and still folded");
-  assert.ok(html.indexOf("Two storefronts.") < html.indexOf("Proceed, and check the domain"),
-    "the outcome closes the page rather than moving above the read it came from");
+  assert.equal(once("Proceed, and check the domain before filing."), 1, "the paragraph appears exactly once");
+  assert.ok(html.indexOf("Two storefronts.") < html.indexOf("Proceed, and check the domain"), "in the order it was written");
 });
 
 test("A.7: only the LAST block is hoisted, so a mid-document heading is never reordered", () => {
@@ -392,14 +387,12 @@ test("A.7 clause F: an assessment with no such heading renders whole and grows n
   assert.ok(html.includes("Two storefronts"), "the assessment is still drawn");
 });
 
-test("A.7: a batch gives every name its paragraph, under its own name", () => {
+test("A.7: a batch draws no section either, and every name keeps its own words", () => {
   const second = SPLIT.replace("Proceed, and check the domain before filing.", "Do not file this one.");
   const html = body(RENDER([MARK({ assessment: SPLIT }), MARK({ name: "COPPERWHISK", assessment: second })]));
-  const sec = html.slice(html.indexOf("<h2>What happens next</h2>"));
-  assert.ok(sec.includes("Proceed, and check the domain before filing."), "the first name's paragraph");
-  assert.ok(sec.includes("Do not file this one."), "and the second's, which a single-outcome section would drop");
-  assert.match(sec, /<h3>IRONWHISK<\/h3>/, "each under the name it belongs to");
-  assert.match(sec, /<h3>COPPERWHISK<\/h3>/);
+  assert.doesNotMatch(html, /<h2>What happens next<\/h2>/);
+  assert.ok(html.includes("Proceed, and check the domain before filing."), "the first name's paragraph");
+  assert.ok(html.includes("Do not file this one."), "and the second's");
 });
 
 // ── A.6 — the one-name page has no index ─────────────────────────────────────────────────────────────
