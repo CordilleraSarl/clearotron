@@ -673,7 +673,7 @@ function findingBlock(v, framework, markIndex, method = null) {
           <div class="rail" style="background:var(${stop})"></div>
           <div class="body">
             <div class="cardhead">
-              <span class="fnum">${esc(v.ref)}</span><span class="who">${esc(v.name ?? 'Unnamed finding')}</span>${
+              <span class="fnum">${esc(v.ref)}</span><h3 class="who">${esc(v.name ?? 'Unnamed finding')}</h3>${
     v.band ? `<span class="ko-findband" style="background:var(${stop})">${bandChipText(v.band, method, v.inputs)}</span>` : ''}${sourceChips(v)}
               <button class="ask-fi no-print">\u2726 Ask AI about this finding</button>
             </div>
@@ -1184,7 +1184,7 @@ function registerFindingBlock(v, markIndex, reads = null, framework = null, owne
           <div class="rail" style="background:var(${stop ?? '--faint'})"></div>
           <div class="body">
             <div class="cardhead">
-              <span class="fnum">${esc(v.ref)}</span><span class="who">${esc(r.mark ?? 'Unnamed filing')}</span>${
+              <span class="fnum">${esc(v.ref)}</span><h3 class="who">${esc(r.mark ?? 'Unnamed filing')}</h3>${
     band ? `<span class="ko-findband" style="background:var(${stop})">${bandChipText(band, method, row?.inputs)}</span>` : ''}<span class="src reg">Register</span>
               <button class="ask-fi no-print">\u2726 Ask AI about this finding</button>
             </div>
@@ -1837,6 +1837,7 @@ window.addEventListener('beforeprint',o);})();
    the clearance template carries, for the same markup; they move together when the top bar is shared. */
 ${EXPORT_MENU_JS}</script>
 <div class="wrap">
+<main>
   <header class="hero" id="summary">
     ${demoBannerHtml(demoData === true)}
     ${confLineHtml(delivery, productName)}
@@ -1873,6 +1874,7 @@ ${EXPORT_MENU_JS}</script>
        is kept. Both of the demo run's survive. */''}
   ${newCaveats.length ? `<div class="panel ko-caveats"><p class="ko-scope">${CAVEAT_LEAD}<br>${
     newCaveats.map((c) => inlineMd(c)).join('<br>')}</p></div>` : ''}
+</main>
 
   <footer>
     ${/* THE FOOTER NAMES THE SAME THREE THINGS THE HEADER DOES. It read "<product>. / Matter

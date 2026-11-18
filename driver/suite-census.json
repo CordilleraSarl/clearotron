@@ -4311,6 +4311,12 @@
           "skips": 0,
           "todos": 0
         },
+        "each-finding-card-is-a-heading-inside-the-main-landmark.test.mjs": {
+          "tests": 3,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "each-organisations-generic-carries-the-daily-cap.test.mjs": {
           "tests": 7,
           "asserts": 14,

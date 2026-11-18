@@ -1340,7 +1340,7 @@ function alsoConsideredSection(ruledOut, recordsByUri = new Map(), opts = {}) {
     const fold = (legal || practical)
       ? `<details class="roff"><summary>Why it was ruled out</summary>${legal ? `<p><b>Legal position.</b> ${legal}</p>` : ''}${practical ? `<p><b>Practical position.</b> ${practical}</p>` : ''}</details>` : '';
     return `<div class="card ruled"><div class="top"><div class="rail"></div><div class="body"><div class="cardhead">${
-      f.ordinal != null ? `<span class="fnum">${esc(String(f.ordinal))}</span>` : ''}<span class="who mark-first">${esc(f.mark || '')}</span>${
+      f.ordinal != null ? `<span class="fnum">${esc(String(f.ordinal))}</span>` : ''}<h3 class="who mark-first">${esc(f.mark || '')}</h3>${
       who ? `<span class="cwho">${esc(who)}</span>` : ''}<span class="tier ruled">Ruled out</span><button class="ask-fi no-print">\u2726 Ask AI about this finding</button></div><div class="oneline">${why}</div>${fold}</div></div></div>`;
   }).join('');
   const groups = clearedGroupsHtml(sd, opts.auditFile);
@@ -1970,7 +1970,7 @@ function cardTitleParts(f, who) {
   const code = regionCode(f);
   const where = code && code !== COMMON_LAW ? (regionName(code) || code) : '';
   const tail = [where, classes ? `Class ${classes}` : ''].filter(Boolean).join(' \u00b7 ');
-  const title = `<span class="who mark-first">${esc(f.mark || who || '')}${tail ? ` <span class="where">\u2014 ${esc(tail)}</span>` : ''}</span>`;
+  const title = `<h3 class="who mark-first">${esc(f.mark || who || '')}${tail ? ` <span class="where">\u2014 ${esc(tail)}</span>` : ''}</h3>`;
   const ownerLine = who ? `<div class="owner-line"><span class="ok">Owner</span> ${esc(who)}</div>` : '';
   return { title, ownerLine };
 }
@@ -2302,7 +2302,7 @@ function openAll(v){document.querySelectorAll('details.drill,details.method,deta
 // deep-link load; non-card #-links (#common-law) fall through to native nav.
 function _cardReveal(el){var p=el.parentElement;while(p){if(p.tagName==='DETAILS'&&!p.open)p.open=true;p=p.parentElement;}}
 function _cardHashGo(){var id=location.hash.slice(1);if(id.charAt(0)!=='c'||!/^[0-9]+$/.test(id.slice(1)))return;var el=document.getElementById(id);if(!el)return;_cardReveal(el);el.scrollIntoView({block:'start'});}
-document.addEventListener('click',function(e){var a=e.target.closest?e.target.closest('a[href^="#c"]'):null;if(!a)return;var id=(a.getAttribute('href')||'').slice(1);if(id.charAt(0)!=='c'||!/^[0-9]+$/.test(id.slice(1)))return;var el=document.getElementById(id);if(!el)return;_cardReveal(el);e.preventDefault();try{if(history.replaceState)history.replaceState(null,'','#'+id);}catch(err){}el.scrollIntoView({behavior:'smooth',block:'start'});});
+document.addEventListener('click',function(e){var a=e.target.closest?e.target.closest('a[href^="#c"]'):null;if(!a)return;var id=(a.getAttribute('href')||'').slice(1);if(id.charAt(0)!=='c'||!/^[0-9]+$/.test(id.slice(1)))return;var el=document.getElementById(id);if(!el)return;_cardReveal(el);e.preventDefault();try{if(history.replaceState)history.replaceState(null,'','#'+id);}catch(err){}el.scrollIntoView({behavior:(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)?'auto':'smooth',block:'start'});});
 window.addEventListener('hashchange',_cardHashGo);
 window.addEventListener('load',_cardHashGo);
 window.addEventListener('beforeprint',function(){document.querySelectorAll('details').forEach(function(d){d.dataset.o=d.open?'1':'';d.open=true;});});
@@ -2800,6 +2800,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
 </div>
 
 <div class="wrap">
+<main>
   <!-- doc-52 §1 THE VERDICT — the answer leads: mark · band · one plain "subject to" line · the lawyer's
        questions answered · the time-critical alert. Process + coverage detail are below and collapsible. -->
   <header class="hero" id="summary">
@@ -2848,6 +2849,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
        (owner, 2026-09-16: no coverage narrative on the page). What is left is counts, folded closed:
        completed work appears as numbers and cleared names, never as the engine's account of itself. -->
   ${whatWasSearchedSection(opts, coverage, findings, recordsByUri)}
+</main>
 
   <footer>
     ${/* ONE CLIENT LINE, AND IT NAMES WHAT EACH DATE IS. It ran to four.

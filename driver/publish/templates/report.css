@@ -1,6 +1,6 @@
   /* Brand :root tokens live in shared/brand.mjs (REPORT_ROOT) and are prepended by render.mjs. */
   *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.55;
     -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
   .wrap{max-width:1120px;margin:0 auto;padding:0 26px 110px}
@@ -196,6 +196,9 @@
   .pick input{width:16px;height:16px;cursor:pointer;accent-color:var(--crimson)}
   .fnum{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--faint)}
   .who{font-weight:900;font-size:19px;letter-spacing:-.01em}
+  /* A card's title is its h3, so a reader can move between findings by heading. :where() keeps this at no
+     specificity: it removes the browser's heading margin, size and weight, and every .who rule still wins. */
+  :where(h3.who){margin:0;font:inherit;display:inline}
   /* the contentious MARK + the classes it matched in, next to the holder (which mark/class the conflict IS) */
   .cmark{display:inline-flex;align-items:center;gap:7px;font-size:13px;min-width:0}
   .cm-mark{font-weight:800;color:var(--crimson);background:#fbece9;padding:2px 9px;border-radius:6px;letter-spacing:-.005em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:32ch}
