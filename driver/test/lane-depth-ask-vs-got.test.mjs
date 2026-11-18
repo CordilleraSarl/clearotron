@@ -215,6 +215,10 @@ test("readJxLanes carries the run's own verdict, and an artifact that never stat
   assert.equal(zh.depthVerdict.recorded, true);
   assert.equal(zh.depthVerdict.ran, "candidates");
   assert.equal(zh.depthVerdict.shortfall, true);
+  // A depth the record cannot confirm: the scorer keeps the record's own terms beside the client's sentence.
+  const unconfirmed = readJxLanes({ lanes: { zh: laneAsking("full") }, fold: { lanes: { zh: { degraded: false, accepted: [] } },
+    depth: { zh: { asked: "full", ran: null, shortfall: true, cause: "not-established", why: "the sentence", detail: "slice 1 for this lane is unrecorded" } } } });
+  assert.equal(unconfirmed.lanes.find((l) => l.lane === "zh").depthVerdict.detail, "slice 1 for this lane is unrecorded");
 
   // A pre-change artifact. Three-valued on the record itself, the same discipline as `statement`: this is
   // an absence and it is stated as one. `shortfall: null`, never `false` — reporting "no shortfall" from
