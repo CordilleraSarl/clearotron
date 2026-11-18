@@ -221,11 +221,13 @@ only if nothing else on the machine uses it.
 `~/.npm/_npx`, beside anything else you have run with `npx`. Deleting `~/.npm/_npx` removes all of them;
 npm downloads again the next time it is asked.
 Any `npm install` also keeps what it downloaded in npm's cache, `~/.npm/_cacache`; `npm cache clean --force` empties it.
+npm also writes its own logs to `~/.npm/_logs`.
 
 **The settings, and the keys.** `~/.config/clearotron/.env` holds this install's signing secrets, so
 deleting it invalidates every key it ever issued. Beside it: `~/.config/clearotron/token-denylist`, the
 list of keys you revoked, and `~/.config/clearotron/running`, a folder holding one small file for each
-product running in a terminal.
+product running in a terminal. A second run of setup keeps the previous settings in
+`~/.config/clearotron/.env.bak`. It holds the same keys and secrets, so delete it with `.env`.
 
 **Your work.** The install keeps it all under one directory, `~/trademark` by default — wherever
 `CLEAROTRON_REPORTS_DIR`'s parent points if you moved it:
@@ -239,6 +241,7 @@ product running in a terminal.
 ~/trademark/config                            your companies, their projects and your saved searches
 ~/trademark/config/recipes                    the saved searches themselves
 ~/trademark/config/profiles                   the company profiles
+~/trademark/config/skills                     your own versions of the AI's manuals, if you add any
 ~/trademark/grants.json                       who may use this install
 ~/trademark/portal-audit.log                  what the portal was asked to do
 ~/trademark/telemetry/trademark-mcp-access.jsonl   what a connected assistant asked for, and what it was told
@@ -248,9 +251,9 @@ product running in a terminal.
 **Keep the pool if you want the reports.** They are finished documents and nothing else reads them: move
 `~/trademark/pool` somewhere of your own and delete the rest. Deleting the pool deletes the clearances.
 
-**The demo, if you ran one.** `~/trademark-demo` holds the demo's own copy of everything above, including
-its own copy of the program under `~/trademark-demo/program`. It is one directory to remove and it shares
-nothing with an install.
+**The demo, if you ran one.** `~/trademark-demo` holds the demo's own copy of everything above. When the
+demo runs through `npx`, that includes its own copy of the program, under `~/trademark-demo/program`. It is
+one directory to remove, and it shares nothing with an install.
 
 **The background services, if you installed them.** `clearotron stop` removes the four unit files; if you
 would rather see them, they are in `~/.config/systemd/user`:

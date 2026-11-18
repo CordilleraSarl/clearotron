@@ -860,13 +860,7 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
   // which publishes without one: the throw left publishReport at `published → null` and the runner
   // exited 1. Reading from the report's own directory is also the right answer for a republish.
   const recallStore = readStore(runDir ?? dirname(reportMd), '_driver/register-recall.json');
-  const undispatchedProbes = (recallReceiptForOwnCompany(recallStore.value)?.overflow ?? [])   // never another company's remembered conflict
-    .filter((o) => o && (o.term || o.qid))
-    .map((o) => ({
-      area: String(o.term ?? o.qid),
-      state: 'not-searched',
-      note: `over the cap, never dispatched (${String(o.qid ?? 'no probe id recorded')})`,
-    }));
+  const undispatchedProbes = undispatchedProbeRows(recallReceiptForOwnCompany(recallStore.value));   // never another company's remembered conflict
   if (recallStore.state === 'damaged' && runDir) {
     try {
       runLog(runDir, { event: 'probe-over-cap-unreadable', store: recallStore.name, error: recallStore.error });
@@ -1724,6 +1718,15 @@ export const TONE_TIER = {
   low:     EMAIL_TIER.manageable,
   minimal: EMAIL_TIER.low,
 };
+/**
+ * The gaps-sheet rows for the recall probes a run left over the cap. The probe id is the engine's: it stays in the
+ * receipt and the run record, and the cell gets nothing in its place.
+ */
+export function undispatchedProbeRows(receipt) {
+  return (receipt?.overflow ?? [])
+    .filter((o) => o && (o.term || o.qid))
+    .map((o) => ({ area: String(o.term ?? o.qid), state: 'not-searched', note: 'over the cap, never dispatched' }));
+}
 export function riskTier(word) {
   const u = String(word || '').toUpperCase();
   if (EMAIL_BANDS) {
