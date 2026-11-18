@@ -166,3 +166,18 @@ test("a slice label a run stored says 'main register search' in every workbook c
   ]);
   assert.deepEqual([ws.getRow(2).getCell(1).value, ws.getRow(2).getCell(2).value], ["Main Register Sweep", "main register search / exact: QZXV [cl 9]"]);
 });
+
+test("a coverage area the engine named by its axis reads the reader's label on Coverage & gaps; any other area is unchanged", async (t) => {
+  const out = tempBook(t, "audit.xlsx");
+  await buildAudit({ findings: [], coverage: [
+    { area: "primary-sweep", state: "confirmed-clean", note: "read in full" },
+    { area: "incumbent-class / named-owner screen", state: "confirmed-clean", note: "no matches" },
+    { area: "Japanese register check for the exact QZXV spelling", state: "open", note: "" },
+  ] }, null, out, "QZXV", { title: "QZXV" });
+  const { sheet } = await workbookRows(out);
+  const areas = sheet("Coverage & gaps").map((r) => r["Area"]);
+  assert.ok(areas.includes("main register search"), `the axis name was not relabelled: ${JSON.stringify(areas)}`);
+  assert.ok(areas.includes("owner portfolio sweep / named-owner screen"));
+  assert.ok(areas.includes("Japanese register check for the exact QZXV spelling"), "an area the engine did not name by its axis changed");
+  assert.ok(!areas.some((a) => /^(?:primary-sweep|incumbent-class|transliteration-numeric)\b/.test(a)), "an engine axis identifier reached an Area cell");
+});
