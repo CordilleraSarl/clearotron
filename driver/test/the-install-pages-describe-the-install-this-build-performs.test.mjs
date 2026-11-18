@@ -341,7 +341,7 @@ test("the release notes promise what setup does", () => {
   // What the note promises is what setup's offer and its engine question say, for every program it installs.
   // The note says setup "says what it found on this computer"; each row says it in the approved words.
   for (const [id, eng] of Object.entries(ENGINE_BINARIES).filter(([, e]) => e.package)) {
-    assert.match(installSizeLine(eng), /^It takes about \d+ MB\. To remove it, delete that folder\.$/,
+    assert.match(installSizeLine(eng), /^It takes about \d+ MB\. To remove it, delete that folder\. npm also keeps a copy of the download in its cache, `~\/\.npm\/_cacache`; `npm cache clean --force` empties it\.$/,
       `setup's install offer for ${eng.product} names no size, which the release note promises`);
     const row = (found) => engineOptions({ [id]: found }).find((o) => o.id === id).label;
     // The version here stands for "some version" and is taken from the engine's own floor: a row whose

@@ -13,6 +13,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { VARIANTS_SENTENCES } from "./ruled-sentences-variants.mjs";
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-variants");
 const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
@@ -20,10 +21,10 @@ const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
 test("the variants manual generates one script form per market the frame names", () => {
   const manual = flat("SKILL.md");
   for (const ruled of [
-    "| foreign-transliteration | One script form per market the frame names whose buyers read a non-Latin script.",
-    "| variant | foreign-transliteration | applied | one per market the frame names whose buyers read a non-Latin script | — |",
-    "runs for each market the frame names whose buyers read a non-Latin script, or for a non-Latin mark; drop where no such market is named",
-    "- [ ] Foreign transliterations generated, one per market the frame names whose buyers read a non-Latin script",
+    VARIANTS_SENTENCES.foreignTransliterationOneScriptForm,
+    VARIANTS_SENTENCES.variantForeignTransliterationAppliedOne,
+    VARIANTS_SENTENCES.runsForEachMarketThe,
+    VARIANTS_SENTENCES.foreignTransliterationsGeneratedOnePer,
   ]) assert.ok(manual.includes(ruled), `the variants manual does not say "${ruled}"`);
   for (const gone of ["Always for worldwide/multi-region scope", "6 variants — worldwide scope", "runs for worldwide / multi-region scope",
     "generated for worldwide/multi-region scope"])

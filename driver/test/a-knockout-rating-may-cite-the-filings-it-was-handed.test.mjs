@@ -16,6 +16,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { knockoutReceipts } from "../verify-knockout.mjs";
+import { ASSESS_SENTENCES } from "./ruled-sentences-knockout-assess.mjs";
 
 const FILING = "https://register.example.test/mark/lanternwick-001";
 const OTHER = "https://register.example.test/mark/novapulse-002";
@@ -60,7 +61,7 @@ test("a mark with no payload may still cite a held filing, and nothing else", ()
 // ── ONE RULE, IN EVERY PLACE THE RATING STEP READS IT ─────────────────────────────────────────────────
 // The step's message, its manual and the refusal it meets all state the same rule (design's wording, 2026-10-19).
 // They are engine-independent strings, composed once here; the manual reaches both engines through the step's reads.
-const RULE = "A cited URL must come from a recorded research payload for this batch, a filing held for this batch, or a recorded owner check linked to a held filing.";
+const RULE = ASSESS_SENTENCES.citedUrlMustComeFrom;
 function REFUSAL(mark, url) {
   return `knockout_url_unreceipted:${mark}: "${url}" is not traceable to a recorded research payload for this batch, a filing held for this batch, or a recorded owner check linked to a held filing. Cite a source from that held evidence.`;
 }

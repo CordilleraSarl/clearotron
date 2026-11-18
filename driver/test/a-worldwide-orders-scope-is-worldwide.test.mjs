@@ -16,6 +16,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { scopeJurisdictions } from "../scope-ledger.mjs";
 import { jurisdictionScopeFlags } from "../frame-diff-model.mjs";
+import { VARIANTS_SENTENCES } from "./ruled-sentences-variants.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 const row = (item, status = "applied") => ({ layer: "jurisdiction", item, status, reason: "the order", reopen_trigger: "—" });
@@ -44,8 +45,7 @@ test("a named order is read as before", () => {
 
 test("the variants manual gives a worldwide order one applied row, and the checklist says the same", () => {
   const manual = readFileSync(join(DRIVER, "skills", "clearance-variants", "SKILL.md"), "utf8").replace(/\s+/g, " ");
-  assert.ok(manual.includes("On a worldwide order the scope is worldwide: one `applied` row. Markets named for narrowing a crowd are priorities, never scope."));
-  assert.ok(manual.includes("jurisdiction (on a worldwide order one `applied` worldwide row; otherwise one `applied` row per instructed territory, "
-    + "one `dropped` row per territory considered and excluded)"));
+  assert.ok(manual.includes(VARIANTS_SENTENCES.worldwideOrderTheScopeWorldwide));
+  assert.ok(manual.includes(VARIANTS_SENTENCES.jurisdictionWorldwideOrderOneApplied));
   assert.ok(!manual.includes("This is the authoritative scope the register sweep is bounded to"), "the manual still bounds the sweep to the ledger's rows");
 });

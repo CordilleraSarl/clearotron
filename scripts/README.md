@@ -153,6 +153,7 @@ row that names a file this folder does not hold.
 | `compare.mjs` | by hand |
 | `composer-render-check.mjs` | CI |
 | `contract-dictation-scan.mjs` | by hand, `npm run contract-dictation` |
+| `count-manual-pins.mjs` | by hand |
 | `dead-names.mjs` | by hand, `npm run retired-settings` |
 | `demo-evidence.mjs` | CI |
 | `deprecate-below.mjs` | CI |
@@ -188,6 +189,7 @@ row that names a file this folder does not hold.
 | `mint-public-residue.mjs` | by hand |
 | `mint-reference-strip-backlog.mjs` | by hand |
 | `mint-search-level-tags.mjs` | by hand |
+| `mint-source-pin-census.mjs` | by hand |
 | `mint-suite-census.mjs` | CI |
 | `mint-writing-standard-backlog.mjs` | by hand |
 | `nightly-notice.mjs` | by hand |

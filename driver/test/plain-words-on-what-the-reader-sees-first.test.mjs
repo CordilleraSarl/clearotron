@@ -214,6 +214,7 @@ test("the reviewer decides nothing — a flagged run still returns a receipt, no
 // naming the field.
 
 import { renderKnockoutHtml } from "../publish/render-knockout.mjs";
+import { ASSESS_SENTENCES } from "./ruled-sentences-knockout-assess.mjs";
 
 const FW_R = { framework_key: "t", bands: [{ label: "Blocking", tone: "severe" }, { label: "Medium", tone: "medium" }] };
 const MARKER = "zzmarkerzz";
@@ -316,7 +317,7 @@ test("the skill carries the two-register rule, and its worked examples obey it",
 
 test("the skill's own worked notes sort the way the skill says they do", () => {
   const skill = readFileSync(SKILL, "utf8");
-  const section = skill.slice(skill.indexOf("A note is verb-first"), skill.indexOf("## The per-mark opening read"));
+  const section = skill.slice(skill.indexOf("A note is verb-first"), skill.indexOf(ASSESS_SENTENCES.thePerMarkOpeningRead));
   const quotes = [...section.matchAll(/^> "(.+?)"$/gms)].map((m) => m[1].replace(/\s*>\s*/g, " "));
   assert.ok(quotes.length >= 4, `expected the worked notes, found ${quotes.length}`);
   // The renderer's own reader, restated: a note naming the request is a request note.

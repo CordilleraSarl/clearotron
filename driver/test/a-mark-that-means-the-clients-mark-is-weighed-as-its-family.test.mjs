@@ -10,12 +10,13 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { INQUIRY_SENTENCES } from "./ruled-sentences-placement-inquiry.mjs";
 
 const MANUAL = readFileSync(new URL("../skills/placement-inquiry/SKILL.md", import.meta.url), "utf8");
-const MEANING = "A mark whose meaning is the client's mark or its dominant element, in any language, is weighed as a same-family mark whatever its spelling.";
+const MEANING = INQUIRY_SENTENCES.markWhoseMeaningTheClient;
 
 test("the family rule weighs a mark that means the client's mark or its dominant element as a same-family mark, in the ruled words", () => {
-  const family = MANUAL.split("\n").filter((l) => l.startsWith("- **Don't dump a look-alike or shared-meaning family when one member is in our field.**"));
+  const family = MANUAL.split("\n").filter((l) => l.startsWith(INQUIRY_SENTENCES.donDumpLookAlikeShared));
   assert.equal(family.length, 1, "guard: the manual holds one family rule");
   assert.ok(family[0].includes(MEANING), "the family rule does not carry the meaning sentence word for word");
   assert.equal(MANUAL.split(MEANING).length - 1, 1, "the sentence stands once, in the family rule");

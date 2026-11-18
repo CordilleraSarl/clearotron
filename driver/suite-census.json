@@ -310,8 +310,8 @@
           "todos": 0
         },
         "a-client-cell-carries-no-raw-engine-words.test.mjs": {
-          "tests": 5,
-          "asserts": 18,
+          "tests": 7,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
@@ -340,8 +340,8 @@
           "todos": 0
         },
         "a-codex-attempt-records-where-its-time-went.test.mjs": {
-          "tests": 5,
-          "asserts": 13,
+          "tests": 6,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -364,8 +364,8 @@
           "todos": 0
         },
         "a-command-printed-from-npx-outlives-the-cache.test.mjs": {
-          "tests": 3,
-          "asserts": 14,
+          "tests": 4,
+          "asserts": 16,
           "skips": 1,
           "todos": 0
         },
@@ -1235,7 +1235,7 @@
         },
         "a-knockout-part-that-failed-as-a-whole-is-in-its-audit-workbook.test.mjs": {
           "tests": 8,
-          "asserts": 25,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
@@ -2742,6 +2742,12 @@
         "a-tool-serves-only-its-own-runs-files.test.mjs": {
           "tests": 4,
           "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-turn-stopped-while-working-is-resumed-not-restarted.test.mjs": {
+          "tests": 5,
+          "asserts": 31,
           "skips": 0,
           "todos": 0
         },
@@ -4347,6 +4353,18 @@
           "skips": 0,
           "todos": 0
         },
+        "each-attempt-records-how-much-of-each-manual-its-model-was-shown.test.mjs": {
+          "tests": 8,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
+        "each-finding-card-is-a-heading-inside-the-main-landmark.test.mjs": {
+          "tests": 3,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "each-organisations-generic-carries-the-daily-cap.test.mjs": {
           "tests": 7,
           "asserts": 14,
@@ -4378,8 +4396,8 @@
           "todos": 0
         },
         "effective-scope.test.mjs": {
-          "tests": 15,
-          "asserts": 44,
+          "tests": 16,
+          "asserts": 47,
           "skips": 0,
           "todos": 0
         },
@@ -4433,7 +4451,7 @@
         },
         "engine.anthropic.test.mjs": {
           "tests": 70,
-          "asserts": 263,
+          "asserts": 264,
           "skips": 2,
           "todos": 0
         },
@@ -4931,7 +4949,7 @@
         },
         "instrumentation-house-rule.test.mjs": {
           "tests": 17,
-          "asserts": 122,
+          "asserts": 125,
           "skips": 0,
           "todos": 0
         },
@@ -5316,6 +5334,12 @@
         "one-country-report-is-byte-identical.test.mjs": {
           "tests": 3,
           "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "one-inline-markdown-dialect-on-both-report-pages.test.mjs": {
+          "tests": 4,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -6131,7 +6155,7 @@
         },
         "render-frozen.test.mjs": {
           "tests": 6,
-          "asserts": 18,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
@@ -6334,8 +6358,8 @@
           "todos": 0
         },
         "run-queue-help-does-not-invite-a-bare-run.test.mjs": {
-          "tests": 2,
-          "asserts": 6,
+          "tests": 3,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -6664,8 +6688,8 @@
           "todos": 0
         },
         "setup-keeps-the-ai-you-picked-and-offers-a-way-on.test.mjs": {
-          "tests": 5,
-          "asserts": 17,
+          "tests": 6,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
@@ -8235,6 +8259,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-ruled-sentences-tests-hold-are-in-their-manuals.test.mjs": {
+          "tests": 4,
+          "asserts": 18,
+          "skips": 1,
+          "todos": 0
+        },
         "the-run-key-is-unique-where-it-is-read.test.mjs": {
           "tests": 5,
           "asserts": 12,
@@ -8409,6 +8439,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-tests-that-pin-source-are-a-floor.test.mjs": {
+          "tests": 2,
+          "asserts": 9,
+          "skips": 1,
+          "todos": 0
+        },
         "the-title-and-attribution-sweep-takes-the-label.test.mjs": {
           "tests": 30,
           "asserts": 99,
@@ -8496,6 +8532,12 @@
         "the-workbook-summary-counts-every-row-it-shows-open.test.mjs": {
           "tests": 2,
           "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-workbook-tags-each-driver-as-the-page-does.test.mjs": {
+          "tests": 4,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -9536,8 +9578,8 @@
           "todos": 0
         },
         "inlineMd.test.ts": {
-          "tests": 7,
-          "asserts": 16,
+          "tests": 8,
+          "asserts": 21,
           "skips": 0,
           "todos": 0
         },
@@ -9651,7 +9693,7 @@
         },
         "profileFields.test.ts": {
           "tests": 57,
-          "asserts": 190,
+          "asserts": 191,
           "skips": 0,
           "todos": 0
         },
@@ -9674,8 +9716,8 @@
           "todos": 0
         },
         "recommendSearch.test.ts": {
-          "tests": 7,
-          "asserts": 20,
+          "tests": 8,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },

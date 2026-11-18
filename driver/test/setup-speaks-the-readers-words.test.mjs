@@ -87,7 +87,7 @@ test("the register check's result names the register and what it checked, as the
   assert.equal(typeof onboard.registerCheckPassed, "function", "setup has no composer for the check's result");
   assert.equal(onboard.registerCheckPassed("signa", "SIGNA_API_KEY"),
     "the register credential check passed for \"signa\" — checked SIGNA_API_KEY");
-  onceIn("ok(registerCheckPassed(pf.result.provider, pf.result.checked.join(\" + \")));", "the check's result");
+  onceIn("registerCheckPassed(pf.result.provider, pf.result.checked.join(\" + \")));", "the check's result");
 });
 
 // The public-address step, in the order a reader meets it: its heading, the sentence that says what skipping

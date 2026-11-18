@@ -33,9 +33,10 @@ import { parseFindingsJson, bindRecommendation, sentenceCaseLead, CLIENT_TIER_BY
 import { REC, inPriorityWindow, ownerDisplayName } from '../registry-fidelity.mjs';
 import { registrationSystem } from '../jurisdiction-systems.mjs';
 import { READ_LEAD_RE } from '../report-card-record.mjs';   // D3 — the dedupe gate and the card's acceptance are ONE predicate
-import { REPORT_ROOT, REPORT_ROOT_DARK_EXPLICIT, THEME_INIT_EXPLICIT, FAVICON_LINK, logoLockup, BRAND, confPosture, sectionStrip } from '../../shared/brand.mjs';
+import { logoLockup, BRAND, confPosture, sectionStrip } from '../../shared/brand.mjs';
 import { NAV_CSS } from '../../shared/site-nav.mjs';
-import { REPORT_FONT_STYLE } from '../../shared/brand-fonts.mjs';   // the typefaces travel inside the report; it fetches nothing to draw its text
+import { pageShell } from './page-shell.mjs';   // the document shell, shared with the knockout template
+import { inlineMarkdown } from '../../shared/inline-markdown.mjs';   // the inline-markdown dialect, shared with the knockout template
 import { isEntrypoint } from "../../shared/is-entrypoint.mjs";   // — realpath both sides, or a symlinked invocation exits 0 silently
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -340,29 +341,9 @@ export function homeButton(href, label = '← All reports') {
 function inline(s) {
   // T6 (H7): internal-note handling routes through the ONE choke point (publish/parse.mjs
   // stripInternal) BEFORE escaping — global, wrapped-marker-aware; nothing raw survives on any surface.
-  s = stripInternal(s, { client: false });
-  s = esc(s);
-  // External links open in a new tab (spec 47 UX) — internal anchors keep same-tab navigation.
-  // Provenance honesty: an authored 'Corsearch · <name>' label whose href is NOT a Corsearch page
-  // (live case: Steam storefront links labelled as the register vendor) gets its vendor token replaced
-  // by the link's actual host — a lawyer must never cite a storefront as a register record.
-  s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (mm, txt, href) => {
-    let label = txt;
-    const vend = /^(Corsearch)\s*·\s*(.+)$/i.exec(txt);
-    if (vend && /^https?:\/\//i.test(href) && !/corsearch\./i.test(href)) {
-      try { label = `${new URL(href.replace(/&amp;/g, '&')).host.replace(/^www\./, '')} · ${vend[2]}`; } catch { /* keep authored label */ }
-    }
-    // XSS: href was already esc()'d above (& < >), but esc() does NOT escape quotes — a `"` in href would
-    // break out of the attribute. Quote-escape it here. NOT escAttr(), which re-runs esc() and would
-    // double-encode `&` in query strings (?a=1&amp;b=2 -> &amp;amp;). Also allow only safe schemes
-    // (http/https/mailto/#fragment); anything else (javascript:, data:, vbscript:, …) renders as PLAIN TEXT.
-    if (!(/^https?:\/\//i.test(href) || /^mailto:/i.test(href) || href.startsWith('#'))) return label;
-    const safeHref = href.replace(/"/g, '&quot;');
-    return /^https?:\/\//i.test(href) ? `<a href="${safeHref}" target="_blank" rel="noopener noreferrer">${label}</a>` : `<a href="${safeHref}">${label}</a>`;
-  });
-  s = s.replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
-  s = s.replace(/\*([^*]+)\*/g, '<i>$1</i>');
-  return s;
+  // Then the one inline-markdown dialect both report renderers read (shared/inline-markdown.mjs): links, bold,
+  // italic and code, with its link-target guard and the vendor-label check.
+  return inlineMarkdown(esc(stripInternal(s, { client: false })));
 }
 
 // Internal-labelled items get a class so the print stylesheet can honour the export promise
@@ -1354,12 +1335,12 @@ function alsoConsideredSection(ruledOut, recordsByUri = new Map(), opts = {}) {
     const why = f.ruled_out_reason ? esc(f.ruled_out_reason)
       : f.net ? esc(String(f.net))
       : 'a different name in a related field — not a conflict with your mark';
-    const legal = f.legal_position ? esc(String(f.legal_position)) : '';
-    const practical = f.practical_position ? esc(String(f.practical_position)) : '';
+    const legal = f.legal_position ? inline(String(f.legal_position)) : '';
+    const practical = f.practical_position ? inline(String(f.practical_position)) : '';
     const fold = (legal || practical)
       ? `<details class="roff"><summary>Why it was ruled out</summary>${legal ? `<p><b>Legal position.</b> ${legal}</p>` : ''}${practical ? `<p><b>Practical position.</b> ${practical}</p>` : ''}</details>` : '';
     return `<div class="card ruled"><div class="top"><div class="rail"></div><div class="body"><div class="cardhead">${
-      f.ordinal != null ? `<span class="fnum">${esc(String(f.ordinal))}</span>` : ''}<span class="who mark-first">${esc(f.mark || '')}</span>${
+      f.ordinal != null ? `<span class="fnum">${esc(String(f.ordinal))}</span>` : ''}<h3 class="who mark-first">${esc(f.mark || '')}</h3>${
       who ? `<span class="cwho">${esc(who)}</span>` : ''}<span class="tier ruled">Ruled out</span><button class="ask-fi no-print">\u2726 Ask AI about this finding</button></div><div class="oneline">${why}</div>${fold}</div></div></div>`;
   }).join('');
   const groups = clearedGroupsHtml(sd, opts.auditFile);
@@ -1989,7 +1970,7 @@ function cardTitleParts(f, who) {
   const code = regionCode(f);
   const where = code && code !== COMMON_LAW ? (regionName(code) || code) : '';
   const tail = [where, classes ? `Class ${classes}` : ''].filter(Boolean).join(' \u00b7 ');
-  const title = `<span class="who mark-first">${esc(f.mark || who || '')}${tail ? ` <span class="where">\u2014 ${esc(tail)}</span>` : ''}</span>`;
+  const title = `<h3 class="who mark-first">${esc(f.mark || who || '')}${tail ? ` <span class="where">\u2014 ${esc(tail)}</span>` : ''}</h3>`;
   const ownerLine = who ? `<div class="owner-line"><span class="ok">Owner</span> ${esc(who)}</div>` : '';
   return { title, ownerLine };
 }
@@ -2263,7 +2244,7 @@ function coverageGrid(coverage, { verdict = true } = {}) {
     // mark that does not exist, inside the report that clears it. Measured across the nine delivered
     // runs in the pool, `coverage[]` carries no axis identifier at all; the ones that leaked were the
     // coverage_judgment rows, which now carry a driver-emitted `areaLabel` and fold through it.
-    return `<div class="covcell ${s.cls}"><div class="ck">${s.ic}</div><div><div class="ct">${esc(cap(c.area))}${tag}</div><div class="cd">${esc(c.note || '')}</div></div></div>`;
+    return `<div class="covcell ${s.cls}"><div class="ck">${s.ic}</div><div><div class="ct">${esc(cap(c.area))}${tag}</div><div class="cd">${inline(c.note || '')}</div></div></div>`;
   };
   const covered = coverage.filter(c => c.state === 'confirmed-clean');
   const rest = coverage.filter(c => c.state !== 'confirmed-clean');
@@ -2295,26 +2276,21 @@ function method(_text) {
 // controls and rendered nothing without them, so took it with them.
 
 
-// Brand :root tokens are sourced from shared/brand.mjs (REPORT_ROOT) and prepended to the
-// report stylesheet, so report.css carries only rules — the palette lives in ONE place across surfaces.
-// + the shared floating-nav CSS, with a report-only override: the report already has a sticky .topbar at
+// The report's base sheet (brand tokens + report.css) and its print rule are the page shell's (page-shell.mjs);
+// this file adds the shared floating-nav CSS, with a report-only override: the report already has a sticky .topbar at
 // top:0, so the cross-page nav renders STATIC (a band above it that scrolls away) — two stacked sticky bars
 // would overlap. Internal report only (stripped on the client export, like every internal control).
 // The report wraps the cross-page nav + its own action bar in ONE sticky container (.rep-stickyhead), so
 // the nav no longer scrolls away while the topbar stays (the "nav disappears on scroll" bug). Inside the
 // wrapper the nav is static and drops its own shadow — the wrapper/topbar border provides the separation.
 // The report's CSS in three parts so the INTERNAL report can LINK the shared chrome instead of inlining it
-// (D — <pool>/assets/chrome.css, written by regenIndex): REPORT_BASE (tokens + report.css) + REP_OVERRIDE stay
+// (D — <pool>/assets/chrome.css, written by regenIndex): the shell's base sheet + REP_OVERRIDE stay
 // inline on every variant; NAV_SHEET (the shared nav/toggle/fab chrome) is inlined on the client export (a
 // portable, self-contained deliverable) but LINKED on the internal report so a chrome tweak reaches every
 // already-published internal report on the next view with no re-render. The <link> is emitted AFTER the inline
 // <style> so the cascade order (chrome after report.css, as today) is identical to the all-inline export.
-const REPORT_BASE = REPORT_ROOT + '\n' + readFileSync(join(HERE, 'templates', 'report.css'), 'utf8');
 const NAV_SHEET = NAV_CSS;
 const REP_OVERRIDE = '.rep-stickyhead .sitenav{position:static;box-shadow:none;border-bottom:none;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}';
-// Print always renders light: re-assert the REPORT_ROOT light tokens under [data-theme=dark] inside @media
-// print (a dark-toggled report must never print on near-black — ink/banding + legal-document convention).
-const PRINT_LIGHT = '\n@media print{' + REPORT_ROOT.replace(':root{', ':root[data-theme="dark"]{color-scheme:light;') + '}';
 const PAGE_JS = `var _hidden=[];
 function exportPDF(){_hidden=[];document.querySelectorAll('.card').forEach(function(card){var cb=card.querySelector('input.pickbox');if(cb&&!cb.checked){card.classList.add('print-hidden');_hidden.push(card);}});window.print();}
 function pickAll(v){document.querySelectorAll('input.pickbox').forEach(function(cb){cb.checked=v;});}
@@ -2326,7 +2302,7 @@ function openAll(v){document.querySelectorAll('details.drill,details.method,deta
 // deep-link load; non-card #-links (#common-law) fall through to native nav.
 function _cardReveal(el){var p=el.parentElement;while(p){if(p.tagName==='DETAILS'&&!p.open)p.open=true;p=p.parentElement;}}
 function _cardHashGo(){var id=location.hash.slice(1);if(id.charAt(0)!=='c'||!/^[0-9]+$/.test(id.slice(1)))return;var el=document.getElementById(id);if(!el)return;_cardReveal(el);el.scrollIntoView({block:'start'});}
-document.addEventListener('click',function(e){var a=e.target.closest?e.target.closest('a[href^="#c"]'):null;if(!a)return;var id=(a.getAttribute('href')||'').slice(1);if(id.charAt(0)!=='c'||!/^[0-9]+$/.test(id.slice(1)))return;var el=document.getElementById(id);if(!el)return;_cardReveal(el);e.preventDefault();try{if(history.replaceState)history.replaceState(null,'','#'+id);}catch(err){}el.scrollIntoView({behavior:'smooth',block:'start'});});
+document.addEventListener('click',function(e){var a=e.target.closest?e.target.closest('a[href^="#c"]'):null;if(!a)return;var id=(a.getAttribute('href')||'').slice(1);if(id.charAt(0)!=='c'||!/^[0-9]+$/.test(id.slice(1)))return;var el=document.getElementById(id);if(!el)return;_cardReveal(el);e.preventDefault();try{if(history.replaceState)history.replaceState(null,'','#'+id);}catch(err){}el.scrollIntoView({behavior:(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)?'auto':'smooth',block:'start'});});
 window.addEventListener('hashchange',_cardHashGo);
 window.addEventListener('load',_cardHashGo);
 window.addEventListener('beforeprint',function(){document.querySelectorAll('details').forEach(function(d){d.dataset.o=d.open?'1':'';d.open=true;});});
@@ -2373,10 +2349,10 @@ function markAssessmentBlock(ma) {
   const cmRows = [], crRows = [];
   for (const v of [ma.distinctiveness, ma.connotation]) {
     if (!v || typeof v !== 'object') continue;
-    for (const r of Array.isArray(v.per_class) ? v.per_class : []) cmRows.push(`<li><b>Class ${esc(String(r.class))}.</b> ${esc(r.note)}</li>`);
-    for (const r of Array.isArray(v.per_market) ? v.per_market : []) cmRows.push(`<li><b>${esc(r.market)}.</b> ${esc(r.note)}</li>`);
+    for (const r of Array.isArray(v.per_class) ? v.per_class : []) cmRows.push(`<li><b>Class ${esc(String(r.class))}.</b> ${inline(r.note)}</li>`);
+    for (const r of Array.isArray(v.per_market) ? v.per_market : []) cmRows.push(`<li><b>${esc(r.market)}.</b> ${inline(r.note)}</li>`);
     for (const r of Array.isArray(v.counter_registrations) ? v.counter_registrations : []) {
-      crRows.push(`<li><b>${esc(r.mark || r.uri || '')}</b>${r.owner ? ` — ${esc(r.owner)}` : ''}${r.note ? ` — ${esc(r.note)}` : ''}</li>`);
+      crRows.push(`<li><b>${esc(r.mark || r.uri || '')}</b>${r.owner ? ` — ${esc(r.owner)}` : ''}${r.note ? ` — ${inline(r.note)}` : ''}</li>`);
     }
   }
   const dist = lead(ma.distinctiveness), conn = lead(ma.connotation);
@@ -2778,32 +2754,16 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
     covNum = num();
   }
 
-  // Dark theme rides at EMIT time — the module-level CSS const stays untouched (its light half must render
-  // byte-identically). The toggle arrives via the nav.
-  //
-  // EXPLICIT ONLY. This said "full gating: dark block WITH the @media auto-dark +
-  // the OS-aware init", and that predates the client-surface ruling. A clearance report is the product's
-  // most client-facing artefact — it is opened in front of a client, and the portal frames it for one —
-  // and a client surface must never follow the OS colour preference. It went dark on a dark-mode laptop,
-  // as a delivered legal document, on the standalone file AND framed in the portal, because the shell
-  // does not strip the rule.
-  //
-  // The knockout renderer already took the explicit pair; the two report lanes disagreed and the wrong
-  // one was the bigger deliverable. Dark is still fully reachable, by the toggle and by a choice carried
-  // from any other surface — this removes the automatic part only.
-  const darkCss = REPORT_ROOT_DARK_EXPLICIT;
-  const themeInitScript = THEME_INIT_EXPLICIT;
+  // The explicit dark pair, the typefaces, the favicon, the base sheet and the print rule are the shell's
+  // (page-shell.mjs, which says why the dark pair is explicit only).
   // D: the report LINKS the shared chrome (opts.chromeHref → <pool>/assets/chrome.css); direct callers with
   // no chromeHref keep it inline. Link emitted after the <style> so chrome stays last in the cascade.
   const linkChrome = !!opts.chromeHref;
-  const cssInline = REPORT_BASE + '\n' + (linkChrome ? '' : NAV_SHEET) + '\n' + REP_OVERRIDE;
-  const chromeLinkTag = linkChrome ? `<link rel="stylesheet" href="${escAttr(opts.chromeHref)}">` : '';
-  const doc = `<!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${productName ? `${esc(productName)} — ` : ''}${esc(fm.title || '')} · ${esc(BRAND.name)}</title>
-${REPORT_FONT_STYLE}${FAVICON_LINK}${themeInitScript}
-<style>${cssInline}${darkCss}${PRINT_LIGHT}</style>${chromeLinkTag}</head><body class="has-glow">
-<div class="rep-stickyhead no-print">
+  const doc = pageShell({
+    title: `${productName ? `${esc(productName)} — ` : ''}${esc(fm.title || '')}`,
+    css: (linkChrome ? '' : NAV_SHEET) + '\n' + REP_OVERRIDE,
+    chromeHref: opts.chromeHref,
+    body: `<div class="rep-stickyhead no-print">
 <div class="topbar no-print">
   ${/* ONE BAR (the 2026-09-16 report redesign). The site bar is not rendered on a report, so the brand belongs here:
        a reader met two stacked headers, and the lower one carried the only brand. */''}
@@ -2840,6 +2800,7 @@ ${REPORT_FONT_STYLE}${FAVICON_LINK}${themeInitScript}
 </div>
 
 <div class="wrap">
+<main>
   <!-- doc-52 §1 THE VERDICT — the answer leads: mark · band · one plain "subject to" line · the lawyer's
        questions answered · the time-critical alert. Process + coverage detail are below and collapsible. -->
   <header class="hero" id="summary">
@@ -2888,6 +2849,7 @@ ${REPORT_FONT_STYLE}${FAVICON_LINK}${themeInitScript}
        (owner, 2026-09-16: no coverage narrative on the page). What is left is counts, folded closed:
        completed work appears as numbers and cleared names, never as the engine's account of itself. -->
   ${whatWasSearchedSection(opts, coverage, findings, recordsByUri)}
+</main>
 
   <footer>
     ${/* ONE CLIENT LINE, AND IT NAMES WHAT EACH DATE IS. It ran to four.
@@ -2938,8 +2900,8 @@ ${REPORT_FONT_STYLE}${FAVICON_LINK}${themeInitScript}
     ${logoLockup({ mark: 16 })}
   </footer>
 </div>
-<script>${PAGE_JS}</script>
-</body></html>`;
+<script>${PAGE_JS}</script>`,
+  });
   return doc.replace('<!--SECTION-STRIP-->', sectionStrip(doc, STRIP));
 }
 

@@ -1,0 +1,56 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
+// publish/page-shell.mjs — the document both report renderers wrap their page in.
+//
+// The clearance report (render.mjs) and the Knockout (render-knockout.mjs) built this shell each on its own: the same
+// head, title, typefaces, favicon, theme script and style block, written twice, with the report's base sheet and the
+// print rule defined in both files. A change a skin needs, to the head, the fonts, the theme or print, had to be made
+// twice, and the two copies had already drifted on the chrome sheet.
+//
+// WHAT DIFFERS BETWEEN THE TWO PAGES IS AN INPUT, NEVER A SWITCH. Each renderer passes its own title, its own sheet and,
+// when the pool serves one, the address of the shared chrome sheet. The clearance inlines the chrome only when it is
+// given no address, and the Knockout always inlines it; each decides that in what it passes as `css`, so the shell
+// emits each page's bytes exactly as its renderer wrote them before. Converging the two would change a page a reader
+// sees, and is not this module's to do.
+import { readFileSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { REPORT_ROOT, REPORT_ROOT_DARK_EXPLICIT, THEME_INIT_EXPLICIT, FAVICON_LINK, BRAND } from '../../shared/brand.mjs';
+import { REPORT_FONT_STYLE } from '../../shared/brand-fonts.mjs';   // the typefaces travel inside the report; it fetches nothing to draw its text
+
+const HERE = dirname(fileURLToPath(import.meta.url));
+const escHtml = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+// Brand :root tokens are sourced from shared/brand.mjs (REPORT_ROOT) and prepended to the report stylesheet, so
+// report.css carries only rules — the palette lives in ONE place across surfaces.
+export const REPORT_BASE = REPORT_ROOT + '\n' + readFileSync(join(HERE, 'templates', 'report.css'), 'utf8');
+// Print always renders light: re-assert the REPORT_ROOT light tokens under [data-theme=dark] inside @media
+// print (a dark-toggled report must never print on near-black — ink/banding + legal-document convention).
+const PRINT_LIGHT = '\n@media print{' + REPORT_ROOT.replace(':root{', ':root[data-theme="dark"]{color-scheme:light;') + '}';
+
+// Dark theme rides at EMIT time — the module-level sheets stay untouched (their light half must render
+// byte-identically). The toggle arrives via the nav.
+//
+// EXPLICIT ONLY. A report is the product's most client-facing artefact — it is opened in front of a client, and the
+// portal frames it for one — and a client surface must never follow the OS colour preference. The clearance report
+// once emitted the automatic pair and went dark on a dark-mode laptop, as a delivered legal document, on the
+// standalone file AND framed in the portal, because the portal's shell does not strip the rule. The Knockout already
+// took the explicit pair. Dark is still fully reachable, by the toggle and by a choice carried from any other
+// surface; only the automatic part is gone.
+
+/**
+ * One report page. `title` is the page's own title as HTML, already escaped by its renderer; the shell adds the
+ * product's name after it. `css` is the renderer's sheet, placed after the base sheet and before the dark and print
+ * rules. `chromeHref`, when given, links the pool's shared chrome sheet after the inline style, so the chrome stays
+ * last in the cascade. `body` is everything inside <body>.
+ */
+export function pageShell({ title, css, chromeHref, body }) {
+  const chromeLinkTag = chromeHref ? `<link rel="stylesheet" href="${escHtml(chromeHref)}">` : '';
+  return `<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${title} · ${escHtml(BRAND.name)}</title>
+${REPORT_FONT_STYLE}${FAVICON_LINK}${THEME_INIT_EXPLICIT}
+<style>${REPORT_BASE}\n${css}${REPORT_ROOT_DARK_EXPLICIT}${PRINT_LIGHT}</style>${chromeLinkTag}</head><body class="has-glow">
+${body}
+</body></html>`;
+}

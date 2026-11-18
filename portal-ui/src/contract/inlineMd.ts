@@ -16,19 +16,38 @@
 // nodes, React escapes every one of them, and no string in this file is ever markup. `<script>` in an
 // assessment renders as the characters `<script>`, which is what a reader should see.
 
-/** The three inline forms the engine's renderer honours. Anything else is prose. */
-export type InlineStyle = 'strong' | 'em' | 'code'
+/** The four inline forms the engine's renderers honour (shared/inline-markdown.mjs). Anything else is prose. */
+export type InlineStyle = 'link' | 'strong' | 'em' | 'code'
 
 export type InlineSpan = {
   readonly text: string
   /** Null means plain prose — the common case, and the reason this is nullable rather than a list. */
   readonly style: InlineStyle | null
+  /** A link's target, on a `link` span only: http(s) or mailto, never anything that runs. */
+  readonly href?: string
 }
 
-// The forms, IN THE ORDER `render-knockout.mjs` applies them: bold first, so the inner asterisks of a
-// `**bold**` run are never read as a pair of italics. One alternation rather than three passes, which
-// keeps the precedence in one place instead of in the order of three statements.
-const INLINE = /\*\*([^*]+)\*\*|\*([^*]+)\*|`([^`]+)`/g
+// The forms, IN THE ORDER shared/inline-markdown.mjs applies them: links, then bold, so the inner asterisks of a
+// `**bold**` run are never read as a pair of italics. One alternation rather than four passes, which keeps the
+// precedence in one place instead of in the order of four statements.
+const INLINE = /\[([^\]]+)\]\(([^)]+)\)|\*\*([^*]+)\*\*|\*([^*]+)\*|`([^`]+)`/g
+
+// THE REPORTS' LINK GUARD, mirrored. http(s) and mailto become links; any other scheme (javascript:, data:, …) is the
+// label as prose. An in-page `#` anchor, which a report page can land on, has nothing to land on here, so it is prose
+// too. A label is text: the reports run their emphasis over a link's label, and this does not, as with nesting below.
+const isLinkTarget = (href: string) => /^https?:\/\//i.test(href) || /^mailto:/i.test(href)
+
+// Provenance honesty, as the reports apply it: a 'Corsearch · <name>' label on a link that is NOT a Corsearch page
+// names the link's real host instead — a storefront must never read as the register vendor's record.
+function linkLabel(label: string, href: string): string {
+  const vend = /^(Corsearch)\s*·\s*(.+)$/i.exec(label)
+  if (!vend || !/^https?:\/\//i.test(href) || /corsearch\./i.test(href)) return label
+  try {
+    return `${new URL(href).host.replace(/^www\./, '')} · ${vend[2]}`
+  } catch {
+    return label
+  }
+}
 
 /**
  * One paragraph of engine prose, as spans to render.
@@ -49,8 +68,11 @@ export function inlineSpans(text: string): readonly InlineSpan[] {
   INLINE.lastIndex = 0
   for (let m = INLINE.exec(src); m !== null; m = INLINE.exec(src)) {
     if (m.index > at) out.push({ text: src.slice(at, m.index), style: null })
-    const [, bold, italic, code] = m
-    if (bold !== undefined) out.push({ text: bold, style: 'strong' })
+    const [, label, href, bold, italic, code] = m
+    if (label !== undefined && href !== undefined) {
+      const text = linkLabel(label, href)
+      out.push(isLinkTarget(href) ? { text, style: 'link', href } : { text, style: null })
+    } else if (bold !== undefined) out.push({ text: bold, style: 'strong' })
     else if (italic !== undefined) out.push({ text: italic, style: 'em' })
     else out.push({ text: code as string, style: 'code' })
     at = m.index + m[0].length

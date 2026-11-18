@@ -30,7 +30,10 @@ process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
 
 const JOB = { id: "test-job", msgId: "<test@x>", forwarder: "requester", forwarderDomain: "example.com",
   ref: "TMP8440", markName: "PROJECT NOVAPULSE", classes: [9, 41], provider: "corsearch" };
-const FAIL_LATE = "record_report_overview";   // a stage in the delivery phase, so the first segment leaves a resumable run
+// A late stage that fails the run and whose turn carries the band server, so the first segment leaves a resumable run
+// and the turn the resume runs again is handed a register. Not the report overview: the cards run beside it, finish in
+// the first segment and are skipped on the resume, and the overview's own tools carry no register.
+const FAIL_LATE = "record_narrative_refutation";
 
 const events = (runDir) => readFileSync(driverDir(runDir, "run.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
 const choicesRows = (runDir) => events(runDir).filter((e) => e.event === "run-choices");

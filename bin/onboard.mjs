@@ -564,6 +564,10 @@ export const REGISTER_CHECK_SKIPPED =
 /** What setup says when the register's credentials pass that check: the register, and the settings it checked. */
 export const registerCheckPassed = (register, settings) =>
   `the register credential check passed for "${register}" — checked ${settings}`;
+/** What it says instead when the settings are present but the index they name is not built yet: doctor's own
+ *  clause, so setup's tick and the warning above it agree that nothing was proved. */
+export const registerCheckPresenceOnly = (settings) =>
+  `${settings} present — presence only; add --probe-providers to prove it retrieves`;
 
 export function composeEnvBody(candidate, existing = {}, { packaged = PACKAGED } = {}) {
   // Setup's own answers win: the reader just typed them, and this run is the newer statement.
@@ -686,13 +690,18 @@ export const isExplicitYes = (answer) => String(answer ?? "").trim().toLowerCase
  * The argv and spawn options for the background build. Returned rather than executed so the shape can
  * be asserted: detached, its own session, output to a log, and the parent not waiting on it.
  */
-export function backgroundSyncSpec({ repo, dbPath, logFd }) {
+export function backgroundSyncSpec({ repo, dbPath, logFd, apiKey = null }) {
   return {
     command: process.execPath,
     args: [join(repo, "bin", "uspto-sync.mjs"), "--db", dbPath],
-    options: { cwd: repo, detached: true, stdio: ["ignore", logFd, logFd] },
+    // The download key setup was just given reaches the build, which runs before any .env is written.
+    options: { cwd: repo, detached: true, stdio: ["ignore", logFd, logFd], ...(apiKey ? { env: { ...process.env, USPTO_API_KEY: apiKey } } : {}) },
   };
 }
+
+/** The question setup asks for the US index's download key, before it offers to build the index. */
+export const usptoApiKeyQuestion = (prefix = invocationPrefix()) => "USPTO_API_KEY — free from the USPTO; getting one needs an ID.me identity check. "
+  + `The US index can't be downloaded without it. Press Enter to skip and build it later with \`${prefix}clearotron sync\`.`;
 
 /**
  * Offer to build the US index now, in the background, and take a real yes for it.
@@ -705,7 +714,8 @@ export function backgroundSyncSpec({ repo, dbPath, logFd }) {
  * `deps.spawn` and `deps.statfs` are injectable for the same reason. Defaults are the real ones.
  */
 export async function offerUsptoSync(dbPath, io, deps = {}) {
-  const { ask, say = () => {}, ok = () => {}, info = () => {}, warn = () => {}, problem = () => {} } = io;
+  // `euHalf` false on a register with no EU half, which then hears nothing about the EU register.
+  const { ask, say = () => {}, ok = () => {}, info = () => {}, warn = () => {}, problem = () => {}, euHalf = true, apiKey = null } = io;
   let freeBytes = null;
   try {
     const statfs = deps.statfs ?? (await import("node:fs/promises")).statfs;
@@ -717,7 +727,7 @@ export async function offerUsptoSync(dbPath, io, deps = {}) {
   if (!plan.offer) return { started: false, reason: plan.reason };
 
   say("");
-  info("The EU register works as soon as setup finishes — none of this blocks it.");
+  if (euHalf) info("The EU register works as soon as setup finishes — none of this blocks it.");
   info(`The US half needs the index built first: about ${plan.downloadGB} GB downloaded and roughly `
     + `${plan.hours} hours of ingest, once.`);
   if (plan.roomWarning) warn(plan.roomWarning);
@@ -735,7 +745,7 @@ export async function offerUsptoSync(dbPath, io, deps = {}) {
     const openFile = deps.openSync ?? (await import("node:fs")).openSync;
     const spawnFn = deps.spawn ?? (await import("node:child_process")).spawn;
     const fd = openFile(logPath, "a");
-    const spec = backgroundSyncSpec({ repo: REPO, dbPath, logFd: fd });
+    const spec = backgroundSyncSpec({ repo: REPO, dbPath, logFd: fd, apiKey });
     const child = spawnFn(spec.command, spec.args, spec.options);
     // Detach for real: without unref() the wizard's own exit waits on a six-hour build.
     child.unref();
@@ -743,7 +753,8 @@ export async function offerUsptoSync(dbPath, io, deps = {}) {
     info(`Progress:  tail -f ${logPath}`);
     info("It reports each file as it downloads and ingests, and prints the disk it needs before it starts.");
     info("If it refuses on disk, nothing has been downloaded — point --db somewhere with room and re-run.");
-    info("Until it finishes, US coverage is DISCLOSED as a deferred gap. The EU half is unaffected.");
+    info(euHalf ? "Until it finishes, US coverage is DISCLOSED as a deferred gap. The EU half is unaffected."
+      : "Until it finishes, US coverage is DISCLOSED as a deferred gap.");
     return { started: true, pid: child.pid, logPath };
   } catch (e) {
     // A failed spawn is a finding, not a silent skip: the reader has just said yes to a six-hour build
@@ -779,6 +790,8 @@ export const AMBIENT_KEYS = [
   // for the wizard to find lying around. Offering to adopt one taught a new install to set something
   // that configures nothing.
   "PERPLEXITY_API_KEY", "SERPAPI_API_KEY",
+  // The US index's download key, asked before the index build is offered.
+  "USPTO_API_KEY",
 ];
 
 // ── helpers ──────────────────────────────────────────────────────────────────────────────────────────
@@ -1129,7 +1142,8 @@ export function programDisagreement({ capture, live }, { command = reachableComm
  * on PATH.
  */
 export function installSizeLine(eng) {
-  return `${Number.isFinite(eng?.installMB) ? `It takes about ${eng.installMB} MB. ` : ""}To remove it, delete that folder.`;
+  return `${Number.isFinite(eng?.installMB) ? `It takes about ${eng.installMB} MB. ` : ""}To remove it, delete that folder. `
+    + "npm also keeps a copy of the download in its cache, `~/.npm/_cacache`; `npm cache clean --force` empties it.";
 }
 
 /**
@@ -1187,9 +1201,16 @@ export function engineOptions(found = {}) {
  * whose turn failed on one AI and who went back to the menu met row 0 under Enter, which is a change of AI they
  * had not chosen. Remembering the pick saves nothing: the proof turn still decides what is written.
  */
-export function engineMenuDefault(options, lastPick = null) {
+export function engineMenuDefault(options, lastPick = null, found = {}) {
   const at = lastPick ? options.findIndex((o) => o.id === lastPick) : -1;
-  return at < 0 ? 0 : at;
+  if (at >= 0) return at;
+  // THE ONE ENGINE FOUND USABLE, when exactly one is: a copy that runs and is not below the floor. A copy
+  // below the floor, or a setting pointing at a copy that is not there, is not found. Both or neither: row 0.
+  const usable = Object.entries(ENGINE_BINARIES)
+    .filter(([id, e]) => found[id]?.executable && !found[id]?.relative && olderThanFloor(found[id]?.version, e.floor) !== true)
+    .map(([id]) => id);
+  const only = usable.length === 1 ? options.findIndex((o) => o.id === usable[0]) : -1;
+  return only < 0 ? 0 : only;
 }
 
 // A COPY REFUSED AS THE VENDOR'S PLACEHOLDER, told apart by the resolver's own reason for refusing it
@@ -1613,8 +1634,46 @@ export function whatSetupLeft({ copy = null, engine = null, turnRan = false } = 
       : `${engine.vendor}'s CLI stays installed in ${engine.dir}.`;
   return `No settings were written. ${stays}${turnRan ? " The AI program's test turn keeps its own files." : ""}`;
 }
+
+/**
+ * What `doctor` prints, one function per section, called in the order they print. What more than one
+ * section reads is read once, by readCheckContext, before any of them.
+ */
 export async function runCheck() {
   say("\n  Trademark clearance engine — configuration check\n");
+  const ctx = await readCheckContext();
+  const { leadIsTheRefusal, turnLeads, signInLineLeads } = await sayOpening(ctx);
+
+  // The path this command runs from, with the build it names below it.
+  say(`\n  repo: ${REPO}`);
+
+  await sayDeployment(ctx);
+  await sayNode();
+  await sayEngine({ ...ctx, turnLeads, signInLineLeads });
+  await sayHowToRun();
+  await sayEnvFile();
+  await sayConfigurationStore(ctx);
+  await sayCustomInstructions(ctx);
+  await sayRegister(ctx);
+  // "Research provider" is printed second, right after the opening (sayResearch).
+
+  // "Will a search run?" keeps this place when the opening was the refusal's own sentence, which says the
+  // same thing without the names; in every other state it is the opening (sayWillASearchRun).
+  if (leadIsTheRefusal) ctx.sayWillASearchRun();
+  await sayCaseLaw();
+  await sayPortalBundle();
+  await sayPortalTriggerKey(ctx);
+  await sayPortalSignIn(ctx);
+  await sayProvenProviders(ctx);
+  await sayFileLocations(ctx);
+  await sayBackgroundUnits(ctx);
+  await sayStartButtonPath(ctx);
+  await sayClientConnector(ctx);
+  return sayVerdict(ctx.turnRan());
+}
+
+/** What more than one section of the check reads, read once. `turnRan` is asked after the last section. */
+async function readCheckContext() {
   // Whether the engine probe's turn started the AI program (TURN_KEPT_ITS_FILES); one refused first did not.
   let probeTurnRan = false;
 
@@ -1896,7 +1955,14 @@ export async function runCheck() {
     else if (px) ok(`PERPLEXITY_API_KEY present (${px.from}) — presence only; add --probe-providers to prove it answers`);
     else info("PERPLEXITY_API_KEY is not set — the three clearance searches carry the common-law grid and cannot switch it off, so a clearance stops before it starts, and names the missing key; a Knockout search still runs and discloses the half it skipped");
   };
+  return { fileEnv, unitDir, startPaths, hosted, unitEnv, effective, serviceEnvLabel, serviceEnvFile, serviceKnown,
+    serviceFileEnv, effectiveForService, servicesRead, engineEnvOf, engSel, engineId, engSpec, serviceValue,
+    engineChosen, binSet, binSetting, bin, invEnv, installMode, signInLine, runTurn, sayTurn, atOrder,
+    sayWillASearchRun, sayResearch, turnRan: () => probeTurnRan };
+}
 
+async function sayOpening({ hosted, serviceKnown, engineId, engineChosen, bin, signInLine, runTurn, sayTurn, atOrder,
+  sayWillASearchRun, sayResearch }) {
   // ── THE OPENING: WHETHER A SEARCH CAN RUN, WHAT STOPS IT, AND THE NEXT ACTION ─────────────────────
   //
   // A newcomer reads this command from the top, and the top was its path and its build: the answer to
@@ -1942,10 +2008,10 @@ export async function runCheck() {
     if (turn) sayTurn(turn);
   }
   sayResearch();
+  return { leadIsTheRefusal, turnLeads, signInLineLeads };
+}
 
-  // The path this command runs from, with the build it names below it.
-  say(`\n  repo: ${REPO}`);
-
+async function sayDeployment({ fileEnv, hosted, unitEnv }) {
   // — CURRENT, not just configured. Printed first among the sections about this install's build,
   // because a stale deployment makes every line below it a report about the wrong build. The opening
   // and the research key come before it, because a newcomer's first question is whether a search runs.
@@ -2107,12 +2173,17 @@ export async function runCheck() {
     // one who can tell which of the two it is.
     say(`      running programs on a different checkout: ${elsewhere.detail}.`);
   }
+}
 
+async function sayNode() {
   say("\n  Node");
   const nodeV = nodeFloorVerdict();
   if (nodeV.ok) ok(`node ${nodeV.current}`);
   else problem(`node ${nodeV.current} — this engine needs ${nodeV.required} or newer; node:sqlite is not a built-in module before then`);
+}
 
+async function sayEngine({ hosted, serviceEnvFile, serviceKnown, servicesRead, engineEnvOf, engSel, engineId,
+  engSpec, binSet, binSetting, bin, invEnv, installMode, signInLine, runTurn, sayTurn, turnLeads, signInLineLeads }) {
   say("\n  Engine");
   // This block used to read CLEAROTRON_CLAUDE_PATH unconditionally, under the heading "Engine binary", on a
   // box that may be running codex — so it reported the wrong variable and could pass for the wrong
@@ -2348,7 +2419,9 @@ export async function runCheck() {
       sayTurn(await runTurn());
     }
   }
+}
 
+async function sayHowToRun() {
   // ── HOW THIS READER REACHES US, before anything below tells them to type something (issue 1916) ──
   //
   // Every advice line in this report composes through invocationPrefix(), and until this issue that
@@ -2388,7 +2461,9 @@ export async function runCheck() {
       info(`no \`clearotron\` on your PATH — re-run \`${invoke("install")}\` to put one there`);
     }
   }
+}
 
+async function sayEnvFile() {
   say("\n  .env");
   // ── THE FILE MOVED, SO ASK THE SAME QUESTION THE LOADER ASKS ─────────────────────────────────────
   //
@@ -2423,7 +2498,10 @@ export async function runCheck() {
     const mode = statSync(ENV_PATH).mode & 0o777;
     if (mode & 0o077) warn(`mode ${mode.toString(8)} — it holds credentials; 600 is the mode for that`);
   }
+}
 
+async function sayConfigurationStore({ startPaths, hosted, unitEnv, effective, serviceEnvLabel, serviceEnvFile,
+  serviceKnown, serviceFileEnv, effectiveForService }) {
   // — WHERE CONFIGURATION RESOLVES FROM, and whether that is inside the checkout.
   //
   // Unset is a REPORTABLE STATE, not silence: unset means this install is running our bundled demo
@@ -2759,7 +2837,9 @@ export async function runCheck() {
       }
     }
   }
+}
 
+async function sayCustomInstructions({ hosted, unitEnv, serviceKnown, effectiveForService }) {
   // — WHICH DOCTRINE FILES THIS INSTALL OVERRIDES, AND WHETHER OURS HAVE MOVED UNDER THEM.
   //
   // The report itself shipped in and worked, reachable only as `npm run doctrine-report` — a name
@@ -2806,7 +2886,9 @@ export async function runCheck() {
     // job is to report every section, and a section that kills the run tells the reader least.
     problem(`the custom instructions could not be read — ${e.message}`);
   }
+}
 
+async function sayRegister({ unitEnv, serviceKnown, serviceValue }) {
   say("\n  Register provider");
   // WHAT THE SERVICES WILL SEARCH, READ AS THE ORDER-TIME CHECK BELOW READS IT. This section asked the
   // shell and this command's .env, so in a fresh terminal on a hosted box it told a working install that
@@ -2856,9 +2938,9 @@ export async function runCheck() {
       }
     }
   }
+}
 
-  // "Research provider" is printed second, right after the opening (sayResearch).
-
+async function sayCaseLaw() {
   // ── — THE LANES A PRODUCT DECLARES IT NEEDS, BEFORE A REPORT NAMES THEM ──
   //
   // The owner ran a Full country search on his own install and the finished report told him, after two
@@ -2874,11 +2956,6 @@ export async function runCheck() {
   // doctor that hangs on a box with no route — so this reports ENROLMENT, and says plainly that a
   // source which is enrolled can still fail at run time. The owner's own report says `CONNECTION_CLOSED`
   // on exactly that case.
-  //
-  // "Will a search run?" keeps this place when the opening was the refusal's own sentence, which says the
-  // same thing without the names; in every other state it is the opening (sayWillASearchRun).
-  if (leadIsTheRefusal) sayWillASearchRun();
-
   say("\n  Case law and other capabilities");
   {
     const { caseLawInventory } = await import("../driver/config-inventory.mjs");
@@ -2923,7 +3000,9 @@ export async function runCheck() {
       info(`${r.providerLabel} — ${r.remedy ?? (r.configured ? "configured" : "not set up")}`);
     }
   }
+}
 
+async function sayPortalBundle() {
   // ── issue 1891 — WHICH DOOR GUARDS THE PORTAL, AND IS IT CONFIGURED ────────────────────────────
   //
   // Neither screen said anything about the portal's front door. A stranger install lands in `local` and
@@ -3000,7 +3079,9 @@ export async function runCheck() {
     // render, which is the same position they were in before this section existed.
     blocking(`the portal bundle could not be read — ${e.message} — so whether /portal can render is unknown`);
   }
+}
 
+async function sayPortalTriggerKey({ hosted, serviceKnown, effectiveForService }) {
   // ── THE TRIGGER KEY, AND THE DEADLINE NOBODY WAS COUNTING ────────────────────────────────────────
   //
   // A `--background` install stores the portal's trigger key in `~/.env`, the file the units load, and
@@ -3100,7 +3181,9 @@ export async function runCheck() {
       }
     }
   }
+}
 
+async function sayPortalSignIn({ startPaths, hosted, unitEnv, serviceEnvFile, serviceKnown, effectiveForService }) {
   say("\n  Portal sign-in");
   {
     const { authView } = await import("../driver/portal-config-view.mjs");
@@ -3246,7 +3329,9 @@ export async function runCheck() {
       info(`could not judge who may use the portal (${String(e?.message ?? e).slice(0, 80)}) — a failure to look, not a finding`);
     }
   }
+}
 
+async function sayProvenProviders({ effective }) {
   // ── issue 1871 — PROVE THE REGISTER LANE, or say plainly that presence is all this knows ────────
   //
   // Everything above about a credential is a fact about a FILE. `✓ CLARIVATE_API_KEY present` is equally
@@ -3330,7 +3415,9 @@ export async function runCheck() {
       else problem(`PERPLEXITY_API_KEY did not answer: ${v.error}`);
     }
   }
+}
 
+async function sayFileLocations({ effective }) {
   say("\n  Where files are stored");
   // Each entry is a FUNCTION, called only on the branch that prints it, so a getter is read at access
   // time and never captured as a constant here. The reader of this command is deciding what to
@@ -3348,7 +3435,8 @@ export async function runCheck() {
       const d = defaultWith(name, () => config.workspaceRoot);
       return d.refusal ?? `${name} is not set — run directories go to ${d.value}`;
     }],
-    ["CLEAROTRON_QUEUE_DIR", (name) => `${name} is not set — the intake queue`],
+    // `clearotron start` hands its children <base>/queue (bin/start.mjs), so the unset queue has an answer.
+    ["CLEAROTRON_QUEUE_DIR", (name) => `${name} is not set — \`${invocationPrefix()}clearotron start\` uses ~/trademark/queue`],
   ]) {
     const e = effective(k);
     // — the name in every one of these lines is the spelling that ANSWERED, or the current one
@@ -3358,7 +3446,9 @@ export async function runCheck() {
     if (!existsSync(e.v)) warn(`${e.name}=${e.v} (${e.from}) does not exist yet`);
     else ok(`${e.name}=${e.v} (${e.from})`);
   }
+}
 
+async function sayBackgroundUnits({ hosted }) {
   // ── THE CLIENT CONNECTOR, AND WHETHER ISSUED KEYS ARE STILL GOOD ──────────
   //
   // The status surface the ruling names: "status should say whether a key is still valid". Stopping
@@ -3392,7 +3482,9 @@ export async function runCheck() {
     else warn(`could not tell whether lingering is on for ${who} — ${lingerWhy}. That is this command `
       + "failing to look, not a report that it is off.");
   }
+}
 
+async function sayStartButtonPath({ hosted, unitEnv }) {
   say("\n  Start-button path");
   try {
     const { triggerLaneVerdict, HOSTED, SUPERVISED } = await import(pathToFileURL(join(REPO, "shared", "trigger-lane.mjs")).href);
@@ -3475,7 +3567,10 @@ export async function runCheck() {
       else info(lane.message);
     }
   } catch (e) { warn(`the submit lane could not be read: ${e.message}`); }
+}
 
+async function sayClientConnector({ unitDir, startPaths, hosted, unitEnv, effective, serviceFileEnv,
+  effectiveForService }) {
   say("\n  Client connector");
   // THE REVOCATION LIST, REPORTED (found in review). `isRevoked` used to read an unreadable denylist as
   // "not revoked", so a named-but-absent file made every revocation silently ineffective: measured on a
@@ -3858,7 +3953,9 @@ export async function runCheck() {
       }
     }
   } catch (e) { warn(`the client-connector state could not be read: ${e.message}`); }
+}
 
+function sayVerdict(probeTurnRan) {
   say("");
   // NAMED, NOT COUNTED, AND NAMED FIRST — before the problem count and independently of it. Listing
   // blockers only when `problems` is empty would reproduce this command's original defect one level up:
@@ -4157,7 +4254,7 @@ try {
     // no claim. Resolved once per pass, so a reader who mends something and comes back sees it mended.
     const found = engineMenuState();
     const options = engineOptions(found);
-    const pick = await choose(ENGINE_QUESTION, options, engineMenuDefault(options, lastPick), PAY_PREAMBLE);
+    const pick = await choose(ENGINE_QUESTION, options, engineMenuDefault(options, lastPick, found), PAY_PREAMBLE);
     if (!pick.id) { sayNoEngine(); break; }
     lastPick = pick.id;
     const eng = ENGINE_BINARIES[pick.id];
@@ -4362,7 +4459,7 @@ try {
       say("  Running one turn…");
       // Read on every try, so a setting the reader fixes in the file between tries is the one the next turn uses.
       const v = await probeEngineTurn(proofTurn({ engineId: pick.id, eng, bin, authEnv, settings: settingsInForce() }));
-      // A turn refused before it started the program left no files of the program's own (runCheck's runTurn).
+      // A turn refused before it started the program left no files of the program's own (readCheckContext's runTurn).
       if (v.ok || v.basis !== "config") setupTurnRan = true;
       if (v.ok) {
         ok(`${eng.product} completed a turn on ${PAYS_WITH[authPick.id]} — binary, credential, billing mode and model access all work.`);
@@ -4469,7 +4566,7 @@ try {
   // unset was reachable only by picking a vendor and skipping its credential, so a reader who meant "none
   // yet" had to pretend to choose one. Choosing it takes the branch a skipped credential reaches below.
   const provider = await choose("Which register?", [...PROVIDERS.map((p) => ({ label: `${p.label} — ${p.cost}`, spec: p })), { label: "None for now", spec: null }], 0);
-  const spec = provider.spec;
+  let spec = provider.spec;
   if (spec) {
     say(`\n  ${spec.label}: covers ${spec.covers}`);
     for (const w of spec.warnings ?? []) warn(w);
@@ -4503,11 +4600,33 @@ try {
   const collectedHere = [];
   for (const k of spec?.credentials ?? []) {
     if (present(candidate[k])) { ok(`${k} already adopted from your environment`); continue; }
+    // THE FREE TIER'S US HALF STANDS ON ITS OWN, so a skipped EUIPO credential there is not the end of the
+    // register: the reader is offered the US-only row below, and is told nothing is selected only if they
+    // decline it.
+    const freeTier = spec.id === "free-tier";
     const v = await askValue(`${k}:`, { secret: true, skippable: true,
-      skipped: `${k} not set, so ${spec.id} cannot be configured — this install will have NO register selected.` });
+      skipped: freeTier ? undefined : `${k} not set, so ${spec.id} cannot be configured — this install will have NO register selected.` });
     if (v === null) { registerSelected = false; break; }
     candidate[k] = v;
     collectedHere.push(k);
+  }
+  if (!registerSelected && spec?.id === "free-tier") {
+    for (const k of collectedHere.splice(0)) delete candidate[k];
+    const usOnly = PROVIDERS.find((p) => p.id === "uspto-local");
+    const next = await choose("Which register?", [{ label: `${usOnly.label} — ${usOnly.cost}`, spec: usOnly }, { label: "None for now", spec: null }], 0);
+    if (next.spec) {
+      spec = next.spec;
+      say(`\n  ${spec.label}: covers ${spec.covers}`);
+      registerSelected = true;
+      for (const k of spec.credentials) {
+        if (present(candidate[k])) { ok(`${k} already adopted from your environment`); continue; }
+        const v = await askValue(`${k}:`, { secret: true, skippable: true,
+          skipped: `${k} not set, so ${spec.id} cannot be configured — this install will have NO register selected.` });
+        if (v === null) { registerSelected = false; break; }
+        candidate[k] = v;
+        collectedHere.push(k);
+      }
+    }
   }
   if (!registerSelected) {
     // ONLY what this step collected. A credential ADOPTED from the environment was approved by name at
@@ -4564,7 +4683,11 @@ try {
     else {
       warn(`${db} does not exist yet — build it with: ${invocationPrefix()}clearotron sync`);
       if (!await confirm("Keep this path anyway?", true)) { aborted = "uspto"; throw new Error("uspto"); }
-      await offerUsptoSync(db, { ask: askRaw, say, ok, info, warn, problem });
+      if (!present(candidate.USPTO_API_KEY)) {
+        const key = await askValue(usptoApiKeyQuestion(), { secret: true, skippable: true });
+        if (key) { candidate.USPTO_API_KEY = key; collectedHere.push("USPTO_API_KEY"); }
+      }
+      await offerUsptoSync(db, { ask: askRaw, say, ok, info, warn, problem, euHalf: spec.euHalf !== false, apiKey: candidate.USPTO_API_KEY ?? null });
     }
   }
   if (registerSelected && !spec.validateEuipo && !spec.uspToLocalKey) {
@@ -4599,7 +4722,9 @@ try {
       if (!present(candidate[name])) {
         const skippedLine = `Skipped. You can add ${name} later; until then: ${adapter.absentMeans ?? "the lane stays off"}.`;
         // A KEY PASTED AT THE YES/NO IS THE ANSWER (confirmOrKey): taken, never shown, not asked for twice.
-        const answer = await confirmOrKey(`Enter a ${adapter.label} API key now?`, true);
+        // YES FOR RESEARCH, NO FOR THE CHINESE MARKETPLACE SEARCH: without the research key three clearance searches
+        // refuse; the marketplace key serves only the China-region native-language lanes.
+        const answer = await confirmOrKey(`Enter a ${adapter.label} API key now?`, table !== SERP_PROVIDERS);
         if (answer.value) candidate[name] = answer.value;
         else if (answer.yes) {
           const v = await askValue(`${adapter.label} key:`, { secret: true, skippable: true, skipped: skippedLine });
@@ -4854,7 +4979,10 @@ try {
   if (registerSelected) {
     say("\n  Running the register credential check over these values…");
     const pf = await preflightCandidate(candidate);
-    if (pf.ok) ok(registerCheckPassed(pf.result.provider, pf.result.checked.join(" + ")));
+    // A DATABASE PATH THAT DOES NOT EXIST YET PROVES NOTHING. The check reads the setting's presence, and the
+    // warning above already said the index is not built, so the tick says presence and not "passed".
+    const unbuilt = spec?.uspToLocalKey && present(candidate[spec.uspToLocalKey]) && !existsSync(candidate[spec.uspToLocalKey]);
+    if (pf.ok) ok(unbuilt ? registerCheckPresenceOnly(pf.result.checked.join(" + ")) : registerCheckPassed(pf.result.provider, pf.result.checked.join(" + ")));
     else {
       problem(pf.error);
       say(`\n  ${whatSetupLeft(leftSoFar()) ?? "Nothing has been written."}`);
@@ -4998,7 +5126,8 @@ try {
   say("");
   // A FIRST REAL CLEARANCE IS SUGGESTED ONLY WHERE ONE CAN RUN. With no register chosen, the line suggesting
   // `run` sat a few lines above the warning that `run` will refuse at its door.
-  if (registerSelected) {
+  // …and the EU job only where the register reaches the EU.
+  if (registerSelected && spec?.euHalf !== false) {
     say(`  ${style.dim(`Also: \`${invocationPrefix()}clearotron demo\` replays a finished report with no keys and no model calls;`)}`);
     say(`  ${style.dim(`\`${invocationPrefix()}clearotron run --job ${/\s/.test(EXAMPLE_JOB) ? `"${EXAMPLE_JOB}"` : EXAMPLE_JOB}\` runs a first real clearance on the EU register.`)}`);
   } else say(`  ${style.dim(`Also: \`${invocationPrefix()}clearotron demo\` replays a finished report with no keys and no model calls.`)}`);

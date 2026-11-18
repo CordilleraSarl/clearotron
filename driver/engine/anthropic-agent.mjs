@@ -21,7 +21,7 @@ import { statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { WRITE_DISCIPLINE, absolutizeSkillRefs, resolveSpawnCwd, spawnGraceMs } from "./common.mjs";
+import { WRITE_DISCIPLINE, absolutizeSkillRefs, resolveSpawnCwd, spawnGraceMs, isRecordTool } from "./common.mjs";
 import { resolveEngineProgram, resolveModel } from "../driver.config.mjs";   // — the one place that finds the program; it reads every spelling of the setting
 import { authorityTrees } from "../authority-trees.mjs";
 import { recordEngineChild, clearEngineChild } from "./child-record.mjs";   //
@@ -623,6 +623,10 @@ export const anthropicAgentEngine = {
       // "omitted" on Opus 5, so an ENGAGED block streams with a zero-length `thinking` string and a real
       // `signature` — reading the text would report "no thinking" on every production turn.
       let thought = false;
+      // THE FIRST CALL'S CACHE SPLIT: how much of the opening prompt the provider served from its cache and how much it wrote
+      // to it, read off the first assistant message's usage. Every caching claim about a stage was rebuilt from raw streams
+      // by hand; this puts the first call's figures on the attempt. null when the stream carried no assistant message.
+      let firstCall = null;
       // MODEL GAUGE (corruption 3): which model the PROVIDER says served this turn. Until now
       // nothing on any record was a function of the provider's response — `modelUsed` was
       // `resolveModel(<the alias we asked for>)`, a pure function of the request, so a substitution or a
@@ -709,6 +713,9 @@ export const anthropicAgentEngine = {
       const writeAsks = new Set();
       let toolWaitMs = 0;
       let toolAskedAt = null;
+      // The last time this turn asked for a tool, apart from its own record write, and the last time it asked for that write:
+      // what the gateway reads to tell a turn killed while still working from one killed silent or finishing (`lastToolAsk`).
+      let lastWorkAskAt = null, lastRecordAskAt = null;
       // WHAT THE WAIT IS MADE OF, keyed by the tool(s) that caused it.
       //
       // The total alone cannot answer the question it was collected for. "Exclude tool wait from the kill
@@ -868,6 +875,7 @@ export const anthropicAgentEngine = {
           toolAskedNames = asked.length ? [...new Set(asked)].sort().join("+") : null;
           if (asked.length) {
             const now = Date.now();
+            if (asked.some((n) => !isRecordTool(n))) lastWorkAskAt = now; else lastRecordAskAt = now;
             closePeriod(now, false);          // the outstanding set is about to change
             const rec = { names: asked.slice() };
             openAsks.push(rec);
@@ -881,6 +889,7 @@ export const anthropicAgentEngine = {
           // This block's usage, folded into its own call: the largest reading wins, so a block's early count
           // never replaces the delta's running total, and a second block of the same call adds nothing twice.
           foldUsage(ev.message?.id ?? openMessage ?? `__assistant_${++anonMessages}`, mapUsage(ev.message?.usage));
+          if (!firstCall && ev.message?.usage) firstCall = mapUsage(ev.message.usage);
           progress();
         }
         else if (ev.type === "user") {
@@ -1192,6 +1201,8 @@ export const anthropicAgentEngine = {
           // true = the 500-path cap dropped at least one further distinct file (so a `read:false` derived
           // from this list is unreliable and the consumer must downgrade it to "not observed").
           reads: [...reads], readsTruncated,
+          // The first call's cache read and cache write, in tokens (see `firstCall`); null when it was never seen.
+          firstCallCache: firstCall ? { read: firstCall.cacheRead, creation: firstCall.cacheWrite } : null,
           toolCalls, toolWaitMs: settledToolWaitMs,   // two integers, no content
           // The same calls by tool name (values sum to toolCalls), and what the session went through: every
           // result, cut, refusal and restart (session-record.mjs). `stream` is the raw stream's file and size,
@@ -1209,6 +1220,9 @@ export const anthropicAgentEngine = {
           // ONLY: nothing branches on it. A recording field is protected by a test or by nothing, so
           // engine.anthropic.test.mjs pins it — deleting it must red something.
           firstByteMs: firstOutputAt === null ? null : Math.round(firstOutputAt - t0),
+          // ms from spawn to the last tool ask that was not the stage's own record write, and to the last that was; null where
+          // the turn made none. RECORDING, and read by the gateway only to choose how a hard-wall kill is retried.
+          lastToolAsk: { workMs: lastWorkAskAt === null ? null : Math.round(lastWorkAskAt - t0), recordMs: lastRecordAskAt === null ? null : Math.round(lastRecordAskAt - t0) },
           // WHICH SIDE OF THE KILL a byte or a tool ask fell on. RECORDING ONLY, like firstByteMs. The
           // totals above keep counting after the decision, because what a dying child already wrote is
           // still read (streamed usage depends on it). On Windows the kill blocks this process while it

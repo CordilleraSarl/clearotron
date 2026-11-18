@@ -27,6 +27,9 @@ import { inlineMd } from '../../driver/publish/render-knockout.mjs'
 // The portal's spans, rendered to the DRIVER's markup, so the two can be compared as strings. This is
 // the only place in the portal that ever composes HTML, it is in a test, and nothing ships it.
 const TAG = { strong: ['<b>', '</b>'], em: ['<i>', '</i>'], code: ['<span class="mono">', '</span>'] } as const
+// The reports open a web link in a new tab and a mailto link where it is.
+const LINK_OPEN = (href: string) =>
+  /^https?:\/\//i.test(href) ? `<a href="${esc(href)}" target="_blank" rel="noopener noreferrer">` : `<a href="${esc(href)}">`
 // `esc` in render-knockout.mjs, character for character — INCLUDING the quote, which it escapes
 // because it builds attribute-safe HTML. The portal escapes nothing: a span is a text node and a browser
 // shows `"` as `"`. Getting this wrong made the parity test report a divergence that was the test's, on
@@ -34,9 +37,15 @@ const TAG = { strong: ['<b>', '</b>'], em: ['<i>', '</i>'], code: ['<span class=
 const esc = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 const asHtml = (spans: readonly InlineSpan[]) =>
-  spans.map((s) => (s.style ? `${TAG[s.style][0]}${esc(s.text)}${TAG[s.style][1]}` : esc(s.text))).join('')
+  spans.map((s) => (s.style === 'link' ? `${LINK_OPEN(s.href ?? '')}${esc(s.text)}</a>`
+    : s.style ? `${TAG[s.style][0]}${esc(s.text)}${TAG[s.style][1]}` : esc(s.text))).join('')
 
-test('the three forms the reports honour are the three forms this reads', () => {
+test('the four forms the reports honour are the four forms this reads', () => {
+  assert.deepEqual(inlineSpans('see [the record](https://example.com/r?a=1&b=2) here'), [
+    { text: 'see ', style: null },
+    { text: 'the record', style: 'link', href: 'https://example.com/r?a=1&b=2' },
+    { text: ' here', style: null },
+  ])
   assert.deepEqual(inlineSpans('IRONWHISK rates **Medium** for 9.'), [
     { text: 'IRONWHISK rates ', style: null },
     { text: 'Medium', style: 'strong' },
@@ -84,9 +93,9 @@ test('an unmatched marker stays visible, because it is somebody’s sentence', (
 test('the round trip loses nothing: every character comes back', () => {
   // A parser that drops text is the failure nobody notices — a sentence renders, slightly shorter. The
   // markers themselves are consumed by design; everything between them is not.
-  for (const s of ['plain', '**a** b *c* d `e` f', 'a**b**c', '<x> & **y**', '']) {
+  for (const s of ['plain', '**a** b *c* d `e` f', 'a**b**c', '<x> & **y**', 'a [b](https://e.example) c', '']) {
     const joined = inlineSpans(s).map((x) => x.text).join('')
-    assert.equal(joined, s.replace(/\*\*([^*]+)\*\*|\*([^*]+)\*|`([^`]+)`/g, '$1$2$3'),
+    assert.equal(joined, s.replace(/\[([^\]]+)\]\(([^)]+)\)|\*\*([^*]+)\*\*|\*([^*]+)\*|`([^`]+)`/g, '$1$3$4$5'),
       `${JSON.stringify(s)}: only the markers are consumed`)
   }
 })
@@ -103,11 +112,22 @@ test('PARITY: the portal and the report render the same paragraph the same way',
     '<script>alert(1)</script> & an ampersand',
     '2 * 3 = 6 and an ** unterminated pair',
     'quotes "like this" and an em dash — kept',
+    'a source: [the office record](https://example.com/r?a=1&b=2), and **bold** after it',
+    'a [mail](mailto:a@example.com) link and a [scheme](javascript:alert) that is only its label',
+    '[Corsearch · Steam](https://store.example.com/app/1) read as the host it is',
     '',
   ]
   for (const s of corpus) {
     assert.equal(asHtml(inlineSpans(s)), inlineMd(s), `the two renderers disagree on ${JSON.stringify(s)}`)
   }
+})
+
+test('a link that would run anything is its label as prose, and an in-page anchor has nothing to land on', () => {
+  assert.deepEqual(inlineSpans('[x](javascript:alert)'), [{ text: 'x', style: null }])
+  assert.deepEqual(inlineSpans('[x](data:text/html,1)'), [{ text: 'x', style: null }])
+  assert.deepEqual(inlineSpans('[card 3](#c3)'), [{ text: 'card 3', style: null }])
+  assert.equal(inlineSpans('[a](https://e.example/" onmouseover="x)').find((s) => s.style === 'link')?.href,
+    'https://e.example/" onmouseover="x', 'the href is data; React writes it as an attribute value, never markup')
 })
 
 test('the ONE divergence is declared, not discovered', () => {

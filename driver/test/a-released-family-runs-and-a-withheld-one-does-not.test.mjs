@@ -180,11 +180,11 @@ test("the audit workbook's coverage sheet carries each released family and its r
     const rows = releasedFamilyRows(dir);
     assert.equal(rows.length, 2, "not one row per released family");
     assert.ok(rows.every((r) => r.note === RELEASE && r.state === "note"));
-    assert.ok(rows.every((r) => /^main register sweep \/ /.test(r.area)), "the area is not the driver's reader label for the family");
+    assert.ok(rows.every((r) => /^main register search \/ /.test(r.area)), "the area is not the driver's reader label for the family");
     // A withheld family is a recorded judgment. This arm pins the RENDERING: the row withheldFamilyRows builds for
     // it (that function is pinned in every-waiting-family-is-asked-or-withheld.test.mjs) reaches the sheet in the
     // same Note presentation, its reason whole in one cell.
-    const withheldRow = { area: "main register sweep / exact: WELTRIS", state: "note", note: WITHHOLD, done: WITHHOLD, left: "" };
+    const withheldRow = { area: "main register search / exact: WELTRIS", state: "note", note: WITHHOLD, done: WITHHOLD, left: "" };
     await buildAudit({ findings: [], coverage: [], fetchState: {}, releasedFamilies: rows, withheldFamilies: [withheldRow] }, null, book, MARK, {});
     const wb = new ExcelJS.Workbook();
     await wb.xlsx.readFile(book);
@@ -198,6 +198,6 @@ test("the audit workbook's coverage sheet carries each released family and its r
     // The reason is one cell: cut at its ";" it read as half done and half left.
     assert.ok(released.every((t) => t.endsWith(`| ${RELEASE} | —`)), `a release reason was split across two cells:\n${released.join("\n")}`);
     const withheld = text.filter((t) => t.includes(WITHHOLD));
-    assert.deepEqual(withheld, [`main register sweep / exact: WELTRIS | Note | ${WITHHOLD} | —`], "the withheld family's reason was split, or shown as open work");
+    assert.deepEqual(withheld, [`main register search / exact: WELTRIS | Note | ${WITHHOLD} | —`], "the withheld family's reason was split, or shown as open work");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });

@@ -110,9 +110,14 @@ export const PROVIDERS = [
     id: "uspto-local", label: "USPTO (local index) — the US register only", cost: "free",
     covers: "the US register, and nothing else, from an index you build and hold locally.",
     credentials: ["USPTO_LOCAL_DB"],
-    warnings: USPTO_WARNINGS,
+    // NO EU HALF: setup says nothing about the EU register for this row.
+    warnings: USPTO_WARNINGS.filter((w) => !/^The EU register /.test(w)),
     uspToLocalKey: "USPTO_LOCAL_DB",
+    euHalf: false,
   },
-  { id: "corsearch", label: "Corsearch — global", cost: "subscription", covers: "a global sweep.", credentials: ["CORSEARCH_SESSION_KEY"] },
-  { id: "clarivate", label: "Clarivate — global", cost: "subscription", covers: "a global sweep.", credentials: ["CLARIVATE_API_KEY"] },
+  // NO VENDOR STEPS ARE WRITTEN for these two: the shipped sentence says where the key comes from.
+  { id: "corsearch", label: "Corsearch — global", cost: "subscription", covers: "a global sweep.", credentials: ["CORSEARCH_SESSION_KEY"],
+    signup: ["The key arrives through your Corsearch sales agreement, not a signup form."] },
+  { id: "clarivate", label: "Clarivate — global", cost: "subscription", covers: "a global sweep.", credentials: ["CLARIVATE_API_KEY"],
+    signup: ["The key arrives through your Clarivate sales agreement, not a signup form."] },
 ];
