@@ -33,7 +33,7 @@ import { parseFindingsJson, bindRecommendation, sentenceCaseLead, CLIENT_TIER_BY
 import { REC, inPriorityWindow, ownerDisplayName } from '../registry-fidelity.mjs';
 import { registrationSystem } from '../jurisdiction-systems.mjs';
 import { READ_LEAD_RE } from '../report-card-record.mjs';   // D3 — the dedupe gate and the card's acceptance are ONE predicate
-import { logoLockup, BRAND, confPosture, sectionStrip } from '../../shared/brand.mjs';
+import { logoLockup, BRAND, confPosture, sectionStrip, PALETTE, QUADRANT_COLOURS as QC } from '../../shared/brand.mjs';
 import { NAV_CSS } from '../../shared/site-nav.mjs';
 import { pageShell } from './page-shell.mjs';   // the document shell, shared with the knockout template
 import { inlineMarkdown } from '../../shared/inline-markdown.mjs';   // the inline-markdown dialect, shared with the knockout template
@@ -1447,27 +1447,27 @@ function quadrant(findings) {
     // Band hexes, hardcoded on purpose: the quadrant panel stays a FIXED LIGHT surface in dark mode
     // (brand.mjs REPORT_DARK_RULES), so it cannot read var(--med)/var(--clear) — those flip. They are
     // the LIGHT ramp's --med / --clear and must be recolored in lockstep with brand.mjs:90.
-    const fill = on ? '#C8871B' : '#5F8A64';
+    const fill = on ? QC.onField : QC.secondary;
     const X = cx.toFixed(1), Y = cy.toFixed(1), fs = on ? 12.5 : 8;
     const inner = pending
-      ? `<circle cx="${X}" cy="${Y}" r="${r}" fill="#FFFDF9" stroke="${fill}" stroke-width="2.5"/><text x="${X}" y="${Y}" text-anchor="middle" dominant-baseline="central" font-size="${fs}" font-weight="900" fill="${fill}">${f.ordinal}</text>`
-      : `<circle cx="${X}" cy="${Y}" r="${r}" fill="${fill}" stroke="#250902" stroke-opacity=".22" stroke-width="1"/><text x="${X}" y="${Y}" text-anchor="middle" dominant-baseline="central" font-size="${fs}" font-weight="900" fill="#fff">${f.ordinal}</text>`;
+      ? `<circle cx="${X}" cy="${Y}" r="${r}" fill="${QC.pendingFill}" stroke="${fill}" stroke-width="2.5"/><text x="${X}" y="${Y}" text-anchor="middle" dominant-baseline="central" font-size="${fs}" font-weight="900" fill="${fill}">${f.ordinal}</text>`
+      : `<circle cx="${X}" cy="${Y}" r="${r}" fill="${fill}" stroke="${PALETTE.ink}" stroke-opacity=".22" stroke-width="1"/><text x="${X}" y="${Y}" text-anchor="middle" dominant-baseline="central" font-size="${fs}" font-weight="900" fill="#fff">${f.ordinal}</text>`;
     return `<a href="#c${f.ordinal}"><title>#${f.ordinal}</title>${inner}</a>`;
   }).join('');
   return `<div class="panel land">
       <svg viewBox="0 0 560 430" xmlns="http://www.w3.org/2000/svg" font-family="Plus Jakarta Sans, sans-serif">
-        <defs><linearGradient id="rz" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#860F09" stop-opacity="0"/><stop offset="1" stop-color="#860F09" stop-opacity=".09"/></linearGradient></defs>
+        <defs><linearGradient id="rz" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="${PALETTE.crimson}" stop-opacity="0"/><stop offset="1" stop-color="${PALETTE.crimson}" stop-opacity=".09"/></linearGradient></defs>
         <rect x="70" y="30" width="460" height="342" fill="url(#rz)"/>
-        <g stroke="#E4DACA" stroke-width="1"><line x1="70" y1="30" x2="70" y2="372"/><line x1="300" y1="30" x2="300" y2="372" stroke-dasharray="3 4"/><line x1="530" y1="30" x2="530" y2="372"/><line x1="70" y1="372" x2="530" y2="372"/><line x1="70" y1="201" x2="530" y2="201" stroke-dasharray="3 4"/><line x1="70" y1="30" x2="530" y2="30"/></g>
-        <text x="300" y="406" text-anchor="middle" font-size="12" font-weight="700" fill="#6B5D52">Goods / services proximity →</text>
-        <text x="40" y="201" font-size="12" font-weight="700" fill="#6B5D52" transform="rotate(-90 40 201)" text-anchor="middle">Mark similarity →</text>
-        <text x="520" y="46" text-anchor="end" font-size="9.5" font-weight="700" letter-spacing=".08em" fill="#B89A6E">CONFUSION ZONE</text>
+        <g stroke="${QC.grid}" stroke-width="1"><line x1="70" y1="30" x2="70" y2="372"/><line x1="300" y1="30" x2="300" y2="372" stroke-dasharray="3 4"/><line x1="530" y1="30" x2="530" y2="372"/><line x1="70" y1="372" x2="530" y2="372"/><line x1="70" y1="201" x2="530" y2="201" stroke-dasharray="3 4"/><line x1="70" y1="30" x2="530" y2="30"/></g>
+        <text x="300" y="406" text-anchor="middle" font-size="12" font-weight="700" fill="${QC.axisText}">Goods / services proximity →</text>
+        <text x="40" y="201" font-size="12" font-weight="700" fill="${QC.axisText}" transform="rotate(-90 40 201)" text-anchor="middle">Mark similarity →</text>
+        <text x="520" y="46" text-anchor="end" font-size="9.5" font-weight="700" letter-spacing=".08em" fill="${QC.zoneLabel}">CONFUSION ZONE</text>
         ${markers}
       </svg>
       <div class="legend">
-        <span><i style="background:#C8871B"></i>On-field · drives the read</span>
-        <span><i style="background:#5F8A64"></i>${FRAMEWORK ? 'Secondary · watch' : 'Secondary · manageable'}</span>
-        <span><i style="background:#FFFDF9;border:2px solid #5F8A64;width:7px;height:7px"></i>Pending</span>
+        <span><i style="background:${QC.onField}"></i>On-field · drives the read</span>
+        <span><i style="background:${QC.secondary}"></i>${FRAMEWORK ? 'Secondary · watch' : 'Secondary · manageable'}</span>
+        <span><i style="background:${QC.pendingFill};border:2px solid ${QC.secondary};width:7px;height:7px"></i>Pending</span>
       </div>
     </div>`;
 }
@@ -1479,7 +1479,7 @@ function quadrant(findings) {
 // keeps the house sentence case ('Register' / 'Common-law') and never wraps mid-word.
 function keyRow(f, recordsByUri) {
   const on = isOnField(f);
-  const kn = on ? '#C8871B' : '#5F8A64';   // matches this row's quadrant marker — light ramp, see quadrant()
+  const kn = on ? QC.onField : QC.secondary;   // matches this row's quadrant marker — light ramp, see quadrant()
   const kc = on ? 'med' : 'low';
   const cls = [...new Set((f.owner?.registrations || []).flatMap((r) => Array.isArray(r.classes) ? r.classes : []))]
     .map(Number).filter((x) => !Number.isNaN(x)).sort((a, b) => a - b).join('/');

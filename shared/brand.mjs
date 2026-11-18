@@ -292,6 +292,17 @@ export const WORKBOOK_COLOURS = Object.freeze({
   stateNote:    'EDEDED',
 });
 
+/** The clearance report's quadrant, which stays a fixed light surface in both themes: its markers, the pending marker's
+ *  fill, the grid, the axis titles and the zone label. Its ink and its zone's red are PALETTE.ink and PALETTE.crimson. */
+export const QUADRANT_COLOURS = Object.freeze({
+  onField:     '#C8871B',
+  secondary:   '#5F8A64',
+  pendingFill: '#FFFDF9',
+  grid:        '#E4DACA',
+  axisText:    '#6B5D52',
+  zoneLabel:   '#B89A6E',
+});
+
 // The typefaces themselves are not linked from anywhere: brand-fonts.mjs embeds them in each page that
 // sets text, and this module only names them, so it stays free of file reads for the tools that import it.
 
