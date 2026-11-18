@@ -783,7 +783,7 @@
     ],
     "driver/test/render-frozen.test.mjs": [
       0,
-      5
+      3
     ],
     "driver/test/repair-composer-registry.test.mjs": [
       1,

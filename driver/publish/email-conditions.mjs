@@ -4,8 +4,8 @@
 // email-conditions.mjs — the conditions the cover email carries in its "Only you can close these" box.
 //
 // The email composes its box from this list, and the delivery check reads the same list as the email's own action
-// lines, so the two cannot differ. It lives beside the renderer rather than in it: render.mjs is frozen
-// (render-frozen.test.mjs), and this reads it without changing it.
+// lines, so the two cannot differ. It lives beside the renderer rather than in it: render.mjs was hash-frozen
+// when this was written (render-frozen.test.mjs), and this reads it without changing it.
 //
 // The delivery check is HANDED the list, by the run and by the replay, rather than importing this: the check runs inside
 // the tool servers too, and the renderer would bring the brand settings into every server's environment.
