@@ -30,7 +30,7 @@ import { declaredRecordOrigins } from '../record-origins.mjs';
 import { NEUTRAL_DELIVERY, loadProfiles } from '../profiles.mjs';
 import { resolveDemoData, demoBannerMd } from './demo-marking.mjs';   // — one demo question, every product; 2134 — every SURFACE
 import { engineCommit } from '../engine-build.mjs';
-import { WARM_ROOT, WARM_ROOT_DARK, WARM_ROOT_DARK_EXPLICIT, THEME_INIT, THEME_INIT_EXPLICIT, FAVICON_LINK, BRAND, EMAIL_TIER, EMAIL_COLOURS as EC } from '../../shared/brand.mjs'; import { TEXT_FONT_STYLE } from '../../shared/brand-fonts.mjs';   // the text face, carried in the page rather than fetched
+import { WARM_ROOT, WARM_ROOT_DARK, WARM_ROOT_DARK_EXPLICIT, THEME_INIT, THEME_INIT_EXPLICIT, FAVICON_LINK, BRAND, EMAIL_TIER, EMAIL_COLOURS as EC, BAND_BY_TONE } from '../../shared/brand.mjs'; import { TEXT_FONT_STYLE } from '../../shared/brand-fonts.mjs';   // the text face, carried in the page rather than fetched
 import { NAV_CSS, siteNav, siteFab } from '../../shared/site-nav.mjs';
 import { anonAssets, anonClient, anonMark } from '../../shared/anon-overlay.mjs';
 
@@ -203,7 +203,7 @@ const INDEX_CSS = `
  th{background:var(--crimson-deep);color:#f0e8d8;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
  tr:last-child td{border-bottom:none}
  .b{display:inline-block;color:#fff;font-weight:700;font-size:12px;padding:2px 9px;border-radius:999px}
- .b-mh,.b-l3{background:var(--h-amber)}.b-l4{background:var(--crimson)}.b-l2{background:var(--h-green)}.b-l1{background:var(--h-grey)}
+ .b-clear{background:var(--clear);color:var(--clear-on)}.b-low,.b-l2{background:var(--low);color:var(--low-on)}.b-med,.b-mh,.b-l3{background:var(--med);color:var(--med-on)}.b-high,.b-l4{background:var(--high);color:var(--high-on)}.b-severe{background:var(--severe);color:var(--severe-on)}.b-l1{background:var(--h-grey)}
  .stmt{display:block;margin-top:3px;font-size:11.5px;color:var(--muted,#6b5d50);max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
  .hold{display:inline-block;background:var(--crimson);color:#fff;font-weight:700;font-size:11px;padding:1px 7px;border-radius:999px;margin-left:6px} .disc{display:inline-block;border:1px solid var(--line);color:var(--muted);font-size:11px;padding:1px 7px;border-radius:999px;margin-left:6px}
  .hpill{display:inline-block;color:#fff;font-weight:700;font-size:11.5px;padding:3px 11px;border-radius:999px;white-space:nowrap}
@@ -251,7 +251,7 @@ function indexRows(runs, { reportFile, linkPrefix = '', showAudit = true, client
       <td>${matterCell}</td>
       <td>${anonMark(r.title, { key: ck, run: r.runId })}</td>
       <td>${anonClient(r.client, ck)}</td>
-      <td><span class="b b-${attrValue(r.badge)}">${esc(r.overall)}</span>${qcFailed ? ' <span class="hold" title="machine QC checks failed — see the audit workbook">⚠ QC</span>' : ''}${!client && !qcFailed && r.clientGate?.inputsAbsent?.length ? ` <span class="disc" title="${escAttr(`published without ${r.clientGate.inputsAbsent.join(', ')} — each declared optional, so the release stands; the report was built without it`)}">◦ built without an input</span>` : ''}${
+      <td><span class="b b-${attrValue(bandClassOf(r))}">${esc(r.overall)}</span>${qcFailed ? ' <span class="hold" title="machine QC checks failed — see the audit workbook">⚠ QC</span>' : ''}${!client && !qcFailed && r.clientGate?.inputsAbsent?.length ? ` <span class="disc" title="${escAttr(`published without ${r.clientGate.inputsAbsent.join(', ')} — each declared optional, so the release stands; the report was built without it`)}">◦ built without an input</span>` : ''}${
         // The report's own conclusion beside the band pill (ruled 2026-09-22: the report is the master),
         // never a second summary. A meta.json written before the caption was kept shows the pill alone:
         // its stored statement could say "on hold", which was never true. The pill carries the rating,
@@ -1695,8 +1695,8 @@ export function composeEmailBody(reportMdPath, url, auditFile, productName = nul
 // ---------------------------------------------------------------------------------------------------
 const FONT = "font-family:Calibri,'Segoe UI',Arial,sans-serif";
 
-// 5-tier reporting-template risk scheme — the whole left "NAME / RISK RATING" cell takes the bg colour.
-// Matches skills/clearance-search/templates/search-request-form.html + knockout-searches/template-formatting.md.
+// 5-tier risk scheme on the report's ramp (shared/brand.mjs EMAIL_TIER) — the whole left "NAME / RISK RATING"
+// cell takes the bg colour, and `txt` colours a band's word on a light ground.
 // `txt` = a readable text-colour version of the tier (for the EXECUTIVE SUMMARY risk phrase, where a bright
 // fill like yellow/red is unreadable as text). Order matters: VERY HIGH before HIGH.
 const tier = (t, label) => ({ bg: t.bg, fg: t.fg, label, txt: t.txt });
@@ -1711,6 +1711,14 @@ export const RISK_TIERS = [
 // same template palette keyed by TONE, so "Moderate" (house) and "Medium" (a customer ladder) both colour correctly
 // and a 5-band matrix framework (incl. "Low") lands on the same ramp. Set per compose; null = legacy.
 let EMAIL_BANDS = null;
+// THE INDEX'S BAND PILL TAKES THE REPORT'S RAMP: the run's band, its tone on the run's own frozen ladder, then
+// that tone's stop (2026-11-18). A run recorded before its ladder was kept falls back to its badge, a coarser
+// step: l2 reads as the low stop, l3 as medium, l4 as high, and l1, no rated band, stays grey.
+function bandClassOf(r) {
+  const word = String(r?.overall ?? '').trim().toLowerCase();
+  const tone = (Array.isArray(r?.framework?.bands) ? r.framework.bands : []).find((b) => String(b?.label ?? '').toLowerCase() === word)?.tone;
+  return BAND_BY_TONE[tone] ?? r?.badge;
+}
 export const TONE_TIER = {
   severe:  EMAIL_TIER.veryHigh,
   high:    EMAIL_TIER.high,

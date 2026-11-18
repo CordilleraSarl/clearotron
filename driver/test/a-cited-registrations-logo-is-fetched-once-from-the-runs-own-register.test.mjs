@@ -1,0 +1,131 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
+//
+// A lawyer compares logos first, and the report showed none. Once the findings are final, each registration the report
+// will show is checked against its saved record, and where the record says a figurative mark with an image, that one
+// image is asked of the run's own register and saved with the run, its outcome written in `_driver/logos.json`. These
+// arms drive the step with invented records and a stand-in image call, so no register is asked anything.
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { logoOf, imageTypeOf, citedRefs, markLogos } from "../mark-logos.mjs";
+import { driverDir } from "../../shared/driver-dir.mjs";
+
+const PNG = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 13]);
+
+test("a record carries a logo only when it says a figurative mark and an image, in the register's own words", () => {
+  assert.equal(logoOf({ markFeature: "WORD AND DESIGN", imageAvailable: true }), "logo");
+  assert.equal(logoOf({ markFeature: "STYLIZED LETTERS", imageAvailable: true }), "logo");
+  assert.equal(logoOf({ markFeature: "combined", imageAvailable: true }), "logo", "Signa's word for a word-and-device mark");
+  assert.equal(logoOf({ markFeature: "WORD ONLY", imageAvailable: true }), "no-logo", "a word mark with a typeset image is no logo");
+  assert.equal(logoOf({ markFeature: "BLOCK LETTERS", imageAvailable: true }), "no-logo");
+  assert.equal(logoOf({ markFeature: "WORD AND DESIGN", imageAvailable: false }), "no-logo");
+  assert.equal(logoOf({ markFeature: "WORD AND DESIGN", imageAvailable: null }), "unknown", "a record that cannot say fetches nothing");
+  assert.equal(logoOf({ markFeature: "SOUND MARK", imageAvailable: true }), "unknown");
+  assert.equal(logoOf(null), "unknown");
+});
+
+test("only a PNG, JPEG, GIF or WebP image is kept", () => {
+  assert.equal(imageTypeOf(PNG).type, "image/png");
+  assert.equal(imageTypeOf(Buffer.from([0xff, 0xd8, 0xff, 0xe0])).type, "image/jpeg");
+  assert.equal(imageTypeOf(Buffer.from("GIF89a....")).type, "image/gif");
+  assert.equal(imageTypeOf(Buffer.concat([Buffer.from("RIFF"), Buffer.alloc(4), Buffer.from("WEBP")])).type, "image/webp");
+  assert.equal(imageTypeOf(Buffer.from("<svg xmlns='http://www.w3.org/2000/svg'/>")), null, "an SVG is refused: it would be embedded in a client report");
+  assert.equal(imageTypeOf(Buffer.from("not an image")), null);
+});
+
+test("the registrations asked about are the ones the report shows: a withdrawn finding's are not, and each once", () => {
+  const findings = [
+    { disposition: "adversarial", owner: { registrations: [{ uri: "/mark/EM/0001" }, { uri: "/mark/us/0002" }] } },
+    { disposition: "withdrawn", owner: { registrations: [{ uri: "/mark/em/0003" }] } },
+    { disposition: "distinguished", owner: { registrations: [{ uri: "/mark/em/0001" }, { uri: "no uri here" }] } },
+  ];
+  assert.deepEqual(citedRefs({ findings }), ["/mark/em/0001", "/mark/us/0002"]);
+  const registerRecords = { marks: [{ name: "INVENTED", records: [{ recordId: "/mark/wo/0004" }, { recordId: "/mark/wo/0004" }] }] };
+  assert.deepEqual(citedRefs({ registerRecords }), ["/mark/wo/0004"]);
+});
+
+/** An invented run: three cited registrations, one of them a figurative mark with an image. */
+function run() {
+  const dir = mkdtempSync(join(tmpdir(), "logos-"));
+  mkdirSync(join(dir, "_records"), { recursive: true });
+  mkdirSync(driverDir(dir), { recursive: true });
+  const rec = (cc, id, markFeature, imageAvailable) =>
+    writeFileSync(join(dir, "_records", `${cc}-${id}.json`), JSON.stringify({ _uri: `/mark/${cc}/${id}`, markFeature, imageAvailable }));
+  rec("em", "0001", "WORD AND DESIGN", true);
+  rec("em", "0002", "WORD ONLY", true);
+  rec("us", "0003", "DESIGN MARK", null);
+  writeFileSync(join(dir, "findings.json"), JSON.stringify({ findings: [{ disposition: "adversarial", owner: { registrations: [
+    { uri: "/mark/em/0001" }, { uri: "/mark/em/0002" }, { uri: "/mark/us/0003" }, { uri: "/mark/us/0009" }] } }] }));
+  return dir;
+}
+const register = (answer, calls) => ({ id: "invented-register", credEnv: "INVENTED_REGISTER_KEY", markImage: async (ref) => { calls.push(ref); return answer(ref); } });
+const ENV = { INVENTED_REGISTER_KEY: "invented" };
+const byRef = (doc) => Object.fromEntries(doc.rows.map((r) => [r.ref, r]));
+
+test("one image request per registration whose record carries a logo, saved with the run, and none asked again on a resume", async () => {
+  const dir = run();
+  const calls = [];
+  const provider = register(() => ({ ok: true, bytes: PNG, contentType: "image/png" }), calls);
+  const doc = await markLogos(dir, { findingsPath: join(dir, "findings.json"), provider, env: ENV });
+  assert.deepEqual(calls, ["/mark/em/0001"], "only the figurative mark with an image was asked for");
+  const rows = byRef(doc);
+  assert.equal(rows["/mark/em/0001"].state, "fetched");
+  assert.equal(rows["/mark/em/0001"].contentType, "image/png");
+  assert.ok(existsSync(join(dir, rows["/mark/em/0001"].file)), "the image is saved with the run");
+  assert.equal(rows["/mark/em/0002"].state, "no-logo");
+  assert.equal(rows["/mark/us/0003"].state, "unknown", "a record that cannot say asks nothing");
+  assert.equal(rows["/mark/us/0009"].state, "unknown", "a registration the run holds no record of asks nothing");
+  assert.deepEqual(JSON.parse(readFileSync(driverDir(dir, "logos.json"), "utf8")).rows, doc.rows);
+  await markLogos(dir, { findingsPath: join(dir, "findings.json"), provider, env: ENV });
+  assert.deepEqual(calls, ["/mark/em/0001"], "a resume asked for the image again");
+});
+
+test("a run that makes no register call asks nothing, and says why: a replay, no credential, a register with no image call", async () => {
+  for (const [why, opts] of [
+    ["replay", { injectedFetcher: true, env: ENV }],
+    ["no credential", { env: {} }],
+  ]) {
+    const calls = [];
+    const doc = await markLogos(run(), { findingsPath: null, provider: register(() => ({ ok: true, bytes: PNG }), calls), ...opts });
+    assert.equal(calls.length, 0, `${why}: an image was asked for`);
+    assert.ok(doc, why);
+  }
+  for (const [why, opts] of [["replay", { injectedFetcher: true, env: ENV }], ["no credential", { env: {} }]]) {
+    const calls = [];
+    const dir = run();
+    const doc = await markLogos(dir, { findingsPath: join(dir, "findings.json"), provider: register(() => ({ ok: true, bytes: PNG }), calls), ...opts });
+    assert.equal(calls.length, 0, `${why}: an image was asked for`);
+    assert.equal(byRef(doc)["/mark/em/0001"].state, "unknown", why);
+    assert.ok(byRef(doc)["/mark/em/0001"].cause, `${why}: no cause given`);
+  }
+  const dir = run();
+  const doc = await markLogos(dir, { findingsPath: join(dir, "findings.json"), provider: { id: "invented-register", credEnv: "INVENTED_REGISTER_KEY" }, env: ENV });
+  assert.equal(byRef(doc)["/mark/em/0001"].state, "unknown", "a register whose adapter fetches no image is not a failure");
+});
+
+test("a request that does not land, or brings back something that is not an image, is failed with its cause and stops nothing", async () => {
+  for (const [why, answer] of [
+    ["refused", () => ({ ok: false, cause: "HTTP 503: invented" })],
+    ["an SVG", () => ({ ok: true, bytes: Buffer.from("<svg/>") })],
+    ["a throw", () => { throw new Error("invented"); }],
+  ]) {
+    const dir = run();
+    const doc = await markLogos(dir, { findingsPath: join(dir, "findings.json"), provider: register(answer, []), env: ENV });
+    const row = byRef(doc)["/mark/em/0001"];
+    assert.equal(row.state, "failed", why);
+    assert.ok(row.cause, `${why}: no cause`);
+    assert.equal(row.file, undefined, `${why}: a file was recorded`);
+  }
+});
+
+test("a Knockout's listed filings are read the same way", async () => {
+  const dir = run();
+  writeFileSync(join(dir, "register-records.json"), JSON.stringify({ marks: [{ name: "INVENTED", records: [{ recordId: "/mark/em/0001" }] }] }));
+  const calls = [];
+  const doc = await markLogos(dir, { registerRecordsPath: join(dir, "register-records.json"), provider: register(() => ({ ok: true, bytes: PNG }), calls), env: ENV });
+  assert.deepEqual(calls, ["/mark/em/0001"]);
+  assert.equal(doc.rows.length, 1);
+});

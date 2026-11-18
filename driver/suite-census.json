@@ -245,7 +245,13 @@
         },
         "a-cited-registration-opens-with-the-register-record.test.mjs": {
           "tests": 7,
-          "asserts": 31,
+          "asserts": 35,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-cited-registrations-logo-is-fetched-once-from-the-runs-own-register.test.mjs": {
+          "tests": 7,
+          "asserts": 37,
           "skips": 0,
           "todos": 0
         },
@@ -310,8 +316,8 @@
           "todos": 0
         },
         "a-client-cell-carries-no-raw-engine-words.test.mjs": {
-          "tests": 7,
-          "asserts": 22,
+          "tests": 8,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
@@ -1932,6 +1938,12 @@
         "a-records-goods-are-served-once.test.mjs": {
           "tests": 6,
           "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-records-goods-read-as-the-register-holds-them.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -4657,6 +4669,12 @@
           "tests": 2,
           "asserts": 7,
           "skips": 2,
+          "todos": 0
+        },
+        "every-surface-draws-bands-from-the-report-ramp.test.mjs": {
+          "tests": 5,
+          "asserts": 16,
+          "skips": 0,
           "todos": 0
         },
         "every-surface-that-takes-the-manifest-asks-for-the-goods-words.test.mjs": {
@@ -9141,8 +9159,8 @@
           "todos": 0
         },
         "account-audit-chain.test.mjs": {
-          "tests": 10,
-          "asserts": 48,
+          "tests": 11,
+          "asserts": 50,
           "skips": 0,
           "todos": 0
         },
@@ -10100,6 +10118,12 @@
         "providers/clarivate/test/a-gateway-timeout-is-asked-again-in-region-halves.test.mjs": {
           "tests": 6,
           "asserts": 28,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/clarivate/test/a-logo-is-one-image-request.test.mjs": {
+          "tests": 2,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },

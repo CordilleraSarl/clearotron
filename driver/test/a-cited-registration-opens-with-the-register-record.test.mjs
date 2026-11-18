@@ -79,7 +79,10 @@ test("a logo is wanted only where the record marks the mark figurative and says 
   assert.equal(logoWanted(record({ markFeature: "WORD ONLY" })), false, "a word mark's image is only the word");
   assert.equal(logoWanted(record({ imageAvailable: false })), false);
   const v = registerRecordView(record());
-  assert.deepEqual(v.logo, { wanted: true, caption: "EM", alt: "SKARVEL, logo as registered in European Union", href: v.logo.href });
+  assert.deepEqual(v.logo, { wanted: true, caption: "EU", alt: "SKARVEL, logo as registered in European Union", href: v.logo.href },
+    "an EUIPO record (office em) is captioned EU, as the board draws it");
+  assert.equal(registerRecordView(record({ office: "wo", uri: "/mark/wo/1500001" })).logo.caption, "WIPO");
+  assert.equal(registerRecordView(record({ office: "us", uri: "/mark/us/90000001" })).logo.caption, "US");
 });
 
 test("the labels are the approved words", () => {
@@ -88,6 +91,8 @@ test("the labels are the approved words", () => {
   assert.equal(NO_GOODS, "The record states no goods or services.");
   assert.equal(CLASS_NOT_STATED, "Class not stated");
   assert.equal(registrationsCount(2), "2 registrations");
-  assert.equal(countryOf("wo"), "WIPO");
+  assert.equal(countryOf("wo"), "WIPO (Madrid)", "WO reads as every other report surface names it");
   assert.equal(countryOf("us"), "United States");
+  assert.equal(countryOf("em"), "European Union");
+  assert.equal(countryOf("ar"), "Argentina", "a country the naming table does not list still reads as a name");
 });
