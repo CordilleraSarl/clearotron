@@ -7899,6 +7899,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-portal-strips-the-chrome-a-report-marks.test.mjs": {
+          "tests": 4,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "the-primary-sweep-decides-waiting-families-on-the-judgment-tier.pipeline.test.mjs": {
           "tests": 3,
           "asserts": 22,

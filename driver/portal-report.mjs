@@ -197,6 +197,31 @@ const CHROME_RES = [
   { tag: "div", open: /<div class="[^"]*\bfab-stack\b[^"]*"[^>]*>/ },
 ];
 
+// ── the chrome a renderer marks as its own ──────────────────────────────────────────────────────────
+//
+// Both renderers put `data-report-chrome` on the root of each piece of chrome the portal draws for itself:
+// the sticky header on both reports, and the Knockout's floating theme toggle. A report rendered with the
+// marker is stripped by it, element by element and balanced by its own tag, so a renamed class or a
+// reshaped header no longer stops a strip without a sound. The attribute changes nothing a reader sees,
+// and no stylesheet selects on it.
+//
+// THE CLASS RULES ABOVE STAY. Stored reports are served from their own bytes for as long as they are
+// kept, and a report rendered before the marker carries only the classes. A class rule leaves only when
+// no stored report matches it any more. On a marked report they find nothing left to remove.
+const MARKED_CHROME_RE = /<([a-z]+)\b[^>]*\sdata-report-chrome\b[^>]*>/gi;
+
+function stripMarkedChrome(html, onUnbalanced = () => {}) {
+  const tags = new Set([...html.matchAll(MARKED_CHROME_RE)].map((m) => m[1].toLowerCase()));
+  let out = html;
+  let removed = 0;
+  for (const tag of tags) {
+    const r = stripBalanced(out, new RegExp(`<${tag}\\b[^>]*\\sdata-report-chrome\\b[^>]*>`), tag, onUnbalanced);
+    out = r.html;
+    removed += r.removed;
+  }
+  return { html: out, removed };
+}
+
 // ── labelled internal tails: the MID-LINE form the element strip cannot see ──────────────────────────
 //
 // publish/parse.mjs is the authority on what `[internal] ` means: stripInternal({client:false}) labels
@@ -917,6 +942,7 @@ export function prepareReportForEmbed(html, { staff = false, poolRoot = null, fe
   let out = nav.html;
   const strippedNav = nav.removed;
 
+  out = stripMarkedChrome(out, note).html;
   for (const { open, tag } of CHROME_RES) out = stripBalanced(out, open, tag, note).html;
 
   // The baked connector credential comes out for EVERYONE, before the audience branch below decides
