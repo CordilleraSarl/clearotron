@@ -20,7 +20,7 @@ import { recordGoods, niceClass, untaggedIsEnglish, DEFAULT_ANSWER_CUT } from '.
 import { REC } from '../registry-fidelity.mjs';
 import { officeRecordLink } from './office-record-links.mjs';
 
-// The labels, as approved (tracker issue 1343, Krzys, 2026-11-18). A renderer takes them from here.
+// The labels, as approved on 2026-11-18. A renderer takes them from here.
 export const RECORD_LABELS = Object.freeze({
   title: 'Register record',
   mark: 'Mark',
