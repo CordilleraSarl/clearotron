@@ -80,7 +80,7 @@ async function deliver(overCap) {
     await wb.xlsx.readFile(xlsx);
     const s = wb.getWorksheet("Summary");
     let hit = false;
-    s?.eachRow((row) => { if (/Coverage judgment — slices considered/.test(String(row.getCell(1).value ?? ""))) hit = true; });
+    s?.eachRow((row) => { if (/How coverage was judged/.test(String(row.getCell(1).value ?? ""))) hit = true; });
     workbookHasSlices = hit;
   }
 

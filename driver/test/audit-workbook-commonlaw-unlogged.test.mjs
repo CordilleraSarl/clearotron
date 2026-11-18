@@ -115,13 +115,13 @@ test("the common-law sweep is stated on the sheet, never silently absent", async
 
   const head = t.findIndex((x) => /^COMMON-LAW\s+—\s+web/.test(x));
   assert.ok(head >= 0, `the common-law section header is present: ${t.join(" | ")}`);
-  assert.ok(t.some((x) => /^COMMON-LAW/.test(x) && /not itemised in this run's search log/i.test(x)),
+  assert.ok(t.some((x) => /^COMMON-LAW/.test(x) && /not itemised in this search's search log/i.test(x)),
     "and one honest row underneath names what the log does not hold");
 
   const ws = wb.getWorksheet("What was searched");
   const noteCol = colIdx(ws, "Note");
   let declNote = "";
-  ws.eachRow((r, n) => { if (n > 1 && /not itemised in this run's search log/i.test(cellText(r, colIdx(ws, "Search term / variant")))) declNote = cellText(r, noteCol); });
+  ws.eachRow((r, n) => { if (n > 1 && /not itemised in this search's search log/i.test(cellText(r, colIdx(ws, "Search term / variant")))) declNote = cellText(r, noteCol); });
   assert.match(declNote, /never as evidence that no common-law search ran/i,
     "the row states what the reader must NOT conclude from it");
   assert.match(declNote, /incomplete record/i, "and names the tab as incomplete rather than complete");

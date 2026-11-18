@@ -238,12 +238,12 @@ test("what the rating did not carry reaches the audit workbook with the rater's 
   assert.equal(complete["Mark"], "LANTERNWICK");
   // READING A RESULT AND PUTTING IT DOWN IS THE SCREEN WORKING, so the row is not a degraded one: a
   // Degraded here would tell the reader a part of the screen failed when the opposite happened.
-  assert.equal(complete["OK/Degraded"], "OK");
+  assert.ok(!/^FAILED/.test(complete["Result Summary"]), "a complete search reads as failed");
 
   // AND THE HALF-FORMED ROW IS VISIBLE RATHER THAN DROPPED, marked Degraded because part of this record
   // is genuinely missing. Dropped silently, this mark would read as having set nothing aside.
   const half = aside.find((r) => r["Search Term"].endsWith("/no-ground"));
-  assert.equal(half["OK/Degraded"], "Degraded");
+  assert.ok(!("OK/Degraded" in half), "the engine's OK/Degraded column is back on the lawyer's sheet");
   // ITS REASON CELL SAYS NOTHING, and the arm pins the emptiness on purpose. The row's shipped line for a
   // part left open asserts a step could not be completed, and here the set-aside was completed — only its
   // reason is absent from the record. That line would tell a client a step failed when none did, which is

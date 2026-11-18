@@ -153,7 +153,7 @@ test("the audit workbook's coverage sheet carries the withheld family as a recor
     const out = withheldFamilyRows(dir);
     assert.equal(out.length, 1);
     assert.deepEqual([out[0].state, out[0].note, out[0].done, out[0].left], ["note", REASON, REASON, ""]);
-    assert.match(out[0].area, /^main register sweep \/ /, "the area is not the driver's reader label");
+    assert.match(out[0].area, /^main register search \/ /, "the area is not the driver's reader label");
     // A later digest that re-words the form's row does not replace the turn's reason.
     writeFileSync(coverageFormPaths(dir).sidecar, JSON.stringify({ rows: rows.map((r) => (r.kind === "family" ? { ...r, reason: "an invented later wording" } : r)) }));
     assert.equal(withheldFamilyRows(dir)[0].note, REASON, "the reason shown is the reading turn's, not the digest's");

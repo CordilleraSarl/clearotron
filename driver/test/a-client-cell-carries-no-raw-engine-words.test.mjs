@@ -57,7 +57,7 @@ test("a knockout web search that failed prints the reader's line on its Audit Tr
   const { sheet, cells } = await workbookRows(out);
   const trail = sheet("Audit Trail");
   assert.deepEqual(trail.map((r) => r["Result Summary"]), [`FAILED — ${LEFT_OPEN}`, `FAILED — ${TIMED_OUT}`, "ok — 10 bytes"]);
-  assert.deepEqual(trail.map((r) => r["OK/Degraded"]), ["Degraded", "Degraded", "OK"], "the rows keep their state");
+  assert.ok(trail.every((r) => !("OK/Degraded" in r)), "the engine's OK/Degraded column is back on the lawyer's sheet");
   assert.ok(!cells.some((c) => /API_KEY|driver env|executor threw/.test(c)), "a raw cause reached a reader's cell");
 });
 
@@ -131,15 +131,15 @@ test("the Summary's coverage-judgment slices are named in the reader's words and
     null, out, "QZXV", { title: "QZXV" });
   const { sheet } = await workbookRows(out);
   const summary = sheet("Summary");
-  const head = summary.findIndex((r) => /Coverage judgment — slices considered/.test(r["Field"]));
+  const head = summary.findIndex((r) => /How coverage was judged/.test(r["Field"]));
   assert.ok(head >= 0, "no coverage-judgment slices on the Summary");
   const slices = summary.slice(head + 1, head + 1 + rows.length);
   assert.deepEqual(slices.map((r) => r["Field"].trim()), [
-    "main register sweep / QZXV* wildcard, cl. 9, US",
+    "main register search / QZXV* wildcard, cl. 9, US",
     "owner portfolio sweep / owner probe, cl. 9, US",
     "transliterations and numeric forms / exact: KYUZIXV [cl 9]",
   ], "a slice is printed under the engine's identifier where the driver wrote the reader's name");
-  assert.equal(slices[1]["Value"], "deferred — the owner's portfolio was not counted this run",
+  assert.equal(slices[1]["Value"], "Not searched — the owner's portfolio was not counted this run",
     "the row claiming a search that never ran carries the engine's qid");
   assert.equal(slices[2]["Value"], "planned and not executed this run", "the orphan row carries the engine's own clause");
   const engine = /\b(?:primary-sweep|incumbent-class|transliteration-numeric|saturation-probe)\b|band block|funnel/;
