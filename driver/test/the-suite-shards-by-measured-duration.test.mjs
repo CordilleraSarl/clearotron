@@ -9,7 +9,7 @@ import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { shardByDuration, untimedCount } from "../../scripts/test-full.mjs";
+import { shardByDuration, untimedCount, readDurations, plan, shardableFiles } from "../../scripts/test-full.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const files = (n) => Array.from({ length: n }, (_, k) => `driver/test/f${String(k).padStart(3, "0")}.test.mjs`);
@@ -48,6 +48,16 @@ test("a file the table does not name is dealt at the median, and counted", () =>
   assert.equal(untimedCount(list, ms), 2);
   assert.equal(untimedCount(list, {}), 5);
   assert.deepEqual(deal(list, 2, {}).flat().sort(), [...list].sort(), "with no table at all, a file was lost");
+});
+
+test("the committed table was measured, and names every file the shards deal but those added since", () => {
+  const { measured, ms } = readDurations(ROOT);
+  assert.match(String(measured), /^\d{4}-\d{2}-\d{2}$/, "the table carries no measurement date");
+  const dealt = shardableFiles(plan(ROOT).corpora, ROOT);
+  const untimed = untimedCount(dealt, ms);
+  // A table goes stale as files are added, and that costs balance, not coverage. A table naming almost nothing is not
+  // stale, though: it is not the table, and the deal would be a guess.
+  assert.ok(untimed < dealt.length / 10, `${untimed} of ${dealt.length} files have no recorded duration; rebuild it with scripts/measure-test-durations.mjs --run <id> --write`);
 });
 
 test("a shard's log says how many files had no recorded duration", () => {

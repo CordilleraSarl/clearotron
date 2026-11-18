@@ -253,6 +253,45 @@ export const PALETTE_DARK = {
   codeBg:     'rgba(236,229,216,.08)',// parchment at 8%
 };
 
+// — THE COLOURS OUTSIDE THE RAMP, NAMED FOR WHERE THEY ARE USED TODAY. The emails and the audit workbook
+// each drew with their own literals, so a re-skin that edited this file still missed them. Their values
+// are unchanged here: the email tiers are an Office traffic light ("minimal" is blue), not the report's
+// ramp. Bringing them onto the ramp is a visible change, made after this move and shown before it ships.
+
+/** The email risk tiers: the cell fill, the text on it, and a readable text colour for a risk phrase. */
+export const EMAIL_TIER = Object.freeze({
+  veryHigh:   Object.freeze({ bg: '#ff0000', fg: '#fff', txt: '#d10000' }),
+  high:       Object.freeze({ bg: '#ED7D31', fg: '#fff', txt: '#c75b13' }),
+  medium:     Object.freeze({ bg: '#ffff00', fg: '#000', txt: '#9a8400' }),
+  manageable: Object.freeze({ bg: '#70AD47', fg: '#fff', txt: '#4e7a31' }),
+  low:        Object.freeze({ bg: '#4472C4', fg: '#fff', txt: '#2f55a4' }),
+  unrated:    Object.freeze({ bg: '#bfbfbf', fg: '#000', txt: '#555' }),
+});
+
+/** The emails' other colours: the clearance cover note's links, headline and boxes, and the access note. */
+export const EMAIL_COLOURS = Object.freeze({
+  reportLink:   '#1a4fd6',
+  auditLink:    '#3b4fd6',
+  headline:     '#1a1a2e',
+  quiet:        '#7a8290',   // the access note, and the rated-under and coverage lines
+  warning:      '#7a2b12',   // the handling note, and an applicant named mid-run
+  closeBoxFill: '#fdeeee',   // "Only you can close these"
+  closeBoxLine: '#c98a86',
+  closeBoxText: '#6e1512',
+});
+
+/** The audit workbook's colours, as the spreadsheet library takes them: RRGGBB, or AARRGGBB where it asks for alpha. */
+export const WORKBOOK_COLOURS = Object.freeze({
+  headerFill:   '11132A',
+  headerText:   'FFFFFFFF',
+  link:         'FF0563C1',
+  sectionFill:  'FFEDEDED',
+  stateClean:   'DEF0DC',
+  stateLimited: 'FBE7C6',
+  stateOpen:    'FBE7C6',
+  stateNote:    'EDEDED',
+});
+
 // The typefaces themselves are not linked from anywhere: brand-fonts.mjs embeds them in each page that
 // sets text, and this module only names them, so it stays free of file reads for the tools that import it.
 

@@ -1,0 +1,320 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://clearotron.ai/schemas/report-data/clearance-1.schema.json",
+  "title": "report-data/clearance-1",
+  "description": "report-data.json beside a clearance report: the client's cut of the run as data. Written by driver/publish/report-data.mjs (clearanceReportData).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "kind", "runId", "codename", "matter", "markName", "title", "customerKey", "issued", "engineCommit", "servedModels", "url", "auditFile", "level", "framework", "rating", "caption", "jurisdiction", "scopeBasis", "searchedJurisdictions", "markAssessment", "fourAnswers", "findings", "contextNotes", "coverage", "actions", "askAnswers"],
+  "properties": {
+    "schema": { "const": "report-data/clearance-1" },
+    "kind": { "const": "clearance" },
+    "runId": { "type": "string" },
+    "codename": { "type": ["string", "null"] },
+    "matter": { "type": "string" },
+    "markName": { "type": ["string", "null"] },
+    "title": { "type": ["string", "null"] },
+    "customerKey": { "type": "string" },
+    "issued": { "type": ["string", "null"] },
+    "engineCommit": { "type": ["string", "null"], "description": "The engine build that produced the report." },
+    "servedModels": { "type": ["array", "null"], "items": { "type": "string" }, "description": "The models that served the run, in first-use order; null when none was read." },
+    "url": { "type": ["string", "null"] },
+    "auditFile": { "type": ["string", "null"] },
+    "level": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["searchLevel", "stageLabel"],
+      "properties": {
+        "searchLevel": { "type": ["string", "null"] },
+        "stageLabel": { "type": ["string", "null"] }
+      }
+    },
+    "framework": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["key", "title", "bands"],
+      "properties": {
+        "key": { "type": "string" },
+        "title": { "type": "string" },
+        "bands": { "type": "array", "items": { "$ref": "#/$defs/band" } }
+      }
+    },
+    "rating": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["tier", "badge", "band", "statement", "conditions"],
+      "properties": {
+        "tier": { "type": ["string", "null"] },
+        "badge": { "type": ["string", "null"] },
+        "band": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["label", "rankFromTop", "scale"],
+          "properties": {
+            "label": { "type": "string" },
+            "rankFromTop": { "type": "integer" },
+            "scale": { "type": "integer" }
+          }
+        },
+        "statement": { "type": ["string", "null"] },
+        "conditions": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "caption": { "type": ["string", "null"] },
+    "assessment": { "const": "not-completed", "description": "Present only when the run's overall assessment could not be completed: there is then no rating and no finding." },
+    "jurisdiction": { "type": ["string", "null"] },
+    "scopeBasis": { "enum": ["instructed", "worldwide", "inferred", null] },
+    "searchedJurisdictions": { "type": "array", "items": { "type": "string" } },
+    "markAssessment": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["distinctiveness", "connotation"],
+      "properties": {
+        "distinctiveness": { "$ref": "#/$defs/assessmentField" },
+        "connotation": { "$ref": "#/$defs/assessmentField" }
+      }
+    },
+    "fourAnswers": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "third_party_rights": { "$ref": "#/$defs/answer", "properties": { "token": { "enum": ["strong", "moderate", "weak"] } } },
+        "objection_likelihood": { "$ref": "#/$defs/answer", "properties": { "token": { "enum": ["likely", "possible", "unlikely"] } } },
+        "registrability": { "$ref": "#/$defs/answer", "properties": { "token": { "enum": ["registrable", "registrable-with-conditions", "obstructed"] } } },
+        "client_enforceability": { "$ref": "#/$defs/answer", "properties": { "token": { "enum": ["strong", "moderate", "weak"] } } }
+      }
+    },
+    "findings": { "type": "array", "items": { "$ref": "#/$defs/finding" } },
+    "contextNotes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "mark", "context"],
+        "properties": {
+          "type": { "enum": ["famous-neighbour-ungrounded"] },
+          "mark": { "type": "string" },
+          "owner": { "type": "string" },
+          "context": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "coverage": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["area", "state"],
+        "properties": {
+          "area": { "type": ["string", "null"] },
+          "state": { "enum": ["confirmed-clean", "coverage-limited", "open", "not-searched", "note"] },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "actions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["conditions", "advisories"],
+      "properties": {
+        "conditions": { "type": "array", "items": { "$ref": "#/$defs/action", "properties": { "kind": { "enum": ["consent", "coexistence-agreement", "territorial-delimitation", "goods-amendment", "mark-modification", "senior-clearance", "proceeding-response", "counsel-opinion-required"] } } } },
+        "advisories": { "type": "array", "items": { "$ref": "#/$defs/action", "properties": { "kind": { "enum": ["client-fact", "commercial-decision", "monitoring", "filing-routine"] } } } }
+      }
+    },
+    "askAnswers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["ask", "answer"],
+        "properties": {
+          "ask": { "type": "string" },
+          "answer": { "type": "string" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "band": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "tone"],
+      "properties": {
+        "label": { "type": "string" },
+        "tone": { "enum": ["severe", "high", "medium", "low", "minimal"] }
+      }
+    },
+    "deadline": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["kind", "date"],
+      "properties": {
+        "kind": { "type": ["string", "null"] },
+        "date": { "type": "string" }
+      }
+    },
+    "classNote": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["class", "note"],
+      "properties": {
+        "class": { "type": "string" },
+        "note": { "type": ["string", "null"] }
+      }
+    },
+    "assessmentField": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["text"],
+      "properties": {
+        "text": { "type": ["string", "null"] },
+        "spectrum": { "type": "string" },
+        "per_class": { "type": "array", "items": { "$ref": "#/$defs/classNote" } },
+        "per_market": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["market", "note"],
+            "properties": {
+              "market": { "type": ["string", "null"] },
+              "note": { "type": ["string", "null"] }
+            }
+          }
+        },
+        "counter_registrations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "mark": { "type": "string" },
+              "uri": { "type": "string" },
+              "owner": { "type": "string" },
+              "note": { "type": "string" }
+            }
+          }
+        },
+        "acquired": { "type": "string" },
+        "note": { "type": "string" }
+      }
+    },
+    "answer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["read"],
+      "properties": {
+        "read": { "type": ["string", "null"] },
+        "token": { "type": "string" },
+        "basis": { "type": "string" },
+        "ordinals": { "type": "array", "items": { "type": "integer" } },
+        "obstacles": { "type": "array", "items": { "$ref": "#/$defs/classNote" } }
+      }
+    },
+    "meter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["token", "basis"],
+      "properties": {
+        "token": { "type": ["string", "null"] },
+        "basis": { "enum": ["verified-from-record", "inferred-from-signal", null] }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ordinal", "mark", "band", "net", "group", "composite", "level", "owner", "meters", "quadrant", "source", "impact", "legal_position", "practical_position", "manageable", "deadline"],
+      "properties": {
+        "ordinal": { "type": "integer" },
+        "mark": { "type": "string" },
+        "band": { "type": ["string", "null"] },
+        "inputs": { "type": "object", "additionalProperties": { "type": "string" }, "description": "The framework's own inputs for the finding, present only where the framework states a method." },
+        "net": { "type": ["string", "null"] },
+        "group": { "enum": ["on-field", "off-field", "out-of-scope", null] },
+        "composite": { "type": ["integer", "null"], "description": "Kept on runs rated before bands, so an archived run still publishes." },
+        "level": { "enum": ["A", "B", "C", "D", "E", null] },
+        "owner": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "country", "registrations"],
+          "properties": {
+            "name": { "type": ["string", "null"] },
+            "country": { "type": ["string", "null"] },
+            "registrations": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["uri", "classes", "status", "filed", "expiry", "jurisdiction"],
+                "properties": {
+                  "uri": { "type": "string" },
+                  "classes": { "type": "array", "items": { "type": "string" } },
+                  "status": { "type": ["string", "null"] },
+                  "filed": { "type": ["string", "null"] },
+                  "expiry": { "type": ["string", "null"] },
+                  "jurisdiction": { "type": ["string", "null"] }
+                }
+              }
+            }
+          }
+        },
+        "meters": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "properties": {
+            "mark_similarity": { "$ref": "#/$defs/meter", "properties": { "token": { "enum": ["high", "medium", "low", null] } } },
+            "goods_proximity": { "$ref": "#/$defs/meter", "properties": { "token": { "enum": ["high", "medium", "low", null] } } },
+            "use": { "$ref": "#/$defs/meter", "properties": { "token": { "enum": ["confirmed", "not-confirmed", "unknown", null] } } },
+            "enforcer": { "$ref": "#/$defs/meter", "properties": { "token": { "enum": ["high", "medium", "low", "unknown", null] } } }
+          }
+        },
+        "quadrant": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["x", "y"],
+          "properties": {
+            "x": { "type": "number", "minimum": 0, "maximum": 1 },
+            "y": { "type": "number", "minimum": 0, "maximum": 1 }
+          }
+        },
+        "source": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["source_type", "resolved_link"],
+          "properties": {
+            "source_type": { "enum": ["register-vendor", "register-euipo", "common-law-marketplace", "common-law-web", "case-law", null] },
+            "resolved_link": { "type": ["string", "null"] }
+          }
+        },
+        "impact": { "type": ["string", "null"] },
+        "legal_position": { "type": ["string", "null"] },
+        "practical_position": { "type": ["string", "null"] },
+        "off_field_ground": { "enum": ["different-field", "no-material-risk"] },
+        "manageable": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["category", "reason"],
+          "properties": {
+            "category": { "enum": ["large-competitor", "commercial-partner", "troll", "well-known-enforcer"] },
+            "reason": { "type": ["string", "null"] }
+          }
+        },
+        "deadline": { "$ref": "#/$defs/deadline" },
+        "ruled_out": { "const": true },
+        "ruled_out_reason": { "type": ["string", "null"] }
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "text", "ordinals", "deadline"],
+      "properties": {
+        "id": { "type": ["integer", "null"] },
+        "kind": { "type": ["string", "null"] },
+        "text": { "type": ["string", "null"] },
+        "ordinals": { "type": "array", "items": { "type": "integer" } },
+        "deadline": { "$ref": "#/$defs/deadline" }
+      }
+    }
+  }
+}

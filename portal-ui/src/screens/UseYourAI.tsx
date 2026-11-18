@@ -69,10 +69,10 @@ const COPIED_MS = 2600
  * accommodate one vendor would be sorting by vendor again.
  */
 const PLACES = ['disk', 'public-http'] as const
-const WHERE: Record<(typeof PLACES)[number], { readonly label: string; readonly icon: string }> = {
-  disk: { label: 'Clearotron is installed on this machine (laptop/desktop)', icon: 'laptop' },
-  'public-http': { label: 'Clearotron is running elsewhere (e.g. Cloud/Server)', icon: 'server' },
-}
+const whereFor = (name: string): Record<(typeof PLACES)[number], { readonly label: string; readonly icon: string }> => ({
+  disk: { label: `${name} is installed on this machine (laptop/desktop)`, icon: 'laptop' },
+  'public-http': { label: `${name} is running elsewhere (e.g. Cloud/Server)`, icon: 'server' },
+})
 
 /**
  * The setup guide, at its public home — a document a reader's own AI can open too, which is what "give
@@ -136,9 +136,10 @@ const AT_REST: PressState = { copiedAt: null, landedAt: null, landed: null, reve
  * is the panel. `watch` is the page's own line under the last step, when there is one to say.
  */
 function StepsPanel({
-  offer, measuring = false, folded = false, watch = null, state = AT_REST, onBlock, onSecret,
+  offer, name, measuring = false, folded = false, watch = null, state = AT_REST, onBlock, onSecret,
 }: {
   readonly offer: ConnectOffer
+  readonly name: string
   readonly measuring?: boolean
   readonly folded?: boolean
   readonly watch?: string | null
@@ -157,7 +158,7 @@ function StepsPanel({
           promise the page did not keep: a reader went looking for an alternative that was not there. */}
       {offer.door === null && offer.altSteps?.length ? (
         <p className="steps-unknown">
-          We could not check how this Clearotron lets an assistant in, so both ways are below. Try the
+          We could not check how {name} lets an assistant in, so both ways are below. Try the
           first — your assistant will tell you if it needs the other.
         </p>
       ) : null}
@@ -294,12 +295,12 @@ function StepList({
 }
 
 /** The one honest unavailable, about the DEPLOYMENT rather than the reader, naming who can change it. */
-function NotOnline() {
+function NotOnline({ name }: { readonly name: string }) {
   return (
     <div className="notice ai-none">
       <strong>Not available on this installation yet</strong>
       <p>
-        Your AI app reaches Clearotron over the internet, and this installation isn&rsquo;t on the internet
+        Your AI app reaches {name} over the internet, and this installation isn&rsquo;t on the internet
         yet. Whoever installed it can put it online — it takes about a minute and needs no account.
       </p>
     </div>
@@ -307,6 +308,8 @@ function NotOnline() {
 }
 
 export function UseYourAI({ ctx }: { readonly ctx: ShellContext }) {
+  const name = ctx.me.brandName
+  const where = whereFor(name)
   const [access, setAccess] = useState<McpAccess | null>(null)
   const [place, setPlace] = useState<string | null>(null)
   const [picked, setPicked] = useState<string | null>(null)
@@ -350,7 +353,7 @@ export function UseYourAI({ ctx }: { readonly ctx: ShellContext }) {
   // WHAT THE PAGE SAYS ABOUT THE CONNECTION, each decided in the contract from the one three-valued answer.
   const connected = access?.aiConnected ?? null
   const pill = connectionPill(connected)
-  const watch = watchForConnected(connected)
+  const watch = watchForConnected(connected, name)
   const folds = foldsSteps(connected)
   const back = continueOffer({ aiConnected: connected, fromReport, remembered })
 
@@ -411,6 +414,7 @@ export function UseYourAI({ ctx }: { readonly ctx: ShellContext }) {
     <StepsPanel
       key={chosen.id}
       offer={chosen}
+      name={name}
       folded={folds}
       watch={watch}
       state={{ copiedAt, landedAt, landed, revealedAt, revealed }}
@@ -445,10 +449,10 @@ export function UseYourAI({ ctx }: { readonly ctx: ShellContext }) {
           ) : null}
         </div>
 
-        {!served.length ? <NotOnline /> : (
+        {!served.length ? <NotOnline name={name} /> : (
           <>
             {asks ? (
-              <div className="where-grid" role="group" aria-label="Where Clearotron is running">
+              <div className="where-grid" role="group" aria-label={`Where ${name} is running`}>
                 {PLACES.map((p) => (
                   <button
                     key={p}
@@ -459,14 +463,14 @@ export function UseYourAI({ ctx }: { readonly ctx: ShellContext }) {
                     onClick={() => { if (p !== active) { setPlace(p); setPicked(null); settle() } }}
                   >
                     <span className={p === active ? 'radio radio-on' : 'radio'} aria-hidden="true" />
-                    <Icon name={WHERE[p].icon} size={19} />
-                    {WHERE[p].label}
+                    <Icon name={where[p].icon} size={19} />
+                    {where[p].label}
                   </button>
                 ))}
               </div>
             ) : null}
 
-            {active === null ? null : !here.length ? <NotOnline /> : (
+            {active === null ? null : !here.length ? <NotOnline name={name} /> : (
               <div className="ai-connect-grid">
                 <div>
                   <h3 className="section-title">Select AI app</h3>
@@ -532,7 +536,7 @@ export function UseYourAI({ ctx }: { readonly ctx: ShellContext }) {
                   )}
                   {failed ? <p className="ai-said ai-failed">{failed}</p> : null}
                   <div className="ai-probe" ref={probe} aria-hidden="true">
-                    {here.map((o) => <StepsPanel key={o.id} offer={o} watch={watch} measuring />)}
+                    {here.map((o) => <StepsPanel key={o.id} offer={o} name={name} watch={watch} measuring />)}
                   </div>
                 </div>
               </div>

@@ -103,7 +103,7 @@ test('the administrator line names the role, links it only when the installation
     /To change the address, the permissions or the companies on it, contact your \{administrator\}\./)
   // Both branches, from the one value the server sent: a link to it, or the same words as plain text.
   assert.match(PREFERENCES, /const contact = ctx\.me\.administratorContact/)
-  assert.match(PREFERENCES, /const administrator = contact \? \( <a className="pref-link" href=\{contact\}[^>]*> Clearotron administrator <\/a> \) : \( 'Clearotron administrator' \)/,
+  assert.match(PREFERENCES, /const administrator = contact \? \( <a className="pref-link" href=\{contact\}[^>]*> \{ctx\.me\.brandName\} administrator <\/a> \) : \( `\$\{ctx\.me\.brandName\} administrator` \)/,
     'the words are not a link to the contact when there is one, and plain when there is not')
   // The operator's name is no longer used in this sentence.
   assert.doesNotMatch(PREFERENCES, /operatorName\(/, 'the line names the operator again')

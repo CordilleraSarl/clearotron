@@ -87,7 +87,8 @@ const semantic = () => {
     // borders + focus
     ["--border-hairline", L("--line"), D("--line"), "brand --line"],
     ["--border-strong", L("--line2"), D("--line2"), "brand --line2"],
-    ["--focus-ring", L("--crimson"), L("--crimson"), "brand --crimson"],
+    ["--focus-ring", L("--crimson"), "#e0736b",
+      "brand --crimson; dark takes the dark --text-accent, since crimson on the dark page is too faint to see a focus by"],
 
     // type, shadow, motion
     ["--font-body", L("--font"), L("--font"), "brand --font"],

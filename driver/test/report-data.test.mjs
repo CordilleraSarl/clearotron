@@ -70,7 +70,7 @@ const ARGS = {
 
 test("clearanceReportData: the run as data — shape, level identity, verdict record, findings, asks", () => {
   const d = clearanceReportData(ARGS);
-  assert.equal(d.schema, "report-data/1");
+  assert.equal(d.schema, "report-data/clearance-1");
   assert.equal(d.kind, "clearance");
   assert.equal(d.level.stageLabel, "Depth 4");
   assert.equal(d.framework.key, "house-default");
@@ -90,10 +90,9 @@ test("clearanceReportData: the run as data — shape, level identity, verdict re
   assert.equal(d.askAnswers[0].answer, "nothing found", "the [internal]-labelled tail is dropped by the client scrub");
   assert.equal(d.actions.conditions.length, 1);
   assert.equal(d.actions.conditions[0].kind, "consent");
-  // — report-data.json held the THIRD copy of the filing-routine drop, and it is the copy that
-  // matters most: legacy runs are served as baked bytes, but new runs render component-native from this
-  // file. A fix that reached only the markdown renderer would have left the kind unreachable on every
-  // run from here on, with this assertion going green over it.
+  // — report-data.json held the THIRD copy of the filing-routine drop, and it is the copy an outside
+  // reader of the data takes the asks from. A fix that reached only the markdown renderer would have left
+  // the kind unreachable here, with this assertion going green over it.
   assert.deepEqual(d.actions.advisories.map((a) => a.kind), ["monitoring", "filing-routine"],
     "every ADVISORY_KINDS member travels to the component surface — the partition is conditions vs "
     + "advisories and nothing else");
@@ -139,7 +138,7 @@ test("the placement key is not served — `group` says the same thing in the cli
 
 test("clearanceReportData: degenerate inputs (no findings, no verdict, no asks) still produce a valid file", () => {
   const d = clearanceReportData({ runId: "x", codename: null });
-  assert.equal(d.schema, "report-data/1");
+  assert.equal(d.schema, "report-data/clearance-1");
   assert.deepEqual(d.findings, []);
   assert.equal(d.rating, null);
   assert.deepEqual(d.askAnswers, []);

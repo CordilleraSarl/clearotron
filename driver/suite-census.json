@@ -3400,8 +3400,8 @@
           "todos": 0
         },
         "brand.test.mjs": {
-          "tests": 10,
-          "asserts": 59,
+          "tests": 11,
+          "asserts": 61,
           "skips": 0,
           "todos": 0
         },
@@ -5603,7 +5603,7 @@
         },
         "portal-service.test.mjs": {
           "tests": 138,
-          "asserts": 745,
+          "asserts": 750,
           "skips": 1,
           "todos": 0
         },
@@ -6186,6 +6186,12 @@
         "report-card-validator-join.test.mjs": {
           "tests": 8,
           "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "report-data-matches-its-published-schema.test.mjs": {
+          "tests": 3,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
@@ -8368,8 +8374,8 @@
           "todos": 0
         },
         "the-suite-shards-by-measured-duration.test.mjs": {
-          "tests": 4,
-          "asserts": 10,
+          "tests": 5,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -9350,8 +9356,8 @@
           "todos": 0
         },
         "api.test.ts": {
-          "tests": 49,
-          "asserts": 199,
+          "tests": 50,
+          "asserts": 201,
           "skips": 0,
           "todos": 0
         },
@@ -9446,8 +9452,8 @@
           "todos": 0
         },
         "engineState.test.ts": {
-          "tests": 15,
-          "asserts": 68,
+          "tests": 16,
+          "asserts": 71,
           "skips": 0,
           "todos": 0
         },
@@ -9542,8 +9548,8 @@
           "todos": 0
         },
         "lockup.test.ts": {
-          "tests": 4,
-          "asserts": 11,
+          "tests": 5,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
@@ -9614,8 +9620,8 @@
           "todos": 0
         },
         "permissions.test.ts": {
-          "tests": 7,
-          "asserts": 41,
+          "tests": 8,
+          "asserts": 43,
           "skips": 0,
           "todos": 0
         },
@@ -9765,7 +9771,7 @@
         },
         "useYourAI.test.ts": {
           "tests": 17,
-          "asserts": 75,
+          "asserts": 76,
           "skips": 0,
           "todos": 0
         },

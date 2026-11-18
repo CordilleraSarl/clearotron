@@ -1,0 +1,268 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://clearotron.ai/schemas/report-data/knockout-1.schema.json",
+  "title": "report-data/knockout-1",
+  "description": "report-data.json beside a Knockout report, one file per name: the run as data. Written by knockoutReportData.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "runId", "codename", "matter", "customerKey", "issued", "url", "auditFile", "servedModels", "level", "framework", "overall", "summary", "productContext", "caveats", "marks", "registerCountBasis", "registerFilingsBasis", "registerProvider"],
+  "properties": {
+    "schema": { "const": "report-data/knockout-1" },
+    "runId": { "type": "string" },
+    "codename": { "type": ["string", "null"] },
+    "matter": { "type": "string" },
+    "customerKey": { "type": "string" },
+    "issued": { "type": ["string", "null"] },
+    "url": { "type": ["string", "null"] },
+    "auditFile": { "type": ["string", "null"] },
+    "servedModels": { "type": ["array", "null"], "items": { "type": "string" }, "description": "The models that served the run, in first-use order; null when none was read." },
+    "level": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["searchLevel", "stageLabel", "identity"],
+      "properties": {
+        "searchLevel": { "type": ["string", "null"] },
+        "stageLabel": { "type": ["string", "null"] },
+        "identity": { "type": ["string", "null"] }
+      }
+    },
+    "framework": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["key", "title", "bands"],
+      "properties": {
+        "key": { "type": "string" },
+        "title": { "type": "string" },
+        "bands": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["label", "tone"],
+            "properties": {
+              "label": { "type": "string" },
+              "tone": { "enum": ["severe", "high", "medium", "low", "minimal"] }
+            }
+          }
+        }
+      }
+    },
+    "overall": { "type": ["string", "null"] },
+    "summary": { "type": ["string", "null"] },
+    "productContext": { "type": ["string", "null"] },
+    "caveats": { "type": "array", "items": { "type": "string" } },
+    "marks": { "type": "array", "items": { "$ref": "#/$defs/mark" } },
+    "registerCountBasis": { "type": ["string", "null"] },
+    "registerFilingsBasis": { "type": ["string", "null"] },
+    "registerProvider": { "type": ["string", "null"] }
+  },
+  "$defs": {
+    "classes": { "type": "array", "items": { "type": "integer" } },
+    "inputs": { "type": "object", "additionalProperties": { "type": "string" }, "description": "The framework's own inputs, present only where the framework states a method." },
+    "mark": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "band", "qualifier", "contextFraming", "classesSearched", "classesDriving", "degraded", "points", "assessment", "counterFactors", "mitigation", "crowdedField", "reviewerNotes", "negatives", "registerReads", "findings", "registerCounts", "registerFilings"],
+      "properties": {
+        "name": { "type": "string" },
+        "band": { "type": ["string", "null"] },
+        "qualifier": { "enum": ["low", null] },
+        "contextFraming": { "type": ["string", "null"] },
+        "classesSearched": { "$ref": "#/$defs/classes" },
+        "classesDriving": { "$ref": "#/$defs/classes" },
+        "classGroups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["band", "classes"],
+            "properties": {
+              "band": { "type": "string" },
+              "ratingQualifier": { "enum": ["low", null] },
+              "classes": { "$ref": "#/$defs/classes" }
+            }
+          }
+        },
+        "degraded": { "type": "boolean" },
+        "points": { "type": "array", "items": { "type": "string" } },
+        "assessment": { "type": ["string", "null"] },
+        "counterFactors": { "type": "array", "items": { "type": "string" } },
+        "mitigation": { "type": ["string", "null"] },
+        "crowdedField": { "type": ["boolean", "null"] },
+        "reviewerNotes": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "type": "string" },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "text": { "type": "string" },
+                  "note": { "type": "string" },
+                  "about": { "type": ["string", "null"] }
+                }
+              }
+            ]
+          }
+        },
+        "negatives": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["term", "source", "note"],
+            "properties": {
+              "term": { "type": ["string", "null"] },
+              "source": { "type": ["string", "null"] },
+              "note": { "type": ["string", "null"] }
+            }
+          }
+        },
+        "registerReads": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["recordId", "read", "band"],
+            "properties": {
+              "recordId": { "type": ["string", "null"] },
+              "read": { "type": ["string", "null"] },
+              "band": { "type": ["string", "null"] },
+              "inputs": { "$ref": "#/$defs/inputs" }
+            }
+          }
+        },
+        "findings": { "type": "array", "items": { "anyOf": [{ "$ref": "#/$defs/webFinding" }, { "$ref": "#/$defs/registerFinding" }] } },
+        "registerCounts": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["classScope", "classes", "identical", "containing", "close", "closeVariationForms", "closeVariationsLine", "line"],
+          "properties": {
+            "classScope": { "enum": ["mark", "batch", "all-classes", null] },
+            "classes": { "$ref": "#/$defs/classes" },
+            "identical": { "type": ["integer", "null"] },
+            "containing": { "type": ["integer", "null"] },
+            "close": { "type": ["integer", "null"] },
+            "floors": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "identical": { "type": "number" },
+                "containing": { "type": "number" },
+                "close": { "type": "number" }
+              }
+            },
+            "closeVariationForms": { "type": "array", "items": { "type": "string" } },
+            "closeVariationsLine": { "type": ["string", "null"] },
+            "line": { "type": ["string", "null"] }
+          }
+        },
+        "registerFilings": {
+          "anyOf": [
+            { "type": "null" },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["available", "line", "records"],
+              "properties": {
+                "available": { "const": false },
+                "line": { "type": "string" },
+                "records": { "type": "array", "maxItems": 0 }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["available", "line", "fetched", "capped", "cap", "records", "unanswered"],
+              "properties": {
+                "available": { "const": true },
+                "line": { "type": ["string", "null"] },
+                "fetched": { "type": "integer" },
+                "capped": { "type": "boolean" },
+                "cap": { "type": ["integer", "null"] },
+                "records": { "type": "array", "items": { "$ref": "#/$defs/record" } },
+                "unanswered": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["form", "basis", "reason"],
+                    "properties": {
+                      "form": { "type": ["string", "null"] },
+                      "basis": { "type": ["string", "null"] },
+                      "reason": { "type": ["string", "null"] }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "webFinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ref", "ordinal", "name", "owner", "band", "type", "net", "basis", "evidence", "shape"],
+      "properties": {
+        "ref": { "type": "string" },
+        "ordinal": { "type": "integer" },
+        "name": { "type": ["string", "null"] },
+        "owner": { "type": ["string", "null"] },
+        "band": { "type": ["string", "null"] },
+        "type": { "type": ["string", "null"] },
+        "net": { "type": ["string", "null"] },
+        "basis": { "type": ["string", "null"] },
+        "evidence": { "type": "array", "items": { "type": "string" } },
+        "shape": { "enum": ["typed", "prose"] },
+        "inputs": { "$ref": "#/$defs/inputs" }
+      }
+    },
+    "registerFinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ref", "ordinal", "name", "owner", "band", "type", "net", "basis", "useCheckSource", "evidence", "shape"],
+      "properties": {
+        "ref": { "type": "string" },
+        "ordinal": { "type": "integer" },
+        "name": { "type": ["string", "null"] },
+        "owner": { "type": ["string", "null"] },
+        "band": { "type": ["string", "null"] },
+        "inputs": { "$ref": "#/$defs/inputs" },
+        "type": { "const": "Register filing" },
+        "net": { "type": "string" },
+        "basis": { "type": "string" },
+        "useCheckSource": { "type": ["string", "null"] },
+        "evidence": { "type": "array", "items": { "type": "string" } },
+        "shape": { "const": "register" }
+      }
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mark", "owner", "status", "classes", "territory", "matchedForm", "matchedBasis", "recordId", "url"],
+      "properties": {
+        "mark": { "type": ["string", "null"] },
+        "owner": { "type": ["string", "null"] },
+        "status": { "type": ["string", "null"] },
+        "classes": { "$ref": "#/$defs/classes" },
+        "territory": { "type": ["string", "null"] },
+        "matchedForm": { "type": ["string", "null"] },
+        "matchedBasis": { "type": ["string", "null"] },
+        "recordId": { "type": ["string", "null"] },
+        "url": { "type": ["string", "null"] },
+        "officeRecord": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["label", "href", "reason"],
+          "properties": {
+            "label": { "type": ["string", "null"] },
+            "href": { "type": ["string", "null"] },
+            "reason": { "type": ["string", "null"] }
+          }
+        }
+      }
+    }
+  }
+}

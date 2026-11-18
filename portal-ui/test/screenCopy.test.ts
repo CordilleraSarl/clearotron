@@ -471,7 +471,7 @@ test('an install that signs in one person says so, disables Add, and names the w
   const prose = body(PEOPLE_ACCESS)
   assert.match(prose, /disabled=\{!v\.canAdd\}/, 'Add is disabled exactly when the server says it cannot add')
   assert.match(prose, /v\.localSignIn \?/, 'the notice keys on local sign-in')
-  assert.match(prose, /This Clearotron signs in one person: you\./)
+  assert.match(prose, /\{installation\} signs in one person: you\./)
   assert.match(prose, /href=\{loginInFrontDoc\(repo\)\}/, 'and it links to where a login system in front is explained')
   assert.doesNotMatch(prose, /not currently configurable via the UI/, 'the old read-only sentence is gone with the read-only page')
 })
