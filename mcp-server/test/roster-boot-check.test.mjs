@@ -6,7 +6,7 @@
 // had neither CLEAROTRON_CUSTOMERS_DIR nor the shared EnvironmentFile. It was the only service in the fleet
 // with neither. So `driver/profiles.mjs` fell back, silently, to the demo roster bundled at
 // driver/profiles, and `start_run` refused the first clearance ever started from the portal with
-// "profileKey \"sim-praxis\" names no known customer".
+// "profileKey \"quillmere\" names no known customer".
 //
 // Everything about that sentence points at the customer. The customer was fine. The path was wrong.
 // Nothing in any log connected the two, and nothing would have connected them for the NEXT customer

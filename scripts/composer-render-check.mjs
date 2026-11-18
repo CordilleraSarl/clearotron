@@ -211,7 +211,7 @@ const server = createServer((req, res) => {
   if (req.method === 'POST' && path === '/portal/api/run' && url.searchParams.get('fail') === '1') {
     res.writeHead(502, { 'content-type': 'application/json' })
     res.end(JSON.stringify({
-      error: 'start_run refused upstream: job rejected — profileKey "sim-praxis" names no known customer '
+      error: 'start_run refused upstream: job rejected — profileKey "quillmere" names no known customer '
         + '— the roster this process can see is [burrowell, coastline, foxglade, generic]',
     }))
     return

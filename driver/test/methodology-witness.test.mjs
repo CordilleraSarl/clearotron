@@ -23,7 +23,7 @@ import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { skillRefsIn, witnessStageMethodology, describeMethodologyDrift, WITNESS_FILE } from "../methodology-witness.mjs";
 
-const FRAMEWORK = "skills/clearance-search/risk-framework-sim-praxis.md";
+const FRAMEWORK = "skills/clearance-search/risk-framework-quillmere.md";
 const RULES = "skills/clearance-search/synthesis-rules.md";
 
 function bench() {
@@ -87,7 +87,7 @@ test("THE SILENT CASE: an overlay file deleted mid-run swaps the customer's rule
   // with NOTHING in any log. That is the case worth catching most, because it is the one nobody can see.
   const b = bench();
   witnessStageMethodology(b.runDir, "synthesis", msg(FRAMEWORK), b.resolve);
-  rmSync(join(b.overlay, "risk-framework-sim-praxis.md"));
+  rmSync(join(b.overlay, "risk-framework-quillmere.md"));
   const out = witnessStageMethodology(b.runDir, "report-overview", msg(FRAMEWORK), b.resolve);
 
   assert.equal(out.fellBackToBase.length, 1, "the source change is caught");
