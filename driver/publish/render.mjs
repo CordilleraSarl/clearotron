@@ -36,6 +36,7 @@ import { READ_LEAD_RE } from '../report-card-record.mjs';   // D3 — the dedupe
 import { logoLockup, BRAND, confPosture, sectionStrip, PALETTE, QUADRANT_COLOURS as QC } from '../../shared/brand.mjs';
 import { NAV_CSS } from '../../shared/site-nav.mjs';
 import { pageShell } from './page-shell.mjs';   // the document shell, shared with the knockout template
+import { EVIDENCE_LABEL, USE_EVIDENCE_LABEL, meterEvidence } from './evidence-words.mjs';   // the meters' evidence words, shared with the audit workbook
 import { inlineMarkdown } from '../../shared/inline-markdown.mjs';   // the inline-markdown dialect, shared with the knockout template
 import { isEntrypoint } from "../../shared/is-entrypoint.mjs";   // — realpath both sides, or a symlinked invocation exits 0 silently
 
@@ -518,12 +519,11 @@ function groupByRegion(findings) {
 // A4 — when the publish-time receipt join ran (joinEvidenceStatus stamped `_status`), every
 // meter's caption carries the four-tuple: verified (source joins a fetch receipt) / assumed (claims
 // verified, receipt missing) / inferred / not checked. Absent `_status` (direct renderHtml callers,
-// archived replays) the caption is byte-identical to the legacy form.
-const EVIDENCE_LABEL = { confirmed: 'verified', assumed: 'not yet verified', inferred: 'inferred', 'not-checked': 'not checked' };
+// archived replays) the caption is byte-identical to the legacy form. The four words, and the two tables below, are
+// defined once in evidence-words.mjs, which the audit workbook reads too, so both say the same word for one value.
 // D4 — the meter's own `basis` enum, mapped to the SAME four client evidence words EVIDENCE_LABEL
 // uses. It is the fallback for a run with no receipt join, so a legacy enforcer's basis lands in the
-// evidence position rather than in the fact position, and one page has ONE evidence vocabulary.
-const EVIDENCE_BASIS_LABEL = { 'verified-from-record': 'verified', 'inferred-from-signal': 'inferred' };
+// evidence position rather than in the fact position, and one page has ONE evidence vocabulary (EVIDENCE_BASIS_LABEL).
 // D4 — the use-check SOURCE CLASS, one definition. It was declared twice with two different
 // strings for the same member: fullDetail said 'register mirror — not evidence of use' and the
 // common-law contribution list said 'register mirror — not use evidence'. Two copies of one
@@ -541,8 +541,7 @@ const USE_SOURCE_LABEL = {
 // "Evidence: verified, from" ever. A label with one reachable value carries no information, and a
 // lawyer reads "not yet verified" as doubt about the FACT. `inferred` and `not checked` are different
 // facts (a mirror's not-checked is the honesty) and stay. The receipt vocabulary is UNCHANGED on the
-// register meters, where the join is real — only this line loses it.
-const USE_EVIDENCE_LABEL = { inferred: 'inferred', 'not-checked': 'not checked' };
+// register meters, where the join is real — only this line loses it (USE_EVIDENCE_LABEL).
 // The evidence sentence for a use meter: where the page it rests on came from (and the non-receipt
 // statuses that still say something).
 const useEvidence = (m) => [USE_EVIDENCE_LABEL[m?._status], USE_SOURCE_LABEL[m?._useSourceClass]].filter(Boolean).join(', ');
@@ -575,22 +574,21 @@ const isUseCheckNoResult = (s) => {
 function meter(name, entry) {
   const e = entry || {};
   const tok = e.token || 'unknown';
-  const st = EVIDENCE_LABEL[e._status] || '';
-  const basis = EVIDENCE_BASIS_LABEL[e.basis] || '';
   if (name === 'use') {
     const cls = tok === 'confirmed' ? 'g3' : '';
     const cap = tok === 'confirmed' ? 'Confirmed' : tok === 'not-confirmed' ? 'Not confirmed' : 'Unknown';
     // — same rule as useEvidence: no verification word on the use surface (its receipt
     // join is unreachable by construction); inferred / not checked still say something and stay.
-    return { label: 'Use', cls, cap, ev: USE_EVIDENCE_LABEL[e._status] || '' };
+    return { label: 'Use', cls, cap, ev: meterEvidence(name, e) };
   }
   const cls = tok === 'high' ? 'l3' : tok === 'medium' ? 'l2' : tok === 'low' ? 'l1' : '';
   // The 2026-09-16 report redesign — "Enforcer" was a noun for the owner; the meter measures what the owner is
   // likely to DO, which is what a reader is deciding about. The token under it is unchanged.
   const label = name === 'mark_similarity' ? 'Similarity' : name === 'goods_proximity' ? 'Goods proximity' : 'Likely to enforce';
   // With a joined status the status REPLACES the raw basis word on the enforcer — "verified" with no
-  // receipt behind it is exactly the self-attestation A4 exists to demote.
-  return { label, cls, cap: humanize(tok), ev: st || (name === 'enforcer' ? basis : '') };
+  // receipt behind it is exactly the self-attestation A4 exists to demote. Similarity prints no evidence word
+  // (owner, 2026-11-18): the workbook dropped it too, so the two say the same.
+  return { label, cls, cap: humanize(tok), ev: meterEvidence(name, e) };
 }
 
 // Join a finding to its report.md prose card. Every card's first body line is `- ord: <ordinal>`

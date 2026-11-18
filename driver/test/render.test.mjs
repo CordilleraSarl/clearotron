@@ -1075,7 +1075,12 @@ test("spec-48 A4: meter captions carry the joined four-tuple; without _status th
   // D4 — the four-tuple still renders on every meter, in its OWN labelled position. The fused
   // `<fact> · <status>` caption is gone: a client read "Confirmed · inferred" as one caption, and
   // nothing on the page said the separator meant "and we know that because".
-  assert.match(html, /<div class="mv">Medium<\/div><div class="mev">Evidence: verified<\/div>/, "a receipt-joined verified meter says so");
+  // Similarity prints no evidence word, even a receipt-joined one (owner, 2026-11-18); a verified register meter
+  // still says so.
+  assert.match(html, /<div class="ml">Similarity<\/div><div class="pips [^"]*"><i><\/i><i><\/i><i><\/i><\/div><div class="mv">Medium<\/div><\/div>/, "Similarity printed an evidence word");
+  const verified = renderHtml(parsedOf(REPORT), [{ ...FINDINGS[0], meters: { ...joined[0].meters,
+    goods_proximity: { token: "high", basis: "verified-from-record", _status: "confirmed" } } }], COVERAGE, {});
+  assert.match(verified, /<div class="mv">High<\/div><div class="mev">Evidence: verified<\/div>/, "a receipt-joined verified meter says so");
   assert.match(html, /<div class="mv">High<\/div><div class="mev">Evidence: not yet verified<\/div>/, "an unjoined verified meter is presented as not-yet-verified");
   // — the use meter prints NO verification word (ruling): its receipt join is
   // unreachable for an http source, so verified/not-yet-verified carried no information there and

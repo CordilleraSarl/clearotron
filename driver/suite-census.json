@@ -6215,7 +6215,7 @@
         },
         "render.test.mjs": {
           "tests": 164,
-          "asserts": 690,
+          "asserts": 691,
           "skips": 0,
           "todos": 0
         },
