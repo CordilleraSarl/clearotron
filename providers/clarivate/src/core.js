@@ -1766,7 +1766,23 @@ export async function doImageFetch(apiKey, base, params, tctx) {
   return { type: "text", text: JSON.stringify({ test_mode: useTest, count: results.length, results }, null, 2) };
 }
 
-// ── Filing date (per-register data freshness) ─────────────────────────────────────────────────────
+// ── One cited registration's logo, for the report ───────────────────────────────────────────────────────────────
+// The live image of one record: one image request, on the same `/image` call as the metadata fetch above and through
+// the same ledger. The answer's `image` field is a string; read here as base64, and the caller keeps the bytes only when
+// they open as a PNG, JPEG, GIF or WebP file, so a different encoding is reported rather than saved. `{ ok, bytes,
+// contentType }`, or `{ ok: false, cause }` for a call that did not land or held no image.
+export async function doMarkImage(apiKey, base, ref, tctx) {
+  const guid = refToGuid(ref);
+  const r = await clarivateFetch(apiKey, base, "/image", { body: { id: guid }, tctx: { ...tctx, target: guid } });
+  if (!r.ok) return { ok: false, cause: `HTTP ${r.status}: ${String(errText(r)).slice(0, 120)}` };
+  if (r.parseError) return { ok: false, cause: `unparseable body (HTTP ${r.status})` };
+  const imgs = Array.isArray(r.body?.images) ? r.body.images : Array.isArray(r.body) ? r.body : null;
+  const img = imgs?.find((i) => typeof i?.image === "string" && i.image.length > 0) ?? null;
+  if (!img) return { ok: false, cause: imgs ? "the answer held no image" : `not an image response (HTTP ${r.status})` };
+  return { ok: true, bytes: Buffer.from(img.image, "base64"), contentType: img.contentType ?? img.mimeType ?? null };
+}
+
+// ── Filing date (per-register data freshness)─────────────────────────────────────────────────────
 // POST /filingdate — how CURRENT each register's data is (recordLastUpdated yyyyMMdd + the office's own
 // currency notes). A coverage claim is only as good as the freshness of the register behind it.
 export async function doFilingDate(apiKey, base, params, tctx) {

@@ -57,6 +57,7 @@ import { correctionsAppliedTable, unresolvedFlags } from "./corrections-feedforw
 import { settledKnockoutReading } from "./knockout-register-record.mjs";
 import { stripNextStepSections } from "./knockout-next-step.mjs";
 import { publishKnockout, composeKnockoutEmail, knockoutName } from "./publish/knockout.mjs";
+import { markLogos, logosStep } from "./mark-logos.mjs";
 import { writeRunStatus, readRunStatus, rollupStatus, identitySeed, recordTransition, resumeRecord } from "./progress.mjs";   // — the identity seed is shared; the stepper is not
 import { batchMarkName } from "./mark-name.mjs";
 import { runLog, note, outputMeta } from "./log.mjs";
@@ -1471,6 +1472,9 @@ export async function knockoutInner(ctx, job, opts = {}) {
             const moved = withCitedFilings(held, merged);
             if (moved !== held) atomicWrite(K.registerRecords, JSON.stringify(moved, null, 2) + "\n");
           } catch { /* no record on this run, or none readable: publish says which */ }
+          // THE LOGOS of the listed filings, as the clearance's are fetched (mark-logos.mjs), before the page is built.
+          logosStep(run.runDir, await markLogos(run.runDir, { registerRecordsPath: K.registerRecords, provider: (() => { try { return adapterForRegister(ctx.register ?? null); } catch { return null; } })(),
+            injectedFetcher: Boolean(opts.recordFetcher), agentId: ctx.agent ?? null }));
           published = await publishKnockout({
             runId, codename: run.codename, runDir: run.runDir,
             findings: merged, plan, framework: ctx.framework, overall,
