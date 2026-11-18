@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // connotation-search.mjs — the meaning/connotation sweep: its DICTATED queries (driver side) and the
-// searched-not-asserted enforcement (validator side). Sister of use-check.mjs (spec 11): a "clean" claim
+// searched-not-asserted enforcement (validator side). Sister of the retired use-check gate (spec 11): a "clean" claim
 // is sayable ONLY when a search produced it.
 //
 // The bug this closes (live incident: a mark reading as a benign given name one letter off the Mara
