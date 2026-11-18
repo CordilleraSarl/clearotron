@@ -1187,7 +1187,7 @@
         },
         "a-knockout-finding-carries-every-key-its-doctrine-teaches.test.mjs": {
           "tests": 7,
-          "asserts": 18,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
