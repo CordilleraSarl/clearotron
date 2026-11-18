@@ -72,7 +72,7 @@ test("a Claude session's share is what its Read calls returned, and another tool
 
 test("a session that read nothing is measured at 0; a stream that cannot say is null, never 0", () => {
   assert.deepEqual(manualShares(told(), shownLines(jsonl([{ type: "thread.started" }, { type: "turn.completed" }]), "openai-agent")), { "skills/invented/manual.md": 0 });
-  assert.equal(shownLines(`${JSON.stringify(codexRead(numbered(LINES)))}\nnot json\n{"type":"turn.completed"}\n`, "openai-agent"), null, "a broken line mid-stream");
+  assert.equal(shownLines(`{"type":"thread.started"}\n{"type":"item.completed","item":{"type":"command_execution","aggre\n{"type":"turn.completed"}\n`, "openai-agent"), null, "a broken output mid-stream");
   assert.ok(shownLines(`${JSON.stringify(codexRead(numbered(LINES)))}\n{"type":"item.comp`, "openai-agent"), "a killed turn's torn last line is tolerated");
   assert.equal(shownLines(jsonl(claudeRead("r1", numbered(LINES))), "openai-agent"), null, "another engine's stream");
   assert.equal(shownLines(jsonl([codexRead(numbered(LINES))]), "an-invented-engine"), null, "an engine this does not read");
