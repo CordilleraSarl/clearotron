@@ -28,8 +28,8 @@ export function connectionPill(aiConnected: boolean | null | undefined): Connect
  * ONLY WHILE THE ANSWER IS "NOT YET". Once connected the pill already says so. Where the log cannot be read
  * the page will never say Connected, so a line promising that it will would be untrue.
  */
-export function watchForConnected(aiConnected: boolean | null | undefined): string | null {
-  return aiConnected === false ? 'This page says **Connected** once your assistant calls Clearotron.' : null
+export function watchForConnected(aiConnected: boolean | null | undefined, name: string): string | null {
+  return aiConnected === false ? `This page says **Connected** once your assistant calls ${name}.` : null
 }
 
 /** Whether the steps fold away under "Setup steps": once connected, and only then. */

@@ -71,10 +71,10 @@ export function Preferences({ ctx }: { readonly ctx: ShellContext }) {
       // A web address opens beside the portal; a mail address hands over to the mail program and needs no tab.
       {...(/^https?:/i.test(contact) ? { target: '_blank', rel: 'noreferrer' } : {})}
     >
-      Clearotron administrator
+      {ctx.me.brandName} administrator
     </a>
   ) : (
-    'Clearotron administrator'
+    `${ctx.me.brandName} administrator`
   )
 
   return (

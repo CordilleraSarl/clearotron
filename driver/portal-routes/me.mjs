@@ -5,7 +5,7 @@
 // the searches an account can order.
 //
 // One of the portal service's route groups, moved out of its dispatcher unchanged; makePortalService says how it asks them.
-import { ADMINISTRATOR_CONTACT, ORGANISATION_NAME } from "../../shared/brand.mjs";
+import { ADMINISTRATOR_CONTACT, ORGANISATION_NAME, BRAND } from "../../shared/brand.mjs";
 import { browserCommand, installRoute } from "../../shared/invocation.mjs";
 import { productIdentity } from "../../shared/product-identity.mjs";
 import { assertPrincipal, principalView, seesEverything } from "../portal-access.mjs";
@@ -106,6 +106,9 @@ export async function meRoutes({ poolRoot, stopControl, demo, orderRefusal, load
     return { status: 200, json: { email: principal.email, ...principalView(principal, grantsHere, accountNames),
       accounts: principal.accounts, accountNames, accountFacts,
       concurrentRuns: concurrentRunsCap(), brand: ORGANISATION_NAME, engineMode: meEngineMode, houseMarketplaces,
+      // WHAT THIS INSTALLATION CALLS ITSELF: the logo, the page title and the sentences that name the
+      // installation read it. Not `brand`, which is who OPERATES it and is null until somebody names one.
+      brandName: BRAND.name,
       // WHERE A PERSON ASKS FOR A CHANGE TO THEIR SIGN-IN, beside the brand and read where it is read:
       // an href Preferences links "Clearotron administrator" to, or null, and then the words are plain.
       administratorContact: ADMINISTRATOR_CONTACT,

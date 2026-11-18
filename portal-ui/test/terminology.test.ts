@@ -206,11 +206,6 @@ const ORGANISATION_COMPANY_EXCEPTIONS: readonly { readonly file: string; readonl
       + 'the company settings heading "How matters are rated"',
   },
   {
-    file: 'screens/UseYourAI.tsx',
-    text: 'needs no account',
-    why: 'an account with a service that puts the installation online — a sign-up, not an organisation or a company',
-  },
-  {
     file: 'contract/profileFields.ts',
     text: 'Law firm options',
     why: 'the specified label of the fold that holds the lawyer-only fields — the vocabulary issue names '

@@ -45,6 +45,7 @@ export function useSourceRepo(): string | null {
 }
 
 export function PeopleAccess({ ctx }: { readonly ctx: ShellContext }) {
+  const installation = ctx.me.brandName
   // The table's wrapper, for the scrollbar pinned under it at phone width (components/PinnedScrollbar.tsx).
   const peopleWrap = useRef<HTMLDivElement | null>(null)
   const { result } = useLoad(() => api.adminAccess(), [])
@@ -97,7 +98,7 @@ export function PeopleAccess({ ctx }: { readonly ctx: ShellContext }) {
         {v.localSignIn ? (
           <div className="notice quiet" style={{ marginBottom: 14 }}>
             <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-muted)' }}>
-              <b style={{ color: 'var(--text-strong)' }}>This Clearotron signs in one person: you.</b> To add
+              <b style={{ color: 'var(--text-strong)' }}>{installation} signs in one person: you.</b> To add
               people, put it behind a login system such as your company single sign-on.{' '}
               {repo ? <a href={loginInFrontDoc(repo)} target="_blank" rel="noreferrer">How to set that up</a> : null}
             </p>

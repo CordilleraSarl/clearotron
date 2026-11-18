@@ -16,10 +16,10 @@ import { useCallback, useEffect, useState } from 'react'
 // it does not depend on a global that a future types major can move again.
 import type { ReactElement } from 'react'
 import type { Me, Organisation } from '../contract/api.ts'
-import { api, onSessionEnded } from '../contract/api.ts'
+import { api, onSessionEnded, PRODUCT_NAME } from '../contract/api.ts'
 import { navGroupsFor, avatarMenuFor, avatarEntryOf, scopeOf, screenForPath, HOME, type NavEntry, type ScreenId } from '../nav/nav.config.ts'
 import { Icon } from '../components/Icon.tsx'
-import { Logo, WORDMARK } from '../components/Logo.tsx'
+import { Logo, wordmarkFor } from '../components/Logo.tsx'
 import { useLoad } from '../state/useApi.ts'
 import { confirmDiscard, attachBeforeUnload } from '../state/guard.ts'
 import { readBlurChoice, writeBlurChoice } from '../state/blurChoice.ts'
@@ -386,6 +386,13 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
     setAvatarOpen(false)
   }, [path])
 
+  // THE TAB CARRIES THE INSTALLATION'S NAME once /me says what it is. index.html's title is the product's,
+  // and stays the title of an installation that names nothing.
+  const brandName = meResult?.kind === 'ok' ? meResult.value.brandName : PRODUCT_NAME
+  useEffect(() => {
+    if (brandName !== PRODUCT_NAME) document.title = `${brandName} · Trademark clearance`
+  }, [brandName])
+
   // THE WAIT IS NAMED, NOT LEFT BLANK. This frame stands for the whole of the /me round trip, and no
   // screen is mounted behind it — so a screen's own loading state cannot cover this window, however
   // careful that screen is. The list screen already had one and it never got the chance: what the
@@ -564,9 +571,9 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
             className="nav-item"
             style={{ padding: '4px 6px' }}
             onClick={() => go(HOME.path)}
-            aria-label={`${WORDMARK} — go to ${HOME.label.toLowerCase()}`}
+            aria-label={`${wordmarkFor(me.brandName)} — go to ${HOME.label.toLowerCase()}`}
           >
-            <Logo markOnly={collapsed && !mobile} />
+            <Logo markOnly={collapsed && !mobile} brandName={me.brandName} />
           </button>
 
           {/* COMPANY LIVES HERE, in the rail, above the navigation it filters.

@@ -938,3 +938,12 @@ test('addPerson posts the address, the switches and the points, and reads the pe
   assert.deepEqual(r.value.person.permissions, { run: true, manage: true }, 'the switches are read back, not assumed')
   assert.equal(r.value.switchesApplied, false, 'and the screen is told the ones it sent were not applied')
 })
+
+test('/me carries what the installation calls itself, and an older server reads as the product', async () => {
+  const named = await withFetch(200, { email: 'staff@example-firm.com', permissions: { run: true, manage: true }, brandName: 'Larchmont Legal' }, () => api.me())
+  assert.equal(isOk(named) ? named.value.brandName : null, 'Larchmont Legal')
+  const older = await withFetch(200, { email: 'staff@example-firm.com', permissions: { run: true, manage: true } }, () => api.me())
+  assert.equal(isOk(older) ? older.value.brandName : null, 'Clearotron', 'a server that sends no name reads as the product, never a blank')
+  const blank = await withFetch(200, { email: 'staff@example-firm.com', permissions: { run: true, manage: true }, brandName: '   ' }, () => api.me())
+  assert.equal(isOk(blank) ? blank.value.brandName : null, 'Clearotron', 'a blank name is no name')
+})
