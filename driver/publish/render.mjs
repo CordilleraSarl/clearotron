@@ -1233,7 +1233,10 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
   // the international registrations apart from them — and the per-country counts as chips under it, code
   // first and the name on hover. One country is named in the line instead ("141 records read in Japan"),
   // and draws no chips: a single chip would repeat the line.
-  const byC = c.recordsByCountry || {};
+  // A register's own key (EM, GB, INT) is read as the country the band rows name (EU, UK, WO), and two keys for one
+  // country are one count, so no chip repeats and Madrid records counted under INT join the international line.
+  const byC = {};
+  for (const [k, n] of Object.entries(c.recordsByCountry || {})) { const key = normRegion(k); byC[key] = (byC[key] || 0) + (Number(n) || 0); }
   const intl = Number(byC.WO) || 0;
   const countries = Object.entries(byC).filter(([k, n]) => k !== 'WO' && Number(n) > 0).sort((a, b) => b[1] - a[1]);
   const read = countries.reduce((t, [, n]) => t + Number(n), 0);

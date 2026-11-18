@@ -34,5 +34,23 @@ export const REGION_ALIAS = { GB: 'UK', EM: 'EU', EUTM: 'EU', EUIPO: 'EU', INT: 
 
 export const normRegion = (c) => { const u = String(c || '').toUpperCase(); return REGION_ALIAS[u] || u; };
 
-// Unknown code ⇒ the raw code doubles as the name, so a new register surfaces without a change here.
-export const regionName = (code) => REGION_NAMES[code] || code;
+// THE NAME A READER SEES. The table above wins; a two-letter country code it lacks takes the name the runtime's own
+// region names give it (Intl.DisplayNames, a global, so this file stays import-free); anything else is printed as
+// the code itself, so a new register still surfaces without a change here. 128 of 320 country rows on delivered
+// reports printed a bare code (AR, CO, CZ) because the table is hand-kept.
+//
+// ONLY A REAL COUNTRY CODE IS ASKED. ZZ reads "Unknown Region" and a numeric code "world", and neither may reach a
+// page, so the question is put only for two capital letters outside ZZ and the private-use ranges (AA, QM to QZ,
+// XA to XZ), and a name that comes back as the code itself (EM) is no name. The runtime's names come from its ICU
+// data, so a newer Node can spell one differently; the table is where a spelling is pinned (TR stays Turkey).
+const PRIVATE_USE = /^(?:AA|ZZ|Q[M-Z]|X[A-Z])$/;
+let displayNames;
+function runtimeRegionName(code) {
+  if (!/^[A-Z]{2}$/.test(code) || PRIVATE_USE.test(code) || typeof Intl?.DisplayNames !== 'function') return null;
+  try {
+    displayNames ??= new Intl.DisplayNames(['en'], { type: 'region' });
+    const name = displayNames.of(code);
+    return name && name !== code ? name : null;
+  } catch { return null; }
+}
+export const regionName = (code) => REGION_NAMES[code] || runtimeRegionName(code) || code;

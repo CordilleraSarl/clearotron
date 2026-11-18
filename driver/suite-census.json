@@ -2007,6 +2007,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-register-key-reads-as-the-country-the-rows-name.test.mjs": {
+          "tests": 2,
+          "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
         "a-register-manual-states-what-its-provider-declares.test.mjs": {
           "tests": 6,
           "asserts": 13,
@@ -5962,8 +5968,8 @@
           "todos": 0
         },
         "regions.test.mjs": {
-          "tests": 5,
-          "asserts": 15,
+          "tests": 7,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
