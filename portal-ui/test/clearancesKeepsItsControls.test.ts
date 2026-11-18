@@ -32,16 +32,20 @@ test('the full-screen first run is keyed off the account, not off the filter', (
 test('the empty state renders inside the list, below the controls', () => {
   const chips = SRC.indexOf('<CompanyChips')
   const filters = SRC.indexOf('aria-label="Filter by status"')
+  const levels = SRC.indexOf('aria-label="Filter by search"')
   const empty = SRC.indexOf('No clearances match this view')
-  assert.ok(chips > 0 && filters > 0 && empty > 0, 'one of the three is gone from the screen entirely')
+  assert.ok(chips > 0 && filters > 0 && levels > 0 && empty > 0, 'one of the four is gone from the screen entirely')
   assert.ok(empty > chips, 'the empty state renders before the company chips — it is replacing them again')
   assert.ok(empty > filters, 'the empty state renders before the status filters')
+  assert.ok(empty > levels, 'the empty state renders before the level filter')
 })
 
 test('the empty state names the way out rather than only the absence', () => {
   // A dead end that says "nothing here" and stops is the defect with better manners. It has to say what
   // to do, because the controls that do it are the ones that used to disappear.
-  assert.match(SRC, /Pick another company above, or widen the status filter/,
+  // The words approved with the Clearances level board, 2026-11-18: with a level filter beside the status
+  // filter, "widen the status filter" named only one of the two ways out.
+  assert.match(SRC, /No clearances match this view\. Pick another company above, or widen the filters\./,
     'the empty state stopped telling the reader how to leave it')
 })
 
@@ -52,4 +56,6 @@ test('nothing renders the controls conditionally on there being rows', () => {
     'the company chips are drawn conditionally on rows again')
   assert.doesNotMatch(SRC, /runs\.length \? [\s\S]{0,80}Filter by status/,
     'the status filters are drawn conditionally on rows again')
+  assert.doesNotMatch(SRC, /(runs|visible)\.length \? [\s\S]{0,80}Filter by search/,
+    'the level filter is drawn conditionally on rows — under a level with nothing in it, the way back to All is gone')
 })
