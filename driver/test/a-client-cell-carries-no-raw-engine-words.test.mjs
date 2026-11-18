@@ -14,7 +14,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { buildKnockoutWorkbook } from "../publish/knockout.mjs";
 import { buildAudit } from "../publish/xlsx.mjs";
-import { gateCouldNotEvaluate } from "../publish/index.mjs";
+import { gateCouldNotEvaluate, undispatchedProbeRows } from "../publish/index.mjs";
 import { plainDeferralReason } from "../deferral-row.mjs";
 import { coverageJudgmentRows } from "../pipeline.mjs";
 import { joinPlanToBands, deriveCoverageSkeleton } from "../register-plan.mjs";
@@ -144,4 +144,16 @@ test("the Summary's coverage-judgment slices are named in the reader's words and
   assert.equal(slices[2]["Value"], "planned and not executed this run", "the orphan row carries the engine's own clause");
   const engine = /\b(?:primary-sweep|incumbent-class|transliteration-numeric|saturation-probe)\b|band block|funnel/;
   assert.ok(!summary.some((r) => engine.test(`${r["Field"]} ${r["Value"]}`)), "an engine identifier reached the Summary");
+});
+
+test("a recall probe left over the cap reaches the gaps sheet with its party and no probe id", async (t) => {
+  // An engine identifier in a client cell is the class: the probe id stays in the receipt and the run record.
+  const receipt = { overflow: [{ qid: "recall-owner-lanternwick-holdings", term: "Lanternwick Holdings" }] };
+  const rows = undispatchedProbeRows(receipt);
+  assert.deepEqual(rows, [{ area: "Lanternwick Holdings", state: "not-searched", note: "over the cap, never dispatched" }]);
+  const out = tempBook(t, "audit.xlsx");
+  await buildAudit({ findings: [], coverage: rows }, null, out, "LANTERNWICK", { title: "LANTERNWICK" });
+  const { cells } = await workbookRows(out);
+  assert.ok(cells.some((c) => /Lanternwick Holdings/.test(c)), "the row did not reach the workbook, so the check below checks nothing");
+  assert.ok(!cells.some((c) => /\(recall-owner-lanternwick-holdings\)|never dispatched \(/.test(c)), "a probe id reached a note cell");
 });
