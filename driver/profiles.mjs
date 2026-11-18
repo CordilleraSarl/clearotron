@@ -414,10 +414,10 @@ export function normalizeDelivery(d) {
 
 // delivery.template (Phase 1): a NAMED deliverable-template variant, validated against this closed registry.
 // One variant exists today — "standard" (the current code-composed report); a profile that omits it gets the
-// default. The registry is the un-park point: when a real second format is defined, add its name here AND a
-// render branch + meta stamp keyed off it (the publish path already records the chosen name in meta.json, so
-// the field is a live consumer, not a dead knob). Keeping it a closed enum means a typo'd template name
-// hard-fails at load rather than silently rendering the default.
+// default. A second format, when one is defined, is a SKIN the one renderer reads (its tokens, its section list,
+// its string set), named here; never a second render branch chosen by this value. The publish path records the
+// chosen name in meta.json, so the field is a live consumer, not a dead knob. Keeping it a closed enum means a
+// typo'd template name hard-fails at load rather than silently rendering the default.
 export const DEFAULT_DELIVERY_TEMPLATE = "standard";
 export const KNOWN_DELIVERY_TEMPLATES = [DEFAULT_DELIVERY_TEMPLATE];
 
