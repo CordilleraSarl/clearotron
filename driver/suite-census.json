@@ -9074,6 +9074,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-findings-registrations-reach-the-evidence-layer.test.mjs": {
+          "tests": 1,
+          "asserts": 2,
+          "skips": 0,
+          "todos": 0
+        },
         "a-key-has-one-door-and-it-is-not-the-network.test.mjs": {
           "tests": 13,
           "asserts": 33,
