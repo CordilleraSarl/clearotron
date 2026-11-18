@@ -28,7 +28,7 @@ import { newSessionRecord, noteCodexEvent, sessionSummary, countTool, streamSink
 import { writeSecretFile } from "../../shared/secret-file.mjs";   // the rotated login goes back the way every credential is written
 import { tmpdir, homedir } from "node:os";
 import { join, dirname, sep } from "node:path";
-import { runStreamingChild, absolutizeSkillRefs, WRITE_DISCIPLINE, buildEnvelope, resolveSpawnCwd } from "./common.mjs";
+import { runStreamingChild, absolutizeSkillRefs, WRITE_DISCIPLINE, buildEnvelope, resolveSpawnCwd, isRecordTool } from "./common.mjs";
 import { renderCodexConfigToml } from "./mcp/codex-config.mjs";
 import { resolveAuthMode } from "./auth.mjs";
 import { engineEnv, codexCommandWithheld } from "./engine-env.mjs";
@@ -569,6 +569,8 @@ export function noteToolTiming(type, item, ev, atMs) {
   const t = (ev.toolTiming ??= { open: new Map(), since: null, waitMs: 0, byTool: Object.create(null) });
   if (type === "item.started") {
     if (t.open.has(item.id)) return;
+    // The last tool asked for, apart from the stage's own record write, and the last record write (see codexTiming).
+    if (isRecordTool(name)) ev.lastRecordAskMs = atMs; else ev.lastWorkAskMs = atMs;
     if (t.open.size === 0) t.since = atMs;
     t.open.set(item.id, atMs);
     return;
@@ -587,7 +589,7 @@ export function noteToolTiming(type, item, ev, atMs) {
  * field: this engine could not measure, which is not "no wait". PURE.
  */
 export function codexTiming(ev, wallMs) {
-  if (!ev?.timed || !Number.isFinite(wallMs)) return { firstByteMs: null, toolWaitMs: null, activeMs: null, toolWaitByTool: null };
+  if (!ev?.timed || !Number.isFinite(wallMs)) return { firstByteMs: null, toolWaitMs: null, activeMs: null, toolWaitByTool: null, lastToolAsk: null };
   const t = ev.toolTiming;
   const open = t?.open.size ? Math.max(0, wallMs - t.since) : 0;
   const toolWaitMs = Math.min(Math.round(wallMs), Math.round((t?.waitMs ?? 0) + open));
@@ -595,6 +597,9 @@ export function codexTiming(ev, wallMs) {
     firstByteMs: Number.isFinite(ev.firstLineAtMs) ? Math.round(ev.firstLineAtMs) : null,
     toolWaitMs, activeMs: Math.max(0, Math.round(wallMs) - toolWaitMs),
     toolWaitByTool: Object.fromEntries(Object.entries(t?.byTool ?? {}).map(([k, v]) => [k, Math.round(v)])),
+    // ms from spawn to the last tool item opened that was not the stage's own record write, and to the last that was, as the
+    // Anthropic engine reports them; the gateway reads them to choose how a hard-wall kill is retried.
+    lastToolAsk: { workMs: Number.isFinite(ev.lastWorkAskMs) ? Math.round(ev.lastWorkAskMs) : null, recordMs: Number.isFinite(ev.lastRecordAskMs) ? Math.round(ev.lastRecordAskMs) : null },
   };
 }
 

@@ -21,7 +21,7 @@ import { statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { WRITE_DISCIPLINE, absolutizeSkillRefs, resolveSpawnCwd, spawnGraceMs } from "./common.mjs";
+import { WRITE_DISCIPLINE, absolutizeSkillRefs, resolveSpawnCwd, spawnGraceMs, isRecordTool } from "./common.mjs";
 import { resolveEngineProgram, resolveModel } from "../driver.config.mjs";   // — the one place that finds the program; it reads every spelling of the setting
 import { authorityTrees } from "../authority-trees.mjs";
 import { recordEngineChild, clearEngineChild } from "./child-record.mjs";   //
@@ -709,6 +709,9 @@ export const anthropicAgentEngine = {
       const writeAsks = new Set();
       let toolWaitMs = 0;
       let toolAskedAt = null;
+      // The last time this turn asked for a tool, apart from its own record write, and the last time it asked for that write:
+      // what the gateway reads to tell a turn killed while still working from one killed silent or finishing (`lastToolAsk`).
+      let lastWorkAskAt = null, lastRecordAskAt = null;
       // WHAT THE WAIT IS MADE OF, keyed by the tool(s) that caused it.
       //
       // The total alone cannot answer the question it was collected for. "Exclude tool wait from the kill
@@ -868,6 +871,7 @@ export const anthropicAgentEngine = {
           toolAskedNames = asked.length ? [...new Set(asked)].sort().join("+") : null;
           if (asked.length) {
             const now = Date.now();
+            if (asked.some((n) => !isRecordTool(n))) lastWorkAskAt = now; else lastRecordAskAt = now;
             closePeriod(now, false);          // the outstanding set is about to change
             const rec = { names: asked.slice() };
             openAsks.push(rec);
@@ -1209,6 +1213,9 @@ export const anthropicAgentEngine = {
           // ONLY: nothing branches on it. A recording field is protected by a test or by nothing, so
           // engine.anthropic.test.mjs pins it — deleting it must red something.
           firstByteMs: firstOutputAt === null ? null : Math.round(firstOutputAt - t0),
+          // ms from spawn to the last tool ask that was not the stage's own record write, and to the last that was; null where
+          // the turn made none. RECORDING, and read by the gateway only to choose how a hard-wall kill is retried.
+          lastToolAsk: { workMs: lastWorkAskAt === null ? null : Math.round(lastWorkAskAt - t0), recordMs: lastRecordAskAt === null ? null : Math.round(lastRecordAskAt - t0) },
           // WHICH SIDE OF THE KILL a byte or a tool ask fell on. RECORDING ONLY, like firstByteMs. The
           // totals above keep counting after the decision, because what a dying child already wrote is
           // still read (streamed usage depends on it). On Windows the kill blocks this process while it
