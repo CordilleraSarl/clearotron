@@ -1,0 +1,31 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
+//
+// THE SENTENCES OF skills/knockout-assess/SKILL.md THAT TESTS HOLD, IN ONE PLACE. Most are ruled wording a test guards on
+// purpose, and a test that guards one names it from here rather than writing it out, so a ruled wording change is one edit.
+// the-ruled-sentences-tests-hold-are-in-their-manuals.test.mjs checks each one is still in the manual, word for word.
+export const ASSESS_SENTENCES = Object.freeze({
+  useClassgroupsWhenSeparatingThe: "Use `classGroups` when separating the requested goods changes the advice under the frozen framework.",
+  differentBandWordsQualifiersAlone: "Different band words or qualifiers alone do not require a split.",
+  belowTheFrameworkMaterialBands: "Below the framework's material bands, keep one overall conclusion unless the distinction changes the "
+    + "advice",
+  divideTheRequestedGoodsAnd: "Divide on the requested goods and evidence, never to soften a rating.",
+  whatThoseFilingsShowWhat: "what those filings show, what the screened field adds to that reading",
+  citedUrlMustComeFrom: "A cited URL must come from a recorded research payload for this batch, a filing held for this batch, or "
+    + "a recorded owner check linked to a held filing.",
+  howItsGoodsMeetThe2: "how its goods meet the goods the client asked about, whether it bears on the rating, and why.",
+  useTheMissingGoodsNote: "Use the missing-goods note only when no wording is held; open a shortened held record before concluding "
+    + "that wording is missing.",
+  goodsWordingNotHeldFor: "\"Goods wording is not held for this filing, so its relevance to the requested goods remains unresolved.\"",
+  thePerMarkOpeningRead: "## The per-mark opening read",
+  optionalAndOmittingRowAlways: "> **Optional, and omitting a row is always safe.** A result your reading took for a possible conflict "
+    + "and > then put down gets a ground, one row per owner's set or group of like results, never one per "
+    + "result. > Never invent one to fill the list",
+  perMarkTheMandatorySequence: "## Per mark — the mandatory sequence",
+  omitTheseFieldsWhenTheir: "Omit these fields when their information does not apply.",
+  sayingWhatYouPutDown: "## Saying what you put down (`setAside`)",
+  writtenAfterYourRatingWritten: "**Written after your rating is written, and it changes no band.**",
+  theRatingYouHaveAlready: "the rating you have already reached stands exactly as it is, and nothing in this section asks you to "
+    + "raise or lower it",
+  whereManyResultsShareOne: "**Where many results share one ground, write it once**",
+});

@@ -13,6 +13,7 @@ import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
 import { DIGEST_SENTENCES } from "./ruled-sentences-digest.mjs";
 import { COMMON_LAW_SENTENCES } from "./ruled-sentences-common-law.mjs";
 import { VARIANTS_SENTENCES } from "./ruled-sentences-variants.mjs";
+import { ASSESS_SENTENCES } from "./ruled-sentences-knockout-assess.mjs";
 import { GATHERED, manualPins, heldStrings, namesManual } from "../../scripts/count-manual-pins.mjs";
 import { skipReason } from "../../shared/tracked-files.mjs";
 
@@ -22,11 +23,17 @@ const FIXTURES = {
   "driver/skills/clearance-register/digest.md": DIGEST_SENTENCES,
   "driver/skills/clearance-common-law/SKILL.md": COMMON_LAW_SENTENCES,
   "driver/skills/clearance-variants/SKILL.md": VARIANTS_SENTENCES,
+  "driver/skills/knockout-assess/SKILL.md": ASSESS_SENTENCES,
 };
-// Strings a test that reads a manual uses for its own purpose, which the manual happens to share word for word: here an
-// example row label used as a unit name. They hold nothing of the manual.
+// Strings a test that reads a manual uses for its own purpose, which the manual happens to share word for word: an example
+// row label used as a unit name, a stage message's own words, a fixture's input. They hold nothing of the manual.
 const COINCIDENT = {
   "driver/skills/clearance-register/digest.md": { "driver/test/coverage-form-seat-axis.test.mjs": 2 },
+  "driver/skills/knockout-assess/SKILL.md": {
+    "driver/test/a-knockout-defect-reaches-the-step-that-can-repair-it.test.mjs": 1,
+    "driver/test/a-knockout-reads-the-clients-own-request.test.mjs": 1,
+    "driver/test/knockout-typed-finding.test.mjs": 1,
+  },
 };
 const flat = (s) => String(s).replace(/\s+/g, " ");
 
