@@ -2539,8 +2539,8 @@ function depthStripHtml(note) {
 // THE BOARD'S FIVE ENTRIES, in its order. The rule that filters them lives in shared/brand.mjs, because
 // the knockout renderer draws a strip from its own board and the filtering is the half worth having once.
 const STRIP = Object.freeze([
-  ['summary', 'Summary'], ['findings', 'Findings'], ['also-considered', 'Also considered'],
-  ['next', 'Next steps'], ['searched', 'What was searched'],
+  ['summary', 'Summary'], ['next', 'Next steps'], ['findings', 'Findings'], ['also-considered', 'Also considered'],
+  ['searched', 'What was searched'],
 ]);
 
 export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
@@ -2817,21 +2817,8 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
     ${actionGroup(buckets.ans, 'ans')}
   </header>
 
-  <!-- WP-56 B2 — THE MARK ITSELF: the standing distinctiveness + connotation read (EN and non-EN). It
-       frames everything below, so it sits with the verdict, above the conflict landscape. Advisory only —
-       carries no rating; legacy runs (no mark_assessment) render without it. Both variants. -->
-  ${markAssessmentBlock(markAssessment)}
-
-  <!-- doc-52 §2 THE CONFLICTS — findings ordered by who can block first; each expands to full detail. -->
-  ${findingsSections}
-
-  ${whereItStandsSection(findings, opts)}
-
-  ${courtDecisionsSection(opts)}
-
-  ${alsoConsideredSection(ruledOut, recordsByUri, opts)}
-
-  <!-- doc-52 §3 WHAT ONLY YOU CAN CLOSE — forward decisions, plain English, after the findings. -->
+  <!-- doc-52 §3 WHAT ONLY YOU CAN CLOSE — forward decisions, plain English, directly after the verdict (owner, 2026-11-18:
+       a reader who forwards the first pages forwards the actions with the conditions). Words unchanged. -->
   ${buckets.you ? `<div class="sec" id="next"><span class="num"></span><h2>What happens next</h2></div>
   <div class="panel actions"><div class="actgrp act-you">${renderProse(buckets.you.body)
     .replace(/\[Time-critical\]\s*/gi, '<span class="src cl" style="margin-right:6px">Time-critical</span> ')
@@ -2847,6 +2834,20 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
     // buildOnlyYouSection now mints it beside the other three; a run assembled before that lands has none
     // and this replace is inert on it.
     .replace(/\[Before you can rely\]\s*/gi, '<span class="src cl" style="margin-right:6px">Before you can rely</span> ')}</div></div>` : ''}
+
+  <!-- WP-56 B2 — THE MARK ITSELF: the standing distinctiveness + connotation read (EN and non-EN). It
+       frames everything below, so it sits with the verdict, above the conflict landscape. Advisory only —
+       carries no rating; legacy runs (no mark_assessment) render without it. Both variants. -->
+  ${markAssessmentBlock(markAssessment)}
+
+  <!-- doc-52 §2 THE CONFLICTS — findings ordered by who can block first; each expands to full detail. -->
+  ${findingsSections}
+
+  ${whereItStandsSection(findings, opts)}
+
+  ${courtDecisionsSection(opts)}
+
+  ${alsoConsideredSection(ruledOut, recordsByUri, opts)}
 
   <!-- The 2026-09-16 report redesign — WHAT WAS SEARCHED. The scope fold and the checks-we-ran narrative are gone
        (owner, 2026-09-16: no coverage narrative on the page). What is left is counts, folded closed:

@@ -1407,10 +1407,11 @@ test("doc-52: reading order + plain banner (from only-you) + ruled-out routing +
   const opts = { runId: "d52", verdictInfo: vi, coverageJudgment: { reason: "the exact-compound slice is unadjudicable" } };
   const html = renderHtml(parsedOf(md), F, COV, opts);
   const client = renderHtml(parsedOf(md), F, COV, { ...opts, client: true });
-  // reading order: verdict (mark) → conflicts → What happens next → Scope
+  // reading order: verdict (mark) → What happens next → conflicts → Scope. The next steps follow the verdict
+  // (owner, 2026-11-18): a reader who forwards the first pages forwards the actions with the conditions.
   const iVerdict = html.indexOf('class="mark"'), iConf = html.indexOf("<h2>Conflicts</h2>");
   const iYou = html.indexOf("What happens next"), iScope = html.indexOf('<details class="searched">');
-  assert.ok(iVerdict >= 0 && iVerdict < iConf && iConf < iYou && iYou < iScope, "verdict → conflicts → only-you → what was searched");
+  assert.ok(iVerdict >= 0 && iVerdict < iYou && iYou < iConf && iConf < iScope, "verdict → only-you → conflicts → what was searched");
   // the lawyer's Q&A leads in the verdict block, before the conflicts
   assert.ok(html.indexOf("Answers to your instructions") >= 0 && html.indexOf("Answers to your instructions") < iConf, "Q&A in the verdict block");
   // B1 (spec 2026-07-30 §4) — the "Subject to:" bound line is DELETED (a third copy of the verdict's
