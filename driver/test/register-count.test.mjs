@@ -328,8 +328,8 @@ test("a DETERMINISTIC capability gap is marked as one — and a resume does not 
       ? { ok: true, total: 2 }
       : { ok: false, reason: "capability-gap: a multi-word term cannot be expressed under this mode" };
   };
-  const perMark = 2 + variantForms("SIM PRAXIS").forms.length;
-  const first = await run({ marks: [{ name: "SIM PRAXIS" }], counter });
+  const perMark = 2 + variantForms("QUILLMERE LABS").forms.length;
+  const first = await run({ marks: [{ name: "QUILLMERE LABS" }], counter });
   assert.equal(calls, perMark);
   assert.equal(first.marks[0].counts.containing.deterministic, true);
   // Same rule through the aggregate: EVERY form hit the same structural refusal, so the whole cell is
@@ -337,7 +337,7 @@ test("a DETERMINISTIC capability gap is marked as one — and a resume does not 
   assert.equal(first.marks[0].counts.close.deterministic, true);
   assert.equal(first.marks[0].counts.close.total, null);
 
-  const second = await run({ marks: [{ name: "SIM PRAXIS" }], counter, prior: first });
+  const second = await run({ marks: [{ name: "QUILLMERE LABS" }], counter, prior: first });
   assert.equal(calls, perMark, "settled: nothing was re-asked");
   assert.equal(second.marks[0].reused, true);
 
@@ -542,12 +542,12 @@ test("the report prints the figures as their own section, and the model's guess 
 test("the workbook grows a fourth sheet only when counts exist, and never a blank cell for a missing one", async () => {
   const ironForms = variantForms("IRONWHISK").forms.map((f) => f.form);
   const doc = await run({
-    marks: [{ name: "IRONWHISK", classes: [8] }, { name: "SIM PRAXIS" }], jurisdictions: ["US"],
+    marks: [{ name: "IRONWHISK", classes: [8] }, { name: "QUILLMERE LABS" }], jurisdictions: ["US"],
     counter: async (mark, p) => (mark === "IRONWHISK" || ironForms.includes(mark)
       ? { ok: true, total: p.key === "identical" ? 3 : (p.key === "containing" ? 41 : 2) }
       : { ok: false, reason: "capability-gap: multi-word" }),
   });
-  const findings = { marks: [{ name: "IRONWHISK", findings: [], negatives: [] }, { name: "SIM PRAXIS", findings: [], negatives: [] }] };
+  const findings = { marks: [{ name: "IRONWHISK", findings: [], negatives: [] }, { name: "QUILLMERE LABS", findings: [], negatives: [] }] };
   const dir = mkdtempSync(join(tmpdir(), "ko-wb-"));
   const ExcelJS = (await import("exceljs")).default;
 
@@ -573,17 +573,17 @@ test("the workbook grows a fourth sheet only when counts exist, and never a blan
   assert.equal(iron[4], 41);
   assert.equal(iron[5], 2 * ironForms.length, "the aggregate is the sum over the forms");
   assert.match(String(iron[6]), new RegExp(ironForms[0]), "and the forms it summed are auditable in the same row");
-  const sim = sheet.getRow(3).values.slice(1);
-  assert.equal(sim[0], "SIM PRAXIS");
-  assert.equal(sim[1], "all classes");
-  assert.equal(sim[3], "not available", "a cell can never be blank — blank reads as none found");
-  assert.equal(sim[4], "not available");
-  assert.equal(sim[5], "not available", "…the close column included");
+  const quill = sheet.getRow(3).values.slice(1);
+  assert.equal(quill[0], "QUILLMERE LABS");
+  assert.equal(quill[1], "all classes");
+  assert.equal(quill[3], "not available", "a cell can never be blank — blank reads as none found");
+  assert.equal(quill[4], "not available");
+  assert.equal(quill[5], "not available", "…the close column included");
   // The reader's line travels with the missing figure; the refusal itself ("capability-gap: multi-word")
   // is engine wording and stays in the counts record, which the next assertion reads.
-  assert.match(String(sim[9]), new RegExp(plainDeferralReason("unfinished")), "the reader's line travels with the missing figure");
-  assert.doesNotMatch(String(sim[9]), /capability-gap|multi-word/, "the engine's refusal reached the lawyer's workbook");
-  assert.match(String(doc.marks.find((m) => m.name === "SIM PRAXIS").counts.identical.unavailable), /capability-gap: multi-word/,
+  assert.match(String(quill[9]), new RegExp(plainDeferralReason("unfinished")), "the reader's line travels with the missing figure");
+  assert.doesNotMatch(String(quill[9]), /capability-gap|multi-word/, "the engine's refusal reached the lawyer's workbook");
+  assert.match(String(doc.marks.find((m) => m.name === "QUILLMERE LABS").counts.identical.unavailable), /capability-gap: multi-word/,
     "…and the record keeps it as written");
 });
 
