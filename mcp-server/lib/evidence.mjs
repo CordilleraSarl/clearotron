@@ -221,8 +221,9 @@ export function evidenceRecords(run) {
       layer: layerOf(f?.source?.source_type),
       owner: valueField(f?.owner?.name),
       ownerCountry: valueField(f?.owner?.country),
+      // A run records each registration as its record URI, `{uri}`; an older one wrote the string itself.
       registrations: Array.isArray(f?.owner?.registrations)
-        ? f.owner.registrations.filter((r) => typeof r === "string") : [],
+        ? f.owner.registrations.map((r) => (typeof r === "string" ? r : r?.uri)).filter((r) => typeof r === "string" && r) : [],
       classes: [],                      // findings.json carries no class list; the audit block below may
       status: null,
       url,
