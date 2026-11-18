@@ -143,7 +143,7 @@ test('the focus ring is focus-VISIBLE and sits on the control that takes focus',
   // A keyboard user must see where they are; a mouse user must not get a ring they did not ask for. The
   // row no longer takes focus (see above), so the ring moved with the target — onto the Open button and
   // the row menu — and a rule styling a focused ROW would be a rule for a state that cannot happen.
-  assert.match(BASE, /button\.row-open:focus-visible,\s*button\.row-menu-btn:focus-visible \{\s*outline: 2px solid var\(--accent\)/)
+  assert.match(BASE, /button\.row-open:focus-visible,\s*button\.row-menu-btn:focus-visible \{\s*outline: 2px solid var\(--focus-ring\)/)
   assert.doesNotMatch(BASE, /tr\.read-row\.openable:focus-visible/, 'no ring for a row that cannot be focused')
 })
 
@@ -240,7 +240,7 @@ test('the checkbox is in the palette in every state — unchecked, checked, focu
   // Browser-default blue was the only blue on a warm and maroon page: the clearest sign on the screen
   // that a control had been dropped in and never dressed.
   assert.match(BASE, /input\[type='checkbox'\]\.pickbox \{[^}]*accent-color: var\(--accent\)/)
-  assert.match(BASE, /\.pickbox:focus-visible \{[^}]*outline: 2px solid var\(--accent\)/)
+  assert.match(BASE, /\.pickbox:focus-visible \{[^}]*outline: 2px solid var\(--focus-ring\)/)
   assert.match(BASE, /\.pickbox:disabled \{[^}]*accent-color: var\(--border-strong\)/)
   assert.doesNotMatch(BASE, /\.pickbox[^{]*\{[^}]*accent-color: var\(--high\)/,
     'never --high: brand.mjs records it was un-aliased from --accent because a High risk dot read as a Start button')
@@ -280,7 +280,7 @@ test('pressing the button toggles ONCE — the row handler must not fire as well
 test('the button looks like the span it replaced, and adds one thing — a focus ring', () => {
   assert.match(BASE, /button\.twisty \{[^}]*border: 0/)
   assert.match(BASE, /button\.twisty \{[^}]*background: none/)
-  assert.match(BASE, /button\.twisty:focus-visible \{[^}]*outline: 2px solid var\(--accent\)/)
+  assert.match(BASE, /button\.twisty:focus-visible \{[^}]*outline: 2px solid var\(--focus-ring\)/)
   assert.match(BASE, /button\.twisty:focus \{\s*outline: none/, 'focus-visible only — a mouse user gets no ring')
 })
 
