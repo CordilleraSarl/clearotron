@@ -8042,6 +8042,19 @@ export function scriptScopeDisclosure(lane) {   // @internal
   };
 }
 
+/** Several script lanes' rows as one, in the approved words: the lanes' names and their territories joined, the
+ *  sentence and the offer once. PURE. */
+export function mergedScriptScopeRow(lanes, state = "coverage-limited") {   // @internal
+  const parts = lanes.map((lane) => scriptScopeDisclosure(lane)).filter(Boolean);
+  const names = parts.map((d) => d.area.replace(/\s*register equivalents\s*\(.*\)$/, ""));
+  const joined = names.length <= 1 ? names.join("") : `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+  return {
+    area: `${joined} register equivalents (${parts.flatMap((d) => d.territories).join(" / ")})`,
+    state,
+    note: `${joined} same-meaning/phonetic register equivalents not searched on this search — ${NATIVE_LANGUAGE_REMEDY}`,
+  };
+}
+
 /** The pure decision: should the honesty row be injected, and what row. Exported for the unit tests.
  *  `scope` is the requested-territory list (jxScopeJurisdictions precedence: instructed wins, else
  *  profile defaults); the zh match is EXACTLY the codes decideJxLanes would have matched with the lane
@@ -8153,7 +8166,7 @@ export function injectScriptScopeCoverage(P, runDir, note, { searchPolicy = null
     const doc = JSON.parse(readFileSync(P.findings, "utf8"));
     if (!Array.isArray(doc.coverage)) doc.coverage = [];   // T1 (G8) posture: never silently lose the disclosure
     const rowText = (c) => `${c?.area ?? ""} ${c?.note ?? ""}`.toLowerCase();
-    const added = [];
+    const added = [], owed = [];
     for (const p of pending) {
       // Suppression is PER LANE. The old check treated any coverage row mentioning "clearance-jx" as
       // covering the disclosure, which was harmless while zh was the only lane and is a silent row-
@@ -8171,9 +8184,18 @@ export function injectScriptScopeCoverage(P, runDir, note, { searchPolicy = null
           || (p.marker != null && t.includes(p.marker) && SCRIPT_SCOPE_RECOMMENDATION_TOKENS.some((tok) => t.includes(tok)));
       });
       if (already) continue;
-      doc.coverage.push(p.row);
-      added.push(p.lane);
+      owed.push(p);
     }
+    // THE SCRIPT ROWS ARE ONE ROW (owner, 2026-11-18). A worldwide order owed a row per script lane, each ending
+    // in the same offer, so "Left open" said it three times. The lanes still owed a row are now one row: their
+    // names and territories joined, the same approved sentence once. One lane writes the row it always wrote.
+    // The merged row carries every lane's marker and the offer's own words, so the per-lane check above finds
+    // it on a second pass and writes nothing more.
+    const scriptRows = owed.filter((p) => p.marker != null);
+    const rows = [...owed.filter((p) => p.marker == null).map((p) => p.row),
+      ...(scriptRows.length > 1 ? [mergedScriptScopeRow(scriptRows.map((p) => p.lane), scriptRows[0].row.state)] : scriptRows.map((p) => p.row))];
+    doc.coverage.push(...rows);
+    added.push(...owed.map((p) => p.lane));
     if (!added.length) return;
     parseFindingsJson(JSON.stringify(doc));                    // re-validate the shape (throws → catch keeps original)
     writeFindings(runDir, doc, { why: "script-scope-coverage-row", settles: [] });   // B5 — never a truncated findings.json

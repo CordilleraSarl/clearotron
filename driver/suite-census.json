@@ -3604,8 +3604,8 @@
           "todos": 0
         },
         "cn-scope-honesty.test.mjs": {
-          "tests": 22,
-          "asserts": 96,
+          "tests": 24,
+          "asserts": 102,
           "skips": 0,
           "todos": 0
         },
