@@ -5277,6 +5277,12 @@
           "skips": 0,
           "todos": 0
         },
+        "one-inline-markdown-dialect-on-both-report-pages.test.mjs": {
+          "tests": 4,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "one-name-per-command.test.mjs": {
           "tests": 4,
           "asserts": 9,
@@ -9476,8 +9482,8 @@
           "todos": 0
         },
         "inlineMd.test.ts": {
-          "tests": 7,
-          "asserts": 16,
+          "tests": 8,
+          "asserts": 21,
           "skips": 0,
           "todos": 0
         },

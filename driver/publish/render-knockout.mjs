@@ -42,6 +42,7 @@ import {
   themeButton, THEME_BTN_CSS, CHROME_CSS, logoLockup, confPosture, sectionStrip,
 } from '../../shared/brand.mjs';
 import { pageShell } from './page-shell.mjs';   // the document shell, shared with the clearance template
+import { inlineMarkdown } from '../../shared/inline-markdown.mjs';   // the inline-markdown dialect, shared with the clearance template
 import { SUMMARY_BLOCK_LINE, parseSummaryBlocks } from '../../shared/summary-blocks.mjs';
 
 // THIS BOARD'S FOUR ENTRIES, in its order. Its third reads "Also considered" and resolves at the filings
@@ -105,11 +106,9 @@ const officeRecordCell = (r, fallback) => {
 // Minimal inline markdown, escaped FIRST. The old renderer ran esc() and nothing else, so a batch
 // summary reading `BRIMSTONE rates **High (Classes 9, 28, 41)**.` rendered its asterisks verbatim —
 // the model writes markdown because every other surface it feeds renders markdown.
+// The dialect is the one the clearance reads too (shared/inline-markdown.mjs), links included.
 export function inlineMd(s) {
-  return esc(String(s ?? ''))
-    .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
-    .replace(/(^|[^*])\*([^*]+)\*/g, '$1<i>$2</i>')
-    .replace(/`([^`]+)`/g, '<span class="mono">$1</span>');
+  return inlineMarkdown(esc(String(s ?? '')));
 }
 // BLOCKS, NOT ONLY PARAGRAPHS.
 //

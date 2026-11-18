@@ -322,7 +322,11 @@ function Prose({ text }: { readonly text: string }) {
   return (
     <>
       {inlineSpans(text).map((s, i) =>
-        s.style === 'strong' ? <b key={i}>{s.text}</b>
+        // A link as the reports draw it: a web page opens in a new tab, a mail address where it is.
+        s.style === 'link' ? (/^https?:\/\//i.test(s.href ?? '')
+          ? <a key={i} href={s.href} target="_blank" rel="noopener noreferrer">{s.text}</a>
+          : <a key={i} href={s.href}>{s.text}</a>)
+        : s.style === 'strong' ? <b key={i}>{s.text}</b>
         : s.style === 'em' ? <i key={i}>{s.text}</i>
         : s.style === 'code' ? <span key={i} className="mono">{s.text}</span>
         : <span key={i}>{s.text}</span>,

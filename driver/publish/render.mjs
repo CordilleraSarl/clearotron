@@ -36,6 +36,7 @@ import { READ_LEAD_RE } from '../report-card-record.mjs';   // D3 — the dedupe
 import { logoLockup, BRAND, confPosture, sectionStrip } from '../../shared/brand.mjs';
 import { NAV_CSS } from '../../shared/site-nav.mjs';
 import { pageShell } from './page-shell.mjs';   // the document shell, shared with the knockout template
+import { inlineMarkdown } from '../../shared/inline-markdown.mjs';   // the inline-markdown dialect, shared with the knockout template
 import { isEntrypoint } from "../../shared/is-entrypoint.mjs";   // — realpath both sides, or a symlinked invocation exits 0 silently
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -340,29 +341,9 @@ export function homeButton(href, label = '← All reports') {
 function inline(s) {
   // T6 (H7): internal-note handling routes through the ONE choke point (publish/parse.mjs
   // stripInternal) BEFORE escaping — global, wrapped-marker-aware; nothing raw survives on any surface.
-  s = stripInternal(s, { client: false });
-  s = esc(s);
-  // External links open in a new tab (spec 47 UX) — internal anchors keep same-tab navigation.
-  // Provenance honesty: an authored 'Corsearch · <name>' label whose href is NOT a Corsearch page
-  // (live case: Steam storefront links labelled as the register vendor) gets its vendor token replaced
-  // by the link's actual host — a lawyer must never cite a storefront as a register record.
-  s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (mm, txt, href) => {
-    let label = txt;
-    const vend = /^(Corsearch)\s*·\s*(.+)$/i.exec(txt);
-    if (vend && /^https?:\/\//i.test(href) && !/corsearch\./i.test(href)) {
-      try { label = `${new URL(href.replace(/&amp;/g, '&')).host.replace(/^www\./, '')} · ${vend[2]}`; } catch { /* keep authored label */ }
-    }
-    // XSS: href was already esc()'d above (& < >), but esc() does NOT escape quotes — a `"` in href would
-    // break out of the attribute. Quote-escape it here. NOT escAttr(), which re-runs esc() and would
-    // double-encode `&` in query strings (?a=1&amp;b=2 -> &amp;amp;). Also allow only safe schemes
-    // (http/https/mailto/#fragment); anything else (javascript:, data:, vbscript:, …) renders as PLAIN TEXT.
-    if (!(/^https?:\/\//i.test(href) || /^mailto:/i.test(href) || href.startsWith('#'))) return label;
-    const safeHref = href.replace(/"/g, '&quot;');
-    return /^https?:\/\//i.test(href) ? `<a href="${safeHref}" target="_blank" rel="noopener noreferrer">${label}</a>` : `<a href="${safeHref}">${label}</a>`;
-  });
-  s = s.replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
-  s = s.replace(/\*([^*]+)\*/g, '<i>$1</i>');
-  return s;
+  // Then the one inline-markdown dialect both report renderers read (shared/inline-markdown.mjs): links, bold,
+  // italic and code, with its link-target guard and the vendor-label check.
+  return inlineMarkdown(esc(stripInternal(s, { client: false })));
 }
 
 // Internal-labelled items get a class so the print stylesheet can honour the export promise
@@ -1354,8 +1335,8 @@ function alsoConsideredSection(ruledOut, recordsByUri = new Map(), opts = {}) {
     const why = f.ruled_out_reason ? esc(f.ruled_out_reason)
       : f.net ? esc(String(f.net))
       : 'a different name in a related field — not a conflict with your mark';
-    const legal = f.legal_position ? esc(String(f.legal_position)) : '';
-    const practical = f.practical_position ? esc(String(f.practical_position)) : '';
+    const legal = f.legal_position ? inline(String(f.legal_position)) : '';
+    const practical = f.practical_position ? inline(String(f.practical_position)) : '';
     const fold = (legal || practical)
       ? `<details class="roff"><summary>Why it was ruled out</summary>${legal ? `<p><b>Legal position.</b> ${legal}</p>` : ''}${practical ? `<p><b>Practical position.</b> ${practical}</p>` : ''}</details>` : '';
     return `<div class="card ruled"><div class="top"><div class="rail"></div><div class="body"><div class="cardhead">${
@@ -2263,7 +2244,7 @@ function coverageGrid(coverage, { verdict = true } = {}) {
     // mark that does not exist, inside the report that clears it. Measured across the nine delivered
     // runs in the pool, `coverage[]` carries no axis identifier at all; the ones that leaked were the
     // coverage_judgment rows, which now carry a driver-emitted `areaLabel` and fold through it.
-    return `<div class="covcell ${s.cls}"><div class="ck">${s.ic}</div><div><div class="ct">${esc(cap(c.area))}${tag}</div><div class="cd">${esc(c.note || '')}</div></div></div>`;
+    return `<div class="covcell ${s.cls}"><div class="ck">${s.ic}</div><div><div class="ct">${esc(cap(c.area))}${tag}</div><div class="cd">${inline(c.note || '')}</div></div></div>`;
   };
   const covered = coverage.filter(c => c.state === 'confirmed-clean');
   const rest = coverage.filter(c => c.state !== 'confirmed-clean');
@@ -2368,10 +2349,10 @@ function markAssessmentBlock(ma) {
   const cmRows = [], crRows = [];
   for (const v of [ma.distinctiveness, ma.connotation]) {
     if (!v || typeof v !== 'object') continue;
-    for (const r of Array.isArray(v.per_class) ? v.per_class : []) cmRows.push(`<li><b>Class ${esc(String(r.class))}.</b> ${esc(r.note)}</li>`);
-    for (const r of Array.isArray(v.per_market) ? v.per_market : []) cmRows.push(`<li><b>${esc(r.market)}.</b> ${esc(r.note)}</li>`);
+    for (const r of Array.isArray(v.per_class) ? v.per_class : []) cmRows.push(`<li><b>Class ${esc(String(r.class))}.</b> ${inline(r.note)}</li>`);
+    for (const r of Array.isArray(v.per_market) ? v.per_market : []) cmRows.push(`<li><b>${esc(r.market)}.</b> ${inline(r.note)}</li>`);
     for (const r of Array.isArray(v.counter_registrations) ? v.counter_registrations : []) {
-      crRows.push(`<li><b>${esc(r.mark || r.uri || '')}</b>${r.owner ? ` — ${esc(r.owner)}` : ''}${r.note ? ` — ${esc(r.note)}` : ''}</li>`);
+      crRows.push(`<li><b>${esc(r.mark || r.uri || '')}</b>${r.owner ? ` — ${esc(r.owner)}` : ''}${r.note ? ` — ${inline(r.note)}` : ''}</li>`);
     }
   }
   const dist = lead(ma.distinctiveness), conn = lead(ma.connotation);
