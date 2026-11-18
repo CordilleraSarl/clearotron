@@ -19,6 +19,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, openSy
 import { join } from "node:path";
 import { ledgerPath, runRecordLogPath, ledgerDeprecationNotice, retiredGlobalRecordLogNotice }
   from "../providers/_shared/ledger-path.mjs";
+import { normalizeRecordUri } from "../providers/_shared/record-uri.mjs";   // one record key for every reader of the record log
 import { recordedRegister } from "./engine/run-choices.mjs";   // the register the run recorded, which named its receipts
 import { envFrom } from "../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
 import { USE_SOURCE_QUALITY } from "./findings-model.mjs";   // — the attested vocabulary; an unknown value falls back to the heuristic
@@ -625,14 +626,8 @@ export function classifyUseSource(url, ownerName = "") {
 // use meter whose use_check source is a register mirror (register listing ≠ use evidence) — by URL
 // host OR by the model's own `quality` attestation, whichever is stricter. PURE
 // (mutates only the private `_status`/`_useSourceClass` display fields, like bindFindingsToRecords).
-// WP-receipts W2 (the VENZY join defect): meter sources sometimes arrive as FULL provider URLs
-// (https://tm.corsearch.com/mark/ae/229552) while the record set keys on /mark/ paths — without
-// normalization a genuinely FETCHED record demotes to "assumed" at render, with a false integrity
-// flag on top. Same broad id shape as pipeline.mjs CITED_URI_RE.
-export function normalizeRecordUri(src) {
-  const m = String(src ?? "").trim().match(/\/mark\/[a-z]{2,6}\/[a-z0-9][a-z0-9_-]*/i);
-  return m ? m[0].toLowerCase() : "";
-}
+// The record key, kept beside the run record log's index so the two cannot drift (record-uri.mjs says why).
+export { normalizeRecordUri };
 
 // ── spec 64 (B3) — opposition-window extraction ─────────────────────────────────────────────────────────
 // The DEMVENZY drop: teal-conduit recorded "CH opposition window open to 2026-07-13"; copper-causeway's
