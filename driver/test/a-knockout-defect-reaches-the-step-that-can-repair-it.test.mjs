@@ -142,7 +142,7 @@ test("a correction that fails leaves the rated record standing and the defect on
   assert.equal(r.json(driverDir(r.dir, "knockout-correction-work.json")).stoodDown, "correction-failed", "a resumed run does not go through the round again");
   const record = r.json(driverDir(r.dir, "knockout-corrections.json"));
   assert.deepEqual(record.open.map((o) => [o.mark, o.problem, o.state]), [[NAME, DEFECT.problem, "not-corrected"]], "a failed step cannot erase the defect");
-  assert.ok((await notes("correction-failed")).includes(`Not corrected in this run: ${DEFECT.problem}`), "the reviewing lawyer sees it, and why it is open");
+  assert.ok((await notes("correction-failed")).includes(`Not corrected in this search: ${DEFECT.problem}`), "the reviewing lawyer sees it, and why it is open");
 });
 
 // THE KNOCKOUT'S POLICY, PINNED END TO END, as a clearance's (design ruling, 2026-11-10): a correction that also moved a name

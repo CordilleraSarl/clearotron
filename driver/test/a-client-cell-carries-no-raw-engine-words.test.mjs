@@ -13,7 +13,7 @@ import { join } from "node:path";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { buildKnockoutWorkbook } from "../publish/knockout.mjs";
-import { buildAudit } from "../publish/xlsx.mjs";
+import { buildAudit, addSheet } from "../publish/xlsx.mjs";
 import { gateCouldNotEvaluate, undispatchedProbeRows } from "../publish/index.mjs";
 import { plainDeferralReason } from "../deferral-row.mjs";
 import { coverageJudgmentRows } from "../pipeline.mjs";
@@ -156,4 +156,13 @@ test("a recall probe left over the cap reaches the gaps sheet with its party and
   const { cells } = await workbookRows(out);
   assert.ok(cells.some((c) => /Lanternwick Holdings/.test(c)), "the row did not reach the workbook, so the check below checks nothing");
   assert.ok(!cells.some((c) => /\(recall-owner-lanternwick-holdings\)|never dispatched \(/.test(c)), "a probe id reached a note cell");
+});
+
+test("a slice label a run stored says 'main register search' in every workbook cell, and a name stays as written", async () => {
+  // A run keeps the words of the build that wrote its labels; the workbook copies them. Invented names.
+  const ExcelJS = (await import("exceljs")).default;
+  const ws = addSheet(new ExcelJS.Workbook(), "Notes", ["Mark", "Note"], [
+    { Mark: "Main Register Sweep", Note: "main register sweep / exact: QZXV [cl 9]" },
+  ]);
+  assert.deepEqual([ws.getRow(2).getCell(1).value, ws.getRow(2).getCell(2).value], ["Main Register Sweep", "main register search / exact: QZXV [cl 9]"]);
 });
