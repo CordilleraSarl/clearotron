@@ -105,7 +105,7 @@ test("D4.1: the refusal NAMES the roster it checked, so a wrong profiles directo
   // real customer. The message said "names no known customer" — which points at the customer, and the
   // customer was fine. Reading the roster back distinguishes the two cases at a glance: your customers
   // listed means the key is wrong, four demo ones means the DIRECTORY is wrong.
-  const v = validateJob({ ...FULL, profileKey: "sim-praxis" });
+  const v = validateJob({ ...FULL, profileKey: "quillmere" });
   assert.equal(v.classify, "clarify");
   const msg = v.errors.join(" ");
   assert.match(msg, /the roster this process can see is \[/);

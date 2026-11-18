@@ -359,8 +359,8 @@ const MCP_HOST_RE = /https?:\/\/[A-Za-z0-9.-]+\/mcp/gi;
 // The footer's "Rated under:" line — the ONE piece of engine scaffolding that is not element-shaped.
 //
 // It renders inline in the confidentiality footer as `<br>Rated under: <span class="mono">…</span>.` and
-// carries the account key, the framework name and a profile content hash ("Sim Praxis (sim-praxis) · house
-// default framework · profile 133826183db4"). The hash is a fingerprint of an internal config file: it
+// carries the account key, the framework name and a profile content hash ("Quillmere Labs (quillmere) · house
+// default framework · profile 5e0c7d21a94f"). The hash is a fingerprint of an internal config file: it
 // means nothing to a reader, identifies an internal artefact, and travels in a document designed to be
 // forwarded. Same ruling as the blocks above; a different removal only because the markup gives nothing
 // balanced to strip.
