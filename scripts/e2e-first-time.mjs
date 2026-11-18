@@ -104,7 +104,7 @@ export const COUNTED_EVENTS = {
   // court-decisions file that arrived absent or empty from a stage that ended ok: this record is its only one.
   "degraded-parts": { kind: FAILED, when: (e) => (Array.isArray(e.parts) ? e.parts : [])
     .some((p) => p?.part === "court-decisions" && /is (absent|empty)$/.test(String(p?.cause ?? ""))) },
-  "degraded-parts-failed": FAILED,
+  "degraded-parts-failed": FAILED, "logos-not-written": FAILED,
   // A store publishing found unreadable, or one delivery read and a republish found missing: its only record.
   "degraded-parts-at-publish": FAILED,
   // A part publishing could not write, and the report shipped without it. A clearance's workbook is counted by its
@@ -197,7 +197,7 @@ export const NOT_COUNTED_EVENTS = {
     "digest-coverage-form-brief", "digest-flush", "digest-queue-noop", "digest-queued", "digest-rulings-tail",
     "doctrine-write", "document-coverage-rendered", "document-growth-trip", "doubt-selection", "doubts", "draft-carry",
     "economics", "engine-build", "envelope-closed", "envelope-decision", "envelope-decision-early",
-    "escalation-skipped", "experiment", "experiment-refused", "goods-held-whole-handed", 
+    "escalation-skipped", "experiment", "experiment-refused", "goods-held-whole-handed", "logos", 
     "form-neighbourhood-derived", "frame-diff", 
     "frame-diff-source-directives-dropped", "frame-reopen-reconcile-not-needed", "frame-reopen-skipped", "frame-web-grid",
     "framework", "goods-evidence", "grid-ledger-saved", "grid-spec", "grid-split", "hit-list-minted",

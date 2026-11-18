@@ -26,11 +26,11 @@
 // A RESUME OR A REPUBLISH ASKS NOTHING AGAIN. A row already `fetched` whose file is still there is kept as it is.
 //
 // RECORDING ONLY, and it never throws: a logo that could not be had never stops a report.
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { normalizeRecordUri } from "../providers/_shared/record-uri.mjs";
 import { readRecordArtifacts } from "./registry-fidelity.mjs";
-import { DRIVER_DIR, driverDir } from "./run-record.mjs";
+import { DRIVER_DIR, driverDir, ensureDriverDir } from "./run-record.mjs";
 import { runLog } from "./log.mjs";
 
 export const LOGOS_FILE = "logos.json";
@@ -100,7 +100,7 @@ export async function logoRows({ runDir, refs, records, register, fetchImage, ma
     if (!kind) { rows.push({ ref, register, state: "failed", cause: "the answer is not a PNG, JPEG, GIF or WebP image" }); continue; }
     const file = `${DRIVER_DIR}/${LOGOS_DIR}/${fileFor(ref, kind.ext)}`;   // relative to the run folder, the same on every system
     try {
-      mkdirSync(driverDir(runDir, LOGOS_DIR), { recursive: true });
+      ensureDriverDir(runDir, LOGOS_DIR);
       writeFileSync(join(runDir, file), got.bytes);
       rows.push({ ref, register, state: "fetched", file, contentType: kind.type, bytes: got.bytes.length });
     } catch (e) { rows.push({ ref, register, state: "failed", cause: `the image could not be saved: ${String(e?.message ?? e).slice(0, 120)}` }); }
