@@ -6,7 +6,6 @@ import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { DIGEST_SENTENCES } from "./ruled-sentences-digest.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { parseManifestVariants, variantsManifestAudit, variantsParseFailure, countMatrixCells, findReceiptViolations, parsePrRiskQueries,
   GRID_HALVES, MEANING_SEAT, GRID_SEATS, splitGridTerms, splitGridSpec, halfOfTerm, mergeGrids, mergeCommonLawFindings,
@@ -79,7 +78,7 @@ test("parseManifestVariants: live clearance-variants format — term in the 'Val
 | exact-element | THORNMANTLE | distinctive anchor | |
 | foreign-transliteration | ソーンマントル | JP reach | ✅ |
 `;
-  assert.deepEqual(parseManifestVariants(live), [DIGEST_SENTENCES.duskTalesThornmantle, "THORNMANTLE", "ソーンマントル"]);
+  assert.deepEqual(parseManifestVariants(live), ["Dusk: Tales of Thornmantle", "THORNMANTLE", "ソーンマントル"]);
 });
 
 test("countMatrixCells: counts per-variant rows in the negative-results section only", () => {

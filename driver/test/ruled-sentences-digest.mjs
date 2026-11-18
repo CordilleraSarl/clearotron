@@ -44,10 +44,8 @@ export const DIGEST_SENTENCES = Object.freeze({
   theCrowdThenCoversPosition: "the crowd then covers no position, and the run delivers with those positions stated as unended, over a "
     + "ruling you did make.",
   dropAndTheRulingCovers: "Drop it and the ruling covers nothing, and the run delivers with those positions stated as unended.",
-  duskTalesThornmantle: "Dusk: Tales of Thornmantle",
   coverageRulingsOpenQuestions: "### Coverage rulings & open questions",
   openQuestionsForTheClient: "### Open questions for the client / reviewer",
-  primarySweepReconciliation: "primary-sweep / CH reconciliation",
   youMayAddRowsYour: "You may ADD rows of your own",
   theAuditTrailAndThe: "#### The audit trail and the status-filter summary are the DRIVER's",
   saturatedFieldWithEnumeratedExact: "saturated field with no enumerated exact-owner slice, and no narrowed list that was read answering it, "

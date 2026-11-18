@@ -327,7 +327,7 @@ test("HALF 1 — with the axis fixed, the status token fires with its own census
   const dir = runDir();
   try {
     const { verdict } = submit(dir, [{ kind: "seat", axis: "primary-sweep",
-      unit: DIGEST_SENTENCES.primarySweepReconciliation, status: "coverage-limited", reason: "r" }],
+      unit: "primary-sweep / CH reconciliation", status: "coverage-limited", reason: "r" }],
     { driverSettled: false });
     assert.match(verdict.reason, /coverage_no_status:/);
     assert.ok(!verdict.reason.includes("axis_invalid"), "axis_invalid has left this census for good");
@@ -437,7 +437,7 @@ test("fixing the axis does not cost the row its status — the corrected row kee
       reason: "CH could not be fully reconciled" };
     const first = submit(dir, [bad]);
     assert.equal(first.verdict.ok, false, "attempt 1 is refused on the axis");
-    const second = submit(dir, [{ ...bad, axis: "primary-sweep", unit: DIGEST_SENTENCES.primarySweepReconciliation }],
+    const second = submit(dir, [{ ...bad, axis: "primary-sweep", unit: "primary-sweep / CH reconciliation" }],
       { prior: first.form });
     assert.equal(second.verdict.ok, true, `attempt 2 passes (${second.verdict.reason})`);
     const seatNow = second.form.rows.filter((r) => r.kind === "seat");
