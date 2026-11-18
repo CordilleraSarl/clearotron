@@ -115,7 +115,10 @@ test("the knockout's workbook prints the set-aside row, and the knockout still k
   const book = readFileSync(join(DRIVER, "publish", "knockout.mjs"), "utf8");
   assert.ok(book.includes("'Working Notes'"), "guard: the knockout workbook builder was read");
   // The label is the clearance's own, so no new sentence reaches a reader; the ground is the rater's words.
-  assert.match(book, /'Search Term': `Set aside: \$\{url\}`/, "set-aside reasons live in the audit workbook, under the label a clearance already ships");
+  // The row's words are in the sentence catalogue, which the builder reads them from.
+  const strings = readFileSync(join(DRIVER, "publish", "strings.mjs"), "utf8");
+  assert.match(book, /'Search Term': KW\.setAside\(url\)/, "set-aside reasons live in the audit workbook, under the label a clearance already ships");
+  assert.match(strings, /setAside: \(url\) => `Set aside: \$\{url\}`/, "the set-aside row's label changed");
   // AND NO PAGE TRACE, which is the half that did not change: a ground is owed for a candidate the notes
   // marked, never for every page read, so nothing here counts or files the knockout's pages.
   const paths = readFileSync(join(DRIVER, "stages-knockout.mjs"), "utf8");
