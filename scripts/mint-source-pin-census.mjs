@@ -57,6 +57,8 @@ export function mint(root = ROOT) {
   if (tracked === null) return null;
   const p = publishedOf(tracked.filter((f) => f.endsWith(".test.mjs")), root);
   if (p.error) throw new Error(`mint-source-pin-census: ${p.error}`);
+  // Test files the index carries and HEAD does not are laid over this checkout, not published in it: said, and not counted.
+  if (p.laid) console.log(`mint-source-pin-census: ${p.laid} tracked test file(s) are not in HEAD — laid over this checkout and not counted`);
   const read = publishedReader(root, (f) => readFileSync(join(root, f), "utf8"));
   const files = {};
   for (const f of [...p.files].sort()) {
