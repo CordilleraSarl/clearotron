@@ -1149,6 +1149,12 @@
           "skips": 2,
           "todos": 0
         },
+        "a-knockout-card-cites-a-filing-as-its-office-does.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-citation-the-run-does-not-hold-is-left-out-in-the-turn.test.mjs": {
           "tests": 8,
           "asserts": 31,
