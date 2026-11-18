@@ -19,9 +19,15 @@ const FIXTURES = {
   "driver/skills/clearance-register/unit.md": UNIT_SENTENCES,
   "driver/skills/clearance-register/digest.md": DIGEST_SENTENCES,
 };
-// A test's own assertion message that a manual happens to share word for word; it holds nothing of the manual.
+// Strings a test uses for its own purpose that a manual happens to share word for word: an assertion message, a worked
+// example's invented mark used as a fixture, an example row label used as a unit name. They hold nothing of the manual.
 const COINCIDENT = {
-  "driver/skills/clearance-register/digest.md": { "driver/test/a-knockout-citation-the-run-does-not-hold-is-left-out-in-the-turn.test.mjs": 1 },
+  "driver/skills/clearance-register/digest.md": {
+    "driver/test/a-knockout-citation-the-run-does-not-hold-is-left-out-in-the-turn.test.mjs": 1,
+    "driver/test/common-law-receipts.test.mjs": 1,
+    "driver/test/coverage-call.test.mjs": 4,
+    "driver/test/coverage-form-seat-axis.test.mjs": 2,
+  },
 };
 const flat = (s) => String(s).replace(/\s+/g, " ");
 

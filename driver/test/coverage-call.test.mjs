@@ -25,7 +25,6 @@ import { armCoverageForm, readCoverageForm, coverageFormPaths } from "../coverag
 // them. A test that retyped either would pass while the served contract said something else.
 import { CROWD_RULING_TOKEN, CROWD_RULING_UNIT_GRAMMAR, crowdRulingCount } from "../coverage-ledger.mjs";
 import { parseCrowdRulings } from "../recall-reconciliation.mjs";
-import { DIGEST_SENTENCES } from "./ruled-sentences-digest.mjs";
 
 // The same fixture family coverage-union.test.mjs uses: one open block, one deferred qid, two axes.
 const PLAN = { entries: [
@@ -97,7 +96,7 @@ test("status/reason floors: off-enum status, empty reason, engine vocabulary in 
 test("a seat row is accepted through the union's own ingest (driver-minted id, repaired axis)", () => {
   const rows = canonical();
   const { accepted, refused } = validateCoverageCall([{
-    kind: "seat", axis: "primary-sweep", unit: DIGEST_SENTENCES.primarySweepReconciliation,
+    kind: "seat", axis: "primary-sweep", unit: "primary-sweep / CH reconciliation",
     status: "confirmed-clean", reason: "every CH filing in the band was reconciled against the instructed scope",
   }], rows);
   assert.equal(refused.length, 0);
@@ -148,7 +147,7 @@ test("a crowd ruling whose unit counts nothing is refused AT CALL TIME, not at d
   // a COUNTED crowd row is accepted, and every non-crowd seat row is untouched by this arm
   const good = { ...bad, unit: `saturation-probe / ${CROWD_RULING_TOKEN} (12 members): residual pile` };
   assert.equal(validateCoverageCall([good], rows).refused.length, 0);
-  assert.equal(validateCoverageCall([{ kind: "seat", axis: "primary-sweep", unit: DIGEST_SENTENCES.primarySweepReconciliation,
+  assert.equal(validateCoverageCall([{ kind: "seat", axis: "primary-sweep", unit: "primary-sweep / CH reconciliation",
     status: "confirmed-clean", reason: "reconciled against the instructed scope" }], rows).refused.length, 0);
 });
 
@@ -159,7 +158,7 @@ test("ONE PARSER, TWO READERS: the count the call reads is the count delivery cr
   const cells = [
     `saturation-probe / ${CROWD_RULING_TOKEN} (12 members): residual pile`,   // counted
     `saturation-probe / ${CROWD_RULING_TOKEN}`,                               // ruled, counting nothing
-    DIGEST_SENTENCES.primarySweepReconciliation,                                      // not a crowd row at all
+    "primary-sweep / CH reconciliation",                                      // not a crowd row at all
   ];
   for (const unit of cells) {
     const seen = parseCrowdRulings([{ unit, status: "coverage-limited", reason: "r" }]);
@@ -294,7 +293,7 @@ test("recordCoverage: statuses survive the gateway's regenerate union, and a ref
 test("recordCoverage: seat rows accumulate across calls and retract removes exactly one", () => {
   const dir = runDir();
   const r1 = recordCoverage(dir, { rows: [
-    { kind: "seat", axis: "primary-sweep", unit: DIGEST_SENTENCES.primarySweepReconciliation,
+    { kind: "seat", axis: "primary-sweep", unit: "primary-sweep / CH reconciliation",
       status: "confirmed-clean", reason: "reconciled" },
   ] });
   assert.equal(r1.accepted, 1);
