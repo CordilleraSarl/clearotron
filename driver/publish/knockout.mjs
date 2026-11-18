@@ -139,7 +139,6 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
     'Source / Context': `${r.executor ?? 'perplexity'} (${r.preset ?? ''})${Array.isArray(r.places) && r.places.length ? ` — ${r.places.join(', ')}` : r.question && r.inUseAs ? ` — in use as ${r.inUseAs}` : ''}`,
     'Result Summary': r.ok ? `ok — ${r.bytes ?? 0} bytes` : `FAILED — ${plainCause(r.cause)}`,
     'Finding Reference': r.ok && refByMark.has(r.mark) ? refByMark.get(r.mark) : '',
-    'Sweep Call #': r.callNo ?? '', 'Wall-time (s)': r.took_ms != null ? Math.round(r.took_ms / 1000) : '', 'OK/Degraded': r.ok ? 'OK' : 'Degraded',
   }));
   // AN OWNER LOOKUP THAT GOT NO ANSWER (ruling 498): the card still prints its use-check line, so the
   // failure is recorded here, in the trail's own columns and words, beside the web searches. Only a failed
@@ -150,14 +149,14 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
     trailRows.push({
       'Mark': c.mark, 'Search Term': c.query ?? '', 'Source / Context': `perplexity (${c.preset ?? ''})`,
       'Result Summary': `FAILED — ${plainCause(c.cause)}`,
-      'Finding Reference': '', 'Sweep Call #': '', 'Wall-time (s)': c.took_ms != null ? Math.round(c.took_ms / 1000) : '', 'OK/Degraded': 'Degraded',
+      'Finding Reference': '',
     });
   }
   // THE PARTS THAT FAILED AS A WHOLE (ruled 2026-09-25, 537 and 539), in the trail's own columns: the
   // part's name where a search would be named, the reader's line for a part left open, and every other
   // cell `—`. A run with none of them builds the workbook it built before.
   const partRow = (name, reason) => ({ 'Mark': '—', 'Search Term': '—', 'Source / Context': name,
-    'Result Summary': `FAILED — ${plainDeferralReason(reason)}`, 'Finding Reference': '—', 'Sweep Call #': '—', 'Wall-time (s)': '—', 'OK/Degraded': 'Degraded' });
+    'Result Summary': `FAILED — ${plainDeferralReason(reason)}`, 'Finding Reference': '—' });
   if (degraded.reading) trailRows.push(partRow(PART_NAMES.register, degraded.reading.reason));
   if (degraded.review) trailRows.push(partRow(RULED_WORDS.plainLanguageReview, degraded.review.reason));
   if (degraded.machineChecks) trailRows.push(partRow(PART_NAMES.machineChecks, degraded.machineChecks.reason));
@@ -166,7 +165,7 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
   // says the record was not kept, and never that the search failed.
   for (const r of degraded.recordsNotKept ?? []) {
     trailRows.push({ 'Mark': r.mark, 'Search Term': '—', 'Source / Context': `perplexity (${r.preset ?? ''})`,
-      'Result Summary': RULED_WORDS.recordNotKept, 'Finding Reference': '—', 'Sweep Call #': '—', 'Wall-time (s)': '—', 'OK/Degraded': 'Degraded' });
+      'Result Summary': RULED_WORDS.recordNotKept, 'Finding Reference': '—' });
   }
   // WHAT THE SEARCH RETURNED AND THE RATING DID NOT CARRY, each with the ground the rater wrote (ruled
   // 2026-09-26). Set-aside reasons live in the audit workbook and never in the report, so this sheet is
@@ -196,12 +195,14 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
       if (!url) continue;
       trailRows.push({ 'Mark': m.name, 'Search Term': `Set aside: ${url}`, 'Source / Context': '—',
         'Result Summary': ground,
-        'Finding Reference': '—', 'Sweep Call #': '—', 'Wall-time (s)': '—', 'OK/Degraded': ground ? 'OK' : 'Degraded' });
+        'Finding Reference': '—' });
     }
   }
   addSheet(wb, 'Findings', ['Mark', 'Finding Reference', 'Finding Name', 'Owner', 'Band', 'Type', 'Net', 'Basis', 'Evidence'], findingRows);
   addSheet(wb, 'Negative Results', ['Mark', 'Search Term', 'Source / Context', 'Result', 'Notes'], negativeRows);
-  addSheet(wb, 'Audit Trail', ['Mark', 'Search Term', 'Source / Context', 'Result Summary', 'Finding Reference', 'Sweep Call #', 'Wall-time (s)', 'OK/Degraded'], trailRows);
+  // The sweep's call number, its wall time and OK/Degraded are the engine's, not the lawyer's: they stay in the run
+  // record and leave this sheet (2026-11-18).
+  addSheet(wb, 'Audit Trail', ['Mark', 'Search Term', 'Source / Context', 'Result Summary', 'Finding Reference'], trailRows);
   // ── Depth 2: an EXTRA sheet, only when counts were taken ────────────────────────────────────────
   // Additive by design: the three sheets above are the interactive skill's exact contract and a
   // knockout without counts produces a byte-identical workbook. A count that could not be taken says
