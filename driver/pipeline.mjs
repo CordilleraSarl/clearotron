@@ -11102,7 +11102,13 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   try { a = parseArgv(process.argv.slice(2)); }
   catch (e) { console.error(`error: ${e.message}`); console.error(USAGE); process.exit(2); }
   const usage = process.env.CLEAROTRON_INVOKED_AS ? RUN_USAGE : USAGE;   // reached through `clearotron run`, or directly
-  if (a.help) { console.log(usage); process.exit(0); }
+  // Reached through `clearotron run`, the help keeps the dispatcher's spend line, which it printed before this
+  // program had a --help of its own.
+  if (a.help) {
+    console.log(usage);
+    if (process.env.CLEAROTRON_INVOKED_AS) console.log("THIS SPENDS: hours of model time and real register calls. See INSTALL.md §5 and §6.");
+    process.exit(0);
+  }
   if (!a.job && !a.codename) { console.error(usage); process.exit(2); }   // --resume alone rebuilds the job below
   // composition guards
   if (a.fromStage && !a.codename) { console.error("error: --from requires --resume <codename>"); process.exit(2); }

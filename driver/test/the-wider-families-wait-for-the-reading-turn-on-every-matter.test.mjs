@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 import { compileRegisterPlan, joinPlanToBands, deriveCoverageSkeleton, findUnexecutedCleanClaims,
   awaitsReadingTurn, guardParentQid } from "../register-plan.mjs";
 import { PROVIDER_CAPABILITIES } from "../register-capabilities.mjs";
+import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
@@ -167,10 +168,7 @@ test("the shipped manual carries the words the model reads, not only the config 
     // The decision after reading carries no crowd precondition: once the identical mark for the client's goods has been
     // read, the reading turn decides as a lawyer would whether it has enough. The owner's sentence (his 899),
     // character for character, and no fixed stop.
-    assert.ok(src.replace(/\s+/g, " ").includes("Once the identical mark for the client's goods has been read, decide as a lawyer would whether you have enough. "
-      + "Would more searching change what you tell the client: who could object, how weak the word is in this market, or what the client should do? "
-      + "If it would, widen one step, read, and decide again. If it would not, you are done. Write in one line why more searching would not change "
-      + "the advice, record which questions you did not ask and why, and move on. That is complete work."), `${f} does not carry the owner's stopping judgment`);
+    assert.ok(src.replace(/\s+/g, " ").includes(UNIT_SENTENCES.onceTheIdenticalMarkFor), `${f} does not carry the owner's stopping judgment`);
     assert.doesNotMatch(src, /stop widening|widen one step at a time/, `${f} still carries the fixed stop or the thin-list rule`);
   }
 });

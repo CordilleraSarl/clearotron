@@ -153,6 +153,7 @@ row that names a file this folder does not hold.
 | `compare.mjs` | by hand |
 | `composer-render-check.mjs` | CI |
 | `contract-dictation-scan.mjs` | by hand, `npm run contract-dictation` |
+| `count-manual-pins.mjs` | by hand |
 | `dead-names.mjs` | by hand, `npm run retired-settings` |
 | `demo-evidence.mjs` | CI |
 | `deprecate-below.mjs` | CI |

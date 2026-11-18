@@ -12,13 +12,13 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { COMMON_LAW_SENTENCES } from "./ruled-sentences-common-law.mjs";
 
 const manual = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-common-law", "SKILL.md"), "utf8")
   .replace(/\s+/g, " ");
 
 test("the web manual asks one grid call per mark and a follow-up only where it could change the advice", () => {
-  assert.ok(manual.includes("One grid call per mark, as dictated. Ask a targeted follow-up when its answer could change what you tell the client. "
-    + "The grid already searches each flagged element on the general web; judge its results."));
+  assert.ok(manual.includes(COMMON_LAW_SENTENCES.oneGridCallPerMark));
   for (const gone of ["calls: **5**", "Per workflow run total: **15**"])
     assert.ok(!manual.includes(gone), `the web manual still sets a call count: "${gone}"`);
 });
@@ -26,5 +26,5 @@ test("the web manual asks one grid call per mark and a follow-up only where it c
 test("the web manual names no price, and calls a shortfall a coverage one", () => {
   for (const gone of ["Budget rationale", "≈ $0.06", "API-key billed", "the budget/coverage is merely incomplete"])
     assert.ok(!manual.includes(gone), `the web manual still says "${gone}"`);
-  assert.ok(manual.includes("3. If Perplexity worked for some calls and coverage is merely incomplete: that is NOT a failure"));
+  assert.ok(manual.includes(COMMON_LAW_SENTENCES.perplexityWorkedForSomeCalls));
 });

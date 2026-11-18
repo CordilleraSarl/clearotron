@@ -23,12 +23,13 @@ import { compileRegisterPlan, awaitsReadingTurn } from "../register-plan.mjs";
 import { PROVIDER_CAPABILITIES } from "../register-capabilities.mjs";
 import { marketsFilingScriptOf, requiredScriptsFor, scriptQuestionsByMarket, SCRIPT_NOT_READ_REASON, SCRIPT_ALREADY_ASKED_REASON } from "../registration-scripts.mjs";
 import { isNonLatinTerm } from "../../providers/_shared/script-form.mjs";
+import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = (rel) => readFileSync(join(DRIVER, rel), "utf8");
 
 // The owner's sentence 3, word for word.
-const SENTENCE_3 = "Ask one script question per market the frame names. Where the register files foreign marks by their romanised form, and it says so, the Latin question already covers them; do not ask it again in other scripts. A word's meaning in another language is asked only where the frame says that market matters and buyers would read the word as the mark.";
+const SENTENCE_3 = UNIT_SENTENCES.askOneScriptQuestionPer;
 
 const KATAKANA = "ヴェルトリス", HAN = "维尔特里斯", HANGUL = "벨트리스", CYRILLIC = "Вельтрис", GREEK = "Βελτρις";
 const manifest = {

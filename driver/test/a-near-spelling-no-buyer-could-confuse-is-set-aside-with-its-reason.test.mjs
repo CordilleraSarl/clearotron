@@ -21,13 +21,15 @@ import { buildAuditMd, parseSpineFindingBlocks } from "../publish/audit-from-spi
 import { parseAudit } from "../publish/parse.mjs";
 import { buildAudit, searchRows } from "../publish/xlsx.mjs";
 import { findScreenGateViolations } from "../screen-gate.mjs";
+import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
+import { DIGEST_SENTENCES } from "./ruled-sentences-digest.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = (rel) => readFileSync(join(DRIVER, rel), "utf8");
 
 // The owner's sentence 2, word for word.
-const SENTENCE_2 = "The spelling band is asked as the machine writes it. What it returns is a pile like any other: look at how much, read what a buyer in this market could take for the mark by sound, by look or by meaning, carry only that, and record the rest as set aside with your reason. Where the mark's dominant element has a sound-alike root the machine did not write, ask for it.";
-const READER_SENTENCE = "The spelling band is read differently: carry a near spelling only where a buyer in this market could take it for the mark by sound, by look or by meaning, and record each other one as a drop on the ground `sign`, with your reason.";
+const SENTENCE_2 = UNIT_SENTENCES.theSpellingBandAskedThe;
+const READER_SENTENCE = DIGEST_SENTENCES.theSpellingBandReadDifferently;
 
 // The identical mark, carried; and a near spelling in the same class, live and in scope, set aside on its sign.
 const IDENTICAL = { record_id: "/mark/eu/018777001", mark_text: "VELTRIS", owner_name: "Quarvintex AG", owner_country: "CH",
@@ -58,8 +60,8 @@ test("sentence 2 is in the register unit's manual as written, and nothing there 
   const digest = read("skills/clearance-register/digest.md").replace(/\s+/g, " ");
   assert.ok(digest.includes(READER_SENTENCE), "the reader's sentence is not in digest.md");
   // The gate's two absolute sentences point at it, so the manual does not say field-irrelevance is the only drop.
-  assert.ok(digest.includes("genuine field-irrelevance (the goods/services are commercially unrelated), or a near spelling's sign (below);"));
-  assert.ok(digest.includes("drop only genuine field-irrelevance, or a near spelling on its sign (below)."));
+  assert.ok(digest.includes(DIGEST_SENTENCES.genuineFieldIrrelevanceTheGoods));
+  assert.ok(digest.includes(DIGEST_SENTENCES.dropOnlyGenuineFieldIrrelevance));
 });
 
 test("the digest's tool offers the sign ground the record accepts, and says what it means", () => {

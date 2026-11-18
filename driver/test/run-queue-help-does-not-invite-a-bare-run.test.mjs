@@ -3,8 +3,8 @@
 //
 // `clearotron run-queue --help` told its reader to run it with no arguments, and a bare `run-queue` drains the queue:
 // real register calls and hours of model time. The owner ruled the sentence dropped for `run-queue` with nothing in its
-// place. The verbs that share the dispatcher's help keep it word for word; `run` keeps it because its bare form prints a
-// usage line. Driven through the dispatcher in a temporary home; `--help` returns before anything is started.
+// place. The verbs that share the dispatcher's help keep it word for word. Driven through the dispatcher in a temporary
+// home; `--help` returns before anything is started.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
@@ -33,10 +33,15 @@ test("run-queue's help no longer invites a bare run, and still says it spends", 
   assert.match(out, /THIS SPENDS: hours of model time and real register calls\./);
 });
 
-test("the verbs that share the dispatcher's help keep it word for word, run's spend line included", () => {
-  for (const verb of ["run", "cancel", "brandowner", "framework", "project", "mcp"]) {
+test("the verbs that share the dispatcher's help keep it word for word", () => {
+  for (const verb of ["cancel", "brandowner", "framework", "project", "mcp"]) {
     const out = help(verb);
     assert.ok(out.includes(`its own. ${INVITE}`), `${verb} --help lost its line:\n${out}`);
   }
-  assert.match(help("run"), /THIS SPENDS: hours of model time and real register calls\./);
+});
+
+test("run answers --help with its own usage line and keeps the spend line", () => {
+  const out = help("run");
+  assert.match(out, /usage: clearotron run --job <file\.json> — runs one clearance from a job file\. An example job is examples\/job\.euipo\.json\./);
+  assert.match(out, /THIS SPENDS: hours of model time and real register calls\./, "run's help no longer says it spends");
 });

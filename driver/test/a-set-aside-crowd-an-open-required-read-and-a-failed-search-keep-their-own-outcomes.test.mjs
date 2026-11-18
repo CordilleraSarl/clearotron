@@ -26,15 +26,12 @@ import { coverageFormRows, coverageFormBrief, formLedgerRows } from "../coverage
 import { validateCoverageCall } from "../coverage-call.mjs";
 import { deriveCoverageStatus, coerceToolAbsenceDeferred } from "../coverage-ledger.mjs";
 import { STAGES } from "../stages.mjs";
+import { DIGEST_SENTENCES } from "./ruled-sentences-digest.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 const flat = (rel) => readFileSync(join(DRIVER, rel), "utf8").replace(/\s+/g, " ");
 
-const RULED = "An incomplete crowd descriptor is a count, not a finding or a clean search. Carry forward the recorded crowd "
-  + "decision. Where a narrowed list that was read answered the question, or the reading step validly set the crowd aside "
-  + "with its count and reason, apply the coverage form's withheld-by-judgment status: that is finished work. An unanswered "
-  + "slice that matters remains a material gap under the coverage rules. Never label an unenumerated crowd confirmed-clean "
-  + "merely because it is immaterial, or reopen a settled crowd merely because its descriptor remains in the evidence.";
+const RULED = DIGEST_SENTENCES.incompleteCrowdDescriptorCountNot;
 
 const AXIS = "primary-sweep";
 const GOODS = ["video games", "joysticks"];
@@ -70,8 +67,7 @@ test("the reading step's manual carries the ruled line, and keeps the identical 
   const manual = flat("skills/clearance-register/digest.md");
   assert.ok(manual.includes(`- ${RULED}`), "the ruled line is not in the manual word for word");
   assert.ok(!manual.includes("**cleared** (immaterial noise, `confirmed-clean`)"), "the old line that cleared an immaterial crowd is still there");
-  assert.ok(manual.includes("A crowd left by the identical mark's own narrowing is not this kind: one still a crowd after the last step, "
-    + "or in a country its market step did not read, is an unaccounted crowd block."), "the identical mark's residual-crowd rule is gone");
+  assert.ok(manual.includes(DIGEST_SENTENCES.crowdLeftTheIdenticalMark), "the identical mark's residual-crowd rule is gone");
 });
 
 test("each outcome has its own open row, and the message lists all three with what keeps each open", () => {

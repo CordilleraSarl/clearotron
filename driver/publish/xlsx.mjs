@@ -18,6 +18,7 @@
 // exceljs is loaded lazily so this delivery-only dep can never break the driver's import.
 
 import { BRAND, WORKBOOK_COLOURS as WB } from '../../shared/brand.mjs';
+import { meterEvidence } from './evidence-words.mjs';
 import { projectAssessmentField } from '../findings-model.mjs';
 import { inputsLine } from '../framework-method.mjs';
 import { deliveryVocabViolations } from '../predelivery-lint.mjs';
@@ -66,8 +67,16 @@ function plainNote(s) {
     .replace(/has_more\s*:?\s*false/gi, 'completion')
     .replace(/\bhas_more\b/gi, 'enumeration')
     .replace(/\s+/g, ' ')
-    .trim();
+    .trim()
+    // A note that opens with the ledger's state word opens with the report's instead (2026-11-18).
+    .replace(/^coverage-limited — /, 'Partially covered — ')
+    .replace(/^deferred — /, 'Not searched — ');
 }
+
+// A run stores its slice labels in the words of the build that wrote them, and both workbooks copy them into
+// cells. Every cell says "main register search", as the workbook's own words do (2026-11-18). Lower case
+// only, as readerWords: a capitalised word is a name and stays as written.
+const inCellWords = (v) => (typeof v === 'string' ? v.replace(/\bmain register sweep\b/g, 'main register search') : v);
 
 // a column is "empty" only when NO data row fills it. Dropping such a column honours the spec's
 // "no dead schema" by construction (a common-law-only run simply omits Class / Registration(s) rather
@@ -100,7 +109,7 @@ export function addSheet(wb, name, columns, rows, styleRow) {
   });
   hr.height = 26;
   for (const r of rows) {
-    const row = ws.addRow(r);
+    const row = ws.addRow(Object.fromEntries(Object.entries(r).map(([k, v]) => [k, inCellWords(v)])));
     row.alignment = { vertical: 'top', wrapText: true };
     // a styler gets the written row, its SOURCE data, and the surviving columns. Each states its own
     // precondition against `kept`, so a dropped column makes that one rule a no-op and leaves every
@@ -128,15 +137,12 @@ const regLabel = uri => { const c = uriCountry(uri); const n = uriNumber(uri); r
 // the four drivers keep their token but wear a PLAIN provenance tag: a value checked against the actual
 // register record or live listing reads "from source"; our own inference reads "our read". (This is the
 // verified/inferred basis already computed — relabelled, never recomputed.)
-// THE TAG FOLLOWS THE PAGE. An unknown value was never checked, whatever its basis says, so it reads "not checked",
-// the page's word, on every driver. Use carries no verification word for a value read from the record: the page
-// prints none there (owner, 2026-08-31), because its receipt join cannot reach the use surface. An inferred Use value
-// keeps "our read". The other drivers keep "from source" and "our read", which is what the legend below explains.
-const basisTag = (b, driver) => b === 'verified-from-record' ? (driver === 'use' ? '' : 'from source') : b === 'inferred-from-signal' ? 'our read' : '';
+// THE CELL SAYS WHAT THE PAGE SAYS: the token, and the meter's evidence in the report's own words
+// (evidence-words.mjs). An unknown value nobody checked reads "not checked" where the page has no word for it.
 export const meterCell = (m, driver) => {
   if (!m || !m.token) return '';
-  const tag = m.token === 'unknown' ? 'not checked' : basisTag(m.basis, driver);
-  return `${m.token}${tag ? ` · ${tag}` : ''}`;
+  const word = meterEvidence(driver, m) || (m.token === 'unknown' && driver !== 'mark_similarity' ? 'not checked' : '');
+  return `${m.token}${word ? ` · ${word}` : ''}`;
 };
 
 // disposition -> the plain "how we treated it" sentence.
@@ -403,7 +409,7 @@ export function searchRows(auditParsed, { findings = [], joinedTerms = null, reg
     // about what ran — only what this run's own search log does and does not hold.
     push({ 'Search term / variant': COMMON_LAW_SECTION, Scope: '', Result: '', Outcome: '', Note: '', _section: true });
     push({
-      'Search term / variant': "COMMON-LAW  —  not itemised in this run's search log",
+      'Search term / variant': "COMMON-LAW  —  not itemised in this search's search log",
       Scope: '', Result: 'no per-term rows recorded', Outcome: 'Not itemised',
       Note: 'This run is not recorded as a register-only search, so what this tab lists is not the whole of what it searched. Its search log holds no per-term common-law rows, so the sweep cannot be set out term by term here. Read this tab as an incomplete record of the searching — never as evidence that no common-law search ran — and check any common-law line on "Coverage & gaps" against the run\'s own common-law record.',
       _commonLawUnlogged: true,
@@ -517,7 +523,7 @@ export function summaryRows(findings, coverage, fm, { mark, coverageJudgment, ve
     // exist, because the same defect threw before writeFile, or it silently read as a complete
     // register-only search. Reproducing that byte-for-byte would be reproducing the defect.
     ...(commonLawUnlogged
-      ? [{ Field: '⚠  Common-law searching', Value: 'Not set out term by term in this workbook: this run\'s search log holds no per-term common-law rows, so "What was searched" lists the register terms only. Read that tab as an incomplete record of the searching, not as evidence that no common-law search ran, and check any common-law line on "Coverage & gaps" against the run\'s own common-law record.', _caveat: true }]
+      ? [{ Field: '⚠  Common-law searching', Value: 'Not set out term by term in this workbook: this search\'s search log holds no per-term common-law rows, so "What was searched" lists the register terms only. Read that tab as an incomplete record of the searching, not as evidence that no common-law search ran, and check any common-law line on "Coverage & gaps" against the run\'s own common-law record.', _caveat: true }]
       : []),
     // ONE report (spec 2026-07-30 §5): the machine-QC checks enumerate their failures HERE — the
     // workbook is where they live now, and they decide nothing about who may read the report. The old
@@ -563,7 +569,7 @@ export function summaryRows(findings, coverage, fm, { mark, coverageJudgment, ve
         ? 'every register search we ran, term by term. The common-law searching is NOT set out here — see the caveat above — so this tab is not the whole record of what was searched.'
         : 'every search we ran — register and common-law — so you can see we looked everywhere.' },
     { Field: '   Coverage & gaps', Value: 'what is fully cleared and what is still open — read this first if you have a doubt.' },
-    { Field: '   Evidence tags', Value: '“from source” = checked against the actual register record or live listing · “our read” = our own assessment.' },
+    { Field: '   Evidence tags', Value: "'verified' = checked against the register record we retrieved · 'not yet verified' = stated, but the record was not retrieved · 'inferred' = our own reading · 'not checked' = not checked" },
     { Field: '   Record retrieved?', Value: 'whether the register entry itself was retrieved; where a record could not be retrieved, its details are shown unverified.' },
   ];
   return rows;
@@ -597,7 +603,7 @@ function assessmentSummaryRows(ma) {
 function coverageJudgmentSummaryRows(cj) {
   const rows = Array.isArray(cj?.rows) ? cj.rows : [];
   if (!rows.length) return [];
-  return [{ Field: '', Value: '' }, { Field: 'Coverage judgment — slices considered', Value: '', _head: true },
+  return [{ Field: '', Value: '' }, { Field: 'How coverage was judged', Value: '', _head: true },
     ...rows.map((r) => ({ Field: `   ${plainNote(r.areaLabel || r.area)}`, Value: plainNote(r.note) }))];
 }
 function correctionsSummaryRows(c) {
@@ -905,15 +911,18 @@ export function validateAudit(wb, { findings = [], coverage = [], coverageJudgme
       if (/not retrieved/i.test(ret) && !/unverified/i.test(ret) && !/n\/a/i.test(ret) && !/read/i.test(ret)) {
         // "Not individually retrieved" is allowed; only a fetch-FAILURE must carry "unverified"
       }
-      // 5 — rated findings: each driver says how its value is evidenced, as the page does (context notes exempt). An
-      // unknown value reads "not checked"; a known Use value carries no "from source" (it may carry "our read"); a known
-      // value on the other three reads "from source" or "our read".
+      // 5 — rated findings: each driver says how its value is evidenced in the report's words, as the page does
+      // (context notes exempt). Similarity carries no evidence word; Use carries only "inferred" or "not checked"; the
+      // other two carry one of the four words or none; an unknown value nobody checked reads "not checked".
       if (!isCtx) {
+        const WORDS = { 'mark similarity': null, 'goods proximity': /^(?:verified|not yet verified|inferred|not checked)$/i,
+          use: /^(?:inferred|not checked)$/i, enforcer: /^(?:verified|not yet verified|inferred|not checked)$/i };
         for (const [cc, label] of [[cMs, 'mark similarity'], [cGp, 'goods proximity'], [cUse, 'use'], [cEnf, 'enforcer']]) {
           const t = cellText(cc);
-          if (/^unknown\b/i.test(t)) { if (!/ · not checked$/i.test(t)) v.push(`Findings "${mark}": ${label} driver is unknown but not tagged not checked (got "${t}")`); }
-          else if (label === 'use') { if (/from source|not checked/i.test(t)) v.push(`Findings "${mark}": use driver carries a verification word the report does not print (got "${t}")`); }
-          else if (!/ · (?:from source|our read)$/i.test(t)) v.push(`Findings "${mark}": ${label} driver not tagged from-source/our-read (got "${t}")`);
+          const word = t.includes(' · ') ? t.slice(t.lastIndexOf(' · ') + 3) : '';
+          if (label === 'mark similarity') { if (word) v.push(`Findings "${mark}": the similarity driver carries an evidence word the report does not print (got "${t}")`); }
+          else if (/^unknown\b/i.test(t) && !word) v.push(`Findings "${mark}": ${label} driver is unknown but says nothing about its evidence (got "${t}")`);
+          else if (word && !WORDS[label].test(word)) v.push(`Findings "${mark}": ${label} driver's evidence word is not the report's (got "${t}")`);
         }
       }
     }

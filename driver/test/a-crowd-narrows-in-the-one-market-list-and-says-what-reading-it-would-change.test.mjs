@@ -14,6 +14,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register");
 const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
@@ -23,9 +24,8 @@ test("a crowd's market step uses the one list, and a major the list does not nam
   assert.ok(skill.includes("When the in-scope sweep returns `incomplete` as a crowd, narrow it by the steps in *Read the identical mark first*: "
     + "their market step uses the one list your opening message names, and a major or material jurisdiction the list does not name is not asked "
     + "on its own; it stays in the crowd's count."));
-  assert.ok(unit.includes("When the worldwide question is a crowd, its market step uses the one list your opening message names; a major the list "
-    + "does not name is not asked on its own and stays in the crowd's count."));
-  assert.ok(unit.includes("The identical mark for the client's goods, still a crowd in a market on the one list your opening message names, is not done."));
+  assert.ok(unit.includes(UNIT_SENTENCES.whenTheWorldwideQuestionCrowd));
+  assert.ok(unit.includes(UNIT_SENTENCES.theIdenticalMarkForThe));
   assert.ok(recipes.includes("Their market step uses the one list your opening message names: "
     + "`register_enumerate name:<root> match=default nice_classes:<target> regions:[<market>]`"));
   assert.ok(recipes.includes("then one market at a time from the one list your opening message names:"));
@@ -39,9 +39,7 @@ test("a crowd's market step uses the one list, and a major the list does not nam
 });
 
 test("before narrowing a wider crowd, judgment writes what reading it would change, or sets it aside", () => {
-  const condition = "The same steps serve any other question that comes back as a crowd, when reading it would change what you tell the client. "
-    + "Before you narrow a wider crowd, write in the proposal what reading it would change. If you cannot, set it aside with its count and your "
-    + "reason. You need not take every step on every crowd.";
+  const condition = UNIT_SENTENCES.theSameStepsServeAny;
   for (const m of ["SKILL.md", "unit.md"]) assert.ok(flat(m).includes(condition), `${m} does not carry the condition sentence`);
 });
 

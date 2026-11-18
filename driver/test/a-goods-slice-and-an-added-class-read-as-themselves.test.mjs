@@ -50,7 +50,7 @@ test("a goods slice's unit names its goods words, in the client's table and in t
   // THE CONTROL: the identical question's label is today's, byte for byte.
   assert.equal(row(CORE.qid).unit, "primary-sweep / exact: VELTRIN [cl 41]");
   // The client's coverage table prints the reader label of the same unit.
-  assert.equal(coverageUnitLabel(row(goods.qid).unit), "main register sweep / exact: VELTRIN [cl 41] goods: entertainment");
+  assert.equal(coverageUnitLabel(row(goods.qid).unit), "main register search / exact: VELTRIN [cl 41] goods: entertainment");
   // The digest is shown the same unit, so it reads which slice is the goods one.
   const brief = coverageFormBrief(parseCoverageForm(JSON.stringify(buildCoverageForm(input))));
   const line = (qid) => brief.split("\n").find((l) => l.includes(row(qid).row_id)) ?? "";

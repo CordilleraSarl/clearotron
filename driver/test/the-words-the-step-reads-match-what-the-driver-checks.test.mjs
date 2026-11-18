@@ -18,6 +18,8 @@ import { buildBandShape, deriveRegisterPositions, CROWDED_GROUP_RECORDS, groupPa
 import { setAsideKeysOf, SET_ASIDE_ROW_CONTRACT, SET_ASIDE_GROUP_CONTRACT, PLACEMENT_FORM_PROVENANCE } from "../placement-form.mjs";
 import { unionPlacementForm } from "../placement-union.mjs";
 import { goodsWordCounter, goodsWordsMatched } from "../record-goods.mjs";
+import { VARIANTS_SENTENCES } from "./ruled-sentences-variants.mjs";
+import { INQUIRY_SENTENCES } from "./ruled-sentences-placement-inquiry.mjs";
 
 const MANUAL = readFileSync(new URL("../skills/placement-inquiry/SKILL.md", import.meta.url), "utf8");
 const DICTATION = driverSource("stages.mjs").split("\n").filter((l) => /EACH LINE THE SHAPE LISTS|ONE ROW PER GROUP/.test(l)).join("\n");
@@ -43,7 +45,7 @@ test("a crowd outside (a) stands on its first page and the count, and the shape,
   const refused = unionPlacementForm(null, { rows: [{ set_aside_group: "b", count: CROWDED_GROUP_RECORDS, ground: "identical in class, for printers" }] }, { ...input, served: { lines: new Set(), records: new Set() } });
   assert.match(refused.form.set_aside_group_refused[0].why, /^0 of the first 5 lines of group b were read: read the parts of band_shape that print them, before its row$/, "the refusal asks for the first page only");
   assert.ok(!refused.form.set_aside_group_refused[0].why.includes(groupPageCall("b")), "and asks no paging of a crowd");
-  assert.ok(MANUAL.includes("A crowd of a thousand or more outside (a) stands on its first page read and the count."));
+  assert.ok(MANUAL.includes(INQUIRY_SENTENCES.crowdThousandMoreOutsideStands));
   assert.ok(DICTATION.includes("a crowd of a thousand or more outside (a) stands on its first page read and the count"));
   assert.match(SET_ASIDE_GROUP_CONTRACT.when, /in a crowd of a thousand or more outside \(a\), it stands on the first page read and the count/);
 });
@@ -65,7 +67,7 @@ test("no sentence the step reads lets a name cover an owner's other marks", () =
     assert.doesNotMatch(text, /every record of that owner|owner's set|as a set and do not carry|several lines|more than one line/, `the ${where} still sets an owner's marks aside by one name`);
   assert.match(SET_ASIDE_ROW_CONTRACT.set_aside, /Another mark of the same owner needs its own fate\./);
   assert.ok(SET_ASIDE_ROW_CONTRACT.on.includes("The owner, its customers and its field are never a ground."));
-  assert.ok(MANUAL.includes("set aside by name with `on` set to status, territory, goods or mark"));
+  assert.ok(MANUAL.includes(INQUIRY_SENTENCES.setAsideNameWithSet));
   assert.ok(DICTATION.includes("A floor's set-aside gives its ground in \"on\": status, territory, goods or mark."));
   assert.match(MANUAL, /never an identical mark live in an ordered or frame-added class\. For each:/, "the out-of-scope section names the exception");
 });
@@ -118,7 +120,7 @@ test("the three places that ask for product words ask for whole words in the sin
   const VARIANTS = readFileSync(new URL("../skills/clearance-variants/SKILL.md", import.meta.url), "utf8");
   for (const [where, text] of [["recording tool", RECORDING], ["dictation", STAGES], ["variants manual", VARIANTS]]) {
     assert.doesNotMatch(text, /the stem that matches/, `the ${where} still asks for a stem`);
-    assert.ok(text.includes("in the singular; the engine matches the plural too"), `the ${where} does not ask for the singular`);
+    assert.ok(text.includes(VARIANTS_SENTENCES.theSingularTheEngineMatches), `the ${where} does not ask for the singular`);
   }
 });
 
@@ -128,7 +130,7 @@ test("no part banner or role text orders a whole read, and the manual's identica
   assert.doesNotMatch(SERVER, /COMPLETE only once|is complete once parts/, "a record's banner still orders a whole read");
   assert.ok(SERVER.includes("This record is served in ${total} parts; the next part continues it."));
   assert.doesNotMatch(SHAPE_SRC, /reads THIS whole/);
-  assert.ok(MANUAL.includes("A floor is a live identical or mechanically near-identical mark in an ordered or added class. Compare each floor's mark with the client's mark, and its registered goods with the client's particular goods. Place the floor when a conflict is plausible or the evidence leaves the question open. Otherwise set it aside, with the reason and the evidence. A shared class, or a match to a searched variant, is not on its own a reason to place a floor. Missing or incomplete goods, thin use, a small owner and possible revocation are never reasons to set a floor aside. A floor never takes out-of-scope-filtered."));
+  assert.ok(MANUAL.includes(INQUIRY_SENTENCES.floorLiveIdenticalMechanicallyNear));
   assert.doesNotMatch(MANUAL, /is placed, sheet 2 at the least, unless it is set aside by name on its status or territory/, "the compulsory-retention line still stands beside the amendment");
   assert.doesNotMatch(MANUAL, /is never out-of-scope-filtered: sheet 2 at the least\./, "the old line 172 still stands beside the by-name rule");
 });
