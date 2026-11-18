@@ -4623,6 +4623,12 @@
           "skips": 2,
           "todos": 0
         },
+        "every-setting-read-in-code-has-a-row-in-the-configuration-reference.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 1,
+          "todos": 0
+        },
         "every-surface-that-takes-the-manifest-asks-for-the-goods-words.test.mjs": {
           "tests": 10,
           "asserts": 23,

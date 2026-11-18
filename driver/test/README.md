@@ -56,7 +56,7 @@ Five tree-scanning tests run in the fast tier and fail on content anywhere in th
 Each carries something that reddens when the sweep stops looking — a planted hit, a corpus floor, or an allow-listed
 file that must still match — and the identity guards print which mode they ran in, because a sweep that found
 nothing and one that never looked look alike. `vendor-as-architecture.test.mjs` (publishable markdown) and
-`env-governance.test.mjs` (`process.env` reads in code) scan tree-wide but scoped, so are not counted here.
+`every-setting-read-in-code-has-a-row-in-the-configuration-reference.test.mjs` (`process.env` reads in code) scan tree-wide but scoped, so are not counted here.
 
 - `no-client-identifiers.test.mjs` — no client identity in the product repo. Identifiers with a shape get a positive
   allowlist of the reserved synthetic forms; customer and mark names have no shape, so those are a blocklist loaded

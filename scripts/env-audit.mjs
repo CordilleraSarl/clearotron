@@ -15,8 +15,8 @@
 // written, and the surface has grown the whole time.
 //
 // A rule with no mechanism is not a weak rule, it is a rule that has stopped existing. This is the
-// mechanism half: it enumerates, it classifies, and `driver/test/env-governance.test.mjs` ratchets on
-// its output.
+// mechanism half: it enumerates, it classifies, and
+// `driver/test/every-setting-read-in-code-has-a-row-in-the-configuration-reference.test.mjs` ratchets on its output.
 //
 // ── THE CLASSIFICATION IS THE WHOLE VALUE ────────────────────────────────────────────────────────
 //
@@ -336,7 +336,8 @@ export function isProductFile(rel) {
  * The corpus is what git tracks — a walk would sweep build output and a contributor's scratch files
  * into a register an operator is supposed to read. Off a checkout there is nothing honest to
  * enumerate, so this returns null, shared/tracked-files.mjs says so by name in the log, and the
- * callers decide: the ratchet in driver/test/env-governance.test.mjs skips, and the CLI below
+ * callers decide: the ratchet in
+ * driver/test/every-setting-read-in-code-has-a-row-in-the-configuration-reference.test.mjs skips, and the CLI below
  * refuses. Neither reports an empty audit as a clean one.
  */
 /**
@@ -469,7 +470,9 @@ export function auditEnv(root = ROOT) {
     }
   }
 
-  // Documented = named anywhere in either governance document, ON A NAME BOUNDARY.
+  // Documented = named anywhere in the configuration reference, ON A NAME BOUNDARY. That page is the one a
+  // reader looking up a setting is sent to, so it is the catalogue; 05 is the governance view of the same
+  // names, and a name it alone carries is a name the reader does not find.
   //
   // Not a table parse — the register is prose with tables in it, and a stricter parser would report a
   // documented var as UNdocumented, which is the direction that gets a check switched off. But not a
@@ -478,7 +481,7 @@ export function auditEnv(root = ROOT) {
   // as system-owned, every `PORTAL_*`. A bare `includes` marks the SHORTER name documented the moment
   // the longer one is written down — the false-DOCUMENTED direction, which hides a real gap instead of
   // inventing a fake one.
-  const docs = ["docs/architecture/05-config-governance.md", "docs/architecture/04-configuration-reference.md"]
+  const docs = ["docs/architecture/04-configuration-reference.md"]
     .map((p) => (existsSync(join(root, p)) ? readFileSync(join(root, p), "utf8") : ""));
   // step 2 — THE CATALOGUE IS A SET OF FILES, NOT ONE FILE.
   //
@@ -489,8 +492,7 @@ export function auditEnv(root = ROOT) {
   //
   // What the ratchet MEANS is that every product variable is written down where a reader can find it.
   // That meaning is preserved by reading the whole catalogue rather than one member of it. What it must
-  // NOT become is weaker: a name with a row in NEITHER file still fails, and that is planted both ways
-  // in driver/test/env-governance.test.mjs.
+  // NOT become is weaker: a name with a row in NEITHER file still fails.
   const example = [...CATALOGUE_FILES]
     .filter((f) => !f.endsWith(".json") && !f.endsWith(".txt"))   // the inventories are contracts, not catalogues of rows
     .map((f) => (existsSync(join(root, f)) ? readFileSync(join(root, f), "utf8") : ""))
