@@ -253,18 +253,36 @@ export const PALETTE_DARK = {
   codeBg:     'rgba(236,229,216,.08)',// parchment at 8%
 };
 
-// — THE COLOURS OUTSIDE THE RAMP, NAMED FOR WHERE THEY ARE USED TODAY. The emails and the audit workbook
-// each drew with their own literals, so a re-skin that edited this file still missed them. Their values
-// are unchanged here: the email tiers are an Office traffic light ("minimal" is blue), not the report's
-// ramp. Bringing them onto the ramp is a visible change, made after this move and shown before it ships.
+// — THE RISK RAMP, ONE SOURCE FOR EVERY SURFACE. Five stops, lowest first, keyed as the report's tokens are
+// (--clear … --severe). The report's tokens below read these, and so do the emails, the staff index and the
+// audit workbook, which each used to draw bands in a palette of their own (2026-11-18). A band's TONE picks
+// its stop: minimal → clear, low → low, medium → med, high → high, severe → severe.
+export const BAND_BY_TONE = Object.freeze({ minimal: 'clear', low: 'low', medium: 'med', high: 'high', severe: 'severe' });
+export const BAND_RAMP = Object.freeze({ clear: '#5F8A64', low: '#8A9440', med: '#C8871B', high: '#B23A2E', severe: '#7C1E15' });
+export const BAND_RAMP_DARK = Object.freeze({ clear: '#7EA382', low: '#A8B25A', med: '#DDA13E', high: '#CA594E', severe: '#A22D22' });
+// The text on a band's fill, chosen per stop for contrast, light and dark.
+export const BAND_ON = Object.freeze({ clear: PALETTE.ink, low: PALETTE.ink, med: PALETTE.ink, high: '#fff', severe: '#fff' });
+export const BAND_ON_DARK = Object.freeze({ clear: PALETTE.ink, low: PALETTE.ink, med: PALETTE.ink, high: PALETTE.ink, severe: '#fff' });
+// The soft fill a chip sits on and the text on it, derived from the bases by the rule in
+// shared/tools/derive-band-pairs.mjs.
+export const BAND_SOFT = Object.freeze({ clear: '#E0E8E1', med: '#F4E8D4', high: '#F1DAD8' });
+export const BAND_SOFT_TEXT = Object.freeze({ clear: '#38553B', med: '#82550A', high: '#742018' });
+// A band's word as coloured text on white, as the emails print it: the base itself where it reads 4.5:1 on
+// white, and otherwise its darker text value by the same rule. Darkening every stop would print High and
+// Very High in one dark red.
+export const BAND_TEXT = Object.freeze({ clear: '#38553B', low: '#5E6527', med: '#82550A', high: '#B23A2E', severe: '#7C1E15' });
 
-/** The email risk tiers: the cell fill, the text on it, and a readable text colour for a risk phrase. */
+// — THE EMAILS' AND THE WORKBOOK'S OTHER COLOURS, NAMED FOR WHERE THEY ARE USED. Each surface drew with its own
+// literals, so a re-skin that edited this file still missed them.
+
+/** The email risk tiers, on the report's ramp: the cell fill, the text on it, and the band's word as text. */
+const emailTier = (stop) => Object.freeze({ bg: BAND_RAMP[stop], fg: BAND_ON[stop], txt: BAND_TEXT[stop] });
 export const EMAIL_TIER = Object.freeze({
-  veryHigh:   Object.freeze({ bg: '#ff0000', fg: '#fff', txt: '#d10000' }),
-  high:       Object.freeze({ bg: '#ED7D31', fg: '#fff', txt: '#c75b13' }),
-  medium:     Object.freeze({ bg: '#ffff00', fg: '#000', txt: '#9a8400' }),
-  manageable: Object.freeze({ bg: '#70AD47', fg: '#fff', txt: '#4e7a31' }),
-  low:        Object.freeze({ bg: '#4472C4', fg: '#fff', txt: '#2f55a4' }),
+  veryHigh:   emailTier('severe'),
+  high:       emailTier('high'),
+  medium:     emailTier('med'),
+  manageable: emailTier('low'),
+  low:        emailTier('clear'),
   unrated:    Object.freeze({ bg: '#bfbfbf', fg: '#000', txt: '#555' }),
 });
 
@@ -286,9 +304,11 @@ export const WORKBOOK_COLOURS = Object.freeze({
   headerText:   'FFFFFFFF',
   link:         'FF0563C1',
   sectionFill:  'FFEDEDED',
-  stateClean:   'DEF0DC',
-  stateLimited: 'FBE7C6',
-  stateOpen:    'FBE7C6',
+  // The coverage states take the report's own: a clean search on the clear stop's soft fill, a limited or
+  // open one on the medium stop's, as the report colours its coverage cells.
+  stateClean:   BAND_SOFT.clear.slice(1),
+  stateLimited: BAND_SOFT.med.slice(1),
+  stateOpen:    BAND_SOFT.med.slice(1),
   stateNote:    'EDEDED',
 });
 
@@ -447,7 +467,9 @@ const D = PALETTE_DARK;
 export const WARM_ROOT =
   `:root{--bg:${P.cream};--card:${P.cardWarm};--ink:${P.ink};--muted:${P.muted};--line:${P.line};` +
   `--crimson:${P.crimson};--crimson-deep:${P.crimsonDeep};--crimson-mid:${P.crimsonMid};--accent:${P.crimson};` +
-  `--h-green:${P.sage};--h-amber:${P.ochre};--h-red:${P.crimson};--h-grey:${P.warmGrey}}`;
+  `--h-green:${P.sage};--h-amber:${P.ochre};--h-red:${P.crimson};--h-grey:${P.warmGrey};` +
+  // The risk ramp and the text on each stop, for the staff index's band pills (2026-11-18).
+  Object.keys(BAND_RAMP).map((k) => `--${k}:${BAND_RAMP[k]};--${k}-on:${BAND_ON[k]};`).join('') + `}`;
 
 // :root for the clearance report (templates/report.css). Shared brand colours come from PALETTE;
 // report-specific values (risk scale, soft pairs, neutrals, shadow, mono) are literals. Kept in
@@ -465,10 +487,10 @@ export const REPORT_ROOT =
   // of its own: --high is deliberately NOT --accent any more (the shipped --high was byte-identical to
   // #860F09, so a High risk dot read as a Start button and needed a ring workaround). --accent /
   // --crimson / --maroon above are untouched. The gauge's stop order is clear→low→med→high→severe.
-  `--clear:#5F8A64; --low:#8A9440; --med:#C8871B; --high:#B23A2E; --severe:#7C1E15;` +
+  `--clear:${BAND_RAMP.clear}; --low:${BAND_RAMP.low}; --med:${BAND_RAMP.med}; --high:${BAND_RAMP.high}; --severe:${BAND_RAMP.severe};` +
   // Soft/text pairs: re-derived from the five bases by the rule in shared/tools/derive-band-pairs.mjs (same
   // hue, soft at L .895 / S×.78, text at L .275 / S×1.12). Every pair clears WCAG AA on its own chip.
-  `--med-soft:#F4E8D4; --med-tx:#82550A; --clear-soft:#E0E8E1; --clear-tx:#38553B; --high-soft:#F1DAD8; --high-tx:#742018;` +
+  `--med-soft:${BAND_SOFT.med}; --med-tx:${BAND_SOFT_TEXT.med}; --clear-soft:${BAND_SOFT.clear}; --clear-tx:${BAND_SOFT_TEXT.clear}; --high-soft:${BAND_SOFT.high}; --high-tx:${BAND_SOFT_TEXT.high};` +
   `--taupe:#A99A82;` +
   // The mark-itself disclosure toggles. A DEDICATED token: --crimson has no dark variant, and
   // reusing it left the toggles barely legible on the dark ground.
@@ -512,7 +534,8 @@ const darkBlock = (tokens, rules, { auto = true } = {}) => {
 const WARM_DARK_TOKENS =
   `color-scheme:dark;--bg:${D.ground};--card:${D.cardWarm};--ink:${D.ink};--muted:${D.muted};--line:${D.line};` +
   `--crimson:${P.crimson};--crimson-deep:${D.crimsonDeep};--crimson-mid:${D.crimsonMid};--accent:${P.crimson};` +
-  `--h-green:#6f9463;--h-amber:#d6a24a;--h-red:${P.crimson};--h-grey:#9a8c7a;--web-glow:rgba(94,7,14,.5);--surface-high:#25201b`;
+  `--h-green:#6f9463;--h-amber:#d6a24a;--h-red:${P.crimson};--h-grey:#9a8c7a;--web-glow:rgba(94,7,14,.5);--surface-high:#25201b;` +
+  Object.keys(BAND_RAMP_DARK).map((k) => `--${k}:${BAND_RAMP_DARK[k]};--${k}-on:${BAND_ON_DARK[k]}`).join(';');
 
 // Scoped warm-surface overrides — a SUPERSET across the warm pages (like WARM_ROOT itself): crimson-TEXT
 // recolors + the hardcoded light-background islands (#fff/#efe6d8/#faf5ec chips, tracks, forms) that would
@@ -552,7 +575,7 @@ const REPORT_DARK_TOKENS =
   `--line:#322c24;--line2:#3d362c;` +
   `--crimson:${P.crimson};--maroon:${D.crimsonDeep};--rose:${D.crimsonMid};--rose2:#cf8681;--tan:#c8b89a;--mark:${D.ink};` +
   `--crimson-deep:${D.crimsonDeep};--crimson-mid:${D.crimsonMid};` +
-  `--clear:#7EA382;--low:#A8B25A;--med:#DDA13E;--high:#CA594E;--severe:#A22D22;` +
+  `--clear:${BAND_RAMP_DARK.clear};--low:${BAND_RAMP_DARK.low};--med:${BAND_RAMP_DARK.med};--high:${BAND_RAMP_DARK.high};--severe:${BAND_RAMP_DARK.severe};` +
   `--med-soft:#352915;--med-tx:#E4BF81;--clear-soft:#212922;--clear-tx:#A7BEA9;--high-soft:#311B19;--high-tx:#D8938D;` +
   `--taupe:#8f8570;` +
   `--ma-toggle:#E8A87C;` +
