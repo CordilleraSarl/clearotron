@@ -281,7 +281,15 @@ const MEASURE = `(async () => {
     if (!b) return null;
     const cs = getComputedStyle(b);
     const lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.4;
-    return { text: (b.textContent || '').trim(), lines: Math.max(1, Math.round(b.getBoundingClientRect().height / lh)) };
+    // THE TAGS UNDER THE NAME: what they read, what they say on hover, and where they sit. They belong on a
+    // line of their own below the name and inside the Name cell, wrapping there rather than widening it.
+    const tagLine = td.querySelector('.level-tags');
+    const tags = tagLine ? [...tagLine.querySelectorAll('.pill')].map(p => ({ text: (p.textContent || '').trim(), title: p.getAttribute('title') || '' })) : [];
+    const nb = b.getBoundingClientRect(), tb = tagLine ? tagLine.getBoundingClientRect() : null, cb = td.getBoundingClientRect();
+    return {
+      text: (b.textContent || '').trim(), lines: Math.max(1, Math.round(nb.height / lh)),
+      tags, tagsBelowName: tb ? tb.top >= nb.bottom - 1 : null, tagsInsideCell: tb ? tb.left >= cb.left - 1 && tb.right <= cb.right + 1 : null,
+    };
   }).filter(Boolean);
 
   // Header widths as a share of the table, so a regression reads as "Status is 47% again".
@@ -545,6 +553,55 @@ const ROW_OPENS = `(async () => {
   return { path: location.pathname };
 })()`
 const rowOpens = await value(ROW_OPENS)
+await reload()
+
+// — THE LEVEL FILTER, pressed as a reader presses it. It narrows the SEARCHES before they are grouped into
+// names, so a name keeps only its searches of that kind and speaks for them alone. VENZY's knockout came back
+// Medium and its later preliminary Manageable: under All the row shows Manageable, under KO it must show
+// Medium, and it must never show the preliminary's risk beside a KO filter.
+const LEVEL = `(async () => {
+  const group = document.querySelector('[role="group"][aria-label="Filter by search"]');
+  if (!group) return { fatal: 'no "Filter by search" group on the page' };
+  const heads = [...document.querySelectorAll('table.data thead th')].map(th => (th.textContent || '').trim());
+  const riskIdx = heads.findIndex(h => /^RISK/i.test(h));
+  const rowsNow = () => [...document.querySelectorAll('table.data tbody tr.row')].map(tr => {
+    const b = tr.querySelector('b');
+    return {
+      name: b ? (b.textContent || '').trim() : '',
+      tags: [...tr.querySelectorAll('.level-tags .pill')].map(p => (p.textContent || '').trim()),
+      risk: riskIdx >= 0 && tr.children[riskIdx] ? (tr.children[riskIdx].textContent || '').trim() : null,
+    };
+  });
+  const empty = () => /No clearances match this view/.test(document.querySelector('table.data tbody')?.textContent || '');
+  const buttons = () => [...group.querySelectorAll('button')].map(x => ({ text: (x.textContent || '').trim(), title: x.getAttribute('title') || '', pressed: x.getAttribute('aria-pressed') === 'true' }));
+  // Every group opened after each press, so the names inside one are on screen to be read: AQUAMAX sits in a
+  // group, and a check that read only the group's own row would pass whatever the filter did to it.
+  const openAll = async () => {
+    for (let pass = 0; pass < 3; pass++) {
+      const shut = [...document.querySelectorAll('table.data button.twisty[aria-expanded="false"]')];
+      if (!shut.length) break;
+      for (const t of shut) { t.click(); await new Promise(r => setTimeout(r, 60)); }
+      await new Promise(r => setTimeout(r, 250));
+    }
+  };
+  const press = async (label) => {
+    const btn = [...group.querySelectorAll('button')].find(x => (x.textContent || '').trim() === label);
+    if (!btn) return false;
+    btn.click();
+    await new Promise(r => setTimeout(r, 300));
+    await openAll();
+    return true;
+  };
+  const before = buttons();
+  const pressedKo = await press('KO');
+  const ko = { rows: rowsNow(), empty: empty(), buttons: buttons() };
+  const pressedFull = await press('Full');
+  const full = { rows: rowsNow(), empty: empty() };
+  const pressedAll = await press('All');
+  const all = { rows: rowsNow(), empty: empty(), buttons: buttons() };
+  return { riskIdx, before, pressed: pressedKo && pressedFull && pressedAll, ko, full, all };
+})()`
+const levels = await value(LEVEL)
 await reload()
 
 // — THE WIDE PASS: the same page at a desktop width, where Ask AI sits beside Open instead of under it.
@@ -917,6 +974,44 @@ for (const n of short.nameLines ?? []) {
   // two facts in one cell and is allowed a second line; the drift-probe name is deliberately absurd.
   if (/\+\d+ more$/.test(n.text) || n.text.length > 34) continue
   ok(n.lines === 1, `the Name cell wraps at ${WIDTH}px for a single mark of ordinary length: ${JSON.stringify(n.text)} took ${n.lines} lines`)
+}
+// — THE TAGS UNDER EACH NAME. One per kind of search behind the name, each kind once, always in the order
+// KO, Prelim, Multi, Full, with the search's full name on hover. The fixture's own searches decide what each
+// name must read: VENZY has a knockout and a preliminary, AQUAPLUS adds a queued multi-country search, and
+// AQUAMAX has one full country search. On a line of their own under the name, inside the Name cell.
+const TAGS_EXPECTED = {
+  VENZY: [['KO', 'Knockout search'], ['Prelim', 'Global preliminary search']],
+  AQUAPLUS: [['KO', 'Knockout search'], ['Prelim', 'Global preliminary search'], ['Multi', 'Multi-country focus search']],
+  AQUAMAX: [['Full', 'Full country search']],
+}
+for (const [name, want] of Object.entries(TAGS_EXPECTED)) {
+  const row = (short.nameLines ?? []).find((n) => n.text === name)
+  ok(row, `the name ${name} is not on the list at ${WIDTH}px, so its tags could not be read`)
+  if (!row) continue
+  ok(JSON.stringify(row.tags.map((g) => [g.text, g.title])) === JSON.stringify(want),
+    `${name} carries the tags ${JSON.stringify(row.tags)} at ${WIDTH}px, not ${JSON.stringify(want)}`)
+  ok(row.tagsBelowName === true, `${name}'s tags share the name's line at ${WIDTH}px rather than sitting under it`)
+  ok(row.tagsInsideCell === true, `${name}'s tags run out of the Name cell at ${WIDTH}px`)
+}
+ok(levels && !levels.fatal, `the level filter could not be driven: ${levels?.fatal ?? 'no answer from the page'}`)
+if (levels && !levels.fatal) {
+  ok(JSON.stringify(levels.before.map((x) => [x.text, x.title])) === JSON.stringify([['All', ''], ['KO', 'Knockout search'], ['Prelim', 'Global preliminary search'], ['Multi', 'Multi-country focus search'], ['Full', 'Full country search']]),
+    `the level filter reads ${JSON.stringify(levels.before)}, not All, KO, Prelim, Multi, Full with each search's full name on hover`)
+  ok(levels.before[0]?.pressed === true && levels.before.filter((x) => x.pressed).length === 1, `on arrival the level filter does not have All alone pressed: ${JSON.stringify(levels.before)}`)
+  ok(levels.pressed && levels.riskIdx >= 0, `the level filter's buttons or the Risk column could not be found (risk column ${levels.riskIdx})`)
+  const byName = (rows, n) => rows.find((r) => r.name === n)
+  // Under KO: only knockouts are left, VENZY speaks for its knockout, and the full search's name is gone.
+  ok(levels.ko.buttons.filter((x) => x.pressed).map((x) => x.text).join() === 'KO', `under KO the pressed buttons are ${JSON.stringify(levels.ko.buttons)}`)
+  ok(levels.ko.rows.every((r) => !r.tags.length || r.tags.join() === 'KO'), `under KO a row carries another kind's tag: ${JSON.stringify(levels.ko.rows)}`)
+  ok(/Medium/.test(byName(levels.ko.rows, 'VENZY')?.risk ?? '') && !/Manageable/.test(byName(levels.ko.rows, 'VENZY')?.risk ?? ''),
+    `under KO VENZY shows ${JSON.stringify(byName(levels.ko.rows, 'VENZY'))}, not its knockout's Medium`)
+  ok(!byName(levels.ko.rows, 'AQUAMAX'), 'under KO a name with no knockout is still on the list')
+  ok(!levels.ko.empty, 'under KO the list is empty, though the fixture holds knockouts')
+  // Under Full: the one full country search, and nothing that has none.
+  ok(byName(levels.full.rows, 'AQUAMAX') && !byName(levels.full.rows, 'VENZY'), `under Full the names are ${JSON.stringify(levels.full.rows.map((r) => r.name))}`)
+  // Back under All: the latest search speaks for the name again.
+  ok(/Manageable/.test(byName(levels.all.rows, 'VENZY')?.risk ?? ''), `back under All VENZY shows ${JSON.stringify(byName(levels.all.rows, 'VENZY'))}, not its latest search's Manageable`)
+  ok(levels.all.buttons[0]?.pressed === true, 'pressing All does not press it')
 }
 ok(short.overflowsX === narrow,
   narrow

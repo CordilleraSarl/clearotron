@@ -1,0 +1,25 @@
+{
+  "_generated": "by scripts/mint-search-level-tags.mjs from driver/search-policy.mjs PRODUCT_POLICIES — do not edit; re-mint",
+  "levels": [
+    {
+      "product": "knockout-search",
+      "tag": "KO",
+      "name": "Knockout search"
+    },
+    {
+      "product": "global-preliminary-search",
+      "tag": "Prelim",
+      "name": "Global preliminary search"
+    },
+    {
+      "product": "multi-country-focus-search",
+      "tag": "Multi",
+      "name": "Multi-country focus search"
+    },
+    {
+      "product": "full-country-search",
+      "tag": "Full",
+      "name": "Full country search"
+    }
+  ]
+}

@@ -55,6 +55,7 @@ import { allowanceLine } from '../contract/allowance.ts'
 import { runProductLabel } from '../contract/home.ts'
 import { AskAi } from '../components/AskAi.tsx'
 import { askAiOffer } from '../contract/askAi.ts'
+import { SEARCH_LEVELS, atLevel, levelsOf, type LevelFilter, type SearchLevel } from '../contract/levelTags.ts'
 
 // criterion 5 — 'failed' is a tab, not a member of the other three. The owner's ruling was
 // "Failed runs on clearance screen - no", and a tab is how a screen says no to something without
@@ -135,6 +136,9 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
     setTableWidth(el.clientWidth)
   }, [])
   const [filter, setFilter] = useState<Filter>('all')
+  // WHICH KIND OF SEARCH, beside the status filter and on the same terms: it narrows the SEARCHES, so a name
+  // with none of that kind drops out and a name that keeps some speaks for those alone (contract/levelTags.ts).
+  const [level, setLevel] = useState<LevelFilter>('all')
   const [sort, setSort] = useState<{ key: SortKey; desc: boolean }>({ key: 'date', desc: true })
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState<ReadonlySet<string>>(new Set())
@@ -306,6 +310,10 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
       // bug this line was written to close.
       if (filter === 'finished' && !TERMINAL.has(r.state)) return false
       if (filter === 'progress' && TERMINAL.has(r.state)) return false
+      // A LEVEL IS A PROPERTY OF A SEARCH, like "In progress", so it filters here, before grouping. Under KO,
+      // a name with a knockout and a later full country search keeps only the knockout: its row shows the
+      // knockout's result and opens the knockout's report, never the other search's risk under a KO filter.
+      if (!atLevel(r, level)) return false
       if (q && !displayName(r).toLowerCase().includes(q) && !r.marks.some((m) => m.name.toLowerCase().includes(q))) return false
       return true
     })
@@ -351,7 +359,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
           return -dir * newestFirst(a, b)
       }
     })
-  }, [runs, filter, query, sort, grouped, families])
+  }, [runs, filter, level, query, sort, grouped, families])
 
   // Paging and cross-owner disambiguation are decided in contract/listView.ts, where they can be
   // tested — this screen has no DOM harness, so logic left inline here is logic nothing checks.
@@ -604,6 +612,36 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
           ))}
         </div>
 
+        {/* WHICH KIND OF SEARCH. Its buttons and their hover text come from the registry's own list, in its
+            order, so a product cannot be sold without a button here. It stays on screen when nothing matches,
+            like the company chips and the status filter, so the way out of an empty view is where it was. */}
+        <div className="segmented" role="group" aria-label="Filter by search">
+          <button
+            type="button"
+            aria-pressed={level === 'all'}
+            onClick={() => {
+              setLevel('all')
+              resetPage()
+            }}
+          >
+            All
+          </button>
+          {SEARCH_LEVELS.map((l) => (
+            <button
+              key={l.product}
+              type="button"
+              aria-pressed={level === l.product}
+              title={l.name}
+              onClick={() => {
+                setLevel(l.product)
+                resetPage()
+              }}
+            >
+              {l.tag}
+            </button>
+          ))}
+        </div>
+
         {/* NO COMPANY SELECT HERE. It lived in this toolbar beside an identical sidebar switcher —
             two controls for one decision, and the reader had no way to tell which was live. The nav
             switcher is the one, and it now scopes this list (see ownerFilter above). */}
@@ -772,7 +810,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
             {!visible.length ? (
               <tr>
                 <td colSpan={(canGroup ? 7 : 6) + (showOwnerColumn ? 1 : 0)} style={{ padding: '22px 12px', color: 'var(--text-muted)' }}>
-                  No clearances match this view. Pick another company above, or widen the status filter.
+                  No clearances match this view. Pick another company above, or widen the filters.
                 </td>
               </tr>
             ) : null}
@@ -1166,6 +1204,8 @@ function FamilyRows({
               group row that is not obvious from looking at it, and "worst of 2" said it without saying
               worst of WHAT. */}
           <span className="sub">{GROUP_RISK_LINE}</span>
+          {/* NO TAGS ON A GROUP. Tags go under a NAME, and a group is several names: each one inside it carries
+              its own when the group is opened, and the risk line stays the last thing in this cell. */}
         </td>
         {/* found this: the family row still carried the Stages cell after deleted that column,
             so it had one cell MORE than the table had columns. The browser check never saw it — the
@@ -1236,6 +1276,24 @@ function FamilyRows({
           ))
         : null}
     </>
+  )
+}
+
+/**
+ * The tags under a name: one small pill per kind of search among the row's searches, in the registry's order,
+ * each with its search's full name as hover text. On a line of its own under the name, quieter than it, and
+ * wrapping inside the Name cell at every width. Nothing at all for a row whose searches carry no tag.
+ */
+function LevelTags({ levels }: { readonly levels: readonly SearchLevel[] }) {
+  if (!levels.length) return null
+  return (
+    <div className="level-tags">
+      {levels.map((l) => (
+        <span key={l.product} className="pill" title={l.name}>
+          {l.tag}
+        </span>
+      ))}
+    </div>
   )
 }
 
@@ -1338,6 +1396,7 @@ function MarkRow({
               communicate, repeated rather than fixed. Making the header read as a header is the fix.
               Grouping OFF is a separate case, and it needs the owner on every row rather than on the ones
               that happen to collide — which is the column below, not a chip. */}
+          <LevelTags levels={levelsOf(mark.reads)} />
         </td>
         {/* — UNGROUPED, THE OWNER LIVES HERE. The information has to survive the toggle, and a
             column survives it in the grid  built rather than as a chip crowding the Name cell. */}

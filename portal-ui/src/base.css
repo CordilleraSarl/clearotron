@@ -1035,6 +1035,15 @@ button.row-menu-item {
   color: var(--text-muted);
 }
 
+/* The Clearances list's tags under a name: one small pill per kind of search behind it, on a line of their
+   own so they never crowd the name, wrapping inside the Name cell at every width. */
+.level-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 5px;
+}
+
 /* The larger pill, for a control that is a card's closing action rather than a label — and an anchor
    drawn as one, which is what opening a document in a new tab is. */
 .pill-lg {
