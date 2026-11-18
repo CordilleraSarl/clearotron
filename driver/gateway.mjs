@@ -401,6 +401,11 @@ export function toolGauge(turn) {
     // ms from spawn to the engine's first output, on both engines; null when it never spoke or cannot report. With
     // `toolWaitMs` and `activeMs` it splits a turn into start-up, tool wait and work. RECORDING ONLY.
     firstByteMs: n(turn?.firstByteMs),
+    // The first call's cache read and write in tokens, where the engine reports them (Claude), and how many times the turn
+    // searched for a tool to load (`ToolSearch`), read off its own per-name counts. null where the engine cannot say.
+    firstCallCache: turn?.firstCallCache && Number.isFinite(turn.firstCallCache.read) && Number.isFinite(turn.firstCallCache.creation)
+      ? { read: turn.firstCallCache.read, creation: turn.firstCallCache.creation } : null,
+    toolSearchCalls: turn?.toolCallsByName && typeof turn.toolCallsByName === "object" ? (turn.toolCallsByName.ToolSearch ?? 0) : null,
   };
 }
 

@@ -4427,7 +4427,7 @@
         },
         "engine.anthropic.test.mjs": {
           "tests": 70,
-          "asserts": 263,
+          "asserts": 264,
           "skips": 2,
           "todos": 0
         },
@@ -4925,7 +4925,7 @@
         },
         "instrumentation-house-rule.test.mjs": {
           "tests": 17,
-          "asserts": 122,
+          "asserts": 125,
           "skips": 0,
           "todos": 0
         },

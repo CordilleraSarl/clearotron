@@ -623,6 +623,10 @@ export const anthropicAgentEngine = {
       // "omitted" on Opus 5, so an ENGAGED block streams with a zero-length `thinking` string and a real
       // `signature` — reading the text would report "no thinking" on every production turn.
       let thought = false;
+      // THE FIRST CALL'S CACHE SPLIT: how much of the opening prompt the provider served from its cache and how much it wrote
+      // to it, read off the first assistant message's usage. Every caching claim about a stage was rebuilt from raw streams
+      // by hand; this puts the first call's figures on the attempt. null when the stream carried no assistant message.
+      let firstCall = null;
       // MODEL GAUGE (corruption 3): which model the PROVIDER says served this turn. Until now
       // nothing on any record was a function of the provider's response — `modelUsed` was
       // `resolveModel(<the alias we asked for>)`, a pure function of the request, so a substitution or a
@@ -881,6 +885,7 @@ export const anthropicAgentEngine = {
           // This block's usage, folded into its own call: the largest reading wins, so a block's early count
           // never replaces the delta's running total, and a second block of the same call adds nothing twice.
           foldUsage(ev.message?.id ?? openMessage ?? `__assistant_${++anonMessages}`, mapUsage(ev.message?.usage));
+          if (!firstCall && ev.message?.usage) firstCall = mapUsage(ev.message.usage);
           progress();
         }
         else if (ev.type === "user") {
@@ -1192,6 +1197,8 @@ export const anthropicAgentEngine = {
           // true = the 500-path cap dropped at least one further distinct file (so a `read:false` derived
           // from this list is unreliable and the consumer must downgrade it to "not observed").
           reads: [...reads], readsTruncated,
+          // The first call's cache read and cache write, in tokens (see `firstCall`); null when it was never seen.
+          firstCallCache: firstCall ? { read: firstCall.cacheRead, creation: firstCall.cacheWrite } : null,
           toolCalls, toolWaitMs: settledToolWaitMs,   // two integers, no content
           // The same calls by tool name (values sum to toolCalls), and what the session went through: every
           // result, cut, refusal and restart (session-record.mjs). `stream` is the raw stream's file and size,
