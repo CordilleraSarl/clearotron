@@ -395,12 +395,12 @@
        headers; the old blanket details>summary hide deleted every region/group header and the scope title
        from the exported PDF.
        EVERY <details> THE RENDERERS EMIT MUST BE IN ONE LIST OR THE OTHER. The instrument that says so
-       is a browser under print media, and it is NOT in this repository: `render-css.test.mjs`, named
-       here until 2026-09-16, exists in no tree. Nothing in the public suite can see this — the frozen
-       hash pins the renderer's bytes and the render arms grep its HTML, and on screen a mis-ruled
-       disclosure is correct. It is the private print control that walks a rendered page on both lanes
-       and refuses a disclosure ruled by neither mechanism, and it runs by hand. Two folds have now
-       shipped mis-ruled and been caught there rather than in CI. `details.sub-more` was in NEITHER, so the exported PDF — the
+       is a browser under print media: scripts/report-print-check.mjs walks a rendered page on both lanes
+       and refuses a disclosure ruled by neither mechanism, and CI's checks job runs it on every pull
+       request ("node scripts/report-print-check.mjs" in .github/workflows/ci.yml). `render-css.test.mjs`,
+       named here until 2026-09-16, exists in no tree. The render arms grep the HTML, and on screen a
+       mis-ruled disclosure is correct, so this check is the one that sees it. Two folds shipped
+       mis-ruled and were caught by it. `details.sub-more` was in NEITHER, so the exported PDF — the
        client-facing legal document — printed an inert "MORE" label and a right-pointing COLLAPSED marker
        in the hero, directly above text that was already fully expanded. Measured in Chrome: the caption's
        own content was carried correctly and only the control leaked, which is why the commit that added
