@@ -11,6 +11,7 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { finishPoolRun, openPoolRun, refreshStaffPages } from './shell.mjs';
 import { plainDeferralReason, plainCause } from '../deferral-row.mjs'; import { knockoutStepFailures, PART_NAMES, RULED_WORDS, NOT_COMPLETED, linkNotOnRegisterSite } from '../degraded-parts.mjs'; import { ownersOwedACheck, composeOwnerQuery } from '../owner-use-check.mjs'; import { KNOCKOUT_WEB } from '../stages-knockout.mjs';   // — the reader's words for a search left open; and the parts that failed as a whole
 import { join } from 'node:path';
+import { EMAIL_TIER } from '../../shared/brand.mjs';
 import { riskTier, TONE_TIER, regenIndex, regenSurfaces, auditRouteFor, markReportRouteFor, reportRouteFor } from './index.mjs';
 import { runKnockoutLint, deliveryFlagLines } from '../predelivery-lint.mjs';
 import { note } from '../log.mjs';
@@ -39,7 +40,7 @@ const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').
 export function bandTier(framework, word) {
   const tone = framework?.bands?.find((b) => String(b.label).toLowerCase() === String(word ?? '').trim().toLowerCase())?.tone;
   if (tone && TONE_TIER[tone]) return { ...TONE_TIER[tone], label: String(word) };
-  return riskTier(word) ?? { bg: '#bfbfbf', fg: '#000', txt: '#555', label: String(word ?? '—') };
+  return riskTier(word) ?? { ...EMAIL_TIER.unrated, label: String(word ?? '—') };
 }
 // The email body is inline-styled and self-contained by contract (docs/DELIVERY.md: the courier sends
 // `emailBodyHtml` verbatim), so it keeps a mail-safe font stack. The report does not — it has a stylesheet.

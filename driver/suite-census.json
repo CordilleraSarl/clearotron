@@ -3388,8 +3388,8 @@
           "todos": 0
         },
         "brand.test.mjs": {
-          "tests": 10,
-          "asserts": 59,
+          "tests": 11,
+          "asserts": 61,
           "skips": 0,
           "todos": 0
         },
