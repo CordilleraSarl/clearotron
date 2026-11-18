@@ -340,8 +340,8 @@
           "todos": 0
         },
         "a-codex-attempt-records-where-its-time-went.test.mjs": {
-          "tests": 5,
-          "asserts": 13,
+          "tests": 6,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -2736,6 +2736,12 @@
         "a-tool-serves-only-its-own-runs-files.test.mjs": {
           "tests": 4,
           "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-turn-stopped-while-working-is-resumed-not-restarted.test.mjs": {
+          "tests": 5,
+          "asserts": 31,
           "skips": 0,
           "todos": 0
         },
