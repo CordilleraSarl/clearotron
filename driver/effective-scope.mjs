@@ -49,6 +49,8 @@ const FROM = {
   project: "this project",
   account: (noun) => `the account's default ${noun}`,
   none: "not set anywhere",
+  // No class anywhere, and the request describes its goods: the search is scoped by that description.
+  goodsOnly: "none — the goods description sets the scope",
 };
 
 const nonEmpty = (a) => Array.isArray(a) && a.length > 0;
@@ -284,7 +286,7 @@ export function resolveEffectiveScope(job = {}, profile = null, resolved = null)
   if (nonEmpty(job.classes)) { classes = job.classes; classesFrom = FROM.request; }
   else if (nonEmpty(saved?.classes)) { classes = saved.classes; classesFrom = FROM.savedSearch; }
   else if (nonEmpty(profile?.defaultClasses)) { classes = profile.defaultClasses; classesFrom = accountClFrom; }
-  else { classes = []; classesFrom = FROM.none; }
+  else { classes = []; classesFrom = String(job.goods ?? "").trim() ? FROM.goodsOnly : FROM.none; }
 
   // Platforms UNION rather than replace, and they union in BOTH directions: the saved search's stores are
   // folded in first so a per-run addition sits on top of them, and neither can remove an account's own.

@@ -85,6 +85,13 @@ export const WRITE_DISCIPLINE =
 // to a layered overlay-over-base path (driver.config.resolveSkillPath); without it the legacy single-dir
 // behaviour stands.
 const SKILL_REF = /(?<![\w/.])skills\/[A-Za-z0-9._/-]+\.md/g;
+/**
+ * Is this tool a stage's own record tool, the call that hands its result back? Any `record_*` tool, by its bare name or under
+ * an MCP server (`mcp__recording-<stage>__record_<stage>`). Both engines name a kill's last tool ask with it: a turn whose
+ * last asks were only its own record write was finishing, not working, when it was stopped. PURE.
+ */
+export const isRecordTool = (name) => /(^|__)record_/.test(String(name ?? ""));
+
 export function absolutizeSkillRefs(message, skillsDir, resolve = null) {
   if (!message || (!skillsDir && !resolve)) return message;
   const base = skillsDir ? dirname(skillsDir) : null;   // skillsDir ends in /skills; refs carry their own `skills/` prefix

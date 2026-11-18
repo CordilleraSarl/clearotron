@@ -31,7 +31,7 @@ test("the commands the guide gives a package install are verbs the installed com
   assert.deepEqual(VERBS.run, ["driver/pipeline.mjs"]);
   assert.deepEqual(VERBS.mcp, ["bin/mcp.mjs"]);
   // `run --resume` without `--job` is a command the pipeline accepts: it rebuilds the job from the run.
-  assert.match(read("driver/pipeline.mjs"), /if \(!a\.job && !a\.codename\) \{ console\.error\(USAGE\); process\.exit\(2\); \}/,
+  assert.match(read("driver/pipeline.mjs"), /if \(!a\.job && !a\.codename\) \{ console\.error\(usage\); process\.exit\(2\); \}/,
     "the pipeline no longer accepts --resume without --job");
   assert.doesNotMatch(INSTALL, /node \/path\/to\/driver\/pipeline\.mjs/, "the resume line a stopped run prints is the product's verb, and no longer a path");
   assert.ok(INSTALL.includes("``` clearotron run --resume <codename> ```"),
