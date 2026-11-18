@@ -5579,7 +5579,7 @@
         },
         "portal-service.test.mjs": {
           "tests": 138,
-          "asserts": 745,
+          "asserts": 747,
           "skips": 1,
           "todos": 0
         },
@@ -9308,8 +9308,8 @@
           "todos": 0
         },
         "api.test.ts": {
-          "tests": 49,
-          "asserts": 199,
+          "tests": 50,
+          "asserts": 202,
           "skips": 0,
           "todos": 0
         },
@@ -9404,8 +9404,8 @@
           "todos": 0
         },
         "engineState.test.ts": {
-          "tests": 15,
-          "asserts": 68,
+          "tests": 16,
+          "asserts": 71,
           "skips": 0,
           "todos": 0
         },
@@ -9500,8 +9500,8 @@
           "todos": 0
         },
         "lockup.test.ts": {
-          "tests": 4,
-          "asserts": 11,
+          "tests": 5,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
@@ -9572,8 +9572,8 @@
           "todos": 0
         },
         "permissions.test.ts": {
-          "tests": 7,
-          "asserts": 41,
+          "tests": 8,
+          "asserts": 43,
           "skips": 0,
           "todos": 0
         },
@@ -9723,7 +9723,7 @@
         },
         "useYourAI.test.ts": {
           "tests": 17,
-          "asserts": 75,
+          "asserts": 76,
           "skips": 0,
           "todos": 0
         },

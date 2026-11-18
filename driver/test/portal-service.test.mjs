@@ -28,6 +28,7 @@ import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { driverSource } from "./driver-source.mjs";
+import { BRAND } from "../../shared/brand.mjs";
 
 
 // EVERY temp directory this file makes is removed — including ones created inside helpers, and ones
@@ -650,6 +651,10 @@ test("multi-account client: door routes admit; scoped routes demand a named acco
   assert.deepEqual(me.json.accounts, ["demo-brand-owner", "zephyr"], "the accounts array feeds the UI picker");
   // The command the New company screen shows when no organisation is filed: a name, never a path here.
   assert.equal(me.json.organisationCommand, 'clearotron start --organisation "<name>"');
+  // What the installation calls itself, beside who operates it: the logo and the sentences that name the
+  // installation read it. With no CLEAROTRON_BRAND_NAME it is the product's name, never blank.
+  assert.equal(me.json.brandName, BRAND.name);
+  assert.ok(me.json.brandName, "the installation's name is blank");
   // (the SPA document itself is portal-static.mjs's job now — see portal-static.test.mjs)
   assert.equal((await service.route("GET", "/portal", BOSS)).status, 404);
   const un = await service.route("GET", "/portal/api/searches", BOSS, {}, {});

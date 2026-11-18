@@ -94,6 +94,7 @@ function Form({ ctx, person, view }: {
   readonly person: Person
   readonly view: AccessView
 }) {
+  const installation = ctx.me.brandName
   // WHETHER THIS INSTALL CAN CHANGE ANYBODY AT ALL. The three write routes refuse on local sign-in, so
   // the controls say so before they are pressed rather than after — the same posture the People page
   // takes with Add. Read off the view this component already holds, not fetched again. The refusal
@@ -151,6 +152,7 @@ function Form({ ctx, person, view }: {
     everything: holdsEverything,
     organisations: [...chosen.orgs].map(orgName),
     companies: soloCompanies.map((k) => ({ name: ctx.ownerName(k), organisation: orgName(ctx.orgOf(k) ?? '') })),
+    installation,
   })
 
   const save = async () => {
@@ -174,8 +176,8 @@ function Form({ ctx, person, view }: {
   const failure = (r: Result<unknown> | null): string | null =>
     r === null || isOk(r) ? null
       : r.kind === 'gate' && r.detail?.code === 'local_sign_in'
-        ? 'This Clearotron now signs in one person, so nobody else can be changed. Nothing was saved.'
-      : r.kind === 'conflict' ? 'This Clearotron now signs in one person, so nobody else can be changed. Nothing was saved.'
+        ? `${installation} now signs in one person, so nobody else can be changed. Nothing was saved.`
+      : r.kind === 'conflict' ? `${installation} now signs in one person, so nobody else can be changed. Nothing was saved.`
       : r.kind === 'notFound' ? 'That is not access you can change. Nothing was saved.'
       : r.kind === 'reject' ? r.errors.join(' ')
       : saveFailureText(r, 'That could not be saved. Nothing was changed.')
@@ -184,7 +186,7 @@ function Form({ ctx, person, view }: {
   // WHAT THE READER IS AGREEING TO, in the order they need it: who loses what, when it takes effect, and
   // the one thing this product cannot do for them.
   const loses = person.access.length
-    ? person.access.map((a) => (a.kind === 'everything' ? 'everything on this Clearotron' : a.name ?? a.key))
+    ? person.access.map((a) => (a.kind === 'everything' ? `everything on ${installation}` : a.name ?? a.key))
     : []
   // WHAT THIS PAGE CAN VOUCH FOR, AND WHAT IT CANNOT.
   //
@@ -228,7 +230,7 @@ function Form({ ctx, person, view }: {
         <div className="field-label">Access to</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 8 }}>
           {holdsEverything ? (
-            <AttachRow on name="Everything on this Clearotron" line={REACH_LINE.everything}
+            <AttachRow on name={`Everything on ${installation}`} line={REACH_LINE.everything}
               disabled onToggle={() => { /* not this page's to take away — removal is */ }} />
           ) : null}
           {tree.map((t) => (
@@ -279,7 +281,7 @@ function Form({ ctx, person, view }: {
         {readOnlyPeople ? (
           <div className="notice quiet" style={{ marginBottom: 14 }}>
             <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-muted)' }}>
-              <b style={{ color: 'var(--text-strong)' }}>This Clearotron signs in one person: you.</b> Nobody
+              <b style={{ color: 'var(--text-strong)' }}>{installation} signs in one person: you.</b> Nobody
               else can be changed or removed here. To hold more than one person, put it behind a login
               system such as your company single sign-on.
             </p>
@@ -307,12 +309,12 @@ function Form({ ctx, person, view }: {
                 <p style={{ margin: 0, fontSize: 13.5 }}>
                   <b data-anon="mark">{person.email}</b>{' '}
                   {whole ? (
-                    <b>loses access to {loses.length ? loses.join(' and ') : 'this Clearotron'} straight away,</b>
+                    <b>loses access to {loses.length ? loses.join(' and ') : installation} straight away,</b>
                   ) : (
                     <b>loses {loses.join(' and ')} straight away,</b>
                   )}{' '}
                   {keyStaysLive ? (
-                    <>here. Their AI was issued a key this Clearotron cannot withdraw — it was started
+                    <>here. Their AI was issued a key {installation} cannot withdraw — it was started
                     without a revocation list — so that key keeps working until it expires.{' '}
                     <b className="mono">clearotron doctor</b> reports it.{' '}</>
                   ) : <>here and through their AI.{' '}</>}
@@ -341,7 +343,7 @@ function Form({ ctx, person, view }: {
               <button type="button" className="pill" style={{ cursor: readOnlyPeople ? 'default' : 'pointer', fontSize: 12 }}
                 disabled={busy || readOnlyPeople} onClick={() => setConfirming(true)}>
                 {whole
-                  ? domain ? `Remove everyone at ${domain}` : 'Remove from Clearotron'
+                  ? domain ? `Remove everyone at ${domain}` : `Remove from ${installation}`
                   : `Remove from ${[...held.orgs].map(orgName).join(', ') || 'here'}`}
               </button>
               {whole ? null : (

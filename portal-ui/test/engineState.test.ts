@@ -467,5 +467,12 @@ test('a beta install\'s Engine row names the setup command that fetches the beta
   // AND THE CONFIGURATION SCREEN HANDS IT THE CHANNEL /me CARRIES.
   const src = readFileSync(new URL('../src/screens/GlobalConfig.tsx', import.meta.url), 'utf8')
   assert.match(src, /channel=\{ctx\.me\.channel \?\? null\}/, 'the screen does not pass the install\'s channel to the row')
-  assert.match(src, /engineRow\(engine, \{ programDisputed, channel \}\)/, 'the row is drawn without the channel')
+  assert.match(src, /engineRow\(engine, \{ programDisputed, channel, name \}\)/, 'the row is drawn without the channel')
+  assert.match(src, /name=\{ctx\.me\.brandName\}/, 'the screen does not pass the installation\'s name to the row')
+})
+
+test('the engine sentences that name the installation name it as it calls itself', () => {
+  const r: BillingRefusal = { kind: 'not-a-mode', mode: null, setting: 'CLEAROTRON_AI_BILLING', clouds: [], modes: ['subscription', 'api-key'], gateway: null }
+  assert.equal(billingRefusalSentence(r), 'Searches will be refused: CLEAROTRON_AI_BILLING is set to a word Clearotron does not know. Set it to subscription or api-key.')
+  assert.match(billingRefusalSentence(r, 'Larchmont Legal'), /is set to a word Larchmont Legal does not know\./)
 })

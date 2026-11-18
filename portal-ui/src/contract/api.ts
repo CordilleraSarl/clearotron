@@ -409,6 +409,14 @@ export type Me = {
    */
   readonly brand: string
   /**
+   * WHAT THIS INSTALLATION CALLS ITSELF — `CLEAROTRON_BRAND_NAME`, or the product's name when none is set.
+   *
+   * Not `brand`: that is who operates the installation, and a fresh install has no answer to it. This one
+   * always has an answer, so the logo, the page title and every sentence that names the installation
+   * ("Remove from Clearotron") read it. An older portal-service sends none, and the product's name stands in.
+   */
+  readonly brandName: string
+  /**
    * WHERE THIS PERSON ASKS FOR A CHANGE TO THEIR SIGN-IN — the installation's administrator contact, as an
    * href (`mailto:` or http(s)), or null when the installation names none.
    *
@@ -428,6 +436,9 @@ export type Me = {
  * Screens outside a `ShellContext` (the not-enrolled notice, the field pickers) have no brand to read at
  * all and are worded without a name instead of calling this with an empty string.
  */
+/** The product's own name: what an installation that names nothing calls itself, and what the source link names. */
+export const PRODUCT_NAME = 'Clearotron'
+
 export const operatorName = (brand: string, opts?: { readonly lead?: boolean }): string =>
   brand || (opts?.lead ? 'The operator' : 'the operator')
 
@@ -1983,6 +1994,7 @@ export const api = {
       // The same closed set again, and for the same reason: this word becomes part of a command a reader types.
       channel: b['channel'] === 'beta' ? 'beta' : b['channel'] === 'latest' ? 'latest' : null,
       brand: typeof b['brand'] === 'string' ? b['brand'] : '',
+      brandName: typeof b['brandName'] === 'string' && b['brandName'].trim() ? b['brandName'].trim() : PRODUCT_NAME,
       // A LINK OR NULL, and only a mail or web address is a link. The server already refuses anything
       // else; this is the second check at the one place a value becomes an `href`.
       administratorContact: typeof b['administratorContact'] === 'string'
