@@ -810,7 +810,9 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
             {!visible.length ? (
               <tr>
                 <td colSpan={(canGroup ? 7 : 6) + (showOwnerColumn ? 1 : 0)} style={{ padding: '22px 12px', color: 'var(--text-muted)' }}>
-                  No clearances match this view. Pick another company above, or widen the filters.
+                  <span className="list-empty">
+                    No clearances match this view. Pick another company above, or widen the filters.
+                  </span>
                 </td>
               </tr>
             ) : null}
