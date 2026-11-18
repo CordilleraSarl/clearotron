@@ -369,6 +369,14 @@ const WORLDWIDE_TOKEN_RE = /^(worldwide|world|ww|global)$/i;
 // AND NOW ITS REACH (owner, 2026-11-18, replacing "never a list of offices, never a count"): where the service
 // declares its office list, the line states how many offices it searched and names the order's markets outside them,
 // "registers: Signa, 15 offices; <the markets, by name> not covered", and ends after the count when none is.
+// THE ARTICLE, IN THIS LINE ONLY (owner, 2026-11-18). The shared country names carry none, so the approved line
+// "Japan, the Philippines, Indonesia and Vietnam not covered" printed "Philippines". A name that takes "the" in English
+// gets it here: a union or kingdom of states, a group of islands, a republic or territory named as one, and the plural
+// names. The test is on the name, not the code, so a name the shared table changes still reads right. Rows and
+// other surfaces keep the bare name.
+const TAKES_THE = /^(United |(Philippines|Bahamas|Gambia|Maldives|Comoros|Seychelles|European Union|Isle of Man)$)|(Islands|Republic|Netherlands|Territories|Territory)$/;
+const withArticle = (name) => (TAKES_THE.test(name) ? `the ${name}` : name);
+
 function registerServiceOf(plan) {
   if (!plan?.provider) return null;
   try { return capabilitiesFor(plan.provider).label ?? null; } catch { return null; }
@@ -380,7 +388,7 @@ function jurisdictionTail({ searched_jurisdictions = [], scope_basis = null, ins
     : (Array.isArray(instructedScope?.jurisdictions) ? instructedScope.jurisdictions : [])).map((j) => String(j).trim()).filter((j) => j);
   if (scope_basis === "worldwide" || list.some((j) => WORLDWIDE_TOKEN_RE.test(j))) {
     if (register_reach) {
-      const outside = register_reach.uncovered.map((c) => regionName(c));
+      const outside = register_reach.uncovered.map((c) => withArticle(regionName(c)));
       return ` · registers: ${register_reach.service}, ${register_reach.offices} office${register_reach.offices === 1 ? "" : "s"}${outside.length ? `; ${joinAnd(outside)} not covered` : ""}`;
     }
     return ` · registers: worldwide${register_service ? ` (${register_service})` : ""}`;

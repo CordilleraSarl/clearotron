@@ -35,7 +35,7 @@ test("the reach is the service's own office list, and a market is outside it whe
 
 test("a worldwide order's line states the service, its office count and the markets outside it", () => {
   const facts = line(plan(), MARKETS);
-  assert.match(facts.coverage_line, / · registers: Signa, 15 offices; Japan, Philippines, Indonesia and Vietnam not covered$/);
+  assert.match(facts.coverage_line, / · registers: Signa, 15 offices; Japan, the Philippines, Indonesia and Vietnam not covered$/);
   assert.deepEqual(facts.register_reach, { service: "Signa", offices: 15, uncovered: ["JP", "PH", "ID", "VN"] }, "the run record keeps the answer");
   assert.match(line(plan(), ["US", "EU"]).coverage_line, / · registers: Signa, 15 offices$/, "every market covered: the line ends after the count");
   assert.match(line(plan({ provider: "corsearch" }), MARKETS).coverage_line, / · registers: worldwide \(Corsearch\)$/, "no office list: the line it had");
@@ -44,6 +44,13 @@ test("a worldwide order's line states the service, its office count and the mark
     plan: plan({ scope_basis: null, regions: ["us"] }), planExecution: { executed: [{ qid: "q-1", state: "complete", total_hits: 0 }] }, coverageRows: [], markets: MARKETS });
   assert.match(named.coverage_line, / · registers: US$/, "a named list keeps its line");
   assert.equal(named.register_reach, undefined);
+});
+
+test("the line gives \"the\" to the names that take it, and to no other", () => {
+  const outside = (markets) => line(plan(), markets).coverage_line.match(/15 offices; (.*) not covered$/)?.[1];
+  assert.equal(outside(["PH", "AE", "BS", "KY", "DO", "IM", "JP"]),
+    "the Philippines, the United Arab Emirates, the Bahamas, the Cayman Islands, the Dominican Republic, the Isle of Man and Japan");
+  assert.equal(outside(["ID", "VN", "TH", "NG"]), "Indonesia, Vietnam, Thailand and Nigeria");
 });
 
 test("code writes one Not searched row per market outside the reach, once, beside whatever the writer wrote", (t) => {
