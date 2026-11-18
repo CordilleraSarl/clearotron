@@ -2253,9 +2253,14 @@ function coverageGrid(coverage, { verdict = true } = {}) {
   const rest = coverage.filter(c => c.state !== 'confirmed-clean');
   const parts = [];
   if (covered.length) parts.push(`<div class="cov">${covered.map(cell).join('')}</div>`);
+  // THE OPEN ROWS GROUP UNDER THEIR STATE WORDS, EACH WITH ITS COUNT (owner, 2026-11-18). A report could list 23 to 65
+  // open rows that all looked alike, so a lawyer read every one to find which bore on the advice. Every row stays,
+  // and stays as it was; the groups take the states' own words, in the order the states are declared above.
+  const groups = Object.keys(COV_STATE).map((state) => [state, rest.filter((c) => (COV_STATE[c.state] ? c.state : 'note') === state)])
+    .filter(([, rows]) => rows.length);
   if (rest.length) parts.push(
     (verdict ? `<p class="covnext"><b>Next steps &amp; monitoring</b> — routine follow-ups and bounded monitor items; anything material is carried in the verdict above.</p>` : '')
-    + `<div class="cov">${rest.map(cell).join('')}</div>`);
+    + groups.map(([state, rows]) => `<div class="covgrp"><div class="covgh">${esc(COV_STATE[state].word)} <span class="covgn">(${rows.length})</span></div><div class="cov">${rows.map(cell).join('')}</div></div>`).join(''));
   return parts.join('');
 }
 

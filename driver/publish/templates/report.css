@@ -254,6 +254,10 @@
   .covcell.info .ck{background:#A9B4C6} .covcell.info{border-color:var(--line)}
   .covcell .cst{font-weight:600;color:var(--faint);font-size:11.5px}
   .covnext{margin:16px 0 10px;font-size:13px;color:var(--slate)}
+  /* The open rows' groups, each headed by its state word and count, styled as the "Left open" label above them. */
+  .covgrp+.covgrp{margin-top:14px}
+  .covgh{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin:0 0 6px}
+  .covgn{letter-spacing:.04em}
   .covcell .ct{font-size:13px;font-weight:700;margin-bottom:2px}
   .covcell .cd{font-size:12px;color:var(--slate);line-height:1.45}
 

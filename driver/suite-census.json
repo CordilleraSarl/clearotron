@@ -5385,6 +5385,12 @@
           "skips": 0,
           "todos": 0
         },
+        "open-coverage-rows-group-under-their-state.test.mjs": {
+          "tests": 1,
+          "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
         "operability.test.mjs": {
           "tests": 31,
           "asserts": 181,
