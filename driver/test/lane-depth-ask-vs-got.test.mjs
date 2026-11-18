@@ -31,6 +31,10 @@ import { deriveLaneDepthVerdicts, deriveJxSliceStatement, laneDepthOfRun } from 
 import { localLanguageDepth } from "../publish/search-depth.mjs";
 import { readJxLanes } from "../reference-score.mjs";
 import { injectLaneDepthCoverage } from "../pipeline.mjs";
+import { LANGUAGE_LANES } from "../jx-lanes.mjs";
+
+// The lane's language as the depth sentence names it.
+const LANG = LANGUAGE_LANES.zh.label.replace(/-script deepening$/, "");
 
 const dir = () => mkdtempSync(join(tmpdir(), "lane-depth-"));
 
@@ -119,7 +123,9 @@ test("asked full and NOTHING is established — the flag fires and `ran` is null
   assert.equal(v.zh.ran, null, "an unestablished depth must not be reported as candidates");
   assert.equal(v.zh.shortfall, true, "an absence does not discharge the flag");
   assert.equal(v.zh.cause, "not-established");
-  assert.match(v.zh.why, /CANNOT be established/);
+  // The reader's sentence is the owner's (2026-11-18); what the record says stays beside it.
+  assert.equal(v.zh.why, `Whether the full-depth ${LANG}-language search ran cannot be confirmed from this search's record, so it is treated as not done.`);
+  assert.match(v.zh.detail, /CANNOT be established/);
 });
 
 test("asked candidates and got candidates — no flag, whatever the arms did", () => {
@@ -253,6 +259,14 @@ test("a shortfall becomes a reader-visible coverage row — coverage-limited, ne
   injectLaneDepthCoverage(P, d, () => {});
   assert.equal(JSON.parse(readFileSync(P.findings, "utf8")).coverage.filter((c) => c.area === AREA).length, 1,
     "idempotent on resume — a second delivery pass must not duplicate the disclosure");
+});
+
+test("a depth the record cannot confirm reaches the reader as the owner's sentence, alone, under its label in words", () => {
+  const why = `Whether the full-depth ${LANG}-language search ran cannot be confirmed from this search's record, so it is treated as not done.`;
+  const { d, P } = runWith({ zh: { asked: "full", ran: null, shortfall: true, cause: "not-established", why, detail: "slice 1 for this lane is unrecorded" } });
+  injectLaneDepthCoverage(P, d, () => {});
+  const rows = JSON.parse(readFileSync(P.findings, "utf8")).coverage.filter((c) => /search depth|investigation depth/.test(c.area));
+  assert.deepEqual(rows, [{ area: `${LANG}-language search depth`, state: "coverage-limited", note: why }]);
 });
 
 test("no shortfall ⇒ no row, and an UNSTATED verdict ⇒ no row either", () => {
