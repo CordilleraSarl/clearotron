@@ -8393,6 +8393,54 @@ export function injectScreenGateCoverage(P, runDir, note, ctx = {}) {   // @inte
   }
 }
 
+// Imported down here, below every line the rest of the tree cites by number, so adding them moved none of those lines.
+import { registerReach, NOT_COVERED_REASON } from "./register-reach.mjs";   // — what the register service reaches, against the order's markets
+import { regionName } from "./publish/regions.mjs";
+
+// THE MARKETS AN ORDER IS FOR, as the register's reach is read against them: a worldwide order's are the client's
+// markets (the account's default markets, else the major markets, plus any market the order names), and a territorial
+// order's are its own. Read from the run's frozen order and profile. Never throws: an order it cannot read has no
+// markets here, and the coverage line and the rows then say what they said before.
+export function orderMarketsOf(ctx, plan) {   // @internal
+  try {
+    const order = instructedOrder(ctx.paths, ctx.job);
+    return plan?.scope_basis === "worldwide" ? clientMarkets(order, ctx.profile) : orderTerritories(order, ctx.profile);
+  } catch { return []; }
+}
+
+/** EVERY MARKET THE REGISTER SERVICE DOES NOT REACH GETS A "NOT SEARCHED" ROW, WRITTEN BY CODE (owner, 2026-11-18).
+ *  Whether such a market was named used to depend on what the writer chose to write: on three deliveries of one
+ *  order, one named Japan alone, and Vietnam was named on none. The reach is register-reach.mjs's, the same answer the
+ *  coverage line names, so the row and the line cannot disagree. The area is the country's name and the reason is the
+ *  approved one. A row the writer added for the same market stays beside it. Idempotent by area and reason, so a resume
+ *  or a second pass never doubles a row; never-kill, as its siblings. */
+export function injectUncoveredMarketCoverage(P, runDir, note, ctx = {}) {   // @internal
+  try {
+    if (!existsSync(P.findings)) return;
+    let plan = ctx.registerPlan ?? null;
+    if (!plan) { try { plan = JSON.parse(readFileSync(P.registerPlan, "utf8")); } catch { return; } }
+    const reach = registerReach(plan?.provider, orderMarketsOf(ctx, plan));
+    if (!reach?.uncovered.length) return;
+    const doc = JSON.parse(readFileSync(P.findings, "utf8"));
+    if (!Array.isArray(doc.coverage)) doc.coverage = [];
+    let added = 0;
+    for (const code of reach.uncovered) {
+      const area = regionName(code);
+      if (doc.coverage.some((c) => String(c?.area ?? "") === area && String(c?.note ?? "") === NOT_COVERED_REASON)) continue;
+      doc.coverage.push({ area, state: "not-searched", note: NOT_COVERED_REASON });
+      added++;
+    }
+    if (!added) return;
+    parseFindingsJson(JSON.stringify(doc));                    // re-validate the shape (throws → catch keeps original)
+    writeFindings(runDir, doc, { why: "uncovered-market-rows", settles: [] });
+    runLog(runDir, { event: "uncovered-market-rows", service: reach.service, offices: reach.offices, markets: reach.uncovered, added });
+    note(`[register-reach] ${added} "Not searched" row(s) for market(s) outside ${reach.service}'s ${reach.offices} offices: ${reach.uncovered.join(", ")}`);
+  } catch (e) {
+    note(`[register-reach] coverage rows skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
+    coverageRowNotAdded(runDir, "register-reach", e);
+  }
+}
+
 // spec 64 (B3) — within-run deadline propagation (the DEMVENZY drop): the register bands carried
 // oppositionEndDate 2026-07-13 two days before the window closed, and it never reached the delivered
 // findings/prose. Deterministic join: a finding whose registration matches a band/record opposition
@@ -9932,7 +9980,7 @@ async function pipelineInner(job, opts = {}) {
     } },
     { name: "overview-and-cards", run: async () => {
         // The report's overview and its cards (steps/overview-and-cards.mjs).
-        ({ applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, findingsForCards, groupedMembers, overviewOpen, rebuildTheDeliveredRecord, restoreTheBrokenRecord, rov, writeScopeFacts, writeUps } = await runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWritersDuty, ctx, followTheRecordsActions, job, run, runState, saveTheLabel, writeVerdictSidecar }, { StageFailure, applyScopeFrontMatterOf, asPartNotCompleted, assembleReportMd, caseLawJoin, consolidateFindingsFile, correctionsTheRestoreLacks, deriveCommonLawCarry, deriveRecordCarry, inScopeClassList, injectDeferralCoverage, injectFrontMatter, injectLaneDepthCoverage, injectMeaningGapCoverage, injectScreenGateCoverage, injectScriptScopeCoverage, keepDeliveredRecordAsHistory, localLanguageStateOf, must, openAskForClosure, originRowsForReport, planWriteUps, readFindingsForReport, readReadingLog, rebuildDeliveredRecord, reportIdentityRecord, restoreTheRecordThatPassed, rewriteFromBeforeTheSeam, runBatched, safeReadJson, settleDerivedBases, stage, stampCoverageJudgmentRows, withdrawSupersededAudit, writeScopeFactsOf, writeShortEntries }));
+        ({ applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, findingsForCards, groupedMembers, overviewOpen, rebuildTheDeliveredRecord, restoreTheBrokenRecord, rov, writeScopeFacts, writeUps } = await runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWritersDuty, ctx, followTheRecordsActions, job, run, runState, saveTheLabel, writeVerdictSidecar }, { StageFailure, applyScopeFrontMatterOf, asPartNotCompleted, assembleReportMd, caseLawJoin, consolidateFindingsFile, correctionsTheRestoreLacks, deriveCommonLawCarry, deriveRecordCarry, inScopeClassList, injectDeferralCoverage, injectFrontMatter, injectLaneDepthCoverage, injectMeaningGapCoverage, injectScreenGateCoverage, injectScriptScopeCoverage, injectUncoveredMarketCoverage, keepDeliveredRecordAsHistory, localLanguageStateOf, must, openAskForClosure, originRowsForReport, planWriteUps, readFindingsForReport, readReadingLog, rebuildDeliveredRecord, reportIdentityRecord, restoreTheRecordThatPassed, rewriteFromBeforeTheSeam, runBatched, safeReadJson, settleDerivedBases, stage, stampCoverageJudgmentRows, withdrawSupersededAudit, writeScopeFactsOf, writeShortEntries }));
     } },
     { name: "delivery", run: async () => {
         // The checks before delivery, their repairs, and the publish (steps/delivery.mjs).
@@ -10049,6 +10097,7 @@ export function writeScopeFactsOf(ctx, P, runDir) {   // @internal
     planExecution,
     coverageRows: loadCoverageLedger(runDir).rows,
     withheldQids: waitingFamilyStates(runDir, planExecution?.awaiting).withheld.map((f) => f.qid),
+    markets: orderMarketsOf(ctx, plan),
   });
   facts.derived_from = Object.fromEntries([
     ["instructed_scope", P.instructedScope], ["register_plan", P.registerPlan],

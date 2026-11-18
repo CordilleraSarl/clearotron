@@ -6533,7 +6533,7 @@
         },
         "scope-facts.test.mjs": {
           "tests": 21,
-          "asserts": 83,
+          "asserts": 84,
           "skips": 0,
           "todos": 0
         },
@@ -7230,6 +7230,12 @@
         "the-coverage-floors-own-sentences-stay-in-the-run-record.test.mjs": {
           "tests": 4,
           "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-coverage-line-states-the-register-services-reach.test.mjs": {
+          "tests": 3,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },

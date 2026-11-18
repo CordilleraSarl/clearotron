@@ -40,7 +40,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 
 import { basename, join } from "node:path";
 
 export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWritersDuty, ctx, followTheRecordsActions, job, run, runState, saveTheLabel, writeVerdictSidecar }, helpers) {
-  const { StageFailure, applyScopeFrontMatterOf, asPartNotCompleted, assembleReportMd, caseLawJoin, consolidateFindingsFile, correctionsTheRestoreLacks, deriveCommonLawCarry, deriveRecordCarry, inScopeClassList, injectDeferralCoverage, injectFrontMatter, injectLaneDepthCoverage, injectMeaningGapCoverage, injectScreenGateCoverage, injectScriptScopeCoverage, keepDeliveredRecordAsHistory, localLanguageStateOf, must, openAskForClosure, originRowsForReport, planWriteUps, readFindingsForReport, readReadingLog, rebuildDeliveredRecord, reportIdentityRecord, restoreTheRecordThatPassed, rewriteFromBeforeTheSeam, safeReadJson, settleDerivedBases, stage, stampCoverageJudgmentRows, withdrawSupersededAudit, writeScopeFactsOf, writeShortEntries } = helpers;
+  const { StageFailure, applyScopeFrontMatterOf, asPartNotCompleted, assembleReportMd, caseLawJoin, consolidateFindingsFile, correctionsTheRestoreLacks, deriveCommonLawCarry, deriveRecordCarry, inScopeClassList, injectDeferralCoverage, injectFrontMatter, injectLaneDepthCoverage, injectMeaningGapCoverage, injectScreenGateCoverage, injectScriptScopeCoverage, injectUncoveredMarketCoverage, keepDeliveredRecordAsHistory, localLanguageStateOf, must, openAskForClosure, originRowsForReport, planWriteUps, readFindingsForReport, readReadingLog, rebuildDeliveredRecord, reportIdentityRecord, restoreTheRecordThatPassed, rewriteFromBeforeTheSeam, safeReadJson, settleDerivedBases, stage, stampCoverageJudgmentRows, withdrawSupersededAudit, writeScopeFactsOf, writeShortEntries } = helpers;
   // Phase 3 — delivery (v14 post-mortem fix). One LLM step curates the report; the audit, the page render,
   // and the email body are deterministic CODE; a tiny LLM step only SENDS. Each step is independent — a
   // failure in the audit or the email never loses the report.
@@ -93,6 +93,9 @@ export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWri
   // mark+uri). The CONDITIONAL clamp came from applyCoverageFloor's screenGateGap arm above, never
   // from these coverage-limited rows.
   injectScreenGateCoverage(P, run.runDir, note, ctx);
+  // The fifth: every market the register service does not reach gets a "Not searched" row, written by code
+  // (register-reach.mjs); the coverage line names the same markets.
+  injectUncoveredMarketCoverage(P, run.runDir, note, ctx);
   // — the fourth sibling, and the one that REPLACES rather than adds: coverage_judgment.rows
   // is derived from the machine ledger and the plan-execution receipt instead of retyped by the seat.
   // Same seam and same reason as injectDeferralCoverage above — every synthesis re-run has settled, so
