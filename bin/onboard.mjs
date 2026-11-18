@@ -1393,7 +1393,7 @@ export async function preflightCandidate(candidate) {
     // Cache-busted, and that is not a nicety. `REGISTER_PROVIDER` is frozen at the module's FIRST
     // evaluation, so a cached copy answers with whatever provider the first import saw — which makes a
     // second call in the same process, or any process that already imported driver.config, check the
-    // wrong provider and pass for the wrong reason. Same trick driver/test/pipeline.mock.test.mjs uses
+    // wrong provider and pass for the wrong reason. Same trick driver/test/pipeline-mock-harness.mjs uses
     // on pipeline.mjs, for the same frozen-at-import reason.
     const bust = `${Date.now()}-${process.hrtime.bigint()}`;
     const { preflightCredentials } = await import(`${pathToFileURL(join(REPO, "driver", "driver.config.mjs")).href}?bust=${bust}`);

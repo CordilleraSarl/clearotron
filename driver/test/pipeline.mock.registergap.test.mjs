@@ -4,7 +4,7 @@
 // copper-lattice e2e (offline mock): the deliver-conditional floor exercised ON in its own process (the
 // legacy pipeline.mock harness runs with the clamp off — its scenarios share one frozen root/slug and
 // predate it), and a recall store left on disk from before its removal, which no run reads or writes.
-// Mirrors pipeline.mock.test.mjs's harness; every run is billable-call-free (mock engine).
+// Mirrors pipeline-mock-harness.mjs; every run is billable-call-free (mock engine).
 import { test } from "node:test";
 import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
