@@ -11,6 +11,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { DIGEST_SENTENCES } from "./ruled-sentences-digest.mjs";
 
 const skill = (rel) => readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", rel), "utf8");
 
@@ -18,7 +19,7 @@ test("no manual lets a watchlist carry a finding, or an off-field sector exclude
   const digest = skill("clearance-register/digest.md");
   const synthesis = skill("clearance-search/synthesis-rules.md");
   const frame = skill("matter-frame/SKILL.md");
-  assert.ok(digest.includes("### Step 5 — Apply watchlists") && synthesis.includes("## Watchlist findings")
+  assert.ok(digest.includes(DIGEST_SENTENCES.stepApplyWatchlists) && synthesis.includes("## Watchlist findings")
     && frame.includes("### Off-field sectors"), "guard: the manuals were read");
   for (const carried of [/always include/, /regardless of relevance-gate/, /override the gate/, /can only ever ADD a finding/, /exists to \*guarantee\*/])
     assert.doesNotMatch(digest, carried, `the digest lets a watchlist carry a finding: ${carried}`);

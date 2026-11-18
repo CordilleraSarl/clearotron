@@ -160,9 +160,13 @@ export function credentialPathFor(env = process.env, home = null) {
  * file, names it. That also covers an operator who set `PORTAL_LOCAL_CREDENTIAL` themselves, who had
  * the same broken line and no demo in sight.
  */
-export function passphraseResetCommand({ prefix = "", credentialPath = null, env = process.env, home = null } = {}) {
-  const base = `${prefix}clearotron passphrase --reset`;
+export function passphraseResetCommand({ prefix = "", credentialPath = null, env = process.env, home = null, exists = existsSync } = {}) {
   const path = credentialPath ?? env.PORTAL_LOCAL_CREDENTIAL ?? null;
+  // THE DEMO'S OWN PROGRAM, WHERE IT HAS ONE. A demo started through npx keeps a copy of the program in its
+  // base (shared/permanent-install.mjs), and a bare `clearotron` names no program that reader has on PATH.
+  const demoProgram = path && basename(path) === INSTALL_CREDENTIAL_FILE ? join(dirname(path), "program", "bin", "clearotron") : null;
+  const program = demoProgram && exists(demoProgram) ? (/\s/.test(demoProgram) ? `"${demoProgram}"` : demoProgram) : `${prefix}clearotron`;
+  const base = `${program} passphrase --reset`;
   if (!path || path === credentialPathFor({}, home)) return base;
   // AN INSTALL'S OWN FILE IS NAMED BY ITS INSTALL, the way `clearotron start` names it: `--base`, which the
   // verb resolves through installCredential exactly as start does, and nothing at all for the default

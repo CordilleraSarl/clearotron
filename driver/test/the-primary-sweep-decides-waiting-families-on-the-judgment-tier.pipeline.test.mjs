@@ -30,7 +30,7 @@ const CLAUDE = join(HERE, "mock-claude.mjs");
 const CODEX = join(HERE, "mock-codex.mjs");
 chmodSync(CLAUDE, 0o755);
 chmodSync(CODEX, 0o755);
-// The offline mock run's settings, as pipeline.mock.test.mjs sets them and for its reasons.
+// The offline mock run's settings, as pipeline-mock-harness.mjs sets them and for its reasons.
 pinEnv(process.env, "CLEAROTRON_REPORTS_URL", envFrom(process.env, "CLEAROTRON_REPORTS_URL") || "https://trademark.test");
 process.env.CORSEARCH_SESSION_KEY ||= "test-offline";
 process.env.CLEAROTRON_PLAN_DISPATCH ||= "off";

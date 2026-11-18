@@ -13,6 +13,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { COMMON_LAW_SENTENCES } from "./ruled-sentences-common-law.mjs";
 
 const manual = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-common-law", "SKILL.md"), "utf8")
   .replace(/>\s/g, " ").replace(/\s+/g, " ");
@@ -28,7 +29,6 @@ test("grid mode judges the flagged elements' grid results and the meaning answer
 });
 
 test("a follow-up is asked only where closing the gap could change what the client is told", () => {
-  assert.ok(manual.includes("If an answer is \"no\" or \"unsure\" and closing it could change what you tell the client, fire a targeted "
-    + "`perplexity_research` follow-up"));
+  assert.ok(manual.includes(COMMON_LAW_SENTENCES.answerUnsureAndClosingCould));
   assert.ok(!manual.includes("If any answer is \"no\" or \"unsure,\" fire"), "the web manual still fires a follow-up on any such answer");
 });

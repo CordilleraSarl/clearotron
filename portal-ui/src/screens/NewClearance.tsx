@@ -447,8 +447,8 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   const recommendation = useMemo(
     () => (draft.pick.territories.length
       ? recommendSearch(levels, names.length, draft.pick.territories)
-      : recommendSearch(levels, names.length, own.territories, { own: true })),
-    [levels, names.length, draft.pick.territories, own.territories],
+      : recommendSearch(levels, names.length, own.territories, { own: true, fromProject: own.territoriesFromProject })),
+    [levels, names.length, draft.pick.territories, own.territories, own.territoriesFromProject],
   )
   useEffect(() => {
     if (pickedByHand || draft.savedSearch || editingSlug || !recommendation) return
@@ -501,7 +501,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
       // a search the reader chose, and never over a template, which carries its own.
       const fits = after.draft.territories.length
         ? recommendSearch(levels, parseNames(after.names).length, after.draft.territories)
-        : recommendSearch(levels, parseNames(after.names).length, own.territories, { own: true })
+        : recommendSearch(levels, parseNames(after.names).length, own.territories, { own: true, fromProject: own.territoriesFromProject })
       if (read.product == null && !pickedByHand && !d.savedSearch && fits) {
         after = { ...after, draft: chooseProduct(after.draft, fits.product) }
       }
@@ -1001,7 +1001,9 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
                     the screen still owes the reader is the account's own list, tagged with where it
                     came from, exactly as Classes does below. */}
                 {draft.pick.territories.length === 0 ? (
-                  own.territories.length ? (
+                  // TAKEN OVER AND EMPTIED IS WORLDWIDE. Once the reader removes the company's own places
+                  // the request says worldwide (geographyFor), so the panel draws that, not the list again.
+                  own.territories.length && !draft.pick.replacesOwnTerritories ? (
                     <>
                       {/* THE COMPANY'S OWN, AND REMOVABLE — because the engine judges them exactly as it
                           judges a territory the requester typed (owner's ruling, 2026-09-17). A register

@@ -21,6 +21,7 @@ import { fileURLToPath } from "node:url";
 import { validateJob } from "../enqueue-schema.mjs";
 import { STAGES } from "../stages.mjs";
 import { MAJOR_MARKETS } from "../effective-scope.mjs";
+import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
 
 const DEFAULTS = ["NZ", "PH", "KE"];
 const PATHS = { variantManifest: "vm.json", matterContext: "mc.md", registerBand: (a) => `band-${a}.json`,
@@ -77,9 +78,9 @@ test("both register manuals narrow a crowd one class at a time in the instructed
   const dir = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register");
   for (const name of ["SKILL.md", "unit.md"]) {
     const text = readFileSync(join(dir, name), "utf8").replace(/\s+/g, " ");
-    assert.ok(text.includes("Still a crowd? Ask again with the dominant goods word alone, then one class at a time, in the instructed classes. Read each list."), name);
-    assert.ok(text.includes("Still a crowd? Ask again one question per market, from the one list your opening message names. Read those lists."), name);
-    assert.ok(text.includes("4. Still a crowd after step 3? The narrowing ends. Record it with its count: the field is crowded there."), name);
+    assert.ok(text.includes(UNIT_SENTENCES.stillCrowdAskAgainWith), name);
+    assert.ok(text.includes(UNIT_SENTENCES.stillCrowdAskAgainOne), name);
+    assert.ok(text.includes(UNIT_SENTENCES.stillCrowdAfterStepThe), name);
     assert.doesNotMatch(text, /the owners crowding the list file in|then the incumbent's/, name);
   }
 });

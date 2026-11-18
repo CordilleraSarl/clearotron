@@ -273,7 +273,7 @@ export const EMAIL_COLOURS = Object.freeze({
   reportLink:   '#1a4fd6',
   auditLink:    '#3b4fd6',
   headline:     '#1a1a2e',
-  quiet:        '#7a8290',   // the access note, and the rated-under and coverage lines
+  quiet:        '#7a8290',   // the access note, and the coverage line
   warning:      '#7a2b12',   // the handling note, and an applicant named mid-run
   closeBoxFill: '#fdeeee',   // "Only you can close these"
   closeBoxLine: '#c98a86',

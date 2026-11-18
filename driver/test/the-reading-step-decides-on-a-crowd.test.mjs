@@ -13,6 +13,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register");
 const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
@@ -33,10 +34,10 @@ test("the register manual's unit mode reads its answers and decides, and the dig
 test("the unit manual has the unit decide on each crowd, and writes its reason as the note", () => {
   const unit = flat("unit.md");
   for (const ruled of [
-    "an incomplete result crosses the firewall as an incomplete block, and you decide on it by the narrowing steps: narrow it, or record it with its count and move on.",
-    "Read the count and decide by the narrowing steps whether a narrower named question inside it would change what you tell the client.",
-    "the prose carries no clearance verdict. Your one line on why more searching would not change the advice is the `note` you send.",
-    "you decide on each `incomplete` by the narrowing steps, and the write-up rules each slice's coverage.",
+    UNIT_SENTENCES.incompleteResultCrossesTheFirewall,
+    UNIT_SENTENCES.readTheCountAndDecide,
+    UNIT_SENTENCES.theProseCarriesClearanceVerdict,
+    UNIT_SENTENCES.youDecideEachIncompleteThe,
   ]) assert.ok(unit.includes(ruled), `the unit manual does not say "${ruled.slice(0, 80)}…"`);
   for (const gone of ["judgment decides whether to command a narrower enumeration", "Judgment reads the count and decides",
     "no clearance verdict and no sufficiency claim", "the lawyer reads the band and decides sufficiency"])

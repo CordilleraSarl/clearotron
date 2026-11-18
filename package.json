@@ -151,6 +151,7 @@
     "driver/skills/clearance-search/worked-examples-demo.md",
     "!scripts/secret-scanner-fetch.mjs",
     "!scripts/measure-test-durations.mjs",
+    "!scripts/count-manual-pins.mjs",
     "!scripts/test-durations.json",
     "!scripts/home-render-check.mjs",
     "!scripts/ai-page-render-check.mjs",

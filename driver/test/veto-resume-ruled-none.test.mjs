@@ -26,7 +26,7 @@
 // dispatch. The unit arm of that rider lives with the veto's own predicate tests; this file drives the
 // end-to-end behaviour.
 //
-// Mirrors pipeline.mock.test.mjs's harness (own process, own root); every run is billable-call-free.
+// Mirrors pipeline-mock-harness.mjs (own process, own root); every run is billable-call-free.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, chmodSync, readFileSync } from "node:fs";

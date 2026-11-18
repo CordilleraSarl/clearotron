@@ -92,7 +92,8 @@ clearotron start
 ```
 
 That is the portal everyone at your company uses. Ordering a clearance is the same screen — describe it
-in a sentence, or set the classes, marketplaces and search depth yourself:
+in a sentence once an AI is set up (the demo makes no AI calls, so it fills nothing in), or set the classes,
+marketplaces and search depth yourself:
 
 ![The new-clearance screen — classes, marketplaces and the four search depths](docs/assets/portal-new-clearance.png)
 

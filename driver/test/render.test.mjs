@@ -1730,15 +1730,17 @@ test("doc-54: legacy sidecar-less gauge keeps its 5 positional ticks (byte-stabi
   assert.match(ticks, />Severe</);
 });
 
-test("doc-54: one footer — the full provenance line rides the document; serve-time removal is portal-report's job", () => {
-  // ONE report (spec 2026-07-30 §5): the client footer variant is retired. The document carries the
-  // reviewer's full "Rated under:" provenance; portal-report.mjs (RATED_UNDER_RE) strips that line for
-  // EVERY embedded reader at serve time — one place, tested there.
+test("doc-54: one footer — no provenance line rides the document, and no option forks it", () => {
+  // ONE report (spec 2026-07-30 §5): the client footer variant is retired. The reviewer's "Rated under:" line was
+  // carried on the document and stripped at serve time; it is no longer written (owner, 2026-11-18), and
+  // portal-report.mjs (RATED_UNDER_RE) keeps its strip for stored reports that carry it.
   const fmLeak = REPORT.replace("run: 2026-06-10", "run: 2026-06-10 · Corsearch register + common-law grid")
     .replace("---\n\n#", "rated_under: Demo Brand Owner (demo-brand-owner) · custom framework (risk-framework-demo.md) · profile 890f610e1dcf\n---\n\n#");
   const vi = { tier: "Manageable", verdict: "CONDITIONAL", badge: "l2", gaugeIndex: 1, band: { label: "Manageable", rankFromTop: 4, scale: 5 } };
   const internal = renderHtml(parsedOf(fmLeak), BAND_FINDINGS, [], { framework: MATRIX_MANIFEST, verdictInfo: vi });
-  assert.match(internal, /Rated under: <span class="mono">Demo Brand Owner \(demo-brand-owner\)/, "the footer keeps the full provenance line");
+  const foot = (internal.match(/<footer[^>]*>([\s\S]*?)<\/footer>/) || [])[1] ?? "";
+  assert.ok(foot.length > 0, "the page has a footer to read");
+  assert.doesNotMatch(foot, /Rated under:/, "the footer still writes the provenance line");
   const stale = renderHtml(parsedOf(fmLeak), BAND_FINDINGS, [], { client: true, framework: MATRIX_MANIFEST, verdictInfo: vi });
   assert.equal(stale, internal, "opts.client no longer forks the footer");
 });
@@ -1835,13 +1837,10 @@ test("the footer is one client line with its dates named, and the reviewer's pro
   assert.match(foot, /issued on 2026-06-16/, "and the issue date as the date issued");
   assert.doesNotMatch(foot, /14:32|CEST/, "the publish minute reaches no surface");
   assert.match(foot, /Corsearch register \+ common-law grid/, "the provider survives the split");
-  // BOTH provenance lines stay ON THE DOCUMENT and are removed at serve time. That is the shape the
-  // page already used for "Rated under", and "Run under project" was the same class of line sitting
-  // beside it with no strip — so it reached every embedded reader while its neighbour did not.
-  assert.match(foot, /<br\s*\/?>Rated under:\s*<span class="mono">[^<]*<\/span>\./,
-    "the reviewer's provenance is on the document, in the shape the strip removes");
-  assert.match(foot, /<br\s*\/?>Run under project:\s*<span class="mono">[^<]*<\/span>\./,
-    "and the project line beside it, in the same shape");
+  // NEITHER provenance line is written (owner, 2026-11-18): every reader reaches a report through the portal,
+  // which removed both, so on the document they served nobody. The facts stay in the run's front matter.
+  assert.doesNotMatch(foot, /Rated under:/, "the framework provenance is still written on the document");
+  assert.doesNotMatch(foot, /Run under project:/, "the project line is still written on the document");
 });
 
 // The strip itself, driven rather than described: an embedded reader gets the client line and neither
@@ -1851,7 +1850,11 @@ test("an embedded reader gets the client footer line and neither provenance line
   const { prepareReportForEmbed } = await import("../portal-report.mjs");
   const fmRun = REPORT.replace("run: 2026-06-10", "run: 2026-06-10 · Corsearch register + common-law grid")
     .replace("---\n\n#", "rated_under: Demo Brand Owner (demo-brand-owner) · custom framework · profile 890f610e\nrun_under_project: Japan and Korea app launch (Demo Brand Owner)\n---\n\n#");
-  const html = renderHtml(parsedOf(fmRun), BAND_FINDINGS, [], { issued: "2026-06-16 · 14:32 CEST" });
+  // A STORED report, rendered before the lines stopped being written, still carries both: the portal serves it from
+  // its own bytes, so the strip is driven on a document that has them, put back where the footer wrote them.
+  const html = renderHtml(parsedOf(fmRun), BAND_FINDINGS, [], { issued: "2026-06-16 · 14:32 CEST" })
+    .replace(/(Corsearch register \+ common-law grid\.)/, '$1<br>Rated under: <span class="mono">Demo Brand Owner (demo-brand-owner) · custom framework · profile 890f610e</span>.<br>Run under project: <span class="mono">Japan and Korea app launch (Demo Brand Owner)</span>.');
+  assert.match(html, /Rated under:[\s\S]*Run under project:/, "the stored document was not built with both lines");
   const embedded = prepareReportForEmbed(html, {}).html ?? prepareReportForEmbed(html, {});
   const served = typeof embedded === "string" ? embedded : String(embedded);
 

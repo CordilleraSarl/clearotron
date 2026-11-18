@@ -860,13 +860,7 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
   // which publishes without one: the throw left publishReport at `published → null` and the runner
   // exited 1. Reading from the report's own directory is also the right answer for a republish.
   const recallStore = readStore(runDir ?? dirname(reportMd), '_driver/register-recall.json');
-  const undispatchedProbes = (recallReceiptForOwnCompany(recallStore.value)?.overflow ?? [])   // never another company's remembered conflict
-    .filter((o) => o && (o.term || o.qid))
-    .map((o) => ({
-      area: String(o.term ?? o.qid),
-      state: 'not-searched',
-      note: `over the cap, never dispatched (${String(o.qid ?? 'no probe id recorded')})`,
-    }));
+  const undispatchedProbes = undispatchedProbeRows(recallReceiptForOwnCompany(recallStore.value));   // never another company's remembered conflict
   if (recallStore.state === 'damaged' && runDir) {
     try {
       runLog(runDir, { event: 'probe-over-cap-unreadable', store: recallStore.name, error: recallStore.error });
@@ -1724,6 +1718,15 @@ export const TONE_TIER = {
   low:     EMAIL_TIER.manageable,
   minimal: EMAIL_TIER.low,
 };
+/**
+ * The gaps-sheet rows for the recall probes a run left over the cap. The probe id is the engine's: it stays in the
+ * receipt and the run record, and the cell gets nothing in its place.
+ */
+export function undispatchedProbeRows(receipt) {
+  return (receipt?.overflow ?? [])
+    .filter((o) => o && (o.term || o.qid))
+    .map((o) => ({ area: String(o.term ?? o.qid), state: 'not-searched', note: 'over the cap, never dispatched' }));
+}
 export function riskTier(word) {
   const u = String(word || '').toUpperCase();
   if (EMAIL_BANDS) {
@@ -1897,8 +1900,8 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
       : (fm.overall_caption ? `<p style="margin:0 0 6px">${cell(fm.overall_caption)}</p>` : ''))
     + reportLink
     + (fm.handling_note ? `<p style="margin:0 0 8px;color:${EC.warning}"><b>Handling note:</b> ${cell(fm.handling_note)}</p>` : '')
-    // T9 (K3): methodology identity — which profile/framework rated this run (+ verifiable sha).
-    + (fm.rated_under ? `<p style="margin:0 0 6px;font-size:9.5pt;color:${EC.quiet}">Rated under: ${cell(fm.rated_under)}</p>` : '')
+    // No "Rated under" line: the report a client reads is cleaned of it, so the note covering it is too
+    // (2026-11-18). The scale stays named on the report's gauge and in the run's record.
     // compute-don't-author (PR-4, review issue 2): the per-class register-coverage truth is computed
     // by the driver (scope-facts.mjs) and stamped as `coverage_line:` front-matter — but the frozen
     // report renderer only renders known keys, so without THIS line the join never reached a surface

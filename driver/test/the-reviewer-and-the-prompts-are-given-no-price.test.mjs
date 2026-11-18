@@ -12,13 +12,14 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { COMMON_LAW_SENTENCES } from "./ruled-sentences-common-law.mjs";
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "skills");
 const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
 
 test("the web prompts name the deepest tier, not the most expensive, and price nothing the tool returns", () => {
   const prompts = flat("clearance-common-law/perplexity-prompts.md");
-  assert.ok(prompts.includes("Do not pass depth. The run's search setting decides the tier of every follow-up; the grid runs on its own tier."));
+  assert.ok(prompts.includes(COMMON_LAW_SENTENCES.notPassDepthTheRun));
   assert.ok(prompts.includes("The tool writes the grid ledger, then returns how many cells it holds and the candidates to judge. Then:"));
   for (const gone of ["most expensive tier", "(tokens, cost)"])
     assert.ok(!prompts.includes(gone), `the web prompts still say "${gone}"`);
