@@ -2234,6 +2234,22 @@ function dedupeFollowUps(coverage) {
   });
 }
 
+// A REPORT WHOSE ASSESSMENT DID NOT COMPLETE STATES A SHARED NOTE ONCE (owner, 2026-11-18). Its grid is the page's whole
+// body, and most of its rows carry the one fallback note, so the page was one lower-case sentence many times over
+// (17 on the measured run). Rows of one state that share a note are one cell: the note once, its first letter
+// capitalised, then the searches it covers. A row with a note of its own renders as it always did, and the group's
+// count still counts every row.
+function sharedNoteCells(rows, cell) {
+  const byNote = new Map();
+  for (const r of rows) { const k = String(r.note ?? ''); byNote.set(k, [...(byNote.get(k) ?? []), r]); }
+  return [...byNote.values()].map((same) => {
+    if (same.length < 2) return cell(same[0]);
+    const s = COV_STATE[same[0].state] || COV_STATE.note;
+    return `<div class="covcell ${s.cls}"><div class="ck">${s.ic}</div><div><div class="ct">${inline(cap(same[0].note || ''))}</div>`
+      + `<ul class="covlist">${same.map((r) => `<li>${esc(cap(r.area))}</li>`).join('')}</ul></div></div>`;
+  });
+}
+
 // `verdict: false` — a report whose overall assessment was not completed has no verdict above the grid, so the open
 // rows' lead line, which says the material ones are carried in it, is not printed. The rows are.
 function coverageGrid(coverage, { verdict = true } = {}) {
@@ -2260,7 +2276,7 @@ function coverageGrid(coverage, { verdict = true } = {}) {
     .filter(([, rows]) => rows.length);
   if (rest.length) parts.push(
     (verdict ? `<p class="covnext"><b>Next steps &amp; monitoring</b> — routine follow-ups and bounded monitor items; anything material is carried in the verdict above.</p>` : '')
-    + groups.map(([state, rows]) => `<div class="covgrp"><div class="covgh">${esc(COV_STATE[state].word)} <span class="covgn">(${rows.length})</span></div><div class="cov">${rows.map(cell).join('')}</div></div>`).join(''));
+    + groups.map(([state, rows]) => `<div class="covgrp"><div class="covgh">${esc(COV_STATE[state].word)} <span class="covgn">(${rows.length})</span></div><div class="cov">${(verdict ? rows.map(cell) : sharedNoteCells(rows, cell)).join('')}</div></div>`).join(''));
   return parts.join('');
 }
 

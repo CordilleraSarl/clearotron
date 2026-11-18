@@ -5386,8 +5386,8 @@
           "todos": 0
         },
         "open-coverage-rows-group-under-their-state.test.mjs": {
-          "tests": 1,
-          "asserts": 4,
+          "tests": 2,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
