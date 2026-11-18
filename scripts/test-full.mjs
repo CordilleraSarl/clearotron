@@ -45,7 +45,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+export const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 /**
  * Every `*.test.mjs` under `providers/`, at any depth, deduplicated and ordered.
@@ -175,12 +175,22 @@ export function plan(root = ROOT, { providerFiles } = {}) {
  * ~980 test files in the tree, executed in one serial job. Agents write faster than that gate opens, so
  * the gate — not the work — set the pace of the day.
  *
- * A shard is a SLICE OF THE SORTED FILE LIST TAKEN BY INDEX: shard i of n takes every file whose
- * position satisfies `index % n === i - 1`. That is exhaustive and disjoint by construction — every
- * index lands in exactly one shard, for any n — so the union of the shards is the whole list as a
- * property of the arithmetic, not as something a check has to confirm afterwards. Round-robin rather
- * than contiguous blocks because neighbouring files in a sorted list tend to be the same subsystem and
- * to cost the same; interleaving spreads the slow ones.
+ * A shard is DEALT BY MEASURED DURATION: the files go out longest first, each to the shard with the
+ * least time dealt so far, ties to the lower shard, from the table in `scripts/test-durations.json`.
+ * Every file is dealt exactly once, so the shards are exhaustive and disjoint by construction, for any
+ * n and any table — the union of the shards is the whole list as a property of the deal, not as
+ * something a check has to confirm afterwards. Every shard reads the same committed table, so every
+ * shard computes the same deal.
+ *
+ * It replaced a slice by index (`index % n`), which interleaved the sorted list and still left the
+ * longest shard about twice the shortest: measured over 38 green runs, 2026-11-11 to 2026-11-17, a
+ * median of 10.4 minutes against 5.3, while the four summed to 29.1. The required checks wait for the
+ * longest.
+ *
+ * A TABLE THAT IS STALE COSTS BALANCE, NEVER COVERAGE. A file the table does not name is dealt at the
+ * median of the files it does name, so it lands in exactly one shard like any other, and every shard's
+ * log says how many files that was. `scripts/measure-test-durations.mjs --run <id> --write` rebuilds the
+ * table from what a CI run measured.
  *
  * WHAT IS NOT SHARDED, and why that is stated rather than assumed. Only a corpus whose own test script
  * is the plain `node --test test/*.test.mjs` shape can be expressed as an explicit file list and cut up
@@ -191,9 +201,37 @@ export function plan(root = ROOT, { providerFiles } = {}) {
  */
 const PLAIN_GLOB = /^node \.\.\/scripts\/test-run\.mjs node --test test\/\*\.test\.mjs$/;
 
-export function shardSlice(list, i, n) {
-  return list.filter((_, idx) => idx % n === i - 1);
+export const DURATIONS_FILE = "scripts/test-durations.json";
+
+/** The measured table (milliseconds per file), or an empty one: a missing table deals every file at one cost. */
+export function readDurations(root = ROOT) {
+  try {
+    const table = JSON.parse(readFileSync(join(root, DURATIONS_FILE), "utf8"));
+    return { measured: table.measured ?? null, ms: table.ms ?? {} };
+  } catch { return { measured: null, ms: {} }; }
 }
+
+const timed = (ms, f) => Number.isFinite(ms[f]) && ms[f] >= 0;
+
+/** Shard i of n of `list`, dealt by `ms` (see above). Returned in `list`'s own order. */
+export function shardByDuration(list, i, n, ms = {}) {
+  const known = list.filter((f) => timed(ms, f)).map((f) => ms[f]).sort((a, b) => a - b);
+  const median = known.length ? known[Math.floor(known.length / 2)] : 1;
+  const deal = list.map((f, at) => ({ f, at, cost: timed(ms, f) ? ms[f] : median }))
+    .sort((a, b) => b.cost - a.cost || a.at - b.at);
+  const load = new Array(n).fill(0);
+  const owner = new Map();
+  for (const { f, cost } of deal) {
+    let k = 0;
+    for (let j = 1; j < n; j++) if (load[j] < load[k]) k = j;
+    load[k] += cost;
+    owner.set(f, k);
+  }
+  return list.filter((f) => owner.get(f) === i - 1);
+}
+
+/** How many files of `list` the table does not name. */
+export const untimedCount = (list, ms = {}) => list.filter((f) => !timed(ms, f)).length;
 
 function workspaceTestFiles(root, ws) {
   const dir = join(root, ws, "test");
@@ -213,22 +251,28 @@ function isShardable(root, ws) {
   } catch { return false; }
 }
 
+/** Every file the shards deal, corpus by corpus: what `measure-test-durations` needs a figure for. */
+export function shardableFiles(corpora, root = ROOT) {
+  return corpora.flatMap((c) => (c.kind === "files" ? c.files
+    : c.kind === "workspace" && isShardable(root, c.name) ? workspaceTestFiles(root, c.name) : []));
+}
+
 /**
  * Rewrite the plan for one shard. Every corpus stays in the list and is reported; what changes is how
- * many of its files THIS shard runs.
+ * many of its files THIS shard runs, and how many of them the table did not name.
  */
-export function applyShard(corpora, { i, n }, root = ROOT) {
+export function applyShard(corpora, { i, n }, root = ROOT, ms = readDurations(root).ms) {
   return corpora.map((c) => {
     if (c.kind === "covered") return c;
     if (c.kind === "files") {
-      const mine = shardSlice(c.files, i, n);
-      return { ...c, files: mine, total: c.files.length,
+      const mine = shardByDuration(c.files, i, n, ms);
+      return { ...c, files: mine, total: c.files.length, untimed: untimedCount(c.files, ms),
                argv: ["node", "scripts/test-run.mjs", "node", "--test", ...mine] };
     }
     if (c.kind === "workspace" && isShardable(root, c.name)) {
       const all = workspaceTestFiles(root, c.name);
-      const mine = shardSlice(all, i, n);
-      return { ...c, kind: "files", files: mine, total: all.length,
+      const mine = shardByDuration(all, i, n, ms);
+      return { ...c, kind: "files", files: mine, total: all.length, untimed: untimedCount(all, ms),
                argv: ["node", "scripts/test-run.mjs", "node", "--test", ...mine] };
     }
     // Not expressible as a file list: run it whole, once, on shard 1.
@@ -249,7 +293,8 @@ function main() {
     return { i: a, n: b };
   })();
   const { corpora: full, faults } = plan();
-  const corpora = shard ? applyShard(full, shard, ROOT) : full;
+  const durations = readDurations(ROOT);
+  const corpora = shard ? applyShard(full, shard, ROOT, durations.ms) : full;
 
   // FAULTS BEFORE ANYTHING RUNS. A missing corpus discovered after a green suite reads as an
   // afterthought; discovered first, it is the answer.
@@ -266,6 +311,17 @@ function main() {
     process.exit(2);
   }
 
+  // SAID BEFORE A LISTING TOO, so the deal and how much of it the table measured can be read without running a shard.
+  if (shard) {
+    const dealt = corpora.filter((c) => c.kind === "files");
+    const total = dealt.reduce((a, c) => a + c.total, 0);
+    const untimed = dealt.reduce((a, c) => a + c.untimed, 0);
+    console.log(`\ntest-full: shard ${shard.i} of ${shard.n} — files are dealt by measured duration, longest first to the `
+      + `shard with the least so far, so the shards are disjoint and their union is the whole list. `
+      + `${DURATIONS_FILE} (measured ${durations.measured ?? "never"}) names ${total - untimed} of the ${total} file(s); `
+      + `${untimed} have no recorded duration and were dealt at the median.`);
+  }
+
   if (listOnly) {
     for (const c of chosen) {
       console.log(c.kind === "covered"
@@ -274,8 +330,6 @@ function main() {
     }
     return;
   }
-
-  if (shard) console.log(`\ntest-full: shard ${shard.i} of ${shard.n} — slices are taken by index from the sorted file list, so the shards are disjoint and their union is the whole list.`);
 
   const ran = [];
   for (const c of chosen) {

@@ -8343,6 +8343,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-suite-shards-by-measured-duration.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "the-summary-carries-structure.test.mjs": {
           "tests": 14,
           "asserts": 37,
