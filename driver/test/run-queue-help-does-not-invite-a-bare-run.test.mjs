@@ -39,3 +39,9 @@ test("the verbs that share the dispatcher's help keep it word for word", () => {
     assert.ok(out.includes(`its own. ${INVITE}`), `${verb} --help lost its line:\n${out}`);
   }
 });
+
+test("run answers --help with its own usage line and keeps the spend line", () => {
+  const out = help("run");
+  assert.match(out, /usage: clearotron run --job <file\.json> — runs one clearance from a job file\. An example job is examples\/job\.euipo\.json\./);
+  assert.match(out, /THIS SPENDS: hours of model time and real register calls\./, "run's help no longer says it spends");
+});
