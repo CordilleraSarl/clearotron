@@ -26,7 +26,7 @@ test("the common-law sentinel is C/L — never a real ISO code", () => {
 test("ISO-collision guard: every two-letter key carries a country/office meaning, never a pipeline concept", () => {
   // Non-ISO keys that legitimately carry a non-country meaning. Everything else that LOOKS like an
   // ISO alpha-2 code must not be repurposed (the CL=Common-law bug class).
-  const SANCTIONED_NON_ISO = new Set(["C/L", "EU", "WO", "BX", "UK"]);   // EU/WO/BX/UK: offices, not ISO countries
+  const SANCTIONED_NON_ISO = new Set(["C/L", "EU", "WO", "BX", "UK", "XS"]);   // EU/WO/BX/UK: offices, not ISO countries; XS: the US state registers
   const CONCEPT_WORDS = /common-law|register|marketplace|pending|unknown|internal/i;
   for (const [code, name] of Object.entries(REGION_NAMES)) {
     if (SANCTIONED_NON_ISO.has(code)) continue;
@@ -64,7 +64,7 @@ test("a country code the table lacks is named by the runtime; the table's own na
 });
 
 test("no placeholder reaches a page: unknown, private-use, numeric and malformed codes keep their code and never throw", () => {
-  for (const code of ["ZZ", "AA", "QM", "QZ", "XA", "XS", "XX", "EM", "001", "419", "C/L-x", "INT", "EUTM", "", "a", "ar", "A1", "ABC"]) {
+  for (const code of ["ZZ", "AA", "QM", "QZ", "XA", "XX", "EM", "001", "419", "C/L-x", "INT", "EUTM", "", "a", "ar", "A1", "ABC"]) {
     let out;
     assert.doesNotThrow(() => { out = regionName(code); }, `regionName(${JSON.stringify(code)}) threw`);
     assert.equal(out, code, `${JSON.stringify(code)} took a name it should not: ${out}`);

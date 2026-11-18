@@ -574,6 +574,7 @@
   .wclean{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:10px 0 4px}
   .wk{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--clear);margin-right:8px}
   .wchip{padding:3px 9px;border-radius:999px;background:var(--clear-soft);color:var(--clear-tx);font:600 12px/1.4 var(--font)}
+  .wnames{margin:0;flex:1 1 320px;font-size:13.5px;line-height:1.55}
   .panel.courtp{padding:14px 18px}.panel.courtp p{margin:0;font-size:14px;line-height:1.5}
 
   .ask-fi{margin-left:auto;font:600 12px/1 var(--font);padding:7px 10px;border-radius:999px;border:1px solid var(--line2);background:transparent;color:var(--ink);cursor:pointer;white-space:nowrap}

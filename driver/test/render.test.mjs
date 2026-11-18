@@ -1812,7 +1812,7 @@ test("the by-country rows name the country, including where the register writes 
 
   const rows = [...html.matchAll(/<span class="rcode">([^<]*)<\/span><span class="wname">([^<]*)<\/span>/g)]
     .map((m) => [m[1], m[2]]);
-  const chips = [...html.matchAll(/<span class="wchip" title="([^"]*)">/g)].map((m) => m[1]);
+  const chips = (html.match(/<p class="wnames">([^<]*)<\/p>/)?.[1].split(", ") ?? []);
   const named = new Map([...rows, ...chips.map((t) => [t, t])]);
 
   // However the three land between rated rows and clean chips, none of them may read as a bare code.
@@ -3048,9 +3048,7 @@ test("the court-decisions line never ships a dangling clause where the country s
 //   · a plan that named nothing draws nothing        → break: fall back to the archive, arm 4 red
 //   · an unreached territory is NOT a clean chip     → break: chip it, arm 5 red
 test("where it stands is filled from the search plan, so a register that archives nothing still says where it looked", () => {
-  // THE CHIP'S TEXT IS THE NAME OR THE CODE depending on how many chips there are — twelve is the seam,
-  // drawn that way by the board. Its `title` is always the country's name, so the arms read that and the
-  // rows' own code, which is what makes them stable whichever side of the seam a case falls on.
+  // THE CLEAN PLACES ARE ONE PARAGRAPH OF NAMES, so the arms read those names and the rows' own code.
   // READ INSIDE THE SECTION'S OWN PANEL, never across the whole page. `rcode` is drawn by other sections
   // too, so a page-wide walk found an MX row that this section had not drawn: the arm asserting that a
   // finding's country keeps its row passed with the union removed, which is the one break it exists for.
@@ -3065,7 +3063,7 @@ test("where it stands is filled from the search plan, so a register that archive
     const panel = panelOf(html);
     return {
       rows: [...panel.matchAll(/<span class="rcode">([^<]*)<\/span>/g)].map((m) => m[1]),
-      chips: [...panel.matchAll(/<span class="wchip" title="([^"]*)">/g)].map((m) => m[1]),
+      chips: (panel.match(/<p class="wnames">([^<]*)<\/p>/)?.[1].split(", ") ?? []),
     };
   };
 
@@ -3142,7 +3140,7 @@ test("every country a finding holds a registration in takes its band where it st
     { uri: "https://tm.example/mark/am/3003", classes: ["9"], status: "Registered" } ] } }];
   const panel = panelOf(renderHtml(parsedOf(REPORT), threeCountries, [], { searchDepth: depth, planTerritories: plan }));
   const rows = [...panel.matchAll(/<span class="rcode">([^<]*)<\/span><span class="wname">[^<]*<\/span><span class="kc[^"]*">([^<]*)</g)].map((m) => `${m[1]}:${m[2]}`);
-  const chips = [...panel.matchAll(/<span class="wchip" title="([^"]*)">/g)].map((m) => m[1]);
+  const chips = (panel.match(/<p class="wnames">([^<]*)<\/p>/)?.[1].split(", ") ?? []);
   assert.deepEqual(rows.sort(), ["AM:Moderate", "GR:Moderate", "SA:Moderate"], `a registered country lost its band: ${JSON.stringify(rows)}`);
   assert.deepEqual(chips, ["Japan"], `a country holding a finding's registration was chipped Nothing found: ${JSON.stringify(chips)}`);
 

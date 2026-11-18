@@ -688,13 +688,18 @@ function facts(fm, findings, coverage) {
 // "register / priority markets NZ, IN, TR") matches nothing and we fall back to the findings' own regions —
 // a sensible searched-set for those runs (and for coverage-less / single-finding runs). Insertion order is
 // preserved (coverage order, else exposure order); common-law (C/L) is not a jurisdiction chip.
+// ZZ IS NOWHERE (owner, 2026-11-18, batch two item 1153). It is the register's "unspecified", not a place, and it
+// printed as a code in the lists of places a report gives. It leaves every one of them; a record filed under it still
+// counts as read.
+const UNSPECIFIED_REGION = 'ZZ';
+
 function jurisdictionCodes(fm, coverage = [], findings = []) {
   const order = [], meta = new Map();
   // The plan's own answer when publish supplied one; otherwise the ledger-prose sniff below decides,
   // exactly as before. A plan that says worldwide is never overridden by prose that forgot to say so.
   let worldwide = SCOPE_WORLDWIDE === true;
   const add = (code, limited) => {
-    if (!code || code === COMMON_LAW) return;
+    if (!code || code === COMMON_LAW || code === UNSPECIFIED_REGION) return;
     if (!meta.has(code)) { meta.set(code, { limited: !!limited }); order.push(code); }
     else if (limited) meta.get(code).limited = true;
   };
@@ -815,7 +820,11 @@ function headScope(fm, coverage = [], findings = []) {
 // The scope line, the facts card and the covers sentence were three places saying what was asked for.
 // They are one labelled panel now, directly under the name, on every report type (the 2026-09-16 report redesign).
 // Every row is a fact the run already carries: nothing here is composed.
-function aboutPanel(fm, coverage = [], findings = [], opts = {}) {
+// WHERE THE SEARCH RAN, as a count and as the list. On a worldwide search the About row gives the count of focus
+// territories (owner, 2026-11-18, batch two item 1151), "Worldwide · 14 focus territories", where it listed every one
+// of them; the list, in the words it had, moves to the What was searched section. A search of named places keeps
+// its list in the About row, where it is the answer.
+function placesSearched(fm, coverage = [], findings = []) {
   const { order: codes, meta, worldwide } = jurisdictionCodes(fm, coverage, findings);
   // A JURISDICTION SEARCHED WITH LIMITED COVERAGE SAYS SO HERE. The chips this row replaces carried that
   // on the office's own chip; a plain list of country names would read as "all of these were searched"
@@ -826,6 +835,11 @@ function aboutPanel(fm, coverage = [], findings = [], opts = {}) {
     const name = regionName(c) || c;
     return meta.get(c)?.limited ? `${name} (coverage-limited)` : name;
   }).filter(Boolean).join(', ');
+  return { worldwide, focus: codes.length, where, list: worldwide ? (where ? `Worldwide, focus on ${where}` : 'Worldwide') : where };
+}
+
+function aboutPanel(fm, coverage = [], findings = [], opts = {}) {
+  const { worldwide, focus, list } = placesSearched(fm, coverage, findings);
   // The type of search is the bolded head of the depth note the driver already composes; the rest of
   // that sentence is the product's covers line, which the owner ruled off the page.
   const note = String(opts.depthNote ?? '').trim();
@@ -835,7 +849,7 @@ function aboutPanel(fm, coverage = [], findings = [], opts = {}) {
     ['Type of search', stage],
     ['Instructed use', fm.use || ''],
     ['Classes', fm.classes || ''],
-    ['Where searched', worldwide ? (where ? `Worldwide, focus on ${where}` : 'Worldwide') : where],
+    ['Where searched', worldwide && focus ? `Worldwide \u00b7 ${focus} focus territor${focus === 1 ? 'y' : 'ies'}` : list],
     ['Project', fm.run_under_project || ''],
     ['Searched on', fm.searched || fm.run || ''],
   ].filter(([, v]) => String(v || '').trim());
@@ -1147,7 +1161,7 @@ function whereItStandsSection(findings, opts) {
   const planned = plan && Array.isArray(plan.searched) ? plan.searched.map(String) : null;
   const codes = (planned
     ? [...new Set([...planned, ...bandBy.keys()])]
-    : Object.keys(byC)).filter((c) => c !== 'WO');
+    : Object.keys(byC)).filter((c) => c !== 'WO' && c !== UNSPECIFIED_REGION);
   if (!codes.length) return '';
   const alias = { EM: 'EU', GB: 'UK' };
   // ONE ROW PER COUNTRY, DEDUPED AFTER THE ALIAS AND NOT BEFORE. The archive wrote each country once, so
@@ -1179,8 +1193,10 @@ function whereItStandsSection(findings, opts) {
   }
   if (!withF.length && !clean.length) return '';
   const rows = withF.map((c) => `<div class="wrow"><span class="rcode">${esc(c.code)}</span><span class="wname">${esc(c.name)}</span><span class="kc">${esc(c.band)}</span></div>`).join('');
+  // THE CLEAN PLACES ARE ONE PARAGRAPH OF NAMES (owner, 2026-11-18, batch two item 1152). They were a chip each, and
+  // past twelve the chips printed codes, with the name only on hover. A list of names reads in the names' order.
   const cleanHtml = clean.length
-    ? `<div class="wclean"><span class="wk">Nothing found</span>${clean.map((c) => `<span class="wchip" title="${escAttr(c.name)}">${esc(clean.length > 12 ? c.code : c.name)}</span>`).join('')}</div>`
+    ? `<div class="wclean"><span class="wk">Nothing found</span><p class="wnames">${esc(clean.map((c) => c.name).sort((a, b) => a.localeCompare(b, 'en')).join(', '))}</p></div>`
     : '';
   return `<div class="sec" id="countries"><span class="num"></span><h2>Where it stands</h2></div>
   <div class="panel where">${rows}${cleanHtml}</div>`;
@@ -1224,10 +1240,12 @@ function courtLineFor(opts, state) {
 // disclosure the whole can't-close-then-disclose doctrine rests on, and it was measured reaching a
 // client short by two rows only hours before this redesign (the 2026-09-16 report redesign). It renders here, in the
 // reader's own words, with the counts — never the query text, the refusals or the provider faults.
-function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri = new Map()) {
+function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri = new Map(), fm = {}) {
   const sd = opts && opts.searchDepth;
   const open = (Array.isArray(coverage) ? coverage : []).filter((c) => COV_STATE[c?.state]?.cls !== 'ok');
   const c = (sd && sd.counts) || {}, rows = [];
+  const places = placesSearched(fm, coverage, findings);
+  if (places.worldwide && places.focus) rows.push(['Where searched', places.list]);
   // THE REGISTER ROW, AS THE BOARDS DRAW IT: one line of totals — records read across the countries, plus
   // the international registrations apart from them — and the per-country counts as chips under it, code
   // first and the name on hover. One country is named in the line instead ("141 records read in Japan"),
@@ -1245,7 +1263,8 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
     const plus = intl ? `${countries.length ? ', plus ' : ''}${intl.toLocaleString('en-GB')} international registration${intl === 1 ? '' : 's'}` : '';
     const line = `${countries.length ? `${read.toLocaleString('en-GB')} record${read === 1 ? '' : 's'} read${where}` : ''}${plus}`;
     const chips = countries.length > 1
-      ? `<div class="wchips">${countries.map(([k, n]) => `<span class="wchip" title="${escAttr(regionName(k) || k)}">${esc(k)} <b>${Number(n).toLocaleString('en-GB')}</b></span>`).join('')}</div>`
+      // ZZ draws no chip; its records stay in the totals, which the overall-risk panel states too.
+      ? `<div class="wchips">${countries.filter(([k]) => k !== UNSPECIFIED_REGION).map(([k, n]) => `<span class="wchip" title="${escAttr(regionName(k) || k)}">${esc(k)} <b>${Number(n).toLocaleString('en-GB')}</b></span>`).join('')}</div>`
       : '';
     rows.push(['Register', { html: `${esc(line)}${chips}` }]);
   }
@@ -1441,8 +1460,13 @@ function dedupeScatter(findings) {
   return placed;
 }
 
+// THE CHART'S NAME (owner, 2026-11-18, batch two item 1155). A screen reader met an unnamed drawing and then a run
+// of "#1", "#2" links. The <title>, first in the <svg>, says what the drawing is; its count is the points drawn.
+const chartTitle = (n) => `Chart of ${n} conflict${n === 1 ? '' : 's'}, placed by how similar each mark is and how close its goods are; each number links to its card below.`;
+
 function quadrant(findings) {
-  const markers = dedupeScatter(findings).map(({ f, cx, cy, on, r, pending }) => {
+  const points = dedupeScatter(findings);
+  const markers = points.map(({ f, cx, cy, on, r, pending }) => {
     // Band hexes, hardcoded on purpose: the quadrant panel stays a FIXED LIGHT surface in dark mode
     // (brand.mjs REPORT_DARK_RULES), so it cannot read var(--med)/var(--clear) — those flip. They are
     // the LIGHT ramp's --med / --clear and must be recolored in lockstep with brand.mjs:90.
@@ -1455,6 +1479,7 @@ function quadrant(findings) {
   }).join('');
   return `<div class="panel land">
       <svg viewBox="0 0 560 430" xmlns="http://www.w3.org/2000/svg" font-family="Plus Jakarta Sans, sans-serif">
+        <title>${chartTitle(points.length)}</title>
         <defs><linearGradient id="rz" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="${PALETTE.crimson}" stop-opacity="0"/><stop offset="1" stop-color="${PALETTE.crimson}" stop-opacity=".09"/></linearGradient></defs>
         <rect x="70" y="30" width="460" height="342" fill="url(#rz)"/>
         <g stroke="${QC.grid}" stroke-width="1"><line x1="70" y1="30" x2="70" y2="372"/><line x1="300" y1="30" x2="300" y2="372" stroke-dasharray="3 4"/><line x1="530" y1="30" x2="530" y2="372"/><line x1="70" y1="372" x2="530" y2="372"/><line x1="70" y1="201" x2="530" y2="201" stroke-dasharray="3 4"/><line x1="70" y1="30" x2="530" y2="30"/></g>
@@ -2106,7 +2131,7 @@ function findingCard(f, card, recordsByUri = new Map()) {
       <div class="rail ${tierCls}"></div>
       <div class="body">
         <div class="cardhead">
-          <label class="pick no-print"><input type="checkbox" class="pickbox" checked></label>
+          <label class="pick no-print"><input type="checkbox" class="pickbox" checked aria-label="Include conflict ${f.ordinal} in the PDF"></label>
           <span class="fnum">${f.ordinal}</span>${cardTitleParts(f, who).title}${evidenceChips(f)}
           <span class="tier ${tierCls}">${riskChip(f)}</span>
           <button class="ask-fi no-print">\u2726 Ask AI about this finding</button>
@@ -2135,7 +2160,7 @@ function compactCard(f, card, recordsByUri = new Map()) {
   const markChip = markClassChip(f, who);
   return `<div class="card compact" id="c${f.ordinal}">
     <div class="top"><div class="rail low"></div><div class="body">
-      <div class="cardhead"><label class="pick no-print"><input type="checkbox" class="pickbox" checked></label><span class="fnum">${f.ordinal}</span>${cardTitleParts(f, who).title}${evidenceChips(f)}<span class="tier low">${riskChip(f)}</span><button class="ask-fi no-print">\u2726 Ask AI about this finding</button></div>${cardTitleParts(f, who).ownerLine}
+      <div class="cardhead"><label class="pick no-print"><input type="checkbox" class="pickbox" checked aria-label="Include conflict ${f.ordinal} in the PDF"></label><span class="fnum">${f.ordinal}</span>${cardTitleParts(f, who).title}${evidenceChips(f)}<span class="tier low">${riskChip(f)}</span><button class="ask-fi no-print">\u2726 Ask AI about this finding</button></div>${cardTitleParts(f, who).ownerLine}
       <div class="oneline">${inline(sentenceCaseLead(one))}</div>
     </div></div>
     ${fullDetail(f, card, recordsByUri)}
@@ -2872,7 +2897,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   <!-- The 2026-09-16 report redesign — WHAT WAS SEARCHED. The scope fold and the checks-we-ran narrative are gone
        (owner, 2026-09-16: no coverage narrative on the page). What is left is counts, folded closed:
        completed work appears as numbers and cleared names, never as the engine's account of itself. -->
-  ${whatWasSearchedSection(opts, coverage, findings, recordsByUri)}
+  ${whatWasSearchedSection(opts, coverage, findings, recordsByUri, fm)}
 </main>
 
   <footer>

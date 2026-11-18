@@ -6,7 +6,7 @@
 // The common-law sentinel is 'C/L', never 'CL' — to a trademark lawyer CL is Chile (ISO 3166), and an
 // actual Chilean registration must not collide with the common-law bucket (the latent bug a reviewing
 // lawyer hit on a live matter). Every ISO-3166 alpha-2 key in REGION_NAMES must therefore carry its
-// country meaning; only non-ISO keys ('C/L', 'WO', 'BX', 'EU') may carry a non-country meaning —
+// country meaning; only non-ISO keys ('C/L', 'WO', 'BX', 'EU', 'XS') may carry a non-country meaning —
 // regions.test.mjs guards this.
 //
 // PURE (no node imports) so tests run offline and any surface (render, email, xlsx) can import it.
@@ -22,6 +22,9 @@ export const REGION_NAMES = {
   MX: 'Mexico', TW: 'Taiwan', HK: 'Hong Kong', SA: 'Saudi Arabia', AE: 'United Arab Emirates',
   DK: 'Denmark', FI: 'Finland', PL: 'Poland', PT: 'Portugal', AT: 'Austria', BE: 'Belgium',
   IE: 'Ireland', GR: 'Greece', IL: 'Israel', TK: 'Tokelau',
+  // XS is no country: it is the code the US state registers are filed under beside the federal one, read as they are
+  // named (owner, 2026-11-18, batch two item 1153). It printed as "XS".
+  XS: 'US state registers',
   CL: 'Chile', [COMMON_LAW]: 'Common-law',
 };
 
