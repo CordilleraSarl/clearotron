@@ -238,7 +238,7 @@ export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWri
   // A2 — cards are isolated BY DESIGN (each sees ONLY its own finding and writes its own
   // P.reportCard(ord) file), so they fan out like the gather members instead of paying 8–14 serial
   // LLM walls. The first card runs alone to warm the shared prompt-prefix cache; the rest batch at
-  // gatherConcurrency. A failed card stays non-fatal (render shows it structured-only) and never
+  // `config.cardConcurrency` (CLEAROTRON_CARD_CONCURRENCY), shared with the overview while it runs. A failed card stays non-fatal (render shows it structured-only) and never
   // fails a sibling — renderCard resolves on rc.fail, it never throws. assembleReportMd runs
   // strictly after every card settles; the lint-repair re-render loop below stays serial.
   const cardFindings = findingsForCards.filter((f) => cardOrdinals.includes(f.ordinal));   // secondary findings render structured-only (no LLM call)
