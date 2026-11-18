@@ -46,3 +46,25 @@ export const KNOCKOUT_EMAIL = Object.freeze({
   manualCheck: 'manual verification recommended (automated research unavailable)',
   openThisReport: 'open this report',
 });
+
+/** The audit workbook's own sentences, sheet by sheet. */
+export const WORKBOOK = Object.freeze({
+  // Findings: how each conflict was treated, keyed by its disposition.
+  treatment: Object.freeze({
+    adversarial: 'On-field — stress-tested as the closest conflict',
+    'coexistence-partner': 'Coexistence partner — living alongside, kept manageable',
+    distinguished: 'Distinguished — weak shared element, kept manageable',
+    'off-field': 'Off-field — outside the risk zone',
+  }),
+  withdrawn: (reason) => `Withdrawn on review — ${reason}`,
+  noReasonRecorded: 'no reason recorded',
+  contextNote: 'Noted for awareness — not a rated conflict',
+  // Findings: whether each registration's record was retrieved.
+  liveListing: 'n/a — live listing',
+  retrieved: 'Retrieved from the register',
+  notRetrievedUnverified: 'Not retrieved — details unverified',
+  notIndividuallyRetrieved: 'Not individually retrieved',
+  // `countries` arrives joined, "CA" or "US/AU".
+  countriesRetrieved: (countries) => `${countries} retrieved`,
+  countriesNotRetrieved: (countries) => `${countries} not retrieved`,
+});

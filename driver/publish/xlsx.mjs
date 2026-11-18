@@ -19,6 +19,7 @@
 
 import { BRAND, WORKBOOK_COLOURS as WB } from '../../shared/brand.mjs';
 import { meterEvidence } from './evidence-words.mjs';
+import { WORKBOOK as W } from './strings.mjs';
 import { projectAssessmentField } from '../findings-model.mjs';
 import { inputsLine } from '../framework-method.mjs';
 import { deliveryVocabViolations } from '../predelivery-lint.mjs';
@@ -135,9 +136,6 @@ const uriCountry = uri => (String(uri || '').match(/\/mark\/([a-z]{2})\//i)?.[1]
 const uriNumber = uri => String(uri || '').match(/\/mark\/[a-z]{2,6}\/(.+)$/i)?.[1] || String(uri || '');
 const regLabel = uri => { const c = uriCountry(uri); const n = uriNumber(uri); return c ? `${c} ${n}` : n; };
 
-// the four drivers keep their token but wear a PLAIN provenance tag: a value checked against the actual
-// register record or live listing reads "from source"; our own inference reads "our read". (This is the
-// verified/inferred basis already computed — relabelled, never recomputed.)
 // THE CELL SAYS WHAT THE PAGE SAYS: the token, and the meter's evidence in the report's own words
 // (evidence-words.mjs). An unknown value nobody checked reads "not checked" where the page has no word for it.
 export const meterCell = (m, driver) => {
@@ -147,37 +145,32 @@ export const meterCell = (m, driver) => {
 };
 
 // disposition -> the plain "how we treated it" sentence.
-const TREATMENT = {
-  adversarial: 'On-field — stress-tested as the closest conflict',
-  'coexistence-partner': 'Coexistence partner — living alongside, kept manageable',
-  distinguished: 'Distinguished — weak shared element, kept manageable',
-  'off-field': 'Off-field — outside the risk zone',
-};
+const TREATMENT = W.treatment;
 const treatmentCell = f => f?.disposition === 'withdrawn'
-  ? `Withdrawn on review — ${plainNote(f.withdrawn_reason) || 'no reason recorded'}`
-  : (f?.isContextNote ? 'Noted for awareness — not a rated conflict' : (TREATMENT[f?.disposition] || ''));
+  ? W.withdrawn(plainNote(f.withdrawn_reason) || W.noReasonRecorded)
+  : (f?.isContextNote ? W.contextNote : (TREATMENT[f?.disposition] || ''));
 
 // Record retrieved? — the plain-English state of the register-record fetch for a finding, from the per-URI
 // fetch-state map ({retrieved | failed | not-attempted}). A common-law finding (no registrations) is
 // "n/a — live listing"; a failed fetch is VISIBLY unverified, never presented as confirmed.
 export function retrievedCell(f, fetchState) {   // @internal — driven by its test
   const regs = f?.owner?.registrations || [];
-  if (!regs.length) return 'n/a — live listing';
+  if (!regs.length) return W.liveListing;
   const st = uri => (fetchState && fetchState[String(uri || '').toLowerCase()]) || 'not-attempted';
   const states = regs.map(r => st(r.uri));
-  if (states.every(s => s === 'retrieved')) return 'Retrieved from the register';
+  if (states.every(s => s === 'retrieved')) return W.retrieved;
   const anyRead = states.some(s => s === 'retrieved');
   const anyFailed = states.some(s => s === 'failed');
   // no leg read: a fetch that FAILED (a 404) makes the registry values unverified — say so visibly; a leg
   // simply never pulled (off-field context) is the softer "not individually retrieved".
-  if (!anyRead) return anyFailed ? 'Not retrieved — details unverified' : 'Not individually retrieved';
+  if (!anyRead) return anyFailed ? W.notRetrievedUnverified : W.notIndividuallyRetrieved;
   // mixed — spell out which country legs were retrieved and which were not ("CA retrieved; US/AU not retrieved").
   const read = regs.filter(r => st(r.uri) === 'retrieved').map(r => uriCountry(r.uri)).filter(Boolean);
   const missing = regs.filter(r => st(r.uri) !== 'retrieved').map(r => uriCountry(r.uri)).filter(Boolean);
   const parts = [];
-  if (read.length) parts.push(`${read.join('/')} retrieved`);
-  if (missing.length) parts.push(`${missing.join('/')} not retrieved`);
-  return parts.join('; ') || 'Not individually retrieved';
+  if (read.length) parts.push(W.countriesRetrieved(read.join('/')));
+  if (missing.length) parts.push(W.countriesNotRetrieved(missing.join('/')));
+  return parts.join('; ') || W.notIndividuallyRetrieved;
 }
 
 // Status & key dates — a single representative line from the first registration whose record was read.
