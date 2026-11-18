@@ -1261,6 +1261,8 @@ async function runStageLadder(name, opts, stageHome = null, engine = selectEngin
     if (killClass) killSeen = true;
     fail = nameTheFailure(fail, { usage, json, stdout: turn.stdout, stderr, signals: turn.signals, name,
       gauge: { modelMismatch, famRequested, famActual, modelRequested, modelActual } });
+    // How a hard-wall kill read (killedWhile), once per attempt: both rows record it and the next rung reads it. null otherwise.
+    const attemptKilledWhile = fail === "timeout" ? killedWhile(turn, stallSec ?? Number(process.env.CLEAROTRON_STALL_MS || 120000) / 1000) : null;
 
     // AD-4 house rule — both computed UNCONDITIONALLY, three-valued on purpose:
     //   wrote: did THIS attempt move any expected artifact? true/false when the stage has expected files,
@@ -1466,7 +1468,7 @@ async function runStageLadder(name, opts, stageHome = null, engine = selectEngin
         // not left looking like an artifact problem. It names a fact; it moves no retry policy. See
         // `spentBudgetCleanly`.
         budgetSpentCleanly: spentBudgetCleanly({ fail, killed, code, wall, derivedLimitSec: derivedLimit?.sec }),
-        killedWhile: fail === "timeout" ? killedWhile(turn, stallSec ?? Number(process.env.CLEAROTRON_STALL_MS || 120000) / 1000) : null,   // how a hard-wall kill read; null for any other outcome
+        killedWhile: attemptKilledWhile,
         // The share of each told manual this turn's model was shown, read off its saved stream (manuals-seen.mjs); null
         // where the stream cannot say. A resumed turn is shown only what it read after resuming, so read it beside `warm`.
         manualsSeen: measureManualsSeen(turn, witnessed.told, engine.name),
@@ -1540,7 +1542,7 @@ async function runStageLadder(name, opts, stageHome = null, engine = selectEngin
         // …and the same fact on this row, because one of the two carrying it records half the runs and
         // reads as done. Three-valued and beside the numbers it is about. See `spentBudgetCleanly`.
         budgetSpentCleanly: spentBudgetCleanly({ fail, killed, code, wall, derivedLimitSec: derivedLimit?.sec }),
-        killedWhile: fail === "timeout" ? killedWhile(turn, stallSec ?? Number(process.env.CLEAROTRON_STALL_MS || 120000) / 1000) : null,   // how a hard-wall kill read; null for any other outcome
+        killedWhile: attemptKilledWhile,
           formRepairs: formRepairsThisAttempt || undefined,   //, see the stage row above
         });
       } catch { /* telemetry best-effort — never fail a turn over a journal line */ }
@@ -1556,7 +1558,7 @@ async function runStageLadder(name, opts, stageHome = null, engine = selectEngin
     lastKey = key;
     lastQuantity = quantity;   //: rides the ladder's final return, so the run-level catch stamps the exact count
     lastSessionRef = turn.sessionRef ?? lastSessionRef;   // anthropic warm-resume target for the next attempt
-    lastKillClass = fail === "timeout" ? killedWhile(turn, stallSec ?? Number(process.env.CLEAROTRON_STALL_MS || 120000) / 1000) : null;
+    lastKillClass = attemptKilledWhile;
     note(`[${name}] attempt ${attempt} FAILED: ${fail}${quantity === null ? "" : ` (count ${quantity}${noChange ? ", unchanged" : ""})`}`);
 
     // What the ladder does next after this failure — escalate, retry, break, or return — is ladder/next-rung.mjs.
