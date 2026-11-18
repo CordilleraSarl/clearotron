@@ -6352,8 +6352,8 @@
           "todos": 0
         },
         "run-queue-help-does-not-invite-a-bare-run.test.mjs": {
-          "tests": 2,
-          "asserts": 5,
+          "tests": 3,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
