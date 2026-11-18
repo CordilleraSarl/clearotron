@@ -1391,9 +1391,8 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // had to be passed to BOTH renders. There is one render now, so `fourAnswers` rides the one call — the
   // panel reaches the client through the same cleaning path as every other reader-facing block.
   // PR-9 — the clearance run as data (publish/report-data.mjs): the client-cut projection the assistant
-  // drafts mail from and the portal's native-render path reads. BEST-EFFORT with a hard receipt rule:
-  // meta.reportSchema is stamped ONLY when the file actually wrote — a run whose meta advertises a data
-  // file that is not there would break the portal's presence branch. A producer throw never blocks the
+  // drafts mail from. BEST-EFFORT with a hard receipt rule: meta.reportSchema is stamped ONLY when the file
+  // actually wrote, so a meta never names a data file that is not there. A producer throw never blocks the
   // report (the baked HTML above is already on disk).
   const reportSchema = writeDataFile('report-data.json', () => clearanceReportData({
     runId, codename, matter: fm.matter, markName, title: fm.title, customerKey: customerKey || 'generic',
@@ -1408,7 +1407,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     framework, verdictInfo, findings, coverage, contextNotes, markAssessment, fourAnswers, askAnswers,
     actions: actionsRegister, jurisdiction, searchedJurisdictions, scopeBasis, caption,
     assessmentNotCompleted,
-  })) ? 'report-data/1' : null;
+  })) ? 'report-data/clearance-1' : null;
   const total = finishPoolRun({ writeRO, poolRoot, skipRegen, regenIndex, meta: {
     runId, codename: codename || '', matter: fm.matter, title: fm.title, client: fm.client,
     // The mark as typed — see above. Distinct from `title`, which is the report's own headline.
@@ -1476,9 +1475,9 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     clientGate: { released: clientGate.released, reasons: clientGate.reasons,
       inputsAbsent: clientGate.inputsAbsent?.length ? clientGate.inputsAbsent : undefined, notClosing: clientGate.notClosing?.length ? clientGate.notClosing : undefined,
       evaluationError: clientGate.evaluationError ?? undefined },
-    // PR-9 — present ⇒ report-data.json is beside the report and the portal can render natively (the
-    // same stamp the knockout lane writes; the consumer branch had readers before it had a writer).
-    // undefined on a producer miss, so the meta never advertises a file that is not there.
+    // PR-9 — present ⇒ report-data.json is beside the report, in the shape the string names
+    // (`report-data/clearance-1`; a Knockout stamps `report-data/knockout-1`). undefined on a producer
+    // miss, so the meta never advertises a file that is not there.
     reportSchema: reportSchema ?? undefined,
   } });
   await refreshStaffPages({ regenSurfaces, poolRoot, skipRegen, runDir });

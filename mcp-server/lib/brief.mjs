@@ -80,7 +80,8 @@ export function buildBrief(run) {
   const product = productIdentityFor(run, docs);
   const clearance = docs.find((d) => d?.kind === "clearance") ?? null;
   // The knockout shape carries no `kind` at all and is told apart by `marks[]` — the same discrimination
-  // portal-service.mjs makes. Both lanes stamp `schema: 'report-data/1'`, so the schema string cannot.
+  // portal-service.mjs makes. The schema string names the shape on new runs (`report-data/clearance-1`,
+  // `report-data/knockout-1`), but runs stored before that carry `report-data/1` for both, so the shape decides.
   const koDocs = docs.filter((d) => d?.kind !== "clearance" && Array.isArray(d?.marks));
   // A NAME WHOSE DATA FILE COULD NOT BE WRITTEN IS STILL A NAME SCREENED. A Knockout batch publishes every name's
   // report when one name's data file fails, and lists that name in meta.reports with no data file. Read from the

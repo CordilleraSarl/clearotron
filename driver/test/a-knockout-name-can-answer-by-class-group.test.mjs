@@ -8,7 +8,8 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 
 const { classGroupsDefect, validators, validateMergedFindings } = await import("../verify-knockout.mjs");
-const { renderKnockoutHtml, knockoutReportData } = await import("../publish/render-knockout.mjs");
+const { renderKnockoutHtml } = await import("../publish/render-knockout.mjs");
+const { knockoutReportData } = await import("../publish/report-data.mjs");
 const { composeKnockoutEmail } = await import("../publish/knockout.mjs");
 const { recordKnockoutAssess, knockoutAssessChunkFile } = await import("../knockout-assess-record.mjs");
 const { KNOCKOUT_CARD_ORDER } = await import("../findings-model.mjs");

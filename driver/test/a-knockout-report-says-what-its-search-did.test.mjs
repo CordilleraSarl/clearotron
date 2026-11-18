@@ -11,7 +11,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 const { RECORD_BASIS, ARCHIVED_RECORD_BASIS, recordsLine } = await import("../register-records.mjs");
-const { renderKnockoutHtml, knockoutReportData } = await import("../publish/render-knockout.mjs");
+const { renderKnockoutHtml } = await import("../publish/render-knockout.mjs");
+const { knockoutReportData } = await import("../publish/report-data.mjs");
 const { buildKnockoutWorkbook } = await import("../publish/knockout.mjs");
 const ExcelJS = (await import("exceljs")).default;
 

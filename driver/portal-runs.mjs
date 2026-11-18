@@ -184,16 +184,13 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
             ? meta.marks.filter((m) => m && typeof m.name === "string")
               .map((m) => ({ name: m.name, band: m.band ?? null, tone: toneFor(m.band ?? null) }))
             : [],
-          // Present ⇒ the run has a report-data.json and can render natively. Absent ⇒ legacy: the Result
-          // screen iframes the baked file. Legacy is identified by ABSENCE, so this must stay undefined
-          // rather than defaulting to 0 or 1.
-          // BOTH writers (publish/knockout.mjs and the clearance producer) stamp the STRING
-          // 'report-data/1' — gating on `typeof === "number"` alone meant the native-render flag NEVER
-          // armed, even for runs with a report-data.json on disk (2026-07-29, filed during PR-9). The
-          // string form maps to its numeric version; a bare number is honoured; anything else is legacy.
+          // The data file's version: present ⇒ the run has a report-data.json beside its report; absent
+          // (null) ⇒ it has none. Both writers stamp a STRING: `report-data/clearance-1` or
+          // `report-data/knockout-1` since the two shapes were named, `report-data/1` on runs stored before
+          // that. Each maps to its number; a bare number is honoured; anything else is null.
           reportSchema: typeof meta.reportSchema === "number" ? meta.reportSchema
-            : typeof meta.reportSchema === "string" && /^report-data\/(\d+)$/.test(meta.reportSchema)
-              ? Number(meta.reportSchema.slice("report-data/".length)) : null,
+            : typeof meta.reportSchema === "string" && /^report-data\/(?:(?:clearance|knockout)-)?(\d+)$/.test(meta.reportSchema)
+              ? Number(/(\d+)$/.exec(meta.reportSchema)[1]) : null,
           // `report` is the run-level link and it is NULL for a batch — there is no run-level document
           // to open. `reports` is the list, one entry per name, and it is what a batch's row renders.
           // A single-document run carries both, pointing at the same place, so nothing that reads

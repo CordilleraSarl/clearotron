@@ -31,7 +31,8 @@ import { parseFrameworkMethod, freezeFrameworkMethod, methodDictation, inputsSha
 import { validateKnockoutFinding } from "../findings-model.mjs";
 import { validators, validateMergedFindings } from "../verify-knockout.mjs";
 import { KO_STAGES, koPaths } from "../stages-knockout.mjs";
-import { renderKnockoutHtml, knockoutReportData } from "../publish/render-knockout.mjs";
+import { renderKnockoutHtml } from "../publish/render-knockout.mjs";
+import { knockoutReportData } from "../publish/report-data.mjs";
 import { buildKnockoutWorkbook } from "../publish/knockout.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));

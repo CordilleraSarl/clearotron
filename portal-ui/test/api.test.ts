@@ -260,9 +260,6 @@ test('run rows never gain a tone or a band the server did not send', async () =>
 
   assert.equal(r2!.tone, null, '"Medium" is not a tone — near-misses are rejected, not corrected')
   assert.deepEqual(r2!.bands, [], 'every malformed rung is dropped; a fabricated ladder rung is worse than a short ladder')
-
-  // reportSchema absence is what identifies a legacy run, so it must decode to null, never to a default.
-  assert.equal(r1!.reportSchema, null)
 })
 
 test('an unknown run state is treated as in flight, never as finished', async () => {

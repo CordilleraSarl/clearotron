@@ -20,7 +20,8 @@ import {
 import { variantForms } from "../register-variants.mjs";
 import { capabilitiesFor } from "../register-capabilities.mjs";
 import { buildKnockoutWorkbook } from "../publish/knockout.mjs";
-import { renderKnockoutHtml, knockoutReportData } from "../publish/render-knockout.mjs";
+import { renderKnockoutHtml } from "../publish/render-knockout.mjs";
+import { knockoutReportData } from "../publish/report-data.mjs";
 import { plainDeferralReason } from "../deferral-row.mjs";
 
 const CORSEARCH = capabilitiesFor("corsearch");

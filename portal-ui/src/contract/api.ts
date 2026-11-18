@@ -529,8 +529,6 @@ export type Run = {
   readonly bands: readonly Band[]
   /** Knockout batches carry a per-name summary. Empty for a single-mark clearance. */
   readonly marks: readonly { readonly name: string; readonly band: string | null; readonly tone: Tone | null }[]
-  /** Present ⇒ the run can render natively. Absent ⇒ legacy, and it takes the iframe path. */
-  readonly reportSchema: number | null
   /**
    * The client gate: a finished report a lawyer has not released yet.
    *
@@ -1485,7 +1483,6 @@ const decodeRun = (raw: unknown): Run | null => {
         return name ? { name, band: asString(mm['band']), tone: asTone(mm['tone']) } : null
       })
       .filter((m): m is { name: string; band: string | null; tone: Tone | null } => m !== null),
-    reportSchema: asNumber(r['reportSchema']),
     held: r['held'] === true,
     report: asString(r['report']),
     reports: Array.isArray(r['reports'])
