@@ -1,45 +1,51 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// driver/publish/render.mjs is FROZEN.
+// driver/publish/render.mjs and render-knockout.mjs: what the four demo runs publish as their report pages.
 //
-// It produces every clearance report Cordillera has ever delivered. The portal rebuild
-// does not touch it: legacy runs are served as baked bytes and embedded in a null-origin iframe, and new
-// runs render component-native from report-data.json. Nothing in the portal imports it, ever.
+// render.mjs produces every clearance report Cordillera has ever delivered; render-knockout.mjs draws the Knockout.
+// The portal imports neither: legacy runs are served as baked bytes in a null-origin iframe, and new runs render
+// component-native from report-data.json.
 //
-// The freeze starts AFTER the 2026-07-19 ramp recolor (the quadrant panel hardcodes band hexes because it
-// stays a fixed light surface in dark mode, so the recolor had to reach in once). This test pins the
-// result of that commit.
+// ── The report-page guard ───────────────────────────────────────────────────────────────────────────
+// The saved runs under demo/ (the three clearance levels and the Knockout) are published under a frozen clock through
+// driver/test/snapshot/publish-compare.mjs, and each run's report.html is compared with the fingerprint stored in
+// fixtures/demo-report-pages.json. A change that moves what a demo page prints fails here, and a comment does not.
+// report.css and shared/brand.mjs are inlined into the page, so a change there moves it too.
 //
-// ── If this test fails ──────────────────────────────────────────────────────────────────────────────
-// You changed render.mjs. That is not automatically wrong, but it is a decision, not a detail:
+// It replaced a sha256 over render.mjs's own bytes on 2026-11-18. That pin existed because pool-admin's republish
+// re-rendered archived runs, so any edit to the renderer rewrote reports already delivered, and reports already
+// delivered keep the layout they were issued with (owner, 2026-09-16). The republish path now refuses a run made by
+// another build (driver/one-build-per-run.mjs), so a renderer change reaches only reports rendered after it. The pin's
+// break lineage stays below, as the record of why the renderer is shaped as it is.
 //
-//   1. Is the change reachable from a REPUBLISH? pool-admin's doRepublish() re-renders any archived run,
-//      so a change here silently rewrites reports already delivered to clients. Check that first.
-//   2. Could it live in report.css or brand.mjs instead? Those are not frozen, and almost every visual
-//      change belongs there.
-//   3. If it genuinely must land here, update the hash below IN THE SAME COMMIT and say in the commit
-//      message why the renderer had to move. Do not update the hash in a follow-up "fix the test" commit —
-//      that is how a freeze becomes a formality.
+// ── If the page guard fails ─────────────────────────────────────────────────────────────────────────
+// You changed what a delivered report shows. That is a decision, not a detail:
 //
-// The hash is over the file's exact bytes. Whitespace and comments count; that is deliberate.
+//   1. Record the demo runs on the previous commit and on yours (publish-compare.mjs `record`, then `compare`),
+//      and read every page that differs. Each difference should be one you meant.
+//   2. Re-stamp IN THE SAME COMMIT, and say in its message what the pages now show differently:
+//        node driver/test/snapshot/publish-compare.mjs pages --write driver/test/fixtures/demo-report-pages.json
+//
+// WHAT IT CANNOT SEE: a branch no demo run reaches. Measured 2026-11-18 with V8 coverage of the four publishes,
+// 22 of render.mjs's 118 named functions never run (the compact card and the card's "The read" fold among them),
+// and 26 of render-knockout.mjs's 64, every finding block included: the Knockout demo's one mark has no findings.
+// A change there passes this guard; only a behaviour test that reaches it can catch it.
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { createHash } from "node:crypto";
 import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
-// The header strings come from the sweep script that WRITES them. Spelled out here as literals,
-// this test had its own copy of the identifier and the AGPL flip made that copy wrong — the filter
-// matched nothing, the "header is present exactly once" assertion failed, and the message pointed at
-// the freeze rather than at the licence. Importing them means the break still fires where it should,
-// on the content hash below, which is the assertion that is supposed to demand a human decision.
-import { SPDX, COPYRIGHT } from "../../scripts/spdx-headers.mjs";
+import { demoReportPages } from "./snapshot/publish-compare.mjs";
 import { inDispositionMode, DISPOSITION_BAND } from "../findings-model.mjs";   // #1100
 
 const at = (p) => fileURLToPath(new URL(p, import.meta.url));
-const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 
+// ── THE FREEZE'S LINEAGE, KEPT AS HISTORY ───────────────────────────────────────────────────────────
+// From here to the report-page guard, every note records one break of the retired sha256 pin: what moved in render.mjs,
+// whether a republish could reach it, and why it could not live in report.css or brand.mjs. The two constants they
+// mention, FROZEN and FROZEN_BEFORE_SPDX, were removed with the pin on 2026-11-18; each stood where a marker now says so.
+//
 // sha256 of driver/publish/render.mjs, as of the deployment-hostname commit (2026-07-19).
 //
 // Second break of the freeze, and it answers the checklist above: the change IS reachable from a republish,
@@ -1814,7 +1820,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // blocks. Not licence-only, so this constant moves with the other one.
 // Advanced again by the break recorded above the FROZEN constant: the run's own common-law search record is named in
 // words. Not licence-only, so this constant moves with the other one.
-const FROZEN_BEFORE_SPDX = "7e135f4051f05f83e22a0cb69b29ebd717d7b842549690048a4078e6e151d73f";
+// [FROZEN_BEFORE_SPDX stood here: render.mjs's hash with its two licence lines stripped. Retired 2026-11-18.]
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2848,36 +2854,24 @@ const FROZEN_BEFORE_SPDX = "7e135f4051f05f83e22a0cb69b29ebd717d7b842549690048a40
 //      text, derived from the row's markup on each tree). The other three demos publish byte-identical.
 //   2. Could it live in report.css or brand.mjs? No: it decides what a row says.
 //   3. Why it had to move here: the row is composed in this file and nowhere else.
-const FROZEN = "0a8c4478c9dbb4b4aca51885027d56cc6b7cb3888a421c8320117423ba551949";
+// [FROZEN stood here: the sha256 of render.mjs's whole file. Retired 2026-11-18 for the report-page guard below.]
 
-test("render.mjs is frozen at its post-recolor content hash", () => {
-  const actual = sha256(readFileSync(at("../publish/render.mjs")));
-  assert.equal(actual, FROZEN, "render.mjs changed — read the header of this file before updating the hash");
-});
-
-test("stripping the two licence lines leaves the file the last break left — a licence sweep carries nothing else", () => {
-  // Strip exactly the two header lines and nothing else, then compare with the hash from before the
-  // sweep. This is what makes "comment-only" a checked claim rather than a promise in a comment: a
-  // behavioural edit that rode in with the licence sweep changes these bytes and fails right here.
-  const text = readFileSync(at("../publish/render.mjs"), "utf8");
-  const lines = text.split("\n");
-  // THE COPYRIGHT LINE IS MATCHED BY PREFIX because it now CARRIES the additional-terms notice
-  //: counsel's sentence sits on that line rather than on a third one, so that the
-  // sweep changes no file's line COUNT and no line-numbered citation moves.
-  //
-  // The property this arm protects is unchanged, and the definitional question was asked before the
-  // matcher was widened: are the additional terms LICENCE content? They are terms under section 7 of
-  // the AGPL itself, so a notice pointing at them is licence metadata exactly as the SPDX and copyright
-  // lines are. The header is therefore still two lines of licence and nothing else, and stripping them
-  // must still leave the bytes the last break left.
-  const header = lines.filter((l) => l.trim() === SPDX || /^\/\/ Copyright /.test(l.trim()));
-  assert.equal(header.length, 2, "the header is present exactly once, as two lines");
-  const stripped = lines.filter((l) => !header.includes(l)).join("\n");
-  assert.equal(sha256(Buffer.from(stripped, "utf8")), FROZEN_BEFORE_SPDX,
-    "render.mjs changed by more than its licence header. This constant advances with every break that is "
-    + "not licence-only (see the lineage above), so what it guards is the NEXT licence sweep: a sweep that "
-    + "drags a behavioural edit along with it moves these bytes and fails right here, where the first "
-    + "assertion could only say 'something changed'");
+// THE REPORT-PAGE GUARD. The header says what it compares and what to do when it fails. Every sample must publish
+// exactly one page, and the samples must be the ones the record names: a sample that publishes nothing, or a record
+// that lost one, would otherwise compare as clean.
+test("the four demo runs publish the report pages the record holds", () => {
+  const record = JSON.parse(readFileSync(at("fixtures/demo-report-pages.json"), "utf8"));
+  const pages = demoReportPages(at("../../"));
+  const restamp = "node driver/test/snapshot/publish-compare.mjs pages --write driver/test/fixtures/demo-report-pages.json";
+  assert.deepEqual(Object.keys(pages).sort(), Object.keys(record).sort(),
+    `the demo runs and the record name different samples; if demo/ changed on purpose, re-stamp: ${restamp}`);
+  assert.equal(Object.keys(pages).length, 4, "expected the four demo runs, the Knockout included");
+  for (const [sample, published] of Object.entries(pages)) {
+    assert.equal(Object.keys(published).length, 1, `${sample} published ${Object.keys(published).length} report pages, not one`);
+    assert.deepEqual(published, record[sample],
+      `${sample}: the report page differs from the record. Read the header of this file, then re-stamp in the same `
+      + `commit: ${restamp}`);
+  }
 });
 
 // The client-safety transforms that MOVED out of the renderer (breaks three and four) must have exactly

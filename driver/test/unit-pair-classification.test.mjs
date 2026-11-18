@@ -202,7 +202,7 @@
 //                        reads. The two agreed only because the bodies were identical. pipeline.mjs
 //                        sorted with the imported one; the surface that PRINTS the report used its own.
 //
-//                        It shipped as its own PR because render.mjs is under a content freeze
+//                        It shipped as its own PR because render.mjs was under a content freeze
 //                        (render-frozen.test.mjs) whose protocol makes any edit a declared break with a
 //                        lineage note and two hashes advanced — a freeze exists to make edits visible,
 //                        and bundling one into a classification would have put a contested break in

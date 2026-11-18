@@ -30,10 +30,10 @@ field. `publishReport()` writes the pool run dir from that document. `coverNoteO
 note's options from the run's frozen files, for the document and for the delivery's email.
 `knockout.mjs` is built the same way: `readKnockoutDocument()`, then `publishKnockout()`.
 
-**`render.mjs`** — but read `../test/render-frozen.test.mjs` first. The renderer is pinned by a sha256
-over its exact bytes, because `republishRun` re-renders reports already delivered to clients through it.
-Editing it is a decision to argue for in the commit message; almost every visual change belongs in
-`templates/report.css` or `../../shared/brand.mjs` instead, neither of which is frozen.
+**`render.mjs`** — but read `../test/render-frozen.test.mjs` first. The four demo runs' report pages are
+compared with a stored record, so a change to what a page prints, from this file, `templates/report.css` or
+`../../shared/brand.mjs`, fails that test until it is re-stamped in the same commit. Republishing a run made
+by another build is refused, so a delivered report keeps the page it was issued with.
 
 ## Files
 

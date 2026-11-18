@@ -4,6 +4,7 @@
 //
 //   node driver/test/snapshot/publish-compare.mjs record --out <dir> [--repo <checkout>] [--run <saved-run-dir>]...
 //   node driver/test/snapshot/publish-compare.mjs compare <base-dir> <head-dir>
+//   node driver/test/snapshot/publish-compare.mjs pages [--repo <checkout>] [--write <file>]
 //
 // Each sample is copied, then published under a frozen clock into a throwaway report folder. What the publisher returns and the
 // rows it appends to the run's log are compared too, key by key and row by row. Nothing is normalised but the
@@ -13,6 +14,9 @@
 //
 // IT REPORTS AND DOES NOT JUDGE: exit 0 means no difference was found in the samples given, and a sample that could not
 // publish is a could-not-look, which exits 2.
+//
+// `pages` prints the fingerprint of each demo run's report page, and `--write` stores it. The stored copy is
+// driver/test/fixtures/demo-report-pages.json, the record the report-page guard in render-frozen.test.mjs compares with.
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
@@ -42,7 +46,8 @@ function fingerprint(file, root, commit) {
   return /\.(html?|md|json|txt|csv|svg)$/.test(file) ? sha(clean(buf.toString("utf8"))) : sha(buf);
 }
 
-function recordSample(sample, repo, out) {
+/** Publish one saved run and return what it published, fingerprinted. Nothing is written outside a throwaway folder. */
+export function publishSample(sample, repo) {
   const root = mkdtempSync(join(tmpdir(), "publish-compare-"));
   try {
     const copy = join(root, "sample"), pool = join(root, "pool"), home = join(root, "home"), resultFile = join(root, "result.json"), specFile = join(root, "spec.json");
@@ -63,9 +68,31 @@ function recordSample(sample, repo, out) {
       returned: Object.fromEntries(Object.entries(returned ?? {}).map(([k, v]) => [k, sha(cleanText(JSON.stringify(v ?? null)))])),
       log: Object.fromEntries((logRows ?? []).map((row, i) => { let ev = "?"; try { ev = JSON.parse(row).event ?? "?"; } catch { /* kept by position */ } return [`${i} ${ev}`, sha(cleanText(row))]; })),
     };
-    writeFileSync(join(out, `${sample.name}.json`), JSON.stringify(record, null, 1) + "\n");
-    return { name: sample.name, files: Object.keys(files).length };
+    return record;
   } finally { rmSync(root, { recursive: true, force: true }); }
+}
+
+function recordSample(sample, repo, out) {
+  const record = publishSample(sample, repo);
+  writeFileSync(join(out, `${sample.name}.json`), JSON.stringify(record, null, 1) + "\n");
+  return { name: sample.name, files: Object.keys(record.files).length };
+}
+
+/** The saved runs under the checkout's `demo/`, one per folder holding `meta.json`. */
+export function demoSamples(repo) {
+  const demo = join(repo, "demo");
+  return readdirSync(demo).filter((n) => existsSync(join(demo, n, "meta.json"))).map((n) => ({ name: n, dir: join(demo, n) })).sort((a, b) => a.name.localeCompare(b.name));
+}
+
+/**
+ * Each demo run's report page, by sample and then by its path in the report folder. Only `report.html` is kept: it is
+ * what the two renderers write, and the folder's other files belong to the data, workbook and index code.
+ */
+export function demoReportPages(repo) {
+  return Object.fromEntries(demoSamples(repo).map((s) => {
+    const { files } = publishSample(s, repo);
+    return [s.name, Object.fromEntries(Object.entries(files).filter(([path]) => basename(path) === "report.html"))];
+  }));
 }
 
 function differences(a, b, path = "") {
@@ -79,8 +106,7 @@ function main(argv) {
     const repo = resolve(at("--repo") ?? join(HERE, "..", "..", ".."));
     const out = resolve(at("--out"));
     mkdirSync(out, { recursive: true });
-    const demo = join(repo, "demo");
-    const samples = readdirSync(demo).filter((n) => existsSync(join(demo, n, "meta.json"))).map((n) => ({ name: n, dir: join(demo, n) }));
+    const samples = demoSamples(repo);
     argv.forEach((a, i) => { if (a === "--run") samples.push({ name: basename(resolve(argv[i + 1])), dir: resolve(argv[i + 1]) }); });
     let failed = 0;
     for (const s of samples) {
@@ -104,8 +130,16 @@ function main(argv) {
     console.log(`publish-compare: ${total} difference(s) across ${names.length} sample(s)`);
     return total ? 1 : 0;
   }
-  console.error("usage: publish-compare.mjs record --out <dir> [--repo <checkout>] [--run <saved-run-dir>]...\n       publish-compare.mjs compare <base-dir> <head-dir>");
+  if (argv[0] === "pages") {
+    const pages = demoReportPages(resolve(at("--repo") ?? join(HERE, "..", "..", "..")));
+    const text = JSON.stringify(pages, null, 1) + "\n";
+    if (at("--write")) { writeFileSync(resolve(at("--write")), text); console.log(`publish-compare: wrote ${Object.keys(pages).length} sample(s) to ${at("--write")}`); }
+    else process.stdout.write(text);
+    return 0;
+  }
+  console.error("usage: publish-compare.mjs record --out <dir> [--repo <checkout>] [--run <saved-run-dir>]...\n       publish-compare.mjs compare <base-dir> <head-dir>\n       publish-compare.mjs pages [--repo <checkout>] [--write <file>]");
   return 2;
 }
 
-process.exit(main(process.argv.slice(2)));
+// Run as a command only; the report-page guard imports it.
+if (resolve(process.argv[1] ?? "") === fileURLToPath(import.meta.url)) process.exit(main(process.argv.slice(2)));
