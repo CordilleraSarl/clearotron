@@ -465,6 +465,86 @@ test("a note a PRE-RELEASE has consumed still answers for the commit that wrote 
   } finally { deleted.clean(); }
 });
 
+/**
+ * A line that crossed a stable release, in the real shape: the line writes a note, main holds the change as
+ * a squash, a beta moves the note under `pre/`, the stable deletes it, the line merges main back (which
+ * revives the line's own copy) and then removes the revived copy without saying why. `cutBy` authors both
+ * version commits; `after` is more line commits once main is back in. `origin/main` is set, because
+ * without it the check reads no release at all and the arm would pass on the old code for that reason.
+ */
+function lineAcrossAStable({ cutBy = "github-actions[bot]", after = [] } = {}) {
+  const dir = mkdtempSync(join(tmpdir(), "ctnote-"));
+  const git = gitIn(dir);
+  const put = (changes) => {
+    for (const [path, body] of Object.entries(changes)) {
+      if (body === null) { rmSync(join(dir, path)); continue; }
+      mkdirSync(join(dir, dirname(path)), { recursive: true });
+      writeFileSync(join(dir, path), body);
+    }
+  };
+  const commit = (changes, message, author = null) => {
+    put(changes);
+    git("add", "-A");
+    git(...(author ? ["-c", `user.name=${author}`] : []), "commit", "-qm", message);
+    return git("rev-parse", "HEAD").trim();
+  };
+  const NOTE = ".changeset/this-change.md";
+  const CONSUMED = ".changeset/pre/this-change.md";
+  const CHANGE = { [NOTE]: NOTE_BODY("this change."), "bin/thing.mjs": "export const a = 1;\n" };
+  git("init", "-q", "-b", "main");
+  commit({ "seed.txt": "seed\n" }, "base");
+  git("checkout", "-q", "-b", "line");
+  const wrote = commit(CHANGE, "A change a reader sees");
+  git("checkout", "-q", "main");
+  commit(CHANGE, "A change a reader sees, squashed");
+  commit({ [NOTE]: null, [CONSUMED]: NOTE_BODY("this change.") }, "Release 1.0.0-beta.1", cutBy);
+  const stable = commit({ [CONSUMED]: null, "CHANGELOG.md": "## 1.0.0\n\n- this change.\n" }, "Release 1.0.0", cutBy);
+  const base = git("rev-parse", "HEAD").trim();
+  git("update-ref", "refs/remotes/origin/main", base);
+  git("checkout", "-q", "line");
+  git("merge", "-q", "--no-ff", "-m", "Merge main back after the stable", "main");
+  commit({ [NOTE]: null }, "Remove the release notes the cut already consumed");
+  const later = after.map(({ changes, message }) => commit(changes, message));
+  return { dir, base, wrote, stable, later, clean: () => rmSync(dir, { recursive: true, force: true }) };
+}
+
+test("a note a STABLE release has published still answers for the line commit that wrote it", () => {
+  // The merge back carries the stable's deletion, and the last deletion in the range is a commit sweeping
+  // up the copy that merge revived, with no reason given. Read as a withdrawal, it charged every commit
+  // whose note shipped in the stable with owing one. Measured: 35 commits on a real line.
+  const repo = lineAcrossAStable();
+  try {
+    const r = run(repo);
+    assert.equal(r.code, 0, `a note the stable published no longer answered for its commit:\n${r.said}`);
+    assert.match(r.said, new RegExp(`${repo.wrote.slice(0, 7)} answered with this-change\\.md, which `
+      + `${repo.stable.slice(0, 7)} \\(Release 1\\.0\\.0\\) published`), r.said);
+  } finally { repo.clean(); }
+
+  // THE CONTROL: the same two commits made by a person are not releases. Either version commit alone
+  // publishes the note, the beta's move included, so both are made by hand here. The note then reached no
+  // reader, and the sweep that removed the revived copy is still asked why.
+  const byHand = lineAcrossAStable({ cutBy: "a person" });
+  try {
+    const r = run(byHand);
+    assert.equal(r.code, 1, `a note deleted on main by hand answered as published:\n${r.said}`);
+    assert.match(r.said, /this-change\.md, which [0-9a-f]{7} deletes in this range without saying why/, r.said);
+  } finally { byHand.clean(); }
+
+  // AND A NOTE WRITTEN AFTER THE RELEASE MERGED BACK IS A NEW ONE, though it shares the name: the release
+  // is in its commit's own history, so that release published something else.
+  const reused = lineAcrossAStable({ after: [
+    { changes: { ".changeset/this-change.md": NOTE_BODY("another change."), "bin/other.mjs": "export const b = 2;\n" },
+      message: "Another change a reader sees" },
+    { changes: { ".changeset/this-change.md": null }, message: "Drop that note" },
+  ] });
+  try {
+    const r = run(reused);
+    assert.equal(r.code, 1, `a new note sharing a published name answered as published:\n${r.said}`);
+    assert.match(r.said, new RegExp(`${reused.later[0].slice(0, 7)} Another change a reader sees`), r.said);
+    assert.doesNotMatch(r.said, new RegExp(`${reused.wrote.slice(0, 7)} A change a reader sees\\n`), r.said);
+  } finally { reused.clean(); }
+});
+
 // ── A LATER COMMIT MAY ANSWER A BARE `none` FOR ONE NAMED COMMIT ──────────────────────────────────────
 // A bare `none` merged into an integration branch that a second branch was already built on: the only fix
 // the check offered was a rewrite of the shared branch. The answer is a later commit's
