@@ -222,3 +222,20 @@ export const WORKBOOK_LABELS = Object.freeze({
     'Check', 'What it found',
   ].map((h) => [h, h]))),
 });
+
+/** The list of reports a client's own index page shows: its heading, its table and its search and pages. */
+export const CLIENT_INDEX = Object.freeze({
+  heading: (account) => `Trademark clearance — ${account}`,
+  subheading: (n) => `${n} report(s) for this account · access-controlled · noindex.`,
+  columns: Object.freeze({ matter: 'Matter', project: 'Project', client: 'Client', overall: 'Overall', run: 'Run', audit: 'Audit' }),
+  search: 'Search',
+  searchPlaceholder: 'Filter by matter, project or verdict…',
+  searchLabel: 'Filter reports',
+  noMatch: 'No matching reports',
+  previous: 'Prev',
+  next: 'Next',
+  // The page's count line, built in the browser: "1–20 of 45", then " shown" under a filter.
+  of: ' of ',
+  shown: ' shown',
+  retired: ' retired',
+});

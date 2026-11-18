@@ -285,9 +285,9 @@ function clientFilterBar(clients) {
 // per-customer indexes — customer/generic already holds >20 runs). Ships `hidden`: no-JS pages degrade to
 // the flat, fully-visible table with no dead buttons.
 const PAGER_BAR = `<div class="pager" id="pager" hidden>
-    <button type="button" id="pgPrev">&#8249; Prev</button>
+    <button type="button" id="pgPrev">&#8249; ${IX.previous}</button>
     <span class="pcount" id="pcount"></span>
-    <button type="button" id="pgNext">Next &#8250;</button>
+    <button type="button" id="pgNext">${IX.next} &#8250;</button>
   </div>`;
 
 // Report search — a text box that filters rows by their content (matter, project, verdict, date), composing
@@ -295,9 +295,9 @@ const PAGER_BAR = `<div class="pager" id="pager" hidden>
 // PAGER_SCRIPT reveals it only when the table is large enough to warrant searching (>8 rows). Emitted on every
 // index (staff + per-customer), so it scales the client-facing matter history to many reports.
 const SEARCH_BAR = `<div class="filterbar" id="repSearchBar" hidden>
-    <label class="flbl" for="repSearch">Search</label>
-    <input id="repSearch" type="search" placeholder="Filter by matter, project or verdict…" autocomplete="off" aria-label="Filter reports">
-    <span class="nomatch" id="repNoMatch" hidden>No matching reports</span>
+    <label class="flbl" for="repSearch">${IX.search}</label>
+    <input id="repSearch" type="search" placeholder="${IX.searchPlaceholder}" autocomplete="off" aria-label="${IX.searchLabel}">
+    <span class="nomatch" id="repNoMatch" hidden>${IX.noMatch}</span>
   </div>`;
 
 // One apply() = filter-then-page. Rows are queried LAZILY on every pass (the parse-time cache was the
@@ -333,9 +333,9 @@ if(!bar)return;
 bar.hidden=!paged&&!active;
 prev.hidden=next.hidden=!paged;
 prev.disabled=page<=1;next.disabled=page>=P;
-var t=paged?(a+1)+"\\u2013"+b+" of "+M:String(M);
-if(active)t+=" shown";
-if(active&&fold)t+=" \\u00b7 "+fold+" retired";
+var t=paged?(a+1)+"\\u2013"+b+${JSON.stringify(IX.of)}+M:String(M);
+if(active)t+=${JSON.stringify(IX.shown)};
+if(active&&fold)t+=" \\u00b7 "+fold+${JSON.stringify(IX.retired)};
 cnt.textContent=(active||paged)?t:"";
 }
 if(sbar&&document.querySelectorAll("tr[data-client]").length>8)sbar.hidden=false;
@@ -361,7 +361,7 @@ ${TEXT_FONT_STYLE}${FAVICON_LINK}${client ? THEME_INIT_EXPLICIT : THEME_INIT}
   ${SEARCH_BAR}
   ${filter}
   <table>
-    <tr><th>Matter</th><th>Project</th><th>Client</th><th>Overall</th><th>Run</th>${auditCol ? '<th>Audit</th>' : ''}</tr>
+    <tr><th>${IX.columns.matter}</th><th>${IX.columns.project}</th><th>${IX.columns.client}</th><th>${IX.columns.overall}</th><th>${IX.columns.run}</th>${auditCol ? `<th>${IX.columns.audit}</th>` : ''}</tr>
 ${rows}
   </table>
   ${PAGER_BAR}
@@ -484,8 +484,8 @@ export function regenIndex(poolDir) {
     // on the audit workbook now and decide nothing about who may read. The precedent is the knockout
     // lane's own collapse note: two renderings of one run is how the wrong link gets sent.
     writeFileSync(cidx, indexPage({
-      heading: `Trademark clearance — ${displayOf.get(key) || key}`,
-      sub: `${crs.length} report(s) for this account · access-controlled · noindex.`,
+      heading: IX.heading(displayOf.get(key) || key),
+      sub: IX.subheading(crs.length),
       rows: indexRows(crs, { reportFile: 'report.html', linkPrefix: '../../', showAudit: false, client: true }),
       auditCol: false,
       theme: 'client',                           // explicit-light: toggle only, NO @media auto-dark on a customer page
@@ -1486,7 +1486,7 @@ const BADGE_EMOJI = { l4: '🔴', l3: '🟠', mh: '🟠', l2: '🟢', l1: '⚪' 
 // config, NOT a literal: this string was hardcoded, so the 2026-07-17 repo split rewrote it to a
 // example.com domain and both 2026-07-19 deliveries told the reader to sign in with an account that
 // does not exist. Unset ⇒ NO note: silence beats confidently wrong sign-in instructions.
-import { EMAIL } from './strings.mjs';   // kept down here, below every line the tree cites in this file by number
+import { EMAIL, CLIENT_INDEX as IX } from './strings.mjs';   // kept down here, below every line the tree cites in this file by number
 export function accessNoteMd(domain = config.accessDomain) {
   return domain ? `*${EMAIL.accessNote(`**${domain}**`)}*` : '';
 }
