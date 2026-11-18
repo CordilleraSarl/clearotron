@@ -88,6 +88,8 @@ test("the labels are the approved words", () => {
   assert.equal(NO_GOODS, "The record states no goods or services.");
   assert.equal(CLASS_NOT_STATED, "Class not stated");
   assert.equal(registrationsCount(2), "2 registrations");
-  assert.equal(countryOf("wo"), "WIPO");
+  assert.equal(countryOf("wo"), "WIPO (Madrid)", "WO reads as every other report surface names it");
   assert.equal(countryOf("us"), "United States");
+  assert.equal(countryOf("em"), "European Union");
+  assert.equal(countryOf("ar"), "Argentina", "a country the naming table does not list still reads as a name");
 });

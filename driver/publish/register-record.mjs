@@ -19,6 +19,7 @@
 import { recordGoods, niceClass, untaggedIsEnglish, DEFAULT_ANSWER_CUT } from '../record-goods.mjs';
 import { REC } from '../registry-fidelity.mjs';
 import { officeRecordLink } from './office-record-links.mjs';
+import { normRegion, regionName } from './regions.mjs';
 
 // The labels, as approved on 2026-11-18. A renderer takes them from here.
 export const RECORD_LABELS = Object.freeze({
@@ -42,19 +43,15 @@ const asRegistered = (language) => (language
   : 'As registered. No English translation on the record.');
 export const logoAlt = (mark, country) => `${mark}, logo as registered in ${country}`;
 
-// A code into the English name a reader knows. The office codes that are not regions are named first.
-const OFFICE_REGION = { em: 'EU', eu: 'EU', wo: null, uk: 'GB' };
-const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
+// A code into the English name a reader knows, from the one naming source every report surface uses.
+export function countryOf(office) {
+  const code = normRegion(String(office ?? '').trim());
+  return code ? regionName(code) : null;
+}
 const languageNames = new Intl.DisplayNames(['en'], { type: 'language' });
 const nameOf = (names, code) => {
   try { const n = names.of(code); return n && n !== code ? n : null; } catch { return null; }
 };
-export function countryOf(office) {
-  const o = String(office ?? '').trim().toLowerCase();
-  if (o === 'wo') return 'WIPO';
-  const region = o in OFFICE_REGION ? OFFICE_REGION[o] : o.toUpperCase();
-  return region ? nameOf(regionNames, region) ?? region : null;
-}
 const languageOf = (code) => {
   const c = String(code ?? '').trim();
   return c ? nameOf(languageNames, c) : null;
