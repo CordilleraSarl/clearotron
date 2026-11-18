@@ -189,6 +189,18 @@
   .kticks span{position:absolute;transform:translateX(-50%);color:var(--faint);white-space:nowrap;
     font:700 10.5px/1 'Plus Jakarta Sans','Helvetica Neue',Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase}
   .kticks span.on{font-weight:800}
+  /* AT PHONE WIDTH THE WORDS SHARE THE ROW, as the clearance report's gauge words do. Each word sat at its band's point
+     on the bar, absolutely placed and unbroken, so on a 390 px screen five words needed more than the bar's width and
+     printed on top of one another. Below 560 px they become five equal cells that may wrap, the clearance gauge's own
+     model, with the end words held to the bar's ends; a word longer than its cell (MANAGEABLE) is hyphenated where English
+     allows rather than run into its neighbour. The positions are inline styles, so the override needs !important. */
+  @media (max-width:560px){
+    .kticks{display:flex;height:auto;gap:4px}
+    .kticks span{position:static !important;transform:none !important;flex:1 1 0;min-width:0;white-space:normal;
+      text-align:center;letter-spacing:0;line-height:1.25;font-size:9.5px;hyphens:auto;overflow-wrap:break-word}
+    .kticks span:first-child{text-align:left}
+    .kticks span:last-child{text-align:right}
+  }
   .terr{margin-top:4px}
   .terr summary{cursor:pointer;color:var(--rose,var(--faint));font-size:12px;font-weight:600;list-style:none}
   .terr summary::-webkit-details-marker{display:none}
