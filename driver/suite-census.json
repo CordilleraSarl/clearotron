@@ -1317,6 +1317,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-says-what-it-left-open.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-stage-reuses-its-output-only-while-its-inputs-are-unchanged.test.mjs": {
           "tests": 9,
           "asserts": 41,

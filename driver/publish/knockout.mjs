@@ -20,7 +20,7 @@ import { COUNT_PREDICATES, COUNT_BASIS, countsForMark, countLine, countedMarks, 
 import { noneCarriedForward, recordsForMark, recordsLine, normalizeRegisterRecordLinks } from '../register-records.mjs';
 import { reportIdentityFor, productCoverageNote, kebab } from '../search-policy.mjs';
 import { batchMarkName } from '../mark-name.mjs';
-import { renderKnockoutHtml } from './render-knockout.mjs';
+import { renderKnockoutHtml, DEGRADED_NOTE } from './render-knockout.mjs';
 import { knockoutReportData } from './report-data.mjs';
 import { readFrozenMethod, inputsLine, FROZEN_METHOD_FILE } from '../framework-method.mjs';
 import { resolveDemoData, demoBannerMd } from './demo-marking.mjs';   //
@@ -99,6 +99,24 @@ export const knockoutStatement = (framework, marks) =>
 // than "never asked for". 'Impact' goes with them: it was the second rating scale. What replaces them is
 // what the typed record actually carries. A `—` means the shape that produced the row never had the
 // field (an archived prose finding), which is a different fact from an empty cell.
+/**
+ * WHAT A KNOCKOUT LEFT OPEN, from the run's own record (design's rule, approved by the owner 2026-11-18). PURE.
+ *
+ * A register step that failed is a row under the report's "Register" name: the listing that never came back is not
+ * searched, and a reading that stopped part-way is partly covered. A name whose automated research was unavailable is a
+ * row under its own name, not searched. The notes are the shipped lines, the deferral row's for a step and the page's
+ * own for a name, so nothing here is a new sentence and nothing comes from model prose. A refused listing is not a
+ * search that failed (the run never offered it), and a run with nothing left open returns no rows.
+ */
+export function knockoutLeftOpen(steps, marks = []) {
+  return [
+    ...(steps?.listing ? [{ area: PART_NAMES.register, state: 'not-searched', note: plainDeferralReason(steps.listing.reason) }] : []),
+    ...(steps?.reading ? [{ area: PART_NAMES.register, state: 'coverage-limited', note: plainDeferralReason(steps.reading.reason) }] : []),
+    ...(Array.isArray(marks) ? marks : []).filter((m) => m?.degraded === true && String(m?.name ?? '').trim())
+      .map((m) => ({ area: String(m.name).trim(), state: 'not-searched', note: DEGRADED_NOTE })),
+  ];
+}
+
 export async function buildKnockoutWorkbook(findings, receipts, outPath, registerCounts = null, qcFlags = [], framework = null, registerRecords = null, frameworkMethod = null, ownerChecks = [], degraded = {}) {
   const ExcelJS = (await import('exceljs')).default;
   const wb = new ExcelJS.Workbook();
@@ -807,6 +825,9 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
       // The page's workbook control links the portal's audit route, the one the cover note links: the pool path to the
       // file reaches no handler. Null when the workbook could not be written, and then no control is drawn.
       auditHref: auditFile ? auditRouteFor(origin, runId) : null,
+      // The searches this run did not complete, for this page's names: the Knockout's own Left open grid.
+      // A listing failure counts only where no filings came back, as the workbook's own part rows read it.
+      leftOpen: knockoutLeftOpen({ listing: registerRecords ? null : steps.listing, reading: steps.reading }, one.marks),
       // Carried as its own value rather than folded into `registerRecords`, because three sites PRINT
       // `registerRecords.unavailable` and a marker invented here would become client-facing wording.
       registerRecordsUnreadable,

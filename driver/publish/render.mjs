@@ -2276,7 +2276,8 @@ function sharedNoteCells(rows, cell) {
 
 // `verdict: false` — a report whose overall assessment was not completed has no verdict above the grid, so the open
 // rows' lead line, which says the material ones are carried in it, is not printed. The rows are.
-function coverageGrid(coverage, { verdict = true } = {}) {
+// Exported for the Knockout's own Left open grid (render-knockout.mjs): one grid, in the clearance's words, on both pages.
+export function coverageGrid(coverage, { verdict = true } = {}) {
   coverage = dedupeFollowUps(coverage);
   if (!coverage.length) return '';
   const cell = (c) => {

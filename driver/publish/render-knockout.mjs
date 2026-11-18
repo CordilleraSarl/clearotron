@@ -56,7 +56,7 @@ import { recordBasisOf, readByJudgment, noneCarriedForward, NONE_CARRIED_FORWARD
 import { officeLinkSentences, officeRecordLink } from './office-record-links.mjs';
 import { knockoutFindingViews, splitKnockoutNotes, KNOCKOUT_CARD_ORDER } from '../findings-model.mjs';
 import { inputsLine } from '../framework-method.mjs';
-import { demoBannerHtml, servedModelsLine } from './render.mjs';   // — the SAME banner the clearance template renders, not a second wording
+import { demoBannerHtml, servedModelsLine, coverageGrid } from './render.mjs';   // — the SAME banner the clearance template renders, not a second wording
 import { EXPORT_TOGGLE, exportPopover, EXPORT_MENU_JS } from './report-topbar.mjs';   // — the export menu's shell and behaviour, shared with the clearance template   // — the SAME banner the clearance template renders, not a second wording
 // — the two facts the register card is allowed to read off a raw record, and NEITHER is minted
 // here. `makeClassifyStatus` and `isAllClass` are the screening lane's own, already shipped, already
@@ -148,7 +148,7 @@ function bandStop(framework, band) {
   return STOP_VAR[STOP_BY_TONE[tone] ?? 2];
 }
 
-const DEGRADED_NOTE = 'Automated research for this name was unavailable — manual verification is recommended before relying on this rating.';
+export const DEGRADED_NOTE = 'Automated research for this name was unavailable — manual verification is recommended before relying on this rating.';
 
 // THE QUALIFIER, IN WORDS. It rendered as a bare grey token under the band chip — `low`, no
 // label, no border, nothing on the page saying what it qualified. A reader met one word of a private
@@ -1634,6 +1634,8 @@ export function renderKnockoutHtml(findings, framework, {
   // is its own value rather than a marker on `registerRecords`, because three sites PRINT
   // `registerRecords.unavailable` and anything invented for it would become client-facing wording.
   registerRecordsUnreadable = false,
+  // The searches this run did not complete, as Left open rows ({area, state, note}); empty draws no section.
+  leftOpen = [],
   // The driver's own record of the owner lookups it ran. Defaults to [] so an
   // archived run that predates the lane renders exactly as it was delivered.
   ownerChecks = [],
@@ -1757,6 +1759,13 @@ export function renderKnockoutHtml(findings, framework, {
   const onFieldSec = `<div class="sec" id="findings"><span class="num"></span><h2>Conflicts</h2></div>
 ${counts}
 ${analysis}`;
+  // WHAT THIS KNOCKOUT LEFT OPEN (design's rule, approved by the owner 2026-11-18). A name whose register search failed read
+  // as a clean name, where a clearance in the same place says so. The rows are the run's own record of searches that did
+  // not complete, built by the publisher (knockout.mjs, knockoutLeftOpen), in the clearance's grid and state words; none
+  // is model prose. A Knockout with nothing left open draws nothing, byte for byte. No scope narration returns.
+  const leftOpenSec = Array.isArray(leftOpen) && leftOpen.length
+    ? `\n\n  <div class="sec" id="open"><span class="num"></span><h2>Left open</h2></div>\n  <div class="panel"><div class="openrows">${coverageGrid(leftOpen, { verdict: false })}</div></div>`
+    : '';
   const filingsSec = filings
     ? `<div class="sec" id="filings"><span class="num"></span><h2>Also considered</h2><span class="note">the filings behind the counts</span></div>
 ${filings}`
@@ -1854,7 +1863,7 @@ ${EXPORT_MENU_JS}</script>
 
   ${glance}
   ${onFieldSec}
-  ${filingsSec}
+  ${filingsSec}${leftOpenSec}
 
 
   ${/* The 2026-09-16 report redesign — the scope section and its fold are off the page: what a screen is and
