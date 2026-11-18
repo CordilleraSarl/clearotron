@@ -67,4 +67,36 @@ export const WORKBOOK = Object.freeze({
   // `countries` arrives joined, "CA" or "US/AU".
   countriesRetrieved: (countries) => `${countries} retrieved`,
   countriesNotRetrieved: (countries) => `${countries} not retrieved`,
+  // What was searched: each row's outcome, the section heads, and the words a common-law row is built from. A
+  // count or a list arrives formatted; `across` is "~3" or "the".
+  outcome: Object.freeze({
+    findings: '→ Findings',
+    excluded: 'Excluded',
+    noConflict: 'No conflict',
+    recorded: 'Recorded — read the Result',
+    reviewed: 'Reviewed — not carried as a conflict',
+    partial: 'No conflict — partial',
+    notSearched: 'Open — not searched',
+  }),
+  couldNotBeSearched: 'could not be searched',
+  registerSection: 'REGISTER  —  vendor register, worldwide',
+  commonLawSection: 'COMMON-LAW  —  web / marketplace / social / product database',
+  surfaces: (n) => `~${n} surfaces`,
+  similarFound: 'similar listing(s) found',
+  clean: '0 — clean',
+  cleanOn: (ran, n) => `0 — clean on ${ran} of ${n}`,
+  reasonsGiven: (count, list) => ` The surface${count === 1 ? '' : 's'} gave a reason: ${list}.`,
+  someGaveNoReason: (count, list) => ` ${count} recorded no reason (${list}).`,
+  noneGaveAReason: ' No reason was recorded for any of them.',
+  notClosedAcross: (count, list) => ` ${count} surface${count === 1 ? '' : 's'} could not be searched (${list}) — this term is NOT closed across them.`,
+  checkedJoined: (across) => `Checked across ${across} surfaces; similar listing(s) surfaced → see Findings`,
+  checkedReviewed: (across) => `Checked across ${across} surfaces; listing(s) reviewed, none carried as a separate conflict`,
+  checkedClean: (ran) => `Checked across ~${ran} surface${ran === 1 ? '' : 's'}; no listing found`,
+  checkedNowhere: 'Not checked on any recorded surface',
+  unlogged: Object.freeze({
+    term: "COMMON-LAW  —  not itemised in this search's search log",
+    result: 'no per-term rows recorded',
+    outcome: 'Not itemised',
+    note: 'This run is not recorded as a register-only search, so what this tab lists is not the whole of what it searched. Its search log holds no per-term common-law rows, so the sweep cannot be set out term by term here. Read this tab as an incomplete record of the searching — never as evidence that no common-law search ran — and check any common-law line on "Coverage & gaps" against the run\'s own common-law record.',
+  }),
 });

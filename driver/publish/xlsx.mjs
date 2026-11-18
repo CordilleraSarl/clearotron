@@ -239,8 +239,8 @@ const EXCL = /excluded|dropped|off-field|out of scope|distribution-partner|relev
 // SAME WORKBOOK already shows a client on its Coverage & gaps tab: STATE_WORD maps the typed
 // `not-searched` coverage state to "Open". Reusing it keeps one vocabulary in front of the reader instead
 // of inventing a second for the same fact.
-const NOT_SEARCHED_OUTCOME = 'Open — not searched';
-const NOT_SEARCHED_RESULT = 'could not be searched';
+const NOT_SEARCHED_OUTCOME = W.outcome.notSearched;
+const NOT_SEARCHED_RESULT = W.couldNotBeSearched;
 
 // A row is not-searched when it SAYS SO IN A FIELD, not when its prose happens to match a pattern.
 // audit-from-spine.mjs stamps `searched:false` on every gaps[] row, because that function already knows
@@ -259,13 +259,13 @@ const outcomeFor = (result, note, row = null) => {
   const t = `${result} ${note}`;
   // Ahead of everything: a query that never ran cannot be a hit, an exclusion, or a clean sweep.
   if (notSearched(row, result, note)) return NOT_SEARCHED_OUTCOME;
-  if (HITY.test(t) && !/no (similar|active|products|results|relevant)/i.test(result)) return '→ Findings';
-  if (EXCL.test(t)) return 'Excluded';
+  if (HITY.test(t) && !/no (similar|active|products|results|relevant)/i.test(result)) return W.outcome.findings;
+  if (EXCL.test(t)) return W.outcome.excluded;
   // NO CATCH-ALL. `return 'No conflict'` as a fall-through was the defect: an unknown shape resolved to
   // the most reassuring answer available, so any Result this file has never seen became a closure claim.
   // An unrecognised row now says it is unrecognised, and a human reads the Result column beside it.
-  if (!String(result ?? '').trim()) return 'No conflict';
-  return /^(0|no |none\b|nothing\b|clean\b)/i.test(String(result).trim()) ? 'No conflict' : 'Recorded — read the Result';
+  if (!String(result ?? '').trim()) return W.outcome.noConflict;
+  return /^(0|no |none\b|nothing\b|clean\b)/i.test(String(result).trim()) ? W.outcome.noConflict : W.outcome.recorded;
 };
 
 // term -> did it become a surviving finding? A PROVABLE join, never a guessed number: the term shares a
@@ -288,7 +288,7 @@ function joinsFinding(term, findings, joinedTerms) {
   return false;
 }
 
-const COMMON_LAW_SECTION = 'COMMON-LAW  —  web / marketplace / social / product database';
+const COMMON_LAW_SECTION = W.commonLawSection;
 
 // register negatives are already one row per term in the spine; common-law negatives arrive per-platform and
 // collapse to one row per term with a distinct-surface count (the spec's dedup). The full per-surface grid
@@ -305,7 +305,7 @@ export function searchRows(auditParsed, { findings = [], joinedTerms = null, reg
   const push = r => rows.push({ '#': ++i, ...r, Result: readerWords(r.Result), Note: readerWords(r.Note) }); // plain words, after each branch below has classified its row from the engine's own
 
   if (reg.length) {
-    push({ 'Search term / variant': 'REGISTER  —  vendor register, worldwide', Scope: '', Result: '', Outcome: '', Note: '', _section: true });
+    push({ 'Search term / variant': W.registerSection, Scope: '', Result: '', Outcome: '', Note: '', _section: true });
     for (const n of reg) {
       const note = plainNote(n.notes);
       push({
@@ -347,7 +347,7 @@ export function searchRows(auditParsed, { findings = [], joinedTerms = null, reg
       const results = [...g.results];
       const anyHit = results.some(r => (HITY.test(r) || GRID_HIT.test(String(r).trim())) && !/^no /i.test(r));
       const n = g.plats.size;
-      const scope = n ? `~${n} surfaces` : '';
+      const scope = n ? W.surfaces(n) : '';
       // the deduped row lost its per-surface detail (that lives in the run's own grid); the Note states the
       // honest aggregate — how wide the sweep ran and where any hit went — never one cherry-picked surface
       // receipt (which, on a hit term, would read as "nothing found" beside a "found" result).
@@ -364,31 +364,26 @@ export function searchRows(auditParsed, { findings = [], joinedTerms = null, reg
       // a content-policy refusal will refuse again, a query that never ran may simply run.
       const said = gaps.map((s) => [s, g.gapReasons.get(s)]).filter(([, r]) => r);
       const silent = gaps.filter((s) => !g.gapReasons.has(s));
-      const reasonNote = said.length
-        ? ` The surface${said.length === 1 ? '' : 's'} gave a reason: ${said.map(([s, r]) => `${s} — ${r}`).join('; ')}.`
-        : '';
-      const silentNote = silent.length && said.length
-        ? ` ${silent.length} recorded no reason (${silent.slice(0, 4).join(', ')}${silent.length > 4 ? ', …' : ''}).`
-        : silent.length ? ' No reason was recorded for any of them.' : '';
-      const gapNote = gaps.length ? ` ${gaps.length} surface${gaps.length === 1 ? '' : 's'} could not be searched (${gaps.slice(0, 4).join(', ')}${gaps.length > 4 ? ', …' : ''}) — this term is NOT closed across them.${reasonNote}${silentNote}` : '';
-      const outcome = anyHit ? (joined ? '→ Findings' : 'Reviewed — not carried as a conflict')
+      const firstFour = (list) => `${list.slice(0, 4).join(', ')}${list.length > 4 ? ', …' : ''}`;
+      const reasonNote = said.length ? W.reasonsGiven(said.length, said.map(([s, r]) => `${s} — ${r}`).join('; ')) : '';
+      const silentNote = silent.length && said.length ? W.someGaveNoReason(silent.length, firstFour(silent))
+        : silent.length ? W.noneGaveAReason : '';
+      const gapNote = gaps.length ? `${W.notClosedAcross(gaps.length, firstFour(gaps))}${reasonNote}${silentNote}` : '';
+      const outcome = anyHit ? (joined ? W.outcome.findings : W.outcome.reviewed)
         : gaps.length && !ran ? NOT_SEARCHED_OUTCOME          // nothing ran at all: never a closure claim
-          : gaps.length ? 'No conflict — partial'             // some ran clean, some never ran: say both
-            : 'No conflict';
+          : gaps.length ? W.outcome.partial                   // some ran clean, some never ran: say both
+            : W.outcome.noConflict;
+      const across = ran ? `~${ran}` : 'the';
       const note = (anyHit
-        ? (joined
-          ? `Checked across ${ran ? `~${ran}` : 'the'} surfaces; similar listing(s) surfaced → see Findings`
-          : `Checked across ${ran ? `~${ran}` : 'the'} surfaces; listing(s) reviewed, none carried as a separate conflict`)
-        : ran
-          ? `Checked across ~${ran} surface${ran === 1 ? '' : 's'}; no listing found`
-          : `Not checked on any recorded surface`) + gapNote;
+        ? (joined ? W.checkedJoined(across) : W.checkedReviewed(across))
+        : ran ? W.checkedClean(ran) : W.checkedNowhere) + gapNote;
       push({
         'Search term / variant': plainNote(term), Scope: scope,
         // The all-clean row is unchanged — a workbook that annotates every clean line teaches the reader to
         // ignore the annotation. It says "of N" only when some surface did NOT run.
-        Result: anyHit ? 'similar listing(s) found'
+        Result: anyHit ? W.similarFound
           : !ran ? NOT_SEARCHED_RESULT
-            : gaps.length ? `0 — clean on ${ran} of ${n}` : '0 — clean',
+            : gaps.length ? W.cleanOn(ran, n) : W.clean,
         Outcome: outcome, Note: note,
       });
     }
@@ -403,9 +398,9 @@ export function searchRows(auditParsed, { findings = [], joinedTerms = null, reg
     // about what ran — only what this run's own search log does and does not hold.
     push({ 'Search term / variant': COMMON_LAW_SECTION, Scope: '', Result: '', Outcome: '', Note: '', _section: true });
     push({
-      'Search term / variant': "COMMON-LAW  —  not itemised in this search's search log",
-      Scope: '', Result: 'no per-term rows recorded', Outcome: 'Not itemised',
-      Note: 'This run is not recorded as a register-only search, so what this tab lists is not the whole of what it searched. Its search log holds no per-term common-law rows, so the sweep cannot be set out term by term here. Read this tab as an incomplete record of the searching — never as evidence that no common-law search ran — and check any common-law line on "Coverage & gaps" against the run\'s own common-law record.',
+      'Search term / variant': W.unlogged.term,
+      Scope: '', Result: W.unlogged.result, Outcome: W.unlogged.outcome,
+      Note: W.unlogged.note,
       _commonLawUnlogged: true,
     });
   }
