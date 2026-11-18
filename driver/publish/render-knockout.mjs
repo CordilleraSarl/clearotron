@@ -1464,7 +1464,7 @@ function markOutcomes(marks) {
     .filter((o) => o.text);
 }
 
-function readBlock(m, framework) {
+function readBlock(m, framework, { opening = '' } = {}) {
   const factors = (m.factors ?? []).filter((s) => typeof s === 'string' && s.trim());
   const counter = (m.counterFactors ?? []).filter((s) => typeof s === 'string' && s.trim());
   const structured = Boolean(m.basis || factors.length || counter.length || m.mitigation);
@@ -1499,16 +1499,20 @@ function readBlock(m, framework) {
     //
     // CLAUSE F. An archived run carries bullets and no assessment: it keeps the fold it was delivered
     // with, under its own old label. The fallback is the old block, never an empty new one.
-    assessment
+    // A PER-NAME PAGE OF A MULTI-NAME BATCH OPENS WITH THIS VERY ASSESSMENT (the publisher sets it as the page's
+    // opening), so the fold would print it a second time: 10 to 26% of each such page repeated. There the fold is
+    // not drawn (owner, 2026-11-18). A single-name page opens with the batch paragraph, which is other text, and keeps it.
+    assessment && String(opening ?? '').trim() === String(m.assessment ?? '').trim() ? ''
+    : assessment
       ? `<details class="ko-full"><summary>${esc(ASSESSMENT_FOLD_LABEL)}</summary><div class="ko-assess">${mdParagraphs(assessment)}</div></details>`
       : (bullets ? `<details class="ko-full"><summary>Full narrative</summary><ul class="ko-bul">${bullets}</ul></details>` : ''),
   ].filter(Boolean).join('');
 }
 
-function analysisSection(marks, framework, { registerCounts = null, probeRan = false, registerRecords = null, ownerChecks = [], frameworkMethod = null, cardOrder = null } = {}) {
+function analysisSection(marks, framework, { registerCounts = null, probeRan = false, registerRecords = null, ownerChecks = [], frameworkMethod = null, cardOrder = null, opening = '' } = {}) {
   const cite = { filings: filingsByHandle(registerRecords), provider: registerRecords?.provider ?? null };
   const cards = marks.map((m, markIndex) => {
-    const bullets = readBlock(m, framework);
+    const bullets = readBlock(m, framework, { opening });
     // — the promoted register filings, in the SAME list as the common-law conflicts. A name's filing evidence
     // leads and its web use follows, the order a lawyer's report takes: first the findings that weigh a filing,
     // then the filing cards, then the findings resting on use alone. Each keeps its own order, so the
@@ -1756,7 +1760,7 @@ export function renderKnockoutHtml(findings, framework, {
   // a disclosure, which is the one failure that would matter on a client-facing page. A similarity score
   // could; that is why there isn't one.
   const newCaveats = caveats.filter((c) => saysSomethingNew(c, SCOPE_BLOCK_TEXT));
-  const analysis = analysisSection(marks, framework, { registerCounts, probeRan, registerRecords, ownerChecks, frameworkMethod, cardOrder: findings?.cardOrder });
+  const analysis = analysisSection(marks, framework, { registerCounts, probeRan, registerRecords, ownerChecks, frameworkMethod, cardOrder: findings?.cardOrder, opening: findings?.batch?.executiveSummary });
   // The request-level notes, gathered across every mark on the document and rendered ONCE at the top.
   // They are about the asking, not about a name, so a batch repeating them per mark would be the same
   // sentence three times. reviewerNotesBlock renders the rest, under that mark's own cards.
