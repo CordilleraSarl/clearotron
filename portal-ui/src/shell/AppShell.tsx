@@ -642,7 +642,7 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
         ) : null}
       </nav>
 
-      <div className="main">
+      <main className="main">
         <header className="topbar">
           {mobile ? (
             <button type="button" className="icon-btn" aria-label="Open menu" onClick={() => setDrawer(true)}>
@@ -796,7 +796,7 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
           </div>
         ) : null}
         {body}
-      </div>
+      </main>
     </div>
   )
 }
