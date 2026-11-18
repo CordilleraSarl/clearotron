@@ -24,7 +24,9 @@
 //      weighed and concluded bears on the rating.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { spawn } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -176,15 +178,38 @@ test("a weighed id the run does not hold changes nothing, and never throws", () 
 
 // ── half 1: the field the rater is told to send must exist in the schema it is given ────────────────
 
+/** The assess tool as the recording server lists it, started with no run so it lists its declared schema. */
+const listedAssess = () => new Promise((resolve, reject) => {
+  const env = { ...process.env, HOME: mkdtempSync(join(tmpdir(), "materiality-home-")) };
+  delete env.CLEAROTRON_BAND_RUN_DIR;
+  const p = spawn(process.execPath, [join(HERE, "..", "engine", "mcp", "recording-server.mjs")], { stdio: ["pipe", "pipe", "ignore"], env });
+  let buf = "";
+  const timer = setTimeout(() => { p.kill(); reject(new Error("recording-server did not answer tools/list: could not look")); }, 20000);
+  p.on("error", (e) => { clearTimeout(timer); reject(e); });
+  p.stdout.setEncoding("utf8");
+  p.stdout.on("data", (d) => {
+    buf += d;
+    for (const line of buf.split("\n")) {
+      let m; try { m = JSON.parse(line); } catch { continue; }
+      if (m?.id !== 2) continue;
+      clearTimeout(timer); p.kill();
+      const tool = (m.result?.tools ?? []).find((t) => t.name === "record_knockout_assess");
+      return tool ? resolve(tool.inputSchema) : reject(new Error("record_knockout_assess is not listed: a read of nothing is not a pass"));
+    }
+  });
+  const send = (o) => p.stdin.write(JSON.stringify(o) + "\n");
+  send({ jsonrpc: "2.0", id: 1, method: "initialize", params: { protocolVersion: "2024-11-05", capabilities: {}, clientInfo: { name: "materiality", version: "0" } } });
+  send({ jsonrpc: "2.0", id: 2, method: "tools/list", params: {} });
+});
+
 test("registerReads and weighedFilings are DECLARED in the tool schema", async () => {
   // A field described in prose and absent from the schema is folklore, and this repo already says so in
   // as many words (a-cancel-marker-names-its-actor.test.mjs). The mark object is
   // `additionalProperties: false`, so the seat was being told to send a key its own schema forbids.
-  const src = readFileSync(join(HERE, "..", "engine", "mcp", "recording-server.mjs"), "utf8");
-  const tool = src.slice(src.indexOf('name: "record_knockout_assess"'));
-  assert.ok(/registerReads:\s*\{/.test(tool),
+  const mark = (await listedAssess()).properties?.marks?.items?.properties ?? {};
+  assert.ok(mark.registerReads,
     "registerReads left the tool schema — the rater is instructed to send a key the schema forbids");
-  assert.ok(/weighedFilings:\s*\{/.test(tool),
+  assert.ok(mark.findings?.items?.properties?.weighedFilings,
     "weighedFilings left the tool schema — the finding's source labelling derives from it");
 });
 
@@ -203,20 +228,17 @@ test("the schema and the recorder's allowlist agree about these two keys", async
     /undeclared_field:.*invented/, "and it still refuses a key it does not declare, so the acceptance above is not vacuous");
 });
 
-test("the findings key count in the schema's own description matches its properties", () => {
+test("the findings key count in the schema's own description matches its properties", async () => {
   // The description says "CLOSED KEYS, all N, no others". It said EIGHT while the recorder enforced
   // nine, so the sentence a reader trusts was a closed set that was not the closed set in force.
-  const src = readFileSync(join(HERE, "..", "engine", "mcp", "recording-server.mjs"), "utf8");
-  const tool = src.slice(src.indexOf('name: "record_knockout_assess"'));
-  const block = tool.slice(tool.indexOf("findings: {"));
-  const said = /CLOSED KEYS, all (\w+), no others/.exec(block)?.[1];
+  const findings = (await listedAssess()).properties?.marks?.items?.properties?.findings ?? {};
+  const said = /CLOSED KEYS, all (\w+), no others/.exec(findings.description ?? "")?.[1];
   assert.ok(said, "the findings description stopped stating its own closed-key count");
-  const props = block.slice(block.indexOf("properties: {"));
-  const names = new Set([...props.slice(0, props.indexOf("\n                },")).matchAll(/^\s{20}(\w+):/gm)].map((m) => m[1]));
+  const names = new Set(Object.keys(findings.items?.properties ?? {}));
   const WORDS = { seven: 7, eight: 8, nine: 9, ten: 10 };
   // A key the description names as owed only where the framework states a method is counted beside the
   // closed set, never inside it: "all nine, no others, and "inputs" where the framework states a method".
-  const conditional = [...block.slice(0, block.indexOf("items:")).matchAll(/and \\"(\w+)\\" where the framework states a method/g)].map((m) => m[1]);
+  const conditional = [...findings.description.matchAll(/and "(\w+)" where the framework states a method/g)].map((m) => m[1]);
   for (const k of conditional) assert.ok(names.has(k), `the description names ${k} and the object does not declare it`);
   assert.equal(WORDS[said] + conditional.length, names.size,
     `the description claims ${said} keys${conditional.length ? ` and ${conditional.join(", ")}` : ""} and the object declares ${names.size}: ${[...names].join(", ")}`);
