@@ -1665,7 +1665,7 @@ export function renderKnockoutHtml(findings, framework, {
   // The driver's own record of the owner lookups it ran. Defaults to [] so an
   // archived run that predates the lane renders exactly as it was delivered.
   ownerChecks = [],
-  identity = null, matter = null, homeHref = null, chromeHref = null, depthNote = null,
+  identity = null, matter = null, homeHref = null, chromeHref = null, depthNote = null, auditHref = null,
   // — the run's FROZEN policy, so the scope section states what this run was
   // instructed to do rather than what its artifacts happen to show. Defaults to null, and an archived
   // run that carries none keeps the artifact-derived sentence it was delivered with.
@@ -1838,6 +1838,9 @@ ${filings}`
     ${EXPORT_TOGGLE}
     ${exportPopover(`
       <button class="util primary" onclick="exportPDF()">\u2b07 Export PDF</button>
+      ${/* THE CLEARANCE'S OWN WORKBOOK CONTROL (owner, 2026-11-18). The page cites "the audit workbook" and gave no way to
+           open it; the control links the portal's audit route the publisher hands in, and is absent when there is none. */''}${
+        isHttpUrl(auditHref) ? `<a class="util" href="${escAttr(auditHref)}" download>\u2b07 Download full audit (Excel)</a>` : ''}
       <div class="tb-sep"></div>
       <div class="tb-row"><button class="util" onclick="openAll(true)">Expand all</button><button class="util" onclick="openAll(false)">Collapse all</button></div>
     `)}

@@ -804,6 +804,9 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     const markBand = single ? overall : worstBand(framework, [m]);
     writeRO(file, renderKnockoutHtml(one, framework, {
       runId, overall: markBand, issued, searched, auditFile, probeRan, registerCounts, registerRecords, ownerChecks, instructedScope, identity, matter: runId,
+      // The page's workbook control links the portal's audit route, the one the cover note links: the pool path to the
+      // file reaches no handler. Null when the workbook could not be written, and then no control is drawn.
+      auditHref: auditFile ? auditRouteFor(origin, runId) : null,
       // Carried as its own value rather than folded into `registerRecords`, because three sites PRINT
       // `registerRecords.unavailable` and a marker invented here would become client-facing wording.
       registerRecordsUnreadable,

@@ -7713,6 +7713,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-knockout-page-opens-its-audit-workbook.test.mjs": {
+          "tests": 2,
+          "asserts": 2,
+          "skips": 0,
+          "todos": 0
+        },
         "the-knockout-rating-step-keeps-each-names-full-opening.test.mjs": {
           "tests": 2,
           "asserts": 8,
