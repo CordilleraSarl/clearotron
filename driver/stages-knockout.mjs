@@ -228,8 +228,8 @@ export function knockoutGridSpec(markRow, batch, { outputPath }) {
   };
 }
 
-// ── Assess chunking: ≤8 marks per LLM turn; chunks merged in code (pipeline-knockout) ────────────────
-export const KO_ASSESS_CHUNK = 8;
+// ── Assess chunking: ≤3 marks per LLM turn, rated side by side; chunks merged in code (pipeline-knockout) ──
+export const KO_ASSESS_CHUNK = 3;
 export const koChunks = (marks) => {
   const out = [];
   for (let i = 0; i < marks.length; i += KO_ASSESS_CHUNK) out.push(marks.slice(i, i + KO_ASSESS_CHUNK));
@@ -524,7 +524,10 @@ export const KO_STAGES = {
       `On the first call, send the complete assessment. Once the tool has confirmed a written record for this chunk, correct a name by sending its exact name and only the fields you changed. Omitted names and omitted fields within a name keep their recorded values. A field you send replaces that whole field: send a changed list or object complete, including unchanged entries. Update the chunk summary when the correction changes it. If the tool has written no record, send the complete corrected assessment.`,
       chunkNo === 0
         ? `As the FIRST chunk you also send \`batch\` (productContext, standardCaveats) and \`framework\`.`
-        : `As a CONTINUATION chunk you send \`marks\` and \`chunkSummary\` only — batch and framework came from chunk 1.`,
+        : `As a CONTINUATION chunk you send \`marks\` and \`chunkSummary\`, and in \`batch.standardCaveats\` only a qualification that holds for the whole batch. Use the supplied frozen framework.`,
+      chunkTotal > 1
+        ? `This batch is rated in ${chunkTotal} groups side by side, and code joins the groups' summaries in order. Open your \`chunkSummary\` with a line for these names, not for the whole batch: the other groups' ratings are not in front of you.`
+        : "",
     ),
   },
 
