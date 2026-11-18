@@ -8,18 +8,18 @@
 // <meta charset>. It rendered as a grey spreadsheet beside a clearance report, and its curly quotes and
 // middots turned to mojibake wherever a reader's browser guessed latin-1.
 //
-// This module is a SIBLING of render.mjs, not an extension of it. It imports nothing from that file.
-// render.mjs is hash-frozen (test/render-frozen.test.mjs), single-mark shaped, and built around a parsed
-// report.md; a knockout is batch-shaped (`marks[]`, one row per name, no report.md at all). Grafting one
-// into the other would be a large freeze break in exchange for no reuse.
+// This module is a SIBLING of render.mjs, not an extension of it. render.mjs is single-mark shaped and
+// built around a parsed report.md; a knockout is batch-shaped (`marks[]`, one row per name, no report.md at
+// all). It takes two pieces from that file, the demo banner and the served-models line, so the two reports
+// say those in one wording.
 //
-// Visual consistency does not come from sharing the renderer. It comes from sharing the DESIGN SYSTEM,
-// and that already lives in modules nothing has frozen: shared/brand.mjs owns the tokens, the dark
-// blocks, the theme init and the lockup; templates/report.css owns the layout vocabulary. This file
-// emits the same class names — .rep-stickyhead, .topbar, .wrap, .hero/.conf/.mark/.sub, .sec/.num/.note,
-// .panel, footer — so the two reports track each other for free when either is restyled. The price is
-// ~60 lines of duplicated document shell, and it is the right price: the alternative is exporting the
-// shell out of the frozen file, which is a bigger break than the duplication saves.
+// Visual consistency does not come from sharing the renderer. It comes from sharing the DESIGN SYSTEM:
+// shared/brand.mjs owns the tokens, the dark blocks, the theme init and the lockup; templates/report.css owns
+// the layout vocabulary; page-shell.mjs owns the document both pages sit in. This file emits the same class
+// names — .rep-stickyhead, .topbar, .wrap, .hero/.conf/.mark/.sub, .sec/.num/.note, .panel, footer — so the
+// two reports track each other for free when either is restyled. The shell used to be ~60 lines duplicated
+// here, because exporting it out of the hash-frozen clearance renderer cost more than the copy; the freeze
+// is gone and the shell is shared.
 //
 // ONE report. There is no client variant and no internal variant, and that is
 // still the rule — it is what removes the whole class of "the wrong link got sent".
@@ -39,10 +39,9 @@ import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-  REPORT_ROOT, REPORT_ROOT_DARK_EXPLICIT, THEME_INIT_EXPLICIT, themeButton,
-  THEME_BTN_CSS, CHROME_CSS, FAVICON_LINK, logoLockup, BRAND, confPosture, sectionStrip,
+  themeButton, THEME_BTN_CSS, CHROME_CSS, logoLockup, confPosture, sectionStrip,
 } from '../../shared/brand.mjs';
-import { REPORT_FONT_STYLE } from '../../shared/brand-fonts.mjs';   // the typefaces travel inside the report; it fetches nothing to draw its text
+import { pageShell } from './page-shell.mjs';   // the document shell, shared with the clearance template
 import { SUMMARY_BLOCK_LINE, parseSummaryBlocks } from '../../shared/summary-blocks.mjs';
 
 // THIS BOARD'S FOUR ENTRIES, in its order. Its third reads "Also considered" and resolves at the filings
@@ -173,212 +172,10 @@ function qualifierHtml(q) {
   return `<span class="ko-qual">${esc(said)}</span>`;
 }
 
-// The layout this report adds on top of report.css. Additive and `ko-`prefixed: report.css is shared with
-// the frozen clearance renderer, and a selector that is inert there cannot regress it.
-const KO_CSS = `
-  /* THE BOARD'S SECTION STRIP AND ITS SECTION FURNITURE, lifted from the approved knockout board rather
-     than written here. Four entries; the third reads "Also considered" and resolves at the filings
-     section. Marked not to print, because the board marks it so: a strip that follows the reader down
-     the page is a control, and paper has nothing for it to follow.
-     NO BACKTICK BELOW, and none in this comment — one closes the template literal this sits inside, and
-     it has cost this file two silent breakages already.
-     The number span is drawn and then hidden, which is the board's own doing: it emits the span on every
-     section and sets it to none further down its own stylesheet. Carried so the delivered document holds
-     the same elements as the approved one; no pixel moves. */
-  /* THE BREADCRUMB IS A ROW OF THE HEADER, not a bar under it (owner, 2026-09-18).
-     It used to be a SIBLING of .rep-stickyhead, pinned on its own at top:var(--tb-h,52px) — and
-     --tb-h is set nowhere in this product, so the fallback was a guess at a bar that measures ~46px:
-     content showed through the slit between the two, and z-index:20 put the strip UNDER the header's
-     100 whenever the guess was wrong. The strip is now emitted inside .rep-stickyhead, so the header
-     and the breadcrumb are one sticky surface that pins and unpins together and can never gap or
-     overlap, whatever the bar measures or how it wraps.
-     No background and no bottom hairline of its own: the wrapper carries the blurred surface and the
-     single edge, and the border-top here is the divider between the two rows. It is on .strip rather
-     than on any wrapper because sectionStrip() emits NOTHING when fewer than two of its sections are
-     live — a wrapper would leave a stray line on those reports.
-     The gutter matches the topbar's, so the first entry lines up under the back button. */
-  .strip{display:flex;gap:4px;align-items:center;padding:4px max(26px,calc((100% - 1120px)/2)) 6px;
-    border-top:1px solid var(--line);font:600 12px/1 'Plus Jakarta Sans','Helvetica Neue',Arial,sans-serif;
-    letter-spacing:.04em;overflow-x:auto;scrollbar-width:none}
-  .strip::-webkit-scrollbar{display:none}
-  .strip a{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;color:#6b5d50;text-decoration:none;white-space:nowrap}
-  .strip a i{width:8px;height:8px;border-radius:50%;border:1.5px solid currentColor;box-sizing:border-box}
-  .strip a.done{color:#4c7a4c}
-  .strip a.done i{background:#4c7a4c;border-color:#4c7a4c}
-  .strip a.now{color:#250902;background:rgba(0,0,0,.06)}
-  .strip a.now i{border-color:#860F09;border-width:3px}
-  .sec .num{display:none}
-  .sec .note{display:inline;margin-left:10px;font-size:12px;color:var(--faint)}
-  .ko-glance{padding:6px 0 2px}
-  /* — framework attribution, captioning the rows. Same gutter and hairline as.ko-row so it reads
-     as the table's head, not a floating note. */
-  .ko-legend{padding:11px 24px 12px;border-bottom:1px solid var(--line);font-size:11.5px;color:var(--faint)}
-  .ko-row{display:grid;grid-template-columns:minmax(140px,.34fr) 1fr;gap:18px;align-items:start;
-    padding:15px 24px;border-bottom:1px solid var(--line)}
-  .ko-row:last-child{border-bottom:0}
-  .ko-name{font-weight:800;font-size:17px;letter-spacing:-.01em;margin:0 0 7px;word-break:break-word}
-  .ko-band{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
-    color:#fff;padding:4px 11px;border-radius:30px}
-  .ko-qual{display:block;margin-top:5px;font-size:11.5px;color:var(--faint)}
-  .ko-classes{font-size:12px;color:var(--faint);margin:6px 0 0}
-  .ko-bul{margin:0;padding-left:18px;font-size:14px;color:var(--slate);line-height:1.6}
-  /* / — the summary's own sub-headers and bullets. The summary is the report's entry point and
-     the owner's complaint was that it read as one block; these are what make it scannable. Sized BELOW
-     .ko-name so a sub-header inside the summary never competes with a mark's own name. */
-  .ko-sumh{font-weight:800;font-size:13.5px;letter-spacing:.01em;margin:15px 0 6px;color:var(--slate)}
-  .ko-sumh:first-child{margin-top:0}
-  .ko-sumbul{margin:0 0 8px}
-  .ko-bul li{margin:0 0 5px}
-  .ko-bul li:last-child{margin-bottom:0}
-  /* — one conflict, one block: the reference a reader carries to the workbook, the name, its band,
-     the conclusion sentence, the ground under it, and the evidence it opens to. */
-  /* ko-find is a LOCATOR now, not a look: the block wears .card as well and report.css draws it. The
-     dashed rule and the top margin this used to carry would fight the card's own border and radius. */
-  .ko-find.card{margin:14px 0 0}
-  .ko-find.card:first-child{margin-top:0}
-  .ko-findband{display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
-    color:#fff;padding:2px 8px;border-radius:30px;margin-left:7px;vertical-align:1px}
-  .ko-findmeta{margin:0 0 5px;font-size:12px;color:var(--faint)}
-  .ko-findnet{margin:0 0 5px;font-size:14px;color:var(--slate);line-height:1.6}
-  .ko-findbasis{margin:0 0 5px;font-size:13.5px;color:var(--slate);line-height:1.6}
-  .ko-findev{margin:0;font-size:12.5px;line-height:1.6;word-break:break-word}
-  .ko-count{font-family:var(--mono);font-size:13px;color:var(--ink);margin:0}
-  .ko-degraded{font-size:13px;color:var(--med-tx,#82550A);margin:8px 0 0;font-style:italic}
-  /* The reviewer-notes legend. NOT .ko-legend — that name is taken by the framework attribution row
-     above, and reusing it would restyle the caption. It names the purple convention report.css already
-     draws for .internal, so the colour is stated once and never re-specified. */
-  /* The notes sit inside a mark's column, so the shared .internal block's bullets keep the column's
-     own list indent and do not fight the paragraph above them. */
-  .ko-row .internal .ko-bul{margin:0 0 4px}
-  .ko-row .internal .ko-bul:last-child{margin-bottom:0}
-  .ko-counts table{width:100%;border-collapse:collapse;font-size:14px}
-  .ko-counts th{text-align:left;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);
-    font-weight:700;padding:14px 24px 8px;border-bottom:1px solid var(--line)}
-  .ko-counts td{padding:13px 24px;border-bottom:1px solid var(--line);vertical-align:top}
-  .ko-counts tr:last-child td{border-bottom:0}
-  .ko-counts td.num{font-family:var(--mono);font-size:15px;font-weight:600;color:var(--ink)}
-  .ko-counts td.na{font-family:var(--mono);font-size:12.5px;color:var(--faint)}
-  .ko-counts tr.ko-forms td{font-size:12px;color:var(--faint);line-height:1.55;padding:0 24px 13px;
-    font-family:var(--mono);word-break:break-word}
-  .ko-tier{font-size:13.5px;color:var(--slate);line-height:1.65;margin:0;padding:18px 24px}
-  /* — the read, as structure. The chip and classes are the head; basis leads; factors are a tight
-     list; the two qualifying blocks are visually distinct so a scan separates "why this band" from
-     "what would move it"; the register line is code-owned and always last. */
-  .ko-basisline{margin:0 0 8px;font-size:14.5px;color:var(--ink);line-height:1.5;font-weight:600}
-  .ko-lbl{display:block;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
-    color:var(--faint);margin:0 0 4px}
-  .ko-counter{margin:10px 0 0;padding:9px 0 0;border-top:1px dashed var(--line)}
-  .ko-mitig{margin:10px 0 0;padding:9px 12px;border-left:2px solid var(--line);background:var(--sunken,transparent)}
-  .ko-mitig p{margin:0;font-size:13.5px;color:var(--slate);line-height:1.6}
-  .ko-full{margin:10px 0 0;font-size:13px;color:var(--slate)}
-  .ko-full summary{cursor:pointer;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);font-weight:700}
-  .ko-full ul{margin-top:7px}
-  /* NOTHING IS DISCARDED — including on paper. A collapsed <details> prints collapsed, so a report
-     saved to PDF would drop the narrative this block exists to preserve. The beforeprint handler below
-     opens them; this hides the now-pointless toggle in print. */
-  @media print{.ko-full summary{display:none}}
-  /* THE LABELS THE READER ACTUALLY READS. ko-lbl above is 9.5px uppercase grey — the owner's
-     "what holds what?" was asked of a label in that style, so a new word in the same style is the
-     same defect with different letters. These are body size and body colour, and they carry the
-     band's own word ("Why High"), which is what makes them answerable without a legend. */
-  .ko-lbl2{display:block;font-size:14px;font-weight:700;color:var(--ink);margin:0 0 5px;letter-spacing:0}
-  /* The card's fold. ko-full rides with it so openAll() and the beforeprint handler reach it —
-     what folds on screen still prints, which is the rule this template already states for the
-     narrative fold. ko-why carries only the spacing a card needs inside its own body. */
-  .ko-why{margin:6px 0 5px}
-  .ko-why summary{font-size:12px;text-transform:none;letter-spacing:0;color:var(--rose,var(--faint));font-weight:600}
-  /* "About this request" — what was asked, and any flag on the asking. It sits in the hero because a
-     mis-scoped request makes every number below it answer the wrong question. */
-  .ko-req{margin:14px 0 0;padding:13px 16px;border:1px solid var(--line);border-radius:3px}
-  .ko-req .ko-lbl2{margin-bottom:6px}
-  .ko-req p{margin:0 0 6px;font-size:13.5px;color:var(--slate);line-height:1.6}
-  .ko-req p:last-child{margin-bottom:0}
-  .ko-reqflag{border-left:3px solid var(--rose,var(--line));padding-left:11px;margin-top:9px}
-  /* THE PURPLE NOTES COME OFF THE EXPORT, exactly as the clearance page removes its internal notes
-     ("Internal (review-only) notes are removed on export"). The knockout's export is window.print()
-     via exportPDF(), so print is the whole export path and this rule is the whole strip. Without it
-     a knockout PDF forwarded to a client carries the reviewing lawyer's notes. */
-  @media print{.internal{display:none !important}}
-  .ko-reg{margin:11px 0 0;padding:8px 0 0;border-top:1px solid var(--line);
-    font-family:var(--mono);font-size:12px;color:var(--faint);line-height:1.5}
-  .ko-filings{padding:14px 0 2px;border-bottom:1px solid var(--line)}
-  .ko-filings:last-of-type{border-bottom:0}
-  .ko-filings .ko-name{padding:0 24px}
-  .ko-filings td{font-size:13px}
-  .ko-basis{font-size:12.5px;color:var(--slate);line-height:1.6;margin:0;padding:15px 24px 17px;border-top:1px solid var(--line)}
-  .ko-scope{font-size:13.5px;color:var(--slate);line-height:1.65;margin:0;padding:18px 24px}
-  .ko-scope b{color:var(--ink)}
-  /* A wide counts table must scroll inside its own panel, never push the page sideways. */
-  /* AND IT SHOWS THAT IT SCROLLS. A panel that continues off its right edge and says nothing leaves a
-     reader who never drags it believing they have seen the whole table; the columns past the edge are
-     reachable and invisible at the same time. Ruled 2026-09-17: a scrollbar, always visible, and no text.
-     The -webkit-appearance:none is the part that does the work — without it the platform draws an OVERLAY
-     scrollbar that appears only once a scroll is already under way, which is the state this rule ends.
-     scrollbar-width and scrollbar-color are the same instruction for the engines that take the standard
-     properties. (NO BACKTICK IN THIS COMMENT: it sits inside the stylesheet's own template literal, and
-     one closes it. That is written above the export menu block too, and I still did it — so it is here
-     as well, beside the second rule anyone adds.) The colours are tokens, not fixed values, for the reason the ladder below this block
-     records: a fixed colour here reads on one ground and goes invisible on the other. */
-  .ko-scroll{overflow-x:auto}
-  .ko-scroll::-webkit-scrollbar{height:9px;-webkit-appearance:none}
-  .ko-scroll::-webkit-scrollbar-track{background:transparent}
-  .ko-scroll::-webkit-scrollbar-thumb{background:var(--faint);border-radius:5px}
-  /* THE TWO INSTRUCTIONS CANNOT SIT TOGETHER, and this was measured rather than reasoned. Setting the
-     standard scrollbar-width alongside the pseudo-elements makes the engine take the standard path and
-     ignore them, and on this one the standard path draws an overlay bar with no layout height at all.
-     Driven three ways on a delivered report at 390px, reading the height the bar takes out of the panel:
-     both together 0px, the pseudo-elements alone 9px, the standard properties alone 0px. So the standard
-     ones go behind a support query that the engines carrying the pseudo-elements never enter, which
-     leaves each engine exactly one instruction. */
-  @supports not selector(::-webkit-scrollbar){
-    .ko-scroll{scrollbar-width:thin;scrollbar-color:var(--faint) transparent}}
-  /* A finding's bullets carry bare source URLs, and a URL offers a line no place to break. On a phone
-     that unbreakable run becomes the minimum width of the grid item, so the single column floors at
-     443px inside a 360px viewport and the whole page scrolls sideways -- 135px of it, measured
-     2026-09-17. Only the value "anywhere" lowers that minimum: "break-word" breaks the line but
-     leaves the minimum where it was, which is why the blocks beside this one that already set
-     word-break were never the cause. Phone widths only: nothing at or above 700px changes.
-     NO BACKTICK IN THIS COMMENT -- it sits inside the stylesheet's own template literal. */
-  @media(max-width:700px){.ko-row{grid-template-columns:1fr;gap:10px}
-    .ko-bul{overflow-wrap:anywhere}}
+// The layout this report adds on top of report.css, kept in templates/knockout.css. Additive and `ko-`prefixed:
+// report.css is shared with the clearance renderer, and a selector that is inert there cannot regress it.
+const KO_CSS = '\n' + readFileSync(join(HERE, 'templates', 'knockout.css'), 'utf8');   // the file's text, after the line break the sheet always began with
 
-  /* The band ladder, the territories fold and the run's own caveats (the 2026-09-16 report redesign). Ported from
-     the design's stylesheet with its fixed colours replaced by this page's tokens, so the ladder reads
-     in both themes: the tick row was #a89a8a on white and the fold's summary and prose a brown pair,
-     all three of which go invisible on the dark ground this report also renders on. */
-  /* THE BAND PILL HANGS ABOVE THE BAR, so the space above the bar is what keeps it off the heading.
-     NO BACKTICK IN THIS COMMENT — it sits inside the stylesheet's own template literal.
-     .kmarker sits at top:-30px and the pill is ~23px tall (5+5 padding on a 13px line), so it starts
-     30px above the bar and ends 7px above it. At the LEFTMOST band the pill is also drawn flush left
-     (translateX(-12px) at left:0%) — directly under the left-aligned "Overall risk" — so that is the
-     rung where the two touch, and the house ladder's leftmost rung is Low.
-     THE ROOM IS ONE MARGIN, NOT TWO, and that is what made the arithmetic wrong twice. This margin and
-     .gauge .label's 18px bottom margin are ADJACENT SIBLINGS, so they collapse to the larger of the two
-     rather than adding: 10px here gave 18px of room against a pill that needs 30, and the first attempt
-     at 24 still left 6. Measured in a browser at every rung (scripts/report-header-render-check.mjs),
-     not reasoned: 44 gives 14px of daylight under the heading at every band. */
-  .kscale{position:relative;margin:44px 8px 34px}
-  .kbar{position:relative;height:8px;border-radius:4px}
-  .kmarker{position:absolute;top:-30px;text-align:center}
-  .kpill{display:inline-block;padding:5px 12px;border-radius:999px;color:#fff;
-    font:700 13px/1 'Plus Jakarta Sans','Helvetica Neue',Arial,sans-serif;white-space:nowrap}
-  .kneedle{width:3px;height:14px;margin:4px auto 0;border-radius:2px}
-  .kticks{position:relative;height:16px;margin-top:8px}
-  .kticks span{position:absolute;transform:translateX(-50%);color:var(--faint);white-space:nowrap;
-    font:700 10.5px/1 'Plus Jakarta Sans','Helvetica Neue',Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase}
-  .kticks span.on{font-weight:800}
-  .terr{margin-top:4px}
-  .terr summary{cursor:pointer;color:var(--rose,var(--faint));font-size:12px;font-weight:600;list-style:none}
-  .terr summary::-webkit-details-marker{display:none}
-  .terr p{margin:4px 0 0;font-size:12px;line-height:1.6;color:var(--slate)}
-  .ko-caveats{padding:16px 24px;margin:14px 0 8px}
-  .ko-caveats p{margin:0 0 7px;font-size:12px;line-height:1.6;color:var(--faint)}
-  .ko-caveats p:last-child{margin-bottom:0}
-`;
-
-const REPORT_BASE = REPORT_ROOT + '\n' + readFileSync(join(HERE, 'templates', 'report.css'), 'utf8');
-// Print renders light whatever the toggle says — re-assert the light tokens under [data-theme=dark].
-const PRINT_LIGHT = '\n@media print{' + REPORT_ROOT.replace(':root{', ':root[data-theme="dark"]{color-scheme:light;') + '}';
 
 /** The batch's display title: the mark itself when a screen covered one name, else the count. */
 function batchTitle(marks) {
@@ -1968,15 +1765,11 @@ ${filings}`
   // falls back to its intrinsic 500px and overflows the body box by ~440px, which the height bridge then
   // posts as the frame height. That is invisible to a string test and obvious to a browser: the page
   // renders correctly and sits in a frame with 450px of dead space under it. Caught by render-check.
-  const cssInline = REPORT_BASE + '\n' + CHROME_CSS + '\n' + THEME_BTN_CSS + '\n' + KO_CSS;
-  const chromeLinkTag = chromeHref ? `<link rel="stylesheet" href="${escAttr(chromeHref)}">` : '';
-
-  const doc = `<!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${productName ? `${esc(productName)} — ` : ''}${esc(title)} · ${esc(BRAND.name)}</title>
-${REPORT_FONT_STYLE}${FAVICON_LINK}${THEME_INIT_EXPLICIT}
-<style>${cssInline}${REPORT_ROOT_DARK_EXPLICIT}${PRINT_LIGHT}</style>${chromeLinkTag}</head><body class="has-glow">
-<div class="rep-stickyhead no-print">
+  const doc = pageShell({
+    title: `${productName ? `${esc(productName)} — ` : ''}${esc(title)}`,
+    css: CHROME_CSS + '\n' + THEME_BTN_CSS + '\n' + KO_CSS,
+    chromeHref,
+    body: `<div class="rep-stickyhead no-print">
 <div class="topbar no-print">
   ${homeHref ? `<a class="homebtn tb-back no-print" href="${escAttr(homeHref)}" title="All reports"><span aria-hidden="true">←</span> <span class="tb-back-lbl">All reports</span></a>` : ''}
   ${logoLockup({ mark: 20, tag: '' })}<span class="sp"></span>
@@ -2097,8 +1890,8 @@ ${EXPORT_MENU_JS}</script>
       title || productName || issuedDate ? '.' : ''}</span>
     ${logoLockup({ mark: 16 })}
   </footer>
-</div>
-</body></html>`;
+</div>`,
+  });
   return doc.replace('<!--SECTION-STRIP-->', sectionStrip(doc, STRIP));
 }
 

@@ -33,9 +33,9 @@ import { parseFindingsJson, bindRecommendation, sentenceCaseLead, CLIENT_TIER_BY
 import { REC, inPriorityWindow, ownerDisplayName } from '../registry-fidelity.mjs';
 import { registrationSystem } from '../jurisdiction-systems.mjs';
 import { READ_LEAD_RE } from '../report-card-record.mjs';   // D3 — the dedupe gate and the card's acceptance are ONE predicate
-import { REPORT_ROOT, REPORT_ROOT_DARK_EXPLICIT, THEME_INIT_EXPLICIT, FAVICON_LINK, logoLockup, BRAND, confPosture, sectionStrip } from '../../shared/brand.mjs';
+import { logoLockup, BRAND, confPosture, sectionStrip } from '../../shared/brand.mjs';
 import { NAV_CSS } from '../../shared/site-nav.mjs';
-import { REPORT_FONT_STYLE } from '../../shared/brand-fonts.mjs';   // the typefaces travel inside the report; it fetches nothing to draw its text
+import { pageShell } from './page-shell.mjs';   // the document shell, shared with the knockout template
 import { isEntrypoint } from "../../shared/is-entrypoint.mjs";   // — realpath both sides, or a symlinked invocation exits 0 silently
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -2295,26 +2295,21 @@ function method(_text) {
 // controls and rendered nothing without them, so took it with them.
 
 
-// Brand :root tokens are sourced from shared/brand.mjs (REPORT_ROOT) and prepended to the
-// report stylesheet, so report.css carries only rules — the palette lives in ONE place across surfaces.
-// + the shared floating-nav CSS, with a report-only override: the report already has a sticky .topbar at
+// The report's base sheet (brand tokens + report.css) and its print rule are the page shell's (page-shell.mjs);
+// this file adds the shared floating-nav CSS, with a report-only override: the report already has a sticky .topbar at
 // top:0, so the cross-page nav renders STATIC (a band above it that scrolls away) — two stacked sticky bars
 // would overlap. Internal report only (stripped on the client export, like every internal control).
 // The report wraps the cross-page nav + its own action bar in ONE sticky container (.rep-stickyhead), so
 // the nav no longer scrolls away while the topbar stays (the "nav disappears on scroll" bug). Inside the
 // wrapper the nav is static and drops its own shadow — the wrapper/topbar border provides the separation.
 // The report's CSS in three parts so the INTERNAL report can LINK the shared chrome instead of inlining it
-// (D — <pool>/assets/chrome.css, written by regenIndex): REPORT_BASE (tokens + report.css) + REP_OVERRIDE stay
+// (D — <pool>/assets/chrome.css, written by regenIndex): the shell's base sheet + REP_OVERRIDE stay
 // inline on every variant; NAV_SHEET (the shared nav/toggle/fab chrome) is inlined on the client export (a
 // portable, self-contained deliverable) but LINKED on the internal report so a chrome tweak reaches every
 // already-published internal report on the next view with no re-render. The <link> is emitted AFTER the inline
 // <style> so the cascade order (chrome after report.css, as today) is identical to the all-inline export.
-const REPORT_BASE = REPORT_ROOT + '\n' + readFileSync(join(HERE, 'templates', 'report.css'), 'utf8');
 const NAV_SHEET = NAV_CSS;
 const REP_OVERRIDE = '.rep-stickyhead .sitenav{position:static;box-shadow:none;border-bottom:none;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}';
-// Print always renders light: re-assert the REPORT_ROOT light tokens under [data-theme=dark] inside @media
-// print (a dark-toggled report must never print on near-black — ink/banding + legal-document convention).
-const PRINT_LIGHT = '\n@media print{' + REPORT_ROOT.replace(':root{', ':root[data-theme="dark"]{color-scheme:light;') + '}';
 const PAGE_JS = `var _hidden=[];
 function exportPDF(){_hidden=[];document.querySelectorAll('.card').forEach(function(card){var cb=card.querySelector('input.pickbox');if(cb&&!cb.checked){card.classList.add('print-hidden');_hidden.push(card);}});window.print();}
 function pickAll(v){document.querySelectorAll('input.pickbox').forEach(function(cb){cb.checked=v;});}
@@ -2778,32 +2773,16 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
     covNum = num();
   }
 
-  // Dark theme rides at EMIT time — the module-level CSS const stays untouched (its light half must render
-  // byte-identically). The toggle arrives via the nav.
-  //
-  // EXPLICIT ONLY. This said "full gating: dark block WITH the @media auto-dark +
-  // the OS-aware init", and that predates the client-surface ruling. A clearance report is the product's
-  // most client-facing artefact — it is opened in front of a client, and the portal frames it for one —
-  // and a client surface must never follow the OS colour preference. It went dark on a dark-mode laptop,
-  // as a delivered legal document, on the standalone file AND framed in the portal, because the shell
-  // does not strip the rule.
-  //
-  // The knockout renderer already took the explicit pair; the two report lanes disagreed and the wrong
-  // one was the bigger deliverable. Dark is still fully reachable, by the toggle and by a choice carried
-  // from any other surface — this removes the automatic part only.
-  const darkCss = REPORT_ROOT_DARK_EXPLICIT;
-  const themeInitScript = THEME_INIT_EXPLICIT;
+  // The explicit dark pair, the typefaces, the favicon, the base sheet and the print rule are the shell's
+  // (page-shell.mjs, which says why the dark pair is explicit only).
   // D: the report LINKS the shared chrome (opts.chromeHref → <pool>/assets/chrome.css); direct callers with
   // no chromeHref keep it inline. Link emitted after the <style> so chrome stays last in the cascade.
   const linkChrome = !!opts.chromeHref;
-  const cssInline = REPORT_BASE + '\n' + (linkChrome ? '' : NAV_SHEET) + '\n' + REP_OVERRIDE;
-  const chromeLinkTag = linkChrome ? `<link rel="stylesheet" href="${escAttr(opts.chromeHref)}">` : '';
-  const doc = `<!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${productName ? `${esc(productName)} — ` : ''}${esc(fm.title || '')} · ${esc(BRAND.name)}</title>
-${REPORT_FONT_STYLE}${FAVICON_LINK}${themeInitScript}
-<style>${cssInline}${darkCss}${PRINT_LIGHT}</style>${chromeLinkTag}</head><body class="has-glow">
-<div class="rep-stickyhead no-print">
+  const doc = pageShell({
+    title: `${productName ? `${esc(productName)} — ` : ''}${esc(fm.title || '')}`,
+    css: (linkChrome ? '' : NAV_SHEET) + '\n' + REP_OVERRIDE,
+    chromeHref: opts.chromeHref,
+    body: `<div class="rep-stickyhead no-print">
 <div class="topbar no-print">
   ${/* ONE BAR (the 2026-09-16 report redesign). The site bar is not rendered on a report, so the brand belongs here:
        a reader met two stacked headers, and the lower one carried the only brand. */''}
@@ -2938,8 +2917,8 @@ ${REPORT_FONT_STYLE}${FAVICON_LINK}${themeInitScript}
     ${logoLockup({ mark: 16 })}
   </footer>
 </div>
-<script>${PAGE_JS}</script>
-</body></html>`;
+<script>${PAGE_JS}</script>`,
+  });
   return doc.replace('<!--SECTION-STRIP-->', sectionStrip(doc, STRIP));
 }
 
