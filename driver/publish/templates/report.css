@@ -446,6 +446,9 @@
        the next. .sec is a flex row holding the h2, so the rule sits on the row and on the heading inside it. */
     .sec,.sec h2{break-after:avoid}
   }
+  /* PDFs print on A4 (owner, 2026-11-18). Export PDF is the browser's print, so the paper followed the reader's locale,
+     and a Swiss or EU lawyer's export came out in Letter. */
+  @page{size:A4}
 
   /* ── P4 (spec 2026-07-30) — one spine + mark-itself disclosures + depth strip ─────────────────────
      This file is NOT hash-frozen; visual rules for the restructure live here (freeze-header rule 2).
