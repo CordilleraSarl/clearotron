@@ -30,7 +30,7 @@ import { declaredRecordOrigins } from '../record-origins.mjs';
 import { NEUTRAL_DELIVERY, loadProfiles } from '../profiles.mjs';
 import { resolveDemoData, demoBannerMd } from './demo-marking.mjs';   // — one demo question, every product; 2134 — every SURFACE
 import { engineCommit } from '../engine-build.mjs';
-import { WARM_ROOT, WARM_ROOT_DARK, WARM_ROOT_DARK_EXPLICIT, THEME_INIT, THEME_INIT_EXPLICIT, FAVICON_LINK, BRAND } from '../../shared/brand.mjs'; import { TEXT_FONT_STYLE } from '../../shared/brand-fonts.mjs';   // the text face, carried in the page rather than fetched
+import { WARM_ROOT, WARM_ROOT_DARK, WARM_ROOT_DARK_EXPLICIT, THEME_INIT, THEME_INIT_EXPLICIT, FAVICON_LINK, BRAND, EMAIL_TIER, EMAIL_COLOURS as EC } from '../../shared/brand.mjs'; import { TEXT_FONT_STYLE } from '../../shared/brand-fonts.mjs';   // the text face, carried in the page rather than fetched
 import { NAV_CSS, siteNav, siteFab } from '../../shared/site-nav.mjs';
 import { anonAssets, anonClient, anonMark } from '../../shared/anon-overlay.mjs';
 
@@ -1369,19 +1369,13 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // caveat banner (H1/H2); the receipts live on audit.xlsx. The machine QC above decides nothing
   // about this write.
   // homeHref — the floating "← All reports" pill returns to the listing (the staff index one level up).
-  // The floating cross-page nav on the INTERNAL report too (jump to Archive/Status from a report).
-  // '../' prefix — a report lives one level down at <pool>/<runId>/report.html; existence-gating stays poolRoot-
-  // absolute. portal-report.mjs strips the nav at serve time (it lists every customer key).
-  // anon:false — the demo-privacy toggle is a STAFF-INDEX feature (its __ANON__ config + overlay JS are
-  // injected there only); on a report page the button rendered "Privacy ON" while doing nothing. Omit it
-  // rather than wire the overlay in: client names saturate privileged report prose — a partial blur is a
-  // worse demo than no toggle.
-  const reportNav = siteNav(poolRoot, 'report', null, '../', { anon: false });
+  // NO SITE NAV IS BUILT FOR A REPORT. One was, from a walk of the pool on every publish, and handed to a
+  // renderer that never read it; reports published before that carry one, and the portal still strips it.
   // How much was read to reach the answer, written where the document holds it (an additive record: a publish never
   // fails for want of it).
   if (searchDepth) { try { writeRO('search-depth.json', JSON.stringify(searchDepth, null, 2)); } catch { /* additive */ } }
 
-  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, frameworkMethod, servedModels: served, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', nav: reportNav, chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion, searchDepth, assessmentNotCompleted }));
+  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, frameworkMethod, servedModels: served, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion, searchDepth, assessmentNotCompleted }));
   // ONE report (spec 2026-07-30 §5): report.client.html is no longer written. The knockout lane's own
   // collapse note is the precedent: "two renderings of one run is how the wrong link gets sent". The
   // client host serves the same report.html through the portal's readReport() (cleaning built in) — its
@@ -1391,9 +1385,8 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // had to be passed to BOTH renders. There is one render now, so `fourAnswers` rides the one call — the
   // panel reaches the client through the same cleaning path as every other reader-facing block.
   // PR-9 — the clearance run as data (publish/report-data.mjs): the client-cut projection the assistant
-  // drafts mail from and the portal's native-render path reads. BEST-EFFORT with a hard receipt rule:
-  // meta.reportSchema is stamped ONLY when the file actually wrote — a run whose meta advertises a data
-  // file that is not there would break the portal's presence branch. A producer throw never blocks the
+  // drafts mail from. BEST-EFFORT with a hard receipt rule: meta.reportSchema is stamped ONLY when the file
+  // actually wrote, so a meta never names a data file that is not there. A producer throw never blocks the
   // report (the baked HTML above is already on disk).
   const reportSchema = writeDataFile('report-data.json', () => clearanceReportData({
     runId, codename, matter: fm.matter, markName, title: fm.title, customerKey: customerKey || 'generic',
@@ -1408,7 +1401,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     framework, verdictInfo, findings, coverage, contextNotes, markAssessment, fourAnswers, askAnswers,
     actions: actionsRegister, jurisdiction, searchedJurisdictions, scopeBasis, caption,
     assessmentNotCompleted,
-  })) ? 'report-data/1' : null;
+  })) ? 'report-data/clearance-1' : null;
   const total = finishPoolRun({ writeRO, poolRoot, skipRegen, regenIndex, meta: {
     runId, codename: codename || '', matter: fm.matter, title: fm.title, client: fm.client,
     // The mark as typed — see above. Distinct from `title`, which is the report's own headline.
@@ -1476,9 +1469,9 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     clientGate: { released: clientGate.released, reasons: clientGate.reasons,
       inputsAbsent: clientGate.inputsAbsent?.length ? clientGate.inputsAbsent : undefined, notClosing: clientGate.notClosing?.length ? clientGate.notClosing : undefined,
       evaluationError: clientGate.evaluationError ?? undefined },
-    // PR-9 — present ⇒ report-data.json is beside the report and the portal can render natively (the
-    // same stamp the knockout lane writes; the consumer branch had readers before it had a writer).
-    // undefined on a producer miss, so the meta never advertises a file that is not there.
+    // PR-9 — present ⇒ report-data.json is beside the report, in the shape the string names
+    // (`report-data/clearance-1`; a Knockout stamps `report-data/knockout-1`). undefined on a producer
+    // miss, so the meta never advertises a file that is not there.
     reportSchema: reportSchema ?? undefined,
   } });
   await refreshStaffPages({ regenSurfaces, poolRoot, skipRegen, runDir });
@@ -1504,7 +1497,7 @@ export function accessNoteMd(domain = config.accessDomain) {
 }
 export function accessNoteHtml(font, domain = config.accessDomain) {
   return domain
-    ? `<p style="${font};font-size:9.5pt;color:#7a8290;margin:14px 0 0"><i>Access-controlled — sign in with a <b>${domain}</b> account. Reply to this email with any questions.</i></p>`
+    ? `<p style="${font};font-size:9.5pt;color:${EC.quiet};margin:14px 0 0"><i>Access-controlled — sign in with a <b>${domain}</b> account. Reply to this email with any questions.</i></p>`
     : '';
 }
 
@@ -1712,23 +1705,24 @@ const FONT = "font-family:Calibri,'Segoe UI',Arial,sans-serif";
 // Matches skills/clearance-search/templates/search-request-form.html + knockout-searches/template-formatting.md.
 // `txt` = a readable text-colour version of the tier (for the EXECUTIVE SUMMARY risk phrase, where a bright
 // fill like yellow/red is unreadable as text). Order matters: VERY HIGH before HIGH.
+const tier = (t, label) => ({ bg: t.bg, fg: t.fg, label, txt: t.txt });
 export const RISK_TIERS = [
-  [/VERY[\s-]?HIGH/, { bg: '#ff0000', fg: '#fff', label: 'VERY HIGH',  txt: '#d10000' }],
-  [/HIGH/,           { bg: '#ED7D31', fg: '#fff', label: 'HIGH',       txt: '#c75b13' }],
-  [/MEDIUM/,         { bg: '#ffff00', fg: '#000', label: 'MEDIUM',     txt: '#9a8400' }],
-  [/MANAGEABLE/,     { bg: '#70AD47', fg: '#fff', label: 'MANAGEABLE', txt: '#4e7a31' }],
-  [/LOW/,            { bg: '#4472C4', fg: '#fff', label: 'LOW',        txt: '#2f55a4' }],
+  [/VERY[\s-]?HIGH/, tier(EMAIL_TIER.veryHigh, 'VERY HIGH')],
+  [/HIGH/,           tier(EMAIL_TIER.high, 'HIGH')],
+  [/MEDIUM/,         tier(EMAIL_TIER.medium, 'MEDIUM')],
+  [/MANAGEABLE/,     tier(EMAIL_TIER.manageable, 'MANAGEABLE')],
+  [/LOW/,            tier(EMAIL_TIER.low, 'LOW')],
 ];
 // doc 50 — the run's band LADDER (from opts.bands / meta.framework.bands): per-run vocabulary with the
 // same template palette keyed by TONE, so "Moderate" (house) and "Medium" (a customer ladder) both colour correctly
 // and a 5-band matrix framework (incl. "Low") lands on the same ramp. Set per compose; null = legacy.
 let EMAIL_BANDS = null;
 export const TONE_TIER = {
-  severe:  { bg: '#ff0000', fg: '#fff', txt: '#d10000' },
-  high:    { bg: '#ED7D31', fg: '#fff', txt: '#c75b13' },
-  medium:  { bg: '#ffff00', fg: '#000', txt: '#9a8400' },
-  low:     { bg: '#70AD47', fg: '#fff', txt: '#4e7a31' },
-  minimal: { bg: '#4472C4', fg: '#fff', txt: '#2f55a4' },
+  severe:  EMAIL_TIER.veryHigh,
+  high:    EMAIL_TIER.high,
+  medium:  EMAIL_TIER.medium,
+  low:     EMAIL_TIER.manageable,
+  minimal: EMAIL_TIER.low,
 };
 export function riskTier(word) {
   const u = String(word || '').toUpperCase();
@@ -1736,9 +1730,9 @@ export function riskTier(word) {
     const b = EMAIL_BANDS.find((x) => String(x.label).toUpperCase() === u);
     if (b) return { ...(TONE_TIER[b.tone] ?? TONE_TIER.medium), label: u };
   }
-  if (/NO RATED CONFLICTS/.test(u)) return { bg: '#4472C4', fg: '#fff', label: u, txt: '#2f55a4' };
+  if (/NO RATED CONFLICTS/.test(u)) return tier(EMAIL_TIER.low, u);
   for (const [re, t] of RISK_TIERS) if (re.test(u)) return t;
-  return { bg: '#bfbfbf', fg: '#000', label: u || '—', txt: '#555' };
+  return tier(EMAIL_TIER.unrated, u || '—');
 }
 // minimal inline markdown -> HTML for a table cell (escape FIRST; drop any stray internal ::p:: defensively)
 function cell(s) {
@@ -1805,8 +1799,8 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
   // this goes with it.
   // The report link rides HIGH — right under the bottom line in the headline, not buried below the table.
   const reportLink = hrefAttr(url)
-    ? `<p style="margin:0 0 10px"><a href="${hrefAttr(url)}" style="color:#1a4fd6;font-weight:bold;font-size:12pt;text-decoration:none">▶ Open the full report</a>`
-      + (hrefAttr(auditUrl) ? ` &nbsp;·&nbsp; <a href="${hrefAttr(auditUrl)}" style="color:#3b4fd6;text-decoration:none">Download audit (Excel)</a>` : '')
+    ? `<p style="margin:0 0 10px"><a href="${hrefAttr(url)}" style="color:${EC.reportLink};font-weight:bold;font-size:12pt;text-decoration:none">▶ Open the full report</a>`
+      + (hrefAttr(auditUrl) ? ` &nbsp;·&nbsp; <a href="${hrefAttr(auditUrl)}" style="color:${EC.auditLink};text-decoration:none">Download audit (Excel)</a>` : '')
       + `</p>`
     : '';
   // The search-scope signal leads the email. The 2026-06-12 "lint flags do not render on the email" rule
@@ -1886,12 +1880,12 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
   // held — and before that the delivery gate's word. It now quotes the report: the rating, then the
   // report's own conclusion (below), and where the report names what only the client can close, those
   // items under the report's own heading. Nothing here composes a sentence of its own.
-  const closeBox = (items) => `<p style="margin:0 0 8px;padding:8px 10px;background:#fdeeee;border:1px solid #c98a86;color:#6e1512"><b>Only you can close these</b><br>${items.map((r) => `• ${cell(String(r))}`).join('<br>')}</p>`;
+  const closeBox = (items) => `<p style="margin:0 0 8px;padding:8px 10px;background:${EC.closeBoxFill};border:1px solid ${EC.closeBoxLine};color:${EC.closeBoxText}"><b>Only you can close these</b><br>${items.map((r) => `• ${cell(String(r))}`).join('<br>')}</p>`;
   const verdictBound = opts?.verdict === 'CONDITIONAL'
     ? closeBox(emailConditions.length ? emailConditions : ['the open items set out in the report, before relying on a clean result'])
     : opts?.verdict === 'BLOCKING' && emailConditions.length ? closeBox(emailConditions) : '';
 
-  const reviewHeadline = `<div style="${FONT};font-size:11pt;color:#1a1a2e;margin:0 0 14px">`
+  const reviewHeadline = `<div style="${FONT};font-size:11pt;color:${EC.headline};margin:0 0 14px">`
     + flagBanner
     + verdictBound
     + `<p style="margin:0 0 8px"><b>${[opts?.productName ? esc(String(opts.productName)) : '', esc(fm.title || '')].filter(Boolean).join(' — ')} (${esc(fm.matter || '')})</b></p>`
@@ -1902,9 +1896,9 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
       ? `<p style="margin:0 0 6px"><b>Overall risk: ${esc(opts?.tier ?? fm.overall_label)}.</b> ${cell(fm.overall_caption || '')}</p>`
       : (fm.overall_caption ? `<p style="margin:0 0 6px">${cell(fm.overall_caption)}</p>` : ''))
     + reportLink
-    + (fm.handling_note ? `<p style="margin:0 0 8px;color:#7a2b12"><b>Handling note:</b> ${cell(fm.handling_note)}</p>` : '')
+    + (fm.handling_note ? `<p style="margin:0 0 8px;color:${EC.warning}"><b>Handling note:</b> ${cell(fm.handling_note)}</p>` : '')
     // T9 (K3): methodology identity — which profile/framework rated this run (+ verifiable sha).
-    + (fm.rated_under ? `<p style="margin:0 0 6px;font-size:9.5pt;color:#7a8290">Rated under: ${cell(fm.rated_under)}</p>` : '')
+    + (fm.rated_under ? `<p style="margin:0 0 6px;font-size:9.5pt;color:${EC.quiet}">Rated under: ${cell(fm.rated_under)}</p>` : '')
     // compute-don't-author (PR-4, review issue 2): the per-class register-coverage truth is computed
     // by the driver (scope-facts.mjs) and stamped as `coverage_line:` front-matter — but the frozen
     // report renderer only renders known keys, so without THIS line the join never reached a surface
@@ -1912,12 +1906,12 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
     // "Class 30: 76 of 99 slices fully searched — the remaining 23 are non-Latin script forms" (the
     // spec-B4 proportion form) rides beside the report link. Facts about what ran, never a caveat;
     // absent on legacy runs ⇒ byte-identical mail.
-    + (fm.coverage_line ? `<p style="margin:0 0 6px;font-size:9.5pt;color:#7a8290">Register coverage — ${cell(fm.coverage_line)}</p>` : '')
+    + (fm.coverage_line ? `<p style="margin:0 0 6px;font-size:9.5pt;color:${EC.quiet}">Register coverage — ${cell(fm.coverage_line)}</p>` : '')
     // The WS1c "Model failover:" line stood here and is DELETED: no code path writes `failover_note`
     // into front-matter any more, because the model-failover chain that would have produced one never had a
     // second rung on any shipped build. Nothing renders a failover note into a report.
     // B5b checkpoint 4 — a customer named after the analysis was written ships as a delivery note, never silently.
-    + (fm.late_bind_note ? `<p style="margin:0 0 8px;color:#7a2b12"><b>Applicant named mid-run:</b> ${cell(fm.late_bind_note)}</p>` : '')
+    + (fm.late_bind_note ? `<p style="margin:0 0 8px;color:${EC.warning}"><b>Applicant named mid-run:</b> ${cell(fm.late_bind_note)}</p>` : '')
     // The reviewer's open points stood here, from the run record. They do not ride the cover any more
     // (owner ruling, 2026-10-01): the sentence naming the independent reviewer reads as a human declining
     // to sign, and the points themselves are the engine's own vocabulary. Both stay on the run, beside the

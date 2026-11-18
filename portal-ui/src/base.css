@@ -673,7 +673,7 @@ button.twisty:focus {
 }
 
 button.twisty:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 1px;
 }
 
@@ -942,7 +942,7 @@ button.row-open:hover {
 }
 button.row-open:focus-visible,
 button.row-menu-btn:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 1px;
 }
 .row-menu {
@@ -1172,7 +1172,7 @@ input[type='checkbox'].pickbox {
 }
 
 input[type='checkbox'].pickbox:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 

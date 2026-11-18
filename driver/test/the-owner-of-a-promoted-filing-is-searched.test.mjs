@@ -28,7 +28,8 @@ import {
   ownersOwedACheck, composeOwnerQuery, runOwnerChecks, firstSourceUrl,
   NO_RESULT, OWNER_CHECK_CAP,
 } from "../owner-use-check.mjs";
-import { renderKnockoutHtml, knockoutReportData } from "../publish/render-knockout.mjs";
+import { renderKnockoutHtml } from "../publish/render-knockout.mjs";
+import { knockoutReportData } from "../publish/report-data.mjs";
 
 const FW = {
   framework_key: "house-triage",

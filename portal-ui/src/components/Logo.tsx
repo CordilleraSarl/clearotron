@@ -30,8 +30,16 @@
 // The ridge ASSETS stay in shared/brand/assets: they are the parent company's mark, and this product
 // simply stops rendering it. What went is the chain that turned them into a component nobody drew.
 
+import { PRODUCT_NAME } from '../contract/api.ts'
+
 /** The wordmark string. Lowercase is the brand reference's rule, not a typo. */
 export const WORDMARK = 'clearotron'
+
+/**
+ * The wordmark an installation shows: its own name when it set one, the product's lowercase wordmark when
+ * it did not. A name set by a deployment is shown as that deployment wrote it.
+ */
+export const wordmarkFor = (brandName: string): string => (brandName === PRODUCT_NAME ? WORDMARK : brandName)
 
 /**
  * The bracket mark: a pair of square brackets around a centred block.
@@ -69,9 +77,9 @@ export function BracketMark({ size = 20 }: { readonly size?: number }) {
  * `markOnly` is the collapsed-rail form: the bracket keeps its meaning at 20px where the wordmark
  * would just be clipped.
  */
-export function Logo({ markOnly = false }: { readonly markOnly?: boolean }) {
+export function Logo({ markOnly = false, brandName = PRODUCT_NAME }: { readonly markOnly?: boolean; readonly brandName?: string }) {
   return (
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10, whiteSpace: 'nowrap' }}>
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10, whiteSpace: 'nowrap', maxWidth: '100%', minWidth: 0 }}>
       <span style={{ color: 'var(--text-strong)', display: 'block' }}>
         <BracketMark size={20} />
       </span>
@@ -85,9 +93,15 @@ export function Logo({ markOnly = false }: { readonly markOnly?: boolean }) {
             color: 'var(--text-strong)',
             lineHeight: 1,
             whiteSpace: 'nowrap',
+            // An installation's own name can be longer than the rail is wide; it ends in an ellipsis
+            // rather than running under the edge. The product wordmark fits and is drawn as before.
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            minWidth: 0,
           }}
+          title={brandName === PRODUCT_NAME ? undefined : brandName}
         >
-          {WORDMARK}
+          {wordmarkFor(brandName)}
         </span>
       )}
     </span>

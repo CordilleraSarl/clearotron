@@ -184,7 +184,7 @@ test('THE SLOT IS AS TALL AS ITS TALLEST PANEL — measured from a hidden copy o
   assert.match(c, /className="ai-probe"[^>]*ref=\{probe\}/, 'the hidden copy the slot is measured from is gone')
   // Every panel, with whatever the page adds under the steps — a line the copy left out is height the slot
   // did not reserve.
-  assert.match(c, /here\.map\(\(o\) => <StepsPanel key=\{o\.id\} offer=\{o\}(?: watch=\{watch\})? measuring \/>\)/,
+  assert.match(c, /here\.map\(\(o\) => <StepsPanel key=\{o\.id\} offer=\{o\}(?: name=\{name\})?(?: watch=\{watch\})? measuring \/>\)/,
     'the hidden copy does not draw EVERY panel on this card, so the tallest may be missing from it')
   assert.match(c, /offer=\{chosen\}[\s\S]{0,120}watch=\{watch\}/, 'the line under the last step is drawn but not measured, or measured but not drawn')
   assert.match(c, /Math\.max\(0, \.\.\.\[\.\.\.el\.children\]/, 'the slot is not sized to the tallest panel')
@@ -196,8 +196,8 @@ test('THE SLOT IS AS TALL AS ITS TALLEST PANEL — measured from a hidden copy o
 
 test('THE WHERE-CHOICE — the approved labels, and asked of the people it has two answers for', () => {
   const prose = SCREEN.replace(/\s+/g, ' ')
-  assert.ok(prose.includes("disk: { label: 'Clearotron is installed on this machine (laptop/desktop)'"))
-  assert.ok(prose.includes("'public-http': { label: 'Clearotron is running elsewhere (e.g. Cloud/Server)'"))
+  assert.ok(prose.includes("disk: { label: `${name} is installed on this machine (laptop/desktop)`"))
+  assert.ok(prose.includes("'public-http': { label: `${name} is running elsewhere (e.g. Cloud/Server)`"))
   // Nothing shows below the cards until one is picked: the active place starts empty where they show.
   assert.match(code(SCREEN), /const active = asks \? place : \(routes\[0\] \?\? null\)/,
     'with the cards showing, something is picked on the reader\'s behalf')
@@ -307,7 +307,7 @@ test('WITH aiConnected NULL, NO PILL RENDERS AND THE PAGE SAYS NOTHING ABOUT THE
   // offered on the strength of it. Undefined is a server too old to send the field, which is the same fact.
   for (const unknown of [null, undefined]) {
     assert.equal(connectionPill(unknown), null, `${unknown}: a pill`)
-    assert.equal(watchForConnected(unknown), null, `${unknown}: a line about watching for Connected`)
+    assert.equal(watchForConnected(unknown, 'Clearotron'), null, `${unknown}: a line about watching for Connected`)
     assert.equal(foldsSteps(unknown), false, `${unknown}: the steps fold away as though connected`)
     assert.equal(continueOffer({ aiConnected: unknown, fromReport: true, remembered: { runId: 'r', markSlug: null, mark: 'VENQORI' } }), null,
       `${unknown}: a way back offered as though connected`)
@@ -318,7 +318,7 @@ test('WITH aiConnected NULL, NO PILL RENDERS AND THE PAGE SAYS NOTHING ABOUT THE
   assert.doesNotMatch(c, /Not connected yet|'Connected'|>Connected</, 'the page spells a connection state itself')
   assert.match(c, /const pill = connectionPill\(connected\)/)
   assert.match(c, /\{pill \? \(/, 'the pill is drawn whether or not there is one to draw')
-  assert.match(c, /const watch = watchForConnected\(connected\)/)
+  assert.match(c, /const watch = watchForConnected\(connected, name\)/)
   assert.match(c, /const back = continueOffer\(\{ aiConnected: connected, fromReport, remembered \}\)/)
   assert.match(c, /const connected = access\?\.aiConnected \?\? null/)
 })
@@ -327,8 +327,10 @@ test('the two states the log CAN answer: the pill, the line under the last step,
   assert.deepEqual(connectionPill(true), { label: 'Connected', on: true })
   assert.deepEqual(connectionPill(false), { label: 'Not connected yet', on: false })
   // THE LINE UNDER STEP FIVE ONLY WHILE NOT CONNECTED — once connected the pill is already saying it.
-  assert.equal(watchForConnected(false), 'This page says **Connected** once your assistant calls Clearotron.')
-  assert.equal(watchForConnected(true), null)
+  assert.equal(watchForConnected(false, 'Clearotron'), 'This page says **Connected** once your assistant calls Clearotron.')
+  assert.equal(watchForConnected(false, 'Larchmont Legal'), 'This page says **Connected** once your assistant calls Larchmont Legal.',
+    'an installation that names itself is the one the assistant calls')
+  assert.equal(watchForConnected(true, 'Clearotron'), null)
   // ONCE CONNECTED THE STEPS FOLD AWAY, and only then.
   assert.equal(foldsSteps(true), true)
   assert.equal(foldsSteps(false), false)

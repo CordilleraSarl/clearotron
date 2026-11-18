@@ -21,6 +21,8 @@
 //
 // The screens render what these functions return and decide nothing.
 
+import { PRODUCT_NAME } from './api.ts'
+
 /**
  * Why every search is refused over how this machine is set to pay, as the driver classifies it
  * (`billingRefusalReason` in driver/engine/auth.mjs, which lists the kinds). Names only: settings,
@@ -116,7 +118,7 @@ const NAMES_CLOUDS = new Set(['switch-beside-mode', 'two-clouds', 'no-cloud'])
  * A KIND THIS BUILD DOES NOT NAME still gets a sentence, the last branch, so the row is red whenever the
  * driver says searches are refused, whatever it calls the reason.
  */
-export function billingRefusalSentence(r: BillingRefusal): string {
+export function billingRefusalSentence(r: BillingRefusal, name: string = PRODUCT_NAME): string {
   const setting = r.setting || 'the billing setting'
   const generic = `Searches will be refused over how this machine is set to pay. Check ${setting} and the settings beside it.`
   // A CLOUD SENTENCE WITH NO CLOUD IN IT reads "the  switches ()". A reason that names none, from a cloud
@@ -151,7 +153,7 @@ export function billingRefusalSentence(r: BillingRefusal): string {
         + (r.gateway ? `, set ${r.gateway} for a gateway,` : ',')
         + ` or set ${setting} to subscription.`
     case 'not-a-mode':
-      return `Searches will be refused: ${setting} is set to a word Clearotron does not know. `
+      return `Searches will be refused: ${setting} is set to a word ${name} does not know. `
         + `Set it to ${listed(r.modes, 'or')}.`
     case 'cloud-on-codex':
       return 'Searches will be refused: payment is set to a cloud account, which pays only for Claude, and this '
@@ -173,10 +175,12 @@ export function billingRefusalSentence(r: BillingRefusal): string {
  */
 export function engineRowFaults(
   engine: EngineFacts,
-  { programDisputed = false, channel = null }: {
+  { programDisputed = false, channel = null, name = PRODUCT_NAME }: {
     readonly programDisputed?: boolean
     /** This install's release channel, from /me, so the setup command fetches it. */
     readonly channel?: 'beta' | 'latest' | null
+    /** What this installation calls itself, from /me, for the sentences that name it. */
+    readonly name?: string
   } = {},
 ): readonly string[] {
   const reason = engine.billing.reason ?? null
@@ -193,7 +197,7 @@ export function engineRowFaults(
     // ONE BILLING SENTENCE, NEVER TWO. The driver sends a missing key and a reason apart (a key that is
     // missing is named first, as the run door names it), and the `!missing.length` here holds that on the
     // row too, whatever a service sends.
-    ...(reason && !engine.billing.missing.length ? [billingRefusalSentence(reason)] : []),
+    ...(reason && !engine.billing.missing.length ? [billingRefusalSentence(reason, name)] : []),
     // NAMES THE PROGRAM AND THE WAY TO GET IT. This sentence used to end at "cannot be found or run on
     // this machine", which tells a reader they have a problem and not one thing to do about it. It then
     // named a hand install and a restart "so it re-reads its PATH"; setup installs the program now, into a
@@ -211,7 +215,7 @@ export function engineRowFaults(
         ? [`The engine program \`${engine.program}\` cannot be found or run on this machine. `
            + `Run the setup wizard, \`npx ${setupPackage(channel)} install\`: it offers to install the program `
            + 'and proves it with one turn. '
-           + "Then restart Clearotron's services, which look for the program when they start."]
+           + `Then restart ${name}'s services, which look for the program when they start.`]
         : ['The engine program cannot be found or run on this machine.']),
     // SELECTED IS NOT USABLE, and this row is where those two got drawn the same.
     //
@@ -309,9 +313,10 @@ export function engineNotice({ programDisputed }: { readonly programDisputed: bo
  */
 export function engineRow(
   engine: EngineFacts,
-  { programDisputed = false, channel = null }: {
+  { programDisputed = false, channel = null, name = PRODUCT_NAME }: {
     readonly programDisputed?: boolean
     readonly channel?: 'beta' | 'latest' | null
+    readonly name?: string
   } = {},
 ): {
   readonly ok: boolean
@@ -320,7 +325,7 @@ export function engineRow(
   readonly state: string
   readonly faults: readonly string[]
 } {
-  const faults = engineRowFaults(engine, { programDisputed, channel })
+  const faults = engineRowFaults(engine, { programDisputed, channel, name })
   // THE UNSET SELECTION, SHOWN AS UNSET: not the default's name, not its id, and not what would pay for it.
   if (engine.selected === false) return { ok: false, name: 'Not set', mono: '', state: 'Missing', faults }
   return {

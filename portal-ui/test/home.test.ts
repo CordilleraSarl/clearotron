@@ -15,7 +15,7 @@ const run = (over: Partial<Run>): Run => ({
   runId: over.runId ?? 'r1', account: 'zephyr', title: 'X', markName: 'X',
   projectKey: null, projectName: null,
   product: null, stageLabel: null, kind: 'clearance', state: 'running', date: '2026-07-27', issuedAt: null,
-  band: null, tone: null, bands: [], marks: [], reportSchema: null, held: false, report: null,
+  band: null, tone: null, bands: [], marks: [], held: false, report: null,
   step: null, stepN: null, stepTotal: null, reason: null, failedStage: null,
   pausedKind: null, resetsAt: null, startedAt: null, queuePos: null, acked: false, ...over,
 })

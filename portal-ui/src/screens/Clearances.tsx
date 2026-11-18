@@ -884,8 +884,6 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
       </div>
       <PinnedScrollbar target={namesWrapEl} />
 
-      {!rows.length ? <div className="empty">No names match this view.</div> : null}
-
       {/* — THE WAY BACK. A one-way hide is how a run gets lost rather than filed, so the control
           and its inverse both live on this page. Rendered only when something IS retired: an empty fold
           on every visit is a permanent question about a state nobody is in.

@@ -11,6 +11,7 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { finishPoolRun, openPoolRun, refreshStaffPages } from './shell.mjs';
 import { plainDeferralReason, plainCause } from '../deferral-row.mjs'; import { knockoutStepFailures, PART_NAMES, RULED_WORDS, NOT_COMPLETED, linkNotOnRegisterSite } from '../degraded-parts.mjs'; import { ownersOwedACheck, composeOwnerQuery } from '../owner-use-check.mjs'; import { KNOCKOUT_WEB } from '../stages-knockout.mjs';   // — the reader's words for a search left open; and the parts that failed as a whole
 import { join } from 'node:path';
+import { EMAIL_TIER } from '../../shared/brand.mjs';
 import { riskTier, TONE_TIER, regenIndex, regenSurfaces, auditRouteFor, markReportRouteFor, reportRouteFor } from './index.mjs';
 import { runKnockoutLint, deliveryFlagLines } from '../predelivery-lint.mjs';
 import { note } from '../log.mjs';
@@ -19,7 +20,8 @@ import { COUNT_PREDICATES, COUNT_BASIS, countsForMark, countLine, countedMarks, 
 import { noneCarriedForward, recordsForMark, recordsLine, normalizeRegisterRecordLinks } from '../register-records.mjs';
 import { reportIdentityFor, productCoverageNote, kebab } from '../search-policy.mjs';
 import { batchMarkName } from '../mark-name.mjs';
-import { renderKnockoutHtml, knockoutReportData } from './render-knockout.mjs';
+import { renderKnockoutHtml } from './render-knockout.mjs';
+import { knockoutReportData } from './report-data.mjs';
 import { readFrozenMethod, inputsLine, FROZEN_METHOD_FILE } from '../framework-method.mjs';
 import { resolveDemoData, demoBannerMd } from './demo-marking.mjs';   //
 import { engineCommit } from '../engine-build.mjs';
@@ -39,7 +41,7 @@ const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').
 export function bandTier(framework, word) {
   const tone = framework?.bands?.find((b) => String(b.label).toLowerCase() === String(word ?? '').trim().toLowerCase())?.tone;
   if (tone && TONE_TIER[tone]) return { ...TONE_TIER[tone], label: String(word) };
-  return riskTier(word) ?? { bg: '#bfbfbf', fg: '#000', txt: '#555', label: String(word ?? '—') };
+  return riskTier(word) ?? { ...EMAIL_TIER.unrated, label: String(word ?? '—') };
 }
 // The email body is inline-styled and self-contained by contract (docs/DELIVERY.md: the courier sends
 // `emailBodyHtml` verbatim), so it keeps a mail-safe font stack. The report does not — it has a stylesheet.
@@ -817,11 +819,10 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
       servedModels: served,
       frameworkMethod,
     }));
-    // The run as data — what the assistant drafts client-facing mail from, and the shape the portal's
-    // native-render path has been reading for since before anything wrote it. One per report, so the
-    // native render of a per-mark document is that mark's data and not the batch's. A data file that
-    // cannot be written leaves this name's report in place and the other names publishing; `dataFile`
-    // is null for it, so nothing points at a file that is not there.
+    // The run as data — what the assistant drafts client-facing mail from. One per report, so a per-mark
+    // document's data is that mark's and not the batch's. A data file that cannot be written leaves this
+    // name's report in place and the other names publishing; `dataFile` is null for it, so nothing points
+    // at a file that is not there.
     const dataFile = writeDataFile(single ? 'report-data.json' : `report-data-${slug}.json`, () => knockoutReportData(one, framework, {
       runId, codename, overall: markBand, issued, registerCounts, registerRecords, ownerChecks, auditFile, customerKey, matter: runId, servedModels: served,
       identity: { ...identity, level: searchPolicy?.level ?? null },
@@ -899,10 +900,9 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     // WHY THERE IS NO WORKBOOK, when the build threw. Absent when it built, so such a meta is unchanged.
     auditError: auditError ?? undefined,
     framework: framework ? { key: framework.framework_key, title: framework.title, custom: framework.framework_key !== 'house-triage', bands: framework.bands.map((b) => ({ label: b.label, tone: b.tone })) } : undefined,
-    // Present ⇒ this run has a report-data.json beside its report. The portal reads this to tell a run it
-    // could render natively from a legacy one; the field had readers long before it had a writer.
+    // Present ⇒ this run has a report-data.json beside each name's report, in the Knockout's shape.
     // Stamped only when every name's data file wrote, as the clearance stamps it only when its one file wrote.
-    reportSchema: reports.every((r) => r.dataFile) ? 'report-data/1' : undefined,
+    reportSchema: reports.every((r) => r.dataFile) ? 'report-data/knockout-1' : undefined,
     // WHICH DOCUMENTS THIS RUN PUBLISHED, and for which name. Every reader that has to open,
     // serve or link a knockout's reports takes the list from here rather than deriving a filename: the
     // naming rule (one mark ⇒ `report.html`, several ⇒ `report-<slug>.html`) is written ONCE, above, and
