@@ -96,3 +96,10 @@ test('a company\'s own territories are read as the codes its store holds', () =>
   // A place this vocabulary cannot read recommends nothing, rather than a search whose reason names nothing.
   assert.equal(recommendSearch(PRODUCTS, 0, ['Bavaria']), null)
 })
+
+test('places that came from the project are the project\'s in the reason', () => {
+  const project = (t: string[]) => recommendSearch(PRODUCTS, 0, t, { own: true, fromProject: true })?.reason
+  assert.equal(project(['EU', 'US', 'JP']), 'because the project searches a region and 2 countries')
+  assert.equal(project(['US']), 'because the project searches a country')
+  assert.equal(recommendSearch(PRODUCTS, 0, ['US'], { own: true })?.reason, 'because the company searches a country', 'inherited from the company: unchanged')
+})

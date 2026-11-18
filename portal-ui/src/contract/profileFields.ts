@@ -882,12 +882,14 @@ export function mergePlatforms(
  * removed something they did not.
  */
 export function revokedPlatforms(
-  customer: readonly string[] | undefined,
-  project: readonly string[] | undefined,
+  _customer: readonly string[] | undefined,
+  _project: readonly string[] | undefined,
 ): readonly string[] {
-  if (!Array.isArray(project)) return []
-  const kept = new Set((project ?? []).map((p) => String(p).trim().toLowerCase()))
-  return (customer ?? []).filter((p) => !kept.has(String(p).trim().toLowerCase()))
+  // NONE, BY THE ENGINE'S OWN RULE. Marketplaces union across the company and the project
+  // (driver/effective-scope.mjs), so a project's list that leaves a company marketplace out does not remove
+  // it: the run still searches it. This used to compare the two lists and refused every project whose list
+  // was shorter than the company's, a removal that never happened.
+  return []
 }
 
 /** Strip the code-owned fields from a draft before sending. The server strips them too. */

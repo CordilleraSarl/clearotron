@@ -102,7 +102,7 @@ test("setup asks that question on that screen, and prints nothing above it", () 
   const ask = src.indexOf("const pick = await choose(", start);
   assert.notEqual(start, -1, "anchor missing: the engine loop");
   assert.ok(ask > start, "anchor missing: the engine question inside the engine loop");
-  assert.match(src.slice(ask, src.indexOf("\n", ask)), /choose\(ENGINE_QUESTION, options, engineMenuDefault\(options, lastPick\), PAY_PREAMBLE\);$/,
+  assert.match(src.slice(ask, src.indexOf("\n", ask)), /choose\(ENGINE_QUESTION, options, engineMenuDefault\(options, lastPick, found\), PAY_PREAMBLE\);$/,
     "the engine question is not asked with the approved words and the line after the menu");
   assert.match(src.slice(start, ask), /const options = engineOptions\(found\);\n\s*$/, "the menu's rows are not the ones engineOptions builds");
   // THE BLOCK ABOVE THE QUESTION IS GONE: the rows now say what it said.

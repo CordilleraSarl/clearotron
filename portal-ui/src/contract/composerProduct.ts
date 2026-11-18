@@ -505,9 +505,11 @@ export type Recommendation = {
  * @param names how many names are on the form
  * @param territories the places named, in the composer's own vocabulary
  * @param own true when `territories` are the company's own, read because the draft names none
+ * @param fromProject true when those inherited territories came from the project rather than the company
  */
 export function recommendSearch(
-  products: readonly Product[], names: number, territories: readonly string[], { own = false }: { own?: boolean } = {},
+  products: readonly Product[], names: number, territories: readonly string[],
+  { own = false, fromProject = false }: { own?: boolean; fromProject?: boolean } = {},
 ): Recommendation | null {
   if (territories.length === 0 && names <= 1) return null
   const live = products.filter((p) => p.available)
@@ -528,7 +530,10 @@ export function recommendSearch(
     regions ? some(regions, 'region', 'regions') : '',
     countries ? some(countries, 'country', 'countries') : '',
   ].filter(Boolean)
-  return { product, reason: own ? `because the company searches ${named.join(' and ')}` : `because you named ${named.join(' and ')}` }
+  const places = named.join(' and ')
+  const reason = !own ? `because you named ${places}`
+    : fromProject ? `because the project searches ${places}` : `because the company searches ${places}`
+  return { product, reason }
 }
 
 /**
@@ -1265,6 +1270,8 @@ export type Inherited = {
    */
   readonly territories: readonly string[]
   readonly territoriesFrom: string
+  /** True when those territories are the project's own rather than the company's. */
+  readonly territoriesFromProject: boolean
   readonly platforms: readonly string[]
   readonly density: string | null
 }
@@ -1291,6 +1298,7 @@ export function inherited({
     territories: strings(source['defaultJurisdictions']),
     territoriesFrom: projectOrigins?.['defaultJurisdictions'] === 'project' && projectLabel
       ? `from ${projectLabel}` : `from ${ownerLabel}`,
+    territoriesFromProject: projectOrigins?.['defaultJurisdictions'] === 'project' && Boolean(projectLabel),
     platforms: strings(source['platforms']),
     density: typeof source['marketplaceDensity'] === 'string' ? source['marketplaceDensity'] : null,
   }

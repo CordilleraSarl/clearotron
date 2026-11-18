@@ -179,3 +179,9 @@ test("no profile ⇒ no invented grid size", () => {
   assert.equal(r.gridCellsPerVariant, null);
   assert.deepEqual(r.jurisdictions, ["US"], "an instructed territory still resolves without a profile");
 });
+
+test("no class anywhere and a goods description present: the classes row says the description sets the scope", () => {
+  assert.equal(resolveEffectiveScope({ goods: "Headphones and speakers" }, { platforms: [] }).classesFrom, "none — the goods description sets the scope");
+  assert.equal(resolveEffectiveScope({}, { platforms: [] }).classesFrom, "not set anywhere", "with no description either, the row is unchanged");
+  assert.equal(resolveEffectiveScope({ goods: "Headphones", classes: [9] }, { platforms: [] }).classesFrom, "this request", "a class named anywhere still wins");
+});
