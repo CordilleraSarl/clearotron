@@ -4599,6 +4599,12 @@
           "skips": 1,
           "todos": 0
         },
+        "every-script-has-a-row-in-the-scripts-index.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 2,
+          "todos": 0
+        },
         "every-surface-that-takes-the-manifest-asks-for-the-goods-words.test.mjs": {
           "tests": 10,
           "asserts": 23,
