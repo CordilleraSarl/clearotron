@@ -12,6 +12,7 @@ import { fileURLToPath } from "node:url";
 import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
 import { DIGEST_SENTENCES } from "./ruled-sentences-digest.mjs";
 import { COMMON_LAW_SENTENCES } from "./ruled-sentences-common-law.mjs";
+import { VARIANTS_SENTENCES } from "./ruled-sentences-variants.mjs";
 import { GATHERED, manualPins, heldStrings, namesManual } from "../../scripts/count-manual-pins.mjs";
 import { skipReason } from "../../shared/tracked-files.mjs";
 
@@ -20,6 +21,7 @@ const FIXTURES = {
   "driver/skills/clearance-register/unit.md": UNIT_SENTENCES,
   "driver/skills/clearance-register/digest.md": DIGEST_SENTENCES,
   "driver/skills/clearance-common-law/SKILL.md": COMMON_LAW_SENTENCES,
+  "driver/skills/clearance-variants/SKILL.md": VARIANTS_SENTENCES,
 };
 // Strings a test that reads a manual uses for its own purpose, which the manual happens to share word for word: here an
 // example row label used as a unit name. They hold nothing of the manual.

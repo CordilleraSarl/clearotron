@@ -18,6 +18,7 @@ import { buildBandShape, deriveRegisterPositions, CROWDED_GROUP_RECORDS, groupPa
 import { setAsideKeysOf, SET_ASIDE_ROW_CONTRACT, SET_ASIDE_GROUP_CONTRACT, PLACEMENT_FORM_PROVENANCE } from "../placement-form.mjs";
 import { unionPlacementForm } from "../placement-union.mjs";
 import { goodsWordCounter, goodsWordsMatched } from "../record-goods.mjs";
+import { VARIANTS_SENTENCES } from "./ruled-sentences-variants.mjs";
 
 const MANUAL = readFileSync(new URL("../skills/placement-inquiry/SKILL.md", import.meta.url), "utf8");
 const DICTATION = driverSource("stages.mjs").split("\n").filter((l) => /EACH LINE THE SHAPE LISTS|ONE ROW PER GROUP/.test(l)).join("\n");
@@ -118,7 +119,7 @@ test("the three places that ask for product words ask for whole words in the sin
   const VARIANTS = readFileSync(new URL("../skills/clearance-variants/SKILL.md", import.meta.url), "utf8");
   for (const [where, text] of [["recording tool", RECORDING], ["dictation", STAGES], ["variants manual", VARIANTS]]) {
     assert.doesNotMatch(text, /the stem that matches/, `the ${where} still asks for a stem`);
-    assert.ok(text.includes("in the singular; the engine matches the plural too"), `the ${where} does not ask for the singular`);
+    assert.ok(text.includes(VARIANTS_SENTENCES.theSingularTheEngineMatches), `the ${where} does not ask for the singular`);
   }
 });
 

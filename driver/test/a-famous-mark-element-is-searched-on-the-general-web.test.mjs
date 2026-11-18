@@ -26,6 +26,7 @@ import { parseVariantManifestModel, famousMarkElements } from "../variant-manife
 import { validateGridSpec, dictatedCells, buildGridProgramTask } from "../../providers/perplexity/src/core.js";
 import { findUnranDictatedCells } from "../common-law-receipts.mjs";
 import { COMMON_LAW_SENTENCES } from "./ruled-sentences-common-law.mjs";
+import { VARIANTS_SENTENCES } from "./ruled-sentences-variants.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = mkdtempSync(join(tmpdir(), "famous-mark-cells-"));
@@ -167,7 +168,7 @@ test("the variants step is asked for the flag in its own sentence, and its tool 
   const server = read(join(HERE, "..", "engine", "mcp", "recording-server.mjs"), "utf8");
   assert.ok(server.includes("famous_mark_flag: { type: \"boolean\","), "the tool offers no slot for the flag");
   const variants = skill("clearance-variants/SKILL.md");
-  assert.ok(variants.includes("- The web search then searches that element on the general web, and `clearance-common-law` judges the results"));
+  assert.ok(variants.includes(VARIANTS_SENTENCES.theWebSearchThenSearches));
   assert.doesNotMatch(variants, /famous_mark_calls_needed/, "the variants manual still hands off through a list nobody reads");
 });
 

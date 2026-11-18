@@ -32,6 +32,7 @@ export const GATHERED = Object.freeze({
   "driver/skills/clearance-register/unit.md": "driver/test/ruled-sentences-unit.mjs",
   "driver/skills/clearance-register/digest.md": "driver/test/ruled-sentences-digest.mjs",
   "driver/skills/clearance-common-law/SKILL.md": "driver/test/ruled-sentences-common-law.mjs",
+  "driver/skills/clearance-variants/SKILL.md": "driver/test/ruled-sentences-variants.mjs",
 });
 
 const LIT = String.raw`"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'|\x60(?:\\.|[^\x60\\$\n])*\x60`;

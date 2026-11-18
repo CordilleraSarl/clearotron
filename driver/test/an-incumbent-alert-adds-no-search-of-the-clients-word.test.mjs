@@ -14,6 +14,7 @@ import { parseVariantManifestModel } from "../variant-manifest-model.mjs";
 import { capabilitiesFor } from "../register-capabilities.mjs";
 import { decideAxes } from "../coverage-ledger.mjs";
 import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
+import { VARIANTS_SENTENCES } from "./ruled-sentences-variants.mjs";
 
 const MODEL = {
   schema_version: 1, mark: "GLIMBEX", dominant_element: "GLIMBEX",
@@ -82,7 +83,7 @@ test("no manual or tool the engine reads asks for a competitor's or an enforcer'
 
 test("the spelling manual points at no register step that no longer exists", () => {
   const variants = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-variants", "SKILL.md"), "utf8");
-  assert.ok(variants.includes("| competitor-intel / watchlist | focused web search | not used |"),
+  assert.ok(variants.includes(VARIANTS_SENTENCES.competitorIntelWatchlistFocusedWeb),
     "a watchlist starts no register sweep, as Step 5 says");
   assert.doesNotMatch(variants, /Step 8\.5/);
 });
