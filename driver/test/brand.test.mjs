@@ -5,13 +5,15 @@
 // every shared brand colour, carry no legacy blue-skin tokens, and that the report actually renders branded.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { writeFileSync, mkdtempSync, rmSync } from "node:fs";
-import { join } from "node:path";
+import { writeFileSync, mkdtempSync, rmSync, readFileSync } from "node:fs";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
 import {
   PALETTE, WARM_ROOT, REPORT_ROOT,
   WARM_ROOT_DARK, WARM_ROOT_DARK_EXPLICIT, REPORT_ROOT_DARK, REPORT_ROOT_DARK_EXPLICIT,
   THEME_INIT, THEME_INIT_EXPLICIT, themeButton, THEME_BTN_CSS,
+  EMAIL_TIER, EMAIL_COLOURS, WORKBOOK_COLOURS,
 } from "../../shared/brand.mjs";
 import { parseReport } from "../publish/parse.mjs";
 import { renderHtml } from "../publish/render.mjs";
@@ -179,5 +181,21 @@ test("a rendered report carries the brand :root, its own fonts and no blue skin"
     assert.doesNotMatch(html, BLUE_SKIN);
   } finally {
     rmSync(dir, { recursive: true, force: true });
+  }
+});
+test("the emails and the workbook take their colours from brand.mjs, and no file beside it keeps a copy", () => {
+  // They drew with their own literals, so a re-skin that edited brand.mjs still missed them. Each value now
+  // lives once, in brand.mjs; a literal of any of them typed back into these files fails here by name.
+  const PUBLISH = join(dirname(fileURLToPath(import.meta.url)), "..", "publish");
+  const values = new Set([
+    ...Object.values(EMAIL_TIER).flatMap((t) => [t.bg, t.txt]),
+    ...Object.values(EMAIL_COLOURS),
+    ...Object.values(WORKBOOK_COLOURS).map((v) => v.slice(-6)),
+  ].map((v) => v.replace(/^#/, "").toLowerCase()).filter((v) => v.length === 6));
+  assert.ok(values.size >= 15, `only ${values.size} colours read from brand.mjs: the tokens moved, so this checks nothing`);
+  for (const file of ["index.mjs", "knockout.mjs", "xlsx.mjs"]) {
+    const src = readFileSync(join(PUBLISH, file), "utf8").toLowerCase();
+    const kept = [...values].filter((v) => new RegExp(`[#'"]${v}\\b|ff${v}\\b`).test(src));
+    assert.deepEqual(kept, [], `${file} keeps its own copy of a colour brand.mjs names`);
   }
 });

@@ -17,14 +17,14 @@
 // vocabulary reaching a lawyer-visible cell) for the driver to log — it never suppresses the deliverable.
 // exceljs is loaded lazily so this delivery-only dep can never break the driver's import.
 
-import { BRAND } from '../../shared/brand.mjs';
+import { BRAND, WORKBOOK_COLOURS as WB } from '../../shared/brand.mjs';
 import { projectAssessmentField } from '../findings-model.mjs';
 import { inputsLine } from '../framework-method.mjs';
 import { deliveryVocabViolations } from '../predelivery-lint.mjs';
 
-const HEAD_FILL = '11132A';
+const HEAD_FILL = WB.headerFill;
 // plain-English coverage-state fills (the state words are relabelled for the reader; the fills key off them).
-const STATE_FILL = { Clean: 'DEF0DC', Limited: 'FBE7C6', Open: 'FBE7C6', Note: 'EDEDED' };
+const STATE_FILL = { Clean: WB.stateClean, Limited: WB.stateLimited, Open: WB.stateOpen, Note: WB.stateNote };
 const WIDE = {
   // Summary
   'Field': 26, 'Value': 96,
@@ -90,7 +90,7 @@ export function addSheet(wb, name, columns, rows, styleRow) {
   const kept = new Set(columns);            // what SURVIVED the drop — the set every styler is held to
   const hr = ws.getRow(1);
   hr.eachCell(c => {
-    c.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+    c.font = { bold: true, color: { argb: WB.headerText } };
     c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF' + HEAD_FILL } };
     c.alignment = { vertical: 'middle', wrapText: true };
   });
@@ -654,7 +654,7 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
     if (kept.has('Link')) {
       const link = row.getCell('Link');
       const url = String(link.value || '').trim();
-      if (/^https?:\/\//i.test(url)) { link.value = { text: 'View', hyperlink: url }; link.font = { color: { argb: 'FF0563C1' }, underline: true }; }
+      if (/^https?:\/\//i.test(url)) { link.value = { text: 'View', hyperlink: url }; link.font = { color: { argb: WB.link }, underline: true }; }
     }
     if (kept.has('Risk band')) {
       const band = row.getCell('Risk band');
@@ -666,7 +666,7 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
   // are identified by the flag the row already carries, not re-derived from three of its cells: the
   // re-derivation needed Scope and Result to exist, which on a sparse run they do not.
   addSheet(wb, 'What was searched', SEARCH_COLS, searched, (row, data) => {
-    if (data?._section) row.eachCell(c => { c.font = { bold: true }; c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFEDEDED' } }; });
+    if (data?._section) row.eachCell(c => { c.font = { bold: true }; c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: WB.sectionFill } }; });
   });
 
   // 4 · Coverage & gaps — the honest completeness ledger, state coloured.
