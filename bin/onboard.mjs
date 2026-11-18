@@ -1634,8 +1634,46 @@ export function whatSetupLeft({ copy = null, engine = null, turnRan = false } = 
       : `${engine.vendor}'s CLI stays installed in ${engine.dir}.`;
   return `No settings were written. ${stays}${turnRan ? " The AI program's test turn keeps its own files." : ""}`;
 }
+
+/**
+ * What `doctor` prints, one function per section, called in the order they print. What more than one
+ * section reads is read once, by readCheckContext, before any of them.
+ */
 export async function runCheck() {
   say("\n  Trademark clearance engine — configuration check\n");
+  const ctx = await readCheckContext();
+  const { leadIsTheRefusal, turnLeads, signInLineLeads } = await sayOpening(ctx);
+
+  // The path this command runs from, with the build it names below it.
+  say(`\n  repo: ${REPO}`);
+
+  await sayDeployment(ctx);
+  await sayNode();
+  await sayEngine({ ...ctx, turnLeads, signInLineLeads });
+  await sayHowToRun();
+  await sayEnvFile();
+  await sayConfigurationStore(ctx);
+  await sayCustomInstructions(ctx);
+  await sayRegister(ctx);
+  // "Research provider" is printed second, right after the opening (sayResearch).
+
+  // "Will a search run?" keeps this place when the opening was the refusal's own sentence, which says the
+  // same thing without the names; in every other state it is the opening (sayWillASearchRun).
+  if (leadIsTheRefusal) ctx.sayWillASearchRun();
+  await sayCaseLaw();
+  await sayPortalBundle();
+  await sayPortalTriggerKey(ctx);
+  await sayPortalSignIn(ctx);
+  await sayProvenProviders(ctx);
+  await sayFileLocations(ctx);
+  await sayBackgroundUnits(ctx);
+  await sayStartButtonPath(ctx);
+  await sayClientConnector(ctx);
+  return sayVerdict(ctx.turnRan());
+}
+
+/** What more than one section of the check reads, read once. `turnRan` is asked after the last section. */
+async function readCheckContext() {
   // Whether the engine probe's turn started the AI program (TURN_KEPT_ITS_FILES); one refused first did not.
   let probeTurnRan = false;
 
@@ -1917,7 +1955,14 @@ export async function runCheck() {
     else if (px) ok(`PERPLEXITY_API_KEY present (${px.from}) — presence only; add --probe-providers to prove it answers`);
     else info("PERPLEXITY_API_KEY is not set — the three clearance searches carry the common-law grid and cannot switch it off, so a clearance stops before it starts, and names the missing key; a Knockout search still runs and discloses the half it skipped");
   };
+  return { fileEnv, unitDir, startPaths, hosted, unitEnv, effective, serviceEnvLabel, serviceEnvFile, serviceKnown,
+    serviceFileEnv, effectiveForService, servicesRead, engineEnvOf, engSel, engineId, engSpec, serviceValue,
+    engineChosen, binSet, binSetting, bin, invEnv, installMode, signInLine, runTurn, sayTurn, atOrder,
+    sayWillASearchRun, sayResearch, turnRan: () => probeTurnRan };
+}
 
+async function sayOpening({ hosted, serviceKnown, engineId, engineChosen, bin, signInLine, runTurn, sayTurn, atOrder,
+  sayWillASearchRun, sayResearch }) {
   // ── THE OPENING: WHETHER A SEARCH CAN RUN, WHAT STOPS IT, AND THE NEXT ACTION ─────────────────────
   //
   // A newcomer reads this command from the top, and the top was its path and its build: the answer to
@@ -1963,10 +2008,10 @@ export async function runCheck() {
     if (turn) sayTurn(turn);
   }
   sayResearch();
+  return { leadIsTheRefusal, turnLeads, signInLineLeads };
+}
 
-  // The path this command runs from, with the build it names below it.
-  say(`\n  repo: ${REPO}`);
-
+async function sayDeployment({ fileEnv, hosted, unitEnv }) {
   // — CURRENT, not just configured. Printed first among the sections about this install's build,
   // because a stale deployment makes every line below it a report about the wrong build. The opening
   // and the research key come before it, because a newcomer's first question is whether a search runs.
@@ -2128,12 +2173,17 @@ export async function runCheck() {
     // one who can tell which of the two it is.
     say(`      running programs on a different checkout: ${elsewhere.detail}.`);
   }
+}
 
+async function sayNode() {
   say("\n  Node");
   const nodeV = nodeFloorVerdict();
   if (nodeV.ok) ok(`node ${nodeV.current}`);
   else problem(`node ${nodeV.current} — this engine needs ${nodeV.required} or newer; node:sqlite is not a built-in module before then`);
+}
 
+async function sayEngine({ hosted, serviceEnvFile, serviceKnown, servicesRead, engineEnvOf, engSel, engineId,
+  engSpec, binSet, binSetting, bin, invEnv, installMode, signInLine, runTurn, sayTurn, turnLeads, signInLineLeads }) {
   say("\n  Engine");
   // This block used to read CLEAROTRON_CLAUDE_PATH unconditionally, under the heading "Engine binary", on a
   // box that may be running codex — so it reported the wrong variable and could pass for the wrong
@@ -2369,7 +2419,9 @@ export async function runCheck() {
       sayTurn(await runTurn());
     }
   }
+}
 
+async function sayHowToRun() {
   // ── HOW THIS READER REACHES US, before anything below tells them to type something (issue 1916) ──
   //
   // Every advice line in this report composes through invocationPrefix(), and until this issue that
@@ -2409,7 +2461,9 @@ export async function runCheck() {
       info(`no \`clearotron\` on your PATH — re-run \`${invoke("install")}\` to put one there`);
     }
   }
+}
 
+async function sayEnvFile() {
   say("\n  .env");
   // ── THE FILE MOVED, SO ASK THE SAME QUESTION THE LOADER ASKS ─────────────────────────────────────
   //
@@ -2444,7 +2498,10 @@ export async function runCheck() {
     const mode = statSync(ENV_PATH).mode & 0o777;
     if (mode & 0o077) warn(`mode ${mode.toString(8)} — it holds credentials; 600 is the mode for that`);
   }
+}
 
+async function sayConfigurationStore({ startPaths, hosted, unitEnv, effective, serviceEnvLabel, serviceEnvFile,
+  serviceKnown, serviceFileEnv, effectiveForService }) {
   // — WHERE CONFIGURATION RESOLVES FROM, and whether that is inside the checkout.
   //
   // Unset is a REPORTABLE STATE, not silence: unset means this install is running our bundled demo
@@ -2780,7 +2837,9 @@ export async function runCheck() {
       }
     }
   }
+}
 
+async function sayCustomInstructions({ hosted, unitEnv, serviceKnown, effectiveForService }) {
   // — WHICH DOCTRINE FILES THIS INSTALL OVERRIDES, AND WHETHER OURS HAVE MOVED UNDER THEM.
   //
   // The report itself shipped in and worked, reachable only as `npm run doctrine-report` — a name
@@ -2827,7 +2886,9 @@ export async function runCheck() {
     // job is to report every section, and a section that kills the run tells the reader least.
     problem(`the custom instructions could not be read — ${e.message}`);
   }
+}
 
+async function sayRegister({ unitEnv, serviceKnown, serviceValue }) {
   say("\n  Register provider");
   // WHAT THE SERVICES WILL SEARCH, READ AS THE ORDER-TIME CHECK BELOW READS IT. This section asked the
   // shell and this command's .env, so in a fresh terminal on a hosted box it told a working install that
@@ -2877,9 +2938,9 @@ export async function runCheck() {
       }
     }
   }
+}
 
-  // "Research provider" is printed second, right after the opening (sayResearch).
-
+async function sayCaseLaw() {
   // ── — THE LANES A PRODUCT DECLARES IT NEEDS, BEFORE A REPORT NAMES THEM ──
   //
   // The owner ran a Full country search on his own install and the finished report told him, after two
@@ -2895,11 +2956,6 @@ export async function runCheck() {
   // doctor that hangs on a box with no route — so this reports ENROLMENT, and says plainly that a
   // source which is enrolled can still fail at run time. The owner's own report says `CONNECTION_CLOSED`
   // on exactly that case.
-  //
-  // "Will a search run?" keeps this place when the opening was the refusal's own sentence, which says the
-  // same thing without the names; in every other state it is the opening (sayWillASearchRun).
-  if (leadIsTheRefusal) sayWillASearchRun();
-
   say("\n  Case law and other capabilities");
   {
     const { caseLawInventory } = await import("../driver/config-inventory.mjs");
@@ -2944,7 +3000,9 @@ export async function runCheck() {
       info(`${r.providerLabel} — ${r.remedy ?? (r.configured ? "configured" : "not set up")}`);
     }
   }
+}
 
+async function sayPortalBundle() {
   // ── issue 1891 — WHICH DOOR GUARDS THE PORTAL, AND IS IT CONFIGURED ────────────────────────────
   //
   // Neither screen said anything about the portal's front door. A stranger install lands in `local` and
@@ -3021,7 +3079,9 @@ export async function runCheck() {
     // render, which is the same position they were in before this section existed.
     blocking(`the portal bundle could not be read — ${e.message} — so whether /portal can render is unknown`);
   }
+}
 
+async function sayPortalTriggerKey({ hosted, serviceKnown, effectiveForService }) {
   // ── THE TRIGGER KEY, AND THE DEADLINE NOBODY WAS COUNTING ────────────────────────────────────────
   //
   // A `--background` install stores the portal's trigger key in `~/.env`, the file the units load, and
@@ -3121,7 +3181,9 @@ export async function runCheck() {
       }
     }
   }
+}
 
+async function sayPortalSignIn({ startPaths, hosted, unitEnv, serviceEnvFile, serviceKnown, effectiveForService }) {
   say("\n  Portal sign-in");
   {
     const { authView } = await import("../driver/portal-config-view.mjs");
@@ -3267,7 +3329,9 @@ export async function runCheck() {
       info(`could not judge who may use the portal (${String(e?.message ?? e).slice(0, 80)}) — a failure to look, not a finding`);
     }
   }
+}
 
+async function sayProvenProviders({ effective }) {
   // ── issue 1871 — PROVE THE REGISTER LANE, or say plainly that presence is all this knows ────────
   //
   // Everything above about a credential is a fact about a FILE. `✓ CLARIVATE_API_KEY present` is equally
@@ -3351,7 +3415,9 @@ export async function runCheck() {
       else problem(`PERPLEXITY_API_KEY did not answer: ${v.error}`);
     }
   }
+}
 
+async function sayFileLocations({ effective }) {
   say("\n  Where files are stored");
   // Each entry is a FUNCTION, called only on the branch that prints it, so a getter is read at access
   // time and never captured as a constant here. The reader of this command is deciding what to
@@ -3380,7 +3446,9 @@ export async function runCheck() {
     if (!existsSync(e.v)) warn(`${e.name}=${e.v} (${e.from}) does not exist yet`);
     else ok(`${e.name}=${e.v} (${e.from})`);
   }
+}
 
+async function sayBackgroundUnits({ hosted }) {
   // ── THE CLIENT CONNECTOR, AND WHETHER ISSUED KEYS ARE STILL GOOD ──────────
   //
   // The status surface the ruling names: "status should say whether a key is still valid". Stopping
@@ -3414,7 +3482,9 @@ export async function runCheck() {
     else warn(`could not tell whether lingering is on for ${who} — ${lingerWhy}. That is this command `
       + "failing to look, not a report that it is off.");
   }
+}
 
+async function sayStartButtonPath({ hosted, unitEnv }) {
   say("\n  Start-button path");
   try {
     const { triggerLaneVerdict, HOSTED, SUPERVISED } = await import(pathToFileURL(join(REPO, "shared", "trigger-lane.mjs")).href);
@@ -3497,7 +3567,10 @@ export async function runCheck() {
       else info(lane.message);
     }
   } catch (e) { warn(`the submit lane could not be read: ${e.message}`); }
+}
 
+async function sayClientConnector({ unitDir, startPaths, hosted, unitEnv, effective, serviceFileEnv,
+  effectiveForService }) {
   say("\n  Client connector");
   // THE REVOCATION LIST, REPORTED (found in review). `isRevoked` used to read an unreadable denylist as
   // "not revoked", so a named-but-absent file made every revocation silently ineffective: measured on a
@@ -3880,7 +3953,9 @@ export async function runCheck() {
       }
     }
   } catch (e) { warn(`the client-connector state could not be read: ${e.message}`); }
+}
 
+function sayVerdict(probeTurnRan) {
   say("");
   // NAMED, NOT COUNTED, AND NAMED FIRST — before the problem count and independently of it. Listing
   // blockers only when `problems` is empty would reproduce this command's original defect one level up:
@@ -4384,7 +4459,7 @@ try {
       say("  Running one turn…");
       // Read on every try, so a setting the reader fixes in the file between tries is the one the next turn uses.
       const v = await probeEngineTurn(proofTurn({ engineId: pick.id, eng, bin, authEnv, settings: settingsInForce() }));
-      // A turn refused before it started the program left no files of the program's own (runCheck's runTurn).
+      // A turn refused before it started the program left no files of the program's own (readCheckContext's runTurn).
       if (v.ok || v.basis !== "config") setupTurnRan = true;
       if (v.ok) {
         ok(`${eng.product} completed a turn on ${PAYS_WITH[authPick.id]} — binary, credential, billing mode and model access all work.`);
