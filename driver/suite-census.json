@@ -9815,6 +9815,12 @@
           "skips": 0,
           "todos": 0
         },
+        "providers/_shared/test/a-record-lookup-is-served-from-the-logs-index.test.mjs": {
+          "tests": 5,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "providers/_shared/test/a-register-floor-is-too-many-to-read.test.mjs": {
           "tests": 8,
           "asserts": 47,
