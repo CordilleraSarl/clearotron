@@ -351,10 +351,11 @@ export function spentBudgetCleanly({ fail, killed, code, wall, derivedLimitSec }
 // — THE TOOL GAUGE, AND WHY NULL IS NOT ZERO HERE EITHER.
 //
 // `toolCalls` and `toolWaitMs` say how much of a turn was tool wait rather than generation. An engine
-// that cannot report them is NOT a turn that called no tools: `openai-agent` carries no tool references
-// at all, so every codex attempt is unmeasured. Writing 0 for those would make every codex turn read as
-// "called no tools", and a cross-engine comparison would then conclude tool wait is an Anthropic-only
-// phenomenon — from an instrument that had simply gone quiet.
+// that cannot report them is NOT a turn that called no tools: `openai-agent` reports no whole-turn tool
+// count, so a codex attempt's `toolCalls` is unmeasured. Writing 0 for it would make every codex turn read
+// as "called no tools", and a cross-engine comparison would then conclude tool calls are an Anthropic-only
+// phenomenon — from an instrument that had simply gone quiet. Its tool wait it does time, from when each
+// tool item opens and closes in its stream (openai-agent.mjs, codexTiming).
 //
 // PRESENT AND NULL, never absent, which is this file's own house rule: a field written even when null
 // keeps "this engine cannot report" visibly different from "this record predates the gauge". The first
@@ -397,6 +398,9 @@ export function toolGauge(turn) {
     // model asked for. An OBJECT is a measurement (`{}`: none); null is "this engine cannot report".
     toolCallsByName: turn?.toolCallsByName && typeof turn.toolCallsByName === "object" && !Array.isArray(turn.toolCallsByName)
       ? { ...turn.toolCallsByName } : null,
+    // ms from spawn to the engine's first output, on both engines; null when it never spoke or cannot report. With
+    // `toolWaitMs` and `activeMs` it splits a turn into start-up, tool wait and work. RECORDING ONLY.
+    firstByteMs: n(turn?.firstByteMs),
   };
 }
 

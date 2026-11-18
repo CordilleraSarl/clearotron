@@ -24,6 +24,7 @@ import { answerBudget, quotedBytes } from "../../../shared/answer-parts.mjs";
 import { classifyRecord, prepareTargets, SHAPE_TIERS, isLiveRecord, niceClassKey, withoutPlacementOrders } from "../../band-shape.mjs";
 import { recordQids } from "../../named-band.mjs";
 import { normalizeRecordUri } from "../../registry-fidelity.mjs";
+import { recordBodyFromLog } from "../../../providers/_shared/ledger.mjs";   // the run record log's own index, which the fetches write through
 import { bandGoodsIndex, goodsFor, goodsWordCounter, goodsWordsMatched, recordAsServed, untaggedIsEnglish, rowGoods } from "../../record-goods.mjs";
 import { recordGoodsEvidence, heldRecordProvenance, recordFetchOutcomes, readRunCallRows, goodsFromLabel, registerPageLabel } from "../../goods-evidence.mjs";
 import { savedStatusPages } from "../../saved-register-pages.mjs";
@@ -53,27 +54,17 @@ const recordLedgerPath = () => paths(RUN_DIR).registerRecordBodies;
 /**
  * The record body this run has already fetched, or null.
  *
- * Scanned only on a `_records/` miss — six times on the measured round, against 2,842 lines — so the
- * cost falls on the path that was previously answering wrongly, and never on the common one.
+ * Asked only on a `_records/` miss, and every record a stage reads before the end-of-run union is one.
+ * This read and parsed the whole log on each: a median 0.80 s, up to 147 s, measured on production's 0.4.x
+ * clearances, inside serial stages whose model waited for each answer. The answer now comes from the run
+ * record log's own index (`recordBodyFromLog`), which reads only what was appended since the last look.
  *
  * LAST WRITE WINS, matching `assembleRunRecords`: the ledger leg overrides the run-dir leg there, so a
  * later body is the current one here too. Two readers of one ledger must not disagree about which row
- * is authoritative.
+ * is authoritative, which is why there is one index and not a second one here.
  */
 function recordFromLedger(uri) {
-  const p = recordLedgerPath();
-  if (!existsSync(p)) return null;
-  const want = normalizeRecordUri(uri) || String(uri).toLowerCase();
-  let found = null;
-  try {
-    for (const line of readFileSync(p, "utf8").split("\n")) {
-      if (!line.trim()) continue;
-      let row; try { row = JSON.parse(line); } catch { continue; }
-      const t = normalizeRecordUri(row?.target) || String(row?.target ?? "").toLowerCase();
-      if (t && t === want && row?.body) found = row.body;
-    }
-  } catch { return null; }
-  return found;
+  return recordBodyFromLog(recordLedgerPath(), uri);
 }
 
 // ── the reading log: EVERY lookup lands here, success or failure — the audit is the point ──────────

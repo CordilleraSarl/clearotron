@@ -519,18 +519,23 @@ test("an engine that CANNOT REPORT tool time records null, never 0 — silence i
 // (`[]`) are different answers, which is the whole distinction the field exists to draw.
 const NO_GAUGE = { toolCalls: null, toolWaitMs: null, activeMs: null, toolWaitByTool: null,
   toolWaitUnmeasurable: null, toolCallsRefused: null, commandToolCalls: null, mcpToolCalls: null, toolCallsErroredByName: null,
-  toolCallsByName: null };
+  toolCallsByName: null, firstByteMs: null };
 
 test("toolGauge — an honest zero survives, and every unmeasurable operand returns null", () => {
   assert.deepEqual(toolGauge({ toolCalls: 3, toolWaitMs: 5400, activeMs: 12000, toolWaitByTool: { Read: 5400 }, toolCallsByName: { Read: 3 } }),
     { toolCalls: 3, toolWaitMs: 5400, activeMs: 12000, toolWaitByTool: { Read: 5400 },
       toolWaitUnmeasurable: null, toolCallsRefused: null, commandToolCalls: null, mcpToolCalls: null, toolCallsErroredByName: null,
-      toolCallsByName: { Read: 3 } });
+      toolCallsByName: { Read: 3 }, firstByteMs: null });
   assert.deepEqual(toolGauge({ toolCalls: 0, toolWaitMs: 0, activeMs: 0, toolWaitByTool: {}, toolCallsByName: {}, toolCallsErroredByName: {} }),
     { toolCalls: 0, toolWaitMs: 0, activeMs: 0, toolWaitByTool: {}, toolWaitUnmeasurable: null,
-      toolCallsRefused: null, commandToolCalls: null, mcpToolCalls: null, toolCallsErroredByName: {}, toolCallsByName: {} },
+      toolCallsRefused: null, commandToolCalls: null, mcpToolCalls: null, toolCallsErroredByName: {}, toolCallsByName: {}, firstByteMs: null },
     "a turn that genuinely called no tools must keep its 0 and its EMPTY map — both are measurements, not silences");
   assert.deepEqual(toolGauge({}), NO_GAUGE, "an engine that reports none of them");
+  // Start-up rides the same rule on both engines: a measured first byte, an honest 0 included, and null otherwise.
+  assert.equal(toolGauge({ firstByteMs: 812 }).firstByteMs, 812);
+  assert.equal(toolGauge({ firstByteMs: 0 }).firstByteMs, 0);
+  assert.equal(toolGauge({ firstByteMs: -5 }).firstByteMs, null);
+  assert.equal(toolGauge({ firstByteMs: "812" }).firstByteMs, null);
   assert.deepEqual(toolGauge(undefined), NO_GAUGE, "no turn at all");
   // The per-stage counts a test round reads: an honest zero is kept, and a negative or a string is not a count.
   assert.deepEqual([toolGauge({ toolCallsRefused: 0, commandToolCalls: 0, mcpToolCalls: 0 })].map((g) => [g.toolCallsRefused, g.commandToolCalls, g.mcpToolCalls])[0], [0, 0, 0],

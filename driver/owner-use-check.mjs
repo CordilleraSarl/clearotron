@@ -16,9 +16,9 @@
 //
 // ── WHY THE DRIVER RUNS THE QUERY, RATHER THAN THE SEAT BEING TOLD TO ───────────────────────────────
 //
-// The clearance lane enforces its use-check on the DOCUMENT SHAPE of the narrative, and `use-check.mjs`
-// says plainly why: "There is no perplexity call ledger … so the cited result inside the narrative is the
-// only proof a query ran." That was the best substrate available there.
+// The clearance lane enforced its use-check on the DOCUMENT SHAPE of the narrative, and the retired gate
+// said plainly why: "There is no perplexity call ledger … so the cited result inside the narrative is the
+// only proof a query ran." That was the best substrate available there; it is a findings-record field now.
 //
 // This lane has a better one. The driver already owns the register store, already runs the sweep, and
 // already writes a receipts ledger — so it can issue the query ITSELF and record the outcome at the

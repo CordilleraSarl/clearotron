@@ -378,6 +378,12 @@ const RUN_UNDER_PROJECT_RE = /<br\s*\/?>Run under project:\s*<span class="mono">
 
 const CONNECTOR_TOKEN_RE = /([?&])token=v1\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+(&)?/g;
 
+// WHAT DRIFT LOOKS LIKE, read from the served document rather than from what the strips removed: any
+// `<nav>` carrying a site-nav class, and any `token=` query value of the connector's dotted shape, in any
+// version. Wider than the strips on purpose, so a renamed class or a new token version is still seen.
+const navSurvived = (html) => /<nav\b[^>]*\bclass\s*=\s*["'][^"']*\bsite-?nav\b/i.test(html);
+const tokenSurvived = (html) => /[?&]token=v\d+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/.test(html);
+
 function dropConnectorToken(html) {
   let dropped = 0;
   // The separator arithmetic, which is the only fiddly part: a parameter is removed together with ONE
@@ -1118,17 +1124,16 @@ export function readReport(dir, { log = () => {}, staff = false, poolRoot = null
   if (neutralised > 0) {
     log(`report-embed: ${neutralised} cross-tenant link(s) survived the nav strip in ${dir} — nav markup may have drifted`);
   }
-  if (strippedNav === 0) {
-    // Not fatal: a report rendered without the shared nav is legitimate (some publish paths omit it).
-    // Worth a line, because the other explanation is that the strip stopped working.
-    log(`report-embed: no site nav found in ${dir} (fine if it was rendered without one)`);
+  // THE TWO CANARIES SPEAK ONLY ON DRIFT. They used to log whenever nothing was stripped, and no renderer
+  // writes a site nav or a connector token any more, so they logged on every current report and drift read
+  // the same as normal. Now each looks at what is SERVED: a site nav or a token still in it means a report
+  // carried one in a shape the strip no longer matches.
+  if (navSurvived(html)) {
+    log(`report-embed: a site nav survived the strip in ${dir} (stripped ${strippedNav}) — nav markup drifted`);
   }
-  if (tokensDropped === 0) {
-    // Every report the current renderer publishes carries exactly one. Zero means either a run published
-    // before connector tokens existed (fine, and common in the archive) or that the renderer changed shape
-    // and this strip is now a no-op — which would put a bearer credential back into a served document with
-    // nothing else to catch it. Said at INFO rather than asserted, because the benign case is real.
-    log(`report-embed: no connector token found in ${dir} (fine on a pre-connector run; otherwise the renderer's URL shape moved)`);
+  if (tokenSurvived(html)) {
+    // A bearer credential in a served document, with nothing else to catch it.
+    log(`report-embed: a connector token survived the strip in ${dir} (dropped ${tokensDropped}) — the renderer's URL shape moved`);
   }
   return html;
 }
