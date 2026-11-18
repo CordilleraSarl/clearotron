@@ -101,6 +101,23 @@
 // A deletion that gives no reason still refuses, and names the deleting commit as where the reason goes.
 // The move a pre-release makes — `.changeset/<name>.md` deleted and `.changeset/pre/<name>.md` added in
 // one commit — is not a withdrawal: the note still reaches a reader, and a version commit is that shape.
+//
+// ── A NOTE A RELEASE ALREADY PUBLISHED IS AN ANSWER ───────────────────────────────────────────────────
+//
+// A line branched from the previous line, not from main, carries that line's commits one by one across
+// its stable release. Main holds them only as squashes, so none is reached by ancestry and every one is
+// read again. Before the stable, each note a beta had consumed sat under `.changeset/pre/` at the head and
+// answered by its name. The stable publishes them all and deletes them, the merge back carries the
+// deletion, and the last deletion in the range, a commit removing copies an earlier merge had revived,
+// read as a withdrawal that gave no reason. Measured on the 0.6.1 line, 2026-11-18: 35 commits whose notes
+// shipped in 0.6.0 were charged as owing one, and the only fix offered was rewriting pushed history.
+//
+// So a note a VERSION COMMIT on main's own line deleted, at either path, has been published, and it
+// answers for the commits that wrote or named it. The version commit is recognised as the placement check
+// recognises it (`release-duplicate-notes.mjs`), by the pipeline's own author and subject. Not where that
+// release is already in the commit's own history: a note written after the release merged back is a new
+// note sharing a name, and it answers as any other note does. Every commit excused this way is printed
+// with the release that published its note.
 // ── A LATER COMMIT MAY ANSWER A BARE `none` FOR ONE NAMED COMMIT ───────────────────────────────────────
 //
 // A commit carried `Release-note: none` with no reason and was merged into an integration branch before
@@ -145,6 +162,7 @@ import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
+import { cutCommitSubject, isVersionCommit } from "./release-duplicate-notes.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -275,15 +293,18 @@ const shipped = (paths, files) => paths.filter((p) => !NEVER_A_NOTE.some((re) =>
  * @param {string[]} o.files  the package's own `files` list
  * @param {string[]|null} [o.atHead]  every path the head carries under `.changeset/`, when the caller read it
  * @param {((a:string, b:string) => boolean)|null} [o.isAncestor]  git ancestry for `Release-note-for:` answers; range order without it
+ * @param {Map<string, {sha:string, subject:string}>|null} [o.released]  note name → the version commit on main's
+ *   line that published it, when the caller read it
  * @returns {{visible:string[], notes:string[], declined:Array<{sha:string, subject:string, reason:string}>,
  *   withdrawals:Array<{sha:string, subject:string, note:string, by:string, reason:string}>,
+ *   published:Array<{sha:string, subject:string, note:string, by:string, release:string}>,
  *   answered:Array<{sha:string, subject:string, by:string, reason:string}>,
  *   refusedAnswers:Array<{sha:string, subject:string, text:string, problem:string}>,
  *   unneeded:Array<{sha:string, by:string, said:string}>,
  *   owed:Array<{sha:string, subject:string, why:"no-note"|"prose"|"bare-none"|"names-a-missing-note"|"note-withdrawn-unsaid",
  *   paths?:string[], text?:string, by?:string}>}}
  */
-export function commitVerdicts({ commits = [], files = [], atHead = null, isAncestor = null } = {}) {
+export function commitVerdicts({ commits = [], files = [], atHead = null, isAncestor = null, released = null } = {}) {
   // `added` and `atHead` are what the command reads from git; a caller that passes neither keeps the older
   // reading of every changed path, which is what a pure table of paths means.
   // MATCHED ON THE NAME, NOT THE PATH, BECAUSE A PRE-RELEASE MOVES A NOTE IT CONSUMES.
@@ -331,7 +352,13 @@ export function commitVerdicts({ commits = [], files = [], atHead = null, isAnce
   });
   // AND A NAME THE HEAD STILL CARRIES WAS NEVER WITHDRAWN AT ALL: the release assembles what the head has.
   if (presentNames) for (const name of [...withdrawn.keys()]) if (presentNames.has(name)) withdrawn.delete(name);
-  const declined = [], owed = [], withdrawals = [], answered = [], unneeded = [];
+  // THE RELEASE THAT PUBLISHED A NOTE OF THIS NAME (see the header), unless this commit's own history
+  // already holds that release, which makes its note a new one.
+  const publishedBy = (c, name) => {
+    const r = released?.get(name);
+    return r && !(isAncestor && isAncestor(r.sha, c.sha)) ? r : null;
+  };
+  const declined = [], owed = [], withdrawals = [], answered = [], unneeded = [], published = [];
   const { answers, refused: refusedAnswers } = readAnswers(commits, isAncestor);
   const used = new Set();
   for (const [i, c] of commits.entries()) {
@@ -342,13 +369,15 @@ export function commitVerdicts({ commits = [], files = [], atHead = null, isAnce
     const named = values.map((v) => NAMED_NOTE.exec(v)?.groups.name).filter(Boolean);
     const prose = values.filter((v) => !/^none\b/i.test(v) && !NAMED_NOTE.test(v));
     const at = { sha: c.sha, subject: c.subject };
+    const firstPublished = (names) => names.map((n) => [n, publishedBy(c, n)]).find(([, r]) => r);
+    const ownPublished = addsNote ? null : firstPublished((c.added ?? c.paths).filter(isNotePath).map(nameOf));
     // A LATER COMMIT'S ANSWER NAMING A NOTE: taken for a sentence line or a bare `none`, when the range adds it.
     const byNote = (answer) => {
       used.add(c.sha);
       if (!noteNames.has(answer.note)) { owed.push({ ...at, why: "names-a-missing-note", text: answer.note, by: answer.by }); return; }
       answered.push({ ...at, by: answer.by, note: answer.note, said: prose[0] ?? "none" });
     };
-    if (prose.length && !addsNote) {
+    if (prose.length && !addsNote && !ownPublished) {
       const answer = answers.get(c.sha);
       if (answer?.note) byNote(answer);
       else owed.push({ ...at, why: "prose", text: prose[0] });
@@ -365,6 +394,12 @@ export function commitVerdicts({ commits = [], files = [], atHead = null, isAnce
       continue;
     }
     if (addsNote) continue;                                   // it carries its own note
+    const releasedNote = ownPublished ?? firstPublished(named);
+    if (releasedNote) {
+      const [note, by] = releasedNote;
+      published.push({ ...at, note, by: by.sha, release: by.subject });
+      continue;
+    }
     // THE NOTE THIS COMMIT ANSWERED WITH, TAKEN BACK BY A LATER ONE. Only a later commit: a name deleted
     // before this commit named it was never this commit's answer.
     const addedNames = [...new Set((c.added ?? c.paths).filter(isNotePath).map(nameOf))];
@@ -395,7 +430,7 @@ export function commitVerdicts({ commits = [], files = [], atHead = null, isAnce
           : `names ${sha.slice(0, 7)}, which owes a note this line cannot give: an answer covers only a bare \`none\``)
         : `names ${sha.slice(0, 7)}, which owes no answer: it ships no code, carries a note, or gives its own reason` });
   }
-  return { visible, notes, declined, withdrawals, owed, answered, refusedAnswers, unneeded };
+  return { visible, notes, declined, withdrawals, published, owed, answered, refusedAnswers, unneeded };
 }
 
 const argAfter = (flag) => {
@@ -415,6 +450,7 @@ function main() {
   const head = argAfter("--head") || "HEAD";
   const git = (...a) => execFileSync("git", a, { encoding: "utf8", maxBuffer: 1 << 28 });
   let changed, commits, atHead, onMainLine = [];
+  const released = new Map();
   try {
     changed = git("diff", "--name-only", `${base}...${head}`).split("\n").filter(Boolean);
     // THE BRANCH'S OWN COMMITS. On a pull request the range can reach commits main already carries, from
@@ -441,6 +477,24 @@ function main() {
       deleted: git("diff-tree", "--no-commit-id", "--name-only", "-r", "--root", "--diff-filter=D", sha).split("\n").filter(Boolean),
     }));
     atHead = git("ls-tree", "-r", "--name-only", head, "--", ".changeset/").split("\n").filter(Boolean);
+    // EVERY NOTE A RELEASE ON MAIN'S OWN LINE PUBLISHED (see the header): the names a version commit
+    // deleted, at either path. Newest first, so the first sighting of a name is the latest release.
+    if (mainKnown) {
+      const cutSubject = cutCommitSubject(ROOT);
+      let version = null;
+      const log = git("log", "--first-parent", "--no-renames", "--diff-filter=D", "--name-status",
+        "--format=@@%H%x00%an%x00%s", "origin/main", "--", ".changeset/");
+      for (const line of log.split("\n")) {
+        if (line.startsWith("@@")) {
+          const [sha, author, subject] = line.slice(2).split("\0");
+          version = isVersionCommit({ author, subject }, cutSubject) ? { sha, subject } : null;
+          continue;
+        }
+        const path = line.split("\t")[1] ?? "";
+        const name = path.split("/").pop();
+        if (version && isNotePath(path) && !released.has(name)) released.set(name, version);
+      }
+    }
   } catch (e) {
     // COULD NOT LOOK, never a pass — an unresolvable base is the shape this repository cares about.
     console.error(`release-note-required: cannot read the range against ${base}: ${e.message.split("\n")[0]}`);
@@ -462,11 +516,13 @@ function main() {
   }
   // ANCESTRY FROM GIT, NEVER TIMESTAMPS: an answer must come from a commit the named one is an ancestor of.
   const isAncestor = (a, b) => { try { git("merge-base", "--is-ancestor", a, b); return true; } catch { return false; } };
-  const { visible, notes, declined, withdrawals, owed, answered, refusedAnswers, unneeded } = commitVerdicts({ commits, files, atHead, isAncestor });
+  const { visible, notes, declined, withdrawals, published, owed, answered, refusedAnswers, unneeded } =
+    commitVerdicts({ commits, files, atHead, isAncestor, released });
   console.log(`release-note-required: ${changed.length} changed file(s) against ${base}`
     + `${head === "HEAD" ? "" : ` (head ${head})`}; `
     + `${visible.length} ship as code; ${notes.length} release note(s) in the range; ${commits.length} commit(s) read`
-    + `${withdrawals.length ? `; ${withdrawals.length} answered by a note the range withdrew` : ""}`);
+    + `${withdrawals.length ? `; ${withdrawals.length} answered by a note the range withdrew` : ""}`
+    + `${published.length ? `; ${published.length} answered by a note a release already published` : ""}`);
   // PER COMMIT, SAID AS PER COMMIT. "no note, declared on purpose" read as a verdict on the range, and beside
   // a range that carries a note it told a reader skimming the output that none went out. Found in review.
   if (onMainLine.length) {
@@ -480,6 +536,9 @@ function main() {
   // another commit's decision is one a person may want to disagree with, and they cannot if it is silent.
   for (const w of withdrawals) {
     console.log(`  ${w.sha.slice(0, 7)} answered with ${w.note}, which ${w.by.slice(0, 7)} withdrew: ${w.reason}`);
+  }
+  for (const p of published) {
+    console.log(`  ${p.sha.slice(0, 7)} answered with ${p.note}, which ${p.by.slice(0, 7)} (${p.release}) published`);
   }
   for (const a of answered) {
     console.log(a.note
