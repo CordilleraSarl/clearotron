@@ -69,8 +69,8 @@ const FROZEN_FILES = [
   { path: "_driver/senior-rights.json", why: "publish/index.mjs:790 seniorRights" },
   { path: "_driver/verdict.json", why: "publish/index.mjs:811 verdictInfo" },
   { path: "_driver/framework.json", why: "publish/index.mjs, the frozen band vocabulary the run was rated under" },
-  { path: "_driver/register-plan.json", why: "publish/index.mjs:919 scopeBasis" },
-  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:930 searchedJurisdictions, the fallback for register-plan" },
+  { path: "_driver/register-plan.json", why: "publish/index.mjs:914 scopeBasis" },
+  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:915 searchedJurisdictions, the fallback for register-plan" },
   { path: "_driver/enforcer-signals.json", why: "`esPath` declared in index.mjs" },
   { path: "_driver/predelivery-lint.json", why: "publish/index.mjs:173 lintSink" },
   { path: "_driver/escalation-state.json", why: "publish/index.mjs:174 escSink" },
@@ -118,7 +118,7 @@ const KNOCKOUT_FILES = [
   // knockout report render empty (`buildKnockoutWorkbook` in publish/knockout.mjs). Named by `koPaths` in stages-knockout.mjs.
   { path: "_driver/register-counts.json", why: "buildKnockoutWorkbook in publish/knockout.mjs: counted figures + the Register column" },
   { path: "_driver/register-records.json", why: "koPaths in stages-knockout.mjs: the terms behind the close-variation axis" },
-  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:930 searchedJurisdictions, the fallback for register-plan" },
+  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:915 searchedJurisdictions, the fallback for register-plan" },
 ];
 
 /** The allowlist for a template. One place, so a new template cannot half-exist. */
