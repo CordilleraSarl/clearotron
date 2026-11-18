@@ -8260,9 +8260,9 @@
           "todos": 0
         },
         "the-secret-scanner-comes-from-a-kept-copy.test.mjs": {
-          "tests": 5,
-          "asserts": 15,
-          "skips": 0,
+          "tests": 6,
+          "asserts": 16,
+          "skips": 3,
           "todos": 0
         },
         "the-settings-surface-reads-the-customer-store.test.mjs": {

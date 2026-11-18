@@ -257,7 +257,10 @@ test("a list whose removal failed after a failed write does not make the earlier
   assert.deepEqual(readAcceptedFlags(runDir), [later]);
 });
 
-test("both failures, as they happen: a list that can be neither written nor removed", { skip: process.getuid?.() === 0 ? "a read-only folder does not stop root" : false }, async () => {
+test("both failures, as they happen: a list that can be neither written nor removed", {
+  skip: process.getuid?.() === 0 ? "a read-only folder does not stop root"
+    : process.platform === "win32" && "folder modes: Windows ignores a folder's mode bits, so a read-only folder refuses neither the write nor the removal; the state both failures leave is read on every platform by the arm above",
+}, async () => {
   const { readAcceptedFlags } = await import("../narrative-refutation-record.mjs");
   const { chmodSync } = await import("node:fs");
   const runDir = earlierReviewAccepted("read-only");

@@ -36,6 +36,9 @@ const onPath = (bin, fn) => {
   try { return fn(); } finally { process.env.PATH = real; }
 };
 const quiet = () => {};
+// THE ARMS THAT DOWNLOAD stand a shell script in for curl, and Windows starts no shell script. Nothing is lost there:
+// the fetch runs only on the Linux CI runners and the package does not ship it, which the last arm holds.
+const STAND_IN = process.platform === "win32" && "shell stand-ins: the arm puts a `#!/bin/sh` curl on PATH, which Windows does not start; the fetch runs only on the Linux CI runners and is not in the package";
 
 test("a kept copy matching the pin is used, and nothing is downloaded", () => {
   const w = world();
@@ -46,7 +49,7 @@ test("a kept copy matching the pin is used, and nothing is downloaded", () => {
   assert.equal(existsSync(w.calls), false, "the download ran although a good copy was kept");
 });
 
-test("with no kept copy it downloads, verifies, and keeps the archive for the next run", () => {
+test("with no kept copy it downloads, verifies, and keeps the archive for the next run", { skip: STAND_IN }, () => {
   const w = world();
   onPath(w.bin, () => fetchSecretScanner({ version: VERSION, sha256: w.sha256, cacheDir: w.cacheDir, cwd: w.work, log: quiet }));
   assert.equal(readFileSync(w.calls, "utf8"), "called\n");
@@ -54,7 +57,7 @@ test("with no kept copy it downloads, verifies, and keeps the archive for the ne
   assert.deepEqual(readFileSync(join(w.cacheDir, `gitleaks-${VERSION}.tgz`)), readFileSync(w.tgz));
 });
 
-test("a kept copy that does not match the pin is ignored", () => {
+test("a kept copy that does not match the pin is ignored", { skip: STAND_IN }, () => {
   const w = world();
   mkdirSync(w.cacheDir);
   writeFileSync(join(w.cacheDir, `gitleaks-${VERSION}.tgz`), "not the archive");
@@ -63,7 +66,7 @@ test("a kept copy that does not match the pin is ignored", () => {
   assert.deepEqual(readFileSync(join(w.cacheDir, `gitleaks-${VERSION}.tgz`)), readFileSync(w.tgz), "the bad copy was not replaced");
 });
 
-test("a download that does not match the pin stops, and nothing is kept", () => {
+test("a download that does not match the pin stops, and nothing is kept", { skip: STAND_IN }, () => {
   const w = world();
   assert.throws(() => onPath(w.bin, () => fetchSecretScanner({ version: VERSION, sha256: "0".repeat(64), cacheDir: w.cacheDir, cwd: w.work, log: quiet })), /does not match the pinned hash/);
   assert.equal(existsSync(join(w.cacheDir, `gitleaks-${VERSION}.tgz`)), false);
@@ -81,4 +84,9 @@ test("both publish jobs and CI fetch the scanner this way, and the schedule keep
   const pending = release.slice(release.indexOf("\n  pending:\n"), release.indexOf("\n  entry:\n"));
   assert.match(pending, /actions\/cache@/, "nothing reads the copy between publishes, so it would be evicted");
   assert.match(pending, /continue-on-error: true/, "keeping the copy must never hold up the decision");
+});
+
+test("the fetch is not in the package, which is what lets Windows skip the arms that stand in for curl", () => {
+  const { files } = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8"));
+  assert.ok(files.includes("!scripts/secret-scanner-fetch.mjs"), "the fetch now ships, so a Windows user can run it and its arms must run there");
 });

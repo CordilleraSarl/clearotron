@@ -15,7 +15,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { join } from "node:path";
+import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { paths } from "../run-record.mjs";
 import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
@@ -23,10 +23,12 @@ import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
 const ROOT = fileURLToPath(new URL("../../", import.meta.url));
 const GUARD = "run-files-through-the-records-door";
 
-// The door's single-segment names, read from the door itself so a key added there is covered at once.
+// The door's single-segment names, read from the door itself so a key added there is covered at once. The door joins
+// with the platform's separator, so the folder is compared as a joined path, never as a `/` spelling.
+const DOOR_DIR = join("/R", "_driver");
 const DOOR_NAMES = new Set(Object.values(paths("/R"))
-  .filter((v) => typeof v === "string" && /^\/R\/_driver\/[^/]+$/.test(v))
-  .map((v) => v.slice("/R/_driver/".length)));
+  .filter((v) => typeof v === "string" && dirname(v) === DOOR_DIR)
+  .map((v) => basename(v)));
 
 const CALL = /driverDir\(\s*[^,()]+(?:\([^()]*\))?\s*,\s*(["'])([^"']+)\1\s*\)/g;
 const handSpelled = (src) => [...String(src).matchAll(CALL)].map((m) => m[2]).filter((name) => DOOR_NAMES.has(name));
