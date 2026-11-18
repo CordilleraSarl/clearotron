@@ -1923,6 +1923,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-records-goods-read-as-the-register-holds-them.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-redone-register-reading-asks-nothing-already-answered.test.mjs": {
           "tests": 7,
           "asserts": 18,
@@ -9099,8 +9105,8 @@
           "todos": 0
         },
         "account-audit-chain.test.mjs": {
-          "tests": 10,
-          "asserts": 48,
+          "tests": 11,
+          "asserts": 50,
           "skips": 0,
           "todos": 0
         },

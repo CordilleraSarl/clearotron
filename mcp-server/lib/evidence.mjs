@@ -31,14 +31,22 @@
 // `coverage_judgment.reason` is NOT forwarded: render.mjs gates it `!CLIENT` as engine wording, so it stays
 // internal here too.
 //
+// THE SECOND EXCEPTION, ruled 2026-11-18: a cited register record's goods in the register's own words. The report
+// now prints a registration's goods in English, or the vendor's machine translation marked as one, and points a
+// reader who wants the original wording to their assistant. So get_finding carries, for the one register record
+// its block names, the goods as the register holds them (registrationGoods below). It is the REGISTER's text,
+// copied from the record the run saved, never the firm's: no scrub pass touches it, because each one rewrites.
+// Only a record a delivered block names is read, one file, never the archive at large.
+//
 // AND THE LESSON THE CORPUS ADDED (see valueField): "structured field" is not a synonym for "safe value".
 // A model free-typing into `classes:` welded an engine clause onto a class list. Structured KEYS are the
 // allowlist; structured VALUES still have to be recognised, not trusted.
 
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { parseAudit, stripEngineInternals } from "./driver.mjs";
-import { readRecordArtifacts } from "../../driver/registry-fidelity.mjs";
+import { readRecordArtifacts, normalizeRecordUri } from "../../driver/registry-fidelity.mjs";
+import { recordGoodsAsRegistered } from "../../driver/record-goods.mjs";
 import { readJson } from "../../driver/run-record.mjs";
 
 // The client report's own display word per coverage state (publish/render.mjs COV_STATE). Carried here so
@@ -478,4 +486,22 @@ export function coverageStatement(run) {
       ? "What the search covered, in the same terms as the report's own coverage section. An area that is not 'Searched — clean' is not cleared: treat it as open, not as a negative result."
       : "This run records no coverage ledger.",
   };
+}
+
+// ---- a cited record's goods, as the register holds them ------------------------------------------
+
+/**
+ * The goods of the ONE register record a finding's block names, as the register holds them: {registration,
+ * statements} or null. `url` is the block's own link; only a register record URI resolves, and only to the file
+ * the run saved for it (named as driver/registry-fidelity.mjs writeRecordArtifacts names it). Nothing here
+ * reads the archive at large, so nothing the delivered record does not name can be reached.
+ */
+export function registrationGoods(run, url) {
+  const uri = normalizeRecordUri(url ?? "");
+  if (!uri || !run?.runDir) return null;
+  const name = uri.replace(/^\/mark\//, "").replace(/[^a-z0-9]+/gi, "-") + ".json";
+  let body;
+  try { body = JSON.parse(readFileSync(join(run.runDir, "_records", name), "utf8")); } catch { return null; }
+  const statements = recordGoodsAsRegistered(body);
+  return statements.length ? { registration: uri, statements } : null;
 }
