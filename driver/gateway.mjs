@@ -881,8 +881,9 @@ async function runStageLadder(name, opts, stageHome = null, engine = selectEngin
     // A TURN STOPPED AT ITS HARD WALL WHILE STILL WORKING IS RESUMED, NOT RESTARTED. Its single extended retry (ladder/next-rung.mjs)
     // continues the same session with the message design wrote, so an hour of work is not done again; a kill that was silent, or
     // was only making its own record write, is retried fresh as before. The classification is killedWhile, below.
-    const timeoutWarm = attempt > 1 && !warmUsed && process.env.CLEAROTRON_WARM_RETRY !== "0" && lastFail === "timeout" && lastKillClass === "working";
-    const warm = timeoutWarm || (attempt > 1 && !warmUsed && process.env.CLEAROTRON_WARM_RETRY !== "0" && !vetoedResume && warmEligible(lastFail, lastJson));
+    const timeoutResume = lastFail === "timeout" && lastKillClass === "working";
+    const warm = attempt > 1 && !warmUsed && process.env.CLEAROTRON_WARM_RETRY !== "0" && (timeoutResume || (!vetoedResume && warmEligible(lastFail, lastJson)));
+    const timeoutWarm = warm && timeoutResume;
     if (warm) warmUsed = true;
     else if (vetoedResume && !warmUsed && process.env.CLEAROTRON_WARM_RETRY !== "0" && warmEligible(lastFail, lastJson))
       note(`[${name}] attempt ${attempt - 1} left this stage's meaning population with ZERO ruled rows (${String(lastFail).slice(0, 100)}) — a resumed session re-reads its own output and cannot rule what it did not rule; SKIPPING the warm patch and dispatching attempt ${attempt} FRESH (the warm attempt is not spent: a partial failure later in this ladder still gets it)`);
