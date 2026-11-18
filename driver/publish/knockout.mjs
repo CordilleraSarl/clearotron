@@ -216,7 +216,7 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
   const noteRows = [];
   // WHAT THE LOOK AT THE CORRECTED RECORD STILL FOUND, for the reviewing lawyer, in its own words. Not on the client's report.
   // Where the run could not close it, the note says why, so the lawyer can tell a repair that failed from a look that did not run.
-  const OPEN_BECAUSE = { 'not-corrected': 'Not corrected in this run: ', 'not-rechecked': 'Corrected, but not read again: ', 'not-answered': 'Not answered: ' };
+  const OPEN_BECAUSE = { 'not-corrected': 'Not corrected in this search: ', 'not-rechecked': 'Corrected, but not read again: ', 'not-answered': 'Not answered: ' };
   for (const p of degraded.openPoints ?? []) noteRows.push({ 'Mark': p.mark, 'Type': 'Internal note', 'Note': `${OPEN_BECAUSE[p.state] ?? ''}${p.problem}` });
   for (const m of findings.marks ?? []) {
     for (const n of m.purpleNotes ?? []) noteRows.push({ 'Mark': m.name, 'Type': 'Internal note', 'Note': n });
@@ -239,7 +239,7 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
       // check: two runs of the same mark under different rule tables produce different figures and the
       // sheet would show no reason why. An archived schema-1 row (no expansion cell) says so in words
       // rather than showing a blank, which on this sheet reads as "none".
-      row['Close variation forms'] = variantFormsLine(e) ?? 'not recorded — this run predates the close-variation column';
+      row['Close variation forms'] = variantFormsLine(e) ?? 'not recorded — this search predates the close-variation column';
       row['Register'] = registerCounts.providerLabel ?? registerCounts.provider ?? '';
       row['Basis'] = COUNT_BASIS;
       // The reader's line for anything missing. The provider's own reason, or an exception's message, stays

@@ -73,6 +73,11 @@ function plainNote(s) {
     .replace(/^deferred — /, 'Not searched — ');
 }
 
+// A run stores its slice labels in the words of the build that wrote them, and both workbooks copy them into
+// cells. Every cell says "main register search", as the workbook's own words do (2026-11-18). Lower case
+// only, as readerWords: a capitalised word is a name and stays as written.
+const inCellWords = (v) => (typeof v === 'string' ? v.replace(/\bmain register sweep\b/g, 'main register search') : v);
+
 // a column is "empty" only when NO data row fills it. Dropping such a column honours the spec's
 // "no dead schema" by construction (a common-law-only run simply omits Class / Registration(s) rather
 // than shipping them blank) AND means the workbook never carries an empty column to trip a gate on.
@@ -104,7 +109,7 @@ export function addSheet(wb, name, columns, rows, styleRow) {
   });
   hr.height = 26;
   for (const r of rows) {
-    const row = ws.addRow(r);
+    const row = ws.addRow(Object.fromEntries(Object.entries(r).map(([k, v]) => [k, inCellWords(v)])));
     row.alignment = { vertical: 'top', wrapText: true };
     // a styler gets the written row, its SOURCE data, and the surviving columns. Each states its own
     // precondition against `kept`, so a dropped column makes that one rule a no-op and leaves every
