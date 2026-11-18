@@ -22,6 +22,7 @@ import { readFileSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 import { trackedFiles, skipReason } from "../shared/tracked-files.mjs";
+import { publishedOf, publishedReader } from "../shared/reference-guard-classes.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -70,12 +71,17 @@ export function namesManual(text, manual) {
 export function manualPins(manuals, root = ROOT) {
   const tracked = trackedFiles(GUARD, { root, pathspec: ["driver/test", "mcp-server/test", "driver/skills"] });
   if (tracked === null) return null;
-  const tests = tracked.filter((f) => f.endsWith(".test.mjs"));
-  const texts = new Map(tests.map((f) => [f, readFileSync(join(root, f), "utf8")]));
+  // WHAT THIS CHECKOUT PUBLISHES, not what an overlay laid beside it: a private test or manual laid into the tree is not
+  // the product's, and its own repository holds its own wording (the source-pin census reads the tree the same way).
+  const p = publishedOf(tracked, root);
+  if (p.error) throw new Error(`count-manual-pins: ${p.error}`);
+  const read = publishedReader(root, (f) => readFileSync(join(root, f), "utf8"));
+  const tests = p.files.filter((f) => f.endsWith(".test.mjs"));
+  const texts = new Map(tests.map((f) => [f, read(f)]));
   const held = new Map([...texts].map(([f, t]) => [f, heldStrings(t)]));
   const out = {};
-  for (const m of manuals ?? tracked.filter((f) => f.endsWith(".md"))) {
-    const text = flat(readFileSync(join(root, m), "utf8"));
+  for (const m of manuals ?? p.files.filter((f) => f.endsWith(".md"))) {
+    const text = flat(read(m));
     const files = {};
     for (const [f, vs] of held) {
       if (!namesManual(texts.get(f), m)) continue;

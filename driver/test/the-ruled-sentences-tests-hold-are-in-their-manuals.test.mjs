@@ -6,7 +6,9 @@
 // both halves: every sentence a fixture holds is still in its manual, word for word, and no other test writes one out.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
@@ -74,4 +76,21 @@ test("a test counts against a manual only when it names it: the folder, and the 
   assert.equal(namesManual(`read("skills/clearance-register/digest.md")`, "driver/skills/clearance-register/unit.md"), false, "the folder's other manual");
   assert.equal(namesManual(`read("skills/clearance-common-law/SKILL.md")`, "driver/skills/clearance-common-law/SKILL.md"), true);
   assert.equal(namesManual(`const header = "| Coverage unit | Status | Reason |";`, "driver/skills/clearance-common-law/SKILL.md"), false, "a shared table header");
+});
+
+test("a test an overlay lays into the tree, uncommitted, is not the product's and is not counted", () => {
+  const root = mkdtempSync(join(tmpdir(), "laid-"));
+  const git = (...a) => execFileSync("git", a, { cwd: root, stdio: "ignore" });
+  mkdirSync(join(root, "driver", "skills", "invented-manual"), { recursive: true });
+  mkdirSync(join(root, "driver", "test"), { recursive: true });
+  const S = "An invented sentence the manual says, at least twenty-five characters.";
+  writeFileSync(join(root, "driver", "skills", "invented-manual", "SKILL.md"), `# Invented\n\n${S}\n`);
+  const holding = `const m = read("skills/invented-manual/SKILL.md");\nassert.ok(m.includes("${S}"));\n`;
+  writeFileSync(join(root, "driver", "test", "published.test.mjs"), holding);
+  git("init", "-q"); git("add", "-A");
+  git("-c", "user.name=t", "-c", "user.email=t@t.invalid", "commit", "-q", "-m", "published");
+  writeFileSync(join(root, "driver", "test", "laid.test.mjs"), holding);
+  git("add", "-A");   // laid: tracked in the index, not in HEAD
+  const files = manualPins(["driver/skills/invented-manual/SKILL.md"], root)["driver/skills/invented-manual/SKILL.md"].files;
+  assert.deepEqual(files, { "driver/test/published.test.mjs": 1 });
 });

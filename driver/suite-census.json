@@ -4643,7 +4643,7 @@
         },
         "every-script-has-a-row-in-the-scripts-index.test.mjs": {
           "tests": 2,
-          "asserts": 7,
+          "asserts": 8,
           "skips": 2,
           "todos": 0
         },
@@ -8326,8 +8326,8 @@
           "todos": 0
         },
         "the-ruled-sentences-tests-hold-are-in-their-manuals.test.mjs": {
-          "tests": 4,
-          "asserts": 18,
+          "tests": 5,
+          "asserts": 19,
           "skips": 1,
           "todos": 0
         },
