@@ -22,6 +22,7 @@ import { mintSupplementalEntries } from "../engine/mcp/supplemental.mjs";
 import { CAPABILITIES as CLARIVATE } from "../../providers/clarivate/src/capabilities.js";
 import { defaultBuildEntryQuery, planPredicateParams } from "../../providers/_shared/execute-plan.mjs";
 import { buildSearchRequest, GOODS_FIELD } from "../../providers/clarivate/src/core.js";
+import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 const MARK = "INVENTEDMARK";
@@ -129,7 +130,7 @@ test("the manual tells the model the order of moves, in the shipping tree", () =
     assert.match(manual, /limited to the client's goods words/, `${f} does not state the first move`);
     assert.match(manual, /one question per market/, `${f} does not state the market move`);
     // The ruled order (2026-09-26): goods and class before any market.
-    const goods = manual.indexOf("limited to the client's goods words");
+    const goods = manual.indexOf(UNIT_SENTENCES.limitedTheClientGoodsWords);
     const byClass = manual.indexOf("one class at a time");
     const byMarket = manual.indexOf("one question per market");
     assert.ok(goods < byClass && byClass < byMarket, `${f} does not narrow by goods, then class, then market`);

@@ -13,6 +13,7 @@ import { compileRegisterPlan, variantsFingerprint } from "../register-plan.mjs";
 import { parseVariantManifestModel } from "../variant-manifest-model.mjs";
 import { capabilitiesFor } from "../register-capabilities.mjs";
 import { decideAxes } from "../coverage-ledger.mjs";
+import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
 
 const MODEL = {
   schema_version: 1, mark: "GLIMBEX", dominant_element: "GLIMBEX",
@@ -49,7 +50,7 @@ test("the incumbent step still spawns on the alert, so its axis is not gone", ()
 test("the register manual's incumbent paragraph asks in the matter's classes and markets", () => {
   const unit = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register", "unit.md"), "utf8");
   const para = unit.split("\n").find((l) => l.startsWith("- **`incumbent-class`**"));
-  assert.ok(para?.includes("`register_enumerate` the named band in the matter's in-scope Nice set and markets"),
+  assert.ok(para?.includes(UNIT_SENTENCES.registerEnumerateTheNamedBand),
     "the paragraph carries the approved sentence");
   assert.doesNotMatch(unit, /incumbent's primary classes/, "no line sends the unit to the incumbent's own classes");
 });

@@ -14,19 +14,19 @@ import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { STAGES, paths } from "../stages.mjs";
+import { DIGEST_SENTENCES } from "./ruled-sentences-digest.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 const digest = readFileSync(join(DRIVER, "skills", "clearance-register", "digest.md"), "utf8").replace(/\s+/g, " ");
 
 test("placement's own set-aside is the fourth ending, counted by the driver", () => {
-  assert.ok(digest.includes("4. **placement's own set-aside of that position** — by name, or, for a residual position, by its group's row. "
-    + "The driver counts it; you add nothing."));
+  assert.ok(digest.includes(DIGEST_SENTENCES.placementOwnSetAsideThat));
 });
 
 test("a position with no ending is delivered stated, in the manual and in the write-up's message", () => {
-  assert.ok(digest.includes("A position with NO ending is a hard discrepancy: one warm follow-up, then the run delivers with the unended positions stated."));
-  assert.ok(digest.includes("the crowd then covers no position, and the run delivers with those positions stated as unended, over a ruling you did make."));
-  assert.ok(digest.includes("Drop it and the ruling covers nothing, and the run delivers with those positions stated as unended."));
+  assert.ok(digest.includes(DIGEST_SENTENCES.positionWithEndingHardDiscrepancy));
+  assert.ok(digest.includes(DIGEST_SENTENCES.theCrowdThenCoversPosition));
+  assert.ok(digest.includes(DIGEST_SENTENCES.dropAndTheRulingCovers));
   for (const gone of ["then the run **blocks delivery**", "and delivery blocks over a ruling you did make", "the ruling covers nothing and the run blocks delivery"])
     assert.ok(!digest.includes(gone), `the write-up's manual still says "${gone}"`);
   const stage = driverSource("stages.mjs");

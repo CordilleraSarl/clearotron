@@ -13,6 +13,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { DIGEST_SENTENCES } from "./ruled-sentences-digest.mjs";
 
 const SKILLS = join(dirname(fileURLToPath(import.meta.url)), "..", "skills");
 const flat = (rel) => readFileSync(join(SKILLS, rel), "utf8").replace(/\s+/g, " ");
@@ -36,6 +37,6 @@ test("a saturated element answered by a narrowed list that was read is not a mat
     "no enumerated exact-in-class-live slice is an unsearched dangerous category"])
     assert.ok(!manual.includes(gone), `the placement manual still says "${gone}"`);
   const digest = flat("clearance-register/digest.md");
-  assert.ok(digest.includes("saturated field with no enumerated exact-owner slice, and no narrowed list that was read answering it, ruled a material gap"));
+  assert.ok(digest.includes(DIGEST_SENTENCES.saturatedFieldWithEnumeratedExact));
   assert.ok(!digest.includes("no enumerated exact-owner slice ruled a material gap"), "the digest's checklist still rules it a gap");
 });

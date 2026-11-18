@@ -23,6 +23,7 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { fileURLToPath } from "node:url";
+import { DIGEST_SENTENCES } from "./ruled-sentences-digest.mjs";
 
 
 // EVERY temp directory this file makes is removed — including ones created inside helpers, and ones
@@ -82,11 +83,11 @@ const PLACEMENT_MD = [
   "## Disagreements / flags surfaced to downstream",
   "- none",
   "",
-  "### Coverage rulings & open questions",
+  DIGEST_SENTENCES.coverageRulingsOpenQuestions,
   "- cleared: saturation-probe crowd descriptor — immaterial noise off the dangerous band (confirmed-clean)",
   "- material-gap: named band for transliteration-numeric absent — search output did not cross; cannot judge this axis",
   "",
-  "### Open questions for the client / reviewer",
+  DIGEST_SENTENCES.openQuestionsForTheClient,
   "- whether the DK incumbent's use genuinely meets the applicant's channel",
   "",
 ].join("\n");
@@ -94,7 +95,7 @@ const PLACEMENT_MD = [
 test("AD-2 A9: extractRulingsTail — heading→EOF verbatim; absent-safe; the cap cuts on a line boundary and says so", async () => {
   const { extractRulingsTail } = await import(`../pipeline.mjs?bust=${Math.random()}`);
   const tail = extractRulingsTail(PLACEMENT_MD);
-  assert.ok(tail.startsWith("### Coverage rulings & open questions"), "the tail starts at the rulings heading");
+  assert.ok(tail.startsWith(DIGEST_SENTENCES.coverageRulingsOpenQuestions), "the tail starts at the rulings heading");
   assert.match(tail, /material-gap: named band for transliteration-numeric absent/, "rulings travel verbatim");
   assert.match(tail, /### Open questions for the client \/ reviewer/, "the whole TAIL travels — open questions included");
   assert.ok(!tail.includes("Headline candidates"), "nothing above the heading rides along");

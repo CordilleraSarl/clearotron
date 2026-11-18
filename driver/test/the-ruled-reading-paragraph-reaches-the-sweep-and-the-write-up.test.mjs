@@ -17,10 +17,11 @@ import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { resolveSkillReads } from "../stages.mjs";
+import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = (rel) => readFileSync(join(DRIVER, rel), "utf8");
-const HEADING = "At every step: look at what you have before you work on it";
+const HEADING = UNIT_SENTENCES.everyStepLookWhatYou2;
 
 /** The paragraph as the register manual ships it: the text between its heading and the next heading. */
 function shippedParagraph() {
