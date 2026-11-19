@@ -213,6 +213,9 @@ context on the page supplies one.
 **Where there is no reader-facing word for the thing, describe the thing.** The description is the
 finished sentence, not a stand-in for the term you meant.
 
+Name the evidence you found, the places you searched, or the wording you compared. Use the terms the
+reader knows for those things.
+
 > ✗ The full variant band enumerated to zero.
 >
 > ✓ We searched every spelling of the name and found no live rights.
