@@ -31,7 +31,7 @@ const US = "/mark/us/6123457", GB = "/mark/gb/uk00004012873", AU = "/mark/au/221
 const FILINGS = [
   { recordId: US, mark: "SKARVELLE", owner: "Dunquarry Sound LLC", status: "Registered", classes: [9], territory: "US",
     officeLink: { office: "us", label: "US 6123457", href: "https://register.example/us/6123457", reason: null } },
-  { recordId: GB, mark: "SKARVELL AUDIO", owner: "Ardenvale Trading Ltd", status: "Pending", classes: [9, 11], territory: "GB" },
+  { recordId: GB, mark: "SKARVELL AUDIO", owner: "Halloway Trading Ltd", status: "Pending", classes: [9, 11], territory: "GB" },
   { recordId: AU, mark: "SKAR VELLE", owner: "Corrivane Pty Ltd", status: "Registered", classes: [15], territory: "AU" },
 ];
 const body = (uri, office, mark, feature, over = {}) => ({
@@ -46,7 +46,7 @@ const page = (opts = {}) => renderKnockoutHtml({
     factors: ["An observation."], counterFactors: ["What holds it."], mitigation: "", bullets: ["A bullet."], purpleNotes: [], findings: [] }],
 }, MANIFEST, { runId: "r1", overall: "Notable",
   registerRecords: { provider: "clarivate", marks: [{ name: "SKARVELLE", classes: [9], records: FILINGS.map((f) => ({ ...f })) }] }, ...opts });
-const RECORDS = new Map([[US, body(US, "us", "SKARVELLE", "WORD ONLY")], [GB, body(GB, "gb", "SKARVELL AUDIO", "WORD AND DESIGN", { owner: "Ardenvale Trading Ltd", ownerCountry: "GB" })]]);
+const RECORDS = new Map([[US, body(US, "us", "SKARVELLE", "WORD ONLY")], [GB, body(GB, "gb", "SKARVELL AUDIO", "WORD AND DESIGN", { owner: "Halloway Trading Ltd", ownerCountry: "GB" })]]);
 const rowOf = (html, mark) => html.match(new RegExp(`<tr class="rr-has">\\s*<td>${mark}[\\s\\S]*?</tr><tr class="rr-krow">([\\s\\S]*?)</tr>`));
 
 test("a filing the run saved a record of opens it in a closed drop-down in the row under its own", () => {
