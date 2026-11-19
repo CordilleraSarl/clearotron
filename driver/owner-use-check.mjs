@@ -50,6 +50,7 @@ import { createHash } from "node:crypto";
 
 import { promotableRecords } from "./publish/render-knockout.mjs";
 import { isResearchAnswer } from "./research-answers.mjs";   // a reply the formatter could not read is no answer
+import { RunCancelled } from "./cancel.mjs";
 
 /** The literal the clearance lane uses for an honest non-answer. Copied, not re-worded. */
 export const NO_RESULT = "perplexity_research — no result";
@@ -153,7 +154,10 @@ export async function runOwnerChecks({ owners, exec, runDir, ledgerPath = null, 
     const started = Date.now();
     let r;
     try { r = await exec(query, { mark: o.mark, preset }); }
-    catch (e) { r = { ok: false, cause: `executor threw: ${String(e?.message ?? e).slice(0, 200)}` }; }
+    catch (e) {
+      if (e instanceof RunCancelled) throw e;   // a stop is not an unanswered check: the run ends, and asks no more
+      r = { ok: false, cause: `executor threw: ${String(e?.message ?? e).slice(0, 200)}` };
+    }
 
     // THE SEARCHES BEHIND THE ANSWER ARE KEPT, answered or not, beside the answer's own name: the answer
     // alone cannot say which pages the lookup was handed.

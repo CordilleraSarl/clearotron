@@ -2739,6 +2739,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-stopped-knockout-starts-no-paid-call.test.mjs": {
+          "tests": 4,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
         "a-stopped-run-leaves-no-codex-home-behind.test.mjs": {
           "tests": 4,
           "asserts": 11,
@@ -8368,8 +8374,8 @@
           "todos": 0
         },
         "the-report-can-say-how-much-was-read.test.mjs": {
-          "tests": 26,
-          "asserts": 75,
+          "tests": 27,
+          "asserts": 79,
           "skips": 0,
           "todos": 0
         },
