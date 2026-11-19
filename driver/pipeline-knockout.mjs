@@ -328,19 +328,21 @@ async function correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, wor
   const keepRecord = (record) => { try { atomicWrite(paths(run.runDir).knockoutCorrections, JSON.stringify(record, null, 2) + "\n"); } catch (e) { note(`corrections record not kept (non-fatal): ${String(e?.message ?? e).slice(0, 160)}`); } };
   const failed = [];
   const thrown = [];
-  // THE CORRECTIONS RUN SIDE BY SIDE, as the groups they correct were rated. A RATE LIMIT STARTS NOTHING MORE: the corrections already
-  // running finish, and none is sent into the same limit.
+  // THE CORRECTIONS RUN SIDE BY SIDE, as the groups they correct were rated. A RATE LIMIT OR A STOP STARTS NOTHING MORE: the
+  // corrections already running finish, none is sent into the same limit, and a queued one asks for the stop before it is sent, as
+  // the assessment's groups do. A stop is the run's to handle, so it leaves here as itself, never as a failed correction.
   await runBatched(touched, KO_CONCURRENT_TURNS, async (c) => {
     try {
+      if (isCancelled(run.runDir)) throw new RunCancelled("knockout-correct", readCancel(run.runDir));
       await koStage("knockout-correct", ctx, { chunkNo: c, msgCtx: { work, chunkMarks: chunks[c], framework: ctx.framework, frameworkMethod: ctx.frameworkMethod ?? null } });
     } catch (e) {
       thrown.push({ c, e });
       failed.push({ chunk: c, reason: String(e?.message ?? e).slice(0, 200) });
     }
-  }, { stop: () => thrown.some(rateLimited) });
+  }, { stop: () => thrown.some((f) => rateLimited(f) || f.e instanceof RunCancelled) });
   failed.sort((a, b) => a.chunk - b.chunk);
-  const limited = thrown.find(rateLimited);
-  if (limited) throw limited.e;
+  const halted = thrown.find((f) => f.e instanceof RunCancelled) ?? thrown.find(rateLimited);
+  if (halted) throw halted.e;
   // Back to the record as it was rated, through the same gate, with every defect still open and why.
   const standDown = (outcome, detail) => {
     restoreChunkBases(run.runDir, touched);
@@ -395,7 +397,7 @@ async function correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, wor
     await koStage("knockout-review", ctx, { chunkNo: 1, msgCtx: { ...d.msgCtx, recheckTable: correctionsAppliedTable(outcomes),
       movedNames, comparisonComplete: outside.complete } });
   } catch (e) {
-    if (e instanceof StageFailure && (e.rateLimited || e.resetsAt)) throw e;
+    if (e instanceof RunCancelled || (e instanceof StageFailure && (e.rateLimited || e.resetsAt))) throw e;
     // NOBODY READ THE CORRECTED RECORD, so nothing here can call a defect answered.
     const reason = String(e?.message ?? e).slice(0, 200);
     keepRecord({ ...held, recheck: "failed", failure: reason, open: asOpen(work.defects, "not-rechecked", "recheck-failed") });

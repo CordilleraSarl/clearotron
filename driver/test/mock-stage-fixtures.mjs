@@ -39,6 +39,7 @@ import { recordKnockoutFrame } from "../knockout-frame-record.mjs";
 import { recordKnockoutReview } from "../knockout-review-record.mjs";
 import { recordKnockoutRegisterRead } from "../knockout-register-record.mjs";
 import { recordKnockoutCorrection } from "../knockout-correction-record.mjs";
+import { requestCancel } from "../cancel.mjs";
 import { addedClassQuestions, knockoutAxis, knockoutBandBlocks, knockoutBandPath, knockoutProposals, questionsOwed } from "../knockout-register-read.mjs";
 import { fixtureRecordsDir } from "../register-fixture-marker.mjs";
 import { fixtureFileName } from "../register-records.mjs";
@@ -2810,6 +2811,10 @@ export function applyStageWrites(msg, argv) {
     const boundChunk = recordAxisFromWiring(argv);
     if (boundChunk === null) return "mock knockout-correct: no chunk ordinal bound in the engine wiring";
     recordMockToolCall(runDir, "record_knockout_correction", "recording-knockout-correct");
+    // MOCK_KO_CORRECT_CANCEL_AT: the correction of that chunk asks the run to stop, as a person would while it runs.
+    // MOCK_KO_CORRECT_HOLD_MS holds every other correction, so a group is still queued when the stop lands.
+    if (process.env.MOCK_KO_CORRECT_CANCEL_AT === String(boundChunk)) requestCancel(runDir, { via: "mock", by: "a test" });
+    else if (process.env.MOCK_KO_CORRECT_HOLD_MS) Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, Number(process.env.MOCK_KO_CORRECT_HOLD_MS));
     const work = JSON.parse(readFileSync(driverDir(runDir, "knockout-correction-work.json"), "utf8"));
     const held = JSON.parse(readFileSync(join(runDir, `knockout-assess-${Number(boundChunk)}.json`), "utf8"));
     const defects = work.defects.filter((d) => d.chunk === Number(boundChunk));

@@ -37,7 +37,7 @@ const { KO_ASSESS_CHUNK, KO_STAGES, koChunks, koPaths } = await import("../stage
 const { answeredGrid } = await import("./knockout-grid-fixture.mjs");
 
 const NAMES = ["QUILLBRAE", "MOSSVALE", "LANTERNWICK", "ODRAVEL", "NOVAPULSE", "IRONWHISK", "CLUVENDRA", "BRIMSTARE", "TALLOWMERE", "PEBBLEWAY"];
-const MOCK_KEYS = ["MOCK_KO_ASSESS_HOLD_MS", "MOCK_KO_ASSESS_LOG", "MOCK_KO_GROUP_CONTEXT", "MOCK_KO_LATER_CAVEAT", "MOCK_KO_FIRST_FRAMEWORK", "MOCK_KO_LATER_FRAMEWORK", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_RATELIMIT", "MOCK_CLAUDE_RATELIMIT_MATCH"];
+const MOCK_KEYS = ["MOCK_KO_ASSESS_HOLD_MS", "MOCK_KO_ASSESS_LOG", "MOCK_KO_GROUP_CONTEXT", "MOCK_KO_LATER_CAVEAT", "MOCK_KO_FIRST_FRAMEWORK", "MOCK_KO_LATER_FRAMEWORK", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_RATELIMIT", "MOCK_CLAUDE_RATELIMIT_MATCH", "MOCK_KO_MATERIAL", "MOCK_KO_CORRECTED_BAND", "MOCK_KO_CORRECT_CANCEL_AT", "MOCK_KO_CORRECT_HOLD_MS"];
 
 /** One knockout of these names through the lane, on the mock engine. What the run left, whether or not it delivered. */
 async function knockout(codename, names, env = {}, executors = {}) {
@@ -159,4 +159,20 @@ test("the batch's framework is the frozen one, and a group that echoes another s
   assert.equal(fine.res?.ok, true, `the knockout did not deliver: ${fine.thrown?.message ?? JSON.stringify(fine.res)}`);
   const frozenOnDisk = fine.json(driverDir(fine.dir, "framework.json"));
   assert.deepEqual(fine.findings.framework, { source: frozenOnDisk.framework_key, ladder: frozenOnDisk.bands.map((b) => b.label) }, "the composed framework is the frozen one");
+});
+
+test("a stop asked for while the corrections run starts no queued correction, and reaches the run as a stop, not a failed correction", async () => {
+  // One defect in each of the four groups, so four corrections and one of them queued behind the first three. The first asks the
+  // run to stop while the other two are still running.
+  const defects = [0, 3, 6, 9].map((i) => ({ kind: "contradiction", mark: NAMES[i], finding: 1, problem: "The first conflict is rated below what its own evidence shows." }));
+  const r = await knockout("stopped-in-correction", NAMES, { MOCK_KO_MATERIAL: JSON.stringify(defects), MOCK_KO_CORRECTED_BAND: "High",
+    MOCK_KO_CORRECT_CANCEL_AT: "0", MOCK_KO_CORRECT_HOLD_MS: "1500" });
+  const sent = r.journal.filter((e) => /^knockout-correct#/.test(String(e.stage)) && e.event === "stage").map((e) => e.stage).sort();
+  assert.deepEqual(sent, ["knockout-correct#0", "knockout-correct#1", "knockout-correct#2"], "the queued correction was sent after the stop");
+  assert.equal(r.thrown, null, `the lane threw: ${r.thrown?.message}`);
+  assert.equal(r.res?.cancelled, true, `the stop did not reach the run as a stop: ${JSON.stringify(r.res)}`);
+  assert.equal(r.res?.failedStage, "knockout-correct", "the run stopped somewhere other than the corrections");
+  const work = r.json(driverDir(r.dir, "knockout-correction-work.json"));
+  assert.equal(work.stoodDown, undefined, "the stop was recorded as a failed correction");
+  assert.equal(r.journal.filter((e) => e.stage === "knockout-review" && e.event === "stage").length, 1, "the corrected record was looked at again after the stop");
 });
