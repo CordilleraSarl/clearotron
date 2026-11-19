@@ -604,7 +604,12 @@ export const REPORT_PAGE = Object.freeze({
     reputation: 'Reputation and meaning',
     checks: (n) => `${n} checks`,
     localScript: 'Local-script spellings',
-    searched: 'Searched',
+    // The scripts by name: what was searched lists those a search completed in, and Left open those planned with none
+    // completed (owner, 2026-11-19). The names are the scripts' Unicode names, listed in this table's order, which gives
+    // the approved examples their own order: "Katakana and Hangul", "Greek or Cyrillic".
+    scriptName: Object.freeze({ Hani: 'Han', Hira: 'Hiragana', Kana: 'Katakana', Hang: 'Hangul', Grek: 'Greek', Cyrl: 'Cyrillic', Arab: 'Arabic', Hebr: 'Hebrew', Thai: 'Thai', Deva: 'Devanagari' }),
+    scriptsSearched: (names) => new Intl.ListFormat('en-GB', { type: 'conjunction' }).format(names),
+    scriptsNotCompleted: (names) => `No search in ${new Intl.ListFormat('en-GB', { type: 'disjunction' }).format(names)} script was completed.`,
     notSearched: 'Not searched',
     included: 'Included',
     notPartOfSearch: 'Not part of this search',
