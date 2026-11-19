@@ -93,6 +93,8 @@ export function accessSentence(input: {
   readonly organisations: readonly string[]
   /** Companies picked on their own, each with the name of the organisation it sits in. */
   readonly companies: readonly { readonly name: string; readonly organisation: string }[]
+  /** What this installation calls itself, for "everything on …". */
+  readonly installation: string
 }): string {
   // The address typed, or "this person" before one is — capitalised only where it opens a sentence.
   const typed = input.who.trim()
@@ -104,7 +106,7 @@ export function accessSentence(input: {
         : 'can read every report there'
 
   const places = input.everything
-    ? 'everything on this Clearotron, including organisations added later'
+    ? `everything on ${input.installation}, including organisations added later`
     : input.organisations.length || input.companies.length
       ? `everything ${joinWords([...input.organisations, ...input.companies.map((c) => c.name)].map((p) => `under ${p}`))}`
       : null

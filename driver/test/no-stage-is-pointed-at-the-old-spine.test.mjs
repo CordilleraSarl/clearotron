@@ -16,6 +16,8 @@ import { join, dirname, resolve, relative } from "node:path";
 
 import { DRIVER, SKILLS, everyModelStageDispatch } from "./model-stage-dispatches.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
+import { COMMON_LAW_SENTENCES } from "./ruled-sentences-common-law.mjs";
+import { PHASE2_SENTENCES } from "./ruled-sentences-phase2-execution.mjs";
 
 const SPINE = resolve(DRIVER, "..", "docs", "architecture", "retired-manuals", "clearance-search-spine.md");
 const flat = (rel) => readFileSync(join(SKILLS, rel), "utf8").replace(/\s+/g, " ");
@@ -46,11 +48,10 @@ test("no chain of links from a file any stage declares reaches the spine", () =>
 
 test("the unit brief names the active provider and no sub-budget, and the web manual states the approval itself", () => {
   const phase2 = flat("clearance-search/phase2-execution.md");
-  assert.ok(phase2.includes("the **active register provider** and its output path (`register-units/<axis>.md`)."));
+  assert.ok(phase2.includes(PHASE2_SENTENCES.theActiveRegisterProviderAnd));
   assert.ok(!phase2.includes("the sub-budget"), "phase two still hands a unit a sub-budget");
   const web = flat("clearance-common-law/SKILL.md");
-  assert.ok(web.includes("This workflow's searches are pre-approved at workflow trigger time, when the requesting lawyer or a staff lawyer "
-    + "forwards the request email."));
+  assert.ok(web.includes(COMMON_LAW_SENTENCES.thisWorkflowSearchesArePre));
 });
 
 test("the spine says no stage reads it, and its lines follow the ruled method", () => {

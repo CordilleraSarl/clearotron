@@ -265,10 +265,13 @@ async function main(argv) {
 export const SCENARIO_GAPS = ["real-shaped data: every scenario runs on the mocks' invented fixtures"];
 
 // Neutral area labels. Which session or person holds an area is kept outside the repository.
+// The Knockout lane, the queue worker and the driver's configuration are the pipeline; the register search, the
+// tools a seat calls and the records they accept are the engine; what a record must hold and the checks before
+// delivery are the record. A module none of these name reads "unassigned" and is counted, never guessed.
 const OWNERS = [
-  [/^driver\/(pipeline|stages|steps\/|run-(outcome|delivered|failed|shell)\.mjs)/, "pipeline"],
-  [/^driver\/(skills\/|engine\/|gateway|repair-composers)|^providers\//, "engine and instructions"],
-  [/^driver\/(publish\/|run-record|progress)|^shared\//, "record and report"],
+  [/^driver\/(pipeline|stages|steps\/|run-(outcome|delivered|failed|shell)\.mjs|knockout-|runner\.mjs|driver\.config\.mjs)/, "pipeline"],
+  [/^driver\/(skills\/|engine\/|gateway|repair-composers|register-|registry-|(?!run-record)[a-z0-9-]+-(tool|record)\.mjs)|^providers\//, "engine and instructions"],
+  [/^driver\/(publish\/|run-record|progress|findings-model|verify\.mjs|predelivery-)|^shared\//, "record and report"],
   [/^driver\/(portal-|portal-routes\/)/, "portal"],
   [/^(\.github\/|scripts\/|package(-lock)?\.json$|\.changeset\/|bin\/)/, "release"],
 ];

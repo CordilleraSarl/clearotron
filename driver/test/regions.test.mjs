@@ -26,7 +26,7 @@ test("the common-law sentinel is C/L — never a real ISO code", () => {
 test("ISO-collision guard: every two-letter key carries a country/office meaning, never a pipeline concept", () => {
   // Non-ISO keys that legitimately carry a non-country meaning. Everything else that LOOKS like an
   // ISO alpha-2 code must not be repurposed (the CL=Common-law bug class).
-  const SANCTIONED_NON_ISO = new Set(["C/L", "EU", "WO", "BX", "UK"]);   // EU/WO/BX/UK: offices, not ISO countries
+  const SANCTIONED_NON_ISO = new Set(["C/L", "EU", "WO", "BX", "UK", "XS"]);   // EU/WO/BX/UK: offices, not ISO countries; XS: the US state registers
   const CONCEPT_WORDS = /common-law|register|marketplace|pending|unknown|internal/i;
   for (const [code, name] of Object.entries(REGION_NAMES)) {
     if (SANCTIONED_NON_ISO.has(code)) continue;
@@ -50,4 +50,24 @@ test("doc-55 B: Madrid international 'INT' normalizes to WO; 'IR' stays Iran (IS
   assert.equal(normRegion("int"), "WO", "case-insensitive");
   assert.equal(regionName("WO"), "WIPO (Madrid)", "WO names the international register");
   assert.notEqual(normRegion("IR"), "WO", "IR is ISO-3166 Iran, NOT 'international registration' — never collapse it into WO");
+});
+
+// A COUNTRY THE TABLE LACKS IS NAMED, NOT PRINTED AS A CODE. The table wins for every entry it has; a real two-letter
+// country code it lacks takes the runtime's region name; anything that is not a country keeps its code, and nothing
+// throws. The runtime names come from ICU data; these three have read the same since CLDR 31 (2017), and the
+// supported Node floor ships a later CLDR.
+test("a country code the table lacks is named by the runtime; the table's own names never move", () => {
+  assert.deepEqual(["AR", "CO", "CZ"].map(regionName), ["Argentina", "Colombia", "Czechia"]);
+  for (const [code, name] of Object.entries(REGION_NAMES)) assert.equal(regionName(code), name, `the table's name for ${code} moved`);
+  assert.equal(regionName("TR"), "Turkey", "the table pins its spelling over the runtime's");
+  assert.equal(regionName("HK"), "Hong Kong", "the table pins its spelling over the runtime's");
+});
+
+test("no placeholder reaches a page: unknown, private-use, numeric and malformed codes keep their code and never throw", () => {
+  for (const code of ["ZZ", "AA", "QM", "QZ", "XA", "XX", "EM", "001", "419", "C/L-x", "INT", "EUTM", "", "a", "ar", "A1", "ABC"]) {
+    let out;
+    assert.doesNotThrow(() => { out = regionName(code); }, `regionName(${JSON.stringify(code)}) threw`);
+    assert.equal(out, code, `${JSON.stringify(code)} took a name it should not: ${out}`);
+  }
+  for (const bad of [undefined, null]) assert.doesNotThrow(() => regionName(bad));
 });

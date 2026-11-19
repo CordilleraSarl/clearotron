@@ -127,9 +127,11 @@ jobs:
     # the same price and a quarter of the wait. Nothing here needs a self-hosted runner, and a public
     # repository should not have one — a fork's pull request would run its own code on it.
     #
-    # WHAT MAKES A SHARD SAFE is `scripts/test-full.mjs --shard i/n`: it slices the SORTED file list by
-    # index, so the shards are disjoint and exhaustive as arithmetic rather than as a promise. The two
-    # corpus-guard checks moved to `suites-complete` below, for the reason written there.
+    # WHAT MAKES A SHARD SAFE is `scripts/test-full.mjs --shard i/n`: it deals every file exactly once,
+    # longest first to the shard with the least measured time so far (`scripts/test-durations.json`), so
+    # the shards are disjoint and exhaustive by construction rather than as a promise, and a file the
+    # table does not name is still dealt, at the median. The two corpus-guard checks moved to
+    # `suites-complete` below, for the reason written there.
     name: The offline suites
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -181,8 +183,14 @@ jobs:
       # `tee suite.log` in the checkout, the file exists WHILE the suite runs, and this suite has guards
       # that watch the tree for exactly that: ten arms failed with `~ suite.log — changed by the run`.
       # A check that makes the thing it is checking fail is not a check.
+      # EACH FILE'S TEST TIME IS KEPT BESIDE THE LOG (`CT_DURATIONS_DIR`, read by scripts/test-run.mjs), so the
+      # table this suite's shards are dealt from can be rebuilt from a green run, measured on these runners:
+      # `node scripts/measure-test-durations.mjs --run <id> --write`. Set on this step only, so the provider
+      # corpus's second run below does not measure the same files twice.
       - name: This shard of the offline suite
         shell: bash
+        env:
+          CT_DURATIONS_DIR: ${{ runner.temp }}/durations
         run: |
           set -o pipefail
           log="${RUNNER_TEMP:-/tmp}/suite.log"
@@ -205,7 +213,9 @@ jobs:
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: suite-log-${{ matrix.shard }}
-          path: ${{ runner.temp }}/suite.log
+          path: |
+            ${{ runner.temp }}/suite.log
+            ${{ runner.temp }}/durations/
           retention-days: 3
 
       # DELIBERATELY A SECOND RUN OF A CORPUS THE STEP ABOVE ALREADY COVERED, and that is the point.

@@ -29,6 +29,7 @@ import { acceptKnockoutRegister, recordKnockoutRegisterRead, settledKnockoutRead
 import { readingDoc } from "./knockout-reading-fixture.mjs";
 import { KO_STAGES, koPaths } from "../stages-knockout.mjs";
 import { beginAnswerMemory } from "../../providers/_shared/answer-memory.mjs";
+import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
 
 const CLARIVATE = capabilitiesFor("clarivate");
 const NAME = "QUILLBRAE";
@@ -720,9 +721,9 @@ test("the manual carries the clearance's reading rule word for word, narrows the
   const read = (rel) => readFileSync(fileURLToPath(new URL(`../skills/${rel}`, import.meta.url)), "utf8");
   const manual = read("knockout-register-read/SKILL.md");
   const unit = read("clearance-register/unit.md");
-  for (const heading of ["### At every step: look at what you have before you work on it", "### Read the identical mark first. Look at the count before you read anything"])
+  for (const heading of [UNIT_SENTENCES.everyStepLookWhatYou, UNIT_SENTENCES.readTheIdenticalMarkFirst])
     assert.ok(manual.includes(heading) && unit.includes(heading), heading);
-  const step = (text) => text.slice(text.indexOf("3. Still a crowd?"), text.indexOf("A list you have read answers"));
+  const step = (text) => text.slice(text.indexOf("3. Still a crowd?"), text.indexOf(UNIT_SENTENCES.listYouHaveReadAnswers));
   assert.ok(step(manual).length > 0);
   assert.equal(step(manual), step(unit), "the market steps drifted from the clearance's");
   assert.match(manual, /Use the provider's supported OR form\. Read that list\.\n2\. Still a crowd\? Split the goods question by its dominant goods terms/);

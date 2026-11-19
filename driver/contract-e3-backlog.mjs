@@ -519,7 +519,7 @@ export const E3_BACKLOG = [
     where: "driver/stages.mjs:3121",
     surface: "stage-message",
     evidence: "use_check = {\"source\",\"quality\",\"question\"}: … quality: OPTIONAL, EXACTLY one of owner-site / independent / register-mirror … own_rights = {\"source\"}",
-    reparsedBy: "driver/verify.mjs checkFindingsSibling (finding_use_check_missing); driver/own-rights.mjs:19-22",
+    reparsedBy: "driver/verify.mjs checkFindingsSibling (finding_use_check_missing, finding_own_rights_source_missing)",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   {

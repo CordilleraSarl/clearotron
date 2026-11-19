@@ -1602,7 +1602,7 @@ if (!people || people.fatal) {
   ok(people.paragraphs.includes('You can only give access to what you have access to yourself'),
     `Give access does not say it offers only what the giver holds: ${JSON.stringify(people.paragraphs)}`)
   const tree = people.tree ?? []
-  ok(JSON.stringify(tree[0]) === JSON.stringify(['Everything on this Clearotron', 'every organisation and company, including ones added later']),
+  ok(JSON.stringify(tree[0]) === JSON.stringify(['Everything on Clearotron', 'every organisation and company, including ones added later']),
     `the root row does not say it reaches what is added later: ${JSON.stringify(tree[0])}`)
   ok(tree.some((r) => r[0] === 'Apmxc Group' && r[1] === 'every company in it, including ones added later'),
     `an organisation row does not say it reaches companies added later: ${JSON.stringify(tree)}`)

@@ -19,7 +19,7 @@
 import { test, after } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync, existsSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { join, dirname, sep } from "node:path";
 import { tmpdir } from "node:os";
 
 import { STAGES, composeFollowup, paths, resolveSkillReads, REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK } from "../stages.mjs";
@@ -110,10 +110,11 @@ test("a framework that lives only in the instruction overlay resolves inside a f
       const { args, input } = buildClaudeArgs({ message, model: "opus", thinking: "low", cwd: root, skillsDir: overlay, skillsGrantRoots: roots, resolveSkill: resolve, runDir: join(root, "run") });
       const granted = args.reduce((acc, a, i) => (a === "--add-dir" ? [...acc, args[i + 1]] : acc), []);
       assert.ok(input.includes(fw), `claude, ${label}: the framework reference did not become the overlay's file`);
-      assert.ok(granted.some((r) => fw.startsWith(r + "/")), `claude, ${label}: no granted folder holds ${fw}`);
+      // The engines are handed the platform's own paths, so a folder holds the file under the platform's separator.
+      assert.ok(granted.some((r) => fw.startsWith(r + sep)), `claude, ${label}: no granted folder holds ${fw}`);
       // Codex's sandbox reads the same roots (openai-agent.mjs, readRoots), so the same file is in reach.
       assert.ok(codexRewrite(message, overlay, resolve).includes(fw), `codex, ${label}: the framework reference did not become the overlay's file`);
-      assert.ok(roots.some((r) => fw.startsWith(r + "/")));
+      assert.ok(roots.some((r) => fw.startsWith(r + sep)));
     }
   } finally { rmSync(root, { recursive: true, force: true }); }
 });

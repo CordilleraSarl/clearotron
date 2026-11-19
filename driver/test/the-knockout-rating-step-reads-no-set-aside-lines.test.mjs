@@ -26,12 +26,14 @@ import { fileURLToPath } from "node:url";
 import { ensureDriverDir } from "../../shared/driver-dir.mjs";
 import { KO_STAGES, koPaths } from "../stages-knockout.mjs";
 import { kebab } from "../search-policy.mjs";
+import { ASSESS_SENTENCES } from "./ruled-sentences-knockout-assess.mjs";
+import { INQUIRY_SENTENCES } from "./ruled-sentences-placement-inquiry.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 // Sentence 6 as the crowded-field method words it: its last sentence ("A record you do not carry is given a
 // ground; no record leaves without one") became the lawyer's own, because a listed owner's fate is now
 // written at the level she writes it, the group.
-const SENTENCE_6 = "Judge an owner's records as a set. Write the position from the record in the client's market and class, quoting its goods. Carry forward only what a lawyer would raise with the client. Write down what you set aside and why.";
+const SENTENCE_6 = INQUIRY_SENTENCES.judgeOwnerRecordsSetWrite;
 const PAYLOAD = "## Findings\n- **Near** — https://apps.example.org/app/7 — a game.\n## Sources\n- https://dict.example/word/near\n";
 
 function runWithResearch() {
@@ -65,7 +67,7 @@ test("the knockout's rating instructions carry no page list and no set-aside rul
 
 test("sentence 6 stays in the clearance's picking step; the knockout manual records a set-aside without it", () => {
   const md = readFileSync(join(DRIVER, "skills", "knockout-assess", "SKILL.md"), "utf8");
-  assert.ok(md.includes("## Per mark — the mandatory sequence"), "guard: the knockout manual was read");
+  assert.ok(md.includes(ASSESS_SENTENCES.perMarkTheMandatorySequence), "guard: the knockout manual was read");
   assert.equal(md.includes(SENTENCE_6), false, "sentence 6 is out of the knockout manual");
   // AND THE PAGE LIST, on this surface too. The rater is handed this manual in its dispatch —
   // `stages-knockout.mjs` names it in the `reads([...])` line of the rating step's own message — so the
@@ -75,23 +77,23 @@ test("sentence 6 stays in the clearance's picking step; the knockout manual reco
   // below is a positive `includes`, and a positive cannot be broken by ADDING text, so a per-page
   // accounting paragraph could be added beside the section and pass all of them.
   assert.doesNotMatch(md, /EACH MARK'S PAGES/, "the page list stays out of the manual too, not only out of the dispatch");
-  assert.ok(md.includes("Omit these fields when their information does not apply."), "the filing lines say when to omit them");
+  assert.ok(md.includes(ASSESS_SENTENCES.omitTheseFieldsWhenTheir), "the filing lines say when to omit them");
   const placement = readFileSync(join(DRIVER, "skills", "placement-inquiry", "SKILL.md"), "utf8");
   assert.equal(placement.split(SENTENCE_6).length - 1, 1, "and it stays, once, in the clearance's picking step");
 
   // AND THE SET-ASIDE THE LATER RULING ADDED, with the two sentences that keep it a record rather than a
   // rating rule. Asserted by their text, not by the field's name: a section that dropped either sentence
   // would still mention `setAside` and would be the instruction the 2026-09-25 ruling took out.
-  assert.ok(md.includes("## Saying what you put down (`setAside`)"), "the set-aside section is in the manual");
-  assert.ok(md.includes("**Written after your rating is written, and it changes no band.**"),
+  assert.ok(md.includes(ASSESS_SENTENCES.sayingWhatYouPutDown), "the set-aside section is in the manual");
+  assert.ok(md.includes(ASSESS_SENTENCES.writtenAfterYourRatingWritten),
     "the section must say, first, that it comes after the rating and moves no band — the band drop of 2026-09-25 is what that sentence exists to prevent");
   // READ WITH ITS LINE BREAKS FOLDED. The manual is hard-wrapped prose, so a sentence long enough to
   // matter spans two lines and an exact-string read of it fails on the newline rather than on the text.
   const folded = md.replace(/\s+/g, " ");
-  assert.ok(folded.includes("the rating you have already reached stands exactly as it is, and nothing in this section asks you to raise or lower it"),
+  assert.ok(folded.includes(ASSESS_SENTENCES.theRatingYouHaveAlready),
     "…and say it again in its own words, because a rater reads the paragraph and not the heading");
   // The grouped form, not a row per page: the 79-grounds audit the owner refused is what this forbids.
-  assert.ok(md.includes("**Where many results share one ground, write it once**"),
+  assert.ok(md.includes(ASSESS_SENTENCES.whereManyResultsShareOne),
     "a row each for every returned result is the page-by-page audit the owner refused");
 });
 
@@ -113,7 +115,10 @@ test("the knockout's workbook prints the set-aside row, and the knockout still k
   const book = readFileSync(join(DRIVER, "publish", "knockout.mjs"), "utf8");
   assert.ok(book.includes("'Working Notes'"), "guard: the knockout workbook builder was read");
   // The label is the clearance's own, so no new sentence reaches a reader; the ground is the rater's words.
-  assert.match(book, /'Search Term': `Set aside: \$\{url\}`/, "set-aside reasons live in the audit workbook, under the label a clearance already ships");
+  // The row's words are in the sentence catalogue, which the builder reads them from.
+  const strings = readFileSync(join(DRIVER, "publish", "strings.mjs"), "utf8");
+  assert.match(book, /'Search Term': KW\.setAside\(url\)/, "set-aside reasons live in the audit workbook, under the label a clearance already ships");
+  assert.match(strings, /setAside: \(url\) => `Set aside: \$\{url\}`/, "the set-aside row's label changed");
   // AND NO PAGE TRACE, which is the half that did not change: a ground is owed for a candidate the notes
   // marked, never for every page read, so nothing here counts or files the knockout's pages.
   const paths = readFileSync(join(DRIVER, "stages-knockout.mjs"), "utf8");

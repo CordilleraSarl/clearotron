@@ -70,5 +70,20 @@ test('the accessible name of the lockup is the wordmark, not the old brand', () 
   for (const l of labels) {
     assert.ok(!/Cordillera/.test(l), `an accessible name still announces the old brand: ${l}`)
   }
-  assert.match(shell, /aria-label=\{`\$\{WORDMARK\}/, 'and it reads the wordmark rather than repeating it')
+  assert.match(shell, /aria-label=\{`\$\{wordmarkFor\(me\.brandName\)\}/, 'and it reads the wordmark rather than repeating it')
+})
+
+test('the wordmark is the installation\'s name when it set one, and the lowercase product wordmark when it did not', () => {
+  // Read as source, as the rest of this file reads the lockup: a .tsx module does not load under the test runner.
+  const logo = readFileSync(fileURLToPath(new URL('../src/components/Logo.tsx', import.meta.url)), 'utf8')
+  assert.match(logo, /export const WORDMARK = 'clearotron'/, 'an installation that names nothing keeps the product wordmark, lowercase')
+  assert.match(logo, /export const wordmarkFor = \(brandName: string\): string => \(brandName === PRODUCT_NAME \? WORDMARK : brandName\)/,
+    'a set name is shown as the deployment wrote it, and only the product\'s own name falls back to the wordmark')
+  assert.match(logo, /\{wordmarkFor\(brandName\)\}/, 'the lockup does not draw the name it is given')
+  // The tab: index.html keeps the product's title, and the shell replaces it only for a set name.
+  const html = readFileSync(fileURLToPath(new URL('../index.html', import.meta.url)), 'utf8')
+  assert.match(html, /<title>Clearotron · Trademark clearance<\/title>/)
+  const shell = readFileSync(fileURLToPath(new URL('../src/shell/AppShell.tsx', import.meta.url)), 'utf8')
+  assert.match(shell, /if \(brandName !== PRODUCT_NAME\) document\.title = `\$\{brandName\} · Trademark clearance`/)
+  assert.match(shell, /<Logo markOnly=\{collapsed && !mobile\} brandName=\{me\.brandName\} \/>/, 'the logo is not given the name')
 })

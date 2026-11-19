@@ -48,7 +48,7 @@
 import { spawn } from "node:child_process";
 import { mkdtempSync, mkdirSync, rmSync, readdirSync, statSync, existsSync, readFileSync, symlinkSync, copyFileSync, chmodSync, writeFileSync, realpathSync } from "node:fs";
 import { delimiter, dirname, join, parse as parsePath, resolve, sep } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { tmpdir, homedir } from "node:os";
 import { snapshotRepo, repoWrites, explainRepoWrites, snapshotHome, explainHomeWrites } from "./repo-writes.mjs";
 
@@ -211,6 +211,23 @@ if (process.env.CT_COVERAGE_DIR && argv.includes("--test")) {
     "--test-reporter=tap", "--test-reporter-destination=stdout",
     "--test-reporter=lcov", `--test-reporter-destination=${join(dir, name)}`);
   console.error(`[test-run] coverage on — ${join(dir, name)}`);
+}
+
+// ── — EACH FILE'S DURATION ON REQUEST, SO THE SHARDS CAN BE DEALT BY IT ───────────────────────────
+//
+// `CT_DURATIONS_DIR` adds `scripts/test-durations-reporter.mjs`, which writes one JSON line per test file with its
+// summed test time; `scripts/measure-test-durations.mjs` builds the shard table from what a CI run kept. Additive for
+// the reason coverage is: naming a reporter silences the default TAP, so TAP is named too, once. One file per
+// invocation, by directory and process, because a shard runs several corpora through this wrapper.
+if (process.env.CT_DURATIONS_DIR && argv.includes("--test")) {
+  const dir = process.env.CT_DURATIONS_DIR;
+  mkdirSync(dir, { recursive: true });
+  const name = `${parsePath(process.cwd()).base || "root"}-${process.pid}.jsonl`;
+  // A file URL, not a path: on Windows a drive letter reads as a URL scheme.
+  const reporter = pathToFileURL(join(dirname(fileURLToPath(import.meta.url)), "test-durations-reporter.mjs")).href;
+  const tap = argv.includes("--test-reporter=tap") ? [] : ["--test-reporter=tap", "--test-reporter-destination=stdout"];
+  argv.splice(argv.indexOf("--test") + 1, 0, ...tap,
+    `--test-reporter=${reporter}`, `--test-reporter-destination=${join(dir, name)}`);
 }
 
 // ── THE TEST RUN DECLARES ITS REGISTER PROVIDER ───────────────────────────────────────────

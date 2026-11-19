@@ -127,7 +127,7 @@ test("the corrective pass is told where a rewrite of such a line goes, in both o
     assert.match(text, /a coverage row's "note", an action's "text", or the mark assessment's/,
       `${sample.name}: the pass is not told that such a line is correctable at all`);
     assert.match(text, /inside the call's `findings` object beside the "corrections" marker: send the complete `coverage` array/, sample.name);
-    assert.match(text, /A row left out of the array is a row deleted/, `${sample.name}: nothing warns that a partial array deletes`);
+    assert.match(text, /A row omitted from an array is deleted/, `${sample.name}: nothing warns that a partial array deletes`);
     // A wording change and a factual correction are two cases, and the step says which rule each follows: without
     // that the seat reads the step and the flagged-coverage rule as a conflict and does nothing.
     assert.match(text, /A wording-only change to a coverage note preserves its area, state and supported facts\. If the flag identifies a factual error, correct that error and any corresponding coverage fields under the flagged-coverage rule above/,

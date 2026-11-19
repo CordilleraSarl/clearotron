@@ -22,6 +22,7 @@ import { setAsideKeysOf, setAsideGrounds, buildSelectionIndex, parsePlacementFor
 import { unionPlacementForm } from "../placement-union.mjs";
 import { reconcileFloorDuty } from "../floor-duty.mjs";
 import { goodsWordCounter, goodsWordsMatched } from "../record-goods.mjs";
+import { INQUIRY_SENTENCES } from "./ruled-sentences-placement-inquiry.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 const LONG = "printers, printer cartridges, ink for printers, toner for photocopiers and laser printers, paper feeders for printers, "
@@ -80,8 +81,8 @@ test("a crowded (b) says its row covers a floor once read, and each floor line s
 
 test("the placement manual and the group contract carry the five sentences", () => {
   const manual = readFileSync(join(DRIVER, "skills", "placement-inquiry", "SKILL.md"), "utf8").replace(/\s+/g, " ");
-  assert.ok(manual.includes("it covers a floor only in such a crowd in (b), and only once you have read the floor's line."));
-  assert.ok(manual.includes("only a crowd's row of a thousand records or more in (b) covers a floor."));
+  assert.ok(manual.includes(INQUIRY_SENTENCES.coversFloorOnlySuchCrowd));
+  assert.ok(manual.includes(INQUIRY_SENTENCES.onlyCrowdRowThousandRecords));
   assert.ok(SET_ASIDE_GROUP_CONTRACT.when.includes("It covers a floor only in such a crowd in (b), and only once you have read the floor's line; a floor among the lines the goods test could not place, like any other floor, is placed or set aside by name."));
   assert.ok(SET_ASIDE_GROUP_CONTRACT.unresolved.includes("or a group with lines you have not read (its first page, in a crowd outside (a), and in (b) every floor),"));
 });

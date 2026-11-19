@@ -421,13 +421,13 @@ test("Full detail: a multi-URL cite renders one link per URL, never one glued de
 test("Full detail renders own_rights.source as TEXT when it is an honest-negative", () => {
   const f = [{ ...FINDINGS[0], own_rights: { source: "no applicant-owned registrations in the searched register material" } }];
   const html = renderHtml(parsedOf(REPORT), f, COVERAGE, {});
-  assert.match(html, /<li><b>Own-portfolio sweep\.<\/b> no applicant-owned registrations in the searched register material<\/li>/);
+  assert.match(html, /<li><b>Search of the client's own marks\.<\/b> no applicant-owned registrations in the searched register material<\/li>/);
 });
 
 test("Full detail OMITS the use_check / own_rights cites when the fields are absent", () => {
   const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, {});   // FINDINGS carry neither field
   assert.doesNotMatch(html, /Use checked\./);
-  assert.doesNotMatch(html, /Own-portfolio sweep\./);
+  assert.doesNotMatch(html, /Search of the client's own marks\./);
 });
 
 // ── Instance #6: registry identifiers RENDERED FROM the fetched _records/ (recordsByUri), not model prose ──
@@ -1075,7 +1075,12 @@ test("spec-48 A4: meter captions carry the joined four-tuple; without _status th
   // D4 — the four-tuple still renders on every meter, in its OWN labelled position. The fused
   // `<fact> · <status>` caption is gone: a client read "Confirmed · inferred" as one caption, and
   // nothing on the page said the separator meant "and we know that because".
-  assert.match(html, /<div class="mv">Medium<\/div><div class="mev">Evidence: verified<\/div>/, "a receipt-joined verified meter says so");
+  // Similarity prints no evidence word, even a receipt-joined one (owner, 2026-11-18); a verified register meter
+  // still says so.
+  assert.match(html, /<div class="ml">Similarity<\/div><div class="pips [^"]*"><i><\/i><i><\/i><i><\/i><\/div><div class="mv">Medium<\/div><\/div>/, "Similarity printed an evidence word");
+  const verified = renderHtml(parsedOf(REPORT), [{ ...FINDINGS[0], meters: { ...joined[0].meters,
+    goods_proximity: { token: "high", basis: "verified-from-record", _status: "confirmed" } } }], COVERAGE, {});
+  assert.match(verified, /<div class="mv">High<\/div><div class="mev">Evidence: verified<\/div>/, "a receipt-joined verified meter says so");
   assert.match(html, /<div class="mv">High<\/div><div class="mev">Evidence: not yet verified<\/div>/, "an unjoined verified meter is presented as not-yet-verified");
   // — the use meter prints NO verification word (ruling): its receipt join is
   // unreachable for an http source, so verified/not-yet-verified carried no information there and
@@ -1119,7 +1124,7 @@ test("spec-48 A4: an assumed-demoted 'verified' enforcer renders as inference; c
   assert.doesNotMatch(html, /<b>verified<\/b> \(enforcement record on file\)/);
   // D4 — the cite's status is LABELLED as evidence, and the source class reads as a source phrase.
   assert.match(html, /Use checked\.[^<]*<\/b>[\s\S]{0,200}?Evidence: not checked, from a register mirror, which is not evidence of use/);
-  assert.match(html, /Own-portfolio sweep\.<\/b> no applicant-owned registrations in the searched register material <i class="evstat">Evidence: not yet verified<\/i>/);
+  assert.match(html, /Search of the client's own marks\.<\/b> no applicant-owned registrations in the searched register material <i class="evstat">Evidence: not yet verified<\/i>/);
 });
 
 test("spec-48 A4/A5: enforcer verified NAMES its source when the meter carries one", () => {
@@ -1368,7 +1373,13 @@ test("wp50: the # Actions panel renders — Answers first, buckets styled, ::p::
   assert.match(internal, /What happens next/, "doc-52 — the human-only bucket renders under its own section after the findings, headed as the board heads it");
   assert.match(internal, /Confirm whether the identical senior mark/, "the only-you forward decision rides through");
   // doc-52 — the Q&A leads (verdict block, top); "Checks we ran" moves to the collapsed Scope section (bottom)
-  assert.ok(internal.indexOf("Answers to your instructions") < internal.indexOf("Checks we ran"), "Q&A (verdict block) precedes Checks-we-ran (Scope)");
+  // This compared "Answers to your instructions" with "Checks we ran", and the only place on the page carrying both was
+  // one comment in the inlined stylesheet, so it read the comment and passed. The Checks-we-ran section went in the
+  // 2026-09-16 redesign and the stylesheet is now inlined without comments: the order checked is the answers before the
+  // human-only bucket, which renders after the findings, and the retired section is asserted gone.
+  const answersAt = internal.indexOf("Answers to your instructions"), nextAt = internal.indexOf("What happens next");
+  assert.ok(answersAt > 0 && nextAt > 0 && answersAt < nextAt, "Q&A (verdict block) precedes What happens next");
+  assert.doesNotMatch(internal, /Checks we ran/, "the retired Checks-we-ran section is back on the page");
   // ONE report: the ::p:: tail renders LABELLED [internal] for the reviewing reader; the raw marker
   // never survives; a stale opts.client is inert.
   assert.ok(!internal.includes("::p::"), "the raw marker never reaches any surface");
@@ -1401,10 +1412,11 @@ test("doc-52: reading order + plain banner (from only-you) + ruled-out routing +
   const opts = { runId: "d52", verdictInfo: vi, coverageJudgment: { reason: "the exact-compound slice is unadjudicable" } };
   const html = renderHtml(parsedOf(md), F, COV, opts);
   const client = renderHtml(parsedOf(md), F, COV, { ...opts, client: true });
-  // reading order: verdict (mark) → conflicts → What happens next → Scope
+  // reading order: verdict (mark) → What happens next → conflicts → Scope. The next steps follow the verdict
+  // (owner, 2026-11-18): a reader who forwards the first pages forwards the actions with the conditions.
   const iVerdict = html.indexOf('class="mark"'), iConf = html.indexOf("<h2>Conflicts</h2>");
   const iYou = html.indexOf("What happens next"), iScope = html.indexOf('<details class="searched">');
-  assert.ok(iVerdict >= 0 && iVerdict < iConf && iConf < iYou && iYou < iScope, "verdict → conflicts → only-you → what was searched");
+  assert.ok(iVerdict >= 0 && iVerdict < iYou && iYou < iConf && iConf < iScope, "verdict → only-you → conflicts → what was searched");
   // the lawyer's Q&A leads in the verdict block, before the conflicts
   assert.ok(html.indexOf("Answers to your instructions") >= 0 && html.indexOf("Answers to your instructions") < iConf, "Q&A in the verdict block");
   // B1 (spec 2026-07-30 §4) — the "Subject to:" bound line is DELETED (a third copy of the verdict's
@@ -1416,7 +1428,7 @@ test("doc-52: reading order + plain banner (from only-you) + ruled-out routing +
   assert.doesNotMatch(html, /and \d+ more/, "no condition hides behind a count");
   // ruled-out routing: UNTAMED (off-field, shares no word with NOVAPULSE) leaves the conflict bands
   assert.match(html, /<h2>Also considered<\/h2>/);
-  assert.match(html, /class="fnum">\d+<\/span><span class="who mark-first">UNTAMED/);
+  assert.match(html, /class="fnum">\d+<\/span><h3 class="who mark-first">UNTAMED/);
   assert.doesNotMatch(html, /Commercial awareness/, "the genre-neighbour is not surfaced as a conflict");
   // RE-POINTED. This asserted that the renderer REWROTE engine idioms out of a coverage note.
   // That mechanism is deleted: it was find-and-replace over a client-facing string, and is what it
@@ -1614,7 +1626,7 @@ test("doc-54: Clear zero-state — no active tick, left-anchored clear pill", ()
   const html = renderHtml(parsedOf(REPORT), [], [], { framework: MATRIX_MANIFEST, verdictInfo: vi });
   const ticks = html.match(/<div class="ticks">([\s\S]*?)<\/div>/)[1];
   assert.doesNotMatch(ticks, /class="on"/, "no band tick is active in the zero-state");
-  assert.match(html, /class="marker" style="left:0;transform:none[^"]*"><div class="pill" style="background:var\(--clear\)">No rated conflicts<\/div>/);
+  assert.match(html, /class="marker" style="left:0;transform:none[^"]*"><div class="pill" style="background:var\(--clear\);color:var\(--clear-on\)">No rated conflicts<\/div>/);
 });
 
 test("doc-54: composite-tier sidecar on a framework run maps tone-nearest, never Clear (fail-loud floor)", () => {
@@ -1730,15 +1742,17 @@ test("doc-54: legacy sidecar-less gauge keeps its 5 positional ticks (byte-stabi
   assert.match(ticks, />Severe</);
 });
 
-test("doc-54: one footer — the full provenance line rides the document; serve-time removal is portal-report's job", () => {
-  // ONE report (spec 2026-07-30 §5): the client footer variant is retired. The document carries the
-  // reviewer's full "Rated under:" provenance; portal-report.mjs (RATED_UNDER_RE) strips that line for
-  // EVERY embedded reader at serve time — one place, tested there.
+test("doc-54: one footer — no provenance line rides the document, and no option forks it", () => {
+  // ONE report (spec 2026-07-30 §5): the client footer variant is retired. The reviewer's "Rated under:" line was
+  // carried on the document and stripped at serve time; it is no longer written (owner, 2026-11-18), and
+  // portal-report.mjs (RATED_UNDER_RE) keeps its strip for stored reports that carry it.
   const fmLeak = REPORT.replace("run: 2026-06-10", "run: 2026-06-10 · Corsearch register + common-law grid")
     .replace("---\n\n#", "rated_under: Demo Brand Owner (demo-brand-owner) · custom framework (risk-framework-demo.md) · profile 890f610e1dcf\n---\n\n#");
   const vi = { tier: "Manageable", verdict: "CONDITIONAL", badge: "l2", gaugeIndex: 1, band: { label: "Manageable", rankFromTop: 4, scale: 5 } };
   const internal = renderHtml(parsedOf(fmLeak), BAND_FINDINGS, [], { framework: MATRIX_MANIFEST, verdictInfo: vi });
-  assert.match(internal, /Rated under: <span class="mono">Demo Brand Owner \(demo-brand-owner\)/, "the footer keeps the full provenance line");
+  const foot = (internal.match(/<footer[^>]*>([\s\S]*?)<\/footer>/) || [])[1] ?? "";
+  assert.ok(foot.length > 0, "the page has a footer to read");
+  assert.doesNotMatch(foot, /Rated under:/, "the footer still writes the provenance line");
   const stale = renderHtml(parsedOf(fmLeak), BAND_FINDINGS, [], { client: true, framework: MATRIX_MANIFEST, verdictInfo: vi });
   assert.equal(stale, internal, "opts.client no longer forks the footer");
 });
@@ -1798,7 +1812,7 @@ test("the by-country rows name the country, including where the register writes 
 
   const rows = [...html.matchAll(/<span class="rcode">([^<]*)<\/span><span class="wname">([^<]*)<\/span>/g)]
     .map((m) => [m[1], m[2]]);
-  const chips = [...html.matchAll(/<span class="wchip" title="([^"]*)">/g)].map((m) => m[1]);
+  const chips = (html.match(/<p class="wnames">([^<]*)<\/p>/)?.[1].split(", ") ?? []);
   const named = new Map([...rows, ...chips.map((t) => [t, t])]);
 
   // However the three land between rated rows and clean chips, none of them may read as a bare code.
@@ -1835,13 +1849,10 @@ test("the footer is one client line with its dates named, and the reviewer's pro
   assert.match(foot, /issued on 2026-06-16/, "and the issue date as the date issued");
   assert.doesNotMatch(foot, /14:32|CEST/, "the publish minute reaches no surface");
   assert.match(foot, /Corsearch register \+ common-law grid/, "the provider survives the split");
-  // BOTH provenance lines stay ON THE DOCUMENT and are removed at serve time. That is the shape the
-  // page already used for "Rated under", and "Run under project" was the same class of line sitting
-  // beside it with no strip — so it reached every embedded reader while its neighbour did not.
-  assert.match(foot, /<br\s*\/?>Rated under:\s*<span class="mono">[^<]*<\/span>\./,
-    "the reviewer's provenance is on the document, in the shape the strip removes");
-  assert.match(foot, /<br\s*\/?>Run under project:\s*<span class="mono">[^<]*<\/span>\./,
-    "and the project line beside it, in the same shape");
+  // NEITHER provenance line is written (owner, 2026-11-18): every reader reaches a report through the portal,
+  // which removed both, so on the document they served nobody. The facts stay in the run's front matter.
+  assert.doesNotMatch(foot, /Rated under:/, "the framework provenance is still written on the document");
+  assert.doesNotMatch(foot, /Run under project:/, "the project line is still written on the document");
 });
 
 // The strip itself, driven rather than described: an embedded reader gets the client line and neither
@@ -1851,7 +1862,11 @@ test("an embedded reader gets the client footer line and neither provenance line
   const { prepareReportForEmbed } = await import("../portal-report.mjs");
   const fmRun = REPORT.replace("run: 2026-06-10", "run: 2026-06-10 · Corsearch register + common-law grid")
     .replace("---\n\n#", "rated_under: Demo Brand Owner (demo-brand-owner) · custom framework · profile 890f610e\nrun_under_project: Japan and Korea app launch (Demo Brand Owner)\n---\n\n#");
-  const html = renderHtml(parsedOf(fmRun), BAND_FINDINGS, [], { issued: "2026-06-16 · 14:32 CEST" });
+  // A STORED report, rendered before the lines stopped being written, still carries both: the portal serves it from
+  // its own bytes, so the strip is driven on a document that has them, put back where the footer wrote them.
+  const html = renderHtml(parsedOf(fmRun), BAND_FINDINGS, [], { issued: "2026-06-16 · 14:32 CEST" })
+    .replace(/(Corsearch register \+ common-law grid\.)/, '$1<br>Rated under: <span class="mono">Demo Brand Owner (demo-brand-owner) · custom framework · profile 890f610e</span>.<br>Run under project: <span class="mono">Japan and Korea app launch (Demo Brand Owner)</span>.');
+  assert.match(html, /Rated under:[\s\S]*Run under project:/, "the stored document was not built with both lines");
   const embedded = prepareReportForEmbed(html, {}).html ?? prepareReportForEmbed(html, {});
   const served = typeof embedded === "string" ? embedded : String(embedded);
 
@@ -2146,7 +2161,7 @@ test("spec 64: §3 renders the advisory tags as chips (Open question / Your deci
 test("spec 64: f.impact renders as a code-built 'If enforced' bullet (structured-only cards included)", () => {
   const withImpact = FINDINGS.map((f) => f.ordinal === 1 ? { ...f, impact: "an injunction would halt the shipped stock" } : f);
   const html = renderHtml(parsedOf(REPORT), withImpact, COVERAGE, { runId: "noref-demo" });
-  assert.match(html, /<b>If enforced:<\/b> an injunction would halt the shipped stock — for the client to consider\./);
+  assert.match(html, /<b>If enforced:<\/b> an injunction would halt the shipped stock<\/li>/, "the tail is gone (owner, 2026-11-18)");
 });
 
 // ── spec 62: per-project disclosure — the project line (both surfaces) + the origin table (internal-only) ──
@@ -2307,7 +2322,7 @@ test("§L: a same-element mark (token containment ≥4 chars) is NEVER silently 
   assert.match(html, /<h2>Also considered<\/h2>/);
   // The ruled-out list became cards under Also considered (the 2026-09-16 report redesign): the ordinal and the mark
   // are both still on the page, which is what keeps a numbering gap from reading as a lost finding.
-  assert.match(html, /class="fnum">3<\/span><span class="who mark-first">UNTAMED/, "the ruled-out ordinal stays accounted for");
+  assert.match(html, /class="fnum">3<\/span><h3 class="who mark-first">UNTAMED/, "the ruled-out ordinal stays accounted for");
 });
 
 // ── P5 (charter 2026-07-30, Reviewer §L) — content model on the render ──────────────────────────────────
@@ -2680,8 +2695,8 @@ test("D5: the INTERNAL legacy Level/Composite chip is untouched — this is the 
 // ── D7: the tool name leaves the page, the sentinel stays where it is enforced ───────────────────
 //
 // `perplexity_research — no result` is the ONLY legal "we searched and found nothing" value for
-// use_check.source: stages.mjs dictates it, findings-model.mjs names it in two refusals, and
-// use-check.mjs wires it into validators.narrative as FATAL. It is mapped HERE, by exact equality, and
+// use_check.source: stages.mjs dictates it and findings-model.mjs names it in two refusals (use-check.mjs,
+// a dead gate that also named it, is deleted). It is mapped HERE, by exact equality, and
 // nowhere else — changing the sentinel would force every archived run and every check to accept two
 // spellings of one enum member, over a complaint that is only ever about the page.
 const NO_RESULT = "perplexity_research — no result";
@@ -3033,9 +3048,7 @@ test("the court-decisions line never ships a dangling clause where the country s
 //   · a plan that named nothing draws nothing        → break: fall back to the archive, arm 4 red
 //   · an unreached territory is NOT a clean chip     → break: chip it, arm 5 red
 test("where it stands is filled from the search plan, so a register that archives nothing still says where it looked", () => {
-  // THE CHIP'S TEXT IS THE NAME OR THE CODE depending on how many chips there are — twelve is the seam,
-  // drawn that way by the board. Its `title` is always the country's name, so the arms read that and the
-  // rows' own code, which is what makes them stable whichever side of the seam a case falls on.
+  // THE CLEAN PLACES ARE ONE PARAGRAPH OF NAMES, so the arms read those names and the rows' own code.
   // READ INSIDE THE SECTION'S OWN PANEL, never across the whole page. `rcode` is drawn by other sections
   // too, so a page-wide walk found an MX row that this section had not drawn: the arm asserting that a
   // finding's country keeps its row passed with the union removed, which is the one break it exists for.
@@ -3050,7 +3063,7 @@ test("where it stands is filled from the search plan, so a register that archive
     const panel = panelOf(html);
     return {
       rows: [...panel.matchAll(/<span class="rcode">([^<]*)<\/span>/g)].map((m) => m[1]),
-      chips: [...panel.matchAll(/<span class="wchip" title="([^"]*)">/g)].map((m) => m[1]),
+      chips: (panel.match(/<p class="wnames">([^<]*)<\/p>/)?.[1].split(", ") ?? []),
     };
   };
 
@@ -3127,7 +3140,7 @@ test("every country a finding holds a registration in takes its band where it st
     { uri: "https://tm.example/mark/am/3003", classes: ["9"], status: "Registered" } ] } }];
   const panel = panelOf(renderHtml(parsedOf(REPORT), threeCountries, [], { searchDepth: depth, planTerritories: plan }));
   const rows = [...panel.matchAll(/<span class="rcode">([^<]*)<\/span><span class="wname">[^<]*<\/span><span class="kc[^"]*">([^<]*)</g)].map((m) => `${m[1]}:${m[2]}`);
-  const chips = [...panel.matchAll(/<span class="wchip" title="([^"]*)">/g)].map((m) => m[1]);
+  const chips = (panel.match(/<p class="wnames">([^<]*)<\/p>/)?.[1].split(", ") ?? []);
   assert.deepEqual(rows.sort(), ["AM:Moderate", "GR:Moderate", "SA:Moderate"], `a registered country lost its band: ${JSON.stringify(rows)}`);
   assert.deepEqual(chips, ["Japan"], `a country holding a finding's registration was chipped Nothing found: ${JSON.stringify(chips)}`);
 
@@ -3171,7 +3184,7 @@ test("the local-language row states the depth reached, in the words the page alr
 
   const seen = {};
   for (const [state, word] of [["ran", "Included"], ["ran-shallow", "Partially covered"],
-    ["not-run", "Not run this run"], ["not-in-scope", "Not part of this search"]]) {
+    ["not-run", "Not searched"], ["not-in-scope", "Not part of this search"]]) {
     const got = rowFor(render(state), "Local-language investigation");
     assert.equal(got, word, `the ${state} state draws ${JSON.stringify(got)}`);
     seen[word] = (seen[word] ?? 0) + 1;

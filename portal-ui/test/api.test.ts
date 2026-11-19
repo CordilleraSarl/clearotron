@@ -260,9 +260,6 @@ test('run rows never gain a tone or a band the server did not send', async () =>
 
   assert.equal(r2!.tone, null, '"Medium" is not a tone — near-misses are rejected, not corrected')
   assert.deepEqual(r2!.bands, [], 'every malformed rung is dropped; a fabricated ladder rung is worse than a short ladder')
-
-  // reportSchema absence is what identifies a legacy run, so it must decode to null, never to a default.
-  assert.equal(r1!.reportSchema, null)
 })
 
 test('an unknown run state is treated as in flight, never as finished', async () => {
@@ -940,4 +937,13 @@ test('addPerson posts the address, the switches and the points, and reads the pe
   assert.ok(isOk(r))
   assert.deepEqual(r.value.person.permissions, { run: true, manage: true }, 'the switches are read back, not assumed')
   assert.equal(r.value.switchesApplied, false, 'and the screen is told the ones it sent were not applied')
+})
+
+test('/me carries what the installation calls itself, and an older server reads as the product', async () => {
+  const named = await withFetch(200, { email: 'staff@example-firm.com', permissions: { run: true, manage: true }, brandName: 'Larchmont Legal' }, () => api.me())
+  assert.equal(isOk(named) ? named.value.brandName : null, 'Larchmont Legal')
+  const older = await withFetch(200, { email: 'staff@example-firm.com', permissions: { run: true, manage: true } }, () => api.me())
+  assert.equal(isOk(older) ? older.value.brandName : null, 'Clearotron', 'a server that sends no name reads as the product, never a blank')
+  const blank = await withFetch(200, { email: 'staff@example-firm.com', permissions: { run: true, manage: true }, brandName: '   ' }, () => api.me())
+  assert.equal(isOk(blank) ? blank.value.brandName : null, 'Clearotron', 'a blank name is no name')
 })

@@ -20,7 +20,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { knockoutReportData, renderKnockoutHtml, NOT_WEIGHED_LINE } from "../publish/render-knockout.mjs";
+import { renderKnockoutHtml, NOT_WEIGHED_LINE } from "../publish/render-knockout.mjs";
+import { knockoutReportData } from "../publish/report-data.mjs";
 
 const MARK = "IRONWHISK";
 

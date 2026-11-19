@@ -170,6 +170,11 @@ export const COMPONENTS = {
 //                   queries included. Grids stay on the tier they run on today; this is their lever.
 // The run freezes the pair in its search policy, which is its record of what it ran on; a run frozen
 // before this rule carries none and runs as every run did before it.
+// `report.tag` IS THE SHORT NAME the Clearances list prints under a name and offers as a filter: "KO",
+// "Prelim", "Multi", "Full". It sits beside `identity` so a product cannot ship without naming its own,
+// and the page reads it from shared/search-level-tags.json, minted from this table
+// (scripts/mint-search-level-tags.mjs), never from a list of its own. A retired product has none: its runs
+// carry no tag and show only under All.
 export const PRODUCT_POLICIES = {
   // ONE knockout, and it carries the register hit-counts. There used to be two levels here — a plain
   // screen and the same screen plus a filing count per name — and the offering has one Knockout search.
@@ -180,7 +185,7 @@ export const PRODUCT_POLICIES = {
   // those words ("register-cannot-count") instead of the release-note sentence that would be a lie.
   "knockout-search": {
     product: "knockout-search", stageLabel: "Knockout search", pipeline: "knockout",
-    report: { template: "knockout", identity: "Knockout search" },
+    report: { template: "knockout", identity: "Knockout search", tag: "KO" },
     components: { registerProbe: true, jxLanes: false, commonLawGrid: false },
     web: { questionPreset: "pro-search", resultsPerCell: 10 },
     // — NO DEPTH ROW ON PURPOSE. Product 1 is out of scope by the spec: the knockout lane has its
@@ -189,7 +194,7 @@ export const PRODUCT_POLICIES = {
   },
   "global-preliminary-search": {
     product: "global-preliminary-search", stageLabel: "Global preliminary search", pipeline: "clearance",
-    report: { template: "clearance", identity: "Global preliminary search" },
+    report: { template: "clearance", identity: "Global preliminary search", tag: "Prelim" },
     // WORLDWIDE — the higher bar everywhere it is graded.
     depth: {
       narrativeProse: "adversarial",       // per-finding prose in narrative.md: `adversarial` findings only
@@ -239,7 +244,7 @@ export const PRODUCT_POLICIES = {
   // multi-country search whether or not anybody bought one.
   "multi-country-focus-search": {
     product: "multi-country-focus-search", stageLabel: "Multi-country focus search", pipeline: "clearance",
-    report: { template: "clearance", identity: "Multi-country focus search" },
+    report: { template: "clearance", identity: "Multi-country focus search", tag: "Multi" },
     // MULTI-COUNTRY — the same instructions, a lower bar than worldwide.
     depth: {
       narrativeProse: "adversarial+floors",   // `adversarial` findings plus tier-`identical` floor marks
@@ -289,7 +294,7 @@ export const PRODUCT_POLICIES = {
   // only where one was asked for, so this can never refuse a request we ourselves shaped.
   "full-country-search": {
     product: "full-country-search", stageLabel: "Full country search", pipeline: "clearance",
-    report: { template: "clearance", identity: "Full country search" },
+    report: { template: "clearance", identity: "Full country search", tag: "Full" },
     // ONE COUNTRY — every value is TODAY'S BEHAVIOUR, declared. This row is the byte-identical guard.
     depth: {
       narrativeProse: "every-finding",

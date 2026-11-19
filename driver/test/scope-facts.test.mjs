@@ -222,12 +222,15 @@ test("jurisdiction tail: a worldwide token collapses the register list — never
 
 // Owner ruling 2026-09-18: a worldwide order names the register service that searched it, from the
 // provider's own capability label — never a list of offices, never a count.
-test("jurisdiction tail: worldwide names the register service the plan records, and a named list is unchanged", () => {
+test("jurisdiction tail: worldwide names the register service the plan records and its reach, and a named list is unchanged", () => {
   const exec = { ...EXEC, executed: EXEC.executed.map((x) => ({ ...x, state: "enumerated" })) };
   const wide = (provider) => deriveScopeFacts({ instructedScope: INSTRUCTED,
     plan: { ...PLAN, regions: [], scope_basis: "worldwide", ...(provider ? { provider } : {}) }, planExecution: exec, coverageRows: [] });
-  assert.match(wide("signa").coverage_line, / · registers: worldwide \(Signa\)$/);
-  assert.match(wide("clarivate").coverage_line, / · registers: worldwide \(Clarivate Compumark\)$/);
+  // The reach replaced "worldwide (<service>)" for a service that declares its offices (owner, 2026-11-18). With no
+  // market outside it, the line ends after the count.
+  assert.match(wide("signa").coverage_line, / · registers: Signa, 15 offices$/);
+  assert.match(wide("clarivate").coverage_line, / · registers: Clarivate Compumark, 186 offices$/);
+  assert.match(wide("corsearch").coverage_line, / · registers: worldwide \(Corsearch\)$/, "a service with no office list keeps its line");
   assert.match(wide(null).coverage_line, / · registers: worldwide$/, "a plan that records no provider keeps the bare word");
   assert.match(wide("no-such-provider").coverage_line, / · registers: worldwide$/, "an unknown provider names nothing rather than throwing");
   const named = deriveScopeFacts({ instructedScope: INSTRUCTED, plan: { ...PLAN, provider: "signa" }, planExecution: exec, coverageRows: [] });

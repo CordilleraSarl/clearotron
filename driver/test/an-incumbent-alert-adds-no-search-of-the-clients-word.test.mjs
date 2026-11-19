@@ -13,6 +13,9 @@ import { compileRegisterPlan, variantsFingerprint } from "../register-plan.mjs";
 import { parseVariantManifestModel } from "../variant-manifest-model.mjs";
 import { capabilitiesFor } from "../register-capabilities.mjs";
 import { decideAxes } from "../coverage-ledger.mjs";
+import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
+import { VARIANTS_SENTENCES } from "./ruled-sentences-variants.mjs";
+import { RECIPES_SENTENCES } from "./ruled-sentences-register-recipes.mjs";
 
 const MODEL = {
   schema_version: 1, mark: "GLIMBEX", dominant_element: "GLIMBEX",
@@ -49,14 +52,14 @@ test("the incumbent step still spawns on the alert, so its axis is not gone", ()
 test("the register manual's incumbent paragraph asks in the matter's classes and markets", () => {
   const unit = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register", "unit.md"), "utf8");
   const para = unit.split("\n").find((l) => l.startsWith("- **`incumbent-class`**"));
-  assert.ok(para?.includes("`register_enumerate` the named band in the matter's in-scope Nice set and markets"),
+  assert.ok(para?.includes(UNIT_SENTENCES.registerEnumerateTheNamedBand),
     "the paragraph carries the approved sentence");
   assert.doesNotMatch(unit, /incumbent's primary classes/, "no line sends the unit to the incumbent's own classes");
 });
 
 test("no register recipe asks for the client's word in the incumbent's classes", () => {
   const recipes = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register", "register-recipes.md"), "utf8");
-  assert.ok(recipes.includes("## Recipe 1 — Compound tagline"), "guard: the recipes were read");
+  assert.ok(recipes.includes(RECIPES_SENTENCES.recipeCompoundTagline), "guard: the recipes were read");
   assert.doesNotMatch(recipes, /ENUMERATE the incumbent(?:'s)? classes|classes <incumbent classes>/,
     "a recipe the unit reads would ask again for the search the plan no longer compiles");
   assert.doesNotMatch(recipes, /Industry-incumbent shadow|incumbent's portfolio|owner:<incumbent name pattern>/,
@@ -69,7 +72,7 @@ test("no manual or tool the engine reads asks for a competitor's or an enforcer'
   const digest = read("skills", "clearance-register", "digest.md");
   const orchestrator = read("..", "docs", "architecture", "retired-manuals", "clearance-search-spine.md");
   const tools = read("engine", "mcp", "recording-server.mjs");
-  assert.ok(recipes.includes("## Recipe 6 — Multi-word descriptive tagline") && digest.includes("### Step 4 —")
+  assert.ok(recipes.includes(RECIPES_SENTENCES.recipeMultiWordDescriptiveTagline) && digest.includes("### Step 4 —")
     && orchestrator.includes("**Competitor intelligence:**") && tools.includes("watchlist_owners"), "guard: each file was read");
   assert.doesNotMatch(recipes, /owner-bound competitor queries|owner:<each competitor>|\+ competitor portfolio/,
     "a recipe asks for every competitor's register");
@@ -81,7 +84,7 @@ test("no manual or tool the engine reads asks for a competitor's or an enforcer'
 
 test("the spelling manual points at no register step that no longer exists", () => {
   const variants = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-variants", "SKILL.md"), "utf8");
-  assert.ok(variants.includes("| competitor-intel / watchlist | focused web search | not used |"),
+  assert.ok(variants.includes(VARIANTS_SENTENCES.competitorIntelWatchlistFocusedWeb),
     "a watchlist starts no register sweep, as Step 5 says");
   assert.doesNotMatch(variants, /Step 8\.5/);
 });

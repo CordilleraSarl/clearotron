@@ -16,6 +16,8 @@ import assert from "node:assert/strict";
 import { mkdtempSync, rmSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { INQUIRY_SENTENCES } from "./ruled-sentences-placement-inquiry.mjs";
+import { PHASE2_SENTENCES } from "./ruled-sentences-phase2-execution.mjs";
 import { STAGES, paths, BAND_READING_STAGES, BAND_READING_CONTRACT, BAND_READING_CONTRACT_AFTER_PLACEMENT,
   BAND_READING_CONTRACT_FOR_THE_WRITER, BAND_READING_STANDARDS, WRITER_STARTS_FROM_THE_WORK, WRITER_RECORDS_AS_IT_GOES,
   USE_CHECK_ANSWERS_HELD } from "../stages.mjs";
@@ -26,7 +28,7 @@ const RULED = [
   "Assess each retained position on its relevant evidence. A list of its constituent records does not require you to open every record. Open an additional record when a difference in its goods, status, priority, territory, identity, or other material evidence could change the assessment and the supplied evidence does not resolve it. Missing or incomplete evidence does not establish an exclusion or a clean result.",
 ];
 const BAND_USE = "Use the band tools (`band_shape`, `band_lookup`, `band_record`) when a specific assessment needs evidence beyond the material handed to you. The available groups and pages are ways to find that evidence, not a list you must read to completion.";
-const ANSWERS_HELD = "Apply the existing triggers for actual-use, enforcement, and owner checks after the relevant legal assessment. First use a suitable answer already held by this run, including an earlier stage or attempt, where it answers the same owner, mark, goods, territory, and material time question. A source requirement is not a requirement for a new call. One answer may support several findings only where it answers each finding's question. Ask only what remains unanswered and record the result against every finding it supports.";
+const ANSWERS_HELD = PHASE2_SENTENCES.applyTheExistingTriggersFor;
 const SET_ASIDE = "- QZORVAK — Beta GmbH (/mark/eu/b1): set aside on its goods: registered for industrial pumps";
 
 function messageOf(t, stage, extra = {}) {
@@ -50,7 +52,7 @@ test("the writer uses the band tools when an assessment needs them; it is no lon
   const text = messageOf(t, "synthesis");
   assert.ok(text.includes(`THE REGISTER BAND: ${BAND_USE} ${BAND_READING_STANDARDS}`));
   assert.equal(BAND_READING_CONTRACT_FOR_THE_WRITER, `THE REGISTER BAND: ${BAND_USE} ${BAND_READING_STANDARDS}`);
-  for (const order of ["call `band_shape` FIRST", "each naming the next call", "Then pull exactly the records"])
+  for (const order of ["call `band_shape` FIRST", INQUIRY_SENTENCES.eachNamingTheNextCall, "Then pull exactly the records"])
     assert.ok(!text.includes(order), `the writer is still told: ${order}`);
 });
 
@@ -84,7 +86,7 @@ test("an answer the run already holds can be a finding's check, in the message a
   const step = manual.slice(manual.indexOf("## Step 3.5"), manual.indexOf("## Step 3.6"));
   assert.ok(step.includes(`\n\n${ANSWERS_HELD}\n\n`), "Step 3.5 does not carry the ruled paragraph as its own");
   assert.ok(!step.includes("Before synthesis,"), "Step 3.5 still runs the check before the assessment it depends on");
-  assert.ok(step.includes("it must actually run the scoped query (owner + mark + goods/field), unless an answer this run already holds answers that question, and cite the result"));
+  assert.ok(step.includes(PHASE2_SENTENCES.mustActuallyRunTheScoped));
 });
 
 test("no band tool tells a reader to keep paging; each says the next page is there", () => {

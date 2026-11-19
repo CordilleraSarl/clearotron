@@ -13,6 +13,9 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
+import { REGISTER_SENTENCES } from "./ruled-sentences-register.mjs";
+import { RECIPES_SENTENCES } from "./ruled-sentences-register-recipes.mjs";
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register");
 const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
@@ -20,8 +23,8 @@ const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
 test("the register manual's unit mode reads its answers and decides, and the digest is not handed all the judgment", () => {
   const manual = flat("SKILL.md");
   for (const ruled of [
-    "Unit mode — `saturation-probe` uses `haiku`, with thinking off, for count-only work. `primary-sweep` uses `opus`, with adaptive thinking, to run the plan, read its answers, and decide which further searches could change the advice. `transliteration-numeric` and `incumbent-class` use `sonnet`, with adaptive thinking.",
-    "Register units execute searches and decide which further questions could change the advice. The primary sweep uses the judgment model for that decision. The digest assesses the evidence carried forward. The driver selects each stage's model; a unit does not choose its own replacement.",
+    REGISTER_SENTENCES.unitModeSaturationProbeUses,
+    REGISTER_SENTENCES.registerUnitsExecuteSearchesAnd,
   ]) assert.ok(manual.includes(ruled), `the register manual does not say "${ruled.slice(0, 80)}…"`);
   for (const gone of ["nuanced rule-following, not open analysis", "All the precision-critical judgment lives here",
     "units execute (smaller model tiers), the digest worker judges", "re-spawns it escalated to Opus"])
@@ -33,10 +36,10 @@ test("the register manual's unit mode reads its answers and decides, and the dig
 test("the unit manual has the unit decide on each crowd, and writes its reason as the note", () => {
   const unit = flat("unit.md");
   for (const ruled of [
-    "an incomplete result crosses the firewall as an incomplete block, and you decide on it by the narrowing steps: narrow it, or record it with its count and move on.",
-    "Read the count and decide by the narrowing steps whether a narrower named question inside it would change what you tell the client.",
-    "the prose carries no clearance verdict. Your one line on why more searching would not change the advice is the `note` you send.",
-    "you decide on each `incomplete` by the narrowing steps, and the write-up rules each slice's coverage.",
+    UNIT_SENTENCES.incompleteResultCrossesTheFirewall,
+    UNIT_SENTENCES.readTheCountAndDecide,
+    UNIT_SENTENCES.theProseCarriesClearanceVerdict,
+    UNIT_SENTENCES.youDecideEachIncompleteThe,
   ]) assert.ok(unit.includes(ruled), `the unit manual does not say "${ruled.slice(0, 80)}…"`);
   for (const gone of ["judgment decides whether to command a narrower enumeration", "Judgment reads the count and decides",
     "no clearance verdict and no sufficiency claim", "the lawyer reads the band and decides sufficiency"])
@@ -46,11 +49,10 @@ test("the unit manual has the unit decide on each crowd, and writes its reason a
 test("the recipes give the write-up and placement their own work, and the crowd to the narrowing steps", () => {
   const recipes = flat("register-recipes.md");
   for (const ruled of [
-    "the write-up (Layer B) performs the cross-cutting relevance / owner-aggregation / prioritisation over the candidates placement carried forward.",
-    "Placement reads the band; a crowd is narrowed by the steps in unit.md.",
-    "You decide on each `incomplete` by the narrowing steps; placement reads the band and decides relevance.",
-    "That `incomplete` block is never a clean; you decide on it by the narrowing steps: narrow it, or record it with its count and "
-      + "move on. The funnel does not \"narrow and re-probe until tractable, then call it clean\" — it surfaces the descriptor, and you decide on it.",
+    RECIPES_SENTENCES.theWriteLayerPerformsThe,
+    RECIPES_SENTENCES.placementReadsTheBandCrowd,
+    RECIPES_SENTENCES.youDecideEachIncompleteThe,
+    RECIPES_SENTENCES.thatIncompleteBlockNeverClean2,
   ]) assert.ok(recipes.includes(ruled), `the recipes do not say "${ruled.slice(0, 80)}…"`);
   for (const gone of ["relevance / sufficiency / owner-aggregation", "The lawyer reads the complete band", "the signal to judgment",
     "lets judgment command"])

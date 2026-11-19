@@ -12,14 +12,14 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { VARIANTS_SENTENCES } from "./ruled-sentences-variants.mjs";
 
 const manual = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-variants", "SKILL.md"), "utf8")
   .replace(/\s+/g, " ");
 
 test("a collaboration proposes the collaborated goods' class, and adds a class only for the client's own goods", () => {
-  assert.ok(manual.includes("For a **collaboration**, propose the direct class of the collaborated goods. Add a class only for the client's own goods, "
-    + "never for what a competitor might hold, with one sentence saying why."));
-  assert.ok(manual.includes("(collab direct-class proposed where applicable; a class added only for the client's own goods, with its reason)"));
+  assert.ok(manual.includes(VARIANTS_SENTENCES.forCollaborationProposeTheDirect));
+  assert.ok(manual.includes(VARIANTS_SENTENCES.collabDirectClassProposedWhere));
   for (const gone of ["belt-and-braces", "side-glance", "search the gaming classes (9/28/41/42)"])
     assert.ok(!manual.includes(gone), `the variants manual still says "${gone}"`);
 });

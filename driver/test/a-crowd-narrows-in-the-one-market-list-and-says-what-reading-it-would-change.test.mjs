@@ -14,21 +14,22 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
+import { REGISTER_SENTENCES } from "./ruled-sentences-register.mjs";
+import { RECIPES_SENTENCES } from "./ruled-sentences-register-recipes.mjs";
+import { CORSEARCH_SENTENCES } from "./ruled-sentences-corsearch.mjs";
+import { SIGNA_SENTENCES } from "./ruled-sentences-signa.mjs";
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register");
 const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
 
 test("a crowd's market step uses the one list, and a major the list does not name stays in the crowd's count", () => {
   const skill = flat("SKILL.md"), unit = flat("unit.md"), recipes = flat("register-recipes.md");
-  assert.ok(skill.includes("When the in-scope sweep returns `incomplete` as a crowd, narrow it by the steps in *Read the identical mark first*: "
-    + "their market step uses the one list your opening message names, and a major or material jurisdiction the list does not name is not asked "
-    + "on its own; it stays in the crowd's count."));
-  assert.ok(unit.includes("When the worldwide question is a crowd, its market step uses the one list your opening message names; a major the list "
-    + "does not name is not asked on its own and stays in the crowd's count."));
-  assert.ok(unit.includes("The identical mark for the client's goods, still a crowd in a market on the one list your opening message names, is not done."));
-  assert.ok(recipes.includes("Their market step uses the one list your opening message names: "
-    + "`register_enumerate name:<root> match=default nice_classes:<target> regions:[<market>]`"));
-  assert.ok(recipes.includes("then one market at a time from the one list your opening message names:"));
+  assert.ok(skill.includes(REGISTER_SENTENCES.whenTheScopeSweepReturns));
+  assert.ok(unit.includes(UNIT_SENTENCES.whenTheWorldwideQuestionCrowd));
+  assert.ok(unit.includes(UNIT_SENTENCES.theIdenticalMarkForThe));
+  assert.ok(recipes.includes(RECIPES_SENTENCES.theirMarketStepUsesThe));
+  assert.ok(recipes.includes(RECIPES_SENTENCES.thenOneMarketTimeFrom));
   for (const [name, text] of [["SKILL.md", skill], ["unit.md", unit], ["register-recipes.md", recipes]]) {
     for (const gone of ["A slice gets its OWN `register_enumerate` call only on the guarded crowd-narrow path", "the per-major region-scoped band",
       "A major gets its own question only when the worldwide question was a crowd", "run its per-major / phonetic passes", "(per major region)",
@@ -39,19 +40,16 @@ test("a crowd's market step uses the one list, and a major the list does not nam
 });
 
 test("before narrowing a wider crowd, judgment writes what reading it would change, or sets it aside", () => {
-  const condition = "The same steps serve any other question that comes back as a crowd, when reading it would change what you tell the client. "
-    + "Before you narrow a wider crowd, write in the proposal what reading it would change. If you cannot, set it aside with its count and your "
-    + "reason. You need not take every step on every crowd.";
+  const condition = UNIT_SENTENCES.theSameStepsServeAny;
   for (const m of ["SKILL.md", "unit.md"]) assert.ok(flat(m).includes(condition), `${m} does not carry the condition sentence`);
 });
 
 test("the shared manual and the provider notes carry no price words", () => {
-  assert.ok(flat("SKILL.md").includes("**EUIPO covers the EU alone.** Running it makes every non-EU territory a deferred row — a known limit of "
-    + "that register, not a fault."));
+  assert.ok(flat("SKILL.md").includes(REGISTER_SENTENCES.euipoCoversTheAloneRunning));
   const corsearch = flat("providers/corsearch.md");
-  assert.ok(corsearch.includes("Don't run multiple separate phonetic searches — they make more requests and return largely overlapping results."));
+  assert.ok(corsearch.includes(CORSEARCH_SENTENCES.donRunMultipleSeparatePhonetic));
   assert.ok(corsearch.includes("## Request limits"));
-  assert.ok(flat("providers/signa.md").includes("It is ONE call, not three."));
+  assert.ok(flat("providers/signa.md").includes(SIGNA_SENTENCES.oneCallNotThree));
   const all = ["SKILL.md", "register-recipes.md", "providers/corsearch.md", "providers/signa.md"].map(flat).join(" ");
   for (const gone of ["and is free", "the honest trade", "costs more", "## API budget", "no extra spend", "do NOT spend"])
     assert.ok(!all.includes(gone), `the register manuals still say "${gone}"`);

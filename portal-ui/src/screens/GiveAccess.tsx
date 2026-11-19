@@ -36,6 +36,7 @@ const NOTHING: Chosen = { everything: false, orgs: new Set(), companies: new Set
 const oneAddress = (s: string): boolean => /^[^\s@,;<>]+@[^\s@,;<>]+$/.test(s)
 
 export function GiveAccess({ ctx }: { readonly ctx: ShellContext }) {
+  const installation = ctx.me.brandName
   // Whether this install can take another person at all. A reader who types this page's address on an
   // install that signs in one person meets the same explanation People gives, not a form that fails.
   const { result: view } = useLoad(() => api.adminAccess(), [])
@@ -69,7 +70,7 @@ export function GiveAccess({ ctx }: { readonly ctx: ShellContext }) {
           <PageHeader title="Give access" />
           <div className="notice quiet">
             <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-muted)' }}>
-              <b style={{ color: 'var(--text-strong)' }}>This Clearotron signs in one person: you.</b> To add
+              <b style={{ color: 'var(--text-strong)' }}>{installation} signs in one person: you.</b> To add
               people, put it behind a login system such as your company single sign-on.{' '}
               {repo ? <a href={loginInFrontDoc(repo)} target="_blank" rel="noreferrer">How to set that up</a> : null}
             </p>
@@ -114,6 +115,7 @@ export function GiveAccess({ ctx }: { readonly ctx: ShellContext }) {
     everything: chosen.everything,
     organisations: [...chosen.orgs].map(orgName),
     companies: soloCompanies.map((k) => ({ name: ctx.ownerName(k), organisation: orgName(ctx.orgOf(k) ?? '') })),
+    installation,
   })
 
   const save = async () => {
@@ -131,11 +133,11 @@ export function GiveAccess({ ctx }: { readonly ctx: ShellContext }) {
     // 409 branch looked for, so the token itself was the message. The `conflict` arm below stays for a
     // proxy's own version clash, which is a different fact.
     ? result.kind === 'gate' && result.detail?.code === 'local_sign_in'
-      ? 'This Clearotron now signs in one person, so nobody can be added. Nothing was saved.'
+      ? `${installation} now signs in one person, so nobody can be added. Nothing was saved.`
       : result.kind === 'conflict'
       // The one refusal the server names for this route: the install changed to local sign-in since the
       // page loaded, and it cannot hold a second person.
-      ? 'This Clearotron now signs in one person, so nobody can be added. Nothing was saved.'
+      ? `${installation} now signs in one person, so nobody can be added. Nothing was saved.`
       : result.kind === 'notFound'
       ? 'You can only give access to what you have access to yourself. Nothing was saved.'
       : result.kind === 'reject'
@@ -179,7 +181,7 @@ export function GiveAccess({ ctx }: { readonly ctx: ShellContext }) {
         <div className="field-label">Access to</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 8 }}>
           {holdsEverything ? (
-            <AttachRow on={chosen.everything} name="Everything on this Clearotron" line={REACH_LINE.everything}
+            <AttachRow on={chosen.everything} name={`Everything on ${installation}`} line={REACH_LINE.everything}
               disabled={saved} onToggle={() => setChosen((c) => ({ ...c, everything: !c.everything }))} />
           ) : null}
           {tree.map((t) => (

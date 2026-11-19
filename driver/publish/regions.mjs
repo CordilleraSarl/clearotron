@@ -6,7 +6,7 @@
 // The common-law sentinel is 'C/L', never 'CL' — to a trademark lawyer CL is Chile (ISO 3166), and an
 // actual Chilean registration must not collide with the common-law bucket (the latent bug a reviewing
 // lawyer hit on a live matter). Every ISO-3166 alpha-2 key in REGION_NAMES must therefore carry its
-// country meaning; only non-ISO keys ('C/L', 'WO', 'BX', 'EU') may carry a non-country meaning —
+// country meaning; only non-ISO keys ('C/L', 'WO', 'BX', 'EU', 'XS') may carry a non-country meaning —
 // regions.test.mjs guards this.
 //
 // PURE (no node imports) so tests run offline and any surface (render, email, xlsx) can import it.
@@ -22,6 +22,9 @@ export const REGION_NAMES = {
   MX: 'Mexico', TW: 'Taiwan', HK: 'Hong Kong', SA: 'Saudi Arabia', AE: 'United Arab Emirates',
   DK: 'Denmark', FI: 'Finland', PL: 'Poland', PT: 'Portugal', AT: 'Austria', BE: 'Belgium',
   IE: 'Ireland', GR: 'Greece', IL: 'Israel', TK: 'Tokelau',
+  // XS is no country: it is the code the US state registers are filed under beside the federal one, read as they are
+  // named (owner, 2026-11-18). It printed as "XS".
+  XS: 'US state registers',
   CL: 'Chile', [COMMON_LAW]: 'Common-law',
 };
 
@@ -34,5 +37,23 @@ export const REGION_ALIAS = { GB: 'UK', EM: 'EU', EUTM: 'EU', EUIPO: 'EU', INT: 
 
 export const normRegion = (c) => { const u = String(c || '').toUpperCase(); return REGION_ALIAS[u] || u; };
 
-// Unknown code ⇒ the raw code doubles as the name, so a new register surfaces without a change here.
-export const regionName = (code) => REGION_NAMES[code] || code;
+// THE NAME A READER SEES. The table above wins; a two-letter country code it lacks takes the name the runtime's own
+// region names give it (Intl.DisplayNames, a global, so this file stays import-free); anything else is printed as
+// the code itself, so a new register still surfaces without a change here. 128 of 320 country rows on delivered
+// reports printed a bare code (AR, CO, CZ) because the table is hand-kept.
+//
+// ONLY A REAL COUNTRY CODE IS ASKED. ZZ reads "Unknown Region" and a numeric code "world", and neither may reach a
+// page, so the question is put only for two capital letters outside ZZ and the private-use ranges (AA, QM to QZ,
+// XA to XZ), and a name that comes back as the code itself (EM) is no name. The runtime's names come from its ICU
+// data, so a newer Node can spell one differently; the table is where a spelling is pinned (TR stays Turkey).
+const PRIVATE_USE = /^(?:AA|ZZ|Q[M-Z]|X[A-Z])$/;
+let displayNames;
+function runtimeRegionName(code) {
+  if (!/^[A-Z]{2}$/.test(code) || PRIVATE_USE.test(code) || typeof Intl?.DisplayNames !== 'function') return null;
+  try {
+    displayNames ??= new Intl.DisplayNames(['en'], { type: 'region' });
+    const name = displayNames.of(code);
+    return name && name !== code ? name : null;
+  } catch { return null; }
+}
+export const regionName = (code) => REGION_NAMES[code] || runtimeRegionName(code) || code;

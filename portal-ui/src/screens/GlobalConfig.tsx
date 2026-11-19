@@ -111,6 +111,7 @@ export function GlobalConfig({ ctx }: { readonly ctx: ShellContext }) {
                    page an operator checks first is what made that contradiction cost a user. */
                 programDisputed={(v.lastRun?.disagrees ?? []).some((d) => d.what === 'engine program')}
                 channel={ctx.me.channel ?? null}
+                name={ctx.me.brandName}
               />
             ) : (
               <NotRecorded what="which engine is running" source={v.source} />
@@ -242,13 +243,15 @@ const NotServed = () => (
 //
 // One call site, spread whole, so the row is covered by construction rather than by this file agreeing
 // with another one. `engineState.test.ts` holds both the relation and this call site.
-function Engine({ engine, programDisputed = false, channel = null }: {
+function Engine({ engine, programDisputed = false, channel = null, name }: {
   readonly engine: EngineState
   readonly programDisputed?: boolean
   /** The release channel this install came from, so the row's setup command fetches it. */
   readonly channel?: 'beta' | 'latest' | null
+  /** What this installation calls itself, for the sentences that name it. */
+  readonly name: string
 }) {
-  return <Row {...engineRow(engine, { programDisputed, channel })} />
+  return <Row {...engineRow(engine, { programDisputed, channel, name })} />
 }
 
 /**

@@ -42,6 +42,7 @@ import { buildCoverageForm, formLedgerRows, coverageFormBrief, SEAT_ROW_CONTRACT
 import { REGISTER_AXES, COVERAGE_FORM_NAME } from "../coverage-ledger.mjs";
 import { correctionHint, warmEligible, warmPatchMessage, repairTarget } from "../gateway.mjs";
 import { progressQuantity } from "../repairs.mjs";
+import { DIGEST_SENTENCES } from "./ruled-sentences-digest.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
@@ -112,10 +113,10 @@ const DIGEST_MD = readFileSync(join(HERE, "..", "skills", "clearance-register", 
 // the duplication NAMED rather than refactored in a conversion PR — a shared helper is the right fix and
 // it belongs in a change that is about these guards, not one that happens to break them.
 const seatSection = () => {
-  const from = DIGEST_MD.indexOf("You may ADD rows of your own");
+  const from = DIGEST_MD.indexOf(DIGEST_SENTENCES.youMayAddRowsYour);
   // Was `"### Audit trail"`, a heading that existed because the seat was shown the document it had to
   // type. The driver renders the audit trail now; this is the section that replaced it.
-  const to = DIGEST_MD.indexOf("#### The audit trail and the status-filter summary are the DRIVER's");
+  const to = DIGEST_MD.indexOf(DIGEST_SENTENCES.theAuditTrailAndThe);
   assert.ok(from > 0 && to > from,
     "the seat-row section is not where it is expected — one of its two anchors moved. Re-point it at the "
     + "section that now FOLLOWS the worked example (and check the twin copy in "

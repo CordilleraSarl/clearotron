@@ -38,7 +38,7 @@ test("the menu's default is the AI the reader picked before, on both AIs, and ro
   }
   assert.equal(engineMenuDefault(options, "no-such-ai"), 0, "a pick the menu no longer offers falls back to row 0");
   // And the loop hands it the pick of the pass before, set once a pick is made.
-  assert.match(STEP, /const pick = await choose\(ENGINE_QUESTION, options, engineMenuDefault\(options, lastPick\), PAY_PREAMBLE\);\n\s*if \(!pick\.id\) \{ sayNoEngine\(\); break; \}\n\s*lastPick = pick\.id;/);
+  assert.match(STEP, /const pick = await choose\(ENGINE_QUESTION, options, engineMenuDefault\(options, lastPick, found\), PAY_PREAMBLE\);\n\s*if \(!pick\.id\) \{ sayNoEngine\(\); break; \}\n\s*lastPick = pick\.id;/);
 });
 
 test("a declined proof is asked whether to go on without an AI, and only a no goes back to the menu", () => {
@@ -70,4 +70,21 @@ test("a token pasted for a sign-in is saved only with the turn it proved", () =>
   assert.match(capture, /pastedToken = tok;\n\s*authEnv\[eng\.headless\.tokenEnv\] = tok;/, "the next turn no longer runs with the pasted token");
   const success = STEP.slice(STEP.indexOf("if (v.ok) {"), STEP.indexOf("break engine;", STEP.indexOf("if (v.ok) {")));
   assert.match(success, /if \(pastedToken !== null\) candidate\[eng\.headless\.tokenEnv\] = pastedToken;/, "a proved token is no longer saved");
+});
+
+test("the first pass defaults to the one AI found usable, and to row 0 when both or neither are", () => {
+  const options = engineOptions({});
+  const ids = Object.keys(ENGINE_BINARIES);
+  const usable = (id) => ({ executable: true, relative: false, version: ENGINE_BINARIES[id].floor });
+  for (const id of ids) {
+    assert.equal(engineMenuDefault(options, null, { [id]: usable(id) }), options.findIndex((o) => o.id === id), `only ${id} found`);
+  }
+  assert.equal(engineMenuDefault(options, null, Object.fromEntries(ids.map((id) => [id, usable(id)]))), 0, "both found: row 0");
+  assert.equal(engineMenuDefault(options, null, {}), 0, "neither found: row 0");
+  const [first, second] = ids;
+  assert.equal(engineMenuDefault(options, null, { [first]: usable(first), [second]: { ...usable(second), version: "0.0.1" } }),
+    options.findIndex((o) => o.id === first), "a copy below the floor does not count as found");
+  assert.equal(engineMenuDefault(options, null, { [first]: usable(first), [second]: { executable: false, relative: false } }),
+    options.findIndex((o) => o.id === first), "a setting pointing at a copy that is not there does not count");
+  assert.equal(engineMenuDefault(options, second, { [first]: usable(first) }), options.findIndex((o) => o.id === second), "a reader's earlier pick still wins");
 });

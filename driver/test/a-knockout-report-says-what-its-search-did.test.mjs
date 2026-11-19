@@ -11,7 +11,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 const { RECORD_BASIS, ARCHIVED_RECORD_BASIS, recordsLine } = await import("../register-records.mjs");
-const { renderKnockoutHtml, knockoutReportData } = await import("../publish/render-knockout.mjs");
+const { renderKnockoutHtml } = await import("../publish/render-knockout.mjs");
+const { knockoutReportData } = await import("../publish/report-data.mjs");
 const { buildKnockoutWorkbook } = await import("../publish/knockout.mjs");
 const ExcelJS = (await import("exceljs")).default;
 
@@ -119,5 +120,5 @@ test("the workbook's row for a reading that kept nothing says so, where an archi
 test("a working note says why a defect is open, and a defect the second look found prints the check's words alone", async () => {
   const open = (state, problem) => ({ mark: NAME, kind: "band", problem, ...(state ? { state } : {}) });
   const { notes } = await sheet(READ(), { openPoints: [open("not-corrected", "One."), open("not-rechecked", "Two."), open("not-answered", "Three."), open("found", "Four."), open(null, "Five.")] });
-  assert.deepEqual(notes.map((n) => n.Note), ["Not corrected in this run: One.", "Corrected, but not read again: Two.", "Not answered: Three.", "Four.", "Five."]);
+  assert.deepEqual(notes.map((n) => n.Note), ["Not corrected in this search: One.", "Corrected, but not read again: Two.", "Not answered: Three.", "Four.", "Five."]);
 });

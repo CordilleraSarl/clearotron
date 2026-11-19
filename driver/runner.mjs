@@ -20,7 +20,7 @@
 
 import "../shared/env-local.mjs";   // side effect: apply <repo>/.env when THIS file is the CLI entry (never on library import)
 import "./engine/mcp/http-dispatcher.mjs";   // side effect: raise undici headersTimeout (code-side fetches)
-import { readdirSync, renameSync, existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync, rmSync, statSync } from "node:fs";
+import { readdirSync, renameSync, existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync, rmSync, statSync, watch as watchFolder } from "node:fs";
 import { join, dirname, basename } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
 import { crossBuildResumeRefusal } from "./one-build-per-run.mjs";   // a run is finished on the build it started on (owner, 2026-11-09)
 // The queue's filename vocabulary, in ONE place — the rule, extended by to the prose-sidecar and
@@ -2392,6 +2392,36 @@ const WATCH_WAKE_JUMP_MS = 15_000;   // wall clock outrunning a slice by this mu
 // same trap the gateway-preflight hold documents.
 const sleepRefd = (ms) => new Promise((r) => setTimeout(r, ms));
 
+// ── A JOB FILE WAKES THE LOOP; THE TICK STAYS THE GUARANTEE ─────────────────────────────────────────────
+//
+// Between ticks an order waited for the next one: up to 90 s, about 45 s on average, before a search it was
+// accepted for began, and it fell before the run's own start time, so no record showed it. Measured on the two
+// production clearances whose order carries `enqueuedAt`: 1.1 and 1.4 minutes from queue to start. So each
+// queue folder the drain reads is watched, and a `.json` landing in one ends the wait. The watch only says when
+// to LOOK: the tick that follows reads the folders exactly as a timed tick does, whole job files only.
+//
+// `fs.watch` misses events on network filesystems and in some macOS and Windows cases, and a folder can fail
+// to be watched at all; each of those leaves the 90 s tick, as before. The watchers never keep the process
+// alive, and the folder list is re-read every tick, because a workspace created after start has a queue too.
+const WATCH_SETTLE_MS = 250;   // a burst of arrivals inside this window starts one drain, not one per file
+
+/** Watch every queue folder the drain reads; `onJob` on a `.json` arrival. Returns `{ rearm, close }`. */
+export function watchQueueFolders(onJob, folders = () => config.queueDirs) {
+  const watchers = new Map();
+  const rearm = () => {
+    for (const q of folders()) {
+      if (watchers.has(q)) continue;
+      try {
+        const w = watchFolder(q, { persistent: false }, (_kind, name) => { if (!name || String(name).endsWith(".json")) onJob(); });
+        w.on("error", () => { w.close(); watchers.delete(q); });
+        watchers.set(q, w);
+      } catch { /* not watchable here: the tick reads it */ }
+    }
+  };
+  rearm();
+  return { rearm, close: () => { for (const w of watchers.values()) w.close(); watchers.clear(); } };
+}
+
 // WAKE FROM SUSPEND. A closed lid is the normal condition for a multi-hour job, and a single
 // setTimeout(90s) handles it badly in both directions depending on the platform: timers run on a
 // MONOTONIC clock that stops while a Linux laptop is suspended, while `resetsAt` and postponedDueAt are
@@ -2422,39 +2452,53 @@ export async function watch({
   // thing keeping this process alive.
   beatEveryMs = WATCH_TICK_MS,
   startBeating = (fn, everyMs) => { const t = setInterval(fn, everyMs); t.unref?.(); return () => clearInterval(t); },
+  // A job file arriving ends the wait early (see watchQueueFolders). Injectable so the arms can watch a folder
+  // of their own, or none.
+  queueWatch = (onJob) => watchQueueFolders(onJob), settleMs = WATCH_SETTLE_MS,
 } = {}) {
   note(`[runner] watch: checking every ${Math.round(tickMs / 1000)}s for a search to start or to resume. Ctrl-C to stop.`);
-  for (let n = 0; ; n++) {
-    if (stopped()) break;
-    // One bad tick must never end the loop — that would put us back where a laptop started, with nothing
-    // re-invoking anything. main() already isolates per-queue failures; this catches everything above them.
-    // — the beat goes BEFORE the tick's work, not after. The portal reads this to tell "waiting for
-    // a worker that is not running" from "waiting its turn", and a beat written only on completion would
-    // leave a freshly-started worker looking absent for its whole first tick — which is exactly the window
-    // a user watches after pressing Start.
-    heartbeat();
-    const stopBeating = startBeating(heartbeat, beatEveryMs);
-    try { await run({ once: true }); }
-    catch (e) { note(`[runner] watch tick FAILED (isolated — retrying next tick): ${e?.message ?? e}`); }
-    // Reached on every path out of the tick, including the one where the catch above swallows a
-    // failure. A timer left running would go on beating for a worker that had stopped — the one
-    // direction this file's fail-safe rule forbids, because it is the reading nobody checks twice.
-    finally { stopBeating(); }
-    if (n + 1 >= ticks) break;
-    const due = now() + tickMs;
-    for (;;) {
+  // Arrivals during a drain are not lost and not raced: they leave `woken` set, and the drain's next pass starts as
+  // soon as this one ends. Never a second main() beside one in flight.
+  let woken = false, rouse = null;
+  const watcher = queueWatch(() => { woken = true; rouse?.(); });
+  try {
+    for (let n = 0; ; n++) {
       if (stopped()) break;
-      const before = now();
-      const asked = Math.min(sliceMs, due - before);
-      if (asked <= 0) break;
-      await sleep(asked);
-      const elapsed = now() - before;
-      if (elapsed > asked + wakeJumpMs) {
-        note(`[runner] watch: ${Math.round(elapsed / 1000)}s of wall clock passed during a ${Math.round(asked / 1000)}s sleep — treating this as wake-from-suspend and ticking now, so a window that elapsed while asleep is not waited out again`);
-        break;
+      watcher?.rearm?.();
+      woken = false;
+      // One bad tick must never end the loop — that would put us back where a laptop started, with nothing
+      // re-invoking anything. main() already isolates per-queue failures; this catches everything above them.
+      // — the beat goes BEFORE the tick's work, not after. The portal reads this to tell "waiting for
+      // a worker that is not running" from "waiting its turn", and a beat written only on completion would
+      // leave a freshly-started worker looking absent for its whole first tick — which is exactly the window
+      // a user watches after pressing Start.
+      heartbeat();
+      const stopBeating = startBeating(heartbeat, beatEveryMs);
+      try { await run({ once: true }); }
+      catch (e) { note(`[runner] watch tick FAILED (isolated — retrying next tick): ${e?.message ?? e}`); }
+      // Reached on every path out of the tick, including the one where the catch above swallows a
+      // failure. A timer left running would go on beating for a worker that had stopped — the one
+      // direction this file's fail-safe rule forbids, because it is the reading nobody checks twice.
+      finally { stopBeating(); }
+      if (n + 1 >= ticks) break;
+      const due = now() + tickMs;
+      for (;;) {
+        if (stopped()) break;
+        if (woken) { await sleep(settleMs); break; }   // let a burst of arrivals land, then one drain reads them all
+        const before = now();
+        const asked = Math.min(sliceMs, due - before);
+        if (asked <= 0) break;
+        await Promise.race([sleep(asked), new Promise((r) => { rouse = r; })]);
+        rouse = null;
+        if (woken) continue;
+        const elapsed = now() - before;
+        if (elapsed > asked + wakeJumpMs) {
+          note(`[runner] watch: ${Math.round(elapsed / 1000)}s of wall clock passed during a ${Math.round(asked / 1000)}s sleep — treating this as wake-from-suspend and ticking now, so a window that elapsed while asleep is not waited out again`);
+          break;
+        }
       }
     }
-  }
+  } finally { watcher?.close?.(); }
   note(`[runner] watch: stopped${stopSignal ? ` (${stopSignal})` : ""} — anything still parked resumes the next time this runs.`);
 }
 

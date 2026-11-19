@@ -67,6 +67,15 @@ jobs:
 
       - run: npm ci
 
+      # THE WATCH LOOP'S WAKE, ON THE MACHINE THAT DEPENDS ON IT. A Mac has no systemd, so `clearotron start`
+      # drains the queue with `runner.mjs --watch`, and an order is picked up when a job file lands in a queue
+      # folder. That rests on the platform's folder watch, which differs here from Linux, so the arms run here
+      # too. They drive the loop against a temporary folder and spend nothing.
+      - name: A queued order wakes the watch loop
+        run: |
+          export HOME="$(mktemp -d)"
+          node scripts/test-run.mjs node --test driver/test/a-queued-order-wakes-the-watch-loop.test.mjs
+
       # THE PACKAGE SHIPS THE BUILT PORTAL (`portal-ui/dist/` is in `files`), so the bytes are only whole
       # once it is built. The health check below requires `ui: built` for exactly that reason.
       - run: npm run build:ui

@@ -220,7 +220,7 @@ test("a 3-mark knockout batch runs end to end: receipts, degrade, publish stamps
   assert.ok(meta.overall && meta.badge, "index-compatible overall/badge stamps");
   assert.equal(meta.template, "knockout");
   assert.equal(meta.stageLabel, "Knockout search", "the product's own name is stamped, not re-derived downstream");
-  assert.equal(meta.reportSchema, "report-data/1", "the run publishes machine-readable data beside the document");
+  assert.equal(meta.reportSchema, "report-data/knockout-1", "the run publishes machine-readable data beside the document");
   // — the TYPED finding, end to end: emitted by the stage, validated by the chunk gate and again
   // on the merged artifact, receipted against the payload on disk, and RENDERED. The old shape reached
   // the page through a `f.url` filter that a typed record fails, so a mark with conflicts published as a

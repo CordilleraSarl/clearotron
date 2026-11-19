@@ -28,7 +28,7 @@ import { newSessionRecord, noteCodexEvent, sessionSummary, countTool, streamSink
 import { writeSecretFile } from "../../shared/secret-file.mjs";   // the rotated login goes back the way every credential is written
 import { tmpdir, homedir } from "node:os";
 import { join, dirname, sep } from "node:path";
-import { runStreamingChild, absolutizeSkillRefs, WRITE_DISCIPLINE, buildEnvelope, resolveSpawnCwd } from "./common.mjs";
+import { runStreamingChild, absolutizeSkillRefs, WRITE_DISCIPLINE, buildEnvelope, resolveSpawnCwd, isRecordTool } from "./common.mjs";
 import { renderCodexConfigToml } from "./mcp/codex-config.mjs";
 import { resolveAuthMode } from "./auth.mjs";
 import { engineEnv, codexCommandWithheld } from "./engine-env.mjs";
@@ -438,8 +438,10 @@ export function buildCodexArgs({ model, thinking, resumeRef, runDir } = {}) {
   return { args: [...base, "-"] };
 }
 
-// Fold ONE codex --json line into the running event accumulator.
-export function parseCodexEvent(line, ev) {
+// Fold ONE codex --json line into the running event accumulator. `atMs` is when the line arrived, in ms from the
+// spawn; given, it times the turn (see codexTiming), and a line that is not JSON still counts as the child speaking.
+export function parseCodexEvent(line, ev, atMs = null) {
+  if (Number.isFinite(atMs)) ev.firstLineAtMs ??= atMs;
   let e; try { e = JSON.parse(line); } catch { return; }
   // MODEL GAUGE ( corruption 3) — OPPORTUNISTIC on the stream, and its answer here is "nothing".
   //
@@ -475,6 +477,7 @@ export function parseCodexEvent(line, ev) {
       }
       noteMcpToolCall(e.item, ev);
       noteToolItem(e.item, ev);
+      noteToolTiming(e.type, e.item, ev, atMs);
       break;
     // ── — AN MCP CALL THAT WAS REFUSED IS NOT A CALL NOBODY MADE ──────────
     //
@@ -498,6 +501,7 @@ export function parseCodexEvent(line, ev) {
     case "item.started":
       noteMcpToolCall(e.item, ev);
       noteToolItem(e.item, ev);
+      noteToolTiming(e.type, e.item, ev, atMs);
       break;
     default: break;
   }
@@ -533,10 +537,70 @@ const TOOL_ITEM_KINDS = new Set(["command_execution", "file_change", "web_search
  */
 export function noteToolItem(item, ev) {
   if (!item?.id) return;
-  const name = item.type === "mcp_tool_call" ? `mcp__${item.server ?? "?"}__${item.tool ?? "?"}`
-    : TOOL_ITEM_KINDS.has(item.type) ? item.type : null;
+  const name = toolItemName(item);
   if (!name) return;
   (ev.toolItems ??= new Map()).set(item.id, name);
+}
+
+/** A tool-shaped item's name, as the per-name count and the wait split key it; null for anything else. */
+const toolItemName = (item) => (item?.type === "mcp_tool_call" ? `mcp__${item.server ?? "?"}__${item.tool ?? "?"}`
+  : TOOL_ITEM_KINDS.has(item?.type) ? item.type : null);
+
+// ── WHERE A CODEX TURN'S TIME WENT, ON THE ANTHROPIC ENGINE'S TERMS ─────────────────────────────────────────
+//
+// Codex attempts carried no start-up, tool-wait or active time, so a Codex turn's time could not be split between
+// the engine starting, the model working and its tools running, and its stall window could not be set from any
+// record. Its stream already says when each tool item opens (`item.started`) and closes (`item.completed`); what it
+// lacked was the time each line arrived. Every line is now read with its arrival in ms from the spawn, and the
+// fields mean what they mean on the Anthropic engine (anthropic-agent.mjs, the settled timing):
+//   - `firstByteMs`: spawn to the child's first line, null when it never spoke;
+//   - `toolWaitMs`: time with at least one tool item open, so two concurrent items count their overlap once, and an
+//     item still open when the turn ended counts up to the end;
+//   - `toolWaitByTool`: each resolved item's own open time under its name, which can sum past `toolWaitMs` for the
+//     same reason as on the Anthropic engine (concurrent items), and leaves out an item that never resolved;
+//   - `activeMs`: the wall less `toolWaitMs`, so the two tile the wall.
+// The items counted as tool wait are the kinds this file counts as tool calls: MCP calls, shell commands, file
+// changes and web searches; the Anthropic engine counts every tool it asks for, which covers the same kinds.
+// RECORDING ONLY: nothing in the kill clocks, walls or retries reads these.
+export function noteToolTiming(type, item, ev, atMs) {
+  if (!Number.isFinite(atMs) || !item?.id) return;
+  const name = toolItemName(item);
+  if (!name) return;
+  const t = (ev.toolTiming ??= { open: new Map(), since: null, waitMs: 0, byTool: Object.create(null) });
+  if (type === "item.started") {
+    if (t.open.has(item.id)) return;
+    // The last tool asked for, apart from the stage's own record write, and the last record write (see codexTiming).
+    if (isRecordTool(name)) ev.lastRecordAskMs = atMs; else ev.lastWorkAskMs = atMs;
+    if (t.open.size === 0) t.since = atMs;
+    t.open.set(item.id, atMs);
+    return;
+  }
+  if (type !== "item.completed") return;
+  const opened = t.open.get(item.id);
+  // An item that arrives already complete was never seen open: it is a call, with no wait anybody could time.
+  t.byTool[name] = (t.byTool[name] ?? 0) + (opened == null ? 0 : Math.max(0, atMs - opened));
+  if (opened == null) return;
+  t.open.delete(item.id);
+  if (t.open.size === 0) { t.waitMs += Math.max(0, atMs - t.since); t.since = null; }
+}
+
+/**
+ * The settled timing of a turn `wallMs` long (see above). An accumulator that was never timed reports null for each
+ * field: this engine could not measure, which is not "no wait". PURE.
+ */
+export function codexTiming(ev, wallMs) {
+  if (!ev?.timed || !Number.isFinite(wallMs)) return { firstByteMs: null, toolWaitMs: null, activeMs: null, toolWaitByTool: null, lastToolAsk: null };
+  const t = ev.toolTiming;
+  const open = t?.open.size ? Math.max(0, wallMs - t.since) : 0;
+  const toolWaitMs = Math.min(Math.round(wallMs), Math.round((t?.waitMs ?? 0) + open));
+  return {
+    firstByteMs: Number.isFinite(ev.firstLineAtMs) ? Math.round(ev.firstLineAtMs) : null,
+    toolWaitMs, activeMs: Math.max(0, Math.round(wallMs) - toolWaitMs),
+    toolWaitByTool: Object.fromEntries(Object.entries(t?.byTool ?? {}).map(([k, v]) => [k, Math.round(v)])),
+    // ms from spawn to the last tool item opened that was not the stage's own record write, and to the last that was, as the
+    // Anthropic engine reports them; the gateway reads them to choose how a hard-wall kill is retried.
+    lastToolAsk: { workMs: Number.isFinite(ev.lastWorkAskMs) ? Math.round(ev.lastWorkAskMs) : null, recordMs: Number.isFinite(ev.lastRecordAskMs) ? Math.round(ev.lastRecordAskMs) : null },
+  };
 }
 
 /**
@@ -863,6 +927,8 @@ function settleTuple({ r, ev, resumeRef }) {
     // through (session-record.mjs: every turn ending and stream error, in order), and the raw stream.
     toolCallsByName: codexToolCallsByName(ev), toolCallsErroredByName: codexToolServerErrors(ev),
     session: sessionSummary(ev.session), stream: ev.stream ?? null,
+    // Start-up, tool wait and active time, as the Anthropic engine reports them (codexTiming).
+    ...codexTiming(ev, r.wall * 1000),
     writesFailed: ev.writesFailed ?? 0,
     commandsFailed: ev.commandsFailed ?? 0,
     commandFailures: ev.commandFailures ?? [],
@@ -992,8 +1058,9 @@ export const openaiAgentEngine = {
       // Stamped HERE, not at function entry: everything above is file writes that can take a moment, and
       // a floor set too early would let a previous turn's rollout back in on a shared home.
       const spawnedAtMs = Date.now();
+      // `timed`: this turn's lines are read with their arrival times, so its timing fields are measurements.
       const ev = { threadId: null, usage: null, agentText: "", turnCompleted: false, turnFailed: null, streamError: null, model: null, mcpCalls: new Map(),
-        session: newSessionRecord() };
+        session: newSessionRecord(), timed: true };
       // The raw stream, one file per session beside its dispatch; every line codex wrote on stdout.
       const sink = streamSink(streamFile);
       const r = await runStreamingChild({
@@ -1004,7 +1071,7 @@ export const openaiAgentEngine = {
         env, stallSec, timeoutSec,
         onStdoutLine: (line) => {
           sink.write(`${line}\n`);
-          parseCodexEvent(line, ev);
+          parseCodexEvent(line, ev, Date.now() - spawnedAtMs);
           let e; try { e = JSON.parse(line); } catch { return; }
           noteCodexEvent(ev.session, e, Date.now() - t0);
         },

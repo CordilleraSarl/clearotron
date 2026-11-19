@@ -33,6 +33,7 @@ import { appendFileSync, mkdirSync, statSync, openSync, readSync, closeSync, rea
 import { dirname, basename } from "node:path";
 import { createHash } from "node:crypto";
 import { ledgerPath, RUN_RECORD_LOG_FILE } from "./ledger-path.mjs";
+import { normalizeRecordUri } from "./record-uri.mjs";
 
 export const CALL_LOG_PATH = ledgerPath("call");
 // Spec A1 (citation fidelity): every fetched record's BODY is persisted alongside the call ledger, so the
@@ -135,7 +136,7 @@ export function makeLedger(provider) {
 //
 // Run-scoped ledgers only. The box-wide fallback file holds many runs, and a record one run fetched is not
 // a record another run holds.
-const RUN_INDEXES = new Map();   // dest → { offset, byTarget: Map<key, { hash, refreshed, ts, start, len }>, byGuid: Map<guid, key> }
+const RUN_INDEXES = new Map();   // dest → { offset, byTarget: Map<key, { hash, refreshed, ts, start, len }>, byGuid: Map<guid, key>, withBody: Map<record key, { start, len }> }
 const targetKey = (t) => String(t ?? "").toLowerCase();   // the key every reader of this file matches on
 const bodyHash = (b) => createHash("sha1").update(JSON.stringify(b ?? null)).digest("hex");
 // The record's own id: the last segment of `/mark/<office>/<id>`. The office segment is a hint that can
@@ -150,6 +151,9 @@ function indexRow(ix, line, start = null, len = null) {
     const key = targetKey(r?.target);
     ix.byTarget.set(key, { hash: bodyHash(r?.body), refreshed: r?.refreshed === true, ts: r?.ts ?? null, start, len });
     if (key) ix.byGuid.set(guidOf(key), key);
+    // THE LAST LINE THAT CARRIES A BODY, under the record key a lookup by record id uses (recordBodyFromLog). Kept
+    // apart from `byTarget`, whose rule is the last line of any kind: a later line with no body must not hide a body.
+    if (r?.body) ix.withBody.set(normalizeRecordUri(r.target) || key, { start, len });
   } catch { /* a torn or foreign line indexes nothing, and is left where it is */ }
 }
 
@@ -160,7 +164,7 @@ function indexOf(dest) {
   let ix = RUN_INDEXES.get(dest);
   // A replacement elsewhere renames a NEW file over this one: same path, different inode, and an offset
   // into the old file means nothing in the new one. Re-read from the start.
-  if (!ix || size < ix.offset || ix.ino !== ino) { ix = { offset: 0, ino, byTarget: new Map(), byGuid: new Map() }; RUN_INDEXES.set(dest, ix); }
+  if (!ix || size < ix.offset || ix.ino !== ino) { ix = { offset: 0, ino, byTarget: new Map(), byGuid: new Map(), withBody: new Map() }; RUN_INDEXES.set(dest, ix); }
   if (size <= ix.offset) return ix;
   const fd = openSync(dest, "r");
   try {
@@ -217,6 +221,30 @@ export function heldRecordBodies(dest, ids) {
     }
   } catch { /* unreadable: nothing held */ } finally { if (fd !== undefined) try { closeSync(fd); } catch { /* closed */ } }
   return out;
+}
+
+/**
+ * The body this run's record log holds for one record, or null: the last line naming it, by its record key, that
+ * carries a body. The same answer as reading the whole log and keeping the last such line, served from the index
+ * above, so a lookup costs the lines appended since the last one and one line's read, not a parse of the whole log.
+ * Measured on production's 0.4.x clearances before this existed: a whole-log lookup took a median 0.80 s and up to
+ * 147 s, inside serial stages whose model waited for each answer.
+ *
+ * A run-scoped log only, like `heldRecordBodies`. A line still being written is not yet in the index, as it is not
+ * yet a whole line. Anything that cannot be read is null, which the caller reports as not fetched yet.
+ */
+export function recordBodyFromLog(dest, uri) {
+  if (typeof dest !== "string" || basename(dest) !== RUN_RECORD_LOG_FILE) return null;
+  const want = normalizeRecordUri(uri) || targetKey(uri);
+  let fd;
+  try {
+    const at = indexOf(dest).withBody.get(want);
+    if (!at || !Number.isInteger(at.start) || !Number.isInteger(at.len)) return null;
+    fd = openSync(dest, "r");
+    const buf = Buffer.alloc(at.len);
+    if (readSync(fd, buf, 0, at.len, at.start) !== at.len) return null;
+    return JSON.parse(buf.toString("utf8"))?.body || null;
+  } catch { return null; } finally { if (fd !== undefined) try { closeSync(fd); } catch { /* closed */ } }
 }
 
 const sleepMs = (ms) => { try { Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms); } catch { /* no sleep available */ } };

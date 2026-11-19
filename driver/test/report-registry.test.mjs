@@ -27,6 +27,26 @@ test("every level states its report identity — a new level cannot ship without
   }
 });
 
+// The Clearances list prints each search's short tag under the name and filters by it. The tag sits beside
+// the identity for the same reason the identity does: a product added without one would show nothing under
+// its names and have no filter button, and the page keeps no list of its own to notice.
+test("every level states its short tag, one per level — a new level cannot ship without one", () => {
+  const tags = Object.entries(PRODUCT_POLICIES).map(([level, p]) => {
+    assert.equal(typeof p.report.tag, "string", `${level} has no short tag`);
+    assert.ok(p.report.tag.trim(), `${level} has a blank short tag`);
+    return p.report.tag;
+  });
+  assert.equal(new Set(tags).size, tags.length, `two levels share a tag: ${tags.join(", ")}`);
+});
+
+test("the tags the Clearances page imports are the registry's, in its order: shared/search-level-tags.json is current", async () => {
+  const { deriveSearchLevelTags } = await import("../../scripts/mint-search-level-tags.mjs");
+  const { readFileSync } = await import("node:fs");
+  const committed = JSON.parse(readFileSync(new URL("../../shared/search-level-tags.json", import.meta.url), "utf8"));
+  assert.deepEqual(committed, await deriveSearchLevelTags(), "re-mint: node scripts/mint-search-level-tags.mjs");
+  assert.deepEqual(committed.levels.map((l) => l.tag), ["KO", "Prelim", "Multi", "Full"], "the approved tags, in the approved order");
+});
+
 test("the banner joins the stage label to the identity — this is the line the reader sees", () => {
   assert.equal(reportIdentityFor("knockout-register").banner, "Depth 2 — Knockout review with register hit-counts");
   assert.equal(reportIdentityFor("clearance").banner, "Depth 4 — Preliminary clearance");

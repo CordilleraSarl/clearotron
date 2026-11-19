@@ -135,7 +135,7 @@ test("a Knockout whose workbook cannot be built delivers its report, and nothing
   assert.equal(JSON.parse(readFileSync(join(poolRunDir, "report-data.json"), "utf8")).auditFile, null, "the data file names no workbook");
   assert.doesNotMatch(readFileSync(join(poolRunDir, "report.md"), "utf8"), /audit workbook/, "the run's summary names no workbook");
   assert.doesNotMatch(knockoutEmail(runDir, published), /audit workbook/, "the email offers no workbook");
-  assert.equal(meta.reportSchema, "report-data/1", "control: the data file was written and is claimed");
+  assert.equal(meta.reportSchema, "report-data/knockout-1", "control: the data file was written and is claimed");
   claimsOnlyWhatExists(poolRunDir, meta);
   assert.equal(logged(runDir, "workbook-not-built").length, 1, "the run records the failure");
 });
@@ -144,7 +144,7 @@ test("a Knockout batch with one data file that cannot be written delivers both r
   const whole = await publishWith("knockout-search", { prepare: addSecondName });
   assert.equal(opensEveryReport(whole.poolRunDir, whole.meta), 2, "premise: the copy publishes as a batch of two");
   assert.deepEqual(whole.meta.reports.map((r) => r.dataFile), ["report-data-venqori.json", "report-data-cluvendra.json"]);
-  assert.equal(whole.meta.reportSchema, "report-data/1", "control: with both written, both are claimed");
+  assert.equal(whole.meta.reportSchema, "report-data/knockout-1", "control: with both written, both are claimed");
 
   const { published, poolRunDir, runDir, meta } = await publishWith("knockout-search", { prepare: addSecondName, blocked: () => ["report-data-cluvendra.json"] });
   assert.equal(opensEveryReport(poolRunDir, meta), 2, "both names' reports open");

@@ -13,8 +13,8 @@ import { join } from "node:path";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { buildKnockoutWorkbook } from "../publish/knockout.mjs";
-import { buildAudit } from "../publish/xlsx.mjs";
-import { gateCouldNotEvaluate } from "../publish/index.mjs";
+import { buildAudit, addSheet } from "../publish/xlsx.mjs";
+import { gateCouldNotEvaluate, undispatchedProbeRows } from "../publish/index.mjs";
 import { plainDeferralReason } from "../deferral-row.mjs";
 import { coverageJudgmentRows } from "../pipeline.mjs";
 import { joinPlanToBands, deriveCoverageSkeleton } from "../register-plan.mjs";
@@ -56,8 +56,8 @@ test("a knockout web search that failed prints the reader's line on its Audit Tr
   await buildKnockoutWorkbook(FINDINGS, receipts, out);
   const { sheet, cells } = await workbookRows(out);
   const trail = sheet("Audit Trail");
-  assert.deepEqual(trail.map((r) => r["Result Summary"]), [`FAILED — ${LEFT_OPEN}`, `FAILED — ${TIMED_OUT}`, "ok — 10 bytes"]);
-  assert.deepEqual(trail.map((r) => r["OK/Degraded"]), ["Degraded", "Degraded", "OK"], "the rows keep their state");
+  assert.deepEqual(trail.map((r) => r["Result summary"]), [`FAILED — ${LEFT_OPEN}`, `FAILED — ${TIMED_OUT}`, "ok — 10 bytes"]);
+  assert.ok(trail.every((r) => !("OK/Degraded" in r)), "the engine's OK/Degraded column is back on the lawyer's sheet");
   assert.ok(!cells.some((c) => /API_KEY|driver env|executor threw/.test(c)), "a raw cause reached a reader's cell");
 });
 
@@ -74,7 +74,7 @@ test("an unusable close-variation cap leaves the setting's name out of the Regis
   await buildKnockoutWorkbook(FINDINGS, [], out, registerCounts);
   const { sheet, cells } = await workbookRows(out);
   const [row] = sheet("Register Counts");
-  assert.equal(row["Notes"], `Close variations: ${LEFT_OPEN}`);
+  assert.equal(row["Note"], `Close variations: ${LEFT_OPEN}`);
   assert.ok(!cells.some((c) => /CLEAROTRON_|\bNaN\b|configuration fault/.test(c)), "the setting or its raw value reached a reader's cell");
 });
 
@@ -131,17 +131,53 @@ test("the Summary's coverage-judgment slices are named in the reader's words and
     null, out, "QZXV", { title: "QZXV" });
   const { sheet } = await workbookRows(out);
   const summary = sheet("Summary");
-  const head = summary.findIndex((r) => /Coverage judgment — slices considered/.test(r["Field"]));
+  const head = summary.findIndex((r) => /How coverage was judged/.test(r["Field"]));
   assert.ok(head >= 0, "no coverage-judgment slices on the Summary");
   const slices = summary.slice(head + 1, head + 1 + rows.length);
   assert.deepEqual(slices.map((r) => r["Field"].trim()), [
-    "main register sweep / QZXV* wildcard, cl. 9, US",
+    "main register search / QZXV* wildcard, cl. 9, US",
     "owner portfolio sweep / owner probe, cl. 9, US",
     "transliterations and numeric forms / exact: KYUZIXV [cl 9]",
   ], "a slice is printed under the engine's identifier where the driver wrote the reader's name");
-  assert.equal(slices[1]["Value"], "deferred — the owner's portfolio was not counted this run",
+  assert.equal(slices[1]["Value"], "Not searched — the owner's portfolio was not counted this run",
     "the row claiming a search that never ran carries the engine's qid");
   assert.equal(slices[2]["Value"], "planned and not executed this run", "the orphan row carries the engine's own clause");
   const engine = /\b(?:primary-sweep|incumbent-class|transliteration-numeric|saturation-probe)\b|band block|funnel/;
   assert.ok(!summary.some((r) => engine.test(`${r["Field"]} ${r["Value"]}`)), "an engine identifier reached the Summary");
+});
+
+test("a recall probe left over the cap reaches the gaps sheet with its party and no probe id", async (t) => {
+  // An engine identifier in a client cell is the class: the probe id stays in the receipt and the run record.
+  const receipt = { overflow: [{ qid: "recall-owner-lanternwick-holdings", term: "Lanternwick Holdings" }] };
+  const rows = undispatchedProbeRows(receipt);
+  assert.deepEqual(rows, [{ area: "Lanternwick Holdings", state: "not-searched", note: "over the cap, never dispatched" }]);
+  const out = tempBook(t, "audit.xlsx");
+  await buildAudit({ findings: [], coverage: rows }, null, out, "LANTERNWICK", { title: "LANTERNWICK" });
+  const { cells } = await workbookRows(out);
+  assert.ok(cells.some((c) => /Lanternwick Holdings/.test(c)), "the row did not reach the workbook, so the check below checks nothing");
+  assert.ok(!cells.some((c) => /\(recall-owner-lanternwick-holdings\)|never dispatched \(/.test(c)), "a probe id reached a note cell");
+});
+
+test("a slice label a run stored says 'main register search' in every workbook cell, and a name stays as written", async () => {
+  // A run keeps the words of the build that wrote its labels; the workbook copies them. Invented names.
+  const ExcelJS = (await import("exceljs")).default;
+  const ws = addSheet(new ExcelJS.Workbook(), "Notes", ["Mark", "Note"], [
+    { Mark: "Main Register Sweep", Note: "main register sweep / exact: QZXV [cl 9]" },
+  ]);
+  assert.deepEqual([ws.getRow(2).getCell(1).value, ws.getRow(2).getCell(2).value], ["Main Register Sweep", "main register search / exact: QZXV [cl 9]"]);
+});
+
+test("a coverage area the engine named by its axis reads the reader's label on Coverage & gaps; any other area is unchanged", async (t) => {
+  const out = tempBook(t, "audit.xlsx");
+  await buildAudit({ findings: [], coverage: [
+    { area: "primary-sweep", state: "confirmed-clean", note: "read in full" },
+    { area: "incumbent-class / named-owner screen", state: "confirmed-clean", note: "no matches" },
+    { area: "Japanese register check for the exact QZXV spelling", state: "open", note: "" },
+  ] }, null, out, "QZXV", { title: "QZXV" });
+  const { sheet } = await workbookRows(out);
+  const areas = sheet("Coverage & gaps").map((r) => r["Area"]);
+  assert.ok(areas.includes("main register search"), `the axis name was not relabelled: ${JSON.stringify(areas)}`);
+  assert.ok(areas.includes("owner portfolio sweep / named-owner screen"));
+  assert.ok(areas.includes("Japanese register check for the exact QZXV spelling"), "an area the engine did not name by its axis changed");
+  assert.ok(!areas.some((a) => /^(?:primary-sweep|incumbent-class|transliteration-numeric)\b/.test(a)), "an engine axis identifier reached an Area cell");
 });

@@ -197,6 +197,31 @@ const CHROME_RES = [
   { tag: "div", open: /<div class="[^"]*\bfab-stack\b[^"]*"[^>]*>/ },
 ];
 
+// ── the chrome a renderer marks as its own ──────────────────────────────────────────────────────────
+//
+// Both renderers put `data-report-chrome` on the root of each piece of chrome the portal draws for itself:
+// the sticky header on both reports, and the Knockout's floating theme toggle. A report rendered with the
+// marker is stripped by it, element by element and balanced by its own tag, so a renamed class or a
+// reshaped header no longer stops a strip without a sound. The attribute changes nothing a reader sees,
+// and no stylesheet selects on it.
+//
+// THE CLASS RULES ABOVE STAY. Stored reports are served from their own bytes for as long as they are
+// kept, and a report rendered before the marker carries only the classes. A class rule leaves only when
+// no stored report matches it any more. On a marked report they find nothing left to remove.
+const MARKED_CHROME_RE = /<([a-z]+)\b[^>]*\sdata-report-chrome\b[^>]*>/gi;
+
+function stripMarkedChrome(html, onUnbalanced = () => {}) {
+  const tags = new Set([...html.matchAll(MARKED_CHROME_RE)].map((m) => m[1].toLowerCase()));
+  let out = html;
+  let removed = 0;
+  for (const tag of tags) {
+    const r = stripBalanced(out, new RegExp(`<${tag}\\b[^>]*\\sdata-report-chrome\\b[^>]*>`), tag, onUnbalanced);
+    out = r.html;
+    removed += r.removed;
+  }
+  return { html: out, removed };
+}
+
 // ── labelled internal tails: the MID-LINE form the element strip cannot see ──────────────────────────
 //
 // publish/parse.mjs is the authority on what `[internal] ` means: stripInternal({client:false}) labels
@@ -377,6 +402,12 @@ const RATED_UNDER_RE = /<br\s*\/?>Rated under:\s*<span class="mono">[^<]*<\/span
 const RUN_UNDER_PROJECT_RE = /<br\s*\/?>Run under project:\s*<span class="mono">[^<]*<\/span>\./gi;
 
 const CONNECTOR_TOKEN_RE = /([?&])token=v1\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+(&)?/g;
+
+// WHAT DRIFT LOOKS LIKE, read from the served document rather than from what the strips removed: any
+// `<nav>` carrying a site-nav class, and any `token=` query value of the connector's dotted shape, in any
+// version. Wider than the strips on purpose, so a renamed class or a new token version is still seen.
+const navSurvived = (html) => /<nav\b[^>]*\bclass\s*=\s*["'][^"']*\bsite-?nav\b/i.test(html);
+const tokenSurvived = (html) => /[?&]token=v\d+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/.test(html);
 
 function dropConnectorToken(html) {
   let dropped = 0;
@@ -911,6 +942,7 @@ export function prepareReportForEmbed(html, { staff = false, poolRoot = null, fe
   let out = nav.html;
   const strippedNav = nav.removed;
 
+  out = stripMarkedChrome(out, note).html;
   for (const { open, tag } of CHROME_RES) out = stripBalanced(out, open, tag, note).html;
 
   // The baked connector credential comes out for EVERYONE, before the audience branch below decides
@@ -1118,17 +1150,16 @@ export function readReport(dir, { log = () => {}, staff = false, poolRoot = null
   if (neutralised > 0) {
     log(`report-embed: ${neutralised} cross-tenant link(s) survived the nav strip in ${dir} — nav markup may have drifted`);
   }
-  if (strippedNav === 0) {
-    // Not fatal: a report rendered without the shared nav is legitimate (some publish paths omit it).
-    // Worth a line, because the other explanation is that the strip stopped working.
-    log(`report-embed: no site nav found in ${dir} (fine if it was rendered without one)`);
+  // THE TWO CANARIES SPEAK ONLY ON DRIFT. They used to log whenever nothing was stripped, and no renderer
+  // writes a site nav or a connector token any more, so they logged on every current report and drift read
+  // the same as normal. Now each looks at what is SERVED: a site nav or a token still in it means a report
+  // carried one in a shape the strip no longer matches.
+  if (navSurvived(html)) {
+    log(`report-embed: a site nav survived the strip in ${dir} (stripped ${strippedNav}) — nav markup drifted`);
   }
-  if (tokensDropped === 0) {
-    // Every report the current renderer publishes carries exactly one. Zero means either a run published
-    // before connector tokens existed (fine, and common in the archive) or that the renderer changed shape
-    // and this strip is now a no-op — which would put a bearer credential back into a served document with
-    // nothing else to catch it. Said at INFO rather than asserted, because the benign case is real.
-    log(`report-embed: no connector token found in ${dir} (fine on a pre-connector run; otherwise the renderer's URL shape moved)`);
+  if (tokenSurvived(html)) {
+    // A bearer credential in a served document, with nothing else to catch it.
+    log(`report-embed: a connector token survived the strip in ${dir} (dropped ${tokensDropped}) — the renderer's URL shape moved`);
   }
   return html;
 }

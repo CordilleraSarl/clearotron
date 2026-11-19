@@ -191,7 +191,7 @@ export function deriveLaneDepthVerdicts({ sidecar, slices } = {}) {
 
     const ran = deepRan.length ? "full" : candidatesState === "ran" ? "candidates" : null;
     const shortfall = asked === "full" && ran !== "full";
-    let cause = null, why = null;
+    let cause = null, why = null, detail = null;
     if (shortfall) {
       // "The lane ran as a slice-1 candidate lane" is said only of a lane whose candidates ran: a lane
       // that ran nothing is not established, whatever this build carries for it.
@@ -202,15 +202,23 @@ export function deriveLaneDepthVerdicts({ sidecar, slices } = {}) {
           + `Only the candidate search ran; the deeper web search and native-language review were not performed.`;
       } else if (ran === null) {
         cause = "not-established";
-        why = `${deep.length ? `the deep slice(s) ${deepStates.map((d) => `${d.name}=${d.state ?? "no record"}`).join(", ")} did not state that they ran, and ` : ""}`
+        // THE CLIENT READS THIS UNDER "LEFT OPEN" too: the owner's sentence (2026-11-18), in place of
+        // the record's own terms. What the record does say, slice by slice, stays beside it as `detail`, for the run
+        // record and whoever reads it. Not reported as candidates: that would be a claim no artifact supports.
+        why = `Whether the full-depth ${languageOfLane(lane)}-language search ran cannot be confirmed from this search's record, `
+          + `so it is treated as not done.`;
+        detail = `${deep.length ? `the deep slice(s) ${deepStates.map((d) => `${d.name}=${d.state ?? "no record"}`).join(", ")} did not state that they ran, and ` : ""}`
           + `slice 1 for this lane is ${candidatesState ?? "unrecorded"} — what this lane delivered CANNOT be established from `
-          + `this run's own record. Not reported as candidates: that would be a claim no artifact supports.`;
+          + `this run's own record.`;
       } else {
         cause = "requested-full-ran-candidates";
-        why = `asked for full and ran candidates only — ${deepStates.map((d) => `${d.name} ${d.state ?? "no record"}`).join(", ")}`;
+        // The owner's 2026-11-11 sentence pattern, ruled for this cause on 2026-11-18; the slices' own states stay as `detail`.
+        why = `A full-depth ${languageOfLane(lane)}-language search was requested, but only the candidate search ran; `
+          + `the deeper web search and native-language review were not performed.`;
+        detail = `asked for full and ran candidates only — ${deepStates.map((d) => `${d.name} ${d.state ?? "no record"}`).join(", ")}`;
       }
     }
-    out[lane] = { asked, ran, shortfall, cause, why,
+    out[lane] = { asked, ran, shortfall, cause, why, ...(detail ? { detail } : {}),
       basis: "_driver/jx-lanes.json:lanes[].depth (asked) vs fold.slices (ran)" };
   }
   return out;

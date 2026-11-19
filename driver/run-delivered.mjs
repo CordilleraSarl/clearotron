@@ -15,6 +15,7 @@ import { degradedParts, writeDegradedParts } from "./degraded-parts.mjs";
 import { config } from "./driver.config.mjs";
 import { registerAdapter } from "./engine/run-choices.mjs";   // the run's register adapter, from ctx.register
 import { note, runLog } from "./log.mjs";
+import { markLogos, logosStep } from "./mark-logos.mjs";
 import { NOT_COMPLETED_DIR } from "./parts-not-completed.mjs";
 import { deliveryForRun } from "./profiles.mjs";
 import { finalStepFields, readRunStatus, recordTransition, signoffPatch, writeRunStatus } from "./progress.mjs";
@@ -31,7 +32,7 @@ import { stampTokenRollup } from "./tokens.mjs";
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-export async function deliveryEndState({ P, agent, ctx, job, run }, helpers) {
+export async function deliveryEndState({ P, agent, ctx, job, run, opts = {} }, helpers) {
   const { applyScopeFrontMatterOf, archive, assessmentCoverageOfRun, localLanguageStateOf, reportIdentityRecord, searchLogAuditMd, sentinel, setAsideTheAssessment, writeScopeFactsOf } = helpers;
   // ── PUBLISHING AND DELIVERING: ONE PATH, FOR EVERY RUN THAT DELIVERS ─────────────────────────────────
   //
@@ -66,6 +67,10 @@ export async function deliveryEndState({ P, agent, ctx, job, run }, helpers) {
         const degraded = writeDegradedParts(run.runDir, degradedParts(run.runDir, { localLanguage }));
         runLog(run.runDir, { event: "degraded-parts", parts: degraded.parts.map((d) => ({ part: d.part, cause: d.cause })) });
       } catch (e) { runLog(run.runDir, { event: "degraded-parts-failed", cause: String(e?.message ?? e).slice(0, 200) }); }
+      // THE LOGOS, once the findings are final and before the page is built (mark-logos.mjs): one image request per
+      // cited registration whose record carries a logo, from this run's own register. It never stops the publish.
+      logosStep(run.runDir, await markLogos(run.runDir, { findingsPath: P.findings, provider: (() => { try { return registerAdapter(ctx.register ?? null); } catch { return null; } })(),
+        injectedFetcher: Boolean(opts.recordFetcher), agentId: agent }));
       published = await publishReport({
         runId: `${run.slug}-${run.date}-${run.codename}`, codename: run.codename,
         reportMd: P.report, auditMd: P.audit, findingsJson: P.findings, poolRoot: config.poolRoot, poolUrl: config.poolUrl,

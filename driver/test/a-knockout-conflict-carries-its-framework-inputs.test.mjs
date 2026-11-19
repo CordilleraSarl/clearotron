@@ -31,7 +31,8 @@ import { parseFrameworkMethod, freezeFrameworkMethod, methodDictation, inputsSha
 import { validateKnockoutFinding } from "../findings-model.mjs";
 import { validators, validateMergedFindings } from "../verify-knockout.mjs";
 import { KO_STAGES, koPaths } from "../stages-knockout.mjs";
-import { renderKnockoutHtml, knockoutReportData } from "../publish/render-knockout.mjs";
+import { renderKnockoutHtml } from "../publish/render-knockout.mjs";
+import { knockoutReportData } from "../publish/report-data.mjs";
 import { buildKnockoutWorkbook } from "../publish/knockout.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -235,7 +236,7 @@ test("arm 6: the chip, the data row and the workbook cell show the inputs beside
     const wb = new ExcelJS.Workbook();
     await wb.xlsx.readFile(out);
     const ws = wb.getWorksheet("Findings");
-    const col = ws.getRow(1).values.indexOf("Band");
+    const col = ws.getRow(1).values.indexOf("Risk band");
     return ws.getRow(2).getCell(col).value;
   };
   assert.equal(await bandCell(METHOD), "Serious · Claim Grade R · Harbour");

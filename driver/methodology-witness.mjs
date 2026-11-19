@@ -59,7 +59,7 @@ export function skillRefsIn(message) {
  * the invisibility it is fixing.
  */
 export function witnessStageMethodology(runDir, stage, message, resolveSkill, { platform = process.platform } = {}) {
-  const out = { drift: [], fellBackToBase: [], recorded: 0 };
+  const out = { drift: [], fellBackToBase: [], recorded: 0, told: [] };
   const underSkills = new RegExp(`${sepClass(platform)}skills${sepClass(platform)}`);
   const nameOf = platform === "win32" ? win32.basename : basename;
   try {
@@ -97,6 +97,7 @@ export function witnessStageMethodology(runDir, stage, message, resolveSkill, { 
 
     doc.stages[stage] = seen;
     out.recorded = seen.length;
+    out.told = seen;   // the rows themselves, so the caller measures this turn against what IT was told (manuals-seen.mjs)
     ensureDriverDir(runDir);
     writeFileSync(`${path}.tmp`, JSON.stringify(doc, null, 2) + "\n");
     renameSync(`${path}.tmp`, path);   // atomic: a torn witness must never look like drift

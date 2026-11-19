@@ -172,11 +172,13 @@ const [verb, ...rest] = process.argv.slice(2);
   // A LIST, NOT A PROBE, and deliberately: asking a child whether it handles --help means RUNNING it,
   // and two of these verbs spend real money. The list is short, it sits beside VERBS, and a verb added
   // without an entry gets the dispatcher's answer -- which is the safe direction to be wrong in.
-  const HELP_FROM_CHILD = new Set(["install", "doctor", "demo", "start", "grant", "key", "passphrase", "sync", "update", "connect", "disconnect", "stop", "status"]);
+  const HELP_FROM_CHILD = new Set(["install", "doctor", "demo", "start", "grant", "key", "passphrase", "sync", "update", "connect", "disconnect", "stop", "status", "run"]);
   if ((rest.includes("--help") || rest.includes("-h")) && !HELP_FROM_CHILD.has(verb)) {
     console.log(`\n  ${invocationPrefix()}clearotron ${verb} — ${SUMMARY[verb]}\n`);
     console.log(`  Options after the verb are passed through to ${VERBS[verb][0]}, which has no --help of`);
-    console.log(`  its own. Run it with no arguments to see what it requires.\n`);
+    // NOT FOR `run-queue`, whose bare form drains the queue and spends: the invitation to run it with no arguments
+    // is dropped there with nothing in its place (the owner's ruling, 2026-11-18).
+    console.log(`  its own.${verb === "run-queue" ? "" : " Run it with no arguments to see what it requires."}\n`);
     if (verb === "run" || verb === "run-queue") {
       console.log(`  THIS SPENDS: hours of model time and real register calls. See INSTALL.md §5 and §6.\n`);
     }

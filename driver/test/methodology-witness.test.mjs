@@ -169,7 +169,7 @@ test("the gateway witnesses the turn it is about to run, with the SAME resolver 
   const src = readFileSync(new URL("../gateway.mjs", import.meta.url), "utf8");
   const i = src.indexOf("witnessStageMethodology(runDir, name, effMessage, engineResolveSkill)");
   assert.ok(i > 0, "the witness runs on the dispatch path");
-  const after = src.slice(i, i + 900);
+  const after = src.slice(i, i + 1000);
   assert.ok(after.includes("engine.runTurn("), "…immediately before the turn");
   assert.match(after, /resolveSkill: engineResolveSkill/, "and the engine receives that same resolver");
 });

@@ -23,9 +23,10 @@ import { STAGES, paths, composeFollowup } from "../stages.mjs";
 import { parseFindingsJson } from "../findings-model.mjs";
 import { composeDispatchExtra } from "../pipeline.mjs";
 import { plainRegisterFlags, SENTENCE_WORD_LIMIT } from "../plain-register.mjs";
+import { SYNTHESIS_SENTENCES } from "./ruled-sentences-synthesis-rules.mjs";
 
-const PARAGRAPH = "**The finding sentence.** At most two sentences, each at most 25 words, in words a client reads without a glossary. The first states the outcome as a likelihood: who would win against whom, for what goods, where. *\"[Owner]'s earlier [mark] would probably win against [your mark] for [goods] in [territory].\"* The second, only when the first cannot carry it, states what the earlier right covers: *\"Their registration covers [goods].\"* No \"prevail\". No semicolon, no arrow, no advice, no band word. Every fact that does not fit goes in the legal and practical positions below, never dropped.";
-const PARAGRAPH_IN_THE_MANUAL = "**The finding sentence.** At most two sentences, each at most 25 words, in words a client reads\nwithout a glossary. The first states the outcome as a likelihood: who would win against whom, for\nwhat goods, where. *\"[Owner]'s earlier [mark] would probably win against [your mark] for [goods] in\n[territory].\"* The second, only when the first cannot carry it, states what the earlier right covers:\n*\"Their registration covers [goods].\"* No \"prevail\". No semicolon, no arrow, no advice, no band word.\nEvery fact that does not fit goes in the legal and practical positions below, never dropped.";
+const PARAGRAPH = SYNTHESIS_SENTENCES.theFindingSentenceMostTwo;
+const PARAGRAPH_IN_THE_MANUAL = SYNTHESIS_SENTENCES.theFindingSentenceMostTwo2;
 const MANIFEST = {
   schema_version: 1, framework_key: "house-default", title: "House default", entity_label: "the company",
   bands: [{ label: "Severe" }, { label: "Serious" }, { label: "Moderate" }, { label: "Low" }],
@@ -48,17 +49,17 @@ test("the writer is given the approved paragraph in place of the old one-sentenc
 
 test("the writing manual's section on the finding sentence says the same as the paragraph", () => {
   const text = manual("clearance-search/synthesis-rules.md");
-  const section = text.slice(text.indexOf("### The finding sentence — the shape of the typed `net`"), text.indexOf("### The grouped reasoned negative"));
+  const section = text.slice(text.indexOf(SYNTHESIS_SENTENCES.theFindingSentenceTheShape), text.indexOf(SYNTHESIS_SENTENCES.theGroupedReasonedNegative));
   assert.ok(section.length > 500, "the section was not found");
-  assert.ok(section.includes("**A conclusion, not a chain.** It answers the single question a lawyer asks of this\n"), "its opening line");
+  assert.ok(section.includes(SYNTHESIS_SENTENCES.conclusionNotChainAnswersThe), "its opening line");
   assert.ok(!section.includes("**One sentence."), "the opening no longer says one sentence");
   assert.ok(section.includes(`\n\n${PARAGRAPH_IN_THE_MANUAL}\n\n`), "the paragraph stands where the worked example stood");
   assert.ok(!section.includes("Worked example:"), "the old worked example is gone");
-  assert.ok(section.includes("(`findings_net_chained`), and so does the pre-delivery lint (`net-conclusion-form`).\n\n"),
+  assert.ok(section.includes(SYNTHESIS_SENTENCES.findingsNetChainedAndDoes),
     "the line on what the save and the lint refuse ends there");
   assert.ok(!/no cap here|no length cap/i.test(section), "no claim that there is no length limit");
-  assert.ok(section.includes("Say what is true of the world instead.\n"), "not repeating the band ends there");
-  assert.ok(section.includes("**WHAT A CONCLUSION LOOKS LIKE.** Name the parties and the territory, and state the outcome as a\nlikelihood. *\"Nothing on the German register reaches the applicant's class-9 goods.\"*\n"),
+  assert.ok(section.includes(SYNTHESIS_SENTENCES.sayWhatTrueTheWorld), "not repeating the band ends there");
+  assert.ok(section.includes(SYNTHESIS_SENTENCES.whatConclusionLooksLikeName),
     "the conclusion examples keep the German register line");
   assert.ok(!/prevail/i.test(section.replace("No \"prevail\".", "")), "no example in the section is built on prevail");
   assert.ok(section.trimEnd().endsWith("wider."), "the section ends after the paragraph on goods");

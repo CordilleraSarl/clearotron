@@ -110,9 +110,12 @@ export function scrubBlocks(items) {
  */
 export function accountFinding(f) {
   if (!f || typeof f !== "object") return f;
-  const [only] = scrubBlocks([f]);
+  // The register's own goods wording is held apart from the scrub: it is the register's text, copied, and every
+  // scrub pass rewrites (lib/evidence.mjs, the second exception). A withdrawn block refuses before it travels.
+  const { goodsAsRegistered, ...block } = f;
+  const [only] = scrubBlocks([block]);
   if (!only) throw new Error(`finding "${f.id ?? "?"}" was withdrawn during the run and does not appear in the delivered record`);
-  return only;
+  return goodsAsRegistered ? { ...only, goodsAsRegistered } : only;
 }
 
 /** list_findings on the raw path — {source, kind, items}. The cards path never reaches here. */

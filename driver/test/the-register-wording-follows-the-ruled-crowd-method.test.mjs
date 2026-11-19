@@ -19,6 +19,8 @@ import { PROVIDER_CAPABILITIES } from "../register-capabilities.mjs";
 import { formNeighbourhood } from "../form-neighbourhood.mjs";
 import { STAGES } from "../stages.mjs";
 import { coverageFormBrief } from "../coverage-form.mjs";
+import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
+import { REGISTER_SENTENCES } from "./ruled-sentences-register.mjs";
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register");
 const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
@@ -59,29 +61,27 @@ test("the crowd bound takes a crowd's majors from it by jurisdictions, and no lo
 
 test("the unit manual lets a narrowing stop at the first list it can read", () => {
   const unit = flat("unit.md");
-  assert.ok(unit.includes("- **sample or self-accept** — no top-N, no per-jurisdiction 3-fetch ceiling, no switch-to-exact-standalone-as-enumeration. "
-    + "The tool enumerates or reports incomplete; a crowd is narrowed by the steps above, and the narrowing stops at the first list you can read."));
+  assert.ok(unit.includes(UNIT_SENTENCES.sampleSelfAcceptTopPer));
   for (const gone of ["no \"narrow to tractable and stop\"", "there is no in-between for you to author"])
     assert.ok(!unit.includes(gone), `the unit manual still says "${gone}"`);
 });
 
 test("the unit manual records what stays a crowd with its count, and leaves no state for a search that did not run", () => {
   const unit = flat("unit.md");
-  assert.ok(unit.includes("There is **no \"good enough\" for a search that did not run** — no sampling, no top-N, no \"narrow to tractable and call it "
-    + "clean\". A crowd is narrowed by the steps below, and what stays a crowd is recorded with its count. Placement reads your **complete named band**."));
+  assert.ok(unit.includes(UNIT_SENTENCES.thereGoodEnoughForSearch));
   for (const gone of ["no third \"good enough\" state", "no \"coverage-limited and move on\"", "The lawyer (Layer B — the digest / synthesis stages downstream)"])
     assert.ok(!unit.includes(gone), `the unit manual still says "${gone}"`);
 });
 
 // The unit manual's six places that owed a question per major or material market, before and after.
 const R5 = [
-  ["in the in-scope classes, per material+major jurisdiction (per-axis specifics below)", "in the in-scope classes, across the order's scope (per-axis specifics below)"],
+  ["in the in-scope classes, per material+major jurisdiction (per-axis specifics below)", UNIT_SENTENCES.theScopeClassesAcrossThe],
   ["Search **bounded to the matter's in-scope jurisdictions** (the matter frame's *Scope jurisdictions*: the instructed territories + rights effective in them).",
-    "Search **the order's scope**: worldwide on a worldwide order, otherwise the instructed territories + rights effective in them."],
-  ["(the exact mark + each specific variant × in-scope class × material/major jurisdiction)", "(the exact mark + each specific variant × in-scope class, across the order's scope)"],
-  ["\"The exact mark, in-class, every major+material jurisdiction\" is *usually* small", "\"The exact mark, in-class\" is *usually* small"],
-  ["named slice, per major+material jurisdiction, plus the phonetic fringe", "named slice, its majors taken from it by jurisdictions, plus the phonetic fringe"],
-  ["(exact mark + each manifest variant × in-scope class × material/major jurisdiction)", "(exact mark + each manifest variant × in-scope class, across the order's scope)"],
+    UNIT_SENTENCES.searchTheOrderScopeWorldwide],
+  ["(the exact mark + each specific variant × in-scope class × material/major jurisdiction)", UNIT_SENTENCES.theExactMarkEachSpecific],
+  ["\"The exact mark, in-class, every major+material jurisdiction\" is *usually* small", UNIT_SENTENCES.theExactMarkClassUsually],
+  ["named slice, per major+material jurisdiction, plus the phonetic fringe", UNIT_SENTENCES.namedSliceItsMajorsTaken],
+  ["(exact mark + each manifest variant × in-scope class × material/major jurisdiction)", UNIT_SENTENCES.exactMarkEachManifestVariant],
 ];
 
 test("the unit manual asks across the order's scope, and owes no question per major or material market", () => {
@@ -102,8 +102,6 @@ test("the write-up's coverage brief and manual give a crowd the narrowing closed
     + "aside with its count and a reason, the status is `withheld-by-judgment` with that reason: that is finished work, not a gap. A crowd the "
     + "identical mark's own narrowing left, still a crowd after the last step or in a country its market step did not read, stays `coverage-limited`."));
   const skill = flat("SKILL.md");
-  assert.ok(skill.includes("a waiting family the reading turn chose not to ask, so it was never searched; or a crowd the narrowing steps closed (a "
-    + "narrowed list that was read answered it, or the reading step set it aside with its count and a reason). Its reason goes into the audit "
-    + "workbook, not the report."));
+  assert.ok(skill.includes(REGISTER_SENTENCES.waitingFamilyTheReadingTurn));
   assert.ok(!skill.includes("Only a `family` row takes it"), "the register manual still keeps withheld-by-judgment for a family row alone");
 });

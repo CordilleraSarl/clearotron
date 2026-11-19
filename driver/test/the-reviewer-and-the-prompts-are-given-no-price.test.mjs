@@ -12,13 +12,16 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { COMMON_LAW_SENTENCES } from "./ruled-sentences-common-law.mjs";
+import { REFUTATION_SENTENCES } from "./ruled-sentences-narrative-refutation.mjs";
+import { PHASE2_SENTENCES } from "./ruled-sentences-phase2-execution.mjs";
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "skills");
 const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
 
 test("the web prompts name the deepest tier, not the most expensive, and price nothing the tool returns", () => {
   const prompts = flat("clearance-common-law/perplexity-prompts.md");
-  assert.ok(prompts.includes("Do not pass depth. The run's search setting decides the tier of every follow-up; the grid runs on its own tier."));
+  assert.ok(prompts.includes(COMMON_LAW_SENTENCES.notPassDepthTheRun));
   assert.ok(prompts.includes("The tool writes the grid ledger, then returns how many cells it holds and the candidates to judge. Then:"));
   for (const gone of ["most expensive tier", "(tokens, cost)"])
     assert.ok(!prompts.includes(gone), `the web prompts still say "${gone}"`);
@@ -26,14 +29,14 @@ test("the web prompts name the deepest tier, not the most expensive, and price n
 
 test("the narrative reviewer keeps its backstop checks as insurance, not cheap insurance", () => {
   const reviewer = flat("narrative-refutation/SKILL.md");
-  assert.equal(reviewer.split("insurance against a diff that missed something").length - 1, 2);
+  assert.equal(reviewer.split(REFUTATION_SENTENCES.insuranceAgainstDiffThatMissed).length - 1, 2);
   assert.ok(!reviewer.includes("cheap insurance"), "the narrative reviewer still calls a check cheap");
 });
 
 test("phase two prices no re-run and no audit", () => {
   const phase2 = flat("clearance-search/phase2-execution.md");
-  assert.ok(phase2.includes("a passing mention never triggers a re-run,"));
-  assert.ok(phase2.includes("comes from a fresh-eyes audit plus targeted escalation, not from one giant session."));
+  assert.ok(phase2.includes(PHASE2_SENTENCES.passingMentionNeverTriggersRun));
+  assert.ok(phase2.includes(PHASE2_SENTENCES.comesFromFreshEyesAudit));
   for (const gone of ["paid re-run", "cheap fresh-eyes", "Opus escalation"])
     assert.ok(!phase2.includes(gone), `phase two still says "${gone}"`);
 });

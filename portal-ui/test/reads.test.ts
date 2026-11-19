@@ -25,7 +25,6 @@ const run = (over: Partial<Run> & { runId: string }): Run => ({
   tone: null,
   bands: [],
   marks: [],
-  reportSchema: null,
   held: false,
   report: null,
   step: null,

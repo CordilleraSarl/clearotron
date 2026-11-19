@@ -30,7 +30,7 @@ import { declaredRecordOrigins } from '../record-origins.mjs';
 import { NEUTRAL_DELIVERY, loadProfiles } from '../profiles.mjs';
 import { resolveDemoData, demoBannerMd } from './demo-marking.mjs';   // — one demo question, every product; 2134 — every SURFACE
 import { engineCommit } from '../engine-build.mjs';
-import { WARM_ROOT, WARM_ROOT_DARK, WARM_ROOT_DARK_EXPLICIT, THEME_INIT, THEME_INIT_EXPLICIT, FAVICON_LINK, BRAND } from '../../shared/brand.mjs'; import { TEXT_FONT_STYLE } from '../../shared/brand-fonts.mjs';   // the text face, carried in the page rather than fetched
+import { WARM_ROOT, WARM_ROOT_DARK, WARM_ROOT_DARK_EXPLICIT, THEME_INIT, THEME_INIT_EXPLICIT, FAVICON_LINK, BRAND, EMAIL_TIER, EMAIL_COLOURS as EC, BAND_BY_TONE } from '../../shared/brand.mjs'; import { TEXT_FONT_STYLE } from '../../shared/brand-fonts.mjs';   // the text face, carried in the page rather than fetched
 import { NAV_CSS, siteNav, siteFab } from '../../shared/site-nav.mjs';
 import { anonAssets, anonClient, anonMark } from '../../shared/anon-overlay.mjs';
 
@@ -82,7 +82,7 @@ export function evaluateClientGate({ coverage = [], lintFailingIds = [], escalat
   // surfaces render from (the corrective pass left findings.json stale after a followup demand):
   // the client cards may carry facts the review already corrected or killed.
   if (Array.isArray(findingsStale) && findingsStale.length)
-    push("findings-stale", `the reviewer's corrections did not reach the client-facing findings (${findingsStale.slice(0, 3).join(", ")}${findingsStale.length > 3 ? ", …" : ""}) — re-run the correction before this goes out`);
+    push("findings-stale", W.heldBecause.findingsStale(`${findingsStale.slice(0, 3).join(", ")}${findingsStale.length > 3 ? ", …" : ""}`));
   // (1) doc-35 close-the-loop: a core search layer in state "not-searched" NO LONGER closes the client
   // export. An in-scope channel a search layer CAN reach is a CLOSE target (run it) or a clean forward
   // action — never a ⛔ CLOSE-BEFORE-FILING banner. The gate now closes ONLY when the data cannot be
@@ -91,16 +91,16 @@ export function evaluateClientGate({ coverage = [], lintFailingIds = [], escalat
   // Plain English — these reasons are read by a lawyer, not the people who built the pipeline. The internal
   // axis ids stay in the run log / audit; the surfaced reason says what happened in words a reader understands.
   if (Array.isArray(escalationFailed) && escalationFailed.length)
-    push("escalation-failed", `the main search didn't finish — it needs to be re-run before this can be relied on`);
+    push("escalation-failed", W.heldBecause.escalationFailed);
   // (3) internally-inconsistent registration facts survive in the delivered report (A2). record-coverage
   // (an unverified/unfetched URL, E1) is flag-only — it cannot change the answer, it just isn't confirmed.
   const ids = (lintFailingIds || []).map(String);
-  if (ids.includes('registry-record-match')) push('lint:registry-record-match', 'a registration detail in the report does not match its official record');
-  if (ids.includes('registry-arithmetic')) push('lint:registry-arithmetic', 'the registration counts in the report do not add up');
+  if (ids.includes('registry-record-match')) push('lint:registry-record-match', W.heldBecause.recordMismatch);
+  if (ids.includes('registry-arithmetic')) push('lint:registry-arithmetic', W.heldBecause.countsDoNotAddUp);
   // (3b) A1 — a finding the reviewer WITHDREW still appears on a delivered surface after the
   // redo attempts (ids are per-ordinal: correction-consistency:<ord> / :client:<ord>): the reader
   // would see a conflict the review already killed.
-  if (ids.some((id) => id.startsWith('correction-consistency:'))) push('lint:correction-consistency', 'a conflict the reviewer withdrew still appears in the deliverable — the correction did not stick');
+  if (ids.some((id) => id.startsWith('correction-consistency:'))) push('lint:correction-consistency', W.heldBecause.withdrawnStillShown);
   // (3c) ION/copper-foundry (2026-07-22): the deliverable states a search tool was blocked/permission-denied.
   // That is not a disclosed gap — it is a false explanation for one, and it excused count-only sampling over
   // high-volume owner queries. It CANNOT be flag-only: a lawyer reading "the tool was blocked" reads
@@ -116,13 +116,13 @@ export function evaluateClientGate({ coverage = [], lintFailingIds = [], escalat
   // by-design exclusion, and either way the coverage has to be re-established.
   const isPermissionProse = (id) => id === 'permission-prose' || id.startsWith('permission-prose:');
   if (ids.some((id) => isPermissionProse(id) && !id.startsWith('permission-prose:narrative')))
-    push('lint:permission-prose', 'the deliverable explains missing coverage by saying a search tool was blocked or lacked permission — on this configuration that is normally a by-design exclusion rather than an outage, so both the explanation and the coverage it excuses must be re-established before this can be relied on');
+    push('lint:permission-prose', W.heldBecause.permissionProse);
   // (4) the machine findings could not be parsed — the data-driven surfaces are unverifiable.
-  if (findingsError) push('findings-unreadable', `the results could not be read back to build the report`);
+  if (findingsError) push('findings-unreadable', W.heldBecause.findingsUnreadable);
   // (5) A3 — a malformed finding was quarantined (dropped from the rendered set): the client export must never
   // ship silently missing a finding, so it closes for review (the internal report shows the exclusion + the audit records it).
   if (Array.isArray(quarantined) && quarantined.length)
-    push('finding-quarantined', `a result could not be read and had to be set aside, so the report would be missing it`);
+    push('finding-quarantined', W.heldBecause.findingQuarantined);
   // (6) — A PUBLISH INPUT WAS NOT THERE AT ALL. Distinct from (4): findingsError means the file was
   // present and could not be read back, this means it was never there, and until this arm existed the
   // second case set no signal whatsoever — an absent findings.json produced findings=[]/coverage=[] and
@@ -135,7 +135,7 @@ export function evaluateClientGate({ coverage = [], lintFailingIds = [], escalat
   // the recording above it is what actually does the work today.
   const closing = requiredAbsent(inputsAbsent);
   if (closing.length)
-    push('publish-input-absent', `a required input to this report was not there (${closing.join(', ')}) — the report was built without it, which is not the same as a search that found nothing`);
+    push('publish-input-absent', W.heldBecause.inputAbsent(closing.join(', ')));
   return { released: reasons.length === 0, reasons, reasonCodes, inputsAbsent: [...(Array.isArray(inputsAbsent) ? inputsAbsent : [])], notClosing: nonClosingAbsences(inputsAbsent) };   // `notClosing` EXPLAINS a recorded absence that did not hold the release (publish-inputs.mjs nonClosingAbsences) — it decides nothing
 }
 
@@ -203,7 +203,7 @@ const INDEX_CSS = `
  th{background:var(--crimson-deep);color:#f0e8d8;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
  tr:last-child td{border-bottom:none}
  .b{display:inline-block;color:#fff;font-weight:700;font-size:12px;padding:2px 9px;border-radius:999px}
- .b-mh,.b-l3{background:var(--h-amber)}.b-l4{background:var(--crimson)}.b-l2{background:var(--h-green)}.b-l1{background:var(--h-grey)}
+ .b-clear{background:var(--clear);color:var(--clear-on)}.b-low,.b-l2{background:var(--low);color:var(--low-on)}.b-med,.b-mh,.b-l3{background:var(--med);color:var(--med-on)}.b-high,.b-l4{background:var(--high);color:var(--high-on)}.b-severe{background:var(--severe);color:var(--severe-on)}.b-l1{background:var(--h-grey)}
  .stmt{display:block;margin-top:3px;font-size:11.5px;color:var(--muted,#6b5d50);max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
  .hold{display:inline-block;background:var(--crimson);color:#fff;font-weight:700;font-size:11px;padding:1px 7px;border-radius:999px;margin-left:6px} .disc{display:inline-block;border:1px solid var(--line);color:var(--muted);font-size:11px;padding:1px 7px;border-radius:999px;margin-left:6px}
  .hpill{display:inline-block;color:#fff;font-weight:700;font-size:11.5px;padding:3px 11px;border-radius:999px;white-space:nowrap}
@@ -251,7 +251,7 @@ function indexRows(runs, { reportFile, linkPrefix = '', showAudit = true, client
       <td>${matterCell}</td>
       <td>${anonMark(r.title, { key: ck, run: r.runId })}</td>
       <td>${anonClient(r.client, ck)}</td>
-      <td><span class="b b-${attrValue(r.badge)}">${esc(r.overall)}</span>${qcFailed ? ' <span class="hold" title="machine QC checks failed — see the audit workbook">⚠ QC</span>' : ''}${!client && !qcFailed && r.clientGate?.inputsAbsent?.length ? ` <span class="disc" title="${escAttr(`published without ${r.clientGate.inputsAbsent.join(', ')} — each declared optional, so the release stands; the report was built without it`)}">◦ built without an input</span>` : ''}${
+      <td><span class="b b-${attrValue(bandClassOf(r))}">${esc(r.overall)}</span>${qcFailed ? ' <span class="hold" title="machine QC checks failed — see the audit workbook">⚠ QC</span>' : ''}${!client && !qcFailed && r.clientGate?.inputsAbsent?.length ? ` <span class="disc" title="${escAttr(`published without ${r.clientGate.inputsAbsent.join(', ')} — each declared optional, so the release stands; the report was built without it`)}">◦ built without an input</span>` : ''}${
         // The report's own conclusion beside the band pill (ruled 2026-09-22: the report is the master),
         // never a second summary. A meta.json written before the caption was kept shows the pill alone:
         // its stored statement could say "on hold", which was never true. The pill carries the rating,
@@ -285,9 +285,9 @@ function clientFilterBar(clients) {
 // per-customer indexes — customer/generic already holds >20 runs). Ships `hidden`: no-JS pages degrade to
 // the flat, fully-visible table with no dead buttons.
 const PAGER_BAR = `<div class="pager" id="pager" hidden>
-    <button type="button" id="pgPrev">&#8249; Prev</button>
+    <button type="button" id="pgPrev">&#8249; ${IX.previous}</button>
     <span class="pcount" id="pcount"></span>
-    <button type="button" id="pgNext">Next &#8250;</button>
+    <button type="button" id="pgNext">${IX.next} &#8250;</button>
   </div>`;
 
 // Report search — a text box that filters rows by their content (matter, project, verdict, date), composing
@@ -295,9 +295,9 @@ const PAGER_BAR = `<div class="pager" id="pager" hidden>
 // PAGER_SCRIPT reveals it only when the table is large enough to warrant searching (>8 rows). Emitted on every
 // index (staff + per-customer), so it scales the client-facing matter history to many reports.
 const SEARCH_BAR = `<div class="filterbar" id="repSearchBar" hidden>
-    <label class="flbl" for="repSearch">Search</label>
-    <input id="repSearch" type="search" placeholder="Filter by matter, project or verdict…" autocomplete="off" aria-label="Filter reports">
-    <span class="nomatch" id="repNoMatch" hidden>No matching reports</span>
+    <label class="flbl" for="repSearch">${IX.search}</label>
+    <input id="repSearch" type="search" placeholder="${IX.searchPlaceholder}" autocomplete="off" aria-label="${IX.searchLabel}">
+    <span class="nomatch" id="repNoMatch" hidden>${IX.noMatch}</span>
   </div>`;
 
 // One apply() = filter-then-page. Rows are queried LAZILY on every pass (the parse-time cache was the
@@ -333,9 +333,9 @@ if(!bar)return;
 bar.hidden=!paged&&!active;
 prev.hidden=next.hidden=!paged;
 prev.disabled=page<=1;next.disabled=page>=P;
-var t=paged?(a+1)+"\\u2013"+b+" of "+M:String(M);
-if(active)t+=" shown";
-if(active&&fold)t+=" \\u00b7 "+fold+" retired";
+var t=paged?(a+1)+"\\u2013"+b+${JSON.stringify(IX.of)}+M:String(M);
+if(active)t+=${JSON.stringify(IX.shown)};
+if(active&&fold)t+=" \\u00b7 "+fold+${JSON.stringify(IX.retired)};
 cnt.textContent=(active||paged)?t:"";
 }
 if(sbar&&document.querySelectorAll("tr[data-client]").length>8)sbar.hidden=false;
@@ -361,7 +361,7 @@ ${TEXT_FONT_STYLE}${FAVICON_LINK}${client ? THEME_INIT_EXPLICIT : THEME_INIT}
   ${SEARCH_BAR}
   ${filter}
   <table>
-    <tr><th>Matter</th><th>Project</th><th>Client</th><th>Overall</th><th>Run</th>${auditCol ? '<th>Audit</th>' : ''}</tr>
+    <tr><th>${IX.columns.matter}</th><th>${IX.columns.project}</th><th>${IX.columns.client}</th><th>${IX.columns.overall}</th><th>${IX.columns.run}</th>${auditCol ? `<th>${IX.columns.audit}</th>` : ''}</tr>
 ${rows}
   </table>
   ${PAGER_BAR}
@@ -484,8 +484,8 @@ export function regenIndex(poolDir) {
     // on the audit workbook now and decide nothing about who may read. The precedent is the knockout
     // lane's own collapse note: two renderings of one run is how the wrong link gets sent.
     writeFileSync(cidx, indexPage({
-      heading: `Trademark clearance — ${displayOf.get(key) || key}`,
-      sub: `${crs.length} report(s) for this account · access-controlled · noindex.`,
+      heading: IX.heading(displayOf.get(key) || key),
+      sub: IX.subheading(crs.length),
       rows: indexRows(crs, { reportFile: 'report.html', linkPrefix: '../../', showAudit: false, client: true }),
       auditCol: false,
       theme: 'client',                           // explicit-light: toggle only, NO @media auto-dark on a customer page
@@ -860,13 +860,7 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
   // which publishes without one: the throw left publishReport at `published → null` and the runner
   // exited 1. Reading from the report's own directory is also the right answer for a republish.
   const recallStore = readStore(runDir ?? dirname(reportMd), '_driver/register-recall.json');
-  const undispatchedProbes = (recallReceiptForOwnCompany(recallStore.value)?.overflow ?? [])   // never another company's remembered conflict
-    .filter((o) => o && (o.term || o.qid))
-    .map((o) => ({
-      area: String(o.term ?? o.qid),
-      state: 'not-searched',
-      note: `over the cap, never dispatched (${String(o.qid ?? 'no probe id recorded')})`,
-    }));
+  const undispatchedProbes = undispatchedProbeRows(recallReceiptForOwnCompany(recallStore.value));   // never another company's remembered conflict
   if (recallStore.state === 'damaged' && runDir) {
     try {
       runLog(runDir, { event: 'probe-over-cap-unreadable', store: recallStore.name, error: recallStore.error });
@@ -954,6 +948,14 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
   // rendering worldwide runs have always had: chips from the coverage ledger and the findings' own
   // regions — the citation focus, which is exactly what the worldwide notes beneath them promise.
   if (scopeBasis === 'worldwide') searchedJurisdictions = [];
+  // THE REGISTER SERVICE'S REACH, as the run recorded it when it stamped the coverage line (scope-facts.mjs): the
+  // service and how many offices it searched. Read, never recomputed, so a republish states what the line states.
+  // Null when the run recorded none, which is every run before the record and every service with no office list.
+  let registerReach = null;
+  {
+    const r = readStore(runDir ?? dirname(reportMd), '_driver/scope-facts.json').value?.register_reach;
+    if (typeof r?.service === 'string' && r.service && Number.isInteger(r.offices) && r.offices > 0) registerReach = { service: r.service, offices: r.offices };
+  }
   // T7 (E5) — the case-law layer joins DETERMINISTICALLY (was: a prompt fished in the md and
   // hit 2 of 3 copper-spire cards): parse the grounded profiles, join by ordinal (fresh runs dictate
   // "- ord:") falling back to mark/owner (archived runs) — every matched card gets its strand.
@@ -1092,12 +1094,12 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
   } catch { /* no frozen profile — a legacy run keeps its wording */ }
 
   // Jurisdiction line for the Summary — searched register scope + the common-law surface layer.
-  const regScope = (searchedJurisdictions && searchedJurisdictions.length) ? searchedJurisdictions.join('/') : 'Worldwide';
+  const regScope = (searchedJurisdictions && searchedJurisdictions.length) ? searchedJurisdictions.join('/') : W.jurisdictionLine.worldwide;
   const jurisdiction = registerOnly
-    ? `${regScope} (register only — no common-law / marketplace search)`
+    ? W.jurisdictionLine.registerOnly(regScope)
     : noMarketplacesPicked
-      ? `${regScope} (register) + common-law (Western web / social, plus any stores chosen for this matter)`
-      : `${regScope} (register) + common-law (Western web / marketplace / social)`;
+      ? W.jurisdictionLine.noMarketplaces(regScope)
+      : W.jurisdictionLine.withCommonLaw(regScope);
 
   // Common-law URL-join: a grid hit whose candidate URL resolves to a finding's own link PROVES that search
   // term became a finding (rescues an anchor term whose finding wears a different name). Best-effort; absent
@@ -1285,7 +1287,7 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
     quarantined, findingsError, coverageJudgment, markAssessment, actionsRegister, askAnswers, correctionsDoc,
     fourAnswers, findingsSchemaVersion, findingsKept, assessmentNotCompleted, coverageJudgmentDisplay, recordsByUri,
     runProviderConf, recordOrigin, providerLabel, runOrigins, seniorRights, verdictInfo, droppedConditions,
-    undispatchedProbes, withheldFamilies, setAside, framework, frameworkMethod, scopeBasis, searchedJurisdictions,
+    undispatchedProbes, withheldFamilies, setAside, framework, frameworkMethod, scopeBasis, searchedJurisdictions, registerReach,
     planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals, officeLinks, reviewReceipts, clientGate,
     fetchState, searchPolicy, registerOnly, noMarketplacesPicked, jurisdiction, commonLawJoinedTerms, stageLabel,
     depthNote, productName, publishParts, auditParsed, degradedRows, releasedFamilies, served, searchDepth, issuedAt,
@@ -1332,7 +1334,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     findingsKept, assessmentNotCompleted, coverageJudgmentDisplay, recordsByUri, runProviderConf, recordOrigin, providerLabel,
     runOrigins, seniorRights, verdictInfo, droppedConditions, undispatchedProbes, withheldFamilies, setAside, framework,
     frameworkMethod, scopeBasis, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals,
-    officeLinks, reviewReceipts, clientGate, fetchState, searchPolicy, registerOnly, jurisdiction, commonLawJoinedTerms,
+    officeLinks, reviewReceipts, clientGate, fetchState, searchPolicy, registerOnly, jurisdiction, commonLawJoinedTerms, registerReach,
     stageLabel, depthNote, productName, publishParts, auditParsed, degradedRows, releasedFamilies, served, searchDepth,
     issuedAt, renderedAt, markName, project, organisation, tokenRollup, reportRoute, frozenStageLabel, ratingWord,
     ratingBadge, caption } = doc;
@@ -1358,7 +1360,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
       // the same rule (the workbook's own BANNED gate had already started firing on the raw detail —
       // advisory, so CI stayed green). reviewReceipts.lint keeps its raw detail for the internal
       // readers above (fetchState reads registry-record-coverage's URIs out of it).
-      const built = await buildAudit({ degradedParts: degradedRows, droppedConditions, undispatchedProbes, withheldFamilies, releasedFamilies, setAside, findings, frameworkMethod, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null, assessmentNotCompleted }, auditParsed, at, fm.title, fm);
+      const built = await buildAudit({ degradedParts: degradedRows, droppedConditions, undispatchedProbes, withheldFamilies, releasedFamilies, setAside, findings, frameworkMethod, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null, assessmentNotCompleted, registerReach }, auditParsed, at, fm.title, fm);
       if (built?.gateViolations?.length) console.warn(`[audit-workbook] advisory: ${built.gateViolations.join(' | ')}`);
       return built;
     }));   // a REAL exception only — the report ships without the workbook, and nothing names it
@@ -1369,19 +1371,13 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // caveat banner (H1/H2); the receipts live on audit.xlsx. The machine QC above decides nothing
   // about this write.
   // homeHref — the floating "← All reports" pill returns to the listing (the staff index one level up).
-  // The floating cross-page nav on the INTERNAL report too (jump to Archive/Status from a report).
-  // '../' prefix — a report lives one level down at <pool>/<runId>/report.html; existence-gating stays poolRoot-
-  // absolute. portal-report.mjs strips the nav at serve time (it lists every customer key).
-  // anon:false — the demo-privacy toggle is a STAFF-INDEX feature (its __ANON__ config + overlay JS are
-  // injected there only); on a report page the button rendered "Privacy ON" while doing nothing. Omit it
-  // rather than wire the overlay in: client names saturate privileged report prose — a partial blur is a
-  // worse demo than no toggle.
-  const reportNav = siteNav(poolRoot, 'report', null, '../', { anon: false });
+  // NO SITE NAV IS BUILT FOR A REPORT. One was, from a walk of the pool on every publish, and handed to a
+  // renderer that never read it; reports published before that carry one, and the portal still strips it.
   // How much was read to reach the answer, written where the document holds it (an additive record: a publish never
   // fails for want of it).
   if (searchDepth) { try { writeRO('search-depth.json', JSON.stringify(searchDepth, null, 2)); } catch { /* additive */ } }
 
-  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, frameworkMethod, servedModels: served, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', nav: reportNav, chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion, searchDepth, assessmentNotCompleted }));
+  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, frameworkMethod, servedModels: served, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion, searchDepth, assessmentNotCompleted }));
   // ONE report (spec 2026-07-30 §5): report.client.html is no longer written. The knockout lane's own
   // collapse note is the precedent: "two renderings of one run is how the wrong link gets sent". The
   // client host serves the same report.html through the portal's readReport() (cleaning built in) — its
@@ -1391,9 +1387,8 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // had to be passed to BOTH renders. There is one render now, so `fourAnswers` rides the one call — the
   // panel reaches the client through the same cleaning path as every other reader-facing block.
   // PR-9 — the clearance run as data (publish/report-data.mjs): the client-cut projection the assistant
-  // drafts mail from and the portal's native-render path reads. BEST-EFFORT with a hard receipt rule:
-  // meta.reportSchema is stamped ONLY when the file actually wrote — a run whose meta advertises a data
-  // file that is not there would break the portal's presence branch. A producer throw never blocks the
+  // drafts mail from. BEST-EFFORT with a hard receipt rule: meta.reportSchema is stamped ONLY when the file
+  // actually wrote, so a meta never names a data file that is not there. A producer throw never blocks the
   // report (the baked HTML above is already on disk).
   const reportSchema = writeDataFile('report-data.json', () => clearanceReportData({
     runId, codename, matter: fm.matter, markName, title: fm.title, customerKey: customerKey || 'generic',
@@ -1408,7 +1403,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     framework, verdictInfo, findings, coverage, contextNotes, markAssessment, fourAnswers, askAnswers,
     actions: actionsRegister, jurisdiction, searchedJurisdictions, scopeBasis, caption,
     assessmentNotCompleted,
-  })) ? 'report-data/1' : null;
+  })) ? 'report-data/clearance-1' : null;
   const total = finishPoolRun({ writeRO, poolRoot, skipRegen, regenIndex, meta: {
     runId, codename: codename || '', matter: fm.matter, title: fm.title, client: fm.client,
     // The mark as typed — see above. Distinct from `title`, which is the report's own headline.
@@ -1476,9 +1471,9 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     clientGate: { released: clientGate.released, reasons: clientGate.reasons,
       inputsAbsent: clientGate.inputsAbsent?.length ? clientGate.inputsAbsent : undefined, notClosing: clientGate.notClosing?.length ? clientGate.notClosing : undefined,
       evaluationError: clientGate.evaluationError ?? undefined },
-    // PR-9 — present ⇒ report-data.json is beside the report and the portal can render natively (the
-    // same stamp the knockout lane writes; the consumer branch had readers before it had a writer).
-    // undefined on a producer miss, so the meta never advertises a file that is not there.
+    // PR-9 — present ⇒ report-data.json is beside the report, in the shape the string names
+    // (`report-data/clearance-1`; a Knockout stamps `report-data/knockout-1`). undefined on a producer
+    // miss, so the meta never advertises a file that is not there.
     reportSchema: reportSchema ?? undefined,
   } });
   await refreshStaffPages({ regenSurfaces, poolRoot, skipRegen, runDir });
@@ -1499,12 +1494,13 @@ const BADGE_EMOJI = { l4: '🔴', l3: '🟠', mh: '🟠', l2: '🟢', l1: '⚪' 
 // config, NOT a literal: this string was hardcoded, so the 2026-07-17 repo split rewrote it to a
 // example.com domain and both 2026-07-19 deliveries told the reader to sign in with an account that
 // does not exist. Unset ⇒ NO note: silence beats confidently wrong sign-in instructions.
+import { EMAIL, CLIENT_INDEX as IX, WORKBOOK as W } from './strings.mjs';   // kept down here, below every line the tree cites in this file by number
 export function accessNoteMd(domain = config.accessDomain) {
-  return domain ? `*Access-controlled — sign in with a **${domain}** account. Reply to this email with any questions.*` : '';
+  return domain ? `*${EMAIL.accessNote(`**${domain}**`)}*` : '';
 }
 export function accessNoteHtml(font, domain = config.accessDomain) {
   return domain
-    ? `<p style="${font};font-size:9.5pt;color:#7a8290;margin:14px 0 0"><i>Access-controlled — sign in with a <b>${domain}</b> account. Reply to this email with any questions.</i></p>`
+    ? `<p style="${font};font-size:9.5pt;color:${EC.quiet};margin:14px 0 0"><i>${EMAIL.accessNote(`<b>${domain}</b>`)}</i></p>`
     : '';
 }
 
@@ -1654,14 +1650,14 @@ export function composeEmailBody(reportMdPath, url, auditFile, productName = nul
 
   // A scannable meta line — only the fields that are present.
   const meta = [
-    fm.client && `**Client:** ${fm.client}`,
-    fm.classes && `**Classes:** ${fm.classes}`,
-    fm.run && `**Basis:** ${fm.run}`,
+    fm.client && `**${EMAIL.client}** ${fm.client}`,
+    fm.classes && `**${EMAIL.classes}** ${fm.classes}`,
+    fm.run && `**${EMAIL.basis}** ${fm.run}`,
   ].filter(Boolean).join('  ·  ');
 
   const links = [
-    url && `[**▶ Open the full report**](${url})`,
-    auditUrl && `[Download audit (Excel)](${auditUrl})`,
+    url && `[**${EMAIL.openReport}**](${url})`,
+    auditUrl && `[${EMAIL.downloadAudit}](${auditUrl})`,
   ].filter(Boolean).join('  ·  ');
 
   return [
@@ -1686,9 +1682,9 @@ export function composeEmailBody(reportMdPath, url, auditFile, productName = nul
     // failure mode here was a pointer written before its target, and one true sentence beats two where
     // the second is a promise. When a surface exists that renders open floors in client language, this is
     // where the pointer to it belongs.
-    fm.envelope_note ? `**Search scope:** Some scoped searches remained open at delivery.` : '',
+    fm.envelope_note ? `**${EMAIL.scopeLabel}** ${EMAIL.scopeOpen}` : '',
     fm.overall_label
-      ? `${dot} **Overall risk: ${fm.overall_label}**${fm.overall_caption ? `\n\n${fm.overall_caption}` : ''}`
+      ? `${dot} **${EMAIL.overallRisk} ${fm.overall_label}**${fm.overall_caption ? `\n\n${fm.overall_caption}` : ''}`
       : '',
     meta || '',
     links || '',
@@ -1708,37 +1704,55 @@ export function composeEmailBody(reportMdPath, url, auditFile, productName = nul
 // ---------------------------------------------------------------------------------------------------
 const FONT = "font-family:Calibri,'Segoe UI',Arial,sans-serif";
 
-// 5-tier reporting-template risk scheme — the whole left "NAME / RISK RATING" cell takes the bg colour.
-// Matches skills/clearance-search/templates/search-request-form.html + knockout-searches/template-formatting.md.
+// 5-tier risk scheme on the report's ramp (shared/brand.mjs EMAIL_TIER) — the whole left "NAME / RISK RATING"
+// cell takes the bg colour, and `txt` colours a band's word on a light ground.
 // `txt` = a readable text-colour version of the tier (for the EXECUTIVE SUMMARY risk phrase, where a bright
 // fill like yellow/red is unreadable as text). Order matters: VERY HIGH before HIGH.
+const tier = (t, label) => ({ bg: t.bg, fg: t.fg, label, txt: t.txt });
 export const RISK_TIERS = [
-  [/VERY[\s-]?HIGH/, { bg: '#ff0000', fg: '#fff', label: 'VERY HIGH',  txt: '#d10000' }],
-  [/HIGH/,           { bg: '#ED7D31', fg: '#fff', label: 'HIGH',       txt: '#c75b13' }],
-  [/MEDIUM/,         { bg: '#ffff00', fg: '#000', label: 'MEDIUM',     txt: '#9a8400' }],
-  [/MANAGEABLE/,     { bg: '#70AD47', fg: '#fff', label: 'MANAGEABLE', txt: '#4e7a31' }],
-  [/LOW/,            { bg: '#4472C4', fg: '#fff', label: 'LOW',        txt: '#2f55a4' }],
+  [/VERY[\s-]?HIGH/, tier(EMAIL_TIER.veryHigh, 'VERY HIGH')],
+  [/HIGH/,           tier(EMAIL_TIER.high, 'HIGH')],
+  [/MEDIUM/,         tier(EMAIL_TIER.medium, 'MEDIUM')],
+  [/MANAGEABLE/,     tier(EMAIL_TIER.manageable, 'MANAGEABLE')],
+  [/LOW/,            tier(EMAIL_TIER.low, 'LOW')],
 ];
 // doc 50 — the run's band LADDER (from opts.bands / meta.framework.bands): per-run vocabulary with the
 // same template palette keyed by TONE, so "Moderate" (house) and "Medium" (a customer ladder) both colour correctly
 // and a 5-band matrix framework (incl. "Low") lands on the same ramp. Set per compose; null = legacy.
 let EMAIL_BANDS = null;
+// THE INDEX'S BAND PILL TAKES THE REPORT'S RAMP: the run's band, its tone on the run's own frozen ladder, then
+// that tone's stop (2026-11-18). A run recorded before its ladder was kept falls back to its badge, a coarser
+// step: l2 reads as the low stop, l3 as medium, l4 as high, and l1, no rated band, stays grey.
+function bandClassOf(r) {
+  const word = String(r?.overall ?? '').trim().toLowerCase();
+  const tone = (Array.isArray(r?.framework?.bands) ? r.framework.bands : []).find((b) => String(b?.label ?? '').toLowerCase() === word)?.tone;
+  return BAND_BY_TONE[tone] ?? r?.badge;
+}
 export const TONE_TIER = {
-  severe:  { bg: '#ff0000', fg: '#fff', txt: '#d10000' },
-  high:    { bg: '#ED7D31', fg: '#fff', txt: '#c75b13' },
-  medium:  { bg: '#ffff00', fg: '#000', txt: '#9a8400' },
-  low:     { bg: '#70AD47', fg: '#fff', txt: '#4e7a31' },
-  minimal: { bg: '#4472C4', fg: '#fff', txt: '#2f55a4' },
+  severe:  EMAIL_TIER.veryHigh,
+  high:    EMAIL_TIER.high,
+  medium:  EMAIL_TIER.medium,
+  low:     EMAIL_TIER.manageable,
+  minimal: EMAIL_TIER.low,
 };
+/**
+ * The gaps-sheet rows for the recall probes a run left over the cap. The probe id is the engine's: it stays in the
+ * receipt and the run record, and the cell gets nothing in its place.
+ */
+export function undispatchedProbeRows(receipt) {
+  return (receipt?.overflow ?? [])
+    .filter((o) => o && (o.term || o.qid))
+    .map((o) => ({ area: String(o.term ?? o.qid), state: 'not-searched', note: W.overTheCap }));
+}
 export function riskTier(word) {
   const u = String(word || '').toUpperCase();
   if (EMAIL_BANDS) {
     const b = EMAIL_BANDS.find((x) => String(x.label).toUpperCase() === u);
     if (b) return { ...(TONE_TIER[b.tone] ?? TONE_TIER.medium), label: u };
   }
-  if (/NO RATED CONFLICTS/.test(u)) return { bg: '#4472C4', fg: '#fff', label: u, txt: '#2f55a4' };
+  if (/NO RATED CONFLICTS/.test(u)) return tier(EMAIL_TIER.low, u);
   for (const [re, t] of RISK_TIERS) if (re.test(u)) return t;
-  return { bg: '#bfbfbf', fg: '#000', label: u || '—', txt: '#555' };
+  return tier(EMAIL_TIER.unrated, u || '—');
 }
 // minimal inline markdown -> HTML for a table cell (escape FIRST; drop any stray internal ::p:: defensively)
 function cell(s) {
@@ -1805,8 +1819,8 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
   // this goes with it.
   // The report link rides HIGH — right under the bottom line in the headline, not buried below the table.
   const reportLink = hrefAttr(url)
-    ? `<p style="margin:0 0 10px"><a href="${hrefAttr(url)}" style="color:#1a4fd6;font-weight:bold;font-size:12pt;text-decoration:none">▶ Open the full report</a>`
-      + (hrefAttr(auditUrl) ? ` &nbsp;·&nbsp; <a href="${hrefAttr(auditUrl)}" style="color:#3b4fd6;text-decoration:none">Download audit (Excel)</a>` : '')
+    ? `<p style="margin:0 0 10px"><a href="${hrefAttr(url)}" style="color:${EC.reportLink};font-weight:bold;font-size:12pt;text-decoration:none">${EMAIL.openReport}</a>`
+      + (hrefAttr(auditUrl) ? ` &nbsp;·&nbsp; <a href="${hrefAttr(auditUrl)}" style="color:${EC.auditLink};text-decoration:none">${EMAIL.downloadAudit}</a>` : '')
       + `</p>`
     : '';
   // The search-scope signal leads the email. The 2026-06-12 "lint flags do not render on the email" rule
@@ -1823,7 +1837,7 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
   // are one message in two renderings, and a client reading the HTML must not be told something the
   // markdown does not say.
   const flagBanner =
-    (fm.envelope_note ? `<p style="margin:0 0 6px"><b>Search scope:</b> Some scoped searches remained open at delivery.</p>` : '');
+    (fm.envelope_note ? `<p style="margin:0 0 6px"><b>${EMAIL.scopeLabel}</b> ${EMAIL.scopeOpen}</p>` : '');
 
   // ONE report (spec 2026-07-30 §6): the "Not client-ready — for your review only" block is deleted with
   // the two-bit delivery it narrated. The cover note is a cover note — verdict, one-line summary, link —
@@ -1886,12 +1900,12 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
   // held — and before that the delivery gate's word. It now quotes the report: the rating, then the
   // report's own conclusion (below), and where the report names what only the client can close, those
   // items under the report's own heading. Nothing here composes a sentence of its own.
-  const closeBox = (items) => `<p style="margin:0 0 8px;padding:8px 10px;background:#fdeeee;border:1px solid #c98a86;color:#6e1512"><b>Only you can close these</b><br>${items.map((r) => `• ${cell(String(r))}`).join('<br>')}</p>`;
+  const closeBox = (items) => `<p style="margin:0 0 8px;padding:8px 10px;background:${EC.closeBoxFill};border:1px solid ${EC.closeBoxLine};color:${EC.closeBoxText}"><b>${EMAIL.onlyYouCanClose}</b><br>${items.map((r) => `• ${cell(String(r))}`).join('<br>')}</p>`;
   const verdictBound = opts?.verdict === 'CONDITIONAL'
-    ? closeBox(emailConditions.length ? emailConditions : ['the open items set out in the report, before relying on a clean result'])
+    ? closeBox(emailConditions.length ? emailConditions : [EMAIL.onlyYouCanCloseDefault])
     : opts?.verdict === 'BLOCKING' && emailConditions.length ? closeBox(emailConditions) : '';
 
-  const reviewHeadline = `<div style="${FONT};font-size:11pt;color:#1a1a2e;margin:0 0 14px">`
+  const reviewHeadline = `<div style="${FONT};font-size:11pt;color:${EC.headline};margin:0 0 14px">`
     + flagBanner
     + verdictBound
     + `<p style="margin:0 0 8px"><b>${[opts?.productName ? esc(String(opts.productName)) : '', esc(fm.title || '')].filter(Boolean).join(' — ')} (${esc(fm.matter || '')})</b></p>`
@@ -1899,12 +1913,12 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
     // model-authored fm label — one authority on every surface. The rating leads, then the report's own
     // conclusion verbatim (ruling 244); with no rating recorded, the conclusion stands alone.
     + ((opts?.tier ?? fm.overall_label)
-      ? `<p style="margin:0 0 6px"><b>Overall risk: ${esc(opts?.tier ?? fm.overall_label)}.</b> ${cell(fm.overall_caption || '')}</p>`
+      ? `<p style="margin:0 0 6px"><b>${EMAIL.overallRisk} ${esc(opts?.tier ?? fm.overall_label)}.</b> ${cell(fm.overall_caption || '')}</p>`
       : (fm.overall_caption ? `<p style="margin:0 0 6px">${cell(fm.overall_caption)}</p>` : ''))
     + reportLink
-    + (fm.handling_note ? `<p style="margin:0 0 8px;color:#7a2b12"><b>Handling note:</b> ${cell(fm.handling_note)}</p>` : '')
-    // T9 (K3): methodology identity — which profile/framework rated this run (+ verifiable sha).
-    + (fm.rated_under ? `<p style="margin:0 0 6px;font-size:9.5pt;color:#7a8290">Rated under: ${cell(fm.rated_under)}</p>` : '')
+    + (fm.handling_note ? `<p style="margin:0 0 8px;color:${EC.warning}"><b>${EMAIL.handlingNote}</b> ${cell(fm.handling_note)}</p>` : '')
+    // No "Rated under" line: the report a client reads is cleaned of it, so the note covering it is too
+    // (2026-11-18). The scale stays named on the report's gauge and in the run's record.
     // compute-don't-author (PR-4, review issue 2): the per-class register-coverage truth is computed
     // by the driver (scope-facts.mjs) and stamped as `coverage_line:` front-matter — but the frozen
     // report renderer only renders known keys, so without THIS line the join never reached a surface
@@ -1912,12 +1926,12 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
     // "Class 30: 76 of 99 slices fully searched — the remaining 23 are non-Latin script forms" (the
     // spec-B4 proportion form) rides beside the report link. Facts about what ran, never a caveat;
     // absent on legacy runs ⇒ byte-identical mail.
-    + (fm.coverage_line ? `<p style="margin:0 0 6px;font-size:9.5pt;color:#7a8290">Register coverage — ${cell(fm.coverage_line)}</p>` : '')
+    + (fm.coverage_line ? `<p style="margin:0 0 6px;font-size:9.5pt;color:${EC.quiet}">${EMAIL.registerCoverage} ${cell(fm.coverage_line)}</p>` : '')
     // The WS1c "Model failover:" line stood here and is DELETED: no code path writes `failover_note`
     // into front-matter any more, because the model-failover chain that would have produced one never had a
     // second rung on any shipped build. Nothing renders a failover note into a report.
     // B5b checkpoint 4 — a customer named after the analysis was written ships as a delivery note, never silently.
-    + (fm.late_bind_note ? `<p style="margin:0 0 8px;color:#7a2b12"><b>Applicant named mid-run:</b> ${cell(fm.late_bind_note)}</p>` : '')
+    + (fm.late_bind_note ? `<p style="margin:0 0 8px;color:${EC.warning}"><b>${EMAIL.applicantMidRun}</b> ${cell(fm.late_bind_note)}</p>` : '')
     // The reviewer's open points stood here, from the run record. They do not ride the cover any more
     // (owner ruling, 2026-10-01): the sentence naming the independent reviewer reads as a human declining
     // to sign, and the points themselves are the engine's own vocabulary. Both stay on the run, beside the
@@ -2020,8 +2034,8 @@ export function setAsideRows(runDir, { findings = null } = {}) {
     const ended = recordsOfDeliveredPositions(read('declination-spec.json')?.rows ?? [], [...findingUris(delivered.filter((f) => f?.disposition !== 'withdrawn')).keys()]);
     const label = (x) => [x.mark, x.owner].filter((v) => typeof v === 'string' && v.trim()).join(' — ') || x.uri;
     return [
-      ...[...d.byUri.entries()].filter(([u]) => !ended.has(u)).map(([, x]) => ({ area: `Set aside: ${label(x)}`, note: String(x.grounds ?? '') })),
-      ...[...d.byPage.values()].map((x) => ({ area: `Set aside: ${x.url ?? x.page}`, note: String(x.grounds ?? '') })),
+      ...[...d.byUri.entries()].filter(([u]) => !ended.has(u)).map(([, x]) => ({ area: W.setAside(label(x)), note: String(x.grounds ?? '') })),
+      ...[...d.byPage.values()].map((x) => ({ area: W.setAside(x.url ?? x.page), note: String(x.grounds ?? '') })),
     ];
   } catch { return []; }
 }

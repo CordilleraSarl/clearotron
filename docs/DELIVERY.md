@@ -199,9 +199,12 @@ one for outside readers, and nothing writes `report.client.html` — internal wo
 model's register estimate) is not stripped from the report, it is not in the report: it lives in the
 audit workbook. Two renderings of one run is how the wrong link gets sent.
 
-Beside it the run publishes `report-data.json` (`schema: "report-data/1"`): the run as data — level
-identity, bands, per-mark points, evidence links, register counts. That is the input a bespoke,
-forwardable email is drafted from. The engine composes exactly one email shape, a cover note
+Beside it the run publishes `report-data.json`: the run as data — level identity, bands, per-mark
+points, evidence links, register counts. That is the input a bespoke, forwardable email is drafted
+from. A clearance and a Knockout write different shapes, and the `schema` field names which:
+`report-data/clearance-1` or `report-data/knockout-1`, each described by a JSON Schema in
+[report-data/](report-data/). Runs published before the shapes were named carry `report-data/1` for
+both, and keep it: a published file is never rewritten. The engine composes exactly one email shape, a cover note
 pointing at the report; per-company formatting is not a config knob.
 
 The second document was a real hazard while it existed: any surface that opened a report **by file

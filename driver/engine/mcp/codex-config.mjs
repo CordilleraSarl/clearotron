@@ -62,6 +62,9 @@ export const TOOL_SERVER_SETTINGS = Object.freeze([
 // characters: printed with its escapes and banner it stays under the general answer size below, and so under
 // the cut. An install's own smaller size still wins.
 export const CODEX_BAND_ANSWER_CHARS = 30000;
+// The cut above in bytes, as the product measures it: 10,000 tokens at 4 bytes a token. The model is shown the first
+// and last half of it. driver/manuals-seen.mjs reads a saved session's outputs through it; an estimate, not the vendor's.
+export const CODEX_SHOWN_OUTPUT_BYTES = 10000 * 4;
 export const codexBandAnswerChars = (env = process.env) =>
   Math.min(CODEX_BAND_ANSWER_CHARS, Number(env.CLEAROTRON_BAND_RESPONSE_CHARS) || CODEX_BAND_ANSWER_CHARS);
 

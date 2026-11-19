@@ -26,6 +26,32 @@ import { clauseForDefect, gapPositivelyClosed, jointUnaccounted, orderClausesFor
 import { countCitedDefects, parseCorrections, parseVerdict } from "../verify.mjs";
 import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 
+/**
+ * THE COVERAGE FLOOR'S CONDITIONS, as run-record reasons and the client's clause for each, in the order the floor
+ * records them. PURE: the gate reads the receipts and hands their contents in.
+ *
+ * Every clause the floor composes itself is `null`: the reason stays in the run record and verdict.json, and the
+ * client's conditions get nothing in its place. These sentences are the engine's account of its own steps, and a
+ * client reads the list as the conditions on their result, so they are not ours to write (owner, 2026-09-17; ruled
+ * 2026-09-18 for the screen-gate line and for the class, engineering words come out of client text with nothing
+ * written in their place; ruled 2026-10-13 for the frame comparison). "The lawyer judged a material
+ * slice not fully cleared" read as a human lawyer's judgment, and "slice", "this run" and "(policy: clamp)" are
+ * engine words. The register lines are the exception: registerGapConditions carries clauses the owner ruled.
+ *
+ * @returns {{reason: string, clause: string|null}[]}
+ */
+export function coverageFloorConditions({ coverageInsufficient = false, coverageReason = null, frameGap = false, frameDeferrals = [],
+  screenGateUnresolved = [], seniorUnverified = null, registerRows = [] } = {}) {
+  const out = [];
+  if (coverageInsufficient) out.push({ reason: `the lawyer judged a material slice not fully cleared: ${coverageReason || "register coverage gap"}`, clause: null });
+  if (frameGap) out.push({ reason: "the blind frame-diff flagged a dominant-element omission the reopen pass did not close", clause: null });
+  else if (frameDeferrals.length) out.push({ reason: `follow-ups left open this run: ${frameDeferrals.map((d) => plainDirective(d.directive)).slice(0, 3).join(", ")}`, clause: null });
+  if (screenGateUnresolved.length) out.push({ reason: `${screenGateUnresolved.length} in-scope mark(s) dropped on goods could not be record_fetched (unverified): ${screenGateUnresolved.map((g) => g.mark).join(", ")}`, clause: null });
+  if (seniorUnverified) out.push({ reason: `the oldest registration in a verdict-driving family could not be retrieved (policy: clamp): ${seniorUnverified.map((r) => r.mark).join(", ")}`, clause: null });
+  for (const { reason, clause } of registerRows) out.push({ reason, clause });
+  return out;
+}
+
 export async function runVerdictGate({ P, agent, applyVerdictFrontMatter, correctiveCycleSettled, correctiveEntryVerdict, correctiveRecheckOk, coverageJudgment, ctx, opts, run, runState }, helpers) {
   const { StageFailure, actionsRegisterListed, conditionsFollowingTheRecord, defaultRecordFetcher, enrichFindingDeadlines, lateRecordsUnaddressed, loadCoverageLedger, loadScreenGateUnresolved, owedUrisFor, planAuditExtra, refusedRecordsLeftOut, registerGapConditions, safeReadJson, saveWithRetries, stage, withdrawByToken } = helpers;
   // U1 — coverage-honesty floor (Appendix A tripwire #2). The reviewer verdict is empirically noisy
@@ -598,19 +624,13 @@ export async function runVerdictGate({ P, agent, applyVerdictFrontMatter, correc
       // here and refused: the objection was the class, not the wording. RULED 2026-09-18, design item
       // 25 — cut the clause: it stays in the run record and leaves the client's result entirely, with
       // NOTHING written in its place. That is what the `null` clause below means.
-      const reasons = [], clauseOf = new Map();   // run-record reason → the client's clause: the same words, with any engine token taken out
-      const machinery = (reason, clause = reason) => { reasons.push(reason); clauseOf.set(reason, clause); };
-      if (coverageInsufficient) machinery(`the lawyer judged a material slice not fully cleared: ${coverageJudgment.reason || "register coverage gap"}`);
-      // The frame comparison's reason is the engine's account of its own steps: it stays in the run record, and the
-      // client's conditions get nothing in its place (ruled 2026-10-13, as the screen-gate line below).
-      if (frameGap) machinery("the blind frame-diff flagged a dominant-element omission the reopen pass did not close", null);
-      else if (frameDeferrals.length) machinery(`follow-ups left open this run: ${frameDeferrals.map((d) => plainDirective(d.directive)).slice(0, 3).join(", ")}`);
-      if (screenGateGap) machinery(`${sgUnresolved.length} in-scope mark(s) dropped on goods could not be record_fetched (unverified): ${sgUnresolved.map((g) => g.mark).join(", ")}`, null);   // run record ONLY: no client clause (ruled 2026-09-18)
-      if (seniorGap) machinery(`the oldest registration in a verdict-driving family could not be retrieved (policy: clamp): ${(ctx.seniorRights?.rows ?? []).filter((r) => r.applicable && !r.verified).map((r) => r.mark).join(", ")}`);
-      if (registerGap) {
-        for (const { reason, clause } of registerGapConditions(regGap)) machinery(reason, clause);
-        // (the deferred and cut-down register lines: registerGapConditions, at the end of this file)
-      }
+      const floor = coverageFloorConditions({
+        coverageInsufficient, coverageReason: coverageJudgment.reason, frameGap, frameDeferrals,
+        screenGateUnresolved: screenGateGap ? sgUnresolved : [],
+        seniorUnverified: seniorGap ? (ctx.seniorRights?.rows ?? []).filter((r) => r.applicable && !r.verified) : null,
+        registerRows: registerGap ? registerGapConditions(regGap) : [],
+      });
+      const reasons = floor.map((c) => c.reason), clauseOf = new Map(floor.map((c) => [c.reason, c.clause]));   // run-record reason → the client's clause; null = the run record's alone
       // ── THE THIRD CLAMP SITE NAMES ITSELF, AND NAMES WHICH OF ITS SIX INPUTS FIRED ────────────────
       //
       // All three clamp sites emitted this event under one name with the same from/to, distinguishable

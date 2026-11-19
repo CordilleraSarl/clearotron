@@ -47,8 +47,8 @@ async function notes(registerCounts, t) {
   const row = Object.fromEntries(head.map((h, i) => [h, String(ws.getRow(2).values[i + 1] ?? "")]));
   const cells = [];
   wb.eachSheet((s) => s.eachRow((r) => r.values.slice(1).forEach((v) => cells.push(String(v ?? "")))));
-  // A sheet whose Notes are all empty carries no Notes column at all, so an absent cell reads as no note.
-  return { notes: row["Notes"] ?? "", cells };
+  // A sheet whose notes are all empty carries no Note column at all, so an absent cell reads as no note.
+  return { notes: row["Note"] ?? "", cells };
 }
 const page = (registerCounts) => String(renderKnockoutHtml(FINDINGS, FW, { runId: "r", overall: "Low", registerCounts }))
   .replace(/<style>[\s\S]*?<\/style>/g, "");

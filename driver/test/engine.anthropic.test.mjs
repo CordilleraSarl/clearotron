@@ -946,6 +946,7 @@ test("streamed-usage honesty: a token-moving stall kill carries the STREAMED usa
   assert.equal(r.signals?.stalled, true);
   assert.ok(r.usage, "the kill reports what the stream PROVED it moved (the 137+usage:null class is over)");
   assert.equal(r.usage.cacheRead, 2950000, "the R-round evidence shape: millions of cacheRead on the killed attempt");
+  assert.deepEqual(r.firstCallCache, { read: 2950000, creation: 0 }, "the first call's cache split rides the attempt");
   assert.equal(r.signals?.usageStreamed, true, "marked as stream-reconstructed, not a result-event figure");
   // classification honesty: tokens moved ⇒ NOT a never-admitted lane wedge — it stays a timeout (stall),
   // so the chain does not burn a pointless provider cascade on a turn that was demonstrably admitted.

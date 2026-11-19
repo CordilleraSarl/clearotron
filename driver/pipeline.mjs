@@ -8042,6 +8042,19 @@ export function scriptScopeDisclosure(lane) {   // @internal
   };
 }
 
+/** Several script lanes' rows as one, in the approved words: the lanes' names and their territories joined, the
+ *  sentence and the offer once. PURE. */
+export function mergedScriptScopeRow(lanes, state = "coverage-limited") {   // @internal
+  const parts = lanes.map((lane) => scriptScopeDisclosure(lane)).filter(Boolean);
+  const names = parts.map((d) => d.area.replace(/\s*register equivalents\s*\(.*\)$/, ""));
+  const joined = names.length <= 1 ? names.join("") : `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+  return {
+    area: `${joined} register equivalents (${parts.flatMap((d) => d.territories).join(" / ")})`,
+    state,
+    note: `${joined} same-meaning/phonetic register equivalents not searched on this search — ${NATIVE_LANGUAGE_REMEDY}`,
+  };
+}
+
 /** The pure decision: should the honesty row be injected, and what row. Exported for the unit tests.
  *  `scope` is the requested-territory list (jxScopeJurisdictions precedence: instructed wins, else
  *  profile defaults); the zh match is EXACTLY the codes decideJxLanes would have matched with the lane
@@ -8153,7 +8166,7 @@ export function injectScriptScopeCoverage(P, runDir, note, { searchPolicy = null
     const doc = JSON.parse(readFileSync(P.findings, "utf8"));
     if (!Array.isArray(doc.coverage)) doc.coverage = [];   // T1 (G8) posture: never silently lose the disclosure
     const rowText = (c) => `${c?.area ?? ""} ${c?.note ?? ""}`.toLowerCase();
-    const added = [];
+    const added = [], owed = [];
     for (const p of pending) {
       // Suppression is PER LANE. The old check treated any coverage row mentioning "clearance-jx" as
       // covering the disclosure, which was harmless while zh was the only lane and is a silent row-
@@ -8171,9 +8184,18 @@ export function injectScriptScopeCoverage(P, runDir, note, { searchPolicy = null
           || (p.marker != null && t.includes(p.marker) && SCRIPT_SCOPE_RECOMMENDATION_TOKENS.some((tok) => t.includes(tok)));
       });
       if (already) continue;
-      doc.coverage.push(p.row);
-      added.push(p.lane);
+      owed.push(p);
     }
+    // THE SCRIPT ROWS ARE ONE ROW (owner, 2026-11-18). A worldwide order owed a row per script lane, each ending
+    // in the same offer, so "Left open" said it three times. The lanes still owed a row are now one row: their
+    // names and territories joined, the same approved sentence once. One lane writes the row it always wrote.
+    // The merged row carries every lane's marker and the offer's own words, so the per-lane check above finds
+    // it on a second pass and writes nothing more.
+    const scriptRows = owed.filter((p) => p.marker != null);
+    const rows = [...owed.filter((p) => p.marker == null).map((p) => p.row),
+      ...(scriptRows.length > 1 ? [mergedScriptScopeRow(scriptRows.map((p) => p.lane), scriptRows[0].row.state)] : scriptRows.map((p) => p.row))];
+    doc.coverage.push(...rows);
+    added.push(...owed.map((p) => p.lane));
     if (!added.length) return;
     parseFindingsJson(JSON.stringify(doc));                    // re-validate the shape (throws → catch keeps original)
     writeFindings(runDir, doc, { why: "script-scope-coverage-row", settles: [] });   // B5 — never a truncated findings.json
@@ -8240,7 +8262,10 @@ export function injectLaneDepthCoverage(P, runDir, note) {   // @internal
       // `jx.mjs` writes them as this cause's `why`, and the reader gets them as they are, under a label in words: no
       // opening that restates them in the code's terms, and no closing line about verdicts, which belongs to the run's
       // own coverage judgment. Every other cause keeps the fuller note below.
-      const plain = v.cause === "not-built-for-lane" && v.ran === "candidates" && typeof v.why === "string" && v.why;
+      // A depth the record cannot confirm, and a full ask that ran candidates only, are said the same way, each in the
+      // owner's sentence (2026-11-18).
+      const plain = (v.cause === "not-built-for-lane" && v.ran === "candidates" || v.cause === "not-established"
+        || v.cause === "requested-full-ran-candidates") && typeof v.why === "string" && v.why;
       const language = String(LANGUAGE_LANES[lane]?.label ?? "").replace(/-script deepening$/, "") || lane;   // as jx.mjs names it
       const area = plain ? `${language}-language search depth` : `Native-language investigation depth / ${lane}`;
       const areas = [area, `Native-language investigation depth / ${lane}`, `${language}-language search depth`].map((a) => a.toLowerCase());
@@ -8390,6 +8415,54 @@ export function injectScreenGateCoverage(P, runDir, note, ctx = {}) {   // @inte
   } catch (e) {
     note(`[screen-gate] coverage injection skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
     coverageRowNotAdded(runDir, "screen-gate", e);
+  }
+}
+
+// Imported down here, below every line the rest of the tree cites by number, so adding them moved none of those lines.
+import { registerReach, NOT_COVERED_REASON } from "./register-reach.mjs";   // — what the register service reaches, against the order's markets
+import { regionName } from "./publish/regions.mjs";
+
+// THE MARKETS AN ORDER IS FOR, as the register's reach is read against them: a worldwide order's are the client's
+// markets (the account's default markets, else the major markets, plus any market the order names), and a territorial
+// order's are its own. Read from the run's frozen order and profile. Never throws: an order it cannot read has no
+// markets here, and the coverage line and the rows then say what they said before.
+export function orderMarketsOf(ctx, plan) {   // @internal
+  try {
+    const order = instructedOrder(ctx.paths, ctx.job);
+    return plan?.scope_basis === "worldwide" ? clientMarkets(order, ctx.profile) : orderTerritories(order, ctx.profile);
+  } catch { return []; }
+}
+
+/** EVERY MARKET THE REGISTER SERVICE DOES NOT REACH GETS A "NOT SEARCHED" ROW, WRITTEN BY CODE (owner, 2026-11-18).
+ *  Whether such a market was named used to depend on what the writer chose to write: on three deliveries of one
+ *  order, one named Japan alone, and Vietnam was named on none. The reach is register-reach.mjs's, the same answer the
+ *  coverage line names, so the row and the line cannot disagree. The area is the country's name and the reason is the
+ *  approved one. A row the writer added for the same market stays beside it. Idempotent by area and reason, so a resume
+ *  or a second pass never doubles a row; never-kill, as its siblings. */
+export function injectUncoveredMarketCoverage(P, runDir, note, ctx = {}) {   // @internal
+  try {
+    if (!existsSync(P.findings)) return;
+    let plan = ctx.registerPlan ?? null;
+    if (!plan) { try { plan = JSON.parse(readFileSync(P.registerPlan, "utf8")); } catch { return; } }
+    const reach = registerReach(plan?.provider, orderMarketsOf(ctx, plan));
+    if (!reach?.uncovered.length) return;
+    const doc = JSON.parse(readFileSync(P.findings, "utf8"));
+    if (!Array.isArray(doc.coverage)) doc.coverage = [];
+    let added = 0;
+    for (const code of reach.uncovered) {
+      const area = regionName(code);
+      if (doc.coverage.some((c) => String(c?.area ?? "") === area && String(c?.note ?? "") === NOT_COVERED_REASON)) continue;
+      doc.coverage.push({ area, state: "not-searched", note: NOT_COVERED_REASON });
+      added++;
+    }
+    if (!added) return;
+    parseFindingsJson(JSON.stringify(doc));                    // re-validate the shape (throws → catch keeps original)
+    writeFindings(runDir, doc, { why: "uncovered-market-rows", settles: [] });
+    runLog(runDir, { event: "uncovered-market-rows", service: reach.service, offices: reach.offices, markets: reach.uncovered, added });
+    note(`[register-reach] ${added} "Not searched" row(s) for market(s) outside ${reach.service}'s ${reach.offices} offices: ${reach.uncovered.join(", ")}`);
+  } catch (e) {
+    note(`[register-reach] coverage rows skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
+    coverageRowNotAdded(runDir, "register-reach", e);
   }
 }
 
@@ -9829,7 +9902,7 @@ async function pipelineInner(job, opts = {}) {
   note(`\n=== clearotron-driver: ${run.slug} / ${run.date}-${run.codename} (agent=${agent}) ===`);
 
   // How the run ends delivered (run-delivered.mjs).
-  const { deliverWithoutTheAssessment, publishAndDeliver } = await deliveryEndState({ P, agent, ctx, job, run }, { applyScopeFrontMatterOf, archive, assessmentCoverageOfRun, localLanguageStateOf, reportIdentityRecord, searchLogAuditMd, sentinel, setAsideTheAssessment, writeScopeFactsOf });
+  const { deliverWithoutTheAssessment, publishAndDeliver } = await deliveryEndState({ P, agent, ctx, job, run, opts }, { applyScopeFrontMatterOf, archive, assessmentCoverageOfRun, localLanguageStateOf, reportIdentityRecord, searchLogAuditMd, sentinel, setAsideTheAssessment, writeScopeFactsOf });
 
   // The clearance's own steps, in order, run by run-shell.mjs. A value one step hands a later one is held here, between
   // them; a step that returns a result ends the run with it. A failure in any step ends through run-failed.mjs.
@@ -9932,7 +10005,7 @@ async function pipelineInner(job, opts = {}) {
     } },
     { name: "overview-and-cards", run: async () => {
         // The report's overview and its cards (steps/overview-and-cards.mjs).
-        ({ applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, findingsForCards, groupedMembers, overviewOpen, rebuildTheDeliveredRecord, restoreTheBrokenRecord, rov, writeScopeFacts, writeUps } = await runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWritersDuty, ctx, followTheRecordsActions, job, run, runState, saveTheLabel, writeVerdictSidecar }, { StageFailure, applyScopeFrontMatterOf, asPartNotCompleted, assembleReportMd, caseLawJoin, consolidateFindingsFile, correctionsTheRestoreLacks, deriveCommonLawCarry, deriveRecordCarry, inScopeClassList, injectDeferralCoverage, injectFrontMatter, injectLaneDepthCoverage, injectMeaningGapCoverage, injectScreenGateCoverage, injectScriptScopeCoverage, keepDeliveredRecordAsHistory, localLanguageStateOf, must, openAskForClosure, originRowsForReport, planWriteUps, readFindingsForReport, readReadingLog, rebuildDeliveredRecord, reportIdentityRecord, restoreTheRecordThatPassed, rewriteFromBeforeTheSeam, runBatched, safeReadJson, settleDerivedBases, stage, stampCoverageJudgmentRows, withdrawSupersededAudit, writeScopeFactsOf, writeShortEntries }));
+        ({ applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, findingsForCards, groupedMembers, overviewOpen, rebuildTheDeliveredRecord, restoreTheBrokenRecord, rov, writeScopeFacts, writeUps } = await runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWritersDuty, ctx, followTheRecordsActions, job, run, runState, saveTheLabel, writeVerdictSidecar }, { StageFailure, applyScopeFrontMatterOf, asPartNotCompleted, assembleReportMd, caseLawJoin, consolidateFindingsFile, correctionsTheRestoreLacks, deriveCommonLawCarry, deriveRecordCarry, inScopeClassList, injectDeferralCoverage, injectFrontMatter, injectLaneDepthCoverage, injectMeaningGapCoverage, injectScreenGateCoverage, injectScriptScopeCoverage, injectUncoveredMarketCoverage, keepDeliveredRecordAsHistory, localLanguageStateOf, must, openAskForClosure, originRowsForReport, planWriteUps, readFindingsForReport, readReadingLog, rebuildDeliveredRecord, reportIdentityRecord, restoreTheRecordThatPassed, rewriteFromBeforeTheSeam, runBatched, safeReadJson, settleDerivedBases, stage, stampCoverageJudgmentRows, withdrawSupersededAudit, writeScopeFactsOf, writeShortEntries }));
     } },
     { name: "delivery", run: async () => {
         // The checks before delivery, their repairs, and the publish (steps/delivery.mjs).
@@ -10049,6 +10122,7 @@ export function writeScopeFactsOf(ctx, P, runDir) {   // @internal
     planExecution,
     coverageRows: loadCoverageLedger(runDir).rows,
     withheldQids: waitingFamilyStates(runDir, planExecution?.awaiting).withheld.map((f) => f.qid),
+    markets: orderMarketsOf(ctx, plan),
   });
   facts.derived_from = Object.fromEntries([
     ["instructed_scope", P.instructedScope], ["register_plan", P.registerPlan],
@@ -10860,6 +10934,7 @@ function parseArgv(argv) {
     "--experiment": "experiment", "--model": "model", "--instructions": "instructions",
     "--label": "label", "--axis": "axis", "--dispatch-trigger": "dispatchTrigger", "--research": "research", "--records": "records" };
   for (let i = 0; i < argv.length; i++) {
+    if (argv[i] === "--help" || argv[i] === "-h") { o.help = true; continue; }
     const key = flags[argv[i]];
     if (!key) {
       throw new Error(argv[i].startsWith("-")
@@ -11029,6 +11104,8 @@ export function resumeAdvice({ result = null, error = null, signal = null, jobPa
   return lines;
 }
 
+// What a reader who typed `clearotron run` is told; the developer usage below stays for `node driver/pipeline.mjs`.
+const RUN_USAGE = "usage: clearotron run --job <file.json> — runs one clearance from a job file. An example job is examples/job.euipo.json.";
 const USAGE = "usage: node pipeline.mjs --job <file.json> [--agent <id>]\n" +
   "       [--resume <codename> [--from <stage>] [--records live|replay]]\n" +
   "       [--resume <codename> --experiment <stage> [--model <id>] [--instructions <text>] [--axis <axis>] [--label <text>] [--dispatch-trigger <t>] [--research live|replay]]\n" +
@@ -11076,7 +11153,15 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   let a;
   try { a = parseArgv(process.argv.slice(2)); }
   catch (e) { console.error(`error: ${e.message}`); console.error(USAGE); process.exit(2); }
-  if (!a.job && !a.codename) { console.error(USAGE); process.exit(2); }   // --resume alone rebuilds the job below
+  const usage = process.env.CLEAROTRON_INVOKED_AS ? RUN_USAGE : USAGE;   // reached through `clearotron run`, or directly
+  // Reached through `clearotron run`, the help keeps the dispatcher's spend line, which it printed before this
+  // program had a --help of its own.
+  if (a.help) {
+    console.log(usage);
+    if (process.env.CLEAROTRON_INVOKED_AS) console.log("THIS SPENDS: hours of model time and real register calls. See INSTALL.md §5 and §6.");
+    process.exit(0);
+  }
+  if (!a.job && !a.codename) { console.error(usage); process.exit(2); }   // --resume alone rebuilds the job below
   // composition guards
   if (a.fromStage && !a.codename) { console.error("error: --from requires --resume <codename>"); process.exit(2); }
   if (a.experiment && !a.codename) { console.error("error: --experiment requires --resume <codename>"); process.exit(2); }

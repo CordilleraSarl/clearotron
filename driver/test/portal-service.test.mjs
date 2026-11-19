@@ -28,6 +28,7 @@ import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { driverSource } from "./driver-source.mjs";
+import { BRAND } from "../../shared/brand.mjs";
 
 
 // EVERY temp directory this file makes is removed — including ones created inside helpers, and ones
@@ -650,6 +651,10 @@ test("multi-account client: door routes admit; scoped routes demand a named acco
   assert.deepEqual(me.json.accounts, ["demo-brand-owner", "zephyr"], "the accounts array feeds the UI picker");
   // The command the New company screen shows when no organisation is filed: a name, never a path here.
   assert.equal(me.json.organisationCommand, 'clearotron start --organisation "<name>"');
+  // What the installation calls itself, beside who operates it: the logo and the sentences that name the
+  // installation read it. With no CLEAROTRON_BRAND_NAME it is the product's name, never blank.
+  assert.equal(me.json.brandName, BRAND.name);
+  assert.ok(me.json.brandName, "the installation's name is blank");
   // (the SPA document itself is portal-static.mjs's job now — see portal-static.test.mjs)
   assert.equal((await service.route("GET", "/portal", BOSS)).status, 404);
   const un = await service.route("GET", "/portal/api/searches", BOSS, {}, {});
@@ -1238,21 +1243,27 @@ test("scanAccountRuns: bands and tone come from the run's OWN framework, never a
   assert.equal(by["r-moderate"].reportSchema, null);
 });
 
-test("scanAccountRuns: the writers' STRING reportSchema ('report-data/1') arms the native-render flag", () => {
+test("scanAccountRuns: the writers' STRING reportSchema maps to its version, named or as stored before", () => {
   const poolRoot = tempDir("portal-schema-");
   const workspaceRoot = tempDir("portal-schemaws-");
   const put = (runId, meta) => {
     mkdirSync(join(poolRoot, runId), { recursive: true });
     writeFileSync(join(poolRoot, runId, "meta.json"), JSON.stringify({ runId, customerKey: "demo-brand-owner", date: "2026-07-18", clientGate: { released: true }, ...meta }));
   };
-  // What publish/knockout.mjs (and the clearance producer) actually stamp — the string form. Gating on
-  // `typeof === "number"` alone left this null forever, so the portal's native branch never armed.
+  // What publish/knockout.mjs and the clearance producer stamp — the string form, named for its shape
+  // since the two shapes were told apart, and `report-data/1` on every run stored before that.
   put("r-native", { title: "NOVAKIT", kind: "knockout-batch", overall: "Clear", reportSchema: "report-data/1" });
+  put("r-knockout", { title: "KOKIT", kind: "knockout-batch", overall: "Clear", reportSchema: "report-data/knockout-1" });
+  put("r-clearance", { title: "CLRKIT", kind: "clearance", overall: "Clear", reportSchema: "report-data/clearance-1" });
   put("r-numeric", { title: "NUMKIT", kind: "clearance", overall: "Clear", reportSchema: 1 });
   put("r-junk", { title: "JUNKKIT", kind: "clearance", overall: "Clear", reportSchema: "not-a-schema" });
+  put("r-other-shape", { title: "SHAPEKIT", kind: "clearance", overall: "Clear", reportSchema: "report-data/verdict-1" });
 
   const by = Object.fromEntries(scanAccountRuns({ poolRoot, workspaceRoot, account: "demo-brand-owner" }).map((r) => [r.runId, r]));
-  assert.equal(by["r-native"].reportSchema, 1, "'report-data/1' means schema version 1 — the flag arms");
+  assert.equal(by["r-native"].reportSchema, 1, "a stored run's 'report-data/1' still reads as version 1");
+  assert.equal(by["r-knockout"].reportSchema, 1, "'report-data/knockout-1' is version 1 of the Knockout's shape");
+  assert.equal(by["r-clearance"].reportSchema, 1, "'report-data/clearance-1' is version 1 of the clearance's shape");
+  assert.equal(by["r-other-shape"].reportSchema, null, "a shape nobody writes is not read as a version");
   assert.equal(by["r-numeric"].reportSchema, 1, "a bare number still passes through");
   assert.equal(by["r-junk"].reportSchema, null, "an unrecognised string stays legacy — never invented");
 });

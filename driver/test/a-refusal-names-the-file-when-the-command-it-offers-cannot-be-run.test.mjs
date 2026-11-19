@@ -222,7 +222,7 @@ const DEV_PORTAL = [join(ROOT, "driver", "dev-portal.mjs")];
 
 /** The pool-root refusal as a reader prints it: from its variable's name to the end of its line. */
 function poolRefusal(said) {
-  const m = /CLEAROTRON_REPORTS_DIR is not set, and it has NO default\..*$/m.exec(said);
+  const m = /CLEAROTRON_REPORTS_DIR is not set, and it has no default\..*$/m.exec(said);
   assert.ok(m, `this drive never printed the pool-root refusal, so there was nothing here to measure:\n${said.slice(0, 900)}`);
   return m[0];
 }
@@ -231,7 +231,7 @@ test("start hands its snapshot the paths it hands its services, so its screen ca
   const said = reachedTheRefusal(READ);
   assert.doesNotMatch(said, /the configuration snapshot could not be written/,
     `start still wrote its snapshot without the paths it resolved:\n${said.slice(0, 900)}`);
-  assert.doesNotMatch(said, /CLEAROTRON_REPORTS_DIR is not set, and it has NO default/);
+  assert.doesNotMatch(said, /CLEAROTRON_REPORTS_DIR is not set, and it has no default/);
 });
 
 test("doctor, which resolves no paths, still prints the pool-root refusal", () => {

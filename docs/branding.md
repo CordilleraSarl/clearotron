@@ -15,7 +15,7 @@ install needs no change — but the names below are the ones to write:
 
 | Variable | Default | Where it surfaces |
 |---|---|---|
-| `CLEAROTRON_BRAND_NAME` | `Clearotron` | Report title and watermark, pool index header, portal nav, Excel metadata, connector instructions |
+| `CLEAROTRON_BRAND_NAME` | `Clearotron` | Report title, pool index header, the portal's logo, its page title and the sentences that name the installation, Excel metadata, connector instructions |
 | `CLEAROTRON_BRAND_TAGLINE` | *(empty — no strapline is rendered)* | Report and portal chrome |
 | `CLEAROTRON_BRAND_PRODUCT` | `Trademark clearance` | Artifact naming and connector instructions |
 
@@ -39,9 +39,9 @@ Unset, the words are plain text.
 
 - **The palette is not env-overridable.** Brand colours are defined in code beside those variables.
   Changing them is a code change, not configuration.
-- **Neither is the mark.** The ridge mark is drawn in code (`shared/brand.mjs`) and is Cordillera's,
-  not the product's. A deployment that sets the three variables gets its own *name* on every artifact
-  and still gets that mark beside it. Replacing it is a code change today; if you are deploying under
+- **Neither is the mark.** The bracket mark is drawn in code (`shared/brand.mjs`) and is the product's.
+  A deployment that sets the three variables gets its own *name* on every artifact and still gets that
+  mark beside it. Replacing it is a code change today; if you are deploying under
   your own name, do it. The Swiss flag that used to sit inside the wordmark is **gone** — a shape is
   not a claim, but a national flag beside someone else's name was one.
 - **`portal-ui/dist` is committed and CI byte-compares it against a fresh build.** Brand strings are

@@ -262,6 +262,7 @@ import { progressQuantity } from "./repairs.mjs";
 // SIBLING ARTIFACT rather than the fail string, because the fail string is cut at 160 chars.
 import { undispatchableFiringDirectives } from "./frame-diff-model.mjs";
 import { witnessStageMethodology, describeMethodologyDrift } from "./methodology-witness.mjs";
+import { measureManualsSeen } from "./manuals-seen.mjs";
 // — the meaning-sweep form and its accumulator. Both PURE and acyclic: connotation-search.mjs
 // imports nothing, disposition-union.mjs imports only it, and neither reaches back here.
 import { parsePrRiskResults, connotationObligations, parseDispositionForm, CONNOTATION_FORM_TOKEN_SRC,
@@ -351,10 +352,11 @@ export function spentBudgetCleanly({ fail, killed, code, wall, derivedLimitSec }
 // — THE TOOL GAUGE, AND WHY NULL IS NOT ZERO HERE EITHER.
 //
 // `toolCalls` and `toolWaitMs` say how much of a turn was tool wait rather than generation. An engine
-// that cannot report them is NOT a turn that called no tools: `openai-agent` carries no tool references
-// at all, so every codex attempt is unmeasured. Writing 0 for those would make every codex turn read as
-// "called no tools", and a cross-engine comparison would then conclude tool wait is an Anthropic-only
-// phenomenon — from an instrument that had simply gone quiet.
+// that cannot report them is NOT a turn that called no tools: `openai-agent` reports no whole-turn tool
+// count, so a codex attempt's `toolCalls` is unmeasured. Writing 0 for it would make every codex turn read
+// as "called no tools", and a cross-engine comparison would then conclude tool calls are an Anthropic-only
+// phenomenon — from an instrument that had simply gone quiet. Its tool wait it does time, from when each
+// tool item opens and closes in its stream (openai-agent.mjs, codexTiming).
 //
 // PRESENT AND NULL, never absent, which is this file's own house rule: a field written even when null
 // keeps "this engine cannot report" visibly different from "this record predates the gauge". The first
@@ -397,6 +399,14 @@ export function toolGauge(turn) {
     // model asked for. An OBJECT is a measurement (`{}`: none); null is "this engine cannot report".
     toolCallsByName: turn?.toolCallsByName && typeof turn.toolCallsByName === "object" && !Array.isArray(turn.toolCallsByName)
       ? { ...turn.toolCallsByName } : null,
+    // ms from spawn to the engine's first output, on both engines; null when it never spoke or cannot report. With
+    // `toolWaitMs` and `activeMs` it splits a turn into start-up, tool wait and work. RECORDING ONLY.
+    firstByteMs: n(turn?.firstByteMs),
+    // The first call's cache read and write in tokens, where the engine reports them (Claude), and how many times the turn
+    // searched for a tool to load (`ToolSearch`), read off its own per-name counts. null where the engine cannot say.
+    firstCallCache: turn?.firstCallCache && Number.isFinite(turn.firstCallCache.read) && Number.isFinite(turn.firstCallCache.creation)
+      ? { read: turn.firstCallCache.read, creation: turn.firstCallCache.creation } : null,
+    toolSearchCalls: turn?.toolCallsByName && typeof turn.toolCallsByName === "object" ? (turn.toolCallsByName.ToolSearch ?? 0) : null,
   };
 }
 
@@ -797,6 +807,7 @@ async function runStageLadder(name, opts, stageHome = null, engine = selectEngin
   let lastJson = null;          // the failed attempt's parsed envelope — warm eligibility needs its status
   let lastKey = sessionKey;     // the failed attempt's session key — the warm patch resumes exactly it
   let lastSessionRef = sessionKey;  // the failed attempt's engine sessionRef — anthropic warm-resume (--resume) reuses it
+  let lastKillClass = null;     // how the failed attempt's hard-wall kill read (killedWhile): a working one is resumed warm
   // statOf feeds the ONE artifact-state snapshot both the exit-1 rescue and AD-4's emitted-vs-landed
   // gauge read. It is taken PER ATTEMPT, just before the turn is dispatched — it used to be taken
   // once before the whole ladder, which is the cross-attempt rescue hole post-merge audit 2 found: a
@@ -873,7 +884,12 @@ async function runStageLadder(name, opts, stageHome = null, engine = selectEngin
     // lane: if attempt 2 comes back with rows ruled (`call_partial` — a seat that has now recorded
     // rulings), attempt 3 can still warm, which is the case warm is good at.
     const vetoedResume = vetoResumeRuledNone(attempt, lastUnion);
-    const warm = attempt > 1 && !warmUsed && process.env.CLEAROTRON_WARM_RETRY !== "0" && !vetoedResume && warmEligible(lastFail, lastJson);
+    // A TURN STOPPED AT ITS HARD WALL WHILE STILL WORKING IS RESUMED, NOT RESTARTED. Its single extended retry (ladder/next-rung.mjs)
+    // continues the same session with the message design wrote, so an hour of work is not done again; a kill that was silent, or
+    // was only making its own record write, is retried fresh as before. The classification is killedWhile, below.
+    const timeoutResume = lastFail === "timeout" && lastKillClass === "working";
+    const warm = attempt > 1 && !warmUsed && process.env.CLEAROTRON_WARM_RETRY !== "0" && (timeoutResume || (!vetoedResume && warmEligible(lastFail, lastJson)));
+    const timeoutWarm = warm && timeoutResume;
     if (warm) warmUsed = true;
     else if (vetoedResume && !warmUsed && process.env.CLEAROTRON_WARM_RETRY !== "0" && warmEligible(lastFail, lastJson))
       note(`[${name}] attempt ${attempt - 1} left this stage's meaning population with ZERO ruled rows (${String(lastFail).slice(0, 100)}) — a resumed session re-reads its own output and cannot rule what it did not rule; SKIPPING the warm patch and dispatching attempt ${attempt} FRESH (the warm attempt is not spent: a partial failure later in this ladder still gets it)`);
@@ -913,8 +929,8 @@ async function runStageLadder(name, opts, stageHome = null, engine = selectEngin
       try { const fresh = refreshMessage(attempt); if (typeof fresh === "string" && fresh) base = fresh; }
       catch (e) { note(`[${name}] refreshMessage failed on attempt ${attempt}, dispatching the original text: ${String(e?.message ?? e).slice(0, 120)}`); }
     }
-    const effMessage = warm ? warmPatchMessage(lastFail, files, { supplementalLane, adds }) : correctiveMessage(base, attempt, lastFail, files, { supplementalLane, adds });
-    note(`[${name}] attempt ${attempt}/${maxRetries + 1}${warm ? " [warm patch]" : ""} (engine=${engine.name} agent=${agent} model=${model ?? "default"} key=${key} timeout=${effTimeout}s)`);
+    const effMessage = timeoutWarm ? warmTimeoutMessage(files) : warm ? warmPatchMessage(lastFail, files, { supplementalLane, adds }) : correctiveMessage(base, attempt, lastFail, files, { supplementalLane, adds });
+    note(`[${name}] attempt ${attempt}/${maxRetries + 1}${timeoutWarm ? " [warm resume: the timed-out turn was still working]" : warm ? " [warm patch]" : ""} (engine=${engine.name} agent=${agent} model=${model ?? "default"} key=${key} timeout=${effTimeout}s)`);
     // The engine runs ONE turn and returns the normalized tuple. Every adapter returns the same shape
     // (zero change); anthropic-agent = claude -p off-gateway with the stall-watchdog. A warm retry threads
     // the prior attempt's sessionRef so the engine resumes the SAME session (anthropic: via
@@ -938,7 +954,7 @@ async function runStageLadder(name, opts, stageHome = null, engine = selectEngin
     const dispatch = envGateOn("CLEAROTRON_DISPATCH_RECORD")
       ? recordDispatch(runDir, name, {
         attempt,
-        kind: warm ? "warm-patch" : followup ? "followup" : attempt === warmEscalatedAt ? "fresh-escalation" : vetoedResume ? "fresh-total-defect" : attempt > 1 ? "corrective" : "fresh",
+        kind: timeoutWarm ? "warm-timeout" : warm ? "warm-patch" : followup ? "followup" : attempt === warmEscalatedAt ? "fresh-escalation" : vetoedResume ? "fresh-total-defect" : attempt > 1 ? "corrective" : "fresh",
         message: effMessage,
         // — THE RESOLVED GRANT, recorded beside the sha of the message it went out with. This is
         // the value handed to `engine.runTurn` below as `allowedTools`, not a re-derivation of it: a
@@ -953,8 +969,8 @@ async function runStageLadder(name, opts, stageHome = null, engine = selectEngin
     // precede its own settle, so they stay outside it.
     const dispatchedAt = Date.now();
     const mcpConfig = turnConfig(effTimeout);   // this turn's copy, with its time to stop sending
-    for (const line of describeMethodologyDrift(witnessStageMethodology(runDir, name, effMessage, engineResolveSkill)))
-      note(`[${name}] ${line}`);
+    const witnessed = witnessStageMethodology(runDir, name, effMessage, engineResolveSkill);
+    for (const line of describeMethodologyDrift(witnessed)) note(`[${name}] ${line}`);
     // — the frozen judged-by set, hashed into THIS PROCESS'S MEMORY before the seat runs. Never
     // written to disk before the comparison, so the thing being watched cannot reach it. See
     // run-integrity.mjs for why it is not a manifest file and why the append-only journals are excluded.
@@ -1245,6 +1261,8 @@ async function runStageLadder(name, opts, stageHome = null, engine = selectEngin
     if (killClass) killSeen = true;
     fail = nameTheFailure(fail, { usage, json, stdout: turn.stdout, stderr, signals: turn.signals, name,
       gauge: { modelMismatch, famRequested, famActual, modelRequested, modelActual } });
+    // How a hard-wall kill read (killedWhile), once per attempt: both rows record it and the next rung reads it. null otherwise.
+    const attemptKilledWhile = fail === "timeout" ? killedWhile(turn, stallSec ?? Number(process.env.CLEAROTRON_STALL_MS || 120000) / 1000) : null;
 
     // AD-4 house rule — both computed UNCONDITIONALLY, three-valued on purpose:
     //   wrote: did THIS attempt move any expected artifact? true/false when the stage has expected files,
@@ -1450,6 +1468,10 @@ async function runStageLadder(name, opts, stageHome = null, engine = selectEngin
         // not left looking like an artifact problem. It names a fact; it moves no retry policy. See
         // `spentBudgetCleanly`.
         budgetSpentCleanly: spentBudgetCleanly({ fail, killed, code, wall, derivedLimitSec: derivedLimit?.sec }),
+        killedWhile: attemptKilledWhile,
+        // The share of each told manual this turn's model was shown, read off its saved stream (manuals-seen.mjs); null
+        // where the stream cannot say. A resumed turn is shown only what it read after resuming, so read it beside `warm`.
+        manualsSeen: measureManualsSeen(turn, witnessed.told, engine.name),
         // AD-4 emitted-vs-landed, UNCONDITIONAL (was success-only, which made a failed attempt's mid-write
         // artifact invisible): `output` = what LANDED on disk after this attempt (null when the stage has no
         // expected file); `wrote` = whether THIS attempt emitted it (see the computation above the runDir
@@ -1520,6 +1542,7 @@ async function runStageLadder(name, opts, stageHome = null, engine = selectEngin
         // …and the same fact on this row, because one of the two carrying it records half the runs and
         // reads as done. Three-valued and beside the numbers it is about. See `spentBudgetCleanly`.
         budgetSpentCleanly: spentBudgetCleanly({ fail, killed, code, wall, derivedLimitSec: derivedLimit?.sec }),
+        killedWhile: attemptKilledWhile,
           formRepairs: formRepairsThisAttempt || undefined,   //, see the stage row above
         });
       } catch { /* telemetry best-effort — never fail a turn over a journal line */ }
@@ -1535,6 +1558,7 @@ async function runStageLadder(name, opts, stageHome = null, engine = selectEngin
     lastKey = key;
     lastQuantity = quantity;   //: rides the ladder's final return, so the run-level catch stamps the exact count
     lastSessionRef = turn.sessionRef ?? lastSessionRef;   // anthropic warm-resume target for the next attempt
+    lastKillClass = attemptKilledWhile;
     note(`[${name}] attempt ${attempt} FAILED: ${fail}${quantity === null ? "" : ` (count ${quantity}${noChange ? ", unchanged" : ""})`}`);
 
     // What the ladder does next after this failure — escalate, retry, break, or return — is ladder/next-rung.mjs.
@@ -2803,6 +2827,39 @@ export function draftCarryEligible(fail) {
 }
 export function warmEligible(fail, json) {
   return json?.status === "ok" && WARM_ELIGIBLE_RE.test(fail ?? "");
+}
+
+/**
+ * How a turn stopped at its hard wall read when it was stopped: "working" when it asked for a tool other than its own record
+ * write within the stage's last stall window, "record-only" when its only asks there were that write, "silent" when it asked
+ * for none, and null for anything that is not a hard-wall kill or a turn whose engine could not say. The window is the stage's
+ * own `stallSec`, 120 s where it sets none, read back from the end of the turn. Measured before this was built, over saved
+ * hard-wall kills: 10 of 14 on production and 18 of 24 on a test machine were working. PURE.
+ */
+export function killedWhile(turn, stallSec) {
+  if (!turn?.killed || !turn?.signals?.hardWall || turn?.signals?.stalled) return null;
+  const asked = turn.lastToolAsk;
+  const wallMs = Number(turn.wall) * 1000;
+  if (!asked || !Number.isFinite(wallMs)) return null;
+  const windowMs = (Number.isFinite(stallSec) && stallSec > 0 ? stallSec : 120) * 1000;
+  const within = (ms) => Number.isFinite(ms) && wallMs - ms <= windowMs;
+  return within(asked.workMs) ? "working" : within(asked.recordMs) ? "record-only" : "silent";
+}
+
+/**
+ * What a session resumed after a working hard-wall kill reads: design's words, with the stage's own closing tail, the record
+ * tool's for a tool-written stage and the whole-file write for any other. Approved word for word. PURE.
+ */
+export function warmTimeoutMessage(expectFile) {
+  const files = (Array.isArray(expectFile) ? expectFile : [expectFile]).filter(Boolean);
+  const names = files.map(rel).join(", ");
+  const toolWritten = files.length ? toolWrittenArtifact(files[0]) : null;
+  const tail = toolWritten
+    ? `Call \`${toolWritten.tool}\` with the values from the work already in your context — never by writing or editing any file. Do not stop until the tool accepts the call.`
+    : fullWriteTail(names || "the stage output");
+  return `You are RESUMING your own session for this stage — your prior work and inputs are already in your context. Do NOT redo the work from scratch.\n` +
+    `Your previous turn was stopped at the stage's time limit while you were still working. Everything you already recorded through the stage's tools is kept; do not record it again. Continue from the last step you completed, finish what remains, and then ` +
+    tail + ` This attempt has a longer limit, but not an unlimited one: finish the remaining work rather than revisiting finished steps.`;
 }
 
 // ── — THE FIRST RETRY IS ROUTED BY THE RUN'S OWN COUNTED STATE, NOT BY A TOKEN NAME ────────────

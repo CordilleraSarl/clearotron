@@ -22,6 +22,8 @@
 //
 // Each address was checked on 2026-09-10 against a real record, and each row says how.
 
+import { RECORD_LINKS as L } from "./strings.mjs";
+
 const pad = (s, n) => String(s).padStart(n, "0");
 const clean = (v) => (v == null ? "" : String(v).trim());
 
@@ -244,33 +246,33 @@ export function officeReasonSentences(byUri) {
   const each = [...keys].sort().map((k) => {
     const [office, reason] = k.split(" ");
     const name = nameOf(office);
-    if (reason === "no-page") return `${name}: the register publishes no page for a single record, so its registrations are cited by number.`;
-    return `${name}: registrations whose numbers are not in the form the register's page address takes are cited by number, not linked.`;
+    if (reason === "no-page") return L.noPage(name);
+    return L.numberForm(name);
   });
   const codes = [...unknown].sort().map(nameOf);
-  if (codes.length === 1) each.push(`${codes[0]}: we hold no page address for this register, so its registrations are cited by number.`);
-  else if (codes.length > 1) each.push(`${codes.join(", ")}: we hold no page address for these registers, so their registrations are cited by number.`);
+  if (codes.length === 1) each.push(L.noAddress(codes[0]));
+  else if (codes.length > 1) each.push(L.noAddresses(codes.join(", ")));
   return each;
 }
 
 /**
  * What a linked registration number opens, when one is linked, then the reasons per office, as the
  * knockout says them under its listed filings. They are the sentences the clearance says in Scope; its
- * renderer is frozen (render-frozen.test.mjs) and keeps its own copy of the first.
+ * renderer was hash-frozen when this was written (render-frozen.test.mjs) and keeps its own copy of the first.
  */
 export function officeLinkSentences(byUri) {
   if (!(byUri instanceof Map)) return [];
   const linked = [...byUri.values()].some((l) => l?.href);
-  return [...(linked ? ["A registration number shown as a link opens the office’s own page for that record."] : []),
+  return [...(linked ? [L.opensOfficePage] : []),
     ...officeReasonSentences(byUri)];
 }
 
 /** Why a registration is cited by number rather than linked, in the workbook's words. */
 export function reasonCellFor(link) {
   const name = nameOf(link.office);
-  if (link.reason === "no-page") return `No page for a single record at this register (${name}); cited by number`;
-  if (link.reason === "unknown-office") return `No page address held for this register (${name}); cited by number`;
-  return `Number not in the form this register's page address takes (${name}); cited by number`;
+  if (link.reason === "no-page") return L.cell.noPage(name);
+  if (link.reason === "unknown-office") return L.cell.noAddress(name);
+  return L.cell.numberForm(name);
 }
 
 /** The workbook's Link cell for a finding: its first linked registration, else the first stated reason. */

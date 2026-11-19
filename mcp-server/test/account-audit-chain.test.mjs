@@ -18,7 +18,7 @@
 //     the output" would pass on a fixture that never had one.
 //   · a STAFF principal still reads the raw cut, byte-for-byte. A scrub that leaked onto the internal
 //     review surface would break it just as quietly.
-import { mkdtempSync, writeFileSync, readFileSync, appendFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, appendFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";
@@ -281,4 +281,28 @@ test("the Resources surface agrees with the tool surface, kind for kind", async 
   assert.match(denied, /may only read the report/, "a report link read the audit trail as a resource");
   const sealed = await mcpRaw(acme, "resources/read", { uri: `trademark://run/${RUN_ID}/status.json` });
   assert.match(sealed, /not readable by a client account/, "a sealed artifact was served as a resource");
+});
+
+// ---- 6. A CITED RECORD'S GOODS, AS THE REGISTER HOLDS THEM ------------------------------------------
+//
+// The report prints a registration's goods in English, or the vendor's machine translation marked as one, and
+// points a reader who wants the original wording to their assistant (2026-11-18). get_finding carries it for the
+// one register record a block names, copied from the record the run saved and passed through no scrub. An
+// invented record; its text holds what a scrub pass would rewrite, so a cleaned copy cannot pass for the record.
+test("acme's token reads a cited record's goods in the register's own words, copied, and a web source carries none", async () => {
+  const runDir = join(ROOT, "workspace-test", "studio", "clearance-search", "tmptest1-acme", "2026-06-08-copper-anvil");
+  const original = "Appareils **de mesure**; logiciels de primary-sweep; casques audio";
+  const translation = "Measuring **apparatus**; primary-sweep software; headphones";
+  mkdirSync(join(runDir, "_records"), { recursive: true });
+  writeFileSync(join(runDir, "_records", "us-123.json"), JSON.stringify({
+    _uri: "/mark/us/123", office: "us", markText: "ACME",
+    goodsServices: [{ classes: [9], language: "fr", description: original, translation_language: "en", translation }],
+  }));
+  const one = await call("get_finding", { runId: RUN_ID, id: "F1" }, ACME());
+  assert.deepEqual(one.goodsAsRegistered, {
+    registration: "/mark/us/123",
+    statements: [{ classes: ["9"], text: original, language: "fr", translation: { text: translation, language: "en" } }],
+  }, "the record's goods did not travel exactly as the register holds them");
+  const web = await call("get_finding", { runId: RUN_ID, id: "F2" }, ACME());
+  assert.ok(!("goodsAsRegistered" in web), "a marketplace source was given register goods");
 });

@@ -31,6 +31,10 @@ import { deriveLaneDepthVerdicts, deriveJxSliceStatement, laneDepthOfRun } from 
 import { localLanguageDepth } from "../publish/search-depth.mjs";
 import { readJxLanes } from "../reference-score.mjs";
 import { injectLaneDepthCoverage } from "../pipeline.mjs";
+import { LANGUAGE_LANES } from "../jx-lanes.mjs";
+
+// The lane's language as the depth sentence names it.
+const LANG = LANGUAGE_LANES.zh.label.replace(/-script deepening$/, "");
 
 const dir = () => mkdtempSync(join(tmpdir(), "lane-depth-"));
 
@@ -68,9 +72,11 @@ test("asked full, the deep slices refused, candidates ran — REQUESTED-FULL-RAN
   assert.equal(v.zh.cause, "requested-full-ran-candidates");
   // The reader is not sent to the artifact to find out WHICH slice fell short — the rule for
   // degradedCause, applied to the field beside it. No switch arms a slice, so none is named.
-  assert.match(v.zh.why, /serp-grid refused/);
-  assert.match(v.zh.why, /nativeread refused/);
-  assert.doesNotMatch(v.zh.why, /env arm/, "the cause names a switch that no longer exists");
+  // The reader's sentence is the owner's; which slice fell short stays in the record's own terms beside it.
+  assert.equal(v.zh.why, `A full-depth ${LANG}-language search was requested, but only the candidate search ran; the deeper web search and native-language review were not performed.`);
+  assert.match(v.zh.detail, /serp-grid refused/);
+  assert.match(v.zh.detail, /nativeread refused/);
+  assert.doesNotMatch(v.zh.detail, /env arm/, "the cause names a switch that no longer exists");
 });
 
 test("ONE deep slice running is enough to have delivered full — the arms are independent", () => {
@@ -119,7 +125,9 @@ test("asked full and NOTHING is established — the flag fires and `ran` is null
   assert.equal(v.zh.ran, null, "an unestablished depth must not be reported as candidates");
   assert.equal(v.zh.shortfall, true, "an absence does not discharge the flag");
   assert.equal(v.zh.cause, "not-established");
-  assert.match(v.zh.why, /CANNOT be established/);
+  // The reader's sentence is the owner's (2026-11-18); what the record says stays beside it.
+  assert.equal(v.zh.why, `Whether the full-depth ${LANG}-language search ran cannot be confirmed from this search's record, so it is treated as not done.`);
+  assert.match(v.zh.detail, /CANNOT be established/);
 });
 
 test("asked candidates and got candidates — no flag, whatever the arms did", () => {
@@ -209,6 +217,10 @@ test("readJxLanes carries the run's own verdict, and an artifact that never stat
   assert.equal(zh.depthVerdict.recorded, true);
   assert.equal(zh.depthVerdict.ran, "candidates");
   assert.equal(zh.depthVerdict.shortfall, true);
+  // A depth the record cannot confirm: the scorer keeps the record's own terms beside the client's sentence.
+  const unconfirmed = readJxLanes({ lanes: { zh: laneAsking("full") }, fold: { lanes: { zh: { degraded: false, accepted: [] } },
+    depth: { zh: { asked: "full", ran: null, shortfall: true, cause: "not-established", why: "the sentence", detail: "slice 1 for this lane is unrecorded" } } } });
+  assert.equal(unconfirmed.lanes.find((l) => l.lane === "zh").depthVerdict.detail, "slice 1 for this lane is unrecorded");
 
   // A pre-change artifact. Three-valued on the record itself, the same discipline as `statement`: this is
   // an absence and it is stated as one. `shortfall: null`, never `false` — reporting "no shortfall" from
@@ -237,7 +249,7 @@ function runWith(foldDepth) {
 
 test("a shortfall becomes a reader-visible coverage row — coverage-limited, never a clamp, idempotent", () => {
   const { d, P } = runWith({ zh: { asked: "full", ran: "candidates", shortfall: true,
-    cause: "requested-full-ran-candidates", why: "asked for full and ran candidates only — serp-grid not-armed, nativeread not-armed" } });
+    cause: "some-later-cause", why: "asked for full and ran candidates only — serp-grid not-armed, nativeread not-armed" } });
 
   injectLaneDepthCoverage(P, d, () => {});
   const once = JSON.parse(readFileSync(P.findings, "utf8")).coverage;
@@ -253,6 +265,14 @@ test("a shortfall becomes a reader-visible coverage row — coverage-limited, ne
   injectLaneDepthCoverage(P, d, () => {});
   assert.equal(JSON.parse(readFileSync(P.findings, "utf8")).coverage.filter((c) => c.area === AREA).length, 1,
     "idempotent on resume — a second delivery pass must not duplicate the disclosure");
+});
+
+test("a depth the record cannot confirm reaches the reader as the owner's sentence, alone, under its label in words", () => {
+  const why = `Whether the full-depth ${LANG}-language search ran cannot be confirmed from this search's record, so it is treated as not done.`;
+  const { d, P } = runWith({ zh: { asked: "full", ran: null, shortfall: true, cause: "not-established", why, detail: "slice 1 for this lane is unrecorded" } });
+  injectLaneDepthCoverage(P, d, () => {});
+  const rows = JSON.parse(readFileSync(P.findings, "utf8")).coverage.filter((c) => /search depth|investigation depth/.test(c.area));
+  assert.deepEqual(rows, [{ area: `${LANG}-language search depth`, state: "coverage-limited", note: why }]);
 });
 
 test("no shortfall ⇒ no row, and an UNSTATED verdict ⇒ no row either", () => {
