@@ -1239,7 +1239,7 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
           bridges: CASELAW_BRIDGES,
         });
       })(),
-      registerPlan: rdJson(paths(runBase).registerPlan),
+      registerPlan: rdJson(paths(runBase).registerPlan), planExecution: readStore(runBase, '_driver/plan-execution.json').value ?? null,
       laneDepthVerdicts,
       noMarketplacesPicked,
     });

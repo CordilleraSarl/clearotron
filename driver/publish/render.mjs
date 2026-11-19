@@ -232,7 +232,6 @@ function ratingExtras(fm, findings, coverage, fourAnswers, opts, bandWord, condi
     if (cleared) parts.push(R.rating.nearNamesCleared(cleared.toLocaleString('en-GB')));
     const rated = findings.filter((f) => f && f.band).length;
     parts.push(R.rating.conflicts(rated));
-    if (sd.counts.localScriptSearched) parts.push(R.rating.localScript);
     const cd = sd.counts.courtDecisions;
     if (cd === 'found') parts.push(R.rating.courtChecked);
     else if (cd === 'none-found') parts.push(R.rating.courtNoneTouch);
@@ -1194,7 +1193,9 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
     ? R.searched.checksWebAndStores(sw.checks.toLocaleString('en-GB'))
     : R.searched.checksOnPlatforms(sw.checks.toLocaleString('en-GB'), sw.platforms)]);
   if (sw.reputation) rows.push([R.searched.reputation, R.searched.checks(sw.reputation.toLocaleString('en-GB'))]);
-  rows.push([R.searched.localScript, c.localScriptSearched ? R.searched.searched : R.searched.notSearched]);
+  // The local-script row says what the run's record shows ran (owner, 2026-11-19): searched when a native-script term
+  // ran, not searched when the record shows none did, and no row when the run kept no execution record to say either.
+  if (c.localScripts) rows.push([R.searched.localScript, c.localScripts.searched.length ? R.searched.searched : R.searched.notSearched]);
   // HOW DEEP THE LOCAL-LANGUAGE INVESTIGATION WENT, which is a different question from the row above it.
   // That one answers whether the spellings were searched; this one answers whether the investigation ran
   // at the depth the matter configured. The engine can run it shallower than the account asked for, and
@@ -2098,9 +2099,9 @@ function findingCard(f, card, recordsByUri = new Map()) {
 // cards set the risk, and the exported PDF fell from 280 pages to 53 with the rest unticked. A lawyer who ticks a
 // card puts it back in the PDF; each compact card still opens to its full detail.
 //
-// ONLY WHERE THE WORDS ARE HIS. The heading is his plural; a single conflict below the risk keeps its full card
-// until he words the singular. A conflict with no band on the ladder keeps its full card, since nothing says it is
-// below the risk. A run with no framework renders every card in full, as it always has.
+// A single conflict below the risk folds too, under the singular, "1 more conflict rated Manageable" (owner,
+// 2026-11-19). A conflict with no band on the ladder keeps its full card, since nothing says it is below the risk. A
+// run with no framework renders every card in full, as it always has.
 function conflictCards(onField, cardFor, recordsByUri) {
   const full = (list) => list.map((f) => findingCard(f, cardFor(f), recordsByUri)).join('\n  ');
   if (!FRAMEWORK) return full(onField);
@@ -2108,12 +2109,12 @@ function conflictCards(onField, cardFor, recordsByUri) {
   if (!rated.length) return full(onField);
   const top = Math.min(...rated.map(severityRank));
   const below = onField.filter((f) => severityRank(f) > top && severityRank(f) < FRAMEWORK.bands.length);
-  if (below.length < 2) return full(onField);
+  if (!below.length) return full(onField);
   const kept = onField.filter((f) => !below.includes(f));
   const bands = [...new Set(below.map(severityRank))].sort((a, b) => a - b).map((i) => FRAMEWORK.bands[i].label);
   const cards = below.map((f) => compactCard(f, cardFor(f), recordsByUri, { ticked: false })).join('\n      ');
   return `${full(kept)}
-  <details class="rgroup lowerband"><summary><span class="gname">${esc(R.lowerBand(below.length.toLocaleString('en-GB'), bands))}</span></summary><div class="gbody">
+  <details class="rgroup lowerband"><summary><span class="gname">${esc(R.lowerBand(below.length, bands))}</span></summary><div class="gbody">
       ${cards}
   </div></details>`;
 }

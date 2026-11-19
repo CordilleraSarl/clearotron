@@ -344,10 +344,34 @@ export function localLanguageDepth(verdicts) {
   return { state: short ? "ran-shallow" : "ran", lanes };
 }
 
-/** Was the name searched in a non-Latin script? Read off the plan's own terms, never asserted. PURE. */
-export function localScriptSearched(registerPlan) {
-  const entries = Array.isArray(registerPlan?.entries) ? registerPlan.entries : [];
-  return entries.some((e) => /[^\x00-\x7F]/.test(String(e?.term ?? "")));
+// WHICH NATIVE SCRIPTS THE RUN SEARCHED, READ OFF WHAT RAN (owner, 2026-11-19). This read the plan alone, and any
+// non-ASCII character made the page claim local script: an accented Latin spelling did, and so did a native-script
+// term that was planned and never ran. Measured on the test box's saved runs: the claim was fully borne out on 18 of
+// 80; on 59 a native-script search ran while another planned one did not, and on 3 none ran at all. Now a script
+// counts as searched only when a plan term in it is in the run's execution record, a Latin term names no native
+// script however it is accented, and a run that kept no execution record says nothing either way.
+const NATIVE_SCRIPTS = [
+  ["Hani", /\p{Script=Han}/u], ["Hira", /\p{Script=Hiragana}/u], ["Kana", /\p{Script=Katakana}/u], ["Hang", /\p{Script=Hangul}/u],
+  ["Cyrl", /\p{Script=Cyrillic}/u], ["Arab", /\p{Script=Arabic}/u], ["Grek", /\p{Script=Greek}/u], ["Hebr", /\p{Script=Hebrew}/u],
+  ["Thai", /\p{Script=Thai}/u], ["Deva", /\p{Script=Devanagari}/u],
+];
+/**
+ * The native scripts the run's plan searched in, `{ searched, missed }` as ISO 15924 codes: a script is searched when a
+ * plan term written in it ran, and missed when every term in it was planned and none ran. Null when the run kept no
+ * execution record, so neither can be said. PURE.
+ */
+export function localScripts(registerPlan, planExecution) {
+  if (!planExecution || !Array.isArray(planExecution.executed)) return null;
+  const ran = new Set(planExecution.executed.map((x) => x?.qid).filter(Boolean));
+  const searched = new Set(), planned = new Set();
+  for (const e of Array.isArray(registerPlan?.entries) ? registerPlan.entries : []) {
+    for (const [code, re] of NATIVE_SCRIPTS) {
+      if (!re.test(String(e?.term ?? ""))) continue;
+      planned.add(code);
+      if (ran.has(e?.qid)) searched.add(code);
+    }
+  }
+  return { searched: [...searched].sort(), missed: [...planned].filter((c) => !searched.has(c)).sort() };
 }
 
 /**
@@ -355,7 +379,7 @@ export function localScriptSearched(registerPlan) {
  *
  * @returns {{schemaVersion: number, cleared: object, counts: object}}
  */
-export function searchDepthRecord({ auditMd = "", recordIndex = {}, recordFileNames = [], bandRecordIds = null, commonLawGrid = null, caseLawText = "", caseLawRecord = null, registerPlan = null, laneDepthVerdicts = null, noMarketplacesPicked = false } = {}) {
+export function searchDepthRecord({ auditMd = "", recordIndex = {}, recordFileNames = [], bandRecordIds = null, commonLawGrid = null, caseLawText = "", caseLawRecord = null, registerPlan = null, planExecution = null, laneDepthVerdicts = null, noMarketplacesPicked = false } = {}) {
   // `recordFileNames: null` travels all the way to the page — see recordsByCountry. The default stays `[]`
   // because that is "the caller said nothing", not "the store is absent"; only the publish path knows the
   // difference and it is the one producer.
@@ -378,9 +402,9 @@ export function searchDepthRecord({ auditMd = "", recordIndex = {}, recordFileNa
       // The company picked no marketplaces: the report says the general web ran plus any stores chosen for
       // the matter. Stamped only when true, so every other run's record is unchanged.
       sweep: { ...sweepCounts(commonLawGrid, auditMd), ...(noMarketplacesPicked ? { noMarketplacesPicked: true } : {}) },
-      localScriptSearched: localScriptSearched(registerPlan),
+      localScripts: localScripts(registerPlan, planExecution),
       courtDecisions: courtDecisionsState(caseLawText, caseLawRecord ?? undefined),
-      // `localScriptSearched` above answers whether the spellings were searched; this answers how deep
+      // `localScripts` above answers which scripts' spellings were searched; this answers how deep
       // the investigation went against what was configured. Two different facts, and the row the report
       // reserves is for the second.
       localLanguage: localLanguageDepth(laneDepthVerdicts),

@@ -23,7 +23,7 @@
 import { test } from "node:test";
 process.env.CLEAROTRON_MCP_URL ||= "https://mcp.test/mcp";
 import assert from "node:assert/strict";
-import { CLEARED_GROUPS, groupForCleared, clearedNames, recordsByCountry, sweepCounts, courtDecisionsState, localScriptSearched, searchDepthRecord, planTerritoriesOf, localLanguageDepth, recordNamesFromIds } from "../publish/search-depth.mjs";
+import { CLEARED_GROUPS, groupForCleared, clearedNames, recordsByCountry, sweepCounts, courtDecisionsState, localScripts, searchDepthRecord, planTerritoriesOf, localLanguageDepth, recordNamesFromIds } from "../publish/search-depth.mjs";
 
 // Invented ground throughout. No client content reaches a fixture.
 const AUDIT = `# Negative Results
@@ -128,8 +128,20 @@ test("court decisions keeps its four states apart", () => {
 test("the sweep and local-script counts come from the machine record", () => {
   const grid = { cells: [{ term: "a", platform: "p1" }, { term: "b", platform: "p1" }, { term: "a", platform: "p2" }], extras: { pr_risk: [1, 2] } };
   assert.deepEqual(sweepCounts(grid), { checks: 3, platforms: 2, spellings: 2, reputation: 2 });
-  assert.equal(localScriptSearched({ entries: [{ term: "VOLTARIS" }, { term: "ボルタリス" }] }), true);
-  assert.equal(localScriptSearched({ entries: [{ term: "VOLTARIS" }] }), false);
+});
+
+// THE LOCAL-SCRIPT CLAIM RESTS ON WHAT RAN (owner, 2026-11-19), shown on design's three cases and the run that kept
+// no execution record. Every term is invented.
+test("a native script counts as searched only when a term in it ran; accented Latin names none; no record says nothing", () => {
+  const ran = (...qids) => ({ executed: qids.map((qid) => ({ qid, state: "ok" })) });
+  // An accented Latin term: no native script, so nothing is searched or missed in one.
+  assert.deepEqual(localScripts({ entries: [{ qid: "q1", term: "CAFÉ SKARVÈL" }] }, ran("q1")), { searched: [], missed: [] });
+  // A planned-only term: the native script is missed, never searched, however the plan reads.
+  assert.deepEqual(localScripts({ entries: [{ qid: "q1", term: "VOLTARIS" }, { qid: "q2", term: "ボルタリス" }] }, ran("q1")), { searched: [], missed: ["Kana"] });
+  // Partial coverage: one script ran, another planned one did not.
+  assert.deepEqual(localScripts({ entries: [{ qid: "q1", term: "ボルタリス" }, { qid: "q2", term: "볼타리스" }] }, ran("q1")), { searched: ["Kana"], missed: ["Hang"] });
+  // No execution record: the claim stays unknown.
+  assert.equal(localScripts({ entries: [{ qid: "q1", term: "ボルタリス" }] }, null), null);
 });
 
 test("the whole record carries a group tally over the closed set only", () => {
