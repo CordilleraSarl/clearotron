@@ -229,7 +229,7 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
       // below returns for it either way, so reading the profile first only cost a file per delivered run.
       if (s.state === "delivered") return;   // the pool row is the delivered face
       // ONE `paths()` PER RUN STILL IN FLIGHT. It joins every path of a run's record, 164 of them, and this
-      // walk called it twice for every workspace run, delivered or not: on the test box's 33 workspace runs
+      // walk called it twice for every workspace run, delivered or not: on a test deployment's 33 workspace runs
       // that was most of this walk's time on every poll (measured 2026-11-19).
       const P = paths(dir);
       const p = readJson(P.profile);
@@ -466,7 +466,7 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
   // THE CANONICAL INTAKE FIRST, and it is why this parameter exists. `CLEAROTRON_QUEUE_DIR` is where the
   // enqueue CLI and ops-MCP `start_run` write — which is where the PORTAL's own submissions land, since
   // its `trigger` is an ops-MCP hop. The walk below finds only `workspace-*/studio/clearance-search/queue`,
-  // and a documented headless install has no workspaces at all: measured on the test box, the only queue
+  // and a documented headless install has no workspaces at all: measured on a test deployment, the only queue
   // under the whole tree is the configured one, and it holds portal-prefixed jobs. So this scan ran ZERO
   // times there, and a submitted search was invisible on the dashboard from submit until claim — a
   // minute and a half of a client believing their order was lost.

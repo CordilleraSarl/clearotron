@@ -3,7 +3,7 @@
 //
 // A RECORD LOG LINE IS DECODED WHOLE. The ledger reader walks a file in chunks, and it decoded each chunk on its
 // own: a character a chunk boundary split came back as two replacement characters, and the garbled text reached
-// the record bodies a run writes (measured on the test box's two largest record logs, 2026-11-19). Lines are now
+// the record bodies a run writes (measured on the two largest record logs of a test deployment, 2026-11-19). Lines are now
 // split on the newline byte and each is decoded once. Small chunks here put the boundary where the test wants it.
 import { test } from "node:test";
 import assert from "node:assert/strict";
