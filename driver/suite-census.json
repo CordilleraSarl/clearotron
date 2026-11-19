@@ -7407,6 +7407,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-crowd-instruction-reads-the-same-in-every-manual.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "the-cut-approves-its-own-parked-run.test.mjs": {
           "tests": 8,
           "asserts": 20,
