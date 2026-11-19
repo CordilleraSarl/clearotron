@@ -314,3 +314,139 @@ export const RECORD_LINKS = Object.freeze({
     numberForm: (name) => `Number not in the form this register's page address takes (${name}); cited by number`,
   }),
 });
+
+/** The Knockout report page: its own words, section by section. A value a sentence carries arrives formatted. */
+export const KNOCKOUT_PAGE = Object.freeze({
+  // The jump strip, in its order.
+  strip: Object.freeze({ summary: 'Summary', findings: 'Findings', filings: 'Also considered', next: 'Next steps' }),
+  degradedNote: 'Automated research for this name was unavailable — manual verification is recommended before relying on this rating.',
+  // The rating's qualifier, in words: the closed set's own, and any other word framed.
+  qualifier: Object.freeze({ low: 'at the low end of this band' }),
+  qualifierOther: (word) => `${word} within this band`,
+  names: (n) => `${n} names`,
+  classes: (list) => `Classes ${list}`,
+  // Registers that are not countries, in the two forms English needs: "the United States" and "United States application".
+  registerNames: Object.freeze({
+    EM: Object.freeze({ bare: 'European Union', phrase: 'the European Union' }),
+    EU: Object.freeze({ bare: 'European Union', phrase: 'the European Union' }),
+    WO: Object.freeze({ bare: 'international', phrase: 'the WIPO register' }),
+    US: Object.freeze({ bare: 'United States', phrase: 'the United States' }),
+    GB: Object.freeze({ bare: 'United Kingdom', phrase: 'the United Kingdom' }),
+    UK: Object.freeze({ bare: 'United Kingdom', phrase: 'the United Kingdom' }),
+    CH: Object.freeze({ bare: 'Swiss', phrase: 'Switzerland' }),
+  }),
+  // "a, b and c": `head` arrives joined on commas.
+  listEnd: (head, last) => `${head} and ${last}`,
+  // The counted scope, in one sentence.
+  counted: Object.freeze({
+    theRegister: 'the register',
+    worldwideOn: (n, provider) => `Counted worldwide, ${n} registers, on ${provider}.`,
+    worldwide: (provider) => `Counted worldwide on ${provider}.`,
+    named: (list, provider) => `Counted in ${list}, on ${provider}.`,
+    listed: (n, provider) => `Counted on ${n} registers, listed on the workbook's Register Counts sheet, on ${provider}.`,
+  }),
+  // The counts table: its heads, and a cell with no count.
+  counts: Object.freeze({
+    name: 'Name',
+    exactly: (name) => `Exactly ${name}`,
+    exactlyTheName: 'Exactly the name',
+    contains: (name) => `Contains ${name}`,
+    containsTheName: 'Contains the name',
+    nearSpellingsOf: (forms) => `Near-spellings (${forms})`,
+    nearSpellings: 'Near-spellings',
+    noCountRecorded: 'no count recorded',
+    notCountedThisRun: 'not counted on this run — it predates this column, and an archived report re-renders as what it was',
+    notAvailable: 'not available',
+    inClasses: (list) => `classes ${list}`,
+    allClasses: 'all classes — this run named none, so nothing narrowed the count',
+  }),
+  // The filings listed under "Also considered". `rest` is `otherSearches` or `closeVariations`.
+  filings: Object.freeze({
+    noListing: 'No filings listing was recorded for this name.',
+    foundAs: (form) => `found as ${form}`,
+    head: Object.freeze({ trademark: 'Trademark', owner: 'Owner', status: 'Status', classes: 'Classes', territory: 'Territory', record: 'Record' }),
+    showing: (shown, total, rest) => ` Showing ${shown} of ${total}, most material first — the filings this assessment weighed before the rest, then live filings before dead, in the searched classes before outside them, the name itself before ${rest}. The full list is in the audit workbook's Register Filings sheet.`,
+    otherSearches: 'other searches',
+    closeVariations: 'its close variations',
+    sameRows: " The same rows are in the audit workbook's Register Filings sheet, most material first.",
+  }),
+  // Why no register was counted: the counts failed on this run, or the product tier does not include them.
+  tierAbsence: Object.freeze({
+    probeRan: 'Register hit-counts are part of this search, and none could be taken on this run — the per-name reason is recorded in the audit workbook. This is a gap in this run, not a limit of the product.',
+    notInTier: 'Register hit-counts (identical · containing · close variations) are not included in this product tier, so no register was counted for this report. They are part of the Knockout search this offering sells today.',
+  }),
+  // The card fold's label: the clearance's word for the reasoning (owner, 2026-11-18, item 1140).
+  riskAssessment: 'Risk assessment',
+  // A finding card's head and fold.
+  finding: Object.freeze({
+    unnamed: 'Unnamed finding',
+    askAi: '\u2726 Ask AI about this finding',
+    fullDetail: 'Full detail',
+    sources: 'Sources: ',
+  }),
+  // The source chips a card wears.
+  chips: Object.freeze({ commonLaw: 'Common law', register: 'Register' }),
+  // About this request: its rows. The heading stays in the renderer, where a guard holds it to the part's name.
+  about: Object.freeze({
+    on: (provider) => `, on ${provider}`,
+    registers: (n) => `${n} ${n === 1 ? 'register' : 'registers'}`,
+    countedWorldwide: 'Counted worldwide',
+    typeOfSearch: 'Type of search',
+    instructedUse: 'Instructed use',
+    classes: 'Classes',
+    whereSearched: 'Where searched',
+    context: 'Context',
+    registersCounted: 'Registers counted',
+    searchedOn: 'Searched on',
+  }),
+  // A name's read: where its register position stands, and what was counted for it. `near` is `nameNear` or
+  // `closeVariation`; `where` is `above` or `below`; `classWhere` is `inClasses`'s phrase or empty.
+  read: Object.freeze({
+    filingsNotListed: 'The filings behind the counts could not be listed on this run, so nothing here says whether one stands.',
+    countsNotListed: 'The filings behind those counts were not listed on this run.',
+    noListing: 'No filings listing was recorded for this name.',
+    theRegister: 'the register',
+    inClasses: (n, list) => ` in class${n === 1 ? '' : 'es'} ${list}`,
+    filingsStand: (n, near, provider, classWhere, refs, where) => `${n === 1 ? 'A filing' : `${n} filings`} of this name or ${near} stand${n === 1 ? 's' : ''} on ${provider}${classWhere} — ${refs} ${where}.`,
+    nameNear: 'a name near it',
+    closeVariation: 'a close variation of it',
+    above: 'above',
+    below: 'below',
+    noneStands: (provider) => `No filing of this name or a close variation of it stands on ${provider}, in the classes counted.`,
+    listingIncomplete: 'The filings listing for this name did not complete, so nothing here says whether one stands.',
+    listedBelow: (n) => `${n} filing${n === 1 ? ' is' : 's are'} listed for this name below; none is carried up as a conflict — each is either shown dead on the register or outside the classes counted.`,
+    countsFailed: 'Register: hit-counts are part of this search and none could be taken for this name — the reason is in the audit workbook.',
+    countsNotInTier: 'Register: not included in this product tier — no register was counted for this name.',
+    noCount: 'Register: no count could be taken for this name — the reason is in the audit workbook.',
+    acrossAllClasses: 'across all classes',
+    inClassesCounted: (n, list) => `in class${n === 1 ? '' : 'es'} ${list}`,
+    countsTaken: (scope) => `Register: hit-counts were taken for this name ${scope} — the figures are in the counts table above.`,
+    remainingUncertainties: 'Remaining uncertainties',
+    readFullAssessment: 'Read the full assessment',
+  }),
+  // A name's rating card and its row.
+  readCard: Object.freeze({
+    overallRisk: 'Overall risk',
+    why: (band) => `Why ${band}`,
+    whatWouldChange: 'What would change this',
+    fullNarrative: 'Full narrative',
+    noAdverseSignals: 'No adverse signals recorded for this name on this screen.',
+  }),
+  caveatLead: 'This screen also carries the following limits:',
+  sections: Object.freeze({
+    conflicts: 'Conflicts',
+    leftOpen: 'Left open',
+    alsoConsidered: 'Also considered',
+    alsoConsideredNote: 'the filings behind the counts',
+  }),
+  // The top bar. A glyph beside a label stays with the markup.
+  topbar: Object.freeze({
+    allReports: 'All reports',
+    issuedOn: (date) => `Issued on ${date}`,
+    askAi: 'Ask AI',
+    exportPdf: 'Export PDF',
+    downloadAudit: 'Download full audit (Excel)',
+    expandAll: 'Expand all',
+    collapseAll: 'Collapse all',
+  }),
+});
