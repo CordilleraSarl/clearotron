@@ -2,11 +2,12 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // connector-compare.mjs — does the connector still answer the same on the same runs?
 //
-//   node driver/test/snapshot/connector-compare.mjs seed --workspace <dir> [--repo <checkout>]
+//   node driver/test/snapshot/connector-compare.mjs seed --workspace <dir> [--repo <checkout>] [--run <saved-run-dir>]...
 //   node driver/test/snapshot/connector-compare.mjs record --workspace <dir> --out <file> [--repo <checkout>] [--aside]
 //   node driver/test/snapshot/connector-compare.mjs compare <a> <b>
 //
-// `seed` lays the demo runs into a throwaway workspace and publishes each there, so each carries its report document.
+// `seed` lays the demo runs into a throwaway workspace and publishes each there, so each carries its report document. Each
+// `--run` adds a saved run in the demo folder's shape (`meta.json` beside `run/`), copied in and published the same way.
 // `record` calls the connector's read tools on every run in that workspace, under a frozen clock, with the connector of
 // the checkout given, and writes each answer's fingerprint. Two checkouts recorded on ONE seeded workspace read the same
 // files, so a difference is a difference in what the connector does with them. `--aside` sets each run's report document
@@ -16,7 +17,7 @@
 // It makes no model turn and no register call.
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, statSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -49,9 +50,12 @@ function child(mode, repo, workspace, extra = {}) {
   const env = { PATH: process.env.PATH, HOME: home, TZ: "UTC", CLEAROTRON_NO_ENV_FILE: "1",
     CLEAROTRON_WORK_DIR: workspace, CLEAROTRON_REPORTS_DIR: join(workspace, "pool"), ...extra };
   return execFileSync(process.execPath, [fileURLToPath(import.meta.url), mode, "--repo", repo, "--workspace", workspace,
-    ...(extra.ASIDE ? ["--aside"] : []), ...(extra.OUT ? ["--out", extra.OUT] : [])],
+    ...(extra.ASIDE ? ["--aside"] : []), ...(extra.OUT ? ["--out", extra.OUT] : []), ...savedRuns().flatMap((r) => ["--run", r])],
     { env, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: 600_000, maxBuffer: 256 * 1024 * 1024 });
 }
+
+/** Every `--run` given, as absolute paths. */
+const savedRuns = () => process.argv.flatMap((a, i) => (a === "--run" && process.argv[i + 1] ? [resolve(process.argv[i + 1])] : []));
 
 const mode = process.argv[2];
 const repo = resolve(arg("--repo") ?? join(HERE, "..", "..", ".."));
@@ -70,6 +74,14 @@ if (mode === "seed") {
     const meta = JSON.parse(readFileSync(join(examples, name, "meta.json"), "utf8"));
     return [meta.runId, meta];
   }));
+  // A saved run is copied to the depth the connector looks at, under its own runId, and published with the demos.
+  for (const saved of savedRuns()) {
+    const meta = JSON.parse(readFileSync(join(saved, "meta.json"), "utf8"));
+    const { studioDirFor } = await load("shared/pre-rename-spellings.mjs");
+    const dir = join(studioDirFor(join(workspace, "workspace-saved")), "saved", meta.runId);
+    cpSync(join(saved, "run"), dir, { recursive: true });
+    metas.set(meta.runId, meta);
+  }
   for (const file of statusFiles(workspace)) {
     const runId = JSON.parse(readFileSync(file, "utf8")).runId;
     const meta = metas.get(runId);
