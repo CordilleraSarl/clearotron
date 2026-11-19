@@ -157,17 +157,20 @@ export function evidenceRecords(run) {
   // a fetched record". Telling a client their real evidence is unverified is the exact inverse of the
   // safeguard's purpose, so the question is only asked where the archive can answer it.
   //
+  //
   // A FINDING NAMES ITS RECORDS BY ITS REGISTRATIONS TOO, not only by its link. A register finding with no link of its
   // own still lists the record URIs it rests on, and a record the run fetched and saved under one of them was retrieved:
-  // reading the link alone told a client's assistant that a fetched record rested on the write-up.
+  // reading the link alone told a client's assistant that a fetched record rested on the write-up. One saved record is
+  // enough for `true`, which says the finding has retrieved evidence, not that every registration it names was fetched.
+  //
+  // A RECORD IS MATCHED BY ITS WHOLE IDENTITY, office and number. The link was matched as a substring either way round,
+  // so a link to a registration whose number only began with a saved one's read as retrieved, and so would a short
+  // fragment of a saved record's path.
   const retrievedFor = (layer, url, registrations = []) => {
     if (layer !== "register") return null;              // not a question this archive can answer
     if (!archived.size) return null;                    // no archive on this run — unknown, not false
     if (registrations.some((r) => archived.has(normalizeRecordUri(r)))) return true;
-    if (!url) return false;
-    const u = String(url).toLowerCase();
-    for (const uri of archived.keys()) if (u.includes(uri) || uri.includes(u)) return true;
-    return false;
+    return url ? archived.has(normalizeRecordUri(url)) : false;
   };
 
   // The provenance signal that DOES span both layers, straight out of findings.json's own contract:
