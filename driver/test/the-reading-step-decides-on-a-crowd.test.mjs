@@ -14,6 +14,7 @@ import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
+import { REGISTER_SENTENCES } from "./ruled-sentences-register.mjs";
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register");
 const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
@@ -21,8 +22,8 @@ const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
 test("the register manual's unit mode reads its answers and decides, and the digest is not handed all the judgment", () => {
   const manual = flat("SKILL.md");
   for (const ruled of [
-    "Unit mode — `saturation-probe` uses `haiku`, with thinking off, for count-only work. `primary-sweep` uses `opus`, with adaptive thinking, to run the plan, read its answers, and decide which further searches could change the advice. `transliteration-numeric` and `incumbent-class` use `sonnet`, with adaptive thinking.",
-    "Register units execute searches and decide which further questions could change the advice. The primary sweep uses the judgment model for that decision. The digest assesses the evidence carried forward. The driver selects each stage's model; a unit does not choose its own replacement.",
+    REGISTER_SENTENCES.unitModeSaturationProbeUses,
+    REGISTER_SENTENCES.registerUnitsExecuteSearchesAnd,
   ]) assert.ok(manual.includes(ruled), `the register manual does not say "${ruled.slice(0, 80)}…"`);
   for (const gone of ["nuanced rule-following, not open analysis", "All the precision-critical judgment lives here",
     "units execute (smaller model tiers), the digest worker judges", "re-spawns it escalated to Opus"])

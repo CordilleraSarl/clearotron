@@ -15,15 +15,14 @@ import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
+import { REGISTER_SENTENCES } from "./ruled-sentences-register.mjs";
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register");
 const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
 
 test("a crowd's market step uses the one list, and a major the list does not name stays in the crowd's count", () => {
   const skill = flat("SKILL.md"), unit = flat("unit.md"), recipes = flat("register-recipes.md");
-  assert.ok(skill.includes("When the in-scope sweep returns `incomplete` as a crowd, narrow it by the steps in *Read the identical mark first*: "
-    + "their market step uses the one list your opening message names, and a major or material jurisdiction the list does not name is not asked "
-    + "on its own; it stays in the crowd's count."));
+  assert.ok(skill.includes(REGISTER_SENTENCES.whenTheScopeSweepReturns));
   assert.ok(unit.includes(UNIT_SENTENCES.whenTheWorldwideQuestionCrowd));
   assert.ok(unit.includes(UNIT_SENTENCES.theIdenticalMarkForThe));
   assert.ok(recipes.includes("Their market step uses the one list your opening message names: "
@@ -44,8 +43,7 @@ test("before narrowing a wider crowd, judgment writes what reading it would chan
 });
 
 test("the shared manual and the provider notes carry no price words", () => {
-  assert.ok(flat("SKILL.md").includes("**EUIPO covers the EU alone.** Running it makes every non-EU territory a deferred row — a known limit of "
-    + "that register, not a fault."));
+  assert.ok(flat("SKILL.md").includes(REGISTER_SENTENCES.euipoCoversTheAloneRunning));
   const corsearch = flat("providers/corsearch.md");
   assert.ok(corsearch.includes("Don't run multiple separate phonetic searches — they make more requests and return largely overlapping results."));
   assert.ok(corsearch.includes("## Request limits"));
