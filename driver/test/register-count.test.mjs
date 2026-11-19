@@ -565,7 +565,7 @@ test("the workbook grows a fourth sheet only when counts exist, and never a blan
   assert.ok(sheet, "the fourth sheet is additive");
   const header = sheet.getRow(1).values.slice(1);
   assert.deepEqual(header, ["Mark", "Classes counted", "Territories", "Identical filings", "Filings containing the name",
-    "Filings on close variations", "Close variation forms", "Register", "Basis", "Notes"]);
+    "Filings on close variations", "Close variation forms", "Register", "Basis", "Note"]);
   const iron = sheet.getRow(2).values.slice(1);
   assert.equal(iron[0], "IRONWHISK");
   assert.equal(iron[1], "8");
