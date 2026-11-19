@@ -37,7 +37,8 @@ import { READ_LEAD_RE } from '../report-card-record.mjs';   // D3 — the dedupe
 import { logoLockup, BRAND, confPosture, sectionStrip, PALETTE, QUADRANT_COLOURS as QC } from '../../shared/brand.mjs';
 import { NAV_CSS } from '../../shared/site-nav.mjs';
 import { pageShell } from './page-shell.mjs';
-import { registerRecordView, RECORD_LABELS, registrationsCount, countryOf, LOGO_NOT_RETRIEVED } from './register-record.mjs';
+import { registerRecordView, RECORD_LABELS, registrationsCount } from './register-record.mjs';
+import { recordEntryHtml, logoFigureHtml } from './register-record-html.mjs';   // a record entry and a logo, drawn once for both report pages
 import { normalizeRecordUri } from '../registry-fidelity.mjs';   // the register's own record of a cited registration
 import { readerRowHead } from '../coverage-ledger.mjs';   // an engine-token row head in the reader's words   // the document shell, shared with the knockout template
 import { EVIDENCE_LABEL, USE_EVIDENCE_LABEL, meterEvidence } from './evidence-words.mjs';   // the meters' evidence words, shared with the audit workbook
@@ -1896,15 +1897,9 @@ function logoLine(f, recordsByUri, { small = false } = {}) {
     .filter((r) => r?.uri && recordsByUri.get(String(r.uri).toLowerCase()))
     .slice(0, RECORD_CAP)
     .map((r) => {
-      const logo = LOGOS.get(normalizeRecordUri(r.uri));
-      if (!logo) return '';
-      const { logo: v } = registerRecordView(recordsByUri.get(String(r.uri).toLowerCase()), { uri: r.uri });
-      const href = hrefAttr(RECORD_LINKS?.get(String(r.uri).toLowerCase())?.href) || hrefAttr(v.href);
-      const link = (inner, cls = '') => (href ? `<a${cls} href="${href}" target="_blank" rel="noopener noreferrer">${inner}</a>` : inner);
-      const body = logo.state === 'fetched'
-        ? link(`<img src="${logo.src}" alt="${escAttr(v.alt || '')}">`)
-        : (href ? link(esc(LOGO_NOT_RETRIEVED), ' class="rr-nologo"') : `<span class="rr-nologo">${esc(LOGO_NOT_RETRIEVED)}</span>`);
-      return `<figure class="rr-lg">${body}${!small && v.caption ? `<figcaption>${esc(v.caption)}</figcaption>` : ''}</figure>`;
+      const rec = recordsByUri.get(String(r.uri).toLowerCase());
+      const href = hrefAttr(RECORD_LINKS?.get(String(r.uri).toLowerCase())?.href) || hrefAttr(registerRecordView(rec, { uri: r.uri }).logo.href);
+      return logoFigureHtml(rec, { uri: r.uri, logo: LOGOS.get(normalizeRecordUri(r.uri)), href, caption: !small });
     })
     .filter(Boolean);
   if (!figures.length) return '';
@@ -1916,51 +1911,10 @@ function recordEntry(f, r, rec, numberCell) {
   const uri = String(r.uri || '');
   const receipt = rec._receipt?.fetched_at
     ? `verified — ${PROVIDER_LABEL || 'register'} record fetched ${String(rec._receipt.fetched_at).slice(0, 10)}` : null;
-  const view = registerRecordView(rec, { uri, receipt });
-  const by = Object.fromEntries(view.rows.map((row) => [row.label, row]));
-  const L = RECORD_LABELS;
-  const faint = (t) => (t ? ` <span class="rr-faint">${esc(t)}</span>` : '');
-  const row = (label, v) => (v ? `<div class="rr-row"><span class="k">${esc(label)}</span><span class="v">${v}</span></div>` : '');
-  // The goods: the translation marker or the original's note first, then each class statement, a long one cut at
-  // a term boundary with the rest one tap away.
-  const g = by[L.goods];
-  const statement = (st) => `<div class="rr-g"><span class="rr-cls">${esc(st.class)}</span> ${st.preview
-    ? `<span class="rr-txt">${esc(st.preview)}; …</span><details class="rr-all"><summary>${esc(st.showAll)}</summary><span class="rr-txt">${esc(st.text)}</span></details>`
-    : `<span class="rr-txt">${esc(st.text)}</span>`}</div>`;
-  const goods = g.entries.length
-    ? `${g.marker ? `<details class="rr-mt"><summary>${esc(g.marker.tag)}</summary><span class="rr-mtnote">${esc(g.marker.note)}</span></details>` : ''}${g.note ? `<div class="rr-orig">${esc(g.note)}</div>` : ''}${g.entries.map(statement).join('')}`
-    : `<div class="rr-g rr-faint">${esc(g.note)}</div>`;
-  // The Country row carries the registration system and, for an international registration, where its rights reach.
-  const jur = r.jurisdiction || rec.jurisdiction || '';
-  const sys = registrationSystem(jur);
-  const isWO = normRegion(jur) === 'WO' || /\/mark\/wo\//i.test(uri);
-  const desig = isWO ? REC.designations(rec) : null;
-  const reach = !isWO ? ''
-    : (desig ? ` · designating: ${esc(desig.join(', '))}`
-             : ` · <i>designated countries not on the fetched record — rights reach only its designations</i>`);
-  // A record that names no office still names its jurisdiction, and the country is read from that.
-  const place = by[L.country].value || countryOf(rec.jurisdiction);
-  const country = place || isWO || sys
-    ? `${esc(place || '')}${sys ? ` <i class="jsys">(${sys})</i>` : ''}${reach}` : '';
-  // The Status row: the register's status, its dates, and the Paris-priority flag beside them.
-  const st = by[L.status];
-  const prio = AS_OF && inPriorityWindow(rec, AS_OF)
-    ? ` · <b>recent filing — Paris-priority window (potential global backdating)</b>` : '';
-  const status = st.value || st.faint || prio
-    ? `${esc(st.value || '')}${st.value && st.faint ? ' · ' : ''}${st.faint ? `<span class="rr-faint">${esc(st.faint)}</span>` : ''}${prio}` : '';
-  // The register number is the cell the report already prints for this registration; the application number
-  // follows only where the cell does not already show it. Compared by letters and digits alone: an office can
-  // write the number the record holds as 2019046708 with dashes, "2019-046708".
-  const num = by[L.number];
-  const cell = numberCell(uri);
-  const bare = (t) => String(t).replace(/<[^>]*>/g, '').replace(/[^0-9A-Za-z]/g, '');
-  const app = num.faint && !bare(cell).includes(bare(num.faint.replace(/^application /, ''))) ? faint(num.faint) : '';
-  const mark = by[L.mark].value ? `<b>${esc(by[L.mark].value)}</b>${faint(by[L.mark].faint)}` : '';
   // The owner by the card's own rule: a record's Latin owner is a romanisation when it also carries the native
   // form, and then the resolved name is the one a lawyer can read (recordOwner, above, decides the same way).
   const ownerName = ownerDisplayName({ raw: REC.owner(rec), native: REC.ownerNative(rec), resolved: f.owner?.name });
-  const owner = ownerName ? `${esc(ownerName)}${faint(by[L.owner].faint)}` : '';
-  return `<div class="rr">${row(L.mark, mark)}${row(L.goods, goods)}${row(L.owner, owner)}${row(L.country, country)}${row(L.status, status)}${row(L.number, `${cell}${app}${receipt ? `<div><i class="receipt">${esc(receipt)}</i></div>` : ''}`)}</div>`;
+  return recordEntryHtml(rec, { uri, jurisdiction: r.jurisdiction, receipt, asOf: AS_OF, numberCell: numberCell(uri), ownerName });
 }
 
 // The contentious MARK + the classes it matched in, as a header chip next to the holder — so a card shows
