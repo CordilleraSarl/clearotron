@@ -258,6 +258,18 @@
   .rr-mt>summary::after{content:" ⓘ";text-transform:none}
   .rr-mtnote{display:block;margin-top:4px;color:var(--ink)}
   .rr-orig{margin:0 0 6px;font-size:12px;color:var(--slate)}
+  /* The logos: one fixed box each, on a line of their own under the owner, so the card head never moves. */
+  .rr-logos{flex:none;display:flex;flex-wrap:wrap;align-content:flex-start;justify-content:flex-end;gap:8px;max-width:196px}
+  .rr-lg{margin:0;width:94px;text-align:center}
+  .rr-lg img{display:block;width:94px;height:72px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:8px;padding:5px;box-sizing:border-box}
+  .rr-lg figcaption{font-size:10.5px;letter-spacing:.04em;color:var(--slate);margin-top:3px}
+  .rr-nologo{width:94px;height:72px;box-sizing:border-box;border-radius:8px;border:1px dashed var(--line2);display:flex;align-items:center;justify-content:center;text-align:center;padding:6px;font-size:11px;line-height:1.3;color:var(--slate);text-decoration:none}
+  a.rr-nologo{color:var(--slate)}
+  .rr-band{max-width:none;justify-content:flex-start;gap:10px;margin:10px 0 12px}
+  .rn>summary .rr-sm{flex:0 0 100%;box-sizing:border-box;padding-left:14px;margin:2px 0 0}
+  .rr-more{align-self:center;font-size:11px;color:var(--slate)}
+  .rr-sm{max-width:none;justify-content:flex-start;gap:4px;margin-left:4px}
+  .rr-sm .rr-lg,.rr-sm .rr-lg img,.rr-sm .rr-nologo{width:40px;height:30px;padding:2px;font-size:7.5px}
   .internal{background:#F6ECF7;border:1px dashed #C9A9CC;border-radius:9px;padding:9px 12px;margin-top:11px;font-size:12.5px;color:#6a2b6e}
   .internal .tag{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8a3a8f;display:block;margin-bottom:3px}
   /* (spec-49 T4: the collapsible QC-banner rules died with the quarantine/review banners.) */
@@ -531,7 +543,7 @@
   .fourans ul.fa-obstacles{margin:6px 0 0;padding-left:18px}
   .fourans ul.fa-obstacles li{margin:0 0 4px;font-size:13px}
   @media (max-width:640px){.fourans .fa-row{flex-direction:column;gap:2px}.fourans .fa-k{flex:auto}}
-  @media (max-width:640px){.rr-row{grid-template-columns:1fr;gap:0}}
+  @media (max-width:640px){.rr-row{grid-template-columns:1fr;gap:0}.rr-band .rr-lg,.rr-band .rr-lg img,.rr-band .rr-nologo{width:72px}.rr-band .rr-lg img,.rr-band .rr-nologo{height:56px}}
 
   /* ── the coverage ledger stops being the page's smallest print ─────────────────────────────
      `details.scope` had NO screen rule at all: its summary rendered at the browser default, in the

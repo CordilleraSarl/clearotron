@@ -37,7 +37,8 @@ import { READ_LEAD_RE } from '../report-card-record.mjs';   // D3 — the dedupe
 import { logoLockup, BRAND, confPosture, sectionStrip, PALETTE, QUADRANT_COLOURS as QC } from '../../shared/brand.mjs';
 import { NAV_CSS } from '../../shared/site-nav.mjs';
 import { pageShell } from './page-shell.mjs';
-import { registerRecordView, RECORD_LABELS, registrationsCount, countryOf } from './register-record.mjs';   // the register's own record of a cited registration
+import { registerRecordView, RECORD_LABELS, registrationsCount, countryOf, LOGO_NOT_RETRIEVED } from './register-record.mjs';
+import { normalizeRecordUri } from '../registry-fidelity.mjs';   // the register's own record of a cited registration
 import { readerRowHead } from '../coverage-ledger.mjs';   // an engine-token row head in the reader's words   // the document shell, shared with the knockout template
 import { EVIDENCE_LABEL, USE_EVIDENCE_LABEL, meterEvidence } from './evidence-words.mjs';   // the meters' evidence words, shared with the audit workbook
 import { inlineMarkdown } from '../../shared/inline-markdown.mjs';   // the inline-markdown dialect, shared with the knockout template
@@ -108,6 +109,7 @@ let NEGATIVES_GROUPED = false;
 let FRAMEWORK = null;
 let FRAMEWORK_METHOD = null;   // the frozen method (framework-method.mjs), where the framework states one
 let AUDIT_HREF = null;   // the audit workbook's address, for the line a capped list ends with; null when the run has none
+let LOGOS = new Map();   // registration → its saved logo ({ state, src }); empty on a run that fetched none
 const GAUGE_STOP_BY_TONE = { minimal: 1, low: 1, medium: 2, high: 3, severe: 4 };
 // Severity rank for sorting/worst-of: band index in the manifest (0 = most severe); legacy composite
 // negated so higher composite = lower rank. Unrated items sink to the bottom.
@@ -1530,7 +1532,8 @@ function negativeLine(f, recordsByUri) {
   const reason = clause(f.net) || clause(f.legal_position);
   return `<span class="rn-mark">${esc(f.mark)}</span>${who ? `<span class="rn-who">${esc(who)}</span>` : ''}`
     + `${facts ? `<span class="rn-facts">${facts}</span>` : ''}`
-    + `${reason ? `<span class="rn-why">${inline(sentenceCaseLead(reason))}</span>` : ''}`;
+    + `${reason ? `<span class="rn-why">${inline(sentenceCaseLead(reason))}</span>` : ''}`
+    + logoLine(f, recordsByUri, { small: true });
 }
 function reasonedNegatives(groups, cardFor, recordsByUri) {
   return groups.map(g => {
@@ -1881,6 +1884,34 @@ function registerRecordBlock(f, recordsByUri, numberCell) {
   return `<details class="drill rr-drill"><summary>${esc(RECORD_LABELS.title)}${count}</summary><div class="drillbody">${entries}${more}</div></details>`;
 }
 
+// LOGOS ON THE CARD, ON A LINE OF THEIR OWN (owner, 2026-11-18). Under the owner line, one logo per registration
+// in the card's register record whose logo the run saved, each in a box of one fixed size captioned with its
+// register, so nothing in the card head moves when a card has logos. A logo the run tried and failed to fetch reads
+// "Logo not retrieved" and opens the office's record; a registration with no logo, or one the run never asked
+// about, draws nothing, so a run that fetched no logos draws no line. A grouped negative row shows up to three small
+// logos and "+N" under its text. The image travels inside the report; nothing points at the register's image.
+function logoLine(f, recordsByUri, { small = false } = {}) {
+  if (!LOGOS.size) return '';
+  const figures = (f.owner?.registrations || [])
+    .filter((r) => r?.uri && recordsByUri.get(String(r.uri).toLowerCase()))
+    .slice(0, RECORD_CAP)
+    .map((r) => {
+      const logo = LOGOS.get(normalizeRecordUri(r.uri));
+      if (!logo) return '';
+      const { logo: v } = registerRecordView(recordsByUri.get(String(r.uri).toLowerCase()), { uri: r.uri });
+      const href = hrefAttr(RECORD_LINKS?.get(String(r.uri).toLowerCase())?.href) || hrefAttr(v.href);
+      const link = (inner, cls = '') => (href ? `<a${cls} href="${href}" target="_blank" rel="noopener noreferrer">${inner}</a>` : inner);
+      const body = logo.state === 'fetched'
+        ? link(`<img src="${logo.src}" alt="${escAttr(v.alt || '')}">`)
+        : (href ? link(esc(LOGO_NOT_RETRIEVED), ' class="rr-nologo"') : `<span class="rr-nologo">${esc(LOGO_NOT_RETRIEVED)}</span>`);
+      return `<figure class="rr-lg">${body}${!small && v.caption ? `<figcaption>${esc(v.caption)}</figcaption>` : ''}</figure>`;
+    })
+    .filter(Boolean);
+  if (!figures.length) return '';
+  if (!small) return `<div class="rr-logos rr-band">${figures.join('')}</div>`;
+  return `<div class="rr-logos rr-sm">${figures.slice(0, 3).join('')}${figures.length > 3 ? `<span class="rr-more">+${figures.length - 3}</span>` : ''}</div>`;
+}
+
 function recordEntry(f, r, rec, numberCell) {
   const uri = String(r.uri || '');
   const receipt = rec._receipt?.fetched_at
@@ -2083,7 +2114,7 @@ function findingCard(f, card, recordsByUri = new Map()) {
           <span class="tier ${tierCls}">${riskChip(f)}</span>
           <button class="ask-fi no-print">${R.card.askAi}</button>
         </div>
-        ${cardTitleParts(f, who).ownerLine}
+        ${cardTitleParts(f, who).ownerLine}${logoLine(f, recordsByUri)}
         <div class="oneline">${inline(sentenceCaseLead(one))}</div>
         ${meters(f)}
       </div>
@@ -2107,7 +2138,7 @@ function compactCard(f, card, recordsByUri = new Map()) {
   const markChip = markClassChip(f, who);
   return `<div class="card compact" id="c${f.ordinal}">
     <div class="top"><div class="rail low"></div><div class="body">
-      <div class="cardhead"><label class="pick no-print"><input type="checkbox" class="pickbox" checked aria-label="${R.card.includeInPdf(f.ordinal)}"></label><span class="fnum">${f.ordinal}</span>${cardTitleParts(f, who).title}${evidenceChips(f)}<span class="tier low">${riskChip(f)}</span><button class="ask-fi no-print">${R.card.askAi}</button></div>${cardTitleParts(f, who).ownerLine}
+      <div class="cardhead"><label class="pick no-print"><input type="checkbox" class="pickbox" checked aria-label="${R.card.includeInPdf(f.ordinal)}"></label><span class="fnum">${f.ordinal}</span>${cardTitleParts(f, who).title}${evidenceChips(f)}<span class="tier low">${riskChip(f)}</span><button class="ask-fi no-print">${R.card.askAi}</button></div>${cardTitleParts(f, who).ownerLine}${logoLine(f, recordsByUri)}
       <div class="oneline">${inline(sentenceCaseLead(one))}</div>
     </div></div>
     ${fullDetail(f, card, recordsByUri)}
@@ -2538,6 +2569,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   FRAMEWORK = opts.framework ?? null;   // doc 50 — the frozen manifest; null on archived/legacy runs
   FRAMEWORK_METHOD = opts.frameworkMethod ?? null;
   AUDIT_HREF = hrefAttr(opts.auditFile, { relative: true }) || null;
+  LOGOS = opts.logos instanceof Map ? opts.logos : new Map();
   SEARCHED_JUR = Array.isArray(opts.searchedJurisdictions) && opts.searchedJurisdictions.length ? opts.searchedJurisdictions : null;   // T6 (D4)
   SCOPE_WORLDWIDE = opts.scopeBasis === 'worldwide' ? true : null;   // the plan's scope_basis; null ⇒ fall back to the ledger-prose sniff
   CASE_LAW_BY_ORD = opts.caseLawByOrdinal instanceof Map ? opts.caseLawByOrdinal : new Map();   // T7 (E5)
