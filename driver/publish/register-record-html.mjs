@@ -19,12 +19,14 @@ const escAttr = (s) => esc(s).replace(/"/g, '&quot;');
 
 /**
  * One register record entry: Mark, Goods and services, Owner, Country, Status and Register number, each row drawn
- * only when the record states it. `numberCell` is the page's own cell for the registration number, as HTML;
+ * only when the record states it. `number` is the page's own register number for the registration: `label`, the
+ * office's number as plain text, or null where the page cites the record by its handle; `fallbackText`, the text the
+ * page shows then; and `cell(label)`, the page's cell for a label, which escapes it;
  * `receipt` the page's receipt line or null; `ownerName` the owner as the page resolves it; `jurisdiction` the
  * registration's jurisdiction where the record names none; `asOf` the publish date the Paris-priority flag is read
  * against, or null for no flag. PURE.
  */
-export function recordEntryHtml(rec, { uri = '', jurisdiction = '', receipt = null, asOf = null, numberCell, ownerName = null }) {
+export function recordEntryHtml(rec, { uri = '', jurisdiction = '', receipt = null, asOf = null, number, ownerName = null }) {
   const view = registerRecordView(rec, { uri, receipt });
   const by = Object.fromEntries(view.rows.map((row) => [row.label, row]));
   const faint = (t) => (t ? ` <span class="rr-faint">${esc(t)}</span>` : '');
@@ -66,16 +68,22 @@ export function recordEntryHtml(rec, { uri = '', jurisdiction = '', receipt = nu
   // reads the application number; there the cell's visible number becomes the registration number, its link still
   // opening the office's page, and "application N" follows. The words are the approved ones; only which number
   // shows changes.
+  //
+  // THE SWAP IS MADE ON PLAIN TEXT, NEVER ON MARKUP. The office's number arrives as the label the page would print,
+  // the registration number takes the application number's place in that text, and the page's own cell builder
+  // escapes the result, as it escapes every label it prints. A record handle (`/mark/us/…`) is an identifier, not a
+  // number, and is never rewritten.
   const num = by[L.number];
-  const bare = (t) => String(t).replace(/<[^>]*>/g, '').replace(/[^0-9A-Za-z]/g, '');
+  const bare = (t) => String(t ?? '').replace(/[^0-9A-Za-z]/g, '');
   const appNo = REC.serial(rec), regNo = REC.regNumber(rec);
-  let cell = String(numberCell ?? '');
-  if (appNo && regNo && bare(appNo) !== bare(regNo) && bare(cell).includes(bare(appNo)) && !bare(cell).includes(bare(regNo))) {
-    const loose = new RegExp([...bare(appNo)].map((c) => c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('[^0-9A-Za-z<>]?'));
-    const swap = (text) => text.replace(loose, esc(regNo));
-    cell = /^<a\b/.test(cell) ? cell.replace(/^(<a\b[^>]*>)([^<]*)/, (m, open, text) => open + swap(text)) : cell.replace(/^[^<]*/, swap);
+  let label = number?.label ?? null;
+  if (label && appNo && regNo && bare(appNo) !== bare(regNo) && bare(label).includes(bare(appNo)) && !bare(label).includes(bare(regNo))) {
+    const loose = new RegExp([...bare(appNo)].join('[^0-9A-Za-z]?'));
+    label = label.replace(loose, () => String(regNo));
   }
-  const app = num.faint && !bare(cell).includes(bare(num.faint.replace(/^application /, ''))) ? faint(num.faint) : '';
+  const cell = typeof number?.cell === 'function' ? number.cell(label) : '';
+  const shown = label ?? number?.fallbackText ?? '';
+  const app = num.faint && !bare(shown).includes(bare(num.faint.replace(/^application /, ''))) ? faint(num.faint) : '';
   const mark = by[L.mark].value ? `<b>${esc(by[L.mark].value)}</b>${faint(by[L.mark].faint)}` : '';
   const owner = ownerName || by[L.owner].value;
   const ownerHtml = owner ? `${esc(owner)}${faint(by[L.owner].faint)}` : '';
