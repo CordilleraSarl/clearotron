@@ -56,7 +56,7 @@ const COV_WORD = {
   "confirmed-clean": "Searched — clean",
   "coverage-limited": "Partially covered",
   open: "Open item",
-  "not-searched": "Not run this run",
+  "not-searched": "Not searched",
   note: "Note",
 };
 

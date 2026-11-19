@@ -9452,6 +9452,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-connector-calls-an-unsearched-area-what-the-report-does.test.mjs": {
+          "tests": 2,
+          "asserts": 3,
+          "skips": 0,
+          "todos": 0
+        },
         "the-handshake-reports-the-package-version.test.mjs": {
           "tests": 1,
           "asserts": 3,
