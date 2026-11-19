@@ -296,3 +296,21 @@ export const REGISTER_RECORD = Object.freeze({
     : 'As registered. No English translation on the record.'),
   logoAlt: (mark, country) => `${mark}, logo as registered in ${country}`,
 });
+
+/**
+ * What a registration number linked to the office's own page opens, and why one is cited by number instead: the
+ * report's sentences under its findings, and the workbook's Link cell. `name` is the register's name, and `names` a
+ * list of them, joined.
+ */
+export const RECORD_LINKS = Object.freeze({
+  opensOfficePage: 'A registration number shown as a link opens the office’s own page for that record.',
+  noPage: (name) => `${name}: the register publishes no page for a single record, so its registrations are cited by number.`,
+  numberForm: (name) => `${name}: registrations whose numbers are not in the form the register's page address takes are cited by number, not linked.`,
+  noAddress: (name) => `${name}: we hold no page address for this register, so its registrations are cited by number.`,
+  noAddresses: (names) => `${names}: we hold no page address for these registers, so their registrations are cited by number.`,
+  cell: Object.freeze({
+    noPage: (name) => `No page for a single record at this register (${name}); cited by number`,
+    noAddress: (name) => `No page address held for this register (${name}); cited by number`,
+    numberForm: (name) => `Number not in the form this register's page address takes (${name}); cited by number`,
+  }),
+});
