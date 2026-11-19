@@ -12,12 +12,12 @@
 // and never goes through the gateway — so a stop arriving during that stage has no later read to be
 // seen at. Nothing failed; there was no boundary left.
 //
-// WHAT THIS FILE HOLDS, in two parts, because either alone is satisfiable while the pair is wrong:
-// that the read refuses when it should, and that both lanes actually perform it. A helper nobody calls
-// is the shape this whole defect had.
+// WHAT THIS FILE HOLDS: that the read refuses when it should. That both lanes perform it, in the right place, is held
+// by what a run does: a-stop-pressed-during-the-last-knockout-stage-publishes-nothing.test.mjs and
+// a-clearance-reads-the-stop-before-it-publishes-and-never-after.test.mjs. A helper nobody calls is the shape this whole
+// defect had, so the pair is needed.
 
 import test from "node:test";
-import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -49,21 +49,6 @@ test("a stop recorded at any earlier moment refuses the publish", () => {
     assert.ok(e instanceof RunCancelled, "not the distinct class — a StageFailure here would be classified, parked and RESUMED");
     assert.match(String(e.message), /publish/, "the refusal does not say where it happened");
   }
-});
-
-test("the clearance lane performs the read, after the already-published branch and before it publishes", () => {
-  // THE WIRING, WHICH IS THE HALF THE DEFECT ACTUALLY WAS. The gateway's read existed and was correct; nothing asked it
-  // late enough. The Knockout lane's read is held by what a run does
-  // (a-stop-pressed-during-the-last-knockout-stage-publishes-nothing.test.mjs); this lane's is still held by its place.
-  const cl = driverSource("pipeline.mjs");
-  // It must sit INSIDE the else branch — after the `.published` short-circuit — or a run that already delivered would
-  // be recorded as cancelled, which is this defect reversed.
-  const shortCircuit = onlyAt(cl, 'existsSync(join(run.runDir, ".published"))');
-  const call = onlyAt(cl, 'assertNotCancelledBeforePublish(run.runDir, "clearance")');
-  const publish = onlyAt(cl, "published = await publishReport({");
-  assert.ok(shortCircuit > 0 && call > shortCircuit,
-    "the clearance lane reads the flag BEFORE the already-published check — a delivered run would be recorded as stopped");
-  assert.ok(call < publish, "the clearance lane reads the flag after publishing, which is no read at all");
 });
 
 test("the marker the read looks for is the one the engine writes", () => {
