@@ -16,7 +16,7 @@ import { buildAudit } from './xlsx.mjs'; import { readDegradedPartRows, degraded
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, projectCoverageJudgment, COVERAGE_AREA_STATES } from '../findings-model.mjs';
 import { recordsOfDeliveredPositions } from '../declination-duty.mjs'; import { findingUris } from '../record-carry.mjs';   // — a position a finding delivers is not listed as set aside
 import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs'; import { coverageFormStamp, readCoverageForm } from '../coverage-form-io.mjs'; import { readReleasedFamilies, readWithheldFamilies } from '../withheld-families.mjs'; import { unitLabel } from '../coverage-form.mjs'; import { coverageUnitLabel } from '../coverage-ledger.mjs'; import { recallReceiptForOwnCompany } from '../recall-receipt.mjs';   // — and why an absence did not close; whose recall checks an audit lists
-import { clearanceReportDocument, clearanceReportDataOf, clearanceWorkbookOf } from './report-document.mjs';   // the run's report as one document, and what it carries
+import { clearanceReportDocument, clearanceReportDataOf, clearanceRatingOf, clearanceWorkbookOf } from './report-document.mjs';   // the run's report as one document, and what it carries
 import { searchDepthRecord, planTerritoriesOf, caseLawPassRecord } from './search-depth.mjs'; import { bandRecords } from '../named-band.mjs'; import { CASELAW_BRIDGES } from '../engine/mcp/gather-config.mjs';   // how much was read to reach the answer, as counts and tokens; and the case-law sources whose calls the court state reads
 import { parseFrameworkManifest } from '../framework.mjs'; import { readFrozenMethod, FROZEN_METHOD_FILE } from '../framework-method.mjs';
 import { rollupTokens, servedModels } from '../tokens.mjs';
@@ -1421,10 +1421,8 @@ function clearanceMetaOf(document, { template, reportSchema }) {
   const { renderedAt } = build;
   const served = client.servedModels, framework = document.framework.manifest, clientGate = reviewer.clientGate;
   const verdictInfo = verdict.record, assessmentNotCompleted = verdict.assessmentNotCompleted;
-  // The rating word and its badge, falling back to the report's front matter on a run older than the verdict record, as
-  // the page does; none where the assessment was not completed. The headline caption, empty as null.
-  const ratingWord = assessmentNotCompleted ? undefined : (verdictInfo?.tier ?? fm.overall_label);
-  const ratingBadge = assessmentNotCompleted ? undefined : (verdictInfo?.badge ?? fm.overall_badge);
+  // The rating word and its badge as the page states them (clearanceRatingOf). The headline caption, empty as null.
+  const { word: ratingWord, badge: ratingBadge } = clearanceRatingOf(document);
   const caption = fm.overall_caption || null;
   return {
     runId, codename: codename || '', matter: fm.matter, title: fm.title, client: fm.client,
@@ -1806,9 +1804,9 @@ function mdBlock(block) {
 /**
  * THE EMAIL'S OPTIONS, read from the run's frozen files: the product's name off the frozen search policy, the verdict
  * record's sign-off word, conditions, rating and statement as the record wrote them, and the band ladder of the frozen
- * framework. The report document carries them as `cover`, and the delivery passes them to composeEmailHtml, on a fresh
- * publish and on a resume that finds the run already published. The statement is the record's own, which the run's status
- * keeps; the report's surfaces print the client form. Never throws: a file it cannot read leaves its options out.
+ * framework. The cover email reads them for a run published before the report document existed (coverNoteInputs). The
+ * statement is the record's own, which the run's status keeps; the report's surfaces print the client form. Never throws: a
+ * file it cannot read leaves its options out.
  */
 export function coverNoteOptions(runDir) {
   const frozen = (key, parse = JSON.parse) => { try { return parse(readFileSync(paths(runDir)[key], 'utf8')); } catch { return null; } };
@@ -1844,11 +1842,17 @@ export function coverNoteInputs(runDir) {
   return { report: { fm: document.prose.frontMatter, secs: document.prose.sections }, opts: coverNoteOptionsOf(document) };
 }
 
-/** coverNoteOptions, read from the document: the verdict record as written, and the run's band ladder. */
+/**
+ * coverNoteOptions, read from the document: the verdict record and the rating as the page reads them, and the run's band
+ * ladder. An older record gains its derived rating, as on the page, and a run whose assessment was not completed has no
+ * record, so a verdict saved from that assessment raises neither a rating nor the close-box, and leaves the run's status no
+ * statement. Where there is a record, the statement is the record's as written, which the run's status keeps.
+ */
 function coverNoteOptionsOf(document) {
   const opts = { productName: document.run.product.name ?? undefined };
-  const v = document.verdict.written;
-  if (v) Object.assign(opts, { verdict: v.verdict, conditions: clientConditions(v), tier: v.tier, statement: v.statement ?? null });
+  const v = document.verdict.record;
+  if (v) Object.assign(opts, { verdict: v.verdict, conditions: clientConditions(v), tier: v.tier, statement: document.verdict.written?.statement ?? null });
+  opts.rating = clearanceRatingOf(document).word ?? null;
   const framework = document.framework.manifest;
   if (framework) opts.bands = framework.bands.map((b) => ({ label: b.label, tone: b.tone }));
   return opts;
@@ -1953,6 +1957,9 @@ function composeEmailHtmlFrom({ fm, secs }, url, auditFile, names = [], delivery
     ? closeBox(emailConditions.length ? emailConditions : [EMAIL.onlyYouCanCloseDefault])
     : opts?.verdict === 'BLOCKING' && emailConditions.length ? closeBox(emailConditions) : '';
 
+  // The rating as the page states it where the options carry it (from the report document); otherwise the record's, then
+  // the front matter's, as a run published before the document reads.
+  const rating = opts && 'rating' in opts ? opts.rating : (opts?.tier ?? fm.overall_label);
   const reviewHeadline = `<div style="${FONT};font-size:11pt;color:${EC.headline};margin:0 0 14px">`
     + flagBanner
     + verdictBound
@@ -1960,8 +1967,8 @@ function composeEmailHtmlFrom({ fm, secs }, url, auditFile, names = [], delivery
     // T2 (H5): the derived tier (verdict sidecar, passed by the driver) outranks the
     // model-authored fm label — one authority on every surface. The rating leads, then the report's own
     // conclusion verbatim (ruling 244); with no rating recorded, the conclusion stands alone.
-    + ((opts?.tier ?? fm.overall_label)
-      ? `<p style="margin:0 0 6px"><b>${EMAIL.overallRisk} ${esc(opts?.tier ?? fm.overall_label)}.</b> ${cell(fm.overall_caption || '')}</p>`
+    + (rating
+      ? `<p style="margin:0 0 6px"><b>${EMAIL.overallRisk} ${esc(rating)}.</b> ${cell(fm.overall_caption || '')}</p>`
       : (fm.overall_caption ? `<p style="margin:0 0 6px">${cell(fm.overall_caption)}</p>` : ''))
     + reportLink
     + (fm.handling_note ? `<p style="margin:0 0 8px;color:${EC.warning}"><b>${EMAIL.handlingNote}</b> ${cell(fm.handling_note)}</p>` : '')
