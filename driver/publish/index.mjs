@@ -1716,11 +1716,11 @@ const FONT = "font-family:Calibri,'Segoe UI',Arial,sans-serif";
 // fill like yellow/red is unreadable as text). Order matters: VERY HIGH before HIGH.
 const tier = (t, label) => ({ bg: t.bg, fg: t.fg, label, txt: t.txt });
 export const RISK_TIERS = [
-  [/VERY[\s-]?HIGH/, tier(EMAIL_TIER.veryHigh, 'VERY HIGH')],
-  [/HIGH/,           tier(EMAIL_TIER.high, 'HIGH')],
-  [/MEDIUM/,         tier(EMAIL_TIER.medium, 'MEDIUM')],
-  [/MANAGEABLE/,     tier(EMAIL_TIER.manageable, 'MANAGEABLE')],
-  [/LOW/,            tier(EMAIL_TIER.low, 'LOW')],
+  [/VERY[\s-]?HIGH/, tier(EMAIL_TIER.veryHigh, EMAIL.tiers.veryHigh)],
+  [/HIGH/,           tier(EMAIL_TIER.high, EMAIL.tiers.high)],
+  [/MEDIUM/,         tier(EMAIL_TIER.medium, EMAIL.tiers.medium)],
+  [/MANAGEABLE/,     tier(EMAIL_TIER.manageable, EMAIL.tiers.manageable)],
+  [/LOW/,            tier(EMAIL_TIER.low, EMAIL.tiers.low)],
 ];
 // doc 50 — the run's band LADDER (from opts.bands / meta.framework.bands): per-run vocabulary with the
 // same template palette keyed by TONE, so "Moderate" (house) and "Medium" (a customer ladder) both colour correctly

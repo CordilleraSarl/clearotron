@@ -48,17 +48,12 @@ import { parseAudit, stripEngineInternals } from "./driver.mjs";
 import { readRecordArtifacts, normalizeRecordUri } from "../../driver/registry-fidelity.mjs";
 import { recordGoodsAsRegistered } from "../../driver/record-goods.mjs";
 import { readJson } from "../../driver/run-record.mjs";
+import { REPORT_PAGE } from "../../driver/publish/strings.mjs";
 
-// The client report's own display word per coverage state (publish/render.mjs COV_STATE). Carried here so
-// the connector and the PDF call the same state the same thing; a state absent from the map degrades to
-// its raw token rather than being dropped (an unknown state is still a fact about the run).
-const COV_WORD = {
-  "confirmed-clean": "Searched — clean",
-  "coverage-limited": "Partially covered",
-  open: "Open item",
-  "not-searched": "Not searched",
-  note: "Note",
-};
+// The client report's own display word per coverage state, read from the catalogue the report reads, so the
+// connector and the PDF call the same state the same thing; a state absent from the map degrades to its raw
+// token rather than being dropped (an unknown state is still a fact about the run).
+const COV_WORD = REPORT_PAGE.coverageStates;
 
 // The coverage-note transform, chosen to MATCH the client report's own rendering of these exact strings
 // rather than to be maximally strict — scrub.mjs's warning applies in full here: "a scrubber stricter than

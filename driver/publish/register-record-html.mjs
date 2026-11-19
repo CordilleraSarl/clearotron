@@ -12,6 +12,7 @@ import { registerRecordView, RECORD_LABELS as L, countryOf, LOGO_NOT_RETRIEVED }
 import { REC, inPriorityWindow } from '../registry-fidelity.mjs';
 import { registrationSystem } from '../jurisdiction-systems.mjs';
 import { normRegion } from './regions.mjs';
+import { REGISTER_RECORD as RR } from './strings.mjs';
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const escAttr = (s) => esc(s).replace(/"/g, '&quot;');
@@ -44,8 +45,8 @@ export function recordEntryHtml(rec, { uri = '', jurisdiction = '', receipt = nu
   const isWO = normRegion(jur) === 'WO' || /\/mark\/wo\//i.test(uri);
   const desig = isWO ? REC.designations(rec) : null;
   const reach = !isWO ? ''
-    : (desig ? ` · designating: ${esc(desig.join(', '))}`
-             : ` · <i>designated countries not on the fetched record — rights reach only its designations</i>`);
+    : (desig ? RR.designating(esc(desig.join(', ')))
+             : ` · <i>${RR.designationsNotOnRecord}</i>`);
   // A record that names no office still names its jurisdiction, and the country is read from that.
   const place = by[L.country].value || countryOf(rec.jurisdiction);
   const country = place || isWO || sys
@@ -53,7 +54,7 @@ export function recordEntryHtml(rec, { uri = '', jurisdiction = '', receipt = nu
   // The Status row: the register's status, its dates, and the Paris-priority flag beside them, with its emphasis.
   const st = by[L.status];
   const prio = asOf && inPriorityWindow(rec, asOf)
-    ? ` · <b>recent filing — Paris-priority window (potential global backdating)</b>` : '';
+    ? ` · <b>${RR.priorityWindow}</b>` : '';
   const status = st.value || st.faint || prio
     ? `${esc(st.value || '')}${st.value && st.faint ? ' · ' : ''}${st.faint ? `<span class="rr-faint">${esc(st.faint)}</span>` : ''}${prio}` : '';
   // The register number is the page's own cell for this registration; the application number follows only where
