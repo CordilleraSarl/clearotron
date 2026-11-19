@@ -2723,7 +2723,13 @@
         },
         "a-stop-is-read-once-more-before-anything-is-published.test.mjs": {
           "tests": 4,
-          "asserts": 12,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-stop-pressed-during-the-last-knockout-stage-publishes-nothing.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -8368,8 +8374,8 @@
           "todos": 0
         },
         "the-report-document-carries-the-data-file.test.mjs": {
-          "tests": 8,
-          "asserts": 35,
+          "tests": 9,
+          "asserts": 38,
           "skips": 0,
           "todos": 0
         },

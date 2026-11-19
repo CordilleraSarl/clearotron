@@ -58,6 +58,7 @@ import { recordDeclinations } from "../declination-tool.mjs";   // — the mock 
 import { contradictionFor } from "../declination-call.mjs";      // — and reads the refusal it would meet, rather than guessing
 import { findingUris } from "../record-carry.mjs";
 import { normalizeRecordUri } from "../registry-fidelity.mjs";
+import { requestCancel } from "../cancel.mjs";   // MOCK_KO_REVIEW_STOP: a stop pressed while the last stage runs
 import { recordClosures } from "../doubt-closure-tool.mjs";           // conversion 6 — the closure transport
 import { recordRefutation } from "../narrative-refutation-record.mjs"; // conversion 9 — the reviewer transport
 import { parseManifestVariants } from "../common-law-receipts.mjs";   // the terms the receipts gate joins on
@@ -2787,6 +2788,9 @@ export function applyStageWrites(msg, argv) {
     }
     const verdict = recordKnockoutReview(runDir, { first_question: `mock review: ${reads}`, material, declined, ...(rewrites.length ? { rewrites } : {}) }, { boundOrdinal: pass });
     if (!verdict.written) return `mock knockout-review: the transport refused the composed call — ${verdict.refused ?? verdict.write_failed}`;
+    // MOCK_KO_REVIEW_STOP: the operator presses Stop while the review, the lane's last stage, is running. The turn still
+    // finishes, as a dispatched turn does, and only a read after it can see the stop.
+    if (process.env.MOCK_KO_REVIEW_STOP && !pass) requestCancel(runDir, { via: "mock/review", by: "mock" });
     return "mock knockout review ok";
   }
   // ── A MATERIAL DEFECT'S REPAIR ──────────────────────────────────────────────

@@ -125,7 +125,9 @@ export function clearanceReportDocument(d, { codename = null, customerKey = null
       quarantined: d.quarantined ?? [],
       coverageJudgment: orNull(d.coverageJudgment),
       corrections: orNull(d.correctionsDoc),
-      receipts: orNull(d.reviewReceipts),
+      // The predelivery checks that failed, with their raw detail, which stays here: the workbook is handed their delivery
+      // lines. The run's other review receipts reach no surface, so they are not carried.
+      lint: d.reviewReceipts?.lint ?? [],
       droppedConditions: d.droppedConditions ?? [],
       undispatchedProbes: d.undispatchedProbes ?? [],
       withheldFamilies: d.withheldFamilies ?? [],
@@ -209,7 +211,7 @@ export function clearanceWorkbookOf(doc) {
       coverageJudgment: reviewer.coverageJudgment, markAssessment: client.markAssessment, corrections: reviewer.corrections,
       fetchState: reviewer.fetchState, verdict: verdict.record, jurisdiction: scope.jurisdiction,
       commonLawJoinedTerms: reviewer.commonLawJoinedTerms, registerOnly: scope.registerOnly, clientGate: reviewer.clientGate,
-      lintFailures: deliveryFlagLines(reviewer.receipts?.lint), productName: run.product.name,
+      lintFailures: deliveryFlagLines(reviewer.lint), productName: run.product.name,
       registerPublishesRecordPages: origins == null ? null : origins.length > 0,
       recordLinks: client.recordLinks?.byUri ? new Map(client.recordLinks.byUri) : null,
       assessmentNotCompleted: verdict.assessmentNotCompleted, registerReach: scope.registerReach, registerScope: scope.registerScope,
@@ -284,7 +286,6 @@ export function knockoutReportDocument(d, { runId, codename = null, customerKey 
       servedModels: orNull(d.served),
     },
     reviewer: {
-      receipts: orNull(d.receipts),
       sweepReceipts: d.sweepReceipts ?? [],
       qcFlags: d.qcFlags ?? [],
       machineChecksFailed: orNull(d.machineChecksFailed),
