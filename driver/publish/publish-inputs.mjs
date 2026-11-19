@@ -75,6 +75,10 @@ export const PUBLISH_INPUTS = {
   "register-named-band.json": "optional",
   // The instructed scope, read only as the register plan's fallback for the searched-jurisdiction set.
   "_driver/instructed-scope.json": "optional",
+  // The scope facts, read only for the register service's reach the run recorded beside its coverage line: the head
+  // of the workbook's register rows states it. Optional: a run from before the record, and every run whose service
+  // declares no office list, has no reach, and the head keeps its earlier words.
+  "_driver/scope-facts.json": "optional",
   // The frozen local-language lane decision, and the units the fold wrote. Read to derive how deep that
   // investigation went against what the matter configured — through the engine's own asked-versus-ran
   // reader, not by re-deciding it here. Optional and genuinely so: a plain clearance never runs the
