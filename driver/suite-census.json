@@ -184,8 +184,8 @@
           "todos": 0
         },
         "a-card-opens-each-cited-registration-with-its-register-record.test.mjs": {
-          "tests": 7,
-          "asserts": 23,
+          "tests": 9,
+          "asserts": 29,
           "skips": 0,
           "todos": 0
         },
@@ -1252,8 +1252,8 @@
           "todos": 0
         },
         "a-knockout-filing-opens-its-register-record.test.mjs": {
-          "tests": 3,
-          "asserts": 12,
+          "tests": 4,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },

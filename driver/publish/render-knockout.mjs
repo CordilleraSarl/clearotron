@@ -100,10 +100,10 @@ const linkOrText = (u) => (isHttpUrl(u) ? `<a href="${escAttr(u)}" target="_blan
 // publish sets `officeLink` from the filing's own numbers (office-record-links.mjs). The label is the
 // office and the number, linked where the office has a page. The handle names the vendor's record, not
 // the office's, and a reader can look it up nowhere. A filing with no number shows `fallback`, as before.
-const officeRecordCell = (r, fallback) => {
+const officeRecordCell = (r, fallback, label = null) => {   // `label` prints in place of the office's own, escaped like it
   const l = r?.officeLink;
   if (!l?.label) return fallback;
-  return l.href ? `<a href="${escAttr(l.href)}" target="_blank" rel="noopener noreferrer">${esc(l.label)}</a>` : esc(l.label);
+  return l.href ? `<a href="${escAttr(l.href)}" target="_blank" rel="noopener noreferrer">${esc(label ?? l.label)}</a>` : esc(label ?? l.label);
 };
 
 // Minimal inline markdown, escaped FIRST. The old renderer ran esc() and nothing else, so a batch
@@ -539,7 +539,9 @@ function filingRows(r, { filingRecords, logos }) {
     </tr>`;
   if (!rec) return row;
   const ownerName = ownerDisplayName({ raw: REC.owner(rec), native: REC.ownerNative(rec), resolved: r.owner });
-  const entry = recordEntryHtml(rec, { uri: key, jurisdiction: r.territory, numberCell: cell, ownerName });
+  const fallback = r.url ? linkOrText(r.url) : esc(r.recordId ?? '—');
+  const number = { label: r.officeLink?.label ?? null, fallbackText: r.url ?? r.recordId ?? '', cell: (label) => officeRecordCell(r, fallback, label) };
+  const entry = recordEntryHtml(rec, { uri: key, jurisdiction: r.territory, number, ownerName });
   return `${row}<tr class="rr-krow"><td colspan="6"><details class="drill rr-drill"><summary>${esc(RECORD_LABELS.title)}</summary><div class="drillbody">${entry}</div></details></td></tr>`;
 }
 

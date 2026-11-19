@@ -1850,7 +1850,14 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   const proseHasRead = READ_LEAD_RE.test(proseFull || '');
   const positions = `${proseHasRead ? '' : lpSplit(f)}${manageableLine(f)}`;
   const body = `${positions}${regs || seniorLine || fetchFailLine || enfLine || enfTelemetry || useChk || ownR || impactLine ? `<ul>${fetchFailLine}${seniorLine}${regs}${enfLine}${enfTelemetry}${useChk}${ownR}${impactLine}</ul>` : ''}${proseFullShown ? renderProse(proseFullShown) : ''}${caseLawStrand}${prov}`;
-  const recordBlock = registerRecordBlock(f, recordsByUri, (u) => officeRecordCell(u, regUri, RECORD_CITATION ? NO_LINK_NOTE[RECORD_CITATION] : null));
+  // The register number of each record entry: the office's label as plain text, the text a handle-cited record shows,
+  // and the page's own cell for a label.
+  const numberOf = (u) => ({
+    label: RECORD_LINKS?.get(String(u || '').toLowerCase())?.label ?? null,
+    fallbackText: u || 'registration',
+    cell: (label) => officeRecordCell(u, regUri, RECORD_CITATION ? NO_LINK_NOTE[RECORD_CITATION] : null, label),
+  });
+  const recordBlock = registerRecordBlock(f, recordsByUri, numberOf);
   return `${recordBlock}<details class="drill"><summary>${R.detail.fold}</summary><div class="drillbody">${body}</div></details>`;
 }
 
@@ -1868,12 +1875,12 @@ function fullDetail(f, card, recordsByUri = new Map()) {
 // AT MOST EIGHT ENTRIES, in the card's order, then the line that sends the reader to the audit workbook for all of
 // them (owner, 2026-11-18). A card citing dozens of registrations otherwise runs to pages.
 const RECORD_CAP = 8;
-function registerRecordBlock(f, recordsByUri, numberCell) {
+function registerRecordBlock(f, recordsByUri, numberOf) {
   const cited = (f.owner?.registrations || [])
     .map((r) => ({ r, rec: r?.uri ? recordsByUri.get(String(r.uri).toLowerCase()) : null }))
     .filter((x) => x.rec);
   if (!cited.length) return '';
-  const entries = cited.slice(0, RECORD_CAP).map(({ r, rec }) => recordEntry(f, r, rec, numberCell)).join('');
+  const entries = cited.slice(0, RECORD_CAP).map(({ r, rec }) => recordEntry(f, r, rec, numberOf)).join('');
   const all = R.cleared.allInWorkbook(cited.length.toLocaleString('en-GB'));
   const more = cited.length > RECORD_CAP ? `<div class="cmore">${AUDIT_HREF ? `<a class="wb" href="${AUDIT_HREF}">${all}</a>` : all}</div>` : '';
   const count = cited.length > 1 ? ` <span class="rr-count">${esc(registrationsCount(cited.length))}</span>` : '';
@@ -1902,14 +1909,14 @@ function logoLine(f, recordsByUri, { small = false } = {}) {
   return `<div class="rr-logos rr-sm">${figures.slice(0, 3).join('')}${figures.length > 3 ? `<span class="rr-more">+${figures.length - 3}</span>` : ''}</div>`;
 }
 
-function recordEntry(f, r, rec, numberCell) {
+function recordEntry(f, r, rec, numberOf) {
   const uri = String(r.uri || '');
   const receipt = rec._receipt?.fetched_at
     ? R.recordVerified(PROVIDER_LABEL || R.register, String(rec._receipt.fetched_at).slice(0, 10)) : null;
   // The owner by the card's own rule: a record's Latin owner is a romanisation when it also carries the native
   // form, and then the resolved name is the one a lawyer can read (recordOwner, above, decides the same way).
   const ownerName = ownerDisplayName({ raw: REC.owner(rec), native: REC.ownerNative(rec), resolved: f.owner?.name });
-  return recordEntryHtml(rec, { uri, jurisdiction: r.jurisdiction, receipt, asOf: AS_OF, numberCell: numberCell(uri), ownerName });
+  return recordEntryHtml(rec, { uri, jurisdiction: r.jurisdiction, receipt, asOf: AS_OF, number: numberOf(uri), ownerName });
 }
 
 // The contentious MARK + the classes it matched in, as a header chip next to the holder — so a card shows
@@ -2929,11 +2936,12 @@ import { officeReasonSentences } from './office-record-links.mjs';
 // The label is the office and the number, linked where the office has a page. The handle names the
 // vendor's record, not the office's, and a reader can look it up nowhere. With no link the number stands
 // on its own beside the workbook note, and Scope says once, per office, why it is not a link.
-function officeRecordCell(uri, regUri, note) {
+function officeRecordCell(uri, regUri, note, label = null) {   // `label` prints in place of the office's own, escaped like it
   const l = RECORD_LINKS?.get(String(uri || '').toLowerCase());
   if (!l?.label) return regUri(uri);
-  if (hrefAttr(l.href)) return `<a href="${hrefAttr(l.href)}" target="_blank" rel="noopener noreferrer">${esc(l.label)}</a>`;
-  return note ? `${esc(l.label)}<span class="reg-nolink">${note}</span>` : esc(l.label);
+  const text = esc(label ?? l.label);
+  if (hrefAttr(l.href)) return `<a href="${hrefAttr(l.href)}" target="_blank" rel="noopener noreferrer">${text}</a>`;
+  return note ? `${text}<span class="reg-nolink">${note}</span>` : text;
 }
 
 // What a linked registration number opens and, once per office, why the rest are cited by number. Said

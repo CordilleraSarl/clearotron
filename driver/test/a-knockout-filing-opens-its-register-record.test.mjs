@@ -83,3 +83,16 @@ test("a run that saved no records draws the table as it did, and a clearance and
     assert.equal(entryOf(clearance), entryOf(page({ filingRecords: RECORDS })), "the two pages draw one record differently");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
+
+test("markup planted in a filing's record prints as text in its register record", () => {
+  const HOSTILE = "<scr<script>ipt>alert(1)</script>";
+  const records = new Map([[US, body(US, "us", HOSTILE, "WORD ONLY", { applicationNumber: "6123457", registrationNumber: `9000001${HOSTILE}`, owner: HOSTILE })]]);
+  const html = renderKnockoutHtml({ batch: { overall: "Notable", executiveSummary: "summary" }, marks: [{ name: "SKARVELLE", rating: "Notable",
+    classesSearched: [9], classesDriving: [9], basis: "A basis.", factors: [], counterFactors: [], mitigation: "", bullets: [], purpleNotes: [], findings: [] }] },
+  MANIFEST, { runId: "r1", overall: "Notable", filingRecords: records, logos: new Map(), registerRecords: { provider: "clarivate", marks: [{ name: "SKARVELLE", classes: [9],
+    records: [{ ...FILINGS[0], officeLink: { ...FILINGS[0].officeLink, label: `US 6123457 ${HOSTILE}` } }] }] } });
+  const row = html.match(/<tr class="rr-krow">([\s\S]*?)<\/tr>/)?.[1] ?? "";
+  assert.ok(row, "the filing drew no register record");
+  assert.doesNotMatch(row, /<scr|<script|<\/script/i, "a planted tag reached the page as markup");
+  assert.ok(row.includes(">US 90000011 &lt;scr&lt;script&gt;ipt&gt;alert(1)&lt;/script&gt;</a>"), "the swapped label does not print as text in its link");
+});
