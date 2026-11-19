@@ -16,7 +16,7 @@ import { buildAudit } from './xlsx.mjs'; import { readDegradedPartRows, degraded
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, projectCoverageJudgment, COVERAGE_AREA_STATES } from '../findings-model.mjs';
 import { recordsOfDeliveredPositions } from '../declination-duty.mjs'; import { findingUris } from '../record-carry.mjs';   // — a position a finding delivers is not listed as set aside
 import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs'; import { coverageFormStamp, readCoverageForm } from '../coverage-form-io.mjs'; import { readReleasedFamilies, readWithheldFamilies } from '../withheld-families.mjs'; import { unitLabel } from '../coverage-form.mjs'; import { coverageUnitLabel } from '../coverage-ledger.mjs'; import { recallReceiptForOwnCompany } from '../recall-receipt.mjs';   // — and why an absence did not close; whose recall checks an audit lists
-import { clearanceReportData } from './report-data.mjs';
+import { clearanceReportDocument, clearanceReportDataOf } from './report-document.mjs';   // the run's report as one document, and the data file it carries
 import { searchDepthRecord, planTerritoriesOf, caseLawPassRecord } from './search-depth.mjs'; import { bandRecords } from '../named-band.mjs'; import { CASELAW_BRIDGES } from '../engine/mcp/gather-config.mjs';   // how much was read to reach the answer, as counts and tokens; and the case-law sources whose calls the court state reads
 import { parseFrameworkManifest } from '../framework.mjs'; import { readFrozenMethod, FROZEN_METHOD_FILE } from '../framework-method.mjs';
 import { rollupTokens, servedModels } from '../tokens.mjs';
@@ -1392,30 +1392,21 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // P5 rebase note: this package was written against the pre-collapse tree, where the four-answers panel
   // had to be passed to BOTH renders. There is one render now, so `fourAnswers` rides the one call — the
   // panel reaches the client through the same cleaning path as every other reader-facing block.
-  // PR-9 — the clearance run as data (publish/report-data.mjs): the client-cut projection the assistant
-  // drafts mail from. BEST-EFFORT with a hard receipt rule: meta.reportSchema is stamped ONLY when the file
-  // actually wrote, so a meta never names a data file that is not there. A producer throw never blocks the
-  // report (the baked HTML above is already on disk).
-  const reportSchema = writeDataFile('report-data.json', () => clearanceReportData({
-    runId, codename, matter: fm.matter, markName, title: fm.title, customerKey: customerKey || 'generic',
-    issued, url: reportRoute,
-    // stageLabel REGISTRY-FIRST ( residual, audit item 4): `stageLabel` is reportIdentityFor's
-    // read-time derivation — the same label report.html renders — so a republished pre-renumber run
-    // cannot mint report.html "Depth 2" beside report-data.json "Stage 0.5". The frozen sidecar label
-    // is the LAST resort (a level today's registry no longer knows). meta.json below keeps the frozen
-    // stamp BY DESIGN — its readers re-derive.
-    auditFile, searchLevel: searchPolicy?.level ?? null, stageLabel: stageLabel ?? frozenStageLabel ?? null,
-    engineCommit: doc.engineCommit, servedModels: served,
-    framework, verdictInfo, findings, coverage, contextNotes, markAssessment, fourAnswers, askAnswers,
-    actions: actionsRegister, jurisdiction, searchedJurisdictions, scopeBasis, caption,
-    assessmentNotCompleted,
-  })) ? 'report-data/clearance-1' : null;
-  // The run's report as one document, in the run's own record and never the pool (publish/report-document.mjs).
-  // Nothing reads it yet. A failed write costs the publish nothing.
-  if (runDir) {
-    try { ensureDriverDir(runDir); atomicWrite(paths(runDir).reportDocument, JSON.stringify(clearanceReportDocument({ ...doc, runId }, { codename, customerKey, auditFile, auditError }), null, 1) + '\n'); }
+  // THE RUN'S REPORT AS ONE DOCUMENT (publish/report-document.mjs), built once from what was read above and kept in
+  // the run's own record, never the pool. The surfaces below move to reading it one at a time; the data file is the
+  // first. A build that throws costs the data file, as a producer throw always has, and never the report.
+  let reportDocument = null;
+  try { reportDocument = clearanceReportDocument({ ...doc, runId }, { codename, customerKey, auditFile, auditError }); }
+  catch (e) { console.warn(`[report-document] not built: ${e?.message ?? e}`); }
+  if (reportDocument && runDir) {
+    try { ensureDriverDir(runDir); atomicWrite(paths(runDir).reportDocument, JSON.stringify(reportDocument, null, 1) + '\n'); }
     catch (e) { console.warn(`[report-document] not written: ${e?.message ?? e}`); }
   }
+  // PR-9 — the clearance run as data: the client-cut projection the assistant drafts mail from, built from the
+  // document (clearanceReportDataOf). BEST-EFFORT with a hard receipt rule: meta.reportSchema is stamped ONLY when the
+  // file actually wrote, so a meta never names a data file that is not there. A producer throw never blocks the
+  // report (the baked HTML above is already on disk).
+  const reportSchema = writeDataFile('report-data.json', () => clearanceReportDataOf(reportDocument)) ? 'report-data/clearance-1' : null;
   const total = finishPoolRun({ writeRO, poolRoot, skipRegen, regenIndex, meta: {
     runId, codename: codename || '', matter: fm.matter, title: fm.title, client: fm.client,
     // The mark as typed — see above. Distinct from `title`, which is the report's own headline.
@@ -1975,7 +1966,6 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
 import { recordLinksFor } from './office-record-links.mjs';
 import { reportDates, zurichStamp } from './report-dates.mjs';   // the dates a report prints, from its record
 import { atomicWrite, driverDir, ensureDriverDir, paths, readJson } from "../run-record.mjs";
-import { clearanceReportDocument } from "./report-document.mjs";   // the run's report as one document
 import { logosForReport } from "../mark-logos.mjs";   // the saved logo of each cited registration, embedded in the report
 import { followUpKindsOf } from "../follow-up-twins.mjs";   // the search each deferred directive recorded
 function officeLinksFor(findings, recordsByUri, runOrigins) {

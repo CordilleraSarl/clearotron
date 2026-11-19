@@ -159,6 +159,9 @@ export function clearanceReportDataOf(doc) {
   return clearanceReportData({
     runId: run.runId, codename: run.codename, matter: fm.matter, markName: run.markName, title: fm.title,
     customerKey: run.customerKey || 'generic', issued: run.issued, url: run.url, auditFile: run.auditFile,
+    // The stage label REGISTRY-FIRST: today's registry's label, the one report.html renders, so a republished
+    // pre-renumber run cannot carry one label on its page and another in its data file. The label frozen with the run
+    // is the last resort, for a level today's registry no longer knows; meta.json keeps the frozen one by design.
     searchLevel: run.product.level, stageLabel: run.product.stageLabel ?? run.product.frozenStageLabel ?? null,
     engineCommit: doc.build.engineCommit, servedModels: client.servedModels,
     framework: doc.framework.manifest, verdictInfo: verdict.record, findings: client.findings,
