@@ -5319,6 +5319,12 @@
           "skips": 0,
           "todos": 0
         },
+        "no-client-sentence-is-written-outside-the-catalogue.test.mjs": {
+          "tests": 2,
+          "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
         "no-client-surface-speaks-the-delivery-gates-word.test.mjs": {
           "tests": 4,
           "asserts": 21,
