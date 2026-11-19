@@ -80,9 +80,12 @@ test("the SAME list reaches both consumers — one allow-list, not two derivatio
   // normalizeRecordLinks repairs absolute links; render constructs from paths. Before this both had
   // their own idea of what was legitimate, which is how one could refuse while the other allowed.
   assert.match(idx, /normalizeRecordLinks\(findings, runOrigins\)/);
-  assert.match(idx, /recordOrigins: runOrigins/,
-    "render must be handed the SAME runOrigins the repair pass uses — a second derivation is a second "
+  // The page reads its allow-list from the run's report document, which publish builds from the same runOrigins.
+  assert.match(read("driver/publish/report-document.mjs"), /origins: orNull\(d\.runOrigins\)/,
+    "the document must carry the SAME runOrigins the repair pass uses — a second derivation is a second "
     + "chance to disagree");
+  assert.match(read("driver/publish/render.mjs"), /recordOrigins: run\.provider\?\.origins/,
+    "and the page must read the document's list, not derive one");
 });
 
 // ── the link RULE, read off the resolver ───────────────────────────────────────────────────────────

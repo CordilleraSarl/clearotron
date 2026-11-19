@@ -11,7 +11,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, chmodS
 import { finishPoolRun, grpRead, openPoolRun, refreshStaffPages } from './shell.mjs';
 import { join, dirname } from 'node:path';
 import { readFold } from '../record-fold.mjs'; import { parseReport, parseAudit, stripInternal, parseCaseLawProfiles, parseCaseLawPreamble, joinCaseLawProfiles } from './parse.mjs';
-import { renderHtml } from './render.mjs'; import { emailConditionsOf } from './email-conditions.mjs';   // the box's conditions, read the same way by the delivery check
+import { renderClearanceDocument } from './render.mjs'; import { emailConditionsOf } from './email-conditions.mjs';   // the box's conditions, read the same way by the delivery check
 import { buildAudit } from './xlsx.mjs'; import { readDegradedPartRows, degradedPartRows, degradedAtPublish, storeStates, readDeliveredStores, mergeDegradedRows } from '../degraded-parts.mjs'; import { readDeclinations } from '../declination-tool.mjs'; import { frameSetAsideRows } from '../web-grid.mjs';   // — what synthesis set aside, with its grounds; and the stores the matter frame set aside, with its reason
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, projectCoverageJudgment, COVERAGE_AREA_STATES } from '../findings-model.mjs';
 import { recordsOfDeliveredPositions } from '../declination-duty.mjs'; import { findingUris } from '../record-carry.mjs';   // — a position a finding delivers is not listed as set aside
@@ -1394,7 +1394,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     try { ensureDriverDir(runDir); atomicWrite(paths(runDir).reportDocument, JSON.stringify(reportDocument, null, 1) + '\n'); }
     catch (e) { console.warn(`[report-document] not written: ${e?.message ?? e}`); }
   }
-  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, frameworkMethod, servedModels: served, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion, searchDepth, assessmentNotCompleted, logos, followUpKinds }));
+  writeRO('report.html', renderClearanceDocument(pageDocument(reportDocument), { recordsByUri, logos, homeHref: '../index.html', chromeHref: '../assets/chrome.css', delivery: deliv, demoData }));   // the page reads the report document, with its surface beside it
   // ONE report (spec 2026-07-30 §5): report.client.html is no longer written. The knockout lane's own
   // collapse note is the precedent: "two renderings of one run is how the wrong link gets sent". The
   // client host serves the same report.html through the portal's readReport() (cleaning built in) — its
@@ -2070,4 +2070,12 @@ export function withoutRepeatedRows(rows) {
     seen.add(key);
     return true;
   });
+}
+
+// THE PAGE READS THE RUN'S REPORT DOCUMENT AS WRITTEN: the JSON the run keeps, parsed back, so the page can read nothing
+// the file does not hold. A document that could not be built leaves the page nothing to read, and the publish stops
+// there rather than print a page from another source.
+function pageDocument(doc) {
+  if (!doc) throw new Error('[report-document] not built, so report.html has nothing to read');
+  return JSON.parse(JSON.stringify(doc));
 }

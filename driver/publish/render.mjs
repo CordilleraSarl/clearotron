@@ -2553,6 +2553,31 @@ const STRIP = Object.freeze([
   ['searched', R.searched.title],
 ]);
 
+// THE CLEARANCE PAGE FROM ITS REPORT DOCUMENT (C14). The run's report document (publish/report-document.mjs, written to
+// `_driver/report-document.json`) holds every fact the page prints. This reads it, as written, and hands the page the
+// arguments publish hands it today, so the page is byte for byte the page it was. What the document does not hold is
+// the page's surface: its two addresses, the confidentiality posture and the demo flag, which publish passes beside the
+// document as it always has; and the two sets the document holds by reference, the saved records' bodies by uri and the
+// saved logos' images by ref, which publish resolves from the run. PURE given its inputs.
+export function renderClearanceDocument(doc, { recordsByUri = new Map(), logos = new Map(), homeHref, chromeHref, delivery, demoData } = {}) {
+  const run = doc?.run ?? {}, scope = doc?.scope ?? {}, client = doc?.client ?? {}, verdict = doc?.verdict ?? {};
+  const framework = doc?.framework ?? {}, prose = doc?.prose ?? {};
+  const asMap = (pairs) => (Array.isArray(pairs) ? new Map(pairs) : null);
+  return renderHtml({ fm: prose.frontMatter ?? {}, secs: prose.sections ?? {}, cards: prose.cards ?? [] }, client.findings ?? [], client.coverage ?? [], {
+    demoData, frameworkMethod: framework.method, servedModels: client.servedModels, productName: run.product?.name,
+    depthNote: run.product?.depthNote, scopeBasis: scope.scopeBasis, auditFile: run.auditFile || undefined, runId: run.runId,
+    delivery, recordsByUri, contextNotes: client.contextNotes, coverageJudgment: client.coverageJudgment,
+    markAssessment: client.markAssessment, fourAnswers: client.fourAnswers, homeHref, chromeHref, issued: run.issued,
+    asOf: run.asOf, verdictInfo: verdict.record, framework: framework.manifest, searchedJurisdictions: scope.searchedJurisdictions,
+    planTerritories: scope.planTerritories, caseLawByOrdinal: asMap(client.caseLaw?.byOrdinal) ?? new Map(),
+    caseLawNotice: client.caseLaw?.notice, enforcerSignals: client.enforcerSignals, recordOrigin: run.provider?.origin,
+    recordOrigins: run.provider?.origins, recordCitation: run.provider?.citation ?? null, recordLinks: asMap(client.recordLinks?.byUri),
+    providerLabel: run.provider?.label, seniorRights: client.seniorRights, findingsSchemaVersion: run.findingsVersion,
+    searchDepth: scope.searchDepth, assessmentNotCompleted: verdict.assessmentNotCompleted, logos,
+    followUpKinds: new Map((client.followUpKinds ?? []).map(([k, kinds]) => [k, new Set(Array.isArray(kinds) ? kinds : [])])),
+  });
+}
+
 export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   if (findings && !Array.isArray(findings)) { opts = findings; findings = []; coverage = []; }  // tolerate legacy (parsed, opts)
   AS_OF = opts.asOf ?? null;   // C2
