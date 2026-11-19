@@ -23,6 +23,8 @@ import { RECIPES_SENTENCES } from "./ruled-sentences-register-recipes.mjs";
 import { PHASE2_SENTENCES } from "./ruled-sentences-phase2-execution.mjs";
 import { SYNTHESIS_SENTENCES } from "./ruled-sentences-synthesis-rules.mjs";
 import { MATTER_FRAME_SENTENCES } from "./ruled-sentences-matter-frame.mjs";
+import { BLIND_FRAME_SENTENCES } from "./ruled-sentences-blind-frame.mjs";
+import { CORSEARCH_SENTENCES } from "./ruled-sentences-corsearch.mjs";
 import { GATHERED, manualPins, heldStrings, namesManual } from "../../scripts/count-manual-pins.mjs";
 import { skipReason } from "../../shared/tracked-files.mjs";
 
@@ -40,6 +42,8 @@ const FIXTURES = {
   "driver/skills/clearance-search/phase2-execution.md": PHASE2_SENTENCES,
   "driver/skills/clearance-search/synthesis-rules.md": SYNTHESIS_SENTENCES,
   "driver/skills/matter-frame/SKILL.md": MATTER_FRAME_SENTENCES,
+  "driver/skills/blind-frame/SKILL.md": BLIND_FRAME_SENTENCES,
+  "driver/skills/clearance-register/providers/corsearch.md": CORSEARCH_SENTENCES,
 };
 // Strings a test that reads a manual uses for its own purpose, which the manual happens to share word for word: an example
 // row label used as a unit name, a stage message's own words, a fixture's input. They hold nothing of the manual.
@@ -51,6 +55,7 @@ const COINCIDENT = {
   "driver/skills/matter-frame/SKILL.md": {
     "driver/test/a-class-the-client-reaches-is-added-and-costs-one-question.test.mjs": 3,
   },
+  "driver/skills/blind-frame/SKILL.md": { "driver/test/blind-frame-model.test.mjs": 1 },
   "driver/skills/knockout-assess/SKILL.md": {
     "driver/test/a-knockout-defect-reaches-the-step-that-can-repair-it.test.mjs": 1,
     "driver/test/a-knockout-reads-the-clients-own-request.test.mjs": 1,

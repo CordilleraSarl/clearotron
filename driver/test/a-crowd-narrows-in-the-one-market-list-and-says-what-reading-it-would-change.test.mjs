@@ -17,6 +17,7 @@ import { fileURLToPath } from "node:url";
 import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
 import { REGISTER_SENTENCES } from "./ruled-sentences-register.mjs";
 import { RECIPES_SENTENCES } from "./ruled-sentences-register-recipes.mjs";
+import { CORSEARCH_SENTENCES } from "./ruled-sentences-corsearch.mjs";
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register");
 const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
@@ -45,7 +46,7 @@ test("before narrowing a wider crowd, judgment writes what reading it would chan
 test("the shared manual and the provider notes carry no price words", () => {
   assert.ok(flat("SKILL.md").includes(REGISTER_SENTENCES.euipoCoversTheAloneRunning));
   const corsearch = flat("providers/corsearch.md");
-  assert.ok(corsearch.includes("Don't run multiple separate phonetic searches — they make more requests and return largely overlapping results."));
+  assert.ok(corsearch.includes(CORSEARCH_SENTENCES.donRunMultipleSeparatePhonetic));
   assert.ok(corsearch.includes("## Request limits"));
   assert.ok(flat("providers/signa.md").includes("It is ONE call, not three."));
   const all = ["SKILL.md", "register-recipes.md", "providers/corsearch.md", "providers/signa.md"].map(flat).join(" ");

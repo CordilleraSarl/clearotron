@@ -13,6 +13,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { CORSEARCH_SENTENCES } from "./ruled-sentences-corsearch.mjs";
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register", "providers");
 const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
@@ -52,7 +53,6 @@ test("a gap no search on the register can close is disclosed, never escalated an
 
 test("Corsearch asks one script question per market the frame names", () => {
   const corsearch = flat("corsearch.md");
-  assert.ok(corsearch.includes("Skill handles this by generating transliteration variants in `clearance-variants`, with one script question "
-    + "per market the frame names."));
+  assert.ok(corsearch.includes(CORSEARCH_SENTENCES.skillHandlesThisGeneratingTransliteration));
   assert.ok(!corsearch.includes("querying each separately"), "the Corsearch manual still queries every variant separately");
 });
