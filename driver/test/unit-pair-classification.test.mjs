@@ -157,6 +157,14 @@
 //                               recorded: an earlier attempt's answer cannot vouch for the last one's
 //                               zeros. An arm of court-decisions-take-the-pass-record-over-its-words
 //                               pins that cut. (CITED BY SYMBOL AND NO LINE, per CONTRIBUTING.md.)
+//   · `localScripts` declared in search-depth.mjs decides per plan term whether it is the worldwide search (the
+//                               term asks the whole territory list of a plan stamped `scope_basis: "worldwide"`)
+//                               and keeps that, per script, as the WORD `worldwide` ("searched" or "missed") in
+//                               the same object as the territory lists it qualifies. The plan and the execution
+//                               record are the one pair of arguments to the one call, so there is no second
+//                               derivation for later data to contradict. The consumer, render.mjs's
+//                               `scriptGapRows`, reads the word beside those lists from that one record and
+//                               derives nothing else. (CITED BY SYMBOL AND NO LINE, per CONTRIBUTING.md.)
 //
 //   · `recordGoodsEvidence` declared in goods-evidence.mjs mints `readable` in the SAME object literal as the
 //                               `state`, `source` and `basis` it qualifies, off the one `statements` read, in one
@@ -268,7 +276,7 @@ const RULED = new Map([
   ["form-neighbourhood.mjs", 4], ["gateway.mjs", 2], ["grounds-grammar.mjs", 1],
   ["pipeline.mjs", 2], ["steps/verdict-gate.mjs", 1], ["publish/render.mjs", 1], ["publish/xlsx.mjs", 2],
   ["reference-score.mjs", 3], ["registry-fidelity.mjs", 2], ["repair-scope.mjs", 4],
-  ["portal-config-view.mjs", 1], ["publish/search-depth.mjs", 2], ["goods-evidence.mjs", 1],
+  ["portal-config-view.mjs", 1], ["publish/search-depth.mjs", 3], ["goods-evidence.mjs", 1],
   ["knockout-register-read.mjs", 4],
   ["knockout-assess-record.mjs", 2],
   ["how-it-runs.mjs", 1],

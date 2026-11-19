@@ -612,6 +612,17 @@ export const REPORT_PAGE = Object.freeze({
     scriptName: Object.freeze({ Hani: 'Han', Hira: 'Hiragana', Kana: 'Katakana', Hang: 'Hangul', Grek: 'Greek', Cyrl: 'Cyrillic', Arab: 'Arabic', Hebr: 'Hebrew', Thai: 'Thai', Deva: 'Devanagari' }),
     scriptsSearched: (names) => new Intl.ListFormat('en-GB', { type: 'conjunction' }).format(names),
     scriptsNotCompleted: (names) => `No search in ${new Intl.ListFormat('en-GB', { type: 'disjunction' }).format(names)} script was completed.`,
+    // A script searched in one place and not in another (design, 2026-11-19, under the owner's delegation): the places
+    // where no search in it completed, named in place up to three and counted from four, with the list in the row's
+    // detail; a planned worldwide search that did not complete; and a planned search whose territory was not recorded.
+    // Two or three places are joined as the approved sentence above joins scripts.
+    scriptNotCompletedIn: (script, places) => `No search in ${script} script was completed in ${new Intl.ListFormat('en-GB', { type: 'disjunction' }).format(places)}.`,
+    scriptNotCompletedInCount: (script, n) => `No search in ${script} script was completed in ${n} planned territories.`,
+    worldwideNotCompleted: (script) => `The planned worldwide search in ${script} script did not complete.`,
+    territoryNotRecorded: (script) => `A planned search in ${script} script did not complete. Its territory was not recorded.`,
+    // Under "What was searched", a script whose planned worldwide search did not complete is named with the places a
+    // narrower search in it did complete.
+    scriptIn: (script, places) => `${script} (${new Intl.ListFormat('en-GB', { type: 'conjunction' }).format(places)})`,
     notSearched: 'Not searched',
     included: 'Included',
     notPartOfSearch: 'Not part of this search',

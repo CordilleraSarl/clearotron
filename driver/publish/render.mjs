@@ -32,7 +32,7 @@ import { COMMON_LAW, normRegion, regionName, REGION_NAMES } from './regions.mjs'
 import { parseFindingsJson, bindRecommendation, sentenceCaseLead, CLIENT_TIER_BY_COMPOSITE, bandOf, compareBlockingPower, inDispositionMode, reasonedNegativeGroups } from '../findings-model.mjs';
 import { REC, inPriorityWindow, ownerDisplayName } from '../registry-fidelity.mjs';
 import { registrationSystem } from '../jurisdiction-systems.mjs';
-import { REPORT_PAGE as R, RECORD_LINKS as LINK_WORDS } from './strings.mjs';
+import { REPORT_PAGE as R, RECORD_LINKS as LINK_WORDS, KNOCKOUT_PAGE } from './strings.mjs';
 import { READ_LEAD_RE } from '../report-card-record.mjs';   // D3 — the dedupe gate and the card's acceptance are ONE predicate
 import { logoLockup, BRAND, confPosture, sectionStrip, PALETTE, QUADRANT_COLOURS as QC } from '../../shared/brand.mjs';
 import { NAV_CSS } from '../../shared/site-nav.mjs';
@@ -179,7 +179,7 @@ function ratingExtras(fm, findings, coverage, fourAnswers, opts, bandWord, condi
   }
   const fa = fourAnswers && typeof fourAnswers === 'object' ? fourAnswers : null;
   if (fa) {
-    const shown = new Set((Array.isArray(findings) ? findings : []).map((f) => Number(f?.ordinal)));
+    const shown = new Set((Array.isArray(findings) ? findings : []).map((f) => cardTarget(f?.ordinal)));
     const rows = FOUR_ANSWER_LABELS.map(([key, label], i) => {
       const a = fa[key];
       if (!a || typeof a.read !== 'string' || !a.read.trim()) return '';
@@ -199,9 +199,9 @@ function ratingExtras(fm, findings, coverage, fourAnswers, opts, bandWord, condi
       else tone = /^(registrable|strong|clear)$/.test(tok) ? 'good' : /condition|moderate|medium|qualified|narrow/.test(tok) ? 'mid' : /not|weak|unlikely|blocked|obstructed/.test(tok) ? 'bad' : 'mid';
       // A withdrawn finding renders nowhere, so its ordinal is not cited here either: the token would link to a card the
       // page does not draw. `findings` arrives with the withdrawn ones already out.
-      const ordinals = (Array.isArray(a.ordinals) ? a.ordinals : []).filter((n) => shown.has(Number(n)));
-      const ords = ordinals.length
-        ? ` <span class="fa-ords">${ordinals.map((n) => `<a href="#c${n}">#${n}</a>`).join(' ')}</span>` : '';
+      const targets = (Array.isArray(a.ordinals) ? a.ordinals : []).map(cardTarget).filter((t) => t && shown.has(t));
+      const ords = targets.length
+        ? ` <span class="fa-ords">${targets.map((t) => `<a href="#${t}">#${t.slice(1)}</a>`).join(' ')}</span>` : '';
       const basis = a.basis ? inline(String(a.basis).trim()).trim() : '';
       // THE PER-CLASS OBSTACLES RIDE WITH THE ANSWER THEY QUALIFY. An answer that reads "registrable with
       // conditions" and does not say in which classes leaves the reader with the conclusion and none of
@@ -313,6 +313,13 @@ function frameworkGauge(fm, findings, coverage = [], fourAnswers = null, opts = 
 
 const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const escAttr = s => esc(s).replace(/"/g, '&quot;');
+// A finding's card is the page's `c<ordinal>` target when its ordinal is a whole number, the shape the page script
+// reveals and scrolls to. An absent or malformed ordinal has no target: its card draws no id and nothing links to it.
+const cardTarget = (ordinal) => {
+  const n = typeof ordinal === 'string' && /^[0-9]+$/.test(ordinal) ? Number(ordinal) : ordinal;
+  return Number.isSafeInteger(n) && n >= 0 ? `c${n}` : null;
+};
+const cardId = (f) => { const t = cardTarget(f?.ordinal); return t ? ` id="${t}"` : ''; };
 
 // A floating "home" pill that returns to the listing from a report. FULLY INLINE-STYLED on purpose: it is
 // emitted natively here AND injected into already-rendered reports (pool-admin link-home) whose frozen CSS
@@ -1155,6 +1162,46 @@ function courtLineFor(opts, state) {
   return line;
 }
 
+// The scripts' reader names, in the table's order, for ISO 15924 codes the search-depth record keeps.
+const scriptNames = (codes) => Object.entries(R.searched.scriptName).filter(([k]) => codes.includes(k)).map(([, name]) => name);
+// A territory as the page names it, alphabetically in a list; inside a sentence it takes the article English gives it
+// ("the United States"), from the phrases the Knockout page already prints.
+const territoryNames = (codes) => codes.map((c) => regionName(c)).sort((a, b) => a.localeCompare(b, 'en-GB'));
+const territoryPhrase = (c) => KNOCKOUT_PAGE.registerNames[c]?.phrase ?? regionName(c);
+const byPhrase = (codes) => [...codes].sort((a, b) => regionName(a).localeCompare(regionName(b), 'en-GB')).map(territoryPhrase);
+// A script searched somewhere that still has a gap: its record by script, in the table's order.
+const partlySearched = (ls) => Object.keys(R.searched.scriptName).filter((k) => (ls?.searched ?? []).includes(k) && ls?.territories?.[k]);
+// The script row under "What was searched": each script a search completed in, and for one whose planned worldwide search
+// did not complete, the places a narrower search in it did complete, where the record names them.
+function scriptsSearchedLine(ls) {
+  return R.searched.scriptsSearched(Object.entries(R.searched.scriptName).filter(([k]) => ls.searched.includes(k)).map(([k, name]) => {
+    const t = ls.territories?.[k];
+    return t?.worldwide === 'missed' && t.searched.length ? R.searched.scriptIn(name, byPhrase(t.searched)) : name;
+  }));
+}
+// THE LOCAL-SCRIPT ROWS UNDER LEFT OPEN, one per distinct gap (design, 2026-11-19, under the owner's delegation). The
+// scripts planned with no search completed anywhere share the approved sentence's one row. A script searched somewhere
+// keeps a row for each gap it still has: the territories where none of its searches completed, named up to three and
+// counted from four with the full list in `detail`; a planned worldwide search that did not complete; and a planned
+// search whose territory the plan did not record, unless a worldwide search in that script completed. No territory is
+// guessed, and a run with no execution record draws none of these.
+function scriptGapRows(ls) {
+  if (!ls) return [];
+  const row = (note, detail) => ({ area: R.searched.localScript, state: 'not-searched', note, ...(detail ? { detail } : {}) });
+  const rows = [];
+  const missed = scriptNames(ls.missed ?? []);
+  if (missed.length) rows.push(row(R.searched.scriptsNotCompleted(missed)));
+  for (const k of partlySearched(ls)) {
+    const t = ls.territories[k], name = R.searched.scriptName[k];
+    const gaps = Array.isArray(t.missed) ? t.missed : [];
+    if (gaps.length > 3) rows.push(row(R.searched.scriptNotCompletedInCount(name, gaps.length.toLocaleString('en-GB')), territoryNames(gaps)));
+    else if (gaps.length) rows.push(row(R.searched.scriptNotCompletedIn(name, byPhrase(gaps))));
+    if (t.worldwide === 'missed') rows.push(row(R.searched.worldwideNotCompleted(name)));
+    if (t.unnamed === 'missed' && t.worldwide !== 'searched') rows.push(row(R.searched.territoryNotRecorded(name)));
+  }
+  return rows;
+}
+
 // Counts only, folded closed. A count of records read is engine activity rather than something a reader
 // acts on (owner, 2026-09-16), so it lives here and not beside the outcome per country.
 // THE OPEN ROWS STAY ON THE PAGE, and that is deliberate rather than a leftover of the old fold. The
@@ -1165,7 +1212,6 @@ function courtLineFor(opts, state) {
 // reader's own words, with the counts — never the query text, the refusals or the provider faults.
 function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri = new Map(), fm = {}) {
   const sd = opts && opts.searchDepth;
-  const open = (Array.isArray(coverage) ? coverage : []).filter((c) => COV_STATE[c?.state]?.cls !== 'ok');
   const c = (sd && sd.counts) || {}, rows = [];
   const places = placesSearched(fm, coverage, findings);
   if (places.worldwide && places.focus) rows.push([R.searched.whereSearched, places.list]);
@@ -1199,11 +1245,8 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
   if (sw.reputation) rows.push([R.searched.reputation, R.searched.checks(sw.reputation.toLocaleString('en-GB'))]);
   // The local-script row says what the run's record shows ran (owner, 2026-11-19): the scripts a native-script search
   // completed in, by name, or not searched when the record shows none did, and no row when the run kept no execution
-  // record to say either. The scripts planned with none completed are left open, in the row added to the grid below.
-  const scriptNames = (codes) => Object.entries(R.searched.scriptName).filter(([k]) => codes.includes(k)).map(([, name]) => name);
-  if (c.localScripts) rows.push([R.searched.localScript, c.localScripts.searched.length ? R.searched.scriptsSearched(scriptNames(c.localScripts.searched)) : R.searched.notSearched]);
-  const scriptsMissed = c.localScripts ? scriptNames(c.localScripts.missed) : [];
-  if (scriptsMissed.length) open.push({ area: R.searched.localScript, state: 'not-searched', note: R.searched.scriptsNotCompleted(scriptsMissed) });
+  // record to say either. The scripts planned with none completed are left open, in the grid below (`scriptGapRows`).
+  if (c.localScripts) rows.push([R.searched.localScript, c.localScripts.searched.length ? scriptsSearchedLine(c.localScripts) : R.searched.notSearched]);
   // HOW DEEP THE LOCAL-LANGUAGE INVESTIGATION WENT, which is a different question from the row above it.
   // That one answers whether the spellings were searched; this one answers whether the investigation ran
   // at the depth the matter configured. The engine can run it shallower than the account asked for, and
@@ -1247,6 +1290,7 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
     const why = c.courtDecisions === 'not-checked' ? courtLineFor(opts, 'not-checked') : '';
     rows.push(['Court decisions', { html: `<span class="wstate">${esc(cdWord)}</span>${why ? `<span class="wnote">${esc(why)}</span>` : ''}` }]);
   }
+  const open = leftOpenRows({ coverage, localScripts: c.localScripts, followUpKinds: opts?.followUpKinds });
   const openHtml = open.length ? `<div class="openrows"><div class="rk">${R.searched.leftOpen}</div>${coverageGrid(open, { verdict: opts?.assessmentNotCompleted !== true, followUpKinds: opts?.followUpKinds })}</div>` : '';
   // THE LEGEND FOR WHAT IS ON THE CARDS, kept when the scope fold went. It is not the engine narrating
   // its own searching — it is what a linked registration number opens, why the rest are cited by number,
@@ -1289,7 +1333,7 @@ function alsoConsideredSection(ruledOut, recordsByUri = new Map(), opts = {}) {
     const practical = f.practical_position ? inline(String(f.practical_position)) : '';
     const fold = (legal || practical)
       ? `<details class="roff"><summary>${R.alsoConsidered.whyRuledOut}</summary>${legal ? `<p><b>${R.alsoConsidered.legal}</b> ${legal}</p>` : ''}${practical ? `<p><b>${R.alsoConsidered.practical}</b> ${practical}</p>` : ''}</details>` : '';
-    return `<div class="card ruled"${f.ordinal != null ? ` id="c${esc(String(f.ordinal))}"` : ''}><div class="top"><div class="rail"></div><div class="body"><div class="cardhead">${
+    return `<div class="card ruled"${cardId(f)}><div class="top"><div class="rail"></div><div class="body"><div class="cardhead">${
       f.ordinal != null ? `<span class="fnum">${esc(String(f.ordinal))}</span>` : ''}<h3 class="who mark-first">${esc(f.mark || '')}</h3>${
       who ? `<span class="cwho">${esc(who)}</span>` : ''}<span class="tier ruled">${R.alsoConsidered.ruledOut}</span><button class="ask-fi no-print">${R.alsoConsidered.askAi}</button></div><div class="oneline">${why}</div>${fold}</div></div></div>`;
   }).join('');
@@ -1390,9 +1434,10 @@ function quadrant(findings) {
     const fill = on ? QC.onField : QC.secondary;
     const X = cx.toFixed(1), Y = cy.toFixed(1), fs = on ? 12.5 : 8;
     const inner = pending
-      ? `<circle cx="${X}" cy="${Y}" r="${r}" fill="${QC.pendingFill}" stroke="${fill}" stroke-width="2.5"/><text x="${X}" y="${Y}" text-anchor="middle" dominant-baseline="central" font-size="${fs}" font-weight="900" fill="${fill}">${f.ordinal}</text>`
-      : `<circle cx="${X}" cy="${Y}" r="${r}" fill="${fill}" stroke="${PALETTE.ink}" stroke-opacity=".22" stroke-width="1"/><text x="${X}" y="${Y}" text-anchor="middle" dominant-baseline="central" font-size="${fs}" font-weight="900" fill="#fff">${f.ordinal}</text>`;
-    return `<a href="#c${f.ordinal}"><title>#${f.ordinal}</title>${inner}</a>`;
+      ? `<circle cx="${X}" cy="${Y}" r="${r}" fill="${QC.pendingFill}" stroke="${fill}" stroke-width="2.5"/><text x="${X}" y="${Y}" text-anchor="middle" dominant-baseline="central" font-size="${fs}" font-weight="900" fill="${fill}">${esc(f.ordinal)}</text>`
+      : `<circle cx="${X}" cy="${Y}" r="${r}" fill="${fill}" stroke="${PALETTE.ink}" stroke-opacity=".22" stroke-width="1"/><text x="${X}" y="${Y}" text-anchor="middle" dominant-baseline="central" font-size="${fs}" font-weight="900" fill="#fff">${esc(f.ordinal)}</text>`;
+    const t = cardTarget(f.ordinal);
+    return t ? `<a href="#${t}"><title>#${t.slice(1)}</title>${inner}</a>` : inner;
   }).join('');
   return `<div class="panel land">
       <svg viewBox="0 0 560 430" xmlns="http://www.w3.org/2000/svg" font-family="Plus Jakarta Sans, sans-serif">
@@ -1432,7 +1477,8 @@ function keyRow(f, recordsByUri) {
   if (who && nrm(who) !== nrm(f.mark)) subParts.push(esc(who));
   if (cls) subParts.push(R.key.classes(esc(cls)));
   if (src) subParts.push(`<span style="white-space:nowrap">${esc(src)}</span>`);
-  return `<a class="keyrow" href="#c${f.ordinal}"><span class="kn" style="background:${kn}">${f.ordinal}</span><span class="kw"><span class="cm-mark">${esc(f.mark)}</span><em>${subParts.join(' · ')}</em></span><span class="kc ${kc}">${chip}</span><span class="arr">→</span></a>`;
+  const t = cardTarget(f.ordinal);
+  return `<a class="keyrow"${t ? ` href="#${t}"` : ''}><span class="kn" style="background:${kn}">${esc(f.ordinal)}</span><span class="kw"><span class="cm-mark">${esc(f.mark)}</span><em>${subParts.join(' · ')}</em></span><span class="kc ${kc}">${chip}</span><span class="arr">→</span></a>`;
 }
 
 // Rights-holder panel → cross-region groups (§2.3). Findings grouped by jurisdiction (region order = lowest
@@ -1464,9 +1510,10 @@ function keyPanel(findings, recordsByUri = new Map()) {
   // (highest-risk) region opens; the rest collapse (doc-55).
   // The hint lands on the first common-law card the page draws, an on-field one before the rest, as the conflicts come
   // first. It linked to `#common-law`, which went with the section's heading on 2026-09-16 and left the link dead.
-  const clFirst = findings.find((f) => regionCode(f) === COMMON_LAW && isOnField(f)) ?? clGroup?.findings[0];
+  const clFirst = cardTarget((findings.find((f) => regionCode(f) === COMMON_LAW && isOnField(f)) ?? clGroup?.findings[0])?.ordinal);
+  const clLink = clFirst ? `<a href="#${clFirst}">${esc(R.key.commonLawSectionLink)}</a>` : esc(R.key.commonLawSectionLink);
   const clBlock = clGroup
-    ? `<p class="keyhint" style="margin-top:10px">${R.key.commonLawHint(`<a href="#c${clFirst.ordinal}">${esc(R.key.commonLawSectionLink)}</a>`)}</p>${detail(clGroup, R.key.commonLawGroup, `<span style="white-space:nowrap">${R.key.unregisteredUse}</span>`, true)}`
+    ? `<p class="keyhint" style="margin-top:10px">${R.key.commonLawHint(clLink)}</p>${detail(clGroup, R.key.commonLawGroup, `<span style="white-space:nowrap">${R.key.unregisteredUse}</span>`, true)}`
     : '';
   return `<div class="panel keypanel">
       <div class="label">${R.key.title}</div>
@@ -1492,7 +1539,7 @@ function commonLawSection(clSecondary, clOnField, cardFor, recordsByUri = new Ma
   // Nothing is lost with it: the cards it linked to sit directly below.
   if (!clSecondary.length && !clOnField.length) return '';
   const links = clOnField.length
-    ? `<p class="clx" style="margin:4px 0 10px;font-size:13.5px">${R.onFieldCommonLaw}${clOnField.map(f => `<a href="#c${f.ordinal}">#${f.ordinal} ${esc(f.mark)}</a>`).join(' · ')}</p>`
+    ? `<p class="clx" style="margin:4px 0 10px;font-size:13.5px">${R.onFieldCommonLaw}${clOnField.map(f => { const t = cardTarget(f.ordinal); return t ? `<a href="#${t}">#${t.slice(1)} ${esc(f.mark)}</a>` : esc(f.mark); }).join(' · ')}</p>`
     : '';
   const cards = clSecondary.map(f => compactCard(f, cardFor(f), recordsByUri)).join('\n  ');
   return links + cards;
@@ -1546,7 +1593,7 @@ function negativeLine(f, recordsByUri) {
 function reasonedNegatives(groups, cardFor, recordsByUri) {
   return groups.map(g => {
     const members = g.findings.map(f =>
-      `<details class="rgroup rn" id="c${f.ordinal}"><summary>${negativeLine(f, recordsByUri)}</summary><div class="gbody">${fullDetail(f, cardFor(f), recordsByUri)}</div></details>`
+      `<details class="rgroup rn"${cardId(f)}><summary>${negativeLine(f, recordsByUri)}</summary><div class="gbody">${fullDetail(f, cardFor(f), recordsByUri)}</div></details>`
     ).join('\n      ');
     return `<p class="fold-lead"><b>${esc(GROUP_HEADING[g.key] ?? g.key)}</b> (${esc(g.ground)}) — ${R.marks(g.findings.length)}.</p>
       ${members}`;
@@ -2082,13 +2129,13 @@ function findingCard(f, card, recordsByUri = new Map()) {
   const one = clause(f.net) || (card?.meta?.one) || oneFallback(f, who);
   const readProse = cardBlock(card, /^the read$/i);
   const read = readProse ? `<details class="drill read" open><summary>${R.card.theRead}</summary><div class="drillbody lead">${renderProse(readProse)}</div></details>` : '';
-  return `<div class="card" id="c${f.ordinal}">
+  return `<div class="card"${cardId(f)}>
     <div class="top">
       <div class="rail ${tierCls}"></div>
       <div class="body">
         <div class="cardhead">
-          <label class="pick no-print"><input type="checkbox" class="pickbox" checked aria-label="${R.card.includeInPdf(f.ordinal)}"></label>
-          <span class="fnum">${f.ordinal}</span>${cardTitleParts(f, who).title}${evidenceChips(f)}
+          <label class="pick no-print"><input type="checkbox" class="pickbox" checked aria-label="${escAttr(R.card.includeInPdf(f.ordinal))}"></label>
+          <span class="fnum">${esc(f.ordinal)}</span>${cardTitleParts(f, who).title}${evidenceChips(f)}
           <span class="tier ${tierCls}">${riskChip(f)}</span>
           <button class="ask-fi no-print">${R.card.askAi}</button>
         </div>
@@ -2142,9 +2189,9 @@ function compactCard(f, card, recordsByUri = new Map(), { ticked = true } = {}) 
   // — verbatim here too; the two card renderers must never disagree about one sentence.
   const one = clause(f.net) || (card?.meta?.one) || oneFallback(f, '');
   const markChip = markClassChip(f, who);
-  return `<div class="card compact" id="c${f.ordinal}">
+  return `<div class="card compact"${cardId(f)}>
     <div class="top"><div class="rail low"></div><div class="body">
-      <div class="cardhead"><label class="pick no-print"><input type="checkbox" class="pickbox"${ticked ? ' checked' : ''} aria-label="${R.card.includeInPdf(f.ordinal)}"></label><span class="fnum">${f.ordinal}</span>${cardTitleParts(f, who).title}${evidenceChips(f)}<span class="tier low">${riskChip(f)}</span><button class="ask-fi no-print">${R.card.askAi}</button></div>${cardTitleParts(f, who).ownerLine}${logoLine(f, recordsByUri)}
+      <div class="cardhead"><label class="pick no-print"><input type="checkbox" class="pickbox"${ticked ? ' checked' : ''} aria-label="${escAttr(R.card.includeInPdf(f.ordinal))}"></label><span class="fnum">${esc(f.ordinal)}</span>${cardTitleParts(f, who).title}${evidenceChips(f)}<span class="tier low">${riskChip(f)}</span><button class="ask-fi no-print">${R.card.askAi}</button></div>${cardTitleParts(f, who).ownerLine}${logoLine(f, recordsByUri)}
       <div class="oneline">${inline(sentenceCaseLead(one))}</div>
     </div></div>
     ${fullDetail(f, card, recordsByUri)}
@@ -2262,6 +2309,19 @@ function sharedNoteCells(rows, cell) {
   });
 }
 
+/**
+ * THE ROWS UNDER "LEFT OPEN", as the page draws them: the run's coverage rows that are not clean, then the rows for the
+ * native scripts whose planned search did not complete, less any follow-up row another open row restates
+ * (`dedupeFollowUps`). One list for every surface that prints it, so the page and a delivered document cannot disagree.
+ * `localScripts` is the search-depth record's `counts.localScripts`. PURE.
+ * @returns {{ area: string, state: string, note: string, detail?: string[] }[]} `detail` is the list a note counts, printed
+ *   after it; coverage rows keep their other fields
+ */
+export function leftOpenRows({ coverage = [], localScripts = null, followUpKinds = null } = {}) {
+  const open = (Array.isArray(coverage) ? coverage : []).filter((c) => COV_STATE[c?.state]?.cls !== 'ok');
+  return dedupeFollowUps([...open, ...scriptGapRows(localScripts)], followUpKinds);
+}
+
 // `verdict: false` — a report whose overall assessment was not completed has no verdict above the grid, so the open
 // rows' lead line, which says the material ones are carried in it, is not printed. The rows are.
 // Exported for the Knockout's own Left open grid (render-knockout.mjs): one grid, in the clearance's words, on both pages.
@@ -2276,7 +2336,9 @@ export function coverageGrid(coverage, { verdict = true, followUpKinds = null } 
     // mark that does not exist, inside the report that clears it. Measured across the nine delivered
     // runs in the pool, `coverage[]` carries no axis identifier at all; the ones that leaked were the
     // coverage_judgment rows, which now carry a driver-emitted `areaLabel` and fold through it.
-    return `<div class="covcell ${s.cls}"><div class="ck">${s.ic}</div><div><div class="ct">${esc(cap(readerRowHead(c.area)))}${tag}</div><div class="cd">${inline(c.note || '')}</div></div></div>`;
+    // A row's `detail` is the list its note counts, such as the territories a script's search did not complete in.
+    const detail = Array.isArray(c.detail) && c.detail.length ? `<div class="cd">${esc(c.detail.join(', '))}</div>` : '';
+    return `<div class="covcell ${s.cls}"><div class="ck">${s.ic}</div><div><div class="ct">${esc(cap(readerRowHead(c.area)))}${tag}</div><div class="cd">${inline(c.note || '')}</div>${detail}</div></div>`;
   };
   const covered = coverage.filter(c => c.state === 'confirmed-clean');
   const rest = coverage.filter(c => c.state !== 'confirmed-clean');
