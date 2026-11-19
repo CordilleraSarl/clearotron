@@ -1194,9 +1194,9 @@ function whereItStandsSection(findings, opts) {
   // THE CLEAN PLACES ARE ONE PARAGRAPH OF NAMES (owner, 2026-11-18, batch two item 1152). They were a chip each, and
   // past twelve the chips printed codes, with the name only on hover. A list of names reads in the names' order.
   const cleanHtml = clean.length
-    ? `<div class="wclean"><span class="wk">Nothing found</span><p class="wnames">${esc(clean.map((c) => c.name).sort((a, b) => a.localeCompare(b, 'en')).join(', '))}</p></div>`
+    ? `<div class="wclean"><span class="wk">${R.nothingFound}</span><p class="wnames">${esc(clean.map((c) => c.name).sort((a, b) => a.localeCompare(b, 'en')).join(', '))}</p></div>`
     : '';
-  return `<div class="sec" id="countries"><span class="num"></span><h2>Where it stands</h2></div>
+  return `<div class="sec" id="countries"><span class="num"></span><h2>${R.whereItStands}</h2></div>
   <div class="panel where">${rows}${cleanHtml}</div>`;
 }
 
@@ -1207,7 +1207,7 @@ function courtDecisionsSection(opts) {
   if (!sd || !sd.counts || !isFullCountry(opts)) return '';
   const line = courtLineFor(opts, sd.counts.courtDecisions);
   if (!line) return '';
-  return `<div class="sec" id="court"><span class="num"></span><h2>Court decisions</h2></div>
+  return `<div class="sec" id="court"><span class="num"></span><h2>${R.court.title}</h2></div>
   <div class="panel courtp"><p>${esc(line)}</p></div>`;
 }
 
@@ -1222,11 +1222,11 @@ function courtLineFor(opts, state) {
   // put here — and every branch below embedded it mid-sentence. The page then read "Case-law research
   // could not be completed for ." Each clause is now attached to the name rather than assuming one:
   // same words when there is a country, one clause shorter when there is not.
-  const forWhere = where ? ` for ${where}` : '';
+  const forWhere = where ? R.court.forWhere(where) : '';
   let line = '';
-  if (state === 'not-checked') line = `Case-law research could not be completed${forWhere}.`;
-  else if (state === 'none-found') line = `Court decisions: none found${forWhere}.`;
-  else if (state === 'found') line = `Court decisions were searched${forWhere} and are cited against the findings above.`;
+  if (state === 'not-checked') line = R.court.notCompleted(forWhere);
+  else if (state === 'none-found') line = R.court.noneFound(forWhere);
+  else if (state === 'found') line = R.court.found(forWhere);
   return line;
 }
 
@@ -1243,7 +1243,7 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
   const open = (Array.isArray(coverage) ? coverage : []).filter((c) => COV_STATE[c?.state]?.cls !== 'ok');
   const c = (sd && sd.counts) || {}, rows = [];
   const places = placesSearched(fm, coverage, findings);
-  if (places.worldwide && places.focus) rows.push(['Where searched', places.list]);
+  if (places.worldwide && places.focus) rows.push([R.searched.whereSearched, places.list]);
   // THE REGISTER ROW, AS THE BOARDS DRAW IT: one line of totals — records read across the countries, plus
   // the international registrations apart from them — and the per-country counts as chips under it, code
   // first and the name on hover. One country is named in the line instead ("141 records read in Japan"),
@@ -1256,10 +1256,10 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
   const countries = Object.entries(byC).filter(([k, n]) => k !== 'WO' && Number(n) > 0).sort((a, b) => b[1] - a[1]);
   const read = countries.reduce((t, [, n]) => t + Number(n), 0);
   if (countries.length || intl) {
-    const where = countries.length === 1 ? ` in ${regionName(countries[0][0]) || countries[0][0]}`
-      : countries.length ? ` across ${countries.length.toLocaleString('en-GB')} countries` : '';
-    const plus = intl ? `${countries.length ? ', plus ' : ''}${intl.toLocaleString('en-GB')} international registration${intl === 1 ? '' : 's'}` : '';
-    const line = `${countries.length ? `${read.toLocaleString('en-GB')} record${read === 1 ? '' : 's'} read${where}` : ''}${plus}`;
+    const where = countries.length === 1 ? R.searched.inPlace(regionName(countries[0][0]) || countries[0][0])
+      : countries.length ? R.searched.acrossCountries(countries.length.toLocaleString('en-GB')) : '';
+    const plus = intl ? `${countries.length ? R.searched.plus : ''}${R.searched.international(intl.toLocaleString('en-GB'), intl)}` : '';
+    const line = `${countries.length ? R.searched.recordsRead(read.toLocaleString('en-GB'), read, where) : ''}${plus}`;
     const chips = countries.length > 1
       // ZZ draws no chip; its records stay in the totals, which the overall-risk panel states too.
       ? `<div class="wchips">${countries.filter(([k]) => k !== UNSPECIFIED_REGION).map(([k, n]) => `<span class="wchip" title="${escAttr(regionName(k) || k)}">${esc(k)} <b>${Number(n).toLocaleString('en-GB')}</b></span>`).join('')}</div>`
@@ -1267,12 +1267,12 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
     rows.push(['Register', { html: `${esc(line)}${chips}` }]);
   }
   const sw = c.sweep || {};
-  if (sw.spellings) rows.push(['Spellings searched', String(sw.spellings)]);
+  if (sw.spellings) rows.push([R.searched.spellings, String(sw.spellings)]);
   if (sw.checks) rows.push(['Marketplace and web', sw.noMarketplacesPicked
-    ? `${sw.checks.toLocaleString('en-GB')} checks: the general web, plus any stores chosen for this matter.`
-    : `${sw.checks.toLocaleString('en-GB')} checks on ${sw.platforms} platforms`]);
-  if (sw.reputation) rows.push(['Reputation and meaning', `${sw.reputation.toLocaleString('en-GB')} checks`]);
-  rows.push(['Local-script spellings', c.localScriptSearched ? 'Searched' : 'Not searched']);
+    ? R.searched.checksWebAndStores(sw.checks.toLocaleString('en-GB'))
+    : R.searched.checksOnPlatforms(sw.checks.toLocaleString('en-GB'), sw.platforms)]);
+  if (sw.reputation) rows.push([R.searched.reputation, R.searched.checks(sw.reputation.toLocaleString('en-GB'))]);
+  rows.push([R.searched.localScript, c.localScriptSearched ? R.searched.searched : R.searched.notSearched]);
   // HOW DEEP THE LOCAL-LANGUAGE INVESTIGATION WENT, which is a different question from the row above it.
   // That one answers whether the spellings were searched; this one answers whether the investigation ran
   // at the depth the matter configured. The engine can run it shallower than the account asked for, and
@@ -1289,10 +1289,10 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
   // somebody adds: a row is a claim about a client's search, and the nearest word to an unknown state is
   // a claim nobody checked.
   const LL_WORD = {
-    ran: 'Included',
+    ran: R.searched.included,
     'ran-shallow': COV_STATE['coverage-limited'].word,
     'not-run': COV_STATE['not-searched'].word,
-    'not-in-scope': 'Not part of this search',
+    'not-in-scope': R.searched.notPartOfSearch,
   };
   //
   // AND THE ROW NEEDS A LANE RECORD BEHIND IT, not just a state. The state folds to `not-in-scope` when
@@ -1311,12 +1311,12 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
   // COURT DECISIONS, AS THE FULL COUNTRY BOARD DRAWS THE ROW: its state, and for a search that could not
   // be completed, the same sentence the court section under it prints. A search that does not include
   // court decisions draws no row, as the other boards draw none.
-  const cdWord = { 'found': 'Found', 'none-found': 'None found', 'not-checked': 'Not searched' }[c.courtDecisions];
+  const cdWord = R.searched.courtWords[c.courtDecisions];
   if (cdWord && isFullCountry(opts)) {
     const why = c.courtDecisions === 'not-checked' ? courtLineFor(opts, 'not-checked') : '';
     rows.push(['Court decisions', { html: `<span class="wstate">${esc(cdWord)}</span>${why ? `<span class="wnote">${esc(why)}</span>` : ''}` }]);
   }
-  const openHtml = open.length ? `<div class="openrows"><div class="rk">Left open</div>${coverageGrid(open, { verdict: opts?.assessmentNotCompleted !== true })}</div>` : '';
+  const openHtml = open.length ? `<div class="openrows"><div class="rk">${R.searched.leftOpen}</div>${coverageGrid(open, { verdict: opts?.assessmentNotCompleted !== true })}</div>` : '';
   // THE LEGEND FOR WHAT IS ON THE CARDS, kept when the scope fold went. It is not the engine narrating
   // its own searching — it is what a linked registration number opens, why the rest are cited by number,
   // and what a register-index entry means. A reader cannot read a card without it.
@@ -1325,15 +1325,15 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
   const hasIndexEntry = (Array.isArray(findings) ? findings : []).some((f) => (f?.owner?.registrations ?? []).some((r) => r?.uri
     && (hasRecordSet || !(r.status || r.filed || r.expiry || (r.classes && r.classes.length)))));
   const prov = (opts?.assessmentNotCompleted !== true && (hasRecordSet || hasCards))
-    ? `<div class="provwrap"><div class="rk">Record provenance</div><p class="provnote">${hasRecordSet ? 'Registration numbers on the cards were read from the register records. ' : ''}${officeLinkNote()}${hasIndexEntry ? 'A registration shown as a register-index entry was seen in the register index; its full record was not pulled. ' : ''}\u201cInferred\u201d beside an owner\u2019s likelihood to object means we judged it from what the owner sells and holds; we had no enforcement history to read.</p></div>`
+    ? `<div class="provwrap"><div class="rk">${R.searched.provenance}</div><p class="provnote">${hasRecordSet ? R.searched.numbersRead : ''}${officeLinkNote()}${hasIndexEntry ? R.searched.indexEntry : ''}${R.searched.inferred}</p></div>`
     : '';
   // THE BOARDS END THE SECTION WITH THE WORKBOOK: every search and its result are in the audit workbook,
   // which is where a reader who wants the record goes.
   const more = hrefAttr(opts?.auditFile, { relative: true })
-    ? `<div class="cmore"><a class="wb" href="${hrefAttr(opts.auditFile, { relative: true })}">Every search and result, in the audit workbook</a></div>` : '';
+    ? `<div class="cmore"><a class="wb" href="${hrefAttr(opts.auditFile, { relative: true })}">${R.searched.everySearch}</a></div>` : '';
   if (!rows.length && !openHtml && !prov) return '';
-  return `<div class="sec" id="searched"><span class="num"></span><h2>What was searched</h2></div>
-  <details class="searched"><summary><span class="gname">Counts for this search</span></summary><div class="gbody">${
+  return `<div class="sec" id="searched"><span class="num"></span><h2>${R.searched.title}</h2></div>
+  <details class="searched"><summary><span class="gname">${R.searched.counts}</span></summary><div class="gbody">${
     rows.map(([k, v]) => `<div class="row"><span class="k">${esc(k)}</span><span class="v">${typeof v === 'object' ? v.html : esc(v)}</span></div>`).join('')}${openHtml}${prov}${more}</div></details>`;
 }
 
@@ -1353,19 +1353,19 @@ function alsoConsideredSection(ruledOut, recordsByUri = new Map(), opts = {}) {
     // The fixed line stays as the last resort, for a finding that carries neither.
     const why = f.ruled_out_reason ? esc(f.ruled_out_reason)
       : f.net ? esc(String(f.net))
-      : 'a different name in a related field — not a conflict with your mark';
+      : R.alsoConsidered.defaultWhy;
     const legal = f.legal_position ? inline(String(f.legal_position)) : '';
     const practical = f.practical_position ? inline(String(f.practical_position)) : '';
     const fold = (legal || practical)
-      ? `<details class="roff"><summary>Why it was ruled out</summary>${legal ? `<p><b>Legal position.</b> ${legal}</p>` : ''}${practical ? `<p><b>Practical position.</b> ${practical}</p>` : ''}</details>` : '';
+      ? `<details class="roff"><summary>${R.alsoConsidered.whyRuledOut}</summary>${legal ? `<p><b>${R.alsoConsidered.legal}</b> ${legal}</p>` : ''}${practical ? `<p><b>${R.alsoConsidered.practical}</b> ${practical}</p>` : ''}</details>` : '';
     return `<div class="card ruled"><div class="top"><div class="rail"></div><div class="body"><div class="cardhead">${
       f.ordinal != null ? `<span class="fnum">${esc(String(f.ordinal))}</span>` : ''}<h3 class="who mark-first">${esc(f.mark || '')}</h3>${
-      who ? `<span class="cwho">${esc(who)}</span>` : ''}<span class="tier ruled">Ruled out</span><button class="ask-fi no-print">\u2726 Ask AI about this finding</button></div><div class="oneline">${why}</div>${fold}</div></div></div>`;
+      who ? `<span class="cwho">${esc(who)}</span>` : ''}<span class="tier ruled">${R.alsoConsidered.ruledOut}</span><button class="ask-fi no-print">${R.alsoConsidered.askAi}</button></div><div class="oneline">${why}</div>${fold}</div></div></div>`;
   }).join('');
   const groups = clearedGroupsHtml(sd, opts.auditFile);
   const web = webNamesHtml(sd);
   if (!ruledCards && !groups && !web) return '';
-  return `<div class="sec" id="also-considered"><span class="num"></span><h2>Also considered</h2></div>
+  return `<div class="sec" id="also-considered"><span class="num"></span><h2>${R.alsoConsidered.title}</h2></div>
   <div class="panel alsocons">${ruledCards ? `<div class="ruled-cards">${ruledCards}</div>` : ''}${groups || web ? `<div class="cgroups">${groups}${web}</div>` : ''}</div>`;
 }
 
@@ -1373,12 +1373,12 @@ function ruledOutSection(ruledOut, recordsByUri = new Map()) {
   if (!ruledOut.length) return '';
   const rows = ruledOut.map(f => {
     const who = recordOwner(f, recordsByUri) || f.owner?.name || '';
-    const why = f.ruled_out_reason ? esc(f.ruled_out_reason) : 'a different name in a related field — not a conflict with your mark';
+    const why = f.ruled_out_reason ? esc(f.ruled_out_reason) : R.alsoConsidered.defaultWhy;
     // The ordinal renders here too — ruled-out findings keep their persisted number, so a reader who
     // sees #1–#8, #10, #11 in the landscape finds #9 accounted for instead of unexplainably missing.
     return `<li style="margin:4px 0"><b>${f.ordinal != null ? `#${f.ordinal} ` : ''}${esc(f.mark)}</b>${who ? ` — ${esc(who)}` : ''} · <span style="color:var(--muted,#6b5d50)">${why}</span></li>`;
   }).join('');
-  return `<details class="rgroup ruledout"><summary><span class="gname">Also considered — ruled out</span><span class="gcount">${ruledOut.length} name${ruledOut.length === 1 ? '' : 's'}</span></summary><div class="gbody"><p class="note" style="margin:2px 0 8px">Names that surfaced in the search but share no word or sound with your mark — listed for completeness; not conflicts.</p><ul style="margin:0;padding-left:20px;font-size:13px">${rows}</ul></div></details>`;
+  return `<details class="rgroup ruledout"><summary><span class="gname">${R.alsoConsidered.listTitle}</span><span class="gcount">${R.alsoConsidered.names(ruledOut.length)}</span></summary><div class="gbody"><p class="note" style="margin:2px 0 8px">${R.alsoConsidered.listNote}</p><ul style="margin:0;padding-left:20px;font-size:13px">${rows}</ul></div></details>`;
 }
 
 // doc-52 §4 — ONE collapsed "Scope & what we didn't search" section, LAST, replacing BOTH the top
