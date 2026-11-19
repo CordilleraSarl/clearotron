@@ -419,3 +419,21 @@ test("settleOneShotStamp keeps a report card's projection current, and the proje
   assert.equal(projectStageInput("report-card:9", file), null, "an ordinal absent from the file falls back to the whole file");
   rmSync(d, { recursive: true, force: true });
 });
+
+test("a stamp is there whole or not at all: a half-written one reads as no record, so one is never left half-written", () => {
+  const d = runDir();
+  try {
+    const input = write(join(d, "in.md"), "an input\n");
+    // The reason it matters: a stamp that exists but does not parse is read as no record, which reruns the stage on a resume.
+    mkdirSync(driverDir(d, "stage-inputs"), { recursive: true });
+    writeFileSync(driverDir(d, "stage-inputs", "half.json"), '{ "label": "half", "inputs": [ { "pa');
+    assert.equal(readStamp(d, "half"), null, "a half-written stamp read as a record");
+    // Written beside its final name and renamed over it: after the write only the stamp itself is in the folder, and whole.
+    writeStamp(d, "matter-frame", [input]);
+    restamp(d, write(input, "an input, changed by a later step\n"));
+    const files = readdirSync(driverDir(d, "stage-inputs")).sort();
+    assert.deepEqual(files, ["half.json", "matter-frame.json"], `a temporary file was left beside the stamps: ${files}`);
+    assert.equal(readStamp(d, "matter-frame")?.label, "matter-frame");
+    assert.equal(stageStaleness(d, "matter-frame", [input]).stale, false, "the restamp did not land whole");
+  } finally { rmSync(d, { recursive: true, force: true }); }
+});

@@ -6940,8 +6940,8 @@
           "todos": 0
         },
         "stage-freshness.test.mjs": {
-          "tests": 26,
-          "asserts": 79,
+          "tests": 27,
+          "asserts": 83,
           "skips": 0,
           "todos": 0
         },
