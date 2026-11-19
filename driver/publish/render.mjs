@@ -1508,23 +1508,17 @@ function secondaryRegions(findings, cardFor, recordsByUri = new Map()) {
 //
 // The full card is not lost — each member is a <details> whose body is the same fullDetail block the
 // compact card carries, so the drill-through is one click from the line.
-const GROUP_HEADING = {
-  distinguished: 'Argued apart on the mark',
-  'coexistence-partner': 'Coexistence on the record',
-  'off-field:different-field': 'A different commercial field',
-  'off-field:no-material-risk': 'Clearly won',
-  'off-field:unstated': 'Cleared — ground not stated on the record',
-};
+const GROUP_HEADING = R.setApart;
 function negativeLine(f, recordsByUri) {
   const who = recordOwner(f, recordsByUri) || f.owner?.name || '';
   const regs = f.owner?.registrations || [];
   const juris = [...new Set(regs.map(r => r.jurisdiction ? normRegion(r.jurisdiction) : null).filter(Boolean))].join(', ')
-    || (regionCode(f) === COMMON_LAW ? 'common-law' : normRegion(regionCode(f)));
+    || (regionCode(f) === COMMON_LAW ? R.commonLaw : normRegion(regionCode(f)));
   const classes = [...new Set(regs.flatMap(r => Array.isArray(r.classes) ? r.classes : []))]
     .map(Number).filter(x => !Number.isNaN(x)).sort((a, b) => a - b).join('/');
   // Escaped per PART and joined with the entity, exactly as markClassChip does: a literal U+00A0 in
   // source is invisible to a reader and to a grep, and esc() would turn a raw `&nbsp;` into `&amp;nbsp;`.
-  const facts = [esc(juris), classes ? `Cl.&nbsp;${esc(classes)}` : ''].filter(Boolean).join(' · ');
+  const facts = [esc(juris), classes ? `${R.classesShort}&nbsp;${esc(classes)}` : ''].filter(Boolean).join(' · ');
   // The reason is the finding's OWN typed sentence, rendered whole like every other surface ( —
   // there is no character budget any more). `net` stays OPTIONAL in the parser (an archived run has
   // none), so the fallback is the finding's legal_position — which v6 DOES require on every negative.
@@ -1541,7 +1535,7 @@ function reasonedNegatives(groups, cardFor, recordsByUri) {
     const members = g.findings.map(f =>
       `<details class="rgroup rn"><summary>${negativeLine(f, recordsByUri)}</summary><div class="gbody">${fullDetail(f, cardFor(f), recordsByUri)}</div></details>`
     ).join('\n      ');
-    return `<p class="fold-lead"><b>${esc(GROUP_HEADING[g.key] ?? g.key)}</b> (${esc(g.ground)}) — ${g.findings.length} mark${g.findings.length === 1 ? '' : 's'}.</p>
+    return `<p class="fold-lead"><b>${esc(GROUP_HEADING[g.key] ?? g.key)}</b> (${esc(g.ground)}) — ${R.marks(g.findings.length)}.</p>
       ${members}`;
   }).join('\n  ');
 }
@@ -1987,7 +1981,7 @@ function lpSplit(f) {
 // (promote-or-omit; a category-less manageable finding is a lint flag upstream). Absent ⇒ ''.
 // The category is a CLOSED code-owned vocabulary (esc is right for it); the reason is model-authored
 // free prose and routes through inline() with the two positions above.
-const MANAGEABLE_LABEL = { 'large-competitor': 'Large competitor', 'commercial-partner': 'Commercial partner', troll: 'Troll', 'well-known-enforcer': 'Well-known enforcer' };
+const MANAGEABLE_LABEL = R.manageable;
 function manageableLine(f) {
   const m = f.manageable;
   if (!m || !m.category) return '';
@@ -2418,7 +2412,7 @@ function heroCaptionHtml(text, { whole = false } = {}) {
   // `sub-lead` marks the FOLDED first sentence so the stylesheet can tighten its bottom margin without a
   // positional selector: `.sub:first-of-type` would have caught an UNFOLDED one-sentence caption too and
   // changed the spacing of every archived report that has no fold.
-  return `<p class="sub sub-lead">${inline(first)}</p><details class="sub-more"><summary>What this depends on</summary><p class="sub">${inline(rest)}</p></details>`;
+  return `<p class="sub sub-lead">${inline(first)}</p><details class="sub-more"><summary>${R.dependsOn}</summary><p class="sub">${inline(rest)}</p></details>`;
 }
 
 // The hero's confidentiality line: the delivery posture and the PRODUCT, joined, and nothing else.
@@ -2488,7 +2482,7 @@ function depthStripHtml(note) {
 // opens the Conflicts heading, not the landscape above it. The rule that filters them lives in shared/brand.mjs,
 // because the knockout renderer draws a strip from its own board and the filtering is the half worth having once.
 const STRIP = Object.freeze([
-  ['summary', 'Summary'], ['next', R.next.title], ['conflicts', 'Conflicts'], ['also-considered', R.alsoConsidered.title],
+  ['summary', 'Summary'], ['next', R.next.title], ['conflicts', R.strip.conflicts], ['also-considered', R.alsoConsidered.title],
   ['searched', R.searched.title],
 ]);
 

@@ -661,4 +661,25 @@ export const REPORT_PAGE = Object.freeze({
   // The models that prepared the report. `list` arrives joined.
   preparedWith: (claude, list) => `Prepared with${claude ? ' Claude' : ''}: ${list}.`,
   claudeModel: (id) => `Claude ${id}`,
+  // The jump strip's Conflicts entry; Summary stays in the renderer, where a guard holds it to the part's name, and
+  // the others are their sections' titles.
+  strip: Object.freeze({ conflicts: 'Conflicts' }),
+  // The fold under the summary's lead.
+  dependsOn: 'What this depends on',
+  // The names set apart on the record, grouped by why, and a manageable owner's kind.
+  setApart: Object.freeze({
+    distinguished: 'Argued apart on the mark',
+    'coexistence-partner': 'Coexistence on the record',
+    'off-field:different-field': 'A different commercial field',
+    'off-field:no-material-risk': 'Clearly won',
+    'off-field:unstated': 'Cleared — ground not stated on the record',
+  }),
+  commonLaw: 'common-law',
+  classesShort: 'Cl.',
+  manageable: Object.freeze({
+    'large-competitor': 'Large competitor',
+    'commercial-partner': 'Commercial partner',
+    troll: 'Troll',
+    'well-known-enforcer': 'Well-known enforcer',
+  }),
 });
