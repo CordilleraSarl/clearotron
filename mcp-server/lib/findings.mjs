@@ -45,7 +45,22 @@ function parseAuditText(md) {
 }
 
 // { findings, negatives, audit, source } — never throws; empty lists + source:"none" if nothing parseable.
+/**
+ * The run's report document (driver/publish/report-document.mjs) when the run has one of this product's kind, else null.
+ * A run published before the document existed has none, and its readers read the run's files as they always did.
+ */
+export function reportDocumentOf(P, kind = "clearance") {
+  try {
+    if (!P?.reportDocument || !existsSync(P.reportDocument)) return null;
+    const doc = readJson(P.reportDocument);
+    return doc?.document === `report-document/${kind}-1` ? doc : null;
+  } catch { return null; }
+}
+
 export function loadFindings(P) {
+  // audit.md as publishing parsed it, where the run's document holds it: the same parse, so the same lists and ids.
+  const parsed = reportDocumentOf(P)?.reviewer?.audit;
+  if (parsed) return { ...idStamp(parsed), source: "audit.md" };
   if (existsSync(P.audit)) {
     try { return { ...idStamp(parseAudit(P.audit)), source: "audit.md" }; } catch { /* fall through to backstop */ }
   }
@@ -90,9 +105,11 @@ export function filterFindings(P, { kind, sourceLayer } = {}) {
 
 // The curated client-report cards: group (on-field/off-field/out-of-scope) + the read + the source URL.
 export function loadCards(P) {
-  if (!existsSync(P.report)) return { fm: {}, cards: [], note: "report.md not present" };
+  // report.md as publishing parsed it, where the run's document holds it.
+  const prose = reportDocumentOf(P)?.prose;
+  if (!prose && !existsSync(P.report)) return { fm: {}, cards: [], note: "report.md not present" };
   try {
-    const { fm, cards } = parseReport(P.report);
+    const { fm, cards } = prose ? { fm: prose.frontMatter, cards: prose.cards } : parseReport(P.report);
     return {
       fm,
       cards: cards.map((c) => ({

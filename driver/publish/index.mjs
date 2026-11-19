@@ -1839,7 +1839,8 @@ export function composeCoverNote({ report, opts }, { url, auditFile, names = [],
 export function coverNoteInputs(runDir) {
   let document = null;
   try { document = readJson(paths(runDir).reportDocument); } catch { /* a run published before the document */ }
-  if (!document) return { report: parseReport(join(runDir, 'report.md')), opts: coverNoteOptions(runDir) };
+  // A document written before it carried the verdict record as written is read from the files too.
+  if (!document || !('written' in (document.verdict ?? {}))) return { report: parseReport(join(runDir, 'report.md')), opts: coverNoteOptions(runDir) };
   return { report: { fm: document.prose.frontMatter, secs: document.prose.sections }, opts: coverNoteOptionsOf(document) };
 }
 

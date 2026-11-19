@@ -97,6 +97,7 @@ import { variantForms, VARIANT_RULES, VARIANT_CAP } from "./register-variants.mj
 import { isCapabilityGap } from "../providers/_shared/execute-plan.mjs";
 import { plainDeferralReason, plainCause } from "./deferral-row.mjs";   // — the reader's line for a count left open
 import { readJson } from "./run-record.mjs";
+import { RunCancelled } from "./cancel.mjs";
 
 /** The three questions, in report order. `matchMode` is the provider-neutral predicate name.
  *
@@ -335,7 +336,10 @@ export async function countRegisterHits({
       const started = Date.now();
       let r;
       try { r = await counter(term, p, { classes: scoped, regions }); }
-      catch (e) { r = { ok: false, total: null, reason: `count threw: ${String(e?.message ?? e).slice(0, 200)}` }; }
+      catch (e) {
+        if (e instanceof RunCancelled) throw e;   // a stop is not a failed count: the run ends, and counts no more
+        r = { ok: false, total: null, reason: `count threw: ${String(e?.message ?? e).slice(0, 200)}` };
+      }
       const ok = Boolean(r?.ok) && Number.isFinite(r?.total);
       // A DISCLOSED APPROXIMATION IS AN ANSWER, AND IT WAS BEING READ AS A FAILURE. When the register
       // says "more than ten thousand", it has answered — it has answered with a floor instead of a
