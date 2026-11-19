@@ -1743,6 +1743,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-pinned-position-reads-a-string-the-source-holds-once.test.mjs": {
+          "tests": 2,
+          "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
         "a-placement-boundary-is-a-notice-not-a-failed-check.test.mjs": {
           "tests": 2,
           "asserts": 13,
