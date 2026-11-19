@@ -90,7 +90,7 @@ const invented = {
   caseLawByOrdinal: new Map([[3, [{ case: "A v B" }]], [1, []]]),
   recordsByUri: new Map([["/mark/ch/3", { body: "large" }], ["/mark/ch/1", { body: "large" }]]),
   logos: new Map([["/mark/ch/1", { state: "fetched", src: "data:image/png;base64,AAAA" }]]),
-  followUpKinds: new Map([[1, "owner"]]), commonLawJoinedTerms: new Set(["ZETA", "ALPHA"]),
+  followUpKinds: new Map([["mark one exact", new Set(["primary-sweep", "owner-lookup"])]]), commonLawJoinedTerms: new Set(["ZETA", "ALPHA"]),
   officeLinks: { byUri: new Map([["/mark/ch/1", null]]), tally: { linked: {}, cited: {}, notRetrieved: 1 }, summary: "record not retrieved 1" },
   assessmentNotCompleted: true,
 };
@@ -119,14 +119,15 @@ test("on an invented run, the data file built from the document read back is the
   assert.deepEqual(doc.client.records, ["/mark/ch/3", "/mark/ch/1"]);
   assert.deepEqual(doc.client.logos, [["/mark/ch/1", "fetched"]]);
   assert.deepEqual(doc.reviewer.commonLawJoinedTerms, ["ZETA", "ALPHA"]);
+  // A Set inside a Map's value keeps its members on disk: JSON alone writes it as {}.
+  assert.deepEqual(throughJson(doc).client.followUpKinds, [["mark one exact", ["primary-sweep", "owner-lookup"]]]);
 });
 
-test("the verdict's sign-off is the reviewer's, and the rest of the record is the verdict's", () => {
-  const doc = clearanceReportDocument({ ...invented, assessmentNotCompleted: false,
-    verdictInfo: { verdict: "CONDITIONAL", tier: "Moderate", badge: "l3", reasons: ["r"], clauses: ["c"], statement: "S." } });
-  assert.equal(doc.reviewer.signoff, "CONDITIONAL");
-  assert.equal(doc.verdict.record.verdict, undefined);
-  assert.equal(doc.verdict.record.tier, "Moderate");
+test("the verdict record is kept whole, sign-off included, because the page prints it where there is no statement", () => {
+  const record = { verdict: "CONDITIONAL", tier: "Moderate", badge: "l3", reasons: ["r"], clauses: ["c"] };
+  const doc = clearanceReportDocument({ ...invented, assessmentNotCompleted: false, verdictInfo: record });
+  assert.deepStrictEqual(doc.verdict.record, record);
+  assert.equal(doc.reviewer.signoff, undefined, "the sign-off is held twice");
 });
 
 // ── THE KNOCKOUT: one document per run, and one data file per name built from it ──────────────────────────────
