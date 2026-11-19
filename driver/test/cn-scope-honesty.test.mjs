@@ -485,3 +485,23 @@ test("one lane owed writes the row it always wrote", () => {
     assert.deepEqual([one.area, one.note], [d.area, d.note], `${lane}: a single lane's row changed`);
   }
 });
+
+test("a worldwide order is owed its native-script rows even when the account's default territories hold none of those markets", () => {
+  // Measured on two delivered worldwide preliminaries: the order named no territory, so the lane scope fell back to the
+  // account's defaults, which held no Chinese, Japanese or Korean territory, and the report said nothing of the native-script
+  // search it never ran. A worldwide order is searched worldwide; the defaults are priorities, never its scope.
+  const dir = mkRun();
+  const P = { findings: join(dir, "findings.json") };
+  writeFileSync(P.findings, JSON.stringify(FINDINGS_DOC, null, 2));
+  const profile = { defaultJurisdictions: ["EU", "US", "CH"] };
+  injectScriptScopeCoverage(P, dir, quiet, { searchPolicy: POLICY_CLEARANCE, job: { geography: { mode: "worldwide" } }, profile, env: {} });
+  const areas = JSON.parse(readFileSync(P.findings, "utf8")).coverage.map((c) => c.area);
+  assert.ok(areas.includes(mergedScriptScopeRow(["zh", "ja", "ko"]).area), `no native-script row on a worldwide order: ${areas}`);
+  // The same account's order that names its own markets is scoped by them, as before.
+  const named = mkRun();
+  const Q = { findings: join(named, "findings.json") };
+  writeFileSync(Q.findings, JSON.stringify(FINDINGS_DOC, null, 2));
+  injectScriptScopeCoverage(Q, named, quiet, { searchPolicy: POLICY_CLEARANCE, job: { jurisdictions: ["EU", "US"] }, profile, env: {} });
+  assert.equal(JSON.parse(readFileSync(Q.findings, "utf8")).coverage.some((c) => /script register equivalents/.test(c.area)), false,
+    "an order naming no native-script market was given a native-script row");
+});

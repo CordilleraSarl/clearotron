@@ -22,7 +22,7 @@ import { noneCarriedForward, recordsForMark, recordsLine, normalizeRegisterRecor
 import { reportIdentityFor, productCoverageNote, kebab } from '../search-policy.mjs';
 import { batchMarkName } from '../mark-name.mjs';
 import { renderKnockoutHtml, DEGRADED_NOTE } from './render-knockout.mjs';
-import { knockoutReportData } from './report-data.mjs';
+import { knockoutReportDocument, knockoutReportDataOf } from './report-document.mjs';   // the run's report as one document, and the data files it carries
 import { readFrozenMethod, inputsLine, FROZEN_METHOD_FILE } from '../framework-method.mjs';
 import { resolveDemoData, demoBannerMd } from './demo-marking.mjs';   //
 import { engineCommit } from '../engine-build.mjs';
@@ -797,9 +797,29 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     aboutThisRequest: scopeUnreadable ? { reason: NOT_COMPLETED } : null, droppedLinks: recordLinksDropped, recordsNotKept, openPoints,
   }));
 
-  const reports = markRows.map((m) => {
+  // Each name's report: its file, its address, and its band. `overall` on a one-mark document is that mark's rating,
+  // never the batch's worst, or a clean name would inherit a blocking name's colour.
+  const named = markRows.map((m) => {
     const slug = kebab(m.name);
-    const file = single ? 'report.html' : `report-${slug}.html`;
+    return { mark: m.name, slug, file: single ? 'report.html' : `report-${slug}.html`, url: reportUrlFor(slug), band: single ? overall : worstBand(framework, [m]) };
+  });
+  // THE RUN'S REPORT AS ONE DOCUMENT (publish/report-document.mjs), built once from what was read above and kept in
+  // the run's own record, never the pool. Each name's data file below is its projection. A build that throws costs
+  // the data files, as a producer throw always has, and never a report.
+  let reportDocument = null;
+  try {
+    reportDocument = knockoutReportDocument(doc, {
+      runId, codename, customerKey, findings, framework, overall, searchPolicy: searchPolicy ?? null,
+      depthNote: productCoverageNote(searchPolicy ?? null), tokens, reports: named, auditFile, auditError,
+    });
+  } catch (e) { note(`knockout report document not built (non-fatal): ${e?.message ?? e}`); }
+  if (reportDocument) {
+    try { ensureDriverDir(runDir); atomicWrite(paths(runDir).reportDocument, JSON.stringify(reportDocument, null, 1) + '\n'); }
+    catch (e) { note(`knockout report document not written (non-fatal): ${e?.message ?? e}`); }
+  }
+
+  const reports = markRows.map((m, at) => {
+    const { slug, file, band: markBand } = named[at];
     // The mark's own slice. Its band is the document's band — `overall` on a one-mark document is that
     // mark's rating, never the batch's worst, or a clean name would inherit a blocking name's colour.
     const one = {
@@ -823,7 +843,6 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
       // and re-renders exactly as it was delivered.
       batch: { ...(findings.batch ?? {}), ...(single ? {} : { executiveSummary: String(m.assessment ?? '').trim() }) },
     };
-    const markBand = single ? overall : worstBand(framework, [m]);
     writeRO(file, renderKnockoutHtml(one, framework, {
       runId, overall: markBand, issued, searched, auditFile, probeRan, registerCounts, registerRecords, ownerChecks, instructedScope, identity, matter: runId,
       // The page's workbook control links the portal's audit route, the one the cover note links: the pool path to the
@@ -852,22 +871,9 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     // document's data is that mark's and not the batch's. A data file that cannot be written leaves this
     // name's report in place and the other names publishing; `dataFile` is null for it, so nothing points
     // at a file that is not there.
-    const dataFile = writeDataFile(single ? 'report-data.json' : `report-data-${slug}.json`, () => knockoutReportData(one, framework, {
-      runId, codename, overall: markBand, issued, registerCounts, registerRecords, ownerChecks, auditFile, customerKey, matter: runId, servedModels: served,
-      identity: { ...identity, level: searchPolicy?.level ?? null },
-      url: reportUrlFor(slug),
-    }));
+    const dataFile = writeDataFile(single ? 'report-data.json' : `report-data-${slug}.json`, () => knockoutReportDataOf(reportDocument, at));
     return { mark: m.name, slug, file, dataFile, url: reportUrlFor(slug), band: markBand ?? null };
   });
-  // The run's report as one document, in the run's own record and never the pool (publish/report-document.mjs).
-  // Nothing reads it yet. A failed write costs the publish nothing.
-  try {
-    ensureDriverDir(runDir);
-    atomicWrite(paths(runDir).reportDocument, JSON.stringify(knockoutReportDocument(doc, {
-      runId, codename, customerKey, findings, framework, overall, searchPolicy: searchPolicy ?? null,
-      depthNote: productCoverageNote(searchPolicy ?? null), tokens, reports, auditFile, auditError,
-    }), null, 1) + '\n');
-  } catch (e) { note(`knockout report document not written (non-fatal): ${e?.message ?? e}`); }
   // report.md — front-matter compatible with archive greps (title/matter/overall_label)
   //
   // — AND IT NAMES THE DOCUMENTS (knockoutDocumentRoutes, below).
@@ -1030,7 +1036,6 @@ import { addressListedFilings, reasonCellFor } from './office-record-links.mjs';
 import { reportDates, zurichStamp } from './report-dates.mjs';   // the dates a report prints, from its record
 import { declaredRecordOrigins } from '../record-origins.mjs';
 import { atomicWrite, driverDir, ensureDriverDir, paths, readJson } from "../run-record.mjs";
-import { knockoutReportDocument } from "./report-document.mjs";   // the run's report as one document
 import { readRecordArtifacts, normalizeRecordUri } from "../registry-fidelity.mjs";
 import { recordBodyFromLog } from "../../providers/_shared/ledger.mjs";   // the run record log's own index
 import { logosForReport } from "../mark-logos.mjs";   // the saved logo of each listed filing, embedded in the report

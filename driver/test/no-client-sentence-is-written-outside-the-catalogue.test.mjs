@@ -74,6 +74,7 @@ const ALLOWED = {
     "and {…} more",
     "knockout lint receipt write failed (non-fatal): {…}",
     "knockout predelivery lint skipped (non-fatal): {…}",
+    "knockout report document not built (non-fatal): {…}",
     "knockout report document not written (non-fatal): {…}",
     "knockout working record: {…} is not in the run directory, so the delivered report has no engine text to be checked against",
     "knockout-audit-{…}.xlsx",
