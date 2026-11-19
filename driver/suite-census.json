@@ -9333,8 +9333,8 @@
           "todos": 0
         },
         "a-findings-registrations-reach-the-evidence-layer.test.mjs": {
-          "tests": 1,
-          "asserts": 2,
+          "tests": 2,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },
