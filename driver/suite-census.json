@@ -1954,8 +1954,8 @@
           "todos": 0
         },
         "a-record-set-reads-only-what-was-appended.test.mjs": {
-          "tests": 4,
-          "asserts": 9,
+          "tests": 5,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },

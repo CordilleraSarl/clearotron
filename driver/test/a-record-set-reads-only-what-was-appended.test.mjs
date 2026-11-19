@@ -96,3 +96,26 @@ test("the call log's fetch rows read on from where they stopped, for the run ask
   assert.deepEqual(read(log), fromStart(d, log, read));
   assert.equal(read(log).length, 2);
 });
+
+test("what is kept stays under its bound: a log over it is read from the start each time, and the oldest log goes first", async (t) => {
+  const { setFoldedTextLimit, foldedLogs } = await import("../registry-fidelity.mjs");
+  const was = setFoldedTextLimit(1000);
+  t.after(() => setFoldedTextLimit(was));
+  const d = dir(t);
+  const big = join(d, "big.jsonl");
+  writeFileSync(big, row(RUN, "/mark/eu/001", { ...body("TARNELLO", "Invented Holdings"), note: "x".repeat(1200) }));
+  same(d, big, "a log over the bound");
+  same(d, big, "the same log again");
+  assert.equal(foldedLogs().some((l) => l.path === big), false, "a log over the bound was kept");
+  const a = join(d, "a.jsonl"), b = join(d, "b.jsonl");
+  writeFileSync(a, row(RUN, "/mark/eu/002", body("TARNELO", "First Kept")) + row(RUN, "/mark/eu/003", body("TARNELI", "First Kept Too")));
+  writeFileSync(b, row(RUN, "/mark/eu/004", body("TARNELU", "Second Kept")) + row(RUN, "/mark/eu/005", body("TARNELA", "Second Kept Too")));
+  appendFileSync(b, row(RUN, "/mark/eu/006", body("TARNELE", "Third Row Pushes It Over")));
+  const first = plain(bodies(a)), second = plain(bodies(b));   // read before any comparison, which keeps a copy of its own
+  const kept = foldedLogs().filter((l) => l.path === a || l.path === b);
+  assert.deepEqual(kept.map((l) => l.path), [b], "the older log was not the one let go");
+  assert.equal(foldedLogs().reduce((sum, l) => sum + l.text, 0) <= 1000, true);
+  assert.deepEqual(first, plain(fromStart(d, a, bodies)));
+  assert.deepEqual(second, plain(fromStart(d, b, bodies)));
+  same(d, a, "the log let go reads from the start again");
+});

@@ -193,11 +193,20 @@ export function collectRecordBodies(recordLogPath, runPrefix) {
 // it. What a caller is given is built fresh on every call, so no caller can change what the next one is given: a
 // record body is kept as the line it came on, and parsed again when it is handed out, the same parse a read from
 // the start makes.
+//
+// IT IS BOUNDED BY SIZE, because the driver is one long-lived process and a record body is kept as its line. On the
+// test box's largest record log (527 MB) the kept lines held 729 MB of heap between assemblies (measured
+// 2026-11-19). The lines kept across every log stay under FOLDED_TEXT; a log whose own lines would pass it is not
+// kept at all, and is read from the start each time, as before, and the least recent log goes first.
 const FOLDED = new Map();   // `${kind}\0${path}\0${runPrefix}` → { ino, offset, mark, state }; insertion order is recency
-const FOLDED_KEPT = 6;      // a run keeps two (its record log and the call log), so a few runs in one process
+let FOLDED_TEXT = 128 * 1024 * 1024;   // characters of kept lines, across every log
+/** @internal — set the bound, for the test that drives it, and return the one it replaced. */
+export function setFoldedTextLimit(n) { const was = FOLDED_TEXT; FOLDED_TEXT = n; return was; }
+/** @internal — the logs kept now, oldest first, with the characters each holds. */
+export const foldedLogs = () => [...FOLDED].map(([key, e]) => ({ path: key.split("\0")[1], text: e.state?.text ?? 0 }));
 const MARK_BYTES = 256;
 
-function foldLedger(kind, path, runPrefix, { init, fold, copy, out }) {
+function foldLedger(kind, path, runPrefix, { init, fold, copy, out, text = () => 0 }) {
   const key = `${kind}\0${path}\0${runPrefix}`;
   let entry = FOLDED.get(key) ?? null;
   FOLDED.delete(key);
@@ -219,13 +228,17 @@ function foldLedger(kind, path, runPrefix, { init, fold, copy, out }) {
     const { lines, end } = walkFd(fd, entry.offset, LEDGER_CHUNK, (line) => { const row = rowOf(line); if (row) fold(entry.state, row, line); }, (line) => tail.push(line));
     entry.offset = end;
     entry.mark = markAt(fd, end);
-    FOLDED.set(key, entry);
-    while (FOLDED.size > FOLDED_KEPT) FOLDED.delete(FOLDED.keys().next().value);
+    if (text(entry.state) <= FOLDED_TEXT) {
+      FOLDED.set(key, entry);
+      let held = [...FOLDED.values()].reduce((sum, e) => sum + text(e.state), 0);
+      for (const [k, e] of FOLDED) { if (held <= FOLDED_TEXT || k === key) break; held -= text(e.state); FOLDED.delete(k); }
+    }
     const state = tail.length ? copy(entry.state) : entry.state;
     for (const line of tail) { const row = rowOf(line); if (row) fold(state, row, line); }
     return { state: out(state), read: noteLedger({ lines, error: null }) };
   } catch (e) {
-    return { state: out(init()), read: noteLedger({ lines: 0, error: String(e?.code ?? e?.message ?? "read failed").slice(0, 80) }) };
+    // What was folded before the failure goes out, uncached, with the reason: what a read from the start gave.
+    return { state: out(entry?.state ?? init()), read: noteLedger({ lines: 0, error: String(e?.code ?? e?.message ?? "read failed").slice(0, 80) }) };
   } finally { try { closeSync(fd); } catch { /* nothing left to do about it */ } }
 }
 function markAt(fd, end) {
@@ -254,12 +267,15 @@ function foldBody(map, row) {
 }
 // keepRecord's rule over the lines the bodies came on: a body with content replaces, and one without replaces only
 // a body without content. The line is kept, not the object, and parsed again when the record set is handed out.
-function foldBodyLine(map, row, line) {
+function foldBodyLine(st, row, line) {
   const body = bodyOf(row);
   if (!row.target || !body || typeof body !== "object") return;
   const uri = String(row.target).toLowerCase();
   const content = recordBodyHasContent(body);
-  if (content || !map.get(uri)?.content) map.set(uri, { line, content, fresh: body });
+  const held = st.bodies.get(uri);
+  if (!content && held?.content) return;
+  st.text += line.length - (held?.line.length ?? 0);
+  st.bodies.set(uri, { line, content, fresh: body });
 }
 // A body parsed by this read goes out as it is, once: nothing else holds it. After that it is parsed again from its
 // line, so a read that found nothing new still hands out objects no earlier caller has.
@@ -292,9 +308,10 @@ function foldReceipt(map, real, row) {
 // return, for the price of one read.
 export function collectRecordBodiesAndReceipts(recordLogPath, runPrefix) {
   const { state } = foldLedger("bodies", recordLogPath, runPrefix, {
-    init: () => ({ bodies: new Map(), receipts: new Map(), real: new Set() }),
-    fold: (st, row, line) => { foldBodyLine(st.bodies, row, line); foldReceipt(st.receipts, st.real, row); },
-    copy: (st) => ({ bodies: new Map(st.bodies), receipts: new Map(st.receipts), real: new Set(st.real) }),
+    init: () => ({ bodies: new Map(), receipts: new Map(), real: new Set(), text: 0 }),
+    fold: (st, row, line) => { foldBodyLine(st, row, line); foldReceipt(st.receipts, st.real, row); },
+    copy: (st) => ({ bodies: new Map(st.bodies), receipts: new Map(st.receipts), real: new Set(st.real), text: st.text }),
+    text: (st) => st.text,
     out: (st) => ({
       bodies: new Map([...st.bodies].map(([uri, kept]) => [uri, handOut(kept)])),
       receipts: new Map([...st.receipts].map(([uri, receipt]) => [uri, { ...receipt }])),
