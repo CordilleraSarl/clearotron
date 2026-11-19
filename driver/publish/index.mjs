@@ -8,7 +8,7 @@
 // This is deterministic Node — NOT an LLM turn — so it cannot hang/timeout. The driver calls it directly
 // (not via runStage). Run identity (runId/codename) comes from the driver's ctx.run; do NOT regenerate it.
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, chmodSync } from 'node:fs';
-import { finishPoolRun, grpRead, openPoolRun, refreshStaffPages } from './shell.mjs';
+import { grpRead, publishRun } from './shell.mjs';
 import { join, dirname } from 'node:path';
 import { readFold } from '../record-fold.mjs'; import { parseReport, parseAudit, stripInternal, parseCaseLawProfiles, parseCaseLawPreamble, joinCaseLawProfiles } from './parse.mjs';
 import { renderClearanceDocument } from './render.mjs'; import { emailConditionsOf } from './email-conditions.mjs';   // the box's conditions, read the same way by the delivery check
@@ -16,7 +16,7 @@ import { buildAudit } from './xlsx.mjs'; import { readDegradedPartRows, degraded
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, projectCoverageJudgment, COVERAGE_AREA_STATES } from '../findings-model.mjs';
 import { recordsOfDeliveredPositions } from '../declination-duty.mjs'; import { findingUris } from '../record-carry.mjs';   // — a position a finding delivers is not listed as set aside
 import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs'; import { coverageFormStamp, readCoverageForm } from '../coverage-form-io.mjs'; import { readReleasedFamilies, readWithheldFamilies } from '../withheld-families.mjs'; import { unitLabel } from '../coverage-form.mjs'; import { coverageUnitLabel } from '../coverage-ledger.mjs'; import { recallReceiptForOwnCompany } from '../recall-receipt.mjs';   // — and why an absence did not close; whose recall checks an audit lists
-import { clearanceReportDocument, clearanceReportDataOf, clearanceWorkbookOf, withWorkbook } from './report-document.mjs';   // the run's report as one document, and what it carries
+import { clearanceReportDocument, clearanceReportDataOf, clearanceWorkbookOf } from './report-document.mjs';   // the run's report as one document, and what it carries
 import { searchDepthRecord, planTerritoriesOf, caseLawPassRecord } from './search-depth.mjs'; import { bandRecords } from '../named-band.mjs'; import { CASELAW_BRIDGES } from '../engine/mcp/gather-config.mjs';   // how much was read to reach the answer, as counts and tokens; and the case-law sources whose calls the court state reads
 import { parseFrameworkManifest } from '../framework.mjs'; import { readFrozenMethod, FROZEN_METHOD_FILE } from '../framework-method.mjs';
 import { rollupTokens, servedModels } from '../tokens.mjs';
@@ -1334,36 +1334,33 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
 // skipRegen — do NOT re-render index.html + the staff pages at the end. The batch backfill passes this and does
 //   ONE regen after the whole loop instead of N redundant ones (per-run publish leaves it false, as before).
 // (skipClient is retired with report.client.html — one report, spec 2026-07-30 §5.)
-export async function publishReport({ runId, codename, reportMd, auditMd, findingsJson, poolRoot, poolUrl, customerKey, delivery, runDir, skipRegen = false }) {
-  const doc = await readClearanceDocument({ runId, reportMd, auditMd, findingsJson, poolRoot, poolUrl, customerKey, delivery, runDir });
-  const { parsed, fm, deliv, issued, asOf, demoData, demoMd, findings, coverage, contextNotes, findingsError,
-    coverageJudgment, markAssessment, actionsRegister, askAnswers, correctionsDoc, fourAnswers, findingsSchemaVersion,
-    findingsKept, assessmentNotCompleted, coverageJudgmentDisplay, recordsByUri, logos, followUpKinds, runProviderConf, recordOrigin, providerLabel,
-    runOrigins, seniorRights, verdictInfo, droppedConditions, undispatchedProbes, withheldFamilies, setAside, framework,
-    frameworkMethod, scopeBasis, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals,
-    officeLinks, reviewReceipts, clientGate, fetchState, searchPolicy, registerOnly, jurisdiction, commonLawJoinedTerms, registerReach, registerScope,
-    stageLabel, depthNote, productName, publishParts, auditParsed, degradedRows, releasedFamilies, served, searchDepth,
-    issuedAt, renderedAt, markName, project, organisation, tokenRollup, reportRoute, frozenStageLabel, ratingWord,
-    ratingBadge, caption } = doc;
-  const { poolRunDir, writeRO, copyRO, copyPart, buildWorkbook, writeDataFile } = openPoolRun(poolRoot, runId, { runDir });
-  // The pool's copy of report.md, marked as demo data where the document says it is (the answer and its argument are
-  // with `demoData` in readClearanceDocument).
-  writeRO('report.md', (demoMd ? `${demoMd}\n` : '') + stripInternal(readFileSync(reportMd, 'utf8'), { client: false }));
-  // The findings.json the document read, kept beside the report for forensics. A copy that fails leaves the report in
-  // place and is recorded, as a data file is (shell.mjs).
-  if (findingsKept) copyPart(findingsKept, 'findings.json');
-  if (auditMd && existsSync(auditMd)) copyRO(auditMd, 'audit.md');   // durable source (kept even if the xlsx fails)
-  // THE RUN'S REPORT AS ONE DOCUMENT (publish/report-document.mjs), built once from what was read above and kept in
-  // the run's own record, never the pool. The workbook, the page and the data file read it. A build that throws costs
-  // the workbook and the data file, as a throw in either always has, and the page too, which reads only the document.
-  let reportDocument = null;
-  try { reportDocument = clearanceReportDocument({ ...doc, runId }, { codename, customerKey }); }
-  catch (e) { console.warn(`[report-document] not built: ${e?.message ?? e}`); }
-  let auditFile = null, counts = null, auditError = null;
-  // In the state the workbook is built even with no finding and no search log: it carries the part that was not
-  // completed, and the coverage the run did record.
-  if (findings.length || auditParsed || assessmentNotCompleted) {
-    ({ auditFile, auditError, built: counts } = await buildWorkbook(`${runId}-audit.xlsx`, async (at) => {
+export async function publishReport(input) {
+  return publishRun(CLEARANCE_SHAPE, input);
+}
+
+// The clearance's parts of the publishing order (shell.mjs publishRun).
+const CLEARANCE_SHAPE = {
+  regenIndex, regenSurfaces,
+  read: async ({ runId, reportMd, auditMd, findingsJson, poolRoot, poolUrl, customerKey, delivery, runDir, codename }) => ({
+    doc: await readClearanceDocument({ runId, reportMd, auditMd, findingsJson, poolRoot, poolUrl, customerKey, delivery, runDir }),
+    runId, codename, customerKey, reportMd, auditMd,
+  }),
+  keep({ writeRO, copyRO, copyPart }, { doc: { demoMd, findingsKept }, reportMd, auditMd }) {
+    // The pool's copy of report.md, marked as demo data where the document says it is (the answer and its argument are
+    // with `demoData` in readClearanceDocument).
+    writeRO('report.md', (demoMd ? `${demoMd}\n` : '') + stripInternal(readFileSync(reportMd, 'utf8'), { client: false }));
+    // The findings.json the document read, kept beside the report for forensics. A copy that fails leaves the report in
+    // place and is recorded, as a data file is (shell.mjs).
+    if (findingsKept) copyPart(findingsKept, 'findings.json');
+    if (auditMd && existsSync(auditMd)) copyRO(auditMd, 'audit.md');   // durable source (kept even if the xlsx fails)
+  },
+  document: ({ doc, runId, codename, customerKey }) => clearanceReportDocument({ ...doc, runId }, { codename, customerKey }),
+  warn: (what, e) => console.warn(`[report-document] ${what}: ${e?.message ?? e}`),
+  async workbook({ buildWorkbook }, reportDocument, { doc: { findings, auditParsed, assessmentNotCompleted }, runId }) {
+    // In the state the workbook is built even with no finding and no search log: it carries the part that was not
+    // completed, and the coverage the run did record.
+    if (!(findings.length || auditParsed || assessmentNotCompleted)) return { auditFile: null, auditError: null, built: null };
+    return buildWorkbook(`${runId}-audit.xlsx`, async (at) => {
       // A10 — the failing predelivery checks ride into the workbook and are ENUMERATED on its Summary
       // sheet (with the cover note, the delivery surfaces that reach the reviewing lawyer), as their delivery
       // lines (clearanceWorkbookOf).
@@ -1371,50 +1368,46 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
       const built = await buildAudit(w.contract, w.audit, at, w.title, w.frontMatter);
       if (built?.gateViolations?.length) console.warn(`[audit-workbook] advisory: ${built.gateViolations.join(' | ')}`);
       return built;
-    }));   // a REAL exception only — the report ships without the workbook, and nothing names it
-  }
-  if (reportDocument) reportDocument = withWorkbook(reportDocument, { auditFile, auditError });
-  if (reportDocument && runDir) {
-    try { ensureDriverDir(runDir); atomicWrite(paths(runDir).reportDocument, JSON.stringify(reportDocument, null, 1) + '\n'); }
-    catch (e) { console.warn(`[report-document] not written: ${e?.message ?? e}`); }
-  }
+    });   // a REAL exception only — the report ships without the workbook, and nothing names it
+  },
+  surfaces({ writeRO, writeDataFile }, reportDocument, { doc: { searchDepth, recordsByUri, logos, deliv, demoData } }) {
+    // THE report. T4: the render receives no QC flags — the report a lawyer signs carries no
+    // caveat banner (H1/H2); the receipts live on audit.xlsx. The machine QC above decides nothing
+    // about this write.
+    // homeHref — the floating "← All reports" pill returns to the listing (the staff index one level up).
+    // NO SITE NAV IS BUILT FOR A REPORT. One was, from a walk of the pool on every publish, and handed to a
+    // renderer that never read it; reports published before that carry one, and the portal still strips it.
+    // How much was read to reach the answer, written where the document holds it (an additive record: a publish never
+    // fails for want of it).
+    if (searchDepth) { try { writeRO('search-depth.json', JSON.stringify(searchDepth, null, 2)); } catch { /* additive */ } }
 
-
-  // THE report. T4: the render receives no QC flags — the report a lawyer signs carries no
-  // caveat banner (H1/H2); the receipts live on audit.xlsx. The machine QC above decides nothing
-  // about this write.
-  // homeHref — the floating "← All reports" pill returns to the listing (the staff index one level up).
-  // NO SITE NAV IS BUILT FOR A REPORT. One was, from a walk of the pool on every publish, and handed to a
-  // renderer that never read it; reports published before that carry one, and the portal still strips it.
-  // How much was read to reach the answer, written where the document holds it (an additive record: a publish never
-  // fails for want of it).
-  if (searchDepth) { try { writeRO('search-depth.json', JSON.stringify(searchDepth, null, 2)); } catch { /* additive */ } }
-
-  writeRO('report.html', renderClearanceDocument(pageDocument(reportDocument), { recordsByUri, logos, homeHref: '../index.html', chromeHref: '../assets/chrome.css', delivery: deliv, demoData }));   // the page reads the report document, with its surface beside it
-  // ONE report (spec 2026-07-30 §5): report.client.html is no longer written. The knockout lane's own
-  // collapse note is the precedent: "two renderings of one run is how the wrong link gets sent". The
-  // client host serves the same report.html through the portal's readReport() (cleaning built in) — its
-  // repoint deploys BEFORE this change merges (charter ruling 2a).
-  //
-  // P5 rebase note: this package was written against the pre-collapse tree, where the four-answers panel
-  // had to be passed to BOTH renders. There is one render now, so `fourAnswers` rides the one call — the
-  // panel reaches the client through the same cleaning path as every other reader-facing block.
-  // PR-9 — the clearance run as data: the client-cut projection the assistant drafts mail from, built from the
-  // document (clearanceReportDataOf). BEST-EFFORT with a hard receipt rule: meta.reportSchema is stamped ONLY when the
-  // file actually wrote, so a meta never names a data file that is not there. A producer throw never blocks the
-  // report (the baked HTML above is already on disk).
-  const reportSchema = writeDataFile('report-data.json', () => clearanceReportDataOf(reportDocument)) ? 'report-data/clearance-1' : null;
+    writeRO('report.html', renderClearanceDocument(pageDocument(reportDocument), { recordsByUri, logos, homeHref: '../index.html', chromeHref: '../assets/chrome.css', delivery: deliv, demoData }));   // the page reads the report document, with its surface beside it
+    // ONE report (spec 2026-07-30 §5): report.client.html is no longer written. The knockout lane's own
+    // collapse note is the precedent: "two renderings of one run is how the wrong link gets sent". The
+    // client host serves the same report.html through the portal's readReport() (cleaning built in) — its
+    // repoint deploys BEFORE this change merges (charter ruling 2a).
+    //
+    // P5 rebase note: this package was written against the pre-collapse tree, where the four-answers panel
+    // had to be passed to BOTH renders. There is one render now, so `fourAnswers` rides the one call — the
+    // panel reaches the client through the same cleaning path as every other reader-facing block.
+    // PR-9 — the clearance run as data: the client-cut projection the assistant drafts mail from, built from the
+    // document (clearanceReportDataOf). BEST-EFFORT with a hard receipt rule: meta.reportSchema is stamped ONLY when the
+    // file actually wrote, so a meta never names a data file that is not there. A producer throw never blocks the
+    // report (the baked HTML above is already on disk).
+    const reportSchema = writeDataFile('report-data.json', () => clearanceReportDataOf(reportDocument)) ? 'report-data/clearance-1' : null;
+    return { reportSchema, template: deliv?.template ?? 'standard' };
+  },
   // The run's record, from the document. A document that could not be built fails the publish here, after the page
   // and before the record, as a throw in the record always has.
-  const total = finishPoolRun({ writeRO, poolRoot, skipRegen, regenIndex, meta: clearanceMetaOf(reportDocument, { template: deliv?.template ?? 'standard', reportSchema }) });
-  await refreshStaffPages({ regenSurfaces, poolRoot, skipRegen, runDir });
-  // THE PORTAL ROUTE, not the pool's directory layout. This was
-  // `<origin>/<runId>/report.html` — where the documents sit on disk, which is not an application route.
-  // Composed rather than spelled here so the report link is built the same way the audit link always was.
-  const url = reportRoute;
-  return { runId, auditFile, counts, total, url, poolRunDir, auditError, findingsError, customerKey: customerKey || 'generic', clientGate,
-    caption };   // the report's own conclusion, for the run record's short surfaces
-}
+  meta: (reportDocument, { template, reportSchema }) => clearanceMetaOf(reportDocument, { template, reportSchema }),
+  result: ({ read: { doc: { reportRoute, findingsError, clientGate, caption }, runId, customerKey }, pool: { poolRunDir }, workbook: { auditFile, auditError, built: counts }, total }) => ({
+    // THE PORTAL ROUTE, not the pool's directory layout. This was
+    // `<origin>/<runId>/report.html` — where the documents sit on disk, which is not an application route.
+    // Composed rather than spelled here so the report link is built the same way the audit link always was.
+    runId, auditFile, counts, total, url: reportRoute, poolRunDir, auditError, findingsError, customerKey: customerKey || 'generic', clientGate,
+    caption,   // the report's own conclusion, for the run record's short surfaces
+  }),
+};
 
 /**
  * The run's record in the pool (meta.json), from the report document. `template`, the delivery's named variant, and
@@ -2016,7 +2009,7 @@ function composeEmailHtmlFrom({ fm, secs }, url, auditFile, names = [], delivery
 // of the tree cites by number.
 import { recordLinksFor } from './office-record-links.mjs';
 import { reportDates, zurichStamp } from './report-dates.mjs';   // the dates a report prints, from its record
-import { atomicWrite, driverDir, ensureDriverDir, paths, readJson } from "../run-record.mjs";
+import { driverDir, paths, readJson } from "../run-record.mjs";
 import { logosForReport } from "../mark-logos.mjs";   // the saved logo of each cited registration, embedded in the report
 import { followUpKindsOf } from "../follow-up-twins.mjs";   // the search each deferred directive recorded
 function officeLinksFor(findings, recordsByUri, runOrigins) {
