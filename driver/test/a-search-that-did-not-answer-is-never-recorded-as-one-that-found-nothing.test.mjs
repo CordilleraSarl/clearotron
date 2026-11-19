@@ -25,6 +25,7 @@ import { spawn } from "node:child_process";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { REFUTATION_SENTENCES } from "./ruled-sentences-narrative-refutation.mjs";
 import { PHASE2_SENTENCES } from "./ruled-sentences-phase2-execution.mjs";
+import { SYNTHESIS_SENTENCES } from "./ruled-sentences-synthesis-rules.mjs";
 
 // The writer's session, as its tools are told it; the research tool below asks under the same one.
 const SESSION = "clearance-acme-run-amber-fox-synthesis";
@@ -453,7 +454,7 @@ test("the ruled words stand where the writer, its correction and the review read
   assert.ok(step.includes(`${CHECKED} The synthesis stage cannot ship an *inferred* "no use"`), "Step 3.5 still names the retired validator");
   const rules = flat(["clearance-search", "synthesis-rules.md"]);
   assert.ok(rules.includes(`MUST record its source in the finding's \`use_check.source\`. ${CHECKED} A use-negative`), "the synthesis manual still names the retired validator");
-  assert.ok(rules.includes(`MUST record its source in the finding's \`own_rights.source\`, which the driver checks in the structured finding record. **Know what the negative means:**`), "the own-rights paragraph still names the retired validator");
+  assert.ok(rules.includes(SYNTHESIS_SENTENCES.mustRecordItsSourceThe), "the own-rights paragraph still names the retired validator");
   assert.equal(/validator rejects the narrative/.test(rules), false, "the synthesis manual still names the retired narrative validator");
   const review = flat(["narrative-refutation", "SKILL.md"]);
   assert.ok(review.includes(`an un-run check dressed as a clean negative is a defect. ${CHECKED}`), "the review still names the retired validator");
@@ -477,7 +478,7 @@ test("an unknown use owes no source line in the manuals or the review", () => {
   assert.equal(/unknown/i.test(contract), false, "Step 3.5 still owes a source line for an unknown use");
   const rules = flat(["clearance-search", "synthesis-rules.md"]);
   const filed = rules.slice(rules.indexOf("## Filed-vs-used check"), rules.indexOf("## Own-rights evidence"));
-  assert.ok(filed.includes('(non-use revocation/cancellation, "not in actual use", "no marketplace use found") MUST record'));
+  assert.ok(filed.includes(SYNTHESIS_SENTENCES.nonUseRevocationCancellationNot));
   assert.equal(filed.includes("owner's use unknown"), false, "the synthesis manual still owes a source line for an unknown use");
   const review = flat(["narrative-refutation", "SKILL.md"]);
   const bullet = review.slice(review.indexOf(REFUTATION_SENTENCES.useNegativeWithoutSearch), review.indexOf("### Optics-escalation checks"));

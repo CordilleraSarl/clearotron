@@ -21,6 +21,7 @@ import { REGISTER_SENTENCES } from "./ruled-sentences-register.mjs";
 import { REFUTATION_SENTENCES } from "./ruled-sentences-narrative-refutation.mjs";
 import { RECIPES_SENTENCES } from "./ruled-sentences-register-recipes.mjs";
 import { PHASE2_SENTENCES } from "./ruled-sentences-phase2-execution.mjs";
+import { SYNTHESIS_SENTENCES } from "./ruled-sentences-synthesis-rules.mjs";
 import { GATHERED, manualPins, heldStrings, namesManual } from "../../scripts/count-manual-pins.mjs";
 import { skipReason } from "../../shared/tracked-files.mjs";
 
@@ -36,6 +37,7 @@ const FIXTURES = {
   "driver/skills/narrative-refutation/SKILL.md": REFUTATION_SENTENCES,
   "driver/skills/clearance-register/register-recipes.md": RECIPES_SENTENCES,
   "driver/skills/clearance-search/phase2-execution.md": PHASE2_SENTENCES,
+  "driver/skills/clearance-search/synthesis-rules.md": SYNTHESIS_SENTENCES,
 };
 // Strings a test that reads a manual uses for its own purpose, which the manual happens to share word for word: an example
 // row label used as a unit name, a stage message's own words, a fixture's input. They hold nothing of the manual.
