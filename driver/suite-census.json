@@ -4673,7 +4673,7 @@
         },
         "every-script-has-a-row-in-the-scripts-index.test.mjs": {
           "tests": 2,
-          "asserts": 7,
+          "asserts": 8,
           "skips": 2,
           "todos": 0
         },
@@ -4710,6 +4710,12 @@
         "every-waiting-family-is-asked-or-withheld.test.mjs": {
           "tests": 8,
           "asserts": 38,
+          "skips": 0,
+          "todos": 0
+        },
+        "every-workbook-label-is-in-the-catalogue.test.mjs": {
+          "tests": 1,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },
@@ -7805,7 +7811,7 @@
         },
         "the-knockout-rating-step-reads-no-set-aside-lines.test.mjs": {
           "tests": 4,
-          "asserts": 23,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -8386,8 +8392,8 @@
           "todos": 0
         },
         "the-ruled-sentences-tests-hold-are-in-their-manuals.test.mjs": {
-          "tests": 4,
-          "asserts": 18,
+          "tests": 5,
+          "asserts": 19,
           "skips": 1,
           "todos": 0
         },
@@ -9131,6 +9137,12 @@
         "a-demo-names-no-tool-it-withholds.test.mjs": {
           "tests": 4,
           "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-findings-registrations-reach-the-evidence-layer.test.mjs": {
+          "tests": 1,
+          "asserts": 2,
           "skips": 0,
           "todos": 0
         },

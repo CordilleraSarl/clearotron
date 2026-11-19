@@ -13,14 +13,13 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { PHASE2_SENTENCES } from "./ruled-sentences-phase2-execution.mjs";
 
 const manual = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-search", "phase2-execution.md"), "utf8")
   .replace(/\s+/g, " ");
 
 test("the reviewer's manual sends the register units to the unit manual's steps, and orders no fixed set of searches", () => {
-  assert.ok(manual.includes("### Variant execution strategy (register layer) The register units follow clearance-register/unit.md: the identical "
-    + "mark first, a crowd narrowed by its steps, and a wider question only where reading it would change what you tell the client. A family the "
-    + "reading turn did not ask is recorded withheld-by-judgment with its reason; that is a documented decision, not a shortcut. ## Step 2.6"),
+  assert.ok(manual.includes(PHASE2_SENTENCES.variantExecutionStrategyRegisterLayer),
     "the section's body is not the ruled paragraph alone");
   for (const gone of ["Compound-Phrase Funnel", "Minimum 3 searches", "Run one scoped sub-query per jurisdiction", "ring-fenced per-jurisdiction allowance",
     "the funnel is lighter"])
@@ -28,15 +27,11 @@ test("the reviewer's manual sends the register units to the unit manual's steps,
 });
 
 test("the reviewer's coverage check asks only for a material market no question reached", () => {
-  assert.ok(manual.includes("- **Coverage ledger:** is any `deferred` / `coverage-limited` row being narrated (or about to be narrated) as a "
-    + "clean negative? Is a material jurisdiction that no question reached at all missing from the ledger? One covered by a complete worldwide "
-    + "answer, or left in a crowd's count by the identical mark's narrowing, is accounted for and needs no row of its own. A deferred row treated "
-    + "as clean is a recall gap — flag it."));
+  assert.ok(manual.includes(PHASE2_SENTENCES.coverageLedgerAnyDeferredCoverage));
   assert.ok(!manual.includes("carry a row for **every** jurisdiction"), "the reviewer still asks for a row on every material market");
 });
 
 test("the reviewer re-runs only a deferral the table lists as closeable", () => {
-  assert.ok(manual.includes("**A `deferred` coverage-ledger row the table lists as CLOSEABLE is exactly this kind of documented-reason gap** — "
-    + "the owning unit resumes and runs the missing question. A deferral the table marks NOT CLOSEABLE is not re-run."));
+  assert.ok(manual.includes(PHASE2_SENTENCES.deferredCoverageLedgerRowThe));
   assert.ok(!manual.includes("runs the missing per-jurisdiction sub-query"), "the reviewer still re-runs a deferral per material market");
 });

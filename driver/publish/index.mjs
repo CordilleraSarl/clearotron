@@ -285,9 +285,9 @@ function clientFilterBar(clients) {
 // per-customer indexes — customer/generic already holds >20 runs). Ships `hidden`: no-JS pages degrade to
 // the flat, fully-visible table with no dead buttons.
 const PAGER_BAR = `<div class="pager" id="pager" hidden>
-    <button type="button" id="pgPrev">&#8249; Prev</button>
+    <button type="button" id="pgPrev">&#8249; ${IX.previous}</button>
     <span class="pcount" id="pcount"></span>
-    <button type="button" id="pgNext">Next &#8250;</button>
+    <button type="button" id="pgNext">${IX.next} &#8250;</button>
   </div>`;
 
 // Report search — a text box that filters rows by their content (matter, project, verdict, date), composing
@@ -295,9 +295,9 @@ const PAGER_BAR = `<div class="pager" id="pager" hidden>
 // PAGER_SCRIPT reveals it only when the table is large enough to warrant searching (>8 rows). Emitted on every
 // index (staff + per-customer), so it scales the client-facing matter history to many reports.
 const SEARCH_BAR = `<div class="filterbar" id="repSearchBar" hidden>
-    <label class="flbl" for="repSearch">Search</label>
-    <input id="repSearch" type="search" placeholder="Filter by matter, project or verdict…" autocomplete="off" aria-label="Filter reports">
-    <span class="nomatch" id="repNoMatch" hidden>No matching reports</span>
+    <label class="flbl" for="repSearch">${IX.search}</label>
+    <input id="repSearch" type="search" placeholder="${IX.searchPlaceholder}" autocomplete="off" aria-label="${IX.searchLabel}">
+    <span class="nomatch" id="repNoMatch" hidden>${IX.noMatch}</span>
   </div>`;
 
 // One apply() = filter-then-page. Rows are queried LAZILY on every pass (the parse-time cache was the
@@ -333,9 +333,9 @@ if(!bar)return;
 bar.hidden=!paged&&!active;
 prev.hidden=next.hidden=!paged;
 prev.disabled=page<=1;next.disabled=page>=P;
-var t=paged?(a+1)+"\\u2013"+b+" of "+M:String(M);
-if(active)t+=" shown";
-if(active&&fold)t+=" \\u00b7 "+fold+" retired";
+var t=paged?(a+1)+"\\u2013"+b+${JSON.stringify(IX.of)}+M:String(M);
+if(active)t+=${JSON.stringify(IX.shown)};
+if(active&&fold)t+=" \\u00b7 "+fold+${JSON.stringify(IX.retired)};
 cnt.textContent=(active||paged)?t:"";
 }
 if(sbar&&document.querySelectorAll("tr[data-client]").length>8)sbar.hidden=false;
@@ -361,7 +361,7 @@ ${TEXT_FONT_STYLE}${FAVICON_LINK}${client ? THEME_INIT_EXPLICIT : THEME_INIT}
   ${SEARCH_BAR}
   ${filter}
   <table>
-    <tr><th>Matter</th><th>Project</th><th>Client</th><th>Overall</th><th>Run</th>${auditCol ? '<th>Audit</th>' : ''}</tr>
+    <tr><th>${IX.columns.matter}</th><th>${IX.columns.project}</th><th>${IX.columns.client}</th><th>${IX.columns.overall}</th><th>${IX.columns.run}</th>${auditCol ? `<th>${IX.columns.audit}</th>` : ''}</tr>
 ${rows}
   </table>
   ${PAGER_BAR}
@@ -484,8 +484,8 @@ export function regenIndex(poolDir) {
     // on the audit workbook now and decide nothing about who may read. The precedent is the knockout
     // lane's own collapse note: two renderings of one run is how the wrong link gets sent.
     writeFileSync(cidx, indexPage({
-      heading: `Trademark clearance — ${displayOf.get(key) || key}`,
-      sub: `${crs.length} report(s) for this account · access-controlled · noindex.`,
+      heading: IX.heading(displayOf.get(key) || key),
+      sub: IX.subheading(crs.length),
       rows: indexRows(crs, { reportFile: 'report.html', linkPrefix: '../../', showAudit: false, client: true }),
       auditCol: false,
       theme: 'client',                           // explicit-light: toggle only, NO @media auto-dark on a customer page
@@ -1486,12 +1486,13 @@ const BADGE_EMOJI = { l4: '🔴', l3: '🟠', mh: '🟠', l2: '🟢', l1: '⚪' 
 // config, NOT a literal: this string was hardcoded, so the 2026-07-17 repo split rewrote it to a
 // example.com domain and both 2026-07-19 deliveries told the reader to sign in with an account that
 // does not exist. Unset ⇒ NO note: silence beats confidently wrong sign-in instructions.
+import { EMAIL, CLIENT_INDEX as IX } from './strings.mjs';   // kept down here, below every line the tree cites in this file by number
 export function accessNoteMd(domain = config.accessDomain) {
-  return domain ? `*Access-controlled — sign in with a **${domain}** account. Reply to this email with any questions.*` : '';
+  return domain ? `*${EMAIL.accessNote(`**${domain}**`)}*` : '';
 }
 export function accessNoteHtml(font, domain = config.accessDomain) {
   return domain
-    ? `<p style="${font};font-size:9.5pt;color:${EC.quiet};margin:14px 0 0"><i>Access-controlled — sign in with a <b>${domain}</b> account. Reply to this email with any questions.</i></p>`
+    ? `<p style="${font};font-size:9.5pt;color:${EC.quiet};margin:14px 0 0"><i>${EMAIL.accessNote(`<b>${domain}</b>`)}</i></p>`
     : '';
 }
 
@@ -1641,14 +1642,14 @@ export function composeEmailBody(reportMdPath, url, auditFile, productName = nul
 
   // A scannable meta line — only the fields that are present.
   const meta = [
-    fm.client && `**Client:** ${fm.client}`,
-    fm.classes && `**Classes:** ${fm.classes}`,
-    fm.run && `**Basis:** ${fm.run}`,
+    fm.client && `**${EMAIL.client}** ${fm.client}`,
+    fm.classes && `**${EMAIL.classes}** ${fm.classes}`,
+    fm.run && `**${EMAIL.basis}** ${fm.run}`,
   ].filter(Boolean).join('  ·  ');
 
   const links = [
-    url && `[**▶ Open the full report**](${url})`,
-    auditUrl && `[Download audit (Excel)](${auditUrl})`,
+    url && `[**${EMAIL.openReport}**](${url})`,
+    auditUrl && `[${EMAIL.downloadAudit}](${auditUrl})`,
   ].filter(Boolean).join('  ·  ');
 
   return [
@@ -1673,9 +1674,9 @@ export function composeEmailBody(reportMdPath, url, auditFile, productName = nul
     // failure mode here was a pointer written before its target, and one true sentence beats two where
     // the second is a promise. When a surface exists that renders open floors in client language, this is
     // where the pointer to it belongs.
-    fm.envelope_note ? `**Search scope:** Some scoped searches remained open at delivery.` : '',
+    fm.envelope_note ? `**${EMAIL.scopeLabel}** ${EMAIL.scopeOpen}` : '',
     fm.overall_label
-      ? `${dot} **Overall risk: ${fm.overall_label}**${fm.overall_caption ? `\n\n${fm.overall_caption}` : ''}`
+      ? `${dot} **${EMAIL.overallRisk} ${fm.overall_label}**${fm.overall_caption ? `\n\n${fm.overall_caption}` : ''}`
       : '',
     meta || '',
     links || '',
@@ -1810,8 +1811,8 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
   // this goes with it.
   // The report link rides HIGH — right under the bottom line in the headline, not buried below the table.
   const reportLink = hrefAttr(url)
-    ? `<p style="margin:0 0 10px"><a href="${hrefAttr(url)}" style="color:${EC.reportLink};font-weight:bold;font-size:12pt;text-decoration:none">▶ Open the full report</a>`
-      + (hrefAttr(auditUrl) ? ` &nbsp;·&nbsp; <a href="${hrefAttr(auditUrl)}" style="color:${EC.auditLink};text-decoration:none">Download audit (Excel)</a>` : '')
+    ? `<p style="margin:0 0 10px"><a href="${hrefAttr(url)}" style="color:${EC.reportLink};font-weight:bold;font-size:12pt;text-decoration:none">${EMAIL.openReport}</a>`
+      + (hrefAttr(auditUrl) ? ` &nbsp;·&nbsp; <a href="${hrefAttr(auditUrl)}" style="color:${EC.auditLink};text-decoration:none">${EMAIL.downloadAudit}</a>` : '')
       + `</p>`
     : '';
   // The search-scope signal leads the email. The 2026-06-12 "lint flags do not render on the email" rule
@@ -1828,7 +1829,7 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
   // are one message in two renderings, and a client reading the HTML must not be told something the
   // markdown does not say.
   const flagBanner =
-    (fm.envelope_note ? `<p style="margin:0 0 6px"><b>Search scope:</b> Some scoped searches remained open at delivery.</p>` : '');
+    (fm.envelope_note ? `<p style="margin:0 0 6px"><b>${EMAIL.scopeLabel}</b> ${EMAIL.scopeOpen}</p>` : '');
 
   // ONE report (spec 2026-07-30 §6): the "Not client-ready — for your review only" block is deleted with
   // the two-bit delivery it narrated. The cover note is a cover note — verdict, one-line summary, link —
@@ -1891,9 +1892,9 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
   // held — and before that the delivery gate's word. It now quotes the report: the rating, then the
   // report's own conclusion (below), and where the report names what only the client can close, those
   // items under the report's own heading. Nothing here composes a sentence of its own.
-  const closeBox = (items) => `<p style="margin:0 0 8px;padding:8px 10px;background:${EC.closeBoxFill};border:1px solid ${EC.closeBoxLine};color:${EC.closeBoxText}"><b>Only you can close these</b><br>${items.map((r) => `• ${cell(String(r))}`).join('<br>')}</p>`;
+  const closeBox = (items) => `<p style="margin:0 0 8px;padding:8px 10px;background:${EC.closeBoxFill};border:1px solid ${EC.closeBoxLine};color:${EC.closeBoxText}"><b>${EMAIL.onlyYouCanClose}</b><br>${items.map((r) => `• ${cell(String(r))}`).join('<br>')}</p>`;
   const verdictBound = opts?.verdict === 'CONDITIONAL'
-    ? closeBox(emailConditions.length ? emailConditions : ['the open items set out in the report, before relying on a clean result'])
+    ? closeBox(emailConditions.length ? emailConditions : [EMAIL.onlyYouCanCloseDefault])
     : opts?.verdict === 'BLOCKING' && emailConditions.length ? closeBox(emailConditions) : '';
 
   const reviewHeadline = `<div style="${FONT};font-size:11pt;color:${EC.headline};margin:0 0 14px">`
@@ -1904,10 +1905,10 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
     // model-authored fm label — one authority on every surface. The rating leads, then the report's own
     // conclusion verbatim (ruling 244); with no rating recorded, the conclusion stands alone.
     + ((opts?.tier ?? fm.overall_label)
-      ? `<p style="margin:0 0 6px"><b>Overall risk: ${esc(opts?.tier ?? fm.overall_label)}.</b> ${cell(fm.overall_caption || '')}</p>`
+      ? `<p style="margin:0 0 6px"><b>${EMAIL.overallRisk} ${esc(opts?.tier ?? fm.overall_label)}.</b> ${cell(fm.overall_caption || '')}</p>`
       : (fm.overall_caption ? `<p style="margin:0 0 6px">${cell(fm.overall_caption)}</p>` : ''))
     + reportLink
-    + (fm.handling_note ? `<p style="margin:0 0 8px;color:${EC.warning}"><b>Handling note:</b> ${cell(fm.handling_note)}</p>` : '')
+    + (fm.handling_note ? `<p style="margin:0 0 8px;color:${EC.warning}"><b>${EMAIL.handlingNote}</b> ${cell(fm.handling_note)}</p>` : '')
     // No "Rated under" line: the report a client reads is cleaned of it, so the note covering it is too
     // (2026-11-18). The scale stays named on the report's gauge and in the run's record.
     // compute-don't-author (PR-4, review issue 2): the per-class register-coverage truth is computed
@@ -1917,12 +1918,12 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
     // "Class 30: 76 of 99 slices fully searched — the remaining 23 are non-Latin script forms" (the
     // spec-B4 proportion form) rides beside the report link. Facts about what ran, never a caveat;
     // absent on legacy runs ⇒ byte-identical mail.
-    + (fm.coverage_line ? `<p style="margin:0 0 6px;font-size:9.5pt;color:${EC.quiet}">Register coverage — ${cell(fm.coverage_line)}</p>` : '')
+    + (fm.coverage_line ? `<p style="margin:0 0 6px;font-size:9.5pt;color:${EC.quiet}">${EMAIL.registerCoverage} ${cell(fm.coverage_line)}</p>` : '')
     // The WS1c "Model failover:" line stood here and is DELETED: no code path writes `failover_note`
     // into front-matter any more, because the model-failover chain that would have produced one never had a
     // second rung on any shipped build. Nothing renders a failover note into a report.
     // B5b checkpoint 4 — a customer named after the analysis was written ships as a delivery note, never silently.
-    + (fm.late_bind_note ? `<p style="margin:0 0 8px;color:${EC.warning}"><b>Applicant named mid-run:</b> ${cell(fm.late_bind_note)}</p>` : '')
+    + (fm.late_bind_note ? `<p style="margin:0 0 8px;color:${EC.warning}"><b>${EMAIL.applicantMidRun}</b> ${cell(fm.late_bind_note)}</p>` : '')
     // The reviewer's open points stood here, from the run record. They do not ride the cover any more
     // (owner ruling, 2026-10-01): the sentence naming the independent reviewer reads as a human declining
     // to sign, and the points themselves are the engine's own vocabulary. Both stay on the run, beside the

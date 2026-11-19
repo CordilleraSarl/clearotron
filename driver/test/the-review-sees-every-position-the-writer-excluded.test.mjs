@@ -29,6 +29,7 @@ import { driverDir } from "../../shared/driver-dir.mjs";
 import { synthesisFindings } from "./mock-stage-fixtures.mjs";
 import { RESEARCH_AFTER_REVIEW_MD, keepResearchAnswer } from "../research-answers.mjs";
 import { searchRunArtifacts } from "../skeptic-search.mjs";
+import { REFUTATION_SENTENCES } from "./ruled-sentences-narrative-refutation.mjs";
 
 const PLACEMENTS = [
   { mark: "QZORVAK", owner: "Alpha Ltd", jurisdiction: "EU", records: ["/mark/eu/a1"], tier: "headline-candidate", reason: "identical, live, for the client's own goods" },
@@ -392,10 +393,10 @@ test("a later review re-reads a decision whose placement reason, evidence or sam
 test("the review's manual states the targets as ruled: positions beside on, the document flag's passage, and no all-or-nothing", () => {
   const manual = readFileSync(new URL("../skills/narrative-refutation/SKILL.md", import.meta.url), "utf8").replace(/\s+/g, " ");
   for (const ruled of [
-    "and optionally `positions` (the record ids of the writer's excluded positions it is about, as their list names them), and optionally `lines` (the addresses of the parts of the report it is about that are not findings, copied from the dispatch's address list).",
-    "**Identify what each flag is about** — the `on` field",
-    "`[on: -]` means no existing finding is named. For an excluded position, supply its record id in `positions`. For a coverage line, an action, a mark assessment read or a narrative section with a listed address, supply that address in `lines`. Name any passage without a listed address in `text`. Omit all three fields only when none applies to the flag. A flag may carry `on`, `positions` and `lines` together.",
-    "The writer corrects the named findings, excluded positions, and document passages, together with conclusions that depend on them. Unaffected findings stay unchanged. The recheck reviews that same scope and any additional changes the writer had to make, using its recorded reasons. A missing finding number does not make the whole report open for revision.",
+    REFUTATION_SENTENCES.andOptionallyPositionsTheRecord,
+    REFUTATION_SENTENCES.identifyWhatEachFlagAbout,
+    REFUTATION_SENTENCES.meansExistingFindingNamedFor,
+    REFUTATION_SENTENCES.theWriterCorrectsTheNamed,
   ]) assert.ok(manual.includes(ruled), `the manual does not carry: ${ruled.slice(0, 60)}…`);
   assert.ok(!/Either every flag has one|a partial set buys nothing|the absence is the statement/.test(manual), "the all-or-nothing paragraph is still in the manual");
   assert.ok(!/EVERY FLAG CARRIES WHICH FINDING IT IS ABOUT|it is about the document, not a finding/.test(manual), "the manual still says every flag names a finding");

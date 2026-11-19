@@ -11,6 +11,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
+import { publishedOf } from "../../shared/reference-guard-classes.mjs";
 
 const ROOT = fileURLToPath(new URL("../../", import.meta.url));
 const GUARD = "scripts-index";
@@ -26,7 +27,11 @@ function indexRows() {
 test("every file in scripts/ has one row in the index, and every row names a file there", (t) => {
   const tracked = trackedFiles(GUARD, { root: ROOT, pathspec: ["scripts"] });
   if (tracked === null) return t.skip(skipReason(GUARD));
-  const files = tracked.filter((f) => f !== "scripts/README.md").map((f) => f.slice("scripts/".length)).sort();
+  // The scripts this checkout publishes: a private overlay lays its own scripts into scripts/, and they are indexed where
+  // they live, not here.
+  const published = publishedOf(tracked, ROOT);
+  assert.ok(!published.error, published.error);
+  const files = published.files.filter((f) => f !== "scripts/README.md").map((f) => f.slice("scripts/".length)).sort();
   assert.ok(files.length > 100, `only ${files.length} scripts were listed, so this would pass on nothing`);
   const rows = indexRows();
   assert.deepEqual(files.filter((f) => !rows.has(f)), [], "these scripts have no row in scripts/README.md's index");

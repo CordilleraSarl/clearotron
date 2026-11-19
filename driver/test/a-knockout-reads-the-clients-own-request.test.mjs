@@ -16,6 +16,7 @@ import { KO_STAGES, koPaths } from "../stages-knockout.mjs";
 import { validators as koValidators, alternativesDefect } from "../verify-knockout.mjs";
 import { acceptKnockoutFrame } from "../knockout-frame-record.mjs";
 import { ASSESS_SENTENCES } from "./ruled-sentences-knockout-assess.mjs";
+import { KO_FRAME_SENTENCES } from "./ruled-sentences-knockout-frame.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const TEMP = [];
@@ -64,8 +65,8 @@ test("the rating is told the filings carry goods, what they rest on, and where t
 test("the manuals carry the same words as the messages", () => {
   const frame = readFileSync(join(HERE, "..", "skills", "knockout-frame", "SKILL.md"), "utf8");
   const assess = readFileSync(join(HERE, "..", "skills", "knockout-assess", "SKILL.md"), "utf8").replace(/\s+/g, " ");
-  assert.ok(frame.includes('Where the request does not state what a name is for, say so here and write what you infer as a possibility ("possibly a game title"), never as what the client intends.'));
-  assert.ok(frame.includes('2f. **`alternatives` — where the request gives one item in more than one spelling or word order ("LAKE MOON / MOON LAKE"), list each form as written.**'));
+  assert.ok(frame.includes(KO_FRAME_SENTENCES.whereTheRequestDoesNot));
+  assert.ok(frame.includes(KO_FRAME_SENTENCES.alternativesWhereTheRequestGives));
   assert.ok(frame.includes('"alternatives": ['), "the output contract does not carry the key");
   assert.ok(assess.includes(ASSESS_SENTENCES.howItsGoodsMeetThe2));
   assert.ok(assess.includes(ASSESS_SENTENCES.useTheMissingGoodsNote));

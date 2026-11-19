@@ -14,15 +14,15 @@ import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { ASSESS_SENTENCES } from "./ruled-sentences-knockout-assess.mjs";
+import { KO_FRAME_SENTENCES } from "./ruled-sentences-knockout-frame.mjs";
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "skills");
 const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
 
 test("the knockout frame adds a class only for the client's own goods, with its reason", () => {
   const frame = flat("knockout-frame/SKILL.md");
-  assert.ok(frame.includes("3. **Added classes** per mark: add a class only for the client's own goods, never for what a competitor might "
-    + "hold, with one sentence saying why."));
-  assert.ok(frame.includes("household utensils (21); retail of the client's own goods (35, belt-and-braces)"),
+  assert.ok(frame.includes(KO_FRAME_SENTENCES.addedClassesPerMarkAdd));
+  assert.ok(frame.includes(KO_FRAME_SENTENCES.householdUtensilsRetailTheClient),
     "the class-line example does not teach an added class of the client's own");
   for (const gone of ["a prudent search would cover", "food theme → 29/43", "retail services (35, belt-and-braces)"])
     assert.ok(!frame.includes(gone), `the knockout frame still says "${gone}"`);

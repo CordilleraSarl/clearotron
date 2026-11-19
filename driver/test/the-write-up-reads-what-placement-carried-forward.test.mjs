@@ -11,13 +11,14 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { REGISTER_SENTENCES } from "./ruled-sentences-register.mjs";
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register");
 const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
 
 test("the write-up's mode lines read the candidates placement carried forward and their evidence", () => {
   const manual = flat("SKILL.md");
-  assert.ok(manual.includes("read the candidates placement carried forward, and their evidence, through the band tools"));
-  assert.ok(manual.includes("Read the candidates placement carried forward, and their evidence, through the band tools"));
+  assert.ok(manual.includes(REGISTER_SENTENCES.readTheCandidatesPlacementCarried));
+  assert.ok(manual.includes(REGISTER_SENTENCES.readTheCandidatesPlacementCarried2));
   assert.ok(!/read the complete merged band/i.test(manual), "the register manual still tells the write-up to read the whole band");
 });

@@ -25,6 +25,7 @@ import { acceptMatterFrame } from "../matter-frame-record.mjs";
 import { validateGridSpec, dictatedCells, buildGridProgramTask, captureGridFromResponse } from "../../providers/perplexity/src/core.js";
 import { findUnranDictatedCells, splitGridSpec, mergeGrids } from "../common-law-receipts.mjs";
 import { COMMON_LAW_SENTENCES } from "./ruled-sentences-common-law.mjs";
+import { MATTER_FRAME_SENTENCES } from "./ruled-sentences-matter-frame.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = mkdtempSync(join(tmpdir(), "frame-web-grid-"));
@@ -275,14 +276,14 @@ test("a store the frame set aside reaches the audit workbook with the frame's re
 
 // ── the words the frame and the search service read ─────────────────────────────────────────────────
 
-const SENTENCE_5 = "The stores that sell the client's kind of goods, for the forms a buyer could confuse. The customer profile's list is what you choose from, not what you owe. A store or form set aside is written down with its reason.";
+const SENTENCE_5 = MATTER_FRAME_SENTENCES.theStoresThatSellThe;
 const skill = (rel) => readFileSync(join(HERE, "..", "skills", rel), "utf8");
 const count = (hay, needle) => hay.split(needle).length - 1;
 
 test("sentence 5 is in the frame's manual once, word for word, and nowhere in the web sweep's", () => {
   const frame = skill("matter-frame/SKILL.md");
   assert.equal(count(frame, SENTENCE_5), 1);
-  assert.equal(count(frame, "`search_channels`, `confusable_forms` and `set_aside` decide the web grid before the web sweep runs it:"), 1);
+  assert.equal(count(frame, MATTER_FRAME_SENTENCES.searchChannelsConfusableFormsAnd), 1);
   assert.equal(count(skill("clearance-common-law/SKILL.md"), SENTENCE_5), 0);
 });
 

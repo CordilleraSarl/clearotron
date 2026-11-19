@@ -18,14 +18,13 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { STAGES, paths as stagePaths } from "../stages.mjs";
 import { absolutizeSkillRefs } from "../engine/anthropic-agent.mjs";
+import { REFUTATION_SENTENCES } from "./ruled-sentences-narrative-refutation.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 const MANUAL = "skills/narrative-refutation/SKILL.md";
 
 // The owner's sentence, as ruled. A difference of one character here is a new ruling, not a fix.
-const FIRST_QUESTION = "Does the report answer the client's question: who could object, how strong they are, "
-  + "what the client should do? Are the marks a lawyer would list present, and is each position written from "
-  + "the record that matters? Answer that before any check on wording.";
+const FIRST_QUESTION = REFUTATION_SENTENCES.doesTheReportAnswerThe;
 
 function reviewerMessage() {
   const dir = mkdtempSync(join(tmpdir(), "first-question-"));
