@@ -336,6 +336,21 @@ export function takeOverOwnTerritories(d: Draft, own: readonly string[], without
   return { ...d, territories: own.filter((t) => t !== without), replacesOwnTerritories: true }
 }
 
+/**
+ * Where the bar under New clearance says the search runs: what the Where panel shows, in codes. A search that is worldwide
+ * and nothing else reads the panel's worldwide line, and so does a company list the reader took over and emptied, which
+ * the panel draws as worldwide too. The company's own list where the reader named nothing and took nothing over. The
+ * screen hands in its own words for the two worldwide states.
+ */
+export function barWhere(
+  d: Draft, own: readonly string[], words: { worldwideOnly: boolean; worldwideLine: string; unset: string },
+): string {
+  if (words.worldwideOnly) return words.worldwideLine
+  if (d.territories.length) return d.territories.map(territoryCode).join(', ')
+  if (own.length && !d.replacesOwnTerritories) return own.map(territoryCode).join(', ')
+  return d.replacesOwnTerritories ? words.worldwideLine : words.unset
+}
+
 // ── what the wire carries ───────────────────────────────────────────────────────────────────────────
 
 export type Geography = {
