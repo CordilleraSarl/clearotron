@@ -8550,7 +8550,7 @@ export function fullProseOrdinals(findings) {
     .map((f) => f.ordinal)
     .filter((o) => o != null);
 }
-// ASSEMBLE report.md = the overview shell (front-matter + Actions/Coverage/Methodology) + `# Marks` + the
+// ASSEMBLE report.md = the overview shell (front-matter + Actions) + `# Left open` + `# Marks` + the
 // per-card files in render order (composite desc, ordinal asc — mirrors render.mjs `sortedAll`), `open: true` on the
 // single top card. Findings with no card file (a failed report-card, or a secondary finding) are NOT emitted —
 // render.mjs synthesizes them structured-only from findings.json, so nothing is silently dropped. Pure file IO.
@@ -9349,7 +9349,14 @@ export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRi
   // different grouping key. The negatives grouping is not extended and not touched. Empty on one country
   // (nothing is graded to an entry there), so the assembled bytes are unchanged for product 4.
   const groupedSection = grouped.length ? buildGradedEntriesSection(grouped, { byRight }) : "";
-  writeFileSync(P.report, `${overview}\n\n# Marks\n\n${cards.join("\n\n")}\n`
+  // "LEFT OPEN", the rows the page will draw (left-open-md.mjs), before the cards: the connector serves this file when a
+  // reader's assistant asks for the report, and it listed none of them (design, 2026-11-19). Nothing open draws no
+  // heading. Assembly-time, like the sections above: no stored report.md is rewritten by this.
+  let leftOpen = "";
+  try {
+    if (P.findings && existsSync(P.findings)) leftOpen = leftOpenSectionOfRun(P.runDir, parseFindingsJsonLenient(readFileSync(P.findings, "utf8")).coverage, { already: overview });
+  } catch { /* never-kill: an unreadable record leaves the section out, and the cards still ship */ }
+  writeFileSync(P.report, `${overview}${leftOpen ? `\n\n${leftOpen}` : ""}\n\n# Marks\n\n${cards.join("\n\n")}\n`
     + `${groupedSection ? `\n${groupedSection}\n` : ""}${negatives ? `\n${negatives}\n` : ""}`);
   // PR-9 — fold observability: every fold this assembly performed, persisted for the predelivery lint's
   // flag-only row (and for anyone auditing where the assembly moved words). Overwritten per assembly so
@@ -11802,4 +11809,5 @@ export function reassembleFromTheRecord(P, findings, depth) {   // @internal
 // Hoisted, so placed last: an import at the top would move every line citation into this file.
 import { commandLineRefusal } from "./run-requirements.mjs";
 import { runTables } from "./order-tables.mjs";
+import { leftOpenSectionOfRun } from "./left-open-md.mjs";   // the page's Left open rows, printed into report.md
 import { axisTwin, followUpKinds, kindsForFollowUp } from "./follow-up-twins.mjs";   // when a written row stands in for a Follow-up row, as the page decides
