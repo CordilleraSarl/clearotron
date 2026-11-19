@@ -78,6 +78,10 @@ export function lineMayMatchRun(runPrefix) {
 //   · a read that FAILS is reported. `catch { return map }` on a present, readable, correct file is an
 //     absence presented as a pass — the exact class the hard rules exist for. The reason travels to the
 //     caller, which logs it.
+//   · a line is DECODED WHOLE. Decoding each chunk on its own turned a character split by a chunk
+//     boundary into two replacement characters, and the garbled text reached the record bodies a run
+//     writes: on the test box's two largest record logs, 7 and 6 lines (measured 2026-11-19). The split is
+//     on the newline byte, which never occurs inside a UTF-8 character, and each line is decoded once.
 
 const LEDGER_CHUNK = 8 * 1024 * 1024;
 
@@ -89,23 +93,24 @@ const LEDGER_CHUNK = 8 * 1024 * 1024;
  *          a file that exists and cannot be read is.
  * Never throws: the callers are gates, and a gate that dies on telemetry is worse than one that reports.
  */
-export function forEachLedgerLine(path, onLine) {
+export function forEachLedgerLine(path, onLine, { chunk = LEDGER_CHUNK } = {}) {
   let fd = null;
   try { fd = openSync(path, "r"); }
   catch (e) { return { lines: 0, error: e?.code === "ENOENT" ? null : `${e?.code ?? "read failed"}` }; }
   try {
-    const buf = Buffer.allocUnsafe(LEDGER_CHUNK);
-    let carry = "";
+    const buf = Buffer.allocUnsafe(chunk);
+    let carry = null;                   // the bytes after the last newline: a line still being read, kept as bytes
     let lines = 0;
+    const emit = (bytes, from, to) => { const ln = bytes.toString("utf8", from, to); if (ln.trim()) { onLine(ln); lines++; } };
     for (;;) {
-      const n = readSync(fd, buf, 0, LEDGER_CHUNK, null);
+      const n = readSync(fd, buf, 0, chunk, null);
       if (n <= 0) break;
-      const text = carry + buf.toString("utf8", 0, n);
-      const parts = text.split("\n");
-      carry = parts.pop() ?? "";        // the tail may be a partial line; it rides to the next chunk
-      for (const ln of parts) { if (ln.trim()) { onLine(ln); lines++; } }
+      const data = carry ? Buffer.concat([carry, buf.subarray(0, n)]) : buf.subarray(0, n);
+      let start = 0;
+      for (let nl = data.indexOf(10, start); nl !== -1; nl = data.indexOf(10, start)) { emit(data, start, nl); start = nl + 1; }
+      carry = start < data.length ? Buffer.from(data.subarray(start)) : null;   // copied: the next read reuses `buf`
     }
-    if (carry.trim()) { onLine(carry); lines++; }
+    if (carry) emit(carry, 0, carry.length);
     return { lines, error: null };
   } catch (e) {
     return { lines: 0, error: String(e?.code ?? e?.message ?? "read failed").slice(0, 80) };
