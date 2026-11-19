@@ -237,6 +237,27 @@
   .drillbody b{color:var(--ink);font-weight:700}
   .drillbody ul{margin:8px 0;padding-left:18px}
   .drillbody li{margin:6px 0}
+  /* THE REGISTER RECORD: each cited registration's own facts, in a drop-down before "Full detail". The approved
+     board's styles, with the report's grey (--slate) where the board drew --faint, so the rows meet the same
+     contrast floor as every other small grey label on the page. */
+  .rr-faint{color:var(--slate)}
+  .rr-count{color:var(--slate);font-weight:400;margin-left:6px}
+  .rr{padding:12px 0;border-top:1px solid var(--line)}
+  .rr:first-child{border-top:0;padding-top:4px}
+  .rr-row{display:grid;grid-template-columns:150px minmax(0,1fr);gap:10px;padding:3px 0;font-size:13px;line-height:1.5}
+  .rr-row .k{color:var(--slate)}
+  .rr-g{margin:0 0 6px}
+  .rr-cls{font-weight:600}
+  .rr-all{display:inline}
+  .rr-all>summary{display:inline;cursor:pointer;color:var(--crimson);font-size:12px;margin-left:4px}
+  .rr-all[open]>summary{display:block;margin:4px 0}
+  span.rr-txt:has(+ .rr-all[open]){display:none}
+  .rr-mt{margin:0 0 6px;font-size:12px}
+  .rr-mt>summary{display:inline-block;list-style:none;cursor:pointer;font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--slate);border:1px solid var(--line2);border-radius:4px;padding:1px 6px}
+  .rr-mt>summary::-webkit-details-marker{display:none}
+  .rr-mt>summary::after{content:" ⓘ";text-transform:none}
+  .rr-mtnote{display:block;margin-top:4px;color:var(--ink)}
+  .rr-orig{margin:0 0 6px;font-size:12px;color:var(--slate)}
   .internal{background:#F6ECF7;border:1px dashed #C9A9CC;border-radius:9px;padding:9px 12px;margin-top:11px;font-size:12.5px;color:#6a2b6e}
   .internal .tag{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8a3a8f;display:block;margin-bottom:3px}
   /* (spec-49 T4: the collapsible QC-banner rules died with the quarantine/review banners.) */
@@ -414,6 +435,9 @@
        own content was carried correctly and only the control leaked, which is why the commit that added
        the fold could check the half it thought about and ship the half it did not. */
     details.drill>summary,details.method>summary,details.sub-more>summary,
+    /* A long goods list's "Show all N terms" is a pure toggle; on paper the full list prints once, without the
+       preview above it. */
+    details.rr-all>summary,
     /* An answer's "More" is a pure toggle: it carries no content of its own, so on paper it would be an
        inert label over text the rule below has already expanded — a defect that once shipped. */
     details.ans-more>summary{display:none!important}
@@ -424,6 +448,8 @@
        and internal notes (.int-note, hidden above) are the only two things print ever drops. */
     details>*:not(summary){display:block!important}
     details>summary{list-style:none;cursor:default}
+    span.rr-txt:has(+ .rr-all){display:none}
+    .rr-mt>summary::after{content:none}
     /* `details.searched` keeps its summary in print like the region rows and the secondary groups. The
        reason has CHANGED and the behaviour has not: the summary used to carry the section's own heading,
        so dropping it in print lost the heading over the counts. The heading is now an <h2> in a section
@@ -505,6 +531,7 @@
   .fourans ul.fa-obstacles{margin:6px 0 0;padding-left:18px}
   .fourans ul.fa-obstacles li{margin:0 0 4px;font-size:13px}
   @media (max-width:640px){.fourans .fa-row{flex-direction:column;gap:2px}.fourans .fa-k{flex:auto}}
+  @media (max-width:640px){.rr-row{grid-template-columns:1fr;gap:0}}
 
   /* ── the coverage ledger stops being the page's smallest print ─────────────────────────────
      `details.scope` had NO screen rule at all: its summary rendered at the browser default, in the

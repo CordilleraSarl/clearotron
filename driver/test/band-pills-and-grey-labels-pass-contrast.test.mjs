@@ -55,6 +55,18 @@ test("grey text reads at 4.5:1 on the page, the second ground, a card and print 
   assert.ok(ratio(LIGHT.slate, "#ffffff") >= AA, "--slate on print white");
 });
 
+test("a drop-down's title reads at 4.5:1 in the dark theme, where --crimson does not", () => {
+  // The title is 11px bold: small text, so 4.5:1. Light keeps --crimson, which reads on the light card.
+  assert.ok(ratio(LIGHT.crimson, LIGHT.card) >= AA, `light: --crimson on --card is ${ratio(LIGHT.crimson, LIGHT.card).toFixed(2)}:1`);
+  const rule = REPORT_ROOT_DARK_EXPLICIT.match(/([^{}]*details\.drill>summary[^{}]*)\{color:(#[0-9a-fA-F]{3,6})/);
+  assert.ok(rule, "the dark block gives a drop-down's title no colour of its own, so it keeps --crimson");
+  assert.ok(rule[1].includes(".rr-all>summary"), "the goods list's Show all toggle is not recoloured in dark");
+  for (const ground of ["card", "bg"]) {
+    const r = ratio(rule[2], DARK[ground]);
+    assert.ok(r >= AA, `dark: a drop-down's title ${rule[2]} on --${ground} is ${r.toFixed(2)}:1`);
+  }
+});
+
 test("no stylesheet or renderer sets text in --faint, and no band pill keeps white text", () => {
   const read = (p) => readFileSync(join(HERE, "..", "publish", p), "utf8");
   for (const p of ["templates/report.css", "templates/knockout.css", "render.mjs", "render-knockout.mjs"]) {

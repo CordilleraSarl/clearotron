@@ -605,7 +605,9 @@ const REPORT_DARK_TOKENS =
 //   dark; the near-white islands (.covcell.warn / .firstUp / .cm-mark / .ccl) flip to dark equivalents.
 const REPORT_DARK_RULES = [
   ['.lockup .lk-mark', `color:${D.crimsonMid}`],
-  ['a,.wm', `color:${D.crimsonText}`],
+  // A drop-down's title ("The read", "Register record", "Full detail") and a long goods list's "Show all" toggle
+  // are crimson text like a link: on the dark ground --crimson measured 1.77:1, so they take the links' colour.
+  ['a,.wm,details.drill>summary,.rr-all>summary', `color:${D.crimsonText}`],
   ['.wm .ridge path', `fill:${D.crimsonText}`],
   ['.tbbtn:hover,.util:hover,.tb-back:hover,.theme-toggle.tt-page:hover', `color:${D.crimsonText};border-color:${D.crimsonText}`],
   ['.rep-stickyhead', 'background:rgba(15,14,12,.82)'],

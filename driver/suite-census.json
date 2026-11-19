@@ -183,6 +183,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-card-opens-each-cited-registration-with-its-register-record.test.mjs": {
+          "tests": 7,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
         "a-case-law-gap-names-the-right-reason.test.mjs": {
           "tests": 8,
           "asserts": 27,
@@ -250,8 +256,8 @@
           "todos": 0
         },
         "a-cited-registration-opens-with-the-register-record.test.mjs": {
-          "tests": 7,
-          "asserts": 35,
+          "tests": 8,
+          "asserts": 36,
           "skips": 0,
           "todos": 0
         },
@@ -3388,8 +3394,8 @@
           "todos": 0
         },
         "band-pills-and-grey-labels-pass-contrast.test.mjs": {
-          "tests": 5,
-          "asserts": 11,
+          "tests": 6,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -6268,8 +6274,8 @@
           "todos": 0
         },
         "render.test.mjs": {
-          "tests": 164,
-          "asserts": 691,
+          "tests": 163,
+          "asserts": 693,
           "skips": 0,
           "todos": 0
         },

@@ -37,6 +37,7 @@ import { READ_LEAD_RE } from '../report-card-record.mjs';   // D3 — the dedupe
 import { logoLockup, BRAND, confPosture, sectionStrip, PALETTE, QUADRANT_COLOURS as QC } from '../../shared/brand.mjs';
 import { NAV_CSS } from '../../shared/site-nav.mjs';
 import { pageShell } from './page-shell.mjs';
+import { registerRecordView, RECORD_LABELS, registrationsCount, countryOf } from './register-record.mjs';   // the register's own record of a cited registration
 import { readerRowHead } from '../coverage-ledger.mjs';   // an engine-token row head in the reader's words   // the document shell, shared with the knockout template
 import { EVIDENCE_LABEL, USE_EVIDENCE_LABEL, meterEvidence } from './evidence-words.mjs';   // the meters' evidence words, shared with the audit workbook
 import { inlineMarkdown } from '../../shared/inline-markdown.mjs';   // the inline-markdown dialect, shared with the knockout template
@@ -106,12 +107,7 @@ let NEGATIVES_GROUPED = false;
 // ladder, the footer names it. Absent ⇒ every legacy (composite) surface renders byte-identically.
 let FRAMEWORK = null;
 let FRAMEWORK_METHOD = null;   // the frozen method (framework-method.mjs), where the framework states one
-// The 2026-09-16 report redesign — the depth rule, as one flag. The same sections render at every depth; what grows
-// is what a finding's Full detail fold carries, and the goods as registered and the record's dates are
-// the two blocks the design gives the full country alone. Module-level for the same reason FRAMEWORK is:
-// fullDetail is reached through four call sites and threading a flag through all of them to reach one
-// `if` is how the other three drift out of step.
-let FULL_COUNTRY = false;
+let AUDIT_HREF = null;   // the audit workbook's address, for the line a capped list ends with; null when the run has none
 const GAUGE_STOP_BY_TONE = { minimal: 1, low: 1, medium: 2, high: 3, severe: 4 };
 // Severity rank for sorting/worst-of: band index in the manifest (0 = most severe); legacy composite
 // negated so higher composite = lower rank. Unrated items sink to the bottom.
@@ -1670,46 +1666,11 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   const regs = (f.owner?.registrations || []).map(r => {
     const uri = String(r.uri || '').toLowerCase();
     const rec = uri ? recordsByUri.get(uri) : null;
-    if (rec) {
-      const cls = (r.classes && r.classes.length ? r.classes.join('/') : (Array.isArray(rec.classList) ? rec.classList.join('/') : ''));
-      const status = REC.statusStr(rec);
-      const filingYear = REC.filingYear(rec), regYear = REC.regYear(rec);
-      const appNum = REC.serial(rec), regNum = REC.regNumber(rec);
-      const jur = r.jurisdiction || rec.jurisdiction || '';
-      const ids = [appNum && `app. ${appNum}`, regNum && `reg. ${regNum}`].filter(Boolean).join(', ');
-      const dates = [filingYear && `filed ${filingYear}`, regYear && `registered ${regYear}`].filter(Boolean).join(', ');
-      const tail = [ids, dates].filter(Boolean).join('; ');
-      // A5 (senior lawyer) — an international (WIPO/Madrid) registration's rights reach ONLY its
-      // designated countries. A WO line NAMES them from the fetched record, or states honestly that
-      // the record did not carry them — never lets "international" imply worldwide.
-      const isWO = normRegion(jur) === 'WO' || /\/mark\/wo\//i.test(uri);
-      const desig = isWO ? REC.designations(rec) : null;
-      const desigHtml = !isWO ? ''
-        : (desig ? ` · designating: ${esc(desig.join(', '))}`
-                 : ` · <i>designated countries not on the fetched record — rights reach only its designations</i>`);
-      // C1 — the jurisdiction's registration system, labeled from DATA (unknown = unlabeled)
-      const sys = registrationSystem(jur);
-      // C2 — an application inside the 6-month Paris-priority window can be re-filed
-      // elsewhere claiming THIS date; flag it so a fresh local filing is never read as local-only.
-      const prio = AS_OF && inPriorityWindow(rec, AS_OF)
-        ? ` · <b>recent filing — Paris-priority window (potential global backdating)</b>` : '';
-      // WP-receipts W2 — the PROVABLE verified label: when the record artifact carries its fetch
-      // receipt (_receipt, embedded at assembly), say what was pulled and when — replacing the
-      // "file exists on disk" inference. Absent receipt (archived runs) renders nothing.
-      const receiptTail = rec._receipt?.fetched_at
-        ? ` · <i class="receipt">verified — ${esc(PROVIDER_LABEL || 'register')} record fetched ${esc(String(rec._receipt.fetched_at).slice(0, 10))}</i>` : '';
-      // AS REGISTERED, AND THE DATES — the full country's two extra blocks (the 2026-09-16 report redesign). Both come
-      // off the fetched record and neither is composed: the goods are the register's own wording in the
-      // language it granted them in, and the dates are its own, to the day. The one-line summary above
-      // carries YEARS, which cannot say whether a registration lapses this month.
-      const goods = FULL_COUNTRY ? REC.goods(rec) : null;
-      const recDates = FULL_COUNTRY ? REC.dates(rec) : null;
-      const goodsHtml = !goods ? '' : `<div class="row"><span class="k">As registered</span><span class="v">${
-        goods.map((g) => `${g.classes.length ? `${esc(g.classes.length === 1 ? 'Class' : 'Classes')} ${esc(g.classes.join(', '))}: ` : ''}${esc(g.description)}`).join('<br>')}</span></div>`;
-      const datesHtml = !recDates ? '' : `<div class="row"><span class="k">Dates</span><span class="v">${
-        esc(recDates.map(([k, v]) => `${k} ${v}`).join(' \u00b7 '))}</span></div>`;
-      return `<li><b>${officeRecordCell(r.uri, regUri, RECORD_CITATION ? NO_LINK_NOTE[RECORD_CITATION] : null)}</b>${cls ? ` · Cl.${esc(cls)}` : ''}${status ? ` · ${esc(status)}` : ''}${tail ? ` (${esc(tail)})` : ''}${jur ? ` · ${esc(jur)}${sys ? ` <i class="jsys">(${sys})</i>` : ''}` : ''}${desigHtml}${prio}${receiptTail}${goodsHtml || datesHtml ? `<div class="record">${goodsHtml}${datesHtml}</div>` : ''}</li>`;
-    }
+    // A FETCHED RECORD IS NOT A LINE HERE ANY MORE. Its facts open the card as the register's own record, in
+    // registerRecordBlock below, before this analysis; a line here would state them twice. What stays in Full
+    // detail is what has no record to show: an index-only citation, and the back-compat render of a run that
+    // fetched no records at all.
+    if (rec) return '';
     // (2)+(3): a cited record with NO fetched body. NEVER-INVENT when the run has a record set (this URI was
     // not fetched ⇒ the model's fields are unconfirmed); also when there are no findings.json facts to show.
     if (uri && (hasRecordSet || !(r.status || r.filed || r.expiry || (r.classes && r.classes.length)))) {
@@ -1890,7 +1851,85 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   const proseHasRead = READ_LEAD_RE.test(proseFull || '');
   const positions = `${proseHasRead ? '' : lpSplit(f)}${manageableLine(f)}`;
   const body = `${positions}${regs || seniorLine || fetchFailLine || enfLine || enfTelemetry || useChk || ownR || impactLine ? `<ul>${fetchFailLine}${seniorLine}${regs}${enfLine}${enfTelemetry}${useChk}${ownR}${impactLine}</ul>` : ''}${proseFullShown ? renderProse(proseFullShown) : ''}${caseLawStrand}${prov}`;
-  return `<details class="drill"><summary>Full detail</summary><div class="drillbody">${body}</div></details>`;
+  const recordBlock = registerRecordBlock(f, recordsByUri, (u) => officeRecordCell(u, regUri, RECORD_CITATION ? NO_LINK_NOTE[RECORD_CITATION] : null));
+  return `${recordBlock}<details class="drill"><summary>Full detail</summary><div class="drillbody">${body}</div></details>`;
+}
+
+// THE REGISTER RECORD (owner, 2026-11-18). A reviewing lawyer checked every cited mark against the register by hand
+// before reading the analysis. Each cited registration whose record this run fetched now opens with the register's
+// own facts, in a closed drop-down placed before "Full detail": the mark and its type, the goods by class, the owner
+// and the owner's country, the country, the status with its dates, and the register number. Every fact is copied
+// from the saved record by registerRecordView; nothing here is composed by a model, and the words are the approved
+// labels and the report's own.
+//
+// THREE FACTS THE OLD LINE CARRIED KEEP THEIR WORDS AND MOVE TO THEIR ROW (design, 2026-11-19): an international
+// registration's designated countries, or the sentence saying the record did not carry them, and the registration
+// system go on the Country row; the Paris-priority flag goes beside the dates on the Status row, with its emphasis.
+//
+// AT MOST EIGHT ENTRIES, in the card's order, then the line that sends the reader to the audit workbook for all of
+// them (owner, 2026-11-18). A card citing dozens of registrations otherwise runs to pages.
+const RECORD_CAP = 8;
+function registerRecordBlock(f, recordsByUri, numberCell) {
+  const cited = (f.owner?.registrations || [])
+    .map((r) => ({ r, rec: r?.uri ? recordsByUri.get(String(r.uri).toLowerCase()) : null }))
+    .filter((x) => x.rec);
+  if (!cited.length) return '';
+  const entries = cited.slice(0, RECORD_CAP).map(({ r, rec }) => recordEntry(f, r, rec, numberCell)).join('');
+  const all = R.cleared.allInWorkbook(cited.length.toLocaleString('en-GB'));
+  const more = cited.length > RECORD_CAP ? `<div class="cmore">${AUDIT_HREF ? `<a class="wb" href="${AUDIT_HREF}">${all}</a>` : all}</div>` : '';
+  const count = cited.length > 1 ? ` <span class="rr-count">${esc(registrationsCount(cited.length))}</span>` : '';
+  return `<details class="drill rr-drill"><summary>${esc(RECORD_LABELS.title)}${count}</summary><div class="drillbody">${entries}${more}</div></details>`;
+}
+
+function recordEntry(f, r, rec, numberCell) {
+  const uri = String(r.uri || '');
+  const receipt = rec._receipt?.fetched_at
+    ? `verified — ${PROVIDER_LABEL || 'register'} record fetched ${String(rec._receipt.fetched_at).slice(0, 10)}` : null;
+  const view = registerRecordView(rec, { uri, receipt });
+  const by = Object.fromEntries(view.rows.map((row) => [row.label, row]));
+  const L = RECORD_LABELS;
+  const faint = (t) => (t ? ` <span class="rr-faint">${esc(t)}</span>` : '');
+  const row = (label, v) => (v ? `<div class="rr-row"><span class="k">${esc(label)}</span><span class="v">${v}</span></div>` : '');
+  // The goods: the translation marker or the original's note first, then each class statement, a long one cut at
+  // a term boundary with the rest one tap away.
+  const g = by[L.goods];
+  const statement = (st) => `<div class="rr-g"><span class="rr-cls">${esc(st.class)}</span> ${st.preview
+    ? `<span class="rr-txt">${esc(st.preview)}; …</span><details class="rr-all"><summary>${esc(st.showAll)}</summary><span class="rr-txt">${esc(st.text)}</span></details>`
+    : `<span class="rr-txt">${esc(st.text)}</span>`}</div>`;
+  const goods = g.entries.length
+    ? `${g.marker ? `<details class="rr-mt"><summary>${esc(g.marker.tag)}</summary><span class="rr-mtnote">${esc(g.marker.note)}</span></details>` : ''}${g.note ? `<div class="rr-orig">${esc(g.note)}</div>` : ''}${g.entries.map(statement).join('')}`
+    : `<div class="rr-g rr-faint">${esc(g.note)}</div>`;
+  // The Country row carries the registration system and, for an international registration, where its rights reach.
+  const jur = r.jurisdiction || rec.jurisdiction || '';
+  const sys = registrationSystem(jur);
+  const isWO = normRegion(jur) === 'WO' || /\/mark\/wo\//i.test(uri);
+  const desig = isWO ? REC.designations(rec) : null;
+  const reach = !isWO ? ''
+    : (desig ? ` · designating: ${esc(desig.join(', '))}`
+             : ` · <i>designated countries not on the fetched record — rights reach only its designations</i>`);
+  // A record that names no office still names its jurisdiction, and the country is read from that.
+  const place = by[L.country].value || countryOf(rec.jurisdiction);
+  const country = place || isWO || sys
+    ? `${esc(place || '')}${sys ? ` <i class="jsys">(${sys})</i>` : ''}${reach}` : '';
+  // The Status row: the register's status, its dates, and the Paris-priority flag beside them.
+  const st = by[L.status];
+  const prio = AS_OF && inPriorityWindow(rec, AS_OF)
+    ? ` · <b>recent filing — Paris-priority window (potential global backdating)</b>` : '';
+  const status = st.value || st.faint || prio
+    ? `${esc(st.value || '')}${st.value && st.faint ? ' · ' : ''}${st.faint ? `<span class="rr-faint">${esc(st.faint)}</span>` : ''}${prio}` : '';
+  // The register number is the cell the report already prints for this registration; the application number
+  // follows only where the cell does not already show it. Compared by letters and digits alone: an office can
+  // write the number the record holds as 2019046708 with dashes, "2019-046708".
+  const num = by[L.number];
+  const cell = numberCell(uri);
+  const bare = (t) => String(t).replace(/<[^>]*>/g, '').replace(/[^0-9A-Za-z]/g, '');
+  const app = num.faint && !bare(cell).includes(bare(num.faint.replace(/^application /, ''))) ? faint(num.faint) : '';
+  const mark = by[L.mark].value ? `<b>${esc(by[L.mark].value)}</b>${faint(by[L.mark].faint)}` : '';
+  // The owner by the card's own rule: a record's Latin owner is a romanisation when it also carries the native
+  // form, and then the resolved name is the one a lawyer can read (recordOwner, above, decides the same way).
+  const ownerName = ownerDisplayName({ raw: REC.owner(rec), native: REC.ownerNative(rec), resolved: f.owner?.name });
+  const owner = ownerName ? `${esc(ownerName)}${faint(by[L.owner].faint)}` : '';
+  return `<div class="rr">${row(L.mark, mark)}${row(L.goods, goods)}${row(L.owner, owner)}${row(L.country, country)}${row(L.status, status)}${row(L.number, `${cell}${app}${receipt ? `<div><i class="receipt">${esc(receipt)}</i></div>` : ''}`)}</div>`;
 }
 
 // The contentious MARK + the classes it matched in, as a header chip next to the holder — so a card shows
@@ -2498,7 +2537,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   VERDICT_INFO = (opts.verdictInfo && opts.verdictInfo.tier != null) ? opts.verdictInfo : null;   // T2 — only an enriched sidecar is an authority
   FRAMEWORK = opts.framework ?? null;   // doc 50 — the frozen manifest; null on archived/legacy runs
   FRAMEWORK_METHOD = opts.frameworkMethod ?? null;
-  FULL_COUNTRY = isFullCountry(opts);   // The 2026-09-16 report redesign — the depth rule for the Full detail fold
+  AUDIT_HREF = hrefAttr(opts.auditFile, { relative: true }) || null;
   SEARCHED_JUR = Array.isArray(opts.searchedJurisdictions) && opts.searchedJurisdictions.length ? opts.searchedJurisdictions : null;   // T6 (D4)
   SCOPE_WORLDWIDE = opts.scopeBasis === 'worldwide' ? true : null;   // the plan's scope_basis; null ⇒ fall back to the ledger-prose sniff
   CASE_LAW_BY_ORD = opts.caseLawByOrdinal instanceof Map ? opts.caseLawByOrdinal : new Map();   // T7 (E5)
