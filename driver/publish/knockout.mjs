@@ -16,7 +16,7 @@ import { riskTier, TONE_TIER, regenIndex, regenSurfaces, auditRouteFor, markRepo
 import { runKnockoutLint, deliveryFlagLines } from '../predelivery-lint.mjs';
 import { note } from '../log.mjs';
 import { addSheet } from './xlsx.mjs';
-import { KNOCKOUT_EMAIL as KO, KNOCKOUT_WORKBOOK as KW } from './strings.mjs';
+import { KNOCKOUT_EMAIL as KO, KNOCKOUT_WORKBOOK as KW, KNOCKOUT_PAGE as KP } from './strings.mjs';
 import { COUNT_PREDICATES, COUNT_BASIS, countsForMark, countLine, countedMarks, variantFormsLine, disclosedFloor, moreThan, countNote } from '../register-count.mjs';
 import { noneCarriedForward, recordsForMark, recordsLine, normalizeRegisterRecordLinks } from '../register-records.mjs';
 import { reportIdentityFor, productCoverageNote, kebab } from '../search-policy.mjs';
@@ -66,7 +66,7 @@ const bandCounts = (framework, marks) => {
   return [...counts].filter(([, n]) => n > 0);
 };
 export const knockoutStatement = (framework, marks) =>
-  `Knockout screen — ${marks.length} mark${marks.length === 1 ? '' : 's'}: ${bandCounts(framework, marks).map(([l, n]) => `${n} ${l}`).join(', ') || 'no rated marks'}.`;
+  KP.statement(marks.length, bandCounts(framework, marks).map(([l, n]) => `${n} ${l}`).join(', ') || KP.noRatedMarks);
 
 // The MSO review table and its bare-<div> page wrapper are DELETED (2026-07-28). They were a
 // byte-faithful port of the interactive skill's Word template — `border:solid windowtext 1pt`, Calibri
@@ -1005,14 +1005,13 @@ export function knockoutDocumentRoutes(reports, { auditFile = null } = {}) {
     // boundary by heading DEPTH instead of reading one. That guess is what broke the moment the summary
     // gained sub-headers of its own — it terminated the client's entry point at the first of them.
     // Promoted, the boundary is the section boundary, and both readers stop in the right place.
-    '', '# Documents', '',
-    ...rows.map((r) => `- **${r.mark ?? '(unnamed mark)'}**${r.band ? ` — ${r.band}` : ''}: \`${r.file}\``),
+    '', `# ${KP.documents}`, '',
+    ...rows.map((r) => `- **${r.mark ?? KP.unnamedMark}**${r.band ? ` — ${r.band}` : ''}: \`${r.file}\``),
     '',
     rows.length === 1
-      ? 'The register counts, the records and the coverage are in that document.'
-      : 'One document per mark, each carrying its own register counts, records and coverage. There is no '
-        + 'combined report: this summary is the only place the marks appear together.',
-    ...(auditFile ? [`The receipts are in the audit workbook: \`${auditFile}\`.`] : []),
+      ? KP.oneDocument
+      : KP.manyDocuments,
+    ...(auditFile ? [KP.receiptsIn(auditFile)] : []),
   ];
 }
 

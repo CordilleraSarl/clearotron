@@ -14,6 +14,8 @@
 
 /** The cover note that carries a clearance report to the lawyer, as HTML and as markdown. */
 export const EMAIL = Object.freeze({
+  // The risk tier a cover note's badge prints, by the tier it matched.
+  tiers: Object.freeze({ veryHigh: 'VERY HIGH', high: 'HIGH', medium: 'MEDIUM', manageable: 'MANAGEABLE', low: 'LOW' }),
   openReport: '▶ Open the full report',
   downloadAudit: 'Download audit (Excel)',
   scopeLabel: 'Search scope:',
@@ -184,6 +186,19 @@ export const WORKBOOK = Object.freeze({
   // Coverage & gaps: a probe the run decided on and never sent, and a result the run read and put down.
   overTheCap: 'over the cap, never dispatched',
   setAside: (what) => `Set aside: ${what}`,
+  // A machine check whose finding the report does not print, and the words a few cells fall back to.
+  checkNotPassed: 'A machine check on the report did not pass.',
+  notChecked: 'not checked',
+  commonLawRegistration: '— (common-law)',
+  notedOnly: 'n/a — noted only',
+  // The engine's own words, and the reader's word each becomes in a cell. Keys are the engine's, lower case.
+  readerWords: Object.freeze({
+    receipt: 'record', receipts: 'records',
+    lint: 'check', tripwire: 'check', tripwires: 'checks',
+    composite: 'combined', scatter: 'chart', cache: 'stored copy',
+    quadrant: 'position', quadrants: 'positions', coordinate: 'position', coordinates: 'positions',
+    meter: 'measure', meters: 'measures',
+  }),
 });
 
 /** The Knockout's audit workbook: its sheets' own words. A value a cell carries arrives formatted. */
@@ -297,6 +312,9 @@ export const REGISTER_RECORD = Object.freeze({
     ? `In ${language}, as registered. No English translation on the record.`
     : 'As registered. No English translation on the record.'),
   logoAlt: (mark, country) => `${mark}, logo as registered in ${country}`,
+  designating: (list) => ` · designating: ${list}`,
+  designationsNotOnRecord: 'designated countries not on the fetched record — rights reach only its designations',
+  priorityWindow: 'recent filing — Paris-priority window (potential global backdating)',
 });
 
 /**
@@ -461,7 +479,19 @@ export const KNOCKOUT_PAGE = Object.freeze({
     useCheckLabel: 'Use-check source:',
     useCheckUnavailable: 'Use check unavailable.',
     useCheckLinkUnavailable: 'link unavailable.',
+    proprietorNotStated: 'proprietor not stated',
+    noRecordAddress: 'no record address supplied',
   }),
+  furtherFilings: (n) => `${n} further filing${n === 1 ? '' : 's'} for this name met the same test — every one of them is in the filings section below.`,
+  issuedOn: (date) => `issued on ${date}`,
+  // The batch's statement and the summary's list of documents.
+  statement: (n, counts) => `Knockout screen — ${n} mark${n === 1 ? '' : 's'}: ${counts}.`,
+  noRatedMarks: 'no rated marks',
+  documents: 'Documents',
+  unnamedMark: '(unnamed mark)',
+  oneDocument: 'The register counts, the records and the coverage are in that document.',
+  manyDocuments: 'One document per mark, each carrying its own register counts, records and coverage. There is no combined report: this summary is the only place the marks appear together.',
+  receiptsIn: (file) => `The receipts are in the audit workbook: \`${file}\`.`,
 });
 
 /** The clearance report page: its own words, section by section. A value a sentence carries arrives formatted. */
@@ -752,4 +782,13 @@ export const REPORT_PAGE = Object.freeze({
     note: 'Note',
   }),
   nextStepsHead: 'Next steps & monitoring',
+  marketplaceWebChip: 'Marketplace / web',
+  chartTitle: (n) => `Chart of ${n} conflict${n === 1 ? '' : 's'}, placed by how similar each mark is and how close its goods are; each number links to its card below.`,
+  // A record entry fetched from the register; `register` is the fallback when the run names no provider.
+  recordVerified: (provider, date) => `verified — ${provider} record fetched ${date}`,
+  register: 'register',
+  followUpPrefix: 'Follow-up / ',
+  exportPdfTicked: 'Export PDF (ticked findings)',
+  searchedOn: (date) => `searched on ${date}`,
+  issuedOn: (date) => `issued on ${date}`,
 });

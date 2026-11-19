@@ -1003,7 +1003,7 @@ export function registerCardViews(mark, framework, registerRecords) {
   const typed = knockoutFindingViews(mark, { manifest: framework });
   const floor = Math.max(REGISTER_ORDINAL_FLOOR, ...typed.map((v) => Number(v.ordinal) || 0));
   const markName = String(mark?.name ?? '').trim();
-  const provider = registerRecords.providerLabel ?? registerRecords.provider ?? 'the register';
+  const provider = registerRecords.providerLabel ?? registerRecords.provider ?? K.counted.theRegister;
   // RANKED BEFORE THE CAP. promotableRecords decides WHETHER a filing may be
   // pointed at; this decides WHICH of the ones that may get the three slots. Without it the three cards
   // were the first three the provider happened to return.
@@ -1211,9 +1211,9 @@ function registerFindingBlock(v, markIndex, reads = null, framework = null, owne
   const useCheckLine = !useCheck ? ''
     : useCheck.kind === 'unavailable' ? esc(USE_CHECK_UNAVAILABLE)
     : `${esc(USE_CHECK_LABEL)} ${useCheck.kind === 'linked' ? linkOrText(useCheck.url) : esc(USE_CHECK_LINK_UNAVAILABLE)}`;
-  const meta = [r.owner ? esc(r.owner) : 'proprietor not stated', r.territory ? esc(r.territory) : null]
+  const meta = [r.owner ? esc(r.owner) : K.filingCard.proprietorNotStated, r.territory ? esc(r.territory) : null]
     .filter(Boolean).join(' · ');
-  const receipt = officeRecordCell(r, isHttpUrl(r.url) ? linkOrText(r.url) : esc(r.recordId ?? 'no record address supplied'));
+  const receipt = officeRecordCell(r, isHttpUrl(r.url) ? linkOrText(r.url) : esc(r.recordId ?? K.filingCard.noRecordAddress));
   return `<div class="card ko-find" data-ko-mark="${Number(markIndex)}" data-ko-ord="${Number(v.ordinal)}">
         <div class="top">
           <div class="rail" style="background:var(${stop ?? '--faint'})"></div>
@@ -1480,7 +1480,7 @@ function analysisSection(marks, framework, { registerCounts = null, probeRan = f
     // are the same fact: further filings for this name, all of them listed below.
     const held = reg.promoted - drawn.length;
     const overflow = held > 0
-      ? `<p class="ko-bul">${esc(`${held} further filing${held === 1 ? '' : 's'} for this name met the same test — every one of them is in the filings section below.`)}</p>`
+      ? `<p class="ko-bul">${esc(K.furtherFilings(held))}</p>`
       : '';
     // THE DEFECT THIS CLOSES. This line was `(m.findings ??).filter((f) => f?.url)`, and a
     // typed finding has no `url` — so every conflict was dropped from the page and a mark whose findings
@@ -1879,7 +1879,7 @@ ${EXPORT_MENU_JS}</script>
          off this page; the line is provenance rather than the narration that was ruled out, so it moved
          here. Owner ruling, 2026-09-17. Adjacent on purpose, as on the clearance side. -->${servedModelsLine(servedModels)}
     <span>${[title, productName].filter(Boolean).map(esc).join(' \u00b7 ')}${
-      issuedDate ? `${title || productName ? ' \u00b7 ' : ''}issued on ${esc(issuedDate)}` : ''}${
+      issuedDate ? `${title || productName ? ' \u00b7 ' : ''}${esc(K.issuedOn(issuedDate))}` : ''}${
       title || productName || issuedDate ? '.' : ''}</span>
     ${logoLockup({ mark: 16 })}
   </footer>

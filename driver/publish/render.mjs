@@ -431,7 +431,7 @@ function sourceChip(st) {
 function evidenceChips(f) {
   const chips = [];
   if ((f.owner?.registrations ?? []).length || /^register/.test(f.source?.source_type || '')) chips.push({ label: 'Register', cls: 'reg' });
-  if (f.use_check?.source || /^common-law/.test(f.source?.source_type || '')) chips.push({ label: 'Marketplace / web', cls: 'cl' });
+  if (f.use_check?.source || /^common-law/.test(f.source?.source_type || '')) chips.push({ label: R.marketplaceWebChip, cls: 'cl' });
   if (CASE_LAW_BY_ORD.has(f.ordinal)) chips.push({ label: 'Case-law', cls: 'cl' });
   const use = f.meters?.use?.token;
   if (use === 'confirmed') chips.push({ label: 'Use ✓', cls: 'reg' });
@@ -1370,7 +1370,7 @@ function dedupeScatter(findings) {
 
 // THE CHART'S NAME (owner, 2026-11-18). A screen reader met an unnamed drawing and then a run
 // of "#1", "#2" links. The <title>, first in the <svg>, says what the drawing is; its count is the points drawn.
-const chartTitle = (n) => `Chart of ${n} conflict${n === 1 ? '' : 's'}, placed by how similar each mark is and how close its goods are; each number links to its card below.`;
+const chartTitle = R.chartTitle;
 
 function quadrant(findings) {
   const points = dedupeScatter(findings);
@@ -1905,7 +1905,7 @@ function logoLine(f, recordsByUri, { small = false } = {}) {
 function recordEntry(f, r, rec, numberCell) {
   const uri = String(r.uri || '');
   const receipt = rec._receipt?.fetched_at
-    ? `verified — ${PROVIDER_LABEL || 'register'} record fetched ${String(rec._receipt.fetched_at).slice(0, 10)}` : null;
+    ? R.recordVerified(PROVIDER_LABEL || R.register, String(rec._receipt.fetched_at).slice(0, 10)) : null;
   // The owner by the card's own rule: a record's Latin owner is a romanisation when it also carries the native
   // form, and then the resolved name is the one a lawyer can read (recordOwner, above, decides the same way).
   const ownerName = ownerDisplayName({ raw: REC.owner(rec), native: REC.ownerNative(rec), resolved: f.owner?.name });
@@ -2151,7 +2151,7 @@ const COV_STATE = {
  * from the reader, which is the failure worth avoiding. So the driver's row goes only when another row
  * carries EVERY significant word of the directive it names — a near-match keeps both.
  */
-const FOLLOW_UP_PREFIX = 'Follow-up / ';
+const FOLLOW_UP_PREFIX = R.followUpPrefix;
 // `<axis> / <what was swept>` — the shape unitLabel composes for a plan-derived coverage unit.
 const AXIS_LABELLED = /\s\/\s/;
 const COV_STOPWORDS = new Set(['the', 'a', 'an', 'as', 'for', 'of', 'in', 'on', 'and', 'or', 'to', 'is',
@@ -2791,7 +2791,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
     ${EXPORT_TOGGLE}
     ${exportPopover(`
       <div class="tb-pop-title">${esc(R.topbar.exportAndAudit)}</div>
-      <button class="util primary" onclick="exportPDF()">⬇ Export PDF (ticked findings)</button>
+      <button class="util primary" onclick="exportPDF()">⬇ ${R.exportPdfTicked}</button>
       ${excelBtn2}
       <div class="tb-sep"></div>
       <div class="tb-row"><button class="util" onclick="pickAll(true)">${R.topbar.selectAll}</button><button class="util" onclick="pickAll(false)">${R.topbar.selectNone}</button></div>
@@ -2888,8 +2888,8 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
       const issuedOn = (String(opts.issued ?? '').match(/^\d{4}-\d{2}-\d{2}/) || [])[0] ?? opts.issued ?? null;
       const parts = [
         fm.matter ? `Matter ${esc(fm.matter)}` : '',
-        searchedOn ? `searched on ${esc(searchedOn)}` : '',
-        issuedOn ? `issued on ${esc(issuedOn)}` : '',
+        searchedOn ? esc(R.searchedOn(searchedOn)) : '',
+        issuedOn ? esc(R.issuedOn(issuedOn)) : '',
         provider ? esc(provider) : '',
       ].filter(Boolean);
       const line = parts.length ? `${parts.join(' \u00b7 ')}.` : '';
