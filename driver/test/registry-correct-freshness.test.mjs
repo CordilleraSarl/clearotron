@@ -17,7 +17,7 @@
 // fires AND the correction lands — which is why it is worth closing before it happens rather than after.
 
 import { test } from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -105,7 +105,7 @@ test("THE CALL SITE EXISTS — the corrector restamps what it wrote", () => {
   // actually uses it. Deleting the restamp call is precisely how this defect comes back, and without
   // this assertion every test in this file would still pass while the run died in production.
   const src = driverSource("pipeline.mjs");
-  const fn = src.slice(src.indexOf("const autoCorrectRegistry = ()"));
+  const fn = src.slice(onlyAt(src, "const autoCorrectRegistry = ()"));
   const body = fn.slice(0, fn.indexOf("\n      };"));
   assert.ok(body.includes("writeFileSync(file, after)"), "found the corrector's write (anchor still valid)");
   // Matched WITHOUT the closing paren so the call may carry options ( added a projection hook) —
@@ -120,7 +120,8 @@ test("autoCorrectClientTiers is deliberately NOT restamped — it cannot strand 
   // there would be cargo-cult; if client-summary.md ever BECOMES a declared input, this test fails and
   // whoever made that change gets told to look here.
   const stages = driverSource("stages.mjs");
-  const map = stages.slice(stages.indexOf("stageInputs"));
+  // The function itself: its name also occurs in comments above it, and the first of those is not the map.
+  const map = stages.slice(onlyAt(stages, "export function stageInputs("));
   const declared = map.slice(0, map.indexOf("\n}"));
   assert.ok(!/P\.clientSummary/.test(declared),
     "client-summary.md is not a stage input — if that changed, autoCorrectClientTiers now needs a restamp too");

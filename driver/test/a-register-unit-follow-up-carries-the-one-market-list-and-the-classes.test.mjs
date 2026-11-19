@@ -10,7 +10,7 @@
 // and the markets were the model's to pick. Each follow-up now carries the line the opening message gives, and the
 // class line. Every market, class and mark here is invented.
 import { test } from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { repairFollowup } from "../repair-composers.mjs";
 import { inScopeClassLine, followupScopeLines } from "../stages.mjs";
@@ -69,7 +69,7 @@ test("a follow-up composed with no order to read adds nothing", () => {
 test("the pipeline hands every register-unit follow-up the order and the profile it is read from", () => {
   const src = driverSource("pipeline.mjs");
   for (const key of ["xcheck-decide", "frame-reopen-directive", "frame-reopen-retry", "escalation", "envelope-close"]) {
-    const at = src.indexOf(`repairFollowup("register-unit:${key}"`);
+    const at = onlyAt(src, `repairFollowup("register-unit:${key}"`);
     assert.ok(at >= 0, `no call composes the ${key} follow-up`);
     const call = src.slice(at, src.indexOf(";", at));
     assert.match(call, /job: ctx\.job, profile: ctx\.profile/, `the ${key} follow-up is composed without the order and the profile`);

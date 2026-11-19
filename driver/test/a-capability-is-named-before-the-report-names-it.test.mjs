@@ -32,7 +32,7 @@ import { caseLawInventory } from "../config-inventory.mjs";
 import { caseLawReadyFor } from "../flag-snapshot.mjs";
 import { CASELAW_BRIDGES } from "../engine/mcp/gather-config.mjs";
 import { PRODUCTS } from "../products.mjs";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 
 const withCreds = (enrolled) => {
   const dir = mkdtempSync(join(tmpdir(), "caselaw-creds-"));
@@ -122,7 +122,7 @@ test("arm 4 — the composer warns off the PRODUCT'S declaration, and only on a 
     "the warning fires on anything but an explicit false — a snapshot that cannot say would warn every reader");
   // The sentence a client reads names no vendor and no variable: the enrolment is an operator's job on
   // the box, and this is a client-facing screen.
-  const note = src.slice(src.indexOf("const CASE_LAW_DARK_NOTE"), src.indexOf(";", src.indexOf("const CASE_LAW_DARK_NOTE")));
+  const note = src.slice(onlyAt(src, "const CASE_LAW_DARK_NOTE"), src.indexOf(";", onlyAt(src, "const CASE_LAW_DARK_NOTE")));
   assert.doesNotMatch(note, /courtlistener|legaldatahunter|OAUTH|README/i,
     "the client-facing sentence names our plumbing");
   assert.match(note, /report states the gap/, "it does not say what the reader gets instead");

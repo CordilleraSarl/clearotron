@@ -28,7 +28,7 @@
 //   · the missing-meter message names each meter's set   → break: restore "use unknown", arm 2
 //   · the closed sets themselves are unchanged           → break: admit unknown, arm 4
 import { test } from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -106,7 +106,7 @@ test("arm 3 — `unknown` never sits inside a 3-band meter's stated set in the i
   // them in a trailing parenthetical. Each set is now stated on its own, so the word is never adjacent
   // to a meter it is illegal on.
   for (const meter of CLOSED_3) {
-    const at = STAGES.indexOf(`${meter} = `);
+    const at = onlyAt(STAGES, `${meter} = `);
     assert.ok(at > 0, `the instruction no longer states ${meter}'s own closed set`);
     const stated = STAGES.slice(at, STAGES.indexOf(".", at));
     assert.ok(!/unknown/.test(stated),
@@ -115,7 +115,7 @@ test("arm 3 — `unknown` never sits inside a 3-band meter's stated set in the i
       assert.ok(stated.includes(tok), `${meter}'s set omits its own legal token ${tok}`);
   }
   // enforcer DOES carry it, and must keep saying so — this is a split, not a blanket ban.
-  const enf = STAGES.slice(STAGES.indexOf("enforcer = "), STAGES.indexOf(".", STAGES.indexOf("enforcer = ")));
+  const enf = STAGES.slice(onlyAt(STAGES, "enforcer = "), STAGES.indexOf(".", onlyAt(STAGES, "enforcer = ")));
   assert.match(enf, /unknown/, "enforcer lost its indeterminate value — the split went one meter too far");
 });
 

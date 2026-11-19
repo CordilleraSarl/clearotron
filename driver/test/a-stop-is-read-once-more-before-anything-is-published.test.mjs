@@ -17,7 +17,7 @@
 // is the shape this whole defect had.
 
 import test from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -70,9 +70,9 @@ test("BOTH lanes perform the read, and the clearance lane does it after the alre
 
   // On the clearance lane it must sit INSIDE the else branch — after the `.published` short-circuit —
   // or a run that already delivered would be recorded as cancelled, which is this defect reversed.
-  const shortCircuit = cl.indexOf('existsSync(join(run.runDir, ".published"))');
-  const call = cl.indexOf('assertNotCancelledBeforePublish(run.runDir, "clearance")');
-  const publish = cl.indexOf("published = await publishReport({");
+  const shortCircuit = onlyAt(cl, 'existsSync(join(run.runDir, ".published"))');
+  const call = onlyAt(cl, 'assertNotCancelledBeforePublish(run.runDir, "clearance")');
+  const publish = onlyAt(cl, "published = await publishReport({");
   assert.ok(shortCircuit > 0 && call > shortCircuit,
     "the clearance lane reads the flag BEFORE the already-published check — a delivered run would be recorded as stopped");
   assert.ok(call < publish, "the clearance lane reads the flag after publishing, which is no read at all");

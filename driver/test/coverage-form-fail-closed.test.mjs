@@ -18,7 +18,7 @@
 // THREE STATES, AND THEY ARE NOT THE SAME FACT. This file pins all three, plus the write ORDER that makes
 // the third reachable at all.
 import { test } from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -126,7 +126,7 @@ test("M6 — THE DISPATCH HAS NO SECOND ARM, and the driver arms before it dispa
     // future edit dispatches the digest without arming first, the unstamped validator arm becomes
     // reachable on a live run and the seat is handed an unclearable contract.
     const src = driverSource("pipeline.mjs");
-    const arm = src.indexOf("armCoverageForm(P.runDir);");
+    const arm = onlyAt(src, "armCoverageForm(P.runDir);");
     const gate = src.lastIndexOf("if (willRun) {", arm);
     assert.ok(gate >= 0 && arm > gate, "armCoverageForm runs inside the same willRun gate that dispatches the digest");
   } finally { cleanup(dir); }

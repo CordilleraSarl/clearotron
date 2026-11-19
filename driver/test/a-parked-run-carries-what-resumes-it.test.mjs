@@ -79,7 +79,7 @@ test("a park with no identity to give still writes, and says so by leaving the t
 // RunChoiceUnavailable signal. pipeline() parks it rather than ending it, and the marker it writes is the one above.
 import { isRunChoiceUnavailable, parkForRunChoice } from "../pipeline.mjs";
 import { postponedDueAt } from "../runner.mjs";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 
 const signal = (runDir) => Object.assign(new Error("run amber-gate started on the euipo register, and this process serves the signa register."), {
   name: "RunChoiceUnavailable", run: { runDir, codename: "amber-gate", date: "2026-11-10" },
@@ -110,6 +110,6 @@ test("a resume this runner cannot serve parks with what it waits on, and the run
 
 test("pipeline() parks the signal and lets every other failure through", () => {
   const src = driverSource("pipeline.mjs");
-  const fn = src.slice(src.indexOf("export async function pipeline(job, opts = {}) {"), src.indexOf("export function isRunChoiceUnavailable("));
+  const fn = src.slice(onlyAt(src, "export async function pipeline(job, opts = {}) {"), onlyAt(src, "export function isRunChoiceUnavailable("));
   assert.match(fn, /if \(isRunChoiceUnavailable\(e\)\) return parkForRunChoice\(e, \{ job, agent: opts\.agent \?\? config\.defaultAgent \}\);\s*throw e;/);
 });

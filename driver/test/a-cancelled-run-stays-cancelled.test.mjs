@@ -20,7 +20,7 @@
 // queueOwnedCodenames, so cancelling in the queue was the act that HANDED the run to the run-dir
 // watcher. The strongest stop an operator could write made the resurrection more likely.
 import { test } from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -226,8 +226,8 @@ test("WIRING: the door refuses BEFORE it clears any marker", async () => {
   const { fileURLToPath } = await import("node:url");
   const { dirname } = await import("node:path");
   const src = driverSource("pipeline.mjs");
-  const refusal = src.indexOf("const stopped = resumeStopRefusal(run.runDir);");
-  const clearing = src.indexOf('rmSync(join(run.runDir, ".failed"))');
+  const refusal = onlyAt(src, "const stopped = resumeStopRefusal(run.runDir);");
+  const clearing = onlyAt(src, 'rmSync(join(run.runDir, ".failed"))');
   assert.ok(refusal > 0, "the resume door stopped consulting resumeStopRefusal");
   assert.ok(clearing > 0, "the marker clearing moved — re-check this arm rather than deleting it");
   assert.ok(refusal < clearing,
@@ -288,8 +288,8 @@ test("item 4 WIRING: the resume path re-stamps, and does so AFTER the stop refus
   // Order matters here too, for a different reason than arm 13: stamping a run we are about to refuse
   // would write to the record of a run nobody is resuming.
   const src = driverSource("pipeline.mjs");
-  const refusal = src.indexOf("const stopped = resumeStopRefusal(run.runDir);");
-  const stamp = src.indexOf('stampTokenRollup(run.runDir, "resumed")');
+  const refusal = onlyAt(src, "const stopped = resumeStopRefusal(run.runDir);");
+  const stamp = onlyAt(src, 'stampTokenRollup(run.runDir, "resumed")');
   assert.ok(stamp > 0, "the resume stopped re-stating its engines — a two-engine run goes invisible again");
   assert.ok(refusal < stamp, "a run being refused must not have its record re-stamped");
 });

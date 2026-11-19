@@ -4,7 +4,7 @@
 // hand-off with no ground is counted — and a hand-off with no trace says so instead of counting zero. A page
 // the web step only read is not owed a ground, and the knockout is outside the check.
 import { test } from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -127,7 +127,7 @@ test("the clearance pipeline calls the check where its traces are written; the k
     assert.ok(clearance.includes(call), `the clearance pipeline no longer calls ${call}`);
   }
   assert.match(clearance, /event: "reasonless-exits", lane: "clearance"/);
-  assert.ok(clearance.indexOf("pickingExits(") > clearance.indexOf('deriveCommonLawCarry(ctx, "publish");'),
+  assert.ok(onlyAt(clearance, "pickingExits(") > onlyAt(clearance, 'deriveCommonLawCarry(ctx, "publish");'),
     "the check runs before the traces it reads are written");
   assert.equal(Object.keys(exitsModule).some((k) => /web|knockout|payload/i.test(k)), false,
     "a count of the grid's rows or the knockout's pages is back: neither is owed a ground");
