@@ -322,8 +322,8 @@
           "todos": 0
         },
         "a-clearance-prints-its-ticked-cards-whole.test.mjs": {
-          "tests": 3,
-          "asserts": 7,
+          "tests": 4,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
