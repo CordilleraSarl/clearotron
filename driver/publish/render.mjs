@@ -2418,7 +2418,7 @@ function heroCaptionHtml(text, { whole = false } = {}) {
   // `sub-lead` marks the FOLDED first sentence so the stylesheet can tighten its bottom margin without a
   // positional selector: `.sub:first-of-type` would have caught an UNFOLDED one-sentence caption too and
   // changed the spacing of every archived report that has no fold.
-  return `<p class="sub sub-lead">${inline(first)}</p><details class="sub-more"><summary>Show the chart and rights-holders</summary><p class="sub">${inline(rest)}</p></details>`;
+  return `<p class="sub sub-lead">${inline(first)}</p><details class="sub-more"><summary>What this depends on</summary><p class="sub">${inline(rest)}</p></details>`;
 }
 
 // The hero's confidentiality line: the delivery posture and the PRODUCT, joined, and nothing else.
@@ -2484,11 +2484,12 @@ function depthStripHtml(note) {
 }
 
 // Signature: renderHtml(parsed, findings, coverage, opts). ONE render path — there is no client variant.
-// THE BOARD'S FIVE ENTRIES, in its order. The rule that filters them lives in shared/brand.mjs, because
-// the knockout renderer draws a strip from its own board and the filtering is the half worth having once.
+// THE FIVE ENTRIES, in their order, each in the words of the heading it opens (owner, 2026-11-18). "Conflicts"
+// opens the Conflicts heading, not the landscape above it. The rule that filters them lives in shared/brand.mjs,
+// because the knockout renderer draws a strip from its own board and the filtering is the half worth having once.
 const STRIP = Object.freeze([
-  ['summary', 'Summary'], ['next', 'Next steps'], ['findings', 'Findings'], ['also-considered', 'Also considered'],
-  ['searched', 'What was searched'],
+  ['summary', 'Summary'], ['next', R.next.title], ['conflicts', 'Conflicts'], ['also-considered', R.alsoConsidered.title],
+  ['searched', R.searched.title],
 ]);
 
 export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
@@ -2643,7 +2644,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
     findingsSections = `${onField.length ? `<div class="sec" id="findings"><span class="num"></span><h2>The conflict landscape</h2></div>
   <div class="landwrap">${quadrant(sorted)}${keyPanel(sorted, recordsByUri)}</div>
 
-  <div class="sec"><span class="num"></span><h2>Conflicts</h2></div>
+  <div class="sec" id="conflicts"><span class="num"></span><h2>Conflicts</h2></div>
   ${onField.map(f => findingCard(f, cardFor(f), recordsByUri)).join('\n  ')}` : ''}
 
   ${secReg.length ? `<div class="sec"><span class="num"></span><h2>Secondary &amp; watch</h2></div>
@@ -2658,7 +2659,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
       ? `<div class="sec" id="findings"><span class="num"></span><h2>The conflict landscape</h2></div>
   <div class="landwrap">${quadrant(sorted)}${keyPanel(sorted, recordsByUri)}</div>
 
-  <div class="sec"><span class="num"></span><h2>Conflicts</h2></div>
+  <div class="sec" id="conflicts"><span class="num"></span><h2>Conflicts</h2></div>
   ${onField.map(f => findingCard(f, cardFor(f), recordsByUri)).join('\n  ')}`
       : '';
     // THE COMMON-LAW CARDS GO WITH THE CONFLICTS, NOT UNDER THE NEXT HEADING. Appended at the end they
@@ -2685,7 +2686,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
       const notes = contextNotes.length ? `\n  <p class="fold-lead"><b>Famous-mark neighbours.</b> Diligence — no register record; not scored, does not affect the risk read.</p>
   ${contextNotesList(contextNotes)}` : '';
       if (negatives.total || notes) {
-        tail += `\n\n  <div class="sec"><span class="num"></span><h2>Notable but manageable</h2></div>
+        tail += `\n\n  <div class="sec"><span class="num"></span><h2>Marks that can coexist</h2></div>
   ${negatives.total ? reasonedNegatives(negatives.groups, cardFor, recordsByUri) : ''}${notes}`;
       }
     } else if (band2r.length || band3r.length || contextNotes.length) {
@@ -2695,7 +2696,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   ${secondaryRegions(band3r, cardFor, recordsByUri)}`);
       if (contextNotes.length) parts.push(`<p class="fold-lead"><b>Famous-mark neighbours.</b> Diligence — no register record; not scored, does not affect the risk read.</p>
   ${contextNotesList(contextNotes)}`);
-      tail += `\n\n  <div class="sec"><span class="num"></span><h2>Notable but manageable</h2></div>
+      tail += `\n\n  <div class="sec"><span class="num"></span><h2>Marks that can coexist</h2></div>
   ${parts.join('\n  ')}`;
     }
     // The 2026-09-16 report redesign — the section heading and its routing notice go; the CARDS stay, or a

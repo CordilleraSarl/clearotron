@@ -114,7 +114,7 @@ async function assertDeliveredWithoutTheAssessment(root, res, label) {
   const html = pageText(readFileSync(join(pool, "report.html"), "utf8"));
   for (const [what, needle] of [["the risk pill", 'class="tb-risk"'], ["the gauge", 'class="panel gauge"'], ["Where it stands", 'id="countries"'],
     ["Also considered", 'id="also-considered"'], ["a findings section", 'id="findings"'], ["What happens next", 'id="next"'],
-    ["the fold that names a chart", "Show the chart and rights-holders"], ["a line pointing at a verdict", "carried in the verdict above"]])
+    ["the fold that names a chart", "What this depends on"], ["the Conflicts heading", 'id="conflicts"'], ["a line pointing at a verdict", "carried in the verdict above"]])
     assert.ok(!html.includes(needle), `${label}: the page draws ${what}`);
   assert.ok(html.includes(`${ASSESSMENT_NOT_COMPLETED} ${CLIENT_ACTION}`), `${label}: the page does not lead with the sentence and the action`);
   assert.ok(html.includes('id="searched"'), `${label}: the page lost "What was searched"`);

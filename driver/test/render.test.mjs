@@ -852,14 +852,14 @@ test("CHANGE 2: disposition bands — adversarial leads band 1; a Composite-3 co
   // band renders under the SAME heading, demoted to a fold-lead ("we looked, it is not a problem" is
   // one section, not two). The heading count drops; the cards and their words are unchanged.
   assert.match(html, /<h2>Conflicts<\/h2>/);
-  assert.match(html, /<h2>Notable but manageable<\/h2>/);
+  assert.match(html, /<h2>Marks that can coexist<\/h2>/);
   assert.doesNotMatch(html, /<h2>Commercial awareness<\/h2>/, "the absorbed heading is gone");
   assert.match(html, /<p class="fold-lead"><b>Same name, a different commercial field\.<\/b>/, "the band-3 lead-in survives as a fold-lead");
   // placement: adversarial (c1) in band 1; coexistence-partner (c2) + distinguished (c3) + off-field (c4) all under 03
   assert.equal(bandOfCard(html, 1), "Conflicts", "adversarial composite-3 leads band 1");
-  assert.equal(bandOfCard(html, 2), "Notable but manageable", "NORDWAVE-style coexistence-partner composite-3 is band 2, NOT band 1");
-  assert.equal(bandOfCard(html, 3), "Notable but manageable", "distinguished composite-3 is band 2");
-  assert.equal(bandOfCard(html, 4), "Notable but manageable", "off-field renders under 03 (absorbed), after the fold-lead");
+  assert.equal(bandOfCard(html, 2), "Marks that can coexist", "NORDWAVE-style coexistence-partner composite-3 is band 2, NOT band 1");
+  assert.equal(bandOfCard(html, 3), "Marks that can coexist", "distinguished composite-3 is band 2");
+  assert.equal(bandOfCard(html, 4), "Marks that can coexist", "off-field renders under 03 (absorbed), after the fold-lead");
   assert.ok(html.indexOf('<p class="fold-lead"><b>Same name') < html.indexOf('id="c4"'), "the off-field card sits under the fold-lead");
   // the full (band-1) card is the adversarial one; the band-2/3 cards are compact
   assert.match(html, /<div class="card" id="c1"/);
@@ -885,7 +885,7 @@ test("CHANGE 2 back-compat: NO finding carries disposition → legacy composite 
   // heads "What was searched" outside the fold and leaves the fold headed "Counts for this search", so
   // the heading is in this list while the counts are still behind the disclosure.
   assert.deepEqual(sectionOrder(html), ["The conflict landscape", "Conflicts", "Secondary & watch", "What was searched"]);
-  assert.doesNotMatch(html, /Notable but manageable/);
+  assert.doesNotMatch(html, /Marks that can coexist/);
   assert.doesNotMatch(html, /Commercial awareness/);
   // composite≥3 → on-field (c1,c2,c3 full), composite≤2 → secondary (c4 compact) — the pre-change split
   assert.match(html, /<div class="card" id="c1"/);
@@ -902,7 +902,7 @@ test("CHANGE 2 back-compat: the EXISTING composite-only fixtures render byte-ide
   const html = renderHtml(parsedOf(FM), REGION_FINDINGS, REGION_COVERAGE, {});
   assert.match(html, /<h2>Conflicts<\/h2>/);
   assert.match(html, /Secondary &amp; watch/);
-  assert.doesNotMatch(html, /Notable but manageable/);
+  assert.doesNotMatch(html, /Marks that can coexist/);
   assert.doesNotMatch(html, /Commercial awareness/);
 });
 
@@ -1173,8 +1173,8 @@ test("spec-48 A5: disposition mode — common-law leaves the bands for its own s
   // The 2026-09-16 report redesign — same as above: the cards outlive their heading. An off-field common-law card
   // still renders and still does not join the register bands, which is the distinction this arm is for.
   assert.match(html, / id="c5"/, "the off-field common-law card still renders");
-  assert.notEqual(bandOfCard(html, 5), "Notable but manageable", "…and it is not absorbed into the register band");
-  assert.equal(bandOfCard(html, 4), "Notable but manageable", "register off-field stays in the absorbed band");
+  assert.notEqual(bandOfCard(html, 5), "Marks that can coexist", "…and it is not absorbed into the register band");
+  assert.equal(bandOfCard(html, 4), "Marks that can coexist", "register off-field stays in the absorbed band");
 });
 
 // ---- C1/C2: jurisdiction-system labels + the Paris-priority window flag ----
@@ -1377,7 +1377,7 @@ test("wp50: the # Actions panel renders — Answers first, buckets styled, ::p::
   // one comment in the inlined stylesheet, so it read the comment and passed. The Checks-we-ran section went in the
   // 2026-09-16 redesign and the stylesheet is now inlined without comments: the order checked is the answers before the
   // human-only bucket, which renders after the findings, and the retired section is asserted gone.
-  const answersAt = internal.indexOf("Answers to your instructions"), nextAt = internal.indexOf("What happens next");
+  const answersAt = internal.indexOf("Answers to your instructions"), nextAt = internal.indexOf("<h2>What happens next</h2>");
   assert.ok(answersAt > 0 && nextAt > 0 && answersAt < nextAt, "Q&A (verdict block) precedes What happens next");
   assert.doesNotMatch(internal, /Checks we ran/, "the retired Checks-we-ran section is back on the page");
   // ONE report: the ::p:: tail renders LABELLED [internal] for the reviewing reader; the raw marker
@@ -1415,7 +1415,7 @@ test("doc-52: reading order + plain banner (from only-you) + ruled-out routing +
   // reading order: verdict (mark) → What happens next → conflicts → Scope. The next steps follow the verdict
   // (owner, 2026-11-18): a reader who forwards the first pages forwards the actions with the conditions.
   const iVerdict = html.indexOf('class="mark"'), iConf = html.indexOf("<h2>Conflicts</h2>");
-  const iYou = html.indexOf("What happens next"), iScope = html.indexOf('<details class="searched">');
+  const iYou = html.indexOf("<h2>What happens next</h2>"), iScope = html.indexOf('<details class="searched">');
   assert.ok(iVerdict >= 0 && iVerdict < iYou && iYou < iConf && iConf < iScope, "verdict → only-you → conflicts → what was searched");
   // the lawyer's Q&A leads in the verdict block, before the conflicts
   assert.ok(html.indexOf("Answers to your instructions") >= 0 && html.indexOf("Answers to your instructions") < iConf, "Q&A in the verdict block");
@@ -2294,7 +2294,7 @@ test("§L: disposition mode absorbs the famous-mark notes into 03 Notable but ma
   const html = renderHtml(parsedOf(FM_NOVAPULSE), DISP_FINDINGS, [], { runId: "fm-demo", contextNotes: [ctx] });
   assert.match(html, /<p class="fold-lead"><b>Famous-mark neighbours\.<\/b>/, "the famous-mark lead-in renders inside 03");
   assert.doesNotMatch(html, /<h2>Famous-mark neighbours noted<\/h2>/, "the standalone heading is gone in disposition mode");
-  const i03 = html.indexOf("Notable but manageable"), iNOVAPULSO = html.indexOf("NOVAPULSO");
+  const i03 = html.indexOf("Marks that can coexist"), iNOVAPULSO = html.indexOf("NOVAPULSO");
   assert.ok(i03 >= 0 && i03 < iNOVAPULSO, "the note renders under 03");
   const scope = html.slice(html.indexOf('<details class="scope">'));
   assert.doesNotMatch(scope, /NOVAPULSO/, "and NOT inside Scope any more");
@@ -2316,7 +2316,7 @@ test("§L: a same-element mark (token containment ≥4 chars) is NEVER silently 
   const land = html.slice(html.indexOf('class="landwrap"'));
   const svg = land.slice(land.indexOf("<svg viewBox"), land.indexOf("</svg>"));
   assert.match(svg, /href="#c2"/, "FREEZEIV plots on the landscape");
-  assert.equal(bandOfCard(html, 2), "Notable but manageable", "and renders in the absorbed awareness band, not the ruled-out list");
+  assert.equal(bandOfCard(html, 2), "Marks that can coexist", "and renders in the absorbed awareness band, not the ruled-out list");
   // the genuinely word-free neighbour still routes to the quiet list, with its ordinal accounted for
   assert.doesNotMatch(svg, /href="#c3"/, "UNTAMED stays off the chart");
   assert.match(html, /<h2>Also considered<\/h2>/);
@@ -2557,12 +2557,12 @@ test("on a v6 record the reasoned negatives group by their shared ground, one li
   assert.match(html, /class="rn-facts">UK · Cl\.&nbsp;12<\/span>/, "jurisdictions go through the renderer's own region vocabulary (GB → UK), not the record's raw string");
   assert.match(html, /class="rn-why">Class 12 vehicle servicing; the specification stops short/);
   // the adversarial finding stays where it was — it is not a negative
-  assert.ok(!/rn-mark">MATCHDAY</.test(html.split("Notable but manageable")[1] ?? ""), "band-1 conflicts never enter the negatives section");
+  assert.ok(!/rn-mark">MATCHDAY</.test(html.split("Marks that can coexist")[1] ?? ""), "band-1 conflicts never enter the negatives section");
 });
 
 test("zero reasoned negatives renders NOTHING — no heading, no sentence explaining the emptiness", () => {
   const html = renderHtml(parsedOf(REPORT), [P5_BANDED[0]], COVERAGE, { runId: "noref-demo", findingsSchemaVersion: 6 });
-  assert.doesNotMatch(html, /Notable but manageable/, "a heading with nothing under it does not render at all (owner, 2026-09-16)");
+  assert.doesNotMatch(html, /Marks that can coexist/, "a heading with nothing under it does not render at all (owner, 2026-09-16)");
   assert.ok(!/class="rn-mark"/.test(html), "no member rows under a zero grouping");
   // and the distinguishing signal: a v5 record renders no such claim either way, because it never grouped
   const legacy = renderHtml(parsedOf(REPORT), [P5_BANDED[0]], COVERAGE, { runId: "noref-demo" });
@@ -2673,7 +2673,7 @@ test("D5: the client risk chip is the BAND WORD — the placement key never ride
     assert.doesNotMatch(html, new RegExp(`class="tier[^"]*">[^<]*${word}`), `"${word}" is on a client chip`);
   // …and the section headings the disposition DOES decide are untouched: the fact is still on the page,
   // once, in the place that owns it.
-  assert.match(html, /<h2>Notable but manageable<\/h2>/);
+  assert.match(html, /<h2>Marks that can coexist<\/h2>/);
 });
 
 test("D5: an UNRATED awareness finding drops the suffix too, and keeps its own words", () => {
