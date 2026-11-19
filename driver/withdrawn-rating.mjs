@@ -12,15 +12,17 @@
 // the finding as the report names it, and the approved sentence for its ground. The row reaches every surface that
 // reads `coverage[]`. A finding the review rejected (no ground) writes nothing, as before.
 //
-// THE SENTENCE IS THE OWNER'S. A ground with no approved sentence writes no row: the reader is never shown words
-// nobody approved, and the finding stays where it was.
+// THE SENTENCE IS THE OWNER'S, word for word, and follows the right's identifying detail under "Left open". A ground with no
+// approved sentence writes no row: the reader is never shown words nobody approved, and the finding stays where it was.
 import { existsSync, readFileSync } from "node:fs";
-import { parseFindingsJson, RATING_WITHDRAWN_GROUNDS } from "./findings-model.mjs";
+import { parseFindingsJson } from "./findings-model.mjs";
 import { writeFindings } from "./stage-freshness.mjs";
 import { runLog } from "./log.mjs";
 
-/** The sentence each ground's row carries, once approved; null until then, and a null ground writes no row. */
-export const WITHDRAWN_RATING_NOTES = Object.freeze(Object.fromEntries(RATING_WITHDRAWN_GROUNDS.map((g) => [g, null])));
+/** The sentence each ground's row carries, as the owner approved it (2026-11-19); a ground with none writes no row. */
+export const WITHDRAWN_RATING_NOTES = Object.freeze({
+  "goods-wording-unavailable": "We could not rate this earlier right because we could not verify which goods its record covers.",
+});
 
 /** The finding as the report names one: its mark, its owner and the territories of its registrations. PURE. */
 export function withdrawnRatingArea(f) {

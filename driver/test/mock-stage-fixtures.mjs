@@ -1929,6 +1929,12 @@ export function applyStageWrites(msg, argv) {
         const f = (doc.findings ?? []).find((x) => String(x.ordinal) === String(process.env.MOCK_RECORD_WITHDRAWS));
         if (f) { f.disposition = "withdrawn"; f.withdrawn_reason = "The review flag on this invented finding withdrew it."; }
       }
+      // MOCK_RECORD_RATING_WITHDRAWN=<ordinal> — that finding's RATING is withdrawn on every save, on the approved ground: the
+      // right stands, unrated, because its goods wording could not be used.
+      if (process.env.MOCK_RECORD_RATING_WITHDRAWN) {
+        const f = (doc.findings ?? []).find((x) => String(x.ordinal) === String(process.env.MOCK_RECORD_RATING_WITHDRAWN));
+        if (f) { f.disposition = "withdrawn"; f.withdrawn_reason = "The review withdrew this invented finding's rating: its goods wording could not be used."; f.rating_withdrawn_ground = "goods-wording-unavailable"; }
+      }
       if (process.env.MOCK_ANSWERS_CITE) {
         const cites = String(process.env.MOCK_ANSWERS_CITE).split(",").map(Number);
         for (const a of Object.values(doc.four_answers ?? {})) if (a && typeof a === "object") a.ordinals = cites;

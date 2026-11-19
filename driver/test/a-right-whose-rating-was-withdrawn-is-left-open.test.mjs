@@ -55,9 +55,13 @@ test("each right that stands unrated owes one Left open row naming it; a rejecte
   ]);
 });
 
-test("until the owner's sentence is set, no row is written: no reader meets words nobody approved", () => {
-  assert.equal(WITHDRAWN_RATING_NOTES[GROUND], null);
-  assert.deepEqual(withdrawnRatingRows(doc([finding({ rating_withdrawn_ground: GROUND })])), []);
+test("the row carries the owner's sentence word for word, and every ground has one", () => {
+  // Approved 2026-11-19 (design's c.7015638707): printed under "Left open", after the right's identifying detail.
+  assert.equal(WITHDRAWN_RATING_NOTES[GROUND], "We could not rate this earlier right because we could not verify which goods its record covers.");
+  for (const g of RATING_WITHDRAWN_GROUNDS) assert.equal(typeof WITHDRAWN_RATING_NOTES[g], "string", `the ground ${g} has no sentence`);
+  assert.deepEqual(withdrawnRatingRows(doc([finding({ rating_withdrawn_ground: GROUND }), finding({ ordinal: 8, mark: "TESSALINE" })])),
+    [{ area: "VELMORA — Quillstone Ltd (EU, GB)", state: "open", note: WITHDRAWN_RATING_NOTES[GROUND] }],
+    "with the approved sentence, the marked right gets its row and the rejected finding none");
 });
 
 test("the run writes the row into its findings record once, and the finding stays withdrawn", () => {
