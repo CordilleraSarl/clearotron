@@ -4,7 +4,7 @@
 // A FRESH SESSION CARRIES ITS STAGE'S MANUALS IN ITS OPENING MESSAGE, on both engines alike (manuals-inline.mjs). Each
 // dispatch below goes through the real gateway and each engine's real adapter to the stand-in program, and the test reads
 // the text that program was handed. Two cards, two halves, two register units, a Knockout stage and a company's own copy
-// of a manual, as design set the checks (tracker issue 1385, B1 to B3, item 2). Messages and case material are invented.
+// of a manual, as design set the checks (2026-11-19). Messages and case material are invented.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, readFileSync, rmSync, existsSync, writeFileSync } from "node:fs";

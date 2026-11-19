@@ -6,9 +6,8 @@
 // files with its own read tool: the same manual, re-read by each card, half and register unit of a run.
 // Here the gateway puts each named manual's text into the message itself, in the order named and with the
 // company's overrides applied, so the session starts holding them and two sessions of one stage send the
-// same leading text. Design's ruling on tracker issue 1385 (batch three, B1 to B3) sets the sentence and the
-// order: the manuals first, then the stage's own instructions and the run's material, as the message
-// already has them.
+// same leading text. Design set the sentence and the order (2026-11-19): the manuals first, then the stage's own
+// instructions and the run's material, as the message already has them.
 //
 // ONE PLACE, BOTH ENGINES. It runs in the gateway on the text handed to `engine.runTurn`, so the Claude and
 // Codex adapters receive the same bytes by construction. Each adapter still rewrites `skills/…md` references
@@ -25,7 +24,7 @@ import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 
-/** The sentence that replaces the read instruction, word for word as design set it (tracker issue 1385). */
+/** The sentence that replaces the read instruction, word for word as design set it (2026-11-19). */
 export const MANUALS_SENTENCE = "Apply the following manuals to this stage, in the order given.";
 
 const READ_SENTENCE = "First, read and follow exactly: ";
