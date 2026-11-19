@@ -6,6 +6,7 @@
 //
 //   node driver/test/instruction-read-map.mjs          the map, for a person
 //   node driver/test/instruction-read-map.mjs --json   the same, as JSON
+//   node driver/test/instruction-read-map.mjs --stable each stage's rule text composed in code, by block
 //
 // Every file under `driver/skills/` is prompt payload, and a stage reads only the files its message names.
 // So the map is composed the way a stage is composed: the opening messages come from the same composition
@@ -39,10 +40,11 @@ import { skillRefsIn } from "../methodology-witness.mjs";
 import { publishedOf } from "../../shared/reference-guard-classes.mjs";
 import { trackedFiles } from "../../shared/tracked-files.mjs";
 import { isEntrypoint } from "../../shared/is-entrypoint.mjs";
-import { DRIVER, everyDispatchedLabel, everyModelStageDispatch } from "./model-stage-dispatches.mjs";
+import { ANOTHER_RUN, DRIVER, everyDispatchedLabel, everyModelStageDispatch } from "./model-stage-dispatches.mjs";
 
 const ROOT = join(DRIVER, "..");
 const RUN = "/nonexistent/read-map";
+const OTHER_RUN = "/nonexistent/read-map-other";
 export const GUARD = "instruction-read-map";
 
 /** Files under `skills/` written for a person, never for a seat. Each carries the sentence that makes that true. */
@@ -233,9 +235,55 @@ export function recordingToolBytes() {
 const ownRecordingTools = (stage) => (RECORDING_TOOLS[stage] ?? [])
   .filter((t) => t.startsWith(`mcp__recording-${stage}__`)).map((t) => t.split("__").pop());
 
-/** Per stage under the house default: { stage, manualBytes, messageBytes, toolSchemaBytes, tools }. */
+// ── THE PART OF A STAGE'S MESSAGE NO RUN CHANGES ────────────────────────────────────────────────────────────────────
+//
+// Some of what stage code composes is rule text: the same words whatever the run, which could sit in a manual instead,
+// where the session starts holding it (B9, tracker issue 1385; the moves are design's). Composing each stage again under
+// another run's folder, name and finding and another matter (model-stage-dispatches.mjs ANOTHER_RUN) separates it: the
+// lines both messages carry, in the same order, are text no run changes. A line that names a path, the mark or the
+// classes differs between the two and is not counted. A rule that only some matters get is not either, so the count is
+// a floor for the house default.
+
+/**
+ * The lines `a` and `b` share in order (a longest common subsequence of lines): `{ bytes, blocks }`, where each block is
+ * a run of shared consecutive lines of `a`, `{ line, bytes, head }`, `line` 1-based. PURE.
+ */
+export function stableText(a, b) {
+  const A = String(a).split("\n"), B = String(b).split("\n");
+  const n = A.length, m = B.length, L = Array.from({ length: n + 1 }, () => new Uint32Array(m + 1));
+  for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) L[i][j] = A[i] === B[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+  const shared = new Array(n).fill(false);
+  for (let i = 0, j = 0; i < n && j < m;) {
+    if (A[i] === B[j]) { shared[i] = true; i++; j++; } else if (L[i + 1][j] >= L[i][j + 1]) i++; else j++;
+  }
+  const blocks = [];
+  let bytes = 0;
+  for (let i = 0; i < n; i++) {
+    if (!shared[i]) continue;
+    const size = Buffer.byteLength(A[i]) + (i < n - 1 ? 1 : 0);
+    bytes += size;
+    const last = blocks.at(-1);
+    if (last && last.end === i - 1) { last.end = i; last.bytes += size; }
+    else blocks.push({ line: i + 1, end: i, bytes: size, head: A[i].trim().slice(0, 80) });
+  }
+  return { bytes, blocks: blocks.map(({ end, ...b }) => b) };
+}
+
+/** Each stage's opening message under the house default, and the same stage composed for another run. */
+function houseDefaultPairs() {
+  const other = new Map(everyModelStageDispatch(OTHER_RUN, ANOTHER_RUN).map((d) => [`${d.name}\u0000${d.label}`, d.message]));
+  return everyModelStageDispatch(RUN).filter((d) => d.label === "house default" || d.label === "knockout")
+    .map((d) => ({ d, other: other.get(`${d.name}\u0000${d.label}`) ?? "" }));
+}
+
+/** Per stage, the blocks of its message no run changes, largest first: { stage, blocks }. */
+export function stableBlocks() {
+  return houseDefaultPairs().map(({ d, other }) => ({ stage: d.name, blocks: stableText(d.message, other).blocks.sort((x, y) => y.bytes - x.bytes) }));
+}
+
+/** Per stage under the house default: { stage, manualBytes, messageBytes, stableMessageBytes, toolSchemaBytes, tools }. */
 export function houseDefaultFigures(root = ROOT, toolBytes = recordingToolBytes()) {
-  return everyModelStageDispatch(RUN).filter((d) => d.label === "house default" || d.label === "knockout").map((d) => {
+  return houseDefaultPairs().map(({ d, other }) => {
     const tools = ownRecordingTools(d.name);
     const missing = tools.filter((t) => !toolBytes.has(t));
     if (missing.length) throw new Error(`${GUARD}: ${d.name}'s recording tools ${missing.join(", ")} are not on the recording server`);
@@ -243,6 +291,7 @@ export function houseDefaultFigures(root = ROOT, toolBytes = recordingToolBytes(
       stage: d.name,
       manualBytes: bytesOf(root, [...new Set([...d.declared, ...skillRefsIn(d.message)])]),
       messageBytes: Buffer.byteLength(d.message),
+      stableMessageBytes: stableText(d.message, other).bytes,
       toolSchemaBytes: tools.reduce((a, t) => a + toolBytes.get(t), 0),
       tools,
     };
@@ -260,6 +309,14 @@ function main() {
     unread: map.unread.map((file) => ({ file, bytes: size(file) })),
     houseDefault: houseDefaultFigures(ROOT),
   };
+  if (process.argv.includes("--stable")) {
+    // The rule text each stage's code composes, its largest blocks first: what a move into a manual would carry.
+    for (const { stage, blocks } of stableBlocks()) {
+      console.log(`${stage}\t${blocks.reduce((a, b) => a + b.bytes, 0)} bytes in ${blocks.length} block(s)`);
+      for (const b of blocks.filter((x) => x.bytes >= 200)) console.log(`  line ${b.line}\t${b.bytes}\t${b.head}`);
+    }
+    return;
+  }
   if (process.argv.includes("--json")) { console.log(JSON.stringify(out, null, 2)); return; }
   for (const r of out.stages) console.log(`${r.stage}\t${r.context}\t${r.bytes}\t${r.files.map((f) => f.slice("skills/".length)).join(" ")}`);
   console.log("\nPOINTED AT, NEVER TOLD:");
@@ -268,10 +325,10 @@ function main() {
   for (const f of out.forAReader) console.log(`  ${f}`);
   console.log("\nREAD BY NOTHING:");
   for (const r of out.unread) console.log(`  ${r.file} ${r.bytes}`);
-  console.log("\nHOUSE DEFAULT, BYTES PER STAGE: manuals, composed message, own recording tools");
-  for (const r of out.houseDefault) console.log(`  ${r.stage}\t${r.manualBytes}\t${r.messageBytes}\t${r.toolSchemaBytes}`);
+  console.log("\nHOUSE DEFAULT, BYTES PER STAGE: manuals, composed message, of it the text no run changes, own recording tools");
+  for (const r of out.houseDefault) console.log(`  ${r.stage}\t${r.manualBytes}\t${r.messageBytes}\t${r.stableMessageBytes}\t${r.toolSchemaBytes}`);
   const sum = (k) => out.houseDefault.reduce((a, r) => a + r[k], 0);
-  console.log(`  all ${out.houseDefault.length} stages\t${sum("manualBytes")}\t${sum("messageBytes")}\t${sum("toolSchemaBytes")}`);
+  console.log(`  all ${out.houseDefault.length} stages\t${sum("manualBytes")}\t${sum("messageBytes")}\t${sum("stableMessageBytes")}\t${sum("toolSchemaBytes")}`);
 }
 
 if (isEntrypoint(import.meta.url)) main();
