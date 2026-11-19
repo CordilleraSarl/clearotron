@@ -179,7 +179,7 @@ function ratingExtras(fm, findings, coverage, fourAnswers, opts, bandWord, condi
   }
   const fa = fourAnswers && typeof fourAnswers === 'object' ? fourAnswers : null;
   if (fa) {
-    const shown = new Set((Array.isArray(findings) ? findings : []).map((f) => Number(f?.ordinal)));
+    const shown = new Set((Array.isArray(findings) ? findings : []).map((f) => cardTarget(f?.ordinal)));
     const rows = FOUR_ANSWER_LABELS.map(([key, label], i) => {
       const a = fa[key];
       if (!a || typeof a.read !== 'string' || !a.read.trim()) return '';
@@ -199,9 +199,9 @@ function ratingExtras(fm, findings, coverage, fourAnswers, opts, bandWord, condi
       else tone = /^(registrable|strong|clear)$/.test(tok) ? 'good' : /condition|moderate|medium|qualified|narrow/.test(tok) ? 'mid' : /not|weak|unlikely|blocked|obstructed/.test(tok) ? 'bad' : 'mid';
       // A withdrawn finding renders nowhere, so its ordinal is not cited here either: the token would link to a card the
       // page does not draw. `findings` arrives with the withdrawn ones already out.
-      const ordinals = (Array.isArray(a.ordinals) ? a.ordinals : []).filter((n) => shown.has(Number(n)));
-      const ords = ordinals.length
-        ? ` <span class="fa-ords">${ordinals.map((n) => `<a href="#c${n}">#${n}</a>`).join(' ')}</span>` : '';
+      const targets = (Array.isArray(a.ordinals) ? a.ordinals : []).map(cardTarget).filter((t) => t && shown.has(t));
+      const ords = targets.length
+        ? ` <span class="fa-ords">${targets.map((t) => `<a href="#${t}">#${t.slice(1)}</a>`).join(' ')}</span>` : '';
       const basis = a.basis ? inline(String(a.basis).trim()).trim() : '';
       // THE PER-CLASS OBSTACLES RIDE WITH THE ANSWER THEY QUALIFY. An answer that reads "registrable with
       // conditions" and does not say in which classes leaves the reader with the conclusion and none of
@@ -313,6 +313,13 @@ function frameworkGauge(fm, findings, coverage = [], fourAnswers = null, opts = 
 
 const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const escAttr = s => esc(s).replace(/"/g, '&quot;');
+// A finding's card is the page's `c<ordinal>` target when its ordinal is a whole number, the shape the page script
+// reveals and scrolls to. An absent or malformed ordinal has no target: its card draws no id and nothing links to it.
+const cardTarget = (ordinal) => {
+  const n = typeof ordinal === 'string' && /^[0-9]+$/.test(ordinal) ? Number(ordinal) : ordinal;
+  return Number.isSafeInteger(n) && n >= 0 ? `c${n}` : null;
+};
+const cardId = (f) => { const t = cardTarget(f?.ordinal); return t ? ` id="${t}"` : ''; };
 
 // A floating "home" pill that returns to the listing from a report. FULLY INLINE-STYLED on purpose: it is
 // emitted natively here AND injected into already-rendered reports (pool-admin link-home) whose frozen CSS
@@ -1155,6 +1162,14 @@ function courtLineFor(opts, state) {
   return line;
 }
 
+// The scripts' reader names, in the table's order, for ISO 15924 codes the search-depth record keeps.
+const scriptNames = (codes) => Object.entries(R.searched.scriptName).filter(([k]) => codes.includes(k)).map(([, name]) => name);
+// The native scripts planned with no search completed are one Left open row, named in the approved sentence.
+function scriptGapRows(localScripts) {
+  const missed = localScripts ? scriptNames(localScripts.missed ?? []) : [];
+  return missed.length ? [{ area: R.searched.localScript, state: 'not-searched', note: R.searched.scriptsNotCompleted(missed) }] : [];
+}
+
 // Counts only, folded closed. A count of records read is engine activity rather than something a reader
 // acts on (owner, 2026-09-16), so it lives here and not beside the outcome per country.
 // THE OPEN ROWS STAY ON THE PAGE, and that is deliberate rather than a leftover of the old fold. The
@@ -1165,7 +1180,6 @@ function courtLineFor(opts, state) {
 // reader's own words, with the counts — never the query text, the refusals or the provider faults.
 function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri = new Map(), fm = {}) {
   const sd = opts && opts.searchDepth;
-  const open = (Array.isArray(coverage) ? coverage : []).filter((c) => COV_STATE[c?.state]?.cls !== 'ok');
   const c = (sd && sd.counts) || {}, rows = [];
   const places = placesSearched(fm, coverage, findings);
   if (places.worldwide && places.focus) rows.push([R.searched.whereSearched, places.list]);
@@ -1199,11 +1213,8 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
   if (sw.reputation) rows.push([R.searched.reputation, R.searched.checks(sw.reputation.toLocaleString('en-GB'))]);
   // The local-script row says what the run's record shows ran (owner, 2026-11-19): the scripts a native-script search
   // completed in, by name, or not searched when the record shows none did, and no row when the run kept no execution
-  // record to say either. The scripts planned with none completed are left open, in the row added to the grid below.
-  const scriptNames = (codes) => Object.entries(R.searched.scriptName).filter(([k]) => codes.includes(k)).map(([, name]) => name);
+  // record to say either. The scripts planned with none completed are left open, in the grid below (`scriptGapRows`).
   if (c.localScripts) rows.push([R.searched.localScript, c.localScripts.searched.length ? R.searched.scriptsSearched(scriptNames(c.localScripts.searched)) : R.searched.notSearched]);
-  const scriptsMissed = c.localScripts ? scriptNames(c.localScripts.missed) : [];
-  if (scriptsMissed.length) open.push({ area: R.searched.localScript, state: 'not-searched', note: R.searched.scriptsNotCompleted(scriptsMissed) });
   // HOW DEEP THE LOCAL-LANGUAGE INVESTIGATION WENT, which is a different question from the row above it.
   // That one answers whether the spellings were searched; this one answers whether the investigation ran
   // at the depth the matter configured. The engine can run it shallower than the account asked for, and
@@ -1247,6 +1258,7 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
     const why = c.courtDecisions === 'not-checked' ? courtLineFor(opts, 'not-checked') : '';
     rows.push(['Court decisions', { html: `<span class="wstate">${esc(cdWord)}</span>${why ? `<span class="wnote">${esc(why)}</span>` : ''}` }]);
   }
+  const open = leftOpenRows({ coverage, localScripts: c.localScripts, followUpKinds: opts?.followUpKinds });
   const openHtml = open.length ? `<div class="openrows"><div class="rk">${R.searched.leftOpen}</div>${coverageGrid(open, { verdict: opts?.assessmentNotCompleted !== true, followUpKinds: opts?.followUpKinds })}</div>` : '';
   // THE LEGEND FOR WHAT IS ON THE CARDS, kept when the scope fold went. It is not the engine narrating
   // its own searching — it is what a linked registration number opens, why the rest are cited by number,
@@ -1289,7 +1301,7 @@ function alsoConsideredSection(ruledOut, recordsByUri = new Map(), opts = {}) {
     const practical = f.practical_position ? inline(String(f.practical_position)) : '';
     const fold = (legal || practical)
       ? `<details class="roff"><summary>${R.alsoConsidered.whyRuledOut}</summary>${legal ? `<p><b>${R.alsoConsidered.legal}</b> ${legal}</p>` : ''}${practical ? `<p><b>${R.alsoConsidered.practical}</b> ${practical}</p>` : ''}</details>` : '';
-    return `<div class="card ruled"${f.ordinal != null ? ` id="c${esc(String(f.ordinal))}"` : ''}><div class="top"><div class="rail"></div><div class="body"><div class="cardhead">${
+    return `<div class="card ruled"${cardId(f)}><div class="top"><div class="rail"></div><div class="body"><div class="cardhead">${
       f.ordinal != null ? `<span class="fnum">${esc(String(f.ordinal))}</span>` : ''}<h3 class="who mark-first">${esc(f.mark || '')}</h3>${
       who ? `<span class="cwho">${esc(who)}</span>` : ''}<span class="tier ruled">${R.alsoConsidered.ruledOut}</span><button class="ask-fi no-print">${R.alsoConsidered.askAi}</button></div><div class="oneline">${why}</div>${fold}</div></div></div>`;
   }).join('');
@@ -1390,9 +1402,10 @@ function quadrant(findings) {
     const fill = on ? QC.onField : QC.secondary;
     const X = cx.toFixed(1), Y = cy.toFixed(1), fs = on ? 12.5 : 8;
     const inner = pending
-      ? `<circle cx="${X}" cy="${Y}" r="${r}" fill="${QC.pendingFill}" stroke="${fill}" stroke-width="2.5"/><text x="${X}" y="${Y}" text-anchor="middle" dominant-baseline="central" font-size="${fs}" font-weight="900" fill="${fill}">${f.ordinal}</text>`
-      : `<circle cx="${X}" cy="${Y}" r="${r}" fill="${fill}" stroke="${PALETTE.ink}" stroke-opacity=".22" stroke-width="1"/><text x="${X}" y="${Y}" text-anchor="middle" dominant-baseline="central" font-size="${fs}" font-weight="900" fill="#fff">${f.ordinal}</text>`;
-    return `<a href="#c${f.ordinal}"><title>#${f.ordinal}</title>${inner}</a>`;
+      ? `<circle cx="${X}" cy="${Y}" r="${r}" fill="${QC.pendingFill}" stroke="${fill}" stroke-width="2.5"/><text x="${X}" y="${Y}" text-anchor="middle" dominant-baseline="central" font-size="${fs}" font-weight="900" fill="${fill}">${esc(f.ordinal)}</text>`
+      : `<circle cx="${X}" cy="${Y}" r="${r}" fill="${fill}" stroke="${PALETTE.ink}" stroke-opacity=".22" stroke-width="1"/><text x="${X}" y="${Y}" text-anchor="middle" dominant-baseline="central" font-size="${fs}" font-weight="900" fill="#fff">${esc(f.ordinal)}</text>`;
+    const t = cardTarget(f.ordinal);
+    return t ? `<a href="#${t}"><title>#${t.slice(1)}</title>${inner}</a>` : inner;
   }).join('');
   return `<div class="panel land">
       <svg viewBox="0 0 560 430" xmlns="http://www.w3.org/2000/svg" font-family="Plus Jakarta Sans, sans-serif">
@@ -1432,7 +1445,8 @@ function keyRow(f, recordsByUri) {
   if (who && nrm(who) !== nrm(f.mark)) subParts.push(esc(who));
   if (cls) subParts.push(R.key.classes(esc(cls)));
   if (src) subParts.push(`<span style="white-space:nowrap">${esc(src)}</span>`);
-  return `<a class="keyrow" href="#c${f.ordinal}"><span class="kn" style="background:${kn}">${f.ordinal}</span><span class="kw"><span class="cm-mark">${esc(f.mark)}</span><em>${subParts.join(' · ')}</em></span><span class="kc ${kc}">${chip}</span><span class="arr">→</span></a>`;
+  const t = cardTarget(f.ordinal);
+  return `<a class="keyrow"${t ? ` href="#${t}"` : ''}><span class="kn" style="background:${kn}">${esc(f.ordinal)}</span><span class="kw"><span class="cm-mark">${esc(f.mark)}</span><em>${subParts.join(' · ')}</em></span><span class="kc ${kc}">${chip}</span><span class="arr">→</span></a>`;
 }
 
 // Rights-holder panel → cross-region groups (§2.3). Findings grouped by jurisdiction (region order = lowest
@@ -1464,9 +1478,10 @@ function keyPanel(findings, recordsByUri = new Map()) {
   // (highest-risk) region opens; the rest collapse (doc-55).
   // The hint lands on the first common-law card the page draws, an on-field one before the rest, as the conflicts come
   // first. It linked to `#common-law`, which went with the section's heading on 2026-09-16 and left the link dead.
-  const clFirst = findings.find((f) => regionCode(f) === COMMON_LAW && isOnField(f)) ?? clGroup?.findings[0];
+  const clFirst = cardTarget((findings.find((f) => regionCode(f) === COMMON_LAW && isOnField(f)) ?? clGroup?.findings[0])?.ordinal);
+  const clLink = clFirst ? `<a href="#${clFirst}">${esc(R.key.commonLawSectionLink)}</a>` : esc(R.key.commonLawSectionLink);
   const clBlock = clGroup
-    ? `<p class="keyhint" style="margin-top:10px">${R.key.commonLawHint(`<a href="#c${clFirst.ordinal}">${esc(R.key.commonLawSectionLink)}</a>`)}</p>${detail(clGroup, R.key.commonLawGroup, `<span style="white-space:nowrap">${R.key.unregisteredUse}</span>`, true)}`
+    ? `<p class="keyhint" style="margin-top:10px">${R.key.commonLawHint(clLink)}</p>${detail(clGroup, R.key.commonLawGroup, `<span style="white-space:nowrap">${R.key.unregisteredUse}</span>`, true)}`
     : '';
   return `<div class="panel keypanel">
       <div class="label">${R.key.title}</div>
@@ -1492,7 +1507,7 @@ function commonLawSection(clSecondary, clOnField, cardFor, recordsByUri = new Ma
   // Nothing is lost with it: the cards it linked to sit directly below.
   if (!clSecondary.length && !clOnField.length) return '';
   const links = clOnField.length
-    ? `<p class="clx" style="margin:4px 0 10px;font-size:13.5px">${R.onFieldCommonLaw}${clOnField.map(f => `<a href="#c${f.ordinal}">#${f.ordinal} ${esc(f.mark)}</a>`).join(' · ')}</p>`
+    ? `<p class="clx" style="margin:4px 0 10px;font-size:13.5px">${R.onFieldCommonLaw}${clOnField.map(f => { const t = cardTarget(f.ordinal); return t ? `<a href="#${t}">#${t.slice(1)} ${esc(f.mark)}</a>` : esc(f.mark); }).join(' · ')}</p>`
     : '';
   const cards = clSecondary.map(f => compactCard(f, cardFor(f), recordsByUri)).join('\n  ');
   return links + cards;
@@ -1546,7 +1561,7 @@ function negativeLine(f, recordsByUri) {
 function reasonedNegatives(groups, cardFor, recordsByUri) {
   return groups.map(g => {
     const members = g.findings.map(f =>
-      `<details class="rgroup rn" id="c${f.ordinal}"><summary>${negativeLine(f, recordsByUri)}</summary><div class="gbody">${fullDetail(f, cardFor(f), recordsByUri)}</div></details>`
+      `<details class="rgroup rn"${cardId(f)}><summary>${negativeLine(f, recordsByUri)}</summary><div class="gbody">${fullDetail(f, cardFor(f), recordsByUri)}</div></details>`
     ).join('\n      ');
     return `<p class="fold-lead"><b>${esc(GROUP_HEADING[g.key] ?? g.key)}</b> (${esc(g.ground)}) — ${R.marks(g.findings.length)}.</p>
       ${members}`;
@@ -2082,13 +2097,13 @@ function findingCard(f, card, recordsByUri = new Map()) {
   const one = clause(f.net) || (card?.meta?.one) || oneFallback(f, who);
   const readProse = cardBlock(card, /^the read$/i);
   const read = readProse ? `<details class="drill read" open><summary>${R.card.theRead}</summary><div class="drillbody lead">${renderProse(readProse)}</div></details>` : '';
-  return `<div class="card" id="c${f.ordinal}">
+  return `<div class="card"${cardId(f)}>
     <div class="top">
       <div class="rail ${tierCls}"></div>
       <div class="body">
         <div class="cardhead">
-          <label class="pick no-print"><input type="checkbox" class="pickbox" checked aria-label="${R.card.includeInPdf(f.ordinal)}"></label>
-          <span class="fnum">${f.ordinal}</span>${cardTitleParts(f, who).title}${evidenceChips(f)}
+          <label class="pick no-print"><input type="checkbox" class="pickbox" checked aria-label="${escAttr(R.card.includeInPdf(f.ordinal))}"></label>
+          <span class="fnum">${esc(f.ordinal)}</span>${cardTitleParts(f, who).title}${evidenceChips(f)}
           <span class="tier ${tierCls}">${riskChip(f)}</span>
           <button class="ask-fi no-print">${R.card.askAi}</button>
         </div>
@@ -2142,9 +2157,9 @@ function compactCard(f, card, recordsByUri = new Map(), { ticked = true } = {}) 
   // — verbatim here too; the two card renderers must never disagree about one sentence.
   const one = clause(f.net) || (card?.meta?.one) || oneFallback(f, '');
   const markChip = markClassChip(f, who);
-  return `<div class="card compact" id="c${f.ordinal}">
+  return `<div class="card compact"${cardId(f)}>
     <div class="top"><div class="rail low"></div><div class="body">
-      <div class="cardhead"><label class="pick no-print"><input type="checkbox" class="pickbox"${ticked ? ' checked' : ''} aria-label="${R.card.includeInPdf(f.ordinal)}"></label><span class="fnum">${f.ordinal}</span>${cardTitleParts(f, who).title}${evidenceChips(f)}<span class="tier low">${riskChip(f)}</span><button class="ask-fi no-print">${R.card.askAi}</button></div>${cardTitleParts(f, who).ownerLine}${logoLine(f, recordsByUri)}
+      <div class="cardhead"><label class="pick no-print"><input type="checkbox" class="pickbox"${ticked ? ' checked' : ''} aria-label="${escAttr(R.card.includeInPdf(f.ordinal))}"></label><span class="fnum">${esc(f.ordinal)}</span>${cardTitleParts(f, who).title}${evidenceChips(f)}<span class="tier low">${riskChip(f)}</span><button class="ask-fi no-print">${R.card.askAi}</button></div>${cardTitleParts(f, who).ownerLine}${logoLine(f, recordsByUri)}
       <div class="oneline">${inline(sentenceCaseLead(one))}</div>
     </div></div>
     ${fullDetail(f, card, recordsByUri)}
@@ -2260,6 +2275,18 @@ function sharedNoteCells(rows, cell) {
     return `<div class="covcell ${s.cls}"><div class="ck">${s.ic}</div><div><div class="ct">${inline(cap(same[0].note || ''))}</div>`
       + `<ul class="covlist">${same.map((r) => `<li>${esc(cap(readerRowHead(r.area)))}</li>`).join('')}</ul></div></div>`;
   });
+}
+
+/**
+ * THE ROWS UNDER "LEFT OPEN", as the page draws them: the run's coverage rows that are not clean, then the rows for the
+ * native scripts whose planned search did not complete, less any follow-up row another open row restates
+ * (`dedupeFollowUps`). One list for every surface that prints it, so the page and a delivered document cannot disagree.
+ * `localScripts` is the search-depth record's `counts.localScripts`. PURE.
+ * @returns {{ area: string, state: string, note: string }[]} coverage rows keep their other fields
+ */
+export function leftOpenRows({ coverage = [], localScripts = null, followUpKinds = null } = {}) {
+  const open = (Array.isArray(coverage) ? coverage : []).filter((c) => COV_STATE[c?.state]?.cls !== 'ok');
+  return dedupeFollowUps([...open, ...scriptGapRows(localScripts)], followUpKinds);
 }
 
 // `verdict: false` — a report whose overall assessment was not completed has no verdict above the grid, so the open

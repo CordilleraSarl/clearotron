@@ -17,8 +17,9 @@ import { writeFileSync, mkdtempSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { parseReport } from "../publish/parse.mjs";
-import { renderHtml, homeButton } from "../publish/render.mjs";
+import { renderHtml, homeButton, leftOpenRows, coverageGrid } from "../publish/render.mjs";
 import { localScripts } from "../publish/search-depth.mjs";
+import { pageElements, pageLinks } from "./helpers/page-links.mjs";
 import { EXPORT_TOGGLE, EXPORT_MENU_JS } from "../publish/report-topbar.mjs";
 import { joinEvidenceStatus } from "../registry-fidelity.mjs";
 
@@ -2503,17 +2504,13 @@ test("the one-clause net renders VERBATIM — no cap, no ellipsis, on every card
 // EVERY IN-PAGE LINK LANDS ON THE PAGE. The key rows and the chart linked to findings drawn as grouped rows with no
 // id, the key's common-law hint to a section that had lost its heading and its anchor, and a four-answers ordinal to a
 // withdrawn finding the page does not draw. Measured on saved test-instance clearances: up to 13 dead links a page.
-// Each target now exists, a withdrawn finding is cited nowhere, and no id repeats. Ids are read from the markup only.
-const pageLinks = (html) => {
-  const markup = html.replace(/<script\b[\s\S]*?<\/script>/g, "").replace(/<style\b[\s\S]*?<\/style>/g, "");
-  const ids = [...markup.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]);
-  const hrefs = [...markup.matchAll(/href="#([^"]+)"/g)].map((m) => m[1]);
-  return { hrefs, dead: hrefs.filter((h) => !ids.includes(h)), repeated: ids.filter((x, i) => ids.indexOf(x) !== i) };
-};
+// Each target now exists, a withdrawn finding is cited nowhere, and no id repeats. Ids and links are read from the
+// page's parsed elements, never from the text of its script.
 test("every in-page link on a clearance page lands on an element of that page, and no id repeats", () => {
-  const lands = (html, what) => {
-    const { hrefs, dead, repeated } = pageLinks(html);
+  const lands = (html, what, target) => {
+    const { ids, hrefs, dead, repeated } = pageLinks(html);
     assert.ok(hrefs.length > 0, `${what}: the page draws in-page links`);
+    assert.ok(ids.includes(target) && hrefs.includes(target), `${what}: ${target} is read as both a link and an id`);
     assert.deepEqual(dead, [], `${what}: links to targets the page does not carry`);
     assert.deepEqual(repeated, [], `${what}: ids that repeat`);
   };
@@ -2521,12 +2518,12 @@ test("every in-page link on a clearance page lands on an element of that page, a
   const grouped = renderHtml(parsedOf(REPORT), V6_NEGATIVES, COVERAGE, { runId: "noref-demo", findingsSchemaVersion: 6 });
   assert.match(grouped, /<details class="rgroup rn" id="c3">/);
   assert.match(grouped, /class="keyrow" href="#c3"/);
-  lands(grouped, "grouped negatives");
+  lands(grouped, "grouped negatives", "c3");
   // The common-law hint lands on the first common-law card, not on the section that went with its heading.
   const cl = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-demo" });
   assert.match(cl, /<p class="keyhint" style="margin-top:10px">[^<]*<a href="#c2">/);
   assert.doesNotMatch(cl, /href="#common-law"/);
-  lands(cl, "common-law hint");
+  lands(cl, "common-law hint", "c2");
   // A four-answers ordinal lands on a ruled-out card, on either layout, and a withdrawn finding is not cited at all.
   const ruled = { ordinal: 4, mark: "MATCHDAY MOTORS", ruled_out: true, owner: { name: "Matchday Motors Ltd", registrations: [] },
     composite: 1, level: "C", meters: {}, quadrant: { x: 0.1, y: 0.1 }, source: { source_type: "register-vendor" } };
@@ -2536,7 +2533,28 @@ test("every in-page link on a clearance page lands on an element of that page, a
     const html = renderHtml(parsedOf(REPORT), [...findings, ruled, withdrawn], COVERAGE, { runId: "noref-demo", fourAnswers, ...extra });
     assert.match(html, /<span class="fa-ords"><a href="#c1">#1<\/a> <a href="#c4">#4<\/a><\/span>/, `${what}: the withdrawn #5 is not cited`);
     assert.match(html, /<div class="card ruled" id="c4">/, `${what}: the ruled-out card carries its id`);
-    lands(html, what);
+    lands(html, what, "c4");
+  }
+});
+
+// A card's target is `c` and a whole-number ordinal. An ordinal that is absent, or is anything else, gets no id and no
+// link pointing at it: nothing on the page invents a target for it, and its text cannot close an attribute it sits in.
+test("a finding with an absent or malformed ordinal draws no id and no link, and its ordinal opens no attribute", () => {
+  const quoted = '9" data-injected="1';
+  const odd = (f, ordinal, mark) => ({ ...f, ordinal, mark });
+  const ruled = { ordinal: quoted, mark: "MATCHDAY MOTORS", ruled_out: true, owner: { name: "Matchday Motors Ltd", registrations: [] },
+    composite: 1, level: "C", meters: {}, quadrant: { x: 0.1, y: 0.1 }, source: { source_type: "register-vendor" } };
+  const fourAnswers = { third_party_rights: { read: "Senior rights sit in the core class.", token: "strong", ordinals: [1, quoted, "x"] } };
+  for (const [what, findings, extra] of [["legacy layout", FINDINGS, {}], ["grouped layout", V6_NEGATIVES, { findingsSchemaVersion: 6 }]]) {
+    const html = renderHtml(parsedOf(REPORT), [...findings, odd(findings[0], quoted, "QUOTEDCO"), odd(findings[1], undefined, "NUMBERLESS"), ruled],
+      COVERAGE, { runId: "noref-demo", fourAnswers, ...extra });
+    const elements = pageElements(html);
+    assert.deepEqual(elements.filter((e) => Object.hasOwn(e.attrs, "data-injected")), [], `${what}: the quoted ordinal closed an attribute`);
+    const { ids, dead, repeated } = pageLinks(html);
+    assert.deepEqual(ids.filter((x) => /^c(?![a-z-])/.test(x) && !/^c[0-9]+$/.test(x)), [], `${what}: an id made from a malformed ordinal`);
+    assert.deepEqual(dead, [], `${what}: links to targets the page does not carry`);
+    assert.deepEqual(repeated, [], `${what}: ids that repeat`);
+    assert.ok(ids.includes("c1"), `${what}: a whole-number ordinal keeps its card's id`);
   }
 });
 
@@ -3416,4 +3434,22 @@ test("the local-script row names the scripts searched, and Left open names those
   const all = localScripts({ entries: terms.map((term, i) => ({ qid: `q${i}`, term })) }, { executed: terms.map((_, i) => ({ qid: `q${i}`, state: "enumerated" })) });
   assert.equal(all.searched.length, 10);
   assert.equal(v(page(all), "Local-script spellings"), "Han, Hiragana, Katakana, Hangul, Greek, Cyrillic, Arabic, Hebrew, Thai and Devanagari");
+});
+
+// ONE LIST OF LEFT OPEN ROWS for every surface that prints it. The page draws exactly the rows `leftOpenRows` returns:
+// the open coverage rows, a follow-up row another open row restates left out, a clean row left out, and the script row.
+test("the Left open grid is drawn from leftOpenRows, so a delivered document can print the same rows", () => {
+  const coverage = [
+    { area: "Register / exact word in class 9", state: "confirmed-clean", note: "Searched; nothing in the way." },
+    { area: "the English word DOLPHIN as a dedicated exact search", state: "open", note: "Not reached this run." },
+    { area: "Follow-up / dolphin", state: "open", note: "dolphin — not completed this run — the search for it was planned and never reached the register" },
+    { area: "Owner portfolio", state: "coverage-limited", note: "The owner's newer filings were not all read." },
+  ];
+  const localScripts = { searched: ["Kana"], missed: ["Hang"], territories: {} };
+  const rows = leftOpenRows({ coverage, localScripts });
+  assert.deepEqual(rows.map((r) => r.area), ["the English word DOLPHIN as a dedicated exact search", "Owner portfolio", "Local-script spellings"]);
+  assert.deepEqual(rows[2], { area: "Local-script spellings", state: "not-searched", note: "No search in Hangul script was completed." });
+  const html = renderHtml(parsedOf(REPORT), [], coverage, { searchDepth: { counts: { localScripts } } });
+  assert.ok(html.includes(`<div class="openrows"><div class="rk">Left open</div>${coverageGrid(rows)}</div>`), "the page draws the function's rows");
+  assert.deepEqual(leftOpenRows({ coverage: [coverage[0]], localScripts: null }), [], "a clean run with no execution record leaves nothing open");
 });
