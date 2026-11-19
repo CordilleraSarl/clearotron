@@ -64,9 +64,10 @@ test("the row is written once, whichever label an earlier pass gave it", () => {
   assert.equal(older.rows().length, 1, "a row under the earlier label is not written a second time under the new one");
 });
 
-test("every other cause keeps its fuller note and its label", () => {
-  const run = runWith("zh", { zh: { asked: "full", ran: "candidates", shortfall: true, cause: "requested-full-ran-candidates",
-    why: "asked for full and ran candidates only — serp-grid not-armed, nativeread not-armed" } });
+test("a cause with no sentence of its own keeps the fuller note and its label", () => {
+  // Every cause jx.mjs names now has the owner's sentence (items 1137 and 1156); a cause minted later reads this way.
+  const run = runWith("zh", { zh: { asked: "full", ran: "candidates", shortfall: true, cause: "some-later-cause",
+    why: "a reason in the record's terms" } });
   injectLaneDepthCoverage(run.P, run.d, () => {});
   const row = run.rows().find((c) => c.area === "Native-language investigation depth / zh");
   assert.ok(row, "the other cause keeps its label");

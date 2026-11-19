@@ -421,13 +421,13 @@ test("Full detail: a multi-URL cite renders one link per URL, never one glued de
 test("Full detail renders own_rights.source as TEXT when it is an honest-negative", () => {
   const f = [{ ...FINDINGS[0], own_rights: { source: "no applicant-owned registrations in the searched register material" } }];
   const html = renderHtml(parsedOf(REPORT), f, COVERAGE, {});
-  assert.match(html, /<li><b>Own-portfolio sweep\.<\/b> no applicant-owned registrations in the searched register material<\/li>/);
+  assert.match(html, /<li><b>Search of the client's own marks\.<\/b> no applicant-owned registrations in the searched register material<\/li>/);
 });
 
 test("Full detail OMITS the use_check / own_rights cites when the fields are absent", () => {
   const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, {});   // FINDINGS carry neither field
   assert.doesNotMatch(html, /Use checked\./);
-  assert.doesNotMatch(html, /Own-portfolio sweep\./);
+  assert.doesNotMatch(html, /Search of the client's own marks\./);
 });
 
 // ── Instance #6: registry identifiers RENDERED FROM the fetched _records/ (recordsByUri), not model prose ──
@@ -1124,7 +1124,7 @@ test("spec-48 A4: an assumed-demoted 'verified' enforcer renders as inference; c
   assert.doesNotMatch(html, /<b>verified<\/b> \(enforcement record on file\)/);
   // D4 — the cite's status is LABELLED as evidence, and the source class reads as a source phrase.
   assert.match(html, /Use checked\.[^<]*<\/b>[\s\S]{0,200}?Evidence: not checked, from a register mirror, which is not evidence of use/);
-  assert.match(html, /Own-portfolio sweep\.<\/b> no applicant-owned registrations in the searched register material <i class="evstat">Evidence: not yet verified<\/i>/);
+  assert.match(html, /Search of the client's own marks\.<\/b> no applicant-owned registrations in the searched register material <i class="evstat">Evidence: not yet verified<\/i>/);
 });
 
 test("spec-48 A4/A5: enforcer verified NAMES its source when the meter carries one", () => {
@@ -2161,7 +2161,7 @@ test("spec 64: §3 renders the advisory tags as chips (Open question / Your deci
 test("spec 64: f.impact renders as a code-built 'If enforced' bullet (structured-only cards included)", () => {
   const withImpact = FINDINGS.map((f) => f.ordinal === 1 ? { ...f, impact: "an injunction would halt the shipped stock" } : f);
   const html = renderHtml(parsedOf(REPORT), withImpact, COVERAGE, { runId: "noref-demo" });
-  assert.match(html, /<b>If enforced:<\/b> an injunction would halt the shipped stock — for the client to consider\./);
+  assert.match(html, /<b>If enforced:<\/b> an injunction would halt the shipped stock<\/li>/, "the tail is gone (owner, 2026-11-18)");
 });
 
 // ── spec 62: per-project disclosure — the project line (both surfaces) + the origin table (internal-only) ──
@@ -3184,7 +3184,7 @@ test("the local-language row states the depth reached, in the words the page alr
 
   const seen = {};
   for (const [state, word] of [["ran", "Included"], ["ran-shallow", "Partially covered"],
-    ["not-run", "Not run this run"], ["not-in-scope", "Not part of this search"]]) {
+    ["not-run", "Not searched"], ["not-in-scope", "Not part of this search"]]) {
     const got = rowFor(render(state), "Local-language investigation");
     assert.equal(got, word, `the ${state} state draws ${JSON.stringify(got)}`);
     seen[word] = (seen[word] ?? 0) + 1;

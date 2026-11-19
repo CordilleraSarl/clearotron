@@ -55,7 +55,7 @@ export const plainDeferralReason = (r) => {
   if (/^not-verified-closed\b/i.test(t))
     return "nothing in the run's own record confirms it was searched, so it is left open rather than assumed done";
   if (/^source-not-swept\b/i.test(t))
-    return "the channel it needed was never swept this run, so nothing is known about it either way";
+    return "the source it needed was not searched, so nothing is known about it either way";   // owner, 2026-11-18, item 1136
   if (/^digest-locked-resume\b/i.test(t))
     return "the earlier pass was still holding the record when the re-run was attempted, so it could not be completed this run";
   if (/^resume-arm-unverifiable\b/i.test(t))

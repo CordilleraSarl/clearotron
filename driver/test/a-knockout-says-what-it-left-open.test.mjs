@@ -41,7 +41,7 @@ test("the page draws the clearance's grid under Left open, and nothing when noth
   const html = page(knockoutLeftOpen({ listing: { reason: TIMED_OUT } }, MARKS));
   const sec = html.slice(html.indexOf('<h2>Left open</h2>'));
   assert.ok(html.includes('<h2>Left open</h2>'), "no Left open section");
-  assert.match(sec, /<div class="covgrp"><div class="covgh">Not run this run <span class="covgn">\(2\)<\/span><\/div>/, "the clearance's state word and count");
+  assert.match(sec, /<div class="covgrp"><div class="covgh">Not searched <span class="covgn">\(2\)<\/span><\/div>/, "the clearance's state word and count");
   assert.ok(sec.includes(`<div class="ct">Register <span class="cst">`) && sec.includes(plainDeferralReason(TIMED_OUT)), "the register row");
   assert.ok(sec.includes(`<div class="ct">BRISQUETTE <span class="cst">`), "the name whose research was unavailable");
   for (const none of [[], undefined]) assert.doesNotMatch(page(none), /Left open|class="covcell/, "a section drawn with nothing in it");

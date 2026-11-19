@@ -30,9 +30,9 @@ test("open rows group under their state words with a count, in a fixed order, an
   const grouped = html.slice(html.indexOf('<div class="covgrp">'), html.lastIndexOf('</div></div></div>'));
   assert.equal(grouped.includes("Invented note 7."), false, "a searched-and-clean row was put in an open group");
   const heads = [...html.matchAll(/<div class="covgh">([^<]*) <span class="covgn">\((\d+)\)<\/span><\/div>/g)].map((m) => [m[1], Number(m[2])]);
-  assert.deepEqual(heads, [["Partially covered", 2], ["Open item", 1], ["Not run this run", 3], ["Note", 1]]);
+  assert.deepEqual(heads, [["Partially covered", 2], ["Open item", 1], ["Not searched", 3], ["Note", 1]]);
   // Each group holds exactly the rows it counts: the three not-searched rows sit under that heading.
-  const group = html.slice(html.indexOf("Not run this run <span"), html.indexOf("Note <span class=\"covgn\""));
+  const group = html.slice(html.indexOf("Not searched <span"), html.indexOf("Note <span class=\"covgn\""));
   for (const n of [1, 4, 8]) assert.ok(group.includes(`Invented note ${n}.`), `row ${n} is outside its group`);
 });
 

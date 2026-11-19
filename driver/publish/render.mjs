@@ -35,7 +35,8 @@ import { registrationSystem } from '../jurisdiction-systems.mjs';
 import { READ_LEAD_RE } from '../report-card-record.mjs';   // D3 — the dedupe gate and the card's acceptance are ONE predicate
 import { logoLockup, BRAND, confPosture, sectionStrip, PALETTE, QUADRANT_COLOURS as QC } from '../../shared/brand.mjs';
 import { NAV_CSS } from '../../shared/site-nav.mjs';
-import { pageShell } from './page-shell.mjs';   // the document shell, shared with the knockout template
+import { pageShell } from './page-shell.mjs';
+import { readerRowHead } from '../coverage-ledger.mjs';   // an engine-token row head in the reader's words (item 1138)   // the document shell, shared with the knockout template
 import { EVIDENCE_LABEL, USE_EVIDENCE_LABEL, meterEvidence } from './evidence-words.mjs';   // the meters' evidence words, shared with the audit workbook
 import { inlineMarkdown } from '../../shared/inline-markdown.mjs';   // the inline-markdown dialect, shared with the knockout template
 import { isEntrypoint } from "../../shared/is-entrypoint.mjs";   // — realpath both sides, or a symlinked invocation exits 0 silently
@@ -1282,7 +1283,7 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
   // redesign replaced with named rows — so a run that went shallow said so on no page at all.
   //
   // EVERY ONE OF THE FOUR WORDS IS ALREADY ON THE PAGE. "Included" and "Not part of this search" are the
-  // approved board's own values for this row; "Partially covered" and "Not run this run" are the coverage
+  // approved board's own values for this row; "Partially covered" and "Not searched" are the coverage
   // vocabulary this file already renders, taken from COV_STATE rather than retyped so they cannot drift
   // apart from it. Nothing here composes a sentence.
   //
@@ -1872,7 +1873,7 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   // how a FINDING was established, and there is no finding here. Nothing was found, and that is the
   // whole of what the line has to say.
   const useChk = cite(useSrc, 'Use checked.', isUseCheckNoResult(f.use_check?.source) ? null : useStatus);
-  const ownR = cite(f.own_rights?.source, 'Own-portfolio sweep.', EVIDENCE_LABEL[f.own_rights?._status]);
+  const ownR = cite(f.own_rights?.source, "Search of the client's own marks.", EVIDENCE_LABEL[f.own_rights?._status]);   // owner, 2026-11-18, item 1135
   const proseFull = cardBlock(card, /^full detail/i);
   const proseFullShown = proseFull;   // one report: the full prose; portal-report strips serve-time chrome, never analysis
   const internalNote = cardBlock(card, /^full detail/i) ? '' : '';   // internal notes ride ::p:: inside prose
@@ -1926,7 +1927,7 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   // already carries an "If enforced" bullet (the reasoned read wins — the enfLine dedupe pattern).
   const proseHasImpact = /(^|\n)\s*-\s*(\*\*)?\s*If enforced\b/i.test(proseFull || '');
   const impactLine = (f.impact && !proseHasImpact)
-    ? `<li><b>If enforced:</b> ${esc(f.impact)} — for the client to consider.</li>` : '';
+    ? `<li><b>If enforced:</b> ${esc(f.impact)}</li>` : '';   // its "— for the client to consider." tail is gone (owner, 2026-11-18, item 1134)
   // — THE REASONING LEADS THE DRAWER, and this is where it now lives. legal_position /
   // practical_position and the manageable category used to render uncut ABOVE the fold on every card:
   // roughly 600 characters of prose per finding before a reader opened anything, while the one sentence
@@ -2176,7 +2177,7 @@ const COV_STATE = {
   'confirmed-clean': { cls: 'ok', ic: '✓', word: 'Searched — clean' },
   'coverage-limited': { cls: 'todo', ic: '→', word: 'Partially covered' },
   open: { cls: 'todo', ic: '→', word: 'Open item' },
-  'not-searched': { cls: 'todo', ic: '→', word: 'Not run this run' },
+  'not-searched': { cls: 'todo', ic: '→', word: 'Not searched' },   // owner, 2026-11-18, item 1132: it read "Not run this run"
   note: { cls: 'info', ic: 'i', word: 'Note' },
 };
 /**
@@ -2270,7 +2271,7 @@ function sharedNoteCells(rows, cell) {
     if (same.length < 2) return cell(same[0]);
     const s = COV_STATE[same[0].state] || COV_STATE.note;
     return `<div class="covcell ${s.cls}"><div class="ck">${s.ic}</div><div><div class="ct">${inline(cap(same[0].note || ''))}</div>`
-      + `<ul class="covlist">${same.map((r) => `<li>${esc(cap(r.area))}</li>`).join('')}</ul></div></div>`;
+      + `<ul class="covlist">${same.map((r) => `<li>${esc(cap(readerRowHead(r.area)))}</li>`).join('')}</ul></div></div>`;
   });
 }
 
@@ -2288,7 +2289,7 @@ export function coverageGrid(coverage, { verdict = true } = {}) {
     // mark that does not exist, inside the report that clears it. Measured across the nine delivered
     // runs in the pool, `coverage[]` carries no axis identifier at all; the ones that leaked were the
     // coverage_judgment rows, which now carry a driver-emitted `areaLabel` and fold through it.
-    return `<div class="covcell ${s.cls}"><div class="ck">${s.ic}</div><div><div class="ct">${esc(cap(c.area))}${tag}</div><div class="cd">${inline(c.note || '')}</div></div></div>`;
+    return `<div class="covcell ${s.cls}"><div class="ck">${s.ic}</div><div><div class="ct">${esc(cap(readerRowHead(c.area)))}${tag}</div><div class="cd">${inline(c.note || '')}</div></div></div>`;
   };
   const covered = coverage.filter(c => c.state === 'confirmed-clean');
   const rest = coverage.filter(c => c.state !== 'confirmed-clean');
@@ -2300,7 +2301,7 @@ export function coverageGrid(coverage, { verdict = true } = {}) {
   const groups = Object.keys(COV_STATE).map((state) => [state, rest.filter((c) => (COV_STATE[c.state] ? c.state : 'note') === state)])
     .filter(([, rows]) => rows.length);
   if (rest.length) parts.push(
-    (verdict ? `<p class="covnext"><b>Next steps &amp; monitoring</b> — routine follow-ups and bounded monitor items; anything material is carried in the verdict above.</p>` : '')
+    (verdict ? `<p class="covnext"><b>Next steps &amp; monitoring</b></p>` : '')   // the head alone (owner, 2026-11-18, item 1133)
     + groups.map(([state, rows]) => `<div class="covgrp"><div class="covgh">${esc(COV_STATE[state].word)} <span class="covgn">(${rows.length})</span></div><div class="cov">${(verdict ? rows.map(cell) : sharedNoteCells(rows, cell)).join('')}</div></div>`).join(''));
   return parts.join('');
 }
