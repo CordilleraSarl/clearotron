@@ -584,7 +584,7 @@ export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontM
       let caseLawNow = new Map();
       try {
         if (existsSync(P.caseLaw)) caseLawNow = caseLawJoin(P, findingsNow);
-      } catch { /* no case-law layer */ }
+      } catch { /* no case-law layer, or a join that failed, which caseLawJoin has recorded */ }
       let reassemble = false;
       // THE LATE VERDICT, ONE RULE FOR BOTH REVIEWS THIS LOOP CAN RUN — the whole review and the review after
       // a delivery-check repair. A late review may only harden the run's verdict, and a softer one is logged,
@@ -746,7 +746,7 @@ export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontM
             ordinalsNow = fullProseOrdinals(findingsNow);
             try {
               if (existsSync(P.caseLaw)) caseLawNow = caseLawJoin(P, findingsNow);
-            } catch { /* no case-law layer */ }
+            } catch { /* no case-law layer, or a join that failed, which caseLawJoin has recorded */ }
             // After a correction, and after a rollback that rebuilt the record from a save, what reads the record is
             // rebuilt from it; a rollback that put the same bytes back leaves nothing stale, and queues nothing.
             if (pass.ok || pass.rollback) {
@@ -819,7 +819,7 @@ export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontM
             ordinalsNow = fullProseOrdinals(findingsNow);
             try {
               if (existsSync(P.caseLaw)) caseLawNow = caseLawJoin(P, findingsNow);
-            } catch { /* no case-law layer */ }
+            } catch { /* no case-law layer, or a join that failed, which caseLawJoin has recorded */ }
             for (const owed of cardsNeverBuilt(P, ctx.depth, cardOrdinals)) if (!runState.staleStages.some((x) => x.label === owed.label)) runState.staleStages.push(owed);
             // — AND THE REVIEW IS ALSO SOMETHING THIS PASS JUST WROTE.
             //
