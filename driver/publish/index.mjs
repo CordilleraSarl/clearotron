@@ -956,6 +956,12 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
     const r = readStore(runDir ?? dirname(reportMd), '_driver/scope-facts.json').value?.register_reach;
     if (typeof r?.service === 'string' && r.service && Number.isInteger(r.offices) && r.offices > 0) registerReach = { service: r.service, offices: r.offices };
   }
+  // WHAT THE ORDER COVERED, for the register rows' head: 'worldwide', or 'named' for an order that names its
+  // countries, so the head does not call that search worldwide. Read from the same plan and instructed scope as the
+  // searched set above; null when the run's record cannot say.
+  const registerScope = scopeBasis === 'worldwide' ? 'worldwide'
+    : searchedJurisdictions.length && searchedJurisdictions.every((j) => !/^(worldwide|world|ww|global)$/i.test(String(j).trim())) ? 'named'
+      : null;
   // T7 (E5) — the case-law layer joins DETERMINISTICALLY (was: a prompt fished in the md and
   // hit 2 of 3 copper-spire cards): parse the grounded profiles, join by ordinal (fresh runs dictate
   // "- ord:") falling back to mark/owner (archived runs) — every matched card gets its strand.
@@ -1287,7 +1293,7 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
     quarantined, findingsError, coverageJudgment, markAssessment, actionsRegister, askAnswers, correctionsDoc,
     fourAnswers, findingsSchemaVersion, findingsKept, assessmentNotCompleted, coverageJudgmentDisplay, recordsByUri,
     runProviderConf, recordOrigin, providerLabel, runOrigins, seniorRights, verdictInfo, droppedConditions,
-    undispatchedProbes, withheldFamilies, setAside, framework, frameworkMethod, scopeBasis, searchedJurisdictions, registerReach,
+    undispatchedProbes, withheldFamilies, setAside, framework, frameworkMethod, scopeBasis, searchedJurisdictions, registerReach, registerScope,
     planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals, officeLinks, reviewReceipts, clientGate,
     fetchState, searchPolicy, registerOnly, noMarketplacesPicked, jurisdiction, commonLawJoinedTerms, stageLabel,
     depthNote, productName, publishParts, auditParsed, degradedRows, releasedFamilies, served, searchDepth, issuedAt,
@@ -1334,7 +1340,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     findingsKept, assessmentNotCompleted, coverageJudgmentDisplay, recordsByUri, runProviderConf, recordOrigin, providerLabel,
     runOrigins, seniorRights, verdictInfo, droppedConditions, undispatchedProbes, withheldFamilies, setAside, framework,
     frameworkMethod, scopeBasis, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals,
-    officeLinks, reviewReceipts, clientGate, fetchState, searchPolicy, registerOnly, jurisdiction, commonLawJoinedTerms, registerReach,
+    officeLinks, reviewReceipts, clientGate, fetchState, searchPolicy, registerOnly, jurisdiction, commonLawJoinedTerms, registerReach, registerScope,
     stageLabel, depthNote, productName, publishParts, auditParsed, degradedRows, releasedFamilies, served, searchDepth,
     issuedAt, renderedAt, markName, project, organisation, tokenRollup, reportRoute, frozenStageLabel, ratingWord,
     ratingBadge, caption } = doc;
@@ -1360,7 +1366,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
       // the same rule (the workbook's own BANNED gate had already started firing on the raw detail —
       // advisory, so CI stayed green). reviewReceipts.lint keeps its raw detail for the internal
       // readers above (fetchState reads registry-record-coverage's URIs out of it).
-      const built = await buildAudit({ degradedParts: degradedRows, droppedConditions, undispatchedProbes, withheldFamilies, releasedFamilies, setAside, findings, frameworkMethod, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null, assessmentNotCompleted, registerReach }, auditParsed, at, fm.title, fm);
+      const built = await buildAudit({ degradedParts: degradedRows, droppedConditions, undispatchedProbes, withheldFamilies, releasedFamilies, setAside, findings, frameworkMethod, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null, assessmentNotCompleted, registerReach, registerScope }, auditParsed, at, fm.title, fm);
       if (built?.gateViolations?.length) console.warn(`[audit-workbook] advisory: ${built.gateViolations.join(' | ')}`);
       return built;
     }));   // a REAL exception only — the report ships without the workbook, and nothing names it
