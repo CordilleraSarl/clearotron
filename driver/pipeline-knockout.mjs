@@ -34,7 +34,7 @@ import { registerAdapter as adapterForRegister } from "./engine/run-choices.mjs"
 import { StageFailure, stageWallFields } from "./run-outcome.mjs";   // — the wall fields the spine already carries
 import { endTheDeliveredRun, runShell } from "./run-shell.mjs";   // — the runner and the delivered ending both products share
 import { logTurnaroundReconciliation } from "./run-quote.mjs";
-import { RunCancelled, assertNotCancelledBeforePublish, isCancelled, readCancel } from "./cancel.mjs";   // stop-by-user: never the failure lane below
+import { RunCancelled, assertNotCancelledBeforePublish, isCancelled, readCancel, stopsWithTheRun } from "./cancel.mjs";   // stop-by-user: never the failure lane below
 import { loadFrameworkManifest, parseFrameworkManifest, frameworkFor, DEFAULT_FRAMEWORK } from "./framework.mjs";
 import { attachFrameworkMethod, methodPathFor, FROZEN_METHOD_FILE } from "./framework-method.mjs";
 import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutGridSpec, KNOCKOUT_WEB, KNOCKOUT_MINUTES_BAR, knockoutBarVerdict, koChunks } from "./stages-knockout.mjs";
@@ -595,6 +595,8 @@ async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts
     offline: countExec.source.startsWith("fixtures:"),
     fixtureDir: job?.registerFixtures?.records ?? null,
   });
+  // The questions the code asks the register itself read the stop first, as the counts do; a model turn's are the gateway's.
+  if (typeof exec.execute === "function") exec.execute = stopsWithTheRun(run.runDir, "knockout-register-read", exec.execute);
   const refusal = countExec.source.startsWith("fixtures:") && exec.source === "none"
     ? "this run counted from fixtures and its job declares no `registerFixtures.records` directory, so the "
       + "filings behind the counts were not listed — a fixture run never reaches a live register."
@@ -646,6 +648,9 @@ async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts
     }
   } catch (e) {
     if (e instanceof StageFailure && (e.rateLimited || e.resetsAt)) throw e;
+    // A STOP IS NOT A STEP THAT DID NOT FINISH. Read as one, the lane settled the reading and went on to the owner checks,
+    // and paid for them after the stop (measured 2026-11-19).
+    if (e instanceof RunCancelled) throw e;
     note(`register reading step did not finish (non-fatal): ${String(e?.message ?? e).slice(0, 200)}`);
     runLog(run.runDir, { event: "knockout-register-read-failed", cause: String(e?.message ?? e).slice(0, 300) });
     reading = settledKnockoutReading(run.runDir);
@@ -864,6 +869,9 @@ export async function knockoutInner(ctx, job, opts = {}) {
         // frame turn" is exactly what a skip prevents, and prevents earlier than a throw did.
         // (pipelineInner's register preflight is skipped for this lane — knockout has no register machinery.)
         sweep = resolveSweepExecutor(opts);
+        // Every paid call the lane makes itself reads the stop first (cancel.mjs stopsWithTheRun): the web grid, the owner
+        // checks that share its executor, and below, the register counts and listings.
+        sweep = { ...sweep, grid: stopsWithTheRun(run.runDir, "knockout-sweep", sweep.grid), exec: stopsWithTheRun(run.runDir, "knockout-owner-checks", sweep.exec) };
 
         // Depth 2 preflight — the SAME discipline, for the register count. Both refusals it can return
         // are structural (a provider that cannot count; a territory scope it cannot express), so they are
@@ -892,6 +900,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
             // is a fact about the run, so it arrives with the run and lands on its record.
             fixtureDir: job?.registerFixtures?.counts ?? null,
           });
+          countExec = { ...countExec, count: stopsWithTheRun(run.runDir, "knockout-register-count", countExec.count) };
           // EVERY required variable. `Boolean(process.env[credEnv])` here was a half-check: it
           // reported "credential present" for a euipo instance holding the id and no secret, and would
           // have done the same for a free-tier instance holding one member of two. fixed the
@@ -1093,7 +1102,10 @@ export async function knockoutInner(ctx, job, opts = {}) {
               while (attempts < 2) {
                 attempts++;
                 try { r = await grid(spec, { mark: m.name, preset, reasoning }); }
-                catch (e) { r = { ok: false, cause: `executor threw: ${String(e?.message ?? e).slice(0, 200)}` }; }
+                catch (e) {
+                  if (e instanceof RunCancelled) throw e;   // a stop is not a degraded mark
+                  r = { ok: false, cause: `executor threw: ${String(e?.message ?? e).slice(0, 200)}` };
+                }
                 if (Array.isArray(r?.raw) && r.raw.length) raw.push({ attempt: attempts, items: r.raw });
                 if (r?.ok || r?.outage === true || !/^grid: /.test(String(r?.cause ?? ""))) break;
               }
@@ -1243,6 +1255,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
             } catch (e) {
               // Structural only — runOwnerChecks itself never throws. Non-fatal by the same rule as the
               // listing above: a report is never withheld for a check that could not run.
+              if (e instanceof RunCancelled) throw e;
               note(`owner use-check failed (non-fatal): ${e.message}`);
               runLog(run.runDir, { event: "knockout-owner-checks-failed", cause: String(e?.message ?? e).slice(0, 300) });
             }

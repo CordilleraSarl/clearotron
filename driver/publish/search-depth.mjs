@@ -37,6 +37,7 @@
 //   · court decisions distinguishes four states      → break: collapse none-found into not-checked, arm 6 red
 
 import { parseCaseLawLedger, ledgerSeparatesUnsentQueries } from "../case-law-ledger.mjs";   // pure, like this module
+import { normRegion } from "./regions.mjs";   // pure: the page's own folding of a territory's spellings
 
 /** The closed set a group key may take. The renderer's headings are keyed on these, never on prose. */
 export const CLEARED_GROUPS = Object.freeze(["dead-filing", "different-goods", "other"]);
@@ -357,23 +358,40 @@ const NATIVE_SCRIPTS = [
   ["Cyrl", /\p{Script=Cyrillic}/u], ["Arab", /\p{Script=Arabic}/u], ["Grek", /\p{Script=Greek}/u], ["Hebr", /\p{Script=Hebrew}/u],
   ["Thai", /\p{Script=Thai}/u], ["Deva", /\p{Script=Devanagari}/u],
 ];
+// WHERE EACH SCRIPT COMPLETED, so a script searched in one territory and not in another keeps that gap (2026-11-19).
+// A territory is a plan term's region, folded the way the page folds the plan's territories (`normRegion`: EM and
+// euipo are EU, GB is UK), so one territory under two spellings is never a gap. A term that names no region is placed
+// nowhere: on the test box's 88 saved plans, 464 of 1,492 native-script terms name none. Those are kept apart, under
+// `unnamed`, rather than read as searching nowhere or everywhere.
 /**
- * The native scripts the run's plan searched in, `{ searched, missed }` as ISO 15924 codes: a script is searched when a
- * plan term written in it completed, and missed when terms in it were planned and none completed. Null when the run
- * kept no execution record, so neither can be said. PURE.
+ * The native scripts the run's plan searched in, `{ searched, missed, territories }`, keyed by ISO 15924 code: a script
+ * is searched when a plan term written in it completed, and missed when terms in it were planned and none completed.
+ * `territories` holds, per script, the territories where a term in it completed (`searched`) and those where terms in
+ * it were planned and none completed (`missed`), plus `unnamed` ("searched" or "missed") when terms in it named no
+ * region. Null when the run kept no execution record, so none of it can be said. PURE.
  */
 export function localScripts(registerPlan, planExecution) {
   if (!planExecution || !Array.isArray(planExecution.executed)) return null;
   const ran = new Set(planExecution.executed.filter((x) => x?.state === "enumerated").map((x) => x?.qid).filter(Boolean));
-  const searched = new Set(), planned = new Set();
+  const searched = new Set(), planned = new Set(), at = {};
   for (const e of Array.isArray(registerPlan?.entries) ? registerPlan.entries : []) {
+    const regions = [...new Set((Array.isArray(e?.regions) ? e.regions : []).map(normRegion).filter(Boolean))];
+    const done = ran.has(e?.qid);
     for (const [code, re] of NATIVE_SCRIPTS) {
       if (!re.test(String(e?.term ?? ""))) continue;
       planned.add(code);
-      if (ran.has(e?.qid)) searched.add(code);
+      if (done) searched.add(code);
+      const t = (at[code] ??= { searched: new Set(), planned: new Set(), unnamed: null });
+      for (const r of regions) { t.planned.add(r); if (done) t.searched.add(r); }
+      if (!regions.length) t.unnamed = done || t.unnamed === "searched" ? "searched" : "missed";
     }
   }
-  return { searched: [...searched].sort(), missed: [...planned].filter((c) => !searched.has(c)).sort() };
+  const territories = {};
+  for (const code of Object.keys(at).sort()) {
+    const t = at[code];
+    territories[code] = { searched: [...t.searched].sort(), missed: [...t.planned].filter((r) => !t.searched.has(r)).sort(), ...(t.unnamed ? { unnamed: t.unnamed } : {}) };
+  }
+  return { searched: [...searched].sort(), missed: [...planned].filter((c) => !searched.has(c)).sort(), territories };
 }
 
 /**
