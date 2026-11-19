@@ -80,6 +80,8 @@ export const WORKBOOK = Object.freeze({
   }),
   couldNotBeSearched: 'could not be searched',
   registerSection: 'REGISTER  —  vendor register, worldwide',
+  // The register service's own reach, as the coverage line states it; a run that recorded none keeps the line above.
+  registerSectionReach: (service, offices) => `REGISTER  —  ${service}, ${offices} office${offices === 1 ? '' : 's'}`,
   commonLawSection: 'COMMON-LAW  —  web / marketplace / social / product database',
   surfaces: (n) => `~${n} surfaces`,
   similarFound: 'similar listing(s) found',
