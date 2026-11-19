@@ -3785,22 +3785,9 @@ export const STAGES = {
       // misread away from writing another finding's card. It also gives the harness a stable handle:
       // the knob that fails ONE card used to key on `report-cards/2.md`, a path this dispatch no longer
       // names at all.
-      `THIS TURN IS BOUND TO CARD ${axis}. Send \`ordinal\`: "${axis}" — the tool refuses a payload naming any other card, and you hold no other finding's record.`,
       `Send \`full_detail\` — one entry per item, each \`{text, lead, internal}\`. \`text\` is your sentence; \`lead\` is a one-word lead-in ("Portfolio", "Risk assessment", "Enforcement") sent as the word ALONE — the driver renders the bold and the full stop. §L: the entry carrying the risk read is led "Risk assessment", NEVER "Legal lever", which reads as leverage the client can pull rather than the assessment it is. THAT ENTRY IS REQUIRED, and the tool refuses the card without it (reportcard_read_lead_missing): the report suppresses the record's own legal and practical reads wherever this bullet is present, so a card that omits it — or marks it internal — reaches the client with no risk read at all, and nothing downstream recovers it. NO "Filing" BULLET (ruled): the driver already renders every registration from the FETCHED record — number, classes, status, filing and registration years, jurisdiction, designations, priority — so a typed filing bullet is that same fact retyped by a seat nothing can transposition-check. State a filing fact only where it carries the read you are making. Every other lead is optional. Mark an internal-only note with \`internal: true\`; do not type a \`::p::\` marker — the driver places it where the render splits.`,
-      // T7 (E5) — the MATCHED grounded profile arrives INLINE (deterministic join), replacing
-      // the old "if the file exists, fish in it" discretion that missed cards on copper-spire.
-      caseLawProfile ? lines(
-        `GROUNDED CASE-LAW for THIS finding (deterministically matched — weave its bearing into the card; quote a fetched citation where it grounds the enforcer/confusability read; never cite a proceeding it does not carry${caseLawProfile.none ? "; it records an explicit NO-ON-POINT-PRECEDENT result — that honest negative may be stated" : ""}):`,
-        "```markdown",
-        String(caseLawProfile.body ?? "").slice(0, 4000),
-        "```",
-      ) : "",
-      `The finding's OWN record — the ONLY source for this card (owner, mark, registrations, meters with their basis, band, disposition, source link):`,
-      "```json",
-      JSON.stringify(finding ?? {}, null, 2),
-      "```",
       // TRANSFORM, NOT FREE-GENERATION (Fix B1 — main's claims-must-not-outrun-evidence discipline, applied per card).
-      `TRANSFORM, NOT FREE-GENERATION: RESHAPE this record into the card — do not re-derive or re-judge. Use ONLY the fields above; NEVER re-compute the band (synthesis fixed it). Carry each claim's BASIS: a meter/owner fact whose basis is "verified-from-record" stays stated as fact; one whose basis is "inferred-from-signal" reads AS an inference ("on the available signals…"), never flattened into bald fact. The enforcer / "litigious" label especially — established only when a filing backs it (verified-from-record); otherwise present it as the inference it is.`,
+      `TRANSFORM, NOT FREE-GENERATION: RESHAPE this record into the card — do not re-derive or re-judge. Use ONLY the fields below; NEVER re-compute the band (synthesis fixed it). Carry each claim's BASIS: a meter/owner fact whose basis is "verified-from-record" stays stated as fact; one whose basis is "inferred-from-signal" reads AS an inference ("on the available signals…"), never flattened into bald fact. The enforcer / "litigious" label especially — established only when a filing backs it (verified-from-record); otherwise present it as the inference it is.`,
       // T6 (H6/I8): the "- label:" risk-expression line is RETIRED — the RENDER builds the risk
       // chip from the record's typed band (the framework in force's own word, on every surface), so a
       // re-invented label can no longer disagree with the finding it describes and no code tag is
@@ -3816,7 +3803,7 @@ export const STAGES = {
       //
       // A card that still ARRIVES with a head renders the old way, so archived runs and a drifted seat
       // are byte-identical rather than gaining a second head. See carriesOwnFrame().
-      `WRITE THE CARD'S DETAIL ONLY — NO HEAD, NO META LINES. Your output STARTS at "### Full detail" and contains nothing above it: no "## …" heading, and none of "- ord:", "- group:", "- source:", "- net:", "- one:", "- label:", "- open:". Every one of those is composed by the driver from the record above, where they are already typed — a line you write there is discarded, not read.`,
+      `WRITE THE CARD'S DETAIL ONLY — NO HEAD, NO META LINES. Your output STARTS at "### Full detail" and contains nothing above it: no "## …" heading, and none of "- ord:", "- group:", "- source:", "- net:", "- one:", "- label:", "- open:". Every one of those is composed by the driver from the record below, where they are already typed — a line you write there is discarded, not read.`,
       `Emit NO "### The read" narrative — RETIRED. It was a THIRD condensation of the same finding, beside this card's own one-liner and the typed net. The legal read and the enforcement read are already TYPED on the record (legal_position / practical_position) and render from there; the finding sentence is the typed net. Your whole output is the \`full_detail\` entries — filing, portfolio, the risk assessment, enforcement — and the driver builds the section around them.`,
       // The SOURCE bullet is gone from the ask entirely. It was the transcription class in its purest
       // form: a seat composing a URL from a host table it is not even given (providers/<name>.md is NOT
@@ -3837,7 +3824,7 @@ export const STAGES = {
       // so the prompt no longer asks for it (it would double-render).
       // T6 (J9) — the delivery lint's constraints, stated at DRAFT time so the first generation
       // passes (the lint-repair redo was a deterministic ~2-generation tax on 83% of runs).
-      `LINT CONTRACTS (the delivery lint fails a card that breaks these — state them right the first time): state an owner's registration COUNT at most once, and only as the number of registrations in the record above (unsure ⇒ name the owner without a count). NEVER pair a WIPO/Madrid/international registration with "worldwide"/"global" reach language — name the designated countries or omit the reach claim.`,
+      `LINT CONTRACTS (the delivery lint fails a card that breaks these — state them right the first time): state an owner's registration COUNT at most once, and only as the number of registrations in the record below (unsure ⇒ name the owner without a count). NEVER pair a WIPO/Madrid/international registration with "worldwide"/"global" reach language — name the designated countries or omit the reach claim.`,
       // P6 — the house prose contract. This card is the surface where "each fact once, at its rank"
       // actually bites: the delivered report told WAVO PUNCH in six sections, and 43% of it was
       // on-field conflict prose. delivery-contract.md (this stage's skill read) carries the same rules.
@@ -3846,6 +3833,22 @@ export const STAGES = {
       profile?.riskAppetite ? `CUSTOMER RISK POSTURE (emphasis only — never moves the band, already set): ${profile.riskAppetite}` : "",
       profile?.delivery?.style ? `PROSE STYLE (presentation tone only — register/phrasing; NEVER a risk word or a band): ${profile.delivery.style}` : "",
       `Do NOT write or edit any file. There is no path for you to write to: the driver renders the card from your values and assembles the report around it, and nothing you hand-write is read.`,
+      // THIS CARD'S OWN MATERIAL COMES LAST, before the output instruction: the manuals lead, the instructions every card
+      // shares follow, and what is only this card's (its ordinal, its case law, its record) closes the message, so two cards
+      // of a run send the same leading text (design, 2026-11-19).
+      `THIS TURN IS BOUND TO CARD ${axis}. Send \`ordinal\`: "${axis}" — the tool refuses a payload naming any other card, and you hold no other finding's record.`,
+      // T7 (E5) — the MATCHED grounded profile arrives INLINE (deterministic join), replacing
+      // the old "if the file exists, fish in it" discretion that missed cards on copper-spire.
+      caseLawProfile ? lines(
+        `GROUNDED CASE-LAW for THIS finding (deterministically matched — weave its bearing into the card; quote a fetched citation where it grounds the enforcer/confusability read; never cite a proceeding it does not carry${caseLawProfile.none ? "; it records an explicit NO-ON-POINT-PRECEDENT result — that honest negative may be stated" : ""}):`,
+        "```markdown",
+        String(caseLawProfile.body ?? "").slice(0, 4000),
+        "```",
+      ) : "",
+      `The finding's OWN record — the ONLY source for this card (owner, mark, registrations, meters with their basis, band, disposition, source link):`,
+      "```json",
+      JSON.stringify(finding ?? {}, null, 2),
+      "```",
       `When the tool accepts your call, return ONLY a 2-3 line summary of the card.`,
     ),
   },
