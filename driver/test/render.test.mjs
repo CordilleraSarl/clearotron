@@ -966,7 +966,8 @@ test("CHANGE 5a render: the reg number is bound to its record's uri + jurisdicti
   const entry = html.match(/<div class="rr">([\s\S]*?)<\/details>/)?.[1] ?? "";
   assert.match(entry, /<span class="k">Country<\/span><span class="v">United States <i class="jsys">\(first-to-use\)<\/i><\/span>/);
   assert.match(entry, /<span class="k">Status<\/span><span class="v">Registered · /);
-  assert.match(entry, /<span class="k">Register number<\/span><span class="v"><a href="https:\/\/tm\.example\/mark\/us\/3396572" target="_blank" rel="noopener noreferrer">\/mark\/us\/3396572<\/a> <span class="rr-faint">application 77999111<\/span>/);
+  // With no office link naming it, the row prints the record's own office number, still opening the record's page.
+  assert.match(entry, /<span class="k">Register number<\/span><span class="v"><a href="https:\/\/tm\.example\/mark\/us\/3396572" target="_blank" rel="noopener noreferrer">US 3396572<\/a> <span class="rr-faint">application 77999111<\/span>/);
 });
 
 // — THIS ARM ASSERTED THE DEFECT, and is rewritten rather than deleted so the record of what it

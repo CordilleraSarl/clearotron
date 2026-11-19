@@ -21,7 +21,7 @@ import { COUNT_PREDICATES, COUNT_BASIS, countsForMark, countLine, countedMarks, 
 import { noneCarriedForward, recordsForMark, recordsLine, normalizeRegisterRecordLinks } from '../register-records.mjs';
 import { reportIdentityFor, productCoverageNote, kebab } from '../search-policy.mjs';
 import { batchMarkName } from '../mark-name.mjs';
-import { renderKnockoutHtml, DEGRADED_NOTE } from './render-knockout.mjs';
+import { renderKnockoutDocument, DEGRADED_NOTE } from './render-knockout.mjs';
 import { knockoutReportDocument, knockoutReportDataOf, knockoutWorkbookOf, withWorkbook } from './report-document.mjs';   // the run's report as one document, and what it carries
 import { readFrozenMethod, inputsLine, FROZEN_METHOD_FILE } from '../framework-method.mjs';
 import { resolveDemoData, demoBannerMd } from './demo-marking.mjs';   //
@@ -100,23 +100,8 @@ export const knockoutStatement = (framework, marks) =>
 // than "never asked for". 'Impact' goes with them: it was the second rating scale. What replaces them is
 // what the typed record actually carries. A `—` means the shape that produced the row never had the
 // field (an archived prose finding), which is a different fact from an empty cell.
-/**
- * WHAT A KNOCKOUT LEFT OPEN, from the run's own record (design's rule, approved by the owner 2026-11-18). PURE.
- *
- * A register step that failed is a row under the report's "Register" name: the listing that never came back is not
- * searched, and a reading that stopped part-way is partly covered. A name whose automated research was unavailable is a
- * row under its own name, not searched. The notes are the shipped lines, the deferral row's for a step and the page's
- * own for a name, so nothing here is a new sentence and nothing comes from model prose. A refused listing is not a
- * search that failed (the run never offered it), and a run with nothing left open returns no rows.
- */
-export function knockoutLeftOpen(steps, marks = []) {
-  return [
-    ...(steps?.listing ? [{ area: PART_NAMES.register, state: 'not-searched', note: plainDeferralReason(steps.listing.reason) }] : []),
-    ...(steps?.reading ? [{ area: PART_NAMES.register, state: 'coverage-limited', note: plainDeferralReason(steps.reading.reason) }] : []),
-    ...(Array.isArray(marks) ? marks : []).filter((m) => m?.degraded === true && String(m?.name ?? '').trim())
-      .map((m) => ({ area: String(m.name).trim(), state: 'not-searched', note: DEGRADED_NOTE })),
-  ];
-}
+// What a Knockout left open is drawn by the page (render-knockout.mjs), which reads it from the run's report document.
+export { knockoutLeftOpen } from './render-knockout.mjs';
 
 export async function buildKnockoutWorkbook(findings, receipts, outPath, registerCounts = null, qcFlags = [], framework = null, registerRecords = null, frameworkMethod = null, ownerChecks = [], degraded = {}) {
   const ExcelJS = (await import('exceljs')).default;
@@ -820,52 +805,12 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
 
   const reports = markRows.map((m, at) => {
     const { slug, file, band: markBand } = named[at];
-    // The mark's own slice. Its band is the document's band — `overall` on a one-mark document is that
-    // mark's rating, never the batch's worst, or a clean name would inherit a blocking name's colour.
-    const one = {
-      ...findings,
-      marks: [m],
-      // ── THE PER-MARK DOCUMENT OPENS WITH ITS OWN ASSESSMENT ────────────────
-      //
-      // This blanked `executiveSummary` on every per-mark document, and the blank was right: the batch
-      // paragraph names every mark in the batch, and a reader who ordered one name must not be handed a
-      // summary about other clients' marks. What it left behind was a page opening with nothing.
-      //
-      // The assess stage writes a model-authored paragraph per mark now (ruling, full length), so
-      // the blank has a replacement rather than being merely correct. Substituting it HERE, into the
-      // per-mark COPY, is what makes one line serve both surfaces: the rendered `<div class="sub">` and
-      // `report-data-<slug>.json`'s `.summary` both read `batch.executiveSummary`, so neither the
-      // renderer nor the data builder needs to change.
-      //
-      // THE BATCH PARAGRAPH ITSELF IS UNTOUCHED — `findings.batch.executiveSummary` still holds the
-      // cross-mark read and still owns the grouped page. This substitutes only in the single-mark copy
-      // this loop is building. An archived run whose marks carry no `assessment` falls back to the blank
-      // and re-renders exactly as it was delivered.
-      batch: { ...(findings.batch ?? {}), ...(single ? {} : { executiveSummary: String(m.assessment ?? '').trim() }) },
-    };
-    writeRO(file, renderKnockoutHtml(one, framework, {
-      runId, overall: markBand, issued, searched, auditFile, probeRan, registerCounts, registerRecords, ownerChecks, instructedScope, identity, matter: runId,
+    // The page reads the run's report document as written, for this name, with its surface beside it.
+    writeRO(file, renderKnockoutDocument(pageDocument(reportDocument), at, {
+      filingRecords, logos, demoData, delivery,
       // The page's workbook control links the portal's audit route, the one the cover note links: the pool path to the
       // file reaches no handler. Null when the workbook could not be written, and then no control is drawn.
       auditHref: auditFile ? auditRouteFor(origin, runId) : null,
-      // The searches this run did not complete, for this page's names: the Knockout's own Left open grid.
-      // A listing failure counts only where no filings came back, as the workbook's own part rows read it.
-      leftOpen: knockoutLeftOpen({ listing: registerRecords ? null : steps.listing, reading: steps.reading }, one.marks),
-      // Carried as its own value rather than folded into `registerRecords`, because three sites PRINT
-      // `registerRecords.unavailable` and a marker invented here would become client-facing wording.
-      registerRecordsUnreadable, filingRecords, logos,
-      // — an invented mark says so on its own report. Resolved ONCE above the loop:
-      // the answer is a property of the run, and asking per mark would let a multi-mark demo mark some
-      // documents and not others if the roster moved mid-publish.
-      demoData,
-      // charter ruling 1 — the masthead names what this depth covers, from the run's own frozen policy.
-      depthNote: productCoverageNote(searchPolicy ?? null),
-      // — and the scope section is composed from the same frozen policy, so what the
-      // document says it did not search is what the run was instructed not to search.
-      searchPolicy: searchPolicy ?? null,
-      delivery,
-      servedModels: served,
-      frameworkMethod,
     }));
     // The run as data — what the assistant drafts client-facing mail from. One per report, so a per-mark
     // document's data is that mark's and not the batch's. A data file that cannot be written leaves this
@@ -1058,4 +1003,11 @@ function filingRecordBodies(runDir, registerRecords) {
     }
   }
   return out;
+}
+
+// THE PAGE READS THE RUN'S REPORT DOCUMENT AS WRITTEN: the JSON the run keeps, parsed back, so a page can read nothing
+// the file does not hold. A document that could not be built leaves the pages nothing to read, and the publish stops.
+function pageDocument(doc) {
+  if (!doc) throw new Error('[report-document] not built, so the Knockout pages have nothing to read');
+  return JSON.parse(JSON.stringify(doc));
 }

@@ -185,7 +185,7 @@
         },
         "a-card-opens-each-cited-registration-with-its-register-record.test.mjs": {
           "tests": 9,
-          "asserts": 29,
+          "asserts": 28,
           "skips": 0,
           "todos": 0
         },
@@ -6095,7 +6095,7 @@
         },
         "record-links-honour-the-allowlist.test.mjs": {
           "tests": 8,
-          "asserts": 26,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
