@@ -424,7 +424,9 @@ export function chooseProduct(d: Draft, product: Product | null): Draft {
   const territories = product?.geography === 'worldwide, and nothing else'
     ? []
     : product?.geography === 'exactly one country'
-      ? d.territories.filter((t) => tierOf(t) === 'country').slice(0, 1)
+      // Read as the recommendation reads a place, by name or by the code a company's own list holds: a company's last
+      // country, kept as "US", is a country, and filtering it out emptied the list and fell back to the whole company list.
+      ? d.territories.filter((t) => tierOfPlace(t) === 'country').slice(0, 1)
       : d.territories
   return {
     product: product?.key ?? null,

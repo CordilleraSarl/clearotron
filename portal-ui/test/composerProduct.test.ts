@@ -20,7 +20,7 @@ import {
   chooseProduct, blockers, nameBudget, machineryFor, composeSaved, draftFromSaved, inherited, readiness,
   missingPieces,
   MAX_TERRITORIES, checksSummary, runsNote, turnaround, effortUnits,
-  isTerritoryEntry, isKnownTerritory, ALL_TERRITORIES } from '../src/contract/composerProduct.ts'
+  isTerritoryEntry, isKnownTerritory, ALL_TERRITORIES, recommendSearch } from '../src/contract/composerProduct.ts'
 import type { Draft } from '../src/contract/composerProduct.ts'
 import { PRODUCTS, assertMatchesRegistry } from './products.fixture.ts'
 
@@ -160,6 +160,20 @@ test('switching product DROPS what the new one cannot hold — never leaves it s
     { product: KNOCKOUT.key, territories: ['European Union', 'France'], replacesOwnTerritories: false, nativeLanguage: false })
   // and back to the one that offers it — the toggle does not come back on by itself
   assert.equal(chooseProduct(chooseProduct(rich, GLOBAL), MULTI).nativeLanguage, false)
+})
+
+test("a company's places taken down to one country keep that country through the move to a one-country search", () => {
+  // A company's own places are held as codes. Removing all but one country recommends the one-country search, and the
+  // move must keep the country the reader left, so Where and the bar name the same place and nothing reads Worldwide.
+  const own = ['EU', 'US', 'JP']
+  for (const [first, then, left] of [['EU', 'JP', 'US'], ['EU', 'US', 'JP']]) {
+    const d = removeTerritory(takeOverOwnTerritories(draft({ product: MULTI.key }), own, first), then)
+    assert.deepEqual([...d.territories], [left], 'premise: one country is left')
+    assert.equal(recommendSearch(PRODUCTS, 1, d.territories)?.product.key, FULL.key, 'premise: one country recommends a one-country search')
+    const moved = chooseProduct(d, FULL)
+    assert.deepEqual([...moved.territories], [left], `removing ${first} then ${then} dropped ${left} too`)
+    assert.deepEqual(geographyFor(moved, FULL, own), { mode: 'named', territories: [left] })
+  }
 })
 
 test('the arrival state is one sentence and no panel, because every term is true at once', () => {
