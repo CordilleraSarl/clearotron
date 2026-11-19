@@ -198,6 +198,11 @@
   .kticks span{position:absolute;transform:translateX(-50%);color:var(--slate);white-space:nowrap;
     font:700 10.5px/1 'Plus Jakarta Sans','Helvetica Neue',Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase}
   .kticks span.on{font-weight:800}
+  /* ON A PHONE THE SCALE NAMES ONLY ITS ENDS (design, 2026-11-19). Each word sits at its band's point on the bar, and on
+     a 390 px screen five words need more than the bar's width and print on top of one another. Below 560 px only the
+     framework's first and last words stay under the bar; the pill over the needle already names the mark's own band in
+     full. A single-band scale keeps its one word. Screen only: the wider layout and the printed page keep every word. */
+  @media screen and (max-width:560px){.kticks span:not(:first-child):not(:last-child){display:none}}
   .terr{margin-top:4px}
   .terr summary{cursor:pointer;color:var(--rose,var(--faint));font-size:12px;font-weight:600;list-style:none}
   .terr summary::-webkit-details-marker{display:none}

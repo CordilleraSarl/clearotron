@@ -7875,6 +7875,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-knockout-scale-names-its-ends-on-a-phone.test.mjs": {
+          "tests": 2,
+          "asserts": 3,
+          "skips": 0,
+          "todos": 0
+        },
         "the-knockout-searches-every-spelling-on-every-place.test.mjs": {
           "tests": 13,
           "asserts": 91,
