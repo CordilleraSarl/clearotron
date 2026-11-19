@@ -32,6 +32,7 @@ import { COMMON_LAW, normRegion, regionName, REGION_NAMES } from './regions.mjs'
 import { parseFindingsJson, bindRecommendation, sentenceCaseLead, CLIENT_TIER_BY_COMPOSITE, bandOf, compareBlockingPower, inDispositionMode, reasonedNegativeGroups } from '../findings-model.mjs';
 import { REC, inPriorityWindow, ownerDisplayName } from '../registry-fidelity.mjs';
 import { registrationSystem } from '../jurisdiction-systems.mjs';
+import { REPORT_PAGE as R } from './strings.mjs';
 import { READ_LEAD_RE } from '../report-card-record.mjs';   // D3 — the dedupe gate and the card's acceptance are ONE predicate
 import { logoLockup, BRAND, confPosture, sectionStrip, PALETTE, QUADRANT_COLOURS as QC } from '../../shared/brand.mjs';
 import { NAV_CSS } from '../../shared/site-nav.mjs';
@@ -173,7 +174,7 @@ function ratingExtras(fm, findings, coverage, fourAnswers, opts, bandWord, condi
   // condition on precisely the archived runs that cannot be re-rendered with better text.
   if (!conditionsInVerdict) {
     const conds = clientConditions(VERDICT_INFO || {});
-    if (conds.length) out.push(`<div class="gconds-wrap"><span class="gk">Conditions</span><ul class="gconds">${
+    if (conds.length) out.push(`<div class="gconds-wrap"><span class="gk">${R.rating.conditions}</span><ul class="gconds">${
       conds.map((c) => `<li>${esc(c)}</li>`).join('')}</ul></div>`);
   }
   const fa = fourAnswers && typeof fourAnswers === 'object' ? fourAnswers : null;
@@ -205,19 +206,19 @@ function ratingExtras(fm, findings, coverage, fourAnswers, opts, bandWord, condi
         .map((o) => ({ cls: esc(String(o?.class ?? '')), note: inline(String(o?.note ?? '').trim()).trim() }))
         .filter((o) => o.note && !isInternalLabelled(o.note));
       const obstacles = obsRows.length
-        ? `<ul class="fa-obstacles">${obsRows.map((o) => `<li><b>Class ${o.cls}.</b> ${o.note}</li>`).join('')}</ul>` : '';
+        ? `<ul class="fa-obstacles">${obsRows.map((o) => `<li><b>${R.rating.obstacleClass(o.cls)}</b> ${o.note}</li>`).join('')}</ul>` : '';
       return `<div class="fa-row"><span class="fa-k">${label}</span><span class="fa-v">${
         a.token ? `<span class="fa-token tone-${tone}">${esc(humanize(a.token))}</span> — ` : ''}${read}${ords}${
-        basis ? `<div class="fa-based"><span class="fa-bk">Based on</span> ${basis}</div>` : ''}${obstacles}</span></div>`;
+        basis ? `<div class="fa-based"><span class="fa-bk">${R.rating.basedOn}</span> ${basis}</div>` : ''}${obstacles}</span></div>`;
     }).filter(Boolean);
-    if (rows.length) out.push(`<div class="gwhy"><div class="label">Why ${esc(bandWord || '')}</div>${rows.join('')}</div>`);
+    if (rows.length) out.push(`<div class="gwhy"><div class="label">${esc(R.rating.why(bandWord || ''))}</div>${rows.join('')}</div>`);
   }
   const bestRank = findings.reduce((m, f) => Math.min(m, severityRank(f)), Number.MAX_SAFE_INTEGER);
   const worstSet = bestRank === Number.MAX_SAFE_INTEGER ? [] : findings.filter((f) => severityRank(f) === bestRank);
   const worst = worstSet.length
-    ? [...new Set(worstSet.map((f) => regionCode(f)))].map((c) => c === COMMON_LAW ? 'Common-law use' : esc(regionName(c) || c))
+    ? [...new Set(worstSet.map((f) => regionCode(f)))].map((c) => c === COMMON_LAW ? R.rating.commonLawUse : esc(regionName(c) || c))
     : [];
-  if (worst.length) out.push(`<div class="grow gexp"><span class="gk">Highest exposure</span><span class="gv">${worst.join(' \u00b7 ')}</span></div>`);
+  if (worst.length) out.push(`<div class="grow gexp"><span class="gk">${R.rating.highestExposure}</span><span class="gv">${worst.join(' \u00b7 ')}</span></div>`);
   const sd = opts && opts.searchDepth;
   if (sd && sd.counts) {
     const parts = [];
@@ -225,23 +226,23 @@ function ratingExtras(fm, findings, coverage, fourAnswers, opts, bandWord, condi
     const real = Object.entries(byC).filter(([c]) => c !== 'WO');
     const intl = byC.WO || 0;
     const records = real.reduce((s, [, n]) => s + n, 0);
-    if (records) parts.push(real.length === 1 ? `${records.toLocaleString('en-GB')} records read in ${regionName(real[0][0]) || real[0][0]}` : `${records.toLocaleString('en-GB')} records read across ${real.length} countries`);
-    if (intl) parts.push(`${intl.toLocaleString('en-GB')} international registrations read`);
+    if (records) parts.push(real.length === 1 ? R.rating.recordsReadIn(records.toLocaleString('en-GB'), regionName(real[0][0]) || real[0][0]) : R.rating.recordsReadAcross(records.toLocaleString('en-GB'), real.length));
+    if (intl) parts.push(R.rating.internationalRead(intl.toLocaleString('en-GB')));
     const cleared = ((sd.cleared && sd.cleared.register) || []).length;
-    if (cleared) parts.push(`${cleared.toLocaleString('en-GB')} near-names cleared`);
+    if (cleared) parts.push(R.rating.nearNamesCleared(cleared.toLocaleString('en-GB')));
     const rated = findings.filter((f) => f && f.band).length;
-    parts.push(`${rated} ${rated === 1 ? 'conflict' : 'conflicts'}`);
-    if (sd.counts.localScriptSearched) parts.push('the name searched in local script');
+    parts.push(R.rating.conflicts(rated));
+    if (sd.counts.localScriptSearched) parts.push(R.rating.localScript);
     const cd = sd.counts.courtDecisions;
-    if (cd === 'found') parts.push('court decisions checked');
-    else if (cd === 'none-found') parts.push('court decisions checked, none touch the name');
-    else if (cd === 'not-checked') parts.push('court decisions could not be checked');
-    if (parts.length) out.push(`<div class="grow gconf"><span class="gk">Search coverage</span><span class="gv">${parts.map(esc).join(' \u00b7 ')}</span></div>`);
+    if (cd === 'found') parts.push(R.rating.courtChecked);
+    else if (cd === 'none-found') parts.push(R.rating.courtNoneTouch);
+    else if (cd === 'not-checked') parts.push(R.rating.courtNotChecked);
+    if (parts.length) out.push(`<div class="grow gconf"><span class="gk">${R.rating.searchCoverage}</span><span class="gv">${parts.map(esc).join(' \u00b7 ')}</span></div>`);
   }
   // ONE NAME FOR ONE FRAMEWORK. A manifest run already prints it in the card's own heading, beside the
   // ladder whose words it governs; adding a second line here named it twice on the same card. The line
   // is for the run that records a framework by name without carrying its manifest.
-  if (!FRAMEWORK && fm.rated_under) out.push(`<div class="gframe">Rated on the ${esc(fm.rated_under)}</div>`);
+  if (!FRAMEWORK && fm.rated_under) out.push(`<div class="gframe">${esc(R.rating.ratedOn(fm.rated_under))}</div>`);
   return out.join('');
 }
 
@@ -254,7 +255,7 @@ function frameworkGauge(fm, findings, coverage = [], fourAnswers = null, opts = 
   const grad = `linear-gradient(90deg,var(--clear) 0%,${ladder.map((b, k) => `var(${toneVar(b.tone)}) ${pct(k)}`).join(',')})`;
   const stop = tick == null ? '--clear' : toneVar(ladder[tick].tone);
   const mv = `var(${stop})`;
-  const label = VERDICT_INFO?.tier || (tick == null ? 'Clear' : ladder[tick].label);
+  const label = VERDICT_INFO?.tier || (tick == null ? R.rating.clear : ladder[tick].label);
   // Zero-state marker parks LEFT-ANCHORED at the scale origin (transform:none) so a long pill
   // ("No rated conflicts") grows rightward over the scale instead of clipping off the page edge.
   const marker = tick == null
@@ -268,7 +269,7 @@ function frameworkGauge(fm, findings, coverage = [], fourAnswers = null, opts = 
     : VERDICT_INFO
       ? (bindRecommendation(fm.recommendation, VERDICT_INFO.verdict, []) || VERDICT_INFO.tier || '')
       : (fm.recommendation || fm.overall_label || '');
-  const recLabel = VERDICT_INFO?.statement ? 'Verdict' : 'Recommendation';
+  const recLabel = VERDICT_INFO?.statement ? R.rating.verdict : R.rating.recommendation;
   // THE VERDICT CARRIES EVERY CONDITION, NOT THE FIRST AND A COUNT. The composed statement ends
   // "(and N more)" because it is also a ONE-LINE surface — the email lede, the registry row — where a
   // list cannot go. On the page there is room for all of them, and a condition a client is told exists
@@ -299,7 +300,7 @@ function frameworkGauge(fm, findings, coverage = [], fourAnswers = null, opts = 
   // frameworkGauge ONLY: the legacy `gauge()` branch below has no manifest to name, so it stays
   // byte-identical for every archived run that has no framework sidecar.
   return `<div class="panel gauge">
-    <div class="gauge-head"><div class="label">Overall risk</div><div class="gauge-fw">${esc(FRAMEWORK.title)}</div></div>
+    <div class="gauge-head"><div class="label">${R.rating.overallRisk}</div><div class="gauge-fw">${esc(FRAMEWORK.title)}</div></div>
     <div class="scale" style="background:${grad}">${marker}</div>
     <div class="ticks">${ticks}</div>
     <div class="gconc">${conc}</div>
@@ -314,7 +315,7 @@ const escAttr = s => esc(s).replace(/"/g, '&quot;');
 // emitted natively here AND injected into already-rendered reports (pool-admin link-home) whose frozen CSS
 // never knew the class — inline styles render identically on both. href is relative to the run dir:
 // '../index.html' for the internal report, '../customer/<key>/index.html' for the client export. Absent ⇒ ''.
-export function homeButton(href, label = '← All reports') {
+export function homeButton(href, label = R.allReports) {
   if (!href) return '';
   const style = "position:fixed;left:14px;bottom:14px;z-index:9999;display:inline-flex;align-items:center;"
     + "background:#4E030F;color:#f0e8d8;font:600 12px/1 'Plus Jakarta Sans','Helvetica Neue',Helvetica,Arial,sans-serif;"
@@ -401,8 +402,8 @@ const STOP_VAR = ['--clear', '--low', '--med', '--high', '--severe'];
 // layer only, gated on VERDICT_INFO: RISK_STOPS stays untouched (STOP_VAR CSS keys off it) and
 // sidecar-less archived runs render byte-identically. Stop 1 covers composites 1–2 (GAUGE_BY_COMPOSITE),
 // so its tick is labelled with both words.
-const TIER_STOP_LABELS = ['Clear', 'Low / Manageable', 'Medium', 'High', 'Very high'];
-const TIER_STOP_PILL = ['CLEAR', 'LOW', 'MEDIUM', 'HIGH', 'VERY HIGH'];
+const TIER_STOP_LABELS = R.tierLabels;
+const TIER_STOP_PILL = R.tierPills;
 
 // Overall risk index (0-4) — the derived display verdict when present ( T2, one authority),
 // else the report's stated overall, else the worst composite (legacy).
@@ -530,11 +531,7 @@ function groupByRegion(findings) {
 // common-law contribution list said 'register mirror — not use evidence'. Two copies of one
 // vocabulary is the drift this file has been split apart to stop, so they are one const now, and the
 // words say what they are — a SOURCE phrase, readable after "Evidence: verified,".
-const USE_SOURCE_LABEL = {
-  'owner-site': "from the owner's own site",
-  independent: 'from an independent source',
-  'register-mirror': 'from a register mirror, which is not evidence of use',
-};
+const USE_SOURCE_LABEL = R.useSource;
 // — THE USE LINE PRINTS NO VERIFICATION WORD (owner ruling, 2026-08-31, verbatim: "a
 // website does not equal a citation on a register record — so how would that ever line up. So yes,
 // drop it"). A use meter reaches `confirmed` only via the `/mark/…` fetch-receipt join, and an http
@@ -553,10 +550,10 @@ const useEvidence = (m) => [USE_EVIDENCE_LABEL[m?._status], USE_SOURCE_LABEL[m?.
 // EXACT EQUALITY, exactly as EVIDENCE_LABEL maps `_status`. The sentinel itself does not move: archived
 // runs carry the old value forever and a fourth spelling of it would have to be accepted everywhere.
 const USE_CHECK_NO_RESULT = 'perplexity_research — no result';
-const USE_CHECK_NO_RESULT_CITE = 'Nothing found in the marketplaces searched.';
+const USE_CHECK_NO_RESULT_CITE = R.useCheckNothingFound;
 // The same "searched, nothing found" line for a run whose company picked no marketplaces (the owner's
 // ruling of 2026-09-23): there was no marketplace search to name, and the general web still ran.
-const USE_CHECK_NO_RESULT_CITE_NO_MARKETPLACES = 'Nothing found in the general web search or in any store chosen for this matter.';
+const USE_CHECK_NO_RESULT_CITE_NO_MARKETPLACES = R.useCheckNothingFoundNoMarketplaces;
 // — MATCHED ON NORMALISED PUNCTUATION, NOT ONE SPELLING. The constant itself does not
 // move (archived runs carry it forever, the validators name it), but the SEAT emitted a hyphen where
 // the doctrine writes an em dash, and exact equality let the raw tool name through to a delivered
@@ -577,15 +574,15 @@ function meter(name, entry) {
   const tok = e.token || 'unknown';
   if (name === 'use') {
     const cls = tok === 'confirmed' ? 'g3' : '';
-    const cap = tok === 'confirmed' ? 'Confirmed' : tok === 'not-confirmed' ? 'Not confirmed' : 'Unknown';
+    const cap = tok === 'confirmed' ? R.meters.confirmed : tok === 'not-confirmed' ? R.meters.notConfirmed : R.meters.unknown;
     // — same rule as useEvidence: no verification word on the use surface (its receipt
     // join is unreachable by construction); inferred / not checked still say something and stay.
-    return { label: 'Use', cls, cap, ev: meterEvidence(name, e) };
+    return { label: R.meters.use, cls, cap, ev: meterEvidence(name, e) };
   }
   const cls = tok === 'high' ? 'l3' : tok === 'medium' ? 'l2' : tok === 'low' ? 'l1' : '';
   // The 2026-09-16 report redesign — "Enforcer" was a noun for the owner; the meter measures what the owner is
   // likely to DO, which is what a reader is deciding about. The token under it is unchanged.
-  const label = name === 'mark_similarity' ? 'Similarity' : name === 'goods_proximity' ? 'Goods proximity' : 'Likely to enforce';
+  const label = name === 'mark_similarity' ? R.meters.similarity : name === 'goods_proximity' ? R.meters.goodsProximity : R.meters.likelyToEnforce;
   // With a joined status the status REPLACES the raw basis word on the enforcer — "verified" with no
   // receipt behind it is exactly the self-attestation A4 exists to demote. Similarity prints no evidence word
   // (owner, 2026-11-18): the workbook dropped it too, so the two say the same.
@@ -645,12 +642,12 @@ function gauge(fm, findings, coverage = [], fourAnswers = null, opts = {}) {
     : VERDICT_INFO
       ? (bindRecommendation(fm.recommendation, VERDICT_INFO.verdict, []) || VERDICT_INFO.tier || '')
       : (fm.recommendation || fm.overall_label || '');
-  const recLabel = VERDICT_INFO?.statement ? 'Verdict' : 'Recommendation';
+  const recLabel = VERDICT_INFO?.statement ? R.rating.verdict : R.rating.recommendation;
   const conc = [
     rec && `<div class="grow"><span class="gk">${recLabel}</span><span class="gv gv-rec">${esc(rec)}</span></div>`,
   ].filter(Boolean).join('');
   return `<div class="panel gauge">
-    <div class="label">Overall risk</div>
+    <div class="label">${R.rating.overallRisk}</div>
     <div class="scale"><div class="marker" style="left:${STOP_LEFT[i]}"><div class="pill" style="background:var(${STOP_VAR[i]});color:var(${STOP_VAR[i]}-on)">${label}</div><div class="needle" style="background:var(${STOP_VAR[i]})"></div></div></div>
     <div class="ticks">${ticks}</div>
     <div class="gconc">${conc}</div>
@@ -670,14 +667,14 @@ function facts(fm, findings, coverage) {
   const worstSet = bestRank === Number.MAX_SAFE_INTEGER ? [] : findings.filter((f) => severityRank(f) === bestRank);
   const worst = worstSet.length
     ? [...new Set(worstSet.map((f) => regionCode(f)))]
-        .map((c) => c === COMMON_LAW ? 'Common-law use' : `<span title="${escAttr(regionName(c))}">${esc(c)}</span>`)
+        .map((c) => c === COMMON_LAW ? R.rating.commonLawUse : `<span title="${escAttr(regionName(c))}">${esc(c)}</span>`)
     : [];
   const rows = [
-    fm.classes && `<div class="row"><span class="k">Classes</span><span class="v">${esc(fm.classes)}</span></div>`,
-    chips ? `<div class="row jrow"><span class="k">Jurisdictions searched</span>${chips}</div>`
-      : (fm.jurisdiction && `<div class="row"><span class="k">Jurisdictions searched</span><span class="v">${esc(fm.jurisdiction)}</span></div>`),
-    worst.length && `<div class="row"><span class="k">Highest exposure</span><span class="v">${worst.join(' ')} <span style="font-size:10.5px;color:var(--slate)">— from the highest-rated finding${worst.length > 1 || worstSet.length > 1 ? 's' : ''}</span></span></div>`,
-    (fm.run || fm.searched) && `<div class="row"><span class="k">Searched</span><span class="v"><span class="mono" style="font-size:12px">${esc(fm.searched || fm.run)}</span></span></div>`,
+    fm.classes && `<div class="row"><span class="k">${R.facts.classes}</span><span class="v">${esc(fm.classes)}</span></div>`,
+    chips ? `<div class="row jrow"><span class="k">${R.facts.jurisdictionsSearched}</span>${chips}</div>`
+      : (fm.jurisdiction && `<div class="row"><span class="k">${R.facts.jurisdictionsSearched}</span><span class="v">${esc(fm.jurisdiction)}</span></div>`),
+    worst.length && `<div class="row"><span class="k">${R.facts.highestExposure}</span><span class="v">${worst.join(' ')} <span style="font-size:10.5px;color:var(--slate)">${R.facts.fromHighestRated(worst.length > 1 || worstSet.length > 1)}</span></span></div>`,
+    (fm.run || fm.searched) && `<div class="row"><span class="k">${R.facts.searched}</span><span class="v"><span class="mono" style="font-size:12px">${esc(fm.searched || fm.run)}</span></span></div>`,
   ].filter(Boolean);
   return `<div class="panel facts">${rows.join('')}</div>`;
 }
@@ -2423,12 +2420,7 @@ function markAssessmentBlock(ma) {
 // with the basis as a quiet tail. It NEVER carries a verdict sentence of its own — riskStatement()
 // stays the single assembler; this panel decomposes it, never competes with it. Absent (every
 // archived run) ⇒ '' ⇒ byte-identical hero.
-const FOUR_ANSWER_LABELS = [
-  ['third_party_rights', 'Third-party rights'],
-  ['objection_likelihood', 'Likelihood of objection'],
-  ['registrability', 'Registrability'],
-  ['client_enforceability', 'Your own enforceability'],
-];
+const FOUR_ANSWER_LABELS = Object.entries(R.rating.fourAnswers);
 // CLIENT SAFETY (review 2026-07-31, blocking): read / basis / obstacles[].note are model-authored free
 // strings and route through inline() with every other reader-facing string on this page (see lpSplit).
 // The tokens and the class numbers are closed/typed values — esc() is right for those. A read that was

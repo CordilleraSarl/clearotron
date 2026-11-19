@@ -450,3 +450,68 @@ export const KNOCKOUT_PAGE = Object.freeze({
     collapseAll: 'Collapse all',
   }),
 });
+
+/** The clearance report page: its own words, section by section. A value a sentence carries arrives formatted. */
+export const REPORT_PAGE = Object.freeze({
+  // The rating card: its labels, and the lines under the gauge. Counts arrive formatted for the reader.
+  rating: Object.freeze({
+    overallRisk: 'Overall risk',
+    verdict: 'Verdict',
+    recommendation: 'Recommendation',
+    clear: 'Clear',
+    conditions: 'Conditions',
+    obstacleClass: (cls) => `Class ${cls}.`,
+    basedOn: 'Based on',
+    why: (band) => `Why ${band}`,
+    commonLawUse: 'Common-law use',
+    highestExposure: 'Highest exposure',
+    recordsReadIn: (n, place) => `${n} records read in ${place}`,
+    recordsReadAcross: (n, countries) => `${n} records read across ${countries} countries`,
+    internationalRead: (n) => `${n} international registrations read`,
+    nearNamesCleared: (n) => `${n} near-names cleared`,
+    conflicts: (n) => `${n} ${n === 1 ? 'conflict' : 'conflicts'}`,
+    localScript: 'the name searched in local script',
+    courtChecked: 'court decisions checked',
+    courtNoneTouch: 'court decisions checked, none touch the name',
+    courtNotChecked: 'court decisions could not be checked',
+    searchCoverage: 'Search coverage',
+    ratedOn: (framework) => `Rated on the ${framework}`,
+    // The four answers, in their order.
+    fourAnswers: Object.freeze({
+      third_party_rights: 'Third-party rights',
+      objection_likelihood: 'Likelihood of objection',
+      registrability: 'Registrability',
+      client_enforceability: 'Your own enforceability',
+    }),
+  }),
+  allReports: '← All reports',
+  // The five tiers, as the gauge's ticks and its pill print them.
+  tierLabels: Object.freeze(['Clear', 'Low / Manageable', 'Medium', 'High', 'Very high']),
+  tierPills: Object.freeze(['CLEAR', 'LOW', 'MEDIUM', 'HIGH', 'VERY HIGH']),
+  // Where a use check's evidence came from, readable after "Evidence: verified,".
+  useSource: Object.freeze({
+    'owner-site': "from the owner's own site",
+    independent: 'from an independent source',
+    'register-mirror': 'from a register mirror, which is not evidence of use',
+  }),
+  useCheckNothingFound: 'Nothing found in the marketplaces searched.',
+  useCheckNothingFoundNoMarketplaces: 'Nothing found in the general web search or in any store chosen for this matter.',
+  // The meters: their labels, and the use meter's readings.
+  meters: Object.freeze({
+    use: 'Use',
+    confirmed: 'Confirmed',
+    notConfirmed: 'Not confirmed',
+    unknown: 'Unknown',
+    similarity: 'Similarity',
+    goodsProximity: 'Goods proximity',
+    likelyToEnforce: 'Likely to enforce',
+  }),
+  // The facts panel.
+  facts: Object.freeze({
+    classes: 'Classes',
+    jurisdictionsSearched: 'Jurisdictions searched',
+    highestExposure: 'Highest exposure',
+    fromHighestRated: (several) => `— from the highest-rated finding${several ? 's' : ''}`,
+    searched: 'Searched',
+  }),
+});
