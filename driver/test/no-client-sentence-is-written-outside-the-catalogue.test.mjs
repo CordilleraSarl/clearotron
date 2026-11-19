@@ -76,6 +76,8 @@ const ALLOWED = {
     "knockout predelivery lint skipped (non-fatal): {…}",
     "knockout report document not built (non-fatal): {…}",
     "knockout report document not written (non-fatal): {…}",
+    // the error that stops the publish when the report document the pages read was not built; no client reads it
+    "[report-document] not built, so the Knockout pages have nothing to read",
     "knockout working record: {…} is not in the run directory, so the delivered report has no engine text to be checked against",
     "knockout-audit-{…}.xlsx",
     "overall_label: \"{…}\"",
