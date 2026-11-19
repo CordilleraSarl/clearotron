@@ -213,7 +213,7 @@ const koMark = (name, rating, extra = {}) => ({
 test("on an invented batch of two names, each name's data file is the one built from the document", async () => {
   const root = mkdtempSync(join(tmpdir(), "report-document-ko-"));
   const runDir = join(root, "run"), poolRoot = join(root, "pool");
-  mkdirSync(paths(runDir).reportDocument.replace(/[^/]+$/, ""), { recursive: true });
+  mkdirSync(dirname(paths(runDir).reportDocument), { recursive: true });
   mkdirSync(poolRoot);
   writeFileSync(join(runDir, "status.json"), JSON.stringify({ runId: "tmpinvented-batch" }));
   const findings = {
