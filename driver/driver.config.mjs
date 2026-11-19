@@ -1093,8 +1093,7 @@ export const RESEARCH_PROVIDERS = {
 
 // ── jx providers (Phase 2b, Stage-1.5 lanes) — the same lazy-import + cred-guard idiom. ONE
 // non-agentic schema-enforced completions call per mark×lane turns the mark into native-script
-// register candidates; tests inject an executor, the dev instance uses CLEAROTRON_JX_FIXTURES. Knobs:
-//   CLEAROTRON_JX_MODEL                          — model override (default haiku — cheap structured task)
+// register candidates; tests inject an executor, the dev instance uses CLEAROTRON_JX_FIXTURES. Knob:
 //   CLEAROTRON_JX_FIXTURES                       — dir of <mark-kebab>.<lane>.json canned candidate lists
 //                                              ({candidates:[{term,kind,rationale}]}) — the $0 seam
 //
