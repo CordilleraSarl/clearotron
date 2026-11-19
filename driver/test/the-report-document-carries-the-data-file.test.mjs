@@ -27,8 +27,11 @@ const { republishRun } = await import("../publish/report-registry.mjs");
 const { readClearanceDocument } = await import("../publish/index.mjs");
 const { publishKnockout, readKnockoutDocument } = await import("../publish/knockout.mjs");
 const { CLEARANCE_DOCUMENT, KNOCKOUT_DOCUMENT, clearanceReportDocument, clearanceReportDataOf, knockoutReportDocument,
-  knockoutReportDataOf } = await import("../publish/report-document.mjs");
+  knockoutReportDataOf, allFindingsOf, clearanceWorkbookOf } = await import("../publish/report-document.mjs");
 const { clearanceReportData } = await import("../publish/report-data.mjs");
+const { buildAudit } = await import("../publish/xlsx.mjs");
+const { deliveryFlagLines } = await import("../predelivery-lint.mjs");
+const { zipEntries, workbookEntryText } = await import("./snapshot/workbook-entries.mjs");
 const { paths } = await import("../run-record.mjs");
 
 /** The value as JSON would carry it: equal to itself only if it holds no Map, Set, Date, function or undefined. */
@@ -121,6 +124,38 @@ test("on an invented run, the data file built from the document read back is the
   assert.deepEqual(doc.reviewer.commonLawJoinedTerms, ["ZETA", "ALPHA"]);
   // A Set inside a Map's value keeps its members on disk: JSON alone writes it as {}.
   assert.deepEqual(throughJson(doc).client.followUpKinds, [["mark one exact", ["primary-sweep", "owner-lookup"]]]);
+});
+
+test("the workbook's findings are the run's own list, each withdrawn one back in its place", () => {
+  for (const order of [["withdrawn", "on-point", "on-point"], ["on-point", "withdrawn", "on-point"], ["on-point", "on-point", "withdrawn"], ["withdrawn", "withdrawn", "on-point"]]) {
+    const findings = order.map((disposition, i) => finding(i + 1, disposition));
+    const doc = throughJson(clearanceReportDocument({ ...invented, findings }));
+    assert.deepEqual(allFindingsOf(doc).map((f) => f.ordinal), [1, 2, 3], `order ${order.join(", ")}`);
+  }
+});
+
+/** A workbook's entries as text, the build's own stamps aside. */
+const entriesOf = (file) => Object.fromEntries(zipEntries(readFileSync(file)).map(([n, b]) => [n, workbookEntryText(n, b)]));
+
+test("on an invented run, the workbook built from the document read back is the workbook publishing builds", async () => {
+  const d = { ...invented, assessmentNotCompleted: false, coverageJudgment: { sufficient: false, reason: "an invented reason" },
+    fetchState: { "/mark/ch/1": "retrieved" }, degradedRows: [], reviewReceipts: { lint: [{ id: "invented-check", detail: "d", family: "f" }] },
+    clientGate: { released: true, reasons: [] }, verdictInfo: { verdict: "CONDITIONAL", tier: "Low", badge: "l2", reasons: [], clauses: [] },
+    runOrigins: [], productName: "An invented product" };
+  const dir = mkdtempSync(join(tmpdir(), "report-document-wb-"));
+  // What publishReport handed the workbook before it read the document, spelled as it spelled it.
+  await buildAudit({ degradedParts: d.degradedRows, droppedConditions: [], undispatchedProbes: [], withheldFamilies: [], releasedFamilies: [],
+    setAside: [], findings: d.findings, frameworkMethod: null, coverage: d.coverage, contextNotes: d.contextNotes,
+    coverageJudgment: d.coverageJudgment, markAssessment: null, corrections: null, fetchState: d.fetchState, verdict: d.verdictInfo,
+    jurisdiction: null, commonLawJoinedTerms: d.commonLawJoinedTerms, registerOnly: false, clientGate: d.clientGate,
+    lintFailures: deliveryFlagLines(d.reviewReceipts.lint), productName: d.productName, registerPublishesRecordPages: false,
+    recordLinks: d.officeLinks.byUri, assessmentNotCompleted: false, registerReach: undefined, registerScope: undefined },
+  null, join(dir, "direct.xlsx"), d.parsed.fm.title, d.parsed.fm);
+  const w = clearanceWorkbookOf(throughJson(clearanceReportDocument(d, {})));
+  await buildAudit(w.contract, w.audit, join(dir, "document.xlsx"), w.title, w.frontMatter);
+  const direct = entriesOf(join(dir, "direct.xlsx"));
+  assert.ok(Object.values(direct).join("").includes("MARK 2"), "premise: the withdrawn finding reaches the workbook");
+  assert.deepEqual(entriesOf(join(dir, "document.xlsx")), direct);
 });
 
 test("the verdict record is kept whole, sign-off included, because the page prints it where there is no statement", () => {
