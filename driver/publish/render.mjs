@@ -2581,7 +2581,7 @@ export function renderClearanceDocument(doc, { recordsByUri = new Map(), logos =
     markAssessment: client.markAssessment, fourAnswers: client.fourAnswers, homeHref, chromeHref, issued: run.issued,
     asOf: run.asOf, verdictInfo: verdict.record, framework: framework.manifest, searchedJurisdictions: scope.searchedJurisdictions,
     planTerritories: scope.planTerritories, caseLawByOrdinal: asMap(client.caseLaw?.byOrdinal) ?? new Map(),
-    caseLawNotice: client.caseLaw?.notice, enforcerSignals: client.enforcerSignals, recordOrigin: run.provider?.origin,
+    enforcerSignals: client.enforcerSignals, recordOrigin: run.provider?.origin,
     recordOrigins: run.provider?.origins, recordCitation: run.provider?.citation ?? null, recordLinks: asMap(client.recordLinks?.byUri),
     providerLabel: run.provider?.label, seniorRights: client.seniorRights, findingsSchemaVersion: run.findingsVersion,
     searchDepth: scope.searchDepth, assessmentNotCompleted: verdict.assessmentNotCompleted, logos,
@@ -2722,17 +2722,6 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   // T7 (E4): the section also renders when the ONLY common-law content is the layer's
   // contributions to register findings — the layer's work is visible even with zero CL findings.
   const clBody = commonLawSection(secCL, clOnField, cardFor, recordsByUri, sorted);
-  // The case-law stage's session-wide preamble (source outages etc.) renders ONCE here — the per-finding
-  // strands cite 'as § Session-wide notice above', which used to point at nothing (the preamble was
-  // discarded at parse). Rendered only when case-law strands exist to reference it.
-  // doc-55 A3 — INTERNAL ONLY: this preamble is operational session narration (which case-law sources were
-  // reachable this run — MCP wiring, tool status, HTTP/quota) = process exhaust, not legal product (doc-52).
-  // It leaked those internals to the client. The client's per-finding case-law lines carry the plain result;
-  // the reviewer keeps the full session note here.
-  const clNoticeText = String(opts.caseLawNotice || '').trim();
-  const clNotice = (clNoticeText && CASE_LAW_BY_ORD.size)
-    ? `<div class="panel" style="padding:12px 16px;margin:0 0 12px"><p style="margin:0 0 4px;font-weight:700;font-size:13px">${R.findings.sessionNotice}</p><div style="font-size:13px">${renderProse(clNoticeText)}</div></div>`
-    : '';
   // The 2026-09-16 report redesign — the section heading and the session-wide notice are off the page: the heading
   // named a layer rather than a thing a reader looks for, and the notice was operational narration. The
   // CARDS are not: a rated common-law finding is a finding, and it renders in place with the others.

@@ -763,7 +763,6 @@ export const REPORT_PAGE = Object.freeze({
   // The findings sections: their headings and the leads of their folds. "Marks that can coexist" stays in the
   // renderer, where a guard holds both its layouts to the ruled words; Conflicts is the strip's own entry.
   findings: Object.freeze({
-    sessionNotice: 'Session-wide notice',
     landscape: 'The conflict landscape',
     secondaryWatch: 'Secondary & watch',
     famousLead: 'Famous-mark neighbours.',
