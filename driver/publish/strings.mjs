@@ -23,6 +23,8 @@ export const EMAIL = Object.freeze({
   overallRisk: 'Overall risk:',
   onlyYouCanClose: 'Only you can close these',
   onlyYouCanCloseDefault: 'the open items set out in the report, before relying on a clean result',
+  // The heading a report whose assessment did not complete lists its conditions under, copied from the report (2026-11-19).
+  beforeYouCanRely: 'Before you can rely on this result',
   handlingNote: 'Handling note:',
   registerCoverage: 'Register coverage —',
   applicantMidRun: 'Applicant named mid-run:',

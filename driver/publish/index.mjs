@@ -1811,11 +1811,18 @@ function mdBlock(block) {
 export function coverNoteOptions(runDir) {
   const frozen = (key, parse = JSON.parse) => { try { return parse(readFileSync(paths(runDir)[key], 'utf8')); } catch { return null; } };
   const opts = { productName: reportIdentityFor(frozen('searchPolicy')).identity ?? undefined };
+  // The run's own record that its assessment did not complete decides, as it does for the page: then no verdict saved
+  // by that assessment supplies a rating, and the rating stays unknown.
+  if (readStore(runDir, '_driver/not-completed/assessment.json').state !== 'absent') return Object.assign(opts, frameworkBands(frozen), { assessmentNotCompleted: true, rating: null });
   const v = frozen('verdict');
   if (v) Object.assign(opts, { verdict: v.verdict, conditions: clientConditions(v), tier: v.tier, statement: v.statement ?? null });
+  return Object.assign(opts, frameworkBands(frozen));
+}
+
+/** The run's band ladder for the email, from its frozen framework; nothing where it has none. */
+function frameworkBands(frozen) {
   const framework = frozen('framework', parseFrameworkManifest);
-  if (framework) opts.bands = framework.bands.map((b) => ({ label: b.label, tone: b.tone }));
-  return opts;
+  return framework ? { bands: framework.bands.map((b) => ({ label: b.label, tone: b.tone })) } : {};
 }
 
 export function composeEmailHtml(reportMdPath, url, auditFile, names = [], delivery = NEUTRAL_DELIVERY, opts = {}) {
@@ -1850,6 +1857,7 @@ export function coverNoteInputs(runDir) {
  */
 function coverNoteOptionsOf(document) {
   const opts = { productName: document.run.product.name ?? undefined };
+  if (document.verdict.assessmentNotCompleted === true) opts.assessmentNotCompleted = true;
   const v = document.verdict.record;
   if (v) Object.assign(opts, { verdict: v.verdict, conditions: clientConditions(v), tier: v.tier, statement: document.verdict.written?.statement ?? null });
   opts.rating = clearanceRatingOf(document).word ?? null;
@@ -1946,16 +1954,22 @@ function composeEmailHtmlFrom({ fm, secs }, url, auditFile, names = [], delivery
   // A BLOCKING RESULT KEEPS THE REPORT'S ITEMS TOO (ruled 2026-10-27). The box showed only on a CONDITIONAL result, so
   // a blocking one lost the client's own actions the report lists. It shows them under the report's heading in the
   // report's words, and only where the report names any: no empty box, no fallback line.
-  const emailConditions = emailConditionsOf(secs['Actions'], opts?.verdict);
+  // AN ASSESSMENT THAT DID NOT COMPLETE HAS NO RESULT TO CONDITION (2026-11-19). Its box lists what the report lists under
+  // "Before you can rely on this result", under that heading, in the report's order, and is left out where the report
+  // names nothing there: a heading saying only the client can close these would claim more than the run knows.
+  const notCompleted = opts?.assessmentNotCompleted === true;
+  const emailConditions = emailConditionsOf(secs['Actions'], opts?.verdict, { assessmentNotCompleted: notCompleted });
   // THE REPORT IS THE MASTER (ruled 2026-09-22). The banner used to print a second summary composed
   // beside the report — "On hold — …" on a run the report called conditional, although nothing is ever
   // held — and before that the delivery gate's word. It now quotes the report: the rating, then the
   // report's own conclusion (below), and where the report names what only the client can close, those
   // items under the report's own heading. Nothing here composes a sentence of its own.
-  const closeBox = (items) => `<p style="margin:0 0 8px;padding:8px 10px;background:${EC.closeBoxFill};border:1px solid ${EC.closeBoxLine};color:${EC.closeBoxText}"><b>${EMAIL.onlyYouCanClose}</b><br>${items.map((r) => `• ${cell(String(r))}`).join('<br>')}</p>`;
-  const verdictBound = opts?.verdict === 'CONDITIONAL'
-    ? closeBox(emailConditions.length ? emailConditions : [EMAIL.onlyYouCanCloseDefault])
-    : opts?.verdict === 'BLOCKING' && emailConditions.length ? closeBox(emailConditions) : '';
+  const closeBox = (items, head = EMAIL.onlyYouCanClose) => `<p style="margin:0 0 8px;padding:8px 10px;background:${EC.closeBoxFill};border:1px solid ${EC.closeBoxLine};color:${EC.closeBoxText}"><b>${head}</b><br>${items.map((r) => `• ${cell(String(r))}`).join('<br>')}</p>`;
+  const verdictBound = notCompleted
+    ? (emailConditions.length ? closeBox(emailConditions, EMAIL.beforeYouCanRely) : '')
+    : opts?.verdict === 'CONDITIONAL'
+      ? closeBox(emailConditions.length ? emailConditions : [EMAIL.onlyYouCanCloseDefault])
+      : opts?.verdict === 'BLOCKING' && emailConditions.length ? closeBox(emailConditions) : '';
 
   // The rating as the page states it where the options carry it (from the report document); otherwise the record's, then
   // the front matter's, as a run published before the document reads.

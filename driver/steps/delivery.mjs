@@ -202,7 +202,7 @@ export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontM
         goodsEvidence: readGoodsEvidenceAsWritten(run.runDir) ?? readGoodsEvidence(run.runDir), goodsHanded: readGoodsHanded(run.runDir),
         // The overview as its writer wrote it, read for a citation of a finding the report does not carry; and the
         // conditions the email carries, as the email composes them.
-        overviewMd: (() => { try { return readFileSync(P.reportOverview, "utf8"); } catch { return null; } })(), emailConditions: emailConditionsOfReport(reportMd, lintVerdict?.verdict),
+        overviewMd: (() => { try { return readFileSync(P.reportOverview, "utf8"); } catch { return null; } })(), emailConditions: emailConditionsOfReport(reportMd, lintVerdict?.verdict, { assessmentNotCompleted: readPartNotCompleted(run.runDir, "assessment") != null }),
         fetchFailures: recordFetchFailures, findings: lintFindings, narrativeFindings: lintNarrativeFindings, findingsRaw: lintFindingsRaw, actionsRegister: lintActions, verdictDoc: lintVerdict,
         // WP-56 B2 — fresh v4 runs expect the standing mark-assessment (structural banner flag when
         // absent). The replay harness's runLint call never passes this, so archived runs never flip.
