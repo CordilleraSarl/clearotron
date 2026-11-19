@@ -13,6 +13,7 @@ import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { COMMON_LAW_SENTENCES } from "./ruled-sentences-common-law.mjs";
+import { REFUTATION_SENTENCES } from "./ruled-sentences-narrative-refutation.mjs";
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "skills");
 const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
@@ -27,7 +28,7 @@ test("the web prompts name the deepest tier, not the most expensive, and price n
 
 test("the narrative reviewer keeps its backstop checks as insurance, not cheap insurance", () => {
   const reviewer = flat("narrative-refutation/SKILL.md");
-  assert.equal(reviewer.split("insurance against a diff that missed something").length - 1, 2);
+  assert.equal(reviewer.split(REFUTATION_SENTENCES.insuranceAgainstDiffThatMissed).length - 1, 2);
   assert.ok(!reviewer.includes("cheap insurance"), "the narrative reviewer still calls a check cheap");
 });
 
