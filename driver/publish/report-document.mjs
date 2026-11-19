@@ -99,6 +99,9 @@ export function clearanceReportDocument(d, { codename = null, customerKey = null
       // The verdict record whole. Its sign-off is the reviewer's word, but the page prints it as the recommendation
       // on a record with no statement, so it is read here with the rest.
       record: orNull(d.verdictInfo),
+      // The record as written in the run's verdict file, which the cover email reads. It differs from `record` on a record
+      // older than the derived display fields, and where the assessment was not completed.
+      written: orNull(d.verdictWritten),
       assessmentNotCompleted: Boolean(d.assessmentNotCompleted),
     },
     client: {

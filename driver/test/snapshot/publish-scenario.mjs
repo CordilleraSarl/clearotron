@@ -29,9 +29,15 @@ const delivery = existsSync(profileFile) ? JSON.parse(readFileSync(profileFile, 
 const reportMd = join(spec.runDir, "report.md");
 const email = {};
 if (existsSync(reportMd)) {
-  const { composeEmailBody, composeEmailHtml, coverNoteOptions } = await load("publish/index.mjs");
+  const { composeEmailBody, composeEmailHtml, coverNoteOptions, coverNoteInputs, composeCoverNote } = await load("publish/index.mjs");
   email.text = composeEmailBody(reportMd, published.url, published.auditFile);
-  if (coverNoteOptions) {
+  if (coverNoteInputs) {
+    // The cover note composed by the delivery's own function (run-delivered.mjs): from the run's report document where the
+    // run has one, from its files where it has none.
+    const cover = coverNoteInputs(spec.runDir);
+    email.html = composeCoverNote(cover, { url: published.url, auditFile: published.auditFile, names: [], delivery, productName: cover.opts.productName });
+    email.cover = JSON.stringify({ tier: cover.opts.tier ?? null, statement: cover.opts.statement ?? null });
+  } else if (coverNoteOptions) {
     // The cover note composed with the options the publisher's one function reads, which the report document carries too.
     const opts = coverNoteOptions(spec.runDir);
     email.html = composeEmailHtml(reportMd, published.url, published.auditFile, [], delivery, opts);
@@ -52,14 +58,19 @@ if (existsSync(reportMd)) {
     email.cover = JSON.stringify({ tier: opts.tier ?? null, statement: opts.statement ?? null });
   }
 } else {
-  const { composeKnockoutEmail, knockoutName } = await load("publish/knockout.mjs");
+  const { composeKnockoutEmail, composeKnockoutCoverNote, knockoutName } = await load("publish/knockout.mjs");
+  const { paths } = await load("run-record.mjs");
   const { worstBand } = await load("verify-knockout.mjs");
   const findings = JSON.parse(readFileSync(join(spec.runDir, "knockout-findings.json"), "utf8"));
   const framework = JSON.parse(readFileSync(join(spec.runDir, "_driver", "framework.json"), "utf8"));
   // The product's name as the delivery takes it, from the run's frozen policy, where the build names it at all.
   const policyFile = join(spec.runDir, "_driver", "search-policy.json");
   const named = knockoutName ? { productName: knockoutName(existsSync(policyFile) ? JSON.parse(readFileSync(policyFile, "utf8")) : null) } : {};
-  email.html = composeKnockoutEmail({ findings, framework, overall: worstBand(framework, findings.marks ?? []), reports: published.reports, auditUrl: published.auditUrl, job: meta.job ?? {}, ...named });
+  // The values the lane hands the delivery: its machine-check lines and its register counts, which on an unresumed run are
+  // the counts file's. Composed by the delivery's own function where the build has it.
+  const counts = existsSync(paths(spec.runDir).registerCounts) ? JSON.parse(readFileSync(paths(spec.runDir).registerCounts, "utf8")) : null;
+  const lane = { findings, framework, overall: worstBand(framework, findings.marks ?? []), reports: published.reports, auditUrl: published.auditUrl, job: meta.job ?? {}, registerCounts: counts, qcFlags: published.qcFlags ?? [], ...named };
+  email.html = composeKnockoutCoverNote ? composeKnockoutCoverNote(spec.runDir, lane) : composeKnockoutEmail(lane);
 }
 writeFileSync(spec.resultFile, JSON.stringify({ email, returned: published ?? null, logRows }));
 process.exit(0);

@@ -56,7 +56,7 @@ import { knockoutAssessSourceDefects } from "./knockout-assess-record.mjs";
 import { correctionsAppliedTable, unresolvedFlags } from "./corrections-feedforward.mjs";
 import { settledKnockoutReading } from "./knockout-register-record.mjs";
 import { stripNextStepSections } from "./knockout-next-step.mjs";
-import { publishKnockout, composeKnockoutEmail, knockoutName } from "./publish/knockout.mjs";
+import { publishKnockout, composeKnockoutCoverNote, knockoutName } from "./publish/knockout.mjs";
 import { markLogos, logosStep } from "./mark-logos.mjs";
 import { writeRunStatus, readRunStatus, rollupStatus, identitySeed, recordTransition, resumeRecord } from "./progress.mjs";   // — the identity seed is shared; the stepper is not
 import { batchMarkName } from "./mark-name.mjs";
@@ -1514,7 +1514,9 @@ export async function knockoutInner(ctx, job, opts = {}) {
         // They are FLAGS: the packet, the state and the send below are byte-identical with or without them.
         // The product's name, from the run's frozen policy, for the email's first line and its subject alike.
         const productName = knockoutName(policy);
-        const emailHtml = composeKnockoutEmail({ findings: merged, framework: ctx.framework, overall, reports: published.reports, auditUrl: published.auditUrl, job, registerCounts, qcFlags: published.qcFlags, productName });
+        // From the run's report document where it has one (composeKnockoutCoverNote); the lane's own values are what a run
+        // published before the document is composed from.
+        const emailHtml = composeKnockoutCoverNote(run.runDir, { findings: merged, framework: ctx.framework, overall, reports: published.reports, auditUrl: published.auditUrl, job, registerCounts, qcFlags: published.qcFlags, productName });
         writeFileSync(K.emailBody, emailHtml);
         const nMarks = merged.marks.length;
         const refTag = job.ref ? ` (${job.ref})` : "";
