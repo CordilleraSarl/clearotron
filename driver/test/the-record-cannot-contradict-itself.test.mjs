@@ -15,7 +15,7 @@
 // trip — an honest failure, a corrected finding, a clean success — because a flag that fires on all of
 // them says nothing, and that is how the original contradiction survived being looked at.
 import { test } from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, rmSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -198,7 +198,7 @@ test("the sidecar writer carries the grounds and refuses an empty BLOCKING", () 
   assert.match(SRC, /reasons: reasonsOut, kinds: kindsOut/,
     "the sidecar writes the shared clamp state again rather than the value the invariant just checked");
   // The ordering that keeps a degenerate review recoverable: the sidecar is written BEFORE the re-ask.
-  assert.ok(SRC.indexOf("let cited = []") < SRC.indexOf("reviewer-degenerate-reask"),
+  assert.ok(onlyAt(SRC, "let cited = []") < onlyAt(SRC, 'reviewLedger.canAttempt("reviewer-degenerate-reask"'),
     "the grounds arm moved after the degenerate re-ask — if the empty case ever throws before that re-ask "
     + "runs, a recoverable reviewer defect becomes a StageFailure that ends the run");
 });

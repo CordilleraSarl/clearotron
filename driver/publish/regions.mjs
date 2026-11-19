@@ -25,6 +25,10 @@ export const REGION_NAMES = {
   // XS is no country: it is the code the US state registers are filed under beside the federal one, read as they are
   // named (owner, 2026-11-18). It printed as "XS".
   XS: 'US state registers',
+  // Two regional offices and a user-assigned code, by the names a lawyer knows them (owner, 2026-11-19). They printed
+  // as codes in a report's list of places where nothing was found. XA, XG and XW stay as the register records them
+  // until the register's own names for them are verified.
+  AP: 'ARIPO', OA: 'OAPI', XK: 'Kosovo',
   CL: 'Chile', [COMMON_LAW]: 'Common-law',
 };
 

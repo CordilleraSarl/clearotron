@@ -40,7 +40,7 @@ import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 import { demoReportPages } from "./snapshot/publish-compare.mjs";
 import { crossBuildRepublishRefusal } from "../one-build-per-run.mjs";
-import { inDispositionMode, DISPOSITION_BAND } from "../findings-model.mjs";   // #1100
+import { inDispositionMode, DISPOSITION_BAND } from "../findings-model.mjs";
 
 const at = (p) => fileURLToPath(new URL(p, import.meta.url));
 

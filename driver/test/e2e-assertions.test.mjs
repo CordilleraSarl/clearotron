@@ -23,9 +23,9 @@ import { pinEnv } from "../../shared/env-aliases.mjs";   // a fixture pins EVERY
 import assert from "node:assert/strict";
 import { mkdtempSync, writeFileSync, mkdirSync, rmSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir } from "../../shared/driver-dir.mjs";   // #1336
+import { driverDir } from "../../shared/driver-dir.mjs";
 import { tmpdir } from "node:os";
-import { createServer as createTcpServer } from "node:net";   // #1865 — a real closed port
+import { createServer as createTcpServer } from "node:net";   // a real closed port
 import { execFileSync } from "node:child_process";
 import { dirname } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -862,7 +862,7 @@ test("no-attempt-fail-token: a stage that logged nothing fails, and a real faile
   const dir = mkdtempSync(join(tmpdir(), "e2e-token-"));
   mkdirSync(driverDir(dir), { recursive: true });
   const p = driverDir(dir, "register-digest.jsonl");
-  const path = "_driver/register-digest.jsonl:coverage_no_status";   // #476 — the live token R1/R2 assert on
+  const path = "_driver/register-digest.jsonl:coverage_no_status";   // the live token R1/R2 assert on
 
   // absent telemetry is the "absence read as success" shape — it must FAIL
   assert.equal(evalAssertion({ op: "no-attempt-fail-token", path }, dir).ok, false);

@@ -67,6 +67,9 @@ import { saysSomethingNew } from '../../shared/says-something-new.mjs';
 import OFFERED from '../../shared/offered-territories.json' with { type: 'json' };   // the order form's own territory names
 import { normalizeTerritory } from '../../providers/_shared/territory-codes.mjs';   // a territory as written → its code
 import { KNOCKOUT_PAGE as K } from './strings.mjs';
+import { recordEntryHtml, logoFigureHtml } from './register-record-html.mjs';   // a record entry and a logo, drawn once for both report pages
+import { RECORD_LABELS } from './register-record.mjs';
+import { REC, ownerDisplayName, normalizeRecordUri } from '../registry-fidelity.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
@@ -385,7 +388,8 @@ function countsSection(marks, registerCounts, positions = '') {
     // checked by the reader it was written for, which makes it a claim rather than a measurement.
     const forms = variantFormsLine(e);
     return `<tr><td><b>${esc(m.name)}</b><br><span class="ko-classes">${esc(scope)}</span></td>${cells}</tr>`
-      + (forms ? `<tr class="ko-forms"><td colspan="${COUNT_PREDICATES.length + 1}">${esc(forms)}</td></tr>` : '');
+      // The line sits in a block of its own so a phone can hold it to the card's visible width (knockout.css).
+      + (forms ? `<tr class="ko-forms"><td colspan="${COUNT_PREDICATES.length + 1}"><div class="ko-formsline">${esc(forms)}</div></td></tr>` : '');
   }).join('');
   // COUNT_BASIS IS OFF THE PAGE, NOT OUT OF THE RECORD. It is still written to
   // report-data.json (knockoutReportData -> registerCountBasis) and still on the workbook, which is where
@@ -515,7 +519,31 @@ export function rankByMateriality(records, entry, mark) {
 }
 
 const APPENDIX_ROWS = 8;
-function filingsSection(marks, registerRecords) {
+// EACH LISTED FILING OPENS ITS REGISTER RECORD (owner, 2026-11-18; the approved board). A filing whose record the
+// run saved gets a closed drop-down in a row under its table row, the same entry a clearance card draws, and its
+// logo, where the run saved one, on a line of its own under the mark name, uncaptioned because the Territory
+// column names the register. A filing with no saved record keeps its single row, so a run that saved none renders
+// as it did.
+function filingRows(r, { filingRecords, logos }) {
+  const key = normalizeRecordUri(r.recordId);
+  const rec = key ? filingRecords.get(key) : null;
+  const cell = officeRecordCell(r, r.url ? linkOrText(r.url) : esc(r.recordId ?? '—'));
+  const logo = rec ? logoFigureHtml(rec, { uri: key, logo: logos.get(key), href: r.officeLink?.href ? escAttr(r.officeLink.href) : null, caption: false }) : null;
+  const row = `<tr${rec ? ' class="rr-has"' : ''}>
+      <td>${esc(r.mark ?? '—')}${r.matchedBasis === 'close' ? `<br><span class="ko-classes">${esc(K.filings.foundAs(r.matchedForm))}</span>` : ''}${logo ? `<div class="rr-logos rr-ko">${logo}</div>` : ''}</td>
+      <td>${esc(r.owner ?? '—')}</td>
+      <td>${esc(r.status ?? '—')}</td>
+      <td>${esc((r.classes ?? []).join(', ') || '—')}</td>
+      <td>${esc(r.territory ?? '—')}</td>
+      <td class="ko-findev">${cell}</td>
+    </tr>`;
+  if (!rec) return row;
+  const ownerName = ownerDisplayName({ raw: REC.owner(rec), native: REC.ownerNative(rec), resolved: r.owner });
+  const entry = recordEntryHtml(rec, { uri: key, jurisdiction: r.territory, numberCell: cell, ownerName });
+  return `${row}<tr class="rr-krow"><td colspan="6"><details class="drill rr-drill"><summary>${esc(RECORD_LABELS.title)}</summary><div class="drillbody">${entry}</div></details></td></tr>`;
+}
+
+function filingsSection(marks, registerRecords, records = { filingRecords: new Map(), logos: new Map() }) {
   // The provider refused the whole lane (clarivate's per-record bill). One sentence, once — not the
   // same refusal repeated under every mark.
   if (registerRecords.unavailable) {
@@ -534,14 +562,7 @@ function filingsSection(marks, registerRecords) {
     // not material". The cards promote and therefore filter; the appendix evidences and therefore ranks.
     const ranked = rankByMateriality(e.records, e, m);
     const shown = ranked.slice(0, APPENDIX_ROWS);
-    const rows = shown.map((r) => `<tr>
-      <td>${esc(r.mark ?? '—')}${r.matchedBasis === 'close' ? `<br><span class="ko-classes">${esc(K.filings.foundAs(r.matchedForm))}</span>` : ''}</td>
-      <td>${esc(r.owner ?? '—')}</td>
-      <td>${esc(r.status ?? '—')}</td>
-      <td>${esc((r.classes ?? []).join(', ') || '—')}</td>
-      <td>${esc(r.territory ?? '—')}</td>
-      <td class="ko-findev">${officeRecordCell(r, r.url ? linkOrText(r.url) : esc(r.recordId ?? '—'))}</td>
-    </tr>`).join('');
+    const rows = shown.map((r) => filingRows(r, records)).join('');
     // "First N" WAS TRUE AND IS NOT ANY MORE, and saying it of a ranked table would be worse than the
     // cap: it invites the reader to take the sample for the top of the provider's list. Say the count
     // that exists, say what decided the order, and say where the rest is.
@@ -785,7 +806,7 @@ const REGISTER_ORDINAL_FLOOR = 900;
 // SHOWING THE RATER'S ACTUAL READ IS THE OTHER HALF, and it cannot be done here: it needs the assess
 // seat to emit which filings it weighed. Deriving it from the assessment's prose would be a regex over
 // rendered prose, which is the thing this lane's structure-at-source rule exists to prevent.
-export const NOT_WEIGHED_LINE = 'Register listing — this card carries no rating of its own';
+export const NOT_WEIGHED_LINE = K.filingCard.notWeighed;
 const NOT_WEIGHED = NOT_WEIGHED_LINE;
 
 /**
@@ -878,21 +899,21 @@ function registerRightPhrase(r) {
   const echoes = (kind === 'registration' && REGISTRATION_WORDS.test(status))
     || (kind === 'application' && /^(?:appl|filed?)/i.test(status));
   const bracket = status && !echoes ? ` (${status.toLowerCase()})` : '';
-  return `${where}${kind}${bracket}`.trim();
+  return `${where}${kind === 'registration' ? K.filingCard.registration : K.filingCard.application}${bracket}`.trim();
 }
 
 function registerStatement(r, provider) {
   const name = String(r?.mark ?? r?.name ?? '').trim();
   const classes = (Array.isArray(r.classes) ? r.classes : []).filter((n) => Number.isFinite(Number(n)));
   const lead = [name, registerRightPhrase(r)].filter(Boolean).join(', ');
-  const owner = r.owner ? `by ${r.owner}` : 'owner not stated on the record';
+  const owner = r.owner ? K.filingCard.by(r.owner) : K.filingCard.ownerNotStated;
   const cls = classes.length
-    ? `class${classes.length === 1 ? '' : 'es'} ${classes.join(', ')}`
-    : 'classes not stated on the record';
+    ? K.filingCard.classes(classes.length, classes.join(', '))
+    : K.filingCard.classesNotStated;
   // A close-variation card says WHICH near-form matched, because the name at the head of the sentence is
   // then not the name the client asked about and a reader must not have to guess which it is. A filing the reading
   // step found names its question, and that question may be a wider search, which is no close variation.
-  const via = r.matchedBasis === 'close' && r.matchedForm ? (r.question ? ` Found by a search on ${r.matchedForm}.` : ` Found under the close variation ${r.matchedForm}.`) : '';
+  const via = r.matchedBasis === 'close' && r.matchedForm ? (r.question ? K.filingCard.foundBySearch(r.matchedForm) : K.filingCard.foundUnderVariation(r.matchedForm)) : '';
   return `${lead} ${owner}, ${cls}.${via}`;
 }
 
@@ -983,7 +1004,7 @@ export function registerCardViews(mark, framework, registerRecords) {
   const typed = knockoutFindingViews(mark, { manifest: framework });
   const floor = Math.max(REGISTER_ORDINAL_FLOOR, ...typed.map((v) => Number(v.ordinal) || 0));
   const markName = String(mark?.name ?? '').trim();
-  const provider = registerRecords.providerLabel ?? registerRecords.provider ?? 'the register';
+  const provider = registerRecords.providerLabel ?? registerRecords.provider ?? K.counted.theRegister;
   // RANKED BEFORE THE CAP. promotableRecords decides WHETHER a filing may be
   // pointed at; this decides WHICH of the ones that may get the three slots. Without it the three cards
   // were the first three the provider happened to return.
@@ -1056,15 +1077,15 @@ function sourceChips(v) {
 
 // The clearance lane's own label, copied rather than re-worded. One spelling across
 // both products is the point: a reader who has seen it on a clearance report knows what it means here.
-const USE_CHECK_LABEL = 'Use-check source:';
+const USE_CHECK_LABEL = K.filingCard.useCheckLabel;
 
 // WHAT THE CARD SAYS OF AN OWNER LOOKUP, read from the lookup's own outcome (owner-use-check.mjs), never from a marker:
 // a lookup that failed or was refused, and a completed answer that carries no link, used to print the same "no result"
 // literal, and neither shows a search that found nothing. The words are the owner's (approved 2026-10-28). A lookup's
 // row with a link cites it. A completed search that found nothing keeps the existing no-result line, and no lookup
 // today gives a sign of one beyond a missing link, which alone does not establish it.
-export const USE_CHECK_UNAVAILABLE = 'Use check unavailable.';
-export const USE_CHECK_LINK_UNAVAILABLE = 'link unavailable.';
+export const USE_CHECK_UNAVAILABLE = K.filingCard.useCheckUnavailable;
+export const USE_CHECK_LINK_UNAVAILABLE = K.filingCard.useCheckLinkUnavailable;
 /** A lookup's outcome: "linked" with its link, "no-link", or "unavailable". `null` when no lookup was owed. PURE. */
 export function ownerCheckOutcome(row) {
   if (!row) return null;
@@ -1191,27 +1212,27 @@ function registerFindingBlock(v, markIndex, reads = null, framework = null, owne
   const useCheckLine = !useCheck ? ''
     : useCheck.kind === 'unavailable' ? esc(USE_CHECK_UNAVAILABLE)
     : `${esc(USE_CHECK_LABEL)} ${useCheck.kind === 'linked' ? linkOrText(useCheck.url) : esc(USE_CHECK_LINK_UNAVAILABLE)}`;
-  const meta = [r.owner ? esc(r.owner) : 'proprietor not stated', r.territory ? esc(r.territory) : null]
+  const meta = [r.owner ? esc(r.owner) : K.filingCard.proprietorNotStated, r.territory ? esc(r.territory) : null]
     .filter(Boolean).join(' · ');
-  const receipt = officeRecordCell(r, isHttpUrl(r.url) ? linkOrText(r.url) : esc(r.recordId ?? 'no record address supplied'));
+  const receipt = officeRecordCell(r, isHttpUrl(r.url) ? linkOrText(r.url) : esc(r.recordId ?? K.filingCard.noRecordAddress));
   return `<div class="card ko-find" data-ko-mark="${Number(markIndex)}" data-ko-ord="${Number(v.ordinal)}">
         <div class="top">
           <div class="rail" style="background:var(${stop ?? '--faint'})"></div>
           <div class="body">
             <div class="cardhead">
-              <span class="fnum">${esc(v.ref)}</span><h3 class="who">${esc(r.mark ?? 'Unnamed filing')}</h3>${
-    band ? `<span class="ko-findband" style="background:var(${stop});color:var(${stop}-on)">${bandChipText(band, method, row?.inputs)}</span>` : ''}<span class="src reg">Register</span>
-              <button class="ask-fi no-print">\u2726 Ask AI about this finding</button>
+              <span class="fnum">${esc(v.ref)}</span><h3 class="who">${esc(r.mark ?? K.filingCard.unnamed)}</h3>${
+    band ? `<span class="ko-findband" style="background:var(${stop});color:var(${stop}-on)">${bandChipText(band, method, row?.inputs)}</span>` : ''}<span class="src reg">${K.chips.register}</span>
+              <button class="ask-fi no-print">${K.finding.askAi}</button>
             </div>
             <p class="ko-findmeta">${meta}</p>
             <p class="ko-findnet">${esc(v.statement)}</p>
             ${/* The 2026-09-16 report redesign — the head, the meta line and the one-line read stay visible; the rest
                  sits behind a fold, as it does on a clearance card, so a screen of many names reads as a
                  screen rather than as a wall. */''}
-            <details class="drill"><summary>Full detail</summary><div class="drillbody">
+            <details class="drill"><summary>${K.finding.fullDetail}</summary><div class="drillbody">
             ${basisLine(band, read)}
             ${useCheckLine ? `<p class="ko-findev">${useCheckLine}</p>` : ''}
-            <p class="ko-findev">Register record: ${receipt}</p>
+            <p class="ko-findev">${K.filingCard.registerRecord}${receipt}</p>
             </div></details>
           </div>
         </div>
@@ -1460,7 +1481,7 @@ function analysisSection(marks, framework, { registerCounts = null, probeRan = f
     // are the same fact: further filings for this name, all of them listed below.
     const held = reg.promoted - drawn.length;
     const overflow = held > 0
-      ? `<p class="ko-bul">${esc(`${held} further filing${held === 1 ? '' : 's'} for this name met the same test — every one of them is in the filings section below.`)}</p>`
+      ? `<p class="ko-bul">${esc(K.furtherFilings(held))}</p>`
       : '';
     // THE DEFECT THIS CLOSES. This line was `(m.findings ??).filter((f) => f?.url)`, and a
     // typed finding has no `url` — so every conflict was dropped from the page and a mark whose findings
@@ -1597,6 +1618,8 @@ export function renderKnockoutHtml(findings, framework, {
   // is its own value rather than a marker on `registerRecords`, because three sites PRINT
   // `registerRecords.unavailable` and anything invented for it would become client-facing wording.
   registerRecordsUnreadable = false,
+  // Each listed filing's saved record and logo, by its normalised record id; empty draws the table as before.
+  filingRecords = new Map(), logos = new Map(),
   // The searches this run did not complete, as Left open rows ({area, state, note}); empty draws no section.
   leftOpen = [],
   // The driver's own record of the owner lookups it ran. Defaults to [] so an
@@ -1718,7 +1741,7 @@ export function renderKnockoutHtml(findings, framework, {
   const registerCardCount = marks.reduce((n, m) =>
     n + registerCardsOnPage(registerCardViews(m, framework, registerRecords).cards, m, framework).length, 0);
   const hasRecords = Boolean(registerRecords && (registerRecords.marks?.length || registerRecords.unavailable));
-  const filings = hasRecords ? filingsSection(marks, registerRecords) : '';
+  const filings = hasRecords ? filingsSection(marks, registerRecords, { filingRecords, logos }) : '';
   const onFieldSec = `<div class="sec" id="findings"><span class="num"></span><h2>${K.sections.conflicts}</h2></div>
 ${counts}
 ${analysis}`;
@@ -1857,7 +1880,7 @@ ${EXPORT_MENU_JS}</script>
          off this page; the line is provenance rather than the narration that was ruled out, so it moved
          here. Owner ruling, 2026-09-17. Adjacent on purpose, as on the clearance side. -->${servedModelsLine(servedModels)}
     <span>${[title, productName].filter(Boolean).map(esc).join(' \u00b7 ')}${
-      issuedDate ? `${title || productName ? ' \u00b7 ' : ''}issued on ${esc(issuedDate)}` : ''}${
+      issuedDate ? `${title || productName ? ' \u00b7 ' : ''}${esc(K.issuedOn(issuedDate))}` : ''}${
       title || productName || issuedDate ? '.' : ''}</span>
     ${logoLockup({ mark: 16 })}
   </footer>

@@ -42,6 +42,7 @@ import { clauseForDefect } from "../terminal-clamp.mjs";
 import { VERDICT_RANK, findReviewerCoherenceFlags, lateReviewAgainst, parseVerdict } from "../verify.mjs";
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
+import { followUpKindsOf } from "../follow-up-twins.mjs";   // the search each deferred directive recorded
 
 export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, checkLateBind, clampOnTheFloorDuty, clampOnTheWritersDuty, ctx, deliverAndClamp, findingsForCards, followTheRecordsActions, groupedMembers, job, opts, overviewOpen, publishAndDeliver, rebuildTheDeliveredRecord, restoreTheBrokenRecord, reviewOpen, rov, run, runState, saveTheLabel, saveTheOwedLabel, synthesisKey, synthesisModel, synthesisThinking, writeScopeFacts, writeUps, writeVerdictSidecar }, helpers) {
   const { CITED_URI_RE, NO_CHANGE, REBUILDS_THE_DELIVERED_RECORD, StageFailure, UPSTREAM_STALE_REPAIR, assembleReportMd, cardsNeverBuilt, caseLawJoin, computeOpenFloors, defaultRecordFetcher, fullProseOrdinals, inScopeClassList, injectFrontMatter, keepRankingReadByWriter, lateRecordIds, loadCoverageLedger, owedCardOrdinals, ownerScreenForDelivery, partitionDeliveryStale, postRepairScope, queuedForTheRecordOnly, rankingReadByWriterPath, readFindingsForReport, readFloorAxes, readGoodsHanded, reassembleFromTheRecord, recordChangeOwesReview, recordGoodsHanded, relabelCoverageRows, retainStateBeforeReview, runPostRepairCorrection, runPostRepairReview, runWholeReviewForRecord, safeReadJson, settleDerivedBases, stage, stageCharter, stagesStaleOnPlacement, unreadRecordFindingOnly, unreadRecordReview, whatTheRepairLeftStale } = helpers;
@@ -191,6 +192,8 @@ export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontM
         // is presence-gated and simply emits nothing here; they stay alive for replay-archive.mjs,
         // which passes the archived summary.
         reportMd, narrativeMd, auditMd, recordsByUri: assembled.records, searchedNames,
+        // The search each deferred directive recorded, so the lint reads Left open as the page draws it.
+        followUpKinds: followUpKindsOf(run.runDir),
         // What each record's goods rested on when the writer wrote, and the records whose whole text a delivery repair
         // was already handed: a finding written on goods the register cut, whose whole body the run holds now. The
         // evidence is the copy kept when the writer was dispatched cold, which no later band merge rewrites; a run that
@@ -581,7 +584,7 @@ export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontM
       let caseLawNow = new Map();
       try {
         if (existsSync(P.caseLaw)) caseLawNow = caseLawJoin(P, findingsNow);
-      } catch { /* no case-law layer */ }
+      } catch { /* no case-law layer, or a join that failed, which caseLawJoin has recorded */ }
       let reassemble = false;
       // THE LATE VERDICT, ONE RULE FOR BOTH REVIEWS THIS LOOP CAN RUN — the whole review and the review after
       // a delivery-check repair. A late review may only harden the run's verdict, and a softer one is logged,
@@ -743,7 +746,7 @@ export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontM
             ordinalsNow = fullProseOrdinals(findingsNow);
             try {
               if (existsSync(P.caseLaw)) caseLawNow = caseLawJoin(P, findingsNow);
-            } catch { /* no case-law layer */ }
+            } catch { /* no case-law layer, or a join that failed, which caseLawJoin has recorded */ }
             // After a correction, and after a rollback that rebuilt the record from a save, what reads the record is
             // rebuilt from it; a rollback that put the same bytes back leaves nothing stale, and queues nothing.
             if (pass.ok || pass.rollback) {
@@ -816,7 +819,7 @@ export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontM
             ordinalsNow = fullProseOrdinals(findingsNow);
             try {
               if (existsSync(P.caseLaw)) caseLawNow = caseLawJoin(P, findingsNow);
-            } catch { /* no case-law layer */ }
+            } catch { /* no case-law layer, or a join that failed, which caseLawJoin has recorded */ }
             for (const owed of cardsNeverBuilt(P, ctx.depth, cardOrdinals)) if (!runState.staleStages.some((x) => x.label === owed.label)) runState.staleStages.push(owed);
             // — AND THE REVIEW IS ALSO SOMETHING THIS PASS JUST WROTE.
             //

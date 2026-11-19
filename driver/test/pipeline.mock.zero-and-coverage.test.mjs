@@ -664,6 +664,8 @@ test("Map A e2e: a finding citing a fetched record renders its registry IDs FROM
   const poolDir = readdirSync(poolRoot, { withFileTypes: true }).find((d) => d.isDirectory() && d.name.endsWith(suffix));
   assert.ok(poolDir, `published run dir for ${suffix} present in the pool`);
   const html = readFileSync(join(poolRoot, poolDir.name, "report.html"), "utf8");
-  assert.match(html, /reg\. 7100200/, "registration number rendered FROM the fetched record body");
-  assert.match(html, /registered 2023/, "registration year rendered FROM the record (not model prose)");
+  // The fetched record's facts are its register record entry on the card.
+  const entry = html.match(/<div class="rr">[\s\S]*?<\/details>/)?.[0] ?? "";
+  assert.match(entry, /7100200/, "registration number rendered FROM the fetched record body");
+  assert.match(entry, /registered 2023-/, "registration date rendered FROM the record (not model prose)");
 });

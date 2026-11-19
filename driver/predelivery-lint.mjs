@@ -40,6 +40,7 @@ import { normalizeBand } from "./framework.mjs";
 import { clientConditions, unrenderableConditions, ENGINE_TOKEN_RE, ENGINE_PHRASE_RE } from "./terminal-clamp.mjs";   // the reader's clause per condition, and the token shape it may never carry
 import { knockoutNoteView, REQUEST_NOTE_WORDS, REQUEST_SUBJECT_WORDS } from "./findings-model.mjs";   // one reader for where a note prints
 import { isEngineAppendedCaveat } from "./knockout-caveats.mjs";   // ONE derivation for "the engine appended this caveat, not a seat"
+import { axisTwin, kindsForFollowUp } from "./follow-up-twins.mjs";   // when a written row stands in for a Follow-up row, as the page decides
 
 // V4-3: diacritics FOLD (NFD strip) instead of being deleted — "Televisión" must normalize to
 // "television" (deletion made it "televisin", so a diacritic mention never matched its introduction).
@@ -226,13 +227,14 @@ const PAGE_COV_STOPWORDS = new Set(["the", "a", "an", "as", "for", "of", "in", "
   "was", "it", "its", "this", "that", "with", "by", "at", "be", "been", "run", "search", "searched"]);
 const pageCovWords = (t) => new Set(String(t || "").toLowerCase().match(/[a-z0-9]+/g)?.filter((w) => !PAGE_COV_STOPWORDS.has(w)) ?? []);
 /** The coverage rows the page draws: not clean, and not a follow-up row another open row restates (render.mjs dedupeFollowUps). PURE. */
-function pageDrawnCoverage(coverage) {
+function pageDrawnCoverage(coverage, followUpKinds = null) {
   const open = (Array.isArray(coverage) ? coverage : []).filter((c) => c && typeof c === "object" && c.state !== "confirmed-clean");
   const composed = (c) => String(c?.area || "").startsWith(PAGE_FOLLOW_UP_PREFIX);
   const written = open.filter((c) => !composed(c));
   if (!written.length) return open;
   return open.filter((c) => {
     if (!composed(c)) return true;
+    if (axisTwin(String(c.note || "").split("\u2014")[0], kindsForFollowUp(c, followUpKinds), written)) return false;   // the page's rule, follow-up-twins.mjs
     const directive = pageCovWords(String(c.note || "").split("\u2014")[0]);
     if (!directive.size) return true;
     return !written.some((w) => {
@@ -244,9 +246,9 @@ function pageDrawnCoverage(coverage) {
   });
 }
 /** Every line the page draws from the record that can name a party: the drawn coverage rows, and the names it lists. PURE. */
-export function pageNameLines({ coverage = [], webNames = [] } = {}) {
+export function pageNameLines({ coverage = [], webNames = [], followUpKinds = null } = {}) {
   return [
-    ...pageDrawnCoverage(coverage).map((c) => `${c.area ?? ""} ${c.note ?? ""}`),
+    ...pageDrawnCoverage(coverage, followUpKinds).map((c) => `${c.area ?? ""} ${c.note ?? ""}`),
     ...(Array.isArray(webNames) ? webNames : []).slice(0, PAGE_WEB_NAMES_SHOWN).map((w) => String(w?.title ?? "")),
   ];
 }
@@ -2501,7 +2503,7 @@ export function cardBudgetChecks({ cardFolds }) {
     `assembly folded ${folds.length} surface(s) to the level budgets (moved, never deleted): ${folds.map((f) => `${f.surface} → +${f.movedSentences} sentence(s)/${f.movedWords} word(s) into depth`).join("; ")}`)];
 }
 
-export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, reportMd, overviewMd = null, emailConditions = null, clientSummaryMd, narrativeMd, auditMd, recordsByUri, searchedNames, headerName, ratedNames, actionsText, fetchFailures, extraPlatformNames, findings, narrativeFindings = null, findingsRaw, actionsRegister, actionsExpected, intakeAsks, askAnswers, cardFolds, verdictDoc, manifest, seniorRights, seniorRightsExpected, markAssessment, markAssessmentExpected, fourAnswers, contentModelExpected, findingsSchemaVersion, placements, ownerScreen, recordCarry, commonLawCarries, searchedJurisdictions = null, goodsEvidence = null, goodsHanded = null }) {
+export function runLint({ followUpKinds = null, depth, commonLawGrid, matterContext, clientPartyName, reportMd, overviewMd = null, emailConditions = null, clientSummaryMd, narrativeMd, auditMd, recordsByUri, searchedNames, headerName, ratedNames, actionsText, fetchFailures, extraPlatformNames, findings, narrativeFindings = null, findingsRaw, actionsRegister, actionsExpected, intakeAsks, askAnswers, cardFolds, verdictDoc, manifest, seniorRights, seniorRightsExpected, markAssessment, markAssessmentExpected, fourAnswers, contentModelExpected, findingsSchemaVersion, placements, ownerScreen, recordCarry, commonLawCarries, searchedJurisdictions = null, goodsEvidence = null, goodsHanded = null }) {
   // WS-B: the run's profile platforms join the vocabulary for this run. Profiles carry store
   // DOMAINS by contract, so derive the name tokens a report would actually print: the raw norm
   // ("thomasnetcom"), the separator-spaced phrase ("thomasnet com" / "made in china com"), and the
@@ -2541,7 +2543,7 @@ export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, 
       try { coverage = JSON.parse(findingsRaw)?.coverage ?? []; } catch { /* no record: the page draws no row from it */ }
       let webNames = [];
       try { webNames = auditMd ? clearedNames(auditMd).web : []; } catch { /* an unreadable audit lists no names */ }
-      return pageNameLines({ coverage, webNames }).join("\n");
+      return pageNameLines({ coverage, webNames, followUpKinds }).join("\n");
     })();
     checks.push(...referenceChecks({ actionsText: onlyYou, fullSurface: reportMd, searchedNames, surface: "report", extraVocab, markNames, structural: actionsExpected === true, introducedIn: onThePage }));
     // V4-5 (+ PR-3): with a typed register the reachability check asserts over the STORE the

@@ -18,12 +18,12 @@
 //   · both leave a DURABLE record in run.jsonl. `note()` is stderr-only, which is the second half of why
 //     the defect survived two months: no consumer we have reads stderr.
 import { test } from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { driverDir } from "../../shared/driver-dir.mjs";   // #1336
+import { driverDir } from "../../shared/driver-dir.mjs";
 
 import { deriveRecordCarry } from "../pipeline.mjs";
 import { paths } from "../stages.mjs";
@@ -89,7 +89,7 @@ test("the repaired catch reports DURABLY — a stderr-only report is what bought
   // assertions below reported on text that has nothing to do with this catch. An arm that cannot find
   // its subject must say so; it must never report on whatever it found instead.
   const src = driverSource("pipeline.mjs");
-  const at = src.indexOf("THIS CATCH BOUGHT TWO MONTHS OF SILENCE, TWO WAYS");
+  const at = onlyAt(src, "THIS CATCH BOUGHT TWO MONTHS OF SILENCE, TWO WAYS");
   assert.notEqual(at, -1,
     "the catch's heading is gone from driver/pipeline.mjs, so this arm has nothing to read — it does "
     + "not fall back to a window of some other part of the file");

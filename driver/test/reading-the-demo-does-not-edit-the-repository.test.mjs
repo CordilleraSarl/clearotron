@@ -23,7 +23,7 @@ import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { demoChildren, prepareSample, publishContainer, publishSource } from "../demo-container.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
-import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";   // tracker issue 235
+import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
 
 const REPO = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 const GUARD = "reading-the-demo";

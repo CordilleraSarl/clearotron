@@ -39,8 +39,9 @@
 // said in plain words that the session had expired. On a healthy ending that field is the model's answer
 // and stays off the row.
 
-import { mkdirSync, openSync, writeSync, closeSync, statfsSync } from "node:fs";
+import { mkdirSync, openSync, writeSync, closeSync, readSync, statfsSync, existsSync, readFileSync, writeFileSync, unlinkSync, statSync } from "node:fs";
 import { dirname } from "node:path";
+import { gzipSync, gunzipSync } from "node:zlib";
 
 /** The program's words for a classifier cut, as it writes them into the session. Matched, never quoted. */
 export const CLASSIFIER_CUT_RE = /stopped by a safety classifier/i;
@@ -203,6 +204,32 @@ export function countTool(byName, name) {
 // name it took, so every row names the bytes of its own session.
 export const STREAM_FLOOR_BYTES = 5 * 1024 ** 3;
 
+/**
+ * Each line of a saved stream, as bytes, whether it was kept gzipped (a session that closed) or plain (one that never
+ * did). The one reader of the format, beside the one writer. A plain stream is read a megabyte at a time, so a long one is
+ * never held whole; a gzipped one is held whole once decompressed, at most the size the session wrote.
+ */
+export function* streamLines(file) {
+  if (String(file).endsWith(".gz")) {
+    const text = gunzipSync(readFileSync(file));
+    let at = 0;
+    for (let nl; (nl = text.indexOf(10, at)) >= 0; at = nl + 1) yield text.subarray(at, nl);
+    if (at < text.length) yield text.subarray(at);
+    return;
+  }
+  const fd = openSync(file, "r");
+  try {
+    const chunk = Buffer.alloc(1 << 20);
+    let rest = Buffer.alloc(0);
+    for (let n; (n = readSync(fd, chunk, 0, chunk.length, null)) > 0;) {
+      let buf = Buffer.concat([rest, chunk.subarray(0, n)]), at;
+      while ((at = buf.indexOf(10)) >= 0) { yield buf.subarray(0, at); buf = buf.subarray(at + 1); }
+      rest = Buffer.from(buf);
+    }
+    if (rest.length) yield rest;
+  } finally { closeSync(fd); }
+}
+
 /** `<stem>.jsonl` for the first session under a name, `<stem>.session<n>.jsonl` for each later one. */
 const nthStreamName = (file, n) => (n === 1 ? file : file.replace(/(\.jsonl)?$/, (ext) => `.session${n}${ext}`));
 
@@ -222,6 +249,9 @@ export function streamSink(file, { floorBytes = STREAM_FLOOR_BYTES, freeBytes = 
       // "wx" creates or refuses, in one step, so two sessions can never both take one name.
       for (let n = 1; fd === null; n += 1) {
         const name = nthStreamName(file, n);
+        // A closed session's stream is kept gzipped under `<name>.gz`, so the plain name is free again once it closes: a
+        // name is taken when either is there.
+        if (existsSync(`${name}.gz`)) continue;
         try { fd = openSync(name, "wx", 0o600); file = name; }
         catch (e) { if (e?.code !== "EEXIST" || n >= 999) throw e; }
       }
@@ -235,7 +265,19 @@ export function streamSink(file, { floorBytes = STREAM_FLOOR_BYTES, freeBytes = 
     },
     close() {
       if (fd !== null) { try { closeSync(fd); } catch { /* the bytes are on disk or they are not; bytes says which */ } fd = null; }
-      return reason ? { file, present: bytes > 0, bytes, reason } : { file, present: true, bytes };
+      if (reason) return { file, present: bytes > 0, bytes, reason };
+      // A SESSION THAT CLOSED IS KEPT GZIPPED. One long session wrote 28 to 41 MB as plain lines, and the archive keeps every
+      // run's streams. Compressed here, once the session has closed: a session that is killed never reaches this, so its
+      // stream stays plain and readable to its last line, which is the stream someone most wants to read. A compression that
+      // fails keeps the plain file and says so; it never fails the turn.
+      try {
+        const gz = `${file}.gz`;
+        writeFileSync(gz, gzipSync(readFileSync(file)), { mode: 0o600, flag: "wx" });
+        unlinkSync(file);
+        return { file: gz, present: true, bytes, storedBytes: statSync(gz).size };
+      } catch (e) {
+        return { file, present: true, bytes, notCompressed: String(e?.message ?? e).slice(0, 120) };
+      }
     },
   };
 }

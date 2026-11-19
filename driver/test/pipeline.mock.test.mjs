@@ -4,7 +4,7 @@
 // Offline driver dry-run against a mock engine (no billable calls). The shared harness is pipeline-mock-harness.mjs.
 import { ARCHIVED, JOB, PROFILES_SEED, findFile, runPipeline, stageOrder, studioRootOf } from "./pipeline-mock-harness.mjs";
 import { test } from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import { refusalsFor } from "../synthesis-record.mjs";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync, writeFileSync, mkdirSync } from "node:fs";
@@ -154,7 +154,7 @@ test("screen-gate: one mode filter, one helper, BOTH gate checks — the ION pro
   // `enforcedViolations`, which owns the filter — so this asserts the structure rather than a run,
   // WITH a control that fails if it is reading the wrong text.
   const SRC = driverSource("pipeline.mjs");
-  const from = SRC.indexOf("const checkScreenGate = ()");
+  const from = onlyAt(SRC, "const checkScreenGate = ()");
   // ANCHORED ON THE PROSE, NOT THE SPEC NUMBER. The end marker used to read "// spec-66: AFTER any
   // settlement/late flush"; the cut strips a spec reference out of a comment and left "//: AFTER any
   // settlement…", so indexOf returned -1. That is not an error — a negative `to` makes the slice run
@@ -726,7 +726,7 @@ test("selector/record disagreement FAULTS, and the record is written BEFORE the 
   // strips those out of comments, so the old anchor stopped existing. This arm's vacuity control caught
   // it — an uncontrolled slice on a missing anchor is not an error, it is a window from the end of the
   // file that the assertions below would have read as the record block.
-  const start = src.indexOf("RECORD THE CHOICE, HERE, where both paths converge");
+  const start = onlyAt(src, "RECORD THE CHOICE, HERE, where both paths converge");
   assert.notEqual(start, -1, "the record block's heading is gone from pipeline.mjs — if this fails the assertions below are vacuous");
   const end = src.indexOf("const gather =", start);
   assert.ok(end > start, "…and delimitable");

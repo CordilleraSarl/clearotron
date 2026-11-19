@@ -60,6 +60,7 @@ import { runLog } from "./log.mjs";   // what the transport read a call as goes 
 import { pageNameLines, stepPartyNames, textNamesParty } from "./predelivery-lint.mjs";   // a step's parties, read as the reference check reads them
 import { recordOriginsOr, blankOnRepeat, recordBlanking, FOREIGN_HOST_TOKEN } from "./foreign-record-links.mjs";   // a foreign record link: refused once, then blanked
 import { driverDir, paths, readJson } from "./run-record.mjs";
+import { followUpKindsOf } from "./follow-up-twins.mjs";   // the search each deferred directive recorded
 export const NARRATIVE_FILE = "narrative.md";
 export const FINDINGS_FILE = "findings.json";
 
@@ -965,7 +966,7 @@ export function mergeSynthesisPatch(stored, patch, { positions = null } = {}) {
  * `stored` and `saved` are the findings documents before and after the save. Returns `{actions, kept}`: `kept` names
  * each step held, as `{id, ordinals}`, and `actions` is the saved list with those steps' citations put back.
  */
-export function stepsOnWithdrawnSupport(stored, saved) {
+export function stepsOnWithdrawnSupport(stored, saved, followUpKinds = null) {
   const actions = saved?.actions;
   if (!Array.isArray(actions) || !Array.isArray(stored?.actions)) return { actions, kept: [] };
   const rows = Array.isArray(saved?.findings) ? saved.findings : [];
@@ -976,7 +977,7 @@ export function stepsOnWithdrawnSupport(stored, saved) {
     .filter((t) => typeof t === "string" && t.trim()).join("\n");
   const coverage = Array.isArray(saved?.coverage) ? saved.coverage : [];
   const openRows = coverage.filter((c) => c?.state === "open").map((c) => `${c.area ?? ""} ${c.note ?? ""}`).join("\n");
-  const introduced = [...pageNameLines({ coverage }), parties(rows.filter((f) => f?.disposition !== "withdrawn"))].join("\n");
+  const introduced = [...pageNameLines({ coverage, followUpKinds }), parties(rows.filter((f) => f?.disposition !== "withdrawn"))].join("\n");
   const withdrawnOnly = parties(rows.filter((f) => f?.disposition === "withdrawn"));
   const identifies = (a) => {
     const names = stepPartyNames(a);
@@ -1206,7 +1207,7 @@ export function recordSynthesis(runDir, received, opts = {}) {
     call = merged.merged;
   }
   // A STEP WHOSE ONLY SUPPORT WAS WITHDRAWN keeps its citations when the save sends it back with none (`stepsOnWithdrawnSupport`).
-  const held = stored ? stepsOnWithdrawnSupport(stored.findings, call?.findings) : { kept: [] };
+  const held = stored ? stepsOnWithdrawnSupport(stored.findings, call?.findings, followUpKindsOf(runDir)) : { kept: [] };
   if (held.kept.length) call = { ...call, findings: { ...call.findings, actions: held.actions } };
 
   // A RECORD LINK ON A HOST THIS REGISTER DOES NOT PUBLISH is gated here as verify.mjs gates the saved

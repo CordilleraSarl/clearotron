@@ -14,7 +14,7 @@
 // (a line-wrap split "Unity\nTechnologies"; a prefix list omitted `phonetic`). The ruling of
 // 2026-08-20 narrowed the duty to a ROW ON A FORM, which is why nothing here reads prose.
 import { test } from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { reconcileFloorDuty, floorDutyEvent, FLOOR_DUTY_SCHEMA_VERSION, armFloorDuty, floorDutyArmed, FLOOR_DUTY_STAMP, floorDutyBlock, floorDutyBlocksSkip, FLOOR_DUTY_STAGE } from "../floor-duty.mjs";
 import { readFileSync, mkdtempSync, rmSync, existsSync, writeFileSync, mkdirSync } from "node:fs";
@@ -180,8 +180,8 @@ test("malformed inputs do not throw", () => {
 // write "0 floors, 0 unanswered" and read as a clean floor. That inversion is the whole risk, so the
 // guards are asserted to exist, WITH a control that fails if this test is looking at the wrong text.
 const PIPELINE = driverSource("pipeline.mjs");
-const DERIVE = PIPELINE.slice(PIPELINE.indexOf("function deriveFloorDuty"),
-  PIPELINE.indexOf("function derivePlacementCarry"));
+const DERIVE = PIPELINE.slice(onlyAt(PIPELINE, "function deriveFloorDuty"),
+  onlyAt(PIPELINE, "function derivePlacementCarry"));
 
 test("the derivation is READ and it is the right function — the control for the arms below", () => {
   assert.ok(DERIVE.length > 400 && DERIVE.length < 6000,
@@ -345,7 +345,7 @@ test("tracker 1988 the floor DELIVERS AND CLAMPS at the site, and no longer thro
   // — and `slice(-1, …)` is not an error, it is a window measured from the END of the file. The length
   // control below is the only reason this arm went red rather than asserting confidently about unrelated
   // text. Both markers now refuse by name first, so the reason is legible without reading a char count.
-  const FLOOR_AT = PIPELINE.indexOf("THE FLOOR DUTY, DISCLOSED AND CLAMPED AT DELIVERY");
+  const FLOOR_AT = onlyAt(PIPELINE, "THE FLOOR DUTY, DISCLOSED AND CLAMPED AT DELIVERY");
   assert.notEqual(FLOOR_AT, -1,
     "the floor block's heading is gone from pipeline.mjs — a missing anchor is a refusal here, never a "
     + "window from the end of the file that the arms below would then read as the floor");
@@ -353,7 +353,7 @@ test("tracker 1988 the floor DELIVERS AND CLAMPS at the site, and no longer thro
   // again further down the file, so indexOf found THAT one, the slice ran backwards and returned 0
   // characters. A source scan whose markers are not unique reads the wrong text and asserts confidently
   // about it.
-  const FLOOR_END = PIPELINE.indexOf("// PR-3 (report voice) — the factual open-state clause per reason");
+  const FLOOR_END = onlyAt(PIPELINE, "// PR-3 (report voice) — the factual open-state clause per reason");
   assert.notEqual(FLOOR_END, -1, "the floor block's end marker is gone, so the block has no bound");
   const FLOOR = PIPELINE.slice(FLOOR_AT, FLOOR_END);
   assert.ok(FLOOR.length > 800 && FLOOR.length < 9000,

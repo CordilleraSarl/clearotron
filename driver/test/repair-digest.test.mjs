@@ -5,7 +5,7 @@
 // parks count from recoveryHistory even on a run that recovered, and an empty window renders as an
 // explicit all-clear line.
 import { test } from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -267,7 +267,7 @@ test("WIRING (source) — the park row pipeline.mjs WRITES carries the keys this
   //
   // It does NOT prove the values are right at run time, and no offline test in this repo can.
   const src = driverSource("pipeline.mjs");
-  const at = src.indexOf("recoveryHistory: [...recoveryHistory,");
+  const at = onlyAt(src, "recoveryHistory: [...recoveryHistory,");
   assert.ok(at > 0, "the park write moved — this guard needs re-aiming, not deleting");
   const row = src.slice(at, src.indexOf("}]", at) + 2);
   // The key names, as the reader spells them one screen up: `row.quantityToken`, `"classSource" in row`.

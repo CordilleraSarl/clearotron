@@ -14,7 +14,7 @@
 // the delivery gate and is not derived again after its repairs; that is its own limit, older than this.
 // Every mark and owner is invented.
 import { test } from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -107,15 +107,15 @@ test("a skipped pass decides nothing: the earlier pass's grounds stand and no st
 
 test("the delivery gate's repeat of placement goes through the one helper, as the main path does", () => {
   const src = driverSource("pipeline.mjs");
-  const map = src.slice(src.indexOf("const UPSTREAM_STALE_REPAIR = {"), src.indexOf("export const DELIVERY_TAIL_LABEL_RE"));
+  const map = src.slice(onlyAt(src, "const UPSTREAM_STALE_REPAIR = {"), onlyAt(src, "export const DELIVERY_TAIL_LABEL_RE"));
   assert.match(map, /"placement-inquiry": async \(ctx\) => recordPlacementPass\(ctx, await stage\("placement-inquiry", ctx, \{ force: true, trigger: "stale-repair" \}\), "stale-repair"\)/);
-  const start = src.indexOf("const placementPass = await asPartNotCompleted(\"assessment\", () => stage(\"placement-inquiry\", ctx));");
-  const end = src.indexOf("await asPartNotCompleted(\"assessment\", async () => must(placementPass, \"placement-inquiry\"));");
+  const start = onlyAt(src, "const placementPass = await asPartNotCompleted(\"assessment\", () => stage(\"placement-inquiry\", ctx));");
+  const end = onlyAt(src, "await asPartNotCompleted(\"assessment\", async () => must(placementPass, \"placement-inquiry\"));");
   assert.ok(start >= 0 && end > start, "guard: the main path's placement call is not where this test reads it");
   const main = src.slice(start, end);
   assert.match(main, /recordPlacementPass\(ctx, placementPass\);/, "the main path records its pass through the same helper");
   // After a repeated placement pass the gate applies the floor again, through the one clamp the terminal checks use.
-  const arm = src.slice(src.indexOf("} else if (UPSTREAM_STALE_REPAIR[s2.label]) {"), src.indexOf("} else if (s2.label.startsWith(\"report-card:\")) {"));
+  const arm = src.slice(onlyAt(src, "} else if (UPSTREAM_STALE_REPAIR[s2.label]) {"), onlyAt(src, "} else if (s2.label.startsWith(\"report-card:\")) {"));
   assert.match(arm, /if \(s2\.label === "placement-inquiry"\) \{[\s\S]*?clampOnTheFloorDuty\(\{ again: true \}\);[\s\S]*?clampOnTheWritersDuty\(\{ again: true \}\);[\s\S]*?saveTheLabel\(/,
     "the repeated pass's floor account, and the recall gate's floor exclusion, are not judged again and the label saved before the report is rebuilt from them");
   assert.match(src, /const clampOnTheFloorDuty = \(\{ again = false \} = \{\}\) => \{\n\s+\/\/ THE PREDICATE IS `floorDutyBlock`/, "the terminal checks and the repair share one clamp");

@@ -20,7 +20,7 @@
 // demands all three mints, and the gate still behaves exactly as it did.
 
 import { test } from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { screenGateZeroCause, findScreenGateViolations } from "../screen-gate.mjs";
@@ -147,7 +147,7 @@ test("NO SECOND PARSER: the row count comes from findScreenGateViolations itself
 test("the pipeline's clean branch actually carries the cause", () => {
   // The helper being right is worth nothing if the gate still logs a bare event. This pins the wiring.
   const src = driverSource("pipeline.mjs");
-  const at = src.indexOf('event: "screen-gate-clean",\n');
+  const at = onlyAt(src, 'event: "screen-gate-clean",\n');
   assert.ok(at > 0, 'the gate\'s clean log moved — this assertion is measuring nothing');
   assert.match(src.slice(at, at + 400), /screenGateZeroCause\(\{/,
     "the gate logs a clean gate without saying why it was clean — that is #1215");
@@ -159,7 +159,7 @@ test("the cause REACHES THE CI LOG — a discriminator that stops at run.jsonl h
   // artifact of it." So the cause landing in run.jsonl is NOT enough — on the three red CI runs that
   // motivated it would have been invisible. It has to travel in the assertion message.
   const src = readFileSync(new URL("./digest-funnel.pipeline.test.mjs", import.meta.url), "utf8");
-  const at = src.indexOf("const digestPicture =");
+  const at = onlyAt(src, "const digestPicture =");
   assert.ok(at > 0, "digestPicture was renamed or removed — this assertion is measuring nothing");
   const body = src.slice(at, src.indexOf("\n};", at));
   assert.match(body, /screen-gate-clean/,

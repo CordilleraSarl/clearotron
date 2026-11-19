@@ -30,7 +30,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { triggerCapGap, triggerCapWarning } from "../trigger-cap.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 
@@ -115,7 +115,7 @@ test("doctor reports the cap too — the third surface, and it was never wired",
   // has produced the disagreement: a door resolving the bundled demo roster while the configured store
   // held one more company. Comparing the units' token against a roster the units never see reports a gap
   // that is not there, or misses one that is.
-  const from = src.indexOf("AND WHICH COMPANIES IT CAN START");
+  const from = onlyAt(src, "AND WHICH COMPANIES IT CAN START");
   assert.ok(from > 0, "the cap block moved; this arm can no longer see it");
   const block = src.slice(from, src.indexOf("Portal sign-in", from));
   assert.match(block, /effectiveForService\("CLEAROTRON_CUSTOMERS_DIR"\)/,
@@ -148,7 +148,7 @@ test("`brandowner add` says it where the person is looking, and never dies of it
   // SCOPED TO THE CHECK'S OWN BLOCK, not to a window around it: this file legitimately exits and
   // refuses elsewhere — before anything is written — and an arm that swept those in would be asserting
   // something it does not mean while looking strict.
-  const from = src.lastIndexOf("try {", src.indexOf("const { opsTokenPosture }"));
+  const from = src.lastIndexOf("try {", onlyAt(src, "const { opsTokenPosture }"));
   const to = src.indexOf("return { written: true", from);
   assert.ok(from > 0 && to > from, "the check's block moved; this arm can no longer see it");
   const block = src.slice(from, to);

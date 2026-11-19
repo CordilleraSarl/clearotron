@@ -29,7 +29,7 @@ import { createServer } from "node:http";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { makeHttpHandler } from "../portal-service.mjs";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 
 /** Drive one request against a real handler on a real socket, and read the headers a client would get. */
 async function drive({ route, path = "/portal/api/anything", accept = "application/json" }) {
@@ -91,7 +91,7 @@ test("the credential route still declares its own stricter policy", async () => 
   // Read from the source rather than driven, because reaching that route needs a whole service.
   const src = driverSource("portal-service.mjs");
   // Found by the route's own test of the path, which moves with the route; the path itself is also named in prose elsewhere.
-  const i = src.indexOf('parts[2] === "connect-key"');
+  const i = onlyAt(src, 'parts[2] === "connect-key"');
   assert.ok(i > 0, "the credential route is gone from this file — this arm is now measuring nothing");
   const region = src.slice(i, i + 6000);
   assert.match(region, /"cache-control":\s*"no-store, no-cache, must-revalidate, private"/,

@@ -21,8 +21,9 @@
 // same. A manual that changed since the stage was told it, or that holds no line long enough to count, is null on its
 // own. Recording only, and it never throws: the attempt's result does not depend on it.
 import { createHash } from "node:crypto";
-import { closeSync, openSync, readFileSync, readSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { CODEX_SHOWN_OUTPUT_BYTES } from "./engine/mcp/codex-config.mjs";
+import { streamLines } from "./engine/session-record.mjs";
 
 const MIN_CHARS = 20;
 const NUMBERED = /^\s*\d+(?:\t|→|:)/;
@@ -67,20 +68,6 @@ const READERS = {
   },
 };
 
-/** Each line of a saved stream as bytes, read a megabyte at a time, so a long stream is never held whole. */
-function* fileLines(file) {
-  const fd = openSync(file, "r");
-  try {
-    const chunk = Buffer.alloc(1 << 20);
-    let rest = Buffer.alloc(0);
-    for (let n; (n = readSync(fd, chunk, 0, chunk.length, null)) > 0;) {
-      let buf = Buffer.concat([rest, chunk.subarray(0, n)]), at;
-      while ((at = buf.indexOf(10)) >= 0) { yield buf.subarray(0, at); buf = buf.subarray(at + 1); }
-      rest = Buffer.from(buf);
-    }
-    if (rest.length) yield rest;
-  } finally { closeSync(fd); }
-}
 
 const textLines = function* (text) { for (const l of String(text ?? "").split("\n")) yield Buffer.from(l); };
 
@@ -141,6 +128,7 @@ export function measureManualsSeen(turn, told, engine, { readManual } = {}) {
     if (!Array.isArray(told) || !told.length) return null;
     const s = turn?.stream;
     if (!s?.file || s.present !== true || s.reason) return null;
-    return manualShares(told, shownFrom(fileLines(s.file), engine), readManual ? { readManual } : {});
+    // A closed session's stream is gzipped and a killed one's is plain; the session record's own reader reads either.
+    return manualShares(told, shownFrom(streamLines(s.file), engine), readManual ? { readManual } : {});
   } catch { return null; }
 }

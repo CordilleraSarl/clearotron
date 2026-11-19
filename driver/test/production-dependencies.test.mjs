@@ -24,7 +24,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
-import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";   // tracker issue 235
+import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
 import { collect } from "../../scripts/third-party-notices.mjs";
 
 const REPO = dirname(dirname(dirname(fileURLToPath(import.meta.url))));

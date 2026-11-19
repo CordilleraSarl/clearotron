@@ -12,7 +12,7 @@
 // dir, and the two false-positive classes it caught (status.json, and the obligations receipts)
 // existed precisely because I had not looked.
 import { test } from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { join, sep } from "node:path";
 import { paths } from "../stages.mjs";
@@ -175,7 +175,7 @@ test("the sweep is wired, reports LOUDLY, and can never cost a run", () => {
   const src = driverSource("pipeline.mjs");
   assert.match(src, /function sweepStrayArtifacts\(ctx, stageName\) \{\n  sweepDoctrineTree\(ctx, stageName\)/,
     "it runs on the same seam as the run-dir sweep — after every stage");
-  const fn = src.slice(src.indexOf("function sweepDoctrineTree"), src.indexOf("function sweepStrayArtifacts"));
+  const fn = src.slice(onlyAt(src, "function sweepDoctrineTree"), onlyAt(src, "function sweepStrayArtifacts"));
   assert.match(fn, /event: "doctrine-write"/, "it lands in run.jsonl, not only on stderr");
   assert.match(fn, /the doctrine `\n\s*\+ `tree is an INPUT/,
     "the note says what the tree IS, because a reader who has not met this defect needs that");
