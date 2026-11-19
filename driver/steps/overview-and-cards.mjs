@@ -10,6 +10,7 @@ import { ensureDriverDir } from "../../shared/driver-dir.mjs";
 import { applyAskClosure, deriveAsks, finalizeOpenHandoffs, summarizeAsks } from "../ask-ledger.mjs";
 import { mintCommonLawCarryDoubts } from "../commonlaw-carry.mjs";
 import { readDeclinations } from "../declination-tool.mjs";
+import { injectWithdrawnRatingCoverage } from "../withdrawn-rating.mjs";
 import { CLOSURE_EVIDENCE_FILES } from "../doubt-closure-call.mjs";
 import { readAcceptedClosures } from "../doubt-closure-tool.mjs";
 import { applyClosure, mintContradictionDoubts, mintCrossCheckDoubts, stitchDoubts } from "../doubt-ledger.mjs";
@@ -96,6 +97,8 @@ export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWri
   // The fifth: every market the register service does not reach gets a "Not searched" row, written by code
   // (register-reach.mjs); the coverage line names the same markets.
   injectUncoveredMarketCoverage(P, run.runDir, note, ctx);
+  // The sixth: each right that stands with its rating withdrawn is listed as left open, with its ground's approved sentence.
+  injectWithdrawnRatingCoverage(P, run.runDir, note);
   // — the fourth sibling, and the one that REPLACES rather than adds: coverage_judgment.rows
   // is derived from the machine ledger and the plan-execution receipt instead of retyped by the seat.
   // Same seam and same reason as injectDeferralCoverage above — every synthesis re-run has settled, so

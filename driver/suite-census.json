@@ -2361,6 +2361,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-right-whose-rating-was-withdrawn-is-left-open.test.mjs": {
+          "tests": 5,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "a-rollback-puts-back-the-base-the-next-patch-builds-on.test.mjs": {
           "tests": 9,
           "asserts": 42,
@@ -6364,8 +6370,8 @@
           "todos": 0
         },
         "render.test.mjs": {
-          "tests": 163,
-          "asserts": 693,
+          "tests": 164,
+          "asserts": 703,
           "skips": 0,
           "todos": 0
         },

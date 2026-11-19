@@ -1193,9 +1193,13 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
     ? R.searched.checksWebAndStores(sw.checks.toLocaleString('en-GB'))
     : R.searched.checksOnPlatforms(sw.checks.toLocaleString('en-GB'), sw.platforms)]);
   if (sw.reputation) rows.push([R.searched.reputation, R.searched.checks(sw.reputation.toLocaleString('en-GB'))]);
-  // The local-script row says what the run's record shows ran (owner, 2026-11-19): searched when a native-script term
-  // ran, not searched when the record shows none did, and no row when the run kept no execution record to say either.
-  if (c.localScripts) rows.push([R.searched.localScript, c.localScripts.searched.length ? R.searched.searched : R.searched.notSearched]);
+  // The local-script row says what the run's record shows ran (owner, 2026-11-19): the scripts a native-script search
+  // completed in, by name, or not searched when the record shows none did, and no row when the run kept no execution
+  // record to say either. The scripts planned with none completed are left open, in the row added to the grid below.
+  const scriptNames = (codes) => Object.entries(R.searched.scriptName).filter(([k]) => codes.includes(k)).map(([, name]) => name);
+  if (c.localScripts) rows.push([R.searched.localScript, c.localScripts.searched.length ? R.searched.scriptsSearched(scriptNames(c.localScripts.searched)) : R.searched.notSearched]);
+  const scriptsMissed = c.localScripts ? scriptNames(c.localScripts.missed) : [];
+  if (scriptsMissed.length) open.push({ area: R.searched.localScript, state: 'not-searched', note: R.searched.scriptsNotCompleted(scriptsMissed) });
   // HOW DEEP THE LOCAL-LANGUAGE INVESTIGATION WENT, which is a different question from the row above it.
   // That one answers whether the spellings were searched; this one answers whether the investigation ran
   // at the depth the matter configured. The engine can run it shallower than the account asked for, and
