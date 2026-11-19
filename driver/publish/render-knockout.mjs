@@ -688,17 +688,17 @@ function findingBlock(v, framework, markIndex, method = null, cite = {}) {
           <div class="rail" style="background:var(${stop})"></div>
           <div class="body">
             <div class="cardhead">
-              <span class="fnum">${esc(v.ref)}</span><h3 class="who">${esc(v.name ?? 'Unnamed finding')}</h3>${
+              <span class="fnum">${esc(v.ref)}</span><h3 class="who">${esc(v.name ?? K.finding.unnamed)}</h3>${
     v.band ? `<span class="ko-findband" style="background:var(${stop});color:var(${stop}-on)">${bandChipText(v.band, method, v.inputs)}</span>` : ''}${sourceChips(v)}
-              <button class="ask-fi no-print">\u2726 Ask AI about this finding</button>
+              <button class="ask-fi no-print">${K.finding.askAi}</button>
             </div>
             ${meta ? `<p class="ko-findmeta">${meta}</p>` : ''}
             ${v.lead ? `<p class="ko-findnet">${inlineMd(v.lead)}</p>` : ''}
             ${/* The 2026-09-16 report redesign — head, meta and the one-line read stay visible; the rest folds, as on
                  a clearance card, so a screen of many names reads as a screen. */''}
-            ${(v.detail || ev) ? `<details class="drill"><summary>Full detail</summary><div class="drillbody">${
+            ${(v.detail || ev) ? `<details class="drill"><summary>${K.finding.fullDetail}</summary><div class="drillbody">${
       whyBandFold(v.detail ? `<p class="ko-findbasis">${inlineMd(v.detail)}</p>` : '')}${
-      ev ? `<p class="ko-findev">Sources: ${ev}</p>` : ''}</div></details>` : ''}
+      ev ? `<p class="ko-findev">${K.finding.sources}${ev}</p>` : ''}</div></details>` : ''}
           </div>
         </div>
       </div>`;
@@ -1038,7 +1038,7 @@ export function registerCardViews(mark, framework, registerRecords) {
 function sourceChips(v) {
   const register = Array.isArray(v?.weighedFilings) && v.weighedFilings.length > 0;
   const commonLaw = (Array.isArray(v?.evidence) && v.evidence.length > 0) || !register;
-  return `${commonLaw ? '<span class="src cl">Common law</span>' : ''}${register ? '<span class="src reg">Register</span>' : ''}`;
+  return `${commonLaw ? `<span class="src cl">${K.chips.commonLaw}</span>` : ''}${register ? `<span class="src reg">${K.chips.register}</span>` : ''}`;
 }
 
 // ── THE REVIEWER'S NOTES, ON THE REPORT ─────────────────────────────────────────────────
@@ -1126,7 +1126,7 @@ function aboutRequestBlock(scope, requestNotes, depthNote = '', productContext =
   // is not listed here; it is disclosed where deferrals are. A territory the form's list cannot name, or an
   // office this install could not reach, falls back to the count rather than printing a code or claiming
   // a territory nothing was counted in.
-  const on = provider ? `, on ${provider}` : '';
+  const on = provider ? K.about.on(provider) : '';
   const sc = registerCounts?.scope ?? {};
   const deferred = new Set((sc.deferredJurisdictions ?? []).map(orderCode));
   const ordered = [...new Set((sc.jurisdictions ?? [])
@@ -1135,8 +1135,8 @@ function aboutRequestBlock(scope, requestNotes, depthNote = '', productContext =
     && ordered.length > 0 && ordered.every(Boolean);
   const counted = namesTheOrder ? `${listWords(ordered)}${on}.`
     : regions.length
-      ? `${regions.length} ${regions.length === 1 ? 'register' : 'registers'}${on}.`
-      : (registerCounts ? `Counted worldwide${on}` : '');
+      ? `${K.about.registers(regions.length)}${on}.`
+      : (registerCounts ? `${K.about.countedWorldwide}${on}` : '');
   if (!asked && !where && !classLine && !stage && !context && !counted) return '';
   // ONE PANEL, THE SAME ON BOTH REPORTS (the 2026-09-16 report redesign). The rows carry what was asked for; the
   // counts row says what was counted and hides the territory list behind a fold rather than running a
@@ -1144,13 +1144,13 @@ function aboutRequestBlock(scope, requestNotes, depthNote = '', productContext =
   const row = (k, v, extra = '') => v ? `<div class="row"><span class="k">${esc(k)}</span><span class="v">${esc(v)}${extra}</span></div>` : '';
   return `<div class="panel about">
       <div class="label">About this request</div>
-      ${row('Type of search', stage)}
-      ${row('Instructed use', asked)}
-      ${row('Classes', classLine)}
-      ${row('Where searched', where)}
-      ${row('Context', context)}
-      ${row('Registers counted', counted)}
-      ${row('Searched on', searched)}
+      ${row(K.about.typeOfSearch, stage)}
+      ${row(K.about.instructedUse, asked)}
+      ${row(K.about.classes, classLine)}
+      ${row(K.about.whereSearched, where)}
+      ${row(K.about.context, context)}
+      ${row(K.about.registersCounted, counted)}
+      ${row(K.about.searchedOn, searched)}
       ${/* item 18 — a note for the reviewing lawyer does not reach the delivered page */''}
     </div>`;
 }
@@ -1277,31 +1277,29 @@ function firstRef(marks, framework) {
 // The one sentence for a listing whose answer this run cannot state, whether the lister refused or the
 // sidecar itself would not parse. Held once so the two callers below cannot drift: they are the same fact
 // to a reader, and two copies of a sentence are two sentences waiting to differ.
-const FILINGS_NOT_LISTED = 'The filings behind the counts could not be listed on this run, so nothing here says whether one stands.';
+const FILINGS_NOT_LISTED = K.read.filingsNotListed;
 
-function registerPositionClause(mark, registerCounts, registerRecords, cards = [], where = 'above', recordsUnreadable = false) {
+function registerPositionClause(mark, registerCounts, registerRecords, cards = [], where = K.read.above, recordsUnreadable = false) {
   if (!registerRecords) {
     // AN UNREADABLE SIDECAR IS NOT AN ABSENT ONE. Absent means the listing was never taken, and the page
     // says so. Unreadable means it WAS taken and this run cannot say what it found. The second sentence
     // was already written, for the lister's own refusal, and was simply unreachable from a republish:
     // a file that would not parse arrived as null, and null reads here as absent.
     if (recordsUnreadable) return FILINGS_NOT_LISTED;
-    return registerCounts ? 'The filings behind those counts were not listed on this run.' : '';
+    return registerCounts ? K.read.countsNotListed : '';
   }
   if (registerRecords.unavailable) {
     return FILINGS_NOT_LISTED;
   }
   const entry = recordsForMark(registerRecords, mark?.name);
-  const provider = registerRecords.providerLabel ?? registerRecords.provider ?? 'the register';
-  if (!entry) return 'No filings listing was recorded for this name.';
+  const provider = registerRecords.providerLabel ?? registerRecords.provider ?? K.read.theRegister;
+  if (!entry) return K.read.noListing;
   if (cards.length) {
     const classes = [...new Set(cards.flatMap((c) => (c.record.classes ?? []).map(Number).filter(Number.isFinite)))]
       .sort((a, b) => a - b);
-    const classWhere = classes.length ? ` in class${classes.length === 1 ? '' : 'es'} ${classes.join(', ')}` : '';
-    const one = cards.length === 1;
+    const classWhere = classes.length ? K.read.inClasses(classes.length, classes.join(', ')) : '';
     const refs = cards.map((c) => c.ref).join(', ');
-    return `${one ? 'A filing' : `${cards.length} filings`} of this name or ${readByJudgment(registerRecords) ? 'a name near it' : 'a close variation of it'} `
-      + `stand${one ? 's' : ''} on ${provider}${classWhere} — ${refs} ${where}.`;
+    return K.read.filingsStand(cards.length, readByJudgment(registerRecords) ? K.read.nameNear : K.read.closeVariation, provider, classWhere, refs, where);
   }
   const records = entry.records ?? [];
   if (!records.length) {
@@ -1314,33 +1312,32 @@ function registerPositionClause(mark, registerCounts, registerRecords, cards = [
     const terms = entry.terms ?? [];
     const ranAndAnswered = terms.length > 0 && terms.every((t) => t.ok && !t.setAside);
     return ranAndAnswered
-      ? `No filing of this name or a close variation of it stands on ${provider}, in the classes counted.`
+      ? K.read.noneStands(provider)
       : noneCarriedForward(entry) ? NONE_CARRIED_FORWARD
-      : 'The filings listing for this name did not complete, so nothing here says whether one stands.';
+      : K.read.listingIncomplete;
   }
-  return `${records.length} filing${records.length === 1 ? ' is' : 's are'} listed for this name below; `
-    + `none is carried up as a conflict — each is either shown dead on the register or outside the classes counted.`;
+  return K.read.listedBelow(records.length);
 }
 
 function coverageClause(mark, registerCounts, probeRan) {
   const entry = registerCounts ? countsForMark(registerCounts, mark.name) : null;
   if (!entry?.counts) {
     return probeRan
-      ? 'Register: hit-counts are part of this search and none could be taken for this name — the reason is in the audit workbook.'
-      : 'Register: not included in this product tier — no register was counted for this name.';
+      ? K.read.countsFailed
+      : K.read.countsNotInTier;
   }
   // A floor the register disclosed is a figure it gave, so a name counted only that way was counted.
   const anyFigure = COUNT_PREDICATES.some((p) => Number.isFinite(entry.counts[p.key]?.total) || disclosedFloor(entry.counts[p.key]) !== null);
-  if (!anyFigure) return 'Register: no count could be taken for this name — the reason is in the audit workbook.';
+  if (!anyFigure) return K.read.noCount;
   // COVERAGE, NOT THE FIGURES. asks the renderer to own the register-tier caveat, and the numbers
   // are already on this page twice — in the glance line at the top and in the counts table above this
   // section. A third rendering of "3 identical, 41 containing" at the foot of every card is noise, and
   // noise is what a reader stops reading. What the card owes is the fact the model cannot supply: that
   // the lane ran for THIS name, and where its output is.
   const scope = entry.classScope === 'all-classes' || !(entry.classes ?? []).length
-    ? 'across all classes'
-    : `in class${entry.classes.length === 1 ? '' : 'es'} ${entry.classes.join(', ')}`;
-  return `Register: hit-counts were taken for this name ${scope} — the figures are in the counts table above.`;
+    ? K.read.acrossAllClasses
+    : K.read.inClassesCounted(entry.classes.length, entry.classes.join(', '));
+  return K.read.countsTaken(scope);
 }
 
 // — the per-mark read, rendered as STRUCTURE because it was emitted as structure.
@@ -1377,9 +1374,9 @@ function coverageClause(mark, registerCounts, probeRan) {
 // It read "Why not <the rung above>", which asked the reader to hold a ladder they had not been given
 // and, at the top rung, had no band to name and asked a different question instead. The engine's
 // bullets are unchanged; only the label is, and it no longer varies with the band.
-const COUNTER_LABEL = 'Remaining uncertainties';
+const COUNTER_LABEL = K.read.remainingUncertainties;
 
-const ASSESSMENT_FOLD_LABEL = 'Read the full assessment';
+const ASSESSMENT_FOLD_LABEL = K.read.readFullAssessment;
 
 /** The scope block's own words, as one string, so the caveat filter reads exactly what the page prints. */
 const SCOPE_BLOCK_TEXT = 'What this is. A fast screen for obvious blockers to using each name, from '
@@ -1434,18 +1431,18 @@ function readBlock(m, framework, { opening = '' } = {}) {
   const band = String(m.rating ?? '').trim();
   const card = [
     framework?.title
-      ? `<div class="gauge-head"><div class="label">Overall risk</div><div class="gauge-fw">${esc(framework.title)}</div></div>`
-      : `<div class="label">Overall risk</div>`,
+      ? `<div class="gauge-head"><div class="label">${K.readCard.overallRisk}</div><div class="gauge-fw">${esc(framework.title)}</div></div>`
+      : `<div class="label">${K.readCard.overallRisk}</div>`,
     koScale(framework, band),
     m.basis ? `<p class="ko-basisline">${inlineMd(m.basis)}</p>` : '',
-    factors.length ? `<div class="gwhy">${band ? `<div class="label">Why ${esc(band)}</div>` : ''}<ul class="ko-bul">${
+    factors.length ? `<div class="gwhy">${band ? `<div class="label">${esc(K.readCard.why(band))}</div>` : ''}<ul class="ko-bul">${
       factors.map((f) => `<li>${inlineMd(f)}</li>`).join('')}</ul></div>` : '',
   ].filter(Boolean).join('');
   return [
     card ? `<div class="panel gauge ko-gauge">${card}</div>` : '',
     counter.length ? `<div class="ko-counter"><span class="ko-lbl2">${esc(COUNTER_LABEL)}</span><ul class="ko-bul">${
       counter.map((f) => `<li>${inlineMd(f)}</li>`).join('')}</ul></div>` : '',
-    m.mitigation ? `<div class="ko-mitig"><span class="ko-lbl2">What would change this</span><p>${inlineMd(m.mitigation)}</p></div>` : '',
+    m.mitigation ? `<div class="ko-mitig"><span class="ko-lbl2">${K.readCard.whatWouldChange}</span><p>${inlineMd(m.mitigation)}</p></div>` : '',
     // ── THE ASSESSMENT REPLACES THE "FULL NARRATIVE" FOLD ────────────────────────────────────────────
     //
     // The model writes both. `bullets` (five) say in other words what `factors` (four) already say
@@ -1466,7 +1463,7 @@ function readBlock(m, framework, { opening = '' } = {}) {
     assessment && String(opening ?? '').trim() === String(m.assessment ?? '').trim() ? ''
     : assessment
       ? `<details class="ko-full"><summary>${esc(ASSESSMENT_FOLD_LABEL)}</summary><div class="ko-assess">${mdParagraphs(assessment)}</div></details>`
-      : (bullets ? `<details class="ko-full"><summary>Full narrative</summary><ul class="ko-bul">${bullets}</ul></details>` : ''),
+      : (bullets ? `<details class="ko-full"><summary>${K.readCard.fullNarrative}</summary><ul class="ko-bul">${bullets}</ul></details>` : ''),
   ].filter(Boolean).join('');
 }
 
@@ -1516,14 +1513,14 @@ function analysisSection(marks, framework, { registerCounts = null, probeRan = f
     // the test for that reads the markup this same function just produced.
     // The rating line reads as the clearance's does, "Overall risk" and the framework's name (owner, 2026-11-18, item 1141).
     const frameworkLine = !body.includes('class="gauge-fw"') && framework?.title && String(m.rating ?? '').trim()
-      ? `<div class="ko-fwline"><div class="label">Overall risk</div><div class="gauge-fw">${esc(framework.title)}</div></div>` : '';
+      ? `<div class="ko-fwline"><div class="label">${K.readCard.overallRisk}</div><div class="gauge-fw">${esc(framework.title)}</div></div>` : '';
     return `<div class="ko-row">
       <div>
         <p class="ko-name">${esc(m.name)}</p>
         ${bandColumn(m, framework)}
       </div>
       <div>
-        ${body || '<p class="ko-bul">No adverse signals recorded for this name on this screen.</p>'}
+        ${body || `<p class="ko-bul">${K.readCard.noAdverseSignals}</p>`}
         ${frameworkLine}
         ${m.degraded ? `<p class="ko-degraded">${esc(DEGRADED_NOTE)}</p>` : ''}
         ${reviewerNotesBlock(m)}
@@ -1596,7 +1593,7 @@ function depthStrip(note) {
 // section above them was removed, and the first restoration drew them as bare paragraphs — dropping this
 // sentence, which is the whole of what the ruling asked for. One paragraph, the lead-in first, the
 // caveats verbatim after it; only where it sits on the page has changed.
-const CAVEAT_LEAD = 'This screen also carries the following limits:';
+const CAVEAT_LEAD = K.caveatLead;
 
 
 /**
@@ -1704,7 +1701,7 @@ export function renderKnockoutHtml(findings, framework, {
   // promoted, and the clause would name refs no card carries.
   const cardsByMark = new Map(marks.map((m) => [m?.name, registerCardViews(m, framework, registerRecords).cards]));
   const positions = marks.map((m) => {
-    const clause = registerPositionClause(m, registerCounts, registerRecords, cardsByMark.get(m?.name) ?? [], 'below', registerRecordsUnreadable);
+    const clause = registerPositionClause(m, registerCounts, registerRecords, cardsByMark.get(m?.name) ?? [], K.read.below, registerRecordsUnreadable);
     if (!clause) return '';
     return marks.length > 1 && m?.name ? `${m.name}: ${clause}` : clause;
   }).filter(Boolean).join(' ');
@@ -1730,7 +1727,7 @@ export function renderKnockoutHtml(findings, framework, {
   // sentence three times. reviewerNotesBlock renders the rest, under that mark's own cards.
   const requestNotes = marks.flatMap((m) => splitKnockoutNotes(m).request);
   const aboutRequest = aboutRequestBlock(instructedScope, requestNotes, depthNote, productContext, searched, registerCounts);
-  const provider = hasCounts ? (registerCounts.providerLabel ?? registerCounts.provider ?? 'the register') : null;
+  const provider = hasCounts ? (registerCounts.providerLabel ?? registerCounts.provider ?? K.counted.theRegister) : null;
   // The filings appendix renders only when the run produced a listing artifact — never on its absence,
   // and never as an empty table. A knockout with no sidecar publishes exactly the counts-only document.
   // — THE DRILL-THROUGH CLAIM IS NARROWED TO WHAT IT IS TRUE OF. The workbook line below said "the
@@ -1746,7 +1743,7 @@ export function renderKnockoutHtml(findings, framework, {
     n + registerCardsOnPage(registerCardViews(m, framework, registerRecords).cards, m, framework).length, 0);
   const hasRecords = Boolean(registerRecords && (registerRecords.marks?.length || registerRecords.unavailable));
   const filings = hasRecords ? filingsSection(marks, registerRecords) : '';
-  const onFieldSec = `<div class="sec" id="findings"><span class="num"></span><h2>Conflicts</h2></div>
+  const onFieldSec = `<div class="sec" id="findings"><span class="num"></span><h2>${K.sections.conflicts}</h2></div>
 ${counts}
 ${analysis}`;
   // WHAT THIS KNOCKOUT LEFT OPEN (design's rule, approved by the owner 2026-11-18). A name whose register search failed read
@@ -1754,10 +1751,10 @@ ${analysis}`;
   // not complete, built by the publisher (knockout.mjs, knockoutLeftOpen), in the clearance's grid and state words; none
   // is model prose. A Knockout with nothing left open draws nothing, byte for byte. No scope narration returns.
   const leftOpenSec = Array.isArray(leftOpen) && leftOpen.length
-    ? `\n\n  <div class="sec" id="open"><span class="num"></span><h2>Left open</h2></div>\n  <div class="panel"><div class="openrows">${coverageGrid(leftOpen, { verdict: false })}</div></div>`
+    ? `\n\n  <div class="sec" id="open"><span class="num"></span><h2>${K.sections.leftOpen}</h2></div>\n  <div class="panel"><div class="openrows">${coverageGrid(leftOpen, { verdict: false })}</div></div>`
     : '';
   const filingsSec = filings
-    ? `<div class="sec" id="filings"><span class="num"></span><h2>Also considered</h2><span class="note">the filings behind the counts</span></div>
+    ? `<div class="sec" id="filings"><span class="num"></span><h2>${K.sections.alsoConsidered}</h2><span class="note">${K.sections.alsoConsideredNote}</span></div>
 ${filings}`
     : '';
 
@@ -1772,7 +1769,7 @@ ${filings}`
     chromeHref,
     body: `<div class="rep-stickyhead no-print" data-report-chrome>
 <div class="topbar no-print">
-  ${homeHref ? `<a class="homebtn tb-back no-print" href="${escAttr(homeHref)}" title="All reports"><span aria-hidden="true">←</span> <span class="tb-back-lbl">All reports</span></a>` : ''}
+  ${homeHref ? `<a class="homebtn tb-back no-print" href="${escAttr(homeHref)}" title="${K.topbar.allReports}"><span aria-hidden="true">←</span> <span class="tb-back-lbl">${K.topbar.allReports}</span></a>` : ''}
   ${logoLockup({ mark: 20, tag: '' })}<span class="sp"></span>
   <span class="tb-risk" style="background:var(${overallStop});color:var(${overallStop}-on)">${esc(overall ?? '—')}</span>
   ${/* THE IDENTITY LINE NAMES THE MARK AND THE SEARCH, NOT THE RUN. It printed `matter || runId`,
@@ -1786,7 +1783,7 @@ ${filings}`
        it. */''}
   ${title || productName ? `<span class="mono tb-matter" style="font-size:11px;color:var(--slate)">${
     [title, productName].filter(Boolean).map(esc).join(' / ')}</span>` : ''}
-  ${issuedDate ? `<span class="mono tb-issued"><span aria-hidden="true">🗓 </span>Issued on ${esc(issuedDate)}</span>` : ''}
+  ${issuedDate ? `<span class="mono tb-issued"><span aria-hidden="true">🗓 </span>${esc(K.topbar.issuedOn(issuedDate))}</span>` : ''}
   ${/* THE EXPORT CONTROL, which this template had never emitted. The approved header carries it and the
        clearance report has it; the knockout offered a reader who opens the file no route to a PDF at
        all, while its own stylesheet still described the utility buttons as "used by the topbar Export
@@ -1805,15 +1802,15 @@ ${filings}`
        own change with its own byte-comparison against a real archived run. Filed as a follow-up. The
        class names are the shared vocabulary this file already emits, so report.css styles both. */''}
   <div class="tb-menu">
-    <button type="button" class="tbbtn tb-ask no-print">\u2726 <span class="tb-lbl">Ask AI</span></button>
+    <button type="button" class="tbbtn tb-ask no-print">\u2726 <span class="tb-lbl">${K.topbar.askAi}</span></button>
     ${EXPORT_TOGGLE}
     ${exportPopover(`
-      <button class="util primary" onclick="exportPDF()">\u2b07 Export PDF</button>
+      <button class="util primary" onclick="exportPDF()">\u2b07 ${K.topbar.exportPdf}</button>
       ${/* THE CLEARANCE'S OWN WORKBOOK CONTROL (owner, 2026-11-18). The page cites "the audit workbook" and gave no way to
            open it; the control links the portal's audit route the publisher hands in, and is absent when there is none. */''}${
-        isHttpUrl(auditHref) ? `<a class="util" href="${escAttr(auditHref)}" download>\u2b07 Download full audit (Excel)</a>` : ''}
+        isHttpUrl(auditHref) ? `<a class="util" href="${escAttr(auditHref)}" download>\u2b07 ${K.topbar.downloadAudit}</a>` : ''}
       <div class="tb-sep"></div>
-      <div class="tb-row"><button class="util" onclick="openAll(true)">Expand all</button><button class="util" onclick="openAll(false)">Collapse all</button></div>
+      <div class="tb-row"><button class="util" onclick="openAll(true)">${K.topbar.expandAll}</button><button class="util" onclick="openAll(false)">${K.topbar.collapseAll}</button></div>
     `)}
   </div>
 </div>

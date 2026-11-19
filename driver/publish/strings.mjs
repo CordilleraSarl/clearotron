@@ -377,4 +377,76 @@ export const KNOCKOUT_PAGE = Object.freeze({
   }),
   // The card fold's label: the clearance's word for the reasoning (owner, 2026-11-18, item 1140).
   riskAssessment: 'Risk assessment',
+  // A finding card's head and fold.
+  finding: Object.freeze({
+    unnamed: 'Unnamed finding',
+    askAi: '\u2726 Ask AI about this finding',
+    fullDetail: 'Full detail',
+    sources: 'Sources: ',
+  }),
+  // The source chips a card wears.
+  chips: Object.freeze({ commonLaw: 'Common law', register: 'Register' }),
+  // About this request: its rows. The heading stays in the renderer, where a guard holds it to the part's name.
+  about: Object.freeze({
+    on: (provider) => `, on ${provider}`,
+    registers: (n) => `${n} ${n === 1 ? 'register' : 'registers'}`,
+    countedWorldwide: 'Counted worldwide',
+    typeOfSearch: 'Type of search',
+    instructedUse: 'Instructed use',
+    classes: 'Classes',
+    whereSearched: 'Where searched',
+    context: 'Context',
+    registersCounted: 'Registers counted',
+    searchedOn: 'Searched on',
+  }),
+  // A name's read: where its register position stands, and what was counted for it. `near` is `nameNear` or
+  // `closeVariation`; `where` is `above` or `below`; `classWhere` is `inClasses`'s phrase or empty.
+  read: Object.freeze({
+    filingsNotListed: 'The filings behind the counts could not be listed on this run, so nothing here says whether one stands.',
+    countsNotListed: 'The filings behind those counts were not listed on this run.',
+    noListing: 'No filings listing was recorded for this name.',
+    theRegister: 'the register',
+    inClasses: (n, list) => ` in class${n === 1 ? '' : 'es'} ${list}`,
+    filingsStand: (n, near, provider, classWhere, refs, where) => `${n === 1 ? 'A filing' : `${n} filings`} of this name or ${near} stand${n === 1 ? 's' : ''} on ${provider}${classWhere} — ${refs} ${where}.`,
+    nameNear: 'a name near it',
+    closeVariation: 'a close variation of it',
+    above: 'above',
+    below: 'below',
+    noneStands: (provider) => `No filing of this name or a close variation of it stands on ${provider}, in the classes counted.`,
+    listingIncomplete: 'The filings listing for this name did not complete, so nothing here says whether one stands.',
+    listedBelow: (n) => `${n} filing${n === 1 ? ' is' : 's are'} listed for this name below; none is carried up as a conflict — each is either shown dead on the register or outside the classes counted.`,
+    countsFailed: 'Register: hit-counts are part of this search and none could be taken for this name — the reason is in the audit workbook.',
+    countsNotInTier: 'Register: not included in this product tier — no register was counted for this name.',
+    noCount: 'Register: no count could be taken for this name — the reason is in the audit workbook.',
+    acrossAllClasses: 'across all classes',
+    inClassesCounted: (n, list) => `in class${n === 1 ? '' : 'es'} ${list}`,
+    countsTaken: (scope) => `Register: hit-counts were taken for this name ${scope} — the figures are in the counts table above.`,
+    remainingUncertainties: 'Remaining uncertainties',
+    readFullAssessment: 'Read the full assessment',
+  }),
+  // A name's rating card and its row.
+  readCard: Object.freeze({
+    overallRisk: 'Overall risk',
+    why: (band) => `Why ${band}`,
+    whatWouldChange: 'What would change this',
+    fullNarrative: 'Full narrative',
+    noAdverseSignals: 'No adverse signals recorded for this name on this screen.',
+  }),
+  caveatLead: 'This screen also carries the following limits:',
+  sections: Object.freeze({
+    conflicts: 'Conflicts',
+    leftOpen: 'Left open',
+    alsoConsidered: 'Also considered',
+    alsoConsideredNote: 'the filings behind the counts',
+  }),
+  // The top bar. A glyph beside a label stays with the markup.
+  topbar: Object.freeze({
+    allReports: 'All reports',
+    issuedOn: (date) => `Issued on ${date}`,
+    askAi: 'Ask AI',
+    exportPdf: 'Export PDF',
+    downloadAudit: 'Download full audit (Excel)',
+    expandAll: 'Expand all',
+    collapseAll: 'Collapse all',
+  }),
 });
