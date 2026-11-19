@@ -16,6 +16,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
 import { REGISTER_SENTENCES } from "./ruled-sentences-register.mjs";
+import { RECIPES_SENTENCES } from "./ruled-sentences-register-recipes.mjs";
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register");
 const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
@@ -25,9 +26,8 @@ test("a crowd's market step uses the one list, and a major the list does not nam
   assert.ok(skill.includes(REGISTER_SENTENCES.whenTheScopeSweepReturns));
   assert.ok(unit.includes(UNIT_SENTENCES.whenTheWorldwideQuestionCrowd));
   assert.ok(unit.includes(UNIT_SENTENCES.theIdenticalMarkForThe));
-  assert.ok(recipes.includes("Their market step uses the one list your opening message names: "
-    + "`register_enumerate name:<root> match=default nice_classes:<target> regions:[<market>]`"));
-  assert.ok(recipes.includes("then one market at a time from the one list your opening message names:"));
+  assert.ok(recipes.includes(RECIPES_SENTENCES.theirMarketStepUsesThe));
+  assert.ok(recipes.includes(RECIPES_SENTENCES.thenOneMarketTimeFrom));
   for (const [name, text] of [["SKILL.md", skill], ["unit.md", unit], ["register-recipes.md", recipes]]) {
     for (const gone of ["A slice gets its OWN `register_enumerate` call only on the guarded crowd-narrow path", "the per-major region-scoped band",
       "A major gets its own question only when the worldwide question was a crowd", "run its per-major / phonetic passes", "(per major region)",

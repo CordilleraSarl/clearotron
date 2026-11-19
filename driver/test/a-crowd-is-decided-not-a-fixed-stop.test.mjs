@@ -24,6 +24,7 @@ import { mechanicalFormGapDirectives } from "../pipeline.mjs";
 import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
 import { DIGEST_SENTENCES } from "./ruled-sentences-digest.mjs";
 import { REGISTER_SENTENCES } from "./ruled-sentences-register.mjs";
+import { RECIPES_SENTENCES } from "./ruled-sentences-register-recipes.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = (rel) => readFileSync(join(DRIVER, rel), "utf8");
@@ -106,8 +107,8 @@ test("both manuals stop on a lawyer's judgment, and the register manuals carry t
   assert.ok(flat("skills/clearance-register/unit.md").includes(UNIT_SENTENCES.theExactNameListRead2));
   assert.ok(flat("skills/clearance-register/SKILL.md").includes(REGISTER_SENTENCES.theNarrowingStepsBoundThe));
   const recipes = flat("skills/clearance-register/register-recipes.md");
-  assert.ok(recipes.includes("then the majors, taken from a complete worldwide answer; a crowd is narrowed by the steps in `unit.md`, whose market step uses the one list your opening message names; then the exact name-list, narrowed by the steps in `unit.md` when it crowds"));
-  assert.ok(recipes.includes("Scope the search text by class and region; narrow a crowd by the client's goods with the goods field, never by putting goods words into the search text."));
+  assert.ok(recipes.includes(RECIPES_SENTENCES.thenTheMajorsTakenFrom));
+  assert.ok(recipes.includes(RECIPES_SENTENCES.scopeTheSearchTextClass));
   // the billing and price words the approved set takes out
   const all = ["SKILL.md", "unit.md", "digest.md", "register-recipes.md", "providers/clarivate.md", "providers/corsearch.md", "providers/euipo.md",
     "providers/free-tier.md", "providers/uspto-local.md"].map((f) => flat(`skills/clearance-register/${f}`)).join(" ");
@@ -124,7 +125,7 @@ test("judgment on a crowd narrows by the steps or records it with its count and 
   assert.ok(skill.includes(DIGEST_SENTENCES.theUnitNarrowsCrowdRecords));
   assert.ok(skill.includes(REGISTER_SENTENCES.crossesJudgmentTheUnitNarrows));
   assert.ok(unit.includes(UNIT_SENTENCES.incompleteResultCrossesTheFirewall));
-  assert.ok(recipes.includes("That `incomplete` block is never a clean; you decide on it by the narrowing steps: narrow it, or record it with its count and move on."));
+  assert.ok(recipes.includes(RECIPES_SENTENCES.thatIncompleteBlockNeverClean));
   for (const [name, text] of [["SKILL.md", skill], ["unit.md", unit], ["register-recipes.md", recipes]])
     assert.doesNotMatch(text, /halts to a human|, or halts\.| or halt\./, `${name} still lets judgment halt on a crowd`);
   assert.doesNotMatch(flat("skills/clearance-register/providers/corsearch.md"), /cheapest count-only/);

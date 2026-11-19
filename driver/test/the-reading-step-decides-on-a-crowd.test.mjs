@@ -15,6 +15,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
 import { REGISTER_SENTENCES } from "./ruled-sentences-register.mjs";
+import { RECIPES_SENTENCES } from "./ruled-sentences-register-recipes.mjs";
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register");
 const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
@@ -48,11 +49,10 @@ test("the unit manual has the unit decide on each crowd, and writes its reason a
 test("the recipes give the write-up and placement their own work, and the crowd to the narrowing steps", () => {
   const recipes = flat("register-recipes.md");
   for (const ruled of [
-    "the write-up (Layer B) performs the cross-cutting relevance / owner-aggregation / prioritisation over the candidates placement carried forward.",
-    "Placement reads the band; a crowd is narrowed by the steps in unit.md.",
-    "You decide on each `incomplete` by the narrowing steps; placement reads the band and decides relevance.",
-    "That `incomplete` block is never a clean; you decide on it by the narrowing steps: narrow it, or record it with its count and "
-      + "move on. The funnel does not \"narrow and re-probe until tractable, then call it clean\" — it surfaces the descriptor, and you decide on it.",
+    RECIPES_SENTENCES.theWriteLayerPerformsThe,
+    RECIPES_SENTENCES.placementReadsTheBandCrowd,
+    RECIPES_SENTENCES.youDecideEachIncompleteThe,
+    RECIPES_SENTENCES.thatIncompleteBlockNeverClean2,
   ]) assert.ok(recipes.includes(ruled), `the recipes do not say "${ruled.slice(0, 80)}…"`);
   for (const gone of ["relevance / sufficiency / owner-aggregation", "The lawyer reads the complete band", "the signal to judgment",
     "lets judgment command"])
