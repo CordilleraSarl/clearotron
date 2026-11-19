@@ -1640,11 +1640,11 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   // link the number IS the link, and when there is not, the number still stands on its own. The
   // workbook note stays: it tells a reader where the full record actually is.
   const NO_LINK_NOTE = {
-    workbook: ' — full record in the audit workbook (“Download full audit (Excel)”)',
+    workbook: R.detail.inWorkbook,
   };
   const regUri = (u, fb) => {
     const h = regHref(u);
-    const label = esc(u || fb || 'registration');
+    const label = esc(u || fb || R.detail.registration);
     if (hrefAttr(h)) return `<a href="${hrefAttr(h)}" target="_blank" rel="noopener noreferrer">${label}</a>`;
     const note = RECORD_CITATION ? NO_LINK_NOTE[RECORD_CITATION] : null;
     return note ? `${label}<span class="reg-nolink">${note}</span>` : label;
@@ -1660,7 +1660,7 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   // failure's cause is the record's (the persisted failure list and the stamp keep it), never the card's:
   // it can be an exception's message.
   const fetchFailLine = f._recordFetchFailure
-    ? `<li class="openitem"><b>Official register record could not be retrieved</b> — registry details in this card are unverified.</li>`
+    ? `<li class="openitem"><b>${R.detail.recordNotRetrieved}</b>${R.detail.detailsUnverified}</li>`
     : '';
   const regs = (f.owner?.registrations || []).map(r => {
     const uri = String(r.uri || '').toLowerCase();
@@ -1675,12 +1675,12 @@ function fullDetail(f, card, recordsByUri = new Map()) {
     if (uri && (hasRecordSet || !(r.status || r.filed || r.expiry || (r.classes && r.classes.length)))) {
       // wp50/wi7 + B3: this is a register-INDEX entry (the search saw it and enumerated it); no field
       // renders as confirmed. What "register-index entry" means is stated once, in Scope — not per row.
-      return `<li><b>${regUri(r.uri)}</b> <i>(register-index entry)</i></li>`;
+      return `<li><b>${regUri(r.uri)}</b> <i>${R.detail.indexEntry}</i></li>`;
     }
     // (3) back-compat field render — byte-identical to the prior behaviour for the no-record-set case
     const dates = [r.filed && `filed ${r.filed}`, r.expiry && `expiry ${r.expiry}`].filter(Boolean).join(', ');
     const cls = (r.classes || []).length ? ` · Cl.${r.classes.join('/')}` : '';
-    return `<li><b>${regUri(r.uri, 'registration')}</b>${cls}${r.status ? ` · ${esc(r.status)}` : ''}${dates ? ` (${esc(dates)})` : ''}${r.jurisdiction ? ` · ${esc(r.jurisdiction)}` : ''}</li>`;
+    return `<li><b>${regUri(r.uri, R.detail.registration)}</b>${cls}${r.status ? ` · ${esc(r.status)}` : ''}${dates ? ` (${esc(dates)})` : ''}${r.jurisdiction ? ` · ${esc(r.jurisdiction)}` : ''}</li>`;
   }).join('');
   // CHANGE 5b — the enforcer basis line. verified-from-record stays stated as FACT (an enforcement record is
   // on file). inferred-from-signal is rendered as an EXPLICIT inference — reputation/profile only, NO
@@ -1707,8 +1707,8 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   const enfSrc = enf && String(enf.source ?? '').trim();
   const enfBasis = enf
     ? (enfVerified
-        ? `<li><b>Likely to enforce.</b> ${esc(humanize(enf.token))} appetite — <b>verified</b> (${enfSrc ? `source: ${esc(enfSrc.slice(0, 60))}` : 'enforcement record on file'}).</li>`
-        : `<li><b>Likely to enforce.</b> ${esc(humanize(enf.token))} appetite <i>inferred</i> — reputation/profile signal.</li>`)
+        ? `<li><b>${R.meters.likelyToEnforce}.</b> ${esc(R.detail.appetite(humanize(enf.token)))} — <b>${R.detail.verified}</b> (${enfSrc ? esc(R.detail.source(enfSrc.slice(0, 60))) : R.detail.enforcementOnFile}).</li>`
+        : `<li><b>${R.meters.likelyToEnforce}.</b> ${esc(R.detail.appetite(humanize(enf.token)))} <i>${R.detail.inferred}</i>${R.detail.profileSignal}</li>`)
     : '';
   // Instance #5 — the use-check / own-rights cite is rendered FROM the JSON (no prose-regex), so it can never
   // diverge from the structured field. The source string may hold ONE URL, SEVERAL (comma/space-separated —
@@ -1722,7 +1722,7 @@ function fullDetail(f, card, recordsByUri = new Map()) {
     if (!src) return '';
     // D4 — the status is LABELLED as what it is. A bare "· not yet verified" hung off the end of a
     // cite with nothing saying which of the two facts on the line it qualified.
-    const stat = status ? ` <i class="evstat">Evidence: ${esc(status)}</i>` : '';
+    const stat = status ? ` <i class="evstat">${esc(R.evidence(status))}</i>` : '';
     const urls = (String(src).match(/https?:\/\/[^\s,|]+/g) || []).map(u => u.replace(/[).,;:]+$/, ''));
     if (!urls.length) return `<li><b>${label}</b> ${esc(src)}${stat}</li>`;
     const links = urls.map(u => (hrefAttr(u) ? `<a href="${hrefAttr(u)}" target="_blank" rel="noopener noreferrer">${esc(u.replace(/^https?:\/\//, '').slice(0, 48))}</a>` : esc(u))).join(' · ');
@@ -1739,8 +1739,8 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   // found. Evidence: inferred", and "inferred" beside "no result" reads as a contradiction: it qualifies
   // how a FINDING was established, and there is no finding here. Nothing was found, and that is the
   // whole of what the line has to say.
-  const useChk = cite(useSrc, 'Use checked.', isUseCheckNoResult(f.use_check?.source) ? null : useStatus);
-  const ownR = cite(f.own_rights?.source, "Search of the client's own marks.", EVIDENCE_LABEL[f.own_rights?._status]);   // owner, 2026-11-18
+  const useChk = cite(useSrc, R.detail.useChecked, isUseCheckNoResult(f.use_check?.source) ? null : useStatus);
+  const ownR = cite(f.own_rights?.source, R.detail.ownMarks, EVIDENCE_LABEL[f.own_rights?._status]);   // owner, 2026-11-18
   const proseFull = cardBlock(card, /^full detail/i);
   const proseFullShown = proseFull;   // one report: the full prose; portal-report strips serve-time chrome, never analysis
   const internalNote = cardBlock(card, /^full detail/i) ? '' : '';   // internal notes ride ::p:: inside prose
@@ -1756,7 +1756,7 @@ function fullDetail(f, card, recordsByUri = new Map()) {
     .map((r) => ({ r, sig: ENFORCER_SIGNALS.get(String(r.uri ?? '').toLowerCase()) }))
     .filter((x) => x.sig && (x.sig.aggression != null || x.sig.oppositions))
     .slice(0, 1)
-    .map(({ r, sig }) => `<li><b>Enforcement telemetry.</b> Corsearch records ${sig.aggression != null ? `an aggression indicator of ${esc(String(sig.aggression))}` : ''}${sig.aggression != null && sig.oppositions ? ' and ' : ''}${sig.oppositions ? `${sig.oppositions} opposition proceeding${sig.oppositions === 1 ? '' : 's'}` : ''} on the owner's record (<span class="mono">${esc(String(r.uri ?? ''))}</span>) — provider telemetry, read beside the enforcer meter.</li>`)
+    .map(({ r, sig }) => `<li><b>${R.detail.telemetry}</b> ${R.detail.corsearchRecords}${sig.aggression != null ? R.detail.aggression(esc(String(sig.aggression))) : ''}${sig.aggression != null && sig.oppositions ? R.detail.and : ''}${sig.oppositions ? R.detail.oppositions(sig.oppositions) : ''}${R.detail.onOwnersRecord(`<span class="mono">${esc(String(r.uri ?? ''))}</span>`)}</li>`)
     .join('');
   // T7 (E5) — the grounded case-law strand, deterministically joined (ordinal / mark+owner).
   // The honest no-precedent state renders too: an explicit negative is a result the lawyer relies on.
@@ -1764,7 +1764,7 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   // doc-55 A3 (one-report form) — the strand renders its full body for the reviewing reader; ::p::-marked
   // internal lines are handled by renderProse's stripInternal choke point, and serve-time client
   // preparation is portal-report.mjs's job, never a second render fork here.
-  const clHead = clProfile ? `<b>Case-law${clProfile.jurisdiction ? ` (${esc(clProfile.jurisdiction)})` : ''}.</b>` : '';
+  const clHead = clProfile ? `<b>${R.detail.caseLaw}${clProfile.jurisdiction ? ` (${esc(clProfile.jurisdiction)})` : ''}.</b>` : '';
   const clBody = !clProfile ? '' : renderProse(clProfile.body);   // one report: the full body (renderProse handles ::p:: internal lines)
   // Only a pass that FOUND precedent puts a strand on the card. Where none was found, or the research
   // could not be completed, the body is the engine's account of the attempt and the Court decisions
@@ -1786,15 +1786,15 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   const sr = SENIOR_RIGHTS.get(f.ordinal);
   const seniorLine = !sr || !sr.applicable || sr.verified ? ''
     : sr.seniorUri
-      ? `<li class="openitem"><b>Open item:</b> we could not pull the official record for the oldest registration in this family (${regUri(sr.seniorUri)}). We verified this conflict from a later registration of the same mark by the same owner. Checking that oldest record is still open.</li>`
-      : `<li class="openitem"><b>Open item:</b> we could not tell which registration in this family is the oldest — the register index gave us no dates. The conflict itself is verified from the record we pulled; identifying the oldest right is still open.</li>`;
+      ? `<li class="openitem"><b>${R.detail.openItem}</b>${R.detail.seniorNotPulled(regUri(sr.seniorUri))}</li>`
+      : `<li class="openitem"><b>${R.detail.openItem}</b>${R.detail.seniorUnknown}</li>`;
   // spec 64 — f.impact is code-rendered (it was prompted + validated but reached no reader surface on
   // structured-only cards; the prompt-lane IMPACT bullet is retired so it renders exactly once). Stated
   // as consequences FOR THE CLIENT TO CONSIDER, never a conclusion; suppressed when the card's own prose
   // already carries an "If enforced" bullet (the reasoned read wins — the enfLine dedupe pattern).
   const proseHasImpact = /(^|\n)\s*-\s*(\*\*)?\s*If enforced\b/i.test(proseFull || '');
   const impactLine = (f.impact && !proseHasImpact)
-    ? `<li><b>If enforced:</b> ${esc(f.impact)}</li>` : '';   // its "— for the client to consider." tail is gone (owner, 2026-11-18)
+    ? `<li><b>${R.detail.ifEnforced}</b> ${esc(f.impact)}</li>` : '';   // its "— for the client to consider." tail is gone (owner, 2026-11-18)
   // — THE REASONING LEADS THE DRAWER, and this is where it now lives. legal_position /
   // practical_position and the manageable category used to render uncut ABOVE the fold on every card:
   // roughly 600 characters of prose per finding before a reader opened anything, while the one sentence
@@ -1851,7 +1851,7 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   const positions = `${proseHasRead ? '' : lpSplit(f)}${manageableLine(f)}`;
   const body = `${positions}${regs || seniorLine || fetchFailLine || enfLine || enfTelemetry || useChk || ownR || impactLine ? `<ul>${fetchFailLine}${seniorLine}${regs}${enfLine}${enfTelemetry}${useChk}${ownR}${impactLine}</ul>` : ''}${proseFullShown ? renderProse(proseFullShown) : ''}${caseLawStrand}${prov}`;
   const recordBlock = registerRecordBlock(f, recordsByUri, (u) => officeRecordCell(u, regUri, RECORD_CITATION ? NO_LINK_NOTE[RECORD_CITATION] : null));
-  return `${recordBlock}<details class="drill"><summary>Full detail</summary><div class="drillbody">${body}</div></details>`;
+  return `${recordBlock}<details class="drill"><summary>${R.detail.fold}</summary><div class="drillbody">${body}</div></details>`;
 }
 
 // THE REGISTER RECORD (owner, 2026-11-18). A reviewing lawyer checked every cited mark against the register by hand
@@ -2128,11 +2128,11 @@ function compactCard(f, card, recordsByUri = new Map(), { ticked = true } = {}) 
 // splits "covered" from "next steps & monitoring". Every row still renders (doc-35: a not-searched row
 // is the reader's only deterministic signal a layer didn't run — nothing is hidden).
 const COV_STATE = {
-  'confirmed-clean': { cls: 'ok', ic: '✓', word: 'Searched — clean' },
-  'coverage-limited': { cls: 'todo', ic: '→', word: 'Partially covered' },
-  open: { cls: 'todo', ic: '→', word: 'Open item' },
-  'not-searched': { cls: 'todo', ic: '→', word: 'Not searched' },   // owner, 2026-11-18: it read "Not run this run"
-  note: { cls: 'info', ic: 'i', word: 'Note' },
+  'confirmed-clean': { cls: 'ok', ic: '✓', word: R.coverageStates['confirmed-clean'] },
+  'coverage-limited': { cls: 'todo', ic: '→', word: R.coverageStates['coverage-limited'] },
+  open: { cls: 'todo', ic: '→', word: R.coverageStates.open },
+  'not-searched': { cls: 'todo', ic: '→', word: R.coverageStates['not-searched'] },   // owner, 2026-11-18: it read "Not run this run"
+  note: { cls: 'info', ic: 'i', word: R.coverageStates.note },
 };
 /**
  * ONE ROW PER GAP, where the driver's follow-up row and the model's own row are the same search.
@@ -2259,7 +2259,7 @@ export function coverageGrid(coverage, { verdict = true, followUpKinds = null } 
   const groups = Object.keys(COV_STATE).map((state) => [state, rest.filter((c) => (COV_STATE[c.state] ? c.state : 'note') === state)])
     .filter(([, rows]) => rows.length);
   if (rest.length) parts.push(
-    (verdict ? `<p class="covnext"><b>Next steps &amp; monitoring</b></p>` : '')   // the head alone (owner, 2026-11-18)
+    (verdict ? `<p class="covnext"><b>${esc(R.nextStepsHead)}</b></p>` : '')   // the head alone (owner, 2026-11-18)
     + groups.map(([state, rows]) => `<div class="covgrp"><div class="covgh">${esc(COV_STATE[state].word)} <span class="covgn">(${rows.length})</span></div><div class="cov">${(verdict ? rows.map(cell) : sharedNoteCells(rows, cell)).join('')}</div></div>`).join(''));
   return parts.join('');
 }
@@ -2685,7 +2685,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   // the reviewer keeps the full session note here.
   const clNoticeText = String(opts.caseLawNotice || '').trim();
   const clNotice = (clNoticeText && CASE_LAW_BY_ORD.size)
-    ? `<div class="panel" style="padding:12px 16px;margin:0 0 12px"><p style="margin:0 0 4px;font-weight:700;font-size:13px">Session-wide notice</p><div style="font-size:13px">${renderProse(clNoticeText)}</div></div>`
+    ? `<div class="panel" style="padding:12px 16px;margin:0 0 12px"><p style="margin:0 0 4px;font-weight:700;font-size:13px">${R.findings.sessionNotice}</p><div style="font-size:13px">${renderProse(clNoticeText)}</div></div>`
     : '';
   // The 2026-09-16 report redesign — the section heading and the session-wide notice are off the page: the heading
   // named a layer rather than a thing a reader looks for, and the notice was operational narration. The
@@ -2693,13 +2693,13 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   const hasCL = Boolean(clBody);
   let findingsSections, covNum;
   if (!DISPOSITION_MODE) {
-    findingsSections = `${onField.length ? `<div class="sec" id="findings"><span class="num"></span><h2>The conflict landscape</h2></div>
+    findingsSections = `${onField.length ? `<div class="sec" id="findings"><span class="num"></span><h2>${R.findings.landscape}</h2></div>
   <div class="landwrap">${quadrant(sorted)}${keyPanel(sorted, recordsByUri)}</div>
 
-  <div class="sec" id="conflicts"><span class="num"></span><h2>Conflicts</h2></div>
+  <div class="sec" id="conflicts"><span class="num"></span><h2>${R.strip.conflicts}</h2></div>
   ${conflictCards(onField, cardFor, recordsByUri)}` : ''}
 
-  ${secReg.length ? `<div class="sec"><span class="num"></span><h2>Secondary &amp; watch</h2></div>
+  ${secReg.length ? `<div class="sec"><span class="num"></span><h2>${esc(R.findings.secondaryWatch)}</h2></div>
   ${secondaryRegions(secReg, cardFor, recordsByUri)}` : ''}${hasCL ? `
 
   ${clBody}` : ''}`;
@@ -2708,10 +2708,10 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
     let secNum = 0;
     const num = () => String(++secNum).padStart(2, '0');
     const landscape = onField.length
-      ? `<div class="sec" id="findings"><span class="num"></span><h2>The conflict landscape</h2></div>
+      ? `<div class="sec" id="findings"><span class="num"></span><h2>${R.findings.landscape}</h2></div>
   <div class="landwrap">${quadrant(sorted)}${keyPanel(sorted, recordsByUri)}</div>
 
-  <div class="sec" id="conflicts"><span class="num"></span><h2>Conflicts</h2></div>
+  <div class="sec" id="conflicts"><span class="num"></span><h2>${R.strip.conflicts}</h2></div>
   ${conflictCards(onField, cardFor, recordsByUri)}`
       : '';
     // THE COMMON-LAW CARDS GO WITH THE CONFLICTS, NOT UNDER THE NEXT HEADING. Appended at the end they
@@ -2735,7 +2735,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
       // reader guessing. That is right for a working record and wrong for a client's page, where a
       // heading followed by a sentence explaining that there is nothing under it is the "nothing here"
       // line the owner ruled out. Whether the grouping ran is answered by the counts, not by a paragraph.
-      const notes = contextNotes.length ? `\n  <p class="fold-lead"><b>Famous-mark neighbours.</b> Diligence — no register record; not scored, does not affect the risk read.</p>
+      const notes = contextNotes.length ? `\n  <p class="fold-lead"><b>${R.findings.famousLead}</b> ${R.findings.famousNote}</p>
   ${contextNotesList(contextNotes)}` : '';
       if (negatives.total || notes) {
         tail += `\n\n  <div class="sec"><span class="num"></span><h2>Marks that can coexist</h2></div>
@@ -2744,9 +2744,9 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
     } else if (band2r.length || band3r.length || contextNotes.length) {
       const parts = [];
       if (band2r.length) parts.push(secondaryRegions(band2r, cardFor, recordsByUri));
-      if (band3r.length) parts.push(`<p class="fold-lead"><b>Same name, a different commercial field.</b> Listed for completeness — not conflicts with your mark.</p>
+      if (band3r.length) parts.push(`<p class="fold-lead"><b>${R.findings.sameNameLead}</b> ${R.findings.sameNameNote}</p>
   ${secondaryRegions(band3r, cardFor, recordsByUri)}`);
-      if (contextNotes.length) parts.push(`<p class="fold-lead"><b>Famous-mark neighbours.</b> Diligence — no register record; not scored, does not affect the risk read.</p>
+      if (contextNotes.length) parts.push(`<p class="fold-lead"><b>${R.findings.famousLead}</b> ${R.findings.famousNote}</p>
   ${contextNotesList(contextNotes)}`);
       tail += `\n\n  <div class="sec"><span class="num"></span><h2>Marks that can coexist</h2></div>
   ${parts.join('\n  ')}`;

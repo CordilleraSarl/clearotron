@@ -702,4 +702,54 @@ export const REPORT_PAGE = Object.freeze({
     troll: 'Troll',
     'well-known-enforcer': 'Well-known enforcer',
   }),
+  // A card's Full detail: its fold, its registrations, its evidence lines and its open items. A link or a value that
+  // carries markup arrives as markup; the words around it are here.
+  detail: Object.freeze({
+    fold: 'Full detail',
+    inWorkbook: ' — full record in the audit workbook (“Download full audit (Excel)”)',
+    registration: 'registration',
+    indexEntry: '(register-index entry)',
+    recordNotRetrieved: 'Official register record could not be retrieved',
+    detailsUnverified: ' — registry details in this card are unverified.',
+    appetite: (level) => `${level} appetite`,
+    verified: 'verified',
+    source: (src) => `source: ${src}`,
+    enforcementOnFile: 'enforcement record on file',
+    inferred: 'inferred',
+    profileSignal: ' — reputation/profile signal.',
+    telemetry: 'Enforcement telemetry.',
+    corsearchRecords: 'Corsearch records ',
+    aggression: (n) => `an aggression indicator of ${n}`,
+    and: ' and ',
+    oppositions: (n) => `${n} opposition proceeding${n === 1 ? '' : 's'}`,
+    onOwnersRecord: (uri) => ` on the owner's record (${uri}) — provider telemetry, read beside the enforcer meter.`,
+    useChecked: 'Use checked.',
+    ownMarks: "Search of the client's own marks.",
+    caseLaw: 'Case-law',
+    openItem: 'Open item:',
+    seniorNotPulled: (link) => ` we could not pull the official record for the oldest registration in this family (${link}). We verified this conflict from a later registration of the same mark by the same owner. Checking that oldest record is still open.`,
+    seniorUnknown: ' we could not tell which registration in this family is the oldest — the register index gave us no dates. The conflict itself is verified from the record we pulled; identifying the oldest right is still open.',
+    ifEnforced: 'If enforced:',
+  }),
+  // The findings sections: their headings and the leads of their folds. "Marks that can coexist" stays in the
+  // renderer, where a guard holds both its layouts to the ruled words; Conflicts is the strip's own entry.
+  findings: Object.freeze({
+    sessionNotice: 'Session-wide notice',
+    landscape: 'The conflict landscape',
+    secondaryWatch: 'Secondary & watch',
+    famousLead: 'Famous-mark neighbours.',
+    famousNote: 'Diligence — no register record; not scored, does not affect the risk read.',
+    sameNameLead: 'Same name, a different commercial field.',
+    sameNameNote: 'Listed for completeness — not conflicts with your mark.',
+  }),
+  // What the search covered: each coverage state's word, and the head over the open rows. The connector names the
+  // states in these same words.
+  coverageStates: Object.freeze({
+    'confirmed-clean': 'Searched — clean',
+    'coverage-limited': 'Partially covered',
+    open: 'Open item',
+    'not-searched': 'Not searched',
+    note: 'Note',
+  }),
+  nextStepsHead: 'Next steps & monitoring',
 });
