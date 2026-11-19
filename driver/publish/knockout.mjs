@@ -398,6 +398,22 @@ export const knockoutName = (searchPolicy) => reportIdentityFor(searchPolicy ?? 
 export const knockoutRecordTitle = (searchPolicy, runId) =>
   `${[knockoutName(searchPolicy)?.toUpperCase(), 'REPORT'].filter(Boolean).join(' ')} — ${runId}`;
 
+/**
+ * The Knockout's cover email as the delivery sends it: the findings, the band ladder, the batch's band, the machine-check
+ * lines and the product's name from the run's report document where it has one, and as the lane holds them where it has
+ * none (a run published before the document existed). The register counts stay the lane's own: on a resumed run the lane
+ * can hold none while the page shows the counts file, and which of the two the email should state is not settled here.
+ */
+export function composeKnockoutCoverNote(runDir, { findings, framework, overall, reports, auditUrl, job, registerCounts, qcFlags, productName }) {
+  let document = null;
+  try { document = readJson(paths(runDir).reportDocument); } catch { /* a run published before the document */ }
+  if (!document) return composeKnockoutEmail({ findings, framework, overall, reports, auditUrl, job, registerCounts, qcFlags, productName });
+  return composeKnockoutEmail({
+    findings: document.client.findings, framework: document.framework.manifest, overall: document.verdict.overall,
+    reports, auditUrl, job, registerCounts, qcFlags: document.reviewer.qcFlags, productName: document.run.product.name,
+  });
+}
+
 export function composeKnockoutEmail({ findings, framework, overall, reports = [], auditUrl = null, job, registerCounts = null, qcFlags = [], productName = null }) {
   const t = bandTier(framework, overall);
   const n = (findings.marks ?? []).length;

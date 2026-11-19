@@ -1314,8 +1314,9 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
     // The headline caption as the front matter states it, empty as null. The email, the data file, meta.json and the run
     // record take it; the page takes the report's Summary instead (render.mjs).
     caption: fm.overall_caption || null,
-    // The email's options (coverNoteOptions): the delivery composes the email after publishing, from the same function.
-    cover: coverNoteOptions(runDir ?? dirname(reportMd)),
+    // The verdict record as written, which the cover email reads. `verdictInfo` above is the record as the page reads it:
+    // the two differ on a record older than the derived display fields, and where the assessment was not completed.
+    verdictWritten: (() => { try { return readJson(paths(runDir ?? dirname(reportMd)).verdict); } catch { return null; } })(),
   };
 }
 
@@ -1827,8 +1828,40 @@ export function coverNoteOptions(runDir) {
 }
 
 export function composeEmailHtml(reportMdPath, url, auditFile, names = [], delivery = NEUTRAL_DELIVERY, opts = {}) {
+  return composeEmailHtmlFrom(parseReport(reportMdPath), url, auditFile, names, delivery, opts);
+}
+
+/**
+ * The cover email for a run, as the delivery sends it, from what coverNoteInputs read. `productName` is the name the
+ * subject takes, which the caller resolves.
+ */
+export function composeCoverNote({ report, opts }, { url, auditFile, names = [], delivery = NEUTRAL_DELIVERY, productName } = {}) {
+  return composeEmailHtmlFrom(report, url, auditFile, names, delivery, { ...opts, productName });
+}
+
+/**
+ * What the cover email reads: the report's front matter and sections, and its options. From the run's report document
+ * where it has one, and from the run's own files where it has none (a run published before the document existed).
+ */
+export function coverNoteInputs(runDir) {
+  let document = null;
+  try { document = readJson(paths(runDir).reportDocument); } catch { /* a run published before the document */ }
+  if (!document) return { report: parseReport(join(runDir, 'report.md')), opts: coverNoteOptions(runDir) };
+  return { report: { fm: document.prose.frontMatter, secs: document.prose.sections }, opts: coverNoteOptionsOf(document) };
+}
+
+/** coverNoteOptions, read from the document: the verdict record as written, and the run's band ladder. */
+function coverNoteOptionsOf(document) {
+  const opts = { productName: document.run.product.name ?? undefined };
+  const v = document.verdict.written;
+  if (v) Object.assign(opts, { verdict: v.verdict, conditions: clientConditions(v), tier: v.tier, statement: v.statement ?? null });
+  const framework = document.framework.manifest;
+  if (framework) opts.bands = framework.bands.map((b) => ({ label: b.label, tone: b.tone }));
+  return opts;
+}
+
+function composeEmailHtmlFrom({ fm, secs }, url, auditFile, names = [], delivery = NEUTRAL_DELIVERY, opts = {}) {
   EMAIL_BANDS = Array.isArray(opts?.bands) && opts.bands.length ? opts.bands : null;   // doc 50 — per-run vocabulary
-  const { fm, secs } = parseReport(reportMdPath);
   const auditUrl = auditUrlFor(url, auditFile);
 
   // 1) internal review headline — short: the bottom line, and nothing of the reviewer's own notes.
