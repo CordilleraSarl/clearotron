@@ -1953,6 +1953,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-record-set-reads-only-what-was-appended.test.mjs": {
+          "tests": 4,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "a-recorded-deadline-survives-a-later-save.test.mjs": {
           "tests": 3,
           "asserts": 12,

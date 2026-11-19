@@ -15,7 +15,7 @@
 // ordering, and renewal/expiry cycle arithmetic (renewals fall at year 10/20/… from registration — the
 // check that catches "registration 2013 … renewed 2025" from the document alone).
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, openSync, readSync, closeSync } from "node:fs"; import { runPrefixSpellings } from "../shared/pre-rename-spellings.mjs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, openSync, readSync, closeSync, fstatSync } from "node:fs"; import { runPrefixSpellings } from "../shared/pre-rename-spellings.mjs";
 import { join } from "node:path";
 import { ledgerPath, runRecordLogPath, ledgerDeprecationNotice, retiredGlobalRecordLogNotice }
   from "../providers/_shared/ledger-path.mjs";
@@ -98,23 +98,40 @@ export function forEachLedgerLine(path, onLine, { chunk = LEDGER_CHUNK } = {}) {
   try { fd = openSync(path, "r"); }
   catch (e) { return { lines: 0, error: e?.code === "ENOENT" ? null : `${e?.code ?? "read failed"}` }; }
   try {
-    const buf = Buffer.allocUnsafe(chunk);
-    let carry = null;                   // the bytes after the last newline: a line still being read, kept as bytes
-    let lines = 0;
-    const emit = (bytes, from, to) => { const ln = bytes.toString("utf8", from, to); if (ln.trim()) { onLine(ln); lines++; } };
-    for (;;) {
-      const n = readSync(fd, buf, 0, chunk, null);
-      if (n <= 0) break;
-      const data = carry ? Buffer.concat([carry, buf.subarray(0, n)]) : buf.subarray(0, n);
-      let start = 0;
-      for (let nl = data.indexOf(10, start); nl !== -1; nl = data.indexOf(10, start)) { emit(data, start, nl); start = nl + 1; }
-      carry = start < data.length ? Buffer.from(data.subarray(start)) : null;   // copied: the next read reuses `buf`
-    }
-    if (carry) emit(carry, 0, carry.length);
+    const { lines } = walkFd(fd, 0, chunk, onLine, onLine);
     return { lines, error: null };
   } catch (e) {
     return { lines: 0, error: String(e?.code ?? e?.message ?? "read failed").slice(0, 80) };
   } finally { try { closeSync(fd); } catch { /* nothing left to do about it */ } }
+}
+
+/**
+ * Walk an open ledger from byte `start`: each complete line to `onLine`, then a last line with no newline, if any,
+ * to `onTail`. Returns the line count and `end`, the byte after the last newline read. Throws on a read failure.
+ */
+function walkFd(fd, start, chunk, onLine, onTail) {
+  const buf = Buffer.allocUnsafe(chunk);
+  let carry = null;                   // the bytes after the last newline: a line still being read, kept as bytes
+  let lines = 0;
+  let pos = start;                    // where the next read starts
+  let end = start;                    // the byte after the last newline
+  const text = (bytes, from, to) => bytes.toString("utf8", from, to);
+  for (;;) {
+    const n = readSync(fd, buf, 0, chunk, pos);
+    if (n <= 0) break;
+    pos += n;
+    const data = carry ? Buffer.concat([carry, buf.subarray(0, n)]) : buf.subarray(0, n);
+    let from = 0;
+    for (let nl = data.indexOf(10, from); nl !== -1; nl = data.indexOf(10, from)) {
+      const ln = text(data, from, nl);
+      if (ln.trim()) { onLine(ln); lines++; }
+      from = nl + 1;
+    }
+    end += from;                      // `data` starts where the last newline left off
+    carry = from < data.length ? Buffer.from(data.subarray(from)) : null;   // copied: the next read reuses `buf`
+  }
+  if (carry) { const ln = text(carry, 0, carry.length); if (ln.trim()) { onTail(ln); lines++; } }
+  return { lines, end };
 }
 
 /** The last ledger read's failure reason, or null. Read by assembleRunRecords so the caller can LOG it. */
@@ -161,6 +178,64 @@ export function collectRecordBodies(recordLogPath, runPrefix) {
 }
 
 // Each row of a log that belongs to the run, parsed, in file order. A read failure is noted for the caller.
+// ── THE RECORD SET, READ FROM WHERE THE LAST ASSEMBLY STOPPED ──────────────────────────────────────────
+//
+// A run assembles its record set 8 to 14 times, and each assembly read the run's whole record log and the box's
+// whole call log from the first byte: about 2 s a pass on the test box's largest record log (292 MB, measured
+// 2026-11-19), most of it the read itself. The logs are appended to, so what the last assembly folded still
+// holds. The driver keeps the folded state per log and run, and reads only the lines appended since. The fold is
+// the same fold over the same lines in the same order, so the state is the one a read from the start would give.
+//
+// IT STARTS AGAIN whenever the file is not the one it read: another inode (the writer rewrites a run's log
+// through a rename), a size below where it stopped, or bytes before that point that are not the bytes it read.
+// All three are checked on the descriptor it then reads, so a rename between check and read cannot slip past.
+// A last line with no newline yet is folded into a copy, and read again next time, as a read from the start reads
+// it. What a caller is given is built fresh on every call, so no caller can change what the next one is given: a
+// record body is kept as the line it came on, and parsed again when it is handed out, the same parse a read from
+// the start makes.
+const FOLDED = new Map();   // `${kind}\0${path}\0${runPrefix}` → { ino, offset, mark, state }; insertion order is recency
+const FOLDED_KEPT = 6;      // a run keeps two (its record log and the call log), so a few runs in one process
+const MARK_BYTES = 256;
+
+function foldLedger(kind, path, runPrefix, { init, fold, copy, out }) {
+  const key = `${kind}\0${path}\0${runPrefix}`;
+  let entry = FOLDED.get(key) ?? null;
+  FOLDED.delete(key);
+  let fd = null;
+  try { fd = openSync(path, "r"); }
+  catch (e) { return { state: out(init()), read: noteLedger({ lines: 0, error: e?.code === "ENOENT" ? null : `${e?.code ?? "read failed"}` }) }; }
+  try {
+    const { ino, size } = fstatSync(fd);
+    if (entry && (entry.ino !== ino || size < entry.offset || !markHolds(fd, entry))) entry = null;
+    entry ??= { ino, offset: 0, mark: null, state: init() };
+    const mayMatch = lineMayMatchRun(runPrefix);
+    const rowOf = (line) => {
+      if (!mayMatch(line)) return null;
+      let row;
+      try { row = JSON.parse(line); } catch { return null; }
+      return runPrefix && rowMatchesRun(row, runPrefix) ? row : null;
+    };
+    const tail = [];
+    const { lines, end } = walkFd(fd, entry.offset, LEDGER_CHUNK, (line) => { const row = rowOf(line); if (row) fold(entry.state, row, line); }, (line) => tail.push(line));
+    entry.offset = end;
+    entry.mark = markAt(fd, end);
+    FOLDED.set(key, entry);
+    while (FOLDED.size > FOLDED_KEPT) FOLDED.delete(FOLDED.keys().next().value);
+    const state = tail.length ? copy(entry.state) : entry.state;
+    for (const line of tail) { const row = rowOf(line); if (row) fold(state, row, line); }
+    return { state: out(state), read: noteLedger({ lines, error: null }) };
+  } catch (e) {
+    return { state: out(init()), read: noteLedger({ lines: 0, error: String(e?.code ?? e?.message ?? "read failed").slice(0, 80) }) };
+  } finally { try { closeSync(fd); } catch { /* nothing left to do about it */ } }
+}
+function markAt(fd, end) {
+  const n = Math.min(MARK_BYTES, end);
+  const b = Buffer.alloc(n);
+  if (n) readSync(fd, b, 0, n, end - n);
+  return b;
+}
+const markHolds = (fd, entry) => markAt(fd, entry.offset).equals(entry.mark ?? Buffer.alloc(0));
+
 function walkRunRows(path, runPrefix, onRow) {
   const mayMatch = lineMayMatchRun(runPrefix);
   noteLedger(forEachLedgerLine(path, (line) => {
@@ -172,9 +247,26 @@ function walkRunRows(path, runPrefix, onRow) {
   }));
 }
 
+const bodyOf = (row) => (Array.isArray(row.body) ? row.body[0] : row.body);
 function foldBody(map, row) {
-  const body = Array.isArray(row.body) ? row.body[0] : row.body;
+  const body = bodyOf(row);
   if (row.target && body && typeof body === "object") keepRecord(map, String(row.target).toLowerCase(), body);
+}
+// keepRecord's rule over the lines the bodies came on: a body with content replaces, and one without replaces only
+// a body without content. The line is kept, not the object, and parsed again when the record set is handed out.
+function foldBodyLine(map, row, line) {
+  const body = bodyOf(row);
+  if (!row.target || !body || typeof body !== "object") return;
+  const uri = String(row.target).toLowerCase();
+  const content = recordBodyHasContent(body);
+  if (content || !map.get(uri)?.content) map.set(uri, { line, content, fresh: body });
+}
+// A body parsed by this read goes out as it is, once: nothing else holds it. After that it is parsed again from its
+// line, so a read that found nothing new still hands out objects no earlier caller has.
+function handOut(kept) {
+  const body = kept.fresh ?? bodyOf(JSON.parse(kept.line));
+  delete kept.fresh;
+  return body;
 }
 
 // WP-receipts (2026-07-05): the fetch RECEIPT per record URI — when the record was pulled and under
@@ -199,26 +291,35 @@ function foldReceipt(map, real, row) {
 // The bodies and the receipts from ONE pass over the record log: the same two maps the two readers above
 // return, for the price of one read.
 export function collectRecordBodiesAndReceipts(recordLogPath, runPrefix) {
-  const bodies = new Map();
-  const receipts = new Map();
-  const real = new Set();
-  walkRunRows(recordLogPath, runPrefix, (row) => { foldBody(bodies, row); foldReceipt(receipts, real, row); });
-  return { bodies, receipts };
+  const { state } = foldLedger("bodies", recordLogPath, runPrefix, {
+    init: () => ({ bodies: new Map(), receipts: new Map(), real: new Set() }),
+    fold: (st, row, line) => { foldBodyLine(st.bodies, row, line); foldReceipt(st.receipts, st.real, row); },
+    copy: (st) => ({ bodies: new Map(st.bodies), receipts: new Map(st.receipts), real: new Set(st.real) }),
+    out: (st) => ({
+      bodies: new Map([...st.bodies].map(([uri, kept]) => [uri, handOut(kept)])),
+      receipts: new Map([...st.receipts].map(([uri, receipt]) => [uri, { ...receipt }])),
+    }),
+  });
+  return state;
 }
 
 // Per-URI fetch call metadata (http_status / ok / cache_hit) from the CALL ledger the plugin already
 // writes — joined into receipts.json so "verified" is provable with the transport outcome attached.
 export function collectFetchCallMeta(callLogPath, runPrefix) {
-  const map = new Map();
-  walkRunRows(callLogPath, runPrefix, (row) => {
-    if (row.tool !== "record_fetch" || !row.target) return;
-    map.set(String(row.target).toLowerCase(), {
-      ...(row.http_status !== undefined ? { http_status: row.http_status } : {}),
-      ...(row.ok !== undefined ? { ok: row.ok } : {}),
-      ...(row.cache_hit !== undefined ? { cache_hit: row.cache_hit } : {}),
-    });
+  const { state } = foldLedger("fetches", callLogPath, runPrefix, {
+    init: () => new Map(),
+    fold: (map, row) => {
+      if (row.tool !== "record_fetch" || !row.target) return;
+      map.set(String(row.target).toLowerCase(), {
+        ...(row.http_status !== undefined ? { http_status: row.http_status } : {}),
+        ...(row.ok !== undefined ? { ok: row.ok } : {}),
+        ...(row.cache_hit !== undefined ? { cache_hit: row.cache_hit } : {}),
+      });
+    },
+    copy: (map) => new Map(map),
+    out: (map) => new Map([...map].map(([uri, meta]) => [uri, { ...meta }])),
   });
-  return map;
+  return state;
 }
 
 // Archive the run's fetched records as individual artifacts — the auditor-visible substrate the A1 check
