@@ -49,9 +49,16 @@ const languageNames = new Intl.DisplayNames(['en'], { type: 'language' });
 const nameOf = (names, code) => {
   try { const n = names.of(code); return n && n !== code ? n : null; } catch { return null; }
 };
-const languageOf = (code) => {
+// A REGISTER'S OWN LANGUAGE CODES, WHERE THEY ARE NOT THE STANDARD'S. Clarivate tags Chinese "cn", Greek "gr" and
+// Swedish "sw" (counted on the demo records, 2026-11-19: "sw" holds Swedish text, where the standard's "sw" is Swahili).
+// Read through the standard alone, the first two had no name and the third named the wrong language. Only that
+// register's records are read this way; every other code is the standard's.
+const PROVIDER_LANGUAGE = Object.freeze({ clarivate: Object.freeze({ cn: 'zh', gr: 'el', sw: 'sv' }) });
+const languageOf = (code, provider = null) => {
   const c = String(code ?? '').trim();
-  return c ? nameOf(languageNames, c) : null;
+  if (!c) return null;
+  const own = PROVIDER_LANGUAGE[String(provider ?? '').trim().toLowerCase()];
+  return nameOf(languageNames, (own && Object.hasOwn(own, c.toLowerCase())) ? own[c.toLowerCase()] : c);
 };
 
 // A register's own words for its status, in the case a sentence takes: "REGISTERED" reads "Registered".
@@ -105,16 +112,19 @@ function goodsRow(rec, uri) {
   const row = { label: RECORD_LABELS.goods, entries: goods.map(statementOf) };
   if (translated.length) {
     const langs = [...new Set(translatedLanguages(rec))];
-    row.marker = { tag: machineTranslation(langs.length === 1 ? languageOf(langs[0]) : null), note: MT_NOTE };
+    row.marker = { tag: machineTranslation(langs.length === 1 ? languageOf(langs[0], rec.provider) : null), note: MT_NOTE };
   } else if (original.length) {
     const langs = [...new Set(originalLanguages(rec))];
-    row.note = asRegistered(langs.length === 1 ? languageOf(langs[0]) : null);
+    row.note = asRegistered(langs.length === 1 ? languageOf(langs[0], rec.provider) : null);
   }
   return row;
 }
-const originalLanguages = (rec) => (Array.isArray(rec?.goodsServices) ? rec.goodsServices : [])
-  .filter((g) => !g?.translation && String(g?.language ?? '').trim() && !/^en/i.test(String(g.language)))
-  .map((g) => String(g.language).trim());
+// A Signa record keeps no goodsServices: each class's language rides on its classification in the full record
+// (`_raw.classifications[].goods_services_language`), which is where the goods reader reads that record's statements.
+const originalLanguages = (rec) => (Array.isArray(rec?.goodsServices)
+  ? rec.goodsServices.filter((g) => !g?.translation).map((g) => g?.language)
+  : (Array.isArray(rec?._raw?.classifications) ? rec._raw.classifications : []).map((c) => c?.goods_services_language))
+  .map((l) => String(l ?? '').trim()).filter((l) => l && !/^en/i.test(l));
 const translatedLanguages = (rec) => (Array.isArray(rec?.goodsServices) ? rec.goodsServices : [])
   .filter((g) => g?.translation && String(g?.language ?? '').trim() && !/^en/i.test(String(g.language)))
   .map((g) => String(g.language).trim());

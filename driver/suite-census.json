@@ -262,8 +262,8 @@
           "todos": 0
         },
         "a-cited-registration-opens-with-the-register-record.test.mjs": {
-          "tests": 8,
-          "asserts": 36,
+          "tests": 10,
+          "asserts": 43,
           "skips": 0,
           "todos": 0
         },
@@ -2340,6 +2340,12 @@
         "a-rollback-puts-back-the-base-the-next-patch-builds-on.test.mjs": {
           "tests": 9,
           "asserts": 42,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-row-that-spans-a-knockout-table-reads-on-a-phone.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },
