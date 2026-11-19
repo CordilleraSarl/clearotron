@@ -1637,7 +1637,7 @@
         },
         "a-new-run-folder-is-closed-to-other-accounts.test.mjs": {
           "tests": 5,
-          "asserts": 11,
+          "asserts": 12,
           "skips": 5,
           "todos": 0
         },
@@ -2310,6 +2310,12 @@
         "a-resumed-knockout-asks-no-owner-check-it-already-holds.test.mjs": {
           "tests": 8,
           "asserts": 41,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-resumed-knockout-emails-the-counts-its-page-states.test.mjs": {
+          "tests": 1,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },
@@ -7473,6 +7479,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-cover-email-states-what-the-page-states.test.mjs": {
+          "tests": 3,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "the-coverage-floors-own-sentences-stay-in-the-run-record.test.mjs": {
           "tests": 4,
           "asserts": 17,
@@ -8405,7 +8417,7 @@
         },
         "the-report-document-carries-the-data-file.test.mjs": {
           "tests": 10,
-          "asserts": 44,
+          "asserts": 45,
           "skips": 0,
           "todos": 0
         },

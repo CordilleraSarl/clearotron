@@ -241,7 +241,10 @@ test("on an invented batch of two names, each name's data file is the one built 
  * aside, as for a run published before it, must be the same email.
  */
 function assertKnockoutEmailBothWays(runDir, { findings, framework, overall, published, productName }) {
-  const lane = { findings, framework, overall, reports: published.reports, auditUrl: published.auditUrl, job: {}, registerCounts: null, qcFlags: published.qcFlags, productName };
+  // The lane holds the counts it saved: every attempt counts again over the saved record, and holds what it writes.
+  let registerCounts = null;
+  try { registerCounts = JSON.parse(readFileSync(paths(runDir).registerCounts, "utf8")); } catch { /* a batch that counted nothing */ }
+  const lane = { findings, framework, overall, reports: published.reports, auditUrl: published.auditUrl, job: {}, registerCounts, qcFlags: published.qcFlags, productName };
   const fromDocument = composeKnockoutCoverNote(runDir, lane);
   renameSync(paths(runDir).reportDocument, `${paths(runDir).reportDocument}.aside`);
   const fromLane = composeKnockoutCoverNote(runDir, lane);
@@ -272,7 +275,10 @@ test("each demo's cover email composed from its document is the one composed fro
     renameSync(paths(runDir).reportDocument, `${paths(runDir).reportDocument}.aside`);
     const fromFiles = coverNoteInputs(runDir);
     renameSync(`${paths(runDir).reportDocument}.aside`, paths(runDir).reportDocument);
-    assert.deepEqual(fromDocument.opts, fromFiles.opts, `${name}: the email's options differ`);
+    // The document's options carry the rating as the page states it, which the files have no form of.
+    const { rating, ...documentOpts } = fromDocument.opts;
+    assert.deepEqual(documentOpts, fromFiles.opts, `${name}: the email's options differ`);
+    assert.equal(rating, fromFiles.opts.tier, `${name}: the rating the email states is not the record's`);
     // A document written before it carried the verdict record as written is read from the files.
     const written = readFileSync(paths(runDir).reportDocument, "utf8");
     const older = JSON.parse(written);

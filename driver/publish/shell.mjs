@@ -11,7 +11,8 @@ import { chmodSync, copyFileSync, mkdirSync, rmSync, writeFileSync } from 'node:
 import { join } from 'node:path';
 
 import { runLog } from '../log.mjs';
-import { RUN_DIR_MODE } from '../run-record.mjs';
+import { RUN_DIR_MODE, atomicWrite, ensureDriverDir, paths } from '../run-record.mjs';
+import { withWorkbook } from './report-document.mjs';
 
 export const grpRead = (p, mode) => { try { chmodSync(p, mode); } catch { /* best-effort */ } };
 
@@ -103,4 +104,43 @@ export async function refreshStaffPages({ regenSurfaces, poolRoot, skipRegen, ru
     record(runDir, { event: 'staff-pages-not-refreshed', error: error.slice(0, 300) });
     return error;
   }
+}
+
+/**
+ * Publish one run, in the order every report shape follows. `shape` supplies what differs between the shapes; this holds
+ * the order, so a step added to publishing is added once:
+ *
+ *   read the run → open its pool folder → keep the run's working record there → build the report document → build the
+ *   workbook → name the workbook on the document → write the document to the run → write the pages and data files →
+ *   write `meta.json` → refresh the staff pages.
+ *
+ * The document is built once and kept in the run's own record, never the pool. A build that throws costs every surface
+ * that reads it, as a throw in any of them always has: `shape.surfaces` and `shape.meta` read only the document, and the
+ * record fails the publish when there is none. `shape.warn(what, error)` says so in the shape's own words, `what` being
+ * 'not built' or 'not written'. `regenIndex` and `regenSurfaces` come with the shape for the reason `finishPoolRun` takes
+ * them as arguments.
+ *
+ * @param {{ read(input): Promise<object>, keep(pool, read): object|void, document(read, kept): object,
+ *   workbook(pool, document, read): Promise<{auditFile: string|null, auditError: string|null, built: any}>,
+ *   surfaces(pool, document, read, kept, workbook): object, meta(document, surfaces): object,
+ *   result(parts): object, warn(what: string, e: unknown): void, regenIndex: Function, regenSurfaces: Function }} shape
+ * @param {{ poolRoot: string, runId: string, runDir?: string|null, skipRegen?: boolean }} input  the publisher's arguments
+ */
+export async function publishRun(shape, input) {
+  const { poolRoot, runId, runDir = null, skipRegen = false } = input;
+  const read = await shape.read(input);
+  const pool = openPoolRun(poolRoot, runId, { runDir });
+  const kept = shape.keep(pool, read) ?? {};
+  let document = null;
+  try { document = shape.document(read, kept); } catch (e) { shape.warn('not built', e); }
+  const workbook = await shape.workbook(pool, document, read);
+  if (document) document = withWorkbook(document, { auditFile: workbook.auditFile, auditError: workbook.auditError });
+  if (document && runDir) {
+    try { ensureDriverDir(runDir); atomicWrite(paths(runDir).reportDocument, JSON.stringify(document, null, 1) + '\n'); }
+    catch (e) { shape.warn('not written', e); }
+  }
+  const surfaces = shape.surfaces(pool, document, read, kept, workbook);
+  const total = finishPoolRun({ writeRO: pool.writeRO, poolRoot, skipRegen, regenIndex: shape.regenIndex, meta: shape.meta(document, surfaces) });
+  await refreshStaffPages({ regenSurfaces: shape.regenSurfaces, poolRoot, skipRegen, runDir });
+  return shape.result({ read, pool, kept, workbook, surfaces, total });
 }
