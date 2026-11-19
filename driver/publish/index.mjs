@@ -1403,7 +1403,36 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // file actually wrote, so a meta never names a data file that is not there. A producer throw never blocks the
   // report (the baked HTML above is already on disk).
   const reportSchema = writeDataFile('report-data.json', () => clearanceReportDataOf(reportDocument)) ? 'report-data/clearance-1' : null;
-  const total = finishPoolRun({ writeRO, poolRoot, skipRegen, regenIndex, meta: {
+  // The run's record, from the document. A document that could not be built fails the publish here, after the page
+  // and before the record, as a throw in the record always has.
+  const total = finishPoolRun({ writeRO, poolRoot, skipRegen, regenIndex, meta: clearanceMetaOf(reportDocument, { template: deliv?.template ?? 'standard', reportSchema }) });
+  await refreshStaffPages({ regenSurfaces, poolRoot, skipRegen, runDir });
+  // THE PORTAL ROUTE, not the pool's directory layout. This was
+  // `<origin>/<runId>/report.html` — where the documents sit on disk, which is not an application route.
+  // Composed rather than spelled here so the report link is built the same way the audit link always was.
+  const url = reportRoute;
+  return { runId, auditFile, counts, total, url, poolRunDir, auditError, findingsError, customerKey: customerKey || 'generic', clientGate,
+    caption };   // the report's own conclusion, for the run record's short surfaces
+}
+
+/**
+ * The run's record in the pool (meta.json), from the report document. `template`, the delivery's named variant, and
+ * `reportSchema`, whether the data file wrote, are publishing's own facts and not the run's.
+ */
+function clearanceMetaOf(document, { template, reportSchema }) {
+  if (!document) throw new Error('the report document could not be built, so the run record cannot be written');
+  const { run, verdict, client, reviewer, staff, build } = document;
+  const fm = document.prose.frontMatter;
+  const { runId, codename, markName, project, organisation, customerKey, issuedAt, auditFile } = run;
+  const { renderedAt } = build;
+  const served = client.servedModels, framework = document.framework.manifest, clientGate = reviewer.clientGate;
+  const verdictInfo = verdict.record, assessmentNotCompleted = verdict.assessmentNotCompleted;
+  // The rating word and its badge, falling back to the report's front matter on a run older than the verdict record, as
+  // the page does; none where the assessment was not completed. The headline caption, empty as null.
+  const ratingWord = assessmentNotCompleted ? undefined : (verdictInfo?.tier ?? fm.overall_label);
+  const ratingBadge = assessmentNotCompleted ? undefined : (verdictInfo?.badge ?? fm.overall_badge);
+  const caption = fm.overall_caption || null;
+  return {
     runId, codename: codename || '', matter: fm.matter, title: fm.title, client: fm.client,
     // The mark as typed — see above. Distinct from `title`, which is the report's own headline.
     markName: markName ?? undefined,
@@ -1419,33 +1448,33 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     issuedAt,
     renderedAt,
     // WHICH BUILD produced this. null off a git checkout — a provenance stamp never fails a publish.
-    engineCommit: doc.engineCommit,
+    engineCommit: build.engineCommit,
     // The models that served the run, named as a client may read them (tokens.mjs servedModels). Absent when
     // nothing was read, so a meta from before the record keeps its shape; [] when turns ran and named none a client may read.
     servedModels: served ?? undefined,
-    kind: 'clearance', recordLinks: officeLinks?.tally ?? undefined,   // per office: linked, or cited by number and why; only where the register has no record pages
-    searchLevel: searchPolicy?.level ?? undefined,
+    kind: 'clearance', recordLinks: client.recordLinks?.tally ?? undefined,   // per office: linked, or cited by number and why; only where the register has no record pages
+    searchLevel: run.product.level ?? undefined,
     // Display-only face of the level ("Depth 4"), frozen alongside it so the list can show which reads
     // have run on a name without the browser having to know the level registry.
-    stageLabel: frozenStageLabel ?? undefined,
-    recipe: searchPolicy?.recipe ?? undefined,
-    enqueuedVia: searchPolicy?.enqueuedVia ?? undefined,
-    enqueuedBy: searchPolicy?.enqueuedBy ?? undefined,
-    parentRunId: searchPolicy?.parentRunId ?? undefined,
-    tokens: (() => { const t = tokenRollup?.total; return t && (t.input || t.output || t.cacheRead || t.cacheWrite) ? t : undefined; })(),
+    stageLabel: run.product.frozenStageLabel ?? undefined,
+    recipe: run.provenance.recipe ?? undefined,
+    enqueuedVia: run.provenance.enqueuedVia ?? undefined,
+    enqueuedBy: run.provenance.enqueuedBy ?? undefined,
+    parentRunId: run.provenance.parentRunId ?? undefined,
+    tokens: (() => { const t = build.tokens; return t && (t.input || t.output || t.cacheRead || t.cacheWrite) ? t : undefined; })(),
     // delivery.template: the named deliverable-template variant this run used. Default "standard"
     // (today's render). Recorded here so the choice is observable + a live consumer of the profile field
     // (not a dead knob); the registry currently holds one variant, ready to grow when a 2nd format ships.
-    template: deliv?.template ?? 'standard',
+    template,
     // T2 (H5): the derived display verdict is THE authority when the sidecar exists; the
     // model-authored fm fields are the pre-A2 legacy fallback only.
     // No rating at all in the state where the assessment was not completed, whatever a report's front matter says.
     overall: ratingWord,
     badge: ratingBadge, run: fm.run, date: dateOf(fm.run), auditFile,
     // WHY THERE IS NO WORKBOOK, when the build threw. Absent when it built, so such a meta is unchanged.
-    auditError: auditError ?? undefined,
+    auditError: staff.auditError ?? undefined,
     // THE PARTS PUBLISHING FOUND DEGRADED, with their raw causes, which no cell carries. Absent when none.
-    degradedAtPublish: publishParts.length ? publishParts.map((d) => ({ part: d.part, name: d.name, cause: d.cause })) : undefined,
+    degradedAtPublish: staff.publishParts.length ? staff.publishParts.map((d) => ({ part: d.part, name: d.name, cause: d.cause })) : undefined,
     // spec 64 — THE one risk statement (band + stance in one sentence, composed once by the sidecar
     // writer). Absent on legacy runs — regenIndex re-reads every historical meta.json, so consumers
     // null-guard and old rows render byte-identically.
@@ -1474,14 +1503,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     // (`report-data/clearance-1`; a Knockout stamps `report-data/knockout-1`). undefined on a producer
     // miss, so the meta never advertises a file that is not there.
     reportSchema: reportSchema ?? undefined,
-  } });
-  await refreshStaffPages({ regenSurfaces, poolRoot, skipRegen, runDir });
-  // THE PORTAL ROUTE, not the pool's directory layout. This was
-  // `<origin>/<runId>/report.html` — where the documents sit on disk, which is not an application route.
-  // Composed rather than spelled here so the report link is built the same way the audit link always was.
-  const url = reportRoute;
-  return { runId, auditFile, counts, total, url, poolRunDir, auditError, findingsError, customerKey: customerKey || 'generic', clientGate,
-    caption };   // the report's own conclusion, for the run record's short surfaces
+  };
 }
 
 // Compose the notification email body — MARKDOWN (the mail tool renders markdown→HTML; raw HTML gets escaped).

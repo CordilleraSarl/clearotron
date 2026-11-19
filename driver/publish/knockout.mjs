@@ -843,69 +843,9 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     String(findings.batch?.executiveSummary ?? ''),
     ...routes,
   ].join('\n'));
-  const total = finishPoolRun({ writeRO, poolRoot, skipRegen, regenIndex, meta: {
-    runId, codename: codename ?? '', matter: runId,
-    title,   // the product's name and how many names (readKnockoutDocument)
-    markName: batchMarkName(markNames) ?? undefined,
-    engineCommit: doc.engineCommit,
-    // The models that served the batch, named as a client may read them (tokens.mjs servedModels). Absent when
-    // nothing was read, so a meta from before the record keeps its shape; [] when turns ran and named none a client may read.
-    servedModels: served ?? undefined,
-    client: null, customerKey: customerKey || 'generic',
-    // WHICH ORGANISATION'S GENERIC this batch was filed under (readKnockoutDocument).
-    organisation,
-    issuedAt: dates.issuedAt,
-    renderedAt: dates.renderedAt,
-    kind: 'knockout-batch',
-    marks: (findings.marks ?? []).map((m) => ({ name: m.name, band: m.rating })),
-    searchLevel: searchPolicy?.level ?? 'knockout',
-    // The level's DISPLAY identity, stamped at publish exactly as the clearance lane stamps it. The
-    // portal re-derived this from the level word because the knockout meta never carried it; a reader of
-    // an archived meta had to know the registry by heart to tell Depth 1 from Depth 2.
-    stageLabel: identity.stageLabel ?? undefined,
-    // `reportIdentity` WAS written here and read NOWHERE — one occurrence in the whole repository, this
-    // one. A stored display label with no reader is not harmless: it is a second answer to "what is this
-    // product called", frozen at publish, that would have started disagreeing with the registry the first
-    // time a product was renamed — and nothing would have noticed, because nothing looks at it. The name
-    // is derived on every render from `searchLevel`, which is right below and IS read. Deleted.
-    // Depth 2 provenance — WHICH register was counted and when, so a reader of an archived run can
-    // tell a screen that counted from one that did not without opening the workbook.
-    registerCounts: registerCounts
-      ? { provider: registerCounts.provider, takenAt: registerCounts.takenAt, marks: registerCounts.marks?.length ?? 0, counted: countedMarks(registerCounts) }
-      : undefined,
-    recordLinks: officeLinks?.tally ?? undefined,   // per office: linked, or cited by number and why; only where the register has no record pages
-    recipe: searchPolicy?.recipe ?? undefined,
-    enqueuedVia: searchPolicy?.enqueuedVia ?? undefined,
-    parentRunId: searchPolicy?.parentRunId ?? undefined,
-    tokens: tokens && (tokens.input || tokens.output) ? tokens : undefined,
-    template: 'knockout',
-    // `run` IS GONE. It carried the literal 'Knockout screen (Depth 1)' — a product name that is not the
-    // product's name, at a rung of a ladder retired — into report-data.json, where nothing has ever
-    // read it. The one `.run` reader in the tree parses report.html front matter and uses it as a DATE
-    // fallback, so had this field ever been joined to that one it would have printed a product name where
-    // a date belongs. The product is `meta.product`, written from the run's own frozen policy.
-    overall: overall ?? '', badge: overallBadge, date: issuedDateUtc,
-    auditFile, statement,
-    // WHY THERE IS NO WORKBOOK, when the build threw. Absent when it built, so such a meta is unchanged.
-    auditError: auditError ?? undefined,
-    framework: framework ? { key: framework.framework_key, title: framework.title, custom: framework.framework_key !== 'house-triage', bands: framework.bands.map((b) => ({ label: b.label, tone: b.tone })) } : undefined,
-    // Present ⇒ this run has a report-data.json beside each name's report, in the Knockout's shape.
-    // Stamped only when every name's data file wrote, as the clearance stamps it only when its one file wrote.
-    reportSchema: reports.every((r) => r.dataFile) ? 'report-data/knockout-1' : undefined,
-    // WHICH DOCUMENTS THIS RUN PUBLISHED, and for which name. Every reader that has to open,
-    // serve or link a knockout's reports takes the list from here rather than deriving a filename: the
-    // naming rule (one mark ⇒ `report.html`, several ⇒ `report-<slug>.html`) is written ONCE, above, and
-    // nobody re-implements it. Absent on every pre-change meta, which is exactly the run that has one
-    // report at `report.html` — so a reader that falls back to that name on absence is reading the
-    // archive correctly, not guessing.
-    // — `slug` RIDES. It was destructured away here while being computed twenty lines up, and
-    // everything that links a batch's per-mark report needs it: reportsOf() reads it, the portal
-    // builds `/portal/report/<runId>/<slug>/` from it, and resolveReportFile() matches on it. Without
-    // it BOTH marks of a batch resolved to the run-level URL, which resolveReportFile answers null
-    // for by design (a batch has no run-level document) — so every per-mark link 404'd, and the
-    // clearances row printed a fallback saying the report was with us for a final read.
-    reports: reports.map(({ mark, slug, file, dataFile, band, url }) => ({ mark, slug, file, dataFile, band, url })),
-  } });
+  // The batch's record, from the document. A document that could not be built fails the publish here, after the pages
+  // and before the record, as a throw in the record always has.
+  const total = finishPoolRun({ writeRO, poolRoot, skipRegen, regenIndex, meta: knockoutMetaOf(reportDocument, { reports }) });
   await refreshStaffPages({ regenSurfaces, poolRoot, skipRegen, runDir });
   // `url` IS NULL FOR A BATCH, and that is the honest answer rather than a convenient one. A multi-name
   // knockout has no single report, so any one URL here would be the first name standing for all of them —
@@ -990,6 +930,81 @@ import { logosForReport } from "../mark-logos.mjs";   // the saved logo of each 
  * there is one, else the body the run's record log holds. A filing whose record the run never saved is absent, and
  * its table row draws no register record. IMPURE: it reads the run.
  */
+/**
+ * The batch's record in the pool (meta.json), from the report document. `reports` is what publishing wrote for each
+ * name, its data file included, which is publishing's own fact and not the run's.
+ */
+function knockoutMetaOf(document, { reports }) {
+  if (!document) throw new Error('the report document could not be built, so the run record cannot be written');
+  const { run, verdict, client, staff, build } = document;
+  const { runId, codename, title, markNames, customerKey } = run;
+  const served = client.servedModels, registerCounts = client.registerCounts, framework = document.framework.manifest;
+  const tokens = build.tokens;
+  return {
+    runId, codename: codename ?? '', matter: runId,
+    title,   // the product's name and how many names (readKnockoutDocument)
+    markName: batchMarkName(markNames) ?? undefined,
+    engineCommit: build.engineCommit,
+    // The models that served the batch, named as a client may read them (tokens.mjs servedModels). Absent when
+    // nothing was read, so a meta from before the record keeps its shape; [] when turns ran and named none a client may read.
+    servedModels: served ?? undefined,
+    client: null, customerKey: customerKey || 'generic',
+    // WHICH ORGANISATION'S GENERIC this batch was filed under (readKnockoutDocument).
+    organisation: run.organisation ?? undefined,
+    issuedAt: run.issuedAt,
+    renderedAt: build.renderedAt,
+    kind: 'knockout-batch',
+    marks: (client.findings?.marks ?? []).map((m) => ({ name: m.name, band: m.rating })),
+    searchLevel: run.product.level ?? 'knockout',
+    // The level's DISPLAY identity, stamped at publish exactly as the clearance lane stamps it. The
+    // portal re-derived this from the level word because the knockout meta never carried it; a reader of
+    // an archived meta had to know the registry by heart to tell Depth 1 from Depth 2.
+    stageLabel: run.product.stageLabel ?? undefined,
+    // `reportIdentity` WAS written here and read NOWHERE — one occurrence in the whole repository, this
+    // one. A stored display label with no reader is not harmless: it is a second answer to "what is this
+    // product called", frozen at publish, that would have started disagreeing with the registry the first
+    // time a product was renamed — and nothing would have noticed, because nothing looks at it. The name
+    // is derived on every render from `searchLevel`, which is right below and IS read. Deleted.
+    // Depth 2 provenance — WHICH register was counted and when, so a reader of an archived run can
+    // tell a screen that counted from one that did not without opening the workbook.
+    registerCounts: registerCounts
+      ? { provider: registerCounts.provider, takenAt: registerCounts.takenAt, marks: registerCounts.marks?.length ?? 0, counted: countedMarks(registerCounts) }
+      : undefined,
+    recordLinks: client.recordLinks?.tally ?? undefined,   // per office: linked, or cited by number and why; only where the register has no record pages
+    recipe: run.provenance.recipe ?? undefined,
+    enqueuedVia: run.provenance.enqueuedVia ?? undefined,
+    parentRunId: run.provenance.parentRunId ?? undefined,
+    tokens: tokens && (tokens.input || tokens.output) ? tokens : undefined,
+    template: 'knockout',
+    // `run` IS GONE. It carried the literal 'Knockout screen (Depth 1)' — a product name that is not the
+    // product's name, at a rung of a ladder retired — into report-data.json, where nothing has ever
+    // read it. The one `.run` reader in the tree parses report.html front matter and uses it as a DATE
+    // fallback, so had this field ever been joined to that one it would have printed a product name where
+    // a date belongs. The product is `meta.product`, written from the run's own frozen policy.
+    overall: verdict.overall ?? '', badge: verdict.badge, date: run.issuedAt.slice(0, 10),
+    auditFile: run.auditFile, statement: verdict.statement,
+    // WHY THERE IS NO WORKBOOK, when the build threw. Absent when it built, so such a meta is unchanged.
+    auditError: staff.auditError ?? undefined,
+    framework: framework ? { key: framework.framework_key, title: framework.title, custom: framework.framework_key !== 'house-triage', bands: framework.bands.map((b) => ({ label: b.label, tone: b.tone })) } : undefined,
+    // Present ⇒ this run has a report-data.json beside each name's report, in the Knockout's shape.
+    // Stamped only when every name's data file wrote, as the clearance stamps it only when its one file wrote.
+    reportSchema: reports.every((r) => r.dataFile) ? 'report-data/knockout-1' : undefined,
+    // WHICH DOCUMENTS THIS RUN PUBLISHED, and for which name. Every reader that has to open,
+    // serve or link a knockout's reports takes the list from here rather than deriving a filename: the
+    // naming rule (one mark ⇒ `report.html`, several ⇒ `report-<slug>.html`) is written ONCE, above, and
+    // nobody re-implements it. Absent on every pre-change meta, which is exactly the run that has one
+    // report at `report.html` — so a reader that falls back to that name on absence is reading the
+    // archive correctly, not guessing.
+    // — `slug` RIDES. It was destructured away here while being computed twenty lines up, and
+    // everything that links a batch's per-mark report needs it: reportsOf() reads it, the portal
+    // builds `/portal/report/<runId>/<slug>/` from it, and resolveReportFile() matches on it. Without
+    // it BOTH marks of a batch resolved to the run-level URL, which resolveReportFile answers null
+    // for by design (a batch has no run-level document) — so every per-mark link 404'd, and the
+    // clearances row printed a fallback saying the report was with us for a final read.
+    reports: reports.map(({ mark, slug, file, dataFile, band, url }) => ({ mark, slug, file, dataFile, band, url })),
+  };
+}
+
 function filingRecordBodies(runDir, registerRecords) {
   const out = new Map();
   if (!runDir || !registerRecords) return out;
