@@ -175,7 +175,9 @@ test("on every committed demo run, the full country report keeps every part of e
   }
 
   // A floor on what was compared: a page whose cards stopped matching the opener would otherwise pass.
-  assert.ok((shapes.get("card") ?? 0) >= 10, `only ${shapes.get("card") ?? 0} on-field card(s) compared across the demo runs`);
+  // The conflicts below the risk are compact cards behind a closed heading, so the floor counts both shapes.
+  const conflictCards = (shapes.get("card") ?? 0) + (shapes.get("compact") ?? 0);
+  assert.ok(conflictCards >= 10, `only ${conflictCards} conflict card(s) compared across the demo runs`);
   assert.ok((shapes.get("ruled") ?? 0) >= 3, `only ${shapes.get("ruled") ?? 0} ruled-out card(s) compared across the demo runs`);
   assert.equal(differing, CLEARANCE_DEMOS.length, "a demo published the same document under both policies, so the two renders were one report");
   assert.ok(recordOnFull > 0 && recordOnMulti > 0, "a render shows no register record's goods or status, so the comparison read no record");

@@ -2078,7 +2078,35 @@ function findingCard(f, card, recordsByUri = new Map()) {
   </div>`;
 }
 
-function compactCard(f, card, recordsByUri = new Map()) {
+// THE CONFLICTS BELOW THE RISK SIT BEHIND ONE CLOSED HEADING (owner, 2026-11-18). Full cards stay for the conflicts
+// in the band that sets the report's risk, the highest band any conflict holds on the framework's own ladder. Every
+// conflict below it renders as the compact card, unticked for export, and the compact cards sit together behind
+// one closed heading carrying their count: "{N} more conflicts rated {band}", with the framework's band word, each
+// band named and joined by "or" where several sit below. Measured on the largest production clearance, 21 of 274
+// cards set the risk, and the exported PDF fell from 280 pages to 53 with the rest unticked. A lawyer who ticks a
+// card puts it back in the PDF; each compact card still opens to its full detail.
+//
+// ONLY WHERE THE WORDS ARE HIS. The heading is his plural; a single conflict below the risk keeps its full card
+// until he words the singular. A conflict with no band on the ladder keeps its full card, since nothing says it is
+// below the risk. A run with no framework renders every card in full, as it always has.
+function conflictCards(onField, cardFor, recordsByUri) {
+  const full = (list) => list.map((f) => findingCard(f, cardFor(f), recordsByUri)).join('\n  ');
+  if (!FRAMEWORK) return full(onField);
+  const rated = onField.filter((f) => severityRank(f) < FRAMEWORK.bands.length);
+  if (!rated.length) return full(onField);
+  const top = Math.min(...rated.map(severityRank));
+  const below = onField.filter((f) => severityRank(f) > top && severityRank(f) < FRAMEWORK.bands.length);
+  if (below.length < 2) return full(onField);
+  const kept = onField.filter((f) => !below.includes(f));
+  const bands = [...new Set(below.map(severityRank))].sort((a, b) => a - b).map((i) => FRAMEWORK.bands[i].label);
+  const cards = below.map((f) => compactCard(f, cardFor(f), recordsByUri, { ticked: false })).join('\n      ');
+  return `${full(kept)}
+  <details class="rgroup lowerband"><summary><span class="gname">${esc(R.lowerBand(below.length.toLocaleString('en-GB'), bands))}</span></summary><div class="gbody">
+      ${cards}
+  </div></details>`;
+}
+
+function compactCard(f, card, recordsByUri = new Map(), { ticked = true } = {}) {
   const who = recordOwner(f, recordsByUri) || f.owner?.name || f.mark;   // doc-31 step 4: bound from the record
   // — the SAME fallback chain findingCard has carried since item 9b, and this line is why the issue
   // exists. The eleventh break pointed findingCard at the typed record and left compactCard behind, so a
@@ -2092,7 +2120,7 @@ function compactCard(f, card, recordsByUri = new Map()) {
   const markChip = markClassChip(f, who);
   return `<div class="card compact" id="c${f.ordinal}">
     <div class="top"><div class="rail low"></div><div class="body">
-      <div class="cardhead"><label class="pick no-print"><input type="checkbox" class="pickbox" checked aria-label="${R.card.includeInPdf(f.ordinal)}"></label><span class="fnum">${f.ordinal}</span>${cardTitleParts(f, who).title}${evidenceChips(f)}<span class="tier low">${riskChip(f)}</span><button class="ask-fi no-print">${R.card.askAi}</button></div>${cardTitleParts(f, who).ownerLine}${logoLine(f, recordsByUri)}
+      <div class="cardhead"><label class="pick no-print"><input type="checkbox" class="pickbox"${ticked ? ' checked' : ''} aria-label="${R.card.includeInPdf(f.ordinal)}"></label><span class="fnum">${f.ordinal}</span>${cardTitleParts(f, who).title}${evidenceChips(f)}<span class="tier low">${riskChip(f)}</span><button class="ask-fi no-print">${R.card.askAi}</button></div>${cardTitleParts(f, who).ownerLine}${logoLine(f, recordsByUri)}
       <div class="oneline">${inline(sentenceCaseLead(one))}</div>
     </div></div>
     ${fullDetail(f, card, recordsByUri)}
@@ -2273,7 +2301,7 @@ function method(_text) {
 const NAV_SHEET = NAV_CSS;
 const REP_OVERRIDE = '.rep-stickyhead .sitenav{position:static;box-shadow:none;border-bottom:none;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}';
 const PAGE_JS = `var _hidden=[];
-function exportPDF(){_hidden=[];document.querySelectorAll('.card').forEach(function(card){var cb=card.querySelector('input.pickbox');if(cb&&!cb.checked){card.classList.add('print-hidden');_hidden.push(card);}});window.print();}
+function exportPDF(){_hidden=[];document.querySelectorAll('.card').forEach(function(card){var cb=card.querySelector('input.pickbox');if(cb&&!cb.checked){card.classList.add('print-hidden');_hidden.push(card);}});document.querySelectorAll('details.lowerband').forEach(function(d){if(!d.querySelector('.card:not(.print-hidden)')){d.classList.add('print-hidden');_hidden.push(d);}});window.print();}
 function pickAll(v){document.querySelectorAll('input.pickbox').forEach(function(cb){cb.checked=v;});}
 function openAll(v){document.querySelectorAll('details.drill,details.method,details.scope,details.rgroup,details.rrow').forEach(function(d){d.open=v;});}
 // doc-55 A1: a rights-holder / marker / cross-link click targets a card by #c<ordinal>. When that card sits
@@ -2670,7 +2698,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   <div class="landwrap">${quadrant(sorted)}${keyPanel(sorted, recordsByUri)}</div>
 
   <div class="sec" id="conflicts"><span class="num"></span><h2>Conflicts</h2></div>
-  ${onField.map(f => findingCard(f, cardFor(f), recordsByUri)).join('\n  ')}` : ''}
+  ${conflictCards(onField, cardFor, recordsByUri)}` : ''}
 
   ${secReg.length ? `<div class="sec"><span class="num"></span><h2>Secondary &amp; watch</h2></div>
   ${secondaryRegions(secReg, cardFor, recordsByUri)}` : ''}${hasCL ? `
@@ -2685,7 +2713,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   <div class="landwrap">${quadrant(sorted)}${keyPanel(sorted, recordsByUri)}</div>
 
   <div class="sec" id="conflicts"><span class="num"></span><h2>Conflicts</h2></div>
-  ${onField.map(f => findingCard(f, cardFor(f), recordsByUri)).join('\n  ')}`
+  ${conflictCards(onField, cardFor, recordsByUri)}`
       : '';
     // THE COMMON-LAW CARDS GO WITH THE CONFLICTS, NOT UNDER THE NEXT HEADING. Appended at the end they
     // landed beneath "Notable but manageable", which says something about a finding that is not true of
