@@ -46,7 +46,8 @@ test("the next session under a name a closed session took takes the next name, n
   assert.equal(gunzipSync(readFileSync(a.file)).toString("utf8"), "first\n", "the first session's stream was written over");
 });
 
-test("a compression that fails keeps the plain stream and says why", (t) => {
+test("a compression that fails keeps the plain stream and says why",
+  { skip: process.platform === "win32" && "mode bits: a Windows folder made read-only still takes a new file, so the failure cannot be planted" }, (t) => {
   if (process.getuid?.() === 0) return t.skip("root writes into a folder whatever its mode, so the failure cannot be planted");
   const dir = dirOf(t);
   const file = join(dir, "synthesis.attempt1.jsonl");
