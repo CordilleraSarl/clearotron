@@ -17,7 +17,7 @@ import { writeFileSync, mkdtempSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { parseReport } from "../publish/parse.mjs";
-import { renderHtml, homeButton } from "../publish/render.mjs";
+import { renderHtml, homeButton, leftOpenRows, coverageGrid } from "../publish/render.mjs";
 import { localScripts } from "../publish/search-depth.mjs";
 import { pageElements, pageLinks } from "./helpers/page-links.mjs";
 import { EXPORT_TOGGLE, EXPORT_MENU_JS } from "../publish/report-topbar.mjs";
@@ -3434,4 +3434,22 @@ test("the local-script row names the scripts searched, and Left open names those
   const all = localScripts({ entries: terms.map((term, i) => ({ qid: `q${i}`, term })) }, { executed: terms.map((_, i) => ({ qid: `q${i}`, state: "enumerated" })) });
   assert.equal(all.searched.length, 10);
   assert.equal(v(page(all), "Local-script spellings"), "Han, Hiragana, Katakana, Hangul, Greek, Cyrillic, Arabic, Hebrew, Thai and Devanagari");
+});
+
+// ONE LIST OF LEFT OPEN ROWS for every surface that prints it. The page draws exactly the rows `leftOpenRows` returns:
+// the open coverage rows, a follow-up row another open row restates left out, a clean row left out, and the script row.
+test("the Left open grid is drawn from leftOpenRows, so a delivered document can print the same rows", () => {
+  const coverage = [
+    { area: "Register / exact word in class 9", state: "confirmed-clean", note: "Searched; nothing in the way." },
+    { area: "the English word DOLPHIN as a dedicated exact search", state: "open", note: "Not reached this run." },
+    { area: "Follow-up / dolphin", state: "open", note: "dolphin — not completed this run — the search for it was planned and never reached the register" },
+    { area: "Owner portfolio", state: "coverage-limited", note: "The owner's newer filings were not all read." },
+  ];
+  const localScripts = { searched: ["Kana"], missed: ["Hang"], territories: {} };
+  const rows = leftOpenRows({ coverage, localScripts });
+  assert.deepEqual(rows.map((r) => r.area), ["the English word DOLPHIN as a dedicated exact search", "Owner portfolio", "Local-script spellings"]);
+  assert.deepEqual(rows[2], { area: "Local-script spellings", state: "not-searched", note: "No search in Hangul script was completed." });
+  const html = renderHtml(parsedOf(REPORT), [], coverage, { searchDepth: { counts: { localScripts } } });
+  assert.ok(html.includes(`<div class="openrows"><div class="rk">Left open</div>${coverageGrid(rows)}</div>`), "the page draws the function's rows");
+  assert.deepEqual(leftOpenRows({ coverage: [coverage[0]], localScripts: null }), [], "a clean run with no execution record leaves nothing open");
 });
