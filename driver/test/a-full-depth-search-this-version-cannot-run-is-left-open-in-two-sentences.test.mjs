@@ -65,7 +65,7 @@ test("the row is written once, whichever label an earlier pass gave it", () => {
 });
 
 test("a cause with no sentence of its own keeps the fuller note and its label", () => {
-  // Every cause jx.mjs names now has the owner's sentence (items 1137 and 1156); a cause minted later reads this way.
+  // Every cause jx.mjs names now has the owner's sentence; a cause minted later reads this way.
   const run = runWith("zh", { zh: { asked: "full", ran: "candidates", shortfall: true, cause: "some-later-cause",
     why: "a reason in the record's terms" } });
   injectLaneDepthCoverage(run.P, run.d, () => {});

@@ -37,7 +37,7 @@ import { READ_LEAD_RE } from '../report-card-record.mjs';   // D3 — the dedupe
 import { logoLockup, BRAND, confPosture, sectionStrip, PALETTE, QUADRANT_COLOURS as QC } from '../../shared/brand.mjs';
 import { NAV_CSS } from '../../shared/site-nav.mjs';
 import { pageShell } from './page-shell.mjs';
-import { readerRowHead } from '../coverage-ledger.mjs';   // an engine-token row head in the reader's words (item 1138)   // the document shell, shared with the knockout template
+import { readerRowHead } from '../coverage-ledger.mjs';   // an engine-token row head in the reader's words   // the document shell, shared with the knockout template
 import { EVIDENCE_LABEL, USE_EVIDENCE_LABEL, meterEvidence } from './evidence-words.mjs';   // the meters' evidence words, shared with the audit workbook
 import { inlineMarkdown } from '../../shared/inline-markdown.mjs';   // the inline-markdown dialect, shared with the knockout template
 import { isEntrypoint } from "../../shared/is-entrypoint.mjs";   // — realpath both sides, or a symlinked invocation exits 0 silently
@@ -662,7 +662,7 @@ function gauge(fm, findings, coverage = [], fourAnswers = null, opts = {}) {
 // "register / priority markets NZ, IN, TR") matches nothing and we fall back to the findings' own regions —
 // a sensible searched-set for those runs (and for coverage-less / single-finding runs). Insertion order is
 // preserved (coverage order, else exposure order); common-law (C/L) is not a jurisdiction.
-// ZZ IS NOWHERE (owner, 2026-11-18, batch two item 1153). It is the register's "unspecified", not a place, and it
+// ZZ IS NOWHERE (owner, 2026-11-18). It is the register's "unspecified", not a place, and it
 // printed as a code in the lists of places a report gives. It leaves every one of them; a record filed under it still
 // counts as read.
 const UNSPECIFIED_REGION = 'ZZ';
@@ -741,7 +741,7 @@ function findingRegions(f) {
 // They are one labelled panel now, directly under the name, on every report type (the 2026-09-16 report redesign).
 // Every row is a fact the run already carries: nothing here is composed.
 // WHERE THE SEARCH RAN, as a count and as the list. On a worldwide search the About row gives the count of focus
-// territories (owner, 2026-11-18, batch two item 1151), "Worldwide · 14 focus territories", where it listed every one
+// territories (owner, 2026-11-18), "Worldwide · 14 focus territories", where it listed every one
 // of them; the list, in the words it had, moves to the What was searched section. A search of named places keeps
 // its list in the About row, where it is the answer.
 function placesSearched(fm, coverage = [], findings = []) {
@@ -1113,7 +1113,7 @@ function whereItStandsSection(findings, opts) {
   }
   if (!withF.length && !clean.length) return '';
   const rows = withF.map((c) => `<div class="wrow"><span class="rcode">${esc(c.code)}</span><span class="wname">${esc(c.name)}</span><span class="kc">${esc(c.band)}</span></div>`).join('');
-  // THE CLEAN PLACES ARE ONE PARAGRAPH OF NAMES (owner, 2026-11-18, batch two item 1152). They were a chip each, and
+  // THE CLEAN PLACES ARE ONE PARAGRAPH OF NAMES (owner, 2026-11-18). They were a chip each, and
   // past twelve the chips printed codes, with the name only on hover. A list of names reads in the names' order.
   const cleanHtml = clean.length
     ? `<div class="wclean"><span class="wk">${R.nothingFound}</span><p class="wnames">${esc(clean.map((c) => c.name).sort((a, b) => a.localeCompare(b, 'en')).join(', '))}</p></div>`
@@ -1368,7 +1368,7 @@ function dedupeScatter(findings) {
   return placed;
 }
 
-// THE CHART'S NAME (owner, 2026-11-18, batch two item 1155). A screen reader met an unnamed drawing and then a run
+// THE CHART'S NAME (owner, 2026-11-18). A screen reader met an unnamed drawing and then a run
 // of "#1", "#2" links. The <title>, first in the <svg>, says what the drawing is; its count is the points drawn.
 const chartTitle = (n) => `Chart of ${n} conflict${n === 1 ? '' : 's'}, placed by how similar each mark is and how close its goods are; each number links to its card below.`;
 
@@ -1780,7 +1780,7 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   // how a FINDING was established, and there is no finding here. Nothing was found, and that is the
   // whole of what the line has to say.
   const useChk = cite(useSrc, 'Use checked.', isUseCheckNoResult(f.use_check?.source) ? null : useStatus);
-  const ownR = cite(f.own_rights?.source, "Search of the client's own marks.", EVIDENCE_LABEL[f.own_rights?._status]);   // owner, 2026-11-18, item 1135
+  const ownR = cite(f.own_rights?.source, "Search of the client's own marks.", EVIDENCE_LABEL[f.own_rights?._status]);   // owner, 2026-11-18
   const proseFull = cardBlock(card, /^full detail/i);
   const proseFullShown = proseFull;   // one report: the full prose; portal-report strips serve-time chrome, never analysis
   const internalNote = cardBlock(card, /^full detail/i) ? '' : '';   // internal notes ride ::p:: inside prose
@@ -1834,7 +1834,7 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   // already carries an "If enforced" bullet (the reasoned read wins — the enfLine dedupe pattern).
   const proseHasImpact = /(^|\n)\s*-\s*(\*\*)?\s*If enforced\b/i.test(proseFull || '');
   const impactLine = (f.impact && !proseHasImpact)
-    ? `<li><b>If enforced:</b> ${esc(f.impact)}</li>` : '';   // its "— for the client to consider." tail is gone (owner, 2026-11-18, item 1134)
+    ? `<li><b>If enforced:</b> ${esc(f.impact)}</li>` : '';   // its "— for the client to consider." tail is gone (owner, 2026-11-18)
   // — THE REASONING LEADS THE DRAWER, and this is where it now lives. legal_position /
   // practical_position and the manageable category used to render uncut ABOVE the fold on every card:
   // roughly 600 characters of prose per finding before a reader opened anything, while the one sentence
@@ -2084,7 +2084,7 @@ const COV_STATE = {
   'confirmed-clean': { cls: 'ok', ic: '✓', word: 'Searched — clean' },
   'coverage-limited': { cls: 'todo', ic: '→', word: 'Partially covered' },
   open: { cls: 'todo', ic: '→', word: 'Open item' },
-  'not-searched': { cls: 'todo', ic: '→', word: 'Not searched' },   // owner, 2026-11-18, item 1132: it read "Not run this run"
+  'not-searched': { cls: 'todo', ic: '→', word: 'Not searched' },   // owner, 2026-11-18: it read "Not run this run"
   note: { cls: 'info', ic: 'i', word: 'Note' },
 };
 /**
@@ -2208,7 +2208,7 @@ export function coverageGrid(coverage, { verdict = true } = {}) {
   const groups = Object.keys(COV_STATE).map((state) => [state, rest.filter((c) => (COV_STATE[c.state] ? c.state : 'note') === state)])
     .filter(([, rows]) => rows.length);
   if (rest.length) parts.push(
-    (verdict ? `<p class="covnext"><b>Next steps &amp; monitoring</b></p>` : '')   // the head alone (owner, 2026-11-18, item 1133)
+    (verdict ? `<p class="covnext"><b>Next steps &amp; monitoring</b></p>` : '')   // the head alone (owner, 2026-11-18)
     + groups.map(([state, rows]) => `<div class="covgrp"><div class="covgh">${esc(COV_STATE[state].word)} <span class="covgn">(${rows.length})</span></div><div class="cov">${(verdict ? rows.map(cell) : sharedNoteCells(rows, cell)).join('')}</div></div>`).join(''));
   return parts.join('');
 }

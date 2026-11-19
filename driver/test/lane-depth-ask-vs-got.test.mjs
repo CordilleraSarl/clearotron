@@ -72,7 +72,7 @@ test("asked full, the deep slices refused, candidates ran — REQUESTED-FULL-RAN
   assert.equal(v.zh.cause, "requested-full-ran-candidates");
   // The reader is not sent to the artifact to find out WHICH slice fell short — the rule for
   // degradedCause, applied to the field beside it. No switch arms a slice, so none is named.
-  // The reader's sentence is the owner's (item 1137); which slice fell short stays in the record's own terms beside it.
+  // The reader's sentence is the owner's; which slice fell short stays in the record's own terms beside it.
   assert.equal(v.zh.why, `A full-depth ${LANG}-language search was requested, but only the candidate search ran; the deeper web search and native-language review were not performed.`);
   assert.match(v.zh.detail, /serp-grid refused/);
   assert.match(v.zh.detail, /nativeread refused/);

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// THE KNOCKOUT'S LABELS READ AS THE CLEARANCE'S (owner, 2026-11-18, batch two items 1139 to 1141).
+// THE KNOCKOUT'S LABELS READ AS THE CLEARANCE'S (owner, 2026-11-18).
 //
 // "Evidence:" means an evidence status on the clearance, and the Knockout used it for a list of links: the list is
 // "Sources:". The fold that argues a band is "Risk assessment", the clearance's word, where it read "Why this band". The

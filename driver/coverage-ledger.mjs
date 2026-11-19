@@ -50,7 +50,7 @@ export const AXIS_READER_LABEL = Object.freeze({
   "incumbent-class": "owner portfolio sweep",
 });
 
-// A ROW HEAD THAT IS AN ENGINE TOKEN, in the reader's words (owner, 2026-11-18, batch two item 1138). The synthesis
+// A ROW HEAD THAT IS AN ENGINE TOKEN, in the reader's words (owner, 2026-11-18). The synthesis
 // writes an open intake question's row under the ask register's own token (`intake-ask`, ask-ledger.mjs), and the page
 // printed it capitalised, "Intake-ask". Same one position as an axis head, read the same way: equality on the head.
 export const ROW_HEAD_READER_LABEL = Object.freeze({

@@ -23,7 +23,7 @@ export const REGION_NAMES = {
   DK: 'Denmark', FI: 'Finland', PL: 'Poland', PT: 'Portugal', AT: 'Austria', BE: 'Belgium',
   IE: 'Ireland', GR: 'Greece', IL: 'Israel', TK: 'Tokelau',
   // XS is no country: it is the code the US state registers are filed under beside the federal one, read as they are
-  // named (owner, 2026-11-18, batch two item 1153). It printed as "XS".
+  // named (owner, 2026-11-18). It printed as "XS".
   XS: 'US state registers',
   CL: 'Chile', [COMMON_LAW]: 'Common-law',
 };
