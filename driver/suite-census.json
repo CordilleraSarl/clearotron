@@ -4624,8 +4624,8 @@
           "todos": 0
         },
         "every-setting-read-in-code-has-a-row-in-the-configuration-reference.test.mjs": {
-          "tests": 2,
-          "asserts": 5,
+          "tests": 3,
+          "asserts": 9,
           "skips": 1,
           "todos": 0
         },
