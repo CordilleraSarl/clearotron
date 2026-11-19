@@ -97,7 +97,7 @@ test("a grouped negative row shows up to three small logos and +N under its text
     owner: { name: "Varrow Holdings Ltd", registrations: uris.map((uri) => ({ uri, jurisdiction: "EM" })) },
   }], [], { runId: "logo-test", findingsSchemaVersion: 6, recordsByUri: new Map(recs.map((r) => [r.uri, r])),
     logos: new Map(uris.map((u) => [u, { state: "fetched", src: DATA }])) });
-  const row = html.match(/<details class="rgroup rn"><summary>([\s\S]*?)<\/summary>/)?.[1] ?? "";
+  const row = html.match(/<details class="rgroup rn"(?: id="c\d+")?><summary>([\s\S]*?)<\/summary>/)?.[1] ?? "";
   assert.ok(row, "the negative row is not drawn");
   const small = row.match(/<div class="rr-logos rr-sm">([\s\S]*?)<\/div>$/)?.[1] ?? "";
   assert.equal((small.match(/<figure class="rr-lg">/g) ?? []).length, 3, "the row does not show three small logos");

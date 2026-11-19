@@ -58,9 +58,9 @@ const FULL = "full-country-search";
 // ── reading a finding off the page ───────────────────────────────────────────────────────────────────
 
 // Every block that shows one finding, keyed so the same finding is found on the other report. A card
-// carries its ordinal as its id; a ruled-out card carries it as its number; a grouped negative carries
-// neither and is keyed by its mark, with a counter for a mark that appears twice.
-const OPENER = /<div class="card" id="c(\d+)">|<div class="card compact" id="c(\d+)">|<div class="card ruled">|<details class="rgroup rn">/g;
+// carries its ordinal as its id; a ruled-out card is keyed by its number; a grouped negative is keyed by its
+// mark, with a counter for a mark that appears twice. Both also carry an id, for the links that land on them.
+const OPENER = /<div class="card" id="c(\d+)">|<div class="card compact" id="c(\d+)">|<div class="card ruled"(?: id="c\d+")?>|<details class="rgroup rn"(?: id="c\d+")?>/g;
 
 function blockAt(html, start, tag) {
   const re = new RegExp(`<${tag}\\b|</${tag}>`, "g");
