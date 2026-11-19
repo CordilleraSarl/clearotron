@@ -25,7 +25,7 @@ import { seedUnplannedBands, plannedEntries, acceptUnitNote, recordUnitNote, ren
 import { paths } from "../run-record.mjs";
 import { parseNamedBand } from "../named-band.mjs";
 import { slicesUnitNeverReached } from "../pipeline.mjs";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 
 const DIRS = [];
 const runDir = () => { const d = mkdtempSync(join(tmpdir(), "unplanned-axis-")); DIRS.push(d); return d; };
@@ -77,10 +77,10 @@ test("the note of a unit whose axis the plan gives no work is recorded, through 
 
 test("the sweep writes those bands before its units run, and logs which", () => {
   const src = driverSource("steps/register-sweep.mjs");
-  const seed = src.indexOf("seedUnplannedBands(P.runDir, ctx.registerPlan");
+  const seed = onlyAt(src, "seedUnplannedBands(P.runDir, ctx.registerPlan");
   assert.ok(seed > 0, "the sweep does not write the empty bands");
-  assert.ok(seed < src.indexOf("runBatched(gather"), "the empty bands are written after the units are sent");
-  assert.ok(src.indexOf("const satProbeCodeSide") < seed, "the saturation probe's band is seeded before the sweep knows whether code writes it");
+  assert.ok(seed < onlyAt(src, "runBatched(gather"), "the empty bands are written after the units are sent");
+  assert.ok(onlyAt(src, "const satProbeCodeSide") < seed, "the saturation probe's band is seeded before the sweep knows whether code writes it");
   assert.ok(src.includes(`runLog(run.runDir, { event: "unit-band-seeded-empty", axes: seeded })`));
 });
 

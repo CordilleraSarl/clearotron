@@ -13,6 +13,7 @@ import assert from "node:assert/strict";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { mkdtempSync, writeFileSync, readFileSync, existsSync, rmSync, readdirSync } from "node:fs";
+import { gunzipSync } from "node:zlib";
 import { tmpdir } from "node:os";
 import { anthropicAgentEngine } from "../engine/anthropic-agent.mjs";
 import { parseCodexEvent, codexToolCallsByName, openaiAgentEngine } from "../engine/openai-agent.mjs";
@@ -63,6 +64,9 @@ async function turn(events, { streamTo = null } = {}) {
   }
 }
 
+// A closed session's stream is kept gzipped; one that never closed stays plain.
+const readStream = (f) => (String(f).endsWith(".gz") ? gunzipSync(readFileSync(f)).toString("utf8") : readFileSync(f, "utf8"));
+
 test("a cut the session carried on from is recorded, though the session ended in a clean result", async () => {
   const { dir, r } = await turn(CUT_AND_CARRIED_ON);
   try {
@@ -103,7 +107,7 @@ test("a refusal a restart recovered is the silent case: every result is kept, an
     assert.equal(attemptOk("missing_file:x", r), false);
     // the raw stream, byte for byte
     assert.equal(r.stream.present, true);
-    const kept = readFileSync(r.stream.file, "utf8");
+    const kept = readStream(r.stream.file);
     assert.equal(kept, REFUSED_THEN_RECOVERED.map((e) => JSON.stringify(e)).join("\n") + "\n");
     assert.equal(r.stream.bytes, Buffer.byteLength(kept));
   } finally { rmSync(dir, { recursive: true, force: true }); }
@@ -132,7 +136,7 @@ test("through the gateway: the attempt row says not ok with no failure, carries 
     assert.equal(row.session.results.length, 3);
     assert.equal(row.session.results[0].isError, true);
     assert.deepEqual(row.toolCallsByName, { Agent: 1, Read: 2 });
-    assert.equal(row.stream.file, "_driver/streams/teststage.attempt1.jsonl");
+    assert.equal(row.stream.file, "_driver/streams/teststage.attempt1.jsonl.gz");
     assert.equal(row.stream.present, true);
     assert.ok(existsSync(join(dir, row.stream.file)));
     // never beside the journals: every *.jsonl directly under _driver/ is read as a stage's journal (the token
@@ -193,7 +197,9 @@ test("the stream is not written below the disk floor, and the record says why ra
     assert.equal(existsSync(join(dir, "_driver", "x.stream.jsonl")), false);
     const ok = streamSink(join(dir, "_driver", "y.stream.jsonl"), { freeBytes: 6 * 1024 ** 3 });
     ok.write("{}\n"); ok.write(Buffer.from("{}\n"));
-    assert.deepEqual(ok.close(), { file: join(dir, "_driver", "y.stream.jsonl"), present: true, bytes: 6 });
+    const closed = ok.close();
+    assert.deepEqual({ ...closed, storedBytes: undefined }, { file: join(dir, "_driver", "y.stream.jsonl.gz"), present: true, bytes: 6, storedBytes: undefined });
+    assert.ok(closed.storedBytes > 0, "the stored size is not recorded");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 

@@ -71,3 +71,8 @@ test("no placeholder reaches a page: unknown, private-use, numeric and malformed
   }
   for (const bad of [undefined, null]) assert.doesNotThrow(() => regionName(bad));
 });
+
+test("the two regional offices and Kosovo read by their names, and the unverified codes stay as recorded (owner, 2026-11-19)", () => {
+  assert.deepEqual(["AP", "OA", "XK"].map(regionName), ["ARIPO", "OAPI", "Kosovo"]);
+  assert.deepEqual(["XA", "XG", "XW"].map(regionName), ["XA", "XG", "XW"], "a code whose register name is unverified was given a name");
+});

@@ -43,7 +43,7 @@ import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { SIGNATURES, censusOf, isScannable, RULE_DEFINITIONS } from "../reference-strip-signatures.mjs";
-import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";   // tracker issue 235
+import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
 import { publishedOf } from "../../shared/reference-guard-classes.mjs";   // the same population the mint counts
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");

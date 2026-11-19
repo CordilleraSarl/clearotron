@@ -223,9 +223,10 @@ test("the card links the office and number, cites the rest by number, and states
   const { byUri } = recordLinksFor(FINDINGS, RECORDS, recordOriginsFor("signa"));
   const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, cardOpts({ recordLinks: byUri }));
   assert.match(html, /<a href="https:\/\/search\.ipaustralia\.gov\.au\/trademarks\/search\/view\/2145673" target="_blank" rel="noopener noreferrer">AU 2145673<\/a>/);
-  assert.match(html, /<b>SG 40202012345Y<span class="reg-nolink">/, "an unlinked registration shows its office and number, with the workbook note");
+  // A fetched registration's number is its register record's Register number row.
+  assert.match(html, /<span class="k">Register number<\/span><span class="v">SG 40202012345Y<span class="reg-nolink">/, "an unlinked registration shows its office and number, with the workbook note");
   assert.doesNotMatch(html, /<a [^>]*>SG 4020201234/, "no link where the office publishes no page");
-  assert.doesNotMatch(html, /<b>\/mark\/(au|sg|fr)\//, "a fetched registration is never labelled with the handle");
+  assert.doesNotMatch(html, /<b>\/mark\/(au|sg|fr)\/|<span class="k">Register number<\/span><span class="v">\/mark\//, "a fetched registration is never labelled with the handle");
   assert.match(html, /<b>\/mark\/ch\/s5<span class="reg-nolink">[^<]*<\/span><\/b> <i>\(register-index entry\)<\/i>/, "an unfetched registration keeps its handle, its note and its label");
   assert.match(html, /A registration number shown as a link opens the office’s own page for that record\./);
   assert.equal(html.split("Singapore: the register publishes no page for a single record").length - 1, 1, "Singapore's reason, once");
@@ -354,10 +355,10 @@ test("a Compumark card links the US record at TSDR and cites the Chinese one by 
   const html = renderHtml(parsedOf(REPORT), CM_FINDINGS, COVERAGE, cardOpts({ recordsByUri: CM_RECORDS, recordLinks: byUri }));
   assert.match(html, /<a href="https:\/\/tsdr\.uspto\.gov\/#caseNumber=79123456&amp;caseType=SERIAL_NO&amp;searchType=statusSearch" target="_blank" rel="noopener noreferrer">US 79123456<\/a>/);
   assert.match(html, /<a href="https:\/\/euipo\.europa\.eu\/eSearch\/#details\/trademarks\/012345678"[^>]*>EU 012345678<\/a>/);
-  assert.match(html, /<b>CN 71234567<span class="reg-nolink">/, "the Chinese record shows its office and number");
+  assert.match(html, /<span class="k">Register number<\/span><span class="v">CN 71234567<span class="reg-nolink">/, "the Chinese record shows its office and number");
   assert.doesNotMatch(html, /<a [^>]*>CN 71234567/, "and no link, since the table holds no address for it");
   assert.equal(html.split("CN, JP: we hold no page address for these registers").length - 1, 1, "the reason, once");
-  assert.doesNotMatch(html, /<b>\/mark\/(us|em|gb|wo|cn|jp)\//, "a fetched record is never labelled with the handle");
+  assert.doesNotMatch(html, /<b>\/mark\/(us|em|gb|wo|cn|jp)\/|<span class="k">Register number<\/span><span class="v">\/mark\//, "a fetched record is never labelled with the handle");
 });
 
 // ── THE REGISTER'S OWN LINK FILLS A GAP AND NEVER REPLACES THE TABLE ─────────────────────────────────

@@ -7,7 +7,7 @@
 // opening CONDITIONAL. BLOCKING rightly stood, but nothing in the run said so, and a reader found two
 // answers. The repair now logs `verdict-softening-not-adopted` beside the verdict it did not change.
 import { test } from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { lateReviewAgainst } from "../verify.mjs";
 
@@ -34,7 +34,7 @@ test("the delivery stale-repair decides through lateReviewAgainst and logs the s
   const src = driverSource("pipeline.mjs");
   // The late review is read in ONE closure, which both reviews the delivery loop can run call: the whole review
   // and the review after a delivery-check repair.
-  const at = src.indexOf("const adoptLateReview = (reviewNow, stageLabel) => {");
+  const at = onlyAt(src, "const adoptLateReview = (reviewNow, stageLabel) => {");
   assert.ok(at > 0, "the stale-repair loop's late-review rule is where this test reads");
   const site = src.slice(at, at + 2500);
   assert.match(site, /const \{ hardened, softened: reviewSays \} = lateReviewAgainst\(runState\.verdict, reviewNow\);/);

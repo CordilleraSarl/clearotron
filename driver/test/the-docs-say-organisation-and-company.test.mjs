@@ -182,7 +182,6 @@ const EXCEPTIONS = [
       /\bbrand\s+source\b/gi,
       /\bbrand\s+seam\b/gi,
       /\bsomebody\s+else's\s+brand\b/gi,
-      /\boutbox,\s+brand\s+and\s+auth\b/gi,
     ],
     reason: "the brand an installation prints on what it delivers — the `CLEAROTRON_BRAND_*` settings and "
       + "the product's own artwork — " + ORG_OR_COMPANY,

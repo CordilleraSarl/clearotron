@@ -54,7 +54,7 @@ export const BANNED = /\b(receipts?|lint|tripwires?|composite|quadrants?|scatter
 
 // A10 rows are composed by predelivery-lint's projection table. If a caller hands this module a check
 // object instead of a projected line, the row says nothing rather than saying the engine's words.
-const A10_UNPROJECTED = 'A machine check on the report did not pass.';
+const A10_UNPROJECTED = W.checkNotPassed;
 // The Summary rows A10 owns. validateAudit holds these to a HARD standard (see there) — the general
 // BANNED scan over every cell stays advisory, because archived model-authored prose legitimately trips
 // it and a republish must not lose its workbook over a word in a finding.
@@ -142,7 +142,7 @@ const regLabel = uri => { const c = uriCountry(uri); const n = uriNumber(uri); r
 // (evidence-words.mjs). An unknown value nobody checked reads "not checked" where the page has no word for it.
 export const meterCell = (m, driver) => {
   if (!m || !m.token) return '';
-  const word = meterEvidence(driver, m) || (m.token === 'unknown' && driver !== 'mark_similarity' ? 'not checked' : '');
+  const word = meterEvidence(driver, m) || (m.token === 'unknown' && driver !== 'mark_similarity' ? W.notChecked : '');
   return `${m.token}${word ? ` · ${word}` : ''}`;
 };
 
@@ -205,9 +205,9 @@ function findingRows(findings, fetchState, recordLinks = null, method = null) {
       'Country': f.owner?.country || '',
       'Source': sourceWord(f.source?.source_type || ''),
       'Class': classCell(f),
-      'Registration(s)': regs.length ? regs.map(r => recordLinks?.get(String(r.uri || '').toLowerCase())?.label || regLabel(r.uri)).join('; ') : (ctx ? '—' : '— (common-law)'),
+      'Registration(s)': regs.length ? regs.map(r => recordLinks?.get(String(r.uri || '').toLowerCase())?.label || regLabel(r.uri)).join('; ') : (ctx ? '—' : W.commonLawRegistration),
       'Status & key dates': statusDatesCell(f),
-      'Record retrieved?': ctx ? 'n/a — noted only' : retrievedCell(f, fetchState),
+      'Record retrieved?': ctx ? W.notedOnly : retrievedCell(f, fetchState),
       // where the framework states a method, its inputs ride beside the band, as on the report card
       'Risk band': f.band ? [f.band, inputsLine(method, f.inputs)].filter(Boolean).join(' · ') : '—',
       'How we treated it': treatmentCell(f),
@@ -744,13 +744,7 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
 // name. A web address loses its scheme in any case and keeps its host and path. has_more is plainNote's.
 //
 // Kept down here, below every line the rest of the tree cites in this file by number.
-export const READER_WORDS = Object.freeze({
-  receipt: 'record', receipts: 'records',
-  lint: 'check', tripwire: 'check', tripwires: 'checks',
-  composite: 'combined', scatter: 'chart', cache: 'stored copy',
-  quadrant: 'position', quadrants: 'positions', coordinate: 'position', coordinates: 'positions',
-  meter: 'measure', meters: 'measures',
-});
+export const READER_WORDS = W.readerWords;
 const READER_WORD = new RegExp(`\\b(?:${Object.keys(READER_WORDS).join('|')})\\b`, 'gi');
 
 function readerWords(s) {

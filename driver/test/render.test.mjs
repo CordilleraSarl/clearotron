@@ -443,20 +443,21 @@ test("Map A: a fetched record in recordsByUri OVERRIDES the finding's fields (tr
   const f = [{ ...FINDINGS[0], owner: { name: "Matchday, Inc.", country: "US", registrations: [
     { uri: "https://tm.example/us/3396572", classes: ["41"], status: "Registered", filed: "2008-03-11", expiry: "2028-03-11", jurisdiction: "US" } ] } }];
   const html = renderHtml(parsedOf(REPORT), f, COVERAGE, { recordsByUri });
-  assert.match(html, /app\. 77999111/);                 // application number from the record
-  assert.match(html, /reg\. 3396572/);
-  assert.match(html, /filed 2011/);                     // filing YEAR from the record, NOT the finding's 2008
-  assert.match(html, /registered 2014/);
-  assert.match(html, /Registered and renewed/);         // status text from the record
+  // The fetched record's facts are its register record entry.
+  const entry = html.match(/<div class="rr">([\s\S]*?)<\/details>/)?.[1] ?? "";
+  assert.match(entry, /application 77999111/);          // application number from the record
+  assert.match(entry, /3396572/);
+  assert.match(entry, /filed 2011-05-04/);              // filing date from the record, NOT the finding's 2008
+  assert.match(entry, /registered 2014-08-19/);
+  assert.match(entry, /Registered and renewed/);        // status text from the record
   assert.doesNotMatch(html, /filed 2008/);              // the finding's transposable field is gone
 });
 
-// ── the depth rule for the Full detail fold: the goods as registered, and the record's dates ─────────
+// ── the goods as registered, and the record's dates, at every depth ──────────────────────────────────
 //
-// The design's depth rule is that the same sections render at every depth and what GROWS is what a
-// finding's fold carries. These two blocks are the full country's alone, and both come off the fetched
-// record: the goods in the register's own words, and the dates to the day where the summary line above
-// carries only years.
+// These were the full country's two blocks in the Full detail fold. The register record now carries both on
+// every report (owner, 2026-11-18): the goods in the register's own words where it holds no English, and the
+// dates to the day.
 
 const GOODS_REC = {
   _uri: "https://tm.example/jp/6231111",
@@ -469,23 +470,15 @@ const GOODS_F = () => [{ ...FINDINGS[0], owner: { name: "Yiwu Tengding", country
   { uri: "https://tm.example/jp/6231111", classes: ["9"], jurisdiction: "JP" }] } }];
 const FULL_COUNTRY_OPTS = { depthNote: "Full country search — Japan" };
 
-test("depth: a full country's fold carries the goods as registered and the record's own dates", () => {
-  const html = renderHtml(parsedOf(REPORT), GOODS_F(), COVERAGE,
-    { recordsByUri: new Map([[GOODS_REC._uri, GOODS_REC]]), ...FULL_COUNTRY_OPTS });
-  assert.match(html, /<span class="k">As registered<\/span><span class="v">Class 9: 再充電可能な電池，タコグラフ，ビデオカメラ<\/span>/,
-    "the register's own wording, in the language it granted the right in");
-  assert.match(html, /<span class="k">Dates<\/span><span class="v">filed 2019-04-02 · registered 2020-03-02 · expires 2030-03-02<\/span>/,
-    "to the day — the summary line above carries years, which cannot say whether a right lapses this month");
-});
-
-test("depth: the two blocks are the full country's alone", () => {
-  for (const note of ["Global preliminary search — worldwide", "Multi-country focus search — Japan and Korea", ""]) {
+test("depth: the register record carries the goods as registered and the record's own dates on every report", () => {
+  for (const note of ["Full country search — Japan", "Global preliminary search — worldwide", "Multi-country focus search — Japan and Korea", ""]) {
     const html = renderHtml(parsedOf(REPORT), GOODS_F(), COVERAGE,
       { recordsByUri: new Map([[GOODS_REC._uri, GOODS_REC]]), depthNote: note });
-    assert.doesNotMatch(html, /As registered/, `goods on: ${note || "a run with no depth note"}`);
-    assert.doesNotMatch(html, /class="k">Dates</, `dates on: ${note || "a run with no depth note"}`);
-    // …and the summary line the shallower products DO carry is untouched by their absence.
-    assert.match(html, /filed 2019, registered 2020/, "the one-line summary still reads as it did");
+    const on = note || "a run with no depth note";
+    assert.match(html, /<span class="rr-cls">Class 9<\/span> <span class="rr-txt">再充電可能な電池，タコグラフ，ビデオカメラ<\/span>/,
+      `the register's own wording, in the language it granted the right in: ${on}`);
+    assert.match(html, /filed 2019-04-02 · registered 2020-03-02 · expires 2030-03-02/, `the dates to the day: ${on}`);
+    assert.doesNotMatch(html, /class="k">As registered<|class="k">Dates</, `the old full-country rows are back: ${on}`);
   }
 });
 
@@ -496,7 +489,7 @@ test("depth: an English entry is preferred where the register wrote one, and not
   ] };
   const html = renderHtml(parsedOf(REPORT), GOODS_F(), COVERAGE,
     { recordsByUri: new Map([[bilingual._uri, bilingual]]), ...FULL_COUNTRY_OPTS });
-  assert.match(html, /Class 9: Rechargeable batteries/, "the register's own English is the one shown");
+  assert.match(html, /<span class="rr-cls">Class 9<\/span> <span class="rr-txt">Rechargeable batteries<\/span>/, "the register's own English is the one shown");
   assert.doesNotMatch(html, /再充電可能な電池/, "and it replaces the local entry rather than doubling it");
 });
 
@@ -506,6 +499,8 @@ test("depth clause F: a record with no goods and no dates grows no empty block",
   const html = renderHtml(parsedOf(REPORT), GOODS_F(), COVERAGE,
     { recordsByUri: new Map([[bare._uri, bare]]), ...FULL_COUNTRY_OPTS });
   assert.doesNotMatch(html, /class="record"/, "an archived record missing both fields draws no labelled shell");
+  assert.match(html, /<div class="rr-g rr-faint">The record states no goods or services\.<\/div>/, "a record with no goods says so, in the approved words");
+  assert.doesNotMatch(html, /rr-faint">filed /, "a record with no dates prints none");
 });
 
 // ── WP-receipts W2: the provable "verified" label + provider record links ─────────────────────────────
@@ -966,9 +961,12 @@ test("CHANGE 5a render: the reg number is bound to its record's uri + jurisdicti
   // publish/index.mjs passes it. It used to be scraped from `f.source.resolved_link`, which is why the
   // expected host below is the allow-listed one and not the fixture's source host.
   const html = renderHtml(parsedOf(REPORT), f, COVERAGE, { recordsByUri, recordOrigins: ["https://tm.example"] });
-  // the reg number sits INSIDE the same <li> as its uri + jurisdiction (one structured per-record line)
-  // C1: the record-backed line now labels the jurisdiction's registration system from DATA
-  assert.match(html, /<li><b><a href="https:\/\/tm\.example\/mark\/us\/3396572" target="_blank" rel="noopener noreferrer">\/mark\/us\/3396572<\/a><\/b>[^<]*· Registered[^<]*reg\. 3396572[^<]*· US <i class="jsys">\(first-to-use\)<\/i><\/li>/);
+  // the reg number sits INSIDE the same register record entry as its uri and jurisdiction, and the Country row
+  // labels the jurisdiction's registration system from DATA (C1)
+  const entry = html.match(/<div class="rr">([\s\S]*?)<\/details>/)?.[1] ?? "";
+  assert.match(entry, /<span class="k">Country<\/span><span class="v">United States <i class="jsys">\(first-to-use\)<\/i><\/span>/);
+  assert.match(entry, /<span class="k">Status<\/span><span class="v">Registered · /);
+  assert.match(entry, /<span class="k">Register number<\/span><span class="v"><a href="https:\/\/tm\.example\/mark\/us\/3396572" target="_blank" rel="noopener noreferrer">\/mark\/us\/3396572<\/a> <span class="rr-faint">application 77999111<\/span>/);
 });
 
 // — THIS ARM ASSERTED THE DEFECT, and is rewritten rather than deleted so the record of what it

@@ -6,7 +6,7 @@
 // declaring the undeclared outputs stopped being a follow-on and became the prerequisite. You cannot
 // tell which stale stage feeds which without knowing who WROTE the artifact that moved.
 import { test } from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { basename } from "node:path";
 import { paths, STAGES, stageInputs, stageOutputs, dependencyOrder } from "../stages.mjs";
@@ -31,7 +31,7 @@ test("15c — every stage's authored surface is declared, not just the one file 
 // THE TRAP the ruling names, and the reason this is a second list rather than an addition to outSibs.
 test("15c — the declaration is NOT the destructive list: nothing deletes from stageOutputs", () => {
   const src = driverSource("pipeline.mjs");
-  const snap = src.slice(src.indexOf("function snapshotOutputs("), src.indexOf("function snapshotOutputs(") + 1200);
+  const snap = src.slice(onlyAt(src, "function snapshotOutputs("), onlyAt(src, "function snapshotOutputs(") + 1200);
   assert.match(snap, /outSibs/, "snapshotOutputs still drives its deletes off outSibs");
   assert.ok(!/stageOutputs/.test(snap),
     "…and never off stageOutputs — findings.json in the destructive list would be deleted before every "
@@ -76,7 +76,7 @@ test("15a — mixed staleness is repaired, not suppressed: the guard's own parti
 
 test("15a — the upstream repair map is the honest scope statement", () => {
   const src = driverSource("pipeline.mjs");
-  const map = src.slice(src.indexOf("// item 15a — the UPSTREAM repair arms"), src.indexOf("export const DELIVERY_TAIL_LABEL_RE"));
+  const map = src.slice(onlyAt(src, "// item 15a — the UPSTREAM repair arms"), onlyAt(src, "export const DELIVERY_TAIL_LABEL_RE"));
   for (const label of ["register-digest", "synthesis", "narrative-refutation", "skeptic"])
     assert.ok(map.includes(`"${label}"`) || map.includes(`${label}:`), `${label} has a repair arm`);
   assert.match(map, /runDigest\(ctx/, "register-digest routes through runDigest, never a bare stage() — else the old machine ledger outvotes the rewritten prose");
@@ -88,7 +88,7 @@ test("15b — the blocked pass writes down WHAT is stale, so the recovery has so
   assert.match(src, /delivery-stale\.json/, "the set is recorded at the throw");
   assert.match(src, /labels: dependencyOrder\(runState\.staleStages\.map/, "…in dependency order, so reader and repair agree about what happens first");
   assert.match(src, /export async function repairStale\(/, "and there is an entry point that runs exactly it");
-  const fn = src.slice(src.indexOf("export async function repairStale("), src.indexOf("export async function repairStale(") + 2400);
+  const fn = src.slice(onlyAt(src, "export async function repairStale("), onlyAt(src, "export async function repairStale(") + 2400);
   assert.match(fn, /RE-DERIVE THE ORDER rather than trusting the file/,
     "the file names WHAT, the live graph says WHEN — a recorded order can go stale with the code");
   assert.match(fn, /return null/, "nothing recorded ⇒ the ordinary resume, so this can never become a requirement");
@@ -101,7 +101,7 @@ test("A-4 — the skeptic declares what it consumes, and has an arm to be repair
   assert.ok(inputs.includes("plan-execution.json"), "the receipt skepticDeferralExtra is built from");
   assert.ok(inputs.includes("register-coverage-ledger.json"));
   const src = driverSource("pipeline.mjs");
-  const map = src.slice(src.indexOf("const UPSTREAM_STALE_REPAIR = {"), src.indexOf("export const DELIVERY_TAIL_LABEL_RE"));
+  const map = src.slice(onlyAt(src, "const UPSTREAM_STALE_REPAIR = {"), onlyAt(src, "export const DELIVERY_TAIL_LABEL_RE"));
   assert.match(map, /skeptic:/, "…and the arm that makes declaring it safe, which is why it waited for Wave D");
 });
 
@@ -115,7 +115,7 @@ test("placement-inquiry declares the band material, and has a stale-repair arm; 
   assert.ok(inputs.includes("register-named-band.json"),
     "the declaration is why it can go stale — narrowing it instead would be the gate lying");
   const src = driverSource("pipeline.mjs");
-  const map = src.slice(src.indexOf("const UPSTREAM_STALE_REPAIR = {"), src.indexOf("export const DELIVERY_TAIL_LABEL_RE"));
+  const map = src.slice(onlyAt(src, "const UPSTREAM_STALE_REPAIR = {"), onlyAt(src, "export const DELIVERY_TAIL_LABEL_RE"));
   assert.match(map, /"placement-inquiry":/, "the arm exists");
   assert.match(map, /"placement-inquiry": async \(ctx\) => recordPlacementPass\(ctx, await stage\("placement-inquiry", ctx, \{ force: true/,
     "it re-runs the stage — a repair that did not force would skip on the artifact it is repairing — and records the pass as the main path does");
@@ -144,7 +144,7 @@ test("placement-inquiry declares the band material, and has a stale-repair arm; 
 // it — so this arm fails on a stage declared later that nobody wired into the repair path.
 test("every stale-repair arm carries the driver-computed blocks its stage declares", () => {
   const src = driverSource("pipeline.mjs");
-  const map = src.slice(src.indexOf("const UPSTREAM_STALE_REPAIR = {"), src.indexOf("export const DELIVERY_TAIL_LABEL_RE"));
+  const map = src.slice(onlyAt(src, "const UPSTREAM_STALE_REPAIR = {"), onlyAt(src, "export const DELIVERY_TAIL_LABEL_RE"));
   assert.ok(map.length > 100, "the map was not located — this arm must fail loudly rather than vacuously pass");
 
   const declared = {};

@@ -17,6 +17,7 @@ import assert from "node:assert/strict";
 import { fileURLToPath } from "node:url";
 import { dirname, join, basename } from "node:path";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readdirSync, rmSync } from "node:fs";
+import { gunzipSync } from "node:zlib";
 import { tmpdir } from "node:os";
 import { streamSink } from "../engine/session-record.mjs";
 import * as codex from "../engine/openai-agent.mjs";
@@ -26,6 +27,9 @@ import { pinEnv } from "../../shared/env-aliases.mjs";
 const HERE = dirname(fileURLToPath(import.meta.url));
 const readRolloutUsage = (...a) => (typeof codex.readRolloutUsage === "function" ? codex.readRolloutUsage(...a) : undefined);
 const aDir = (t) => { const d = mkdtempSync(join(tmpdir(), "cut-session-")); t.after(() => rmSync(d, { recursive: true, force: true })); return d; };
+
+// A closed session's stream is kept gzipped; one that never closed stays plain.
+const readStream = (f) => (String(f).endsWith(".gz") ? gunzipSync(readFileSync(f)).toString("utf8") : readFileSync(f, "utf8"));
 
 test("a second session under a taken stream name keeps the first session's bytes, and names its own file", (t) => {
   const file = join(aDir(t), "streams", "synthesis.attempt1.jsonl");
@@ -38,12 +42,12 @@ test("a second session under a taken stream name keeps the first session's bytes
   const third = streamSink(file);
   third.write("x\n");
   const three = third.close();
-  assert.match(readFileSync(file, "utf8"), /"first"/, "the first session's stream was written over by the next");
-  assert.equal(one.file, file);
+  assert.match(readStream(one.file), /"first"/, "the first session's stream was written over by the next");
+  assert.equal(one.file, `${file}.gz`, "a closed session's stream is not kept gzipped under its own name");
   assert.notEqual(two.file, file, "the second session's row names the first session's file");
-  assert.equal(basename(two.file), "synthesis.attempt1.session2.jsonl");
-  assert.match(readFileSync(two.file, "utf8"), /"second"/);
-  assert.equal(basename(three.file), "synthesis.attempt1.session3.jsonl");
+  assert.equal(basename(two.file), "synthesis.attempt1.session2.jsonl.gz");
+  assert.match(readStream(two.file), /"second"/);
+  assert.equal(basename(three.file), "synthesis.attempt1.session3.jsonl.gz");
   assert.deepEqual([one.present, two.present, three.present], [true, true, true]);
   assert.equal(readdirSync(dirname(file)).length, 3);
 });
@@ -97,7 +101,7 @@ test("a codex turn cut off by the watchdog keeps what it spent, counted as rebui
   assert.deepEqual(r.usage, { input: 1800, output: 550, cacheRead: 7200, cacheWrite: 0, total: 9550 }, "the cut-off turn was journalled as spending nothing");
   assert.equal(r.signals?.usageStreamed, true, "the usage is not marked as rebuilt, so it counts as a measured turn");
   assert.equal(classifyWedge("timeout", r.usage, r.signals), "timeout", "a turn that spent tokens was taken for a silent lane");
-  assert.equal(r.stream?.file, streamFile);
+  assert.equal(r.stream?.file, `${streamFile}.gz`);
 });
 
 test("a resumed codex turn counts its own share, not its thread's running total, and stays a measured turn", async (t) => {

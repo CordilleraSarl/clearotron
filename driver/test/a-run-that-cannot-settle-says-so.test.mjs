@@ -24,7 +24,7 @@
 // regressed is a SHAPE, not a value. Somebody re-introducing `await` at this entry would restore the
 // deadlock exactly, and no assertion about run behaviour would fire until a knockout run was attempted.
 import test from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { join } from "node:path";
 
@@ -49,7 +49,7 @@ test("the detached entry still reports a throw the way the inner catch does", ()
 });
 
 test("a run that never settles writes a terminal status and releases its slot", () => {
-  const net = SRC.slice(SRC.indexOf('process.on("beforeExit"'));
+  const net = SRC.slice(onlyAt(SRC, 'process.on("beforeExit"'));
   assert.ok(net.length > 0, "the unsettled-run net is gone — nothing speaks for a run that deadlocks");
   assert.match(net, /if \(settled\) return;/,
     "the net must not fire for a run that already recorded its own outcome — overwriting a settled run's "
