@@ -73,16 +73,16 @@ async function knockout(codename, { lookupAnswers }) {
 
 test("an owner lookup that got no answer is a Degraded row on the Audit Trail, in the reader's words", async () => {
   const trail = await knockout("lookup-failed", { lookupAnswers: false });
-  const row = trail.find((r) => OWNER_QUESTION.test(r["Search Term"]));
+  const row = trail.find((r) => OWNER_QUESTION.test(r["Search term"]));
   assert.ok(row, `no trail row for the failed owner lookup: ${JSON.stringify(trail)}`);
   assert.ok(!("OK/Degraded" in row), "the engine's OK/Degraded column is back on the lawyer's sheet");
   assert.equal(row["Mark"], "LANTERNWICK");
-  assert.equal(row["Result Summary"], "FAILED — it could not be completed this run, so it is left open here rather than reported as clean");
+  assert.equal(row["Result summary"], "FAILED — it could not be completed this run, so it is left open here rather than reported as clean");
   assert.ok(!/503|provider is down/.test(JSON.stringify(row)), "the raw cause reached a reader's cell");
 });
 
 test("THE CONTROL: a knockout whose lookups all answered has no lookup row, as before", async () => {
   const trail = await knockout("lookup-answered", { lookupAnswers: true });
-  assert.equal(trail.filter((r) => OWNER_QUESTION.test(r["Search Term"])).length, 0);
-  assert.ok(trail.length > 0 && trail.every((r) => !/^FAILED/.test(r["Result Summary"])), `the trail is not the clean run's: ${JSON.stringify(trail)}`);
+  assert.equal(trail.filter((r) => OWNER_QUESTION.test(r["Search term"])).length, 0);
+  assert.ok(trail.length > 0 && trail.every((r) => !/^FAILED/.test(r["Result summary"])), `the trail is not the clean run's: ${JSON.stringify(trail)}`);
 });

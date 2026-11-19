@@ -200,29 +200,36 @@ export const KNOCKOUT_WORKBOOK = Object.freeze({
 });
 
 /**
- * The audit workbooks' tab names and column headers, keyed by the name the code builds each tab and row on, which is
- * today's English. A translation changes the values and never the keys, because the rows are built on the keys.
+ * The audit workbooks' tab names and column headers, keyed by the name the code builds each tab and row on. A header
+ * the owner renamed reads differently from its key; a translation changes the values and never the keys, because the
+ * rows are built on the keys.
  */
 export const WORKBOOK_LABELS = Object.freeze({
   sheets: Object.freeze(Object.fromEntries([
     'Summary', 'Findings', 'What was searched', 'Coverage & gaps',
     'Negative Results', 'Audit Trail', 'Working Notes', 'Register Counts', 'Register Filings', 'Machine Checks',
   ].map((n) => [n, n]))),
-  columns: Object.freeze(Object.fromEntries([
-    // The clearance workbook.
-    'Field', 'Value',
-    '#', 'Conflicting mark', 'Owner', 'Country', 'Source', 'Class', 'Registration(s)', 'Status & key dates',
-    'Record retrieved?', 'Risk band', 'How we treated it', 'Mark similarity', 'Goods proximity', 'Use', 'Enforcer', 'Link',
-    'Search term / variant', 'Scope', 'Result', 'Outcome', 'Note',
-    'Area', 'State', 'What was done', "What's left",
-    // The Knockout workbook.
-    'Mark', 'Finding Reference', 'Finding Name', 'Band', 'Type', 'Net', 'Basis', 'Evidence',
-    'Search Term', 'Source / Context', 'Notes', 'Result Summary',
-    'Classes counted', 'Territories', 'Identical filings', 'Filings containing the name', 'Filings on close variations',
-    'Close variation forms', 'Register',
-    'Matched form', 'Trademark', 'Status', 'Classes', 'Territory', 'Filed', 'Registered', 'Record',
-    'Check', 'What it found',
-  ].map((h) => [h, h]))),
+  columns: Object.freeze({ ...Object.fromEntries([
+      // The clearance workbook.
+      'Field', 'Value',
+      '#', 'Conflicting mark', 'Owner', 'Country', 'Source', 'Class', 'Registration(s)', 'Status & key dates',
+      'Record retrieved?', 'Risk band', 'How we treated it', 'Mark similarity', 'Goods proximity', 'Use', 'Enforcer', 'Link',
+      'Search term / variant', 'Scope', 'Result', 'Outcome', 'Note',
+      'Area', 'State', 'What was done', "What's left",
+      // The Knockout workbook.
+      'Mark', 'Finding Reference', 'Finding Name', 'Band', 'Type', 'Net', 'Basis', 'Evidence',
+      'Search Term', 'Source / Context', 'Notes', 'Result Summary',
+      'Classes counted', 'Territories', 'Identical filings', 'Filings containing the name', 'Filings on close variations',
+      'Close variation forms', 'Register',
+      'Matched form', 'Trademark', 'Status', 'Classes', 'Territory', 'Filed', 'Registered', 'Record',
+      'Check', 'What it found',
+    ].map((h) => [h, h])),
+    // The owner's labels (2026-11-18): the report's words for the enforcement meter, and the Knockout's headings in
+    // the clearance workbook's sentence case, in its words where a column holds the same thing.
+    'Enforcer': 'Likely to enforce',
+    'Finding Reference': 'Finding reference', 'Finding Name': 'Conflicting mark', 'Band': 'Risk band',
+    'Search Term': 'Search term', 'Source / Context': 'Source / context', 'Notes': 'Note', 'Result Summary': 'Result summary',
+  }),
 });
 
 /** The list of reports a client's own index page shows: its heading, its table and its search and pages. */
