@@ -24,6 +24,7 @@ import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { REFUTATION_SENTENCES } from "./ruled-sentences-narrative-refutation.mjs";
+import { PHASE2_SENTENCES } from "./ruled-sentences-phase2-execution.mjs";
 
 // The writer's session, as its tools are told it; the research tool below asks under the same one.
 const SESSION = "clearance-acme-run-amber-fox-synthesis";
@@ -47,11 +48,7 @@ const DRIVER = join(HERE, "..");
 const SERVER = join(DRIVER, "engine", "mcp", "perplexity-server.mjs");
 
 // The ruled sentences, word for word (design, 2026-10-28). Written out here so a change to any of them fails this file.
-const RULED = "A search that failed, was refused, was not asked, or has no available saved answer supplies no search result. "
-  + "Use relevant evidence already held, and leave any remaining use or enforcement question unknown. "
-  + "Never describe the unanswered question as a search that found no result, no use, or no enforcement, and do not infer a low "
-  + "enforcement likelihood from that failure. Record no-result only when a completed search actually returned no result. "
-  + "Preserve unaffected findings and complete the report from the evidence available.";
+const RULED = PHASE2_SENTENCES.searchThatFailedWasRefused;
 const CORRECTION = "Correct the affected findings and any narrative, answers, actions or conclusions that depend on them. "
   + "If the driver already holds an accepted record, use record_synthesis to send only the corrected findings, affected narrative "
   + "sections and changed registers. Otherwise complete the initial recording with the corrected values. Preserve unaffected work.";
@@ -475,8 +472,8 @@ test("the ruled words stand where the writer, its correction and the review read
 test("an unknown use owes no source line in the manuals or the review", () => {
   const flat = (p) => readFileSync(join(DRIVER, "skills", ...p), "utf8").replace(/\s+/g, " ");
   const step = flat(["clearance-search", "phase2-execution.md"]);
-  const contract = step.slice(step.indexOf("**Output contract"), step.indexOf("record its result in that finding's `use_check.source`"));
-  assert.ok(contract.includes("names non-use revocation/cancellation as the mitigant),"));
+  const contract = step.slice(step.indexOf("**Output contract"), step.indexOf(PHASE2_SENTENCES.recordItsResultThatFinding));
+  assert.ok(contract.includes(PHASE2_SENTENCES.namesNonUseRevocationCancellation));
   assert.equal(/unknown/i.test(contract), false, "Step 3.5 still owes a source line for an unknown use");
   const rules = flat(["clearance-search", "synthesis-rules.md"]);
   const filed = rules.slice(rules.indexOf("## Filed-vs-used check"), rules.indexOf("## Own-rights evidence"));

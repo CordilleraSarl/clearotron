@@ -20,6 +20,7 @@ import { INQUIRY_SENTENCES } from "./ruled-sentences-placement-inquiry.mjs";
 import { REGISTER_SENTENCES } from "./ruled-sentences-register.mjs";
 import { REFUTATION_SENTENCES } from "./ruled-sentences-narrative-refutation.mjs";
 import { RECIPES_SENTENCES } from "./ruled-sentences-register-recipes.mjs";
+import { PHASE2_SENTENCES } from "./ruled-sentences-phase2-execution.mjs";
 import { GATHERED, manualPins, heldStrings, namesManual } from "../../scripts/count-manual-pins.mjs";
 import { skipReason } from "../../shared/tracked-files.mjs";
 
@@ -34,11 +35,15 @@ const FIXTURES = {
   "driver/skills/clearance-register/SKILL.md": REGISTER_SENTENCES,
   "driver/skills/narrative-refutation/SKILL.md": REFUTATION_SENTENCES,
   "driver/skills/clearance-register/register-recipes.md": RECIPES_SENTENCES,
+  "driver/skills/clearance-search/phase2-execution.md": PHASE2_SENTENCES,
 };
 // Strings a test that reads a manual uses for its own purpose, which the manual happens to share word for word: an example
 // row label used as a unit name, a stage message's own words, a fixture's input. They hold nothing of the manual.
 const COINCIDENT = {
   "driver/skills/clearance-register/digest.md": { "driver/test/coverage-form-seat-axis.test.mjs": 2 },
+  "driver/skills/clearance-search/phase2-execution.md": {
+    "driver/test/a-search-that-did-not-answer-is-never-recorded-as-one-that-found-nothing.test.mjs": 1,
+  },
   "driver/skills/knockout-assess/SKILL.md": {
     "driver/test/a-knockout-defect-reaches-the-step-that-can-repair-it.test.mjs": 1,
     "driver/test/a-knockout-reads-the-clients-own-request.test.mjs": 1,

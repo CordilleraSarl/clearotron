@@ -14,6 +14,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { COMMON_LAW_SENTENCES } from "./ruled-sentences-common-law.mjs";
 import { REFUTATION_SENTENCES } from "./ruled-sentences-narrative-refutation.mjs";
+import { PHASE2_SENTENCES } from "./ruled-sentences-phase2-execution.mjs";
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "skills");
 const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
@@ -34,8 +35,8 @@ test("the narrative reviewer keeps its backstop checks as insurance, not cheap i
 
 test("phase two prices no re-run and no audit", () => {
   const phase2 = flat("clearance-search/phase2-execution.md");
-  assert.ok(phase2.includes("a passing mention never triggers a re-run,"));
-  assert.ok(phase2.includes("comes from a fresh-eyes audit plus targeted escalation, not from one giant session."));
+  assert.ok(phase2.includes(PHASE2_SENTENCES.passingMentionNeverTriggersRun));
+  assert.ok(phase2.includes(PHASE2_SENTENCES.comesFromFreshEyesAudit));
   for (const gone of ["paid re-run", "cheap fresh-eyes", "Opus escalation"])
     assert.ok(!phase2.includes(gone), `phase two still says "${gone}"`);
 });
