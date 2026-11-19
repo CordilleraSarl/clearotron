@@ -33,6 +33,9 @@ import { fileURLToPath } from "node:url";
 const ROOT = mkdtempSync(join(tmpdir(), "clearotron-2155-"));
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
+// The resume below passes the engine preflight before it reaches the door, so it names the mock engine: the runner's
+// PATH stand-in has no form Windows will run.
+pinEnv(process.env, "CLEAROTRON_CLAUDE_PATH", fileURLToPath(new URL("./mock-claude.mjs", import.meta.url)));
 
 const STUDIO = (agent) => join(ROOT, `workspace-${agent}`, "studio", "clearance-search");
 const mkRun = (slug, run, agent = "mailagent") => {
