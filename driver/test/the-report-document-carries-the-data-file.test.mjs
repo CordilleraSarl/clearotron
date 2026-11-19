@@ -158,6 +158,14 @@ test("on an invented run, the workbook built from the document read back is the 
   assert.deepEqual(entriesOf(join(dir, "document.xlsx")), direct);
 });
 
+test("of the run's review receipts, the document carries the failing checks alone, since no surface reads the rest", () => {
+  const lint = [{ id: "invented-check", detail: "raw detail", family: "f" }];
+  const doc = clearanceReportDocument({ ...invented, reviewReceipts: { lint, engagement: { x: 1 }, tripFlags: ["t"], machineLedgerNote: "n" } }, {});
+  assert.deepStrictEqual(doc.reviewer.lint, lint);
+  assert.equal(doc.reviewer.receipts, undefined);
+  assert.doesNotMatch(JSON.stringify(doc), /machineLedgerNote|tripFlags|engagement/);
+});
+
 test("the verdict record is kept whole, sign-off included, because the page prints it where there is no statement", () => {
   const record = { verdict: "CONDITIONAL", tier: "Moderate", badge: "l3", reasons: ["r"], clauses: ["c"] };
   const doc = clearanceReportDocument({ ...invented, assessmentNotCompleted: false, verdictInfo: record });
