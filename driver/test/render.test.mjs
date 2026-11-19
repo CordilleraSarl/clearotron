@@ -1576,7 +1576,8 @@ test("wp50: the C/L group renders AFTER the region list, labelled and cross-link
   ];
   const html = renderHtml(parsedOf(REPORT), findings, COVERAGE, {});
   assert.match(html, /Common-law \/ marketplace — unregistered use, not register rights/, "labelled block");
-  assert.match(html, /<a href="#common-law">/, "cross-link to the reading section");
+  assert.match(html, /\(<a href="#c2">[^<]*<\/a>\)/, "cross-link to the common-law card, which the page draws");
+  assert.match(html, /id="c2"/);
   const usIdx = html.indexOf('<span class="rcode">US</span>');
   const clIdx = html.indexOf('Common-law / marketplace');
   assert.ok(usIdx > 0 && clIdx > usIdx, "C/L block sits after the region list");
@@ -2497,6 +2498,46 @@ test("the one-clause net renders VERBATIM — no cap, no ellipsis, on every card
   // and on the reasoned-negative row, which folded through the same helper
   const neg = renderHtml(parsedOf(REPORT), [P5_BANDED[0], { ...V6_NEGATIVES[2], net: LONG_NET }], COVERAGE, { runId: "noref-demo", findingsSchemaVersion: 6 });
   assert.match(neg, /class="rn-why">[^<]*the opposition window closes in March/, "the grouped negative's reason is uncut too");
+});
+
+// EVERY IN-PAGE LINK LANDS ON THE PAGE. The key rows and the chart linked to findings drawn as grouped rows with no
+// id, the key's common-law hint to a section that had lost its heading and its anchor, and a four-answers ordinal to a
+// withdrawn finding the page does not draw. Measured on saved test-instance clearances: up to 13 dead links a page.
+// Each target now exists, a withdrawn finding is cited nowhere, and no id repeats. Ids are read from the markup only.
+const pageLinks = (html) => {
+  const markup = html.replace(/<script\b[\s\S]*?<\/script>/g, "").replace(/<style\b[\s\S]*?<\/style>/g, "");
+  const ids = [...markup.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]);
+  const hrefs = [...markup.matchAll(/href="#([^"]+)"/g)].map((m) => m[1]);
+  return { hrefs, dead: hrefs.filter((h) => !ids.includes(h)), repeated: ids.filter((x, i) => ids.indexOf(x) !== i) };
+};
+test("every in-page link on a clearance page lands on an element of that page, and no id repeats", () => {
+  const lands = (html, what) => {
+    const { hrefs, dead, repeated } = pageLinks(html);
+    assert.ok(hrefs.length > 0, `${what}: the page draws in-page links`);
+    assert.deepEqual(dead, [], `${what}: links to targets the page does not carry`);
+    assert.deepEqual(repeated, [], `${what}: ids that repeat`);
+  };
+  // The grouped negatives: the key and the chart link to each one's row.
+  const grouped = renderHtml(parsedOf(REPORT), V6_NEGATIVES, COVERAGE, { runId: "noref-demo", findingsSchemaVersion: 6 });
+  assert.match(grouped, /<details class="rgroup rn" id="c3">/);
+  assert.match(grouped, /class="keyrow" href="#c3"/);
+  lands(grouped, "grouped negatives");
+  // The common-law hint lands on the first common-law card, not on the section that went with its heading.
+  const cl = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-demo" });
+  assert.match(cl, /<p class="keyhint" style="margin-top:10px">[^<]*<a href="#c2">/);
+  assert.doesNotMatch(cl, /href="#common-law"/);
+  lands(cl, "common-law hint");
+  // A four-answers ordinal lands on a ruled-out card, on either layout, and a withdrawn finding is not cited at all.
+  const ruled = { ordinal: 4, mark: "MATCHDAY MOTORS", ruled_out: true, owner: { name: "Matchday Motors Ltd", registrations: [] },
+    composite: 1, level: "C", meters: {}, quadrant: { x: 0.1, y: 0.1 }, source: { source_type: "register-vendor" } };
+  const withdrawn = { ...FINDINGS[0], ordinal: 5, disposition: "withdrawn" };
+  const fourAnswers = { third_party_rights: { read: "Senior rights sit in the core class.", token: "strong", ordinals: [1, 4, 5] } };
+  for (const [what, findings, extra] of [["legacy layout", FINDINGS, {}], ["grouped layout", V6_NEGATIVES, { findingsSchemaVersion: 6 }]]) {
+    const html = renderHtml(parsedOf(REPORT), [...findings, ruled, withdrawn], COVERAGE, { runId: "noref-demo", fourAnswers, ...extra });
+    assert.match(html, /<span class="fa-ords"><a href="#c1">#1<\/a> <a href="#c4">#4<\/a><\/span>/, `${what}: the withdrawn #5 is not cited`);
+    assert.match(html, /<div class="card ruled" id="c4">/, `${what}: the ruled-out card carries its id`);
+    lands(html, what);
+  }
 });
 
 // The half of foldClause that was NOT a cap, and had to survive its deletion: trim-to-empty. It is what

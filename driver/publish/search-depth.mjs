@@ -347,7 +347,7 @@ export function localLanguageDepth(verdicts) {
 
 // WHICH NATIVE SCRIPTS THE RUN SEARCHED, READ OFF WHAT RAN (owner, 2026-11-19). This read the plan alone, and any
 // non-ASCII character made the page claim local script: an accented Latin spelling did, and so did a native-script
-// term that was planned and never ran. Measured on the test box's saved runs: the claim was fully borne out on 18 of
+// term that was planned and never ran. Measured on the test instance's saved runs: the claim was fully borne out on 18 of
 // 80; on 59 a native-script search ran while another planned one did not, and on 3 none ran at all. Now a script
 // counts as searched only when a plan term in it COMPLETED: its row in the run's execution record is `enumerated`. A
 // row the record keeps as `incomplete` (1,193 of 11,813 on those runs), or with no state, did not complete and does not
@@ -361,7 +361,7 @@ const NATIVE_SCRIPTS = [
 // WHERE EACH SCRIPT COMPLETED, so a script searched in one territory and not in another keeps that gap (2026-11-19).
 // A territory is a plan term's region, folded the way the page folds the plan's territories (`normRegion`: EM and
 // euipo are EU, GB is UK), so one territory under two spellings is never a gap. A term that names no region is placed
-// nowhere: on the test box's 88 saved plans, 464 of 1,492 native-script terms name none. Those are kept apart, under
+// nowhere: on the test instance's 88 saved plans, 464 of 1,492 native-script terms name none. Those are kept apart, under
 // `unnamed`, rather than read as searching nowhere or everywhere.
 /**
  * The native scripts the run's plan searched in, `{ searched, missed, territories }`, keyed by ISO 15924 code: a script
