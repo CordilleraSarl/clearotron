@@ -7,7 +7,8 @@
 // the export prints (a ticked card, or a ruled-out card, which has no tick box) print open, record and reasoning
 // included, with any fold such a card sits in; a fold the reader left closed prints its summary line and stays shut.
 // Measured with a browser on the three clearance demos: 14 pages to 10, 12 to 10, 10 to 7, the pages the owner chose
-// from. The Knockout has no tick boxes and still prints every fold. A browser measures the pages; this holds the
+// from. The verdict caption is not such a fold: it prints whole, its label off the paper, as before. The Knockout has no
+// tick boxes and still prints every fold. A browser measures the pages; this holds the
 // rules, the script and which page carries them.
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -39,6 +40,24 @@ test("the clearance's print sheet keeps closed folds shut and opens every card t
   ]) assert.ok(css.replace(/\s+/g, "").includes(rule.replace(/\s+/g, "")), `the print rule is missing: ${rule}`);
   assert.ok(css.lastIndexOf("details:not([open])>*:not(summary)") > css.lastIndexOf("details>*:not(summary){display:block!important}"),
     "the clearance's rules must come after the base sheet's open-every-fold rule");
+});
+
+test("the verdict caption prints whole and unlabelled, closed on screen or not", () => {
+  const html = clearance();
+  assert.match(html, /<details class="sub-more"><summary>/, "the demo's verdict caption no longer folds, so this measures nothing");
+  const css = [...html.matchAll(/<style>([\s\S]*?)<\/style>/g)].map((m) => m[1]).join("\n").replace(/\s+/g, "");
+  const hidden = css.lastIndexOf("details.sub-more>summary{display:none!important}");
+  const whole = css.lastIndexOf("details.sub-more>*:not(summary){display:block!important}");
+  assert.ok(hidden >= 0 && whole >= 0, "the caption's print rules are missing");
+  // As specific as the closed-fold rules, so the later rule wins: both must come after them.
+  for (const closed of ["details:not([open])>summary{display:block!important}", "details:not([open])>*:not(summary){display:none!important}"]) {
+    assert.ok(Math.min(hidden, whole) > css.lastIndexOf(closed), `a closed-fold rule comes after the caption's: ${closed}`);
+  }
+  // A browser hides a closed fold's body whatever its children's display, so the page opens the caption before printing;
+  // afterprint puts every fold back as the screen had it.
+  const js = html.match(/window\.addEventListener\('beforeprint',function\(\)\{[^\n]*\}\);/)?.[0] ?? "";
+  assert.match(js, /d\.dataset\.o=d\.open\?'1':'';\}\);document\.querySelectorAll\('details\.sub-more'\)\.forEach\(function\(d\)\{d\.open=true;\}\);/,
+    "the page does not open the verdict caption before printing, after keeping the screen's fold state");
 });
 
 test("before printing, the page opens only the folds of the cards the export prints, and their containers", () => {

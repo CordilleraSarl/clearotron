@@ -322,8 +322,8 @@
           "todos": 0
         },
         "a-clearance-prints-its-ticked-cards-whole.test.mjs": {
-          "tests": 3,
-          "asserts": 7,
+          "tests": 4,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
@@ -2358,6 +2358,12 @@
         "a-right-kept-on-a-sheet-is-not-dropped-by-its-copies.test.mjs": {
           "tests": 7,
           "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-right-whose-rating-was-withdrawn-is-left-open.test.mjs": {
+          "tests": 5,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
