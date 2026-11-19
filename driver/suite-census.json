@@ -8356,8 +8356,8 @@
           "todos": 0
         },
         "the-report-can-say-how-much-was-read.test.mjs": {
-          "tests": 25,
-          "asserts": 71,
+          "tests": 26,
+          "asserts": 73,
           "skips": 0,
           "todos": 0
         },

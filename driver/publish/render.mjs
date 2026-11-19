@@ -232,7 +232,6 @@ function ratingExtras(fm, findings, coverage, fourAnswers, opts, bandWord, condi
     if (cleared) parts.push(R.rating.nearNamesCleared(cleared.toLocaleString('en-GB')));
     const rated = findings.filter((f) => f && f.band).length;
     parts.push(R.rating.conflicts(rated));
-    if (sd.counts.localScriptSearched) parts.push(R.rating.localScript);
     const cd = sd.counts.courtDecisions;
     if (cd === 'found') parts.push(R.rating.courtChecked);
     else if (cd === 'none-found') parts.push(R.rating.courtNoneTouch);
@@ -1194,7 +1193,9 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
     ? R.searched.checksWebAndStores(sw.checks.toLocaleString('en-GB'))
     : R.searched.checksOnPlatforms(sw.checks.toLocaleString('en-GB'), sw.platforms)]);
   if (sw.reputation) rows.push([R.searched.reputation, R.searched.checks(sw.reputation.toLocaleString('en-GB'))]);
-  rows.push([R.searched.localScript, c.localScriptSearched ? R.searched.searched : R.searched.notSearched]);
+  // The local-script row says what the run's record shows ran (owner, 2026-11-19): searched when a native-script term
+  // ran, not searched when the record shows none did, and no row when the run kept no execution record to say either.
+  if (c.localScripts) rows.push([R.searched.localScript, c.localScripts.searched.length ? R.searched.searched : R.searched.notSearched]);
   // HOW DEEP THE LOCAL-LANGUAGE INVESTIGATION WENT, which is a different question from the row above it.
   // That one answers whether the spellings were searched; this one answers whether the investigation ran
   // at the depth the matter configured. The engine can run it shallower than the account asked for, and

@@ -513,7 +513,6 @@ export const REPORT_PAGE = Object.freeze({
     internationalRead: (n) => `${n} international registrations read`,
     nearNamesCleared: (n) => `${n} near-names cleared`,
     conflicts: (n) => `${n} ${n === 1 ? 'conflict' : 'conflicts'}`,
-    localScript: 'the name searched in local script',
     courtChecked: 'court decisions checked',
     courtNoneTouch: 'court decisions checked, none touch the name',
     courtNotChecked: 'court decisions could not be checked',
