@@ -116,6 +116,8 @@ Everything below follows from writing only what your evidence supports.
    `findings[]` — cite that evidence. It is never a claim about filings, families, or how many marks
    share a token. `crowdedField: true` means "the payload I read
    shows a crowded field", and if the payload does not show one, it is `false`.
+5. Describe only the activity the held source shows. Attribute a listing’s claim of registration to the
+   listing unless a held register record confirms it.
 
 The engine appends the depth boundary to `batch.standardCaveats` itself, and the standing caveat where
 one is owed, so never write your own version of either.
