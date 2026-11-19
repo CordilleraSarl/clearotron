@@ -17,7 +17,8 @@
 // two surfaces that default differently today still can from one document.
 //
 // JSON-SAFE BY CONSTRUCTION: a Map is stored as its [key, value] entries in insertion order (an object would
-// turn ordinal keys into strings and reorder them), a Set as its members in insertion order. The register's
+// turn ordinal keys into strings and reorder them), a Set as its members in insertion order, a Set inside a Map's
+// value included (JSON writes a Set as `{}`). The register's
 // records and the saved logos are stored by reference: their bodies stay in the run's `_records/` and
 // `_driver/logos/`, which can hold thousands of records.
 //
@@ -27,7 +28,7 @@ import { deriveActionConditions } from '../findings-model.mjs';
 
 export const CLEARANCE_DOCUMENT = 'report-document/clearance-1';
 
-const entries = (m) => (m instanceof Map ? [...m.entries()] : null);
+const entries = (m) => (m instanceof Map ? [...m].map(([k, v]) => [k, v instanceof Set ? [...v] : v]) : null);
 const members = (s) => (s instanceof Set ? [...s] : null);
 const orNull = (v) => (v === undefined ? null : v);
 
@@ -41,7 +42,6 @@ export function clearanceReportDocument(d, { codename = null, customerKey = null
   // The forward asks as the report partitions them. An ask whose findings were all withdrawn is dropped
   // here, so the client section never needs the withdrawn findings to read its own asks.
   const { conditionActions, advisoryActions } = deriveActionConditions(d.actionsRegister ?? [], all);
-  const { verdict: signoff, ...rating } = d.verdictInfo ?? {};
   const pol = d.searchPolicy ?? null;
   return {
     document: CLEARANCE_DOCUMENT,
@@ -94,8 +94,9 @@ export function clearanceReportDocument(d, { codename = null, customerKey = null
     },
     framework: { manifest: orNull(d.framework), method: orNull(d.frameworkMethod) },
     verdict: {
-      // The verdict record without the reviewer's sign-off, which is the review stage's and sits in `reviewer`.
-      record: d.verdictInfo ? rating : null,
+      // The verdict record whole. Its sign-off is the reviewer's word, but the page prints it as the recommendation
+      // on a record with no statement, so it is read here with the rest.
+      record: orNull(d.verdictInfo),
       assessmentNotCompleted: Boolean(d.assessmentNotCompleted),
     },
     client: {
@@ -117,7 +118,6 @@ export function clearanceReportDocument(d, { codename = null, customerKey = null
       servedModels: orNull(d.served),
     },
     reviewer: {
-      signoff: d.verdictInfo ? orNull(signoff) : null,
       // Each withdrawn finding with its place in the run's list, so a reader can restore the list's order.
       withdrawn: all.flatMap((f, at) => (isWithdrawn(f) ? [{ at, finding: f }] : [])),
       quarantined: d.quarantined ?? [],

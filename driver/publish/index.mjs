@@ -1383,6 +1383,17 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // fails for want of it).
   if (searchDepth) { try { writeRO('search-depth.json', JSON.stringify(searchDepth, null, 2)); } catch { /* additive */ } }
 
+  // THE RUN'S REPORT AS ONE DOCUMENT (publish/report-document.mjs), built once from what was read above and kept in
+  // the run's own record, never the pool. The surfaces below move to reading it one at a time; the data file is the
+  // first. Built ahead of the page so the page can read it too. A build that throws costs the data file, as a
+  // producer throw always has, and never the report.
+  let reportDocument = null;
+  try { reportDocument = clearanceReportDocument({ ...doc, runId }, { codename, customerKey, auditFile, auditError }); }
+  catch (e) { console.warn(`[report-document] not built: ${e?.message ?? e}`); }
+  if (reportDocument && runDir) {
+    try { ensureDriverDir(runDir); atomicWrite(paths(runDir).reportDocument, JSON.stringify(reportDocument, null, 1) + '\n'); }
+    catch (e) { console.warn(`[report-document] not written: ${e?.message ?? e}`); }
+  }
   writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, frameworkMethod, servedModels: served, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion, searchDepth, assessmentNotCompleted, logos, followUpKinds }));
   // ONE report (spec 2026-07-30 §5): report.client.html is no longer written. The knockout lane's own
   // collapse note is the precedent: "two renderings of one run is how the wrong link gets sent". The
@@ -1392,16 +1403,6 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // P5 rebase note: this package was written against the pre-collapse tree, where the four-answers panel
   // had to be passed to BOTH renders. There is one render now, so `fourAnswers` rides the one call — the
   // panel reaches the client through the same cleaning path as every other reader-facing block.
-  // THE RUN'S REPORT AS ONE DOCUMENT (publish/report-document.mjs), built once from what was read above and kept in
-  // the run's own record, never the pool. The surfaces below move to reading it one at a time; the data file is the
-  // first. A build that throws costs the data file, as a producer throw always has, and never the report.
-  let reportDocument = null;
-  try { reportDocument = clearanceReportDocument({ ...doc, runId }, { codename, customerKey, auditFile, auditError }); }
-  catch (e) { console.warn(`[report-document] not built: ${e?.message ?? e}`); }
-  if (reportDocument && runDir) {
-    try { ensureDriverDir(runDir); atomicWrite(paths(runDir).reportDocument, JSON.stringify(reportDocument, null, 1) + '\n'); }
-    catch (e) { console.warn(`[report-document] not written: ${e?.message ?? e}`); }
-  }
   // PR-9 — the clearance run as data: the client-cut projection the assistant drafts mail from, built from the
   // document (clearanceReportDataOf). BEST-EFFORT with a hard receipt rule: meta.reportSchema is stamped ONLY when the
   // file actually wrote, so a meta never names a data file that is not there. A producer throw never blocks the
