@@ -1,7 +1,8 @@
 # driver/test — the driver's suite
 
-470 `*.test.mjs` files, the `fixtures/` they read, and the mock binaries they drive. The suite is offline by
-construction: no network, no credentials, no model. Engine tests spawn `mock-claude.mjs` (or `mock-codex.mjs`)
+The `*.test.mjs` files, the `fixtures/` they read, and the mock binaries they drive. How many files and tests
+there are is in `../suite-census.json`, which CI refuses to let go stale; a count written here did, within weeks.
+The suite is offline by construction: no network, no credentials, no model. Engine tests spawn `mock-claude.mjs` (or `mock-codex.mjs`)
 in place of a reasoning CLI, so a green run proves the machinery without a bill.
 
 ## Two tiers
@@ -14,8 +15,8 @@ in place of a reasoning CLI, so a green run proves the machinery without a bill.
 A file joins the full tier with a comment line near the top: `// @tier full — drives the mock pipeline end to end`.
 
 That marker is the whole mechanism: `../../scripts/test-fast.mjs` holds no list of filenames, because a list rots
-the first time a file is renamed. 37 files carry it today, and it names every one of them on every run. Marking one
-cannot take it out of the merge gate — `test:full` runs all of them, and `test-tiers.test.mjs` asserts that wiring.
+the first time a file is renamed. It names every file that carries the marker on every run, so its output is the
+count. Marking one cannot take it out of the merge gate — `test:full` runs all of them, and `test-tiers.test.mjs` asserts that wiring.
 Both npm scripts wrap the runner in `../../scripts/test-run.mjs`: the run gets its own `TMPDIR`, deleted at the end,
 so `mkdtemp` fixtures do not pile up in the real one.
 

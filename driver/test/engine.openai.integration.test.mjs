@@ -8,7 +8,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { driverDir } from "../../shared/driver-dir.mjs";   // #1336
+import { driverDir } from "../../shared/driver-dir.mjs";
 import { mkdtempSync, existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { runStage, selectEngine } from "../gateway.mjs";
@@ -26,7 +26,7 @@ function withEnv(env, fn) {
 
 test("selectEngine resolves openai-agent when CLEAROTRON_AI=openai-agent; unknown still fails loud", async () => {
   await withEnv({ CLEAROTRON_AI: "openai-agent" }, () => {
-    assert.equal(selectEngine().name, "openai-agent");   // #696 — process-wide, no stage argument
+    assert.equal(selectEngine().name, "openai-agent");   // process-wide, no stage argument
   });
   await withEnv({ CLEAROTRON_AI: "nonsense-engine" }, () => {
     assert.throws(() => selectEngine(), /not a registered engine adapter/);

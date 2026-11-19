@@ -1652,7 +1652,21 @@ for (const x of DISPATCH_EXTRAS) {
 
 // The case-law profiles joined to the findings as they stand: the profiles carry the writer's numbers, and after a
 // grouping the delivered record has its own (joinCaseLawProfiles).
-const caseLawJoin = (P, findings) => joinCaseLawProfiles(parseCaseLawProfiles(readFileSync(P.caseLaw, "utf8")), findings, readFold(P.runDir)?.map?.modelToFolded ?? null);
+//
+// A JOIN THAT FAILS IS RECORDED BEFORE IT IS THROWN. Every caller asks only when the case-law file is there, and catches
+// the throw as "no case-law layer", so a join that failed on a file that exists read exactly like a run with no case law:
+// the cards and the delivery checks went on without it and nothing said so. The run log now carries the failure; what
+// each caller does next is unchanged.
+export const caseLawJoin = (P, findings) => {
+  try {
+    return joinCaseLawProfiles(parseCaseLawProfiles(readFileSync(P.caseLaw, "utf8")), findings, readFold(P.runDir)?.map?.modelToFolded ?? null);
+  } catch (e) {
+    const error = String(e?.message ?? e).replace(/\s+/g, " ").slice(0, 200);
+    try { runLog(P.runDir, { event: "case-law-join-failed", error }); } catch { /* the note below still says it */ }
+    note(`case law: the profiles could not be joined to the findings (${error}); this step goes on without them`);
+    throw e;
+  }
+};
 
 // The runnable half of INLINE_CONTEXT. Reads the CANONICAL run (`ctx.paths`), because that is the run
 // pipelineInner would have been reading when it built this payload.
@@ -1669,7 +1683,7 @@ const INLINE_RESOLVERS = {
     try {
       if (finding && existsSync(P.caseLaw))
         caseLawProfile = caseLawJoin(P, findings).get(ord) ?? null;
-    } catch { /* no case-law layer — production passes null here too */ }
+    } catch { /* no case-law layer, or a join that failed, which caseLawJoin has recorded — production passes null here too */ }
     return { finding, caseLawProfile };
   },
 };
@@ -9376,7 +9390,7 @@ export async function acquireRunSlot(agent = null) {   // @internal
 // P2 — reconcile every stage stamp against the artifacts as they finally stand for this pass, so the NEXT
 // pass pays only for material that actually changed between passes (not for this pass's own driver-side
 // re-merges/normalizations). Runs on success and failure alike, and always after the delivery precondition.
-function reconcilePassStamps(runRef, ctx) {
+export function reconcilePassStamps(runRef, ctx) {   // @internal, exported for its test
   try {
     const P = ctx?.paths ?? runRef?.paths;
     if (!P?.runDir) return;
@@ -9391,7 +9405,11 @@ function reconcilePassStamps(runRef, ctx) {
     try {
       const q = coerceQueue(JSON.parse(readFileSync(P.digestQueue, "utf8")));
       if (pendingItems(q).length) exclude.add("register-digest");
-    } catch { /* no queue on disk — nothing pending */ }
+    } catch {
+      // No queue on disk is nothing pending. A queue that is there and does not read may still owe a re-digest, so the
+      // digest stays stale and the resume recomputes it, rather than being reconciled as though nothing were owed.
+      if (existsSync(P.digestQueue)) exclude.add("register-digest");
+    }
     const n = reconcileStamps(P.runDir, (label) => {
       const bare = label.replace(/:.*$/, "");
       const axis = label.includes(":") ? label.slice(label.indexOf(":") + 1) : null;

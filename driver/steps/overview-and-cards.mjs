@@ -237,7 +237,7 @@ export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWri
   let caseLawByOrd = new Map();
   try {
     if (existsSync(P.caseLaw)) caseLawByOrd = caseLawJoin(P, findingsForCards);
-  } catch { /* no case-law layer */ }
+  } catch { /* no case-law layer, or a join that failed, which caseLawJoin has recorded */ }
   // A2 — cards are isolated BY DESIGN (each sees ONLY its own finding and writes its own
   // P.reportCard(ord) file), so they fan out like the gather members instead of paying 8–14 serial
   // LLM walls. The first card runs alone to warm the shared prompt-prefix cache; the rest batch at
