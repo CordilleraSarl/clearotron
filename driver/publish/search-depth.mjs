@@ -348,8 +348,10 @@ export function localLanguageDepth(verdicts) {
 // non-ASCII character made the page claim local script: an accented Latin spelling did, and so did a native-script
 // term that was planned and never ran. Measured on the test box's saved runs: the claim was fully borne out on 18 of
 // 80; on 59 a native-script search ran while another planned one did not, and on 3 none ran at all. Now a script
-// counts as searched only when a plan term in it is in the run's execution record, a Latin term names no native
-// script however it is accented, and a run that kept no execution record says nothing either way.
+// counts as searched only when a plan term in it COMPLETED: its row in the run's execution record is `enumerated`. A
+// row the record keeps as `incomplete` (1,193 of 11,813 on those runs), or with no state, did not complete and does not
+// count. A Latin term names no native script however it is accented, and a run that kept no execution record says
+// nothing either way.
 const NATIVE_SCRIPTS = [
   ["Hani", /\p{Script=Han}/u], ["Hira", /\p{Script=Hiragana}/u], ["Kana", /\p{Script=Katakana}/u], ["Hang", /\p{Script=Hangul}/u],
   ["Cyrl", /\p{Script=Cyrillic}/u], ["Arab", /\p{Script=Arabic}/u], ["Grek", /\p{Script=Greek}/u], ["Hebr", /\p{Script=Hebrew}/u],
@@ -357,12 +359,12 @@ const NATIVE_SCRIPTS = [
 ];
 /**
  * The native scripts the run's plan searched in, `{ searched, missed }` as ISO 15924 codes: a script is searched when a
- * plan term written in it ran, and missed when every term in it was planned and none ran. Null when the run kept no
- * execution record, so neither can be said. PURE.
+ * plan term written in it completed, and missed when terms in it were planned and none completed. Null when the run
+ * kept no execution record, so neither can be said. PURE.
  */
 export function localScripts(registerPlan, planExecution) {
   if (!planExecution || !Array.isArray(planExecution.executed)) return null;
-  const ran = new Set(planExecution.executed.map((x) => x?.qid).filter(Boolean));
+  const ran = new Set(planExecution.executed.filter((x) => x?.state === "enumerated").map((x) => x?.qid).filter(Boolean));
   const searched = new Set(), planned = new Set();
   for (const e of Array.isArray(registerPlan?.entries) ? registerPlan.entries : []) {
     for (const [code, re] of NATIVE_SCRIPTS) {

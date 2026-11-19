@@ -972,7 +972,7 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
     if (existsSync(clPath)) {
       const clMd = readFileSync(clPath, 'utf8');
       caseLawByOrdinal = joinCaseLawProfiles(parseCaseLawProfiles(clMd), findings, readFold(runDir ?? dirname(reportMd))?.map?.modelToFolded ?? null);
-      caseLawNotice = parseCaseLawPreamble(clMd);   // session-wide outage notice — rendered once in §04
+      caseLawNotice = parseCaseLawPreamble(clMd);   // session-wide outage notice — kept in the report document; no page prints it
     }
   } catch { /* no case-law layer this run */ }
   // T7 (E6) — the Corsearch enforcement telemetry (onomaticsAggression/oppositions, extracted
@@ -1354,7 +1354,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   if (auditMd && existsSync(auditMd)) copyRO(auditMd, 'audit.md');   // durable source (kept even if the xlsx fails)
   // THE RUN'S REPORT AS ONE DOCUMENT (publish/report-document.mjs), built once from what was read above and kept in
   // the run's own record, never the pool. The workbook, the page and the data file read it. A build that throws costs
-  // the workbook and the data file, as a throw in either always has, and never the report.
+  // the workbook and the data file, as a throw in either always has, and the page too, which reads only the document.
   let reportDocument = null;
   try { reportDocument = clearanceReportDocument({ ...doc, runId }, { codename, customerKey }); }
   catch (e) { console.warn(`[report-document] not built: ${e?.message ?? e}`); }

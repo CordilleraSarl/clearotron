@@ -784,7 +784,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   });
   // THE RUN'S REPORT AS ONE DOCUMENT (publish/report-document.mjs), built once from what was read above and kept in
   // the run's own record, never the pool. The workbook and each name's data file read it. A build that throws costs
-  // the workbook and the data files, as a throw in either always has, and never a report.
+  // the workbook and the data files, as a throw in either always has, and the pages too, which read only the document.
   let reportDocument = null;
   try {
     reportDocument = knockoutReportDocument(doc, {
