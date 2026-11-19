@@ -134,6 +134,8 @@ function normaliser(root, result) {
       .replace(/"turnaroundHours":\s*\{[^}]*\}/g, '"turnaroundHours":"<WALL>"')
       // A record's own duration, which the wall clock decides: the post-repair review's `ms` moved on every run.
       .replace(/"ms":\s*\d+/g, '"ms":"<MS>"')
+      // And a register answer's own duration, which the report document carries.
+      .replace(/"took_ms":\s*\d+/g, '"took_ms":"<MS>"')
       .replace(/mock-sess-[a-z0-9]+/g, "<SESSION>")
       .replace(/\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/g, "<UUID>");
   };
@@ -192,7 +194,13 @@ function fileHash(f, norm) {
   if (f.endsWith(".xlsx")) return sha(zipEntries(buf).map(([n, b]) => `${n}\0${norm(workbookEntryText(n, b))}`).join("\0"));
   // A report lists the models it was served in the order concurrent stages finished. Each turn's own model is
   // compared in its record, so the list's order carries nothing the comparison needs.
-  return /\.(png|jpg|pdf|zip|gz)$/.test(f) ? "binary" : sha(norm(buf.toString("utf8")).replace(/\b(?:claude|gpt)-[a-z0-9.-]+/g, "<MODEL>"));
+  if (/\.(png|jpg|pdf|zip|gz)$/.test(f)) return "binary";
+  let text = norm(buf.toString("utf8")).replace(/\b(?:claude|gpt)-[a-z0-9.-]+/g, "<MODEL>");
+  // A stage's input record holds a hash of each input file's raw bytes, which name the run's folder and codename, so
+  // it moved on every run. Each of those files is an output here, hashed after normalising, so the record's own hashes
+  // add nothing and are masked.
+  if (/[\\/]_driver[\\/]stage-inputs[\\/]/.test(f)) text = text.replace(/"(sha|proj)":\s*"[0-9a-f]+"/g, '"$1":"<SHA>"');
+  return sha(text);
 }
 const VOLATILE = /(^|[\\/])(streams|[^\\/]*\.jsonl|economics\.json|[^\\/]*\.attempt\d+[^\\/]*\.stdout)($|[\\/])/;
 const stableOutput = (f) => !VOLATILE.test(f);
