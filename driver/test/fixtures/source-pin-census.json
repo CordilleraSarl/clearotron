@@ -1,5 +1,5 @@
 {
-  "total": 298,
+  "total": 297,
   "files": {
     "driver/test/a-backgrounded-install-can-actually-run-a-clearance.test.mjs": [
       0,
@@ -268,10 +268,6 @@
     "driver/test/a-stage-reads-only-its-own-folders.test.mjs": [
       0,
       3
-    ],
-    "driver/test/a-stop-is-read-once-more-before-anything-is-published.test.mjs": [
-      1,
-      0
     ],
     "driver/test/a-terminal-guard-delivers-and-clamps.test.mjs": [
       1,
