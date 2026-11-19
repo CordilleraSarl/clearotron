@@ -22,7 +22,7 @@ import { noneCarriedForward, recordsForMark, recordsLine, normalizeRegisterRecor
 import { reportIdentityFor, productCoverageNote, kebab } from '../search-policy.mjs';
 import { batchMarkName } from '../mark-name.mjs';
 import { renderKnockoutHtml, DEGRADED_NOTE } from './render-knockout.mjs';
-import { knockoutReportDocument, knockoutReportDataOf } from './report-document.mjs';   // the run's report as one document, and the data files it carries
+import { knockoutReportDocument, knockoutReportDataOf, knockoutWorkbookOf, withWorkbook } from './report-document.mjs';   // the run's report as one document, and what it carries
 import { readFrozenMethod, inputsLine, FROZEN_METHOD_FILE } from '../framework-method.mjs';
 import { resolveDemoData, demoBannerMd } from './demo-marking.mjs';   //
 import { engineCommit } from '../engine-build.mjs';
@@ -791,12 +791,6 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
       note(`knockout working record: ${name} is not in the run directory, so the delivered report has no engine text to be checked against`);
     }
   }
-  // A workbook that cannot be built no longer stops the batch: every name's report ships, and nothing names the workbook.
-  const { auditFile, auditError } = await buildWorkbook(`knockout-audit-${codename ?? runId}.xlsx`, (at) => buildKnockoutWorkbook(findings, sweepReceipts, at, registerCounts, qcFlags, framework, registerRecords, frameworkMethod, [...ownerChecks, ...lookupsNotRun], {
-    listing: registerRecords ? null : steps.listing, reading: steps.reading, review: steps.review, machineChecks: machineChecksFailed,
-    aboutThisRequest: scopeUnreadable ? { reason: NOT_COMPLETED } : null, droppedLinks: recordLinksDropped, recordsNotKept, openPoints,
-  }));
-
   // Each name's report: its file, its address, and its band. `overall` on a one-mark document is that mark's rating,
   // never the batch's worst, or a clean name would inherit a blocking name's colour.
   const named = markRows.map((m) => {
@@ -804,15 +798,21 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     return { mark: m.name, slug, file: single ? 'report.html' : `report-${slug}.html`, url: reportUrlFor(slug), band: single ? overall : worstBand(framework, [m]) };
   });
   // THE RUN'S REPORT AS ONE DOCUMENT (publish/report-document.mjs), built once from what was read above and kept in
-  // the run's own record, never the pool. Each name's data file below is its projection. A build that throws costs
-  // the data files, as a producer throw always has, and never a report.
+  // the run's own record, never the pool. The workbook and each name's data file read it. A build that throws costs
+  // the workbook and the data files, as a throw in either always has, and never a report.
   let reportDocument = null;
   try {
     reportDocument = knockoutReportDocument(doc, {
       runId, codename, customerKey, findings, framework, overall, searchPolicy: searchPolicy ?? null,
-      depthNote: productCoverageNote(searchPolicy ?? null), tokens, reports: named, auditFile, auditError,
+      depthNote: productCoverageNote(searchPolicy ?? null), tokens, reports: named,
     });
   } catch (e) { note(`knockout report document not built (non-fatal): ${e?.message ?? e}`); }
+  // A workbook that cannot be built no longer stops the batch: every name's report ships, and nothing names the workbook.
+  const { auditFile, auditError } = await buildWorkbook(`knockout-audit-${codename ?? runId}.xlsx`, (at) => {
+    const w = knockoutWorkbookOf(reportDocument);
+    return buildKnockoutWorkbook(w.findings, w.sweepReceipts, at, w.registerCounts, w.qcFlags, w.framework, w.registerRecords, w.frameworkMethod, w.ownerChecks, w.parts);
+  });
+  if (reportDocument) reportDocument = withWorkbook(reportDocument, { auditFile, auditError });
   if (reportDocument) {
     try { ensureDriverDir(runDir); atomicWrite(paths(runDir).reportDocument, JSON.stringify(reportDocument, null, 1) + '\n'); }
     catch (e) { note(`knockout report document not written (non-fatal): ${e?.message ?? e}`); }
