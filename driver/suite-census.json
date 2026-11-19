@@ -8343,6 +8343,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-report-document-carries-the-data-file.test.mjs": {
+          "tests": 3,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
         "the-report-headings-read-in-the-ruled-words.test.mjs": {
           "tests": 2,
           "asserts": 9,
