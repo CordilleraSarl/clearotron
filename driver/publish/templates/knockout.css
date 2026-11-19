@@ -196,3 +196,5 @@
   .ko-caveats{padding:16px 24px;margin:14px 0 8px}
   .ko-caveats p{margin:0 0 7px;font-size:12px;line-height:1.6;color:var(--slate)}
   .ko-caveats p:last-child{margin-bottom:0}
+  .ko-fwline{margin-top:10px}.ko-fwline .label{margin-bottom:0}
+  .ko-fwline .gauge-fw{margin-top:3px;font-size:11px;font-weight:600;color:var(--slate)}

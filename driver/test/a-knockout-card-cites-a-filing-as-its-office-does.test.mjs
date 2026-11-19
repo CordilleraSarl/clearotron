@@ -26,7 +26,7 @@ const FILINGS = [
   { recordId: "/mark/wo/b2d4e6f8-1a3c", office: "WO", irNumber: "1234567", mark: "TARNELLO", owner: "Tarnello Srl", status: "registered", classes: [9] },
 ];
 
-const evidenceLine = (html) => html.match(/<p class="ko-findev">Evidence: ([\s\S]*?)<\/p>/)?.[1] ?? "";
+const evidenceLine = (html) => html.match(/<p class="ko-findev">Sources: ([\s\S]*?)<\/p>/)?.[1] ?? "";
 const page = (evidence, provider, filings = FILINGS) => {
   const registerRecords = { provider, marks: [{ name: "TARNELLO", classes: [9], records: filings.map((f) => ({ ...f })) }] };
   addressListedFilings(registerRecords, []);   // a register with no record pages of its own: the office's page is the link

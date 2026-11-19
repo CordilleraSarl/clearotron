@@ -50,6 +50,22 @@ export const AXIS_READER_LABEL = Object.freeze({
   "incumbent-class": "owner portfolio sweep",
 });
 
+// A ROW HEAD THAT IS AN ENGINE TOKEN, in the reader's words (owner, 2026-11-18, batch two item 1138). The synthesis
+// writes an open intake question's row under the ask register's own token (`intake-ask`, ask-ledger.mjs), and the page
+// printed it capitalised, "Intake-ask". Same one position as an axis head, read the same way: equality on the head.
+export const ROW_HEAD_READER_LABEL = Object.freeze({
+  "intake-ask": "Question from the request",
+});
+
+/** A row's area with an engine-token head in the reader's words; any other area rides back unchanged. PURE. */
+export function readerRowHead(area) {
+  const a = String(area ?? "");
+  const cut = a.indexOf(" / ");
+  const head = (cut < 0 ? a : a.slice(0, cut)).trim().toLowerCase();
+  const label = Object.hasOwn(ROW_HEAD_READER_LABEL, head) ? ROW_HEAD_READER_LABEL[head] : null;
+  return label ? (cut < 0 ? label : `${label}${a.slice(cut)}`) : a;
+}
+
 /**
  * A coverage unit in the reader's words. `<axis> / <scope>` → `<label> / <scope>`; a bare axis → its
  * label; anything whose head is not one of the four closed axes rides back UNCHANGED.
@@ -66,7 +82,7 @@ export function coverageUnitLabel(unit) {
   const cut = u.indexOf(" / ");
   const head = cut < 0 ? u : u.slice(0, cut);
   const label = Object.hasOwn(AXIS_READER_LABEL, head) ? AXIS_READER_LABEL[head] : null;
-  if (!label) return u;
+  if (!label) return readerRowHead(u);
   return cut < 0 ? label : `${label}${u.slice(cut)}`;
 }
 

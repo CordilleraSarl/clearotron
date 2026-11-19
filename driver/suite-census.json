@@ -1329,6 +1329,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-says-what-it-left-open.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-stage-reuses-its-output-only-while-its-inputs-are-unchanged.test.mjs": {
           "tests": 9,
           "asserts": 41,
@@ -5159,7 +5165,7 @@
         },
         "lane-depth-ask-vs-got.test.mjs": {
           "tests": 16,
-          "asserts": 61,
+          "asserts": 63,
           "skips": 0,
           "todos": 0
         },
@@ -5442,6 +5448,12 @@
         "open-coverage-rows-group-under-their-state.test.mjs": {
           "tests": 2,
           "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "open-items-read-in-the-ruled-words.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
@@ -7785,6 +7797,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-knockout-labels-read-as-the-clearances.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "the-knockout-names-every-ordered-territory.test.mjs": {
           "tests": 3,
           "asserts": 5,
@@ -7793,7 +7811,7 @@
         },
         "the-knockout-page-leads-with-the-read.test.mjs": {
           "tests": 39,
-          "asserts": 125,
+          "asserts": 122,
           "skips": 0,
           "todos": 0
         },

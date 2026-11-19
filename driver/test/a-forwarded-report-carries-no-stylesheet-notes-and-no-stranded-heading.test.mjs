@@ -45,5 +45,6 @@ test("a rendered page's own stylesheet holds no comment, and the source keeps it
 test("in print, a section heading is kept with what follows it", () => {
   const css = readFileSync(join(HERE, "..", "publish", "templates", "report.css"), "utf8");
   const print = css.slice(css.indexOf("@media print{"));
-  assert.match(stripCssComments(print), /\.sec,\.sec h2\{break-after:avoid\}/, "the print rules do not keep a section heading with its content");
+  assert.match(stripCssComments(print), /\.sec,\.sec h2,\.cardhead\{break-after:avoid\}/,
+    "the print rules do not keep a section heading, or a card's title row, with its content");
 });

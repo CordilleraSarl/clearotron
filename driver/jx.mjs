@@ -212,7 +212,10 @@ export function deriveLaneDepthVerdicts({ sidecar, slices } = {}) {
           + `this run's own record.`;
       } else {
         cause = "requested-full-ran-candidates";
-        why = `asked for full and ran candidates only — ${deepStates.map((d) => `${d.name} ${d.state ?? "no record"}`).join(", ")}`;
+        // The owner's 2026-11-11 sentence pattern (2026-11-18, batch two item 1137); the slices' own states stay as `detail`.
+        why = `A full-depth ${languageOfLane(lane)}-language search was requested, but only the candidate search ran; `
+          + `the deeper web search and native-language review were not performed.`;
+        detail = `asked for full and ran candidates only — ${deepStates.map((d) => `${d.name} ${d.state ?? "no record"}`).join(", ")}`;
       }
     }
     out[lane] = { asked, ran, shortfall, cause, why, ...(detail ? { detail } : {}),
