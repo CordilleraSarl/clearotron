@@ -770,16 +770,16 @@ function jurisdictionChips(fm, coverage = [], findings = []) {
   // as covered even when the sweep found nothing there. Never forced on a non-worldwide (targeted) run.
   const codes = (worldwide && !order.includes('WO')) ? [...order, 'WO'] : order;
   const chips = codes.map(code => { const v = meta.get(code) || { limited: false };
-    return `<span class="jchip${v.limited ? ' lim' : ''}" title="${escAttr(regionName(code))}${v.limited ? ' — coverage-limited' : ''}">${esc(code)}${v.limited ? '*' : ''}</span>`; }).join('');
+    return `<span class="jchip${v.limited ? ' lim' : ''}" title="${escAttr(regionName(code))}${v.limited ? R.scope.coverageLimitedTitle : ''}">${esc(code)}${v.limited ? '*' : ''}</span>`; }).join('');
   // wp50: a worldwide sweep leads the chips and gets its own plain-language note.
-  const wwChip = worldwide ? `<span class="jchip ww" title="the register sweep ran worldwide — chips show the citation focus and the jurisdictions where conflicts live">worldwide</span>` : '';
+  const wwChip = worldwide ? `<span class="jchip ww" title="${R.scope.worldwideChipTitle}">${R.scope.worldwide}</span>` : '';
   const limited = order.filter(code => meta.get(code).limited);
   const notes = [
-    worldwide ? `<div class="jnote">register sweep ran worldwide — chips show the citation focus and where the conflicts live</div>` : '',
+    worldwide ? `<div class="jnote">${R.scope.worldwideNote}</div>` : '',
     // doc-55 B — honest source completeness: a worldwide register search covers, for every jurisdiction in
     // scope, its national register, the EU regional register where one applies, AND WIPO/Madrid international
     // registrations designating it — not one source per territory.
-    worldwide ? `<div class="jnote">every jurisdiction cleared across its national register, the EU regional register where applicable, and WIPO/Madrid (WO) international registrations designating it</div>` : '',
+    worldwide ? `<div class="jnote">${R.scope.clearedAcross}</div>` : '',
     // — THE POINTER NAMES THE HEADING VERBATIM. It said “What we covered”, and the heading it points
     // at reads "What we covered — and what's open" (scopeSection). A reader who ctrl-Fs the quoted words
     // lands on a prefix of a title rather than the title, and there is no anchor to follow instead: the
@@ -792,7 +792,7 @@ function jurisdictionChips(fm, coverage = [], findings = []) {
     // condition the heading renders under. Checked rather than assumed — the alternative was a
     // `coverage.length` guard here that no input can reach, and a guard that cannot fire is a claim
     // nobody can check.
-    limited.length ? `<div class="jnote">* ${esc(limited.join(', '))} — coverage-limited (see “What we covered — and what's open”)</div>` : '',
+    limited.length ? `<div class="jnote">${R.scope.limitedNote(esc(limited.join(', ')))}</div>` : '',
   ].join('');
   return `<div class="jchips">${wwChip}${chips}</div>${notes}`;
 }
@@ -802,14 +802,14 @@ function jurisdictionChips(fm, coverage = [], findings = []) {
 function headScope(fm, coverage = [], findings = []) {
   const { order: codes, worldwide } = jurisdictionCodes(fm, coverage, findings);
   if (!fm.classes && !codes.length && !worldwide) return '';
-  const cls = fm.classes ? `<span>Cl.&nbsp;${esc(fm.classes)}</span>` : '';
+  const cls = fm.classes ? `<span>${R.scope.classesShort}&nbsp;${esc(fm.classes)}</span>` : '';
   const jur = codes.map(c => `<span title="${escAttr(regionName(c))}">${esc(c)}</span>`).join(' ');
   const style = "margin:4px 0 0;font:600 13px/1.5 'Plus Jakarta Sans','Helvetica Neue',Helvetica,Arial,sans-serif;"
     + "letter-spacing:.05em;opacity:.75";
   // wp50: a worldwide sweep leads the scope line; the codes read as the focus set, never as the
   // whole scope ("Cl. 5 · US EU UK CH JP" under a worldwide search reads as a narrow search).
   const parts = worldwide
-    ? [cls, `<span title="the register sweep ran worldwide (all reachable registers)">worldwide register sweep</span>`, jur ? `<span style="opacity:.85">focus:</span> ${jur}` : '']
+    ? [cls, `<span title="${R.scope.sweepTitle}">${R.scope.sweep}</span>`, jur ? `<span style="opacity:.85">${R.scope.focus}</span> ${jur}` : '']
     : [cls, jur];
   return `<div class="mark-scope" style="${style}">${parts.filter(Boolean).join(' · ')}</div>`;
 }
@@ -831,9 +831,9 @@ function placesSearched(fm, coverage = [], findings = []) {
   const shown = (worldwide && !codes.includes('WO')) ? [...codes, 'WO'] : codes;
   const where = shown.map((c) => {
     const name = regionName(c) || c;
-    return meta.get(c)?.limited ? `${name} (coverage-limited)` : name;
+    return meta.get(c)?.limited ? R.scope.coverageLimited(name) : name;
   }).filter(Boolean).join(', ');
-  return { worldwide, focus: codes.length, where, list: worldwide ? (where ? `Worldwide, focus on ${where}` : 'Worldwide') : where };
+  return { worldwide, focus: codes.length, where, list: worldwide ? (where ? R.scope.worldwideFocusOn(where) : R.scope.worldwideList) : where };
 }
 
 function aboutPanel(fm, coverage = [], findings = [], opts = {}) {
@@ -844,15 +844,15 @@ function aboutPanel(fm, coverage = [], findings = [], opts = {}) {
   const cut = note.lastIndexOf(' — ');
   const stage = cut > 0 ? note.slice(0, cut).trim() : note;
   const rows = [
-    ['Type of search', stage],
-    ['Instructed use', fm.use || ''],
-    ['Classes', fm.classes || ''],
-    ['Where searched', worldwide && focus ? `Worldwide \u00b7 ${focus} focus territor${focus === 1 ? 'y' : 'ies'}` : list],
-    ['Project', fm.run_under_project || ''],
-    ['Searched on', fm.searched || fm.run || ''],
+    [R.about.typeOfSearch, stage],
+    [R.about.instructedUse, fm.use || ''],
+    [R.about.classes, fm.classes || ''],
+    [R.about.whereSearched, worldwide && focus ? R.about.worldwideFocus(focus) : list],
+    [R.about.project, fm.run_under_project || ''],
+    [R.about.searchedOn, fm.searched || fm.run || ''],
   ].filter(([, v]) => String(v || '').trim());
   if (!rows.length) return '';
-  return `<div class="panel about"><div class="label">About this request</div>${
+  return `<div class="panel about"><div class="label">${R.about.title}</div>${
     rows.map(([k, v]) => `<div class="row"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`).join('')
   }</div>`;
 }
@@ -864,7 +864,7 @@ function doFirst(secs) {
   const head = nl < 0 ? t.trim() : t.slice(0, nl).trim();
   const body = nl < 0 ? '' : t.slice(nl + 1).trim();
   return `<div class="firstUp"><div class="ic">!</div><div>
-    <div class="tcrit">Do this first · time-critical</div>
+    <div class="tcrit">${R.doFirst}</div>
     <h3>${inline(head)}</h3>${body ? `<p>${inline(body)}</p>` : ''}
   </div></div>`;
 }
@@ -960,7 +960,7 @@ function answersHtml(body) {
     const head = `${label ? `${inline(label)} ` : ''}${inline(first)}`;
     if (!rest && !tail) { rows.push(`<li>${head}</li>`); continue; }
     if (!first && !rest) { rows.push(`<li class="int-note">${head}${inline(tail)}</li>`); continue; }
-    const fold = `<details class="ans-more"><summary>More</summary><p>${inline(rest && tail ? `${rest} ${tail}` : rest || tail)}</p></details>`;
+    const fold = `<details class="ans-more"><summary>${R.more}</summary><p>${inline(rest && tail ? `${rest} ${tail}` : rest || tail)}</p></details>`;
     rows.push(`<li>${head}${rest ? fold : `<div class="int-note">${fold}</div>`}</li>`);
   }
   return rows.length ? `<ul class="answers">${rows.join('')}</ul>` : '';
@@ -1055,14 +1055,14 @@ export function actYouConditions(youBucket) {
 // meaning "different goods" appeared zero times, because such records are dropped by the batch screen
 // before they ever become a cleared near-name. Grouping on the engine's reasoning paragraph instead would
 // produce four groups and assert a reason the record does not support. Owner ruling, 2026-09-16.
-const CLEARED_GROUP_LABEL = { 'dead-filing': 'Dead filings', 'different-goods': 'Different goods', 'other': 'Read and cleared' };
+const CLEARED_GROUP_LABEL = R.cleared.groups;
 const CLEARED_GROUP_ORDER = ['different-goods', 'dead-filing', 'other'];
 const NAMES_CAP = 8;
 
 function clearedGroupsHtml(searchDepth, auditFile) {
   const reg = (searchDepth && searchDepth.cleared && searchDepth.cleared.register) || [];
   if (!reg.length) return '';
-  const link = (n) => hrefAttr(auditFile, { relative: true }) ? `<div class="cmore"><a class="wb" href="${hrefAttr(auditFile, { relative: true })}">All ${n.toLocaleString('en-GB')} in the audit workbook</a></div>` : '';
+  const link = (n) => hrefAttr(auditFile, { relative: true }) ? `<div class="cmore"><a class="wb" href="${hrefAttr(auditFile, { relative: true })}">${R.cleared.allInWorkbook(n.toLocaleString('en-GB'))}</a></div>` : '';
   return CLEARED_GROUP_ORDER.map((g) => {
     const items = reg.filter((c) => c.group === g);
     if (!items.length) return '';
@@ -1075,7 +1075,7 @@ function clearedGroupsHtml(searchDepth, auditFile) {
       esc([c.owner, regionName(c.country) || c.country, c.classes ? `Cl. ${c.classes}` : '',
            c.status ? String(c.status).toLowerCase() : ''].filter(Boolean).join(' \u00b7 '))}</span></div>`).join('');
     return `<details class="cgroup"><summary><span class="gname">${esc(CLEARED_GROUP_LABEL[g] || g)}</span><span class="gcount">${
-      items.length.toLocaleString('en-GB')} ${items.length === 1 ? 'name' : 'names'}</span></summary><div class="gbody">${rows}${
+      R.cleared.names(items.length.toLocaleString('en-GB'), items.length)}</span></summary><div class="gbody">${rows}${
       items.length > shown.length ? link(items.length) : ''}</div></details>`;
   }).join('');
 }
@@ -1085,7 +1085,7 @@ function clearedGroupsHtml(searchDepth, auditFile) {
 // reference positively identified as that ledger is renamed; any other source keeps its exact reference until a
 // truthful label exists for it. The run's record and the audit keep the original reference.
 const RUN_COMMON_LAW_RECORD = /^(?:\.\/)?(?:_driver\/)?common-law-grid(?:\.half-[a-z0-9]+)?\.json$/i;
-const RUN_COMMON_LAW_RECORD_LABEL = "the run's own common-law search record";
+const RUN_COMMON_LAW_RECORD_LABEL = R.cleared.runCommonLawRecord;
 
 function webNamesHtml(searchDepth) {
   const web = (searchDepth && searchDepth.cleared && searchDepth.cleared.web) || [];
@@ -1094,8 +1094,8 @@ function webNamesHtml(searchDepth) {
   const rows = shown.map((w) => `<div class="crow"><span class="cm-mark">${esc(w.title || '')}</span>${
     w.url && RUN_COMMON_LAW_RECORD.test(String(w.url).trim()) ? `<span class="curl">${esc(RUN_COMMON_LAW_RECORD_LABEL)}</span>`
     : w.url ? `<a class="curl" href="${escAttr(w.url)}">${esc(String(w.url).replace(/^https?:\/\//, '').replace(/\/$/, ''))}</a>` : '<span class="cwho"></span>'}</div>`).join('');
-  return `<details class="cgroup"><summary><span class="gname">Web and marketplace names</span><span class="gcount">${
-    web.length.toLocaleString('en-GB')} ${web.length === 1 ? 'name' : 'names'}</span></summary><div class="gbody">${rows}</div></details>`;
+  return `<details class="cgroup"><summary><span class="gname">${R.cleared.webAndMarketplace}</span><span class="gcount">${
+    R.cleared.names(web.length.toLocaleString('en-GB'), web.length)}</span></summary><div class="gbody">${rows}</div></details>`;
 }
 
 // ── WHERE IT STANDS, COURT DECISIONS, WHAT WAS SEARCHED ────────────────────────────────────────────

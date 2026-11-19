@@ -514,4 +514,42 @@ export const REPORT_PAGE = Object.freeze({
     fromHighestRated: (several) => `— from the highest-rated finding${several ? 's' : ''}`,
     searched: 'Searched',
   }),
+  // The jurisdictions searched: the chips, their notes, and the scope line under the mark.
+  scope: Object.freeze({
+    coverageLimitedTitle: ' — coverage-limited',
+    worldwideChipTitle: 'the register sweep ran worldwide — chips show the citation focus and the jurisdictions where conflicts live',
+    worldwide: 'worldwide',
+    worldwideNote: 'register sweep ran worldwide — chips show the citation focus and where the conflicts live',
+    clearedAcross: 'every jurisdiction cleared across its national register, the EU regional register where applicable, and WIPO/Madrid (WO) international registrations designating it',
+    limitedNote: (list) => `* ${list} — coverage-limited (see “What we covered — and what's open”)`,
+    classesShort: 'Cl.',
+    sweepTitle: 'the register sweep ran worldwide (all reachable registers)',
+    sweep: 'worldwide register sweep',
+    focus: 'focus:',
+    coverageLimited: (name) => `${name} (coverage-limited)`,
+    worldwideFocusOn: (where) => `Worldwide, focus on ${where}`,
+    worldwideList: 'Worldwide',
+  }),
+  // About this request.
+  about: Object.freeze({
+    title: 'About this request',
+    typeOfSearch: 'Type of search',
+    instructedUse: 'Instructed use',
+    classes: 'Classes',
+    whereSearched: 'Where searched',
+    worldwideFocus: (n) => `Worldwide \u00b7 ${n} focus territor${n === 1 ? 'y' : 'ies'}`,
+    project: 'Project',
+    searchedOn: 'Searched on',
+  }),
+  doFirst: 'Do this first · time-critical',
+  // The answers to the client's instructions: the fold that holds the rest of an answer.
+  more: 'More',
+  // The names the search read and cleared, by group. Counts arrive formatted for the reader.
+  cleared: Object.freeze({
+    groups: Object.freeze({ 'dead-filing': 'Dead filings', 'different-goods': 'Different goods', other: 'Read and cleared' }),
+    allInWorkbook: (n) => `All ${n} in the audit workbook`,
+    names: (formatted, n) => `${formatted} ${n === 1 ? 'name' : 'names'}`,
+    runCommonLawRecord: "the run's own common-law search record",
+    webAndMarketplace: 'Web and marketplace names',
+  }),
 });
