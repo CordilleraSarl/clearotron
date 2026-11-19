@@ -8263,7 +8263,7 @@ export function injectLaneDepthCoverage(P, runDir, note) {   // @internal
       // opening that restates them in the code's terms, and no closing line about verdicts, which belongs to the run's
       // own coverage judgment. Every other cause keeps the fuller note below.
       // A depth the record cannot confirm, and a full ask that ran candidates only, are said the same way, each in the
-      // owner's sentence (2026-11-18, batch two items 1156 and 1137).
+      // owner's sentence (2026-11-18).
       const plain = (v.cause === "not-built-for-lane" && v.ran === "candidates" || v.cause === "not-established"
         || v.cause === "requested-full-ran-candidates") && typeof v.why === "string" && v.why;
       const language = String(LANGUAGE_LANES[lane]?.label ?? "").replace(/-script deepening$/, "") || lane;   // as jx.mjs names it

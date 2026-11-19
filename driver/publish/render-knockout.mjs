@@ -622,7 +622,7 @@ function whyBandFold(inner) {
 }
 
 /** The card fold's own word. Stated once so the renderer and its tests read the same string. */
-const WHY_BAND_LABEL = K.riskAssessment;   // the clearance's word for the reasoning (owner, 2026-11-18, item 1140)
+const WHY_BAND_LABEL = K.riskAssessment;   // the clearance's word for the reasoning (owner, 2026-11-18)
 
 /**
  * The band chip's text. A framework that states a method shows its inputs beside the band, in its own
@@ -1487,7 +1487,7 @@ function analysisSection(marks, framework, { registerCounts = null, probeRan = f
     // mark says "no adverse signals recorded" — a mark with nothing against it — so anything added to it
     // silently retires that sentence. Named ONCE: the read above carries it where it drew a card, and
     // the test for that reads the markup this same function just produced.
-    // The rating line reads as the clearance's does, "Overall risk" and the framework's name (owner, 2026-11-18, item 1141).
+    // The rating line reads as the clearance's does, "Overall risk" and the framework's name (owner, 2026-11-18).
     const frameworkLine = !body.includes('class="gauge-fw"') && framework?.title && String(m.rating ?? '').trim()
       ? `<div class="ko-fwline"><div class="label">${K.readCard.overallRisk}</div><div class="gauge-fw">${esc(framework.title)}</div></div>` : '';
     return `<div class="ko-row">

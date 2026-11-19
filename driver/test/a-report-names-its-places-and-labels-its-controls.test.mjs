@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// A REPORT NAMES ITS PLACES AND LABELS ITS CONTROLS (owner, 2026-11-18, batch two items 1151 to 1155).
+// A REPORT NAMES ITS PLACES AND LABELS ITS CONTROLS (owner, 2026-11-18).
 //
 // A worldwide report's About row listed every focus territory; it now gives their count, and the list moves, in its
 // own words, to What was searched. The places that came back clean were a chip each, codes past twelve; they are one

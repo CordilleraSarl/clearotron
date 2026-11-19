@@ -375,7 +375,7 @@ export const KNOCKOUT_PAGE = Object.freeze({
     probeRan: 'Register hit-counts are part of this search, and none could be taken on this run — the per-name reason is recorded in the audit workbook. This is a gap in this run, not a limit of the product.',
     notInTier: 'Register hit-counts (identical · containing · close variations) are not included in this product tier, so no register was counted for this report. They are part of the Knockout search this offering sells today.',
   }),
-  // The card fold's label: the clearance's word for the reasoning (owner, 2026-11-18, item 1140).
+  // The card fold's label: the clearance's word for the reasoning (owner, 2026-11-18).
   riskAssessment: 'Risk assessment',
   // A finding card's head and fold.
   finding: Object.freeze({

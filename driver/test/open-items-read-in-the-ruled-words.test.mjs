@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// OPEN ITEMS READ IN THE RULED WORDS (owner, 2026-11-18, batch two items 1132 to 1138, L-03).
+// OPEN ITEMS READ IN THE RULED WORDS (owner, 2026-11-18).
 //
 // The Left open grid said "Not run this run", led its rows with a sentence about "bounded monitor items", and showed a
 // question from the request under the engine's own token, "Intake-ask". A deferred source read "never swept this run",
