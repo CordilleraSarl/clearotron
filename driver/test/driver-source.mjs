@@ -33,3 +33,16 @@ export function runFilesNamedIn(src) {
   const named = [...src.matchAll(/\b(?:paths|runPaths)\([^;\n]*?\)\.(\w+)/g)].map((m) => table[m[1]]);
   return [...new Set(named.filter((v) => typeof v === "string").map((v) => basename(v)))];
 }
+
+/**
+ * Where `needle` is in `src`, which must hold it exactly once. A test that reads a position in the orchestrator's text reads
+ * it across the pipeline and every module carved out of it, so a string that also occurs in a second file would pin
+ * whichever copy came first and pass on it. Throws, naming the string and its count, when it is absent or not unique.
+ */
+export function onlyAt(src, needle) {
+  const text = String(src), want = String(needle);
+  let count = 0, first = -1;
+  for (let i = text.indexOf(want); i !== -1; i = text.indexOf(want, i + 1)) { if (first < 0) first = i; count++; }
+  if (count !== 1) throw new Error(`the pinned text ${JSON.stringify(want.slice(0, 80))} occurs ${count} time(s) in the source read, not once`);
+  return first;
+}

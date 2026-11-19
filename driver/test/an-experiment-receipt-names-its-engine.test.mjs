@@ -12,7 +12,7 @@
 // guard rather than a reader's attention.
 
 import { test } from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { telemetryDelta, refuseToCompare, engineOf } from "../compare.mjs";
 import { resolveModel } from "../driver.config.mjs";
@@ -28,7 +28,7 @@ test("resolveModel is engine-blind — the defect, stated as a measurement not a
 
 test("the receipt records the ENGINE and the TIER, and synthesises no vendor id", () => {
   const src = driverSource("pipeline.mjs");
-  const receipt = src.slice(src.indexOf("// ── 5. THE CONTEXT RECEIPT"), src.indexOf("experiment-context.json"));
+  const receipt = src.slice(onlyAt(src, "// ── 5. THE CONTEXT RECEIPT"), onlyAt(src, "experiment-context.json"));
   assert.ok(receipt.length > 0, "the context receipt block moved — this guard is reading nothing");
   assert.match(receipt, /engine: experimentEngineName\(\)/,
     "the receipt does not record which engine will serve the arm");
@@ -108,7 +108,7 @@ test("a non-default-engine arm is distinguishable from a default one by the rece
 
 test("the receipt records the rating authority the arm ran under, from the FROZEN sidecar", () => {
   const src = driverSource("pipeline.mjs");
-  const receipt = src.slice(src.indexOf("// ── 5. THE CONTEXT RECEIPT"), src.indexOf("experiment-context.json"));
+  const receipt = src.slice(onlyAt(src, "// ── 5. THE CONTEXT RECEIPT"), onlyAt(src, "experiment-context.json"));
   assert.ok(receipt.length > 0, "the context receipt block moved — this guard is reading nothing");
   assert.match(receipt, /ratedUnder: ctx\.profile\?\.profileKey \?\? null/,
     "the receipt does not record which rating authority produced the arm");

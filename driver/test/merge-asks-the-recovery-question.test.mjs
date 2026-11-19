@@ -23,7 +23,7 @@
 // recoverable. A genuine dead end must still terminate. What these tests pin is that the QUESTION IS
 // ASKED — the token reaches the channel, and the class comes from what the validator said.
 import { test } from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { StageFailure, connotationRemedyToken } from "../pipeline.mjs";
 import { classifyFailureReason } from "../repairs.mjs";
@@ -83,8 +83,8 @@ test("the merge derives its class from the validator's reason, and only after th
   // the old expression and an unanchored grep would match the explanation of the bug.
   const src = driverSource("pipeline.mjs")
     .replace(/\/\*[\s\S]*?\*\//g, "").split("\n").map((l) => l.replace(/\/\/.*$/, "")).join("\n");
-  const iValidator = src.indexOf("validators.commonLaw(P.commonLaw");
-  const iClass = src.indexOf("const clFailClass");
+  const iValidator = onlyAt(src, "validators.commonLaw(P.commonLaw");
+  const iClass = onlyAt(src, "const clFailClass");
   assert.ok(iValidator > 0 && iClass > 0, "the merge's validator call or its fail class could not be found");
   assert.ok(iClass > iValidator,
     "clFailClass is computed BEFORE the validator runs — v.reason cannot reach it, which is #1279 exactly");

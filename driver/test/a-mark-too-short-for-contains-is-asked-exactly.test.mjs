@@ -14,7 +14,7 @@
 // to the request body that goes over the wire: the compiler alone passing would say nothing about what
 // the register is sent.
 import test from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { compileRegisterPlan, containsFormSubstitution, foldedTermLength } from "../register-plan.mjs";
 import { PROVIDER_CAPABILITIES } from "../register-capabilities.mjs";
@@ -205,7 +205,7 @@ test("the pipeline hands the crowd-context pass the run's register's capabilitie
   // buildCrowdContext defaults to no capabilities, which counts every term on the contains form. The
   // floor reaches a run only if the pipeline's own call passes them, so the call site is asserted.
   const src = driverSource("pipeline.mjs");
-  const call = src.slice(src.indexOf("await buildCrowdContext({"), src.indexOf("await buildCrowdContext({") + 600);
+  const call = src.slice(onlyAt(src, "await buildCrowdContext({"), onlyAt(src, "await buildCrowdContext({") + 600);
   assert.ok(call.length > 100, "the pipeline no longer calls buildCrowdContext where this arm looks");
   assert.match(call, /capabilities: registerCapabilities\(ctx\.register\)/, "the crowd-context call passes no capabilities of the run's register");
 });

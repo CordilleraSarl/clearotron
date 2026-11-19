@@ -17,7 +17,7 @@
 // what a draw IS in order to fix what a guard can see. `draw` is a separate prefix in the same directory:
 // the deploy guard counts it, and nothing else does.
 import test from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
@@ -101,7 +101,7 @@ test("runExperiment wraps its body so a THROW still releases the lock", () => {
   // idiom `pipeline()`/`pipelineInner()` already uses in that file. Without the finally, a draw that
   // throws leaves a live-pid lock behind and the next hourly deploy defers on a draw that ended.
   const src = driverSource("pipeline.mjs");
-  const i = src.indexOf("export async function runExperiment(job, opts) {");
+  const i = onlyAt(src, "export async function runExperiment(job, opts) {");
   assert.ok(i > 0, "runExperiment must still be the exported entry point");
   const body = src.slice(i, src.indexOf("\n}\n", i));
   assert.match(body, /acquireSlot\(\{ dir: config\.runLockDir, cap: \d+, prefix: "draw" \}\)/);

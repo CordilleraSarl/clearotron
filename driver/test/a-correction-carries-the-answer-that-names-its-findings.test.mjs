@@ -10,7 +10,7 @@
 // every Moderate-or-higher finding but the three the correction raised or added. A shared band is a reason to ask the
 // writer, never a required citation (design, 2026-11-03).
 import test from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { answersLeftBehind } from "../corrections-feedforward.mjs";
 import { repairFollowup, composerFor } from "../repair-composers.mjs";
@@ -86,7 +86,7 @@ test("the gate asks once, only where the findings reached the record, and hands 
   const src = driverSource("pipeline.mjs");
   assert.match(src, /if \(!readState\(\)\.stale\) return answerFollowsCorrection\(ctx, P, pre, resume\);/,
     "the answer is checked only when the existing re-emit did not run, so the gate never asks twice");
-  const at = src.indexOf("async function answerFollowsCorrection(");
+  const at = onlyAt(src, "async function answerFollowsCorrection(");
   const body = src.slice(at, src.indexOf("\n}\n", at));   // the function itself, wherever it lives
   assert.equal((body.match(/await stage\(/g) ?? []).length, 1, "one re-ask, never a loop");
   assert.doesNotMatch(body, /correction: resume\.correction/, "an answer patch adds no finding, so it is handed no positions");
