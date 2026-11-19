@@ -966,7 +966,8 @@ test("CHANGE 5a render: the reg number is bound to its record's uri + jurisdicti
   const entry = html.match(/<div class="rr">([\s\S]*?)<\/details>/)?.[1] ?? "";
   assert.match(entry, /<span class="k">Country<\/span><span class="v">United States <i class="jsys">\(first-to-use\)<\/i><\/span>/);
   assert.match(entry, /<span class="k">Status<\/span><span class="v">Registered · /);
-  assert.match(entry, /<span class="k">Register number<\/span><span class="v"><a href="https:\/\/tm\.example\/mark\/us\/3396572" target="_blank" rel="noopener noreferrer">\/mark\/us\/3396572<\/a> <span class="rr-faint">application 77999111<\/span>/);
+  // With no office link naming it, the row prints the record's own office number, still opening the record's page.
+  assert.match(entry, /<span class="k">Register number<\/span><span class="v"><a href="https:\/\/tm\.example\/mark\/us\/3396572" target="_blank" rel="noopener noreferrer">US 3396572<\/a> <span class="rr-faint">application 77999111<\/span>/);
 });
 
 // — THIS ARM ASSERTED THE DEFECT, and is rewritten rather than deleted so the record of what it
@@ -3171,7 +3172,7 @@ test("every country a finding holds a registration in takes its band where it st
 test("the local-language row states the depth reached, in the words the page already uses", () => {
   const LANES = { ja: { configured: "full", achieved: "full" } };
   const depth = (state, lanes = LANES) => ({ counts: { recordsByCountry: { JP: 3 }, courtDecisions: "not-in-scope",
-    localScriptSearched: true, localLanguage: state === undefined ? undefined : { state, lanes } } });
+    localScripts: { searched: ["Kana"], missed: [] }, localLanguage: state === undefined ? undefined : { state, lanes } } });
   // The counts fold draws key/value rows; read the pair, not the page.
   const rowFor = (html, key) => {
     const re = new RegExp(`<span class="k">${key}</span><span class="v">([^<]*)</span>`);
@@ -3215,7 +3216,7 @@ test("the local-language row states the depth reached, in the words the page alr
   // undefined through it lands on the default and the case reads as a pass. Built here instead.
   for (const state of ["ran", "ran-shallow", "not-run", "not-in-scope"]) {
     const noKey = renderHtml(parsedOf(REPORT), [], [], { searchDepth: { counts: { recordsByCountry: { JP: 3 },
-      courtDecisions: "not-in-scope", localScriptSearched: true, localLanguage: { state } } } });
+      courtDecisions: "not-in-scope", localScripts: { searched: ["Kana"], missed: [] }, localLanguage: { state } } } });
     assert.equal(rowFor(noKey, "Local-language investigation"), null,
       `the ${state} state drew a row from a record with no lanes key`);
   }
@@ -3226,7 +3227,7 @@ test("the local-language row states the depth reached, in the words the page alr
   // of the matrix did not red until the court-decisions side was asserted too.
   // A full country search, because that is the one board that draws a Court decisions row.
   const html = renderHtml(parsedOf(REPORT), [], [], { ...FULL_COUNTRY_OPTS, searchDepth: { counts: { recordsByCountry: { JP: 3 },
-    courtDecisions: "found", localScriptSearched: true, localLanguage: { state: "ran", lanes: LANES } } } });
+    courtDecisions: "found", localScripts: { searched: ["Kana"], missed: [] }, localLanguage: { state: "ran", lanes: LANES } } } });
   const at = (k) => {
     const i = html.indexOf(`<span class="k">${k}</span>`);
     assert.notEqual(i, -1, `the ${k} row is not on the page, so the order assertion proves nothing`);
@@ -3281,9 +3282,10 @@ test("the section strip is drawn from the document, so it can never name an anch
 // fixture, because this fixture happens to draw every section. Drive a document that draws fewer.
 test("a section that is not drawn takes its strip entry with it", () => {
   const full = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-strip-full" });
-  // No findings and no coverage: no rows, no open rows, no cards and no record set, so the counts
-  // section is not drawn at all and #searched cannot be in the document.
-  const thin = renderHtml(parsedOf(REPORT), [], [], { runId: "noref-strip-thin" });
+  // No findings and one open row: no cards and no record set, so the conflicts are not drawn and only the summary and
+  // "What was searched" (for its Left open row) are. A document with nothing at all to draw under "What was searched"
+  // no longer draws it: the local-script row it used to carry made a claim no execution record supported (2026-11-19).
+  const thin = renderHtml(parsedOf(REPORT), [], [{ area: "register / US", state: "open", note: "not completed this run" }], { runId: "noref-strip-thin" });
   const of = (h) => [...(h.match(/<nav class="strip[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? "").matchAll(/href="#([^"]+)"/g)].map((m) => m[1]);
   const [a, b] = [of(full), of(thin)];
   assert.ok(a.length >= 2 && b.length >= 2, `strips of ${a.length} and ${b.length} — one of these documents drew no navigation`);
@@ -3298,7 +3300,7 @@ test("a section that is not drawn takes its strip entry with it", () => {
 // the matter, so the two lines that would otherwise name a marketplace search say that instead. The flag
 // rides the search-depth record (counts.sweep.noMarketplacesPicked), stamped by publish from the frozen profile.
 test("a company with no marketplaces: the nothing-found line and the search row name the general web", () => {
-  const sd = { counts: { recordsByCountry: { JP: 10 }, localScriptSearched: true,
+  const sd = { counts: { recordsByCountry: { JP: 10 }, localScripts: { searched: ["Kana"], missed: [] },
     sweep: { spellings: 12, checks: 12, platforms: 1, reputation: 9, noMarketplacesPicked: true } } };
   const f = [{ ...FINDINGS[0], use_check: { source: NO_RESULT } }];
   const html = renderHtml(parsedOf(REPORT), f, COVERAGE, { searchDepth: sd });
@@ -3322,7 +3324,7 @@ test("a company with no marketplaces: the nothing-found line and the search row 
 // completed — and a closing link to the audit workbook. The Left open rows and the provenance note stay
 // where they are until their own ruling.
 test("What was searched draws the boards' rows: totals and chips, checks on, Searched, court on full country, the workbook", () => {
-  const sd = { counts: { recordsByCountry: { JP: 60, KR: 46, WO: 6 }, courtDecisions: "not-checked", localScriptSearched: true,
+  const sd = { counts: { recordsByCountry: { JP: 60, KR: 46, WO: 6 }, courtDecisions: "not-checked", localScripts: { searched: ["Kana"], missed: [] },
     sweep: { spellings: 28, checks: 476, platforms: 17, reputation: 49 } } };
   const multi = renderHtml(parsedOf(REPORT), [], [], { searchDepth: sd, auditFile: "run-audit.xlsx" });
   const v = (html, k) => (html.match(new RegExp(`<span class="k">${k}</span><span class="v">([\\s\\S]*?)</span></div>`)) || [])[1] ?? null;

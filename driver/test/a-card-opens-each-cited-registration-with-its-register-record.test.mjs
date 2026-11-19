@@ -122,3 +122,30 @@ test("where the office keys its page on the application number, the row shows th
   assert.match(us, /<span class="v"><a href="https:\/\/register\.example\/us\?caseNumber=90000001" target="_blank" rel="noopener noreferrer">US 7100200<\/a> <span class="rr-faint">application 90000001<\/span>/,
     "the link no longer opens the office's page, or its text is not the registration number");
 });
+
+// A REGISTER'S VALUES ARE TEXT, AND A HOSTILE ONE PRINTS AS TEXT. The register number's row once compared and rewrote the
+// cell's markup with a pattern that removed tags, the incomplete kind of sanitising a scanner rightly flags. The row now
+// swaps the number on plain text and the page's own cell builder escapes it, so markup planted in any record field is
+// printed as characters, never parsed.
+const HOSTILE = "<scr<script>ipt>alert(1)</script>";
+test("markup planted in a record's label, number, mark or owner prints as text on the card", () => {
+  const US = "/mark/us/90000001";
+  // The office's label carries the markup, and the swap to the registration number runs over it: the record reader
+  // keeps only a registration number's digits, so the planted number arrives as its digits, 71002001.
+  const links = new Map([[US, { office: "us", label: `US 90000001 ${HOSTILE}`, href: "https://register.example/us?caseNumber=90000001", reason: null }]]);
+  const html = render([finding([{ uri: US, jurisdiction: "US" }])],
+    [record(US, "us", { applicationNumber: "90000001", registrationNumber: `7100200${HOSTILE}`, markText: HOSTILE, owner: HOSTILE })], { recordLinks: links });
+  const [entry] = entries(html);
+  assert.doesNotMatch(entry, /<scr|<script|<\/script/i, "a planted tag reached the page as markup");
+  assert.ok(entry.includes(">US 71002001 &lt;scr&lt;script&gt;ipt&gt;alert(1)&lt;/script&gt;</a>"), "the swapped label does not print as text in its link");
+  assert.ok(entry.includes("<b>&lt;scr&lt;script&gt;ipt&gt;alert(1)&lt;/script&gt;</b>"), "the planted mark does not print as text");
+});
+
+test("a record the run's office links do not name prints its own office number, and never a rewritten handle", () => {
+  const US = "/mark/us/90000001";
+  const html = render([finding([{ uri: US, jurisdiction: "US" }])], [record(US, "us", { applicationNumber: "90000001", registrationNumber: "7100200" })]);
+  const [entry] = entries(html);
+  assert.match(entry, /<span class="k">Register number<\/span><span class="v">US 7100200 <span class="rr-faint">application 90000001<\/span>/,
+    "the record's own office number, as the registration number with its application after it, is not the row");
+  assert.doesNotMatch(entry, /\/mark\/us\/7100200/, "a handle was rewritten into a number");
+});

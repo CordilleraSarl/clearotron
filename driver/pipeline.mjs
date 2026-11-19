@@ -8160,7 +8160,12 @@ export function zhLaneRanOnRun(runDir, opts = {}) {   // @internal
 export function injectScriptScopeCoverage(P, runDir, note, { searchPolicy = null, job = null, profile = null, env = process.env, lanes = Object.keys(LANGUAGE_LANES), localLanguage = null } = {}) {   // @internal
   try {
     if (!existsSync(P.findings)) return;
-    const scope = jxScopeJurisdictions(job ?? {}, profile ?? {});
+    // A WORLDWIDE ORDER IS SEARCHED WORLDWIDE, and its native-script rows are owed on that scope. The lane scope below falls
+    // back to the account's default territories when an order names none, which is right for the paid lanes it chooses and
+    // wrong here: a worldwide order under an account whose defaults hold no Chinese, Japanese or Korean territory wrote no
+    // native-script row at all, and its report said nothing of a search it never ran. The account's defaults are the
+    // customer's priorities, never the order's scope (ruled 2026-09-26, effective-scope.mjs).
+    const scope = job?.geography?.mode === "worldwide" ? [] : jxScopeJurisdictions(job ?? {}, profile ?? {});
     const pending = [];
     // AN INVESTIGATION THE CLIENT ORDERED IS NEVER OFFERED BACK TO THEM (ruled 2026-09-25). The row below
     // says where the native-language investigation can be bought, which is true of a search that did not

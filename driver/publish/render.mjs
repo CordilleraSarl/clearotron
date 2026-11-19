@@ -232,7 +232,6 @@ function ratingExtras(fm, findings, coverage, fourAnswers, opts, bandWord, condi
     if (cleared) parts.push(R.rating.nearNamesCleared(cleared.toLocaleString('en-GB')));
     const rated = findings.filter((f) => f && f.band).length;
     parts.push(R.rating.conflicts(rated));
-    if (sd.counts.localScriptSearched) parts.push(R.rating.localScript);
     const cd = sd.counts.courtDecisions;
     if (cd === 'found') parts.push(R.rating.courtChecked);
     else if (cd === 'none-found') parts.push(R.rating.courtNoneTouch);
@@ -1194,7 +1193,9 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
     ? R.searched.checksWebAndStores(sw.checks.toLocaleString('en-GB'))
     : R.searched.checksOnPlatforms(sw.checks.toLocaleString('en-GB'), sw.platforms)]);
   if (sw.reputation) rows.push([R.searched.reputation, R.searched.checks(sw.reputation.toLocaleString('en-GB'))]);
-  rows.push([R.searched.localScript, c.localScriptSearched ? R.searched.searched : R.searched.notSearched]);
+  // The local-script row says what the run's record shows ran (owner, 2026-11-19): searched when a native-script term
+  // ran, not searched when the record shows none did, and no row when the run kept no execution record to say either.
+  if (c.localScripts) rows.push([R.searched.localScript, c.localScripts.searched.length ? R.searched.searched : R.searched.notSearched]);
   // HOW DEEP THE LOCAL-LANGUAGE INVESTIGATION WENT, which is a different question from the row above it.
   // That one answers whether the spellings were searched; this one answers whether the investigation ran
   // at the depth the matter configured. The engine can run it shallower than the account asked for, and
@@ -1850,7 +1851,24 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   const proseHasRead = READ_LEAD_RE.test(proseFull || '');
   const positions = `${proseHasRead ? '' : lpSplit(f)}${manageableLine(f)}`;
   const body = `${positions}${regs || seniorLine || fetchFailLine || enfLine || enfTelemetry || useChk || ownR || impactLine ? `<ul>${fetchFailLine}${seniorLine}${regs}${enfLine}${enfTelemetry}${useChk}${ownR}${impactLine}</ul>` : ''}${proseFullShown ? renderProse(proseFullShown) : ''}${caseLawStrand}${prov}`;
-  const recordBlock = registerRecordBlock(f, recordsByUri, (u) => officeRecordCell(u, regUri, RECORD_CITATION ? NO_LINK_NOTE[RECORD_CITATION] : null));
+  // The register number of each record entry: the office's label as plain text, the text a handle-cited record shows,
+  // and the page's own cell for a label. Where the run's office links do not name a record, the record still holds its
+  // office number, and the row prints that, opening the record where its handle did, rather than the bare handle.
+  const numberOf = (u, rec) => {
+    const office = RECORD_LINKS?.get(String(u || '').toLowerCase())?.label ?? null;
+    const own = office ? null : (officeRecordLink(rec, u)?.label ?? null);
+    const note = RECORD_CITATION ? NO_LINK_NOTE[RECORD_CITATION] : null;
+    return {
+      label: office ?? own,
+      fallbackText: u || 'registration',
+      cell: (label) => {
+        if (!own) return officeRecordCell(u, regUri, note, label);
+        const h = hrefAttr(regHref(u));
+        return h ? `<a href="${h}" target="_blank" rel="noopener noreferrer">${esc(label)}</a>` : esc(label);
+      },
+    };
+  };
+  const recordBlock = registerRecordBlock(f, recordsByUri, numberOf);
   return `${recordBlock}<details class="drill"><summary>${R.detail.fold}</summary><div class="drillbody">${body}</div></details>`;
 }
 
@@ -1868,12 +1886,12 @@ function fullDetail(f, card, recordsByUri = new Map()) {
 // AT MOST EIGHT ENTRIES, in the card's order, then the line that sends the reader to the audit workbook for all of
 // them (owner, 2026-11-18). A card citing dozens of registrations otherwise runs to pages.
 const RECORD_CAP = 8;
-function registerRecordBlock(f, recordsByUri, numberCell) {
+function registerRecordBlock(f, recordsByUri, numberOf) {
   const cited = (f.owner?.registrations || [])
     .map((r) => ({ r, rec: r?.uri ? recordsByUri.get(String(r.uri).toLowerCase()) : null }))
     .filter((x) => x.rec);
   if (!cited.length) return '';
-  const entries = cited.slice(0, RECORD_CAP).map(({ r, rec }) => recordEntry(f, r, rec, numberCell)).join('');
+  const entries = cited.slice(0, RECORD_CAP).map(({ r, rec }) => recordEntry(f, r, rec, numberOf)).join('');
   const all = R.cleared.allInWorkbook(cited.length.toLocaleString('en-GB'));
   const more = cited.length > RECORD_CAP ? `<div class="cmore">${AUDIT_HREF ? `<a class="wb" href="${AUDIT_HREF}">${all}</a>` : all}</div>` : '';
   const count = cited.length > 1 ? ` <span class="rr-count">${esc(registrationsCount(cited.length))}</span>` : '';
@@ -1902,14 +1920,14 @@ function logoLine(f, recordsByUri, { small = false } = {}) {
   return `<div class="rr-logos rr-sm">${figures.slice(0, 3).join('')}${figures.length > 3 ? `<span class="rr-more">+${figures.length - 3}</span>` : ''}</div>`;
 }
 
-function recordEntry(f, r, rec, numberCell) {
+function recordEntry(f, r, rec, numberOf) {
   const uri = String(r.uri || '');
   const receipt = rec._receipt?.fetched_at
     ? R.recordVerified(PROVIDER_LABEL || R.register, String(rec._receipt.fetched_at).slice(0, 10)) : null;
   // The owner by the card's own rule: a record's Latin owner is a romanisation when it also carries the native
   // form, and then the resolved name is the one a lawyer can read (recordOwner, above, decides the same way).
   const ownerName = ownerDisplayName({ raw: REC.owner(rec), native: REC.ownerNative(rec), resolved: f.owner?.name });
-  return recordEntryHtml(rec, { uri, jurisdiction: r.jurisdiction, receipt, asOf: AS_OF, numberCell: numberCell(uri), ownerName });
+  return recordEntryHtml(rec, { uri, jurisdiction: r.jurisdiction, receipt, asOf: AS_OF, number: numberOf(uri, rec), ownerName });
 }
 
 // The contentious MARK + the classes it matched in, as a header chip next to the holder — so a card shows
@@ -2081,9 +2099,9 @@ function findingCard(f, card, recordsByUri = new Map()) {
 // cards set the risk, and the exported PDF fell from 280 pages to 53 with the rest unticked. A lawyer who ticks a
 // card puts it back in the PDF; each compact card still opens to its full detail.
 //
-// ONLY WHERE THE WORDS ARE HIS. The heading is his plural; a single conflict below the risk keeps its full card
-// until he words the singular. A conflict with no band on the ladder keeps its full card, since nothing says it is
-// below the risk. A run with no framework renders every card in full, as it always has.
+// A single conflict below the risk folds too, under the singular, "1 more conflict rated Manageable" (owner,
+// 2026-11-19). A conflict with no band on the ladder keeps its full card, since nothing says it is below the risk. A
+// run with no framework renders every card in full, as it always has.
 function conflictCards(onField, cardFor, recordsByUri) {
   const full = (list) => list.map((f) => findingCard(f, cardFor(f), recordsByUri)).join('\n  ');
   if (!FRAMEWORK) return full(onField);
@@ -2091,12 +2109,12 @@ function conflictCards(onField, cardFor, recordsByUri) {
   if (!rated.length) return full(onField);
   const top = Math.min(...rated.map(severityRank));
   const below = onField.filter((f) => severityRank(f) > top && severityRank(f) < FRAMEWORK.bands.length);
-  if (below.length < 2) return full(onField);
+  if (!below.length) return full(onField);
   const kept = onField.filter((f) => !below.includes(f));
   const bands = [...new Set(below.map(severityRank))].sort((a, b) => a - b).map((i) => FRAMEWORK.bands[i].label);
   const cards = below.map((f) => compactCard(f, cardFor(f), recordsByUri, { ticked: false })).join('\n      ');
   return `${full(kept)}
-  <details class="rgroup lowerband"><summary><span class="gname">${esc(R.lowerBand(below.length.toLocaleString('en-GB'), bands))}</span></summary><div class="gbody">
+  <details class="rgroup lowerband"><summary><span class="gname">${esc(R.lowerBand(below.length, bands))}</span></summary><div class="gbody">
       ${cards}
   </div></details>`;
 }
@@ -2546,6 +2564,31 @@ const STRIP = Object.freeze([
   ['searched', R.searched.title],
 ]);
 
+// THE CLEARANCE PAGE FROM ITS REPORT DOCUMENT (C14). The run's report document (publish/report-document.mjs, written to
+// `_driver/report-document.json`) holds every fact the page prints. This reads it, as written, and hands the page the
+// arguments publish hands it today, so the page is byte for byte the page it was. What the document does not hold is
+// the page's surface: its two addresses, the confidentiality posture and the demo flag, which publish passes beside the
+// document as it always has; and the two sets the document holds by reference, the saved records' bodies by uri and the
+// saved logos' images by ref, which publish resolves from the run. PURE given its inputs.
+export function renderClearanceDocument(doc, { recordsByUri = new Map(), logos = new Map(), homeHref, chromeHref, delivery, demoData } = {}) {
+  const run = doc?.run ?? {}, scope = doc?.scope ?? {}, client = doc?.client ?? {}, verdict = doc?.verdict ?? {};
+  const framework = doc?.framework ?? {}, prose = doc?.prose ?? {};
+  const asMap = (pairs) => (Array.isArray(pairs) ? new Map(pairs) : null);
+  return renderHtml({ fm: prose.frontMatter ?? {}, secs: prose.sections ?? {}, cards: prose.cards ?? [] }, client.findings ?? [], client.coverage ?? [], {
+    demoData, frameworkMethod: framework.method, servedModels: client.servedModels, productName: run.product?.name,
+    depthNote: run.product?.depthNote, scopeBasis: scope.scopeBasis, auditFile: run.auditFile || undefined, runId: run.runId,
+    delivery, recordsByUri, contextNotes: client.contextNotes, coverageJudgment: client.coverageJudgment,
+    markAssessment: client.markAssessment, fourAnswers: client.fourAnswers, homeHref, chromeHref, issued: run.issued,
+    asOf: run.asOf, verdictInfo: verdict.record, framework: framework.manifest, searchedJurisdictions: scope.searchedJurisdictions,
+    planTerritories: scope.planTerritories, caseLawByOrdinal: asMap(client.caseLaw?.byOrdinal) ?? new Map(),
+    enforcerSignals: client.enforcerSignals, recordOrigin: run.provider?.origin,
+    recordOrigins: run.provider?.origins, recordCitation: run.provider?.citation ?? null, recordLinks: asMap(client.recordLinks?.byUri),
+    providerLabel: run.provider?.label, seniorRights: client.seniorRights, findingsSchemaVersion: run.findingsVersion,
+    searchDepth: scope.searchDepth, assessmentNotCompleted: verdict.assessmentNotCompleted, logos,
+    followUpKinds: new Map((client.followUpKinds ?? []).map(([k, kinds]) => [k, new Set(Array.isArray(kinds) ? kinds : [])])),
+  });
+}
+
 export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   if (findings && !Array.isArray(findings)) { opts = findings; findings = []; coverage = []; }  // tolerate legacy (parsed, opts)
   AS_OF = opts.asOf ?? null;   // C2
@@ -2679,17 +2722,6 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   // T7 (E4): the section also renders when the ONLY common-law content is the layer's
   // contributions to register findings — the layer's work is visible even with zero CL findings.
   const clBody = commonLawSection(secCL, clOnField, cardFor, recordsByUri, sorted);
-  // The case-law stage's session-wide preamble (source outages etc.) renders ONCE here — the per-finding
-  // strands cite 'as § Session-wide notice above', which used to point at nothing (the preamble was
-  // discarded at parse). Rendered only when case-law strands exist to reference it.
-  // doc-55 A3 — INTERNAL ONLY: this preamble is operational session narration (which case-law sources were
-  // reachable this run — MCP wiring, tool status, HTTP/quota) = process exhaust, not legal product (doc-52).
-  // It leaked those internals to the client. The client's per-finding case-law lines carry the plain result;
-  // the reviewer keeps the full session note here.
-  const clNoticeText = String(opts.caseLawNotice || '').trim();
-  const clNotice = (clNoticeText && CASE_LAW_BY_ORD.size)
-    ? `<div class="panel" style="padding:12px 16px;margin:0 0 12px"><p style="margin:0 0 4px;font-weight:700;font-size:13px">${R.findings.sessionNotice}</p><div style="font-size:13px">${renderProse(clNoticeText)}</div></div>`
-    : '';
   // The 2026-09-16 report redesign — the section heading and the session-wide notice are off the page: the heading
   // named a layer rather than a thing a reader looks for, and the notice was operational narration. The
   // CARDS are not: a rated common-law finding is a finding, and it renders in place with the others.
@@ -2924,16 +2956,17 @@ if (isEntrypoint(import.meta.url)) {
 // ── The office's own page for a fetched record, where the run's register publishes none of its own ─────
 // publish addresses each fetched record from its own numbers (office-record-links.mjs) and hands the map
 // in as `recordLinks`. Kept down here, below every line the rest of the tree cites by number.
-import { officeReasonSentences } from './office-record-links.mjs';
+import { officeReasonSentences, officeRecordLink } from './office-record-links.mjs';
 
 // The label is the office and the number, linked where the office has a page. The handle names the
 // vendor's record, not the office's, and a reader can look it up nowhere. With no link the number stands
 // on its own beside the workbook note, and Scope says once, per office, why it is not a link.
-function officeRecordCell(uri, regUri, note) {
+function officeRecordCell(uri, regUri, note, label = null) {   // `label` prints in place of the office's own, escaped like it
   const l = RECORD_LINKS?.get(String(uri || '').toLowerCase());
   if (!l?.label) return regUri(uri);
-  if (hrefAttr(l.href)) return `<a href="${hrefAttr(l.href)}" target="_blank" rel="noopener noreferrer">${esc(l.label)}</a>`;
-  return note ? `${esc(l.label)}<span class="reg-nolink">${note}</span>` : esc(l.label);
+  const text = esc(label ?? l.label);
+  if (hrefAttr(l.href)) return `<a href="${hrefAttr(l.href)}" target="_blank" rel="noopener noreferrer">${text}</a>`;
+  return note ? `${text}<span class="reg-nolink">${note}</span>` : text;
 }
 
 // What a linked registration number opens and, once per office, why the rest are cited by number. Said
