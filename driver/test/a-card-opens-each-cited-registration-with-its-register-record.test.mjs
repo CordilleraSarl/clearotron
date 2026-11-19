@@ -109,12 +109,16 @@ test("a run with no record set renders the card as it always has", () => {
   assert.ok(fullDetail(html).includes("018046213"), "the back-compat registration line is gone");
 });
 
-test("the application number is not repeated where the register number already is it, however the office writes it", () => {
-  const JP = "/mark/jp/6231111";
-  const links = new Map([[JP, { office: "jp", label: "JP 2019-046708", href: null, reason: "unaddressable" }]]);
-  const html = render([finding([{ uri: JP, jurisdiction: "JP" }])],
-    [record(JP, "jp", { applicationNumber: "2019046708", registrationNumber: "6231111" })], { recordLinks: links });
-  const [jp] = entries(html);
-  assert.ok(jp.includes("JP 2019-046708"), "the register number is missing");
-  assert.doesNotMatch(jp, /application 2019046708/, "the application number is printed twice");
+test("where the office keys its page on the application number, the row shows the registration number and then the application", () => {
+  const JP = "/mark/jp/6231111", US = "/mark/us/90000001";
+  const links = new Map([[JP, { office: "jp", label: "JP 2019-046708", href: null, reason: "unaddressable" }],
+    [US, { office: "us", label: "US 90000001", href: "https://register.example/us?caseNumber=90000001", reason: null }]]);
+  const html = render([finding([{ uri: JP, jurisdiction: "JP" }, { uri: US, jurisdiction: "US" }])],
+    [record(JP, "jp", { applicationNumber: "2019046708", registrationNumber: "6231111" }),
+      record(US, "us", { applicationNumber: "90000001", registrationNumber: "7100200" })], { recordLinks: links });
+  const [jp, us] = entries(html);
+  assert.match(jp, /<span class="k">Register number<\/span><span class="v">JP 6231111 <span class="rr-faint">application 2019046708<\/span>/,
+    "the registration number does not show, or the application number does not follow it");
+  assert.match(us, /<span class="v"><a href="https:\/\/register\.example\/us\?caseNumber=90000001" target="_blank" rel="noopener noreferrer">US 7100200<\/a> <span class="rr-faint">application 90000001<\/span>/,
+    "the link no longer opens the office's page, or its text is not the registration number");
 });

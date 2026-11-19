@@ -42,6 +42,7 @@ import { clauseForDefect } from "../terminal-clamp.mjs";
 import { VERDICT_RANK, findReviewerCoherenceFlags, lateReviewAgainst, parseVerdict } from "../verify.mjs";
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
+import { followUpKindsOf } from "../follow-up-twins.mjs";   // the search each deferred directive recorded
 
 export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, checkLateBind, clampOnTheFloorDuty, clampOnTheWritersDuty, ctx, deliverAndClamp, findingsForCards, followTheRecordsActions, groupedMembers, job, opts, overviewOpen, publishAndDeliver, rebuildTheDeliveredRecord, restoreTheBrokenRecord, reviewOpen, rov, run, runState, saveTheLabel, saveTheOwedLabel, synthesisKey, synthesisModel, synthesisThinking, writeScopeFacts, writeUps, writeVerdictSidecar }, helpers) {
   const { CITED_URI_RE, NO_CHANGE, REBUILDS_THE_DELIVERED_RECORD, StageFailure, UPSTREAM_STALE_REPAIR, assembleReportMd, cardsNeverBuilt, caseLawJoin, computeOpenFloors, defaultRecordFetcher, fullProseOrdinals, inScopeClassList, injectFrontMatter, keepRankingReadByWriter, lateRecordIds, loadCoverageLedger, owedCardOrdinals, ownerScreenForDelivery, partitionDeliveryStale, postRepairScope, queuedForTheRecordOnly, rankingReadByWriterPath, readFindingsForReport, readFloorAxes, readGoodsHanded, reassembleFromTheRecord, recordChangeOwesReview, recordGoodsHanded, relabelCoverageRows, retainStateBeforeReview, runPostRepairCorrection, runPostRepairReview, runWholeReviewForRecord, safeReadJson, settleDerivedBases, stage, stageCharter, stagesStaleOnPlacement, unreadRecordFindingOnly, unreadRecordReview, whatTheRepairLeftStale } = helpers;
@@ -191,6 +192,8 @@ export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontM
         // is presence-gated and simply emits nothing here; they stay alive for replay-archive.mjs,
         // which passes the archived summary.
         reportMd, narrativeMd, auditMd, recordsByUri: assembled.records, searchedNames,
+        // The search each deferred directive recorded, so the lint reads Left open as the page draws it.
+        followUpKinds: followUpKindsOf(run.runDir),
         // What each record's goods rested on when the writer wrote, and the records whose whole text a delivery repair
         // was already handed: a finding written on goods the register cut, whose whole body the run holds now. The
         // evidence is the copy kept when the writer was dispatched cold, which no later band merge rewrites; a run that

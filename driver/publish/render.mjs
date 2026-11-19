@@ -38,7 +38,8 @@ import { logoLockup, BRAND, confPosture, sectionStrip, PALETTE, QUADRANT_COLOURS
 import { NAV_CSS } from '../../shared/site-nav.mjs';
 import { pageShell } from './page-shell.mjs';
 import { registerRecordView, RECORD_LABELS, registrationsCount } from './register-record.mjs';
-import { recordEntryHtml, logoFigureHtml } from './register-record-html.mjs';   // a record entry and a logo, drawn once for both report pages
+import { recordEntryHtml, logoFigureHtml } from './register-record-html.mjs';
+import { axisTwin, kindsForFollowUp } from '../follow-up-twins.mjs';   // when a written row stands in for a Follow-up row   // a record entry and a logo, drawn once for both report pages
 import { normalizeRecordUri } from '../registry-fidelity.mjs';   // the register's own record of a cited registration
 import { readerRowHead } from '../coverage-ledger.mjs';   // an engine-token row head in the reader's words   // the document shell, shared with the knockout template
 import { EVIDENCE_LABEL, USE_EVIDENCE_LABEL, meterEvidence } from './evidence-words.mjs';   // the meters' evidence words, shared with the audit workbook
@@ -1237,7 +1238,7 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
     const why = c.courtDecisions === 'not-checked' ? courtLineFor(opts, 'not-checked') : '';
     rows.push(['Court decisions', { html: `<span class="wstate">${esc(cdWord)}</span>${why ? `<span class="wnote">${esc(why)}</span>` : ''}` }]);
   }
-  const openHtml = open.length ? `<div class="openrows"><div class="rk">${R.searched.leftOpen}</div>${coverageGrid(open, { verdict: opts?.assessmentNotCompleted !== true })}</div>` : '';
+  const openHtml = open.length ? `<div class="openrows"><div class="rk">${R.searched.leftOpen}</div>${coverageGrid(open, { verdict: opts?.assessmentNotCompleted !== true, followUpKinds: opts?.followUpKinds })}</div>` : '';
   // THE LEGEND FOR WHAT IS ON THE CARDS, kept when the scope fold went. It is not the engine narrating
   // its own searching — it is what a linked registration number opens, why the rest are cited by number,
   // and what a register-index entry means. A reader cannot read a card without it.
@@ -2163,12 +2164,16 @@ const COV_STOPWORDS = new Set(['the', 'a', 'an', 'as', 'for', 'of', 'in', 'on', 
   'was', 'it', 'its', 'this', 'that', 'with', 'by', 'at', 'be', 'been', 'run', 'search', 'searched']);
 const covWords = (t) => new Set(String(t || '').toLowerCase().match(/[a-z0-9]+/g)?.filter((w) => !COV_STOPWORDS.has(w)) ?? []);
 
-function dedupeFollowUps(coverage) {
+function dedupeFollowUps(coverage, followUpKinds = null) {
   const composed = (c) => String(c?.area || '').startsWith(FOLLOW_UP_PREFIX);
   const written = coverage.filter((c) => !composed(c));
   if (!written.length) return coverage;
   return coverage.filter((c) => {
     if (!composed(c)) return true;
+    // AN AXIS-LABELLED ROW STANDS IN ONLY ON THE SEARCH THE RUN RECORDED (design, 2026-11-19): the directive's
+    // recorded questions name one kind of search, and exactly one open row of that kind carries the directive's
+    // words. follow-up-twins.mjs holds the rule; the driver and the lint ask it too.
+    if (axisTwin(String(c.note || '').split('—')[0], kindsForFollowUp(c, followUpKinds), written)) return false;
     // The directive is the note's opening clause — the same string the area was clipped from, unclipped.
     const directive = covWords(String(c.note || '').split('—')[0]);
     if (!directive.size) return true;
@@ -2237,8 +2242,8 @@ function sharedNoteCells(rows, cell) {
 // `verdict: false` — a report whose overall assessment was not completed has no verdict above the grid, so the open
 // rows' lead line, which says the material ones are carried in it, is not printed. The rows are.
 // Exported for the Knockout's own Left open grid (render-knockout.mjs): one grid, in the clearance's words, on both pages.
-export function coverageGrid(coverage, { verdict = true } = {}) {
-  coverage = dedupeFollowUps(coverage);
+export function coverageGrid(coverage, { verdict = true, followUpKinds = null } = {}) {
+  coverage = dedupeFollowUps(coverage, followUpKinds);
   if (!coverage.length) return '';
   const cell = (c) => {
     const s = COV_STATE[c.state] || COV_STATE.note;

@@ -757,7 +757,7 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
   // (materialized by the lint-pass assembleRunRecords); absent ⇒ empty map ⇒ a NO-OP (back-compat: archived /
   // replay runs with no record set keep the model's fields). The persisted findings.json copy above is the
   // model's original (kept for forensics); the records are archived alongside in _records/.
-  const recordsByUri = runDir ? readRecordArtifacts(runDir) : new Map(), logos = logosForReport(runDir);   // and each cited registration's saved logo; none on a run that fetched none
+  const recordsByUri = runDir ? readRecordArtifacts(runDir) : new Map(), logos = logosForReport(runDir), followUpKinds = followUpKindsOf(runDir);   // and each cited registration's saved logo; none on a run that fetched none
   // WP-receipts W2 — the run's fetch-receipt index (written by assembleRunRecords). Its `provider` names
   // the register THIS run actually used — the link origin + label come from THAT provider's config, never
   // the currently-configured one (a re-published archive keeps its own register). Legacy runs: null ⇒
@@ -1285,7 +1285,7 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
   return {
     parsed, fm, deliv, dates, issued, asOf, demoData, demoMd, inputsAbsent, findings, coverage, contextNotes,
     quarantined, findingsError, coverageJudgment, markAssessment, actionsRegister, askAnswers, correctionsDoc,
-    fourAnswers, findingsSchemaVersion, findingsKept, assessmentNotCompleted, coverageJudgmentDisplay, recordsByUri, logos,
+    fourAnswers, findingsSchemaVersion, findingsKept, assessmentNotCompleted, coverageJudgmentDisplay, recordsByUri, logos, followUpKinds,
     runProviderConf, recordOrigin, providerLabel, runOrigins, seniorRights, verdictInfo, droppedConditions,
     undispatchedProbes, withheldFamilies, setAside, framework, frameworkMethod, scopeBasis, searchedJurisdictions, registerReach,
     planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals, officeLinks, reviewReceipts, clientGate,
@@ -1331,7 +1331,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   const doc = await readClearanceDocument({ runId, reportMd, auditMd, findingsJson, poolRoot, poolUrl, customerKey, delivery, runDir });
   const { parsed, fm, deliv, issued, asOf, demoData, demoMd, findings, coverage, contextNotes, findingsError,
     coverageJudgment, markAssessment, actionsRegister, askAnswers, correctionsDoc, fourAnswers, findingsSchemaVersion,
-    findingsKept, assessmentNotCompleted, coverageJudgmentDisplay, recordsByUri, logos, runProviderConf, recordOrigin, providerLabel,
+    findingsKept, assessmentNotCompleted, coverageJudgmentDisplay, recordsByUri, logos, followUpKinds, runProviderConf, recordOrigin, providerLabel,
     runOrigins, seniorRights, verdictInfo, droppedConditions, undispatchedProbes, withheldFamilies, setAside, framework,
     frameworkMethod, scopeBasis, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals,
     officeLinks, reviewReceipts, clientGate, fetchState, searchPolicy, registerOnly, jurisdiction, commonLawJoinedTerms, registerReach,
@@ -1377,7 +1377,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // fails for want of it).
   if (searchDepth) { try { writeRO('search-depth.json', JSON.stringify(searchDepth, null, 2)); } catch { /* additive */ } }
 
-  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, frameworkMethod, servedModels: served, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion, searchDepth, assessmentNotCompleted, logos }));
+  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, frameworkMethod, servedModels: served, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion, searchDepth, assessmentNotCompleted, logos, followUpKinds }));
   // ONE report (spec 2026-07-30 §5): report.client.html is no longer written. The knockout lane's own
   // collapse note is the precedent: "two renderings of one run is how the wrong link gets sent". The
   // client host serves the same report.html through the portal's readReport() (cleaning built in) — its
@@ -1964,6 +1964,7 @@ import { recordLinksFor } from './office-record-links.mjs';
 import { reportDates, zurichStamp } from './report-dates.mjs';   // the dates a report prints, from its record
 import { driverDir, paths, readJson } from "../run-record.mjs";
 import { logosForReport } from "../mark-logos.mjs";   // the saved logo of each cited registration, embedded in the report
+import { followUpKindsOf } from "../follow-up-twins.mjs";   // the search each deferred directive recorded
 function officeLinksFor(findings, recordsByUri, runOrigins) {
   const links = recordLinksFor(findings, recordsByUri, runOrigins);
   if (links) console.log(`[record-links] ${links.summary}`);

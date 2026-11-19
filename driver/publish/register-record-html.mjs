@@ -59,9 +59,21 @@ export function recordEntryHtml(rec, { uri = '', jurisdiction = '', receipt = nu
   // The register number is the page's own cell for this registration; the application number follows only where
   // the cell does not already show it. Compared by letters and digits alone: an office can write the number the
   // record holds as 2019046708 with dashes, "2019-046708".
+  //
+  // THE ROW SHOWS THE REGISTRATION NUMBER, as the board draws it ("US 6123457 application 90770114"). Some offices
+  // key their record page on the application number (the USPTO's serial, the JPO's application), so the page's cell
+  // reads the application number; there the cell's visible number becomes the registration number, its link still
+  // opening the office's page, and "application N" follows. The words are the approved ones; only which number
+  // shows changes.
   const num = by[L.number];
-  const cell = String(numberCell ?? '');
   const bare = (t) => String(t).replace(/<[^>]*>/g, '').replace(/[^0-9A-Za-z]/g, '');
+  const appNo = REC.serial(rec), regNo = REC.regNumber(rec);
+  let cell = String(numberCell ?? '');
+  if (appNo && regNo && bare(appNo) !== bare(regNo) && bare(cell).includes(bare(appNo)) && !bare(cell).includes(bare(regNo))) {
+    const loose = new RegExp([...bare(appNo)].map((c) => c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('[^0-9A-Za-z<>]?'));
+    const swap = (text) => text.replace(loose, esc(regNo));
+    cell = /^<a\b/.test(cell) ? cell.replace(/^(<a\b[^>]*>)([^<]*)/, (m, open, text) => open + swap(text)) : cell.replace(/^[^<]*/, swap);
+  }
   const app = num.faint && !bare(cell).includes(bare(num.faint.replace(/^application /, ''))) ? faint(num.faint) : '';
   const mark = by[L.mark].value ? `<b>${esc(by[L.mark].value)}</b>${faint(by[L.mark].faint)}` : '';
   const owner = ownerName || by[L.owner].value;
