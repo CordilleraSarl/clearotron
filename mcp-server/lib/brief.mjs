@@ -33,6 +33,7 @@ import { join } from "node:path";
 import { parseReport } from "./driver.mjs";
 import { readReportData, productIdentityFor } from "./runs.mjs";
 import { readJson, readJsonOrNull } from "../../driver/run-record.mjs";
+import { reportDocumentOf } from "./findings.mjs";   // the run's report document, where it has one
 
 // THE LINE FOR A SCREENED NAME WITH NO DATA FILE, beside its report link: the brief cannot read its rating, and says so
 // rather than leaving the name out. Design's wording (2026-11-11), printed only where the name's report was published.
@@ -75,7 +76,9 @@ function clearanceLine(f) {
  */
 export function buildBrief(run) {
   const { P } = run;
-  const fm = existsSync(P.report) ? parseReport(P.report).fm : {};
+  // The report's front matter as publishing parsed it, where the run's document holds it (findings.mjs reportDocumentOf).
+  const prose = reportDocumentOf(P)?.prose;
+  const fm = prose ? prose.frontMatter : existsSync(P.report) ? parseReport(P.report).fm : {};
   const docs = readReportData(run);
   const product = productIdentityFor(run, docs);
   const clearance = docs.find((d) => d?.kind === "clearance") ?? null;

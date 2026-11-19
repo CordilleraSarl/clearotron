@@ -134,7 +134,7 @@ export function About() {
                 grant trademark rights, and TRADEMARKS.md is where that declination is written down. */}
             <dt>Trade marks</dt>
             <dd>
-              <strong>{info.name}</strong> and the mountain mark are trade marks of Cordillera Sàrl. The
+              <strong>{info.name}</strong> and the bracket mark are trade marks of Cordillera Sàrl. The
               licence above covers the software; it does not grant any right in the name or the mark. See{' '}
               <a className="about-link" href={`${info.sourceRepo}/blob/main/TRADEMARKS.md`} rel="noreferrer">TRADEMARKS.md</a>.
             </dd>

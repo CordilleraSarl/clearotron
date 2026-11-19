@@ -204,7 +204,7 @@ import { recordedScopeLedgerRows } from "./clearance-variants-record.mjs";
 import { renderFormNeighbourhoodJson, parseFormNeighbourhoodJson, dispatchedQueriesFromBand, formGapDirectives, markText } from "./form-neighbourhood.mjs"; import { loadOrdinaryWords } from "./ordinary-words.mjs";
 import { createRepairLedger, retryCannotHelpWith, isContentShapedFail, isFallbackEligible } from "./repairs.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
-import { isCancelled } from "./cancel.mjs";   // stop-by-user: a distinct class, never classified as a failure; isCancelled is the resume door's own refusal (2155)
+import { isCancelled, stopsWithTheRun } from "./cancel.mjs";   // stop-by-user: a distinct class, never classified as a failure; isCancelled is the resume door's own refusal (2155)
 import { reachableCommand } from "../shared/invocation.mjs";   // — a printed command the reader can type later, from anywhere
 export { StageFailure, buildFailurePacket, isDesignedRefusal, stageWallFields, terminalReasonFields };   // moved to run-outcome.mjs; importers read them here as before
 export { correctionReading, correctionRows, flagOrdinals, recordCorrectionsBasis, repairUnnamedRemovals, rollbackCorrectivePass };   // moved to steps/corrections.mjs; importers read them here as before
@@ -2761,7 +2761,7 @@ async function verifyAndRecordHouseElement(ctx, opts = {}) {
     // "verified by owner, not asserted" means — there is no owner-predicate listing on this interface
     // and inventing one would be a second way to ask the same question.
     const lookup = typeof rec.list !== "function" ? null : async ({ element, classes: cls }) => {
-      const r = await rec.list(element, { classes: cls, regions, limit: 50 });
+      const r = await stopsWithTheRun(P.runDir, "own-registrations", rec.list)(element, { classes: cls, regions, limit: 50 });
       if (!r || r.ok === false) return { ok: false, reason: String(r?.reason ?? "the register listing did not answer") };
       return { ok: true, records: Array.isArray(r.records) ? r.records : [] };
     };

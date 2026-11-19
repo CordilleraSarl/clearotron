@@ -85,6 +85,25 @@ export function assertNotCancelledBeforePublish(runDir, lane = "run") {
 }
 
 /**
+ * A CALL THAT SPENDS, MADE TO READ THE STOP FIRST. The gateway reads the stop before a model turn, and only there; the
+ * register counts and listings, the web searches and the owner checks that the code makes itself went around it, so a
+ * stopped Knockout kept making paid searches after the stop (measured 2026-11-19: six owner checks after it). Each call
+ * through this wrapper reads the stop before it starts, and a stopped run starts none: a call already started finishes,
+ * as a dispatched turn does.
+ *
+ * ONLY BEFORE THE PUBLISH READ. Past `assertNotCancelledBeforePublish` a stop can no longer prevent delivery, so the
+ * calls that build what is delivered (the logos, a record's body for the page) are not wrapped: refusing one there
+ * would leave a report half delivered rather than not delivered.
+ */
+export function stopsWithTheRun(runDir, label, fn) {
+  if (typeof fn !== "function") return fn;
+  return async (...args) => {
+    if (isCancelled(runDir)) throw new RunCancelled(label, readCancel(runDir));
+    return fn(...args);
+  };
+}
+
+/**
  * Thrown by the gateway when a run is asked to stop, and caught by both pipelines' run-level handlers.
  *
  * A DISTINCT CLASS, NOT A StageFailure, and that is load-bearing. A StageFailure goes through

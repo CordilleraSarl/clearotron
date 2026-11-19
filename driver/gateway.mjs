@@ -1876,7 +1876,7 @@ const REPAIR_HINTS = [
       `${POSITION_REQUIRED_DISPOSITIONS.join(", ").replace(/, ([^,]+)$/, " AND $1")} alike (only a review-killed ${
         DISPOSITIONS.filter((d) => !POSITION_REQUIRED_DISPOSITIONS.includes(d)).map((d) => `"${d}"`).join(" / ")
       } finding is ` +
-      `outside this, and it carries "withdrawn_reason" instead). An off-field finding additionally carries ` +
+      `outside this, and it carries "withdrawn_reason" instead). If the right stands and only its rating is withdrawn, because its goods wording cannot be used, also set "rating_withdrawn_ground": "goods-wording-unavailable". An off-field finding additionally carries ` +
       `"off_field_ground" = "different-field" (the goods do not meet — its own goods_proximity meter must then read ` +
       `"low") or "no-material-risk" (a clear win, carrying no field claim). A mark argued apart on sound, rhythm, ` +
       `orthography or connotation is "distinguished", never off-field. ` +

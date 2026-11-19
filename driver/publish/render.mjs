@@ -1193,9 +1193,13 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
     ? R.searched.checksWebAndStores(sw.checks.toLocaleString('en-GB'))
     : R.searched.checksOnPlatforms(sw.checks.toLocaleString('en-GB'), sw.platforms)]);
   if (sw.reputation) rows.push([R.searched.reputation, R.searched.checks(sw.reputation.toLocaleString('en-GB'))]);
-  // The local-script row says what the run's record shows ran (owner, 2026-11-19): searched when a native-script term
-  // ran, not searched when the record shows none did, and no row when the run kept no execution record to say either.
-  if (c.localScripts) rows.push([R.searched.localScript, c.localScripts.searched.length ? R.searched.searched : R.searched.notSearched]);
+  // The local-script row says what the run's record shows ran (owner, 2026-11-19): the scripts a native-script search
+  // completed in, by name, or not searched when the record shows none did, and no row when the run kept no execution
+  // record to say either. The scripts planned with none completed are left open, in the row added to the grid below.
+  const scriptNames = (codes) => Object.entries(R.searched.scriptName).filter(([k]) => codes.includes(k)).map(([, name]) => name);
+  if (c.localScripts) rows.push([R.searched.localScript, c.localScripts.searched.length ? R.searched.scriptsSearched(scriptNames(c.localScripts.searched)) : R.searched.notSearched]);
+  const scriptsMissed = c.localScripts ? scriptNames(c.localScripts.missed) : [];
+  if (scriptsMissed.length) open.push({ area: R.searched.localScript, state: 'not-searched', note: R.searched.scriptsNotCompleted(scriptsMissed) });
   // HOW DEEP THE LOCAL-LANGUAGE INVESTIGATION WENT, which is a different question from the row above it.
   // That one answers whether the spellings were searched; this one answers whether the investigation ran
   // at the depth the matter configured. The engine can run it shallower than the account asked for, and
@@ -2317,7 +2321,8 @@ function method(_text) {
 // <style> so the cascade order (chrome after report.css, as today) is identical to the all-inline export.
 const NAV_SHEET = NAV_CSS;
 // How a clearance prints (owner, 2026-11-19): ticked cards whole, every other fold as it reads on screen. The clearance's
-// own sheet, after the base sheet whose print rule opens every fold, which the Knockout keeps.
+// own sheet, after the base sheet whose print rule opens every fold, which the Knockout keeps. The verdict caption is not a
+// fold the reader chose: the page opens it before printing, and its label stays off the paper.
 const CLEARANCE_PRINT = readFileSync(join(HERE, 'templates', 'clearance-print.css'), 'utf8');
 const REP_OVERRIDE = '.rep-stickyhead .sitenav{position:static;box-shadow:none;border-bottom:none;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}';
 const PAGE_JS = `var _hidden=[];
@@ -2334,7 +2339,7 @@ function _cardHashGo(){var id=location.hash.slice(1);if(id.charAt(0)!=='c'||!/^[
 document.addEventListener('click',function(e){var a=e.target.closest?e.target.closest('a[href^="#c"]'):null;if(!a)return;var id=(a.getAttribute('href')||'').slice(1);if(id.charAt(0)!=='c'||!/^[0-9]+$/.test(id.slice(1)))return;var el=document.getElementById(id);if(!el)return;_cardReveal(el);e.preventDefault();try{if(history.replaceState)history.replaceState(null,'','#'+id);}catch(err){}el.scrollIntoView({behavior:(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)?'auto':'smooth',block:'start'});});
 window.addEventListener('hashchange',_cardHashGo);
 window.addEventListener('load',_cardHashGo);
-window.addEventListener('beforeprint',function(){document.querySelectorAll('details').forEach(function(d){d.dataset.o=d.open?'1':'';});document.querySelectorAll('.card').forEach(function(c){var b=c.querySelector('input.pickbox');if(b&&!b.checked)return;c.querySelectorAll('details').forEach(function(d){d.open=true;});for(var p=c.parentElement;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;});});
+window.addEventListener('beforeprint',function(){document.querySelectorAll('details').forEach(function(d){d.dataset.o=d.open?'1':'';});document.querySelectorAll('details.sub-more').forEach(function(d){d.open=true;});document.querySelectorAll('.card').forEach(function(c){var b=c.querySelector('input.pickbox');if(b&&!b.checked)return;c.querySelectorAll('details').forEach(function(d){d.open=true;});for(var p=c.parentElement;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;});});
 window.addEventListener('afterprint',function(){document.querySelectorAll('details').forEach(function(d){d.open=d.dataset.o==='1';});_hidden.forEach(function(c){c.classList.remove('print-hidden');});_hidden=[];});
 ${EXPORT_MENU_JS}`;
 

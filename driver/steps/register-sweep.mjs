@@ -33,6 +33,7 @@ import { readWithheldFamilies, releasedFamilyQids } from "../withheld-families.m
 import { existsSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { seedUnplannedBands } from "../register-unit-record.mjs";
 import { join } from "node:path";
+import { stopsWithTheRun } from "../cancel.mjs";   // every paid call the code makes itself reads the stop first
 
 /**
  * Which cross-checks this pass folds into the plan, and which the receipt keeps from an earlier pass. PURE.
@@ -124,9 +125,9 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
   // lane fully ARMED. envGateOn accepts both spellings rather than switching to a bare `!== "0"`:
   // deployments and 15 test files already say "off", and breaking that would arm dispatch silently,
   // which is the same bug in the other direction.
-  const planExec = opts.planExecutor
+  const planExec = stopsWithTheRun(run.runDir, "register-plan", opts.planExecutor
     ?? (envGateOn("CLEAROTRON_PLAN_DISPATCH") && registerAdapter(ctx.register).executePlan
-      ? (args, c) => noteAdapter(c ?? ctx, registerAdapter(ctx.register)).executePlan(args, c) : null);
+      ? (args, c) => noteAdapter(c ?? ctx, registerAdapter(ctx.register)).executePlan(args, c) : null));
   // Kill switch CLEAROTRON_SATPROBE_CODESIDE=0 (the inline `!== "0"` pattern): legacy mock harnesses
   // opt out — their scenarios pre-date the code-side member and script the AGENT path (and an armed
   // real executor lane would dial the provider from a test). Production default is ON.
@@ -234,7 +235,7 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
         note(`the meaning half recorded all but ${short.length} of its dictated searches — the engine re-issues `
           + `${short.length === 1 ? "it" : "them"} itself rather than asking for the sweep again`);
         clConnotationReissueSpent = true;
-        const reissuer = opts.connotationReissuer ?? defaultConnotationReissuer;
+        const reissuer = stopsWithTheRun(run.runDir, "connotation-reissue", opts.connotationReissuer ?? defaultConnotationReissuer);
         const r = await reissuer(short, { spec, rawPath: driverDir(run.runDir, "web-results", `connotation-reissue-${h}-${Date.now()}.json`) });
         runLog(run.runDir, { event: "connotation-reissue-result", ok: !!r?.ok,
           recovered: Array.isArray(r?.rows) ? r.rows.length : 0,
@@ -546,7 +547,7 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
           runLog(run.runDir, { event: "connotation-reissue", count: missing.length });
           note(`${missing.length} dictated meaning quer${missing.length === 1 ? "y" : "ies"} missing after the `
             + "model's one repair turn — the engine re-issues them itself through the same tool");
-          const reissuer = opts.connotationReissuer ?? defaultConnotationReissuer;
+          const reissuer = stopsWithTheRun(run.runDir, "connotation-reissue", opts.connotationReissuer ?? defaultConnotationReissuer);
           const r = await reissuer(missing, { spec, rawPath: driverDir(run.runDir, "web-results", `connotation-reissue-${Date.now()}.json`) });
           runLog(run.runDir, { event: "connotation-reissue-result", ok: !!r?.ok,
             recovered: Array.isArray(r?.rows) ? r.rows.length : 0,

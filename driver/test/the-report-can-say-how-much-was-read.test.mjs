@@ -134,17 +134,47 @@ test("the sweep and local-script counts come from the machine record", () => {
 // no execution record. Every term is invented.
 test("a native script counts as searched only when a term in it completed; accented Latin names none; no record says nothing", () => {
   const ran = (...qids) => ({ executed: qids.map((qid) => ({ qid, state: "enumerated" })) });
+  const scripts = (plan, exec) => { const r = localScripts(plan, exec); return { searched: r.searched, missed: r.missed }; };
   // An accented Latin term: no native script, so nothing is searched or missed in one.
-  assert.deepEqual(localScripts({ entries: [{ qid: "q1", term: "CAFÉ SKARVÈL" }] }, ran("q1")), { searched: [], missed: [] });
+  assert.deepEqual(localScripts({ entries: [{ qid: "q1", term: "CAFÉ SKARVÈL" }] }, ran("q1")), { searched: [], missed: [], territories: {} });
   // A planned-only term: the native script is missed, never searched, however the plan reads.
-  assert.deepEqual(localScripts({ entries: [{ qid: "q1", term: "VOLTARIS" }, { qid: "q2", term: "ボルタリス" }] }, ran("q1")), { searched: [], missed: ["Kana"] });
+  assert.deepEqual(scripts({ entries: [{ qid: "q1", term: "VOLTARIS" }, { qid: "q2", term: "ボルタリス" }] }, ran("q1")), { searched: [], missed: ["Kana"] });
   // Partial coverage: one script ran, another planned one did not.
-  assert.deepEqual(localScripts({ entries: [{ qid: "q1", term: "ボルタリス" }, { qid: "q2", term: "볼타리스" }] }, ran("q1")), { searched: ["Kana"], missed: ["Hang"] });
+  assert.deepEqual(scripts({ entries: [{ qid: "q1", term: "ボルタリス" }, { qid: "q2", term: "볼타리스" }] }, ran("q1")), { searched: ["Kana"], missed: ["Hang"] });
   // A native-script term whose only search did not complete is missed, not searched; so is one whose row has no state.
-  assert.deepEqual(localScripts({ entries: [{ qid: "q1", term: "ボルタリス" }] }, { executed: [{ qid: "q1", state: "incomplete" }] }), { searched: [], missed: ["Kana"] });
-  assert.deepEqual(localScripts({ entries: [{ qid: "q1", term: "ボルタリス" }] }, { executed: [{ qid: "q1" }] }), { searched: [], missed: ["Kana"] });
+  assert.deepEqual(scripts({ entries: [{ qid: "q1", term: "ボルタリス" }] }, { executed: [{ qid: "q1", state: "incomplete" }] }), { searched: [], missed: ["Kana"] });
+  assert.deepEqual(scripts({ entries: [{ qid: "q1", term: "ボルタリス" }] }, { executed: [{ qid: "q1" }] }), { searched: [], missed: ["Kana"] });
   // No execution record: the claim stays unknown.
   assert.equal(localScripts({ entries: [{ qid: "q1", term: "ボルタリス" }] }, null), null);
+});
+
+// A SCRIPT SEARCHED IN ONE TERRITORY AND NOT IN ANOTHER KEEPS THAT GAP, per script, on invented terms. One territory
+// under two spellings is no gap, and a term naming no region is kept apart rather than placed.
+test("the record keeps, per script, where it completed and where it was missed", () => {
+  const exec = (...rows) => ({ executed: rows.map(([qid, state]) => ({ qid, state })) });
+  // Katakana completed in Japan and was missed in Korea: the script is searched, and the gap is kept.
+  const gap = localScripts({ entries: [
+    { qid: "q1", term: "ボルタリス", regions: ["JP"] },
+    { qid: "q2", term: "ボルタリス", regions: ["KR"] },
+  ] }, exec(["q1", "enumerated"], ["q2", "incomplete"]));
+  assert.deepEqual(gap, { searched: ["Kana"], missed: [], territories: { Kana: { searched: ["JP"], missed: ["KR"] } } });
+  // A territory completed under one spelling and planned under another is not missed: EM and euipo are EU, GB is UK.
+  const alias = localScripts({ entries: [
+    { qid: "q1", term: "ВОЛТАРИС", regions: ["EM", "GB"] },
+    { qid: "q2", term: "ВОЛТАРИС", regions: ["euipo", "UK"] },
+  ] }, exec(["q1", "enumerated"], ["q2", "incomplete"]));
+  assert.deepEqual(alias.territories, { Cyrl: { searched: ["EU", "UK"], missed: [] } });
+  // A term naming no region is placed nowhere: it reads searched or missed under `unnamed`, and leaves the territories
+  // other terms named as they are.
+  const unnamed = localScripts({ entries: [
+    { qid: "q1", term: "ΒΟΛΤΑΡΙΣ" },
+    { qid: "q2", term: "ΒΟΛΤΑΡΙΣ", regions: ["GR"] },
+    { qid: "q3", term: "볼타리스", regions: [] },
+  ] }, exec(["q1", "incomplete"], ["q2", "enumerated"], ["q3", "enumerated"]));
+  assert.deepEqual(unnamed.territories, { Grek: { searched: ["GR"], missed: [], unnamed: "missed" }, Hang: { searched: [], missed: [], unnamed: "searched" } });
+  // Once one unnamed term in a script completes, that script's unnamed reading is searched, whatever order they come in.
+  const either = localScripts({ entries: [{ qid: "q1", term: "ΒΟΛΤΑΡΙΣ" }, { qid: "q2", term: "ΒΟΛΤΑΡΙΣ" }] }, exec(["q1", "enumerated"], ["q2", "incomplete"]));
+  assert.equal(either.territories.Grek.unnamed, "searched");
 });
 
 test("the whole record carries a group tally over the closed set only", () => {

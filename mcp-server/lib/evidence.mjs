@@ -48,6 +48,7 @@ import { parseAudit, stripEngineInternals } from "./driver.mjs";
 import { readRecordArtifacts, normalizeRecordUri } from "../../driver/registry-fidelity.mjs";
 import { recordGoodsAsRegistered } from "../../driver/record-goods.mjs";
 import { readJson } from "../../driver/run-record.mjs";
+import { reportDocumentOf } from "./findings.mjs";   // the run's report document, where it has one
 import { REPORT_PAGE } from "../../driver/publish/strings.mjs";
 
 // The client report's own display word per coverage state, read from the catalogue the report reads, so the
@@ -438,7 +439,9 @@ function outcomeOf(result) {
 export function searchLog(run) {
   const { P } = run;
   let blocks = [];
-  try { blocks = existsSync(P.audit) ? (parseAudit(P.audit).negatives ?? []) : []; } catch { blocks = []; }
+  // audit.md's search log as publishing parsed it, where the run's document holds it (findings.mjs reportDocumentOf).
+  const parsed = reportDocumentOf(P)?.reviewer?.audit;
+  try { blocks = parsed ? (parsed.negatives ?? []) : existsSync(P.audit) ? (parseAudit(P.audit).negatives ?? []) : []; } catch { blocks = []; }
   const searches = blocks.map((b, i) => {
     const raw = deMarkup(typeof b.search_term === "string" ? b.search_term : "");
     return {

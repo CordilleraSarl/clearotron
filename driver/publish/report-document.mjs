@@ -99,6 +99,9 @@ export function clearanceReportDocument(d, { codename = null, customerKey = null
       // The verdict record whole. Its sign-off is the reviewer's word, but the page prints it as the recommendation
       // on a record with no statement, so it is read here with the rest.
       record: orNull(d.verdictInfo),
+      // The record as written in the run's verdict file, which the cover email reads. It differs from `record` on a record
+      // older than the derived display fields, and where the assessment was not completed.
+      written: orNull(d.verdictWritten),
       assessmentNotCompleted: Boolean(d.assessmentNotCompleted),
     },
     client: {
@@ -110,7 +113,8 @@ export function clearanceReportDocument(d, { codename = null, customerKey = null
       askAnswers: orNull(d.askAnswers),
       actions: { conditions: conditionActions, advisories: advisoryActions },
       coverageJudgment: orNull(d.coverageJudgmentDisplay),
-      caseLaw: { byOrdinal: entries(d.caseLawByOrdinal) ?? [], notice: d.caseLawNotice ?? '' },
+      // Each finding's court decisions. The session-wide notice is not carried: no surface prints it.
+      caseLaw: { byOrdinal: entries(d.caseLawByOrdinal) ?? [] },
       enforcerSignals: d.enforcerSignals ?? [],
       seniorRights: orNull(d.seniorRights),
       records: d.recordsByUri instanceof Map ? [...d.recordsByUri.keys()] : [],
@@ -177,6 +181,17 @@ export function clearanceReportDataOf(doc) {
     jurisdiction: scope.jurisdiction, searchedJurisdictions: scope.searchedJurisdictions, scopeBasis: scope.scopeBasis,
     caption: fm.overall_caption || null, assessmentNotCompleted: verdict.assessmentNotCompleted,
   });
+}
+
+/**
+ * The rating a clearance's surfaces state, and its badge: the verdict record's as the page reads it, the report's front
+ * matter on a run older than the record, and none where the assessment was not completed. The page, the run record and
+ * the cover email read it here, so a saved verdict from an assessment that did not complete rates nothing on any of them.
+ */
+export function clearanceRatingOf(doc) {
+  const fm = doc.prose.frontMatter, { record, assessmentNotCompleted } = doc.verdict;
+  if (assessmentNotCompleted) return { word: undefined, badge: undefined };
+  return { word: record?.tier ?? fm.overall_label, badge: record?.badge ?? fm.overall_badge };
 }
 
 /** The run's findings in their own order: the withdrawn ones are put back where they were. */

@@ -39,6 +39,7 @@ import { kebab } from "./search-policy.mjs";
 import { SERP_PROVIDERS, JX_PROVIDERS } from "./driver.config.mjs";
 import { findGridLedgerViolations, findPlatformIdentityViolations } from "./common-law-receipts.mjs";
 import { paths, readJson } from "./run-record.mjs";
+import { stopsWithTheRun } from "./cancel.mjs";
 
 export const MAX_UNIT_ATTEMPTS = 3;      // degraded-unit retries across resumes (repairable, never terminal)
 export const SERP_TERM_CAP = 12;         // terms per grid — 12 × 7 cells = 84 paid calls, the hard ceiling
@@ -287,7 +288,8 @@ export async function runJxSerpGrid(ctx, job, opts = {}, { runLog = () => {}, no
     // wall-clock deadline on top of the per-call transport timeout: past it, remaining cells become
     // honest "deadline exceeded" gaps (the floor logic then decides degraded-vs-done) — a stalled
     // provider can never stall the paid run it shadows.
-    const { exec, source } = resolveSerpExecutor(opts, { mark: markName, lane });
+    const { exec: serpExec, source } = resolveSerpExecutor(opts, { mark: markName, lane });
+    const exec = stopsWithTheRun(run.runDir, `jx-serp-${lane}`, serpExec);   // every paid call the code makes itself reads the stop first
     const callsLedger = join(jxDir(run.runDir), "serp-calls.jsonl");
     const sessionKey = `${runPrefix(run)}jx-serp-${lane}`;
     const outPath = join(jxDir(run.runDir), spec.output ?? `${lane}-grid.json`);   // legacy absolute output_path is ignored — always run-local
