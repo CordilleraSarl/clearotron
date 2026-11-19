@@ -13,9 +13,10 @@ import { tmpdir as __tmpdir } from "node:os";
 import { join as __join } from "node:path";
 import { pinEnv } from "../../shared/env-aliases.mjs";
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", __mkdtemp(__join(__tmpdir(), "report-document-ws-")));
+pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", __mkdtemp(__join(__tmpdir(), "report-document-pool-default-")));
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { existsSync, mkdtempSync, readFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -24,7 +25,9 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const { publishSource, demoChildren } = await import("../demo-container.mjs");
 const { republishRun } = await import("../publish/report-registry.mjs");
 const { readClearanceDocument } = await import("../publish/index.mjs");
-const { CLEARANCE_DOCUMENT, clearanceReportDocument, clearanceReportDataOf } = await import("../publish/report-document.mjs");
+const { publishKnockout, readKnockoutDocument } = await import("../publish/knockout.mjs");
+const { CLEARANCE_DOCUMENT, KNOCKOUT_DOCUMENT, clearanceReportDocument, clearanceReportDataOf, knockoutReportDocument,
+  knockoutReportDataOf } = await import("../publish/report-document.mjs");
 const { clearanceReportData } = await import("../publish/report-data.mjs");
 const { paths } = await import("../run-record.mjs");
 
@@ -124,4 +127,70 @@ test("the verdict's sign-off is the reviewer's, and the rest of the record is th
   assert.equal(doc.reviewer.signoff, "CONDITIONAL");
   assert.equal(doc.verdict.record.verdict, undefined);
   assert.equal(doc.verdict.record.tier, "Moderate");
+});
+
+// ── THE KNOCKOUT: one document per run, and one data file per name built from it ──────────────────────────────
+
+test("the Knockout demo's document is JSON as built, keeps its findings record whole, and carries its data file", async () => {
+  const sample = demoChildren(copy).map((name) => join(copy, name)).find((dir) => existsSync(join(dir, "run", "knockout-findings.json")));
+  assert.ok(sample, "the demo container holds no Knockout");
+  const meta = JSON.parse(readFileSync(join(sample, "meta.json"), "utf8"));
+  const runDir = join(sample, "run");
+  const findings = JSON.parse(readFileSync(join(runDir, "knockout-findings.json"), "utf8"));
+  const framework = JSON.parse(readFileSync(paths(runDir).framework, "utf8"));
+  const pool = mkdtempSync(join(tmpdir(), "report-document-pool-"));
+
+  const read = await readKnockoutDocument({ runId: meta.runId, runDir, findings, framework, overall: null, poolRoot: pool, poolUrl: "" });
+  const built = knockoutReportDocument(read, { runId: meta.runId, findings, framework });
+  assert.deepStrictEqual(throughJson(built), built, "the document holds a value JSON does not carry");
+  assert.equal(built.document, KNOCKOUT_DOCUMENT);
+  assert.deepStrictEqual(throughJson(built).client.findings, findings, "the document's findings record is not the one read");
+
+  await republishRun({ runId: meta.runId, meta, pool, poolUrl: "", runDir });
+  const written = JSON.parse(readFileSync(paths(runDir).reportDocument, "utf8"));
+  assert.equal(written.run.reports.length, 1);
+  assert.equal(JSON.stringify(knockoutReportDataOf(written, 0), null, 2), readFileSync(join(pool, meta.runId, "report-data.json"), "utf8"),
+    "the data file built from the document is not the data file publishing wrote");
+});
+
+const FRAMEWORK = { framework_key: "house-triage", title: "t", bands: [
+  { label: "Very High", tone: "severe" }, { label: "High", tone: "high" }, { label: "Moderate", tone: "medium" },
+  { label: "Manageable", tone: "low" }, { label: "Low", tone: "minimal" }] };
+const koMark = (name, rating, extra = {}) => ({
+  name, rating, bullets: [`An invented point about ${name}.`], assessment: `The invented read of ${name}.`,
+  findings: [{ ordinal: 1, name: `${name} look-alike`, owner: "Invented Owner SA", band: rating,
+    net: "A listing under a closely similar name is live.", type: "Active Business", evidence: [] }],
+  ...extra,
+});
+
+test("on an invented batch of two names, each name's data file is the one built from the document", async () => {
+  const root = mkdtempSync(join(tmpdir(), "report-document-ko-"));
+  const runDir = join(root, "run"), poolRoot = join(root, "pool");
+  mkdirSync(paths(runDir).reportDocument.replace(/[^/]+$/, ""), { recursive: true });
+  mkdirSync(poolRoot);
+  writeFileSync(join(runDir, "status.json"), JSON.stringify({ runId: "tmpinvented-batch" }));
+  const findings = {
+    schema_version: 2, batch: { executiveSummary: "The batch read, naming both names.", standardCaveats: ["A caveat."] },
+    marks: [koMark("QUILLMERE", "High", { ratingQualifier: "on the goods named", purpleNotes: ["A reviewer's note."] }), koMark("TARNOVEL", "Low")],
+  };
+  await publishKnockout({ runId: "tmpinvented-batch", codename: "invented", runDir, findings, framework: FRAMEWORK, overall: "High",
+    poolRoot, poolUrl: "https://reports.example.test", customerKey: "", skipRegen: true });
+  const written = JSON.parse(readFileSync(paths(runDir).reportDocument, "utf8"));
+  assert.equal(written.run.single, false);
+  assert.deepEqual(written.run.reports.map((r) => [r.mark, r.band]), [["QUILLMERE", "High"], ["TARNOVEL", "Low"]]);
+  // The findings record whole, under its own names: the data file's projection renames, as publishing does today.
+  assert.deepStrictEqual(written.client.findings, findings);
+  written.run.reports.forEach((r, at) => {
+    const file = readFileSync(join(poolRoot, "tmpinvented-batch", `report-data-${r.slug}.json`), "utf8");
+    assert.equal(JSON.stringify(knockoutReportDataOf(written, at), null, 2), file, `${r.mark}: not the data file publishing wrote`);
+    // Each name's file opens with that name's own read, never the batch's.
+    assert.equal(JSON.parse(file).summary, `The invented read of ${r.mark}.`);
+  });
+});
+
+test("the Knockout's searches left open are the scope's, which the page and the workbook both read", () => {
+  const steps = { listing: { failed: true }, reading: null, review: null };
+  const doc = knockoutReportDocument({ steps }, { runId: "x", findings: { marks: [] } });
+  assert.deepEqual(doc.scope.steps, steps);
+  assert.equal(doc.reviewer.steps, undefined);
 });

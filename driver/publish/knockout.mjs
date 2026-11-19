@@ -859,6 +859,15 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     }));
     return { mark: m.name, slug, file, dataFile, url: reportUrlFor(slug), band: markBand ?? null };
   });
+  // The run's report as one document, in the run's own record and never the pool (publish/report-document.mjs).
+  // Nothing reads it yet. A failed write costs the publish nothing.
+  try {
+    ensureDriverDir(runDir);
+    atomicWrite(paths(runDir).reportDocument, JSON.stringify(knockoutReportDocument(doc, {
+      runId, codename, customerKey, findings, framework, overall, searchPolicy: searchPolicy ?? null,
+      depthNote: productCoverageNote(searchPolicy ?? null), tokens, reports, auditFile, auditError,
+    }), null, 1) + '\n');
+  } catch (e) { note(`knockout report document not written (non-fatal): ${e?.message ?? e}`); }
   // report.md — front-matter compatible with archive greps (title/matter/overall_label)
   //
   // — AND IT NAMES THE DOCUMENTS (knockoutDocumentRoutes, below).
@@ -1020,7 +1029,8 @@ export function knockoutDocumentRoutes(reports, { auditFile = null } = {}) {
 import { addressListedFilings, reasonCellFor } from './office-record-links.mjs';
 import { reportDates, zurichStamp } from './report-dates.mjs';   // the dates a report prints, from its record
 import { declaredRecordOrigins } from '../record-origins.mjs';
-import { driverDir, ensureDriverDir, paths, readJson } from "../run-record.mjs";
+import { atomicWrite, driverDir, ensureDriverDir, paths, readJson } from "../run-record.mjs";
+import { knockoutReportDocument } from "./report-document.mjs";   // the run's report as one document
 import { readRecordArtifacts, normalizeRecordUri } from "../registry-fidelity.mjs";
 import { recordBodyFromLog } from "../../providers/_shared/ledger.mjs";   // the run record log's own index
 import { logosForReport } from "../mark-logos.mjs";   // the saved logo of each listed filing, embedded in the report

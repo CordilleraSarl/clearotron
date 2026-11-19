@@ -1413,7 +1413,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // The run's report as one document, in the run's own record and never the pool (publish/report-document.mjs).
   // Nothing reads it yet. A failed write costs the publish nothing.
   if (runDir) {
-    try { mkdirSync(dirname(paths(runDir).reportDocument), { recursive: true }); atomicWrite(paths(runDir).reportDocument, JSON.stringify(clearanceReportDocument({ ...doc, runId }, { codename, customerKey, auditFile, auditError }), null, 1) + '\n'); }
+    try { ensureDriverDir(runDir); atomicWrite(paths(runDir).reportDocument, JSON.stringify(clearanceReportDocument({ ...doc, runId }, { codename, customerKey, auditFile, auditError }), null, 1) + '\n'); }
     catch (e) { console.warn(`[report-document] not written: ${e?.message ?? e}`); }
   }
   const total = finishPoolRun({ writeRO, poolRoot, skipRegen, regenIndex, meta: {
@@ -1974,7 +1974,7 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
 // of the tree cites by number.
 import { recordLinksFor } from './office-record-links.mjs';
 import { reportDates, zurichStamp } from './report-dates.mjs';   // the dates a report prints, from its record
-import { atomicWrite, driverDir, paths, readJson } from "../run-record.mjs";
+import { atomicWrite, driverDir, ensureDriverDir, paths, readJson } from "../run-record.mjs";
 import { clearanceReportDocument } from "./report-document.mjs";   // the run's report as one document
 import { logosForReport } from "../mark-logos.mjs";   // the saved logo of each cited registration, embedded in the report
 import { followUpKindsOf } from "../follow-up-twins.mjs";   // the search each deferred directive recorded

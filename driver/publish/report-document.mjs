@@ -22,7 +22,7 @@
 // `_driver/logos/`, which can hold thousands of records.
 //
 // PURE: no IO and no clock. publishReport hands it the values readClearanceDocument read.
-import { clearanceReportData } from './report-data.mjs';
+import { clearanceReportData, knockoutReportData } from './report-data.mjs';
 import { deriveActionConditions } from '../findings-model.mjs';
 
 export const CLEARANCE_DOCUMENT = 'report-document/clearance-1';
@@ -167,5 +167,106 @@ export function clearanceReportDataOf(doc) {
     actions: [...client.actions.conditions, ...client.actions.advisories],
     jurisdiction: scope.jurisdiction, searchedJurisdictions: scope.searchedJurisdictions, scopeBasis: scope.scopeBasis,
     caption: fm.overall_caption || null, assessmentNotCompleted: verdict.assessmentNotCompleted,
+  });
+}
+
+export const KNOCKOUT_DOCUMENT = 'report-document/knockout-1';
+
+/**
+ * The Knockout run as one document: every name in the batch, with each name's report as publishing wrote it.
+ * `d` is readKnockoutDocument's return; `reports` is each name's report ({ mark, slug, file, url, band }), in
+ * the order publishing wrote them.
+ *
+ * The run's findings record is kept whole, under its own names. The data file renames four of a mark's fields
+ * (rating, ratingQualifier, bullets, purpleNotes) and goes on doing so in its projection: a rename here would be
+ * one more way for the build to fail, and the record is what the page reads.
+ */
+export function knockoutReportDocument(d, { runId, codename = null, customerKey = null, findings, framework = null, overall = null, searchPolicy = null, depthNote = null, tokens = null, reports = [], auditFile = null, auditError = null }) {
+  const identity = d.identity ?? {};
+  return {
+    document: KNOCKOUT_DOCUMENT,
+    build: { engineCommit: orNull(d.engineCommit), renderedAt: orNull(d.dates?.renderedAt), tokens: orNull(tokens) },
+    run: {
+      runId: runId ?? null,
+      codename: codename ?? null,
+      customerKey: customerKey || null,
+      organisation: orNull(d.organisation),
+      title: orNull(d.title),
+      markNames: d.markNames ?? [],
+      issued: orNull(d.issued),
+      issuedAt: orNull(d.dates?.issuedAt),
+      searched: orNull(d.searched),
+      origin: orNull(d.origin),
+      auditFile: auditFile || null,
+      single: Boolean(d.single),
+      // Each name's report, with the band it carries: the name's own on a batch, the run's on one name.
+      reports: reports.map(({ mark, slug, file, url, band }) => ({ mark, slug, file, url: orNull(url), band: band ?? null })),
+      product: {
+        name: orNull(identity.identity), stageLabel: orNull(identity.stageLabel), template: orNull(identity.template),
+        banner: orNull(identity.banner), level: orNull(searchPolicy?.level), depthNote: orNull(depthNote),
+      },
+      provenance: {
+        recipe: orNull(searchPolicy?.recipe), enqueuedVia: orNull(searchPolicy?.enqueuedVia),
+        enqueuedBy: orNull(searchPolicy?.enqueuedBy), parentRunId: orNull(searchPolicy?.parentRunId),
+      },
+    },
+    scope: {
+      instructedScope: orNull(d.instructedScope),
+      scopeUnreadable: Boolean(d.scopeUnreadable),
+      // The frozen policy whole: the page composes "About this request" and the masthead from it.
+      policy: orNull(searchPolicy),
+      probeRan: Boolean(d.probeRan),
+      // The searches that did not complete, which the page's Left open and the workbook's part rows read.
+      steps: orNull(d.steps),
+    },
+    framework: { manifest: orNull(framework), method: orNull(d.frameworkMethod) },
+    verdict: { overall: orNull(overall), badge: orNull(d.overallBadge), statement: orNull(d.statement) },
+    client: {
+      findings: orNull(findings),
+      registerCounts: orNull(d.registerCounts),
+      registerRecords: orNull(d.registerRecords),
+      registerRecordsUnreadable: Boolean(d.registerRecordsUnreadable),
+      // By reference: each filing's saved record stays in the run's `_records/` or its record log.
+      filingRecords: d.filingRecords instanceof Map ? [...d.filingRecords.keys()] : [],
+      logos: d.logos instanceof Map ? [...d.logos].map(([ref, l]) => [ref, l?.state ?? null]) : [],
+      ownerChecks: d.ownerChecks ?? [],
+      recordLinks: d.officeLinks ? { tally: orNull(d.officeLinks.tally), summary: orNull(d.officeLinks.summary) } : null,
+      servedModels: orNull(d.served),
+    },
+    reviewer: {
+      receipts: orNull(d.receipts),
+      sweepReceipts: d.sweepReceipts ?? [],
+      qcFlags: d.qcFlags ?? [],
+      machineChecksFailed: orNull(d.machineChecksFailed),
+      lookupsNotRun: d.lookupsNotRun ?? [],
+      recordsNotKept: d.recordsNotKept ?? [],
+      openPoints: d.openPoints ?? [],
+      recordLinksDropped: orNull(d.recordLinksDropped),
+      registerCountsUnreadable: Boolean(d.registerCountsUnreadable),
+    },
+    staff: { auditError: auditError ?? null },
+  };
+}
+
+/**
+ * One name's data file (`report-data/knockout-1`) as the document's client projection, by the name's place in
+ * the batch. Equal byte for byte to the file publishing writes for that name today.
+ */
+export function knockoutReportDataOf(doc, at) {
+  const { run, client } = doc;
+  const findings = client.findings ?? {};
+  const m = (findings.marks ?? [])[at];
+  // The name's own slice, as publishing builds it: on a batch, the page opens with the name's own assessment.
+  const one = {
+    ...findings, marks: [m],
+    batch: { ...(findings.batch ?? {}), ...(run.single ? {} : { executiveSummary: String(m.assessment ?? '').trim() }) },
+  };
+  const report = run.reports[at];
+  return knockoutReportData(one, doc.framework.manifest, {
+    runId: run.runId, codename: run.codename, overall: report.band, issued: run.issued,
+    registerCounts: client.registerCounts, registerRecords: client.registerRecords, ownerChecks: client.ownerChecks,
+    auditFile: run.auditFile, customerKey: run.customerKey, matter: run.runId, servedModels: client.servedModels,
+    identity: { identity: run.product.name, stageLabel: run.product.stageLabel, level: run.product.level },
+    url: report.url,
   });
 }
