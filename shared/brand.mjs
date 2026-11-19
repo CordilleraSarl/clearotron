@@ -312,6 +312,17 @@ export const WORKBOOK_COLOURS = Object.freeze({
   stateNote:    'EDEDED',
 });
 
+/** The clearance report's quadrant, which stays a fixed light surface in both themes: its markers, the pending marker's
+ *  fill, the grid, the axis titles and the zone label. Its ink and its zone's red are PALETTE.ink and PALETTE.crimson. */
+export const QUADRANT_COLOURS = Object.freeze({
+  onField:     '#C8871B',
+  secondary:   '#5F8A64',
+  pendingFill: '#FFFDF9',
+  grid:        '#E4DACA',
+  axisText:    '#6B5D52',
+  zoneLabel:   '#B89A6E',
+});
+
 // The typefaces themselves are not linked from anywhere: brand-fonts.mjs embeds them in each page that
 // sets text, and this module only names them, so it stays free of file reads for the tools that import it.
 
@@ -488,6 +499,10 @@ export const REPORT_ROOT =
   // #860F09, so a High risk dot read as a Start button and needed a ring workaround). --accent /
   // --crimson / --maroon above are untouched. The gauge's stop order is clear→low→med→high→severe.
   `--clear:${BAND_RAMP.clear}; --low:${BAND_RAMP.low}; --med:${BAND_RAMP.med}; --high:${BAND_RAMP.high}; --severe:${BAND_RAMP.severe};` +
+  // THE TEXT ON A BAND. A band pill printed white on every band, and white scored 3.03:1 on Medium, 3.29 on Low and
+  // 3.96 on Clear, under the 4.5 a 14px label needs. Each band names its own text (BAND_ON): the ink on the three light
+  // bands, white on the two dark ones (WCAG 2.x: 4.74, 5.71, 6.20, 5.94, 10.23). No single colour clears all five.
+  `--clear-on:${BAND_ON.clear}; --low-on:${BAND_ON.low}; --med-on:${BAND_ON.med}; --high-on:${BAND_ON.high}; --severe-on:${BAND_ON.severe};` +
   // Soft/text pairs: re-derived from the five bases by the rule in shared/tools/derive-band-pairs.mjs (same
   // hue, soft at L .895 / S×.78, text at L .275 / S×1.12). Every pair clears WCAG AA on its own chip.
   `--med-soft:${BAND_SOFT.med}; --med-tx:${BAND_SOFT_TEXT.med}; --clear-soft:${BAND_SOFT.clear}; --clear-tx:${BAND_SOFT_TEXT.clear}; --high-soft:${BAND_SOFT.high}; --high-tx:${BAND_SOFT_TEXT.high};` +
@@ -576,6 +591,9 @@ const REPORT_DARK_TOKENS =
   `--crimson:${P.crimson};--maroon:${D.crimsonDeep};--rose:${D.crimsonMid};--rose2:#cf8681;--tan:#c8b89a;--mark:${D.ink};` +
   `--crimson-deep:${D.crimsonDeep};--crimson-mid:${D.crimsonMid};` +
   `--clear:${BAND_RAMP_DARK.clear};--low:${BAND_RAMP_DARK.low};--med:${BAND_RAMP_DARK.med};--high:${BAND_RAMP_DARK.high};--severe:${BAND_RAMP_DARK.severe};` +
+  // The dark bands are lighter, so the light ink stays (it does not flip with the theme) and covers High too: white
+  // on dark High is 4.16, the ink 4.51. Severe keeps white (7.16).
+  `--clear-on:${BAND_ON_DARK.clear};--low-on:${BAND_ON_DARK.low};--med-on:${BAND_ON_DARK.med};--high-on:${BAND_ON_DARK.high};--severe-on:${BAND_ON_DARK.severe};` +
   `--med-soft:#352915;--med-tx:#E4BF81;--clear-soft:#212922;--clear-tx:#A7BEA9;--high-soft:#311B19;--high-tx:#D8938D;` +
   `--taupe:#8f8570;` +
   `--ma-toggle:#E8A87C;` +

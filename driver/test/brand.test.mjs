@@ -13,7 +13,7 @@ import {
   PALETTE, WARM_ROOT, REPORT_ROOT,
   WARM_ROOT_DARK, WARM_ROOT_DARK_EXPLICIT, REPORT_ROOT_DARK, REPORT_ROOT_DARK_EXPLICIT,
   THEME_INIT, THEME_INIT_EXPLICIT, themeButton, THEME_BTN_CSS,
-  EMAIL_TIER, EMAIL_COLOURS, WORKBOOK_COLOURS,
+  EMAIL_TIER, EMAIL_COLOURS, WORKBOOK_COLOURS, QUADRANT_COLOURS,
 } from "../../shared/brand.mjs";
 import { parseReport } from "../publish/parse.mjs";
 import { renderHtml } from "../publish/render.mjs";
@@ -97,12 +97,11 @@ test("the ramp's out-of-band duplicates track the tokens", async () => {
   const r = tokens(REPORT_ROOT);
   const render = at("../publish/render.mjs"), css = at("../publish/templates/report.css");
 
-  for (const tok of ["--med", "--clear"]) {
-    const hex = r[tok];
-    assert.ok(
-      new RegExp(hex, "i").test(render),
-      `render.mjs hardcodes ${tok} for the quadrant markers/legend/key badges — it still carries the OLD hex`,
-    );
+  // The quadrant's markers, legend and key badges take QUADRANT_COLOURS now (the light ramp, held beside the tokens);
+  // they must still be the ramp's own --med and --clear.
+  for (const [tok, name] of [["--med", "onField"], ["--clear", "secondary"]]) {
+    assert.equal(QUADRANT_COLOURS[name].toLowerCase(), r[tok].toLowerCase(),
+      `QUADRANT_COLOURS.${name} is not ${tok}: the quadrant's markers/legend/key badges carry an OLD hex`);
   }
   const [mr, mg, mb] = [1, 3, 5].map((i) => parseInt(r["--med"].slice(i, i + 2), 16));
   assert.match(css, new RegExp(`rgba\\(${mr}, ?${mg}, ?${mb},`), "the gauge marker glow is --med in decimal");
@@ -183,7 +182,7 @@ test("a rendered report carries the brand :root, its own fonts and no blue skin"
     rmSync(dir, { recursive: true, force: true });
   }
 });
-test("the emails and the workbook take their colours from brand.mjs, and no file beside it keeps a copy", () => {
+test("the emails, the workbook and the quadrant take their colours from brand.mjs, and no file beside it keeps a copy", () => {
   // They drew with their own literals, so a re-skin that edited brand.mjs still missed them. Each value now
   // lives once, in brand.mjs; a literal of any of them typed back into these files fails here by name.
   const PUBLISH = join(dirname(fileURLToPath(import.meta.url)), "..", "publish");
@@ -191,9 +190,10 @@ test("the emails and the workbook take their colours from brand.mjs, and no file
     ...Object.values(EMAIL_TIER).flatMap((t) => [t.bg, t.txt]),
     ...Object.values(EMAIL_COLOURS),
     ...Object.values(WORKBOOK_COLOURS).map((v) => v.slice(-6)),
+    ...Object.values(QUADRANT_COLOURS),
   ].map((v) => v.replace(/^#/, "").toLowerCase()).filter((v) => v.length === 6));
   assert.ok(values.size >= 15, `only ${values.size} colours read from brand.mjs: the tokens moved, so this checks nothing`);
-  for (const file of ["index.mjs", "knockout.mjs", "xlsx.mjs"]) {
+  for (const file of ["index.mjs", "knockout.mjs", "xlsx.mjs", "render.mjs"]) {
     const src = readFileSync(join(PUBLISH, file), "utf8").toLowerCase();
     const kept = [...values].filter((v) => new RegExp(`[#'"]${v}\\b|ff${v}\\b`).test(src));
     assert.deepEqual(kept, [], `${file} keeps its own copy of a colour brand.mjs names`);

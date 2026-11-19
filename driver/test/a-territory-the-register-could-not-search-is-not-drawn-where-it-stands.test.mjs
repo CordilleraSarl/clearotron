@@ -55,7 +55,7 @@ const drawn = (html) => {
   const panel = panelOf(html);
   return {
     rows: [...panel.matchAll(/<span class="rcode">([^<]*)<\/span>/g)].map((m) => m[1]),
-    chips: [...panel.matchAll(/<span class="wchip" title="([^"]*)">/g)].map((m) => m[1]).sort(),
+    chips: (panel.match(/<p class="wnames">([^<]*)<\/p>/)?.[1].split(", ") ?? []).sort(),
   };
 };
 const DEPTH = { counts: { recordsByCountry: { JP: 3, KR: 1, FR: 2 }, courtDecisions: "not-in-scope" } };

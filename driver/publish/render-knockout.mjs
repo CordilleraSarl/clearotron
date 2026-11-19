@@ -191,7 +191,7 @@ function batchTitle(marks) {
 // group, in the order the merged gate left them, highest first. The same chip and the same line either way, so no
 // words are added. A mark with no groups, which is every archived run, keeps its markup byte for byte.
 function bandColumn(m, framework) {
-  const chip = (band, qualifier, classes) => `<span class="ko-band" style="background:var(${bandStop(framework, band)})">${esc(band ?? '—')}</span>
+  const chip = (band, qualifier, classes) => `<span class="ko-band" style="background:var(${bandStop(framework, band)});color:var(${bandStop(framework, band)}-on)">${esc(band ?? '—')}</span>
         ${qualifierHtml(qualifier)}
         ${classes?.length ? `<p class="ko-classes">Classes ${esc(classes.join(', '))}</p>` : ''}`;
   if (!Array.isArray(m.classGroups) || !m.classGroups.length) return chip(m.rating, m.ratingQualifier, m.classesSearched);
@@ -700,7 +700,7 @@ function findingBlock(v, framework, markIndex, method = null, cite = {}) {
           <div class="body">
             <div class="cardhead">
               <span class="fnum">${esc(v.ref)}</span><h3 class="who">${esc(v.name ?? 'Unnamed finding')}</h3>${
-    v.band ? `<span class="ko-findband" style="background:var(${stop})">${bandChipText(v.band, method, v.inputs)}</span>` : ''}${sourceChips(v)}
+    v.band ? `<span class="ko-findband" style="background:var(${stop});color:var(${stop}-on)">${bandChipText(v.band, method, v.inputs)}</span>` : ''}${sourceChips(v)}
               <button class="ask-fi no-print">\u2726 Ask AI about this finding</button>
             </div>
             ${meta ? `<p class="ko-findmeta">${meta}</p>` : ''}
@@ -1211,7 +1211,7 @@ function registerFindingBlock(v, markIndex, reads = null, framework = null, owne
           <div class="body">
             <div class="cardhead">
               <span class="fnum">${esc(v.ref)}</span><h3 class="who">${esc(r.mark ?? 'Unnamed filing')}</h3>${
-    band ? `<span class="ko-findband" style="background:var(${stop})">${bandChipText(band, method, row?.inputs)}</span>` : ''}<span class="src reg">Register</span>
+    band ? `<span class="ko-findband" style="background:var(${stop});color:var(${stop}-on)">${bandChipText(band, method, row?.inputs)}</span>` : ''}<span class="src reg">Register</span>
               <button class="ask-fi no-print">\u2726 Ask AI about this finding</button>
             </div>
             <p class="ko-findmeta">${meta}</p>
@@ -1416,12 +1416,13 @@ function koScale(framework, band) {
   const n = ladder.length;
   const idx = Math.max(0, ladder.findIndex((b) => b.toLowerCase() === String(band ?? '').trim().toLowerCase()));
   const pct = (k) => (n > 1 ? (k / (n - 1)) * 100 : 50);
-  const TONE = ['var(--clear)', 'var(--low)', 'var(--med)', 'var(--high)', 'var(--severe)'];
-  const tone = (k) => TONE[Math.round((k / Math.max(1, n - 1)) * (TONE.length - 1))];
+  const STOPS = ['--clear', '--low', '--med', '--high', '--severe'];
+  const stopAt = (k) => STOPS[Math.round((k / Math.max(1, n - 1)) * (STOPS.length - 1))];
+  const tone = (k) => `var(${stopAt(k)})`;
   const shift = (k) => (k === 0 ? '0' : k === n - 1 ? '-100%' : '-50%');
   return `<div class="kscale"><div class="kbar" style="background:linear-gradient(90deg,${
     ladder.map((b, k) => `${tone(k)} ${pct(k)}%`).join(',')})"><div class="kmarker" style="left:${pct(idx)}%;transform:translateX(${
-    idx === 0 ? '-12px' : idx === n - 1 ? 'calc(-100% + 12px)' : '-50%'})"><div class="kpill" style="background:${tone(idx)}">${
+    idx === 0 ? '-12px' : idx === n - 1 ? 'calc(-100% + 12px)' : '-50%'})"><div class="kpill" style="background:${tone(idx)};color:var(${stopAt(idx)}-on)">${
     esc(ladder[idx] || band || '')}</div><div class="kneedle" style="background:${tone(idx)}"></div></div></div><div class="kticks">${
     ladder.map((b, k) => `<span class="${k === idx ? 'on' : ''}" style="left:${pct(k)}%;transform:translateX(${shift(k)})${
       k === idx ? `;color:${tone(k)}` : ''}">${esc(b)}</span>`).join('')}</div></div>`;
@@ -1464,7 +1465,7 @@ function markOutcomes(marks) {
     .filter((o) => o.text);
 }
 
-function readBlock(m, framework) {
+function readBlock(m, framework, { opening = '' } = {}) {
   const factors = (m.factors ?? []).filter((s) => typeof s === 'string' && s.trim());
   const counter = (m.counterFactors ?? []).filter((s) => typeof s === 'string' && s.trim());
   const structured = Boolean(m.basis || factors.length || counter.length || m.mitigation);
@@ -1499,16 +1500,20 @@ function readBlock(m, framework) {
     //
     // CLAUSE F. An archived run carries bullets and no assessment: it keeps the fold it was delivered
     // with, under its own old label. The fallback is the old block, never an empty new one.
-    assessment
+    // A PER-NAME PAGE OF A MULTI-NAME BATCH OPENS WITH THIS VERY ASSESSMENT (the publisher sets it as the page's
+    // opening), so the fold would print it a second time: 10 to 26% of each such page repeated. There the fold is
+    // not drawn (owner, 2026-11-18). A single-name page opens with the batch paragraph, which is other text, and keeps it.
+    assessment && String(opening ?? '').trim() === String(m.assessment ?? '').trim() ? ''
+    : assessment
       ? `<details class="ko-full"><summary>${esc(ASSESSMENT_FOLD_LABEL)}</summary><div class="ko-assess">${mdParagraphs(assessment)}</div></details>`
       : (bullets ? `<details class="ko-full"><summary>Full narrative</summary><ul class="ko-bul">${bullets}</ul></details>` : ''),
   ].filter(Boolean).join('');
 }
 
-function analysisSection(marks, framework, { registerCounts = null, probeRan = false, registerRecords = null, ownerChecks = [], frameworkMethod = null, cardOrder = null } = {}) {
+function analysisSection(marks, framework, { registerCounts = null, probeRan = false, registerRecords = null, ownerChecks = [], frameworkMethod = null, cardOrder = null, opening = '' } = {}) {
   const cite = { filings: filingsByHandle(registerRecords), provider: registerRecords?.provider ?? null };
   const cards = marks.map((m, markIndex) => {
-    const bullets = readBlock(m, framework);
+    const bullets = readBlock(m, framework, { opening });
     // — the promoted register filings, in the SAME list as the common-law conflicts. A name's filing evidence
     // leads and its web use follows, the order a lawyer's report takes: first the findings that weigh a filing,
     // then the filing cards, then the findings resting on use alone. Each keeps its own order, so the
@@ -1661,7 +1666,7 @@ export function renderKnockoutHtml(findings, framework, {
   // The driver's own record of the owner lookups it ran. Defaults to [] so an
   // archived run that predates the lane renders exactly as it was delivered.
   ownerChecks = [],
-  identity = null, matter = null, homeHref = null, chromeHref = null, depthNote = null,
+  identity = null, matter = null, homeHref = null, chromeHref = null, depthNote = null, auditHref = null,
   // — the run's FROZEN policy, so the scope section states what this run was
   // instructed to do rather than what its artifacts happen to show. Defaults to null, and an archived
   // run that carries none keeps the artifact-derived sentence it was delivered with.
@@ -1756,7 +1761,7 @@ export function renderKnockoutHtml(findings, framework, {
   // a disclosure, which is the one failure that would matter on a client-facing page. A similarity score
   // could; that is why there isn't one.
   const newCaveats = caveats.filter((c) => saysSomethingNew(c, SCOPE_BLOCK_TEXT));
-  const analysis = analysisSection(marks, framework, { registerCounts, probeRan, registerRecords, ownerChecks, frameworkMethod, cardOrder: findings?.cardOrder });
+  const analysis = analysisSection(marks, framework, { registerCounts, probeRan, registerRecords, ownerChecks, frameworkMethod, cardOrder: findings?.cardOrder, opening: findings?.batch?.executiveSummary });
   // The request-level notes, gathered across every mark on the document and rendered ONCE at the top.
   // They are about the asking, not about a name, so a batch repeating them per mark would be the same
   // sentence three times. reviewerNotesBlock renders the rest, under that mark's own cards.
@@ -1795,11 +1800,11 @@ ${filings}`
     title: `${productName ? `${esc(productName)} — ` : ''}${esc(title)}`,
     css: CHROME_CSS + '\n' + THEME_BTN_CSS + '\n' + KO_CSS,
     chromeHref,
-    body: `<div class="rep-stickyhead no-print">
+    body: `<div class="rep-stickyhead no-print" data-report-chrome>
 <div class="topbar no-print">
   ${homeHref ? `<a class="homebtn tb-back no-print" href="${escAttr(homeHref)}" title="All reports"><span aria-hidden="true">←</span> <span class="tb-back-lbl">All reports</span></a>` : ''}
   ${logoLockup({ mark: 20, tag: '' })}<span class="sp"></span>
-  <span class="tb-risk" style="background:var(${overallStop})">${esc(overall ?? '—')}</span>
+  <span class="tb-risk" style="background:var(${overallStop});color:var(${overallStop}-on)">${esc(overall ?? '—')}</span>
   ${/* THE IDENTITY LINE NAMES THE MARK AND THE SEARCH, NOT THE RUN. It printed `matter || runId`,
        and the caller passes the runId AS the matter, so what a client read was the engine's own run
        identifier — on a real run a temporary-directory name carrying a capture suffix. It is ours, it
@@ -1809,7 +1814,7 @@ ${filings}`
        neither the line does not render. A run whose registry identity is missing is exactly the case
        that used to print the raw name, so falling back would keep the defect for the runs that have
        it. */''}
-  ${title || productName ? `<span class="mono tb-matter" style="font-size:11px;color:var(--faint)">${
+  ${title || productName ? `<span class="mono tb-matter" style="font-size:11px;color:var(--slate)">${
     [title, productName].filter(Boolean).map(esc).join(' / ')}</span>` : ''}
   ${issuedDate ? `<span class="mono tb-issued"><span aria-hidden="true">🗓 </span>Issued on ${esc(issuedDate)}</span>` : ''}
   ${/* THE EXPORT CONTROL, which this template had never emitted. The approved header carries it and the
@@ -1834,6 +1839,9 @@ ${filings}`
     ${EXPORT_TOGGLE}
     ${exportPopover(`
       <button class="util primary" onclick="exportPDF()">\u2b07 Export PDF</button>
+      ${/* THE CLEARANCE'S OWN WORKBOOK CONTROL (owner, 2026-11-18). The page cites "the audit workbook" and gave no way to
+           open it; the control links the portal's audit route the publisher hands in, and is absent when there is none. */''}${
+        isHttpUrl(auditHref) ? `<a class="util" href="${escAttr(auditHref)}" download>\u2b07 Download full audit (Excel)</a>` : ''}
       <div class="tb-sep"></div>
       <div class="tb-row"><button class="util" onclick="openAll(true)">Expand all</button><button class="util" onclick="openAll(false)">Collapse all</button></div>
     `)}
@@ -1841,7 +1849,7 @@ ${filings}`
 </div>
 <!--SECTION-STRIP-->
 </div>
-<div class="fab-stack">${themeButton()}</div>
+<div class="fab-stack" data-report-chrome>${themeButton()}</div>
 <script>
 /* THE DOCUMENT'S OWN CONTROLS, and they are GLOBAL on purpose.
    The portal frames this document and drives it by postMessage. The bridge injected at serve time looks

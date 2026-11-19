@@ -20,7 +20,7 @@ import { zhScopeDepthNotes, LANGUAGE_LANES } from "../jx-lanes.mjs";
 import { resolveSearchPolicy } from "../search-policy.mjs";
 import { PRODUCT_IDS, PRODUCTS, productName, NATIVE_LANGUAGE_REMEDY } from "../products.mjs";
 import { decideZhScopeHonesty, injectZhScopeCoverage, zhLaneRanOnRun, ZH_SCOPE_COVERAGE_AREA, ZH_SCOPE_COVERAGE_NOTE,
-  scriptScopeDisclosure, decideScriptScopeHonesty, scriptLaneRanOnRun, injectScriptScopeCoverage } from "../pipeline.mjs";
+  scriptScopeDisclosure, decideScriptScopeHonesty, scriptLaneRanOnRun, injectScriptScopeCoverage, mergedScriptScopeRow } from "../pipeline.mjs";
 
 // ── the pure decision ───────────────────────────────────────────────────────────────────────────────
 
@@ -356,7 +356,7 @@ test("scriptLaneRanOnRun: zh keeps its unit legs; ja/ko run when the FOLD accept
   assert.equal(zhLaneRanOnRun(zhRan, { searchPolicy: POLICY_JX, env: {} }), true, "the zh-bound alias still answers identically");
 });
 
-test("injectScriptScopeCoverage: a JP+KR plain-clearotron run gets the ja AND ko rows — and neither eats the other", () => {
+test("injectScriptScopeCoverage: a JP+KR plain-clearotron run gets one row naming the ja AND ko lanes — neither is lost", () => {
   const dir = mkRun();
   const P = { findings: join(dir, "findings.json") };
   writeFileSync(P.findings, JSON.stringify(FINDINGS_DOC, null, 2));
@@ -364,9 +364,13 @@ test("injectScriptScopeCoverage: a JP+KR plain-clearotron run gets the ja AND ko
   injectScriptScopeCoverage(P, dir, quiet, args);
   const cov = JSON.parse(readFileSync(P.findings, "utf8")).coverage;
   const areas = cov.map((c) => c.area);
-  assert.ok(areas.includes(scriptScopeDisclosure("ja").area), "the Japanese-script row landed");
-  assert.ok(areas.includes(scriptScopeDisclosure("ko").area), "the Korean-script row landed");
-  assert.equal(areas.includes(ZH_SCOPE_COVERAGE_AREA), false, "no Chinese-script row — CN is not in scope");
+  // ONE ROW FOR THE LANES OWED (owner, 2026-11-18): the scripts' names and territories joined, the sentence once.
+  const merged = mergedScriptScopeRow(["ja", "ko"]);
+  assert.ok(areas.includes(merged.area), "the one row naming the Japanese-script and Korean-script lanes landed");
+  assert.match(merged.area, /^Japanese-script and Korean-script register equivalents \(/);
+  assert.equal(areas.includes(scriptScopeDisclosure("ja").area) || areas.includes(scriptScopeDisclosure("ko").area), false,
+    "a per-lane row was written beside the merged one");
+  assert.equal(areas.some((a) => /Chinese-script/.test(a)), false, "no Chinese-script row — CN is not in scope");
   assert.ok(cov.every((c) => c.state !== "deferred"), "every injected row is coverage-limited — never a verdict clamp");
   // idempotent on resume, per lane
   injectScriptScopeCoverage(P, dir, quiet, args);
@@ -385,9 +389,9 @@ test("the row-eater: a CN+JP scope must not lose the ja row to the zh row's own 
   writeFileSync(P.findings, JSON.stringify(FINDINGS_DOC, null, 2));
   injectScriptScopeCoverage(P, dir, quiet, { searchPolicy: POLICY_CLEARANCE, job: { jurisdictions: ["CN", "JP"] }, profile: {}, env: {} });
   const areas = JSON.parse(readFileSync(P.findings, "utf8")).coverage.map((c) => c.area);
-  assert.ok(areas.includes(ZH_SCOPE_COVERAGE_AREA), "the Chinese-script row");
-  assert.ok(areas.includes(scriptScopeDisclosure("ja").area), "AND the Japanese-script row — both scopes are real");
-  assert.equal(areas.includes(scriptScopeDisclosure("ko").area), false, "KR is not in scope — no Korean row");
+  // Both scopes are real, so the one row names both lanes: the zh row's remedy clause eats nothing.
+  assert.ok(areas.includes(mergedScriptScopeRow(["zh", "ja"]).area), "the one row names the Chinese-script AND the Japanese-script lanes");
+  assert.equal(areas.some((a) => /Korean-script/.test(a)), false, "KR is not in scope — no Korean row");
 });
 
 test("a synthesis-authored Stage-1.5 row still defers — but only for ITS OWN lane", () => {
@@ -455,4 +459,29 @@ test("no lane's client-facing disclosure carries an internal key, a component na
   // reintroduce the vocabulary the other dropped.
   const row = decideZhScopeHonesty({ scope: ["CN"], laneRan: false });
   assert.doesNotMatch(`${row.area} ${row.note}`, /Depth \s*\d|clearance-jx/);
+});
+
+// THE THREE NATIVE-SCRIPT ROWS ARE ONE (owner, 2026-11-18). A worldwide order owed a row per script lane, each ending in
+// the same offer, so "Left open" said it three times; the lanes still owed a row are now one row with the same words.
+test("a worldwide plain-clearotron run gets one script row naming every lane, once, with the offer once", () => {
+  const dir = mkRun();
+  const P = { findings: join(dir, "findings.json") };
+  writeFileSync(P.findings, JSON.stringify(FINDINGS_DOC, null, 2));
+  const args = { searchPolicy: POLICY_CLEARANCE, job: { jurisdictions: ["worldwide"] }, profile: {}, env: {} };
+  injectScriptScopeCoverage(P, dir, quiet, args);
+  const scriptRows = JSON.parse(readFileSync(P.findings, "utf8")).coverage.filter((c) => /-script register equivalents/.test(c.area));
+  assert.equal(scriptRows.length, 1, "three script rows where there should be one");
+  assert.match(scriptRows[0].area, /^Chinese-script, Japanese-script and Korean-script register equivalents \(/);
+  assert.equal(scriptRows[0].note.split(NATIVE_LANGUAGE_REMEDY).length - 1, 1, "the offer is said once");
+  assert.equal(scriptRows[0].state, "coverage-limited");
+  injectScriptScopeCoverage(P, dir, quiet, args);
+  assert.equal(JSON.parse(readFileSync(P.findings, "utf8")).coverage.filter((c) => /-script register equivalents/.test(c.area)).length, 1,
+    "a second pass wrote a per-lane row beside the merged one");
+});
+
+test("one lane owed writes the row it always wrote", () => {
+  for (const lane of ["zh", "ja", "ko"]) {
+    const d = scriptScopeDisclosure(lane), one = mergedScriptScopeRow([lane]);
+    assert.deepEqual([one.area, one.note], [d.area, d.note], `${lane}: a single lane's row changed`);
+  }
 });

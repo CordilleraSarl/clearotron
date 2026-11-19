@@ -1075,7 +1075,12 @@ test("spec-48 A4: meter captions carry the joined four-tuple; without _status th
   // D4 — the four-tuple still renders on every meter, in its OWN labelled position. The fused
   // `<fact> · <status>` caption is gone: a client read "Confirmed · inferred" as one caption, and
   // nothing on the page said the separator meant "and we know that because".
-  assert.match(html, /<div class="mv">Medium<\/div><div class="mev">Evidence: verified<\/div>/, "a receipt-joined verified meter says so");
+  // Similarity prints no evidence word, even a receipt-joined one (owner, 2026-11-18); a verified register meter
+  // still says so.
+  assert.match(html, /<div class="ml">Similarity<\/div><div class="pips [^"]*"><i><\/i><i><\/i><i><\/i><\/div><div class="mv">Medium<\/div><\/div>/, "Similarity printed an evidence word");
+  const verified = renderHtml(parsedOf(REPORT), [{ ...FINDINGS[0], meters: { ...joined[0].meters,
+    goods_proximity: { token: "high", basis: "verified-from-record", _status: "confirmed" } } }], COVERAGE, {});
+  assert.match(verified, /<div class="mv">High<\/div><div class="mev">Evidence: verified<\/div>/, "a receipt-joined verified meter says so");
   assert.match(html, /<div class="mv">High<\/div><div class="mev">Evidence: not yet verified<\/div>/, "an unjoined verified meter is presented as not-yet-verified");
   // — the use meter prints NO verification word (ruling): its receipt join is
   // unreachable for an http source, so verified/not-yet-verified carried no information there and
@@ -1368,7 +1373,13 @@ test("wp50: the # Actions panel renders — Answers first, buckets styled, ::p::
   assert.match(internal, /What happens next/, "doc-52 — the human-only bucket renders under its own section after the findings, headed as the board heads it");
   assert.match(internal, /Confirm whether the identical senior mark/, "the only-you forward decision rides through");
   // doc-52 — the Q&A leads (verdict block, top); "Checks we ran" moves to the collapsed Scope section (bottom)
-  assert.ok(internal.indexOf("Answers to your instructions") < internal.indexOf("Checks we ran"), "Q&A (verdict block) precedes Checks-we-ran (Scope)");
+  // This compared "Answers to your instructions" with "Checks we ran", and the only place on the page carrying both was
+  // one comment in the inlined stylesheet, so it read the comment and passed. The Checks-we-ran section went in the
+  // 2026-09-16 redesign and the stylesheet is now inlined without comments: the order checked is the answers before the
+  // human-only bucket, which renders after the findings, and the retired section is asserted gone.
+  const answersAt = internal.indexOf("Answers to your instructions"), nextAt = internal.indexOf("What happens next");
+  assert.ok(answersAt > 0 && nextAt > 0 && answersAt < nextAt, "Q&A (verdict block) precedes What happens next");
+  assert.doesNotMatch(internal, /Checks we ran/, "the retired Checks-we-ran section is back on the page");
   // ONE report: the ::p:: tail renders LABELLED [internal] for the reviewing reader; the raw marker
   // never survives; a stale opts.client is inert.
   assert.ok(!internal.includes("::p::"), "the raw marker never reaches any surface");
@@ -1401,10 +1412,11 @@ test("doc-52: reading order + plain banner (from only-you) + ruled-out routing +
   const opts = { runId: "d52", verdictInfo: vi, coverageJudgment: { reason: "the exact-compound slice is unadjudicable" } };
   const html = renderHtml(parsedOf(md), F, COV, opts);
   const client = renderHtml(parsedOf(md), F, COV, { ...opts, client: true });
-  // reading order: verdict (mark) → conflicts → What happens next → Scope
+  // reading order: verdict (mark) → What happens next → conflicts → Scope. The next steps follow the verdict
+  // (owner, 2026-11-18): a reader who forwards the first pages forwards the actions with the conditions.
   const iVerdict = html.indexOf('class="mark"'), iConf = html.indexOf("<h2>Conflicts</h2>");
   const iYou = html.indexOf("What happens next"), iScope = html.indexOf('<details class="searched">');
-  assert.ok(iVerdict >= 0 && iVerdict < iConf && iConf < iYou && iYou < iScope, "verdict → conflicts → only-you → what was searched");
+  assert.ok(iVerdict >= 0 && iVerdict < iYou && iYou < iConf && iConf < iScope, "verdict → only-you → conflicts → what was searched");
   // the lawyer's Q&A leads in the verdict block, before the conflicts
   assert.ok(html.indexOf("Answers to your instructions") >= 0 && html.indexOf("Answers to your instructions") < iConf, "Q&A in the verdict block");
   // B1 (spec 2026-07-30 §4) — the "Subject to:" bound line is DELETED (a third copy of the verdict's
@@ -1614,7 +1626,7 @@ test("doc-54: Clear zero-state — no active tick, left-anchored clear pill", ()
   const html = renderHtml(parsedOf(REPORT), [], [], { framework: MATRIX_MANIFEST, verdictInfo: vi });
   const ticks = html.match(/<div class="ticks">([\s\S]*?)<\/div>/)[1];
   assert.doesNotMatch(ticks, /class="on"/, "no band tick is active in the zero-state");
-  assert.match(html, /class="marker" style="left:0;transform:none[^"]*"><div class="pill" style="background:var\(--clear\)">No rated conflicts<\/div>/);
+  assert.match(html, /class="marker" style="left:0;transform:none[^"]*"><div class="pill" style="background:var\(--clear\);color:var\(--clear-on\)">No rated conflicts<\/div>/);
 });
 
 test("doc-54: composite-tier sidecar on a framework run maps tone-nearest, never Clear (fail-loud floor)", () => {
@@ -1800,7 +1812,7 @@ test("the by-country rows name the country, including where the register writes 
 
   const rows = [...html.matchAll(/<span class="rcode">([^<]*)<\/span><span class="wname">([^<]*)<\/span>/g)]
     .map((m) => [m[1], m[2]]);
-  const chips = [...html.matchAll(/<span class="wchip" title="([^"]*)">/g)].map((m) => m[1]);
+  const chips = (html.match(/<p class="wnames">([^<]*)<\/p>/)?.[1].split(", ") ?? []);
   const named = new Map([...rows, ...chips.map((t) => [t, t])]);
 
   // However the three land between rated rows and clean chips, none of them may read as a bare code.
@@ -2683,8 +2695,8 @@ test("D5: the INTERNAL legacy Level/Composite chip is untouched — this is the 
 // ── D7: the tool name leaves the page, the sentinel stays where it is enforced ───────────────────
 //
 // `perplexity_research — no result` is the ONLY legal "we searched and found nothing" value for
-// use_check.source: stages.mjs dictates it, findings-model.mjs names it in two refusals, and
-// use-check.mjs wires it into validators.narrative as FATAL. It is mapped HERE, by exact equality, and
+// use_check.source: stages.mjs dictates it and findings-model.mjs names it in two refusals (use-check.mjs,
+// a dead gate that also named it, is deleted). It is mapped HERE, by exact equality, and
 // nowhere else — changing the sentinel would force every archived run and every check to accept two
 // spellings of one enum member, over a complaint that is only ever about the page.
 const NO_RESULT = "perplexity_research — no result";
@@ -3036,9 +3048,7 @@ test("the court-decisions line never ships a dangling clause where the country s
 //   · a plan that named nothing draws nothing        → break: fall back to the archive, arm 4 red
 //   · an unreached territory is NOT a clean chip     → break: chip it, arm 5 red
 test("where it stands is filled from the search plan, so a register that archives nothing still says where it looked", () => {
-  // THE CHIP'S TEXT IS THE NAME OR THE CODE depending on how many chips there are — twelve is the seam,
-  // drawn that way by the board. Its `title` is always the country's name, so the arms read that and the
-  // rows' own code, which is what makes them stable whichever side of the seam a case falls on.
+  // THE CLEAN PLACES ARE ONE PARAGRAPH OF NAMES, so the arms read those names and the rows' own code.
   // READ INSIDE THE SECTION'S OWN PANEL, never across the whole page. `rcode` is drawn by other sections
   // too, so a page-wide walk found an MX row that this section had not drawn: the arm asserting that a
   // finding's country keeps its row passed with the union removed, which is the one break it exists for.
@@ -3053,7 +3063,7 @@ test("where it stands is filled from the search plan, so a register that archive
     const panel = panelOf(html);
     return {
       rows: [...panel.matchAll(/<span class="rcode">([^<]*)<\/span>/g)].map((m) => m[1]),
-      chips: [...panel.matchAll(/<span class="wchip" title="([^"]*)">/g)].map((m) => m[1]),
+      chips: (panel.match(/<p class="wnames">([^<]*)<\/p>/)?.[1].split(", ") ?? []),
     };
   };
 
@@ -3130,7 +3140,7 @@ test("every country a finding holds a registration in takes its band where it st
     { uri: "https://tm.example/mark/am/3003", classes: ["9"], status: "Registered" } ] } }];
   const panel = panelOf(renderHtml(parsedOf(REPORT), threeCountries, [], { searchDepth: depth, planTerritories: plan }));
   const rows = [...panel.matchAll(/<span class="rcode">([^<]*)<\/span><span class="wname">[^<]*<\/span><span class="kc[^"]*">([^<]*)</g)].map((m) => `${m[1]}:${m[2]}`);
-  const chips = [...panel.matchAll(/<span class="wchip" title="([^"]*)">/g)].map((m) => m[1]);
+  const chips = (panel.match(/<p class="wnames">([^<]*)<\/p>/)?.[1].split(", ") ?? []);
   assert.deepEqual(rows.sort(), ["AM:Moderate", "GR:Moderate", "SA:Moderate"], `a registered country lost its band: ${JSON.stringify(rows)}`);
   assert.deepEqual(chips, ["Japan"], `a country holding a finding's registration was chipped Nothing found: ${JSON.stringify(chips)}`);
 

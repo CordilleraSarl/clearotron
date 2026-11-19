@@ -969,6 +969,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-forwarded-report-carries-no-stylesheet-notes-and-no-stranded-heading.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "a-frame-call-with-places-per-name-passes-the-gate.test.mjs": {
           "tests": 2,
           "asserts": 7,
@@ -1689,6 +1695,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-per-name-knockout-page-says-its-assessment-once.test.mjs": {
+          "tests": 2,
+          "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
         "a-pin-change-asks-for-a-bench-replay.test.mjs": {
           "tests": 16,
           "asserts": 37,
@@ -2191,6 +2203,12 @@
           "tests": 3,
           "asserts": 8,
           "skips": 1,
+          "todos": 0
+        },
+        "a-report-names-its-places-and-labels-its-controls.test.mjs": {
+          "tests": 5,
+          "asserts": 16,
+          "skips": 0,
           "todos": 0
         },
         "a-report-prints-the-dates-of-its-record.test.mjs": {
@@ -3351,6 +3369,12 @@
           "skips": 0,
           "todos": 0
         },
+        "band-pills-and-grey-labels-pass-contrast.test.mjs": {
+          "tests": 5,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "band-server.test.mjs": {
           "tests": 26,
           "asserts": 136,
@@ -3610,8 +3634,8 @@
           "todos": 0
         },
         "cn-scope-honesty.test.mjs": {
-          "tests": 22,
-          "asserts": 96,
+          "tests": 24,
+          "asserts": 102,
           "skips": 0,
           "todos": 0
         },
@@ -5122,8 +5146,8 @@
           "todos": 0
         },
         "lane-depth-ask-vs-got.test.mjs": {
-          "tests": 15,
-          "asserts": 59,
+          "tests": 16,
+          "asserts": 61,
           "skips": 0,
           "todos": 0
         },
@@ -5400,6 +5424,12 @@
         "one-string-read-two-ways-is-searched-both-ways.test.mjs": {
           "tests": 3,
           "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "open-coverage-rows-group-under-their-state.test.mjs": {
+          "tests": 2,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
@@ -6215,7 +6245,7 @@
         },
         "render.test.mjs": {
           "tests": 164,
-          "asserts": 689,
+          "asserts": 691,
           "skips": 0,
           "todos": 0
         },
@@ -6599,7 +6629,7 @@
         },
         "scope-facts.test.mjs": {
           "tests": 21,
-          "asserts": 83,
+          "asserts": 84,
           "skips": 0,
           "todos": 0
         },
@@ -7305,6 +7335,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-coverage-line-states-the-register-services-reach.test.mjs": {
+          "tests": 4,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "the-cut-approves-its-own-parked-run.test.mjs": {
           "tests": 8,
           "asserts": 20,
@@ -7749,6 +7785,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-knockout-page-opens-its-audit-workbook.test.mjs": {
+          "tests": 2,
+          "asserts": 2,
+          "skips": 0,
+          "todos": 0
+        },
         "the-knockout-rating-step-keeps-each-names-full-opening.test.mjs": {
           "tests": 2,
           "asserts": 8,
@@ -8190,6 +8232,12 @@
         "the-report-carries-what-the-assessment-wrote.test.mjs": {
           "tests": 10,
           "asserts": 39,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-report-marks-its-own-chrome.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },
