@@ -6388,8 +6388,8 @@
           "todos": 0
         },
         "render.test.mjs": {
-          "tests": 167,
-          "asserts": 723,
+          "tests": 168,
+          "asserts": 735,
           "skips": 0,
           "todos": 0
         },
@@ -8404,8 +8404,8 @@
           "todos": 0
         },
         "the-report-can-say-how-much-was-read.test.mjs": {
-          "tests": 27,
-          "asserts": 79,
+          "tests": 28,
+          "asserts": 83,
           "skips": 0,
           "todos": 0
         },
