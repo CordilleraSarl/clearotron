@@ -32,7 +32,7 @@ import { COMMON_LAW, normRegion, regionName, REGION_NAMES } from './regions.mjs'
 import { parseFindingsJson, bindRecommendation, sentenceCaseLead, CLIENT_TIER_BY_COMPOSITE, bandOf, compareBlockingPower, inDispositionMode, reasonedNegativeGroups } from '../findings-model.mjs';
 import { REC, inPriorityWindow, ownerDisplayName } from '../registry-fidelity.mjs';
 import { registrationSystem } from '../jurisdiction-systems.mjs';
-import { REPORT_PAGE as R } from './strings.mjs';
+import { REPORT_PAGE as R, RECORD_LINKS as LINK_WORDS } from './strings.mjs';
 import { READ_LEAD_RE } from '../report-card-record.mjs';   // D3 — the dedupe gate and the card's acceptance are ONE predicate
 import { logoLockup, BRAND, confPosture, sectionStrip, PALETTE, QUADRANT_COLOURS as QC } from '../../shared/brand.mjs';
 import { NAV_CSS } from '../../shared/site-nav.mjs';
@@ -1481,15 +1481,15 @@ function quadrant(findings) {
         <defs><linearGradient id="rz" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="${PALETTE.crimson}" stop-opacity="0"/><stop offset="1" stop-color="${PALETTE.crimson}" stop-opacity=".09"/></linearGradient></defs>
         <rect x="70" y="30" width="460" height="342" fill="url(#rz)"/>
         <g stroke="${QC.grid}" stroke-width="1"><line x1="70" y1="30" x2="70" y2="372"/><line x1="300" y1="30" x2="300" y2="372" stroke-dasharray="3 4"/><line x1="530" y1="30" x2="530" y2="372"/><line x1="70" y1="372" x2="530" y2="372"/><line x1="70" y1="201" x2="530" y2="201" stroke-dasharray="3 4"/><line x1="70" y1="30" x2="530" y2="30"/></g>
-        <text x="300" y="406" text-anchor="middle" font-size="12" font-weight="700" fill="${QC.axisText}">Goods / services proximity →</text>
-        <text x="40" y="201" font-size="12" font-weight="700" fill="${QC.axisText}" transform="rotate(-90 40 201)" text-anchor="middle">Mark similarity →</text>
-        <text x="520" y="46" text-anchor="end" font-size="9.5" font-weight="700" letter-spacing=".08em" fill="${QC.zoneLabel}">CONFUSION ZONE</text>
+        <text x="300" y="406" text-anchor="middle" font-size="12" font-weight="700" fill="${QC.axisText}">${R.chart.goodsAxis}</text>
+        <text x="40" y="201" font-size="12" font-weight="700" fill="${QC.axisText}" transform="rotate(-90 40 201)" text-anchor="middle">${R.chart.markAxis}</text>
+        <text x="520" y="46" text-anchor="end" font-size="9.5" font-weight="700" letter-spacing=".08em" fill="${QC.zoneLabel}">${R.chart.zone}</text>
         ${markers}
       </svg>
       <div class="legend">
-        <span><i style="background:${QC.onField}"></i>On-field · drives the read</span>
-        <span><i style="background:${QC.secondary}"></i>${FRAMEWORK ? 'Secondary · watch' : 'Secondary · manageable'}</span>
-        <span><i style="background:${QC.pendingFill};border:2px solid ${QC.secondary};width:7px;height:7px"></i>Pending</span>
+        <span><i style="background:${QC.onField}"></i>${R.chart.onField}</span>
+        <span><i style="background:${QC.secondary}"></i>${FRAMEWORK ? R.chart.secondaryWatch : R.chart.secondaryManageable}</span>
+        <span><i style="background:${QC.pendingFill};border:2px solid ${QC.secondary};width:7px;height:7px"></i>${R.chart.pending}</span>
       </div>
     </div>`;
 }
@@ -1511,7 +1511,7 @@ function keyRow(f, recordsByUri) {
   const nrm = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   const subParts = [];
   if (who && nrm(who) !== nrm(f.mark)) subParts.push(esc(who));
-  if (cls) subParts.push(`Cl.${esc(cls)}`);
+  if (cls) subParts.push(R.key.classes(esc(cls)));
   if (src) subParts.push(`<span style="white-space:nowrap">${esc(src)}</span>`);
   return `<a class="keyrow" href="#c${f.ordinal}"><span class="kn" style="background:${kn}">${f.ordinal}</span><span class="kw"><span class="cm-mark">${esc(f.mark)}</span><em>${subParts.join(' · ')}</em></span><span class="kc ${kc}">${chip}</span><span class="arr">→</span></a>`;
 }
@@ -1544,11 +1544,11 @@ function keyPanel(findings, recordsByUri = new Map()) {
   // the main driver of the key-panel height (doc-54 whitespace). Geographic regions: only the top
   // (highest-risk) region opens; the rest collapse (doc-55).
   const clBlock = clGroup
-    ? `<p class="keyhint" style="margin-top:10px">Common-law / marketplace — unregistered use, not register rights (<a href="#common-law">see the Common-law &amp; marketplace section</a>).</p>${detail(clGroup, 'Common-law / marketplace', '<span style="white-space:nowrap">Unregistered use</span>', true)}`
+    ? `<p class="keyhint" style="margin-top:10px">${R.key.commonLawHint(`<a href="#common-law">${esc(R.key.commonLawSectionLink)}</a>`)}</p>${detail(clGroup, R.key.commonLawGroup, `<span style="white-space:nowrap">${R.key.unregisteredUse}</span>`, true)}`
     : '';
   return `<div class="panel keypanel">
-      <div class="label">Rights-holders</div>
-      <p class="keyhint">Grouped by jurisdiction — open a region for its holders.</p>
+      <div class="label">${R.key.title}</div>
+      <p class="keyhint">${R.key.hint}</p>
       ${groups}${clBlock}
     </div>`;
 }
@@ -1570,7 +1570,7 @@ function commonLawSection(clSecondary, clOnField, cardFor, recordsByUri = new Ma
   // Nothing is lost with it: the cards it linked to sit directly below.
   if (!clSecondary.length && !clOnField.length) return '';
   const links = clOnField.length
-    ? `<p class="clx" style="margin:4px 0 10px;font-size:13.5px">On-field common-law conflicts (full cards above): ${clOnField.map(f => `<a href="#c${f.ordinal}">#${f.ordinal} ${esc(f.mark)}</a>`).join(' · ')}</p>`
+    ? `<p class="clx" style="margin:4px 0 10px;font-size:13.5px">${R.onFieldCommonLaw}${clOnField.map(f => `<a href="#c${f.ordinal}">#${f.ordinal} ${esc(f.mark)}</a>`).join(' · ')}</p>`
     : '';
   const cards = clSecondary.map(f => compactCard(f, cardFor(f), recordsByUri)).join('\n  ');
   return links + cards;
@@ -1583,7 +1583,7 @@ function secondaryRegions(findings, cardFor, recordsByUri = new Map()) {
   return groupByRegion(findings).map(g => {
     const kc = g.hasOnField ? 'med' : 'low';
     const cards = g.findings.map(f => compactCard(f, cardFor(f), recordsByUri)).join('\n      ');
-    return `<details class="rgroup"><summary><span class="rcode">${esc(g.code)}</span><span class="gname">${esc(g.name)}</span><span class="kc ${kc}">${g.chip}</span><span class="gsub">${esc(cap(registrationSystem(g.code) ?? ''))}</span><span class="gcount">${g.count} mark${g.count === 1 ? '' : 's'}</span></summary><div class="gbody">${cards}</div></details>`;
+    return `<details class="rgroup"><summary><span class="rcode">${esc(g.code)}</span><span class="gname">${esc(g.name)}</span><span class="kc ${kc}">${g.chip}</span><span class="gsub">${esc(cap(registrationSystem(g.code) ?? ''))}</span><span class="gcount">${R.marks(g.count)}</span></summary><div class="gbody">${cards}</div></details>`;
   }).join('\n  ');
 }
 
@@ -1640,7 +1640,7 @@ function meters(f) {
   const order = ['mark_similarity', 'goods_proximity', 'use', 'enforcer'];
   return `<div class="meters">${order.map(name => {
     const m = meter(name, f.meters?.[name]);
-    return `<div class="meter"><div class="ml">${m.label}</div><div class="pips ${m.cls}"><i></i><i></i><i></i></div><div class="mv">${esc(m.cap)}</div>${m.ev ? `<div class="mev">Evidence: ${esc(m.ev)}</div>` : ''}</div>`;
+    return `<div class="meter"><div class="ml">${m.label}</div><div class="pips ${m.cls}"><i></i><i></i><i></i></div><div class="mv">${esc(m.cap)}</div>${m.ev ? `<div class="mev">${esc(R.evidence(m.ev))}</div>` : ''}</div>`;
   }).join('')}</div>`;
 }
 
@@ -1996,7 +1996,7 @@ function cardTitleParts(f, who) {
   const where = code && code !== COMMON_LAW ? (regionName(code) || code) : '';
   const tail = [where, classes ? `Class ${classes}` : ''].filter(Boolean).join(' \u00b7 ');
   const title = `<h3 class="who mark-first">${esc(f.mark || who || '')}${tail ? ` <span class="where">\u2014 ${esc(tail)}</span>` : ''}</h3>`;
-  const ownerLine = who ? `<div class="owner-line"><span class="ok">Owner</span> ${esc(who)}</div>` : '';
+  const ownerLine = who ? `<div class="owner-line"><span class="ok">${R.card.owner}</span> ${esc(who)}</div>` : '';
   return { title, ownerLine };
 }
 
@@ -2026,7 +2026,7 @@ function riskChip(f) {
   // already prints those headings, so the suffix was the section name repeated in engine vocabulary on
   // every card in it — and "Adversarial" reads to a client as a claim about the owner's temper.
   if (FRAMEWORK && f.composite == null) {
-    if (f.band == null) return 'Not rated — awareness';
+    if (f.band == null) return R.card.notRatedAwareness;
     // A framework that states a method shows its inputs beside the band, in its own labels and order:
     // "High · Claim Grade R · Harbour". Every other framework's chip is the band alone.
     const line = inputsLine(FRAMEWORK_METHOD, f.inputs);
@@ -2036,15 +2036,15 @@ function riskChip(f) {
   // wp50: the internal chip leads with the SAME tier word every other surface uses — the reader can
   // match a card against the email/summary at a glance; Level/Composite stays as the legal shorthand.
   const tier = CLIENT_TIER_BY_COMPOSITE[f.composite];
-  return `${tier ? `${esc(tier)} · ` : ''}<span class="lv">Level ${esc(f.level)}</span>Composite ${esc(String(f.composite ?? ''))}${esc(dt)}`;
+  return `${tier ? `${esc(tier)} · ` : ''}<span class="lv">${R.card.level(esc(f.level))}</span>${R.card.composite(esc(String(f.composite ?? '')))}${esc(dt)}`;
 }
 // The one-liner fallback (model "- one:" absent): plain client words, reviewer shorthand internally.
 function oneFallback(f, who) {
   if (FRAMEWORK && f.composite == null) {
-    const head = f.band != null ? `${f.band} risk` : 'Not rated — commercial awareness';
+    const head = f.band != null ? R.card.bandRisk(f.band) : R.card.notRatedCommercial;
     return `${head}.${who && who !== f.mark ? ` ${who}.` : ''}`;
   }
-  return `${CLIENT_TIER_BY_COMPOSITE[f.composite] ?? ''} risk (Level ${f.level} · Composite ${f.composite}) — ${humanize(f.dispute_type)}.${who && who !== f.mark ? ` ${who}.` : ''}`;
+  return `${R.card.tierRisk(CLIENT_TIER_BY_COMPOSITE[f.composite] ?? '', f.level, f.composite, humanize(f.dispute_type))}${who && who !== f.mark ? ` ${who}.` : ''}`;
 }
 
 // P5 (charter 2026-07-30, Reviewer §L) — the legal/practical SPLIT: the legal read (the one the band's
@@ -2071,7 +2071,7 @@ function lpSplit(f) {
   const legal = inline(String(f.legal_position ?? '').trim()).trim();
   const practical = inline(String(f.practical_position ?? '').trim()).trim();
   if (!legal && !practical) return '';
-  return `<div class="lp-split">${legal ? lpPara('Legal risk.', legal) : ''}${practical ? lpPara('Practical position.', practical) : ''}</div>`;
+  return `<div class="lp-split">${legal ? lpPara(R.card.legalRisk, legal) : ''}${practical ? lpPara(R.card.practicalPosition, practical) : ''}</div>`;
 }
 // P5 (Reviewer §L) — WHY a notable finding is manageable: the closed category + the stated reason
 // (promote-or-omit; a category-less manageable finding is a lint flag upstream). Absent ⇒ ''.
@@ -2123,16 +2123,16 @@ function findingCard(f, card, recordsByUri = new Map()) {
   // `clause` block above for what replaced the defence it was providing.
   const one = clause(f.net) || (card?.meta?.one) || oneFallback(f, who);
   const readProse = cardBlock(card, /^the read$/i);
-  const read = readProse ? `<details class="drill read" open><summary>The read</summary><div class="drillbody lead">${renderProse(readProse)}</div></details>` : '';
+  const read = readProse ? `<details class="drill read" open><summary>${R.card.theRead}</summary><div class="drillbody lead">${renderProse(readProse)}</div></details>` : '';
   return `<div class="card" id="c${f.ordinal}">
     <div class="top">
       <div class="rail ${tierCls}"></div>
       <div class="body">
         <div class="cardhead">
-          <label class="pick no-print"><input type="checkbox" class="pickbox" checked aria-label="Include conflict ${f.ordinal} in the PDF"></label>
+          <label class="pick no-print"><input type="checkbox" class="pickbox" checked aria-label="${R.card.includeInPdf(f.ordinal)}"></label>
           <span class="fnum">${f.ordinal}</span>${cardTitleParts(f, who).title}${evidenceChips(f)}
           <span class="tier ${tierCls}">${riskChip(f)}</span>
-          <button class="ask-fi no-print">\u2726 Ask AI about this finding</button>
+          <button class="ask-fi no-print">${R.card.askAi}</button>
         </div>
         ${cardTitleParts(f, who).ownerLine}
         <div class="oneline">${inline(sentenceCaseLead(one))}</div>
@@ -2158,7 +2158,7 @@ function compactCard(f, card, recordsByUri = new Map()) {
   const markChip = markClassChip(f, who);
   return `<div class="card compact" id="c${f.ordinal}">
     <div class="top"><div class="rail low"></div><div class="body">
-      <div class="cardhead"><label class="pick no-print"><input type="checkbox" class="pickbox" checked aria-label="Include conflict ${f.ordinal} in the PDF"></label><span class="fnum">${f.ordinal}</span>${cardTitleParts(f, who).title}${evidenceChips(f)}<span class="tier low">${riskChip(f)}</span><button class="ask-fi no-print">\u2726 Ask AI about this finding</button></div>${cardTitleParts(f, who).ownerLine}
+      <div class="cardhead"><label class="pick no-print"><input type="checkbox" class="pickbox" checked aria-label="${R.card.includeInPdf(f.ordinal)}"></label><span class="fnum">${f.ordinal}</span>${cardTitleParts(f, who).title}${evidenceChips(f)}<span class="tier low">${riskChip(f)}</span><button class="ask-fi no-print">${R.card.askAi}</button></div>${cardTitleParts(f, who).ownerLine}
       <div class="oneline">${inline(sentenceCaseLead(one))}</div>
     </div></div>
     ${fullDetail(f, card, recordsByUri)}
@@ -2374,14 +2374,14 @@ ${EXPORT_MENU_JS}`;
 function markAssessmentBlock(ma) {
   if (ma == null) return '';
   const structured = typeof ma.distinctiveness === 'object' || typeof ma.connotation === 'object';
-  const SEC = `<div class="sec"><span class="num"></span><h2>The mark itself</h2></div>`;
+  const SEC = `<div class="sec"><span class="num"></span><h2>${R.markItself.title}</h2></div>`;
   if (!structured) {
     const dist = String(ma?.distinctiveness ?? '').trim(), conn = String(ma?.connotation ?? '').trim();
     if (!dist && !conn) return '';
     return `${SEC}
   <div class="markassess">
-    ${dist ? `<p><strong>Distinctiveness.</strong> ${esc(dist)}</p>` : ''}
-    ${conn ? `<p><strong>Connotation &amp; meaning.</strong> ${esc(conn)}</p>` : ''}
+    ${dist ? `<p><strong>${R.markItself.distinctiveness}</strong> ${esc(dist)}</p>` : ''}
+    ${conn ? `<p><strong>${esc(R.markItself.connotation)}</strong> ${esc(conn)}</p>` : ''}
   </div>`;
   }
   const lead = (v) => {
@@ -2390,13 +2390,13 @@ function markAssessmentBlock(ma) {
     const dot = (s) => { const t = String(s ?? '').trim(); return t ? (/[.!?…]$/.test(t) ? t : `${t}.`) : ''; };
     const out = (typeof v.read === 'string' && v.read.trim())
       ? dot(v.read)
-      : [dot(v.spectrum), dot(v.acquired && `Acquired distinctiveness: ${String(v.acquired).trim().replace(/[.\s]+$/, '')}`), dot(v.note)].filter(Boolean).join(' ');
+      : [dot(v.spectrum), dot(v.acquired && R.markItself.acquired(String(v.acquired).trim().replace(/[.\s]+$/, ''))), dot(v.note)].filter(Boolean).join(' ');
     return out ? out.charAt(0).toUpperCase() + out.slice(1) : '';
   };
   const cmRows = [], crRows = [];
   for (const v of [ma.distinctiveness, ma.connotation]) {
     if (!v || typeof v !== 'object') continue;
-    for (const r of Array.isArray(v.per_class) ? v.per_class : []) cmRows.push(`<li><b>Class ${esc(String(r.class))}.</b> ${inline(r.note)}</li>`);
+    for (const r of Array.isArray(v.per_class) ? v.per_class : []) cmRows.push(`<li><b>${R.markItself.perClass(esc(String(r.class)))}</b> ${inline(r.note)}</li>`);
     for (const r of Array.isArray(v.per_market) ? v.per_market : []) cmRows.push(`<li><b>${esc(r.market)}.</b> ${inline(r.note)}</li>`);
     for (const r of Array.isArray(v.counter_registrations) ? v.counter_registrations : []) {
       crRows.push(`<li><b>${esc(r.mark || r.uri || '')}</b>${r.owner ? ` — ${esc(r.owner)}` : ''}${r.note ? ` — ${inline(r.note)}` : ''}</li>`);
@@ -2407,10 +2407,10 @@ function markAssessmentBlock(ma) {
   const toggle = (label, rows) => rows.length ? `<details class="ma-more"><summary>${label} (${rows.length})</summary><ul class="ma-rows">${rows.join('')}</ul></details>` : '';
   return `${SEC}
   <div class="markassess">
-    ${dist ? `<p><strong>Distinctiveness.</strong> ${esc(dist)}</p>` : ''}
-    ${conn ? `<p><strong>Connotation &amp; meaning.</strong> ${esc(conn)}</p>` : ''}
-    ${toggle('By class and market', cmRows)}
-    ${toggle('Registrations considered', crRows)}
+    ${dist ? `<p><strong>${R.markItself.distinctiveness}</strong> ${esc(dist)}</p>` : ''}
+    ${conn ? `<p><strong>${esc(R.markItself.connotation)}</strong> ${esc(conn)}</p>` : ''}
+    ${toggle(R.markItself.byClassAndMarket, cmRows)}
+    ${toggle(R.markItself.registrationsConsidered, crRows)}
   </div>`;
 }
 
@@ -2439,7 +2439,7 @@ function contextNotesList(notes = []) {
 // the findings-section assembly below.
 function contextNotesBlock(notes = []) {
   if (!notes.length) return '';
-  return `<div class="sec"><span class="num"></span><h2>Famous-mark neighbours noted</h2></div>
+  return `<div class="sec"><span class="num"></span><h2>${R.famousNeighbours}</h2></div>
   ${contextNotesList(notes)}`;
 }
 
@@ -2552,8 +2552,7 @@ export function demoBannerHtml(isDemo) {
     + 'border-radius:6px;background:#fffbeb;color:#3f2d0b;font-size:13px;line-height:1.45;'
     + '-webkit-print-color-adjust:exact;print-color-adjust:exact;';
   return `<div style="${box}" role="note">`
-    + '<b>Demonstration report.</b> The mark is invented and this matter is not a real engagement. '
-    + 'The register records, the searches behind them and the risk assessment are real.'
+    + `<b>${R.demoBanner.title}</b> ${R.demoBanner.text}`
     + '</div>';
 }
 
@@ -2686,7 +2685,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   const riskLabel = VERDICT_INFO ? (VERDICT_INFO.tier || TIER_STOP_PILL[i]) : RISK_STOPS[i].toUpperCase();
 
   // Excel/audit download — lives inside the topbar Export popover (portal-report strips the link at serve time for non-staff).
-  const excelBtn2 = !hrefAttr(opts.auditFile, { relative: true }) ? '' : `<a class="util" href="${hrefAttr(opts.auditFile, { relative: true })}" download>⬇ Download full audit (Excel)</a>`;
+  const excelBtn2 = !hrefAttr(opts.auditFile, { relative: true }) ? '' : `<a class="util" href="${hrefAttr(opts.auditFile, { relative: true })}" download>⬇ ${R.topbar.downloadAudit}</a>`;
 
   const cardFor = f => matchCard(f, cards);
   const recordsByUri = opts.recordsByUri || new Map();   // Instance #6 — the run's _records/ set (publishReport loads it)
@@ -2810,7 +2809,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   ${/* ONE BAR (the 2026-09-16 report redesign). The site bar is not rendered on a report, so the brand belongs here:
        a reader met two stacked headers, and the lower one carried the only brand. */''}
   ${logoLockup({ mark: 16, cls: 'tb-lockup' })}
-  ${opts.homeHref ? `<a class="homebtn tb-back no-print" href="${escAttr(opts.homeHref)}" title="All reports"><span aria-hidden="true">←</span> <span class="tb-back-lbl">All reports</span></a>` : ''}
+  ${opts.homeHref ? `<a class="homebtn tb-back no-print" href="${escAttr(opts.homeHref)}" title="${R.topbar.allReports}"><span aria-hidden="true">←</span> <span class="tb-back-lbl">${R.topbar.allReports}</span></a>` : ''}
   <span class="sp"></span>
   ${/* With no assessment there is no rating, and with no rating this pill falls back to the CLEAR stop. */''}${opts.assessmentNotCompleted === true ? '' : `<span class="tb-risk" style="background:var(${STOP_VAR[i]});color:var(${STOP_VAR[i]}-on)">${riskLabel}</span>`}
   <span class="mono tb-matter" style="font-size:11px;color:var(--slate)">${esc(fm.matter || opts.runId || '')}${fm.title ? ' / ' + esc(fm.title) : ''}</span>
@@ -2822,19 +2821,19 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
        there — an archived run's stamp is not this publisher's to assume. */''}
   ${(() => {
     const d = (String(opts.issued ?? '').match(/^\d{4}-\d{2}-\d{2}/) || [])[0] ?? opts.issued;
-    return d ? `<span class="mono tb-issued"><span aria-hidden="true">🗓 </span>Issued on ${esc(d)}</span>` : '';
+    return d ? `<span class="mono tb-issued"><span aria-hidden="true">🗓 </span>${esc(R.topbar.issuedOn(d))}</span>` : '';
   })()}
-  <button type="button" class="tbbtn tb-ask no-print">✦ <span class="tb-lbl">Ask AI</span></button>
+  <button type="button" class="tbbtn tb-ask no-print">✦ <span class="tb-lbl">${R.topbar.askAi}</span></button>
   <div class="tb-menu">
     ${EXPORT_TOGGLE}
     ${exportPopover(`
-      <div class="tb-pop-title">Export &amp; audit</div>
+      <div class="tb-pop-title">${esc(R.topbar.exportAndAudit)}</div>
       <button class="util primary" onclick="exportPDF()">⬇ Export PDF (ticked findings)</button>
       ${excelBtn2}
       <div class="tb-sep"></div>
-      <div class="tb-row"><button class="util" onclick="pickAll(true)">Select all</button><button class="util" onclick="pickAll(false)">Select none</button></div>
-      <div class="tb-row"><button class="util" onclick="openAll(true)">Expand all</button><button class="util" onclick="openAll(false)">Collapse all</button></div>
-      <p class="tb-hint">Tick a finding to keep it in the exported PDF; untick to drop it. Internal (review-only) notes are removed on export.</p>
+      <div class="tb-row"><button class="util" onclick="pickAll(true)">${R.topbar.selectAll}</button><button class="util" onclick="pickAll(false)">${R.topbar.selectNone}</button></div>
+      <div class="tb-row"><button class="util" onclick="openAll(true)">${R.topbar.expandAll}</button><button class="util" onclick="openAll(false)">${R.topbar.collapseAll}</button></div>
+      <p class="tb-hint">${R.topbar.exportHint}</p>
     `)}
   </div>
 </div>
@@ -2858,21 +2857,21 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
 
   <!-- doc-52 §3 WHAT ONLY YOU CAN CLOSE — forward decisions, plain English, directly after the verdict (owner, 2026-11-18:
        a reader who forwards the first pages forwards the actions with the conditions). Words unchanged. -->
-  ${buckets.you ? `<div class="sec" id="next"><span class="num"></span><h2>What happens next</h2></div>
+  ${buckets.you ? `<div class="sec" id="next"><span class="num"></span><h2>${R.next.title}</h2></div>
   <div class="panel actions"><div class="actgrp act-you">${renderProse(buckets.you.body)
-    .replace(/\[Time-critical\]\s*/gi, '<span class="src cl" style="margin-right:6px">Time-critical</span> ')
-    .replace(/\[Open question\]\s*/gi, '<span class="src" style="margin-right:6px">Open question</span> ')
-    .replace(/\[Your decision\]\s*/gi, '<span class="src" style="margin-right:6px">Your decision</span> ')
-    .replace(/\[Monitor\]\s*/gi, '<span class="src" style="margin-right:6px">Monitor</span> ')
+    .replace(/\[Time-critical\]\s*/gi, `<span class="src cl" style="margin-right:6px">${R.next.timeCritical}</span> `)
+    .replace(/\[Open question\]\s*/gi, `<span class="src" style="margin-right:6px">${R.next.openQuestion}</span> `)
+    .replace(/\[Your decision\]\s*/gi, `<span class="src" style="margin-right:6px">${R.next.yourDecision}</span> `)
+    .replace(/\[Monitor\]\s*/gi, `<span class="src" style="margin-right:6px">${R.next.monitor}</span> `)
     // — the fifth token. `filing-routine` was schema-valid and unreachable until the pipeline's
     // ADVISORY_TAG gained its fourth entry; without this replace the client reads the literal "[Filing
     // step]". A run assembled before that lands carries none and this replace is inert on it.
-    .replace(/\[Filing step\]\s*/gi, '<span class="src" style="margin-right:6px">Filing step</span> ')
+    .replace(/\[Filing step\]\s*/gi, `<span class="src" style="margin-right:6px">${R.next.filingStep}</span> `)
     // — the fourth token, and the one whose ABSENCE was the defect: an undated condition carried no
     // tag at all, so the items that block reliance were the only items in this section with no chip.
     // buildOnlyYouSection now mints it beside the other three; a run assembled before that lands has none
     // and this replace is inert on it.
-    .replace(/\[Before you can rely\]\s*/gi, '<span class="src cl" style="margin-right:6px">Before you can rely</span> ')}</div></div>` : ''}
+    .replace(/\[Before you can rely\]\s*/gi, `<span class="src cl" style="margin-right:6px">${R.next.beforeYouCanRely}</span> `)}</div></div>` : ''}
 
   <!-- WP-56 B2 — THE MARK ITSELF: the standing distinctiveness + connotation read (EN and non-EN). It
        frames everything below, so it sits with the verdict, above the conflict landscape. Advisory only —
@@ -2977,7 +2976,7 @@ function officeRecordCell(uri, regUri, note) {
 function officeLinkNote() {
   if (!RECORD_LINKS) return '';
   const linked = [...RECORD_LINKS.values()].some((l) => l?.href);
-  return (linked ? 'A registration number shown as a link opens the office’s own page for that record. ' : '')
+  return (linked ? `${LINK_WORDS.opensOfficePage} ` : '')
     + officeReasonSentences(RECORD_LINKS).map((s) => `${esc(s)} `).join('');
 }
 
@@ -2998,6 +2997,6 @@ export function servedModelsLine(ids) {
   const list = (Array.isArray(ids) ? ids : []).map((s) => String(s ?? '').trim()).filter(Boolean);
   if (!list.length) return '';
   const claude = list.every((id) => /^claude-/i.test(id) || CLAUDE_TIER_WORD_RE.test(id));
-  const shown = claude ? list : list.map((id) => (CLAUDE_TIER_WORD_RE.test(id) ? `Claude ${id}` : id));
-  return `<p class="servedby" style="margin:10px 0 0;font-size:13px">Prepared with${claude ? ' Claude' : ''}: ${shown.map(esc).join(', ')}.</p>`;
+  const shown = claude ? list : list.map((id) => (CLAUDE_TIER_WORD_RE.test(id) ? R.claudeModel(id) : id));
+  return `<p class="servedby" style="margin:10px 0 0;font-size:13px">${R.preparedWith(claude, shown.map(esc).join(', '))}</p>`;
 }

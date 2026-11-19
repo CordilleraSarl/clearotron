@@ -605,4 +605,85 @@ export const REPORT_PAGE = Object.freeze({
     names: (n) => `${n} name${n === 1 ? '' : 's'}`,
     listNote: 'Names that surfaced in the search but share no word or sound with your mark — listed for completeness; not conflicts.',
   }),
+  // The chart of conflicts: its axes, its zone and its legend.
+  chart: Object.freeze({
+    goodsAxis: 'Goods / services proximity →',
+    markAxis: 'Mark similarity →',
+    zone: 'CONFUSION ZONE',
+    onField: 'On-field · drives the read',
+    secondaryWatch: 'Secondary · watch',
+    secondaryManageable: 'Secondary · manageable',
+    pending: 'Pending',
+  }),
+  // The rights-holders key beside the chart.
+  key: Object.freeze({
+    classes: (list) => `Cl.${list}`,
+    // `link` arrives as the link to the section, its words from `commonLawSectionLink`.
+    commonLawHint: (link) => `Common-law / marketplace — unregistered use, not register rights (${link}).`,
+    commonLawSectionLink: 'see the Common-law & marketplace section',
+    commonLawGroup: 'Common-law / marketplace',
+    unregisteredUse: 'Unregistered use',
+    title: 'Rights-holders',
+    hint: 'Grouped by jurisdiction — open a region for its holders.',
+  }),
+  onFieldCommonLaw: 'On-field common-law conflicts (full cards above): ',
+  marks: (n) => `${n} mark${n === 1 ? '' : 's'}`,
+  evidence: (word) => `Evidence: ${word}`,
+  // A finding card: its head, its rating chip, its one line when the read is missing, and its folds.
+  card: Object.freeze({
+    owner: 'Owner',
+    notRatedAwareness: 'Not rated — awareness',
+    level: (level) => `Level ${level}`,
+    composite: (composite) => `Composite ${composite}`,
+    bandRisk: (band) => `${band} risk`,
+    notRatedCommercial: 'Not rated — commercial awareness',
+    tierRisk: (tier, level, composite, dispute) => `${tier} risk (Level ${level} · Composite ${composite}) — ${dispute}.`,
+    legalRisk: 'Legal risk.',
+    practicalPosition: 'Practical position.',
+    theRead: 'The read',
+    includeInPdf: (n) => `Include conflict ${n} in the PDF`,
+    askAi: '\u2726 Ask AI about this finding',
+  }),
+  // The mark itself: what the mark is, before any conflict.
+  markItself: Object.freeze({
+    title: 'The mark itself',
+    distinctiveness: 'Distinctiveness.',
+    connotation: 'Connotation & meaning.',
+    acquired: (text) => `Acquired distinctiveness: ${text}`,
+    perClass: (cls) => `Class ${cls}.`,
+    byClassAndMarket: 'By class and market',
+    registrationsConsidered: 'Registrations considered',
+  }),
+  famousNeighbours: 'Famous-mark neighbours noted',
+  // The banner a demonstration report carries, on the clearance and the Knockout alike.
+  demoBanner: Object.freeze({
+    title: 'Demonstration report.',
+    text: 'The mark is invented and this matter is not a real engagement. The register records, the searches behind them and the risk assessment are real.',
+  }),
+  // The top bar and its export menu. A glyph beside a label stays with the markup.
+  topbar: Object.freeze({
+    allReports: 'All reports',
+    issuedOn: (date) => `Issued on ${date}`,
+    askAi: 'Ask AI',
+    exportAndAudit: 'Export & audit',
+    downloadAudit: 'Download full audit (Excel)',
+    selectAll: 'Select all',
+    selectNone: 'Select none',
+    expandAll: 'Expand all',
+    collapseAll: 'Collapse all',
+    exportHint: 'Tick a finding to keep it in the exported PDF; untick to drop it. Internal (review-only) notes are removed on export.',
+  }),
+  // What happens next: the section, and the chip each kind of step wears.
+  next: Object.freeze({
+    title: 'What happens next',
+    timeCritical: 'Time-critical',
+    openQuestion: 'Open question',
+    yourDecision: 'Your decision',
+    monitor: 'Monitor',
+    filingStep: 'Filing step',
+    beforeYouCanRely: 'Before you can rely',
+  }),
+  // The models that prepared the report. `list` arrives joined.
+  preparedWith: (claude, list) => `Prepared with${claude ? ' Claude' : ''}: ${list}.`,
+  claudeModel: (id) => `Claude ${id}`,
 });
