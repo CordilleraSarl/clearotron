@@ -330,6 +330,7 @@ export function paths(runDir) {
     registerXcheck: p(driverRel("register-xcheck.json")),
     repairs: p(driverRel("repairs.json")),
     reportCardCalls: p(driverRel("report-card-calls")),
+    reportDocument: p(driverRel("report-document.json")),   // the run's report as one document (publish/report-document.mjs)
     reportOverviewCalls: p(driverRel("report-overview-calls")),
     researchAnswers: p(driverRel("research-answers.jsonl")),
     reviewAfterRepair: p(driverRel("review-after-repair.md")),
