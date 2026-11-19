@@ -183,6 +183,17 @@ export function clearanceReportDataOf(doc) {
   });
 }
 
+/**
+ * The rating a clearance's surfaces state, and its badge: the verdict record's as the page reads it, the report's front
+ * matter on a run older than the record, and none where the assessment was not completed. The page, the run record and
+ * the cover email read it here, so a saved verdict from an assessment that did not complete rates nothing on any of them.
+ */
+export function clearanceRatingOf(doc) {
+  const fm = doc.prose.frontMatter, { record, assessmentNotCompleted } = doc.verdict;
+  if (assessmentNotCompleted) return { word: undefined, badge: undefined };
+  return { word: record?.tier ?? fm.overall_label, badge: record?.badge ?? fm.overall_badge };
+}
+
 /** The run's findings in their own order: the withdrawn ones are put back where they were. */
 export function allFindingsOf(doc) {
   const out = [...doc.client.findings];

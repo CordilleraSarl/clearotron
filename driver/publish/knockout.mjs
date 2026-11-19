@@ -400,9 +400,10 @@ export const knockoutRecordTitle = (searchPolicy, runId) =>
 
 /**
  * The Knockout's cover email as the delivery sends it: the findings, the band ladder, the batch's band, the machine-check
- * lines and the product's name from the run's report document where it has one, and as the lane holds them where it has
- * none (a run published before the document existed). The register counts stay the lane's own: on a resumed run the lane
- * can hold none while the page shows the counts file, and which of the two the email should state is not settled here.
+ * lines, the register counts and the product's name from the run's report document where it has one, and as the lane holds
+ * them where it has none (a run published before the document existed). The counts are the ones the page states, from the
+ * run's saved count record, so the email cannot state figures the page does not, and a count the record lacks is left out
+ * rather than read as none.
  */
 export function composeKnockoutCoverNote(runDir, { findings, framework, overall, reports, auditUrl, job, registerCounts, qcFlags, productName }) {
   let document = null;
@@ -410,7 +411,7 @@ export function composeKnockoutCoverNote(runDir, { findings, framework, overall,
   if (!document) return composeKnockoutEmail({ findings, framework, overall, reports, auditUrl, job, registerCounts, qcFlags, productName });
   return composeKnockoutEmail({
     findings: document.client.findings, framework: document.framework.manifest, overall: document.verdict.overall,
-    reports, auditUrl, job, registerCounts, qcFlags: document.reviewer.qcFlags, productName: document.run.product.name,
+    reports, auditUrl, job, registerCounts: document.client.registerCounts, qcFlags: document.reviewer.qcFlags, productName: document.run.product.name,
   });
 }
 
