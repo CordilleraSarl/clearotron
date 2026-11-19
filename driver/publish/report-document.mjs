@@ -113,7 +113,8 @@ export function clearanceReportDocument(d, { codename = null, customerKey = null
       askAnswers: orNull(d.askAnswers),
       actions: { conditions: conditionActions, advisories: advisoryActions },
       coverageJudgment: orNull(d.coverageJudgmentDisplay),
-      caseLaw: { byOrdinal: entries(d.caseLawByOrdinal) ?? [], notice: d.caseLawNotice ?? '' },
+      // Each finding's court decisions. The session-wide notice is not carried: no surface prints it.
+      caseLaw: { byOrdinal: entries(d.caseLawByOrdinal) ?? [] },
       enforcerSignals: d.enforcerSignals ?? [],
       seniorRights: orNull(d.seniorRights),
       records: d.recordsByUri instanceof Map ? [...d.recordsByUri.keys()] : [],

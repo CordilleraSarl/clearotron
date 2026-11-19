@@ -273,6 +273,15 @@ test("each demo's cover email composed from its document is the one composed fro
     const fromFiles = coverNoteInputs(runDir);
     renameSync(`${paths(runDir).reportDocument}.aside`, paths(runDir).reportDocument);
     assert.deepEqual(fromDocument.opts, fromFiles.opts, `${name}: the email's options differ`);
+    // A document written before it carried the verdict record as written is read from the files.
+    const written = readFileSync(paths(runDir).reportDocument, "utf8");
+    const older = JSON.parse(written);
+    delete older.verdict.written;
+    older.prose.frontMatter = { planted: true };
+    writeFileSync(paths(runDir).reportDocument, JSON.stringify(older));
+    const fromOlder = coverNoteInputs(runDir);
+    writeFileSync(paths(runDir).reportDocument, written);
+    assert.deepEqual(fromOlder, fromFiles, `${name}: a document without the record as written was read`);
     assert.equal(composeCoverNote(fromDocument, { ...args, productName: fromDocument.opts.productName }),
       composeCoverNote(fromFiles, { ...args, productName: fromFiles.opts.productName }), `${name}: the email differs`);
   }
