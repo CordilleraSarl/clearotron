@@ -206,13 +206,13 @@ export function setFoldedTextLimit(n) { const was = FOLDED_TEXT; FOLDED_TEXT = n
 export const foldedLogs = () => [...FOLDED].map(([key, e]) => ({ path: key.split("\0")[1], text: e.state?.text ?? 0 }));
 const MARK_BYTES = 256;
 
-function foldLedger(kind, path, runPrefix, { init, fold, copy, out, text = () => 0 }) {
+function foldLedger(kind, path, runPrefix, { init, fold, copy, result, text = () => 0 }) {
   const key = `${kind}\0${path}\0${runPrefix}`;
   let entry = FOLDED.get(key) ?? null;
   FOLDED.delete(key);
   let fd = null;
   try { fd = openSync(path, "r"); }
-  catch (e) { return { state: out(init()), read: noteLedger({ lines: 0, error: e?.code === "ENOENT" ? null : `${e?.code ?? "read failed"}` }) }; }
+  catch (e) { return { state: result(init()), read: noteLedger({ lines: 0, error: e?.code === "ENOENT" ? null : `${e?.code ?? "read failed"}` }) }; }
   try {
     const { ino, size } = fstatSync(fd);
     if (entry && (entry.ino !== ino || size < entry.offset || !markHolds(fd, entry))) entry = null;
@@ -235,10 +235,10 @@ function foldLedger(kind, path, runPrefix, { init, fold, copy, out, text = () =>
     }
     const state = tail.length ? copy(entry.state) : entry.state;
     for (const line of tail) { const row = rowOf(line); if (row) fold(state, row, line); }
-    return { state: out(state), read: noteLedger({ lines, error: null }) };
+    return { state: result(state), read: noteLedger({ lines, error: null }) };
   } catch (e) {
     // What was folded before the failure goes out, uncached, with the reason: what a read from the start gave.
-    return { state: out(entry?.state ?? init()), read: noteLedger({ lines: 0, error: String(e?.code ?? e?.message ?? "read failed").slice(0, 80) }) };
+    return { state: result(entry?.state ?? init()), read: noteLedger({ lines: 0, error: String(e?.code ?? e?.message ?? "read failed").slice(0, 80) }) };
   } finally { try { closeSync(fd); } catch { /* nothing left to do about it */ } }
 }
 function markAt(fd, end) {
@@ -312,7 +312,7 @@ export function collectRecordBodiesAndReceipts(recordLogPath, runPrefix) {
     fold: (st, row, line) => { foldBodyLine(st, row, line); foldReceipt(st.receipts, st.real, row); },
     copy: (st) => ({ bodies: new Map(st.bodies), receipts: new Map(st.receipts), real: new Set(st.real), text: st.text }),
     text: (st) => st.text,
-    out: (st) => ({
+    result: (st) => ({
       bodies: new Map([...st.bodies].map(([uri, kept]) => [uri, handOut(kept)])),
       receipts: new Map([...st.receipts].map(([uri, receipt]) => [uri, { ...receipt }])),
     }),
@@ -334,7 +334,7 @@ export function collectFetchCallMeta(callLogPath, runPrefix) {
       });
     },
     copy: (map) => new Map(map),
-    out: (map) => new Map([...map].map(([uri, meta]) => [uri, { ...meta }])),
+    result: (map) => new Map([...map].map(([uri, meta]) => [uri, { ...meta }])),
   });
   return state;
 }
