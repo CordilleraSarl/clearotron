@@ -52,13 +52,13 @@ export function inlineManuals(message, { resolve = null, skillsDir = null, read 
   for (const ref of refs) {
     let body = null;
     try { const p = locate(ref, { resolve, skillsDir }); body = p ? read(p) : null; } catch { body = null; }
-    if (typeof body !== "string") { missing.push(ref); continue; }
+    // A manual that cannot be read keeps its place in the order given, as a read of that one manual.
+    if (typeof body !== "string") { missing.push(ref); blocks.push(`${READ_SENTENCE}${ref}.`); continue; }
     inlined.push({ ref, bytes: Buffer.byteLength(body), sha256: createHash("sha256").update(body).digest("hex") });
     blocks.push(`=== MANUAL: ${ref} ===\n${body.replace(/\s+$/, "")}\n=== END MANUAL: ${ref} ===`);
   }
   if (!inlined.length) return { text, inlined: [], missing };
   const parts = [MANUALS_SENTENCE, ...blocks];
-  if (missing.length) parts.push(`${READ_SENTENCE}${missing.join(", ")}.`);
   // A sentence that continued on the same line (the register stages' exclusion) starts on its own line after the manuals.
   const at = m.index + m[0].length;
   const tail = text.slice(at).replace(/^ (?=\S)/, "\n\n");
@@ -82,9 +82,14 @@ export function stageTextOf(message) {
   if (at < 0) return text;
   const refs = [];
   let end = at + MANUALS_SENTENCE.length;
-  BLOCK_RE.lastIndex = end;
-  for (let b; (b = BLOCK_RE.exec(text)) && /^\s*$/.test(text.slice(end, b.index)); ) { refs.push(b[1]); end = b.index + b[0].length; }
-  const left = text.slice(end).match(/^\s*First, read and follow exactly: ([^\n]*?\.md)\.(?=\s|$)/);
-  if (left) { refs.push(...(left[1].match(/\S*?skills\/[A-Za-z0-9._/-]+\.md/g) ?? [])); end += left[0].length; }
+  // The blocks, and a read sentence in the place of each manual that could not be read, in the order given.
+  for (;;) {
+    BLOCK_RE.lastIndex = end;
+    const b = BLOCK_RE.exec(text);
+    if (b && /^\s*$/.test(text.slice(end, b.index))) { refs.push(b[1]); end = b.index + b[0].length; continue; }
+    const left = text.slice(end).match(/^\s*First, read and follow exactly: (\S*?skills\/[A-Za-z0-9._/-]+\.md)\.(?=\s|$)/);
+    if (left) { refs.push(left[1]); end += left[0].length; continue; }
+    break;
+  }
   return `${text.slice(0, at)}${READ_SENTENCE}${refs.join(", ")}.${text.slice(end)}`;
 }

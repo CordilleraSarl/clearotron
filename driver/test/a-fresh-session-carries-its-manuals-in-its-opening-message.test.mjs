@@ -96,15 +96,18 @@ for (const engine of Object.keys(ENGINES)) {
   });
 }
 
-test("a manual that cannot be read stays named in the read sentence, and a message with no read sentence is unchanged", () => {
+test("a manual that cannot be read keeps its place between the others, and a message with no read sentence is unchanged", () => {
   const read = (p) => { if (p.endsWith("gone.md")) throw new Error("absent"); return `Text of ${p}, with $& and $1 kept as written.`; };
   const r = inlineManuals("First, read and follow exactly: skills/a.md, skills/gone.md, skills/b.md.\nThe stage.", { resolve: (ref) => `/x/${ref}`, read });
   assert.deepEqual(r.inlined.map((m) => m.ref), ["skills/a.md", "skills/b.md"]);
   assert.deepEqual(r.missing, ["skills/gone.md"]);
   assert.match(r.text, /^Apply the following manuals to this stage, in the order given\.\n\n=== MANUAL: skills\/a\.md ===\nText of \/x\/skills\/a\.md, with \$& and \$1 kept as written\./);
   assert.ok(r.text.indexOf("skills/a.md ===") < r.text.indexOf("skills/b.md ==="), "the order named is kept");
-  assert.match(r.text, /\n\nFirst, read and follow exactly: skills\/gone\.md\.\nThe stage\.$/);
-  assert.equal(stageTextOf(r.text), "First, read and follow exactly: skills/a.md, skills/b.md, skills/gone.md.\nThe stage.");
+  // The order given holds: a, then the read of gone, then b.
+  assert.ok(r.text.indexOf("=== END MANUAL: skills/a.md ===") < r.text.indexOf("First, read and follow exactly: skills/gone.md.")
+    && r.text.indexOf("First, read and follow exactly: skills/gone.md.") < r.text.indexOf("=== MANUAL: skills/b.md ==="), "the unread manual lost its place");
+  assert.match(r.text, /=== END MANUAL: skills\/b\.md ===\nThe stage\.$|=== END MANUAL: skills\/b\.md ===\n\nThe stage\.$/);
+  assert.equal(stageTextOf(r.text), "First, read and follow exactly: skills/a.md, skills/gone.md, skills/b.md.\nThe stage.");
   const none = inlineManuals("The stage, which names no manual.", { resolve: (ref) => `/x/${ref}`, read });
   assert.equal(none.text, "The stage, which names no manual.");
   const nothing = inlineManuals("First, read and follow exactly: skills/gone.md.\nThe stage.", { resolve: (ref) => `/x/${ref}`, read });
