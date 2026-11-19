@@ -84,7 +84,7 @@ export const WORKBOOK = Object.freeze({
   registerSection: 'REGISTER  —  vendor register, worldwide',
   // The register service's own reach, as the coverage line states it; a run that recorded none keeps the line above.
   registerSectionReach: (service, offices) => `REGISTER  —  ${service}, ${offices} office${offices === 1 ? '' : 's'}`,
-  // An order that names its countries: the rows below say where (owner, 2026-11-19).
+  // An order that names its countries: the rows below say where (2026-11-19).
   registerSectionNamed: 'REGISTER',
   commonLawSection: 'COMMON-LAW  —  web / marketplace / social / product database',
   surfaces: (n) => `~${n} surfaces`,
@@ -290,7 +290,7 @@ export const CLIENT_INDEX = Object.freeze({
 
 /** The register's own record of a cited registration, as the report shows it: its labels and its notes. */
 export const REGISTER_RECORD = Object.freeze({
-  // The labels, as approved on 2026-11-18.
+  // The labels, as fixed on 2026-11-18.
   labels: Object.freeze({
     title: 'Register record',
     mark: 'Mark',
@@ -395,7 +395,7 @@ export const KNOCKOUT_PAGE = Object.freeze({
     probeRan: 'Register hit-counts are part of this search, and none could be taken on this run — the per-name reason is recorded in the audit workbook. This is a gap in this run, not a limit of the product.',
     notInTier: 'Register hit-counts (identical · containing · close variations) are not included in this product tier, so no register was counted for this report. They are part of the Knockout search this offering sells today.',
   }),
-  // The card fold's label: the clearance's word for the reasoning (owner, 2026-11-18).
+  // The card fold's label: the clearance's word for the reasoning (2026-11-18).
   riskAssessment: 'Risk assessment',
   // A finding card's head and fold.
   finding: Object.freeze({
@@ -605,8 +605,8 @@ export const REPORT_PAGE = Object.freeze({
     checks: (n) => `${n} checks`,
     localScript: 'Local-script spellings',
     // The scripts by name: what was searched lists those a search completed in, and Left open those planned with none
-    // completed (owner, 2026-11-19). The names are the scripts' Unicode names, listed in this table's order, which gives
-    // the approved examples their own order: "Katakana and Hangul", "Greek or Cyrillic".
+    // completed (2026-11-19). The names are the scripts' Unicode names, listed in this table's order, which gives
+    // the examples their own order: "Katakana and Hangul", "Greek or Cyrillic".
     scriptName: Object.freeze({ Hani: 'Han', Hira: 'Hiragana', Kana: 'Katakana', Hang: 'Hangul', Grek: 'Greek', Cyrl: 'Cyrillic', Arab: 'Arabic', Hebr: 'Hebrew', Thai: 'Thai', Deva: 'Devanagari' }),
     scriptsSearched: (names) => new Intl.ListFormat('en-GB', { type: 'conjunction' }).format(names),
     scriptsNotCompleted: (names) => `No search in ${new Intl.ListFormat('en-GB', { type: 'disjunction' }).format(names)} script was completed.`,
@@ -631,7 +631,7 @@ export const REPORT_PAGE = Object.freeze({
     ruledOut: 'Ruled out',
     askAi: '\u2726 Ask AI about this finding',
   }),
-  // The closed heading over the conflicts below the risk (owner, 2026-11-18; both forms 2026-11-19): their count, and
+  // The closed heading over the conflicts below the risk (2026-11-18; the singular form 2026-11-19): their count, and
   // each band below the risk by the framework's own word, joined by "or". One conflict reads in the singular.
   lowerBand: (count, bands) => `${count.toLocaleString('en-GB')} more conflict${count === 1 ? '' : 's'} rated ${bands.join(' or ')}`,
   // The chart of conflicts: its axes, its zone and its legend.
@@ -766,7 +766,7 @@ export const REPORT_PAGE = Object.freeze({
     ifEnforced: 'If enforced:',
   }),
   // The findings sections: their headings and the leads of their folds. "Marks that can coexist" stays in the
-  // renderer, where a guard holds both its layouts to the ruled words; Conflicts is the strip's own entry.
+  // renderer, where a guard holds both its layouts to these words; Conflicts is the strip's own entry.
   findings: Object.freeze({
     landscape: 'The conflict landscape',
     secondaryWatch: 'Secondary & watch',

@@ -1752,7 +1752,7 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   // how a FINDING was established, and there is no finding here. Nothing was found, and that is the
   // whole of what the line has to say.
   const useChk = cite(useSrc, R.detail.useChecked, isUseCheckNoResult(f.use_check?.source) ? null : useStatus);
-  const ownR = cite(f.own_rights?.source, R.detail.ownMarks, EVIDENCE_LABEL[f.own_rights?._status]);   // owner, 2026-11-18
+  const ownR = cite(f.own_rights?.source, R.detail.ownMarks, EVIDENCE_LABEL[f.own_rights?._status]);
   const proseFull = cardBlock(card, /^full detail/i);
   const proseFullShown = proseFull;   // one report: the full prose; portal-report strips serve-time chrome, never analysis
   const internalNote = cardBlock(card, /^full detail/i) ? '' : '';   // internal notes ride ::p:: inside prose

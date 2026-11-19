@@ -24,7 +24,7 @@ const ALLOWED = {
     "Marketplace and web",
     "Local-language investigation",
     "Court decisions",
-    // the ruled heading, which a guard holds to both layouts in this file
+    // the heading a guard holds to both layouts in this file
     "<div class=\"sec\"><span class=\"num\"></span><h2>Marks that can coexist</h2></div> {…}{…}",
     "<div class=\"sec\"><span class=\"num\"></span><h2>Marks that can coexist</h2></div> {…}",
     // an engine token compared against, never printed
