@@ -20,6 +20,7 @@ import { findScreenGateParseGaps, findScreenGateViolations, screenGateZeroCause 
 import { escalatedAxes } from "../skeptic-record.mjs";
 import { STAGES, lines } from "../stages.mjs";
 import { existsSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import { stopsWithTheRun } from "../cancel.mjs";   // every paid call the code makes itself reads the stop first
 
 export async function runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQids, flushDigestQueue, job, mintDigestWork, opts, planExec, run, unitKey }, helpers) {
   const { askableOf, bandBytesOf, capabilityGapAxes, defaultRecordFetcher, deriveBandShape, deriveNamedBand, envelopeDecision, envelopeHeldNote, escalationHeldNote, findFloorBreaches, forceFromActive, isInactiveAxisRow, lateRecordIds, loadCoverageLedger, officeGapOf, readFloorAxes, readPlanExecution, reaskFollowUpErrors, recordPlacementPass, recordScreenGateEvidence, refreshSupplementalExecution, remergeIfBandsMoved, runBatched, screenGateSnapshot, settleOneShotStamp, skepticDeferralExtra, stage, stickyGapUnits } = helpers;
@@ -544,7 +545,7 @@ export async function runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQ
     // the mechanism). Registered here so the flush (which runs later, at the frame-reopen seam)
     // reuses the exact same check + fetched-universe closure as the gate itself.
     ctx.screenGateRecheck = async (pass) => {
-      const fetcher = opts.recordFetcher ?? defaultRecordFetcher;
+      const fetcher = stopsWithTheRun(run.runDir, "screen-gate-refetch", opts.recordFetcher ?? defaultRecordFetcher);
       const { violations: leftover, failures: postFlushFailures } = await runPostFlushGateRepair({
         check: enforcedViolations,
         fetcher: (uri) => fetcher(uri, { agentId: agent, sessionKey: `${runPrefix}screen-gate-refetch`, recordLog: runRecordLogPath(run.runDir) }),
@@ -614,7 +615,7 @@ export async function runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQ
       // every event consumer to null-guard. Stamp `unnamed:<mark>` — the digest-queue keyParts shape.
       runLog(run.runDir, { event: "screen-gate-violation", count: violations.length, uris: violations.map((v) => v.uri ?? `unnamed:${v.mark}`), action: "driver-refetch" });
       note(`screen-gate: ${violations.length} in-scope-live goods/field drop(s) not record_fetched — DRIVER code-fetch + re-decide (no hard-halt)`);
-      const fetcher = opts.recordFetcher ?? defaultRecordFetcher;
+      const fetcher = stopsWithTheRun(run.runDir, "screen-gate-fetch", opts.recordFetcher ?? defaultRecordFetcher);
       const fetchFailures = new Map();
       for (const v of violations) {
         if (!v.uri) continue;                                // an unnamed drop — the driver cannot fetch what nobody named; the re-digest below must name it

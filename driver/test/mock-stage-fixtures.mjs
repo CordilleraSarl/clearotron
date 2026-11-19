@@ -2717,6 +2717,12 @@ export function applyStageWrites(msg, argv) {
     const runDir = runDirFromWiring(argv);
     if (!runDir) return "mock knockout-register-read: no run dir in the engine wiring — the driver wires CLEAROTRON_BAND_RUN_DIR per run and this branch refuses rather than guesses";
     recordMockToolCall(runDir, "record_knockout_register_read", "recording-knockout-register-read");
+    // MOCK_KO_READ_STOP: the operator presses Stop while the register read runs. `complete`: the turn still finishes, as a
+    // dispatched turn does. `fail`: the turn is ended, as an immediate stop ends it, and the gateway's next attempt meets the stop.
+    if (process.env.MOCK_KO_READ_STOP) {
+      requestCancel(runDir, { via: "mock/register-read", by: "mock" });
+      if (process.env.MOCK_KO_READ_STOP === "fail") process.exit(1);
+    }
     const scope = JSON.parse(readFileSync(driverDir(runDir, "instructed-scope.json"), "utf8"));
     const counts = JSON.parse(readFileSync(driverDir(runDir, "register-counts.json"), "utf8"));
     const fixtures = fixtureRecordsDir(runDir);
@@ -2742,7 +2748,8 @@ export function applyStageWrites(msg, argv) {
       const blocks = knockoutBandBlocks(runDir, name);
       const held = [...blocks.values()].flatMap((b) => (b?.records ?? []).map((r) => r.record_id)).filter(Boolean);
       const owed = questionsOwed({ name, countsEntry, blocks, proposals: knockoutProposals(runDir, name).entries, carried: new Set(held), addedQuestions: addedClassQuestions(runDir, name) });
-      marks.push({ name, carried: held.length ? [{ records: held, why: "mock reading: the name's own filings" }] : [],
+      // MOCK_KO_CHECK_OWNERS: the reading asks for its carried filings' owners to be searched, so the lane owes owner checks.
+      marks.push({ name, carried: held.length ? [{ records: held, why: "mock reading: the name's own filings", ...(process.env.MOCK_KO_CHECK_OWNERS ? { check_owner: true } : {}) }] : [],
         set_aside: owed.map((o) => ({ question: o.question, why: "mock reading: reading it would not change the advice" })), not_asked: [] });
     }
     const verdict = recordKnockoutRegisterRead(runDir, { marks });
