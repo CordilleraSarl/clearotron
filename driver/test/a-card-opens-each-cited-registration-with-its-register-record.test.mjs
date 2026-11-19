@@ -141,11 +141,11 @@ test("markup planted in a record's label, number, mark or owner prints as text o
   assert.ok(entry.includes("<b>&lt;scr&lt;script&gt;ipt&gt;alert(1)&lt;/script&gt;</b>"), "the planted mark does not print as text");
 });
 
-test("a record cited by its handle keeps the handle as it is", () => {
+test("a record the run's office links do not name prints its own office number, and never a rewritten handle", () => {
   const US = "/mark/us/90000001";
   const html = render([finding([{ uri: US, jurisdiction: "US" }])], [record(US, "us", { applicationNumber: "90000001", registrationNumber: "7100200" })]);
   const [entry] = entries(html);
-  assert.ok(entry.includes("/mark/us/90000001"), "the handle was rewritten");
-  assert.doesNotMatch(entry, /\/mark\/us\/7100200/, "the handle took the registration number");
-  assert.doesNotMatch(entry, /application 90000001/, "the application number is repeated beside a handle that already shows it");
+  assert.match(entry, /<span class="k">Register number<\/span><span class="v">US 7100200 <span class="rr-faint">application 90000001<\/span>/,
+    "the record's own office number, as the registration number with its application after it, is not the row");
+  assert.doesNotMatch(entry, /\/mark\/us\/7100200/, "a handle was rewritten into a number");
 });

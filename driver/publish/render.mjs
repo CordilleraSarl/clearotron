@@ -1851,12 +1851,22 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   const positions = `${proseHasRead ? '' : lpSplit(f)}${manageableLine(f)}`;
   const body = `${positions}${regs || seniorLine || fetchFailLine || enfLine || enfTelemetry || useChk || ownR || impactLine ? `<ul>${fetchFailLine}${seniorLine}${regs}${enfLine}${enfTelemetry}${useChk}${ownR}${impactLine}</ul>` : ''}${proseFullShown ? renderProse(proseFullShown) : ''}${caseLawStrand}${prov}`;
   // The register number of each record entry: the office's label as plain text, the text a handle-cited record shows,
-  // and the page's own cell for a label.
-  const numberOf = (u) => ({
-    label: RECORD_LINKS?.get(String(u || '').toLowerCase())?.label ?? null,
-    fallbackText: u || 'registration',
-    cell: (label) => officeRecordCell(u, regUri, RECORD_CITATION ? NO_LINK_NOTE[RECORD_CITATION] : null, label),
-  });
+  // and the page's own cell for a label. Where the run's office links do not name a record, the record still holds its
+  // office number, and the row prints that, opening the record where its handle did, rather than the bare handle.
+  const numberOf = (u, rec) => {
+    const office = RECORD_LINKS?.get(String(u || '').toLowerCase())?.label ?? null;
+    const own = office ? null : (officeRecordLink(rec, u)?.label ?? null);
+    const note = RECORD_CITATION ? NO_LINK_NOTE[RECORD_CITATION] : null;
+    return {
+      label: office ?? own,
+      fallbackText: u || 'registration',
+      cell: (label) => {
+        if (!own) return officeRecordCell(u, regUri, note, label);
+        const h = hrefAttr(regHref(u));
+        return h ? `<a href="${h}" target="_blank" rel="noopener noreferrer">${esc(label)}</a>` : esc(label);
+      },
+    };
+  };
   const recordBlock = registerRecordBlock(f, recordsByUri, numberOf);
   return `${recordBlock}<details class="drill"><summary>${R.detail.fold}</summary><div class="drillbody">${body}</div></details>`;
 }
@@ -1916,7 +1926,7 @@ function recordEntry(f, r, rec, numberOf) {
   // The owner by the card's own rule: a record's Latin owner is a romanisation when it also carries the native
   // form, and then the resolved name is the one a lawyer can read (recordOwner, above, decides the same way).
   const ownerName = ownerDisplayName({ raw: REC.owner(rec), native: REC.ownerNative(rec), resolved: f.owner?.name });
-  return recordEntryHtml(rec, { uri, jurisdiction: r.jurisdiction, receipt, asOf: AS_OF, number: numberOf(uri), ownerName });
+  return recordEntryHtml(rec, { uri, jurisdiction: r.jurisdiction, receipt, asOf: AS_OF, number: numberOf(uri, rec), ownerName });
 }
 
 // The contentious MARK + the classes it matched in, as a header chip next to the holder — so a card shows
@@ -2956,7 +2966,7 @@ if (isEntrypoint(import.meta.url)) {
 // ── The office's own page for a fetched record, where the run's register publishes none of its own ─────
 // publish addresses each fetched record from its own numbers (office-record-links.mjs) and hands the map
 // in as `recordLinks`. Kept down here, below every line the rest of the tree cites by number.
-import { officeReasonSentences } from './office-record-links.mjs';
+import { officeReasonSentences, officeRecordLink } from './office-record-links.mjs';
 
 // The label is the office and the number, linked where the office has a page. The handle names the
 // vendor's record, not the office's, and a reader can look it up nowhere. With no link the number stands
