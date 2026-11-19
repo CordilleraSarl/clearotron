@@ -18,6 +18,7 @@ import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
 import { REGISTER_SENTENCES } from "./ruled-sentences-register.mjs";
 import { RECIPES_SENTENCES } from "./ruled-sentences-register-recipes.mjs";
 import { CORSEARCH_SENTENCES } from "./ruled-sentences-corsearch.mjs";
+import { SIGNA_SENTENCES } from "./ruled-sentences-signa.mjs";
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register");
 const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
@@ -48,7 +49,7 @@ test("the shared manual and the provider notes carry no price words", () => {
   const corsearch = flat("providers/corsearch.md");
   assert.ok(corsearch.includes(CORSEARCH_SENTENCES.donRunMultipleSeparatePhonetic));
   assert.ok(corsearch.includes("## Request limits"));
-  assert.ok(flat("providers/signa.md").includes("It is ONE call, not three."));
+  assert.ok(flat("providers/signa.md").includes(SIGNA_SENTENCES.oneCallNotThree));
   const all = ["SKILL.md", "register-recipes.md", "providers/corsearch.md", "providers/signa.md"].map(flat).join(" ");
   for (const gone of ["and is free", "the honest trade", "costs more", "## API budget", "no extra spend", "do NOT spend"])
     assert.ok(!all.includes(gone), `the register manuals still say "${gone}"`);

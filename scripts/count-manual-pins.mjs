@@ -44,6 +44,9 @@ export const GATHERED = Object.freeze({
   "driver/skills/matter-frame/SKILL.md": "driver/test/ruled-sentences-matter-frame.mjs",
   "driver/skills/blind-frame/SKILL.md": "driver/test/ruled-sentences-blind-frame.mjs",
   "driver/skills/clearance-register/providers/corsearch.md": "driver/test/ruled-sentences-corsearch.mjs",
+  "driver/skills/clearance-register/providers/signa.md": "driver/test/ruled-sentences-signa.mjs",
+  "driver/skills/clearance-search/firm-wide-reasoning.md": "driver/test/ruled-sentences-firm-wide-reasoning.mjs",
+  "driver/skills/knockout-frame/SKILL.md": "driver/test/ruled-sentences-knockout-frame.mjs",
 });
 
 const LIT = String.raw`"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'|\x60(?:\\.|[^\x60\\$\n])*\x60`;

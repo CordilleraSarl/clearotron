@@ -14,6 +14,7 @@ import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { CORSEARCH_SENTENCES } from "./ruled-sentences-corsearch.mjs";
+import { SIGNA_SENTENCES } from "./ruled-sentences-signa.mjs";
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register", "providers");
 const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
@@ -37,14 +38,13 @@ test("Corsearch runs no watchlist sweep, and EUIPO names its coverage, not the t
   assert.ok(!euipo.includes("the deliberate trade of running the free tier"), "the EUIPO manual still calls its coverage the trade of a tier");
 });
 
-const NEVER_CLOSED = "disclose it; no search on this register can close it, so it is not escalated, and it is never clean.";
+const NEVER_CLOSED = SIGNA_SENTENCES.discloseSearchThisRegisterCan;
 
 test("a gap no search on the register can close is disclosed, never escalated and never clean", () => {
   const clarivate = flat("clarivate.md"), signa = flat("signa.md"), uspto = flat("uspto-local.md");
   assert.ok(clarivate.includes("Each of these, when it blocks a dictated slice, is a **`deferred` coverage row** — " + NEVER_CLOSED));
-  assert.ok(signa.includes("give that slice a `deferred` coverage-form row (the register sweep **cannot reach** it on Signa) — "
-    + NEVER_CLOSED + " This follows the keystone doctrine in `../SKILL.md` → *Coverage ledger*: a could-not-reach gap is "
-    + "**`deferred`**, open and disclosed, never `coverage-limited`"));
+  assert.ok(signa.includes(SIGNA_SENTENCES.giveThatSliceDeferredCoverage
+    + NEVER_CLOSED + SIGNA_SENTENCES.thisFollowsTheKeystoneDoctrine));
   assert.ok(uspto.includes("give that slice a `deferred` coverage-form row so the digest and synthesis surface it — " + NEVER_CLOSED));
   for (const [name, text] of [["Signa", signa], ["USPTO", uspto]])
     for (const gone of ["closeable", "skeptic can escalate", "escalate + disclose"])

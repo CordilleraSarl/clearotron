@@ -25,6 +25,9 @@ import { SYNTHESIS_SENTENCES } from "./ruled-sentences-synthesis-rules.mjs";
 import { MATTER_FRAME_SENTENCES } from "./ruled-sentences-matter-frame.mjs";
 import { BLIND_FRAME_SENTENCES } from "./ruled-sentences-blind-frame.mjs";
 import { CORSEARCH_SENTENCES } from "./ruled-sentences-corsearch.mjs";
+import { SIGNA_SENTENCES } from "./ruled-sentences-signa.mjs";
+import { FIRM_WIDE_SENTENCES } from "./ruled-sentences-firm-wide-reasoning.mjs";
+import { KO_FRAME_SENTENCES } from "./ruled-sentences-knockout-frame.mjs";
 import { GATHERED, manualPins, heldStrings, namesManual } from "../../scripts/count-manual-pins.mjs";
 import { skipReason } from "../../shared/tracked-files.mjs";
 
@@ -44,6 +47,9 @@ const FIXTURES = {
   "driver/skills/matter-frame/SKILL.md": MATTER_FRAME_SENTENCES,
   "driver/skills/blind-frame/SKILL.md": BLIND_FRAME_SENTENCES,
   "driver/skills/clearance-register/providers/corsearch.md": CORSEARCH_SENTENCES,
+  "driver/skills/clearance-register/providers/signa.md": SIGNA_SENTENCES,
+  "driver/skills/clearance-search/firm-wide-reasoning.md": FIRM_WIDE_SENTENCES,
+  "driver/skills/knockout-frame/SKILL.md": KO_FRAME_SENTENCES,
 };
 // Strings a test that reads a manual uses for its own purpose, which the manual happens to share word for word: an example
 // row label used as a unit name, a stage message's own words, a fixture's input. They hold nothing of the manual.
