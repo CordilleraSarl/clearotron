@@ -2298,6 +2298,9 @@ function method(_text) {
 // already-published internal report on the next view with no re-render. The <link> is emitted AFTER the inline
 // <style> so the cascade order (chrome after report.css, as today) is identical to the all-inline export.
 const NAV_SHEET = NAV_CSS;
+// How a clearance prints (owner, 2026-11-19): ticked cards whole, every other fold as it reads on screen. The clearance's
+// own sheet, after the base sheet whose print rule opens every fold, which the Knockout keeps.
+const CLEARANCE_PRINT = readFileSync(join(HERE, 'templates', 'clearance-print.css'), 'utf8');
 const REP_OVERRIDE = '.rep-stickyhead .sitenav{position:static;box-shadow:none;border-bottom:none;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}';
 const PAGE_JS = `var _hidden=[];
 function exportPDF(){_hidden=[];document.querySelectorAll('.card').forEach(function(card){var cb=card.querySelector('input.pickbox');if(cb&&!cb.checked){card.classList.add('print-hidden');_hidden.push(card);}});document.querySelectorAll('details.lowerband').forEach(function(d){if(!d.querySelector('.card:not(.print-hidden)')){d.classList.add('print-hidden');_hidden.push(d);}});window.print();}
@@ -2313,7 +2316,7 @@ function _cardHashGo(){var id=location.hash.slice(1);if(id.charAt(0)!=='c'||!/^[
 document.addEventListener('click',function(e){var a=e.target.closest?e.target.closest('a[href^="#c"]'):null;if(!a)return;var id=(a.getAttribute('href')||'').slice(1);if(id.charAt(0)!=='c'||!/^[0-9]+$/.test(id.slice(1)))return;var el=document.getElementById(id);if(!el)return;_cardReveal(el);e.preventDefault();try{if(history.replaceState)history.replaceState(null,'','#'+id);}catch(err){}el.scrollIntoView({behavior:(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)?'auto':'smooth',block:'start'});});
 window.addEventListener('hashchange',_cardHashGo);
 window.addEventListener('load',_cardHashGo);
-window.addEventListener('beforeprint',function(){document.querySelectorAll('details').forEach(function(d){d.dataset.o=d.open?'1':'';d.open=true;});});
+window.addEventListener('beforeprint',function(){document.querySelectorAll('details').forEach(function(d){d.dataset.o=d.open?'1':'';});document.querySelectorAll('.card').forEach(function(c){var b=c.querySelector('input.pickbox');if(b&&!b.checked)return;c.querySelectorAll('details').forEach(function(d){d.open=true;});for(var p=c.parentElement;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;});});
 window.addEventListener('afterprint',function(){document.querySelectorAll('details').forEach(function(d){d.open=d.dataset.o==='1';});_hidden.forEach(function(c){c.classList.remove('print-hidden');});_hidden=[];});
 ${EXPORT_MENU_JS}`;
 
@@ -2765,7 +2768,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   const linkChrome = !!opts.chromeHref;
   const doc = pageShell({
     title: `${productName ? `${esc(productName)} — ` : ''}${esc(fm.title || '')}`,
-    css: (linkChrome ? '' : NAV_SHEET) + '\n' + REP_OVERRIDE,
+    css: (linkChrome ? '' : NAV_SHEET) + '\n' + REP_OVERRIDE + '\n' + CLEARANCE_PRINT,
     chromeHref: opts.chromeHref,
     body: `<div class="rep-stickyhead no-print" data-report-chrome>
 <div class="topbar no-print">
