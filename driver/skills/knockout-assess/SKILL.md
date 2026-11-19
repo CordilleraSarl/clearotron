@@ -116,6 +116,8 @@ Everything below follows from writing only what your evidence supports.
    `findings[]` — cite that evidence. It is never a claim about filings, families, or how many marks
    share a token. `crowdedField: true` means "the payload I read
    shows a crowded field", and if the payload does not show one, it is `false`.
+5. Describe only the activity the held source shows. Attribute a listing’s claim of registration to the
+   listing unless a held register record confirms it.
 
 The engine appends the depth boundary to `batch.standardCaveats` itself, and the standing caveat where
 one is owed, so never write your own version of either.
@@ -139,6 +141,9 @@ nouns, one idea per sentence, no sentence over 25 words, the conclusion first. O
 **Inside a fold the lawyer's vocabulary is allowed** where a plain word would lose precision — a
 finding's `basis`, the provenance, the long `assessment`. Even there, a term is explained the first time
 it appears on the page.
+
+Name the evidence you found, the places you searched, or the wording you compared. Use the terms the
+reader knows for those things.
 
 The rule is the test, not the list. Ask of every noun: *does the reader already own this word?* These
 are worked examples of the one failure, not its boundary:
@@ -254,6 +259,9 @@ Every mark carries the read as typed fields, not as a paragraph:
 
 Each is a standalone line: no semicolon chains, no clause stacking, no restating the band word. Write
 each observation ONCE: a point made in `factors` is not repeated in `bullets`.
+
+Give the short answer in the summary. Use the reasons to explain the rating and uncertainties to say what
+remains open. Add a detail to the assessment when it helps the reader understand the result.
 
 ## What the register reading hands you
 

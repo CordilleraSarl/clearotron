@@ -1941,9 +1941,21 @@
           "skips": 0,
           "todos": 0
         },
+        "a-record-log-line-is-decoded-whole.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "a-record-placement-set-aside-is-not-a-lost-finding.test.mjs": {
           "tests": 4,
           "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-record-set-reads-only-what-was-appended.test.mjs": {
+          "tests": 5,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -8704,8 +8716,8 @@
           "todos": 0
         },
         "the-workbooks-register-rows-are-headed-by-the-services-reach.test.mjs": {
-          "tests": 3,
-          "asserts": 12,
+          "tests": 4,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
