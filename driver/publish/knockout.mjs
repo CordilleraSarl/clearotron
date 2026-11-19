@@ -526,6 +526,9 @@ export async function readKnockoutDocument({ runId, runDir, findings, plan, fram
   let registerRecords = null, registerRecordsUnreadable = false;
   try { registerRecords = readJson(paths(runDir).registerRecords); }
   catch { registerRecords = null; registerRecordsUnreadable = existsSync(paths(runDir).registerRecords); }
+  // Each listed filing's saved record, which its register record drop-down is built from, and each one's saved logo.
+  // A run that saved no records, or fetched no logos, has none, and its table renders as before.
+  const filingRecords = filingRecordBodies(runDir, registerRecords), logos = logosForReport(runDir);
   // The owner lookups this run made, read the same tolerant way as the records above:
   // an archived run that predates the lane has no file, and its cards then render exactly as they were
   // delivered. The source line the report prints comes from HERE, not from anything the seat typed.
@@ -726,7 +729,7 @@ export async function readKnockoutDocument({ runId, runDir, findings, plan, fram
   const organisation = (() => { try { const f = readJson(paths(runDir).profile); return typeof f?.organisation === 'string' && f.organisation ? f.organisation : undefined; } catch { return undefined; } })();
   return {
     receipts, dates, issued, searched, sweepReceipts, registerCounts, registerCountsUnreadable, registerRecords,
-    registerRecordsUnreadable, ownerChecks, instructedScope, scopeUnreadable, frameworkMethod, recordLinksDropped,
+    registerRecordsUnreadable, filingRecords, logos, ownerChecks, instructedScope, scopeUnreadable, frameworkMethod, recordLinksDropped,
     officeLinks, qcFlags, machineChecksFailed, steps, lookupsNotRun, recordsNotKept, openPoints, identity, probeRan,
     markRows, single, origin, reportUrlFor, demoData, served, statement, markNames, organisation,
     // WHICH BUILD produced this, read once for every surface that records it. null off a git checkout.
@@ -761,7 +764,7 @@ export async function readKnockoutDocument({ runId, runDir, findings, plan, fram
 export async function publishKnockout({ runId, codename, runDir, findings, plan, framework, overall, poolRoot, poolUrl, customerKey, searchPolicy, tokens, registerCounts: givenCounts = null, skipRegen = false, delivery = null }) {
   // `givenCounts`: counts the lane already holds; the document reads the run's own when none are given.
   const doc = await readKnockoutDocument({ runId, runDir, findings, plan, framework, overall, poolRoot, poolUrl, customerKey, searchPolicy, registerCounts: givenCounts });
-  const { receipts, dates, issued, searched, sweepReceipts, registerCounts, registerRecords, registerRecordsUnreadable,
+  const { receipts, dates, issued, searched, sweepReceipts, registerCounts, registerRecords, registerRecordsUnreadable, filingRecords, logos,
     ownerChecks, instructedScope, scopeUnreadable, frameworkMethod, recordLinksDropped, officeLinks, qcFlags,
     machineChecksFailed, steps, lookupsNotRun, recordsNotKept, openPoints, identity, probeRan, markRows, single, origin,
     reportUrlFor, demoData, served, statement, markNames, organisation, issuedDateUtc, title, overallBadge } = doc;
@@ -831,7 +834,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
       leftOpen: knockoutLeftOpen({ listing: registerRecords ? null : steps.listing, reading: steps.reading }, one.marks),
       // Carried as its own value rather than folded into `registerRecords`, because three sites PRINT
       // `registerRecords.unavailable` and a marker invented here would become client-facing wording.
-      registerRecordsUnreadable,
+      registerRecordsUnreadable, filingRecords, logos,
       // — an invented mark says so on its own report. Resolved ONCE above the loop:
       // the answer is a property of the run, and asking per mark would let a multi-mark demo mark some
       // documents and not others if the roster moved mid-publish.
@@ -1019,3 +1022,26 @@ import { addressListedFilings, reasonCellFor } from './office-record-links.mjs';
 import { reportDates, zurichStamp } from './report-dates.mjs';   // the dates a report prints, from its record
 import { declaredRecordOrigins } from '../record-origins.mjs';
 import { driverDir, ensureDriverDir, paths, readJson } from "../run-record.mjs";
+import { readRecordArtifacts, normalizeRecordUri } from "../registry-fidelity.mjs";
+import { recordBodyFromLog } from "../../providers/_shared/ledger.mjs";   // the run record log's own index
+import { logosForReport } from "../mark-logos.mjs";   // the saved logo of each listed filing, embedded in the report
+
+/**
+ * The saved record of each filing the Knockout lists, by its normalised record id: the run's `_records/` copy where
+ * there is one, else the body the run's record log holds. A filing whose record the run never saved is absent, and
+ * its table row draws no register record. IMPURE: it reads the run.
+ */
+function filingRecordBodies(runDir, registerRecords) {
+  const out = new Map();
+  if (!runDir || !registerRecords) return out;
+  const saved = readRecordArtifacts(runDir);
+  for (const m of Array.isArray(registerRecords.marks) ? registerRecords.marks : []) {
+    for (const r of Array.isArray(m?.records) ? m.records : []) {
+      const key = normalizeRecordUri(r?.recordId);
+      if (!key || out.has(key)) continue;
+      const body = saved.get(key) ?? recordBodyFromLog(paths(runDir).registerRecordBodies, r.recordId);
+      if (body && typeof body === 'object' && !Array.isArray(body)) out.set(key, body);
+    }
+  }
+  return out;
+}

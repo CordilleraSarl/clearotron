@@ -67,6 +67,9 @@ import { saysSomethingNew } from '../../shared/says-something-new.mjs';
 import OFFERED from '../../shared/offered-territories.json' with { type: 'json' };   // the order form's own territory names
 import { normalizeTerritory } from '../../providers/_shared/territory-codes.mjs';   // a territory as written → its code
 import { KNOCKOUT_PAGE as K } from './strings.mjs';
+import { recordEntryHtml, logoFigureHtml } from './register-record-html.mjs';   // a record entry and a logo, drawn once for both report pages
+import { RECORD_LABELS } from './register-record.mjs';
+import { REC, ownerDisplayName, normalizeRecordUri } from '../registry-fidelity.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
@@ -515,7 +518,31 @@ export function rankByMateriality(records, entry, mark) {
 }
 
 const APPENDIX_ROWS = 8;
-function filingsSection(marks, registerRecords) {
+// EACH LISTED FILING OPENS ITS REGISTER RECORD (owner, 2026-11-18; the approved board). A filing whose record the
+// run saved gets a closed drop-down in a row under its table row, the same entry a clearance card draws, and its
+// logo, where the run saved one, on a line of its own under the mark name, uncaptioned because the Territory
+// column names the register. A filing with no saved record keeps its single row, so a run that saved none renders
+// as it did.
+function filingRows(r, { filingRecords, logos }) {
+  const key = normalizeRecordUri(r.recordId);
+  const rec = key ? filingRecords.get(key) : null;
+  const cell = officeRecordCell(r, r.url ? linkOrText(r.url) : esc(r.recordId ?? '—'));
+  const logo = rec ? logoFigureHtml(rec, { uri: key, logo: logos.get(key), href: r.officeLink?.href ? escAttr(r.officeLink.href) : null, caption: false }) : null;
+  const row = `<tr${rec ? ' class="rr-has"' : ''}>
+      <td>${esc(r.mark ?? '—')}${r.matchedBasis === 'close' ? `<br><span class="ko-classes">${esc(K.filings.foundAs(r.matchedForm))}</span>` : ''}${logo ? `<div class="rr-logos rr-ko">${logo}</div>` : ''}</td>
+      <td>${esc(r.owner ?? '—')}</td>
+      <td>${esc(r.status ?? '—')}</td>
+      <td>${esc((r.classes ?? []).join(', ') || '—')}</td>
+      <td>${esc(r.territory ?? '—')}</td>
+      <td class="ko-findev">${cell}</td>
+    </tr>`;
+  if (!rec) return row;
+  const ownerName = ownerDisplayName({ raw: REC.owner(rec), native: REC.ownerNative(rec), resolved: r.owner });
+  const entry = recordEntryHtml(rec, { uri: key, jurisdiction: r.territory, numberCell: cell, ownerName });
+  return `${row}<tr class="rr-krow"><td colspan="6"><details class="drill rr-drill"><summary>${esc(RECORD_LABELS.title)}</summary><div class="drillbody">${entry}</div></details></td></tr>`;
+}
+
+function filingsSection(marks, registerRecords, records = { filingRecords: new Map(), logos: new Map() }) {
   // The provider refused the whole lane (clarivate's per-record bill). One sentence, once — not the
   // same refusal repeated under every mark.
   if (registerRecords.unavailable) {
@@ -534,14 +561,7 @@ function filingsSection(marks, registerRecords) {
     // not material". The cards promote and therefore filter; the appendix evidences and therefore ranks.
     const ranked = rankByMateriality(e.records, e, m);
     const shown = ranked.slice(0, APPENDIX_ROWS);
-    const rows = shown.map((r) => `<tr>
-      <td>${esc(r.mark ?? '—')}${r.matchedBasis === 'close' ? `<br><span class="ko-classes">${esc(K.filings.foundAs(r.matchedForm))}</span>` : ''}</td>
-      <td>${esc(r.owner ?? '—')}</td>
-      <td>${esc(r.status ?? '—')}</td>
-      <td>${esc((r.classes ?? []).join(', ') || '—')}</td>
-      <td>${esc(r.territory ?? '—')}</td>
-      <td class="ko-findev">${officeRecordCell(r, r.url ? linkOrText(r.url) : esc(r.recordId ?? '—'))}</td>
-    </tr>`).join('');
+    const rows = shown.map((r) => filingRows(r, records)).join('');
     // "First N" WAS TRUE AND IS NOT ANY MORE, and saying it of a ranked table would be worse than the
     // cap: it invites the reader to take the sample for the top of the provider's list. Say the count
     // that exists, say what decided the order, and say where the rest is.
@@ -1597,6 +1617,8 @@ export function renderKnockoutHtml(findings, framework, {
   // is its own value rather than a marker on `registerRecords`, because three sites PRINT
   // `registerRecords.unavailable` and anything invented for it would become client-facing wording.
   registerRecordsUnreadable = false,
+  // Each listed filing's saved record and logo, by its normalised record id; empty draws the table as before.
+  filingRecords = new Map(), logos = new Map(),
   // The searches this run did not complete, as Left open rows ({area, state, note}); empty draws no section.
   leftOpen = [],
   // The driver's own record of the owner lookups it ran. Defaults to [] so an
@@ -1718,7 +1740,7 @@ export function renderKnockoutHtml(findings, framework, {
   const registerCardCount = marks.reduce((n, m) =>
     n + registerCardsOnPage(registerCardViews(m, framework, registerRecords).cards, m, framework).length, 0);
   const hasRecords = Boolean(registerRecords && (registerRecords.marks?.length || registerRecords.unavailable));
-  const filings = hasRecords ? filingsSection(marks, registerRecords) : '';
+  const filings = hasRecords ? filingsSection(marks, registerRecords, { filingRecords, logos }) : '';
   const onFieldSec = `<div class="sec" id="findings"><span class="num"></span><h2>${K.sections.conflicts}</h2></div>
 ${counts}
 ${analysis}`;

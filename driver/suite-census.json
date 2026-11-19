@@ -183,6 +183,18 @@
           "skips": 0,
           "todos": 0
         },
+        "a-card-opens-each-cited-registration-with-its-register-record.test.mjs": {
+          "tests": 7,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-card-shows-the-logo-each-registration-carries.test.mjs": {
+          "tests": 4,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "a-case-law-gap-names-the-right-reason.test.mjs": {
           "tests": 8,
           "asserts": 27,
@@ -250,8 +262,8 @@
           "todos": 0
         },
         "a-cited-registration-opens-with-the-register-record.test.mjs": {
-          "tests": 7,
-          "asserts": 35,
+          "tests": 8,
+          "asserts": 36,
           "skips": 0,
           "todos": 0
         },
@@ -1224,6 +1236,12 @@
         "a-knockout-filing-links-to-its-office.test.mjs": {
           "tests": 15,
           "asserts": 75,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-knockout-filing-opens-its-register-record.test.mjs": {
+          "tests": 3,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -3027,6 +3045,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-written-row-stands-in-for-a-follow-up-only-on-its-recorded-search.test.mjs": {
+          "tests": 5,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
         "ab-tooling-honesty.test.mjs": {
           "tests": 16,
           "asserts": 79,
@@ -3400,8 +3424,8 @@
           "todos": 0
         },
         "band-pills-and-grey-labels-pass-contrast.test.mjs": {
-          "tests": 5,
-          "asserts": 11,
+          "tests": 7,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -6118,8 +6142,8 @@
           "todos": 0
         },
         "regions.test.mjs": {
-          "tests": 7,
-          "asserts": 22,
+          "tests": 8,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -6280,8 +6304,8 @@
           "todos": 0
         },
         "render.test.mjs": {
-          "tests": 164,
-          "asserts": 691,
+          "tests": 163,
+          "asserts": 693,
           "skips": 0,
           "todos": 0
         },
@@ -7299,6 +7323,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-conflicts-below-the-risk-sit-behind-one-closed-heading.test.mjs": {
+          "tests": 4,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "the-connect-line-names-the-claude-setup-installed.test.mjs": {
           "tests": 5,
           "asserts": 30,
@@ -7854,6 +7884,12 @@
         "the-knockout-reviewing-pass-rewrites-what-a-reader-sees-first.test.mjs": {
           "tests": 21,
           "asserts": 80,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-knockout-scale-names-its-ends-on-a-phone.test.mjs": {
+          "tests": 2,
+          "asserts": 3,
           "skips": 0,
           "todos": 0
         },

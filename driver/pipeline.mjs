@@ -7935,8 +7935,10 @@ export function injectDeferralCoverage(P, runDir, note) {   // @internal — exp
   try {
     const rp = paths(runDir).frameReopenReceipt;
     if (!existsSync(rp) || !existsSync(P.findings)) return;
-    const deferrals = JSON.parse(readFileSync(rp, "utf8"))?.deferrals ?? [];
+    const receipt = JSON.parse(readFileSync(rp, "utf8"));
+    const deferrals = receipt?.deferrals ?? [];
     if (!deferrals.length) return;
+    const kinds = followUpKinds(receipt);   // the search each deferred directive recorded (follow-up-twins.mjs)
     const doc = JSON.parse(readFileSync(P.findings, "utf8"));
     // T1 (G8): a findings.json without a coverage array must not silently LOSE the deferral
     // rows — the reader-visible disclosure is the whole point of "can't close → disclose".
@@ -7963,6 +7965,8 @@ export function injectDeferralCoverage(P, runDir, note) {   // @internal — exp
       const want = normTxt(plainDirective(directive)).split(" ").filter((w) => w.length >= 4).slice(0, 4);
       if (want.length && rows.some((ws) => want.every((w) => ws.has(w)))) continue;   // synthesis already weighed it in
       const row = deferralCoverageRow(directive, d?.reason);   // — word-boundary heading, full directive in the note
+      // An axis-labelled row stands in only on the search the run recorded for this directive, as the page decides.
+      if (axisTwin(plainDirective(directive), kindsForFollowUp(row, kinds), doc.coverage.filter((c) => !String(c.area ?? "").startsWith("Follow-up / ")))) continue;
       doc.coverage.push(row);
       rows.push(wordsOf(row));
       added++;
@@ -11775,3 +11779,4 @@ export function reassembleFromTheRecord(P, findings, depth) {   // @internal
 // Hoisted, so placed last: an import at the top would move every line citation into this file.
 import { commandLineRefusal } from "./run-requirements.mjs";
 import { runTables } from "./order-tables.mjs";
+import { axisTwin, followUpKinds, kindsForFollowUp } from "./follow-up-twins.mjs";   // when a written row stands in for a Follow-up row, as the page decides

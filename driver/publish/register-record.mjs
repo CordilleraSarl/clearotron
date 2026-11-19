@@ -93,7 +93,12 @@ function statementOf(g) {
 /** The goods row: English, or a marked machine translation, or the original as registered, or none stated. */
 function goodsRow(rec, uri) {
   // An untagged statement on an English-language register is English, as the run's own goods reader takes it.
-  const goods = recordGoods(rec, { english: untaggedIsEnglish(String(rec.uri ?? uri ?? '')) });
+  const read = recordGoods(rec, { english: untaggedIsEnglish(String(rec.uri ?? uri ?? '')) });
+  // THE REGISTER'S OWN ENGLISH REPLACES THE ORIGINAL, class for class. A record can hold a class's statement twice,
+  // in the language it was granted in and in English; the reader returns both, and the report shows the English
+  // alone. An original stays only for classes no English statement covers.
+  const englishFor = new Set(read.filter((g) => g.en !== false).map((g) => g.classes.join(',')));
+  const goods = read.filter((g) => g.en !== false || !englishFor.has(g.classes.join(',')));
   if (!goods.length) return { label: RECORD_LABELS.goods, note: NO_GOODS, entries: [] };
   const translated = goods.filter((g) => g.alt);
   const original = goods.filter((g) => g.en === false);

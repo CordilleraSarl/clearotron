@@ -27,7 +27,7 @@
 //
 // RECORDING ONLY, and it never throws: a logo that could not be had never stops a report.
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { join, resolve, sep } from "node:path";
 import { normalizeRecordUri } from "../providers/_shared/record-uri.mjs";
 import { readRecordArtifacts } from "./registry-fidelity.mjs";
 import { DRIVER_DIR, driverDir, ensureDriverDir } from "./run-record.mjs";
@@ -141,4 +141,34 @@ export function logosStep(runDir, doc) {
   for (const r of doc?.rows ?? []) counts[r.state] = (counts[r.state] ?? 0) + 1;
   try { runLog(runDir, doc ? { event: "logos", register: doc.register, ...counts } : { event: "logos-not-written" }); } catch { /* a log line never stops a publish */ }
   return counts;
+}
+
+const SHOWN_TYPES = new Set(["image/png", "image/jpeg", "image/gif", "image/webp"]);
+
+/**
+ * The logos a report shows, by registration: `fetched` rows carry the image as a data address, so the delivered
+ * report fetches nothing and never names the register's image address; `failed` rows carry no image and read "Logo
+ * not retrieved"; every other row is left out, since it draws nothing. A row's file must sit inside the run's logo
+ * folder and open as the image type it was saved as, or it is left out. Never throws. IMPURE: it reads the run.
+ */
+export function logosForReport(runDir) {
+  const out = new Map();
+  if (!runDir) return out;
+  let doc = null;
+  try { doc = JSON.parse(readFileSync(driverDir(runDir, LOGOS_FILE), "utf8")); } catch { return out; }
+  const folder = resolve(runDir, DRIVER_DIR, LOGOS_DIR) + sep;
+  for (const row of Array.isArray(doc?.rows) ? doc.rows : []) {
+    const ref = normalizeRecordUri(row?.ref);
+    if (!ref) continue;
+    if (row.state === "failed") { out.set(ref, { state: "failed" }); continue; }
+    if (row.state !== "fetched" || typeof row.file !== "string" || !SHOWN_TYPES.has(row.contentType)) continue;
+    const at = resolve(runDir, row.file);
+    if (!at.startsWith(folder)) continue;
+    try {
+      const bytes = readFileSync(at);
+      if (imageTypeOf(bytes)?.type !== row.contentType) continue;
+      out.set(ref, { state: "fetched", src: `data:${row.contentType};base64,${bytes.toString("base64")}` });
+    } catch { /* an image that cannot be read is not shown */ }
+  }
+  return out;
 }

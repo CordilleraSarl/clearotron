@@ -37,6 +37,10 @@ import { READ_LEAD_RE } from '../report-card-record.mjs';   // D3 — the dedupe
 import { logoLockup, BRAND, confPosture, sectionStrip, PALETTE, QUADRANT_COLOURS as QC } from '../../shared/brand.mjs';
 import { NAV_CSS } from '../../shared/site-nav.mjs';
 import { pageShell } from './page-shell.mjs';
+import { registerRecordView, RECORD_LABELS, registrationsCount } from './register-record.mjs';
+import { recordEntryHtml, logoFigureHtml } from './register-record-html.mjs';
+import { axisTwin, kindsForFollowUp } from '../follow-up-twins.mjs';   // when a written row stands in for a Follow-up row   // a record entry and a logo, drawn once for both report pages
+import { normalizeRecordUri } from '../registry-fidelity.mjs';   // the register's own record of a cited registration
 import { readerRowHead } from '../coverage-ledger.mjs';   // an engine-token row head in the reader's words   // the document shell, shared with the knockout template
 import { EVIDENCE_LABEL, USE_EVIDENCE_LABEL, meterEvidence } from './evidence-words.mjs';   // the meters' evidence words, shared with the audit workbook
 import { inlineMarkdown } from '../../shared/inline-markdown.mjs';   // the inline-markdown dialect, shared with the knockout template
@@ -106,12 +110,8 @@ let NEGATIVES_GROUPED = false;
 // ladder, the footer names it. Absent ⇒ every legacy (composite) surface renders byte-identically.
 let FRAMEWORK = null;
 let FRAMEWORK_METHOD = null;   // the frozen method (framework-method.mjs), where the framework states one
-// The 2026-09-16 report redesign — the depth rule, as one flag. The same sections render at every depth; what grows
-// is what a finding's Full detail fold carries, and the goods as registered and the record's dates are
-// the two blocks the design gives the full country alone. Module-level for the same reason FRAMEWORK is:
-// fullDetail is reached through four call sites and threading a flag through all of them to reach one
-// `if` is how the other three drift out of step.
-let FULL_COUNTRY = false;
+let AUDIT_HREF = null;   // the audit workbook's address, for the line a capped list ends with; null when the run has none
+let LOGOS = new Map();   // registration → its saved logo ({ state, src }); empty on a run that fetched none
 const GAUGE_STOP_BY_TONE = { minimal: 1, low: 1, medium: 2, high: 3, severe: 4 };
 // Severity rank for sorting/worst-of: band index in the manifest (0 = most severe); legacy composite
 // negated so higher composite = lower rank. Unrated items sink to the bottom.
@@ -1238,7 +1238,7 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
     const why = c.courtDecisions === 'not-checked' ? courtLineFor(opts, 'not-checked') : '';
     rows.push(['Court decisions', { html: `<span class="wstate">${esc(cdWord)}</span>${why ? `<span class="wnote">${esc(why)}</span>` : ''}` }]);
   }
-  const openHtml = open.length ? `<div class="openrows"><div class="rk">${R.searched.leftOpen}</div>${coverageGrid(open, { verdict: opts?.assessmentNotCompleted !== true })}</div>` : '';
+  const openHtml = open.length ? `<div class="openrows"><div class="rk">${R.searched.leftOpen}</div>${coverageGrid(open, { verdict: opts?.assessmentNotCompleted !== true, followUpKinds: opts?.followUpKinds })}</div>` : '';
   // THE LEGEND FOR WHAT IS ON THE CARDS, kept when the scope fold went. It is not the engine narrating
   // its own searching — it is what a linked registration number opens, why the rest are cited by number,
   // and what a register-index entry means. A reader cannot read a card without it.
@@ -1528,7 +1528,8 @@ function negativeLine(f, recordsByUri) {
   const reason = clause(f.net) || clause(f.legal_position);
   return `<span class="rn-mark">${esc(f.mark)}</span>${who ? `<span class="rn-who">${esc(who)}</span>` : ''}`
     + `${facts ? `<span class="rn-facts">${facts}</span>` : ''}`
-    + `${reason ? `<span class="rn-why">${inline(sentenceCaseLead(reason))}</span>` : ''}`;
+    + `${reason ? `<span class="rn-why">${inline(sentenceCaseLead(reason))}</span>` : ''}`
+    + logoLine(f, recordsByUri, { small: true });
 }
 function reasonedNegatives(groups, cardFor, recordsByUri) {
   return groups.map(g => {
@@ -1664,46 +1665,11 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   const regs = (f.owner?.registrations || []).map(r => {
     const uri = String(r.uri || '').toLowerCase();
     const rec = uri ? recordsByUri.get(uri) : null;
-    if (rec) {
-      const cls = (r.classes && r.classes.length ? r.classes.join('/') : (Array.isArray(rec.classList) ? rec.classList.join('/') : ''));
-      const status = REC.statusStr(rec);
-      const filingYear = REC.filingYear(rec), regYear = REC.regYear(rec);
-      const appNum = REC.serial(rec), regNum = REC.regNumber(rec);
-      const jur = r.jurisdiction || rec.jurisdiction || '';
-      const ids = [appNum && `app. ${appNum}`, regNum && `reg. ${regNum}`].filter(Boolean).join(', ');
-      const dates = [filingYear && `filed ${filingYear}`, regYear && `registered ${regYear}`].filter(Boolean).join(', ');
-      const tail = [ids, dates].filter(Boolean).join('; ');
-      // A5 (senior lawyer) — an international (WIPO/Madrid) registration's rights reach ONLY its
-      // designated countries. A WO line NAMES them from the fetched record, or states honestly that
-      // the record did not carry them — never lets "international" imply worldwide.
-      const isWO = normRegion(jur) === 'WO' || /\/mark\/wo\//i.test(uri);
-      const desig = isWO ? REC.designations(rec) : null;
-      const desigHtml = !isWO ? ''
-        : (desig ? ` · designating: ${esc(desig.join(', '))}`
-                 : ` · <i>designated countries not on the fetched record — rights reach only its designations</i>`);
-      // C1 — the jurisdiction's registration system, labeled from DATA (unknown = unlabeled)
-      const sys = registrationSystem(jur);
-      // C2 — an application inside the 6-month Paris-priority window can be re-filed
-      // elsewhere claiming THIS date; flag it so a fresh local filing is never read as local-only.
-      const prio = AS_OF && inPriorityWindow(rec, AS_OF)
-        ? ` · <b>recent filing — Paris-priority window (potential global backdating)</b>` : '';
-      // WP-receipts W2 — the PROVABLE verified label: when the record artifact carries its fetch
-      // receipt (_receipt, embedded at assembly), say what was pulled and when — replacing the
-      // "file exists on disk" inference. Absent receipt (archived runs) renders nothing.
-      const receiptTail = rec._receipt?.fetched_at
-        ? ` · <i class="receipt">verified — ${esc(PROVIDER_LABEL || 'register')} record fetched ${esc(String(rec._receipt.fetched_at).slice(0, 10))}</i>` : '';
-      // AS REGISTERED, AND THE DATES — the full country's two extra blocks (the 2026-09-16 report redesign). Both come
-      // off the fetched record and neither is composed: the goods are the register's own wording in the
-      // language it granted them in, and the dates are its own, to the day. The one-line summary above
-      // carries YEARS, which cannot say whether a registration lapses this month.
-      const goods = FULL_COUNTRY ? REC.goods(rec) : null;
-      const recDates = FULL_COUNTRY ? REC.dates(rec) : null;
-      const goodsHtml = !goods ? '' : `<div class="row"><span class="k">As registered</span><span class="v">${
-        goods.map((g) => `${g.classes.length ? `${esc(g.classes.length === 1 ? 'Class' : 'Classes')} ${esc(g.classes.join(', '))}: ` : ''}${esc(g.description)}`).join('<br>')}</span></div>`;
-      const datesHtml = !recDates ? '' : `<div class="row"><span class="k">Dates</span><span class="v">${
-        esc(recDates.map(([k, v]) => `${k} ${v}`).join(' \u00b7 '))}</span></div>`;
-      return `<li><b>${officeRecordCell(r.uri, regUri, RECORD_CITATION ? NO_LINK_NOTE[RECORD_CITATION] : null)}</b>${cls ? ` · Cl.${esc(cls)}` : ''}${status ? ` · ${esc(status)}` : ''}${tail ? ` (${esc(tail)})` : ''}${jur ? ` · ${esc(jur)}${sys ? ` <i class="jsys">(${sys})</i>` : ''}` : ''}${desigHtml}${prio}${receiptTail}${goodsHtml || datesHtml ? `<div class="record">${goodsHtml}${datesHtml}</div>` : ''}</li>`;
-    }
+    // A FETCHED RECORD IS NOT A LINE HERE ANY MORE. Its facts open the card as the register's own record, in
+    // registerRecordBlock below, before this analysis; a line here would state them twice. What stays in Full
+    // detail is what has no record to show: an index-only citation, and the back-compat render of a run that
+    // fetched no records at all.
+    if (rec) return '';
     // (2)+(3): a cited record with NO fetched body. NEVER-INVENT when the run has a record set (this URI was
     // not fetched ⇒ the model's fields are unconfirmed); also when there are no findings.json facts to show.
     if (uri && (hasRecordSet || !(r.status || r.filed || r.expiry || (r.classes && r.classes.length)))) {
@@ -1884,7 +1850,66 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   const proseHasRead = READ_LEAD_RE.test(proseFull || '');
   const positions = `${proseHasRead ? '' : lpSplit(f)}${manageableLine(f)}`;
   const body = `${positions}${regs || seniorLine || fetchFailLine || enfLine || enfTelemetry || useChk || ownR || impactLine ? `<ul>${fetchFailLine}${seniorLine}${regs}${enfLine}${enfTelemetry}${useChk}${ownR}${impactLine}</ul>` : ''}${proseFullShown ? renderProse(proseFullShown) : ''}${caseLawStrand}${prov}`;
-  return `<details class="drill"><summary>Full detail</summary><div class="drillbody">${body}</div></details>`;
+  const recordBlock = registerRecordBlock(f, recordsByUri, (u) => officeRecordCell(u, regUri, RECORD_CITATION ? NO_LINK_NOTE[RECORD_CITATION] : null));
+  return `${recordBlock}<details class="drill"><summary>Full detail</summary><div class="drillbody">${body}</div></details>`;
+}
+
+// THE REGISTER RECORD (owner, 2026-11-18). A reviewing lawyer checked every cited mark against the register by hand
+// before reading the analysis. Each cited registration whose record this run fetched now opens with the register's
+// own facts, in a closed drop-down placed before "Full detail": the mark and its type, the goods by class, the owner
+// and the owner's country, the country, the status with its dates, and the register number. Every fact is copied
+// from the saved record by registerRecordView; nothing here is composed by a model, and the words are the approved
+// labels and the report's own.
+//
+// THREE FACTS THE OLD LINE CARRIED KEEP THEIR WORDS AND MOVE TO THEIR ROW (design, 2026-11-19): an international
+// registration's designated countries, or the sentence saying the record did not carry them, and the registration
+// system go on the Country row; the Paris-priority flag goes beside the dates on the Status row, with its emphasis.
+//
+// AT MOST EIGHT ENTRIES, in the card's order, then the line that sends the reader to the audit workbook for all of
+// them (owner, 2026-11-18). A card citing dozens of registrations otherwise runs to pages.
+const RECORD_CAP = 8;
+function registerRecordBlock(f, recordsByUri, numberCell) {
+  const cited = (f.owner?.registrations || [])
+    .map((r) => ({ r, rec: r?.uri ? recordsByUri.get(String(r.uri).toLowerCase()) : null }))
+    .filter((x) => x.rec);
+  if (!cited.length) return '';
+  const entries = cited.slice(0, RECORD_CAP).map(({ r, rec }) => recordEntry(f, r, rec, numberCell)).join('');
+  const all = R.cleared.allInWorkbook(cited.length.toLocaleString('en-GB'));
+  const more = cited.length > RECORD_CAP ? `<div class="cmore">${AUDIT_HREF ? `<a class="wb" href="${AUDIT_HREF}">${all}</a>` : all}</div>` : '';
+  const count = cited.length > 1 ? ` <span class="rr-count">${esc(registrationsCount(cited.length))}</span>` : '';
+  return `<details class="drill rr-drill"><summary>${esc(RECORD_LABELS.title)}${count}</summary><div class="drillbody">${entries}${more}</div></details>`;
+}
+
+// LOGOS ON THE CARD, ON A LINE OF THEIR OWN (owner, 2026-11-18). Under the owner line, one logo per registration
+// in the card's register record whose logo the run saved, each in a box of one fixed size captioned with its
+// register, so nothing in the card head moves when a card has logos. A logo the run tried and failed to fetch reads
+// "Logo not retrieved" and opens the office's record; a registration with no logo, or one the run never asked
+// about, draws nothing, so a run that fetched no logos draws no line. A grouped negative row shows up to three small
+// logos and "+N" under its text. The image travels inside the report; nothing points at the register's image.
+function logoLine(f, recordsByUri, { small = false } = {}) {
+  if (!LOGOS.size) return '';
+  const figures = (f.owner?.registrations || [])
+    .filter((r) => r?.uri && recordsByUri.get(String(r.uri).toLowerCase()))
+    .slice(0, RECORD_CAP)
+    .map((r) => {
+      const rec = recordsByUri.get(String(r.uri).toLowerCase());
+      const href = hrefAttr(RECORD_LINKS?.get(String(r.uri).toLowerCase())?.href) || hrefAttr(registerRecordView(rec, { uri: r.uri }).logo.href);
+      return logoFigureHtml(rec, { uri: r.uri, logo: LOGOS.get(normalizeRecordUri(r.uri)), href, caption: !small });
+    })
+    .filter(Boolean);
+  if (!figures.length) return '';
+  if (!small) return `<div class="rr-logos rr-band">${figures.join('')}</div>`;
+  return `<div class="rr-logos rr-sm">${figures.slice(0, 3).join('')}${figures.length > 3 ? `<span class="rr-more">+${figures.length - 3}</span>` : ''}</div>`;
+}
+
+function recordEntry(f, r, rec, numberCell) {
+  const uri = String(r.uri || '');
+  const receipt = rec._receipt?.fetched_at
+    ? `verified — ${PROVIDER_LABEL || 'register'} record fetched ${String(rec._receipt.fetched_at).slice(0, 10)}` : null;
+  // The owner by the card's own rule: a record's Latin owner is a romanisation when it also carries the native
+  // form, and then the resolved name is the one a lawyer can read (recordOwner, above, decides the same way).
+  const ownerName = ownerDisplayName({ raw: REC.owner(rec), native: REC.ownerNative(rec), resolved: f.owner?.name });
+  return recordEntryHtml(rec, { uri, jurisdiction: r.jurisdiction, receipt, asOf: AS_OF, numberCell: numberCell(uri), ownerName });
 }
 
 // The contentious MARK + the classes it matched in, as a header chip next to the holder — so a card shows
@@ -2038,7 +2063,7 @@ function findingCard(f, card, recordsByUri = new Map()) {
           <span class="tier ${tierCls}">${riskChip(f)}</span>
           <button class="ask-fi no-print">${R.card.askAi}</button>
         </div>
-        ${cardTitleParts(f, who).ownerLine}
+        ${cardTitleParts(f, who).ownerLine}${logoLine(f, recordsByUri)}
         <div class="oneline">${inline(sentenceCaseLead(one))}</div>
         ${meters(f)}
       </div>
@@ -2048,7 +2073,35 @@ function findingCard(f, card, recordsByUri = new Map()) {
   </div>`;
 }
 
-function compactCard(f, card, recordsByUri = new Map()) {
+// THE CONFLICTS BELOW THE RISK SIT BEHIND ONE CLOSED HEADING (owner, 2026-11-18). Full cards stay for the conflicts
+// in the band that sets the report's risk, the highest band any conflict holds on the framework's own ladder. Every
+// conflict below it renders as the compact card, unticked for export, and the compact cards sit together behind
+// one closed heading carrying their count: "{N} more conflicts rated {band}", with the framework's band word, each
+// band named and joined by "or" where several sit below. Measured on the largest production clearance, 21 of 274
+// cards set the risk, and the exported PDF fell from 280 pages to 53 with the rest unticked. A lawyer who ticks a
+// card puts it back in the PDF; each compact card still opens to its full detail.
+//
+// ONLY WHERE THE WORDS ARE HIS. The heading is his plural; a single conflict below the risk keeps its full card
+// until he words the singular. A conflict with no band on the ladder keeps its full card, since nothing says it is
+// below the risk. A run with no framework renders every card in full, as it always has.
+function conflictCards(onField, cardFor, recordsByUri) {
+  const full = (list) => list.map((f) => findingCard(f, cardFor(f), recordsByUri)).join('\n  ');
+  if (!FRAMEWORK) return full(onField);
+  const rated = onField.filter((f) => severityRank(f) < FRAMEWORK.bands.length);
+  if (!rated.length) return full(onField);
+  const top = Math.min(...rated.map(severityRank));
+  const below = onField.filter((f) => severityRank(f) > top && severityRank(f) < FRAMEWORK.bands.length);
+  if (below.length < 2) return full(onField);
+  const kept = onField.filter((f) => !below.includes(f));
+  const bands = [...new Set(below.map(severityRank))].sort((a, b) => a - b).map((i) => FRAMEWORK.bands[i].label);
+  const cards = below.map((f) => compactCard(f, cardFor(f), recordsByUri, { ticked: false })).join('\n      ');
+  return `${full(kept)}
+  <details class="rgroup lowerband"><summary><span class="gname">${esc(R.lowerBand(below.length.toLocaleString('en-GB'), bands))}</span></summary><div class="gbody">
+      ${cards}
+  </div></details>`;
+}
+
+function compactCard(f, card, recordsByUri = new Map(), { ticked = true } = {}) {
   const who = recordOwner(f, recordsByUri) || f.owner?.name || f.mark;   // doc-31 step 4: bound from the record
   // — the SAME fallback chain findingCard has carried since item 9b, and this line is why the issue
   // exists. The eleventh break pointed findingCard at the typed record and left compactCard behind, so a
@@ -2062,7 +2115,7 @@ function compactCard(f, card, recordsByUri = new Map()) {
   const markChip = markClassChip(f, who);
   return `<div class="card compact" id="c${f.ordinal}">
     <div class="top"><div class="rail low"></div><div class="body">
-      <div class="cardhead"><label class="pick no-print"><input type="checkbox" class="pickbox" checked aria-label="${R.card.includeInPdf(f.ordinal)}"></label><span class="fnum">${f.ordinal}</span>${cardTitleParts(f, who).title}${evidenceChips(f)}<span class="tier low">${riskChip(f)}</span><button class="ask-fi no-print">${R.card.askAi}</button></div>${cardTitleParts(f, who).ownerLine}
+      <div class="cardhead"><label class="pick no-print"><input type="checkbox" class="pickbox"${ticked ? ' checked' : ''} aria-label="${R.card.includeInPdf(f.ordinal)}"></label><span class="fnum">${f.ordinal}</span>${cardTitleParts(f, who).title}${evidenceChips(f)}<span class="tier low">${riskChip(f)}</span><button class="ask-fi no-print">${R.card.askAi}</button></div>${cardTitleParts(f, who).ownerLine}${logoLine(f, recordsByUri)}
       <div class="oneline">${inline(sentenceCaseLead(one))}</div>
     </div></div>
     ${fullDetail(f, card, recordsByUri)}
@@ -2105,12 +2158,16 @@ const COV_STOPWORDS = new Set(['the', 'a', 'an', 'as', 'for', 'of', 'in', 'on', 
   'was', 'it', 'its', 'this', 'that', 'with', 'by', 'at', 'be', 'been', 'run', 'search', 'searched']);
 const covWords = (t) => new Set(String(t || '').toLowerCase().match(/[a-z0-9]+/g)?.filter((w) => !COV_STOPWORDS.has(w)) ?? []);
 
-function dedupeFollowUps(coverage) {
+function dedupeFollowUps(coverage, followUpKinds = null) {
   const composed = (c) => String(c?.area || '').startsWith(FOLLOW_UP_PREFIX);
   const written = coverage.filter((c) => !composed(c));
   if (!written.length) return coverage;
   return coverage.filter((c) => {
     if (!composed(c)) return true;
+    // AN AXIS-LABELLED ROW STANDS IN ONLY ON THE SEARCH THE RUN RECORDED (design, 2026-11-19): the directive's
+    // recorded questions name one kind of search, and exactly one open row of that kind carries the directive's
+    // words. follow-up-twins.mjs holds the rule; the driver and the lint ask it too.
+    if (axisTwin(String(c.note || '').split('—')[0], kindsForFollowUp(c, followUpKinds), written)) return false;
     // The directive is the note's opening clause — the same string the area was clipped from, unclipped.
     const directive = covWords(String(c.note || '').split('—')[0]);
     if (!directive.size) return true;
@@ -2179,8 +2236,8 @@ function sharedNoteCells(rows, cell) {
 // `verdict: false` — a report whose overall assessment was not completed has no verdict above the grid, so the open
 // rows' lead line, which says the material ones are carried in it, is not printed. The rows are.
 // Exported for the Knockout's own Left open grid (render-knockout.mjs): one grid, in the clearance's words, on both pages.
-export function coverageGrid(coverage, { verdict = true } = {}) {
-  coverage = dedupeFollowUps(coverage);
+export function coverageGrid(coverage, { verdict = true, followUpKinds = null } = {}) {
+  coverage = dedupeFollowUps(coverage, followUpKinds);
   if (!coverage.length) return '';
   const cell = (c) => {
     const s = COV_STATE[c.state] || COV_STATE.note;
@@ -2243,7 +2300,7 @@ function method(_text) {
 const NAV_SHEET = NAV_CSS;
 const REP_OVERRIDE = '.rep-stickyhead .sitenav{position:static;box-shadow:none;border-bottom:none;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}';
 const PAGE_JS = `var _hidden=[];
-function exportPDF(){_hidden=[];document.querySelectorAll('.card').forEach(function(card){var cb=card.querySelector('input.pickbox');if(cb&&!cb.checked){card.classList.add('print-hidden');_hidden.push(card);}});window.print();}
+function exportPDF(){_hidden=[];document.querySelectorAll('.card').forEach(function(card){var cb=card.querySelector('input.pickbox');if(cb&&!cb.checked){card.classList.add('print-hidden');_hidden.push(card);}});document.querySelectorAll('details.lowerband').forEach(function(d){if(!d.querySelector('.card:not(.print-hidden)')){d.classList.add('print-hidden');_hidden.push(d);}});window.print();}
 function pickAll(v){document.querySelectorAll('input.pickbox').forEach(function(cb){cb.checked=v;});}
 function openAll(v){document.querySelectorAll('details.drill,details.method,details.scope,details.rgroup,details.rrow').forEach(function(d){d.open=v;});}
 // doc-55 A1: a rights-holder / marker / cross-link click targets a card by #c<ordinal>. When that card sits
@@ -2492,7 +2549,8 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   VERDICT_INFO = (opts.verdictInfo && opts.verdictInfo.tier != null) ? opts.verdictInfo : null;   // T2 — only an enriched sidecar is an authority
   FRAMEWORK = opts.framework ?? null;   // doc 50 — the frozen manifest; null on archived/legacy runs
   FRAMEWORK_METHOD = opts.frameworkMethod ?? null;
-  FULL_COUNTRY = isFullCountry(opts);   // The 2026-09-16 report redesign — the depth rule for the Full detail fold
+  AUDIT_HREF = hrefAttr(opts.auditFile, { relative: true }) || null;
+  LOGOS = opts.logos instanceof Map ? opts.logos : new Map();
   SEARCHED_JUR = Array.isArray(opts.searchedJurisdictions) && opts.searchedJurisdictions.length ? opts.searchedJurisdictions : null;   // T6 (D4)
   SCOPE_WORLDWIDE = opts.scopeBasis === 'worldwide' ? true : null;   // the plan's scope_basis; null ⇒ fall back to the ledger-prose sniff
   CASE_LAW_BY_ORD = opts.caseLawByOrdinal instanceof Map ? opts.caseLawByOrdinal : new Map();   // T7 (E5)
@@ -2639,7 +2697,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   <div class="landwrap">${quadrant(sorted)}${keyPanel(sorted, recordsByUri)}</div>
 
   <div class="sec" id="conflicts"><span class="num"></span><h2>Conflicts</h2></div>
-  ${onField.map(f => findingCard(f, cardFor(f), recordsByUri)).join('\n  ')}` : ''}
+  ${conflictCards(onField, cardFor, recordsByUri)}` : ''}
 
   ${secReg.length ? `<div class="sec"><span class="num"></span><h2>Secondary &amp; watch</h2></div>
   ${secondaryRegions(secReg, cardFor, recordsByUri)}` : ''}${hasCL ? `
@@ -2654,7 +2712,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   <div class="landwrap">${quadrant(sorted)}${keyPanel(sorted, recordsByUri)}</div>
 
   <div class="sec" id="conflicts"><span class="num"></span><h2>Conflicts</h2></div>
-  ${onField.map(f => findingCard(f, cardFor(f), recordsByUri)).join('\n  ')}`
+  ${conflictCards(onField, cardFor, recordsByUri)}`
       : '';
     // THE COMMON-LAW CARDS GO WITH THE CONFLICTS, NOT UNDER THE NEXT HEADING. Appended at the end they
     // landed beneath "Notable but manageable", which says something about a finding that is not true of

@@ -96,3 +96,14 @@ test("the labels are the approved words", () => {
   assert.equal(countryOf("em"), "European Union");
   assert.equal(countryOf("ar"), "Argentina", "a country the naming table does not list still reads as a name");
 });
+
+test("where the record holds a class's goods in English and in the original, the English alone is shown", () => {
+  const both = registerRecordView(record({ office: "jp", uri: "/mark/jp/6231111", goodsServices: [
+    { classes: ["9"], language: null, description: "再充電可能な電池" },
+    { classes: ["9"], language: "en", description: "Rechargeable batteries" },
+    { classes: ["12"], language: null, description: "自転車" },
+  ] }));
+  const goods = rowOf(both, "Goods and services");
+  assert.deepEqual(goods.entries.map((e) => [e.class, e.text]), [["Class 9", "Rechargeable batteries"], ["Class 12", "自転車"]],
+    "the English replaces the original in its class, and a class with no English keeps its original");
+});
