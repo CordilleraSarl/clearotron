@@ -470,7 +470,7 @@ export function auditEnv(root = ROOT) {
     }
   }
 
-  // Documented = named anywhere in the configuration reference, ON A NAME BOUNDARY. That page is the one a
+  // Documented = named in a row's first cell of the configuration reference, ON A NAME BOUNDARY. That page is the one a
   // reader looking up a setting is sent to, so it is the catalogue; 05 is the governance view of the same
   // names, and a name it alone carries is a name the reader does not find.
   //
@@ -519,6 +519,11 @@ export function auditEnv(root = ROOT) {
   // NOT when either spelling does. A file carrying only the old row is a file teaching the old name,
   // which is a real defect and stays visible as one.
   const catalogued = (n) => isCatalogued(assigned, n);
+  // A ROW, NOT A MENTION: the name has to be in a table row's FIRST cell, where a reader looking it up
+  // finds it. A setting named only inside another row's meaning, or in prose, passed as documented while
+  // nobody searching the first column could find it. A first cell may name several settings that share a
+  // row. Cells are split on unescaped pipes, so a `\|` inside a cell does not end it.
+  const firstCells = docs.flatMap((d) => d.split("\n").filter((l) => /^\s*\|/.test(l)).map((l) => l.split(/(?<!\\)\|/)[1] ?? ""));
   const documented = (n) => {
     // step 4.0 — ANY SPELLING COUNTS. The governance documents are written in retired spellings,
     // so a read converted to the name in force read as documented NOWHERE and the ratchet fired on a
@@ -526,7 +531,7 @@ export function auditEnv(root = ROOT) {
     // `spellingsOf` returns only itself and the check is exactly what it was.
     return [n].some((sp) => {
       const re = new RegExp(`(?<![A-Z0-9_])${sp}(?![A-Z0-9_])`);
-      return docs.some((d) => re.test(d));
+      return firstCells.some((c) => re.test(c));
     });
   };
 
@@ -831,7 +836,7 @@ if (isEntrypoint(import.meta.url)) {
   console.log(`  ${a.total} distinct names read by code`);
   console.log(`    ${a.product} read by product code — these need a governance row`);
   console.log(`    ${a.harness} read ONLY by tests, mocks and dev scripts — these do not`);
-  console.log(`\n  ${a.undocumentedProduct.length} PRODUCT name(s) absent from both governance documents:`);
+  console.log(`\n  ${a.undocumentedProduct.length} PRODUCT name(s) with no row in the configuration reference:`);
   for (const n of a.undocumentedProduct) {
     const r = a.rows.find((x) => x.name === n);
     console.log(`    ${n.padEnd(38)} ${r.files[0]}${r.files.length > 1 ? ` (+${r.files.length - 1})` : ""}${r.inExample ? "   [in .env.example]" : ""}`);

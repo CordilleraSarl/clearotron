@@ -45,3 +45,14 @@ test("a setting only the governance page names is not documented; a row in the r
   assert.deepEqual(auditEnv(tree({ ref: "| `CLEAROTRON_AN_INVENTED_SETTING_WIDER` | unset | A longer name. |\n" })).undocumentedProduct,
     ["CLEAROTRON_AN_INVENTED_SETTING"], "a longer name documented the shorter one");
 });
+
+test("a setting named only in another row's meaning, or in prose, has no row; one sharing a first cell does", () => {
+  const other = "| `CLEAROTRON_ANOTHER_SETTING` | unset | Read beside `CLEAROTRON_AN_INVENTED_SETTING`. |\n";
+  assert.deepEqual(auditEnv(tree({ ref: other })).undocumentedProduct, ["CLEAROTRON_AN_INVENTED_SETTING"], "a mention in a meaning cell counted as a row");
+  assert.deepEqual(auditEnv(tree({ ref: "Set `CLEAROTRON_AN_INVENTED_SETTING` to change it.\n" })).undocumentedProduct,
+    ["CLEAROTRON_AN_INVENTED_SETTING"], "a mention in prose counted as a row");
+  const escaped = "| `CLEAROTRON_ANOTHER_SETTING` \\| `CLEAROTRON_AN_INVENTED_SETTING` | unset | Either name. |\n";
+  assert.deepEqual(auditEnv(tree({ ref: escaped })).undocumentedProduct, [], "an escaped pipe ended the first cell early");
+  const shared = "| `CLEAROTRON_ANOTHER_SETTING`, `CLEAROTRON_AN_INVENTED_SETTING` | unset | Two settings, one row. |\n";
+  assert.deepEqual(auditEnv(tree({ ref: shared })).undocumentedProduct, []);
+});
