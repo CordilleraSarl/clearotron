@@ -1162,6 +1162,14 @@ function courtLineFor(opts, state) {
   return line;
 }
 
+// The scripts' reader names, in the table's order, for ISO 15924 codes the search-depth record keeps.
+const scriptNames = (codes) => Object.entries(R.searched.scriptName).filter(([k]) => codes.includes(k)).map(([, name]) => name);
+// The native scripts planned with no search completed are one Left open row, named in the approved sentence.
+function scriptGapRows(localScripts) {
+  const missed = localScripts ? scriptNames(localScripts.missed ?? []) : [];
+  return missed.length ? [{ area: R.searched.localScript, state: 'not-searched', note: R.searched.scriptsNotCompleted(missed) }] : [];
+}
+
 // Counts only, folded closed. A count of records read is engine activity rather than something a reader
 // acts on (owner, 2026-09-16), so it lives here and not beside the outcome per country.
 // THE OPEN ROWS STAY ON THE PAGE, and that is deliberate rather than a leftover of the old fold. The
@@ -1172,7 +1180,6 @@ function courtLineFor(opts, state) {
 // reader's own words, with the counts — never the query text, the refusals or the provider faults.
 function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri = new Map(), fm = {}) {
   const sd = opts && opts.searchDepth;
-  const open = (Array.isArray(coverage) ? coverage : []).filter((c) => COV_STATE[c?.state]?.cls !== 'ok');
   const c = (sd && sd.counts) || {}, rows = [];
   const places = placesSearched(fm, coverage, findings);
   if (places.worldwide && places.focus) rows.push([R.searched.whereSearched, places.list]);
@@ -1206,11 +1213,8 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
   if (sw.reputation) rows.push([R.searched.reputation, R.searched.checks(sw.reputation.toLocaleString('en-GB'))]);
   // The local-script row says what the run's record shows ran (owner, 2026-11-19): the scripts a native-script search
   // completed in, by name, or not searched when the record shows none did, and no row when the run kept no execution
-  // record to say either. The scripts planned with none completed are left open, in the row added to the grid below.
-  const scriptNames = (codes) => Object.entries(R.searched.scriptName).filter(([k]) => codes.includes(k)).map(([, name]) => name);
+  // record to say either. The scripts planned with none completed are left open, in the grid below (`scriptGapRows`).
   if (c.localScripts) rows.push([R.searched.localScript, c.localScripts.searched.length ? R.searched.scriptsSearched(scriptNames(c.localScripts.searched)) : R.searched.notSearched]);
-  const scriptsMissed = c.localScripts ? scriptNames(c.localScripts.missed) : [];
-  if (scriptsMissed.length) open.push({ area: R.searched.localScript, state: 'not-searched', note: R.searched.scriptsNotCompleted(scriptsMissed) });
   // HOW DEEP THE LOCAL-LANGUAGE INVESTIGATION WENT, which is a different question from the row above it.
   // That one answers whether the spellings were searched; this one answers whether the investigation ran
   // at the depth the matter configured. The engine can run it shallower than the account asked for, and
@@ -1254,6 +1258,7 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
     const why = c.courtDecisions === 'not-checked' ? courtLineFor(opts, 'not-checked') : '';
     rows.push(['Court decisions', { html: `<span class="wstate">${esc(cdWord)}</span>${why ? `<span class="wnote">${esc(why)}</span>` : ''}` }]);
   }
+  const open = leftOpenRows({ coverage, localScripts: c.localScripts, followUpKinds: opts?.followUpKinds });
   const openHtml = open.length ? `<div class="openrows"><div class="rk">${R.searched.leftOpen}</div>${coverageGrid(open, { verdict: opts?.assessmentNotCompleted !== true, followUpKinds: opts?.followUpKinds })}</div>` : '';
   // THE LEGEND FOR WHAT IS ON THE CARDS, kept when the scope fold went. It is not the engine narrating
   // its own searching — it is what a linked registration number opens, why the rest are cited by number,
@@ -2270,6 +2275,18 @@ function sharedNoteCells(rows, cell) {
     return `<div class="covcell ${s.cls}"><div class="ck">${s.ic}</div><div><div class="ct">${inline(cap(same[0].note || ''))}</div>`
       + `<ul class="covlist">${same.map((r) => `<li>${esc(cap(readerRowHead(r.area)))}</li>`).join('')}</ul></div></div>`;
   });
+}
+
+/**
+ * THE ROWS UNDER "LEFT OPEN", as the page draws them: the run's coverage rows that are not clean, then the rows for the
+ * native scripts whose planned search did not complete, less any follow-up row another open row restates
+ * (`dedupeFollowUps`). One list for every surface that prints it, so the page and a delivered document cannot disagree.
+ * `localScripts` is the search-depth record's `counts.localScripts`. PURE.
+ * @returns {{ area: string, state: string, note: string }[]} coverage rows keep their other fields
+ */
+export function leftOpenRows({ coverage = [], localScripts = null, followUpKinds = null } = {}) {
+  const open = (Array.isArray(coverage) ? coverage : []).filter((c) => COV_STATE[c?.state]?.cls !== 'ok');
+  return dedupeFollowUps([...open, ...scriptGapRows(localScripts)], followUpKinds);
 }
 
 // `verdict: false` — a report whose overall assessment was not completed has no verdict above the grid, so the open
