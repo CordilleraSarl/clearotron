@@ -225,10 +225,16 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
   const readRun = (dir) => {
     try {
       const s = readJson(join(dir, "status.json"));
-      const p = readJson(paths(dir).profile);
+      // A DELIVERED RUN IS SKIPPED BEFORE ITS PROFILE IS READ: the pool row is its face, and every path
+      // below returns for it either way, so reading the profile first only cost a file per delivered run.
+      if (s.state === "delivered") return;   // the pool row is the delivered face
+      // ONE `paths()` PER RUN STILL IN FLIGHT. It joins every path of a run's record, 164 of them, and this
+      // walk called it twice for every workspace run, delivered or not: on the test box's 33 workspace runs
+      // that was most of this walk's time on every poll (measured 2026-11-19).
+      const P = paths(dir);
+      const p = readJson(P.profile);
       const owner = p.profileKey ?? p.key ?? "generic";
       if (!mine(owner, p.organisation ?? null)) return;
-      if (s.state === "delivered") return;   // the pool row is the delivered face
       // ── — RETIREMENT REACHES A RUN THAT NEVER PUBLISHED ──────────────────
       //
       // The pool branch above has honoured the sidecar since; this branch never did, so a tag
@@ -246,7 +252,7 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
       // search-policy sidecar carries the stage. Both are read here so a run does not change identity
       // when it crosses from live to delivered: same mark, same stage, same thread.
       let sp = null;
-      try { sp = readJson(paths(dir).searchPolicy); } catch { /* legacy/early run */ }
+      try { sp = readJson(P.searchPolicy); } catch { /* legacy/early run */ }
       // A PAUSE IS NOT A RUN. The engine writes `postponed` (a rate-limit park, auto-resuming at
       // `resetsAt`) and `recovering` (an auto-retry backing off), and the portal contract knows neither
       // — its coercion treats anything unrecognised as `running`. So a run parked for five hours showed

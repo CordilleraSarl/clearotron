@@ -4,6 +4,48 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.7.0-beta.0
+
+### New
+
+- The data file published beside each report now names which of its two shapes it is: `report-data/clearance-1` for a clearance, `report-data/knockout-1` for a Knockout. Each shape has a JSON Schema in the documentation, so a firm building its own screens on the data can check a file against it. Reports published before this keep `report-data/1`: a published file is never rewritten.
+- The Clearances list shows which kind of search is behind each name: a tag under the name for each kind it has (KO, Prelim, Multi or Full), with the search's full name on hover. A new filter beside the status filter shows one kind of search at a time, and each name then shows the result of that kind of search.
+
+### Fixed
+
+- A search ordered while the worker is idle now starts within a few seconds. It used to wait for the worker's next check, up to 90 seconds later, wherever the worker is started by `clearotron start` rather than by systemd, which includes every Mac.
+- A large search no longer slows down each time a step looks up a register record the search has already fetched. On the largest searches these lookups could add several minutes, and a search that had fetched a very large number of records could fail to find them at all.
+- When a report's overall assessment could not be completed, its "Left open" list states a shared reason once, followed by the searches it covers. It printed the same sentence once for every search.
+- On clearance and Knockout reports, the band word on a risk pill and the small grey labels now meet the WCAG AA contrast minimum, in both themes and in print. Pills on the lighter bands print dark text, where they printed white.
+- A clearance's "conditional on" list no longer includes three notes the search wrote about its own steps, such as "the lawyer judged a material slice not fully cleared" or "follow-ups left open this run". Those notes stay in the run's own record. Nothing is written in their place, and the report, the portal, the email and the assistant's summary all leave them out.
+- A clearance report now names a country where it printed a bare code, such as AR, CO or CZ. The names show in the rows of where the mark stands and when you point at a country's chip. The register counts also read EU and UK where they printed the register's own EM and GB, and two counts for one country show as one.
+- A Knockout conflict card now cites a register filing by its office and number, such as EU 018765432, linked to the office's own page where it has one. It printed the register service's internal record path, which opens nothing, while the filings table on the same page already named the filing this way.
+- A Knockout report labels things as a clearance report does. The links under a conflict read "Sources:", where they read "Evidence:", which the clearance uses only for how well a value is evidenced. The fold that argues a rating is "Risk assessment", and the rating line reads "Overall risk" followed by the framework's name.
+- A Knockout report now lists under "Left open" each register search that did not complete, and each name whose automated research was unavailable, as a clearance report does. A name whose register search failed no longer reads as a clean name.
+- A Knockout report's export menu offers "Download full audit (Excel)", as a clearance report's does. The page referred readers to the audit workbook and gave no way to open it.
+- A link the assessment writes into a report now shows as a link, not as bracketed text with its address. This covers the ruled-out names, the coverage notes left open and the mark assessment on a clearance report, the Knockout's assessment, and the same paragraphs in the portal. Bold, italic and code read the same way on both reports.
+- A worldwide clearance report lists the Chinese-, Japanese- and Korean-script register equivalents it did not search as one item under "Left open", with the offer of the native-language investigation once. It listed three near-identical items.
+- On a clearance report, "What happens next" now comes directly after the verdict, before the conflicts, so a reader who forwards the first pages forwards the actions too. Its words are unchanged, and the section links at the top follow the new order.
+- A clearance report's "Left open" list groups its items under their state, such as "Partially covered" or "Open item", with a count for each group. Every item is still listed.
+- A report's "Left open" list reads in plain words. A search not run is "Not searched", the list's heading is "Next steps & monitoring" alone, and a question from the client's request is headed "Question from the request", not by an internal label. A source left unsearched, and a full native-language search that ran only its first step, each say so in one plain sentence. Under a conflict, "If enforced:" no longer ends "for the client to consider", and the client's own marks are cited as "Search of the client's own marks."
+- On a Knockout of several names, each name's page no longer repeats its full assessment in a "Read the full assessment" fold under the one it opens with.
+- On clearance and Knockout reports, each finding's title is now a heading, so a screen reader can move from finding to finding, and the report's content is marked as the page's main region. A report also stops scrolling smoothly when the reader's system asks for reduced motion. The page looks the same.
+- A clearance report's footer no longer ends with the "Rated under" and "Run under project" lines. They showed only when the report file was opened outside the portal. The run keeps both facts in its own record.
+- On a worldwide clearance report, "Where searched" in About this request gives the number of focus territories, and the full list moves to "What was searched". Places where nothing was found read as one list of names, not a chip each with codes past twelve. "XS" reads "US state registers", and the unspecified code "ZZ" no longer appears in these lists. Each conflict's export checkbox and the conflict chart now have names a screen reader announces.
+- A printed or exported report no longer ends a page on a section heading whose content starts the next page. A report's page source also no longer carries the developers' stylesheet notes, which made each report about 17 KB larger.
+- A report exported to PDF now prints on A4 paper. It followed the browser's own paper setting, which could be Letter.
+- Setup now picks the one AI it finds ready on the machine as the default. When the free tier's EU credential is skipped, it offers the US-only register instead of leaving none. It asks for the USPTO download key before offering to build the US index, and says a US index not built yet is only present, not that its check passed. It says nothing about the EU register when the chosen register has no EU half. `clearotron run` with nothing after it, or with `--help`, now says how to run a clearance from a job file. In the portal, a suggested search names the project when the places came from the project, and removing all of a company's places shows Worldwide. A project that lists fewer marketplaces than its company can now be saved; the company's marketplaces are still searched. A company's run limits read "Runs a day" and "Waiting at once".
+- On a clearance report, the Similarity meter no longer prints an evidence word under it, matching the audit workbook. The other meters keep theirs.
+- In the audit workbooks, the Knockout's long text columns are now wide enough to read. A search left over its limit no longer shows an internal identifier in its note. The Use column no longer says a website's evidence was checked against the register, and a value nobody checked now reads "not checked", as the report says.
+- The audit workbook now uses the report's words. Each driver says how its value is evidenced as the report does: "verified", "not yet verified", "inferred" or "not checked", with no evidence word under Similarity. Coverage notes open with "Partially covered" or "Not searched", the main search is "main register search", and the coverage block is headed "How coverage was judged". The Knockout workbook's Audit Trail no longer shows the engine's call number, timing and OK/Degraded columns.
+- In the dark theme, the outline that shows which control has keyboard focus was a dark red that was hard to see against the page, menus and dialogs. It is now a lighter red that stands out on all of them. The portal also marks its main content area, so a screen reader can jump straight to it.
+- When a search's record cannot confirm whether the full-depth native-language search ran, the report's "Left open" list now says so in one plain sentence and treats that search as not done. The sentence used to be written in the engine's internal terms.
+- On a worldwide clearance, the coverage line now states how many offices the register service searched and names the ordered markets it does not cover, such as "Japan, the Philippines, Indonesia and Vietnam not covered". Each of those markets is listed as not searched. The line read "registers: worldwide", whatever the service reached.
+
+### For operators
+
+- An installation given its own name in the brand-name setting now shows that name throughout the portal: in the logo, in the browser tab, and in every sentence that names the installation, such as "Remove from …" on the access screens. An installation that sets no name still shows Clearotron, and the sentences that said "this Clearotron" now say "Clearotron".
+
 ## 0.6.0
 
 ### New

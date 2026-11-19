@@ -37,6 +37,7 @@ import { config } from "./driver.config.mjs";
 import { GRID_HALVES } from "./common-law-receipts.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { DRIVER_DIR, paths, readJson } from "./run-record.mjs";
+import { followUpKindsOf } from "./follow-up-twins.mjs";   // the search each deferred directive recorded
 
 // Artifact filename → verify.mjs validator key. notify receipts are trivial and skipped.
 const FILE_CHECKS = {
@@ -184,7 +185,7 @@ export function replayRun(runDir) {
       let verdictDoc = null;
       try { verdictDoc = readJson(paths(runDir).verdict); } catch { /* legacy run */ }
       const lint = runLint({
-        reportMd, clientSummaryMd: csMd, narrativeMd,
+        reportMd, clientSummaryMd: csMd, narrativeMd, followUpKinds: followUpKindsOf(runDir),
         recordsByUri: recordsFor(runDir, reportMd + "\n" + csMd),
         searchedNames,
         headerName: shape.headerName || searchedNames.join(" / "),

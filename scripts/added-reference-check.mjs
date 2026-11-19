@@ -46,9 +46,10 @@
 import { execFileSync } from "node:child_process";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 import {
-  CLASSES, offendingClasses, isProse, isScannable,
+  CLASSES, offendingClasses, classesIn, isProse, isScannable,
   withoutColourValues, withoutLinkTargets,
 } from "../shared/reference-guard-classes.mjs";
+import { sourceSpans, isScript } from "../shared/source-spans.mjs";
 
 // Re-exported because scripts/retire-bare-refs.mjs and the arms beside this file import them from
 // here, and moving the table should not move every caller in the same commit.
@@ -69,13 +70,43 @@ const baseArg = () => {
  */
 export function addedLines(diffText) {
   const out = [];
-  let path = null;
+  let path = null, n = 0;
   for (const line of diffText.split("\n")) {
     if (line.startsWith("+++ b/")) { path = line.slice(6); continue; }
     if (line.startsWith("+++ ") || line.startsWith("--- ")) continue;
-    if (line.startsWith("+") && path) out.push({ path, line: line.slice(1) });
+    // Each hunk says where its added lines start in the new file, so a line can be found in the file it was added to.
+    const hunk = /^@@ -\S+ \+(\d+)(?:,\d+)? @@/.exec(line);
+    if (hunk) { n = Number(hunk[1]); continue; }
+    if (line.startsWith("+") && path) out.push({ path, line: line.slice(1), n: n++ });
   }
   return out;
+}
+
+/**
+ * The classes each added line carries, as `{ path, id, token, why, line }`. A line that starts as a comment is read whole,
+ * as before. In a script, a comment after code on an added line is read too: it is prose, and the file is read as a whole
+ * to find it, because a `//` inside a string or a regular expression is not one. A string is not read here; the census
+ * counts strings in a column of their own.
+ *
+ * @param {{path: string, line: string, n?: number}[]} added
+ * @param {(path: string) => string | null} readFile the file as the change leaves it
+ */
+export function addedHits(added, readFile) {
+  const spans = new Map();
+  const spansOf = (path) => {
+    if (!spans.has(path)) { let t = null; try { t = readFile(path); } catch { t = null; } spans.set(path, t == null ? null : sourceSpans(t)); }
+    return spans.get(path);
+  };
+  const hits = [];
+  for (const { path, line, n } of added) {
+    let found = offendingClasses(path, line);
+    if (!found.length && isScannable(path) && isScript(path) && !isProse(path, line) && Number.isInteger(n)) {
+      const trailing = spansOf(path)?.[n - 1]?.comment;
+      if (trailing) found = classesIn(trailing);
+    }
+    for (const c of found) hits.push({ path, ...c, line: line.trim().slice(0, 100) });
+  }
+  return hits;
 }
 
 function main() {
@@ -91,10 +122,7 @@ function main() {
   // AN EMPTY DIFF IS NOT A PASS TO CELEBRATE, but it is a legitimate one — a pull request can touch
   // only files this check does not read. The count is printed either way so a reader can tell the
   // difference between "looked and found nothing" and "had nothing to look at".
-  const hits = [];
-  for (const { path, line } of added) {
-    for (const c of offendingClasses(path, line)) hits.push({ path, ...c, line: line.trim().slice(0, 100) });
-  }
+  const hits = addedHits(added, (path) => execFileSync("git", ["show", `HEAD:${path}`], { encoding: "utf8", maxBuffer: 1 << 28, stdio: ["ignore", "pipe", "ignore"] }));
   console.log(`added-reference-check: read ${added.length} added line(s) against ${base}`);
   if (!hits.length) return;
 

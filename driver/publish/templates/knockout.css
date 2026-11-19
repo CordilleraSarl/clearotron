@@ -79,6 +79,25 @@
   .ko-counts td{padding:13px 24px;border-bottom:1px solid var(--line);vertical-align:top}
   .ko-counts tr:last-child td{border-bottom:0}
   .ko-counts td.num{font-family:var(--mono);font-size:15px;font-weight:600;color:var(--ink)}
+  /* A listed filing's register record, in a row under its table row, and its logo under the mark name (the approved
+     board). The record row carries the filing's bottom rule, so the two read as one filing. */
+  tr.rr-has td{border-bottom:0}
+  .rr-krow td{padding:0 24px 10px;border-bottom:1px solid var(--line)}
+  .rr-krow details.drill{border-top:0;margin:0}
+  .rr-krow details.drill>summary{padding:0 0 0 2px}
+  .rr-krow .drillbody{padding:8px 0 4px 18px}
+  .rr-ko{max-width:none;justify-content:flex-start;margin:8px 0 2px}
+  /* ON A PHONE A ROW THAT SPANS A TABLE READS WITHOUT SCROLLING SIDEWAYS. The counts and filings tables are wider than a
+     phone and scroll sideways inside their card. A row spanning the whole table, a filing's register record or the
+     counts card's close-variations line, laid out at the table's width (626 and 443 px at 390), so it was read by
+     scrolling mid-line or ran past the card. Each scroller is a size container, and such a row's content takes its
+     visible width and stays at its left edge while the table scrolls beside it. Screen only: the wider layout and
+     print are unchanged. */
+  @media screen and (max-width:640px){
+    .ko-scroll{container-type:inline-size}
+    .rr-krow td>details,.ko-forms .ko-formsline{position:sticky;left:24px;box-sizing:border-box;max-width:calc(100cqw - 48px)}
+  }
+  @media (max-width:640px){.rr-ko .rr-lg,.rr-ko .rr-lg img,.rr-ko .rr-nologo{width:72px}.rr-ko .rr-lg img,.rr-ko .rr-nologo{height:56px}}
   .ko-counts td.na{font-family:var(--mono);font-size:12.5px;color:var(--slate)}
   .ko-counts tr.ko-forms td{font-size:12px;color:var(--slate);line-height:1.55;padding:0 24px 13px;
     font-family:var(--mono);word-break:break-word}
@@ -189,6 +208,11 @@
   .kticks span{position:absolute;transform:translateX(-50%);color:var(--slate);white-space:nowrap;
     font:700 10.5px/1 'Plus Jakarta Sans','Helvetica Neue',Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase}
   .kticks span.on{font-weight:800}
+  /* ON A PHONE THE SCALE NAMES ONLY ITS ENDS (design, 2026-11-19). Each word sits at its band's point on the bar, and on
+     a 390 px screen five words need more than the bar's width and print on top of one another. Below 560 px only the
+     framework's first and last words stay under the bar; the pill over the needle already names the mark's own band in
+     full. A single-band scale keeps its one word. Screen only: the wider layout and the printed page keep every word. */
+  @media screen and (max-width:560px){.kticks span:not(:first-child):not(:last-child){display:none}}
   .terr{margin-top:4px}
   .terr summary{cursor:pointer;color:var(--rose,var(--faint));font-size:12px;font-weight:600;list-style:none}
   .terr summary::-webkit-details-marker{display:none}

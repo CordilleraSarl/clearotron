@@ -10,7 +10,7 @@
 // A silent drop leaves a hole. A stated drop leaves a SENTENCE, and the sentence reads as diligence.
 // That delivery carried 92 recall asks and 66 rulings of IMMATERIAL.
 import { test } from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { statedDivergenceFindings, silentlyLostFindings } from "../record-carry.mjs";
 
@@ -156,7 +156,7 @@ test("the pipeline CALLS it, beside its sibling, on the same inputs", async () =
 
   // The same three inputs the sibling gets. A call that omitted digestFindingUris would lose the
   // disjoint-population guard silently and answer clean on a run looking at the wrong set.
-  const call = pipeline.slice(pipeline.indexOf("statedDivergenceFindings({"));
+  const call = pipeline.slice(onlyAt(pipeline, "statedDivergenceFindings({"));
   const body = call.slice(0, call.indexOf("});") + 3);
   for (const field of ["reconciliation:", "carryRows:", "digestFindingUris:"]) {
     assert.ok(body.includes(field), `the call must pass ${field} — the sibling's guards need all three`);

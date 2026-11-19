@@ -3,18 +3,19 @@
 //
 // A FULL COUNTRY REPORT SHOWS EVERY PART OF A FINDING THAT A MULTI-COUNTRY REPORT SHOWS.
 //
-// The full country search is the deeper product. For a finding it adds two blocks to the Full detail
-// fold, the goods as registered and the record's dates, and it must drop nothing the multi-country report
-// shows for the same finding. The renderer tells the two apart by one flag, read from the run's frozen
-// search policy. A later change that gates any part of a finding on that flag the wrong way round takes a
-// fact off the deeper report, and the frozen-render hash cannot say so: a hash proves a report did not
-// change, not that two reports agree about a finding.
+// The full country search is the deeper product, and it must drop nothing the multi-country report shows for
+// the same finding. It used to add two blocks to a finding's Full detail fold, the goods as registered and the
+// record's dates. The register record now carries both at every depth (owner, 2026-11-18), so a finding reads
+// the same on both reports; the reports still differ in what they say was searched. The renderer tells the two
+// apart by one flag, read from the run's frozen search policy. A later change that gates any part of a finding
+// on that flag the wrong way round takes a fact off the deeper report, and the frozen-render hash cannot say
+// so: a hash proves a report did not change, not that two reports agree about a finding.
 //
 // TWO POPULATIONS, BECAUSE A FINDING REACHES THE PAGE IN FOUR SHAPES:
 //
 //   1. The committed demo runs, each published twice through the ordinary republish path: once under the
 //      multi-country focus policy and once under the full country policy, the one input that differs.
-//      They carry real fetched records, so the full country blocks actually render. They reach the
+//      They carry real fetched records, so the register record actually renders. They reach the
 //      on-field card and the ruled-out card.
 //   2. An invented record rendered directly, for the two shapes no demo run carries: the compact card
 //      and the grouped negative, each with its own Full detail fold.
@@ -24,8 +25,9 @@
 // is not asserted; the full country report is meant to show more.
 //
 // THE COMPARISON MUST BE BETWEEN TWO DIFFERENT REPORTS. If the flag stopped being read, both renders
-// would be the same document and every finding would pass. So each population also asserts that the full
-// country render shows its own blocks and the multi-country render does not.
+// would be the same document and every finding would pass. So each population also asserts that the two
+// documents differ, and that the record's goods and dates, which only the full country once showed, are on
+// both.
 import { test, after } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, cpSync, readFileSync, writeFileSync, readdirSync, existsSync, rmSync } from "node:fs";
@@ -131,7 +133,8 @@ function assertFullKeepsMulti(multiHtml, fullHtml, label) {
   return { multi, full };
 }
 
-const FULL_ONLY = ["text As registered", "text Dates"];
+// The register record's goods and status rows: the facts the full country's two blocks carried, now at every depth.
+const RECORD_ROWS = ["text Goods and services", "text Status"];
 const countOf = (blocks, item) => [...blocks.values()].reduce((n, b) => n + shown(b).filter((x) => x === item).length, 0);
 
 // ── 1. the committed demo runs, through the ordinary publisher ──────────────────────────────────────
@@ -162,18 +165,22 @@ test("on every committed demo run, the full country report keeps every part of e
     "the two policies this compares are read from the multi-country and full country demo runs, and one is missing");
 
   const shapes = new Map();
-  let fullOnlyOnFull = 0, fullOnlyOnMulti = 0;
+  let recordOnFull = 0, recordOnMulti = 0, differing = 0;
   for (const demo of CLEARANCE_DEMOS) {
-    const { multi, full } = assertFullKeepsMulti(await publishAs(demo, MULTI), await publishAs(demo, FULL), demo);
+    const [multiPage, fullPage] = [await publishAs(demo, MULTI), await publishAs(demo, FULL)];
+    if (multiPage !== fullPage) differing++;
+    const { multi, full } = assertFullKeepsMulti(multiPage, fullPage, demo);
     for (const key of multi.keys()) { const s = key.split(" ")[0]; shapes.set(s, (shapes.get(s) ?? 0) + 1); }
-    for (const item of FULL_ONLY) { fullOnlyOnFull += countOf(full, item); fullOnlyOnMulti += countOf(multi, item); }
+    for (const item of RECORD_ROWS) { recordOnFull += countOf(full, item); recordOnMulti += countOf(multi, item); }
   }
 
   // A floor on what was compared: a page whose cards stopped matching the opener would otherwise pass.
-  assert.ok((shapes.get("card") ?? 0) >= 10, `only ${shapes.get("card") ?? 0} on-field card(s) compared across the demo runs`);
+  // The conflicts below the risk are compact cards behind a closed heading, so the floor counts both shapes.
+  const conflictCards = (shapes.get("card") ?? 0) + (shapes.get("compact") ?? 0);
+  assert.ok(conflictCards >= 10, `only ${conflictCards} conflict card(s) compared across the demo runs`);
   assert.ok((shapes.get("ruled") ?? 0) >= 3, `only ${shapes.get("ruled") ?? 0} ruled-out card(s) compared across the demo runs`);
-  assert.ok(fullOnlyOnFull > 0, "the full country render shows neither 'As registered' nor 'Dates', so the two renders were one report");
-  assert.equal(fullOnlyOnMulti, 0, "the multi-country render shows a full country block, so the two renders were one report");
+  assert.equal(differing, CLEARANCE_DEMOS.length, "a demo published the same document under both policies, so the two renders were one report");
+  assert.ok(recordOnFull > 0 && recordOnMulti > 0, "a render shows no register record's goods or status, so the comparison read no record");
 });
 
 // ── 2. the shapes no demo run carries ────────────────────────────────────────────────────────────────
@@ -230,12 +237,13 @@ test("the compact card and the grouped negative keep every part of a finding on 
     ["compact cards", {}, "compact"],
     ["grouped negatives", { findingsSchemaVersion: 6 }, "negative"],
   ]) {
-    const { multi, full } = assertFullKeepsMulti(render(MULTI, extra), render(FULL, extra), label);
+    const [multiPage, fullPage] = [render(MULTI, extra), render(FULL, extra)];
+    assert.notEqual(multiPage, fullPage, `${label}: both policies rendered the same document, so the two renders were one report`);
+    const { multi, full } = assertFullKeepsMulti(multiPage, fullPage, label);
     const ofShape = (blocks) => new Map([...blocks].filter(([k]) => k.startsWith(`${shape} `)));
     assert.ok(ofShape(multi).size >= 1, `${label}: the invented findings rendered no ${shape} block, so nothing of this shape was compared`);
-    const fullOnly = FULL_ONLY.reduce((n, item) => n + countOf(ofShape(full), item), 0);
-    assert.ok(fullOnly > 0, `${label}: the full country render shows neither full country block on a ${shape} block, so the two renders were one report`);
-    assert.equal(FULL_ONLY.reduce((n, item) => n + countOf(ofShape(multi), item), 0), 0,
-      `${label}: the multi-country render shows a full country block`);
+    for (const blocks of [ofShape(multi), ofShape(full)]) {
+      assert.ok(RECORD_ROWS.every((item) => countOf(blocks, item) > 0), `${label}: a ${shape} block shows no register record's goods or status`);
+    }
   }
 });

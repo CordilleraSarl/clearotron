@@ -22,7 +22,7 @@
 // `terminal-clamp.mjs` and these arms call it. The one source-level arm below is honest about being
 // exactly that — a regression catch, not the proof.
 import { test } from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { terminalClampDecision, recordNamesDefect, ENGINE_TOKEN_RE, orderClausesForLede } from "../terminal-clamp.mjs";
 import { reconcileDeclinationDuty } from "../declination-duty.mjs";
@@ -133,7 +133,8 @@ test("neither terminal site throws any more — a regression catch, and it is on
   // tokens, which is the shape this issue exists to remove.
   const src = driverSource("pipeline.mjs");
   for (const token of ["floor_duty_undischarged", "synthesis_unaccounted_delivered"]) {
-    const at = src.indexOf(token);
+    // The block that names the defect: the token occurs several times in it, and once as the defect it raises.
+    const at = onlyAt(src, "defect: `" + token + ":");
     assert.notEqual(at, -1, `${token} is gone from pipeline.mjs — the defect is no longer named at all, which is worse than blocking on it`);
     const window = src.slice(Math.max(0, at - 700), at + 700);
     assert.ok(!/throw new StageFailure/.test(window),

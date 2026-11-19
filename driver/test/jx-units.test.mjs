@@ -153,6 +153,7 @@ test("core: buildCandidateRequest forces the schema tool; parseCandidates falls 
   const body = core.buildCandidateRequest({ mark: "NOVAPULSE", productContext: "game software", lane: "zh" });
   assert.equal(body.tools[0].name, "emit_candidates");
   assert.equal(body.tool_choice, undefined, "a forced choice is refused by the current generation and was never forwarded");
+  assert.equal(body.model, undefined, "the run's engine picks the model; an id here reads as the one in use and is not");
   assert.match(body.messages[0].content, /NOVAPULSE/);
   assert.match(body.messages[0].content, /Han script ONLY/);
   assert.throws(() => core.buildCandidateRequest({ mark: "X", lane: "yy" }), /no prompt for lane/);

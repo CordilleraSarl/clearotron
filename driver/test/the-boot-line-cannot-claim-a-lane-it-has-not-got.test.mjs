@@ -17,7 +17,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 
 const SRC = driverSource("portal-service.mjs");
 
@@ -49,7 +49,7 @@ test("the token line cannot be read on its own as evidence of a working lane", (
 test("the remedy is in the line, not only the condition", () => {
   // The existing roster warning's shape, which criterion 2 asks this to match: name the condition, give
   // the fix. A reader on a box that launches the service directly has no way to guess the origin rule.
-  const idx = SRC.indexOf("trigger lane: NOT WIRED");
+  const idx = onlyAt(SRC, "trigger lane: NOT WIRED");
   assert.ok(idx > 0);
   const block = SRC.slice(idx, idx + 900);
   assert.match(block, /clearotron start/, "it must say what normally sets the value");

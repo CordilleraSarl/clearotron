@@ -22,7 +22,7 @@
 // alive would launder a real hole into a clean receipt — worse than the defect being fixed.
 
 import { test } from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { findDroppedConnotationQueries, findErroredConnotationQueries } from "../common-law-receipts.mjs";
 
@@ -109,7 +109,7 @@ test("THE GATE'S CLASSIFICATION: explained ⇒ one retry, unexplained ⇒ still 
   // keeps its transient ladder, a fully-explained drop drops to `unknown` (one park), and anything
   // unexplained keeps `deterministic` (zero). Collapsing them back to one class is how this returns.
   const src = driverSource("pipeline.mjs");
-  const gate = src.slice(src.indexOf("const dropped = findDroppedConnotationQueries(fullSpec, mergedGrid);"));
+  const gate = src.slice(onlyAt(src, "const dropped = findDroppedConnotationQueries(fullSpec, mergedGrid);"));
   const body = gate.slice(0, gate.indexOf("return { mergedGrid, fullSpec };"));
   assert.ok(body.includes("findErroredConnotationQueries"), "the gate consults the gap rows");
   assert.match(body, /anyQuarantined \? clFailClass : \(allExplained \? "unknown" : "deterministic"\)/,

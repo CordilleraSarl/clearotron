@@ -12,6 +12,7 @@ import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { countable, codexShown, shownLines, manualShares, measureManualsSeen } from "../manuals-seen.mjs";
+import { streamSink } from "../engine/session-record.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { pinEnv } from "../../shared/env-aliases.mjs";
 
@@ -87,6 +88,15 @@ test("a manual that changed since it was told, or holds nothing countable, is nu
   writeFileSync(tiny, "# Tiny\nshort\n");
   assert.deepEqual(manualShares([{ ref: "skills/invented/tiny.md", path: tiny }], shown), { "skills/invented/tiny.md": null });
   assert.deepEqual(manualShares([{ ref: "skills/invented/gone.md", path: join(ROOT, "gone.md") }], shown), { "skills/invented/gone.md": null });
+});
+
+test("a stream kept gzipped, as a closed session's is, measures the same as the plain one", () => {
+  // A closed session's stream is written gzipped; this read it as plain lines, found no event, and reported nothing.
+  const sink = streamSink(join(ROOT, "gz.attempt1.jsonl"), { freeBytes: 6 * 1024 ** 3 });
+  sink.write(jsonl([codexRead(numbered(LINES))]));
+  const closed = sink.close();
+  assert.match(closed.file, /\.gz$/, "premise: the closed stream was not gzipped");
+  assert.deepEqual(measureManualsSeen({ stream: closed }, told(), "openai-agent"), { "skills/invented/manual.md": 1 });
 });
 
 test("an attempt whose stream was not saved, or was cut short, measures nothing", () => {

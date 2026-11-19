@@ -19,20 +19,20 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const SERVICE = driverSource("portal-service.mjs");
 const ROUTE = SERVICE.slice(
-  SERVICE.indexOf('parts[2] === "connect-key"'),
-  SERVICE.indexOf("// /portal/connect-help"),
+  onlyAt(SERVICE, 'parts[2] === "connect-key"'),
+  onlyAt(SERVICE, "// /portal/connect-help"),
 );
 
 test("the route exists and is reachable only by an authenticated caller", () => {
   assert.ok(ROUTE.length > 200, "the connect-key route was not found — every arm below would assert nothing");
   assert.ok(ROUTE.includes("assertPrincipal"), "an unauthenticated caller can mint a credential");
-  assert.ok(/method === "POST"/.test(SERVICE.slice(SERVICE.indexOf('parts[2] === "connect-key"') - 120,
-    SERVICE.indexOf('parts[2] === "connect-key"') + 80)), "minting is reachable by GET");
+  assert.ok(/method === "POST"/.test(SERVICE.slice(onlyAt(SERVICE, 'parts[2] === "connect-key"') - 120,
+    onlyAt(SERVICE, 'parts[2] === "connect-key"') + 80)), "minting is reachable by GET");
 });
 
 test("`sub` COMES FROM THE PRINCIPAL AND NEVER FROM THE REQUEST", () => {

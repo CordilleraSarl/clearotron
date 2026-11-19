@@ -342,10 +342,11 @@ test("reducing a record uri to its path RE-BINDS it to the record the run actual
   assert.deepEqual([label.href, label.reason], [null, "unaddressable"], "precondition: a number the EU page cannot take");
   const i = html.indexOf(label.label);
   assert.ok(i > 0, "the record identity is not on the page at all");
-  const item = html.slice(html.lastIndexOf("<li", i), html.indexOf("</li>", i));
+  // The fetched record's identity is its register record entry's Register number row.
+  const item = html.slice(html.lastIndexOf('<div class="rr">', i), html.indexOf("</details>", i));
   assert.ok(!item.includes(foreign), `the foreign absolute uri survived into the card:\n  ${item}`);
   assert.ok(!/<a\b/i.test(item), `a number the office's page cannot take must not be a link:\n  ${item}`);
-  assert.match(item, /REGISTERED/, `the fetched record's status did not reach the card:\n  ${item}`);
+  assert.match(item, /Registered/, `the fetched record's status did not reach the card:\n  ${item}`);
   assert.match(item, /2019/, `the fetched record's dates did not reach the card:\n  ${item}`);
   assert.doesNotMatch(item, /register-index entry/,
     `the card still says the record was only CITED, though the run fetched it and the receipt is on file:\n  ${item}`);

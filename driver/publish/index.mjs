@@ -16,7 +16,7 @@ import { buildAudit } from './xlsx.mjs'; import { readDegradedPartRows, degraded
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, projectCoverageJudgment, COVERAGE_AREA_STATES } from '../findings-model.mjs';
 import { recordsOfDeliveredPositions } from '../declination-duty.mjs'; import { findingUris } from '../record-carry.mjs';   // — a position a finding delivers is not listed as set aside
 import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs'; import { coverageFormStamp, readCoverageForm } from '../coverage-form-io.mjs'; import { readReleasedFamilies, readWithheldFamilies } from '../withheld-families.mjs'; import { unitLabel } from '../coverage-form.mjs'; import { coverageUnitLabel } from '../coverage-ledger.mjs'; import { recallReceiptForOwnCompany } from '../recall-receipt.mjs';   // — and why an absence did not close; whose recall checks an audit lists
-import { clearanceReportData } from './report-data.mjs';
+import { clearanceReportDocument, clearanceReportDataOf } from './report-document.mjs';   // the run's report as one document, and the data file it carries
 import { searchDepthRecord, planTerritoriesOf, caseLawPassRecord } from './search-depth.mjs'; import { bandRecords } from '../named-band.mjs'; import { CASELAW_BRIDGES } from '../engine/mcp/gather-config.mjs';   // how much was read to reach the answer, as counts and tokens; and the case-law sources whose calls the court state reads
 import { parseFrameworkManifest } from '../framework.mjs'; import { readFrozenMethod, FROZEN_METHOD_FILE } from '../framework-method.mjs';
 import { rollupTokens, servedModels } from '../tokens.mjs';
@@ -757,7 +757,7 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
   // (materialized by the lint-pass assembleRunRecords); absent ⇒ empty map ⇒ a NO-OP (back-compat: archived /
   // replay runs with no record set keep the model's fields). The persisted findings.json copy above is the
   // model's original (kept for forensics); the records are archived alongside in _records/.
-  const recordsByUri = runDir ? readRecordArtifacts(runDir) : new Map();
+  const recordsByUri = runDir ? readRecordArtifacts(runDir) : new Map(), logos = logosForReport(runDir), followUpKinds = followUpKindsOf(runDir);   // and each cited registration's saved logo; none on a run that fetched none
   // WP-receipts W2 — the run's fetch-receipt index (written by assembleRunRecords). Its `provider` names
   // the register THIS run actually used — the link origin + label come from THAT provider's config, never
   // the currently-configured one (a re-published archive keeps its own register). Legacy runs: null ⇒
@@ -956,6 +956,12 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
     const r = readStore(runDir ?? dirname(reportMd), '_driver/scope-facts.json').value?.register_reach;
     if (typeof r?.service === 'string' && r.service && Number.isInteger(r.offices) && r.offices > 0) registerReach = { service: r.service, offices: r.offices };
   }
+  // WHAT THE ORDER COVERED, for the register rows' head: 'worldwide', or 'named' for an order that names its
+  // countries, so the head does not call that search worldwide. Read from the same plan and instructed scope as the
+  // searched set above; null when the run's record cannot say.
+  const registerScope = scopeBasis === 'worldwide' ? 'worldwide'
+    : searchedJurisdictions.length && searchedJurisdictions.every((j) => !/^(worldwide|world|ww|global)$/i.test(String(j).trim())) ? 'named'
+      : null;
   // T7 (E5) — the case-law layer joins DETERMINISTICALLY (was: a prompt fished in the md and
   // hit 2 of 3 copper-spire cards): parse the grounded profiles, join by ordinal (fresh runs dictate
   // "- ord:") falling back to mark/owner (archived runs) — every matched card gets its strand.
@@ -1285,9 +1291,9 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
   return {
     parsed, fm, deliv, dates, issued, asOf, demoData, demoMd, inputsAbsent, findings, coverage, contextNotes,
     quarantined, findingsError, coverageJudgment, markAssessment, actionsRegister, askAnswers, correctionsDoc,
-    fourAnswers, findingsSchemaVersion, findingsKept, assessmentNotCompleted, coverageJudgmentDisplay, recordsByUri,
+    fourAnswers, findingsSchemaVersion, findingsKept, assessmentNotCompleted, coverageJudgmentDisplay, recordsByUri, logos, followUpKinds,
     runProviderConf, recordOrigin, providerLabel, runOrigins, seniorRights, verdictInfo, droppedConditions,
-    undispatchedProbes, withheldFamilies, setAside, framework, frameworkMethod, scopeBasis, searchedJurisdictions, registerReach,
+    undispatchedProbes, withheldFamilies, setAside, framework, frameworkMethod, scopeBasis, searchedJurisdictions, registerReach, registerScope,
     planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals, officeLinks, reviewReceipts, clientGate,
     fetchState, searchPolicy, registerOnly, noMarketplacesPicked, jurisdiction, commonLawJoinedTerms, stageLabel,
     depthNote, productName, publishParts, auditParsed, degradedRows, releasedFamilies, served, searchDepth, issuedAt,
@@ -1331,10 +1337,10 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   const doc = await readClearanceDocument({ runId, reportMd, auditMd, findingsJson, poolRoot, poolUrl, customerKey, delivery, runDir });
   const { parsed, fm, deliv, issued, asOf, demoData, demoMd, findings, coverage, contextNotes, findingsError,
     coverageJudgment, markAssessment, actionsRegister, askAnswers, correctionsDoc, fourAnswers, findingsSchemaVersion,
-    findingsKept, assessmentNotCompleted, coverageJudgmentDisplay, recordsByUri, runProviderConf, recordOrigin, providerLabel,
+    findingsKept, assessmentNotCompleted, coverageJudgmentDisplay, recordsByUri, logos, followUpKinds, runProviderConf, recordOrigin, providerLabel,
     runOrigins, seniorRights, verdictInfo, droppedConditions, undispatchedProbes, withheldFamilies, setAside, framework,
     frameworkMethod, scopeBasis, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals,
-    officeLinks, reviewReceipts, clientGate, fetchState, searchPolicy, registerOnly, jurisdiction, commonLawJoinedTerms, registerReach,
+    officeLinks, reviewReceipts, clientGate, fetchState, searchPolicy, registerOnly, jurisdiction, commonLawJoinedTerms, registerReach, registerScope,
     stageLabel, depthNote, productName, publishParts, auditParsed, degradedRows, releasedFamilies, served, searchDepth,
     issuedAt, renderedAt, markName, project, organisation, tokenRollup, reportRoute, frozenStageLabel, ratingWord,
     ratingBadge, caption } = doc;
@@ -1360,7 +1366,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
       // the same rule (the workbook's own BANNED gate had already started firing on the raw detail —
       // advisory, so CI stayed green). reviewReceipts.lint keeps its raw detail for the internal
       // readers above (fetchState reads registry-record-coverage's URIs out of it).
-      const built = await buildAudit({ degradedParts: degradedRows, droppedConditions, undispatchedProbes, withheldFamilies, releasedFamilies, setAside, findings, frameworkMethod, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null, assessmentNotCompleted, registerReach }, auditParsed, at, fm.title, fm);
+      const built = await buildAudit({ degradedParts: degradedRows, droppedConditions, undispatchedProbes, withheldFamilies, releasedFamilies, setAside, findings, frameworkMethod, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null, assessmentNotCompleted, registerReach, registerScope }, auditParsed, at, fm.title, fm);
       if (built?.gateViolations?.length) console.warn(`[audit-workbook] advisory: ${built.gateViolations.join(' | ')}`);
       return built;
     }));   // a REAL exception only — the report ships without the workbook, and nothing names it
@@ -1377,7 +1383,18 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // fails for want of it).
   if (searchDepth) { try { writeRO('search-depth.json', JSON.stringify(searchDepth, null, 2)); } catch { /* additive */ } }
 
-  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, frameworkMethod, servedModels: served, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion, searchDepth, assessmentNotCompleted }));
+  // THE RUN'S REPORT AS ONE DOCUMENT (publish/report-document.mjs), built once from what was read above and kept in
+  // the run's own record, never the pool. The surfaces below move to reading it one at a time; the data file is the
+  // first. Built ahead of the page so the page can read it too. A build that throws costs the data file, as a
+  // producer throw always has, and never the report.
+  let reportDocument = null;
+  try { reportDocument = clearanceReportDocument({ ...doc, runId }, { codename, customerKey, auditFile, auditError }); }
+  catch (e) { console.warn(`[report-document] not built: ${e?.message ?? e}`); }
+  if (reportDocument && runDir) {
+    try { ensureDriverDir(runDir); atomicWrite(paths(runDir).reportDocument, JSON.stringify(reportDocument, null, 1) + '\n'); }
+    catch (e) { console.warn(`[report-document] not written: ${e?.message ?? e}`); }
+  }
+  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, frameworkMethod, servedModels: served, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion, searchDepth, assessmentNotCompleted, logos, followUpKinds }));
   // ONE report (spec 2026-07-30 §5): report.client.html is no longer written. The knockout lane's own
   // collapse note is the precedent: "two renderings of one run is how the wrong link gets sent". The
   // client host serves the same report.html through the portal's readReport() (cleaning built in) — its
@@ -1386,24 +1403,11 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // P5 rebase note: this package was written against the pre-collapse tree, where the four-answers panel
   // had to be passed to BOTH renders. There is one render now, so `fourAnswers` rides the one call — the
   // panel reaches the client through the same cleaning path as every other reader-facing block.
-  // PR-9 — the clearance run as data (publish/report-data.mjs): the client-cut projection the assistant
-  // drafts mail from. BEST-EFFORT with a hard receipt rule: meta.reportSchema is stamped ONLY when the file
-  // actually wrote, so a meta never names a data file that is not there. A producer throw never blocks the
+  // PR-9 — the clearance run as data: the client-cut projection the assistant drafts mail from, built from the
+  // document (clearanceReportDataOf). BEST-EFFORT with a hard receipt rule: meta.reportSchema is stamped ONLY when the
+  // file actually wrote, so a meta never names a data file that is not there. A producer throw never blocks the
   // report (the baked HTML above is already on disk).
-  const reportSchema = writeDataFile('report-data.json', () => clearanceReportData({
-    runId, codename, matter: fm.matter, markName, title: fm.title, customerKey: customerKey || 'generic',
-    issued, url: reportRoute,
-    // stageLabel REGISTRY-FIRST ( residual, audit item 4): `stageLabel` is reportIdentityFor's
-    // read-time derivation — the same label report.html renders — so a republished pre-renumber run
-    // cannot mint report.html "Depth 2" beside report-data.json "Stage 0.5". The frozen sidecar label
-    // is the LAST resort (a level today's registry no longer knows). meta.json below keeps the frozen
-    // stamp BY DESIGN — its readers re-derive.
-    auditFile, searchLevel: searchPolicy?.level ?? null, stageLabel: stageLabel ?? frozenStageLabel ?? null,
-    engineCommit: doc.engineCommit, servedModels: served,
-    framework, verdictInfo, findings, coverage, contextNotes, markAssessment, fourAnswers, askAnswers,
-    actions: actionsRegister, jurisdiction, searchedJurisdictions, scopeBasis, caption,
-    assessmentNotCompleted,
-  })) ? 'report-data/clearance-1' : null;
+  const reportSchema = writeDataFile('report-data.json', () => clearanceReportDataOf(reportDocument)) ? 'report-data/clearance-1' : null;
   const total = finishPoolRun({ writeRO, poolRoot, skipRegen, regenIndex, meta: {
     runId, codename: codename || '', matter: fm.matter, title: fm.title, client: fm.client,
     // The mark as typed — see above. Distinct from `title`, which is the report's own headline.
@@ -1710,11 +1714,11 @@ const FONT = "font-family:Calibri,'Segoe UI',Arial,sans-serif";
 // fill like yellow/red is unreadable as text). Order matters: VERY HIGH before HIGH.
 const tier = (t, label) => ({ bg: t.bg, fg: t.fg, label, txt: t.txt });
 export const RISK_TIERS = [
-  [/VERY[\s-]?HIGH/, tier(EMAIL_TIER.veryHigh, 'VERY HIGH')],
-  [/HIGH/,           tier(EMAIL_TIER.high, 'HIGH')],
-  [/MEDIUM/,         tier(EMAIL_TIER.medium, 'MEDIUM')],
-  [/MANAGEABLE/,     tier(EMAIL_TIER.manageable, 'MANAGEABLE')],
-  [/LOW/,            tier(EMAIL_TIER.low, 'LOW')],
+  [/VERY[\s-]?HIGH/, tier(EMAIL_TIER.veryHigh, EMAIL.tiers.veryHigh)],
+  [/HIGH/,           tier(EMAIL_TIER.high, EMAIL.tiers.high)],
+  [/MEDIUM/,         tier(EMAIL_TIER.medium, EMAIL.tiers.medium)],
+  [/MANAGEABLE/,     tier(EMAIL_TIER.manageable, EMAIL.tiers.manageable)],
+  [/LOW/,            tier(EMAIL_TIER.low, EMAIL.tiers.low)],
 ];
 // doc 50 — the run's band LADDER (from opts.bands / meta.framework.bands): per-run vocabulary with the
 // same template palette keyed by TONE, so "Moderate" (house) and "Medium" (a customer ladder) both colour correctly
@@ -1962,7 +1966,9 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
 // of the tree cites by number.
 import { recordLinksFor } from './office-record-links.mjs';
 import { reportDates, zurichStamp } from './report-dates.mjs';   // the dates a report prints, from its record
-import { driverDir, paths, readJson } from "../run-record.mjs";
+import { atomicWrite, driverDir, ensureDriverDir, paths, readJson } from "../run-record.mjs";
+import { logosForReport } from "../mark-logos.mjs";   // the saved logo of each cited registration, embedded in the report
+import { followUpKindsOf } from "../follow-up-twins.mjs";   // the search each deferred directive recorded
 function officeLinksFor(findings, recordsByUri, runOrigins) {
   const links = recordLinksFor(findings, recordsByUri, runOrigins);
   if (links) console.log(`[record-links] ${links.summary}`);

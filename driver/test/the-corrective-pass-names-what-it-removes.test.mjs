@@ -18,7 +18,7 @@
 // alternatives were weighed: rolling back trades one silent loss for another, printing the removals tells
 // the client about a hole instead of filling it, and holding the report is against deliver-always.
 import { test } from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -220,7 +220,7 @@ test("an absence is not a pass: no snapshot and an unreadable record both declin
 test("the repair runs on the SUCCESS branch, so the reviewer re-read covers the repaired document", () => {
   const src = driverSource("pipeline.mjs");
 
-  const rollbackAt = src.indexOf("correctiveRollback = correctivePass.ok");
+  const rollbackAt = onlyAt(src, "correctiveRollback = correctivePass.ok");
   const mustAt = src.indexOf("must(correctivePass,", rollbackAt);
   const repairAt = src.indexOf("repairUnnamedRemovals(P, run.runDir", mustAt);
   const enforceAt = src.indexOf("await enforceCorrectionsReachFindings(ctx, P, preCorrective", mustAt);

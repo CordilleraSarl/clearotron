@@ -22,9 +22,10 @@
 // `callMessagesAPI` — with its own MESSAGES_API_URL, x-api-key header and retry ladder — is DELETED
 // rather than left exported. It had no caller after e49868e3, and an exported function that POSTs to
 // a hardcoded vendor endpoint on a hardcoded key is one `import` away from reintroducing the mix.
-// DEFAULT_MODEL stays: judge.js and nativeread.js still read it as their request default.
+// THE BODY NAMES NO MODEL. A turn reads only the body's message and its tool (`promptFromRequest` in
+// turn-envelope.mjs), and runs on the model the run's engine resolves; the receipt records that one. A
+// dated id here read as the model in use, and it was not.
 
-export const DEFAULT_MODEL = "claude-haiku-4-5-20251001";   // cheap, structured task; JX_MODEL overrides upstream
 export const MAX_CANDIDATES = 8;
 
 import { runJxTurn } from "./turn-envelope.mjs";
@@ -111,12 +112,11 @@ const LANE_PROMPTS = {
 };
 
 /** Assemble the Messages API body (pure). Throws on an unknown lane — callers route lanes, not this. */
-export function buildCandidateRequest({ mark, productContext = "", lane = "zh", model = DEFAULT_MODEL }) {
+export function buildCandidateRequest({ mark, productContext = "", lane = "zh" }) {
   const promptFor = LANE_PROMPTS[lane];
   if (!promptFor) throw new Error(`jx-completions: no prompt for lane "${lane}"`);
   if (!String(mark ?? "").trim()) throw new Error("jx-completions: mark is required");
   return {
-    model,
     max_tokens: 2048,   // 8 Han candidates + rationales need headroom; truncation is checked either way
     tools: [CANDIDATE_TOOL],
     messages: [{ role: "user", content: promptFor({ mark: String(mark).trim(), productContext: String(productContext ?? "").trim() }) }],
