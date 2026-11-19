@@ -1228,29 +1228,26 @@ function firstRef(marks, framework) {
   return '';
 }
 
-// — THE REGISTER SENTENCE IS THE RENDERER'S, and it is the whole reason the two clauses below exist.
+// — THE REGISTER SENTENCE IS THE RENDERER'S, and it is the whole reason the clause below exists.
 //
 // A live run printed "the register overlay has not been run" in model prose directly under a table of
 // register counts the same run had taken. The model was not lying: it cannot see the count lane, it is
 // deliberately never shown the figures (register-count.mjs rule 1), and it filled the gap with the only
 // thing it had. The fix is not a better prompt — it is that nobody who cannot see the machinery gets to
-// describe it. The validator forbids the model from saying anything about register coverage; these
-// clauses say it, from the artifacts.
+// describe it. The validator forbids the model from saying anything about register coverage; this
+// clause says it, from the artifacts.
 //
-// They read the SIDECARS, never the prose: the counts entry for this mark, and whether the product bought
-// the probe at all. Four states, four sentences, and none of them is a judgment.
+// — IT STATES THE POSITION, NOT ONLY THE COVERAGE. Coverage alone ("hit-counts were taken for this
+// name") answers a question nobody asked; the question a reader holds is whether anything STANDS on the
+// register for this name. registerPositionClause says that in every state, including the state where the
+// answer is "nothing does": an absence is a finding and must be said out loud, never left as a silence
+// over a table of numbers.
 //
-// — AND IT NOW STATES THE POSITION, NOT ONLY THE COVERAGE. Coverage alone ("hit-counts were taken
-// for this name") answers a question nobody asked; the question a reader holds is whether anything
-// STANDS on the register for this name. That sentence is appended by registerPositionClause below and
-// it is present in every state, including the state where the answer is "nothing does" — an absence is
-// a finding and must be said out loud, never left as a silence over a table of numbers.
-//
-// THE FUNCTION THAT COMPOSED THE PAIR IS GONE, and removing it was the point rather than tidiness. It
-// was called from nowhere in the tree, and its call to `registerPositionClause` was the one that did NOT
-// pass the unreadable-sidecar flag — so anybody reviving it would have revived exactly the defect that
-// flag closes, silently, with nothing at the call site to say so. The live composition is inline in
-// `renderKnockoutHtml`, which passes it. Found independently twice before being removed once.
+// THE COVERAGE CLAUSE AND THE FUNCTION THAT COMPOSED THE PAIR ARE GONE. Neither was called from anywhere
+// in the tree. The composer's call to `registerPositionClause` was the one that did NOT pass the
+// unreadable-sidecar flag, so anybody reviving it would have revived exactly the defect that flag closes,
+// silently, with nothing at the call site to say so. The live composition is inline in
+// `renderKnockoutHtml`, which passes it; whether counts were taken at all is said once, by tierAbsenceLine.
 
 /**
  * Where the name STANDS on the register that was searched. Six states, and they are six because
@@ -1317,27 +1314,6 @@ function registerPositionClause(mark, registerCounts, registerRecords, cards = [
       : K.read.listingIncomplete;
   }
   return K.read.listedBelow(records.length);
-}
-
-function coverageClause(mark, registerCounts, probeRan) {
-  const entry = registerCounts ? countsForMark(registerCounts, mark.name) : null;
-  if (!entry?.counts) {
-    return probeRan
-      ? K.read.countsFailed
-      : K.read.countsNotInTier;
-  }
-  // A floor the register disclosed is a figure it gave, so a name counted only that way was counted.
-  const anyFigure = COUNT_PREDICATES.some((p) => Number.isFinite(entry.counts[p.key]?.total) || disclosedFloor(entry.counts[p.key]) !== null);
-  if (!anyFigure) return K.read.noCount;
-  // COVERAGE, NOT THE FIGURES. asks the renderer to own the register-tier caveat, and the numbers
-  // are already on this page twice — in the glance line at the top and in the counts table above this
-  // section. A third rendering of "3 identical, 41 containing" at the foot of every card is noise, and
-  // noise is what a reader stops reading. What the card owes is the fact the model cannot supply: that
-  // the lane ran for THIS name, and where its output is.
-  const scope = entry.classScope === 'all-classes' || !(entry.classes ?? []).length
-    ? K.read.acrossAllClasses
-    : K.read.inClassesCounted(entry.classes.length, entry.classes.join(', '));
-  return K.read.countsTaken(scope);
 }
 
 // — the per-mark read, rendered as STRUCTURE because it was emitted as structure.

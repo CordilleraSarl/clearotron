@@ -54,7 +54,7 @@ let AS_OF = null;     // C2 — publish-time clock for the priority-window flag;
 // fallback only (archived runs with no sidecar render byte-identically).
 let VERDICT_INFO = null;
 // T6 (D4) — the machine-derived SEARCHED jurisdiction set (register-plan/instructed-scope,
-// passed by publish). When present it IS the "Jurisdictions searched" header; the coverage-regex /
+// passed by publish). When present it IS the set the report names as searched; the coverage-regex /
 // per-finding fallbacks below serve archived runs without the sidecars.
 let SEARCHED_JUR = null;
 // Did the register sweep run WORLDWIDE? Read off the frozen plan's `scope_basis` (publish passes it),
@@ -655,37 +655,13 @@ function gauge(fm, findings, coverage = [], fourAnswers = null, opts = {}) {
   </div>`;
 }
 
-// Scope card (right of the hero): the FACTS of what was searched — Classes · Jurisdictions searched (as
-// wrapping mono chips, §2.8) · Searched (date + source). The verdict (recommendation + open conditions) now
-// lives with the dial, so this card is scope-only.
-function facts(fm, findings, coverage) {
-  const chips = jurisdictionChips(fm, coverage, findings);
-  // T6 (H10) — the worst-exposure jurisdiction(s), derived honestly from the highest-rated
-  // LIVE finding(s): the one geographic answer a reader asks first ("where does this bite hardest?").
-  // Suppressed when there are no rated findings. C/L reads as "common-law use".
-  const bestRank = findings.reduce((m, f) => Math.min(m, severityRank(f)), Number.MAX_SAFE_INTEGER);
-  const worstSet = bestRank === Number.MAX_SAFE_INTEGER ? [] : findings.filter((f) => severityRank(f) === bestRank);
-  const worst = worstSet.length
-    ? [...new Set(worstSet.map((f) => regionCode(f)))]
-        .map((c) => c === COMMON_LAW ? R.rating.commonLawUse : `<span title="${escAttr(regionName(c))}">${esc(c)}</span>`)
-    : [];
-  const rows = [
-    fm.classes && `<div class="row"><span class="k">${R.facts.classes}</span><span class="v">${esc(fm.classes)}</span></div>`,
-    chips ? `<div class="row jrow"><span class="k">${R.facts.jurisdictionsSearched}</span>${chips}</div>`
-      : (fm.jurisdiction && `<div class="row"><span class="k">${R.facts.jurisdictionsSearched}</span><span class="v">${esc(fm.jurisdiction)}</span></div>`),
-    worst.length && `<div class="row"><span class="k">${R.facts.highestExposure}</span><span class="v">${worst.join(' ')} <span style="font-size:10.5px;color:var(--slate)">${R.facts.fromHighestRated(worst.length > 1 || worstSet.length > 1)}</span></span></div>`,
-    (fm.run || fm.searched) && `<div class="row"><span class="k">${R.facts.searched}</span><span class="v"><span class="mono" style="font-size:12px">${esc(fm.searched || fm.run)}</span></span></div>`,
-  ].filter(Boolean);
-  return `<div class="panel facts">${rows.join('')}</div>`;
-}
-
-// Jurisdiction chips for the scope card. Primary source = the coverage ledger's PER-JURISDICTION register
+// The jurisdictions a report names as searched. Primary source = the coverage ledger's PER-JURISDICTION register
 // rows ("register / US", "register / CN (make-or-break)", "register / TR") — the searched scope, carrying the
-// coverage-limited/not-searched state the dashed `*` chip needs. The leading code must be an UPPERCASE office
+// coverage-limited/not-searched state the reader is told of. The leading code must be an UPPERCASE office
 // code at a word boundary, so an AXIS-style ledger (rows like "register / bare-MARK exact-in-class floor" or
 // "register / priority markets NZ, IN, TR") matches nothing and we fall back to the findings' own regions —
 // a sensible searched-set for those runs (and for coverage-less / single-finding runs). Insertion order is
-// preserved (coverage order, else exposure order); common-law (C/L) is not a jurisdiction chip.
+// preserved (coverage order, else exposure order); common-law (C/L) is not a jurisdiction.
 // ZZ IS NOWHERE (owner, 2026-11-18, batch two item 1153). It is the register's "unspecified", not a place, and it
 // printed as a code in the lists of places a report gives. It leaves every one of them; a record filed under it still
 // counts as read.
@@ -758,60 +734,6 @@ function findingRegions(f) {
   }
   if (!out.size) { const c = regionCode(f); if (c && c !== COMMON_LAW) out.add(c); }
   return [...out];
-}
-
-function jurisdictionChips(fm, coverage = [], findings = []) {
-  const { order, meta, worldwide } = jurisdictionCodes(fm, coverage, findings);
-  if (!order.length && !worldwide) return '';
-  // doc-55 B — the WIPO/Madrid international register is ALWAYS in scope for a worldwide sweep (corsearch
-  // returns /mark/int/ records in-sweep), so WO is ALWAYS shown for a worldwide run — consistently, whether
-  // or not a Madrid conflict happened to surface (one recent run showed WO, another omitted it). A Madrid
-  // FINDING already contributes WO via the INT→WO normalization; this guarantees the register SOURCE reads
-  // as covered even when the sweep found nothing there. Never forced on a non-worldwide (targeted) run.
-  const codes = (worldwide && !order.includes('WO')) ? [...order, 'WO'] : order;
-  const chips = codes.map(code => { const v = meta.get(code) || { limited: false };
-    return `<span class="jchip${v.limited ? ' lim' : ''}" title="${escAttr(regionName(code))}${v.limited ? R.scope.coverageLimitedTitle : ''}">${esc(code)}${v.limited ? '*' : ''}</span>`; }).join('');
-  // wp50: a worldwide sweep leads the chips and gets its own plain-language note.
-  const wwChip = worldwide ? `<span class="jchip ww" title="${R.scope.worldwideChipTitle}">${R.scope.worldwide}</span>` : '';
-  const limited = order.filter(code => meta.get(code).limited);
-  const notes = [
-    worldwide ? `<div class="jnote">${R.scope.worldwideNote}</div>` : '',
-    // doc-55 B — honest source completeness: a worldwide register search covers, for every jurisdiction in
-    // scope, its national register, the EU regional register where one applies, AND WIPO/Madrid international
-    // registrations designating it — not one source per territory.
-    worldwide ? `<div class="jnote">${R.scope.clearedAcross}</div>` : '',
-    // — THE POINTER NAMES THE HEADING VERBATIM. It said “What we covered”, and the heading it points
-    // at reads "What we covered — and what's open" (scopeSection). A reader who ctrl-Fs the quoted words
-    // lands on a prefix of a title rather than the title, and there is no anchor to follow instead: the
-    // report is served in a null-origin iframe where fragment jumps go nowhere (the same fact the B1 note
-    // below gives for deleting the Subject-to line). A cross-reference is only worth its bytes if the
-    // words it quotes are the words on the page.
-    //
-    // IT CANNOT DANGLE. `limited` is populated only from coverage rows carrying a coverage-limited /
-    // not-searched state, so a limited chip implies at least one coverage row, which is the exact
-    // condition the heading renders under. Checked rather than assumed — the alternative was a
-    // `coverage.length` guard here that no input can reach, and a guard that cannot fire is a claim
-    // nobody can check.
-    limited.length ? `<div class="jnote">${R.scope.limitedNote(esc(limited.join(', ')))}</div>` : '',
-  ].join('');
-  return `<div class="jchips">${wwChip}${chips}</div>${notes}`;
-}
-
-// spec 47 UX: the title heading carries the matter's scope at a glance — classes + searched countries —
-// with the full country name on hover. Inline-styled (like homeButton) so frozen template CSS needs no change.
-function headScope(fm, coverage = [], findings = []) {
-  const { order: codes, worldwide } = jurisdictionCodes(fm, coverage, findings);
-  if (!fm.classes && !codes.length && !worldwide) return '';
-  const cls = fm.classes ? `<span>${R.scope.classesShort}&nbsp;${esc(fm.classes)}</span>` : '';
-  const jur = codes.map(c => `<span title="${escAttr(regionName(c))}">${esc(c)}</span>`).join(' ');
-  const style = "margin:4px 0 0;font:600 13px/1.5 'Plus Jakarta Sans','Helvetica Neue',Helvetica,Arial,sans-serif;"
-    + "letter-spacing:.05em;opacity:.75";
-  // wp50: a worldwide sweep leads the scope line; the codes read as the focus set, never as the
-  // whole scope ("Cl. 5 · US EU UK CH JP" under a worldwide search reads as a narrow search).
-  const parts = worldwide
-    ? [cls, `<span title="${R.scope.sweepTitle}">${R.scope.sweep}</span>`, jur ? `<span style="opacity:.85">${R.scope.focus}</span> ${jur}` : '']
-    : [cls, jur];
-  return `<div class="mark-scope" style="${style}">${parts.filter(Boolean).join(' · ')}</div>`;
 }
 
 // ── ABOUT THIS REQUEST ─────────────────────────────────────────────────────────────────────────────
@@ -1367,18 +1289,6 @@ function alsoConsideredSection(ruledOut, recordsByUri = new Map(), opts = {}) {
   if (!ruledCards && !groups && !web) return '';
   return `<div class="sec" id="also-considered"><span class="num"></span><h2>${R.alsoConsidered.title}</h2></div>
   <div class="panel alsocons">${ruledCards ? `<div class="ruled-cards">${ruledCards}</div>` : ''}${groups || web ? `<div class="cgroups">${groups}${web}</div>` : ''}</div>`;
-}
-
-function ruledOutSection(ruledOut, recordsByUri = new Map()) {
-  if (!ruledOut.length) return '';
-  const rows = ruledOut.map(f => {
-    const who = recordOwner(f, recordsByUri) || f.owner?.name || '';
-    const why = f.ruled_out_reason ? esc(f.ruled_out_reason) : R.alsoConsidered.defaultWhy;
-    // The ordinal renders here too — ruled-out findings keep their persisted number, so a reader who
-    // sees #1–#8, #10, #11 in the landscape finds #9 accounted for instead of unexplainably missing.
-    return `<li style="margin:4px 0"><b>${f.ordinal != null ? `#${f.ordinal} ` : ''}${esc(f.mark)}</b>${who ? ` — ${esc(who)}` : ''} · <span style="color:var(--muted,#6b5d50)">${why}</span></li>`;
-  }).join('');
-  return `<details class="rgroup ruledout"><summary><span class="gname">${R.alsoConsidered.listTitle}</span><span class="gcount">${R.alsoConsidered.names(ruledOut.length)}</span></summary><div class="gbody"><p class="note" style="margin:2px 0 8px">${R.alsoConsidered.listNote}</p><ul style="margin:0;padding-left:20px;font-size:13px">${rows}</ul></div></details>`;
 }
 
 // doc-52 §4 — ONE collapsed "Scope & what we didn't search" section, LAST, replacing BOTH the top

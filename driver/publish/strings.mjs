@@ -415,12 +415,6 @@ export const KNOCKOUT_PAGE = Object.freeze({
     noneStands: (provider) => `No filing of this name or a close variation of it stands on ${provider}, in the classes counted.`,
     listingIncomplete: 'The filings listing for this name did not complete, so nothing here says whether one stands.',
     listedBelow: (n) => `${n} filing${n === 1 ? ' is' : 's are'} listed for this name below; none is carried up as a conflict — each is either shown dead on the register or outside the classes counted.`,
-    countsFailed: 'Register: hit-counts are part of this search and none could be taken for this name — the reason is in the audit workbook.',
-    countsNotInTier: 'Register: not included in this product tier — no register was counted for this name.',
-    noCount: 'Register: no count could be taken for this name — the reason is in the audit workbook.',
-    acrossAllClasses: 'across all classes',
-    inClassesCounted: (n, list) => `in class${n === 1 ? '' : 'es'} ${list}`,
-    countsTaken: (scope) => `Register: hit-counts were taken for this name ${scope} — the figures are in the counts table above.`,
     remainingUncertainties: 'Remaining uncertainties',
     readFullAssessment: 'Read the full assessment',
   }),
@@ -506,26 +500,8 @@ export const REPORT_PAGE = Object.freeze({
     goodsProximity: 'Goods proximity',
     likelyToEnforce: 'Likely to enforce',
   }),
-  // The facts panel.
-  facts: Object.freeze({
-    classes: 'Classes',
-    jurisdictionsSearched: 'Jurisdictions searched',
-    highestExposure: 'Highest exposure',
-    fromHighestRated: (several) => `— from the highest-rated finding${several ? 's' : ''}`,
-    searched: 'Searched',
-  }),
-  // The jurisdictions searched: the chips, their notes, and the scope line under the mark.
+  // The jurisdictions searched, as the About row and the What was searched section name them.
   scope: Object.freeze({
-    coverageLimitedTitle: ' — coverage-limited',
-    worldwideChipTitle: 'the register sweep ran worldwide — chips show the citation focus and the jurisdictions where conflicts live',
-    worldwide: 'worldwide',
-    worldwideNote: 'register sweep ran worldwide — chips show the citation focus and where the conflicts live',
-    clearedAcross: 'every jurisdiction cleared across its national register, the EU regional register where applicable, and WIPO/Madrid (WO) international registrations designating it',
-    limitedNote: (list) => `* ${list} — coverage-limited (see “What we covered — and what's open”)`,
-    classesShort: 'Cl.',
-    sweepTitle: 'the register sweep ran worldwide (all reachable registers)',
-    sweep: 'worldwide register sweep',
-    focus: 'focus:',
     coverageLimited: (name) => `${name} (coverage-limited)`,
     worldwideFocusOn: (where) => `Worldwide, focus on ${where}`,
     worldwideList: 'Worldwide',
@@ -592,7 +568,7 @@ export const REPORT_PAGE = Object.freeze({
     inferred: '\u201cInferred\u201d beside an owner\u2019s likelihood to object means we judged it from what the owner sells and holds; we had no enforcement history to read.',
     everySearch: 'Every search and result, in the audit workbook',
   }),
-  // Also considered: the names ruled out, as cards and as a list.
+  // Also considered: the names ruled out, as cards.
   alsoConsidered: Object.freeze({
     title: 'Also considered',
     defaultWhy: 'a different name in a related field — not a conflict with your mark',
@@ -601,9 +577,6 @@ export const REPORT_PAGE = Object.freeze({
     practical: 'Practical position.',
     ruledOut: 'Ruled out',
     askAi: '\u2726 Ask AI about this finding',
-    listTitle: 'Also considered — ruled out',
-    names: (n) => `${n} name${n === 1 ? '' : 's'}`,
-    listNote: 'Names that surfaced in the search but share no word or sound with your mark — listed for completeness; not conflicts.',
   }),
   // The chart of conflicts: its axes, its zone and its legend.
   chart: Object.freeze({
