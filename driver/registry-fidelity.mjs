@@ -80,7 +80,7 @@ export function lineMayMatchRun(runPrefix) {
 //     caller, which logs it.
 //   · a line is DECODED WHOLE. Decoding each chunk on its own turned a character split by a chunk
 //     boundary into two replacement characters, and the garbled text reached the record bodies a run
-//     writes: on the test box's two largest record logs, 7 and 6 lines (measured 2026-11-19). The split is
+//     writes: on the two largest record logs of a test deployment, 7 and 6 lines (measured 2026-11-19). The split is
 //     on the newline byte, which never occurs inside a UTF-8 character, and each line is decoded once.
 
 const LEDGER_CHUNK = 8 * 1024 * 1024;
@@ -180,8 +180,8 @@ export function collectRecordBodies(recordLogPath, runPrefix) {
 // Each row of a log that belongs to the run, parsed, in file order. A read failure is noted for the caller.
 // ── THE RECORD SET, READ FROM WHERE THE LAST ASSEMBLY STOPPED ──────────────────────────────────────────
 //
-// A run assembles its record set 8 to 14 times, and each assembly read the run's whole record log and the box's
-// whole call log from the first byte: about 2 s a pass on the test box's largest record log (292 MB, measured
+// A run assembles its record set 8 to 14 times, and each assembly read the run's whole record log and the machine's
+// whole call log from the first byte: about 2 s a pass on a test deployment's largest record log (292 MB, measured
 // 2026-11-19), most of it the read itself. The logs are appended to, so what the last assembly folded still
 // holds. The driver keeps the folded state per log and run, and reads only the lines appended since. The fold is
 // the same fold over the same lines in the same order, so the state is the one a read from the start would give.
@@ -194,8 +194,8 @@ export function collectRecordBodies(recordLogPath, runPrefix) {
 // record body is kept as the line it came on, and parsed again when it is handed out, the same parse a read from
 // the start makes.
 //
-// IT IS BOUNDED BY SIZE, because the driver is one long-lived process and a record body is kept as its line. On the
-// test box's largest record log (527 MB) the kept lines held 729 MB of heap between assemblies (measured
+// IT IS BOUNDED BY SIZE, because the driver is one long-lived process and a record body is kept as its line. On a
+// test deployment's largest record log (527 MB) the kept lines held 729 MB of heap between assemblies (measured
 // 2026-11-19). The lines kept across every log stay under FOLDED_TEXT; a log whose own lines would pass it is not
 // kept at all, and is read from the start each time, as before, and the least recent log goes first.
 const FOLDED = new Map();   // `${kind}\0${path}\0${runPrefix}` → { ino, offset, mark, state }; insertion order is recency
