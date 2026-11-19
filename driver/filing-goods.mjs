@@ -11,9 +11,14 @@
 //
 // A SHORT VIEW, AND THE WHOLE TEXT ONE READ AWAY. A long statement is cut in the view and the record says so
 // (`goodsShortened`), and the whole held record is written to its own file (`fullRecord`, relative to the run), with the
-// duplicate raw goods list left out where the normalised list carries it. On that batch the view at this length is 106 KB
-// of 153 KB, and it shortens 39 of 394 statements, on 16 of 160 records. Pasting every record whole into every read is what
-// this avoids; hiding wording the run holds is what it must not do.
+// duplicate raw goods list left out where the normalised list carries it. Pasting every record whole into every read is
+// what this avoids; hiding wording the run holds is what it must not do.
+//
+// THE LENGTH IS 300 CHARACTERS A STATEMENT (design, 2026-11-19), down from 1,200. At 1,200 the view of that batch was 106 KB
+// of 153 KB and shortened 39 of 394 statements. On a saved 401-filing list, measured 2026-11-18, the view came to 126 parts
+// of a Codex answer at 1,200 and to 57 at 300. A statement past the length still shows its first 300 characters and the
+// marker, and the whole of it stays one record read away; whether the shorter view changes an assessment is measured on
+// both engines before the length ships.
 //
 // WHAT THE GOODS REST ON IS THE FULL ENGINE'S RECORD, not a new one: `goodsState` and `goodsFrom` are goods-evidence.mjs's
 // states and labels, read through the same reader. So complete, cut by the register, not established whole, absent, failed
@@ -29,7 +34,7 @@ import { DEFAULT_LEDGER_PATH } from "./provider-usage.mjs";
 /** The folder under the run that holds one whole record per filing, for a reader who needs more than the short view. */
 export const FILING_RECORDS_DIR = "register-filings";
 /** The longest statement the short view carries whole. */
-export const GOODS_VIEW_CHARS = 1200;
+export const GOODS_VIEW_CHARS = 300;
 
 /**
  * Statements as the short view carries them: one line each, its classes first ("9, 35: computer software"), and whether any

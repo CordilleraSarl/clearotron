@@ -55,6 +55,18 @@ test("a long statement is cut in the view and says so, and the whole of it is on
   assert.equal(readFull(run, rec).goodsServices[0].description, long, "the whole text is not on file");
 });
 
+test("a material term just past the view's length is not in the view, is flagged as cut, and is in the record one read away", () => {
+  const run = tempRun();
+  const head = "x".repeat(GOODS_VIEW_CHARS - 10);
+  const long = `${head} and in particular INVENTEDMATERIALTERM goods for the same trade`;
+  assert.ok(long.indexOf("INVENTEDMATERIALTERM") > GOODS_VIEW_CHARS, "premise: the term starts past the view's length");
+  logBodies(run, [[ID, body([statement(long)])]]);
+  const rec = one(run);
+  assert.equal(rec.goodsShortened, true, "the cut is not flagged");
+  assert.ok(rec.goods[0].endsWith("…") && !rec.goods[0].includes("INVENTEDMATERIALTERM"), "the view carries more than its length");
+  assert.ok(readFull(run, rec).goodsServices[0].description.includes("INVENTEDMATERIALTERM"), "the term is not one read away");
+});
+
 test("the raw goods list a normalised list carries is left out of the file, as the full engine serves a record", () => {
   const run = tempRun();
   const raw = { goodsServices: { intClassDescriptions: [{ intClassNumber: "9", intGoodsLanguageCode: "en", intGoodsServicesDescription: "computer software for mapping" }] } };
