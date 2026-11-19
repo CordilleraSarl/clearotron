@@ -2098,9 +2098,9 @@ function findingCard(f, card, recordsByUri = new Map()) {
 // cards set the risk, and the exported PDF fell from 280 pages to 53 with the rest unticked. A lawyer who ticks a
 // card puts it back in the PDF; each compact card still opens to its full detail.
 //
-// ONLY WHERE THE WORDS ARE HIS. The heading is his plural; a single conflict below the risk keeps its full card
-// until he words the singular. A conflict with no band on the ladder keeps its full card, since nothing says it is
-// below the risk. A run with no framework renders every card in full, as it always has.
+// A single conflict below the risk folds too, under the singular, "1 more conflict rated Manageable" (owner,
+// 2026-11-19). A conflict with no band on the ladder keeps its full card, since nothing says it is below the risk. A
+// run with no framework renders every card in full, as it always has.
 function conflictCards(onField, cardFor, recordsByUri) {
   const full = (list) => list.map((f) => findingCard(f, cardFor(f), recordsByUri)).join('\n  ');
   if (!FRAMEWORK) return full(onField);
@@ -2108,12 +2108,12 @@ function conflictCards(onField, cardFor, recordsByUri) {
   if (!rated.length) return full(onField);
   const top = Math.min(...rated.map(severityRank));
   const below = onField.filter((f) => severityRank(f) > top && severityRank(f) < FRAMEWORK.bands.length);
-  if (below.length < 2) return full(onField);
+  if (!below.length) return full(onField);
   const kept = onField.filter((f) => !below.includes(f));
   const bands = [...new Set(below.map(severityRank))].sort((a, b) => a - b).map((i) => FRAMEWORK.bands[i].label);
   const cards = below.map((f) => compactCard(f, cardFor(f), recordsByUri, { ticked: false })).join('\n      ');
   return `${full(kept)}
-  <details class="rgroup lowerband"><summary><span class="gname">${esc(R.lowerBand(below.length.toLocaleString('en-GB'), bands))}</span></summary><div class="gbody">
+  <details class="rgroup lowerband"><summary><span class="gname">${esc(R.lowerBand(below.length, bands))}</span></summary><div class="gbody">
       ${cards}
   </div></details>`;
 }

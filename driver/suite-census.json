@@ -7366,8 +7366,8 @@
           "todos": 0
         },
         "the-conflicts-below-the-risk-sit-behind-one-closed-heading.test.mjs": {
-          "tests": 4,
-          "asserts": 15,
+          "tests": 5,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },

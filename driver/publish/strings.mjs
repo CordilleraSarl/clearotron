@@ -627,9 +627,9 @@ export const REPORT_PAGE = Object.freeze({
     ruledOut: 'Ruled out',
     askAi: '\u2726 Ask AI about this finding',
   }),
-  // The closed heading over the conflicts below the risk (owner, 2026-11-18): their count, formatted, and each band
-  // below the risk by the framework's own word. Plural only: a single conflict below the risk keeps its full card.
-  lowerBand: (count, bands) => `${count} more conflicts rated ${bands.join(' or ')}`,
+  // The closed heading over the conflicts below the risk (owner, 2026-11-18; both forms 2026-11-19): their count, and
+  // each band below the risk by the framework's own word, joined by "or". One conflict reads in the singular.
+  lowerBand: (count, bands) => `${count.toLocaleString('en-GB')} more conflict${count === 1 ? '' : 's'} rated ${bands.join(' or ')}`,
   // The chart of conflicts: its axes, its zone and its legend.
   chart: Object.freeze({
     goodsAxis: 'Goods / services proximity →',
