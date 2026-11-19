@@ -5057,7 +5057,7 @@
         },
         "jx-p4-cores.test.mjs": {
           "tests": 14,
-          "asserts": 58,
+          "asserts": 60,
           "skips": 0,
           "todos": 0
         },
@@ -5081,7 +5081,7 @@
         },
         "jx-units.test.mjs": {
           "tests": 25,
-          "asserts": 161,
+          "asserts": 162,
           "skips": 0,
           "todos": 0
         },

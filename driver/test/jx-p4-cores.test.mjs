@@ -77,6 +77,7 @@ test("judge buildJudgeRequest: the tool schema, ids verbatim, requires mark + hi
   const body = judge.buildJudgeRequest({ mark: "NOVAPULSE", hits: [{ id: 7, term: "诺瓦", platform: "taobao.com", title: "t", url: "https://x/1", snippet: "s" }] });
   assert.equal(body.tools[0].name, "emit_judgments");
   assert.equal(body.tool_choice, undefined, "a forced choice is refused by the current generation and was never forwarded");
+  assert.equal(body.model, undefined, "the run's engine picks the model; an id here reads as the one in use and is not");
   assert.match(body.messages[0].content, /\[7\] term "诺瓦" on taobao\.com/);
   assert.throws(() => judge.buildJudgeRequest({ mark: "M", hits: [] }), /nothing to judge/);
   assert.throws(() => judge.buildJudgeRequest({ hits: [{ id: 1 }] }), /mark is required/);
@@ -133,6 +134,7 @@ test("nativeread buildNativereadRequest: the tool schema, requires payload, zh o
   const body = nread.buildNativereadRequest({ mark: "NOVAPULSE", payload: "## slice\nrow" });
   assert.equal(body.tools[0].name, "emit_read_items");
   assert.equal(body.tool_choice, undefined, "a forced choice is refused by the current generation and was never forwarded");
+  assert.equal(body.model, undefined, "the run's engine picks the model; an id here reads as the one in use and is not");
   assert.match(body.messages[0].content, /=== EVIDENCE SLICE ===/);
   assert.throws(() => nread.buildNativereadRequest({ mark: "M", payload: " " }), /payload/);
   assert.throws(() => nread.buildNativereadRequest({ mark: "M", lane: "kr", payload: "x" }), /no prompt for lane/);
