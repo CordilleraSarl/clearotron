@@ -20,7 +20,6 @@
 // queueOwnedCodenames, so cancelling in the queue was the act that HANDED the run to the run-dir
 // watcher. The strongest stop an operator could write made the resurrection more likely.
 import { test } from "node:test";
-import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -219,19 +218,34 @@ test("the door lets a resumable run through — including one whose record canno
 
 // ── THE ORDER, WHICH IS THE ACTUAL FIX ────────────────────────────────────────────────────────────
 
-test("WIRING: the door refuses BEFORE it clears any marker", async () => {
-  // Stated as what it is: an ORDER assertion over the source, because the two behaviours it separates
-  // are a throw and three rmSync calls in one function, and no return value distinguishes them. The
-  // order is the entire fix — the refusal is worth nothing if it runs after the evidence is gone.
-  const { fileURLToPath } = await import("node:url");
-  const { dirname } = await import("node:path");
-  const src = driverSource("pipeline.mjs");
-  const refusal = onlyAt(src, "const stopped = resumeStopRefusal(run.runDir);");
-  const clearing = onlyAt(src, 'rmSync(join(run.runDir, ".failed"))');
-  assert.ok(refusal > 0, "the resume door stopped consulting resumeStopRefusal");
-  assert.ok(clearing > 0, "the marker clearing moved — re-check this arm rather than deleting it");
-  assert.ok(refusal < clearing,
-    "the stop refusal must precede the clearing: refusing after the evidence is erased is how the SECOND resume happened");
+test("a stopped run's resume is refused with its markers in place and its record not re-stamped", async () => {
+  // THE ORDER IS THE FIX, read off what a resume leaves behind. The door must refuse before it clears the markers a
+  // resume clears, or the refusal works once and the next resume finds nothing to refuse with; and it must refuse
+  // before the resume re-states the run's engines, or a run nobody resumes has its record written. So a stopped
+  // run that also carries a stale `.failed` and `.parked` is resumed through the pipeline itself, and what is on
+  // disk afterwards is the evidence.
+  const { pipeline } = await import("../pipeline.mjs");
+  const { deriveSlug } = await import("../phase0.mjs");
+  const job = { id: "job-door-order", msgId: "<door-order@x>", forwarder: "jordan", ref: "TMP-2155", markName: "ORDERWELL", classes: [9] };
+  const d = mkRun(deriveSlug(job), "2026-09-03-door-order");
+  writeFileSync(join(d, ".cancel"), JSON.stringify({ ts: past, via: "mcp/stop_run", by: "someone@example.test" }));
+  writeFileSync(join(d, ".failed"), "a stale marker from an earlier attempt\n");
+  writeFileSync(join(d, ".parked"), "{}\n");
+  statusFile(d, "running", { reason: "the record before the resume" });
+  const before = readFileSync(join(d, "status.json"), "utf8");
+
+  let outcome;
+  const key = process.env.CORSEARCH_SESSION_KEY;
+  process.env.CORSEARCH_SESSION_KEY = "test-offline";   // the preflight before the door wants a key; this one calls nothing
+  try { outcome = await pipeline(job, { codename: "door-order", agent: "mailagent", studioRoot: STUDIO("mailagent") }); }
+  catch (e) { outcome = e; }
+  finally { if (key === undefined) delete process.env.CORSEARCH_SESSION_KEY; else process.env.CORSEARCH_SESSION_KEY = key; }
+  assert.match(String(outcome?.message ?? outcome?.reason ?? outcome?.error ?? JSON.stringify(outcome)), /was stopped/,
+    `the resume of a run the operator stopped was not refused at the door: ${String(outcome?.message ?? JSON.stringify(outcome)).slice(0, 300)}`);
+  assert.ok(existsSync(join(d, ".failed")) && existsSync(join(d, ".parked")),
+    "the refusal came after the markers were cleared: the next resume finds nothing to refuse with");
+  assert.equal(readFileSync(join(d, "status.json"), "utf8"), before,
+    "the record of a run nobody resumed was written: the engines were re-stated before the refusal");
 });
 
 // ── THE OPERATOR'S WAY IN ─────────────────────────────────────────────────────────────────────────
@@ -282,16 +296,6 @@ test("item 4: a resume re-states the engines the run has used, so a two-engine r
   assert.deepEqual(engines, ["anthropic", "openai-agent"],
     "a run that used two engines must SAY both on the record a reader opens — this is the whole of item 4");
   assert.equal(st.tokens.total.input, 40, "byEngine must still sum to total, or the split is decoration");
-});
-
-test("item 4 WIRING: the resume path re-stamps, and does so AFTER the stop refusal", async () => {
-  // Order matters here too, for a different reason than arm 13: stamping a run we are about to refuse
-  // would write to the record of a run nobody is resuming.
-  const src = driverSource("pipeline.mjs");
-  const refusal = onlyAt(src, "const stopped = resumeStopRefusal(run.runDir);");
-  const stamp = onlyAt(src, 'stampTokenRollup(run.runDir, "resumed")');
-  assert.ok(stamp > 0, "the resume stopped re-stating its engines — a two-engine run goes invisible again");
-  assert.ok(refusal < stamp, "a run being refused must not have its record re-stamped");
 });
 
 function dirnameOf(url) {

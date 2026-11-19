@@ -25,6 +25,8 @@
 // PURE: no IO and no clock. publishReport hands it the values readClearanceDocument read.
 import { clearanceReportData, knockoutReportData } from './report-data.mjs';
 import { deriveActionConditions } from '../findings-model.mjs';
+import { deliveryFlagLines } from '../predelivery-lint.mjs';
+import { NOT_COMPLETED } from '../degraded-parts.mjs';
 
 export const CLEARANCE_DOCUMENT = 'report-document/clearance-1';
 
@@ -97,6 +99,9 @@ export function clearanceReportDocument(d, { codename = null, customerKey = null
       // The verdict record whole. Its sign-off is the reviewer's word, but the page prints it as the recommendation
       // on a record with no statement, so it is read here with the rest.
       record: orNull(d.verdictInfo),
+      // The record as written in the run's verdict file, which the cover email reads. It differs from `record` on a record
+      // older than the derived display fields, and where the assessment was not completed.
+      written: orNull(d.verdictWritten),
       assessmentNotCompleted: Boolean(d.assessmentNotCompleted),
     },
     client: {
@@ -123,7 +128,9 @@ export function clearanceReportDocument(d, { codename = null, customerKey = null
       quarantined: d.quarantined ?? [],
       coverageJudgment: orNull(d.coverageJudgment),
       corrections: orNull(d.correctionsDoc),
-      receipts: orNull(d.reviewReceipts),
+      // The predelivery checks that failed, with their raw detail, which stays here: the workbook is handed their delivery
+      // lines. The run's other review receipts reach no surface, so they are not carried.
+      lint: d.reviewReceipts?.lint ?? [],
       droppedConditions: d.droppedConditions ?? [],
       undispatchedProbes: d.undispatchedProbes ?? [],
       withheldFamilies: d.withheldFamilies ?? [],
@@ -133,6 +140,8 @@ export function clearanceReportDocument(d, { codename = null, customerKey = null
       clientGate: orNull(d.clientGate),
       degradedParts: d.degradedRows ?? [],
       commonLawJoinedTerms: members(d.commonLawJoinedTerms),
+      // audit.md as parsed: the search log the workbook sets out.
+      audit: orNull(d.auditParsed),
     },
     staff: {
       inputsAbsent: d.inputsAbsent ?? [],
@@ -171,6 +180,49 @@ export function clearanceReportDataOf(doc) {
     jurisdiction: scope.jurisdiction, searchedJurisdictions: scope.searchedJurisdictions, scopeBasis: scope.scopeBasis,
     caption: fm.overall_caption || null, assessmentNotCompleted: verdict.assessmentNotCompleted,
   });
+}
+
+/** The run's findings in their own order: the withdrawn ones are put back where they were. */
+export function allFindingsOf(doc) {
+  const out = [...doc.client.findings];
+  for (const { at, finding } of doc.reviewer.withdrawn) out.splice(at, 0, finding);
+  return out;
+}
+
+/**
+ * The document with the workbook publishing wrote, or why there is none. The document is built before the workbook,
+ * which reads it, so the workbook's file name is set on it afterwards.
+ */
+export const withWorkbook = (doc, { auditFile = null, auditError = null } = {}) => ({
+  ...doc, run: { ...doc.run, auditFile: auditFile || null }, staff: { ...doc.staff, auditError: auditError ?? null },
+});
+
+/**
+ * The audit workbook's inputs from the document: buildAudit's contract, the search log, and the front matter. The failing
+ * predelivery checks are handed over as their delivery lines, never their raw detail: the workbook's download link rides
+ * in the cover note a client principal reads, so the workbook is a delivery surface under the same rule.
+ */
+export function clearanceWorkbookOf(doc) {
+  const { run, scope, verdict, client, reviewer } = doc;
+  const origins = run.provider.origins;
+  return {
+    contract: {
+      degradedParts: reviewer.degradedParts, droppedConditions: reviewer.droppedConditions,
+      undispatchedProbes: reviewer.undispatchedProbes, withheldFamilies: reviewer.withheldFamilies,
+      releasedFamilies: reviewer.releasedFamilies, setAside: reviewer.setAside, findings: allFindingsOf(doc),
+      frameworkMethod: doc.framework.method, coverage: client.coverage, contextNotes: client.contextNotes,
+      coverageJudgment: reviewer.coverageJudgment, markAssessment: client.markAssessment, corrections: reviewer.corrections,
+      fetchState: reviewer.fetchState, verdict: verdict.record, jurisdiction: scope.jurisdiction,
+      commonLawJoinedTerms: reviewer.commonLawJoinedTerms, registerOnly: scope.registerOnly, clientGate: reviewer.clientGate,
+      lintFailures: deliveryFlagLines(reviewer.lint), productName: run.product.name,
+      registerPublishesRecordPages: origins == null ? null : origins.length > 0,
+      recordLinks: client.recordLinks?.byUri ? new Map(client.recordLinks.byUri) : null,
+      assessmentNotCompleted: verdict.assessmentNotCompleted, registerReach: scope.registerReach, registerScope: scope.registerScope,
+    },
+    audit: reviewer.audit,
+    title: doc.prose.frontMatter.title,
+    frontMatter: doc.prose.frontMatter,
+  };
 }
 
 export const KNOCKOUT_DOCUMENT = 'report-document/knockout-1';
@@ -237,7 +289,6 @@ export function knockoutReportDocument(d, { runId, codename = null, customerKey 
       servedModels: orNull(d.served),
     },
     reviewer: {
-      receipts: orNull(d.receipts),
       sweepReceipts: d.sweepReceipts ?? [],
       qcFlags: d.qcFlags ?? [],
       machineChecksFailed: orNull(d.machineChecksFailed),
@@ -272,4 +323,19 @@ export function knockoutReportDataOf(doc, at) {
     identity: { identity: run.product.name, stageLabel: run.product.stageLabel, level: run.product.level },
     url: report.url,
   });
+}
+
+/** The Knockout workbook's inputs from the document, under the names buildKnockoutWorkbook takes them. */
+export function knockoutWorkbookOf(doc) {
+  const { client, reviewer, scope } = doc;
+  return {
+    findings: client.findings, sweepReceipts: reviewer.sweepReceipts, registerCounts: client.registerCounts,
+    qcFlags: reviewer.qcFlags, framework: doc.framework.manifest, registerRecords: client.registerRecords,
+    frameworkMethod: doc.framework.method, ownerChecks: [...client.ownerChecks, ...reviewer.lookupsNotRun],
+    parts: {
+      listing: client.registerRecords ? null : scope.steps.listing, reading: scope.steps.reading, review: scope.steps.review,
+      machineChecks: reviewer.machineChecksFailed, aboutThisRequest: scope.scopeUnreadable ? { reason: NOT_COMPLETED } : null,
+      droppedLinks: reviewer.recordLinksDropped, recordsNotKept: reviewer.recordsNotKept, openPoints: reviewer.openPoints,
+    },
+  };
 }

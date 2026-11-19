@@ -10,6 +10,12 @@ import { pathToFileURL } from "node:url";
 delete process.env.NODE_V8_COVERAGE;
 const spec = JSON.parse(readFileSync(process.argv[2], "utf8"));
 const { pipeline } = await import(pathToFileURL(join(spec.driver, "pipeline.mjs")).href);
+// A real-shaped scenario's register answers, written here so their file names are the tree under test's own.
+if (spec.seedRecords) {
+  const { fixtureFileName } = await import(pathToFileURL(join(spec.driver, "register-records.mjs")).href);
+  const { seedRealShapedRecords } = await import(new URL("./real-shaped.mjs", import.meta.url).href);
+  if (typeof fixtureFileName === "function") seedRealShapedRecords(spec.seedRecords.dir, spec.seedRecords.asked, fixtureFileName);
+}
 /** A cancel arrives while the first turn is held: the request is written, then the turn is let go. */
 function cancelOnceStarted() {
   const timer = setInterval(() => {
