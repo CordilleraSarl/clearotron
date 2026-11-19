@@ -160,6 +160,28 @@ export const WORKBOOK = Object.freeze({
     recordRetrieved: 'Record retrieved?',
     recordRetrievedIs: 'whether the register entry itself was retrieved; where a record could not be retrieved, its details are shown unverified.',
   }),
+  // Summary: the Jurisdiction row, the register's scope and then the common-law layer. `scope` arrives joined.
+  jurisdictionLine: Object.freeze({
+    worldwide: 'Worldwide',
+    registerOnly: (scope) => `${scope} (register only — no common-law / marketplace search)`,
+    noMarketplaces: (scope) => `${scope} (register) + common-law (Western web / social, plus any stores chosen for this matter)`,
+    withCommonLaw: (scope) => `${scope} (register) + common-law (Western web / marketplace / social)`,
+  }),
+  // Summary: the Machine QC row's reasons, one per check the delivery failed. A list arrives joined.
+  heldBecause: Object.freeze({
+    findingsStale: (list) => `the reviewer's corrections did not reach the client-facing findings (${list}) — re-run the correction before this goes out`,
+    escalationFailed: "the main search didn't finish — it needs to be re-run before this can be relied on",
+    recordMismatch: 'a registration detail in the report does not match its official record',
+    countsDoNotAddUp: 'the registration counts in the report do not add up',
+    withdrawnStillShown: 'a conflict the reviewer withdrew still appears in the deliverable — the correction did not stick',
+    permissionProse: 'the deliverable explains missing coverage by saying a search tool was blocked or lacked permission — on this configuration that is normally a by-design exclusion rather than an outage, so both the explanation and the coverage it excuses must be re-established before this can be relied on',
+    findingsUnreadable: 'the results could not be read back to build the report',
+    findingQuarantined: 'a result could not be read and had to be set aside, so the report would be missing it',
+    inputAbsent: (list) => `a required input to this report was not there (${list}) — the report was built without it, which is not the same as a search that found nothing`,
+  }),
+  // Coverage & gaps: a probe the run decided on and never sent, and a result the run read and put down.
+  overTheCap: 'over the cap, never dispatched',
+  setAside: (what) => `Set aside: ${what}`,
 });
 
 /** The Knockout's audit workbook: its sheets' own words. A value a cell carries arrives formatted. */
@@ -247,4 +269,48 @@ export const CLIENT_INDEX = Object.freeze({
   of: ' of ',
   shown: ' shown',
   retired: ' retired',
+});
+
+/** The register's own record of a cited registration, as the report shows it: its labels and its notes. */
+export const REGISTER_RECORD = Object.freeze({
+  // The labels, as approved on 2026-11-18.
+  labels: Object.freeze({
+    title: 'Register record',
+    mark: 'Mark',
+    goods: 'Goods and services',
+    owner: 'Owner',
+    country: 'Country',
+    status: 'Status',
+    number: 'Register number',
+  }),
+  mtNote: 'For the original wording, open the register number or use Ask AI.',
+  noGoods: 'The record states no goods or services.',
+  classNotStated: 'Class not stated',
+  logoNotRetrieved: 'Logo not retrieved',
+  registrationsCount: (n) => `${n} registrations`,
+  showAllTerms: (n) => `Show all ${n} terms`,
+  // `language` is the record's language by its English name, or null when the record does not say.
+  machineTranslation: (language) => (language ? `Machine translation from ${language}` : 'Machine translation'),
+  asRegistered: (language) => (language
+    ? `In ${language}, as registered. No English translation on the record.`
+    : 'As registered. No English translation on the record.'),
+  logoAlt: (mark, country) => `${mark}, logo as registered in ${country}`,
+});
+
+/**
+ * What a registration number linked to the office's own page opens, and why one is cited by number instead: the
+ * report's sentences under its findings, and the workbook's Link cell. `name` is the register's name, and `names` a
+ * list of them, joined.
+ */
+export const RECORD_LINKS = Object.freeze({
+  opensOfficePage: 'A registration number shown as a link opens the office’s own page for that record.',
+  noPage: (name) => `${name}: the register publishes no page for a single record, so its registrations are cited by number.`,
+  numberForm: (name) => `${name}: registrations whose numbers are not in the form the register's page address takes are cited by number, not linked.`,
+  noAddress: (name) => `${name}: we hold no page address for this register, so its registrations are cited by number.`,
+  noAddresses: (names) => `${names}: we hold no page address for these registers, so their registrations are cited by number.`,
+  cell: Object.freeze({
+    noPage: (name) => `No page for a single record at this register (${name}); cited by number`,
+    noAddress: (name) => `No page address held for this register (${name}); cited by number`,
+    numberForm: (name) => `Number not in the form this register's page address takes (${name}); cited by number`,
+  }),
 });
