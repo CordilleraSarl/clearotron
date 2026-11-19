@@ -4755,6 +4755,12 @@
           "skips": 2,
           "todos": 0
         },
+        "every-setting-read-in-code-has-a-row-in-the-configuration-reference.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 1,
+          "todos": 0
+        },
         "every-surface-draws-bands-from-the-report-ramp.test.mjs": {
           "tests": 5,
           "asserts": 16,
