@@ -39,8 +39,9 @@
 // said in plain words that the session had expired. On a healthy ending that field is the model's answer
 // and stays off the row.
 
-import { mkdirSync, openSync, writeSync, closeSync, statfsSync } from "node:fs";
+import { mkdirSync, openSync, writeSync, closeSync, statfsSync, existsSync, readFileSync, writeFileSync, unlinkSync, statSync } from "node:fs";
 import { dirname } from "node:path";
+import { gzipSync } from "node:zlib";
 
 /** The program's words for a classifier cut, as it writes them into the session. Matched, never quoted. */
 export const CLASSIFIER_CUT_RE = /stopped by a safety classifier/i;
@@ -222,6 +223,9 @@ export function streamSink(file, { floorBytes = STREAM_FLOOR_BYTES, freeBytes = 
       // "wx" creates or refuses, in one step, so two sessions can never both take one name.
       for (let n = 1; fd === null; n += 1) {
         const name = nthStreamName(file, n);
+        // A closed session's stream is kept gzipped under `<name>.gz`, so the plain name is free again once it closes: a
+        // name is taken when either is there.
+        if (existsSync(`${name}.gz`)) continue;
         try { fd = openSync(name, "wx", 0o600); file = name; }
         catch (e) { if (e?.code !== "EEXIST" || n >= 999) throw e; }
       }
@@ -235,7 +239,19 @@ export function streamSink(file, { floorBytes = STREAM_FLOOR_BYTES, freeBytes = 
     },
     close() {
       if (fd !== null) { try { closeSync(fd); } catch { /* the bytes are on disk or they are not; bytes says which */ } fd = null; }
-      return reason ? { file, present: bytes > 0, bytes, reason } : { file, present: true, bytes };
+      if (reason) return { file, present: bytes > 0, bytes, reason };
+      // A SESSION THAT CLOSED IS KEPT GZIPPED. One long session wrote 28 to 41 MB as plain lines, and the archive keeps every
+      // run's streams. Compressed here, once the session has closed: a session that is killed never reaches this, so its
+      // stream stays plain and readable to its last line, which is the stream someone most wants to read. A compression that
+      // fails keeps the plain file and says so; it never fails the turn.
+      try {
+        const gz = `${file}.gz`;
+        writeFileSync(gz, gzipSync(readFileSync(file)), { mode: 0o600, flag: "wx" });
+        unlinkSync(file);
+        return { file: gz, present: true, bytes, storedBytes: statSync(gz).size };
+      } catch (e) {
+        return { file, present: true, bytes, notCompressed: String(e?.message ?? e).slice(0, 120) };
+      }
     },
   };
 }
