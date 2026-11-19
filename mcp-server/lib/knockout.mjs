@@ -46,7 +46,11 @@ export function isKnockoutRun(run) {
 
 /** The assessment artifact, parsed. `null` when the run has not reached the assess stage (or it failed). */
 export function knockoutDoc(run) {
-  return run?.runDir ? readJsonOrNull(koPaths(run.runDir).findings) : null;
+  if (!run?.runDir) return null;
+  // The findings record as publishing held it, where the run's report document has it; the run's own file otherwise.
+  const document = readJsonOrNull(paths(run.runDir).reportDocument);
+  if (document?.document === "report-document/knockout-1" && document.client?.findings) return document.client.findings;
+  return readJsonOrNull(koPaths(run.runDir).findings);
 }
 
 const marksOf = (doc) => (Array.isArray(doc?.marks) ? doc.marks : []);
