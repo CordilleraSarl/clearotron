@@ -40,8 +40,10 @@ test("the jump strip names each section in its heading's words, in the page's or
 
 test("the fold under the answer reads What this depends on, and the coexistence section reads Marks that can coexist", () => {
   const render = readFileSync(join(HERE, "..", "publish", "render.mjs"), "utf8");
-  assert.ok(render.includes("<summary>What this depends on</summary>"), "the fold under the answer keeps its old label");
-  assert.ok(!render.includes("Show the chart and rights-holders"), "the old fold label is still in the renderer");
+  // The fold's words live in the sentence catalogue, so the page it draws is where they are read.
+  const page = demo("multi-country-focus-search");
+  assert.ok(page.includes("<summary>What this depends on</summary>"), "the fold under the answer keeps its old label");
+  assert.ok(!page.includes("Show the chart and rights-holders") && !render.includes("Show the chart and rights-holders"), "the old fold label is still drawn");
   assert.equal((render.match(/<h2>Marks that can coexist<\/h2>/g) ?? []).length, 2, "both layouts of the section carry the ruled heading");
   assert.ok(!/<h2>Notable but manageable<\/h2>/.test(render), "a layout still prints the old heading");
 });
