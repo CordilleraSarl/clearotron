@@ -18,6 +18,7 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { parseReport } from "../publish/parse.mjs";
 import { renderHtml, homeButton } from "../publish/render.mjs";
+import { localScripts } from "../publish/search-depth.mjs";
 import { EXPORT_TOGGLE, EXPORT_MENU_JS } from "../publish/report-topbar.mjs";
 import { joinEvidenceStatus } from "../registry-fidelity.mjs";
 
@@ -3319,11 +3320,11 @@ test("a company with no marketplaces: the nothing-found line and the search row 
 // ── WHAT WAS SEARCHED, AS THE BOARDS DRAW IT ────────────────────────────────────────────────────────
 //
 // The approved boards draw the register row as one line of totals with the per-country counts as chips,
-// "checks on" the platforms, "Searched" as the spellings word, a Court decisions row on a full country
+// "checks on" the platforms, the scripts searched by name, a Court decisions row on a full country
 // search only — its state word, and the court section's own sentence when the research could not be
 // completed — and a closing link to the audit workbook. The Left open rows and the provenance note stay
 // where they are until their own ruling.
-test("What was searched draws the boards' rows: totals and chips, checks on, Searched, court on full country, the workbook", () => {
+test("What was searched draws the boards' rows: totals and chips, checks on, the scripts searched, court on full country, the workbook", () => {
   const sd = { counts: { recordsByCountry: { JP: 60, KR: 46, WO: 6 }, courtDecisions: "not-checked", localScripts: { searched: ["Kana"], missed: [] },
     sweep: { spellings: 28, checks: 476, platforms: 17, reputation: 49 } } };
   const multi = renderHtml(parsedOf(REPORT), [], [], { searchDepth: sd, auditFile: "run-audit.xlsx" });
@@ -3332,7 +3333,7 @@ test("What was searched draws the boards' rows: totals and chips, checks on, Sea
   assert.match(multi, /<div class="wchips"><span class="wchip" title="Japan">JP <b>60<\/b><\/span><span class="wchip" title="South Korea">KR <b>46<\/b><\/span><\/div>/,
     "the chips carry the code and the count, largest first, the name on hover");
   assert.equal(v(multi, "Marketplace and web"), "476 checks on 17 platforms");
-  assert.equal(v(multi, "Local-script spellings"), "Searched");
+  assert.equal(v(multi, "Local-script spellings"), "Katakana");
   assert.equal(v(multi, "Court decisions"), null, "a search that is not a full country search draws no court row");
   assert.match(multi, /<div class="cmore"><a class="wb" href="run-audit\.xlsx">Every search and result, in the audit workbook<\/a><\/div>/);
 
@@ -3346,4 +3347,32 @@ test("What was searched draws the boards' rows: totals and chips, checks on, Sea
   assert.match(one, /id="court"[\s\S]*Case-law research could not be completed for Japan\./, "and the court section still says it below");
   assert.doesNotMatch(renderHtml(parsedOf(REPORT), [], [], { searchDepth: sd }), /class="cmore"><a class="wb"[^>]*>Every search/,
     "no audit file, no link to one");
+});
+
+// THE SCRIPTS BY NAME (owner, 2026-11-19): what was searched names the scripts a search completed in, and Left open
+// says which planned scripts had none complete, in the approved sentences. A run with no execution record says neither.
+// Every term is invented.
+test("the local-script row names the scripts searched, and Left open names those with no completed search", () => {
+  const v = (html, k) => (html.match(new RegExp(`<span class="k">${k}</span><span class="v">([\\s\\S]*?)</span></div>`)) || [])[1] ?? null;
+  const page = (scripts) => renderHtml(parsedOf(REPORT), [], [], { searchDepth: { counts: { localScripts: scripts } } });
+  const partial = page({ searched: ["Hang", "Kana"], missed: ["Cyrl", "Grek"] });
+  assert.equal(v(partial, "Local-script spellings"), "Katakana and Hangul");
+  assert.match(partial, /<div class="rk">Left open<\/div>[\s\S]*<div class="ct">Local-script spellings <span class="cst">· Not searched<\/span><\/div><div class="cd">No search in Greek or Cyrillic script was completed\.<\/div>/);
+  // Every script searched: the row names them, and nothing is left open for them.
+  const whole = page({ searched: ["Kana"], missed: [] });
+  assert.equal(v(whole, "Local-script spellings"), "Katakana");
+  assert.doesNotMatch(whole, /No search in .* script was completed/);
+  // None completed: the row says not searched, and Left open names the one planned.
+  const none = page({ searched: [], missed: ["Hang"] });
+  assert.equal(v(none, "Local-script spellings"), "Not searched");
+  assert.match(none, /No search in Hangul script was completed\./);
+  // No execution record: no row, and nothing left open for the scripts.
+  const old = renderHtml(parsedOf(REPORT), [], [], { searchDepth: { counts: { localScripts: null } } });
+  assert.equal(v(old, "Local-script spellings"), null);
+  assert.doesNotMatch(old, /script was completed/);
+  // Every script the record can name has a name: one invented term in each, all completed.
+  const terms = ["沃塔", "ぼるた", "ボルタ", "볼타", "ΒΟΛΤΑ", "ВОЛТА", "فولتا", "וולטה", "โวลตา", "वोल्टा"];
+  const all = localScripts({ entries: terms.map((term, i) => ({ qid: `q${i}`, term })) }, { executed: terms.map((_, i) => ({ qid: `q${i}`, state: "enumerated" })) });
+  assert.equal(all.searched.length, 10);
+  assert.equal(v(page(all), "Local-script spellings"), "Han, Hiragana, Katakana, Hangul, Greek, Cyrillic, Arabic, Hebrew, Thai and Devanagari");
 });
