@@ -236,7 +236,7 @@ test("arm 6: the chip, the data row and the workbook cell show the inputs beside
     const wb = new ExcelJS.Workbook();
     await wb.xlsx.readFile(out);
     const ws = wb.getWorksheet("Findings");
-    const col = ws.getRow(1).values.indexOf("Band");
+    const col = ws.getRow(1).values.indexOf("Risk band");
     return ws.getRow(2).getCell(col).value;
   };
   assert.equal(await bandCell(METHOD), "Serious · Claim Grade R · Harbour");

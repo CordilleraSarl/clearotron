@@ -200,7 +200,7 @@ test("the audit trail says what each cell searched: the spelling with its kind o
   const head = ws.getRow(1).values.slice(1);
   const rows = [];
   ws.eachRow((row, n) => { if (n > 1) rows.push(Object.fromEntries(head.map((h, i) => [h, String(row.values[i + 1] ?? "")]))); });
-  const term = (mark) => rows.find((r) => r["Mark"] === mark)?.["Search Term"];
+  const term = (mark) => rows.find((r) => r["Mark"] === mark)?.["Search term"];
   assert.equal(term("LANTERNWICK"), "LANTERNWICK character, LANTERN WICK character");
   assert.equal(term("MOSSGLEN"), "MOSSGLEN, MOSS GLEN", "a receipt with no kind of use prints its spellings as it always did");
 });
@@ -229,28 +229,28 @@ test("what the rating did not carry reaches the audit workbook with the rater's 
   const head = ws.getRow(1).values.slice(1);
   const rows = [];
   ws.eachRow((row, n) => { if (n > 1) rows.push(Object.fromEntries(head.map((h, i) => [h, String(row.values[i + 1] ?? "")]))); });
-  const aside = rows.filter((r) => r["Search Term"].startsWith("Set aside: "));
-  assert.equal(aside.length, 2, `the row with no address cannot print; the one missing its ground must: ${JSON.stringify(rows.map((r) => r["Search Term"]))}`);
+  const aside = rows.filter((r) => r["Search term"].startsWith("Set aside: "));
+  assert.equal(aside.length, 2, `the row with no address cannot print; the one missing its ground must: ${JSON.stringify(rows.map((r) => r["Search term"]))}`);
 
-  const complete = aside.find((r) => r["Search Term"].endsWith("/fan-page"));
-  assert.equal(complete["Search Term"], "Set aside: https://example.test/fan-page");
-  assert.equal(complete["Result Summary"], GROUND, "the ground is the rater's words, carried through");
+  const complete = aside.find((r) => r["Search term"].endsWith("/fan-page"));
+  assert.equal(complete["Search term"], "Set aside: https://example.test/fan-page");
+  assert.equal(complete["Result summary"], GROUND, "the ground is the rater's words, carried through");
   assert.equal(complete["Mark"], "LANTERNWICK");
   // READING A RESULT AND PUTTING IT DOWN IS THE SCREEN WORKING, so the row is not a degraded one: a
   // Degraded here would tell the reader a part of the screen failed when the opposite happened.
-  assert.ok(!/^FAILED/.test(complete["Result Summary"]), "a complete search reads as failed");
+  assert.ok(!/^FAILED/.test(complete["Result summary"]), "a complete search reads as failed");
 
   // AND THE HALF-FORMED ROW IS VISIBLE RATHER THAN DROPPED, marked Degraded because part of this record
   // is genuinely missing. Dropped silently, this mark would read as having set nothing aside.
-  const half = aside.find((r) => r["Search Term"].endsWith("/no-ground"));
+  const half = aside.find((r) => r["Search term"].endsWith("/no-ground"));
   assert.ok(!("OK/Degraded" in half), "the engine's OK/Degraded column is back on the lawyer's sheet");
   // ITS REASON CELL SAYS NOTHING, and the arm pins the emptiness on purpose. The row's shipped line for a
   // part left open asserts a step could not be completed, and here the set-aside was completed — only its
   // reason is absent from the record. That line would tell a client a step failed when none did, which is
   // what this sheet was cleaned of; no shipped string says "the reason is not in this record", and a new
   // one is a sentence a client reads. Empty asserts nothing untrue, and Degraded carries the fact.
-  assert.equal(half["Result Summary"], "", "an empty reason is the only honest one until a sentence exists for it");
-  assert.notEqual(half["Result Summary"], plainDeferralReason("unfinished"),
+  assert.equal(half["Result summary"], "", "an empty reason is the only honest one until a sentence exists for it");
+  assert.notEqual(half["Result summary"], plainDeferralReason("unfinished"),
     "this row must never claim a step could not be completed: the set-aside happened, its reason did not survive");
 });
 

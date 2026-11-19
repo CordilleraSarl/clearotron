@@ -80,6 +80,8 @@ export const WORKBOOK = Object.freeze({
   }),
   couldNotBeSearched: 'could not be searched',
   registerSection: 'REGISTER  —  vendor register, worldwide',
+  // The register service's own reach, as the coverage line states it; a run that recorded none keeps the line above.
+  registerSectionReach: (service, offices) => `REGISTER  —  ${service}, ${offices} office${offices === 1 ? '' : 's'}`,
   commonLawSection: 'COMMON-LAW  —  web / marketplace / social / product database',
   surfaces: (n) => `~${n} surfaces`,
   similarFound: 'similar listing(s) found',
@@ -158,6 +160,28 @@ export const WORKBOOK = Object.freeze({
     recordRetrieved: 'Record retrieved?',
     recordRetrievedIs: 'whether the register entry itself was retrieved; where a record could not be retrieved, its details are shown unverified.',
   }),
+  // Summary: the Jurisdiction row, the register's scope and then the common-law layer. `scope` arrives joined.
+  jurisdictionLine: Object.freeze({
+    worldwide: 'Worldwide',
+    registerOnly: (scope) => `${scope} (register only — no common-law / marketplace search)`,
+    noMarketplaces: (scope) => `${scope} (register) + common-law (Western web / social, plus any stores chosen for this matter)`,
+    withCommonLaw: (scope) => `${scope} (register) + common-law (Western web / marketplace / social)`,
+  }),
+  // Summary: the Machine QC row's reasons, one per check the delivery failed. A list arrives joined.
+  heldBecause: Object.freeze({
+    findingsStale: (list) => `the reviewer's corrections did not reach the client-facing findings (${list}) — re-run the correction before this goes out`,
+    escalationFailed: "the main search didn't finish — it needs to be re-run before this can be relied on",
+    recordMismatch: 'a registration detail in the report does not match its official record',
+    countsDoNotAddUp: 'the registration counts in the report do not add up',
+    withdrawnStillShown: 'a conflict the reviewer withdrew still appears in the deliverable — the correction did not stick',
+    permissionProse: 'the deliverable explains missing coverage by saying a search tool was blocked or lacked permission — on this configuration that is normally a by-design exclusion rather than an outage, so both the explanation and the coverage it excuses must be re-established before this can be relied on',
+    findingsUnreadable: 'the results could not be read back to build the report',
+    findingQuarantined: 'a result could not be read and had to be set aside, so the report would be missing it',
+    inputAbsent: (list) => `a required input to this report was not there (${list}) — the report was built without it, which is not the same as a search that found nothing`,
+  }),
+  // Coverage & gaps: a probe the run decided on and never sent, and a result the run read and put down.
+  overTheCap: 'over the cap, never dispatched',
+  setAside: (what) => `Set aside: ${what}`,
 });
 
 /** The Knockout's audit workbook: its sheets' own words. A value a cell carries arrives formatted. */
@@ -198,29 +222,36 @@ export const KNOCKOUT_WORKBOOK = Object.freeze({
 });
 
 /**
- * The audit workbooks' tab names and column headers, keyed by the name the code builds each tab and row on, which is
- * today's English. A translation changes the values and never the keys, because the rows are built on the keys.
+ * The audit workbooks' tab names and column headers, keyed by the name the code builds each tab and row on. A header
+ * the owner renamed reads differently from its key; a translation changes the values and never the keys, because the
+ * rows are built on the keys.
  */
 export const WORKBOOK_LABELS = Object.freeze({
   sheets: Object.freeze(Object.fromEntries([
     'Summary', 'Findings', 'What was searched', 'Coverage & gaps',
     'Negative Results', 'Audit Trail', 'Working Notes', 'Register Counts', 'Register Filings', 'Machine Checks',
   ].map((n) => [n, n]))),
-  columns: Object.freeze(Object.fromEntries([
-    // The clearance workbook.
-    'Field', 'Value',
-    '#', 'Conflicting mark', 'Owner', 'Country', 'Source', 'Class', 'Registration(s)', 'Status & key dates',
-    'Record retrieved?', 'Risk band', 'How we treated it', 'Mark similarity', 'Goods proximity', 'Use', 'Enforcer', 'Link',
-    'Search term / variant', 'Scope', 'Result', 'Outcome', 'Note',
-    'Area', 'State', 'What was done', "What's left",
-    // The Knockout workbook.
-    'Mark', 'Finding Reference', 'Finding Name', 'Band', 'Type', 'Net', 'Basis', 'Evidence',
-    'Search Term', 'Source / Context', 'Notes', 'Result Summary',
-    'Classes counted', 'Territories', 'Identical filings', 'Filings containing the name', 'Filings on close variations',
-    'Close variation forms', 'Register',
-    'Matched form', 'Trademark', 'Status', 'Classes', 'Territory', 'Filed', 'Registered', 'Record',
-    'Check', 'What it found',
-  ].map((h) => [h, h]))),
+  columns: Object.freeze({ ...Object.fromEntries([
+      // The clearance workbook.
+      'Field', 'Value',
+      '#', 'Conflicting mark', 'Owner', 'Country', 'Source', 'Class', 'Registration(s)', 'Status & key dates',
+      'Record retrieved?', 'Risk band', 'How we treated it', 'Mark similarity', 'Goods proximity', 'Use', 'Enforcer', 'Link',
+      'Search term / variant', 'Scope', 'Result', 'Outcome', 'Note',
+      'Area', 'State', 'What was done', "What's left",
+      // The Knockout workbook.
+      'Mark', 'Finding Reference', 'Finding Name', 'Band', 'Type', 'Net', 'Basis', 'Evidence',
+      'Search Term', 'Source / Context', 'Notes', 'Result Summary',
+      'Classes counted', 'Territories', 'Identical filings', 'Filings containing the name', 'Filings on close variations',
+      'Close variation forms', 'Register',
+      'Matched form', 'Trademark', 'Status', 'Classes', 'Territory', 'Filed', 'Registered', 'Record',
+      'Check', 'What it found',
+    ].map((h) => [h, h])),
+    // The owner's labels (2026-11-18): the report's words for the enforcement meter, and the Knockout's headings in
+    // the clearance workbook's sentence case, in its words where a column holds the same thing.
+    'Enforcer': 'Likely to enforce',
+    'Finding Reference': 'Finding reference', 'Finding Name': 'Conflicting mark', 'Band': 'Risk band',
+    'Search Term': 'Search term', 'Source / Context': 'Source / context', 'Notes': 'Note', 'Result Summary': 'Result summary',
+  }),
 });
 
 /** The list of reports a client's own index page shows: its heading, its table and its search and pages. */
@@ -238,4 +269,421 @@ export const CLIENT_INDEX = Object.freeze({
   of: ' of ',
   shown: ' shown',
   retired: ' retired',
+});
+
+/** The register's own record of a cited registration, as the report shows it: its labels and its notes. */
+export const REGISTER_RECORD = Object.freeze({
+  // The labels, as approved on 2026-11-18.
+  labels: Object.freeze({
+    title: 'Register record',
+    mark: 'Mark',
+    goods: 'Goods and services',
+    owner: 'Owner',
+    country: 'Country',
+    status: 'Status',
+    number: 'Register number',
+  }),
+  mtNote: 'For the original wording, open the register number or use Ask AI.',
+  noGoods: 'The record states no goods or services.',
+  classNotStated: 'Class not stated',
+  logoNotRetrieved: 'Logo not retrieved',
+  registrationsCount: (n) => `${n} registrations`,
+  showAllTerms: (n) => `Show all ${n} terms`,
+  // `language` is the record's language by its English name, or null when the record does not say.
+  machineTranslation: (language) => (language ? `Machine translation from ${language}` : 'Machine translation'),
+  asRegistered: (language) => (language
+    ? `In ${language}, as registered. No English translation on the record.`
+    : 'As registered. No English translation on the record.'),
+  logoAlt: (mark, country) => `${mark}, logo as registered in ${country}`,
+});
+
+/**
+ * What a registration number linked to the office's own page opens, and why one is cited by number instead: the
+ * report's sentences under its findings, and the workbook's Link cell. `name` is the register's name, and `names` a
+ * list of them, joined.
+ */
+export const RECORD_LINKS = Object.freeze({
+  opensOfficePage: 'A registration number shown as a link opens the office’s own page for that record.',
+  noPage: (name) => `${name}: the register publishes no page for a single record, so its registrations are cited by number.`,
+  numberForm: (name) => `${name}: registrations whose numbers are not in the form the register's page address takes are cited by number, not linked.`,
+  noAddress: (name) => `${name}: we hold no page address for this register, so its registrations are cited by number.`,
+  noAddresses: (names) => `${names}: we hold no page address for these registers, so their registrations are cited by number.`,
+  cell: Object.freeze({
+    noPage: (name) => `No page for a single record at this register (${name}); cited by number`,
+    noAddress: (name) => `No page address held for this register (${name}); cited by number`,
+    numberForm: (name) => `Number not in the form this register's page address takes (${name}); cited by number`,
+  }),
+});
+
+/** The Knockout report page: its own words, section by section. A value a sentence carries arrives formatted. */
+export const KNOCKOUT_PAGE = Object.freeze({
+  // The jump strip, in its order.
+  strip: Object.freeze({ summary: 'Summary', findings: 'Findings', filings: 'Also considered', next: 'Next steps' }),
+  degradedNote: 'Automated research for this name was unavailable — manual verification is recommended before relying on this rating.',
+  // The rating's qualifier, in words: the closed set's own, and any other word framed.
+  qualifier: Object.freeze({ low: 'at the low end of this band' }),
+  qualifierOther: (word) => `${word} within this band`,
+  names: (n) => `${n} names`,
+  classes: (list) => `Classes ${list}`,
+  // Registers that are not countries, in the two forms English needs: "the United States" and "United States application".
+  registerNames: Object.freeze({
+    EM: Object.freeze({ bare: 'European Union', phrase: 'the European Union' }),
+    EU: Object.freeze({ bare: 'European Union', phrase: 'the European Union' }),
+    WO: Object.freeze({ bare: 'international', phrase: 'the WIPO register' }),
+    US: Object.freeze({ bare: 'United States', phrase: 'the United States' }),
+    GB: Object.freeze({ bare: 'United Kingdom', phrase: 'the United Kingdom' }),
+    UK: Object.freeze({ bare: 'United Kingdom', phrase: 'the United Kingdom' }),
+    CH: Object.freeze({ bare: 'Swiss', phrase: 'Switzerland' }),
+  }),
+  // "a, b and c": `head` arrives joined on commas.
+  listEnd: (head, last) => `${head} and ${last}`,
+  // The counted scope, in one sentence.
+  counted: Object.freeze({
+    theRegister: 'the register',
+    worldwideOn: (n, provider) => `Counted worldwide, ${n} registers, on ${provider}.`,
+    worldwide: (provider) => `Counted worldwide on ${provider}.`,
+    named: (list, provider) => `Counted in ${list}, on ${provider}.`,
+    listed: (n, provider) => `Counted on ${n} registers, listed on the workbook's Register Counts sheet, on ${provider}.`,
+  }),
+  // The counts table: its heads, and a cell with no count.
+  counts: Object.freeze({
+    name: 'Name',
+    exactly: (name) => `Exactly ${name}`,
+    exactlyTheName: 'Exactly the name',
+    contains: (name) => `Contains ${name}`,
+    containsTheName: 'Contains the name',
+    nearSpellingsOf: (forms) => `Near-spellings (${forms})`,
+    nearSpellings: 'Near-spellings',
+    noCountRecorded: 'no count recorded',
+    notCountedThisRun: 'not counted on this run — it predates this column, and an archived report re-renders as what it was',
+    notAvailable: 'not available',
+    inClasses: (list) => `classes ${list}`,
+    allClasses: 'all classes — this run named none, so nothing narrowed the count',
+  }),
+  // The filings listed under "Also considered". `rest` is `otherSearches` or `closeVariations`.
+  filings: Object.freeze({
+    noListing: 'No filings listing was recorded for this name.',
+    foundAs: (form) => `found as ${form}`,
+    head: Object.freeze({ trademark: 'Trademark', owner: 'Owner', status: 'Status', classes: 'Classes', territory: 'Territory', record: 'Record' }),
+    showing: (shown, total, rest) => ` Showing ${shown} of ${total}, most material first — the filings this assessment weighed before the rest, then live filings before dead, in the searched classes before outside them, the name itself before ${rest}. The full list is in the audit workbook's Register Filings sheet.`,
+    otherSearches: 'other searches',
+    closeVariations: 'its close variations',
+    sameRows: " The same rows are in the audit workbook's Register Filings sheet, most material first.",
+  }),
+  // Why no register was counted: the counts failed on this run, or the product tier does not include them.
+  tierAbsence: Object.freeze({
+    probeRan: 'Register hit-counts are part of this search, and none could be taken on this run — the per-name reason is recorded in the audit workbook. This is a gap in this run, not a limit of the product.',
+    notInTier: 'Register hit-counts (identical · containing · close variations) are not included in this product tier, so no register was counted for this report. They are part of the Knockout search this offering sells today.',
+  }),
+  // The card fold's label: the clearance's word for the reasoning (owner, 2026-11-18, item 1140).
+  riskAssessment: 'Risk assessment',
+  // A finding card's head and fold.
+  finding: Object.freeze({
+    unnamed: 'Unnamed finding',
+    askAi: '\u2726 Ask AI about this finding',
+    fullDetail: 'Full detail',
+    sources: 'Sources: ',
+  }),
+  // The source chips a card wears.
+  chips: Object.freeze({ commonLaw: 'Common law', register: 'Register' }),
+  // About this request: its rows. The heading stays in the renderer, where a guard holds it to the part's name.
+  about: Object.freeze({
+    on: (provider) => `, on ${provider}`,
+    registers: (n) => `${n} ${n === 1 ? 'register' : 'registers'}`,
+    countedWorldwide: 'Counted worldwide',
+    typeOfSearch: 'Type of search',
+    instructedUse: 'Instructed use',
+    classes: 'Classes',
+    whereSearched: 'Where searched',
+    context: 'Context',
+    registersCounted: 'Registers counted',
+    searchedOn: 'Searched on',
+  }),
+  // A name's read: where its register position stands, and what was counted for it. `near` is `nameNear` or
+  // `closeVariation`; `where` is `above` or `below`; `classWhere` is `inClasses`'s phrase or empty.
+  read: Object.freeze({
+    filingsNotListed: 'The filings behind the counts could not be listed on this run, so nothing here says whether one stands.',
+    countsNotListed: 'The filings behind those counts were not listed on this run.',
+    noListing: 'No filings listing was recorded for this name.',
+    theRegister: 'the register',
+    inClasses: (n, list) => ` in class${n === 1 ? '' : 'es'} ${list}`,
+    filingsStand: (n, near, provider, classWhere, refs, where) => `${n === 1 ? 'A filing' : `${n} filings`} of this name or ${near} stand${n === 1 ? 's' : ''} on ${provider}${classWhere} — ${refs} ${where}.`,
+    nameNear: 'a name near it',
+    closeVariation: 'a close variation of it',
+    above: 'above',
+    below: 'below',
+    noneStands: (provider) => `No filing of this name or a close variation of it stands on ${provider}, in the classes counted.`,
+    listingIncomplete: 'The filings listing for this name did not complete, so nothing here says whether one stands.',
+    listedBelow: (n) => `${n} filing${n === 1 ? ' is' : 's are'} listed for this name below; none is carried up as a conflict — each is either shown dead on the register or outside the classes counted.`,
+    countsFailed: 'Register: hit-counts are part of this search and none could be taken for this name — the reason is in the audit workbook.',
+    countsNotInTier: 'Register: not included in this product tier — no register was counted for this name.',
+    noCount: 'Register: no count could be taken for this name — the reason is in the audit workbook.',
+    acrossAllClasses: 'across all classes',
+    inClassesCounted: (n, list) => `in class${n === 1 ? '' : 'es'} ${list}`,
+    countsTaken: (scope) => `Register: hit-counts were taken for this name ${scope} — the figures are in the counts table above.`,
+    remainingUncertainties: 'Remaining uncertainties',
+    readFullAssessment: 'Read the full assessment',
+  }),
+  // A name's rating card and its row.
+  readCard: Object.freeze({
+    overallRisk: 'Overall risk',
+    why: (band) => `Why ${band}`,
+    whatWouldChange: 'What would change this',
+    fullNarrative: 'Full narrative',
+    noAdverseSignals: 'No adverse signals recorded for this name on this screen.',
+  }),
+  caveatLead: 'This screen also carries the following limits:',
+  sections: Object.freeze({
+    conflicts: 'Conflicts',
+    leftOpen: 'Left open',
+    alsoConsidered: 'Also considered',
+    alsoConsideredNote: 'the filings behind the counts',
+  }),
+  // The top bar. A glyph beside a label stays with the markup.
+  topbar: Object.freeze({
+    allReports: 'All reports',
+    issuedOn: (date) => `Issued on ${date}`,
+    askAi: 'Ask AI',
+    exportPdf: 'Export PDF',
+    downloadAudit: 'Download full audit (Excel)',
+    expandAll: 'Expand all',
+    collapseAll: 'Collapse all',
+  }),
+});
+
+/** The clearance report page: its own words, section by section. A value a sentence carries arrives formatted. */
+export const REPORT_PAGE = Object.freeze({
+  // The rating card: its labels, and the lines under the gauge. Counts arrive formatted for the reader.
+  rating: Object.freeze({
+    overallRisk: 'Overall risk',
+    verdict: 'Verdict',
+    recommendation: 'Recommendation',
+    clear: 'Clear',
+    conditions: 'Conditions',
+    obstacleClass: (cls) => `Class ${cls}.`,
+    basedOn: 'Based on',
+    why: (band) => `Why ${band}`,
+    commonLawUse: 'Common-law use',
+    highestExposure: 'Highest exposure',
+    recordsReadIn: (n, place) => `${n} records read in ${place}`,
+    recordsReadAcross: (n, countries) => `${n} records read across ${countries} countries`,
+    internationalRead: (n) => `${n} international registrations read`,
+    nearNamesCleared: (n) => `${n} near-names cleared`,
+    conflicts: (n) => `${n} ${n === 1 ? 'conflict' : 'conflicts'}`,
+    localScript: 'the name searched in local script',
+    courtChecked: 'court decisions checked',
+    courtNoneTouch: 'court decisions checked, none touch the name',
+    courtNotChecked: 'court decisions could not be checked',
+    searchCoverage: 'Search coverage',
+    ratedOn: (framework) => `Rated on the ${framework}`,
+    // The four answers, in their order.
+    fourAnswers: Object.freeze({
+      third_party_rights: 'Third-party rights',
+      objection_likelihood: 'Likelihood of objection',
+      registrability: 'Registrability',
+      client_enforceability: 'Your own enforceability',
+    }),
+  }),
+  allReports: '← All reports',
+  // The five tiers, as the gauge's ticks and its pill print them.
+  tierLabels: Object.freeze(['Clear', 'Low / Manageable', 'Medium', 'High', 'Very high']),
+  tierPills: Object.freeze(['CLEAR', 'LOW', 'MEDIUM', 'HIGH', 'VERY HIGH']),
+  // Where a use check's evidence came from, readable after "Evidence: verified,".
+  useSource: Object.freeze({
+    'owner-site': "from the owner's own site",
+    independent: 'from an independent source',
+    'register-mirror': 'from a register mirror, which is not evidence of use',
+  }),
+  useCheckNothingFound: 'Nothing found in the marketplaces searched.',
+  useCheckNothingFoundNoMarketplaces: 'Nothing found in the general web search or in any store chosen for this matter.',
+  // The meters: their labels, and the use meter's readings.
+  meters: Object.freeze({
+    use: 'Use',
+    confirmed: 'Confirmed',
+    notConfirmed: 'Not confirmed',
+    unknown: 'Unknown',
+    similarity: 'Similarity',
+    goodsProximity: 'Goods proximity',
+    likelyToEnforce: 'Likely to enforce',
+  }),
+  // The facts panel.
+  facts: Object.freeze({
+    classes: 'Classes',
+    jurisdictionsSearched: 'Jurisdictions searched',
+    highestExposure: 'Highest exposure',
+    fromHighestRated: (several) => `— from the highest-rated finding${several ? 's' : ''}`,
+    searched: 'Searched',
+  }),
+  // The jurisdictions searched: the chips, their notes, and the scope line under the mark.
+  scope: Object.freeze({
+    coverageLimitedTitle: ' — coverage-limited',
+    worldwideChipTitle: 'the register sweep ran worldwide — chips show the citation focus and the jurisdictions where conflicts live',
+    worldwide: 'worldwide',
+    worldwideNote: 'register sweep ran worldwide — chips show the citation focus and where the conflicts live',
+    clearedAcross: 'every jurisdiction cleared across its national register, the EU regional register where applicable, and WIPO/Madrid (WO) international registrations designating it',
+    limitedNote: (list) => `* ${list} — coverage-limited (see “What we covered — and what's open”)`,
+    classesShort: 'Cl.',
+    sweepTitle: 'the register sweep ran worldwide (all reachable registers)',
+    sweep: 'worldwide register sweep',
+    focus: 'focus:',
+    coverageLimited: (name) => `${name} (coverage-limited)`,
+    worldwideFocusOn: (where) => `Worldwide, focus on ${where}`,
+    worldwideList: 'Worldwide',
+  }),
+  // About this request.
+  about: Object.freeze({
+    title: 'About this request',
+    typeOfSearch: 'Type of search',
+    instructedUse: 'Instructed use',
+    classes: 'Classes',
+    whereSearched: 'Where searched',
+    worldwideFocus: (n) => `Worldwide \u00b7 ${n} focus territor${n === 1 ? 'y' : 'ies'}`,
+    project: 'Project',
+    searchedOn: 'Searched on',
+  }),
+  doFirst: 'Do this first · time-critical',
+  // The answers to the client's instructions: the fold that holds the rest of an answer.
+  more: 'More',
+  // The names the search read and cleared, by group. Counts arrive formatted for the reader.
+  cleared: Object.freeze({
+    groups: Object.freeze({ 'dead-filing': 'Dead filings', 'different-goods': 'Different goods', other: 'Read and cleared' }),
+    allInWorkbook: (n) => `All ${n} in the audit workbook`,
+    names: (formatted, n) => `${formatted} ${n === 1 ? 'name' : 'names'}`,
+    runCommonLawRecord: "the run's own common-law search record",
+    webAndMarketplace: 'Web and marketplace names',
+  }),
+  whereItStands: 'Where it stands',
+  nothingFound: 'Nothing found',
+  // Court decisions: the section, and the line it carries. `forWhere` is `court.forWhere`'s phrase or empty.
+  court: Object.freeze({
+    title: 'Court decisions',
+    forWhere: (where) => ` for ${where}`,
+    notCompleted: (forWhere) => `Case-law research could not be completed${forWhere}.`,
+    noneFound: (forWhere) => `Court decisions: none found${forWhere}.`,
+    found: (forWhere) => `Court decisions were searched${forWhere} and are cited against the findings above.`,
+  }),
+  // What was searched: the section's rows. Counts arrive formatted for the reader, with the number beside for the plural.
+  // The rows named for a part (Register, Marketplace and web, Local-language investigation, Court decisions) keep their
+  // names in the renderer, where a guard holds each to the part's shipped name.
+  searched: Object.freeze({
+    title: 'What was searched',
+    counts: 'Counts for this search',
+    whereSearched: 'Where searched',
+    inPlace: (place) => ` in ${place}`,
+    acrossCountries: (n) => ` across ${n} countries`,
+    plus: ', plus ',
+    international: (formatted, n) => `${formatted} international registration${n === 1 ? '' : 's'}`,
+    recordsRead: (formatted, n, where) => `${formatted} record${n === 1 ? '' : 's'} read${where}`,
+    spellings: 'Spellings searched',
+    checksWebAndStores: (n) => `${n} checks: the general web, plus any stores chosen for this matter.`,
+    checksOnPlatforms: (n, platforms) => `${n} checks on ${platforms} platforms`,
+    reputation: 'Reputation and meaning',
+    checks: (n) => `${n} checks`,
+    localScript: 'Local-script spellings',
+    searched: 'Searched',
+    notSearched: 'Not searched',
+    included: 'Included',
+    notPartOfSearch: 'Not part of this search',
+    courtWords: Object.freeze({ found: 'Found', 'none-found': 'None found', 'not-checked': 'Not searched' }),
+    leftOpen: 'Left open',
+    provenance: 'Record provenance',
+    numbersRead: 'Registration numbers on the cards were read from the register records. ',
+    indexEntry: 'A registration shown as a register-index entry was seen in the register index; its full record was not pulled. ',
+    inferred: '\u201cInferred\u201d beside an owner\u2019s likelihood to object means we judged it from what the owner sells and holds; we had no enforcement history to read.',
+    everySearch: 'Every search and result, in the audit workbook',
+  }),
+  // Also considered: the names ruled out, as cards and as a list.
+  alsoConsidered: Object.freeze({
+    title: 'Also considered',
+    defaultWhy: 'a different name in a related field — not a conflict with your mark',
+    whyRuledOut: 'Why it was ruled out',
+    legal: 'Legal position.',
+    practical: 'Practical position.',
+    ruledOut: 'Ruled out',
+    askAi: '\u2726 Ask AI about this finding',
+    listTitle: 'Also considered — ruled out',
+    names: (n) => `${n} name${n === 1 ? '' : 's'}`,
+    listNote: 'Names that surfaced in the search but share no word or sound with your mark — listed for completeness; not conflicts.',
+  }),
+  // The chart of conflicts: its axes, its zone and its legend.
+  chart: Object.freeze({
+    goodsAxis: 'Goods / services proximity →',
+    markAxis: 'Mark similarity →',
+    zone: 'CONFUSION ZONE',
+    onField: 'On-field · drives the read',
+    secondaryWatch: 'Secondary · watch',
+    secondaryManageable: 'Secondary · manageable',
+    pending: 'Pending',
+  }),
+  // The rights-holders key beside the chart.
+  key: Object.freeze({
+    classes: (list) => `Cl.${list}`,
+    // `link` arrives as the link to the section, its words from `commonLawSectionLink`.
+    commonLawHint: (link) => `Common-law / marketplace — unregistered use, not register rights (${link}).`,
+    commonLawSectionLink: 'see the Common-law & marketplace section',
+    commonLawGroup: 'Common-law / marketplace',
+    unregisteredUse: 'Unregistered use',
+    title: 'Rights-holders',
+    hint: 'Grouped by jurisdiction — open a region for its holders.',
+  }),
+  onFieldCommonLaw: 'On-field common-law conflicts (full cards above): ',
+  marks: (n) => `${n} mark${n === 1 ? '' : 's'}`,
+  evidence: (word) => `Evidence: ${word}`,
+  // A finding card: its head, its rating chip, its one line when the read is missing, and its folds.
+  card: Object.freeze({
+    owner: 'Owner',
+    notRatedAwareness: 'Not rated — awareness',
+    level: (level) => `Level ${level}`,
+    composite: (composite) => `Composite ${composite}`,
+    bandRisk: (band) => `${band} risk`,
+    notRatedCommercial: 'Not rated — commercial awareness',
+    tierRisk: (tier, level, composite, dispute) => `${tier} risk (Level ${level} · Composite ${composite}) — ${dispute}.`,
+    legalRisk: 'Legal risk.',
+    practicalPosition: 'Practical position.',
+    theRead: 'The read',
+    includeInPdf: (n) => `Include conflict ${n} in the PDF`,
+    askAi: '\u2726 Ask AI about this finding',
+  }),
+  // The mark itself: what the mark is, before any conflict.
+  markItself: Object.freeze({
+    title: 'The mark itself',
+    distinctiveness: 'Distinctiveness.',
+    connotation: 'Connotation & meaning.',
+    acquired: (text) => `Acquired distinctiveness: ${text}`,
+    perClass: (cls) => `Class ${cls}.`,
+    byClassAndMarket: 'By class and market',
+    registrationsConsidered: 'Registrations considered',
+  }),
+  famousNeighbours: 'Famous-mark neighbours noted',
+  // The banner a demonstration report carries, on the clearance and the Knockout alike.
+  demoBanner: Object.freeze({
+    title: 'Demonstration report.',
+    text: 'The mark is invented and this matter is not a real engagement. The register records, the searches behind them and the risk assessment are real.',
+  }),
+  // The top bar and its export menu. A glyph beside a label stays with the markup.
+  topbar: Object.freeze({
+    allReports: 'All reports',
+    issuedOn: (date) => `Issued on ${date}`,
+    askAi: 'Ask AI',
+    exportAndAudit: 'Export & audit',
+    downloadAudit: 'Download full audit (Excel)',
+    selectAll: 'Select all',
+    selectNone: 'Select none',
+    expandAll: 'Expand all',
+    collapseAll: 'Collapse all',
+    exportHint: 'Tick a finding to keep it in the exported PDF; untick to drop it. Internal (review-only) notes are removed on export.',
+  }),
+  // What happens next: the section, and the chip each kind of step wears.
+  next: Object.freeze({
+    title: 'What happens next',
+    timeCritical: 'Time-critical',
+    openQuestion: 'Open question',
+    yourDecision: 'Your decision',
+    monitor: 'Monitor',
+    filingStep: 'Filing step',
+    beforeYouCanRely: 'Before you can rely',
+  }),
+  // The models that prepared the report. `list` arrives joined.
+  preparedWith: (claude, list) => `Prepared with${claude ? ' Claude' : ''}: ${list}.`,
+  claudeModel: (id) => `Claude ${id}`,
 });

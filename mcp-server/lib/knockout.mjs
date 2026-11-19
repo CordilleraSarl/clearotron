@@ -341,7 +341,7 @@ export function knockoutCoverage(run) {
   } else {
     areas.push({
       area: "Register",
-      state: "Not run this run",
+      state: "Not searched",
       detail: "This run has no register component — the assessment rests on the common-law and marketplace sweep.",
     });
   }

@@ -56,7 +56,7 @@ test("a knockout web search that failed prints the reader's line on its Audit Tr
   await buildKnockoutWorkbook(FINDINGS, receipts, out);
   const { sheet, cells } = await workbookRows(out);
   const trail = sheet("Audit Trail");
-  assert.deepEqual(trail.map((r) => r["Result Summary"]), [`FAILED — ${LEFT_OPEN}`, `FAILED — ${TIMED_OUT}`, "ok — 10 bytes"]);
+  assert.deepEqual(trail.map((r) => r["Result summary"]), [`FAILED — ${LEFT_OPEN}`, `FAILED — ${TIMED_OUT}`, "ok — 10 bytes"]);
   assert.ok(trail.every((r) => !("OK/Degraded" in r)), "the engine's OK/Degraded column is back on the lawyer's sheet");
   assert.ok(!cells.some((c) => /API_KEY|driver env|executor threw/.test(c)), "a raw cause reached a reader's cell");
 });
@@ -74,7 +74,7 @@ test("an unusable close-variation cap leaves the setting's name out of the Regis
   await buildKnockoutWorkbook(FINDINGS, [], out, registerCounts);
   const { sheet, cells } = await workbookRows(out);
   const [row] = sheet("Register Counts");
-  assert.equal(row["Notes"], `Close variations: ${LEFT_OPEN}`);
+  assert.equal(row["Note"], `Close variations: ${LEFT_OPEN}`);
   assert.ok(!cells.some((c) => /CLEAROTRON_|\bNaN\b|configuration fault/.test(c)), "the setting or its raw value reached a reader's cell");
 });
 

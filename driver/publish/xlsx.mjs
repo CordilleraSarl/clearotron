@@ -297,7 +297,7 @@ const COMMON_LAW_SECTION = W.commonLawSection;
 // is the run's own artifact; this is the reader's deduped view, not a claim the surfaces went unrecorded.
 // Exported for test: the three-state logic is the deliverable's own claim about what was
 // searched, and it is worth asserting directly rather than only through a rendered xlsx.
-export function searchRows(auditParsed, { findings = [], joinedTerms = null, registerOnly = false } = {}) {
+export function searchRows(auditParsed, { findings = [], joinedTerms = null, registerOnly = false, registerReach = null } = {}) {
   const negs = (auditParsed?.negatives || []).filter(n => (n.search_term || '').trim() && (n.search_term || '').trim() !== '—');
   const reg = negs.filter(n => n.source_layer !== 'Common-law');
   const cl = negs.filter(n => n.source_layer === 'Common-law');
@@ -307,7 +307,11 @@ export function searchRows(auditParsed, { findings = [], joinedTerms = null, reg
   const push = r => rows.push({ '#': ++i, ...r, Result: readerWords(r.Result), Note: readerWords(r.Note) }); // plain words, after each branch below has classified its row from the engine's own
 
   if (reg.length) {
-    push({ 'Search term / variant': W.registerSection, Scope: '', Result: '', Outcome: '', Note: '', _section: true });
+    // THE REGISTER'S HEAD STATES THE SERVICE'S REACH, from the answer the run recorded beside its coverage line
+    // (`register_reach` in the scope facts), so the two cannot disagree. A run that recorded none, a service that
+    // declares no office list or a run from before the record, keeps the head it always had.
+    const head = registerReach ? W.registerSectionReach(registerReach.service, registerReach.offices) : W.registerSection;
+    push({ 'Search term / variant': head, Scope: '', Result: '', Outcome: '', Note: '', _section: true });
     for (const n of reg) {
       const note = plainNote(n.notes);
       push({
@@ -647,7 +651,7 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
   const registerOnly = contract?.registerOnly === true;
   const joinedTerms = contract?.commonLawJoinedTerms instanceof Set ? contract.commonLawJoinedTerms
     : Array.isArray(contract?.commonLawJoinedTerms) ? new Set(contract.commonLawJoinedTerms.map(s => String(s).toUpperCase())) : null;
-  const searched = searchRows(auditParsed, { findings: contract?.findings || [], joinedTerms, registerOnly });
+  const searched = searchRows(auditParsed, { findings: contract?.findings || [], joinedTerms, registerOnly, registerReach: contract?.registerReach ?? null });
   const commonLawUnlogged = searched.some(r => r._commonLawUnlogged);
 
   // 1 · Summary
