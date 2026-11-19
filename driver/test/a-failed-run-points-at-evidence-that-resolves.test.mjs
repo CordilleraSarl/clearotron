@@ -82,7 +82,7 @@ test("the marker rides INSIDE the bound — `reason` is still the 200 the ping i
 //
 //   · The pointer arm's PROPERTY did not survive, because its premise did not. A BLOCKING review no
 //     longer produces a failure record, so there is no record for a pointer to point FROM. The reviewer's
-//     flags now reach a reader through the DELIVERED report — asserted by text in pipeline.mock.test.mjs
+//     flags now reach a reader through the DELIVERED report — asserted by text in the pipeline.mock test files
 //     ("the run DELIVERS, with the open points printed") and in t3a-deliver-with-open-points.test.mjs.
 //     That is a stronger carrier than a failure record: the client sees it.
 //

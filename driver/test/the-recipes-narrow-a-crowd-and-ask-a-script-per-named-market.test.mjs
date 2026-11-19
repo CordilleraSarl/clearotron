@@ -13,25 +13,24 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { RECIPES_SENTENCES } from "./ruled-sentences-register-recipes.mjs";
 
 const recipes = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register", "register-recipes.md"), "utf8")
   .replace(/\s+/g, " ");
 
 test("no recipe step denies the narrowing: a crowd is narrowed by the steps in unit.md", () => {
-  assert.ok(recipes.includes("**No recipe step samples a top-N; a crowd is narrowed by the steps in unit.md.**"));
-  assert.ok(recipes.includes("Each named slice is scoped by class and region (breadth, not sufficiency), and `register_enumerate` pages it to "
-    + "completion or returns `incomplete`; a crowd is narrowed by the steps in unit.md, which stop at the first list you can read."));
+  assert.ok(recipes.includes(RECIPES_SENTENCES.recipeStepSamplesTopCrowd));
+  assert.ok(recipes.includes(RECIPES_SENTENCES.eachNamedSliceScopedClass));
   for (const gone of ["narrows-for-tractability", "narrow-to-tractable-and-stop"])
     assert.ok(!recipes.includes(gone), `the recipes still say "${gone}"`);
 });
 
 test("the transliteration recipe asks one script question per market the frame names", () => {
   for (const ruled of [
-    "## Recipe 5 — Foreign-language transliteration **When to use:** the frame names a market whose buyers read a non-Latin script.",
+    RECIPES_SENTENCES.recipeForeignLanguageTransliterationWhen,
     "(#recipe-5--foreign-language-transliteration)",
-    "Ask one script question per market the frame names. Where the register files foreign marks by their romanised form, and it says so, the "
-      + "Latin question already covers them; do not ask it again in other scripts. For each script question you ask:",
-    "**Breadth note.** The script questions here are owned by the `transliteration-numeric` unit. `register_enumerate` owns each query's page loop.",
+    RECIPES_SENTENCES.askOneScriptQuestionPer,
+    RECIPES_SENTENCES.breadthNoteTheScriptQuestions,
   ]) assert.ok(recipes.includes(ruled), `the recipes do not say "${ruled.slice(0, 90)}…"`);
   for (const gone of ["For each transliteration variant in the manifest", "most providers store non-Latin marks in their native script",
     "(worldwide / multi-region scope)", "the unit runs every variant query the manifest declares", "per-jurisdiction named queries"])

@@ -56,7 +56,7 @@ test("a knockout web search that failed prints the reader's line on its Audit Tr
   await buildKnockoutWorkbook(FINDINGS, receipts, out);
   const { sheet, cells } = await workbookRows(out);
   const trail = sheet("Audit Trail");
-  assert.deepEqual(trail.map((r) => r["Result Summary"]), [`FAILED — ${LEFT_OPEN}`, `FAILED — ${TIMED_OUT}`, "ok — 10 bytes"]);
+  assert.deepEqual(trail.map((r) => r["Result summary"]), [`FAILED — ${LEFT_OPEN}`, `FAILED — ${TIMED_OUT}`, "ok — 10 bytes"]);
   assert.ok(trail.every((r) => !("OK/Degraded" in r)), "the engine's OK/Degraded column is back on the lawyer's sheet");
   assert.ok(!cells.some((c) => /API_KEY|driver env|executor threw/.test(c)), "a raw cause reached a reader's cell");
 });
@@ -74,7 +74,7 @@ test("an unusable close-variation cap leaves the setting's name out of the Regis
   await buildKnockoutWorkbook(FINDINGS, [], out, registerCounts);
   const { sheet, cells } = await workbookRows(out);
   const [row] = sheet("Register Counts");
-  assert.equal(row["Notes"], `Close variations: ${LEFT_OPEN}`);
+  assert.equal(row["Note"], `Close variations: ${LEFT_OPEN}`);
   assert.ok(!cells.some((c) => /CLEAROTRON_|\bNaN\b|configuration fault/.test(c)), "the setting or its raw value reached a reader's cell");
 });
 
@@ -165,4 +165,19 @@ test("a slice label a run stored says 'main register search' in every workbook c
     { Mark: "Main Register Sweep", Note: "main register sweep / exact: QZXV [cl 9]" },
   ]);
   assert.deepEqual([ws.getRow(2).getCell(1).value, ws.getRow(2).getCell(2).value], ["Main Register Sweep", "main register search / exact: QZXV [cl 9]"]);
+});
+
+test("a coverage area the engine named by its axis reads the reader's label on Coverage & gaps; any other area is unchanged", async (t) => {
+  const out = tempBook(t, "audit.xlsx");
+  await buildAudit({ findings: [], coverage: [
+    { area: "primary-sweep", state: "confirmed-clean", note: "read in full" },
+    { area: "incumbent-class / named-owner screen", state: "confirmed-clean", note: "no matches" },
+    { area: "Japanese register check for the exact QZXV spelling", state: "open", note: "" },
+  ] }, null, out, "QZXV", { title: "QZXV" });
+  const { sheet } = await workbookRows(out);
+  const areas = sheet("Coverage & gaps").map((r) => r["Area"]);
+  assert.ok(areas.includes("main register search"), `the axis name was not relabelled: ${JSON.stringify(areas)}`);
+  assert.ok(areas.includes("owner portfolio sweep / named-owner screen"));
+  assert.ok(areas.includes("Japanese register check for the exact QZXV spelling"), "an area the engine did not name by its axis changed");
+  assert.ok(!areas.some((a) => /^(?:primary-sweep|incumbent-class|transliteration-numeric)\b/.test(a)), "an engine axis identifier reached an Area cell");
 });

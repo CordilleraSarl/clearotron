@@ -156,6 +156,48 @@ export function recordGoodsProvenance(body) {
   return { operation: "undocumented", field: "none" };
 }
 
+/**
+ * The goods of one official record body AS THE REGISTER HOLDS THEM, for a reader who asks for the original wording:
+ * [{classes, text, language, translation}], one entry per class statement. `text` is the statement in its own
+ * language, copied; `language` is that language where the record names it, else null; `translation` is the
+ * provider's machine translation with its language, or null. A provider's marker for no goods is no statement.
+ * PURE, over the same shapes recordGoods reads; a statement the record holds in several languages gives one entry
+ * per language.
+ */
+export function recordGoodsAsRegistered(body) {
+  const b = Array.isArray(body) ? body[0] : body;
+  if (!b || typeof b !== "object") return [];
+  const out = [];
+  const lang = (l) => String(l ?? "").trim() || null;
+  const push = (classes, text, language, translation = null) => {
+    const t = String(text ?? "").trim();
+    if (!t || isNoGoodsMarker(t, language)) return;
+    out.push({ classes: [...new Set((classes ?? []).map(niceClass).filter(Boolean))], text: t, language: lang(language), translation });
+  };
+  if (Array.isArray(b.goodsServices)) {
+    for (const g of b.goodsServices) {
+      const tr = String(textOf(g?.translation) ?? "").trim();
+      push(g?.classes, textOf(g?.description), g?.language,
+        tr && !isNoGoodsMarker(tr, g?.translation_language) ? { text: tr, language: lang(g?.translation_language) } : null);
+    }
+  }
+  if (out.length === 0 && Array.isArray(b?._raw?.classifications))
+    for (const c of b._raw.classifications) push([c?.nice_class], c?.goods_services_text, c?.goods_services_language);
+  if (out.length === 0 && b.goodsAndServices != null) {
+    const gs = b.goodsAndServices;
+    if (typeof gs === "string") push([], gs, null);
+    else if (Array.isArray(gs)) {
+      for (const g of gs) {
+        if (typeof g === "string") { push([], g, null); continue; }
+        const classes = [g?.classNumber ?? g?.class ?? g?.niceClass ?? g?.nice_class];
+        if (Array.isArray(g?.description)) for (const d of g.description) push(classes, textOf(d), d?.language);
+        else push(classes, textOf(g?.description ?? g?.text ?? g?.goods), null);
+      }
+    }
+  }
+  return out;
+}
+
 // THE RAW GOODS LIST SAYS NOTHING THE NORMALISED ONE DOES NOT. A Clarivate record holds its goods twice: as the
 // register wrote them (`_raw.goodsServices.intClassDescriptions`) and as the provider maps them, item for item,
 // into `goodsServices` beside it (providers/clarivate/src/core.js `normalizeGoodsServices`). On a crowded test

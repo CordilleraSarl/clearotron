@@ -18,6 +18,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { resolveSkillReads } from "../stages.mjs";
 import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
+import { MATTER_FRAME_SENTENCES } from "./ruled-sentences-matter-frame.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = (rel) => readFileSync(join(DRIVER, rel), "utf8");
@@ -49,5 +50,5 @@ test("the register's own reading steps still carry it, and the frame is given it
   for (const stage of ["register-unit", "register-digest"]) assert.ok(carries(stage, body).length > 0, `${stage} lost the paragraph`);
   // CONTROL: the check can say no. The frame holds no register answer yet, so it is not told to read one.
   assert.deepEqual(carries("matter-frame", body), [], "the frame was handed the order to read a register answer it does not hold");
-  assert.ok(read("skills/matter-frame/SKILL.md").includes("### Which classes to search"), "the frame's own class rule is gone");
+  assert.ok(read("skills/matter-frame/SKILL.md").includes(MATTER_FRAME_SENTENCES.whichClassesSearch), "the frame's own class rule is gone");
 });

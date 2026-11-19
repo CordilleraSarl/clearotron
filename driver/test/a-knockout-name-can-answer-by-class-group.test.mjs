@@ -135,7 +135,7 @@ test("on a batch the glance panel says the same as the name's own row", () => {
 test("a name with no groups keeps its one chip and its whole class list, byte for byte", () => {
   const html = page({ ...NAMED(), classesSearched: [3, 9] });
   const stop = "--med";
-  assert.ok(html.includes(`<span class="ko-band" style="background:var(${stop})">Notable</span>\n        \n        <p class="ko-classes">Classes 3, 9</p>`), "the band column's markup moved");
+  assert.ok(html.includes(`<span class="ko-band" style="background:var(${stop});color:var(${stop}-on)">Notable</span>\n        \n        <p class="ko-classes">Classes 3, 9</p>`), "the band column's markup moved");
 });
 
 test("report-data carries the groups only where a name has them", () => {

@@ -20,6 +20,7 @@ import { formNeighbourhood } from "../form-neighbourhood.mjs";
 import { STAGES } from "../stages.mjs";
 import { coverageFormBrief } from "../coverage-form.mjs";
 import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
+import { REGISTER_SENTENCES } from "./ruled-sentences-register.mjs";
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register");
 const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
@@ -101,8 +102,6 @@ test("the write-up's coverage brief and manual give a crowd the narrowing closed
     + "aside with its count and a reason, the status is `withheld-by-judgment` with that reason: that is finished work, not a gap. A crowd the "
     + "identical mark's own narrowing left, still a crowd after the last step or in a country its market step did not read, stays `coverage-limited`."));
   const skill = flat("SKILL.md");
-  assert.ok(skill.includes("a waiting family the reading turn chose not to ask, so it was never searched; or a crowd the narrowing steps closed (a "
-    + "narrowed list that was read answered it, or the reading step set it aside with its count and a reason). Its reason goes into the audit "
-    + "workbook, not the report."));
+  assert.ok(skill.includes(REGISTER_SENTENCES.waitingFamilyTheReadingTurn));
   assert.ok(!skill.includes("Only a `family` row takes it"), "the register manual still keeps withheld-by-judgment for a family row alone");
 });

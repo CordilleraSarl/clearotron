@@ -23,6 +23,9 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 import { driverDir } from "../../shared/driver-dir.mjs";
+import { REFUTATION_SENTENCES } from "./ruled-sentences-narrative-refutation.mjs";
+import { PHASE2_SENTENCES } from "./ruled-sentences-phase2-execution.mjs";
+import { SYNTHESIS_SENTENCES } from "./ruled-sentences-synthesis-rules.mjs";
 
 // The writer's session, as its tools are told it; the research tool below asks under the same one.
 const SESSION = "clearance-acme-run-amber-fox-synthesis";
@@ -46,19 +49,14 @@ const DRIVER = join(HERE, "..");
 const SERVER = join(DRIVER, "engine", "mcp", "perplexity-server.mjs");
 
 // The ruled sentences, word for word (design, 2026-10-28). Written out here so a change to any of them fails this file.
-const RULED = "A search that failed, was refused, was not asked, or has no available saved answer supplies no search result. "
-  + "Use relevant evidence already held, and leave any remaining use or enforcement question unknown. "
-  + "Never describe the unanswered question as a search that found no result, no use, or no enforcement, and do not infer a low "
-  + "enforcement likelihood from that failure. Record no-result only when a completed search actually returned no result. "
-  + "Preserve unaffected findings and complete the report from the evidence available.";
+const RULED = PHASE2_SENTENCES.searchThatFailedWasRefused;
 const CORRECTION = "Correct the affected findings and any narrative, answers, actions or conclusions that depend on them. "
   + "If the driver already holds an accepted record, use record_synthesis to send only the corrected findings, affected narrative "
   + "sections and changed registers. Otherwise complete the initial recording with the corrected values. Preserve unaffected work.";
 const REVIEW = "Check a claimed research result against the relevant saved answer and its completion record. "
   + "A failed or unanswered question is not a negative result. An unknown status alone does not require an invented source. "
   + "Flag unsupported claims and the conclusions that depend on them; preserve unaffected work.";
-const CHECKED = "The driver checks the structured finding record. A required use-check source belongs in that record. "
-  + "An unknown use status does not require an invented source. The reviewer checks whether the available evidence supports the claim.";
+const CHECKED = REFUTATION_SENTENCES.theDriverChecksTheStructured;
 const NO_RESULT = "perplexity_research — no result";
 // Design's amendments of 2026-10-29, word for word: the refusal's examples, the review's pointer, the writer's field
 // rule and the own-rights line.
@@ -456,7 +454,7 @@ test("the ruled words stand where the writer, its correction and the review read
   assert.ok(step.includes(`${CHECKED} The synthesis stage cannot ship an *inferred* "no use"`), "Step 3.5 still names the retired validator");
   const rules = flat(["clearance-search", "synthesis-rules.md"]);
   assert.ok(rules.includes(`MUST record its source in the finding's \`use_check.source\`. ${CHECKED} A use-negative`), "the synthesis manual still names the retired validator");
-  assert.ok(rules.includes(`MUST record its source in the finding's \`own_rights.source\`, which the driver checks in the structured finding record. **Know what the negative means:**`), "the own-rights paragraph still names the retired validator");
+  assert.ok(rules.includes(SYNTHESIS_SENTENCES.mustRecordItsSourceThe), "the own-rights paragraph still names the retired validator");
   assert.equal(/validator rejects the narrative/.test(rules), false, "the synthesis manual still names the retired narrative validator");
   const review = flat(["narrative-refutation", "SKILL.md"]);
   assert.ok(review.includes(`an un-run check dressed as a clean negative is a defect. ${CHECKED}`), "the review still names the retired validator");
@@ -475,16 +473,16 @@ test("the ruled words stand where the writer, its correction and the review read
 test("an unknown use owes no source line in the manuals or the review", () => {
   const flat = (p) => readFileSync(join(DRIVER, "skills", ...p), "utf8").replace(/\s+/g, " ");
   const step = flat(["clearance-search", "phase2-execution.md"]);
-  const contract = step.slice(step.indexOf("**Output contract"), step.indexOf("record its result in that finding's `use_check.source`"));
-  assert.ok(contract.includes("names non-use revocation/cancellation as the mitigant),"));
+  const contract = step.slice(step.indexOf("**Output contract"), step.indexOf(PHASE2_SENTENCES.recordItsResultThatFinding));
+  assert.ok(contract.includes(PHASE2_SENTENCES.namesNonUseRevocationCancellation));
   assert.equal(/unknown/i.test(contract), false, "Step 3.5 still owes a source line for an unknown use");
   const rules = flat(["clearance-search", "synthesis-rules.md"]);
   const filed = rules.slice(rules.indexOf("## Filed-vs-used check"), rules.indexOf("## Own-rights evidence"));
-  assert.ok(filed.includes('(non-use revocation/cancellation, "not in actual use", "no marketplace use found") MUST record'));
+  assert.ok(filed.includes(SYNTHESIS_SENTENCES.nonUseRevocationCancellationNot));
   assert.equal(filed.includes("owner's use unknown"), false, "the synthesis manual still owes a source line for an unknown use");
   const review = flat(["narrative-refutation", "SKILL.md"]);
-  const bullet = review.slice(review.indexOf("**Use-negative without a search.**"), review.indexOf("### Optics-escalation checks"));
-  assert.ok(bullet.includes("check `use_check.source` and the held answer supporting that claim"));
+  const bullet = review.slice(review.indexOf(REFUTATION_SENTENCES.useNegativeWithoutSearch), review.indexOf("### Optics-escalation checks"));
+  assert.ok(bullet.includes(REFUTATION_SENTENCES.checkUseCheckSourceAnd));
   assert.equal(bullet.includes("owner's use unknown"), false, "the review still flags an honest unknown as blocking");
 });
 

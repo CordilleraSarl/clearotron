@@ -22,6 +22,7 @@ import { readFileSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 import { trackedFiles, skipReason } from "../shared/tracked-files.mjs";
+import { publishedOf, publishedReader } from "../shared/reference-guard-classes.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -35,6 +36,17 @@ export const GATHERED = Object.freeze({
   "driver/skills/clearance-variants/SKILL.md": "driver/test/ruled-sentences-variants.mjs",
   "driver/skills/knockout-assess/SKILL.md": "driver/test/ruled-sentences-knockout-assess.mjs",
   "driver/skills/placement-inquiry/SKILL.md": "driver/test/ruled-sentences-placement-inquiry.mjs",
+  "driver/skills/clearance-register/SKILL.md": "driver/test/ruled-sentences-register.mjs",
+  "driver/skills/narrative-refutation/SKILL.md": "driver/test/ruled-sentences-narrative-refutation.mjs",
+  "driver/skills/clearance-register/register-recipes.md": "driver/test/ruled-sentences-register-recipes.mjs",
+  "driver/skills/clearance-search/phase2-execution.md": "driver/test/ruled-sentences-phase2-execution.mjs",
+  "driver/skills/clearance-search/synthesis-rules.md": "driver/test/ruled-sentences-synthesis-rules.mjs",
+  "driver/skills/matter-frame/SKILL.md": "driver/test/ruled-sentences-matter-frame.mjs",
+  "driver/skills/blind-frame/SKILL.md": "driver/test/ruled-sentences-blind-frame.mjs",
+  "driver/skills/clearance-register/providers/corsearch.md": "driver/test/ruled-sentences-corsearch.mjs",
+  "driver/skills/clearance-register/providers/signa.md": "driver/test/ruled-sentences-signa.mjs",
+  "driver/skills/clearance-search/firm-wide-reasoning.md": "driver/test/ruled-sentences-firm-wide-reasoning.mjs",
+  "driver/skills/knockout-frame/SKILL.md": "driver/test/ruled-sentences-knockout-frame.mjs",
 });
 
 const LIT = String.raw`"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'|\x60(?:\\.|[^\x60\\$\n])*\x60`;
@@ -70,12 +82,17 @@ export function namesManual(text, manual) {
 export function manualPins(manuals, root = ROOT) {
   const tracked = trackedFiles(GUARD, { root, pathspec: ["driver/test", "mcp-server/test", "driver/skills"] });
   if (tracked === null) return null;
-  const tests = tracked.filter((f) => f.endsWith(".test.mjs"));
-  const texts = new Map(tests.map((f) => [f, readFileSync(join(root, f), "utf8")]));
+  // WHAT THIS CHECKOUT PUBLISHES, not what an overlay laid beside it: a private test or manual laid into the tree is not
+  // the product's, and its own repository holds its own wording (the source-pin census reads the tree the same way).
+  const p = publishedOf(tracked, root);
+  if (p.error) throw new Error(`count-manual-pins: ${p.error}`);
+  const read = publishedReader(root, (f) => readFileSync(join(root, f), "utf8"));
+  const tests = p.files.filter((f) => f.endsWith(".test.mjs"));
+  const texts = new Map(tests.map((f) => [f, read(f)]));
   const held = new Map([...texts].map(([f, t]) => [f, heldStrings(t)]));
   const out = {};
-  for (const m of manuals ?? tracked.filter((f) => f.endsWith(".md"))) {
-    const text = flat(readFileSync(join(root, m), "utf8"));
+  for (const m of manuals ?? p.files.filter((f) => f.startsWith("driver/skills/") && f.endsWith(".md"))) {
+    const text = flat(read(m));
     const files = {};
     for (const [f, vs] of held) {
       if (!namesManual(texts.get(f), m)) continue;

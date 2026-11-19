@@ -193,7 +193,7 @@ test("a territory a slice taken out of the band covers is open, and the page chi
     const i = html.indexOf('class="panel where"');
     const j = i === -1 ? -1 : html.indexOf('<div class="sec"', i);
     const panel = i === -1 ? "" : (j === -1 ? html.slice(i) : html.slice(i, j));
-    return [...panel.matchAll(/<span class="wchip" title="([^"]*)">/g)].map((m) => m[1]);
+    return (panel.match(/<p class="wnames">([^<]*)<\/p>/)?.[1].split(", ") ?? []);
   };
   const before = chips(renderHtml(parsed, [], [], { searchDepth: depth, planTerritories: { searched: ["JP", "KR", "FR"], unreached: [] } }));
   assert.equal(before.length, 3, `premise: every country is chipped with nothing open: ${JSON.stringify(before)}`);

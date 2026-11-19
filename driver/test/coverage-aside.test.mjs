@@ -29,6 +29,7 @@ import { fileURLToPath } from "node:url";
 import { deriveScopeFacts } from "../scope-facts.mjs";
 import { CAPABILITY_GAP_MARKER } from "../../providers/_shared/execute-plan.mjs";
 import { nativeScriptIndexGap } from "../../providers/_shared/script-form.mjs";
+import { SYNTHESIS_SENTENCES } from "./ruled-sentences-synthesis-rules.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const RULES = readFileSync(join(HERE, "..", "skills", "clearance-search", "synthesis-rules.md"), "utf8");
@@ -39,8 +40,8 @@ test("arm 1 — the rule is where the seat writing the coverage prose reads it",
   assert.match(FLAT, /The same rule covers the FACT, not only the number/,
     "the coverage-prose rule stopped at numbers, and the fact walked through the gap");
   // …and it sits with the number rule it extends, not in a paragraph of its own somewhere else.
-  const numberRule = FLAT.indexOf("Carry the substance, drop the number");
-  const factRule = FLAT.indexOf("The same rule covers the FACT");
+  const numberRule = FLAT.indexOf(SYNTHESIS_SENTENCES.carryTheSubstanceDropThe);
+  const factRule = FLAT.indexOf(SYNTHESIS_SENTENCES.theSameRuleCoversThe);
   assert.ok(numberRule > 0 && factRule > numberRule && factRule - numberRule < 400,
     "the extension must sit with the rule it extends, or it reads as an unrelated instruction");
 });

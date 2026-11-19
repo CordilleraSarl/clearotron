@@ -1867,7 +1867,10 @@ export function readJxLanes(doc) {
         return { recorded: true, asked: v.asked ?? null, ran: v.ran ?? null,
           shortfall: typeof v.shortfall === "boolean" ? v.shortfall : null,
           cause: typeof v.cause === "string" ? v.cause : null,
-          why: typeof v.why === "string" ? v.why : null };
+          why: typeof v.why === "string" ? v.why : null,
+          // A depth the record cannot confirm says so to the client in the owner's sentence; what the record does say,
+          // slice by slice, rides beside it as `detail` (jx.mjs), and the scorer keeps it.
+          ...(typeof v.detail === "string" ? { detail: v.detail } : {}) };
       })(),
       // ONLY the fold can state fold health. The declaration is frozen before the fold runs, so a
       // `degraded` there would be a health claim about work not yet done — the fallback leg that used

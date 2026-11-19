@@ -102,3 +102,13 @@ for (const [k, base] of Object.entries(NEW)) {
 const OLD_HIGH = '#860F09';
 console.log(`\naccent-collision check: old --high ${OLD_HIGH} vs --accent #860F09 -> contrast ${contrast(OLD_HIGH, '#860F09').toFixed(2)} (identical)`);
 console.log(`                       new --high ${NEW.high} vs --accent #860F09 -> contrast ${contrast(NEW.high, '#860F09').toFixed(2)}`);
+
+// THE EMAILS PRINT A BAND'S WORD AS COLOURED TEXT ON WHITE, so every stop needs a text value, low and severe
+// included, which the report's chips never asked for. A base that reads 4.5:1 on white is used as it is;
+// otherwise the light rule darkens it. Darkening all five would print High and Very High in one dark red.
+const TEXT_ONLY = { low: '#8A9440', severe: '#7C1E15' };
+console.log('\n=== a band\'s word on white, all five stops (brand.mjs BAND_TEXT) ===');
+for (const [k, base] of Object.entries({ ...NEW, ...TEXT_ONLY })) {
+  const word = contrast(base, '#FFFFFF') >= 4.5 ? base : txLight(hsl(base));
+  console.log(`${k.padEnd(6)} base ${base} on #FFFFFF ${contrast(base, '#FFFFFF').toFixed(2)}   word ${word} on #FFFFFF ${contrast(word, '#FFFFFF').toFixed(2)}`);
+}

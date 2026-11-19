@@ -15,6 +15,7 @@ import { capabilitiesFor } from "../register-capabilities.mjs";
 import { decideAxes } from "../coverage-ledger.mjs";
 import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
 import { VARIANTS_SENTENCES } from "./ruled-sentences-variants.mjs";
+import { RECIPES_SENTENCES } from "./ruled-sentences-register-recipes.mjs";
 
 const MODEL = {
   schema_version: 1, mark: "GLIMBEX", dominant_element: "GLIMBEX",
@@ -58,7 +59,7 @@ test("the register manual's incumbent paragraph asks in the matter's classes and
 
 test("no register recipe asks for the client's word in the incumbent's classes", () => {
   const recipes = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register", "register-recipes.md"), "utf8");
-  assert.ok(recipes.includes("## Recipe 1 — Compound tagline"), "guard: the recipes were read");
+  assert.ok(recipes.includes(RECIPES_SENTENCES.recipeCompoundTagline), "guard: the recipes were read");
   assert.doesNotMatch(recipes, /ENUMERATE the incumbent(?:'s)? classes|classes <incumbent classes>/,
     "a recipe the unit reads would ask again for the search the plan no longer compiles");
   assert.doesNotMatch(recipes, /Industry-incumbent shadow|incumbent's portfolio|owner:<incumbent name pattern>/,
@@ -71,7 +72,7 @@ test("no manual or tool the engine reads asks for a competitor's or an enforcer'
   const digest = read("skills", "clearance-register", "digest.md");
   const orchestrator = read("..", "docs", "architecture", "retired-manuals", "clearance-search-spine.md");
   const tools = read("engine", "mcp", "recording-server.mjs");
-  assert.ok(recipes.includes("## Recipe 6 — Multi-word descriptive tagline") && digest.includes("### Step 4 —")
+  assert.ok(recipes.includes(RECIPES_SENTENCES.recipeMultiWordDescriptiveTagline) && digest.includes("### Step 4 —")
     && orchestrator.includes("**Competitor intelligence:**") && tools.includes("watchlist_owners"), "guard: each file was read");
   assert.doesNotMatch(recipes, /owner-bound competitor queries|owner:<each competitor>|\+ competitor portfolio/,
     "a recipe asks for every competitor's register");

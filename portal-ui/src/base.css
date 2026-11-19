@@ -788,6 +788,17 @@ table.data td.nest-2 {
 @media (max-width: 560px) {
   .names-wrap { overflow-x: auto; position: relative; }
 }
+/* THE EMPTY-LIST SENTENCE STAYS INSIDE THE FRAME. Its cell spans every column, so below 560px it is as
+   wide as the table's 860px floor, and the sentence ran past the wrapper's right edge: measured at 390 to
+   400px it read "… Pick another company" until the reader dragged the table. It now wraps at the
+   wrapper's width (the container measured above) and holds the wrapper's left edge while the table
+   scrolls under it. At desktop widths the table fits its wrapper and neither rule moves anything. */
+.names-wrap .list-empty {
+  display: block;
+  position: sticky;
+  left: 12px;
+  max-width: calc(100cqi - 24px);
+}
 /* Eight pixels either side instead of twelve, on every column but the two narrow ones at the left: the
    actions column takes a quarter of the table, and the text columns keep their words on one line by
    giving up padding rather than width. The date and the actions give up a little more. */

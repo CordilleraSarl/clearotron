@@ -16,11 +16,12 @@ import { riskTier, TONE_TIER, regenIndex, regenSurfaces, auditRouteFor, markRepo
 import { runKnockoutLint, deliveryFlagLines } from '../predelivery-lint.mjs';
 import { note } from '../log.mjs';
 import { addSheet } from './xlsx.mjs';
+import { KNOCKOUT_EMAIL as KO, KNOCKOUT_WORKBOOK as KW } from './strings.mjs';
 import { COUNT_PREDICATES, COUNT_BASIS, countsForMark, countLine, countedMarks, variantFormsLine, disclosedFloor, moreThan, countNote } from '../register-count.mjs';
 import { noneCarriedForward, recordsForMark, recordsLine, normalizeRegisterRecordLinks } from '../register-records.mjs';
 import { reportIdentityFor, productCoverageNote, kebab } from '../search-policy.mjs';
 import { batchMarkName } from '../mark-name.mjs';
-import { renderKnockoutHtml } from './render-knockout.mjs';
+import { renderKnockoutHtml, DEGRADED_NOTE } from './render-knockout.mjs';
 import { knockoutReportData } from './report-data.mjs';
 import { readFrozenMethod, inputsLine, FROZEN_METHOD_FILE } from '../framework-method.mjs';
 import { resolveDemoData, demoBannerMd } from './demo-marking.mjs';   //
@@ -99,6 +100,24 @@ export const knockoutStatement = (framework, marks) =>
 // than "never asked for". 'Impact' goes with them: it was the second rating scale. What replaces them is
 // what the typed record actually carries. A `—` means the shape that produced the row never had the
 // field (an archived prose finding), which is a different fact from an empty cell.
+/**
+ * WHAT A KNOCKOUT LEFT OPEN, from the run's own record (design's rule, approved by the owner 2026-11-18). PURE.
+ *
+ * A register step that failed is a row under the report's "Register" name: the listing that never came back is not
+ * searched, and a reading that stopped part-way is partly covered. A name whose automated research was unavailable is a
+ * row under its own name, not searched. The notes are the shipped lines, the deferral row's for a step and the page's
+ * own for a name, so nothing here is a new sentence and nothing comes from model prose. A refused listing is not a
+ * search that failed (the run never offered it), and a run with nothing left open returns no rows.
+ */
+export function knockoutLeftOpen(steps, marks = []) {
+  return [
+    ...(steps?.listing ? [{ area: PART_NAMES.register, state: 'not-searched', note: plainDeferralReason(steps.listing.reason) }] : []),
+    ...(steps?.reading ? [{ area: PART_NAMES.register, state: 'coverage-limited', note: plainDeferralReason(steps.reading.reason) }] : []),
+    ...(Array.isArray(marks) ? marks : []).filter((m) => m?.degraded === true && String(m?.name ?? '').trim())
+      .map((m) => ({ area: String(m.name).trim(), state: 'not-searched', note: DEGRADED_NOTE })),
+  ];
+}
+
 export async function buildKnockoutWorkbook(findings, receipts, outPath, registerCounts = null, qcFlags = [], framework = null, registerRecords = null, frameworkMethod = null, ownerChecks = [], degraded = {}) {
   const ExcelJS = (await import('exceljs')).default;
   const wb = new ExcelJS.Workbook();
@@ -118,7 +137,7 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
       });
     }
     for (const n of m.negatives ?? []) {
-      negativeRows.push({ 'Mark': m.name, 'Search Term': n.term ?? '', 'Source / Context': n.source ?? '', 'Result': n.note ?? 'No results found', 'Notes': '' });
+      negativeRows.push({ 'Mark': m.name, 'Search Term': n.term ?? '', 'Source / Context': n.source ?? '', 'Result': n.note ?? KW.noResults, 'Notes': '' });
     }
   }
   // EACH CELL'S QUERY, not just its spelling. Since the knockout's cells search the spelling followed by
@@ -136,8 +155,8 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
     // was searched on. An archived run's rows print as they were delivered: the mark as the term, and on
     // its second web question the kinds of use it asked about, in the frame's words.
     'Mark': r.mark, 'Search Term': searchedTerms(r),
-    'Source / Context': `${r.executor ?? 'perplexity'} (${r.preset ?? ''})${Array.isArray(r.places) && r.places.length ? ` — ${r.places.join(', ')}` : r.question && r.inUseAs ? ` — in use as ${r.inUseAs}` : ''}`,
-    'Result Summary': r.ok ? `ok — ${r.bytes ?? 0} bytes` : `FAILED — ${plainCause(r.cause)}`,
+    'Source / Context': `${r.executor ?? 'perplexity'} (${r.preset ?? ''})${Array.isArray(r.places) && r.places.length ? ` — ${r.places.join(', ')}` : r.question && r.inUseAs ? KW.inUseAs(r.inUseAs) : ''}`,
+    'Result Summary': r.ok ? KW.callOk(r.bytes ?? 0) : KW.failed(plainCause(r.cause)),
     'Finding Reference': r.ok && refByMark.has(r.mark) ? refByMark.get(r.mark) : '',
   }));
   // AN OWNER LOOKUP THAT GOT NO ANSWER (ruling 498): the card still prints its use-check line, so the
@@ -148,7 +167,7 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
     if (!c || c.ok) continue;
     trailRows.push({
       'Mark': c.mark, 'Search Term': c.query ?? '', 'Source / Context': `perplexity (${c.preset ?? ''})`,
-      'Result Summary': `FAILED — ${plainCause(c.cause)}`,
+      'Result Summary': KW.failed(plainCause(c.cause)),
       'Finding Reference': '',
     });
   }
@@ -156,7 +175,7 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
   // part's name where a search would be named, the reader's line for a part left open, and every other
   // cell `—`. A run with none of them builds the workbook it built before.
   const partRow = (name, reason) => ({ 'Mark': '—', 'Search Term': '—', 'Source / Context': name,
-    'Result Summary': `FAILED — ${plainDeferralReason(reason)}`, 'Finding Reference': '—' });
+    'Result Summary': KW.failed(plainDeferralReason(reason)), 'Finding Reference': '—' });
   if (degraded.reading) trailRows.push(partRow(PART_NAMES.register, degraded.reading.reason));
   if (degraded.review) trailRows.push(partRow(RULED_WORDS.plainLanguageReview, degraded.review.reason));
   if (degraded.machineChecks) trailRows.push(partRow(PART_NAMES.machineChecks, degraded.machineChecks.reason));
@@ -193,7 +212,7 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
       // A row with no url has nothing to name and nothing to look up, so it is the one shape that
       // cannot be printed at all.
       if (!url) continue;
-      trailRows.push({ 'Mark': m.name, 'Search Term': `Set aside: ${url}`, 'Source / Context': '—',
+      trailRows.push({ 'Mark': m.name, 'Search Term': KW.setAside(url), 'Source / Context': '—',
         'Result Summary': ground,
         'Finding Reference': '—' });
     }
@@ -216,37 +235,37 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
   const noteRows = [];
   // WHAT THE LOOK AT THE CORRECTED RECORD STILL FOUND, for the reviewing lawyer, in its own words. Not on the client's report.
   // Where the run could not close it, the note says why, so the lawyer can tell a repair that failed from a look that did not run.
-  const OPEN_BECAUSE = { 'not-corrected': 'Not corrected in this search: ', 'not-rechecked': 'Corrected, but not read again: ', 'not-answered': 'Not answered: ' };
-  for (const p of degraded.openPoints ?? []) noteRows.push({ 'Mark': p.mark, 'Type': 'Internal note', 'Note': `${OPEN_BECAUSE[p.state] ?? ''}${p.problem}` });
+  const OPEN_BECAUSE = KW.openBecause;
+  for (const p of degraded.openPoints ?? []) noteRows.push({ 'Mark': p.mark, 'Type': KW.internalNote, 'Note': `${OPEN_BECAUSE[p.state] ?? ''}${p.problem}` });
   for (const m of findings.marks ?? []) {
-    for (const n of m.purpleNotes ?? []) noteRows.push({ 'Mark': m.name, 'Type': 'Internal note', 'Note': n });
-    if (m.registerEstimate) noteRows.push({ 'Mark': m.name, 'Type': 'Register estimate (model)', 'Note': m.registerEstimate });
+    for (const n of m.purpleNotes ?? []) noteRows.push({ 'Mark': m.name, 'Type': KW.internalNote, 'Note': n });
+    if (m.registerEstimate) noteRows.push({ 'Mark': m.name, 'Type': KW.registerEstimate, 'Note': m.registerEstimate });
   }
   if (noteRows.length) addSheet(wb, 'Working Notes', ['Mark', 'Type', 'Note'], noteRows);
 
   if (registerCounts?.marks?.length) {
     // A floor the register disclosed is its own figure, printed as the report prints it.
-    const cell = (c) => (Number.isFinite(c?.total) ? c.total : disclosedFloor(c) !== null ? moreThan(disclosedFloor(c)) : 'not available');
+    const cell = (c) => (Number.isFinite(c?.total) ? c.total : disclosedFloor(c) !== null ? moreThan(disclosedFloor(c)) : KW.notAvailable);
     const countRows = (findings.marks ?? []).map((m) => {
       const e = countsForMark(registerCounts, m.name);
       const row = {
         'Mark': m.name,
-        'Classes counted': (e?.classes ?? []).join(', ') || 'all classes',
-        'Territories': (registerCounts.scope?.regions ?? []).join(', ') || 'worldwide',
+        'Classes counted': (e?.classes ?? []).join(', ') || KW.allClasses,
+        'Territories': (registerCounts.scope?.regions ?? []).join(', ') || KW.worldwide,
       };
       for (const p of COUNT_PREDICATES) row[p.column] = cell(e?.counts?.[p.key]);
       // WHICH FORMS the close column was counted over. Without it the aggregate is a number nobody can
       // check: two runs of the same mark under different rule tables produce different figures and the
       // sheet would show no reason why. An archived schema-1 row (no expansion cell) says so in words
       // rather than showing a blank, which on this sheet reads as "none".
-      row['Close variation forms'] = variantFormsLine(e) ?? 'not recorded — this search predates the close-variation column';
+      row['Close variation forms'] = variantFormsLine(e) ?? KW.formsNotRecorded;
       row['Register'] = registerCounts.providerLabel ?? registerCounts.provider ?? '';
       row['Basis'] = COUNT_BASIS;
       // The reader's line for anything missing. The provider's own reason, or an exception's message, stays
       // in the counts record where it was written (register-count.mjs, countNote).
       row['Notes'] = COUNT_PREDICATES
         .filter((p) => !Number.isFinite(e?.counts?.[p.key]?.total) && disclosedFloor(e?.counts?.[p.key]) === null)
-        .map((p) => `${p.label}: ${countNote(e?.counts?.[p.key]) ?? 'no count recorded'}`)
+        .map((p) => `${p.label}: ${countNote(e?.counts?.[p.key]) ?? KW.noCountRecorded}`)
         .join(' · ');
       return row;
     });
@@ -274,15 +293,15 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
     const recordRows = [];
     // The cell says which question found the filing: `default` is the register's containing search. An owner search is no
     // question about the name, so it gets no word here. An archived listing names no predicate, so it reads as it did.
-    const basisCell = (basis, predicate) => (predicate === 'default' ? 'containing search' : predicate === 'phonetic' ? 'sound-alike search'
-      : predicate === 'owner' ? '—' : basis === 'close' ? 'close variation' : 'identical');
+    const basisCell = (basis, predicate) => (predicate === 'default' ? KW.containingSearch : predicate === 'phonetic' ? KW.soundAlikeSearch
+      : predicate === 'owner' ? '—' : basis === 'close' ? KW.closeVariation : KW.identical);
     for (const m of findings.marks ?? []) {
       const e = recordsForMark(registerRecords, m.name);
       if (!e) {
         recordRows.push({
-          'Mark': m.name, 'Matched form': '—', 'Basis': '—', 'Trademark': 'not listed',
+          'Mark': m.name, 'Matched form': '—', 'Basis': '—', 'Trademark': KW.notListed,
           'Owner': '—', 'Status': '—', 'Classes': '—', 'Territory': '—', 'Filed': '—', 'Registered': '—',
-          'Record': '—', 'Note': registerRecords.unavailable ?? 'no listing was recorded for this mark',
+          'Record': '—', 'Note': registerRecords.unavailable ?? KW.noListingRecorded,
         });
         continue;
       }
@@ -308,30 +327,30 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
         if (t.ok) continue;
         recordRows.push({
           'Mark': m.name, 'Matched form': t.term, 'Basis': basisCell(t.basis, t.predicate),
-          'Trademark': 'not available', 'Owner': '—', 'Status': '—', 'Classes': '—', 'Territory': '—',
+          'Trademark': KW.notAvailable, 'Owner': '—', 'Status': '—', 'Classes': '—', 'Territory': '—',
           'Filed': '—', 'Registered': '—', 'Record': '—',
-          'Note': !t.reason ? 'the search did not run' : t.notAsked ? t.reason : plainCause(t.reason),
+          'Note': !t.reason ? KW.searchDidNotRun : t.notAsked ? t.reason : plainCause(t.reason),
         });
       }
       // An added class's question that has no answer is on the sheet as what it is, with the reason where one was given.
       for (const t of e.terms ?? []) {
         if (!t.unresolved) continue;
         recordRows.push({
-          'Mark': m.name, 'Matched form': t.term, 'Basis': 'identical', 'Trademark': 'not available', 'Owner': '—', 'Status': '—', 'Classes': (t.classes ?? []).join(', ') || '—', 'Territory': '—',
-          'Filed': '—', 'Registered': '—', 'Record': '—', 'Note': t.reason ?? 'the search did not run',
+          'Mark': m.name, 'Matched form': t.term, 'Basis': KW.identical, 'Trademark': KW.notAvailable, 'Owner': '—', 'Status': '—', 'Classes': (t.classes ?? []).join(', ') || '—', 'Territory': '—',
+          'Filed': '—', 'Registered': '—', 'Record': '—', 'Note': t.reason ?? KW.searchDidNotRun,
         });
       }
       if (!(e.records ?? []).length && (e.terms ?? []).every((t) => t.ok)) {
         // A count above zero that nothing read is not none: the register holds filings under it.
         recordRows.push({
-          'Mark': m.name, 'Matched form': '—', 'Basis': '—', 'Trademark': noneCarriedForward(e) ? 'none carried forward' : (e.terms ?? []).some((t) => t.setAside) ? 'not available' : 'none found',
+          'Mark': m.name, 'Matched form': '—', 'Basis': '—', 'Trademark': noneCarriedForward(e) ? KW.noneCarriedForward : (e.terms ?? []).some((t) => t.setAside) ? KW.notAvailable : KW.noneFound,
           'Owner': '—', 'Status': '—', 'Classes': '—', 'Territory': '—', 'Filed': '—', 'Registered': '—',
           'Record': '—', 'Note': recordsLine(e) ?? '',
         });
       }
       if (e.capped) {
         recordRows.push({
-          'Mark': m.name, 'Matched form': '—', 'Basis': '—', 'Trademark': `capped at ${e.cap}`,
+          'Mark': m.name, 'Matched form': '—', 'Basis': '—', 'Trademark': KW.cappedAt(e.cap),
           'Owner': '—', 'Status': '—', 'Classes': '—', 'Territory': '—', 'Filed': '—', 'Registered': '—',
           'Record': '—', 'Note': recordsLine(e) ?? '',
         });
@@ -346,7 +365,7 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
     addSheet(wb, 'Register Filings',
       ['Mark', 'Matched form', 'Basis', 'Trademark', 'Owner', 'Status', 'Classes', 'Territory', 'Filed', 'Registered', 'Record', 'Note'],
       (findings.marks ?? []).map((m) => ({
-        'Mark': m.name, 'Matched form': '—', 'Basis': '—', 'Trademark': 'not available', 'Owner': '—', 'Status': '—',
+        'Mark': m.name, 'Matched form': '—', 'Basis': '—', 'Trademark': KW.notAvailable, 'Owner': '—', 'Status': '—',
         'Classes': '—', 'Territory': '—', 'Filed': '—', 'Registered': '—', 'Record': '—', 'Note': plainDeferralReason(degraded.listing.reason),
       })));
   }
@@ -361,8 +380,8 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
   const qcLines = (Array.isArray(qcFlags) ? qcFlags : []).filter((l) => typeof l === 'string' && l.trim());
   if (qcLines.length) {
     addSheet(wb, 'Machine Checks', ['Check', 'What it found'], [
-      { 'Check': 'Machine checks flagged', 'What it found': `${qcLines.length} — enumerated below; the report was delivered as usual.` },
-      ...qcLines.map((l, i) => ({ 'Check': `Check ${i + 1}`, 'What it found': l })),
+      { 'Check': KW.checksFlagged, 'What it found': KW.checksFlaggedCount(qcLines.length) },
+      ...qcLines.map((l, i) => ({ 'Check': KW.check(i + 1), 'What it found': l })),
     ]);
   }
   await wb.xlsx.writeFile(outPath);
@@ -404,24 +423,24 @@ export function composeKnockoutEmail({ findings, framework, overall, reports = [
   const only = n === 1 ? urlByMark.get((findings.marks ?? [])[0]?.name) ?? null : null;
   // The product's name and the reference, each where there is one: a part left out leaves no dash or colon behind it.
   const lead = [productName, job?.ref].filter(Boolean).map((p) => esc(p)).join(' — ');
-  const head = `<p style="${FONT}">${lead ? `${lead}: ` : ''}<b>${n} mark${n === 1 ? '' : 's'}</b>, ${n === 1 ? 'rating' : 'highest rating'} <b style="color:${t.txt}">${esc(overall ?? '')}</b>.`
-    + (only ? ` <a href="${esc(only)}">Open the full report</a>${auditUrl ? ` · <a href="${esc(auditUrl)}">audit workbook</a>` : ''}.` : '')
-    + (!only && n > 1 ? ` One report per name below${auditUrl ? `, and one <a href="${esc(auditUrl)}">audit workbook</a> for the batch` : ''}.` : '') + `</p>`;
+  const head = `<p style="${FONT}">${lead ? `${lead}: ` : ''}<b>${KO.marks(n)}</b>, ${n === 1 ? KO.rating : KO.highestRating} <b style="color:${t.txt}">${esc(overall ?? '')}</b>.`
+    + (only ? ` <a href="${esc(only)}">${KO.openReport}</a>${auditUrl ? ` · <a href="${esc(auditUrl)}">${KO.auditWorkbook}</a>` : ''}.` : '')
+    + (!only && n > 1 ? ` ${KO.onePerName}${auditUrl ? KO.batchWorkbook(`<a href="${esc(auditUrl)}">${KO.auditWorkbook}</a>`) : ''}.` : '') + `</p>`;
   // — THE FIRST NON-BLANK, never element 0. `?? fallback` catches null and undefined
   // and not "", so an array whose first entry was an empty string put an empty italic line at the top of
   // the requester's email. That array shape reaches here now that the lint no longer refuses it, and the
   // fallback exists precisely so this line is never blank.
   const firstCaveat = (findings.batch?.standardCaveats ?? []).map((c) => String(c ?? "").trim()).find(Boolean);
-  const caveat = `<p style="${FONT}"><i>${esc(firstCaveat || 'Ratings reflect our common law assessment. Register analysis may adjust ratings in either direction.')}</i></p>`;
+  const caveat = `<p style="${FONT}"><i>${esc(firstCaveat || KO.defaultCaveat)}</i></p>`;
   // One band and the classes behind it, or where the evidence divides them, each group's band and classes.
-  const oneBand = (band, qualifier, classes) => `<b style="color:${bandTier(framework, band).txt ?? 'black'}">${esc(band)}${qualifier ? ` (${esc(qualifier)})` : ''}</b>${classes?.length ? ` — Classes ${esc(classes.join(', '))}` : ''}`;
+  const oneBand = (band, qualifier, classes) => `<b style="color:${bandTier(framework, band).txt ?? 'black'}">${esc(band)}${qualifier ? ` (${esc(qualifier)})` : ''}</b>${classes?.length ? ` — ${KO.classes} ${esc(classes.join(', '))}` : ''}`;
   const bandLine = (m) => (Array.isArray(m.classGroups) && m.classGroups.length
     ? m.classGroups.map((g) => oneBand(g.band, g.ratingQualifier, g.classes)).join('; ')
     : oneBand(m.rating, m.ratingQualifier, m.classesDriving));
   const lines = (findings.marks ?? []).map((m) => {
     const counted = registerCounts ? countLine(countsForMark(registerCounts, m.name)) : null;
     const href = n > 1 ? urlByMark.get(m.name) ?? null : null;
-    return `<li><b>${esc(m.name)}</b>: ${bandLine(m)}${counted ? ` — ${esc(counted)}` : ''}${m.degraded ? ' — <i>manual verification recommended (automated research unavailable)</i>' : ''}${href ? ` — <a href="${esc(href)}">open this report</a>` : ''}</li>`;
+    return `<li><b>${esc(m.name)}</b>: ${bandLine(m)}${counted ? ` — ${esc(counted)}` : ''}${m.degraded ? ` — <i>${KO.manualCheck}</i>` : ''}${href ? ` — <a href="${esc(href)}">${KO.openThisReport}</a>` : ''}</li>`;
   }).join('');
   // A10, extended to this lane 2026-07-31 — the surviving machine-check flags reach the reviewing
   // lawyer WITH the report, in the projection's own words, or they reach nobody. The gate stays a gate:
@@ -804,6 +823,12 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     const markBand = single ? overall : worstBand(framework, [m]);
     writeRO(file, renderKnockoutHtml(one, framework, {
       runId, overall: markBand, issued, searched, auditFile, probeRan, registerCounts, registerRecords, ownerChecks, instructedScope, identity, matter: runId,
+      // The page's workbook control links the portal's audit route, the one the cover note links: the pool path to the
+      // file reaches no handler. Null when the workbook could not be written, and then no control is drawn.
+      auditHref: auditFile ? auditRouteFor(origin, runId) : null,
+      // The searches this run did not complete, for this page's names: the Knockout's own Left open grid.
+      // A listing failure counts only where no filings came back, as the workbook's own part rows read it.
+      leftOpen: knockoutLeftOpen({ listing: registerRecords ? null : steps.listing, reading: steps.reading }, one.marks),
       // Carried as its own value rather than folded into `registerRecords`, because three sites PRINT
       // `registerRecords.unavailable` and a marker invented here would become client-facing wording.
       registerRecordsUnreadable,

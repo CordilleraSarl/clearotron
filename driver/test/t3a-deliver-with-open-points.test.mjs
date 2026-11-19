@@ -7,7 +7,7 @@
 // and a report the reviewer still refuses ships with its rating and nothing added. The section is still
 // built, from the same review and the same corrective observation, and it goes to the run record.
 //
-// The end-to-end arm lives in pipeline.mock.test.mjs, where a BLOCKING run is driven to delivery and the
+// The end-to-end arm lives in the pipeline.mock test files, where a BLOCKING run is driven to delivery and the
 // rendered report is read. This file carries the two halves that arm cannot reach: the section builder's
 // own vocabulary, and a SOURCE-LEVEL check on the late-hardening branch.
 import { test } from "node:test";

@@ -26,6 +26,17 @@ export const adapter = {
       return err ? { ok: false, cause: err.slice(0, 140) } : { ok: true };
     } catch (e) { return { ok: false, cause: `fetch threw: ${e.message}` }; }
   },
+  // One cited registration's logo, for the report: one image request, ledgered like every other call.
+  async markImage(uri, { agentId, sessionKey, recordLog = null }) {
+    if (!process.env.CLARIVATE_API_KEY) return { ok: false, cause: "CLARIVATE_API_KEY absent from driver env" };
+    let doMarkImage, DEFAULT_BASE;
+    try { ({ doMarkImage, DEFAULT_BASE } = await import("./core.js")); }
+    catch (e) { return { ok: false, cause: `plugin core unavailable: ${e.message}` }; }
+    const base = process.env.CLARIVATE_API_BASE || DEFAULT_BASE;
+    try {
+      return await doMarkImage(process.env.CLARIVATE_API_KEY, base, uri, { kind: "image", agentId, sessionKey, sessionId: null, recordLog });
+    } catch (e) { return { ok: false, cause: `fetch threw: ${e.message}` }; }
+  },
   // Depth 2's count, same contract as corsearch's (see above). A TRUE count-only call here: POST
   // /count fetches no records and works at any magnitude. regions[] is mandatory on this provider,
   // so a worldwide count is a disclosed capability gap rather than a number — register-count.mjs

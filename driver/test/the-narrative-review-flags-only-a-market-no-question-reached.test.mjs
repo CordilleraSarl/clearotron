@@ -12,15 +12,14 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { REFUTATION_SENTENCES } from "./ruled-sentences-narrative-refutation.mjs";
 
 const manual = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "narrative-refutation", "SKILL.md"), "utf8")
   .replace(/\s+/g, " ");
 
 test("the narrative review flags only a material market no question reached at all", () => {
-  assert.ok(manual.includes("- For every material jurisdiction named in `matter-context`: is it accounted for — by a ledger row, by a complete "
-    + "worldwide answer, or inside the count of a crowd the identical mark's narrowing left? If no question reached it at all, **FLAG "
-    + "(missing-coverage-row)** — the run cannot account for a jurisdiction it called material."));
-  assert.ok(manual.includes("`missing-coverage-row` — a `matter-context` material jurisdiction no question reached at all"));
+  assert.ok(manual.includes(REFUTATION_SENTENCES.forEveryMaterialJurisdictionNamed));
+  assert.ok(manual.includes(REFUTATION_SENTENCES.missingCoverageRowMatterContext));
   for (const gone of ["is there a ledger row? If a material jurisdiction has no row,", "material jurisdiction with no ledger row at all"])
     assert.ok(!manual.includes(gone), `the narrative review still says "${gone}"`);
 });

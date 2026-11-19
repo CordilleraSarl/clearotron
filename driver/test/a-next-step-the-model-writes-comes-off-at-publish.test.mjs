@@ -16,7 +16,7 @@ import { driverDir } from "../../shared/driver-dir.mjs";
 import { stripNextStepSections, isNextStepHeading } from "../knockout-next-step.mjs";
 import { removeNextStepSections } from "../pipeline-knockout.mjs";
 import { validators } from "../verify-knockout.mjs";
-import { renderKnockoutHtml, splitOutcome } from "../publish/render-knockout.mjs";
+import { renderKnockoutHtml } from "../publish/render-knockout.mjs";
 
 const FW = {
   framework_key: "house-triage",
@@ -154,17 +154,19 @@ test("THE STATED LIMIT: a closing sentence with no heading over it is not touche
   assert.equal(stripNextStepSections(text).text, text);
 });
 
-test("every heading the page would lift into a section of its own is one the pipeline removes first", () => {
-  // The renderer still draws "What happens next" from a record written before this rule. Its test and the
-  // strip's are the same function, so a heading cannot be lifted by one and missed by the other.
+test("the pipeline removes every next-step heading, and the page draws no section from one a record still carries", () => {
+  // The page no longer lifts a next-step block into a "What happens next" section of its own (design's rule, approved
+  // 2026-11-18): a record written before the pipeline's rule renders its read whole, the block where it was written.
   for (const h of ["What to do with it", "What happens next", "Next steps", "Next step", "Recommendations",
     "Recommendation", "Practical next steps", "What to do"]) {
     const text = `${READ}\n\n## ${h}\n\nTake it to clearance.`;
     assert.ok(isNextStepHeading(`## ${h}`), `${h}: not recognised as a next step`);
-    assert.ok(splitOutcome(text).outcome, `${h}: the page would not lift it — this arm needs a heading it would`);
     const { text: stripped } = stripNextStepSections(text);
-    assert.equal(splitOutcome(stripped).outcome, "", `${h}: the page would still draw a section from it`);
     assert.ok(!stripped.includes("Take it to clearance"), `${h}: the section survived the strip`);
+    const marks = [{ name: "IRONWHISK", rating: "Manageable", basis: "b", factors: ["f"], counterFactors: ["c"], mitigation: "", findings: [], assessment: text }];
+    const html = renderKnockoutHtml({ marks, batch: { executiveSummary: "s" } }, FW, { runId: "r", overall: "Manageable" });
+    assert.doesNotMatch(html, /<h2>What happens next<\/h2>/, `${h}: the page drew the section`);
+    assert.ok(html.includes("Take it to clearance"), `${h}: a record's own words were dropped from its read`);
   }
 });
 

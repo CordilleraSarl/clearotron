@@ -115,7 +115,8 @@ test("the register's own steps and a finding's written card are degraded parts w
 
 test("each part's name is a label the report or the workbook already prints", () => {
   const render = readFileSync(join(HERE, "..", "publish", "render.mjs"), "utf8");
-  const xlsx = readFileSync(join(HERE, "..", "publish", "xlsx.mjs"), "utf8");
+  // The workbook's words: its code, and the catalogue its sentences moved into.
+  const xlsx = ["xlsx.mjs", "strings.mjs"].map((f) => readFileSync(join(HERE, "..", "publish", f), "utf8")).join("\n");
   assert.ok(render.includes(`'${PART_NAMES.courtDecisions}'`), "the report's search-coverage row");
   assert.ok(xlsx.includes(`'${PART_NAMES.searchLog}'`), "the workbook's tab");
   assert.ok(xlsx.includes(`'⚠  ${PART_NAMES.machineQc}'`), "the workbook's Summary row for the checks");
