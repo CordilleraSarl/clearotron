@@ -805,7 +805,7 @@ const REGISTER_ORDINAL_FLOOR = 900;
 // SHOWING THE RATER'S ACTUAL READ IS THE OTHER HALF, and it cannot be done here: it needs the assess
 // seat to emit which filings it weighed. Deriving it from the assessment's prose would be a regex over
 // rendered prose, which is the thing this lane's structure-at-source rule exists to prevent.
-export const NOT_WEIGHED_LINE = 'Register listing — this card carries no rating of its own';
+export const NOT_WEIGHED_LINE = K.filingCard.notWeighed;
 const NOT_WEIGHED = NOT_WEIGHED_LINE;
 
 /**
@@ -898,21 +898,21 @@ function registerRightPhrase(r) {
   const echoes = (kind === 'registration' && REGISTRATION_WORDS.test(status))
     || (kind === 'application' && /^(?:appl|filed?)/i.test(status));
   const bracket = status && !echoes ? ` (${status.toLowerCase()})` : '';
-  return `${where}${kind}${bracket}`.trim();
+  return `${where}${kind === 'registration' ? K.filingCard.registration : K.filingCard.application}${bracket}`.trim();
 }
 
 function registerStatement(r, provider) {
   const name = String(r?.mark ?? r?.name ?? '').trim();
   const classes = (Array.isArray(r.classes) ? r.classes : []).filter((n) => Number.isFinite(Number(n)));
   const lead = [name, registerRightPhrase(r)].filter(Boolean).join(', ');
-  const owner = r.owner ? `by ${r.owner}` : 'owner not stated on the record';
+  const owner = r.owner ? K.filingCard.by(r.owner) : K.filingCard.ownerNotStated;
   const cls = classes.length
-    ? `class${classes.length === 1 ? '' : 'es'} ${classes.join(', ')}`
-    : 'classes not stated on the record';
+    ? K.filingCard.classes(classes.length, classes.join(', '))
+    : K.filingCard.classesNotStated;
   // A close-variation card says WHICH near-form matched, because the name at the head of the sentence is
   // then not the name the client asked about and a reader must not have to guess which it is. A filing the reading
   // step found names its question, and that question may be a wider search, which is no close variation.
-  const via = r.matchedBasis === 'close' && r.matchedForm ? (r.question ? ` Found by a search on ${r.matchedForm}.` : ` Found under the close variation ${r.matchedForm}.`) : '';
+  const via = r.matchedBasis === 'close' && r.matchedForm ? (r.question ? K.filingCard.foundBySearch(r.matchedForm) : K.filingCard.foundUnderVariation(r.matchedForm)) : '';
   return `${lead} ${owner}, ${cls}.${via}`;
 }
 
@@ -1076,15 +1076,15 @@ function sourceChips(v) {
 
 // The clearance lane's own label, copied rather than re-worded. One spelling across
 // both products is the point: a reader who has seen it on a clearance report knows what it means here.
-const USE_CHECK_LABEL = 'Use-check source:';
+const USE_CHECK_LABEL = K.filingCard.useCheckLabel;
 
 // WHAT THE CARD SAYS OF AN OWNER LOOKUP, read from the lookup's own outcome (owner-use-check.mjs), never from a marker:
 // a lookup that failed or was refused, and a completed answer that carries no link, used to print the same "no result"
 // literal, and neither shows a search that found nothing. The words are the owner's (approved 2026-10-28). A lookup's
 // row with a link cites it. A completed search that found nothing keeps the existing no-result line, and no lookup
 // today gives a sign of one beyond a missing link, which alone does not establish it.
-export const USE_CHECK_UNAVAILABLE = 'Use check unavailable.';
-export const USE_CHECK_LINK_UNAVAILABLE = 'link unavailable.';
+export const USE_CHECK_UNAVAILABLE = K.filingCard.useCheckUnavailable;
+export const USE_CHECK_LINK_UNAVAILABLE = K.filingCard.useCheckLinkUnavailable;
 /** A lookup's outcome: "linked" with its link, "no-link", or "unavailable". `null` when no lookup was owed. PURE. */
 export function ownerCheckOutcome(row) {
   if (!row) return null;
@@ -1219,19 +1219,19 @@ function registerFindingBlock(v, markIndex, reads = null, framework = null, owne
           <div class="rail" style="background:var(${stop ?? '--faint'})"></div>
           <div class="body">
             <div class="cardhead">
-              <span class="fnum">${esc(v.ref)}</span><h3 class="who">${esc(r.mark ?? 'Unnamed filing')}</h3>${
-    band ? `<span class="ko-findband" style="background:var(${stop});color:var(${stop}-on)">${bandChipText(band, method, row?.inputs)}</span>` : ''}<span class="src reg">Register</span>
-              <button class="ask-fi no-print">\u2726 Ask AI about this finding</button>
+              <span class="fnum">${esc(v.ref)}</span><h3 class="who">${esc(r.mark ?? K.filingCard.unnamed)}</h3>${
+    band ? `<span class="ko-findband" style="background:var(${stop});color:var(${stop}-on)">${bandChipText(band, method, row?.inputs)}</span>` : ''}<span class="src reg">${K.chips.register}</span>
+              <button class="ask-fi no-print">${K.finding.askAi}</button>
             </div>
             <p class="ko-findmeta">${meta}</p>
             <p class="ko-findnet">${esc(v.statement)}</p>
             ${/* The 2026-09-16 report redesign — the head, the meta line and the one-line read stay visible; the rest
                  sits behind a fold, as it does on a clearance card, so a screen of many names reads as a
                  screen rather than as a wall. */''}
-            <details class="drill"><summary>Full detail</summary><div class="drillbody">
+            <details class="drill"><summary>${K.finding.fullDetail}</summary><div class="drillbody">
             ${basisLine(band, read)}
             ${useCheckLine ? `<p class="ko-findev">${useCheckLine}</p>` : ''}
-            <p class="ko-findev">Register record: ${receipt}</p>
+            <p class="ko-findev">${K.filingCard.registerRecord}${receipt}</p>
             </div></details>
           </div>
         </div>

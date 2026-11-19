@@ -445,6 +445,23 @@ export const KNOCKOUT_PAGE = Object.freeze({
     expandAll: 'Expand all',
     collapseAll: 'Collapse all',
   }),
+  // A register filing's card: its statement, its head and fold, and the use check on its owner.
+  filingCard: Object.freeze({
+    registration: 'registration',
+    application: 'application',
+    by: (owner) => `by ${owner}`,
+    ownerNotStated: 'owner not stated on the record',
+    classes: (n, list) => `class${n === 1 ? '' : 'es'} ${list}`,
+    classesNotStated: 'classes not stated on the record',
+    foundBySearch: (form) => ` Found by a search on ${form}.`,
+    foundUnderVariation: (form) => ` Found under the close variation ${form}.`,
+    unnamed: 'Unnamed filing',
+    registerRecord: 'Register record: ',
+    notWeighed: 'Register listing — this card carries no rating of its own',
+    useCheckLabel: 'Use-check source:',
+    useCheckUnavailable: 'Use check unavailable.',
+    useCheckLinkUnavailable: 'link unavailable.',
+  }),
 });
 
 /** The clearance report page: its own words, section by section. A value a sentence carries arrives formatted. */
