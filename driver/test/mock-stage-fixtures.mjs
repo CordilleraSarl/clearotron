@@ -2425,11 +2425,11 @@ export function applyStageWrites(msg, argv) {
       // link was laid out by hand. Every one of those is the driver's now, so what the mock sends is what
       // the seat sends: the caption, the checks, and the notes.
       recordMockToolCall(runDir, "record_report_overview", "recording-report-overview");
-      // MOCK_PERMISSION_PROSE RIDES `methodology`, and it has to ride SOMETHING. It is PR-5's gate-closing
+      // MOCK_PERMISSION_PROSE RIDES AN ACTION LINE, and it has to ride SOMETHING. It is PR-5's gate-closing
       // scenario — a false "tool was blocked" line in the shell that evaluateClientGate must catch — so a
       // conversion that quietly dropped it would retire a live lint scenario while every test still
-      // passed. The seat can no longer author a stray section, but it can still say this in a scope note,
-      // which is the honest post-conversion shape of the same defect.
+      // passed. It rode the methodology note until that field retired (2026-11-19); a check line is the
+      // seat's own prose in the shell, and the same defect can be written there.
       const permNote = process.env.MOCK_PERMISSION_PROSE
         ? "Register note: register_enumerate was blocked by a tool-permission gate this run." : "";
       // MOCK_OVERVIEW_SCOPE_COUNT=1 — the overview's FIRST rendering states a search count in its own prose, the sibling
@@ -2440,16 +2440,15 @@ export function applyStageWrites(msg, argv) {
       // is clean. Keyed on the overview's own file, as MOCK_OVERVIEW_SCOPE_COUNT is.
       const citeNote = process.env.MOCK_OVERVIEW_CITES && !existsSync(join(runDir, "report-overview.md"))
         ? `Finding ${process.env.MOCK_OVERVIEW_CITES} remains an open question on its goods.` : "";
-      // MOCK_OVERVIEW_BARE=1 — the call a seat may send and the acceptance takes: a caption, an empty actions list, and
-      // no methodology. The driver renders it with no section heading.
+      // MOCK_OVERVIEW_BARE=1 — the call a seat may send and the acceptance takes: a caption and an empty actions list.
+      // The driver renders it with no section heading.
       const r = recordReportOverview(runDir, process.env.MOCK_OVERVIEW_BARE ? {
         overall_caption: "The identical registration in class 9 is the one finding that conditions reliance on this mark; nothing else in the field blocks it.",
         actions: [],
       } : {
         overall_caption: "mock composite 3",
-        actions: [{ text: "Mock use-check: none found", source_link: "https://x.example" }],
-        methodology: [permNote, scopeCountNote, citeNote, "Common-law: marketplace storefronts + web/social/press; variant families swept; one listing surfaced, remainder clean."]
-          .filter(Boolean).join(" "),
+        actions: [{ text: "Mock use-check: none found", source_link: "https://x.example" },
+          ...[[permNote, scopeCountNote, citeNote].filter(Boolean).join(" ")].filter(Boolean).map((text) => ({ text }))],
       });
       // A REFUSED CALL MUST NOT READ AS A CLEAN TURN — the sibling rule, stated at every branch.
       // The redo turn stales findings.json exactly as it did before the conversion — the incident shape

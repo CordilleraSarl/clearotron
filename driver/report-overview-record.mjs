@@ -73,7 +73,7 @@ export function reportOverviewCallPaths(runDir) {
  * list is what the ACCEPTOR enforces, and a guard below asserts the two agree.
  */
 const DECLARED = Object.freeze({
-  "": ["overall_caption", "actions", "methodology", "handling_note"],
+  "": ["overall_caption", "actions", "handling_note"],
   actions: ["text", "source_link", "internal"],
 });
 
@@ -110,7 +110,6 @@ export function lastAcceptedOverview(runDir) {
  *   overall_caption   REPLACES — it is required, so every call carries it and means it.
  *   actions           KEEP-IF-ABSENT — an omitted list is "unchanged", never "empty". An empty ARRAY
  *                     sent deliberately is a different statement and is honoured as one.
- *   methodology       KEEP-IF-ABSENT.
  *   handling_note     KEEP-IF-ABSENT.
  *
  * The absent/empty distinction is the whole care here: `undefined` is "I did not speak about this",
@@ -122,7 +121,6 @@ export function mergeOverviewCall(stored, received) {
   return {
     overall_caption: received?.overall_caption,
     actions: keepIfAbsent(received?.actions, base.actions),
-    methodology: keepIfAbsent(received?.methodology, base.methodology),
     handling_note: keepIfAbsent(received?.handling_note, base.handling_note),
   };
 }
@@ -204,7 +202,8 @@ export function renderReportOverview(model, identity) {
     }
     out.push("");
   }
-  if (model.methodology) out.push("# Methodology", "", model.methodology, "");
+  // NO `# Methodology` IS WRITTEN ANY MORE (2026-11-19). The page never printed the note, and what it carried that a
+  // reader needs is in "Left open", on the page and in the Markdown. A stored report keeps its section as delivered.
   return `${out.join("\n").replace(/\n+$/, "")}\n`;
 }
 
@@ -245,7 +244,6 @@ export function acceptReportOverview(params, { identity = null } = {}) {
     overall_caption,
     handling_note: str(params?.handling_note),
     actions,
-    methodology: str(params?.methodology),
   };
   const content = renderReportOverview(model, identity);
 
@@ -315,7 +313,6 @@ export function recordReportOverview(runDir, received, { now = () => new Date().
     written: at,
     refused: null,
     actions: verdict.model.actions.length,
-    methodology: Boolean(verdict.model.methodology),
     captured: closeCapture({ ok: true }),
     capture_failed: captureFailed,
   };

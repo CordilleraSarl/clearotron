@@ -3552,8 +3552,8 @@ export const STAGES = {
         why: "the audit table rules this row 'J (selection) / M (from coverage rows)' with the move 'render candidate bullets from typed coverage[]; model edits'. The bullet SET is derivable from coverage[] — one candidate per coverage area — so producing the candidates is code's. Only the editing on top is the model's, and that is the sibling row below.",
       },
       "actions.checks_we_ran[] selection and edit — which candidate checks a client should read, and how each result is stated in plain English": {
-        class: "judgment", tokens: ["too_short"],
-        why: "The judgment half of the 'J (selection) / M (from coverage rows)' split: which of the rendered candidates earn a place in a client-facing Actions section, and how a result is worded for a lawyer to read. The audit keeps the model's edit pass — 'model edits' — and only the candidate generation moves.",
+        class: "judgment", tokens: ["too_short", "missing"],
+        why: "The judgment half of the 'J (selection) / M (from coverage rows)' split: which of the rendered candidates earn a place in a client-facing Actions section, and how a result is worded for a lawyer to read. The audit keeps the model's edit pass — 'model edits' — and only the candidate generation moves. `missing:front-matter+shell` reads `# Actions` as the shell marker of an overview the record tool did not render, so the token speaks about this section's presence; it spoke about the Methodology note until that retired (2026-11-19), and still accepts one in a stored report.",
       },
       "actions.checks_we_ran[].source_link (the `([source](<url>))` URL in each bullet)": {
         class: "mechanical:code-rendered", tokens: [],
@@ -3564,10 +3564,6 @@ export const STAGES = {
       // record tool has no field for it and nothing a seat sends can create one, which settles a live
       // three-way disagreement: the skill doc taught the seat to write the section, the dispatch told it
       // not to, and the driver overwrote it either way. Structure now says what three documents could not.
-      "# Methodology (optional plain-English scope note)": {
-        class: "judgment", tokens: ["missing"],
-        why: "Judgment with a derivable half, stated so it is not hidden: WHICH layers ran is on disk (coverage ledger, _driver/plan-execution.json, scope-facts.json), so a candidate note is renderable; whether a scope limit is worth a reviewer's attention, and in what words, is not. `missing:front-matter+shell` accepts `# Methodology` as the shell marker, so the token does speak about this element's presence.",
-      },
       "lint_contracts.numbers_and_reach (registration count stated at most once and only from the finding set; no WIPO/Madrid + 'worldwide' pairing)": {
         class: "mechanical:code-rendered", tokens: [],
         why: "findings.json holds every owner's registration list and every Madrid designation; predelivery-lint already computes both (countsFromFindings, wipoLanguageChecks). The prompt is asking a model to agree with a number code owns — #850 line 237's ruling, applied at the shell as well as the card.",
