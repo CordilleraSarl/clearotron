@@ -32,7 +32,7 @@ import { COMMON_LAW, normRegion, regionName, REGION_NAMES } from './regions.mjs'
 import { parseFindingsJson, bindRecommendation, sentenceCaseLead, CLIENT_TIER_BY_COMPOSITE, bandOf, compareBlockingPower, inDispositionMode, reasonedNegativeGroups } from '../findings-model.mjs';
 import { REC, inPriorityWindow, ownerDisplayName } from '../registry-fidelity.mjs';
 import { registrationSystem } from '../jurisdiction-systems.mjs';
-import { REPORT_PAGE as R } from './strings.mjs';
+import { REPORT_PAGE as R, RECORD_LINKS as LINK_WORDS } from './strings.mjs';
 import { READ_LEAD_RE } from '../report-card-record.mjs';   // D3 — the dedupe gate and the card's acceptance are ONE predicate
 import { logoLockup, BRAND, confPosture, sectionStrip, PALETTE, QUADRANT_COLOURS as QC } from '../../shared/brand.mjs';
 import { NAV_CSS } from '../../shared/site-nav.mjs';
@@ -2374,14 +2374,14 @@ ${EXPORT_MENU_JS}`;
 function markAssessmentBlock(ma) {
   if (ma == null) return '';
   const structured = typeof ma.distinctiveness === 'object' || typeof ma.connotation === 'object';
-  const SEC = `<div class="sec"><span class="num"></span><h2>The mark itself</h2></div>`;
+  const SEC = `<div class="sec"><span class="num"></span><h2>${R.markItself.title}</h2></div>`;
   if (!structured) {
     const dist = String(ma?.distinctiveness ?? '').trim(), conn = String(ma?.connotation ?? '').trim();
     if (!dist && !conn) return '';
     return `${SEC}
   <div class="markassess">
-    ${dist ? `<p><strong>Distinctiveness.</strong> ${esc(dist)}</p>` : ''}
-    ${conn ? `<p><strong>Connotation &amp; meaning.</strong> ${esc(conn)}</p>` : ''}
+    ${dist ? `<p><strong>${R.markItself.distinctiveness}</strong> ${esc(dist)}</p>` : ''}
+    ${conn ? `<p><strong>${esc(R.markItself.connotation)}</strong> ${esc(conn)}</p>` : ''}
   </div>`;
   }
   const lead = (v) => {
@@ -2390,13 +2390,13 @@ function markAssessmentBlock(ma) {
     const dot = (s) => { const t = String(s ?? '').trim(); return t ? (/[.!?…]$/.test(t) ? t : `${t}.`) : ''; };
     const out = (typeof v.read === 'string' && v.read.trim())
       ? dot(v.read)
-      : [dot(v.spectrum), dot(v.acquired && `Acquired distinctiveness: ${String(v.acquired).trim().replace(/[.\s]+$/, '')}`), dot(v.note)].filter(Boolean).join(' ');
+      : [dot(v.spectrum), dot(v.acquired && R.markItself.acquired(String(v.acquired).trim().replace(/[.\s]+$/, ''))), dot(v.note)].filter(Boolean).join(' ');
     return out ? out.charAt(0).toUpperCase() + out.slice(1) : '';
   };
   const cmRows = [], crRows = [];
   for (const v of [ma.distinctiveness, ma.connotation]) {
     if (!v || typeof v !== 'object') continue;
-    for (const r of Array.isArray(v.per_class) ? v.per_class : []) cmRows.push(`<li><b>Class ${esc(String(r.class))}.</b> ${inline(r.note)}</li>`);
+    for (const r of Array.isArray(v.per_class) ? v.per_class : []) cmRows.push(`<li><b>${R.markItself.perClass(esc(String(r.class)))}</b> ${inline(r.note)}</li>`);
     for (const r of Array.isArray(v.per_market) ? v.per_market : []) cmRows.push(`<li><b>${esc(r.market)}.</b> ${inline(r.note)}</li>`);
     for (const r of Array.isArray(v.counter_registrations) ? v.counter_registrations : []) {
       crRows.push(`<li><b>${esc(r.mark || r.uri || '')}</b>${r.owner ? ` — ${esc(r.owner)}` : ''}${r.note ? ` — ${inline(r.note)}` : ''}</li>`);
@@ -2407,10 +2407,10 @@ function markAssessmentBlock(ma) {
   const toggle = (label, rows) => rows.length ? `<details class="ma-more"><summary>${label} (${rows.length})</summary><ul class="ma-rows">${rows.join('')}</ul></details>` : '';
   return `${SEC}
   <div class="markassess">
-    ${dist ? `<p><strong>Distinctiveness.</strong> ${esc(dist)}</p>` : ''}
-    ${conn ? `<p><strong>Connotation &amp; meaning.</strong> ${esc(conn)}</p>` : ''}
-    ${toggle('By class and market', cmRows)}
-    ${toggle('Registrations considered', crRows)}
+    ${dist ? `<p><strong>${R.markItself.distinctiveness}</strong> ${esc(dist)}</p>` : ''}
+    ${conn ? `<p><strong>${esc(R.markItself.connotation)}</strong> ${esc(conn)}</p>` : ''}
+    ${toggle(R.markItself.byClassAndMarket, cmRows)}
+    ${toggle(R.markItself.registrationsConsidered, crRows)}
   </div>`;
 }
 
@@ -2439,7 +2439,7 @@ function contextNotesList(notes = []) {
 // the findings-section assembly below.
 function contextNotesBlock(notes = []) {
   if (!notes.length) return '';
-  return `<div class="sec"><span class="num"></span><h2>Famous-mark neighbours noted</h2></div>
+  return `<div class="sec"><span class="num"></span><h2>${R.famousNeighbours}</h2></div>
   ${contextNotesList(notes)}`;
 }
 
@@ -2552,8 +2552,7 @@ export function demoBannerHtml(isDemo) {
     + 'border-radius:6px;background:#fffbeb;color:#3f2d0b;font-size:13px;line-height:1.45;'
     + '-webkit-print-color-adjust:exact;print-color-adjust:exact;';
   return `<div style="${box}" role="note">`
-    + '<b>Demonstration report.</b> The mark is invented and this matter is not a real engagement. '
-    + 'The register records, the searches behind them and the risk assessment are real.'
+    + `<b>${R.demoBanner.title}</b> ${R.demoBanner.text}`
     + '</div>';
 }
 
@@ -2686,7 +2685,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   const riskLabel = VERDICT_INFO ? (VERDICT_INFO.tier || TIER_STOP_PILL[i]) : RISK_STOPS[i].toUpperCase();
 
   // Excel/audit download — lives inside the topbar Export popover (portal-report strips the link at serve time for non-staff).
-  const excelBtn2 = !hrefAttr(opts.auditFile, { relative: true }) ? '' : `<a class="util" href="${hrefAttr(opts.auditFile, { relative: true })}" download>⬇ Download full audit (Excel)</a>`;
+  const excelBtn2 = !hrefAttr(opts.auditFile, { relative: true }) ? '' : `<a class="util" href="${hrefAttr(opts.auditFile, { relative: true })}" download>⬇ ${R.topbar.downloadAudit}</a>`;
 
   const cardFor = f => matchCard(f, cards);
   const recordsByUri = opts.recordsByUri || new Map();   // Instance #6 — the run's _records/ set (publishReport loads it)
@@ -2810,7 +2809,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   ${/* ONE BAR (the 2026-09-16 report redesign). The site bar is not rendered on a report, so the brand belongs here:
        a reader met two stacked headers, and the lower one carried the only brand. */''}
   ${logoLockup({ mark: 16, cls: 'tb-lockup' })}
-  ${opts.homeHref ? `<a class="homebtn tb-back no-print" href="${escAttr(opts.homeHref)}" title="All reports"><span aria-hidden="true">←</span> <span class="tb-back-lbl">All reports</span></a>` : ''}
+  ${opts.homeHref ? `<a class="homebtn tb-back no-print" href="${escAttr(opts.homeHref)}" title="${R.topbar.allReports}"><span aria-hidden="true">←</span> <span class="tb-back-lbl">${R.topbar.allReports}</span></a>` : ''}
   <span class="sp"></span>
   ${/* With no assessment there is no rating, and with no rating this pill falls back to the CLEAR stop. */''}${opts.assessmentNotCompleted === true ? '' : `<span class="tb-risk" style="background:var(${STOP_VAR[i]});color:var(${STOP_VAR[i]}-on)">${riskLabel}</span>`}
   <span class="mono tb-matter" style="font-size:11px;color:var(--slate)">${esc(fm.matter || opts.runId || '')}${fm.title ? ' / ' + esc(fm.title) : ''}</span>
@@ -2822,19 +2821,19 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
        there — an archived run's stamp is not this publisher's to assume. */''}
   ${(() => {
     const d = (String(opts.issued ?? '').match(/^\d{4}-\d{2}-\d{2}/) || [])[0] ?? opts.issued;
-    return d ? `<span class="mono tb-issued"><span aria-hidden="true">🗓 </span>Issued on ${esc(d)}</span>` : '';
+    return d ? `<span class="mono tb-issued"><span aria-hidden="true">🗓 </span>${esc(R.topbar.issuedOn(d))}</span>` : '';
   })()}
-  <button type="button" class="tbbtn tb-ask no-print">✦ <span class="tb-lbl">Ask AI</span></button>
+  <button type="button" class="tbbtn tb-ask no-print">✦ <span class="tb-lbl">${R.topbar.askAi}</span></button>
   <div class="tb-menu">
     ${EXPORT_TOGGLE}
     ${exportPopover(`
-      <div class="tb-pop-title">Export &amp; audit</div>
+      <div class="tb-pop-title">${esc(R.topbar.exportAndAudit)}</div>
       <button class="util primary" onclick="exportPDF()">⬇ Export PDF (ticked findings)</button>
       ${excelBtn2}
       <div class="tb-sep"></div>
-      <div class="tb-row"><button class="util" onclick="pickAll(true)">Select all</button><button class="util" onclick="pickAll(false)">Select none</button></div>
-      <div class="tb-row"><button class="util" onclick="openAll(true)">Expand all</button><button class="util" onclick="openAll(false)">Collapse all</button></div>
-      <p class="tb-hint">Tick a finding to keep it in the exported PDF; untick to drop it. Internal (review-only) notes are removed on export.</p>
+      <div class="tb-row"><button class="util" onclick="pickAll(true)">${R.topbar.selectAll}</button><button class="util" onclick="pickAll(false)">${R.topbar.selectNone}</button></div>
+      <div class="tb-row"><button class="util" onclick="openAll(true)">${R.topbar.expandAll}</button><button class="util" onclick="openAll(false)">${R.topbar.collapseAll}</button></div>
+      <p class="tb-hint">${R.topbar.exportHint}</p>
     `)}
   </div>
 </div>
@@ -2858,21 +2857,21 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
 
   <!-- doc-52 §3 WHAT ONLY YOU CAN CLOSE — forward decisions, plain English, directly after the verdict (owner, 2026-11-18:
        a reader who forwards the first pages forwards the actions with the conditions). Words unchanged. -->
-  ${buckets.you ? `<div class="sec" id="next"><span class="num"></span><h2>What happens next</h2></div>
+  ${buckets.you ? `<div class="sec" id="next"><span class="num"></span><h2>${R.next.title}</h2></div>
   <div class="panel actions"><div class="actgrp act-you">${renderProse(buckets.you.body)
-    .replace(/\[Time-critical\]\s*/gi, '<span class="src cl" style="margin-right:6px">Time-critical</span> ')
-    .replace(/\[Open question\]\s*/gi, '<span class="src" style="margin-right:6px">Open question</span> ')
-    .replace(/\[Your decision\]\s*/gi, '<span class="src" style="margin-right:6px">Your decision</span> ')
-    .replace(/\[Monitor\]\s*/gi, '<span class="src" style="margin-right:6px">Monitor</span> ')
+    .replace(/\[Time-critical\]\s*/gi, `<span class="src cl" style="margin-right:6px">${R.next.timeCritical}</span> `)
+    .replace(/\[Open question\]\s*/gi, `<span class="src" style="margin-right:6px">${R.next.openQuestion}</span> `)
+    .replace(/\[Your decision\]\s*/gi, `<span class="src" style="margin-right:6px">${R.next.yourDecision}</span> `)
+    .replace(/\[Monitor\]\s*/gi, `<span class="src" style="margin-right:6px">${R.next.monitor}</span> `)
     // — the fifth token. `filing-routine` was schema-valid and unreachable until the pipeline's
     // ADVISORY_TAG gained its fourth entry; without this replace the client reads the literal "[Filing
     // step]". A run assembled before that lands carries none and this replace is inert on it.
-    .replace(/\[Filing step\]\s*/gi, '<span class="src" style="margin-right:6px">Filing step</span> ')
+    .replace(/\[Filing step\]\s*/gi, `<span class="src" style="margin-right:6px">${R.next.filingStep}</span> `)
     // — the fourth token, and the one whose ABSENCE was the defect: an undated condition carried no
     // tag at all, so the items that block reliance were the only items in this section with no chip.
     // buildOnlyYouSection now mints it beside the other three; a run assembled before that lands has none
     // and this replace is inert on it.
-    .replace(/\[Before you can rely\]\s*/gi, '<span class="src cl" style="margin-right:6px">Before you can rely</span> ')}</div></div>` : ''}
+    .replace(/\[Before you can rely\]\s*/gi, `<span class="src cl" style="margin-right:6px">${R.next.beforeYouCanRely}</span> `)}</div></div>` : ''}
 
   <!-- WP-56 B2 — THE MARK ITSELF: the standing distinctiveness + connotation read (EN and non-EN). It
        frames everything below, so it sits with the verdict, above the conflict landscape. Advisory only —
@@ -2977,7 +2976,7 @@ function officeRecordCell(uri, regUri, note) {
 function officeLinkNote() {
   if (!RECORD_LINKS) return '';
   const linked = [...RECORD_LINKS.values()].some((l) => l?.href);
-  return (linked ? 'A registration number shown as a link opens the office’s own page for that record. ' : '')
+  return (linked ? `${LINK_WORDS.opensOfficePage} ` : '')
     + officeReasonSentences(RECORD_LINKS).map((s) => `${esc(s)} `).join('');
 }
 
@@ -2998,6 +2997,6 @@ export function servedModelsLine(ids) {
   const list = (Array.isArray(ids) ? ids : []).map((s) => String(s ?? '').trim()).filter(Boolean);
   if (!list.length) return '';
   const claude = list.every((id) => /^claude-/i.test(id) || CLAUDE_TIER_WORD_RE.test(id));
-  const shown = claude ? list : list.map((id) => (CLAUDE_TIER_WORD_RE.test(id) ? `Claude ${id}` : id));
-  return `<p class="servedby" style="margin:10px 0 0;font-size:13px">Prepared with${claude ? ' Claude' : ''}: ${shown.map(esc).join(', ')}.</p>`;
+  const shown = claude ? list : list.map((id) => (CLAUDE_TIER_WORD_RE.test(id) ? R.claudeModel(id) : id));
+  return `<p class="servedby" style="margin:10px 0 0;font-size:13px">${R.preparedWith(claude, shown.map(esc).join(', '))}</p>`;
 }
