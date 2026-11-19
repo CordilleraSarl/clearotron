@@ -36,6 +36,17 @@ export const GATHERED = Object.freeze({
   "driver/skills/clearance-variants/SKILL.md": "driver/test/ruled-sentences-variants.mjs",
   "driver/skills/knockout-assess/SKILL.md": "driver/test/ruled-sentences-knockout-assess.mjs",
   "driver/skills/placement-inquiry/SKILL.md": "driver/test/ruled-sentences-placement-inquiry.mjs",
+  "driver/skills/clearance-register/SKILL.md": "driver/test/ruled-sentences-register.mjs",
+  "driver/skills/narrative-refutation/SKILL.md": "driver/test/ruled-sentences-narrative-refutation.mjs",
+  "driver/skills/clearance-register/register-recipes.md": "driver/test/ruled-sentences-register-recipes.mjs",
+  "driver/skills/clearance-search/phase2-execution.md": "driver/test/ruled-sentences-phase2-execution.mjs",
+  "driver/skills/clearance-search/synthesis-rules.md": "driver/test/ruled-sentences-synthesis-rules.mjs",
+  "driver/skills/matter-frame/SKILL.md": "driver/test/ruled-sentences-matter-frame.mjs",
+  "driver/skills/blind-frame/SKILL.md": "driver/test/ruled-sentences-blind-frame.mjs",
+  "driver/skills/clearance-register/providers/corsearch.md": "driver/test/ruled-sentences-corsearch.mjs",
+  "driver/skills/clearance-register/providers/signa.md": "driver/test/ruled-sentences-signa.mjs",
+  "driver/skills/clearance-search/firm-wide-reasoning.md": "driver/test/ruled-sentences-firm-wide-reasoning.mjs",
+  "driver/skills/knockout-frame/SKILL.md": "driver/test/ruled-sentences-knockout-frame.mjs",
 });
 
 const LIT = String.raw`"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'|\x60(?:\\.|[^\x60\\$\n])*\x60`;
@@ -80,7 +91,7 @@ export function manualPins(manuals, root = ROOT) {
   const texts = new Map(tests.map((f) => [f, read(f)]));
   const held = new Map([...texts].map(([f, t]) => [f, heldStrings(t)]));
   const out = {};
-  for (const m of manuals ?? p.files.filter((f) => f.endsWith(".md"))) {
+  for (const m of manuals ?? p.files.filter((f) => f.startsWith("driver/skills/") && f.endsWith(".md"))) {
     const text = flat(read(m));
     const files = {};
     for (const [f, vs] of held) {

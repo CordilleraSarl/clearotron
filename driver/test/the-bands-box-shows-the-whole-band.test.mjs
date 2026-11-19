@@ -23,6 +23,7 @@ import { extractBandMeanings } from "../profile-service.mjs";
 import { loadFrameworkManifest } from "../framework.mjs";
 import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
+import { FIRM_WIDE_SENTENCES } from "./ruled-sentences-firm-wide-reasoning.mjs";
 
 const DRIVER_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const SKILLS = join(DRIVER_ROOT, "skills", "clearance-search");
@@ -135,7 +136,7 @@ test("the shared reasoning file carries NO ONE CLIENT's ladder", () => {
   // there was already wrong for the matrix decks and for zephyr. Swapping one client's ladder for
   // another's would have fixed today and left the defect, so the line points at the framework in force.
   const shared = readFileSync(join(SKILLS, "synthesis-rules.md"), "utf8");
-  for (const phrase of ["more likely than not to win", "the client has the better of it"]) {
+  for (const phrase of [FIRM_WIDE_SENTENCES.moreLikelyThanNotWin, FIRM_WIDE_SENTENCES.theClientHasTheBetter]) {
     assert.ok(!shared.includes(phrase),
       `synthesis-rules.md still spells out one framework's ladder ("${phrase}"). It is shared by every `
       + "client, so a concrete ladder here contradicts every other shipped deck");

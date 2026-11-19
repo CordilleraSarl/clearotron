@@ -30,6 +30,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { resolveSkillReads } from "../stages.mjs";
 import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS } from "../findings-model.mjs";
+import { SYNTHESIS_SENTENCES } from "./ruled-sentences-synthesis-rules.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SKILL_REL = "skills/clearance-search/synthesis-rules.md";
@@ -61,7 +62,7 @@ test("the skill file is the guaranteed read it is claimed to be — this guard i
 });
 
 test("the skill's position-required enumeration IS the constant — set equality, extracted at run time", () => {
-  const span = spanBetween("Both positions are required on", "four of the five");
+  const span = spanBetween(SYNTHESIS_SENTENCES.bothPositionsAreRequired, "four of the five");
   const stated = ticked(span);
   assert.ok(stated.length > 0, "no backticked tokens between the markers — the enumeration went prose-only and this guard is reading nothing");
   assert.deepEqual([...stated].sort(), [...POSITION_REQUIRED_DISPOSITIONS].sort(),
@@ -89,7 +90,7 @@ test("the skill's stated exemption closes the vocabulary: required set + `withdr
 });
 
 test("the `net` bullet stays a same-set CLAIM, not a fourth copy of the list", () => {
-  const idx = SKILL.indexOf("required on exactly the same set, with the same two exemptions");
+  const idx = SKILL.indexOf(SYNTHESIS_SENTENCES.requiredExactlyTheSameSet);
   assert.ok(idx >= 0,
     "the net bullet's same-set sentence is gone — if net now enumerates its own disposition list, that list is a new unbound copy and needs binding the way the block above is bound");
 });

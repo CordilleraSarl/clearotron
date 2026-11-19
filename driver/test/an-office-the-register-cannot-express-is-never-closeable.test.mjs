@@ -17,6 +17,7 @@ import { territoryOfRow, rowOutsideProviderOffices } from "../register-plan.mjs"
 import { splitDeferredByCloseability } from "../coverage-ledger.mjs";
 import { PROVIDER_CAPABILITIES } from "../register-capabilities.mjs";
 import { officeGapOf } from "../pipeline.mjs";
+import { REGISTER_SENTENCES } from "./ruled-sentences-register.mjs";
 
 const row = (scope, reason = "the write-up's own words") => ({ axis: "primary-sweep", scope, status: "deferred", reason });
 
@@ -50,7 +51,6 @@ test("the run's split reads the plan's provider, and a register that publishes n
 
 test("the register manual says an office the provider cannot express is never closeable", () => {
   const skill = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register", "SKILL.md"), "utf8").replace(/\s+/g, " ");
-  assert.ok(skill.includes("A provider error or a blocked fetch is a CLOSEABLE gap — escalate and disclose; a predicate or an office the provider "
-    + "cannot express is never closeable, and stays open and disclosed. Either way it clamps the verdict CLEAR→CONDITIONAL."));
+  assert.ok(skill.includes(REGISTER_SENTENCES.providerErrorBlockedFetchCloseable));
   assert.ok(!skill.includes("It is a CLOSEABLE gap — escalate and disclose — and it clamps the verdict"), "the manual still calls every deferral closeable");
 });

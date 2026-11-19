@@ -17,6 +17,17 @@ import { COMMON_LAW_SENTENCES } from "./ruled-sentences-common-law.mjs";
 import { VARIANTS_SENTENCES } from "./ruled-sentences-variants.mjs";
 import { ASSESS_SENTENCES } from "./ruled-sentences-knockout-assess.mjs";
 import { INQUIRY_SENTENCES } from "./ruled-sentences-placement-inquiry.mjs";
+import { REGISTER_SENTENCES } from "./ruled-sentences-register.mjs";
+import { REFUTATION_SENTENCES } from "./ruled-sentences-narrative-refutation.mjs";
+import { RECIPES_SENTENCES } from "./ruled-sentences-register-recipes.mjs";
+import { PHASE2_SENTENCES } from "./ruled-sentences-phase2-execution.mjs";
+import { SYNTHESIS_SENTENCES } from "./ruled-sentences-synthesis-rules.mjs";
+import { MATTER_FRAME_SENTENCES } from "./ruled-sentences-matter-frame.mjs";
+import { BLIND_FRAME_SENTENCES } from "./ruled-sentences-blind-frame.mjs";
+import { CORSEARCH_SENTENCES } from "./ruled-sentences-corsearch.mjs";
+import { SIGNA_SENTENCES } from "./ruled-sentences-signa.mjs";
+import { FIRM_WIDE_SENTENCES } from "./ruled-sentences-firm-wide-reasoning.mjs";
+import { KO_FRAME_SENTENCES } from "./ruled-sentences-knockout-frame.mjs";
 import { GATHERED, manualPins, heldStrings, namesManual } from "../../scripts/count-manual-pins.mjs";
 import { skipReason } from "../../shared/tracked-files.mjs";
 
@@ -28,11 +39,29 @@ const FIXTURES = {
   "driver/skills/clearance-variants/SKILL.md": VARIANTS_SENTENCES,
   "driver/skills/knockout-assess/SKILL.md": ASSESS_SENTENCES,
   "driver/skills/placement-inquiry/SKILL.md": INQUIRY_SENTENCES,
+  "driver/skills/clearance-register/SKILL.md": REGISTER_SENTENCES,
+  "driver/skills/narrative-refutation/SKILL.md": REFUTATION_SENTENCES,
+  "driver/skills/clearance-register/register-recipes.md": RECIPES_SENTENCES,
+  "driver/skills/clearance-search/phase2-execution.md": PHASE2_SENTENCES,
+  "driver/skills/clearance-search/synthesis-rules.md": SYNTHESIS_SENTENCES,
+  "driver/skills/matter-frame/SKILL.md": MATTER_FRAME_SENTENCES,
+  "driver/skills/blind-frame/SKILL.md": BLIND_FRAME_SENTENCES,
+  "driver/skills/clearance-register/providers/corsearch.md": CORSEARCH_SENTENCES,
+  "driver/skills/clearance-register/providers/signa.md": SIGNA_SENTENCES,
+  "driver/skills/clearance-search/firm-wide-reasoning.md": FIRM_WIDE_SENTENCES,
+  "driver/skills/knockout-frame/SKILL.md": KO_FRAME_SENTENCES,
 };
 // Strings a test that reads a manual uses for its own purpose, which the manual happens to share word for word: an example
 // row label used as a unit name, a stage message's own words, a fixture's input. They hold nothing of the manual.
 const COINCIDENT = {
   "driver/skills/clearance-register/digest.md": { "driver/test/coverage-form-seat-axis.test.mjs": 2 },
+  "driver/skills/clearance-search/phase2-execution.md": {
+    "driver/test/a-search-that-did-not-answer-is-never-recorded-as-one-that-found-nothing.test.mjs": 1,
+  },
+  "driver/skills/matter-frame/SKILL.md": {
+    "driver/test/a-class-the-client-reaches-is-added-and-costs-one-question.test.mjs": 3,
+  },
+  "driver/skills/blind-frame/SKILL.md": { "driver/test/blind-frame-model.test.mjs": 1 },
   "driver/skills/knockout-assess/SKILL.md": {
     "driver/test/a-knockout-defect-reaches-the-step-that-can-repair-it.test.mjs": 1,
     "driver/test/a-knockout-reads-the-clients-own-request.test.mjs": 1,
@@ -45,7 +74,7 @@ test("every sentence a fixture holds is in its manual, word for word", () => {
   assert.deepEqual(Object.keys(FIXTURES).sort(), Object.keys(GATHERED).sort(), "a gathered manual has no fixture here, or the reverse");
   for (const [manual, sentences] of Object.entries(FIXTURES)) {
     const text = flat(readFileSync(join(ROOT, manual), "utf8"));
-    assert.ok(Object.keys(sentences).length > 5, `${manual}: only ${Object.keys(sentences).length} sentences, so this would pass on nothing`);
+    assert.ok(Object.keys(sentences).length > 0, `${manual}: its fixture holds no sentence, so this would pass on nothing`);
     const gone = Object.entries(sentences).filter(([, s]) => !text.includes(flat(s))).map(([k]) => k);
     assert.deepEqual(gone, [], `${manual} no longer says these word for word; reword them here, once`);
   }

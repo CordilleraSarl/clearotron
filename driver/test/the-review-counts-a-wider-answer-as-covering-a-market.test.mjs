@@ -12,18 +12,17 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { REFUTATION_SENTENCES } from "./ruled-sentences-narrative-refutation.mjs";
 
 const manual = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "narrative-refutation", "SKILL.md"), "utf8")
   .replace(/\s+/g, " ");
 
 test("a clean row is suspect only where no search covered the market, its own question or a wider complete answer", () => {
-  assert.ok(manual.includes("a `confirmed-clean` row for a jurisdiction no search covered — neither its own question nor a complete answer over a "
-    + "wider scope that contains it — is itself suspect"));
+  assert.ok(manual.includes(REFUTATION_SENTENCES.confirmedCleanRowForJurisdiction));
   assert.ok(!manual.includes("no corresponding scoped search in the search-count audit"), "the review still asks a scoped search per market");
 });
 
 test("the review checks each material market was searched by its own question, a worldwide answer or a crowd's count, or deferred", () => {
-  assert.ok(manual.includes("Confirm that the run searched every jurisdiction it called material — by its own question, by a complete worldwide "
-    + "answer, or inside the count of a crowd the identical mark's narrowing left — or honestly deferred it."));
+  assert.ok(manual.includes(REFUTATION_SENTENCES.confirmThatTheRunSearched));
   assert.ok(!manual.includes("Confirm that the run actually searched, or honestly deferred, every jurisdiction it called material."));
 });

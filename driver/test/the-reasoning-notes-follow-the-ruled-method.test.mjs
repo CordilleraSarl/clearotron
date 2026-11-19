@@ -14,10 +14,12 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { BLIND_FRAME_SENTENCES } from "./ruled-sentences-blind-frame.mjs";
+import { FIRM_WIDE_SENTENCES } from "./ruled-sentences-firm-wide-reasoning.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 const flat = (rel) => readFileSync(join(DRIVER, rel), "utf8").replace(/\s+/g, " ");
-const CROWD = "until the crowd has been counted, narrowed by goods, and its survivors named.";
+const CROWD = BLIND_FRAME_SENTENCES.untilTheCrowdHasBeen;
 
 test("the dilution frame is earned once the crowd is counted, narrowed by goods and its survivors named", () => {
   for (const rel of ["skills/clearance-search/firm-wide-reasoning.md", "skills/blind-frame/SKILL.md"]) {
@@ -29,8 +31,7 @@ test("the dilution frame is earned once the crowd is counted, narrowed by goods 
 
 test("player-made content a lawyer would not raise is set aside with its ground", () => {
   const reasoning = flat("skills/clearance-search/firm-wide-reasoning.md");
-  assert.ok(reasoning.includes("It is still **useful commercial context** — where a lawyer would raise it, surface it in the Findings sheet "
-    + "and the narrative as Low priority / Of Interest; otherwise set it aside with its ground."));
+  assert.ok(reasoning.includes(FIRM_WIDE_SENTENCES.stillUsefulCommercialContextWhere));
   assert.ok(!reasoning.includes("Do not omit it."), "the reasoning manual still forbids setting player-made content aside");
 });
 
