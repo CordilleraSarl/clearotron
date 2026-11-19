@@ -20,7 +20,7 @@ import {
   chooseProduct, blockers, nameBudget, machineryFor, composeSaved, draftFromSaved, inherited, readiness,
   missingPieces,
   MAX_TERRITORIES, checksSummary, runsNote, turnaround, effortUnits,
-  isTerritoryEntry, isKnownTerritory, ALL_TERRITORIES, recommendSearch } from '../src/contract/composerProduct.ts'
+  isTerritoryEntry, isKnownTerritory, ALL_TERRITORIES, recommendSearch, barWhere } from '../src/contract/composerProduct.ts'
 import type { Draft } from '../src/contract/composerProduct.ts'
 import { PRODUCTS, assertMatchesRegistry } from './products.fixture.ts'
 
@@ -174,6 +174,19 @@ test("a company's places taken down to one country keep that country through the
     assert.deepEqual([...moved.territories], [left], `removing ${first} then ${then} dropped ${left} too`)
     assert.deepEqual(geographyFor(moved, FULL, own), { mode: 'named', territories: [left] })
   }
+})
+
+test("the bar names what Where shows, worldwide once the reader has removed every one of the company's places", () => {
+  const own = ['EU', 'US', 'JP']
+  const words = { worldwideOnly: false, worldwideLine: 'Worldwide (the line)', unset: 'worldwide' }
+  let d = draft({ product: MULTI.key })
+  assert.equal(barWhere(d, own, words), 'EU, US, JP', "an untouched draft runs on the company's own list")
+  d = removeTerritory(removeTerritory(takeOverOwnTerritories(d, own, 'EU'), 'US'), 'JP')
+  assert.ok(d.territories.length === 0 && d.replacesOwnTerritories, "premise: the company's list was taken over and emptied")
+  assert.equal(barWhere(d, own, words), 'Worldwide (the line)', "the bar names the company's places the reader removed")
+  assert.equal(barWhere(removeTerritory(takeOverOwnTerritories(draft({ product: MULTI.key }), own, 'EU'), 'JP'), own, words), 'US')
+  assert.equal(barWhere(draft({ product: GLOBAL.key, territories: ['US'] }), own, { ...words, worldwideOnly: true }), 'Worldwide (the line)')
+  assert.equal(barWhere(draft({ product: MULTI.key }), [], words), 'worldwide')
 })
 
 test('the arrival state is one sentence and no panel, because every term is true at once', () => {

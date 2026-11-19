@@ -177,6 +177,32 @@ test("the record keeps, per script, where it completed and where it was missed",
   assert.equal(either.territories.Grek.unnamed, "searched");
 });
 
+// A WORLDWIDE SEARCH IS ONE THE PLAN SAYS IS WORLDWIDE. On a plan stamped `scope_basis: "worldwide"`, a term asking the
+// plan's whole territory list is the worldwide search: kept as one reading, its territories not listed as missed one by
+// one, and all of them searched when it completed. A long list on a plan with no stamp is a list of named territories.
+test("a worldwide search is read from the plan's stamp, never from the length of a list", () => {
+  const exec = (...rows) => ({ executed: rows.map(([qid, state]) => ({ qid, state })) });
+  const world = ["JP", "KR", "CN", "TW", "EM", "GB", "US"];
+  const plan = (stamp, entries) => ({ ...(stamp ? { scope_basis: "worldwide" } : {}), regions: world, entries });
+  // The worldwide Hangul search did not complete; a narrower one in Korea did.
+  const missed = localScripts(plan(true, [
+    { qid: "w", term: "볼타리스", regions: [...world].reverse() },
+    { qid: "k", term: "볼타리스", regions: ["KR"] },
+  ]), exec(["w", "incomplete"], ["k", "enumerated"]));
+  assert.deepEqual(missed, { searched: ["Hang"], missed: [], territories: { Hang: { searched: ["KR"], missed: [], worldwide: "missed" } } });
+  // It completed: every territory it asked is searched, and a narrower search that did not complete leaves no gap.
+  const done = localScripts(plan(true, [
+    { qid: "w", term: "볼타리스", regions: world },
+    { qid: "k", term: "볼타리스", regions: ["KR"] },
+  ]), exec(["w", "enumerated"], ["k", "incomplete"]));
+  assert.deepEqual(done.territories.Hang, { searched: ["CN", "EU", "JP", "KR", "TW", "UK", "US"], missed: [], worldwide: "searched" });
+  // The same list on a plan with no stamp is seven named territories, and a part of the list is not worldwide either.
+  const named = localScripts(plan(false, [{ qid: "w", term: "볼타리스", regions: world }, { qid: "k", term: "볼타리스", regions: ["KR"] }]), exec(["w", "incomplete"], ["k", "enumerated"]));
+  assert.deepEqual(named.territories.Hang, { searched: ["KR"], missed: ["CN", "EU", "JP", "TW", "UK", "US"] });
+  const part = localScripts(plan(true, [{ qid: "w", term: "볼타리스", regions: world.slice(1) }, { qid: "k", term: "볼타리스", regions: ["KR"] }]), exec(["w", "incomplete"], ["k", "enumerated"]));
+  assert.equal(part.territories.Hang.worldwide, undefined);
+});
+
 test("the whole record carries a group tally over the closed set only", () => {
   const rec = searchDepthRecord({ auditMd: AUDIT, recordFileNames: ["jp-1.json"], commonLawGrid: null, caseLawText: "", registerPlan: null });
   assert.deepEqual(Object.keys(rec.cleared.groups).sort(), [...CLEARED_GROUPS].sort());

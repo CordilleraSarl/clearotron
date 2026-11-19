@@ -60,6 +60,7 @@
 import { writeFileSync, mkdirSync, appendFileSync, existsSync, readFileSync, writeSync } from "node:fs";
 import { dirname } from "node:path";
 import { applyStageWrites, beforeForcedFailure, breakFindingsAfterWrites } from "./mock-stage-fixtures.mjs";
+import { stageTextOf } from "../manuals-inline.mjs";
 
 const argv = process.argv.slice(2);
 
@@ -86,11 +87,13 @@ async function readStdin() {
   for await (const chunk of process.stdin) d += chunk;
   return d;
 }
-const msg = (await readStdin()) || positional;
+const wireMsg = (await readStdin()) || positional;
+// THE STAGE'S OWN TEXT decides which stage this mock answers; the manuals a fresh session carries are not it.
+const msg = stageTextOf(wireMsg);
 // Call-log = the REAL argv (flags) + the stdin prompt, so tests can assert both faithfully (the prompt is
 // no longer an argv element). Written after the stdin read so `prompt` is populated.
 if (process.env.MOCK_CLAUDE_CALL_LOG) {
-  try { appendFileSync(process.env.MOCK_CLAUDE_CALL_LOG, JSON.stringify({ argv, prompt: msg, envNames: Object.keys(process.env).sort() }) + "\n"); } catch { /* best-effort */ }
+  try { appendFileSync(process.env.MOCK_CLAUDE_CALL_LOG, JSON.stringify({ argv, prompt: msg, wire: wireMsg, envNames: Object.keys(process.env).sort() }) + "\n"); } catch { /* best-effort */ }
 }
 const resumeIdx = argv.indexOf("--resume");
 const resumed = resumeIdx >= 0 ? (argv[resumeIdx + 1] ?? "") : "";

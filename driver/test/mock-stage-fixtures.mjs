@@ -160,7 +160,7 @@ const GAMING_FALLBACK = ["store.steampowered.com", "store.epicgames.com", "play.
 // spec a routed followup names ("your half-grid spec: …"). Null when the message carries none (legacy
 // prose path / single-member followups) — callers fall back to the historical hardcoded fixture terms.
 export function gridSpecFromMsg(msg) {
-  const gp = msg.match(/grid_spec_path:\s*((?:[A-Za-z]:)?[\\/]\S+grid-spec[^\s]*\.json)/)?.[1];
+  const gp = msg.match(/grid_spec_path\)?:\s*((?:[A-Za-z]:)?[\\/]\S+grid-spec[^\s]*\.json)/)?.[1];
   const hp = msg.match(/half-grid spec:\s*((?:[A-Za-z]:)?[\\/]\S+grid-spec\.half-[a-z0-9]+\.json)/)?.[1];
   // Fix-1: a closure followup names BOTH a SUPPLEMENTARY grid_spec_path AND (on the split) the half spec.
   // The FINDINGS/main-ledger fixtures must key on the full half/canonical spec, never the supplementary
@@ -174,7 +174,7 @@ export function gridSpecFromMsg(msg) {
 // supplementary LEDGER at that output_path — never the canonical/half ledger, which stays exactly the
 // fresh-gather plugin output. Returns the parsed spec (with output_path) or null.
 export function suppSpecFromMsg(msg) {
-  const p = msg.match(/grid_spec_path:\s*((?:[A-Za-z]:)?[\\/]\S+supp-\w+\.json)/)?.[1];
+  const p = msg.match(/grid_spec_path\)?:\s*((?:[A-Za-z]:)?[\\/]\S+supp-\w+\.json)/)?.[1];
   if (!p) return null;
   try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; }
 }
@@ -2903,7 +2903,7 @@ export function applyStageWrites(msg, argv) {
   // extraction, which would otherwise find the findings .md named in the "do NOT rewrite" clause and
   // re-emit a whole document the real seat is told not to touch.
   const connRepair = /record_dispositions/.test(msg) && new RegExp(CONNOTATION_FORM_TOKEN_SRC).test(msg)
-    && msg.match(/grid_spec_path[ =:]+\s*((?:[A-Za-z]:)?[\\/]\S+grid-spec[^\s]*\.json)/);
+    && msg.match(/grid_spec_path\)?[ =:]+\s*((?:[A-Za-z]:)?[\\/]\S+grid-spec[^\s]*\.json)/);
   if (connRepair) {
     const specPath = connRepair[1];
     const half = basename(specPath).match(/^grid-spec\.half-([a-z0-9]+)\.json$/)?.[1] ?? null;

@@ -262,6 +262,7 @@ import { progressQuantity } from "./repairs.mjs";
 // SIBLING ARTIFACT rather than the fail string, because the fail string is cut at 160 chars.
 import { undispatchableFiringDirectives } from "./frame-diff-model.mjs";
 import { witnessStageMethodology, describeMethodologyDrift } from "./methodology-witness.mjs";
+import { inlineManuals } from "./manuals-inline.mjs";
 import { measureManualsSeen } from "./manuals-seen.mjs";
 // — the meaning-sweep form and its accumulator. Both PURE and acyclic: connotation-search.mjs
 // imports nothing, disposition-union.mjs imports only it, and neither reaches back here.
@@ -975,7 +976,11 @@ async function runStageLadder(name, opts, stageHome = null, engine = selectEngin
     // written to disk before the comparison, so the thing being watched cannot reach it. See
     // run-integrity.mjs for why it is not a manifest file and why the append-only journals are excluded.
     const integrityBefore = frozenSnapshot(runDir);
-    const turn = await engine.runTurn({ agent, sessionKey: key, message: effMessage, grantDispatch: base, model, thinking, timeoutSec: effTimeout, resumeRef: warm ? lastSessionRef : undefined, stageHome, mcpConfig, allowedTools: gatherAllowedTools, seatWrites: gatherSeatWrites, skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
+    // THE STAGE'S MANUALS RIDE A FRESH SESSION'S OPENING MESSAGE (manuals-inline.mjs), for both engines alike. A resumed session
+    // already holds them, and its message names none. The dispatch record and the witness above keep the composed text.
+    const wire = warm || timeoutWarm ? { text: effMessage, inlined: [], missing: [] }
+      : inlineManuals(effMessage, { resolve: engineResolveSkill, skillsDir: engineSkillsDir });
+    const turn = await engine.runTurn({ agent, sessionKey: key, message: wire.text, grantDispatch: base, model, thinking, timeoutSec: effTimeout, resumeRef: warm ? lastSessionRef : undefined, stageHome, mcpConfig, allowedTools: gatherAllowedTools, seatWrites: gatherSeatWrites, skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
       progressFiles: files,   // the no-progress watchdog's artifact-advance signal (anthropic-agent; other adapters ignore it)
       // The raw stream of this session, beside its dispatch record (engine/session-record.mjs). The engines
       // keep it while the disk has room and say on the tuple's `stream` what landed.
@@ -1525,6 +1530,9 @@ async function runStageLadder(name, opts, stageHome = null, engine = selectEngin
           //: the spine carries the POINTER and the sha, not the text — enough to find the file and
           // to tell two attempts apart without opening either.
           dispatch: dispatch?.file ?? null, dispatchSha: dispatch?.sha ?? null,
+          // The manuals this attempt's opening message carried, by name, size and sha, and any left to a read: what was sent
+          // stays apart from what the session read with its tools afterwards.
+          manualsInline: wire.inlined.length ? wire.inlined : undefined, manualsLeftToRead: wire.missing.length ? wire.missing : undefined,
           //: the spine carries the convergence pair too — the ladder's shape (25 → 9 → 9 vs
           // 29 → 11 → pass) is readable from run.jsonl alone, without joining the per-stage log.
           quantity, noChange: noChange || undefined,
