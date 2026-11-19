@@ -82,7 +82,7 @@ export function evaluateClientGate({ coverage = [], lintFailingIds = [], escalat
   // surfaces render from (the corrective pass left findings.json stale after a followup demand):
   // the client cards may carry facts the review already corrected or killed.
   if (Array.isArray(findingsStale) && findingsStale.length)
-    push("findings-stale", `the reviewer's corrections did not reach the client-facing findings (${findingsStale.slice(0, 3).join(", ")}${findingsStale.length > 3 ? ", …" : ""}) — re-run the correction before this goes out`);
+    push("findings-stale", W.heldBecause.findingsStale(`${findingsStale.slice(0, 3).join(", ")}${findingsStale.length > 3 ? ", …" : ""}`));
   // (1) doc-35 close-the-loop: a core search layer in state "not-searched" NO LONGER closes the client
   // export. An in-scope channel a search layer CAN reach is a CLOSE target (run it) or a clean forward
   // action — never a ⛔ CLOSE-BEFORE-FILING banner. The gate now closes ONLY when the data cannot be
@@ -91,16 +91,16 @@ export function evaluateClientGate({ coverage = [], lintFailingIds = [], escalat
   // Plain English — these reasons are read by a lawyer, not the people who built the pipeline. The internal
   // axis ids stay in the run log / audit; the surfaced reason says what happened in words a reader understands.
   if (Array.isArray(escalationFailed) && escalationFailed.length)
-    push("escalation-failed", `the main search didn't finish — it needs to be re-run before this can be relied on`);
+    push("escalation-failed", W.heldBecause.escalationFailed);
   // (3) internally-inconsistent registration facts survive in the delivered report (A2). record-coverage
   // (an unverified/unfetched URL, E1) is flag-only — it cannot change the answer, it just isn't confirmed.
   const ids = (lintFailingIds || []).map(String);
-  if (ids.includes('registry-record-match')) push('lint:registry-record-match', 'a registration detail in the report does not match its official record');
-  if (ids.includes('registry-arithmetic')) push('lint:registry-arithmetic', 'the registration counts in the report do not add up');
+  if (ids.includes('registry-record-match')) push('lint:registry-record-match', W.heldBecause.recordMismatch);
+  if (ids.includes('registry-arithmetic')) push('lint:registry-arithmetic', W.heldBecause.countsDoNotAddUp);
   // (3b) A1 — a finding the reviewer WITHDREW still appears on a delivered surface after the
   // redo attempts (ids are per-ordinal: correction-consistency:<ord> / :client:<ord>): the reader
   // would see a conflict the review already killed.
-  if (ids.some((id) => id.startsWith('correction-consistency:'))) push('lint:correction-consistency', 'a conflict the reviewer withdrew still appears in the deliverable — the correction did not stick');
+  if (ids.some((id) => id.startsWith('correction-consistency:'))) push('lint:correction-consistency', W.heldBecause.withdrawnStillShown);
   // (3c) ION/copper-foundry (2026-07-22): the deliverable states a search tool was blocked/permission-denied.
   // That is not a disclosed gap — it is a false explanation for one, and it excused count-only sampling over
   // high-volume owner queries. It CANNOT be flag-only: a lawyer reading "the tool was blocked" reads
@@ -116,13 +116,13 @@ export function evaluateClientGate({ coverage = [], lintFailingIds = [], escalat
   // by-design exclusion, and either way the coverage has to be re-established.
   const isPermissionProse = (id) => id === 'permission-prose' || id.startsWith('permission-prose:');
   if (ids.some((id) => isPermissionProse(id) && !id.startsWith('permission-prose:narrative')))
-    push('lint:permission-prose', 'the deliverable explains missing coverage by saying a search tool was blocked or lacked permission — on this configuration that is normally a by-design exclusion rather than an outage, so both the explanation and the coverage it excuses must be re-established before this can be relied on');
+    push('lint:permission-prose', W.heldBecause.permissionProse);
   // (4) the machine findings could not be parsed — the data-driven surfaces are unverifiable.
-  if (findingsError) push('findings-unreadable', `the results could not be read back to build the report`);
+  if (findingsError) push('findings-unreadable', W.heldBecause.findingsUnreadable);
   // (5) A3 — a malformed finding was quarantined (dropped from the rendered set): the client export must never
   // ship silently missing a finding, so it closes for review (the internal report shows the exclusion + the audit records it).
   if (Array.isArray(quarantined) && quarantined.length)
-    push('finding-quarantined', `a result could not be read and had to be set aside, so the report would be missing it`);
+    push('finding-quarantined', W.heldBecause.findingQuarantined);
   // (6) — A PUBLISH INPUT WAS NOT THERE AT ALL. Distinct from (4): findingsError means the file was
   // present and could not be read back, this means it was never there, and until this arm existed the
   // second case set no signal whatsoever — an absent findings.json produced findings=[]/coverage=[] and
@@ -135,7 +135,7 @@ export function evaluateClientGate({ coverage = [], lintFailingIds = [], escalat
   // the recording above it is what actually does the work today.
   const closing = requiredAbsent(inputsAbsent);
   if (closing.length)
-    push('publish-input-absent', `a required input to this report was not there (${closing.join(', ')}) — the report was built without it, which is not the same as a search that found nothing`);
+    push('publish-input-absent', W.heldBecause.inputAbsent(closing.join(', ')));
   return { released: reasons.length === 0, reasons, reasonCodes, inputsAbsent: [...(Array.isArray(inputsAbsent) ? inputsAbsent : [])], notClosing: nonClosingAbsences(inputsAbsent) };   // `notClosing` EXPLAINS a recorded absence that did not hold the release (publish-inputs.mjs nonClosingAbsences) — it decides nothing
 }
 
@@ -1094,12 +1094,12 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
   } catch { /* no frozen profile — a legacy run keeps its wording */ }
 
   // Jurisdiction line for the Summary — searched register scope + the common-law surface layer.
-  const regScope = (searchedJurisdictions && searchedJurisdictions.length) ? searchedJurisdictions.join('/') : 'Worldwide';
+  const regScope = (searchedJurisdictions && searchedJurisdictions.length) ? searchedJurisdictions.join('/') : W.jurisdictionLine.worldwide;
   const jurisdiction = registerOnly
-    ? `${regScope} (register only — no common-law / marketplace search)`
+    ? W.jurisdictionLine.registerOnly(regScope)
     : noMarketplacesPicked
-      ? `${regScope} (register) + common-law (Western web / social, plus any stores chosen for this matter)`
-      : `${regScope} (register) + common-law (Western web / marketplace / social)`;
+      ? W.jurisdictionLine.noMarketplaces(regScope)
+      : W.jurisdictionLine.withCommonLaw(regScope);
 
   // Common-law URL-join: a grid hit whose candidate URL resolves to a finding's own link PROVES that search
   // term became a finding (rescues an anchor term whose finding wears a different name). Best-effort; absent
@@ -1494,7 +1494,7 @@ const BADGE_EMOJI = { l4: '🔴', l3: '🟠', mh: '🟠', l2: '🟢', l1: '⚪' 
 // config, NOT a literal: this string was hardcoded, so the 2026-07-17 repo split rewrote it to a
 // example.com domain and both 2026-07-19 deliveries told the reader to sign in with an account that
 // does not exist. Unset ⇒ NO note: silence beats confidently wrong sign-in instructions.
-import { EMAIL, CLIENT_INDEX as IX } from './strings.mjs';   // kept down here, below every line the tree cites in this file by number
+import { EMAIL, CLIENT_INDEX as IX, WORKBOOK as W } from './strings.mjs';   // kept down here, below every line the tree cites in this file by number
 export function accessNoteMd(domain = config.accessDomain) {
   return domain ? `*${EMAIL.accessNote(`**${domain}**`)}*` : '';
 }
@@ -1742,7 +1742,7 @@ export const TONE_TIER = {
 export function undispatchedProbeRows(receipt) {
   return (receipt?.overflow ?? [])
     .filter((o) => o && (o.term || o.qid))
-    .map((o) => ({ area: String(o.term ?? o.qid), state: 'not-searched', note: 'over the cap, never dispatched' }));
+    .map((o) => ({ area: String(o.term ?? o.qid), state: 'not-searched', note: W.overTheCap }));
 }
 export function riskTier(word) {
   const u = String(word || '').toUpperCase();
@@ -2034,8 +2034,8 @@ export function setAsideRows(runDir, { findings = null } = {}) {
     const ended = recordsOfDeliveredPositions(read('declination-spec.json')?.rows ?? [], [...findingUris(delivered.filter((f) => f?.disposition !== 'withdrawn')).keys()]);
     const label = (x) => [x.mark, x.owner].filter((v) => typeof v === 'string' && v.trim()).join(' — ') || x.uri;
     return [
-      ...[...d.byUri.entries()].filter(([u]) => !ended.has(u)).map(([, x]) => ({ area: `Set aside: ${label(x)}`, note: String(x.grounds ?? '') })),
-      ...[...d.byPage.values()].map((x) => ({ area: `Set aside: ${x.url ?? x.page}`, note: String(x.grounds ?? '') })),
+      ...[...d.byUri.entries()].filter(([u]) => !ended.has(u)).map(([, x]) => ({ area: W.setAside(label(x)), note: String(x.grounds ?? '') })),
+      ...[...d.byPage.values()].map((x) => ({ area: W.setAside(x.url ?? x.page), note: String(x.grounds ?? '') })),
     ];
   } catch { return []; }
 }
