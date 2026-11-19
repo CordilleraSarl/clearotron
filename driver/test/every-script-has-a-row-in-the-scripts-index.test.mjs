@@ -46,7 +46,7 @@ test("a script the index says CI runs is run by a workflow, and one it says noth
     .flatMap((f) => readFileSync(join(ROOT, f), "utf8").split("\n")).filter((l) => !/^\s*#/.test(l)).join("\n");
   const npm = Object.entries(JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8")).scripts ?? {});
   const runByWorkflow = (f) => workflows.includes(`scripts/${f}`)
-    || npm.some(([name, cmd]) => cmd.includes(f) && new RegExp(`npm (run )?(-s )?${name.replace(/[:.]/g, "\\$&")}(\\s|$)`).test(workflows));
+    || npm.some(([name, cmd]) => cmd.includes(f) && new RegExp(`npm (run )?(-s )?${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(\\s|$)`).test(workflows));
   const rows = indexRows();
   const ci = [...rows].filter(([, r]) => r === "CI").map(([f]) => f);
   assert.ok(ci.length > 20, "the index marks almost nothing as CI, so this half would pass on nothing");

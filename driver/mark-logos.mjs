@@ -11,7 +11,7 @@
 //
 // WHICH REGISTRATIONS. The ones the report shows and no others: a clearance's findings, withdrawn ones left out, and
 // the registrations each cites; a Knockout's listed filings. Measured on a 55-finding global preliminary of 2026-11-03:
-// 28 of the 3,497 records it held, so 28 image requests (Krzys approved that count, 2026-11-18).
+// 28 of the 3,497 records it held, so 28 image requests (that count approved 2026-11-18).
 //
 // WHAT A ROW SAYS, and only `failed` reads as "Logo not retrieved" on the page:
 //   fetched   the image is saved; `file` is relative to the run folder, `contentType` PNG, JPEG, GIF or WebP
@@ -20,7 +20,7 @@
 //   unknown   the record cannot say, or this run makes no register call: a replay, an injected fetcher, no credential,
 //             or a register whose adapter fetches no image. Nothing is requested.
 //
-// THE REGISTER THE RUN IS SET TO USE, AND NO OTHER (Krzys, 2026-11-18: "we dont mix and match"). A register that
+// THE REGISTER THE RUN IS SET TO USE, AND NO OTHER (ruled 2026-11-18: one run never mixes registers). A register that
 // cannot fetch an image leaves its rows `unknown`; no second service is asked.
 //
 // A RESUME OR A REPUBLISH ASKS NOTHING AGAIN. A row already `fetched` whose file is still there is kept as it is.

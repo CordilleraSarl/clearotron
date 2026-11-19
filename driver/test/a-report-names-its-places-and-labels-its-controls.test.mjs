@@ -65,7 +65,11 @@ test("each card's export checkbox is named for its conflict, and the chart title
   const html = page({ searchDepth: { counts: COUNTS } });
   const cards = [...html.matchAll(/<div class="card[^"]*" id="c(\d+)">[\s\S]*?<input type="checkbox" class="pickbox" checked([^>]*)>/g)];
   assert.ok(cards.length >= 2, "the demo draws cards with export boxes");
-  for (const [, n, attrs] of cards) assert.equal(attrs, ` aria-label="Include conflict ${n} in the PDF"`, `card ${n}`);
+  for (const [, n, attrs] of cards) {
+    const label = attrs.match(/^ aria-label="Include conflict (\d+) in the PDF"$/);
+    assert.ok(label, `card ${n}: the export box is not named for a conflict`);
+    assert.equal(label[1], n, `card ${n}: the export box names another conflict`);
+  }
   const svg = html.match(/<svg viewBox="0 0 560 430"[^>]*>\s*<title>([^<]*)<\/title>([\s\S]*?)<\/svg>/);
   assert.ok(svg, "the chart has no <title> first");
   const points = [...svg[2].matchAll(/<a href="#c\d+">/g)].length;
