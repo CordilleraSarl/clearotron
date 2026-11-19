@@ -2225,7 +2225,7 @@
         },
         "a-report-names-its-places-and-labels-its-controls.test.mjs": {
           "tests": 5,
-          "asserts": 16,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
