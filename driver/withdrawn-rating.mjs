@@ -18,7 +18,6 @@ import { existsSync, readFileSync } from "node:fs";
 import { parseFindingsJson, RATING_WITHDRAWN_GROUNDS } from "./findings-model.mjs";
 import { writeFindings } from "./stage-freshness.mjs";
 import { runLog } from "./log.mjs";
-import { COVERAGE_ROW_NOT_ADDED } from "./degraded-parts.mjs";
 
 /** The sentence each ground's row carries, once approved; null until then, and a null ground writes no row. */
 export const WITHDRAWN_RATING_NOTES = Object.freeze(Object.fromEntries(RATING_WITHDRAWN_GROUNDS.map((g) => [g, null])));
@@ -65,7 +64,7 @@ export function injectWithdrawnRatingCoverage(P, runDir, note, { notes = WITHDRA
   } catch (e) {
     const fail = String(e?.message || e).replace(/\s+/g, " ");
     note(`[withdrawn-rating] coverage injection skipped: ${fail.slice(0, 100)}`);
-    try { runLog(runDir, { event: COVERAGE_ROW_NOT_ADDED, adder: "withdrawn-rating", fail: fail.slice(0, 200) }); }
+    try { runLog(runDir, { event: "coverage-row-not-added", adder: "withdrawn-rating", fail: fail.slice(0, 200) }); }
     catch { /* the note above still stands */ }
   }
 }
