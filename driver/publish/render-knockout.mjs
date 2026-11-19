@@ -49,7 +49,7 @@ import { SUMMARY_BLOCK_LINE, parseSummaryBlocks } from '../../shared/summary-blo
 // section, which is what that section is; the rule that filters them against the finished document lives
 // in shared/brand.mjs, beside the clearance report's own five.
 const STRIP = Object.freeze([
-  ['summary', 'Summary'], ['findings', 'Findings'], ['filings', 'Also considered'], ['next', 'Next steps'],
+  ['summary', K.strip.summary], ['findings', K.strip.findings], ['filings', K.strip.filings], ['next', K.strip.next],
 ]);
 import { COUNT_BASIS, COUNT_PREDICATES, countsForMark, countLine, variantFormsLine, disclosedFloor, moreThan, countNote } from '../register-count.mjs';
 import { recordBasisOf, readByJudgment, noneCarriedForward, NONE_CARRIED_FORWARD, recordsForMark, recordsLine } from '../register-records.mjs';
@@ -66,6 +66,7 @@ import { makeClassifyStatus, isAllClass } from '../../providers/_shared/screen.m
 import { saysSomethingNew } from '../../shared/says-something-new.mjs';
 import OFFERED from '../../shared/offered-territories.json' with { type: 'json' };   // the order form's own territory names
 import { normalizeTerritory } from '../../providers/_shared/territory-codes.mjs';   // a territory as written → its code
+import { KNOCKOUT_PAGE as K } from './strings.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
@@ -148,7 +149,7 @@ function bandStop(framework, band) {
   return STOP_VAR[STOP_BY_TONE[tone] ?? 2];
 }
 
-export const DEGRADED_NOTE = 'Automated research for this name was unavailable — manual verification is recommended before relying on this rating.';
+export const DEGRADED_NOTE = K.degradedNote;
 
 // THE QUALIFIER, IN WORDS. It rendered as a bare grey token under the band chip — `low`, no
 // label, no border, nothing on the page saying what it qualified. A reader met one word of a private
@@ -162,11 +163,11 @@ export const DEGRADED_NOTE = 'Automated research for this name was unavailable �
 // An unrecognised word keeps its own text and gains the frame. The validator closes the set for a run
 // published TODAY, and an archived run re-renders as what it was — dropping a word this build does not
 // know would be a renderer editing a delivered rating.
-const QUALIFIER_WORDS = Object.freeze({ low: 'at the low end of this band' });
+const QUALIFIER_WORDS = K.qualifier;
 function qualifierHtml(q) {
   const word = String(q ?? '').trim();
   if (!word) return '';
-  const said = QUALIFIER_WORDS[word.toLowerCase()] ?? `${word} within this band`;
+  const said = QUALIFIER_WORDS[word.toLowerCase()] ?? K.qualifierOther(word);
   return `<span class="ko-qual">${esc(said)}</span>`;
 }
 
@@ -178,7 +179,7 @@ const KO_CSS = '\n' + readFileSync(join(HERE, 'templates', 'knockout.css'), 'utf
 /** The batch's display title: the mark itself when a screen covered one name, else the count. */
 function batchTitle(marks) {
   if (marks.length === 1) return marks[0].name ?? '';
-  return `${marks.length} names`;
+  return K.names(marks.length);
 }
 
 // Spine mapping (spec 2026-07-30 §3, charter ruling 1: renames ruled OK): the per-name verdict rows
@@ -192,7 +193,7 @@ function batchTitle(marks) {
 function bandColumn(m, framework) {
   const chip = (band, qualifier, classes) => `<span class="ko-band" style="background:var(${bandStop(framework, band)});color:var(${bandStop(framework, band)}-on)">${esc(band ?? '—')}</span>
         ${qualifierHtml(qualifier)}
-        ${classes?.length ? `<p class="ko-classes">Classes ${esc(classes.join(', '))}</p>` : ''}`;
+        ${classes?.length ? `<p class="ko-classes">${esc(K.classes(classes.join(', ')))}</p>` : ''}`;
   if (!Array.isArray(m.classGroups) || !m.classGroups.length) return chip(m.rating, m.ratingQualifier, m.classesSearched);
   return m.classGroups.map((g) => chip(g.band, g.ratingQualifier, g.classes)).join('\n        ');
 }
@@ -260,15 +261,7 @@ function glanceSection(marks, framework, registerCounts) {
 // TWO FORMS PER REGISTER, because English needs both: "Counted in the United States" takes the article
 // and "United States application" refuses it. One map with one form produced "the United States
 // application (pending)" on a card, which is why they are separate fields rather than a regex over one.
-const REGISTER_NAMES = Object.freeze({
-  EM: { bare: 'European Union', phrase: 'the European Union' },
-  EU: { bare: 'European Union', phrase: 'the European Union' },
-  WO: { bare: 'international', phrase: 'the WIPO register' },
-  US: { bare: 'United States', phrase: 'the United States' },
-  GB: { bare: 'United Kingdom', phrase: 'the United Kingdom' },
-  UK: { bare: 'United Kingdom', phrase: 'the United Kingdom' },
-  CH: { bare: 'Swiss', phrase: 'Switzerland' },
-});
+const REGISTER_NAMES = K.registerNames;
 
 /**
  * A register code as a reader's words, or '' when this build cannot name it. NEVER returns a code.
@@ -311,7 +304,7 @@ const orderCode = (t) => {
 function listWords(items) {
   const xs = (items ?? []).filter(Boolean);
   if (xs.length <= 1) return xs[0] ?? '';
-  return `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`;
+  return K.listEnd(xs.slice(0, -1).join(', '), xs[xs.length - 1]);
 }
 
 /**
@@ -326,20 +319,20 @@ function listWords(items) {
  */
 const TERRITORY_NAME_CAP = 6;
 function territoriesLine(registerCounts) {
-  const provider = registerCounts?.providerLabel ?? registerCounts?.provider ?? 'the register';
+  const provider = registerCounts?.providerLabel ?? registerCounts?.provider ?? K.counted.theRegister;
   const regions = (registerCounts?.scope?.regions ?? []).filter(Boolean);
   const worldwide = registerCounts?.scope?.worldwide === true || regions.length === 0;
   if (worldwide) {
     const n = regions.length;
     return n
-      ? `Counted worldwide, ${n} registers, on ${provider}.`
-      : `Counted worldwide on ${provider}.`;
+      ? K.counted.worldwideOn(n, provider)
+      : K.counted.worldwide(provider);
   }
   const named = regions.map(territoryName).filter(Boolean);
   if (named.length && named.length <= TERRITORY_NAME_CAP) {
-    return `Counted in ${listWords(named)}, on ${provider}.`;
+    return K.counted.named(listWords(named), provider);
   }
-  return `Counted on ${regions.length} registers, listed on the workbook's Register Counts sheet, on ${provider}.`;
+  return K.counted.listed(regions.length, provider);
 }
 
 // The reader line that used to sit under the counts table ("a count is not a conflict…") is off the page:
@@ -361,9 +354,9 @@ function countsSection(marks, registerCounts, positions = '') {
     ? ((countsForMark(registerCounts, single)?.counts?.close?.forms ?? []).map((f) => String(f?.form ?? '').trim()).filter(Boolean))
     : [];
   const headLabel = (pk) => {
-    if (pk === 'identical') return single ? `Exactly ${single}` : 'Exactly the name';
-    if (pk === 'containing') return single ? `Contains ${single}` : 'Contains the name';
-    return forms.length ? `Near-spellings (${forms.join(', ')})` : 'Near-spellings';
+    if (pk === 'identical') return single ? K.counts.exactly(single) : K.counts.exactlyTheName;
+    if (pk === 'containing') return single ? K.counts.contains(single) : K.counts.containsTheName;
+    return forms.length ? K.counts.nearSpellingsOf(forms.join(', ')) : K.counts.nearSpellings;
   };
   const head = COUNT_PREDICATES.map((p) => `<th>${esc(headLabel(p.key))}</th>`).join('');
   const rows = marks.map((m) => {
@@ -377,17 +370,17 @@ function countsSection(marks, registerCounts, positions = '') {
       // column did not exist when it was counted, and "no count recorded" would read as a defect in a
       // report that has none. The hover says which.
       const why = countNote(c) ?? (c
-        ? 'no count recorded'
-        : 'not counted on this run — it predates this column, and an archived report re-renders as what it was');
+        ? K.counts.noCountRecorded
+        : K.counts.notCountedThisRun);
       if (Number.isFinite(c?.total)) return `<td class="num">${esc(String(c.total))}</td>`;
       // The register answered with its own floor: that is a figure, and it is printed as one.
       if (disclosedFloor(c) !== null) return `<td class="num">${esc(moreThan(disclosedFloor(c)))}</td>`;
-      return `<td class="na" title="${escAttr(why)}">not available</td>`;
+      return `<td class="na" title="${escAttr(why)}">${K.counts.notAvailable}</td>`;
     }).join('');
     const scoped = e?.classScope !== 'all-classes' && (e?.classes?.length > 0);
     const scope = scoped
-      ? `classes ${e.classes.join(', ')}`
-      : 'all classes — this run named none, so nothing narrowed the count';
+      ? K.counts.inClasses(e.classes.join(', '))
+      : K.counts.allClasses;
     // The forms the close column was counted over. A number whose forms are not on the page cannot be
     // checked by the reader it was written for, which makes it a claim rather than a measurement.
     const forms = variantFormsLine(e);
@@ -399,7 +392,7 @@ function countsSection(marks, registerCounts, positions = '') {
   // 331 says it belongs; what it stops doing is printing twice on a page whose headers now say the same
   // thing in three words each.
   return `<div class="panel">
-  <div class="ko-counts ko-scroll"><table><thead><tr><th>Name</th>${head}</tr></thead><tbody>${rows}</tbody></table></div>
+  <div class="ko-counts ko-scroll"><table><thead><tr><th>${K.counts.name}</th>${head}</tr></thead><tbody>${rows}</tbody></table></div>
   <p class="ko-basis">${esc(territoriesLine(registerCounts))}${
     positions ? `<br>${esc(positions)}` : ''}</p>
 </div>`;
@@ -533,7 +526,7 @@ function filingsSection(marks, registerRecords) {
     const line = recordsLine(e);
     if (!e || !(e.records ?? []).length) {
       return `<div class="ko-row"><div><p class="ko-name">${esc(m.name)}</p></div>
-        <div><p class="ko-bul">${esc(line ?? 'No filings listing was recorded for this name.')}</p></div></div>`;
+        <div><p class="ko-bul">${esc(line ?? K.filings.noListing)}</p></div></div>`;
     }
     // RANKED, AND DELIBERATELY NOT FILTERED. This table is the evidence behind a
     // COUNT: dropping a cancelled or out-of-class row would leave a reader unable to reconcile the table
@@ -542,7 +535,7 @@ function filingsSection(marks, registerRecords) {
     const ranked = rankByMateriality(e.records, e, m);
     const shown = ranked.slice(0, APPENDIX_ROWS);
     const rows = shown.map((r) => `<tr>
-      <td>${esc(r.mark ?? '—')}${r.matchedBasis === 'close' ? `<br><span class="ko-classes">found as ${esc(r.matchedForm)}</span>` : ''}</td>
+      <td>${esc(r.mark ?? '—')}${r.matchedBasis === 'close' ? `<br><span class="ko-classes">${esc(K.filings.foundAs(r.matchedForm))}</span>` : ''}</td>
       <td>${esc(r.owner ?? '—')}</td>
       <td>${esc(r.status ?? '—')}</td>
       <td>${esc((r.classes ?? []).join(', ') || '—')}</td>
@@ -553,14 +546,11 @@ function filingsSection(marks, registerRecords) {
     // cap: it invites the reader to take the sample for the top of the provider's list. Say the count
     // that exists, say what decided the order, and say where the rest is.
     const more = e.records.length > shown.length
-      ? ` Showing ${shown.length} of ${e.records.length}, most material first — the filings this`
-        + ` assessment weighed before the rest, then live filings before dead,`
-        + ` in the searched classes before outside them, the name itself before ${readByJudgment(registerRecords) ? 'other searches' : 'its close variations'}.`
-        + ` The full list is in the audit workbook's Register Filings sheet.`
-      : ' The same rows are in the audit workbook\'s Register Filings sheet, most material first.';
+      ? K.filings.showing(shown.length, e.records.length, readByJudgment(registerRecords) ? K.filings.otherSearches : K.filings.closeVariations)
+      : K.filings.sameRows;
     return `<div class="ko-filings">
       <p class="ko-name">${esc(m.name)}</p>
-      <div class="ko-counts ko-scroll"><table><thead><tr><th>Trademark</th><th>Owner</th><th>Status</th><th>Classes</th><th>Territory</th><th>Record</th></tr></thead><tbody>${rows}</tbody></table></div>
+      <div class="ko-counts ko-scroll"><table><thead><tr><th>${K.filings.head.trademark}</th><th>${K.filings.head.owner}</th><th>${K.filings.head.status}</th><th>${K.filings.head.classes}</th><th>${K.filings.head.territory}</th><th>${K.filings.head.record}</th></tr></thead><tbody>${rows}</tbody></table></div>
       <p class="ko-basis">${esc(line ?? '')}${esc(more)}</p>
     </div>`;
   }).join('');
@@ -590,8 +580,8 @@ function officeLinkNote(registerRecords) {
 function tierAbsenceLine(registerCounts, probeRan) {
   if (registerCounts?.marks?.length) return null;
   return probeRan
-    ? 'Register hit-counts are part of this search, and none could be taken on this run — the per-name reason is recorded in the audit workbook. This is a gap in this run, not a limit of the product.'
-    : 'Register hit-counts (identical · containing · close variations) are not included in this product tier, so no register was counted for this report. They are part of the Knockout search this offering sells today.';
+    ? K.tierAbsence.probeRan
+    : K.tierAbsence.notInTier;
 }
 
 // ONE conflict, rendered from the typed record. The reference comes first because it is what a
@@ -632,7 +622,7 @@ function whyBandFold(inner) {
 }
 
 /** The card fold's own word. Stated once so the renderer and its tests read the same string. */
-const WHY_BAND_LABEL = 'Risk assessment';   // the clearance's word for the reasoning (owner, 2026-11-18, item 1140)
+const WHY_BAND_LABEL = K.riskAssessment;   // the clearance's word for the reasoning (owner, 2026-11-18, item 1140)
 
 /**
  * The band chip's text. A framework that states a method shows its inputs beside the band, in its own

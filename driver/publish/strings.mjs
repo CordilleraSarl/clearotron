@@ -314,3 +314,67 @@ export const RECORD_LINKS = Object.freeze({
     numberForm: (name) => `Number not in the form this register's page address takes (${name}); cited by number`,
   }),
 });
+
+/** The Knockout report page: its own words, section by section. A value a sentence carries arrives formatted. */
+export const KNOCKOUT_PAGE = Object.freeze({
+  // The jump strip, in its order.
+  strip: Object.freeze({ summary: 'Summary', findings: 'Findings', filings: 'Also considered', next: 'Next steps' }),
+  degradedNote: 'Automated research for this name was unavailable — manual verification is recommended before relying on this rating.',
+  // The rating's qualifier, in words: the closed set's own, and any other word framed.
+  qualifier: Object.freeze({ low: 'at the low end of this band' }),
+  qualifierOther: (word) => `${word} within this band`,
+  names: (n) => `${n} names`,
+  classes: (list) => `Classes ${list}`,
+  // Registers that are not countries, in the two forms English needs: "the United States" and "United States application".
+  registerNames: Object.freeze({
+    EM: Object.freeze({ bare: 'European Union', phrase: 'the European Union' }),
+    EU: Object.freeze({ bare: 'European Union', phrase: 'the European Union' }),
+    WO: Object.freeze({ bare: 'international', phrase: 'the WIPO register' }),
+    US: Object.freeze({ bare: 'United States', phrase: 'the United States' }),
+    GB: Object.freeze({ bare: 'United Kingdom', phrase: 'the United Kingdom' }),
+    UK: Object.freeze({ bare: 'United Kingdom', phrase: 'the United Kingdom' }),
+    CH: Object.freeze({ bare: 'Swiss', phrase: 'Switzerland' }),
+  }),
+  // "a, b and c": `head` arrives joined on commas.
+  listEnd: (head, last) => `${head} and ${last}`,
+  // The counted scope, in one sentence.
+  counted: Object.freeze({
+    theRegister: 'the register',
+    worldwideOn: (n, provider) => `Counted worldwide, ${n} registers, on ${provider}.`,
+    worldwide: (provider) => `Counted worldwide on ${provider}.`,
+    named: (list, provider) => `Counted in ${list}, on ${provider}.`,
+    listed: (n, provider) => `Counted on ${n} registers, listed on the workbook's Register Counts sheet, on ${provider}.`,
+  }),
+  // The counts table: its heads, and a cell with no count.
+  counts: Object.freeze({
+    name: 'Name',
+    exactly: (name) => `Exactly ${name}`,
+    exactlyTheName: 'Exactly the name',
+    contains: (name) => `Contains ${name}`,
+    containsTheName: 'Contains the name',
+    nearSpellingsOf: (forms) => `Near-spellings (${forms})`,
+    nearSpellings: 'Near-spellings',
+    noCountRecorded: 'no count recorded',
+    notCountedThisRun: 'not counted on this run — it predates this column, and an archived report re-renders as what it was',
+    notAvailable: 'not available',
+    inClasses: (list) => `classes ${list}`,
+    allClasses: 'all classes — this run named none, so nothing narrowed the count',
+  }),
+  // The filings listed under "Also considered". `rest` is `otherSearches` or `closeVariations`.
+  filings: Object.freeze({
+    noListing: 'No filings listing was recorded for this name.',
+    foundAs: (form) => `found as ${form}`,
+    head: Object.freeze({ trademark: 'Trademark', owner: 'Owner', status: 'Status', classes: 'Classes', territory: 'Territory', record: 'Record' }),
+    showing: (shown, total, rest) => ` Showing ${shown} of ${total}, most material first — the filings this assessment weighed before the rest, then live filings before dead, in the searched classes before outside them, the name itself before ${rest}. The full list is in the audit workbook's Register Filings sheet.`,
+    otherSearches: 'other searches',
+    closeVariations: 'its close variations',
+    sameRows: " The same rows are in the audit workbook's Register Filings sheet, most material first.",
+  }),
+  // Why no register was counted: the counts failed on this run, or the product tier does not include them.
+  tierAbsence: Object.freeze({
+    probeRan: 'Register hit-counts are part of this search, and none could be taken on this run — the per-name reason is recorded in the audit workbook. This is a gap in this run, not a limit of the product.',
+    notInTier: 'Register hit-counts (identical · containing · close variations) are not included in this product tier, so no register was counted for this report. They are part of the Knockout search this offering sells today.',
+  }),
+  // The card fold's label: the clearance's word for the reasoning (owner, 2026-11-18, item 1140).
+  riskAssessment: 'Risk assessment',
+});
