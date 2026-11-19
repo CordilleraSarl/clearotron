@@ -4744,8 +4744,8 @@
           "todos": 0
         },
         "every-link-on-a-published-report-lands.test.mjs": {
-          "tests": 1,
-          "asserts": 5,
+          "tests": 2,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
@@ -6394,8 +6394,8 @@
           "todos": 0
         },
         "render.test.mjs": {
-          "tests": 165,
-          "asserts": 713,
+          "tests": 168,
+          "asserts": 735,
           "skips": 0,
           "todos": 0
         },
@@ -8410,8 +8410,8 @@
           "todos": 0
         },
         "the-report-can-say-how-much-was-read.test.mjs": {
-          "tests": 27,
-          "asserts": 79,
+          "tests": 28,
+          "asserts": 83,
           "skips": 0,
           "todos": 0
         },
@@ -9824,8 +9824,8 @@
           "todos": 0
         },
         "composerProduct.test.ts": {
-          "tests": 37,
-          "asserts": 149,
+          "tests": 39,
+          "asserts": 159,
           "skips": 0,
           "todos": 0
         },
