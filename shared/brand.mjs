@@ -611,6 +611,9 @@ const REPORT_DARK_RULES = [
   ['.wm .ridge path', `fill:${D.crimsonText}`],
   ['.tbbtn:hover,.util:hover,.tb-back:hover,.theme-toggle.tt-page:hover', `color:${D.crimsonText};border-color:${D.crimsonText}`],
   ['.rep-stickyhead', 'background:rgba(15,14,12,.82)'],
+  // The section strip's current entry is set in the light ink with a dark tint, which on the dark bar left it the
+  // one entry nobody could read. Both report pages draw the strip, and both take this block.
+  ['.strip a.now', `color:${D.ink};background:rgba(255,255,255,.08)`],
   ['.panel.land', 'background:#FFFDF9'],
   ['.panel.land .legend,.panel.land .legend *', 'color:#250902'],
   ['.covcell.warn', 'background:#2a2418;border-color:#4a3d22'],

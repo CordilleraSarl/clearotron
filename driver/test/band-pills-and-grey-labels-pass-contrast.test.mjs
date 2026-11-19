@@ -67,6 +67,16 @@ test("a drop-down's title reads at 4.5:1 in the dark theme, where --crimson does
   }
 });
 
+test("the section strip's current entry reads at 4.5:1 on the dark bar, on both report pages", () => {
+  const rule = REPORT_ROOT_DARK_EXPLICIT.match(/\.strip a\.now\{color:(#[0-9a-fA-F]{3,6})/);
+  assert.ok(rule, "the dark block leaves the current entry in the light ink");
+  const r = ratio(rule[1], DARK.bg);
+  assert.ok(r >= AA, `dark: the current entry ${rule[1]} on --bg is ${r.toFixed(2)}:1`);
+  for (const p of ["templates/report.css", "templates/knockout.css"]) {
+    assert.match(readFileSync(join(HERE, "..", "publish", p), "utf8"), /\.strip a\.now\{color:#250902;/, `${p}: the light entry changed`);
+  }
+});
+
 test("no stylesheet or renderer sets text in --faint, and no band pill keeps white text", () => {
   const read = (p) => readFileSync(join(HERE, "..", "publish", p), "utf8");
   for (const p of ["templates/report.css", "templates/knockout.css", "render.mjs", "render-knockout.mjs"]) {
