@@ -207,6 +207,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-change-no-review-read-is-reviewed-whole-before-it-is-delivered.pipeline.test.mjs": {
+          "tests": 6,
+          "asserts": 37,
+          "skips": 0,
+          "todos": 0
+        },
         "a-channel-the-frame-diff-names-is-disclosed-never-swept.test.mjs": {
           "tests": 1,
           "asserts": 8,
@@ -810,6 +816,12 @@
         "a-fact-about-a-named-party.test.mjs": {
           "tests": 30,
           "asserts": 80,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-failed-correction-after-the-review-never-ends-the-run.pipeline.test.mjs": {
+          "tests": 8,
+          "asserts": 68,
           "skips": 0,
           "todos": 0
         },
@@ -8278,8 +8290,8 @@
           "todos": 0
         },
         "the-review-after-a-repair-reads-only-what-the-repair-changed.pipeline.test.mjs": {
-          "tests": 24,
-          "asserts": 193,
+          "tests": 10,
+          "asserts": 88,
           "skips": 0,
           "todos": 0
         },
