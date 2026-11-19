@@ -20,28 +20,19 @@ import { recordGoods, niceClass, untaggedIsEnglish, DEFAULT_ANSWER_CUT } from '.
 import { REC } from '../registry-fidelity.mjs';
 import { officeRecordLink } from './office-record-links.mjs';
 import { normRegion, regionName } from './regions.mjs';
+import { REGISTER_RECORD as R } from './strings.mjs';
 
-// The labels, as approved on 2026-11-18. A renderer takes them from here.
-export const RECORD_LABELS = Object.freeze({
-  title: 'Register record',
-  mark: 'Mark',
-  goods: 'Goods and services',
-  owner: 'Owner',
-  country: 'Country',
-  status: 'Status',
-  number: 'Register number',
-});
-export const MT_NOTE = 'For the original wording, open the register number or use Ask AI.';
-export const NO_GOODS = 'The record states no goods or services.';
-export const CLASS_NOT_STATED = 'Class not stated';
-export const LOGO_NOT_RETRIEVED = 'Logo not retrieved';
-export const registrationsCount = (n) => `${n} registrations`;
-export const showAllTerms = (n) => `Show all ${n} terms`;
-const machineTranslation = (language) => (language ? `Machine translation from ${language}` : 'Machine translation');
-const asRegistered = (language) => (language
-  ? `In ${language}, as registered. No English translation on the record.`
-  : 'As registered. No English translation on the record.');
-export const logoAlt = (mark, country) => `${mark}, logo as registered in ${country}`;
+// The labels and notes, from the catalogue. A renderer takes them from here.
+export const RECORD_LABELS = R.labels;
+export const MT_NOTE = R.mtNote;
+export const NO_GOODS = R.noGoods;
+export const CLASS_NOT_STATED = R.classNotStated;
+export const LOGO_NOT_RETRIEVED = R.logoNotRetrieved;
+export const registrationsCount = R.registrationsCount;
+export const showAllTerms = R.showAllTerms;
+const machineTranslation = R.machineTranslation;
+const asRegistered = R.asRegistered;
+export const logoAlt = R.logoAlt;
 
 // A code into the English name a reader knows, from the one naming source every report surface uses.
 export function countryOf(office) {

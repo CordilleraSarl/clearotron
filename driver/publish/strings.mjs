@@ -270,3 +270,29 @@ export const CLIENT_INDEX = Object.freeze({
   shown: ' shown',
   retired: ' retired',
 });
+
+/** The register's own record of a cited registration, as the report shows it: its labels and its notes. */
+export const REGISTER_RECORD = Object.freeze({
+  // The labels, as approved on 2026-11-18.
+  labels: Object.freeze({
+    title: 'Register record',
+    mark: 'Mark',
+    goods: 'Goods and services',
+    owner: 'Owner',
+    country: 'Country',
+    status: 'Status',
+    number: 'Register number',
+  }),
+  mtNote: 'For the original wording, open the register number or use Ask AI.',
+  noGoods: 'The record states no goods or services.',
+  classNotStated: 'Class not stated',
+  logoNotRetrieved: 'Logo not retrieved',
+  registrationsCount: (n) => `${n} registrations`,
+  showAllTerms: (n) => `Show all ${n} terms`,
+  // `language` is the record's language by its English name, or null when the record does not say.
+  machineTranslation: (language) => (language ? `Machine translation from ${language}` : 'Machine translation'),
+  asRegistered: (language) => (language
+    ? `In ${language}, as registered. No English translation on the record.`
+    : 'As registered. No English translation on the record.'),
+  logoAlt: (mark, country) => `${mark}, logo as registered in ${country}`,
+});
