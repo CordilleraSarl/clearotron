@@ -388,7 +388,8 @@ function countsSection(marks, registerCounts, positions = '') {
     // checked by the reader it was written for, which makes it a claim rather than a measurement.
     const forms = variantFormsLine(e);
     return `<tr><td><b>${esc(m.name)}</b><br><span class="ko-classes">${esc(scope)}</span></td>${cells}</tr>`
-      + (forms ? `<tr class="ko-forms"><td colspan="${COUNT_PREDICATES.length + 1}">${esc(forms)}</td></tr>` : '');
+      // The line sits in a block of its own so a phone can hold it to the card's visible width (knockout.css).
+      + (forms ? `<tr class="ko-forms"><td colspan="${COUNT_PREDICATES.length + 1}"><div class="ko-formsline">${esc(forms)}</div></td></tr>` : '');
   }).join('');
   // COUNT_BASIS IS OFF THE PAGE, NOT OUT OF THE RECORD. It is still written to
   // report-data.json (knockoutReportData -> registerCountBasis) and still on the workbook, which is where
