@@ -3453,3 +3453,50 @@ test("the Left open grid is drawn from leftOpenRows, so a delivered document can
   assert.ok(html.includes(`<div class="openrows"><div class="rk">Left open</div>${coverageGrid(rows)}</div>`), "the page draws the function's rows");
   assert.deepEqual(leftOpenRows({ coverage: [coverage[0]], localScripts: null }), [], "a clean run with no execution record leaves nothing open");
 });
+
+// A SCRIPT SEARCHED IN ONE PLACE AND NOT IN ANOTHER (design, 2026-11-19): one Left open row per distinct gap, in the
+// approved sentences, from a plan and an execution record built for each shape. The record is read by localScripts.
+test("a script searched in one place and not in another is left open in the approved words, one row per gap", () => {
+  const v = (html, k) => (html.match(new RegExp(`<span class="k">${k}</span><span class="v">([\\s\\S]*?)</span></div>`)) || [])[1] ?? null;
+  const run = (plan, done) => localScripts(plan, { executed: plan.entries.map((e) => ({ qid: e.qid, state: done.includes(e.qid) ? "enumerated" : "incomplete" })) });
+  const notes = (ls) => leftOpenRows({ localScripts: ls }).map((r) => (r.detail ? [r.note, r.detail] : r.note));
+  const page = (ls) => renderHtml(parsedOf(REPORT), [], [], { searchDepth: { counts: { localScripts: ls } } });
+  // A named gap: one territory, and up to three named in place, with the article English gives a territory.
+  const one = run({ entries: [{ qid: "j", term: "볼타리스", regions: ["JP"] }, { qid: "k", term: "볼타리스", regions: ["KR"] }] }, ["j"]);
+  assert.deepEqual(notes(one), ["No search in Hangul script was completed in South Korea."]);
+  const three = run({ entries: [{ qid: "j", term: "볼타리스", regions: ["JP"] }, { qid: "k", term: "볼타리스", regions: ["US", "KR", "EM"] }] }, ["j"]);
+  assert.deepEqual(notes(three), ["No search in Hangul script was completed in the European Union, South Korea or the United States."]);
+  // A long list: four or more counted after normalisation, and every one named in the row's detail.
+  const long = run({ entries: [{ qid: "j", term: "ボルタリス", regions: ["JP"] }, { qid: "r", term: "ボルタリス", regions: ["KR", "CN", "TW", "EM", "euipo", "GB"] }] }, ["j"]);
+  assert.deepEqual(notes(long), [["No search in Katakana script was completed in 5 planned territories.", ["China", "European Union", "South Korea", "Taiwan", "United Kingdom"]]]);
+  const longPage = page(long);
+  assert.match(longPage, /<div class="cd">No search in Katakana script was completed in 5 planned territories\.<\/div><div class="cd">China, European Union, South Korea, Taiwan, United Kingdom<\/div>/);
+  // A worldwide gap, positively stamped by the plan: its own sentence, and the narrower places that completed are named
+  // under What was searched.
+  const world = ["JP", "KR", "CN", "US"];
+  const ww = run({ scope_basis: "worldwide", regions: world, entries: [{ qid: "w", term: "볼타리스", regions: world }, { qid: "k", term: "볼타리스", regions: ["KR"] }] }, ["k"]);
+  assert.deepEqual(notes(ww), ["The planned worldwide search in Hangul script did not complete."]);
+  assert.equal(v(page(ww), "Local-script spellings"), "Hangul (South Korea)");
+  // The same four territories on a plan with no stamp are named territories, not a worldwide search.
+  const unstamped = run({ regions: world, entries: [{ qid: "w", term: "볼타리스", regions: world }, { qid: "k", term: "볼타리스", regions: ["KR"] }] }, ["k"]);
+  assert.deepEqual(notes(unstamped), ["No search in Hangul script was completed in China, Japan or the United States."]);
+  // A planned search whose territory was not recorded: no territory is guessed.
+  const unrecorded = run({ entries: [{ qid: "u", term: "ΒΟΛΤΑΡΙΣ" }, { qid: "g", term: "ΒΟΛΤΑΡΙΣ", regions: ["GR"] }] }, ["g"]);
+  assert.deepEqual(notes(unrecorded), ["A planned search in Greek script did not complete. Its territory was not recorded."]);
+  assert.equal(v(page(unrecorded), "Local-script spellings"), "Greek");
+  // One row per distinct gap, and the approved sentence stays for a script with no completed search anywhere.
+  const mixed = run({ scope_basis: "worldwide", regions: world, entries: [
+    { qid: "w", term: "볼타리스", regions: world }, { qid: "k", term: "볼타리스", regions: ["KR"] }, { qid: "j", term: "볼타리스", regions: ["JP"] },
+    { qid: "u", term: "볼타리스" }, { qid: "c", term: "ВОЛТАРИС", regions: ["KR"] },
+  ] }, ["k"]);
+  assert.deepEqual(notes(mixed), [
+    "No search in Cyrillic script was completed.",
+    "No search in Hangul script was completed in Japan.",
+    "The planned worldwide search in Hangul script did not complete.",
+    "A planned search in Hangul script did not complete. Its territory was not recorded.",
+  ]);
+  // A worldwide search that completed covers a search whose territory was not recorded, and leaves no row.
+  const covered = run({ scope_basis: "worldwide", regions: world, entries: [{ qid: "w", term: "볼타리스", regions: world }, { qid: "u", term: "볼타리스" }] }, ["w"]);
+  assert.deepEqual(notes(covered), []);
+  assert.equal(v(page(covered), "Local-script spellings"), "Hangul");
+});

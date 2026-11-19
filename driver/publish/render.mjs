@@ -32,7 +32,7 @@ import { COMMON_LAW, normRegion, regionName, REGION_NAMES } from './regions.mjs'
 import { parseFindingsJson, bindRecommendation, sentenceCaseLead, CLIENT_TIER_BY_COMPOSITE, bandOf, compareBlockingPower, inDispositionMode, reasonedNegativeGroups } from '../findings-model.mjs';
 import { REC, inPriorityWindow, ownerDisplayName } from '../registry-fidelity.mjs';
 import { registrationSystem } from '../jurisdiction-systems.mjs';
-import { REPORT_PAGE as R, RECORD_LINKS as LINK_WORDS } from './strings.mjs';
+import { REPORT_PAGE as R, RECORD_LINKS as LINK_WORDS, KNOCKOUT_PAGE } from './strings.mjs';
 import { READ_LEAD_RE } from '../report-card-record.mjs';   // D3 — the dedupe gate and the card's acceptance are ONE predicate
 import { logoLockup, BRAND, confPosture, sectionStrip, PALETTE, QUADRANT_COLOURS as QC } from '../../shared/brand.mjs';
 import { NAV_CSS } from '../../shared/site-nav.mjs';
@@ -1164,10 +1164,42 @@ function courtLineFor(opts, state) {
 
 // The scripts' reader names, in the table's order, for ISO 15924 codes the search-depth record keeps.
 const scriptNames = (codes) => Object.entries(R.searched.scriptName).filter(([k]) => codes.includes(k)).map(([, name]) => name);
-// The native scripts planned with no search completed are one Left open row, named in the approved sentence.
-function scriptGapRows(localScripts) {
-  const missed = localScripts ? scriptNames(localScripts.missed ?? []) : [];
-  return missed.length ? [{ area: R.searched.localScript, state: 'not-searched', note: R.searched.scriptsNotCompleted(missed) }] : [];
+// A territory as the page names it, alphabetically in a list; inside a sentence it takes the article English gives it
+// ("the United States"), from the phrases the Knockout page already prints.
+const territoryNames = (codes) => codes.map((c) => regionName(c)).sort((a, b) => a.localeCompare(b, 'en-GB'));
+const territoryPhrase = (c) => KNOCKOUT_PAGE.registerNames[c]?.phrase ?? regionName(c);
+const byPhrase = (codes) => [...codes].sort((a, b) => regionName(a).localeCompare(regionName(b), 'en-GB')).map(territoryPhrase);
+// A script searched somewhere that still has a gap: its record by script, in the table's order.
+const partlySearched = (ls) => Object.keys(R.searched.scriptName).filter((k) => (ls?.searched ?? []).includes(k) && ls?.territories?.[k]);
+// The script row under "What was searched": each script a search completed in, and for one whose planned worldwide search
+// did not complete, the places a narrower search in it did complete, where the record names them.
+function scriptsSearchedLine(ls) {
+  return R.searched.scriptsSearched(Object.entries(R.searched.scriptName).filter(([k]) => ls.searched.includes(k)).map(([k, name]) => {
+    const t = ls.territories?.[k];
+    return t?.worldwide === 'missed' && t.searched.length ? R.searched.scriptIn(name, byPhrase(t.searched)) : name;
+  }));
+}
+// THE LOCAL-SCRIPT ROWS UNDER LEFT OPEN, one per distinct gap (design, 2026-11-19, under the owner's delegation). The
+// scripts planned with no search completed anywhere share the approved sentence's one row. A script searched somewhere
+// keeps a row for each gap it still has: the territories where none of its searches completed, named up to three and
+// counted from four with the full list in `detail`; a planned worldwide search that did not complete; and a planned
+// search whose territory the plan did not record, unless a worldwide search in that script completed. No territory is
+// guessed, and a run with no execution record draws none of these.
+function scriptGapRows(ls) {
+  if (!ls) return [];
+  const row = (note, detail) => ({ area: R.searched.localScript, state: 'not-searched', note, ...(detail ? { detail } : {}) });
+  const rows = [];
+  const missed = scriptNames(ls.missed ?? []);
+  if (missed.length) rows.push(row(R.searched.scriptsNotCompleted(missed)));
+  for (const k of partlySearched(ls)) {
+    const t = ls.territories[k], name = R.searched.scriptName[k];
+    const gaps = Array.isArray(t.missed) ? t.missed : [];
+    if (gaps.length > 3) rows.push(row(R.searched.scriptNotCompletedInCount(name, gaps.length.toLocaleString('en-GB')), territoryNames(gaps)));
+    else if (gaps.length) rows.push(row(R.searched.scriptNotCompletedIn(name, byPhrase(gaps))));
+    if (t.worldwide === 'missed') rows.push(row(R.searched.worldwideNotCompleted(name)));
+    if (t.unnamed === 'missed' && t.worldwide !== 'searched') rows.push(row(R.searched.territoryNotRecorded(name)));
+  }
+  return rows;
 }
 
 // Counts only, folded closed. A count of records read is engine activity rather than something a reader
@@ -1214,7 +1246,7 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
   // The local-script row says what the run's record shows ran (owner, 2026-11-19): the scripts a native-script search
   // completed in, by name, or not searched when the record shows none did, and no row when the run kept no execution
   // record to say either. The scripts planned with none completed are left open, in the grid below (`scriptGapRows`).
-  if (c.localScripts) rows.push([R.searched.localScript, c.localScripts.searched.length ? R.searched.scriptsSearched(scriptNames(c.localScripts.searched)) : R.searched.notSearched]);
+  if (c.localScripts) rows.push([R.searched.localScript, c.localScripts.searched.length ? scriptsSearchedLine(c.localScripts) : R.searched.notSearched]);
   // HOW DEEP THE LOCAL-LANGUAGE INVESTIGATION WENT, which is a different question from the row above it.
   // That one answers whether the spellings were searched; this one answers whether the investigation ran
   // at the depth the matter configured. The engine can run it shallower than the account asked for, and
@@ -2282,7 +2314,8 @@ function sharedNoteCells(rows, cell) {
  * native scripts whose planned search did not complete, less any follow-up row another open row restates
  * (`dedupeFollowUps`). One list for every surface that prints it, so the page and a delivered document cannot disagree.
  * `localScripts` is the search-depth record's `counts.localScripts`. PURE.
- * @returns {{ area: string, state: string, note: string }[]} coverage rows keep their other fields
+ * @returns {{ area: string, state: string, note: string, detail?: string[] }[]} `detail` is the list a note counts, printed
+ *   after it; coverage rows keep their other fields
  */
 export function leftOpenRows({ coverage = [], localScripts = null, followUpKinds = null } = {}) {
   const open = (Array.isArray(coverage) ? coverage : []).filter((c) => COV_STATE[c?.state]?.cls !== 'ok');
@@ -2303,7 +2336,9 @@ export function coverageGrid(coverage, { verdict = true, followUpKinds = null } 
     // mark that does not exist, inside the report that clears it. Measured across the nine delivered
     // runs in the pool, `coverage[]` carries no axis identifier at all; the ones that leaked were the
     // coverage_judgment rows, which now carry a driver-emitted `areaLabel` and fold through it.
-    return `<div class="covcell ${s.cls}"><div class="ck">${s.ic}</div><div><div class="ct">${esc(cap(readerRowHead(c.area)))}${tag}</div><div class="cd">${inline(c.note || '')}</div></div></div>`;
+    // A row's `detail` is the list its note counts, such as the territories a script's search did not complete in.
+    const detail = Array.isArray(c.detail) && c.detail.length ? `<div class="cd">${esc(c.detail.join(', '))}</div>` : '';
+    return `<div class="covcell ${s.cls}"><div class="ck">${s.ic}</div><div><div class="ct">${esc(cap(readerRowHead(c.area)))}${tag}</div><div class="cd">${inline(c.note || '')}</div>${detail}</div></div>`;
   };
   const covered = coverage.filter(c => c.state === 'confirmed-clean');
   const rest = coverage.filter(c => c.state !== 'confirmed-clean');
