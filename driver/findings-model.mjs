@@ -115,6 +115,12 @@ export const FINDINGS_SCHEMA_VERSION = 7;
 // and re-saves, the file is re-validated, and the model would have to author a legal read for a card it
 // is deleting. See issue comment 2026-08-03.
 export const POSITION_REQUIRED_DISPOSITIONS = ["adversarial", "coexistence-partner", "distinguished", "off-field"];
+// A WITHDRAWN RATING IS NOT A REJECTED FINDING. The review can withdraw a finding whose right still stands, because the
+// rating it carried cannot be supported: its goods wording could not be used. `withdrawn` alone took that right off the
+// page with the rejected ones. `rating_withdrawn_ground` says which case it is and why: present, the right stands
+// unrated for that reason and the report lists it as left open; absent, the review rejected the finding, as before.
+// Valid only beside `disposition: "withdrawn"`, so every card, total and summary keeps leaving it out.
+export const RATING_WITHDRAWN_GROUNDS = ["goods-wording-unavailable"];
 // requirement 2 — off-field's TWO sanctioned grounds, made to declare themselves.
 //
 // `off-field` had been carrying two different claims under one token: "the same token in a different
@@ -702,8 +708,9 @@ const FINDING_KEYS_V4 = ["ordinal", "mark", "owner", "band", "borderline_between
 // this negative rests on (see OFF_FIELD_GROUNDS). Required on off-field, forbidden everywhere else — a
 // field ground on a rated conflict is a mis-typed disposition, not extra colour.
 const FINDING_KEYS_V6 = [...FINDING_KEYS_V4, "off_field_ground"];
-// (v7) — no new per-finding key either. The change is to `net`'s permitted CONTENT, not the shape.
-const FINDING_KEYS_V7 = [...FINDING_KEYS_V6];
+// (v7) — the change is to `net`'s permitted CONTENT, not the shape. One OPTIONAL key joined it later, back-compatible
+// like `ruled_out` before it: `rating_withdrawn_ground` (see RATING_WITHDRAWN_GROUNDS). No archived document carries it.
+const FINDING_KEYS_V7 = [...FINDING_KEYS_V6, "rating_withdrawn_ground"];
 // which dispositions carry a band on v4: a rated conflict needs one; off-field IS the unrated
 // commercial-awareness home ("a conflict the entity clearly wins with no material risk is not a rated
 // conflict" — doc 50); withdrawn tolerates a stale band (forensic record, renders nowhere).
@@ -855,6 +862,7 @@ const onlyKeys = (obj, allowed, tokenFor) => {
  *   | finding_deadline_invalid:<ordinal> | finding_deadline_key_unknown:<key> | finding_deadline_date_missing:<ordinal>
  *   | findings_context_note_invalid | findings_context_note_key_unknown:<key> | findings_context_note_type_invalid:<v>
  *   | findings_net_chained:<ordinal>   (v7 only — PLURAL on purpose; see validateNetShape)
+ *   | finding_rating_withdrawn_ground_invalid:<v> | finding_rating_withdrawn_ground_orphan:<ordinal>
  * (the composite>=3 NON-EMPTY-source gate for use_check/own_rights is raised by the caller in verify.mjs —
  *  this parser only enforces SHAPE: object / key-allowlist / source-is-a-string. Both fields are OPTIONAL.)
  *
@@ -1415,6 +1423,10 @@ function validateFinding(f, idx, seenOrdinals, mode = { v4: false, manifest: nul
     throw new Error(`finding_withdrawn_reason_missing:${ord} (a withdrawn finding must carry withdrawn_reason — the review flag that killed it)`);
   if (f.withdrawn_reason != null && f.disposition !== "withdrawn")
     throw new Error(`finding_withdrawn_reason_orphan:${ord} (withdrawn_reason is only valid when disposition is "withdrawn")`);
+  if (f.rating_withdrawn_ground != null && !RATING_WITHDRAWN_GROUNDS.includes(f.rating_withdrawn_ground))
+    throw new Error(`finding_rating_withdrawn_ground_invalid:${short(f.rating_withdrawn_ground)} (rating_withdrawn_ground, when present, must be one of: ${RATING_WITHDRAWN_GROUNDS.join(", ")})`);
+  if (f.rating_withdrawn_ground != null && f.disposition !== "withdrawn")
+    throw new Error(`finding_rating_withdrawn_ground_orphan:${ord} (rating_withdrawn_ground is only valid when disposition is "withdrawn")`);
 
   validateOwner(f.owner, ord, mode?.recordOrigins ?? null, mode?.foreignLinks ?? null);
   validateMeters(f.meters);
