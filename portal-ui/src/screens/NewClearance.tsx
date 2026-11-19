@@ -60,8 +60,8 @@ import {
   EMPTY_DRAFT, blockers, runCount, turnaround, turnaroundInWords, checksSummary, runsNote, machineryFor,
   territoryMatches, addTerritory, removeTerritory, takeOverOwnTerritories, reachesTerritory, notAvailableLine, worldwideLine,
   inherited, composeSaved, draftFromSaved, nameBudget, missingPieces, readiness,
-  chooseProduct, geographyFor, nativeLanguageControl, toggleNativeLanguage,
-  recommendSearch, templateLine, territoryCode, joinAnd, nativeLanguageLine, firstAndMore,
+  chooseProduct, geographyFor, nativeLanguageControl, toggleNativeLanguage, barWhere,
+  recommendSearch, templateLine, joinAnd, nativeLanguageLine, firstAndMore,
 } from '../contract/composerProduct.ts'
 import { productMatrix, LEGEND } from '../contract/productMatrix.ts'
 import { classLabel, classMatches, isClassNumber } from '../contract/niceClasses.ts'
@@ -1552,13 +1552,8 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
           // bar one line tall has no room for place names, and every other surface spells them out.
           // And on a search that is worldwide and nothing else, the footer says what the Where panel says, in
           // its words — the same line, register service included — and names no territory at all.
-          whereWorldwide
-            ? worldwideLine(registerLabel)
-            : draft.pick.territories.length
-              ? draft.pick.territories.map(territoryCode).join(', ')
-              : own.territories.length
-                ? own.territories.map(territoryCode).join(', ')
-                : 'worldwide',
+          // A company list the reader took over and emptied reads as the panel draws it, worldwide (barWhere).
+          barWhere(draft.pick, own.territories, { worldwideOnly: whereWorldwide, worldwideLine: worldwideLine(registerLabel), unset: 'worldwide' }),
           // Checks PER NAME, said once there is a name and a search to count them for.
           names.length && activeLevel ? checksSummary(effort) : '',
         ].filter(Boolean).join(' · ')}
