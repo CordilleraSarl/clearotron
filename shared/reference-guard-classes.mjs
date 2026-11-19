@@ -57,6 +57,7 @@
 
 import { execFileSync } from "node:child_process";
 import { CUT_RECORD_PRESENT, isWithheld } from "./withheld-paths-access.mjs";
+import { sourceSpans, isScript } from "./source-spans.mjs";
 
 // ── A COLOUR IS NOT A CITATION, AND ONE PROPERTY LIST SETTLES BOTH READINGS ──────────────────────
 //
@@ -315,6 +316,14 @@ export const WRAPPED_CLASS = "spelled-citation";
 
 export function offendingClasses(path, line) {
   if (!isScannable(path) || !isProse(path, line)) return [];
+  return classesIn(line);
+}
+
+/**
+ * Every class `text` carries, as `{ id, token, why }` rows. The caller has already decided this text is read: a prose line,
+ * a comment after code, or a string. PURE.
+ */
+export function classesIn(line) {
   const text = withoutColourValues(withoutLinkTargets(line));
   const out = [];
   for (const c of CLASSES) {
@@ -340,6 +349,36 @@ export function offendingClasses(path, line) {
  * @param {(path: string) => string} read
  */
 const COLUMN = new Map(CLASSES.map((c, i) => [c.id, i]));
+
+// ── A COMMENT AFTER CODE IS PROSE, AND A STRING IS COUNTED IN A COLUMN OF ITS OWN ─────────────────
+//
+// The guard read a script line only when it started as a comment, so `foo(); // tracker …` was never read, and nothing in
+// a string was. A comment after code is prose like any other: the census counts it under its class, and the diff guard
+// refuses it in an added line. A string is different: test titles and user-facing strings that other tests assert on
+// carry most of it, and changing them is its own work. So a string's hits are counted in one more column, after the
+// classes, and floored like the rest, and the diff guard does not refuse them. The audit that found the gap set exactly
+// this (2026-11-11): widen the prose to trailing comments, count strings as their own column, strip nothing.
+export const STRING_COLUMN = "in-a-string";
+/** The census's columns: the classes, in their order, then the string column. */
+export const CENSUS_COLUMNS = [...CLASSES.map((c) => c.id), STRING_COLUMN];
+
+/**
+ * Per line of one file, the classes its prose carries and the classes its strings carry. A script is read by its
+ * comments, trailing ones included, and its strings; any other file by the line rule. PURE.
+ * @returns {{ prose: {id: string, token: string, why: string}[], strings: {id: string, token: string, why: string}[] }[]}
+ */
+export function offendingInFile(path, text) {
+  const lines = String(text ?? "").split("\n");
+  if (!isScannable(path)) return lines.map(() => ({ prose: [], strings: [] }));
+  if (!isScript(path)) return lines.map((l) => ({ prose: offendingClasses(path, l), strings: [] }));
+  const spans = sourceSpans(text);
+  return lines.map((l, i) => {
+    // A line that starts as a comment is read whole, as before; a comment after code is read for its comment text.
+    const prose = isProse(path, l) ? classesIn(l) : spans[i]?.comment ? classesIn(spans[i].comment) : [];
+    const strings = !isProse(path, l) && spans[i]?.strings ? classesIn(spans[i].strings) : [];
+    return { prose, strings };
+  });
+}
 
 // ── THE CENSUS IS A STATEMENT ABOUT THE PUBLISHED TREE, AND IT CAN BE RUN OVER A BIGGER ONE ──────
 //
@@ -374,10 +413,12 @@ export function censusOf(files, read) {
     let text;
     try { text = read(path); } catch { continue; }
     if (text.includes("\0")) continue;                       // a binary blob is not prose
-    const counts = CLASSES.map(() => 0);
+    const counts = CENSUS_COLUMNS.map(() => 0);
     const lines = text.split("\n");
+    const rows = offendingInFile(path, text);
     for (let i = 0; i < lines.length; i++) {
-      for (const { id } of offendingClasses(path, lines[i])) counts[COLUMN.get(id)]++;
+      for (const { id } of rows[i].prose) counts[COLUMN.get(id)]++;
+      counts[CENSUS_COLUMNS.length - 1] += rows[i].strings.length;
       // AND THE PAIR, which no per-line rule can see. Counted on the HEAD line and once: the head ends
       // mid-citation, so this can never be the same hit the loop above just counted.
       if (isProse(path, lines[i]) && wrapsInto(lines[i], lines[i + 1])) counts[COLUMN.get(WRAPPED_CLASS)]++;
