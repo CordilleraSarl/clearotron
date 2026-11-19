@@ -332,8 +332,13 @@ export function knockoutCoverage(run) {
         + `${(m.findings ?? []).length} conflict(s) recorded, ${(m.negatives ?? []).length} search(es) recorded as returning nothing.`,
   }));
 
-  const recordsDoc = readJsonOrNull(koPaths(run.runDir).registerRecords);
-  const countsDoc = readJsonOrNull(koPaths(run.runDir).registerCounts);
+  // THE DELIVERED EDITION (2026-11-19): the register record and counts the report was published with, where the run's
+  // report document holds them. A resume after publishing can settle more in the run's files; those stay evidence, and
+  // the report's coverage answer is the one it delivered. The run's files for a run published before the document.
+  const document = readJsonOrNull(paths(run.runDir).reportDocument);
+  const delivered = document?.document === "report-document/knockout-1" ? document.client : null;
+  const recordsDoc = delivered ? delivered.registerRecords : readJsonOrNull(koPaths(run.runDir).registerRecords);
+  const countsDoc = delivered ? delivered.registerCounts : readJsonOrNull(koPaths(run.runDir).registerCounts);
   if (recordsDoc || countsDoc) {
     areas.push({
       area: "Register",

@@ -80,7 +80,7 @@ import { authorize, visibleTools, USER_ARTIFACTS, ACCOUNT_ARTIFACTS, accountMayR
 import { accountRun, accountTrace, accountTimeline, accountFinding, accountFindingList,
   accountWhatIfPlan, accountWhatIfQueued, accountWhatIfResult, CLIENT_FAILURE_NOTE as clientFailureNote } from "./lib/audit-view.mjs";
 import { scrubMarkdown, scrubBody, scrubFrontMatter, scrubCards } from "./lib/scrub.mjs";
-import { evidenceRecords, searchLog, coverageStatement, registrationGoods } from "./lib/evidence.mjs";
+import { evidenceRecords, searchLog, coverageStatement, registrationGoods, deliveredRegistration } from "./lib/evidence.mjs";
 // The knockout lane's projections. Every audit tool below branches on `isKnockoutRun` because the
 // clearance projections read artifacts this product does not write, and returned empty rather than saying
 // so.
@@ -262,6 +262,12 @@ function channelState(runDir) {
 
 // ---- tool implementations ----------------------------------------------------------------------
 
+/** Whether an audit block's "Filed …; Expiry …" line states the delivered registration's dates, "—" standing for none. */
+function sameDates(line, { filed, expiry }) {
+  const at = (word) => { const v = String(line ?? "").match(new RegExp(`${word}\\s+([^;]+)`, "i"))?.[1]?.trim(); return v && v !== "—" ? v : null; };
+  return at("Filed") === (filed ?? null) && at("Expiry") === (expiry ?? null);
+}
+
 const tools = {
   // / AGPL §13. One line, because the answer is not this file's to compose: shared/product-identity.mjs
   // is the single place all three network faces read, so the portal's About page, this tool and the CLI
@@ -438,9 +444,20 @@ const tools = {
     const run = mustRun(runId);
     const f = getFinding(run.P, id);
     if (!f) throw new Error(`finding "${id}" not found in ${runId}. Use list_findings to see ids (F#, NR#, AT#).`);
+    // THE REPORT'S FINDING (2026-11-19): where the run's report document delivered the record this block names, its
+    // owner, classes, status and dates are the delivered ones, and each registration the finding cites is listed apart.
+    // The id stays the block's. A run published before the document answers from its audit.md (lib/evidence.mjs).
+    const delivered = deliveredRegistration(run, f);
+    const answer = delivered ? {
+      ...f, owner: delivered.owner ?? f.owner, owner_country: delivered.ownerCountry ?? f.owner_country,
+      classes: delivered.registration.classes.join(", ") || f.classes, status: delivered.registration.status ?? f.status,
+      dates: sameDates(f.dates, delivered.registration) ? f.dates
+        : [delivered.registration.filed && `Filed ${delivered.registration.filed}`, delivered.registration.expiry && `Expiry ${delivered.registration.expiry}`].filter(Boolean).join("; ") || f.dates,
+      registrations: delivered.registrations,
+    } : f;
     // The register record this block names, its goods in the register's own words (lib/evidence.mjs).
     const goods = registrationGoods(run, f.url);
-    return goods ? { ...f, goodsAsRegistered: goods } : f;
+    return goods ? { ...answer, goodsAsRegistered: goods } : answer;
   },
   trace({ runId, target, depth, shallow }) {
     const run = mustRun(runId);
