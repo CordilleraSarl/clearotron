@@ -156,13 +156,21 @@ export function evidenceRecords(run) {
   // storefront page) came back `false`, which the account SKILL.md reads as "rests on the write-up, not on
   // a fetched record". Telling a client their real evidence is unverified is the exact inverse of the
   // safeguard's purpose, so the question is only asked where the archive can answer it.
-  const retrievedFor = (layer, url) => {
+  //
+  //
+  // A FINDING NAMES ITS RECORDS BY ITS REGISTRATIONS TOO, not only by its link. A register finding with no link of its
+  // own still lists the record URIs it rests on, and a record the run fetched and saved under one of them was retrieved:
+  // reading the link alone told a client's assistant that a fetched record rested on the write-up. One saved record is
+  // enough for `true`, which says the finding has retrieved evidence, not that every registration it names was fetched.
+  //
+  // A RECORD IS MATCHED BY ITS WHOLE IDENTITY, office and number. The link was matched as a substring either way round,
+  // so a link to a registration whose number only began with a saved one's read as retrieved, and so would a short
+  // fragment of a saved record's path.
+  const retrievedFor = (layer, url, registrations = []) => {
     if (layer !== "register") return null;              // not a question this archive can answer
     if (!archived.size) return null;                    // no archive on this run — unknown, not false
-    if (!url) return false;
-    const u = String(url).toLowerCase();
-    for (const uri of archived.keys()) if (u.includes(uri) || uri.includes(u)) return true;
-    return false;
+    if (registrations.some((r) => archived.has(normalizeRecordUri(r)))) return true;
+    return url ? archived.has(normalizeRecordUri(url)) : false;
   };
 
   // The provenance signal that DOES span both layers, straight out of findings.json's own contract:
@@ -212,18 +220,19 @@ export function evidenceRecords(run) {
     const mark = typeof f?.mark === "string" ? f.mark.trim() : "";
     if (!mark) continue;
     const url = asUrl(f?.source?.resolved_link);   // — shape, not type
+    // A run records each registration as its record URI, `{uri}`; an older one wrote the string itself.
+    const registrations = Array.isArray(f?.owner?.registrations)
+      ? f.owner.registrations.map((r) => (typeof r === "string" ? r : r?.uri)).filter((r) => typeof r === "string" && r) : [];
     records.set(`${normMark(mark)}|${normOwner(f?.owner?.name)}`, {
       mark,
       layer: layerOf(f?.source?.source_type),
       owner: valueField(f?.owner?.name),
       ownerCountry: valueField(f?.owner?.country),
-      // A run records each registration as its record URI, `{uri}`; an older one wrote the string itself.
-      registrations: Array.isArray(f?.owner?.registrations)
-        ? f.owner.registrations.map((r) => (typeof r === "string" ? r : r?.uri)).filter((r) => typeof r === "string" && r) : [],
+      registrations,
       classes: [],                      // findings.json carries no class list; the audit block below may
       status: null,
       url,
-      retrieved: retrievedFor(layerOf(f?.source?.source_type), url),
+      retrieved: retrievedFor(layerOf(f?.source?.source_type), url, registrations),
       basis: basisOf(f),
       // The FLAG, never the reason. publish/audit-from-spine.mjs documents the copper-gantry defect:
       // shipping an asserted claim beside its refutation with nothing saying which won. Omitting the

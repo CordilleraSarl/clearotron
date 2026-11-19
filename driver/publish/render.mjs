@@ -179,6 +179,7 @@ function ratingExtras(fm, findings, coverage, fourAnswers, opts, bandWord, condi
   }
   const fa = fourAnswers && typeof fourAnswers === 'object' ? fourAnswers : null;
   if (fa) {
+    const shown = new Set((Array.isArray(findings) ? findings : []).map((f) => Number(f?.ordinal)));
     const rows = FOUR_ANSWER_LABELS.map(([key, label], i) => {
       const a = fa[key];
       if (!a || typeof a.read !== 'string' || !a.read.trim()) return '';
@@ -196,8 +197,11 @@ function ratingExtras(fm, findings, coverage, fourAnswers, opts, bandWord, condi
       let tone = 'mid';
       if (i < 2) tone = /weak|unlikely|none|low/.test(tok) ? 'good' : /strong|likely|high/.test(tok) ? 'bad' : 'mid';
       else tone = /^(registrable|strong|clear)$/.test(tok) ? 'good' : /condition|moderate|medium|qualified|narrow/.test(tok) ? 'mid' : /not|weak|unlikely|blocked|obstructed/.test(tok) ? 'bad' : 'mid';
-      const ords = (Array.isArray(a.ordinals) && a.ordinals.length)
-        ? ` <span class="fa-ords">${a.ordinals.map((n) => `<a href="#c${n}">#${n}</a>`).join(' ')}</span>` : '';
+      // A withdrawn finding renders nowhere, so its ordinal is not cited here either: the token would link to a card the
+      // page does not draw. `findings` arrives with the withdrawn ones already out.
+      const ordinals = (Array.isArray(a.ordinals) ? a.ordinals : []).filter((n) => shown.has(Number(n)));
+      const ords = ordinals.length
+        ? ` <span class="fa-ords">${ordinals.map((n) => `<a href="#c${n}">#${n}</a>`).join(' ')}</span>` : '';
       const basis = a.basis ? inline(String(a.basis).trim()).trim() : '';
       // THE PER-CLASS OBSTACLES RIDE WITH THE ANSWER THEY QUALIFY. An answer that reads "registrable with
       // conditions" and does not say in which classes leaves the reader with the conclusion and none of
@@ -1285,7 +1289,7 @@ function alsoConsideredSection(ruledOut, recordsByUri = new Map(), opts = {}) {
     const practical = f.practical_position ? inline(String(f.practical_position)) : '';
     const fold = (legal || practical)
       ? `<details class="roff"><summary>${R.alsoConsidered.whyRuledOut}</summary>${legal ? `<p><b>${R.alsoConsidered.legal}</b> ${legal}</p>` : ''}${practical ? `<p><b>${R.alsoConsidered.practical}</b> ${practical}</p>` : ''}</details>` : '';
-    return `<div class="card ruled"><div class="top"><div class="rail"></div><div class="body"><div class="cardhead">${
+    return `<div class="card ruled"${f.ordinal != null ? ` id="c${esc(String(f.ordinal))}"` : ''}><div class="top"><div class="rail"></div><div class="body"><div class="cardhead">${
       f.ordinal != null ? `<span class="fnum">${esc(String(f.ordinal))}</span>` : ''}<h3 class="who mark-first">${esc(f.mark || '')}</h3>${
       who ? `<span class="cwho">${esc(who)}</span>` : ''}<span class="tier ruled">${R.alsoConsidered.ruledOut}</span><button class="ask-fi no-print">${R.alsoConsidered.askAi}</button></div><div class="oneline">${why}</div>${fold}</div></div></div>`;
   }).join('');
@@ -1458,8 +1462,11 @@ function keyPanel(findings, recordsByUri = new Map()) {
   // + the dedicated Common-law & marketplace section carry the reading surface; a fully-open C/L list was
   // the main driver of the key-panel height (doc-54 whitespace). Geographic regions: only the top
   // (highest-risk) region opens; the rest collapse (doc-55).
+  // The hint lands on the first common-law card the page draws, an on-field one before the rest, as the conflicts come
+  // first. It linked to `#common-law`, which went with the section's heading on 2026-09-16 and left the link dead.
+  const clFirst = findings.find((f) => regionCode(f) === COMMON_LAW && isOnField(f)) ?? clGroup?.findings[0];
   const clBlock = clGroup
-    ? `<p class="keyhint" style="margin-top:10px">${R.key.commonLawHint(`<a href="#common-law">${esc(R.key.commonLawSectionLink)}</a>`)}</p>${detail(clGroup, R.key.commonLawGroup, `<span style="white-space:nowrap">${R.key.unregisteredUse}</span>`, true)}`
+    ? `<p class="keyhint" style="margin-top:10px">${R.key.commonLawHint(`<a href="#c${clFirst.ordinal}">${esc(R.key.commonLawSectionLink)}</a>`)}</p>${detail(clGroup, R.key.commonLawGroup, `<span style="white-space:nowrap">${R.key.unregisteredUse}</span>`, true)}`
     : '';
   return `<div class="panel keypanel">
       <div class="label">${R.key.title}</div>
@@ -1539,7 +1546,7 @@ function negativeLine(f, recordsByUri) {
 function reasonedNegatives(groups, cardFor, recordsByUri) {
   return groups.map(g => {
     const members = g.findings.map(f =>
-      `<details class="rgroup rn"><summary>${negativeLine(f, recordsByUri)}</summary><div class="gbody">${fullDetail(f, cardFor(f), recordsByUri)}</div></details>`
+      `<details class="rgroup rn" id="c${f.ordinal}"><summary>${negativeLine(f, recordsByUri)}</summary><div class="gbody">${fullDetail(f, cardFor(f), recordsByUri)}</div></details>`
     ).join('\n      ');
     return `<p class="fold-lead"><b>${esc(GROUP_HEADING[g.key] ?? g.key)}</b> (${esc(g.ground)}) — ${R.marks(g.findings.length)}.</p>
       ${members}`;
@@ -1745,7 +1752,7 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   // how a FINDING was established, and there is no finding here. Nothing was found, and that is the
   // whole of what the line has to say.
   const useChk = cite(useSrc, R.detail.useChecked, isUseCheckNoResult(f.use_check?.source) ? null : useStatus);
-  const ownR = cite(f.own_rights?.source, R.detail.ownMarks, EVIDENCE_LABEL[f.own_rights?._status]);   // owner, 2026-11-18
+  const ownR = cite(f.own_rights?.source, R.detail.ownMarks, EVIDENCE_LABEL[f.own_rights?._status]);
   const proseFull = cardBlock(card, /^full detail/i);
   const proseFullShown = proseFull;   // one report: the full prose; portal-report strips serve-time chrome, never analysis
   const internalNote = cardBlock(card, /^full detail/i) ? '' : '';   // internal notes ride ::p:: inside prose
@@ -2333,7 +2340,7 @@ function openAll(v){document.querySelectorAll('details.drill,details.method,deta
 // inside a collapsed <details> (a secondary region's .rgroup, a .rrow), a plain anchor jump lands wrong or
 // nowhere. Open every <details> ancestor of the target FIRST, then land on the card top — scroll-margin-top
 // offsets the sticky topbar so the mark headline + risk band read first. Covers click, hashchange and a
-// deep-link load; non-card #-links (#common-law) fall through to native nav.
+// deep-link load; any other #-link falls through to native nav.
 function _cardReveal(el){var p=el.parentElement;while(p){if(p.tagName==='DETAILS'&&!p.open)p.open=true;p=p.parentElement;}}
 function _cardHashGo(){var id=location.hash.slice(1);if(id.charAt(0)!=='c'||!/^[0-9]+$/.test(id.slice(1)))return;var el=document.getElementById(id);if(!el)return;_cardReveal(el);el.scrollIntoView({block:'start'});}
 document.addEventListener('click',function(e){var a=e.target.closest?e.target.closest('a[href^="#c"]'):null;if(!a)return;var id=(a.getAttribute('href')||'').slice(1);if(id.charAt(0)!=='c'||!/^[0-9]+$/.test(id.slice(1)))return;var el=document.getElementById(id);if(!el)return;_cardReveal(el);e.preventDefault();try{if(history.replaceState)history.replaceState(null,'','#'+id);}catch(err){}el.scrollIntoView({behavior:(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)?'auto':'smooth',block:'start'});});

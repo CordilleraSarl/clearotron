@@ -366,7 +366,7 @@
         "a-closed-session-stream-is-kept-gzipped.test.mjs": {
           "tests": 4,
           "asserts": 13,
-          "skips": 1,
+          "skips": 2,
           "todos": 0
         },
         "a-cloud-account-bills-as-itself.test.mjs": {
@@ -1643,7 +1643,7 @@
         },
         "a-new-run-folder-is-closed-to-other-accounts.test.mjs": {
           "tests": 5,
-          "asserts": 11,
+          "asserts": 12,
           "skips": 5,
           "todos": 0
         },
@@ -4743,6 +4743,12 @@
           "skips": 0,
           "todos": 0
         },
+        "every-link-on-a-published-report-lands.test.mjs": {
+          "tests": 1,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "every-manual-is-read-and-names-what-exists.test.mjs": {
           "tests": 9,
           "asserts": 13,
@@ -6388,8 +6394,8 @@
           "todos": 0
         },
         "render.test.mjs": {
-          "tests": 164,
-          "asserts": 703,
+          "tests": 165,
+          "asserts": 713,
           "skips": 0,
           "todos": 0
         },
@@ -9663,6 +9669,12 @@
           "todos": 0
         },
         "the-connector-calls-an-unsearched-area-what-the-report-does.test.mjs": {
+          "tests": 2,
+          "asserts": 3,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-evidence-list-says-retrieved-only-for-the-saved-record.test.mjs": {
           "tests": 2,
           "asserts": 3,
           "skips": 0,

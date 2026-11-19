@@ -87,7 +87,7 @@ test("every other layout prints what it printed before", {
 test("a demo with its own program copy names that program in its lost-passphrase line", () => {
   const home = "/home/invented-user";
   const credentialPath = `${home}/trademark-demo/portal-local-credential.json`;
-  const program = `${home}/trademark-demo/program/bin/clearotron`;
+  const program = join(home, "trademark-demo", "program", "bin", "clearotron");   // joined, as the product joins it
   assert.equal(passphraseResetCommand({ prefix: "", credentialPath, home, exists: (p) => p === program }),
     `${program} passphrase --reset --base ${home}/trademark-demo`);
   assert.equal(passphraseResetCommand({ prefix: "npx ", credentialPath, home, exists: () => false }),

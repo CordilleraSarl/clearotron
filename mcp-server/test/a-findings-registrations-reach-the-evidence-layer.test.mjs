@@ -24,3 +24,4 @@ test("a registration recorded as {uri} and one recorded as a string both reach t
     assert.deepEqual(regs.SKARVEL, ["EUTM 018046213"], "a registration recorded as a string changed");
   } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
+
