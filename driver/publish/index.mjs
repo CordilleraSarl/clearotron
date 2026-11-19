@@ -16,13 +16,13 @@ import { buildAudit } from './xlsx.mjs'; import { readDegradedPartRows, degraded
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, projectCoverageJudgment, COVERAGE_AREA_STATES } from '../findings-model.mjs';
 import { recordsOfDeliveredPositions } from '../declination-duty.mjs'; import { findingUris } from '../record-carry.mjs';   // — a position a finding delivers is not listed as set aside
 import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs'; import { coverageFormStamp, readCoverageForm } from '../coverage-form-io.mjs'; import { readReleasedFamilies, readWithheldFamilies } from '../withheld-families.mjs'; import { unitLabel } from '../coverage-form.mjs'; import { coverageUnitLabel } from '../coverage-ledger.mjs'; import { recallReceiptForOwnCompany } from '../recall-receipt.mjs';   // — and why an absence did not close; whose recall checks an audit lists
-import { clearanceReportDocument, clearanceReportDataOf } from './report-document.mjs';   // the run's report as one document, and the data file it carries
+import { clearanceReportDocument, clearanceReportDataOf, clearanceWorkbookOf, withWorkbook } from './report-document.mjs';   // the run's report as one document, and what it carries
 import { searchDepthRecord, planTerritoriesOf, caseLawPassRecord } from './search-depth.mjs'; import { bandRecords } from '../named-band.mjs'; import { CASELAW_BRIDGES } from '../engine/mcp/gather-config.mjs';   // how much was read to reach the answer, as counts and tokens; and the case-law sources whose calls the court state reads
 import { parseFrameworkManifest } from '../framework.mjs'; import { readFrozenMethod, FROZEN_METHOD_FILE } from '../framework-method.mjs';
 import { rollupTokens, servedModels } from '../tokens.mjs';
 import { reportIdentityFor, productCoverageNote, isRegisterOnly } from '../search-policy.mjs';
 import { readRecordArtifacts, bindFindingsToRecords, joinEvidenceStatus } from '../registry-fidelity.mjs';
-import { deliveryFlagLines, deliveredFailure } from '../predelivery-lint.mjs';
+import { deliveredFailure } from '../predelivery-lint.mjs';
 import { unrenderableConditions, clientStatement, clientConditions } from '../terminal-clamp.mjs';   // — the conditions that reach no client surface; the cover note's
 import { runLog } from '../log.mjs';   // — one line in the run record when one does
 import { PROVIDERS, config } from '../driver.config.mjs';
@@ -1352,24 +1352,30 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // place and is recorded, as a data file is (shell.mjs).
   if (findingsKept) copyPart(findingsKept, 'findings.json');
   if (auditMd && existsSync(auditMd)) copyRO(auditMd, 'audit.md');   // durable source (kept even if the xlsx fails)
+  // THE RUN'S REPORT AS ONE DOCUMENT (publish/report-document.mjs), built once from what was read above and kept in
+  // the run's own record, never the pool. The workbook, the page and the data file read it. A build that throws costs
+  // the workbook and the data file, as a throw in either always has, and never the report.
+  let reportDocument = null;
+  try { reportDocument = clearanceReportDocument({ ...doc, runId }, { codename, customerKey }); }
+  catch (e) { console.warn(`[report-document] not built: ${e?.message ?? e}`); }
   let auditFile = null, counts = null, auditError = null;
   // In the state the workbook is built even with no finding and no search log: it carries the part that was not
   // completed, and the coverage the run did record.
   if (findings.length || auditParsed || assessmentNotCompleted) {
     ({ auditFile, auditError, built: counts } = await buildWorkbook(`${runId}-audit.xlsx`, async (at) => {
       // A10 — the failing predelivery checks ride into the workbook and are ENUMERATED on its Summary
-      // sheet (with the cover note, the delivery surfaces that reach the reviewing lawyer). The
-      // reviewReceipts assembly above claimed for two releases that these "land on the audit workbook's
-      // Review-receipts sheet"; nothing ever threaded them through — the sink was a flag nobody read.
-      // The workbook is handed the PROJECTED lines, never the checks: the audit download link rides in
-      // the same cover note that reaches a client principal, so it is a delivery surface under exactly
-      // the same rule (the workbook's own BANNED gate had already started firing on the raw detail —
-      // advisory, so CI stayed green). reviewReceipts.lint keeps its raw detail for the internal
-      // readers above (fetchState reads registry-record-coverage's URIs out of it).
-      const built = await buildAudit({ degradedParts: degradedRows, droppedConditions, undispatchedProbes, withheldFamilies, releasedFamilies, setAside, findings, frameworkMethod, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null, assessmentNotCompleted, registerReach, registerScope }, auditParsed, at, fm.title, fm);
+      // sheet (with the cover note, the delivery surfaces that reach the reviewing lawyer), as their delivery
+      // lines (clearanceWorkbookOf).
+      const w = clearanceWorkbookOf(reportDocument);
+      const built = await buildAudit(w.contract, w.audit, at, w.title, w.frontMatter);
       if (built?.gateViolations?.length) console.warn(`[audit-workbook] advisory: ${built.gateViolations.join(' | ')}`);
       return built;
     }));   // a REAL exception only — the report ships without the workbook, and nothing names it
+  }
+  if (reportDocument) reportDocument = withWorkbook(reportDocument, { auditFile, auditError });
+  if (reportDocument && runDir) {
+    try { ensureDriverDir(runDir); atomicWrite(paths(runDir).reportDocument, JSON.stringify(reportDocument, null, 1) + '\n'); }
+    catch (e) { console.warn(`[report-document] not written: ${e?.message ?? e}`); }
   }
 
 
@@ -1383,17 +1389,6 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // fails for want of it).
   if (searchDepth) { try { writeRO('search-depth.json', JSON.stringify(searchDepth, null, 2)); } catch { /* additive */ } }
 
-  // THE RUN'S REPORT AS ONE DOCUMENT (publish/report-document.mjs), built once from what was read above and kept in
-  // the run's own record, never the pool. The surfaces below move to reading it one at a time; the data file is the
-  // first. Built ahead of the page so the page can read it too. A build that throws costs the data file, as a
-  // producer throw always has, and never the report.
-  let reportDocument = null;
-  try { reportDocument = clearanceReportDocument({ ...doc, runId }, { codename, customerKey, auditFile, auditError }); }
-  catch (e) { console.warn(`[report-document] not built: ${e?.message ?? e}`); }
-  if (reportDocument && runDir) {
-    try { ensureDriverDir(runDir); atomicWrite(paths(runDir).reportDocument, JSON.stringify(reportDocument, null, 1) + '\n'); }
-    catch (e) { console.warn(`[report-document] not written: ${e?.message ?? e}`); }
-  }
   writeRO('report.html', renderClearanceDocument(pageDocument(reportDocument), { recordsByUri, logos, homeHref: '../index.html', chromeHref: '../assets/chrome.css', delivery: deliv, demoData }));   // the page reads the report document, with its surface beside it
   // ONE report (spec 2026-07-30 §5): report.client.html is no longer written. The knockout lane's own
   // collapse note is the precedent: "two renderings of one run is how the wrong link gets sent". The
