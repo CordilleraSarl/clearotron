@@ -23,7 +23,7 @@ import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { driverDir } from "../../shared/driver-dir.mjs";   // #1336
+import { driverDir } from "../../shared/driver-dir.mjs";
 
 import { deriveRecordCarry } from "../pipeline.mjs";
 import { paths } from "../stages.mjs";

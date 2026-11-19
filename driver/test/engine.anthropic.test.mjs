@@ -15,7 +15,7 @@ import { anthropicAgentEngine, claudeModel, effortFor, mapUsage, buildClaudeArgs
 import { EFFORT_TABLE as CODEX_EFFORT_TABLE } from "../engine/openai-agent.mjs";
 import { runStage, isTimeout, isLaneWedge, spentBudgetCleanly, classifyWedge, payloadText, selectEngine, registerEngine } from "../gateway.mjs";
 import { failingBin } from "./platform-caps.mjs";
-import { reapPidfile } from "./reap-fixture.mjs";   // #1847 — the owner reaps it, on every exit path
+import { reapPidfile } from "./reap-fixture.mjs";   // the owner reaps it, on every exit path
 import { pinEnv } from "../../shared/env-aliases.mjs";   // a fixture pins EVERY spelling
 
 test("auth toggle: subscription (default) strips ANTHROPIC_API_KEY; api-key mode keeps it", () => {
