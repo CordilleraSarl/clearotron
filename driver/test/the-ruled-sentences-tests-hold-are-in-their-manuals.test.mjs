@@ -22,6 +22,7 @@ import { REFUTATION_SENTENCES } from "./ruled-sentences-narrative-refutation.mjs
 import { RECIPES_SENTENCES } from "./ruled-sentences-register-recipes.mjs";
 import { PHASE2_SENTENCES } from "./ruled-sentences-phase2-execution.mjs";
 import { SYNTHESIS_SENTENCES } from "./ruled-sentences-synthesis-rules.mjs";
+import { MATTER_FRAME_SENTENCES } from "./ruled-sentences-matter-frame.mjs";
 import { GATHERED, manualPins, heldStrings, namesManual } from "../../scripts/count-manual-pins.mjs";
 import { skipReason } from "../../shared/tracked-files.mjs";
 
@@ -38,6 +39,7 @@ const FIXTURES = {
   "driver/skills/clearance-register/register-recipes.md": RECIPES_SENTENCES,
   "driver/skills/clearance-search/phase2-execution.md": PHASE2_SENTENCES,
   "driver/skills/clearance-search/synthesis-rules.md": SYNTHESIS_SENTENCES,
+  "driver/skills/matter-frame/SKILL.md": MATTER_FRAME_SENTENCES,
 };
 // Strings a test that reads a manual uses for its own purpose, which the manual happens to share word for word: an example
 // row label used as a unit name, a stage message's own words, a fixture's input. They hold nothing of the manual.
@@ -45,6 +47,9 @@ const COINCIDENT = {
   "driver/skills/clearance-register/digest.md": { "driver/test/coverage-form-seat-axis.test.mjs": 2 },
   "driver/skills/clearance-search/phase2-execution.md": {
     "driver/test/a-search-that-did-not-answer-is-never-recorded-as-one-that-found-nothing.test.mjs": 1,
+  },
+  "driver/skills/matter-frame/SKILL.md": {
+    "driver/test/a-class-the-client-reaches-is-added-and-costs-one-question.test.mjs": 3,
   },
   "driver/skills/knockout-assess/SKILL.md": {
     "driver/test/a-knockout-defect-reaches-the-step-that-can-repair-it.test.mjs": 1,

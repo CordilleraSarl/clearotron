@@ -41,6 +41,7 @@ export const GATHERED = Object.freeze({
   "driver/skills/clearance-register/register-recipes.md": "driver/test/ruled-sentences-register-recipes.mjs",
   "driver/skills/clearance-search/phase2-execution.md": "driver/test/ruled-sentences-phase2-execution.mjs",
   "driver/skills/clearance-search/synthesis-rules.md": "driver/test/ruled-sentences-synthesis-rules.mjs",
+  "driver/skills/matter-frame/SKILL.md": "driver/test/ruled-sentences-matter-frame.mjs",
 });
 
 const LIT = String.raw`"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'|\x60(?:\\.|[^\x60\\$\n])*\x60`;
