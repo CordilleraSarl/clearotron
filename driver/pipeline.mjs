@@ -10,6 +10,7 @@ import { runShell } from "./run-shell.mjs";
 import { deliveryEndState } from "./run-delivered.mjs";
 import { StageFailure, buildFailurePacket, isDesignedRefusal, stageWallFields, terminalReasonFields } from "./run-outcome.mjs";
 import { correctionReading, correctionRows, flagOrdinals, recordCorrectionsBasis, repairUnnamedRemovals, rollbackCorrectivePass, useThePipeline } from "./steps/corrections.mjs";
+import { findRunDate, resumeStopRefusal } from "./run-resume.mjs";
 import { attachFramework, attachProfile, attachRegisterPlan, attachSearchPolicy, depthLadderEvent, foldRecipeScope, freezeProfile, profileShaOf, registerDeferredCoverage } from "./run-attachments.mjs";
 import { resultsPerCellOf } from "./provider-calls.mjs";
 import { digestDispatchExtra, extractRulingsTail, loadCoverageLedger, readOwnerScreen, recallFollowupMaxFor, recordDetailIndex, relabelCoverageRows, runDigest, writeRegisterDigestFacts } from "./register-digest-run.mjs";
@@ -120,7 +121,7 @@ import { withRejected } from "./engine/mcp/supplemental.mjs";
 import { runLog, note, fileMeta, outputMeta, stageLog } from "./log.mjs"; import { plainDirective, deferralCoverageRow, plainDeferralReason } from "./deferral-row.mjs"; import { PART_NAMES, NOT_COMPLETED } from "./degraded-parts.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
 import { deriveScopeFacts } from "./scope-facts.mjs";
 import { repairFollowup } from "./repair-composers.mjs";
-import { seedRunStatus, recordTransition, writeRunStatus, rollupStatus, terminalRunState, signoffPatch, readSignoff } from "./progress.mjs";
+import { seedRunStatus, recordTransition, writeRunStatus, rollupStatus, signoffPatch, readSignoff } from "./progress.mjs";
 import { atomicWrite } from "./run-record.mjs";
 import { writeOutboxPacket } from "./outbox.mjs";
 import { parseCaseLawProfiles, joinCaseLawProfiles } from "./publish/parse.mjs"; import { buildAuditMd } from "./publish/audit-from-spine.mjs";
@@ -179,12 +180,12 @@ import { recordedScopeLedgerRows } from "./clearance-variants-record.mjs";
 import { renderFormNeighbourhoodJson, parseFormNeighbourhoodJson, dispatchedQueriesFromBand, formGapDirectives, markText } from "./form-neighbourhood.mjs"; import { loadOrdinaryWords } from "./ordinary-words.mjs";
 import { retryCannotHelpWith, isContentShapedFail, isFallbackEligible } from "./repairs.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
-import { isCancelled } from "./cancel.mjs";   // stop-by-user: a distinct class, never classified as a failure; isCancelled is the resume door's own refusal
 import { reachableCommand } from "../shared/invocation.mjs";   // — a printed command the reader can type later, from anywhere
 export { StageFailure, buildFailurePacket, isDesignedRefusal, stageWallFields, terminalReasonFields };   // moved to run-outcome.mjs; importers read them here as before
 export { correctionReading, correctionRows, flagOrdinals, recordCorrectionsBasis, repairUnnamedRemovals, rollbackCorrectivePass };   // moved to steps/corrections.mjs; importers read them here as before
 export { isContentShapedFail, isFallbackEligible };   // moved to repairs.mjs; importers read them here as before
 export { logTurnaroundReconciliation };   // moved to run-quote.mjs; importers read it here as before
+export { resumeStopRefusal };   // moved to run-resume.mjs; importers read them here as before
 export { attachSearchPolicy, depthLadderEvent, foldRecipeScope, freezeProfile, profileShaOf, registerDeferredCoverage };   // moved to run-attachments.mjs; importers read them here as before
 export { resultsPerCellOf };   // moved to provider-calls.mjs; importers read them here as before
 export { digestDispatchExtra, extractRulingsTail, loadCoverageLedger, readOwnerScreen, recallFollowupMaxFor, relabelCoverageRows, writeRegisterDigestFacts };   // moved to register-digest-run.mjs; importers read them here as before
@@ -6097,47 +6098,6 @@ export function reconcilePassStamps(runRef, ctx) {   // @internal, exported for 
 // which is exactly the case a deadlock produces.
 export let liveRunSlot = null;   // @internal
 
-/**
- * — WHY THIS RESUME MUST NOT HAPPEN, OR null.
- *
- * Exported and pure so an arm can drive the DECISION without standing up a run slot, an engine
- * preflight and a whole studio tree to reach it — the same reasoning retireCancelledPark states for
- * returning what it wrote. A predicate nobody can call cheaply is a predicate nobody tests.
- *
- * Two surfaces, because a stop is spelled two ways depending on what the run was doing when it was
- * asked. `.cancel` is the REQUEST, and stop_run writes only that for a run still executing; a terminal
- * `status.json` is the SETTLEMENT, which is what a park retired by the runner (or by an operator at a
- * shell) leaves behind. Reading one and not the other is how the measured run resumed past a cancel
- * that was, by then, written on both of them.
- *
- * The DELIVERED terminal is deliberately NOT folded in here: its caller needs to name which of three
- * delivery markers it found, and it refuses for a different reason (a duplicate report, not a
- * countermanded decision). Two refusals, two messages a reader can act on.
- */
-export function resumeStopRefusal(runDir) {   // @internal
-  if (!runDir) return null;
-  if (isCancelled(runDir)) return "an operator asked it to stop (.cancel present)";
-  // ── CANCELLED ONLY, AND THE FIRST CUT OF THIS WAS WRONG ────────────────────────────────────────
-  //
-  // This read `TERMINAL_STATES.has(state)` — delivered, failed, cancelled — and CI refused sixty-odd
-  // resume arms for it. Rightly: `failed` is a terminal the RUNNER writes about itself, and resuming a
-  // failed run is not an edge case, it is the documented purpose of the door this guard sits in. The
-  // three rmSync calls below exist to clear exactly that sentinel so "a clean resume doesn't read as
-  // failed". A guard refusing what its own function was built to do is a worse defect than the one it
-  // was fixing, and it would have stranded every crash-recovered run on the box.
-  //
-  // `cancelled` is the only state a PERSON sets, which is the issue's own criterion — "a terminal
-  // status.json state set by an OPERATOR is honoured". The runner's REPARK_MAX circuit breaker and the
-  // reclaim-exhausted path both write `failed` with a reason, so "terminal + has a reason" cannot
-  // separate them either; the state word can.
-  //
-  // `delivered` is deliberately absent: the branch above already refuses it, earlier, and names which
-  // of three delivery markers it found. Repeating it here would be unreachable code carrying a worse
-  // message than the one that fires.
-  const t = terminalRunState(runDir);
-  return t === "cancelled" ? "it was cancelled (status.json)" : null;
-}
-
 export async function pipeline(job, opts = {}) {
   const slot = await acquireRunSlot(opts.agent ?? config.defaultAgent);
   liveRunSlot = slot;
@@ -6286,7 +6246,7 @@ export function instructedScopeOf(job) {
 
 async function pipelineInner(job, opts = {}) {
   // The order, the run directory, the resume checks and the context (steps/open-run.mjs).
-  const { P, agent, ctx, isResume, run } = await openRun({ job, opts }, { findRunDate, resumeStopRefusal });
+  const { P, agent, ctx, isResume, run } = await openRun({ job, opts });
   // ── Phase 2a dispatch: a knockout-pipeline policy runs the SLIM lane (pipeline-knockout.mjs) —
   // lazy import (a clearance run never loads it; also breaks the static cycle). Placed INSIDE the
   // run slot + pipeline()'s rate-limit postpone catch, with profile+policy frozen; the knockout lane
@@ -6846,16 +6806,6 @@ export function reportIdentityRecord(job, ctx, runDir, displayVerdict = null) { 
 }
 
 // ---- operability: resolve / reconstruct / single-stage re-run / sandboxed experiment -----------------
-
-// The calendar date of an existing LIVE run-dir for this job+codename (the leaf is "<date>-<codename>"), read
-// off disk so a resume/re-run targets the ORIGINAL run regardless of today's date. null if no live run-dir.
-function findRunDate(job, codename, studioRoot) {
-  const slugDir = join(studioRoot ?? config.studioRoot, deriveSlug(job));
-  let entries = [];
-  try { entries = readdirSync(slugDir); } catch { /* none */ }
-  const hit = entries.find((n) => /^\d{4}-\d\d-\d\d-/.test(n) && n.endsWith(`-${codename}`));
-  return hit ? hit.match(/^(\d{4}-\d\d-\d\d)-/)[1] : null;
-}
 
 // Resolve an existing LIVE run identity from a codename. Drop 1: live runs only — an archived (delivered) run
 // is intentionally not a re-run/--from target. buildRunContext then rebuilds the same identity (same run-dir).
