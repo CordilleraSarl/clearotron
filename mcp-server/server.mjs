@@ -85,7 +85,7 @@ import { evidenceRecords, searchLog, coverageStatement, registrationGoods, deliv
 // clearance projections read artifacts this product does not write, and returned empty rather than saying
 // so.
 import {
-  isKnockoutRun, knockoutDoc, knockoutArtifacts, knockoutArtifactPath, knockoutFindings,
+  isKnockoutRun, knockoutDoc, knockoutArtifacts, knockoutArtifactPath, knockoutFindings, knockoutFinding,
   knockoutEvidence, knockoutSearches, knockoutCoverage, traceKnockout, notProducedOnThisProduct,
 } from "./lib/knockout.mjs";
 import { instructionsFor } from "./lib/instructions.mjs";
@@ -442,6 +442,12 @@ const tools = {
   },
   get_finding({ runId, id }) {
     const run = mustRun(runId);
+    // A Knockout's ids are the ones its list_findings gives; the clearance's audit trail holds none of them.
+    if (isKnockoutRun(run)) {
+      const item = knockoutFinding(run, id);
+      if (!item) throw new Error(`finding "${id}" not found in ${runId}. Use list_findings to see ids.`);
+      return item;
+    }
     const f = getFinding(run.P, id);
     if (!f) throw new Error(`finding "${id}" not found in ${runId}. Use list_findings to see ids (F#, NR#, AT#).`);
     // THE REPORT'S FINDING (2026-11-19): where the run's report document delivered the record this block names, its

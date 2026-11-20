@@ -101,7 +101,7 @@ export const knockoutStatement = (framework, marks) =>
 // what the typed record actually carries. A `—` means the shape that produced the row never had the
 // field (an archived prose finding), which is a different fact from an empty cell.
 // What a Knockout left open is drawn by the page (render-knockout.mjs), which reads it from the run's report document.
-export { knockoutLeftOpen } from './render-knockout.mjs';
+export { knockoutLeftOpen } from './knockout-left-open.mjs';
 
 export async function buildKnockoutWorkbook(findings, receipts, outPath, registerCounts = null, qcFlags = [], framework = null, registerRecords = null, frameworkMethod = null, ownerChecks = [], degraded = {}) {
   const ExcelJS = (await import('exceljs')).default;
