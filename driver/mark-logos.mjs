@@ -35,6 +35,7 @@ import { join, resolve, sep } from "node:path";
 import { normalizeRecordUri } from "../providers/_shared/record-uri.mjs";
 import { recordBodyFromLog } from "../providers/_shared/ledger.mjs";   // the run record log's own index
 import { readRecordArtifacts } from "./registry-fidelity.mjs";
+import { recordsForMark } from "./register-records.mjs";
 import { DRIVER_DIR, driverDir, ensureDriverDir, paths } from "./run-record.mjs";
 import { runLog } from "./log.mjs";
 
@@ -66,16 +67,28 @@ export function imageTypeOf(bytes) {
   return null;
 }
 
-/** The registrations the report will show, in its order and once each. PURE. */
-export function citedRefs({ findings = null, registerRecords = null } = {}) {
+/**
+ * The registrations the report will show, in its order and once each. PURE.
+ *
+ * A KNOCKOUT'S ARE THE FILINGS ITS TABLES SHOW, not every filing its listing holds: a name's table shows its most material
+ * few (publish/render-knockout.mjs, `shownFilings`), and on a demo re-run 8 of a Knockout's 9 image requests were for
+ * filings no page listed (2026-11-20). `shown(entry, mark)` is that rule and `knockoutMarks` the run's rated names; given
+ * them, only those filings are asked about, and a run whose names could not be read asks about none.
+ */
+export function citedRefs({ findings = null, registerRecords = null, knockoutMarks = null, shown = null } = {}) {
   const out = [];
   const add = (ref) => { const k = normalizeRecordUri(ref); if (k && !out.includes(k)) out.push(k); };
   for (const f of Array.isArray(findings) ? findings : []) {
     if (f?.disposition === "withdrawn") continue;
     for (const r of Array.isArray(f?.owner?.registrations) ? f.owner.registrations : []) add(r?.uri);
   }
-  for (const m of Array.isArray(registerRecords?.marks) ? registerRecords.marks : [])
-    for (const r of Array.isArray(m?.records) ? m.records : []) add(r?.recordId);
+  if (typeof shown === "function") {
+    for (const m of Array.isArray(knockoutMarks) ? knockoutMarks : [])
+      for (const r of shown(recordsForMark(registerRecords, m?.name), m) ?? []) add(r?.recordId);
+  } else {
+    for (const m of Array.isArray(registerRecords?.marks) ? registerRecords.marks : [])
+      for (const r of Array.isArray(m?.records) ? m.records : []) add(r?.recordId);
+  }
   return out;
 }
 
@@ -166,16 +179,20 @@ export async function logoRows({ runDir, refs, records, register, fetchImage, ma
 }
 
 /**
- * The step both pipelines run before publishing. `findingsPath` for a clearance, `registerRecordsPath` for a Knockout;
+ * The step both pipelines run before publishing. `findingsPath` for a clearance; `registerRecordsPath` for a Knockout, with
+ * `knockoutFindingsPath`, its rated names, because a name's table shows only its most material filings (citedRefs);
  * `provider` is the run's register adapter; `injectedFetcher` true when the run answers its record fetches itself (a
  * replay, a test). Writes `_driver/logos.json`; returns it, or null when it could not. Never throws.
  */
-export async function markLogos(runDir, { findingsPath = null, registerRecordsPath = null, provider = null, injectedFetcher = false,
-  env = process.env, agentId = null, sessionKey = null } = {}) {
+export async function markLogos(runDir, { findingsPath = null, registerRecordsPath = null, knockoutFindingsPath = null, provider = null,
+  injectedFetcher = false, env = process.env, agentId = null, sessionKey = null } = {}) {
   try {
     const read = (p) => { try { return p ? JSON.parse(readFileSync(p, "utf8")) : null; } catch { return null; } };
     const findings = read(findingsPath)?.findings ?? null;
-    const refs = citedRefs({ findings, registerRecords: read(registerRecordsPath) });
+    const registerRecords = read(registerRecordsPath);
+    // The page's own rule for which filings a name's table shows, loaded only for a Knockout.
+    const shown = registerRecordsPath ? (await import("./publish/render-knockout.mjs")).shownFilings : null;
+    const refs = citedRefs({ findings, registerRecords, knockoutMarks: read(knockoutFindingsPath)?.marks ?? null, shown });
     const at = driverDir(runDir, LOGOS_FILE);
     const prior = read(at)?.rows ?? [];
     const register = provider?.id ?? null;
