@@ -37,7 +37,7 @@ import { warmEligible, repairTarget, correctionHint } from "../gateway.mjs";
 const TOKEN = "findings_net_chained";
 const WIRE = `invalid_file:findings.json:${TOKEN}:3`;
 
-const GATEWAY_SRC = readFileSync(new URL("../gateway.mjs", import.meta.url), "utf8");
+const GATEWAY_SRC = driverSource("gateway.mjs");   // with the ladder modules carved from it
 const PIPELINE_SRC = driverSource("pipeline.mjs");
 
 /** Pull a literal regex out of shipped source by an anchoring prefix, so the test applies the real one. */
