@@ -67,8 +67,7 @@ import { saysSomethingNew } from '../../shared/says-something-new.mjs';
 import OFFERED from '../../shared/offered-territories.json' with { type: 'json' };   // the order form's own territory names
 import { normalizeTerritory } from '../../providers/_shared/territory-codes.mjs';   // a territory as written → its code
 import { KNOCKOUT_PAGE as K } from './strings.mjs';
-import { plainDeferralReason } from '../deferral-row.mjs';   // the reader's words for a search left open
-import { PART_NAMES } from '../degraded-parts.mjs';   // the parts' reader names
+import { knockoutLeftOpenOf } from './knockout-left-open.mjs';   // a name's Left open rows, one projection for every reader
 import { recordEntryHtml, logoFigureHtml } from './register-record-html.mjs';   // a record entry and a logo, drawn once for both report pages
 import { RECORD_LABELS } from './register-record.mjs';
 import { REC, ownerDisplayName, normalizeRecordUri } from '../registry-fidelity.mjs';
@@ -1614,24 +1613,6 @@ const CAVEAT_LEAD = K.caveatLead;
  * hardcoded product name — and, worse, the name of a RETIRED row, so a knockout whose level the registry
  * had forgotten asserted it was the one product it provably was not.
  */
-/**
- * WHAT A KNOCKOUT LEFT OPEN, from the run's own record (design's rule, approved by the owner 2026-11-18). PURE.
- *
- * A register step that failed is a row under the report's "Register" name: the listing that never came back is not
- * searched, and a reading that stopped part-way is partly covered. A name whose automated research was unavailable is a
- * row under its own name, not searched. The notes are the shipped lines, the deferral row's for a step and the page's
- * own for a name, so nothing here is a new sentence and nothing comes from model prose. A refused listing is not a
- * search that failed (the run never offered it), and a run with nothing left open returns no rows.
- */
-export function knockoutLeftOpen(steps, marks = []) {
-  return [
-    ...(steps?.listing ? [{ area: PART_NAMES.register, state: 'not-searched', note: plainDeferralReason(steps.listing.reason) }] : []),
-    ...(steps?.reading ? [{ area: PART_NAMES.register, state: 'coverage-limited', note: plainDeferralReason(steps.reading.reason) }] : []),
-    ...(Array.isArray(marks) ? marks : []).filter((m) => m?.degraded === true && String(m?.name ?? '').trim())
-      .map((m) => ({ area: String(m.name).trim(), state: 'not-searched', note: DEGRADED_NOTE })),
-  ];
-}
-
 // ONE NAME'S KNOCKOUT PAGE FROM THE RUN'S REPORT DOCUMENT (C14). The run's report document (publish/report-document.mjs,
 // `_driver/report-document.json`) holds every fact a Knockout page prints. This reads it, as written, for the name at
 // `at`, and hands the page the arguments publish handed it: the name's own slice of the findings record, opening with
@@ -1647,7 +1628,6 @@ export function renderKnockoutDocument(doc, at, { filingRecords = new Map(), log
   // own paragraph in its place; a one-name run keeps its own. An archived name with no assessment opens blank, as
   // delivered. The batch's paragraph itself stays whole in the record.
   const one = { ...findings, marks: [m], batch: { ...(findings.batch ?? {}), ...(run.single ? {} : { executiveSummary: String(m?.assessment ?? '').trim() }) } };
-  const steps = scope.steps ?? {};
   const registerRecords = client.registerRecords ?? null;
   const product = run.product ?? {};
   return renderKnockoutHtml(one, framework.manifest ?? null, {
@@ -1656,7 +1636,7 @@ export function renderKnockoutDocument(doc, at, { filingRecords = new Map(), log
     instructedScope: scope.instructedScope ?? null,
     identity: { identity: product.name ?? null, stageLabel: product.stageLabel ?? null, template: product.template ?? null, banner: product.banner ?? null },
     matter: run.runId, auditHref,
-    leftOpen: knockoutLeftOpen({ listing: registerRecords ? null : steps.listing, reading: steps.reading }, one.marks),
+    leftOpen: knockoutLeftOpenOf(doc, at),
     registerRecordsUnreadable: client.registerRecordsUnreadable, filingRecords, logos, demoData, depthNote: product.depthNote ?? null,
     searchPolicy: scope.policy ?? null, delivery, servedModels: client.servedModels, frameworkMethod: framework.method,
   });
@@ -1799,8 +1779,8 @@ ${counts}
 ${analysis}`;
   // WHAT THIS KNOCKOUT LEFT OPEN (design's rule, approved by the owner 2026-11-18). A name whose register search failed read
   // as a clean name, where a clearance in the same place says so. The rows are the run's own record of searches that did
-  // not complete, built from the run's record by knockoutLeftOpen (above), in the clearance's grid and state words; none
-  // is model prose. A Knockout with nothing left open draws nothing, byte for byte. No scope narration returns.
+  // not complete, built from the run's record by knockoutLeftOpen (knockout-left-open.mjs), in the clearance's grid and
+  // state words; none is model prose. A Knockout with nothing left open draws nothing, byte for byte. No scope narration returns.
   const leftOpenSec = Array.isArray(leftOpen) && leftOpen.length
     ? `\n\n  <div class="sec" id="open"><span class="num"></span><h2>${K.sections.leftOpen}</h2></div>\n  <div class="panel"><div class="openrows">${coverageGrid(leftOpen, { verdict: false })}</div></div>`
     : '';
