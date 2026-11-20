@@ -158,8 +158,9 @@
 //                               zeros. An arm of court-decisions-take-the-pass-record-over-its-words
 //                               pins that cut. (CITED BY SYMBOL AND NO LINE, per CONTRIBUTING.md.)
 //   · `localScripts` declared in search-depth.mjs decides per plan term whether it is the worldwide search (the
-//                               term asks the whole territory list of a plan stamped `scope_basis: "worldwide"`)
-//                               and keeps that, per script, as the WORD `worldwide` ("searched" or "missed") in
+//                               term asks the whole territory list of a plan stamped `scope_basis: "worldwide"`,
+//                               with the plan's list read for a term that names none, as the executor sends it,
+//                               or no territory where that plan names none) and keeps that, per script, as the WORD `worldwide` ("searched" or "missed") in
 //                               the same object as the territory lists it qualifies. The plan and the execution
 //                               record are the one pair of arguments to the one call, so there is no second
 //                               derivation for later data to contradict. The consumer, render.mjs's
