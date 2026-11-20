@@ -88,7 +88,8 @@ test("get_finding states the registration facts the report delivered, under the 
 /** The rows a clearance page lists under "Left open", as [area, state, note, detail]: area case and inline markup aside. */
 function pageLeftOpen(html) {
   const at = html.indexOf('<div class="openrows">');
-  const text = (x) => (x ?? "").replace(/<[^>]+>/g, "").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, "&");
+  const untag = (s) => { for (let was = null; was !== s;) { was = s; s = s.replace(/<[^>]*>/g, ""); } return s; };   // until none is left
+  const text = (x) => untag(x ?? "").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, "&");
   return at < 0 ? [] : [...html.slice(at).matchAll(/<div class="ct">(.*?) <span class="cst">· (.*?)<\/span><\/div><div class="cd">(.*?)<\/div>(?:<div class="cd">(.*?)<\/div>)?/g)]
     .map(([, area, state, note, detail]) => JSON.stringify([text(area).toLowerCase(), text(state), text(note), text(detail)]));
 }
