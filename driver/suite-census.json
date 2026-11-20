@@ -7486,8 +7486,8 @@
           "todos": 0
         },
         "the-cover-email-states-what-the-page-states.test.mjs": {
-          "tests": 3,
-          "asserts": 14,
+          "tests": 4,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },

@@ -22,7 +22,7 @@ pinEnv(process.env, "CLEAROTRON_WORK_DIR", __mkdtemp(__join(__tmpdir(), "cover-e
 pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", __mkdtemp(__join(__tmpdir(), "cover-email-pool-default-")));
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -57,20 +57,58 @@ const clearanceEmail = (runDir) => {
 };
 const ratingIn = (html) => html.match(/Overall risk: ([^.<]+)\./)?.[1] ?? null;
 
-test("an assessment that did not complete rates nothing in its cover email, as on its page", async () => {
-  const demo = demoWith("report.md");
-  const { runDir, record } = await published(demo, (dir) => {
-    assert.ok(existsSync(paths(dir).verdict), "premise: the run keeps a verdict record");
-    mkdirSync(join(dir, "_driver", "not-completed"), { recursive: true });
-    writeFileSync(join(dir, "_driver", "not-completed", "assessment.json"), JSON.stringify({ part: "assessment", stage: "assess", reason: "spent" }));
+// AN ASSESSMENT THAT DID NOT COMPLETE: no rating, and the box lists what the report lists under "Before you can rely on
+// this result", under that heading and in its order, or is left out where the report names nothing there. The same holds
+// for an email composed from the run's files, as for a run published before its report document.
+const notCompleted = (dir) => {
+  assert.ok(existsSync(paths(dir).verdict), "premise: the run keeps a verdict record");
+  mkdirSync(join(dir, "_driver", "not-completed"), { recursive: true });
+  writeFileSync(join(dir, "_driver", "not-completed", "assessment.json"), JSON.stringify({ part: "assessment", stage: "assess", reason: "spent" }));
+};
+const RELY = "**Before you can rely on this result**";
+const relyBox = (html) => {
+  const box = html.match(/<b>Before you can rely on this result<\/b><br>(.*?)<\/p>/)?.[1];
+  return box == null ? null : box.split("<br>").map((l) => l.replace(/^• /, ""));
+};
+/** The email composed from the run's files alone, its document set aside. */
+const fromFiles = (runDir) => {
+  renameSync(paths(runDir).reportDocument, `${paths(runDir).reportDocument}.aside`);
+  try { return clearanceEmail(runDir); } finally { renameSync(`${paths(runDir).reportDocument}.aside`, paths(runDir).reportDocument); }
+};
+
+test("an assessment that did not complete states no rating, and lists the report's conditions of reliance under its heading", async () => {
+  const added = "Have the invented second register checked for later filings of the name.";
+  const { runDir, record } = await published(demoWith("report.md"), (dir) => {
+    notCompleted(dir);
+    const md = readFileSync(join(dir, "report.md"), "utf8");
+    const at = md.indexOf(RELY);
+    assert.ok(at > 0, "premise: the report lists conditions of reliance");
+    const end = md.indexOf("\n\n**", at + RELY.length + 2);
+    writeFileSync(join(dir, "report.md"), `${md.slice(0, end)}\n- **[Before you can rely]** ${added}${md.slice(end)}`);
   });
   assert.equal(record.overall, undefined, "premise: the run record, as the page, states no rating");
-  const { cover, html } = clearanceEmail(runDir);
-  assert.equal(ratingIn(html), null, "the email rated a run whose assessment did not complete");
-  assert.equal(cover.opts.tier, undefined, "the delivery notice's rating would come from the incomplete assessment");
-  // The conclusion stands alone, as on a run with no rating.
-  const caption = JSON.parse(readFileSync(paths(runDir).reportDocument, "utf8")).prose.frontMatter.overall_caption;
-  assert.ok(caption && html.includes(caption.slice(0, 40)), "the report's own conclusion left the email");
+  for (const [how, { cover, html }] of [["from its document", clearanceEmail(runDir)], ["from its files", fromFiles(runDir)]]) {
+    assert.equal(ratingIn(html), null, `${how}: the email rated a run whose assessment did not complete`);
+    assert.equal(cover.opts.tier, undefined, `${how}: the delivery notice's rating would come from the incomplete assessment`);
+    const items = relyBox(html);
+    assert.equal(items?.length, 2, `${how}: the box does not list the report's two conditions of reliance: ${items}`);
+    assert.equal(items[1], added, `${how}: the conditions are not in the report's order`);
+    assert.ok(!html.includes("Only you can close these"), `${how}: the box says only the client can close what the run did not settle`);
+  }
+});
+
+test("an assessment that did not complete, whose report lists no condition of reliance, emails no box", async () => {
+  const { runDir } = await published(demoWith("report.md"), (dir) => {
+    notCompleted(dir);
+    const md = readFileSync(join(dir, "report.md"), "utf8");
+    const at = md.indexOf(RELY);
+    writeFileSync(join(dir, "report.md"), md.slice(0, at) + md.slice(md.indexOf("\n\n**", at + RELY.length + 2) + 2));
+  });
+  for (const [how, { html }] of [["from its document", clearanceEmail(runDir)], ["from its files", fromFiles(runDir)]]) {
+    assert.equal(relyBox(html), null, `${how}: a box with nothing to list`);
+    assert.ok(!html.includes("Only you can close these"), `${how}: the box came back under another heading`);
+    assert.equal(ratingIn(html), null, `${how}: a rating`);
+  }
 });
 
 test("an older verdict record's email states the rating the page derives from it, not the front matter's label", async () => {
