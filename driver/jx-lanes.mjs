@@ -63,16 +63,8 @@ export const LANGUAGE_LANES = {
   },
 };
 
-// ── Jurisdiction → lane adapters (closed; conservative — only registers where Han-script filings are
-// the norm; multilingual registers (e.g. SG) stay out of slice 1 rather than half-covered) ──────────
-export const JURISDICTION_ADAPTERS = {
-  CN: { lane: "zh", note: "first-to-file; subclass system (CNIPA similarity groups)" },
-  HK: { lane: "zh" },
-  TW: { lane: "zh" },
-  MO: { lane: "zh" },
-  JP: { lane: "ja", note: "JPO similar-group codes (類似群コード) — awareness table lands with its own slice" },
-  KR: { lane: "ko", note: "KIPO similar-group codes (유사군코드) — awareness table lands with its own slice" },
-};
+import { JURISDICTION_ADAPTERS } from "../shared/jurisdiction-tables.mjs";   // a jurisdiction's tables live in one home
+export { JURISDICTION_ADAPTERS };
 
 // ── SERP platform-grid capability tables. Per-lane: which SERP
 // engine the executor dials, which platform cells the grid dictates (6 store platforms + the executor's

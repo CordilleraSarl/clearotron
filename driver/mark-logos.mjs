@@ -29,8 +29,9 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve, sep } from "node:path";
 import { normalizeRecordUri } from "../providers/_shared/record-uri.mjs";
+import { recordBodyFromLog } from "../providers/_shared/ledger.mjs";   // the run record log's own index
 import { readRecordArtifacts } from "./registry-fidelity.mjs";
-import { DRIVER_DIR, driverDir, ensureDriverDir } from "./run-record.mjs";
+import { DRIVER_DIR, driverDir, ensureDriverDir, paths } from "./run-record.mjs";
 import { runLog } from "./log.mjs";
 
 export const LOGOS_FILE = "logos.json";
@@ -70,6 +71,24 @@ export function citedRefs({ findings = null, registerRecords = null } = {}) {
   for (const m of Array.isArray(registerRecords?.marks) ? registerRecords.marks : [])
     for (const r of Array.isArray(m?.records) ? m.records : []) add(r?.recordId);
   return out;
+}
+
+/**
+ * The saved record of each registration asked about. A clearance's are in `_records/`. A Knockout writes none there:
+ * the bodies its listing fetched are in the run's record log, and its page reads each filing's record from both places
+ * (publish/knockout.mjs). So a Knockout's are read from both places here too, or none of its filings had a record and
+ * every row read `unknown`, whatever the register said about the mark.
+ */
+export function savedRecords(runDir, refs, { knockout = false } = {}) {
+  const records = readRecordArtifacts(runDir);
+  if (!knockout) return records;
+  const log = paths(runDir).registerRecordBodies;
+  for (const ref of refs) {
+    if (records.has(ref)) continue;
+    const body = recordBodyFromLog(log, ref);
+    if (body && typeof body === "object" && !Array.isArray(body)) records.set(ref, body);
+  }
+  return records;
 }
 
 const fileFor = (ref, ext) => `${ref.replace(/^\/mark\//, "").replace(/[^a-z0-9_-]+/gi, "-")}.${ext}`;
@@ -128,7 +147,8 @@ export async function markLogos(runDir, { findingsPath = null, registerRecordsPa
         : !credential ? { ok: false, why: `${provider.credEnv ?? "the register's credential"} is not set, so no register call is made` }
           : { ok: true };
     const fetchImage = typeof provider?.markImage === "function" ? (ref) => provider.markImage(ref, { agentId, sessionKey }) : null;
-    const rows = await logoRows({ runDir, refs, records: readRecordArtifacts(runDir), register, fetchImage, mayCall, prior });
+    const records = savedRecords(runDir, refs, { knockout: Boolean(registerRecordsPath) });
+    const rows = await logoRows({ runDir, refs, records, register, fetchImage, mayCall, prior });
     const doc = { schema: 1, register, takenAt: new Date().toISOString(), rows };
     writeFileSync(at, JSON.stringify(doc, null, 2) + "\n");
     return doc;

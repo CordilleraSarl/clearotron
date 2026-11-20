@@ -31,12 +31,15 @@ import { pinState } from "./engine-pins.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 
 export const CONTEXT = "bench replay";
-export const PIN_FILES = ["driver/engine/openai-agent.mjs", "driver/driver.config.mjs"];
+// Each engine's program row is in its own file; a tree from before that holds them in driver.config.mjs,
+// and a file a commit does not have is skipped below, so either layout is read.
+export const PIN_FILES = ["driver/engine/openai-agent.mjs", "driver/engine/anthropic-agent-program.mjs",
+  "driver/engine/openai-agent-program.mjs", "driver/driver.config.mjs"];
 const NO_COMMIT = /^0+$/;
 
 const git = (args, cwd) => execFileSync("git", args, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim();
 
-/** The pins of `commit`, judged by the rule in this checkout: its two pin files, laid into a scratch tree. */
+/** The pins of `commit`, judged by the rule in this checkout: its pin files, laid into a scratch tree. */
 export function pinsAt(commit, { cwd = process.cwd() } = {}) {
   const dir = mkdtempSync(join(tmpdir(), "engine-pins-"));
   try {

@@ -21,7 +21,8 @@ import { COUNT_PREDICATES, COUNT_BASIS, countsForMark, countLine, countedMarks, 
 import { noneCarriedForward, recordsForMark, recordsLine, normalizeRegisterRecordLinks } from '../register-records.mjs';
 import { reportIdentityFor, productCoverageNote, kebab } from '../search-policy.mjs';
 import { batchMarkName } from '../mark-name.mjs';
-import { renderKnockoutDocument, DEGRADED_NOTE } from './render-knockout.mjs';
+import { DEGRADED_NOTE } from './render-knockout.mjs';
+import { renderReport } from './render-report.mjs';   // the one report renderer: the document says which page it is
 import { knockoutReportDocument, knockoutReportDataOf, knockoutWorkbookOf } from './report-document.mjs';   // the run's report as one document, and what it carries
 import { readFrozenMethod, inputsLine, FROZEN_METHOD_FILE } from '../framework-method.mjs';
 import { resolveDemoData, demoBannerMd } from './demo-marking.mjs';   //
@@ -821,8 +822,8 @@ const KNOCKOUT_SHAPE = {
     const reports = markRows.map((m, at) => {
       const { slug, file, band: markBand } = named[at];
       // The page reads the run's report document as written, for this name, with its surface beside it.
-      writeRO(file, renderKnockoutDocument(pageDocument(reportDocument), at, {
-        filingRecords, logos, demoData, delivery,
+      writeRO(file, renderReport(pageDocument(reportDocument), {
+        at, filingRecords, logos, demoData, delivery,
         // The page's workbook control links the portal's audit route, the one the cover note links: the pool path to the
         // file reaches no handler. Null when the workbook could not be written, and then no control is drawn.
         auditHref: auditFile ? auditRouteFor(origin, runId) : null,
