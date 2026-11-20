@@ -22,7 +22,9 @@ async function ask(status, body) {
 }
 
 test("one request for the live image, and its bytes come back", async () => {
-  const { got, sent } = await ask(200, { images: [{ image: PNG.toString("base64"), contentType: "image/png" }] });
+  // The answer's shape as one live request returned it, 2026-11-20. The field read before, `image`, was a guess the answer
+  // does not carry, and every logo of a demo re-run failed on it.
+  const { got, sent } = await ask(200, { images: [{ content: PNG.toString("base64"), id: "QZX0001", type: "image/png" }] });
   assert.equal(sent.length, 1, "more than one request for one logo");
   assert.match(sent[0].url, /\/image$/);
   assert.equal(sent[0].body.test, undefined, "the logo for a report must be the live image, not the test one");
@@ -37,4 +39,7 @@ test("a call that does not land, or holds no image, is not a logo", async () => 
   assert.equal(empty.got.ok, false);
   assert.match(empty.got.cause, /no image/);
   assert.equal((await ask(200, { unexpected: true })).got.ok, false);
+  const guessed = await ask(200, { images: [{ image: PNG.toString("base64") }] });
+  assert.equal(guessed.got.ok, false, "a field the answer does not carry was read as the image");
+  assert.equal(guessed.got.shape, `{images: [1x {image: string(${PNG.toString("base64").length})}]}`, "the failure does not say what the answer held");
 });

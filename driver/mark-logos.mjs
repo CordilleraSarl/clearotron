@@ -43,7 +43,9 @@ export const LOGOS_DIR = "logos";
 
 // The register's own words for the kind of mark, as saved records carry them (counted on the test machine,
 // 2026-11-18: Clarivate's eight values and Signa's three). Any other value is unknown and fetches nothing.
-const FIGURATIVE = new Set(["WORD AND DESIGN", "DESIGN MARK", "DESIGN AND COLOR", "STYLIZED LETTERS", "COMBINED", "FIGURATIVE"]);
+// "DESIGN ONLY" is Clarivate's word for a device mark with no words, 26 of the 400 records of the global preliminary demo
+// (counted 2026-11-20): figurative, as the step's rule says, and left out of this list until then.
+const FIGURATIVE = new Set(["WORD AND DESIGN", "DESIGN ONLY", "DESIGN MARK", "DESIGN AND COLOR", "STYLIZED LETTERS", "COMBINED", "FIGURATIVE"]);
 const WORD = new Set(["WORD ONLY", "WORD MARK", "BLOCK LETTERS", "WORD"]);
 
 /** Whether a saved record carries a logo: "logo", "no-logo" or "unknown". PURE. */
@@ -145,7 +147,12 @@ export async function logoRows({ runDir, refs, records, register, fetchImage, ma
     let got;
     try { got = await fetchImage(ref, record); } catch (e) { got = { ok: false, cause: `the request threw: ${String(e?.message ?? e).slice(0, 120)}` }; }
     // An adapter that had nothing to ask with (no image link on the record) made no request: that is not a failed fetch.
-    if (!got?.ok) { rows.push({ ref, register, state: got?.notTried ? "unknown" : "failed", cause: String(got?.cause ?? "the request did not land").slice(0, 200) }); continue; }
+    // A register's answer of a shape the adapter does not read keeps that shape on the row (names and types, no value).
+    if (!got?.ok) {
+      rows.push({ ref, register, state: got?.notTried ? "unknown" : "failed", cause: String(got?.cause ?? "the request did not land").slice(0, 200),
+        ...(typeof got?.shape === "string" ? { shape: got.shape.slice(0, 400) } : {}) });
+      continue;
+    }
     const kind = imageTypeOf(got.bytes);
     if (!kind) { rows.push({ ref, register, state: "failed", cause: "the answer is not a PNG, JPEG, GIF or WebP image" }); continue; }
     const file = `${DRIVER_DIR}/${LOGOS_DIR}/${fileFor(ref, kind.ext)}`;   // relative to the run folder, the same on every system

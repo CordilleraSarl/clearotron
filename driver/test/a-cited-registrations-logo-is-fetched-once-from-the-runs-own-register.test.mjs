@@ -22,6 +22,7 @@ const PNG = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0
 test("a record carries a logo only when it says a figurative mark and an image, in the register's own words", () => {
   assert.equal(logoOf({ markFeature: "WORD AND DESIGN", imageAvailable: true }), "logo");
   assert.equal(logoOf({ markFeature: "STYLIZED LETTERS", imageAvailable: true }), "logo");
+  assert.equal(logoOf({ markFeature: "DESIGN ONLY", imageAvailable: true }), "logo", "a device mark with no words is figurative");
   assert.equal(logoOf({ markFeature: "combined", imageAvailable: true }), "logo", "Signa's word for a word-and-device mark");
   assert.equal(logoOf({ markFeature: "WORD ONLY", imageAvailable: true }), "no-logo", "a word mark with a typeset image is no logo");
   assert.equal(logoOf({ markFeature: "BLOCK LETTERS", imageAvailable: true }), "no-logo");
@@ -269,13 +270,40 @@ test("Clarivate's image is asked for with the id as the register spells it, not 
   const sent = [];
   globalThis.fetch = async (url, init) => {
     sent.push(JSON.parse(init?.body ?? "{}").id);
-    return new Response(JSON.stringify({ images: [{ image: PNG.toString("base64"), contentType: "image/png" }] }), { status: 200, headers: { "content-type": "application/json" } });
+    // The answer's shape as one live request returned it, 2026-11-20: `{ images: [{ content, id, type }] }`.
+    return new Response(JSON.stringify({ images: [{ content: PNG.toString("base64"), id: "QZX0001", type: "image/png" }] }), { status: 200, headers: { "content-type": "application/json" } });
   };
   process.env.CLARIVATE_API_KEY = "invented";
   try {
     const doc = await markLogos(dir, { findingsPath: join(dir, "findings.json"), provider: clarivate, env: { CLARIVATE_API_KEY: "invented" } });
     assert.deepEqual(sent, ["QZX0001"], "the image was asked for under another spelling of the id");
     assert.equal(byRef(doc)["/mark/em/qzx0001"].state, "fetched");
+  } finally {
+    globalThis.fetch = real;
+    if (key === undefined) delete process.env.CLARIVATE_API_KEY; else process.env.CLARIVATE_API_KEY = key;
+  }
+});
+
+test("a Clarivate answer of a shape the adapter does not read fails with that shape on the row, and never with a value", async () => {
+  // Before the shape was measured, the step read `images[].image`; the answer carried `content`. A failure now says what
+  // the answer held, so the next change of shape is read off the run instead of guessed at.
+  const { adapter: clarivate } = await import("../../providers/clarivate/src/adapter.js");
+  const dir = mkdtempSync(join(tmpdir(), "logos-clarivate-shape-"));
+  mkdirSync(join(dir, "_records"), { recursive: true });
+  mkdirSync(driverDir(dir), { recursive: true });
+  writeFileSync(join(dir, "_records", "em-qzx0002.json"), JSON.stringify({ _uri: "/mark/em/QZX0002", uri: "/mark/em/QZX0002", guid: "QZX0002",
+    provider: "clarivate", markFeature: "DESIGN ONLY", imageAvailable: true }));
+  writeFileSync(join(dir, "findings.json"), JSON.stringify({ findings: [{ disposition: "adversarial", owner: { registrations: [{ uri: "/mark/em/QZX0002" }] } }] }));
+  const secret = PNG.toString("base64");
+  const real = globalThis.fetch, key = process.env.CLARIVATE_API_KEY;
+  globalThis.fetch = async () => new Response(JSON.stringify({ images: [{ image: secret, mime: "image/png" }] }), { status: 200, headers: { "content-type": "application/json" } });
+  process.env.CLARIVATE_API_KEY = "invented";
+  try {
+    const doc = await markLogos(dir, { findingsPath: join(dir, "findings.json"), provider: clarivate, env: { CLARIVATE_API_KEY: "invented" } });
+    const row = byRef(doc)["/mark/em/qzx0002"];
+    assert.equal(row.state, "failed");
+    assert.equal(row.shape, `{images: [1x {image: string(${secret.length}), mime: string(9)}]}`);
+    assert.doesNotMatch(JSON.stringify(doc), new RegExp(secret.replace(/[+/=]/g, "\\$&")), "a value of the answer reached the run's record");
   } finally {
     globalThis.fetch = real;
     if (key === undefined) delete process.env.CLARIVATE_API_KEY; else process.env.CLARIVATE_API_KEY = key;
