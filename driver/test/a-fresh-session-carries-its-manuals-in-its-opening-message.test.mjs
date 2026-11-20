@@ -8,7 +8,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, readFileSync, rmSync, existsSync, writeFileSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { join, dirname, win32 } from "node:path";
 import { tmpdir } from "node:os";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
@@ -20,6 +20,7 @@ process.env.CLEAROTRON_RUN_LOCK_DIR = mkdtempSync(join(tmpdir(), "manuals-inline
 const { runStage } = await import("../gateway.mjs");
 const { inlineManuals, stageTextOf, MANUALS_SENTENCE } = await import("../manuals-inline.mjs");
 const { DRIVER, everyModelStageDispatch, baseOf } = await import("./model-stage-dispatches.mjs");
+const { absolutizeSkillRefs } = await import("../engine/common.mjs");
 
 const ENGINES = {
   "anthropic-agent": (dir, out) => ({ CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: join(HERE, "mock-claude.mjs"),
@@ -112,6 +113,18 @@ test("a manual that cannot be read keeps its place between the others, and a mes
   assert.equal(none.text, "The stage, which names no manual.");
   const nothing = inlineManuals("First, read and follow exactly: skills/gone.md.\nThe stage.", { resolve: (ref) => `/x/${ref}`, read });
   assert.equal(nothing.text, "First, read and follow exactly: skills/gone.md.\nThe stage.", "with nothing readable the message is as composed");
+});
+
+// On Windows the adapter joins each manual's name with backslashes, the block headers included, and the stand-in programs
+// must still take the manuals back out: a header they could not read left every manual in the text they chose a stage from,
+// and the halves and register units then wrote nothing (measured on the Windows CI, 2026-11-20).
+test("the stage's own text comes back out of a message whose manual names are Windows paths", () => {
+  const read = (p) => { if (p.endsWith("gone.md")) throw new Error("absent"); return `Text of ${p}.`; };
+  const r = inlineManuals("First, read and follow exactly: skills/a/SKILL.md, skills/gone.md, skills/b.md.\nThe stage.", { resolve: (ref) => `/x/${ref}`, read });
+  const onWindows = absolutizeSkillRefs(r.text, null, (ref) => win32.join("C:\\work", ref));
+  assert.ok(onWindows.includes("=== MANUAL: C:\\work\\skills\\a\\SKILL.md ==="), `premise: the header is a Windows path: ${onWindows.slice(0, 200)}`);
+  assert.equal(stageTextOf(onWindows),
+    "First, read and follow exactly: C:\\work\\skills\\a\\SKILL.md, C:\\work\\skills\\gone.md, C:\\work\\skills\\b.md.\nThe stage.");
 });
 
 test("the register stages' sentence keeps its exclusion, on its own line after the manuals", () => {

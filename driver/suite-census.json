@@ -1042,8 +1042,8 @@
           "todos": 0
         },
         "a-fresh-session-carries-its-manuals-in-its-opening-message.test.mjs": {
-          "tests": 5,
-          "asserts": 27,
+          "tests": 6,
+          "asserts": 29,
           "skips": 0,
           "todos": 0
         },

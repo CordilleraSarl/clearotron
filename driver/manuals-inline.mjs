@@ -66,8 +66,11 @@ export function inlineManuals(message, { resolve = null, skillsDir = null, read 
 }
 
 // The engine adapters rewrite each `skills/…md` reference to an absolute path after this module runs, the block headers
-// included, so a header names either form.
-const BLOCK_RE = /=== MANUAL: (\S*?skills\/[A-Za-z0-9._/-]+\.md) ===\n[\s\S]*?\n=== END MANUAL: \1 ===/g;
+// included, so a header names either form. The absolute form is joined with the platform's separator: on Windows the header
+// reads `C:\…\skills\a\SKILL.md`, so a manual's name takes either separator.
+const MANUAL_NAME = String.raw`\S*?skills[\\/][A-Za-z0-9._\\/-]+\.md`;
+const BLOCK_RE = new RegExp(String.raw`=== MANUAL: (${MANUAL_NAME}) ===\n[\s\S]*?\n=== END MANUAL: \1 ===`, "g");
+const LEFT_RE = new RegExp(String.raw`^\s*First, read and follow exactly: (${MANUAL_NAME})\.(?=\s|$)`);
 
 /**
  * The stage's own text from a message this module filled: the manual blocks taken out again, and the read
@@ -87,7 +90,7 @@ export function stageTextOf(message) {
     BLOCK_RE.lastIndex = end;
     const b = BLOCK_RE.exec(text);
     if (b && /^\s*$/.test(text.slice(end, b.index))) { refs.push(b[1]); end = b.index + b[0].length; continue; }
-    const left = text.slice(end).match(/^\s*First, read and follow exactly: (\S*?skills\/[A-Za-z0-9._/-]+\.md)\.(?=\s|$)/);
+    const left = text.slice(end).match(LEFT_RE);
     if (left) { refs.push(left[1]); end += left[0].length; continue; }
     break;
   }
