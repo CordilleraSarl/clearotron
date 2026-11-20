@@ -3,8 +3,8 @@
 //
 // steps/verdict-gate.mjs — the verdict's floors and terminal guards, and the label and sidecar they write.
 //
-// One phase of a run, moved out of pipelineInner unchanged. `helpers` are functions still held in pipeline.mjs, handed in
-// because this module must not import that one back; each moves here when the other phases that share it have moved.
+// One phase of a run, moved out of pipelineInner unchanged. It must not import pipeline.mjs back, so what it shares with
+// that module lives in the modules beside it, which it imports.
 import { paths } from "../run-record.mjs";
 import { runRecordLogPath } from "../../providers/_shared/ledger-path.mjs";
 import { decideRegisterGap } from "../coverage-ledger.mjs";
@@ -30,6 +30,7 @@ import { planAuditExtra } from "../dispatch-extras.mjs";
 import { conditionsFollowingTheRecord, enrichFindingDeadlines, lateRecordsUnaddressed, loadScreenGateUnresolved, owedUrisFor, refusedRecordsLeftOut, registerGapConditions } from "../floor-and-gap-checks.mjs";
 import { defaultRecordFetcher } from "../provider-calls.mjs";
 import { loadCoverageLedger } from "../register-digest-run.mjs";
+import { actionsRegisterListed, saveWithRetries, withdrawByToken } from "../repair-review-run.mjs";
 import { StageFailure } from "../run-outcome.mjs";
 import { safeReadJson, stage } from "../stage-dispatch.mjs";
 
@@ -59,8 +60,7 @@ export function coverageFloorConditions({ coverageInsufficient = false, coverage
   return out;
 }
 
-export async function runVerdictGate({ P, agent, applyVerdictFrontMatter, correctiveCycleSettled, correctiveEntryVerdict, correctiveRecheckOk, coverageJudgment, ctx, opts, run, runState }, helpers) {
-  const { actionsRegisterListed, saveWithRetries, withdrawByToken } = helpers;
+export async function runVerdictGate({ P, agent, applyVerdictFrontMatter, correctiveCycleSettled, correctiveEntryVerdict, correctiveRecheckOk, coverageJudgment, ctx, opts, run, runState }) {
   // U1 — coverage-honesty floor (Appendix A tripwire #2). The reviewer verdict is empirically noisy
   // (it flips on byte-identical input), so the honest-status signal is derived from the coverage
   // LEDGER alone, never from the verdict. A run can be only as CLEAR as the layers it actually ran:

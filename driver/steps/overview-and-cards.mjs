@@ -35,6 +35,7 @@ import { deriveRecordCarry } from "../record-carry-trace.mjs";
 import { mintRecordCarryDoubts, silentlyLostFindings, statedDivergenceFindings } from "../record-carry.mjs";
 import { recordedFindingUris } from "../register-digest-record.mjs";
 import { SETTLED_CLASSES, mintRemedyAccountingDoubts } from "../remedy-accounting.mjs";
+import { correctionsTheRestoreLacks, openAskForClosure, restoreTheRecordThatPassed } from "../repair-review-run.mjs";
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE, renderReportOverview } from "../report-overview-record.mjs";
 import { StageFailure } from "../run-outcome.mjs";
 import { inScopeClassList } from "../run-scope.mjs";
@@ -46,7 +47,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 
 import { basename, join } from "node:path";
 
 export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWritersDuty, ctx, followTheRecordsActions, job, run, runState, saveTheLabel, writeVerdictSidecar }, helpers) {
-  const { applyScopeFrontMatterOf, assembleReportMd, consolidateFindingsFile, correctionsTheRestoreLacks, deriveCommonLawCarry, injectDeferralCoverage, injectFrontMatter, injectLaneDepthCoverage, injectMeaningGapCoverage, injectScreenGateCoverage, injectScriptScopeCoverage, injectUncoveredMarketCoverage, keepDeliveredRecordAsHistory, localLanguageStateOf, openAskForClosure, originRowsForReport, planWriteUps, readFindingsForReport, readReadingLog, rebuildDeliveredRecord, reportIdentityRecord, restoreTheRecordThatPassed, rewriteFromBeforeTheSeam, stampCoverageJudgmentRows, withdrawSupersededAudit, writeScopeFactsOf, writeShortEntries } = helpers;
+  const { applyScopeFrontMatterOf, assembleReportMd, consolidateFindingsFile, deriveCommonLawCarry, injectDeferralCoverage, injectFrontMatter, injectLaneDepthCoverage, injectMeaningGapCoverage, injectScreenGateCoverage, injectScriptScopeCoverage, injectUncoveredMarketCoverage, keepDeliveredRecordAsHistory, localLanguageStateOf, originRowsForReport, planWriteUps, readFindingsForReport, readReadingLog, rebuildDeliveredRecord, reportIdentityRecord, rewriteFromBeforeTheSeam, stampCoverageJudgmentRows, withdrawSupersededAudit, writeScopeFactsOf, writeShortEntries } = helpers;
   // Phase 3 — delivery (v14 post-mortem fix). One LLM step curates the report; the audit, the page render,
   // and the email body are deterministic CODE; a tiny LLM step only SENDS. Each step is independent — a
   // failure in the audit or the email never loses the report.

@@ -4,9 +4,8 @@
 // steps/corrections.mjs — the functions the correction steps share: how a review's flags name findings, the rollback
 // and repair of a corrective pass, and the correction after a repair's review.
 //
-// Moved out of pipeline.mjs unchanged. The names below are still held there, and this module must not import that one
-// back, so pipeline.mjs hands them in once, as it loads, through useThePipeline(); each moves here when the code that
-// shares it has moved.
+// Moved out of pipeline.mjs unchanged. It must not import that module back, so what it shares with pipeline.mjs lives in
+// the modules beside it, which it imports.
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { correctionTargets } from "../corrections-delivered.mjs";
 import { REPORT_LINE_KEY, REPORT_LINE_LABEL, answersLeftBehind, buildCorrectionsApplied, correctionScope, correctionsWorklist, flaggedPositions, linesOf, reportLines } from "../corrections-feedforward.mjs";
@@ -21,6 +20,7 @@ import { foldAfterSave, modelRecordPath, restoreFold } from "../record-fold.mjs"
 import { extractRulingsTail } from "../register-digest-run.mjs";
 import { normalizeRecordUri } from "../registry-fidelity.mjs";
 import { repairFollowup } from "../repair-composers.mjs";
+import { CORRECTIONS_DELIVERED_FILE, postRepairCorrectionsPath, postRepairStatePath, recordFromTheSaves, removalRepairedRow, reviewAfterRepairPath, snapshotFindingsForCorrections } from "../repair-review-run.mjs";
 import { NARRATIVE_PROSE, anyRenumbered, sectionText } from "../repair-scope.mjs";
 import { asPartNotCompleted, must, reviewExclusionsPaths, safeReadJson, stage, stageCharter } from "../stage-dispatch.mjs";
 import { writeFindings } from "../stage-freshness.mjs";
@@ -29,13 +29,6 @@ import { lastAcceptedCall, rebaseSynthesis, restoreSynthesisBase, snapshotSynthe
 import { parseCorrections } from "../verify.mjs";
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
-
-let CORRECTIONS_DELIVERED_FILE, postRepairCorrectionsPath, postRepairStatePath, recordFromTheSaves, removalRepairedRow, reviewAfterRepairPath, snapshotFindingsForCorrections;
-
-/** Called once by pipeline.mjs as it loads, with the names above. */
-export function useThePipeline(held) {
-  ({ CORRECTIONS_DELIVERED_FILE, postRepairCorrectionsPath, postRepairStatePath, recordFromTheSaves, removalRepairedRow, reviewAfterRepairPath, snapshotFindingsForCorrections } = held);
-}
 
 /**
  * — `depth` IS A PARAMETER because the corrective pass re-emits the WHOLE narrative and was the
