@@ -29,62 +29,13 @@ const strip = (s) => String(s ?? "")
   .replace(/\s+/g, " ")
   .trim();
 
-// Keys are strip()-normalized display names and common aliases. Values are the ISO 3166-1 alpha-2
-// code (WIPO ST.3 for the regional systems). "" = worldwide sentinel.
-export const TERRITORY_TO_CODE = Object.freeze({
-  "WORLDWIDE": "", "GLOBAL": "", "ALL": "",
-  "EUROPEAN UNION": "EU", "EUIPO": "EU", "EUTM": "EU",
-  "BENELUX": "BX",
-  "AFRICAN REGIONAL ARIPO": "AP", "ARIPO": "AP", "AFRICAN REGIONAL": "AP",
-  "INTERNATIONAL": "WO", "INTERNATIONAL MADRID": "WO", "MADRID": "WO", "WIPO": "WO",
-  "UNITED STATES": "US", "UNITED STATES OF AMERICA": "US", "USA": "US", "U S": "US", "U S A": "US",
-  "UNITED KINGDOM": "GB", "GREAT BRITAIN": "GB",
-  "IRELAND": "IE",
-  "FRANCE": "FR",
-  "GERMANY": "DE",
-  "SPAIN": "ES",
-  "ITALY": "IT",
-  "NETHERLANDS": "NL",
-  // THE OTHER TWO BENELUX MEMBERS, and their absence was not a typo — it is the shape this table has.
-  // A clearance ordered for "Belgium" in words resolved to nothing and was carried as an unrecognized
-  // territory, while "BE" and "Netherlands" both resolved. Belgium and Luxembourg have no national
-  // register of their own (the Benelux office stands in its place, which `binding-layers.mjs` already
-  // models), and the entry for BENELUX above is easy to read as covering them. It does not: this table
-  // answers "what did the requester type", not "which register is that".
-  "BELGIUM": "BE",
-  "LUXEMBOURG": "LU",
-  "SWITZERLAND": "CH",
-  "AUSTRIA": "AT",
-  "SWEDEN": "SE",
-  "NORWAY": "NO",
-  "POLAND": "PL",
-  "BULGARIA": "BG",
-  "GREECE": "GR",
-  "TURKEY": "TR", "TURKIYE": "TR",
-  "CANADA": "CA",
-  "MEXICO": "MX",
-  "BRAZIL": "BR",
-  "ARGENTINA": "AR",
-  "CHINA": "CN", "PEOPLES REPUBLIC OF CHINA": "CN",
-  "HONG KONG": "HK",
-  "TAIWAN": "TW",
-  "MACAU": "MO", "MACAO": "MO",
-  "JAPAN": "JP",
-  "SOUTH KOREA": "KR", "KOREA": "KR", "REPUBLIC OF KOREA": "KR",
-  "SINGAPORE": "SG",
-  "INDIA": "IN",
-  "THAILAND": "TH",
-  "AUSTRALIA": "AU",
-  "NEW ZEALAND": "NZ",
-  "UNITED ARAB EMIRATES": "AE", "UAE": "AE",
-  "SAUDI ARABIA": "SA",
-  "SOUTH AFRICA": "ZA",
-});
+import { TERRITORY_TO_CODE } from "../../shared/jurisdiction-tables.mjs";   // a jurisdiction's tables live in one home
+export { TERRITORY_TO_CODE };
 
 // ── THE LONG TAIL, DERIVED RATHER THAN TYPED ──────────────────────────────────────────────────────
 //
 // Measured while fixing Belgium: of the 262 jurisdiction codes this engine holds, 224 had no display
-// name in the table above — Denmark, Portugal, Czechia, Hungary, Israel and most of the world. The
+// name in TERRITORY_TO_CODE — Denmark, Portugal, Czechia, Hungary, Israel and most of the world. The
 // curated table is a shortlist that grew by demand, and every gap in it is a territory a requester can
 // name in words and have resolved to nothing.
 //

@@ -304,16 +304,5 @@ export async function searchableTerritories() {
   return { offered, unnamed: unnamed.sort() };
 }
 
-// THE 37 LABELS THE FORM CARRIED BEFORE THIS RULE, frozen. They are shipped strings, so each place keeps
-// the label a client already reads — "Hong Kong", "Macau", "Turkey", where the runtime's standard names
-// differ — and the two regional systems whose only names are these. Frozen HERE rather than read from the
-// form's live list, because that list is now minted FROM this function, and a rule that read its own
-// output would lose its labels the first time the file was regenerated from scratch.
-export const LABELS_OFFERED_BEFORE_THE_RULE = Object.freeze([
-  "European Union", "Benelux", "African Regional (ARIPO)",
-  "United States", "United Kingdom", "Ireland", "France", "Germany", "Spain", "Italy", "Netherlands",
-  "Switzerland", "Austria", "Sweden", "Norway", "Poland", "Bulgaria", "Greece", "Turkey", "Canada",
-  "Mexico", "Brazil", "Argentina", "China", "Hong Kong", "Taiwan", "Macau", "Japan", "South Korea",
-  "Singapore", "India", "Thailand", "Australia", "New Zealand", "United Arab Emirates", "Saudi Arabia",
-  "South Africa",
-]);
+import { LABELS_OFFERED_BEFORE_THE_RULE } from "../shared/jurisdiction-tables.mjs";   // a jurisdiction's tables live in one home
+export { LABELS_OFFERED_BEFORE_THE_RULE };
