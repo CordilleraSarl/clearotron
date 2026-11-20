@@ -4725,6 +4725,12 @@
           "skips": 0,
           "todos": 0
         },
+        "every-gap-the-report-leaves-open-is-on-the-audit-workbook.test.mjs": {
+          "tests": 3,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "every-hand-off-exit-is-counted.test.mjs": {
           "tests": 7,
           "asserts": 24,
@@ -8411,7 +8417,7 @@
         },
         "the-report-can-say-how-much-was-read.test.mjs": {
           "tests": 29,
-          "asserts": 88,
+          "asserts": 89,
           "skips": 0,
           "todos": 0
         },

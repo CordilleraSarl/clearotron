@@ -9,11 +9,13 @@
 // row, printed once; and the Summary counts what the sheet adds.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, rmSync } from "node:fs";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { buildAudit } from "../publish/xlsx.mjs";
-import { leftOpenRows } from "../publish/render.mjs";
+import { leftOpenRows, renderHtml } from "../publish/render.mjs";
+import { parseReport } from "../publish/parse.mjs";
+import { localScripts } from "../publish/search-depth.mjs";
 import { WORKBOOK as W } from "../publish/strings.mjs";
 
 async function book(t, contract) {
@@ -75,4 +77,33 @@ test("a gap a coverage row already states is that row, and a run with no search 
   assert.equal(stated.coverage.filter((row) => row[3] === general[0].note).length, 1);
   const before = await book(t, CONTRACT);
   assert.deepEqual(before.coverage.map((row) => row[0]), COVERAGE.map((c) => c.area));
+});
+
+test("from the plan to the sheet: each scope a term can have is the same gap on the page and on the workbook", async (t) => {
+  const exec = (plan, done) => ({ executed: plan.entries.map((e) => ({ qid: e.qid, state: done.includes(e.qid) ? "enumerated" : "incomplete" })) });
+  const term = (qid, regions) => ({ qid, term: "Вольтарис", ...(regions ? { regions } : {}) });
+  const shapes = {
+    own: [{ regions: ["RU", "KZ"], entries: [term("o", ["RU"]), term("k", ["KZ"])] }, ["k"], "No search in Cyrillic script was completed in Russia."],
+    inheritedNamed: [{ regions: ["RU", "KZ"], entries: [term("n", []), term("k", ["KZ"])] }, ["k"], "No search in Cyrillic script was completed in Russia."],
+    inheritedWorldwide: [{ scope_basis: "worldwide", regions: ["RU", "KZ"], entries: [term("w"), term("k", ["KZ"])] }, ["k"],
+      "The planned worldwide search in Cyrillic script did not complete."],
+    unrestricted: [{ scope_basis: "worldwide", regions: [], entries: [term("w", []), term("k", ["KZ"])] }, ["k"],
+      "The planned worldwide search in Cyrillic script did not complete."],
+    indeterminate: [{ regions: [], entries: [term("u", []), term("k", ["KZ"])] }, ["k"],
+      "A planned search in Cyrillic script did not complete. Its territory was not recorded."],
+  };
+  const dir = mkdtempSync(join(tmpdir(), "left-open-report-"));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  const md = join(dir, "report.md");
+  writeFileSync(md, "---\ntitle: VOLTARIS\n---\n\n## Summary\n\nNo conflict.\n");
+  for (const [shape, [plan, done, sentence]] of Object.entries(shapes)) {
+    const ls = localScripts(plan, exec(plan, done));
+    assert.deepEqual(leftOpenRows({ localScripts: ls }).map((r) => r.note), [sentence], shape);
+    assert.ok(renderHtml(parseReport(md), [], [], { searchDepth: { counts: { localScripts: ls } } }).includes(`<div class="cd">${sentence}</div>`), `${shape}: the page`);
+    const { coverage } = await book(t, { ...CONTRACT, localScripts: ls });
+    assert.equal(coverage.filter((row) => row[3] === sentence).length, 1, `${shape}: the sheet`);
+  }
+  // A question sent with no territory that completed reached every territory: a narrower one that did not leaves no gap.
+  const reached = { scope_basis: "worldwide", regions: [], entries: [term("w", []), term("r", ["RU"])] };
+  assert.deepEqual(leftOpenRows({ localScripts: localScripts(reached, exec(reached, ["w"])) }), []);
 });

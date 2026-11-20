@@ -215,9 +215,12 @@ test("a term with no territory of its own is read with the plan's, as the regist
   // On a plan stamped worldwide it takes the plan's whole list, which is the worldwide search.
   const listed = localScripts({ scope_basis: "worldwide", regions: ["RU", "KZ", "EM"], entries: [term("w", [])] }, exec(["w", "incomplete"]));
   assert.deepEqual(listed.territories.Cyrl, { searched: [], missed: [], worldwide: "missed" });
-  // A stamped plan that names no territory sent the question with none: the worldwide search too.
+  // A stamped plan that names no territory sent the question with none: the worldwide search too. Completed, it reached
+  // every territory, so a narrower search that did not complete leaves no gap; not completed, the narrower gap stays.
   const open = localScripts({ scope_basis: "worldwide", regions: [], entries: [term("w", []), term("r", ["RU"])] }, exec(["w", "enumerated"], ["r", "incomplete"]));
-  assert.deepEqual(open.territories.Cyrl, { searched: [], missed: ["RU"], worldwide: "searched" });
+  assert.deepEqual(open.territories.Cyrl, { searched: [], missed: [], worldwide: "searched" });
+  const unfinished = localScripts({ scope_basis: "worldwide", regions: [], entries: [term("w", []), term("r", ["RU"])] }, exec(["w", "incomplete"], ["r", "incomplete"]));
+  assert.deepEqual(unfinished.territories.Cyrl, { searched: [], missed: ["RU"], worldwide: "missed" });
   // Only a plan with no stamp and no territory leaves the term's scope unknown.
   const unknown = localScripts({ regions: [], entries: [term("u", [])] }, exec(["u", "incomplete"]));
   assert.deepEqual(unknown.territories.Cyrl, { searched: [], missed: [], unnamed: "missed" });

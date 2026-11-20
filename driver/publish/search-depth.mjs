@@ -413,7 +413,10 @@ export function localScripts(registerPlan, planExecution) {
     return regionName(code) === code && office.has(code) ? normRegion(office.get(code)) : code;
   }).filter(Boolean))];
   const whole = registerPlan?.scope_basis === "worldwide" ? new Set(fold(registerPlan?.regions)) : null;
-  const searched = new Set(), planned = new Set(), at = {};
+  // The scripts whose question went out with no territory and completed: it reached every territory the register holds,
+  // so a narrower search in that script that did not complete leaves no gap. A worldwide search sent as the plan's whole
+  // list reaches that list, and counts it as searched, below.
+  const searched = new Set(), planned = new Set(), at = {}, everywhere = new Set();
   for (const e of Array.isArray(registerPlan?.entries) ? registerPlan.entries : []) {
     const regions = fold(withPlanRegions({ regions: e?.regions }, registerPlan).regions);
     const worldwide = whole !== null && regions.length === whole.size && regions.every((r) => whole.has(r));
@@ -424,6 +427,7 @@ export function localScripts(registerPlan, planExecution) {
       if (done) searched.add(code);
       const t = (at[code] ??= { searched: new Set(), planned: new Set(), unnamed: null, worldwide: null });
       if (worldwide) t.worldwide = done || t.worldwide === "searched" ? "searched" : "missed";
+      if (worldwide && done && !regions.length) everywhere.add(code);
       for (const r of regions) { if (!worldwide) t.planned.add(r); if (done) t.searched.add(r); }
       if (!regions.length && !worldwide) t.unnamed = done || t.unnamed === "searched" ? "searched" : "missed";
     }
@@ -431,7 +435,7 @@ export function localScripts(registerPlan, planExecution) {
   const territories = {};
   for (const code of Object.keys(at).sort()) {
     const t = at[code];
-    territories[code] = { searched: [...t.searched].sort(), missed: [...t.planned].filter((r) => !t.searched.has(r)).sort(),
+    territories[code] = { searched: [...t.searched].sort(), missed: everywhere.has(code) ? [] : [...t.planned].filter((r) => !t.searched.has(r)).sort(),
       ...(t.unnamed ? { unnamed: t.unnamed } : {}), ...(t.worldwide ? { worldwide: t.worldwide } : {}) };
   }
   return { searched: [...searched].sort(), missed: [...planned].filter((c) => !searched.has(c)).sort(), territories };
