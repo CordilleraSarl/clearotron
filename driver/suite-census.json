@@ -130,8 +130,8 @@
           "todos": 0
         },
         "a-cancelled-run-stays-cancelled.test.mjs": {
-          "tests": 14,
-          "asserts": 29,
+          "tests": 13,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
@@ -185,7 +185,7 @@
         },
         "a-card-opens-each-cited-registration-with-its-register-record.test.mjs": {
           "tests": 9,
-          "asserts": 29,
+          "asserts": 28,
           "skips": 0,
           "todos": 0
         },
@@ -322,14 +322,26 @@
           "todos": 0
         },
         "a-clearance-prints-its-ticked-cards-whole.test.mjs": {
-          "tests": 3,
-          "asserts": 7,
+          "tests": 4,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-clearance-reads-the-stop-before-it-publishes-and-never-after.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },
         "a-clearance-resumed-after-it-published-sends-the-same-cover-note.test.mjs": {
           "tests": 1,
           "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-clearance-stage-reuses-reruns-and-fails-through-the-shared-runner.pipeline.test.mjs": {
+          "tests": 1,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
@@ -360,7 +372,7 @@
         "a-closed-session-stream-is-kept-gzipped.test.mjs": {
           "tests": 4,
           "asserts": 13,
-          "skips": 1,
+          "skips": 2,
           "todos": 0
         },
         "a-cloud-account-bills-as-itself.test.mjs": {
@@ -1035,6 +1047,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-fresh-session-carries-its-manuals-in-its-opening-message.test.mjs": {
+          "tests": 6,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
         "a-frozen-recall-search-runs-as-an-ordinary-search.test.mjs": {
           "tests": 2,
           "asserts": 8,
@@ -1365,9 +1383,21 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-stage-keeps-the-rating-it-replaces-and-records-what-it-read.test.mjs": {
+          "tests": 6,
+          "asserts": 52,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-stage-reuses-its-output-only-while-its-inputs-are-unchanged.test.mjs": {
           "tests": 9,
           "asserts": 41,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-knockout-stage-that-fails-throws-its-own-failure-and-leaves-its-rating-recoverable.test.mjs": {
+          "tests": 4,
+          "asserts": 46,
           "skips": 0,
           "todos": 0
         },
@@ -1631,7 +1661,7 @@
         },
         "a-new-run-folder-is-closed-to-other-accounts.test.mjs": {
           "tests": 5,
-          "asserts": 11,
+          "asserts": 12,
           "skips": 5,
           "todos": 0
         },
@@ -1782,6 +1812,12 @@
         "a-placement-pass-the-delivery-gate-repeats-is-recorded-like-the-first.test.mjs": {
           "tests": 4,
           "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-placement-pass-whose-floor-duty-is-undischarged-runs-again-on-a-resume.pipeline.test.mjs": {
+          "tests": 1,
+          "asserts": 13,
           "skips": 0,
           "todos": 0
         },
@@ -2307,6 +2343,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-resumed-knockout-emails-the-counts-its-page-states.test.mjs": {
+          "tests": 1,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "a-resumed-run-asks-the-step-when-the-shape-moved.test.mjs": {
           "tests": 3,
           "asserts": 13,
@@ -2351,6 +2393,12 @@
         },
         "a-right-kept-on-a-sheet-is-not-dropped-by-its-copies.test.mjs": {
           "tests": 7,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-right-whose-rating-was-withdrawn-is-left-open.test.mjs": {
+          "tests": 5,
           "asserts": 15,
           "skips": 0,
           "todos": 0
@@ -2517,6 +2565,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-script-no-search-completed-in-reaches-the-markdown-and-the-connector.test.mjs": {
+          "tests": 3,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "a-script-question-shows-the-latin-question-it-repeats.test.mjs": {
           "tests": 3,
           "asserts": 16,
@@ -2679,6 +2733,12 @@
           "skips": 5,
           "todos": 0
         },
+        "a-stage-meets-each-paragraph-its-manual-carries-once.test.mjs": {
+          "tests": 5,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "a-stage-program-starts-with-a-listed-environment.test.mjs": {
           "tests": 12,
           "asserts": 62,
@@ -2722,8 +2782,20 @@
           "todos": 0
         },
         "a-stop-is-read-once-more-before-anything-is-published.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-stop-pressed-during-the-last-knockout-stage-publishes-nothing.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-stopped-knockout-starts-no-paid-call.test.mjs": {
           "tests": 4,
-          "asserts": 12,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },
@@ -2920,9 +2992,9 @@
           "todos": 0
         },
         "a-version-npm-is-still-validating-gets-its-entry-once-served.test.mjs": {
-          "tests": 20,
-          "asserts": 72,
-          "skips": 12,
+          "tests": 21,
+          "asserts": 80,
+          "skips": 13,
           "todos": 0
         },
         "a-visible-line-is-written-for-the-client.test.mjs": {
@@ -3037,6 +3109,12 @@
           "tests": 3,
           "asserts": 4,
           "skips": 5,
+          "todos": 0
+        },
+        "a-withdrawn-rating-reaches-the-page-and-the-workbook.test.mjs": {
+          "tests": 6,
+          "asserts": 19,
+          "skips": 0,
           "todos": 0
         },
         "a-workbook-is-compared-by-its-contents.test.mjs": {
@@ -3815,7 +3893,7 @@
         },
         "connect-key-mints-for-the-caller.test.mjs": {
           "tests": 5,
-          "asserts": 19,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
@@ -4683,6 +4761,12 @@
           "skips": 0,
           "todos": 0
         },
+        "every-gap-the-report-leaves-open-is-on-the-audit-workbook.test.mjs": {
+          "tests": 3,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "every-hand-off-exit-is-counted.test.mjs": {
           "tests": 7,
           "asserts": 24,
@@ -4698,6 +4782,12 @@
         "every-lane-declares-its-transport-position.test.mjs": {
           "tests": 7,
           "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "every-link-on-a-published-report-lands.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
@@ -4925,7 +5015,7 @@
         },
         "floor-duty.test.mjs": {
           "tests": 31,
-          "asserts": 94,
+          "asserts": 91,
           "skips": 0,
           "todos": 0
         },
@@ -5039,7 +5129,7 @@
         },
         "health-carries-the-build.test.mjs": {
           "tests": 6,
-          "asserts": 17,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -5321,7 +5411,7 @@
         },
         "methodology-witness.test.mjs": {
           "tests": 10,
-          "asserts": 34,
+          "asserts": 35,
           "skips": 0,
           "todos": 0
         },
@@ -6095,7 +6185,7 @@
         },
         "record-links-honour-the-allowlist.test.mjs": {
           "tests": 8,
-          "asserts": 26,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
@@ -6346,8 +6436,8 @@
           "todos": 0
         },
         "render.test.mjs": {
-          "tests": 163,
-          "asserts": 693,
+          "tests": 168,
+          "asserts": 735,
           "skips": 0,
           "todos": 0
         },
@@ -6430,8 +6520,8 @@
           "todos": 0
         },
         "report-overview-record.test.mjs": {
-          "tests": 15,
-          "asserts": 49,
+          "tests": 16,
+          "asserts": 52,
           "skips": 0,
           "todos": 0
         },
@@ -6977,7 +7067,7 @@
         },
         "stage-event-names-what-ran.test.mjs": {
           "tests": 11,
-          "asserts": 20,
+          "asserts": 25,
           "skips": 1,
           "todos": 0
         },
@@ -7366,8 +7456,8 @@
           "todos": 0
         },
         "the-conflicts-below-the-risk-sit-behind-one-closed-heading.test.mjs": {
-          "tests": 4,
-          "asserts": 15,
+          "tests": 5,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },
@@ -7437,6 +7527,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-cover-email-states-what-the-page-states.test.mjs": {
+          "tests": 4,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
         "the-coverage-floors-own-sentences-stay-in-the-run-record.test.mjs": {
           "tests": 4,
           "asserts": 17,
@@ -7476,6 +7572,12 @@
         "the-delivered-files-say-what-was-retrieved-not-what-was-read.test.mjs": {
           "tests": 3,
           "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-delivered-markdown-lists-what-was-left-open.test.mjs": {
+          "tests": 6,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -8196,7 +8298,7 @@
         "the-public-text-guard-reads-a-comment-after-code.test.mjs": {
           "tests": 4,
           "asserts": 18,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "the-published-door-must-answer-not-merely-exist.test.mjs": {
@@ -8212,8 +8314,8 @@
           "todos": 0
         },
         "the-read-map-counts-what-each-stage-is-handed.test.mjs": {
-          "tests": 2,
-          "asserts": 7,
+          "tests": 4,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -8321,7 +8423,7 @@
         },
         "the-register-wording-follows-the-ruled-crowd-method.test.mjs": {
           "tests": 6,
-          "asserts": 19,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
@@ -8356,8 +8458,8 @@
           "todos": 0
         },
         "the-report-can-say-how-much-was-read.test.mjs": {
-          "tests": 25,
-          "asserts": 71,
+          "tests": 29,
+          "asserts": 89,
           "skips": 0,
           "todos": 0
         },
@@ -8368,8 +8470,8 @@
           "todos": 0
         },
         "the-report-document-carries-the-data-file.test.mjs": {
-          "tests": 6,
-          "asserts": 32,
+          "tests": 10,
+          "asserts": 45,
           "skips": 0,
           "todos": 0
         },
@@ -8393,7 +8495,7 @@
         },
         "the-report-shell-keeps-what-a-repair-does-not-resend.test.mjs": {
           "tests": 6,
-          "asserts": 28,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
@@ -8664,6 +8766,12 @@
         "the-skeptic-is-told-a-limited-row-is-a-counted-crowd.test.mjs": {
           "tests": 1,
           "asserts": 2,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-snapshot-reads-register-answers-of-a-real-runs-shape.test.mjs": {
+          "tests": 5,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
@@ -9296,6 +9404,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-answers-with-what-its-pages-delivered.test.mjs": {
+          "tests": 5,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-trace-survives-the-client-door.test.mjs": {
           "tests": 8,
           "asserts": 22,
@@ -9311,6 +9425,12 @@
         "a-removed-person-loses-their-assistant-too.test.mjs": {
           "tests": 4,
           "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-run-answers-the-same-from-its-report-document.test.mjs": {
+          "tests": 1,
+          "asserts": 4,
           "skips": 0,
           "todos": 0
         },
@@ -9602,7 +9722,19 @@
           "skips": 0,
           "todos": 0
         },
+        "the-connector-answers-with-what-the-report-delivered.test.mjs": {
+          "tests": 3,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "the-connector-calls-an-unsearched-area-what-the-report-does.test.mjs": {
+          "tests": 2,
+          "asserts": 3,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-evidence-list-says-retrieved-only-for-the-saved-record.test.mjs": {
           "tests": 2,
           "asserts": 3,
           "skips": 0,
@@ -9752,8 +9884,8 @@
           "todos": 0
         },
         "composerProduct.test.ts": {
-          "tests": 37,
-          "asserts": 149,
+          "tests": 39,
+          "asserts": 159,
           "skips": 0,
           "todos": 0
         },

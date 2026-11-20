@@ -335,7 +335,7 @@ const REVIEWER_LEGEND_RE =
 
 // ── the Ask-your-AI block: STAFF ONLY, and this one IS a boundary ────────────────────────────────────
 //
-// The report embeds a "paste this into your own AI" connector URL. ONE report (spec 2026-07-30 §5):
+// The report embeds a "paste this into your own AI" connector URL. ONE report:
 // the renderer has one path and always bakes the STAFF surface — CLEAROTRON_MCP_URL plus a run-scoped
 // read-only token — or FAILS CLOSED and omits the block entirely when the env is unset, rather than
 // falling back to a placeholder host. That is critic finding 4, written into the renderer as
@@ -1028,7 +1028,7 @@ export function prepareReportForEmbed(html, { staff = false, poolRoot = null, fe
 /**
  * Read a run's report from the pool and prepare it.
  *
- * ONE file: `report.html`, the full report. The cutover is complete (spec 2026-07-30 §5):
+ * ONE file: `report.html`, the full report. The cutover is complete:
  * `report.client.html` is no longer produced at publish, the per-customer index pages link
  * `report.html`, and the client-access service at clients.example.com serves reports through THIS
  * function (staff:false) rather than reading any file by path. Old pool dirs may still hold a stale

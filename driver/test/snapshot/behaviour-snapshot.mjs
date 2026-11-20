@@ -22,6 +22,7 @@ import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { workbookEntryText, zipEntries } from "./workbook-entries.mjs";
+import { FILINGS_PER_NAME } from "./real-shaped.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 let REPO = resolve(HERE, "..", "..", "..");
@@ -43,6 +44,14 @@ const KNOCKOUT = {
   product: "knockout-search", markName: "IRONWHISK", classes: [8, 21], goods: "kitchen tools; household utensils", rawRequest: "An invented message asking about two names for kitchen tools.",
   marks: [{ name: "IRONWHISK", classes: [8, 21] }, { name: "CLUVENDRA", classes: [8] }],
 };
+// EIGHT NAMES WITH A REAL RUN'S REGISTER ANSWERS: lists from none to a hundred filings, long goods text, other scripts
+// (real-shaped.mjs, where the sizes are measured). Invented names, generated answers.
+const REAL_SHAPED_NAMES = ["QUILLBRAE", "MOSSVALE", "LANTERNWICK", "ODRAVEL", "BRIMSTARE", "TALLOWMERE", "PEBBLEWAY", "VELMORA"];
+const REAL_SHAPED_KNOCKOUT = {
+  product: "knockout-search", markName: REAL_SHAPED_NAMES[0], classes: [9, 25, 41], goods: "software; clothing; entertainment services",
+  rawRequest: "An invented message asking about eight names for software, clothing and entertainment.",
+  marks: REAL_SHAPED_NAMES.map((name) => ({ name, classes: [9, 41] })),
+};
 const AT_THE_SPLIT = "joint synthesis narrative";
 const KO_DEFECT = JSON.stringify([{ kind: "contradiction", mark: "IRONWHISK", finding: 1, problem: "The first conflict is rated below what its own evidence shows." }]);
 const moreThanOne = (stage) => (r) => (r.stages ?? []).filter((x) => x.stage === stage).length > 1;
@@ -51,6 +60,7 @@ function scenarios() {
   for (const engine of Object.keys(ENGINES)) {
     for (const [p, patch] of Object.entries(PRODUCTS)) out.push({ id: `${p}.${engine}`, engine, job: { ...JOB, ...patch } });
     out.push({ id: `knockout.${engine}`, engine, job: { ...JOB, ...KNOCKOUT }, knockout: true });
+    out.push({ id: `knockout-real-shaped.${engine}`, engine, job: { ...JOB, ...REAL_SHAPED_KNOCKOUT }, knockout: true, realShaped: true });
     const full = { ...JOB, ...PRODUCTS["full-country"] };
     out.push({ id: `correction.${engine}`, engine, job: full, env: { MOCK_VERDICT: "BLOCKING", MOCK_VERDICT_DEFECTS: "- the summary says the phonetic axis ran; the receipt shows it never did" }, reaches: moreThanOne("synthesis") });
     out.push({ id: `knockout-correction.${engine}`, engine, job: { ...JOB, ...KNOCKOUT }, knockout: true, env: { MOCK_KO_MATERIAL: KO_DEFECT }, reaches: (r) => r.stages?.some((x) => x.stage.startsWith("knockout-correct")) });
@@ -67,6 +77,7 @@ function scenarios() {
 
 /** The knockout lane reads canned web and register answers from a fixture directory, as its end-to-end test does. */
 function seedKnockout(spec, root) {
+  if (spec.realShaped) return seedRealShaped(spec, root);
   const sweep = join(root, "sweep-fixtures"), counts = join(root, "count-fixtures");
   mkdirSync(sweep, { recursive: true }); mkdirSync(counts, { recursive: true });
   const cell = (term, platform, candidates = []) => ({ term, platform, status: candidates.length ? "hit" : "no_hit", candidates });
@@ -123,6 +134,8 @@ function normaliser(root, result) {
       .replace(/"turnaroundHours":\s*\{[^}]*\}/g, '"turnaroundHours":"<WALL>"')
       // A record's own duration, which the wall clock decides: the post-repair review's `ms` moved on every run.
       .replace(/"ms":\s*\d+/g, '"ms":"<MS>"')
+      // And a register answer's own duration, which the report document carries.
+      .replace(/"took_ms":\s*\d+/g, '"took_ms":"<MS>"')
       .replace(/mock-sess-[a-z0-9]+/g, "<SESSION>")
       .replace(/\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/g, "<UUID>");
   };
@@ -181,7 +194,13 @@ function fileHash(f, norm) {
   if (f.endsWith(".xlsx")) return sha(zipEntries(buf).map(([n, b]) => `${n}\0${norm(workbookEntryText(n, b))}`).join("\0"));
   // A report lists the models it was served in the order concurrent stages finished. Each turn's own model is
   // compared in its record, so the list's order carries nothing the comparison needs.
-  return /\.(png|jpg|pdf|zip|gz)$/.test(f) ? "binary" : sha(norm(buf.toString("utf8")).replace(/\b(?:claude|gpt)-[a-z0-9.-]+/g, "<MODEL>"));
+  if (/\.(png|jpg|pdf|zip|gz)$/.test(f)) return "binary";
+  let text = norm(buf.toString("utf8")).replace(/\b(?:claude|gpt)-[a-z0-9.-]+/g, "<MODEL>");
+  // A stage's input record holds a hash of each input file's raw bytes, which name the run's folder and codename, so
+  // it moved on every run. Each of those files is an output here, hashed after normalising, so the record's own hashes
+  // add nothing and are masked.
+  if (/[\\/]_driver[\\/]stage-inputs[\\/]/.test(f)) text = text.replace(/"(sha|proj)":\s*"[0-9a-f]+"/g, '"$1":"<SHA>"');
+  return sha(text);
 }
 const VOLATILE = /(^|[\\/])(streams|[^\\/]*\.jsonl|economics\.json|[^\\/]*\.attempt\d+[^\\/]*\.stdout)($|[\\/])/;
 const stableOutput = (f) => !VOLATILE.test(f);
@@ -197,6 +216,21 @@ function stageOrder(stages) {
   return groups.flatMap((g) => g.items.map(row).sort((a, b) => (JSON.stringify(a) < JSON.stringify(b) ? -1 : 1)));
 }
 
+/** The real-shaped batch: each name's web grid and register count, and its filing list at the measured spread. */
+function seedRealShaped(spec, root) {
+  const sweep = join(root, "sweep-fixtures"), counts = join(root, "count-fixtures"), records = join(root, "record-fixtures");
+  mkdirSync(sweep, { recursive: true }); mkdirSync(counts, { recursive: true });
+  const cell = (term, platform, candidates = []) => ({ term, platform, status: candidates.length ? "hit" : "no_hit", candidates });
+  REAL_SHAPED_NAMES.forEach((name, i) => {
+    const slug = name.toLowerCase();
+    writeFileSync(join(sweep, `${slug}.grid.json`), JSON.stringify({ cells: [cell(name, "web", i % 2 ? [] : [{ title: `${name} on an invented page`, url: `https://example.test/${slug}` }]), cell(name, "shop.example.com")], gaps: [], extras: {} }));
+    writeFileSync(join(counts, `${slug}.json`), JSON.stringify({ identical: Math.ceil(FILINGS_PER_NAME[i] / 3), containing: FILINGS_PER_NAME[i] }));
+  });
+  spec.seedRecords = { dir: records, asked: REAL_SHAPED_NAMES.map((term, i) => ({ term, count: FILINGS_PER_NAME[i] })) };
+  spec.job = { ...spec.job, registerFixtures: { counts, records } };
+  spec.env = { ...(spec.env ?? {}), CLEAROTRON_KNOCKOUT_MODE: "1", CLEAROTRON_KNOCKOUT_SWEEP_FIXTURES: sweep };
+}
+
 function runOne(spec, out) {
   return new Promise((done) => {
     const root = mkdtempSync(join(tmpdir(), "behaviour-snapshot-"));
@@ -206,7 +240,7 @@ function runOne(spec, out) {
     const callLog = join(root, "calls.jsonl"), netLog = join(root, "network.log"), covDir = join(out, "coverage", spec.id), resultFile = join(root, "result.json");
     mkdirSync(covDir, { recursive: true });
     const specFile = join(root, "spec.json");
-    writeFileSync(specFile, JSON.stringify({ job: spec.job, opts: spec.opts ?? {}, resultFile, driver: join(REPO, "driver"), resume: Boolean(spec.resume), tamperBeforeResume: spec.tamperBeforeResume ?? null, cancel: Boolean(spec.cancel) }));
+    writeFileSync(specFile, JSON.stringify({ job: spec.job, opts: spec.opts ?? {}, resultFile, driver: join(REPO, "driver"), resume: Boolean(spec.resume), tamperBeforeResume: spec.tamperBeforeResume ?? null, seedRecords: spec.seedRecords ?? null, cancel: Boolean(spec.cancel) }));
     chmodSync(join(TEST(), "mock-claude.mjs"), 0o755); chmodSync(join(TEST(), "mock-codex.mjs"), 0o755);
     const t0 = Date.now();
     execFile(process.execPath, [join(HERE, "run-scenario.mjs"), specFile], { env: childEnv(spec, root, netLog, callLog, covDir), cwd: root, timeout: 600_000, maxBuffer: 256 * 1024 * 1024 }, (err, stdout, stderr) => {
@@ -262,7 +296,7 @@ async function main(argv) {
 }
 
 /** Scenarios this tool does not drive yet, printed on every comparison so that their absence is read. */
-export const SCENARIO_GAPS = ["real-shaped data: every scenario runs on the mocks' invented fixtures"];
+export const SCENARIO_GAPS = ["real-shaped data in a clearance: its register band is the mock's few invented rows (the Knockout's lists are real-shaped: knockout-real-shaped)"];
 
 // Neutral area labels. Which session or person holds an area is kept outside the repository.
 // The Knockout lane, the queue worker and the driver's configuration are the pipeline; the register search, the

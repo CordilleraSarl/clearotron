@@ -101,7 +101,8 @@ test("claude: a retried stage keeps the run folder its dispatch was granted, tho
 
 test("the gateway hands the stage turn its stage's own dispatch for the grant", () => {
   const src = readFileSync(join(ROOT, "driver", "gateway.mjs"), "utf8");
-  assert.match(src, /engine\.runTurn\(\{ agent, sessionKey: key, message: effMessage, grantDispatch: base,/,
+  // The message the turn sends is the dispatch with its manuals inlined (manuals-inline.mjs); the grant reads the dispatch.
+  assert.match(src, /engine\.runTurn\(\{ agent, sessionKey: key, message: [\w.]+, grantDispatch: base,/,
     "the stage turn no longer passes its dispatch, so a retry judges the grant on the retry's own text");
 });
 

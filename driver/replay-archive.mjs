@@ -32,7 +32,7 @@ import { readFileSync, writeFileSync, readdirSync, existsSync, statSync } from "
 import { join, basename } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
 import { homedir } from "node:os";
 import { validators } from "./verify.mjs";
-import { runLint, clientSummaryShape } from "./predelivery-lint.mjs"; import { emailConditionsOfReport } from "./publish/email-conditions.mjs";   // what the cover email carries
+import { runLint, clientSummaryShape } from "./predelivery-lint.mjs"; import { emailConditionsOfReport } from "./publish/email-conditions.mjs"; import { readPartNotCompleted } from "./parts-not-completed.mjs";   // what the cover email carries, and whether the assessment completed
 import { config } from "./driver.config.mjs";
 import { GRID_HALVES } from "./common-law-receipts.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
@@ -190,7 +190,7 @@ export function replayRun(runDir) {
         searchedNames,
         headerName: shape.headerName || searchedNames.join(" / "),
         ratedNames: searchedNames,
-        extraPlatformNames, verdictDoc, emailConditions: emailConditionsOfReport(reportMd, verdictDoc?.verdict),
+        extraPlatformNames, verdictDoc, emailConditions: emailConditionsOfReport(reportMd, verdictDoc?.verdict, { assessmentNotCompleted: readPartNotCompleted(runDir, "assessment") != null }),
       });
       out.predeliveryLint = lint.failures.length === 0
         ? "ok"

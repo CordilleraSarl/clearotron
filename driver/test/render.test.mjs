@@ -17,7 +17,9 @@ import { writeFileSync, mkdtempSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { parseReport } from "../publish/parse.mjs";
-import { renderHtml, homeButton } from "../publish/render.mjs";
+import { renderHtml, homeButton, leftOpenRows, coverageGrid } from "../publish/render.mjs";
+import { localScripts } from "../publish/search-depth.mjs";
+import { pageElements, pageLinks } from "./helpers/page-links.mjs";
 import { EXPORT_TOGGLE, EXPORT_MENU_JS } from "../publish/report-topbar.mjs";
 import { joinEvidenceStatus } from "../registry-fidelity.mjs";
 
@@ -966,7 +968,8 @@ test("CHANGE 5a render: the reg number is bound to its record's uri + jurisdicti
   const entry = html.match(/<div class="rr">([\s\S]*?)<\/details>/)?.[1] ?? "";
   assert.match(entry, /<span class="k">Country<\/span><span class="v">United States <i class="jsys">\(first-to-use\)<\/i><\/span>/);
   assert.match(entry, /<span class="k">Status<\/span><span class="v">Registered · /);
-  assert.match(entry, /<span class="k">Register number<\/span><span class="v"><a href="https:\/\/tm\.example\/mark\/us\/3396572" target="_blank" rel="noopener noreferrer">\/mark\/us\/3396572<\/a> <span class="rr-faint">application 77999111<\/span>/);
+  // With no office link naming it, the row prints the record's own office number, still opening the record's page.
+  assert.match(entry, /<span class="k">Register number<\/span><span class="v"><a href="https:\/\/tm\.example\/mark\/us\/3396572" target="_blank" rel="noopener noreferrer">US 3396572<\/a> <span class="rr-faint">application 77999111<\/span>/);
 });
 
 // — THIS ARM ASSERTED THE DEFECT, and is rewritten rather than deleted so the record of what it
@@ -1574,7 +1577,8 @@ test("wp50: the C/L group renders AFTER the region list, labelled and cross-link
   ];
   const html = renderHtml(parsedOf(REPORT), findings, COVERAGE, {});
   assert.match(html, /Common-law \/ marketplace — unregistered use, not register rights/, "labelled block");
-  assert.match(html, /<a href="#common-law">/, "cross-link to the reading section");
+  assert.match(html, /\(<a href="#c2">[^<]*<\/a>\)/, "cross-link to the common-law card, which the page draws");
+  assert.match(html, /id="c2"/);
   const usIdx = html.indexOf('<span class="rcode">US</span>');
   const clIdx = html.indexOf('Common-law / marketplace');
   assert.ok(usIdx > 0 && clIdx > usIdx, "C/L block sits after the region list");
@@ -2497,6 +2501,63 @@ test("the one-clause net renders VERBATIM — no cap, no ellipsis, on every card
   assert.match(neg, /class="rn-why">[^<]*the opposition window closes in March/, "the grouped negative's reason is uncut too");
 });
 
+// EVERY IN-PAGE LINK LANDS ON THE PAGE. The key rows and the chart linked to findings drawn as grouped rows with no
+// id, the key's common-law hint to a section that had lost its heading and its anchor, and a four-answers ordinal to a
+// withdrawn finding the page does not draw. Measured on saved test-instance clearances: up to 13 dead links a page.
+// Each target now exists, a withdrawn finding is cited nowhere, and no id repeats. Ids and links are read from the
+// page's parsed elements, never from the text of its script.
+test("every in-page link on a clearance page lands on an element of that page, and no id repeats", () => {
+  const lands = (html, what, target) => {
+    const { ids, hrefs, dead, repeated } = pageLinks(html);
+    assert.ok(hrefs.length > 0, `${what}: the page draws in-page links`);
+    assert.ok(ids.includes(target) && hrefs.includes(target), `${what}: ${target} is read as both a link and an id`);
+    assert.deepEqual(dead, [], `${what}: links to targets the page does not carry`);
+    assert.deepEqual(repeated, [], `${what}: ids that repeat`);
+  };
+  // The grouped negatives: the key and the chart link to each one's row.
+  const grouped = renderHtml(parsedOf(REPORT), V6_NEGATIVES, COVERAGE, { runId: "noref-demo", findingsSchemaVersion: 6 });
+  assert.match(grouped, /<details class="rgroup rn" id="c3">/);
+  assert.match(grouped, /class="keyrow" href="#c3"/);
+  lands(grouped, "grouped negatives", "c3");
+  // The common-law hint lands on the first common-law card, not on the section that went with its heading.
+  const cl = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-demo" });
+  assert.match(cl, /<p class="keyhint" style="margin-top:10px">[^<]*<a href="#c2">/);
+  assert.doesNotMatch(cl, /href="#common-law"/);
+  lands(cl, "common-law hint", "c2");
+  // A four-answers ordinal lands on a ruled-out card, on either layout, and a withdrawn finding is not cited at all.
+  const ruled = { ordinal: 4, mark: "MATCHDAY MOTORS", ruled_out: true, owner: { name: "Matchday Motors Ltd", registrations: [] },
+    composite: 1, level: "C", meters: {}, quadrant: { x: 0.1, y: 0.1 }, source: { source_type: "register-vendor" } };
+  const withdrawn = { ...FINDINGS[0], ordinal: 5, disposition: "withdrawn" };
+  const fourAnswers = { third_party_rights: { read: "Senior rights sit in the core class.", token: "strong", ordinals: [1, 4, 5] } };
+  for (const [what, findings, extra] of [["legacy layout", FINDINGS, {}], ["grouped layout", V6_NEGATIVES, { findingsSchemaVersion: 6 }]]) {
+    const html = renderHtml(parsedOf(REPORT), [...findings, ruled, withdrawn], COVERAGE, { runId: "noref-demo", fourAnswers, ...extra });
+    assert.match(html, /<span class="fa-ords"><a href="#c1">#1<\/a> <a href="#c4">#4<\/a><\/span>/, `${what}: the withdrawn #5 is not cited`);
+    assert.match(html, /<div class="card ruled" id="c4">/, `${what}: the ruled-out card carries its id`);
+    lands(html, what, "c4");
+  }
+});
+
+// A card's target is `c` and a whole-number ordinal. An ordinal that is absent, or is anything else, gets no id and no
+// link pointing at it: nothing on the page invents a target for it, and its text cannot close an attribute it sits in.
+test("a finding with an absent or malformed ordinal draws no id and no link, and its ordinal opens no attribute", () => {
+  const quoted = '9" data-injected="1';
+  const odd = (f, ordinal, mark) => ({ ...f, ordinal, mark });
+  const ruled = { ordinal: quoted, mark: "MATCHDAY MOTORS", ruled_out: true, owner: { name: "Matchday Motors Ltd", registrations: [] },
+    composite: 1, level: "C", meters: {}, quadrant: { x: 0.1, y: 0.1 }, source: { source_type: "register-vendor" } };
+  const fourAnswers = { third_party_rights: { read: "Senior rights sit in the core class.", token: "strong", ordinals: [1, quoted, "x"] } };
+  for (const [what, findings, extra] of [["legacy layout", FINDINGS, {}], ["grouped layout", V6_NEGATIVES, { findingsSchemaVersion: 6 }]]) {
+    const html = renderHtml(parsedOf(REPORT), [...findings, odd(findings[0], quoted, "QUOTEDCO"), odd(findings[1], undefined, "NUMBERLESS"), ruled],
+      COVERAGE, { runId: "noref-demo", fourAnswers, ...extra });
+    const elements = pageElements(html);
+    assert.deepEqual(elements.filter((e) => Object.hasOwn(e.attrs, "data-injected")), [], `${what}: the quoted ordinal closed an attribute`);
+    const { ids, dead, repeated } = pageLinks(html);
+    assert.deepEqual(ids.filter((x) => /^c(?![a-z-])/.test(x) && !/^c[0-9]+$/.test(x)), [], `${what}: an id made from a malformed ordinal`);
+    assert.deepEqual(dead, [], `${what}: links to targets the page does not carry`);
+    assert.deepEqual(repeated, [], `${what}: ids that repeat`);
+    assert.ok(ids.includes("c1"), `${what}: a whole-number ordinal keeps its card's id`);
+  }
+});
+
 // The half of foldClause that was NOT a cap, and had to survive its deletion: trim-to-empty. It is what
 // makes the `net || card.meta.one || oneFallback` chain fall through on an archived run, whose findings
 // carry no net at all — and on the file that carries the key with nothing in it, which is the case a
@@ -3171,7 +3232,7 @@ test("every country a finding holds a registration in takes its band where it st
 test("the local-language row states the depth reached, in the words the page already uses", () => {
   const LANES = { ja: { configured: "full", achieved: "full" } };
   const depth = (state, lanes = LANES) => ({ counts: { recordsByCountry: { JP: 3 }, courtDecisions: "not-in-scope",
-    localScriptSearched: true, localLanguage: state === undefined ? undefined : { state, lanes } } });
+    localScripts: { searched: ["Kana"], missed: [] }, localLanguage: state === undefined ? undefined : { state, lanes } } });
   // The counts fold draws key/value rows; read the pair, not the page.
   const rowFor = (html, key) => {
     const re = new RegExp(`<span class="k">${key}</span><span class="v">([^<]*)</span>`);
@@ -3215,7 +3276,7 @@ test("the local-language row states the depth reached, in the words the page alr
   // undefined through it lands on the default and the case reads as a pass. Built here instead.
   for (const state of ["ran", "ran-shallow", "not-run", "not-in-scope"]) {
     const noKey = renderHtml(parsedOf(REPORT), [], [], { searchDepth: { counts: { recordsByCountry: { JP: 3 },
-      courtDecisions: "not-in-scope", localScriptSearched: true, localLanguage: { state } } } });
+      courtDecisions: "not-in-scope", localScripts: { searched: ["Kana"], missed: [] }, localLanguage: { state } } } });
     assert.equal(rowFor(noKey, "Local-language investigation"), null,
       `the ${state} state drew a row from a record with no lanes key`);
   }
@@ -3226,7 +3287,7 @@ test("the local-language row states the depth reached, in the words the page alr
   // of the matrix did not red until the court-decisions side was asserted too.
   // A full country search, because that is the one board that draws a Court decisions row.
   const html = renderHtml(parsedOf(REPORT), [], [], { ...FULL_COUNTRY_OPTS, searchDepth: { counts: { recordsByCountry: { JP: 3 },
-    courtDecisions: "found", localScriptSearched: true, localLanguage: { state: "ran", lanes: LANES } } } });
+    courtDecisions: "found", localScripts: { searched: ["Kana"], missed: [] }, localLanguage: { state: "ran", lanes: LANES } } } });
   const at = (k) => {
     const i = html.indexOf(`<span class="k">${k}</span>`);
     assert.notEqual(i, -1, `the ${k} row is not on the page, so the order assertion proves nothing`);
@@ -3281,9 +3342,10 @@ test("the section strip is drawn from the document, so it can never name an anch
 // fixture, because this fixture happens to draw every section. Drive a document that draws fewer.
 test("a section that is not drawn takes its strip entry with it", () => {
   const full = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-strip-full" });
-  // No findings and no coverage: no rows, no open rows, no cards and no record set, so the counts
-  // section is not drawn at all and #searched cannot be in the document.
-  const thin = renderHtml(parsedOf(REPORT), [], [], { runId: "noref-strip-thin" });
+  // No findings and one open row: no cards and no record set, so the conflicts are not drawn and only the summary and
+  // "What was searched" (for its Left open row) are. A document with nothing at all to draw under "What was searched"
+  // no longer draws it: the local-script row it used to carry made a claim no execution record supported (2026-11-19).
+  const thin = renderHtml(parsedOf(REPORT), [], [{ area: "register / US", state: "open", note: "not completed this run" }], { runId: "noref-strip-thin" });
   const of = (h) => [...(h.match(/<nav class="strip[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? "").matchAll(/href="#([^"]+)"/g)].map((m) => m[1]);
   const [a, b] = [of(full), of(thin)];
   assert.ok(a.length >= 2 && b.length >= 2, `strips of ${a.length} and ${b.length} — one of these documents drew no navigation`);
@@ -3298,7 +3360,7 @@ test("a section that is not drawn takes its strip entry with it", () => {
 // the matter, so the two lines that would otherwise name a marketplace search say that instead. The flag
 // rides the search-depth record (counts.sweep.noMarketplacesPicked), stamped by publish from the frozen profile.
 test("a company with no marketplaces: the nothing-found line and the search row name the general web", () => {
-  const sd = { counts: { recordsByCountry: { JP: 10 }, localScriptSearched: true,
+  const sd = { counts: { recordsByCountry: { JP: 10 }, localScripts: { searched: ["Kana"], missed: [] },
     sweep: { spellings: 12, checks: 12, platforms: 1, reputation: 9, noMarketplacesPicked: true } } };
   const f = [{ ...FINDINGS[0], use_check: { source: NO_RESULT } }];
   const html = renderHtml(parsedOf(REPORT), f, COVERAGE, { searchDepth: sd });
@@ -3317,12 +3379,12 @@ test("a company with no marketplaces: the nothing-found line and the search row 
 // ── WHAT WAS SEARCHED, AS THE BOARDS DRAW IT ────────────────────────────────────────────────────────
 //
 // The approved boards draw the register row as one line of totals with the per-country counts as chips,
-// "checks on" the platforms, "Searched" as the spellings word, a Court decisions row on a full country
+// "checks on" the platforms, the scripts searched by name, a Court decisions row on a full country
 // search only — its state word, and the court section's own sentence when the research could not be
 // completed — and a closing link to the audit workbook. The Left open rows and the provenance note stay
 // where they are until their own ruling.
-test("What was searched draws the boards' rows: totals and chips, checks on, Searched, court on full country, the workbook", () => {
-  const sd = { counts: { recordsByCountry: { JP: 60, KR: 46, WO: 6 }, courtDecisions: "not-checked", localScriptSearched: true,
+test("What was searched draws the boards' rows: totals and chips, checks on, the scripts searched, court on full country, the workbook", () => {
+  const sd = { counts: { recordsByCountry: { JP: 60, KR: 46, WO: 6 }, courtDecisions: "not-checked", localScripts: { searched: ["Kana"], missed: [] },
     sweep: { spellings: 28, checks: 476, platforms: 17, reputation: 49 } } };
   const multi = renderHtml(parsedOf(REPORT), [], [], { searchDepth: sd, auditFile: "run-audit.xlsx" });
   const v = (html, k) => (html.match(new RegExp(`<span class="k">${k}</span><span class="v">([\\s\\S]*?)</span></div>`)) || [])[1] ?? null;
@@ -3330,7 +3392,7 @@ test("What was searched draws the boards' rows: totals and chips, checks on, Sea
   assert.match(multi, /<div class="wchips"><span class="wchip" title="Japan">JP <b>60<\/b><\/span><span class="wchip" title="South Korea">KR <b>46<\/b><\/span><\/div>/,
     "the chips carry the code and the count, largest first, the name on hover");
   assert.equal(v(multi, "Marketplace and web"), "476 checks on 17 platforms");
-  assert.equal(v(multi, "Local-script spellings"), "Searched");
+  assert.equal(v(multi, "Local-script spellings"), "Katakana");
   assert.equal(v(multi, "Court decisions"), null, "a search that is not a full country search draws no court row");
   assert.match(multi, /<div class="cmore"><a class="wb" href="run-audit\.xlsx">Every search and result, in the audit workbook<\/a><\/div>/);
 
@@ -3344,4 +3406,97 @@ test("What was searched draws the boards' rows: totals and chips, checks on, Sea
   assert.match(one, /id="court"[\s\S]*Case-law research could not be completed for Japan\./, "and the court section still says it below");
   assert.doesNotMatch(renderHtml(parsedOf(REPORT), [], [], { searchDepth: sd }), /class="cmore"><a class="wb"[^>]*>Every search/,
     "no audit file, no link to one");
+});
+
+// THE SCRIPTS BY NAME (owner, 2026-11-19): what was searched names the scripts a search completed in, and Left open
+// says which planned scripts had none complete, in the approved sentences. A run with no execution record says neither.
+// Every term is invented.
+test("the local-script row names the scripts searched, and Left open names those with no completed search", () => {
+  const v = (html, k) => (html.match(new RegExp(`<span class="k">${k}</span><span class="v">([\\s\\S]*?)</span></div>`)) || [])[1] ?? null;
+  const page = (scripts) => renderHtml(parsedOf(REPORT), [], [], { searchDepth: { counts: { localScripts: scripts } } });
+  const partial = page({ searched: ["Hang", "Kana"], missed: ["Cyrl", "Grek"] });
+  assert.equal(v(partial, "Local-script spellings"), "Katakana and Hangul");
+  assert.match(partial, /<div class="rk">Left open<\/div>[\s\S]*<div class="ct">Local-script spellings <span class="cst">· Not searched<\/span><\/div><div class="cd">No search in Greek or Cyrillic script was completed\.<\/div>/);
+  // Every script searched: the row names them, and nothing is left open for them.
+  const whole = page({ searched: ["Kana"], missed: [] });
+  assert.equal(v(whole, "Local-script spellings"), "Katakana");
+  assert.doesNotMatch(whole, /No search in .* script was completed/);
+  // None completed: the row says not searched, and Left open names the one planned.
+  const none = page({ searched: [], missed: ["Hang"] });
+  assert.equal(v(none, "Local-script spellings"), "Not searched");
+  assert.match(none, /No search in Hangul script was completed\./);
+  // No execution record: no row, and nothing left open for the scripts.
+  const old = renderHtml(parsedOf(REPORT), [], [], { searchDepth: { counts: { localScripts: null } } });
+  assert.equal(v(old, "Local-script spellings"), null);
+  assert.doesNotMatch(old, /script was completed/);
+  // Every script the record can name has a name: one invented term in each, all completed.
+  const terms = ["沃塔", "ぼるた", "ボルタ", "볼타", "ΒΟΛΤΑ", "ВОЛТА", "فولتا", "וולטה", "โวลตา", "वोल्टा"];
+  const all = localScripts({ entries: terms.map((term, i) => ({ qid: `q${i}`, term })) }, { executed: terms.map((_, i) => ({ qid: `q${i}`, state: "enumerated" })) });
+  assert.equal(all.searched.length, 10);
+  assert.equal(v(page(all), "Local-script spellings"), "Han, Hiragana, Katakana, Hangul, Greek, Cyrillic, Arabic, Hebrew, Thai and Devanagari");
+});
+
+// ONE LIST OF LEFT OPEN ROWS for every surface that prints it. The page draws exactly the rows `leftOpenRows` returns:
+// the open coverage rows, a follow-up row another open row restates left out, a clean row left out, and the script row.
+test("the Left open grid is drawn from leftOpenRows, so a delivered document can print the same rows", () => {
+  const coverage = [
+    { area: "Register / exact word in class 9", state: "confirmed-clean", note: "Searched; nothing in the way." },
+    { area: "the English word DOLPHIN as a dedicated exact search", state: "open", note: "Not reached this run." },
+    { area: "Follow-up / dolphin", state: "open", note: "dolphin — not completed this run — the search for it was planned and never reached the register" },
+    { area: "Owner portfolio", state: "coverage-limited", note: "The owner's newer filings were not all read." },
+  ];
+  const localScripts = { searched: ["Kana"], missed: ["Hang"], territories: {} };
+  const rows = leftOpenRows({ coverage, localScripts });
+  assert.deepEqual(rows.map((r) => r.area), ["the English word DOLPHIN as a dedicated exact search", "Owner portfolio", "Local-script spellings"]);
+  assert.deepEqual(rows[2], { area: "Local-script spellings", state: "not-searched", note: "No search in Hangul script was completed." });
+  const html = renderHtml(parsedOf(REPORT), [], coverage, { searchDepth: { counts: { localScripts } } });
+  assert.ok(html.includes(`<div class="openrows"><div class="rk">Left open</div>${coverageGrid(rows)}</div>`), "the page draws the function's rows");
+  assert.deepEqual(leftOpenRows({ coverage: [coverage[0]], localScripts: null }), [], "a clean run with no execution record leaves nothing open");
+});
+
+// A SCRIPT SEARCHED IN ONE PLACE AND NOT IN ANOTHER (design, 2026-11-19): one Left open row per distinct gap, in the
+// approved sentences, from a plan and an execution record built for each shape. The record is read by localScripts.
+test("a script searched in one place and not in another is left open in the approved words, one row per gap", () => {
+  const v = (html, k) => (html.match(new RegExp(`<span class="k">${k}</span><span class="v">([\\s\\S]*?)</span></div>`)) || [])[1] ?? null;
+  const run = (plan, done) => localScripts(plan, { executed: plan.entries.map((e) => ({ qid: e.qid, state: done.includes(e.qid) ? "enumerated" : "incomplete" })) });
+  const notes = (ls) => leftOpenRows({ localScripts: ls }).map((r) => (r.detail ? [r.note, r.detail] : r.note));
+  const page = (ls) => renderHtml(parsedOf(REPORT), [], [], { searchDepth: { counts: { localScripts: ls } } });
+  // A named gap: one territory, and up to three named in place, with the article English gives a territory.
+  const one = run({ entries: [{ qid: "j", term: "볼타리스", regions: ["JP"] }, { qid: "k", term: "볼타리스", regions: ["KR"] }] }, ["j"]);
+  assert.deepEqual(notes(one), ["No search in Hangul script was completed in South Korea."]);
+  const three = run({ entries: [{ qid: "j", term: "볼타리스", regions: ["JP"] }, { qid: "k", term: "볼타리스", regions: ["US", "KR", "EM"] }] }, ["j"]);
+  assert.deepEqual(notes(three), ["No search in Hangul script was completed in the European Union, South Korea or the United States."]);
+  // A long list: four or more counted after normalisation, and every one named in the row's detail.
+  const long = run({ entries: [{ qid: "j", term: "ボルタリス", regions: ["JP"] }, { qid: "r", term: "ボルタリス", regions: ["KR", "CN", "TW", "EM", "euipo", "GB"] }] }, ["j"]);
+  assert.deepEqual(notes(long), [["No search in Katakana script was completed in 5 planned territories.", ["China", "European Union", "South Korea", "Taiwan", "United Kingdom"]]]);
+  const longPage = page(long);
+  assert.match(longPage, /<div class="cd">No search in Katakana script was completed in 5 planned territories\.<\/div><div class="cd">China, European Union, South Korea, Taiwan, United Kingdom<\/div>/);
+  // A worldwide gap, positively stamped by the plan: its own sentence, and the narrower places that completed are named
+  // under What was searched.
+  const world = ["JP", "KR", "CN", "US"];
+  const ww = run({ scope_basis: "worldwide", regions: world, entries: [{ qid: "w", term: "볼타리스", regions: world }, { qid: "k", term: "볼타리스", regions: ["KR"] }] }, ["k"]);
+  assert.deepEqual(notes(ww), ["The planned worldwide search in Hangul script did not complete."]);
+  assert.equal(v(page(ww), "Local-script spellings"), "Hangul (South Korea)");
+  // The same four territories on a plan with no stamp are named territories, not a worldwide search.
+  const unstamped = run({ regions: world, entries: [{ qid: "w", term: "볼타리스", regions: world }, { qid: "k", term: "볼타리스", regions: ["KR"] }] }, ["k"]);
+  assert.deepEqual(notes(unstamped), ["No search in Hangul script was completed in China, Japan or the United States."]);
+  // A planned search whose territory was not recorded: no territory is guessed.
+  const unrecorded = run({ entries: [{ qid: "u", term: "ΒΟΛΤΑΡΙΣ" }, { qid: "g", term: "ΒΟΛΤΑΡΙΣ", regions: ["GR"] }] }, ["g"]);
+  assert.deepEqual(notes(unrecorded), ["A planned search in Greek script did not complete. Its territory was not recorded."]);
+  assert.equal(v(page(unrecorded), "Local-script spellings"), "Greek");
+  // One row per distinct gap, and the approved sentence stays for a script with no completed search anywhere. A term
+  // with no territory on a stamped plan is asked the plan's whole list: it is the worldwide search, not a second gap.
+  const mixed = run({ scope_basis: "worldwide", regions: world, entries: [
+    { qid: "w", term: "볼타리스", regions: world }, { qid: "k", term: "볼타리스", regions: ["KR"] }, { qid: "j", term: "볼타리스", regions: ["JP"] },
+    { qid: "u", term: "볼타리스" }, { qid: "c", term: "ВОЛТАРИС", regions: ["KR"] },
+  ] }, ["k"]);
+  assert.deepEqual(notes(mixed), [
+    "No search in Cyrillic script was completed.",
+    "No search in Hangul script was completed in Japan.",
+    "The planned worldwide search in Hangul script did not complete.",
+  ]);
+  // A worldwide search that completed, with a term asked the same list for want of its own, leaves no row.
+  const covered = run({ scope_basis: "worldwide", regions: world, entries: [{ qid: "w", term: "볼타리스", regions: world }, { qid: "u", term: "볼타리스" }] }, ["w"]);
+  assert.deepEqual(notes(covered), []);
+  assert.equal(v(page(covered), "Local-script spellings"), "Hangul");
 });

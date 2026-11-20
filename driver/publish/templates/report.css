@@ -418,7 +418,7 @@
      and owner anchor it, the jurisdictions/classes sit quiet, and the finding's own sentence takes the
      remaining width and wraps rather than truncating. Denser than .rgroup because these are cleared
      items — a reader scans them and stops at the one that surprises. */
-  .rn{margin-bottom:7px}
+  .rn{margin-bottom:7px;scroll-margin-top:70px}
   .rn>summary{align-items:baseline;flex-wrap:wrap;padding:10px 18px;gap:8px}
   .rn-mark{font-weight:900;font-size:14px;letter-spacing:-.01em}
   .rn-who{font-size:12px;color:var(--slate)}

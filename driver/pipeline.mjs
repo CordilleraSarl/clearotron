@@ -30,7 +30,8 @@ import { DISPATCH_SUFFIX } from "./dispatch-record.mjs";   // a stage that was d
 import { REVIEWER_OPEN_QUESTIONS_FILE } from "./reviewer-open-points.mjs";   // the run-record file the reviewer's open points go to, and the only thing that reads them now
 import { goodsOf } from "./queue-markers.mjs";   // — one reading of "does this job name goods", shared with the intake gate
 import { fileURLToPath } from "node:url";
-import { runStage, draftCarryEligible, toolWrittenArtifact, selectEngine, saidBackOnly } from "./gateway.mjs";
+import { draftCarryEligible, toolWrittenArtifact, selectEngine, saidBackOnly } from "./gateway.mjs";
+import { journalStageInputs, keepPriorOutput, runLaneStage } from "./stage-runner.mjs";   // the one stage skeleton both lanes run through
 // — the arm's TOOL WIRING, for its context receipt. Read through the same two functions the
 // gateway dispatches with, never re-derived: a receipt that described a second computation would be
 // describing a dispatch that did not happen.
@@ -204,7 +205,7 @@ import { recordedScopeLedgerRows } from "./clearance-variants-record.mjs";
 import { renderFormNeighbourhoodJson, parseFormNeighbourhoodJson, dispatchedQueriesFromBand, formGapDirectives, markText } from "./form-neighbourhood.mjs"; import { loadOrdinaryWords } from "./ordinary-words.mjs";
 import { createRepairLedger, retryCannotHelpWith, isContentShapedFail, isFallbackEligible } from "./repairs.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
-import { isCancelled } from "./cancel.mjs";   // stop-by-user: a distinct class, never classified as a failure; isCancelled is the resume door's own refusal (2155)
+import { isCancelled, stopsWithTheRun } from "./cancel.mjs";   // stop-by-user: a distinct class, never classified as a failure; isCancelled is the resume door's own refusal
 import { reachableCommand } from "../shared/invocation.mjs";   // — a printed command the reader can type later, from anywhere
 export { StageFailure, buildFailurePacket, isDesignedRefusal, stageWallFields, terminalReasonFields };   // moved to run-outcome.mjs; importers read them here as before
 export { correctionReading, correctionRows, flagOrdinals, recordCorrectionsBasis, repairUnnamedRemovals, rollbackCorrectivePass };   // moved to steps/corrections.mjs; importers read them here as before
@@ -2761,7 +2762,7 @@ async function verifyAndRecordHouseElement(ctx, opts = {}) {
     // "verified by owner, not asserted" means — there is no owner-predicate listing on this interface
     // and inventing one would be a second way to ask the same question.
     const lookup = typeof rec.list !== "function" ? null : async ({ element, classes: cls }) => {
-      const r = await rec.list(element, { classes: cls, regions, limit: 50 });
+      const r = await stopsWithTheRun(P.runDir, "own-registrations", rec.list)(element, { classes: cls, regions, limit: 50 });
       if (!r || r.ok === false) return { ok: false, reason: String(r?.reason ?? "the register listing did not answer") };
       return { ok: true, records: Array.isArray(r.records) ? r.records : [] };
     };
@@ -5253,19 +5254,23 @@ function stageWasDispatched(runDir, label) {
 }
 
 async function stageOnce(name, ctx, opts = {}) {
-  const def = STAGES[name];
-  if (!def) throw new Error(`unknown stage ${name}`);
+  return runLaneStage(CLEARANCE_LANE, name, ctx, opts);
+}
+
+/**
+ * One clearance dispatch, as the shared stage runner runs it (stage-runner.mjs). The runner owns the skeleton both
+ * lanes share; everything below is the clearance's own and is reached by no Knockout stage: `--from` and forced
+ * reruns, the floor duty that blocks a skip, the winning attempt recovered on a skip, the output contract and the
+ * placement form, the follow-up, carried draft and refresh message, the model tiers and their check, the time limit
+ * derived from the band and its ceiling refusal, and the document-growth trip.
+ */
+function clearanceDispatch(def, name, ctx, opts) {
   const P = ctx.paths;
   const out = def.out ? def.out(P, ctx.axis) : undefined;
   const tier = ctx.axis ? axisTier(ctx.axis) : {};
   const label = name + (ctx.axis ? `:${ctx.axis}` : "");
   const model = opts.model ?? def.model ?? tier.model;
-  // — the stage's own start, captured before ANY work: before the freshness read, before the
-  // snapshot, before the followup composition, before runStage. Capture it after the await instead and
-  // every field is still present, every presence assertion still passes, and every interval is ~0ms — the
-  // journal would then assert that a 14-minute half took nothing. Only a magnitude or overlap assertion
-  // catches that, which is why the test for this is written as an overlap.
-  const tDispatch = Date.now();
+  const trigger = opts.trigger ?? "fresh";
 
   // crash-resume / idempotency: skip if the output already exists and validates — unless explicitly forced or
   // selected by --from. `--from X` re-runs X..end even when their outputs are still valid.
@@ -5276,133 +5281,107 @@ async function stageOnce(name, ctx, opts = {}) {
   // declared, already logged per stage; this consults it. Keyed on CONTENT, so a pure crash-resume (no
   // input bytes changed) still skips exactly as cheaply as before.
   const declaredInputs = () => stageInputs(name, P, { axes: ctx.axes, axis: ctx.axis, registerOnly: ctx.registerOnly });
-  // AN OUTPUT ITS STAGE MADE WITH NO RECORD OF WHAT IT READ IS NOT REUSED, as in the Knockout. A stage records what it
-  // read when it succeeds, so where the stage itself was dispatched and its output has no record, the stage stopped
-  // between writing the output and recording it, or ran before the record existed. Its freshness is unknown, so the
-  // stage runs again. The register answers it holds are not bought again: the executor reuses every answer the run
-  // holds to the same question. An output another step wrote, as the merge of the research halves writes the whole
-  // research output, was never this stage's to record, and is reused as before.
-  const unrecorded = !forced && Boolean(out) && existsSync(out) && !readStamp(P.runDir, label) && stageWasDispatched(P.runDir, label);
-  const freshness = forced ? { stale: false, changed: [] }
-    : unrecorded ? { stale: true, reason: "no record of the inputs it was produced from", changed: [] }
-    : stageStaleness(P.runDir, label, declaredInputs());
-  if (freshness.stale) {
-    const why = freshness.changed.map((c) => `${c.name} ${c.was ?? "(absent)"}→${c.now ?? "(absent)"}`).join(", ");
-    runLog(P.runDir, { event: "stage-stale", stage: label, changed: freshness.changed, ...(freshness.reason ? { reason: freshness.reason } : {}) });
-    note(freshness.reason ? `[${label}] stale — ${freshness.reason}; recomputing`
-      : `[${label}] stale — ${freshness.changed.length} input(s) changed since this output was produced (${why}); recomputing`);
-  }
-  // ── — AN UNDISCHARGED FLOOR DUTY IS PART OF "VALID" ──────────────────────────
-  //
-  // The stage's own validator and the delivery floor disagreed about one placement pass, and a parked run
-  // fell into the gap: on resume the stage skipped as "present and valid" while the floor called that same
-  // pass's duty undischarged. The seat was never dispatched again, so the duty became permanently
-  // undischargeable and the run spent every remaining stage travelling toward a failure it was already
-  // doomed to. Reconciled toward the stricter side — the predicate lives in floor-duty.mjs and is CALLED,
-  // never copied, so the two judgements cannot drift apart again.
-  const dutyBlocksSkip = !forced && (floorDutyBlocksSkip(P.runDir, name) || floorDutyOwedNow(P, name));
-  if (dutyBlocksSkip) {
-    note(`[${label}] NOT skipped — its floor duty is undischarged, so its output is not valid to reuse; `
-      + "re-running so the seat can place the outstanding floor(s) or name them with a ground "
-      + "(the placement form unions, so nothing already answered is lost)");
-    runLog(P.runDir, { event: "stage-floor-duty-rerun", stage: label });
-  }
-  if (!forced && !dutyBlocksSkip && !freshness.stale && out && existsSync(out) && outputStands(def, out)) {
-    // recover the winning key + served model so a later warm-resume (corrective re-synthesis / verdict re-check)
-    // targets the attempt that ACTUALLY produced this output, not the base key on the primary model.
-    const won = recoverWinningAttempt(P.runDir, label);
-    note(`[${label}] skip — output already present and valid`);
-    // outputMeta, NOT fileMeta (post-merge audit N2). `get_run` folds `stage` and `skip` rows into ONE
-    // stages[] list, and server.mjs states that surface's contract unqualified: an absent output arrives
-    // as {present:false}. A skip row written through fileMeta carried no `present` key at all — so a reader
-    // holding the stated contract read `output.present === undefined` → falsy → "not produced" for an
-    // artifact that is on disk AND passed its validator (which is the entire reason this branch ran).
-    // It bites hardest on a RESUME after a recovery park or a rate-limit postpone, where most rows are
-    // skips — i.e. on the babysit surface, in the middle of the shift where someone is watching it.
-    runLog(P.runDir, { event: "skip", stage: label, trigger: "skip", model: won?.model ?? resolveModel(model), output: outputMeta(out), ...stageWallFields(tDispatch) });
-    (ctx.skippedStages ??= []).push(label);   // V4-1: the lint receipt states which artifacts this delivery inherited
-    recordTransition(ctx, name);   // advance the displayed step on resume too (monotonic; an unmapped stage records what it is, and moves no step)
-    // `won ? won.key : …` (NOT `won?.key ?? …`): a recovered CODE-SIDE winner carries key:null on purpose —
-    // falling back to opts.sessionKey there would re-mint the phantom session the null exists to suppress.
-    return { ok: true, skipped: true, sessionKey: won ? won.key : opts.sessionKey, model: won?.model ?? model };
-  }
+  // The register picture the dispatch is handed, taken as it is composed (below) and journalled on its row.
+  let derivedState = [];
+  return {
+    runDir: P.runDir, label, out, trigger,
+    selector: resolveModel(model),
+    // The caller's word that this is a followup: a FRESH session (A-1), journalled on the row beside `warm`.
+    followup: opts.followup != null,
+    stageInputs: declaredInputs,
+    freshness: () => {
+      // AN OUTPUT ITS STAGE MADE WITH NO RECORD OF WHAT IT READ IS NOT REUSED, as in the Knockout. A stage records what it
+      // read when it succeeds, so where the stage itself was dispatched and its output has no record, the stage stopped
+      // between writing the output and recording it, or ran before the record existed. Its freshness is unknown, so the
+      // stage runs again. The register answers it holds are not bought again: the executor reuses every answer the run
+      // holds to the same question. An output another step wrote, as the merge of the research halves writes the whole
+      // research output, was never this stage's to record, and is reused as before.
+      const unrecorded = !forced && Boolean(out) && existsSync(out) && !readStamp(P.runDir, label) && stageWasDispatched(P.runDir, label);
+      return forced ? { stale: false, changed: [] }
+        : unrecorded ? { stale: true, reason: "no record of the inputs it was produced from", changed: [] }
+        : stageStaleness(P.runDir, label, declaredInputs());
+    },
+    reusable: (freshness) => {
+      // ── — AN UNDISCHARGED FLOOR DUTY IS PART OF "VALID" ──────────────────────────
+      //
+      // The stage's own validator and the delivery floor disagreed about one placement pass, and a parked run
+      // fell into the gap: on resume the stage skipped as "present and valid" while the floor called that same
+      // pass's duty undischarged. The seat was never dispatched again, so the duty became permanently
+      // undischargeable and the run spent every remaining stage travelling toward a failure it was already
+      // doomed to. Reconciled toward the stricter side — the predicate lives in floor-duty.mjs and is CALLED,
+      // never copied, so the two judgements cannot drift apart again.
+      const dutyBlocksSkip = !forced && (floorDutyBlocksSkip(P.runDir, name) || floorDutyOwedNow(P, name));
+      if (dutyBlocksSkip) {
+        note(`[${label}] NOT skipped — its floor duty is undischarged, so its output is not valid to reuse; `
+          + "re-running so the seat can place the outstanding floor(s) or name them with a ground "
+          + "(the placement form unions, so nothing already answered is lost)");
+        runLog(P.runDir, { event: "stage-floor-duty-rerun", stage: label });
+      }
+      if (!forced && !dutyBlocksSkip && !freshness.stale && out && existsSync(out) && outputStands(def, out)) return true;
+      return false;
+    },
+    reused: () => {
+      // recover the winning key + served model so a later warm-resume (corrective re-synthesis / verdict re-check)
+      // targets the attempt that ACTUALLY produced this output, not the base key on the primary model.
+      const won = recoverWinningAttempt(P.runDir, label);
+      (ctx.skippedStages ??= []).push(label);   // V4-1: the lint receipt states which artifacts this delivery inherited
+      // `won ? won.key : …` (NOT `won?.key ?? …`): a recovered CODE-SIDE winner carries key:null on purpose —
+      // falling back to opts.sessionKey there would re-mint the phantom session the null exists to suppress.
+      return { model: won?.model ?? resolveModel(model),
+        result: { ok: true, skipped: true, sessionKey: won ? won.key : opts.sessionKey, model: won?.model ?? model } };
+    },
+    beforeDispatch: () => {
+      // The stage is DISPATCHING (never on the skip): record the output contract this code's prompt
+      // holds the artifact to, BEFORE the model runs, so a crash mid-stage still re-validates the partial
+      // output under the rules it is being minted under. See recordStageContract's doc block.
+      if (def.contract) recordStageContract(P.runDir, name, def.contract);
+      // — THE PLACEMENT FORM IS ON DISK BEFORE THE SEAT IS ASKED ANYTHING, and it is written at the SAME
+      // choke point every dispatch funnels through: the main path, the stale-repair path and the frame-reopen
+      // path all reach the seat through here, and three separate pre-dispatch writes would be three chances
+      // to disagree about what the seat was handed.
+      //
+      // ORDER MATTERS AND IT IS THE FAIL-CLOSED WAY ROUND (the lesson): the era stamp lands first, above,
+      // so a form write that fails leaves a stamp saying a form was required and no form to fill — a named,
+      // loud state — rather than no stamp at all, which would silently disarm the whole arm on exactly the
+      // run it governs.
+      //
+      // A re-dispatch re-unions rather than blanking: the prior accumulator is the input, so the seat opens
+      // the file already holding every tier it has placed so far, and a cold retry starts from the work
+      // rather than from nothing. That is the R1 cure, one dispatch earlier than the wall rescue.
+      if (name === "placement-inquiry" && def.contract?.placementForm) {
+        try {
+          const input = readPlacementFormInput(P.runDir);
+          const priorForm = readPlacementForm(P.runDir);
+          const u = unionPlacementForm({ rows: priorForm.rows, set_aside: priorForm.set_aside }, null, input);
+          writePlacementForm(P.runDir, u.form);
+          runLog(P.runDir, { event: "placement-form-written", trigger, rows: u.total,
+            settled: u.settled, carried: u.carried, seatRows: u.seat_rows, unresolved: u.unresolved, setAside: u.set_aside,
+            selectable: u.form.generated_from?.selectable_records ?? null });
+        } catch (e) {
+          note(`placement-form write failed: ${e.message} — the stamp is already armed, so the absence is loud rather than silent`);
+        }
+      }
+    },
+    // PR-4 (compute-don't-author, D5) — the prior output lands in _history/<ts>-<trigger>/ before every in-place
+    // overwrite (corrective / followup / escalation / frame-reopen / lint-repair / verdict-recheck / coverage-closure /
+    // envelope / stale-repair / …), and compare.mjs starts working the moment history is populated. The 2026-07-28
+    // postmortem run's superseded narrative drafts were UNRECOVERABLE — only sizes/shas survived in telemetry. Never for
+    // a shadowed --experiment: its ctx.paths already point at the sandbox, and the canonical run must stay byte-identical.
+    snapshot: trigger === "experiment" ? null : (reason) => snapshotOutputs(ctx, name, reason),
+    dispatch: () => clearanceRunStageOptions({ def, name, ctx, opts, out, tier, label, model, trigger, keepDerivedState: (d) => { derivedState = d; } }),
+    rowExtra: () => (derivedState.length ? { derivedState } : {}),
+    // P2 — record WHAT this output was produced from, so a later resume can tell whether it still holds.
+    stamp: () => { if (out) writeStamp(P.runDir, label, declaredInputs(), { project: projectStageInput }); },
+    after: (r, { priorSize }) => documentGrowthTrip({ r, P, out, label, trigger, priorSize }),
+    result: (r) => ({ ...r, model }),
+  };
+}
 
-  // The stage is DISPATCHING (never on the skip above): record the output contract this code's prompt
-  // holds the artifact to, BEFORE the model runs, so a crash mid-stage still re-validates the partial
-  // output under the rules it is being minted under. See recordStageContract's doc block.
-  if (def.contract) recordStageContract(P.runDir, name, def.contract);
+const CLEARANCE_LANE = { stages: STAGES, prepare: clearanceDispatch };
 
-  // ── AND RECORD THAT THE RUN IS IN IT, AT THE SAME MOMENT ───────────────────────────────────────────
-  //
-  // The displayed step advanced only where a stage SUCCEEDED, so a run inside a stage that takes minutes
-  // read as being in the previous one for the whole of it — a resumed run entered placement at 10:05Z and
-  // still showed "Register sweeps" at 10:10Z, which reads as the run having gone backwards. Nothing
-  // durable said a stage had STARTED: every stage record is written at completion, and the one start-time
-  // signal goes to stderr and never reaches the trace. So no reader could derive it either.
-  //
-  // Here rather than at the dispatch below, because this is the line that already declares the stage is
-  // dispatching, and every mutating path — corrective, followup, escalation, frame-reopen, stale-repair,
-  // verdict-recheck — funnels through it. One declaration of entry, for the contract record and the
-  // status alike.
-  //
-  // Safe against the two things that look like it should not be. `writeRunStatus` keeps the furthest step
-  // ever reached, so an escalation re-run mapping to an earlier stage still cannot pull the stepper back;
-  // and the bare `name` is passed exactly as the success path passes it, so a fan-out's axes go on
-  // collapsing to one display step.
-  recordTransition(ctx, name);
-
-  // — THE PLACEMENT FORM IS ON DISK BEFORE THE SEAT IS ASKED ANYTHING, and it is written at the SAME
-  // choke point every dispatch funnels through: the main path, the stale-repair path and the frame-reopen
-  // path all reach the seat through here, and three separate pre-dispatch writes would be three chances
-  // to disagree about what the seat was handed.
-  //
-  // ORDER MATTERS AND IT IS THE FAIL-CLOSED WAY ROUND (the lesson): the era stamp lands first, above,
-  // so a form write that fails leaves a stamp saying a form was required and no form to fill — a named,
-  // loud state — rather than no stamp at all, which would silently disarm the whole arm on exactly the
-  // run it governs.
-  //
-  // A re-dispatch re-unions rather than blanking: the prior accumulator is the input, so the seat opens
-  // the file already holding every tier it has placed so far, and a cold retry starts from the work
-  // rather than from nothing. That is the R1 cure, one dispatch earlier than the wall rescue.
-  if (name === "placement-inquiry" && def.contract?.placementForm) {
-    try {
-      const input = readPlacementFormInput(P.runDir);
-      const priorForm = readPlacementForm(P.runDir);
-      const u = unionPlacementForm({ rows: priorForm.rows, set_aside: priorForm.set_aside }, null, input);
-      writePlacementForm(P.runDir, u.form);
-      runLog(P.runDir, { event: "placement-form-written", trigger: opts.trigger ?? "fresh", rows: u.total,
-        settled: u.settled, carried: u.carried, seatRows: u.seat_rows, unresolved: u.unresolved, setAside: u.set_aside,
-        selectable: u.form.generated_from?.selectable_records ?? null });
-    } catch (e) {
-      note(`placement-form write failed: ${e.message} — the stamp is already armed, so the absence is loud rather than silent`);
-    }
-  }
-
-  // PR-4 (compute-don't-author, D5) — snapshot-before-overwrite at THE stage choke point. Every mutating
-  // path funnels through here (corrective / followup / escalation / frame-reopen / lint-repair /
-  // verdict-recheck / coverage-closure / envelope / stale-repair / …), so ONE call site covers every
-  // in-place overwrite: the prior output lands in _history/<ts>-<trigger>/ and compare.mjs starts working
-  // the moment history is populated. The 2026-07-28 postmortem run's superseded narrative drafts were UNRECOVERABLE — only
-  // sizes/shas survived in telemetry. Never fires for a shadowed --experiment (its ctx.paths already point
-  // at the sandbox, and the canonical run must stay byte-identical anyway).
-  const trigger = opts.trigger ?? "fresh";
-  let priorSize = null;
-  //: the gate used to be (forced || freshness.stale), which excluded the ONE path that reaches a
-  // dispatch with an output already on disk and no snapshot — a re-dispatch over a PRESENT BUT INVALID
-  // artifact. A stage that never passed writes no freshness stamp, so it is never "stale"; that is the
-  // recovery-park case, and it is exactly where the superseded draft was worth keeping. It is why the
-  // run this issue was filed from has no _history/ at all and its 1-violation draft exists nowhere.
-  // Reaching this line means the skip at the top did NOT fire, so the condition below is now complete.
-  if (out && existsSync(out) && trigger !== "experiment") {
-    try { priorSize = statSync(out).size; } catch { /* best-effort */ }
-    const reason = trigger === "fresh" ? "stale-recompute" : trigger;
-    const snap = snapshotOutputs(ctx, name, reason);
-    if (snap) {
-      ctx.lastSnapshot = snap;
-      runLog(P.runDir, { event: "output-snapshot", stage: label, trigger: reason, snapshot: basename(snap) });
-    }
-  }
-
+/** The `runStage` options of one clearance dispatch, composed after its output was copied aside. May throw the ceiling refusal. */
+function clearanceRunStageOptions({ def, name, ctx, opts, out, tier, label, model, trigger, keepDerivedState }) {
+  const P = ctx.paths;
   const keyAxis = ctx.axis ? `-${ctx.axis}` : "";
   // A-1 — followup/freshMessage COMPOSE, they no longer REPLACE.
   //
@@ -5424,7 +5403,8 @@ async function stageOnce(name, ctx, opts = {}) {
   //: a caller-supplied followup/freshMessage always wins — the in-run remedies (the connotation
   // merge gate, coverage closure, frame reopen) carry a warm session and a better-targeted correction.
   // The carry fills the gap BEHIND them: a cold re-dispatch that would otherwise re-commission the stage
-  // from def.message(ctx) and throw away everything the parked cycle achieved.
+  // from def.message(ctx) and throw away everything the parked cycle achieved. It runs AFTER the snapshot,
+  // because it may restore a better draft over the output.
   // — WHAT THIS RUN HAS ALREADY CORRECTED FOR THIS SEAT. Read from `_driver/<seat>.jsonl`, the
   // same per-attempt record the acceptance criterion is written against, so the fix and its test
   // bind to one authority. Best-effort by construction: no log, an unreadable log or a damaged line
@@ -5492,8 +5472,8 @@ async function stageOnce(name, ctx, opts = {}) {
     inputBytes: derivedLimit.inputBytes, derivedLimitSec: derivedLimit.sec, basis: derivedLimit.basis });
   // The register picture this dispatch is handed, by content (derived-state.mjs), so a replay can tell whether it is
   // handed the same one. Never throws; [] when the stage's context reaches no derivation.
-  const derivedState = derivedStateOf(name, P, { axes: ctx.axes, axis: ctx.axis, registerOnly: ctx.registerOnly });
-  const r = await runStage(label, {
+  keepDerivedState(derivedStateOf(name, P, { axes: ctx.axes, axis: ctx.axis, registerOnly: ctx.registerOnly }));
+  return {
     agent: execAgent,
     message,
     model,
@@ -5535,81 +5515,24 @@ async function stageOnce(name, ctx, opts = {}) {
     // The correction this dispatch is, when it is one: its save may add the finding for an excluded position its flags
     // name. Only the correction's own dispatches carry it.
     ...(opts.correction ? { correction: opts.correction } : {}),
-  });
-  // run.jsonl "stage" event carries the input→output LINKAGE telemetry (what this stage handed downstream),
-  // the WHY (trigger), and the model — the per-attempt execution detail (wall/status/usage) is in _driver/<stage>.jsonl.
-  // AD-4 (instrumentation house rule) additions, each three-valued so "did not happen" never reads as
-  // "not recorded":
-  //   inputs[].read — `inputs` is what the stage was OFFERED (its declared contract); `read` says whether
-  //     the settled turn actually OPENED that file. See journalStageInputs for the three-valued rule and why
-  //     a WARM PATCH or a capped gauge must journal null rather than a manufactured false.
-  //     A followup does NOT (A-1): like opts.freshMessage, it is a standalone message on a fresh session,
-  //     so its declared inputs genuinely were offered and `false` is earned. `followup` is still journalled
-  //     on the row beside `warm` — `followup` is what the CALLER asked for, `warm` is what the gateway's
-  //     retry ladder did with it, and neither implies the other — but only `warm` now suppresses the gauge.
-  //   output — UNCONDITIONAL and three-valued via outputMeta (log.mjs): null = the stage declares no output;
-  //     {present:false} = expected and NOT on disk; {present:true,sha,size} = what landed. It was fileMeta,
-  //     which fabricated a {sha:null,size:0} record for an artifact that never existed.
-  //   outputWritten — whether THIS dispatch emitted it (false = landed but inherited; null = not observed).
-  const followupDispatch = opts.followup != null;
-  runLog(P.runDir, {
-    event: "stage", stage: label, trigger: opts.trigger ?? "fresh",
-    // — THE MODEL THAT RAN, not the one that was assigned. This wrote `resolveModel(model)`, the
-    // ASSIGNED alias resolved through the Anthropic-shaped catalog, so a codex run's skim line read
-    // `anthropic/claude-sonnet-5` while the attempt row milliseconds away said `gpt-5.6-sol`. The truthful
-    // values were never missing — they sat one file away in the attempt records — so this is a wiring gap,
-    // not a measurement gap, and it made a whole round read as Anthropic once.
-    //
-    // Precedence is deliberate: the WIRE's word first (what the provider says it ran), the engine's own
-    // resolver second (what was asked of it, resolved by the engine that owns the vocabulary), and the
-    // catalog alias only as the last resort — which is the legacy value, so a path that reports neither
-    // is exactly as informative as before and never less.
-    ok: r.ok, attempts: r.attempts, fail: r.fail,
-    model: r.modelWire ?? r.modelUsed ?? resolveModel(model),
-    // — THE SELECTOR, kept separate from the truth. `model` answers "what ran", in the provider's
-    // own vocabulary; this answers "what would re-spawn the writer", in the catalog's. One field cannot
-    // be both, and the attempt that made it try is what reddened WS1b.
-    //
-    // Measured, and it narrows what this is for: `recoverWinningAttempt` reads the ATTEMPT telemetry
-    // (`_driver/<stage>.jsonl`, `modelUsed ?? model`) and has never read this event, so no resume was
-    // ever steered by the field above. This is written so a FUTURE reader of the stage row has the
-    // selector without having to join another file — and so that `<selector> ?? model` is a real
-    // fallback for pre-change artifacts rather than a promise.
-    modelSelector: resolveModel(model),
-    inputs: journalStageInputs(stageInputs(name, P, { axes: ctx.axes, axis: ctx.axis, registerOnly: ctx.registerOnly }),
-      { reads: r.reads, followup: followupDispatch, readsTruncated: r.readsTruncated, warm: r.warm }),
-    // written unconditionally so the nulls above are self-explaining: a reader never has to join another
-    // file to learn WHY this row's `read` flags are null. `warm` joins them for the same reason — without
-    // it a warm-patch row's nulls would send the reader to _driver/<stage>.jsonl to find out why, which is
-    // exactly the join this trio exists to remove.
-    followup: followupDispatch,
-    readsTruncated: r.readsTruncated ?? null,
-    warm: r.warm ?? null,
-    ...(derivedState.length ? { derivedState } : {}),
-    output: out ? outputMeta(out) : null,
-    outputWritten: r.wrote ?? null,
-    summary: r.json?.summary,
-    ...stageWallFields(tDispatch),   // — the wall boundaries, so a wave member's cost is a fact
-  });
-  // P2 — record WHAT this output was produced from, so a later resume can tell whether it still holds.
-  if (r.ok && out) writeStamp(P.runDir, label, stageInputs(name, P, { axes: ctx.axes, axis: ctx.axis, registerOnly: ctx.registerOnly }), { project: projectStageInput });
-  // Re-asserted on success, and no longer the only advance: entry records the same transition above, so
-  // this is what re-states the stage after a fan-out's concurrent axes have each written their own.
-  if (r.ok) recordTransition(ctx, name);   // bare name → fan-out axes collapse to one display step (monotonic)
-  // PR-4 — document-growth tripwire, keyed on TRIGGER so it covers BOTH growth loops (the lint-repair
-  // "re-emit the COMPLETE updated file" cycle AND the skeptic/refutation corrective loop — the 2026-07-28 postmortem run's
-  // overview grew 7.1×/6.1× under the first, its narrative 62KB→102KB under the second; a lint-scoped
-  // tripwire would have missed the largest grower). A repair defends or corrects — it does not ADD: growth
-  // beyond 35% or 20KB over the prior output is a document-growth-trip event that joins the
-  // reasoning-integrity tripFlags (internal observability). It NEVER withholds delivery (reasoning-
-  // tripwires posture: a trip forces the delivered status to carry the gap, nothing more).
-  // What a trip MEANS changed when the corrective prompts moved to targeted edits (repair-contract.mjs):
-  // a repair-shaped trigger — lint-repair, the corrective followups, a settlement flush — now instructs the
-  // model to patch the lines the correction names and leave every other line byte-identical, so a document
-  // that grows past these thresholds under one of them is evidence the edit direction was ignored and the
-  // file retyped whole. That is a regression to alarm on, not the known noise it used to be. The triggers
-  // that legitimately ADD are the stated exception (coverage-closure and the frame-reopen source sweep each
-  // append a Negative-results row per variant × channel) and still read as ordinary growth.
+  };
+}
+
+// PR-4 — document-growth tripwire, keyed on TRIGGER so it covers BOTH growth loops (the lint-repair
+// "re-emit the COMPLETE updated file" cycle AND the skeptic/refutation corrective loop — the 2026-07-28 postmortem run's
+// overview grew 7.1×/6.1× under the first, its narrative 62KB→102KB under the second; a lint-scoped
+// tripwire would have missed the largest grower). A repair defends or corrects — it does not ADD: growth
+// beyond 35% or 20KB over the prior output is a document-growth-trip event that joins the
+// reasoning-integrity tripFlags (internal observability). It NEVER withholds delivery (reasoning-
+// tripwires posture: a trip forces the delivered status to carry the gap, nothing more).
+// What a trip MEANS changed when the corrective prompts moved to targeted edits (repair-contract.mjs):
+// a repair-shaped trigger — lint-repair, the corrective followups, a settlement flush — now instructs the
+// model to patch the lines the correction names and leave every other line byte-identical, so a document
+// that grows past these thresholds under one of them is evidence the edit direction was ignored and the
+// file retyped whole. That is a regression to alarm on, not the known noise it used to be. The triggers
+// that legitimately ADD are the stated exception (coverage-closure and the frame-reopen source sweep each
+// append a Negative-results row per variant × channel) and still read as ordinary growth.
+function documentGrowthTrip({ r, P, out, label, trigger, priorSize }) {
   if (r.ok && out && priorSize != null && priorSize > 0 && trigger !== "fresh" && trigger !== "skip") {
     try {
       const afterSize = statSync(out).size;
@@ -5622,7 +5545,6 @@ async function stageOnce(name, ctx, opts = {}) {
       }
     } catch { /* observability only */ }
   }
-  return { ...r, model };
 }
 
 // ── Lane-wedge whole-stage retry (teal-bastion 2026-06-15) ─────────────────────────────────────────
@@ -8550,7 +8472,7 @@ export function fullProseOrdinals(findings) {
     .map((f) => f.ordinal)
     .filter((o) => o != null);
 }
-// ASSEMBLE report.md = the overview shell (front-matter + Actions/Coverage/Methodology) + `# Marks` + the
+// ASSEMBLE report.md = the overview shell (front-matter + Actions) + `# Left open` + `# Marks` + the
 // per-card files in render order (composite desc, ordinal asc — mirrors render.mjs `sortedAll`), `open: true` on the
 // single top card. Findings with no card file (a failed report-card, or a secondary finding) are NOT emitted —
 // render.mjs synthesizes them structured-only from findings.json, so nothing is silently dropped. Pure file IO.
@@ -9349,7 +9271,14 @@ export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRi
   // different grouping key. The negatives grouping is not extended and not touched. Empty on one country
   // (nothing is graded to an entry there), so the assembled bytes are unchanged for product 4.
   const groupedSection = grouped.length ? buildGradedEntriesSection(grouped, { byRight }) : "";
-  writeFileSync(P.report, `${overview}\n\n# Marks\n\n${cards.join("\n\n")}\n`
+  // "LEFT OPEN", the rows the page will draw (left-open-md.mjs), before the cards: the connector serves this file when a
+  // reader's assistant asks for the report, and it listed none of them (design, 2026-11-19). Nothing open draws no
+  // heading. Assembly-time, like the sections above: no stored report.md is rewritten by this.
+  let leftOpen = "";
+  try {
+    if (P.findings && existsSync(P.findings)) leftOpen = leftOpenSectionOfRun(P.runDir, parseFindingsJsonLenient(readFileSync(P.findings, "utf8")).coverage, { already: overview });
+  } catch { /* never-kill: an unreadable record leaves the section out, and the cards still ship */ }
+  writeFileSync(P.report, `${overview}${leftOpen ? `\n\n${leftOpen}` : ""}\n\n# Marks\n\n${cards.join("\n\n")}\n`
     + `${groupedSection ? `\n${groupedSection}\n` : ""}${negatives ? `\n${negatives}\n` : ""}`);
   // PR-9 — fold observability: every fold this assembly performed, persisted for the predelivery lint's
   // flag-only row (and for anyone auditing where the assembly moved words). Overwritten per assembly so
@@ -9515,27 +9444,6 @@ export function parkForRunChoice(e, { job, agent }) {   // @internal
   }
   note(`[pipeline] PARKED ${codename ?? "run"}: ${String(e.message).slice(0, 300)}`);
   return { ok: false, postponed: true, resetsAt: null, parkedFor: e.dependency, codename, runDir };
-}
-
-export function journalStageInputs(paths = [], { reads = null, readsTruncated = null, warm = false } = {}) {   // @internal
-  const readSet = Array.isArray(reads) ? new Set(reads) : null;
-  // A-1 — `followup` was an arm of this predicate and is not any more. It encoded the same false premise
-  // the composer above fixes: that a followup is a resumed session whose files were not re-offered. It is
-  // not. A followup dispatch is a NEW stage() call, i.e. attempt 1, and `resumeRef` is passed only on a
-  // warm retry — so a cold followup's reads gauge is exactly as groundable as a fresh dispatch's, and
-  // nulling it turned "verified unread" into "unknowable" on precisely the dispatches worth measuring.
-  // `warm` STAYS, and it is the arm that was always right: a warm patch resumes the failed session and is
-  // deliberately not re-offered its files, so the turn opening nothing is the normal warm shape rather
-  // than evidence it ignored them. `readsTruncated` stays for the same kind of reason — a capped gauge
-  // would manufacture a `read:false`. The caller still journals `followup` on the row, so a reader can
-  // still split the two populations; it just no longer erases one of them.
-  const unreliable = Boolean(warm) || readsTruncated === true;
-  return paths.map((p) => {
-    const m = fileMeta(p);
-    if (!m) return m;
-    const opened = readSet ? readSet.has(p) : null;
-    return { ...m, read: opened === true ? true : (unreliable ? null : opened) };
-  });
 }
 
 // logTurnaroundReconciliation, the quoted-against-actual row each run ending writes, lives in run-quote.mjs beside
@@ -10432,7 +10340,8 @@ export async function attachJxAim(ctx) {   // @internal
 }
 
 // Copy a stage's about-to-be-overwritten output (+ its per-stage telemetry) into _history/<ts>-<reason>/ so a
-// prior result is NEVER lost and stays comparable. Returns the snapshot dir (or null if there was no output).
+// prior result is NEVER lost and stays comparable. Returns the snapshot dir (or null if there was no output). The copy
+// itself is stage-runner.mjs `keepPriorOutput`, the one the Knockout's stages use too; this names the clearance's files.
 //
 // STRUCTURED SIBLINGS (B2, review 2026-07-31): a stage may declare `outSibs` — machine artifacts written
 // BESIDE its markdown output that downstream stages treat as authoritative. They are snapshotted with the
@@ -10442,23 +10351,9 @@ export async function attachJxAim(ctx) {   // @internal
 // lands with a fresh mtime; removal is deterministic and its failure mode is a loud validator miss.
 function snapshotOutputs(ctx, name, reason) {
   const def = STAGES[name];
-  const out = def?.out ? def.out(ctx.paths, ctx.axis) : null;
-  if (!out || !existsSync(out)) return null;
-  const ts = new Date().toISOString().replace(/[:.]/g, "-");
-  const dest = join(ctx.paths.runDir, "_history", `${ts}-${reason}`);
-  mkdirSync(dest, { recursive: true });
-  copyFileSync(out, join(dest, basename(out)));
-  for (const sib of (def.outSibs ? def.outSibs(ctx.paths, ctx.axis) : [])) {
-    if (!sib || !existsSync(sib)) continue;
-    try {
-      copyFileSync(sib, join(dest, basename(sib)));
-      rmSync(sib, { force: true });   // never leave the prior pass's machine record beside a fresh md
-    } catch (e) { note(`[${name}] sibling snapshot/invalidate failed for ${basename(sib)} (${e.message})`); }
-  }
   const label = name + (ctx.axis ? `:${ctx.axis}` : "");
-  const tel = driverDir(ctx.paths.runDir, `${label}.jsonl`);
-  if (existsSync(tel)) copyFileSync(tel, join(dest, basename(tel)));
-  return dest;
+  return keepPriorOutput({ runDir: ctx.paths.runDir, out: def?.out ? def.out(ctx.paths, ctx.axis) : null,
+    sibs: def?.outSibs ? def.outSibs(ctx.paths, ctx.axis) : [], telemetry: driverDir(ctx.paths.runDir, `${label}.jsonl`), reason, label });
 }
 
 // ── item 15b — the STALE ENTRY POINT ─────────────────────────────────────────────────────────────────
@@ -11802,4 +11697,5 @@ export function reassembleFromTheRecord(P, findings, depth) {   // @internal
 // Hoisted, so placed last: an import at the top would move every line citation into this file.
 import { commandLineRefusal } from "./run-requirements.mjs";
 import { runTables } from "./order-tables.mjs";
+import { leftOpenSectionOfRun } from "./left-open-md.mjs";   // the page's Left open rows, printed into report.md
 import { axisTwin, followUpKinds, kindsForFollowUp } from "./follow-up-twins.mjs";   // when a written row stands in for a Follow-up row, as the page decides

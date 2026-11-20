@@ -52,17 +52,15 @@ const FULL = Object.freeze({
     { text: "Swept marketplace listings for unregistered use across four platforms." },
     { text: "Checked the applicant's own prior rights and confirmed no conflicting earlier filing." },
   ],
-  methodology: "Register search across EUIPO and national registers, plus a common-law sweep.",
   handling_note: "This is a preliminary clearance and not a legal opinion.",
 });
 
-test("a repair that re-sends only the caption keeps the Actions list and the methodology", () => {
+test("a repair that re-sends only the caption keeps the Actions list", () => {
   const d = runDir();
 
   const first = recordReportOverview(d, FULL);
   assert.equal(first.refused, null, `the full fixture no longer validates (${first.refused}) — this arm is planting nothing`);
   assert.equal(first.actions, 3);
-  assert.equal(first.methodology, true);
 
   // THE DEFECT'S OWN SHAPE: the rung asks for a correction, the seat sends the corrected half.
   //
@@ -80,7 +78,6 @@ test("a repair that re-sends only the caption keeps the Actions list and the met
   assert.equal(repaired.refused, null, `the repair call was refused (${repaired.refused}) — preserving must not fail closed`);
   assert.equal(repaired.actions, 3,
     "the Actions list did not survive a caption-only repair — this is the defect, and the client loses the account of what was checked");
-  assert.equal(repaired.methodology, true, "the methodology did not survive a caption-only repair");
 
   // Not "it did not crash" — the rendered file carries the CORRECTION and the PRESERVED content both.
   const body = readFileSync(join(d, PROSE_FILE), "utf8");
@@ -126,15 +123,15 @@ test("a refused call does not become the base a later repair builds on", () => {
 test("an omitted key is 'unchanged'; a deliberately EMPTY one is 'there is none'", () => {
   // The distinction the merge turns on. Collapsing them makes a preserve-merge silently become a
   // replace-merge for any seat that sends an empty value, and vice versa.
-  const stored = { overall_caption: "old", actions: [{ text: "kept" }], methodology: "m", handling_note: "h" };
+  const stored = { overall_caption: "old", actions: [{ text: "kept" }], handling_note: "h" };
 
   const omitted = mergeOverviewCall(stored, { overall_caption: "new" });
   assert.deepEqual(omitted.actions, stored.actions, "an OMITTED list must be kept");
-  assert.equal(omitted.methodology, "m", "an OMITTED string must be kept");
+  assert.equal(omitted.handling_note, "h", "an OMITTED string must be kept");
 
-  const emptied = mergeOverviewCall(stored, { overall_caption: "new", actions: [], methodology: "" });
+  const emptied = mergeOverviewCall(stored, { overall_caption: "new", actions: [], handling_note: "" });
   assert.deepEqual(emptied.actions, [], "a deliberately EMPTY list must be honoured, not overwritten by the stored one");
-  assert.equal(emptied.methodology, "", "a deliberately EMPTY string must be honoured");
+  assert.equal(emptied.handling_note, "", "a deliberately EMPTY string must be honoured");
 
   // And with no base at all, a first call is itself.
   assert.deepEqual(mergeOverviewCall(null, { overall_caption: "first" }).overall_caption, "first");

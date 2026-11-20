@@ -46,8 +46,11 @@ function fingerprint(file, root, commit) {
   return /\.(html?|md|json|txt|csv|svg)$/.test(file) ? sha(clean(buf.toString("utf8"))) : sha(buf);
 }
 
-/** Publish one saved run and return what it published, fingerprinted. Nothing is written outside a throwaway folder. */
-export function publishSample(sample, repo) {
+/**
+ * Publish one saved run and return what it published, fingerprinted. Nothing is written outside a throwaway folder.
+ * With `html`, the record also carries each published report page's text, for checks that read the page itself.
+ */
+export function publishSample(sample, repo, { html = false } = {}) {
   const root = mkdtempSync(join(tmpdir(), "publish-compare-"));
   try {
     const copy = join(root, "sample"), pool = join(root, "pool"), home = join(root, "home"), resultFile = join(root, "result.json"), specFile = join(root, "spec.json");
@@ -68,6 +71,7 @@ export function publishSample(sample, repo) {
       returned: Object.fromEntries(Object.entries(returned ?? {}).map(([k, v]) => [k, sha(cleanText(JSON.stringify(v ?? null)))])),
       log: Object.fromEntries((logRows ?? []).map((row, i) => { let ev = "?"; try { ev = JSON.parse(row).event ?? "?"; } catch { /* kept by position */ } return [`${i} ${ev}`, sha(cleanText(row))]; })),
     };
+    if (html) record.html = Object.fromEntries(walk(pool).filter((f) => basename(f) === "report.html").map((f) => [relative(pool, f).split(sep).join("/"), readFileSync(f, "utf8")]));
     return record;
   } finally { rmSync(root, { recursive: true, force: true }); }
 }
@@ -93,6 +97,11 @@ export function demoReportPages(repo) {
     const { files } = publishSample(s, repo);
     return [s.name, Object.fromEntries(Object.entries(files).filter(([path]) => basename(path) === "report.html"))];
   }));
+}
+
+/** Each demo run's report page as published, its text by sample and then by its path in the report folder. */
+export function demoReportHtml(repo) {
+  return Object.fromEntries(demoSamples(repo).map((s) => [s.name, publishSample(s, repo, { html: true }).html]));
 }
 
 function differences(a, b, path = "") {

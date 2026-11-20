@@ -74,7 +74,7 @@ test("client token: read_artifact(report) is the CLIENT cut on the wire", async 
   assert.match(text, /# Marks/, "the client lost the report body");
   assert.match(text, /A direct, live, in-class conflict/, "the client lost the card read");
   assert.match(text, /Corsearch/, "a provider name was stripped — the client report names it deliberately");
-  assert.match(text, /# Methodology/, "Methodology was stripped — the client report renders it");
+  assert.match(text, /# Methodology/, "a stored report's Methodology was stripped — a report keeps the text it was delivered with");
 });
 
 test("client token: the Resources door gets the same cut as the tool", async () => {

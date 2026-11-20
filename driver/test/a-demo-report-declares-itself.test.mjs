@@ -100,7 +100,9 @@ test("the publisher resolves it from the roster, so a REPUBLISH picks it up", ()
   const src = readFileSync(join(ROOT, "driver", "publish", "index.mjs"), "utf8");
   assert.match(src, /resolveDemoData\(\{ runDir, customerKey \}\)/,
     "the clearance publisher asks the shared resolver");
-  assert.match(src, /renderHtml\(parsed, findings, coverage, \{ demoData,/,
-    "and it reaches the renderer through the opts the publisher already builds, not a new parameter "
+  // The page reads the run's report document, and the demo flag rides beside it as the page's surface, as it always
+  // rode beside the page's other inputs.
+  assert.match(src, /renderClearanceDocument\(pageDocument\(reportDocument\), \{[^}]*\bdemoData \}\)/,
+    "and it reaches the renderer beside the document the publisher already builds, not a new parameter "
     + "threaded through the call chain");
 });

@@ -23,6 +23,8 @@ export const EMAIL = Object.freeze({
   overallRisk: 'Overall risk:',
   onlyYouCanClose: 'Only you can close these',
   onlyYouCanCloseDefault: 'the open items set out in the report, before relying on a clean result',
+  // The heading a report whose assessment did not complete lists its conditions under, copied from the report (2026-11-19).
+  beforeYouCanRely: 'Before you can rely on this result',
   handlingNote: 'Handling note:',
   registerCoverage: 'Register coverage —',
   applicantMidRun: 'Applicant named mid-run:',
@@ -84,7 +86,7 @@ export const WORKBOOK = Object.freeze({
   registerSection: 'REGISTER  —  vendor register, worldwide',
   // The register service's own reach, as the coverage line states it; a run that recorded none keeps the line above.
   registerSectionReach: (service, offices) => `REGISTER  —  ${service}, ${offices} office${offices === 1 ? '' : 's'}`,
-  // An order that names its countries: the rows below say where (owner, 2026-11-19).
+  // An order that names its countries: the rows below say where (2026-11-19).
   registerSectionNamed: 'REGISTER',
   commonLawSection: 'COMMON-LAW  —  web / marketplace / social / product database',
   surfaces: (n) => `~${n} surfaces`,
@@ -290,7 +292,7 @@ export const CLIENT_INDEX = Object.freeze({
 
 /** The register's own record of a cited registration, as the report shows it: its labels and its notes. */
 export const REGISTER_RECORD = Object.freeze({
-  // The labels, as approved on 2026-11-18.
+  // The labels, as fixed on 2026-11-18.
   labels: Object.freeze({
     title: 'Register record',
     mark: 'Mark',
@@ -395,7 +397,7 @@ export const KNOCKOUT_PAGE = Object.freeze({
     probeRan: 'Register hit-counts are part of this search, and none could be taken on this run — the per-name reason is recorded in the audit workbook. This is a gap in this run, not a limit of the product.',
     notInTier: 'Register hit-counts (identical · containing · close variations) are not included in this product tier, so no register was counted for this report. They are part of the Knockout search this offering sells today.',
   }),
-  // The card fold's label: the clearance's word for the reasoning (owner, 2026-11-18).
+  // The card fold's label: the clearance's word for the reasoning (2026-11-18).
   riskAssessment: 'Risk assessment',
   // A finding card's head and fold.
   finding: Object.freeze({
@@ -513,7 +515,6 @@ export const REPORT_PAGE = Object.freeze({
     internationalRead: (n) => `${n} international registrations read`,
     nearNamesCleared: (n) => `${n} near-names cleared`,
     conflicts: (n) => `${n} ${n === 1 ? 'conflict' : 'conflicts'}`,
-    localScript: 'the name searched in local script',
     courtChecked: 'court decisions checked',
     courtNoneTouch: 'court decisions checked, none touch the name',
     courtNotChecked: 'court decisions could not be checked',
@@ -605,7 +606,23 @@ export const REPORT_PAGE = Object.freeze({
     reputation: 'Reputation and meaning',
     checks: (n) => `${n} checks`,
     localScript: 'Local-script spellings',
-    searched: 'Searched',
+    // The scripts by name: what was searched lists those a search completed in, and Left open those planned with none
+    // completed (2026-11-19). The names are the scripts' Unicode names, listed in this table's order, which gives
+    // the examples their own order: "Katakana and Hangul", "Greek or Cyrillic".
+    scriptName: Object.freeze({ Hani: 'Han', Hira: 'Hiragana', Kana: 'Katakana', Hang: 'Hangul', Grek: 'Greek', Cyrl: 'Cyrillic', Arab: 'Arabic', Hebr: 'Hebrew', Thai: 'Thai', Deva: 'Devanagari' }),
+    scriptsSearched: (names) => new Intl.ListFormat('en-GB', { type: 'conjunction' }).format(names),
+    scriptsNotCompleted: (names) => `No search in ${new Intl.ListFormat('en-GB', { type: 'disjunction' }).format(names)} script was completed.`,
+    // A script searched in one place and not in another (design, 2026-11-19, under the owner's delegation): the places
+    // where no search in it completed, named in place up to three and counted from four, with the list in the row's
+    // detail; a planned worldwide search that did not complete; and a planned search whose territory was not recorded.
+    // Two or three places are joined as the approved sentence above joins scripts.
+    scriptNotCompletedIn: (script, places) => `No search in ${script} script was completed in ${new Intl.ListFormat('en-GB', { type: 'disjunction' }).format(places)}.`,
+    scriptNotCompletedInCount: (script, n) => `No search in ${script} script was completed in ${n} planned territories.`,
+    worldwideNotCompleted: (script) => `The planned worldwide search in ${script} script did not complete.`,
+    territoryNotRecorded: (script) => `A planned search in ${script} script did not complete. Its territory was not recorded.`,
+    // Under "What was searched", a script whose planned worldwide search did not complete is named with the places a
+    // narrower search in it did complete.
+    scriptIn: (script, places) => `${script} (${new Intl.ListFormat('en-GB', { type: 'conjunction' }).format(places)})`,
     notSearched: 'Not searched',
     included: 'Included',
     notPartOfSearch: 'Not part of this search',
@@ -627,9 +644,9 @@ export const REPORT_PAGE = Object.freeze({
     ruledOut: 'Ruled out',
     askAi: '\u2726 Ask AI about this finding',
   }),
-  // The closed heading over the conflicts below the risk (owner, 2026-11-18): their count, formatted, and each band
-  // below the risk by the framework's own word. Plural only: a single conflict below the risk keeps its full card.
-  lowerBand: (count, bands) => `${count} more conflicts rated ${bands.join(' or ')}`,
+  // The closed heading over the conflicts below the risk (2026-11-18; the singular form 2026-11-19): their count, and
+  // each band below the risk by the framework's own word, joined by "or". One conflict reads in the singular.
+  lowerBand: (count, bands) => `${count.toLocaleString('en-GB')} more conflict${count === 1 ? '' : 's'} rated ${bands.join(' or ')}`,
   // The chart of conflicts: its axes, its zone and its legend.
   chart: Object.freeze({
     goodsAxis: 'Goods / services proximity →',
@@ -762,9 +779,8 @@ export const REPORT_PAGE = Object.freeze({
     ifEnforced: 'If enforced:',
   }),
   // The findings sections: their headings and the leads of their folds. "Marks that can coexist" stays in the
-  // renderer, where a guard holds both its layouts to the ruled words; Conflicts is the strip's own entry.
+  // renderer, where a guard holds both its layouts to these words; Conflicts is the strip's own entry.
   findings: Object.freeze({
-    sessionNotice: 'Session-wide notice',
     landscape: 'The conflict landscape',
     secondaryWatch: 'Secondary & watch',
     famousLead: 'Famous-mark neighbours.',

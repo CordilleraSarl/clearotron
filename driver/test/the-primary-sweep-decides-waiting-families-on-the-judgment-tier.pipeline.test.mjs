@@ -50,7 +50,10 @@ const MODEL_SETTINGS = { CLEAROTRON_OPENAI_MODEL_JUDGMENT: undefined, CLEAROTRON
 // The skeptic re-runs the primary sweep, so that unit is also dispatched as a follow-up to its own session.
 const ESCALATE = "- primary-sweep under-paged the NZ sub-query\n\n## Escalation decisions\nESCALATE: primary-sweep — re-run the NZ sub-query";
 // The primary sweep's opening dispatch names its axis, on both engines.
-const OPENS = (axis) => `You are register UNIT mode, axis = "${axis}"`;
+// A unit's turn: its opening line, and its axis in the inputs block that closes the message (stages.mjs inputsBlock). The
+// marker is both, joined as the mocks' MOCK_FAIL_STAGE reads a list of parts that must all appear.
+const OPENS = (axis) => `You are register UNIT mode&&- Assigned axis: ${axis}\n`;
+const opens = (axis) => (c) => OPENS(axis).split("&&").every((part) => String(c.prompt ?? "").includes(part));
 
 // Each engine's pins, the other engine's unset (pinEnvAll deletes on undefined): the variables are process-global.
 const ENGINES = {
@@ -135,7 +138,7 @@ for (const engine of Object.keys(ENGINES)) {
 
     // WHAT EACH ENGINE PROGRAM WAS STARTED WITH, for every unit's opening turn.
     for (const [axis, tier] of Object.entries(TIERS)) {
-      const opening = arm.calls().filter((c) => String(c.prompt ?? "").includes(OPENS(axis)));
+      const opening = arm.calls().filter(opens(axis));
       assert.ok(opening.length >= 1, `no ${engine} call opened the ${axis} unit — the arm cannot see its model`);
       for (const c of opening)
         assert.equal(flagValue(c.argv, flag), wire(tier), `the ${axis} unit was started on ${flagValue(c.argv, flag)}, not the ${tier} tier`);
@@ -152,7 +155,7 @@ for (const engine of Object.keys(ENGINES)) {
     let before = arm.calls().length;
     const resumed = await (await arm.pipelineModule()).pipeline({ ...JOB }, { codename, fromStage: "register-unit" });
     assert.equal(codenameOf(resumed.runDir), codename, "the resume opened another run");
-    const again = arm.calls().slice(before).filter((c) => String(c.prompt ?? "").includes(OPENS("primary-sweep")));
+    const again = arm.calls().slice(before).filter(opens("primary-sweep"));
     assert.ok(again.length >= 1, "the resumed run never dispatched the primary-sweep unit — the arm cannot see the resume");
     for (const c of again) assert.equal(flagValue(c.argv, flag), wire("opus"), `the resumed run started the unit on ${flagValue(c.argv, flag)}`);
     assertRowsOnTier(engine, arm.rows(resumed.runDir));
@@ -160,7 +163,7 @@ for (const engine of Object.keys(ENGINES)) {
     // --experiment WITHOUT --model: the saved run's unit, re-run in a sandbox, resolves the same selection.
     before = arm.calls().length;
     await runExperiment({ ...JOB }, { codename, experiment: "register-unit", axis: "primary-sweep" });
-    const experiment = arm.calls().slice(before).filter((c) => String(c.prompt ?? "").includes(OPENS("primary-sweep")));
+    const experiment = arm.calls().slice(before).filter(opens("primary-sweep"));
     assert.ok(experiment.length >= 1, "the experiment never dispatched the primary-sweep unit");
     for (const c of experiment)
       assert.equal(flagValue(c.argv, flag), wire("opus"), `the experiment ran the unit on ${flagValue(c.argv, flag)}`);
@@ -179,7 +182,7 @@ for (const engine of Object.keys(ENGINES)) {
       assert.equal(x.model, "opus", `attempt ${x.attempt} of the failing unit asked for ${x.model}`);
       assert.equal(x.modelUsed, ENGINES[engine].recorded("opus"), `attempt ${x.attempt} records ${x.modelUsed}`);
     }
-    const calls = arm.calls().filter((c) => String(c.prompt ?? "").includes(OPENS("primary-sweep")));
+    const calls = arm.calls().filter(opens("primary-sweep"));
     assert.ok(calls.length >= 2, `the engine was started ${calls.length} time(s) for the failing unit`);
     for (const c of calls) assert.equal(flagValue(c.argv, flag), wire("opus"), "a retry of the unit was started on another model");
   });

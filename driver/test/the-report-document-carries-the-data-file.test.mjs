@@ -16,7 +16,7 @@ pinEnv(process.env, "CLEAROTRON_WORK_DIR", __mkdtemp(__join(__tmpdir(), "report-
 pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", __mkdtemp(__join(__tmpdir(), "report-document-pool-default-")));
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -24,11 +24,15 @@ import { fileURLToPath } from "node:url";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const { publishSource, demoChildren } = await import("../demo-container.mjs");
 const { republishRun } = await import("../publish/report-registry.mjs");
-const { readClearanceDocument } = await import("../publish/index.mjs");
-const { publishKnockout, readKnockoutDocument } = await import("../publish/knockout.mjs");
+const { readClearanceDocument, coverNoteInputs, composeCoverNote } = await import("../publish/index.mjs");
+const { publishKnockout, readKnockoutDocument, composeKnockoutCoverNote, knockoutName } = await import("../publish/knockout.mjs");
+const { worstBand } = await import("../verify-knockout.mjs");
 const { CLEARANCE_DOCUMENT, KNOCKOUT_DOCUMENT, clearanceReportDocument, clearanceReportDataOf, knockoutReportDocument,
-  knockoutReportDataOf } = await import("../publish/report-document.mjs");
+  knockoutReportDataOf, allFindingsOf, clearanceWorkbookOf } = await import("../publish/report-document.mjs");
 const { clearanceReportData } = await import("../publish/report-data.mjs");
+const { buildAudit } = await import("../publish/xlsx.mjs");
+const { deliveryFlagLines } = await import("../predelivery-lint.mjs");
+const { zipEntries, workbookEntryText } = await import("./snapshot/workbook-entries.mjs");
 const { paths } = await import("../run-record.mjs");
 
 /** The value as JSON would carry it: equal to itself only if it holds no Map, Set, Date, function or undefined. */
@@ -123,6 +127,46 @@ test("on an invented run, the data file built from the document read back is the
   assert.deepEqual(throughJson(doc).client.followUpKinds, [["mark one exact", ["primary-sweep", "owner-lookup"]]]);
 });
 
+test("the workbook's findings are the run's own list, each withdrawn one back in its place", () => {
+  for (const order of [["withdrawn", "on-point", "on-point"], ["on-point", "withdrawn", "on-point"], ["on-point", "on-point", "withdrawn"], ["withdrawn", "withdrawn", "on-point"]]) {
+    const findings = order.map((disposition, i) => finding(i + 1, disposition));
+    const doc = throughJson(clearanceReportDocument({ ...invented, findings }));
+    assert.deepEqual(allFindingsOf(doc).map((f) => f.ordinal), [1, 2, 3], `order ${order.join(", ")}`);
+  }
+});
+
+/** A workbook's entries as text, the build's own stamps aside. */
+const entriesOf = (file) => Object.fromEntries(zipEntries(readFileSync(file)).map(([n, b]) => [n, workbookEntryText(n, b)]));
+
+test("on an invented run, the workbook built from the document read back is the workbook publishing builds", async () => {
+  const d = { ...invented, assessmentNotCompleted: false, coverageJudgment: { sufficient: false, reason: "an invented reason" },
+    fetchState: { "/mark/ch/1": "retrieved" }, degradedRows: [], reviewReceipts: { lint: [{ id: "invented-check", detail: "d", family: "f" }] },
+    clientGate: { released: true, reasons: [] }, verdictInfo: { verdict: "CONDITIONAL", tier: "Low", badge: "l2", reasons: [], clauses: [] },
+    runOrigins: [], productName: "An invented product" };
+  const dir = mkdtempSync(join(tmpdir(), "report-document-wb-"));
+  // What publishReport handed the workbook before it read the document, spelled as it spelled it.
+  await buildAudit({ degradedParts: d.degradedRows, droppedConditions: [], undispatchedProbes: [], withheldFamilies: [], releasedFamilies: [],
+    setAside: [], findings: d.findings, frameworkMethod: null, coverage: d.coverage, contextNotes: d.contextNotes,
+    coverageJudgment: d.coverageJudgment, markAssessment: null, corrections: null, fetchState: d.fetchState, verdict: d.verdictInfo,
+    jurisdiction: null, commonLawJoinedTerms: d.commonLawJoinedTerms, registerOnly: false, clientGate: d.clientGate,
+    lintFailures: deliveryFlagLines(d.reviewReceipts.lint), productName: d.productName, registerPublishesRecordPages: false,
+    recordLinks: d.officeLinks.byUri, assessmentNotCompleted: false, registerReach: undefined, registerScope: undefined },
+  null, join(dir, "direct.xlsx"), d.parsed.fm.title, d.parsed.fm);
+  const w = clearanceWorkbookOf(throughJson(clearanceReportDocument(d, {})));
+  await buildAudit(w.contract, w.audit, join(dir, "document.xlsx"), w.title, w.frontMatter);
+  const direct = entriesOf(join(dir, "direct.xlsx"));
+  assert.ok(Object.values(direct).join("").includes("MARK 2"), "premise: the withdrawn finding reaches the workbook");
+  assert.deepEqual(entriesOf(join(dir, "document.xlsx")), direct);
+});
+
+test("of the run's review receipts, the document carries the failing checks alone, since no surface reads the rest", () => {
+  const lint = [{ id: "invented-check", detail: "raw detail", family: "f" }];
+  const doc = clearanceReportDocument({ ...invented, reviewReceipts: { lint, engagement: { x: 1 }, tripFlags: ["t"], machineLedgerNote: "n" } }, {});
+  assert.deepStrictEqual(doc.reviewer.lint, lint);
+  assert.equal(doc.reviewer.receipts, undefined);
+  assert.doesNotMatch(JSON.stringify(doc), /machineLedgerNote|tripFlags|engagement/);
+});
+
 test("the verdict record is kept whole, sign-off included, because the page prints it where there is no statement", () => {
   const record = { verdict: "CONDITIONAL", tier: "Moderate", badge: "l3", reasons: ["r"], clauses: ["c"] };
   const doc = clearanceReportDocument({ ...invented, assessmentNotCompleted: false, verdictInfo: record });
@@ -147,9 +191,11 @@ test("the Knockout demo's document is JSON as built, keeps its findings record w
   assert.equal(built.document, KNOCKOUT_DOCUMENT);
   assert.deepStrictEqual(throughJson(built).client.findings, findings, "the document's findings record is not the one read");
 
-  await republishRun({ runId: meta.runId, meta, pool, poolUrl: "", runDir });
+  const published = await republishRun({ runId: meta.runId, meta, pool, poolUrl: "", runDir });
   const written = JSON.parse(readFileSync(paths(runDir).reportDocument, "utf8"));
   assert.equal(written.run.reports.length, 1);
+  const policy = existsSync(paths(runDir).searchPolicy) ? JSON.parse(readFileSync(paths(runDir).searchPolicy, "utf8")) : null;
+  assertKnockoutEmailBothWays(runDir, { findings, framework, overall: worstBand(framework, findings.marks ?? []), published, productName: knockoutName(policy) });
   assert.equal(JSON.stringify(knockoutReportDataOf(written, 0), null, 2), readFileSync(join(pool, meta.runId, "report-data.json"), "utf8"),
     "the data file built from the document is not the data file publishing wrote");
 });
@@ -167,14 +213,14 @@ const koMark = (name, rating, extra = {}) => ({
 test("on an invented batch of two names, each name's data file is the one built from the document", async () => {
   const root = mkdtempSync(join(tmpdir(), "report-document-ko-"));
   const runDir = join(root, "run"), poolRoot = join(root, "pool");
-  mkdirSync(paths(runDir).reportDocument.replace(/[^/]+$/, ""), { recursive: true });
+  mkdirSync(dirname(paths(runDir).reportDocument), { recursive: true });
   mkdirSync(poolRoot);
   writeFileSync(join(runDir, "status.json"), JSON.stringify({ runId: "tmpinvented-batch" }));
   const findings = {
     schema_version: 2, batch: { executiveSummary: "The batch read, naming both names.", standardCaveats: ["A caveat."] },
     marks: [koMark("QUILLMERE", "High", { ratingQualifier: "on the goods named", purpleNotes: ["A reviewer's note."] }), koMark("TARNOVEL", "Low")],
   };
-  await publishKnockout({ runId: "tmpinvented-batch", codename: "invented", runDir, findings, framework: FRAMEWORK, overall: "High",
+  const published = await publishKnockout({ runId: "tmpinvented-batch", codename: "invented", runDir, findings, framework: FRAMEWORK, overall: "High",
     poolRoot, poolUrl: "https://reports.example.test", customerKey: "", skipRegen: true });
   const written = JSON.parse(readFileSync(paths(runDir).reportDocument, "utf8"));
   assert.equal(written.run.single, false);
@@ -187,11 +233,62 @@ test("on an invented batch of two names, each name's data file is the one built 
     // Each name's file opens with that name's own read, never the batch's.
     assert.equal(JSON.parse(file).summary, `The invented read of ${r.mark}.`);
   });
+  assertKnockoutEmailBothWays(runDir, { findings, framework: FRAMEWORK, overall: "High", published, productName: null });
 });
+
+/**
+ * The Knockout's cover email composed from the run's document, and from the values the lane holds with the document set
+ * aside, as for a run published before it, must be the same email.
+ */
+function assertKnockoutEmailBothWays(runDir, { findings, framework, overall, published, productName }) {
+  // The lane holds the counts it saved: every attempt counts again over the saved record, and holds what it writes.
+  let registerCounts = null;
+  try { registerCounts = JSON.parse(readFileSync(paths(runDir).registerCounts, "utf8")); } catch { /* a batch that counted nothing */ }
+  const lane = { findings, framework, overall, reports: published.reports, auditUrl: published.auditUrl, job: {}, registerCounts, qcFlags: published.qcFlags, productName };
+  const fromDocument = composeKnockoutCoverNote(runDir, lane);
+  renameSync(paths(runDir).reportDocument, `${paths(runDir).reportDocument}.aside`);
+  const fromLane = composeKnockoutCoverNote(runDir, lane);
+  renameSync(`${paths(runDir).reportDocument}.aside`, paths(runDir).reportDocument);
+  assert.ok(fromLane.length > 200, "premise: an email was composed");
+  assert.equal(fromDocument, fromLane, "the Knockout email from the document is not the email from the lane's values");
+}
 
 test("the Knockout's searches left open are the scope's, which the page and the workbook both read", () => {
   const steps = { listing: { failed: true }, reading: null, review: null };
   const doc = knockoutReportDocument({ steps }, { runId: "x", findings: { marks: [] } });
   assert.deepEqual(doc.scope.steps, steps);
   assert.equal(doc.reviewer.steps, undefined);
+});
+
+// ── THE COVER EMAIL: from the document where the run has one, from the run's files where it has none ─────────────
+
+test("each demo's cover email composed from its document is the one composed from its files", async () => {
+  for (const { name, dir } of clearances) {
+    const meta = JSON.parse(readFileSync(join(dir, "meta.json"), "utf8"));
+    const runDir = join(dir, "run");
+    const pool = mkdtempSync(join(tmpdir(), "report-document-pool-"));
+    await republishRun({ runId: meta.runId, meta, pool, poolUrl: "", runDir });
+    const args = { url: "https://reports.example.test/portal/report/x/", auditFile: "x-audit.xlsx", names: ["VENQORI"] };
+    const fromDocument = coverNoteInputs(runDir);
+    assert.deepEqual(fromDocument.report.fm, JSON.parse(readFileSync(paths(runDir).reportDocument, "utf8")).prose.frontMatter, `${name}: premise, the document was read`);
+    // The same run with its document set aside reads its files, as a run published before the document does.
+    renameSync(paths(runDir).reportDocument, `${paths(runDir).reportDocument}.aside`);
+    const fromFiles = coverNoteInputs(runDir);
+    renameSync(`${paths(runDir).reportDocument}.aside`, paths(runDir).reportDocument);
+    // The document's options carry the rating as the page states it, which the files have no form of.
+    const { rating, ...documentOpts } = fromDocument.opts;
+    assert.deepEqual(documentOpts, fromFiles.opts, `${name}: the email's options differ`);
+    assert.equal(rating, fromFiles.opts.tier, `${name}: the rating the email states is not the record's`);
+    // A document written before it carried the verdict record as written is read from the files.
+    const written = readFileSync(paths(runDir).reportDocument, "utf8");
+    const older = JSON.parse(written);
+    delete older.verdict.written;
+    older.prose.frontMatter = { planted: true };
+    writeFileSync(paths(runDir).reportDocument, JSON.stringify(older));
+    const fromOlder = coverNoteInputs(runDir);
+    writeFileSync(paths(runDir).reportDocument, written);
+    assert.deepEqual(fromOlder, fromFiles, `${name}: a document without the record as written was read`);
+    assert.equal(composeCoverNote(fromDocument, { ...args, productName: fromDocument.opts.productName }),
+      composeCoverNote(fromFiles, { ...args, productName: fromFiles.opts.productName }), `${name}: the email differs`);
+  }
 });
