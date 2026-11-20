@@ -238,7 +238,7 @@ const ownRecordingTools = (stage) => (RECORDING_TOOLS[stage] ?? [])
 // ── THE PART OF A STAGE'S MESSAGE NO RUN CHANGES ────────────────────────────────────────────────────────────────────
 //
 // Some of what stage code composes is rule text: the same words whatever the run, which could sit in a manual instead,
-// where the session starts holding it (B9, tracker issue 1385; the moves are design's). Composing each stage again under
+// where the session starts holding it (which text moves is design's call). Composing each stage again under
 // another run's folder, name and finding and another matter (model-stage-dispatches.mjs ANOTHER_RUN) separates it: the
 // lines both messages carry, in the same order, are text no run changes. A line that names a path, the mark or the
 // classes differs between the two and is not counted. A rule that only some matters get is not either, so the count is
