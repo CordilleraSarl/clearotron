@@ -1,5 +1,5 @@
 {
-  "total": 298,
+  "total": 301,
   "files": {
     "driver/test/a-backgrounded-install-can-actually-run-a-clearance.test.mjs": [
       0,
@@ -266,10 +266,14 @@
       0
     ],
     "driver/test/a-stage-reads-only-its-own-folders.test.mjs": [
-      0,
-      3
+      1,
+      2
     ],
     "driver/test/a-terminal-guard-delivers-and-clamps.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/a-turns-tool-servers-are-told-when-to-stop-sending.test.mjs": [
       1,
       0
     ],
@@ -417,6 +421,10 @@
       2,
       0
     ],
+    "driver/test/connotation-quote-unbound.test.mjs": [
+      1,
+      0
+    ],
     "driver/test/context-pack.test.mjs": [
       1,
       0
@@ -482,7 +490,7 @@
       1
     ],
     "driver/test/disposition-set-has-one-author.test.mjs": [
-      1,
+      2,
       0
     ],
     "driver/test/doctor-before-the-first-start-says-what-start-creates.test.mjs": [
@@ -574,8 +582,8 @@
       0
     ],
     "driver/test/findings-gate-token.test.mjs": [
-      1,
-      2
+      2,
+      1
     ],
     "driver/test/floor-duty.test.mjs": [
       2,
@@ -634,8 +642,8 @@
       0
     ],
     "driver/test/methodology-witness.test.mjs": [
-      1,
-      1
+      2,
+      0
     ],
     "driver/test/no-client-surface-speaks-the-delivery-gates-word.test.mjs": [
       1,
@@ -1148,6 +1156,10 @@
     "driver/test/withheld-states-its-scope.test.mjs": [
       0,
       1
+    ],
+    "driver/test/write-guarantee-is-declared.test.mjs": [
+      1,
+      0
     ],
     "driver/test/write-return-names-the-form.test.mjs": [
       3,
