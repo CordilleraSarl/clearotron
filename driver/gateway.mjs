@@ -9,23 +9,24 @@
 // runTurn() (engine/CONTRACT.md §1), and everything below classifies the normalized tuple that comes
 // back. Renaming the file is a separate change with its own diff; naming what it is, here, costs
 // nothing and stops the next reader looking for a gateway.
-import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
 import { driverDir, readJson } from "./run-record.mjs";   //
 import { NO_SEARCH_RESULT, RESEARCH_CORRECTION } from "./research-answers.mjs";   // a search that did not answer supplies no result
-import { config, envOn, envGateOn } from "./driver.config.mjs";
-import { stageLog, runLog, note, outputMeta } from "./log.mjs";
+import { note } from "./log.mjs";
 // — the closed disposition set has ONE author; this file dictates it and must not retype it.
 import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS } from "./findings-model.mjs";
-import { frozenSnapshot, describeDrift } from "./run-integrity.mjs";   // — the frozen judged-by set across a seat turn
 import { isCancelled, readCancel, RunCancelled } from "./cancel.mjs";
-import { engineForRun, selectEngine, modelIdOf } from "./engine/registry.mjs";
-import { timeoutCause, turnFailure, nameTheFailure } from "./ladder/turn-failure.mjs";
+import { engineForRun, selectEngine } from "./engine/registry.mjs";
+import { timeoutCause, turnFailure } from "./ladder/turn-failure.mjs";
 import { modelGauge, servingProgram } from "./ladder/model-gauge.mjs";
-import { rescueAttempt } from "./ladder/rescue.mjs";
+import { rescueAndName } from "./ladder/rescue.mjs";
 import { nextRung } from "./ladder/next-rung.mjs";
-import { stageTools } from "./ladder/stage-tools.mjs";
-import { resolveAuthMode } from "./engine/auth.mjs";
+import { stageOf } from "./ladder/stage.mjs";
+import { artifactJudgement } from "./ladder/judge.mjs";
+import { retryMode, dispatchTurn } from "./ladder/dispatch.mjs";
+import { repairFormInDispatch } from "./ladder/form-repair.mjs";
+import { measureAttempt, writeAttemptRow, writeAttemptEvent } from "./ladder/attempt-record.mjs";
 // ABBREVIATED_VALUE_NOTE is no longer imported: it explained the "…" marker on a value the model
 // had to reproduce EXACTLY, and the only messages that rendered one were the connotation arms telling a
 // seat to copy a title or a URL. Nothing is copied now, so no connotation hint renders a cut identifier.
@@ -229,12 +230,8 @@ export function toolWrittenArtifact(p) {
     ?? TOOL_WRITTEN_PATTERNS.find((r) => r.re.test(base))
     ?? null;
 }
-import { withSendUntil } from "./engine/mcp/gather-config.mjs";
-import { sendReserveMs } from "../providers/_shared/send-until.mjs";   // each turn's plan calls stop sending ahead of its deadline
 import { everyToolCallRefused } from "./engine/tool-refusal.mjs";   // one definition, shared with the engine probe
 export { everyToolCallRefused };
-// The profiles STORE root, for the write boundary only — read from the module that owns it, never
-// re-derived from CLEAROTRON_CUSTOMERS_DIR here. Acyclic: profiles.mjs imports node builtins + config.
 import { unitRefusalsFor } from "./register-unit-record.mjs";
 // The chunk artifact's name shape, IMPORTED from the module that constructs the path — never restated
 // here. See TOOL_WRITTEN_PATTERNS below for why this table reads a pattern instead of owning one.
@@ -243,27 +240,13 @@ import { KNOCKOUT_ASSESS_CHUNK_RE, knockoutAssessChunkFile } from "./knockout-as
 // never called its tool — the distinction, which its sibling stage still lacks.
 import { frameRefusalsFor } from "./knockout-frame-record.mjs"; import { knockoutRegisterRefusalsFor } from "./knockout-register-record.mjs";
 import { KNOCKOUT_RECHECK_RE, knockoutReviewFile, knockoutReviewRefusalsFor } from "./knockout-review-record.mjs";
-import { profilesStoreDir } from "./profiles.mjs";
 // The supplemental lane's single source (stages.mjs). The import is acyclic — stages.mjs reads
 // verify/coverage-ledger/config/framework and never reaches back here.
-import { REGISTER_ENUMERATE_TOOL, SUPPLEMENTAL_LANE_STEERING } from "./stages.mjs";
-// The ONE kill-class discriminator (timeout/status_timeout fails, exit 137, killed, hard-wall/stall
-// signals; lane_wedge and rate_limited deliberately excluded). Reused verbatim so "a kill" means the
-// same thing to the exit-1 rescue below as it does to the register taint chain that reads the very
-// same rows off disk. Acyclic: register-taint.mjs imports node builtins only.
-import { isTaintRow } from "./register-taint.mjs";
-import { recordDispatch, streamFilePath } from "./dispatch-record.mjs";
-import { anyResultErrored, endingFields } from "./engine/session-record.mjs";   // a session that reached an error result is not an ok attempt, whatever its last result said
-import { recordBestDraft } from "./best-draft.mjs";
-//: the allowlisted progress-quantity extractor. Acyclic — repairs.mjs imports node builtins only
-// (fs/crypto/path). Used only when the validator did not stamp its own count; never a digit hunt.
-import { progressQuantity } from "./repairs.mjs";
+import { SUPPLEMENTAL_LANE_STEERING } from "./stages.mjs";
+import { anyResultErrored } from "./engine/session-record.mjs";   // a session that reached an error result is not an ok attempt, whatever its last result said
 // The ask contract's enumeration (PURE, node-free — acyclic). The undispatchable hint reads the
 // SIBLING ARTIFACT rather than the fail string, because the fail string is cut at 160 chars.
 import { undispatchableFiringDirectives } from "./frame-diff-model.mjs";
-import { witnessStageMethodology, describeMethodologyDrift } from "./methodology-witness.mjs";
-import { inlineManuals } from "./manuals-inline.mjs";
-import { measureManualsSeen } from "./manuals-seen.mjs";
 // — the meaning-sweep form and its accumulator. Both PURE and acyclic: connotation-search.mjs
 // imports nothing, disposition-union.mjs imports only it, and neither reaches back here.
 import { parsePrRiskResults, connotationObligations, parseDispositionForm, CONNOTATION_FORM_TOKEN_SRC,
@@ -744,58 +727,12 @@ export async function runStage(name, opts) {
 }
 
 async function runStageLadder(name, opts, stageHome = null, engine = selectEngine()) {
-  const {
-    agent = config.defaultAgent,
-    message,
-    // — OPTIONAL PER-ATTEMPT RECOMPOSE. A stage may declare that its dispatch text depends on state
-    // the run changes between attempts; when it does, this recomposes the base the corrective text is
-    // appended to. Absent — which is every stage but one — the base stays exactly `message`, byte for
-    // byte, and there is a test that drives both arms to prove it.
-    //
-    // A CAPABILITY THE STAGE DECLARES, not a flag hiding a second path: there is no configuration that
-    // turns this on for a stage that did not ask, and no branch a reader has to know about to predict what
-    // a stage sends.
-    refreshMessage,
-    model,
-    thinking,
-    sessionKey,
-    timeoutSec = 600,
-    stallSec,          // per-stage stall override (anthropic-agent only); falls back to global CLEAROTRON_STALL_MS
-    expectFile = [],
-    validate,
-    maxRetries = config.maxRetries,
-    runDir,
-    followup = false,   // the caller's word that this dispatch is a followup: a FRESH session (attempt 1, no
-                        // resumeRef), journalled on every row beside `warm`. At its hard wall it takes the same
-                        // one extended retry as any fresh dispatch (warmHardWallStop stops only a warm attempt).
-    excludeTools, bandSize, derivedLimit = null,   // copper-lattice re-route: tool names dropped from this stage's allowedTools
-    // THE CORRECTION THIS DISPATCH IS, when it is one: `{positions}`, the excluded positions its flags name. Its save may
-    // add a finding for them, and its retries say so (`patchRows`); every other dispatch carries none.
-    correction = null,
-  } = opts;
-  const adds = Boolean(correction);
-  if (!message) throw new Error(`runStage(${name}): message is required`);
-  if (!sessionKey) throw new Error(`runStage(${name}): sessionKey is required`);
-  const files = (Array.isArray(expectFile) ? expectFile : [expectFile]).filter(Boolean);
-  // ION/copper-foundry 2026-07-22: this file cannot see the plan's supplemental_lane contract, and it
-  // must not grow a second flag that could drift from it — so derive the lane from the ONE observable
-  // that the contract produces here, the removed tool. Every corrective/warm re-dispatch below then
-  // agrees with the toolset the attempt actually gets, instead of contradicting the base prompt.
-  const supplementalLane = Array.isArray(excludeTools) && excludeTools.includes(REGISTER_ENUMERATE_TOOL);
-
-  // Billing-mode (auth) resolution — fail LOUD if a mode claims API billing but has no key (fixes the
-  // anthropic silent-fallthrough WITHOUT editing anthropic-agent.mjs), and give the stamp its value. Frozen
-  // per run (env-derived). The throw is caught by pipelineInner's terminal catch and turned into a run
-  // FAILURE carrying the named auth error on the guaranteed failure-packet lane (verified) — loud + named,
-  // NOT a silent mis-bill. (Same catch as the unknown-engine throw above.)
-  const auth = resolveAuthMode({ engineName: engine.name });
-  // The stage's tool servers, allowed tools, skills folder and read grants, by the engine's two capability flags
-  // (ladder/stage-tools.mjs).
-  const { gatherMcpConfig, gatherAllowedTools, gatherSeatWrites, engineSkillsDir, engineSkillsGrantRoots, engineResolveSkill } =
-    stageTools({ engine, name, sessionKey, agent, runDir, correction, excludeTools });
-  // EACH TURN'S OWN COPY of the stage's tool config, carrying that turn's time to stop sending: ahead of the turn's
-  // deadline by the reserve, so a plan call returns what it holds while the turn can still write it (send-until.mjs).
-  const turnConfig = (sec) => withSendUntil(gatherMcpConfig, Date.now() + sec * 1000 - sendReserveMs(sec));
+  // The stage's options, files, billing and tools, fixed for the ladder (ladder/stage.mjs); every phase below reads them.
+  const stage = stageOf(name, opts, stageHome, engine);
+  const { model, sessionKey, timeoutSec, maxRetries, runDir } = stage;
+  const helpers = ladderHelpers();
+  // The artifact judgement, and the forms it last synced, held across attempts (ladder/judge.mjs).
+  const judge = artifactJudgement(stage, helpers);
   let lastFail;
   // — WHAT ACTUALLY RAN, carried out to the caller. The attempt rows have held the truth all along
   // (`modelActual` from the wire, `modelUsed` from the engine's own resolver); the ladder simply never
@@ -809,12 +746,6 @@ async function runStageLadder(name, opts, stageHome = null, engine = selectEngin
   let lastKey = sessionKey;     // the failed attempt's session key — the warm patch resumes exactly it
   let lastSessionRef = sessionKey;  // the failed attempt's engine sessionRef — anthropic warm-resume (--resume) reuses it
   let lastKillClass = null;     // how the failed attempt's hard-wall kill read (killedWhile): a working one is resumed warm
-  // statOf feeds the ONE artifact-state snapshot both the exit-1 rescue and AD-4's emitted-vs-landed
-  // gauge read. It is taken PER ATTEMPT, just before the turn is dispatched — it used to be taken
-  // once before the whole ladder, which is the cross-attempt rescue hole post-merge audit 2 found: a
-  // later attempt's nonzero exit was judged "fresh" against a snapshot predating an EARLIER attempt's
-  // write, so attempt 1's kill-torn partial rescued attempt 2's no-write exit as stage truth.
-  const statOf = (f) => { try { const s = statSync(f); return `${s.mtimeMs}:${s.size}`; } catch { return null; } };
   const attemptFails = [];      // every failed attempt's `fail` string, in order — the taint chain reads the
                                 // winning invocation's ladder (a success AFTER a kill-class attempt is tainted)
   let killSeen = false;         // has ANY attempt in THIS ladder been kill-class (isTaintRow)? One kill closes
@@ -840,21 +771,11 @@ async function runStageLadder(name, opts, stageHome = null, engine = selectEngin
   let lastWarm = null;          // …and whether that attempt was a WARM PATCH (a resumed session is not re-offered
                                 // the files, so its gauge cannot ground a `read:false` — see journalStageInputs)
   let lastWrote = null;         // AD-4 emitted-vs-landed of the settled (last) attempt — rides the failure return
-  let lastUnion = null;         // the last judgement's meaning-sweep counted state (syncDispositionForm's
-                                // return). Written onto the attempt row for the journal AND read by the
-                                // veto below — the run's own answer to "did this session rule any of
-                                // its rows?", counted by the gate's own isRuled, never a token name
-  let lastCoverageUnion = null; //: the same, for the register coverage form
-  let lastPlacementUnion = null; //: the same, for the placement form — and it renders placements.json
-  //: the seat-facing form the last judgement synced, measured at record time so the row carries the
-  // bytes that were on disk when the attempt settled. At most one of the three fires per stage — a stage
-  // owns one form or none — and the ?? chain is that fact, not a preference between them.
   //: the artifact the last refusal was actually ABOUT, when that is not the declared output. ONE
   // source — the same derivation that names the file in the token — so the row and the token can never
   // disagree about which artifact a ladder was fighting over. It persists across attempts on purpose:
   // the attempt that finally PASSES is the one whose sha proves what the ladder bought.
   let lastGraded = null;
-  const gradedFormMeta = () => outputMeta(lastGraded);
   // — the bound grows with the refunds rather than the counter shrinking. Decrementing `attempt`
   // would have made a real attempt 2 report as attempt 1, and every row keyed on that number would then
   // describe a turn that did not happen. The ladder gets another rung; the record keeps its arithmetic.
@@ -873,186 +794,13 @@ async function runStageLadder(name, opts, stageHome = null, engine = selectEngin
       note(`[${name}] CANCELLED by user — not dispatching attempt ${attempt}`);
       throw new RunCancelled(name, readCancel(runDir));
     }
-    // Warm patch retry: resume the COMPLETED failed session with only the fix instruction (see design note
-    // above warmEligible). Otherwise: fresh key + full corrective message (Fix B), exactly as before.
-    // — the warm patch is VETOED, not de-allowlisted, and the veto keys on the DIRECT STATE:
-    // the run's own counted rulings (lastUnion, counted by the gate's isRuled), never a failure-token
-    // name. The connotation family stays in WARM_ELIGIBLE_RE because that allowlist decides two other
-    // things: which file a repair is aimed at and whether a rejected draft may be carried across a
-    // recovery park (draftCarryEligible). See vetoResumeRuledNone for the condition and its riders.
-    //
-    // `warmUsed` is NOT consumed here. A vetoed resume skips ITS warm patch and does not spend the
-    // lane: if attempt 2 comes back with rows ruled (`call_partial` — a seat that has now recorded
-    // rulings), attempt 3 can still warm, which is the case warm is good at.
-    const vetoedResume = vetoResumeRuledNone(attempt, lastUnion);
-    // A TURN STOPPED AT ITS HARD WALL WHILE STILL WORKING IS RESUMED, NOT RESTARTED. Its single extended retry (ladder/next-rung.mjs)
-    // continues the same session with the message design wrote, so an hour of work is not done again; a kill that was silent, or
-    // was only making its own record write, is retried fresh as before. The classification is killedWhile, below.
-    const timeoutResume = lastFail === "timeout" && lastKillClass === "working";
-    const warm = attempt > 1 && !warmUsed && process.env.CLEAROTRON_WARM_RETRY !== "0" && (timeoutResume || (!vetoedResume && warmEligible(lastFail, lastJson)));
-    const timeoutWarm = warm && timeoutResume;
-    if (warm) warmUsed = true;
-    else if (vetoedResume && !warmUsed && process.env.CLEAROTRON_WARM_RETRY !== "0" && warmEligible(lastFail, lastJson))
-      note(`[${name}] attempt ${attempt - 1} left this stage's meaning population with ZERO ruled rows (${String(lastFail).slice(0, 100)}) — a resumed session re-reads its own output and cannot rule what it did not rule; SKIPPING the warm patch and dispatching attempt ${attempt} FRESH (the warm attempt is not spent: a partial failure later in this ladder still gets it)`);
-    // D3: inter-attempt backoff (see retryBackoffMs) — a retry dispatched the same second it failed
-    // tends to re-hit the same still-booting gateway / still-overloaded provider. Attempt 1 never waits.
-    // NOT WHEN THE TURN FINISHED AND ONLY THE VALIDATOR REFUSED IT: nothing in the environment failed, so
-    // the wait buys nothing and costs the stage its length on the critical path. Known positively, by the
-    // predicate the warm patch already uses (the turn's status ok, a validator refusal); a spawn,
-    // transport or kill failure still waits.
-    if (attempt > 1) {
-      const validatorOnly = warmEligible(lastFail, lastJson);
-      const backoff = validatorOnly ? 0 : retryBackoffMs();
-      if (validatorOnly) note(`[${name}] no retry backoff before attempt ${attempt}: attempt ${attempt - 1} finished and only the validator refused it`);
-      else if (backoff > 0) { note(`[${name}] retry backoff ${backoff}ms before attempt ${attempt}`); await sleep(backoff); }
-    }
-    // Snapshot each expected artifact at THIS attempt's start. TWO readers, one base — so they can never
-    // disagree about what this dispatch emitted:
-    //   · AD-4 emitted-vs-landed telemetry — `wrote` says whether this dispatch WROTE its artifact, as
-    //     distinct from the artifact merely EXISTING afterwards (landed — possibly inherited, possibly an
-    //     earlier attempt's);
-    //   · the exit-1 rescue below — freshness against THIS attempt's start, never the ladder's start
-    //     (post-merge audit 2; the one-shot pre-ladder snapshot this replaces let attempt 1's kill-torn
-    //     partial read as attempt 2's own fresh write).
-    // Position is safe: nothing between here and the dispatch touches `files` (the methodology witness
-    // writes only its own _driver sidecar).
-    const preArtifact = new Map(files.map((f) => [f, statOf(f)]));
-    const key = attempt === 1 ? sessionKey : warm ? lastKey : `${sessionKey}-rerun${attempt - 1}`;
-    // — THE BASE, RECOMPOSED IF THE STAGE ASKED FOR IT. Only on the fresh-session arm: a WARM patch
-    // resumes the session that already holds the full text, so re-presenting a shorter list there would
-    // describe a context the seat is not in. A hard-wall kill is never warm — `warmEligible` requires
-    // `json?.status === "ok"` and a killed turn has none — so the arm that matters is this one.
-    //
-    // NEVER-KILL: a refresh that throws costs the base, never the attempt. A stage that cannot recompute
-    // its own text must still dispatch the text it started with.
-    let base = message;
-    if (!warm && typeof refreshMessage === "function") {
-      try { const fresh = refreshMessage(attempt); if (typeof fresh === "string" && fresh) base = fresh; }
-      catch (e) { note(`[${name}] refreshMessage failed on attempt ${attempt}, dispatching the original text: ${String(e?.message ?? e).slice(0, 120)}`); }
-    }
-    const effMessage = timeoutWarm ? warmTimeoutMessage(files) : warm ? warmPatchMessage(lastFail, files, { supplementalLane, adds }) : correctiveMessage(base, attempt, lastFail, files, { supplementalLane, adds });
-    note(`[${name}] attempt ${attempt}/${maxRetries + 1}${timeoutWarm ? " [warm resume: the timed-out turn was still working]" : warm ? " [warm patch]" : ""} (engine=${engine.name} agent=${agent} model=${model ?? "default"} key=${key} timeout=${effTimeout}s)`);
-    // The engine runs ONE turn and returns the normalized tuple. Every adapter returns the same shape
-    // (zero change); anthropic-agent = claude -p off-gateway with the stall-watchdog. A warm retry threads
-    // the prior attempt's sessionRef so the engine resumes the SAME session (anthropic: via
-    // --resume <session_id>, keeping the prompt cache warm). usage is destructured so the
-    // cost telemetry below AND the lane-wedge check (isLaneWedge) read the same value.
-    // WITNESS the methodology this turn is about to read, immediately before it reads it — same resolver,
-    // same message, so what is recorded is what the engine resolves and not a re-derivation that could
-    // disagree. Recording only: it freezes nothing, gates nothing, and can never fail a turn (see
-    // methodology-witness.mjs). Silent in the normal case; a line only when a document MOVED under a run.
-    // — WHAT THIS TURN WAS TOLD, written BEFORE it is told it. A turn that is walled, stalled or
-    // SIGKILLed is exactly the turn whose prompt someone will want, and a record written afterwards is
-    // the record that is missing then.
-    //
-    // DEFAULT ON, via envGateOn — deliberately NOT the CLEAROTRON_DUMP_JSON pattern a few lines below, which
-    // is default-off. A flag that has to be remembered before the interesting run will not be set on the
-    // interesting run, which is the whole shape of this defect. The kill switch exists for one case: a
-    // pool filesystem under pressure, where the house rule is already `df -h /` before an unattended run.
-    //
-    // It is the PRE-IMAGE, not the wire bytes: the engine localizes skill refs at spawn, and
-    // _driver/methodology-read.json carries that resolution. Two records, two questions.
-    const dispatch = envGateOn("CLEAROTRON_DISPATCH_RECORD")
-      ? recordDispatch(runDir, name, {
-        attempt,
-        kind: timeoutWarm ? "warm-timeout" : warm ? "warm-patch" : followup ? "followup" : attempt === warmEscalatedAt ? "fresh-escalation" : vetoedResume ? "fresh-total-defect" : attempt > 1 ? "corrective" : "fresh",
-        message: effMessage,
-        // — THE RESOLVED GRANT, recorded beside the sha of the message it went out with. This is
-        // the value handed to `engine.runTurn` below as `allowedTools`, not a re-derivation of it: a
-        // second computation of what a stage was granted could disagree with what it WAS granted, and a
-        // record that disagrees with the run is worse than no record. `undefined` here is a tool-free
-        // judgment stage, which recordDispatch writes as an explicit `[]`.
-        grant: gatherAllowedTools,
-      })
-      : null;
-    // The start of this attempt's window in the per-run refusal journals. Taken before the witness and
-    // the snapshot, which only widens the window by their own time: an earlier attempt's refusals all
-    // precede its own settle, so they stay outside it.
-    const dispatchedAt = Date.now();
-    const mcpConfig = turnConfig(effTimeout);   // this turn's copy, with its time to stop sending
-    const witnessed = witnessStageMethodology(runDir, name, effMessage, engineResolveSkill);
-    for (const line of describeMethodologyDrift(witnessed)) note(`[${name}] ${line}`);
-    // — the frozen judged-by set, hashed into THIS PROCESS'S MEMORY before the seat runs. Never
-    // written to disk before the comparison, so the thing being watched cannot reach it. See
-    // run-integrity.mjs for why it is not a manifest file and why the append-only journals are excluded.
-    const integrityBefore = frozenSnapshot(runDir);
-    // THE STAGE'S MANUALS RIDE A FRESH SESSION'S OPENING MESSAGE (manuals-inline.mjs), for both engines alike. A resumed session
-    // already holds them, and its message names none. The dispatch record and the witness above keep the composed text.
-    const wire = warm || timeoutWarm ? { text: effMessage, inlined: [], missing: [] }
-      : inlineManuals(effMessage, { resolve: engineResolveSkill, skillsDir: engineSkillsDir });
-    const turn = await engine.runTurn({ agent, sessionKey: key, message: wire.text, grantDispatch: base, model, thinking, timeoutSec: effTimeout, resumeRef: warm ? lastSessionRef : undefined, stageHome, mcpConfig, allowedTools: gatherAllowedTools, seatWrites: gatherSeatWrites, skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
-      progressFiles: files,   // the no-progress watchdog's artifact-advance signal (anthropic-agent; other adapters ignore it)
-      // The raw stream of this session, beside its dispatch record (engine/session-record.mjs). The engines
-      // keep it while the disk has room and say on the tuple's `stream` what landed.
-      streamFile: streamFilePath(runDir, name, attempt) });
-    const settledAt = Date.now();   //: zero point of the wall-rescue quiescence clock, read before anything else
-    // LOG-ONLY. Nothing here can fail a turn: the claim that the frozen set does not change across a seat
-    // turn is READ from the writers' call sites and not yet MEASURED on a running system, and arming an
-    // unmeasured guard is the defect class this exists to catch. One run supplies the number; the row's
-    // own `armed: false` says so to anyone who meets a "would-fault" verdict in the log.
-    try {
-      const drift = describeDrift(name, integrityBefore, frozenSnapshot(runDir));
-      if (drift) runLog(runDir, drift);
-    } catch { /* an integrity check that fails a run by failing itself is worse than no check */ }
-    const { code, killed, wall, stderr, laneWaitMs, json, usage } = turn;
-
-    // The artifact judgement, lifted out of the classification chain into ONE function so the
-    // write-time form repair below can RE-JUDGE the corrected file with the same code — never with a
-    // second, drifting copy of the contract. It returns the three facts that must always travel
-    // together: the fail string, the validator's own stamped count, and WHICH file was
-    // rejected (the repair aims at that file, and only that file's bytes decide whether it landed).
-    const judgeArtifacts = () => {
-      // — union the meaning-sweep form BEFORE judging it, on every judgement (see syncDispositionForm).
-      // A ruling recorded on attempt 1 is therefore still recorded on attempt 3, and the outstanding count
-      // cannot rise. Returns null for every stage that owns no meaning sweep, which is all but one.
-      const u = syncDispositionForm(files);
-      if (u) lastUnion = u;
-      // — the same treatment for the register coverage form. A status recorded on attempt 1 is
-      // still recorded on attempt 3, and the outstanding count cannot rise.
-      const cu = syncCoverageForm(files);
-      if (cu) lastCoverageUnion = cu;
-      // — and the same for placement, which also RENDERS placements.json from the union. A tier
-      // placed on attempt 1 is on disk, in the deliverable, before attempt 1 is allowed to finish.
-      const pu = syncPlacementForm(files);
-      if (pu) lastPlacementUnion = pu;
-      for (const f of files) {
-        if (!existsSync(f)) {
-          // A TOOL-WRITTEN ARTIFACT IS ABSENT FOR ONE OF TWO REASONS, and they are not the same finding:
-          // the seat never called its record tool, or it called and every call was REFUSED. The token was
-          // the same for both, so a stage that met a defect, was told by name, and could not restate it
-          // reported as a stage that produced nothing. Measured twice, on two different stages: the
-          // writer's forbidden coverage form went from naming that defect to "produced nothing", and a
-          // register unit whose band is missing went from `named_band_missing` to an absent note, because
-          // its transport refuses a note over a band that does not exist. Both are a strictly earlier
-          // catch reported as a strictly worse signature. The refusal journal is the transport's own
-          // record of the second case; the LAST entry is the one the stage exhausted on. The token stays
-          // `missing_file` — `contract-vocabulary` classifies by prefix and the repair ladder's routing
-          // for this file is already the tool re-route — so this adds the cause without moving the class.
-          //
-          // THE READER TAKES (runDir, file) so both kinds of row can share one signature. A per-RUN
-          // transport's reader ignores the second argument, which is what makes this forward-compatible;
-          // a per-AXIS one needs it, because six units append in parallel and one shared journal would be
-          // a record nobody can attribute.
-          const refused = toolWrittenArtifact(f)?.refusals?.(runDir, f) ?? [];
-          const last = refused.length ? String(refused[refused.length - 1]?.reason ?? "") : "";
-          return { fail: `missing_file:${rel(f)}${last ? ` — every call refused, last: ${last}` : ""}`, quantity: null, file: f };
-        }
-        if (validate) {
-          const v = validate(f, readFileSync(f, "utf8"));
-          // — the token names THE ARTIFACT THE VALIDATOR GRADED, which for every form-bearing stage
-          // is a sibling of the declared output, not the output itself. `common-law-findings.half-m.md`
-          // was named on a refusal reading `form_untouched=79` over a 46-line file that holds no rows;
-          // the 79 rows are in the disposition form, which the message never mentioned. `file:` stays the
-          // stage's own output — that is the repair anchor and the ladder's byte-identity key, and both
-          // are unchanged by naming the graded artifact in the string a human reads.
-          if (!v.ok) {
-            const g = gradedArtifact(v.reason, f);
-            return { fail: `invalid_file:${rel(g)}:${v.reason}`, quantity: Number.isFinite(v.quantity) ? v.quantity : null, file: f, graded: g === f ? null : g };
-          }
-        }
-      }
-      return { fail: null, quantity: null, file: null, graded: null };
-    };
+    // Warm or fresh, and the wait before it; then the turn, with its dispatch record, witness and manuals (ladder/dispatch.mjs).
+    const mode = await retryMode(stage, { attempt, lastFail, lastJson, lastKillClass, lastUnion: judge.lastUnion, warmUsed }, helpers);
+    const { vetoedResume, warm, timeoutWarm } = mode;
+    warmUsed = mode.warmUsed;
+    const { preArtifact, key, dispatch, dispatchedAt, witnessed, wire, turn, settledAt } = await dispatchTurn(stage,
+      { attempt, warm, timeoutWarm, vetoedResume, lastFail, lastKey, lastSessionRef, warmEscalatedAt, effTimeout }, helpers);
+    const { code, killed, wall, stderr, json, usage } = turn;
 
     // What the turn asked for against what the wire reported, and which program served it (ladder/model-gauge.mjs).
     const { modelRequested, modelActual, modelBasis, providerReported, modelSnapshot, famRequested, famActual, modelMismatch } = modelGauge(engine, model, turn);
@@ -1067,493 +815,35 @@ async function runStageLadder(name, opts, stageHome = null, engine = selectEngin
     const timedOutBy = timeoutCause({ killed, code, wall, stderr, timeoutSec: effTimeout });
     fail = turnFailure({ timedOutBy, code, json, stderr });
     if (fail === null) {
-      const j = judgeArtifacts();
+      const j = judge.judgeArtifacts();
       fail = j.fail; stampedQuantity = j.quantity; failingFile = j.file; lastGraded = j.graded ?? lastGraded;
     }
 
-    // ── — WRITE-TIME FORM REJECTION, INSIDE THE DISPATCH ────────────────────────────────────
-    // In the 08-02 round, 5 of 12 non-clean dispatches were PURE FORM: a bad enum, a closed-vocabulary
-    // string twice, an undispatchable wildcard. Each burned a full paid dispatch — a fresh model call
-    // and minutes of wall-clock — to discover something the contract already knew by name. The contract
-    // is unchanged (see FORM_CLASS_RE); what moves is WHEN it is answered. A form defect is handed back
-    // to the SAME session that wrote it, with the SAME warmPatchMessage the attempt-2 warm retry would
-    // have carried, before this dispatch settles — so the retry ladder is never charged for it and its
-    // attempts stay available for the failures that actually need another pass.
-    //
-    // WHAT THIS DELIBERATELY DOES NOT TOUCH — a work-class failure behaves exactly as it does today.
-    // It is not form-class, so it never enters this loop; `warmUsed` is NOT consumed here, so a work
-    // failure that reaches the ladder still gets its warm attempt 2 (the connotation tokens are
-    // warm-eligible by an explicit 2026-08-01 ruling, and a form fix must not quietly revoke it).
-    //
-    // ZERO SEMANTICS — the three ways this could read an absence as a pass, and how each is closed:
-    //   1. A repair turn that WRITES NOTHING. Re-judging byte-identical bytes would either "confirm"
-    //      the same failure (harmless but wasteful) or, if the validator were ever non-deterministic,
-    //      manufacture a pass out of the harness's own silence. So the TARGET file's stat is the gate:
-    //      unchanged (or gone) ⇒ NOT repaired, the ORIGINAL fail stands, and the ladder gets it. The
-    //      target is what the repair MESSAGE names (repairTarget) — usually a sibling, not the
-    //      expectFile — because watching the wrong file turns a correct repair into a false "no-write".
-    //   2. A repair turn that was KILLED. Its bytes may be torn mid-write and a shape validator cannot
-    //      prove otherwise, so it is never re-judged, and its kill arms killSeen for the rest of the
-    //      ladder — the same refusal the exit-1 rescue makes below.
-    //   3. A form failure this list does not recognise. It never enters the loop at all and reaches the
-    //      ladder as a work-class failure would — visibly, never swallowed as "validated fine".
-    // Cancellation is honoured by SKIPPING the repair (the turn is the unit of spend): the loop top
-    // above throws RunCancelled on the next attempt, so no new throw site is introduced here.
-    let formRepairsThisAttempt = 0;
-    let repairRef = turn.sessionRef;
-    while (fail && failingFile && isFormClassFail(fail)
-           && formRepairsUsed < MAX_FORM_REPAIRS
-           && envGateOn("CLEAROTRON_FORM_REPAIR")
-           // A6: an output-ceiling turn's defect is caused by the budget, not by the vocabulary — it
-           // keeps its named fault and its own policy below.
-           && json?.stopReason !== "max_tokens"
-           && !isCancelled(runDir)) {
-      formRepairsUsed++; formRepairsThisAttempt++;
-      const triggeredBy = fail;
-      // THE FILE THE REPAIR MESSAGE ACTUALLY AIMS AT — not necessarily the rejected expectFile. Every
-      // framediff_/coverage_ token routes its repair to a SIBLING (frame-diff.json,
-      // register-coverage-ledger.json) and tells the model NOT to touch the .md, so watching the .md
-      // would read a compliant model's correct answer as "wrote nothing". repairTarget is the same
-      // derivation warmPatchMessage uses to compose the instruction — one rule, two readers.
-      const target = repairTarget(triggeredBy, files);
-      const targetPre = statOf(target);
-      const repairPre = new Map(files.map((f) => [f, statOf(f)]));
-      note(`[${name}] FORM defect at write time (${triggeredBy.slice(0, 140)}) — repairing INSIDE this dispatch (${formRepairsUsed}/${MAX_FORM_REPAIRS}) at ${rel(target)}; the retry ladder is not charged`);
-      //: a form repair is a real model invocation, so it gets its own record rather than hiding
-      // inside the attempt it belongs to. Hoisted only to be recordable — the message is unchanged.
-      const repairMessage = warmPatchMessage(triggeredBy, files, { supplementalLane, adds });
-      const repairDispatch = envGateOn("CLEAROTRON_DISPATCH_RECORD")
-        ? recordDispatch(runDir, name, { attempt, repair: formRepairsUsed + 1, kind: "form-repair", message: repairMessage })
-        : null;
-      // — `seatWrites` IS DELIBERATELY NOT PASSED HERE, and the omission is the decision. A form
-      // repair exists precisely because a file came out malformed and the seat is being told to go fix
-      // it at `target`, so this turn authors a file whatever the stage's steady-state row says. Omitting
-      // the declaration leaves it `null` — unknown — and unknown keeps the grant, which is the answer
-      // this turn wants. Passing `gatherSeatWrites` would lean on the dispatch naming an ABSOLUTE path
-      // under the run dir to win the grant back, and warmPatchMessage renders the target through rel();
-      // a relative path there would silently strip the write root off the one turn that needs it most.
-      const rt = await engine.runTurn({ agent, sessionKey: key, message: repairMessage, model, thinking,
-        timeoutSec: effTimeout, resumeRef: repairRef, stageHome, mcpConfig: turnConfig(effTimeout), allowedTools: gatherAllowedTools,
-        skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
-        progressFiles: files, streamFile: streamFilePath(runDir, name, attempt, formRepairsUsed + 1) });
-      repairRef = rt.sessionRef ?? repairRef;
-      // A KILLED REPAIR TURN'S BYTES ARE NOT STAGE TRUTH. Same doctrine as the exit-1 rescue below: a
-      // stage validator is a SHAPE check, not a completeness proof, and a torn draft can pass its own
-      // validator — so a repair turn that was killed (or exited nonzero, or came back with a non-ok
-      // envelope) never gets re-judged. Its kill also ARMS killSeen, which closes the exit-1 rescue for
-      // the rest of this ladder exactly as an attempt's kill would.
-      const repairKill = isTaintRow({ fail: null, code: rt.code, killed: rt.killed, signals: rt.signals });
-      if (repairKill) killSeen = true;
-      const repairSettled = !repairKill && rt.code === 0 && rt.json?.status === "ok";
-      // Did the TARGET file change and still exist? That, and nothing else, decides whether a repair
-      // happened. Deleting it is not a repair either.
-      const nowStat = statOf(target);
-      const landed = repairSettled && nowStat !== null && nowStat !== targetPre;
-      let outcome;
-      if (!repairSettled) {
-        outcome = repairKill ? "killed" : "unsettled";
-      } else if (!landed) {
-        outcome = "no-write";
-      } else {
-        const j = judgeArtifacts();
-        if (j.fail === triggeredBy) outcome = "unchanged";      // wrote, reproduced its own failure byte-for-byte
-        else { fail = j.fail; stampedQuantity = j.quantity; failingFile = j.file; lastGraded = j.graded ?? lastGraded; outcome = fail ? "moved" : "repaired"; }
-      }
-      if (runDir) {
-        // A repair turn is a real model invocation and is journalled as one — same {model, usage}
-        // shape every dispatch row carries, so tokens.mjs and run-economics.mjs count its spend
-        // honestly. It is NOT an attempt row: `repair` names the row's class, and its `fail` is the
-        // defect this turn was dispatched to FIX, never the attempt's settled outcome. Written BEFORE
-        // the attempt row below, which is both chronologically true and what keeps the attempt row the
-        // last line of the stage's telemetry (compare.mjs reads exactly that line).
-        stageLog(runDir, name, {
-          attempt, key, agent, model,
-          modelUsed: (lastModelUsed = modelIdOf(engine, model)),
-          // Same billing stamp as the attempt row, written on the same terms — see the note there.
-          engine: engine.name, writeBoundary: writeBoundaryOf(engine), authMode: auth.mode, apiBilled: auth.apiBilled === true, cloud: auth.cloud ?? null,
-          code: rt.code, wall: rt.wall, timeoutSec: effTimeout,
-          // — same rename as the attempt row above. This row already carries the driver's verdict as
-          // `repairOutcome` (only "repaired" is success), so it needs no `ok`; what it lacked was any mark
-          // that the engine had claimed otherwise.
-          engineStatus: rt.json?.status,
-          repair: formRepairsUsed, repairOf: MAX_FORM_REPAIRS, repairOutcome: outcome, fail: triggeredBy,
-          repairTarget: rel(target),   // the file the repair was AIMED at (often a sibling, not the expectFile)
-          dispatch: repairDispatch,    // — the verbatim message this repair turn was given
-          stopReason: rt.json?.stopReason ?? undefined, ...endingFields(rt.json),   // — and what ended it, in the program's words on an error
-          killed: rt.killed || undefined, signals: rt.signals ?? undefined,
-          session: rt.session ?? null, stream: streamMeta(runDir, rt.stream),   // — the repair session's own record, as on the attempt row
-          warm: true,   // a repair turn always RESUMES the session that wrote the defect
-          runId: rt.json?.runId, engineSummary: rt.json?.summary, usage: rt.usage,
-          selfReportContradicted: (outcome !== "repaired" && rt.json?.status === "ok") || undefined,   //
-          // — a repair turn is a real model invocation and run-economics counts it as a dispatch.
-          // Skipping it here would leave retry-waste rows as the only dispatches with no rate.
-          tokensPerSec: tokensPerSec(rt.usage, rt.wall),
-          output: files.length ? outputMeta(files[0]) : null,
-          form: gradedFormMeta() ?? undefined,   // — see the attempt row
-          // `wrote` keeps its house meaning (did THIS turn move ANY expected artifact); `repairLanded`
-          // is the narrower fact the decision above was actually made on.
-          //
-          // NULL WHEN THERE IS NOTHING EXPECTED, EXACTLY AS THE ATTEMPT ROW DOES IT. A stage
-          // declaring no expected artifact leaves `files` empty, and `[].some()` is `false` — so this row
-          // used to answer "this turn wrote nothing" where the attempt row answers "there was nothing to
-          // write". Two producers of one field, two units for the empty case, and the reader is
-          // `run-economics.mjs`: `if (rec.wrote === false) st.emittedOnDispatchesThatWroteNothing +=
-          // cls.output`. Every repair turn on such a stage billed its whole output to a waste counter.
-          // The `output:` line above already guards the same emptiness on the same row.
-          wrote: files.length ? files.some((f) => statOf(f) !== repairPre.get(f)) : null,
-          repairLanded: landed,
-          reads: Array.isArray(rt.reads) ? rt.reads : null,
-          readsTruncated: Array.isArray(rt.reads) ? rt.readsTruncated === true : null,
-          stderrTail: streamDigest(rt.stderr),
-        });
-        try {
-          runLog(runDir, {
-            event: "form-repair", stage: name, attempt, repair: formRepairsUsed, of: MAX_FORM_REPAIRS,
-            fail: triggeredBy, outcome, landed, ok: outcome === "repaired",
-            model: modelIdOf(engine, model),
-          });
-        } catch { /* telemetry best-effort — never fail a turn over a journal line */ }
-      }
-      note(`[${name}] in-dispatch form repair ${formRepairsUsed}: ${outcome}${outcome === "moved" ? ` → ${String(fail).slice(0, 140)}` : ""}`);
-      // Every stop below means "another repair turn cannot converge, or must not be trusted": the turn
-      // did not settle cleanly, it wrote nothing, or it reproduced its own failure byte-for-byte (the A4
-      // doctrine, applied inside the dispatch). In all three the ORIGINAL fail goes to the ladder.
-      if (outcome !== "moved") break;
-    }
-    // Whether this attempt's own artifacts answer its failure is ladder/rescue.mjs (rescueAttempt), with why a kill
-    // anywhere in this ladder closes the exit-1 rescue; `killClass` and `killSeen` carry that kill to it.
-    const killClass = isTaintRow({ fail, code, killed, signals: turn.signals });
-    // ONE artifact judgement, shared by both rescues below (the rule: never a second, drifting copy of
-    // the contract). Present + written by THIS attempt (the per-attempt snapshot — an inherited file and
-    // equally an earlier attempt's file never rescue a failed turn) + passes the stage's own validator.
-    const attemptWroteTruth = (why = null) => {
-      // — the rescues judge with `validate` directly rather than through judgeArtifacts, so the union
-      // has to run here too or a rescued turn would be refused for rows the form already holds. Idempotent,
-      // so the double call on the normal path costs a regeneration and changes nothing.
-      const u = syncDispositionForm(files);
-      if (u) lastUnion = u;
-      const cu = syncCoverageForm(files);          //, same reason
-      if (cu) lastCoverageUnion = cu;
-      // — and placement. THIS CALL IS THE R1 CURE: the wall rescue asks whether this attempt wrote
-      // a valid artifact, and until the union has run and placements.json has been rendered from it, the
-      // answer for a killed-in-the-gap attempt is no. Idempotent, so the double call costs a regeneration.
-      const pu = syncPlacementForm(files);
-      if (pu) lastPlacementUnion = pu;
-      // `why`, when a caller passes one, is told WHICH file failed and on what, so a refusal can name both.
-      return files.every((f) => {
-        const now = statOf(f);
-        const no = (cause, reason) => { if (why) Object.assign(why, { file: rel(f), cause, ...(reason ? { reason } : {}) }); return false; };
-        if (now === null) return no("absent");
-        if (now === preArtifact.get(f)) return no("not-written-by-this-attempt");
-        // A said-back refusal is a duty the artifact leaves open, not an invalid artifact: it never stops a rescue.
-        if (validate) { const v = validate(f, readFileSync(f, "utf8")); if (!v.ok && !saidBackOnly(v.reason)) return no("invalid", v.reason ? String(v.reason) : undefined); }
-        return true;
-      });
-    };
-    let attemptRefusals = null;   //: this dispatch's refusals of a tool-written artifact, on a timeout
-    const rescue = rescueAttempt({ fail, files, killClass, killSeen, signals: turn.signals, validate, wall, settledAt, name, rel, wroteTruth: attemptWroteTruth });
-    fail = rescue.fail;
-    const { rescued, quiescentMs, rescueRefused, rescueRefusedFile, rescueRefusedReason } = rescue;
-    // — WHAT A KILLED ATTEMPT WAS DOING, where its transport kept a record. A tool-written artifact's
-    // refusal journal says how many times this attempt sent its record and was told no, and the reason the
-    // last time. The missing-file row has carried that last reason since the journal existed; a timeout row
-    // carried nothing, so an attempt that spent forty minutes being refused read the same as one that never
-    // called. Counted from THIS dispatch only: the journal is per run, and every attempt appends to it.
-    if (fail === "timeout" && files.length) attemptRefusals = refusalsInWindow(files, runDir, dispatchedAt, settledAt);
-    // Arm the ladder-wide refusal for every LATER attempt. Read before `classifyWedge` below only because
-    // the rescue above needs it; the two can never disagree in reach — isTaintRow excludes lane_wedge, and
-    // a wedge is a `timeout` fail that breaks the ladder immediately, so no later attempt exists to judge.
-    if (killClass) killSeen = true;
-    fail = nameTheFailure(fail, { usage, json, stdout: turn.stdout, stderr, signals: turn.signals, name,
-      gauge: { modelMismatch, famRequested, famActual, modelRequested, modelActual } });
-    // How a hard-wall kill read (killedWhile), once per attempt: both rows record it and the next rung reads it. null otherwise.
-    const attemptKilledWhile = fail === "timeout" ? killedWhile(turn, stallSec ?? Number(process.env.CLEAROTRON_STALL_MS || 120000) / 1000) : null;
-
-    // AD-4 house rule — both computed UNCONDITIONALLY, three-valued on purpose:
-    //   wrote: did THIS attempt move any expected artifact? true/false when the stage has expected files,
-    //          null when it has none (nothing to emit — distinct from "did not write").
-    //   reads: the turn's reads gauge; [] = ran and read nothing, null = this engine cannot observe reads.
-    //   readsTruncated: whether that list is COMPLETE. An engine that caps its gauge (anthropic-agent stops
-    //          at 500 distinct paths) hands back a list that reads as exhaustive when it is a prefix — so a
-    //          `read:false` derived from it would be manufactured. null when there is no gauge to truncate.
-    //   warm: whether THIS attempt was a warm patch. A warm patch resumes the failed session with only the
-    //          fix instruction — the declared inputs are not re-offered, so the turn opening nothing is the
-    //          normal warm-resume shape, not evidence it ignored them. Journalled on the attempt row already;
-    //          it rides the return tuple so the stage row's `read` flags can honour it (post-merge audit N1).
-    // `wrote` and the exit-1 rescue's freshness test read the SAME per-attempt snapshot (preArtifact), so a
-    // rescued row can never carry wrote:false, and a failed row's wrote:true is the mid-write/taint shape.
-    const wrote = files.length ? files.some((f) => statOf(f) !== preArtifact.get(f)) : null;
-    const reads = Array.isArray(turn.reads) ? turn.reads : null;
-    const readsTruncated = reads === null ? null : turn.readsTruncated === true;
+    // A form defect is handed back to the session that wrote it, inside this dispatch (ladder/form-repair.mjs).
+    const repaired = await repairFormInDispatch(stage, judge, { attempt, key, turn, effTimeout, fail, stampedQuantity, failingFile,
+      formRepairsUsed, killSeen, lastGraded, lastModelUsed }, helpers);
+    const { formRepairsThisAttempt } = repaired;
+    ({ fail, stampedQuantity, failingFile, formRepairsUsed, killSeen, lastGraded, lastModelUsed } = repaired);
+    // Whether this attempt's own artifacts answer its failure, and the name the failure then goes by (ladder/rescue.mjs).
+    const rescue = rescueAndName(stage, judge, { fail, turn, preArtifact, dispatchedAt, settledAt, killSeen,
+      modelMismatch, famRequested, famActual, modelRequested, modelActual }, helpers);
+    const { killClass, attemptKilledWhile } = rescue;
+    ({ fail, killSeen } = rescue);
+    // What this attempt wrote, read and still owes, and its draft kept when it is the best so far (ladder/attempt-record.mjs).
+    const { wrote, reads, readsTruncated, quantity, noChange } = measureAttempt(stage, { attempt, key, warm, turn, preArtifact, fail,
+      stampedQuantity, failingFile, killClass, killSeen, attemptFails }, helpers);
     lastWrote = wrote;
     lastReads = reads;
     lastReadsTruncated = readsTruncated;
     lastWarm = warm;
 
-    // — the convergence ledger. Two facts the attempt row never carried:
-    //   quantity: how many of the thing are STILL wrong ("9 meaning receipts undisposed"), as a NUMBER,
-    //     taken from the UNTRUNCATED fail string — the validator's own count where it stamped one, the
-    //     allowlisted text extraction otherwise (repairs.mjs progressQuantity). null = this failure
-    //     carries no progress quantity; NEVER 0, which would read as "nothing left" — i.e. as a PASS.
-    //     Written unconditionally, three-valued like `wrote` and `reads`: on a successful attempt and on
-    //     a quantity-less failure alike the row SAYS null rather than staying silent.
-    //   noChange: this attempt's failure is byte-identical to the previous attempt's. The ladder already
-    //     stops on that for the content classes (the A4 break below) — but it can only know it AFTER
-    //     paying for the attempt, and nothing recorded that the attempt bought a repeat rather than a
-    //     fresh result. The flag is recorded for EVERY class, wider than the break it names, because a
-    //     record of what happened is not the policy about what to do with it.
-    // RECORDING ONLY: no break/park/terminate decision reads either field ( owns that policy).
-    const quantity = fail ? (stampedQuantity ?? progressQuantity(fail)?.value ?? null) : null;
-    const noChange = Boolean(fail) && attemptFails[attemptFails.length - 1] === fail;
-
-    // ── — PRESERVE THE BEST REJECTED DRAFT ─────────────────────────────────────────────────
-    // RECORDING ONLY, like `quantity` and `noChange` beside it: nothing here breaks, parks or terminates,
-    // and what the machinery DOES with a preserved draft is pipeline.mjs's decision. Without this, a
-    // recovery park re-commissions the stage cold and the convergence it parked to protect is gone — the
-    // halves that reached 1 and 2 violations restarted at 21 and 13.
-    // Three refusals, each closing a way this could quietly certify a bad document as the floor:
-    //   · a KILL-CLASS attempt (killClass || killSeen) is never preserved — the same refusal the exit-1
-    //     rescue makes above and for the same reason: `wrote` is a MUTATION, not a proof of a complete
-    //     rewrite, and a stage validate is a SHAPE check. A kill-torn artifact is not a base to patch.
-    //   · `wrote !== true` — an inherited file, or an earlier attempt's, is not THIS attempt's work.
-    //   · a non-finite quantity never wins (best-draft.beatsBest) — ABSENT IS NOT ZERO.
-    if (runDir && fail && wrote === true && !killClass && !killSeen && draftCarryEligible(fail)) {
-      const target = failingFile ?? files[0] ?? null;
-      if (target && recordBestDraft(runDir, name, target, { quantity, fail, attempt, key }))
-        note(`[${name}] attempt ${attempt} rejected at count ${quantity} — preserved as the best draft so far (the next dispatch continues it rather than restarting)`);
-    }
-
     if (runDir) {
-      // — THIS COMMENT USED TO SAY the `usage` extraction "has only ever logged null" and that the
-      // envelope shape was "unconfirmed". Both halves are false and have been for a long time, which is
-      // how a stale build-stage note came to describe a live field as dead. Measured on preserved runs
-      // whose engine commit is byte-identical to this file: the R5 register-unit attempt row of 08-12
-      // carries {input:8349, output:18374, cacheRead:1805815, cacheWrite:96608, total:1929146}. Every
-      // figure in its own table is a verbatim read of these rows — the issue was minted BY reading
-      // the field this comment called null. The shape is `mapUsage`'s canonical
-      // {input, output, cacheRead, cacheWrite, total}, written by both engines
-      // (anthropic-agent.mjs mapUsage, openai-agent.mjs from turn.completed).
-      //
-      // CLEAROTRON_DUMP_JSON stays, but as what it now is: a raw-envelope capture for reading a field this
-      // extraction does not map, not an open probe waiting for an answer it already has.
-      if (envOn("CLEAROTRON_DUMP_JSON") && json) {
-        try { writeFileSync(driverDir(runDir, `${name}.attempt${attempt}.rawjson.json`), JSON.stringify(json, null, 2)); } catch { /* best-effort */ }
-      }
-      // Telemetry is TOKENS ONLY (owner directive 2026-07-11): the attempt row carries the raw `usage`
-      // counts and no driver-computed currency — the per-engine cost policy (costUsd/pricedModel) and the
-      // price table it read are gone. Raw provider output (e.g. a CLEAROTRON_DUMP_JSON capture) is untouched.
-      stageLog(runDir, name, {
-        attempt, key, agent, model,
-        // engine-aware provenance: the GPT id on an openai run, the anthropic-catalog id on an anthropic
-        // run. STILL THE REQUESTED RESOLUTION — unchanged in meaning so run-economics.mjs and tokens.mjs
-        // keep reading exactly what they have always read.
-        modelUsed: modelRequested,
-        // corruption 3 — the wire's own answer, beside it. Three-valued and written UNCONDITIONALLY:
-        //   modelActual   — the id the provider reported, or null when the stream never said one.
-        //   modelBasis    — "actual" | "unknown". Never "requested-dressed-as-actual".
-        //   modelMismatch — true/false when both sides name a family, null when either does not.
-        // Written even on the rows where they are null, so "this engine cannot report" stays visibly
-        // different from "this record predates the gauge".
-        modelActual, modelBasis, modelSnapshot, modelMismatch, providerReported,
-        cliVersion: cli.version, cliVersionProbe: cli.probe, ...(cli.why ? { cliVersionWhy: cli.why } : {}), cliSource: cli.source,
-        cliFloor: cli.floor ?? null, cliBelowFloor: cli.belowFloor ?? null,
-        // W3 billing telemetry: which engine ran + the RESOLVED billing mode (subscription vs api-key). This
-        // records INTENT (the mode the engine was configured to bill under), not independent billing evidence
-        // — the actual proof is the provider console (claude's stream also reports apiKeySource; codex does
-        // not). The value's job here is to make a silent mode-mismatch impossible to miss after the fact.
-        //
-        // — `apiBilled` IS WRITTEN EVEN WHEN FALSE, and it read `|| undefined` until now, which
-        // elided exactly the value a subscription run has. The cost was measured rather than argued: a
-        // sweep of every archived August run looking for this stamp found it nowhere, and the CONTROL
-        // showed no run carried one at all — so the absence could not say whether API mode had ever been
-        // used, and the question had to be left open. That is the house rule two files over, in the wild:
-        // "every telemetry field is written unconditionally, so 'did not happen' stays distinguishable
-        // from 'not recorded'" (instrumentation-house-rule.test.mjs). A run must be able to STATE that it
-        // billed subscription, not merely fail to state that it billed API.
-        engine: engine.name, writeBoundary: writeBoundaryOf(engine), authMode: auth.mode, apiBilled: auth.apiBilled === true, cloud: auth.cloud ?? null,
-        // build 2 — THIS attempt is the fresh dispatch bought by discarding a warm session that
-        // reproduced its own failure. Exact, not cumulative: a `warmEscalatedAt > 0` test would mark
-        // every later attempt too the moment the ladder is deepened, and the row would stop meaning
-        // one dispatch.
-        warmEscalated: attempt === warmEscalatedAt || undefined,
-        code, wall, timeoutSec: effTimeout, fail,
-        // — THE DRIVER'S OWN VERDICT ON THIS ATTEMPT: the same `ok!fail` the run.jsonl spine has
-        // carried since AD-4, which this row never had. Its headline was `status`/`summary`, both echoed
-        // verbatim from the ENGINE's envelope — they answer "did the CLI turn complete", never "did this
-        // attempt produce what the stage exists to produce". Sixty report-card attempts on round 892dd88e
-        // journalled status:"ok", summary:"success", code:0, wrote:true and output.present:true beside a
-        // populated `fail`, and a watcher keyed on the headline saw sixty successes.
-        // — AND NOT WHEN THE SESSION REACHED AN ERROR RESULT, whatever its last result said: a refusal a
-        // restart recovered is a session that was refused (engine/session-record.mjs). `fail` is unchanged,
-        // so the ladder and every reader asking "did the stage fail" read exactly what they read before.
-        ok: attemptOk(fail, turn),
-        // What the session went through — every result, classifier cut, refusal and restart, with when —
-        // and where its raw stream is, or why it was not kept. null where the engine cannot report.
-        session: turn.session ?? null, stream: streamMeta(runDir, turn.stream),
-        // The engine's claim about itself, KEPT and renamed to say whose claim it is. A self-report is
-        // evidence — deleting it would destroy the only record of what the seat believed it had done — and
-        // it is not a verdict. Still three-valued (ok | timeout | error). Nothing in the driver reads either
-        // field (measured across driver/, scripts/ and mcp-server/), so the rename costs no consumer, and
-        // archived rows keep `status`/`summary` meaning exactly what they meant when they were written.
-        engineStatus: json?.status,
-        // TRUE exactly when the engine said the turn completed and the driver failed the attempt anyway.
-        // BOTH filed shapes are this one: wrote:false with the artifact never written, and wrote:true with
-        // the artifact written and rejected. A check keyed on `wrote` alone sees only the first.
-        selfReportContradicted: (fail && json?.status === "ok") || undefined,
-        // convergence ledger (see the computation above): the progress quantity as a number —
-        // null means ABSENT, never zero — and whether this attempt reproduced its predecessor exactly.
-        quantity, noChange: noChange || undefined,
-        // — what the meaning-sweep union held after this attempt was judged. `carried` is the number
-        // of rows whose ruling came from a PREVIOUS attempt, i.e. exactly the work a cold re-dispatch used
-        // to destroy. Absent on every stage that owns no meaning sweep. RECORDING ONLY.
-        // — `parked` rides here too. RECORDING ONLY, so this one is diagnostics rather than a
-        // client surface — but it is the trail the NEXT round reads to ask what a run actually did, and a
-        // trail that omits the parks describes a run that decided everything.
-        dispositions: lastUnion ? { countable: lastUnion.countable, ruled: lastUnion.ruled, outstanding: lastUnion.outstanding, parked: lastUnion.parked, total: lastUnion.total } : undefined,
-        // — the same field for the register coverage form. Absent on every stage that owns no
-        // coverage form, and on any run whose plan apparatus is out of reach. RECORDING ONLY.
-        coverage: lastCoverageUnion ? { settled: lastCoverageUnion.settled, outstanding: lastCoverageUnion.outstanding, carried: lastCoverageUnion.carried, total: lastCoverageUnion.total } : undefined,
-        // — the placement form's own row. `carried` is the measurement the issue asks for: tiers a
-        // previous attempt placed that this one did not re-submit, i.e. exactly what the R1 discard
-        // destroyed. `unresolved` counts selections the fold does not hold. RECORDING ONLY.
-        placements: lastPlacementUnion ? { settled: lastPlacementUnion.settled, outstanding: lastPlacementUnion.outstanding,
-          carried: lastPlacementUnion.carried, total: lastPlacementUnion.total, seatRows: lastPlacementUnion.seat_rows,
-          unresolved: lastPlacementUnion.unresolved, rendered: lastPlacementUnion.rendered, account: lastPlacementUnion.account } : undefined,
-        //: how many in-dispatch form repairs THIS attempt bought (absent = none). Its own rows
-        // sit immediately above with the defect each one was dispatched to fix.
-        formRepairs: formRepairsThisAttempt || undefined,
-        laneWaitMs,   // WS-C turn-cap queue time — the live overlap validation reads this
-        // A6: the provider's stop reason, verbatim — the max_tokens fault line is countable from the
-        // rows alone (fail carries the named fault; this field carries the raw discriminator).
-        stopReason: json?.stopReason ?? undefined, ...endingFields(json),   // — and beside it what ended the session: its kind, the vendor's status, and on an error the program's own words (session-record.mjs)
-        // taint durability (copper-lattice): the kill discriminators survive to disk — register-taint.mjs
-        // reads these rows across process restarts (--resume), where the in-memory turn object is gone.
-        // `followup` matters too: a followup success PATCHES the prior session's output, it never
-        // supersedes a taint the way a fresh full pass does.
-        killed: killed || undefined,
-        timeoutCause: timedOutBy ?? undefined,   // — which of the three timeout signals fired: killed, stderr or wall
-        signals: turn.signals ?? undefined,
-        //: how long every declared artifact had been untouched when the turn settled. Present on any
-        // hard-wall kill the wall rescue looked at — INCLUDING the ones it refused, so "considered and
-        // refused" is readable from the record and never the same silence as "never looked". null when the
-        // arm did not apply (no wall, no validator, no declared file).
-        quiescentMs: Number.isFinite(quiescentMs) ? Math.round(quiescentMs) : undefined,
-        rescueRefused: rescueRefused ?? undefined,   // — the cause, when the rescue looked and refused
-        rescueRefusedFile: rescueRefusedFile ?? undefined, rescueRefusedReason: rescueRefusedReason ?? undefined,
-        refusedCalls: attemptRefusals ?? undefined,   // — {count, last}: this dispatch's refusals, on a timeout
-        //: the verbatim message this attempt was dispatched with — {file, sha, bytes, chars, kind}.
-        // null when the run has no directory or the gate is off; {present:false, error} when the write
-        // failed. An absence is a record here, never a silence.
-        dispatch,
-        // exit-1 rescue (charter P1 §2): the turn exited nonzero but its artifact was fresh + valid — the
-        // row records WHAT was rescued so the journal never reads a rescued 500 as a clean turn.
-        // Since it also carries "timeout": a hard-wall kill whose artifact was finished and quiet.
-        // A stage that succeeded AT THE WALL is therefore distinguishable from one that succeeded
-        // normally — `rescued:"timeout"` plus `killed:true` on the winning row is the signature.
-        rescued: rescued ?? undefined,
-        followup: followup || undefined,
-        warm: warm || undefined,
-        runId: json?.runId, engineSummary: json?.summary,   // — the SEAT's word for itself; see `ok` above
-        usage,
-        // — the ratio `usage` and `wall` could always have been divided into, recorded so nobody
-        // has to read two archived runs to find out a stage generated four times slower. null (never 0)
-        // on a turn that measured nothing — see tokensPerSec.
-        tokensPerSec: tokensPerSec(usage, wall),
-        // — WHAT tokensPerSec's denominator CONTAINS, beside the ratio. Two integers from the
-        // stream's own agent loop: how many tools the turn called, and how long it spent waiting for
-        // them. A slow stage and a stage doing more tool work look identical in the ratio alone, which
-        // is the comparison had to reconstruct by hand across archived runs.
-        //
-        // null (not 0, and not absent) on an engine that cannot report them, so "this adapter does not
-        // measure" stays visibly different from "this turn called no tools" — see toolGauge.
-        ...toolGauge(turn), band: bandSize ?? undefined,
-        inputBytes: derivedLimit?.inputBytes ?? undefined, derivedLimitSec: derivedLimit?.sec ?? undefined,
-        // …and whether this attempt spent that limit and exited cleanly anyway. Written UNCONDITIONALLY and
-        // three-valued, beside the two numbers it is about, so a failure that had used its whole budget is
-        // not left looking like an artifact problem. It names a fact; it moves no retry policy. See
-        // `spentBudgetCleanly`.
-        budgetSpentCleanly: spentBudgetCleanly({ fail, killed, code, wall, derivedLimitSec: derivedLimit?.sec }),
-        killedWhile: attemptKilledWhile,
-        // The share of each told manual this turn's model was shown, read off its saved stream (manuals-seen.mjs); null
-        // where the stream cannot say. A resumed turn is shown only what it read after resuming, so read it beside `warm`.
-        manualsSeen: measureManualsSeen(turn, witnessed.told, engine.name),
-        // AD-4 emitted-vs-landed, UNCONDITIONAL (was success-only, which made a failed attempt's mid-write
-        // artifact invisible): `output` = what LANDED on disk after this attempt (null when the stage has no
-        // expected file); `wrote` = whether THIS attempt emitted it (see the computation above the runDir
-        // gate). A failed row with wrote:true is the mid-write/taint shape; ok with wrote:false is inherited.
-        // outputMeta, NOT fileMeta: an attempt that emitted nothing must journal {present:false} — under
-        // fileMeta it journalled {sha:null,size:0}, a record where there is no file (see log.mjs).
-        output: files.length ? outputMeta(files[0]) : null,
-        // — THE FORM'S OWN sha, beside the output's. On a form-bearing stage the declared output is
-        // the prose the seat writes once; the form is what every attempt after the first is graded on.
-        // Five attempts on one delivered run recorded one identical output sha, so the record could not
-        // distinguish a retry that filled 40 rows from one that touched nothing. ADDITIVE — `output`
-        // keeps its meaning exactly, and this is absent on every stage that owns no form.
-        form: gradedFormMeta() ?? undefined,
-        wrote,
-        // AD-4 reads gauge: which files the turn actually opened ([] = none; null = engine can't observe)
-        // and whether that list is complete (true = the engine's cap dropped distinct paths).
-        reads, readsTruncated,
-        stderrTail: streamDigest(stderr),
-        // — STDOUT ONLY WHEN THE TURN PRODUCED NO PARSEABLE JSON. A crashing wrapper prints its
-        // reason to whichever stream it likes, and on the observed failure the record carried neither.
-        // Absent on every healthy turn, so this costs nothing on the runs that work.
-        stdoutTail: (fail && !json) ? streamDigest(turn.stdout) || undefined : undefined,
-      });
-      // AD-4 — `attempt` lands on run.jsonl too (ADDITIVE: _driver/<stage>.jsonl keeps the full per-attempt
-      // detail and the harness keeps reading it there; run.jsonl gets the lean per-attempt spine it never
-      // had — its readers previously saw one "stage" event with attempts:N and no causes, and the knockout
-      // lane logs no stage events at all, so run.jsonl alone could not distinguish "no retries happened"
-      // from "retries not recorded here"). Best-effort like every telemetry write.
-      try {
-        runLog(runDir, {
-          event: "attempt", stage: name, attempt, of: maxRetries + 1, ok: attemptOk(fail, turn), fail: fail ?? null,
-          // The spine carries the one-word answer and the pointer; the per-stage row carries the record.
-          interrupted: turn.session?.interrupted ?? null, stream: streamMeta(runDir, turn.stream)?.file ?? null,
-          //: the spine carries the same pair as the per-stage log, or the two disagree about what
-          // ran. `model` stays the requested resolution (its existing readers); `modelActual` is the wire.
-          model: modelRequested, modelActual, modelBasis, modelSnapshot, modelMismatch, providerReported,
-          cliVersion: cli.version, cliVersionProbe: cli.probe, ...(cli.why ? { cliVersionWhy: cli.why } : {}), cliSource: cli.source,
-        cliFloor: cli.floor ?? null, cliBelowFloor: cli.belowFloor ?? null,
-          wrote, warm: warm || undefined, warmEscalated: attempt === warmEscalatedAt || undefined,
-          rescued: rescued ?? undefined, killed: killed || undefined, timeoutCause: timedOutBy ?? undefined,
-          quiescentMs: Number.isFinite(quiescentMs) ? Math.round(quiescentMs) : undefined,   // — see the per-stage row
-          rescueRefused: rescueRefused ?? undefined,   // — the cause, when the rescue looked and refused
-          rescueRefusedFile: rescueRefusedFile ?? undefined, rescueRefusedReason: rescueRefusedReason ?? undefined,
-          refusedCalls: attemptRefusals ?? undefined,   // — see the per-stage row
-          // — AND THE BILLING PAIR, by the same argument makes for the model pair one field up:
-          // the spine carries it or the two logs disagree about what ran. This is the row a sweep across
-          // archived runs actually reads, and the question "has this box ever billed API" could not be
-          // answered from it because the pair was only ever on the per-stage log. Written unconditionally,
-          // like everything else here: a subscription run states `false`.
-          authMode: auth.mode, apiBilled: auth.apiBilled === true, cloud: auth.cloud ?? null,
-          //: the spine carries the POINTER and the sha, not the text — enough to find the file and
-          // to tell two attempts apart without opening either.
-          dispatch: dispatch?.file ?? null, dispatchSha: dispatch?.sha ?? null,
-          // The manuals this attempt's opening message carried, by name, size and sha, and any left to a read: what was sent
-          // stays apart from what the session read with its tools afterwards.
-          manualsInline: wire.inlined.length ? wire.inlined : undefined, manualsLeftToRead: wire.missing.length ? wire.missing : undefined,
-          //: the spine carries the convergence pair too — the ladder's shape (25 → 9 → 9 vs
-          // 29 → 11 → pass) is readable from run.jsonl alone, without joining the per-stage log.
-          quantity, noChange: noChange || undefined,
-          // — and the COST pair, by the same argument made for the convergence pair. The
-          // spine carried neither `wall` nor `usage`, so "which stage generated slowly" was not a
-          // question run.jsonl could answer at all: it took joining the per-stage log for every stage
-          // in the run, which is why the anomaly was found by hand across two archived runs rather than
-          // by anything watching. Written UNCONDITIONALLY, null and not 0 when the turn measured
-          // nothing — an unmeasured turn and a turn that emitted nothing are different events, and the
-          // 485-second killed dispatch is exactly the one a 0 here would erase.
-          wall, outputTokens: usage?.output ?? null, tokensPerSec: tokensPerSec(usage, wall),
-          // — the spine carries them too, or a round has to join two files to ask why a stage was slow.
-          ...toolGauge(turn), band: bandSize ?? undefined,
-        inputBytes: derivedLimit?.inputBytes ?? undefined, derivedLimitSec: derivedLimit?.sec ?? undefined,
-        // …and the same fact on this row, because one of the two carrying it records half the runs and
-        // reads as done. Three-valued and beside the numbers it is about. See `spentBudgetCleanly`.
-        budgetSpentCleanly: spentBudgetCleanly({ fail, killed, code, wall, derivedLimitSec: derivedLimit?.sec }),
-        killedWhile: attemptKilledWhile,
-          formRepairs: formRepairsThisAttempt || undefined,   //, see the stage row above
-        });
-      } catch { /* telemetry best-effort — never fail a turn over a journal line */ }
+      // The attempt's row in the stage's own log, then its event on the run's spine (ladder/attempt-record.mjs).
+      const facts = { ...rescue, attempt, key, warm, warmEscalatedAt, effTimeout, dispatch, witnessed, wire, turn, cli, modelRequested,
+        modelActual, modelBasis, modelSnapshot, modelMismatch, providerReported, timedOutBy, fail, formRepairsThisAttempt, lastGraded,
+        wrote, reads, readsTruncated, quantity, noChange };
+      writeAttemptRow(stage, judge, facts, helpers);
+      writeAttemptEvent(stage, facts, helpers);
     }
 
     // sessionKey = the key that actually SUCCEEDED (attempt 1 = base key; a retry = `${base}-rerunN`). Callers
@@ -1589,6 +879,15 @@ async function runStageLadder(name, opts, stageHome = null, engine = selectEngin
   // sessionKey on FAILURE = the last attempted key (lastKey) — callers that recover terminally (e.g. the
   // WS-A coverage-ledger quarantine) need a session to attribute/resume; it is best-effort, not a winner.
   return { ok: false, attempts: attempt, fail: lastFail, sessionKey: lastKey, modelWire: lastModelWire, modelUsed: lastModelUsed, attemptFails: [...attemptFails], warmEscalated: warmEscalatedAt > 0 || undefined, quantity: lastQuantity, reads: lastReads, readsTruncated: lastReadsTruncated, warm: lastWarm, wrote: lastWrote, formRepairs: formRepairsUsed };
+}
+
+// What the ladder's phases (ladder/*.mjs) call from this file. They never import it, since it imports them, so they
+// are handed these, as rescue.mjs is handed `rel`.
+function ladderHelpers() {
+  return { rel, sleep, retryBackoffMs, vetoResumeRuledNone, warmEligible, warmTimeoutMessage, warmPatchMessage, correctiveMessage,
+    syncDispositionForm, syncCoverageForm, syncPlacementForm, toolWrittenArtifact, gradedArtifact, saidBackOnly, isFormClassFail,
+    MAX_FORM_REPAIRS, repairTarget, refusalsInWindow, killedWhile, draftCarryEligible, writeBoundaryOf, attemptOk, streamMeta,
+    tokensPerSec, toolGauge, spentBudgetCleanly, streamDigest };
 }
 
 /**

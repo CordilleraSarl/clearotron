@@ -78,7 +78,8 @@
 //                               `familyExplained` beside it (a retrieval pattern the reading turn
 //                               withheld, 2026-09-25) has the same shape: it feeds the returned
 //                               `phoneticFamilyExplained` and the same `complete`, off the same band.
-//   · runStageLadder() in gateway.mjs     the two `wrote` producers — see the disagreement below; both now guard
+//   · the stage ladder's two `wrote` producers, measureAttempt() in ladder/attempt-record.mjs and
+//                               repairFormInDispatch() in ladder/form-repair.mjs — see the disagreement below; both now guard
 //                               the empty case, and each reads its own per-turn stat snapshot, which the
 //                               site states.
 //   · grounds-grammar.mjs:89 classifyGroundsNote
@@ -193,7 +194,7 @@
 //                               again for itself. (CITED BY SYMBOL AND NO LINE, per CONTRIBUTING.md.)
 //
 //  DISAGREE (1), fixed here:
-//   · runStageLadder() in gateway.mjs   TWO PRODUCERS OF ONE FIELD, TWO UNITS FOR THE EMPTY CASE. The attempt row
+//   · the stage ladder (ladder/attempt-record.mjs, ladder/form-repair.mjs)   TWO PRODUCERS OF ONE FIELD, TWO UNITS FOR THE EMPTY CASE. The attempt row
 //                        answers `files.length ? files.some(…) : null`; the repair row answered
 //                        `files.some(…)`, and `[].some()` is `false`. A stage declaring no expected
 //                        artifact leaves `files` empty, so the same situation was "wrote nothing" on one
@@ -274,7 +275,8 @@ const structureSites = () => nonEmpty(sweep(), "travelling-predicates sweep()")
 // header; this is what the tree may not exceed without a re-read.
 const RULED = new Map([
   ["band-shape.mjs", 7], ["commonlaw-carry.mjs", 1], ["findings-model.mjs", 1],
-  ["form-neighbourhood.mjs", 4], ["gateway.mjs", 2], ["grounds-grammar.mjs", 1],
+  ["form-neighbourhood.mjs", 4], ["grounds-grammar.mjs", 1],
+  ["ladder/attempt-record.mjs", 1], ["ladder/form-repair.mjs", 1],
   ["pipeline.mjs", 2], ["steps/verdict-gate.mjs", 1], ["publish/render.mjs", 1], ["publish/xlsx.mjs", 2],
   ["reference-score.mjs", 3], ["registry-fidelity.mjs", 2], ["repair-scope.mjs", 4],
   ["portal-config-view.mjs", 1], ["publish/search-depth.mjs", 3], ["goods-evidence.mjs", 1],

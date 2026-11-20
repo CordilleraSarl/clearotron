@@ -221,10 +221,12 @@ test("THE READER TRIPWIRE — a new module that reads row state must be taught t
   // Every one of these names the vocabulary in prose and reads no row. coverage-form.mjs is the one the
   // hand enumeration called a reader: it DOES import from connotation-search.mjs, but the import is
   // `shortId`, which is not row state. Importing from the module and reading a row are different facts,
-  // and only the second one has to know about parks.
+  // and only the second one has to know about parks. ladder/dispatch.mjs and ladder/judge.mjs name
+  // `isRuled` in the comments that moved with the stage ladder's veto and its form unions; the count
+  // they describe is syncDispositionForm's, in gateway.mjs.
   const PROSE = [
     "case-law-ledger.mjs", "common-law-receipts.mjs", "contract-vocabulary.mjs", "coverage-form.mjs",
-    "disposition-call-audit.mjs", "doubt-closure-tool.mjs",
+    "dispatch.mjs", "disposition-call-audit.mjs", "doubt-closure-tool.mjs", "judge.mjs",
   ];
 
   assert.deepEqual(readers, READERS,
