@@ -3,8 +3,7 @@
 //
 // THE CONFLICTS BELOW THE RISK SIT BEHIND ONE CLOSED HEADING (owner, 2026-11-18).
 //
-// A report printed every conflict as a full card: 274 on the largest production clearance, 21 of which set its risk,
-// in a 280-page PDF. Full cards now stay for the conflicts in the band that sets the risk, the highest band any
+// A report printed every conflict as a full card, however far below its risk the conflict sat. Full cards now stay for the conflicts in the band that sets the risk, the highest band any
 // conflict holds on the framework's own ladder. The rest render as compact cards, unticked for export, behind one
 // closed heading with their count in his words, "{N} more conflicts rated {band}", each band below the risk named
 // and joined by "or", and "1 more conflict rated {band}" for one (owner, 2026-11-19). A conflict with no band on the
