@@ -1,5 +1,5 @@
 {
-  "total": 299,
+  "total": 300,
   "files": {
     "driver/test/a-backgrounded-install-can-actually-run-a-clearance.test.mjs": [
       0,
@@ -417,6 +417,10 @@
       2,
       0
     ],
+    "driver/test/connotation-quote-unbound.test.mjs": [
+      1,
+      0
+    ],
     "driver/test/context-pack.test.mjs": [
       1,
       0
@@ -482,7 +486,7 @@
       1
     ],
     "driver/test/disposition-set-has-one-author.test.mjs": [
-      1,
+      2,
       0
     ],
     "driver/test/doctor-before-the-first-start-says-what-start-creates.test.mjs": [
@@ -574,8 +578,8 @@
       0
     ],
     "driver/test/findings-gate-token.test.mjs": [
-      1,
-      2
+      2,
+      1
     ],
     "driver/test/floor-duty.test.mjs": [
       2,
