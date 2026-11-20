@@ -1613,13 +1613,14 @@ const CAVEAT_LEAD = K.caveatLead;
  * hardcoded product name — and, worse, the name of a RETIRED row, so a knockout whose level the registry
  * had forgotten asserted it was the one product it provably was not.
  */
-// ONE NAME'S KNOCKOUT PAGE FROM THE RUN'S REPORT DOCUMENT (C14). The run's report document (publish/report-document.mjs,
-// `_driver/report-document.json`) holds every fact a Knockout page prints. This reads it, as written, for the name at
-// `at`, and hands the page the arguments publish handed it: the name's own slice of the findings record, opening with
-// that name's own assessment on a batch, and the band its report carries. What the document does not hold is the page's
-// surface (the workbook's portal address, the confidentiality posture, the demo flag) and the two sets it holds by
-// reference (each filing's saved record and each saved logo), which publish resolves from the run. PURE given its inputs.
-export function renderKnockoutDocument(doc, at, { filingRecords = new Map(), logos = new Map(), auditHref = null, delivery = null, demoData = false } = {}) {
+// ONE NAME'S KNOCKOUT PAGE CONTEXT FROM THE RUN'S REPORT DOCUMENT (C14). The run's report document
+// (publish/report-document.mjs, `_driver/report-document.json`) holds every fact a Knockout page prints, and this is the
+// one place the page reads it: as written, for the name at `at`, into what the page's context is built from: the name's
+// own slice of the findings record, opening with that name's own assessment on a batch, and the band its report
+// carries. What the document does not hold is the page's surface (which name, the workbook's portal address, the
+// confidentiality posture, the demo flag) and the two sets it holds by reference (each filing's saved record and each
+// saved logo), which publish resolves from the run. PURE given its inputs.
+function knockoutContextOf(doc, { at, filingRecords = new Map(), logos = new Map(), auditHref = null, delivery = null, demoData = false } = {}) {
   const run = doc?.run ?? {}, scope = doc?.scope ?? {}, client = doc?.client ?? {}, framework = doc?.framework ?? {};
   const findings = client.findings ?? {};
   const m = (findings.marks ?? [])[at];
@@ -1630,7 +1631,7 @@ export function renderKnockoutDocument(doc, at, { filingRecords = new Map(), log
   const one = { ...findings, marks: [m], batch: { ...(findings.batch ?? {}), ...(run.single ? {} : { executiveSummary: String(m?.assessment ?? '').trim() }) } };
   const registerRecords = client.registerRecords ?? null;
   const product = run.product ?? {};
-  return renderKnockoutHtml(one, framework.manifest ?? null, {
+  return knockoutContext(one, framework.manifest ?? null, {
     runId: run.runId, overall: run.reports?.[at]?.band ?? null, issued: run.issued, searched: run.searched, auditFile: run.auditFile,
     probeRan: scope.probeRan, registerCounts: client.registerCounts ?? null, registerRecords, ownerChecks: client.ownerChecks ?? [],
     instructedScope: scope.instructedScope ?? null,
@@ -1802,6 +1803,7 @@ ${filings}`
 // own controls after it, its sections in their order, and its footer. Each part reads the context knockoutContext built
 // once, in the order the page has always evaluated them, so the page is byte for byte the page it was.
 export const KNOCKOUT_PAGE = Object.freeze({
+  contextOf: knockoutContextOf,
   title: ({ title, productName }) => `${productName ? `${esc(productName)} — ` : ''}${esc(title)}`,
   css: () => CHROME_CSS + '\n' + THEME_BTN_CSS + '\n' + KO_CSS,
   topbar: ({ findings, runId, overall, issued, identity, matter, homeHref, auditHref, title, productName, issuedDate, overallStop }) => `${homeHref ? `<a class="homebtn tb-back no-print" href="${escAttr(homeHref)}" title="${K.topbar.allReports}"><span aria-hidden="true">←</span> <span class="tb-back-lbl">${K.topbar.allReports}</span></a>` : ''}

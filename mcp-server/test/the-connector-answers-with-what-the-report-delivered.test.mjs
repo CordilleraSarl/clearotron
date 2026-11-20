@@ -32,7 +32,7 @@ const WS = process.env.CLEAROTRON_WORK_DIR, POOL = process.env.CLEAROTRON_REPORT
 const { seedDemoRuns, publishSource, demoChildren } = await import("../../driver/demo-container.mjs");
 const { republishRun } = await import("../../driver/publish/report-registry.mjs");
 const { paths } = await import("../../driver/run-record.mjs");
-const { renderClearanceDocument } = await import("../../driver/publish/render.mjs");
+const { renderReport } = await import("../../driver/publish/render-report.mjs");
 
 const statusFiles = (dir, depth = 0) => (depth > 7 || !existsSync(dir) ? [] : readdirSync(dir).flatMap((name) => {
   const p = join(dir, name);
@@ -119,7 +119,7 @@ test("get_search_coverage lists the native-script searches the page lists as not
     localScripts: { searched: ["Hani"], missed: ["Hang"], territories: { Hani: { searched: ["CN"], missed: ["JP", "KR", "TW", "HK"], worldwide: "searched", unnamed: "searched" } } } } };
   writeFileSync(file, JSON.stringify(document));
   try {
-    const html = renderClearanceDocument(JSON.parse(JSON.stringify(document)));
+    const html = renderReport(JSON.parse(JSON.stringify(document)));
     const page = pageLeftOpen(html);
     assert.ok(page.some((r) => JSON.parse(r)[3]), "premise: the page lists a script gap with the places it counts");
     assert.deepEqual(answeredOpen((await tools.get_search_coverage({ runId: meta.runId })).areas).sort(), page.sort(),

@@ -2637,17 +2637,17 @@ const STRIP = Object.freeze([
   ['searched', R.searched.title],
 ]);
 
-// THE CLEARANCE PAGE FROM ITS REPORT DOCUMENT (C14). The run's report document (publish/report-document.mjs, written to
-// `_driver/report-document.json`) holds every fact the page prints. This reads it, as written, and hands the page the
-// arguments publish hands it today, so the page is byte for byte the page it was. What the document does not hold is
-// the page's surface: its two addresses, the confidentiality posture and the demo flag, which publish passes beside the
-// document as it always has; and the two sets the document holds by reference, the saved records' bodies by uri and the
-// saved logos' images by ref, which publish resolves from the run. PURE given its inputs.
-export function renderClearanceDocument(doc, { recordsByUri = new Map(), logos = new Map(), homeHref, chromeHref, delivery, demoData } = {}) {
+// THE CLEARANCE PAGE'S CONTEXT FROM ITS REPORT DOCUMENT (C14). The run's report document (publish/report-document.mjs,
+// written to `_driver/report-document.json`) holds every fact the page prints, and this is the one place the page reads
+// it: as written, into what the page's context is built from, so the page is byte for byte the page it was. What the
+// document does not hold is the page's surface: its two addresses, the confidentiality posture and the demo flag, which
+// publish passes beside the document as it always has; and the two sets the document holds by reference, the saved
+// records' bodies by uri and the saved logos' images by ref, which publish resolves from the run. PURE given its inputs.
+function clearanceContextOf(doc, { recordsByUri = new Map(), logos = new Map(), homeHref, chromeHref, delivery, demoData } = {}) {
   const run = doc?.run ?? {}, scope = doc?.scope ?? {}, client = doc?.client ?? {}, verdict = doc?.verdict ?? {};
   const framework = doc?.framework ?? {}, prose = doc?.prose ?? {};
   const asMap = (pairs) => (Array.isArray(pairs) ? new Map(pairs) : null);
-  return renderHtml({ fm: prose.frontMatter ?? {}, secs: prose.sections ?? {}, cards: prose.cards ?? [] }, client.findings ?? [], client.coverage ?? [], {
+  return clearanceContext({ fm: prose.frontMatter ?? {}, secs: prose.sections ?? {}, cards: prose.cards ?? [] }, client.findings ?? [], client.coverage ?? [], {
     demoData, frameworkMethod: framework.method, servedModels: client.servedModels, productName: run.product?.name,
     depthNote: run.product?.depthNote, scopeBasis: scope.scopeBasis, auditFile: run.auditFile || undefined, runId: run.runId,
     delivery, recordsByUri, contextNotes: client.contextNotes, coverageJudgment: client.coverageJudgment,
@@ -2874,6 +2874,7 @@ function clearanceContext(parsed, findings = [], coverage = [], opts = {}) {
 // footer, and the script it closes with. Each part reads the context clearanceContext built once, in the order the page
 // has always evaluated them, so the page is byte for byte the page it was.
 export const CLEARANCE_PAGE = Object.freeze({
+  contextOf: clearanceContextOf,
   title: ({ productName, fm }) => `${productName ? `${esc(productName)} — ` : ''}${esc(fm.title || '')}`,
   // The explicit dark pair, the typefaces, the favicon, the base sheet and the print rule are the shell's
   // (page-shell.mjs, which says why the dark pair is explicit only).
