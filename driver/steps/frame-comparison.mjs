@@ -13,6 +13,7 @@ import { addedClassBound, alreadyAttemptedReopen, applyDominantBackstop, deriveD
 import { boundDominantElementFrom } from "../frame-diff-record.mjs";
 import { canonicalJurisdictionCode } from "../jurisdiction-codes.mjs";
 import { note, runLog } from "../log.mjs";
+import { loadCoverageLedger } from "../register-digest-run.mjs";
 import { atomicWrite, readJson } from "../run-record.mjs";
 import { blocksByQidOf, foldSupplementalEntries, joinPlanToBands, pendingRequiredQids, refuseWithheldFamilies, searchedJurisdictionsFromPlan, withheldFamilyTwins } from "../register-plan.mjs";
 import { registerCapabilities } from "../register-unreachable.mjs";
@@ -28,7 +29,7 @@ import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "
 import { dirname, join } from "node:path";
 
 export async function runFrameComparison({ P, axes, ctx, dispatchPlanQids, flushDigestQueue, job, mintDigestWork, planExec, run, runCommonLaw, unitKey }, helpers) {
-  const { bandBytesOf, deriveNamedBand, joinOptions, loadCoverageLedger, mechanicalFormGapDirectives, readRegisterBands, reaskFollowUpErrors, refreshSupplementalExecution, remergeIfBandsMoved } = helpers;
+  const { bandBytesOf, deriveNamedBand, joinOptions, mechanicalFormGapDirectives, readRegisterBands, reaskFollowUpErrors, refreshSupplementalExecution, remergeIfBandsMoved } = helpers;
   // ── Property 1+2 (frame-omission design): the blind frame-diff + the reopen channel ────────────────
   // The blind-frame stage re-derived the threat model STARVED of the matter frame (gather, parallel with
   // the sweeps). Diff that cold model against what the run ACTUALLY scoped/searched (frame-diff), and act
