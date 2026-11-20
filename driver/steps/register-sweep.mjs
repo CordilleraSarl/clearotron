@@ -34,6 +34,7 @@ import { existsSync, readFileSync, renameSync, rmSync, writeFileSync } from "nod
 import { seedUnplannedBands } from "../register-unit-record.mjs";
 import { join } from "node:path";
 import { stopsWithTheRun } from "../cancel.mjs";   // every paid call the code makes itself reads the stop first
+import { defaultConnotationReissuer, noteAdapter, resultsPerCellOf } from "../provider-calls.mjs";
 import { StageFailure } from "../run-outcome.mjs";
 import { inScopeClassList } from "../run-scope.mjs";
 import { must, runBatched, stage } from "../stage-dispatch.mjs";
@@ -57,7 +58,7 @@ export function crossChecksForThisPass(plan, candidates, candDirectives, prior, 
 }
 
 export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, runCommonLaw }, helpers) {
-  const { CL_SUPP_TAGS, connotationRemedyToken, defaultConnotationReissuer, deriveNamedBand, foldSupplementalProposals, holdStickyGapsIn, joinOptions, mergeRegisterBands, noteAdapter, noteChannelCoverageAtStageExit, readPlanExecution, readRegisterBands, recordConnotationAudit, remergeIfBandsMoved, resultsPerCellOf, runSaturationProbeCodeSide, slicesUnitNeverReached, taintDisposition, taintParkJudgmentArtifacts, takeSlicesOutOfTheBand, unfinishedUnitAsItStands, writePlanExecutionReceipt } = helpers;
+  const { CL_SUPP_TAGS, connotationRemedyToken, deriveNamedBand, foldSupplementalProposals, holdStickyGapsIn, joinOptions, mergeRegisterBands, noteChannelCoverageAtStageExit, readPlanExecution, readRegisterBands, recordConnotationAudit, remergeIfBandsMoved, runSaturationProbeCodeSide, slicesUnitNeverReached, taintDisposition, taintParkJudgmentArtifacts, takeSlicesOutOfTheBand, unfinishedUnitAsItStands, writePlanExecutionReceipt } = helpers;
   // Step 2A/2B — fan-out (batched ≤ gatherConcurrency) then the code-side fan-in barrier.
   // Property 1 (frame-omission design): the BLIND re-derivation runs as a sibling of the WHOLE gather,
   // not as a gather member — it reads only the raw instruction (no tool calls), so under the turn cap it

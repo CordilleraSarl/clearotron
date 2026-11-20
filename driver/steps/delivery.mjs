@@ -44,6 +44,7 @@ import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "
 import { basename, join } from "node:path";
 import { followUpKindsOf } from "../follow-up-twins.mjs";   // the search each deferred directive recorded
 import { stopsWithTheRun } from "../cancel.mjs";   // every paid call the code makes itself reads the stop first
+import { defaultRecordFetcher } from "../provider-calls.mjs";
 import { keepRankingReadByWriter, rankingReadByWriterPath } from "../record-carry-trace.mjs";
 import { loadCoverageLedger, relabelCoverageRows } from "../register-digest-run.mjs";
 import { StageFailure } from "../run-outcome.mjs";
@@ -52,7 +53,7 @@ import { safeReadJson, stage, stageCharter } from "../stage-dispatch.mjs";
 import { runPostRepairCorrection } from "./corrections.mjs";
 
 export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, checkLateBind, clampOnTheFloorDuty, clampOnTheWritersDuty, ctx, deliverAndClamp, findingsForCards, followTheRecordsActions, groupedMembers, job, opts, overviewOpen, publishAndDeliver, rebuildTheDeliveredRecord, restoreTheBrokenRecord, reviewOpen, rov, run, runState, saveTheLabel, saveTheOwedLabel, synthesisKey, synthesisModel, synthesisThinking, writeScopeFacts, writeUps, writeVerdictSidecar }, helpers) {
-  const { CITED_URI_RE, NO_CHANGE, REBUILDS_THE_DELIVERED_RECORD, UPSTREAM_STALE_REPAIR, assembleReportMd, cardsNeverBuilt, caseLawJoin, computeOpenFloors, defaultRecordFetcher, fullProseOrdinals, injectFrontMatter, lateRecordIds, owedCardOrdinals, ownerScreenForDelivery, partitionDeliveryStale, postRepairScope, queuedForTheRecordOnly, readFindingsForReport, readFloorAxes, readGoodsHanded, reassembleFromTheRecord, recordChangeOwesReview, recordGoodsHanded, retainStateBeforeReview, runPostRepairReview, runWholeReviewForRecord, settleDerivedBases, stagesStaleOnPlacement, unreadRecordFindingOnly, unreadRecordReview, whatTheRepairLeftStale } = helpers;
+  const { CITED_URI_RE, NO_CHANGE, REBUILDS_THE_DELIVERED_RECORD, UPSTREAM_STALE_REPAIR, assembleReportMd, cardsNeverBuilt, caseLawJoin, computeOpenFloors, fullProseOrdinals, injectFrontMatter, lateRecordIds, owedCardOrdinals, ownerScreenForDelivery, partitionDeliveryStale, postRepairScope, queuedForTheRecordOnly, readFindingsForReport, readFloorAxes, readGoodsHanded, reassembleFromTheRecord, recordChangeOwesReview, recordGoodsHanded, retainStateBeforeReview, runPostRepairReview, runWholeReviewForRecord, settleDerivedBases, stagesStaleOnPlacement, unreadRecordFindingOnly, unreadRecordReview, whatTheRepairLeftStale } = helpers;
   // ── Spec A1 + A2: pre-delivery verification — pure code, before ANYTHING outward-facing. Per the
   // user-amended design it NEVER withholds: every check lands in the receipt artifact; failing checks on a
   // drafting surface get ONE warm named-correction redo (the model re-types, this code re-judges); whatever

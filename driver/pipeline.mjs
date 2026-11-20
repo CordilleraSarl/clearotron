@@ -10,6 +10,7 @@ import { runShell } from "./run-shell.mjs";
 import { deliveryEndState } from "./run-delivered.mjs";
 import { StageFailure, buildFailurePacket, isDesignedRefusal, stageWallFields, terminalReasonFields } from "./run-outcome.mjs";
 import { correctionReading, correctionRows, flagOrdinals, recordCorrectionsBasis, repairUnnamedRemovals, rollbackCorrectivePass, useThePipeline } from "./steps/corrections.mjs";
+import { noteAdapter, resultsPerCellOf } from "./provider-calls.mjs";
 import { digestDispatchExtra, extractRulingsTail, loadCoverageLedger, readOwnerScreen, recallFollowupMaxFor, recordDetailIndex, relabelCoverageRows, runDigest, writeRegisterDigestFacts } from "./register-digest-run.mjs";
 import { deriveRecordCarry, recordSeamDiscards, recordSynthesisSeam, safeReadText } from "./record-carry-trace.mjs";
 import { inScopeClassList, registerJurisdictions } from "./run-scope.mjs";
@@ -63,7 +64,6 @@ import { splitDeferredByCloseability, formRowUnitKey, coverageLedgerTableRows, c
 import { readEnvelopeDecision, settledDeferralsSection, readStickyGaps } from "./envelope-settle.mjs";
 import { parseNamedBand, mergeNamedBands, quarantineUnknownStates } from "./named-band.mjs";
 import { REGISTER_PROVIDER } from "./driver.config.mjs";
-import { noteRegisterServed } from "./register-served.mjs";   // which registers actually served this run — noted eagerly from the dispatch's own resolver, and reconciled at publish against the ledger rows, which carry the vendor per call
 import { FACTS_FILE as DIGEST_FACTS_FILE } from "./register-digest-record.mjs";   // conversion 11 — the render's facts sidecar and the accounting era stamp
 import { buildBandShape, deriveRegisterPositions, floorTierByMark, floorMarkKey } from "./band-shape.mjs";   // PR-8 — the deterministic reading layer; P2-A — candidates + positions
 import { deriveOwnerScreen, ownerScreenNegative } from "./owner-screen.mjs";   // P2-B — the owner×element screen's own receipt
@@ -191,6 +191,7 @@ export { StageFailure, buildFailurePacket, isDesignedRefusal, stageWallFields, t
 export { correctionReading, correctionRows, flagOrdinals, recordCorrectionsBasis, repairUnnamedRemovals, rollbackCorrectivePass };   // moved to steps/corrections.mjs; importers read them here as before
 export { isContentShapedFail, isFallbackEligible };   // moved to repairs.mjs; importers read them here as before
 export { logTurnaroundReconciliation };   // moved to run-quote.mjs; importers read it here as before
+export { resultsPerCellOf };   // moved to provider-calls.mjs; importers read them here as before
 export { digestDispatchExtra, extractRulingsTail, loadCoverageLedger, readOwnerScreen, recallFollowupMaxFor, relabelCoverageRows, writeRegisterDigestFacts };   // moved to register-digest-run.mjs; importers read them here as before
 export { deriveRecordCarry, recordSynthesisSeam };   // moved to record-carry-trace.mjs; importers read them here as before
 export { inScopeClassList, registerJurisdictions };   // moved to run-scope.mjs; importers read them here as before
@@ -202,76 +203,6 @@ export { changedFindingOrdinals, changedFindingOwners, floorDutyOwedNow, foreign
 // coverage-closure lane is the only cell-closing top-up; frame-reopen source-channel closure stays
 // prose/byte-diff (its channels are model-resolved, not spec-shaped platforms), so it writes no supp ledger.
 const CL_SUPP_TAGS = ["closure"];
-
-// V4-2 — the driver-code targeted record fetch (registry-evidence closure), delegated to the ACTIVE
-// register provider's adapter (driver.config.PROVIDERS). Pure code at the comparator's named point — no
-// agent turn, no gateway command lane: the adapter imports the provider's dependency-free plugin core and
-// calls doRecordFetch directly. The plugin chokepoint writes BOTH ledgers (call row + normalized record
-// body) under the un-namespaced sessionKey we pass, so the row prefix-matches this run and the assembled
-// record set picks it up on re-assembly. Credential = the provider's own env var (already in the driver's
-// systemd EnvironmentFile); absence is a named mechanical cause. One provider is active per run.
-/**
- * Note the adapter's own id against this run, and hand the adapter straight back.
- *
- * RECORDED WHERE IT IS RESOLVED, so the run's record says what SERVED it rather than what was configured
- * at launch. Noting is idempotent per run and writes only when the set changes, so a run fetching a
- * thousand records pays one write. A null run directory notes nothing: a call outside a run has no record
- * to carry the field, and inventing one is the guess this field exists to replace.
- */
-function noteAdapter(ctx, adapter) {
-  noteRegisterServed(ctx?.run?.runDir ?? ctx?.paths?.runDir ?? null, adapter?.id);
-  return adapter;
-}
-
-async function defaultRecordFetcher(uri, ctx) {
-  return noteAdapter(ctx, registerAdapter(ctx.register)).recordFetch(uri, ctx);
-}
-
-/**
- * THE ENGINE RE-ISSUES A DICTATED MEANING SEARCH ITSELF, without asking the assessing model to redo the
- * sweep — the same shape as `defaultRecordFetcher` above, which fetches a register record in code when
- * one was dropped unexamined rather than sending the model back for it.
- *
- * "Through the same tool" is literal and costs no new machinery: the research provider's grid functions
- * are a plain module with no listener, so the component the model calls and this one call the SAME
- * functions on the same provider. There is no second implementation to drift.
- *
- * NARROW BY CONSTRUCTION. The spec handed over carries only the queries that are missing, so this buys
- * those cells rather than re-running a sweep that already cost real money and real minutes.
- *
- * It DECIDES nothing. The caller re-merges and the gate judges, so a re-issue that comes back empty is
- * simply a re-merge that still fails, and is disclosed as such rather than counted as searched.
- */
-/** The grid spec's `results_per_cell` from a frozen search policy, or nothing for a run frozen without one. PURE. */
-export function resultsPerCellOf(searchPolicy) {   // @internal
-  const n = searchPolicy?.web?.resultsPerCell;
-  return Number.isInteger(n) && n >= 1 ? { results_per_cell: n } : {};
-}
-
-async function defaultConnotationReissuer(queries, { spec, modelOverride = null, rawPath = null } = {}) {
-  const apiKey = process.env.PERPLEXITY_API_KEY || "";
-  if (!apiKey) return { ok: false, cause: "no research credential in the driver environment", rows: [] };
-  const core = await import("../providers/perplexity/src/core.js");
-  const narrow = { ...spec, connotation: { ...(spec.connotation ?? {}), queries: queries.slice() } };
-  try {
-    const task = core.buildGridProgramTask(narrow);
-    const data = await core.callAgentAPI(apiKey,
-      core.buildRequestBody({ task, preset: "pro-search", modelOverride, enableSandbox: true }));
-    // WHAT CAME BACK, KEPT IN THE RUN like every other web call's: the capture keeps the receipts only.
-    if (rawPath) {
-      try {
-        mkdirSync(dirname(rawPath), { recursive: true });
-        writeFileSync(rawPath, JSON.stringify({ tool: "connotation-reissue", queries, items: core.rawResultItems(data) }, null, 1) + "\n");
-      } catch { /* best-effort: the receipts below are the record */ }
-    }
-    const cap = core.captureGridFromResponse(data, narrow);
-    if (!cap?.ok) return { ok: false, cause: String(cap?.error ?? "capture failed").slice(0, 160), rows: [] };
-    const rows = parsePrRiskResults(cap.ledgerJson).filter((r) => queries.includes(r.query));
-    return { ok: true, rows, requested: queries.length };
-  } catch (e) {
-    return { ok: false, cause: String(e?.message ?? e).slice(0, 160), rows: [] };
-  }
-}
 
 // The ACTIVE provider's capability contract and the offices this DEPLOYMENT cannot reach both moved to
 // register-unreachable.mjs, unchanged, because Depth 2's count and record lanes need the same
@@ -7365,7 +7296,7 @@ async function pipelineInner(job, opts = {}) {
     } },
     { name: "register-sweep", run: async () => {
         // The register and unregistered-use searches and their fan-in (steps/register-sweep.mjs).
-        ({ planExec, unitKey, dispatchPlanQids } = await runRegisterSweep({ P, agent, axes, ctx, job, opts, run, runCommonLaw }, { CL_SUPP_TAGS, connotationRemedyToken, defaultConnotationReissuer, deriveNamedBand, foldSupplementalProposals, holdStickyGapsIn, joinOptions, mergeRegisterBands, noteAdapter, noteChannelCoverageAtStageExit, readPlanExecution, readRegisterBands, recordConnotationAudit, remergeIfBandsMoved, resultsPerCellOf, runSaturationProbeCodeSide, slicesUnitNeverReached, taintDisposition, taintParkJudgmentArtifacts, takeSlicesOutOfTheBand, unfinishedUnitAsItStands, writePlanExecutionReceipt }));
+        ({ planExec, unitKey, dispatchPlanQids } = await runRegisterSweep({ P, agent, axes, ctx, job, opts, run, runCommonLaw }, { CL_SUPP_TAGS, connotationRemedyToken, deriveNamedBand, foldSupplementalProposals, holdStickyGapsIn, joinOptions, mergeRegisterBands, noteChannelCoverageAtStageExit, readPlanExecution, readRegisterBands, recordConnotationAudit, remergeIfBandsMoved, runSaturationProbeCodeSide, slicesUnitNeverReached, taintDisposition, taintParkJudgmentArtifacts, takeSlicesOutOfTheBand, unfinishedUnitAsItStands, writePlanExecutionReceipt }));
     } },
     { name: "frame-comparison", run: async () => {
         // The blind frame compared with what the run scoped, and the reopen (steps/frame-comparison.mjs).
@@ -7383,7 +7314,7 @@ async function pipelineInner(job, opts = {}) {
     } },
     { name: "skeptic-and-follow-up", run: async () => {
         // The skeptic, and the searches and rechecks that follow it (steps/skeptic-and-follow-up.mjs).
-        await runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQids, flushDigestQueue, job, mintDigestWork, opts, planExec, run, unitKey }, { askableOf, bandBytesOf, capabilityGapAxes, defaultRecordFetcher, deriveBandShape, deriveNamedBand, envelopeDecision, envelopeHeldNote, escalationHeldNote, findFloorBreaches, isInactiveAxisRow, lateRecordIds, officeGapOf, readFloorAxes, readPlanExecution, reaskFollowUpErrors, recordPlacementPass, recordScreenGateEvidence, refreshSupplementalExecution, remergeIfBandsMoved, screenGateSnapshot, skepticDeferralExtra, stickyGapUnits });
+        await runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQids, flushDigestQueue, job, mintDigestWork, opts, planExec, run, unitKey }, { askableOf, bandBytesOf, capabilityGapAxes, deriveBandShape, deriveNamedBand, envelopeDecision, envelopeHeldNote, escalationHeldNote, findFloorBreaches, isInactiveAxisRow, lateRecordIds, officeGapOf, readFloorAxes, readPlanExecution, reaskFollowUpErrors, recordPlacementPass, recordScreenGateEvidence, refreshSupplementalExecution, remergeIfBandsMoved, screenGateSnapshot, skepticDeferralExtra, stickyGapUnits });
     } },
     { name: "synthesis", run: async () => {
         // The writer, the case-law grounding and the first review (steps/synthesis.mjs).
@@ -7448,7 +7379,7 @@ async function pipelineInner(job, opts = {}) {
     { name: "verdict-gate", run: async () => {
         // The verdict's floors and terminal guards (steps/verdict-gate.mjs).
         // applyVerdictFrontMatter is declared further down, so it goes in by name, read when called.
-        ({ applyCoverageFloor, clampOnTheFloorDuty, clampOnTheWritersDuty, deliverAndClamp, followTheRecordsActions, saveTheLabel, saveTheOwedLabel, writeVerdictSidecar } = await runVerdictGate({ P, agent, applyVerdictFrontMatter: (...a) => applyVerdictFrontMatter(...a), correctiveCycleSettled, correctiveEntryVerdict, correctiveRecheckOk, coverageJudgment, ctx, opts, run, runState }, { actionsRegisterListed, conditionsFollowingTheRecord, defaultRecordFetcher, enrichFindingDeadlines, lateRecordsUnaddressed, loadScreenGateUnresolved, owedUrisFor, planAuditExtra, refusedRecordsLeftOut, registerGapConditions, saveWithRetries, withdrawByToken }));
+        ({ applyCoverageFloor, clampOnTheFloorDuty, clampOnTheWritersDuty, deliverAndClamp, followTheRecordsActions, saveTheLabel, saveTheOwedLabel, writeVerdictSidecar } = await runVerdictGate({ P, agent, applyVerdictFrontMatter: (...a) => applyVerdictFrontMatter(...a), correctiveCycleSettled, correctiveEntryVerdict, correctiveRecheckOk, coverageJudgment, ctx, opts, run, runState }, { actionsRegisterListed, conditionsFollowingTheRecord, enrichFindingDeadlines, lateRecordsUnaddressed, loadScreenGateUnresolved, owedUrisFor, planAuditExtra, refusedRecordsLeftOut, registerGapConditions, saveWithRetries, withdrawByToken }));
 
         // R.1 primitive #3 (engagement receipt) is computed later, in the pre-delivery block, together with
         // F2 rule-shape + B2b reviewer self-coherence into ONE _driver/reasoning-integrity.json sidecar — that
@@ -7460,7 +7391,7 @@ async function pipelineInner(job, opts = {}) {
     } },
     { name: "delivery", run: async () => {
         // The checks before delivery, their repairs, and the publish (steps/delivery.mjs).
-        return await runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, checkLateBind, clampOnTheFloorDuty, clampOnTheWritersDuty, ctx, deliverAndClamp, findingsForCards, followTheRecordsActions, groupedMembers, job, opts, overviewOpen, publishAndDeliver, rebuildTheDeliveredRecord, restoreTheBrokenRecord, reviewOpen, rov, run, runState, saveTheLabel, saveTheOwedLabel, synthesisKey, synthesisModel, synthesisThinking, writeScopeFacts, writeUps, writeVerdictSidecar }, { CITED_URI_RE, NO_CHANGE, REBUILDS_THE_DELIVERED_RECORD, UPSTREAM_STALE_REPAIR, assembleReportMd, cardsNeverBuilt, caseLawJoin, computeOpenFloors, defaultRecordFetcher, fullProseOrdinals, injectFrontMatter, lateRecordIds, owedCardOrdinals, ownerScreenForDelivery, partitionDeliveryStale, postRepairScope, queuedForTheRecordOnly, readFindingsForReport, readFloorAxes, readGoodsHanded, reassembleFromTheRecord, recordChangeOwesReview, recordGoodsHanded, retainStateBeforeReview, runPostRepairReview, runWholeReviewForRecord, settleDerivedBases, stagesStaleOnPlacement, unreadRecordFindingOnly, unreadRecordReview, whatTheRepairLeftStale });
+        return await runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, checkLateBind, clampOnTheFloorDuty, clampOnTheWritersDuty, ctx, deliverAndClamp, findingsForCards, followTheRecordsActions, groupedMembers, job, opts, overviewOpen, publishAndDeliver, rebuildTheDeliveredRecord, restoreTheBrokenRecord, reviewOpen, rov, run, runState, saveTheLabel, saveTheOwedLabel, synthesisKey, synthesisModel, synthesisThinking, writeScopeFacts, writeUps, writeVerdictSidecar }, { CITED_URI_RE, NO_CHANGE, REBUILDS_THE_DELIVERED_RECORD, UPSTREAM_STALE_REPAIR, assembleReportMd, cardsNeverBuilt, caseLawJoin, computeOpenFloors, fullProseOrdinals, injectFrontMatter, lateRecordIds, owedCardOrdinals, ownerScreenForDelivery, partitionDeliveryStale, postRepairScope, queuedForTheRecordOnly, readFindingsForReport, readFloorAxes, readGoodsHanded, reassembleFromTheRecord, recordChangeOwesReview, recordGoodsHanded, retainStateBeforeReview, runPostRepairReview, runWholeReviewForRecord, settleDerivedBases, stagesStaleOnPlacement, unreadRecordFindingOnly, unreadRecordReview, whatTheRepairLeftStale });
     } },
   ] });
 }
