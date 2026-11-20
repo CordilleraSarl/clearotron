@@ -14,6 +14,7 @@ import { parseFindingsJsonLenient } from "../findings-model.mjs";
 import { note, runLog } from "../log.mjs";
 import { listedAddresses, listedExclusionPositions, readAcceptedFlags } from "../narrative-refutation-record.mjs";
 import { properNameCandidates } from "../predelivery-lint.mjs";
+import { recordSynthesisSeam } from "../record-carry-trace.mjs";
 import { atomicWrite } from "../run-record.mjs";
 import { foldAfterSave, modelRecordPath, restoreFold } from "../record-fold.mjs";
 import { normalizeRecordUri } from "../registry-fidelity.mjs";
@@ -27,11 +28,11 @@ import { parseCorrections } from "../verify.mjs";
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 
-let CORRECTIONS_DELIVERED_FILE, extractRulingsTail, postRepairCorrectionsPath, postRepairStatePath, prepareDeclinationSpec, recordFromTheSaves, recordSynthesisSeam, removalRepairedRow, reviewAfterRepairPath, snapshotFindingsForCorrections;
+let CORRECTIONS_DELIVERED_FILE, extractRulingsTail, postRepairCorrectionsPath, postRepairStatePath, prepareDeclinationSpec, recordFromTheSaves, removalRepairedRow, reviewAfterRepairPath, snapshotFindingsForCorrections;
 
 /** Called once by pipeline.mjs as it loads, with the names above. */
 export function useThePipeline(held) {
-  ({ CORRECTIONS_DELIVERED_FILE, extractRulingsTail, postRepairCorrectionsPath, postRepairStatePath, prepareDeclinationSpec, recordFromTheSaves, recordSynthesisSeam, removalRepairedRow, reviewAfterRepairPath, snapshotFindingsForCorrections } = held);
+  ({ CORRECTIONS_DELIVERED_FILE, extractRulingsTail, postRepairCorrectionsPath, postRepairStatePath, prepareDeclinationSpec, recordFromTheSaves, removalRepairedRow, reviewAfterRepairPath, snapshotFindingsForCorrections } = held);
 }
 
 /**

@@ -11,6 +11,7 @@ import { parseFindingsJsonLenient } from "../findings-model.mjs";
 import { note, runLog } from "../log.mjs";
 import { nextRefutationSeq, settleRecheckSave } from "../narrative-refutation-record.mjs";
 import { signoffPatch, writeRunStatus } from "../progress.mjs";
+import { recordSynthesisSeam } from "../record-carry-trace.mjs";
 import { atomicWrite, driverDir, readJson } from "../run-record.mjs";
 import { modelRecordPath } from "../record-fold.mjs";
 import { repairFollowup } from "../repair-composers.mjs";
@@ -23,7 +24,7 @@ import { correctionNamedLines, correctionNamedOrdinals, correctionNamedSet, corr
 import { existsSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 
 export async function runCorrectionCycle({ ctx, run, P, verdict, firstRef, synthesisKey, synthesisModel, synthesisThinking }, helpers) {
-  const { CORRECTIONS_DELIVERED_FILE, CORRECTIVE_RECHECK_FILE, correctionsExtra, correctiveCycleSettledDecision, planAuditExtra, prepareDeclinationSpec, recordSynthesisSeam, removalRepairedRow, restoredFindingsTable, snapshotFindingsForCorrections } = helpers;
+  const { CORRECTIONS_DELIVERED_FILE, CORRECTIVE_RECHECK_FILE, correctionsExtra, correctiveCycleSettledDecision, planAuditExtra, prepareDeclinationSpec, removalRepairedRow, restoredFindingsTable, snapshotFindingsForCorrections } = helpers;
   // AD-2 A1 (E2E-R2, recovery granularity) — the corrective cycle fires ONCE per settled
   // review/narrative state. Both legs below run `force:true` (they bypass the stage-freshness skip
   // by design), so on EVERY resume of a CONDITIONAL/BLOCKING run the cycle used to re-fire: two
