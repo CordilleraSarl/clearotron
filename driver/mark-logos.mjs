@@ -18,20 +18,22 @@
 //   failed    a request was made and did not land, or brought back something that is not one of those images
 //   no-logo   the record says a word mark, or that no image exists
 //   unknown   the record cannot say, or this run makes no register call: a replay, an injected fetcher, no credential,
-//             or a register whose adapter fetches no image. Nothing is requested.
+//             a register whose adapter fetches no image, or a record that names no image to fetch. Nothing is requested.
 //
 // THE REGISTER THE RUN IS SET TO USE, AND NO OTHER (ruled 2026-11-18: one run never mixes registers). A register that
 // cannot fetch an image leaves its rows `unknown`; no second service is asked.
 //
 // A RESUME OR A REPUBLISH ASKS NOTHING AGAIN. A row already `fetched` whose file is still there is kept as it is.
 //
-// RECORDING ONLY, and it never throws: a logo that could not be had never stops a report.
+// RECORDING ONLY. A logo that could not be had never stops a report; the one thing that ends the step is a stopped run,
+// which asks for no image (cancel.mjs) and settles as stopped.
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve, sep } from "node:path";
 import { normalizeRecordUri } from "../providers/_shared/record-uri.mjs";
 import { recordBodyFromLog } from "../providers/_shared/ledger.mjs";   // the run record log's own index
 import { readRecordArtifacts } from "./registry-fidelity.mjs";
 import { DRIVER_DIR, driverDir, ensureDriverDir, paths } from "./run-record.mjs";
+import { RunCancelled, stopsWithTheRun } from "./cancel.mjs";   // an image request is a paid call: it reads the stop first
 import { runLog } from "./log.mjs";
 
 export const LOGOS_FILE = "logos.json";
@@ -83,12 +85,38 @@ export function savedRecords(runDir, refs, { knockout = false } = {}) {
   const records = readRecordArtifacts(runDir);
   if (!knockout) return records;
   const log = paths(runDir).registerRecordBodies;
+  const images = readRecordImages(runDir);
   for (const ref of refs) {
-    if (records.has(ref)) continue;
-    const body = recordBodyFromLog(log, ref);
-    if (body && typeof body === "object" && !Array.isArray(body)) records.set(ref, body);
+    let body = records.get(ref);
+    if (!body) { const logged = recordBodyFromLog(log, ref); if (logged && typeof logged === "object" && !Array.isArray(logged)) body = logged; }
+    // A register that keeps no record body for a listed filing (Signa's listing is its search rows) states the image facts on
+    // the row, and the listing kept them apart (`_driver/record-images.json`). A body's own facts win where it states them.
+    const facts = images.get(ref);
+    const stated = facts ? Object.fromEntries(Object.entries(facts).filter(([, v]) => v !== null)) : null;
+    if (body || stated) records.set(ref, { ...(stated ?? {}), ...(body ?? {}) });
   }
   return records;
+}
+
+/** Each listed filing's image facts as the Knockout's listing saved them, by registration. An absent file is none. */
+function readRecordImages(runDir) {
+  try {
+    const doc = JSON.parse(readFileSync(paths(runDir).registerRecordImages, "utf8"));
+    return new Map(Object.entries(doc?.records ?? {}).map(([ref, f]) => [normalizeRecordUri(ref), f]).filter(([ref, f]) => ref && f && typeof f === "object"));
+  } catch { return new Map(); }
+}
+
+/**
+ * Writes the image facts a Knockout's listing read off its rows (register-records.mjs, imageFactsOf), for this step alone.
+ * Not in `register-records.json`, because the Knockout's rater reads that file and its input does not change for a logo.
+ * Nothing is written for a listing whose rows stated none. Never throws.
+ */
+export function writeRecordImages(runDir, images) {
+  try {
+    if (!(images instanceof Map) || !images.size) return;
+    ensureDriverDir(runDir);
+    writeFileSync(paths(runDir).registerRecordImages, JSON.stringify({ schema: 1, records: Object.fromEntries(images) }, null, 2) + "\n");
+  } catch { /* a logo is never worth a failed listing */ }
 }
 
 const fileFor = (ref, ext) => `${ref.replace(/^\/mark\//, "").replace(/[^a-z0-9_-]+/gi, "-")}.${ext}`;
@@ -113,8 +141,12 @@ export async function logoRows({ runDir, refs, records, register, fetchImage, ma
     if (!mayCall?.ok) { rows.push({ ref, register, state: "unknown", cause: mayCall?.why ?? "this run makes no register call" }); continue; }
     if (typeof fetchImage !== "function") { rows.push({ ref, register, state: "unknown", cause: "this register's adapter fetches no image" }); continue; }
     let got;
-    try { got = await fetchImage(ref); } catch (e) { got = { ok: false, cause: `the request threw: ${String(e?.message ?? e).slice(0, 120)}` }; }
-    if (!got?.ok) { rows.push({ ref, register, state: "failed", cause: String(got?.cause ?? "the request did not land").slice(0, 200) }); continue; }
+    try { got = await fetchImage(ref, record); } catch (e) {
+      if (e instanceof RunCancelled) throw e;   // a stopped run asks for nothing more, and settles as stopped
+      got = { ok: false, cause: `the request threw: ${String(e?.message ?? e).slice(0, 120)}` };
+    }
+    // An adapter that had nothing to ask with (no image link on the record) made no request: that is not a failed fetch.
+    if (!got?.ok) { rows.push({ ref, register, state: got?.notTried ? "unknown" : "failed", cause: String(got?.cause ?? "the request did not land").slice(0, 200) }); continue; }
     const kind = imageTypeOf(got.bytes);
     if (!kind) { rows.push({ ref, register, state: "failed", cause: "the answer is not a PNG, JPEG, GIF or WebP image" }); continue; }
     const file = `${DRIVER_DIR}/${LOGOS_DIR}/${fileFor(ref, kind.ext)}`;   // relative to the run folder, the same on every system
@@ -130,7 +162,7 @@ export async function logoRows({ runDir, refs, records, register, fetchImage, ma
 /**
  * The step both pipelines run before publishing. `findingsPath` for a clearance, `registerRecordsPath` for a Knockout;
  * `provider` is the run's register adapter; `injectedFetcher` true when the run answers its record fetches itself (a
- * replay, a test). Writes `_driver/logos.json`; returns it, or null when it could not. Never throws.
+ * replay, a test). Writes `_driver/logos.json`; returns it, or null when it could not. Throws only a stop (RunCancelled).
  */
 export async function markLogos(runDir, { findingsPath = null, registerRecordsPath = null, provider = null, injectedFetcher = false,
   env = process.env, agentId = null, sessionKey = null } = {}) {
@@ -146,13 +178,17 @@ export async function markLogos(runDir, { findingsPath = null, registerRecordsPa
       : !provider ? { ok: false, why: "no register is set for this run" }
         : !credential ? { ok: false, why: `${provider.credEnv ?? "the register's credential"} is not set, so no register call is made` }
           : { ok: true };
-    const fetchImage = typeof provider?.markImage === "function" ? (ref) => provider.markImage(ref, { agentId, sessionKey }) : null;
+    const fetchImage = typeof provider?.markImage === "function"
+      ? stopsWithTheRun(runDir, "logo-fetch", (ref, record) => provider.markImage(ref, { agentId, sessionKey, record })) : null;
     const records = savedRecords(runDir, refs, { knockout: Boolean(registerRecordsPath) });
     const rows = await logoRows({ runDir, refs, records, register, fetchImage, mayCall, prior });
     const doc = { schema: 1, register, takenAt: new Date().toISOString(), rows };
     writeFileSync(at, JSON.stringify(doc, null, 2) + "\n");
     return doc;
-  } catch { return null; }
+  } catch (e) {
+    if (e instanceof RunCancelled) throw e;   // a stop is not a logo that could not be had
+    return null;
+  }
 }
 
 /** The run's log line for the step: how many registrations ended in each state, or that the step could not write. */

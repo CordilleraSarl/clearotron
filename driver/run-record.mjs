@@ -324,6 +324,7 @@ export function paths(runDir) {
     registerDigestCalls: p(driverRel("register-digest-calls")),
     registerRecall: p(driverRel("register-recall.json")),
     registerRecordBodies: p(driverRel("register-record-bodies.jsonl")),
+    registerRecordImages: p(driverRel("record-images.json")),
     registerRecords: p(driverRel("register-records.json")),
     registerTaint: p(driverRel("register-taint.json")),
     registerUnitCalls: p(driverRel("register-unit-calls")),

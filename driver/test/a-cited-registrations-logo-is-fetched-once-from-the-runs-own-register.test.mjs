@@ -10,7 +10,11 @@ import assert from "node:assert/strict";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { logoOf, imageTypeOf, citedRefs, markLogos } from "../mark-logos.mjs";
+import { logoOf, imageTypeOf, citedRefs, markLogos, writeRecordImages } from "../mark-logos.mjs";
+import { knockoutRecordsDoc, openingQid } from "../knockout-register-read.mjs";
+import { capabilitiesFor } from "../register-capabilities.mjs";
+import { RunCancelled, requestCancel } from "../cancel.mjs";
+import { doMarkImage } from "../../providers/signa/src/core.js";
 import { driverDir } from "../../shared/driver-dir.mjs";
 
 const PNG = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 13]);
@@ -154,4 +158,95 @@ test("a Knockout's filing whose record is only in the run's record log, where it
   const clearance = await markLogos(other, { findingsPath: join(other, "findings.json"), provider: register(() => ({ ok: true, bytes: PNG }), asked), env: ENV });
   assert.deepEqual(asked, [], "a clearance read a record its page does not show");
   assert.equal(byRef(clearance)["/mark/em/0101"].state, "unknown");
+});
+
+// ── A REGISTER THAT STATES THE IMAGE ON ITS ROWS (Signa) ───────────────────────────────────────────────────────────────
+// Its Knockout keeps no record body: the mark's kind, its image flag and the register's link to the image are on the search
+// rows. The listing keeps them for the logo step in a file of their own, and the record the Knockout's rater reads does not
+// change.
+const SIGNA = capabilitiesFor("signa");
+const signaRow = (id, kind, media, link) => ({ record_id: `/mark/us/${id}`, mark_text: "INVENTED", owner_name: "Invented Owner", status: "Registered",
+  classes: [9], office: "us", raw: { id, mark_feature_type: kind, has_media: media, ...(link === undefined ? {} : { primary_image_url: link }) } });
+
+test("a Knockout's listing keeps each row's image facts for the logo step, and the record the rater reads is unchanged", () => {
+  const NAME = "INVENTED";
+  const block = { qid: openingQid(NAME, "identical"), state: "enumerated", total_hits: 3, records: [
+    signaRow("tm_1", "combined", true, "https://api.signa.so/v1/trademarks/tm_1/media/med_1"),
+    signaRow("tm_2", "word", true, "https://api.signa.so/v1/trademarks/tm_2/media/med_2"),
+    signaRow("tm_3", null, false) ] };
+  const scope = { marks: [{ name: NAME, classes: [9] }], classes: [9], jurisdictions: ["US"], provider: "signa", capabilities: SIGNA,
+    counts: { marks: [{ name: NAME, counts: { identical: { total: 3 } } }] }, reading: null,
+    readBlocks: () => new Map([[block.qid, block]]), readProposals: () => ({ entries: [] }) };
+  const images = new Map();
+  const withImages = knockoutRecordsDoc({ ...scope, images, now: () => new Date(0) });
+  const without = knockoutRecordsDoc({ ...scope, now: () => new Date(0) });
+  assert.deepEqual(withImages, without, "the listing the rater reads changed");
+  assert.equal(withImages.marks[0].records.length, 3, "premise: the three rows were listed");
+  assert.doesNotMatch(JSON.stringify(withImages), /primary_image_url|media\/med_|markFeature|imageAvailable/, "an image fact reached the rater's record");
+  assert.deepEqual(images.get("/mark/us/tm_1"), { markFeature: "combined", imageAvailable: true, imageUrl: "https://api.signa.so/v1/trademarks/tm_1/media/med_1" });
+  assert.equal(images.get("/mark/us/tm_2").markFeature, "word");
+  assert.deepEqual(images.get("/mark/us/tm_3"), { markFeature: null, imageAvailable: false, imageUrl: null });
+});
+
+/** An invented Knockout as a Signa listing leaves it: filings in register-records.json, their image facts beside it. */
+function signaKnockout(facts) {
+  const dir = mkdtempSync(join(tmpdir(), "logos-signa-"));
+  mkdirSync(driverDir(dir), { recursive: true });
+  writeFileSync(join(dir, "register-records.json"), JSON.stringify({ marks: [{ name: "INVENTED", records: Object.keys(facts).map((recordId) => ({ recordId })) }] }));
+  writeRecordImages(dir, new Map(Object.entries(facts)));
+  return dir;
+}
+/** A stand-in for Signa's adapter: it follows the record's own image link, and asks nothing without one. */
+const linkFollower = (calls) => ({ id: "signa", credEnv: "INVENTED_REGISTER_KEY", markImage: async (ref, { record } = {}) => {
+  if (!record?.imageUrl) return { ok: false, notTried: true, cause: "the record names no image link" };
+  calls.push([ref, record.imageUrl]);
+  return { ok: true, bytes: PNG };
+} });
+
+test("a Signa Knockout's figurative filing is fetched from the link its row gave, a word mark is one, and no link asks nothing", async () => {
+  const dir = signaKnockout({
+    "/mark/us/tm_1": { markFeature: "combined", imageAvailable: true, imageUrl: "https://api.signa.so/v1/trademarks/tm_1/media/med_1" },
+    "/mark/us/tm_2": { markFeature: "word", imageAvailable: true, imageUrl: "https://api.signa.so/v1/trademarks/tm_2/media/med_2" },
+    "/mark/us/tm_3": { markFeature: "figurative", imageAvailable: true, imageUrl: null },
+  });
+  const calls = [];
+  const doc = await markLogos(dir, { registerRecordsPath: join(dir, "register-records.json"), provider: linkFollower(calls), env: ENV });
+  assert.deepEqual(calls, [["/mark/us/tm_1", "https://api.signa.so/v1/trademarks/tm_1/media/med_1"]]);
+  const rows = byRef(doc);
+  assert.equal(rows["/mark/us/tm_1"].state, "fetched");
+  assert.equal(rows["/mark/us/tm_2"].state, "no-logo");
+  assert.equal(rows["/mark/us/tm_3"].state, "unknown", "a record with no link to follow made no request, so it is not a failed fetch");
+});
+
+test("a stopped run asks for no image: the step ends as the stop, not as a logo that could not be had", async () => {
+  const dir = signaKnockout({ "/mark/us/tm_1": { markFeature: "combined", imageAvailable: true, imageUrl: "https://api.signa.so/v1/trademarks/tm_1/media/med_1" } });
+  requestCancel(dir, { via: "test" });
+  const calls = [];
+  await assert.rejects(markLogos(dir, { registerRecordsPath: join(dir, "register-records.json"), provider: linkFollower(calls), env: ENV }), RunCancelled);
+  assert.deepEqual(calls, [], "an image was asked for after the stop");
+});
+
+test("Signa's image is asked only of the register's own host, over https, and a refusal is a failed fetch", async () => {
+  const BASE = "https://api.signa.so";
+  const real = globalThis.fetch;
+  const asked = [];
+  globalThis.fetch = async (url) => {
+    asked.push(String(url));
+    return String(url).endsWith("/missing") ? new Response("no", { status: 404 }) : new Response(PNG, { status: 200, headers: { "content-type": "image/png" } });
+  };
+  try {
+    const tctx = { kind: "image", agentId: null, sessionKey: null, sessionId: null, recordLog: null };
+    for (const [why, link] of [["another host", "https://elsewhere.example/v1/trademarks/tm_1/media/med_1"], ["not https", "http://api.signa.so/v1/trademarks/tm_1/media/med_1"], ["no link", null]]) {
+      const r = await doMarkImage(BASE, link, tctx);
+      assert.equal(r.ok, false, why);
+      assert.equal(r.notTried, true, `${why}: counted as a request made`);
+    }
+    assert.deepEqual(asked, [], "a link off the register's own host was followed");
+    const got = await doMarkImage(BASE, `${BASE}/v1/trademarks/tm_1/media/med_1`, tctx);
+    assert.equal(got.ok, true);
+    assert.equal(imageTypeOf(got.bytes).type, "image/png");
+    const refused = await doMarkImage(BASE, `${BASE}/v1/trademarks/tm_1/missing`, tctx);
+    assert.deepEqual([refused.ok, refused.notTried, refused.cause], [false, undefined, "HTTP 404"]);
+    assert.equal(asked.length, 2);
+  } finally { globalThis.fetch = real; }
 });

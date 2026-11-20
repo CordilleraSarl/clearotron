@@ -104,6 +104,24 @@ export function toRecord(row, { term, basis, provider }) {
   };
 }
 
+/**
+ * WHAT A ROW SAYS ABOUT THE MARK'S IMAGE: its kind (word, combined, figurative), whether the register holds an image, and
+ * the register's own link to it, where the row carries them. Kept OUT of the record above, because the Knockout's rater
+ * reads that record and its input does not change for a logo; the logo step reads these from a file of their own
+ * (mark-logos.mjs). Signa states them on its search rows; a register whose rows do not answers null, and its logo is read
+ * from the record body instead. Only an https link is kept. PURE.
+ */
+export function imageFactsOf(row) {
+  const raw = row?.raw && typeof row.raw === "object" ? row.raw : {};
+  const link = raw.primary_image_url ?? null;
+  const facts = {
+    markFeature: raw.mark_feature_type ?? null,
+    imageAvailable: typeof raw.has_media === "boolean" ? raw.has_media : null,
+    imageUrl: typeof link === "string" && /^https:\/\//i.test(link) ? link : null,
+  };
+  return Object.values(facts).some((v) => v !== null) ? facts : null;
+}
+
 const goodsOnRow = (row) => {
   const statements = rowGoods(row) ?? recordGoods(row, { english: untaggedIsEnglish(row?.record_id) });
   return statements.length ? statements : null;
