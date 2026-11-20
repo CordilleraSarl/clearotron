@@ -15,6 +15,7 @@ import { atomicWrite, driverDir, readJson } from "../run-record.mjs";
 import { modelRecordPath } from "../record-fold.mjs";
 import { repairFollowup } from "../repair-composers.mjs";
 import { partsDrift, writeReviewAddresses } from "../review-addresses.mjs";
+import { asPartNotCompleted, must, stage, writerExclusionBlock } from "../stage-dispatch.mjs";
 import { lastAcceptedCall } from "../synthesis-record.mjs";
 import { shaOf } from "../stage-freshness.mjs";
 import { parseVerdict } from "../verify.mjs";
@@ -22,7 +23,7 @@ import { correctionNamedLines, correctionNamedOrdinals, correctionNamedSet, corr
 import { existsSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 
 export async function runCorrectionCycle({ ctx, run, P, verdict, firstRef, synthesisKey, synthesisModel, synthesisThinking }, helpers) {
-  const { CORRECTIONS_DELIVERED_FILE, CORRECTIVE_RECHECK_FILE, asPartNotCompleted, correctionsExtra, correctiveCycleSettledDecision, must, planAuditExtra, prepareDeclinationSpec, recordSynthesisSeam, removalRepairedRow, restoredFindingsTable, snapshotFindingsForCorrections, stage, writerExclusionBlock } = helpers;
+  const { CORRECTIONS_DELIVERED_FILE, CORRECTIVE_RECHECK_FILE, correctionsExtra, correctiveCycleSettledDecision, planAuditExtra, prepareDeclinationSpec, recordSynthesisSeam, removalRepairedRow, restoredFindingsTable, snapshotFindingsForCorrections } = helpers;
   // AD-2 A1 (E2E-R2, recovery granularity) — the corrective cycle fires ONCE per settled
   // review/narrative state. Both legs below run `force:true` (they bypass the stage-freshness skip
   // by design), so on EVERY resume of a CONDITIONAL/BLOCKING run the cycle used to re-fire: two

@@ -8,11 +8,12 @@
 import { parseManifestVariants, variantsParseFailure } from "../common-law-receipts.mjs";
 import { note, runLog } from "../log.mjs";
 import { StageFailure } from "../run-outcome.mjs";
+import { must, stage } from "../stage-dispatch.mjs";
 import { decideAxes } from "../stages.mjs";
 import { readFileSync } from "node:fs";
 
 export async function runIntake({ P, ctx, job, opts, run }, helpers) {
-  const { attachRegisterPlan, deriveFormNeighbourhood, deriveGridSpec, deriveIntakeAsks, deriveScopeLedgerJson, inScopeClassList, must, stage, verifyAndRecordHouseElement } = helpers;
+  const { attachRegisterPlan, deriveFormNeighbourhood, deriveGridSpec, deriveIntakeAsks, deriveScopeLedgerJson, inScopeClassList, verifyAndRecordHouseElement } = helpers;
   // Phase 0 done in code (slug/codename/run-dir/customer). Phase 1+2 stages:
   must(await stage("matter-frame", ctx), "matter-frame");
   await deriveIntakeAsks(ctx);   // A6: freeze the intake-ask register (one save-only followup if the section is missing)

@@ -109,7 +109,7 @@ test("the stage event reads the result, not the assignment", () => {
     "the stage event no longer prefers what actually ran");
   assert.ok(!/model: s\.selector,/.test(row),
     "the bare assigned-alias write is back on the stage event — the defect this file exists for");
-  const c = src("driver/pipeline.mjs");
+  const c = src("driver/stage-dispatch.mjs");
   assert.match(c, /runLaneStage\(CLEARANCE_LANE,/, "the clearance no longer runs its stages through the shared runner");
   assert.match(c, /selector: resolveModel\(model\),/, "the clearance no longer hands the runner its catalog selector");
 });

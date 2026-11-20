@@ -63,7 +63,7 @@ test("NO writer of a terminal or parked reason cuts with a bare slice", () => {
   // redden on unrelated records and get relaxed by the next person who hit it, which is worse than a
   // narrow guard that holds.
   const STATUS_WRITE = /writeRunStatus\(|state:\s*"(failed|recovering)"|"status\.json"/;
-  for (const f of ["driver/runner.mjs", "driver/pipeline.mjs", "driver/run-failed.mjs", "driver/run-delivered.mjs", "driver/pipeline-knockout.mjs"]) {
+  for (const f of ["driver/runner.mjs", "driver/pipeline.mjs", "driver/stage-dispatch.mjs", "driver/run-failed.mjs", "driver/run-delivered.mjs", "driver/pipeline-knockout.mjs"]) {
     const lines = code(f).split("\n");
     lines.forEach((line, i) => {
       if (!/\breason\w*\s*:\s*[^,]*\.slice\(0,\s*200\)/.test(line)) return;

@@ -35,6 +35,7 @@ import { seedUnplannedBands } from "../register-unit-record.mjs";
 import { join } from "node:path";
 import { stopsWithTheRun } from "../cancel.mjs";   // every paid call the code makes itself reads the stop first
 import { StageFailure } from "../run-outcome.mjs";
+import { must, runBatched, stage } from "../stage-dispatch.mjs";
 
 /**
  * Which cross-checks this pass folds into the plan, and which the receipt keeps from an earlier pass. PURE.
@@ -55,7 +56,7 @@ export function crossChecksForThisPass(plan, candidates, candDirectives, prior, 
 }
 
 export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, runCommonLaw }, helpers) {
-  const { CL_SUPP_TAGS, connotationRemedyToken, defaultConnotationReissuer, deriveNamedBand, foldSupplementalProposals, holdStickyGapsIn, inScopeClassList, joinOptions, mergeRegisterBands, must, noteAdapter, noteChannelCoverageAtStageExit, readPlanExecution, readRegisterBands, recordConnotationAudit, remergeIfBandsMoved, resultsPerCellOf, runBatched, runSaturationProbeCodeSide, slicesUnitNeverReached, stage, taintDisposition, taintParkJudgmentArtifacts, takeSlicesOutOfTheBand, unfinishedUnitAsItStands, writePlanExecutionReceipt } = helpers;
+  const { CL_SUPP_TAGS, connotationRemedyToken, defaultConnotationReissuer, deriveNamedBand, foldSupplementalProposals, holdStickyGapsIn, inScopeClassList, joinOptions, mergeRegisterBands, noteAdapter, noteChannelCoverageAtStageExit, readPlanExecution, readRegisterBands, recordConnotationAudit, remergeIfBandsMoved, resultsPerCellOf, runSaturationProbeCodeSide, slicesUnitNeverReached, taintDisposition, taintParkJudgmentArtifacts, takeSlicesOutOfTheBand, unfinishedUnitAsItStands, writePlanExecutionReceipt } = helpers;
   // Step 2A/2B — fan-out (batched ≤ gatherConcurrency) then the code-side fan-in barrier.
   // Property 1 (frame-omission design): the BLIND re-derivation runs as a sibling of the WHOLE gather,
   // not as a gather member — it reads only the raw instruction (no tool calls), so under the turn cap it

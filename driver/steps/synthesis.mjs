@@ -13,10 +13,11 @@ import { readPartNotCompleted } from "../parts-not-completed.mjs";
 import { readJson } from "../run-record.mjs";
 import { assembleRunRecords, extractEnforcerSignals } from "../registry-fidelity.mjs";
 import { repairFollowup } from "../repair-composers.mjs";
+import { asPartNotCompleted, goodsEvidenceForTheWriter, keepGoodsEvidenceAsWritten, quarantineSynth, stage, stageCharter } from "../stage-dispatch.mjs";
 import { readFileSync, renameSync, writeFileSync } from "node:fs";
 
 export async function runSynthesis({ P, checkLateBind, ctx, job, opts, run }, helpers) {
-  const { asPartNotCompleted, composeDispatchExtra, decideCaseLaw, goodsEvidenceForTheWriter, keepGoodsEvidenceAsWritten, prepareDeclinationSpec, quarantineSynth, readCoverageJudgment, recordSynthesisSeam, refute, settleDerivedBases, stage, stageCharter } = helpers;
+  const { composeDispatchExtra, decideCaseLaw, prepareDeclinationSpec, readCoverageJudgment, recordSynthesisSeam, refute, settleDerivedBases } = helpers;
   // Steps 3/3.5/4 synthesis → optional 4.5 case-law grounding ∥ Step 4.7 refutation.
   // case-law and refutation are independent siblings of synthesis (case-law reads narrative.md;
   // refutation reads the source files, NOT case-law), so they run concurrently — saves ~one stage's

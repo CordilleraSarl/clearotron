@@ -19,6 +19,7 @@ import { foldAfterSave, modelRecordPath, restoreFold } from "../record-fold.mjs"
 import { normalizeRecordUri } from "../registry-fidelity.mjs";
 import { repairFollowup } from "../repair-composers.mjs";
 import { NARRATIVE_PROSE, anyRenumbered, sectionText } from "../repair-scope.mjs";
+import { asPartNotCompleted, must, reviewExclusionsPaths, safeReadJson, stage, stageCharter } from "../stage-dispatch.mjs";
 import { writeFindings } from "../stage-freshness.mjs";
 import { paths } from "../stages.mjs";
 import { lastAcceptedCall, rebaseSynthesis, restoreSynthesisBase, snapshotSynthesisBase } from "../synthesis-record.mjs";
@@ -26,11 +27,11 @@ import { parseCorrections } from "../verify.mjs";
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 
-let CORRECTIONS_DELIVERED_FILE, asPartNotCompleted, extractRulingsTail, must, postRepairCorrectionsPath, postRepairStatePath, prepareDeclinationSpec, recordFromTheSaves, recordSynthesisSeam, removalRepairedRow, reviewAfterRepairPath, reviewExclusionsPaths, safeReadJson, snapshotFindingsForCorrections, stage, stageCharter;
+let CORRECTIONS_DELIVERED_FILE, extractRulingsTail, postRepairCorrectionsPath, postRepairStatePath, prepareDeclinationSpec, recordFromTheSaves, recordSynthesisSeam, removalRepairedRow, reviewAfterRepairPath, snapshotFindingsForCorrections;
 
 /** Called once by pipeline.mjs as it loads, with the names above. */
 export function useThePipeline(held) {
-  ({ CORRECTIONS_DELIVERED_FILE, asPartNotCompleted, extractRulingsTail, must, postRepairCorrectionsPath, postRepairStatePath, prepareDeclinationSpec, recordFromTheSaves, recordSynthesisSeam, removalRepairedRow, reviewAfterRepairPath, reviewExclusionsPaths, safeReadJson, snapshotFindingsForCorrections, stage, stageCharter } = held);
+  ({ CORRECTIONS_DELIVERED_FILE, extractRulingsTail, postRepairCorrectionsPath, postRepairStatePath, prepareDeclinationSpec, recordFromTheSaves, recordSynthesisSeam, removalRepairedRow, reviewAfterRepairPath, snapshotFindingsForCorrections } = held);
 }
 
 /**

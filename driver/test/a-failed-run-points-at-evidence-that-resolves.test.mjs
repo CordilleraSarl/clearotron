@@ -91,8 +91,10 @@ test("the marker rides INSIDE the bound — `reason` is still the 200 the ping i
 //     gets ENOENT. That was a property of EVERY throw; it was pinned on the one site that happened to
 //     have it. Pinned across the corpus below, it outlives any single site.
 test("no StageFailure interpolates an artifact path into `reason` — the cap severs it there", () => {
-  // A run's throws live in the pipeline and in the phase modules carved out of it; each file is read alone.
-  const files = ["driver/pipeline.mjs", ...readdirSync(join(ROOT, "driver/steps")).filter((f) => f.endsWith(".mjs")).map((f) => `driver/steps/${f}`)];
+  // A run's throws live in the pipeline, in the phase modules carved out of it, and in the modules the helpers
+  // it handed those phases moved to; each file is read alone.
+  const MOVED = ["stage-dispatch.mjs"];
+  const files = ["driver/pipeline.mjs", ...MOVED.map((f) => `driver/${f}`), ...readdirSync(join(ROOT, "driver/steps")).filter((f) => f.endsWith(".mjs")).map((f) => `driver/steps/${f}`)];
   const sites = files.flatMap((f) => {
     const pl = source(f);
     return [...pl.matchAll(/throw new StageFailure\(/g)].map((m) => pl.slice(m.index, m.index + 500));
