@@ -9,6 +9,7 @@ import { atomicWrite, paths } from "../run-record.mjs";
 import { ensureDriverDir } from "../../shared/driver-dir.mjs";
 import { applyAskClosure, deriveAsks, finalizeOpenHandoffs, summarizeAsks } from "../ask-ledger.mjs";
 import { mintCommonLawCarryDoubts } from "../commonlaw-carry.mjs";
+import { consolidateFindingsFile, deriveCommonLawCarry, injectDeferralCoverage, injectLaneDepthCoverage, injectMeaningGapCoverage, injectScreenGateCoverage, injectScriptScopeCoverage, injectUncoveredMarketCoverage, localLanguageStateOf, planWriteUps, stampCoverageJudgmentRows, writeShortEntries } from "../coverage-rows-run.mjs";
 import { readDeclinations } from "../declination-tool.mjs";
 import { caseLawJoin, settleDerivedBases } from "../dispatch-extras.mjs";
 import { injectWithdrawnRatingCoverage } from "../withdrawn-rating.mjs";
@@ -47,7 +48,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 
 import { basename, join } from "node:path";
 
 export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWritersDuty, ctx, followTheRecordsActions, job, run, runState, saveTheLabel, writeVerdictSidecar }, helpers) {
-  const { applyScopeFrontMatterOf, assembleReportMd, consolidateFindingsFile, deriveCommonLawCarry, injectDeferralCoverage, injectFrontMatter, injectLaneDepthCoverage, injectMeaningGapCoverage, injectScreenGateCoverage, injectScriptScopeCoverage, injectUncoveredMarketCoverage, keepDeliveredRecordAsHistory, localLanguageStateOf, originRowsForReport, planWriteUps, readFindingsForReport, readReadingLog, rebuildDeliveredRecord, reportIdentityRecord, rewriteFromBeforeTheSeam, stampCoverageJudgmentRows, withdrawSupersededAudit, writeScopeFactsOf, writeShortEntries } = helpers;
+  const { applyScopeFrontMatterOf, assembleReportMd, injectFrontMatter, keepDeliveredRecordAsHistory, originRowsForReport, readFindingsForReport, readReadingLog, rebuildDeliveredRecord, reportIdentityRecord, rewriteFromBeforeTheSeam, withdrawSupersededAudit, writeScopeFactsOf } = helpers;
   // Phase 3 — delivery (v14 post-mortem fix). One LLM step curates the report; the audit, the page render,
   // and the email body are deterministic CODE; a tiny LLM step only SENDS. Each step is independent — a
   // failure in the audit or the email never loses the report.
