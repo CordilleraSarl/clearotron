@@ -55,9 +55,9 @@ export const RESULT_NOUN_FIELDS = Object.freeze([
   // ── in scope: written into _driver/*.json or run.jsonl ────────────────────────────────────────────
   { file: "driver/digest-queue.mjs", noun: "recovered", sites: 1, atWriteSite: 1, verdict: "result",
     why: "written on the branch where the post-repair `check()` returned zero violations — a re-measured state, not a call returning" },
-  { file: "driver/gateway.mjs", noun: "outcome", sites: 1, atWriteSite: 1, verdict: "result",
+  { file: "driver/ladder/form-repair.mjs", noun: "outcome", sites: 1, atWriteSite: 1, verdict: "result",
     why: "the repair verdict the same row tests with `ok: outcome === \"repaired\"`; judged, not dispatched" },
-  { file: "driver/gateway.mjs", noun: "settled", sites: 2, atWriteSite: 2, verdict: "result",
+  { file: "driver/ladder/attempt-record.mjs", noun: "settled", sites: 2, atWriteSite: 2, verdict: "result",
     why: "counts read off the coverage/placement unions" },
   { file: "driver/pipeline-knockout.mjs", noun: "recovered", sites: 2, atWriteSite: 1, verdict: "result",
     why: "written after the chunk files were actually removed" },

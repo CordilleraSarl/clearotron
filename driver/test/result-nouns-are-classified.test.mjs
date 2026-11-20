@@ -76,7 +76,8 @@ function derive() {
   for (const f of tracked) {
     if (/(^|\/)tests?\//.test(f) || f.startsWith("node_modules/")) continue;
     let src; try { src = readFileSync(join(ROOT, f), "utf8"); } catch { continue; }
-    if (!/driverDir\(|\bpaths\(|run\.jsonl|atomicWrite\(/.test(src)) continue;
+    // A file that writes only through a logger is read too: a site that moves into one would otherwise leave the census.
+    if (!/driverDir\(|\bpaths\(|run\.jsonl|atomicWrite\(|\b(runLog|stageLog|appendLine|recordSpan)\(/.test(src)) continue;
     let ast; try { ast = acorn.parse(src, { ecmaVersion: "latest", sourceType: "module", locations: true }); } catch { continue; }
     for (const t of nounSites(ast)) bump(f, t.split("@")[0]).sites.add(t);
     walk(ast, (n) => {
