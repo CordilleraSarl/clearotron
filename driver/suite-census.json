@@ -7696,8 +7696,8 @@
           "todos": 0
         },
         "the-engine-pins-come-from-the-tree.test.mjs": {
-          "tests": 6,
-          "asserts": 24,
+          "tests": 7,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
