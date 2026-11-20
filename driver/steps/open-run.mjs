@@ -17,6 +17,7 @@ import { note, runLog } from "../log.mjs";
 import { buildRunContext } from "../phase0.mjs";
 import { profileStoreResolution } from "../profiles.mjs";
 import { RECORDS_MODES, heldRegisterCredentials, savedRecordFetch } from "../record-replay.mjs";
+import { attachProfile, attachSearchPolicy, depthLadderEvent } from "../run-attachments.mjs";
 import { policyFor } from "../search-policy.mjs";
 import { preflightSkillsStore } from "../skills-store-provenance.mjs";
 import { assertTierSanity, paths } from "../stages.mjs";
@@ -25,7 +26,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync } from "node:f
 import { join } from "node:path";
 
 export async function openRun({ job, opts }, helpers) {
-  const { attachProfile, attachSearchPolicy, depthLadderEvent, findRunDate, resumeStopRefusal } = helpers;
+  const { findRunDate, resumeStopRefusal } = helpers;
   // The order as it arrived, before anything below folds its scope or settles its fields (accepted-order.mjs).
   const acceptedOrder = orderSnapshot(job);
   assertTierSanity();
