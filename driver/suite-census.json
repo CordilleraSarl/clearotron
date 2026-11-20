@@ -1191,6 +1191,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-jurisdiction-s-tables-agree.test.mjs": {
+          "tests": 3,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "a-jx-lane-runs-on-the-program-the-run-chose.test.mjs": {
           "tests": 8,
           "asserts": 23,
