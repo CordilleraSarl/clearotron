@@ -1,7 +1,9 @@
 # driver/test — the driver's suite
 
-470 `*.test.mjs` files, the `fixtures/` they read, and the mock binaries they drive. The suite is offline by
-construction: no network, no credentials, no model. Engine tests spawn `mock-claude.mjs` (or `mock-codex.mjs`)
+The `*.test.mjs` files, the `fixtures/` they read, the code several of them share in `helpers/` (a free port, a
+temporary home, the portal bundle, the terminal setup, a page's in-page links), and the mock binaries they drive. How many files and tests
+there are is in `../suite-census.json`, which CI refuses to let go stale; a count written here did, within weeks.
+The suite is offline by construction: no network, no credentials, no model. Engine tests spawn `mock-claude.mjs` (or `mock-codex.mjs`)
 in place of a reasoning CLI, so a green run proves the machinery without a bill.
 
 ## Two tiers
@@ -14,8 +16,8 @@ in place of a reasoning CLI, so a green run proves the machinery without a bill.
 A file joins the full tier with a comment line near the top: `// @tier full — drives the mock pipeline end to end`.
 
 That marker is the whole mechanism: `../../scripts/test-fast.mjs` holds no list of filenames, because a list rots
-the first time a file is renamed. 37 files carry it today, and it names every one of them on every run. Marking one
-cannot take it out of the merge gate — `test:full` runs all of them, and `test-tiers.test.mjs` asserts that wiring.
+the first time a file is renamed. It names every file that carries the marker on every run, so its output is the
+count. Marking one cannot take it out of the merge gate — `test:full` runs all of them, and `test-tiers.test.mjs` asserts that wiring.
 Both npm scripts wrap the runner in `../../scripts/test-run.mjs`: the run gets its own `TMPDIR`, deleted at the end,
 so `mkdtemp` fixtures do not pile up in the real one.
 
@@ -56,7 +58,7 @@ Five tree-scanning tests run in the fast tier and fail on content anywhere in th
 Each carries something that reddens when the sweep stops looking — a planted hit, a corpus floor, or an allow-listed
 file that must still match — and the identity guards print which mode they ran in, because a sweep that found
 nothing and one that never looked look alike. `vendor-as-architecture.test.mjs` (publishable markdown) and
-`env-governance.test.mjs` (`process.env` reads in code) scan tree-wide but scoped, so are not counted here.
+`every-setting-read-in-code-has-a-row-in-the-configuration-reference.test.mjs` (`process.env` reads in code) scan tree-wide but scoped, so are not counted here.
 
 - `no-client-identifiers.test.mjs` — no client identity in the product repo. Identifiers with a shape get a positive
   allowlist of the reserved synthetic forms; customer and mark names have no shape, so those are a blocklist loaded

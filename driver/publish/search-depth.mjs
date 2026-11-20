@@ -37,6 +37,8 @@
 //   · court decisions distinguishes four states      → break: collapse none-found into not-checked, arm 6 red
 
 import { parseCaseLawLedger, ledgerSeparatesUnsentQueries } from "../case-law-ledger.mjs";   // pure, like this module
+import { normRegion, regionName } from "./regions.mjs";   // pure: the page's own folding of a territory's spellings
+import { capabilitiesFor } from "../register-capabilities.mjs";   // a register's own territory-to-office translate
 
 /** The closed set a group key may take. The renderer's headings are keyed on these, never on prose. */
 export const CLEARED_GROUPS = Object.freeze(["dead-filing", "different-goods", "other"]);
@@ -344,10 +346,89 @@ export function localLanguageDepth(verdicts) {
   return { state: short ? "ran-shallow" : "ran", lanes };
 }
 
-/** Was the name searched in a non-Latin script? Read off the plan's own terms, never asserted. PURE. */
-export function localScriptSearched(registerPlan) {
-  const entries = Array.isArray(registerPlan?.entries) ? registerPlan.entries : [];
-  return entries.some((e) => /[^\x00-\x7F]/.test(String(e?.term ?? "")));
+// WHICH NATIVE SCRIPTS THE RUN SEARCHED, READ OFF WHAT RAN (owner, 2026-11-19). This read the plan alone, and any
+// non-ASCII character made the page claim local script: an accented Latin spelling did, and so did a native-script
+// term that was planned and never ran. Measured on the test instance's saved runs: the claim was fully borne out on 18 of
+// 80; on 59 a native-script search ran while another planned one did not, and on 3 none ran at all. Now a script
+// counts as searched only when a plan term in it COMPLETED: its row in the run's execution record is `enumerated`. A
+// row the record keeps as `incomplete` (1,193 of 11,813 on those runs), or with no state, did not complete and does not
+// count. A Latin term names no native script however it is accented, and a run that kept no execution record says
+// nothing either way.
+const NATIVE_SCRIPTS = [
+  ["Hani", /\p{Script=Han}/u], ["Hira", /\p{Script=Hiragana}/u], ["Kana", /\p{Script=Katakana}/u], ["Hang", /\p{Script=Hangul}/u],
+  ["Cyrl", /\p{Script=Cyrillic}/u], ["Arab", /\p{Script=Arabic}/u], ["Grek", /\p{Script=Greek}/u], ["Hebr", /\p{Script=Hebrew}/u],
+  ["Thai", /\p{Script=Thai}/u], ["Deva", /\p{Script=Devanagari}/u],
+];
+// WHERE EACH SCRIPT COMPLETED, so a script searched in one territory and not in another keeps that gap (2026-11-19).
+// A territory is a plan term's region, folded the way the page folds the plan's territories (`normRegion`: EM and
+// euipo are EU, GB is UK), so one territory under two spellings is never a gap. A term that names no region is placed
+// nowhere: on the test instance's 88 saved plans, 464 of 1,492 native-script terms name none. Those are kept apart, under
+// `unnamed`, rather than read as searching nowhere or everywhere.
+// A WORLDWIDE SEARCH IS ONE THE PLAN SAYS IS WORLDWIDE, never one inferred from a long list. The plan stamps
+// `scope_basis: "worldwide"` when the matter was unrestricted, because on some registers a worldwide matter compiles to
+// the register's full office list, which reads by shape like 186 hand-picked territories. On such a plan, a term asking
+// the plan's whole territory list is the worldwide search, kept under `worldwide` ("searched" or "missed"); its
+// territories are not listed as planned one by one, and when it completed they all count as searched. 210 of the
+// 1,492 terms are of this kind.
+// A PLAN ON A REGISTER WITH ITS OWN OFFICE KEYS NAMES OFFICES, NOT TERRITORIES: `uspto`, `ipi`, `inpi-fr`. The page has
+// no name for those, and a territory it cannot name would reach a reader as the key. Each is read back as the territory
+// it serves through that register's own translate, territory to office, run in reverse over every two-letter code. It
+// is asked only of a key the page cannot name, so a code that is already a territory keeps its meaning: one register
+// files Benelux under BX, which its translate also reaches from Belgium. A key nothing translates to stays as written.
+function officeTerritories(provider) {
+  const out = new Map();
+  let translate = null;
+  try { translate = provider ? capabilitiesFor(provider)?.offices?.translate : null; } catch { translate = null; }
+  if (typeof translate !== "function") return out;
+  for (let a = 65; a < 91; a++) for (let b = 65; b < 91; b++) {
+    const code = String.fromCharCode(a, b);
+    let key = null;
+    try { key = translate(code); } catch { key = null; }
+    const k = String(key ?? "").toUpperCase();
+    if (k && k !== code && !out.has(k)) out.set(k, code);
+  }
+  return out;
+}
+
+/**
+ * The native scripts the run's plan searched in, `{ searched, missed, territories }`, keyed by ISO 15924 code: a script
+ * is searched when a plan term written in it completed, and missed when terms in it were planned and none completed.
+ * `territories` holds, per script, the territories where a term in it completed (`searched`) and those where terms in
+ * it were planned and none completed (`missed`), plus `unnamed` ("searched" or "missed") when terms in it named no
+ * region, and `worldwide` ("searched" or "missed") when a term in it asked the whole of a plan stamped worldwide. Null
+ * when the run kept no execution record, so none of it can be said. PURE.
+ */
+export function localScripts(registerPlan, planExecution) {
+  if (!planExecution || !Array.isArray(planExecution.executed)) return null;
+  const ran = new Set(planExecution.executed.filter((x) => x?.state === "enumerated").map((x) => x?.qid).filter(Boolean));
+  const office = officeTerritories(registerPlan?.provider);
+  const fold = (list) => [...new Set((Array.isArray(list) ? list : []).map((r) => {
+    const code = normRegion(r);
+    return regionName(code) === code && office.has(code) ? normRegion(office.get(code)) : code;
+  }).filter(Boolean))];
+  const whole = registerPlan?.scope_basis === "worldwide" ? new Set(fold(registerPlan?.regions)) : new Set();
+  const searched = new Set(), planned = new Set(), at = {};
+  for (const e of Array.isArray(registerPlan?.entries) ? registerPlan.entries : []) {
+    const regions = fold(e?.regions);
+    const worldwide = whole.size > 0 && regions.length === whole.size && regions.every((r) => whole.has(r));
+    const done = ran.has(e?.qid);
+    for (const [code, re] of NATIVE_SCRIPTS) {
+      if (!re.test(String(e?.term ?? ""))) continue;
+      planned.add(code);
+      if (done) searched.add(code);
+      const t = (at[code] ??= { searched: new Set(), planned: new Set(), unnamed: null, worldwide: null });
+      if (worldwide) t.worldwide = done || t.worldwide === "searched" ? "searched" : "missed";
+      for (const r of regions) { if (!worldwide) t.planned.add(r); if (done) t.searched.add(r); }
+      if (!regions.length) t.unnamed = done || t.unnamed === "searched" ? "searched" : "missed";
+    }
+  }
+  const territories = {};
+  for (const code of Object.keys(at).sort()) {
+    const t = at[code];
+    territories[code] = { searched: [...t.searched].sort(), missed: [...t.planned].filter((r) => !t.searched.has(r)).sort(),
+      ...(t.unnamed ? { unnamed: t.unnamed } : {}), ...(t.worldwide ? { worldwide: t.worldwide } : {}) };
+  }
+  return { searched: [...searched].sort(), missed: [...planned].filter((c) => !searched.has(c)).sort(), territories };
 }
 
 /**
@@ -355,7 +436,7 @@ export function localScriptSearched(registerPlan) {
  *
  * @returns {{schemaVersion: number, cleared: object, counts: object}}
  */
-export function searchDepthRecord({ auditMd = "", recordIndex = {}, recordFileNames = [], bandRecordIds = null, commonLawGrid = null, caseLawText = "", caseLawRecord = null, registerPlan = null, laneDepthVerdicts = null, noMarketplacesPicked = false } = {}) {
+export function searchDepthRecord({ auditMd = "", recordIndex = {}, recordFileNames = [], bandRecordIds = null, commonLawGrid = null, caseLawText = "", caseLawRecord = null, registerPlan = null, planExecution = null, laneDepthVerdicts = null, noMarketplacesPicked = false } = {}) {
   // `recordFileNames: null` travels all the way to the page — see recordsByCountry. The default stays `[]`
   // because that is "the caller said nothing", not "the store is absent"; only the publish path knows the
   // difference and it is the one producer.
@@ -378,9 +459,9 @@ export function searchDepthRecord({ auditMd = "", recordIndex = {}, recordFileNa
       // The company picked no marketplaces: the report says the general web ran plus any stores chosen for
       // the matter. Stamped only when true, so every other run's record is unchanged.
       sweep: { ...sweepCounts(commonLawGrid, auditMd), ...(noMarketplacesPicked ? { noMarketplacesPicked: true } : {}) },
-      localScriptSearched: localScriptSearched(registerPlan),
+      localScripts: localScripts(registerPlan, planExecution),
       courtDecisions: courtDecisionsState(caseLawText, caseLawRecord ?? undefined),
-      // `localScriptSearched` above answers whether the spellings were searched; this answers how deep
+      // `localScripts` above answers which scripts' spellings were searched; this answers how deep
       // the investigation went against what was configured. Two different facts, and the row the report
       // reserves is for the second.
       localLanguage: localLanguageDepth(laneDepthVerdicts),

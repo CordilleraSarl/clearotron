@@ -15,7 +15,7 @@
 // deadlock the registry auto-corrector had to be dug out of.
 
 import { test } from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -156,7 +156,8 @@ test("IT DOES NOT TOUCH THE FRESHNESS GATE — recording and gating are differen
   assert.ok(!existsSync(driverDir(b.runDir, "stage-inputs")), "no freshness stamp was written or touched");
 
   const stages = driverSource("stages.mjs");
-  const map = stages.slice(stages.indexOf("stageInputs"));
+  // The function itself: its name also occurs in comments above it, and the first of those is not the map.
+  const map = stages.slice(onlyAt(stages, "export function stageInputs("));
   const declared = map.slice(0, map.indexOf("\n}"));
   assert.ok(declared.length > 200, "captured the real input map, not an empty slice");
   assert.ok(!/skills\//.test(declared), "no methodology file is a freshness-gated stage input");
@@ -169,7 +170,8 @@ test("the gateway witnesses the turn it is about to run, with the SAME resolver 
   const src = readFileSync(new URL("../gateway.mjs", import.meta.url), "utf8");
   const i = src.indexOf("witnessStageMethodology(runDir, name, effMessage, engineResolveSkill)");
   assert.ok(i > 0, "the witness runs on the dispatch path");
-  const after = src.slice(i, i + 1000);
+  const after = src.slice(i, i + 1600);
   assert.ok(after.includes("engine.runTurn("), "…immediately before the turn");
   assert.match(after, /resolveSkill: engineResolveSkill/, "and the engine receives that same resolver");
+  assert.match(after, /inlineManuals\(effMessage, \{ resolve: engineResolveSkill/, "and the manuals put into the message come through it too");
 });

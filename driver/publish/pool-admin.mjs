@@ -99,7 +99,7 @@ function injectHome(html, href) {
 }
 
 // Retrofit existing reports across the pool with the home pill. report.html → the staff index
-// (../index.html). One report (spec 2026-07-30 §5): stale report.client.html files in old pool dirs are
+// (../index.html). One report: stale report.client.html files in old pool dirs are
 // dead bytes nothing links to — this deliberately leaves them alone rather than retrofitting them.
 function linkHome(poolDir) {
   const runs = listRuns(poolDir);
@@ -148,7 +148,7 @@ function parseRepublishFlags(rest) {
   const flags = new Map(); const pos = [];
   for (let i = 0; i < rest.length; i++) {
     if (rest[i] === '--internal-only' || rest[i] === '--include-client')
-      throw new Error(`${rest[i]} is retired — there is ONE report now (spec 2026-07-30 §5); republish always re-renders report.html and nothing else exists to hold back.`);
+      throw new Error(`${rest[i]} is retired — there is ONE report now; republish always re-renders report.html and nothing else exists to hold back.`);
     else if (rest[i] === '--pool' || rest[i] === '--run-dir') flags.set(rest[i], rest[++i]);
     else if (rest[i].startsWith('--')) throw new Error(`unknown flag ${rest[i]}`);
     else pos.push(rest[i]);

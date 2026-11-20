@@ -12,21 +12,19 @@
 // and never goes through the gateway — so a stop arriving during that stage has no later read to be
 // seen at. Nothing failed; there was no boundary left.
 //
-// WHAT THIS FILE HOLDS, in two parts, because either alone is satisfiable while the pair is wrong:
-// that the read refuses when it should, and that both lanes actually perform it. A helper nobody calls
-// is the shape this whole defect had.
+// WHAT THIS FILE HOLDS: that the read refuses when it should. That both lanes perform it, in the right place, is held
+// by what a run does: a-stop-pressed-during-the-last-knockout-stage-publishes-nothing.test.mjs and
+// a-clearance-reads-the-stop-before-it-publishes-and-never-after.test.mjs. A helper nobody calls is the shape this whole
+// defect had, so the pair is needed.
 
 import test from "node:test";
-import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 
 import { assertNotCancelledBeforePublish, requestCancel, RunCancelled, CANCEL_MARKER } from "../cancel.mjs";
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const runDir = () => mkdtempSync(join(tmpdir(), "stop-before-publish-"));
 
 test("a run with no stop request publishes — the read is not a wall", () => {
@@ -51,31 +49,6 @@ test("a stop recorded at any earlier moment refuses the publish", () => {
     assert.ok(e instanceof RunCancelled, "not the distinct class — a StageFailure here would be classified, parked and RESUMED");
     assert.match(String(e.message), /publish/, "the refusal does not say where it happened");
   }
-});
-
-test("BOTH lanes perform the read, and the clearance lane does it after the already-published branch", () => {
-  // THE WIRING, WHICH IS THE HALF THE DEFECT ACTUALLY WAS. The gateway's read existed and was correct;
-  // nothing asked it late enough. A test of the helper alone would have passed throughout.
-  const ko = readFileSync(join(ROOT, "pipeline-knockout.mjs"), "utf8");
-  const cl = driverSource("pipeline.mjs");
-
-  for (const [name, src, lane] of [["pipeline-knockout.mjs", ko, "knockout"], ["pipeline.mjs", cl, "clearance"]]) {
-    const call = src.indexOf(`assertNotCancelledBeforePublish(run.runDir, "${lane}")`);
-    assert.ok(call > 0, `${name} does not read the stop flag before publishing`);
-  }
-
-  // ORDER, not presence. On the knockout lane the read must precede the publish call.
-  assert.ok(ko.indexOf('assertNotCancelledBeforePublish(run.runDir, "knockout")') < ko.indexOf("publishKnockout({"),
-    "the knockout lane reads the flag after it has already published, which is no read at all");
-
-  // On the clearance lane it must sit INSIDE the else branch — after the `.published` short-circuit —
-  // or a run that already delivered would be recorded as cancelled, which is this defect reversed.
-  const shortCircuit = cl.indexOf('existsSync(join(run.runDir, ".published"))');
-  const call = cl.indexOf('assertNotCancelledBeforePublish(run.runDir, "clearance")');
-  const publish = cl.indexOf("published = await publishReport({");
-  assert.ok(shortCircuit > 0 && call > shortCircuit,
-    "the clearance lane reads the flag BEFORE the already-published check — a delivered run would be recorded as stopped");
-  assert.ok(call < publish, "the clearance lane reads the flag after publishing, which is no read at all");
 });
 
 test("the marker the read looks for is the one the engine writes", () => {

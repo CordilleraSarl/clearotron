@@ -25,7 +25,7 @@
 // private, so those are read out of the source and applied — the test tracks the code that ships rather
 // than a copy of it that can drift. If a regex here stops being found, that is a failure, not a skip.
 import { test } from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -82,7 +82,7 @@ test("gate token — property 2: the repair turn is aimed at findings.json, not 
 });
 
 test("gate token — property 3: PLURAL, so the A3 per-finding salvage lane never claims it", () => {
-  const a3 = PIPELINE_SRC.slice(PIPELINE_SRC.indexOf("const eligible = /^invalid_file:/"));
+  const a3 = PIPELINE_SRC.slice(onlyAt(PIPELINE_SRC, "const eligible = /^invalid_file:/"));
   assert.ok(a3.startsWith("const eligible ="), "the A3 predicate is gone from pipeline.mjs — this guard needs updating with it");
   const eligible = (fail) => /^invalid_file:/.test(fail) && /:finding_[a-z]/.test(fail) && !/:findings_/.test(fail);
   assert.match(a3.slice(0, 120), /\/:finding_\[a-z\]\/\.test\(fail\) && !\/:findings_\/\.test\(fail\)/,

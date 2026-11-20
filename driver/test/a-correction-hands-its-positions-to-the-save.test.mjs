@@ -10,7 +10,7 @@
 // Codex engine's rendered config, the save tool's server answering a call, the retry wording, and the pipeline's own
 // dispatch sites, where the first correction and its follow-up hand them on and no other synthesis dispatch does.
 import { test } from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync } from "node:fs";
@@ -160,7 +160,7 @@ test("the first correction and its follow-up hand on the positions; the correcti
   const callers = [...src.matchAll(/await enforceCorrectionsReachFindings\(([^;]*)\);/g)].map((m) => m[1]);
   assert.equal(callers.length, 2, "the follow-up's callers moved");
   // Which caller is which, read from the function that holds it rather than from the order the files are read in.
-  const postRepairAt = src.indexOf("async function runPostRepairCorrection(");
+  const postRepairAt = onlyAt(src, "async function runPostRepairCorrection(");
   const postRepairCall = /await enforceCorrectionsReachFindings\(([^;]*)\);/.exec(src.slice(postRepairAt, src.indexOf("\n}\n", postRepairAt)))?.[1];
   assert.ok(postRepairCall != null && !/\bcorrection\b/.test(postRepairCall), "the correction after a repair's review hands positions to the follow-up");
   assert.equal(callers.filter((c) => /\bcorrection\b/.test(c)).length, 1, "the first correction does not hand positions to the follow-up");

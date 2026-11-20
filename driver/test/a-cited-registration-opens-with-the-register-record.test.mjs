@@ -96,3 +96,33 @@ test("the labels are the approved words", () => {
   assert.equal(countryOf("em"), "European Union");
   assert.equal(countryOf("ar"), "Argentina", "a country the naming table does not list still reads as a name");
 });
+
+test("where the record holds a class's goods in English and in the original, the English alone is shown", () => {
+  const both = registerRecordView(record({ office: "jp", uri: "/mark/jp/6231111", goodsServices: [
+    { classes: ["9"], language: null, description: "再充電可能な電池" },
+    { classes: ["9"], language: "en", description: "Rechargeable batteries" },
+    { classes: ["12"], language: null, description: "自転車" },
+  ] }));
+  const goods = rowOf(both, "Goods and services");
+  assert.deepEqual(goods.entries.map((e) => [e.class, e.text]), [["Class 9", "Rechargeable batteries"], ["Class 12", "自転車"]],
+    "the English replaces the original in its class, and a class with no English keeps its original");
+});
+
+test("a Signa record's goods name their language, which it keeps on each classification", () => {
+  const signa = { uri: "/mark/ch/700100", provider: "signa", office: "ch", applicationNumber: "700100", registrationNumber: "700100",
+    markText: "SKARVEL", owner: "Brisavel Acoustics, S.L.", ownerCountry: "ES",
+    _raw: { classifications: [{ nice_class: 9, goods_services_text: "Kopfhörer; Lautsprecher.", goods_services_language: "de" }] } };
+  const goods = rowOf(registerRecordView(signa), "Goods and services");
+  assert.equal(goods.note, "In German, as registered. No English translation on the record.");
+  assert.equal(goods.entries[0].text, "Kopfhörer; Lautsprecher.");
+});
+
+test("Clarivate's own language codes are read as the languages they hold, and only on its records", () => {
+  const translated = (language, provider = "clarivate") => rowOf(registerRecordView(record({ provider, office: "cn", uri: "/mark/cn/7000001",
+    goodsServices: [{ classes: ["9"], language, description: "原文", translation_language: "en", translation: "Headphones." }] })), "Goods and services").marker?.tag;
+  assert.equal(translated("cn"), "Machine translation from Chinese");
+  assert.equal(translated("gr"), "Machine translation from Greek");
+  assert.equal(translated("sw"), "Machine translation from Swedish", "Clarivate's sw holds Swedish text");
+  assert.equal(translated("sw", "signa"), "Machine translation from Swahili", "another register's sw is the standard's");
+  assert.equal(translated("zh"), "Machine translation from Chinese");
+});

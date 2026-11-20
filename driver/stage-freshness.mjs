@@ -46,7 +46,7 @@
 // accrues enforcement as it writes its own stamps.
 
 import { createHash } from "node:crypto";
-import { readFileSync, writeFileSync, existsSync, readdirSync, unlinkSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync, unlinkSync } from "node:fs";
 import { join, basename } from "node:path";
 import { atomicWrite, driverDir, ensureDriverDir, paths, readJson } from "./run-record.mjs";   // — one definition of where `_driver/` is
 import { runLog, note } from "./log.mjs";
@@ -131,7 +131,10 @@ export function writeStamp(runDir, label, inputPaths, { project = null, values =
 export function writeFingerprint(runDir, label, inputs) {
   try {
     ensureDriverDir(runDir, STAMP_DIR);
-    writeFileSync(stampPath(runDir, label), JSON.stringify({ label, ts: new Date().toISOString(), inputs }, null, 2) + "\n");
+    // WHOLE OR NOT AT ALL. A stamp that exists but does not parse reads as no record, and the stage runs again on a resume;
+    // a process killed while writing one in place left exactly that. Written beside the file and renamed over it, a stamp
+    // is either there whole or not there, so its presence means the stage recorded what it read.
+    atomicWrite(stampPath(runDir, label), JSON.stringify({ label, ts: new Date().toISOString(), inputs }, null, 2) + "\n");
   } catch { /* a stamp we could not write just means "not stale" downstream — never worse than today */ }
 }
 
@@ -176,7 +179,7 @@ export function restamp(runDir, absPath, { project = null } = {}) {
           else if ("proj" in e) { delete e.proj; hit = true; }   // no longer projectable ⇒ whole-file fallback
         }
       }
-      if (hit) { writeFileSync(p, JSON.stringify(doc, null, 2) + "\n"); touched++; }
+      if (hit) { atomicWrite(p, JSON.stringify(doc, null, 2) + "\n"); touched++; }
     }
   } catch { /* best-effort */ }
   return touched;
@@ -226,7 +229,7 @@ export function restampStage(runDir, label, absPath, { project = null } = {}) {
         else if ("proj" in e) { delete e.proj; changed = true; }
       }
     }
-    if (changed) writeFileSync(p, JSON.stringify(doc, null, 2) + "\n");
+    if (changed) atomicWrite(p, JSON.stringify(doc, null, 2) + "\n");
     return { stamped: true, matched, changed };
   } catch { return miss; /* best-effort — a miss just means the delivery gate stays as strict as today */ }
 }
@@ -300,7 +303,7 @@ export function reconcileStamps(runDir, inputsFor, exclude = null, { project = n
       if (JSON.stringify(fresh) === JSON.stringify(doc.inputs)) continue;
       doc.inputs = fresh;
       doc.reconciledAt = new Date().toISOString();
-      try { writeFileSync(p, JSON.stringify(doc, null, 2) + "\n"); touched++; } catch { /* best-effort */ }
+      try { atomicWrite(p, JSON.stringify(doc, null, 2) + "\n"); touched++; } catch { /* best-effort */ }
     }
   } catch { /* best-effort */ }
   return touched;

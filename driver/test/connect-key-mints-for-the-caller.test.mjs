@@ -23,26 +23,56 @@ import { driverSource } from "./driver-source.mjs";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const SERVICE = driverSource("portal-service.mjs");
-const ROUTE = SERVICE.slice(
-  SERVICE.indexOf('parts[2] === "connect-key"'),
-  SERVICE.indexOf("// /portal/connect-help"),
-);
 
-test("the route exists and is reachable only by an authenticated caller", () => {
-  assert.ok(ROUTE.length > 200, "the connect-key route was not found — every arm below would assert nothing");
-  assert.ok(ROUTE.includes("assertPrincipal"), "an unauthenticated caller can mint a credential");
-  assert.ok(/method === "POST"/.test(SERVICE.slice(SERVICE.indexOf('parts[2] === "connect-key"') - 120,
-    SERVICE.indexOf('parts[2] === "connect-key"') + 80)), "minting is reachable by GET");
+// THE ROUTE, DRIVEN. Two people enrolled and one stranger; the connector's address and the signing secret set, so the
+// route can mint and every refusal below is the route's own. What it minted is read back through the verifier the
+// connector uses, so "minted for the caller" means what the key says, not what the code looks like.
+const GRANTS = { tenants: {
+  celta: { accounts: ["demo-brand-owner"], users: { "cli@celta.example": ["demo-brand-owner"], "ana@celta.example": ["demo-brand-owner"] } },
+} };
+async function withRoute(fn) {
+  const { makePortalService } = await import("../portal-service.mjs");
+  const { verifyToken } = await import("../../shared/scope.mjs");
+  const lines = [];
+  const svc = makePortalService({ poolRoot: "/nonexistent", workspaceRoot: "/nonexistent", secret: "s", grants: GRANTS,
+    auditLog: (line) => lines.push(String(line)) });
+  const saved = { url: process.env.CLEAROTRON_CLIENT_MCP_URL, secret: process.env.TRADEMARK_MCP_TOKEN_SECRET };
+  process.env.CLEAROTRON_CLIENT_MCP_URL = "https://connector.example/mcp";
+  process.env.TRADEMARK_MCP_TOKEN_SECRET = "connect-key-test-secret";
+  const call = async (method, principal, body = {}) => {
+    try { return await svc.route(method, "/portal/api/connect-key", principal, body); }
+    catch (e) { return { status: e?.status ?? e?.statusCode ?? 500, json: { error: String(e?.message ?? e) } }; }
+  };
+  try { return await fn({ call, lines, verifyToken }); }
+  finally {
+    if (saved.url === undefined) delete process.env.CLEAROTRON_CLIENT_MCP_URL; else process.env.CLEAROTRON_CLIENT_MCP_URL = saved.url;
+    if (saved.secret === undefined) delete process.env.TRADEMARK_MCP_TOKEN_SECRET; else process.env.TRADEMARK_MCP_TOKEN_SECRET = saved.secret;
+  }
+}
+
+test("minting needs a signed-in caller and a POST", async () => {
+  await withRoute(async ({ call }) => {
+    const anonymous = await call("POST", null);
+    assert.notEqual(anonymous.status, 200, "an unauthenticated caller was minted a credential");
+    assert.equal(anonymous.json?.key, undefined, "and was handed a key");
+    const byGet = await call("GET", { email: "cli@celta.example" });
+    assert.equal(byGet?.json?.key, undefined, "minting is reachable by GET");
+    const control = await call("POST", { email: "cli@celta.example" });
+    assert.equal(control.status, 200, `the control did not mint: ${JSON.stringify(control.json)}`);
+  });
 });
 
-test("`sub` COMES FROM THE PRINCIPAL AND NEVER FROM THE REQUEST", () => {
-  // The whole security property in one line. If `sub` could come from the body, the button would be a
-  // way to obtain any identity's credential, and every other control here would be decoration.
-  assert.match(ROUTE, /sub:\s*identity/, "the minted identity is not the caller's");
-  assert.match(ROUTE, /const identity = principal\.email/, "the identity is not taken from the principal");
-  for (const fromRequest of ["body", "query", "params", "JSON.parse"]) {
-    assert.ok(!ROUTE.includes(fromRequest), `the route reads "${fromRequest}" — an identity must not come from the caller`);
-  }
+test("`sub` COMES FROM THE PRINCIPAL AND NEVER FROM THE REQUEST", async () => {
+  // The whole security property. If `sub` could come from the request, the button would be a way to obtain any
+  // identity's credential, and every other control here would be decoration. So the request names someone else, in
+  // every field a route might read, and the key that comes back is read through the connector's own verifier.
+  await withRoute(async ({ call, verifyToken }) => {
+    const other = "ana@celta.example";
+    const r = await call("POST", { email: "cli@celta.example" }, { sub: other, email: other, identity: other, user: other });
+    assert.equal(r.status, 200, JSON.stringify(r.json));
+    const claims = verifyToken(r.json.key);
+    assert.equal(claims?.sub, "cli@celta.example", `the key was minted for ${claims?.sub}, not for the caller`);
+  });
 });
 
 test("an unenrolled identity is refused BEFORE anything is minted", async () => {
@@ -89,16 +119,18 @@ test("an unenrolled identity is refused BEFORE anything is minted", async () => 
   }
 });
 
-test("the response is NEVER CACHED, and the audit line records who — never what", () => {
-  // A credential in a proxy or disk cache is the "outlives the moment" failure the ruling is about,
-  // arriving by a route the page cannot see.
-  assert.match(ROUTE, /cache-control/i, "a credential response may be cached");
-  assert.match(ROUTE, /no-store/, "the response does not forbid storage");
-  // The audit line must name the person and never the token: an audit log that records credentials is a
-  // credential store with a different name.
-  const audit = /auditLog\(`([^`]*)`\)/.exec(ROUTE)?.[1] ?? "";
-  assert.ok(audit.includes("${identity}"), "the audit line does not say who");
-  assert.ok(!audit.includes("${key}"), "the audit line records the token itself");
+test("the response is NEVER CACHED, and the audit line records who — never what", async () => {
+  // A credential in a proxy or disk cache is the "outlives the moment" failure the ruling is about, arriving by a route
+  // the page cannot see. And an audit log that records credentials is a credential store with a different name.
+  await withRoute(async ({ call, lines }) => {
+    const r = await call("POST", { email: "cli@celta.example" });
+    assert.equal(r.status, 200, JSON.stringify(r.json));
+    assert.match(String(r.headers?.["cache-control"] ?? ""), /no-store/, "the credential response may be stored");
+    const audit = lines.filter((l) => l.startsWith("connect-key"));
+    assert.equal(audit.length, 1, "one issuance, one audit line");
+    assert.ok(audit[0].includes("cli@celta.example"), "the audit line does not say who");
+    assert.ok(!audit[0].includes(r.json.key) && !audit[0].includes(r.json.key.slice(0, 16)), "the audit line records the key itself");
+  });
 });
 
 test("THE STALE WALL IS CORRECTED, not left to be trusted", () => {

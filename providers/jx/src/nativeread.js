@@ -11,7 +11,6 @@
 // enforces record_uri ∈ the fetched set upstream (an ungrounded flag downgrades to a lead) — this
 // module only shapes and clamps; it grounds nothing itself.
 
-import { DEFAULT_MODEL } from "./core.js";
 import { runJxTurn } from "./turn-envelope.mjs";
 
 export const MAX_ITEMS = 12;
@@ -52,7 +51,7 @@ export const NATIVEREAD_TOOL = {
 /** Assemble the Messages API body (pure). `payload` is the code-inlined evidence slice the DRIVER
  *  assembled (register rows, candidates, sub-class notes, grid findings) — this module never decides
  *  what the model may see. */
-export function buildNativereadRequest({ mark, lane = "zh", payload, model = DEFAULT_MODEL }) {
+export function buildNativereadRequest({ mark, lane = "zh", payload }) {
   if (lane !== "zh") throw new Error(`jx-nativeread: no prompt for lane "${lane}"`);
   if (!String(mark ?? "").trim()) throw new Error("jx-nativeread: mark is required");
   if (!String(payload ?? "").trim()) throw new Error("jx-nativeread: payload (the evidence slice) is required");
@@ -77,7 +76,6 @@ export function buildNativereadRequest({ mark, lane = "zh", payload, model = DEF
     String(payload),
   ].join("\n");
   return {
-    model,
     max_tokens: 4096,   // 12 grounded items with grounds quotes need headroom; truncation checked either way
     tools: [NATIVEREAD_TOOL],
     messages: [{ role: "user", content: prompt }],

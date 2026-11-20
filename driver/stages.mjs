@@ -309,6 +309,15 @@ export const providerMeta = (register) => PROVIDERS[register] ?? {   // a run's 
 
 // ---- message builders (faithful to the spawn briefs in phase2-execution.md; the leaf reads the skill for detail) ----
 export const lines = (...a) => a.filter(Boolean).join("\n");
+// THE CASE'S OWN VALUES CLOSE THE MESSAGE (design, 2026-11-19: the heading and the instruction are word for word as approved).
+// A stage whose sessions differ only by their paths and identifiers sends the shared instructions first, naming each input,
+// and lists the values once, at the end, so sessions of one stage send the same leading text.
+export const INPUTS_HEADING = "Inputs for this task";
+export const USE_THE_INPUTS = "Use the inputs listed at the end of this message.";
+export const inputsBlock = (rows) => lines(INPUTS_HEADING, ...rows.filter(([, v]) => v != null && v !== "").map(([k, v]) => `- ${k}: ${v}`));
+/** A common-law half's inputs: its half, the two documents it reads, and the three files its tool and its findings use. */
+const halfInputs = (P, half) => inputsBlock([["Assigned half", half], ["Variant manifest", P.variantManifest], ["Matter frame", P.matterContext],
+  ["Grid specification (grid_spec_path)", P.gridSpecHalf(half)], ["Grid ledger", P.commonLawGridHalf(half)], ["Findings file", P.commonLawHalf(half)]]);
 
 // ── — THE PROSE RUNG FOR SYNTHESIS ──────────────────────────────────────────────────────────
 //
@@ -1879,18 +1888,19 @@ export const STAGES = {
       // a floor teaches a model to fabricate rows to pass it.
       if (half === MEANING_SEAT) return lines(
         reads(["skills/clearance-common-law/SKILL.md"]),
-        `Inputs: variant manifest ${P.variantManifest}; matter frame ${P.matterContext}.`,
+        USE_THE_INPUTS,
         systemScope,
         `You own this matter's MEANING SWEEP and nothing else. Two sibling members are running the marketplace grid concurrently and the driver merges all three in code — do NOT sweep marketplaces, do NOT judge listings, and do NOT widen beyond your dictated queries.`,
-        `Run the sweep via the DETERMINISTIC grid: call perplexity_research with enable_sandbox:true and grid_spec_path: ${P.gridSpecHalf(half)}. Your spec carries the dictated meaning queries and NO term x platform cells. The tool runs exactly those queries and WRITES your ledger to ${P.commonLawGridHalf(half)} itself.`,
-        `Do NOT author the grid program, do NOT save ${P.commonLawGridHalf(half)} yourself, and do NOT re-emit the ledger JSON in your message.`,
-        `If your spec's connotation carries "none_named": true, the matter frame named no meaning question for this mark, so there is nothing to search: do not call perplexity_research, and write ${P.commonLawHalf(half)} with a "Findings" heading saying no meaning search ran because the matter frame named no meaning question, and an "Audit trail" section saying the same.`,
+        `Run the sweep via the DETERMINISTIC grid: call perplexity_research with enable_sandbox:true and grid_spec_path set to your grid specification. Your spec carries the dictated meaning queries and NO term x platform cells. The tool runs exactly those queries and WRITES your grid ledger itself.`,
+        `Do NOT author the grid program, do NOT save your grid ledger yourself, and do NOT re-emit the ledger JSON in your message.`,
+        `If your spec's connotation carries "none_named": true, the matter frame named no meaning question for this mark, so there is nothing to search: do not call perplexity_research, and write your findings file with a "Findings" heading saying no meaning search ran because the matter frame named no meaning question, and an "Audit trail" section saying the same.`,
         // The MEANING seat always owns meaning queries — that is what it is for — so the may-own-nothing
         // sentence is FALSE here. It used to be served anyway, because the option was keyed on being a
         // half rather than on the obligations.
         meaningSweepReceiptsInstruction({ lead: "MEANING-SWEEP RECEIPTS — THIS IS THE WORK.", findingsTail: false }),
-        `Then write ${P.commonLawHalf(half)}: a short report of the sweep under a "Findings" heading — every LOADED reading as its own finding, with the receipt behind it — and an "Audit trail" section saying which queries ran and what each returned. The driver renders the disposition TABLE from your recorded rulings, so do not hand-write that table.`,
+        `Then write your findings file: a short report of the sweep under a "Findings" heading — every LOADED reading as its own finding, with the receipt behind it — and an "Audit trail" section saying which queries ran and what each returned. The driver renders the disposition TABLE from your recorded rulings, so do not hand-write that table.`,
         WEB_EVIDENCE_ONLY_THROUGH_RESEARCH,
+        halfInputs(P, half),
         writeReturn(P.commonLawHalf(half)),
       );
       // Instructed checks are receipts executed ONCE per run — half "a" is the designated owner (the
@@ -1903,13 +1913,12 @@ export const STAGES = {
       ) : "";
       return lines(
         reads(["skills/clearance-common-law/SKILL.md"]),
-        `Inputs: variant manifest ${P.variantManifest}; matter frame ${P.matterContext}.`,
+        USE_THE_INPUTS,
         systemScope,
-        asksBlock,
         `You are running ONE HALF of this matter's marketplace grid — a sibling member runs the other half concurrently, and the driver merges the two in code. Cover ONLY your half's dictated terms; never widen to terms outside your spec.`,
-        `Run your half of the sweep via the DETERMINISTIC grid: call perplexity_research with enable_sandbox:true and grid_spec_path: ${P.gridSpecHalf(half)}. The tool runs EXACTLY your half's dictated term × platform grid and WRITES this half's complete ledger to ${P.commonLawGridHalf(half)} itself.`,
-        `Do NOT author the grid program, do NOT save ${P.commonLawGridHalf(half)} yourself, and do NOT re-emit the grid JSON in your message (re-emitting is exactly what truncated/dropped cells before). The tool returns only the candidate hits that need judgment.`,
-        `Judge each returned candidate into the fixed taxonomy and write your findings file to ${P.commonLawHalf(half)} with its Findings, Negative-results matrix, Coverage ledger, and Audit trail sections. The driver validates grid completeness from the ledger the tool wrote — never from your prose.`,
+        `Run your half of the sweep via the DETERMINISTIC grid: call perplexity_research with enable_sandbox:true and grid_spec_path set to your grid specification. The tool runs EXACTLY your half's dictated term × platform grid and WRITES this half's complete grid ledger itself.`,
+        `Do NOT author the grid program, do NOT save your grid ledger yourself, and do NOT re-emit the grid JSON in your message (re-emitting is exactly what truncated/dropped cells before). The tool returns only the candidate hits that need judgment.`,
+        `Judge each returned candidate into the fixed taxonomy and write your findings file with its Findings, Negative-results matrix, Coverage ledger, and Audit trail sections. The driver validates grid completeness from the ledger the tool wrote — never from your prose.`,
         // P2-C (Round-2 §8b leg 2) — the SAME dictate the single-member message carries, half-scoped
         // (2026-07-31 review round): under the split THIS seat writes the PR section, so leaving the
         // obligation to skill prose here is exactly the "prose-only contracts get skipped under output
@@ -1928,6 +1937,9 @@ export const STAGES = {
         meaningSweepReceiptsInstruction({ mayOwnNoQueries: true }),
         CROSS_CHECK_HANDOFF,
         WEB_EVIDENCE_ONLY_THROUGH_RESEARCH,
+        // Half a's instructed checks are this session's own, so they close the message with its inputs.
+        asksBlock,
+        halfInputs(P, half),
         writeReturn(P.commonLawHalf(half)),
       );
     },
@@ -2048,7 +2060,7 @@ export const STAGES = {
       // that does the excluding, and returns NULL — not an empty sentence — when the provider cannot be
       // resolved, which is the path `--experiment` takes.
       grantVocabularySentence(register),
-      `You are register UNIT mode, axis = "${axis}". Active register provider: ${providerMeta(register).label}.`
+      `You are register UNIT mode, on the axis listed at the end of this message. Active register provider: ${providerMeta(register).label}.`
       // A provider with no vocabulary doc is a provider this seat cannot be briefed on. Emitting the
       // sentence with a null path in it would instruct the model to read a file that does not exist,
       // which it resolves by carrying on unbriefed — indistinguishable from choosing not to read.
@@ -2061,17 +2073,14 @@ export const STAGES = {
         // agreement it never obtained.
         ? ` Read and follow ${providerMeta(register).skillDoc} for THIS provider's exact tool names + operator vocabulary; use only that provider's register tools. There is exactly ONE register in this run — if its coverage does not reach a territory the matter needs, that is a DEFERRED coverage row you disclose, never a gap you fill from somewhere else.`
         : " NO provider vocabulary doc is registered for it, so there is nothing to read for its tool names — treat that as a fault and say so rather than improvising an operator vocabulary."),
-      `Inputs: variant manifest ${P.variantManifest}; matter frame ${P.matterContext}.`,
+      USE_THE_INPUTS,
       planEntries.length
         ? lines(
             // (2026-07-03, the senior lawyer): the TOOL executes the plan — the model never runs
             // dictated entries by hand and never re-types results (the transcription defect class
             // dies at the source, the deterministic-grid precedent). The entry list stays in the
             // message for transparency and so judgment knows what is already covered.
-            `EXECUTE THE FROZEN PLAN VIA THE TOOL: call register_execute_plan ONCE with {"plan_path": ${JSON.stringify(P.registerPlan)}, "axis": "${axis}", "output_path": ${JSON.stringify(P.registerBand(axis))}}; call it again only with the qids of waiting families you release. The tool runs every dictated entry below ITSELF (paged enumerates; count-only crowd descriptors; a "when"-guarded fringe only if its parent enumerated; a waiting family only once you release it) and WRITES the band file itself with each block's qid stamped. Do NOT run these dictated entries manually and do NOT write their blocks yourself.`,
-            `For your audit context, the dictated entries the tool will run:`,
-            romanisedFiling && `This register files foreign marks by their romanised form, and says so: a question below in another script is searched by the romanised form shown on it.`,
-            ...planEntries.map((e) => `- qid "${e.qid}": ${e.predicate} ${e.terms ? `names ${JSON.stringify(e.terms)} (one OR-stacked call)` : JSON.stringify(e.term)}${romanisedNote(e)}${e.owner ? ` · owner ${JSON.stringify(e.owner)}` : ""} · nice_classes ${JSON.stringify(e.nice_classes)}${e.regions?.length ? ` · regions ${JSON.stringify(e.regions)}` : ""}${e.when ? (awaitsReadingTurn(e.when) ? ` · WAITING FOR YOU: after reading the identical mark's list, release it or withhold it, with your reason` : ` · when: "${e.when.runs_if_enumerated}" enumerated`) : ""} · expected: ${e.expected_kind}${Array.isArray(e.covered_by) && e.covered_by.length ? ` · crowd context — coverage is ${e.covered_by.join(", ")}` : ""}`),
+            `EXECUTE THE FROZEN PLAN VIA THE TOOL: call register_execute_plan ONCE with the arguments listed at the end of this message; call it again only with the qids of waiting families you release. The tool runs every dictated entry listed there ITSELF (paged enumerates; count-only crowd descriptors; a "when"-guarded fringe only if its parent enumerated; a waiting family only once you release it) and WRITES the band file itself with each block's qid stamped. Do NOT run these dictated entries manually and do NOT write their blocks yourself.`,
             // copper-lattice re-route (supplemental_lane contract): judgment additions stay the model's
             // CALL — which queries the manifest/frame warrant beyond the dictated set — but their
             // EXECUTION and their band blocks are code's (register_propose_supplemental mints qid'd
@@ -2096,19 +2105,17 @@ export const STAGES = {
       // those owner queries effectively unscreened. Enforcement needs matching
       // invitation control — whatever forbids the old path must also, in the same breath, name the new one.
       supplementalLane
-        ? `JUDGMENT ADDITIONS${planEntries.length ? " beyond the dictated plan" : ""} are yours to PROPOSE — call register_propose_supplemental with {"axis": "${axis}", "output_path": ${JSON.stringify(P.registerBand(axis))}, "proposals": [{"predicate": "exact|default|wildcard|phonetic|owner", "term" OR "terms", "romanization" (MANDATORY beside a single non-Latin term — its plain-ASCII Latin form, space-separated syllables; a register that indexes filings by transliteration cannot answer bare characters), "nice_classes": […], "rationale": "why"} …]} for everything the manifest/frame warrants${planEntries.length ? " beyond the dictated set" : " on this axis"}. Batch related proposals into one call; iterate freely — propose, read the returned counts/term_counts/record previews, propose narrower. The tool mints each proposal as a qid'd supplemental entry, executes it through the SAME deterministic executor as the dictated plan, and MERGES its block into the band ITSELF. ${SUPPLEMENTAL_LANE_STEERING} You NEVER write or edit band blocks yourself — a hand-authored band block fails the stage. Never edit or remove a qid-stamped block.`
-        : `JUDGMENT ADDITIONS${planEntries.length ? " beyond the dictated plan" : ""} are yours — run register_enumerate calls for everything the manifest/frame warrants${planEntries.length ? " beyond the dictated set" : " on this axis"} and APPEND each as a block WITHOUT a qid to ${P.registerBand(axis)} (the tool's merge preserves them on any re-run). Never edit or remove a qid-stamped block. Every block you append MUST carry "state":"enumerated" (ONLY if you paged it to has_more:false) or "state":"incomplete" — EXACTLY those two strings; there is no "verified"/"checked"/"complete"/"clean" state, and any other value fails the stage.`,
+        ? `JUDGMENT ADDITIONS${planEntries.length ? " beyond the dictated plan" : ""} are yours to PROPOSE — call register_propose_supplemental with your axis as "axis", your band file as "output_path", and "proposals": [{"predicate": "exact|default|wildcard|phonetic|owner", "term" OR "terms", "romanization" (MANDATORY beside a single non-Latin term — its plain-ASCII Latin form, space-separated syllables; a register that indexes filings by transliteration cannot answer bare characters), "nice_classes": […], "rationale": "why"} …] for everything the manifest/frame warrants${planEntries.length ? " beyond the dictated set" : " on this axis"}. Batch related proposals into one call; iterate freely — propose, read the returned counts/term_counts/record previews, propose narrower. The tool mints each proposal as a qid'd supplemental entry, executes it through the SAME deterministic executor as the dictated plan, and MERGES its block into the band ITSELF. ${SUPPLEMENTAL_LANE_STEERING} You NEVER write or edit band blocks yourself — a hand-authored band block fails the stage. Never edit or remove a qid-stamped block.`
+        : `JUDGMENT ADDITIONS${planEntries.length ? " beyond the dictated plan" : ""} are yours — run register_enumerate calls for everything the manifest/frame warrants${planEntries.length ? " beyond the dictated set" : " on this axis"} and APPEND each as a block WITHOUT a qid to your band file (the tool's merge preserves them on any re-run). Never edit or remove a qid-stamped block. Every block you append MUST carry "state":"enumerated" (ONLY if you paged it to has_more:false) or "state":"incomplete" — EXACTLY those two strings; there is no "verified"/"checked"/"complete"/"clean" state, and any other value fails the stage.`,
       // Owner-axis steering rides the lane only: off-lane the unit still has register_enumerate, so the
       // proposal grammar this text is about does not apply to it.
       supplementalLane ? OWNER_SWEEP_STEERING : "",
-      planEntries.length ? "" : `This axis carries NO dictated plan entries: the whole axis is yours to cover by ${supplementalLane ? "proposal" : "enumeration"} per the manifest/frame. "No entries" means the plan had nothing to freeze here — it does NOT mean the axis is out of scope, and it is never a reason to leave it thin.`,
       // Lever-1 (2026-06-24): EVERY register_enumerate MUST be class-scoped, or it returns an all-45-class crowd
       // that floods the band and TIMES OUT the stage. Scoping by class = which Nice classes the matter instructed
       // = BREADTH (region/variant/match-mode are the breadth dials); it is NOT sampling/sufficiency.
       // ION/copper-foundry: these lines name the tool the unit is expected to class-scope, so they MUST
       // follow the lane too — naming register_enumerate to a unit that cannot call it is what taught ION's
       // incumbent-class pass that the tool was broken.
-      inScopeClassLine(inScope, supplementalLane),
       // CROWD BOUND: gate the dangerous-category substring enumeration on the class-scoped RESULT (tractable
       // vs crowd), not the manifest label. A slice that returns a crowd is no longer terminal (ruled 2026-09-25):
       // the listing ceiling is a call limit, never a decision point, and the unit decides on the crowd as on the
@@ -2116,7 +2123,7 @@ export const STAGES = {
       // stripped common component (GREAT/OUTDOORS) write none — saturation-probe already counted it (immaterial).
       // This removes the primary-sweep grind that double-SIGKILLed an all-common-words phrase run. Boundary held: the funnel
       // counts + hands up; it never writes coverage-limited and never drives CONDITIONAL (judgment's call, Layer B).
-      `CROWD BOUND (removal — prevents the primary-sweep timeout, spec-46): every dangerous-category substring slice (the dominant token / formative root as a contains predicate + its phonetic slice) is attempted ONCE class-scoped and gated on its RESULT, not on the manifest label. Returns enumerated (tractable — NOVA PULSE∩class≈257, the phrase "QUIET FIELD"≈99) → keep it, take its majors from it by jurisdictions, and run its phonetic pass. Returns incomplete because the slice is ITSELF a crowd over the ceiling (a hyper-common word — GREAT≈28k, OUTDOORS≈2.7k) → the ceiling is a call limit, never a decision point: decide on that crowd with the same steps (unit.md, \"Read the identical mark first\"), only as far as reading it would change what you tell the client; record what stays a crowd with its count. On a crowd slice, WHAT you write depends which slice it is: the DISTINCTIVE anchor / dominant category → write ONE incomplete block (a material could-not-finish for judgment); a stripped COMMON component (GREAT/OUTDOORS — NOT the anchor) → write NO block, the saturation-probe axis already counted it (immaterial dilution; a duplicate primary-sweep crowd risks mis-reading as a material in-class gap). For an all-common-words phrase mark ("The Quiet Field" — dominant unit = the phrase), the exact phrase + near-neighbours IS the dangerous band; the common-word components are dilution counts. The funnel counts + hands up; it never writes coverage-limited and never drives CONDITIONAL.`, narrowingOrderLine(job, profile, inScope),
+      `CROWD BOUND (removal — prevents the primary-sweep timeout, spec-46): every dangerous-category substring slice (the dominant token / formative root as a contains predicate + its phonetic slice) is attempted ONCE class-scoped and gated on its RESULT, not on the manifest label. Returns enumerated (tractable — NOVA PULSE∩class≈257, the phrase "QUIET FIELD"≈99) → keep it, take its majors from it by jurisdictions, and run its phonetic pass. Returns incomplete because the slice is ITSELF a crowd over the ceiling (a hyper-common word — GREAT≈28k, OUTDOORS≈2.7k) → the ceiling is a call limit, never a decision point: decide on that crowd with the same steps (unit.md, \"Read the identical mark first\"), only as far as reading it would change what you tell the client; record what stays a crowd with its count. On a crowd slice, WHAT you write depends which slice it is: the DISTINCTIVE anchor / dominant category → write ONE incomplete block (a material could-not-finish for judgment); a stripped COMMON component (GREAT/OUTDOORS — NOT the anchor) → write NO block, the saturation-probe axis already counted it (immaterial dilution; a duplicate primary-sweep crowd risks mis-reading as a material in-class gap). For an all-common-words phrase mark ("The Quiet Field" — dominant unit = the phrase), the exact phrase + near-neighbours IS the dangerous band; the common-word components are dilution counts. The funnel counts + hands up; it never writes coverage-limited and never drives CONDITIONAL.`,
       // judgment-relocation (2026-06-23): the funnel ENUMERATES or reports HONEST INCOMPLETENESS — it decides
       // NOTHING about relevance or sufficiency. For the DANGEROUS NAMED BAND (the exact mark + each manifest
       // variant × in-scope class × material/major jurisdiction) you MUST use register_enumerate, which owns the
@@ -2131,8 +2138,8 @@ export const STAGES = {
       // register_enumerate call" ordered precisely the thing the validator kills, using a tool it does not
       // have. ION's incumbent-class band carries ten qid-less blocks written exactly that way.
       supplementalLane
-        ? `BAND ARTIFACT: the band ${P.registerBand(axis)} is written BY THE TOOLS — register_execute_plan for the dictated entries, register_propose_supplemental for your proposals — with every block qid-stamped. You NEVER author, edit or append a band block: a hand-written block fails the stage. Your job is to READ the band back and judge it by the steps in unit.md: read the identical mark first, narrow a crowd until it gives a list you can read, and decide as a lawyer would whether more searching would change what you tell the client. Every block the tools write is either {"state":"enumerated", …records} (paged to has_more:false) or {"state":"incomplete", total_hits, fetched, sample, reason} (a crowd over the ceiling / the provider window / a provider error). Never sample a slice yourself with register_search, and never record a sample as though it were a band. The band is the real material the lawyer reads: an unenumerable band is an HONEST "incomplete" descriptor, NEVER a clean negative.`
-        : `BAND ARTIFACT (MANDATORY): ALSO write the COMPLETE NAMED BAND for this axis to ${P.registerBand(axis)} — a JSON ARRAY, one block per register_enumerate / count-probe call, in the named-band contract: {"state":"enumerated","query":"<what was searched>","total_hits":N,"records":[{record_id, mark_text, classes, status, owner_name, owner_country, application_date, registration_date, expiry_date, jurisdictions, screen_verdict}, …]} for a band you paged to has_more:false (carry EVERY enumerated record, with its screening facts — live AND recently-dead, with the status/lapse-date; status is surfaced, never date-cut), and {"state":"incomplete","query":"…","total_hits":N,"fetched":K,"sample":[…],"reason":"…"} for any band/crowd you could NOT enumerate to completion (genuinely too large, hit the provider window, a provider error). The band is the real material the lawyer reads — a missing/sampled enumerated record is a recall hole; an unenumerable band is an HONEST "incomplete" descriptor, NEVER a clean negative.`,
+        ? `BAND ARTIFACT: your band file is written BY THE TOOLS — register_execute_plan for the dictated entries, register_propose_supplemental for your proposals — with every block qid-stamped. You NEVER author, edit or append a band block: a hand-written block fails the stage. Your job is to READ the band back and judge it by the steps in unit.md: read the identical mark first, narrow a crowd until it gives a list you can read, and decide as a lawyer would whether more searching would change what you tell the client. Every block the tools write is either {"state":"enumerated", …records} (paged to has_more:false) or {"state":"incomplete", total_hits, fetched, sample, reason} (a crowd over the ceiling / the provider window / a provider error). Never sample a slice yourself with register_search, and never record a sample as though it were a band. The band is the real material the lawyer reads: an unenumerable band is an HONEST "incomplete" descriptor, NEVER a clean negative.`
+        : `BAND ARTIFACT (MANDATORY): ALSO write the COMPLETE NAMED BAND for this axis to your band file — a JSON ARRAY, one block per register_enumerate / count-probe call, in the named-band contract: {"state":"enumerated","query":"<what was searched>","total_hits":N,"records":[{record_id, mark_text, classes, status, owner_name, owner_country, application_date, registration_date, expiry_date, jurisdictions, screen_verdict}, …]} for a band you paged to has_more:false (carry EVERY enumerated record, with its screening facts — live AND recently-dead, with the status/lapse-date; status is surfaced, never date-cut), and {"state":"incomplete","query":"…","total_hits":N,"fetched":K,"sample":[…],"reason":"…"} for any band/crowd you could NOT enumerate to completion (genuinely too large, hit the provider window, a provider error). The band is the real material the lawyer reads — a missing/sampled enumerated record is a recall hole; an unenumerable band is an HONEST "incomplete" descriptor, NEVER a clean negative.`,
       // judgment-relocation (2026-06-24): the funnel writes NO coverage ledger and NO clearance verdict — the
       // band IS the coverage signal (Layer B reads it and authors the ledger). The .md is a SHORT prose audit
       // note only (what you searched, counts) — it is gated for existence, but the BAND is the load-bearing
@@ -2145,7 +2152,23 @@ export const STAGES = {
       // is the quiet one: the note says nine enumerated queries, the band holds eight, and nothing compares
       // them. Deriving removes the disagreement rather than detecting it.
       `FILE THIS AXIS'S AUDIT NOTE WITH \`record_unit_note\`. THE DISPATCH NAMES NO PATH FOR IT, deliberately — the driver writes this axis's note from what you send and you never open it, so there is no path here for you to hold. THE COUNTS ARE NOT YOURS TO TYPE: queries enumerated, incomplete blocks and records carried forward are taken from the band, so the note and the band cannot disagree. Send only what the band cannot say — \`null_result\` if this axis genuinely found nothing (refused against a band that carries records), and \`note\`, ONE short observation an auditor would want, in a lawyer's words. Still NO coverage-limited/confirmed-clean/deferred rows and NO clearance verdict: those are judgment's, Layer B. Call it AFTER the band exists (on a plan run with no entries for this axis, the driver has written it empty) — a note over a band that has not been written is refused by name, because an account of a sweep that has not happened is not a short note, it is a wrong one.`,
-      CROSS_CHECK_HANDOFF, DECIDE_WAITING_FAMILIES,   // withheld-families.mjs
+      CROSS_CHECK_HANDOFF,
+      // THIS AXIS'S OWN CONDITIONS AND VALUES CLOSE THE MESSAGE (design, 2026-11-19), so units of one run send the same
+      // leading text: whether the plan dictates anything here, the classes, then the inputs and the dictated entries.
+      planEntries.length ? "" : `This axis carries NO dictated plan entries: the whole axis is yours to cover by ${supplementalLane ? "proposal" : "enumeration"} per the manifest/frame. "No entries" means the plan had nothing to freeze here — it does NOT mean the axis is out of scope, and it is never a reason to leave it thin.`,
+      narrowingOrderLine(job, profile, inScope),
+      inScopeClassLine(inScope, supplementalLane),
+      inputsBlock([["Assigned axis", axis], ["Register provider", providerMeta(register).label],
+        ["Variant manifest", P.variantManifest], ["Matter frame", P.matterContext],
+        ["Band file (output_path)", P.registerBand(axis)],
+        ...(planEntries.length ? [["register_execute_plan arguments", `{"plan_path": ${JSON.stringify(P.registerPlan)}, "axis": "${axis}", "output_path": ${JSON.stringify(P.registerBand(axis))}}`]] : [])]),
+      planEntries.length ? lines(
+        `For your audit context, the dictated entries the tool will run:`,
+        romanisedFiling && `This register files foreign marks by their romanised form, and says so: a question below in another script is searched by the romanised form shown on it.`,
+        ...planEntries.map((e) => `- qid "${e.qid}": ${e.predicate} ${e.terms ? `names ${JSON.stringify(e.terms)} (one OR-stacked call)` : JSON.stringify(e.term)}${romanisedNote(e)}${e.owner ? ` · owner ${JSON.stringify(e.owner)}` : ""} · nice_classes ${JSON.stringify(e.nice_classes)}${e.regions?.length ? ` · regions ${JSON.stringify(e.regions)}` : ""}${e.when ? (awaitsReadingTurn(e.when) ? ` · WAITING FOR YOU: after reading the identical mark's list, release it or withhold it, with your reason` : ` · when: "${e.when.runs_if_enumerated}" enumerated`) : ""} · expected: ${e.expected_kind}${Array.isArray(e.covered_by) && e.covered_by.length ? ` · crowd context — coverage is ${e.covered_by.join(", ")}` : ""}`),
+      ) : "",
+      // After the entries, so its "the plan above" names them: the waiting families are among them (withheld-families.mjs).
+      DECIDE_WAITING_FAMILIES,
       // THE CLOSING LINE SPLITS WITH THE LANE, because what the seat owes splits with it. Under the
       // supplemental-lane contract the seat writes NOTHING — the band is the tools' and the note is the
       // driver's — so the dispatch names no file and ends the way conversion 9's reviewer does. With the
@@ -3785,22 +3808,9 @@ export const STAGES = {
       // misread away from writing another finding's card. It also gives the harness a stable handle:
       // the knob that fails ONE card used to key on `report-cards/2.md`, a path this dispatch no longer
       // names at all.
-      `THIS TURN IS BOUND TO CARD ${axis}. Send \`ordinal\`: "${axis}" — the tool refuses a payload naming any other card, and you hold no other finding's record.`,
       `Send \`full_detail\` — one entry per item, each \`{text, lead, internal}\`. \`text\` is your sentence; \`lead\` is a one-word lead-in ("Portfolio", "Risk assessment", "Enforcement") sent as the word ALONE — the driver renders the bold and the full stop. §L: the entry carrying the risk read is led "Risk assessment", NEVER "Legal lever", which reads as leverage the client can pull rather than the assessment it is. THAT ENTRY IS REQUIRED, and the tool refuses the card without it (reportcard_read_lead_missing): the report suppresses the record's own legal and practical reads wherever this bullet is present, so a card that omits it — or marks it internal — reaches the client with no risk read at all, and nothing downstream recovers it. NO "Filing" BULLET (ruled): the driver already renders every registration from the FETCHED record — number, classes, status, filing and registration years, jurisdiction, designations, priority — so a typed filing bullet is that same fact retyped by a seat nothing can transposition-check. State a filing fact only where it carries the read you are making. Every other lead is optional. Mark an internal-only note with \`internal: true\`; do not type a \`::p::\` marker — the driver places it where the render splits.`,
-      // T7 (E5) — the MATCHED grounded profile arrives INLINE (deterministic join), replacing
-      // the old "if the file exists, fish in it" discretion that missed cards on copper-spire.
-      caseLawProfile ? lines(
-        `GROUNDED CASE-LAW for THIS finding (deterministically matched — weave its bearing into the card; quote a fetched citation where it grounds the enforcer/confusability read; never cite a proceeding it does not carry${caseLawProfile.none ? "; it records an explicit NO-ON-POINT-PRECEDENT result — that honest negative may be stated" : ""}):`,
-        "```markdown",
-        String(caseLawProfile.body ?? "").slice(0, 4000),
-        "```",
-      ) : "",
-      `The finding's OWN record — the ONLY source for this card (owner, mark, registrations, meters with their basis, band, disposition, source link):`,
-      "```json",
-      JSON.stringify(finding ?? {}, null, 2),
-      "```",
       // TRANSFORM, NOT FREE-GENERATION (Fix B1 — main's claims-must-not-outrun-evidence discipline, applied per card).
-      `TRANSFORM, NOT FREE-GENERATION: RESHAPE this record into the card — do not re-derive or re-judge. Use ONLY the fields above; NEVER re-compute the band (synthesis fixed it). Carry each claim's BASIS: a meter/owner fact whose basis is "verified-from-record" stays stated as fact; one whose basis is "inferred-from-signal" reads AS an inference ("on the available signals…"), never flattened into bald fact. The enforcer / "litigious" label especially — established only when a filing backs it (verified-from-record); otherwise present it as the inference it is.`,
+      `TRANSFORM, NOT FREE-GENERATION: RESHAPE this record into the card — do not re-derive or re-judge. Use ONLY the fields below; NEVER re-compute the band (synthesis fixed it). Carry each claim's BASIS: a meter/owner fact whose basis is "verified-from-record" stays stated as fact; one whose basis is "inferred-from-signal" reads AS an inference ("on the available signals…"), never flattened into bald fact. The enforcer / "litigious" label especially — established only when a filing backs it (verified-from-record); otherwise present it as the inference it is.`,
       // T6 (H6/I8): the "- label:" risk-expression line is RETIRED — the RENDER builds the risk
       // chip from the record's typed band (the framework in force's own word, on every surface), so a
       // re-invented label can no longer disagree with the finding it describes and no code tag is
@@ -3816,7 +3826,7 @@ export const STAGES = {
       //
       // A card that still ARRIVES with a head renders the old way, so archived runs and a drifted seat
       // are byte-identical rather than gaining a second head. See carriesOwnFrame().
-      `WRITE THE CARD'S DETAIL ONLY — NO HEAD, NO META LINES. Your output STARTS at "### Full detail" and contains nothing above it: no "## …" heading, and none of "- ord:", "- group:", "- source:", "- net:", "- one:", "- label:", "- open:". Every one of those is composed by the driver from the record above, where they are already typed — a line you write there is discarded, not read.`,
+      `WRITE THE CARD'S DETAIL ONLY — NO HEAD, NO META LINES. Your output STARTS at "### Full detail" and contains nothing above it: no "## …" heading, and none of "- ord:", "- group:", "- source:", "- net:", "- one:", "- label:", "- open:". Every one of those is composed by the driver from the record below, where they are already typed — a line you write there is discarded, not read.`,
       `Emit NO "### The read" narrative — RETIRED. It was a THIRD condensation of the same finding, beside this card's own one-liner and the typed net. The legal read and the enforcement read are already TYPED on the record (legal_position / practical_position) and render from there; the finding sentence is the typed net. Your whole output is the \`full_detail\` entries — filing, portfolio, the risk assessment, enforcement — and the driver builds the section around them.`,
       // The SOURCE bullet is gone from the ask entirely. It was the transcription class in its purest
       // form: a seat composing a URL from a host table it is not even given (providers/<name>.md is NOT
@@ -3837,7 +3847,7 @@ export const STAGES = {
       // so the prompt no longer asks for it (it would double-render).
       // T6 (J9) — the delivery lint's constraints, stated at DRAFT time so the first generation
       // passes (the lint-repair redo was a deterministic ~2-generation tax on 83% of runs).
-      `LINT CONTRACTS (the delivery lint fails a card that breaks these — state them right the first time): state an owner's registration COUNT at most once, and only as the number of registrations in the record above (unsure ⇒ name the owner without a count). NEVER pair a WIPO/Madrid/international registration with "worldwide"/"global" reach language — name the designated countries or omit the reach claim.`,
+      `LINT CONTRACTS (the delivery lint fails a card that breaks these — state them right the first time): state an owner's registration COUNT at most once, and only as the number of registrations in the record below (unsure ⇒ name the owner without a count). NEVER pair a WIPO/Madrid/international registration with "worldwide"/"global" reach language — name the designated countries or omit the reach claim.`,
       // P6 — the house prose contract. This card is the surface where "each fact once, at its rank"
       // actually bites: the delivered report told WAVO PUNCH in six sections, and 43% of it was
       // on-field conflict prose. delivery-contract.md (this stage's skill read) carries the same rules.
@@ -3846,6 +3856,22 @@ export const STAGES = {
       profile?.riskAppetite ? `CUSTOMER RISK POSTURE (emphasis only — never moves the band, already set): ${profile.riskAppetite}` : "",
       profile?.delivery?.style ? `PROSE STYLE (presentation tone only — register/phrasing; NEVER a risk word or a band): ${profile.delivery.style}` : "",
       `Do NOT write or edit any file. There is no path for you to write to: the driver renders the card from your values and assembles the report around it, and nothing you hand-write is read.`,
+      // THIS CARD'S OWN MATERIAL COMES LAST, before the output instruction: the manuals lead, the instructions every card
+      // shares follow, and what is only this card's (its ordinal, its case law, its record) closes the message, so two cards
+      // of a run send the same leading text (design, 2026-11-19).
+      `THIS TURN IS BOUND TO CARD ${axis}. Send \`ordinal\`: "${axis}" — the tool refuses a payload naming any other card, and you hold no other finding's record.`,
+      // T7 (E5) — the MATCHED grounded profile arrives INLINE (deterministic join), replacing
+      // the old "if the file exists, fish in it" discretion that missed cards on copper-spire.
+      caseLawProfile ? lines(
+        `GROUNDED CASE-LAW for THIS finding (deterministically matched — weave its bearing into the card; quote a fetched citation where it grounds the enforcer/confusability read; never cite a proceeding it does not carry${caseLawProfile.none ? "; it records an explicit NO-ON-POINT-PRECEDENT result — that honest negative may be stated" : ""}):`,
+        "```markdown",
+        String(caseLawProfile.body ?? "").slice(0, 4000),
+        "```",
+      ) : "",
+      `The finding's OWN record — the ONLY source for this card (owner, mark, registrations, meters with their basis, band, disposition, source link):`,
+      "```json",
+      JSON.stringify(finding ?? {}, null, 2),
+      "```",
       `When the tool accepts your call, return ONLY a 2-3 line summary of the card.`,
     ),
   },

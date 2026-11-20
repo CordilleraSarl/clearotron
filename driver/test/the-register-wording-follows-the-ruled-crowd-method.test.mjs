@@ -40,7 +40,8 @@ const unitMessage = () => {
 
 test("the unit's opening message judges the band by the manual's steps, and no longer orders every subdivision covered", () => {
   const message = unitMessage();
-  assert.ok(message.includes("BAND ARTIFACT: the band band-primary-sweep.json is written BY THE TOOLS"), "guard: the supplemental lane's band line");
+  assert.ok(message.includes("BAND ARTIFACT: your band file is written BY THE TOOLS"), "guard: the supplemental lane's band line");
+  assert.ok(message.includes("- Band file (output_path): band-primary-sweep.json"), "guard: the band file is named among the unit's inputs");
   assert.ok(message.includes("Your job is to READ the band back and judge it by the steps in unit.md: read the identical mark first, narrow a crowd "
     + "until it gives a list you can read, and decide as a lawyer would whether more searching would change what you tell the client."));
   assert.ok(message.includes("Never sample a slice yourself with register_search, and never record a sample as though it were a band."));

@@ -30,7 +30,7 @@ import { execFileSync, spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { CLASSES, censusOf, offendingClasses, publishedOf, publishedReader, wrapsInto } from "../../shared/reference-guard-classes.mjs";
+import { CLASSES, CENSUS_COLUMNS, censusOf, offendingClasses, publishedOf, publishedReader, wrapsInto } from "../../shared/reference-guard-classes.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";   // — one corpus floor, shared with the guard that reads for it
 import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
 
@@ -81,8 +81,8 @@ const census = () => {
 // THE FIXTURE IS ORDERED BY `CLASSES`, so a class added, removed or renamed invalidates every row in
 // it — the counts would silently shift one column left. This is asserted before anything reads a row,
 // because a floor compared column-by-column against the wrong columns still produces a verdict.
-test("the backlog's columns are the guard's classes, in the guard's order", () => {
-  assert.deepEqual(TABLE.classes, CLASSES.map((c) => c.id),
+test("the backlog's columns are the guard's classes, in the guard's order, then the string column", () => {
+  assert.deepEqual(TABLE.classes, CENSUS_COLUMNS,
     "the class table moved and the backlog did not — re-mint it in the same commit, or every count "
     + "below is being read against the wrong class");
 });
@@ -96,9 +96,9 @@ test("the public residue is a FLOOR — no file may carry more than it is record
 
   const grew = [];
   for (const [path, counts] of Object.entries(now.files)) {
-    const was = TABLE.files[path] ?? CLASSES.map(() => 0);
+    const was = TABLE.files[path] ?? CENSUS_COLUMNS.map(() => 0);
     counts.forEach((n, i) => {
-      if (n > was[i]) grew.push(`${path}: ${CLASSES[i].id} ${was[i]} → ${n}`);
+      if (n > (was[i] ?? 0)) grew.push(`${path}: ${CENSUS_COLUMNS[i]} ${was[i] ?? 0} → ${n}`);
     });
   }
   assert.deepEqual(grew, [],

@@ -23,7 +23,7 @@ import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { listenErrorMessage } from "../../shared/listen.mjs";
-import { handRunEnv, assertReadItsEnvFile } from "./drive-env.mjs";   // tracker issue 204
+import { handRunEnv, assertReadItsEnvFile } from "./drive-env.mjs";
 
 /** The arms below that drive the background path, which ends at a refusal on Windows. */
 const NO_BACKGROUND_FORM_ON_WINDOWS = process.platform === "win32"

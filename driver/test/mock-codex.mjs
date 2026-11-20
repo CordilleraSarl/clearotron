@@ -43,6 +43,7 @@
 import { writeFileSync, mkdirSync, appendFileSync, existsSync, readFileSync, readdirSync, renameSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { applyStageWrites, beforeForcedFailure, breakFindingsAfterWrites } from "./mock-stage-fixtures.mjs";
+import { stageTextOf } from "../manuals-inline.mjs";
 
 const argv = process.argv.slice(2);
 
@@ -61,7 +62,9 @@ async function readStdin() {
   for await (const chunk of process.stdin) d += chunk;
   return d;
 }
-const msg = await readStdin();
+const wireMsg = await readStdin();
+// THE STAGE'S OWN TEXT decides which stage this mock answers; the manuals a fresh session carries are not it.
+const msg = stageTextOf(wireMsg);
 
 // resume subcommand: `exec … resume <thread-id> -`. The id is the token after "resume" that is not a flag.
 const resumeIdx = argv.indexOf("resume");
@@ -147,7 +150,7 @@ if (process.env.MOCK_CODEX_CALL_LOG) {
       hasAuth = existsSync(join(home, "auth.json"));
     }
   } catch { /* best-effort */ }
-  try { appendFileSync(process.env.MOCK_CODEX_CALL_LOG, JSON.stringify({ argv, prompt: msg, codexHome: process.env.CODEX_HOME || null, configToml, hasAuth, envNames: Object.keys(process.env).sort(),
+  try { appendFileSync(process.env.MOCK_CODEX_CALL_LOG, JSON.stringify({ argv, prompt: msg, wire: wireMsg, codexHome: process.env.CODEX_HOME || null, configToml, hasAuth, envNames: Object.keys(process.env).sort(),
     tempFolders: { TMPDIR: process.env.TMPDIR ?? null, TMP: process.env.TMP ?? null, TEMP: process.env.TEMP ?? null } }) + "\n"); } catch { /* best-effort */ }
 }
 

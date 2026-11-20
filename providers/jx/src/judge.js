@@ -12,7 +12,6 @@
 // guarantee that "a register record page never classifies as use" is enforced by exclusion, not by
 // trusting a model to follow an instruction.
 
-import { DEFAULT_MODEL } from "./core.js";
 import { runJxTurn } from "./turn-envelope.mjs";
 
 export const JUDGE_BATCH = 40;   // hits per call — bounded input, bounded output
@@ -46,7 +45,7 @@ export const JUDGE_TOOL = {
 
 /** Assemble the Messages API body (pure). `hits` = [{id, term, platform, title, url, snippet}] —
  *  already mirror-filtered by the caller; ids are the caller's, echoed back for the merge. */
-export function buildJudgeRequest({ mark, hits, model = DEFAULT_MODEL }) {
+export function buildJudgeRequest({ mark, hits }) {
   if (!String(mark ?? "").trim()) throw new Error("jx-judge: mark is required");
   const rows = Array.isArray(hits) ? hits.slice(0, JUDGE_BATCH) : [];
   if (!rows.length) throw new Error("jx-judge: hits are required — an empty batch has nothing to judge");
@@ -76,7 +75,6 @@ export function buildJudgeRequest({ mark, hits, model = DEFAULT_MODEL }) {
     ].join("\n")),
   ].join("\n");
   return {
-    model,
     max_tokens: 4096,   // 40 one-clause judgments fit well inside; truncation checked either way
     tools: [JUDGE_TOOL],
     messages: [{ role: "user", content: prompt }],

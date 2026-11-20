@@ -26,14 +26,15 @@
 //    promoting this to a floor on arrival is the  shape — a grammar killing paid work.
 
 import { test } from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { planVsExecutedChannels } from "../commonlaw-carry.mjs";
 
 const SRC = driverSource("pipeline.mjs");
 
 test("the check is called where the merged grid is written, not only at publish", () => {
-  const at = SRC.indexOf("atomicWrite(P.commonLawGrid,");
+  // The stage-exit write, the one marked as the canonical ledger: the grid is written at two more places on other paths.
+  const at = onlyAt(SRC, 'atomicWrite(P.commonLawGrid, JSON.stringify(mergedGrid, null, 2) + "\\n");   // B5');
   assert.ok(at > 0, "the canonical grid write moved — find it before trusting this test");
   const after = SRC.slice(at, at + 700);
   assert.match(after, /noteChannelCoverageAtStageExit\(P, mergedGrid\)/,
@@ -53,7 +54,7 @@ test("ONE derivation of the ordered channel list, shared by both seams", () => {
 });
 
 test("the stage-exit reporter never fails the run it is describing", () => {
-  const fn = SRC.slice(SRC.indexOf("function noteChannelCoverageAtStageExit"));
+  const fn = SRC.slice(onlyAt(SRC, "function noteChannelCoverageAtStageExit"));
   const body = fn.slice(0, fn.indexOf("\n}\n") + 3);
   assert.match(body, /try \{/, "the reporter must be wrapped — a coverage NOTE that kills a paid run is worse than the gap");
   assert.match(body, /catch/, "…and it must catch, not merely try");

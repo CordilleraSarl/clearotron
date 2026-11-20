@@ -5,7 +5,7 @@
 // (conversationId beside msgId). teal-causeway is the reference defect: its notice claimed a "systemic
 // (credentials/provider/config)" cause for a deterministic 414 and never quoted the provider error.
 import { test } from "node:test";
-import { driverSource } from "./driver-source.mjs";
+import { driverSource, onlyAt } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";   // — the guard scans the product tree
@@ -200,7 +200,7 @@ test("both notice lanes and the terminal status write pass the payload — the E
   const passes = src.match(/reasonDetail: reasonDetailField, reasonQuantity: quantity/g) ?? [];
   assert.equal(passes.length, 3,
     "expected 3 sites: writeRunStatus(state:'failed'), the handoff buildFailurePacket, the backstop buildFailurePacket");
-  const statusWrite = src.slice(src.indexOf('writeRunStatus(ctx, { state: "failed", failedStage'));
+  const statusWrite = src.slice(onlyAt(src, 'writeRunStatus(ctx, { state: "failed", failedStage'));
   assert.match(statusWrite.slice(0, 700), /reasonDetail: reasonDetailField, reasonQuantity: quantity/,
     "status.json is the file the failure taxonomy sends a diagnosing agent to");
 });

@@ -3,12 +3,12 @@
 > Part of the architecture pack (`docs/architecture/`). The driver's module tree and the headless
 > integrator contract are in [`driver/README.md`](../../driver/README.md).
 
-> **Scope note:** this reference covers the DRIVER-COMPUTE surface (the `driver.config.mjs` layer).
-> The rest of the repo's env vars — the MCP faces, the three admin services, native-language/knockout lanes,
-> outbox, brand and auth — are catalogued, with ownership tiers and the drift/rotation map, in
-> **[05-config-governance.md](05-config-governance.md)**. When adding a var anywhere in the
-> repo, add its row there. `node scripts/env-audit.mjs` reports every name read by code, splits
-> product from harness-only, and lists the product names that have no governance row yet; the
+> **Scope note:** this reference has a row for every setting product code reads, named in the row's
+> first column. When adding a setting anywhere in the repo, add its row here; a setting named only in
+> another row's text is not found by a reader looking it up, and the audit counts it as missing.
+> [05-config-governance.md](05-config-governance.md) carries the same settings with their ownership
+> tiers and the drift and rotation map. `node scripts/env-audit.mjs` reports every name read by code,
+> splits product from harness-only, and lists the product names with no row here; the
 > placeholder-default guards in `driver/test/deployment-hostnames.test.mjs` enforce the fallback
 > rules mechanically.
 
@@ -216,6 +216,7 @@ deployment may override (verify live values per deployment).
 | `CLEAROTRON_ACCESS_DOMAIN` | unset (note omitted) | Identity domain named in the delivery email's access note ("sign in with a `<domain>` account"). Unset ⇒ the note is omitted rather than naming the wrong domain. |
 | `CLEAROTRON_RUN_LOCK_DIR` | `<workspaceRoot>/clearance-run-locks` | Run-slot lock dir (turn locks under `…/turns`). |
 | `CLEAROTRON_OUTBOX_DIR` | `<workspaceRoot>/clearance-outbox` | Delivery outbox (`<runId>.pending` wake markers). Renamed from `clearance-outbox`; when this variable is unset the old directory is still READ, so a box that never pinned it does not orphan markers it has already written. Writers use the new name only. |
+| `CLEAROTRON_ACCESS_FILE` | `<base>/grants.json`: the base is the parent of `CLEAROTRON_REPORTS_DIR` when that is set, else `~/trademark` (`~/trademark-demo` for the demo) | The grants file: each person who may use the portal, and each connection `clearotron connect` records. `clearotron start` writes it the first time it runs and passes its path to the services it starts; `clearotron grant`, `connect` and `disconnect` edit it. Set this only when the file lives elsewhere. *(read from `bin/start.mjs`, `bin/grant.mjs`, `bin/connect.mjs`, `bin/disconnect.mjs`)* |
 | `CLEAROTRON_OAUTH_BRIDGE` | module-relative `providers/oauth-mcp-bridge/bridge.mjs` | Case-law MCP bridge script. (Portable since the module-relative default; set explicitly only for a bridge outside the repo tree.) |
 | `CLEAROTRON_REGISTER_CALL_LOG` | `~/trademark/telemetry/register-calls.jsonl`, or the existing file wherever it already is | Billing-grade provider-call ledger, shared by whichever ONE register provider is wired — not a vendor artifact. Every read site derives the default from`homedir()` at call time (2026-07-19: two sites had hardcoded a literal home directory, splitting the ledger under any other service account — guarded by `test/deployment-hostnames.test.mjs`). |
 | `CLEAROTRON_REGISTER_RECORD_LOG` | **runtime-injected per run**: `<runDir>/_driver/register-record-bodies.jsonl` | Citation-fidelity log: the BODY of every fetched official record. ** moved it INTO the run** — created with the run, unioned into the run's`_records/`, archived and purged with it. There is no retention setting and no cleanup job, because it no longer grows on the box: held globally it reached 432 MB in 61 days on production and needed a rotation timer on every install. **Do not set this by hand** — a fixed value pins every run's bodies to one file and restores the problem. A box upgraded across still holds its old global file; nothing writes or reads it, the driver names it once per process on stderr, and archiving it is one`mv`. An empty log cannot read as verified: the run's successful `record_fetch` rows in the (still global) call ledger are compared against the assembled record set, and a gap is reported as a failure. |
@@ -229,6 +230,20 @@ deployment may override (verify live values per deployment).
 | `CLEAROTRON_ENGINES_DIR` | unset ⇒ `~/.local/share/clearotron/engines` | The folder `clearotron install` installs the chosen engine's program into, `clearotron update` refreshes, and the engine resolver reads as its last step after the explicit setting and `PATH`: an npm project holding `node_modules/@anthropic-ai/claude-code` or `node_modules/@openai/codex`, where an empty directory means there is none. The test suite points it at an empty directory, so a test never reaches a program the developer's own setup installed. |
 | `FEEDBACK_GH_TOKEN` | unset ⇒ `gh`'s own auth | GitHub token for the unattended feedback minter (`scripts/feedback-mint.mjs`), for a service account with no `gh auth` login. Present ⇒ exported to `gh` as `GH_TOKEN` for that call only. A credential: it is not a placeholder value and must not be committed. |
 | `USPTO_API_KEY` | unset ⇒ the download path refuses | API key for the USPTO bulk download path in `bin/uspto-sync.mjs`. The INGEST path needs no key and says so; only the download half reads this. A credential. |
+| `CLEAROTRON_CUSTOMERS_DIR` | unset ⇒ the bundled demo roster | The config store's company profiles. *(read from `driver/profiles.mjs`)* |
+| `CLEAROTRON_RECIPES_DIR` | unset ⇒ saved searches off | The store saved searches are read from and written to. Unset, the portal answers its saved-search routes with 404 and the recipe service refuses to start. *(read from `driver/portal-service.mjs`, `driver/recipe-service.mjs`)* |
+| `CLEAROTRON_QUEUE_DIR` | unset | A queue folder drained in addition to each workspace's own queue. A job claimed from it runs as `CLEAROTRON_DEFAULT_AGENT`. *(read from `driver/driver.config.mjs`)* |
+| `CLEAROTRON_WORKSPACE_PREFIX` | `workspace-` | The prefix of the per-agent folders under `CLEAROTRON_WORK_DIR`. *(read from `driver/driver.config.mjs`)* |
+| `CLEAROTRON_DEFAULT_AGENT` | `localagent` | The agent id a job runs as when nothing names one, such as a job claimed from `CLEAROTRON_QUEUE_DIR`. *(read from `driver/driver.config.mjs`)* |
+| `CLEAROTRON_STAFF_POOL_ROOT` | unset ⇒ the publish pool | The pool the staff profiles page is written into when that page is regenerated from the command line. *(read from `driver/publish/profiles-page.mjs`)* |
+| `PROFILE_REPO_ROOT` | the install's own folder | The git repository the profile service commits profile changes in. With `CLEAROTRON_INSTRUCTIONS_DIR` unset, the portal also reads the config store's manuals from it. *(read from `driver/profile-service.mjs`, `driver/portal-service.mjs`)* |
+| `RECIPE_REPO_ROOT` | unset ⇒ `PROFILE_REPO_ROOT` | The git repository saved searches are committed in, which holds `CLEAROTRON_RECIPES_DIR`. *(read from `bin/start.mjs`, `driver/portal-service.mjs`)* |
+| `PORTAL_AUDIT` | `portal-audit.log` beside the installed code | The portal's audit log: every admin write, refusal and 500. *(read from `driver/portal-service.mjs`)* |
+| `PROFILE_AUDIT` | `_audit.log` in the profile store | The profile service's audit log. *(read from `driver/profile-service.mjs`)* |
+| `RECIPE_AUDIT` | `_audit.log` in `CLEAROTRON_RECIPES_DIR` | The recipe service's audit log. *(read from `driver/recipe-service.mjs`)* |
+| `TRADEMARK_MCP_AUDIT_LOG` | `~/trademark/telemetry/trademark-mcp-access.jsonl`, or the file at its older location if one exists there | The staff MCP door's access log. *(read from `mcp-server/lib/audit.mjs`)* |
+| `TRADEMARK_MCP_TOKEN_DENYLIST` | a file in the install's home | The list of revoked access keys, which the doors read and refuse. *(read from `shared/client-door.mjs`, `mcp-server/mint-token.mjs`)* |
+| `TRADEMARK_MCP_KEY_SOCKET` | unset ⇒ no key door | The local key door, and it is a PATH rather than a port on purpose: a tunnel forwards to a port and cannot reach a unix socket, so the transport separates programs on this machine holding a scoped access key from people arriving through a tunnel. Unset means no key door, and a deployment gets exactly the door it had before. |
 
 ### Concurrency and admission
 
@@ -236,6 +251,7 @@ deployment may override (verify live values per deployment).
 |---|---|---|
 | `CLEAROTRON_MAX_CONCURRENT_RUNS` | **2** (min 1; re-read at call time) | Global run-slot cap — concurrently executing whole runs, however launched (manual CLI runs included). A deployment's `.env` may set a different value; read the live value rather than this column when you need the one in force. A value that is not a number is refused at the read, by name; the staff status page and the portal report the cap as absent with the reason rather than stating a number nobody chose. |
 | `CLEAROTRON_GATHER_CONCURRENCY` | 7 | Parallel gather members per run (also batches escalation re-runs, the closure fan-out, the envelope close and the frame-reopen sweep). A split gather is three common-law seats + four register units = 7, so the default runs them in one wave; it was 6 before the meaning seat got its own dispatch. Report cards have their own knob, `CLEAROTRON_CARD_CONCURRENCY` (default 8). |
+| `CLEAROTRON_CARD_CONCURRENCY` | 8 | How many report cards are written at once, a cap shared with the report overview while it runs. A value that is not a number falls back to 8, and the run's record says so, rather than refusing mid-run (see the rule above the tables). *(read from `driver/driver.config.mjs`, `driver/steps/overview-and-cards.mjs`)* |
 | `CLEAROTRON_RUN_LOCK_POLL_MS` | 15000 | Run-slot acquire poll cadence. |
 | `CLEAROTRON_ADMISSION_BUDGET_MS` | 7200000 (2 h) | Runner stops claiming new jobs after this per activation; leftovers re-trigger a fresh activation. |
 | `CLEAROTRON_QUEUE_SCAN_MS` | 10000 (min 1000) | Mid-drain re-scan for newly arrived jobs. |
@@ -265,11 +281,22 @@ deployment may override (verify live values per deployment).
 | `CLEAROTRON_RATE_LIMIT_PROBE_MS` | `600000` (10 min) | How long a run parked on a provider cap waits before re-probing. Clamped to a 60s minimum — a probe loop tighter than that bills the cap it is waiting on. |
 | `CLEAROTRON_RATE_LIMIT_PROBE_CEILING_MS` | `2400000` (40 min) | The longest that backoff may grow to. Also clamped to 60s minimum. |
 | `CLEAROTRON_WALL_RESCUE` | **on** | The wall-clock rescue that salvages a torn draft when a stage hits its wall. `0`/`off`/`false`/`no` disarms it; anything else, including unset, leaves it armed. |
+| `CLEAROTRON_OUTBOX_BACKOFF_BASE_SEC` | `60` | The first wait before a failed delivery wake is retried, in seconds; it doubles with each consecutive failure. *(read from `driver/outbox-backoff.mjs`)* |
+| `CLEAROTRON_OUTBOX_BACKOFF_CAP_SEC` | `900` | The longest wait between delivery retries, in seconds. *(read from `driver/outbox-backoff.mjs`)* |
+| `CLEAROTRON_OUTBOX_BACKOFF_MAX_RETRIES` | `5` | Consecutive failures before the outbox gives up on a delivery. *(read from `driver/outbox-backoff.mjs`)* |
+| `CLEAROTRON_OUTBOX_GIVEUP_COOLDOWN_SEC` | `3600` | How long a given-up delivery waits before it is tried again, in seconds. Note that this one drops `BACKOFF` from the prefix. *(read from `driver/outbox-backoff.mjs`)* |
+| `CLEAROTRON_OUTBOX_NOPROGRESS_MAX` | `5` | Consecutive wakes that return ok without delivering anything before the marker is set aside and an alert is queued. *(read from `driver/outbox-backoff.mjs`)* |
+| `CLEAROTRON_HTTP_TIMEOUT_MS` | 30 minutes | How long the engine's outbound HTTP waits for a response's headers, in the tool servers and the driver. Under a second, or not a number, falls back to the default. *(read from `driver/engine/mcp/http-dispatcher.mjs`)* |
+| `CLEAROTRON_SPAWN_GRACE_MS` | 2 s, and only where it exceeds the stall window | A floor under the stall window at a stage program's start, so its start-up is not charged to the stall clock. *(read from `driver/engine/common.mjs`)* |
+| `CLEAROTRON_MIN_TOKENS_PER_SEC` | `1` | The trickle floor, counted in output tokens per second of ACTIVE time (elapsed minus tool wait). A turn under the floor is stopped there and recorded as a stall. `0` disables the floor entirely and is read as "no floor", never as a floor of zero. |
+| `CLEAROTRON_MIN_TOKENS_WARMUP_MS` | 5 minutes | How long a turn is left alone before the trickle floor applies. |
+| `CLEAROTRON_JX_SERP_DEADLINE_MS` | 5 minutes | The wall clock for the whole native-language web grid; `0` is a valid instant deadline. *(read from `driver/jx-units.mjs`)* |
 
 ### Pipeline feature gates and caps
 
-The **gates** default on, and `0` disables most of them. One does not read it that way:
-`CLEAROTRON_PLAN_DISPATCH` goes through `envGateOn` and so takes any off-word. (`CLEAROTRON_COMMONLAW_SPLIT`
+The **gates** default on, and `0` disables most of them. Three do not read it that way:
+`CLEAROTRON_PLAN_DISPATCH`, `CLEAROTRON_MODEL_WIRE_CHECK` and `CLEAROTRON_FORM_REPAIR` go through
+`envGateOn` and so take any off-word. (`CLEAROTRON_COMMONLAW_SPLIT`
 was the other, and its `!== "off"` test meant `0` left the split armed — a spelling trap that is gone
 with the switch, deleted by item 8.) The numeric
 **caps** and the policy enum in the last three rows are not on/off switches at all: `0` disables none of
@@ -282,6 +309,11 @@ unrecognised policy value that leaves the default behaviour standing.
 | `CLEAROTRON_FRAME_REOPEN` (+ `CLEAROTRON_FRAME_REOPEN_MAX`, default 1) | The bounded frame-diff reopen. |
 | `CLEAROTRON_REGISTER_GAP_CLAMP` | The registerGap verdict clamp arm. |
 | `CLEAROTRON_UNREACHABLE_SENIOR` (`open-item` \| `clamp`, default `open-item`) | Policy when a verdict-driving senior right can't be retrieved. |
+| `CLEAROTRON_SATPROBE_CODESIDE` | The code-side saturation probe in the register sweep. It needs an `executePlan` adapter (it rides the same lane as `CLEAROTRON_PLAN_DISPATCH`). *(read from `driver/steps/register-sweep.mjs`)* |
+| `CLEAROTRON_BAND_TRUTH_GATE` | The band truth gate in the register sweep. **Never disable in prod — restores the fabrication.** *(read from `driver/steps/register-sweep.mjs`)* |
+| `CLEAROTRON_MODEL_WIRE_CHECK` (`0`, `off`, `false` or `no` disables) | Fails a turn whose provider reports a different model FAMILY than the driver asked for; disarming it silences the refusal and never the record: `modelActual`/`modelMismatch` keep landing on every dispatch row. *(the off-words read from `driver/driver.config.mjs`)* |
+| `CLEAROTRON_FORM_REPAIR` (`0`, `off`, `false` or `no` disables) | Repairs a form-class stage failure inside the dispatch, up to twice; disarmed, the defect falls through to the retry ladder exactly as it did before, visibly, and is never swallowed as "validated fine". *(the off-words read from `driver/driver.config.mjs`)* |
+| `CLEAROTRON_WHATSAPP_OPERATOR_COPY` (`0`, `false` or `no` disables) | Keeps or drops the operator's own copy of the completion notice. It is independent of `CLEAROTRON_REQUESTER_WHATSAPP`: an operator can stop receiving copies of other people's runs without changing who the requester notice reaches. |
 
 ### Payload ceilings
 
@@ -293,6 +325,8 @@ of truncations.
 |---|---|---|
 | `CLEAROTRON_BAND_RESPONSE_CHARS` | five sixths of `CLEAROTRON_TOOL_ANSWER_BYTES`: 37,500 on the Claude engine, 30,000 on the OpenAI engine; 70,000 with no answer size | Characters per band-server response, the band summary's parts included; a summary part is never longer than 70,000 whatever this says. Floor 4096. The sixth left over is room for the quotes and line breaks a printout adds and for a banner, so a band answer is never split again into answer parts. On the OpenAI engine it is at most 30,000; a smaller value set here still applies. |
 | `CLEAROTRON_TOOL_ANSWER_BYTES` | 45,000 on the Claude engine, 36,000 on the OpenAI engine | Bytes per tool answer from every local tool server and the case-law bridge, counted as a quoted string (a quote or line break counts two). A longer answer is served in parts, each naming the next, and the tool runs once: a later part is read from the answer the server holds. Each engine writes its size into every server's entry: Claude Code saves an answer longer than 50,000 characters to a file the model must read for itself, and Codex removes the middle of a tool read longer than about 39,000 bytes. A smaller value set here still applies on both. A server started outside a stage, with no size, serves every answer whole. Floor 8192. |
+| `CLEAROTRON_ENUMERATE_NAMES_CHUNK` | `80` | How many names one register enumerate call carries before it is split into windows. *(read from `providers/clarivate/src/core.js`)* |
+| `TRADEMARK_MCP_MAX_BYTES` | 64 MiB | The largest file an MCP face reads; a larger one fails and names this setting. *(read from `mcp-server/lib/util.mjs`)* |
 
 ### Surfaces beside the driver — portal, demo, e2e harness
 
@@ -308,6 +342,7 @@ because the rule is about what PRODUCT CODE reads, not about what a run reads.
 | `CLEAROTRON_ADMINISTRATOR_CONTACT` | unset | Who a signed-in person contacts to change the address, the permissions or the companies on their sign-in: a mail address (with or without `mailto:`) or an http(s) address. The portal reads it where it reads the organisation name and sends it on the same `/me` answer; Preferences then links the words "Clearotron administrator" to it. Unset, or any value that is neither a mail nor a web address, ⇒ the words are plain text. Effect class `deployment`; the full contract is its row in `.env.example`. |
 | `PORTAL_LOCAL_CREDENTIAL` | `~/.cordillera/portal-local-credential.json` | Where local sign-in keeps its passphrase DIGEST. `clearotron start` points it inside the install's own base directory for a new install, so it mints its own passphrase instead of adopting a digest another install left; an install that has been signing in with the shared file keeps it. `npx clearotron demo` always points it inside the demo's own base directory and mints a new passphrase there on every start, so a demo never inherits a digest minted for another address, and removing the demo stays one `rm -rf`. |
 | `PORTAL_LOCAL_PASSPHRASE` | unset | **NEVER set this in a file.** An internal one-shot handoff, not an operator control: on a first FOREGROUND start the supervisor mints the passphrase and hands it to the portal it spawns *at the spawn call*, so the closing summary can print the value beside the address rather than sending a first-time reader back into eleven startup log lines for the one value in this product that cannot be read back. It is deliberately absent from the composed child environments, because that composition is what `--background` writes into the units' env file — a passphrase there would be a permanent plaintext copy on disk and the product's own sentence, "it is stored only as a digest", would stop being true. Setting it in any env file recreates exactly that. Lost passphrase: `clearotron passphrase --reset`. |
+| `PORTAL_SERVICE_HOST`, `PORTAL_SERVICE_PORT` | `127.0.0.1`, `18802` | The address the portal listens on. `clearotron start` sets both from the ports it resolves. In `local` sign-in mode the portal refuses to start on any address but loopback, because the passphrase and the session cookie would cross the network in plain text. *(read from `driver/portal-service.mjs`, `bin/start.mjs`)* |
 | `PORTAL_URL` | `http://127.0.0.1:18802`, or built from `PORTAL_SERVICE_HOST`/`PORTAL_SERVICE_PORT` | Where the deploy tick's live-surface check expects to reach the portal. |
 | `PORTAL_OPS_TOKEN_FILE` | `~/.config/systemd/user/trademark-portal.service.d/secrets.conf` | The systemd drop-in the live-surface check reads `PORTAL_OPS_TOKEN` out of. It reads the FILE rather than the environment so a check run by hand sees the same token the service does. |
 | `CLEAROTRON_INVOKED_AS` | unset (⇒ the verb's own `argv[1]`) | How the reader typed the command, so every command a verb prints for them to type next is spelled the way they type it: `clearotron …` after a global install, `npx clearotron …` otherwise. The dispatcher runs each verb as a process of its own, whose `argv[1]` is always `bin/<verb>.mjs`, so `bin/clearotron.mjs` passes its own `argv[1]` down in this name. **Set by the dispatcher, never by an operator.** Effect class `deployment`; the full contract is its row in `.env.example`. |
@@ -323,6 +358,50 @@ because the rule is about what PRODUCT CODE reads, not about what a run reads.
 | `CLEAROTRON_AGENTS` | derived | Comma-separated agent ids for `scripts/purge-runs.mjs` to sweep. |
 | `CLEAROTRON_E2E_DIR` | **none — the script refuses without it** | The config repo's `e2e/` directory. There is one suite and it is not in this repo (ruling 2026-08-07), so the comparison script names the variable rather than defaulting anywhere. |
 | `CLEAROTRON_E2E_EXPECT_DEMO_ROSTER` | unset | `1` makes the live-surface check REQUIRE the bundled demo roster. For a box that is meant to ship the demos; off elsewhere, so a real deployment is not failed for lacking them. |
+| `CLEAROTRON_BOX` | none — required (unset or unrecognised ⇒ the unit-inventory line fails and names this variable) | Which deployment this is (`prod` \| `test`), for `scripts/live-surface-check.mjs`'s unit inventory. Self-declared, never inferred from the login name. |
+| `CLEAROTRON_BRAND_NAME` / `CLEAROTRON_BRAND_TAGLINE` / `CLEAROTRON_BRAND_PRODUCT` | reference-deployment literals in `shared/brand.mjs` | Installation brand seam (single-sourced). |
+| `CLEAROTRON_AGENT_WHATSAPP` | unset ⇒ an empty roster | A JSON map of agent id → chat number for the completion notice. Every user of a deployment shares one agent, so this reaches the operator and never the person who ordered the search. Unset is an EMPTY roster and never a demo one. *(the JSON map read from `driver/stages.mjs`)* |
+| `CLEAROTRON_REQUESTER_WHATSAPP` | empty | A JSON map of requester email or handle → number: who the completion notice reaches. It holds contact data; treat it as a mirror-aware value wherever an integrator holds a copy. |
+| `TRADEMARK_MSGID_DOMAIN` | `enqueue.local` | The domain in the message id of a job queued through the staff MCP door. *(read from `mcp-server/lib/ops.mjs`)* |
+| `TRADEMARK_MCP_HTTP_PORT` | `18790` | The staff MCP door's port. Every caller there gets the read tools; an ops token also gets the write tools that start and stop runs, `start_run` among them. *(read from `mcp-server/http-server.mjs`)* |
+| `TRADEMARK_MCP_HTTP_HOST` | `127.0.0.1` | The address the staff MCP door listens on; in `token` mode it must be a loopback address. *(read from `mcp-server/http-server.mjs`)* |
+| `TRADEMARK_MCP_ALLOWED_HOSTS` | **none — set it** | The `host:port` values the staff MCP door answers to. With authentication on, or in `token` mode, unset refuses to start, because DNS-rebinding protection would be off. *(read from `mcp-server/http-server.mjs`)* |
+| `TRADEMARK_MCP_SESSION_TTL_MS` | 30 minutes | Session lifetime on the staff MCP door. *(read from `mcp-server/http-server.mjs`)* |
+| `TRADEMARK_MCP_SESSION_MAX` | `500` | Most sessions the staff MCP door holds at once. *(read from `mcp-server/http-server.mjs`)* |
+| `TRADEMARK_MCP_RATE_PER_MIN` | `120` | Request rate limit on the staff MCP door, per minute. *(read from `mcp-server/http-server.mjs`)* |
+| `TRADEMARK_MCP_OPS_RATE_PER_MIN` | `30` | Rate limit on the staff MCP door's ops requests, per minute. *(read from `mcp-server/http-server.mjs`)* |
+| `TRADEMARK_MCP_AUTH_MODE` | unset ⇒ `cf-access` | Selects the door: unset or `cf-access` is a JWT-fronting proxy at the edge; `token` requires a valid HMAC-signed scoped access key on **every** request and runs no auth proxy at all. An unrecognised value is fatal. |
+| `TRADEMARK_MCP_OIDC_ISSUER` / `TRADEMARK_MCP_JWKS_URL` | unset ⇒ the shapes derived from `CF_ACCESS_TEAM` | The issuer, and the signing-key set, the staff MCP door verifies sign-in tokens against. *(read from `mcp-server/http-server.mjs`)* |
+| `TRADEMARK_MCP_EMAIL_CLAIM` | `email` | The token claim the staff MCP door reads the email address from. *(read from `mcp-server/http-server.mjs`)* |
+| `TRADEMARK_MCP_AUTH_HEADER` | `cf-access-jwt-assertion` | The request header carrying the sign-in token to the staff MCP door; lowercased when read. *(read from `mcp-server/http-server.mjs`)* |
+| `CLIENT_MCP_HTTP_PORT` | `18811` | The client MCP door's port. It was 18795, which collided with a co-hosted warm-MCP block, so keep any unit override that names a port. |
+| `CLIENT_MCP_HTTP_HOST` | `127.0.0.1` | The address the client MCP door listens on. *(read from `mcp-server/http-server-client.mjs`)* |
+| `CLIENT_MCP_ALLOWED_HOSTS` | **none — set it** | The `host:port` values the client MCP door answers to. With authentication on, or in key-only mode, unset refuses to start. *(read from `mcp-server/http-server-client.mjs`)* |
+| `CLIENT_MCP_SESSION_TTL_MS` | 30 minutes | Session lifetime on the client MCP door. *(read from `mcp-server/http-server-client.mjs`)* |
+| `CLIENT_MCP_SESSION_MAX` | `500` | Most sessions the client MCP door holds at once. *(read from `mcp-server/http-server-client.mjs`)* |
+| `CLIENT_MCP_RATE_PER_MIN` | `120` | Request rate limit on the client MCP door, per minute. *(read from `mcp-server/http-server-client.mjs`)* |
+| `CLIENT_MCP_OIDC_ISSUER` / `CLIENT_MCP_JWKS_URL` / `CLIENT_MCP_EMAIL_CLAIM` / `CLIENT_MCP_AUTH_HEADER` | unset ⇒ the staff face's matching value, then the shapes derived from `CF_ACCESS_TEAM` | The client MCP door's issuer, signing-key set, email claim and token header. |
+| `CF_ACCESS_TEAM` | **none — set it, or an issuer** | The JWT-fronting proxy's team, from which the doors derive their issuer and signing-key shapes. With `CLEAROTRON_OIDC_AUDIENCE` and `MCP_ALLOWED_EMAIL_DOMAINS` it appears in unit files as a **mirror of the dashboard**, not a second setup; they must match the edge. The boot guard is an audience PLUS either a team or an issuer. |
+| `CLEAROTRON_OIDC_AUDIENCE` | **none — set it** | The proxy application's audience tag, which the portal, the staff MCP door and the profile and recipe services verify. A mirror of the dashboard; missing it is a refusal to start. *(which services verify it, read from `driver/portal-service.mjs`, `driver/profile-service.mjs`, `driver/recipe-service.mjs`, `mcp-server/http-server.mjs`)* |
+| `CLEAROTRON_CLIENT_OIDC_AUDIENCE` | **none — set it** | The audience the client MCP door verifies. It may not be one of the audiences `CLEAROTRON_OIDC_AUDIENCE` accepts. *(read from `mcp-server/http-server-client.mjs`)* |
+| `MCP_ALLOWED_EMAIL_DOMAINS` | **none — set it, or `MCP_ALLOWED_EMAILS`** | Comma-separated email domains the doors admit; a mirror of the dashboard. The portal and the staff MCP door start with this or `MCP_ALLOWED_EMAILS`; the profile service and the recipe service require this one when sign-in is on. *(read from `driver/portal-service.mjs`, `driver/profile-service.mjs`, `driver/recipe-service.mjs`, `mcp-server/http-server.mjs`)* |
+| `MCP_ALLOWED_EMAILS` | unset | Comma-separated email addresses the portal and the staff MCP door admit, beside `MCP_ALLOWED_EMAIL_DOMAINS`. *(read from `driver/portal-service.mjs`, `mcp-server/http-server.mjs`)* |
+| `PORTAL_AUTH_MODE` | unset ⇒ `auth-proxy` | Selects the door: unset or `auth-proxy` (the default for a hosted deployment) means any login system in front that authenticates in the browser and forwards a verifiable JWT per request; `local` means one address and one passphrase on loopback. `cf-access` is the older word for `auth-proxy`, accepted forever and meaning exactly the same thing. |
+| `PORTAL_OIDC_ISSUER` / `PORTAL_JWKS_URL` | unset ⇒ the shapes derived from `CF_ACCESS_TEAM` | Bringing your own login provider: the issuer, and the signing-key set, the portal verifies against. |
+| `PORTAL_EMAIL_CLAIM` | `email` | The token claim the portal reads the email address from. *(read from `driver/portal-service.mjs`)* |
+| `PORTAL_AUTH_HEADER` | `cf-access-jwt-assertion` | The request header carrying the sign-in token to the portal. Lowercased when read, because Node lowercases incoming header names. *(the default read from `driver/portal-service.mjs`)* |
+| `PORTAL_LOCAL_USER` | none — required in `local` mode | The one email address that signs in to the portal in `local` mode. The service refuses to start without it, and the address must ALSO be enrolled in `CLEAROTRON_ACCESS_FILE`, because signing in is not being enrolled. |
+| `PORTAL_LOCAL_WORKER` | unset | Set only by `bin/start.mjs` when it supervises a worker, and what licenses the portal to say a queued job is waiting for one. |
+| `PORTAL_MCP_URL` | unset ⇒ starting and stopping a run is not wired | The staff MCP door the portal sends start and stop requests to, with `PORTAL_OPS_TOKEN`. `clearotron start` derives it from its resolved ports. *(read from `driver/portal-service.mjs`)* |
+| `PORTAL_OPS_TOKEN` | unset ⇒ starting and stopping a run is not wired | The access key the portal presents to the staff MCP door at `PORTAL_MCP_URL` to start and stop runs. `clearotron start` mints it, capped to the companies on the roster when it started. *(read from `driver/portal-service.mjs`, `bin/brandowner.mjs`, `bin/onboard.mjs`)* |
+| `PORTAL_RATE_PER_MIN` | `120` | Request rate limit on the portal, per minute. *(read from `driver/portal-service.mjs`)* |
+| `PORTAL_PORT` / `PORTAL_HOST` | `18899` / `127.0.0.1` | The dev cockpit's port and address. *(read from `driver/dev-portal.mjs`)* |
+| `PROFILE_PORT` / `PROFILE_HOST` | `18794` / `127.0.0.1` | The profile service's port and address. *(read from `driver/profile-service.mjs`)* |
+| `PROFILE_RATE_PER_MIN` | `60` | Request rate limit on the profile service, per minute. *(read from `driver/profile-service.mjs`)* |
+| `PROFILE_OIDC_ISSUER` / `PROFILE_JWKS_URL` / `PROFILE_EMAIL_CLAIM` / `PROFILE_AUTH_HEADER` | unset ⇒ the shapes derived from `CF_ACCESS_TEAM`; `email`; `cf-access-jwt-assertion` | The profile service's issuer, signing-key set, email claim and token header. *(read from `driver/profile-service.mjs`)* |
+| `RECIPE_PORT` / `RECIPE_HOST` | `18801` / `127.0.0.1` | The recipe service's port and address. *(read from `driver/recipe-service.mjs`)* |
+| `RECIPE_RATE_PER_MIN` | `60` | Request rate limit on the recipe service, per minute. *(read from `driver/recipe-service.mjs`)* |
+| `RECIPE_OIDC_ISSUER` / `RECIPE_JWKS_URL` / `RECIPE_EMAIL_CLAIM` / `RECIPE_AUTH_HEADER` | unset ⇒ the shapes derived from `CF_ACCESS_TEAM`; `email`; `cf-access-jwt-assertion` | The recipe service's issuer, signing-key set, email claim and token header. *(read from `driver/recipe-service.mjs`)* |
 
 ### Gates that are OFF by default
 
@@ -332,6 +411,11 @@ cannot be read as one list.
 | Var | Default | Meaning |
 |---|---|---|
 | `CLEAROTRON_SCREEN_GATE_UNNAMED` | unset (⇒ evidence only) | `enforce` arms the unnamed-row screen gate as terminal. Unset, the run RECORDS whether it enumerated anything under each unnamed row and does not fail — the evidence a decision about the semantics would be built from. Named in `.env.example`; this is the reference row. |
+| `TRADEMARK_MCP_AUTH_DISABLED` / `TRADEMARK_MCP_DEV` | unset | Dev seams — never set in prod. `1` on both turns authentication off on the staff MCP door; the first without the second refuses to start, and it contradicts `TRADEMARK_MCP_AUTH_MODE=token`. *(read from `mcp-server/http-server.mjs`)* |
+| `CLIENT_MCP_AUTH_DISABLED` / `CLIENT_MCP_DEV` | unset | Dev seams — never set in prod. `1` on both turns authentication off on the client MCP door; the first without the second refuses to start. *(read from `mcp-server/http-server-client.mjs`)* |
+| `PROFILE_AUTH_DISABLED` / `PROFILE_DEV` | unset | Auth seams for the profile service. `1` on both turns its authentication off; the first without the second refuses to start. *(read from `driver/profile-service.mjs`)* |
+| `RECIPE_AUTH_DISABLED` / `RECIPE_DEV` | unset | Auth seams for the recipe service. `1` on both turns its authentication off; the first without the second refuses to start. *(read from `driver/recipe-service.mjs`)* |
+| `CLIENT_MCP_TOKEN_ONLY` | unset | `1` runs the client MCP door as a key-only door: every request carries a scoped access key. It requires `TRADEMARK_MCP_TOKEN_SECRET`, `CLIENT_MCP_ACCOUNT_ACCESS=1` and `CLIENT_MCP_ALLOWED_HOSTS`, and refuses `CLIENT_MCP_AUTH_DISABLED`. *(read from `mcp-server/http-server-client.mjs`)* |
 
 
 ### Credentials and gather services (names only — values live in the deployment `.env`)
@@ -346,6 +430,7 @@ cannot be read as one list.
 | `AWS_REGION` / `AWS_PROFILE` / `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` / `AWS_SESSION_TOKEN` | Bedrock's region, optionally the AWS profile, and the standard AWS key variables (the session token only for temporary credentials), read by the Claude program. Without the keys it uses the machine's other AWS credentials, such as an instance role. |
 | `ANTHROPIC_BASE_URL` / `ANTHROPIC_AUTH_TOKEN` | A gateway in front of a cloud, and its token, read by the Claude program. With no cloud switch, `ANTHROPIC_BASE_URL` is the gateway form of `CLEAROTRON_AI_BILLING=cloud`; the gateway's credential must then be the token, because `ANTHROPIC_API_KEY` is deleted. |
 | `ANTHROPIC_DEFAULT_OPUS_MODEL` / `ANTHROPIC_DEFAULT_SONNET_MODEL` / `ANTHROPIC_DEFAULT_HAIKU_MODEL` / `ANTHROPIC_DEFAULT_FABLE_MODEL` | The model each tier's alias resolves to, read by the Claude program: on Foundry, the deployment names; anywhere, a way to hold a tier still. Set the fable one to your Fable deployment's name if you set `CLEAROTRON_SYNTHESIS_MODEL=fable`; setup does not ask for it. |
+| `CODEX_API_KEY` | unset | The OpenAI key the `openai-agent` engine bills under `CLEAROTRON_AI_BILLING=api-key`. With that billing and no key, the engine refuses rather than billing the ChatGPT subscription instead. *(read from `driver/engine/auth.mjs`, `driver/driver.config.mjs`)* |
 | `OPENAI_API_KEY` | **Read only to be DELETED.** The `openai-agent` adapter strips it from the `codex exec` environment under subscription billing, so an unrelated key exported on the box cannot spoil a clean subscription bill. It is never the api-key credential for this product — that is `CODEX_API_KEY`. Listed because a reader who has one set needs to know it is removed. |
 | `CORSEARCH_SESSION_KEY` | Register provider auth (session cookie). **Preflighted at run start — a missing credential fails fast before any model spend.** |
 | `CLARIVATE_API_KEY` / `CLARIVATE_API_BASE` | Clarivate adapter — on the engine path: `providers/clarivate/src/mount.js` in `gather-config.mjs`'s stage-grant table, plus driver-side `recordFetch` / `countHits` / `listRecords` / `executePlan`. `CLARIVATE_API_BASE` overrides the core's `DEFAULT_BASE`. |
@@ -355,6 +440,11 @@ cannot be read as one list.
 | `CLEAROTRON_MCP_URL` | Staff "Ask your AI" connector base, baked into the report at render — there is one report, and `portal-report.mjs` strips the block for non-staff readers at serve time. Fails closed → link omitted when unset. |
 | `CLEAROTRON_CLIENT_MCP_URL` | The client connector's "Ask your AI" base address, served LIVE by the portal's `/portal/api/mcp-access` (the Connect your AI page) — set it on the portal unit, or the screen shows its (correct) empty state. The render no longer reads it: the baked block is the staff connector above. Fails closed → `{url:null}` when unset. **Never pin a placeholder value:** the fail-closed branch keys on the var being EMPTY, so a placeholder host defeats the guard and hands out a dead connector address. |
 | `CLIENT_MCP_ACCOUNT_ACCESS` | `1` admits the signed-in principal from outside your staff (kind `account`) on the client MCP surface: no token, scoped to the companies the CF-verified email is granted. Off by default. Set WITHOUT `CLEAROTRON_ACCESS_FILE` ⇒ fatal start (`accountsForEmail` answers `"*"` with no guest list, and an unscoped wildcard must never be admitted). See `docs/CLIENT-MCP.md` — enabling this for a company with no `runCaps.dailyRuns` lets it start paid searches all day. |
+| `PORTAL_SECRET` | The portal. Required in BOTH modes, and signs both token families; unset refuses to start. *(the refusal read from `driver/portal-service.mjs`)* |
+| `SERPAPI_API_KEY` | The SerpAPI web search behind the grid's marketplace cells; absent, those cells are not searched. *(read from `driver/driver.config.mjs`)* |
+| `TRADEMARK_MCP_TOKEN_SECRET` | Signs and verifies the scoped access keys the doors accept. *(read from `shared/scope.mjs`, `driver/systemd/render-units.mjs`)* |
+| `TRADEMARK_MCP_TOKEN_SECRET_PREVIOUS` | The previous signing secret, still accepted during a rotation window. *(read from `shared/scope.mjs`)* |
+| `OAUTH_BRIDGE_CREDS_DIR` / `OAUTH_BRIDGE_CLIENT_NAME` | The case-law bridge: where its sign-in lives (unset ⇒ `~/.config/trademark-oauth-mcp`), and the name it registers under (unset ⇒ `trademark-oauth-mcp-bridge`). *(read from `providers/oauth-mcp-bridge/bridge.mjs`)* |
 
 ### Scrub guard
 
@@ -378,6 +468,13 @@ cannot be read as one list.
 | `PORTAL_READ_MODEL` | `sonnet` | The model the portal's own compose-read turn uses. Distinct from the pipeline's tiers: this is a portal surface, not a stage. |
 | `CLEAROTRON_ORDER_PROBE_SEED` | unset | Seed for `scripts/band-shape-probe.mjs`, so an ordering probe can be replayed. A diagnostic script's knob, not a run's. |
 | `PROBE_TERM` | `DELTA` | The mark word `providers/uspto-local/bin/verify-index.mjs` searches when verifying a built local USPTO index. A diagnostic script's knob, not a run's. Change it when a row reports MEASURES NOTHING: that means the term had no exact hit, so the row's timing is not a result. |
+| `CLEAROTRON_KNOCKOUT_MODEL` | unset ⇒ opus | Model override for every Knockout stage. *(read from `driver/pipeline-knockout.mjs`)* |
+| `CLEAROTRON_JX_FIXTURES` | unset ⇒ live | A folder of canned answers the native-language lanes read instead of calling out: the $0 test seam. *(read from `driver/jx-units.mjs`, `driver/jx.mjs`)* |
+| `CLEAROTRON_KNOCKOUT_SWEEP_FIXTURES` | unset ⇒ live | A folder of saved grid ledgers and answers the Knockout's web sweep reads instead of calling out. *(read from `driver/pipeline-knockout.mjs`)* |
+| `SIGNA_FIXTURES_DIR` | the provider's own test fixtures | The fixtures the Signa provider's mock lane reads. *(read from `providers/signa/src/core.js`)* |
+| `CLEAROTRON_REPLAY_SNAPSHOT` / `CLEAROTRON_REPLAY_ROOTS` | a snapshot file in the home folder / every workspace under `CLEAROTRON_WORK_DIR` | The validator-replay harness's recorded verdict snapshot, and the colon-separated run roots it replays. *(read from `driver/replay-archive.mjs`)* |
+| `SIGNA_SYNC_STAMP` | unset ⇒ the clock | Read only by `bin/signa-sync.mjs`, to make its output reproducible: it pins the generated office snapshot's `fetched_at`, so the same vendor response yields the same bytes. Unset in every deployment, and never read at run time. |
+| `CLEAROTRON_DOCTOR_ASSUME_PINNED` | unset | A CI workspace declaration, read only by `bin/onboard.mjs`, and only to answer whether this checkout being behind its upstream is a question worth asking. |
 
 ### Retired — set these and nothing happens
 
