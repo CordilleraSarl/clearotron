@@ -37,38 +37,8 @@
 import { normalizeTerritory } from "../providers/_shared/territory-codes.mjs";
 import { canonicalJurisdictionCode, KNOWN_JURISDICTION_CODES } from "./jurisdiction-codes.mjs";
 
-/** The supranational codes: one entry covering many countries. Post-fold — EM/EUTM/EUIPO arrive as EU. */
-export const REGION_CODES = Object.freeze(new Set(["EU", "WO", "AP", "OA", "BX", "EA", "IB"]));
-
-/**
- * — KNOWN, AND STILL NOT A COUNTRY.
- *
- * `KNOWN_JURISDICTION_CODES` is the set of codes the engine RECOGNIZES on a record, which is a wider
- * question than "does this name one country". Its tail carries WIPO ST.3 register-world extras, and
- * `ZZ` is ST.3's code for UNSPECIFIED — the literal "nowhere" token. Tiered by membership alone it came
- * back "country", so a Full country search over `["ZZ"]` named nowhere and satisfied the one-country
- * rule at every door.
- *
- * That is precisely the failure this module was written to prevent — its own header says "QQ would
- * otherwise look exactly like a country code and satisfy a one-country rule while naming nowhere" —
- * arriving from INSIDE the known set instead of outside it, which is why the guard did not see it.
- *
- * KEPT KNOWN, TIERED HONESTLY. Removing `ZZ` from the known set would be the other repair and it is the
- * wrong one: a provider may legitimately stamp it on a record, and an unknown code there is dropped or
- * warned about. What must not happen is a REQUEST naming it passing a geography rule. Membership answers
- * "can we read this"; the tier answers "is this one country"; they were the same answer and are not the
- * same question.
- *
- * DELIBERATELY ONLY `ZZ` TODAY. The siblings beside it in that list — XA, XG, XS, XW — are provider
- * extension codes whose register semantics I could not establish at source, and XK is Kosovo, which
- * registers do treat as a territory. Guessing which of those name a country would trade a measured bug
- * for an unmeasured one. The MECHANISM is the fix and the roster is explicit: adding a code here is one
- * line once somebody can say what it means.
- */
-export const KNOWN_NON_COUNTRY_CODES = Object.freeze(new Set(["ZZ"]));
-
-/** The four answers. Exported so a caller cannot misspell one in a comparison. */
-export const TERRITORY_TIERS = Object.freeze(["worldwide", "region", "country", "unrecognized"]);
+import { REGION_CODES, KNOWN_NON_COUNTRY_CODES, TERRITORY_TIERS } from "../shared/jurisdiction-tables.mjs";   // a jurisdiction's tables live in one home
+export { REGION_CODES, KNOWN_NON_COUNTRY_CODES, TERRITORY_TIERS };
 
 /**
  * What kind of place does this entry name?

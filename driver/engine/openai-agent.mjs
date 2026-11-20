@@ -59,7 +59,7 @@ const codexBin = () => { const r = resolveEngineProgram("openai-agent"); return 
 // and 0.158.0 refuse `gpt-6.1-sol` with a 400 — "not supported when using Codex with a ChatGPT account" —
 // and 0.159.0 to 0.162.0 accept it; `gpt-6-luna` is accepted from 0.156.1. Measured 2026-10-09 with
 // one-word turns on the test box. Below 0.159.0 the judgment tier stops at its first stage, so the floor
-// in ENGINE_BINARIES (driver.config.mjs) is 0.159.0. `gpt-6.1-terra` needs 0.159.0 or later by the
+// in engine/openai-agent-program.mjs is 0.159.0. `gpt-6.1-terra` needs 0.159.0 or later by the
 // vendor's Codex model page, and 0.162.0 served it on a ChatGPT sign-in (measured 2026-10-28), so the
 // floor did not move for it.
 //

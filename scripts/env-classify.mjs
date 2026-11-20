@@ -214,6 +214,13 @@ export function setupNames(root = ROOT) {
     "It is the install wizard, and what it writes is the whole setup population.");
   const cfg = mustRead(root, "driver/driver.config.mjs",
     "It carries the table whose credential fields name the rest of that population.");
+  // EACH ENGINE'S PROGRAM ROW names its program's variable, its billing switch, its key and its captured token. The
+  // rows sit in their own files beside each engine's adapter (driver/engine/<engine>-program.mjs); a tree from before
+  // that holds them in driver.config.mjs's ENGINE_BINARIES. Read where they are, or six setup names fall to `tuning`;
+  // the committed classification's check names any row that moves.
+  const engineDir = join(root, "driver", "engine");
+  const programs = (existsSync(engineDir) ? readdirSync(engineDir) : []).filter((f) => f.endsWith("-program.mjs")).sort()
+    .map((f) => mustRead(root, `driver/engine/${f}`, "It is an engine's program row, whose fields name that engine's setup variables."));
   const seed = new Set();
   for (const m of onboard.matchAll(/candidate\.([A-Z][A-Z0-9_]*)\s*=/g)) seed.add(m[1]);
   for (const m of onboard.matchAll(/candidate\["([A-Z][A-Z0-9_]*)"\]\s*=/g)) seed.add(m[1]);
@@ -224,7 +231,7 @@ export function setupNames(root = ROOT) {
   // Each register states its credential in its own adapter, which PROVIDERS lists.
   const providersDir = join(root, "providers");
   const adapters = existsSync(providersDir) ? readdirSync(providersDir).map((p) => join(providersDir, p, "src", "adapter.js")).filter((f) => existsSync(f)) : [];
-  for (const text of [cfg, ...adapters.map((f) => readFileSync(f, "utf8"))])
+  for (const text of [cfg, ...programs, ...adapters.map((f) => readFileSync(f, "utf8"))])
     for (const m of text.matchAll(/(?:env|authEnv|apiKeyEnv|credEnv|tokenEnv):\s*"([A-Z][A-Z0-9_]*)"/g)) seed.add(m[1]);
   // THE NAMES A HELPER RETURNS AND THE WIZARD MERGES IN. The sign-in step hands back the `.env` keys it
   // wants written, and the wizard writes them with `Object.assign(candidate, await askSignIn(…))`. None of
