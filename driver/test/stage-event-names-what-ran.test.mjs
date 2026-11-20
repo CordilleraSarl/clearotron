@@ -92,7 +92,7 @@ test("the KNOCKOUT lane's stage event too — it is written by the runner the cl
 test("the CODE-SIDE lane is untouched — nothing ran, and it says so", () => {
   // The direct-execute lane writes `model: "code:execute-plan"`. That is not a defect to fix; replacing
   // it with a model id would invent an author for work no model did.
-  assert.match(src("driver/pipeline.mjs"), /model: "code:execute-plan"/,
+  assert.match(src("driver/register-band-run.mjs"), /model: "code:execute-plan"/,
     "the code-side lane stopped declaring itself code — a stage with no model must never name one");
 });
 

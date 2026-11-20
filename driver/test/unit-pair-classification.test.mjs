@@ -83,7 +83,7 @@
 //                               site states.
 //   · grounds-grammar.mjs:89 classifyGroundsNote
 //                               `limits` is spent inside that function's own precedence ladder.
-//   · pipeline.mjs `attachRegisterPlan` — the `register-plan-infeasible` event's `repairable` field
+//   · run-attachments.mjs `attachRegisterPlan` — the `register-plan-infeasible` event's `repairable` field
 //                               rides a runLog line. A journal line has no enforcement counterpart —
 //                               nothing reads it back and acts. (CITED BY SYMBOL AND NO LINE, for the
 //                               reason the neighbour below gives: the number here was :2029, which was
@@ -275,7 +275,7 @@ const structureSites = () => nonEmpty(sweep(), "travelling-predicates sweep()")
 const RULED = new Map([
   ["band-shape.mjs", 7], ["commonlaw-carry.mjs", 1], ["findings-model.mjs", 1],
   ["form-neighbourhood.mjs", 4], ["gateway.mjs", 2], ["grounds-grammar.mjs", 1],
-  ["pipeline.mjs", 2], ["steps/verdict-gate.mjs", 1], ["publish/render.mjs", 1], ["publish/xlsx.mjs", 2],
+  ["pipeline.mjs", 1], ["run-attachments.mjs", 1], ["steps/verdict-gate.mjs", 1], ["publish/render.mjs", 1], ["publish/xlsx.mjs", 2],
   ["reference-score.mjs", 3], ["registry-fidelity.mjs", 2], ["repair-scope.mjs", 4],
   ["portal-config-view.mjs", 1], ["publish/search-depth.mjs", 3], ["goods-evidence.mjs", 1],
   ["knockout-register-read.mjs", 4],

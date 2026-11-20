@@ -215,8 +215,8 @@ test("THE READER TRIPWIRE — a new module that reads row state must be taught t
   // `isRuled`. With word boundaries it does not, which is the right answer: the module never touches a
   // disposition row.
   const READERS = [
-    "connotation-search.mjs", "disposition-tool.mjs", "disposition-union.mjs",
-    "gateway.mjs", "pipeline.mjs", "register-sweep.mjs", "stages.mjs", "verify.mjs",
+    "connotation-audit-run.mjs", "connotation-search.mjs", "disposition-tool.mjs", "disposition-union.mjs",
+    "gateway.mjs", "register-sweep.mjs", "stages.mjs", "verify.mjs",
   ];
   // Every one of these names the vocabulary in prose and reads no row. coverage-form.mjs is the one the
   // hand enumeration called a reader: it DOES import from connotation-search.mjs, but the import is
