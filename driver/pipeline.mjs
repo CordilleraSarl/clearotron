@@ -204,7 +204,7 @@ import { recordedScopeLedgerRows } from "./clearance-variants-record.mjs";
 import { renderFormNeighbourhoodJson, parseFormNeighbourhoodJson, dispatchedQueriesFromBand, formGapDirectives, markText } from "./form-neighbourhood.mjs"; import { loadOrdinaryWords } from "./ordinary-words.mjs";
 import { createRepairLedger, retryCannotHelpWith, isContentShapedFail, isFallbackEligible } from "./repairs.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
-import { isCancelled } from "./cancel.mjs";   // stop-by-user: a distinct class, never classified as a failure; isCancelled is the resume door's own refusal (2155)
+import { isCancelled, stopsWithTheRun } from "./cancel.mjs";   // stop-by-user: a distinct class, never classified as a failure; isCancelled is the resume door's own refusal
 import { reachableCommand } from "../shared/invocation.mjs";   // — a printed command the reader can type later, from anywhere
 export { StageFailure, buildFailurePacket, isDesignedRefusal, stageWallFields, terminalReasonFields };   // moved to run-outcome.mjs; importers read them here as before
 export { correctionReading, correctionRows, flagOrdinals, recordCorrectionsBasis, repairUnnamedRemovals, rollbackCorrectivePass };   // moved to steps/corrections.mjs; importers read them here as before
@@ -2761,7 +2761,7 @@ async function verifyAndRecordHouseElement(ctx, opts = {}) {
     // "verified by owner, not asserted" means — there is no owner-predicate listing on this interface
     // and inventing one would be a second way to ask the same question.
     const lookup = typeof rec.list !== "function" ? null : async ({ element, classes: cls }) => {
-      const r = await rec.list(element, { classes: cls, regions, limit: 50 });
+      const r = await stopsWithTheRun(P.runDir, "own-registrations", rec.list)(element, { classes: cls, regions, limit: 50 });
       if (!r || r.ok === false) return { ok: false, reason: String(r?.reason ?? "the register listing did not answer") };
       return { ok: true, records: Array.isArray(r.records) ? r.records : [] };
     };
@@ -8550,7 +8550,7 @@ export function fullProseOrdinals(findings) {
     .map((f) => f.ordinal)
     .filter((o) => o != null);
 }
-// ASSEMBLE report.md = the overview shell (front-matter + Actions/Coverage/Methodology) + `# Marks` + the
+// ASSEMBLE report.md = the overview shell (front-matter + Actions) + `# Left open` + `# Marks` + the
 // per-card files in render order (composite desc, ordinal asc — mirrors render.mjs `sortedAll`), `open: true` on the
 // single top card. Findings with no card file (a failed report-card, or a secondary finding) are NOT emitted —
 // render.mjs synthesizes them structured-only from findings.json, so nothing is silently dropped. Pure file IO.
@@ -9349,7 +9349,14 @@ export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRi
   // different grouping key. The negatives grouping is not extended and not touched. Empty on one country
   // (nothing is graded to an entry there), so the assembled bytes are unchanged for product 4.
   const groupedSection = grouped.length ? buildGradedEntriesSection(grouped, { byRight }) : "";
-  writeFileSync(P.report, `${overview}\n\n# Marks\n\n${cards.join("\n\n")}\n`
+  // "LEFT OPEN", the rows the page will draw (left-open-md.mjs), before the cards: the connector serves this file when a
+  // reader's assistant asks for the report, and it listed none of them (design, 2026-11-19). Nothing open draws no
+  // heading. Assembly-time, like the sections above: no stored report.md is rewritten by this.
+  let leftOpen = "";
+  try {
+    if (P.findings && existsSync(P.findings)) leftOpen = leftOpenSectionOfRun(P.runDir, parseFindingsJsonLenient(readFileSync(P.findings, "utf8")).coverage, { already: overview });
+  } catch { /* never-kill: an unreadable record leaves the section out, and the cards still ship */ }
+  writeFileSync(P.report, `${overview}${leftOpen ? `\n\n${leftOpen}` : ""}\n\n# Marks\n\n${cards.join("\n\n")}\n`
     + `${groupedSection ? `\n${groupedSection}\n` : ""}${negatives ? `\n${negatives}\n` : ""}`);
   // PR-9 — fold observability: every fold this assembly performed, persisted for the predelivery lint's
   // flag-only row (and for anyone auditing where the assembly moved words). Overwritten per assembly so
@@ -11802,4 +11809,5 @@ export function reassembleFromTheRecord(P, findings, depth) {   // @internal
 // Hoisted, so placed last: an import at the top would move every line citation into this file.
 import { commandLineRefusal } from "./run-requirements.mjs";
 import { runTables } from "./order-tables.mjs";
+import { leftOpenSectionOfRun } from "./left-open-md.mjs";   // the page's Left open rows, printed into report.md
 import { axisTwin, followUpKinds, kindsForFollowUp } from "./follow-up-twins.mjs";   // when a written row stands in for a Follow-up row, as the page decides

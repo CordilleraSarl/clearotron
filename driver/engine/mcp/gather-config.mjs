@@ -328,7 +328,7 @@ const RECORDING = Object.freeze({
     seatWrites: false,
     tools: Object.freeze(["record_report_overview"]),
     reason: "hands back the report SHELL — the overall caption, the Actions bullets with their sources "
-      + "and internal-note marks, an optional methodology note and an optional handling note — through "
+      + "and internal-note marks and an optional handling note — through "
       + "record_report_overview instead of typing report-overview.md's front-matter and section shapes "
       + "by hand; the driver renders the shell from those values and stamps the nine front-matter keys it "
       + "already holds, three of which it used to overwrite after the seat had typed them. Gains NO "

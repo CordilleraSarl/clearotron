@@ -8,21 +8,21 @@
 // This is deterministic Node — NOT an LLM turn — so it cannot hang/timeout. The driver calls it directly
 // (not via runStage). Run identity (runId/codename) comes from the driver's ctx.run; do NOT regenerate it.
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, chmodSync } from 'node:fs';
-import { finishPoolRun, grpRead, openPoolRun, refreshStaffPages } from './shell.mjs';
+import { grpRead, publishRun } from './shell.mjs';
 import { join, dirname } from 'node:path';
 import { readFold } from '../record-fold.mjs'; import { parseReport, parseAudit, stripInternal, parseCaseLawProfiles, parseCaseLawPreamble, joinCaseLawProfiles } from './parse.mjs';
-import { renderHtml } from './render.mjs'; import { emailConditionsOf } from './email-conditions.mjs';   // the box's conditions, read the same way by the delivery check
+import { renderClearanceDocument } from './render.mjs'; import { emailConditionsOf } from './email-conditions.mjs';   // the box's conditions, read the same way by the delivery check
 import { buildAudit } from './xlsx.mjs'; import { readDegradedPartRows, degradedPartRows, degradedAtPublish, storeStates, readDeliveredStores, mergeDegradedRows } from '../degraded-parts.mjs'; import { readDeclinations } from '../declination-tool.mjs'; import { frameSetAsideRows } from '../web-grid.mjs';   // — what synthesis set aside, with its grounds; and the stores the matter frame set aside, with its reason
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, projectCoverageJudgment, COVERAGE_AREA_STATES } from '../findings-model.mjs';
 import { recordsOfDeliveredPositions } from '../declination-duty.mjs'; import { findingUris } from '../record-carry.mjs';   // — a position a finding delivers is not listed as set aside
 import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs'; import { coverageFormStamp, readCoverageForm } from '../coverage-form-io.mjs'; import { readReleasedFamilies, readWithheldFamilies } from '../withheld-families.mjs'; import { unitLabel } from '../coverage-form.mjs'; import { coverageUnitLabel } from '../coverage-ledger.mjs'; import { recallReceiptForOwnCompany } from '../recall-receipt.mjs';   // — and why an absence did not close; whose recall checks an audit lists
-import { clearanceReportDocument, clearanceReportDataOf } from './report-document.mjs';   // the run's report as one document, and the data file it carries
+import { clearanceReportDocument, clearanceReportDataOf, clearanceRatingOf, clearanceWorkbookOf } from './report-document.mjs';   // the run's report as one document, and what it carries
 import { searchDepthRecord, planTerritoriesOf, caseLawPassRecord } from './search-depth.mjs'; import { bandRecords } from '../named-band.mjs'; import { CASELAW_BRIDGES } from '../engine/mcp/gather-config.mjs';   // how much was read to reach the answer, as counts and tokens; and the case-law sources whose calls the court state reads
 import { parseFrameworkManifest } from '../framework.mjs'; import { readFrozenMethod, FROZEN_METHOD_FILE } from '../framework-method.mjs';
 import { rollupTokens, servedModels } from '../tokens.mjs';
 import { reportIdentityFor, productCoverageNote, isRegisterOnly } from '../search-policy.mjs';
 import { readRecordArtifacts, bindFindingsToRecords, joinEvidenceStatus } from '../registry-fidelity.mjs';
-import { deliveryFlagLines, deliveredFailure } from '../predelivery-lint.mjs';
+import { deliveredFailure } from '../predelivery-lint.mjs';
 import { unrenderableConditions, clientStatement, clientConditions } from '../terminal-clamp.mjs';   // — the conditions that reach no client surface; the cover note's
 import { runLog } from '../log.mjs';   // — one line in the run record when one does
 import { PROVIDERS, config } from '../driver.config.mjs';
@@ -142,7 +142,7 @@ export function evaluateClientGate({ coverage = [], lintFailingIds = [], escalat
 // T3 (H3) — the machine-QC INPUT assembly. Mirrors publishReport's own reads exactly (the
 // strict→lenient findings degrade + the _driver sinks) so an out-of-band evaluation (tests, tooling)
 // judges with the same pair of eyes as publish. The pipeline preflight that used to call this is gone
-// (one report, spec 2026-07-30 §5) — publishReport's in-publish evaluation is the single live caller.
+// (one report) — publishReport's in-publish evaluation is the single live caller.
 export function assembleReleaseInputs(reportMdPath, findingsJsonPath) {
   let coverage = [], quarantined = [], findingsError = null;
   const base = dirname(reportMdPath);
@@ -233,7 +233,7 @@ function indexRows(runs, { reportFile, linkPrefix = '', showAudit = true, client
   return runs.map(r => {
     // Machine-QC state (meta.clientGate is the historical stamp name): a STAFF-surface pill pointing the
     // reviewer at the audit workbook. It no longer decides anything — one report, always listed, always
-    // linked (spec 2026-07-30 §5); the delivery-language "⛔ on hold" pill is retired with the split.
+    // linked; the delivery-language "⛔ on hold" pill is retired with the split.
     const qcFailed = !client && r.clientGate && r.clientGate.released === false;
     // Demo anonymisation (inert on the client-facing per-customer index — no overlay there): the matter
     // (slug) + project (title) are marks → blur; the report/audit links carry the slug in the runId → the
@@ -263,7 +263,7 @@ function indexRows(runs, { reportFile, linkPrefix = '', showAudit = true, client
   }).join('\n');
 }
 
-// ONE report (spec 2026-07-30 §5): the "Review & iteration version · internal" / "Clean final version ·
+// ONE report: the "Review & iteration version · internal" / "Clean final version ·
 // client-facing" header pills are retired with the split they printed on the page. Both indexes link the
 // same report.html; what still differs between them is audience presentation (staff nav/filter/audit
 // column vs the customer page's date-only rows and explicit-light theme), not the document.
@@ -400,7 +400,7 @@ ${indexRows(archivedRuns, { reportFile: 'report.html', showAudit: true })}
 
 // Rebuild the pool index from every run's meta.json (newest first): the STAFF all-runs index (links
 // report.html + audit) AND, additively (D3), one per-customer index per account linking the SAME
-// report.html — one report (spec 2026-07-30 §5); the per-customer pages differ in chrome, not document.
+// report.html — one report; the per-customer pages differ in chrome, not document.
 export function regenIndex(poolDir) {
   const runs = readdirSync(poolDir, { withFileTypes: true })
     .filter(d => d.isDirectory() && d.name !== 'customer' && existsSync(join(poolDir, d.name, 'meta.json')))
@@ -461,7 +461,7 @@ export function regenIndex(poolDir) {
   try { chmodSync(idx, 0o640); } catch { /* best-effort; group-read via set-gid pool */ }
 
   // D3 — per-customer indexes at customer/<key>/index.html: only that account's runs, linking THE report
-  // (report.html — one report, spec 2026-07-30 §5) two levels up. The page is template-identical to the
+  // (report.html — one report) two levels up. The page is template-identical to the
   // staff index minus the staff chrome. NO staff nav here — internal surfaces never reach a
   // customer-facing page.
   // Do NOT chmod the customer dirs: they inherit the set-gid pool group (an explicit dir chmod here was the
@@ -479,7 +479,7 @@ export function regenIndex(poolDir) {
     const dir = join(poolDir, 'customer', key);
     mkdirSync(dir, { recursive: true });   // inherits the set-gid group; never chmod the dir
     const cidx = join(dir, 'index.html');
-    // ONE report (spec 2026-07-30 §5): a run you have rights to is always listed and always linked. The
+    // ONE report: a run you have rights to is always listed and always linked. The
     // old clientGate suppression (a held run vanished from this page) is gone — the machine checks live
     // on the audit workbook now and decide nothing about who may read. The precedent is the knockout
     // lane's own collapse note: two renderings of one run is how the wrong link gets sent.
@@ -695,7 +695,7 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
   // input left NO trace anywhere: findings=[]/coverage=[]/findingsError=null is exactly what a search
   // that ran and found nothing produces, so "we read nothing" and "we read everything and it was clean"
   // were the same delivered artifact. Recording is the whole fix here — the gate withholds nothing
-  // (spec 2026-07-30 §5) and the report's own face is the frozen renderer's, not this file's.
+  // and the report's own face is the frozen renderer's, not this file's.
   const inputsAbsent = [];
   // THE OVERALL ASSESSMENT NOT COMPLETED (driver/parts-not-completed.mjs). A stated state, read from the run's own
   // record and never inferred from an absence: the report is built from what the run held, with no rating, no
@@ -745,8 +745,8 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
       : [];
   }
   coverage = withoutRepeatedRows(coverage);   // one recorded row, repeated, prints once (see withoutRepeatedRows)
-  // PR-9 (E9) — the STRING PROJECTION for coverage_judgment stays. mark_assessment is NO LONGER
-  // projected on the RENDER path (spec 2026-07-30 §3): render.mjs takes the structured object and shows
+  // The STRING PROJECTION for coverage_judgment stays. mark_assessment is NO LONGER
+  // projected on the RENDER path: render.mjs takes the structured object and shows
   // the one-sentence `read` with the typed rows collapsed. projectAssessmentField/projectMarkAssessment
   // remain the projection for the workbook, report-data's client text, the lint and legacy string runs.
   const coverageJudgmentDisplay = projectCoverageJudgment(coverageJudgment);
@@ -972,7 +972,7 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
     if (existsSync(clPath)) {
       const clMd = readFileSync(clPath, 'utf8');
       caseLawByOrdinal = joinCaseLawProfiles(parseCaseLawProfiles(clMd), findings, readFold(runDir ?? dirname(reportMd))?.map?.modelToFolded ?? null);
-      caseLawNotice = parseCaseLawPreamble(clMd);   // session-wide outage notice — rendered once in §04
+      caseLawNotice = parseCaseLawPreamble(clMd);   // session-wide outage notice — kept in the report document; no page prints it
     }
   } catch { /* no case-law layer this run */ }
   // T7 (E6) — the Corsearch enforcement telemetry (onomaticsAggression/oppositions, extracted
@@ -1043,7 +1043,7 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
   };
 
   // Machine QC (the evaluateClientGate checks — arithmetic, record fidelity, stale corrections). The
-  // checks SURVIVE; what they decide is gone: one report (spec 2026-07-30 §5), so they no longer choose
+  // checks SURVIVE; what they decide is gone: one report, so they no longer choose
   // who may read anything. Evaluated HERE — before the audit workbook build — because the workbook is
   // where their result lands (a plain internal QC row) alongside the run telemetry; failures also stamp
   // meta.json for the staff index's ⚠ QC pill. The rendered report carries no banner either way, and a
@@ -1148,7 +1148,7 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
     // The NAME is still never stored: the sidecar holds the product ID, and the string comes off
     // today's registry row on every render — which is what lets a renamed product re-render honestly.
     productName = reportIdentityFor(pol).identity ?? undefined;
-    // charter ruling 1 (2026-07-30) — the masthead names what this depth covers and what it omits,
+    // The masthead names what this depth covers and what it omits (2026-07-30),
     // from the run's OWN frozen components. No sidecar ⇒ undefined ⇒ no strip (archived byte-identity).
     depthNote = productCoverageNote(pol) ?? undefined;
   } catch { stageLabel = undefined; depthNote = undefined; productName = undefined; }
@@ -1239,7 +1239,7 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
           bridges: CASELAW_BRIDGES,
         });
       })(),
-      registerPlan: rdJson(paths(runBase).registerPlan),
+      registerPlan: rdJson(paths(runBase).registerPlan), planExecution: readStore(runBase, '_driver/plan-execution.json').value ?? null,
       laneDepthVerdicts,
       noMarketplacesPicked,
     });
@@ -1271,7 +1271,7 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
   // same reason: the fact exists on the way IN and was lost on the way out.
   //
   // The composer has a project picker, portal-service stamps `projectKey` onto the job, and freezeProfile
-  // records the key AND the resolved name in _driver/profile.json (spec 62). The sidecar does not travel
+  // records the key AND the resolved name in _driver/profile.json. The sidecar does not travel
   // with a pool dir, so once a run was delivered nothing could say which matter it belonged to — not the
   // run list, not Clearances, not a report. "What was I working on" had no answer anywhere in the portal.
   //
@@ -1314,8 +1314,9 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
     // The headline caption as the front matter states it, empty as null. The email, the data file, meta.json and the run
     // record take it; the page takes the report's Summary instead (render.mjs).
     caption: fm.overall_caption || null,
-    // The email's options (coverNoteOptions): the delivery composes the email after publishing, from the same function.
-    cover: coverNoteOptions(runDir ?? dirname(reportMd)),
+    // The verdict record as written, which the cover email reads. `verdictInfo` above is the record as the page reads it:
+    // the two differ on a record older than the derived display fields, and where the assessment was not completed.
+    verdictWritten: (() => { try { return readJson(paths(runDir ?? dirname(reportMd)).verdict); } catch { return null; } })(),
   };
 }
 
@@ -1332,83 +1333,98 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
  */
 // skipRegen — do NOT re-render index.html + the staff pages at the end. The batch backfill passes this and does
 //   ONE regen after the whole loop instead of N redundant ones (per-run publish leaves it false, as before).
-// (skipClient is retired with report.client.html — one report, spec 2026-07-30 §5.)
-export async function publishReport({ runId, codename, reportMd, auditMd, findingsJson, poolRoot, poolUrl, customerKey, delivery, runDir, skipRegen = false }) {
-  const doc = await readClearanceDocument({ runId, reportMd, auditMd, findingsJson, poolRoot, poolUrl, customerKey, delivery, runDir });
-  const { parsed, fm, deliv, issued, asOf, demoData, demoMd, findings, coverage, contextNotes, findingsError,
-    coverageJudgment, markAssessment, actionsRegister, askAnswers, correctionsDoc, fourAnswers, findingsSchemaVersion,
-    findingsKept, assessmentNotCompleted, coverageJudgmentDisplay, recordsByUri, logos, followUpKinds, runProviderConf, recordOrigin, providerLabel,
-    runOrigins, seniorRights, verdictInfo, droppedConditions, undispatchedProbes, withheldFamilies, setAside, framework,
-    frameworkMethod, scopeBasis, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals,
-    officeLinks, reviewReceipts, clientGate, fetchState, searchPolicy, registerOnly, jurisdiction, commonLawJoinedTerms, registerReach, registerScope,
-    stageLabel, depthNote, productName, publishParts, auditParsed, degradedRows, releasedFamilies, served, searchDepth,
-    issuedAt, renderedAt, markName, project, organisation, tokenRollup, reportRoute, frozenStageLabel, ratingWord,
-    ratingBadge, caption } = doc;
-  const { poolRunDir, writeRO, copyRO, copyPart, buildWorkbook, writeDataFile } = openPoolRun(poolRoot, runId, { runDir });
-  // The pool's copy of report.md, marked as demo data where the document says it is (the answer and its argument are
-  // with `demoData` in readClearanceDocument).
-  writeRO('report.md', (demoMd ? `${demoMd}\n` : '') + stripInternal(readFileSync(reportMd, 'utf8'), { client: false }));
-  // The findings.json the document read, kept beside the report for forensics. A copy that fails leaves the report in
-  // place and is recorded, as a data file is (shell.mjs).
-  if (findingsKept) copyPart(findingsKept, 'findings.json');
-  if (auditMd && existsSync(auditMd)) copyRO(auditMd, 'audit.md');   // durable source (kept even if the xlsx fails)
-  let auditFile = null, counts = null, auditError = null;
-  // In the state the workbook is built even with no finding and no search log: it carries the part that was not
-  // completed, and the coverage the run did record.
-  if (findings.length || auditParsed || assessmentNotCompleted) {
-    ({ auditFile, auditError, built: counts } = await buildWorkbook(`${runId}-audit.xlsx`, async (at) => {
+// (skipClient is retired with report.client.html — one report.)
+export async function publishReport(input) {
+  return publishRun(CLEARANCE_SHAPE, input);
+}
+
+// The clearance's parts of the publishing order (shell.mjs publishRun).
+const CLEARANCE_SHAPE = {
+  regenIndex, regenSurfaces,
+  read: async ({ runId, reportMd, auditMd, findingsJson, poolRoot, poolUrl, customerKey, delivery, runDir, codename }) => ({
+    doc: await readClearanceDocument({ runId, reportMd, auditMd, findingsJson, poolRoot, poolUrl, customerKey, delivery, runDir }),
+    runId, codename, customerKey, reportMd, auditMd,
+  }),
+  keep({ writeRO, copyRO, copyPart }, { doc: { demoMd, findingsKept }, reportMd, auditMd }) {
+    // The pool's copy of report.md, marked as demo data where the document says it is (the answer and its argument are
+    // with `demoData` in readClearanceDocument).
+    writeRO('report.md', (demoMd ? `${demoMd}\n` : '') + stripInternal(readFileSync(reportMd, 'utf8'), { client: false }));
+    // The findings.json the document read, kept beside the report for forensics. A copy that fails leaves the report in
+    // place and is recorded, as a data file is (shell.mjs).
+    if (findingsKept) copyPart(findingsKept, 'findings.json');
+    if (auditMd && existsSync(auditMd)) copyRO(auditMd, 'audit.md');   // durable source (kept even if the xlsx fails)
+  },
+  document: ({ doc, runId, codename, customerKey }) => clearanceReportDocument({ ...doc, runId }, { codename, customerKey }),
+  warn: (what, e) => console.warn(`[report-document] ${what}: ${e?.message ?? e}`),
+  async workbook({ buildWorkbook }, reportDocument, { doc: { findings, auditParsed, assessmentNotCompleted }, runId }) {
+    // In the state the workbook is built even with no finding and no search log: it carries the part that was not
+    // completed, and the coverage the run did record.
+    if (!(findings.length || auditParsed || assessmentNotCompleted)) return { auditFile: null, auditError: null, built: null };
+    return buildWorkbook(`${runId}-audit.xlsx`, async (at) => {
       // A10 — the failing predelivery checks ride into the workbook and are ENUMERATED on its Summary
-      // sheet (with the cover note, the delivery surfaces that reach the reviewing lawyer). The
-      // reviewReceipts assembly above claimed for two releases that these "land on the audit workbook's
-      // Review-receipts sheet"; nothing ever threaded them through — the sink was a flag nobody read.
-      // The workbook is handed the PROJECTED lines, never the checks: the audit download link rides in
-      // the same cover note that reaches a client principal, so it is a delivery surface under exactly
-      // the same rule (the workbook's own BANNED gate had already started firing on the raw detail —
-      // advisory, so CI stayed green). reviewReceipts.lint keeps its raw detail for the internal
-      // readers above (fetchState reads registry-record-coverage's URIs out of it).
-      const built = await buildAudit({ degradedParts: degradedRows, droppedConditions, undispatchedProbes, withheldFamilies, releasedFamilies, setAside, findings, frameworkMethod, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null, assessmentNotCompleted, registerReach, registerScope }, auditParsed, at, fm.title, fm);
+      // sheet (with the cover note, the delivery surfaces that reach the reviewing lawyer), as their delivery
+      // lines (clearanceWorkbookOf).
+      const w = clearanceWorkbookOf(reportDocument);
+      const built = await buildAudit(w.contract, w.audit, at, w.title, w.frontMatter);
       if (built?.gateViolations?.length) console.warn(`[audit-workbook] advisory: ${built.gateViolations.join(' | ')}`);
       return built;
-    }));   // a REAL exception only — the report ships without the workbook, and nothing names it
-  }
+    });   // a REAL exception only — the report ships without the workbook, and nothing names it
+  },
+  surfaces({ writeRO, writeDataFile }, reportDocument, { doc: { searchDepth, recordsByUri, logos, deliv, demoData } }) {
+    // THE report. The render receives no QC flags — the report a lawyer signs carries no
+    // caveat banner (H1/H2); the receipts live on audit.xlsx. The machine QC above decides nothing
+    // about this write.
+    // homeHref — the floating "← All reports" pill returns to the listing (the staff index one level up).
+    // NO SITE NAV IS BUILT FOR A REPORT. One was, from a walk of the pool on every publish, and handed to a
+    // renderer that never read it; reports published before that carry one, and the portal still strips it.
+    // How much was read to reach the answer, written where the document holds it (an additive record: a publish never
+    // fails for want of it).
+    if (searchDepth) { try { writeRO('search-depth.json', JSON.stringify(searchDepth, null, 2)); } catch { /* additive */ } }
 
+    writeRO('report.html', renderClearanceDocument(pageDocument(reportDocument), { recordsByUri, logos, homeHref: '../index.html', chromeHref: '../assets/chrome.css', delivery: deliv, demoData }));   // the page reads the report document, with its surface beside it
+    // ONE report: report.client.html is no longer written. The knockout lane's own
+    // collapse note is the precedent: "two renderings of one run is how the wrong link gets sent". The
+    // client host serves the same report.html through the portal's readReport() (cleaning built in) — its
+    // repoint deployed before this change merged.
+    //
+    // The four-answers panel was once passed to BOTH renders. There is one render now, so `fourAnswers`
+    // rides the one call — the panel reaches the client through the same cleaning path as every other
+    // reader-facing block.
+    // The clearance run as data: the client-cut projection the assistant drafts mail from, built from the
+    // document (clearanceReportDataOf). BEST-EFFORT with a hard receipt rule: meta.reportSchema is stamped ONLY when the
+    // file actually wrote, so a meta never names a data file that is not there. A producer throw never blocks the
+    // report (the baked HTML above is already on disk).
+    const reportSchema = writeDataFile('report-data.json', () => clearanceReportDataOf(reportDocument)) ? 'report-data/clearance-1' : null;
+    return { reportSchema, template: deliv?.template ?? 'standard' };
+  },
+  // The run's record, from the document. A document that could not be built fails the publish here, after the page
+  // and before the record, as a throw in the record always has.
+  meta: (reportDocument, { template, reportSchema }) => clearanceMetaOf(reportDocument, { template, reportSchema }),
+  result: ({ read: { doc: { reportRoute, findingsError, clientGate, caption }, runId, customerKey }, pool: { poolRunDir }, workbook: { auditFile, auditError, built: counts }, total }) => ({
+    // THE PORTAL ROUTE, not the pool's directory layout. This was
+    // `<origin>/<runId>/report.html` — where the documents sit on disk, which is not an application route.
+    // Composed rather than spelled here so the report link is built the same way the audit link always was.
+    runId, auditFile, counts, total, url: reportRoute, poolRunDir, auditError, findingsError, customerKey: customerKey || 'generic', clientGate,
+    caption,   // the report's own conclusion, for the run record's short surfaces
+  }),
+};
 
-  // THE report. T4: the render receives no QC flags — the report a lawyer signs carries no
-  // caveat banner (H1/H2); the receipts live on audit.xlsx. The machine QC above decides nothing
-  // about this write.
-  // homeHref — the floating "← All reports" pill returns to the listing (the staff index one level up).
-  // NO SITE NAV IS BUILT FOR A REPORT. One was, from a walk of the pool on every publish, and handed to a
-  // renderer that never read it; reports published before that carry one, and the portal still strips it.
-  // How much was read to reach the answer, written where the document holds it (an additive record: a publish never
-  // fails for want of it).
-  if (searchDepth) { try { writeRO('search-depth.json', JSON.stringify(searchDepth, null, 2)); } catch { /* additive */ } }
-
-  // THE RUN'S REPORT AS ONE DOCUMENT (publish/report-document.mjs), built once from what was read above and kept in
-  // the run's own record, never the pool. The surfaces below move to reading it one at a time; the data file is the
-  // first. Built ahead of the page so the page can read it too. A build that throws costs the data file, as a
-  // producer throw always has, and never the report.
-  let reportDocument = null;
-  try { reportDocument = clearanceReportDocument({ ...doc, runId }, { codename, customerKey, auditFile, auditError }); }
-  catch (e) { console.warn(`[report-document] not built: ${e?.message ?? e}`); }
-  if (reportDocument && runDir) {
-    try { ensureDriverDir(runDir); atomicWrite(paths(runDir).reportDocument, JSON.stringify(reportDocument, null, 1) + '\n'); }
-    catch (e) { console.warn(`[report-document] not written: ${e?.message ?? e}`); }
-  }
-  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, frameworkMethod, servedModels: served, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion, searchDepth, assessmentNotCompleted, logos, followUpKinds }));
-  // ONE report (spec 2026-07-30 §5): report.client.html is no longer written. The knockout lane's own
-  // collapse note is the precedent: "two renderings of one run is how the wrong link gets sent". The
-  // client host serves the same report.html through the portal's readReport() (cleaning built in) — its
-  // repoint deploys BEFORE this change merges (charter ruling 2a).
-  //
-  // P5 rebase note: this package was written against the pre-collapse tree, where the four-answers panel
-  // had to be passed to BOTH renders. There is one render now, so `fourAnswers` rides the one call — the
-  // panel reaches the client through the same cleaning path as every other reader-facing block.
-  // PR-9 — the clearance run as data: the client-cut projection the assistant drafts mail from, built from the
-  // document (clearanceReportDataOf). BEST-EFFORT with a hard receipt rule: meta.reportSchema is stamped ONLY when the
-  // file actually wrote, so a meta never names a data file that is not there. A producer throw never blocks the
-  // report (the baked HTML above is already on disk).
-  const reportSchema = writeDataFile('report-data.json', () => clearanceReportDataOf(reportDocument)) ? 'report-data/clearance-1' : null;
-  const total = finishPoolRun({ writeRO, poolRoot, skipRegen, regenIndex, meta: {
+/**
+ * The run's record in the pool (meta.json), from the report document. `template`, the delivery's named variant, and
+ * `reportSchema`, whether the data file wrote, are publishing's own facts and not the run's.
+ */
+function clearanceMetaOf(document, { template, reportSchema }) {
+  if (!document) throw new Error('the report document could not be built, so the run record cannot be written');
+  const { run, verdict, client, reviewer, staff, build } = document;
+  const fm = document.prose.frontMatter;
+  const { runId, codename, markName, project, organisation, customerKey, issuedAt, auditFile } = run;
+  const { renderedAt } = build;
+  const served = client.servedModels, framework = document.framework.manifest, clientGate = reviewer.clientGate;
+  const verdictInfo = verdict.record, assessmentNotCompleted = verdict.assessmentNotCompleted;
+  // The rating word and its badge as the page states them (clearanceRatingOf). The headline caption, empty as null.
+  const { word: ratingWord, badge: ratingBadge } = clearanceRatingOf(document);
+  const caption = fm.overall_caption || null;
+  return {
     runId, codename: codename || '', matter: fm.matter, title: fm.title, client: fm.client,
     // The mark as typed — see above. Distinct from `title`, which is the report's own headline.
     markName: markName ?? undefined,
@@ -1424,34 +1440,34 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     issuedAt,
     renderedAt,
     // WHICH BUILD produced this. null off a git checkout — a provenance stamp never fails a publish.
-    engineCommit: doc.engineCommit,
+    engineCommit: build.engineCommit,
     // The models that served the run, named as a client may read them (tokens.mjs servedModels). Absent when
     // nothing was read, so a meta from before the record keeps its shape; [] when turns ran and named none a client may read.
     servedModels: served ?? undefined,
-    kind: 'clearance', recordLinks: officeLinks?.tally ?? undefined,   // per office: linked, or cited by number and why; only where the register has no record pages
-    searchLevel: searchPolicy?.level ?? undefined,
+    kind: 'clearance', recordLinks: client.recordLinks?.tally ?? undefined,   // per office: linked, or cited by number and why; only where the register has no record pages
+    searchLevel: run.product.level ?? undefined,
     // Display-only face of the level ("Depth 4"), frozen alongside it so the list can show which reads
     // have run on a name without the browser having to know the level registry.
-    stageLabel: frozenStageLabel ?? undefined,
-    recipe: searchPolicy?.recipe ?? undefined,
-    enqueuedVia: searchPolicy?.enqueuedVia ?? undefined,
-    enqueuedBy: searchPolicy?.enqueuedBy ?? undefined,
-    parentRunId: searchPolicy?.parentRunId ?? undefined,
-    tokens: (() => { const t = tokenRollup?.total; return t && (t.input || t.output || t.cacheRead || t.cacheWrite) ? t : undefined; })(),
+    stageLabel: run.product.frozenStageLabel ?? undefined,
+    recipe: run.provenance.recipe ?? undefined,
+    enqueuedVia: run.provenance.enqueuedVia ?? undefined,
+    enqueuedBy: run.provenance.enqueuedBy ?? undefined,
+    parentRunId: run.provenance.parentRunId ?? undefined,
+    tokens: (() => { const t = build.tokens; return t && (t.input || t.output || t.cacheRead || t.cacheWrite) ? t : undefined; })(),
     // delivery.template: the named deliverable-template variant this run used. Default "standard"
     // (today's render). Recorded here so the choice is observable + a live consumer of the profile field
     // (not a dead knob); the registry currently holds one variant, ready to grow when a 2nd format ships.
-    template: deliv?.template ?? 'standard',
+    template,
     // T2 (H5): the derived display verdict is THE authority when the sidecar exists; the
     // model-authored fm fields are the pre-A2 legacy fallback only.
     // No rating at all in the state where the assessment was not completed, whatever a report's front matter says.
     overall: ratingWord,
     badge: ratingBadge, run: fm.run, date: dateOf(fm.run), auditFile,
     // WHY THERE IS NO WORKBOOK, when the build threw. Absent when it built, so such a meta is unchanged.
-    auditError: auditError ?? undefined,
+    auditError: staff.auditError ?? undefined,
     // THE PARTS PUBLISHING FOUND DEGRADED, with their raw causes, which no cell carries. Absent when none.
-    degradedAtPublish: publishParts.length ? publishParts.map((d) => ({ part: d.part, name: d.name, cause: d.cause })) : undefined,
-    // spec 64 — THE one risk statement (band + stance in one sentence, composed once by the sidecar
+    degradedAtPublish: staff.publishParts.length ? staff.publishParts.map((d) => ({ part: d.part, name: d.name, cause: d.cause })) : undefined,
+    // THE one risk statement (band + stance in one sentence, composed once by the sidecar
     // writer). Absent on legacy runs — regenIndex re-reads every historical meta.json, so consumers
     // null-guard and old rows render byte-identically.
     statement: verdictInfo?.statement ?? undefined,
@@ -1475,18 +1491,11 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     clientGate: { released: clientGate.released, reasons: clientGate.reasons,
       inputsAbsent: clientGate.inputsAbsent?.length ? clientGate.inputsAbsent : undefined, notClosing: clientGate.notClosing?.length ? clientGate.notClosing : undefined,
       evaluationError: clientGate.evaluationError ?? undefined },
-    // PR-9 — present ⇒ report-data.json is beside the report, in the shape the string names
+    // Present ⇒ report-data.json is beside the report, in the shape the string names
     // (`report-data/clearance-1`; a Knockout stamps `report-data/knockout-1`). undefined on a producer
     // miss, so the meta never advertises a file that is not there.
     reportSchema: reportSchema ?? undefined,
-  } });
-  await refreshStaffPages({ regenSurfaces, poolRoot, skipRegen, runDir });
-  // THE PORTAL ROUTE, not the pool's directory layout. This was
-  // `<origin>/<runId>/report.html` — where the documents sit on disk, which is not an application route.
-  // Composed rather than spelled here so the report link is built the same way the audit link always was.
-  const url = reportRoute;
-  return { runId, auditFile, counts, total, url, poolRunDir, auditError, findingsError, customerKey: customerKey || 'generic', clientGate,
-    caption };   // the report's own conclusion, for the run record's short surfaces
+  };
 }
 
 // Compose the notification email body — MARKDOWN (the mail tool renders markdown→HTML; raw HTML gets escaped).
@@ -1795,23 +1804,70 @@ function mdBlock(block) {
 /**
  * THE EMAIL'S OPTIONS, read from the run's frozen files: the product's name off the frozen search policy, the verdict
  * record's sign-off word, conditions, rating and statement as the record wrote them, and the band ladder of the frozen
- * framework. The report document carries them as `cover`, and the delivery passes them to composeEmailHtml, on a fresh
- * publish and on a resume that finds the run already published. The statement is the record's own, which the run's status
- * keeps; the report's surfaces print the client form. Never throws: a file it cannot read leaves its options out.
+ * framework. The cover email reads them for a run published before the report document existed (coverNoteInputs). The
+ * statement is the record's own, which the run's status keeps; the report's surfaces print the client form. Never throws: a
+ * file it cannot read leaves its options out.
  */
 export function coverNoteOptions(runDir) {
   const frozen = (key, parse = JSON.parse) => { try { return parse(readFileSync(paths(runDir)[key], 'utf8')); } catch { return null; } };
   const opts = { productName: reportIdentityFor(frozen('searchPolicy')).identity ?? undefined };
+  // The run's own record that its assessment did not complete decides, as it does for the page: then no verdict saved
+  // by that assessment supplies a rating, and the rating stays unknown.
+  if (readStore(runDir, '_driver/not-completed/assessment.json').state !== 'absent') return Object.assign(opts, frameworkBands(frozen), { assessmentNotCompleted: true, rating: null });
   const v = frozen('verdict');
   if (v) Object.assign(opts, { verdict: v.verdict, conditions: clientConditions(v), tier: v.tier, statement: v.statement ?? null });
+  return Object.assign(opts, frameworkBands(frozen));
+}
+
+/** The run's band ladder for the email, from its frozen framework; nothing where it has none. */
+function frameworkBands(frozen) {
   const framework = frozen('framework', parseFrameworkManifest);
+  return framework ? { bands: framework.bands.map((b) => ({ label: b.label, tone: b.tone })) } : {};
+}
+
+export function composeEmailHtml(reportMdPath, url, auditFile, names = [], delivery = NEUTRAL_DELIVERY, opts = {}) {
+  return composeEmailHtmlFrom(parseReport(reportMdPath), url, auditFile, names, delivery, opts);
+}
+
+/**
+ * The cover email for a run, as the delivery sends it, from what coverNoteInputs read. `productName` is the name the
+ * subject takes, which the caller resolves.
+ */
+export function composeCoverNote({ report, opts }, { url, auditFile, names = [], delivery = NEUTRAL_DELIVERY, productName } = {}) {
+  return composeEmailHtmlFrom(report, url, auditFile, names, delivery, { ...opts, productName });
+}
+
+/**
+ * What the cover email reads: the report's front matter and sections, and its options. From the run's report document
+ * where it has one, and from the run's own files where it has none (a run published before the document existed).
+ */
+export function coverNoteInputs(runDir) {
+  let document = null;
+  try { document = readJson(paths(runDir).reportDocument); } catch { /* a run published before the document */ }
+  // A document written before it carried the verdict record as written is read from the files too.
+  if (!document || !('written' in (document.verdict ?? {}))) return { report: parseReport(join(runDir, 'report.md')), opts: coverNoteOptions(runDir) };
+  return { report: { fm: document.prose.frontMatter, secs: document.prose.sections }, opts: coverNoteOptionsOf(document) };
+}
+
+/**
+ * coverNoteOptions, read from the document: the verdict record and the rating as the page reads them, and the run's band
+ * ladder. An older record gains its derived rating, as on the page, and a run whose assessment was not completed has no
+ * record, so a verdict saved from that assessment raises neither a rating nor the close-box, and leaves the run's status no
+ * statement. Where there is a record, the statement is the record's as written, which the run's status keeps.
+ */
+function coverNoteOptionsOf(document) {
+  const opts = { productName: document.run.product.name ?? undefined };
+  if (document.verdict.assessmentNotCompleted === true) opts.assessmentNotCompleted = true;
+  const v = document.verdict.record;
+  if (v) Object.assign(opts, { verdict: v.verdict, conditions: clientConditions(v), tier: v.tier, statement: document.verdict.written?.statement ?? null });
+  opts.rating = clearanceRatingOf(document).word ?? null;
+  const framework = document.framework.manifest;
   if (framework) opts.bands = framework.bands.map((b) => ({ label: b.label, tone: b.tone }));
   return opts;
 }
 
-export function composeEmailHtml(reportMdPath, url, auditFile, names = [], delivery = NEUTRAL_DELIVERY, opts = {}) {
+function composeEmailHtmlFrom({ fm, secs }, url, auditFile, names = [], delivery = NEUTRAL_DELIVERY, opts = {}) {
   EMAIL_BANDS = Array.isArray(opts?.bands) && opts.bands.length ? opts.bands : null;   // doc 50 — per-run vocabulary
-  const { fm, secs } = parseReport(reportMdPath);
   const auditUrl = auditUrlFor(url, auditFile);
 
   // 1) internal review headline — short: the bottom line, and nothing of the reviewer's own notes.
@@ -1843,7 +1899,7 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
   const flagBanner =
     (fm.envelope_note ? `<p style="margin:0 0 6px"><b>${EMAIL.scopeLabel}</b> ${EMAIL.scopeOpen}</p>` : '');
 
-  // ONE report (spec 2026-07-30 §6): the "Not client-ready — for your review only" block is deleted with
+  // ONE report: the "Not client-ready — for your review only" block is deleted with
   // the two-bit delivery it narrated. The cover note is a cover note — verdict, one-line summary, link —
   // plus, since A10 (below), the surviving machine-check failures in the projection's own words. The
   // "machine-QC lives on the workbook, never the email" rule that used to stand here was written when a
@@ -1898,17 +1954,26 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
   // A BLOCKING RESULT KEEPS THE REPORT'S ITEMS TOO (ruled 2026-10-27). The box showed only on a CONDITIONAL result, so
   // a blocking one lost the client's own actions the report lists. It shows them under the report's heading in the
   // report's words, and only where the report names any: no empty box, no fallback line.
-  const emailConditions = emailConditionsOf(secs['Actions'], opts?.verdict);
+  // AN ASSESSMENT THAT DID NOT COMPLETE HAS NO RESULT TO CONDITION (2026-11-19). Its box lists what the report lists under
+  // "Before you can rely on this result", under that heading, in the report's order, and is left out where the report
+  // names nothing there: a heading saying only the client can close these would claim more than the run knows.
+  const notCompleted = opts?.assessmentNotCompleted === true;
+  const emailConditions = emailConditionsOf(secs['Actions'], opts?.verdict, { assessmentNotCompleted: notCompleted });
   // THE REPORT IS THE MASTER (ruled 2026-09-22). The banner used to print a second summary composed
   // beside the report — "On hold — …" on a run the report called conditional, although nothing is ever
   // held — and before that the delivery gate's word. It now quotes the report: the rating, then the
   // report's own conclusion (below), and where the report names what only the client can close, those
   // items under the report's own heading. Nothing here composes a sentence of its own.
-  const closeBox = (items) => `<p style="margin:0 0 8px;padding:8px 10px;background:${EC.closeBoxFill};border:1px solid ${EC.closeBoxLine};color:${EC.closeBoxText}"><b>${EMAIL.onlyYouCanClose}</b><br>${items.map((r) => `• ${cell(String(r))}`).join('<br>')}</p>`;
-  const verdictBound = opts?.verdict === 'CONDITIONAL'
-    ? closeBox(emailConditions.length ? emailConditions : [EMAIL.onlyYouCanCloseDefault])
-    : opts?.verdict === 'BLOCKING' && emailConditions.length ? closeBox(emailConditions) : '';
+  const closeBox = (items, head = EMAIL.onlyYouCanClose) => `<p style="margin:0 0 8px;padding:8px 10px;background:${EC.closeBoxFill};border:1px solid ${EC.closeBoxLine};color:${EC.closeBoxText}"><b>${head}</b><br>${items.map((r) => `• ${cell(String(r))}`).join('<br>')}</p>`;
+  const verdictBound = notCompleted
+    ? (emailConditions.length ? closeBox(emailConditions, EMAIL.beforeYouCanRely) : '')
+    : opts?.verdict === 'CONDITIONAL'
+      ? closeBox(emailConditions.length ? emailConditions : [EMAIL.onlyYouCanCloseDefault])
+      : opts?.verdict === 'BLOCKING' && emailConditions.length ? closeBox(emailConditions) : '';
 
+  // The rating as the page states it where the options carry it (from the report document); otherwise the record's, then
+  // the front matter's, as a run published before the document reads.
+  const rating = opts && 'rating' in opts ? opts.rating : (opts?.tier ?? fm.overall_label);
   const reviewHeadline = `<div style="${FONT};font-size:11pt;color:${EC.headline};margin:0 0 14px">`
     + flagBanner
     + verdictBound
@@ -1916,8 +1981,8 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
     // T2 (H5): the derived tier (verdict sidecar, passed by the driver) outranks the
     // model-authored fm label — one authority on every surface. The rating leads, then the report's own
     // conclusion verbatim (ruling 244); with no rating recorded, the conclusion stands alone.
-    + ((opts?.tier ?? fm.overall_label)
-      ? `<p style="margin:0 0 6px"><b>${EMAIL.overallRisk} ${esc(opts?.tier ?? fm.overall_label)}.</b> ${cell(fm.overall_caption || '')}</p>`
+    + (rating
+      ? `<p style="margin:0 0 6px"><b>${EMAIL.overallRisk} ${esc(rating)}.</b> ${cell(fm.overall_caption || '')}</p>`
       : (fm.overall_caption ? `<p style="margin:0 0 6px">${cell(fm.overall_caption)}</p>` : ''))
     + reportLink
     + (fm.handling_note ? `<p style="margin:0 0 8px;color:${EC.warning}"><b>${EMAIL.handlingNote}</b> ${cell(fm.handling_note)}</p>` : '')
@@ -1966,7 +2031,7 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
 // of the tree cites by number.
 import { recordLinksFor } from './office-record-links.mjs';
 import { reportDates, zurichStamp } from './report-dates.mjs';   // the dates a report prints, from its record
-import { atomicWrite, driverDir, ensureDriverDir, paths, readJson } from "../run-record.mjs";
+import { driverDir, paths, readJson } from "../run-record.mjs";
 import { logosForReport } from "../mark-logos.mjs";   // the saved logo of each cited registration, embedded in the report
 import { followUpKindsOf } from "../follow-up-twins.mjs";   // the search each deferred directive recorded
 function officeLinksFor(findings, recordsByUri, runOrigins) {
@@ -2070,4 +2135,12 @@ export function withoutRepeatedRows(rows) {
     seen.add(key);
     return true;
   });
+}
+
+// THE PAGE READS THE RUN'S REPORT DOCUMENT AS WRITTEN: the JSON the run keeps, parsed back, so the page can read nothing
+// the file does not hold. A document that could not be built leaves the page nothing to read, and the publish stops
+// there rather than print a page from another source.
+function pageDocument(doc) {
+  if (!doc) throw new Error('[report-document] not built, so report.html has nothing to read');
+  return JSON.parse(JSON.stringify(doc));
 }

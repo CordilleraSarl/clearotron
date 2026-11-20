@@ -23,7 +23,7 @@
 import { test } from "node:test";
 process.env.CLEAROTRON_MCP_URL ||= "https://mcp.test/mcp";
 import assert from "node:assert/strict";
-import { CLEARED_GROUPS, groupForCleared, clearedNames, recordsByCountry, sweepCounts, courtDecisionsState, localScriptSearched, searchDepthRecord, planTerritoriesOf, localLanguageDepth, recordNamesFromIds } from "../publish/search-depth.mjs";
+import { CLEARED_GROUPS, groupForCleared, clearedNames, recordsByCountry, sweepCounts, courtDecisionsState, localScripts, searchDepthRecord, planTerritoriesOf, localLanguageDepth, recordNamesFromIds } from "../publish/search-depth.mjs";
 
 // Invented ground throughout. No client content reaches a fixture.
 const AUDIT = `# Negative Results
@@ -128,8 +128,102 @@ test("court decisions keeps its four states apart", () => {
 test("the sweep and local-script counts come from the machine record", () => {
   const grid = { cells: [{ term: "a", platform: "p1" }, { term: "b", platform: "p1" }, { term: "a", platform: "p2" }], extras: { pr_risk: [1, 2] } };
   assert.deepEqual(sweepCounts(grid), { checks: 3, platforms: 2, spellings: 2, reputation: 2 });
-  assert.equal(localScriptSearched({ entries: [{ term: "VOLTARIS" }, { term: "ボルタリス" }] }), true);
-  assert.equal(localScriptSearched({ entries: [{ term: "VOLTARIS" }] }), false);
+});
+
+// THE LOCAL-SCRIPT CLAIM RESTS ON WHAT RAN (owner, 2026-11-19), shown on design's three cases and the run that kept
+// no execution record. Every term is invented.
+test("a native script counts as searched only when a term in it completed; accented Latin names none; no record says nothing", () => {
+  const ran = (...qids) => ({ executed: qids.map((qid) => ({ qid, state: "enumerated" })) });
+  const scripts = (plan, exec) => { const r = localScripts(plan, exec); return { searched: r.searched, missed: r.missed }; };
+  // An accented Latin term: no native script, so nothing is searched or missed in one.
+  assert.deepEqual(localScripts({ entries: [{ qid: "q1", term: "CAFÉ SKARVÈL" }] }, ran("q1")), { searched: [], missed: [], territories: {} });
+  // A planned-only term: the native script is missed, never searched, however the plan reads.
+  assert.deepEqual(scripts({ entries: [{ qid: "q1", term: "VOLTARIS" }, { qid: "q2", term: "ボルタリス" }] }, ran("q1")), { searched: [], missed: ["Kana"] });
+  // Partial coverage: one script ran, another planned one did not.
+  assert.deepEqual(scripts({ entries: [{ qid: "q1", term: "ボルタリス" }, { qid: "q2", term: "볼타리스" }] }, ran("q1")), { searched: ["Kana"], missed: ["Hang"] });
+  // A native-script term whose only search did not complete is missed, not searched; so is one whose row has no state.
+  assert.deepEqual(scripts({ entries: [{ qid: "q1", term: "ボルタリス" }] }, { executed: [{ qid: "q1", state: "incomplete" }] }), { searched: [], missed: ["Kana"] });
+  assert.deepEqual(scripts({ entries: [{ qid: "q1", term: "ボルタリス" }] }, { executed: [{ qid: "q1" }] }), { searched: [], missed: ["Kana"] });
+  // No execution record: the claim stays unknown.
+  assert.equal(localScripts({ entries: [{ qid: "q1", term: "ボルタリス" }] }, null), null);
+});
+
+// A SCRIPT SEARCHED IN ONE TERRITORY AND NOT IN ANOTHER KEEPS THAT GAP, per script, on invented terms. One territory
+// under two spellings is no gap, and a term naming no region is kept apart rather than placed.
+test("the record keeps, per script, where it completed and where it was missed", () => {
+  const exec = (...rows) => ({ executed: rows.map(([qid, state]) => ({ qid, state })) });
+  // Katakana completed in Japan and was missed in Korea: the script is searched, and the gap is kept.
+  const gap = localScripts({ entries: [
+    { qid: "q1", term: "ボルタリス", regions: ["JP"] },
+    { qid: "q2", term: "ボルタリス", regions: ["KR"] },
+  ] }, exec(["q1", "enumerated"], ["q2", "incomplete"]));
+  assert.deepEqual(gap, { searched: ["Kana"], missed: [], territories: { Kana: { searched: ["JP"], missed: ["KR"] } } });
+  // A territory completed under one spelling and planned under another is not missed: EM and euipo are EU, GB is UK.
+  const alias = localScripts({ entries: [
+    { qid: "q1", term: "ВОЛТАРИС", regions: ["EM", "GB"] },
+    { qid: "q2", term: "ВОЛТАРИС", regions: ["euipo", "UK"] },
+  ] }, exec(["q1", "enumerated"], ["q2", "incomplete"]));
+  assert.deepEqual(alias.territories, { Cyrl: { searched: ["EU", "UK"], missed: [] } });
+  // A term naming no region is placed nowhere: it reads searched or missed under `unnamed`, and leaves the territories
+  // other terms named as they are.
+  const unnamed = localScripts({ entries: [
+    { qid: "q1", term: "ΒΟΛΤΑΡΙΣ" },
+    { qid: "q2", term: "ΒΟΛΤΑΡΙΣ", regions: ["GR"] },
+    { qid: "q3", term: "볼타리스", regions: [] },
+  ] }, exec(["q1", "incomplete"], ["q2", "enumerated"], ["q3", "enumerated"]));
+  assert.deepEqual(unnamed.territories, { Grek: { searched: ["GR"], missed: [], unnamed: "missed" }, Hang: { searched: [], missed: [], unnamed: "searched" } });
+  // Once one unnamed term in a script completes, that script's unnamed reading is searched, whatever order they come in.
+  const either = localScripts({ entries: [{ qid: "q1", term: "ΒΟΛΤΑΡΙΣ" }, { qid: "q2", term: "ΒΟΛΤΑΡΙΣ" }] }, exec(["q1", "enumerated"], ["q2", "incomplete"]));
+  assert.equal(either.territories.Grek.unnamed, "searched");
+});
+
+// A WORLDWIDE SEARCH IS ONE THE PLAN SAYS IS WORLDWIDE. On a plan stamped `scope_basis: "worldwide"`, a term asking the
+// plan's whole territory list is the worldwide search: kept as one reading, its territories not listed as missed one by
+// one, and all of them searched when it completed. A long list on a plan with no stamp is a list of named territories.
+test("a worldwide search is read from the plan's stamp, never from the length of a list", () => {
+  const exec = (...rows) => ({ executed: rows.map(([qid, state]) => ({ qid, state })) });
+  const world = ["JP", "KR", "CN", "TW", "EM", "GB", "US"];
+  const plan = (stamp, entries) => ({ ...(stamp ? { scope_basis: "worldwide" } : {}), regions: world, entries });
+  // The worldwide Hangul search did not complete; a narrower one in Korea did.
+  const missed = localScripts(plan(true, [
+    { qid: "w", term: "볼타리스", regions: [...world].reverse() },
+    { qid: "k", term: "볼타리스", regions: ["KR"] },
+  ]), exec(["w", "incomplete"], ["k", "enumerated"]));
+  assert.deepEqual(missed, { searched: ["Hang"], missed: [], territories: { Hang: { searched: ["KR"], missed: [], worldwide: "missed" } } });
+  // It completed: every territory it asked is searched, and a narrower search that did not complete leaves no gap.
+  const done = localScripts(plan(true, [
+    { qid: "w", term: "볼타리스", regions: world },
+    { qid: "k", term: "볼타리스", regions: ["KR"] },
+  ]), exec(["w", "enumerated"], ["k", "incomplete"]));
+  assert.deepEqual(done.territories.Hang, { searched: ["CN", "EU", "JP", "KR", "TW", "UK", "US"], missed: [], worldwide: "searched" });
+  // The same list on a plan with no stamp is seven named territories, and a part of the list is not worldwide either.
+  const named = localScripts(plan(false, [{ qid: "w", term: "볼타리스", regions: world }, { qid: "k", term: "볼타리스", regions: ["KR"] }]), exec(["w", "incomplete"], ["k", "enumerated"]));
+  assert.deepEqual(named.territories.Hang, { searched: ["KR"], missed: ["CN", "EU", "JP", "TW", "UK", "US"] });
+  const part = localScripts(plan(true, [{ qid: "w", term: "볼타리스", regions: world.slice(1) }, { qid: "k", term: "볼타리스", regions: ["KR"] }]), exec(["w", "incomplete"], ["k", "enumerated"]));
+  assert.equal(part.territories.Hang.worldwide, undefined);
+});
+
+test("a term with no territory of its own is read with the plan's, as the register was asked", () => {
+  const exec = (...rows) => ({ executed: rows.map(([qid, state]) => ({ qid, state })) });
+  const term = (qid, regions) => ({ qid, term: "Вольтарис", ...(regions ? { regions } : {}) });
+  // Its own territories come first.
+  const own = localScripts({ regions: ["RU", "KZ"], entries: [term("o", ["RU"])] }, exec(["o", "incomplete"]));
+  assert.deepEqual(own.territories.Cyrl, { searched: [], missed: ["RU"] });
+  // With none, it takes the plan's named territories, as the executor fills them before it sends.
+  const named = localScripts({ regions: ["RU", "KZ"], entries: [term("n", []), term("m")] }, exec(["n", "enumerated"], ["m", "incomplete"]));
+  assert.deepEqual(named.territories.Cyrl, { searched: ["KZ", "RU"], missed: [] });
+  // On a plan stamped worldwide it takes the plan's whole list, which is the worldwide search.
+  const listed = localScripts({ scope_basis: "worldwide", regions: ["RU", "KZ", "EM"], entries: [term("w", [])] }, exec(["w", "incomplete"]));
+  assert.deepEqual(listed.territories.Cyrl, { searched: [], missed: [], worldwide: "missed" });
+  // A stamped plan that names no territory sent the question with none: the worldwide search too. Completed, it reached
+  // every territory, so a narrower search that did not complete leaves no gap; not completed, the narrower gap stays.
+  const open = localScripts({ scope_basis: "worldwide", regions: [], entries: [term("w", []), term("r", ["RU"])] }, exec(["w", "enumerated"], ["r", "incomplete"]));
+  assert.deepEqual(open.territories.Cyrl, { searched: [], missed: [], worldwide: "searched" });
+  const unfinished = localScripts({ scope_basis: "worldwide", regions: [], entries: [term("w", []), term("r", ["RU"])] }, exec(["w", "incomplete"], ["r", "incomplete"]));
+  assert.deepEqual(unfinished.territories.Cyrl, { searched: [], missed: ["RU"], worldwide: "missed" });
+  // Only a plan with no stamp and no territory leaves the term's scope unknown.
+  const unknown = localScripts({ regions: [], entries: [term("u", [])] }, exec(["u", "incomplete"]));
+  assert.deepEqual(unknown.territories.Cyrl, { searched: [], missed: [], unnamed: "missed" });
 });
 
 test("the whole record carries a group tally over the closed set only", () => {

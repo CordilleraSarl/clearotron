@@ -1,5 +1,5 @@
 {
-  "total": 299,
+  "total": 297,
   "files": {
     "driver/test/a-backgrounded-install-can-actually-run-a-clearance.test.mjs": [
       0,
@@ -11,10 +11,6 @@
     ],
     "driver/test/a-cancel-marker-names-its-actor.test.mjs": [
       1,
-      0
-    ],
-    "driver/test/a-cancelled-run-stays-cancelled.test.mjs": [
-      2,
       0
     ],
     "driver/test/a-cancelled-setup-names-what-stays.test.mjs": [
@@ -272,10 +268,6 @@
     "driver/test/a-stage-reads-only-its-own-folders.test.mjs": [
       0,
       3
-    ],
-    "driver/test/a-stop-is-read-once-more-before-anything-is-published.test.mjs": [
-      1,
-      0
     ],
     "driver/test/a-terminal-guard-delivers-and-clamps.test.mjs": [
       1,
@@ -591,7 +583,7 @@
     ],
     "driver/test/health-carries-the-build.test.mjs": [
       2,
-      1
+      2
     ],
     "driver/test/health-names-its-age-and-its-instance.test.mjs": [
       1,

@@ -39,7 +39,6 @@ import { recordKnockoutFrame } from "../knockout-frame-record.mjs";
 import { recordKnockoutReview } from "../knockout-review-record.mjs";
 import { recordKnockoutRegisterRead } from "../knockout-register-record.mjs";
 import { recordKnockoutCorrection } from "../knockout-correction-record.mjs";
-import { requestCancel } from "../cancel.mjs";
 import { addedClassQuestions, knockoutAxis, knockoutBandBlocks, knockoutBandPath, knockoutProposals, questionsOwed } from "../knockout-register-read.mjs";
 import { fixtureRecordsDir } from "../register-fixture-marker.mjs";
 import { fixtureFileName } from "../register-records.mjs";
@@ -59,6 +58,7 @@ import { recordDeclinations } from "../declination-tool.mjs";   // — the mock 
 import { contradictionFor } from "../declination-call.mjs";      // — and reads the refusal it would meet, rather than guessing
 import { findingUris } from "../record-carry.mjs";
 import { normalizeRecordUri } from "../registry-fidelity.mjs";
+import { requestCancel } from "../cancel.mjs";   // MOCK_KO_REVIEW_STOP and MOCK_KO_CORRECT_CANCEL_AT: a stop pressed while a stage runs
 import { recordClosures } from "../doubt-closure-tool.mjs";           // conversion 6 — the closure transport
 import { recordRefutation } from "../narrative-refutation-record.mjs"; // conversion 9 — the reviewer transport
 import { parseManifestVariants } from "../common-law-receipts.mjs";   // the terms the receipts gate joins on
@@ -160,7 +160,7 @@ const GAMING_FALLBACK = ["store.steampowered.com", "store.epicgames.com", "play.
 // spec a routed followup names ("your half-grid spec: …"). Null when the message carries none (legacy
 // prose path / single-member followups) — callers fall back to the historical hardcoded fixture terms.
 export function gridSpecFromMsg(msg) {
-  const gp = msg.match(/grid_spec_path:\s*((?:[A-Za-z]:)?[\\/]\S+grid-spec[^\s]*\.json)/)?.[1];
+  const gp = msg.match(/grid_spec_path\)?:\s*((?:[A-Za-z]:)?[\\/]\S+grid-spec[^\s]*\.json)/)?.[1];
   const hp = msg.match(/half-grid spec:\s*((?:[A-Za-z]:)?[\\/]\S+grid-spec\.half-[a-z0-9]+\.json)/)?.[1];
   // Fix-1: a closure followup names BOTH a SUPPLEMENTARY grid_spec_path AND (on the split) the half spec.
   // The FINDINGS/main-ledger fixtures must key on the full half/canonical spec, never the supplementary
@@ -174,7 +174,7 @@ export function gridSpecFromMsg(msg) {
 // supplementary LEDGER at that output_path — never the canonical/half ledger, which stays exactly the
 // fresh-gather plugin output. Returns the parsed spec (with output_path) or null.
 export function suppSpecFromMsg(msg) {
-  const p = msg.match(/grid_spec_path:\s*((?:[A-Za-z]:)?[\\/]\S+supp-\w+\.json)/)?.[1];
+  const p = msg.match(/grid_spec_path\)?:\s*((?:[A-Za-z]:)?[\\/]\S+supp-\w+\.json)/)?.[1];
   if (!p) return null;
   try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; }
 }
@@ -1929,6 +1929,12 @@ export function applyStageWrites(msg, argv) {
         const f = (doc.findings ?? []).find((x) => String(x.ordinal) === String(process.env.MOCK_RECORD_WITHDRAWS));
         if (f) { f.disposition = "withdrawn"; f.withdrawn_reason = "The review flag on this invented finding withdrew it."; }
       }
+      // MOCK_RECORD_RATING_WITHDRAWN=<ordinal> — that finding's RATING is withdrawn on every save, on the approved ground: the
+      // right stands, unrated, because its goods wording could not be used.
+      if (process.env.MOCK_RECORD_RATING_WITHDRAWN) {
+        const f = (doc.findings ?? []).find((x) => String(x.ordinal) === String(process.env.MOCK_RECORD_RATING_WITHDRAWN));
+        if (f) { f.disposition = "withdrawn"; f.withdrawn_reason = "The review withdrew this invented finding's rating: its goods wording could not be used."; f.rating_withdrawn_ground = "goods-wording-unavailable"; }
+      }
       if (process.env.MOCK_ANSWERS_CITE) {
         const cites = String(process.env.MOCK_ANSWERS_CITE).split(",").map(Number);
         for (const a of Object.values(doc.four_answers ?? {})) if (a && typeof a === "object") a.ordinals = cites;
@@ -2419,11 +2425,11 @@ export function applyStageWrites(msg, argv) {
       // link was laid out by hand. Every one of those is the driver's now, so what the mock sends is what
       // the seat sends: the caption, the checks, and the notes.
       recordMockToolCall(runDir, "record_report_overview", "recording-report-overview");
-      // MOCK_PERMISSION_PROSE RIDES `methodology`, and it has to ride SOMETHING. It is PR-5's gate-closing
+      // MOCK_PERMISSION_PROSE RIDES AN ACTION LINE, and it has to ride SOMETHING. It is PR-5's gate-closing
       // scenario — a false "tool was blocked" line in the shell that evaluateClientGate must catch — so a
       // conversion that quietly dropped it would retire a live lint scenario while every test still
-      // passed. The seat can no longer author a stray section, but it can still say this in a scope note,
-      // which is the honest post-conversion shape of the same defect.
+      // passed. It rode the methodology note until that field retired (2026-11-19); a check line is the
+      // seat's own prose in the shell, and the same defect can be written there.
       const permNote = process.env.MOCK_PERMISSION_PROSE
         ? "Register note: register_enumerate was blocked by a tool-permission gate this run." : "";
       // MOCK_OVERVIEW_SCOPE_COUNT=1 — the overview's FIRST rendering states a search count in its own prose, the sibling
@@ -2434,16 +2440,15 @@ export function applyStageWrites(msg, argv) {
       // is clean. Keyed on the overview's own file, as MOCK_OVERVIEW_SCOPE_COUNT is.
       const citeNote = process.env.MOCK_OVERVIEW_CITES && !existsSync(join(runDir, "report-overview.md"))
         ? `Finding ${process.env.MOCK_OVERVIEW_CITES} remains an open question on its goods.` : "";
-      // MOCK_OVERVIEW_BARE=1 — the call a seat may send and the acceptance takes: a caption, an empty actions list, and
-      // no methodology. The driver renders it with no section heading.
+      // MOCK_OVERVIEW_BARE=1 — the call a seat may send and the acceptance takes: a caption and an empty actions list.
+      // The driver renders it with no section heading.
       const r = recordReportOverview(runDir, process.env.MOCK_OVERVIEW_BARE ? {
         overall_caption: "The identical registration in class 9 is the one finding that conditions reliance on this mark; nothing else in the field blocks it.",
         actions: [],
       } : {
         overall_caption: "mock composite 3",
-        actions: [{ text: "Mock use-check: none found", source_link: "https://x.example" }],
-        methodology: [permNote, scopeCountNote, citeNote, "Common-law: marketplace storefronts + web/social/press; variant families swept; one listing surfaced, remainder clean."]
-          .filter(Boolean).join(" "),
+        actions: [{ text: "Mock use-check: none found", source_link: "https://x.example" },
+          ...[[permNote, scopeCountNote, citeNote].filter(Boolean).join(" ")].filter(Boolean).map((text) => ({ text }))],
       });
       // A REFUSED CALL MUST NOT READ AS A CLEAN TURN — the sibling rule, stated at every branch.
       // The redo turn stales findings.json exactly as it did before the conversion — the incident shape
@@ -2728,6 +2733,12 @@ export function applyStageWrites(msg, argv) {
     const runDir = runDirFromWiring(argv);
     if (!runDir) return "mock knockout-register-read: no run dir in the engine wiring — the driver wires CLEAROTRON_BAND_RUN_DIR per run and this branch refuses rather than guesses";
     recordMockToolCall(runDir, "record_knockout_register_read", "recording-knockout-register-read");
+    // MOCK_KO_READ_STOP: the operator presses Stop while the register read runs. `complete`: the turn still finishes, as a
+    // dispatched turn does. `fail`: the turn is ended, as an immediate stop ends it, and the gateway's next attempt meets the stop.
+    if (process.env.MOCK_KO_READ_STOP) {
+      requestCancel(runDir, { via: "mock/register-read", by: "mock" });
+      if (process.env.MOCK_KO_READ_STOP === "fail") process.exit(1);
+    }
     const scope = JSON.parse(readFileSync(driverDir(runDir, "instructed-scope.json"), "utf8"));
     const counts = JSON.parse(readFileSync(driverDir(runDir, "register-counts.json"), "utf8"));
     const fixtures = fixtureRecordsDir(runDir);
@@ -2753,7 +2764,8 @@ export function applyStageWrites(msg, argv) {
       const blocks = knockoutBandBlocks(runDir, name);
       const held = [...blocks.values()].flatMap((b) => (b?.records ?? []).map((r) => r.record_id)).filter(Boolean);
       const owed = questionsOwed({ name, countsEntry, blocks, proposals: knockoutProposals(runDir, name).entries, carried: new Set(held), addedQuestions: addedClassQuestions(runDir, name) });
-      marks.push({ name, carried: held.length ? [{ records: held, why: "mock reading: the name's own filings" }] : [],
+      // MOCK_KO_CHECK_OWNERS: the reading asks for its carried filings' owners to be searched, so the lane owes owner checks.
+      marks.push({ name, carried: held.length ? [{ records: held, why: "mock reading: the name's own filings", ...(process.env.MOCK_KO_CHECK_OWNERS ? { check_owner: true } : {}) }] : [],
         set_aside: owed.map((o) => ({ question: o.question, why: "mock reading: reading it would not change the advice" })), not_asked: [] });
     }
     const verdict = recordKnockoutRegisterRead(runDir, { marks });
@@ -2799,6 +2811,9 @@ export function applyStageWrites(msg, argv) {
     }
     const verdict = recordKnockoutReview(runDir, { first_question: `mock review: ${reads}`, material, declined, ...(rewrites.length ? { rewrites } : {}) }, { boundOrdinal: pass });
     if (!verdict.written) return `mock knockout-review: the transport refused the composed call — ${verdict.refused ?? verdict.write_failed}`;
+    // MOCK_KO_REVIEW_STOP: the operator presses Stop while the review, the lane's last stage, is running. The turn still
+    // finishes, as a dispatched turn does, and only a read after it can see the stop.
+    if (process.env.MOCK_KO_REVIEW_STOP && !pass) requestCancel(runDir, { via: "mock/review", by: "mock" });
     return "mock knockout review ok";
   }
   // ── A MATERIAL DEFECT'S REPAIR ──────────────────────────────────────────────
@@ -2903,7 +2918,7 @@ export function applyStageWrites(msg, argv) {
   // extraction, which would otherwise find the findings .md named in the "do NOT rewrite" clause and
   // re-emit a whole document the real seat is told not to touch.
   const connRepair = /record_dispositions/.test(msg) && new RegExp(CONNOTATION_FORM_TOKEN_SRC).test(msg)
-    && msg.match(/grid_spec_path[ =:]+\s*((?:[A-Za-z]:)?[\\/]\S+grid-spec[^\s]*\.json)/);
+    && msg.match(/grid_spec_path\)?[ =:]+\s*((?:[A-Za-z]:)?[\\/]\S+grid-spec[^\s]*\.json)/);
   if (connRepair) {
     const specPath = connRepair[1];
     const half = basename(specPath).match(/^grid-spec\.half-([a-z0-9]+)\.json$/)?.[1] ?? null;

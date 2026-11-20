@@ -24,7 +24,7 @@ const ALLOWED = {
     "Marketplace and web",
     "Local-language investigation",
     "Court decisions",
-    // the ruled heading, which a guard holds to both layouts in this file
+    // the heading a guard holds to both layouts in this file
     "<div class=\"sec\"><span class=\"num\"></span><h2>Marks that can coexist</h2></div> {…}{…}",
     "<div class=\"sec\"><span class=\"num\"></span><h2>Marks that can coexist</h2></div> {…}",
     // an engine token compared against, never printed
@@ -76,6 +76,10 @@ const ALLOWED = {
     "knockout predelivery lint skipped (non-fatal): {…}",
     "knockout report document not built (non-fatal): {…}",
     "knockout report document not written (non-fatal): {…}",
+    // an error a publish throws
+    "the report document could not be built, so the run record cannot be written",
+    // the error that stops the publish when the report document the pages read was not built; no client reads it
+    "[report-document] not built, so the Knockout pages have nothing to read",
     "knockout working record: {…} is not in the run directory, so the delivered report has no engine text to be checked against",
     "knockout-audit-{…}.xlsx",
     "overall_label: \"{…}\"",
@@ -98,6 +102,8 @@ const ALLOWED = {
     "{…} shown · {…} retired · {…} report(s) total · access-controlled · noindex. Behind the deployment's auth proxy in production.",
     "{…} report(s) · access-controlled · noindex. Behind the deployment's auth proxy in production.",
     "font-family:Calibri,'Segoe UI',Arial,sans-serif",
+    // an error a publish throws
+    "the report document could not be built, so the run record cannot be written",
   ],
 };
 const FILES = [...Object.keys(ALLOWED), "register-record.mjs", "register-record-html.mjs"];

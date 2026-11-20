@@ -3,11 +3,10 @@
 // publish/register-record-html.mjs — one cited registration's register record, and its logo, as both report pages
 // draw them.
 //
-// The clearance draws a record on each finding card and the Knockout under each listed filing (owner, 2026-11-18;
-// the approved board in docs/design/register-record/). The rows come from registerRecordView, which copies every
-// fact from the saved record; this module lays them out once, so the two pages cannot drift apart. What differs
-// between the pages is an input: the register number's cell, which each page already prints its own way, the
-// receipt line, and the owner's name as that page resolves it.
+// The clearance draws a record on each finding card and the Knockout under each listed filing (owner, 2026-11-18).
+// The rows come from registerRecordView, which copies every fact from the saved record; this module lays them out
+// once, so the two pages cannot drift apart. What differs between the pages is an input: the register number's cell,
+// which each page already prints its own way, the receipt line, and the owner's name as that page resolves it.
 import { registerRecordView, RECORD_LABELS as L, countryOf, LOGO_NOT_RETRIEVED } from './register-record.mjs';
 import { REC, inPriorityWindow } from '../registry-fidelity.mjs';
 import { registrationSystem } from '../jurisdiction-systems.mjs';

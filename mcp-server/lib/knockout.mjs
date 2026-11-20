@@ -29,6 +29,11 @@ import { basename, join } from "node:path";
 
 import { koPaths, addressListedFilings, declaredRecordOrigins } from "./driver.mjs";
 import { paths, readJsonOrNull } from "../../driver/run-record.mjs";
+import { recordsForMark } from "../../driver/register-records.mjs";
+import { PART_NAMES } from "../../driver/degraded-parts.mjs";
+import { readerRowHead } from "../../driver/coverage-ledger.mjs";
+import { knockoutLeftOpenOf } from "../../driver/publish/knockout-left-open.mjs";   // a name's Left open rows, as its page lists them
+import { REPORT_PAGE } from "../../driver/publish/strings.mjs";
 
 
 /**
@@ -46,7 +51,11 @@ export function isKnockoutRun(run) {
 
 /** The assessment artifact, parsed. `null` when the run has not reached the assess stage (or it failed). */
 export function knockoutDoc(run) {
-  return run?.runDir ? readJsonOrNull(koPaths(run.runDir).findings) : null;
+  if (!run?.runDir) return null;
+  // The findings record as publishing held it, where the run's report document has it; the run's own file otherwise.
+  const document = readJsonOrNull(paths(run.runDir).reportDocument);
+  if (document?.document === "report-document/knockout-1" && document.client?.findings) return document.client.findings;
+  return readJsonOrNull(koPaths(run.runDir).findings);
 }
 
 const marksOf = (doc) => (Array.isArray(doc?.marks) ? doc.marks : []);
@@ -195,6 +204,24 @@ const knockoutNegatives = (doc) => marksOf(doc).flatMap((m) =>
     term: n?.term ?? null, source: n?.source ?? null, note: n?.note ?? null,
   })));
 
+/**
+ * ONE ITEM BY THE ID list_findings GAVE IT (2026-11-20): a finding, a filing the rater read, or a negative result, each
+ * as the list states it. get_finding read the clearance's audit trail only, so on a Knockout it refused every id the
+ * list had just handed out. A filing the rater read also carries its register record as the report delivered it, where
+ * the run saved one. An id the run does not hold is null, and so a miss: a Knockout keeps no per-finding audit record,
+ * and none is made up here.
+ */
+export function knockoutFinding(run, id) {
+  const doc = knockoutDoc(run);
+  if (!doc) return null;
+  const want = String(id ?? "").trim();
+  const item = knockoutFindings(run).items.find((f) => f.id === want) ?? knockoutNegatives(doc).find((n) => n.id === want);
+  if (!item?.recordId) return item ?? null;
+  const record = (recordsForMark(registerRecordsOf(run), item.mark)?.records ?? [])
+    .find((r) => String(r?.recordId ?? "") === String(item.recordId)) ?? null;
+  return record ? { ...item, record } : item;
+}
+
 // ── evidence ─────────────────────────────────────────────────────────────────────────────────────────
 
 /**
@@ -300,7 +327,26 @@ export function knockoutSearches(run) {
   return { count: searches.length, searches, source: doc ? "knockout-findings.json" : "none" };
 }
 
+// ── the delivered edition ────────────────────────────────────────────────────────────────────────────
+
+// THE DELIVERED EDITION (2026-11-19): the run's report document, where it is a Knockout's, holds the register record
+// and counts the report was published with. A resume after publishing can settle more in the run's files; those stay
+// evidence, and the answers below state the edition the report delivered. null for a run published before the document.
+const deliveredDocument = (run) => {
+  const document = run?.runDir ? readJsonOrNull(paths(run.runDir).reportDocument) : null;
+  return document?.document === "report-document/knockout-1" ? document : null;
+};
+const registerRecordsOf = (run) => {
+  const document = deliveredDocument(run);
+  return document ? document.client.registerRecords : readJsonOrNull(koPaths(run.runDir).registerRecords);
+};
+
 // ── coverage ─────────────────────────────────────────────────────────────────────────────────────────
+
+const COV_WORD = REPORT_PAGE.coverageStates;
+const capitalised = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);   // a row's head, as the page prints it
+// The page draws its Left open rows grouped under their states, in the order the states are declared; within a state, as listed.
+const inPageOrder = (rows) => Object.keys(COV_WORD).flatMap((state) => rows.filter((r) => (COV_WORD[r.state] ? r.state : "note") === state));
 
 /**
  * What the search covered, in `coverageStatement`'s shape ({ areas, note }).
@@ -317,29 +363,39 @@ export function knockoutCoverage(run) {
       areas: [],
     };
   }
-  const areas = marksOf(doc).map((m) => ({
-    area: `${m.name} — common-law and marketplace sweep`,
-    state: m.degraded ? "Partially covered" : "Searched",
-    // NEVER "clean". This lane's own doctrine: a mark this screen did not knock out is not knocked out at
-    // the configured depth — a result about the SCREEN, not about the mark.
-    detail: m.degraded
-      ? "Research could not be completed for this name; the rating reflects an analytical assessment pending fuller data."
-      : `Screened at the configured depth${(m.classesSearched ?? []).length ? ` in classes ${m.classesSearched.join(", ")}` : ""}. `
-        + `${(m.findings ?? []).length} conflict(s) recorded, ${(m.negatives ?? []).length} search(es) recorded as returning nothing.`,
-  }));
+  // WHAT EACH NAME'S PAGE LEFT OPEN (2026-11-20): the rows its "Left open" section lists, from the page's own projection
+  // and in its words, each naming the name whose page printed it. A run published before the document answers as it did.
+  const document = deliveredDocument(run);
+  const leftOpen = marksOf(doc).map((_, at) => (document ? knockoutLeftOpenOf(document, at) : []));
+  const areas = marksOf(doc).flatMap((m, at) => [
+    // A name whose research was unavailable is stated by its Left open row alone, never also as swept.
+    ...(document && m.degraded === true ? [] : [{
+      area: `${m.name} — common-law and marketplace sweep`,
+      state: m.degraded ? "Partially covered" : "Searched",
+      // NEVER "clean". This lane's own doctrine: a mark this screen did not knock out is not knocked out at
+      // the configured depth — a result about the SCREEN, not about the mark.
+      detail: m.degraded
+        ? "Research could not be completed for this name; the rating reflects an analytical assessment pending fuller data."
+        : `Screened at the configured depth${(m.classesSearched ?? []).length ? ` in classes ${m.classesSearched.join(", ")}` : ""}. `
+          + `${(m.findings ?? []).length} conflict(s) recorded, ${(m.negatives ?? []).length} search(es) recorded as returning nothing.`,
+    }]),
+    ...inPageOrder(leftOpen[at]).map((r) => ({ area: capitalised(readerRowHead(r.area)), state: COV_WORD[r.state] ?? r.state, detail: r.note, name: m.name })),
+  ]);
 
-  const recordsDoc = readJsonOrNull(koPaths(run.runDir).registerRecords);
-  const countsDoc = readJsonOrNull(koPaths(run.runDir).registerCounts);
-  if (recordsDoc || countsDoc) {
-    areas.push({
+  // The register record and counts the report was published with (the delivered edition, above); the run's files for a
+  // run published before the document. Where the listing of filings never came back, its Left open rows say so, and no
+  // register row claims it was searched.
+  const listingOpen = leftOpen.some((rows) => rows.some((r) => r.area === PART_NAMES.register && r.state === "not-searched"));
+  const recordsDoc = document ? document.client.registerRecords : readJsonOrNull(koPaths(run.runDir).registerRecords);
+  const countsDoc = document ? document.client.registerCounts : readJsonOrNull(koPaths(run.runDir).registerCounts);
+  if (!listingOpen) {
+    areas.push(recordsDoc || countsDoc ? {
       area: "Register",
       state: recordsDoc?.unavailable ? "Open item" : "Searched",
       detail: recordsDoc?.unavailable
         ? String(recordsDoc.unavailable)
         : "Filings were fetched and counted for the searched names; the filings themselves are in list_evidence.",
-    });
-  } else {
-    areas.push({
+    } : {
       area: "Register",
       state: "Not searched",
       detail: "This run has no register component — the assessment rests on the common-law and marketplace sweep.",

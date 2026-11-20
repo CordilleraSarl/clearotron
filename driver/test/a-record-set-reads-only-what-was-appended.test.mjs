@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
 // THE RECORD SET READS ONLY WHAT WAS APPENDED, AND GIVES WHAT A READ FROM THE START GIVES. A run assembles its record
-// set 8 to 14 times, and each assembly read its whole record log and the box's whole call log again. The driver now
+// set 8 to 14 times, and each assembly read its whole record log and the machine's whole call log again. The driver now
 // keeps what it folded and reads on from where it stopped. Each arm here compares that answer with a read of the
 // same bytes at a path the driver has never read, which is a read from the start: after appends, a line half
 // written, a complete line with no newline yet, a rewrite in place, a rewrite through a rename, a truncation and a

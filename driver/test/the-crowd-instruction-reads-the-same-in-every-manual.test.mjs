@@ -9,7 +9,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
-import { join, relative } from "node:path";
+import { join, relative, sep } from "node:path";
 
 const SKILLS = join(import.meta.dirname, "..", "skills");
 const HEADING = /^#{2,3} At every step: look at what you have before you work on it$/m;
@@ -32,7 +32,7 @@ function manuals(dir = SKILLS) {
 const drifted = (copies) => copies.filter((c) => c.text !== copies[0].text).map((c) => c.file);
 
 const copies = manuals()
-  .map((file) => ({ file: relative(SKILLS, file), text: paragraph(readFileSync(file, "utf8")) }))
+  .map((file) => ({ file: relative(SKILLS, file).split(sep).join("/"), text: paragraph(readFileSync(file, "utf8")) }))
   .filter((c) => c.text !== null)
   .sort((a, b) => a.file.localeCompare(b.file));
 

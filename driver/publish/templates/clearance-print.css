@@ -13,6 +13,11 @@
     details:has(.card:not(:has(input.pickbox:not(:checked))))>*:not(summary){display:block!important}
     details:not([open])>summary{display:block!important}
     details:not([open])>summary::before{content:""!important}
+    /* The verdict caption is not a fold the reader chose: the page opens it before printing, so its remainder prints
+       whole, and its label stays off the paper, as before E6. Later than the closed-fold rules above and as specific,
+       so it wins. */
+    details.sub-more>summary{display:none!important}
+    details.sub-more>*:not(summary){display:block!important}
     span.rr-txt:has(+ .rr-all:not([open])){display:inline}
     .card:not(:has(input.pickbox:not(:checked))) span.rr-txt:has(+ .rr-all){display:none}
   }

@@ -1,6 +1,7 @@
 # driver/test — the driver's suite
 
-The `*.test.mjs` files, the `fixtures/` they read, and the mock binaries they drive. How many files and tests
+The `*.test.mjs` files, the `fixtures/` they read, the code several of them share in `helpers/` (a free port, a
+temporary home, the portal bundle, the terminal setup, a page's in-page links), and the mock binaries they drive. How many files and tests
 there are is in `../suite-census.json`, which CI refuses to let go stale; a count written here did, within weeks.
 The suite is offline by construction: no network, no credentials, no model. Engine tests spawn `mock-claude.mjs` (or `mock-codex.mjs`)
 in place of a reasoning CLI, so a green run proves the machinery without a bill.

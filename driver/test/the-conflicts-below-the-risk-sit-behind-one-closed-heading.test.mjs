@@ -3,12 +3,11 @@
 //
 // THE CONFLICTS BELOW THE RISK SIT BEHIND ONE CLOSED HEADING (owner, 2026-11-18).
 //
-// A report printed every conflict as a full card: 274 on the largest production clearance, 21 of which set its risk,
-// in a 280-page PDF. Full cards now stay for the conflicts in the band that sets the risk, the highest band any
+// A report printed every conflict as a full card, however far below its risk the conflict sat. Full cards now stay for the conflicts in the band that sets the risk, the highest band any
 // conflict holds on the framework's own ladder. The rest render as compact cards, unticked for export, behind one
 // closed heading with their count in his words, "{N} more conflicts rated {band}", each band below the risk named
-// and joined by "or". A single conflict below the risk keeps its full card, since the heading is his plural; so does
-// a conflict with no band on the ladder, and a run with no framework renders every card in full. The export leaves
+// and joined by "or", and "1 more conflict rated {band}" for one (owner, 2026-11-19). A conflict with no band on the
+// ladder keeps its full card, and a run with no framework renders every card in full. The export leaves
 // the heading out of the PDF when none of its cards is ticked. The demo is the public one; the rest is invented.
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -58,9 +57,14 @@ test("several bands below the risk are each named, joined by or, in the ladder's
   assert.equal(lower(html)?.[1], "3 more conflicts rated Moderate or Manageable");
 });
 
-test("a single conflict below the risk, an unrated one, and a run with no framework keep full cards", () => {
-  assert.deepEqual(fullCards(render([conflict(1, "Moderate"), conflict(2, "Manageable")])), [1, 2], "a lone conflict below the risk was folded");
-  assert.doesNotMatch(render([conflict(1, "Moderate"), conflict(2, "Manageable")]), /<details class="rgroup lowerband">/);
+test("a single conflict below the risk folds under the singular heading", () => {
+  const one = render([conflict(1, "Moderate"), conflict(2, "Manageable")]);
+  assert.deepEqual(fullCards(one), [1], "a lone conflict below the risk kept its full card");
+  assert.equal(lower(one)?.[1], "1 more conflict rated Manageable");
+  assert.match(lower(one)?.[2] ?? "", /<div class="card compact" id="c2">/, "the lone conflict is not the compact card under the heading");
+});
+
+test("an unrated conflict and a run with no framework keep full cards", () => {
   const unrated = render([conflict(1, "Moderate"), conflict(2, "Manageable"), conflict(3, "Manageable"), conflict(4, null)]);
   assert.ok(fullCards(unrated).includes(4), "a conflict with no band was folded");
   assert.equal(lower(unrated)?.[1], "2 more conflicts rated Manageable");

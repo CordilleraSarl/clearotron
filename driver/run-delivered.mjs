@@ -20,7 +20,8 @@ import { NOT_COMPLETED_DIR } from "./parts-not-completed.mjs";
 import { deliveryForRun } from "./profiles.mjs";
 import { finalStepFields, readRunStatus, recordTransition, signoffPatch, writeRunStatus } from "./progress.mjs";
 import { DEFAULT_LEDGER_PATH, tallyRegisterCalls } from "./provider-usage.mjs";
-import { composeEmailHtml, coverNoteOptions, deliverySubject, publishReport } from "./publish/index.mjs";
+import { composeCoverNote, coverNoteInputs, deliverySubject, publishReport } from "./publish/index.mjs";
+import { leftOpenSectionOfRun } from "./left-open-md.mjs";
 import { noteRegisterServed, providerUsageCaveat, registersServedFrom } from "./register-served.mjs";
 import { renderReportOverview } from "./report-overview-record.mjs";
 import { atomicWrite } from "./run-record.mjs";
@@ -200,11 +201,12 @@ export async function deliveryEndState({ P, agent, ctx, job, run, opts = {} }, h
     // name two different products. Null on a run with no sidecar ⇒ both surfaces say nothing rather
     // than asserting one.
     const emailProductName = reportIdentityFor(ctx.searchPolicy ?? null).identity;
-    // The email's options, read from the run's frozen files by the publisher's one function (coverNoteOptions), which the
-    // report document carries too: the verdict record as written and the band ladder. Read from the files rather than from
-    // `published`, because a resume that finds the run already published has no document. The product's name stays the one
-    // the subject takes, which names a run with no frozen policy as the legacy clearance it was.
-    const emailVerdictOpts = { ...coverNoteOptions(run.runDir), productName: emailProductName ?? undefined };
+    // The email reads the run's report document from its record (composeCoverNote): the report's sections, the verdict
+    // record as written and the band ladder. Read from the record rather than from `published`, because a resume that finds
+    // the run already published has nothing in memory; a run published before the document existed is read from its files.
+    // The product's name stays the one the subject takes, which names a run with no frozen policy as the legacy clearance it was.
+    const cover = coverNoteInputs(run.runDir);
+    const emailVerdictOpts = { ...cover.opts, productName: emailProductName ?? undefined };
     // ONE report (spec 2026-07-30 §6): the cover note is a cover note — verdict, one-line summary, link.
     // A10 (addendum, 2026-07-30) NARROWS the old "machine-QC never on the email" rule rather than
     // restating it: surviving predelivery machine-check failures are enumerated on BOTH delivery
@@ -220,7 +222,7 @@ export async function deliveryEndState({ P, agent, ctx, job, run, opts = {} }, h
     // on the last thirty days of production, the report carries neither the heading nor that sentence since
     // that ruling, and the email carries both. The record is still written beside the report for the
     // reviewing lawyer; nothing reads it onto a client surface.
-    writeFileSync(P.emailBody, composeEmailHtml(P.report, published.url, published.auditFile, emailNames, deliveryForRun(ctx), emailVerdictOpts));
+    writeFileSync(P.emailBody, composeCoverNote(cover, { url: published.url, auditFile: published.auditFile, names: emailNames, delivery: deliveryForRun(ctx), productName: emailVerdictOpts.productName }));
     // ctx.verdict is set BEFORE the packet is composed, because the packet's copy reads it.
     ctx.verdict = verdict;
     // DELIVERY (Phase 2). The driver writes a self-contained delivery packet and leaves
@@ -333,8 +335,13 @@ export async function deliveryEndState({ P, agent, ctx, job, run, opts = {} }, h
     } catch (e) { runLog(run.runDir, { event: "audit-build-failed", reason: String(e?.message ?? e).slice(0, 160) }); }
     const coverageRows = assessmentCoverageOfRun(run.runDir);
     atomicWrite(driverDir(run.runDir, NOT_COMPLETED_DIR, "assessment-coverage.json"), JSON.stringify({ rows: coverageRows }, null, 2) + "\n");
-    writeFileSync(P.report, renderReportOverview({ overall_caption: assessmentNotCompletedNote(), handling_note: null, actions: [], methodology: null },
-      reportIdentityRecord(job, ctx, run.runDir, null)));
+    const shell = renderReportOverview({ overall_caption: assessmentNotCompletedNote(), handling_note: null, actions: [] },
+      reportIdentityRecord(job, ctx, run.runDir, null));
+    // The page's Left open rows, as an assembled report carries them (left-open-md.mjs), from the rows written above.
+    let leftOpen = "";
+    try { leftOpen = leftOpenSectionOfRun(run.runDir, coverageRows, { verdict: false, already: shell }); }
+    catch (e) { note(`[assessment] the report's Left open section was not written: ${String(e?.message ?? e).slice(0, 160)}`); }
+    writeFileSync(P.report, leftOpen ? `${shell.replace(/\s*$/, "")}\n\n${leftOpen}\n` : shell);
     writeScopeFactsOf(ctx, P, run.runDir);
     applyScopeFrontMatterOf(P, run.runDir);
     runLog(run.runDir, { event: "assessment-not-completed-delivery", stage: open.stage ?? null, sig: open.sig ?? null,

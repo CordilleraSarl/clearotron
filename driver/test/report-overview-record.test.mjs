@@ -31,7 +31,6 @@ const CALL = {
     { text: "Use-check across marketplaces: no game titles found", source_link: "https://x.example/1" },
     { text: "Register status pull could not be closed from the public record", internal: true },
   ],
-  methodology: "Register + marketplace + general web; transliteration variants searched.",
 };
 
 const runDirWith = (identity = IDENTITY) => {
@@ -66,7 +65,7 @@ test("THE SPLICE ANCHOR — assembleReportMd finds `# Actions` in the driver's o
   const { body } = parseFront(acceptReportOverview(CALL, { identity: IDENTITY }).content);
   assert.match(body, /^#\s+Actions\b/m, "the splice anchor assembleReportMd keys on is not in the render");
   const secs = parseSections(body);
-  assert.deepEqual(Object.keys(secs), ["Actions", "Methodology"], "the section set the shell may carry is exactly these two");
+  assert.deepEqual(Object.keys(secs), ["Actions"], "the section set the shell may carry is exactly this one");
   assert.match(secs.Actions, /^### Checks we ran — what we found$/m, "the sub-heading predelivery-lint re-parses is missing");
 });
 
@@ -124,7 +123,7 @@ test("a newline in a caption WOULD break parseFront — the refusal is not decor
   // Proves the guard is about a real consequence rather than a style rule: rendered with the break in
   // place, the front-matter key set is cut short exactly where the caption is.
   const broken = renderReportOverview(
-    { overall_caption: "First line\nsecond line", handling_note: "", actions: [], methodology: "" }, IDENTITY);
+    { overall_caption: "First line\nsecond line", handling_note: "", actions: [] }, IDENTITY);
   assert.equal(parseFront(broken).fm.overall_caption, "First line", "the break did not truncate — re-check the refusal's premise");
 });
 
@@ -143,9 +142,21 @@ test("the floor moved to the boundary and reports the MEASURED length", () => {
 });
 
 test("an empty actions list omits the section rather than emitting an empty one", () => {
-  const v = acceptReportOverview({ overall_caption: CAPTION, methodology: "Register + marketplace + general web sweep of the mark and its variants." }, { identity: IDENTITY });
+  const v = acceptReportOverview({ overall_caption: CAPTION }, { identity: IDENTITY });
   assert.equal(v.ok, true, v.reason);
-  assert.deepEqual(Object.keys(parseSections(parseFront(v.content).body)), ["Methodology"]);
+  assert.deepEqual(Object.keys(parseSections(parseFront(v.content).body)), []);
+});
+
+test("a call that still sends the retired methodology note is written without it", () => {
+  // The note the page never printed is retired: what it carried that a reader needs is in "Left open". The schema no
+  // longer offers it, and a seat that sends it anyway is not refused, since an unknown top-level key never kills a stage
+  // (preserve-merge.mjs); the note is dropped, and the shell carries no `# Methodology`.
+  const dir = runDirWith();
+  const r = recordReportOverview(dir, { ...CALL, methodology: "Register + marketplace + general web sweep of the mark and its variants." });
+  assert.ok(r.written, `the call was not written: ${r.refused}`);
+  const shell = readFileSync(join(dir, PROSE_FILE), "utf8");
+  assert.doesNotMatch(shell, /^#\s+Methodology\b/m, "the shell still writes the retired section");
+  assert.doesNotMatch(shell, /general web sweep/, "the retired note reached the shell under another heading");
 });
 
 test("THE DISCRIMINATOR — the capture exists even for a REFUSED call, and no artifact is written", () => {

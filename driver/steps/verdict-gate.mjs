@@ -25,6 +25,7 @@ import { synthesisDutyForRun } from "../synthesis-record.mjs";
 import { clauseForDefect, gapPositivelyClosed, jointUnaccounted, orderClausesForLede, terminalClampDecision, verdictWhenTheStepsAreWithdrawn, verdictWithConditionsStanding, verdictWithoutTheClosedGap } from "../terminal-clamp.mjs";
 import { countCitedDefects, parseCorrections, parseVerdict } from "../verify.mjs";
 import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import { stopsWithTheRun } from "../cancel.mjs";   // every paid call the code makes itself reads the stop first
 
 /**
  * THE COVERAGE FLOOR'S CONDITIONS, as run-record reasons and the client's clause for each, in the order the floor
@@ -110,7 +111,7 @@ export async function runVerdictGate({ P, agent, applyVerdictFrontMatter, correc
         } catch { /* no merged band (legacy run) — fetched-record facts alone rank */ }
         const srPrefix = `clearance-${run.slug}-${run.codename}-`;
         let srRecords = assembleRunRecords(run.runDir, srPrefix).records;
-        const srFetcher = opts.recordFetcher ?? defaultRecordFetcher;
+        const srFetcher = stopsWithTheRun(run.runDir, "senior-rights-fetch", opts.recordFetcher ?? defaultRecordFetcher);
         const srLedger = ctx.repairLedger ?? (ctx.repairLedger = createRepairLedger(run.runDir, { log: (o) => runLog(run.runDir, o) }));
         const rows = [];
         for (const f of driving) {

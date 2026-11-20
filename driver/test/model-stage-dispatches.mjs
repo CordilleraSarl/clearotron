@@ -28,13 +28,18 @@ export const CLEARANCE_CTXS = Object.freeze([
   Object.freeze({ label: "pharma matter", ctx: Object.freeze({ profile: null, job: Object.freeze({ classes: ["5"] }) }) }),
 ]);
 
+// ANOTHER RUN OF THE SAME STAGES: another run's folder, name and finding, and a matter with its own classes and mark. What
+// a stage's message says the same under both is text no run changes (instruction-read-map.mjs stableText).
+export const ANOTHER_RUN = Object.freeze({ run: Object.freeze({ slug: "other-invented", codename: "other-invented" }), ordinal: 2,
+  job: Object.freeze({ classes: ["25"], markName: "OTHER INVENTED" }), markName: "OTHER INVENTED NAME" });
+
 /** One composed opening message per clearance stage and context: { name, label, message, declared }. */
-export function clearanceDispatches(runDir) {
+export function clearanceDispatches(runDir, other = null) {
   const out = [];
   for (const [name, def] of Object.entries(STAGES)) {
     for (const { label, ctx } of CLEARANCE_CTXS) {
-      const message = def.message({ ...ctx, paths: paths(runDir), axis: "primary-sweep", half: "a",
-        finding: { ordinal: 1 }, run: { slug: "invented", codename: "invented" } });
+      const message = def.message({ ...ctx, ...(other ? { job: { ...ctx.job, ...other.job } } : {}), paths: paths(runDir), axis: "primary-sweep", half: "a",
+        finding: { ordinal: other?.ordinal ?? 1 }, run: other?.run ?? { slug: "invented", codename: "invented" } });
       out.push({ name, label, message, declared: resolveSkillReads(name, ctx) });
     }
   }
@@ -42,16 +47,16 @@ export function clearanceDispatches(runDir) {
 }
 
 /** The knockout lane's stages, composed from the lane's own context shape. */
-export function knockoutDispatches(runDir) {
+export function knockoutDispatches(runDir, other = null) {
   const K = koPaths(runDir);
   const framework = loadFrameworkManifest((rel) => join(DRIVER, rel), TRIAGE_FRAMEWORK);
   const ctxs = {
     "knockout-frame": { K, job: {}, profile: {} },
-    "knockout-assess": { K, job: {}, chunkNo: 0, chunkMarks: [{ name: "INVENTED NAME" }], chunkTotal: 1,
+    "knockout-assess": { K, job: {}, chunkNo: 0, chunkMarks: [{ name: other?.markName ?? "INVENTED NAME" }], chunkTotal: 1,
       framework, frameworkPath: TRIAGE_FRAMEWORK, frameworkMethod: null },
     "knockout-register-read": { K, job: {}, readingLines: [] },
-    "knockout-correct": { K, job: {}, chunkNo: 0, chunkMarks: [{ name: "INVENTED NAME" }], framework, frameworkPath: TRIAGE_FRAMEWORK, frameworkMethod: null,
-      work: { defects: [{ n: 1, kind: "band", mark: "INVENTED NAME", chunk: 0, problem: "The band is not supported.", rests_on: [] }] } },
+    "knockout-correct": { K, job: {}, chunkNo: 0, chunkMarks: [{ name: other?.markName ?? "INVENTED NAME" }], framework, frameworkPath: TRIAGE_FRAMEWORK, frameworkMethod: null,
+      work: { defects: [{ n: 1, kind: "band", mark: other?.markName ?? "INVENTED NAME", chunk: 0, problem: "The band is not supported.", rests_on: [] }] } },
     "knockout-review": { K, frameworkPath: TRIAGE_FRAMEWORK, evidenceLines: [], firstReadLines: [], exclusionNote: "" },
   };
   const missing = Object.keys(KO_STAGES).filter((n) => !ctxs[n]);
@@ -63,7 +68,7 @@ export function knockoutDispatches(runDir) {
   });
 }
 
-export const everyModelStageDispatch = (runDir) => [...clearanceDispatches(runDir), ...knockoutDispatches(runDir)];
+export const everyModelStageDispatch = (runDir, other = null) => [...clearanceDispatches(runDir, other), ...knockoutDispatches(runDir, other)];
 
 /**
  * Every label a model stage is dispatched under: the bare stage names of both lanes, and the suffixed forms
