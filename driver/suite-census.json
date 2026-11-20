@@ -8465,7 +8465,7 @@
         },
         "the-report-shell-keeps-what-a-repair-does-not-resend.test.mjs": {
           "tests": 6,
-          "asserts": 28,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
