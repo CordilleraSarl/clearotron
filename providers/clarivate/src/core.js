@@ -1770,11 +1770,9 @@ export async function doImageFetch(apiKey, base, params, tctx) {
 // The live image of one record: one image request, on the same `/image` call as the metadata fetch above and through
 // the same ledger. `{ ok, bytes, contentType }`, or `{ ok: false, cause }` for a call that did not land or held no image.
 //
-// THE ANSWER, AS MEASURED (one live request, 2026-11-20): `{ images: [{ content, id, type }] }`. `content` is the image as
-// base64 (a JPEG there, 93,796 characters), and `type` names its media type. This read `images[].image` before, a field
-// the answer does not have, so every logo of a demo re-run failed with "the answer held no image", 12 of 12. The caller
-// keeps the bytes only when they open as a PNG, JPEG, GIF or WebP file. An answer of any other shape fails with its shape
-// (key names, types and lengths, never a value), so the next change of shape is read off the run, not guessed.
+// THE ANSWER: `{ images: [{ content, id, type }] }`. `content` is the image as base64, and `type` names its media type.
+// The caller keeps the bytes only when they open as a PNG, JPEG, GIF or WebP file. An answer of any other shape fails
+// with its shape (key names, types and lengths, never a value), so a change of shape is read off the run, not guessed.
 export async function doMarkImage(apiKey, base, ref, tctx) {
   const guid = refToGuid(ref);
   const r = await clarivateFetch(apiKey, base, "/image", { body: { id: guid }, tctx: { ...tctx, target: guid } });
