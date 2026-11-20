@@ -179,8 +179,8 @@ export async function logoRows({ runDir, refs, records, register, fetchImage, ma
 }
 
 /**
- * The step both pipelines run before publishing. `findingsPath` for a clearance; `registerRecordsPath` for a Knockout, with
- * `knockoutFindingsPath`, its rated names, because a name's table shows only its most material filings (citedRefs);
+ * The step both pipelines run before publishing. `findingsPath` for a clearance; `registerRecordsPath` for a Knockout, whose
+ * rated names (`knockoutFindingsPath`, the run's own by default) decide which filings its tables show (citedRefs);
  * `provider` is the run's register adapter; `injectedFetcher` true when the run answers its record fetches itself (a
  * replay, a test). Writes `_driver/logos.json`; returns it, or null when it could not. Never throws.
  */
@@ -190,9 +190,11 @@ export async function markLogos(runDir, { findingsPath = null, registerRecordsPa
     const read = (p) => { try { return p ? JSON.parse(readFileSync(p, "utf8")) : null; } catch { return null; } };
     const findings = read(findingsPath)?.findings ?? null;
     const registerRecords = read(registerRecordsPath);
-    // The page's own rule for which filings a name's table shows, loaded only for a Knockout.
+    // The page's own rule for which filings a name's table shows, loaded only for a Knockout, with the run's own rated names
+    // unless the caller names another file: left to each caller, a pass run by hand that forgot them asked about nothing.
     const shown = registerRecordsPath ? (await import("./publish/render-knockout.mjs")).shownFilings : null;
-    const refs = citedRefs({ findings, registerRecords, knockoutMarks: read(knockoutFindingsPath)?.marks ?? null, shown });
+    const namesPath = knockoutFindingsPath ?? (registerRecordsPath ? (await import("./stages-knockout.mjs")).koPaths(runDir).findings : null);
+    const refs = citedRefs({ findings, registerRecords, knockoutMarks: read(namesPath)?.marks ?? null, shown });
     const at = driverDir(runDir, LOGOS_FILE);
     const prior = read(at)?.rows ?? [];
     const register = provider?.id ?? null;

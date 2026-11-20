@@ -7,7 +7,7 @@
 // arms drive the step with invented records and a stand-in image call, so no register is asked anything.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { logoOf, imageTypeOf, citedRefs, markLogos, writeRecordImages } from "../mark-logos.mjs";
@@ -337,4 +337,9 @@ test("a Knockout asks for logos only for the filings its tables show: the most m
   const doc = await markLogos(dir, { registerRecordsPath: join(dir, "register-records.json"), knockoutFindingsPath: join(dir, "absent.json"),
     provider: register(() => ({ ok: true, bytes: PNG }), blind), env: ENV });
   assert.deepEqual([blind.length, doc.rows.length], [0, 0]);
+  // A caller that names no file reads the run's own rated names, so a pass run by hand asks as the pipeline does.
+  const byDefault = [];
+  rmSync(driverDir(dir, "logos.json"));
+  await markLogos(dir, { registerRecordsPath: join(dir, "register-records.json"), provider: register(() => ({ ok: true, bytes: PNG }), byDefault), env: ENV });
+  assert.equal(byDefault.length, 8, "a caller that named no file did not read the run's own rated names");
 });
