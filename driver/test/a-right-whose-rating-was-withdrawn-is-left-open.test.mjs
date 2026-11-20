@@ -56,7 +56,7 @@ test("each right that stands unrated owes one Left open row naming it; a rejecte
 });
 
 test("the row carries the owner's sentence word for word, and every ground has one", () => {
-  // Approved 2026-11-19 (design's c.7015638707): printed under "Left open", after the right's identifying detail.
+  // Approved 2026-11-19: printed under "Left open", after the right's identifying detail.
   assert.equal(WITHDRAWN_RATING_NOTES[GROUND], "We could not rate this earlier right because we could not verify which goods its record covers.");
   for (const g of RATING_WITHDRAWN_GROUNDS) assert.equal(typeof WITHDRAWN_RATING_NOTES[g], "string", `the ground ${g} has no sentence`);
   assert.deepEqual(withdrawnRatingRows(doc([finding({ rating_withdrawn_ground: GROUND }), finding({ ordinal: 8, mark: "TESSALINE" })])),

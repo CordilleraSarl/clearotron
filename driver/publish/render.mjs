@@ -2153,9 +2153,8 @@ function findingCard(f, card, recordsByUri = new Map()) {
 // in the band that sets the report's risk, the highest band any conflict holds on the framework's own ladder. Every
 // conflict below it renders as the compact card, unticked for export, and the compact cards sit together behind
 // one closed heading carrying their count: "{N} more conflicts rated {band}", with the framework's band word, each
-// band named and joined by "or" where several sit below. Measured on the largest production clearance, 21 of 274
-// cards set the risk, and the exported PDF fell from 280 pages to 53 with the rest unticked. A lawyer who ticks a
-// card puts it back in the PDF; each compact card still opens to its full detail.
+// band named and joined by "or" where several sit below. A lawyer who ticks a card puts it back in the PDF; each compact
+// card still opens to its full detail.
 //
 // A single conflict below the risk folds too, under the singular, "1 more conflict rated Manageable" (owner,
 // 2026-11-19). A conflict with no band on the ladder keeps its full card, since nothing says it is below the risk. A
