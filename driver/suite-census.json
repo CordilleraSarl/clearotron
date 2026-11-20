@@ -8250,7 +8250,7 @@
         "the-public-text-guard-reads-a-comment-after-code.test.mjs": {
           "tests": 4,
           "asserts": 18,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "the-published-door-must-answer-not-merely-exist.test.mjs": {

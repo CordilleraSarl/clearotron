@@ -9,9 +9,9 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
-import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const { sourceSpans } = await import("../../shared/source-spans.mjs");
@@ -41,9 +41,11 @@ test("the scanner tells a comment from a string, a template and a regular expres
   assert.equal(s[5].comment, "");
 });
 
-test("the scanner agrees with a real parser on every comment and string line of the shared and script folders", () => {
+test("the scanner agrees with a real parser on every comment and string line of the shared and script folders", (ctx) => {
   const acorn = createRequire(join(ROOT, "package.json"))("acorn");
-  const files = execFileSync("git", ["ls-files", "shared/*.mjs", "scripts/*.mjs"], { cwd: ROOT, encoding: "utf8" }).trim().split("\n");
+  const guard = "the scanner agrees with a real parser";
+  const files = trackedFiles(guard, { root: ROOT, pathspec: ["shared/*.mjs", "scripts/*.mjs"] });
+  if (files === null) return ctx.skip(skipReason(guard));
   assert.ok(files.length > 50, "the slice is too small to say anything");
   const off = [];
   for (const f of files) {
