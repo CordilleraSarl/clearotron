@@ -10,6 +10,7 @@
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { correctionTargets } from "../corrections-delivered.mjs";
 import { REPORT_LINE_KEY, REPORT_LINE_LABEL, answersLeftBehind, buildCorrectionsApplied, correctionScope, correctionsWorklist, flaggedPositions, linesOf, reportLines } from "../corrections-feedforward.mjs";
+import { prepareDeclinationSpec } from "../dispatch-extras.mjs";
 import { parseFindingsJsonLenient } from "../findings-model.mjs";
 import { note, runLog } from "../log.mjs";
 import { listedAddresses, listedExclusionPositions, readAcceptedFlags } from "../narrative-refutation-record.mjs";
@@ -29,11 +30,11 @@ import { parseCorrections } from "../verify.mjs";
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 
-let CORRECTIONS_DELIVERED_FILE, postRepairCorrectionsPath, postRepairStatePath, prepareDeclinationSpec, recordFromTheSaves, removalRepairedRow, reviewAfterRepairPath, snapshotFindingsForCorrections;
+let CORRECTIONS_DELIVERED_FILE, postRepairCorrectionsPath, postRepairStatePath, recordFromTheSaves, removalRepairedRow, reviewAfterRepairPath, snapshotFindingsForCorrections;
 
 /** Called once by pipeline.mjs as it loads, with the names above. */
 export function useThePipeline(held) {
-  ({ CORRECTIONS_DELIVERED_FILE, postRepairCorrectionsPath, postRepairStatePath, prepareDeclinationSpec, recordFromTheSaves, removalRepairedRow, reviewAfterRepairPath, snapshotFindingsForCorrections } = held);
+  ({ CORRECTIONS_DELIVERED_FILE, postRepairCorrectionsPath, postRepairStatePath, recordFromTheSaves, removalRepairedRow, reviewAfterRepairPath, snapshotFindingsForCorrections } = held);
 }
 
 /**

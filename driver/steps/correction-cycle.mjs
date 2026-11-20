@@ -6,6 +6,7 @@
 // One phase of a run, moved out of pipelineInner unchanged. `helpers` are functions still held in pipeline.mjs, handed in
 // because this module must not import that one back; each moves here when the other phases that share it have moved.
 import { buildCorrectionsApplied, correctionsAppliedTable, scopeDrift } from "../corrections-feedforward.mjs";
+import { planAuditExtra, prepareDeclinationSpec } from "../dispatch-extras.mjs";
 import { evidenceClaimTable, evidenceClaimViolations } from "../evidence-claim-invariant.mjs";
 import { parseFindingsJsonLenient } from "../findings-model.mjs";
 import { note, runLog } from "../log.mjs";
@@ -24,7 +25,7 @@ import { correctionNamedLines, correctionNamedOrdinals, correctionNamedSet, corr
 import { existsSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 
 export async function runCorrectionCycle({ ctx, run, P, verdict, firstRef, synthesisKey, synthesisModel, synthesisThinking }, helpers) {
-  const { CORRECTIONS_DELIVERED_FILE, CORRECTIVE_RECHECK_FILE, correctionsExtra, correctiveCycleSettledDecision, planAuditExtra, prepareDeclinationSpec, removalRepairedRow, restoredFindingsTable, snapshotFindingsForCorrections } = helpers;
+  const { CORRECTIONS_DELIVERED_FILE, CORRECTIVE_RECHECK_FILE, correctionsExtra, correctiveCycleSettledDecision, removalRepairedRow, restoredFindingsTable, snapshotFindingsForCorrections } = helpers;
   // AD-2 A1 (E2E-R2, recovery granularity) — the corrective cycle fires ONCE per settled
   // review/narrative state. Both legs below run `force:true` (they bypass the stage-freshness skip
   // by design), so on EVERY resume of a CONDITIONAL/BLOCKING run the cycle used to re-fire: two
