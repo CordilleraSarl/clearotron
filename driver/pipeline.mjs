@@ -10,6 +10,7 @@ import { runShell } from "./run-shell.mjs";
 import { deliveryEndState } from "./run-delivered.mjs";
 import { StageFailure, buildFailurePacket, isDesignedRefusal, stageWallFields, terminalReasonFields } from "./run-outcome.mjs";
 import { correctionReading, correctionRows, flagOrdinals, recordCorrectionsBasis, repairUnnamedRemovals, rollbackCorrectivePass, useThePipeline } from "./steps/corrections.mjs";
+import { inScopeClassList, registerJurisdictions } from "./run-scope.mjs";
 import { changedFindingOrdinals, changedFindingOwners, findingsSurfaceRows, floorDutyNow, floorDutyOwedNow, forceFromActive, foreignRecordLinksBlanked, goodsEvidenceForTheWriter, keepGoodsEvidenceAsWritten, messageCtxFor, NARROW_REPAIR_TRIGGERS, outputStands, recoverWinningAttempt, reviewExclusionsPaths, revisedCitesNote, safeReadJson, stage, stageCharter, stageSessionKey, useTheStrayLedger, withdrawnExclusionLine, writerExclusionBlock, writerExclusionLine, writerExclusions } from "./stage-dispatch.mjs";
 import { runDelivery } from "./steps/delivery.mjs";
 import { runOverviewAndCards } from "./steps/overview-and-cards.mjs";
@@ -207,6 +208,7 @@ export { StageFailure, buildFailurePacket, isDesignedRefusal, stageWallFields, t
 export { correctionReading, correctionRows, flagOrdinals, recordCorrectionsBasis, repairUnnamedRemovals, rollbackCorrectivePass };   // moved to steps/corrections.mjs; importers read them here as before
 export { isContentShapedFail, isFallbackEligible };   // moved to repairs.mjs; importers read them here as before
 export { logTurnaroundReconciliation };   // moved to run-quote.mjs; importers read it here as before
+export { inScopeClassList, registerJurisdictions };   // moved to run-scope.mjs; importers read them here as before
 export { changedFindingOrdinals, changedFindingOwners, floorDutyOwedNow, foreignRecordLinksBlanked, goodsEvidenceForTheWriter, keepGoodsEvidenceAsWritten, messageCtxFor, NARROW_REPAIR_TRIGGERS, outputStands, recoverWinningAttempt, reviewExclusionsPaths, revisedCitesNote, stageCharter, stageSessionKey, withdrawnExclusionLine, writerExclusionBlock, writerExclusionLine, writerExclusions };   // moved to stage-dispatch.mjs; importers read them here as before
 
 // Fix-1 (deterministic common-law closure): the lanes that dictate a supplementary grid SPEC (the driver
@@ -6407,25 +6409,6 @@ export function bandClasses(ctx) {   // @internal — driven by its test
   try { classes = inScopeClassList(ctx?.job, ctx?.profile).map(String); } catch { classes = (ctx?.job?.classes ?? []).map(String); }
   return withFrameClasses(classes, ctx?.paths?.runDir);
 }
-export function inScopeClassList(job, profile) {   // @internal — also read by scripts/register-plan-shape.mjs, which must resolve scope exactly as the run did
-  const fromMarks = Array.isArray(job?.marks) ? job.marks.flatMap((m) => (Array.isArray(m?.classes) ? m.classes : [])) : [];
-  const declared = [...(Array.isArray(job?.classes) ? job.classes : []), ...fromMarks];
-  return [...new Set((declared.length ? declared : (profile?.defaultClasses ?? [])).map(String))];
-}
-// The matter's territorial scope for the REGISTER PLAN — THE SHARED LADDER (effective-scope.mjs
-// resolveTerritories), the same one the doors, the freeze and stages.mjs scopeTerritories read.
-// Deduped, blank-stripped. Exported for test.
-//
-// IT USED TO BE A HAND COPY of "instructed, else the account's defaults", and that copy had never heard
-// of the geography stamp. So a `mode: "worldwide"` clearance — admitted as worldwide at every door,
-// priced as worldwide, printed as a Global preliminary search — arrived here and NARROWED to the
-// account's default territories: the register plan swept seven countries for a search sold as
-// everywhere, and nothing anywhere disagreed. An empty list is the worldwide answer downstream
-// (register-plan.mjs treats emptiness as unrestricted), so the fix is the ladder, not a special case.
-export function registerJurisdictions(job, profile) {   // @internal
-  const list = resolveTerritories(job, profile).jurisdictions;
-  return [...new Set((Array.isArray(list) ? list : []).map((x) => String(x ?? "").trim()).filter(Boolean))];
-}
 // judgment-relocation (2026-06-23): `floorContext` was REMOVED. It assembled the floor KEYS + SATURATION
 // trigger + in-scope classes that fed the now-deleted search-shape gate (findFloorShapeGaps). Sufficiency on
 // a crowded field is no longer a driver-side gate over the prose ledger — the funnel enumerates the complete
@@ -8684,15 +8667,15 @@ async function pipelineInner(job, opts = {}) {
   return await runShell({ P, agent, ctx, job, run }, { ending: CLEARANCE_ENDING, helpers: { recordConnotationAudit, sentinel, undoTaintRenames }, steps: [
     { name: "intake", run: async () => {
         // The matter frame, its variants and the plan (steps/intake.mjs).
-        ({ axes, runCommonLaw } = await runIntake({ P, ctx, job, opts, run }, { attachRegisterPlan, deriveFormNeighbourhood, deriveGridSpec, deriveIntakeAsks, deriveScopeLedgerJson, inScopeClassList, verifyAndRecordHouseElement }));
+        ({ axes, runCommonLaw } = await runIntake({ P, ctx, job, opts, run }, { attachRegisterPlan, deriveFormNeighbourhood, deriveGridSpec, deriveIntakeAsks, deriveScopeLedgerJson, verifyAndRecordHouseElement }));
     } },
     { name: "register-sweep", run: async () => {
         // The register and unregistered-use searches and their fan-in (steps/register-sweep.mjs).
-        ({ planExec, unitKey, dispatchPlanQids } = await runRegisterSweep({ P, agent, axes, ctx, job, opts, run, runCommonLaw }, { CL_SUPP_TAGS, connotationRemedyToken, defaultConnotationReissuer, deriveNamedBand, foldSupplementalProposals, holdStickyGapsIn, inScopeClassList, joinOptions, mergeRegisterBands, noteAdapter, noteChannelCoverageAtStageExit, readPlanExecution, readRegisterBands, recordConnotationAudit, remergeIfBandsMoved, resultsPerCellOf, runSaturationProbeCodeSide, slicesUnitNeverReached, taintDisposition, taintParkJudgmentArtifacts, takeSlicesOutOfTheBand, unfinishedUnitAsItStands, writePlanExecutionReceipt }));
+        ({ planExec, unitKey, dispatchPlanQids } = await runRegisterSweep({ P, agent, axes, ctx, job, opts, run, runCommonLaw }, { CL_SUPP_TAGS, connotationRemedyToken, defaultConnotationReissuer, deriveNamedBand, foldSupplementalProposals, holdStickyGapsIn, joinOptions, mergeRegisterBands, noteAdapter, noteChannelCoverageAtStageExit, readPlanExecution, readRegisterBands, recordConnotationAudit, remergeIfBandsMoved, resultsPerCellOf, runSaturationProbeCodeSide, slicesUnitNeverReached, taintDisposition, taintParkJudgmentArtifacts, takeSlicesOutOfTheBand, unfinishedUnitAsItStands, writePlanExecutionReceipt }));
     } },
     { name: "frame-comparison", run: async () => {
         // The blind frame compared with what the run scoped, and the reopen (steps/frame-comparison.mjs).
-        await runFrameComparison({ P, axes, ctx, dispatchPlanQids, flushDigestQueue, job, mintDigestWork, planExec, run, runCommonLaw, unitKey }, { bandBytesOf, deriveNamedBand, inScopeClassList, joinOptions, loadCoverageLedger, mechanicalFormGapDirectives, readRegisterBands, reaskFollowUpErrors, refreshSupplementalExecution, remergeIfBandsMoved });
+        await runFrameComparison({ P, axes, ctx, dispatchPlanQids, flushDigestQueue, job, mintDigestWork, planExec, run, runCommonLaw, unitKey }, { bandBytesOf, deriveNamedBand, joinOptions, loadCoverageLedger, mechanicalFormGapDirectives, readRegisterBands, reaskFollowUpErrors, refreshSupplementalExecution, remergeIfBandsMoved });
     } },
     { name: "placement-and-digest", run: async () => {
         // Step 2C placement → Step 2D digest
@@ -8779,11 +8762,11 @@ async function pipelineInner(job, opts = {}) {
     } },
     { name: "overview-and-cards", run: async () => {
         // The report's overview and its cards (steps/overview-and-cards.mjs).
-        ({ applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, findingsForCards, groupedMembers, overviewOpen, rebuildTheDeliveredRecord, restoreTheBrokenRecord, rov, writeScopeFacts, writeUps } = await runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWritersDuty, ctx, followTheRecordsActions, job, run, runState, saveTheLabel, writeVerdictSidecar }, { applyScopeFrontMatterOf, assembleReportMd, caseLawJoin, consolidateFindingsFile, correctionsTheRestoreLacks, deriveCommonLawCarry, deriveRecordCarry, inScopeClassList, injectDeferralCoverage, injectFrontMatter, injectLaneDepthCoverage, injectMeaningGapCoverage, injectScreenGateCoverage, injectScriptScopeCoverage, injectUncoveredMarketCoverage, keepDeliveredRecordAsHistory, localLanguageStateOf, openAskForClosure, originRowsForReport, planWriteUps, readFindingsForReport, readReadingLog, rebuildDeliveredRecord, reportIdentityRecord, restoreTheRecordThatPassed, rewriteFromBeforeTheSeam, settleDerivedBases, stampCoverageJudgmentRows, withdrawSupersededAudit, writeScopeFactsOf, writeShortEntries }));
+        ({ applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, findingsForCards, groupedMembers, overviewOpen, rebuildTheDeliveredRecord, restoreTheBrokenRecord, rov, writeScopeFacts, writeUps } = await runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWritersDuty, ctx, followTheRecordsActions, job, run, runState, saveTheLabel, writeVerdictSidecar }, { applyScopeFrontMatterOf, assembleReportMd, caseLawJoin, consolidateFindingsFile, correctionsTheRestoreLacks, deriveCommonLawCarry, deriveRecordCarry, injectDeferralCoverage, injectFrontMatter, injectLaneDepthCoverage, injectMeaningGapCoverage, injectScreenGateCoverage, injectScriptScopeCoverage, injectUncoveredMarketCoverage, keepDeliveredRecordAsHistory, localLanguageStateOf, openAskForClosure, originRowsForReport, planWriteUps, readFindingsForReport, readReadingLog, rebuildDeliveredRecord, reportIdentityRecord, restoreTheRecordThatPassed, rewriteFromBeforeTheSeam, settleDerivedBases, stampCoverageJudgmentRows, withdrawSupersededAudit, writeScopeFactsOf, writeShortEntries }));
     } },
     { name: "delivery", run: async () => {
         // The checks before delivery, their repairs, and the publish (steps/delivery.mjs).
-        return await runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, checkLateBind, clampOnTheFloorDuty, clampOnTheWritersDuty, ctx, deliverAndClamp, findingsForCards, followTheRecordsActions, groupedMembers, job, opts, overviewOpen, publishAndDeliver, rebuildTheDeliveredRecord, restoreTheBrokenRecord, reviewOpen, rov, run, runState, saveTheLabel, saveTheOwedLabel, synthesisKey, synthesisModel, synthesisThinking, writeScopeFacts, writeUps, writeVerdictSidecar }, { CITED_URI_RE, NO_CHANGE, REBUILDS_THE_DELIVERED_RECORD, UPSTREAM_STALE_REPAIR, assembleReportMd, cardsNeverBuilt, caseLawJoin, computeOpenFloors, defaultRecordFetcher, fullProseOrdinals, inScopeClassList, injectFrontMatter, keepRankingReadByWriter, lateRecordIds, loadCoverageLedger, owedCardOrdinals, ownerScreenForDelivery, partitionDeliveryStale, postRepairScope, queuedForTheRecordOnly, rankingReadByWriterPath, readFindingsForReport, readFloorAxes, readGoodsHanded, reassembleFromTheRecord, recordChangeOwesReview, recordGoodsHanded, relabelCoverageRows, retainStateBeforeReview, runPostRepairReview, runWholeReviewForRecord, settleDerivedBases, stagesStaleOnPlacement, unreadRecordFindingOnly, unreadRecordReview, whatTheRepairLeftStale });
+        return await runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, checkLateBind, clampOnTheFloorDuty, clampOnTheWritersDuty, ctx, deliverAndClamp, findingsForCards, followTheRecordsActions, groupedMembers, job, opts, overviewOpen, publishAndDeliver, rebuildTheDeliveredRecord, restoreTheBrokenRecord, reviewOpen, rov, run, runState, saveTheLabel, saveTheOwedLabel, synthesisKey, synthesisModel, synthesisThinking, writeScopeFacts, writeUps, writeVerdictSidecar }, { CITED_URI_RE, NO_CHANGE, REBUILDS_THE_DELIVERED_RECORD, UPSTREAM_STALE_REPAIR, assembleReportMd, cardsNeverBuilt, caseLawJoin, computeOpenFloors, defaultRecordFetcher, fullProseOrdinals, injectFrontMatter, keepRankingReadByWriter, lateRecordIds, loadCoverageLedger, owedCardOrdinals, ownerScreenForDelivery, partitionDeliveryStale, postRepairScope, queuedForTheRecordOnly, rankingReadByWriterPath, readFindingsForReport, readFloorAxes, readGoodsHanded, reassembleFromTheRecord, recordChangeOwesReview, recordGoodsHanded, relabelCoverageRows, retainStateBeforeReview, runPostRepairReview, runWholeReviewForRecord, settleDerivedBases, stagesStaleOnPlacement, unreadRecordFindingOnly, unreadRecordReview, whatTheRepairLeftStale });
     } },
   ] });
 }
