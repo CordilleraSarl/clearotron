@@ -3,8 +3,8 @@
 //
 // steps/register-sweep.mjs — the register and unregistered-use searches, their fan-in, and the recovery of what fell short.
 //
-// One phase of a run, moved out of pipelineInner unchanged. `helpers` are functions still held in pipeline.mjs, handed in
-// because this module must not import that one back; each moves here when the other phases that share it have moved.
+// One phase of a run, moved out of pipelineInner unchanged. It must not import pipeline.mjs back, so what it shares with
+// that module lives in the modules beside it, which it imports.
 import { runRecordLogPath } from "../../providers/_shared/ledger-path.mjs";
 import { recordSpan } from "../attributed-span.mjs";
 import { recordStatusesFromFindings } from "../common-law-coverage-status.mjs";
@@ -34,6 +34,7 @@ import { existsSync, readFileSync, renameSync, rmSync, writeFileSync } from "nod
 import { seedUnplannedBands } from "../register-unit-record.mjs";
 import { join } from "node:path";
 import { stopsWithTheRun } from "../cancel.mjs";   // every paid call the code makes itself reads the stop first
+import { connotationRemedyToken, recordConnotationAudit, taintDisposition, taintParkJudgmentArtifacts } from "../connotation-audit-run.mjs";
 import { defaultConnotationReissuer, noteAdapter, resultsPerCellOf } from "../provider-calls.mjs";
 import { CL_SUPP_TAGS, deriveNamedBand, foldSupplementalProposals, holdStickyGapsIn, joinOptions, mergeRegisterBands, noteChannelCoverageAtStageExit, readPlanExecution, readRegisterBands, remergeIfBandsMoved, runSaturationProbeCodeSide, slicesUnitNeverReached, takeSlicesOutOfTheBand, unfinishedUnitAsItStands, writePlanExecutionReceipt } from "../register-band-run.mjs";
 import { StageFailure } from "../run-outcome.mjs";
@@ -58,8 +59,7 @@ export function crossChecksForThisPass(plan, candidates, candDirectives, prior, 
   return { ...screenThenCap(plan, candidates, Math.max(0, cap - carried.size)), carried: [...carried.values()] };
 }
 
-export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, runCommonLaw }, helpers) {
-  const { connotationRemedyToken, recordConnotationAudit, taintDisposition, taintParkJudgmentArtifacts } = helpers;
+export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, runCommonLaw }) {
   // Step 2A/2B — fan-out (batched ≤ gatherConcurrency) then the code-side fan-in barrier.
   // Property 1 (frame-omission design): the BLIND re-derivation runs as a sibling of the WHOLE gather,
   // not as a gather member — it reads only the raw instruction (no tool calls), so under the turn cap it
