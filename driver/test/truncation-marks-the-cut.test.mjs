@@ -62,7 +62,7 @@ test("arm 2 — every site the issue names marks its cut", () => {
     assert.match(live(file), want, `${file} truncates an operator-facing message without marking the cut`);
   // The three sites that report a form the driver could not write — each one is the only account of a
   // write that did not happen, so a message cut mid-path is a message that names no file.
-  const gw = live("gateway.mjs");
+  const gw = live("ladder/form-sync.mjs");
   // B — the disposition tag follows its machinery: the seat-facing form died, and the write this line
   // reports is the ACCUMULATOR's (syncDispositionForm's one write).
   for (const form of ["disposition-accumulator", "coverage-form", "placement-form"])
