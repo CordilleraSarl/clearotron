@@ -1197,6 +1197,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-jurisdiction-s-tables-agree.test.mjs": {
+          "tests": 3,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "a-jx-lane-runs-on-the-program-the-run-chose.test.mjs": {
           "tests": 8,
           "asserts": 23,
@@ -7726,8 +7732,8 @@
           "todos": 0
         },
         "the-engine-pins-come-from-the-tree.test.mjs": {
-          "tests": 6,
-          "asserts": 24,
+          "tests": 7,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },

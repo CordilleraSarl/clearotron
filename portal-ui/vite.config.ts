@@ -3,16 +3,15 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// The bundle is COMMITTED to git and served by portal-service, so the build has to be reproducible
-// enough that a freshness check (`npm run build && git diff --exit-code portal-ui/dist`) is signal and
-// not noise. Two things buy that: a locked dependency tree, and asset names derived from content rather
-// than from build order.
+// The bundle is BUILD OUTPUT, served by portal-service and never committed: `portal-ui/dist` is
+// gitignored. It reaches an install two ways. The published package ships it (`portal-ui/dist/` is in
+// the root package.json's `files`, and the release job runs `npm run build:ui` before packing), so a
+// packaged install needs no build. A source checkout builds it with `npm run build:ui`, and
+// `clearotron update` and `clearotron start` rebuild it when it is older than its sources. CI builds it
+// from source on every run, so there is no committed copy to fall out of step with `src/`.
 //
-// Why commit dist/ at all: a deploy is `git pull --ff-only && npm ci && restart` and never a build.
-// Building on the VM works today only because that `npm ci` happens to install devDependencies. One
-// future `--omit=dev` or `--ignore-scripts` would remove vite and serve a stale bundle with NO error —
-// the same silent-staleness failure that let a months-old HEARTBEAT.md run in production for weeks.
-// A committed bundle cannot go silently stale: CI fails the moment source and dist disagree.
+// The build is still made repeatable: a locked dependency tree, and asset names derived from content
+// rather than from build order, so two builds of the same sources give the same files.
 export default defineConfig({
   // portal-service mounts the SPA under /portal/, so every asset URL must be absolute from there.
   base: '/portal/',
@@ -41,8 +40,9 @@ export default defineConfig({
         // (158 to 226 kB gzip), and its comment lines went 1,444 to 2,522 — carrying internal
         // engineering prose into every client's browser. The firm-reference guard is what caught it:
         // the bundle named the firm in six places against three declared, including a sentence about
-        // which paths staff keep. Off, it is 854 kB / 175 kB and 108 comment lines, and the firm
-        // mentions are back to the declared three.
+        // which paths staff keep. Off, it was 854 kB / 175 kB and 108 comment lines, and the firm
+        // mentions were back to the declared three. Measured again on 2026-11-20, with comments still
+        // off, Vite reports 1,079 kB / 227 kB gzip for the same file.
         //
         // So this is not a new policy — it RESTORES what the client received under Rollup. A separate
         // arm holds it (the built bundle carries no comment line beyond the licence headers), so a

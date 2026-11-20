@@ -22,6 +22,8 @@ on:
     branches: [main, 'beta-*', 'next-*', 'bench-replay-probe-*']
     paths:
       - driver/engine/openai-agent.mjs
+      - driver/engine/anthropic-agent-program.mjs
+      - driver/engine/openai-agent-program.mjs
       - driver/driver.config.mjs
       - scripts/engine-pins.mjs
       - scripts/bench-replay-request.mjs

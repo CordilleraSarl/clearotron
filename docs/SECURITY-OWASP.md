@@ -66,8 +66,8 @@ installs, and `clearotron doctor` accepts, only an engine program at or above th
 needs.
 
 **Where.** `.github/dependabot.yml`, `.github/workflows/`, `.github/workflows/release.yml`,
-`scripts/release-sbom.mjs`, `bin/update.mjs`, `scripts/release-code-scanning-check.mjs`, `driver/driver.config.mjs` (`ENGINE_BINARIES`, each program's
-`floor`).
+`scripts/release-sbom.mjs`, `bin/update.mjs`, `scripts/release-code-scanning-check.mjs`, `driver/engine/*-program.mjs` (each engine's
+program and its `floor`, gathered in `ENGINE_BINARIES`).
 
 ### LLM04:2025 Data and Model Poisoning
 
