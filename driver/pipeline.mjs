@@ -10,13 +10,14 @@ import { runShell } from "./run-shell.mjs";
 import { deliveryEndState } from "./run-delivered.mjs";
 import { StageFailure, buildFailurePacket, isDesignedRefusal, stageWallFields, terminalReasonFields } from "./run-outcome.mjs";
 import { correctionReading, correctionRows, flagOrdinals, recordCorrectionsBasis, repairUnnamedRemovals, rollbackCorrectivePass, useThePipeline } from "./steps/corrections.mjs";
+import { bandRecordIds, deriveFloorDuty, placementOwnerFates, placementSeamReason, recordPlacementPass } from "./placement-pass-record.mjs";
 import { findRunDate, resumeStopRefusal } from "./run-resume.mjs";
 import { attachFramework, attachProfile, attachRegisterPlan, attachSearchPolicy, depthLadderEvent, foldRecipeScope, freezeProfile, profileShaOf, registerDeferredCoverage } from "./run-attachments.mjs";
 import { resultsPerCellOf } from "./provider-calls.mjs";
 import { digestDispatchExtra, extractRulingsTail, loadCoverageLedger, readOwnerScreen, recallFollowupMaxFor, recordDetailIndex, relabelCoverageRows, runDigest, writeRegisterDigestFacts } from "./register-digest-run.mjs";
-import { deriveRecordCarry, recordSeamDiscards, recordSynthesisSeam, safeReadText } from "./record-carry-trace.mjs";
+import { deriveRecordCarry, recordSynthesisSeam, safeReadText } from "./record-carry-trace.mjs";
 import { inScopeClassList, registerJurisdictions } from "./run-scope.mjs";
-import { changedFindingOrdinals, changedFindingOwners, findingsSurfaceRows, floorDutyNow, floorDutyOwedNow, forceFromActive, foreignRecordLinksBlanked, goodsEvidenceForTheWriter, keepGoodsEvidenceAsWritten, messageCtxFor, NARROW_REPAIR_TRIGGERS, outputStands, recoverWinningAttempt, reviewExclusionsPaths, revisedCitesNote, safeReadJson, stage, stageCharter, stageSessionKey, useTheStrayLedger, withdrawnExclusionLine, writerExclusionBlock, writerExclusionLine, writerExclusions } from "./stage-dispatch.mjs";
+import { changedFindingOrdinals, changedFindingOwners, findingsSurfaceRows, floorDutyOwedNow, forceFromActive, foreignRecordLinksBlanked, goodsEvidenceForTheWriter, keepGoodsEvidenceAsWritten, messageCtxFor, NARROW_REPAIR_TRIGGERS, outputStands, recoverWinningAttempt, reviewExclusionsPaths, revisedCitesNote, safeReadJson, stage, stageCharter, stageSessionKey, useTheStrayLedger, withdrawnExclusionLine, writerExclusionBlock, writerExclusionLine, writerExclusions } from "./stage-dispatch.mjs";
 import { runDelivery } from "./steps/delivery.mjs";
 import { runOverviewAndCards } from "./steps/overview-and-cards.mjs";
 import { runVerdictGate } from "./steps/verdict-gate.mjs";
@@ -102,12 +103,12 @@ export const mainMarketsOf = (ctx) => {   // @internal
 };
 const joinOptions = (ctx) => ({ released: releasedFamilyQids(ctx.paths.runDir),
   outstanding: new Set(readOutstanding(driverDir(ctx.paths.runDir)).map((r) => String(r.qid))), mainMarkets: mainMarketsOf(ctx) });
-import { placedUriRows, standingSetAside, placementSetAsideGrounds, placementFloorDecisionLines, placementAuditRows, writePlacementDecisions } from "./placement-decisions.mjs";   // placement's standing decisions, one check for every reader
+import { placementFloorDecisionLines, placementAuditRows, writePlacementDecisions } from "./placement-decisions.mjs";   // placement's standing decisions, one check for every reader
 export { placementSetAsideGrounds, placementFloorDecisionLines, placementSetAsideLines, placementAuditRows, placementRecallEndings,
   standingPlacementDecisions, writePlacementDecisions } from "./placement-decisions.mjs";
-import { readPlacementForm, readPlacementFormInput } from "./placement-form-io.mjs";
+import { readPlacementFormInput } from "./placement-form-io.mjs";
 import { keepsInstructedScope, rebuildRunOrder } from "./accepted-order.mjs";   // the order a run was accepted on, kept with it from intake (steps/open-run.mjs)
-import { buildSelectionIndex, setAsideKeysOf, ownerFates, servedLines, lineKey } from "./placement-form.mjs";
+import { buildSelectionIndex, setAsideKeysOf, lineKey } from "./placement-form.mjs";
 import { loadProfiles, gridBatchFor, applicantMatchesProfile } from "./profiles.mjs";   // adds profileStoreResolution — the CONFIG store's identity, beside the doctrine tree's
 import { productKeyOf } from "./search-policy.mjs";
 import { profileOrdinals } from "./profile-selection.mjs";   // lever 3 — driver selection
@@ -138,10 +139,9 @@ import { stitchDoubts } from "./doubt-ledger.mjs";   // doubt-stitch + doubt-clo
 // is the archive rule — a new way in, never a replacement.
 import { pendingWhatIf, claimWhatIf, finishWhatIf, whatIfRefusal } from "./whatif-queue.mjs";   // a queued job is settled before its run archives   // PR-6 — every ask ends (2026-07-29)
 // — every placed candidate ends somewhere a reader can see; the ones that do not are counted by name
-import { FLOOR_DUTY_SCHEMA_VERSION, floorDutyEvent, armFloorDuty } from "./floor-duty.mjs";   // — the era stamp that turns disclosure into a delivery floor
 import { snapshotSynthesisBase, restoreSynthesisBase, rebaseSynthesis, lastAcceptedCall, acceptSynthesis, driverReadsFor } from "./synthesis-record.mjs";   // — the duty checked against the DELIVERED document; the merge base a corrective pass holds and puts back
-import { parseStageOutcomes, recordCarryDoubtsAgain, bandRecordUri, findingUris } from "./record-carry.mjs"; import { notesPageRows } from "./hand-off-exits.mjs";
-import { deriveGoodsEvidence, recordGoodsEvidence, heldRecordProvenance, recordFetchOutcomes, readRunCallRows, recordReads, linesRead, registerCallAccount, readGoodsEvidence, GOODS_EVIDENCE_FILE, goodsFromLabel } from "./goods-evidence.mjs";   // — what each band record's goods rest on, written beside the shape and served by no band tool
+import { parseStageOutcomes, recordCarryDoubtsAgain, findingUris } from "./record-carry.mjs"; import { notesPageRows } from "./hand-off-exits.mjs";
+import { deriveGoodsEvidence, recordGoodsEvidence, heldRecordProvenance, recordFetchOutcomes, readRunCallRows, recordReads, linesRead, registerCallAccount, GOODS_EVIDENCE_FILE, goodsFromLabel } from "./goods-evidence.mjs";   // — what each band record's goods rest on, written beside the shape and served by no band tool
 import { declinationCallPaths } from "./declination-tool.mjs";   // — synthesis's own stated declines
 import { traceCommonLawCarry, commonLawCarryEvent, planVsExecutedChannels, CL_STAGES } from "./commonlaw-carry.mjs";
 import { DEFAULT_LEDGER_PATH } from "./provider-usage.mjs";
@@ -185,6 +185,7 @@ export { StageFailure, buildFailurePacket, isDesignedRefusal, stageWallFields, t
 export { correctionReading, correctionRows, flagOrdinals, recordCorrectionsBasis, repairUnnamedRemovals, rollbackCorrectivePass };   // moved to steps/corrections.mjs; importers read them here as before
 export { isContentShapedFail, isFallbackEligible };   // moved to repairs.mjs; importers read them here as before
 export { logTurnaroundReconciliation };   // moved to run-quote.mjs; importers read it here as before
+export { deriveFloorDuty, placementOwnerFates, placementSeamReason, recordPlacementPass };   // moved to placement-pass-record.mjs; importers read them here as before
 export { resumeStopRefusal };   // moved to run-resume.mjs; importers read them here as before
 export { attachSearchPolicy, depthLadderEvent, foldRecipeScope, freezeProfile, profileShaOf, registerDeferredCoverage };   // moved to run-attachments.mjs; importers read them here as before
 export { resultsPerCellOf };   // moved to provider-calls.mjs; importers read them here as before
@@ -1903,119 +1904,6 @@ export function taintParkJudgmentArtifacts(P, runDir) {   // @internal
   return [P.registerFindings, P.registerCoverageLedger, form.seat, form.sidecar];
 }
 
-// ── — THE FLOOR DUTY, checked ────────────────────────────────────────────────────────────────
-//
-// The floors are placement-inquiry's one uncapped obligation and nothing verified them. The ruling
-// of 2026-08-20 made the duty machine-checkable — placed, or named by record id with a one-line ground —
-// and this is the check that ruling ordered. The dictation that tells the seat to name the ids ships in
-// the same commit, so a run predating it reports its WHOLE floor unmet, correctly.
-//
-// SAME POSTURE AS placement-carry: disclosure only. It re-tiers nothing, gates nothing and sends no
-// followup. `computable:false` carries its reason and NO counts — a zero would read as "every floor
-// accounted for", which is the opposite of "the band could not be read".
-export function deriveFloorDuty(ctx, r, trigger = null) {   // @internal — driven by its test with a run's own files
-  const P = ctx.paths;
-  const write = (artifact) => {
-    try {
-      ensureDriverDir(P.runDir);
-      atomicWrite(P.floorDuty, JSON.stringify({ ts: new Date().toISOString(), trigger, ...artifact }, null, 2) + "\n");
-    } catch (e) { note(`floor-duty artifact write failed (non-fatal): ${String(e?.message ?? e).slice(0, 80)}`); }
-  };
-  const notComputable = (reason) => {
-    write({ schema_version: FLOOR_DUTY_SCHEMA_VERSION, computable: false, reason });
-    runLog(P.runDir, floorDutyEvent({ trigger, reason }));
-    return null;
-  };
-  try {
-    const now = floorDutyNow(P);
-    if (now.reason) return notComputable(now.reason);
-    const { artifact, placements } = now;
-    const fates = placementOwnerFates(P, placements);
-    artifact.owners = fates.counted ?? null;
-    if (!fates.counted) artifact.owners_absent = fates.absent;   // no count, and why: no groups, or an input that would not read
-    // The pass's own outcome, beside the rows. That lesson: a stage that failed or skipped makes every
-    // record it did not reach an UPSTREAM ABSENCE, not a judgment, and a reader blaming the seat for a
-    // crash is reading the artifact wrong.
-    artifact.pass = { ok: r?.ok === true, skipped: r?.skipped === true };
-    write(artifact);
-    runLog(P.runDir, floorDutyEvent({ trigger, artifact }));
-    const t = artifact.totals;
-    const undischarged = t.unanswered + t.named_without_ground;
-    if (undischarged) {
-      note(`floor duty: ${undischarged} of ${t.floors} floor row(s) did not come back on the placement form`
-        + `${t.named_without_ground ? ` (${t.named_without_ground} named with no ground)` : ""}`
-        + " — every floor is a live in-class identical or near-identical record and the duty is uncapped;"
-        + " this records the gap and re-tiers nothing");
-    }
-    return artifact;
-  } catch (e) {
-    runLog(P.runDir, { event: "floor-duty-failed", trigger, fail: String(e?.message ?? e).slice(0, 200) });
-    note(`floor-duty derivation failed (non-fatal — disclosure only): ${String(e?.message ?? e).slice(0, 100)}`);
-    return null;
-  }
-}
-
-/** The band the placement seam saw, as `{uri}` rows. Cheap and tolerant: an unreadable band records nothing. */
-function bandUriRows(P) {
-  try {
-    const band = safeReadJson(P.registerNamedBand);
-    const enumerated = Array.isArray(band?.enumerated) ? band.enumerated : [];
-    return enumerated.map((r) => ({ uri: bandRecordUri(r) })).filter((r) => r.uri);
-  } catch { return []; }
-}
-
-/**
- * PLACEMENT. Everything in the band was in front of this pass; what it placed is in placements.json.
- * Recorded whether the pass completed or not — an incomplete pass discards nothing, and its rows say so
- * with `placement:stage-incomplete`, which is the ruling on the 澜珀 run made structural.
- */
-function recordPlacementSeam(ctx, r, trigger = null) {
-  const P = ctx.paths;
-  const saw = bandUriRows(P);
-  if (!saw.length) return null;
-  return recordSeamDiscards(ctx, {
-    seam: "placement", stage: "placement-inquiry", trigger, completed: r?.ok === true && !r?.skipped, skipped: r?.skipped === true,
-    saw, carried: placedUriRows(P),
-    evidence: r?.skipped ? "the pass was SKIPPED on an artifact already on disk, so it made no decision this pass" : (r?.fail ? String(r.fail).slice(0, 80) : ""),
-    reasonFor: placementSeamReason(placementSetAsideGrounds(P)),
-  });
-}
-
-/**
- * WHAT ONE PLACEMENT PASS DID, RECORDED: the ground every band record left it with (the seam rows) and the floors
- * it answered (the floor duty). The main path and the delivery gate's repeat of the stage both record through
- * here, so the ledger and the floor duty describe the placements the report is built from. Returns the pass
- * result.
- *
- * THE STAMP IS THE MAIN PATH'S. On the main path, a pass that actually ran arms the floor its account may be held
- * to. A SKIPPED pass leaves `placements.json` written by an earlier seat (on a resume, possibly one that never saw
- * the floors order), so it arms nothing, and its seam rows leave the earlier pass's grounds standing. The delivery
- * gate's repeat (`stale-repair`) arms nothing either: the floor it is held to is the one the run was already held
- * to, applied again to the repeated pass's account where the gate rebuilds the report from it. A run whose only
- * pass under the floors order is that repeat is held to no floor, as before.
- */
-export function recordPlacementPass(ctx, r, trigger = null) {   // @internal — driven by its test with a run's own files
-  recordPlacementSeam(ctx, r, trigger);
-  deriveFloorDuty(ctx, r, trigger);
-  // The decisions as they stand after this pass, where the reading step and the writer declare them: a pass that
-  // changes only a set-aside's ground or a group's membership leaves a reader that already ran stale.
-  try { writePlacementDecisions(ctx.paths); }
-  catch (e) { runLog(ctx.paths.runDir, { event: "placement-decisions-failed", trigger, reason: String(e?.message ?? e).slice(0, 120) }); }
-  if (r?.ok === true && r?.skipped !== true) recordPlacementBandIds(ctx.paths);
-  if (r?.ok === true && r?.skipped !== true && trigger !== "stale-repair") armFloorDuty(ctx.paths.runDir);
-  return r;
-}
-
-const bandRecordIds = (band) => [...new Set((band?.enumerated ?? []).map((r) => String(r?.record_id ?? "").toLowerCase()).filter(Boolean))];
-
-/** The named band's record ids a placement pass that ran read, so a record the band gains after it is known as new. */
-function recordPlacementBandIds(P) {
-  try {
-    const ids = bandRecordIds(safeReadJson(P.registerNamedBand)).sort();
-    atomicWrite(paths(P.runDir).placementBandIds, JSON.stringify({ count: ids.length, ids }) + "\n");
-  } catch (e) { runLog(P.runDir, { event: "placement-band-ids-failed", reason: String(e?.message ?? e).slice(0, 120) }); }
-}
-
 /**
  * The records the named band holds that the last placement pass that ran never read. [] when it read every one, and
  * when no pass recorded what it read (a run predating the record assesses nothing late). Ids, never the band's bytes:
@@ -2053,45 +1941,6 @@ function owedUrisFor(runDir) {
     return Array.isArray(owed) ? owed.flatMap((row) => (Array.isArray(row?.uris) && row.uris.length ? row.uris : [row?.uri ?? row?.record_id]))
       .map((u) => String(normalizeRecordUri(u) ?? "").toLowerCase()).filter(Boolean) : null;
   } catch { return null; }
-}
-
-/**
- * Every owner's fate at placement, by the shape's lists (placement-form.mjs `ownerFates`): `{counted}`, or `{absent}`
- * saying why there is no count. A shape with no groups has nothing to count by; an input that would not read is a
- * gap in the record. The two are not one fact, and the floor duty's artifact keeps them apart.
- */
-export function placementOwnerFates(P, placements) {   // @internal — driven by its test with a run's own files
-  try {
-    const input = readPlacementFormInput(P.runDir);
-    if (!input.groups) return { absent: "the band shape lists no groups" };
-    const index = buildSelectionIndex(input);
-    // What placement read, by its own reading log, and what each line's goods rest on, where the run recorded it.
-    const evidence = readGoodsEvidence(P.runDir);
-    const stateOf = Array.isArray(evidence?.records) ? new Map(evidence.records.map((r) => [normalizeRecordUri(r?.uri), r?.state])) : null;
-    const placedUris = (Array.isArray(placements) ? placements : []).flatMap((p) => (Array.isArray(p?.records) ? p.records : []));
-    const held = readPlacementForm(P.runDir);
-    const counted = ownerFates({ groups: input.groups, entries: standingSetAside(held.set_aside, input, { placedUris, rows: held.rows }), index,
-      placedUris,
-      served: servedLines(input.groups, input.served, index),
-      lineEvidence: stateOf ? (l) => stateOf.get(normalizeRecordUri(l?.record_id)) ?? null : null });
-    return counted ? { counted } : { absent: "the band shape's groups could not be counted" };
-  } catch (e) { return { absent: `an input could not be read: ${String(e?.message ?? e).slice(0, 120)}` }; }
-}
-
-/**
- * WHY A RECORD THE PICKING STEP DID NOT PLACE LEFT IT. Where the step set aside that owner's records as a
- * set, the record leaves with the step's own ground (sentence 6, ruled 2026-09-25). Otherwise the step
- * completed and said nothing about it, which is what the reason-less exit count reports. PURE.
- */
-export function placementSeamReason(groundOf) {   // @internal
-  return (_rec, uri) => {
-    const g = typeof groundOf === "function" ? groundOf(uri) : null;
-    if (g) return { reason: "placement:set-aside", reason_source: "step-stated",
-      detail: g.by === "group" ? `placement-inquiry set aside this owner's records with group ${g.group}: ${g.ground}`
-        : `placement-inquiry set aside this owner's records as a set: ${g.ground}` };
-    return { reason: "placement:not-selected", reason_source: "step-silent",
-      detail: "placement-inquiry completed this pass and named no placement for this record; the decision not to carry it was made and no ground for this record was recorded" };
-  };
 }
 
 /**
@@ -6562,11 +6411,11 @@ async function pipelineInner(job, opts = {}) {
         const assessmentOpen = readPartNotCompleted(run.runDir, "assessment");
         if (assessmentOpen) return await deliverWithoutTheAssessment(assessmentOpen);
         // Placement and the register write-up (steps/placement-and-digest.mjs).
-        await runPlacementAndDigest({ checkLateBind, ctx }, { recordPlacementPass });
+        await runPlacementAndDigest({ checkLateBind, ctx });
     } },
     { name: "skeptic-and-follow-up", run: async () => {
         // The skeptic, and the searches and rechecks that follow it (steps/skeptic-and-follow-up.mjs).
-        await runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQids, flushDigestQueue, job, mintDigestWork, opts, planExec, run, unitKey }, { askableOf, bandBytesOf, capabilityGapAxes, deriveBandShape, deriveNamedBand, envelopeDecision, envelopeHeldNote, escalationHeldNote, findFloorBreaches, isInactiveAxisRow, lateRecordIds, officeGapOf, readFloorAxes, readPlanExecution, reaskFollowUpErrors, recordPlacementPass, recordScreenGateEvidence, refreshSupplementalExecution, remergeIfBandsMoved, screenGateSnapshot, skepticDeferralExtra, stickyGapUnits });
+        await runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQids, flushDigestQueue, job, mintDigestWork, opts, planExec, run, unitKey }, { askableOf, bandBytesOf, capabilityGapAxes, deriveBandShape, deriveNamedBand, envelopeDecision, envelopeHeldNote, escalationHeldNote, findFloorBreaches, isInactiveAxisRow, lateRecordIds, officeGapOf, readFloorAxes, readPlanExecution, reaskFollowUpErrors, recordScreenGateEvidence, refreshSupplementalExecution, remergeIfBandsMoved, screenGateSnapshot, skepticDeferralExtra, stickyGapUnits });
     } },
     { name: "synthesis", run: async () => {
         // The writer, the case-law grounding and the first review (steps/synthesis.mjs).
