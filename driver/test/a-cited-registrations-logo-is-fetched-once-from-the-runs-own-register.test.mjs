@@ -7,7 +7,7 @@
 // arms drive the step with invented records and a stand-in image call, so no register is asked anything.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { logoOf, imageTypeOf, citedRefs, markLogos, writeRecordImages } from "../mark-logos.mjs";
@@ -69,6 +69,12 @@ function run() {
 const register = (answer, calls) => ({ id: "invented-register", credEnv: "INVENTED_REGISTER_KEY", markImage: async (ref) => { calls.push(ref); return answer(ref); } });
 const ENV = { INVENTED_REGISTER_KEY: "invented" };
 const byRef = (doc) => Object.fromEntries(doc.rows.map((r) => [r.ref, r]));
+/** A Knockout's rated names, as the run saves them: each name its listing holds, rated with nothing weighed. Returns the path. */
+const named = (dir) => {
+  const listing = JSON.parse(readFileSync(join(dir, "register-records.json"), "utf8"));
+  writeFileSync(join(dir, "knockout-findings.json"), JSON.stringify({ marks: (listing.marks ?? []).map((m) => ({ name: m.name })) }));
+  return join(dir, "knockout-findings.json");
+};
 
 test("one image request per registration whose record carries a logo, saved with the run, and none asked again on a resume", async () => {
   const dir = run();
@@ -130,7 +136,7 @@ test("a Knockout's listed filings are read the same way", async () => {
   const dir = run();
   writeFileSync(join(dir, "register-records.json"), JSON.stringify({ marks: [{ name: "INVENTED", records: [{ recordId: "/mark/em/0001" }] }] }));
   const calls = [];
-  const doc = await markLogos(dir, { registerRecordsPath: join(dir, "register-records.json"), provider: register(() => ({ ok: true, bytes: PNG }), calls), env: ENV });
+  const doc = await markLogos(dir, { registerRecordsPath: join(dir, "register-records.json"), knockoutFindingsPath: named(dir), provider: register(() => ({ ok: true, bytes: PNG }), calls), env: ENV });
   assert.deepEqual(calls, ["/mark/em/0001"]);
   assert.equal(doc.rows.length, 1);
 });
@@ -144,7 +150,7 @@ test("a Knockout's filing whose record is only in the run's record log, where it
   writeFileSync(join(dir, "register-records.json"), JSON.stringify({ marks: [{ name: "INVENTED", records: [
     { recordId: "/mark/em/0101" }, { recordId: "/mark/em/0102" }, { recordId: "/mark/em/0103" }] }] }));
   const calls = [];
-  const doc = await markLogos(dir, { registerRecordsPath: join(dir, "register-records.json"), provider: register(() => ({ ok: true, bytes: PNG }), calls), env: ENV });
+  const doc = await markLogos(dir, { registerRecordsPath: join(dir, "register-records.json"), knockoutFindingsPath: named(dir), provider: register(() => ({ ok: true, bytes: PNG }), calls), env: ENV });
   assert.deepEqual(calls, ["/mark/em/0101"], "only the figurative filing with an image was asked for");
   const rows = byRef(doc);
   assert.equal(rows["/mark/em/0101"].state, "fetched");
@@ -211,7 +217,7 @@ test("a Signa Knockout's figurative filing is fetched from the link its row gave
     "/mark/us/tm_3": { markFeature: "figurative", imageAvailable: true, imageUrl: null },
   });
   const calls = [];
-  const doc = await markLogos(dir, { registerRecordsPath: join(dir, "register-records.json"), provider: linkFollower(calls), env: ENV });
+  const doc = await markLogos(dir, { registerRecordsPath: join(dir, "register-records.json"), knockoutFindingsPath: named(dir), provider: linkFollower(calls), env: ENV });
   assert.deepEqual(calls, [["/mark/us/tm_1", "https://api.signa.so/v1/trademarks/tm_1/media/med_1"]]);
   const rows = byRef(doc);
   assert.equal(rows["/mark/us/tm_1"].state, "fetched");
@@ -226,7 +232,7 @@ test("a stop that lands during the step does not end it: the step runs past the 
   const dir = signaKnockout({ "/mark/us/tm_1": { markFeature: "combined", imageAvailable: true, imageUrl: "https://api.signa.so/v1/trademarks/tm_1/media/med_1" } });
   requestCancel(dir, { via: "test" });
   const calls = [];
-  const doc = await markLogos(dir, { registerRecordsPath: join(dir, "register-records.json"), provider: linkFollower(calls), env: ENV });
+  const doc = await markLogos(dir, { registerRecordsPath: join(dir, "register-records.json"), knockoutFindingsPath: named(dir), provider: linkFollower(calls), env: ENV });
   assert.equal(calls.length, 1, "the image was not asked for");
   assert.equal(byRef(doc)["/mark/us/tm_1"].state, "fetched");
 });
@@ -308,4 +314,32 @@ test("a Clarivate answer of a shape the adapter does not read fails with that sh
     globalThis.fetch = real;
     if (key === undefined) delete process.env.CLARIVATE_API_KEY; else process.env.CLARIVATE_API_KEY = key;
   }
+});
+
+test("a Knockout asks for logos only for the filings its tables show: the most material few, the weighed ones first", async () => {
+  // A name's table shows at most eight filings, the ones the run weighed first (publish/render-knockout.mjs, shownFilings).
+  // On a demo re-run, 8 of a Knockout's 9 image requests were for filings no page listed.
+  const dir = mkdtempSync(join(tmpdir(), "logos-ko-shown-"));
+  mkdirSync(join(dir, "_records"), { recursive: true });
+  mkdirSync(driverDir(dir), { recursive: true });
+  const ids = Array.from({ length: 10 }, (_, i) => `qzk${String(i + 1).padStart(2, "0")}`);
+  for (const id of ids) writeFileSync(join(dir, "_records", `em-${id}.json`), JSON.stringify({ _uri: `/mark/em/${id}`, markFeature: "WORD AND DESIGN", imageAvailable: true }));
+  writeFileSync(join(dir, "register-records.json"), JSON.stringify({ marks: [{ name: "INVENTED", records: ids.map((id) => ({ recordId: `/mark/em/${id}`, status: "Registered" })) }] }));
+  writeFileSync(join(dir, "knockout-findings.json"), JSON.stringify({ marks: [{ name: "INVENTED", registerReads: [{ recordId: "/mark/em/qzk10" }] }] }));
+  const calls = [];
+  await markLogos(dir, { registerRecordsPath: join(dir, "register-records.json"), knockoutFindingsPath: join(dir, "knockout-findings.json"),
+    provider: register(() => ({ ok: true, bytes: PNG }), calls), env: ENV });
+  assert.equal(calls.length, 8, "a logo was asked for a filing the table does not show, or one it shows was skipped");
+  assert.equal(calls[0], "/mark/em/qzk10", "the filing the run weighed leads, as it does on the page");
+  assert.deepEqual(calls.filter((c) => ["/mark/em/qzk08", "/mark/em/qzk09"].includes(c)), [], "the two filings below the table's eight were asked for");
+  // A run whose rated names cannot be read asks about none, rather than about every filing.
+  const blind = [];
+  const doc = await markLogos(dir, { registerRecordsPath: join(dir, "register-records.json"), knockoutFindingsPath: join(dir, "absent.json"),
+    provider: register(() => ({ ok: true, bytes: PNG }), blind), env: ENV });
+  assert.deepEqual([blind.length, doc.rows.length], [0, 0]);
+  // A caller that names no file reads the run's own rated names, so a pass run by hand asks as the pipeline does.
+  const byDefault = [];
+  rmSync(driverDir(dir, "logos.json"));
+  await markLogos(dir, { registerRecordsPath: join(dir, "register-records.json"), provider: register(() => ({ ok: true, bytes: PNG }), byDefault), env: ENV });
+  assert.equal(byDefault.length, 8, "a caller that named no file did not read the run's own rated names");
 });

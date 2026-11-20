@@ -520,6 +520,14 @@ export function rankByMateriality(records, entry, mark) {
 }
 
 const APPENDIX_ROWS = 8;
+/**
+ * THE FILINGS A NAME'S TABLE SHOWS: its listing in the run's own order of materiality, at most APPENDIX_ROWS. The page
+ * draws these rows, and the logo step asks for logos for these alone (mark-logos.mjs), so no logo is paid for that no
+ * reader sees. PURE.
+ */
+export function shownFilings(entry, mark) {
+  return rankByMateriality(entry?.records, entry, mark).slice(0, APPENDIX_ROWS);
+}
 // EACH LISTED FILING OPENS ITS REGISTER RECORD (owner, 2026-11-18; the approved board). A filing whose record the
 // run saved gets a closed drop-down in a row under its table row, the same entry a clearance card draws, and its
 // logo, where the run saved one, on a line of its own under the mark name, uncaptioned because the Territory
@@ -563,8 +571,7 @@ function filingsSection(marks, registerRecords, records = { filingRecords: new M
     // COUNT: dropping a cancelled or out-of-class row would leave a reader unable to reconcile the table
     // with the number above it, and "we did not show you that one" is a different promise from "it is
     // not material". The cards promote and therefore filter; the appendix evidences and therefore ranks.
-    const ranked = rankByMateriality(e.records, e, m);
-    const shown = ranked.slice(0, APPENDIX_ROWS);
+    const shown = shownFilings(e, m);
     const rows = shown.map((r) => filingRows(r, records)).join('');
     // "First N" WAS TRUE AND IS NOT ANY MORE, and saying it of a ranked table would be worse than the
     // cap: it invites the reader to take the sample for the top of the provider's list. Say the count

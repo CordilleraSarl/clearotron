@@ -1507,7 +1507,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
             if (moved !== held) atomicWrite(K.registerRecords, JSON.stringify(moved, null, 2) + "\n");
           } catch { /* no record on this run, or none readable: publish says which */ }
           // THE LOGOS of the listed filings, as the clearance's are fetched (mark-logos.mjs), before the page is built.
-          logosStep(run.runDir, await markLogos(run.runDir, { registerRecordsPath: K.registerRecords, provider: (() => { try { return adapterForRegister(ctx.register ?? null); } catch { return null; } })(),
+          logosStep(run.runDir, await markLogos(run.runDir, { registerRecordsPath: K.registerRecords, knockoutFindingsPath: K.findings, provider: (() => { try { return adapterForRegister(ctx.register ?? null); } catch { return null; } })(),
             injectedFetcher: Boolean(opts.recordFetcher), agentId: ctx.agent ?? null }));
           published = await publishKnockout({
             runId, codename: run.codename, runDir: run.runDir,

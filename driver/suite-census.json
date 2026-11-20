@@ -268,8 +268,8 @@
           "todos": 0
         },
         "a-cited-registrations-logo-is-fetched-once-from-the-runs-own-register.test.mjs": {
-          "tests": 14,
-          "asserts": 68,
+          "tests": 15,
+          "asserts": 73,
           "skips": 0,
           "todos": 0
         },
