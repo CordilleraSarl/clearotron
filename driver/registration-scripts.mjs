@@ -30,59 +30,8 @@
 //
 // PURE. No IO, no config.
 
-/**
- * Territory → the scripts a mark could plausibly hold a registration in there.
- *
- * Keys are canonical jurisdiction codes (jurisdiction-codes.mjs vocabulary). A territory that is not
- * listed is Latin-only, which is the honest default: adding a script to this table widens what every
- * run in that territory must state, so an unresearched row would cost real work on every matter.
- */
-export const REGISTRABLE_SCRIPTS = Object.freeze({
-  // ── Han-script markets. A foreign mark is commonly registered BOTH in Latin and in a Chinese
-  // rendering (transliterated for sound, translated for meaning, or a coined pairing) — and the Chinese
-  // rendering is the one local consumers use, so a conflict found only there is the one that bites.
-  CN: ["latin", "han"],
-  TW: ["latin", "han"],
-  HK: ["latin", "han"],
-  MO: ["latin", "han"],
-  SG: ["latin", "han"],   // English and Chinese both official; marks routinely file in both
-
-  // ── Japan: katakana, NOT the four writing systems. Katakana is the script Japanese uses for foreign
-  // words, and it is what a foreign word mark is transliterated into on the register. Kanji and hiragana
-  // renderings exist for marks that are Japanese words to begin with — a matter shaped that way earns a
-  // row here by judgment, not by a table demanding it of every mark.
-  JP: ["latin", "katakana"],
-
-  // ── Korea: hangul, same reasoning as katakana.
-  KR: ["latin", "hangul"],
-
-  // ── Cyrillic markets. A Latin mark is routinely registered alongside its Cyrillic transliteration,
-  // and the local trade uses the Cyrillic form.
-  RU: ["latin", "cyrillic"],
-  UA: ["latin", "cyrillic"],
-  BY: ["latin", "cyrillic"],
-  KZ: ["latin", "cyrillic"],
-  RS: ["latin", "cyrillic"],
-  BG: ["latin", "cyrillic"],
-
-  // ── Arabic-script markets. The Arabic rendering is a separate registration in practice.
-  SA: ["latin", "arabic"],
-  AE: ["latin", "arabic"],
-  EG: ["latin", "arabic"],
-  QA: ["latin", "arabic"],
-  KW: ["latin", "arabic"],
-  BH: ["latin", "arabic"],
-  OM: ["latin", "arabic"],
-  JO: ["latin", "arabic"],
-  IR: ["latin", "arabic"],   // Perso-Arabic script
-  PK: ["latin", "arabic"],   // Urdu, Perso-Arabic script
-
-  IL: ["latin", "hebrew"],
-  GR: ["latin", "greek"],
-  CY: ["latin", "greek"],
-  TH: ["latin", "thai"],
-  IN: ["latin", "devanagari"],   // Devanagari is the single most-registered Indic script; others are matter-specific
-});
+import { REGISTRABLE_SCRIPTS, ALSO_REGISTERED_IN, SCRIPTS_ASKED_IN } from "../shared/jurisdiction-tables.mjs";   // a jurisdiction's tables live in one home
+export { REGISTRABLE_SCRIPTS, ALSO_REGISTERED_IN, SCRIPTS_ASKED_IN };
 
 /** The Unicode script test for each name this table uses. One regex per script, nothing derived. */
 const SCRIPT_TESTS = Object.freeze({
@@ -130,16 +79,6 @@ export function requiredScriptsFor(jurisdictions) {
 }
 
 /**
- * Scripts a territory's register also holds marks in, beyond the ones its row above demands of every
- * matter. Read only to scope a question the plan already asks, never to demand a rendering: Japan's
- * register holds kanji marks (see its row), so a kanji question on a matter that names Japan is asked
- * there as well as in the Han-script markets.
- */
-export const ALSO_REGISTERED_IN = Object.freeze({
-  JP: ["han"],
-});
-
-/**
  * The markets, of those given, that register marks in a script `value` is written in — a Latin script
  * excepted, since every market files Latin. A value in a script no given market files answers `[]`:
  * that script's question has no market to be asked in.
@@ -150,16 +89,6 @@ export function marketsFilingScriptOf(value, markets) {
   return (markets ?? []).map((m) => String(m ?? "").trim().toUpperCase())
     .filter((m, i, all) => m && all.indexOf(m) === i && files(m).some((s) => scripts.includes(s)));
 }
-
-/**
- * Scripts a market's buyers read that its row above does not demand of a manifest: the plan asks a form in one of them
- * when the manifest has one, and the script floor never requires it. The EU register holds Greek and Cyrillic marks
- * (Greece and Cyprus read Greek, Bulgaria Cyrillic), and an EU matter asked both before the plan held a script question
- * to a market; demanding them of every EU manifest would be a new duty no ruling sets.
- */
-export const SCRIPTS_ASKED_IN = Object.freeze({
-  EU: Object.freeze(["greek", "cyrillic"]),
-});
 
 /** Why a script form is not asked: no market on the list reads its script, or each that does has its question. */
 export const SCRIPT_NOT_READ_REASON = "no market the frame names reads this script";

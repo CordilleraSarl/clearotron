@@ -268,8 +268,8 @@
           "todos": 0
         },
         "a-cited-registrations-logo-is-fetched-once-from-the-runs-own-register.test.mjs": {
-          "tests": 7,
-          "asserts": 37,
+          "tests": 8,
+          "asserts": 43,
           "skips": 0,
           "todos": 0
         },
@@ -1197,6 +1197,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-jurisdiction-s-tables-agree.test.mjs": {
+          "tests": 3,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "a-jx-lane-runs-on-the-program-the-run-chose.test.mjs": {
           "tests": 8,
           "asserts": 23,
@@ -1624,8 +1630,8 @@
           "todos": 0
         },
         "a-name-the-wizard-returns-is-a-setup-name.test.mjs": {
-          "tests": 5,
-          "asserts": 9,
+          "tests": 6,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -5595,6 +5601,12 @@
           "skips": 0,
           "todos": 0
         },
+        "one-renderer-draws-every-report-page.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "one-repeat-detector-three-receivers.test.mjs": {
           "tests": 7,
           "asserts": 16,
@@ -7720,8 +7732,8 @@
           "todos": 0
         },
         "the-engine-pins-come-from-the-tree.test.mjs": {
-          "tests": 6,
-          "asserts": 24,
+          "tests": 7,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
