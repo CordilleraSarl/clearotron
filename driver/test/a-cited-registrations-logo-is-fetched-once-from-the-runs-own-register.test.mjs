@@ -250,3 +250,30 @@ test("Signa's image is asked only of the register's own host, over https, and a 
     assert.equal(asked.length, 2);
   } finally { globalThis.fetch = real; }
 });
+
+test("Clarivate's image is asked for with the id as the register spells it, not the run's lowercased key", async () => {
+  // The run keys records by a lowercased ref, and the image endpoint refuses a lowercased id ("Not a valid id", 12 of 12
+  // on a demo re-run, 2026-11-20). The saved record keeps the register's spelling, and that is what is sent.
+  const { adapter: clarivate } = await import("../../providers/clarivate/src/adapter.js");
+  const dir = mkdtempSync(join(tmpdir(), "logos-clarivate-"));
+  mkdirSync(join(dir, "_records"), { recursive: true });
+  mkdirSync(driverDir(dir), { recursive: true });
+  writeFileSync(join(dir, "_records", "em-qzx0001.json"), JSON.stringify({ _uri: "/mark/em/QZX0001", uri: "/mark/em/QZX0001", guid: "QZX0001",
+    provider: "clarivate", markFeature: "WORD AND DESIGN", imageAvailable: true }));
+  writeFileSync(join(dir, "findings.json"), JSON.stringify({ findings: [{ disposition: "adversarial", owner: { registrations: [{ uri: "/mark/em/QZX0001" }] } }] }));
+  const real = globalThis.fetch, key = process.env.CLARIVATE_API_KEY;
+  const sent = [];
+  globalThis.fetch = async (url, init) => {
+    sent.push(JSON.parse(init?.body ?? "{}").id);
+    return new Response(JSON.stringify({ images: [{ image: PNG.toString("base64"), contentType: "image/png" }] }), { status: 200, headers: { "content-type": "application/json" } });
+  };
+  process.env.CLARIVATE_API_KEY = "invented";
+  try {
+    const doc = await markLogos(dir, { findingsPath: join(dir, "findings.json"), provider: clarivate, env: { CLARIVATE_API_KEY: "invented" } });
+    assert.deepEqual(sent, ["QZX0001"], "the image was asked for under another spelling of the id");
+    assert.equal(byRef(doc)["/mark/em/qzx0001"].state, "fetched");
+  } finally {
+    globalThis.fetch = real;
+    if (key === undefined) delete process.env.CLARIVATE_API_KEY; else process.env.CLARIVATE_API_KEY = key;
+  }
+});
