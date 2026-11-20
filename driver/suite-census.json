@@ -2709,6 +2709,12 @@
           "skips": 5,
           "todos": 0
         },
+        "a-stage-meets-each-paragraph-its-manual-carries-once.test.mjs": {
+          "tests": 5,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "a-stage-program-starts-with-a-listed-environment.test.mjs": {
           "tests": 12,
           "asserts": 62,
