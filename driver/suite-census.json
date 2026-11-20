@@ -2968,9 +2968,9 @@
           "todos": 0
         },
         "a-version-npm-is-still-validating-gets-its-entry-once-served.test.mjs": {
-          "tests": 20,
-          "asserts": 72,
-          "skips": 12,
+          "tests": 21,
+          "asserts": 80,
+          "skips": 13,
           "todos": 0
         },
         "a-visible-line-is-written-for-the-client.test.mjs": {
