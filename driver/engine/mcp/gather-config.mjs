@@ -14,6 +14,13 @@ import { recordedRegister } from "../run-choices.mjs";   // the register a run r
 import { fixtureRecordsDir } from "../../register-fixture-marker.mjs";
 import { ledgerPath, runRecordLogPath } from "../../../providers/_shared/ledger-path.mjs";
 import { CORRECTION_POSITIONS_ENV } from "./correction-positions.mjs";   // the positions a correction hands its save
+import { REGISTER_TOOLS } from "../../../providers/_shared/register-tools.mjs";
+import { REGISTER_GRANT as CORSEARCH_GRANT } from "../../../providers/corsearch/src/register-grant.mjs";
+import { REGISTER_GRANT as CLARIVATE_GRANT } from "../../../providers/clarivate/src/register-grant.mjs";
+import { REGISTER_GRANT as SIGNA_GRANT } from "../../../providers/signa/src/register-grant.mjs";
+import { REGISTER_GRANT as EUIPO_GRANT } from "../../../providers/euipo/src/register-grant.mjs";
+import { REGISTER_GRANT as USPTOLOCAL_GRANT } from "../../../providers/uspto-local/src/register-grant.mjs";
+import { REGISTER_GRANT as FREETIER_GRANT } from "../../../providers/free-tier/src/register-grant.mjs";
 
 const MCP_DIR = dirname(fileURLToPath(import.meta.url));
 const NODE = process.execPath;
@@ -23,31 +30,6 @@ const NODE = process.execPath;
 // /home/operator/<vendor-dir>/... layout and broke case-law gathering on a clean checkout.)
 const BRIDGE = process.env.CLEAROTRON_OAUTH_BRIDGE || join(MCP_DIR, "..", "..", "..", "providers", "oauth-mcp-bridge", "bridge.mjs");
 
-// ── The register surface is PROVIDER-NEUTRAL ────────────────────────────────────────────────────
-// The active register provider is mounted under the single server key `register`, and every register
-// tool is named `register_*`. The vendor's name survives ONLY inside its own *-server.mjs file and in
-// skills/clearance-register/providers/<provider>.md (the vocabulary doc the spawns are told to read).
-//
-// Why neutral names rather than interpolating `${PROVIDER}_enumerate` into the prose: the register
-// instructions in stages.mjs / pipeline.mjs / gateway.mjs are then correct BY CONSTRUCTION for every
-// provider, and the namespaced ids (`mcp__register__register_enumerate`) stay stable across a swap.
-//
-// THIS USED TO CLAIM MORE THAN IT COULD KEEP. The old sentence ended "— so an excludeTools entry
-// or a corrective-ladder nudge cannot silently name a tool that isn't loaded", and a stable NAME is not a
-// loaded tool: signa served four of these eight while its grant carried two, so two ladder hints named
-// tools its allowlist refused, and a third names one signa does not serve at all. What is true is now
-// enforced instead of asserted here, in two places that fail rather than describe:
-//   · register-advertisement-vs-grant.test.mjs — every provider grants exactly what its server advertises,
-//     compared against the server's real tools/list, with any withholding written down;
-//   · the same file's second arm — every neutral tool the driver's composed prose ORDERS is served by every
-//     provider, with the one live exception named and required to still reproduce.
-// A provider that cannot implement one of these tools must fail LOUDLY (and its gap becomes a
-// `deferred` coverage row); it must never quietly expose a weaker substitute under the same name.
-const REGISTER_TOOLS = [
-  "register_search", "register_record_fetch", "register_image_fetch", "register_expand_phoneme",
-  "register_batch_screen", "register_enumerate", "register_execute_plan", "register_propose_supplemental",
-];
-
 // Per-provider register server scripts. All expose the SAME `register_*` names (each wraps its own
 // provider core as pure glue); they differ only in which of REGISTER_TOOLS they can actually serve.
 // EXPORTED for E12: the dictation check has to know which tool names exist and which a stage
@@ -55,107 +37,14 @@ const REGISTER_TOOLS = [
 // requires a provider by design. Reading this table directly lets it take the UNION for "what
 // names exist" and the INTERSECTION for "what every provider grants", without re-introducing the
 // default deleted.
+// Each provider's grant, with the reason for every tool it withholds, lives in its own folder (providers/<name>/src/register-grant.mjs).
 export const REGISTER_SERVERS = {
-  corsearch: { script: "register-server.mjs", args: ["corsearch"], tools: REGISTER_TOOLS },
-  // clarivate: 7 of the 8. `register_expand_phoneme` is ABSENT ON PURPOSE — the ranked-similarity
-  // surface that would preview phoneme variants is not available on this provider (HTTP 403),
-  // and doctrine 2 forbids stubbing it with something weaker. Phonetic SEARCH still works
-  // (match_mode:"phonetic"); only the variant PREVIEW is unavailable. The gap is declared in
-  // providers/clarivate/src/capabilities.js (phonemeExpansion:false) and pinned by
-  // test/engine.gather.test.mjs, so it can never become a silent omission.
-  clarivate: { script: "register-server.mjs", args: ["clarivate"], tools: REGISTER_TOOLS.filter((t) => t !== "register_expand_phoneme") },
-  // signa: 5 of the 8, and the grant is what the server SERVES. It was 2 until and 4 until.
-  // The 2 was set on 2026-07-21 by 7ef96c7c when signa really was the thin provider — and it never
-  // moved again. The five
-  // commits that made it thick (4b3b59ef kernel + enumerate + execute_plan, 4a616899 the plan-vocabulary
-  // deps, 3468d78c the probed capability contract) touched no file in this directory, so the row was not
-  // dropped from a diff: it was never in one. `git log -L` on this line returns exactly one commit.
-  //
-  // WHAT THAT COST, and why the count pin did not say a word: `allowedToolsFor` is built FROM this row, so
-  // the per-provider count assertion in engine.gather.test.mjs compared the table with itself and passed at
-  // 2 — then DEFENDED the gap, because correcting the grant failed it. Signa was also the one provider of
-  // six with no `handshake + N tools` test, so its advertisement was never compared to anything.
-  // register-advertisement-vs-grant.test.mjs is the general form: every provider, discovered from this
-  // table, its real `tools/list` against its resolved grant.
-  //
-  // PER TOOL, as every sibling entry does it:
-  //   register_search / register_record_fetch — served since the thin days.
-  //   register_enumerate     — SERVED and now granted.  built the page loop on the shared kernel;
-  //     capabilities.js records the bounds it runs against as live-probed 2026-08-17 (pageSize 100 is the
-  //     API's hard refusal, verified at 200/250/500). This is the tool the owner-window ceiling is
-  //     passed into (OWNER_SCOPED_WINDOW → ceilingFor → makeEnumerate), so withholding it put that
-  //     criterion out of reach of any round.
-  //   register_execute_plan  — SERVED and now granted. Two corrective-ladder hints name it unconditionally
-  //     (`tool_timeout`, `named_band_missing`), so while it was withheld a repair turn on this provider was
-  //     told to make a call its allowlist refused.
-  //   register_propose_supplemental — SERVED as, and it is the same executor one file over. The
-  //     mint is shared (mcp/supplemental.mjs); the only per-provider parts are doExecutePlan, which this
-  //     server already binds for the dictated plan, and the capability contract, which the mint reads to
-  //     decide what defers. Nothing new reaches the wire. While it was unwired the driver's composed prose
-  //     ordered the mint UNCONDITIONALLY — `stages.mjs` (the unconditional mint the register-units digest orders) — so a signa deploy was told to
-  //     make a call no server offered. Measured on  over a real signa run: the order reached three
-  //     register-unit stages, no call was recorded against it, and the run still read `delivered`.
-  //
-  // THE OTHER THREE NEUTRAL NAMES ARE NOT SERVED BY THIS SERVER AT ALL, so they are outside the grant
-  // question and outside. Each carries its reason, because an absence with no reason is a finding
-  // rather than a decision:
-  //   register_batch_screen  — no batch-screen surface and no clearance endpoint; `/v1/analysis/clearance`
-  //     404s, stated in providers/signa.md.
-  //   register_expand_phoneme — `phonemeExpansion: false` in the capability contract. READ THAT FIELD
-  //     NARROWLY: it withholds the client-supplied VARIANT LIST, not phonetic search. `predicates.phonetic`
-  //     is `"phonetic"`, a native ranked strategy, so a phonetic SWEEP runs here and only the variant
-  //     PREVIEW is missing — the same shape as clarivate above. Reading it as "no phonetic surface" is how
-  //     a copied sibling paragraph tells the seat to defer a slice this provider answers.
-  //   register_image_fetch   — the tool's payload is the VIENNA figurative-element codes and a citable
-  //     public page, and this provider publishes neither. Read 2026-08-22 across providers/signa/src: no
-  //     vienna or figurative field anywhere in the core, the normaliser carries `imageAvailable`
-  //     (`rec.has_media`) and nothing else about the mark's figure, `hasPublicRecordUrl: false` and
-  //     `resolved_link: null` (no page per record of its own). Serving it would return a
-  //     bare boolean under a name that promises comparable figurative data. NOT A PROBE: this is a read of
-  //     the code and the vendor doc in this repo, and whether the live API has an image endpoint nobody
-  //     wired is UNTESTED from here — euipo's `markImage` looked equally absent until `GET
-  //     /trademarks/{n}/image` answered 200, so treat this as the current best reading, not a closed
-  //     question. PINNED, so this paragraph cannot outlive the facts it rests on: the arm
-  //     " signa's core still carries NO figurative data" in driver/test/register-capabilities.test.mjs
-  //     reds if a vienna/figurative field appears in providers/signa/src or if hasPublicRecordUrl goes
-  //     true. If it reds, re-read this reason before you touch the test.
-  signa:     { script: "register-server.mjs", args: ["signa"],
-    tools: ["register_search", "register_record_fetch", "register_enumerate", "register_execute_plan",
-      "register_propose_supplemental"] },
-  // euipo: 7 of the 8, the same count as clarivate and for the same missing tool.
-  // `register_expand_phoneme` is ABSENT ON PURPOSE — there is no phonetic surface here to preview
-  // variants of. `=phonetic=`, `=fuzzy=` and RSQL's own `~=` all return HTTP 400 at a valid `size`
-  // (probed 2026-08-09), so unlike clarivate phonetic SEARCH is unavailable too:
-  // capabilities.predicates.phonetic is null, the planner stamps the slice `unsupported`, and it
-  // surfaces as a deferred coverage row rather than a contains wearing the phonetic name.
-  //
-  // `register_image_fetch` IS here, and was nearly dropped: the detail record's `markImage` carries
-  // only {imageFormat, viennaClasses} with no bytes and no URL, which reads like an empty field.
-  // `GET /trademarks/{n}/image` answers 200 with real image bytes. The tool serves the Vienna
-  // figurative-element codes — the comparable data — rather than the bytes.
-  euipo:     { script: "register-server.mjs", args: ["euipo"],     tools: REGISTER_TOOLS.filter((t) => t !== "register_expand_phoneme") },
-  // uspto-local: 6 of the 8, and the only provider here that is a FILE rather than an API — the guard
-  // it fails on is USPTO_LOCAL_DB, not a key. Two tools are absent on purpose, neither stubbed:
-  //   register_image_fetch    — the USPTO bulk product is text. It carries the drawing CODE (hence
-  //     mark_feature) and not one byte of image data, so there is no weaker image to serve.
-  //   register_expand_phoneme — no phonetic surface exists over a plain text column. Unlike clarivate,
-  //     phonetic SEARCH is unavailable here too (capabilities.predicates.phonetic is null), so such a
-  //     slice is stamped unsupported at compile time and disclosed as a deferred coverage row.
-  // Both gaps are declared in providers/uspto-local/src/capabilities.js and the exact six are pinned by
-  // test/engine.gather.test.mjs, so neither can become a silent omission.
-  "uspto-local": { script: "register-server.mjs", args: ["uspto-local"],
-    tools: REGISTER_TOOLS.filter((t) => t !== "register_expand_phoneme" && t !== "register_image_fetch") },
-  // free-tier: EUIPO + the local US index as ONE register — 7 of the 8. The surface is the UNION
-  // of what its members can serve, not the intersection, because a tool one member serves is still a
-  // real capability of the composite:
-  //   register_image_fetch    — SERVED. EUIPO answers with image bytes; a US record refuses as a stated
-  //     SOURCE LIMITATION. "The index holds no images" and "this record has no image" are different
-  //     facts and the tool says which one it means.
-  //   register_expand_phoneme — ABSENT, and here the intersection and the union agree: NEITHER member
-  //     has a phonetic surface, so predicates.phonetic is null and a phonetic slice defers rather than
-  //     degrading into a contains under the phonetic name.
-  "free-tier": { script: "register-server.mjs", args: ["free-tier"],
-    tools: REGISTER_TOOLS.filter((t) => t !== "register_expand_phoneme") },
+  corsearch: CORSEARCH_GRANT,
+  clarivate: CLARIVATE_GRANT,
+  signa: SIGNA_GRANT,
+  euipo: EUIPO_GRANT,
+  "uspto-local": USPTOLOCAL_GRANT,
+  "free-tier": FREETIER_GRANT,
 };
 
 // ── RECORDING: THE ONE REGISTRY THE GRANT DERIVES FROM ─────────────────────────────────────────────
@@ -771,7 +660,7 @@ const CASELAW_TOOLS = ["WebFetch"]; // bridge tools are namespaced courtlistener
  *
  * Derived from the very table that does the excluding, so there is one definition and no second list to
  * keep in step. A tool in here is NOT a grant the engine forgot: it is a capability the active provider
- * does not have, declared in `REGISTER_SERVERS` above and again in that provider's own
+ * does not have, declared in its `register-grant.mjs` (gathered into `REGISTER_SERVERS` above) and again in its own
  * `capabilities.js`, each with the reason written beside it.
  *
  * WHY ANYTHING NEEDS TO ASK. The ordered-but-not-granted check reads a dispatch that NAMES a tool and a
