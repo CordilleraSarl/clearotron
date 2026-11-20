@@ -24,6 +24,7 @@ import { projectAssessmentField } from '../findings-model.mjs';
 import { inputsLine } from '../framework-method.mjs';
 import { deliveryVocabViolations } from '../predelivery-lint.mjs';
 import { coverageUnitLabel } from '../coverage-ledger.mjs';
+import { leftOpenRows } from './render.mjs';   // the gaps the report lists under Left open, one list for every surface
 
 const HEAD_FILL = WB.headerFill;
 // plain-English coverage-state fills (the state words are relabelled for the reader; the fills key off them).
@@ -446,8 +447,11 @@ function coverageRows(coverage) {
     const { done, left } = ('done' in c || 'left' in c)
       ? { done: plainNote(c.done ?? ''), left: plainNote(c.left ?? '') || '—' }
       : splitCoverageNote(c.note, state);
+    // A row's `detail` is the list its note counts, such as the territories a script's search did not complete in: it
+    // is printed under the note, as the report prints it.
+    const detail = Array.isArray(c.detail) && c.detail.length ? `\n${c.detail.map(plainNote).join(', ')}` : '';
     // An area the engine named by its axis reads the reader's label, as the Summary's slices do.
-    return { Area: plainNote(coverageUnitLabel(c.area)), State: state, 'What was done': done, "What's left": left };
+    return { Area: plainNote(coverageUnitLabel(c.area)), State: state, 'What was done': done, "What's left": `${left}${detail}` };
   });
 }
 
@@ -628,7 +632,13 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
   wb.creator = BRAND.name;
   wb.created = new Date(0); // deterministic
 
-  const coverage = contract?.coverage || [];
+  // EVERY GAP THE REPORT LEAVES OPEN IS ON THIS SHEET, ONCE (design, 2026-11-20). The report's Left open list is the
+  // run's open coverage rows, which this sheet already prints, and the local-script gaps the report composes from the
+  // search record. A gap is added only where no coverage row already says it, word for word; the Summary's count and
+  // caveat read the added rows like any other.
+  const recorded = contract?.coverage || [];
+  const coverage = [...recorded, ...leftOpenRows({ coverage: recorded, localScripts: contract?.localScripts ?? null })
+    .filter((r) => !recorded.some((c) => c?.area === r?.area && c?.note === r?.note))];
   const coverageJudgment = contract?.coverageJudgment || null;
   const verdict = contract?.verdict || null;
   const fetchState = contract?.fetchState || {};
