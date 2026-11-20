@@ -13,7 +13,7 @@ import { join } from "node:path";
 import { logoOf, imageTypeOf, citedRefs, markLogos, writeRecordImages } from "../mark-logos.mjs";
 import { knockoutRecordsDoc, openingQid } from "../knockout-register-read.mjs";
 import { capabilitiesFor } from "../register-capabilities.mjs";
-import { RunCancelled, requestCancel } from "../cancel.mjs";
+import { requestCancel } from "../cancel.mjs";
 import { doMarkImage } from "../../providers/signa/src/core.js";
 import { driverDir } from "../../shared/driver-dir.mjs";
 
@@ -218,12 +218,16 @@ test("a Signa Knockout's figurative filing is fetched from the link its row gave
   assert.equal(rows["/mark/us/tm_3"].state, "unknown", "a record with no link to follow made no request, so it is not a failed fetch");
 });
 
-test("a stopped run asks for no image: the step ends as the stop, not as a logo that could not be had", async () => {
+test("a stop that lands during the step does not end it: the step runs past the publish read, and the report is delivered whole", async () => {
+  // Both pipelines run this step after `assertNotCancelledBeforePublish`, when the run can no longer be stopped, and the
+  // calls that build what is delivered are not behind the stop (cancel.mjs). A stop refused here would end the run with
+  // no report after the screen said it could no longer be stopped.
   const dir = signaKnockout({ "/mark/us/tm_1": { markFeature: "combined", imageAvailable: true, imageUrl: "https://api.signa.so/v1/trademarks/tm_1/media/med_1" } });
   requestCancel(dir, { via: "test" });
   const calls = [];
-  await assert.rejects(markLogos(dir, { registerRecordsPath: join(dir, "register-records.json"), provider: linkFollower(calls), env: ENV }), RunCancelled);
-  assert.deepEqual(calls, [], "an image was asked for after the stop");
+  const doc = await markLogos(dir, { registerRecordsPath: join(dir, "register-records.json"), provider: linkFollower(calls), env: ENV });
+  assert.equal(calls.length, 1, "the image was not asked for");
+  assert.equal(byRef(doc)["/mark/us/tm_1"].state, "fetched");
 });
 
 test("Signa's image is asked only of the register's own host, over https, and a refusal is a failed fetch", async () => {

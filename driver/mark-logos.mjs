@@ -25,15 +25,17 @@
 //
 // A RESUME OR A REPUBLISH ASKS NOTHING AGAIN. A row already `fetched` whose file is still there is kept as it is.
 //
-// RECORDING ONLY. A logo that could not be had never stops a report; the one thing that ends the step is a stopped run,
-// which asks for no image (cancel.mjs) and settles as stopped.
+// RECORDING ONLY, and it never throws: a logo that could not be had never stops a report.
+//
+// NOT BEHIND THE STOP. Both pipelines run this step after their publish read (`assertNotCancelledBeforePublish`), when the
+// run can no longer be stopped, and cancel.mjs leaves the calls that build what is delivered unwrapped: a stop refused here
+// would leave a report half delivered rather than not delivered.
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve, sep } from "node:path";
 import { normalizeRecordUri } from "../providers/_shared/record-uri.mjs";
 import { recordBodyFromLog } from "../providers/_shared/ledger.mjs";   // the run record log's own index
 import { readRecordArtifacts } from "./registry-fidelity.mjs";
 import { DRIVER_DIR, driverDir, ensureDriverDir, paths } from "./run-record.mjs";
-import { RunCancelled, stopsWithTheRun } from "./cancel.mjs";   // an image request is a paid call: it reads the stop first
 import { runLog } from "./log.mjs";
 
 export const LOGOS_FILE = "logos.json";
@@ -141,10 +143,7 @@ export async function logoRows({ runDir, refs, records, register, fetchImage, ma
     if (!mayCall?.ok) { rows.push({ ref, register, state: "unknown", cause: mayCall?.why ?? "this run makes no register call" }); continue; }
     if (typeof fetchImage !== "function") { rows.push({ ref, register, state: "unknown", cause: "this register's adapter fetches no image" }); continue; }
     let got;
-    try { got = await fetchImage(ref, record); } catch (e) {
-      if (e instanceof RunCancelled) throw e;   // a stopped run asks for nothing more, and settles as stopped
-      got = { ok: false, cause: `the request threw: ${String(e?.message ?? e).slice(0, 120)}` };
-    }
+    try { got = await fetchImage(ref, record); } catch (e) { got = { ok: false, cause: `the request threw: ${String(e?.message ?? e).slice(0, 120)}` }; }
     // An adapter that had nothing to ask with (no image link on the record) made no request: that is not a failed fetch.
     if (!got?.ok) { rows.push({ ref, register, state: got?.notTried ? "unknown" : "failed", cause: String(got?.cause ?? "the request did not land").slice(0, 200) }); continue; }
     const kind = imageTypeOf(got.bytes);
@@ -162,7 +161,7 @@ export async function logoRows({ runDir, refs, records, register, fetchImage, ma
 /**
  * The step both pipelines run before publishing. `findingsPath` for a clearance, `registerRecordsPath` for a Knockout;
  * `provider` is the run's register adapter; `injectedFetcher` true when the run answers its record fetches itself (a
- * replay, a test). Writes `_driver/logos.json`; returns it, or null when it could not. Throws only a stop (RunCancelled).
+ * replay, a test). Writes `_driver/logos.json`; returns it, or null when it could not. Never throws.
  */
 export async function markLogos(runDir, { findingsPath = null, registerRecordsPath = null, provider = null, injectedFetcher = false,
   env = process.env, agentId = null, sessionKey = null } = {}) {
@@ -178,17 +177,13 @@ export async function markLogos(runDir, { findingsPath = null, registerRecordsPa
       : !provider ? { ok: false, why: "no register is set for this run" }
         : !credential ? { ok: false, why: `${provider.credEnv ?? "the register's credential"} is not set, so no register call is made` }
           : { ok: true };
-    const fetchImage = typeof provider?.markImage === "function"
-      ? stopsWithTheRun(runDir, "logo-fetch", (ref, record) => provider.markImage(ref, { agentId, sessionKey, record })) : null;
+    const fetchImage = typeof provider?.markImage === "function" ? (ref, record) => provider.markImage(ref, { agentId, sessionKey, record }) : null;
     const records = savedRecords(runDir, refs, { knockout: Boolean(registerRecordsPath) });
     const rows = await logoRows({ runDir, refs, records, register, fetchImage, mayCall, prior });
     const doc = { schema: 1, register, takenAt: new Date().toISOString(), rows };
     writeFileSync(at, JSON.stringify(doc, null, 2) + "\n");
     return doc;
-  } catch (e) {
-    if (e instanceof RunCancelled) throw e;   // a stop is not a logo that could not be had
-    return null;
-  }
+  } catch { return null; }
 }
 
 /** The run's log line for the step: how many registrations ended in each state, or that the step could not write. */

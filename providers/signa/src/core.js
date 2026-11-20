@@ -944,14 +944,11 @@ export function skippedChannels(body, requested) {
   return out;
 }
 
-// ── Record fetch ─────────────────────────────────────────────────────────────────────────────────
-// Accepts a synthetic `/mark/<office>/<id>` ref OR a raw Signa id. Returns the NORMALIZED record and
-// persists it (keyed by the synthetic ref) for the driver's A1 citation-fidelity gate.
 // ── One registration's logo, from the image link the register gave for it ───────────────────────────────────────────
 // Signa states a mark's image on its own records and search rows: `primary_image_url`, a path under the API's own host
-// (`/v1/trademarks/{id}/media/{id}`, on every link a live Knockout's rows carried, 2026-11-20). The link is followed only
-// when it is https and on the host this install talks to, so a record cannot send the request anywhere else; a record with
-// no such link asks nothing (`notTried`). In a test of 2026-11-17 the link opened without a key and charged no credits; the
+// (`/v1/trademarks/{id}/media/{id}`, on every link a live Knockout's rows carried, 2026-11-20). The request goes out only
+// when the link is https and on the host this install talks to; the register's own answer may redirect it, and what comes
+// back is kept only if it opens as an image (mark-logos.mjs). A record with no such link asks nothing (`notTried`). In a test of 2026-11-17 the link opened without a key and charged no credits; the
 // answer's own credits header is ledgered all the same, as every call's is.
 const IMAGE_ENDPOINT = "GET /v1/trademarks/{id}/media/{id}";
 export async function doMarkImage(base, link, tctx) {
@@ -973,6 +970,9 @@ export async function doMarkImage(base, link, tctx) {
   return { ok: true, bytes, contentType: resp.headers.get("content-type") };
 }
 
+// ── Record fetch ─────────────────────────────────────────────────────────────────────────────────
+// Accepts a synthetic `/mark/<office>/<id>` ref OR a raw Signa id. Returns the NORMALIZED record and
+// persists it (keyed by the synthetic ref) for the driver's A1 citation-fidelity gate.
 export async function doRecordFetch(apiKey, base, params, tctx, { mock = false } = {}) {
   const ref = params.record_id ?? params.id;
   if (!ref) return { type: "text", text: "ERROR: record_id (a /mark/<office>/<id> ref or a Signa id) is required." };
