@@ -27,7 +27,7 @@ import { resultsPerCellOf } from "./provider-calls.mjs";
 import { digestDispatchExtra, extractRulingsTail, loadCoverageLedger, readOwnerScreen, recallFollowupMaxFor, relabelCoverageRows, runDigest, writeRegisterDigestFacts } from "./register-digest-run.mjs";
 import { deriveRecordCarry, recordSynthesisSeam } from "./record-carry-trace.mjs";
 import { inScopeClassList, registerJurisdictions } from "./run-scope.mjs";
-import { changedFindingOrdinals, changedFindingOwners, floorDutyOwedNow, foreignRecordLinksBlanked, goodsEvidenceForTheWriter, keepGoodsEvidenceAsWritten, messageCtxFor, NARROW_REPAIR_TRIGGERS, outputStands, recoverWinningAttempt, reviewExclusionsPaths, revisedCitesNote, safeReadJson, stage, stageCharter, stageSessionKey, useTheStrayLedger, withdrawnExclusionLine, writerExclusionBlock, writerExclusionLine, writerExclusions } from "./stage-dispatch.mjs";
+import { changedFindingOrdinals, changedFindingOwners, floorDutyOwedNow, foreignRecordLinksBlanked, goodsEvidenceForTheWriter, keepGoodsEvidenceAsWritten, messageCtxFor, NARROW_REPAIR_TRIGGERS, outputStands, recoverWinningAttempt, reviewExclusionsPaths, revisedCitesNote, safeReadJson, stage, stageCharter, stageSessionKey, withdrawnExclusionLine, writerExclusionBlock, writerExclusionLine, writerExclusions } from "./stage-dispatch.mjs";
 import { runDelivery } from "./steps/delivery.mjs";
 import { runOverviewAndCards } from "./steps/overview-and-cards.mjs";
 import { runVerdictGate } from "./steps/verdict-gate.mjs";
@@ -317,14 +317,6 @@ export function lateBindAction({ matterFrameRan, digestRan, narrativeExists }) {
   if (matterFrameRan) return "digest-message";
   return "fold-job";
 }
-
-// The ledger of the sweeps for strays (stage-dispatch.mjs): what each run has reported, and the doctrine tree and the
-// studio root as each run first saw them. Created here, with this module, and handed to the sweeps as it loads, so a
-// fresh load of this module starts it empty.
-const strayReported = new Map();
-const doctrineBefore = new Map();
-const matterBefore = new Map();
-useTheStrayLedger({ doctrineBefore, matterBefore, strayReported });
 
 // AD-2 A1 (E2E-R2, ordering) — the delivery-TAIL stages: exactly the stages the pre-delivery pass
 // itself generates and can therefore RE-DO in place when a repair moves an input underneath them

@@ -867,10 +867,10 @@ const laneWedgeSleep = (ms) => new Promise((r) => setTimeout(r, ms));
 // stray is reported ONCE per run — it persists for every later stage, and a line per stage would bury
 // the signal it exists to raise. A sweep that throws is swallowed whole: this must never be able to
 // cost a run anything.
-let strayReported;
+const strayReported = new Map();
 // — the doctrine tree as it was when this run first looked. One snapshot per run dir; anything
 // that appears after it appeared because a stage wrote it.
-let doctrineBefore;
+const doctrineBefore = new Map();
 const readTreeDir = (d) => readdirSync(d, { withFileTypes: true });
 function sweepDoctrineTree(ctx, stageName) {
   try {
@@ -897,7 +897,7 @@ function sweepDoctrineTree(ctx, stageName) {
 // A matter directory that appears while a run is in flight was not created by that run — on the codex
 // engine with the sandbox bypassed, a stage wrote its real output into a sibling whose slug was one
 // letter off, and nothing said so until a human compared two directory listings by eye.
-let matterBefore;
+const matterBefore = new Map();
 function sweepMatterSiblings(ctx, stageName) {
   try {
     const P = ctx?.paths;
@@ -933,14 +933,6 @@ function sweepStrayArtifacts(ctx, stageName) {
       runLog(P.runDir, { event: "stray-artifact", stage: stageName, name: s.name, why: s.why });
     }
   } catch { /* a hygiene sweep must never be able to affect a run */ }
-}
-
-/**
- * Called once by pipeline.mjs as it loads, with the three ledgers above. They are created there, with that module, so a
- * fresh load of it starts every run's snapshots and reported strays empty, as it did while they were declared there.
- */
-export function useTheStrayLedger(held) {
-  ({ doctrineBefore, matterBefore, strayReported } = held);
 }
 
 // ── THE GOODS EVIDENCE AS THE WRITER HAD IT (goods-evidence.mjs GOODS_EVIDENCE_AS_WRITTEN_FILE) ─────────────────────
