@@ -2,4 +2,4 @@
 "clearotron-driver": patch
 ---
 
-Fixed: An installation whose register is Signa now shows logos. A cited registration on a clearance report, and a listed filing on a Knockout report, shows its logo where its register record shows one. Before, an installation on Signa never fetched a logo.
+Fixed: Logos now reach the report on both registers. A cited registration on a clearance report, and a listed filing on a Knockout report, shows its logo where its register record shows one. Before, an installation on Clarivate had every logo request refused, so each logo's place read "Logo not retrieved", and an installation on Signa never fetched a logo.
