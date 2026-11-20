@@ -19,13 +19,14 @@ import { registerCapabilities } from "../register-unreachable.mjs";
 import { accountRemedyTerms, domClosedOverAccounted, remedyAccountingEvent } from "../remedy-accounting.mjs";
 import { repairFollowup } from "../repair-composers.mjs";
 import { parseScopeLedgerJson, scopeJurisdictions } from "../scope-ledger.mjs";
+import { settleOneShotStamp } from "../stage-freshness.mjs";
 import { lines } from "../stages.mjs";
 import { readWithheldFamilies, releasedFamilyQids } from "../withheld-families.mjs";
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 
 export async function runFrameComparison({ P, axes, ctx, dispatchPlanQids, flushDigestQueue, job, mintDigestWork, planExec, run, runCommonLaw, unitKey }, helpers) {
-  const { bandBytesOf, deriveNamedBand, forceFromActive, inScopeClassList, joinOptions, loadCoverageLedger, mechanicalFormGapDirectives, readRegisterBands, reaskFollowUpErrors, refreshSupplementalExecution, remergeIfBandsMoved, settleOneShotStamp, stage } = helpers;
+  const { bandBytesOf, deriveNamedBand, forceFromActive, inScopeClassList, joinOptions, loadCoverageLedger, mechanicalFormGapDirectives, readRegisterBands, reaskFollowUpErrors, refreshSupplementalExecution, remergeIfBandsMoved, stage } = helpers;
   // ── Property 1+2 (frame-omission design): the blind frame-diff + the reopen channel ────────────────
   // The blind-frame stage re-derived the threat model STARVED of the matter frame (gather, parallel with
   // the sweeps). Diff that cold model against what the run ACTUALLY scoped/searched (frame-diff), and act

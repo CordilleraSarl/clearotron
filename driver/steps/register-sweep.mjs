@@ -26,7 +26,7 @@ import { atomicWrite, driverDir, readJson } from "../run-record.mjs";
 import { foldSupplementalEntries, isProviderHardErrorReason, joinPlanToBands, mintSupplementalQid, partitionFoldDirectives, romanizedTermsFromPlan, screenThenCap } from "../register-plan.mjs";
 import { readRegisterTaint } from "../register-taint.mjs";
 import { repairFollowup } from "../repair-composers.mjs";
-import { classifyFailureReason, createRepairLedger, fanInMissingEvidence } from "../repairs.mjs";
+import { classifyFailureReason, createRepairLedger, fanInMissingEvidence, isFallbackEligible } from "../repairs.mjs";
 import { validators } from "../verify.mjs";
 import { closureBlocksOf } from "../web-grid.mjs";
 import { readWithheldFamilies, releasedFamilyQids } from "../withheld-families.mjs";
@@ -34,6 +34,7 @@ import { existsSync, readFileSync, renameSync, rmSync, writeFileSync } from "nod
 import { seedUnplannedBands } from "../register-unit-record.mjs";
 import { join } from "node:path";
 import { stopsWithTheRun } from "../cancel.mjs";   // every paid call the code makes itself reads the stop first
+import { StageFailure } from "../run-outcome.mjs";
 
 /**
  * Which cross-checks this pass folds into the plan, and which the receipt keeps from an earlier pass. PURE.
@@ -54,7 +55,7 @@ export function crossChecksForThisPass(plan, candidates, candDirectives, prior, 
 }
 
 export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, runCommonLaw }, helpers) {
-  const { CL_SUPP_TAGS, StageFailure, connotationRemedyToken, defaultConnotationReissuer, deriveNamedBand, foldSupplementalProposals, holdStickyGapsIn, inScopeClassList, isFallbackEligible, joinOptions, mergeRegisterBands, must, noteAdapter, noteChannelCoverageAtStageExit, readPlanExecution, readRegisterBands, recordConnotationAudit, remergeIfBandsMoved, resultsPerCellOf, runBatched, runSaturationProbeCodeSide, slicesUnitNeverReached, stage, taintDisposition, taintParkJudgmentArtifacts, takeSlicesOutOfTheBand, unfinishedUnitAsItStands, writePlanExecutionReceipt } = helpers;
+  const { CL_SUPP_TAGS, connotationRemedyToken, defaultConnotationReissuer, deriveNamedBand, foldSupplementalProposals, holdStickyGapsIn, inScopeClassList, joinOptions, mergeRegisterBands, must, noteAdapter, noteChannelCoverageAtStageExit, readPlanExecution, readRegisterBands, recordConnotationAudit, remergeIfBandsMoved, resultsPerCellOf, runBatched, runSaturationProbeCodeSide, slicesUnitNeverReached, stage, taintDisposition, taintParkJudgmentArtifacts, takeSlicesOutOfTheBand, unfinishedUnitAsItStands, writePlanExecutionReceipt } = helpers;
   // Step 2A/2B — fan-out (batched ≤ gatherConcurrency) then the code-side fan-in barrier.
   // Property 1 (frame-omission design): the BLIND re-derivation runs as a sibling of the WHOLE gather,
   // not as a gather member — it reads only the raw instruction (no tool calls), so under the turn cap it
