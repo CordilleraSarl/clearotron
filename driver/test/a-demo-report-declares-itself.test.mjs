@@ -102,7 +102,7 @@ test("the publisher resolves it from the roster, so a REPUBLISH picks it up", ()
     "the clearance publisher asks the shared resolver");
   // The page reads the run's report document, and the demo flag rides beside it as the page's surface, as it always
   // rode beside the page's other inputs.
-  assert.match(src, /renderClearanceDocument\(pageDocument\(reportDocument\), \{[^}]*\bdemoData \}\)/,
+  assert.match(src, /renderReport\(pageDocument\(reportDocument\), \{[^}]*\bdemoData \}\)/,
     "and it reaches the renderer beside the document the publisher already builds, not a new parameter "
     + "threaded through the call chain");
 });

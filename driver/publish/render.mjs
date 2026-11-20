@@ -34,9 +34,9 @@ import { REC, inPriorityWindow, ownerDisplayName } from '../registry-fidelity.mj
 import { registrationSystem } from '../jurisdiction-systems.mjs';
 import { REPORT_PAGE as R, RECORD_LINKS as LINK_WORDS, KNOCKOUT_PAGE } from './strings.mjs';
 import { READ_LEAD_RE } from '../report-card-record.mjs';   // D3 — the dedupe gate and the card's acceptance are ONE predicate
-import { logoLockup, BRAND, confPosture, sectionStrip, PALETTE, QUADRANT_COLOURS as QC } from '../../shared/brand.mjs';
+import { logoLockup, BRAND, confPosture, PALETTE, QUADRANT_COLOURS as QC } from '../../shared/brand.mjs';
 import { NAV_CSS } from '../../shared/site-nav.mjs';
-import { pageShell } from './page-shell.mjs';
+import { reportPage } from './page-shell.mjs';
 import { registerRecordView, RECORD_LABELS, registrationsCount } from './register-record.mjs';
 import { recordEntryHtml, logoFigureHtml } from './register-record-html.mjs';
 import { axisTwin, kindsForFollowUp } from '../follow-up-twins.mjs';   // when a written row stands in for a Follow-up row   // a record entry and a logo, drawn once for both report pages
@@ -2637,17 +2637,17 @@ const STRIP = Object.freeze([
   ['searched', R.searched.title],
 ]);
 
-// THE CLEARANCE PAGE FROM ITS REPORT DOCUMENT (C14). The run's report document (publish/report-document.mjs, written to
-// `_driver/report-document.json`) holds every fact the page prints. This reads it, as written, and hands the page the
-// arguments publish hands it today, so the page is byte for byte the page it was. What the document does not hold is
-// the page's surface: its two addresses, the confidentiality posture and the demo flag, which publish passes beside the
-// document as it always has; and the two sets the document holds by reference, the saved records' bodies by uri and the
-// saved logos' images by ref, which publish resolves from the run. PURE given its inputs.
-export function renderClearanceDocument(doc, { recordsByUri = new Map(), logos = new Map(), homeHref, chromeHref, delivery, demoData } = {}) {
+// THE CLEARANCE PAGE'S CONTEXT FROM ITS REPORT DOCUMENT (C14). The run's report document (publish/report-document.mjs,
+// written to `_driver/report-document.json`) holds every fact the page prints, and this is the one place the page reads
+// it: as written, into what the page's context is built from, so the page is byte for byte the page it was. What the
+// document does not hold is the page's surface: its two addresses, the confidentiality posture and the demo flag, which
+// publish passes beside the document as it always has; and the two sets the document holds by reference, the saved
+// records' bodies by uri and the saved logos' images by ref, which publish resolves from the run. PURE given its inputs.
+function clearanceContextOf(doc, { recordsByUri = new Map(), logos = new Map(), homeHref, chromeHref, delivery, demoData } = {}) {
   const run = doc?.run ?? {}, scope = doc?.scope ?? {}, client = doc?.client ?? {}, verdict = doc?.verdict ?? {};
   const framework = doc?.framework ?? {}, prose = doc?.prose ?? {};
   const asMap = (pairs) => (Array.isArray(pairs) ? new Map(pairs) : null);
-  return renderHtml({ fm: prose.frontMatter ?? {}, secs: prose.sections ?? {}, cards: prose.cards ?? [] }, client.findings ?? [], client.coverage ?? [], {
+  return clearanceContext({ fm: prose.frontMatter ?? {}, secs: prose.sections ?? {}, cards: prose.cards ?? [] }, client.findings ?? [], client.coverage ?? [], {
     demoData, frameworkMethod: framework.method, servedModels: client.servedModels, productName: run.product?.name,
     depthNote: run.product?.depthNote, scopeBasis: scope.scopeBasis, auditFile: run.auditFile || undefined, runId: run.runId,
     delivery, recordsByUri, contextNotes: client.contextNotes, coverageJudgment: client.coverageJudgment,
@@ -2662,7 +2662,7 @@ export function renderClearanceDocument(doc, { recordsByUri = new Map(), logos =
   });
 }
 
-export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
+function clearanceContext(parsed, findings = [], coverage = [], opts = {}) {
   if (findings && !Array.isArray(findings)) { opts = findings; findings = []; coverage = []; }  // tolerate legacy (parsed, opts)
   AS_OF = opts.asOf ?? null;   // C2
   VERDICT_INFO = (opts.verdictInfo && opts.verdictInfo.tier != null) ? opts.verdictInfo : null;   // T2 — only an enriched sidecar is an authority
@@ -2866,18 +2866,25 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
     covNum = num();
   }
 
+  return { findings, coverage, opts, productName, fm, secs, ruledOut, i, riskLabel, excelBtn2, recordsByUri, markAssessment, fourAnswers, buckets, findingsSections, chromeHref: opts.chromeHref };
+}
+
+// THE CLEARANCE PAGE, AS ITS PARTS (C14). page-shell.mjs `reportPage` draws every report page in one frame; what makes this
+// page the clearance is what it hands that frame: its title, its sheet, its top bar, its sections in their order, its
+// footer, and the script it closes with. Each part reads the context clearanceContext built once, in the order the page
+// has always evaluated them, so the page is byte for byte the page it was.
+export const CLEARANCE_PAGE = Object.freeze({
+  contextOf: clearanceContextOf,
+  title: ({ productName, fm }) => `${productName ? `${esc(productName)} — ` : ''}${esc(fm.title || '')}`,
   // The explicit dark pair, the typefaces, the favicon, the base sheet and the print rule are the shell's
   // (page-shell.mjs, which says why the dark pair is explicit only).
   // D: the report LINKS the shared chrome (opts.chromeHref → <pool>/assets/chrome.css); direct callers with
   // no chromeHref keep it inline. Link emitted after the <style> so chrome stays last in the cascade.
-  const linkChrome = !!opts.chromeHref;
-  const doc = pageShell({
-    title: `${productName ? `${esc(productName)} — ` : ''}${esc(fm.title || '')}`,
-    css: (linkChrome ? '' : NAV_SHEET) + '\n' + REP_OVERRIDE + '\n' + CLEARANCE_PRINT,
-    chromeHref: opts.chromeHref,
-    body: `<div class="rep-stickyhead no-print" data-report-chrome>
-<div class="topbar no-print">
-  ${/* ONE BAR (the 2026-09-16 report redesign). The site bar is not rendered on a report, so the brand belongs here:
+  css: ({ opts }) => {
+    const linkChrome = !!opts.chromeHref;
+    return (linkChrome ? '' : NAV_SHEET) + '\n' + REP_OVERRIDE + '\n' + CLEARANCE_PRINT;
+  },
+  topbar: ({ opts, fm, i, riskLabel, excelBtn2 }) => `${/* ONE BAR (the 2026-09-16 report redesign). The site bar is not rendered on a report, so the brand belongs here:
        a reader met two stacked headers, and the lower one carried the only brand. */''}
   ${logoLockup({ mark: 16, cls: 'tb-lockup' })}
   ${opts.homeHref ? `<a class="homebtn tb-back no-print" href="${escAttr(opts.homeHref)}" title="${R.topbar.allReports}"><span aria-hidden="true">←</span> <span class="tb-back-lbl">${R.topbar.allReports}</span></a>` : ''}
@@ -2906,14 +2913,10 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
       <div class="tb-row"><button class="util" onclick="openAll(true)">${R.topbar.expandAll}</button><button class="util" onclick="openAll(false)">${R.topbar.collapseAll}</button></div>
       <p class="tb-hint">${R.topbar.exportHint}</p>
     `)}
-  </div>
-</div>
-<!--SECTION-STRIP-->
-</div>
-
-<div class="wrap">
-<main>
-  <!-- doc-52 §1 THE VERDICT — the answer leads: mark · band · one plain "subject to" line · the lawyer's
+  </div>`,
+  afterHead: () => '\n',
+  sections: Object.freeze([
+    ['verdict', ({ findings, coverage, opts, productName, fm, secs, fourAnswers, buckets }) => `<!-- doc-52 §1 THE VERDICT — the answer leads: mark · band · one plain "subject to" line · the lawyer's
        questions answered · the time-critical alert. Process + coverage detail are below and collapsible. -->
   <header class="hero" id="summary">
     ${demoBannerHtml(opts.demoData === true)}
@@ -2924,7 +2927,8 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
     ${/* The gauge is the rating: with no assessment it has none to show, and would point at CLEAR. */''}${opts.assessmentNotCompleted === true ? '' : `<div class="heroGrid">${gauge(fm, findings, coverage, fourAnswers, opts)}</div>`}
     ${doFirst(secs)}
     ${actionGroup(buckets.ans, 'ans')}
-  </header>
+  </header>`],
+    ['next', ({ buckets }) => `
 
   <!-- doc-52 §3 WHAT ONLY YOU CAN CLOSE — forward decisions, plain English, directly after the verdict (owner, 2026-11-18:
        a reader who forwards the first pages forwards the actions with the conditions). Words unchanged. -->
@@ -2942,30 +2946,34 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
     // tag at all, so the items that block reliance were the only items in this section with no chip.
     // buildOnlyYouSection now mints it beside the other three; a run assembled before that lands has none
     // and this replace is inert on it.
-    .replace(/\[Before you can rely\]\s*/gi, `<span class="src cl" style="margin-right:6px">${R.next.beforeYouCanRely}</span> `)}</div></div>` : ''}
+    .replace(/\[Before you can rely\]\s*/gi, `<span class="src cl" style="margin-right:6px">${R.next.beforeYouCanRely}</span> `)}</div></div>` : ''}`],
+    ['mark', ({ markAssessment }) => `
 
   <!-- WP-56 B2 — THE MARK ITSELF: the standing distinctiveness + connotation read (EN and non-EN). It
        frames everything below, so it sits with the verdict, above the conflict landscape. Advisory only —
        carries no rating; legacy runs (no mark_assessment) render without it. Both variants. -->
-  ${markAssessmentBlock(markAssessment)}
+  ${markAssessmentBlock(markAssessment)}`],
+    ['conflicts', ({ findings, findingsSections }) => `
 
   <!-- doc-52 §2 THE CONFLICTS — findings ordered by who can block first; each expands to full detail. -->
-  ${findingsSections}
+  ${findingsSections}`],
+    ['where-it-stands', ({ findings, opts }) => `
 
-  ${whereItStandsSection(findings, opts)}
+  ${whereItStandsSection(findings, opts)}`],
+    ['court-decisions', ({ opts }) => `
 
-  ${courtDecisionsSection(opts)}
+  ${courtDecisionsSection(opts)}`],
+    ['also-considered', ({ opts, ruledOut, recordsByUri }) => `
 
-  ${alsoConsideredSection(ruledOut, recordsByUri, opts)}
+  ${alsoConsideredSection(ruledOut, recordsByUri, opts)}`],
+    ['searched', ({ findings, coverage, opts, fm, recordsByUri }) => `
 
   <!-- The 2026-09-16 report redesign — WHAT WAS SEARCHED. The scope fold and the checks-we-ran narrative are gone
        (owner, 2026-09-16: no coverage narrative on the page). What is left is counts, folded closed:
        completed work appears as numbers and cleared names, never as the engine's account of itself. -->
-  ${whatWasSearchedSection(opts, coverage, findings, recordsByUri, fm)}
-</main>
-
-  <footer>
-    ${/* ONE CLIENT LINE, AND IT NAMES WHAT EACH DATE IS. It ran to four.
+  ${whatWasSearchedSection(opts, coverage, findings, recordsByUri, fm)}`],
+  ]),
+  footer: ({ opts, fm }) => `${/* ONE CLIENT LINE, AND IT NAMES WHAT EACH DATE IS. It ran to four.
          "Rated under" and "Run under project" are no longer written (owner, 2026-11-18). They were kept
          on the document as the reviewer's provenance and stripped from it at serve time, but every
          reader has reached a report through the portal since the 2026-07-20 cutover, so the lines
@@ -3003,12 +3011,13 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
       const line = parts.length ? `${parts.join(' \u00b7 ')}.` : '';
       return line;
     })()}</span>
-    ${logoLockup({ mark: 16 })}
-  </footer>
-</div>
-<script>${PAGE_JS}</script>`,
-  });
-  return doc.replace('<!--SECTION-STRIP-->', sectionStrip(doc, STRIP));
+    ${logoLockup({ mark: 16 })}`,
+  afterWrap: () => `\n<script>${PAGE_JS}</script>`,
+  strip: STRIP,
+});
+
+export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
+  return reportPage(CLEARANCE_PAGE, clearanceContext(parsed, findings, coverage, opts));
 }
 
 // CLI:  node render.mjs <report.md> [findings.json] [outDir]
