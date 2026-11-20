@@ -39,9 +39,9 @@ import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-  themeButton, THEME_BTN_CSS, CHROME_CSS, logoLockup, confPosture, sectionStrip,
+  themeButton, THEME_BTN_CSS, CHROME_CSS, logoLockup, confPosture,
 } from '../../shared/brand.mjs';
-import { pageShell } from './page-shell.mjs';   // the document shell, shared with the clearance template
+import { reportPage } from './page-shell.mjs';   // the one report frame, shared with the clearance template
 import { inlineMarkdown } from '../../shared/inline-markdown.mjs';   // the inline-markdown dialect, shared with the clearance template
 import { SUMMARY_BLOCK_LINE, parseSummaryBlocks } from '../../shared/summary-blocks.mjs';
 
@@ -1642,7 +1642,7 @@ export function renderKnockoutDocument(doc, at, { filingRecords = new Map(), log
   });
 }
 
-export function renderKnockoutHtml(findings, framework, {
+function knockoutContext(findings, framework, {
   runId, overall, issued = null, searched = null, auditFile = null, probeRan = false, registerCounts = null,
   registerRecords = null,
   // — was the filings sidecar PRESENT but unreadable? Defaults to false, so every existing caller — the
@@ -1794,13 +1794,17 @@ ${filings}`
   // falls back to its intrinsic 500px and overflows the body box by ~440px, which the height bridge then
   // posts as the frame height. That is invisible to a string test and obvious to a browser: the page
   // renders correctly and sits in a frame with 450px of dead space under it. Caught by render-check.
-  const doc = pageShell({
-    title: `${productName ? `${esc(productName)} — ` : ''}${esc(title)}`,
-    css: CHROME_CSS + '\n' + THEME_BTN_CSS + '\n' + KO_CSS,
-    chromeHref,
-    body: `<div class="rep-stickyhead no-print" data-report-chrome>
-<div class="topbar no-print">
-  ${homeHref ? `<a class="homebtn tb-back no-print" href="${escAttr(homeHref)}" title="${K.topbar.allReports}"><span aria-hidden="true">←</span> <span class="tb-back-lbl">${K.topbar.allReports}</span></a>` : ''}
+  return { findings, runId, overall, issued, identity, matter, homeHref, auditHref, delivery, servedModels, demoData, title, productName, issuedDate, overallStop, summary, caveats, glance, newCaveats, aboutRequest, onFieldSec, leftOpenSec, filingsSec, chromeHref };
+}
+
+// THE KNOCKOUT PAGE, AS ITS PARTS (C14). page-shell.mjs `reportPage` draws every report page in one frame; what makes this
+// page the Knockout is what it hands that frame: its title, its sheet, its top bar, the theme button and the document's
+// own controls after it, its sections in their order, and its footer. Each part reads the context knockoutContext built
+// once, in the order the page has always evaluated them, so the page is byte for byte the page it was.
+export const KNOCKOUT_PAGE = Object.freeze({
+  title: ({ title, productName }) => `${productName ? `${esc(productName)} — ` : ''}${esc(title)}`,
+  css: () => CHROME_CSS + '\n' + THEME_BTN_CSS + '\n' + KO_CSS,
+  topbar: ({ findings, runId, overall, issued, identity, matter, homeHref, auditHref, title, productName, issuedDate, overallStop }) => `${homeHref ? `<a class="homebtn tb-back no-print" href="${escAttr(homeHref)}" title="${K.topbar.allReports}"><span aria-hidden="true">←</span> <span class="tb-back-lbl">${K.topbar.allReports}</span></a>` : ''}
   ${logoLockup({ mark: 20, tag: '' })}<span class="sp"></span>
   <span class="tb-risk" style="background:var(${overallStop});color:var(${overallStop}-on)">${esc(overall ?? '—')}</span>
   ${/* THE IDENTITY LINE NAMES THE MARK AND THE SEARCH, NOT THE RUN. It printed `matter || runId`,
@@ -1843,11 +1847,8 @@ ${filings}`
       <div class="tb-sep"></div>
       <div class="tb-row"><button class="util" onclick="openAll(true)">${K.topbar.expandAll}</button><button class="util" onclick="openAll(false)">${K.topbar.collapseAll}</button></div>
     `)}
-  </div>
-</div>
-<!--SECTION-STRIP-->
-</div>
-<div class="fab-stack" data-report-chrome>${themeButton()}</div>
+  </div>`,
+  afterHead: () => `<div class="fab-stack" data-report-chrome>${themeButton()}</div>
 <script>
 /* THE DOCUMENT'S OWN CONTROLS, and they are GLOBAL on purpose.
    The portal frames this document and drives it by postMessage. The bridge injected at serve time looks
@@ -1869,19 +1870,24 @@ window.addEventListener('beforeprint',o);})();
 /* The popover opens on its own button, closes on a click outside it and on Escape. Same two listeners
    the clearance template carries, for the same markup; they move together when the top bar is shared. */
 ${EXPORT_MENU_JS}</script>
-<div class="wrap">
-<main>
-  <header class="hero" id="summary">
+`,
+  sections: Object.freeze([
+    ['verdict', ({ delivery, demoData, title, productName, summary, aboutRequest }) => `<header class="hero" id="summary">
     ${demoBannerHtml(demoData === true)}
     ${confLineHtml(delivery, productName)}
     <h1 class="mark">${esc(title)}</h1>
     ${aboutRequest}
     ${summary ? `<div class="sub">${mdParagraphs(summary)}</div>` : ''}
-  </header>
+  </header>`],
+    ['glance', ({ glance }) => `
 
-  ${glance}
-  ${onFieldSec}
-  ${filingsSec}${leftOpenSec}
+  ${glance}`],
+    ['conflicts', ({ onFieldSec }) => `
+  ${onFieldSec}`],
+    ['also-considered', ({ filingsSec }) => `
+  ${filingsSec}`],
+    ['open', ({ leftOpenSec }) => `${leftOpenSec}`],
+    ['caveats', ({ caveats, newCaveats }) => `
 
 
   ${/* The 2026-09-16 report redesign — the scope section and its fold are off the page: what a screen is and
@@ -1898,11 +1904,9 @@ ${EXPORT_MENU_JS}</script>
        panel and the tier line now carry; a caveat making any new claim brings a new word with it and
        is kept. Both of the demo run's survive. */''}
   ${newCaveats.length ? `<div class="panel ko-caveats"><p class="ko-scope">${CAVEAT_LEAD}<br>${
-    newCaveats.map((c) => inlineMd(c)).join('<br>')}</p></div>` : ''}
-</main>
-
-  <footer>
-    ${/* THE FOOTER NAMES THE SAME THREE THINGS THE HEADER DOES. It read "<product>. / Matter
+    newCaveats.map((c) => inlineMd(c)).join('<br>')}</p></div>` : ''}`],
+  ]),
+  footer: ({ runId, issued, identity, matter, servedModels, title, productName, issuedDate }) => `${/* THE FOOTER NAMES THE SAME THREE THINGS THE HEADER DOES. It read "<product>. / Matter
          <runId>. Issued <date · time>." — the identifier again, under a label that calls it the
          client's matter when it is the engine's run directory, and the publish clock again. The mock
          reads mark · search · issued on date. Built from the same parts as the identity line so the
@@ -1914,9 +1918,11 @@ ${EXPORT_MENU_JS}</script>
     <span>${[title, productName].filter(Boolean).map(esc).join(' \u00b7 ')}${
       issuedDate ? `${title || productName ? ' \u00b7 ' : ''}${esc(K.issuedOn(issuedDate))}` : ''}${
       title || productName || issuedDate ? '.' : ''}</span>
-    ${logoLockup({ mark: 16 })}
-  </footer>
-</div>`,
-  });
-  return doc.replace('<!--SECTION-STRIP-->', sectionStrip(doc, STRIP));
+    ${logoLockup({ mark: 16 })}`,
+  afterWrap: () => '',
+  strip: STRIP,
+});
+
+export function renderKnockoutHtml(findings, framework, opts = {}) {
+  return reportPage(KNOCKOUT_PAGE, knockoutContext(findings, framework, opts));
 }

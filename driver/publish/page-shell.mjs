@@ -15,7 +15,7 @@
 import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { REPORT_ROOT, REPORT_ROOT_DARK_EXPLICIT, THEME_INIT_EXPLICIT, FAVICON_LINK, BRAND } from '../../shared/brand.mjs';
+import { REPORT_ROOT, REPORT_ROOT_DARK_EXPLICIT, THEME_INIT_EXPLICIT, FAVICON_LINK, BRAND, sectionStrip } from '../../shared/brand.mjs';
 import { REPORT_FONT_STYLE } from '../../shared/brand-fonts.mjs';   // the typefaces travel inside the report; it fetches nothing to draw its text
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -95,4 +95,45 @@ ${REPORT_FONT_STYLE}${FAVICON_LINK}${THEME_INIT_EXPLICIT}
 <style>${stripCssComments(`${REPORT_BASE}\n${css}${REPORT_ROOT_DARK_EXPLICIT}${PRINT_LIGHT}`)}</style>${chromeLinkTag}</head><body class="has-glow">
 ${body}
 </body></html>`;
+}
+
+/**
+ * THE ONE REPORT FRAME (C14). Every report page is the same frame: the shell above, a sticky head holding the page's
+ * top bar and its section strip, then the page's sections in their order inside <main>, then its footer. A product is
+ * the parts it hands the frame, never a copy of the frame:
+ *
+ *   title(c), css(c)    the page's own title (already escaped) and sheet, as pageShell takes them
+ *   topbar(c)           what the top bar holds
+ *   afterHead(c)        what sits between the sticky head and the page's body
+ *   sections            [id, draw(c)] in the order the page prints them; each draw returns its markup with the
+ *                       whitespace that leads it, so the list joins with nothing
+ *   footer(c)           what the footer holds
+ *   afterWrap(c)        what closes the page after its body
+ *   strip               the section strip's entries, [anchor, label], filtered to the anchors the page holds
+ *
+ * `c` is the page's context, built once by its product from what the page prints. The parts are called in the order
+ * the page reads them top to bottom, so a part that counts or numbers as it draws sees the page in order.
+ */
+export function reportPage(page, c) {
+  const html = pageShell({
+    title: page.title(c),
+    css: page.css(c),
+    chromeHref: c.chromeHref,
+    body: `<div class="rep-stickyhead no-print" data-report-chrome>
+<div class="topbar no-print">
+  ${page.topbar(c)}
+</div>
+<!--SECTION-STRIP-->
+</div>
+${page.afterHead(c)}<div class="wrap">
+<main>
+  ${page.sections.map(([, draw]) => draw(c)).join('')}
+</main>
+
+  <footer>
+    ${page.footer(c)}
+  </footer>
+</div>${page.afterWrap(c)}`,
+  });
+  return html.replace('<!--SECTION-STRIP-->', sectionStrip(html, page.strip));
 }
