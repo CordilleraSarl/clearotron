@@ -303,7 +303,7 @@ test("a Clarivate answer of a shape the adapter does not read fails with that sh
     const row = byRef(doc)["/mark/em/qzx0002"];
     assert.equal(row.state, "failed");
     assert.equal(row.shape, `{images: [1x {image: string(${secret.length}), mime: string(9)}]}`);
-    assert.doesNotMatch(JSON.stringify(doc), new RegExp(secret.replace(/[+/=]/g, "\\$&")), "a value of the answer reached the run's record");
+    assert.equal(JSON.stringify(doc).includes(secret), false, "a value of the answer reached the run's record");
   } finally {
     globalThis.fetch = real;
     if (key === undefined) delete process.env.CLARIVATE_API_KEY; else process.env.CLARIVATE_API_KEY = key;
