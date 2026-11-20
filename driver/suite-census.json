@@ -9668,6 +9668,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-connector-answers-with-what-the-report-delivered.test.mjs": {
+          "tests": 2,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "the-connector-calls-an-unsearched-area-what-the-report-does.test.mjs": {
           "tests": 2,
           "asserts": 3,

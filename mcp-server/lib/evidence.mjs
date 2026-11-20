@@ -481,8 +481,12 @@ export function searchLog(run) {
  * surface that is meant to match the client report must not out-disclose it.
  */
 export function coverageStatement(run) {
-  const doc = readFindingsJson(run.runDir);
-  const areas = (Array.isArray(doc?.coverage) ? doc.coverage : []).map((c) => ({
+  // THE DELIVERED ROWS, where the run has its report document: the rows the page prints, an exact repeat printed once and
+  // a run whose assessment did not complete answered from its own coverage record. findings.json for a run published
+  // before the document.
+  const delivered = reportDocumentOf(run.P)?.client?.coverage;
+  const rows = Array.isArray(delivered) ? delivered : readFindingsJson(run.runDir)?.coverage;
+  const areas = (Array.isArray(rows) ? rows : []).map((c) => ({
     area: clean(c?.areaLabel || c?.area),   // — the reader label the report prints, falling back to the identifier on an archived row
     state: typeof c?.state === "string" ? c.state : null,
     stateLabel: COV_WORD[c?.state] ?? (typeof c?.state === "string" ? c.state : null),
@@ -493,6 +497,39 @@ export function coverageStatement(run) {
     note: areas.length
       ? "What the search covered, in the same terms as the report's own coverage section. An area that is not 'Searched — clean' is not cleared: treat it as open, not as a negative result."
       : "This run records no coverage ledger.",
+  };
+}
+
+// ---- a finding's registrations, as the report delivered them ---------------------------------------
+
+/**
+ * The registration facts the report delivered for one audit block, from the run's report document: the finding that cites
+ * the record the block names, its owner as the page binds it, and each registration it cites, kept apart, with the classes,
+ * status and dates the page shows for it. The owner's country is the saved record's, as the page's register record states
+ * it. null where the run has no document, the block names no register record, or no delivered finding cites it, so a run
+ * published before the document answers from its audit.md as it always did.
+ */
+export function deliveredRegistration(run, block) {
+  const uri = normalizeRecordUri(block?.url ?? "");
+  const findings = uri ? reportDocumentOf(run?.P)?.client?.findings : null;
+  if (!Array.isArray(findings)) return null;
+  const uriOf = (r) => normalizeRecordUri(typeof r === "string" ? r : r?.uri);
+  const finding = findings.find((f) => (Array.isArray(f?.owner?.registrations) ? f.owner.registrations : []).some((r) => uriOf(r) === uri));
+  if (!finding) return null;
+  const registrations = finding.owner.registrations.filter((r) => uriOf(r)).map((r) => ({
+    registration: uriOf(r),
+    classes: Array.isArray(r?.classes) ? r.classes.map(String) : [],
+    status: typeof r?.status === "string" ? r.status : null,
+    filed: typeof r?.filed === "string" ? r.filed : null,
+    expiry: typeof r?.expiry === "string" ? r.expiry : null,
+  }));
+  const record = run?.runDir ? readRecordArtifacts(run.runDir).get(uri) : null;
+  return {
+    finding: finding.ordinal ?? null,
+    owner: valueField(finding.owner?.name),
+    ownerCountry: valueField(record?.ownerCountry) ?? valueField(finding.owner?.country),
+    registration: registrations.find((r) => r.registration === uri),
+    registrations,
   };
 }
 
