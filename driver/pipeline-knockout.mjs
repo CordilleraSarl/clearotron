@@ -74,7 +74,7 @@ import { isResearchAnswer } from "./research-answers.mjs";
 const DRIVER_DIR = dirname(fileURLToPath(import.meta.url));
 export const TRIAGE_FRAMEWORK = "skills/clearance-search/risk-framework-triage.md";
 
-// sentinel and archive are this lane's own. The clearance's archive (pipeline.mjs) also settles any pending what-if
+// sentinel and archive are this lane's own. The clearance's archive (run-end-state.mjs) also settles any pending what-if
 // before it moves the run; this one does not.
 const sentinel = (runDir, name, obj) => atomicWrite(join(runDir, name), JSON.stringify({ ts: new Date().toISOString(), ...obj }, null, 2) + "\n");
 function archive(run) {

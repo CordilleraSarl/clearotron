@@ -39,6 +39,7 @@ import { recordedFindingUris } from "../register-digest-record.mjs";
 import { SETTLED_CLASSES, mintRemedyAccountingDoubts } from "../remedy-accounting.mjs";
 import { correctionsTheRestoreLacks, openAskForClosure, restoreTheRecordThatPassed } from "../repair-review-run.mjs";
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE, renderReportOverview } from "../report-overview-record.mjs";
+import { applyScopeFrontMatterOf, injectFrontMatter, reportIdentityRecord, writeScopeFactsOf } from "../run-end-state.mjs";
 import { StageFailure } from "../run-outcome.mjs";
 import { inScopeClassList } from "../run-scope.mjs";
 import { asPartNotCompleted, must, safeReadJson, stage } from "../stage-dispatch.mjs";
@@ -49,7 +50,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 
 import { basename, join } from "node:path";
 
 export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWritersDuty, ctx, followTheRecordsActions, job, run, runState, saveTheLabel, writeVerdictSidecar }, helpers) {
-  const { applyScopeFrontMatterOf, assembleReportMd, injectFrontMatter, originRowsForReport, reportIdentityRecord, writeScopeFactsOf } = helpers;
+  const { assembleReportMd, originRowsForReport } = helpers;
   // Phase 3 — delivery (v14 post-mortem fix). One LLM step curates the report; the audit, the page render,
   // and the email body are deterministic CODE; a tiny LLM step only SENDS. Each step is independent — a
   // failure in the audit or the email never loses the report.

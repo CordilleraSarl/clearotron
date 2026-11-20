@@ -10,7 +10,8 @@ import { runShell } from "./run-shell.mjs";
 import { deliveryEndState } from "./run-delivered.mjs";
 import { StageFailure, buildFailurePacket, isDesignedRefusal, stageWallFields, terminalReasonFields } from "./run-outcome.mjs";
 import { correctionReading, correctionRows, flagOrdinals, recordCorrectionsBasis, repairUnnamedRemovals, rollbackCorrectivePass } from "./steps/corrections.mjs";
-import { keepDeliveredRecordAsHistory, ownerScreenForDelivery, readFindingsForReport, readReadingLog, rebuildDeliveredRecord, rewriteFromBeforeTheSeam, withdrawSupersededAudit } from "./delivered-record-run.mjs";
+import { applyScopeFrontMatterOf, assessmentCoverageOfRun, assessmentCoverageRows, reportIdentityRecord, searchLogAuditMd, sentinel, setAsideTheAssessment, settlePendingWhatIfsBeforeArchive, writeScopeFactsOf } from "./run-end-state.mjs";
+import { keepDeliveredRecordAsHistory, ownerScreenForDelivery, readFindingsForReport, rebuildDeliveredRecord, rewriteFromBeforeTheSeam, withdrawSupersededAudit } from "./delivered-record-run.mjs";
 import { coverageJudgmentRows, coverageRowArea, coverageRowAreaLabel, decideScriptScopeHonesty, fullProseOrdinals, injectDeferralCoverage, injectLaneDepthCoverage, injectMeaningGapCoverage, injectScreenGateCoverage, injectScriptScopeCoverage, injectUncoveredMarketCoverage, localLanguageStateOf, mergedScriptScopeRow, orderMarketsOf, planWriteUps, scriptLaneRanOnRun, scriptScopeDisclosure, stampCoverageJudgmentRows, writeShortEntries } from "./coverage-rows-run.mjs";
 import { actionsRegisterListed, CORRECTIONS_DELIVERED_FILE, correctionsExtra, correctionsTheRestoreLacks, CORRECTIVE_RECHECK_FILE, correctiveCycleSettledDecision, DELIVERY_TAIL_LABEL_RE, openAskForClosure, partitionDeliveryStale, postRepairScope, recordChangeOwesReview, removalRepairedRow, restoredFindingsTable, reviewAfterRepairPath, reviewBeforeRepairPath, saveWithRetries, snapshotFindingsForCorrections, stagesStaleOnPlacement, unreadRecordReview, UPSTREAM_STALE_REPAIR, whatTheRepairLeftStale, withdrawByToken } from "./repair-review-run.mjs";
 import { CASE_LAW_PRODUCT, CASE_LAW_TRIGGERS, caseLawJoin, composeDispatchExtra, decideCaseLaw, DISPATCH_EXTRA_BUILDERS, prepareDeclinationSpec, reviewProfileSelection, settleDerivedBases, withGoodsFrom, withGoodsStates } from "./dispatch-extras.mjs";
@@ -38,7 +39,7 @@ import { runFrameComparison } from "./steps/frame-comparison.mjs";
 import { runSkepticAndFollowUp } from "./steps/skeptic-and-follow-up.mjs";
 import { runCorrectionCycle } from "./steps/correction-cycle.mjs";
 import "../shared/env-local.mjs";   // side effect: apply <repo>/.env when THIS file is the CLI entry (never on library import)
-import "./engine/mcp/http-dispatcher.mjs"; import { readFileSync, existsSync, mkdirSync, writeFileSync, renameSync, copyFileSync, readdirSync, rmSync } from "node:fs";
+import "./engine/mcp/http-dispatcher.mjs"; import { readFileSync, existsSync, mkdirSync, writeFileSync, copyFileSync, readdirSync, rmSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join, dirname, basename, resolve, relative } from "node:path";   // resolve: the resume line must work from any cwd
 import { driverDir, driverRel, ensureDriverDir } from "../shared/driver-dir.mjs";
@@ -54,16 +55,14 @@ import { config } from "./driver.config.mjs";
 import { codexSandboxBypassed } from "./engine/openai-agent.mjs";        // — a replay is refused where nothing keeps a stage's commands out of the answers it replays
 import { buildRunContext, deriveSlug, kebab } from "./phase0.mjs";
 import { crossBuildResumeRefusal } from "./one-build-per-run.mjs";   // a run is finished on the build it started on (owner, 2026-11-09)
-import { paths, STAGES, axisTier, decideAxes, whatsappRouting, stageOrdinal, stageInputs, dependencyOrder, REGISTER_AXES, providerMeta } from "./stages.mjs";
+import { paths, STAGES, axisTier, decideAxes, whatsappRouting, stageOrdinal, stageInputs, dependencyOrder, REGISTER_AXES } from "./stages.mjs";
 import { RESEARCH_ANSWERS_FILE, RESEARCH_REPLAY_FILE, replayAnswersFile, savedResearchCount } from "./research-answers.mjs";   // the research a stage's earlier attempts got, handed to a later one; a replay of it
-import { IDENTITY_FILE as REPORT_IDENTITY_FILE } from "./report-overview-record.mjs";
-import { readPartNotCompleted, NOT_COMPLETED_DIR } from "./parts-not-completed.mjs";
+import { readPartNotCompleted } from "./parts-not-completed.mjs";
 import { CONTEXT_DERIVATIONS, DISPATCH_EXTRAS, INLINE_CONTEXT, sandboxManifest, sandboxGaps, derivationsFor } from "./stage-context.mjs";   // — what a stage is actually handed
 import { derivedStateOf, recordedDerivedState, replayOfDerivation } from "./derived-state.mjs";   // the register picture a dispatch was handed, so a replay can be checked against it
 import { parseVerdict, parseCorrectionKinds, parseCorrections } from "./verify.mjs";
 import { unresolvedFlags } from "./corrections-feedforward.mjs";
 import { deliveredOutcomes } from "./corrections-delivered.mjs";   // whether each correction reached the record the report was built from
-import { coverageUnitLabel } from "./coverage-ledger.mjs";
 import { readEnvelopeDecision, settledDeferralsSection } from "./envelope-settle.mjs";
 import { REGISTER_PROVIDER } from "./driver.config.mjs";
 import { FACTS_FILE as DIGEST_FACTS_FILE } from "./register-digest-record.mjs";   // conversion 11 — the render's facts sidecar and the accounting era stamp
@@ -73,8 +72,6 @@ import { buildGradedEntriesSection } from "./write-up-render.mjs";
 // an attempt with. PURE and acyclic.
 // — the register coverage form: the driver writes it before the digest dispatches, renders the
 // `## Coverage ledger` table and the machine ledger FROM it after the pass, and unions it across passes.
-import { buildCoverageForm, formLedgerRows } from "./coverage-form.mjs";
-import { coverageFormInput, readCoverageForm, waitingFamilyStates } from "./coverage-form-io.mjs";
 export { placementSetAsideGrounds, placementFloorDecisionLines, placementSetAsideLines, placementAuditRows, placementRecallEndings,
   standingPlacementDecisions, writePlacementDecisions } from "./placement-decisions.mjs";
 import { keepsInstructedScope, rebuildRunOrder } from "./accepted-order.mjs";   // the order a run was accepted on, kept with it from intake (steps/open-run.mjs)
@@ -85,28 +82,24 @@ import { loadProfiles, applicantMatchesProfile } from "./profiles.mjs";   // add
 import { NATIVE_LANGUAGE_REMEDY } from "./products.mjs";
 import { defaultTerritoryState } from "./effective-scope.mjs";   // the ONE territory ladder (the geography stamp included) + the stored-defaults reading
 import { acquireSlot, releaseSlot } from "./slot-lock.mjs";
-import { runLog, note, fileMeta } from "./log.mjs"; import { plainDeferralReason } from "./deferral-row.mjs"; import { NOT_COMPLETED } from "./degraded-parts.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
-import { deriveScopeFacts } from "./scope-facts.mjs";
+import { runLog, note, fileMeta } from "./log.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
 import { repairFollowup } from "./repair-composers.mjs";
 import { seedRunStatus, writeRunStatus, rollupStatus, signoffPatch, readSignoff } from "./progress.mjs";
 import { atomicWrite } from "./run-record.mjs";
 import { writeOutboxPacket } from "./outbox.mjs";
-import { buildAuditMd } from "./publish/audit-from-spine.mjs";
 import { readInstructedScope } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed; and the classes it judged necessary beyond the instructed ones, each with its reason, which the plan compile gives one identical-mark question apiece (decision 18)
 // Conversion 6: the two line-form parsers are no longer on the live path — the seat sends typed
 // rows and the driver applies THOSE. `parseClosureLines`/`parseAskClosureLines` are still exported and
 // still tested: an archived run's doubt-closure.md is a hand-typed artifact and stays readable, which
 // is the archive rule — a new way in, never a replacement.
-import { pendingWhatIf, claimWhatIf, finishWhatIf, whatIfRefusal } from "./whatif-queue.mjs";   // a queued job is settled before its run archives   // PR-6 — every ask ends (2026-07-29)
 // — every placed candidate ends somewhere a reader can see; the ones that do not are counted by name
-import { declinationCallPaths } from "./declination-tool.mjs";   // — synthesis's own stated declines
 // — the run's own record log. Every driver-side register call that can write a record BODY carries
 // this path, because this process runs several runs' pipelines at once and a global address would file
 // one run's evidence under another.
 import { beginAnswerMemory } from "../providers/_shared/answer-memory.mjs";
 import { emptyQueue, coerceQueue, mintItem, pendingItems, markFlushed, receiptKeyFor } from "./digest-queue.mjs";   // (t1cd) — the digest-trigger funnel
 import { openPass, readFold } from "./record-fold.mjs";   // the folded record from the delivery seam on
-import { restamp, restampStage, reconcileStamps, shaOf, settleOneShotStamp, projectStageInput } from "./stage-freshness.mjs";
+import { restampStage, reconcileStamps, shaOf, settleOneShotStamp, projectStageInput } from "./stage-freshness.mjs";
 import { parseManifestVariants, GRID_HALVES, GRID_SEATS } from "./common-law-receipts.mjs";
 import { stampTokenRollup } from "./tokens.mjs";
 import { recordRunConsumption } from "./consumption-ledger.mjs";
@@ -130,6 +123,7 @@ export { StageFailure, buildFailurePacket, isDesignedRefusal, stageWallFields, t
 export { correctionReading, correctionRows, flagOrdinals, recordCorrectionsBasis, repairUnnamedRemovals, rollbackCorrectivePass };   // moved to steps/corrections.mjs; importers read them here as before
 export { isContentShapedFail, isFallbackEligible };   // moved to repairs.mjs; importers read them here as before
 export { logTurnaroundReconciliation };   // moved to run-quote.mjs; importers read it here as before
+export { applyScopeFrontMatterOf, assessmentCoverageOfRun, assessmentCoverageRows, reportIdentityRecord, searchLogAuditMd, setAsideTheAssessment, settlePendingWhatIfsBeforeArchive, writeScopeFactsOf };   // moved to run-end-state.mjs; importers read them here as before
 export { keepDeliveredRecordAsHistory, ownerScreenForDelivery, readFindingsForReport, rebuildDeliveredRecord, rewriteFromBeforeTheSeam, withdrawSupersededAudit };   // moved to delivered-record-run.mjs; importers read them here as before
 export { coverageJudgmentRows, coverageRowArea, coverageRowAreaLabel, decideScriptScopeHonesty, fullProseOrdinals, injectDeferralCoverage, injectLaneDepthCoverage, injectMeaningGapCoverage, injectScreenGateCoverage, injectScriptScopeCoverage, injectUncoveredMarketCoverage, localLanguageStateOf, mergedScriptScopeRow, orderMarketsOf, planWriteUps, scriptLaneRanOnRun, scriptScopeDisclosure, stampCoverageJudgmentRows };   // moved to coverage-rows-run.mjs; importers read them here as before
 export { actionsRegisterListed, CORRECTIONS_DELIVERED_FILE, correctionsExtra, correctionsTheRestoreLacks, CORRECTIVE_RECHECK_FILE, correctiveCycleSettledDecision, DELIVERY_TAIL_LABEL_RE, openAskForClosure, partitionDeliveryStale, postRepairScope, recordChangeOwesReview, removalRepairedRow, restoredFindingsTable, saveWithRetries, snapshotFindingsForCorrections, stagesStaleOnPlacement, unreadRecordReview, whatTheRepairLeftStale, withdrawByToken };   // moved to repair-review-run.mjs; importers read them here as before
@@ -358,115 +352,6 @@ useTheStrayLedger({ doctrineBefore, matterBefore, strayReported });
 // own finding: both now live beside the stamps in stage-freshness.mjs, and are re-exported here for the
 // callers and tests that import them from this file.
 export { settleOneShotStamp, projectStageInput };   // @internal
-
-function sentinel(runDir, name, obj) {
-  // B5 — sentinels gate resume/delivery decisions: a truncated one must never be visible (tmp + rename).
-  atomicWrite(join(runDir, name), JSON.stringify({ ts: new Date().toISOString(), ...obj }, null, 2) + "\n");
-}
-
-/**
- * Settle every queued what-if BEFORE the run dir moves into the archive.
- *
- * A queued job lives under the run directory, and the worker enumerates candidates with `liveRunDirs`,
- * which skips `archive` outright. So archiving carried a pending job out of the worker's reach: not
- * claimed, not settled, not refused. The client who asked for it got no answer and no explanation, and
- * no row anywhere said why. That is an absence reported as nothing at all — the one shape
- * `whatIfRefusal` exists to prevent.
- *
- * BEFORE the rename, deliberately: the settlement is written into the run dir and travels with it, so
- * the answer is on disk in the archive where the read tool will look for it.
- *
- * ✕ THE SENTENCE IS PER KIND, and a memo does not get the stage one. `whatIfRefusal`'s standing
- * refusal — "this run is delivered or archived, what-if runs on live runs only" — is TRUE of a stage
- * and FALSE of a memo, which runs on archived evidence by design. Telling a client their memo was
- * refused because the run is archived would be a false sentence in the one place they go to find out
- * what happened. A memo is closed on the true reason instead: it was queued before the run archived,
- * and the drain does not reach an archived run.
- *
- * ✕ A JOB ANOTHER WORKER IS ACTIVELY RUNNING IS LEFT ALONE. `pendingWhatIf` returns queued jobs and
- * claims older than an hour, never a fresh claim, so a live worker's job is not settled underneath it.
- * A fresh claim at the moment of archiving is a race this does not close, and it is written down
- * rather than papered over.
- *
- * Best-effort throughout: a failure to settle must never stop the archive, because a run that cannot
- * archive is a much larger problem than a job with no row.
- */
-export function settlePendingWhatIfsBeforeArchive(run) {   // @internal
-  let pending = [];
-  // NOT a silent catch. This function exists because a job went unanswered with no row anywhere; a
-  // failure to enumerate that returned quietly would reproduce exactly that, one level up, and the
-  // archive would still succeed so nothing downstream would look wrong.
-  try { pending = pendingWhatIf(run.runDir); }
-  catch (e) { note(`what-if settle before archive could not enumerate the queue (${String(e?.message ?? e).slice(0, 120)}) — pending jobs may be unanswered`); return; }
-  for (const entry of pending) {
-    try {
-      // CLAIM FIRST, exactly as the worker does. `finishWhatIf` writes the terminal file and does not
-      // remove the `.json`; the claim is what renames it out of the queue. Settling without claiming
-      // writes a `.failed` beside a `.json` that still reads as QUEUED to every reader — the job would
-      // look pending and answered at the same time, which is worse than the silence being fixed here.
-      const job = claimWhatIf(entry);
-      if (!job) continue;                     // another worker won it, or it vanished — not ours to settle
-      const kind = job?.op?.kind === "memo" ? "memo" : "stage";
-      // ✕ THE SENTENCE IS PER KIND. The standing refusal — "what-if runs on live runs only" — is TRUE
-      // of a stage and FALSE of a memo, which reasons over archived evidence by design. A memo is
-      // closed on the true reason instead.
-      const error = kind === "memo"
-        ? "this what-if was queued before its run was archived, and the drain does not reach an archived run — ask it again against the archived run, which a memo may read"
-        : (whatIfRefusal({ location: "archive", state: run.state ?? null, kind }) ?? "this run is delivered or archived — what-if runs on live runs only");
-      finishWhatIf(run.runDir, entry.id, { ok: false, op: job.op ?? null, error });
-      try { runLog(run.runDir, { event: "whatif-settled-on-archive", id: entry.id, kind, stale: entry.stale }); }
-      catch { /* the row is written; the log line is a convenience and must not undo it */ }
-    } catch (e) {
-      // One job's settlement must not cost the others, or the archive — but it must not be SILENT
-      // either. A swallowed failure here leaves exactly the unanswered job this function exists to
-      // prevent, and the archive still succeeds, so nothing downstream looks wrong.
-      note(`what-if ${entry.id} could not be settled before archive (${String(e?.message ?? e).slice(0, 120)}) — it may be unanswered`);
-    }
-  }
-}
-
-function archive(run) {
-  try {
-    settlePendingWhatIfsBeforeArchive(run);
-    mkdirSync(dirname(run.archiveDir), { recursive: true });
-    renameSync(run.runDir, run.archiveDir);
-    return run.archiveDir;
-  } catch (e) {
-    note(`archive failed (non-fatal): ${e.message}`);
-    return null;
-  }
-}
-
-// Deterministically inject/replace fields into a markdown file's YAML front-matter — the DRIVER writes these
-// fields, never the LLM. Idempotent; string values are JSON-quoted for YAML safety. No-op if the file has no
-// front-matter block. (It was introduced for the WS1c failover stamp; that stamp is deleted with the chain,
-//, and every surviving caller — the verdict labels, the scope line, rated_under, the project/origin
-// disclosure — is a compute-don't-author field with a live source.)
-// `runDir` (P2): the driver-owned front matter is a DECORATION applied after the report is assembled —
-// the derived verdict labels, the scope line, rated_under. Consumers that declare report.md as an input
-// (report-overview / report-card) are written from its BODY and never derive anything from these
-// fields, and the injection happens after they are drafted (and again after any lint redo), so leaving it
-// to read as staleness would strand the run: a mismatch with no recompute path that can settle it.
-// Re-stamping says "this change is accounted for". Deliberately NOT done for the findings.json mutators
-// — those SHOULD invalidate their consumers (that is the whole fix), and they run before the drafting
-// stages, so one recompute settles them.
-function injectFrontMatter(path, fields, runDir = null) {
-  let text;
-  try { text = readFileSync(path, "utf8"); } catch { return false; }
-  const m = text.match(/^---\n([\s\S]*?)\n---\n/);
-  if (!m) return false;
-  let body = m[1];
-  for (const [k, v] of Object.entries(fields)) {
-    // plain, single-line value (matches the existing handling_note convention; parseFront splits on the
-    // FIRST ':' only, so internal colons in stage labels like "register-unit:primary-sweep" survive intact).
-    const line = `${k}: ${String(v).replace(/\r?\n/g, " ").trim()}`;
-    const re = new RegExp(`^${k}:.*$`, "m");
-    body = re.test(body) ? body.replace(re, line) : `${body}\n${line}`;
-  }
-  atomicWrite(path, `---\n${body}\n---\n${text.slice(m[0].length)}`);   // B5 — never a half-written report.md visible
-  if (runDir) restamp(runDir, path, { project: projectStageInput });
-  return true;
-}
 
 // spec 62 — the per-field CONFIGURATION PROVENANCE rows for a project run: for each PROJECT_KEY, its effective
 // value (compact) and where it came from (project | customer | house). Read off the frozen sidecar `pr` (both
@@ -1886,7 +1771,7 @@ async function pipelineInner(job, opts = {}) {
   note(`\n=== clearotron-driver: ${run.slug} / ${run.date}-${run.codename} (agent=${agent}) ===`);
 
   // How the run ends delivered (run-delivered.mjs).
-  const { deliverWithoutTheAssessment, publishAndDeliver } = await deliveryEndState({ P, agent, ctx, job, run, opts }, { applyScopeFrontMatterOf, archive, assessmentCoverageOfRun, localLanguageStateOf, reportIdentityRecord, searchLogAuditMd, sentinel, setAsideTheAssessment, writeScopeFactsOf });
+  const { deliverWithoutTheAssessment, publishAndDeliver } = await deliveryEndState({ P, agent, ctx, job, run, opts });
 
   // The clearance's own steps, in order, run by run-shell.mjs. A value one step hands a later one is held here, between
   // them; a step that returns a result ends the run with it. A failure in any step ends through run-failed.mjs.
@@ -1989,170 +1874,13 @@ async function pipelineInner(job, opts = {}) {
     } },
     { name: "overview-and-cards", run: async () => {
         // The report's overview and its cards (steps/overview-and-cards.mjs).
-        ({ applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, findingsForCards, groupedMembers, overviewOpen, rebuildTheDeliveredRecord, restoreTheBrokenRecord, rov, writeScopeFacts, writeUps } = await runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWritersDuty, ctx, followTheRecordsActions, job, run, runState, saveTheLabel, writeVerdictSidecar }, { applyScopeFrontMatterOf, assembleReportMd, injectFrontMatter, originRowsForReport, reportIdentityRecord, writeScopeFactsOf }));
+        ({ applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, findingsForCards, groupedMembers, overviewOpen, rebuildTheDeliveredRecord, restoreTheBrokenRecord, rov, writeScopeFacts, writeUps } = await runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWritersDuty, ctx, followTheRecordsActions, job, run, runState, saveTheLabel, writeVerdictSidecar }, { assembleReportMd, originRowsForReport }));
     } },
     { name: "delivery", run: async () => {
         // The checks before delivery, their repairs, and the publish (steps/delivery.mjs).
-        return await runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, checkLateBind, clampOnTheFloorDuty, clampOnTheWritersDuty, ctx, deliverAndClamp, findingsForCards, followTheRecordsActions, groupedMembers, job, opts, overviewOpen, publishAndDeliver, rebuildTheDeliveredRecord, restoreTheBrokenRecord, reviewOpen, rov, run, runState, saveTheLabel, saveTheOwedLabel, synthesisKey, synthesisModel, synthesisThinking, writeScopeFacts, writeUps, writeVerdictSidecar }, { CITED_URI_RE, assembleReportMd, injectFrontMatter, reassembleFromTheRecord });
+        return await runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, checkLateBind, clampOnTheFloorDuty, clampOnTheWritersDuty, ctx, deliverAndClamp, findingsForCards, followTheRecordsActions, groupedMembers, job, opts, overviewOpen, publishAndDeliver, rebuildTheDeliveredRecord, restoreTheBrokenRecord, reviewOpen, rov, run, runState, saveTheLabel, saveTheOwedLabel, synthesisKey, synthesisModel, synthesisThinking, writeScopeFacts, writeUps, writeVerdictSidecar }, { CITED_URI_RE, assembleReportMd, reassembleFromTheRecord });
     } },
   ] });
-}
-
-// ── A DELIVERY WITHOUT THE OVERALL ASSESSMENT: WHAT IT SETS ASIDE AND WHAT IT READS ───────────────────────────────
-
-/** Every artifact of the overall assessment an earlier pass can leave in the run, as a path. */
-function assessmentArtifacts(P, runDir) {
-  return [
-    P.findings, P.narrative, P.report, P.reportOverview, P.reportCardsDir, P.audit, P.seniorEyeReview, P.caseLaw,
-    P.caseLawCitations, P.doubtClosure, P.clientSummary, P.emailBody, P.correctionsApplied,
-    join(runDir, REPORT_IDENTITY_FILE), join(runDir, ".published"),
-    ...["verdict.json", "senior-rights.json", "corrections-state.json", "corrective-cycle.json", CORRECTIVE_RECHECK_FILE,
-      "predelivery-lint.json", "reasoning-integrity.json"].map((n) => driverDir(runDir, n)),
-    declinationCallPaths(runDir, 0).ledger,
-  ].filter(Boolean);
-}
-
-/**
- * Move every assessment artifact an earlier pass left under `_driver/not-completed/set-aside/`, so no rejected draft,
- * earlier verdict, overview or published record can reach a surface of a delivery made without the assessment. Kept,
- * not deleted: the run's record still holds them. Returns the names moved. IMPURE (moves files in the run).
- */
-export function setAsideTheAssessment(P, runDir) {   // @internal
-  const dest = driverDir(runDir, NOT_COMPLETED_DIR, "set-aside");
-  const moved = [];
-  for (const src of assessmentArtifacts(P, runDir)) {
-    if (!existsSync(src)) continue;
-    mkdirSync(dest, { recursive: true });
-    const name = relative(runDir, src).replace(/[\\/]/g, "__");
-    const to = join(dest, name);
-    rmSync(to, { recursive: true, force: true });
-    renameSync(src, to);
-    moved.push(name);
-  }
-  return moved;
-}
-
-// The register ledger's closed statuses as the shipped coverage states of a delivery made without the assessment.
-// "Confirmed-clean" is the write-up's claim that every right it found is reported, and with no assessment nothing is
-// reported, so the row is an open item, with the shipped gap reason. A slice the provider could not express was not
-// run. A family the reading turn chose not to ask takes the "Note" state its withheld families already take.
-const LEDGER_STATE = { "confirmed-clean": "open", "coverage-limited": "coverage-limited",
-  deferred: "not-searched", "withheld-by-judgment": "note" };
-// The note an open row carries: the shipped gap row's own reason (deferral-row.mjs), never the write-up's text.
-const OPEN_ROW_NOTE = plainDeferralReason(NOT_COMPLETED);
-
-/**
- * The register coverage ledger's rows as the report's coverage rows, in a delivery made without the assessment: each
- * row's recorded status as a shipped state (LEDGER_STATE), its unit in the reader's label, and no row clean. The row's
- * reason is not printed: the write-up wrote it for the assessment, in the engine's own words, and in a normal run
- * synthesis writes the reader's note in its place. An open row carries the shipped gap reason; every other row carries
- * no note, and nothing replaces the reason. PURE.
- */
-export function assessmentCoverageRows(ledgerRows) {   // @internal
-  return (Array.isArray(ledgerRows) ? ledgerRows : []).map((r) => {
-    const state = LEDGER_STATE[String(r?.status ?? "").trim().toLowerCase()];
-    const unit = String(r?.unit ?? r?.axis ?? "").trim();
-    return state && unit ? { area: coverageUnitLabel(unit), state, note: state === "open" ? OPEN_ROW_NOTE : "" } : null;
-  }).filter(Boolean);
-}
-
-/**
- * The coverage rows a delivery without the assessment states. The register write-up's own ledger where it saved one;
- * where it never did, because placement or the write-up is the step that failed, the driver's own coverage form, whose
- * rows the frozen plan, the plan receipt and the bands give, and whose statuses the write-up records as it rules. A
- * row it never ruled is an open item, with the shipped gap reason and no words of the engine's. IMPURE (reads the run).
- */
-export function assessmentCoverageOfRun(runDir) {   // @internal
-  const ledger = loadCoverageLedger(runDir);
-  const fromLedger = assessmentCoverageRows(ledger.rows);
-  if (fromLedger.length) return fromLedger;
-  let rows = readCoverageForm(runDir).rows;
-  if (!Array.isArray(rows)) {
-    const { input } = coverageFormInput(runDir);
-    rows = input ? buildCoverageForm(input).rows : [];
-  }
-  const ruled = assessmentCoverageRows(formLedgerRows(rows));
-  const unruled = (rows ?? []).filter((r) => r && r.kind !== "family" && !LEDGER_STATE[String(r.status ?? "").trim().toLowerCase()])
-    .map((r) => String(r.unit ?? r.axis ?? "").trim()).filter(Boolean)
-    .map((unit) => ({ area: coverageUnitLabel(unit), state: "open", note: OPEN_ROW_NOTE }));
-  return [...ruled, ...unruled];
-}
-
-/**
- * The audit a run delivers without its assessment: the search log it holds, from the register write-up and the web
- * search, with no record the assessment would have rated and no placement set-aside. PURE apart from reading the run.
- */
-export function searchLogAuditMd(P) {   // @internal
-  const read = (p) => { try { return existsSync(p) ? readFileSync(p, "utf8") : ""; } catch { return ""; } };
-  const commonLawGrid = read(P.commonLawGrid) || null;
-  return buildAuditMd(read(P.registerFindings), read(P.commonLaw),
-    { findings: [], readingLog: readReadingLog(P), commonLawGrid, placementRows: [], searchLogOnly: true });
-}
-
-/**
- * THE MASTHEAD'S SCOPE FACT, derived and written: `_driver/scope-facts.json`, the pure join of the instructed scope, the
- * frozen plan, the band states and the coverage ledger (scope-facts.mjs). One author for both reports: the one the
- * assessment completed and the one delivered without it. Returns the facts, or null with no scope to state. IMPURE.
- */
-export function writeScopeFactsOf(ctx, P, runDir) {   // @internal
-  const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
-  const plan = ctx.registerPlan ?? readJson(P.registerPlan);
-  const instructed = readJson(P.instructedScope);
-  if (!plan && !Array.isArray(instructed?.classes)) return null;   // a run with no register layer and no instructed classes has no scope fact to state
-  const planExecution = ctx.planExecution ?? readJson(P.planExecution);
-  const facts = deriveScopeFacts({
-    instructedScope: instructed,
-    plan,
-    planExecution,
-    coverageRows: loadCoverageLedger(runDir).rows,
-    withheldQids: waitingFamilyStates(runDir, planExecution?.awaiting).withheld.map((f) => f.qid),
-    markets: orderMarketsOf(ctx, plan),
-  });
-  facts.derived_from = Object.fromEntries([
-    ["instructed_scope", P.instructedScope], ["register_plan", P.registerPlan],
-    ["plan_execution", P.planExecution], ["coverage_ledger", P.registerCoverageLedger],
-  ].filter(([, p]) => existsSync(p)).map(([k, p]) => [k, fileMeta(p)]));
-  try {
-    atomicWrite(P.scopeFacts, JSON.stringify({ ts: new Date().toISOString(), ...facts }, null, 2) + "\n");
-    runLog(runDir, { event: "scope-facts", classes: facts.classes_line, states: Object.fromEntries(Object.entries(facts.per_class).map(([c, v]) => [c, v.state])) });
-  } catch (e) { note(`scope-facts write failed (non-fatal): ${e.message}`); }
-  return facts;
-}
-
-/** Stamp the driver-owned `classes:` and `coverage_line:` from the scope fact onto report.md. IMPURE. */
-export function applyScopeFrontMatterOf(P, runDir) {   // @internal
-  let facts = null;
-  try { facts = JSON.parse(readFileSync(P.scopeFacts, "utf8")); } catch { return; }
-  const fields = {};
-  if (facts?.classes_line) fields.classes = facts.classes_line;
-  if (facts?.coverage_line) fields.coverage_line = facts.coverage_line;
-  if (!Object.keys(fields).length) return;
-  const wrote = injectFrontMatter(P.report, fields, runDir);
-  if (wrote) runLog(runDir, { event: "scope-frontmatter", classes: facts.classes_line ?? null, coverage_line: Boolean(facts.coverage_line) });
-}
-
-/**
- * THE REPORT'S IDENTITY, as the driver states it: the nine front-matter keys of `_driver/report-identity.json`,
- * which the overview's shell and the report read. `displayVerdict` supplies the rating's two keys; a run whose
- * overall assessment was not completed passes null, and the two keys are then null, so no surface is handed a rating
- * the run never reached. PURE apart from reading the run's status for its start date.
- */
-export function reportIdentityRecord(job, ctx, runDir, displayVerdict = null) {   // @internal
-  const idMarks = Array.isArray(job.marks) ? job.marks.map((m) => (typeof m === "string" ? m : m?.name)).filter(Boolean) : [];
-  const clRan = !ctx.registerOnly;
-  let runDate = null;
-  try { runDate = String(JSON.parse(readFileSync(join(runDir, "status.json"), "utf8"))?.startedAt ?? "").slice(0, 10) || null; } catch { /* no status yet — the date half is omitted rather than invented */ }
-  return {
-    schema_version: 1,
-    matter: job.ref ?? job.tmp ?? null,
-    title: job.name ?? job.markName ?? idMarks[0] ?? null,
-    client: job.customer ?? ctx.profile?.name ?? null,
-    use: job.goods ?? null,
-    classes: Array.isArray(job.classes) ? job.classes.join(", ") : (job.classes ?? null),
-    run: [runDate, providerMeta(ctx?.register ?? REGISTER_PROVIDER).label].filter(Boolean).join(" · ") + (clRan ? " + common-law" : ""),
-    overall_label: displayVerdict?.tier ?? null,
-    overall_badge: displayVerdict?.badge ?? null,
-  };
 }
 
 // ---- operability: resolve / reconstruct / single-stage re-run / sandboxed experiment -----------------
