@@ -14,7 +14,9 @@
 // main by it, and the replay reads it to see which engine moved. A second copy of the rule would drift.
 //
 // WHAT COUNTS. The three Codex model defaults in driver/engine/openai-agent.mjs (JUDGMENT, SWEEP and
-// CHEAP), and the `package` and `floor` of both entries in ENGINE_BINARIES in driver/driver.config.mjs.
+// CHEAP), and the `package` and `floor` of each engine's program row: driver/engine/<engine>-program.mjs,
+// or, in a tree from before the rows moved there, that engine's entry in ENGINE_BINARIES in
+// driver/driver.config.mjs. Each engine is read from its own file where the tree has one.
 // The Claude engine asks for a tier by name and its program resolves it, so for Claude the program's
 // floor IS the model choice. Values are parsed, not lines: an edited comment or a moved line is not a
 // change. Left out on purpose: the tier each stage asks for, and anything a box's settings override.
@@ -33,7 +35,7 @@
 // goes to stderr and nothing to stdout, because a partial answer compared as a whole reads as a change or,
 // worse, as none.
 
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -41,7 +43,8 @@ import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 
 export const SCHEMA = 1;
 const MODELS_FILE = "driver/engine/openai-agent.mjs";
-const BINARIES_FILE = "driver/driver.config.mjs";
+const BINARIES_FILE = "driver/driver.config.mjs";   // where the rows sat before each moved to its engine's file
+const programFile = (engine) => `driver/engine/${engine}-program.mjs`;
 const ENGINES = ["anthropic-agent", "openai-agent"];
 const CODEX_MODELS = { judgment: "JUDGMENT", sweep: "SWEEP", cheap: "CHEAP" };
 
@@ -62,6 +65,18 @@ function read(root, rel) {
   catch (e) { throw new CouldNotLook(`${rel}: ${e.code ?? e.message}`); }
 }
 
+/** One engine's program row as source text: its own file where the tree has one, else its ENGINE_BINARIES entry. */
+function programRow(root, engine) {
+  const own = programFile(engine);
+  if (existsSync(join(root, own))) return { rel: own, entry: code(read(root, own)) };
+  const binaries = code(read(root, BINARIES_FILE));
+  const table = one(binaries, /^export const ENGINE_BINARIES = \{\n([\s\S]*?)^\};/gm, `${BINARIES_FILE} ENGINE_BINARIES`)[1];
+  const start = one(table, new RegExp(`^ {2}"${engine}":\\s*\\{`, "gm"), `${BINARIES_FILE} ${engine}`).index;
+  const rest = table.slice(start + 1);
+  const next = rest.search(/^ {2}"[a-z-]+":\s*\{/m);
+  return { rel: BINARIES_FILE, entry: next === -1 ? rest : rest.slice(0, next) };
+}
+
 /** The pins of the tree at `root`. Throws CouldNotLook when any value cannot be read exactly once. */
 export function readPins(root) {
   const models = code(read(root, MODELS_FILE));
@@ -70,17 +85,12 @@ export function readPins(root) {
     const re = new RegExp(`^const ${name}\\s*=\\s*process\\.env\\.CLEAROTRON_OPENAI_MODEL_${name}\\s*\\|\\|\\s*"([^"]+)"\\s*;`, "gm");
     codex[key] = one(models, re, `${MODELS_FILE} ${name}`)[1];
   }
-  const binaries = code(read(root, BINARIES_FILE));
-  const table = one(binaries, /^export const ENGINE_BINARIES = \{\n([\s\S]*?)^\};/gm, `${BINARIES_FILE} ENGINE_BINARIES`)[1];
   const pins = {};
   for (const engine of ENGINES) {
-    const start = one(table, new RegExp(`^ {2}"${engine}":\\s*\\{`, "gm"), `${BINARIES_FILE} ${engine}`).index;
-    const rest = table.slice(start + 1);
-    const next = rest.search(/^ {2}"[a-z-]+":\s*\{/m);
-    const entry = next === -1 ? rest : rest.slice(0, next);
+    const { rel, entry } = programRow(root, engine);
     pins[engine] = {
-      package: one(entry, /\bpackage:\s*"([^"]+)"/g, `${BINARIES_FILE} ${engine} package`)[1],
-      floor: one(entry, /\bfloor:\s*"([^"]+)"/g, `${BINARIES_FILE} ${engine} floor`)[1],
+      package: one(entry, /\bpackage:\s*"([^"]+)"/g, `${rel} ${engine} package`)[1],
+      floor: one(entry, /\bfloor:\s*"([^"]+)"/g, `${rel} ${engine} floor`)[1],
     };
   }
   pins["openai-agent"].models = codex;
