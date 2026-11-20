@@ -31,7 +31,7 @@ import { createHash } from "node:crypto";
 import { kebab } from "./search-policy.mjs";
 import { resolveRegions } from "./register-plan.mjs";
 import { reachableRegions } from "./register-availability.mjs";
-import { RECORD_BASIS, fixtureLister, toRecord } from "./register-records.mjs";
+import { RECORD_BASIS, fixtureLister, imageFactsOf, toRecord } from "./register-records.mjs";
 import { ENUMERATE_CEILING_DEFAULT } from "../providers/_shared/enumerate.mjs";
 export { writeFixtureMarker } from "./register-fixture-marker.mjs";
 import { withFilingGoods } from "./filing-goods.mjs";
@@ -308,7 +308,7 @@ function identicalRow({ term: form, qid, cell, block, plainRead = false, narrowe
  * hold, so the rating step still has what the run paid for, and the step's absence is on the record.
  */
 export function knockoutRecordsDoc({ marks, classes = null, jurisdictions = null, provider, capabilities = null, unreachable = [],
-  counts = null, reading = null, readBlocks, readProposals, framedMarks = [], now = () => new Date() }) {
+  counts = null, reading = null, readBlocks, readProposals, framedMarks = [], images = null, now = () => new Date() }) {
   const { regions: covered, deferred, worldwide } = resolveRegions(jurisdictions, capabilities);
   const { regions, dropped } = reachableRegions(covered, unreachable, capabilities?.offices?.covered, worldwide === true);
   const officeScope = dropped.length
@@ -394,6 +394,8 @@ export function knockoutRecordsDoc({ marks, classes = null, jurisdictions = null
       for (const raw of rowsOf(block)) {
         const id = String(raw?.record_id ?? "");
         if (!id || found.has(id)) continue;
+        // The mark's image facts go to `images`, the logo step's own map, and never onto the record the rater reads.
+        if (images && !images.has(id)) { const facts = imageFactsOf(raw); if (facts) images.set(id, facts); }
         const row = { ...toRecord(neutralRow(raw), { term, basis, provider }), question: qid };
         if (carried && !carried.has(id)) { if (!setAside.has(id)) setAside.set(id, row); continue; }
         found.set(id, { ...row, ...(groupOf.get(id)?.why ? { carriedBecause: groupOf.get(id).why } : {}) });

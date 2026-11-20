@@ -57,7 +57,7 @@ import { correctionsAppliedTable, unresolvedFlags } from "./corrections-feedforw
 import { settledKnockoutReading } from "./knockout-register-record.mjs";
 import { stripNextStepSections } from "./knockout-next-step.mjs";
 import { publishKnockout, composeKnockoutCoverNote, knockoutName } from "./publish/knockout.mjs";
-import { markLogos, logosStep } from "./mark-logos.mjs";
+import { markLogos, logosStep, writeRecordImages } from "./mark-logos.mjs";
 import { writeRunStatus, readRunStatus, rollupStatus, identitySeed, resumeRecord } from "./progress.mjs";   // — the identity seed is shared; the stepper is not
 import { batchMarkName } from "./mark-name.mjs";
 import { runLog, note } from "./log.mjs";
@@ -631,7 +631,8 @@ async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts
   }
   const unreachable = exec.source === "provider" ? (ctx.registerUnreachable ?? []) : [];
   const scope = { marks: names, classes: job.classes ?? null, jurisdictions: job.jurisdictions ?? null, capabilities: ctx.registerCaps, unreachable };
-  const build = (reading) => knockoutRecordsDoc({ ...scope, provider: register, counts, reading, framedMarks: plan.marks,
+  const images = new Map();   // each listed filing's image facts, for the logo step alone (mark-logos.mjs)
+  const build = (reading) => knockoutRecordsDoc({ ...scope, provider: register, counts, reading, framedMarks: plan.marks, images,
     readBlocks: (name) => knockoutBandBlocks(run.runDir, name), readProposals: (name) => knockoutProposals(run.runDir, name) });
   try {
     if (exec.fixtureDir) writeFixtureMarker(run.runDir, exec.fixtureDir);
@@ -677,6 +678,7 @@ async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts
   try {
     const doc = withHeldGoods(build(reading), run.runDir, { runPrefix: `clearance-${run.slug}-${run.codename}` });
     atomicWrite(K.registerRecords, JSON.stringify(doc, null, 2) + "\n");
+    writeRecordImages(run.runDir, images);
     appendQuestionReceipts(K.countLedger, doc, { provider: register });
     runLog(run.runDir, { event: "knockout-register-records", provider: register, executor: exec.source,
       marks: doc.marks.length, listed: listedMarks(doc), records: doc.marks.reduce((n, m) => n + m.records.length, 0),
