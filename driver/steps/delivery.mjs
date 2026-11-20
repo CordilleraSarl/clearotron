@@ -45,6 +45,7 @@ import { basename, join } from "node:path";
 import { followUpKindsOf } from "../follow-up-twins.mjs";   // the search each deferred directive recorded
 import { stopsWithTheRun } from "../cancel.mjs";   // every paid call the code makes itself reads the stop first
 import { fullProseOrdinals } from "../coverage-rows-run.mjs";
+import { cardsNeverBuilt, owedCardOrdinals, ownerScreenForDelivery, readFindingsForReport, readGoodsHanded, REBUILDS_THE_DELIVERED_RECORD, recordGoodsHanded } from "../delivered-record-run.mjs";
 import { caseLawJoin, settleDerivedBases } from "../dispatch-extras.mjs";
 import { computeOpenFloors, lateRecordIds, readFloorAxes } from "../floor-and-gap-checks.mjs";
 import { defaultRecordFetcher } from "../provider-calls.mjs";
@@ -57,7 +58,7 @@ import { safeReadJson, stage, stageCharter } from "../stage-dispatch.mjs";
 import { runPostRepairCorrection } from "./corrections.mjs";
 
 export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, checkLateBind, clampOnTheFloorDuty, clampOnTheWritersDuty, ctx, deliverAndClamp, findingsForCards, followTheRecordsActions, groupedMembers, job, opts, overviewOpen, publishAndDeliver, rebuildTheDeliveredRecord, restoreTheBrokenRecord, reviewOpen, rov, run, runState, saveTheLabel, saveTheOwedLabel, synthesisKey, synthesisModel, synthesisThinking, writeScopeFacts, writeUps, writeVerdictSidecar }, helpers) {
-  const { CITED_URI_RE, REBUILDS_THE_DELIVERED_RECORD, assembleReportMd, cardsNeverBuilt, injectFrontMatter, owedCardOrdinals, ownerScreenForDelivery, readFindingsForReport, readGoodsHanded, reassembleFromTheRecord, recordGoodsHanded } = helpers;
+  const { CITED_URI_RE, assembleReportMd, injectFrontMatter, reassembleFromTheRecord } = helpers;
   // ── Spec A1 + A2: pre-delivery verification — pure code, before ANYTHING outward-facing. Per the
   // user-amended design it NEVER withholds: every check lands in the receipt artifact; failing checks on a
   // drafting surface get ONE warm named-correction redo (the model re-types, this code re-judges); whatever
