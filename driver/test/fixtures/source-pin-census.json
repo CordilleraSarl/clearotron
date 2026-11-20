@@ -1,5 +1,5 @@
 {
-  "total": 297,
+  "total": 298,
   "files": {
     "driver/test/a-backgrounded-install-can-actually-run-a-clearance.test.mjs": [
       0,
@@ -366,6 +366,10 @@
       0
     ],
     "driver/test/channel-fallback-silence.test.mjs": [
+      1,
+      0
+    ],
+    "driver/test/channel-plan-reaches-the-trace.test.mjs": [
       1,
       0
     ],
