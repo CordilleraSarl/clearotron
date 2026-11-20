@@ -23,7 +23,7 @@ import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { tmpdir } from "node:os";
 import { runStage, registerEngine, tokensPerSec, toolGauge } from "../gateway.mjs";
-import { journalStageInputs } from "../pipeline.mjs";
+import { journalStageInputs } from "../stage-runner.mjs";
 
 async function withEngine(name, runTurn, fn) {
   registerEngine({ name, runTurn });

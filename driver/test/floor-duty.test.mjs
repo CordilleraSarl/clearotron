@@ -424,33 +424,14 @@ test("it speaks for ONE stage — the duty is placement's, and no other stage is
   rmSync(dir, { recursive: true, force: true });
 });
 
-test("the SKIP CONDITION ITSELF consults the duty — calling the predicate is not enough", () => {
-  // ✕ THIS ARM WAS WEAKER AND A PLANT CAUGHT IT. It asserted only that pipeline.mjs CALLS
-  // `floorDutyBlocksSkip`. Deleting the term from the skip condition while leaving the call in place —
-  // the exact defect, restored — left all four arms green: the predicate was computed, logged, and then
-  // ignored by the branch it exists to govern.
-  //
-  // That is the shape this whole issue is about, reproduced inside its own fix: a thing that is measured
-  // and a thing that decides, drifting apart. So the assertion is on the CONDITION, not on the call.
-  const src = driverSource("pipeline.mjs");
-  assert.match(src, /floorDutyBlocksSkip\(/, "pipeline.mjs no longer calls the shared predicate");
-
-  // ✕ TWO LINES MATCH `if (!forced &&` — the generic stage skip and register-unit's own code-side one.
-  // A `.find` on that alone took the FIRST, which is register-unit's, and the arm then reported the
-  // absence of a term that was never supposed to be on that line. Keyed on `!freshness.stale`, which is
-  // the generic skip's alone. (First-match-in-order, in an arm written the same afternoon as the scorer
-  // fix for first-match-in-order.)
-  const skipLines = src.split("\n").filter((l) => /if \(!forced &&/.test(l) && /!freshness\.stale/.test(l));
-  assert.equal(skipLines.length, 1,
-    `expected exactly one generic stage-skip condition, found ${skipLines.length} — re-derive this arm's `
-    + "selector before trusting what it says about any of them");
-  const skipLine = skipLines[0];
-  assert.match(skipLine, /!dutyBlocksSkip/,
-    "the skip condition does not consult the floor duty. The predicate may still be called and logged "
-    + "above it, which reads exactly like a fix and is not one: the pass whose duty is undischarged is "
-    + "skipped anyway, and the duty stays permanently undischargeable");
-
-  assert.ok(!/undischarged_by_seat/.test(src),
+// THE SKIP CONDITION ITSELF IS HELD BY A RESUME NOW, not by reading this file's source. A pin on the condition's text
+// once caught the predicate computed, logged and then ignored by the branch it governs; the same defect now fails
+// a-placement-pass-whose-floor-duty-is-undischarged-runs-again-on-a-resume.pipeline.test.mjs, which parks a run after its
+// placement pass, leaves the recorded duty undischarged, and requires the resume to dispatch the pass again.
+//
+// What stays here is the one thing no run shows: that pipeline.mjs forms no judgement of its own about the duty.
+test("pipeline.mjs never reads the duty artifact's internals: the shared predicate is the only judge", () => {
+  assert.ok(!/undischarged_by_seat/.test(driverSource("pipeline.mjs")),
     "pipeline.mjs reads the duty artifact's internals directly — that is a second judgement about the "
     + "same pass, which is the defect this fixes");
 });
