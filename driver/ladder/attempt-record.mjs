@@ -17,9 +17,10 @@ import { recordBestDraft } from "../best-draft.mjs";
 import { progressQuantity } from "../repairs.mjs";
 import { measureManualsSeen } from "../manuals-seen.mjs";
 import { statOf, gradedFormMeta } from "./judge.mjs";
+import { attemptOk, draftCarryEligible, spentBudgetCleanly, streamDigest, streamMeta, tokensPerSec, toolGauge, writeBoundaryOf } from "./turn-signals.mjs";
 
 export function measureAttempt({ name, files, runDir }, { attempt, key, warm, turn, preArtifact, fail, stampedQuantity, failingFile, killClass,
-  killSeen, attemptFails }, { draftCarryEligible }) {
+  killSeen, attemptFails }) {
   // AD-4 house rule — both computed UNCONDITIONALLY, three-valued on purpose:
   //   wrote: did THIS attempt move any expected artifact? true/false when the stage has expected files,
   //          null when it has none (nothing to emit — distinct from "did not write").
@@ -73,8 +74,7 @@ export function measureAttempt({ name, files, runDir }, { attempt, key, warm, tu
 }
 
 export function writeAttemptRow({ name, engine, agent, model, files, runDir, followup, bandSize, derivedLimit, auth },
-  { lastUnion, lastCoverageUnion, lastPlacementUnion }, facts, { writeBoundaryOf, attemptOk, streamMeta, tokensPerSec, toolGauge,
-  spentBudgetCleanly, streamDigest }) {
+  { lastUnion, lastCoverageUnion, lastPlacementUnion }, facts) {
   const { attempt, key, warm, warmEscalatedAt, effTimeout, dispatch, witnessed, turn, cli, modelRequested,
     modelActual, modelBasis, modelSnapshot, modelMismatch, providerReported, timedOutBy, fail, formRepairsThisAttempt, rescued, quiescentMs,
     rescueRefused, rescueRefusedFile, rescueRefusedReason, attemptRefusals, attemptKilledWhile, lastGraded, wrote, reads, readsTruncated,
@@ -258,8 +258,7 @@ export function writeAttemptRow({ name, engine, agent, model, files, runDir, fol
   });
 }
 
-export function writeAttemptEvent({ name, maxRetries, runDir, bandSize, derivedLimit, auth }, facts,
-  { attemptOk, streamMeta, tokensPerSec, toolGauge, spentBudgetCleanly }) {
+export function writeAttemptEvent({ name, maxRetries, runDir, bandSize, derivedLimit, auth }, facts) {
   const { attempt, warm, warmEscalatedAt, dispatch, wire, turn, cli, modelRequested, modelActual, modelBasis, modelSnapshot, modelMismatch,
     providerReported, timedOutBy, fail, formRepairsThisAttempt, rescued, quiescentMs, rescueRefused, rescueRefusedFile, rescueRefusedReason,
     attemptRefusals, attemptKilledWhile, wrote, quantity, noChange } = facts;

@@ -15,10 +15,12 @@ import { isTaintRow } from "../register-taint.mjs";
 import { recordDispatch, streamFilePath } from "../dispatch-record.mjs";
 import { endingFields } from "../engine/session-record.mjs";
 import { statOf, gradedFormMeta } from "./judge.mjs";
+import { isFormClassFail, MAX_FORM_REPAIRS } from "./form-sync.mjs";
+import { repairTarget, warmPatchMessage } from "./repair-messages.mjs";
+import { rel, streamDigest, streamMeta, tokensPerSec, writeBoundaryOf } from "./turn-signals.mjs";
 
 export async function repairFormInDispatch(stage, { judgeArtifacts }, { attempt, key, turn, effTimeout, fail, stampedQuantity, failingFile,
-  formRepairsUsed, killSeen, lastGraded, lastModelUsed }, { isFormClassFail, MAX_FORM_REPAIRS, repairTarget, rel, warmPatchMessage,
-  writeBoundaryOf, streamMeta, tokensPerSec, streamDigest }) {
+  formRepairsUsed, killSeen, lastGraded, lastModelUsed }) {
   const { name, engine, stageHome, agent, model, thinking, files, runDir, stallSec, adds, supplementalLane, auth, gatherAllowedTools,
     engineSkillsDir, engineSkillsGrantRoots, engineResolveSkill, turnConfig } = stage;
   const { json } = turn;

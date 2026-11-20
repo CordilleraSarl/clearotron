@@ -14,6 +14,7 @@ import { note } from "../log.mjs";
 // same rows off disk. Acyclic: register-taint.mjs imports node builtins only.
 import { isTaintRow } from "../register-taint.mjs";
 import { nameTheFailure } from "./turn-failure.mjs";
+import { killedWhile, refusalsInWindow, rel } from "./turn-signals.mjs";
 
 // ── — WALL RESCUE QUIESCENCE. How long every declared artifact must have been UNTOUCHED when the
 // turn settled, for its write to count as provably COMPLETE rather than possibly torn.
@@ -155,7 +156,7 @@ export function rescueAttempt({ fail, files, killClass, killSeen, signals, valid
 // attempt's own artifact judgement (judge.mjs), the refusals a timed-out dispatch met, the name the failure then goes
 // by (turn-failure.mjs nameTheFailure) and how a hard-wall kill read. A kill arms `killSeen` for the rest of the ladder.
 export function rescueAndName(stage, judge, { fail, turn, preArtifact, dispatchedAt, settledAt, killSeen,
-  modelMismatch, famRequested, famActual, modelRequested, modelActual }, { rel, refusalsInWindow, killedWhile }) {
+  modelMismatch, famRequested, famActual, modelRequested, modelActual }) {
   const { name, files, validate, runDir, stallSec } = stage;
   const { code, killed, wall, stderr, json, usage } = turn;
   // Whether this attempt's own artifacts answer its failure is ladder/rescue.mjs (rescueAttempt), with why a kill

@@ -9,6 +9,8 @@
 
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { outputMeta } from "../log.mjs";
+import { gradedArtifact, saidBackOnly, syncCoverageForm, syncDispositionForm, syncPlacementForm, toolWrittenArtifact } from "./form-sync.mjs";
+import { rel } from "./turn-signals.mjs";
 
 // statOf feeds the ONE artifact-state snapshot both the exit-1 rescue and AD-4's emitted-vs-landed
 // gauge read. It is taken PER ATTEMPT, just before the turn is dispatched — it used to be taken
@@ -22,8 +24,7 @@ export const statOf = (f) => { try { const s = statSync(f); return `${s.mtimeMs}
 // owns one form or none — and the ?? chain is that fact, not a preference between them.
 export const gradedFormMeta = (lastGraded) => outputMeta(lastGraded);
 
-export function artifactJudgement({ files, validate, runDir }, { syncDispositionForm, syncCoverageForm, syncPlacementForm, toolWrittenArtifact, rel,
-  gradedArtifact, saidBackOnly }) {
+export function artifactJudgement({ files, validate, runDir }) {
   let lastUnion = null;         // the last judgement's meaning-sweep counted state (syncDispositionForm's
                                 // return). Written onto the attempt row for the journal AND read by the
                                 // veto below — the run's own answer to "did this session rule any of

@@ -16,9 +16,10 @@ import { recordDispatch, streamFilePath } from "../dispatch-record.mjs";
 import { witnessStageMethodology, describeMethodologyDrift } from "../methodology-witness.mjs";
 import { inlineManuals } from "../manuals-inline.mjs";
 import { statOf } from "./judge.mjs";
+import { correctiveMessage, warmPatchMessage, warmTimeoutMessage } from "./repair-messages.mjs";
+import { retryBackoffMs, sleep, vetoResumeRuledNone, warmEligible } from "./turn-signals.mjs";
 
-export async function retryMode({ name }, { attempt, lastFail, lastJson, lastKillClass, lastUnion, warmUsed },
-  { vetoResumeRuledNone, warmEligible, retryBackoffMs, sleep }) {
+export async function retryMode({ name }, { attempt, lastFail, lastJson, lastKillClass, lastUnion, warmUsed }) {
   // Warm patch retry: resume the COMPLETED failed session with only the fix instruction (see design note
   // above warmEligible). Otherwise: fresh key + full corrective message (Fix B), exactly as before.
   // — the warm patch is VETOED, not de-allowlisted, and the veto keys on the DIRECT STATE:
@@ -55,8 +56,7 @@ export async function retryMode({ name }, { attempt, lastFail, lastJson, lastKil
   return { vetoedResume, warm, timeoutWarm, warmUsed };
 }
 
-export async function dispatchTurn(stage, { attempt, warm, timeoutWarm, vetoedResume, lastFail, lastKey, lastSessionRef, warmEscalatedAt, effTimeout },
-  { warmTimeoutMessage, warmPatchMessage, correctiveMessage }) {
+export async function dispatchTurn(stage, { attempt, warm, timeoutWarm, vetoedResume, lastFail, lastKey, lastSessionRef, warmEscalatedAt, effTimeout }) {
   const { name, engine, stageHome, agent, message, refreshMessage, model, thinking, sessionKey, stallSec, files, maxRetries, runDir, followup, adds,
     supplementalLane, gatherAllowedTools, gatherSeatWrites, engineSkillsDir, engineSkillsGrantRoots, engineResolveSkill, turnConfig } = stage;
   // Snapshot each expected artifact at THIS attempt's start. TWO readers, one base — so they can never
