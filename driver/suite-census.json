@@ -9356,6 +9356,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-answers-with-what-its-pages-delivered.test.mjs": {
+          "tests": 5,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-trace-survives-the-client-door.test.mjs": {
           "tests": 8,
           "asserts": 22,
