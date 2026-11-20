@@ -3,8 +3,8 @@
 //
 // steps/overview-and-cards.mjs — the report's overview and its cards, and the front matter the driver stamps on them.
 //
-// One phase of a run, moved out of pipelineInner unchanged. `helpers` are functions still held in pipeline.mjs, handed in
-// because this module must not import that one back; each moves here when the other phases that share it have moved.
+// One phase of a run, moved out of pipelineInner unchanged. It must not import pipeline.mjs back, so what it shares with
+// that module lives in the modules beside it, which it imports.
 import { atomicWrite, paths } from "../run-record.mjs";
 import { ensureDriverDir } from "../../shared/driver-dir.mjs";
 import { applyAskClosure, deriveAsks, finalizeOpenHandoffs, summarizeAsks } from "../ask-ledger.mjs";
@@ -38,6 +38,7 @@ import { mintRecordCarryDoubts, silentlyLostFindings, statedDivergenceFindings }
 import { recordedFindingUris } from "../register-digest-record.mjs";
 import { SETTLED_CLASSES, mintRemedyAccountingDoubts } from "../remedy-accounting.mjs";
 import { correctionsTheRestoreLacks, openAskForClosure, restoreTheRecordThatPassed } from "../repair-review-run.mjs";
+import { assembleReportMd, originRowsForReport } from "../report-assembly.mjs";
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE, renderReportOverview } from "../report-overview-record.mjs";
 import { applyScopeFrontMatterOf, injectFrontMatter, reportIdentityRecord, writeScopeFactsOf } from "../run-end-state.mjs";
 import { StageFailure } from "../run-outcome.mjs";
@@ -49,8 +50,7 @@ import { gradedWriteUpRung } from "../write-up-form.mjs";
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
 
-export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWritersDuty, ctx, followTheRecordsActions, job, run, runState, saveTheLabel, writeVerdictSidecar }, helpers) {
-  const { assembleReportMd, originRowsForReport } = helpers;
+export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWritersDuty, ctx, followTheRecordsActions, job, run, runState, saveTheLabel, writeVerdictSidecar }) {
   // Phase 3 — delivery (v14 post-mortem fix). One LLM step curates the report; the audit, the page render,
   // and the email body are deterministic CODE; a tiny LLM step only SENDS. Each step is independent — a
   // failure in the audit or the email never loses the report.
