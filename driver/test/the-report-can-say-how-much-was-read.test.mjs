@@ -203,6 +203,26 @@ test("a worldwide search is read from the plan's stamp, never from the length of
   assert.equal(part.territories.Hang.worldwide, undefined);
 });
 
+test("a term with no territory of its own is read with the plan's, as the register was asked", () => {
+  const exec = (...rows) => ({ executed: rows.map(([qid, state]) => ({ qid, state })) });
+  const term = (qid, regions) => ({ qid, term: "Вольтарис", ...(regions ? { regions } : {}) });
+  // Its own territories come first.
+  const own = localScripts({ regions: ["RU", "KZ"], entries: [term("o", ["RU"])] }, exec(["o", "incomplete"]));
+  assert.deepEqual(own.territories.Cyrl, { searched: [], missed: ["RU"] });
+  // With none, it takes the plan's named territories, as the executor fills them before it sends.
+  const named = localScripts({ regions: ["RU", "KZ"], entries: [term("n", []), term("m")] }, exec(["n", "enumerated"], ["m", "incomplete"]));
+  assert.deepEqual(named.territories.Cyrl, { searched: ["KZ", "RU"], missed: [] });
+  // On a plan stamped worldwide it takes the plan's whole list, which is the worldwide search.
+  const listed = localScripts({ scope_basis: "worldwide", regions: ["RU", "KZ", "EM"], entries: [term("w", [])] }, exec(["w", "incomplete"]));
+  assert.deepEqual(listed.territories.Cyrl, { searched: [], missed: [], worldwide: "missed" });
+  // A stamped plan that names no territory sent the question with none: the worldwide search too.
+  const open = localScripts({ scope_basis: "worldwide", regions: [], entries: [term("w", []), term("r", ["RU"])] }, exec(["w", "enumerated"], ["r", "incomplete"]));
+  assert.deepEqual(open.territories.Cyrl, { searched: [], missed: ["RU"], worldwide: "searched" });
+  // Only a plan with no stamp and no territory leaves the term's scope unknown.
+  const unknown = localScripts({ regions: [], entries: [term("u", [])] }, exec(["u", "incomplete"]));
+  assert.deepEqual(unknown.territories.Cyrl, { searched: [], missed: [], unnamed: "missed" });
+});
+
 test("the whole record carries a group tally over the closed set only", () => {
   const rec = searchDepthRecord({ auditMd: AUDIT, recordFileNames: ["jp-1.json"], commonLawGrid: null, caseLawText: "", registerPlan: null });
   assert.deepEqual(Object.keys(rec.cleared.groups).sort(), [...CLEARED_GROUPS].sort());
