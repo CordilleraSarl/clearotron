@@ -93,7 +93,7 @@ test("the marker rides INSIDE the bound — `reason` is still the 200 the ping i
 test("no StageFailure interpolates an artifact path into `reason` — the cap severs it there", () => {
   // A run's throws live in the pipeline, in the phase modules carved out of it, and in the modules the helpers
   // it handed those phases moved to; each file is read alone.
-  const MOVED = ["stage-dispatch.mjs", "register-digest-run.mjs", "run-attachments.mjs"];
+  const MOVED = ["stage-dispatch.mjs", "register-digest-run.mjs", "run-attachments.mjs", "intake-derivations.mjs"];
   const files = ["driver/pipeline.mjs", ...MOVED.map((f) => `driver/${f}`), ...readdirSync(join(ROOT, "driver/steps")).filter((f) => f.endsWith(".mjs")).map((f) => `driver/steps/${f}`)];
   const sites = files.flatMap((f) => {
     const pl = source(f);

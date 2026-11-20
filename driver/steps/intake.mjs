@@ -3,9 +3,10 @@
 //
 // steps/intake.mjs — the matter frame, its variants and the plan the searches run from.
 //
-// One phase of a run, moved out of pipelineInner unchanged. `helpers` are functions still held in pipeline.mjs, handed in
-// because this module must not import that one back; each moves here when the other phases that share it have moved.
+// One phase of a run, moved out of pipelineInner unchanged. It must not import pipeline.mjs back, so what it shares with
+// that module lives in the modules beside it, which it imports.
 import { parseManifestVariants, variantsParseFailure } from "../common-law-receipts.mjs";
+import { deriveFormNeighbourhood, deriveGridSpec, deriveIntakeAsks, deriveScopeLedgerJson } from "../intake-derivations.mjs";
 import { note, runLog } from "../log.mjs";
 import { attachRegisterPlan, verifyAndRecordHouseElement } from "../run-attachments.mjs";
 import { StageFailure } from "../run-outcome.mjs";
@@ -14,8 +15,7 @@ import { must, stage } from "../stage-dispatch.mjs";
 import { decideAxes } from "../stages.mjs";
 import { readFileSync } from "node:fs";
 
-export async function runIntake({ P, ctx, job, opts, run }, helpers) {
-  const { deriveFormNeighbourhood, deriveGridSpec, deriveIntakeAsks, deriveScopeLedgerJson } = helpers;
+export async function runIntake({ P, ctx, job, opts, run }) {
   // Phase 0 done in code (slug/codename/run-dir/customer). Phase 1+2 stages:
   must(await stage("matter-frame", ctx), "matter-frame");
   await deriveIntakeAsks(ctx);   // A6: freeze the intake-ask register (one save-only followup if the section is missing)
