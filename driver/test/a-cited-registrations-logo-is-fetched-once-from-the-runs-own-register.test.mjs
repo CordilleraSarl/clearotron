@@ -129,3 +129,29 @@ test("a Knockout's listed filings are read the same way", async () => {
   assert.deepEqual(calls, ["/mark/em/0001"]);
   assert.equal(doc.rows.length, 1);
 });
+
+test("a Knockout's filing whose record is only in the run's record log, where its listing wrote it, is read there", async () => {
+  // A live Knockout writes no `_records/`; its page reads each filing's record from the log, and so does this step.
+  const dir = mkdtempSync(join(tmpdir(), "logos-ko-"));
+  mkdirSync(driverDir(dir), { recursive: true });
+  const row = (target, markFeature, imageAvailable) => JSON.stringify({ ts: "2026-11-20T00:00:00Z", provider: "invented-register", target, body: { markFeature, imageAvailable } });
+  writeFileSync(driverDir(dir, "register-record-bodies.jsonl"), [row("/mark/em/0101", "WORD AND DESIGN", true), row("/mark/em/0102", "WORD ONLY", true)].join("\n") + "\n");
+  writeFileSync(join(dir, "register-records.json"), JSON.stringify({ marks: [{ name: "INVENTED", records: [
+    { recordId: "/mark/em/0101" }, { recordId: "/mark/em/0102" }, { recordId: "/mark/em/0103" }] }] }));
+  const calls = [];
+  const doc = await markLogos(dir, { registerRecordsPath: join(dir, "register-records.json"), provider: register(() => ({ ok: true, bytes: PNG }), calls), env: ENV });
+  assert.deepEqual(calls, ["/mark/em/0101"], "only the figurative filing with an image was asked for");
+  const rows = byRef(doc);
+  assert.equal(rows["/mark/em/0101"].state, "fetched");
+  assert.equal(rows["/mark/em/0102"].state, "no-logo", "a word mark is said to be one, not that the run holds no record");
+  assert.equal(rows["/mark/em/0103"].state, "unknown", "a filing the run holds no record of asks nothing");
+  // A clearance reads its cited registrations from `_records/` alone, as its page does: the log is not read for it.
+  const other = mkdtempSync(join(tmpdir(), "logos-clearance-"));
+  mkdirSync(driverDir(other), { recursive: true });
+  writeFileSync(driverDir(other, "register-record-bodies.jsonl"), row("/mark/em/0101", "WORD AND DESIGN", true) + "\n");
+  writeFileSync(join(other, "findings.json"), JSON.stringify({ findings: [{ disposition: "adversarial", owner: { registrations: [{ uri: "/mark/em/0101" }] } }] }));
+  const asked = [];
+  const clearance = await markLogos(other, { findingsPath: join(other, "findings.json"), provider: register(() => ({ ok: true, bytes: PNG }), asked), env: ENV });
+  assert.deepEqual(asked, [], "a clearance read a record its page does not show");
+  assert.equal(byRef(clearance)["/mark/em/0101"].state, "unknown");
+});
