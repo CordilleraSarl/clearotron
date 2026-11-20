@@ -142,7 +142,7 @@ export function evaluateClientGate({ coverage = [], lintFailingIds = [], escalat
 // T3 (H3) — the machine-QC INPUT assembly. Mirrors publishReport's own reads exactly (the
 // strict→lenient findings degrade + the _driver sinks) so an out-of-band evaluation (tests, tooling)
 // judges with the same pair of eyes as publish. The pipeline preflight that used to call this is gone
-// (one report, spec 2026-07-30 §5) — publishReport's in-publish evaluation is the single live caller.
+// (one report) — publishReport's in-publish evaluation is the single live caller.
 export function assembleReleaseInputs(reportMdPath, findingsJsonPath) {
   let coverage = [], quarantined = [], findingsError = null;
   const base = dirname(reportMdPath);
@@ -233,7 +233,7 @@ function indexRows(runs, { reportFile, linkPrefix = '', showAudit = true, client
   return runs.map(r => {
     // Machine-QC state (meta.clientGate is the historical stamp name): a STAFF-surface pill pointing the
     // reviewer at the audit workbook. It no longer decides anything — one report, always listed, always
-    // linked (spec 2026-07-30 §5); the delivery-language "⛔ on hold" pill is retired with the split.
+    // linked; the delivery-language "⛔ on hold" pill is retired with the split.
     const qcFailed = !client && r.clientGate && r.clientGate.released === false;
     // Demo anonymisation (inert on the client-facing per-customer index — no overlay there): the matter
     // (slug) + project (title) are marks → blur; the report/audit links carry the slug in the runId → the
@@ -263,7 +263,7 @@ function indexRows(runs, { reportFile, linkPrefix = '', showAudit = true, client
   }).join('\n');
 }
 
-// ONE report (spec 2026-07-30 §5): the "Review & iteration version · internal" / "Clean final version ·
+// ONE report: the "Review & iteration version · internal" / "Clean final version ·
 // client-facing" header pills are retired with the split they printed on the page. Both indexes link the
 // same report.html; what still differs between them is audience presentation (staff nav/filter/audit
 // column vs the customer page's date-only rows and explicit-light theme), not the document.
@@ -400,7 +400,7 @@ ${indexRows(archivedRuns, { reportFile: 'report.html', showAudit: true })}
 
 // Rebuild the pool index from every run's meta.json (newest first): the STAFF all-runs index (links
 // report.html + audit) AND, additively (D3), one per-customer index per account linking the SAME
-// report.html — one report (spec 2026-07-30 §5); the per-customer pages differ in chrome, not document.
+// report.html — one report; the per-customer pages differ in chrome, not document.
 export function regenIndex(poolDir) {
   const runs = readdirSync(poolDir, { withFileTypes: true })
     .filter(d => d.isDirectory() && d.name !== 'customer' && existsSync(join(poolDir, d.name, 'meta.json')))
@@ -461,7 +461,7 @@ export function regenIndex(poolDir) {
   try { chmodSync(idx, 0o640); } catch { /* best-effort; group-read via set-gid pool */ }
 
   // D3 — per-customer indexes at customer/<key>/index.html: only that account's runs, linking THE report
-  // (report.html — one report, spec 2026-07-30 §5) two levels up. The page is template-identical to the
+  // (report.html — one report) two levels up. The page is template-identical to the
   // staff index minus the staff chrome. NO staff nav here — internal surfaces never reach a
   // customer-facing page.
   // Do NOT chmod the customer dirs: they inherit the set-gid pool group (an explicit dir chmod here was the
@@ -479,7 +479,7 @@ export function regenIndex(poolDir) {
     const dir = join(poolDir, 'customer', key);
     mkdirSync(dir, { recursive: true });   // inherits the set-gid group; never chmod the dir
     const cidx = join(dir, 'index.html');
-    // ONE report (spec 2026-07-30 §5): a run you have rights to is always listed and always linked. The
+    // ONE report: a run you have rights to is always listed and always linked. The
     // old clientGate suppression (a held run vanished from this page) is gone — the machine checks live
     // on the audit workbook now and decide nothing about who may read. The precedent is the knockout
     // lane's own collapse note: two renderings of one run is how the wrong link gets sent.
@@ -695,7 +695,7 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
   // input left NO trace anywhere: findings=[]/coverage=[]/findingsError=null is exactly what a search
   // that ran and found nothing produces, so "we read nothing" and "we read everything and it was clean"
   // were the same delivered artifact. Recording is the whole fix here — the gate withholds nothing
-  // (spec 2026-07-30 §5) and the report's own face is the frozen renderer's, not this file's.
+  // and the report's own face is the frozen renderer's, not this file's.
   const inputsAbsent = [];
   // THE OVERALL ASSESSMENT NOT COMPLETED (driver/parts-not-completed.mjs). A stated state, read from the run's own
   // record and never inferred from an absence: the report is built from what the run held, with no rating, no
@@ -745,8 +745,8 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
       : [];
   }
   coverage = withoutRepeatedRows(coverage);   // one recorded row, repeated, prints once (see withoutRepeatedRows)
-  // PR-9 (E9) — the STRING PROJECTION for coverage_judgment stays. mark_assessment is NO LONGER
-  // projected on the RENDER path (spec 2026-07-30 §3): render.mjs takes the structured object and shows
+  // The STRING PROJECTION for coverage_judgment stays. mark_assessment is NO LONGER
+  // projected on the RENDER path: render.mjs takes the structured object and shows
   // the one-sentence `read` with the typed rows collapsed. projectAssessmentField/projectMarkAssessment
   // remain the projection for the workbook, report-data's client text, the lint and legacy string runs.
   const coverageJudgmentDisplay = projectCoverageJudgment(coverageJudgment);
@@ -1043,7 +1043,7 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
   };
 
   // Machine QC (the evaluateClientGate checks — arithmetic, record fidelity, stale corrections). The
-  // checks SURVIVE; what they decide is gone: one report (spec 2026-07-30 §5), so they no longer choose
+  // checks SURVIVE; what they decide is gone: one report, so they no longer choose
   // who may read anything. Evaluated HERE — before the audit workbook build — because the workbook is
   // where their result lands (a plain internal QC row) alongside the run telemetry; failures also stamp
   // meta.json for the staff index's ⚠ QC pill. The rendered report carries no banner either way, and a
@@ -1148,7 +1148,7 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
     // The NAME is still never stored: the sidecar holds the product ID, and the string comes off
     // today's registry row on every render — which is what lets a renamed product re-render honestly.
     productName = reportIdentityFor(pol).identity ?? undefined;
-    // charter ruling 1 (2026-07-30) — the masthead names what this depth covers and what it omits,
+    // The masthead names what this depth covers and what it omits (2026-07-30),
     // from the run's OWN frozen components. No sidecar ⇒ undefined ⇒ no strip (archived byte-identity).
     depthNote = productCoverageNote(pol) ?? undefined;
   } catch { stageLabel = undefined; depthNote = undefined; productName = undefined; }
@@ -1271,7 +1271,7 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
   // same reason: the fact exists on the way IN and was lost on the way out.
   //
   // The composer has a project picker, portal-service stamps `projectKey` onto the job, and freezeProfile
-  // records the key AND the resolved name in _driver/profile.json (spec 62). The sidecar does not travel
+  // records the key AND the resolved name in _driver/profile.json. The sidecar does not travel
   // with a pool dir, so once a run was delivered nothing could say which matter it belonged to — not the
   // run list, not Clearances, not a report. "What was I working on" had no answer anywhere in the portal.
   //
@@ -1333,7 +1333,7 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
  */
 // skipRegen — do NOT re-render index.html + the staff pages at the end. The batch backfill passes this and does
 //   ONE regen after the whole loop instead of N redundant ones (per-run publish leaves it false, as before).
-// (skipClient is retired with report.client.html — one report, spec 2026-07-30 §5.)
+// (skipClient is retired with report.client.html — one report.)
 export async function publishReport(input) {
   return publishRun(CLEARANCE_SHAPE, input);
 }
@@ -1371,7 +1371,7 @@ const CLEARANCE_SHAPE = {
     });   // a REAL exception only — the report ships without the workbook, and nothing names it
   },
   surfaces({ writeRO, writeDataFile }, reportDocument, { doc: { searchDepth, recordsByUri, logos, deliv, demoData } }) {
-    // THE report. T4: the render receives no QC flags — the report a lawyer signs carries no
+    // THE report. The render receives no QC flags — the report a lawyer signs carries no
     // caveat banner (H1/H2); the receipts live on audit.xlsx. The machine QC above decides nothing
     // about this write.
     // homeHref — the floating "← All reports" pill returns to the listing (the staff index one level up).
@@ -1382,15 +1382,15 @@ const CLEARANCE_SHAPE = {
     if (searchDepth) { try { writeRO('search-depth.json', JSON.stringify(searchDepth, null, 2)); } catch { /* additive */ } }
 
     writeRO('report.html', renderClearanceDocument(pageDocument(reportDocument), { recordsByUri, logos, homeHref: '../index.html', chromeHref: '../assets/chrome.css', delivery: deliv, demoData }));   // the page reads the report document, with its surface beside it
-    // ONE report (spec 2026-07-30 §5): report.client.html is no longer written. The knockout lane's own
+    // ONE report: report.client.html is no longer written. The knockout lane's own
     // collapse note is the precedent: "two renderings of one run is how the wrong link gets sent". The
     // client host serves the same report.html through the portal's readReport() (cleaning built in) — its
-    // repoint deploys BEFORE this change merges (charter ruling 2a).
+    // repoint deployed before this change merged.
     //
-    // P5 rebase note: this package was written against the pre-collapse tree, where the four-answers panel
-    // had to be passed to BOTH renders. There is one render now, so `fourAnswers` rides the one call — the
-    // panel reaches the client through the same cleaning path as every other reader-facing block.
-    // PR-9 — the clearance run as data: the client-cut projection the assistant drafts mail from, built from the
+    // The four-answers panel was once passed to BOTH renders. There is one render now, so `fourAnswers`
+    // rides the one call — the panel reaches the client through the same cleaning path as every other
+    // reader-facing block.
+    // The clearance run as data: the client-cut projection the assistant drafts mail from, built from the
     // document (clearanceReportDataOf). BEST-EFFORT with a hard receipt rule: meta.reportSchema is stamped ONLY when the
     // file actually wrote, so a meta never names a data file that is not there. A producer throw never blocks the
     // report (the baked HTML above is already on disk).
@@ -1467,7 +1467,7 @@ function clearanceMetaOf(document, { template, reportSchema }) {
     auditError: staff.auditError ?? undefined,
     // THE PARTS PUBLISHING FOUND DEGRADED, with their raw causes, which no cell carries. Absent when none.
     degradedAtPublish: staff.publishParts.length ? staff.publishParts.map((d) => ({ part: d.part, name: d.name, cause: d.cause })) : undefined,
-    // spec 64 — THE one risk statement (band + stance in one sentence, composed once by the sidecar
+    // THE one risk statement (band + stance in one sentence, composed once by the sidecar
     // writer). Absent on legacy runs — regenIndex re-reads every historical meta.json, so consumers
     // null-guard and old rows render byte-identically.
     statement: verdictInfo?.statement ?? undefined,
@@ -1491,7 +1491,7 @@ function clearanceMetaOf(document, { template, reportSchema }) {
     clientGate: { released: clientGate.released, reasons: clientGate.reasons,
       inputsAbsent: clientGate.inputsAbsent?.length ? clientGate.inputsAbsent : undefined, notClosing: clientGate.notClosing?.length ? clientGate.notClosing : undefined,
       evaluationError: clientGate.evaluationError ?? undefined },
-    // PR-9 — present ⇒ report-data.json is beside the report, in the shape the string names
+    // Present ⇒ report-data.json is beside the report, in the shape the string names
     // (`report-data/clearance-1`; a Knockout stamps `report-data/knockout-1`). undefined on a producer
     // miss, so the meta never advertises a file that is not there.
     reportSchema: reportSchema ?? undefined,
@@ -1899,7 +1899,7 @@ function composeEmailHtmlFrom({ fm, secs }, url, auditFile, names = [], delivery
   const flagBanner =
     (fm.envelope_note ? `<p style="margin:0 0 6px"><b>${EMAIL.scopeLabel}</b> ${EMAIL.scopeOpen}</p>` : '');
 
-  // ONE report (spec 2026-07-30 §6): the "Not client-ready — for your review only" block is deleted with
+  // ONE report: the "Not client-ready — for your review only" block is deleted with
   // the two-bit delivery it narrated. The cover note is a cover note — verdict, one-line summary, link —
   // plus, since A10 (below), the surviving machine-check failures in the projection's own words. The
   // "machine-QC lives on the workbook, never the email" rule that used to stand here was written when a

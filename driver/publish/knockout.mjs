@@ -786,8 +786,8 @@ const KNOCKOUT_SHAPE = {
     // ── THE RUN'S WORKING RECORD TRAVELS WITH THE REPORT ──────────────────────────────────────────────
     //
     // The delivered directory held the report, its data and the workbook, and nothing the engine itself
-    // wrote. That is what the acceptance read needs to tell a line the ENGINE wrote from a line the
-    // RENDERER invented: without it the check can still place a line as report text or as a sanctioned
+    // wrote. That is what a check of the delivered report needs to tell a line the ENGINE wrote from a line
+    // the RENDERER invented: without it the check can still place a line as report text or as a sanctioned
     // label, so it passes — and cannot fail in the way it exists to fail. A clearance run's record is
     // `audit.md` and `findings.json`; this lane's own names are these two, and they are copied rather
     // than rebuilt so the pool carries the bytes the stages wrote.
@@ -846,12 +846,11 @@ const KNOCKOUT_SHAPE = {
       `overall_badge: "${overallBadge}"`,
       '---',
       '',
-      // — THE CROSS-MARK SURFACE, MARKED. Acceptance 3 asks for the banner on "the
-      // grouped knockout page"; there is no such page — this file's own header states that a multi-mark
+      // — THE CROSS-MARK SURFACE, MARKED. The demo banner belongs on the page that groups every mark,
+      // and there is no such page — this file's own header states that a multi-mark
       // run "writes no `report.html` AT ALL" and that report.md "is the ONLY file that names every mark
-      // together". It is served from the pool and reachable by URL, so it is the cross-mark document a
-      // reader actually meets. The criterion's intent is met on the file that holds that role; its letter
-      // cannot be, because its subject is not built. Recorded on the issue, not just here.
+      // together". It is served from the pool and reachable by URL: it is the cross-mark document a
+      // reader actually meets, and the banner goes on it.
       ...(demoBannerMd(demoData) ? [demoBannerMd(demoData).trimEnd(), ''] : []),
       `# Summary`,
       '',
@@ -866,7 +865,7 @@ const KNOCKOUT_SHAPE = {
   result({ read: { doc: { single, origin, statement, qcFlags, receipts }, runId }, pool: { poolRunDir }, workbook: { auditFile, auditError }, surfaces: { reports }, total }) {
     // `url` IS NULL FOR A BATCH, and that is the honest answer rather than a convenient one. A multi-name
     // knockout has no single report, so any one URL here would be the first name standing for all of them —
-    // the defect exists to end, re-entering through the delivery packet. Readers take `reports`; a
+    // the very defect `reports` ended, re-entering through the delivery packet. Readers take `reports`; a
     // reader that only knows `url` gets null and fails visibly instead of linking one name in eight.
     const url = single ? reports[0]?.url ?? null : null;
     // qcFlags rides the result so the cover note enumerates the SAME projected lines the workbook does —

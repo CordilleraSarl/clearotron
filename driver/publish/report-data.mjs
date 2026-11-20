@@ -103,7 +103,7 @@ export function clearanceReportData({
     auditFile: auditFile || null,
     level: { searchLevel: searchLevel ?? null, stageLabel: stageLabel ?? null },
     framework: framework ? { key: framework.framework_key, title: framework.title, bands: framework.bands.map((b) => ({ label: b.label, tone: b.tone })) } : null,
-    // The rating + the one risk statement — the exact record every other surface joins (spec 64). Named
+    // The rating + the one risk statement — the exact record every other surface joins. Named
     // `rating` (ruled 2026-09-22): as `verdict` it read as the clearance's answer and carried the reviewer's
     // sign-off word beside the band. The sign-off stays in the review stage's own record, not the client's.
     rating: verdictInfo ? {
