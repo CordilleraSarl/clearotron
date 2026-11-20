@@ -23,12 +23,13 @@ import { existsSync, readFileSync, renameSync, rmSync, writeFileSync } from "nod
 import { stopsWithTheRun } from "../cancel.mjs";   // every paid call the code makes itself reads the stop first
 import { recordPlacementPass } from "../placement-pass-record.mjs";
 import { defaultRecordFetcher } from "../provider-calls.mjs";
+import { bandBytesOf, deriveBandShape, deriveNamedBand, readPlanExecution, reaskFollowUpErrors, refreshSupplementalExecution, remergeIfBandsMoved, stickyGapUnits } from "../register-band-run.mjs";
 import { loadCoverageLedger } from "../register-digest-run.mjs";
 import { forceFromActive, runBatched, stage } from "../stage-dispatch.mjs";
 import { settleOneShotStamp } from "../stage-freshness.mjs";
 
 export async function runSkepticAndFollowUp({ P, agent, axes, ctx, dispatchPlanQids, flushDigestQueue, job, mintDigestWork, opts, planExec, run, unitKey }, helpers) {
-  const { askableOf, bandBytesOf, capabilityGapAxes, deriveBandShape, deriveNamedBand, envelopeDecision, envelopeHeldNote, escalationHeldNote, findFloorBreaches, isInactiveAxisRow, lateRecordIds, officeGapOf, readFloorAxes, readPlanExecution, reaskFollowUpErrors, recordScreenGateEvidence, refreshSupplementalExecution, remergeIfBandsMoved, screenGateSnapshot, skepticDeferralExtra, stickyGapUnits } = helpers;
+  const { askableOf, capabilityGapAxes, envelopeDecision, envelopeHeldNote, escalationHeldNote, findFloorBreaches, isInactiveAxisRow, lateRecordIds, officeGapOf, readFloorAxes, recordScreenGateEvidence, screenGateSnapshot, skepticDeferralExtra } = helpers;
   // Step 2.6 skeptic → code-decided escalation. The skeptic poses its flags as a QUESTION back to each
   // flagged unit, which RESUMES its own session (warm cache, same model) and defends-or-adjusts in place —
   // it does NOT redo the search from scratch on a fresh opus session. This is both cheaper (a follow-up turn
