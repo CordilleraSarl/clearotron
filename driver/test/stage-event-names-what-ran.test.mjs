@@ -76,12 +76,17 @@ test("the gateway HANDS BACK what it already knew, on every exit", () => {
     + "previous attempt's truthful value");
 });
 
-test("the KNOCKOUT lane's stage event too — it has its own copy", () => {
-  // Found by counting stage-event writers instead of assuming one. pipeline-knockout.mjs writes its own,
+test("the KNOCKOUT lane's stage event too — it is written by the runner the clearance's is", () => {
+  // Found by counting stage-event writers instead of assuming one. pipeline-knockout.mjs wrote its own copy,
   // and it carried the same assigned alias, so a codex knockout named an Anthropic model on the skim line.
+  // Both lanes now write it through the shared stage runner, so the Knockout's row has no copy of its own to
+  // drift: it reaches the same writer, and hands it its assignment only as the last resort.
   const k = src("driver/pipeline-knockout.mjs");
-  assert.match(k, /model: r\.modelWire \?\? r\.modelUsed \?\? model/,
-    "the knockout stage event still names the assigned model");
+  assert.match(k, /runLaneStage\(KNOCKOUT_LANE,/, "the knockout lane no longer runs its stages through the shared runner");
+  assert.ok(!/event: *"stage",/.test(k), "the knockout lane writes a stage event of its own again");
+  assert.match(k, /selector: model,/, "the knockout lane no longer hands the runner its assigned model as the selector");
+  assert.match(src("driver/stage-runner.mjs"), /model: r\.modelWire \?\? r\.modelUsed \?\? s\.selector/,
+    "the shared stage event still names the assigned model");
 });
 
 test("the CODE-SIDE lane is untouched — nothing ran, and it says so", () => {
@@ -92,26 +97,30 @@ test("the CODE-SIDE lane is untouched — nothing ran, and it says so", () => {
 });
 
 test("the stage event reads the result, not the assignment", () => {
-  const p = src("driver/pipeline.mjs");
-  // THE AGENT-DISPATCH one, not the code-side lane. pipeline.mjs has TWO stage events and `indexOf`
-  // finds the wrong one: the direct-execute lane at ~3319 writes `model: "code:execute-plan"`, which is
-  // already truthful (no model ran) and must stay exactly as it is. This assertion pointed at it and
-  // reported the agent path unfixed — the test was right that something was wrong and wrong about what.
-  const at = p.indexOf(`event: "stage", stage: label, trigger: opts.trigger`);
+  // THE AGENT-DISPATCH one, not the code-side lane. pipeline.mjs's direct-execute lane writes
+  // `model: "code:execute-plan"`, which is already truthful (no model ran) and must stay exactly as it is. The
+  // agent-dispatch event is the shared stage runner's, and the clearance hands it the assignment, resolved
+  // through the catalog, only as its selector and last resort.
+  const p = src("driver/stage-runner.mjs");
+  const at = p.indexOf(`event: "stage", stage: s.label`);
   assert.ok(at > 0, "the agent-dispatch stage event moved — this assertion is measuring nothing");
-  const row = p.slice(at, at + 1800);   // the field sits behind its own reasoning block
-  assert.match(row, /model: r\.modelWire \?\? r\.modelUsed \?\? resolveModel\(model\)/,
+  const row = p.slice(at, at + 1800);
+  assert.match(row, /model: r\.modelWire \?\? r\.modelUsed \?\? s\.selector/,
     "the stage event no longer prefers what actually ran");
-  assert.ok(!/model: resolveModel\(model\),/.test(row),
-    "the bare assigned-alias write is back on the stage event — that IS #694");
+  assert.ok(!/model: s\.selector,/.test(row),
+    "the bare assigned-alias write is back on the stage event — the defect this file exists for");
+  const c = src("driver/pipeline.mjs");
+  assert.match(c, /runLaneStage\(CLEARANCE_LANE,/, "the clearance no longer runs its stages through the shared runner");
+  assert.match(c, /selector: resolveModel\(model\),/, "the clearance no longer hands the runner its catalog selector");
 });
 
 test("COUNTING, not naming: every agent stage-event writer carries BOTH fields", () => {
   // Ruled condition. Naming the writers passes on an incomplete fix — which is how this shipped: the
   // clearance lane was fixed and the knockout lane's own copy was not. Counting fails instead.
+  // ONE writer now serves both agent lanes (stage-runner.mjs), so the list is one long; the population test below
+  // still counts every writer in the tree, so a lane that grew its own copy again would fail there.
   const writers = [
-    ["driver/pipeline.mjs", /event: "stage", stage: label, trigger: opts\.trigger/],
-    ["driver/pipeline-knockout.mjs", /event: "stage", stage: label, lane: "knockout"/],
+    ["driver/stage-runner.mjs", /event: "stage", stage: s\.label/],
   ];
   const found = [];
   for (const [file, head] of writers) {
@@ -142,13 +151,13 @@ test("the writer POPULATION is the whole driver tree, not the two files I happen
     if (n) sites.push(`${f} x${n}`);
   }
   const total = sites.reduce((a, s) => a + Number(s.split(" x")[1]), 0);
-  // THREE: two agent lanes (both fixed above) + the code-side lane, which declares `code:execute-plan`
-  // because no model ran and is excluded by reason, not by oversight. A fourth must be fixed or
-  // excluded HERE, deliberately — not discovered on a receipt the way this one was.
-  assert.equal(total, 3,
+  // TWO: the shared stage runner, which both agent lanes write through (fixed above), + the code-side lane, which
+  // declares `code:execute-plan` because no model ran and is excluded by reason, not by oversight. A third must be
+  // fixed or excluded HERE, deliberately — not discovered on a receipt the way the Knockout's own copy was.
+  assert.equal(total, 2,
     `the stage-event writer population changed (${total} across ${sites.length} file(s): ${sites.join(", ")}). `
-    + `Expected 3 — two agent lanes + the code-side lane. A new writer must carry model/modelSelector or be `
-    + `excluded here on the record.`);
+    + `Expected 2 — the shared runner both agent lanes write through + the code-side lane. A new writer must carry `
+    + `model/modelSelector or be excluded here on the record.`);
 });
 
 test("the codex shape: a GPT-written stage no longer labels itself Anthropic", () => {

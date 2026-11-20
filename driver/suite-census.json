@@ -339,6 +339,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-clearance-stage-reuses-reruns-and-fails-through-the-shared-runner.pipeline.test.mjs": {
+          "tests": 1,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
         "a-clearance-stage-whose-output-has-no-record-runs-again.pipeline.test.mjs": {
           "tests": 2,
           "asserts": 14,
@@ -1383,9 +1389,21 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-stage-keeps-the-rating-it-replaces-and-records-what-it-read.test.mjs": {
+          "tests": 6,
+          "asserts": 52,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-stage-reuses-its-output-only-while-its-inputs-are-unchanged.test.mjs": {
           "tests": 9,
           "asserts": 41,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-knockout-stage-that-fails-throws-its-own-failure-and-leaves-its-rating-recoverable.test.mjs": {
+          "tests": 4,
+          "asserts": 46,
           "skips": 0,
           "todos": 0
         },
@@ -1800,6 +1818,12 @@
         "a-placement-pass-the-delivery-gate-repeats-is-recorded-like-the-first.test.mjs": {
           "tests": 4,
           "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-placement-pass-whose-floor-duty-is-undischarged-runs-again-on-a-resume.pipeline.test.mjs": {
+          "tests": 1,
+          "asserts": 13,
           "skips": 0,
           "todos": 0
         },
@@ -2974,9 +2998,9 @@
           "todos": 0
         },
         "a-version-npm-is-still-validating-gets-its-entry-once-served.test.mjs": {
-          "tests": 20,
-          "asserts": 72,
-          "skips": 12,
+          "tests": 21,
+          "asserts": 80,
+          "skips": 13,
           "todos": 0
         },
         "a-visible-line-is-written-for-the-client.test.mjs": {
@@ -4997,7 +5021,7 @@
         },
         "floor-duty.test.mjs": {
           "tests": 31,
-          "asserts": 94,
+          "asserts": 91,
           "skips": 0,
           "todos": 0
         },
@@ -7049,7 +7073,7 @@
         },
         "stage-event-names-what-ran.test.mjs": {
           "tests": 11,
-          "asserts": 20,
+          "asserts": 25,
           "skips": 1,
           "todos": 0
         },
