@@ -282,8 +282,8 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
         kind: (policyFor(sp?.level)?.pipeline ?? (s.lane === "knockout" ? "knockout" : null)) === "knockout" ? "knockout-batch" : "clearance",
         markName: typeof s.markName === "string" ? s.markName : null,
         // The project, straight off the frozen sidecar this branch already reads as `p`. A LIVE run needs
-        // no publish stamp and no back-fill — the sidecar is right there, and freezeProfile has written
-        // both fields since spec 62.
+        // no publish stamp and no back-fill — the sidecar is right there, and freezeProfile writes
+        // both fields.
         projectKey: typeof p.projectKey === "string" ? p.projectKey : null,
         projectName: typeof p.projectName === "string" ? p.projectName : null,
         // Registry first here too — a live run's frozen policy sidecar names WHICH level is running; what
@@ -535,7 +535,7 @@ export const concurrentRunsCap = () => {
 
 export function forRole(runs, principal) {
   // A person who sees everything reads failure reasons verbatim; everyone else gets the plain note. That redaction is the ONLY
-  // role-shaping left: the held-run suppression is retired (one report, spec 2026-07-30 §5 — a run you
+  // role-shaping left: the held-run suppression is retired (one report — a run you
   // have rights to is always listed; the machine-QC record lives on the audit workbook).
   if (seesEverything(principal)) return runs;
   return runs.map((r) => {

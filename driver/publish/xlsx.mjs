@@ -500,7 +500,7 @@ export function summaryRows(findings, coverage, fm, { mark, coverageJudgment, ve
     ...(fm.coverage_line ? [{ Field: W.summary.registerCoverage, Value: fm.coverage_line }] : []),
     { Field: W.summary.jurisdiction, Value: jurisdiction || '' },
     { Field: W.summary.searched, Value: fm.searched || fm.run || '' },
-    // spec 64 — the old single row printed the severity TIER under the label "Verdict" (a reader saw
+    // The old single row printed the severity TIER under the label "Verdict" (a reader saw
     // "Verdict: High" — vocabulary conflation). With a composed statement the summary carries two
     // labelled rows: the band word and THE one risk statement. A legacy run (no statement) keeps its
     // single original row byte-identically — a republished archived workbook must not grow rows.
@@ -525,7 +525,7 @@ export function summaryRows(findings, coverage, fm, { mark, coverageJudgment, ve
     ...(commonLawUnlogged
       ? [{ Field: W.summary.commonLaw, Value: W.summary.commonLawUnlogged, _caveat: true }]
       : []),
-    // ONE report (spec 2026-07-30 §5): the machine-QC checks enumerate their failures HERE — the
+    // ONE report: the machine-QC checks enumerate their failures HERE — the
     // workbook is where they live now, and they decide nothing about who may read the report. The old
     // "⛔ Not released to the client" delivery language is retired with the split it narrated. Reasons
     // are the checks' own plain-language lines (no internal vocabulary); plainNote() folds any
@@ -575,7 +575,7 @@ export function summaryRows(findings, coverage, fm, { mark, coverageJudgment, ve
   return rows;
 }
 
-// ── PR-9 (E9) — the STRUCTURED v5 rows, rendered as rows ────────────────────────────────────────────────
+// ── The STRUCTURED v5 rows, rendered as rows ────────────────────────────────────────────────────────────
 // The report (frozen renderer) receives the deterministic string projection; the WORKBOOK is the surface
 // that renders the typed rows themselves — per-class, per-market, the counter-registration list, the
 // coverage-judgment slices and the corrections attestation. All three helpers are ADDITIVE AND
@@ -659,7 +659,7 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
   // 1 · Summary
   addSheet(wb, 'Summary', ['Field', 'Value'],
     [...summaryRows(findings, coverage, fm, { mark, coverageJudgment, verdict, jurisdiction, registerOnly, commonLawUnlogged, clientGate: contract?.clientGate ?? null, lintFailures: contract?.lintFailures ?? [], productName: contract?.productName ?? null, degradedParts, assessmentNotCompleted: contract?.assessmentNotCompleted === true }),
-      // PR-9 — the structured v5 rows (mark assessment / coverage-judgment slices / corrections
+      // The structured v5 rows (mark assessment / coverage-judgment slices / corrections
       // attestation) render as ROWS here; the report carries only their string projection. All three
       // are empty on legacy records, so a republished archived workbook never grows rows.
       ...assessmentSummaryRows(contract?.markAssessment ?? null),

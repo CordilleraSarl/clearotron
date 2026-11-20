@@ -3,9 +3,9 @@
 // publish/register-record.mjs — the register's own record of one cited registration, as the report shows it.
 //
 // A reviewing lawyer checks every cited mark against the register by hand before reading the analysis. The
-// report now opens each cited registration with the register's facts (docs/design/register-record/, the
-// approved board): the mark and its type, the goods by class, the owner and the owner's country, the country,
-// the status with its dates, and the register number linked to the office's own record. This module builds
+// report now opens each cited registration with the register's facts: the mark and its type, the goods by
+// class, the owner and the owner's country, the country, the status with its dates, and the register number
+// linked to the office's own record. This module builds
 // those rows from the record the run saved; the renderers lay them out.
 //
 // EVERY FACT IS COPIED FROM THE SAVED RECORD. Nothing here is composed by a model, and nothing is translated
