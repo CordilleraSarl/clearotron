@@ -23,6 +23,7 @@
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
+import { MANUAL_PARAGRAPHS } from "./manual-paragraphs.mjs";
 
 /** The sentence that replaces the read instruction, word for word as design set it (2026-11-19). */
 export const MANUALS_SENTENCE = "Apply the following manuals to this stage, in the order given.";
@@ -33,6 +34,10 @@ const SKILL_REF = /(?<![\w/.])skills\/[A-Za-z0-9._/-]+\.md/g;
 // "… SKILL.md (the shared spine) then … unit.md (MODE A — UNIT)." It ends at the first full stop that
 // follows a manual's name or its parenthesis.
 const READ_SENTENCE_RE = /First, read and follow exactly: (.*?\.md(?: \([^)]*\))?)\.(?=\s|$)/;
+
+// A paragraph the stage text keeps as a fallback for a manual that lacks it (manual-paragraphs.mjs).
+const FALLBACKS = new Set(Object.values(MANUAL_PARAGRAPHS).flat());
+const linesOf = (body) => new Set(body.split("\n").map((l) => l.trim()));
 
 /** Where a manual's text is, for the engine's resolver or, without one, the skills folder. null when neither. */
 const locate = (ref, { resolve, skillsDir }) => (resolve ? resolve(ref) : skillsDir ? join(dirname(skillsDir), ref) : null);
@@ -61,8 +66,18 @@ export function inlineManuals(message, { resolve = null, skillsDir = null, read 
   const parts = [MANUALS_SENTENCE, ...blocks];
   // A sentence that continued on the same line (the register stages' exclusion) starts on its own line after the manuals.
   const at = m.index + m[0].length;
-  const tail = text.slice(at).replace(/^ (?=\S)/, "\n\n");
+  // A fallback paragraph that an inlined manual holds as a line of its own is said there; the stage text drops it.
+  const said = new Set(), held = blocksHeld(blocks);
+  for (const p of FALLBACKS) if (held.has(p)) said.add(p);
+  const tail = text.slice(at).split("\n").filter((l) => !said.has(l.trim())).join("\n").replace(/^ (?=\S)/, "\n\n");
   return { text: text.slice(0, m.index) + parts.join("\n\n") + tail, inlined, missing };
+}
+
+// Every line the inlined manuals hold, trimmed.
+function blocksHeld(blocks) {
+  const held = new Set();
+  for (const b of blocks) if (b.startsWith("=== MANUAL: ")) for (const l of linesOf(b)) held.add(l);
+  return held;
 }
 
 // The engine adapters rewrite each `skills/…md` reference to an absolute path after this module runs, the block headers

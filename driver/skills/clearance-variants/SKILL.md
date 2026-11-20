@@ -406,6 +406,8 @@ Make `numeric-substitution` and `foreign-transliteration` explicitly profile-awa
 
 These rows ARE the variants-stage coverage statement — phrase each `reason` as a coverage record, not a tick. The driver writes `scope-ledger.json` from them directly; the blind frame-diff diffs it against an independent re-derivation; synthesis (in `clearance-search`) consumes it as the variants-stage coverage input.
 
+FAMILY COMPLETENESS (MANDATORY): the variants[] array must state the mark's WHOLE search family, never a single row — at MINIMUM one "core" variant (the mark / a spacing-punctuation form of it), one "phonetic" variant and one "visual" variant; and when the mark, the dominant element or any elements[] value is non-Latin, at least one "transliteration" variant as well (the transliteration-numeric register axis compiles ONLY from transliteration/numeric rows — with none stated, that axis runs empty, silently). A manifest missing any of these fails the stage. State the family completely and let the searches say what is out there — completeness here is structural, it is NOT a ranking, and it never pre-judges which neighbour matters.
+
 ### Step 5 — Watchlists (per-matter, configurable)
 
 Send enforcers, competitors and the frame's seeds in `watchlist_owners`; do not send brand owners.
