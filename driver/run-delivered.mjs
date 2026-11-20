@@ -21,6 +21,7 @@ import { deliveryForRun } from "./profiles.mjs";
 import { finalStepFields, readRunStatus, recordTransition, signoffPatch, writeRunStatus } from "./progress.mjs";
 import { DEFAULT_LEDGER_PATH, tallyRegisterCalls } from "./provider-usage.mjs";
 import { composeCoverNote, coverNoteInputs, deliverySubject, publishReport } from "./publish/index.mjs";
+import { leftOpenSectionOfRun } from "./left-open-md.mjs";
 import { noteRegisterServed, providerUsageCaveat, registersServedFrom } from "./register-served.mjs";
 import { renderReportOverview } from "./report-overview-record.mjs";
 import { atomicWrite } from "./run-record.mjs";
@@ -334,8 +335,13 @@ export async function deliveryEndState({ P, agent, ctx, job, run, opts = {} }, h
     } catch (e) { runLog(run.runDir, { event: "audit-build-failed", reason: String(e?.message ?? e).slice(0, 160) }); }
     const coverageRows = assessmentCoverageOfRun(run.runDir);
     atomicWrite(driverDir(run.runDir, NOT_COMPLETED_DIR, "assessment-coverage.json"), JSON.stringify({ rows: coverageRows }, null, 2) + "\n");
-    writeFileSync(P.report, renderReportOverview({ overall_caption: assessmentNotCompletedNote(), handling_note: null, actions: [], methodology: null },
-      reportIdentityRecord(job, ctx, run.runDir, null)));
+    const shell = renderReportOverview({ overall_caption: assessmentNotCompletedNote(), handling_note: null, actions: [] },
+      reportIdentityRecord(job, ctx, run.runDir, null));
+    // The page's Left open rows, as an assembled report carries them (left-open-md.mjs), from the rows written above.
+    let leftOpen = "";
+    try { leftOpen = leftOpenSectionOfRun(run.runDir, coverageRows, { verdict: false, already: shell }); }
+    catch (e) { note(`[assessment] the report's Left open section was not written: ${String(e?.message ?? e).slice(0, 160)}`); }
+    writeFileSync(P.report, leftOpen ? `${shell.replace(/\s*$/, "")}\n\n${leftOpen}\n` : shell);
     writeScopeFactsOf(ctx, P, run.runDir);
     applyScopeFrontMatterOf(P, run.runDir);
     runLog(run.runDir, { event: "assessment-not-completed-delivery", stage: open.stage ?? null, sig: open.sig ?? null,

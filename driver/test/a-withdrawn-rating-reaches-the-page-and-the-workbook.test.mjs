@@ -9,9 +9,8 @@
 // the review rejected gets no such row, and the marked one stays off every card and total.
 //
 // One delivered clearance, three findings: finding 2 rejected, finding 3's rating withdrawn on the approved ground. Read in the
-// record, the delivered page and the audit workbook. The report's Markdown, which the connector serves, carries no "Left open"
-// section for any row yet, so neither is read here; until it does, the overview's Methodology note stays. Every name is the
-// mock's invented one.
+// record, the delivered page, the audit workbook, the report's Markdown under "Left open", and what the connector answers a
+// client who asks for the report (design, 2026-11-19). Every name is the mock's invented one.
 import { test, after } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, chmodSync, readFileSync, readdirSync, rmSync, existsSync } from "node:fs";
@@ -21,6 +20,7 @@ import { fileURLToPath } from "node:url";
 import { pinEnv, envFrom } from "../../shared/env-aliases.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { zipEntries, workbookEntryText } from "./snapshot/workbook-entries.mjs";
+import { parseFront, parseSections } from "../publish/parse.mjs";
 
 const TEMP_DIRS = [];
 after(() => { for (const d of TEMP_DIRS) rmSync(d, { recursive: true, force: true }); });
@@ -86,3 +86,22 @@ test("the audit workbook carries it", () => {
   assert.ok(text.includes(SENTENCE), "no workbook carries the sentence");
 });
 
+test("the report's Markdown lists it once, under Left open, in the run and in the pool", () => {
+  const files = [join(res.runDir, "report.md"), ...walk(join(root, "pool")).filter((p) => p.endsWith("report.md"))];
+  assert.ok(files.length > 1, "no report.md was published to the pool");
+  for (const f of files) {
+    const text = readFileSync(f, "utf8");
+    const left = parseSections(parseFront(text).body)["Left open"] ?? "";
+    assert.ok(left.includes(SENTENCE) && left.includes(MARKED.mark), `${f} has no Left open entry for the marked right`);
+    assert.equal(count(text, SENTENCE), 1, `${f} carries the sentence more than once`);
+    assert.doesNotMatch(text, new RegExp(REJECTED.owner), `${f} names the rejected finding`);
+  }
+});
+
+test("the connector's answer to a client asking for the report carries it", async () => {
+  const { tools, presentForPrincipal } = await import("../../mcp-server/server.mjs");
+  const runId = res.runDir.split(/[\\/]/).pop().replace(/^\d{4}-\d\d-\d\d-/, "");   // the codename, which the connector resolves
+  const answer = presentForPrincipal({ kind: "user", runId }, "read_artifact", tools.read_artifact({ runId, name: "report" }));
+  assert.ok(String(answer?.text ?? "").includes(SENTENCE), `the client's read_artifact(report) does not carry the sentence: ${JSON.stringify(answer).slice(0, 200)}`);
+  assert.match(String(answer.text), /^# Left open$/m);
+});

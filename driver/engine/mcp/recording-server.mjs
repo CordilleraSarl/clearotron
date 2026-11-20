@@ -790,13 +790,6 @@ serve({
             },
           },
         },
-        methodology: {
-          type: "string",
-          description:
-            "OPTIONAL plain-English scope note a reviewer needs. Never a telemetry block — no query, " +
-            "fetch, variant, platform or storefront counts, no clean-check enumeration. Omit it when " +
-            "there is no real scope note to make.",
-        },
         handling_note: {
           type: "string",
           description: "OPTIONAL, ONE line — only when a finding rests on an adversary's public social/web profiles. Renders bold on the email cover.",

@@ -2541,6 +2541,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-script-no-search-completed-in-reaches-the-markdown-and-the-connector.test.mjs": {
+          "tests": 3,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "a-script-question-shows-the-latin-question-it-repeats.test.mjs": {
           "tests": 3,
           "asserts": 16,
@@ -3076,8 +3082,8 @@
           "todos": 0
         },
         "a-withdrawn-rating-reaches-the-page-and-the-workbook.test.mjs": {
-          "tests": 4,
-          "asserts": 13,
+          "tests": 6,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -6478,8 +6484,8 @@
           "todos": 0
         },
         "report-overview-record.test.mjs": {
-          "tests": 15,
-          "asserts": 49,
+          "tests": 16,
+          "asserts": 52,
           "skips": 0,
           "todos": 0
         },
@@ -7530,6 +7536,12 @@
         "the-delivered-files-say-what-was-retrieved-not-what-was-read.test.mjs": {
           "tests": 3,
           "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-delivered-markdown-lists-what-was-left-open.test.mjs": {
+          "tests": 6,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
