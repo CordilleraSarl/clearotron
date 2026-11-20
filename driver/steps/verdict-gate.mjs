@@ -26,6 +26,7 @@ import { clauseForDefect, gapPositivelyClosed, jointUnaccounted, orderClausesFor
 import { countCitedDefects, parseCorrections, parseVerdict } from "../verify.mjs";
 import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { stopsWithTheRun } from "../cancel.mjs";   // every paid call the code makes itself reads the stop first
+import { conditionsFollowingTheRecord, enrichFindingDeadlines, lateRecordsUnaddressed, loadScreenGateUnresolved, owedUrisFor, refusedRecordsLeftOut, registerGapConditions } from "../floor-and-gap-checks.mjs";
 import { defaultRecordFetcher } from "../provider-calls.mjs";
 import { loadCoverageLedger } from "../register-digest-run.mjs";
 import { StageFailure } from "../run-outcome.mjs";
@@ -58,7 +59,7 @@ export function coverageFloorConditions({ coverageInsufficient = false, coverage
 }
 
 export async function runVerdictGate({ P, agent, applyVerdictFrontMatter, correctiveCycleSettled, correctiveEntryVerdict, correctiveRecheckOk, coverageJudgment, ctx, opts, run, runState }, helpers) {
-  const { actionsRegisterListed, conditionsFollowingTheRecord, enrichFindingDeadlines, lateRecordsUnaddressed, loadScreenGateUnresolved, owedUrisFor, planAuditExtra, refusedRecordsLeftOut, registerGapConditions, saveWithRetries, withdrawByToken } = helpers;
+  const { actionsRegisterListed, planAuditExtra, saveWithRetries, withdrawByToken } = helpers;
   // U1 — coverage-honesty floor (Appendix A tripwire #2). The reviewer verdict is empirically noisy
   // (it flips on byte-identical input), so the honest-status signal is derived from the coverage
   // LEDGER alone, never from the verdict. A run can be only as CLEAR as the layers it actually ran:
