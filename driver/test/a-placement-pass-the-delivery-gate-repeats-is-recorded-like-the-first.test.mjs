@@ -116,7 +116,14 @@ test("the delivery gate's repeat of placement goes through the one helper, as th
   assert.match(main, /recordPlacementPass\(ctx, placementPass\);/, "the main path records its pass through the same helper");
   // After a repeated placement pass the gate applies the floor again, through the one clamp the terminal checks use.
   const arm = src.slice(onlyAt(src, "} else if (UPSTREAM_STALE_REPAIR[s2.label]) {"), onlyAt(src, "} else if (s2.label.startsWith(\"report-card:\")) {"));
-  assert.match(arm, /if \(s2\.label === "placement-inquiry"\) \{[\s\S]*?clampOnTheFloorDuty\(\{ again: true \}\);[\s\S]*?clampOnTheWritersDuty\(\{ again: true \}\);[\s\S]*?saveTheLabel\(/,
+  // Read inside the repeated pass's own block, closed at its brace: a lazy match over the whole arm reached the same
+  // clamp in the late-records branch below and passed with this block's line gone.
+  const opens = onlyAt(arm, 'if (s2.label === "placement-inquiry") {') + 'if (s2.label === "placement-inquiry") '.length;
+  let depth = 0, closes = opens;
+  for (; closes < arm.length; closes++) { if (arm[closes] === "{") depth++; else if (arm[closes] === "}" && --depth === 0) break; }
+  const repeat = arm.slice(opens, closes + 1);
+  assert.ok(repeat.length > 100 && repeat.length < 2000, `guard: the repeated pass's block was not isolated (${repeat.length} chars)`);
+  assert.match(repeat, /clampOnTheFloorDuty\(\{ again: true \}\);[\s\S]*clampOnTheWritersDuty\(\{ again: true \}\);[\s\S]*saveTheLabel\(/,
     "the repeated pass's floor account, and the recall gate's floor exclusion, are not judged again and the label saved before the report is rebuilt from them");
   assert.match(src, /const clampOnTheFloorDuty = \(\{ again = false \} = \{\}\) => \{\n\s+\/\/ THE PREDICATE IS `floorDutyBlock`/, "the terminal checks and the repair share one clamp");
 });
