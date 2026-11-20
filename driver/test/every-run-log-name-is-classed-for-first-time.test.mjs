@@ -37,6 +37,7 @@ const TRIGGER_SITES = {
   "`recall-reconcile-${trigger}`": ["recall-reconcile-fresh"],   // the recall-reconcile family
   "`${trigger}-retry`": ["settlement-flush-retry", "late-flush-retry"],   // the -retry family
   'opts.trigger ?? "fresh"': [],
+  's.trigger ?? "fresh"': [],   // the shared stage runner: the reason its lane's dispatch carries
   'opts.dispatchTrigger ?? "fresh"': [],
   "opts.dispatchTrigger ?? null": [],
   "i.trigger": [],   // a flush message section's composer name
