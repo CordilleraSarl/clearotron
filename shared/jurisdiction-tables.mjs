@@ -4,8 +4,9 @@
 //
 // A new jurisdiction used to be an edit to about ten modules, each holding its own list, and nothing
 // said whether those lists agreed. They are here now, one section per module that reads them; each of
-// those modules imports its tables from here and exports them as before, so no reader changed.
-// test/a-jurisdiction-s-tables-agree.test.mjs reads them side by side and names every place they differ.
+// those modules imports its tables from here and exports them as before, so no reader changed. The test
+// driver/test/a-jurisdiction-s-tables-agree.test.mjs reads them side by side and names every place they
+// differ.
 //
 // PURE DATA, AND IT IMPORTS NOTHING, so the driver, the publisher and the providers' shared code can all
 // read it. Each table is as it was, frozen or not: freezing one would be a change of its own.
