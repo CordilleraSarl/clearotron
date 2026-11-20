@@ -50,6 +50,7 @@ import { recordGoodsAsRegistered } from "../../driver/record-goods.mjs";
 import { readJson } from "../../driver/run-record.mjs";
 import { reportDocumentOf } from "./findings.mjs";   // the run's report document, where it has one
 import { REPORT_PAGE } from "../../driver/publish/strings.mjs";
+import { leftOpenRows } from "../../driver/publish/render.mjs";   // the rows the page lists under "Left open"
 
 // The client report's own display word per coverage state, read from the catalogue the report reads, so the
 // connector and the PDF call the same state the same thing; a state absent from the map degrades to its raw
@@ -484,13 +485,16 @@ export function coverageStatement(run) {
   // THE DELIVERED ROWS, where the run has its report document: the rows the page prints, an exact repeat printed once and
   // a run whose assessment did not complete answered from its own coverage record. findings.json for a run published
   // before the document.
-  const delivered = reportDocumentOf(run.P)?.client?.coverage;
-  const rows = Array.isArray(delivered) ? delivered : readFindingsJson(run.runDir)?.coverage;
+  const document = reportDocumentOf(run.P);
+  const delivered = document?.client?.coverage;
+  const rows = Array.isArray(delivered) ? asThePagePrintsThem(document, delivered) : readFindingsJson(run.runDir)?.coverage;
   const areas = (Array.isArray(rows) ? rows : []).map((c) => ({
     area: clean(c?.areaLabel || c?.area),   // — the reader label the report prints, falling back to the identifier on an archived row
     state: typeof c?.state === "string" ? c.state : null,
     stateLabel: COV_WORD[c?.state] ?? (typeof c?.state === "string" ? c.state : null),
     note: clean(c?.note),
+    // The list a row's note counts, such as the territories a script's search did not complete in, as the page prints it.
+    ...(Array.isArray(c?.detail) && c.detail.length ? { detail: c.detail.map(String) } : {}),
   })).filter((c) => c.area || c.note);
   return {
     areas,
@@ -498,6 +502,21 @@ export function coverageStatement(run) {
       ? "What the search covered, in the same terms as the report's own coverage section. An area that is not 'Searched — clean' is not cleared: treat it as open, not as a negative result."
       : "This run records no coverage ledger.",
   };
+}
+
+/**
+ * THE DELIVERED ROWS AS THE PAGE PRINTS THEM (2026-11-20): every row the document holds, less a follow-up row that the
+ * page leaves out of "Left open" because another open row already reports its search, and then the native-script
+ * searches the page lists there as not completed. Both come from the page's own list (`leftOpenRows`), which keeps the
+ * rows it does not drop as they are, so the answer and the page cannot disagree about what was left open.
+ */
+function asThePagePrintsThem(document, coverage) {
+  const open = leftOpenRows({
+    coverage, localScripts: document.scope?.searchDepth?.counts?.localScripts ?? null,
+    followUpKinds: new Map((document.client.followUpKinds ?? []).map(([k, kinds]) => [k, new Set(Array.isArray(kinds) ? kinds : [])])),
+  });
+  const listed = new Set(open);
+  return [...coverage.filter((c) => c?.state === "confirmed-clean" || listed.has(c)), ...open.filter((r) => !coverage.includes(r))];
 }
 
 // ---- a finding's registrations, as the report delivered them ---------------------------------------
