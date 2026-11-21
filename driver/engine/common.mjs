@@ -190,11 +190,6 @@ export function runStreamingChild({
     if (started.spawnError) return resolve({ spawnError: started.spawnError, wall: (Date.now() - t0) / 1000 });
     const { child, killTree } = started;
 
-    let buf = "", stdoutAll = "", stderr = "";
-    // A CHUNK IS NOT A CHARACTER. A pipe hands the output over in chunks, and a character of two or more bytes can
-    // straddle two of them: decoded one chunk at a time, its halves read as replacement characters. One decoder per
-    // stream holds a split character's first bytes until the rest arrive.
-    const outText = new StringDecoder("utf8"), errText = new StringDecoder("utf8");
     let lastMove = Date.now();
     // — false until the child's FIRST byte on EITHER stream. Not "first liveness byte": a
     // stderr-only child under stdout-only liveness has spoken, so its startup is over and its stall
@@ -209,33 +204,15 @@ export function runStreamingChild({
       lastMove: () => lastMove, spoken: () => sawOutput, elapsed: (now) => now - firstOutputAt,
       mark: (why) => { killed = true; if (why === "stall") stallKill = true; } });
 
+    // The shared reader (readGovernedStreams). Both streams speak: spoken is spoken, whether or not stderr counts as
+    // liveness, and codex progress lives on stderr, so there it is liveness too. The whole stdout is kept for the caller.
     // Overflow (A3): TRUNCATE at the cap, pull the tree-kill FORWARD (an endless newline-free stream
     // never trips the stall/hard wall — every byte resets the clock), and settle nonzero so the truncated
     // tail is never parsed as a valid result. The group SIGKILL escalation still reaps a spewing tree.
-    const overflowKill = () => { if (overflow) return; overflow = true; killTree(); settle(1); };
-
-    child.stdout.on("data", (d) => {
-      if (settled || overflow) return;
-      sawOutput = true; firstOutputAt ||= Date.now();        // — the child has spoken; startup is over
-      lastMove = Date.now();   // ANY streamed byte = liveness → resets the stall clock
-      const s = outText.write(d);
-      buf += s; stdoutAll += s;
-      let nl;
-      while ((nl = buf.indexOf("\n")) >= 0) { emitLine(buf.slice(0, nl)); buf = buf.slice(nl + 1); }
-      if (buf.length > maxBuffer || stdoutAll.length > maxBuffer) { buf = buf.slice(0, maxBuffer); overflowKill(); }
-    });
-    child.stderr.on("data", (d) => {
-      if (settled || overflow) return;
-      sawOutput = true; firstOutputAt ||= Date.now();        // — spoken is spoken, whether or not this stream counts as liveness
-      if (stderrIsLiveness) lastMove = Date.now();   // codex progress lives on stderr → it is liveness too
-      stderr += errText.write(d);
-      if (stderr.length > maxBuffer) { stderr = stderr.slice(0, maxBuffer); overflowKill(); }
-    });
-
-    function emitLine(line) {
-      const t = line.trim(); if (!t) return;
-      try { onStdoutLine?.(t); } catch { /* a bad sink must never crash the reader */ }
-    }
+    const reader = readGovernedStreams({ child, maxBuffer, onLine: onStdoutLine, closed: () => settled, stderrIsLiveness,
+      onSpoken: () => { sawOutput = true; firstOutputAt ||= Date.now(); },
+      onMove: () => { lastMove = Date.now(); },
+      onOverflow: () => { overflow = true; killTree(); settle(1); } });
 
     // error + close can BOTH fire for one failure (Node) → settle EXACTLY once.
     child.on("error", (e) => { if (settled) return; settled = true; clearInterval(watchdog); resolve({ spawnError: e, wall: (Date.now() - t0) / 1000 }); });
@@ -254,16 +231,15 @@ export function runStreamingChild({
       try { child.stderr.destroy(); } catch { /* stream gone */ }
       // B1: flush the final, un-terminated line — but NEVER the truncated overflow tail. The decoders give up
       // what they held: a character the program never finished reads as a replacement character, once.
-      if (!overflow) { const tail = outText.end(); buf += tail; stdoutAll += tail; stderr += errText.end(); emitLine(buf); }
-      buf = "";
+      reader.flush();
       resolve({
         rawCode: typeof code === "number" ? code : null,
         killed, stallKill,
         hardWall: (killed && !stallKill) || false,   // watchdog killed at the hard wall, NOT a 0-liveness stall
         overflow,
         wall: (Date.now() - t0) / 1000,
-        stdout: stdoutAll,
-        stderr,
+        stdout: reader.stdout(),
+        stderr: reader.stderr(),
         maxBuffer,   // echoed so the caller's overflow stderr signature can name the exact cap
       });
     }
@@ -353,4 +329,58 @@ export function governWatchdog({ pollMs, stall, grace, hardMs, lastMove, spoken,
     // the stall branch above fires at max(stall, grace) whether or not a byte ever arrives, and it is checked first.
     else if (started && elapsed(now) >= hardMs) { mark("hardWall"); killTree(); }
   }, pollMs);
+}
+
+/**
+ * The reader: the program's stdout and stderr, each decoded as a stream so a character split across chunks arrives
+ * whole, stdout split into lines, and both held under `maxBuffer`. Each engine passes its own rules:
+ *   - `stderrSpeaks`      a stderr byte counts as the program having spoken (`onSpoken`). Off where the protocol is on
+ *                         stdout alone and stderr carries notices a program writes before it has done anything.
+ *   - `stderrIsLiveness`  a stderr byte resets the stall clock (`onMove`), as for a program that streams its progress there.
+ *   - `keepStdout`        the whole stdout is kept (`stdout()`) and counted against the cap beside the line buffer.
+ *   - `onChunk`           each raw stdout chunk, before it is decoded, for an engine that writes the stream as it came.
+ *   - `guardLines`        an exception from `onLine` is contained rather than thrown out of the stream's handler.
+ * `onLine` receives each line, trimmed, and never an empty one. Past the cap the buffer is cut at it, `onOverflow` runs
+ * once, and nothing more is read. Nothing is read once `closed()` says the turn has settled. At settle, `flush()` hands
+ * the final unterminated line to `onLine`, unless the reader overflowed: a truncated tail is never parsed.
+ */
+export function readGovernedStreams({ child, maxBuffer, onLine = null, onSpoken, onMove, onOverflow, closed,
+  onChunk = null, stderrSpeaks = true, stderrIsLiveness = true, keepStdout = true, guardLines = true }) {
+  // A CHUNK IS NOT A CHARACTER. A pipe hands the output over in chunks, and a character of two or more bytes can
+  // straddle two of them: decoded one chunk at a time, its halves read as replacement characters. One decoder per
+  // stream holds a split character's first bytes until the rest arrive.
+  const outText = new StringDecoder("utf8"), errText = new StringDecoder("utf8");
+  let buf = "", all = "", err = "", overflow = false;
+  const emit = (line) => {
+    const t = line.trim(); if (!t) return;
+    if (!guardLines) { onLine?.(t); return; }
+    try { onLine?.(t); } catch { /* a bad sink must never crash the reader */ }
+  };
+  const over = () => { if (overflow) return; overflow = true; onOverflow(); };
+  child.stdout.on("data", (d) => {
+    if (closed() || overflow) return;
+    onSpoken();                // the child has spoken; startup is over
+    onMove();                  // ANY streamed byte = liveness → resets the stall clock
+    onChunk?.(d);
+    const s = outText.write(d);
+    buf += s; if (keepStdout) all += s;
+    let nl;
+    while ((nl = buf.indexOf("\n")) >= 0) { emit(buf.slice(0, nl)); buf = buf.slice(nl + 1); }
+    if (buf.length > maxBuffer || (keepStdout && all.length > maxBuffer)) { buf = buf.slice(0, maxBuffer); over(); }
+  });
+  child.stderr.on("data", (d) => {
+    if (closed() || overflow) return;
+    if (stderrSpeaks) onSpoken();
+    if (stderrIsLiveness) onMove();
+    err += errText.write(d);
+    if (err.length > maxBuffer) { err = err.slice(0, maxBuffer); over(); }
+  });
+  return {
+    flush() {
+      if (!overflow) { const tail = outText.end(); buf += tail; if (keepStdout) all += tail; err += errText.end(); emit(buf); }
+      buf = "";
+    },
+    stdout: () => all,
+    stderr: () => err,
+  };
 }

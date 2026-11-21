@@ -15,12 +15,11 @@
 // cache_creation_input_tokens}, total_cost_usd, session_id, stop_reason; stream_event partials are the
 // watchdog heartbeat (--include-partial-messages).
 
-import { StringDecoder } from "node:string_decoder";
 import { statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { WRITE_DISCIPLINE, absolutizeSkillRefs, resolveSpawnCwd, spawnGraceMs, isRecordTool, stallMs, engineMaxBufferChars, startGovernedChild, governWatchdog } from "./common.mjs";   // the child, its watchdog, and the stall and buffer limits both engines share
+import { WRITE_DISCIPLINE, absolutizeSkillRefs, resolveSpawnCwd, spawnGraceMs, isRecordTool, stallMs, engineMaxBufferChars, startGovernedChild, governWatchdog, readGovernedStreams } from "./common.mjs";   // the child, its watchdog, its reader, and the stall and buffer limits both engines share
 import { resolveEngineProgram, resolveModel } from "../driver.config.mjs";   // — the one place that finds the program; it reads every spelling of the setting
 import { authorityTrees } from "../authority-trees.mjs";
 import { clearEngineChild } from "./child-record.mjs";   // the shared child (startGovernedChild) writes the record; this clears it at settle
@@ -570,10 +569,7 @@ function spawnTurn(st) {
 
 /** What the stream has shown so far: the buffers and kill flags, the clocks, the usage per message, and the thinking, model and reads gauges. */
 function streamState(st) {
-  st.buf = ""; st.stderr = ""; st.resultEvent = null; st.killed = false; st.stallKill = false; st.settled = false;
-  // A CHUNK IS NOT A CHARACTER: a character split across two chunks of a pipe is held by its stream's decoder
-  // until the rest arrives (common.mjs `runStreamingChild` says why). The raw sink still takes the bytes.
-  st.outText = new StringDecoder("utf8"); st.errText = new StringDecoder("utf8");
+  st.resultEvent = null; st.killed = false; st.stallKill = false; st.settled = false;
   st.noProgressKill = false;               // the no-progress ceiling fired (a stall discriminator, see noProgressMs)
   st.trickleKill = false;                  // the token-rate floor fired (a stall discriminator, see minTokensPerSec)
   st.overflow = false;                     // A3: stdout/stderr exceeded maxBuffer — force a nonzero fail, never parse the truncated tail
@@ -1064,37 +1060,33 @@ function wireStreams(st) {
   // wall — every byte resets the stall clock), and settle nonzero with a clear overflow error so the
   // truncated tail can never parse as a valid result (a partial line would fail JSON anyway → resultEvent
   // stays null → nonzero fail). The group SIGKILL escalation killTree() arms still reaps a spewing tree.
-  st.overflowKill = () => { if (st.overflow) return; st.overflow = true; st.killTree(); st.settle(1); };
-  st.child.stdout.on("data", (d) => {
-    if (st.settled || st.overflow) return;
-    if (st.firstOutputAt === null) st.firstOutputAt = Date.now();   // the child has spoken; startup is over
-    st.chunkSeq += 1;                                            // see toolAskedChunk
-    st.chunkBytes = d.length;
-    st.chunkGapMs = st.prevChunkAt === null ? 0 : Date.now() - st.prevChunkAt;
-    st.prevChunkAt = Date.now();
-    st.lastMove = Date.now();   // ANY streamed byte = liveness → resets the stall clock
-    st.sink.write(d);           // the raw stream, byte for byte, before anything parses it
-    st.buf += st.outText.write(d);
-    let nl;
-    while ((nl = st.buf.indexOf("\n")) >= 0) { st.parseLine(st.buf.slice(0, nl)); st.buf = st.buf.slice(nl + 1); }
-    if (st.buf.length > st.maxBuffer) { st.buf = st.buf.slice(0, st.maxBuffer); st.overflowKill(); }
-  });
-  st.child.stderr.on("data", (d) => {
-    if (st.settled || st.overflow) return;
-    // STDERR DOES NOT START THE CLOCKS, and this line used to. This engine's protocol is
-    // stream-json on STDOUT; stderr carries node warnings and CLI notices, which a child can emit
-    // before it has done anything at all. Treating one as "the child has spoken" ended the grace and
-    // — since the change that made the first byte the progress clock's ORIGIN — started that clock too,
-    // so a turn whose real startup was still running got its no-progress ceiling measured from a
-    // deprecation warning. A child that writes ONLY stderr is still bounded: it never starts, so the
-    // byte-stall below fires at max(STALL, GRACE) exactly as it does for a silent spawn.
-    //
-    // The diagnostic follows the same rule deliberately. `firstByteMs=NEVER` now means "never spoke
-    // its protocol", which is the question the no-progress specimen is actually asking — a number
-    // that came from a stderr line would have answered a different one.
-    st.stderr += st.errText.write(d);
-    if (st.stderr.length > st.maxBuffer) { st.stderr = st.stderr.slice(0, st.maxBuffer); st.overflowKill(); }
-  });
+  // The shared reader (common.mjs, readGovernedStreams), with this engine's rules: each raw chunk is counted and written
+  // to the session stream before it is decoded; stderr neither speaks nor counts as liveness; only the line buffer is
+  // held to the cap, since nothing keeps the whole output; and a line is parsed where it arrives, uncontained.
+  //
+  // STDERR DOES NOT START THE CLOCKS, and this line used to. This engine's protocol is
+  // stream-json on STDOUT; stderr carries node warnings and CLI notices, which a child can emit
+  // before it has done anything at all. Treating one as "the child has spoken" ended the grace and
+  // — since the change that made the first byte the progress clock's ORIGIN — started that clock too,
+  // so a turn whose real startup was still running got its no-progress ceiling measured from a
+  // deprecation warning. A child that writes ONLY stderr is still bounded: it never starts, so the
+  // byte-stall below fires at max(STALL, GRACE) exactly as it does for a silent spawn.
+  //
+  // The diagnostic follows the same rule deliberately. `firstByteMs=NEVER` now means "never spoke
+  // its protocol", which is the question the no-progress specimen is actually asking — a number
+  // that came from a stderr line would have answered a different one.
+  st.reader = readGovernedStreams({ child: st.child, maxBuffer: st.maxBuffer, closed: () => st.settled, onLine: st.parseLine,
+    stderrSpeaks: false, stderrIsLiveness: false, keepStdout: false, guardLines: false,
+    onSpoken: () => { if (st.firstOutputAt === null) st.firstOutputAt = Date.now(); },   // the child has spoken; startup is over
+    onMove: () => { st.lastMove = Date.now(); },
+    onChunk: (d) => {
+      st.chunkSeq += 1;                                            // see toolAskedChunk
+      st.chunkBytes = d.length;
+      st.chunkGapMs = st.prevChunkAt === null ? 0 : Date.now() - st.prevChunkAt;
+      st.prevChunkAt = Date.now();
+      st.sink.write(d);           // the raw stream, byte for byte, before anything parses it
+    },
+    onOverflow: () => { st.overflow = true; st.killTree(); st.settle(1); } });
   // error + close can BOTH fire for a single failure (Node) → settle EXACTLY once (no double clearInterval/resolve).
   st.child.on("error", (e) => { if (st.settled) return; st.settled = true; clearInterval(st.watchdog); st.sink.close(); st.resolve(errResult(st.t0, e, st.resumeRef)); });
   st.child.on("close", (code) => st.settle(code));
@@ -1110,9 +1102,9 @@ function wireStreams(st) {
     // settlement must never wait on a pipe some straggler keeps open (the group SIGKILL reaps the tree).
     try { st.child.stdout.destroy(); } catch { /* stream gone */ }
     try { st.child.stderr.destroy(); } catch { /* stream gone */ }
-    if (!st.overflow) { st.buf += st.outText.end(); st.stderr += st.errText.end(); st.parseLine(st.buf); }   // B1: flush the final, un-terminated line (the result event) — but NEVER the truncated overflow tail
+    st.reader.flush();   // B1: flush the final, un-terminated line (the result event) — but NEVER the truncated overflow tail
+    st.stderr = st.reader.stderr();
     const stream = st.sink.close();   // after the flush: every byte the program wrote is in it, or the record says why not
-    st.buf = "";
     // ONE SAMPLE OF THE CLOCK, and both quantities below are derived from it. Two `Date.now()` calls
     // a few milliseconds apart are enough to break the identity on the very turn it matters for: on a
     // turn that is almost entirely tool wait, an in-flight gap measured LATER than the wall can exceed
