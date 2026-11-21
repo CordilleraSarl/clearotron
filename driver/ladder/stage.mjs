@@ -11,6 +11,7 @@ import { sendReserveMs } from "../../providers/_shared/send-until.mjs";   // eac
 import { resolveAuthMode } from "../engine/auth.mjs";
 import { REGISTER_ENUMERATE_TOOL } from "../stages.mjs";
 import { stageTools } from "./stage-tools.mjs";
+import { STAGE_DECLARATIONS, declaredStageOf, replyIsOutput } from "../stage-declarations.mjs";
 
 export function stageOf(name, opts, stageHome, engine) {
   const {
@@ -41,6 +42,9 @@ export function stageOf(name, opts, stageHome, engine) {
     // THE CORRECTION THIS DISPATCH IS, when it is one: `{positions}`, the excluded positions its flags name. Its save may
     // add a finding for them, and its retries say so (`patchRows`); every other dispatch carries none.
     correction = null,
+    // A STAGE DESCRIBED BY THE CALLER rather than by its row in stage-declarations.mjs: its grant, record tool, validator and
+    // output. Absent, which is every live stage, the stage's own row describes it.
+    declaration = null,
   } = opts;
   const adds = Boolean(correction);
   if (!message) throw new Error(`runStage(${name}): message is required`);
@@ -61,11 +65,14 @@ export function stageOf(name, opts, stageHome, engine) {
   // The stage's tool servers, allowed tools, skills folder and read grants, by the engine's two capability flags
   // (ladder/stage-tools.mjs).
   const { gatherMcpConfig, gatherAllowedTools, gatherSeatWrites, engineSkillsDir, engineSkillsGrantRoots, engineResolveSkill } =
-    stageTools({ engine, name, sessionKey, agent, runDir, correction, excludeTools });
+    stageTools({ engine, name, sessionKey, agent, runDir, correction, excludeTools, declaration });
+  const declared = declaration ?? STAGE_DECLARATIONS[declaredStageOf(name)] ?? null;
+  // A stage whose result is its reply writes nothing itself: the driver writes the reply (gateway.mjs), so the turn is told so.
+  const seatWrites = replyIsOutput(declared) ? false : gatherSeatWrites;
   // EACH TURN'S OWN COPY of the stage's tool config, carrying that turn's time to stop sending: ahead of the turn's
   // deadline by the reserve, so a plan call returns what it holds while the turn can still write it (send-until.mjs).
   const turnConfig = (sec) => withSendUntil(gatherMcpConfig, Date.now() + sec * 1000 - sendReserveMs(sec));
   return { name, engine, stageHome, agent, message, refreshMessage, model, thinking, sessionKey, timeoutSec, stallSec, files, validate,
-    maxRetries, runDir, followup, bandSize, derivedLimit, adds, supplementalLane, auth, gatherAllowedTools, gatherSeatWrites,
-    engineSkillsDir, engineSkillsGrantRoots, engineResolveSkill, turnConfig };
+    maxRetries, runDir, followup, bandSize, derivedLimit, adds, supplementalLane, auth, gatherAllowedTools, gatherSeatWrites: seatWrites,
+    declaration: declared, engineSkillsDir, engineSkillsGrantRoots, engineResolveSkill, turnConfig };
 }

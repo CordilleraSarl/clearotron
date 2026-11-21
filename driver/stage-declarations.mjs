@@ -13,6 +13,10 @@
 //              its result as a typed call that the driver writes; a stage without one hands back a file, which its
 //              validator checks before anything downstream reads it.
 //   validator  the name of the check that accepts or refuses the stage's output, bound in the stage's own file.
+//   output     "reply" where the stage's result is its reply text, as a plain model's is: the driver writes the reply to
+//              the stage's out file, and the stage's validator judges it there before anything downstream reads it, as it
+//              judges a written file. Missing or invalid, it takes the stage's failure and retry path. No live stage
+//              declares it; a stage that does is handed in to runStage as `declaration`.
 //   labels     "prefix" where the grant also covers every dispatched label that begins with the stage's name
 //              (`register-unit:<axis>`, `common-law-half:<half>`). Those are read in table order, as the chain read them.
 //              Any other stage covers its own name, and the fanned labels its recording row declares (`perAxis`, `perChunk`).
@@ -72,6 +76,9 @@ export function declaredStageOf(label = "") {
   for (const [stage, d] of Object.entries(STAGE_DECLARATIONS)) if (d.labels === "prefix" && label.startsWith(stage)) return stage;
   return null;
 }
+
+/** Does this declaration make the stage's reply its output? PURE. */
+export const replyIsOutput = (declaration) => declaration?.output === "reply";
 
 /** The named validator a stage declares, from the stage file's own table of them. Throws where the name is not in the table. */
 export function declaredValidator(stage, table) {

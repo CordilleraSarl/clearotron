@@ -1833,6 +1833,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-plain-model-can-supply-a-stage-result.test.mjs": {
+          "tests": 4,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "a-plan-audit-line-cannot-open-a-section.test.mjs": {
           "tests": 3,
           "asserts": 9,

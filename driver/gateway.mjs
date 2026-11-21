@@ -18,6 +18,8 @@ import { modelGauge, servingProgram } from "./ladder/model-gauge.mjs";
 import { rescueAndName } from "./ladder/rescue.mjs";
 import { nextRung } from "./ladder/next-rung.mjs";
 import { stageOf } from "./ladder/stage.mjs";
+import { replyIsOutput } from "./stage-declarations.mjs";   // a stage whose reply is its output
+import { writeFileSync } from "node:fs";
 import { artifactJudgement } from "./ladder/judge.mjs";
 import { retryMode, dispatchTurn } from "./ladder/dispatch.mjs";
 import { repairFormInDispatch } from "./ladder/form-repair.mjs";
@@ -84,6 +86,13 @@ export function parseJsonStdout(stdout) {
 
 export function payloadText(json) {
   return (json?.result?.payloads ?? []).map((p) => p?.text ?? "").join("\n").trim();
+}
+
+/** A reply that is the stage's output, written to the one file the stage declares; an empty reply writes nothing to judge. */
+function writeReplyAsOutput(files, json) {
+  if (files.length !== 1) throw new Error(`a stage whose reply is its output declares one output file, not ${files.length}`);
+  const text = payloadText(json);
+  if (text) writeFileSync(files[0], text + "\n");
 }
 
 
@@ -226,6 +235,9 @@ async function runStageLadder(name, opts, stageHome = null, engine = selectEngin
     // (attemptTimedOut). Which signal fired is kept on the row either way.
     const timedOutBy = timeoutCause({ killed, code, wall, stderr, timeoutSec: effTimeout });
     fail = turnFailure({ timedOutBy, code, json, stderr });
+    // A STAGE WHOSE RESULT IS ITS REPLY (a plain model's, by its declaration): the driver writes the reply where the stage's
+    // validator reads it, so it is judged as a written file is, and a missing or invalid one takes the same ladder below.
+    if (fail === null && replyIsOutput(stage.declaration)) writeReplyAsOutput(stage.files, json);
     if (fail === null) {
       const j = judge.judgeArtifacts();
       fail = j.fail; stampedQuantity = j.quantity; failingFile = j.file; lastGraded = j.graded ?? lastGraded;
