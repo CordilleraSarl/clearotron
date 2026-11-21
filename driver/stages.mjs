@@ -19,8 +19,7 @@ import { awaitsReadingTurn } from "../providers/_shared/plan-guards.mjs";   // �
 import { isNonLatinTerm } from "../providers/_shared/script-form.mjs";
 import { latinQuestionsOfRomanisedForm } from "./register-plan.mjs";   // sentence 3 — the Latin question a script question repeats
 import { registerCapabilities } from "./register-unreachable.mjs";
-import { validators } from "./verify.mjs";
-import { declaredValidator } from "./stage-declarations.mjs";   // each stage's validator, by the name its declaration gives
+import { validators } from "./verify.mjs"; import { declaredValidator } from "./stage-declarations.mjs";   // each stage's validator, by the name its declaration gives
 import { REGISTER_PROVIDER, PROVIDERS } from "./driver.config.mjs";
 import { REGISTER_AXES, decideAxes } from "./coverage-ledger.mjs";
 // — the digest dispatch asks the SAME question verify.mjs asks ("does this run owe a form or a
