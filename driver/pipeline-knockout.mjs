@@ -63,7 +63,7 @@ import { batchMarkName } from "./mark-name.mjs";
 import { runLog, note } from "./log.mjs";
 import { defaultTerritoryState } from "./effective-scope.mjs";
 import { keepsInstructedScope } from "./accepted-order.mjs";   // a resume rebuilt from status keeps the scope its order wrote, as a clearance does   // the stored-defaults reading — one producer, shared with the clearance lane
-import { whatsappRouting } from "./stages.mjs";
+import { deliveryPacket, handOffDelivery } from "./delivery-handoff.mjs";
 import { rollupTokens, stampTokenRollup } from "./tokens.mjs";
 import { recordRunConsumption } from "./consumption-ledger.mjs";
 // The scoped owner lookup a promoted register filing is owed. Bounded, deduplicated
@@ -1616,23 +1616,13 @@ export async function knockoutInner(ctx, job, opts = {}) {
         writeFileSync(K.emailBody, emailHtml);
         const nMarks = merged.marks.length;
         const refTag = job.ref ? ` (${job.ref})` : "";
-        const packet = {
-          runId, agent,
-          forwarder: job.forwarder, forwarderEmail: job.forwarderEmail, msgId: job.msgId,
-          conversationId: job.conversationId ?? null,
+        // THE SAME ROUTING AS THE CLEARANCE PACKET (part b), in the one builder both use (delivery-handoff.mjs). This read
+        // `AGENT_WHATSAPP[agent]`, and every user of a deployment shares one agent id, so every knockout completion paged
+        // the operator and told the person who ordered it nothing. The failure notice (run-failed.mjs, buildFailurePacket)
+        // routes the same way: the courier relays it to the requester, and the operator keeps the page as the copy beside it.
+        const packet = deliveryPacket({ runId, agent, job,
           subject: `${[productName, job.ref ?? markNames[0] ?? "batch"].filter(Boolean).join(" — ")} (${nMarks} mark${nMarks === 1 ? "" : "s"})`,
           emailBodyHtml: emailHtml,
-          // THE SAME ROUTING AS THE CLEARANCE PACKET (part b). This read
-          // `AGENT_WHATSAPP[agent]`, and every user of a deployment shares one agent id, so every knockout
-          // completion paged the operator and told the person who ordered it nothing. The clearance packet
-          // was moved off that and this one was not, which is the half that shipped: one call site fixed,
-          // two existing. Where no number is held the packet now SAYS so in `whatsappToReason` rather than
-          // substituting the operator silently.
-          //
-          // The failure notice (run-failed.mjs, buildFailurePacket) routes the same way. It used to keep `AGENT_WHATSAPP[agent]` as an
-          // operational page, but the courier relays it to the requester, who is owed it as they are owed a report, and the
-          // operator keeps the page as the copy beside it.
-          ...whatsappRouting(job, agent),
           // ONE LINE, N LINKS. This said "Report: <one url>" and on a batch that url is now null, which would
           // have read "Report: null" — the fail-visible shape doing its job, and still not a line to send. A
           // batch names every report it produced, in the order the names were ordered.
@@ -1645,16 +1635,8 @@ export async function knockoutInner(ctx, job, opts = {}) {
           // says so: an integrator that only knows `url` gets null on a batch and fails visibly, instead of
           // mailing the first of eight names as though it were the answer.
           url: published.url, reports: published.reports.map((r) => ({ mark: r.mark, url: r.url })),
-          verdict: overall, markName: batchMarkName(markNames),
-        };
-        try { rmSync(join(run.runDir, ".sent")); } catch { /* none */ }
-        try { rmSync(paths(run.runDir).sendReceipts, { force: true }); } catch { /* none */ }
-        try { rmSync(paths(run.runDir).failure); } catch { /* none */ }
-        writeFileSync(paths(run.runDir).delivery, JSON.stringify(packet, null, 2) + "\n");
-        try {
-          mkdirSync(config.outboxDir, { recursive: true });
-          writeFileSync(join(config.outboxDir, `${packet.runId}.pending`), `${agent}\n`);
-        } catch (e) { note(`delivery: outbox marker write skipped (${String(e.message).slice(0, 100)})`); }
+          verdict: overall, markName: batchMarkName(markNames) });
+        handOffDelivery(run.runDir, packet);   // delivery-handoff.mjs: the packet written, the outbox marker dropped
         const deliveredAt = new Date().toISOString();
         // ── THE TEN-MINUTE BAR, AGAINST THE RUN (ruling 591) ────────────────────────────────────────────
         //
