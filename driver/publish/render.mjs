@@ -44,6 +44,7 @@ import { normalizeRecordUri } from '../registry-fidelity.mjs';   // the register
 import { readerRowHead } from '../coverage-ledger.mjs';   // an engine-token row head in the reader's words   // the document shell, shared with the knockout template
 import { EVIDENCE_LABEL, USE_EVIDENCE_LABEL, meterEvidence } from './evidence-words.mjs';   // the meters' evidence words, shared with the audit workbook
 import { inlineMarkdown } from '../../shared/inline-markdown.mjs';   // the inline-markdown dialect, shared with the knockout template
+import { escapeText, escapeAttr } from '../../shared/html-escape.mjs';   // the one escaper for text and for an attribute's value
 import { isEntrypoint } from "../../shared/is-entrypoint.mjs";   // — realpath both sides, or a symlinked invocation exits 0 silently
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -311,8 +312,8 @@ function frameworkGauge(fm, findings, coverage = [], fourAnswers = null, opts = 
   </div>`;
 }
 
-const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const escAttr = s => esc(s).replace(/"/g, '&quot;');
+const esc = escapeText;
+const escAttr = escapeAttr;
 // A finding's card is the page's `c<ordinal>` target when its ordinal is a whole number, the shape the page script
 // reveals and scrolls to. An absent or malformed ordinal has no target: its card draws no id and nothing links to it.
 const cardTarget = (ordinal) => {

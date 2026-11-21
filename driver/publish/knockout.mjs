@@ -31,7 +31,7 @@ import { servedModels } from '../tokens.mjs';
 import { knockoutFindingViews, knockoutFindingRange } from '../findings-model.mjs';
 import { knockoutReceipts, worstBand } from '../verify-knockout.mjs';
 
-const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+import { escapeAttr as esc } from '../../shared/html-escape.mjs';   // text and attribute values alike
 // The http(s)-only link helpers that used to live here went with the MSO review table (2026-07-28) and
 // had no caller left: this module writes workbook CELLS and a cover note that links the report, never a
 // model-derived URL. The rule they carried is not gone — it is enforced where a research URL actually

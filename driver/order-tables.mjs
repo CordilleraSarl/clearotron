@@ -8,14 +8,15 @@
 // door both take them from HERE, so the two ask one question of one set of tables and cannot disagree. The
 // portal used to ask nothing: it said "queued", and the runner then refused the order with no one watching.
 //
-// AT CALL TIME, never a static import. The register SELECTION table lives in `bin/onboard.mjs`, a CLI entry
-// point, and a static import from `driver/` would point the driver at `bin/` — the cycle that makes
-// `clearotron doctor` exit 13 after printing most of a report. This module sits outside run-requirements.mjs
-// so that module stays pure and reaches nothing in `bin/`.
+// The register SELECTION table is read from `shared/register-selection.mjs`, where it moved out of the setup wizard
+// (`bin/onboard.mjs`, which re-exports it). Reaching it through the wizard pointed the driver at `bin/`: the wizard
+// imports the portal service, which imports this module, so the three closed a loop, and the static form of that
+// import is what made `clearotron doctor` exit 13 after printing most of a report. This module sits outside
+// run-requirements.mjs so that module stays pure.
+import { PROVIDERS } from "../shared/register-selection.mjs";
 let tables = null;
 export async function runTables() {
   if (!tables) {
-    const { PROVIDERS } = await import("../bin/onboard.mjs");
     const { ENGINE_BINARIES, DEFAULT_ENGINE_ID, resolveEngineProgram } = await import("./driver.config.mjs");
     tables = { registers: PROVIDERS, engines: ENGINE_BINARIES, defaultEngine: DEFAULT_ENGINE_ID, resolveEngine: resolveEngineProgram };
   }

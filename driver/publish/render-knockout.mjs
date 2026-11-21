@@ -43,6 +43,7 @@ import {
 } from '../../shared/brand.mjs';
 import { reportPage } from './page-shell.mjs';   // the one report frame, shared with the clearance template
 import { hrefAttr } from './attr.mjs';   // the workbook beside the page, linked as the clearance links it
+import { escapeAttr } from '../../shared/html-escape.mjs';
 import { inlineMarkdown } from '../../shared/inline-markdown.mjs';   // the inline-markdown dialect, shared with the clearance template
 import { SUMMARY_BLOCK_LINE, parseSummaryBlocks } from '../../shared/summary-blocks.mjs';
 
@@ -75,8 +76,9 @@ import { REC, ownerDisplayName, normalizeRecordUri } from '../registry-fidelity.
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
-const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-const escAttr = esc;
+// One escaper for text and attribute values alike, since this template does not keep the two apart.
+const esc = escapeAttr;
+const escAttr = escapeAttr;
 // Same doctrine as the old table: a model/research-derived URL becomes a link ONLY when it is http(s).
 // esc() stops attribute breakout; it does not stop scheme smuggling (javascript:, data:).
 const isHttpUrl = (u) => /^https?:\/\//i.test(String(u ?? '').trim());
