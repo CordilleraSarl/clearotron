@@ -34,9 +34,9 @@ const manifest = (version) => (p) => {
 
 test("the example clearance the install prints names its job by a path that exists, in the package", () => {
   const onboard = read("bin/onboard.mjs");
-  assert.match(onboard, /const EXAMPLE_JOB = join\(REPO, "examples", "job\.euipo\.json"\);/);
+  assert.match(onboard, /const EXAMPLE_JOB = join\(REPO, "examples", "job\.knockout\.json"\);/);
   assert.match(onboard, /clearotron run --job \$\{[^}]*EXAMPLE_JOB[^}]*\}/, "the printed command names the job relative to wherever the reader stands");
-  assert.ok(existsSync(join(ROOT, "examples", "job.euipo.json")), "the example job the install names is not in this tree");
+  assert.ok(existsSync(join(ROOT, "examples", "job.knockout.json")), "the example job the install names is not in this tree");
   // IN THE PACKAGE, not only in this tree: the line is printed by an install, which holds what npm packed.
   // Offline: a dry-run pack resolves on disk, and npm reaching for a registry it does not need can block.
   // Through npmInvocation: on Windows `npm` is a batch file Node will not start without a shell, so npm
@@ -46,7 +46,7 @@ test("the example clearance the install prints names its job by a path that exis
     maxBuffer: 64 * 1024 * 1024, env: { ...process.env, npm_config_offline: "true" } });
   const files = (JSON.parse(out)[0]?.files ?? []).map((f) => f.path);
   assert.ok(files.length > 500, `npm listed ${files.length} file(s); this arm needs the real list`);
-  assert.ok(files.includes("examples/job.euipo.json"), "the example job the install names is not in the package");
+  assert.ok(files.includes("examples/job.knockout.json"), "the example job the install names is not in the package");
   // And a package has no npm scripts where its reader stands, so the install says the old way to a checkout only.
   assert.match(onboard, /if \(!PACKAGED\) say\(`[^`]*Each still works the old way too/);
 });

@@ -76,6 +76,8 @@ export const CLARIVATE_OFFICE_ALIASES = Object.freeze({
   OAPI: "OA",
   ARIPO: "AP",
   IR: "IR",   // Iran — NOT the Madrid International Register (that is WO)
+  INT: "WO",  // the Madrid International Register, as a register names it on its own records
+  INTERNATIONAL: "WO", "INTERNATIONAL MADRID": "WO",
   MADRID: "WO",
   "MADRID PROTOCOL": "WO",
   "INTERNATIONAL REGISTER": "WO",

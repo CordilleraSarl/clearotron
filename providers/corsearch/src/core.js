@@ -148,12 +148,13 @@ export function assembleQuery(p) {
   // Regions go to the wire as CODES only (copper-bastion incident: an unknown multi-word region value
   // is answered as a server error rather than a bad request, so a display name here poisons every retry).
   // Known display names are translated; Worldwide drops the clause; anything else fails loudly with
-  // a message the composing model can act on in-session.
+  // a message the composing model can act on in-session. A code is then put in this register's own
+  // spelling (UK → GB, INT → WO), so a call that did not come through the plan sends what the plan would.
   if (Array.isArray(p.regions)) for (const r of p.regions) {
     const code = normalizeTerritory(r);
     if (code === null) throw new Error(`unknown region "${r}" — regions take UPPERCASE 2-letter codes (e.g. US, EU, CH, GB, WO)`);
     if (code === "") continue;                        // Worldwide → no region clause (search all offices)
-    parts.push(clause("", "region", code));
+    parts.push(clause("", "region", CAPABILITIES.offices.translate(code)));
   }
   if (p.owner_country)                                                parts.push(clause("", "owner-country", p.owner_country));
   if (p.application_date_after)       parts.push(clause("", "app-after",  p.application_date_after));

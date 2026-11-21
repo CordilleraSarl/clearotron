@@ -159,8 +159,6 @@ const STANDING = [
   "region with no name of its own: EA",
   "region with no name of its own: IB",
   "script with no section in the manual: hebrew",
-  "spellings joined only for the report: INT and WO",
-  "unknown code: INT in REGION_ALIAS",
 ];
 
 test("the tables differ only where the standing list says, and every listed difference is still there", () => {
@@ -176,9 +174,18 @@ test("a jurisdiction added to one table and not the others is a new difference",
 });
 
 test("a difference closed in the tables leaves the standing list behind it, which fails until the line goes", () => {
-  const { INT, ...aliases } = TABLES.REGION_ALIAS;
-  assert.equal(INT, "WO", "premise: the report folds INT into WO");
-  const closed = differences({ ...TABLES, REGION_ALIAS: aliases });
-  assert.deepEqual(STANDING.filter((d) => !closed.includes(d)),
+  // The Eurasian register, given a name of its own: the line that named its absence is the one that has gone.
+  assert.ok(TABLES.REGION_CODES.has("EA") && !Object.hasOwn(TABLES.REGION_NAMES, "EA"), "premise: EA is a region with no name");
+  const closed = differences({ ...TABLES, REGION_NAMES: { ...TABLES.REGION_NAMES, EA: "Eurasian (EAPO)" } });
+  assert.deepEqual(STANDING.filter((d) => !closed.includes(d)), ["region with no name of its own: EA"]);
+});
+
+test("the engine and the report join INT and WO the same way, so taking either fold away is a new difference", () => {
+  const { INT: reportFold, ...aliases } = TABLES.REGION_ALIAS;
+  const { INT: engineFold, ...fold } = TABLES.JURISDICTION_CODE_FOLD;
+  assert.deepEqual([reportFold, engineFold], ["WO", "WO"], "premise: both fold INT into WO");
+  assert.deepEqual(differences({ ...TABLES, REGION_ALIAS: aliases }).filter((d) => !STANDING.includes(d)),
+    ["spellings joined only for the engine: INT and WO"]);
+  assert.deepEqual(differences({ ...TABLES, JURISDICTION_CODE_FOLD: fold }).filter((d) => !STANDING.includes(d)).sort(),
     ["spellings joined only for the report: INT and WO", "unknown code: INT in REGION_ALIAS"]);
 });
