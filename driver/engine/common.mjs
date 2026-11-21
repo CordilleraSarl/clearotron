@@ -178,79 +178,36 @@ export function runStreamingChild({
   const spawnCwd = resolveSpawnCwd({ cwd, runDir });
 
   return new Promise((resolve) => {
-    let child;
     // detached:true (C2): a coding CLI spawns its MCP servers as CHILDREN; killing only the direct pid
     // orphans them (a bridge orphan ran 3.5 days, still billing). Detached → the child leads its own
     // process group, so the watchdog's group kills reach the whole tree. stdin is a PIPE (not "ignore"):
     // the prompt rides stdin, never a `-p`/argv element, so it is never subject to MAX_ARG_STRLEN (E2BIG).
     // Windows: not detached, and ended as a tree instead (engine-spawn.mjs says why).
     const run = engineSpawn(bin, args, { platform });
-    const spawnedAt = Date.now();   // before the spawn: what the turn starts is started after this
-    try { child = spawn(run.command, run.args, { stdio: ["pipe", "pipe", "pipe"], cwd: spawnCwd, env: env || process.env, detached: spawnsDetached(platform) }); }
-    catch (e) { return resolve({ spawnError: e, wall: (Date.now() - t0) / 1000 }); }
-    let exitedAt = null;
-    child.once("exit", () => { exitedAt = Date.now(); });
-    // — WRITE THE CHILD DOWN, so a stop can target this run's turn rather than hunt
-    // for it. Best effort and never fatal: a dispatch that cannot write this must still run, because
-    // failing here costs a stop that falls back to the boundary, and throwing here costs the run.
-    recordEngineChild(runDir, child.pid);
-
-    child.stdin.on("error", () => {});   // ignore EPIPE if the child already died (close/error settles)
-    try { child.stdin.write(input ?? ""); child.stdin.end(); } catch { /* child gone — handled by close/error */ }
+    let killed = false, stallKill = false, overflow = false, settled = false;
+    const started = startGovernedChild({ command: run.command, args: run.args, cwd: spawnCwd, env: env || process.env,
+      detached: spawnsDetached(platform), input, runDir, platform, endTree });
+    if (started.spawnError) return resolve({ spawnError: started.spawnError, wall: (Date.now() - t0) / 1000 });
+    const { child, killTree } = started;
 
     let buf = "", stdoutAll = "", stderr = "";
     // A CHUNK IS NOT A CHARACTER. A pipe hands the output over in chunks, and a character of two or more bytes can
     // straddle two of them: decoded one chunk at a time, its halves read as replacement characters. One decoder per
     // stream holds a split character's first bytes until the rest arrive.
     const outText = new StringDecoder("utf8"), errText = new StringDecoder("utf8");
-    let killed = false, stallKill = false, overflow = false, settled = false;
     let lastMove = Date.now();
     // — false until the child's FIRST byte on EITHER stream. Not "first liveness byte": a
     // stderr-only child under stdout-only liveness has spoken, so its startup is over and its stall
     // clock must run normally from here.
     let sawOutput = false;
-    // — WHEN THE TURN STARTED, as opposed to when the process did. The hard wall below measures
-    // from here; see its comment for why spawn was the wrong t0 and what still bounds a child that
-    // never speaks.
+    // — WHEN THE TURN STARTED, as opposed to when the process did. The hard wall measures from here
+    // (governWatchdog says why spawn was the wrong t0 and what still bounds a child that never speaks).
     let firstOutputAt = 0;
     const GRACE = spawnGraceMs();
 
-    // Group kill (C2): SIGTERM the whole process group, then group SIGKILL after the escalation grace.
-    // ESRCH/EPERM (group already gone / not ours) falls back to the direct child.kill. The escalation
-    // timer is unref'd and NOT cleared on settle — the direct child exiting on SIGTERM must not save a
-    // SIGTERM-immune MCP straggler from the group SIGKILL.
-    let escalation = null;
-    // Windows has no group to signal: the whole tree is ended at once, and the escalation below then finds
-    // nothing left to end.
-    // EVEN WHEN THE PROGRAM ITSELF HAS EXITED: its tool servers may run on, and only the stop that knows
-    // when the turn was spawned and ended can tell them from a stranger (killWindowsTreeNow). The first
-    // stop that ends nothing says so; the escalation after it expects to find nothing.
-    const groupKill = platform === "win32"
-      ? (sig) => { const n = endTree({ pid: child.pid, since: spawnedAt, until: exitedAt }); if (!n && sig === "SIGTERM") process.stderr.write(`[engine] the Windows stop found nothing of this turn left to end (program ${child.pid})\n`); }
-      : (sig) => { try { process.kill(-child.pid, sig); } catch { try { child.kill(sig); } catch { /* already gone */ } } };
-    const killTree = () => {
-      if (escalation) return;   // the watchdog polls — arm the escalation exactly once
-      groupKill("SIGTERM");
-      escalation = setTimeout(() => groupKill("SIGKILL"), killEscalateMs());
-      escalation.unref?.();
-    };
-
-    const watchdog = setInterval(() => {
-      const idle = Date.now() - lastMove, wall = Date.now() - t0;
-      // Before the first byte the deadline is the LARGER of the stall window and the spawn grace, so a
-      // slow process creation cannot be read as a stall. After it, the stall window governs unchanged.
-      const deadline = sawOutput ? STALL : Math.max(STALL, GRACE);
-      if (idle >= deadline) { stallKill = true; killed = true; killTree(); }
-      // — FROM THE FIRST BYTE, never from spawn, which is what fixed in the anthropic
-      // watchdog and fixed for the stall clock immediately above. Process startup is not the
-      // turn: against a tight pin it was the whole budget, and against the shipping 660s ceiling it
-      // charged ~0.15% to every turn for no reason anyone chose. Both clocks in this file now agree on
-      // when a turn begins.
-      //
-      // A CHILD THAT NEVER SPEAKS IS STILL BOUNDED, so this is not a ceiling removal: the stall branch
-      // above fires at max(STALL, GRACE) whether or not a byte ever arrives, and it is checked first.
-      else if (sawOutput && Date.now() - firstOutputAt >= hardMs) { killed = true; killTree(); }
-    }, pollMs);
+    const watchdog = governWatchdog({ pollMs, stall: STALL, grace: GRACE, hardMs, killTree,
+      lastMove: () => lastMove, spoken: () => sawOutput, elapsed: (now) => now - firstOutputAt,
+      mark: (why) => { killed = true; if (why === "stall") stallKill = true; } });
 
     // Overflow (A3): TRUNCATE at the cap, pull the tree-kill FORWARD (an endless newline-free stream
     // never trips the stall/hard wall — every byte resets the clock), and settle nonzero so the truncated
@@ -311,4 +268,85 @@ export function runStreamingChild({
       });
     }
   });
+}
+
+// ── THE GOVERNED CHILD AND ITS WATCHDOG, BOTH ENGINES' ───────────────────────────────────────────────
+//
+// Each engine starts its program, feeds it its input, records it as the run's, ends its tree and watches it for a
+// stall the same way. The Claude adapter kept its own copy of all of it; both adapters now take these two, and each
+// keeps what is its own: how it reads its streams, what counts as progress, and how it settles.
+
+/**
+ * Start the program: spawn it, feed it `input` on stdin then EOF, and record it as the run's child. Returns the child,
+ * the moment before the spawn (what the turn starts is started after it), a getter for when it exited, and the ONE
+ * tree kill: a group SIGTERM, then a group SIGKILL after killEscalateMs(), armed once however often the watchdog asks.
+ * On Windows the tree is ended by its own stop, which says so when it finds nothing of this turn left. `onKill` runs
+ * at every ask, before the arm, so a caller can record what it saw when the kill was decided. A spawn that throws
+ * returns `{ spawnError }`.
+ */
+export function startGovernedChild({ command, args, cwd, env, detached, input, runDir, platform = process.platform, endTree = killWindowsTreeNow, onKill = null }) {
+  let child;
+  const spawnedAt = Date.now();   // before the spawn: what the turn starts is started after this
+  try { child = spawn(command, args, { stdio: ["pipe", "pipe", "pipe"], cwd, env, detached }); }
+  catch (e) { return { spawnError: e }; }
+  let exitedAt = null;
+  child.once("exit", () => { exitedAt = Date.now(); });
+  // — WRITE THE CHILD DOWN, so a stop can target this run's turn rather than hunt
+  // for it. Best effort and never fatal: a dispatch that cannot write this must still run, because
+  // failing here costs a stop that falls back to the boundary, and throwing here costs the run.
+  recordEngineChild(runDir, child.pid);
+  child.stdin.on("error", () => {});   // ignore EPIPE if the child already died (close/error settles)
+  try { child.stdin.write(input ?? ""); child.stdin.end(); } catch { /* child gone — handled by close/error */ }
+  // Group kill (C2): SIGTERM the whole process group, then group SIGKILL after the escalation grace.
+  // ESRCH/EPERM (group already gone / not ours) falls back to the direct child.kill. The escalation
+  // timer is unref'd and NOT cleared on settle — the direct child exiting on SIGTERM must not save a
+  // SIGTERM-immune MCP straggler from the group SIGKILL.
+  let escalation = null;
+  // Windows has no group to signal: the whole tree is ended at once, and the escalation below then finds
+  // nothing left to end.
+  // EVEN WHEN THE PROGRAM ITSELF HAS EXITED: its tool servers may run on, and only the stop that knows
+  // when the turn was spawned and ended can tell them from a stranger (killWindowsTreeNow). The first
+  // stop that ends nothing says so; the escalation after it expects to find nothing.
+  const groupKill = platform === "win32"
+    ? (sig) => { const n = endTree({ pid: child.pid, since: spawnedAt, until: exitedAt }); if (!n && sig === "SIGTERM") process.stderr.write(`[engine] the Windows stop found nothing of this turn left to end (program ${child.pid})\n`); }
+    : (sig) => { try { process.kill(-child.pid, sig); } catch { try { child.kill(sig); } catch { /* already gone */ } } };
+  const killTree = () => {
+    onKill?.();
+    if (escalation) return;   // the watchdog polls — arm the escalation exactly once
+    groupKill("SIGTERM");
+    escalation = setTimeout(() => groupKill("SIGKILL"), killEscalateMs());
+    escalation.unref?.();
+  };
+  return { child, spawnedAt, exitedAt: () => exitedAt, killTree };
+}
+
+/**
+ * The watchdog: every `pollMs`, end the tree when the child has gone quiet, and say why through `mark`.
+ *   - "stall"      no streamed byte for the stall window. Before the first byte the deadline is the LARGER of the window
+ *                  and the spawn grace, so a slow process creation cannot be read as a stall.
+ *   - "noProgress" no honest progress for `noProgressMs` (`progressIdle`, where the engine measures progress), with the
+ *                  same grace before the first byte.
+ *   - "trickle"    output below the engine's rate floor (`isTrickling`), once the child has spoken.
+ *   - "hardWall"   the hard wall, once the child has spoken: `elapsed` since then, which an engine may measure as active
+ *                  time rather than wall time.
+ * `onTick` runs first at every poll; `onSilentIdle` is handed the progress clock while the child has not spoken.
+ * Returns the interval, which the caller clears when it settles. Only a stall and a hard wall apply where a hook is absent.
+ */
+export function governWatchdog({ pollMs, stall, grace, hardMs, lastMove, spoken, elapsed, killTree, mark,
+  onTick = null, progressIdle = null, noProgressMs = 0, onSilentIdle = null, isTrickling = null }) {
+  return setInterval(() => {
+    onTick?.();
+    const now = Date.now();
+    const started = spoken();
+    const progIdle = progressIdle ? progressIdle(now) : null;
+    if (!started && progIdle !== null) onSilentIdle?.(progIdle);
+    if (now - lastMove() >= (started ? stall : Math.max(stall, grace))) { mark("stall"); killTree(); }
+    else if (progIdle !== null && progIdle >= (started ? noProgressMs : Math.max(noProgressMs, grace))) { mark("noProgress"); killTree(); }
+    else if (started && isTrickling?.(now)) { mark("trickle"); killTree(); }
+    // — THE HARD WALL RUNS FROM THE FIRST BYTE, never from spawn. Process startup is not the turn: against a
+    // tight pin it was the whole budget, and against the shipping 660s ceiling it charged ~0.15% to every turn
+    // for no reason anyone chose. A CHILD THAT NEVER SPEAKS IS STILL BOUNDED, so this is not a ceiling removal:
+    // the stall branch above fires at max(stall, grace) whether or not a byte ever arrives, and it is checked first.
+    else if (started && elapsed(now) >= hardMs) { mark("hardWall"); killTree(); }
+  }, pollMs);
 }
