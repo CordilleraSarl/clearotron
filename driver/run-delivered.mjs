@@ -5,12 +5,13 @@
 // whether or not the overall assessment completed.
 //
 // The clearance pipeline's delivery end state, moved out of pipelineInner unchanged. It hands back the two ways a run
-// delivers. `helpers` are functions still held in pipeline.mjs, handed in because this module must not import that
-// one back.
+// delivers. It must not import pipeline.mjs back, so what it shares with that module lives in the modules beside it,
+// which it imports.
 import { assessmentNotCompletedNote } from "../shared/client-failure-note.mjs";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { assertNotCancelledBeforePublish } from "./cancel.mjs";
 import { recordRunConsumption } from "./consumption-ledger.mjs";
+import { localLanguageStateOf } from "./coverage-rows-run.mjs";
 import { degradedParts, writeDegradedParts } from "./degraded-parts.mjs";
 import { config } from "./driver.config.mjs";
 import { registerAdapter } from "./engine/run-choices.mjs";   // the run's register adapter, from ctx.register
@@ -24,6 +25,7 @@ import { composeCoverNote, coverNoteInputs, deliverySubject, publishReport } fro
 import { leftOpenSectionOfRun } from "./left-open-md.mjs";
 import { noteRegisterServed, providerUsageCaveat, registersServedFrom } from "./register-served.mjs";
 import { renderReportOverview } from "./report-overview-record.mjs";
+import { applyScopeFrontMatterOf, archive, assessmentCoverageOfRun, reportIdentityRecord, searchLogAuditMd, sentinel, setAsideTheAssessment, writeScopeFactsOf } from "./run-end-state.mjs";
 import { atomicWrite } from "./run-record.mjs";
 import { logTurnaroundReconciliation } from "./run-quote.mjs";
 import { endTheDeliveredRun } from "./run-shell.mjs";
@@ -33,8 +35,7 @@ import { stampTokenRollup } from "./tokens.mjs";
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-export async function deliveryEndState({ P, agent, ctx, job, run, opts = {} }, helpers) {
-  const { applyScopeFrontMatterOf, archive, assessmentCoverageOfRun, localLanguageStateOf, reportIdentityRecord, searchLogAuditMd, sentinel, setAsideTheAssessment, writeScopeFactsOf } = helpers;
+export async function deliveryEndState({ P, agent, ctx, job, run, opts = {} }) {
   // ── PUBLISHING AND DELIVERING: ONE PATH, FOR EVERY RUN THAT DELIVERS ─────────────────────────────────
   //
   // The run's last steps, from publishing the report to the delivered state, the packet and the archive. A run whose

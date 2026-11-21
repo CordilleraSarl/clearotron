@@ -179,9 +179,10 @@ test("malformed inputs do not throw", () => {
 // that a MISSING input routes to `notComputable` rather than to a reconcile over `[]` — which would
 // write "0 floors, 0 unanswered" and read as a clean floor. That inversion is the whole risk, so the
 // guards are asserted to exist, WITH a control that fails if this test is looking at the wrong text.
+// The derivation and the reader it calls, `floorDutyNow`, live in two modules: the text is both of them.
 const PIPELINE = driverSource("pipeline.mjs");
-const DERIVE = PIPELINE.slice(onlyAt(PIPELINE, "function deriveFloorDuty"),
-  onlyAt(PIPELINE, "function derivePlacementCarry"));
+const DERIVE = PIPELINE.slice(onlyAt(PIPELINE, "function deriveFloorDuty"), onlyAt(PIPELINE, "function bandUriRows"))
+  + PIPELINE.slice(onlyAt(PIPELINE, "function floorDutyNow"), onlyAt(PIPELINE, "function findingsSurfaceRows"));
 
 test("the derivation is READ and it is the right function — the control for the arms below", () => {
   assert.ok(DERIVE.length > 400 && DERIVE.length < 6000,

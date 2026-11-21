@@ -5,8 +5,8 @@
 //
 // The failure path of both products. A clearance and a Knockout fail, park, recover, stop and end the same way here;
 // what differs is the product's data, `product` below. Every path through it returns the run's result or throws, so
-// each product's step loop returns what it returns. `helpers` are functions still held in pipeline.mjs, handed in
-// because this module must not import that one back; a Knockout hands in only `sentinel`.
+// each product's step loop returns what it returns. `helpers` are the product's own: a clearance hands in its sentinel
+// writer, its connotation audit and the undo of a taint park; a Knockout hands in only its `sentinel`.
 import { writePark } from "./run-park.mjs";
 import { ensureDriverDir } from "../shared/driver-dir.mjs";
 import { stopReason } from "../shared/stop-reason.mjs";
