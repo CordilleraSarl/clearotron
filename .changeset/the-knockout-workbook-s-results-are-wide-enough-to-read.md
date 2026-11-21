@@ -2,4 +2,4 @@
 "clearotron-driver": patch
 ---
 
-Fixed: The Knockout audit workbook's Negative Results sheet shows what each search returned in a column wide enough to read, as its other long-text columns already were.
+Fixed: Every text column in the Knockout audit workbook is now wide enough to read, including what each search returned and each conflict's mark, owner and risk band. The clearance workbook's owner and result columns widen with them.
