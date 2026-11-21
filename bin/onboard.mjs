@@ -5203,6 +5203,12 @@ try {
     }
   }
 
+  // NO AI, SAID AS PLAINLY AS NO REGISTER, with the one command that adds one. Enter at every prompt ends here,
+  // because installing a vendor's program is never the default.
+  if (!aiChosen) {
+    warn(`no AI is chosen, so \`${invocationPrefix()}clearotron run\` will refuse at its door.`);
+    say(`    Set it by re-running \`${invocationPrefix()}clearotron install\`.\n`);
+  }
   if (!registerSelected) {
     warn(`no register is selected, so \`${invocationPrefix()}clearotron run\` will refuse at its door.`);
     say(`    \`${invocationPrefix()}clearotron demo\` and \`${invocationPrefix()}clearotron start\` work now. A real`);
