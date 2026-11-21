@@ -38,13 +38,9 @@
 import { test } from "node:test";
 import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
 import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS } from "../findings-model.mjs";
 
-const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
-const gateway = readFileSync(join(DRIVER, "gateway.mjs"), "utf8");
+const gateway = driverSource("gateway.mjs");   // with the ladder modules carved from it
 
 test("the v6 dictation derives its set from the constant, and does not retype it", () => {
   assert.match(gateway, /POSITION_REQUIRED_DISPOSITIONS\.join\(", "\)/,

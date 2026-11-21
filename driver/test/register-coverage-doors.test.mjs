@@ -62,7 +62,7 @@ function argsAt(code, open) {
 function availabilitySites() {
   const files = [
     "driver/portal-service.mjs", "driver/portal-routes/run.mjs", "driver/door-gates.mjs", "driver/dev-portal.mjs",
-    "driver/runner.mjs", "driver/pipeline.mjs", "driver/search-policy.mjs",
+    "driver/runner.mjs", "driver/run-attachments.mjs", "driver/search-policy.mjs",
     "mcp-server/lib/options.mjs", "mcp-server/lib/plan.mjs",
   ];
   const out = [];
@@ -97,7 +97,7 @@ const EXEMPT = {
   // would do so to jobs that were legitimately ordered before the provider changed. The offer-side
   // refusal belongs at intake, where the requester can still choose differently.
   "driver/runner.mjs": "the admission wall — an unreachable territory is a DISCLOSED deferred row, not a refusal",
-  "driver/pipeline.mjs": "in-run gate, same argument as the runner",
+  "driver/run-attachments.mjs": "in-run gate, same argument as the runner",
 };
 
 test("EVERY availability call site threads register coverage, or is exempt with a reason", () => {

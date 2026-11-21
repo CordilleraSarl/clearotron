@@ -11,13 +11,11 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
 import { withSendUntil } from "../engine/mcp/gather-config.mjs";
 import { renderCodexConfigToml } from "../engine/mcp/codex-config.mjs";
 import { registerMounts } from "./register-mounts.mjs";
+import { driverSource } from "./driver-source.mjs";
 
-const HERE = dirname(fileURLToPath(import.meta.url));
 const CONFIG = JSON.stringify({ mcpServers: { register: { command: "node", args: ["server.mjs"], env: { CLEAROTRON_GATHER_SESSION_KEY: "k" } },
   band: { command: "node", args: ["band.mjs"] } } });
 
@@ -37,7 +35,7 @@ test("codex carries the time to stop sending to each server it starts", () => {
 });
 
 test("the wiring: each turn and each repair turn builds its config with the time, and every register server reads it", () => {
-  const gateway = readFileSync(join(HERE, "..", "gateway.mjs"), "utf8");
+  const gateway = driverSource("gateway.mjs");
   assert.match(gateway, /const turnConfig = \(sec\) => withSendUntil\(gatherMcpConfig, Date\.now\(\) \+ sec \* 1000 - sendReserveMs\(sec\)\);/,
     "a turn's config is not built with its time to stop sending");
   assert.match(gateway, /const mcpConfig = turnConfig\(effTimeout\);[^\n]*\n[\s\S]{0,1200}engine\.runTurn\(\{[^\n]*stageHome, mcpConfig, /,

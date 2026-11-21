@@ -109,18 +109,6 @@
       0,
       2
     ],
-    "driver/pipeline.mjs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      2
-    ],
     "driver/predelivery-lint.mjs": [
       0,
       0,
@@ -157,7 +145,31 @@
       0,
       2
     ],
+    "driver/record-carry-trace.mjs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
     "driver/recording-agreement.mjs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    "driver/register-band-run.mjs": [
       0,
       0,
       0,

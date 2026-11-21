@@ -167,7 +167,7 @@ test("IT DOES NOT TOUCH THE FRESHNESS GATE — recording and gating are differen
 test("the gateway witnesses the turn it is about to run, with the SAME resolver the engine gets", () => {
   // Recording a re-derivation instead of the actual resolver would let the two disagree, which is the one
   // way this could report a comforting fiction.
-  const src = readFileSync(new URL("../gateway.mjs", import.meta.url), "utf8");
+  const src = driverSource("gateway.mjs");
   const i = src.indexOf("witnessStageMethodology(runDir, name, effMessage, engineResolveSkill)");
   assert.ok(i > 0, "the witness runs on the dispatch path");
   const after = src.slice(i, i + 1600);

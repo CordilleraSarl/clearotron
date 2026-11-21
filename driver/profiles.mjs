@@ -348,7 +348,7 @@ export const FIELD_CONSUMERS = {
   workedExamplesPath:   { file: "framework.mjs",     symbol: "profile?.workedExamplesPath" },   // synthesis worked-examples depth-target selection
   defaultProduct:       { file: "search-policy.mjs", symbol: "defaultProduct" },                // product resolution (job → project → customer → the scope)
   allowedRecipes:       { file: "search-policy.mjs", symbol: "allowedRecipes" },                // entitlement gate on the resolved search selection
-  jxPolicy:             { file: "pipeline.mjs",      symbol: "jxPolicy" },                      // frozen into the run sidecar for the Stage-1.5 lanes (resume-safe)
+  jxPolicy:             { file: "run-attachments.mjs", symbol: "jxPolicy" },                      // frozen into the run sidecar for the Stage-1.5 lanes (resume-safe)
   demoData:             { file: "runner.mjs",        symbol: "demoData" },                      // the admission wall refuses a real clearance on demo data
   testFixture:          { file: "profiles.mjs",      symbol: "loadProfiles" },                  // never offered by a resolved roster; the suite asks for it by name
   runCaps:              { file: "runner.mjs",        symbol: "runCaps" },                       // admission caps at claimAndPrep (queued + monthly, both doors)

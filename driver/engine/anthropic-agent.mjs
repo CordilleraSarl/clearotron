@@ -533,765 +533,803 @@ export const anthropicAgentEngine = {
     const hardMs = pinnedHard > 0 ? pinnedHard : (Number(timeoutSec) > 0 ? Number(timeoutSec) + 60 : 660) * 1000;
     const pollMs = Math.max(50, Math.min(1000, Math.floor(Math.min(STALL, NOPROG) / 2)));  // tight enough for fast tests, ≤1s in prod
     return await new Promise((resolve) => {
-      let child;
-      // Spawn from a cwd that is NOT the driver's repo dir: stages use absolute paths, so cwd is a
-      // CLAUDE.md-discovery and trust surface. The driver runs under a checkout that HAS a CLAUDE.md, and
-      // inheriting that would load the dev-assistant instructions into every stage (context pollution +
-      // cost). It also avoids the EACCES when the inherited cwd is unreadable by the runner's user.
-      //
-      // cwd is a granted WRITE root here (file tools are confined to cwd + --add-dir), so it is
-      // the run dir when there is one. See resolveSpawnCwd in common.mjs for why, and for what it deletes.
-      const spawnCwd = resolveSpawnCwd({ cwd, runDir });
-      // stdin is a PIPE (not "ignore"): the prompt rides stdin, not a `-p` argv element, so it is never
-      // subject to the 128 KB MAX_ARG_STRLEN ceiling (the E2BIG that killed the register-unit sweep).
-      // detached:true (C2): claude spawns its MCP servers as CHILDREN (gather-config), and killing only
-      // the direct pid orphaned them for days (a bridge.mjs --server legaldatahunter orphan, PPID 1, ran
-      // 3.5 days — still holding its upstream transport, still able to bill and race *-band.json writes).
-      // Detached makes claude its own process-group leader, so the watchdog's kills reach the whole tree.
-      // Not on Windows, which has no process groups: there the turn stays attached, and ends as a tree
-      // (engine-spawn.mjs says why, and how the program itself is started).
-      const run = engineSpawn(claudeBin(), args);
-      const spawnedAt = Date.now();   // before the spawn: what the turn starts is started after this
-      try { child = spawn(run.command, run.args, { stdio: ["pipe", "pipe", "pipe"], cwd: spawnCwd, env: spawnEnv(), detached: spawnsDetached() }); }
-      catch (e) { return resolve(errResult(t0, e, resumeRef)); }
-      let exitedAt = null;
-      child.once("exit", () => { exitedAt = Date.now(); });
-      // THE SECOND SPAWN PATH, and it has to record too. This engine does not go
-      // through runStreamingChild; wiring one and assuming the other follows is the exact defect shape
-      // 2122 was raised on the same day (the demo banner reached the clearance renderer and not the
-      // knockout one). Best effort, never fatal.
-      recordEngineChild(runDir, child.pid);
-      // Feed the prompt on stdin then EOF — claude reads it and starts (replaces the old `</dev/null`
-      // "avoid the 3s stdin wait"). Ignore EPIPE if the child already died (its close/error path settles).
-      child.stdin.on("error", () => {});
-      try { child.stdin.write(input); child.stdin.end(); } catch { /* child gone — handled by close/error */ }
-      let buf = "", stderr = "", resultEvent = null, killed = false, stallKill = false, settled = false;
-      // A CHUNK IS NOT A CHARACTER: a character split across two chunks of a pipe is held by its stream's decoder
-      // until the rest arrives (common.mjs `runStreamingChild` says why). The raw sink still takes the bytes.
-      const outText = new StringDecoder("utf8"), errText = new StringDecoder("utf8");
-      let noProgressKill = false;               // the no-progress ceiling fired (a stall discriminator, see noProgressMs)
-      let trickleKill = false;                  // the token-rate floor fired (a stall discriminator, see minTokensPerSec)
-      let overflow = false;                     // A3: stdout/stderr exceeded maxBuffer — force a nonzero fail, never parse the truncated tail
-      const maxBuffer = engineMaxBufferChars();
-      let lastMove = Date.now();
-      let lastProgress = Date.now();            // honest-progress clock: token movement / agent-loop steps / artifact writes ONLY
-      let firstOutputAt = null;                 // first byte of the PROTOCOL (stdout only); until then every clock below is timing STARTUP
-      let atKill = null;                        // what the watchdog had seen when it decided to kill — recording only, see killDecision
-      let silentIdleMs = null;                  // the no-progress clock at the watchdog's last look before the child spoke — recording only
-      const GRACE = spawnGraceMs();             // one source of the grace: common.mjs sets it
-      let sawAnyEvent = false;                  // ANY parseable stream event (incl. system:init) — false on close = the CLI died before streaming (startup-class failure)
-      let rateLimitEvent = null;   // a 429 session-cap rejection rides a `rate_limit_event` (status:"rejected" + resetsAt)
-      // Streamed-usage accumulator: what the turn PROVABLY moved, observed from the stream itself, so a
-      // killed turn is never journalled as usage:null when millions of tokens moved (the "137 + usage:null
-      // ⇒ mislabelled transient/lane-wedge" class).
-      //
-      // KEYED BY MESSAGE, AND EACH FIELD IS THE LARGEST READING SEEN FOR THAT MESSAGE. One API call's usage
-      // reaches the stream several times: on `message_start`, on every `assistant` event (one per content
-      // block), and on its `message_delta`, whose output count is the call's own running total. Summing the
-      // assistant events counted a call's input and cache once per block and its output at whatever it
-      // was when the block went out, and dropping the delta lost the rest: a turn killed after 75 calls
-      // journalled 810 output tokens. Which event carries the final count need not be known here, and the
-      // order is inferred rather than recorded, so every reading is kept and the largest wins. A delta names
-      // no message, so it belongs to the one its last `message_start` opened; an assistant event with no id
-      // and no open message is a call of its own, as it always was.
-      const perMessage = new Map();
-      let openMessage = null, anonMessages = 0;
-      const foldUsage = (key, u) => {
-        if (!u) return;
-        const was = perMessage.get(key);
-        perMessage.set(key, was
-          ? { input: Math.max(was.input, u.input), output: Math.max(was.output, u.output),
-              cacheRead: Math.max(was.cacheRead, u.cacheRead), cacheWrite: Math.max(was.cacheWrite, u.cacheWrite) }
-          : { input: u.input, output: u.output, cacheRead: u.cacheRead, cacheWrite: u.cacheWrite });
-      };
-      const streamedUsage = () => {
-        const u = { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 };
-        for (const m of perMessage.values()) {
-          u.input += m.input; u.output += m.output; u.cacheRead += m.cacheRead; u.cacheWrite += m.cacheWrite;
-        }
-        u.total = u.input + u.output + u.cacheRead + u.cacheWrite;
-        return u.total > 0 ? u : null;   // zero observed movement stays null — a never-admitted turn must keep classifying as a lane wedge
-      };
-      const progress = () => { lastProgress = Date.now(); };
-      // THINKING GAUGE: did extended thinking actually engage on this turn? The stage tier ("high"/"low"/…)
-      // only says what we ASKED for — `--effort` is a disposition, not a guarantee (a probe at --effort high
-      // on a trivial prompt produced no thinking block at all). Nothing else records the answer: there is NO
-      // reasoning-token count anywhere in the claude payload (not result.usage, not usage.iterations), so
-      // thinking spend is unrecoverable and only the yes/no is observable.
-      //
-      // Judge on BLOCK PRESENCE + signature, NEVER on the block's text. `thinking.display` defaults to
-      // "omitted" on Opus 5, so an ENGAGED block streams with a zero-length `thinking` string and a real
-      // `signature` — reading the text would report "no thinking" on every production turn.
-      let thought = false;
-      // THE FIRST CALL'S CACHE SPLIT: how much of the opening prompt the provider served from its cache and how much it wrote
-      // to it, read off the first assistant message's usage. Every caching claim about a stage was rebuilt from raw streams
-      // by hand; this puts the first call's figures on the attempt. null when the stream carried no assistant message.
-      let firstCall = null;
-      // MODEL GAUGE (corruption 3): which model the PROVIDER says served this turn. Until now
-      // nothing on any record was a function of the provider's response — `modelUsed` was
-      // `resolveModel(<the alias we asked for>)`, a pure function of the request, so a substitution or a
-      // tier bounce was unobservable by construction. The truth is on the wire twice: `system:init`
-      // carries the session's `.model`, and every completed `assistant` message carries `message.model`.
-      //
-      // Both are kept, and the assistant's wins when present, because they answer different questions:
-      // init is what the CLI was CONFIGURED with, the assistant message is what actually served the API
-      // call. A turn killed before its first assistant event still has init's answer rather than none.
-      //
-      // THREE-VALUED, like every other gauge here: the engine reports the string it observed or `null`.
-      // It never falls back to the requested alias — a record that says "actual: <what we asked for>"
-      // when nothing was observed is precisely the absence-read-as-a-pass this issue exists to end. The
-      // comparison and the policy live in gateway.mjs; this reports, it does not judge.
-      //
-      // A MESSAGE THE CLI WROTE ITSELF NAMES NO MODEL. The CLI labels such a message `<synthetic>` in the
-      // model field, measured in testing on Azure Foundry (2026-09-14): with the opus pin naming a
-      // deployment that did not exist, the turn exited 1 with the CLI's own error and its assistant event
-      // said `<synthetic>`. No model served that turn, so the label is never taken as a served id, and
-      // `answeredItself` stops init's answer from standing in for one: init says what the session was
-      // configured with, and naming it here would name a model for a turn no model served. A real id on
-      // an earlier assistant event of the same turn now stands, because that model did serve a call;
-      // before the label was refused, the label that followed overwrote it.
-      let wireModelInit = null, wireModelAssistant = null, answeredItself = false;
-      // READS GAUGE (AD-4, 2026-07-30 addendum): which files this turn actually OPENED, from the stream's
-      // completed Read tool_use blocks. The stage prompt OFFERS a set of documents (declared inputs +
-      // skill refs); nothing recorded whether the turn could and did read them — and one review
-      // found a stage that "largely COULD NOT read" its deciding docs, a fact that had to be
-      // reconstructed forensically. Same posture as the thinking gauge: presence-only observation (the
-      // tool_use block's file_path), never the content; the tuple carries `reads` UNCONDITIONALLY — an
-      // empty array is the recorded fact "this turn read no files", distinct from an adapter that cannot
-      // observe reads at all (no `reads` key → journalled as null by the gateway).
-      const reads = new Set();
-      // …and the CAP is itself recorded. The set stops growing at READS_CAP; without a flag a capped list
-      // reads as a complete one — "these are the files the turn opened" when it means "these are the first
-      // 500". `readsTruncated` is the same three-valued discipline the gauge itself carries: false = the
-      // list is everything observed, true = at least one further distinct path was dropped at the cap.
-      // (A repeat of an already-recorded path is NOT truncation — nothing is lost.)
-      const READS_CAP = 500;
-      let readsTruncated = false;
-      // ── THE TWO NUMBERS THAT MAKE A SLOW TURN A DIAGNOSIS RATHER THAN AN INFERENCE ────────
-      //
-      // `tokensPerSec` says so itself: "the denominator still contains the turn's own tool waits… it
-      // records the ratio; it does not diagnose it." Establishing that a slow stage was WAITING rather
-      // than generating has meant reading archived runs by hand and correlating — and the attempt record
-      // carries no tool-call count and no tool duration at all.
-      //
-      // TWO INTEGERS, NO CONTENT. Not a call log: no tool names, no inputs, no per-call rows. The owner's
-      // ruling against tool-call log records was about call logs carrying client mark text, and a count
-      // and a millisecond total carry none — nothing here can name a mark.
-      //
-      // The wait is measured off the loop the stream already reports: an `assistant` message carrying
-      // tool_use blocks is the agent asking, and the `user` event that follows is its result arriving
-      // ("a completed tool result = the agent loop advanced", below). The gap between them is the turn
-      // waiting on tools rather than generating.
-      let toolCalls = 0;
-      // …AND THE SAME CALLS BY TOOL NAME, so a tool server's own log can be set against what the model
-      // asked for. A name is the program's identifier for a tool (`Read`, `mcp__band__band_lookup`), never
-      // an input, so it carries no client text. The values sum to `toolCalls` by construction: one fold
-      // per tool_use block, at the one site that counts them.
-      const toolCallsByName = Object.create(null);
-      // …AND WHICH OF THEM A TOOL SERVER ANSWERED WITH AN ERROR. A refused call the model then re-made used to
-      // leave the stage row reading ok on one attempt, as though nothing had happened. Each ask's id names its
-      // tool, and its result says whether it came back as an error; nothing else is kept.
-      const toolNameById = new Map();
-      const toolErrorIds = new Set();
-      // WHAT THE SESSION WENT THROUGH, beside how it ended: every result event, every classifier cut,
-      // every refusal and every restart, each with when it arrived. See session-record.mjs; the retry
-      // policy below still reads the LAST result alone, so this records and decides nothing.
-      const session = newSessionRecord();
-      // The raw stream, one file per session beside its dispatch (the caller names it). Opened before the
-      // first byte can arrive; closed in settle(). A sink that could not open is a null writer whose
-      // close() says why.
-      const sink = streamSink(streamFile);
-      // HOW MANY OF THOSE ASKED FOR A COMMAND TOOL. The command tools are removed from every stage
-      // (COMMAND_TOOLS), so the number a test round expects here is zero, and a count is what proves it: a
-      // flag in the argv shows what was asked of the program, this shows what the model did. Still a count
-      // of calls, never a name or an input.
-      let commandToolCalls = 0;
-      // WRITES THE PROGRAM REPORTED AS FAILED: a Write or Edit whose result came back an error. The engine
-      // probe refuses a machine on it, because it is the engine's own word that a file could not be written,
-      // not an inference from a file that is missing. The ids of the write asks, so their results are known.
-      let writesFailed = 0;
-      const writeAsks = new Set();
-      let toolWaitMs = 0;
-      let toolAskedAt = null;
-      // The last time this turn asked for a tool, apart from its own record write, and the last time it asked for that write:
-      // what the gateway reads to tell a turn killed while still working from one killed silent or finishing (`lastToolAsk`).
-      let lastWorkAskAt = null, lastRecordAskAt = null;
-      // WHAT THE WAIT IS MADE OF, keyed by the tool(s) that caused it.
-      //
-      // The total alone cannot answer the question it was collected for. "Exclude tool wait from the kill
-      // clock because a turn waiting on a tool is the harness working" is TRUE of `register_execute_plan`
-      // and FALSE of the perplexity tools, which dispatch to a MODEL — that wait is another model
-      // generating, and treating it as free time would leave a hung sub-model bounded by nothing.
-      //
-      // One interval, ONE KEY: when a message asks for several tools it waits once, so the key is the
-      // sorted set joined by "+". Every millisecond is attributed exactly once and the values sum to
-      // `toolWaitMs` — a per-name split would double-count a concurrent ask and quietly break that identity.
-      let toolAskedNames = null;
-      // WHICH CHUNK an ask arrived in. Every line in one stdout chunk is parsed in
-      // one synchronous loop, so they all share a single Date.now(). If an ask and its result land in
-      // the SAME chunk, the parent was not running between them and the gap it measures is 0 — for a
-      // wait that really happened. Reproduced deterministically by blocking this process's event loop:
-      // a turn that waited 260ms reported 0, with toolCalls still correct at 3.
-      //
-      // The discriminator is DELIVERY, not value. A genuine zero-millisecond wait is measurable and
-      // real (two chunks, no gap); keying on `spent === 0` would flag those and miss a stall that
-      // happened to leave 1ms on the clock.
-      let toolAskedChunk = null;
-      // THE LATENT HALF, NOT THE STALL — ONE OUTSTANDING ASK WAS ALL THIS COULD
-      // HOLD. `toolAskedAt` was a single slot, so a second assistant message arriving before the first
-      // ask's result OVERWROTE the first ask's start time and its wait was never counted at all.
-      // Measured on the overlap fixture (two asks, 150ms each): the old code reported toolWaitMs=149
-      // with ONE tool in the map, for a turn that spent ~300ms waiting.
-      //
-      // WHY NOT SIMPLY GIVE EACH ASK ITS OWN CLOCK. Two asks outstanding at once wait CONCURRENTLY, so
-      // their intervals overlap in real time; adding them counts the same milliseconds twice and can
-      // exceed the turn's own elapsed time. Measured: 497 against a 469ms turn, which the wall cap on
-      // `settledToolWaitMs` then clamped, breaking the identity the kill clock reads. The comment above
-      // `toolWaitByTool` said so before this was tried — a per-name split double-counts a concurrent ask.
-      //
-      // SO: attribute each millisecond to the SET of tools outstanding during it, which is the very
-      // convention this file already uses for one message asking several tools. A period ends whenever
-      // the outstanding SET CHANGES, not when any single ask resolves:
-      //
-      //     T0      ask A       {A}      period opens
-      //     T0      ask B       {A,B}    close 0ms
-      //     T0+200  result B    {A}      close 200ms → "A+B"
-      //     T0+300  result A    {}       close 100ms → "A"
-      //
-      // Every millisecond is credited exactly once, nothing is lost, and the one-message-two-tools case
-      // reduces to today's behaviour exactly. `tool_use_id` is what makes it work: it says WHICH ask
-      // left the set. Closing "the oldest" instead puts the tail under the wrong key.
-      // The outstanding unit is the ASK — one assistant MESSAGE — not one tool id. A message asking
-      // for several tools waits ONCE, and the first result naming any of its ids closes the whole ask.
-      // That rule predates this change and is what stops a two-tool ask being counted twice; keeping
-      // the unit at the id level left the second tool of such an ask outstanding forever.
-      const openAsks = [];             // ask records still outstanding, oldest first
-      const askById = new Map();       // tool_use_id → its ask record
-      let periodStart = null;          // when the current outstanding-SET period began
-      let periodChunk = null;          // the chunk it began in — the unmeasurable flag
-      let anonSeq = 0;                 // ids are on the wire, but never assume: synthesize if absent
-      const periodKey = () =>
-        [...new Set(openAsks.flatMap((r) => r.names))].sort().join("+");
-      // A PERIOD THAT OPENS AND CLOSES INSIDE ONE CHUNK IS UNMEASURABLE, WHICHEVER EVENT CLOSED IT.
-      //
-      // This line used to read: "a period that opens and closes inside one chunk because two ASKS
-      // arrived together is not an unmeasurable wait, it is no wait. Only a RESULT closing in its ask's
-      // chunk is." That reasoning is wrong and issue 1828's own title says why — the gauge times when
-      // the driver PARSED each line, so a driver stall records a real wait as zero. Two asks 120ms apart
-      // on the wire land in ONE stdout chunk when the reader is scheduled late; the parser sees them
-      // microseconds apart, and the first ask's solo period — real time, really waited — is credited
-      // ZERO with nothing saying it could not be seen. Measured on main 2026-08-25: a fixture that waits
-      // 120ms between two asks reported {"a+b":150,"b":149} and a total of 299 where 420 was owed; the
-      // missing 120 is exactly the collapsed period.
-      //
-      // The total is unchanged and that is deliberate: time the reader never observed must not be
-      // invented, and `spent` stays what the clock says. What changes is that the run now SAYS the
-      // period was unobservable instead of reporting no wait — the same vocabulary the result side has
-      // had since 1828, one branch away, withheld from the ask side by the argument above.
-      //
-      // `cause` separates them because they mean different things to a reader: one is a tool that
-      // answered inside a stalled read, the other is an ask superseded before its own period could be
-      // seen. A consumer that only counts rows is unaffected.
-      const closePeriod = (now, onResult) => {
-        if (periodStart === null || openAsks.length === 0) return;
-        const k = periodKey() || "?";
-        const spent = Math.max(0, now - periodStart);
-        // A period seen across two chunks is measured even when the clock reads it as 0 ms, as a coarse clock can:
-        // its ask is named with what the clock gave. Crediting only a positive wait dropped it, unmeasured and undeclared.
-        if (spent > 0 || periodChunk !== chunkSeq) {
-          toolWaitMs += spent;
-          toolWaitByTool[k] = (toolWaitByTool[k] ?? 0) + spent;
-        }
-        if (periodChunk === chunkSeq) {
-          unmeasurable.push({ tool: k, chunk: chunkSeq, bytes: chunkBytes, sincePrevChunkMs: chunkGapMs,
-            cause: onResult ? "result-in-ask-chunk" : "ask-superseded-in-chunk" });
-        }
-      };
-      // `settledToolWaitMs` adds `endedAt - toolAskedAt` as the gap still open when a kill landed. It
-      // must therefore track the CURRENT UNCREDITED PERIOD — earlier periods are already in the total,
-      // and handing it an older timestamp would count them twice, inflating the total and deflating
-      // `activeMs` on exactly the killed-mid-tool turn the field exists for.
-      const syncOpenAsk = () => {
-        toolAskedAt = openAsks.length ? periodStart : null;
-        toolAskedNames = openAsks.length ? periodKey() : null;
-        toolAskedChunk = openAsks.length ? periodChunk : null;
-      };
-      let chunkSeq = 0, chunkBytes = 0, chunkGapMs = 0, prevChunkAt = null;
-      const unmeasurable = [];
-      const toolWaitByTool = Object.create(null);
-      // Parse ONE NDJSON line. The result event may arrive as the FINAL line with NO trailing newline
-      // (NDJSON uses newline as separator, not terminator) — the close handler flushes `buf` through here
-      // so the result is never dropped (B1: a dropped result mislabels a clean success as a hard failure).
-      // Progress semantics: token-bearing events (assistant / message_start / message_delta), content deltas
-      // (output tokens being generated) and completed agent-loop steps (user = a tool result landed) reset
-      // the progress clock; system/init/ping chatter and unparseable partials reset ONLY the byte clock.
-      const parseLine = (line) => {
-        line = line.trim(); if (!line) return;
-        let ev;
-        try { ev = JSON.parse(line); } catch { return; /* partial/non-json line */ }
-        sawAnyEvent = true;
-        noteClaudeEvent(session, ev, Date.now() - t0);
-        if (ev.type === "result") resultEvent = ev;
-        else if (ev.type === "rate_limit_event") rateLimitEvent = ev;
-        else if (ev.type === "system" && ev.subtype === "init") {
-          // MODEL GAUGE — the session's configured model, the earliest wire statement of what will run.
-          if (typeof ev.model === "string" && ev.model && !isCliLabel(ev.model)) wireModelInit ??= ev.model;
-        }
-        else if (ev.type === "assistant") {
-          // MODEL GAUGE — the model that served THIS API call. Authoritative over init (see above).
-          if (typeof ev.message?.model === "string" && ev.message.model) {
-            if (isCliLabel(ev.message.model)) answeredItself = true;
-            else wireModelAssistant = ev.message.model;
-          }
-          // THINKING GAUGE — block presence + signature, never the text (display defaults to "omitted",
-          // so an engaged block carries a zero-length `thinking` string). See the declaration above.
-          if (!thought && ev.message?.content?.some?.((b) => b?.type === "thinking")) thought = true;
-          // READS GAUGE — completed assistant messages carry the full tool_use blocks; a Read's file_path
-          // is the record. (Partials stream input via input_json_delta and are deliberately not parsed —
-          // the completed message always follows.) Capped so a pathological turn cannot bloat telemetry.
-          // Array.isArray, not `?? []`: a truthy NON-iterable `content` (a display-mode or CLI-version
-          // change that streams an object, a `"…"` string) throws TypeError out of parseLine — which runs
-          // on EVERY stdout chunk AND from settle(), where the throw would land after `settled = true` and
-          // clearInterval(watchdog) but before resolve(): the driver dies mid-stage with no fail
-          // classification and no recovery park, or the turn never settles with its watchdog already gone.
-          // Same belt-and-braces as the thinking gauge's `?.some?.()` on the line above.
-          for (const b of Array.isArray(ev.message?.content) ? ev.message.content : []) {
-            if (b?.type === "tool_use") { toolCalls++; countTool(toolCallsByName, b?.name); }   // every tool, not only Read; the count and its split by name
-            if (b?.type === "tool_use" && b?.id != null) toolNameById.set(String(b.id), String(b?.name ?? "?"));
-            if (b?.type === "tool_use" && COMMAND_TOOLS.includes(b?.name)) commandToolCalls++;
-            if (b?.type === "tool_use" && FILE_WRITE_TOOLS.includes(b?.name) && b?.id != null) writeAsks.add(String(b.id));
-            if (b?.type === "tool_use" && b?.name === "Read" && typeof b?.input?.file_path === "string") {
-              if (reads.size < READS_CAP) reads.add(b.input.file_path);
-              else if (!reads.has(b.input.file_path)) readsTruncated = true;   // a DISTINCT path was dropped
-            }
-          }
-          // The clock starts only if this message actually asked for a tool; an assistant message that
-          // asked for none leaves it null, so ordinary generation is never counted as a wait.
-          const askBlocks = (Array.isArray(ev.message?.content) ? ev.message.content : [])
-            .filter((b) => b?.type === "tool_use");
-          const asked = askBlocks.map((b) => String(b?.name ?? "?"));
-          toolAskedAt = asked.length ? Date.now() : null;
-          toolAskedChunk = asked.length ? chunkSeq : null;
-          toolAskedNames = asked.length ? [...new Set(asked)].sort().join("+") : null;
-          if (asked.length) {
-            const now = Date.now();
-            if (asked.some((n) => !isRecordTool(n))) lastWorkAskAt = now; else lastRecordAskAt = now;
-            closePeriod(now, false);          // the outstanding set is about to change
-            const rec = { names: asked.slice() };
-            openAsks.push(rec);
-            for (const b of askBlocks) {
-              const id = b?.id == null ? `__anon_${anonSeq++}` : String(b.id);
-              askById.set(id, rec);
-            }
-            periodStart = now; periodChunk = chunkSeq;
-          }
-          syncOpenAsk();
-          // This block's usage, folded into its own call: the largest reading wins, so a block's early count
-          // never replaces the delta's running total, and a second block of the same call adds nothing twice.
-          foldUsage(ev.message?.id ?? openMessage ?? `__assistant_${++anonMessages}`, mapUsage(ev.message?.usage));
-          if (!firstCall && ev.message?.usage) firstCall = mapUsage(ev.message.usage);
-          progress();
-        }
-        else if (ev.type === "user") {
-          for (const b of Array.isArray(ev.message?.content) ? ev.message.content : []) {
-            if (b?.type === "tool_result" && b?.is_error === true && writeAsks.has(String(b?.tool_use_id))) writesFailed++;
-            if (b?.type === "tool_result" && b?.is_error === true && b?.tool_use_id != null) toolErrorIds.add(String(b.tool_use_id));
-          }
-          // the result of the ask above. Only counted when an ask is outstanding, so a `user`
-          // event with no preceding tool_use adds nothing rather than charging the turn for a gap it
-          // never spent waiting.
-          // Which ask is this the result OF? The id on the wire answers it. Falling back to the
-          // OLDEST outstanding ask keeps a stream that carries no id working exactly as before, rather
-          // than dropping the interval and quietly under-reporting the turn.
-          const named = (Array.isArray(ev.message?.content) ? ev.message.content : [])
-            .filter((b) => b?.type === "tool_result")
-            .map((b) => (b?.tool_use_id == null ? null : askById.get(String(b.tool_use_id))))
-            .filter((r) => r && openAsks.includes(r));
-          const leaving = named.length
-            ? [...new Set(named)]
-            : (openAsks.length ? [openAsks[0]] : []);
-          if (leaving.length) {
-            const now = Date.now();
-            closePeriod(now, true);
-            for (const rec of leaving) {
-              const i = openAsks.indexOf(rec);
-              if (i >= 0) openAsks.splice(i, 1);
-            }
-            periodStart = openAsks.length ? now : null;
-            periodChunk = openAsks.length ? chunkSeq : null;
-          }
-          syncOpenAsk();
-          progress();      // a completed tool result = the agent loop advanced
-        }
-        else if (ev.type === "stream_event") {
-          const t = ev.event?.type;
-          if (t === "message_start") {
-            openMessage = ev.event.message?.id ?? `__start_${++anonMessages}`;
-            foldUsage(openMessage, mapUsage(ev.event.message?.usage));
-            progress();
-          }
-          else if (t === "message_delta") { foldUsage(openMessage ?? "__delta_without_start", mapUsage(ev.event?.usage)); progress(); }
-          else if (t === "content_block_delta" || t === "content_block_start") progress();
-          // THINKING GAUGE (partials): the earliest tells. Any one is sufficient; belt-and-braces so a
-          // display-mode or CLI-version change cannot silently blind the gauge.
-          if (!thought) {
-            const e = ev.event;
-            if (e?.content_block?.type === "thinking"
-              || e?.delta?.type === "thinking_delta" || e?.delta?.type === "signature_delta") thought = true;
-          }
-        }
-      };
-      // Group kill (C2): SIGTERM the whole process group, then group SIGKILL after the escalation grace.
-      // ESRCH/EPERM (group already gone / not ours) falls back to the direct child.kill. The escalation
-      // timer is unref'd but NOT cleared on close — the direct child exiting on the SIGTERM must not save
-      // a SIGTERM-immune MCP straggler from the group SIGKILL. Caveat: the group kill reaps MCP children
-      // only while claude does not setpgid them itself — post-deploy verification item.
-      let escalation = null;
-      // Windows has no group to signal: the whole tree is ended at once, and the escalation then finds nothing.
-      // Even when claude itself has exited, for the reason runStreamingChild gives (engine/common.mjs).
-      const groupKill = process.platform === "win32"
-        ? (sig) => { const n = killWindowsTreeNow({ pid: child.pid, since: spawnedAt, until: exitedAt }); if (!n && sig === "SIGTERM") process.stderr.write(`[engine] the Windows stop found nothing of this turn left to end (program ${child.pid})\n`); }
-        : (sig) => { try { process.kill(-child.pid, sig); } catch { try { child.kill(sig); } catch { /* already gone */ } } };
-      const killTree = () => {
-        atKill ??= { ms: Date.now() - t0, spoken: firstOutputAt !== null, toolCalls };
-        if (escalation) return;   // the watchdog polls — arm the escalation exactly once
-        groupKill("SIGTERM");
-        escalation = setTimeout(() => groupKill("SIGKILL"), killEscalateMs());
-        escalation.unref?.();
-      };
-      // Artifact-advance watch: an observed write to the stage's own expected output file(s) is the third
-      // honest progress signal (a long single Write of the final artifact may follow minutes of quiet tool
-      // work). A couple of statSync calls per ≤1s tick — negligible.
-      const artifactSeen = new Map();   // path → "mtimeMs:size" last observed
-      const artifactProgress = () => {
-        for (const f of progressFiles ?? []) {
-          let sig = null;
-          try { const s = statSync(f); sig = `${s.mtimeMs}:${s.size}`; } catch { /* not written yet */ }
-          if (sig !== null && artifactSeen.get(f) !== sig) { artifactSeen.set(f, sig); progress(); }
-        }
-      };
-      // Is this turn producing tokens too slowly to be working? Active time, after the warm-up, over the
-      // turn's own streamed output — the same accumulator the journal reports, so the number that kills a
-      // turn is the number a reader afterwards sees.
-      // What the rate WAS when the floor fired, for the failure line. Two decimals: the readings this
-      // exists for are hundredths of a token per second.
-      const trickleRate = (now = Date.now()) => {
-        const activeMs = activeElapsedMs({ wall: now - (firstOutputAt ?? now), toolWaitMs, toolAskedAt, now });
-        return activeMs > 0 ? (((streamedUsage()?.output ?? 0) * 1000) / activeMs).toFixed(2) : "0.00";
-      };
-      const isTrickling = (now) => {
-        const activeMs = activeElapsedMs({ wall: now - firstOutputAt, toolWaitMs, toolAskedAt, now });
-        if (activeMs < WARMUP) return false;
-        return (streamedUsage()?.output ?? 0) < (MIN_RATE * activeMs) / 1000;
-      };
-      const watchdog = setInterval(() => {
-        artifactProgress();
-        const now = Date.now();
-        // THE STARTUP DEBT. An earlier repair widened the deadline below until the first byte but left this
-        // clock's ORIGIN at spawn, so the startup interval stayed on the meter: the moment the grace let
-        // go, progIdle already WAS the whole boot, and any NOPROG shorter than startup had expired before
-        // the child was observed at all. The kill then landed on the next tick, before the ask could reach
-        // toolCalls — a turn recorded as making no progress when nothing had yet had the chance to.
-        // Releasing a clock is not starting one: the first byte is this clock's origin, not its green light.
-        const progFrom = firstOutputAt === null ? lastProgress : Math.max(lastProgress, firstOutputAt);
-        const idle = now - lastMove, progIdle = now - progFrom;
-        // ── STARTUP IS NEITHER SILENCE NOR WORK ──────────────────────────────────────────────
-        // Every clock here USED TO start at SPAWN, so until the child's first byte they were all timing
-        // process startup: an idle clock that had not yet seen silence, and an active clock that had not
-        // yet seen work. Past tense deliberately — that work is finished, and the sentence stayed true of
-        // the byte-stall below (`lastMove`) while being false of the progress clock above, which is
-        // precisely the gap that let the defect sit here for a day looking like ambient flake. This was established for the byte-stall in common.mjs — which this engine does not use,
-        // because it spawns its own child, so that fix never reached this watchdog. Under full-suite load
-        // a starved spawn crossed a 400ms test ceiling before the mock had emitted anything, and the kill
-        // was recorded as a no-progress stall against a turn that had not yet been given a chance to
-        // progress. A child that never speaks AT ALL is still bounded: the byte-stall fires at max(STALL, GRACE).
-        const started = firstOutputAt !== null;
-        if (!started) silentIdleMs = progIdle;
-        if (idle >= (started ? STALL : Math.max(STALL, GRACE))) { stallKill = true; killed = true; killTree(); }
-        // No observable progress (tokens/agent-loop/artifact) for NOPROG while bytes kept the pipe warm:
-        // kill it NOW, well below the wall, and record it as a STALL — never let the ceiling raise turn
-        // into extended stall burn, and never let this kill read as "the stage needed more time".
-        else if (progIdle >= (started ? NOPROG : Math.max(NOPROG, GRACE))) { stallKill = true; noProgressKill = true; killed = true; killTree(); }
-        // ── A TRICKLE IS A STALL WEARING A STREAM ────────────────────────────────────────────
-        //
-        // Both clocks above are satisfied by a token every twelve seconds: the byte-stall resets on any
-        // byte, and the no-progress ceiling counts token movement as progress ON PURPOSE, because the
-        // engine contract promises a slow-but-working streaming turn is never clipped. So the only thing
-        // that stopped a trickle was the wall, at budget + 60s, with the whole attempt thrown away.
-        //
-        // This fires far below the wall and is RECORDED AS A STALL with its own discriminator, so the
-        // retry policy treats it as one and never extends the budget for the next attempt — the thing a
-        // ceiling raise would have done, and the reason this is not one.
-        //
-        // The rate is over the turn's own streamed output, on active time, after a warm-up. A healthy
-        // turn is nowhere near it: the samples that motivated this ran at 74 and 82.83 tokens per second
-        // against kills at 0.08 and 0.12, and the floor sits at 1.
-        // ONE CONDITION, NOT A NESTED BLOCK. An `else if (enabled) { if (trickling) … }` would swallow
-        // the chain: with the floor enabled and the rate healthy, the hard ceiling below would never be
-        // reached, and the only clock that bounds a turn producing tokens at a normal rate forever would
-        // have been switched off by adding this one.
-        else if (started && MIN_RATE > 0 && isTrickling(now)) { stallKill = true; trickleKill = true; killed = true; killTree(); }
-        // ── THE CEILING MEASURES ACTIVE TIME, NOT ELAPSED ────────────────────────────────────
-        //
-        // Ruling: "there isnt such thing as a hung model. it always delivers something or fails."
-        // So this ceiling exists for the harness's own failure modes, not to budget the model, and a turn
-        // still doing work must not die because a tool it was waiting on took a while to answer.
-        //
-        // MEASURED, not assumed. One register stage ran twice in the same run — same engine, same matter,
-        // same date. Attempt 1: 646.7s elapsed, 74.8% of it tool wait, 17 calls at 28.5s each. Attempt 2:
-        // 51.2s elapsed, 0.6% wait, 3 calls at 0.1s each. Generation differed by 1.6%; elapsed by 3.9×;
-        // per-call latency by 285×. Read on elapsed those are a healthy turn and a pathological one. Read
-        // on active time they are the same turn — 81.8 and 80.5 tokens/sec. Across the register family the
-        // 4.16× elapsed spread collapses to 1.27× on active time, while common-law on the same run spreads
-        // 22.9× on active time: the same instrument, opposite results, so the flatness is the lane's
-        // property and not the measure flattering everything.
-        //
-        // WHAT STILL BOUNDS A GENUINELY STUCK TURN, so this is not a ceiling removal:
-        //   a silent process     the byte-stall above, 120s, reset by any streamed byte
-        //   a working-looking    the no-progress ceiling above, reset only by a COMPLETED tool result,
-        //   loop that never ends an artifact write, or token movement — so a tool that never returns is
-        //                        bounded there, tighter than this ceiling ever was
-        // Both are progress clocks. This one was the only elapsed clock, and elapsed was the wrong
-        // quantity: a long turn has three causes — tool latency, a generation stall, and sheer VOLUME
-        // (one healthy stage ran 40.9 minutes at a normal rate producing 186k tokens) — and nothing that
-        // keys on elapsed can tell them apart.
-        // measured from the FIRST BYTE, never from spawn. Startup is not active time either, and
-        // against a tight pin it was the whole budget — a 900ms spawn hit a 500ms ceiling having done
-        // nothing at all, and the turn died carrying `hardWall` with zero tool calls to explain it.
-        else if (started && activeElapsedMs({ wall: now - firstOutputAt, toolWaitMs, toolAskedAt, now }) >= hardMs) {
-          killed = true; killTree();
-        }
-      }, pollMs);
-      // A3 (gateway capAppend/finalCode parity): cap stdout AND stderr at maxBuffer. On overflow TRUNCATE
-      // at the cap, pull the tree-kill FORWARD (an endless newline-free stream never trips the stall/hard
-      // wall — every byte resets the stall clock), and settle nonzero with a clear overflow error so the
-      // truncated tail can never parse as a valid result (a partial line would fail JSON anyway → resultEvent
-      // stays null → nonzero fail). The group SIGKILL escalation killTree() arms still reaps a spewing tree.
-      const overflowKill = () => { if (overflow) return; overflow = true; killTree(); settle(1); };
-      child.stdout.on("data", (d) => {
-        if (settled || overflow) return;
-        if (firstOutputAt === null) firstOutputAt = Date.now();   // the child has spoken; startup is over
-        chunkSeq += 1;                                            // see toolAskedChunk
-        chunkBytes = d.length;
-        chunkGapMs = prevChunkAt === null ? 0 : Date.now() - prevChunkAt;
-        prevChunkAt = Date.now();
-        lastMove = Date.now();   // ANY streamed byte = liveness → resets the stall clock
-        sink.write(d);           // the raw stream, byte for byte, before anything parses it
-        buf += outText.write(d);
-        let nl;
-        while ((nl = buf.indexOf("\n")) >= 0) { parseLine(buf.slice(0, nl)); buf = buf.slice(nl + 1); }
-        if (buf.length > maxBuffer) { buf = buf.slice(0, maxBuffer); overflowKill(); }
-      });
-      child.stderr.on("data", (d) => {
-        if (settled || overflow) return;
-        // STDERR DOES NOT START THE CLOCKS, and this line used to. This engine's protocol is
-        // stream-json on STDOUT; stderr carries node warnings and CLI notices, which a child can emit
-        // before it has done anything at all. Treating one as "the child has spoken" ended the grace and
-        // — since the change that made the first byte the progress clock's ORIGIN — started that clock too,
-        // so a turn whose real startup was still running got its no-progress ceiling measured from a
-        // deprecation warning. A child that writes ONLY stderr is still bounded: it never starts, so the
-        // byte-stall below fires at max(STALL, GRACE) exactly as it does for a silent spawn.
-        //
-        // The diagnostic follows the same rule deliberately. `firstByteMs=NEVER` now means "never spoke
-        // its protocol", which is the question the no-progress specimen is actually asking — a number
-        // that came from a stderr line would have answered a different one.
-        stderr += errText.write(d);
-        if (stderr.length > maxBuffer) { stderr = stderr.slice(0, maxBuffer); overflowKill(); }
-      });
-      // error + close can BOTH fire for a single failure (Node) → settle EXACTLY once (no double clearInterval/resolve).
-      child.on("error", (e) => { if (settled) return; settled = true; clearInterval(watchdog); sink.close(); resolve(errResult(t0, e, resumeRef)); });
-      child.on("close", (code) => settle(code));
-      function settle(code) {
-        // the turn is over; the record must not outlive it, and is cleared only if
-        // it still names THIS child.
-        clearEngineChild(runDir, child?.pid);
-        if (settled) return; settled = true;
-        clearInterval(watchdog);
-        // Reap the pipes: an overflow settle fires while a SIGTERM-immune spewer still holds stdout, so
-        // settlement must never wait on a pipe some straggler keeps open (the group SIGKILL reaps the tree).
-        try { child.stdout.destroy(); } catch { /* stream gone */ }
-        try { child.stderr.destroy(); } catch { /* stream gone */ }
-        if (!overflow) { buf += outText.end(); stderr += errText.end(); parseLine(buf); }   // B1: flush the final, un-terminated line (the result event) — but NEVER the truncated overflow tail
-        const stream = sink.close();   // after the flush: every byte the program wrote is in it, or the record says why not
-        buf = "";
-        // ONE SAMPLE OF THE CLOCK, and both quantities below are derived from it. Two `Date.now()` calls
-        // a few milliseconds apart are enough to break the identity on the very turn it matters for: on a
-        // turn that is almost entirely tool wait, an in-flight gap measured LATER than the wall can exceed
-        // it, `activeMs` clamps to zero, and the two stop tiling. It surfaced as an intermittent test
-        // under suite load — which is what a race looks like from the outside and an instrumentation
-        // defect from the inside.
-        const endedAt = Date.now();
-        const wall = (endedAt - t0) / 1000;
-        // THE TWO CLOCKS MUST TILE THE WALL, in every case including the one that matters.
-        //
-        // A turn killed mid-tool-call has an OPEN ask that `toolWaitMs` has not closed. Reporting the
-        // unclosed accumulator left `activeMs + toolWaitMs` short of the wall by exactly that gap — and
-        // only on turns killed during a call, which is the population this rule is about. A guard asserting
-        // the identity would have held on every ordinary attempt and quietly not held on the interesting
-        // one. Closed here, ONCE, so both fields are derived from the same number.
-        //
-        // `toolWaitByTool` does NOT receive it: the ask has not resolved, so there is no name to charge.
-        // That split was already documented as not summing to `toolWaitMs` (a concurrent ask would
-        // double-count), so nothing downstream reads it as a partition.
-        // CLAMPED TO THE WALL, so the pair tiles it in every case rather than in the common one. A gap
-        // that reads longer than the whole turn is a clock artefact, not more waiting than there was time.
-        const settledToolWaitMs = Math.min(Math.round(wall * 1000),
-          Math.round(toolWaitMs + (toolAskedAt != null ? Math.max(0, endedAt - toolAskedAt) : 0)));
-        // usage honesty: the result event is authoritative; a turn that never produced one (killed / died
-        // mid-flight) reports what the STREAM proved it moved instead of null — so a stall/wall kill after
-        // millions of cacheRead tokens can never be journalled as a 0-token event and mislabelled a lane
-        // wedge or a transient-provider fault. Genuinely zero movement stays null (the wedge signature).
-        const resultUsage = mapUsage(resultEvent?.usage);
-        const streamUsage = resultUsage ? null : streamedUsage();
-        const usage = resultUsage ?? streamUsage;
-        const json = synthesizeEnvelope({ resultEvent, usage, killed });
-        // claude -p can exit 0 even on a failed turn (is_error rides the result envelope). Force a NONZERO
-        // code on any failed turn so runStage's ladder catches it via the code!==0 branch (a hard,
-        // fallback-eligible failure) rather than the softer status_<s> branch — parity with the retired gateway
-        // nonzero_exit shape. (synthesizeEnvelope's status:"error" is belt-and-suspenders behind this.) Success → 0.
-        // A3 overflow is likewise a hard failure (resultEvent is null → already caught here; kept explicit).
-        const failed = overflow || killed || !resultEvent || resultEvent.is_error || resultEvent.subtype !== "success";
-        // stall → make isTimeout fire (killed) AND carry the stall stderr signature the classifier reads, so the
-        // taxonomy is identical; a 0-token stall then classifies as lane_wedge, which stage()'s lane-wedge retry takes.
-        // overflow → carry a clear signature (killed stays false so it is a plain nonzero_exit, NOT a timeout/wedge).
-        const stderrOut = overflow
-          ? (stderr + `\nanthropic-agent output overflow: stdout/stderr exceeded ${maxBuffer} chars — killed the tree and failed the turn (truncated tail never parsed)`)
-          : noProgressKill
-            // THE SPECIMEN RIDES THE FAILURE, because the broken state expires. This kill has
-            // twice reddened `main` from a test whose ANTI-VACUITY check failed — the turn died having
-            // opened no tool ask — and neither the box's ambient load nor a full-suite run reproduces
-            // it on demand. So the discriminating bit is recorded HERE, where the kill happens, rather
-            // than hunted afterwards: `firstByteMs=NEVER` means the child never spoke and the grace
-            // was genuinely exceeded (a starved spawn); a NUMBER means it spoke and the ask never
-            // reached `toolCalls`, which is a progress-accounting fault and has nothing to do with
-            // startup. Those want different fixes and the artifact now says which.
-            ? (stderr + `\nrequest timed out (anthropic-agent no-progress watchdog: no token movement / agent-loop step / artifact write for ${Math.round(NOPROG / 1000)}s — a STALL, not a slow turn)`
-              + `\nanthropic-agent no-progress specimen: firstByteMs=${firstOutputAt === null ? "NEVER" : Math.round(firstOutputAt - t0)}`
-              + ` toolCalls=${toolCalls} noProgressMs=${NOPROG} graceMs=${GRACE}`)
-          : trickleKill
-            // ITS OWN SENTENCE, because "0 streamed tokens" is the one thing this kill is not. A reader
-            // meeting the stall line over a turn that streamed for forty minutes would go looking for a
-            // silent process and find a talkative one. The rate that killed it rides the line, so the
-            // threshold can be argued from artifacts rather than from memory.
-            ? (stderr + `\nrequest timed out (anthropic-agent trickle floor: ${trickleRate()} output tokens/sec of active time,`
-              + ` under the ${MIN_RATE}/sec floor after a ${Math.round(WARMUP / 1000)}s warm-up — a STALL that kept the pipe warm, not a slow turn)`)
-          : stallKill ? (stderr + "\nrequest timed out (anthropic-agent stall-watchdog: 0 streamed tokens)")
-          // Startup-class death (the 3× register-digest code=1 zero-token shape): the CLI exited without
-          // emitting a single stream event — the failure happened before any turn ran (arg/auth/MCP
-          // startup), so the stderr above is the whole story. Name it so the journal's stderrTail is
-          // never read as a mid-turn provider fault.
-          : (!sawAnyEvent && !killed && resultEvent == null)
-            ? (stderr + "\nanthropic-agent: the claude process exited without emitting any stream event — a startup-class failure (args/auth/MCP), not a mid-turn provider fault; the stderr above is the diagnosis")
-          : stderr;
-        // Rate-limit / session-cap rejection: claude -p emits a rate_limit_event{status:"rejected",resetsAt}
-        // plus a result with api_error_status 429. Surface a distinct signal (+ the ISO reset time) so the
-        // driver POSTPONES the run to resetsAt rather than running the futile fallback cascade (every tier
-        // shares the one subscription). resetsAt is epoch SECONDS on the event -> ISO.
-        const rateLimited = resultEvent?.api_error_status === 429 || rateLimitEvent?.rate_limit_info?.status === "rejected";
-        const resetsAtRaw = rateLimitEvent?.rate_limit_info?.resetsAt;
-        const resetsAt = rateLimited && resetsAtRaw ? new Date(Number(resetsAtRaw) * 1000).toISOString() : undefined;
-        resolve({
-          code: killed ? 137 : (failed ? (code || 1) : 0),
-          killed, wall,
-          stdout: typeof resultEvent?.result === "string" ? resultEvent.result : "",
-          stderr: stderrOut, laneWaitMs: 0,
-          json, usage,
-          // READS GAUGE: unconditional, like signals.thought — [] is the recorded fact "read nothing".
-          // readsTruncated rides beside it, also unconditional: false = the list is complete as observed,
-          // true = the 500-path cap dropped at least one further distinct file (so a `read:false` derived
-          // from this list is unreliable and the consumer must downgrade it to "not observed").
-          reads: [...reads], readsTruncated,
-          // The first call's cache read and cache write, in tokens (see `firstCall`); null when it was never seen.
-          firstCallCache: firstCall ? { read: firstCall.cacheRead, creation: firstCall.cacheWrite } : null,
-          toolCalls, toolWaitMs: settledToolWaitMs,   // two integers, no content
-          // The same calls by tool name (values sum to toolCalls), and what the session went through: every
-          // result, cut, refusal and restart (session-record.mjs). `stream` is the raw stream's file and size,
-          // or why it was not kept. Recording only — `failed` above still reads the last result alone.
-          toolCallsByName: { ...toolCallsByName }, session: sessionSummary(session), stream,
-          // The two counts a test round reads per stage: calls to a command tool, and calls the program
-          // refused. The refusals are the result event's own `permission_denials`, counted; null when the
-          // turn settled with no result event, so "not reported" never reads as "none refused".
-          commandToolCalls, writesFailed,
-          toolCallsRefused: Array.isArray(resultEvent?.permission_denials) ? resultEvent.permission_denials.length : null,
-          // The tool-server calls that came back as an error, by tool name: the program sent them and the
-          // server refused or failed them. A call the program itself refused is counted above and not here.
-          toolCallsErroredByName: toolServerErrors(toolErrorIds, toolNameById, resultEvent?.permission_denials),
-          // ms from spawn to the child's FIRST byte, or null when it never spoke. RECORDING
-          // ONLY: nothing branches on it. A recording field is protected by a test or by nothing, so
-          // engine.anthropic.test.mjs pins it — deleting it must red something.
-          firstByteMs: firstOutputAt === null ? null : Math.round(firstOutputAt - t0),
-          // ms from spawn to the last tool ask that was not the stage's own record write, and to the last that was; null where
-          // the turn made none. RECORDING, and read by the gateway only to choose how a hard-wall kill is retried.
-          lastToolAsk: { workMs: lastWorkAskAt === null ? null : Math.round(lastWorkAskAt - t0), recordMs: lastRecordAskAt === null ? null : Math.round(lastRecordAskAt - t0) },
-          // WHICH SIDE OF THE KILL a byte or a tool ask fell on. RECORDING ONLY, like firstByteMs. The
-          // totals above keep counting after the decision, because what a dying child already wrote is
-          // still read (streamed usage depends on it). On Windows the kill blocks this process while it
-          // lists and ends the tree, measured at one to three seconds on the hosted runner, which is long
-          // enough for a booting child to speak and open a tool ask that is read only afterwards.
-          // `killDecision` is what the watchdog had seen when it decided: ms from spawn, whether the child
-          // had spoken, and the tool asks read by then; null when nothing was killed. `silentIdleMs` is how
-          // long the no-progress clock had run at the watchdog's last look before the child spoke; null
-          // when it never looked at a silent child.
-          killDecision: atKill, silentIdleMs,
-          // WHICH CLOCK RAN OUT, and WHAT the wait was made of.
-          //
-          // The hard wall measures ELAPSED, and elapsed includes time the model spent waiting on tools
-          // rather than generating. A wall kill whose elapsed is mostly tool wait is a different event from
-          // one that ground for the whole budget generating, and nothing told them apart — so the question
-          // "should the kill clock count tool wait" could not be answered from any record.
-          //
-          // `activeMs` INCLUDES THE IN-FLIGHT GAP. A turn killed mid-tool-call has an open ask that
-          // `toolWaitMs` has not yet closed, and that is exactly the case this is for: leaving it out would
-          // charge the model for the wait that killed it.
-          //
-          // UNCONDITIONAL, following `thought` below rather than the `|| undefined` siblings: a turn with no
-          // tool wait must report 0, not vanish, or "the wall caught generation" is indistinguishable from
-          // "this record predates the gauge".
-          activeMs: Math.max(0, Math.round(wall * 1000) - settledToolWaitMs),
-          toolWaitByTool: { ...toolWaitByTool },
-          // the asks whose wait this process COULD NOT MEASURE, because the ask and
-          // its result were delivered in one chunk. An ARRAY is a measurement (possibly `[]`: measured,
-          // nothing unmeasurable), following toolWaitByTool's own rule that absence and "cannot report"
-          // must not look alike. `toolWaitMs` and the per-tool split are untouched.
-          toolWaitUnmeasurable: [...unmeasurable],
-          // MODEL GAUGE: the id the WIRE reported, or null when the stream never said. Assistant
-          // message first (what served the call), init second (what the session was configured with).
-          // Never the requested alias, and never init's answer for a turn only the CLI answered — see the
-          // declaration above.
-          modelWire: wireModelAssistant ?? (answeredItself ? null : wireModelInit),
-          // PROVIDER GAUGE: the program's own word for who served the turn, read from the result's per-model
-          // usage ("firstParty" on Anthropic's own API and "foundry" on Azure Foundry, measured 2026-09-14),
-          // or null when the stream never said or its models disagree. Recorded, never inferred from config.
-          providerWire: providerOf(resultEvent),
-          sessionRef: resultEvent?.session_id ?? resumeRef ?? null,
-          // The raw result event's total_cost_usd is a provider-side field and stays in the provider's
-          // own stream; the tuple carries no currency (tokens-only directive 2026-07-11) — `usage` is
-          // the telemetry.
-          // hardWall: the watchdog SIGKILLed at the full timeout+60 wall (NOT a stall). This flag carries the
-          // distinction outward so a hard-wall over-budget grind is treated as a `timeout`, not a `lane_wedge`.
-          // noProgress: the honest-progress ceiling fired (a stall discriminator — recorded as a stall, and
-          // the retry policy must not extend the budget for it). usageStreamed: the tuple's usage was
-          // reconstructed from the stream because the turn died without a result event (telemetry honesty —
-          // never journal a token-moving kill as usage:null). noStreamEvents: the CLI died before emitting
-          // ANY stream event — a startup-class failure, diagnosable from stderrTail alone.
-          signals: { stalled: stallKill || undefined, noProgress: noProgressKill || undefined,
-            // A TRICKLE IS A STALL, and this says which kind. Retry policy keys on `stalled` — so this
-            // never extends the next attempt's budget — while a reader keys on this to tell a turn that
-            // said nothing from one that said almost nothing for three quarters of an hour.
-            trickle: trickleKill || undefined,
-            hardWall: (killed && !stallKill) || undefined, rateLimited: rateLimited || undefined, resetsAt,
-            usageStreamed: (streamUsage != null) || undefined,
-            noStreamEvents: (!sawAnyEvent && resultEvent == null) || undefined,
-            // thought: UNCONDITIONAL boolean — deliberately NOT `|| undefined` like every sibling here. The
-            // whole point of the gauge is that "did not think" stays distinguishable from "this record
-            // predates the gauge"; an omitted key would recreate exactly the ambiguity that made the old
-            // reasoningTokens slot useless. false must be recorded AS false.
-            thought },
-        });
-      }
+      // The turn's state, which every phase below reads and writes (the phases follow the adapter).
+      const st = { resolve, resumeRef, cwd, runDir, progressFiles, streamFile, args, input, t0, STALL, NOPROG, MIN_RATE, WARMUP, hardMs, pollMs };
+      st.settle = (code) => settle(st, code);   // declared before any phase, as the hoisted function it was
+      if (!spawnTurn(st)) return;
+      streamState(st);
+      toolState(st);
+      lineParser(st);
+      killAndWatch(st);
+      wireStreams(st);
     });
   },
 };
+
+// ── runTurn's phases, in the order the turn runs them ──────────────────────────────────────────────────────
+
+/** Starts the program with the prompt on stdin and records its pid. False when the spawn itself failed, and the turn is settled. */
+function spawnTurn(st) {
+  st.child = undefined;
+  // Spawn from a cwd that is NOT the driver's repo dir: stages use absolute paths, so cwd is a
+  // CLAUDE.md-discovery and trust surface. The driver runs under a checkout that HAS a CLAUDE.md, and
+  // inheriting that would load the dev-assistant instructions into every stage (context pollution +
+  // cost). It also avoids the EACCES when the inherited cwd is unreadable by the runner's user.
+  //
+  // cwd is a granted WRITE root here (file tools are confined to cwd + --add-dir), so it is
+  // the run dir when there is one. See resolveSpawnCwd in common.mjs for why, and for what it deletes.
+  st.spawnCwd = resolveSpawnCwd({ cwd: st.cwd, runDir: st.runDir });
+  // stdin is a PIPE (not "ignore"): the prompt rides stdin, not a `-p` argv element, so it is never
+  // subject to the 128 KB MAX_ARG_STRLEN ceiling (the E2BIG that killed the register-unit sweep).
+  // detached:true (C2): claude spawns its MCP servers as CHILDREN (gather-config), and killing only
+  // the direct pid orphaned them for days (a bridge.mjs --server legaldatahunter orphan, PPID 1, ran
+  // 3.5 days — still holding its upstream transport, still able to bill and race *-band.json writes).
+  // Detached makes claude its own process-group leader, so the watchdog's kills reach the whole tree.
+  // Not on Windows, which has no process groups: there the turn stays attached, and ends as a tree
+  // (engine-spawn.mjs says why, and how the program itself is started).
+  st.run = engineSpawn(claudeBin(), st.args);
+  st.spawnedAt = Date.now();   // before the spawn: what the turn starts is started after this
+  try { st.child = spawn(st.run.command, st.run.args, { stdio: ["pipe", "pipe", "pipe"], cwd: st.spawnCwd, env: spawnEnv(), detached: spawnsDetached() }); }
+  catch (e) { return void st.resolve(errResult(st.t0, e, st.resumeRef)); }
+  st.exitedAt = null;
+  st.child.once("exit", () => { st.exitedAt = Date.now(); });
+  // THE SECOND SPAWN PATH, and it has to record too. This engine does not go
+  // through runStreamingChild; wiring one and assuming the other follows is the exact defect shape
+  // 2122 was raised on the same day (the demo banner reached the clearance renderer and not the
+  // knockout one). Best effort, never fatal.
+  recordEngineChild(st.runDir, st.child.pid);
+  // Feed the prompt on stdin then EOF — claude reads it and starts (replaces the old `</dev/null`
+  // "avoid the 3s stdin wait"). Ignore EPIPE if the child already died (its close/error path settles).
+  st.child.stdin.on("error", () => {});
+  try { st.child.stdin.write(st.input); st.child.stdin.end(); } catch { /* child gone — handled by close/error */ }
+  return true;
+}
+
+/** What the stream has shown so far: the buffers and kill flags, the clocks, the usage per message, and the thinking, model and reads gauges. */
+function streamState(st) {
+  st.buf = ""; st.stderr = ""; st.resultEvent = null; st.killed = false; st.stallKill = false; st.settled = false;
+  // A CHUNK IS NOT A CHARACTER: a character split across two chunks of a pipe is held by its stream's decoder
+  // until the rest arrives (common.mjs `runStreamingChild` says why). The raw sink still takes the bytes.
+  st.outText = new StringDecoder("utf8"); st.errText = new StringDecoder("utf8");
+  st.noProgressKill = false;               // the no-progress ceiling fired (a stall discriminator, see noProgressMs)
+  st.trickleKill = false;                  // the token-rate floor fired (a stall discriminator, see minTokensPerSec)
+  st.overflow = false;                     // A3: stdout/stderr exceeded maxBuffer — force a nonzero fail, never parse the truncated tail
+  st.maxBuffer = engineMaxBufferChars();
+  st.lastMove = Date.now();
+  st.lastProgress = Date.now();            // honest-progress clock: token movement / agent-loop steps / artifact writes ONLY
+  st.firstOutputAt = null;                 // first byte of the PROTOCOL (stdout only); until then every clock below is timing STARTUP
+  st.atKill = null;                        // what the watchdog had seen when it decided to kill — recording only, see killDecision
+  st.silentIdleMs = null;                  // the no-progress clock at the watchdog's last look before the child spoke — recording only
+  st.GRACE = spawnGraceMs();             // one source of the grace: common.mjs sets it
+  st.sawAnyEvent = false;                  // ANY parseable stream event (incl. system:init) — false on close = the CLI died before streaming (startup-class failure)
+  st.rateLimitEvent = null;   // a 429 session-cap rejection rides a `rate_limit_event` (status:"rejected" + resetsAt)
+  // Streamed-usage accumulator: what the turn PROVABLY moved, observed from the stream itself, so a
+  // killed turn is never journalled as usage:null when millions of tokens moved (the "137 + usage:null
+  // ⇒ mislabelled transient/lane-wedge" class).
+  //
+  // KEYED BY MESSAGE, AND EACH FIELD IS THE LARGEST READING SEEN FOR THAT MESSAGE. One API call's usage
+  // reaches the stream several times: on `message_start`, on every `assistant` event (one per content
+  // block), and on its `message_delta`, whose output count is the call's own running total. Summing the
+  // assistant events counted a call's input and cache once per block and its output at whatever it
+  // was when the block went out, and dropping the delta lost the rest: a turn killed after 75 calls
+  // journalled 810 output tokens. Which event carries the final count need not be known here, and the
+  // order is inferred rather than recorded, so every reading is kept and the largest wins. A delta names
+  // no message, so it belongs to the one its last `message_start` opened; an assistant event with no id
+  // and no open message is a call of its own, as it always was.
+  st.perMessage = new Map();
+  st.openMessage = null; st.anonMessages = 0;
+  st.foldUsage = (key, u) => {
+    if (!u) return;
+    const was = st.perMessage.get(key);
+    st.perMessage.set(key, was
+      ? { input: Math.max(was.input, u.input), output: Math.max(was.output, u.output),
+          cacheRead: Math.max(was.cacheRead, u.cacheRead), cacheWrite: Math.max(was.cacheWrite, u.cacheWrite) }
+      : { input: u.input, output: u.output, cacheRead: u.cacheRead, cacheWrite: u.cacheWrite });
+  };
+  st.streamedUsage = () => {
+    const u = { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 };
+    for (const m of st.perMessage.values()) {
+      u.input += m.input; u.output += m.output; u.cacheRead += m.cacheRead; u.cacheWrite += m.cacheWrite;
+    }
+    u.total = u.input + u.output + u.cacheRead + u.cacheWrite;
+    return u.total > 0 ? u : null;   // zero observed movement stays null — a never-admitted turn must keep classifying as a lane wedge
+  };
+  st.progress = () => { st.lastProgress = Date.now(); };
+  // THINKING GAUGE: did extended thinking actually engage on this turn? The stage tier ("high"/"low"/…)
+  // only says what we ASKED for — `--effort` is a disposition, not a guarantee (a probe at --effort high
+  // on a trivial prompt produced no thinking block at all). Nothing else records the answer: there is NO
+  // reasoning-token count anywhere in the claude payload (not result.usage, not usage.iterations), so
+  // thinking spend is unrecoverable and only the yes/no is observable.
+  //
+  // Judge on BLOCK PRESENCE + signature, NEVER on the block's text. `thinking.display` defaults to
+  // "omitted" on Opus 5, so an ENGAGED block streams with a zero-length `thinking` string and a real
+  // `signature` — reading the text would report "no thinking" on every production turn.
+  st.thought = false;
+  // THE FIRST CALL'S CACHE SPLIT: how much of the opening prompt the provider served from its cache and how much it wrote
+  // to it, read off the first assistant message's usage. Every caching claim about a stage was rebuilt from raw streams
+  // by hand; this puts the first call's figures on the attempt. null when the stream carried no assistant message.
+  st.firstCall = null;
+  // MODEL GAUGE (corruption 3): which model the PROVIDER says served this turn. Until now
+  // nothing on any record was a function of the provider's response — `modelUsed` was
+  // `resolveModel(<the alias we asked for>)`, a pure function of the request, so a substitution or a
+  // tier bounce was unobservable by construction. The truth is on the wire twice: `system:init`
+  // carries the session's `.model`, and every completed `assistant` message carries `message.model`.
+  //
+  // Both are kept, and the assistant's wins when present, because they answer different questions:
+  // init is what the CLI was CONFIGURED with, the assistant message is what actually served the API
+  // call. A turn killed before its first assistant event still has init's answer rather than none.
+  //
+  // THREE-VALUED, like every other gauge here: the engine reports the string it observed or `null`.
+  // It never falls back to the requested alias — a record that says "actual: <what we asked for>"
+  // when nothing was observed is precisely the absence-read-as-a-pass this issue exists to end. The
+  // comparison and the policy live in gateway.mjs; this reports, it does not judge.
+  //
+  // A MESSAGE THE CLI WROTE ITSELF NAMES NO MODEL. The CLI labels such a message `<synthetic>` in the
+  // model field, measured in testing on Azure Foundry (2026-09-14): with the opus pin naming a
+  // deployment that did not exist, the turn exited 1 with the CLI's own error and its assistant event
+  // said `<synthetic>`. No model served that turn, so the label is never taken as a served id, and
+  // `answeredItself` stops init's answer from standing in for one: init says what the session was
+  // configured with, and naming it here would name a model for a turn no model served. A real id on
+  // an earlier assistant event of the same turn now stands, because that model did serve a call;
+  // before the label was refused, the label that followed overwrote it.
+  st.wireModelInit = null; st.wireModelAssistant = null; st.answeredItself = false;
+  // READS GAUGE (AD-4, 2026-07-30 addendum): which files this turn actually OPENED, from the stream's
+  // completed Read tool_use blocks. The stage prompt OFFERS a set of documents (declared inputs +
+  // skill refs); nothing recorded whether the turn could and did read them — and one review
+  // found a stage that "largely COULD NOT read" its deciding docs, a fact that had to be
+  // reconstructed forensically. Same posture as the thinking gauge: presence-only observation (the
+  // tool_use block's file_path), never the content; the tuple carries `reads` UNCONDITIONALLY — an
+  // empty array is the recorded fact "this turn read no files", distinct from an adapter that cannot
+  // observe reads at all (no `reads` key → journalled as null by the gateway).
+  st.reads = new Set();
+  // …and the CAP is itself recorded. The set stops growing at READS_CAP; without a flag a capped list
+  // reads as a complete one — "these are the files the turn opened" when it means "these are the first
+  // 500". `readsTruncated` is the same three-valued discipline the gauge itself carries: false = the
+  // list is everything observed, true = at least one further distinct path was dropped at the cap.
+  // (A repeat of an already-recorded path is NOT truncation — nothing is lost.)
+  st.READS_CAP = 500;
+  st.readsTruncated = false;
+}
+
+/** What the turn's tool calls have shown so far: the counts, the session record and stream sink, and the outstanding asks and their wait periods. */
+function toolState(st) {
+  // ── THE TWO NUMBERS THAT MAKE A SLOW TURN A DIAGNOSIS RATHER THAN AN INFERENCE ────────
+  //
+  // `tokensPerSec` says so itself: "the denominator still contains the turn's own tool waits… it
+  // records the ratio; it does not diagnose it." Establishing that a slow stage was WAITING rather
+  // than generating has meant reading archived runs by hand and correlating — and the attempt record
+  // carries no tool-call count and no tool duration at all.
+  //
+  // TWO INTEGERS, NO CONTENT. Not a call log: no tool names, no inputs, no per-call rows. The owner's
+  // ruling against tool-call log records was about call logs carrying client mark text, and a count
+  // and a millisecond total carry none — nothing here can name a mark.
+  //
+  // The wait is measured off the loop the stream already reports: an `assistant` message carrying
+  // tool_use blocks is the agent asking, and the `user` event that follows is its result arriving
+  // ("a completed tool result = the agent loop advanced", below). The gap between them is the turn
+  // waiting on tools rather than generating.
+  st.toolCalls = 0;
+  // …AND THE SAME CALLS BY TOOL NAME, so a tool server's own log can be set against what the model
+  // asked for. A name is the program's identifier for a tool (`Read`, `mcp__band__band_lookup`), never
+  // an input, so it carries no client text. The values sum to `toolCalls` by construction: one fold
+  // per tool_use block, at the one site that counts them.
+  st.toolCallsByName = Object.create(null);
+  // …AND WHICH OF THEM A TOOL SERVER ANSWERED WITH AN ERROR. A refused call the model then re-made used to
+  // leave the stage row reading ok on one attempt, as though nothing had happened. Each ask's id names its
+  // tool, and its result says whether it came back as an error; nothing else is kept.
+  st.toolNameById = new Map();
+  st.toolErrorIds = new Set();
+  // WHAT THE SESSION WENT THROUGH, beside how it ended: every result event, every classifier cut,
+  // every refusal and every restart, each with when it arrived. See session-record.mjs; the retry
+  // policy below still reads the LAST result alone, so this records and decides nothing.
+  st.session = newSessionRecord();
+  // The raw stream, one file per session beside its dispatch (the caller names it). Opened before the
+  // first byte can arrive; closed in settle(). A sink that could not open is a null writer whose
+  // close() says why.
+  st.sink = streamSink(st.streamFile);
+  // HOW MANY OF THOSE ASKED FOR A COMMAND TOOL. The command tools are removed from every stage
+  // (COMMAND_TOOLS), so the number a test round expects here is zero, and a count is what proves it: a
+  // flag in the argv shows what was asked of the program, this shows what the model did. Still a count
+  // of calls, never a name or an input.
+  st.commandToolCalls = 0;
+  // WRITES THE PROGRAM REPORTED AS FAILED: a Write or Edit whose result came back an error. The engine
+  // probe refuses a machine on it, because it is the engine's own word that a file could not be written,
+  // not an inference from a file that is missing. The ids of the write asks, so their results are known.
+  st.writesFailed = 0;
+  st.writeAsks = new Set();
+  st.toolWaitMs = 0;
+  st.toolAskedAt = null;
+  // The last time this turn asked for a tool, apart from its own record write, and the last time it asked for that write:
+  // what the gateway reads to tell a turn killed while still working from one killed silent or finishing (`lastToolAsk`).
+  st.lastWorkAskAt = null; st.lastRecordAskAt = null;
+  // WHAT THE WAIT IS MADE OF, keyed by the tool(s) that caused it.
+  //
+  // The total alone cannot answer the question it was collected for. "Exclude tool wait from the kill
+  // clock because a turn waiting on a tool is the harness working" is TRUE of `register_execute_plan`
+  // and FALSE of the perplexity tools, which dispatch to a MODEL — that wait is another model
+  // generating, and treating it as free time would leave a hung sub-model bounded by nothing.
+  //
+  // One interval, ONE KEY: when a message asks for several tools it waits once, so the key is the
+  // sorted set joined by "+". Every millisecond is attributed exactly once and the values sum to
+  // `toolWaitMs` — a per-name split would double-count a concurrent ask and quietly break that identity.
+  st.toolAskedNames = null;
+  // WHICH CHUNK an ask arrived in. Every line in one stdout chunk is parsed in
+  // one synchronous loop, so they all share a single Date.now(). If an ask and its result land in
+  // the SAME chunk, the parent was not running between them and the gap it measures is 0 — for a
+  // wait that really happened. Reproduced deterministically by blocking this process's event loop:
+  // a turn that waited 260ms reported 0, with toolCalls still correct at 3.
+  //
+  // The discriminator is DELIVERY, not value. A genuine zero-millisecond wait is measurable and
+  // real (two chunks, no gap); keying on `spent === 0` would flag those and miss a stall that
+  // happened to leave 1ms on the clock.
+  st.toolAskedChunk = null;
+  // THE LATENT HALF, NOT THE STALL — ONE OUTSTANDING ASK WAS ALL THIS COULD
+  // HOLD. `toolAskedAt` was a single slot, so a second assistant message arriving before the first
+  // ask's result OVERWROTE the first ask's start time and its wait was never counted at all.
+  // Measured on the overlap fixture (two asks, 150ms each): the old code reported toolWaitMs=149
+  // with ONE tool in the map, for a turn that spent ~300ms waiting.
+  //
+  // WHY NOT SIMPLY GIVE EACH ASK ITS OWN CLOCK. Two asks outstanding at once wait CONCURRENTLY, so
+  // their intervals overlap in real time; adding them counts the same milliseconds twice and can
+  // exceed the turn's own elapsed time. Measured: 497 against a 469ms turn, which the wall cap on
+  // `settledToolWaitMs` then clamped, breaking the identity the kill clock reads. The comment above
+  // `toolWaitByTool` said so before this was tried — a per-name split double-counts a concurrent ask.
+  //
+  // SO: attribute each millisecond to the SET of tools outstanding during it, which is the very
+  // convention this file already uses for one message asking several tools. A period ends whenever
+  // the outstanding SET CHANGES, not when any single ask resolves:
+  //
+  //     T0      ask A       {A}      period opens
+  //     T0      ask B       {A,B}    close 0ms
+  //     T0+200  result B    {A}      close 200ms → "A+B"
+  //     T0+300  result A    {}       close 100ms → "A"
+  //
+  // Every millisecond is credited exactly once, nothing is lost, and the one-message-two-tools case
+  // reduces to today's behaviour exactly. `tool_use_id` is what makes it work: it says WHICH ask
+  // left the set. Closing "the oldest" instead puts the tail under the wrong key.
+  // The outstanding unit is the ASK — one assistant MESSAGE — not one tool id. A message asking
+  // for several tools waits ONCE, and the first result naming any of its ids closes the whole ask.
+  // That rule predates this change and is what stops a two-tool ask being counted twice; keeping
+  // the unit at the id level left the second tool of such an ask outstanding forever.
+  st.openAsks = [];             // ask records still outstanding, oldest first
+  st.askById = new Map();       // tool_use_id → its ask record
+  st.periodStart = null;          // when the current outstanding-SET period began
+  st.periodChunk = null;          // the chunk it began in — the unmeasurable flag
+  st.anonSeq = 0;                 // ids are on the wire, but never assume: synthesize if absent
+  st.periodKey = () =>
+    [...new Set(st.openAsks.flatMap((r) => r.names))].sort().join("+");
+  // A PERIOD THAT OPENS AND CLOSES INSIDE ONE CHUNK IS UNMEASURABLE, WHICHEVER EVENT CLOSED IT.
+  //
+  // This line used to read: "a period that opens and closes inside one chunk because two ASKS
+  // arrived together is not an unmeasurable wait, it is no wait. Only a RESULT closing in its ask's
+  // chunk is." That reasoning is wrong and issue 1828's own title says why — the gauge times when
+  // the driver PARSED each line, so a driver stall records a real wait as zero. Two asks 120ms apart
+  // on the wire land in ONE stdout chunk when the reader is scheduled late; the parser sees them
+  // microseconds apart, and the first ask's solo period — real time, really waited — is credited
+  // ZERO with nothing saying it could not be seen. Measured on main 2026-08-25: a fixture that waits
+  // 120ms between two asks reported {"a+b":150,"b":149} and a total of 299 where 420 was owed; the
+  // missing 120 is exactly the collapsed period.
+  //
+  // The total is unchanged and that is deliberate: time the reader never observed must not be
+  // invented, and `spent` stays what the clock says. What changes is that the run now SAYS the
+  // period was unobservable instead of reporting no wait — the same vocabulary the result side has
+  // had since 1828, one branch away, withheld from the ask side by the argument above.
+  //
+  // `cause` separates them because they mean different things to a reader: one is a tool that
+  // answered inside a stalled read, the other is an ask superseded before its own period could be
+  // seen. A consumer that only counts rows is unaffected.
+  st.closePeriod = (now, onResult) => {
+    if (st.periodStart === null || st.openAsks.length === 0) return;
+    const k = st.periodKey() || "?";
+    const spent = Math.max(0, now - st.periodStart);
+    // A period seen across two chunks is measured even when the clock reads it as 0 ms, as a coarse clock can:
+    // its ask is named with what the clock gave. Crediting only a positive wait dropped it, unmeasured and undeclared.
+    if (spent > 0 || st.periodChunk !== st.chunkSeq) {
+      st.toolWaitMs += spent;
+      st.toolWaitByTool[k] = (st.toolWaitByTool[k] ?? 0) + spent;
+    }
+    if (st.periodChunk === st.chunkSeq) {
+      st.unmeasurable.push({ tool: k, chunk: st.chunkSeq, bytes: st.chunkBytes, sincePrevChunkMs: st.chunkGapMs,
+        cause: onResult ? "result-in-ask-chunk" : "ask-superseded-in-chunk" });
+    }
+  };
+  // `settledToolWaitMs` adds `endedAt - toolAskedAt` as the gap still open when a kill landed. It
+  // must therefore track the CURRENT UNCREDITED PERIOD — earlier periods are already in the total,
+  // and handing it an older timestamp would count them twice, inflating the total and deflating
+  // `activeMs` on exactly the killed-mid-tool turn the field exists for.
+  st.syncOpenAsk = () => {
+    st.toolAskedAt = st.openAsks.length ? st.periodStart : null;
+    st.toolAskedNames = st.openAsks.length ? st.periodKey() : null;
+    st.toolAskedChunk = st.openAsks.length ? st.periodChunk : null;
+  };
+  st.chunkSeq = 0; st.chunkBytes = 0; st.chunkGapMs = 0; st.prevChunkAt = null;
+  st.unmeasurable = [];
+  st.toolWaitByTool = Object.create(null);
+}
+
+/** The parser for one stream line, which every gauge above reads from. */
+function lineParser(st) {
+  // Parse ONE NDJSON line. The result event may arrive as the FINAL line with NO trailing newline
+  // (NDJSON uses newline as separator, not terminator) — the close handler flushes `buf` through here
+  // so the result is never dropped (B1: a dropped result mislabels a clean success as a hard failure).
+  // Progress semantics: token-bearing events (assistant / message_start / message_delta), content deltas
+  // (output tokens being generated) and completed agent-loop steps (user = a tool result landed) reset
+  // the progress clock; system/init/ping chatter and unparseable partials reset ONLY the byte clock.
+  st.parseLine = (line) => {
+    line = line.trim(); if (!line) return;
+    let ev;
+    try { ev = JSON.parse(line); } catch { return; /* partial/non-json line */ }
+    st.sawAnyEvent = true;
+    noteClaudeEvent(st.session, ev, Date.now() - st.t0);
+    if (ev.type === "result") st.resultEvent = ev;
+    else if (ev.type === "rate_limit_event") st.rateLimitEvent = ev;
+    else if (ev.type === "system" && ev.subtype === "init") {
+      // MODEL GAUGE — the session's configured model, the earliest wire statement of what will run.
+      if (typeof ev.model === "string" && ev.model && !isCliLabel(ev.model)) st.wireModelInit ??= ev.model;
+    }
+    else if (ev.type === "assistant") {
+      // MODEL GAUGE — the model that served THIS API call. Authoritative over init (see above).
+      if (typeof ev.message?.model === "string" && ev.message.model) {
+        if (isCliLabel(ev.message.model)) st.answeredItself = true;
+        else st.wireModelAssistant = ev.message.model;
+      }
+      // THINKING GAUGE — block presence + signature, never the text (display defaults to "omitted",
+      // so an engaged block carries a zero-length `thinking` string). See the declaration above.
+      if (!st.thought && ev.message?.content?.some?.((b) => b?.type === "thinking")) st.thought = true;
+      // READS GAUGE — completed assistant messages carry the full tool_use blocks; a Read's file_path
+      // is the record. (Partials stream input via input_json_delta and are deliberately not parsed —
+      // the completed message always follows.) Capped so a pathological turn cannot bloat telemetry.
+      // Array.isArray, not `?? []`: a truthy NON-iterable `content` (a display-mode or CLI-version
+      // change that streams an object, a `"…"` string) throws TypeError out of parseLine — which runs
+      // on EVERY stdout chunk AND from settle(), where the throw would land after `settled = true` and
+      // clearInterval(watchdog) but before resolve(): the driver dies mid-stage with no fail
+      // classification and no recovery park, or the turn never settles with its watchdog already gone.
+      // Same belt-and-braces as the thinking gauge's `?.some?.()` on the line above.
+      for (const b of Array.isArray(ev.message?.content) ? ev.message.content : []) {
+        if (b?.type === "tool_use") { st.toolCalls++; countTool(st.toolCallsByName, b?.name); }   // every tool, not only Read; the count and its split by name
+        if (b?.type === "tool_use" && b?.id != null) st.toolNameById.set(String(b.id), String(b?.name ?? "?"));
+        if (b?.type === "tool_use" && COMMAND_TOOLS.includes(b?.name)) st.commandToolCalls++;
+        if (b?.type === "tool_use" && FILE_WRITE_TOOLS.includes(b?.name) && b?.id != null) st.writeAsks.add(String(b.id));
+        if (b?.type === "tool_use" && b?.name === "Read" && typeof b?.input?.file_path === "string") {
+          if (st.reads.size < st.READS_CAP) st.reads.add(b.input.file_path);
+          else if (!st.reads.has(b.input.file_path)) st.readsTruncated = true;   // a DISTINCT path was dropped
+        }
+      }
+      // The clock starts only if this message actually asked for a tool; an assistant message that
+      // asked for none leaves it null, so ordinary generation is never counted as a wait.
+      const askBlocks = (Array.isArray(ev.message?.content) ? ev.message.content : [])
+        .filter((b) => b?.type === "tool_use");
+      const asked = askBlocks.map((b) => String(b?.name ?? "?"));
+      st.toolAskedAt = asked.length ? Date.now() : null;
+      st.toolAskedChunk = asked.length ? st.chunkSeq : null;
+      st.toolAskedNames = asked.length ? [...new Set(asked)].sort().join("+") : null;
+      if (asked.length) {
+        const now = Date.now();
+        if (asked.some((n) => !isRecordTool(n))) st.lastWorkAskAt = now; else st.lastRecordAskAt = now;
+        st.closePeriod(now, false);          // the outstanding set is about to change
+        const rec = { names: asked.slice() };
+        st.openAsks.push(rec);
+        for (const b of askBlocks) {
+          const id = b?.id == null ? `__anon_${st.anonSeq++}` : String(b.id);
+          st.askById.set(id, rec);
+        }
+        st.periodStart = now; st.periodChunk = st.chunkSeq;
+      }
+      st.syncOpenAsk();
+      // This block's usage, folded into its own call: the largest reading wins, so a block's early count
+      // never replaces the delta's running total, and a second block of the same call adds nothing twice.
+      st.foldUsage(ev.message?.id ?? st.openMessage ?? `__assistant_${++st.anonMessages}`, mapUsage(ev.message?.usage));
+      if (!st.firstCall && ev.message?.usage) st.firstCall = mapUsage(ev.message.usage);
+      st.progress();
+    }
+    else if (ev.type === "user") {
+      for (const b of Array.isArray(ev.message?.content) ? ev.message.content : []) {
+        if (b?.type === "tool_result" && b?.is_error === true && st.writeAsks.has(String(b?.tool_use_id))) st.writesFailed++;
+        if (b?.type === "tool_result" && b?.is_error === true && b?.tool_use_id != null) st.toolErrorIds.add(String(b.tool_use_id));
+      }
+      // the result of the ask above. Only counted when an ask is outstanding, so a `user`
+      // event with no preceding tool_use adds nothing rather than charging the turn for a gap it
+      // never spent waiting.
+      // Which ask is this the result OF? The id on the wire answers it. Falling back to the
+      // OLDEST outstanding ask keeps a stream that carries no id working exactly as before, rather
+      // than dropping the interval and quietly under-reporting the turn.
+      const named = (Array.isArray(ev.message?.content) ? ev.message.content : [])
+        .filter((b) => b?.type === "tool_result")
+        .map((b) => (b?.tool_use_id == null ? null : st.askById.get(String(b.tool_use_id))))
+        .filter((r) => r && st.openAsks.includes(r));
+      const leaving = named.length
+        ? [...new Set(named)]
+        : (st.openAsks.length ? [st.openAsks[0]] : []);
+      if (leaving.length) {
+        const now = Date.now();
+        st.closePeriod(now, true);
+        for (const rec of leaving) {
+          const i = st.openAsks.indexOf(rec);
+          if (i >= 0) st.openAsks.splice(i, 1);
+        }
+        st.periodStart = st.openAsks.length ? now : null;
+        st.periodChunk = st.openAsks.length ? st.chunkSeq : null;
+      }
+      st.syncOpenAsk();
+      st.progress();      // a completed tool result = the agent loop advanced
+    }
+    else if (ev.type === "stream_event") {
+      const t = ev.event?.type;
+      if (t === "message_start") {
+        st.openMessage = ev.event.message?.id ?? `__start_${++st.anonMessages}`;
+        st.foldUsage(st.openMessage, mapUsage(ev.event.message?.usage));
+        st.progress();
+      }
+      else if (t === "message_delta") { st.foldUsage(st.openMessage ?? "__delta_without_start", mapUsage(ev.event?.usage)); st.progress(); }
+      else if (t === "content_block_delta" || t === "content_block_start") st.progress();
+      // THINKING GAUGE (partials): the earliest tells. Any one is sufficient; belt-and-braces so a
+      // display-mode or CLI-version change cannot silently blind the gauge.
+      if (!st.thought) {
+        const e = ev.event;
+        if (e?.content_block?.type === "thinking"
+          || e?.delta?.type === "thinking_delta" || e?.delta?.type === "signature_delta") st.thought = true;
+      }
+    }
+  };
+}
+
+/** How the turn is ended, and the watchdog that ends a stalled, trickling or overlong turn. */
+function killAndWatch(st) {
+  // Group kill (C2): SIGTERM the whole process group, then group SIGKILL after the escalation grace.
+  // ESRCH/EPERM (group already gone / not ours) falls back to the direct child.kill. The escalation
+  // timer is unref'd but NOT cleared on close — the direct child exiting on the SIGTERM must not save
+  // a SIGTERM-immune MCP straggler from the group SIGKILL. Caveat: the group kill reaps MCP children
+  // only while claude does not setpgid them itself — post-deploy verification item.
+  st.escalation = null;
+  // Windows has no group to signal: the whole tree is ended at once, and the escalation then finds nothing.
+  // Even when claude itself has exited, for the reason runStreamingChild gives (engine/common.mjs).
+  st.groupKill = process.platform === "win32"
+    ? (sig) => { const n = killWindowsTreeNow({ pid: st.child.pid, since: st.spawnedAt, until: st.exitedAt }); if (!n && sig === "SIGTERM") process.stderr.write(`[engine] the Windows stop found nothing of this turn left to end (program ${st.child.pid})\n`); }
+    : (sig) => { try { process.kill(-st.child.pid, sig); } catch { try { st.child.kill(sig); } catch { /* already gone */ } } };
+  st.killTree = () => {
+    st.atKill ??= { ms: Date.now() - st.t0, spoken: st.firstOutputAt !== null, toolCalls: st.toolCalls };
+    if (st.escalation) return;   // the watchdog polls — arm the escalation exactly once
+    st.groupKill("SIGTERM");
+    st.escalation = setTimeout(() => st.groupKill("SIGKILL"), killEscalateMs());
+    st.escalation.unref?.();
+  };
+  // Artifact-advance watch: an observed write to the stage's own expected output file(s) is the third
+  // honest progress signal (a long single Write of the final artifact may follow minutes of quiet tool
+  // work). A couple of statSync calls per ≤1s tick — negligible.
+  st.artifactSeen = new Map();   // path → "mtimeMs:size" last observed
+  st.artifactProgress = () => {
+    for (const f of st.progressFiles ?? []) {
+      let sig = null;
+      try { const s = statSync(f); sig = `${s.mtimeMs}:${s.size}`; } catch { /* not written yet */ }
+      if (sig !== null && st.artifactSeen.get(f) !== sig) { st.artifactSeen.set(f, sig); st.progress(); }
+    }
+  };
+  // Is this turn producing tokens too slowly to be working? Active time, after the warm-up, over the
+  // turn's own streamed output — the same accumulator the journal reports, so the number that kills a
+  // turn is the number a reader afterwards sees.
+  // What the rate WAS when the floor fired, for the failure line. Two decimals: the readings this
+  // exists for are hundredths of a token per second.
+  st.trickleRate = (now = Date.now()) => {
+    const activeMs = activeElapsedMs({ wall: now - (st.firstOutputAt ?? now), toolWaitMs: st.toolWaitMs, toolAskedAt: st.toolAskedAt, now });
+    return activeMs > 0 ? (((st.streamedUsage()?.output ?? 0) * 1000) / activeMs).toFixed(2) : "0.00";
+  };
+  st.isTrickling = (now) => {
+    const activeMs = activeElapsedMs({ wall: now - st.firstOutputAt, toolWaitMs: st.toolWaitMs, toolAskedAt: st.toolAskedAt, now });
+    if (activeMs < st.WARMUP) return false;
+    return (st.streamedUsage()?.output ?? 0) < (st.MIN_RATE * activeMs) / 1000;
+  };
+  st.watchdog = setInterval(() => {
+    st.artifactProgress();
+    const now = Date.now();
+    // THE STARTUP DEBT. An earlier repair widened the deadline below until the first byte but left this
+    // clock's ORIGIN at spawn, so the startup interval stayed on the meter: the moment the grace let
+    // go, progIdle already WAS the whole boot, and any NOPROG shorter than startup had expired before
+    // the child was observed at all. The kill then landed on the next tick, before the ask could reach
+    // toolCalls — a turn recorded as making no progress when nothing had yet had the chance to.
+    // Releasing a clock is not starting one: the first byte is this clock's origin, not its green light.
+    const progFrom = st.firstOutputAt === null ? st.lastProgress : Math.max(st.lastProgress, st.firstOutputAt);
+    const idle = now - st.lastMove, progIdle = now - progFrom;
+    // ── STARTUP IS NEITHER SILENCE NOR WORK ──────────────────────────────────────────────
+    // Every clock here USED TO start at SPAWN, so until the child's first byte they were all timing
+    // process startup: an idle clock that had not yet seen silence, and an active clock that had not
+    // yet seen work. Past tense deliberately — that work is finished, and the sentence stayed true of
+    // the byte-stall below (`lastMove`) while being false of the progress clock above, which is
+    // precisely the gap that let the defect sit here for a day looking like ambient flake. This was established for the byte-stall in common.mjs — which this engine does not use,
+    // because it spawns its own child, so that fix never reached this watchdog. Under full-suite load
+    // a starved spawn crossed a 400ms test ceiling before the mock had emitted anything, and the kill
+    // was recorded as a no-progress stall against a turn that had not yet been given a chance to
+    // progress. A child that never speaks AT ALL is still bounded: the byte-stall fires at max(STALL, GRACE).
+    const started = st.firstOutputAt !== null;
+    if (!started) st.silentIdleMs = progIdle;
+    if (idle >= (started ? st.STALL : Math.max(st.STALL, st.GRACE))) { st.stallKill = true; st.killed = true; st.killTree(); }
+    // No observable progress (tokens/agent-loop/artifact) for NOPROG while bytes kept the pipe warm:
+    // kill it NOW, well below the wall, and record it as a STALL — never let the ceiling raise turn
+    // into extended stall burn, and never let this kill read as "the stage needed more time".
+    else if (progIdle >= (started ? st.NOPROG : Math.max(st.NOPROG, st.GRACE))) { st.stallKill = true; st.noProgressKill = true; st.killed = true; st.killTree(); }
+    // ── A TRICKLE IS A STALL WEARING A STREAM ────────────────────────────────────────────
+    //
+    // Both clocks above are satisfied by a token every twelve seconds: the byte-stall resets on any
+    // byte, and the no-progress ceiling counts token movement as progress ON PURPOSE, because the
+    // engine contract promises a slow-but-working streaming turn is never clipped. So the only thing
+    // that stopped a trickle was the wall, at budget + 60s, with the whole attempt thrown away.
+    //
+    // This fires far below the wall and is RECORDED AS A STALL with its own discriminator, so the
+    // retry policy treats it as one and never extends the budget for the next attempt — the thing a
+    // ceiling raise would have done, and the reason this is not one.
+    //
+    // The rate is over the turn's own streamed output, on active time, after a warm-up. A healthy
+    // turn is nowhere near it: the samples that motivated this ran at 74 and 82.83 tokens per second
+    // against kills at 0.08 and 0.12, and the floor sits at 1.
+    // ONE CONDITION, NOT A NESTED BLOCK. An `else if (enabled) { if (trickling) … }` would swallow
+    // the chain: with the floor enabled and the rate healthy, the hard ceiling below would never be
+    // reached, and the only clock that bounds a turn producing tokens at a normal rate forever would
+    // have been switched off by adding this one.
+    else if (started && st.MIN_RATE > 0 && st.isTrickling(now)) { st.stallKill = true; st.trickleKill = true; st.killed = true; st.killTree(); }
+    // ── THE CEILING MEASURES ACTIVE TIME, NOT ELAPSED ────────────────────────────────────
+    //
+    // Ruling: "there isnt such thing as a hung model. it always delivers something or fails."
+    // So this ceiling exists for the harness's own failure modes, not to budget the model, and a turn
+    // still doing work must not die because a tool it was waiting on took a while to answer.
+    //
+    // MEASURED, not assumed. One register stage ran twice in the same run — same engine, same matter,
+    // same date. Attempt 1: 646.7s elapsed, 74.8% of it tool wait, 17 calls at 28.5s each. Attempt 2:
+    // 51.2s elapsed, 0.6% wait, 3 calls at 0.1s each. Generation differed by 1.6%; elapsed by 3.9×;
+    // per-call latency by 285×. Read on elapsed those are a healthy turn and a pathological one. Read
+    // on active time they are the same turn — 81.8 and 80.5 tokens/sec. Across the register family the
+    // 4.16× elapsed spread collapses to 1.27× on active time, while common-law on the same run spreads
+    // 22.9× on active time: the same instrument, opposite results, so the flatness is the lane's
+    // property and not the measure flattering everything.
+    //
+    // WHAT STILL BOUNDS A GENUINELY STUCK TURN, so this is not a ceiling removal:
+    //   a silent process     the byte-stall above, 120s, reset by any streamed byte
+    //   a working-looking    the no-progress ceiling above, reset only by a COMPLETED tool result,
+    //   loop that never ends an artifact write, or token movement — so a tool that never returns is
+    //                        bounded there, tighter than this ceiling ever was
+    // Both are progress clocks. This one was the only elapsed clock, and elapsed was the wrong
+    // quantity: a long turn has three causes — tool latency, a generation stall, and sheer VOLUME
+    // (one healthy stage ran 40.9 minutes at a normal rate producing 186k tokens) — and nothing that
+    // keys on elapsed can tell them apart.
+    // measured from the FIRST BYTE, never from spawn. Startup is not active time either, and
+    // against a tight pin it was the whole budget — a 900ms spawn hit a 500ms ceiling having done
+    // nothing at all, and the turn died carrying `hardWall` with zero tool calls to explain it.
+    else if (started && activeElapsedMs({ wall: now - st.firstOutputAt, toolWaitMs: st.toolWaitMs, toolAskedAt: st.toolAskedAt, now }) >= st.hardMs) {
+      st.killed = true; st.killTree();
+    }
+  }, st.pollMs);
+}
+
+/** The program's stdout, stderr, error and close, wired to the parser and to settle. */
+function wireStreams(st) {
+  // A3 (gateway capAppend/finalCode parity): cap stdout AND stderr at maxBuffer. On overflow TRUNCATE
+  // at the cap, pull the tree-kill FORWARD (an endless newline-free stream never trips the stall/hard
+  // wall — every byte resets the stall clock), and settle nonzero with a clear overflow error so the
+  // truncated tail can never parse as a valid result (a partial line would fail JSON anyway → resultEvent
+  // stays null → nonzero fail). The group SIGKILL escalation killTree() arms still reaps a spewing tree.
+  st.overflowKill = () => { if (st.overflow) return; st.overflow = true; st.killTree(); st.settle(1); };
+  st.child.stdout.on("data", (d) => {
+    if (st.settled || st.overflow) return;
+    if (st.firstOutputAt === null) st.firstOutputAt = Date.now();   // the child has spoken; startup is over
+    st.chunkSeq += 1;                                            // see toolAskedChunk
+    st.chunkBytes = d.length;
+    st.chunkGapMs = st.prevChunkAt === null ? 0 : Date.now() - st.prevChunkAt;
+    st.prevChunkAt = Date.now();
+    st.lastMove = Date.now();   // ANY streamed byte = liveness → resets the stall clock
+    st.sink.write(d);           // the raw stream, byte for byte, before anything parses it
+    st.buf += st.outText.write(d);
+    let nl;
+    while ((nl = st.buf.indexOf("\n")) >= 0) { st.parseLine(st.buf.slice(0, nl)); st.buf = st.buf.slice(nl + 1); }
+    if (st.buf.length > st.maxBuffer) { st.buf = st.buf.slice(0, st.maxBuffer); st.overflowKill(); }
+  });
+  st.child.stderr.on("data", (d) => {
+    if (st.settled || st.overflow) return;
+    // STDERR DOES NOT START THE CLOCKS, and this line used to. This engine's protocol is
+    // stream-json on STDOUT; stderr carries node warnings and CLI notices, which a child can emit
+    // before it has done anything at all. Treating one as "the child has spoken" ended the grace and
+    // — since the change that made the first byte the progress clock's ORIGIN — started that clock too,
+    // so a turn whose real startup was still running got its no-progress ceiling measured from a
+    // deprecation warning. A child that writes ONLY stderr is still bounded: it never starts, so the
+    // byte-stall below fires at max(STALL, GRACE) exactly as it does for a silent spawn.
+    //
+    // The diagnostic follows the same rule deliberately. `firstByteMs=NEVER` now means "never spoke
+    // its protocol", which is the question the no-progress specimen is actually asking — a number
+    // that came from a stderr line would have answered a different one.
+    st.stderr += st.errText.write(d);
+    if (st.stderr.length > st.maxBuffer) { st.stderr = st.stderr.slice(0, st.maxBuffer); st.overflowKill(); }
+  });
+  // error + close can BOTH fire for a single failure (Node) → settle EXACTLY once (no double clearInterval/resolve).
+  st.child.on("error", (e) => { if (st.settled) return; st.settled = true; clearInterval(st.watchdog); st.sink.close(); st.resolve(errResult(st.t0, e, st.resumeRef)); });
+  st.child.on("close", (code) => st.settle(code));
+}
+
+  function settle(st, code) {
+    // the turn is over; the record must not outlive it, and is cleared only if
+    // it still names THIS child.
+    clearEngineChild(st.runDir, st.child?.pid);
+    if (st.settled) return; st.settled = true;
+    clearInterval(st.watchdog);
+    // Reap the pipes: an overflow settle fires while a SIGTERM-immune spewer still holds stdout, so
+    // settlement must never wait on a pipe some straggler keeps open (the group SIGKILL reaps the tree).
+    try { st.child.stdout.destroy(); } catch { /* stream gone */ }
+    try { st.child.stderr.destroy(); } catch { /* stream gone */ }
+    if (!st.overflow) { st.buf += st.outText.end(); st.stderr += st.errText.end(); st.parseLine(st.buf); }   // B1: flush the final, un-terminated line (the result event) — but NEVER the truncated overflow tail
+    const stream = st.sink.close();   // after the flush: every byte the program wrote is in it, or the record says why not
+    st.buf = "";
+    // ONE SAMPLE OF THE CLOCK, and both quantities below are derived from it. Two `Date.now()` calls
+    // a few milliseconds apart are enough to break the identity on the very turn it matters for: on a
+    // turn that is almost entirely tool wait, an in-flight gap measured LATER than the wall can exceed
+    // it, `activeMs` clamps to zero, and the two stop tiling. It surfaced as an intermittent test
+    // under suite load — which is what a race looks like from the outside and an instrumentation
+    // defect from the inside.
+    const endedAt = Date.now();
+    const wall = (endedAt - st.t0) / 1000;
+    // THE TWO CLOCKS MUST TILE THE WALL, in every case including the one that matters.
+    //
+    // A turn killed mid-tool-call has an OPEN ask that `toolWaitMs` has not closed. Reporting the
+    // unclosed accumulator left `activeMs + toolWaitMs` short of the wall by exactly that gap — and
+    // only on turns killed during a call, which is the population this rule is about. A guard asserting
+    // the identity would have held on every ordinary attempt and quietly not held on the interesting
+    // one. Closed here, ONCE, so both fields are derived from the same number.
+    //
+    // `toolWaitByTool` does NOT receive it: the ask has not resolved, so there is no name to charge.
+    // That split was already documented as not summing to `toolWaitMs` (a concurrent ask would
+    // double-count), so nothing downstream reads it as a partition.
+    // CLAMPED TO THE WALL, so the pair tiles it in every case rather than in the common one. A gap
+    // that reads longer than the whole turn is a clock artefact, not more waiting than there was time.
+    const settledToolWaitMs = Math.min(Math.round(wall * 1000),
+      Math.round(st.toolWaitMs + (st.toolAskedAt != null ? Math.max(0, endedAt - st.toolAskedAt) : 0)));
+    // usage honesty: the result event is authoritative; a turn that never produced one (killed / died
+    // mid-flight) reports what the STREAM proved it moved instead of null — so a stall/wall kill after
+    // millions of cacheRead tokens can never be journalled as a 0-token event and mislabelled a lane
+    // wedge or a transient-provider fault. Genuinely zero movement stays null (the wedge signature).
+    const resultUsage = mapUsage(st.resultEvent?.usage);
+    const streamUsage = resultUsage ? null : st.streamedUsage();
+    const usage = resultUsage ?? streamUsage;
+    const json = synthesizeEnvelope({ resultEvent: st.resultEvent, usage, killed: st.killed });
+    // claude -p can exit 0 even on a failed turn (is_error rides the result envelope). Force a NONZERO
+    // code on any failed turn so runStage's ladder catches it via the code!==0 branch (a hard,
+    // fallback-eligible failure) rather than the softer status_<s> branch — parity with the retired gateway
+    // nonzero_exit shape. (synthesizeEnvelope's status:"error" is belt-and-suspenders behind this.) Success → 0.
+    // A3 overflow is likewise a hard failure (resultEvent is null → already caught here; kept explicit).
+    const failed = st.overflow || st.killed || !st.resultEvent || st.resultEvent.is_error || st.resultEvent.subtype !== "success";
+    // stall → make isTimeout fire (killed) AND carry the stall stderr signature the classifier reads, so the
+    // taxonomy is identical; a 0-token stall then classifies as lane_wedge, which stage()'s lane-wedge retry takes.
+    // overflow → carry a clear signature (killed stays false so it is a plain nonzero_exit, NOT a timeout/wedge).
+    const stderrOut = st.overflow
+      ? (st.stderr + `\nanthropic-agent output overflow: stdout/stderr exceeded ${st.maxBuffer} chars — killed the tree and failed the turn (truncated tail never parsed)`)
+      : st.noProgressKill
+        // THE SPECIMEN RIDES THE FAILURE, because the broken state expires. This kill has
+        // twice reddened `main` from a test whose ANTI-VACUITY check failed — the turn died having
+        // opened no tool ask — and neither the box's ambient load nor a full-suite run reproduces
+        // it on demand. So the discriminating bit is recorded HERE, where the kill happens, rather
+        // than hunted afterwards: `firstByteMs=NEVER` means the child never spoke and the grace
+        // was genuinely exceeded (a starved spawn); a NUMBER means it spoke and the ask never
+        // reached `toolCalls`, which is a progress-accounting fault and has nothing to do with
+        // startup. Those want different fixes and the artifact now says which.
+        ? (st.stderr + `\nrequest timed out (anthropic-agent no-progress watchdog: no token movement / agent-loop step / artifact write for ${Math.round(st.NOPROG / 1000)}s — a STALL, not a slow turn)`
+          + `\nanthropic-agent no-progress specimen: firstByteMs=${st.firstOutputAt === null ? "NEVER" : Math.round(st.firstOutputAt - st.t0)}`
+          + ` toolCalls=${st.toolCalls} noProgressMs=${st.NOPROG} graceMs=${st.GRACE}`)
+      : st.trickleKill
+        // ITS OWN SENTENCE, because "0 streamed tokens" is the one thing this kill is not. A reader
+        // meeting the stall line over a turn that streamed for forty minutes would go looking for a
+        // silent process and find a talkative one. The rate that killed it rides the line, so the
+        // threshold can be argued from artifacts rather than from memory.
+        ? (st.stderr + `\nrequest timed out (anthropic-agent trickle floor: ${st.trickleRate()} output tokens/sec of active time,`
+          + ` under the ${st.MIN_RATE}/sec floor after a ${Math.round(st.WARMUP / 1000)}s warm-up — a STALL that kept the pipe warm, not a slow turn)`)
+      : st.stallKill ? (st.stderr + "\nrequest timed out (anthropic-agent stall-watchdog: 0 streamed tokens)")
+      // Startup-class death (the 3× register-digest code=1 zero-token shape): the CLI exited without
+      // emitting a single stream event — the failure happened before any turn ran (arg/auth/MCP
+      // startup), so the stderr above is the whole story. Name it so the journal's stderrTail is
+      // never read as a mid-turn provider fault.
+      : (!st.sawAnyEvent && !st.killed && st.resultEvent == null)
+        ? (st.stderr + "\nanthropic-agent: the claude process exited without emitting any stream event — a startup-class failure (args/auth/MCP), not a mid-turn provider fault; the stderr above is the diagnosis")
+      : st.stderr;
+    // Rate-limit / session-cap rejection: claude -p emits a rate_limit_event{status:"rejected",resetsAt}
+    // plus a result with api_error_status 429. Surface a distinct signal (+ the ISO reset time) so the
+    // driver POSTPONES the run to resetsAt rather than running the futile fallback cascade (every tier
+    // shares the one subscription). resetsAt is epoch SECONDS on the event -> ISO.
+    const rateLimited = st.resultEvent?.api_error_status === 429 || st.rateLimitEvent?.rate_limit_info?.status === "rejected";
+    const resetsAtRaw = st.rateLimitEvent?.rate_limit_info?.resetsAt;
+    const resetsAt = rateLimited && resetsAtRaw ? new Date(Number(resetsAtRaw) * 1000).toISOString() : undefined;
+    st.resolve({
+      code: st.killed ? 137 : (failed ? (code || 1) : 0),
+      killed: st.killed, wall,
+      stdout: typeof st.resultEvent?.result === "string" ? st.resultEvent.result : "",
+      stderr: stderrOut, laneWaitMs: 0,
+      json, usage,
+      // READS GAUGE: unconditional, like signals.thought — [] is the recorded fact "read nothing".
+      // readsTruncated rides beside it, also unconditional: false = the list is complete as observed,
+      // true = the 500-path cap dropped at least one further distinct file (so a `read:false` derived
+      // from this list is unreliable and the consumer must downgrade it to "not observed").
+      reads: [...st.reads], readsTruncated: st.readsTruncated,
+      // The first call's cache read and cache write, in tokens (see `firstCall`); null when it was never seen.
+      firstCallCache: st.firstCall ? { read: st.firstCall.cacheRead, creation: st.firstCall.cacheWrite } : null,
+      toolCalls: st.toolCalls, toolWaitMs: settledToolWaitMs,   // two integers, no content
+      // The same calls by tool name (values sum to toolCalls), and what the session went through: every
+      // result, cut, refusal and restart (session-record.mjs). `stream` is the raw stream's file and size,
+      // or why it was not kept. Recording only — `failed` above still reads the last result alone.
+      toolCallsByName: { ...st.toolCallsByName }, session: sessionSummary(st.session), stream,
+      // The two counts a test round reads per stage: calls to a command tool, and calls the program
+      // refused. The refusals are the result event's own `permission_denials`, counted; null when the
+      // turn settled with no result event, so "not reported" never reads as "none refused".
+      commandToolCalls: st.commandToolCalls, writesFailed: st.writesFailed,
+      toolCallsRefused: Array.isArray(st.resultEvent?.permission_denials) ? st.resultEvent.permission_denials.length : null,
+      // The tool-server calls that came back as an error, by tool name: the program sent them and the
+      // server refused or failed them. A call the program itself refused is counted above and not here.
+      toolCallsErroredByName: toolServerErrors(st.toolErrorIds, st.toolNameById, st.resultEvent?.permission_denials),
+      // ms from spawn to the child's FIRST byte, or null when it never spoke. RECORDING
+      // ONLY: nothing branches on it. A recording field is protected by a test or by nothing, so
+      // engine.anthropic.test.mjs pins it — deleting it must red something.
+      firstByteMs: st.firstOutputAt === null ? null : Math.round(st.firstOutputAt - st.t0),
+      // ms from spawn to the last tool ask that was not the stage's own record write, and to the last that was; null where
+      // the turn made none. RECORDING, and read by the gateway only to choose how a hard-wall kill is retried.
+      lastToolAsk: { workMs: st.lastWorkAskAt === null ? null : Math.round(st.lastWorkAskAt - st.t0), recordMs: st.lastRecordAskAt === null ? null : Math.round(st.lastRecordAskAt - st.t0) },
+      // WHICH SIDE OF THE KILL a byte or a tool ask fell on. RECORDING ONLY, like firstByteMs. The
+      // totals above keep counting after the decision, because what a dying child already wrote is
+      // still read (streamed usage depends on it). On Windows the kill blocks this process while it
+      // lists and ends the tree, measured at one to three seconds on the hosted runner, which is long
+      // enough for a booting child to speak and open a tool ask that is read only afterwards.
+      // `killDecision` is what the watchdog had seen when it decided: ms from spawn, whether the child
+      // had spoken, and the tool asks read by then; null when nothing was killed. `silentIdleMs` is how
+      // long the no-progress clock had run at the watchdog's last look before the child spoke; null
+      // when it never looked at a silent child.
+      killDecision: st.atKill, silentIdleMs: st.silentIdleMs,
+      // WHICH CLOCK RAN OUT, and WHAT the wait was made of.
+      //
+      // The hard wall measures ELAPSED, and elapsed includes time the model spent waiting on tools
+      // rather than generating. A wall kill whose elapsed is mostly tool wait is a different event from
+      // one that ground for the whole budget generating, and nothing told them apart — so the question
+      // "should the kill clock count tool wait" could not be answered from any record.
+      //
+      // `activeMs` INCLUDES THE IN-FLIGHT GAP. A turn killed mid-tool-call has an open ask that
+      // `toolWaitMs` has not yet closed, and that is exactly the case this is for: leaving it out would
+      // charge the model for the wait that killed it.
+      //
+      // UNCONDITIONAL, following `thought` below rather than the `|| undefined` siblings: a turn with no
+      // tool wait must report 0, not vanish, or "the wall caught generation" is indistinguishable from
+      // "this record predates the gauge".
+      activeMs: Math.max(0, Math.round(wall * 1000) - settledToolWaitMs),
+      toolWaitByTool: { ...st.toolWaitByTool },
+      // the asks whose wait this process COULD NOT MEASURE, because the ask and
+      // its result were delivered in one chunk. An ARRAY is a measurement (possibly `[]`: measured,
+      // nothing unmeasurable), following toolWaitByTool's own rule that absence and "cannot report"
+      // must not look alike. `toolWaitMs` and the per-tool split are untouched.
+      toolWaitUnmeasurable: [...st.unmeasurable],
+      // MODEL GAUGE: the id the WIRE reported, or null when the stream never said. Assistant
+      // message first (what served the call), init second (what the session was configured with).
+      // Never the requested alias, and never init's answer for a turn only the CLI answered — see the
+      // declaration above.
+      modelWire: st.wireModelAssistant ?? (st.answeredItself ? null : st.wireModelInit),
+      // PROVIDER GAUGE: the program's own word for who served the turn, read from the result's per-model
+      // usage ("firstParty" on Anthropic's own API and "foundry" on Azure Foundry, measured 2026-09-14),
+      // or null when the stream never said or its models disagree. Recorded, never inferred from config.
+      providerWire: providerOf(st.resultEvent),
+      sessionRef: st.resultEvent?.session_id ?? st.resumeRef ?? null,
+      // The raw result event's total_cost_usd is a provider-side field and stays in the provider's
+      // own stream; the tuple carries no currency (tokens-only directive 2026-07-11) — `usage` is
+      // the telemetry.
+      // hardWall: the watchdog SIGKILLed at the full timeout+60 wall (NOT a stall). This flag carries the
+      // distinction outward so a hard-wall over-budget grind is treated as a `timeout`, not a `lane_wedge`.
+      // noProgress: the honest-progress ceiling fired (a stall discriminator — recorded as a stall, and
+      // the retry policy must not extend the budget for it). usageStreamed: the tuple's usage was
+      // reconstructed from the stream because the turn died without a result event (telemetry honesty —
+      // never journal a token-moving kill as usage:null). noStreamEvents: the CLI died before emitting
+      // ANY stream event — a startup-class failure, diagnosable from stderrTail alone.
+      signals: { stalled: st.stallKill || undefined, noProgress: st.noProgressKill || undefined,
+        // A TRICKLE IS A STALL, and this says which kind. Retry policy keys on `stalled` — so this
+        // never extends the next attempt's budget — while a reader keys on this to tell a turn that
+        // said nothing from one that said almost nothing for three quarters of an hour.
+        trickle: st.trickleKill || undefined,
+        hardWall: (st.killed && !st.stallKill) || undefined, rateLimited: rateLimited || undefined, resetsAt,
+        usageStreamed: (streamUsage != null) || undefined,
+        noStreamEvents: (!st.sawAnyEvent && st.resultEvent == null) || undefined,
+        // thought: UNCONDITIONAL boolean — deliberately NOT `|| undefined` like every sibling here. The
+        // whole point of the gauge is that "did not think" stays distinguishable from "this record
+        // predates the gauge"; an omitted key would recreate exactly the ambiguity that made the old
+        // reasoningTokens slot useless. false must be recorded AS false.
+        thought: st.thought },
+    });
+  }
+
 
 function errResult(t0, e, resumeRef) {
   return {

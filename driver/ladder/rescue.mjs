@@ -8,6 +8,13 @@
 
 import { statSync } from "node:fs";
 import { note } from "../log.mjs";
+// The ONE kill-class discriminator (timeout/status_timeout fails, exit 137, killed, hard-wall/stall
+// signals; lane_wedge and rate_limited deliberately excluded). Reused verbatim so "a kill" means the
+// same thing to the exit-1 rescue below as it does to the register taint chain that reads the very
+// same rows off disk. Acyclic: register-taint.mjs imports node builtins only.
+import { isTaintRow } from "../register-taint.mjs";
+import { nameTheFailure } from "./turn-failure.mjs";
+import { killedWhile, refusalsInWindow, rel } from "./turn-signals.mjs";
 
 // ── — WALL RESCUE QUIESCENCE. How long every declared artifact must have been UNTOUCHED when the
 // turn settled, for its write to count as provably COMPLETE rather than possibly torn.
@@ -143,4 +150,37 @@ export function rescueAttempt({ fail, files, killClass, killSeen, signals, valid
     }
   }
   return { fail, rescued, quiescentMs, rescueRefused, rescueRefusedFile, rescueRefusedReason };
+}
+
+// The ladder's phase around rescueAttempt above: the attempt's kill class, both rescues judged by this
+// attempt's own artifact judgement (judge.mjs), the refusals a timed-out dispatch met, the name the failure then goes
+// by (turn-failure.mjs nameTheFailure) and how a hard-wall kill read. A kill arms `killSeen` for the rest of the ladder.
+export function rescueAndName(stage, judge, { fail, turn, preArtifact, dispatchedAt, settledAt, killSeen,
+  modelMismatch, famRequested, famActual, modelRequested, modelActual }) {
+  const { name, files, validate, runDir, stallSec } = stage;
+  const { code, killed, wall, stderr, json, usage } = turn;
+  // Whether this attempt's own artifacts answer its failure is ladder/rescue.mjs (rescueAttempt), with why a kill
+  // anywhere in this ladder closes the exit-1 rescue; `killClass` and `killSeen` carry that kill to it.
+  const killClass = isTaintRow({ fail, code, killed, signals: turn.signals });
+  const attemptWroteTruth = judge.attemptWroteTruthOf(preArtifact);   // this attempt's own artifact judgement (judge.mjs)
+  let attemptRefusals = null;   //: this dispatch's refusals of a tool-written artifact, on a timeout
+  const rescue = rescueAttempt({ fail, files, killClass, killSeen, signals: turn.signals, validate, wall, settledAt, name, rel, wroteTruth: attemptWroteTruth });
+  fail = rescue.fail;
+  const { rescued, quiescentMs, rescueRefused, rescueRefusedFile, rescueRefusedReason } = rescue;
+  // — WHAT A KILLED ATTEMPT WAS DOING, where its transport kept a record. A tool-written artifact's
+  // refusal journal says how many times this attempt sent its record and was told no, and the reason the
+  // last time. The missing-file row has carried that last reason since the journal existed; a timeout row
+  // carried nothing, so an attempt that spent forty minutes being refused read the same as one that never
+  // called. Counted from THIS dispatch only: the journal is per run, and every attempt appends to it.
+  if (fail === "timeout" && files.length) attemptRefusals = refusalsInWindow(files, runDir, dispatchedAt, settledAt);
+  // Arm the ladder-wide refusal for every LATER attempt. Read before `classifyWedge` below only because
+  // the rescue above needs it; the two can never disagree in reach — isTaintRow excludes lane_wedge, and
+  // a wedge is a `timeout` fail that breaks the ladder immediately, so no later attempt exists to judge.
+  if (killClass) killSeen = true;
+  fail = nameTheFailure(fail, { usage, json, stdout: turn.stdout, stderr, signals: turn.signals, name,
+    gauge: { modelMismatch, famRequested, famActual, modelRequested, modelActual } });
+  // How a hard-wall kill read (killedWhile), once per attempt: both rows record it and the next rung reads it. null otherwise.
+  const attemptKilledWhile = fail === "timeout" ? killedWhile(turn, stallSec ?? Number(process.env.CLEAROTRON_STALL_MS || 120000) / 1000) : null;
+  return { fail, killClass, killSeen, rescued, quiescentMs, rescueRefused, rescueRefusedFile, rescueRefusedReason, attemptRefusals,
+    attemptKilledWhile };
 }
