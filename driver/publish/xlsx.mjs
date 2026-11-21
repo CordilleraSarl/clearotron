@@ -37,8 +37,8 @@ const WIDE = {
   '#': 5, 'Conflicting mark': 30, 'Owner': 30, 'Country': 10, 'Source': 14, 'Class': 12,
   'Registration(s)': 30, 'Status & key dates': 26, 'Record retrieved?': 30, 'Risk band': 14,
   'How we treated it': 40, 'Mark similarity': 18, 'Goods proximity': 18, 'Use': 16, 'Enforcer': 18, 'Link': 40,
-  // What was searched
-  'Search term / variant': 40, 'Scope': 20, 'Result': 24, 'Outcome': 24, 'Note': 60,
+  // What was searched. 'Result' is also the Knockout's Negative Results column, which holds a sentence.
+  'Search term / variant': 40, 'Scope': 20, 'Result': 40, 'Outcome': 24, 'Note': 60,
   // Coverage & gaps
   'Area': 40, 'State': 12, 'What was done': 60, "What's left": 60,
   // The Knockout's sheets (knockout.mjs), whose long text wrapped in the 16-wide default: Findings, Negative Results,
