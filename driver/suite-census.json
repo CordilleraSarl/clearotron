@@ -59,7 +59,7 @@
         },
         "a-bare-territory-per-provider.test.mjs": {
           "tests": 4,
-          "asserts": 9,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
@@ -4857,9 +4857,9 @@
           "skips": 1,
           "todos": 0
         },
-        "every-spelling-of-the-uk-and-of-wipo-searches-the-same-office-on-every-register.test.mjs": {
-          "tests": 4,
-          "asserts": 10,
+        "every-spelling-of-a-territory-searches-the-same-office-on-every-register.test.mjs": {
+          "tests": 8,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },
