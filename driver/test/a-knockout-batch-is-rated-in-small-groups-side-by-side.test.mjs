@@ -33,7 +33,7 @@ import assert from "node:assert/strict";
 
 const { driverDir } = await import("../../shared/driver-dir.mjs");
 const { knockoutInner, frameworkEchoFault } = await import("../pipeline-knockout.mjs");
-const { KO_ASSESS_CHUNK, KO_STAGES, koChunks, koPaths } = await import("../stages-knockout.mjs");
+const { KO_ASSESS_CHUNK, KO_STAGES, koChunks, koPaths, groupRecordsDoc } = await import("../stages-knockout.mjs");
 const { answeredGrid } = await import("./knockout-grid-fixture.mjs");
 
 const NAMES = ["QUILLBRAE", "MOSSVALE", "LANTERNWICK", "ODRAVEL", "NOVAPULSE", "IRONWHISK", "CLUVENDRA", "BRIMSTARE", "TALLOWMERE", "PEBBLEWAY"];
@@ -103,6 +103,36 @@ test("the groups run side by side, at most three at once, and the record compose
   const summary = r.findings.batch.executiveSummary;
   const at = (n) => summary.indexOf(n);
   assert.ok(NAMES.every((n) => at(n) >= 0) && at(NAMES[0]) < at(NAMES[3]) && at(NAMES[3]) < at(NAMES[9]), "the groups' summaries are joined in group order");
+});
+
+test("each group is pointed at its own names' held filings, and the whole record stays for the checks", async () => {
+  // One invented filing per name, so every name's share of the record is its own.
+  const filing = (name) => ({ record_id: `tm_${name.toLowerCase()}`, mark_text: name, owner_name: "Brightmoor Candle Co", status: "Registered", classes: [4] });
+  const names = NAMES.slice(0, 7);
+  const r = await knockout("group-filings", names, {}, { recordLister: async (term) => ({ ok: true, total: null, records: names.includes(term) ? [filing(term)] : [] }) });
+  assert.equal(r.res?.ok, true, `the knockout did not deliver: ${r.thrown?.message ?? JSON.stringify(r.res)}`);
+  const whole = r.json(r.K.registerRecords);
+  assert.deepEqual(whole.marks.map((m) => m.name).sort(), [...names].sort(), "the full record holds every name");
+  const groups = koChunks(names.map((name) => ({ name })));
+  for (const [c, group] of groups.entries()) {
+    // The dispatch names the run's live folder; the record is read where the delivered run now sits.
+    const dispatch = readFileSync(driverDir(r.dir, `knockout-assess#${c}.attempt1.dispatch.txt`), "utf8");
+    const named = dispatch.split("\n").find((l) => l.startsWith("THE REGISTER FILINGS THIS RUN ALREADY FETCHED — ")) ?? "";
+    assert.match(named, new RegExp(`/_driver/register-records\\.group-${c}\\.json\\. `), `group ${c + 1} is not pointed at its own filings`);
+    const slice = r.json(r.K.groupRegisterRecords(c));
+    assert.deepEqual(slice.marks.map((m) => m.name), group.map((m) => m.name), `group ${c + 1}'s slice holds other names`);
+    assert.equal(slice.schema, whole.schema, "the slice keeps the record's own fields");
+  }
+});
+
+test("a batch rated in one turn is pointed at the whole record, and the cut keeps every field but the names", () => {
+  const K = koPaths(mkdtempSync(join(tmpdir(), "ko-groups-one-")));
+  const doc = { schema: 2, provider: "invented", marks: [{ name: "QUILLBRAE", records: [] }, { name: "MOSSVALE", records: [] }] };
+  assert.deepEqual(groupRecordsDoc(doc, [" quillbrae "]), { schema: 2, provider: "invented", marks: [{ name: "QUILLBRAE", records: [] }] });
+  assert.deepEqual(groupRecordsDoc({ schema: 2 }, ["QUILLBRAE"]).marks, []);
+  const message = KO_STAGES["knockout-assess"].message({ K, job: {}, chunkNo: 0, chunkMarks: [{ name: "QUILLBRAE" }], chunkTotal: 1,
+    framework: { bands: [{ label: "High" }, { label: "Low" }] }, frameworkPath: null, probeNote: "" });
+  assert.ok(!message.includes(K.groupRegisterRecords(0)), "a single group is pointed at a slice");
 });
 
 test("a group that fails leaves the others' work, and a resume runs only that group again", async () => {

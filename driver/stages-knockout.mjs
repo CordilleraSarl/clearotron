@@ -76,6 +76,9 @@ export function koPaths(runDir) {
     // rows were left exactly as they were rather than gaining a matching marker: their shape is pinned
     // byte-for-byte by register-count.test.mjs, and a discriminator only one side needs is enough.
     registerRecords: paths(runDir).registerRecords,
+    // A RATING GROUP'S SHARE OF THOSE FILINGS, where a batch is rated in groups: the held filings of the group's own names, so each
+    // group reads its names' filings rather than the whole batch's. The driver's own slice of its own record, so under `_driver/`.
+    groupRegisterRecords: (chunkNo) => driverDir(runDir, `register-records.group-${chunkNo}.json`),
     // THE READING STEP'S RECORD, a model output and so at the run root: what it carried forward, set aside and did not
     // ask. The questions and their rows are the register tool's, in the bands under `register-units/`.
     registerReading: knockoutRegisterFile(runDir),
@@ -189,6 +192,12 @@ function registerStateLine(K) {
   return "";
 }
 const registerRecordHeld = (K) => registerLaneState(K.runDir).state === "held";
+
+/** The held-filings record cut to the named marks, every other field as held. PURE. */
+export function groupRecordsDoc(doc, names) {
+  const want = new Set([...names].map((n) => String(n).trim().toLowerCase()));
+  return { ...doc, marks: (Array.isArray(doc?.marks) ? doc.marks : []).filter((m) => want.has(String(m?.name ?? "").trim().toLowerCase())) };
+}
 
 // WHERE A SOURCE MAY COME FROM, in one form of words at every step: rating, correction and check.
 const CITED_URL_RULE = `A cited URL must come from ${PERMITTED_SOURCES}.`;
@@ -394,7 +403,7 @@ export const KO_STAGES = {
     validate: koValidators.knockoutAssessChunk,
     reads: (K) => ({ files: [K.plan, K.instructedScope, ...asRequested(K), ...frozenRules(K), K.registerRecords, K.registerCounts, K.ownerChecks],
       dirs: [K.researchDir], message: true, deck: true }),
-    message: ({ K, job, chunkNo, chunkMarks, chunkTotal, framework, frameworkPath, probeNote, frameworkMethod }) => lines(
+    message: ({ K, job, chunkNo, chunkMarks, chunkTotal, framework, frameworkPath, probeNote, frameworkMethod, registerRecordsFile = null }) => lines(
       // The deck path comes from ctx (attachKnockoutFramework resolves it once, on the fresh and the
       // resume path both) — never recomputed here, because "which deck" is one decision.
       reads(["skills/knockout-assess/SKILL.md", frameworkPath, "skills/clearance-search/firm-wide-reasoning.md"].filter(Boolean)),
@@ -425,7 +434,7 @@ export const KO_STAGES = {
       // a path that is not there teaches the seat that a missing file is normal.
       registerStateLine(K),
       registerRecordHeld(K)
-        ? `THE REGISTER FILINGS THIS RUN ALREADY FETCHED — ${K.registerRecords}. Real records, retrieved before you started: owner, jurisdiction, status, classes, dates. Read the held filings and weigh them for the names you are rating, against the client's requested goods. \`goods\` is a short view, \`goodsState\` records completeness, and \`goodsFrom\` records its source. If wording needed for your judgment is shortened or uncertain, read \`fullRecord\` where it is held (its path is under ${K.runDir}). Missing or incomplete wording does not establish that the goods are unrelated. A registration on this list is evidence about the name it names — treat its owner, its scope and its vulnerability the way the firm-wide reasoning tells you to (revocability above the lowest band; an enforcer's portfolio profile; a crowd as a mitigant under its gating precondition). What you may NOT do is describe the lane that fetched them — see the coverage rule below.`
+        ? `THE REGISTER FILINGS THIS RUN ALREADY FETCHED — ${registerRecordsFile ?? K.registerRecords}. Real records, retrieved before you started: owner, jurisdiction, status, classes, dates. Read the held filings and weigh them for the names you are rating, against the client's requested goods. \`goods\` is a short view, \`goodsState\` records completeness, and \`goodsFrom\` records its source. If wording needed for your judgment is shortened or uncertain, read \`fullRecord\` where it is held (its path is under ${K.runDir}). Missing or incomplete wording does not establish that the goods are unrelated. A registration on this list is evidence about the name it names — treat its owner, its scope and its vulnerability the way the firm-wide reasoning tells you to (revocability above the lowest band; an enforcer's portfolio profile; a crowd as a mitigant under its gating precondition). What you may NOT do is describe the lane that fetched them — see the coverage rule below.`
         : "",
       // ── WHAT THE OWNER ACTUALLY SELLS, ALREADY SEARCHED ────────────────────────────────────────────
       //

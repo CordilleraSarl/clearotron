@@ -37,7 +37,7 @@ import { logTurnaroundReconciliation } from "./run-quote.mjs";
 import { RunCancelled, assertNotCancelledBeforePublish, isCancelled, readCancel, stopsWithTheRun } from "./cancel.mjs";   // stop-by-user: never the failure lane below
 import { loadFrameworkManifest, parseFrameworkManifest, frameworkFor, DEFAULT_FRAMEWORK } from "./framework.mjs";
 import { attachFrameworkMethod, methodPathFor, FROZEN_METHOD_FILE } from "./framework-method.mjs";
-import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutGridSpec, KNOCKOUT_WEB, KNOCKOUT_MINUTES_BAR, knockoutBarVerdict, koChunks } from "./stages-knockout.mjs";
+import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutGridSpec, KNOCKOUT_WEB, KNOCKOUT_MINUTES_BAR, knockoutBarVerdict, koChunks, groupRecordsDoc } from "./stages-knockout.mjs";
 import { kebabCollisions, reportIdentityFor, CAPABILITY_SKIPPED_CAUSE, CAPABILITY_SKIPPED_NOTE } from "./search-policy.mjs";
 import { countPreflight, countRegisterHits, countedMarks, resolveCountExecutor } from "./register-count.mjs";
 import { recordsPreflight, listedMarks } from "./register-records.mjs";
@@ -1393,9 +1393,22 @@ export async function knockoutInner(ctx, job, opts = {}) {
         // THE GROUPS ARE RATED SIDE BY SIDE. Each writes only its own chunk, under its own session and call folder, and all are joined
         // before anything is composed. A group that fails leaves the others' accepted chunks for a resume, which re-runs only what failed.
         // A RATE LIMIT OR A STOP STARTS NOTHING MORE: the groups already running finish and keep their work, and no further group is sent.
+        //
+        // EACH GROUP IS HANDED ITS OWN NAMES' FILINGS. The held-filings record is the whole batch's, and three groups each reading it
+        // read every other group's filings three times over: measured in testing, 2026-11-21, about 0.7 MB of output per Codex group, against
+        // 66-172 KB of the group's own research. The full record stays where it is, for the validator and for every later step.
+        const groupRecords = new Map();
+        if (chunks.length > 1 && existsSync(K.registerRecords)) {
+          let held = null;
+          try { held = JSON.parse(readFileSync(K.registerRecords, "utf8")); } catch { held = null; }
+          if (held) for (let c = 0; c < chunks.length; c++) {
+            atomicWrite(K.groupRegisterRecords(c), JSON.stringify(groupRecordsDoc(held, chunks[c].map((m) => m.name)), null, 2) + "\n");
+            groupRecords.set(c, K.groupRegisterRecords(c));
+          }
+        }
         const assessFailures = [];
         await runBatched(chunks.map((_, c) => c), KO_CONCURRENT_TURNS, async (c) => {
-          try { await koStage("knockout-assess", ctx, { chunkNo: c, msgCtx: { chunkMarks: chunks[c], chunkTotal: chunks.length, framework: ctx.framework, frameworkMethod: ctx.frameworkMethod ?? null } }); }
+          try { await koStage("knockout-assess", ctx, { chunkNo: c, msgCtx: { chunkMarks: chunks[c], chunkTotal: chunks.length, framework: ctx.framework, frameworkMethod: ctx.frameworkMethod ?? null, registerRecordsFile: groupRecords.get(c) ?? null } }); }
           catch (e) { assessFailures.push({ c, e }); }
         }, { stop: () => assessFailures.some((f) => rateLimited(f) || f.e instanceof RunCancelled) });
         if (assessFailures.length) throw firstFailure(assessFailures);
