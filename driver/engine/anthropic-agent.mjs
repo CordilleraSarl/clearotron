@@ -21,7 +21,7 @@ import { statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { WRITE_DISCIPLINE, absolutizeSkillRefs, resolveSpawnCwd, spawnGraceMs, isRecordTool } from "./common.mjs";
+import { WRITE_DISCIPLINE, absolutizeSkillRefs, resolveSpawnCwd, spawnGraceMs, isRecordTool, stallMs, killEscalateMs, engineMaxBufferChars } from "./common.mjs";   // the stall, kill-escalation and buffer limits both engines share
 import { resolveEngineProgram, resolveModel } from "../driver.config.mjs";   // — the one place that finds the program; it reads every spelling of the setting
 import { authorityTrees } from "../authority-trees.mjs";
 import { recordEngineChild, clearEngineChild } from "./child-record.mjs";   //
@@ -56,9 +56,6 @@ const claudeBin = () => { const r = resolveEngineProgram("anthropic-agent"); ret
 export function spawnEnv(base = process.env) {
   return engineEnv(base, { engine: "anthropic-agent" });
 }
-// 120s of ZERO streamed output = the silent-provider-stall abort. A healthy turn
-// streams thinking + output deltas continuously, so this never clips a slow-but-working turn.
-const stallMs = () => Number(process.env.CLEAROTRON_STALL_MS || 120000);
 
 /**
  * How much of a turn's elapsed time was the model actually WORKING — elapsed minus tool wait, including
@@ -117,14 +114,6 @@ const noProgressMs = (stallClockMs) => {
   const floor = Number(process.env.CLEAROTRON_NO_PROGRESS_FLOOR_MS) > 0 ? Number(process.env.CLEAROTRON_NO_PROGRESS_FLOOR_MS) : 300000;
   return Math.max(stallClockMs, floor);
 };
-// C2: grace between the watchdog's group SIGTERM and the group SIGKILL that follows it (see killTree
-// in runTurn). ~5s — long enough for claude to flush, short enough that a wedged tree dies promptly.
-const killEscalateMs = () => Math.max(50, Number(process.env.CLEAROTRON_KILL_ESCALATE_MS || 5000));
-// A3: cap the engine's stdout/stderr the way the retired gateway exec did (capAppend/finalCode in
-// gateway.mjs). A model that emits one endless newline-free line otherwise grows `buf` to the
-// V8 string limit → uncaught RangeError → runner crash mid-drain (and every streamed byte resets the stall
-// clock, so the watchdog never trips). Default 64MB (gateway parity); CLEAROTRON_ENGINE_MAX_BUFFER shrinks it for tests.
-const engineMaxBufferChars = () => Math.max(1024, Number(process.env.CLEAROTRON_ENGINE_MAX_BUFFER || 64 * 1024 * 1024));
 
 // tier/alias → claude -p model alias. EVERY TIER GOES AS THE VENDOR'S OWN ALIAS — opus, sonnet, haiku,
 // fable — so the CLI serves the newest model of that family, and a new one arrives with no edit here.
