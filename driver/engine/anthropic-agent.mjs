@@ -15,18 +15,17 @@
 // cache_creation_input_tokens}, total_cost_usd, session_id, stop_reason; stream_event partials are the
 // watchdog heartbeat (--include-partial-messages).
 
-import { spawn } from "node:child_process";
 import { StringDecoder } from "node:string_decoder";
 import { statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { WRITE_DISCIPLINE, absolutizeSkillRefs, resolveSpawnCwd, spawnGraceMs, isRecordTool, stallMs, killEscalateMs, engineMaxBufferChars } from "./common.mjs";   // the stall, kill-escalation and buffer limits both engines share
+import { WRITE_DISCIPLINE, absolutizeSkillRefs, resolveSpawnCwd, spawnGraceMs, isRecordTool, stallMs, engineMaxBufferChars, startGovernedChild, governWatchdog } from "./common.mjs";   // the child, its watchdog, and the stall and buffer limits both engines share
 import { resolveEngineProgram, resolveModel } from "../driver.config.mjs";   // — the one place that finds the program; it reads every spelling of the setting
 import { authorityTrees } from "../authority-trees.mjs";
 import { recordEngineChild, clearEngineChild } from "./child-record.mjs";   //
 import { engineEnv } from "./engine-env.mjs";   // — the program's environment, by list (see spawnEnv)
-import { engineSpawn, spawnsDetached, killWindowsTreeNow } from "./engine-spawn.mjs";   // one answer to how a turn starts and ends, on every platform
+import { engineSpawn, spawnsDetached } from "./engine-spawn.mjs";   // one answer to how a turn starts and ends, on every platform
 import { newSessionRecord, noteClaudeEvent, sessionSummary, countTool, streamSink, claudeEnding } from "./session-record.mjs";   // what the session went through, beside how it ended
 
 // Read per-call (not module-level) so tests can drive a short stall timeout / a mock binary.
@@ -557,20 +556,15 @@ function spawnTurn(st) {
   // Not on Windows, which has no process groups: there the turn stays attached, and ends as a tree
   // (engine-spawn.mjs says why, and how the program itself is started).
   st.run = engineSpawn(claudeBin(), st.args);
-  st.spawnedAt = Date.now();   // before the spawn: what the turn starts is started after this
-  try { st.child = spawn(st.run.command, st.run.args, { stdio: ["pipe", "pipe", "pipe"], cwd: st.spawnCwd, env: spawnEnv(), detached: spawnsDetached() }); }
-  catch (e) { return void st.resolve(errResult(st.t0, e, st.resumeRef)); }
-  st.exitedAt = null;
-  st.child.once("exit", () => { st.exitedAt = Date.now(); });
-  // THE SECOND SPAWN PATH, and it has to record too. This engine does not go
-  // through runStreamingChild; wiring one and assuming the other follows is the exact defect shape
-  // 2122 was raised on the same day (the demo banner reached the clearance renderer and not the
-  // knockout one). Best effort, never fatal.
-  recordEngineChild(st.runDir, st.child.pid);
-  // Feed the prompt on stdin then EOF — claude reads it and starts (replaces the old `</dev/null`
-  // "avoid the 3s stdin wait"). Ignore EPIPE if the child already died (its close/error path settles).
-  st.child.stdin.on("error", () => {});
-  try { st.child.stdin.write(st.input); st.child.stdin.end(); } catch { /* child gone — handled by close/error */ }
+  // Started, fed its prompt on stdin then EOF, and recorded as the run's child by the piece both engines share
+  // (common.mjs, startGovernedChild), which also gives the one tree kill. Before it asks, the kill records what the
+  // watchdog had seen when it decided (killDecision reads it); recording only.
+  const started = startGovernedChild({ command: st.run.command, args: st.run.args, cwd: st.spawnCwd, env: spawnEnv(), detached: spawnsDetached(),
+    input: st.input, runDir: st.runDir,
+    onKill: () => { st.atKill ??= { ms: Date.now() - st.t0, spoken: st.firstOutputAt !== null, toolCalls: st.toolCalls }; } });
+  if (started.spawnError) return void st.resolve(errResult(st.t0, started.spawnError, st.resumeRef));
+  st.child = started.child;
+  st.killTree = started.killTree;
   return true;
 }
 
@@ -964,24 +958,8 @@ function lineParser(st) {
 
 /** How the turn is ended, and the watchdog that ends a stalled, trickling or overlong turn. */
 function killAndWatch(st) {
-  // Group kill (C2): SIGTERM the whole process group, then group SIGKILL after the escalation grace.
-  // ESRCH/EPERM (group already gone / not ours) falls back to the direct child.kill. The escalation
-  // timer is unref'd but NOT cleared on close — the direct child exiting on the SIGTERM must not save
-  // a SIGTERM-immune MCP straggler from the group SIGKILL. Caveat: the group kill reaps MCP children
+  // The tree kill is the shared one (spawnTurn, startGovernedChild). Caveat: the group kill reaps claude's MCP children
   // only while claude does not setpgid them itself — post-deploy verification item.
-  st.escalation = null;
-  // Windows has no group to signal: the whole tree is ended at once, and the escalation then finds nothing.
-  // Even when claude itself has exited, for the reason runStreamingChild gives (engine/common.mjs).
-  st.groupKill = process.platform === "win32"
-    ? (sig) => { const n = killWindowsTreeNow({ pid: st.child.pid, since: st.spawnedAt, until: st.exitedAt }); if (!n && sig === "SIGTERM") process.stderr.write(`[engine] the Windows stop found nothing of this turn left to end (program ${st.child.pid})\n`); }
-    : (sig) => { try { process.kill(-st.child.pid, sig); } catch { try { st.child.kill(sig); } catch { /* already gone */ } } };
-  st.killTree = () => {
-    st.atKill ??= { ms: Date.now() - st.t0, spoken: st.firstOutputAt !== null, toolCalls: st.toolCalls };
-    if (st.escalation) return;   // the watchdog polls — arm the escalation exactly once
-    st.groupKill("SIGTERM");
-    st.escalation = setTimeout(() => st.groupKill("SIGKILL"), killEscalateMs());
-    st.escalation.unref?.();
-  };
   // Artifact-advance watch: an observed write to the stage's own expected output file(s) is the third
   // honest progress signal (a long single Write of the final artifact may follow minutes of quiet tool
   // work). A couple of statSync calls per ≤1s tick — negligible.
@@ -1007,34 +985,32 @@ function killAndWatch(st) {
     if (activeMs < st.WARMUP) return false;
     return (st.streamedUsage()?.output ?? 0) < (st.MIN_RATE * activeMs) / 1000;
   };
-  st.watchdog = setInterval(() => {
-    st.artifactProgress();
-    const now = Date.now();
-    // THE STARTUP DEBT. An earlier repair widened the deadline below until the first byte but left this
-    // clock's ORIGIN at spawn, so the startup interval stayed on the meter: the moment the grace let
-    // go, progIdle already WAS the whole boot, and any NOPROG shorter than startup had expired before
-    // the child was observed at all. The kill then landed on the next tick, before the ask could reach
-    // toolCalls — a turn recorded as making no progress when nothing had yet had the chance to.
-    // Releasing a clock is not starting one: the first byte is this clock's origin, not its green light.
-    const progFrom = st.firstOutputAt === null ? st.lastProgress : Math.max(st.lastProgress, st.firstOutputAt);
-    const idle = now - st.lastMove, progIdle = now - progFrom;
-    // ── STARTUP IS NEITHER SILENCE NOR WORK ──────────────────────────────────────────────
-    // Every clock here USED TO start at SPAWN, so until the child's first byte they were all timing
-    // process startup: an idle clock that had not yet seen silence, and an active clock that had not
-    // yet seen work. Past tense deliberately — that work is finished, and the sentence stayed true of
-    // the byte-stall below (`lastMove`) while being false of the progress clock above, which is
-    // precisely the gap that let the defect sit here for a day looking like ambient flake. This was established for the byte-stall in common.mjs — which this engine does not use,
-    // because it spawns its own child, so that fix never reached this watchdog. Under full-suite load
-    // a starved spawn crossed a 400ms test ceiling before the mock had emitted anything, and the kill
-    // was recorded as a no-progress stall against a turn that had not yet been given a chance to
-    // progress. A child that never speaks AT ALL is still bounded: the byte-stall fires at max(STALL, GRACE).
-    const started = st.firstOutputAt !== null;
-    if (!started) st.silentIdleMs = progIdle;
-    if (idle >= (started ? st.STALL : Math.max(st.STALL, st.GRACE))) { st.stallKill = true; st.killed = true; st.killTree(); }
+  // The shared watchdog (common.mjs, governWatchdog) with this engine's own clocks.
+  // THE STARTUP DEBT. An earlier repair widened the deadline below until the first byte but left this
+  // clock's ORIGIN at spawn, so the startup interval stayed on the meter: the moment the grace let
+  // go, progIdle already WAS the whole boot, and any NOPROG shorter than startup had expired before
+  // the child was observed at all. The kill then landed on the next tick, before the ask could reach
+  // toolCalls — a turn recorded as making no progress when nothing had yet had the chance to.
+  // Releasing a clock is not starting one: the first byte is this clock's origin, not its green light.
+  // ── STARTUP IS NEITHER SILENCE NOR WORK ──────────────────────────────────────────────
+  // Every clock here USED TO start at SPAWN, so until the child's first byte they were all timing
+  // process startup: an idle clock that had not yet seen silence, and an active clock that had not
+  // yet seen work. Past tense deliberately — that work is finished, and the sentence stayed true of
+  // the byte-stall below (`lastMove`) while being false of the progress clock above, which is
+  // precisely the gap that let the defect sit here for a day looking like ambient flake. This was
+  // established for the byte-stall in common.mjs, whose watchdog this engine now shares (governWatchdog);
+  // before, it spawned its own child, so that fix never reached this watchdog. Under full-suite load
+  // a starved spawn crossed a 400ms test ceiling before the mock had emitted anything, and the kill
+  // was recorded as a no-progress stall against a turn that had not yet been given a chance to
+  // progress. A child that never speaks AT ALL is still bounded: the byte-stall fires at max(STALL, GRACE).
+  st.watchdog = governWatchdog({ pollMs: st.pollMs, stall: st.STALL, grace: st.GRACE, hardMs: st.hardMs, killTree: st.killTree,
+    lastMove: () => st.lastMove, spoken: () => st.firstOutputAt !== null, onTick: st.artifactProgress,
+    progressIdle: (now) => now - (st.firstOutputAt === null ? st.lastProgress : Math.max(st.lastProgress, st.firstOutputAt)),
+    onSilentIdle: (ms) => { st.silentIdleMs = ms; },
     // No observable progress (tokens/agent-loop/artifact) for NOPROG while bytes kept the pipe warm:
     // kill it NOW, well below the wall, and record it as a STALL — never let the ceiling raise turn
     // into extended stall burn, and never let this kill read as "the stage needed more time".
-    else if (progIdle >= (started ? st.NOPROG : Math.max(st.NOPROG, st.GRACE))) { st.stallKill = true; st.noProgressKill = true; st.killed = true; st.killTree(); }
+    noProgressMs: st.NOPROG,
     // ── A TRICKLE IS A STALL WEARING A STREAM ────────────────────────────────────────────
     //
     // Both clocks above are satisfied by a token every twelve seconds: the byte-stall resets on any
@@ -1049,11 +1025,7 @@ function killAndWatch(st) {
     // The rate is over the turn's own streamed output, on active time, after a warm-up. A healthy
     // turn is nowhere near it: the samples that motivated this ran at 74 and 82.83 tokens per second
     // against kills at 0.08 and 0.12, and the floor sits at 1.
-    // ONE CONDITION, NOT A NESTED BLOCK. An `else if (enabled) { if (trickling) … }` would swallow
-    // the chain: with the floor enabled and the rate healthy, the hard ceiling below would never be
-    // reached, and the only clock that bounds a turn producing tokens at a normal rate forever would
-    // have been switched off by adding this one.
-    else if (started && st.MIN_RATE > 0 && st.isTrickling(now)) { st.stallKill = true; st.trickleKill = true; st.killed = true; st.killTree(); }
+    isTrickling: st.MIN_RATE > 0 ? (now) => st.isTrickling(now) : null,
     // ── THE CEILING MEASURES ACTIVE TIME, NOT ELAPSED ────────────────────────────────────
     //
     // Ruling: "there isnt such thing as a hung model. it always delivers something or fails."
@@ -1081,10 +1053,8 @@ function killAndWatch(st) {
     // measured from the FIRST BYTE, never from spawn. Startup is not active time either, and
     // against a tight pin it was the whole budget — a 900ms spawn hit a 500ms ceiling having done
     // nothing at all, and the turn died carrying `hardWall` with zero tool calls to explain it.
-    else if (started && activeElapsedMs({ wall: now - st.firstOutputAt, toolWaitMs: st.toolWaitMs, toolAskedAt: st.toolAskedAt, now }) >= st.hardMs) {
-      st.killed = true; st.killTree();
-    }
-  }, st.pollMs);
+    elapsed: (now) => activeElapsedMs({ wall: now - st.firstOutputAt, toolWaitMs: st.toolWaitMs, toolAskedAt: st.toolAskedAt, now }),
+    mark: (why) => { st.killed = true; if (why !== "hardWall") st.stallKill = true; if (why === "noProgress") st.noProgressKill = true; if (why === "trickle") st.trickleKill = true; } });
 }
 
 /** The program's stdout, stderr, error and close, wired to the parser and to settle. */

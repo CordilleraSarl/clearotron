@@ -342,6 +342,10 @@ export function governWatchdog({ pollMs, stall, grace, hardMs, lastMove, spoken,
     if (!started && progIdle !== null) onSilentIdle?.(progIdle);
     if (now - lastMove() >= (started ? stall : Math.max(stall, grace))) { mark("stall"); killTree(); }
     else if (progIdle !== null && progIdle >= (started ? noProgressMs : Math.max(noProgressMs, grace))) { mark("noProgress"); killTree(); }
+    // ONE CONDITION, NOT A NESTED BLOCK. An `else if (enabled) { if (trickling) … }` would swallow
+    // the chain: with the floor enabled and the rate healthy, the hard wall below would never be
+    // reached, and the only clock that bounds a turn producing tokens at a normal rate forever would
+    // have been switched off by adding this one.
     else if (started && isTrickling?.(now)) { mark("trickle"); killTree(); }
     // — THE HARD WALL RUNS FROM THE FIRST BYTE, never from spawn. Process startup is not the turn: against a
     // tight pin it was the whole budget, and against the shipping 660s ceiling it charged ~0.15% to every turn
