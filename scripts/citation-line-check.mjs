@@ -215,8 +215,9 @@ export function decidableHits(citations, lineCountOf, ships = sourceCrossesTheCu
     // `driver/skills/a/SKILL.md` resolves AMBIGUOUS against fifteen real SKILL.md files, so it never
     // reached the entry written for it and sat in the bucket nothing judged. Measured 2026-08-20 —
     // that entry matched two citations and only one reached the code. A planted path that resolves EXACTLY is
-    // planted all the same: `/srv/app/driver/pipeline.mjs:2411` is a stack frame a test feeds its parser, and the day
-    // pipeline.mjs grew shorter than 2411 lines it read as an overrun (planted-data-is-not-a-claim-about-the-tree).
+    // planted all the same: portal-service.test.mjs feeds its parser a synthetic stack frame under /srv/app/ that names
+    // a line of the real pipeline.mjs, and the day that file grew shorter than the line it read as an overrun
+    // (planted-data-is-not-a-claim-about-the-tree.test.mjs says why no planted line is a claim about this tree).
     if (exemptTarget(c.cited)) { exempt.push(c); continue; }
     if (c.state === "missing") {
       (ships(c.from) ? dangling : danglingUnshipped).push(c);
