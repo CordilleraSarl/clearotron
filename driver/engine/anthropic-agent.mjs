@@ -23,7 +23,7 @@ import { fileURLToPath } from "node:url";
 import { WRITE_DISCIPLINE, absolutizeSkillRefs, resolveSpawnCwd, spawnGraceMs, isRecordTool, stallMs, engineMaxBufferChars, startGovernedChild, governWatchdog } from "./common.mjs";   // the child, its watchdog, and the stall and buffer limits both engines share
 import { resolveEngineProgram, resolveModel } from "../driver.config.mjs";   // — the one place that finds the program; it reads every spelling of the setting
 import { authorityTrees } from "../authority-trees.mjs";
-import { recordEngineChild, clearEngineChild } from "./child-record.mjs";   //
+import { clearEngineChild } from "./child-record.mjs";   // the shared child (startGovernedChild) writes the record; this clears it at settle
 import { engineEnv } from "./engine-env.mjs";   // — the program's environment, by list (see spawnEnv)
 import { engineSpawn, spawnsDetached } from "./engine-spawn.mjs";   // one answer to how a turn starts and ends, on every platform
 import { newSessionRecord, noteClaudeEvent, sessionSummary, countTool, streamSink, claudeEnding } from "./session-record.mjs";   // what the session went through, beside how it ended
