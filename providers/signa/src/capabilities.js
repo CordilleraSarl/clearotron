@@ -93,6 +93,14 @@ export const SIGNA_OFFICE_BY_ISO = Object.freeze(
 /** Spellings an order may carry → the ISO code this register's office table is keyed on. */
 export const SIGNA_ISO_ALIASES = Object.freeze({ UK: "GB", INT: "WO" });
 
+/**
+ * The vendor's own office code → our key. It differs from the jurisdiction for one office: the EUIPO's code
+ * is EM, and the territory it serves is EU. A plan names the EU register by that office code.
+ */
+export const SIGNA_OFFICE_BY_CODE = Object.freeze(Object.fromEntries(
+  SIGNA_OFFICE_SNAPSHOT.offices.filter((o) => o.status === "live").map((o) => [o.code, o.key]),
+));
+
 export const CAPABILITIES = Object.freeze({
   id: "signa",
   label: "Signa",
@@ -257,13 +265,17 @@ export const CAPABILITIES = Object.freeze({
     // the United Kingdom the order means (ISO spells it GB), and "INT" is WIPO's international register
     // (the office's code is WO). Without them a UK order was disclosed as unsearched here while the
     // same order written "GB" or "United Kingdom" searched the UK office.
+    //
+    // AND THE OFFICE'S OWN CODE, read after the territory: "EM" names the EUIPO, whose territory is EU, so
+    // an order for the EU register by its office code was disclosed as unsearched here while the other
+    // registers searched it.
     translate: (code) => {
       const raw = String(code ?? "").trim();
       if (!raw) return null;
       const lower = raw.toLowerCase();
       if (lower in SIGNA_OFFICE_KEYS) return lower;            // already a Signa key — passthrough
       const iso = raw.toUpperCase();
-      return SIGNA_OFFICE_BY_ISO[SIGNA_ISO_ALIASES[iso] ?? iso] ?? null;   // ISO → key, or null (genuinely uncovered)
+      return SIGNA_OFFICE_BY_ISO[SIGNA_ISO_ALIASES[iso] ?? iso] ?? SIGNA_OFFICE_BY_CODE[iso] ?? null;   // ISO → key, or null (genuinely uncovered)
     },
     covered: Object.freeze(Object.keys(SIGNA_OFFICE_KEYS)),
 

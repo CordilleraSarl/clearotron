@@ -123,6 +123,19 @@ export const TERRITORY_TO_CODE = Object.freeze({
   "UNITED ARAB EMIRATES": "AE", "UAE": "AE",
   "SAUDI ARABIA": "SA",
   "SOUTH AFRICA": "ZA",
+  // SPELLINGS A REGISTER'S OWN TABLE ALREADY HELD, with the meaning that table gives them. Clarivate's
+  // office aliases read each of these, but an order is read here first, so an order that wrote one was
+  // disclosed as unrecognized on every register, Clarivate's included.
+  "GBR": "GB", "ENGLAND": "GB", "SCOTLAND": "GB", "WALES": "GB",
+  "THE NETHERLANDS": "NL", "HOLLAND": "NL",
+  "DEUTSCHLAND": "DE",
+  "SCHWEIZ": "CH", "SUISSE": "CH",
+  "CZECH REPUBLIC": "CZ",
+  "PEOPLE'S REPUBLIC OF CHINA": "CN",
+  "RUSSIAN FEDERATION": "RU",
+  "OAPI": "OA",
+  "EUROPEAN UNION INTELLECTUAL PROPERTY OFFICE": "EU",
+  "MADRID PROTOCOL": "WO", "INTERNATIONAL REGISTER": "WO",
 });
 
 // ── read by driver/publish/regions.mjs ──────────────────────────────────────────────────────────────────────
