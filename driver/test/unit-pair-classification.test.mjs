@@ -78,8 +78,8 @@
 //                               `familyExplained` beside it (a retrieval pattern the reading turn
 //                               withheld, 2026-09-25) has the same shape: it feeds the returned
 //                               `phoneticFamilyExplained` and the same `complete`, off the same band.
-//   · the stage ladder's two `wrote` producers, measureAttempt() in ladder/attempt-record.mjs and
-//                               repairFormInDispatch() in ladder/form-repair.mjs — see the disagreement below; both now guard
+//   · the stage ladder's two `wrote` producers, measureAttempt() in attempt-record.mjs and
+//                               repairFormInDispatch() in form-repair.mjs — see the disagreement below; both now guard
 //                               the empty case, and each reads its own per-turn stat snapshot, which the
 //                               site states.
 //   · grounds-grammar.mjs:89 classifyGroundsNote
