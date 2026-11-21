@@ -37,7 +37,7 @@ import { logTurnaroundReconciliation } from "./run-quote.mjs";
 import { RunCancelled, assertNotCancelledBeforePublish, isCancelled, readCancel, stopsWithTheRun } from "./cancel.mjs";   // stop-by-user: never the failure lane below
 import { loadFrameworkManifest, parseFrameworkManifest, frameworkFor, DEFAULT_FRAMEWORK } from "./framework.mjs";
 import { attachFrameworkMethod, methodPathFor, FROZEN_METHOD_FILE } from "./framework-method.mjs";
-import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutGridSpec, KNOCKOUT_WEB, KNOCKOUT_MINUTES_BAR, knockoutBarVerdict, koChunks } from "./stages-knockout.mjs";
+import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutGridSpec, KNOCKOUT_WEB, KNOCKOUT_MINUTES_BAR, knockoutBarVerdict, koChunks, groupRecordsDoc } from "./stages-knockout.mjs";
 import { kebabCollisions, reportIdentityFor, CAPABILITY_SKIPPED_CAUSE, CAPABILITY_SKIPPED_NOTE } from "./search-policy.mjs";
 import { countPreflight, countRegisterHits, countedMarks, resolveCountExecutor } from "./register-count.mjs";
 import { recordsPreflight, listedMarks } from "./register-records.mjs";
@@ -327,14 +327,22 @@ async function correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, wor
   const asOpen = (defects, state, reason = null) => defects.map((x) => ({ kind: x.kind, mark: x.mark, problem: x.problem, state, ...(reason ? { reason } : {}) }));
   const keepRecord = (record) => { try { atomicWrite(paths(run.runDir).knockoutCorrections, JSON.stringify(record, null, 2) + "\n"); } catch (e) { note(`corrections record not kept (non-fatal): ${String(e?.message ?? e).slice(0, 160)}`); } };
   const failed = [];
-  for (const c of touched) {
+  const thrown = [];
+  // THE CORRECTIONS RUN SIDE BY SIDE, as the groups they correct were rated. A RATE LIMIT OR A STOP STARTS NOTHING MORE: the
+  // corrections already running finish, none is sent into the same limit, and a queued one asks for the stop before it is sent, as
+  // the assessment's groups do. A stop is the run's to handle, so it leaves here as itself, never as a failed correction.
+  await runBatched(touched, KO_CONCURRENT_TURNS, async (c) => {
     try {
+      if (isCancelled(run.runDir)) throw new RunCancelled("knockout-correct", readCancel(run.runDir));
       await koStage("knockout-correct", ctx, { chunkNo: c, msgCtx: { work, chunkMarks: chunks[c], framework: ctx.framework, frameworkMethod: ctx.frameworkMethod ?? null } });
     } catch (e) {
-      if (e instanceof StageFailure && (e.rateLimited || e.resetsAt)) throw e;
+      thrown.push({ c, e });
       failed.push({ chunk: c, reason: String(e?.message ?? e).slice(0, 200) });
     }
-  }
+  }, { stop: () => thrown.some((f) => rateLimited(f) || f.e instanceof RunCancelled) });
+  failed.sort((a, b) => a.chunk - b.chunk);
+  const halted = thrown.find((f) => f.e instanceof RunCancelled) ?? thrown.find(rateLimited);
+  if (halted) throw halted.e;
   // Back to the record as it was rated, through the same gate, with every defect still open and why.
   const standDown = (outcome, detail) => {
     restoreChunkBases(run.runDir, touched);
@@ -389,7 +397,7 @@ async function correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, wor
     await koStage("knockout-review", ctx, { chunkNo: 1, msgCtx: { ...d.msgCtx, recheckTable: correctionsAppliedTable(outcomes),
       movedNames, comparisonComplete: outside.complete } });
   } catch (e) {
-    if (e instanceof StageFailure && (e.rateLimited || e.resetsAt)) throw e;
+    if (e instanceof RunCancelled || (e instanceof StageFailure && (e.rateLimited || e.resetsAt))) throw e;
     // NOBODY READ THE CORRECTED RECORD, so nothing here can call a defect answered.
     const reason = String(e?.message ?? e).slice(0, 200);
     keepRecord({ ...held, recheck: "failed", failure: reason, open: asOpen(work.defects, "not-rechecked", "recheck-failed") });
@@ -748,15 +756,39 @@ export function resolveSweepExecutor(opts) {   // exported for its test, like re
   };
 }
 
+// A group's failure that decides what happens next: a stop first, then a usage limit, whose reset decides when to try again, then the
+// first by group order.
+const rateLimited = (f) => f.e instanceof StageFailure && Boolean(f.e.rateLimited || f.e.resetsAt);
+const firstFailure = (failures) => (failures.find((f) => f.e instanceof RunCancelled) ?? failures.find(rateLimited)
+  ?? [...failures].sort((a, b) => a.c - b.c)[0]).e;
+
+/**
+ * Why a group's framework echo does not name the frozen framework, or null. The two are compared as values, the framework's key and its
+ * ladder of band labels, so a difference in shape is not read as a different framework. No echo is no fault. PURE.
+ */
+export function frameworkEchoFault(echo, frozen) {
+  if (echo == null) return null;
+  const words = (xs) => (Array.isArray(xs) ? xs.map((x) => String(typeof x === "string" ? x : x?.label ?? "").trim().toLowerCase()) : null);
+  if (echo.source != null && String(echo.source).trim().toLowerCase() !== String(frozen.source ?? "").trim().toLowerCase())
+    return `names the framework "${echo.source}", not the frozen "${frozen.source}"`;
+  if (echo.ladder != null && JSON.stringify(words(echo.ladder)) !== JSON.stringify(words(frozen.ladder)))
+    return `was rated on a ladder that is not the frozen framework's`;
+  return null;
+}
+
+// AT MOST THREE MODEL TURNS AT ONCE, for the rating groups and for their corrections (design, 2026-11-05).
+const KO_CONCURRENT_TURNS = 3;
+
 // bounded-concurrency fan-out (local copy of the runBatched idiom — pipeline.mjs's is private).
 // A non-finite limit collapses to 1 worker, never to zero (Array.from({length: NaN}) is [] — a typo'd
 // concurrency env var would otherwise silently skip the ENTIRE sweep; review 2026-07-17).
-async function runBatched(items, limit, fn) {
+// `stop`, when given, is asked before each item is taken: once it answers true no further item starts, and those running finish.
+async function runBatched(items, limit, fn, { stop = null } = {}) {
   const results = new Array(items.length);
   let i = 0;
   const cap = Number.isFinite(limit) && limit >= 1 ? Math.floor(limit) : 1;
   const workers = Array.from({ length: Math.max(1, Math.min(cap, items.length)) }, async () => {
-    while (i < items.length) { const idx = i++; results[idx] = await fn(items[idx], idx); }
+    while (i < items.length && !stop?.()) { const idx = i++; results[idx] = await fn(items[idx], idx); }
   });
   await Promise.all(workers);
   return results;
@@ -1336,7 +1368,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
         ({ degraded, recovered } = await startSweep());
     } },
     { name: "assess", run: async () => {
-        // 3 — assess (chunked ≤8/turn; merged + gated in code). DEGRADED per the DISK truth (payload
+        // 3 — assess (chunked ≤3/turn, side by side; merged + gated in code). DEGRADED per the DISK truth (payload
         // presence), never the in-memory Map alone — resume-proof: a prior attempt's degrades count too.
         // A STOP ASKED FOR WHILE THE TWO RESEARCH BRANCHES RAN ends the run here, with both settled and their work kept: the rating does
         // not start, and the status does not name it as begun. The turn boundary would refuse its first turn anyway.
@@ -1360,23 +1392,53 @@ export async function knockoutInner(ctx, job, opts = {}) {
             }
           }
         }
-        for (let c = 0; c < chunks.length; c++) {
-          await koStage("knockout-assess", ctx, { chunkNo: c, msgCtx: { chunkMarks: chunks[c], chunkTotal: chunks.length, framework: ctx.framework, frameworkMethod: ctx.frameworkMethod ?? null } });
+        // THE GROUPS ARE RATED SIDE BY SIDE. Each writes only its own chunk, under its own session and call folder, and all are joined
+        // before anything is composed. A group that fails leaves the others' accepted chunks for a resume, which re-runs only what failed.
+        // A RATE LIMIT OR A STOP STARTS NOTHING MORE: the groups already running finish and keep their work, and no further group is sent.
+        //
+        // EACH GROUP IS HANDED ITS OWN NAMES' FILINGS. The held-filings record is the whole batch's, and three groups each reading it
+        // read every other group's filings three times over: measured in testing, 2026-11-21, about 0.7 MB of output per Codex group, against
+        // 66-172 KB of the group's own research. The full record stays where it is, for the validator and for every later step.
+        const groupRecords = new Map();
+        if (chunks.length > 1 && existsSync(K.registerRecords)) {
+          let held = null;
+          try { held = JSON.parse(readFileSync(K.registerRecords, "utf8")); } catch { held = null; }
+          if (held) for (let c = 0; c < chunks.length; c++) {
+            atomicWrite(K.groupRegisterRecords(c), JSON.stringify(groupRecordsDoc(held, chunks[c].map((m) => m.name)), null, 2) + "\n");
+            groupRecords.set(c, K.groupRegisterRecords(c));
+          }
         }
+        const assessFailures = [];
+        await runBatched(chunks.map((_, c) => c), KO_CONCURRENT_TURNS, async (c) => {
+          try { await koStage("knockout-assess", ctx, { chunkNo: c, msgCtx: { chunkMarks: chunks[c], chunkTotal: chunks.length, framework: ctx.framework, frameworkMethod: ctx.frameworkMethod ?? null, registerRecordsFile: groupRecords.get(c) ?? null } }); }
+          catch (e) { assessFailures.push({ c, e }); }
+        }, { stop: () => assessFailures.some((f) => rateLimited(f) || f.e instanceof RunCancelled) });
+        if (assessFailures.length) throw firstFailure(assessFailures);
         // ONE COMPOSITION, for the rated batch and for a corrected one: the chunks read, the summary joined, the engine's caveats,
         // the merged gate and the write. A correction that took a shorter road would reach a client through a lighter gate.
         composeRecord = () => {
           // cardOrder records how this run's page lists a name's cards, so a delivered report re-renders as it was delivered.
-          const merged = { schema_version: 1, framework: null, batch: null, cardOrder: KNOCKOUT_CARD_ORDER, marks: [] };
-          const summaries = [];
+          const frozenFramework = { source: ctx.framework.framework_key, ladder: ctx.framework.bands.map((b) => b.label) };
+          const merged = { schema_version: 1, framework: frozenFramework, batch: null, cardOrder: KNOCKOUT_CARD_ORDER, marks: [] };
+          const summaries = [], batches = [];
           for (let c = 0; c < chunks.length; c++) {
             const chunkPath = K.assessChunk(c);
             const part = JSON.parse(readFileSync(chunkPath, "utf8"));
-            if (c === 0) { merged.framework = part.framework ?? { source: ctx.framework.framework_key, ladder: ctx.framework.bands.map((b) => b.label) }; merged.batch = part.batch ?? null; }
+            // THE FRAMEWORK IS THE FROZEN ONE, never a group's answer. A group's echo must name the same framework and ladder, or nothing
+            // is composed: a group rated on another is not part of this batch.
+            const echo = frameworkEchoFault(part.framework, frozenFramework);
+            if (echo) throw new Error(`knockout_compose_framework: group ${c + 1} ${echo}`);
+            if (part.batch) batches.push(part.batch);
             if (typeof part.chunkSummary === "string" && part.chunkSummary.trim()) summaries.push(part.chunkSummary.trim());
             merged.marks.push(...(part.marks ?? []));
           }
-          if (!merged.batch) merged.batch = { productContext: plan.batch.productContext, standardCaveats: [] };
+          // THE BATCH IS THE WHOLE BATCH'S. Its scope is the frozen plan's, never one group's, and every group's batch-wide caveat is
+          // kept, in group order, once.
+          const caveats = [];
+          for (const b of batches) for (const x of (Array.isArray(b?.standardCaveats) ? b.standardCaveats : [])) {
+            if (!caveats.some((y) => String(y).trim() === String(x).trim())) caveats.push(x);
+          }
+          merged.batch = { ...(batches[0] ?? {}), productContext: plan.batch?.productContext ?? batches[0]?.productContext ?? "", standardCaveats: caveats };
           // the WHOLE-batch executive summary = the per-chunk summaries, composed in code (every chunk's
           // validator required one, so no mark's chunk is silently absent — review 2026-07-17)
           merged.batch.executiveSummary = summaries.join("\n\n");

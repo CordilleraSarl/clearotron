@@ -1239,6 +1239,12 @@
           "skips": 2,
           "todos": 0
         },
+        "a-knockout-batch-is-rated-in-small-groups-side-by-side.test.mjs": {
+          "tests": 9,
+          "asserts": 53,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-card-cites-a-filing-as-its-office-does.test.mjs": {
           "tests": 2,
           "asserts": 7,
