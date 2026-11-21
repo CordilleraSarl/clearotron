@@ -164,6 +164,8 @@ const probeWord = probeWords ? probeWords.join(" ") : null;
 // PARENT sees the stderr byte EARLY, so the write has to have happened before the block, not merely
 // have been requested.
 if (process.env.MOCK_CLAUDE_STDERR_FIRST) writeSync(2, "mock-claude: an early notice on stderr\n");
+// The stall tree is started and named before any output, so a stall kill can never land before its pidfile exists.
+if (process.env.MOCK_CLAUDE_USAGE_THEN_STALL) stallTree();
 
 const bootMs = Number(process.env.MOCK_CLAUDE_BOOT_MS || 0);
 if (bootMs > 0) Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, bootMs);
@@ -320,7 +322,6 @@ if (process.env.MOCK_CLAUDE_USAGE_THEN_STALL) {
   // journalled as a 0-token lane wedge / transient-provider fault.
   const u = process.env.MOCK_CLAUDE_USAGE ? JSON.parse(process.env.MOCK_CLAUDE_USAGE)
     : { input_tokens: 7, output_tokens: 3, cache_read_input_tokens: 2950000, cache_creation_input_tokens: 0 };
-  stallTree();
   send({ type: "assistant", message: { role: "assistant", model: wireModel, content: [{ type: "text", text: "working…" }], usage: u }, session_id: session });
   setInterval(() => {}, 1 << 30);
 } else if (process.env.MOCK_CLAUDE_KILLED_MULTICALL) {

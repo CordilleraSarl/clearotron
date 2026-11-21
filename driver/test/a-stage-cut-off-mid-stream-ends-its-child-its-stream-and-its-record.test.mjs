@@ -100,7 +100,8 @@ async function cutOff(t, engine, env) {
 for (const [engine, want] of Object.entries(ENGINES)) {
   test(`${engine}: a stage cut off mid-stream ends its program and what it started, closes its stream whole, and records the kill`, async (t) => {
     const { res, row, streams, stream, events, recordedWhileRunning, recordAfter, tree } = await cutOff(t, engine,
-      { ...want.env, CLEAROTRON_STALL_MS: "400" });
+      // a window wide enough that a loaded box cannot deschedule the stand-in past it between its first two lines
+      { ...want.env, CLEAROTRON_STALL_MS: "1500" });
 
     // the kill, classified as it was
     assert.equal(res.ok, false, "a turn the watchdog cut off was accepted");
@@ -108,6 +109,7 @@ for (const [engine, want] of Object.entries(ENGINES)) {
     assert.equal(res.fail, want.fail);
 
     // the child and what it started
+    assert.ok(tree, "the stand-in program never named its process tree");
     assert.ok(await gone(tree.pid), "the program outlived its kill");
     assert.ok(await gone(tree.grandPid), "what the program started outlived the kill (a SIGTERM-ignoring grandchild in its group)");
     if (process.platform !== "win32") assert.throws(() => process.kill(-tree.pid, 0), { code: "ESRCH" }, "the program's process group outlived the kill");
