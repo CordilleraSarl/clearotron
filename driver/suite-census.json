@@ -3651,6 +3651,12 @@
           "skips": 0,
           "todos": 0
         },
+        "both-engines-read-their-program-through-one-reader-with-their-own-rules.test.mjs": {
+          "tests": 9,
+          "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
         "both-lanes-seed-identity.test.mjs": {
           "tests": 3,
           "asserts": 13,

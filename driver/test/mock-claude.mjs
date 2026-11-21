@@ -20,6 +20,7 @@
 //     (+ MOCK_CLAUDE_ASK_DELAY_MS=<ms> to hold that ask <ms> after init, pipe warm throughout: the gap
 //      between the FIRST BYTE and the first PROGRESS event — a timer, not a block, see the call site)
 //   MOCK_CLAUDE_TOKEN_STREAM=<ms> (+ _COUNT) — usage-bearing partials then a clean result (token movement = progress)
+//   MOCK_CLAUDE_STDERR_STREAM=<ms> (+ _COUNT) — after init, only stderr lines, then a clean result (stderr is not liveness)
 //   MOCK_CLAUDE_FAIL=1    — emit a result with is_error/subtype:error (a failed turn)
 //   MOCK_CLAUDE_OVERLOADED=1 — the Anthropic 529 overload shape (failed result carrying overloaded_error, exit 1)
 //   MOCK_CLAUDE_REFRESH_LOCKED=<file> — while <file> does not exist, create it and answer as the program does on an
@@ -395,6 +396,22 @@ if (process.env.MOCK_CLAUDE_USAGE_THEN_STALL) {
       process.exit(0);
     }
     send({ type: "system", subtype: "ping", t: Date.now() });   // bytes, parseable — but NOT progress
+  }, gap);
+} else if (process.env.MOCK_CLAUDE_STDERR_STREAM) {
+  // Spoken on stdout (the init above), then only STDERR: a notice every <ms>, then a clean result. This engine's
+  // protocol is stdout alone, so the notices are not liveness and the stall watchdog still ends the turn.
+  const gap = Number(process.env.MOCK_CLAUDE_STDERR_STREAM);
+  const total = Number(process.env.MOCK_CLAUDE_STDERR_COUNT || 20);
+  let i = 0;
+  const iv = setInterval(() => {
+    if (i++ >= total) {
+      clearInterval(iv);
+      send({ type: "result", subtype: "success", is_error: false, duration_ms: 5, num_turns: 1, result: "mock claude ok",
+        stop_reason: "end_turn", session_id: session, total_cost_usd: 0.001,
+        usage: { input_tokens: 10, output_tokens: 1, cache_read_input_tokens: 0, cache_creation_input_tokens: 0 } });
+      process.exit(0);
+    }
+    process.stderr.write(`mock-claude: a notice ${i}\n`);
   }, gap);
 } else if (process.env.MOCK_CLAUDE_TOKEN_STREAM) {
   // Token-movement substrate: usage-bearing message_delta partials every <ms> (honest progress), then a
