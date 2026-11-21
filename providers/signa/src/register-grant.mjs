@@ -20,8 +20,8 @@
 // PER TOOL, as every sibling entry does it:
 //   register_search / register_record_fetch — served since the thin days.
 //   register_enumerate     — SERVED and now granted.  built the page loop on the shared kernel;
-//     capabilities.js records the bounds it runs against as live-probed 2026-08-17 (pageSize 100 is the
-//     API's hard refusal, verified at 200/250/500). This is the tool the owner-window ceiling is
+//     capabilities.js records the bounds it runs against (a page holds at most 100 records, and the API
+//     refuses a larger one). This is the tool the owner-window ceiling is
 //     passed into (OWNER_SCOPED_WINDOW → ceilingFor → makeEnumerate), so withholding it put that
 //     criterion out of reach of any round.
 //   register_execute_plan  — SERVED and now granted. Two corrective-ladder hints name it unconditionally
