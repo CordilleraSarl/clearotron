@@ -110,6 +110,13 @@ test("spawn error: a missing binary resolves with { spawnError }, never rejects"
   assert.equal(r.rawCode, undefined);
 });
 
+test("spawn error: a spawn that throws before any child exists resolves with { spawnError } on both engines' path", async () => {
+  // An argument holding a NUL byte is refused by spawn itself, synchronously, so no child, pid or record ever exists.
+  const r = await runStreamingChild({ bin: execPath, args: ["-e", "a\0b"], input: "" });
+  assert.equal(r.spawnError?.code, "ERR_INVALID_ARG_VALUE", "a spawn that throws must surface as spawnError");
+  assert.equal(r.rawCode, undefined);
+});
+
 // ── pure helpers ─────────────────────────────────────────────────────────────────────────────────────
 test("absolutizeSkillRefs: rewrites skills/… refs under dirname(skillsDir), idempotently", () => {
   const skillsDir = "/opt/driver/skills";
