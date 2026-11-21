@@ -42,6 +42,7 @@ import {
   themeButton, THEME_BTN_CSS, CHROME_CSS, logoLockup, confPosture,
 } from '../../shared/brand.mjs';
 import { reportPage } from './page-shell.mjs';   // the one report frame, shared with the clearance template
+import { hrefAttr } from './attr.mjs';   // the workbook beside the page, linked as the clearance links it
 import { inlineMarkdown } from '../../shared/inline-markdown.mjs';   // the inline-markdown dialect, shared with the clearance template
 import { SUMMARY_BLOCK_LINE, parseSummaryBlocks } from '../../shared/summary-blocks.mjs';
 
@@ -96,6 +97,9 @@ const isHttpUrl = (u) => /^https?:\/\//i.test(String(u ?? '').trim());
 // since the Result screen's first commit (3654a76), so the popup is not what was missing. `rel` stays
 // beside it — noopener severs window.opener, noreferrer withholds the run's URL from the evidence host.
 const linkOrText = (u) => (isHttpUrl(u) ? `<a href="${escAttr(u)}" target="_blank" rel="noopener noreferrer">${esc(u)}</a>` : esc(u));
+// The audit workbook's link, attribute-safe: the portal's route where the publisher hands one in, else the workbook's
+// own file name beside the page, else none.
+const workbookHref = (route, file) => (isHttpUrl(route) ? escAttr(route) : hrefAttr(file, { relative: true }));
 
 // A listed filing's record as its office publishes it, where the run's register has no page of its own:
 // publish sets `officeLink` from the filing's own numbers (office-record-links.mjs). The label is the
@@ -1802,7 +1806,7 @@ ${filings}`
   // falls back to its intrinsic 500px and overflows the body box by ~440px, which the height bridge then
   // posts as the frame height. That is invisible to a string test and obvious to a browser: the page
   // renders correctly and sits in a frame with 450px of dead space under it. Caught by render-check.
-  return { findings, runId, overall, issued, identity, matter, homeHref, auditHref, delivery, servedModels, demoData, title, productName, issuedDate, overallStop, summary, caveats, glance, newCaveats, aboutRequest, onFieldSec, leftOpenSec, filingsSec, chromeHref };
+  return { findings, runId, overall, issued, identity, matter, homeHref, auditHref, auditFile, delivery, servedModels, demoData, title, productName, issuedDate, overallStop, summary, caveats, glance, newCaveats, aboutRequest, onFieldSec, leftOpenSec, filingsSec, chromeHref };
 }
 
 // THE KNOCKOUT PAGE, AS ITS PARTS (C14). page-shell.mjs `reportPage` draws every report page in one frame; what makes this
@@ -1813,7 +1817,7 @@ export const KNOCKOUT_PAGE = Object.freeze({
   contextOf: knockoutContextOf,
   title: ({ title, productName }) => `${productName ? `${esc(productName)} — ` : ''}${esc(title)}`,
   css: () => CHROME_CSS + '\n' + THEME_BTN_CSS + '\n' + KO_CSS,
-  topbar: ({ findings, runId, overall, issued, identity, matter, homeHref, auditHref, title, productName, issuedDate, overallStop }) => `${homeHref ? `<a class="homebtn tb-back no-print" href="${escAttr(homeHref)}" title="${K.topbar.allReports}"><span aria-hidden="true">←</span> <span class="tb-back-lbl">${K.topbar.allReports}</span></a>` : ''}
+  topbar: ({ findings, runId, overall, issued, identity, matter, homeHref, auditHref, auditFile, title, productName, issuedDate, overallStop }) => `${homeHref ? `<a class="homebtn tb-back no-print" href="${escAttr(homeHref)}" title="${K.topbar.allReports}"><span aria-hidden="true">←</span> <span class="tb-back-lbl">${K.topbar.allReports}</span></a>` : ''}
   ${logoLockup({ mark: 20, tag: '' })}<span class="sp"></span>
   <span class="tb-risk" style="background:var(${overallStop});color:var(${overallStop}-on)">${esc(overall ?? '—')}</span>
   ${/* THE IDENTITY LINE NAMES THE MARK AND THE SEARCH, NOT THE RUN. It printed `matter || runId`,
@@ -1851,8 +1855,10 @@ export const KNOCKOUT_PAGE = Object.freeze({
     ${exportPopover(`
       <button class="util primary" onclick="exportPDF()">\u2b07 ${K.topbar.exportPdf}</button>
       ${/* THE CLEARANCE'S OWN WORKBOOK CONTROL (owner, 2026-11-18). The page cites "the audit workbook" and gave no way to
-           open it; the control links the portal's audit route the publisher hands in, and is absent when there is none. */''}${
-        isHttpUrl(auditHref) ? `<a class="util" href="${escAttr(auditHref)}" download>\u2b07 ${K.topbar.downloadAudit}</a>` : ''}
+           open it; the control links the portal's audit route the publisher hands in. A page published with no public
+           address, as the demo is, links the workbook by its file name, which sits beside the page, as the clearance's
+           control does. Absent when the run has no workbook. */''}${
+        workbookHref(auditHref, auditFile) ? `<a class="util" href="${workbookHref(auditHref, auditFile)}" download>\u2b07 ${K.topbar.downloadAudit}</a>` : ''}
       <div class="tb-sep"></div>
       <div class="tb-row"><button class="util" onclick="openAll(true)">${K.topbar.expandAll}</button><button class="util" onclick="openAll(false)">${K.topbar.collapseAll}</button></div>
     `)}
