@@ -834,6 +834,7 @@ export const JURISDICTION_CODE_FOLD: Readonly<Record<string, string>> = Object.f
   EM: "EU",
   EUTM: "EU",
   EUIPO: "EU",
+  INT: "WO",
 })
 
 export const KNOWN_JURISDICTION_CODES: ReadonlySet<string> = Object.freeze(new Set([
