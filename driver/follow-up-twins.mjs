@@ -47,6 +47,9 @@ export function followUpKinds(receipt) {
   return out;
 }
 
+/** The kinds as the report document carries them, `[directive, [kind, …]]` pairs, read back into the Map above. PURE. */
+export const followUpKindsFrom = (pairs) => new Map((pairs ?? []).map(([k, kinds]) => [k, new Set(Array.isArray(kinds) ? kinds : [])]));
+
 /** The kinds recorded for the directive a Follow-up row prints, or null. The directive is its note's opening clause. PURE. */
 export function kindsForFollowUp(row, kinds) {
   if (!(kinds instanceof Map) || !kinds.size) return null;

@@ -230,7 +230,7 @@ export function clearanceWorkbookOf(doc) {
       registerPublishesRecordPages: origins == null ? null : origins.length > 0,
       recordLinks: client.recordLinks?.byUri ? new Map(client.recordLinks.byUri) : null,
       assessmentNotCompleted: verdict.assessmentNotCompleted, registerReach: scope.registerReach, registerScope: scope.registerScope,
-      localScripts: scope.searchDepth?.counts?.localScripts ?? null,
+      localScripts: scope.searchDepth?.counts?.localScripts ?? null, followUpKinds: client.followUpKinds,
     },
     audit: reviewer.audit,
     title: doc.prose.frontMatter.title,
