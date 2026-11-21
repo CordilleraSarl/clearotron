@@ -17,9 +17,9 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { REPORT_ROOT, REPORT_ROOT_DARK_EXPLICIT, THEME_INIT_EXPLICIT, FAVICON_LINK, BRAND, sectionStrip } from '../../shared/brand.mjs';
 import { REPORT_FONT_STYLE } from '../../shared/brand-fonts.mjs';   // the typefaces travel inside the report; it fetches nothing to draw its text
+import { escapeAttr as escHtml } from '../../shared/html-escape.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const escHtml = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 // Brand :root tokens are sourced from shared/brand.mjs (REPORT_ROOT) and prepended to the report stylesheet, so
 // report.css carries only rules — the palette lives in ONE place across surfaces.

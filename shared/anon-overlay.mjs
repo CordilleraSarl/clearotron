@@ -27,8 +27,7 @@
 // profile prose) is tagged as a key-less/run-less mark → always blurred in privacy mode.
 
 import { readFileSync } from "node:fs";
-
-const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+import { escapeAttr as esc } from "./html-escape.mjs";   // text and attribute values alike
 
 const DEFAULTS = {
   enabled: false,            // fail to a NORMAL page if the config is missing/garbled

@@ -19,8 +19,7 @@ import { existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { anonClient, anonToggle } from "./anon-overlay.mjs";
 import { logoLockup, themeButton, THEME_BTN_CSS, CHROME_CSS } from "./brand.mjs";
-
-const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+import { escapeAttr as esc } from "./html-escape.mjs";   // text and attribute values alike
 
 // Brand-token-driven so it inherits each surface's palette. Full-bleed crimson bar; inner column aligns to the
 // same 1000px content width as the pages. Sticky so it floats as you scroll. The page-links group (.navmenu)
