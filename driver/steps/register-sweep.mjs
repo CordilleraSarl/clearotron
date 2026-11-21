@@ -371,7 +371,7 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
     //
     // The prior channel is the TRUSTED one and already carries everything needed. Half forms are
     // driver-written, `seatFields(p, row)` carries their rulings by the same `pOk` path, and
-    // syncDispositionForm() in gateway.mjs already unions this exact shape — prior-only, `{ rows: null }` submitted — on
+    // syncDispositionForm() in form-sync.mjs already unions this exact shape — prior-only, `{ rows: null }` submitted — on
     // every attempt. So this is that mode, not a new one.
     //
     // ONE METRIC MOVES, deliberately: with no submission, `carried` counts every ruled row, because

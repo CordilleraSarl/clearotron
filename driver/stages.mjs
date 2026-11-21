@@ -1095,7 +1095,7 @@ export const VARIANT_CATEGORY_BRIEF =
 //
 // Enforced by driver/test/contract-audit.test.mjs. Adding a key here changes no runtime behaviour:
 // only `def.contract` reaches _driver/stage-contracts.json, written by
-// recordStageContract() in pipeline.mjs, and nothing spreads a stage def.
+// recordStageContract() in stage-dispatch.mjs, and nothing spreads a stage def.
 export const STAGES = {
   "matter-frame": {
     model: "opus", thinking: "high", timeoutSec: 300, stallSec: 300,
@@ -2566,7 +2566,7 @@ export const STAGES = {
       },
       "the escalation decision — which register axes carry a material, unresolved, genuinely closeable gap, and the one-line reason for each": {
         class: "judgment", tokens: [],
-        why: "Whether a documented coverage-limited row, a capability-gap deferral or a fresh concern on a confirmed-clean row warrants spending a re-run. The driver hands the coverage/execution truth in as a computed table (skepticDeferralExtra() in pipeline.mjs) precisely so this is a call over data rather than a re-derivation — but the call itself is nobody else's.",
+        why: "Whether a documented coverage-limited row, a capability-gap deferral or a fresh concern on a confirmed-clean row warrants spending a re-run. The driver hands the coverage/execution truth in as a computed table (skepticDeferralExtra() in floor-and-gap-checks.mjs) precisely so this is a call over data rather than a re-derivation — but the call itself is nobody else's.",
       },
       "escalation decisions — one {axis, reason} per axis that must be re-run, sent through record_skeptic": {
         class: "mechanical:code-rendered", tokens: [],
@@ -2578,7 +2578,7 @@ export const STAGES = {
       },
       "the `risk: <category>` field inside that dictated ESCALATE line": {
         class: "mechanical:code-rendered", tokens: [],
-        why: "IT HAS NO CONSUMER AT ALL. The D3 note in stages.mjs (\"the escalation-risk SHADOW apparatus … is DELETED\") records that the risk-category filter was deleted, and pipeline.mjs states 'spec-48 D3 — the escalation-risk SHADOW loop (risk-tag parse + would-skip telemetry for the never-enabled CLEAROTRON_ESCALATION_FILTER) is DELETED' at the parse site (envelopeDecision() in pipeline.mjs). The doc block at envelopeDecision() in pipeline.mjs that describes reading the field is a stale header left standing over envelopeDecision — the function it documented is gone. Classed code-rendered because it is not judgment; the correct move is deletion from the skill file.",
+        why: "IT HAS NO CONSUMER AT ALL. The D3 note in stages.mjs (\"the escalation-risk SHADOW apparatus … is DELETED\") records that the risk-category filter was deleted, and floor-and-gap-checks.mjs states 'spec-48 D3 — the escalation-risk SHADOW loop (risk-tag parse + would-skip telemetry for the never-enabled CLEAROTRON_ESCALATION_FILTER) is DELETED' at the parse site (envelopeDecision() in floor-and-gap-checks.mjs). The doc block at envelopeDecision() in floor-and-gap-checks.mjs that describes reading the field is a stale header left standing over envelopeDecision — the function it documented is gone. Classed code-rendered because it is not judgment; the correct move is deletion from the skill file.",
       },
       "return payload — a 2-3 line summary; the audit itself rides record_skeptic": {
         class: "mechanical:tool-written", tokens: ["skeptic_"],
