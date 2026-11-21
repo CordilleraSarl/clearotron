@@ -269,7 +269,7 @@ const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PACKAGED = installRoute(REPO) === "packaged";
 const THIS_TREE = PACKAGED ? "the installed package" : "this checkout";
 // The example job, by the path it has in THIS install, so the printed command runs from any directory.
-const EXAMPLE_JOB = join(REPO, "examples", "job.euipo.json");
+const EXAMPLE_JOB = join(REPO, "examples", "job.knockout.json");
 const ENV_PATH = envLocalPath({ repoRoot: REPO });   // resolved, never composed: one resolver, so moving this file later is one line
 // WHAT IS READ IS NOT ALWAYS WHERE THE NEXT WRITE GOES. An install configured before the move still
 // has its file at the old path, and the loader still reads it — so every READ here asks
@@ -5126,7 +5126,8 @@ try {
   say("");
   // A FIRST REAL CLEARANCE IS SUGGESTED ONLY WHERE ONE CAN RUN. With no register chosen, the line suggesting
   // `run` sat a few lines above the warning that `run` will refuse at its door.
-  // …and the EU job only where the register reaches the EU.
+  // …and the EU job only where the register reaches the EU. It is a knockout search, as the Quickstart's first run
+  // is: the multi-country job this line named before takes hours, where a knockout proves the install in minutes.
   if (registerSelected && spec?.euHalf !== false) {
     say(`  ${style.dim(`Also: \`${invocationPrefix()}clearotron demo\` replays a finished report with no keys and no model calls;`)}`);
     say(`  ${style.dim(`\`${invocationPrefix()}clearotron run --job ${/\s/.test(EXAMPLE_JOB) ? `"${EXAMPLE_JOB}"` : EXAMPLE_JOB}\` runs a first real clearance on the EU register.`)}`);
