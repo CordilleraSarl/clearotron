@@ -21,6 +21,7 @@ import { REGISTER_GRANT as SIGNA_GRANT } from "../../../providers/signa/src/regi
 import { REGISTER_GRANT as EUIPO_GRANT } from "../../../providers/euipo/src/register-grant.mjs";
 import { REGISTER_GRANT as USPTOLOCAL_GRANT } from "../../../providers/uspto-local/src/register-grant.mjs";
 import { REGISTER_GRANT as FREETIER_GRANT } from "../../../providers/free-tier/src/register-grant.mjs";
+import { STAGE_DECLARATIONS, declaredStageOf } from "../../stage-declarations.mjs";   // each stage's grant, by name
 
 const MCP_DIR = dirname(fileURLToPath(import.meta.url));
 const NODE = process.execPath;
@@ -899,106 +900,13 @@ export function buildGatherMcpConfig(groups = [], { sessionKey, agent, runDir, r
   return Object.keys(mcpServers).length ? { mcpServers } : null;
 }
 
-// Stage name (or "register-unit:<axis>" etc.) → the tool groups it needs. Prefix-matched so per-axis
-// register units and any followup-suffixed stage names resolve. Tool-FREE judgment stages return [] (no
-// MCP servers loaded → lean context, no tool-def bloat on judgment turns).
+// Stage name (or "register-unit:<axis>" etc.) → the tool groups it needs. Each stage's grant is its declared one
+// (stage-declarations.mjs), read by the stage's own name, then by a prefix a stage declares, so per-axis register units
+// and any followup-suffixed stage names resolve. Tool-FREE judgment stages return [] (no MCP servers loaded → lean
+// context, no tool-def bloat on judgment turns).
 export function toolGroupsForStage(name = "") {
-  // — the disposition transport is the LANE'S, not the perplexity key's. It rode `perplexity`
-  // until now, which granted it to every holder of that key; here it is named by the one lane whose
-  // doctrine orders it, and the prefix carries `common-law-half` with it (the A1 split member).
-  if (name.startsWith("common-law")) return ["perplexity", "dispositions"];
-  // — the audit note is a typed call now (`unit-note`, own key, one tool). The
-  // funnel's `register` key is UNCHANGED beside it: the band is still the tools', the note is no longer
-  // the seat's, and the two are separate artifacts with separate writers. An allowlist growing by one
-  // token on an already-tooled stage, so no argv-surface transition fires.
-  if (name.startsWith("register-unit")) return ["register", "unit-note"];
-  // THE KNOCKOUT'S READING STEP asks the register what the clearance's reading turn asks it, through the same tool, and
-  // hands its judgment back on its own key. RETRIEVAL AND RECORDING, composed as the other two such branches compose it.
-  if (name === "knockout-register-read") return ["register-questions", recordingKey("knockout-register-read")];
-  // PR-8 (reading layer): the band-consuming judgment stages hold the READ-ONLY band tools — the shape,
-  // record lookups over the frozen band, and the run's fetched official records (band_record finally
-  // feeds _records/ to judgment) — every call logged to the reading audit.
-  //
-  // synthesis DROPS the live register group on purpose: it never enumerated (the funnel owns that) and
-  // a live search from the judgment seat is exactly the un-frozen, un-audited query the plan freeze
-  // retired. A register check judgment still wants is either answerable from the frozen material (the
-  // band tools) or it is NEW SEARCH WORK — and new register work enters only through the supplemental
-  // mint (register_propose_supplemental in a register-unit lane / the escalation re-run), the same
-  // door every other new query uses. This also ends the stages.mjs "register tools you hold" mismatch:
-  // register-digest's prompt ordered live register checks while this map gave it NO register tools.
-  // B's pattern, one lane over ( transport conversion): the digest additionally holds its OWN
-  // record tool — coverage rulings ride `record_coverage`, never a hand-edited file. The key is the
-  // digest's alone; see the LOCAL entry for why it does not ride the shared `band` key.
-  //
-  // ── AND THE SECOND BRANCH THAT RETURNS RETRIEVAL *AND* RECORDING (conversion 11) ─────────────────
-  //
-  // The third key is not optional decoration. This branch RETURNS EARLY, so a conversion that added the
-  // RECORDING row and stopped would never reach the derived branch below, `recording-register-digest`
-  // would never enter the resolved grant, and `recording-agreement` would fail by name at "NO
-  // TOOL_WRITTEN_ARTIFACTS row names a tool this stage holds" — exactly what narrative-refutation's
-  // comment below records happening to it. The key is composed the way the derived branch composes it
-  // (`recording-${stage}`), so the two cannot drift into naming different servers for one stage.
-  //
-  // `coverage` stays beside it, unchanged and separate. The two transports state different things: the
-  // coverage form is the run's obligation ledger, ruled row by row; the digest call is the findings
-  // document. One tool, one key, one holder — and merging them would put a second writer into the
-  // ledger the conversion took a writer out of.
-  if (name.startsWith("register-digest")) return ["band", "coverage", "recording-register-digest"];
-  if (name.startsWith("placement-inquiry")) return ["band"];
-  // ── — THE SEED INSTANCE, RESOLVED BY GRANTING RATHER THAN BY DELETING THE ORDER ─────────────
-  //
-  // The stage held ["band"] while its own doctrine ordered one scoped `perplexity_research` query before
-  // flagging. Two ways to make them agree, and the doc decides which: the probe is "the single place the
-  // review is required to introduce evidence the upstream units did not produce", because re-reading the
-  // files the author read "can only show they agree with themselves". Drop the order and the refutation
-  // stage can no longer refute anything the run did not already contain — the check is removed, not the
-  // mismatch. So the grant moves to meet the doctrine.
-  //
-  // WHAT IT COST WHILE THEY DISAGREED, measured on a delivered production run (2026-08-18): the stage ran
-  // nineteen minutes under an instruction it could not execute and made zero such calls. Nothing recorded
-  // a denial, because the seat never attempted a call it was not told it lacked — the silent degradation
-  // the issue predicts, on the one matter where the confirmation step was most clearly indicated (four
-  // `loaded` meaning rulings, see).
-  //
-  // This changes engine behaviour and ships `status:merged-awaiting-e2e`, which the out-of-scope block
-  // anticipates in as many words. The scoping is doctrine's, not the grant's: SKILL.md already caps it at
-  // one probe per review and requires the query and its result recorded verbatim.
-  // ── THE ONE BRANCH THAT RETURNS RETRIEVAL *AND* RECORDING, and it has to be here ────────────────
-  //
-  // Every other converted stage falls through to the derived recording branch below and gets ONLY its
-  // record key. This one returns early — it keeps perplexity and band by the owner's ruling — so a
-  // conversion that added the registry entry and stopped would never reach the derived branch, the
-  // record tool would never enter the resolved grant, and `recording-agreement` would fail by name at
-  // "NO TOOL_WRITTEN_ARTIFACTS row names a tool this stage holds". Measured: that is exactly what it
-  // did before this line changed, which is the guard doing its job rather than a surprise.
-  //
-  // The key is composed the same way the derived branch composes it (`recording-${stage}`), so the two
-  // cannot drift into naming different servers for one stage.
-  if (name.startsWith("narrative-refutation")) return ["perplexity", "band", "recording-narrative-refutation"];
-  // — `declination` joins synthesis's list: it states, per record, why something that reached its
-  // findings surface was not delivered. A PREFIX branch because synthesis has per-pass variants
-  // (`synthesis(corrective)`), and every one of them must be able to state its declines.
-  // ── RETRIEVAL *AND* RECORDING, the second such branch, and it has to be here ────────────────────
-  //
-  // A converted stage normally falls through to the derived recording branch below and gets ONLY its
-  // record key. This one returns early — it keeps perplexity, band and declination — so a conversion
-  // that added the registry entry and stopped would never reach that branch, the record tool would
-  // never enter the resolved grant, and `recording-agreement` would fail by name at "NO
-  // TOOL_WRITTEN_ARTIFACTS row names a tool this stage holds".
-  //
-  // The key is composed the way the derived branch composes it, so the two cannot drift into naming
-  // different servers for one stage. STILL A PREFIX: synthesis has per-pass variants
-  // (`synthesis(corrective)`), and every one of them must reach both its declines and its record tool.
-  if (name.startsWith("synthesis")) return ["perplexity", "band", "declination", recordingKey("synthesis")];
-  if (name.startsWith("case-law")) return ["caselaw"];
-  // RECORDING, DERIVED from the registry — and the exactness is now structural. Every branch above is a
-  // prefix because those stages have per-axis or followup-suffixed variants; recording stages have none,
-  // and a prefix here would silently hand the grant to any future stage whose name began with one. A map
-  // lookup cannot be a prefix match by accident, which is a stronger guarantee than the comment that used
-  // to say so. `Map.get` and not `RECORDING[name]`: an object index answers for inherited keys, so a stage
-  // called `constructor` would resolve to a truthy row and mint a group from it.
-  const rec = RECORDING_GROUPS.get(name);
-  if (rec) return [rec];
+  const stage = declaredStageOf(name);
+  if (stage) return [...STAGE_DECLARATIONS[stage].grant];
   // ── FANNED-OUT RECORDING STAGES ( conversion 5; #-form added by) ──────────
   //
   // A fanned-out stage is dispatched under a SUFFIXED label, so the exact lookup above misses it. There
@@ -1030,7 +938,7 @@ export function toolGroupsForStage(name = "") {
     const base = name.slice(0, at), suffix = name.slice(at + 1);
     const row = RECORDING[base];
     if (!row || !suffix) continue;
-    if (row[flag]) return [RECORDING_GROUPS.get(base)];
+    if (row[flag]) return [...STAGE_DECLARATIONS[base].grant];
     // AND IT THROWS RATHER THAN RETURNING []. A recording stage that starts fanning out without
     // declaring it would otherwise grant its seats NOTHING, silently, while its dictation ordered a
     // call — the failure this whole block exists to prevent, one level down. Either silent default

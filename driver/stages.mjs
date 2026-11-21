@@ -20,6 +20,7 @@ import { isNonLatinTerm } from "../providers/_shared/script-form.mjs";
 import { latinQuestionsOfRomanisedForm } from "./register-plan.mjs";   // sentence 3 — the Latin question a script question repeats
 import { registerCapabilities } from "./register-unreachable.mjs";
 import { validators } from "./verify.mjs";
+import { declaredValidator } from "./stage-declarations.mjs";   // each stage's validator, by the name its declaration gives
 import { REGISTER_PROVIDER, PROVIDERS } from "./driver.config.mjs";
 import { REGISTER_AXES, decideAxes } from "./coverage-ledger.mjs";
 // — the digest dispatch asks the SAME question verify.mjs asks ("does this run owe a form or a
@@ -1101,7 +1102,7 @@ export const STAGES = {
     model: "opus", thinking: "high", timeoutSec: 300, stallSec: 300,
     skillReads: ["skills/matter-frame/SKILL.md"],
     out: (P) => P.matterContext,
-    validate: validators.matterContext,
+    validate: declaredValidator("matter-frame", validators),
     // The output contract THIS prompt holds the frame to — the dictated "Meaning angles:" line below.
     // Recorded by the driver at DISPATCH (pipeline.mjs recordStageContract → _driver/stage-contracts.json)
     // and the ONLY thing validators.matterContext gates the line requirement on — the romanisation-floor
@@ -1289,7 +1290,7 @@ export const STAGES = {
     model: "opus", thinking: "high", timeoutSec: 600, stallSec: 450,
     skillReads: ["skills/clearance-variants/SKILL.md", "skills/clearance-variants/transliteration-scripts.md"],
     out: (P) => P.variantManifest,
-    validate: validators.variantManifest,
+    validate: declaredValidator("clearance-variants", validators),
     // The output contract THIS prompt holds the artifact to — recorded by the driver at DISPATCH
     // (pipeline.mjs recordStageContract → _driver/stage-contracts.json), and the ONLY thing
     // validators.variantManifest gates the romanisation floor on. It is evidence of PROMPT VINTAGE,
@@ -1525,7 +1526,7 @@ export const STAGES = {
     // validators.blindFrame (invalid_file:…:blindframe_*). Point this at prose again, or at nothing, and
     // the stage can complete having written no model at all.
     out: (P) => P.blindFrameModel,
-    validate: validators.blindFrame,
+    validate: declaredValidator("blind-frame", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
@@ -1605,7 +1606,7 @@ export const STAGES = {
     model: "haiku", thinking: "low", timeoutSec: 2250, stallSec: 1100,
     skillReads: ["skills/clearance-common-law/SKILL.md"],
     out: (P) => P.commonLaw,
-    validate: validators.commonLaw,
+    validate: declaredValidator("common-law", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
@@ -1780,7 +1781,7 @@ export const STAGES = {
     timeoutSec: 2250, stallSec: 1100,
     skillReads: ["skills/clearance-common-law/SKILL.md"],
     out: (P, half) => P.commonLawHalf(half),
-    validate: validators.commonLawHalf,
+    validate: declaredValidator("common-law-half", validators),
     // — the run's own receipt of which prompt vintage minted this dispatch, written at DISPATCH
     // only. DELIBERATELY NOT a gate: the validator keys on whether the dispositions file is there, not
     // on this stamp, because an obligation is discharged by structure OR by prose and a fresh dispatch
@@ -1959,7 +1960,7 @@ export const STAGES = {
     // message tells the first session to read and follow.
     followupSkillReads: (ctx) => (providerMeta(ctx?.register ?? PROVIDER).skillDoc ? [providerMeta(ctx?.register ?? PROVIDER).skillDoc] : []),
     out: (P, axis) => P.registerUnit(axis),
-    validate: validators.registerUnit,
+    validate: declaredValidator("register-unit", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
@@ -2226,7 +2227,7 @@ export const STAGES = {
     // the R1 incident's own trigger — the destructive step ran, the seat wrote its prose, the wall killed
     // the turn in the gap, and the wall rescue then refused because the JSON the driver had just deleted
     // was absent.
-    validate: validators.placement,
+    validate: declaredValidator("placement-inquiry", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
@@ -2348,7 +2349,7 @@ export const STAGES = {
     model: "opus", thinking: "low", timeoutSec: 2400, stallSec: 900,
     skillReads: ["skills/clearance-register/SKILL.md", "skills/clearance-register/digest.md"],
     out: (P) => P.registerFindings,
-    validate: validators.registerFindings,
+    validate: declaredValidator("register-digest", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
@@ -2552,7 +2553,7 @@ export const STAGES = {
     model: "sonnet", thinking: "high", timeoutSec: 600, stallSec: 600,
     skillReads: ["skills/clearance-search/phase2-execution.md"],
     out: (P) => P.skepticFlags,
-    validate: validators.skepticFlags,
+    validate: declaredValidator("skeptic", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
@@ -2648,7 +2649,7 @@ export const STAGES = {
     model: "sonnet", thinking: "low", timeoutSec: 600,
     skillReads: ["skills/frame-diff/SKILL.md"],
     out: (P) => P.frameDiff,
-    validate: validators.frameDiff,
+    validate: declaredValidator("frame-diff", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
@@ -2755,7 +2756,7 @@ export const STAGES = {
     skillReadsFor: synthesisSkillReads,
     standing: Object.freeze([WEB_EVIDENCE_ONLY_THROUGH_RESEARCH]),
     out: (P) => P.narrative,
-    validate: validators.narrative,
+    validate: declaredValidator("synthesis", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
@@ -3310,7 +3311,7 @@ export const STAGES = {
     model: "sonnet", thinking: "adaptive", timeoutSec: 900,
     skillReads: ["skills/case-law-citation/SKILL.md"],
     out: (P) => P.caseLaw,
-    validate: validators.caseLaw,
+    validate: declaredValidator("case-law", validators),
     // — PROMPT VINTAGE, the romanization/completeness pattern. The ledger arm of validators.caseLaw
     // arms ONLY when this marker is on the run's stage contract, so every archived case-law output —
     // which by construction has no ledger, because none was ever asked for — keeps its verdict on
@@ -3401,7 +3402,7 @@ export const STAGES = {
     skillReadsFor: reviewSkillReads,
     standing: Object.freeze([REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK, WEB_EVIDENCE_ONLY_THROUGH_RESEARCH]),
     out: (P) => P.seniorEyeReview,
-    validate: validators.seniorEyeReview,
+    validate: declaredValidator("narrative-refutation", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
@@ -3537,7 +3538,7 @@ export const STAGES = {
     skillReads: ["skills/clearance-search/synthesis-rules.md", "skills/clearance-search/risk-framework.md", "skills/clearance-search/delivery-contract.md", "skills/clearance-search/report-prose.md"],
     skillReadsFor: reportOverviewSkillReads,
     out: (P) => P.reportOverview,
-    validate: validators.reportOverview,
+    validate: declaredValidator("report-overview", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
@@ -3737,7 +3738,7 @@ export const STAGES = {
     skillReads: ["skills/clearance-search/delivery-contract.md", "skills/clearance-search/risk-framework.md", "skills/clearance-search/report-prose.md"],
     skillReadsFor: reportCardSkillReads,
     out: (P, axis) => P.reportCard(axis),
-    validate: validators.reportCard,
+    validate: declaredValidator("report-card", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
@@ -3904,7 +3905,7 @@ export const STAGES = {
     model: "sonnet", thinking: "low", timeoutSec: 600,
     skillReads: [],
     out: (P) => P.doubtClosure,
-    validate: validators.doubtClosure,
+    validate: declaredValidator("doubt-closure", validators),
     // ── — A RETRY ASKS ONLY FOR WHAT IS STILL UNANSWERED ──────────────────────────────────────
     //
     // A killed attempt's accepted answers did not carry. Measured: attempt 2 was re-presented all 80

@@ -21,6 +21,10 @@ import { knockoutReviewFile, validateKnockoutReviewFile } from "./knockout-revie
 import { knockoutRegisterFile, validateKnockoutRegisterFile } from "./knockout-register-record.mjs";
 import { narrowingOrderLine } from "./effective-scope.mjs";
 import { REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK } from "./stages.mjs";
+import { declaredValidator } from "./stage-declarations.mjs";   // each stage's validator, by the name its declaration gives
+
+// The Knockout's validators by the names its stages declare: the lane's own table, and the three records' own checks.
+const KO_VALIDATORS = { ...koValidators, validateKnockoutRegisterFile, validateKnockoutReviewFile, validateKnockoutCorrectionFile };
 export { kebab };   // one definition (search-policy) — re-exported for the lane's existing imports
 
 const lines = (...xs) => xs.filter(Boolean).join("\n");
@@ -283,7 +287,7 @@ export const KO_STAGES = {
     model: "opus", thinking: "high", timeoutSec: 420, stallSec: 300,
     skillReads: ["skills/knockout-frame/SKILL.md"],
     out: (K) => K.plan,
-    validate: koValidators.knockoutPlan,
+    validate: declaredValidator("knockout-frame", KO_VALIDATORS),
     reads: (K) => ({ files: [K.instructedScope, ...asRequested(K), paths(K.runDir).profile], message: true }),
     message: ({ K, job, profile }) => lines(
       reads(["skills/knockout-frame/SKILL.md"]),
@@ -345,7 +349,7 @@ export const KO_STAGES = {
     // DECLARATIVE ONLY on this lane, as the assess stage records; the effective read is in the message.
     skillReads: ["skills/knockout-register-read/SKILL.md"],
     out: (K) => K.registerReading,
-    validate: validateKnockoutRegisterFile,
+    validate: declaredValidator("knockout-register-read", KO_VALIDATORS),
     reads: (K) => ({ files: [K.instructedScope, K.inboundRequest, K.plan, paths(K.runDir).profile], message: true }),
     message: ({ K, job = {}, profile = null, readingLines = [], providerDoc = null, inScope = null }) => lines(
       reads(["skills/knockout-register-read/SKILL.md", providerDoc].filter(Boolean)),
@@ -391,7 +395,7 @@ export const KO_STAGES = {
     skillReads: ["skills/knockout-assess/SKILL.md", "skills/clearance-search/firm-wide-reasoning.md"],
     // out/validate are per-CHUNK; the merged knockout-findings.json is validated separately in code.
     out: (K, chunkNo) => K.assessChunk(chunkNo),
-    validate: koValidators.knockoutAssessChunk,
+    validate: declaredValidator("knockout-assess", KO_VALIDATORS),
     reads: (K) => ({ files: [K.plan, K.instructedScope, ...asRequested(K), ...frozenRules(K), K.registerRecords, K.registerCounts, K.ownerChecks],
       dirs: [K.researchDir], message: true, deck: true }),
     message: ({ K, job, chunkNo, chunkMarks, chunkTotal, framework, frameworkPath, probeNote, frameworkMethod }) => lines(
@@ -557,7 +561,7 @@ export const KO_STAGES = {
     skillReads: ["skills/knockout-assess/SKILL.md", "skills/clearance-search/firm-wide-reasoning.md", "skills/clearance-search/report-prose.md"],
     // A later pass reads the corrected record, under its own artifact: `knockout-review#1`.
     out: (K, pass) => (pass ? knockoutReviewFile(K.runDir, pass) : K.review),
-    validate: validateKnockoutReviewFile,
+    validate: declaredValidator("knockout-review", KO_VALIDATORS),
     reads: (K) => ({ files: [K.findings, K.plan, ...asRequested(K), ...frozenRules(K), K.registerRecords, K.ownerChecks],
       dirs: [K.researchDir], message: true, deck: true }),
     // ── THE MESSAGE PROMISES A TABLE ONLY WHEN IT HAS ONE ──────────────────────────
@@ -626,7 +630,7 @@ export const KO_STAGES = {
     // DECLARATIVE ONLY on this lane, as the assess stage records; the effective read is in the message.
     skillReads: ["skills/knockout-assess/SKILL.md", "skills/clearance-search/firm-wide-reasoning.md"],
     out: (K, chunkNo) => knockoutCorrectionFile(K.runDir, chunkNo),
-    validate: validateKnockoutCorrectionFile,
+    validate: declaredValidator("knockout-correct", KO_VALIDATORS),
     reads: (K) => ({ files: [paths(K.runDir).knockoutCorrectionWork, knockoutReviewFile(K.runDir, 0), K.plan, K.instructedScope,
       ...asRequested(K), ...frozenRules(K), K.registerRecords, K.ownerChecks], dirs: [K.researchDir], deck: true }),
     message: ({ K, job = {}, chunkNo, work = null, chunkMarks = [], frameworkPath = null, frameworkMethod = null }) => {

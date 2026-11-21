@@ -4809,6 +4809,12 @@
           "skips": 0,
           "todos": 0
         },
+        "every-model-stage-is-described-by-one-declaration.test.mjs": {
+          "tests": 4,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
         "every-model-stage-is-handed-its-tools-on-both-engines.test.mjs": {
           "tests": 6,
           "asserts": 11,
