@@ -1834,8 +1834,8 @@
           "todos": 0
         },
         "a-plain-model-can-supply-a-stage-result.test.mjs": {
-          "tests": 4,
-          "asserts": 11,
+          "tests": 5,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },

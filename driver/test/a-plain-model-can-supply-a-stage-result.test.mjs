@@ -79,6 +79,27 @@ for (const engine of Object.keys(ENGINES)) {
   });
 }
 
+test("a reply that fails a form check takes the ladder's retry, not a form repair inside the dispatch", async () => {
+  // A closed-vocabulary refusal is form-class, which a written file would have repaired in its own session. A reply has
+  // no file of its own to patch, so the retry is a fresh dispatch whose reply is written and judged.
+  let checks = 0;
+  const formOnce = (file, text) => (checks++ === 0 ? { ok: false, reason: "framediff_severity_invalid:major (not in: dominant-element, material, minor)" } : inventedAnswer(file, text));
+  for (const engine of Object.keys(ENGINES)) {
+    checks = 0;
+    const dir = mkdtempSync(join(tmpdir(), "plain-form-"));
+    try {
+      mkdirSync(driverDir(dir), { recursive: true });
+      const out = join(dir, "invented-answer.json");
+      const res = await withEnv({ ...ENGINES[engine](dir, "{\"answer\": \"amber\"}"), CLEAROTRON_RETRY_BACKOFF_MS: "0" },
+        () => runStage("invented-plain-stage", { message: MESSAGE, model: "haiku", sessionKey: `plain-form-${engine}`, runDir: dir, expectFile: out,
+          validate: formOnce, declaration: DECLARATION, maxRetries: 1, timeoutSec: 30 }));
+      assert.equal(res.ok, true, `${engine}: refused: ${res.fail}`);
+      assert.equal(res.attempts, 2, `${engine}: the refusal was not retried by the ladder`);
+      assert.equal(res.formRepairs ?? 0, 0, `${engine}: a form repair was attempted on a reply`);
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  }
+});
+
 test("anthropic-agent: the turn of a stage whose reply is its output is granted no write into the run folder", async () => {
   const r = await plain("anthropic-agent", "{\"answer\": \"amber\"}");
   const argv = r.calls[0].argv ?? [];

@@ -18,6 +18,7 @@ import { statOf, gradedFormMeta } from "./judge.mjs";
 import { isFormClassFail, MAX_FORM_REPAIRS } from "./form-sync.mjs";
 import { repairTarget, warmPatchMessage } from "./repair-messages.mjs";
 import { rel, streamDigest, streamMeta, tokensPerSec, writeBoundaryOf } from "./turn-signals.mjs";
+import { replyIsOutput } from "../stage-declarations.mjs";
 
 export async function repairFormInDispatch(stage, { judgeArtifacts }, { attempt, key, turn, effTimeout, fail, stampedQuantity, failingFile,
   formRepairsUsed, killSeen, lastGraded, lastModelUsed }) {
@@ -57,6 +58,9 @@ export async function repairFormInDispatch(stage, { judgeArtifacts }, { attempt,
   while (fail && failingFile && isFormClassFail(fail)
          && formRepairsUsed < MAX_FORM_REPAIRS
          && envGateOn("CLEAROTRON_FORM_REPAIR")
+         // A stage whose result is its reply has no file of its own to patch: its refused reply takes the ladder's retry,
+         // whose reply is written and judged like the first (gateway.mjs).
+         && !replyIsOutput(stage.declaration)
          // A6: an output-ceiling turn's defect is caused by the budget, not by the vocabulary — it
          // keeps its named fault and its own policy below.
          && json?.stopReason !== "max_tokens"
