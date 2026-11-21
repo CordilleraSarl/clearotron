@@ -8159,7 +8159,7 @@
         },
         "the-notice-goes-to-whoever-asked.test.mjs": {
           "tests": 10,
-          "asserts": 28,
+          "asserts": 29,
           "skips": 1,
           "todos": 0
         },
