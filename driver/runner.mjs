@@ -22,6 +22,8 @@ import "../shared/env-local.mjs";   // side effect: apply <repo>/.env when THIS 
 import "./engine/mcp/http-dispatcher.mjs";   // side effect: raise undici headersTimeout (code-side fetches)
 import { readdirSync, renameSync, existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync, rmSync, statSync, watch as watchFolder } from "node:fs";
 import { join, dirname, basename } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
+import { findRunDirFor } from "./run-dir-lookup.mjs";   // where a codename's run lives on disk
+export { findRunDirFor };
 import { crossBuildResumeRefusal } from "./one-build-per-run.mjs";   // a run is finished on the build it started on (owner, 2026-11-09)
 // The queue's filename vocabulary, in ONE place — the rule, extended by to the prose-sidecar and
 // claim-sidecar names, because a harness check retyped four of them from memory and false-alarmed on the
@@ -1941,35 +1943,6 @@ export function runDirDelivered(dir) {
   if (existsSync(join(dir, ".delivered"))) return true;
   if (existsSync(paths(dir).delivery)) return true;
   try { return readJson(join(dir, "status.json"))?.state === "delivered"; } catch { return false; }
-}
-
-// B1 — where (if anywhere) a codename's run already lives on disk. The live leaf is "<date>-<codename>";
-// when the dispatch dateISO is known (persisted in the meta BEFORE any spend, and equal to the run dir's
-// own date prefix — buildRunContext built it with that date), match the EXACT `${dateISO}-${codename}`
-// leaf. A date-agnostic `endsWith(-codename)` (the only option when dateISO is genuinely absent — legacy
-// meta) would ALSO match a lingering same-slug run dir from an EARLIER date that happens to share today's
-// random codename, and mis-route the reclaim: resume that stranger's stale dir, or consume a brand-new job
-// as its `.done` "already-delivered" without ever running the client search (A2). The archive nests the
-// same leaf under <YYYY-MM>/, keyed off the meta's dateISO month when present, else every month is scanned
-// (one readdir per month — the archive is shallow). Pure read; exported for the crash-identity tests.
-export function findRunDirFor({ codename, slug, dateISO = null, studioRoot, archiveRoot }) {
-  const leaf = dateISO
-    ? (n) => n === `${dateISO}-${codename}`
-    : (n) => /^\d{4}-\d\d-\d\d-/.test(n) && n.endsWith(`-${codename}`);
-  try {
-    const hit = readdirSync(join(studioRoot, slug)).find(leaf);
-    if (hit) return { kind: "live", dir: join(studioRoot, slug, hit) };
-  } catch { /* no slug dir yet */ }
-  let months = [];
-  if (dateISO) months = [String(dateISO).slice(0, 7)];
-  else { try { months = readdirSync(archiveRoot); } catch { /* no archive yet */ } }
-  for (const m of months) {
-    try {
-      const hit = readdirSync(join(archiveRoot, m, slug)).find(leaf);
-      if (hit) return { kind: "archived", dir: join(archiveRoot, m, slug, hit) };
-    } catch { /* month/slug absent */ }
-  }
-  return null;
 }
 
 // Atomic takeover of a dead/over-age claimer's `.processing`. The old takeover was a plain

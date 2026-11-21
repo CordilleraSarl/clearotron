@@ -17,40 +17,13 @@ import { repairFollowup } from "./repair-composers.mjs";
 import { changedContent, changedInputsOf, classifyPoints, isEmptyChange, listForReview, postRepairRecordPath, readRepairBase, repairBasePath, restingOn, scopeItems, writePostRepairRecord } from "./repair-scope.mjs";
 import { writeReviewAddresses } from "./review-addresses.mjs";
 import { atomicWrite } from "./run-record.mjs";
-import { stage, stageCharter, writerExclusionBlock } from "./stage-dispatch.mjs";
+import { stage, writerExclusionBlock } from "./stage-dispatch.mjs";
 import { writeFindings } from "./stage-freshness.mjs";
 import { paths } from "./stages.mjs";
-import { correctionReading } from "./steps/corrections.mjs";
 import { acceptSynthesis, driverReadsFor, lastAcceptedCall, restoreSynthesisBase, snapshotSynthesisBase } from "./synthesis-record.mjs";
 import { createHash } from "node:crypto";
 import { copyFileSync, existsSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { basename } from "node:path";
-
-// A1 (F1): a correction must reach EVERY surface the client sees. The narrative alone is
-// not enough — report cards, the landscape and the client summary render from findings.json, so a
-// corrective pass that re-emits only the narrative lets a killed/mis-attributed card resurrect on
-// the delivered page (the VENZY case). The followup therefore mandates BOTH
-// files; the driver-side freshness gate below makes it enforceable.
-// AD-2 A9 (E2E-R2): the dispatch carries placement's rulings tail AS DATA — computed things reach
-// the next stage as data, not prose. A warm resume must not depend on the rulings having survived
-// context trimming, and the repair pass is NOT asked to re-read placement-recommendations.md (the
-// E2E-R2 dispatch history proves both halves: one corrective dispatch passed with no re-read, and
-// another made 7 targeted edits precisely when the tail was in front of it).
-
-export function correctionsExtra(P, depth = null, framework = null, reading = correctionReading(P)) {   // @internal
-  const { review, rulingsTail, worklist, scope } = reading;
-  // THE RUNG RIDES THE CORRECTIVE RE-EMISSION, byte-identically with the fresh dispatch. Appended rather
-  // than threaded through `repairFollowup`'s fields so both dispatches carry the SAME STRING from the
-  // SAME function, and an arm can compare them without knowing how either is assembled.
-  // THE RECORD ITS PATCH UPDATES. The save patches the writer's own record, and the flags name its findings in its
-  // numbering; from the delivery seam on, findings.json is the folded record, renumbered. So while a fold is in force,
-  // a correction re-armed on a later pass is handed the writer's record (record-fold.mjs), as the lint's repair is: a
-  // number read off the folded record names another finding there, and the next one after it a finding already held.
-  return repairFollowup("synthesis:corrective", {
-    narrative: P.narrative, findings: modelRecordPath(P.runDir, P.findings), placement: P.placement,
-    rulingsTail, scope, worklist, review,
-  }) + stageCharter("synthesis", depth, framework);
-}
 
 // AD-2 A1 (E2E-R2, recovery granularity) — is the corrective cycle already SETTLED for the bytes on
 // disk? Pure decision over the completion receipt + the current shas so it tests offline. Settled
