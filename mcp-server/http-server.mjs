@@ -68,7 +68,7 @@ export function grantedAccounts(grantsPath) {
 }
 
 // ---- config (env) ------------------------------------------------------------------------------
-// — THE DEFAULT IS A NAMED CONSTANT BECAUSE TWO FILES HOLD IT. `bin/start.mjs`'s `resolvePorts`
+// — THE DEFAULT IS A NAMED CONSTANT BECAUSE TWO FILES HOLD IT. `resolvePorts` (shared/door-ports.mjs, read by `bin/start.mjs`)
 // carries the same number for the same variable, and until now nothing compared them: the spawner and
 // the thing it spawns could have drifted apart silently, and the face would simply have listened
 // somewhere the portal was not calling. Exported so driver/test/start-command.test.mjs can assert the
