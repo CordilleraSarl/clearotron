@@ -35,8 +35,7 @@ import { StageFailure } from "./run-outcome.mjs";
 import { endTheDeliveredRun, runShell } from "./run-shell.mjs";   // — the runner and the delivered ending both products share
 import { logTurnaroundReconciliation } from "./run-quote.mjs";
 import { RunCancelled, assertNotCancelledBeforePublish, isCancelled, readCancel, stopsWithTheRun } from "./cancel.mjs";   // stop-by-user: never the failure lane below
-import { loadFrameworkManifest, parseFrameworkManifest, frameworkFor, DEFAULT_FRAMEWORK } from "./framework.mjs";
-import { attachFrameworkMethod, methodPathFor, FROZEN_METHOD_FILE } from "./framework-method.mjs";
+import { attachFramework } from "./run-attachments.mjs";   // the one framework freeze, both products'
 import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutGridSpec, KNOCKOUT_WEB, KNOCKOUT_MINUTES_BAR, knockoutBarVerdict, koChunks, groupRecordsDoc } from "./stages-knockout.mjs";
 import { kebabCollisions, reportIdentityFor, CAPABILITY_SKIPPED_CAUSE, CAPABILITY_SKIPPED_NOTE } from "./search-policy.mjs";
 import { countPreflight, countRegisterHits, countedMarks, resolveCountExecutor } from "./register-count.mjs";
@@ -92,50 +91,12 @@ const koStep = (ctx, label, extra = {}) => {
     currentStep: { index: i, label, n: i + 1, total: steps.length }, ...extra });
 };
 
-// ── framework freeze (knockout flavour): the customer's OWN framework when configured, else the house
-// TRIAGE ladder (NOT the clearance Generic default — a knockout rates at triage grain). Same freeze
-// doctrine as attachFramework: minted once, read verbatim on resume, corrupt = loud.
+// ── framework freeze (knockout flavour): the clearance's own freeze (run-attachments.mjs, attachFramework), with the
+// customer's OWN framework when configured, else the house TRIAGE ladder (NOT the clearance Generic default — a knockout
+// rates at triage grain); the deck's path on ctx for the rater, on the resume path too; and the ladder read back the way
+// the rater's validator reads it. Same freeze doctrine: minted once, read verbatim on resume, corrupt = loud.
 function attachKnockoutFramework(ctx) {
-  const sidecarPath = paths(ctx.paths.runDir).framework;
-  // ── THE DECK'S PATH, RESOLVED ONCE AND ON BOTH PATHS ────────────────────────
-  //
-  // The assess stage is served the DECK now, not only the manifest — `framework.mjs` states the rule
-  // the manifest obeys: "vocabulary and order ONLY. Never a mapping table, threshold, or decision
-  // rule — those live in the deck prose, where the model reasons with them." A rater given the band
-  // words and not the rulebook was being told to honour ceilings stated in a document it never saw.
-  //
-  // Resolved HERE and hung on ctx rather than recomputed in the dispatch, because "which deck" is one
-  // decision and a second copy of it is how the two lanes drifted in the first place. ABOVE the resume
-  // return as well: a resumed run reads its manifest off the sidecar and would otherwise reach the
-  // dispatch with no deck path at all — the stage would silently fall back to reading nothing, which
-  // is exactly the failure this issue is about, reintroduced on the resume path only.
-  const configured = frameworkFor(ctx.profile);
-  const fwPath = configured !== DEFAULT_FRAMEWORK ? configured : TRIAGE_FRAMEWORK;
-  ctx.frameworkPath = fwPath;
-  let raw = null;
-  try { raw = readFileSync(sidecarPath, "utf8"); } catch { /* ENOENT */ }
-  if (raw != null) {
-    try { ctx.framework = parseFrameworkManifest(raw); }
-    catch (e) { throw new Error(`_driver/framework.json is corrupt (${e.message}) — investigate; the frozen framework is never silently re-derived`); }
-    readBackLadder(sidecarPath);
-    // The method is read back with the manifest it was frozen beside, never loaded fresh on a resume.
-    ctx.frameworkMethod = attachFrameworkMethod({ frozenPath: driverDir(ctx.paths.runDir, FROZEN_METHOD_FILE),
-      resolve: (rel) => config.resolveSkillPath(rel), fwPath, manifest: ctx.framework, minted: false });
-    return;
-  }
-  const manifest = loadFrameworkManifest((rel) => config.resolveSkillPath(rel), fwPath);   // see pipeline.mjs attachFramework
-  ctx.framework = manifest;
-  // THE FRAMEWORK'S METHOD, frozen when the framework states one (framework-method.mjs): every rated card
-  // on a knockout page then records the framework's inputs and takes its table's band. Frozen BEFORE the
-  // manifest, as the clearance lane does: a run interrupted between the two writes has no manifest, so its
-  // resume mints both again. The other order would leave a manifest with no method beside it, which the
-  // resume branch above reads as a framework that states none.
-  ctx.frameworkMethod = attachFrameworkMethod({ frozenPath: driverDir(ctx.paths.runDir, FROZEN_METHOD_FILE),
-    resolve: (rel) => config.resolveSkillPath(rel), fwPath, manifest, minted: true });
-  atomicWrite(sidecarPath, JSON.stringify(manifest, null, 2) + "\n");
-  runLog(ctx.paths.runDir, { event: "framework", key: manifest.framework_key, custom: fwPath !== TRIAGE_FRAMEWORK, lane: "knockout", bands: manifest.bands.map((b) => b.label).join("/"),
-    method: ctx.frameworkMethod ? methodPathFor(fwPath) : null });
-  readBackLadder(sidecarPath);
+  attachFramework(ctx, { defaultFramework: TRIAGE_FRAMEWORK, lane: "knockout", deckOnCtx: true, readBack: readBackLadder });
 }
 
 // ── — READ THE LADDER BACK THE WAY ITS CONSUMER READS IT, AT THE ONE MOMENT IT IS FREE ─────────

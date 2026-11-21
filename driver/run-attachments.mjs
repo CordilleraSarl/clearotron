@@ -205,40 +205,45 @@ export function attachProfile(ctx, job, { write = true } = {}) {
 // frameworkPath (the parked-run deploy-boundary case); its findings.json stays whatever version it
 // declares, judged by that version's gates. Corrupt ⇒ fail loud (driver-written, same as profile.json).
 const DRIVER_DIR = dirname(fileURLToPath(import.meta.url));
-export function attachFramework(ctx, { write = true } = {}) {
+// ONE FREEZE FOR BOTH PRODUCTS. The Knockout froze its framework in its own copy of this function, and the two had drifted
+// in small ways with no stated reason. Each product now passes what is its own:
+//   defaultFramework  the framework when the customer configured none: the Generic one for a clearance, the house triage
+//                     ladder for a Knockout, because a Knockout rates at triage grain;
+//   write             false where the caller only reads the frozen manifest back (the clearance's introspection);
+//   lane              the product named on the `framework` event, which then carries no `file` (the Knockout's shape);
+//   deckOnCtx         the deck's path hung on ctx, ABOVE the resume return too. The Knockout's rater is served the deck,
+//                     not only the manifest, and a resumed run reads its manifest off the sidecar, so a deck path computed
+//                     only on the mint branch would leave a resumed rater reading nothing;
+//   readBack          the ladder read back the way its consumer reads it (the Knockout's assess validator re-reads the
+//                     sidecar with a forgiving reader), on both branches.
+// On both branches the method is attached with the manifest it was frozen beside: a resume reads it back and never
+// loads a fresh one. On the mint branch the method is frozen BEFORE the manifest, so a run interrupted between the two
+// writes has no manifest, and its resume mints both again.
+export function attachFramework(ctx, { write = true, defaultFramework = DEFAULT_FRAMEWORK, lane = null, deckOnCtx = false, readBack = null } = {}) {
   const sidecarPath = paths(ctx.paths.runDir).framework;
+  const configured = frameworkFor(ctx.profile);
+  const fwPath = configured !== DEFAULT_FRAMEWORK ? configured : defaultFramework;
+  if (deckOnCtx) ctx.frameworkPath = fwPath;
+  const methodPath = driverDir(ctx.paths.runDir, FROZEN_METHOD_FILE);
+  const resolve = (rel) => config.resolveSkillPath(rel);
   let raw = null;
   try { raw = readFileSync(sidecarPath, "utf8"); } catch { /* ENOENT — genuinely absent */ }
-  const methodPath = driverDir(ctx.paths.runDir, FROZEN_METHOD_FILE);
   if (raw != null) {
     try { ctx.framework = parseFrameworkManifest(raw); }
     catch (e) { throw new Error(`_driver/framework.json is corrupt (${e.message}) — investigate; the frozen framework is never silently re-derived`); }
-    // The method the run froze, or none: a run frozen without one is never given one on resume.
-    ctx.frameworkMethod = attachFrameworkMethod({ frozenPath: methodPath, manifest: ctx.framework, minted: false });
+    readBack?.(sidecarPath);
+    ctx.frameworkMethod = attachFrameworkMethod({ frozenPath: methodPath, resolve, fwPath, manifest: ctx.framework, minted: false });
     return;
   }
-  // NO FROZEN FRAMEWORK. It is frozen before the first stage, so a run without one ran no stage, and a
-  // read-only caller has nothing to rebuild. (A run from before the framework freeze was given one here,
-  // resolved in memory; a run from an earlier build is no longer resumed.)
   if (!write) throw new Error("_driver/framework.json is absent — the run stopped before its framework was frozen, so it ran no stage and there is nothing to rebuild");
-  // A cold start, or a resume of a first pass that stopped before this freeze: the framework in force is
-  // resolved from the frozen profile and minted now, as the cold path does. With no profile it is the
-  // GENERIC DEFAULT — doc 50 has no framework-less runs, and frameworkFor(null) resolves it.
-  const fwPath = frameworkFor(ctx.profile);
-  // config.skillsRoot, NOT DRIVER_DIR: the profile's framework may live in the deployment's config
-  // store (CLEAROTRON_INSTRUCTIONS_DIR), which is also the root the AGENT resolves the same path against.
-  const manifest = loadFrameworkManifest((rel) => config.resolveSkillPath(rel), fwPath);   // throws framework_manifest_missing — a deploy defect, loud
+  const manifest = loadFrameworkManifest(resolve, fwPath);   // throws framework_manifest_missing — a deploy defect, loud
   ctx.framework = manifest;
-  // The method is frozen BEFORE the manifest: a run interrupted between the two writes has no manifest,
-  // so its resume mints both again. The other order would leave a manifest with no method beside it,
-  // which the resume branch above reads as a framework that states none.
-  ctx.frameworkMethod = attachFrameworkMethod({ frozenPath: methodPath, resolve: (rel) => config.resolveSkillPath(rel), fwPath, manifest, minted: true });
-  const tmp = `${sidecarPath}.tmp`;
-  writeFileSync(tmp, JSON.stringify(manifest, null, 2) + "\n");
-  renameSync(tmp, sidecarPath);
-  runLog(ctx.paths.runDir, { event: "framework", key: manifest.framework_key,
-    custom: fwPath !== DEFAULT_FRAMEWORK, bands: manifest.bands.map((b) => b.label).join("/"), file: manifestPathFor(fwPath),
+  ctx.frameworkMethod = attachFrameworkMethod({ frozenPath: methodPath, resolve, fwPath, manifest, minted: true });
+  atomicWrite(sidecarPath, JSON.stringify(manifest, null, 2) + "\n");
+  runLog(ctx.paths.runDir, { event: "framework", key: manifest.framework_key, custom: fwPath !== defaultFramework, ...(lane ? { lane } : {}),
+    bands: manifest.bands.map((b) => b.label).join("/"), ...(lane ? {} : { file: manifestPathFor(fwPath) }),
     method: ctx.frameworkMethod ? methodPathFor(fwPath) : null });
+  readBack?.(sidecarPath);
 }
 
 // ── Search-depth spine — freeze the resolved SEARCH POLICY beside the profile ────────────────────────
