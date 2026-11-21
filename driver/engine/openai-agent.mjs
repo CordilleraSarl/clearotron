@@ -423,10 +423,11 @@ export const CODEX_RECORDING_INSTRUCTIONS = `${WRITE_DISCIPLINE} ${TEMP_FOLDER_R
 /**
  * The developer instructions for one Codex turn. `seatWrites` is the stage's declaration, as the Claude adapter reads
  * it (runDirGrant): `false` says the driver writes the stage's artifact from its recording tool, so the turn keeps the
- * rule it had; `true` or unknown (`null`, as a form repair passes it) is a turn that authors a file. PURE.
+ * rule it had. `recordsItsResult` says the same for a turn that leaves `seatWrites` unknown on purpose: a form repair,
+ * which keeps Claude's write grant, on a recording stage. Any other turn authors a file. PURE.
  */
-export const codexDeveloperInstructions = ({ seatWrites = null } = {}) =>
-  (seatWrites === false ? CODEX_RECORDING_INSTRUCTIONS : CODEX_FILE_INSTRUCTIONS);
+export const codexDeveloperInstructions = ({ seatWrites = null, recordsItsResult = false } = {}) =>
+  (seatWrites === false || recordsItsResult === true ? CODEX_RECORDING_INSTRUCTIONS : CODEX_FILE_INSTRUCTIONS);
 
 /**
  * The folder holding codex's own programs, which the stage's profile must let it read. codex runs every
@@ -1022,7 +1023,7 @@ export const openaiAgentEngine = {
   // `thread/resume failed: no rollout found for thread id ... (code -32600)`, exit 1 — with the control
   // (same id, same binary, its own home) resuming cleanly. So every warm-patch retry and every
   // form-repair sub-turn on the codex arm has been failing.
-  async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, stallSec, stageHome: providedHome, streamFile = null } = {}) {
+  async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, recordsItsResult = false, stallSec, stageHome: providedHome, streamFile = null } = {}) {
     if (!message) throw new Error("openai-agent.runTurn: message is required");
     const t0 = Date.now();
     let codexHome;
@@ -1069,7 +1070,7 @@ export const openaiAgentEngine = {
       const fence = codexSandboxBypassed() ? null
         : { runDir, workDir, readRoots: [...(skillsGrantRoots?.length ? skillsGrantRoots : [skillsDir]), codexProgramRoot(codexBin())].filter(Boolean) };
       writeFileSync(join(codexHome, "config.toml"),
-        renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions: codexDeveloperInstructions({ seatWrites }), toolTimeoutSec: timeoutSec, fence,
+        renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions: codexDeveloperInstructions({ seatWrites, recordsItsResult }), toolTimeoutSec: timeoutSec, fence,
           withheldFromCommands: codexCommandWithheld() }));
 
       const input = absolutizeSkillRefs(message, skillsDir, resolveSkill);

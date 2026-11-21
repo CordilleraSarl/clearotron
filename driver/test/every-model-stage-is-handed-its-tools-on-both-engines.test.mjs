@@ -28,7 +28,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { mkdtempSync, mkdirSync, readFileSync, rmSync, existsSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, existsSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
@@ -322,6 +322,34 @@ test("a repair turn is handed its engine's output rule for the stage, on a stage
           assert.equal(line && JSON.parse(line.slice("developer_instructions = ".length)), codexRule(label), `${label}, Codex turn ${i + 1}: not the stage's output rule`);
         }
       }
+    }
+  }
+});
+
+/** Every Codex call of a dispatch of `label` whose output, already on disk, fails a form check once: so the next turn is the form repair inside the dispatch. */
+async function formRepaired(label) {
+  const dir = mkdtempSync(join(tmpdir(), "stage-form-repair-"));
+  try {
+    mkdirSync(driverDir(dir), { recursive: true });
+    const out = join(dir, "out.md");
+    writeFileSync(out, "an invented draft\n");
+    let checks = 0;
+    // A form-class refusal the first time, as a closed vocabulary's is, then a pass.
+    const validate = () => (checks++ === 0 ? { ok: false, reason: "framediff_severity_invalid:major (not in: dominant-element, material, minor)" } : { ok: true });
+    await withEnv({ ...ENGINES["openai-agent"](dir, out), MOCK_CODEX_NOFILE: "1", CLEAROTRON_RETRY_BACKOFF_MS: "0" },
+      () => runStage(label, { message: MESSAGES.get(baseOf(label))?.message ?? "invented message", model: "opus",
+        sessionKey: `stage-form-repair-${label}`, runDir: dir, expectFile: out, validate, maxRetries: 0, timeoutSec: 30 }));
+    return readFileSync(join(dir, "calls.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+}
+
+test("codex: a form repair inside the dispatch keeps the stage's output rule, a recording stage's and a writing stage's", async () => {
+  for (const label of ["frame-diff", "case-law"]) {
+    const turns = await formRepaired(label);
+    assert.equal(turns.length, 2, `${label}: no form repair followed the refused draft`);
+    for (const [i, call] of turns.entries()) {
+      const line = String(call.configToml).split("\n").find((l) => l.startsWith("developer_instructions = "));
+      assert.equal(line && JSON.parse(line.slice("developer_instructions = ".length)), codexRule(label), `${label}, Codex turn ${i + 1}: not the stage's output rule`);
     }
   }
 });
