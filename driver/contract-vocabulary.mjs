@@ -230,13 +230,13 @@ export const VOCABULARY = [
   // its own send. Delivery is code and a packet now, so there is no stage to emit a delivery token.
 
   // ── the gateway wrapper, emittable by EVERY stage and not in verify.mjs at all ─────────────────────
-  { token: "missing_file", stages: ALL_STAGES, site: "driver/gateway.mjs judgeArtifacts" },
+  { token: "missing_file", stages: ALL_STAGES, site: "driver/ladder/judge.mjs judgeArtifacts" },
 ];
 
 /**
  * WRAPPERS — the emitted failure string is not always the bare token.
  *
- *   invalid_file:<rel(gradedArtifact)>:<validator reason>   runStageLadder() in gateway.mjs
+ *   invalid_file:<rel(gradedArtifact)>:<validator reason>   judgeArtifacts() in judge.mjs
  *   max_tokens_no_output:<the whole string above>           runStageLadder() in gateway.mjs
  *
  * The file segment is variable and `max_tokens_no_output:` PREFIXES an otherwise ordinary token, so a
@@ -279,8 +279,8 @@ export const ARM1_EXEMPTIONS = [
   {
     token: "missing_file",
     stages: ALL_STAGES,
-    symbol: { file: "driver/gateway.mjs", names: ["judgeArtifacts"] },
-    reason: "The gateway's own pre-validation check (judgeArtifacts, inside runStageLadder() in gateway.mjs): the declared output does not exist. It speaks about the DISPATCH, not about any element within the output — every stage can emit it and no element owns it.",
+    symbol: { file: "driver/ladder/judge.mjs", names: ["judgeArtifacts"] },
+    reason: "The gateway's own pre-validation check (judgeArtifacts() in judge.mjs, which the stage ladder in gateway.mjs runs): the declared output does not exist. It speaks about the DISPATCH, not about any element within the output — every stage can emit it and no element owns it.",
   },
   {
     token: "profile_unparseable",

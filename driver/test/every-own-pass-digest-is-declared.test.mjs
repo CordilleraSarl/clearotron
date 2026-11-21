@@ -30,7 +30,8 @@ const FUNNEL_INTERNAL = new Set(["runDigest", "flushDigestQueue"]);
 // A declaration this resolver must recognise, or a real site hides behind an unresolved name:
 //   async function f(            const f = async (            const f = (
 //   const MAP = {                (the UPSTREAM_STALE_REPAIR shape — a dispatch inside an object literal)
-const DECL = /^\s*(?:export\s+)?(?:async\s+)?function\s+([A-Za-z0-9_$]+)\s*\(|^\s*(?:const|let)\s+([A-Za-z0-9_$]+)\s*=\s*(?:async\s*)?[({]/;
+// each of them exported or not.
+const DECL = /^\s*(?:export\s+)?(?:async\s+)?function\s+([A-Za-z0-9_$]+)\s*\(|^\s*(?:export\s+)?(?:const|let)\s+([A-Za-z0-9_$]+)\s*=\s*(?:async\s*)?[({]/;
 const DISPATCH = /\brunDigest\s*\(|stage\s*\(\s*"register-digest"/;
 
 /**

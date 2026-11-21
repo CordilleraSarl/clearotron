@@ -39,9 +39,11 @@ import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-  themeButton, THEME_BTN_CSS, CHROME_CSS, logoLockup, confPosture, sectionStrip,
+  themeButton, THEME_BTN_CSS, CHROME_CSS, logoLockup, confPosture,
 } from '../../shared/brand.mjs';
-import { pageShell } from './page-shell.mjs';   // the document shell, shared with the clearance template
+import { reportPage } from './page-shell.mjs';   // the one report frame, shared with the clearance template
+import { hrefAttr } from './attr.mjs';   // the workbook beside the page, linked as the clearance links it
+import { escapeAttr } from '../../shared/html-escape.mjs';
 import { inlineMarkdown } from '../../shared/inline-markdown.mjs';   // the inline-markdown dialect, shared with the clearance template
 import { SUMMARY_BLOCK_LINE, parseSummaryBlocks } from '../../shared/summary-blocks.mjs';
 
@@ -67,16 +69,16 @@ import { saysSomethingNew } from '../../shared/says-something-new.mjs';
 import OFFERED from '../../shared/offered-territories.json' with { type: 'json' };   // the order form's own territory names
 import { normalizeTerritory } from '../../providers/_shared/territory-codes.mjs';   // a territory as written → its code
 import { KNOCKOUT_PAGE as K } from './strings.mjs';
-import { plainDeferralReason } from '../deferral-row.mjs';   // the reader's words for a search left open
-import { PART_NAMES } from '../degraded-parts.mjs';   // the parts' reader names
+import { knockoutLeftOpenOf } from './knockout-left-open.mjs';   // a name's Left open rows, one projection for every reader
 import { recordEntryHtml, logoFigureHtml } from './register-record-html.mjs';   // a record entry and a logo, drawn once for both report pages
 import { RECORD_LABELS } from './register-record.mjs';
 import { REC, ownerDisplayName, normalizeRecordUri } from '../registry-fidelity.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
-const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-const escAttr = esc;
+// One escaper for text and attribute values alike, since this template does not keep the two apart.
+const esc = escapeAttr;
+const escAttr = escapeAttr;
 // Same doctrine as the old table: a model/research-derived URL becomes a link ONLY when it is http(s).
 // esc() stops attribute breakout; it does not stop scheme smuggling (javascript:, data:).
 const isHttpUrl = (u) => /^https?:\/\//i.test(String(u ?? '').trim());
@@ -97,6 +99,9 @@ const isHttpUrl = (u) => /^https?:\/\//i.test(String(u ?? '').trim());
 // since the Result screen's first commit (3654a76), so the popup is not what was missing. `rel` stays
 // beside it — noopener severs window.opener, noreferrer withholds the run's URL from the evidence host.
 const linkOrText = (u) => (isHttpUrl(u) ? `<a href="${escAttr(u)}" target="_blank" rel="noopener noreferrer">${esc(u)}</a>` : esc(u));
+// The audit workbook's link, attribute-safe: the portal's route where the publisher hands one in, else the workbook's
+// own file name beside the page, else none.
+const workbookHref = (route, file) => (isHttpUrl(route) ? escAttr(route) : hrefAttr(file, { relative: true }));
 
 // A listed filing's record as its office publishes it, where the run's register has no page of its own:
 // publish sets `officeLink` from the filing's own numbers (office-record-links.mjs). The label is the
@@ -521,6 +526,14 @@ export function rankByMateriality(records, entry, mark) {
 }
 
 const APPENDIX_ROWS = 8;
+/**
+ * THE FILINGS A NAME'S TABLE SHOWS: its listing in the run's own order of materiality, at most APPENDIX_ROWS. The page
+ * draws these rows, and the logo step asks for logos for these alone (mark-logos.mjs), so no logo is paid for that no
+ * reader sees. PURE.
+ */
+export function shownFilings(entry, mark) {
+  return rankByMateriality(entry?.records, entry, mark).slice(0, APPENDIX_ROWS);
+}
 // EACH LISTED FILING OPENS ITS REGISTER RECORD (owner, 2026-11-18; the approved board). A filing whose record the
 // run saved gets a closed drop-down in a row under its table row, the same entry a clearance card draws, and its
 // logo, where the run saved one, on a line of its own under the mark name, uncaptioned because the Territory
@@ -564,8 +577,7 @@ function filingsSection(marks, registerRecords, records = { filingRecords: new M
     // COUNT: dropping a cancelled or out-of-class row would leave a reader unable to reconcile the table
     // with the number above it, and "we did not show you that one" is a different promise from "it is
     // not material". The cards promote and therefore filter; the appendix evidences and therefore ranks.
-    const ranked = rankByMateriality(e.records, e, m);
-    const shown = ranked.slice(0, APPENDIX_ROWS);
+    const shown = shownFilings(e, m);
     const rows = shown.map((r) => filingRows(r, records)).join('');
     // "First N" WAS TRUE AND IS NOT ANY MORE, and saying it of a ranked table would be worse than the
     // cap: it invites the reader to take the sample for the top of the provider's list. Say the count
@@ -1614,31 +1626,14 @@ const CAVEAT_LEAD = K.caveatLead;
  * hardcoded product name — and, worse, the name of a RETIRED row, so a knockout whose level the registry
  * had forgotten asserted it was the one product it provably was not.
  */
-/**
- * WHAT A KNOCKOUT LEFT OPEN, from the run's own record (design's rule, approved by the owner 2026-11-18). PURE.
- *
- * A register step that failed is a row under the report's "Register" name: the listing that never came back is not
- * searched, and a reading that stopped part-way is partly covered. A name whose automated research was unavailable is a
- * row under its own name, not searched. The notes are the shipped lines, the deferral row's for a step and the page's
- * own for a name, so nothing here is a new sentence and nothing comes from model prose. A refused listing is not a
- * search that failed (the run never offered it), and a run with nothing left open returns no rows.
- */
-export function knockoutLeftOpen(steps, marks = []) {
-  return [
-    ...(steps?.listing ? [{ area: PART_NAMES.register, state: 'not-searched', note: plainDeferralReason(steps.listing.reason) }] : []),
-    ...(steps?.reading ? [{ area: PART_NAMES.register, state: 'coverage-limited', note: plainDeferralReason(steps.reading.reason) }] : []),
-    ...(Array.isArray(marks) ? marks : []).filter((m) => m?.degraded === true && String(m?.name ?? '').trim())
-      .map((m) => ({ area: String(m.name).trim(), state: 'not-searched', note: DEGRADED_NOTE })),
-  ];
-}
-
-// ONE NAME'S KNOCKOUT PAGE FROM THE RUN'S REPORT DOCUMENT (C14). The run's report document (publish/report-document.mjs,
-// `_driver/report-document.json`) holds every fact a Knockout page prints. This reads it, as written, for the name at
-// `at`, and hands the page the arguments publish handed it: the name's own slice of the findings record, opening with
-// that name's own assessment on a batch, and the band its report carries. What the document does not hold is the page's
-// surface (the workbook's portal address, the confidentiality posture, the demo flag) and the two sets it holds by
-// reference (each filing's saved record and each saved logo), which publish resolves from the run. PURE given its inputs.
-export function renderKnockoutDocument(doc, at, { filingRecords = new Map(), logos = new Map(), auditHref = null, delivery = null, demoData = false } = {}) {
+// ONE NAME'S KNOCKOUT PAGE CONTEXT FROM THE RUN'S REPORT DOCUMENT (C14). The run's report document
+// (publish/report-document.mjs, `_driver/report-document.json`) holds every fact a Knockout page prints, and this is the
+// one place the page reads it: as written, for the name at `at`, into what the page's context is built from: the name's
+// own slice of the findings record, opening with that name's own assessment on a batch, and the band its report
+// carries. What the document does not hold is the page's surface (which name, the workbook's portal address, the
+// confidentiality posture, the demo flag) and the two sets it holds by reference (each filing's saved record and each
+// saved logo), which publish resolves from the run. PURE given its inputs.
+function knockoutContextOf(doc, { at, filingRecords = new Map(), logos = new Map(), auditHref = null, delivery = null, demoData = false } = {}) {
   const run = doc?.run ?? {}, scope = doc?.scope ?? {}, client = doc?.client ?? {}, framework = doc?.framework ?? {};
   const findings = client.findings ?? {};
   const m = (findings.marks ?? [])[at];
@@ -1647,22 +1642,21 @@ export function renderKnockoutDocument(doc, at, { filingRecords = new Map(), log
   // own paragraph in its place; a one-name run keeps its own. An archived name with no assessment opens blank, as
   // delivered. The batch's paragraph itself stays whole in the record.
   const one = { ...findings, marks: [m], batch: { ...(findings.batch ?? {}), ...(run.single ? {} : { executiveSummary: String(m?.assessment ?? '').trim() }) } };
-  const steps = scope.steps ?? {};
   const registerRecords = client.registerRecords ?? null;
   const product = run.product ?? {};
-  return renderKnockoutHtml(one, framework.manifest ?? null, {
+  return knockoutContext(one, framework.manifest ?? null, {
     runId: run.runId, overall: run.reports?.[at]?.band ?? null, issued: run.issued, searched: run.searched, auditFile: run.auditFile,
     probeRan: scope.probeRan, registerCounts: client.registerCounts ?? null, registerRecords, ownerChecks: client.ownerChecks ?? [],
     instructedScope: scope.instructedScope ?? null,
     identity: { identity: product.name ?? null, stageLabel: product.stageLabel ?? null, template: product.template ?? null, banner: product.banner ?? null },
     matter: run.runId, auditHref,
-    leftOpen: knockoutLeftOpen({ listing: registerRecords ? null : steps.listing, reading: steps.reading }, one.marks),
+    leftOpen: knockoutLeftOpenOf(doc, at),
     registerRecordsUnreadable: client.registerRecordsUnreadable, filingRecords, logos, demoData, depthNote: product.depthNote ?? null,
     searchPolicy: scope.policy ?? null, delivery, servedModels: client.servedModels, frameworkMethod: framework.method,
   });
 }
 
-export function renderKnockoutHtml(findings, framework, {
+function knockoutContext(findings, framework, {
   runId, overall, issued = null, searched = null, auditFile = null, probeRan = false, registerCounts = null,
   registerRecords = null,
   // — was the filings sidecar PRESENT but unreadable? Defaults to false, so every existing caller — the
@@ -1799,8 +1793,8 @@ ${counts}
 ${analysis}`;
   // WHAT THIS KNOCKOUT LEFT OPEN (design's rule, approved by the owner 2026-11-18). A name whose register search failed read
   // as a clean name, where a clearance in the same place says so. The rows are the run's own record of searches that did
-  // not complete, built from the run's record by knockoutLeftOpen (above), in the clearance's grid and state words; none
-  // is model prose. A Knockout with nothing left open draws nothing, byte for byte. No scope narration returns.
+  // not complete, built from the run's record by knockoutLeftOpen (knockout-left-open.mjs), in the clearance's grid and
+  // state words; none is model prose. A Knockout with nothing left open draws nothing, byte for byte. No scope narration returns.
   const leftOpenSec = Array.isArray(leftOpen) && leftOpen.length
     ? `\n\n  <div class="sec" id="open"><span class="num"></span><h2>${K.sections.leftOpen}</h2></div>\n  <div class="panel"><div class="openrows">${coverageGrid(leftOpen, { verdict: false })}</div></div>`
     : '';
@@ -1814,13 +1808,18 @@ ${filings}`
   // falls back to its intrinsic 500px and overflows the body box by ~440px, which the height bridge then
   // posts as the frame height. That is invisible to a string test and obvious to a browser: the page
   // renders correctly and sits in a frame with 450px of dead space under it. Caught by render-check.
-  const doc = pageShell({
-    title: `${productName ? `${esc(productName)} — ` : ''}${esc(title)}`,
-    css: CHROME_CSS + '\n' + THEME_BTN_CSS + '\n' + KO_CSS,
-    chromeHref,
-    body: `<div class="rep-stickyhead no-print" data-report-chrome>
-<div class="topbar no-print">
-  ${homeHref ? `<a class="homebtn tb-back no-print" href="${escAttr(homeHref)}" title="${K.topbar.allReports}"><span aria-hidden="true">←</span> <span class="tb-back-lbl">${K.topbar.allReports}</span></a>` : ''}
+  return { findings, runId, overall, issued, identity, matter, homeHref, auditHref, auditFile, delivery, servedModels, demoData, title, productName, issuedDate, overallStop, summary, caveats, glance, newCaveats, aboutRequest, onFieldSec, leftOpenSec, filingsSec, chromeHref };
+}
+
+// THE KNOCKOUT PAGE, AS ITS PARTS (C14). page-shell.mjs `reportPage` draws every report page in one frame; what makes this
+// page the Knockout is what it hands that frame: its title, its sheet, its top bar, the theme button and the document's
+// own controls after it, its sections in their order, and its footer. Each part reads the context knockoutContext built
+// once, in the order the page has always evaluated them, so the page is byte for byte the page it was.
+export const KNOCKOUT_PAGE = Object.freeze({
+  contextOf: knockoutContextOf,
+  title: ({ title, productName }) => `${productName ? `${esc(productName)} — ` : ''}${esc(title)}`,
+  css: () => CHROME_CSS + '\n' + THEME_BTN_CSS + '\n' + KO_CSS,
+  topbar: ({ findings, runId, overall, issued, identity, matter, homeHref, auditHref, auditFile, title, productName, issuedDate, overallStop }) => `${homeHref ? `<a class="homebtn tb-back no-print" href="${escAttr(homeHref)}" title="${K.topbar.allReports}"><span aria-hidden="true">←</span> <span class="tb-back-lbl">${K.topbar.allReports}</span></a>` : ''}
   ${logoLockup({ mark: 20, tag: '' })}<span class="sp"></span>
   <span class="tb-risk" style="background:var(${overallStop});color:var(${overallStop}-on)">${esc(overall ?? '—')}</span>
   ${/* THE IDENTITY LINE NAMES THE MARK AND THE SEARCH, NOT THE RUN. It printed `matter || runId`,
@@ -1858,16 +1857,15 @@ ${filings}`
     ${exportPopover(`
       <button class="util primary" onclick="exportPDF()">\u2b07 ${K.topbar.exportPdf}</button>
       ${/* THE CLEARANCE'S OWN WORKBOOK CONTROL (owner, 2026-11-18). The page cites "the audit workbook" and gave no way to
-           open it; the control links the portal's audit route the publisher hands in, and is absent when there is none. */''}${
-        isHttpUrl(auditHref) ? `<a class="util" href="${escAttr(auditHref)}" download>\u2b07 ${K.topbar.downloadAudit}</a>` : ''}
+           open it; the control links the portal's audit route the publisher hands in. A page published with no public
+           address, as the demo is, links the workbook by its file name, which sits beside the page, as the clearance's
+           control does. Absent when the run has no workbook. */''}${
+        workbookHref(auditHref, auditFile) ? `<a class="util" href="${workbookHref(auditHref, auditFile)}" download>\u2b07 ${K.topbar.downloadAudit}</a>` : ''}
       <div class="tb-sep"></div>
       <div class="tb-row"><button class="util" onclick="openAll(true)">${K.topbar.expandAll}</button><button class="util" onclick="openAll(false)">${K.topbar.collapseAll}</button></div>
     `)}
-  </div>
-</div>
-<!--SECTION-STRIP-->
-</div>
-<div class="fab-stack" data-report-chrome>${themeButton()}</div>
+  </div>`,
+  afterHead: () => `<div class="fab-stack" data-report-chrome>${themeButton()}</div>
 <script>
 /* THE DOCUMENT'S OWN CONTROLS, and they are GLOBAL on purpose.
    The portal frames this document and drives it by postMessage. The bridge injected at serve time looks
@@ -1889,19 +1887,24 @@ window.addEventListener('beforeprint',o);})();
 /* The popover opens on its own button, closes on a click outside it and on Escape. Same two listeners
    the clearance template carries, for the same markup; they move together when the top bar is shared. */
 ${EXPORT_MENU_JS}</script>
-<div class="wrap">
-<main>
-  <header class="hero" id="summary">
+`,
+  sections: Object.freeze([
+    ['verdict', ({ delivery, demoData, title, productName, summary, aboutRequest }) => `<header class="hero" id="summary">
     ${demoBannerHtml(demoData === true)}
     ${confLineHtml(delivery, productName)}
     <h1 class="mark">${esc(title)}</h1>
     ${aboutRequest}
     ${summary ? `<div class="sub">${mdParagraphs(summary)}</div>` : ''}
-  </header>
+  </header>`],
+    ['glance', ({ glance }) => `
 
-  ${glance}
-  ${onFieldSec}
-  ${filingsSec}${leftOpenSec}
+  ${glance}`],
+    ['conflicts', ({ onFieldSec }) => `
+  ${onFieldSec}`],
+    ['also-considered', ({ filingsSec }) => `
+  ${filingsSec}`],
+    ['open', ({ leftOpenSec }) => `${leftOpenSec}`],
+    ['caveats', ({ caveats, newCaveats }) => `
 
 
   ${/* The 2026-09-16 report redesign — the scope section and its fold are off the page: what a screen is and
@@ -1918,11 +1921,9 @@ ${EXPORT_MENU_JS}</script>
        panel and the tier line now carry; a caveat making any new claim brings a new word with it and
        is kept. Both of the demo run's survive. */''}
   ${newCaveats.length ? `<div class="panel ko-caveats"><p class="ko-scope">${CAVEAT_LEAD}<br>${
-    newCaveats.map((c) => inlineMd(c)).join('<br>')}</p></div>` : ''}
-</main>
-
-  <footer>
-    ${/* THE FOOTER NAMES THE SAME THREE THINGS THE HEADER DOES. It read "<product>. / Matter
+    newCaveats.map((c) => inlineMd(c)).join('<br>')}</p></div>` : ''}`],
+  ]),
+  footer: ({ runId, issued, identity, matter, servedModels, title, productName, issuedDate }) => `${/* THE FOOTER NAMES THE SAME THREE THINGS THE HEADER DOES. It read "<product>. / Matter
          <runId>. Issued <date · time>." — the identifier again, under a label that calls it the
          client's matter when it is the engine's run directory, and the publish clock again. The mock
          reads mark · search · issued on date. Built from the same parts as the identity line so the
@@ -1934,9 +1935,11 @@ ${EXPORT_MENU_JS}</script>
     <span>${[title, productName].filter(Boolean).map(esc).join(' \u00b7 ')}${
       issuedDate ? `${title || productName ? ' \u00b7 ' : ''}${esc(K.issuedOn(issuedDate))}` : ''}${
       title || productName || issuedDate ? '.' : ''}</span>
-    ${logoLockup({ mark: 16 })}
-  </footer>
-</div>`,
-  });
-  return doc.replace('<!--SECTION-STRIP-->', sectionStrip(doc, STRIP));
+    ${logoLockup({ mark: 16 })}`,
+  afterWrap: () => '',
+  strip: STRIP,
+});
+
+export function renderKnockoutHtml(findings, framework, opts = {}) {
+  return reportPage(KNOCKOUT_PAGE, knockoutContext(findings, framework, opts));
 }

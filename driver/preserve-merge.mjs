@@ -8,7 +8,7 @@
 // OPTIONAL, accepts a call carrying only part of the document and silently deletes the rest. Five of
 // the fifteen return-path transports were measured with that hole:
 //
-//   record_report_overview   actions, methodology, handling_note   (a section of the client's report)
+//   record_report_overview   actions, handling_note   (a section of the client's report)
 //   record_clearance_variants   incumbent_classes, watchlist_owners, search_floor
 //   record_blind_frame       sources
 //   record_matter_frame      scope_jurisdictions, excluded_jurisdictions

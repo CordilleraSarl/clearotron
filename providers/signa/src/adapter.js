@@ -27,6 +27,18 @@ export const adapter = {
       return err ? { ok: false, cause: err.slice(0, 140) } : { ok: true };
     } catch (e) { return { ok: false, cause: `fetch threw: ${e.message}` }; }
   },
+  // One registration's logo, for the report: the image link Signa gave on the record, followed once (core.js doMarkImage).
+  // A Knockout's listed filing carries it from its search row, kept apart from what the rater reads (mark-logos.mjs).
+  async markImage(uri, { agentId, sessionKey, recordLog = null, record = null }) {
+    if (!process.env.SIGNA_API_KEY) return { ok: false, cause: "SIGNA_API_KEY absent from driver env" };
+    let doMarkImage, DEFAULT_BASE;
+    try { ({ doMarkImage, DEFAULT_BASE } = await import("./core.js")); }
+    catch (e) { return { ok: false, cause: `plugin core unavailable: ${e.message}` }; }
+    const base = process.env.SIGNA_BASE_URL || DEFAULT_BASE;
+    const link = record?.imageUrl ?? record?._raw?.primary_image_url ?? null;
+    try { return await doMarkImage(base, link, { kind: "image", agentId, sessionKey, sessionId: null, recordLog, target: uri }); }
+    catch (e) { return { ok: false, cause: `fetch threw: ${e.message}` }; }
+  },
   // ── the three adapters that make this a code-driven provider ─────────────────────────
   //
   // Until these existed signa declared `recordFetch` alone, `planExec` resolved to null, and a run

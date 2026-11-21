@@ -15,13 +15,8 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
 import { planVsExecutedChannels, traceCommonLawCarry, reconciliationRates } from "../commonlaw-carry.mjs";
-
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
-const src = (f) => readFileSync(join(ROOT, f), "utf8");
+import { driverSource } from "./driver-source.mjs";
 
 // The grid-spec shape the writer produces: the dictated channels plus the general-web cell.
 const SPEC_PLATFORMS = ["taobao.com", "jd.com", "1688.com", "web"];
@@ -65,7 +60,7 @@ test("the plan is read from the GRID SPEC, and the reason is pinned with the rea
   // rather than the old inline position — the property it defends is the SOURCE, not the line it sat on.
   // Pinning the position instead would have made a correct refactor look like a regression, and the
   // temptation then is to re-inline the read, which is how the two seams end up with two answers.
-  const pipeline = src("driver/pipeline.mjs");
+  const pipeline = driverSource("pipeline.mjs");   // with the modules carved from it: the reader and the call now live in two
   const at = pipeline.indexOf("function plannedChannelsFor(P) {");
   assert.ok(at > 0, "plannedChannelsFor is gone — find where the ordered channel list is read before trusting this");
   const reader = pipeline.slice(at, at + 500);

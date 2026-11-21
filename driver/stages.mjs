@@ -19,7 +19,7 @@ import { awaitsReadingTurn } from "../providers/_shared/plan-guards.mjs";   // �
 import { isNonLatinTerm } from "../providers/_shared/script-form.mjs";
 import { latinQuestionsOfRomanisedForm } from "./register-plan.mjs";   // sentence 3 — the Latin question a script question repeats
 import { registerCapabilities } from "./register-unreachable.mjs";
-import { validators } from "./verify.mjs";
+import { validators } from "./verify.mjs"; import { declaredValidator } from "./stage-declarations.mjs";   // each stage's validator, by the name its declaration gives
 import { REGISTER_PROVIDER, PROVIDERS } from "./driver.config.mjs";
 import { REGISTER_AXES, decideAxes } from "./coverage-ledger.mjs";
 // — the digest dispatch asks the SAME question verify.mjs asks ("does this run owe a form or a
@@ -41,7 +41,7 @@ import { STATEMENT_CLAUSE_MAX } from "./findings-model.mjs";   // — the ask is
 // The ledger's closed vocabularies, so the dispatch cannot teach an order or a member the code refuses.
 import { SCOPE_LAYERS, SCOPE_STATUSES } from "./scope-ledger.mjs";
 import { CLOSURE_EVIDENCE_FILES } from "./doubt-closure-call.mjs";
-import { caseLawSourceLines } from "./case-law-sources.mjs";   
+import { caseLawSourceLines } from "./case-law-sources.mjs"; import { FAMILY_COMPLETENESS, COMMON_LAW_PARITY, RESPONSE_BAND_COHERENCE, REGISTRATION_NUMBERS, ENFORCER_INFERRED, LEGAL_TERMS_OF_ART } from "./manual-paragraphs.mjs";   // — carried by the stage's own manual; kept here for a copy that lacks one
 import { readAcceptedClosures } from "./doubt-closure-tool.mjs";   //  — what a retry no longer needs to ask   // conversion 6 — file_index is a POSITION into this list
 import { DECLINATION_REASON_TOKENS } from "./declination-call.mjs";   // — the vocabulary is dictated FROM the acceptance boundary, so the order and the refusal cannot disagree
 
@@ -865,12 +865,12 @@ const SPINE_DOC = "skills/clearance-search/firm-wide-reasoning.md";
 const synthesisSkillReads = ({ profile, job }) => [
   "skills/clearance-search/synthesis-rules.md", SPINE_DOC, frameworkFor(profile), workedExamplesFor(profile),
   ...(pharmaMatter(job) ? ["skills/clearance-search/field-doctrine-pharma.md"] : []),
-  REPORT_PROSE,
+  REPORT_PROSE, "skills/clearance-search/synthesis-finding-rules.md",
 ];
 const reportOverviewSkillReads = ({ profile }) =>
   ["skills/clearance-search/synthesis-rules.md", SPINE_DOC, frameworkFor(profile), "skills/clearance-search/delivery-contract.md", REPORT_PROSE];
 const reportCardSkillReads = ({ profile }) =>
-  ["skills/clearance-search/delivery-contract.md", frameworkFor(profile), REPORT_PROSE];
+  ["skills/clearance-search/delivery-contract.md", frameworkFor(profile), REPORT_PROSE, "skills/clearance-search/report-card-rules.md"];
 // THE REVIEW READS WHAT IT ENFORCES. Its manual judges a rating on the framework's own method, at the framework's
 // lowest band and under the framework in force, and its standing lines hold a pharma matter to the field module. It was
 // handed none of them: on a test run with Codex, a review that had not been given the framework went looking for one in
@@ -1095,13 +1095,13 @@ export const VARIANT_CATEGORY_BRIEF =
 //
 // Enforced by driver/test/contract-audit.test.mjs. Adding a key here changes no runtime behaviour:
 // only `def.contract` reaches _driver/stage-contracts.json, written by
-// recordStageContract() in pipeline.mjs, and nothing spreads a stage def.
+// recordStageContract() in stage-dispatch.mjs, and nothing spreads a stage def.
 export const STAGES = {
   "matter-frame": {
     model: "opus", thinking: "high", timeoutSec: 300, stallSec: 300,
     skillReads: ["skills/matter-frame/SKILL.md"],
     out: (P) => P.matterContext,
-    validate: validators.matterContext,
+    validate: declaredValidator("matter-frame", validators),
     // The output contract THIS prompt holds the frame to — the dictated "Meaning angles:" line below.
     // Recorded by the driver at DISPATCH (pipeline.mjs recordStageContract → _driver/stage-contracts.json)
     // and the ONLY thing validators.matterContext gates the line requirement on — the romanisation-floor
@@ -1289,7 +1289,7 @@ export const STAGES = {
     model: "opus", thinking: "high", timeoutSec: 600, stallSec: 450,
     skillReads: ["skills/clearance-variants/SKILL.md", "skills/clearance-variants/transliteration-scripts.md"],
     out: (P) => P.variantManifest,
-    validate: validators.variantManifest,
+    validate: declaredValidator("clearance-variants", validators),
     // The output contract THIS prompt holds the artifact to — recorded by the driver at DISPATCH
     // (pipeline.mjs recordStageContract → _driver/stage-contracts.json), and the ONLY thing
     // validators.variantManifest gates the romanisation floor on. It is evidence of PROMPT VINTAGE,
@@ -1467,7 +1467,7 @@ export const STAGES = {
       `ROMANIZATION (MANDATORY on every non-Latin variant value, FORBIDDEN on a Latin one): a variant whose "value" is written in ANY non-Latin script — Han, Katakana, Hangul, Arabic, Cyrillic, Devanagari, Thai, Greek — MUST also carry "romanization": its Latin-script form, syllable-separated by single spaces, PLAIN ASCII LETTERS AND DIGITS ONLY (no tone marks, no diacritics, no leftover characters): 华威豹 → "HUA WEI BAO", ワボスラッシュ → "WABO SURASSHU", 와보 슬러시 → "WABO SEULLEOSI", Ваво Слаш → "VAVO SLASH". Put each romanization on the row whose OWN value it romanises — never on a neighbouring row, never as a row of its own — and never romanise a value that is already Latin (that row is refused as an orphan). Half the registers we search hold non-Latin filings ONLY under their transliteration and cannot answer the characters at all, so a non-Latin variant without its romanization is a term we cannot search anywhere. WHEN THE MARK OR THE DOMINANT ELEMENT IS ITSELF NON-LATIN, list it as a "core" variant carrying its romanization too — "mark" and "dominant_element" have no romanization slot of their own, and the driver reads every term's romanization off the variant that states it.`,
       // A7 — the completeness floor the validator holds this output to (armed via the stage contract
       // above). The FAMILY must be stated in full; which member bites stays judgment's call downstream.
-      `FAMILY COMPLETENESS (MANDATORY): the variants[] array must state the mark's WHOLE search family, never a single row — at MINIMUM one "core" variant (the mark / a spacing-punctuation form of it), one "phonetic" variant and one "visual" variant; and when the mark, the dominant element or any elements[] value is non-Latin, at least one "transliteration" variant as well (the transliteration-numeric register axis compiles ONLY from transliteration/numeric rows — with none stated, that axis runs empty, silently). A manifest missing any of these fails the stage. State the family completely and let the searches say what is out there — completeness here is structural, it is NOT a ranking, and it never pre-judges which neighbour matters.`,
+      FAMILY_COMPLETENESS,
       // item 21 — the PER-SCRIPT arm of the same floor. Stated as the requirement it is (one rendering
       // per in-scope script), never as a list of terms: code must never mint a search term, so the gate
       // refuses and THIS prompt is what produces the rendering. The territories come from the frozen
@@ -1525,7 +1525,7 @@ export const STAGES = {
     // validators.blindFrame (invalid_file:…:blindframe_*). Point this at prose again, or at nothing, and
     // the stage can complete having written no model at all.
     out: (P) => P.blindFrameModel,
-    validate: validators.blindFrame,
+    validate: declaredValidator("blind-frame", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
@@ -1605,7 +1605,7 @@ export const STAGES = {
     model: "haiku", thinking: "low", timeoutSec: 2250, stallSec: 1100,
     skillReads: ["skills/clearance-common-law/SKILL.md"],
     out: (P) => P.commonLaw,
-    validate: validators.commonLaw,
+    validate: declaredValidator("common-law", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
@@ -1780,7 +1780,7 @@ export const STAGES = {
     timeoutSec: 2250, stallSec: 1100,
     skillReads: ["skills/clearance-common-law/SKILL.md"],
     out: (P, half) => P.commonLawHalf(half),
-    validate: validators.commonLawHalf,
+    validate: declaredValidator("common-law-half", validators),
     // — the run's own receipt of which prompt vintage minted this dispatch, written at DISPATCH
     // only. DELIBERATELY NOT a gate: the validator keys on whether the dispositions file is there, not
     // on this stamp, because an obligation is discharged by structure OR by prose and a fresh dispatch
@@ -1959,7 +1959,7 @@ export const STAGES = {
     // message tells the first session to read and follow.
     followupSkillReads: (ctx) => (providerMeta(ctx?.register ?? PROVIDER).skillDoc ? [providerMeta(ctx?.register ?? PROVIDER).skillDoc] : []),
     out: (P, axis) => P.registerUnit(axis),
-    validate: validators.registerUnit,
+    validate: declaredValidator("register-unit", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
@@ -2226,7 +2226,7 @@ export const STAGES = {
     // the R1 incident's own trigger — the destructive step ran, the seat wrote its prose, the wall killed
     // the turn in the gap, and the wall rescue then refused because the JSON the driver had just deleted
     // was absent.
-    validate: validators.placement,
+    validate: declaredValidator("placement-inquiry", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
@@ -2348,7 +2348,7 @@ export const STAGES = {
     model: "opus", thinking: "low", timeoutSec: 2400, stallSec: 900,
     skillReads: ["skills/clearance-register/SKILL.md", "skills/clearance-register/digest.md"],
     out: (P) => P.registerFindings,
-    validate: validators.registerFindings,
+    validate: declaredValidator("register-digest", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
@@ -2552,7 +2552,7 @@ export const STAGES = {
     model: "sonnet", thinking: "high", timeoutSec: 600, stallSec: 600,
     skillReads: ["skills/clearance-search/phase2-execution.md"],
     out: (P) => P.skepticFlags,
-    validate: validators.skepticFlags,
+    validate: declaredValidator("skeptic", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
@@ -2566,7 +2566,7 @@ export const STAGES = {
       },
       "the escalation decision — which register axes carry a material, unresolved, genuinely closeable gap, and the one-line reason for each": {
         class: "judgment", tokens: [],
-        why: "Whether a documented coverage-limited row, a capability-gap deferral or a fresh concern on a confirmed-clean row warrants spending a re-run. The driver hands the coverage/execution truth in as a computed table (skepticDeferralExtra() in pipeline.mjs) precisely so this is a call over data rather than a re-derivation — but the call itself is nobody else's.",
+        why: "Whether a documented coverage-limited row, a capability-gap deferral or a fresh concern on a confirmed-clean row warrants spending a re-run. The driver hands the coverage/execution truth in as a computed table (skepticDeferralExtra() in floor-and-gap-checks.mjs) precisely so this is a call over data rather than a re-derivation — but the call itself is nobody else's.",
       },
       "escalation decisions — one {axis, reason} per axis that must be re-run, sent through record_skeptic": {
         class: "mechanical:code-rendered", tokens: [],
@@ -2578,7 +2578,7 @@ export const STAGES = {
       },
       "the `risk: <category>` field inside that dictated ESCALATE line": {
         class: "mechanical:code-rendered", tokens: [],
-        why: "IT HAS NO CONSUMER AT ALL. The D3 note in stages.mjs (\"the escalation-risk SHADOW apparatus … is DELETED\") records that the risk-category filter was deleted, and pipeline.mjs states 'spec-48 D3 — the escalation-risk SHADOW loop (risk-tag parse + would-skip telemetry for the never-enabled CLEAROTRON_ESCALATION_FILTER) is DELETED' at the parse site (envelopeDecision() in pipeline.mjs). The doc block at envelopeDecision() in pipeline.mjs that describes reading the field is a stale header left standing over envelopeDecision — the function it documented is gone. Classed code-rendered because it is not judgment; the correct move is deletion from the skill file.",
+        why: "IT HAS NO CONSUMER AT ALL. The D3 note in stages.mjs (\"the escalation-risk SHADOW apparatus … is DELETED\") records that the risk-category filter was deleted, and floor-and-gap-checks.mjs states 'spec-48 D3 — the escalation-risk SHADOW loop (risk-tag parse + would-skip telemetry for the never-enabled CLEAROTRON_ESCALATION_FILTER) is DELETED' at the parse site (envelopeDecision() in floor-and-gap-checks.mjs). The doc block at envelopeDecision() in floor-and-gap-checks.mjs that describes reading the field is a stale header left standing over envelopeDecision — the function it documented is gone. Classed code-rendered because it is not judgment; the correct move is deletion from the skill file.",
       },
       "return payload — a 2-3 line summary; the audit itself rides record_skeptic": {
         class: "mechanical:tool-written", tokens: ["skeptic_"],
@@ -2648,7 +2648,7 @@ export const STAGES = {
     model: "sonnet", thinking: "low", timeoutSec: 600,
     skillReads: ["skills/frame-diff/SKILL.md"],
     out: (P) => P.frameDiff,
-    validate: validators.frameDiff,
+    validate: declaredValidator("frame-diff", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
@@ -2755,7 +2755,7 @@ export const STAGES = {
     skillReadsFor: synthesisSkillReads,
     standing: Object.freeze([WEB_EVIDENCE_ONLY_THROUGH_RESEARCH]),
     out: (P) => P.narrative,
-    validate: validators.narrative,
+    validate: declaredValidator("synthesis", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
@@ -3114,7 +3114,7 @@ export const STAGES = {
       // finding's own goods meter (findings-model.validateOffFieldGround).
       `- off_field_ground (MANDATORY on every off-field finding, FORBIDDEN on every other disposition): EXACTLY one bare token of: ${OFF_FIELD_GROUNDS.join(" / ")}. "different-field" = the goods/services genuinely do not meet — a claim ABOUT THE GOODS, and the validator checks it against your own meters: a different-field finding whose goods_proximity is not "low" is REJECTED, because one record cannot say "a different commercial field" and "the goods are proximate" at the same time. "no-material-risk" = the framework's clear win — a conflict ${framework ? framework.entity_label : "the client"} plainly wins, worth the client knowing, carrying no field claim at all. THE LABEL FOLLOWS THE ARGUMENT: if what separates you from this mark is the MARK — its sound, rhythm, syllable count, orthography, connotation — then the disposition is "distinguished", NOT off-field, whatever the fields are. "Placed off-field on rhythm" is a mark argument wearing a sector label, and a reader who is told a proprietor is not in our field when the goods wording covers ours has been given a conclusion with the wrong reason attached. Where the goods overlap and the marks are argued apart, say "distinguished" and rate it.`,
       `- manageable (MANDATORY on every notable-but-manageable finding — dispositions coexistence-partner / distinguished): {"category":"<EXACTLY one of large-competitor / commercial-partner / troll / well-known-enforcer>","reason":"<one-two lines: WHY this finding is manageable for THIS client — the fact that makes it notable-but-not-blocking>"}. PROMOTE-OR-OMIT: a finding you would place in the manageable band that fits NONE of the four categories is either relevant enough to drive the read (make it disposition adversarial — it belongs in the on-field section) or not worth the lawyer's line (omit it) — never a category-less parking spot. Never put manageable on an adversarial or off-field finding. FACTS THAT CONDITION, NEVER ADVICE (the overall_caption rule, same voice): these fields render VERBATIM on the report — they state what IS, never a step to take. NEVER prescribe ("narrow the goods", "seek consent before filing", "file first", "add a disclaimer") and NEVER use advice grammar ("we recommend", "you should", "the practical path is") — every forward ask lives in the actions register, code-built from it; a prescription typed here is a delivery defect the lint flags.`,
-      `COMMON-LAW PARITY: a common-law / marketplace finding gets THE SAME rating machinery as a register finding — the framework's band by the same method, the same meters, the same legal_position / practical_position split, the same disposition logic (and manageable where it applies). The renderer keeps common-law in its own section (a different LEGAL BASIS — unregistered rights), but the section split is presentation: never leave a common-law conflict unrated, half-metered, or rated on a softer scale because its source is marketplace/web rather than a register.`,
+      COMMON_LAW_PARITY,
       `CROWDING IS PER-MARKET ONLY (§L): every crowd / dilution / "crowded field" statement — in the narrative, a finding's reasoning, legal_position, or coverage prose — NAMES the market it was counted in (jurisdiction × goods lane: "the US class-32 register carries ~N live WAVO-formative marks"), because that is the only lane where the dilution is earned (the WP-56 rule above). A GLOBAL crowd statement ("the field is crowded", "WAVO is diluted worldwide") is FORBIDDEN on every surface — volume elsewhere earns nothing here, and a global sentence is how it leaks.`,
       // RATING CALIBRATION CHALLENGE (judgment-not-rules): symmetric self-check answered BEFORE committing each finding's band. The engine's guardrails all police OVER-rating; this adds the missing UNDER-rating probe and forces the band to match the prose, both directions. Not a formula — a question the reasoning must answer.
       `RATING CALIBRATION CHALLENGE — for EACH rated finding, before you commit its band, answer the one that applies (this is symmetric: it catches BOTH over- and under-rating, and the band MUST match your own prose):
@@ -3128,7 +3128,7 @@ export const STAGES = {
       `USE-MEETS-USE BASIS (governs BOTH checks above): "the uses do / do not meet" is judged against the senior right's OWN scope — for a REGISTERED senior, the mark AS REGISTERED and the G&S AS REGISTERED (read the specification; quote it when it decides the point) against the applicant's intended goods and channels; for a COMMON-LAW senior, their actual trade. OUR side stays our own actual/intended manner of use per the request form — that Stage-1 lever is untouched. Three bases NEVER establish that the uses do not meet: (i) the senior's current presentation / trade dress (how the owner happens to dress or position the mark today informs Stage-2 enforcement reality only — it never narrows the registered right); (ii) a consumption-occasion / sub-category distinction inside a goods lane where the registered goods, channels and consumers already meet (a different "moment" or "occasion" is not a different market); (iii) distancing mined from a use-check that CONFIRMED same-class, same-channel use (a confirming receipt cannot be re-read as a distinguishing one). THE KEEP: a genuinely different lane WITHIN a class — a different shelf, channel, consumer or purpose, read from the REGISTERED specification — remains a full Stage-1 defence carrying the read to the lowest band or out of the rated set; the class number decides nothing in either direction. And dilution is earned per conflict: a crowd counts for THIS conflict only when counted in THIS conflict's jurisdiction × goods lane — volume elsewhere earns nothing here.`,
       // WP-56 — the response may not stand in for the rating: reconcile the recommended path with the band's
       // own Practical-position words, with carve-outs so the question cannot inflate bands or add noise.
-      `RESPONSE-BAND COHERENCE — if a finding's recommended path is consent / coexistence / settlement before filing, state in ONE line which band's Practical position those words describe under the framework in force — or why the response addresses only prosecution mechanics / nuisance posture (the lowest band's own practical words). Carve-outs: a documented EXISTING coexistence agreement is a FACT about the conflict, not a response (it does not trigger this line); a consent sought to clear a routine citation can be a legitimate lowest-band "registration obstacle". The line reconciles — it never moves a band by itself.`,
+      RESPONSE_BAND_COHERENCE,
       `- meters: {"mark_similarity":{...},"goods_proximity":{...},"use":{...},"enforcer":{...}} — all four present, each {"token","basis","source"}. token — EACH SET IS CLOSED AND EACH IS STATED ON ITS OWN LINE, so read the one you are filling in: mark_similarity = high | medium | low. goods_proximity = high | medium | low. enforcer = high | medium | low | unknown. use = confirmed | not-confirmed | unknown. NEVER write "unknown", "n/a", "unclear", "tbd" or "none" as the token on mark_similarity or goods_proximity — those two carry no indeterminate value, the file is REJECTED for it, and a clearance has already lost eleven minutes to that one word. Where goods proximity is genuinely open — a broad specification, the actual trade unstated, classes that neither meet nor plainly diverge — that is still a judgement you can make from the wording in front of you: pick the closest band ("medium" is the honest middle), and say in that finding's own reason and prose that the specification leaves it open and why. Rating it is not a claim to certainty; refusing to rate it is not a move you have. These are the COARSE 3-pip strengths — the precise position lives in quadrant. basis: verified-from-record (asserted from a fetched record/filing) or inferred-from-signal (reasoned from a proxy, e.g. "uses a good law firm"); the enforcer's basis is the one the report surfaces as "verified" vs "inferred" (B1 — never present inferred as fact). source (spec-48 A4): MANDATORY whenever basis is "verified-from-record" — the /mark/… record URI or the exact URL the claim actually rests on (the validator REJECTS a bare verified stamp: finding_basis_source_missing); omit it (or "") on inferred-from-signal. The driver machine-joins each source to the run's fetch receipts and presents an unjoined "verified" as assumed — so name the real source, never a plausible one. SENIOR-RIGHT SOURCE (WP-receipts, 2026-07-05): when a finding's owner holds SEVERAL registrations of the same mark, the verified source must be the SENIOR live leg — the earliest applicationDate among live legs, registered before pending (the batch-screen rows carry the dates). Never cite a junior leg as the verified basis when a senior live leg exists in the cluster; the driver's senior-right closure will fetch and re-bind it anyway, so citing the junior leg only wastes a fetch.`,
       `- quadrant: {"x","y"} numbers in [0,1]. x = goods/services proximity (0 = distant, 1 = identical). y = mark similarity (0 = distinct, 1 = identical).`,
       `- source: {"source_type","resolved_link"}. source_type EXACTLY one of: register-vendor / register-euipo / common-law-marketplace / common-law-web / case-law (the finding's ACTUAL source — a common-law finding never wears a register tag, E2). resolved_link = the record URL you ACTUALLY fetched/cited for this finding (the same link in your Record line), or "" if none.`,
@@ -3310,7 +3310,7 @@ export const STAGES = {
     model: "sonnet", thinking: "adaptive", timeoutSec: 900,
     skillReads: ["skills/case-law-citation/SKILL.md"],
     out: (P) => P.caseLaw,
-    validate: validators.caseLaw,
+    validate: declaredValidator("case-law", validators),
     // — PROMPT VINTAGE, the romanization/completeness pattern. The ledger arm of validators.caseLaw
     // arms ONLY when this marker is on the run's stage contract, so every archived case-law output —
     // which by construction has no ledger, because none was ever asked for — keeps its verdict on
@@ -3401,7 +3401,7 @@ export const STAGES = {
     skillReadsFor: reviewSkillReads,
     standing: Object.freeze([REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK, WEB_EVIDENCE_ONLY_THROUGH_RESEARCH]),
     out: (P) => P.seniorEyeReview,
-    validate: validators.seniorEyeReview,
+    validate: declaredValidator("narrative-refutation", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
@@ -3537,7 +3537,7 @@ export const STAGES = {
     skillReads: ["skills/clearance-search/synthesis-rules.md", "skills/clearance-search/risk-framework.md", "skills/clearance-search/delivery-contract.md", "skills/clearance-search/report-prose.md"],
     skillReadsFor: reportOverviewSkillReads,
     out: (P) => P.reportOverview,
-    validate: validators.reportOverview,
+    validate: declaredValidator("report-overview", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
@@ -3575,8 +3575,8 @@ export const STAGES = {
         why: "the audit table rules this row 'J (selection) / M (from coverage rows)' with the move 'render candidate bullets from typed coverage[]; model edits'. The bullet SET is derivable from coverage[] — one candidate per coverage area — so producing the candidates is code's. Only the editing on top is the model's, and that is the sibling row below.",
       },
       "actions.checks_we_ran[] selection and edit — which candidate checks a client should read, and how each result is stated in plain English": {
-        class: "judgment", tokens: ["too_short"],
-        why: "The judgment half of the 'J (selection) / M (from coverage rows)' split: which of the rendered candidates earn a place in a client-facing Actions section, and how a result is worded for a lawyer to read. The audit keeps the model's edit pass — 'model edits' — and only the candidate generation moves.",
+        class: "judgment", tokens: ["too_short", "missing"],
+        why: "The judgment half of the 'J (selection) / M (from coverage rows)' split: which of the rendered candidates earn a place in a client-facing Actions section, and how a result is worded for a lawyer to read. The audit keeps the model's edit pass — 'model edits' — and only the candidate generation moves. `missing:front-matter+shell` reads `# Actions` as the shell marker of an overview the record tool did not render, so the token speaks about this section's presence; it spoke about the Methodology note until that retired (2026-11-19), and still accepts one in a stored report.",
       },
       "actions.checks_we_ran[].source_link (the `([source](<url>))` URL in each bullet)": {
         class: "mechanical:code-rendered", tokens: [],
@@ -3587,10 +3587,6 @@ export const STAGES = {
       // record tool has no field for it and nothing a seat sends can create one, which settles a live
       // three-way disagreement: the skill doc taught the seat to write the section, the dispatch told it
       // not to, and the driver overwrote it either way. Structure now says what three documents could not.
-      "# Methodology (optional plain-English scope note)": {
-        class: "judgment", tokens: ["missing"],
-        why: "Judgment with a derivable half, stated so it is not hidden: WHICH layers ran is on disk (coverage ledger, _driver/plan-execution.json, scope-facts.json), so a candidate note is renderable; whether a scope limit is worth a reviewer's attention, and in what words, is not. `missing:front-matter+shell` accepts `# Methodology` as the shell marker, so the token does speak about this element's presence.",
-      },
       "lint_contracts.numbers_and_reach (registration count stated at most once and only from the finding set; no WIPO/Madrid + 'worldwide' pairing)": {
         class: "mechanical:code-rendered", tokens: [],
         why: "findings.json holds every owner's registration list and every Madrid designation; predelivery-lint already computes both (countsFromFindings, wipoLanguageChecks). The prompt is asking a model to agree with a number code owns — #850 line 237's ruling, applied at the shell as well as the card.",
@@ -3741,7 +3737,7 @@ export const STAGES = {
     skillReads: ["skills/clearance-search/delivery-contract.md", "skills/clearance-search/risk-framework.md", "skills/clearance-search/report-prose.md"],
     skillReadsFor: reportCardSkillReads,
     out: (P, axis) => P.reportCard(axis),
-    validate: validators.reportCard,
+    validate: declaredValidator("report-card", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
@@ -3835,13 +3831,13 @@ export const STAGES = {
       // to tell a seat what to type when it could not build a link, has no reader and is gone with it.
       // CHANGE 5a (no floating reg numbers) — the per-record structured render is the source of truth for
       // registration / serial numbers; the code lane renders them. Don't float them in prose.
-      `REGISTRATION NUMBERS (CHANGE 5a): do NOT state a registration / application / serial number in a \`full_detail\` entry — the per-record structured render owns the numbers, and the driver renders the ONE place a number appears (the Source line it composes from this record). Name the OWNER + MARK in prose instead. The acceptance boundary refuses an entry carrying one, so this is a rule you find out about in the turn rather than at delivery.`,
+      REGISTRATION_NUMBERS,
       // CHANGE 5b (inferred enforcer) — present an enforcer inferred from a signal as an inference, never as fact.
-      `ENFORCER (CHANGE 5b): if THIS record's enforcer meter basis is "inferred-from-signal" (the litigiousness is reasoned from a proxy — owner size, a good law firm, a portfolio shape — not a filed action on record), present it AS an inference ("on the available signals the owner appears likely to object…"), NEVER as established fact ("the owner is litigious"). Only an enforcer whose basis is "verified-from-record" (a filing / C&D / litigation on record) is stated as fact. Same discipline for any other "inferred-from-signal" claim — it reads as the inference it is.`,
+      ENFORCER_INFERRED,
       `PLAIN LANGUAGE (rule 8): no coined jargon / jargon STACKS ("saturation" → "crowded field"; "spine" → don't surface). NO SECOND PERSON (rule 9): never "you"/"your" — "the client" or impersonal; owner/filer names stay. HONESTY (rule 7): a "no use found" negative is sayable only if the record's use_check carries a searched result; otherwise label it an un-run inference. EVIDENCE: a bounded rating carries its scope in parentheses ("Medium (Germany only)").`,
       // spec 64 Bug 4 (ashen-gantry): "prosecute through any citation" reads as "sue them" to a lay client,
       // and stated confidence must match the record. Prompt guidance + a reviewer flag — never a grep lint.
-      `LEGAL TERMS OF ART (client-facing lines): a lay client must not misread a term of art. Never "prosecute" / "prosecution (through a citation / the application)" — it reads as "sue them": say "respond to the examiner's objection" / "continue the application process". Never bare "citation" for an examiner's reference — say "the examiner raising the prior mark". Never "office action" — say "the examiner's objection". A formal proceeding (an opposition, a cancellation) is named by its name, with one plain clause on what it means for the client. And CONFIDENCE MATCHES THE RECORD: "through ANY citation" / "will succeed" is sayable only when the record supports it — against a capable owner the honest form is "a citation is likely answerable because <the record's reason>".`,
+      LEGAL_TERMS_OF_ART,
       // spec 64 — the IMPACT bullet moved to the CODE lane: render.mjs fullDetail appends
       // "If enforced: <f.impact>" deterministically from the record (structured-only cards included),
       // so the prompt no longer asks for it (it would double-render).
@@ -3908,7 +3904,7 @@ export const STAGES = {
     model: "sonnet", thinking: "low", timeoutSec: 600,
     skillReads: [],
     out: (P) => P.doubtClosure,
-    validate: validators.doubtClosure,
+    validate: declaredValidator("doubt-closure", validators),
     // ── — A RETRY ASKS ONLY FOR WHAT IS STILL UNANSWERED ──────────────────────────────────────
     //
     // A killed attempt's accepted answers did not carry. Measured: attempt 2 was re-presented all 80

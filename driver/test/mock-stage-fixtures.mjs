@@ -58,7 +58,7 @@ import { recordDeclinations } from "../declination-tool.mjs";   // — the mock 
 import { contradictionFor } from "../declination-call.mjs";      // — and reads the refusal it would meet, rather than guessing
 import { findingUris } from "../record-carry.mjs";
 import { normalizeRecordUri } from "../registry-fidelity.mjs";
-import { requestCancel } from "../cancel.mjs";   // MOCK_KO_REVIEW_STOP: a stop pressed while the last stage runs
+import { requestCancel } from "../cancel.mjs";   // MOCK_KO_REVIEW_STOP and MOCK_KO_CORRECT_CANCEL_AT: a stop pressed while a stage runs
 import { recordClosures } from "../doubt-closure-tool.mjs";           // conversion 6 — the closure transport
 import { recordRefutation } from "../narrative-refutation-record.mjs"; // conversion 9 — the reviewer transport
 import { parseManifestVariants } from "../common-law-receipts.mjs";   // the terms the receipts gate joins on
@@ -2425,11 +2425,11 @@ export function applyStageWrites(msg, argv) {
       // link was laid out by hand. Every one of those is the driver's now, so what the mock sends is what
       // the seat sends: the caption, the checks, and the notes.
       recordMockToolCall(runDir, "record_report_overview", "recording-report-overview");
-      // MOCK_PERMISSION_PROSE RIDES `methodology`, and it has to ride SOMETHING. It is PR-5's gate-closing
+      // MOCK_PERMISSION_PROSE RIDES AN ACTION LINE, and it has to ride SOMETHING. It is PR-5's gate-closing
       // scenario — a false "tool was blocked" line in the shell that evaluateClientGate must catch — so a
       // conversion that quietly dropped it would retire a live lint scenario while every test still
-      // passed. The seat can no longer author a stray section, but it can still say this in a scope note,
-      // which is the honest post-conversion shape of the same defect.
+      // passed. It rode the methodology note until that field retired (2026-11-19); a check line is the
+      // seat's own prose in the shell, and the same defect can be written there.
       const permNote = process.env.MOCK_PERMISSION_PROSE
         ? "Register note: register_enumerate was blocked by a tool-permission gate this run." : "";
       // MOCK_OVERVIEW_SCOPE_COUNT=1 — the overview's FIRST rendering states a search count in its own prose, the sibling
@@ -2440,16 +2440,15 @@ export function applyStageWrites(msg, argv) {
       // is clean. Keyed on the overview's own file, as MOCK_OVERVIEW_SCOPE_COUNT is.
       const citeNote = process.env.MOCK_OVERVIEW_CITES && !existsSync(join(runDir, "report-overview.md"))
         ? `Finding ${process.env.MOCK_OVERVIEW_CITES} remains an open question on its goods.` : "";
-      // MOCK_OVERVIEW_BARE=1 — the call a seat may send and the acceptance takes: a caption, an empty actions list, and
-      // no methodology. The driver renders it with no section heading.
+      // MOCK_OVERVIEW_BARE=1 — the call a seat may send and the acceptance takes: a caption and an empty actions list.
+      // The driver renders it with no section heading.
       const r = recordReportOverview(runDir, process.env.MOCK_OVERVIEW_BARE ? {
         overall_caption: "The identical registration in class 9 is the one finding that conditions reliance on this mark; nothing else in the field blocks it.",
         actions: [],
       } : {
         overall_caption: "mock composite 3",
-        actions: [{ text: "Mock use-check: none found", source_link: "https://x.example" }],
-        methodology: [permNote, scopeCountNote, citeNote, "Common-law: marketplace storefronts + web/social/press; variant families swept; one listing surfaced, remainder clean."]
-          .filter(Boolean).join(" "),
+        actions: [{ text: "Mock use-check: none found", source_link: "https://x.example" },
+          ...[[permNote, scopeCountNote, citeNote].filter(Boolean).join(" ")].filter(Boolean).map((text) => ({ text }))],
       });
       // A REFUSED CALL MUST NOT READ AS A CLEAN TURN — the sibling rule, stated at every branch.
       // The redo turn stales findings.json exactly as it did before the conversion — the incident shape
@@ -2635,6 +2634,12 @@ export function applyStageWrites(msg, argv) {
     const boundChunk = recordAxisFromWiring(argv);
     if (boundChunk === null) return "mock knockout-assess: no chunk ordinal bound in the engine wiring — the driver binds CLEAROTRON_RECORD_AXIS per fanned turn, and a mock that picked its own chunk would author the identity the membership join checks";
     recordMockToolCall(runDir, "record_knockout_assess", "recording-knockout-assess");
+    // MOCK_KO_ASSESS_HOLD_MS: hold the turn and log when it ran (MOCK_KO_ASSESS_LOG), so a test can see the groups overlap.
+    if (process.env.MOCK_KO_ASSESS_HOLD_MS) {
+      const start = Date.now();
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, Number(process.env.MOCK_KO_ASSESS_HOLD_MS));
+      if (process.env.MOCK_KO_ASSESS_LOG) appendFileSync(process.env.MOCK_KO_ASSESS_LOG, JSON.stringify({ chunk: Number(boundChunk), start, end: Date.now() }) + "\n");
+    }
     let ladder = ["Very High", "High", "Medium", "Manageable", "Low"];
     let fwKey = "house-triage";
     try { const fw = JSON.parse(readFileSync(driverDir(runDir, "framework.json"), "utf8")); ladder = fw.bands.map((b) => b.label); fwKey = fw.framework_key; } catch { /* default */ }
@@ -2643,11 +2648,16 @@ export function applyStageWrites(msg, argv) {
     const degradedSet = new Set([...msg.matchAll(/^- (.+?):\s+(?:[A-Za-z]:)?[\\/]\S+\s+\(DEGRADED/gm)].map((m) => m[1]));
     const band = process.env.MOCK_KO_BAND || ladder[ladder.length - 2] || ladder[0];   // second-lowest by default
     const chunk = {
+      // MOCK_KO_GROUP_CONTEXT: the first group narrows the batch's scope. MOCK_KO_LATER_CAVEAT: a later group sends a batch-wide caveat.
+      // MOCK_KO_FIRST_FRAMEWORK / MOCK_KO_LATER_FRAMEWORK: the first group's, or a later group's, framework echo differs from the frozen one.
       ...(Number(boundChunk) === 0 ? {
-        framework: { source: fwKey, ladder },
-        batch: { productContext: "mock consumer product line",
+        framework: { source: fwKey, ladder, ...JSON.parse(process.env.MOCK_KO_FIRST_FRAMEWORK || "{}") },
+        batch: { productContext: process.env.MOCK_KO_GROUP_CONTEXT || "mock consumer product line",
           standardCaveats: ["Ratings reflect our common law assessment. Register analysis may adjust ratings in either direction."] },
-      } : {}),
+      } : {
+        ...(process.env.MOCK_KO_LATER_CAVEAT ? { batch: { standardCaveats: [process.env.MOCK_KO_LATER_CAVEAT] } } : {}),
+        ...(process.env.MOCK_KO_LATER_FRAMEWORK ? { framework: { source: fwKey, ladder, ...JSON.parse(process.env.MOCK_KO_LATER_FRAMEWORK) } } : {}),
+      }),
       // EVERY chunk narrates its own marks — code composes the batch executive summary from these
       chunkSummary: `Based on the knockout search results, ${rows.join(", ")} present${rows.length === 1 ? "s" : ""} no obvious blockers in this chunk; see per-mark rows.`,
       marks: rows.map((n) => {
@@ -2816,6 +2826,10 @@ export function applyStageWrites(msg, argv) {
     const boundChunk = recordAxisFromWiring(argv);
     if (boundChunk === null) return "mock knockout-correct: no chunk ordinal bound in the engine wiring";
     recordMockToolCall(runDir, "record_knockout_correction", "recording-knockout-correct");
+    // MOCK_KO_CORRECT_CANCEL_AT: the correction of that chunk asks the run to stop, as a person would while it runs.
+    // MOCK_KO_CORRECT_HOLD_MS holds every other correction, so a group is still queued when the stop lands.
+    if (process.env.MOCK_KO_CORRECT_CANCEL_AT === String(boundChunk)) requestCancel(runDir, { via: "mock", by: "a test" });
+    else if (process.env.MOCK_KO_CORRECT_HOLD_MS) Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, Number(process.env.MOCK_KO_CORRECT_HOLD_MS));
     const work = JSON.parse(readFileSync(driverDir(runDir, "knockout-correction-work.json"), "utf8"));
     const held = JSON.parse(readFileSync(join(runDir, `knockout-assess-${Number(boundChunk)}.json`), "utf8"));
     const defects = work.defects.filter((d) => d.chunk === Number(boundChunk));

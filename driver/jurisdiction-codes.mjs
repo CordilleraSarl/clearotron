@@ -24,56 +24,8 @@
 //
 // PURE (no node imports) → tests offline.
 
-// Aliases → canonical code. GB is the ISO 3166-1 code (UK is a habit, not a code); EU is the driver's
-// canonical EUIPO token (EM is Compumark's spelling of the same office, EUTM/EUIPO are prose).
-export const JURISDICTION_CODE_FOLD = Object.freeze({
-  UK: "GB",
-  EM: "EU",
-  EUTM: "EU",
-  EUIPO: "EU",
-});
-
-// The known universe: ISO 3166-1 alpha-2 (officially assigned) + the register-world extras — EU
-// (EUIPO, canonical), WO (WIPO / Madrid International Register), AP (ARIPO), OA (OAPI), BX (Benelux),
-// EA (Eurasian), IB (International Bureau), plus the X*/ZZ extension codes observed in live provider
-// office enums (XK Kosovo et al.). A code outside this set is not necessarily wrong — it is UNKNOWN,
-// and A12's contract is that it surfaces loudly instead of being silently recorded as a jurisdiction.
-export const KNOWN_JURISDICTION_CODES = Object.freeze(new Set([
-  // ISO 3166-1 alpha-2, officially assigned
-  "AD", "AE", "AF", "AG", "AI", "AL", "AM", "AO", "AQ", "AR", "AS", "AT", "AU", "AW", "AX", "AZ",
-  "BA", "BB", "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BL", "BM", "BN", "BO", "BQ", "BR", "BS",
-  "BT", "BV", "BW", "BY", "BZ",
-  "CA", "CC", "CD", "CF", "CG", "CH", "CI", "CK", "CL", "CM", "CN", "CO", "CR", "CU", "CV", "CW",
-  "CX", "CY", "CZ",
-  "DE", "DJ", "DK", "DM", "DO", "DZ",
-  "EC", "EE", "EG", "EH", "ER", "ES", "ET",
-  "FI", "FJ", "FK", "FM", "FO", "FR",
-  "GA", "GB", "GD", "GE", "GF", "GG", "GH", "GI", "GL", "GM", "GN", "GP", "GQ", "GR", "GS", "GT",
-  "GU", "GW", "GY",
-  "HK", "HM", "HN", "HR", "HT", "HU",
-  "ID", "IE", "IL", "IM", "IN", "IO", "IQ", "IR", "IS", "IT",
-  "JE", "JM", "JO", "JP",
-  "KE", "KG", "KH", "KI", "KM", "KN", "KP", "KR", "KW", "KY", "KZ",
-  "LA", "LB", "LC", "LI", "LK", "LR", "LS", "LT", "LU", "LV", "LY",
-  "MA", "MC", "MD", "ME", "MF", "MG", "MH", "MK", "ML", "MM", "MN", "MO", "MP", "MQ", "MR", "MS",
-  "MT", "MU", "MV", "MW", "MX", "MY", "MZ",
-  "NA", "NC", "NE", "NF", "NG", "NI", "NL", "NO", "NP", "NR", "NU", "NZ",
-  "OM",
-  "PA", "PE", "PF", "PG", "PH", "PK", "PL", "PM", "PN", "PR", "PS", "PT", "PW", "PY",
-  "QA",
-  "RE", "RO", "RS", "RU", "RW",
-  "SA", "SB", "SC", "SD", "SE", "SG", "SH", "SI", "SJ", "SK", "SL", "SM", "SN", "SO", "SR", "SS",
-  "ST", "SV", "SX", "SY", "SZ",
-  "TC", "TD", "TF", "TG", "TH", "TJ", "TK", "TL", "TM", "TN", "TO", "TR", "TT", "TV", "TW", "TZ",
-  "UA", "UG", "UM", "US", "UY", "UZ",
-  "VA", "VC", "VE", "VG", "VI", "VN", "VU",
-  "WF", "WS",
-  "YE", "YT",
-  "ZA", "ZM", "ZW",
-  // register-world extras (WIPO ST.3 / regional offices / provider extension codes)
-  "EU", "WO", "AP", "OA", "BX", "EA", "IB",
-  "XA", "XG", "XK", "XS", "XW", "ZZ",
-]));
+import { JURISDICTION_CODE_FOLD, KNOWN_JURISDICTION_CODES } from "../shared/jurisdiction-tables.mjs";   // a jurisdiction's tables live in one home
+export { JURISDICTION_CODE_FOLD, KNOWN_JURISDICTION_CODES };
 
 /**
  * Canonicalize ONE jurisdiction token: trim, uppercase, fold the aliases (UK→GB, EM/EUTM/EUIPO→EU).

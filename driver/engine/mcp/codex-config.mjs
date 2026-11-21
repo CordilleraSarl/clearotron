@@ -11,7 +11,7 @@ import { tomlString } from "../../../shared/toml-string.mjs"; import { driverDir
 //                     (buildGatherMcpConfig → JSON.stringify)
 //   • allowedTools  — the space-separated claude allowlist `mcp__<server>__<tool> …` (allowedToolsFor)
 // We translate those into codex's `[mcp_servers.<name>]` tables (command/args/env/env_vars/
-// startup_timeout_sec/enabled_tools) + top-level `developer_instructions` (the WRITE_DISCIPLINE append
+// startup_timeout_sec/enabled_tools) + top-level `developer_instructions` (the turn's output rule's append
 // point — codex's equivalent of claude's --append-system-prompt). Pure + dependency-free (hand-rolled
 // TOML, like the repo's other MCP glue); every value is escaped.
 //
@@ -133,7 +133,7 @@ export function webFetchRequested(allowedTools) {
 }
 
 // ── render the full config.toml ──────────────────────────────────────────────────────────────────────
-// developerInstructions → the top-level `developer_instructions` append (WRITE_DISCIPLINE lives here so
+// developerInstructions → the top-level `developer_instructions` append (the turn's output rule lives here so
 // the shared stage prompts are never mutated — parity with claude's --append-system-prompt).
 // toolTimeoutSec → codex's PER-CALL `tool_timeout_sec`, distinct from `startup_timeout_sec` (which is
 // how long a server may take to COME UP).: without it codex applies its own default — measured at

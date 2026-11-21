@@ -3,8 +3,8 @@
 //
 // steps/frame-comparison.mjs — the blind frame compared with what the run scoped, and the reopen that acts on it.
 //
-// One phase of a run, moved out of pipelineInner unchanged. `helpers` are functions still held in pipeline.mjs, handed in
-// because this module must not import that one back; each moves here when the other phases that share it have moved.
+// One phase of a run, moved out of pipelineInner unchanged. It must not import pipeline.mjs back, so what it shares with
+// that module lives in the modules beside it, which it imports.
 import { verifyRegisterDirectiveClose } from "../close-verify.mjs";
 import { pendingItems } from "../digest-queue.mjs";
 import { countedOnLists, heldAnswers, refuseCountedOnList, refuseHeldQuestions } from "../engine/mcp/held-answers.mjs";
@@ -13,19 +13,23 @@ import { addedClassBound, alreadyAttemptedReopen, applyDominantBackstop, deriveD
 import { boundDominantElementFrom } from "../frame-diff-record.mjs";
 import { canonicalJurisdictionCode } from "../jurisdiction-codes.mjs";
 import { note, runLog } from "../log.mjs";
+import { bandBytesOf, deriveNamedBand, joinOptions, mechanicalFormGapDirectives, readRegisterBands, reaskFollowUpErrors, refreshSupplementalExecution, remergeIfBandsMoved } from "../register-band-run.mjs";
+import { loadCoverageLedger } from "../register-digest-run.mjs";
 import { atomicWrite, readJson } from "../run-record.mjs";
 import { blocksByQidOf, foldSupplementalEntries, joinPlanToBands, pendingRequiredQids, refuseWithheldFamilies, searchedJurisdictionsFromPlan, withheldFamilyTwins } from "../register-plan.mjs";
 import { registerCapabilities } from "../register-unreachable.mjs";
 import { accountRemedyTerms, domClosedOverAccounted, remedyAccountingEvent } from "../remedy-accounting.mjs";
 import { repairFollowup } from "../repair-composers.mjs";
+import { inScopeClassList } from "../run-scope.mjs";
 import { parseScopeLedgerJson, scopeJurisdictions } from "../scope-ledger.mjs";
+import { forceFromActive, stage } from "../stage-dispatch.mjs";
+import { settleOneShotStamp } from "../stage-freshness.mjs";
 import { lines } from "../stages.mjs";
 import { readWithheldFamilies, releasedFamilyQids } from "../withheld-families.mjs";
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 
-export async function runFrameComparison({ P, axes, ctx, dispatchPlanQids, flushDigestQueue, job, mintDigestWork, planExec, run, runCommonLaw, unitKey }, helpers) {
-  const { bandBytesOf, deriveNamedBand, forceFromActive, inScopeClassList, joinOptions, loadCoverageLedger, mechanicalFormGapDirectives, readRegisterBands, reaskFollowUpErrors, refreshSupplementalExecution, remergeIfBandsMoved, settleOneShotStamp, stage } = helpers;
+export async function runFrameComparison({ P, axes, ctx, dispatchPlanQids, flushDigestQueue, job, mintDigestWork, planExec, run, runCommonLaw, unitKey }) {
   // ── Property 1+2 (frame-omission design): the blind frame-diff + the reopen channel ────────────────
   // The blind-frame stage re-derived the threat model STARVED of the matter frame (gather, parallel with
   // the sweeps). Diff that cold model against what the run ACTUALLY scoped/searched (frame-diff), and act

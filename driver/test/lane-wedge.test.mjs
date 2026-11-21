@@ -4,7 +4,7 @@
 // its serial command lane (heartbeat-sweep saturation), NOT a slow model. These pin the two load-bearing pure
 // units: the classifier (isLaneWedge — which the production incident's NULL-usage hard-kill MUST trip, and an
 // admitted/slow turn must NOT) and the fallback eligibility (lane_wedge cascades through providers, content
-// failures never do). The chain-retry wrapper itself (stage() in pipeline.mjs) is a thin bounded loop over these.
+// failures never do). The chain-retry wrapper itself (stage() in stage-dispatch.mjs) is a thin bounded loop over these.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { isLaneWedge, classifyWedge, warmHardWallStop } from "../gateway.mjs";

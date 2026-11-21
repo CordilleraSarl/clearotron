@@ -18,7 +18,7 @@
 //   failed    a request was made and did not land, or brought back something that is not one of those images
 //   no-logo   the record says a word mark, or that no image exists
 //   unknown   the record cannot say, or this run makes no register call: a replay, an injected fetcher, no credential,
-//             or a register whose adapter fetches no image. Nothing is requested.
+//             a register whose adapter fetches no image, or a record that names no image to fetch. Nothing is requested.
 //
 // THE REGISTER THE RUN IS SET TO USE, AND NO OTHER (ruled 2026-11-18: one run never mixes registers). A register that
 // cannot fetch an image leaves its rows `unknown`; no second service is asked.
@@ -26,11 +26,17 @@
 // A RESUME OR A REPUBLISH ASKS NOTHING AGAIN. A row already `fetched` whose file is still there is kept as it is.
 //
 // RECORDING ONLY, and it never throws: a logo that could not be had never stops a report.
+//
+// NOT BEHIND THE STOP. Both pipelines run this step after their publish read (`assertNotCancelledBeforePublish`), when the
+// run can no longer be stopped, and cancel.mjs leaves the calls that build what is delivered unwrapped: a stop refused here
+// would leave a report half delivered rather than not delivered.
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve, sep } from "node:path";
 import { normalizeRecordUri } from "../providers/_shared/record-uri.mjs";
+import { recordBodyFromLog } from "../providers/_shared/ledger.mjs";   // the run record log's own index
 import { readRecordArtifacts } from "./registry-fidelity.mjs";
-import { DRIVER_DIR, driverDir, ensureDriverDir } from "./run-record.mjs";
+import { recordsForMark } from "./register-records.mjs";
+import { DRIVER_DIR, driverDir, ensureDriverDir, paths } from "./run-record.mjs";
 import { runLog } from "./log.mjs";
 
 export const LOGOS_FILE = "logos.json";
@@ -38,7 +44,9 @@ export const LOGOS_DIR = "logos";
 
 // The register's own words for the kind of mark, as saved records carry them (counted on the test machine,
 // 2026-11-18: Clarivate's eight values and Signa's three). Any other value is unknown and fetches nothing.
-const FIGURATIVE = new Set(["WORD AND DESIGN", "DESIGN MARK", "DESIGN AND COLOR", "STYLIZED LETTERS", "COMBINED", "FIGURATIVE"]);
+// "DESIGN ONLY" is Clarivate's word for a device mark with no words, 26 of the 400 records of the global preliminary demo
+// (counted 2026-11-20): figurative, as the step's rule says, and left out of this list until then.
+const FIGURATIVE = new Set(["WORD AND DESIGN", "DESIGN ONLY", "DESIGN MARK", "DESIGN AND COLOR", "STYLIZED LETTERS", "COMBINED", "FIGURATIVE"]);
 const WORD = new Set(["WORD ONLY", "WORD MARK", "BLOCK LETTERS", "WORD"]);
 
 /** Whether a saved record carries a logo: "logo", "no-logo" or "unknown". PURE. */
@@ -59,17 +67,73 @@ export function imageTypeOf(bytes) {
   return null;
 }
 
-/** The registrations the report will show, in its order and once each. PURE. */
-export function citedRefs({ findings = null, registerRecords = null } = {}) {
+/**
+ * The registrations the report will show, in its order and once each. PURE.
+ *
+ * A KNOCKOUT'S ARE THE FILINGS ITS TABLES SHOW, not every filing its listing holds: a name's table shows its most material
+ * few (publish/render-knockout.mjs, `shownFilings`), and on a demo re-run 8 of a Knockout's 9 image requests were for
+ * filings no page listed (2026-11-20). `shown(entry, mark)` is that rule and `knockoutMarks` the run's rated names; given
+ * them, only those filings are asked about, and a run whose names could not be read asks about none.
+ */
+export function citedRefs({ findings = null, registerRecords = null, knockoutMarks = null, shown = null } = {}) {
   const out = [];
   const add = (ref) => { const k = normalizeRecordUri(ref); if (k && !out.includes(k)) out.push(k); };
   for (const f of Array.isArray(findings) ? findings : []) {
     if (f?.disposition === "withdrawn") continue;
     for (const r of Array.isArray(f?.owner?.registrations) ? f.owner.registrations : []) add(r?.uri);
   }
-  for (const m of Array.isArray(registerRecords?.marks) ? registerRecords.marks : [])
-    for (const r of Array.isArray(m?.records) ? m.records : []) add(r?.recordId);
+  if (typeof shown === "function") {
+    for (const m of Array.isArray(knockoutMarks) ? knockoutMarks : [])
+      for (const r of shown(recordsForMark(registerRecords, m?.name), m) ?? []) add(r?.recordId);
+  } else {
+    for (const m of Array.isArray(registerRecords?.marks) ? registerRecords.marks : [])
+      for (const r of Array.isArray(m?.records) ? m.records : []) add(r?.recordId);
+  }
   return out;
+}
+
+/**
+ * The saved record of each registration asked about. A clearance's are in `_records/`. A Knockout writes none there:
+ * the bodies its listing fetched are in the run's record log, and its page reads each filing's record from both places
+ * (publish/knockout.mjs). So a Knockout's are read from both places here too, or none of its filings had a record and
+ * every row read `unknown`, whatever the register said about the mark.
+ */
+export function savedRecords(runDir, refs, { knockout = false } = {}) {
+  const records = readRecordArtifacts(runDir);
+  if (!knockout) return records;
+  const log = paths(runDir).registerRecordBodies;
+  const images = readRecordImages(runDir);
+  for (const ref of refs) {
+    let body = records.get(ref);
+    if (!body) { const logged = recordBodyFromLog(log, ref); if (logged && typeof logged === "object" && !Array.isArray(logged)) body = logged; }
+    // A register that keeps no record body for a listed filing (Signa's listing is its search rows) states the image facts on
+    // the row, and the listing kept them apart (`_driver/record-images.json`). A body's own facts win where it states them.
+    const facts = images.get(ref);
+    const stated = facts ? Object.fromEntries(Object.entries(facts).filter(([, v]) => v !== null)) : null;
+    if (body || stated) records.set(ref, { ...(stated ?? {}), ...(body ?? {}) });
+  }
+  return records;
+}
+
+/** Each listed filing's image facts as the Knockout's listing saved them, by registration. An absent file is none. */
+function readRecordImages(runDir) {
+  try {
+    const doc = JSON.parse(readFileSync(paths(runDir).registerRecordImages, "utf8"));
+    return new Map(Object.entries(doc?.records ?? {}).map(([ref, f]) => [normalizeRecordUri(ref), f]).filter(([ref, f]) => ref && f && typeof f === "object"));
+  } catch { return new Map(); }
+}
+
+/**
+ * Writes the image facts a Knockout's listing read off its rows (register-records.mjs, imageFactsOf), for this step alone.
+ * Not in `register-records.json`, because the Knockout's rater reads that file and its input does not change for a logo.
+ * Nothing is written for a listing whose rows stated none. Never throws.
+ */
+export function writeRecordImages(runDir, images) {
+  try {
+    if (!(images instanceof Map) || !images.size) return;
+    ensureDriverDir(runDir);
+    writeFileSync(paths(runDir).registerRecordImages, JSON.stringify({ schema: 1, records: Object.fromEntries(images) }, null, 2) + "\n");
+  } catch { /* a logo is never worth a failed listing */ }
 }
 
 const fileFor = (ref, ext) => `${ref.replace(/^\/mark\//, "").replace(/[^a-z0-9_-]+/gi, "-")}.${ext}`;
@@ -94,8 +158,14 @@ export async function logoRows({ runDir, refs, records, register, fetchImage, ma
     if (!mayCall?.ok) { rows.push({ ref, register, state: "unknown", cause: mayCall?.why ?? "this run makes no register call" }); continue; }
     if (typeof fetchImage !== "function") { rows.push({ ref, register, state: "unknown", cause: "this register's adapter fetches no image" }); continue; }
     let got;
-    try { got = await fetchImage(ref); } catch (e) { got = { ok: false, cause: `the request threw: ${String(e?.message ?? e).slice(0, 120)}` }; }
-    if (!got?.ok) { rows.push({ ref, register, state: "failed", cause: String(got?.cause ?? "the request did not land").slice(0, 200) }); continue; }
+    try { got = await fetchImage(ref, record); } catch (e) { got = { ok: false, cause: `the request threw: ${String(e?.message ?? e).slice(0, 120)}` }; }
+    // An adapter that had nothing to ask with (no image link on the record) made no request: that is not a failed fetch.
+    // A register's answer of a shape the adapter does not read keeps that shape on the row (names and types, no value).
+    if (!got?.ok) {
+      rows.push({ ref, register, state: got?.notTried ? "unknown" : "failed", cause: String(got?.cause ?? "the request did not land").slice(0, 200),
+        ...(typeof got?.shape === "string" ? { shape: got.shape.slice(0, 400) } : {}) });
+      continue;
+    }
     const kind = imageTypeOf(got.bytes);
     if (!kind) { rows.push({ ref, register, state: "failed", cause: "the answer is not a PNG, JPEG, GIF or WebP image" }); continue; }
     const file = `${DRIVER_DIR}/${LOGOS_DIR}/${fileFor(ref, kind.ext)}`;   // relative to the run folder, the same on every system
@@ -109,16 +179,22 @@ export async function logoRows({ runDir, refs, records, register, fetchImage, ma
 }
 
 /**
- * The step both pipelines run before publishing. `findingsPath` for a clearance, `registerRecordsPath` for a Knockout;
+ * The step both pipelines run before publishing. `findingsPath` for a clearance; `registerRecordsPath` for a Knockout, whose
+ * rated names (`knockoutFindingsPath`, the run's own by default) decide which filings its tables show (citedRefs);
  * `provider` is the run's register adapter; `injectedFetcher` true when the run answers its record fetches itself (a
  * replay, a test). Writes `_driver/logos.json`; returns it, or null when it could not. Never throws.
  */
-export async function markLogos(runDir, { findingsPath = null, registerRecordsPath = null, provider = null, injectedFetcher = false,
-  env = process.env, agentId = null, sessionKey = null } = {}) {
+export async function markLogos(runDir, { findingsPath = null, registerRecordsPath = null, knockoutFindingsPath = null, provider = null,
+  injectedFetcher = false, env = process.env, agentId = null, sessionKey = null } = {}) {
   try {
     const read = (p) => { try { return p ? JSON.parse(readFileSync(p, "utf8")) : null; } catch { return null; } };
     const findings = read(findingsPath)?.findings ?? null;
-    const refs = citedRefs({ findings, registerRecords: read(registerRecordsPath) });
+    const registerRecords = read(registerRecordsPath);
+    // The page's own rule for which filings a name's table shows, loaded only for a Knockout, with the run's own rated names
+    // unless the caller names another file: left to each caller, a pass run by hand that forgot them asked about nothing.
+    const shown = registerRecordsPath ? (await import("./publish/render-knockout.mjs")).shownFilings : null;
+    const namesPath = knockoutFindingsPath ?? (registerRecordsPath ? (await import("./stages-knockout.mjs")).koPaths(runDir).findings : null);
+    const refs = citedRefs({ findings, registerRecords, knockoutMarks: read(namesPath)?.marks ?? null, shown });
     const at = driverDir(runDir, LOGOS_FILE);
     const prior = read(at)?.rows ?? [];
     const register = provider?.id ?? null;
@@ -127,8 +203,9 @@ export async function markLogos(runDir, { findingsPath = null, registerRecordsPa
       : !provider ? { ok: false, why: "no register is set for this run" }
         : !credential ? { ok: false, why: `${provider.credEnv ?? "the register's credential"} is not set, so no register call is made` }
           : { ok: true };
-    const fetchImage = typeof provider?.markImage === "function" ? (ref) => provider.markImage(ref, { agentId, sessionKey }) : null;
-    const rows = await logoRows({ runDir, refs, records: readRecordArtifacts(runDir), register, fetchImage, mayCall, prior });
+    const fetchImage = typeof provider?.markImage === "function" ? (ref, record) => provider.markImage(ref, { agentId, sessionKey, record }) : null;
+    const records = savedRecords(runDir, refs, { knockout: Boolean(registerRecordsPath) });
+    const rows = await logoRows({ runDir, refs, records, register, fetchImage, mayCall, prior });
     const doc = { schema: 1, register, takenAt: new Date().toISOString(), rows };
     writeFileSync(at, JSON.stringify(doc, null, 2) + "\n");
     return doc;

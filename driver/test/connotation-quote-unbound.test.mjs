@@ -42,6 +42,7 @@ import {
 } from "../connotation-search.mjs";
 import { progressQuantity } from "../repairs.mjs";
 import { warmEligible, warmPatchMessage } from "../gateway.mjs";
+import { driverSource } from "./driver-source.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
@@ -183,7 +184,7 @@ test("arm 11 — verify.mjs emits the token this test pins, read off its own sou
   const src = readFileSync(join(HERE, "..", "verify.mjs"), "utf8");
   assert.match(src, /connotation_quote_unbound:quote_unbound=\$\{/,
     "the token verify builds no longer matches the shape repairs.mjs counts and gateway.mjs routes on");
-  const gw = readFileSync(join(HERE, "..", "gateway.mjs"), "utf8");
+  const gw = driverSource("gateway.mjs");   // with the ladder modules carved from it, where the hints now live
   assert.match(gw, /connotation_quote_unbound/, "no corrective-hint arm routes on the new token — the loop stays closed");
   // — THIS ASSERTION WAS THE LITERAL IT WARNS ABOUT. It pinned the retyped alternation
   // `connotation_(no_ruling|quote_unbound|form_damaged)` in gateway.mjs's SOURCE, so it went red when

@@ -3,11 +3,13 @@
 //
 // steps/placement-and-digest.mjs — placement and the register write-up, the assessment's first two steps.
 //
-// One phase of a run, moved out of pipelineInner unchanged. `helpers` are functions still held in pipeline.mjs, handed in
-// because this module must not import that one back; each moves here when the other phases that share it have moved.
+// One phase of a run, moved out of pipelineInner unchanged. It must not import pipeline.mjs back, so what it shares with
+// that module lives in the modules beside it, which it imports.
+import { recordPlacementPass } from "../placement-pass-record.mjs";
+import { assertReceiptSettled, runDigest } from "../register-digest-run.mjs";
+import { asPartNotCompleted, must, stage } from "../stage-dispatch.mjs";
 
-export async function runPlacementAndDigest({ checkLateBind, ctx }, helpers) {
-  const { asPartNotCompleted, assertReceiptSettled, must, recordPlacementPass, runDigest, stage } = helpers;
+export async function runPlacementAndDigest({ checkLateBind, ctx }) {
   await assertReceiptSettled(ctx, "placement-inquiry");
   // Placement and the register write-up are the assessment's first two steps. A failure of either, a band too large
   // to dispatch over included, is named as the assessment, as synthesis's own is below.

@@ -125,7 +125,7 @@ test("with no market known the axis compiles as before, and a market the registe
 });
 
 test("the pipeline hands the compiler the frame's markets", () => {
-  const src = read("pipeline.mjs");
+  const src = read("run-attachments.mjs");
   const at = src.indexOf("compiled = compileRegisterPlan({");
   assert.ok(at > 0 && src.slice(at, at + 4000).includes("frameMarkets: lastAcceptedMatterFrame(P.runDir)?.scope_jurisdictions ?? null"),
     "the compile is not given the markets the matter frame names");

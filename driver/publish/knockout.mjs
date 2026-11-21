@@ -21,7 +21,8 @@ import { COUNT_PREDICATES, COUNT_BASIS, countsForMark, countLine, countedMarks, 
 import { noneCarriedForward, recordsForMark, recordsLine, normalizeRegisterRecordLinks } from '../register-records.mjs';
 import { reportIdentityFor, productCoverageNote, kebab } from '../search-policy.mjs';
 import { batchMarkName } from '../mark-name.mjs';
-import { renderKnockoutDocument, DEGRADED_NOTE } from './render-knockout.mjs';
+import { DEGRADED_NOTE } from './render-knockout.mjs';
+import { renderReport } from './render-report.mjs';   // the one report renderer: the document says which page it is
 import { knockoutReportDocument, knockoutReportDataOf, knockoutWorkbookOf } from './report-document.mjs';   // the run's report as one document, and what it carries
 import { readFrozenMethod, inputsLine, FROZEN_METHOD_FILE } from '../framework-method.mjs';
 import { resolveDemoData, demoBannerMd } from './demo-marking.mjs';   //
@@ -30,7 +31,7 @@ import { servedModels } from '../tokens.mjs';
 import { knockoutFindingViews, knockoutFindingRange } from '../findings-model.mjs';
 import { knockoutReceipts, worstBand } from '../verify-knockout.mjs';
 
-const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+import { escapeAttr as esc } from '../../shared/html-escape.mjs';   // text and attribute values alike
 // The http(s)-only link helpers that used to live here went with the MSO review table (2026-07-28) and
 // had no caller left: this module writes workbook CELLS and a cover note that links the report, never a
 // model-derived URL. The rule they carried is not gone — it is enforced where a research URL actually
@@ -101,7 +102,7 @@ export const knockoutStatement = (framework, marks) =>
 // what the typed record actually carries. A `—` means the shape that produced the row never had the
 // field (an archived prose finding), which is a different fact from an empty cell.
 // What a Knockout left open is drawn by the page (render-knockout.mjs), which reads it from the run's report document.
-export { knockoutLeftOpen } from './render-knockout.mjs';
+export { knockoutLeftOpen } from './knockout-left-open.mjs';
 
 export async function buildKnockoutWorkbook(findings, receipts, outPath, registerCounts = null, qcFlags = [], framework = null, registerRecords = null, frameworkMethod = null, ownerChecks = [], degraded = {}) {
   const ExcelJS = (await import('exceljs')).default;
@@ -821,8 +822,8 @@ const KNOCKOUT_SHAPE = {
     const reports = markRows.map((m, at) => {
       const { slug, file, band: markBand } = named[at];
       // The page reads the run's report document as written, for this name, with its surface beside it.
-      writeRO(file, renderKnockoutDocument(pageDocument(reportDocument), at, {
-        filingRecords, logos, demoData, delivery,
+      writeRO(file, renderReport(pageDocument(reportDocument), {
+        at, filingRecords, logos, demoData, delivery,
         // The page's workbook control links the portal's audit route, the one the cover note links: the pool path to the
         // file reaches no handler. Null when the workbook could not be written, and then no control is drawn.
         auditHref: auditFile ? auditRouteFor(origin, runId) : null,

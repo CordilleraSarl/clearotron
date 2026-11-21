@@ -88,3 +88,24 @@ test("a merged helper whose returns name no key refuses too", () => {
   ]);
   assert.throws(() => setupNames(root), /build\(\) returns, and none of its returns is an object literal naming a key/);
 });
+
+test("an engine's own variables are setup names, read from its program row wherever the tree keeps it", async () => {
+  // Each engine's row names its program's variable, its billing switch, its key and its captured token, and the
+  // wizard writes them. The rows sit in their own files beside each adapter; a tree from before held them in
+  // driver.config.mjs. Read from only one place, six names fell to `tuning` the day the rows moved.
+  const { ENGINE_BINARIES } = await import("../driver.config.mjs");
+  const named = Object.values(ENGINE_BINARIES).flatMap((e) => [e.env, e.authEnv, e.apiKeyEnv, e.headless?.tokenEnv]).filter(Boolean);
+  assert.ok(named.length >= 6, `premise: the engine rows name ${named.length} variable(s)`);
+  const setup = setupNames();
+  assert.deepEqual(named.filter((n) => !setup.has(n)), [], "an engine's own variable is not read as a setup name");
+  const row = 'export const program = { env: "INVENTED_ENGINE_PATH", authEnv: "INVENTED_BILLING", apiKeyEnv: "INVENTED_ENGINE_KEY" };\n';
+  const moved = plantWizard([]);
+  mkdirSync(join(moved, "driver", "engine"));
+  writeFileSync(join(moved, "driver", "engine", "invented-agent-program.mjs"), row);
+  const before = plantWizard([]);
+  writeFileSync(join(before, "driver", "driver.config.mjs"), `export const ENGINE_BINARIES = {\n  "invented-agent": ${row.slice("export const program = ".length, -2)},\n};\n`);
+  for (const [where, root] of [["its own file", moved], ["driver.config.mjs", before]]) {
+    const got = setupNames(root);
+    for (const n of ["INVENTED_ENGINE_PATH", "INVENTED_BILLING", "INVENTED_ENGINE_KEY"]) assert.ok(got.has(n), `${n}, in ${where}`);
+  }
+});

@@ -210,13 +210,15 @@ export function citationsIn(corpus, byBase, opts = {}) {
 export function decidableHits(citations, lineCountOf, ships = sourceCrossesTheCut) {
   const dangling = [], overrun = [], danglingUnshipped = [], ambiguous = [], exempt = [], declared = [];
   for (const c of citations) {
-    const unresolved = c.state === "missing" || c.state === "ambiguous";
     // PLANTED DATA IS EXEMPT WHATEVER IT RESOLVED TO. Consulting this only under `missing` made the
     // exemption UNREACHABLE for any planted path whose basename collides with a real file:
     // `driver/skills/a/SKILL.md` resolves AMBIGUOUS against fifteen real SKILL.md files, so it never
     // reached the entry written for it and sat in the bucket nothing judged. Measured 2026-08-20 —
-    // that entry matched two citations and only one reached the code.
-    if (unresolved && exemptTarget(c.cited)) { exempt.push(c); continue; }
+    // that entry matched two citations and only one reached the code. A planted path that resolves EXACTLY is
+    // planted all the same: portal-service.test.mjs feeds its parser a synthetic stack frame under /srv/app/ that names
+    // a line of the real pipeline.mjs, and the day that file grew shorter than the line it read as an overrun
+    // (planted-data-is-not-a-claim-about-the-tree.test.mjs says why no planted line is a claim about this tree).
+    if (exemptTarget(c.cited)) { exempt.push(c); continue; }
     if (c.state === "missing") {
       (ships(c.from) ? dangling : danglingUnshipped).push(c);
       continue;

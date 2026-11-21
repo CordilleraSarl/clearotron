@@ -28,16 +28,16 @@ import { diffFingerprint, fingerprint, readStamp, writeFingerprint } from "./sta
 import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
 import { fileURLToPath } from "node:url";
 
-import { runStage } from "./gateway.mjs";
+import { keepPriorOutput, runLaneStage } from "./stage-runner.mjs";   // the one stage skeleton both lanes run through
 import { config, RESEARCH_PROVIDERS, REGISTER_PROVIDER, missingCredentials } from "./driver.config.mjs";
 import { registerAdapter as adapterForRegister } from "./engine/run-choices.mjs";   // the run's register adapter, from ctx.register
-import { StageFailure, stageWallFields } from "./run-outcome.mjs";   // — the wall fields the spine already carries
+import { StageFailure } from "./run-outcome.mjs";
 import { endTheDeliveredRun, runShell } from "./run-shell.mjs";   // — the runner and the delivered ending both products share
 import { logTurnaroundReconciliation } from "./run-quote.mjs";
 import { RunCancelled, assertNotCancelledBeforePublish, isCancelled, readCancel, stopsWithTheRun } from "./cancel.mjs";   // stop-by-user: never the failure lane below
 import { loadFrameworkManifest, parseFrameworkManifest, frameworkFor, DEFAULT_FRAMEWORK } from "./framework.mjs";
 import { attachFrameworkMethod, methodPathFor, FROZEN_METHOD_FILE } from "./framework-method.mjs";
-import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutGridSpec, KNOCKOUT_WEB, KNOCKOUT_MINUTES_BAR, knockoutBarVerdict, koChunks } from "./stages-knockout.mjs";
+import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutGridSpec, KNOCKOUT_WEB, KNOCKOUT_MINUTES_BAR, knockoutBarVerdict, koChunks, groupRecordsDoc } from "./stages-knockout.mjs";
 import { kebabCollisions, reportIdentityFor, CAPABILITY_SKIPPED_CAUSE, CAPABILITY_SKIPPED_NOTE } from "./search-policy.mjs";
 import { countPreflight, countRegisterHits, countedMarks, resolveCountExecutor } from "./register-count.mjs";
 import { recordsPreflight, listedMarks } from "./register-records.mjs";
@@ -57,10 +57,10 @@ import { correctionsAppliedTable, unresolvedFlags } from "./corrections-feedforw
 import { settledKnockoutReading } from "./knockout-register-record.mjs";
 import { stripNextStepSections } from "./knockout-next-step.mjs";
 import { publishKnockout, composeKnockoutCoverNote, knockoutName } from "./publish/knockout.mjs";
-import { markLogos, logosStep } from "./mark-logos.mjs";
-import { writeRunStatus, readRunStatus, rollupStatus, identitySeed, recordTransition, resumeRecord } from "./progress.mjs";   // — the identity seed is shared; the stepper is not
+import { markLogos, logosStep, writeRecordImages } from "./mark-logos.mjs";
+import { writeRunStatus, readRunStatus, rollupStatus, identitySeed, resumeRecord } from "./progress.mjs";   // — the identity seed is shared; the stepper is not
 import { batchMarkName } from "./mark-name.mjs";
-import { runLog, note, outputMeta } from "./log.mjs";
+import { runLog, note } from "./log.mjs";
 import { defaultTerritoryState } from "./effective-scope.mjs";
 import { keepsInstructedScope } from "./accepted-order.mjs";   // a resume rebuilt from status keeps the scope its order wrote, as a clearance does   // the stored-defaults reading — one producer, shared with the clearance lane
 import { whatsappRouting } from "./stages.mjs";
@@ -74,7 +74,7 @@ import { isResearchAnswer } from "./research-answers.mjs";
 const DRIVER_DIR = dirname(fileURLToPath(import.meta.url));
 export const TRIAGE_FRAMEWORK = "skills/clearance-search/risk-framework-triage.md";
 
-// sentinel and archive are this lane's own. The clearance's archive (pipeline.mjs) also settles any pending what-if
+// sentinel and archive are this lane's own. The clearance's archive (run-end-state.mjs) also settles any pending what-if
 // before it moves the run; this one does not.
 const sentinel = (runDir, name, obj) => atomicWrite(join(runDir, name), JSON.stringify({ ts: new Date().toISOString(), ...obj }, null, 2) + "\n");
 function archive(run) {
@@ -163,7 +163,7 @@ export function readBackLadder(sidecarPath) {   // exported for its test
   throw new Error(`knockout_ladder_unreadable: ${sidecarPath} does not read back as a band ladder, so knockoutAssessChunk's three band checks would pass every rating unchecked — the driver wrote this file itself from a parsed manifest, so this is a driver fault and no seat can fix it`);
 }
 
-// ── koStage: the slim lane's stage runner — skip-if-output-valid (the stageOnce pattern), one
+// ── koStage: the slim lane's stage, run through the shared stage runner (stage-runner.mjs) — skip-if-output-valid, one
 // runStage call, StageFailure on exhaustion (rate_limited rides to pipeline()'s postpone catch).
 /**
  * Rewrite the lines a reader meets first, and NEVER cost a client a report doing it.
@@ -327,14 +327,22 @@ async function correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, wor
   const asOpen = (defects, state, reason = null) => defects.map((x) => ({ kind: x.kind, mark: x.mark, problem: x.problem, state, ...(reason ? { reason } : {}) }));
   const keepRecord = (record) => { try { atomicWrite(paths(run.runDir).knockoutCorrections, JSON.stringify(record, null, 2) + "\n"); } catch (e) { note(`corrections record not kept (non-fatal): ${String(e?.message ?? e).slice(0, 160)}`); } };
   const failed = [];
-  for (const c of touched) {
+  const thrown = [];
+  // THE CORRECTIONS RUN SIDE BY SIDE, as the groups they correct were rated. A RATE LIMIT OR A STOP STARTS NOTHING MORE: the
+  // corrections already running finish, none is sent into the same limit, and a queued one asks for the stop before it is sent, as
+  // the assessment's groups do. A stop is the run's to handle, so it leaves here as itself, never as a failed correction.
+  await runBatched(touched, KO_CONCURRENT_TURNS, async (c) => {
     try {
+      if (isCancelled(run.runDir)) throw new RunCancelled("knockout-correct", readCancel(run.runDir));
       await koStage("knockout-correct", ctx, { chunkNo: c, msgCtx: { work, chunkMarks: chunks[c], framework: ctx.framework, frameworkMethod: ctx.frameworkMethod ?? null } });
     } catch (e) {
-      if (e instanceof StageFailure && (e.rateLimited || e.resetsAt)) throw e;
+      thrown.push({ c, e });
       failed.push({ chunk: c, reason: String(e?.message ?? e).slice(0, 200) });
     }
-  }
+  }, { stop: () => thrown.some((f) => rateLimited(f) || f.e instanceof RunCancelled) });
+  failed.sort((a, b) => a.chunk - b.chunk);
+  const halted = thrown.find((f) => f.e instanceof RunCancelled) ?? thrown.find(rateLimited);
+  if (halted) throw halted.e;
   // Back to the record as it was rated, through the same gate, with every defect still open and why.
   const standDown = (outcome, detail) => {
     restoreChunkBases(run.runDir, touched);
@@ -389,7 +397,7 @@ async function correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, wor
     await koStage("knockout-review", ctx, { chunkNo: 1, msgCtx: { ...d.msgCtx, recheckTable: correctionsAppliedTable(outcomes),
       movedNames, comparisonComplete: outside.complete } });
   } catch (e) {
-    if (e instanceof StageFailure && (e.rateLimited || e.resetsAt)) throw e;
+    if (e instanceof RunCancelled || (e instanceof StageFailure && (e.rateLimited || e.resetsAt))) throw e;
     // NOBODY READ THE CORRECTED RECORD, so nothing here can call a defect answered.
     const reason = String(e?.message ?? e).slice(0, 200);
     keepRecord({ ...held, recheck: "failed", failure: reason, open: asOpen(work.defects, "not-rechecked", "recheck-failed") });
@@ -516,62 +524,81 @@ export function heldOwnerChecks(priorRows, owed, { runDir, preset }) {   // @int
   return { held, ask };
 }
 
-async function koStage(name, ctx, { chunkNo = null, msgCtx = {} } = {}) {
-  // — the stage's own start, captured before ANY work: before the existsSync, before the validator
-  // read, before the message composition. states why on the spine — capture it after the await and
-  // every field is still present, every presence assertion still passes, and every interval is ~0 ms, so
-  // the journal would assert that a four-minute assess took nothing.
-  const tDispatch = Date.now();
-  const def = KO_STAGES[name];
-  const K = ctx.K;
-  const out = def.out(K, chunkNo ?? undefined);
-  const label = chunkNo != null ? `${name}#${chunkNo}` : name;
-  const model = process.env.CLEAROTRON_KNOCKOUT_MODEL || def.model;
-  const message = def.message({ ...ctx, K, chunkNo, ...msgCtx });
-  const readsNow = koReadsNow(def, K, label, message, ctx);
-  if (existsSync(out)) {
-    const v = def.validate(out, readFileSync(out, "utf8"));
-    const fresh = v.ok && readsNow ? koStaleness(ctx.paths.runDir, label, readsNow) : { stale: false, changed: [] };
-    if (v.ok && !fresh.stale) {
-      // Was `{event:"stage-skip"}`, which nothing read: mcp-server/lib/events.mjs classifies `stage` and
-      // `skip` and dropped this lane on the floor, so a knockout run's stages were invisible in get_run
-      // while the clearance spine's were not. Renamed rather than duplicated — no legacy path, and the
-      // grep that found its only reader found none.
-      runLog(ctx.paths.runDir, { event: "skip", stage: label, lane: "knockout", trigger: "skip", ok: true,
-        model, output: outputMeta(out), ...stageWallFields(tDispatch) });
-      recordTransition(ctx, name);   // as a clearance's stage records it: the stage the run is at, on a resume too
-      return { ok: true, skipped: true };
-    }
-    runLog(ctx.paths.runDir, { event: "stage-stale", stage: label, reason: v.ok ? fresh.reason : v.reason, ...(fresh.changed.length ? { changed: fresh.changed } : {}) });
-  }
-  // The run is in this stage from the moment it dispatches, as a clearance's stage records it. The bare name, so a
-  // batch's chunks are one stage. No Knockout stage has a step on the clearance's stepper, so this moves no step.
-  recordTransition(ctx, name);
-  const r = await runStage(label, {
-    agent: ctx.agent,
-    message,
-    model, thinking: def.thinking,
-    sessionKey: `clearance-${ctx.run.slug}-${ctx.run.codename}-${label}`,
-    timeoutSec: def.timeoutSec, stallSec: def.stallSec,
-    expectFile: out, validate: def.validate, runDir: ctx.paths.runDir,
-  });
-  // BEFORE the throw, and with `ok` on the row. A stage that failed still spent its wall, and a lane
-  // whose failures leave no completion row reports its own cost as smaller than it was — which is the
-  // reading error exists to prevent, in the direction that flatters.
-  runLog(ctx.paths.runDir, { event: "stage", stage: label, lane: "knockout", trigger: "fresh",
-    // — the knockout lane's own copy of the clearance lane's defect, found by counting the stage
-    // events rather than trusting that there was one. It wrote the ASSIGNED alias, so a codex knockout
-    // named an Anthropic model on the line a reader skims. Same precedence as the clearance stage event:
-    // the wire's word, then the engine's resolution, then the assignment as the unchanged legacy fallback.
-    ok: r.ok, attempts: r.attempts ?? null, fail: r.fail ?? null,
-    model: r.modelWire ?? r.modelUsed ?? model,
-    modelSelector: model,          // — what re-spawns the writer, beside what ran
-    output: outputMeta(out), outputWritten: r.wrote ?? null, ...stageWallFields(tDispatch) });
-  if (!r.ok) throw new StageFailure(label, r.fail ?? "failed", r.resetsAt);
-  if (readsNow) writeFingerprint(ctx.paths.runDir, label, readsNow);
-  // A chunk rated again on this pass makes any review round begun on the old rating obsolete (knockoutReviewingPass).
-  if (name === "knockout-assess") (ctx.koRated ??= new Set()).add(chunkNo);
-  recordTransition(ctx, name);
+/**
+ * What a Knockout stage holds, judged by the lane's own rule. PURE but for reads of the output and of its record.
+ *
+ * A held output that does not validate is stale, named by its validator's reason, and is run again. One that
+ * validates is stale when its stage declares what it read (`readsNow`, from `reads` in KO_STAGES) and that has
+ * changed since, or no record of it is held (koStaleness). A stage that declares nothing keeps its validation rule
+ * alone. Returns { held, valid, stale, reason?, changed }.
+ */
+export function koHeldOutput(def, out, runDir, label, readsNow) {   // @internal
+  if (!out || !existsSync(out)) return { held: false, valid: false, stale: false, changed: [] };
+  const v = def.validate(out, readFileSync(out, "utf8"));
+  if (!v.ok) return { held: true, valid: false, stale: true, reason: v.reason, changed: [] };
+  return { held: true, valid: true, ...(readsNow ? koStaleness(runDir, label, readsNow) : { stale: false, changed: [] }) };
+}
+
+/** A Knockout stage's label: its name, or `name#n` for a stage run once per chunk (or, for the review, per pass). PURE. */
+const koLabel = (name, chunkNo) => (chunkNo != null ? `${name}#${chunkNo}` : name);
+
+/** The files a Knockout stage recorded it read, from its fingerprint: what its stage row says it was offered. PURE. */
+const koOfferedFiles = (readsNow) => (readsNow ?? []).map((e) => e.path).filter((p) => !String(p).startsWith("value:"));
+
+/**
+ * The Knockout lane, as the shared stage runner runs it (stage-runner.mjs): its stage table, and one dispatch built
+ * from a definition. What is the Knockout's own stays here. Its model is the override where one is set, else the
+ * stage's own. Its time and stall limits are the stage's own: the limit the clearance derives from a band, and that
+ * limit's ceiling, are the clearance's. Its freshness rule is koHeldOutput's. A chunk rated again marks the review
+ * begun on its old rating obsolete. A held output is copied aside under its stage and chunk before a dispatch can
+ * overwrite it, and stays there whatever the dispatch does.
+ */
+export const KNOCKOUT_LANE = {   // @internal — a test runs a stage table of its own through the lane
+  stages: KO_STAGES,
+  prepare(def, name, ctx, { chunkNo = null, msgCtx = {} } = {}) {
+    const K = ctx.K;
+    const runDir = ctx.paths.runDir;
+    const out = def.out(K, chunkNo ?? undefined);
+    const label = koLabel(name, chunkNo);
+    const model = process.env.CLEAROTRON_KNOCKOUT_MODEL || def.model;
+    // Composed before the freshness read: the message is one of the things a stage records it read.
+    const message = def.message({ ...ctx, K, chunkNo, ...msgCtx });
+    const readsNow = koReadsNow(def, K, label, message, ctx);
+    let held = null;
+    return {
+      runDir, label, out, selector: model,
+      // THE LANE AND THE CHUNK ON EVERY ROW, so a batch's chunks are told apart without parsing the label.
+      rowFields: { lane: "knockout", chunk: chunkNo },
+      freshness: () => (held = koHeldOutput(def, out, runDir, label, readsNow)),
+      reusable: () => held.valid,
+      snapshot: (reason) => keepPriorOutput({ runDir, out, telemetry: driverDir(runDir, `${label}.jsonl`), reason, key: label, label }),
+      dispatch: () => ({
+        agent: ctx.agent,
+        message,
+        model, thinking: def.thinking,
+        sessionKey: `clearance-${ctx.run.slug}-${ctx.run.codename}-${label}`,
+        timeoutSec: def.timeoutSec, stallSec: def.stallSec,
+        expectFile: out, validate: def.validate, runDir,
+      }),
+      stageInputs: () => koOfferedFiles(readsNow),
+      // What it read is recorded as taken before it ran, so the record says what the output was based on.
+      stamp: () => { if (readsNow) writeFingerprint(runDir, label, readsNow); },
+      // A chunk rated again on this pass makes any review round begun on the old rating obsolete (knockoutReviewingPass).
+      // Only a rating that succeeded is a new rating: a failed one leaves the old rating, and the round begun on it, standing.
+      after: (r) => { if (r.ok && name === "knockout-assess") (ctx.koRated ??= new Set()).add(chunkNo); },
+    };
+  },
+};
+
+/**
+ * Run one Knockout stage through the shared runner. A failure leaves here as the `StageFailure` this lane has always
+ * thrown, with the stage's label, the failure's reason and the provider's reset time, after its row is written: a rate
+ * limit still reaches pipeline()'s postponement, any other failure the run's failure lane, and nothing downstream of
+ * the stage runs. A cancellation passes through as the gateway raised it.
+ */
+export async function koStage(name, ctx, opts = {}) {   // @internal — driven by its test
+  const r = await runLaneStage(KNOCKOUT_LANE, name, ctx, opts);
+  if (!r.ok) throw new StageFailure(koLabel(name, opts.chunkNo ?? null), r.fail ?? "failed", r.resetsAt);
   return r;
 }
 
@@ -612,7 +639,8 @@ async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts
   }
   const unreachable = exec.source === "provider" ? (ctx.registerUnreachable ?? []) : [];
   const scope = { marks: names, classes: job.classes ?? null, jurisdictions: job.jurisdictions ?? null, capabilities: ctx.registerCaps, unreachable };
-  const build = (reading) => knockoutRecordsDoc({ ...scope, provider: register, counts, reading, framedMarks: plan.marks,
+  const images = new Map();   // each listed filing's image facts, for the logo step alone (mark-logos.mjs)
+  const build = (reading) => knockoutRecordsDoc({ ...scope, provider: register, counts, reading, framedMarks: plan.marks, images,
     readBlocks: (name) => knockoutBandBlocks(run.runDir, name), readProposals: (name) => knockoutProposals(run.runDir, name) });
   try {
     if (exec.fixtureDir) writeFixtureMarker(run.runDir, exec.fixtureDir);
@@ -658,6 +686,7 @@ async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts
   try {
     const doc = withHeldGoods(build(reading), run.runDir, { runPrefix: `clearance-${run.slug}-${run.codename}` });
     atomicWrite(K.registerRecords, JSON.stringify(doc, null, 2) + "\n");
+    writeRecordImages(run.runDir, images);
     appendQuestionReceipts(K.countLedger, doc, { provider: register });
     runLog(run.runDir, { event: "knockout-register-records", provider: register, executor: exec.source,
       marks: doc.marks.length, listed: listedMarks(doc), records: doc.marks.reduce((n, m) => n + m.records.length, 0),
@@ -727,15 +756,39 @@ export function resolveSweepExecutor(opts) {   // exported for its test, like re
   };
 }
 
+// A group's failure that decides what happens next: a stop first, then a usage limit, whose reset decides when to try again, then the
+// first by group order.
+const rateLimited = (f) => f.e instanceof StageFailure && Boolean(f.e.rateLimited || f.e.resetsAt);
+const firstFailure = (failures) => (failures.find((f) => f.e instanceof RunCancelled) ?? failures.find(rateLimited)
+  ?? [...failures].sort((a, b) => a.c - b.c)[0]).e;
+
+/**
+ * Why a group's framework echo does not name the frozen framework, or null. The two are compared as values, the framework's key and its
+ * ladder of band labels, so a difference in shape is not read as a different framework. No echo is no fault. PURE.
+ */
+export function frameworkEchoFault(echo, frozen) {
+  if (echo == null) return null;
+  const words = (xs) => (Array.isArray(xs) ? xs.map((x) => String(typeof x === "string" ? x : x?.label ?? "").trim().toLowerCase()) : null);
+  if (echo.source != null && String(echo.source).trim().toLowerCase() !== String(frozen.source ?? "").trim().toLowerCase())
+    return `names the framework "${echo.source}", not the frozen "${frozen.source}"`;
+  if (echo.ladder != null && JSON.stringify(words(echo.ladder)) !== JSON.stringify(words(frozen.ladder)))
+    return `was rated on a ladder that is not the frozen framework's`;
+  return null;
+}
+
+// AT MOST THREE MODEL TURNS AT ONCE, for the rating groups and for their corrections (design, 2026-11-05).
+const KO_CONCURRENT_TURNS = 3;
+
 // bounded-concurrency fan-out (local copy of the runBatched idiom — pipeline.mjs's is private).
 // A non-finite limit collapses to 1 worker, never to zero (Array.from({length: NaN}) is [] — a typo'd
 // concurrency env var would otherwise silently skip the ENTIRE sweep; review 2026-07-17).
-async function runBatched(items, limit, fn) {
+// `stop`, when given, is asked before each item is taken: once it answers true no further item starts, and those running finish.
+async function runBatched(items, limit, fn, { stop = null } = {}) {
   const results = new Array(items.length);
   let i = 0;
   const cap = Number.isFinite(limit) && limit >= 1 ? Math.floor(limit) : 1;
   const workers = Array.from({ length: Math.max(1, Math.min(cap, items.length)) }, async () => {
-    while (i < items.length) { const idx = i++; results[idx] = await fn(items[idx], idx); }
+    while (i < items.length && !stop?.()) { const idx = i++; results[idx] = await fn(items[idx], idx); }
   });
   await Promise.all(workers);
   return results;
@@ -1315,7 +1368,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
         ({ degraded, recovered } = await startSweep());
     } },
     { name: "assess", run: async () => {
-        // 3 — assess (chunked ≤8/turn; merged + gated in code). DEGRADED per the DISK truth (payload
+        // 3 — assess (chunked ≤3/turn, side by side; merged + gated in code). DEGRADED per the DISK truth (payload
         // presence), never the in-memory Map alone — resume-proof: a prior attempt's degrades count too.
         // A STOP ASKED FOR WHILE THE TWO RESEARCH BRANCHES RAN ends the run here, with both settled and their work kept: the rating does
         // not start, and the status does not name it as begun. The turn boundary would refuse its first turn anyway.
@@ -1339,23 +1392,53 @@ export async function knockoutInner(ctx, job, opts = {}) {
             }
           }
         }
-        for (let c = 0; c < chunks.length; c++) {
-          await koStage("knockout-assess", ctx, { chunkNo: c, msgCtx: { chunkMarks: chunks[c], chunkTotal: chunks.length, framework: ctx.framework, frameworkMethod: ctx.frameworkMethod ?? null } });
+        // THE GROUPS ARE RATED SIDE BY SIDE. Each writes only its own chunk, under its own session and call folder, and all are joined
+        // before anything is composed. A group that fails leaves the others' accepted chunks for a resume, which re-runs only what failed.
+        // A RATE LIMIT OR A STOP STARTS NOTHING MORE: the groups already running finish and keep their work, and no further group is sent.
+        //
+        // EACH GROUP IS HANDED ITS OWN NAMES' FILINGS. The held-filings record is the whole batch's, and three groups each reading it
+        // read every other group's filings three times over: measured in testing, 2026-11-21, about 0.7 MB of output per Codex group, against
+        // 66-172 KB of the group's own research. The full record stays where it is, for the validator and for every later step.
+        const groupRecords = new Map();
+        if (chunks.length > 1 && existsSync(K.registerRecords)) {
+          let held = null;
+          try { held = JSON.parse(readFileSync(K.registerRecords, "utf8")); } catch { held = null; }
+          if (held) for (let c = 0; c < chunks.length; c++) {
+            atomicWrite(K.groupRegisterRecords(c), JSON.stringify(groupRecordsDoc(held, chunks[c].map((m) => m.name)), null, 2) + "\n");
+            groupRecords.set(c, K.groupRegisterRecords(c));
+          }
         }
+        const assessFailures = [];
+        await runBatched(chunks.map((_, c) => c), KO_CONCURRENT_TURNS, async (c) => {
+          try { await koStage("knockout-assess", ctx, { chunkNo: c, msgCtx: { chunkMarks: chunks[c], chunkTotal: chunks.length, framework: ctx.framework, frameworkMethod: ctx.frameworkMethod ?? null, registerRecordsFile: groupRecords.get(c) ?? null } }); }
+          catch (e) { assessFailures.push({ c, e }); }
+        }, { stop: () => assessFailures.some((f) => rateLimited(f) || f.e instanceof RunCancelled) });
+        if (assessFailures.length) throw firstFailure(assessFailures);
         // ONE COMPOSITION, for the rated batch and for a corrected one: the chunks read, the summary joined, the engine's caveats,
         // the merged gate and the write. A correction that took a shorter road would reach a client through a lighter gate.
         composeRecord = () => {
           // cardOrder records how this run's page lists a name's cards, so a delivered report re-renders as it was delivered.
-          const merged = { schema_version: 1, framework: null, batch: null, cardOrder: KNOCKOUT_CARD_ORDER, marks: [] };
-          const summaries = [];
+          const frozenFramework = { source: ctx.framework.framework_key, ladder: ctx.framework.bands.map((b) => b.label) };
+          const merged = { schema_version: 1, framework: frozenFramework, batch: null, cardOrder: KNOCKOUT_CARD_ORDER, marks: [] };
+          const summaries = [], batches = [];
           for (let c = 0; c < chunks.length; c++) {
             const chunkPath = K.assessChunk(c);
             const part = JSON.parse(readFileSync(chunkPath, "utf8"));
-            if (c === 0) { merged.framework = part.framework ?? { source: ctx.framework.framework_key, ladder: ctx.framework.bands.map((b) => b.label) }; merged.batch = part.batch ?? null; }
+            // THE FRAMEWORK IS THE FROZEN ONE, never a group's answer. A group's echo must name the same framework and ladder, or nothing
+            // is composed: a group rated on another is not part of this batch.
+            const echo = frameworkEchoFault(part.framework, frozenFramework);
+            if (echo) throw new Error(`knockout_compose_framework: group ${c + 1} ${echo}`);
+            if (part.batch) batches.push(part.batch);
             if (typeof part.chunkSummary === "string" && part.chunkSummary.trim()) summaries.push(part.chunkSummary.trim());
             merged.marks.push(...(part.marks ?? []));
           }
-          if (!merged.batch) merged.batch = { productContext: plan.batch.productContext, standardCaveats: [] };
+          // THE BATCH IS THE WHOLE BATCH'S. Its scope is the frozen plan's, never one group's, and every group's batch-wide caveat is
+          // kept, in group order, once.
+          const caveats = [];
+          for (const b of batches) for (const x of (Array.isArray(b?.standardCaveats) ? b.standardCaveats : [])) {
+            if (!caveats.some((y) => String(y).trim() === String(x).trim())) caveats.push(x);
+          }
+          merged.batch = { ...(batches[0] ?? {}), productContext: plan.batch?.productContext ?? batches[0]?.productContext ?? "", standardCaveats: caveats };
           // the WHOLE-batch executive summary = the per-chunk summaries, composed in code (every chunk's
           // validator required one, so no mark's chunk is silently absent — review 2026-07-17)
           merged.batch.executiveSummary = summaries.join("\n\n");
@@ -1486,7 +1569,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
             if (moved !== held) atomicWrite(K.registerRecords, JSON.stringify(moved, null, 2) + "\n");
           } catch { /* no record on this run, or none readable: publish says which */ }
           // THE LOGOS of the listed filings, as the clearance's are fetched (mark-logos.mjs), before the page is built.
-          logosStep(run.runDir, await markLogos(run.runDir, { registerRecordsPath: K.registerRecords, provider: (() => { try { return adapterForRegister(ctx.register ?? null); } catch { return null; } })(),
+          logosStep(run.runDir, await markLogos(run.runDir, { registerRecordsPath: K.registerRecords, knockoutFindingsPath: K.findings, provider: (() => { try { return adapterForRegister(ctx.register ?? null); } catch { return null; } })(),
             injectedFetcher: Boolean(opts.recordFetcher), agentId: ctx.agent ?? null }));
           published = await publishKnockout({
             runId, codename: run.codename, runDir: run.runDir,

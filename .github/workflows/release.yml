@@ -897,6 +897,22 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
       - name: This pipeline publishes only the way it was authorised to
         run: node scripts/release-publish-guard.mjs
+      # ── THE INSTRUMENT IS THIS REF; THE SUBJECT IS `main` AS IT IS WHEN THIS RUNS ──────────────────
+      #
+      # A scheduled run's `github.sha` is main when the schedule fired, and the concurrency group above
+      # can hold the run behind the very cut that lands the version commit. Measured 2026-11-20, on
+      # 0.7.0-beta.1: a run fired on the squash, waited 23 minutes behind the cut, read the previous
+      # version from its own checkout and answered that its entry already existed. The version commit was
+      # never asked about, and no scheduled run fired for the next two hours.
+      #
+      # So the scripts stay this ref's, and the two files that say which version is due and what its entry
+      # says, `package.json` and `CHANGELOG.md`, are main's, read here. A fetch or a read that fails stops
+      # the job red rather than deciding from the stale pair.
+      - name: Read the version and its changelog from main as it is now
+        run: |
+          git fetch --no-tags --depth=1 origin +refs/heads/main:refs/remotes/origin/main
+          git show origin/main:package.json > package.json
+          git show origin/main:CHANGELOG.md > CHANGELOG.md
       - name: Write the entry for a tagged version the registry now serves
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

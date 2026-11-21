@@ -63,24 +63,8 @@ export const LAYER_COVERAGE_STATES = Object.freeze(["returns", "excludes", "unes
 // members' national registers; ARIPO does not, and varies by member and by protocol. Getting that wrong
 // in either direction is a legal claim, so neither is asserted here and both fall to the default below,
 // which discloses rather than assumes. Named so the next reader knows it is a decision, not an omission.
-const BENELUX_MEMBERS = Object.freeze(["NL", "BE", "LU"]);
-
-// EU member states, for whom an EU trade mark is a binding regional right. An EUTM covering an
-// instructed EU member blocks use there without appearing in that member's national register.
-// Exported for the audit's register-presence store, which needs the CONVERSE
-// direction — a member state's national right operates inside an EU-scoped matter's market — and must
-// not carry a second copy of this list to drift from it.
-export const EU_MEMBERS = Object.freeze([
-  "AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "ES", "FI", "FR", "GR", "HR", "HU", "IE", "IT",
-  "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK",
-]);
-
-/** The EU-wide register's office code, in the vocabulary the contracts use. */
-export const EU_OFFICE = "EM";
-/** The international (Madrid) register's office code. */
-export const WO_OFFICE = "WO";
-/** The Benelux register's office code. */
-export const BX_OFFICE = "BX";
+import { BENELUX_MEMBERS, EU_MEMBERS, EU_OFFICE, WO_OFFICE, BX_OFFICE } from "../shared/jurisdiction-tables.mjs";   // a jurisdiction's tables live in one home
+export { EU_MEMBERS, EU_OFFICE, WO_OFFICE, BX_OFFICE };
 
 /**
  * The registers that legally bind a territory — a property of the territory, never of the provider.

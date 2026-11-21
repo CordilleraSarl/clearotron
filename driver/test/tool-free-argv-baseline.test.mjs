@@ -507,7 +507,9 @@ test("the resolution above still matches the gateway's — a paraphrase that dri
   // duplicate is only as good as this check: the gateway must still gate on groups.length and still feed
   // buildGatherMcpConfig + allowedToolsFor.
   const src = driverSource("gateway.mjs");
-  assert.match(src, /const groups = toolGroupsForStage\(name\);/, "the gateway no longer resolves groups by stage name this way");
+  // A stage described by its caller (a declaration handed to runStage) is granted its declaration's groups; every live stage,
+  // which surfaceFor() describes, still resolves them by its name.
+  assert.match(src, /const groups = declaration \? \[\.\.\.declaration\.grant\] : toolGroupsForStage\(name\);/, "the gateway no longer resolves groups by stage name this way");
   assert.match(src, /if \(groups\.length\) \{/, "the gateway no longer gates the whole grant on groups.length — the baseline's premise moved");
   assert.match(src, /gatherAllowedTools = allowedToolsFor\(groups[,)]/, "the gateway no longer derives the allowlist from the groups");
 });

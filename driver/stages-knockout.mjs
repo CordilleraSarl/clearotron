@@ -21,6 +21,10 @@ import { knockoutReviewFile, validateKnockoutReviewFile } from "./knockout-revie
 import { knockoutRegisterFile, validateKnockoutRegisterFile } from "./knockout-register-record.mjs";
 import { narrowingOrderLine } from "./effective-scope.mjs";
 import { REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK } from "./stages.mjs";
+import { declaredValidator } from "./stage-declarations.mjs";   // each stage's validator, by the name its declaration gives
+
+// The Knockout's validators by the names its stages declare: the lane's own table, and the three records' own checks.
+const KO_VALIDATORS = { ...koValidators, validateKnockoutRegisterFile, validateKnockoutReviewFile, validateKnockoutCorrectionFile };
 export { kebab };   // one definition (search-policy) — re-exported for the lane's existing imports
 
 const lines = (...xs) => xs.filter(Boolean).join("\n");
@@ -76,6 +80,9 @@ export function koPaths(runDir) {
     // rows were left exactly as they were rather than gaining a matching marker: their shape is pinned
     // byte-for-byte by register-count.test.mjs, and a discriminator only one side needs is enough.
     registerRecords: paths(runDir).registerRecords,
+    // A RATING GROUP'S SHARE OF THOSE FILINGS, where a batch is rated in groups: the held filings of the group's own names, so each
+    // group reads its names' filings rather than the whole batch's. The driver's own slice of its own record, so under `_driver/`.
+    groupRegisterRecords: (chunkNo) => driverDir(runDir, `register-records.group-${chunkNo}.json`),
     // THE READING STEP'S RECORD, a model output and so at the run root: what it carried forward, set aside and did not
     // ask. The questions and their rows are the register tool's, in the bands under `register-units/`.
     registerReading: knockoutRegisterFile(runDir),
@@ -190,6 +197,12 @@ function registerStateLine(K) {
 }
 const registerRecordHeld = (K) => registerLaneState(K.runDir).state === "held";
 
+/** The held-filings record cut to the named marks, every other field as held. PURE. */
+export function groupRecordsDoc(doc, names) {
+  const want = new Set([...names].map((n) => String(n).trim().toLowerCase()));
+  return { ...doc, marks: (Array.isArray(doc?.marks) ? doc.marks : []).filter((m) => want.has(String(m?.name ?? "").trim().toLowerCase())) };
+}
+
 // WHERE A SOURCE MAY COME FROM, in one form of words at every step: rating, correction and check.
 const CITED_URL_RULE = `A cited URL must come from ${PERMITTED_SOURCES}.`;
 const SIBLING_SOURCE = `When you use another name's research payload, explain how its held content bears on this name and its requested use. Keep the original search scope and provenance. A source's presence in the batch does not establish that it supports the claim.`;
@@ -228,8 +241,8 @@ export function knockoutGridSpec(markRow, batch, { outputPath }) {
   };
 }
 
-// ── Assess chunking: ≤8 marks per LLM turn; chunks merged in code (pipeline-knockout) ────────────────
-export const KO_ASSESS_CHUNK = 8;
+// ── Assess chunking: ≤3 marks per LLM turn, rated side by side; chunks merged in code (pipeline-knockout) ──
+export const KO_ASSESS_CHUNK = 3;
 export const koChunks = (marks) => {
   const out = [];
   for (let i = 0; i < marks.length; i += KO_ASSESS_CHUNK) out.push(marks.slice(i, i + KO_ASSESS_CHUNK));
@@ -283,7 +296,7 @@ export const KO_STAGES = {
     model: "opus", thinking: "high", timeoutSec: 420, stallSec: 300,
     skillReads: ["skills/knockout-frame/SKILL.md"],
     out: (K) => K.plan,
-    validate: koValidators.knockoutPlan,
+    validate: declaredValidator("knockout-frame", KO_VALIDATORS),
     reads: (K) => ({ files: [K.instructedScope, ...asRequested(K), paths(K.runDir).profile], message: true }),
     message: ({ K, job, profile }) => lines(
       reads(["skills/knockout-frame/SKILL.md"]),
@@ -345,7 +358,7 @@ export const KO_STAGES = {
     // DECLARATIVE ONLY on this lane, as the assess stage records; the effective read is in the message.
     skillReads: ["skills/knockout-register-read/SKILL.md"],
     out: (K) => K.registerReading,
-    validate: validateKnockoutRegisterFile,
+    validate: declaredValidator("knockout-register-read", KO_VALIDATORS),
     reads: (K) => ({ files: [K.instructedScope, K.inboundRequest, K.plan, paths(K.runDir).profile], message: true }),
     message: ({ K, job = {}, profile = null, readingLines = [], providerDoc = null, inScope = null }) => lines(
       reads(["skills/knockout-register-read/SKILL.md", providerDoc].filter(Boolean)),
@@ -391,10 +404,10 @@ export const KO_STAGES = {
     skillReads: ["skills/knockout-assess/SKILL.md", "skills/clearance-search/firm-wide-reasoning.md"],
     // out/validate are per-CHUNK; the merged knockout-findings.json is validated separately in code.
     out: (K, chunkNo) => K.assessChunk(chunkNo),
-    validate: koValidators.knockoutAssessChunk,
+    validate: declaredValidator("knockout-assess", KO_VALIDATORS),
     reads: (K) => ({ files: [K.plan, K.instructedScope, ...asRequested(K), ...frozenRules(K), K.registerRecords, K.registerCounts, K.ownerChecks],
       dirs: [K.researchDir], message: true, deck: true }),
-    message: ({ K, job, chunkNo, chunkMarks, chunkTotal, framework, frameworkPath, probeNote, frameworkMethod }) => lines(
+    message: ({ K, job, chunkNo, chunkMarks, chunkTotal, framework, frameworkPath, probeNote, frameworkMethod, registerRecordsFile = null }) => lines(
       // The deck path comes from ctx (attachKnockoutFramework resolves it once, on the fresh and the
       // resume path both) — never recomputed here, because "which deck" is one decision.
       reads(["skills/knockout-assess/SKILL.md", frameworkPath, "skills/clearance-search/firm-wide-reasoning.md"].filter(Boolean)),
@@ -425,7 +438,7 @@ export const KO_STAGES = {
       // a path that is not there teaches the seat that a missing file is normal.
       registerStateLine(K),
       registerRecordHeld(K)
-        ? `THE REGISTER FILINGS THIS RUN ALREADY FETCHED — ${K.registerRecords}. Real records, retrieved before you started: owner, jurisdiction, status, classes, dates. Read the held filings and weigh them for the names you are rating, against the client's requested goods. \`goods\` is a short view, \`goodsState\` records completeness, and \`goodsFrom\` records its source. If wording needed for your judgment is shortened or uncertain, read \`fullRecord\` where it is held (its path is under ${K.runDir}). Missing or incomplete wording does not establish that the goods are unrelated. A registration on this list is evidence about the name it names — treat its owner, its scope and its vulnerability the way the firm-wide reasoning tells you to (revocability above the lowest band; an enforcer's portfolio profile; a crowd as a mitigant under its gating precondition). What you may NOT do is describe the lane that fetched them — see the coverage rule below.`
+        ? `THE REGISTER FILINGS THIS RUN ALREADY FETCHED — ${registerRecordsFile ?? K.registerRecords}. Real records, retrieved before you started: owner, jurisdiction, status, classes, dates. Read the held filings and weigh them for the names you are rating, against the client's requested goods. \`goods\` is a short view, \`goodsState\` records completeness, and \`goodsFrom\` records its source. If wording needed for your judgment is shortened or uncertain, read \`fullRecord\` where it is held (its path is under ${K.runDir}). Missing or incomplete wording does not establish that the goods are unrelated. A registration on this list is evidence about the name it names — treat its owner, its scope and its vulnerability the way the firm-wide reasoning tells you to (revocability above the lowest band; an enforcer's portfolio profile; a crowd as a mitigant under its gating precondition). What you may NOT do is describe the lane that fetched them — see the coverage rule below.`
         : "",
       // ── WHAT THE OWNER ACTUALLY SELLS, ALREADY SEARCHED ────────────────────────────────────────────
       //
@@ -524,7 +537,10 @@ export const KO_STAGES = {
       `On the first call, send the complete assessment. Once the tool has confirmed a written record for this chunk, correct a name by sending its exact name and only the fields you changed. Omitted names and omitted fields within a name keep their recorded values. A field you send replaces that whole field: send a changed list or object complete, including unchanged entries. Update the chunk summary when the correction changes it. If the tool has written no record, send the complete corrected assessment.`,
       chunkNo === 0
         ? `As the FIRST chunk you also send \`batch\` (productContext, standardCaveats) and \`framework\`.`
-        : `As a CONTINUATION chunk you send \`marks\` and \`chunkSummary\` only — batch and framework came from chunk 1.`,
+        : `As a CONTINUATION chunk you send \`marks\` and \`chunkSummary\`, and in \`batch.standardCaveats\` only a qualification that holds for the whole batch. Use the supplied frozen framework.`,
+      chunkTotal > 1
+        ? `This batch is rated in ${chunkTotal} groups side by side, and code joins the groups' summaries in order. Open your \`chunkSummary\` with a line for these names, not for the whole batch: the other groups' ratings are not in front of you.`
+        : "",
     ),
   },
 
@@ -557,7 +573,7 @@ export const KO_STAGES = {
     skillReads: ["skills/knockout-assess/SKILL.md", "skills/clearance-search/firm-wide-reasoning.md", "skills/clearance-search/report-prose.md"],
     // A later pass reads the corrected record, under its own artifact: `knockout-review#1`.
     out: (K, pass) => (pass ? knockoutReviewFile(K.runDir, pass) : K.review),
-    validate: validateKnockoutReviewFile,
+    validate: declaredValidator("knockout-review", KO_VALIDATORS),
     reads: (K) => ({ files: [K.findings, K.plan, ...asRequested(K), ...frozenRules(K), K.registerRecords, K.ownerChecks],
       dirs: [K.researchDir], message: true, deck: true }),
     // ── THE MESSAGE PROMISES A TABLE ONLY WHEN IT HAS ONE ──────────────────────────
@@ -626,7 +642,7 @@ export const KO_STAGES = {
     // DECLARATIVE ONLY on this lane, as the assess stage records; the effective read is in the message.
     skillReads: ["skills/knockout-assess/SKILL.md", "skills/clearance-search/firm-wide-reasoning.md"],
     out: (K, chunkNo) => knockoutCorrectionFile(K.runDir, chunkNo),
-    validate: validateKnockoutCorrectionFile,
+    validate: declaredValidator("knockout-correct", KO_VALIDATORS),
     reads: (K) => ({ files: [paths(K.runDir).knockoutCorrectionWork, knockoutReviewFile(K.runDir, 0), K.plan, K.instructedScope,
       ...asRequested(K), ...frozenRules(K), K.registerRecords, K.ownerChecks], dirs: [K.researchDir], deck: true }),
     message: ({ K, job = {}, chunkNo, work = null, chunkMarks = [], frameworkPath = null, frameworkMethod = null }) => {

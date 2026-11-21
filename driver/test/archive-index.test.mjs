@@ -261,7 +261,8 @@ test("the run list quotes the report's own conclusion, never a second summary, a
   const pool = poolWith([withCaption, heldBefore, A]);
   regenIndex(pool);
   const idx = readFileSync(join(pool, "index.html"), "utf8");
-  assert.ok(idx.includes(`<span class="stmt" title="${CAPTION}">${CAPTION}</span>`), "the report's conclusion does not render beside the pill");
+  // The tooltip is an attribute, so its apostrophe is encoded; the text beside it is not.
+  assert.ok(idx.includes(`<span class="stmt" title="${CAPTION.replace(/'/g, "&#39;")}">${CAPTION}</span>`), "the report's conclusion does not render beside the pill");
   assert.doesNotMatch(idx, /conditional on: Obtain consent/, "the composed statement still renders");
   // A meta written before the caption was kept shows the pill alone: its stored statement said "on hold".
   assert.doesNotMatch(idx, /On hold/);

@@ -24,6 +24,8 @@ import { adapter as euipoAdapter } from "../providers/euipo/src/adapter.js";
 import { adapter as usptoLocalAdapter } from "../providers/uspto-local/src/adapter.js";
 import { adapter as freeTierAdapter } from "../providers/free-tier/src/adapter.js";
 import { readJson } from "./run-record.mjs";
+import { program as anthropicAgentProgram } from "./engine/anthropic-agent-program.mjs";   // each engine's program row, kept beside its adapter
+import { program as openaiAgentProgram } from "./engine/openai-agent-program.mjs";
 
 const { X_OK } = FS;
 
@@ -1347,11 +1349,15 @@ export function preflightResearchCredential(policy, env = process.env) {
 // test's note at preflight-engine-binary.test.mjs), and a path is not an import. engine/probe.mjs
 // dynamic-imports the one leaf it needs, so nothing here gains an engine dependency.
 //
-// `label` and `signIn` live here for the same reason the binary variable does — they are per-engine
+// `label` and `signIn` live in the rows for the same reason the binary variable does — they are per-engine
 // facts, and a second place to write them down is a second place for them to go stale. `signIn` is the
 // instruction the openai adapter already emits at runtime (openai-agent.mjs, the auth.json refusal).
+//
+// EACH ROW IS ITS ENGINE'S OWN FILE, engine/<engine>-program.mjs: pure data that imports nothing, beside
+// the adapter, so a new floor or a new engine's facts are an edit to that engine's files and not to this
+// one. Reading those two files loads no adapter, so this module still imports no engine.
 export const ENGINE_BINARIES = {
-  // item 5 — `authEnv` / `apiKeyEnv` are HERE because this table is what the wizard and the
+  // item 5 — `authEnv` / `apiKeyEnv` are in each row because this table is what the wizard and the
   // run-door preflight both read, and the billing mode is the one engine fact they were each guessing
   // at separately. `engine/auth.mjs` still owns the DECISION (it resolves and refuses); this only names
   // the two variables that decision reads, so setup can ask about them without hardcoding a second copy.
@@ -1361,109 +1367,8 @@ export const ENGINE_BINARIES = {
   // OPENAI_API_KEY for a clean subscription bill, so a wizard that adopted it would write a .env whose
   // api-key mode `auth.mjs` refuses. `driver/test/onboard-wizard.test.mjs` drives resolveAuthMode from
   // these fields rather than comparing them to literals, so the table cannot drift from the resolver.
-  "anthropic-agent": {
-    // `vendor` is the one word a person needs — the staff config page answers "which engine is
-    // running the searches", and `label` below is the MECHANISM, which is what took off that page.
-    vendor: "Anthropic",
-    // `product` is the name a reader knows the program by, beside the vendor in setup's engine question
-    // ("Claude, by Anthropic"). Not `fallback`, which is the command word and lower-case.
-    product: "Claude",
-    env: "CLEAROTRON_CLAUDE_PATH", fallback: "claude",
-    // The npm package that carries this program, and the oldest version setup installs: "this version or
-    // newer", with no ceiling. Setup installs it into the engines folder (enginesFolder, below the table)
-    // when the reader picks this engine, and the resolver uses it only when the machine has no copy of its
-    // own. The package's own `bin` field names the program, so no path inside it is written down here.
-    // THE FLOOR IS THE OLDEST RELEASE WHOSE TIER ALIASES REACH THE CURRENT MODEL GENERATION, and each
-    // tier crossed on its own release rather than together. Measured 2026-09-30 by driving each version's
-    // `-p` turn at a local recorder and reading the `model` it put on the wire:
-    //
-    //     version   --model opus        --model sonnet
-    //     2.1.277    claude-opus-5       claude-sonnet-5
-    //     2.1.278    claude-opus-5       claude-sonnet-5
-    //     2.1.280    claude-opus-5-5     claude-sonnet-5
-    //     2.1.281    claude-opus-5-5     claude-sonnet-5
-    //     2.1.282    claude-opus-5-5     claude-sonnet-5
-    //     2.1.283    claude-opus-5-5     claude-sonnet-5
-    //     2.1.284    claude-opus-5-5     claude-sonnet-5-5
-    //
-    // So the old floor of 2.1.280 was exactly right for the top tier and left the sonnet tier a
-    // generation behind for four releases, silently: the alias resolves inside the program, the request
-    // is well formed either way, and nothing refuses. The floor moves to the release where the SECOND
-    // tier crosses, because a stage that asks for sonnet is asking for the current sonnet.
-    //
-    // Below the floor the previous behaviour still holds: on 2.1.263 the alias returned the older model
-    // and a pinned id was refused outright ("version 2.1.280 or newer is required"), measured 2026-09-22.
-    // A floor that only asks for a program that starts is a floor that passes a machine this engine
-    // cannot run the current generation on.
-    //
-    // THE HAIKU TIER CROSSED LATER, when Claude Haiku 5.5 joined the generation. Measured 2026-10-09 by a
-    // one-word `-p` turn per version on the test box's own sign-in, reading the model the turn reports in
-    // `modelUsage`:
-    //
-    //     version   --model haiku
-    //     2.1.285    claude-haiku-4-5-20251001
-    //     2.1.287    claude-haiku-4-5-20251001
-    //     2.1.288    claude-haiku-4-5-20251001
-    //     2.1.289    claude-haiku-4-5-20251001
-    //     2.1.290    claude-haiku-4-5-20251001
-    //     2.1.292    claude-haiku-4-5-20251001
-    //     2.1.293    claude-haiku-5-5
-    //     2.1.294    claude-haiku-5-5
-    //     2.1.295    claude-haiku-5-5
-    //
-    // 2.1.295 still serves claude-opus-5-5 and claude-sonnet-5-5. The floor moves to 2.1.293 for the reason
-    // it moved to 2.1.284: a stage that asks for haiku is asking for the current haiku.
-    package: "@anthropic-ai/claude-code", floor: "2.1.293",
-    // WHAT THE INSTALL TAKES ON DISK, in MB, which setup states before it asks to install. MEASURED, not
-    // declared by the vendor: the engines folder (`du -sm`) after a fresh install into an empty folder with
-    // setup's own command, which fetches the newest release at or above the floor rather than the floor
-    // itself. Measured 2026-11-05 on npm 10.9.9: 323 MB for 2.1.318; 2.1.293 alone is 242. A later release
-    // can be larger or smaller, so setup says "about". Re-measure when the floor moves.
-    installMB: 323,
-    // The licence setup states wherever it tells a reader what they are about to install or use, as the
-    // vendor's package declares it: "SEE LICENSE IN README.md", Anthropic's own terms.
-    licence: "proprietary third-party software",
-    label: "Anthropic — each stage runs as a headless `claude -p` turn",
-    module: "engine/anthropic-agent.mjs", adapter: "anthropicAgentEngine",
-    signIn: "run `claude` once in a terminal and complete the sign-in",
-    authEnv: "CLEAROTRON_AI_BILLING", apiKeyEnv: "ANTHROPIC_API_KEY",
-    subscriptionHow: "sign in once with `claude`",
-    // `install`, the command that puts this program in the engines folder, is written in below the table
-    // from `package` and `floor`, so the command a reader is shown and the one setup runs cannot drift.
-    // npm, NOT the vendor's shell installer: a command this product executes on someone's box has to be
-    // one they can read in full before they answer, and a piped remote script is not.
-    // — the documented headless ending. `claude setup-token` walks the sign-in and
-    // prints a long-lived token; the stage subprocess env is a list (engine/engine-env.mjs) that carries the
-    // vendor's own `CLAUDE_*` names — the API key is the one name it keeps only under `api-key` — so a token
-    // in the env file reaches the CLI untouched, and that is the whole mechanism (armed in
-    // engine.anthropic.test.mjs). The wizard
-    // captures it by paste: the vendor's stream layout is not ours to guess at, and a paste works
-    // whatever it prints where.
-    headless: { cmd: "claude setup-token", tokenEnv: "CLAUDE_CODE_OAUTH_TOKEN" },
-  },
-  "openai-agent": {
-    vendor: "OpenAI",
-    product: "Codex",
-    env: "CLEAROTRON_CODEX_PATH", fallback: "codex",
-    // THE FLOOR IS THE OLDEST RELEASE THAT ACCEPTS THE JUDGMENT TIER'S MODEL on a ChatGPT sign-in, which
-    // is how a subscription bills. Measured 2026-10-09 with a one-word `codex exec` turn per version on the
-    // test box: `gpt-6.1-sol` is refused with a 400 on 0.156.1, 0.157.0 and 0.158.0 ("not supported when
-    // using Codex with a ChatGPT account") and accepted on 0.159.0, 0.160.0, 0.161.0 and 0.162.0;
-    // `gpt-6-luna` is accepted from 0.156.1. Below the floor every clearance stops at its first
-    // judgment-tier stage (the tiers are in engine/openai-agent.mjs). The old floor, 0.154.0, was the
-    // permissions feature's (engine/mcp/codex-config.mjs).
-    package: "@openai/codex", floor: "0.159.0",
-    installMB: 436,   // measured the same way as Claude's, above: setup's command fetched 0.166.0, 2026-11-05; 0.159.0 alone is 424
-    licence: "third-party software under the Apache-2.0 licence",   // the package's own "license" field
-    label: "OpenAI — each stage runs as a headless `codex exec` turn",
-    module: "engine/openai-agent.mjs", adapter: "openaiAgentEngine",
-    signIn: "run `codex login`",
-    authEnv: "CLEAROTRON_AI_BILLING", apiKeyEnv: "CODEX_API_KEY",
-    subscriptionHow: "sign in once with `codex login`",
-    // — codex's headless ending writes its own ~/.codex/auth.json; there is no
-    // token to capture into an env file, and inventing one would be a route nobody has driven.
-    headless: { cmd: "codex login --device-auth", tokenEnv: null },
-  },
+  "anthropic-agent": anthropicAgentProgram,
+  "openai-agent": openaiAgentProgram,
 };
 
 // ── WHERE SETUP INSTALLS AN ENGINE'S PROGRAM, AND THE COMMAND THAT DOES IT ─────────────────────────────

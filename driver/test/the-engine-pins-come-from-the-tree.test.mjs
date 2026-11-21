@@ -22,7 +22,9 @@ import { openaiModel } from "../engine/openai-agent.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const SCRIPT = join(ROOT, "scripts", "engine-pins.mjs");
 const MODELS_FILE = join("driver", "engine", "openai-agent.mjs");
-const BINARIES_FILE = join("driver", "driver.config.mjs");
+const CLAUDE_FILE = join("driver", "engine", "anthropic-agent-program.mjs");
+const CODEX_FILE = join("driver", "engine", "openai-agent-program.mjs");
+const BINARIES_FILE = join("driver", "driver.config.mjs");   // where the rows sat before they moved
 const DIR = mkdtempSync(join(tmpdir(), "engine-pins-test-"));
 after(() => rmSync(DIR, { recursive: true, force: true }));
 
@@ -34,11 +36,11 @@ function pins(args = [], env = cleanEnv()) {
   return { code: r.status, stdout: r.stdout, stderr: r.stderr };
 }
 
-/** A tree holding only the two files the script reads, each edited by `edit`. */
+/** A tree holding only the three files the script reads, each edited by `edit`. */
 let trees = 0;
 function treeWith(edit = {}) {
   const dir = join(DIR, `tree-${++trees}`);
-  for (const rel of [MODELS_FILE, BINARIES_FILE]) {
+  for (const rel of [MODELS_FILE, CLAUDE_FILE, CODEX_FILE]) {
     mkdirSync(join(dir, dirname(rel)), { recursive: true });
     const text = readFileSync(join(ROOT, rel), "utf8");
     writeFileSync(join(dir, rel), edit[rel] ? edit[rel](text) : text);
@@ -83,11 +85,11 @@ test("a box's model settings do not change the answer", () => {
 
 test("a comment edit is no change; a model or a floor that moves is one", () => {
   const base = JSON.parse(pins(["--root", treeWith()]).stdout).digest;
-  assert.equal(base, JSON.parse(pins().stdout).digest, "the two-file tree reads as this tree does");
+  assert.equal(base, JSON.parse(pins().stdout).digest, "the three-file tree reads as this tree does");
 
   const commented = treeWith({
     [MODELS_FILE]: (t) => t.replace(/^const JUDGMENT /m, "// an edited note above the judgment model\nconst JUDGMENT "),
-    [BINARIES_FILE]: (t) => t.replace(/^export const ENGINE_BINARIES = \{\n/m, (m) => `${m}  // a note, with floor: "0.0.1" inside it\n`),
+    [CLAUDE_FILE]: (t) => t.replace(/^export const program = \{\n/m, (m) => `${m}  // a note, with floor: "0.0.1" inside it\n`),
   });
   assert.equal(JSON.parse(pins(["--root", commented]).stdout).digest, base, "comments are not pins");
 
@@ -96,7 +98,7 @@ test("a comment edit is no change; a model or a floor that moves is one", () => 
   assert.notEqual(movedModel.digest, base, "a model id moved");
   assert.equal(movedModel.pins["openai-agent"].models.cheap, "gpt-a-new-one");
 
-  const floor = treeWith({ [BINARIES_FILE]: (t) => t.replace(/(package: "@anthropic-ai\/claude-code", floor: ")[^"]+"/, '$19.9.999"') });
+  const floor = treeWith({ [CLAUDE_FILE]: (t) => t.replace(/(package: "@anthropic-ai\/claude-code", floor: ")[^"]+"/, '$19.9.999"') });
   const movedFloor = JSON.parse(pins(["--root", floor]).stdout);
   assert.notEqual(movedFloor.digest, base, "a program floor moved");
   assert.equal(movedFloor.pins["anthropic-agent"].floor, "9.9.999");
@@ -109,8 +111,9 @@ test("anything it cannot read exactly once is could-not-look: exit 2, nothing on
     "a missing file": () => { const d = join(DIR, "empty"); mkdirSync(d, { recursive: true }); return d; },
     "a model default gone": () => treeWith({ [MODELS_FILE]: (t) => t.replace(/^const SWEEP .*$/m, "") }),
     "a model default doubled": () => treeWith({ [MODELS_FILE]: (t) => t.replace(/^const CHEAP .*$/m, (l) => `${l}\n${l}`) }),
-    "a floor gone": () => treeWith({ [BINARIES_FILE]: (t) => t.replace(/floor: "[^"]+",(\s*installMB: \d+)/, "$1") }),
-    "a commented-out floor": () => treeWith({ [BINARIES_FILE]: (t) => t.replace(/^(\s*)(package: "@openai\/codex", floor: "[^"]+",)/m, "$1// $2") }),
+    "a floor gone": () => treeWith({ [CODEX_FILE]: (t) => t.replace(/floor: "[^"]+",(\s*installMB: \d+)/, "$1") }),
+    "a commented-out floor": () => treeWith({ [CODEX_FILE]: (t) => t.replace(/^(\s*)(package: "@openai\/codex", floor: "[^"]+",)/m, "$1// $2") }),
+    "an engine's program file gone, with no table to fall back on": () => { const d = treeWith(); rmSync(join(d, CLAUDE_FILE)); return d; },
   };
   for (const [name, make] of Object.entries(cases)) {
     const r = pins(["--root", make()]);
@@ -121,4 +124,26 @@ test("anything it cannot read exactly once is could-not-look: exit 2, nothing on
   const usage = pins(["--bogus"]);
   assert.equal(usage.code, 2);
   assert.equal(usage.stdout, "");
+});
+
+test("a tree from before each engine's row moved to its own file is read from ENGINE_BINARIES, with the same pins", () => {
+  // The cut compares the last published version with main, and the bench replay judges a parent tree with
+  // the head's script, so a tree that still holds the rows in driver.config.mjs must answer as it did.
+  // That tree is rebuilt here from the two program files, in the table's old layout.
+  const row = (rel) => readFileSync(join(ROOT, rel), "utf8").split(/^export const program = \{\n/m)[1].replace(/^\};\s*$/m, "")
+    .trimEnd().split("\n").map((l) => (l ? `  ${l}` : l)).join("\n");
+  const table = `export const ENGINE_BINARIES = {\n  "anthropic-agent": {\n${row(CLAUDE_FILE)}\n  },\n  "openai-agent": {\n${row(CODEX_FILE)}\n  },\n};\n`;
+  const dir = join(DIR, "before-the-move");
+  for (const [rel, text] of [[MODELS_FILE, readFileSync(join(ROOT, MODELS_FILE), "utf8")], [BINARIES_FILE, table]]) {
+    mkdirSync(join(dir, dirname(rel)), { recursive: true });
+    writeFileSync(join(dir, rel), text);
+  }
+  const old = pins(["--root", dir]);
+  assert.equal(old.code, 0, old.stderr);
+  assert.equal(JSON.parse(old.stdout).digest, JSON.parse(pins().stdout).digest, "the same rows read from the old table gave other pins");
+  const moved = join(DIR, "before-the-move-floor");
+  mkdirSync(join(moved, "driver", "engine"), { recursive: true });
+  writeFileSync(join(moved, MODELS_FILE), readFileSync(join(dir, MODELS_FILE)));
+  writeFileSync(join(moved, BINARIES_FILE), table.replace(/(package: "@openai\/codex", floor: ")[^"]+"/, '$19.9.999"'));
+  assert.equal(JSON.parse(pins(["--root", moved]).stdout).pins["openai-agent"].floor, "9.9.999", "the old table's floor was not the one read");
 });

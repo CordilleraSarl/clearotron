@@ -3,8 +3,8 @@
 //
 // steps/delivery.mjs — the checks before delivery, the repairs they send back, and the publish that ends the run.
 //
-// One phase of a run, moved out of pipelineInner unchanged. `helpers` are functions still held in pipeline.mjs, handed in
-// because this module must not import that one back; each moves here when the other phases that share it have moved.
+// One phase of a run, moved out of pipelineInner unchanged. It must not import pipeline.mjs back, so what it shares with
+// that module lives in the modules beside it, which it imports.
 import { atomicWrite, paths } from "../run-record.mjs";
 import { runRecordLogPath } from "../../providers/_shared/ledger-path.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
@@ -44,9 +44,22 @@ import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "
 import { basename, join } from "node:path";
 import { followUpKindsOf } from "../follow-up-twins.mjs";   // the search each deferred directive recorded
 import { stopsWithTheRun } from "../cancel.mjs";   // every paid call the code makes itself reads the stop first
+import { fullProseOrdinals } from "../coverage-rows-run.mjs";
+import { cardsNeverBuilt, owedCardOrdinals, ownerScreenForDelivery, readFindingsForReport, readGoodsHanded, REBUILDS_THE_DELIVERED_RECORD, recordGoodsHanded } from "../delivered-record-run.mjs";
+import { caseLawJoin, settleDerivedBases } from "../dispatch-extras.mjs";
+import { computeOpenFloors, lateRecordIds, readFloorAxes } from "../floor-and-gap-checks.mjs";
+import { defaultRecordFetcher } from "../provider-calls.mjs";
+import { keepRankingReadByWriter, rankingReadByWriterPath } from "../record-carry-trace.mjs";
+import { loadCoverageLedger, relabelCoverageRows } from "../register-digest-run.mjs";
+import { NO_CHANGE, partitionDeliveryStale, postRepairScope, queuedForTheRecordOnly, recordChangeOwesReview, retainStateBeforeReview, runPostRepairReview, runWholeReviewForRecord, stagesStaleOnPlacement, unreadRecordFindingOnly, unreadRecordReview, UPSTREAM_STALE_REPAIR, whatTheRepairLeftStale } from "../repair-review-run.mjs";
+import { assembleReportMd, CITED_URI_RE, reassembleFromTheRecord } from "../report-assembly.mjs";
+import { injectFrontMatter } from "../run-end-state.mjs";
+import { StageFailure } from "../run-outcome.mjs";
+import { inScopeClassList } from "../run-scope.mjs";
+import { safeReadJson, stage, stageCharter } from "../stage-dispatch.mjs";
+import { runPostRepairCorrection } from "./corrections.mjs";
 
-export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, checkLateBind, clampOnTheFloorDuty, clampOnTheWritersDuty, ctx, deliverAndClamp, findingsForCards, followTheRecordsActions, groupedMembers, job, opts, overviewOpen, publishAndDeliver, rebuildTheDeliveredRecord, restoreTheBrokenRecord, reviewOpen, rov, run, runState, saveTheLabel, saveTheOwedLabel, synthesisKey, synthesisModel, synthesisThinking, writeScopeFacts, writeUps, writeVerdictSidecar }, helpers) {
-  const { CITED_URI_RE, NO_CHANGE, REBUILDS_THE_DELIVERED_RECORD, StageFailure, UPSTREAM_STALE_REPAIR, assembleReportMd, cardsNeverBuilt, caseLawJoin, computeOpenFloors, defaultRecordFetcher, fullProseOrdinals, inScopeClassList, injectFrontMatter, keepRankingReadByWriter, lateRecordIds, loadCoverageLedger, owedCardOrdinals, ownerScreenForDelivery, partitionDeliveryStale, postRepairScope, queuedForTheRecordOnly, rankingReadByWriterPath, readFindingsForReport, readFloorAxes, readGoodsHanded, reassembleFromTheRecord, recordChangeOwesReview, recordGoodsHanded, relabelCoverageRows, retainStateBeforeReview, runPostRepairCorrection, runPostRepairReview, runWholeReviewForRecord, safeReadJson, settleDerivedBases, stage, stageCharter, stagesStaleOnPlacement, unreadRecordFindingOnly, unreadRecordReview, whatTheRepairLeftStale } = helpers;
+export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, checkLateBind, clampOnTheFloorDuty, clampOnTheWritersDuty, ctx, deliverAndClamp, findingsForCards, followTheRecordsActions, groupedMembers, job, opts, overviewOpen, publishAndDeliver, rebuildTheDeliveredRecord, restoreTheBrokenRecord, reviewOpen, rov, run, runState, saveTheLabel, saveTheOwedLabel, synthesisKey, synthesisModel, synthesisThinking, writeScopeFacts, writeUps, writeVerdictSidecar }) {
   // ── Spec A1 + A2: pre-delivery verification — pure code, before ANYTHING outward-facing. Per the
   // user-amended design it NEVER withholds: every check lands in the receipt artifact; failing checks on a
   // drafting surface get ONE warm named-correction redo (the model re-types, this code re-judges); whatever

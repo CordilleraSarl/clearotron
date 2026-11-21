@@ -27,6 +27,7 @@ import { FENCE_PROFILE } from "../engine/mcp/codex-config.mjs"; import { driverD
 import { STAGES } from "../stages.mjs";
 import { KO_STAGES } from "../stages-knockout.mjs";
 import { pinEnv } from "../../shared/env-aliases.mjs";
+import { driverSource } from "./driver-source.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, "..", "..");
@@ -100,7 +101,7 @@ test("claude: a retried stage keeps the run folder its dispatch was granted, tho
 });
 
 test("the gateway hands the stage turn its stage's own dispatch for the grant", () => {
-  const src = readFileSync(join(ROOT, "driver", "gateway.mjs"), "utf8");
+  const src = driverSource("gateway.mjs");
   // The message the turn sends is the dispatch with its manuals inlined (manuals-inline.mjs); the grant reads the dispatch.
   assert.match(src, /engine\.runTurn\(\{ agent, sessionKey: key, message: [\w.]+, grantDispatch: base,/,
     "the stage turn no longer passes its dispatch, so a retry judges the grant on the retry's own text");

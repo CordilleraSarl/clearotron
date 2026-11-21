@@ -11,7 +11,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, chmodS
 import { grpRead, publishRun } from './shell.mjs';
 import { join, dirname } from 'node:path';
 import { readFold } from '../record-fold.mjs'; import { parseReport, parseAudit, stripInternal, parseCaseLawProfiles, parseCaseLawPreamble, joinCaseLawProfiles } from './parse.mjs';
-import { renderClearanceDocument } from './render.mjs'; import { emailConditionsOf } from './email-conditions.mjs';   // the box's conditions, read the same way by the delivery check
+import { renderReport } from './render-report.mjs'; import { emailConditionsOf } from './email-conditions.mjs';   // the box's conditions, read the same way by the delivery check
 import { buildAudit } from './xlsx.mjs'; import { readDegradedPartRows, degradedPartRows, degradedAtPublish, storeStates, readDeliveredStores, mergeDegradedRows } from '../degraded-parts.mjs'; import { readDeclinations } from '../declination-tool.mjs'; import { frameSetAsideRows } from '../web-grid.mjs';   // — what synthesis set aside, with its grounds; and the stores the matter frame set aside, with its reason
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, projectCoverageJudgment, COVERAGE_AREA_STATES } from '../findings-model.mjs';
 import { recordsOfDeliveredPositions } from '../declination-duty.mjs'; import { findingUris } from '../record-carry.mjs';   // — a position a finding delivers is not listed as set aside
@@ -34,8 +34,8 @@ import { WARM_ROOT, WARM_ROOT_DARK, WARM_ROOT_DARK_EXPLICIT, THEME_INIT, THEME_I
 import { NAV_CSS, siteNav, siteFab } from '../../shared/site-nav.mjs';
 import { anonAssets, anonClient, anonMark } from '../../shared/anon-overlay.mjs';
 
-const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const escAttr = s => esc(s).replace(/"/g, '&quot;');   // attribute sink — esc alone is quote-blind
+import { escapeText as esc, escapeAttr as escAttr } from '../../shared/html-escape.mjs';
+// esc for text, escAttr for an attribute's value: esc alone is quote-blind
 const dateOf = run => (String(run).match(/\d{4}-\d{2}-\d{2}/) || ['undated'])[0];
 
 // Newest-first run order for every pool listing (staff index, per-customer indexes, pool-admin list).
@@ -1381,7 +1381,7 @@ const CLEARANCE_SHAPE = {
     // fails for want of it).
     if (searchDepth) { try { writeRO('search-depth.json', JSON.stringify(searchDepth, null, 2)); } catch { /* additive */ } }
 
-    writeRO('report.html', renderClearanceDocument(pageDocument(reportDocument), { recordsByUri, logos, homeHref: '../index.html', chromeHref: '../assets/chrome.css', delivery: deliv, demoData }));   // the page reads the report document, with its surface beside it
+    writeRO('report.html', renderReport(pageDocument(reportDocument), { recordsByUri, logos, homeHref: '../index.html', chromeHref: '../assets/chrome.css', delivery: deliv, demoData }));   // the page reads the report document, with its surface beside it
     // ONE report: report.client.html is no longer written. The knockout lane's own
     // collapse note is the precedent: "two renderings of one run is how the wrong link gets sent". The
     // client host serves the same report.html through the portal's readReport() (cleaning built in) — its

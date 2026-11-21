@@ -459,7 +459,7 @@ test("C: more than six registers gives a count and says where the list is", () =
   const counts = COUNTS();
   counts.scope.regions = ["US", "EM", "WO", "CH", "GB", "FR", "DE"];
   assert.match(territories(RENDER([MARK()], { registerCounts: counts })),
-    /^Counted on 7 registers, listed on the workbook's Register Counts sheet/);
+    /^Counted on 7 registers, listed on the workbook&#39;s Register Counts sheet/);
 });
 
 test("C: a worldwide run states the count, never two hundred codes", () => {
@@ -499,7 +499,7 @@ test("D: a registration does not say 'registration (registered)'", () => {
 // block removed with nothing asserting its absence comes back on the next edit near it and nothing reds.
 test("E: the scope block and its fixed narration are off the page", () => {
   const html = body(RENDER([MARK({ findings: [FINDING()] })], { registerCounts: COUNTS() }));
-  assert.doesNotMatch(html, /Scope &amp; what we didn't search/);
+  assert.doesNotMatch(html, /Scope &amp; what we didn(?:'|&#39;)t search/);
   assert.doesNotMatch(html, /<details class="scope"/);
   assert.doesNotMatch(html, /A fast screen for obvious blockers/, "the fixed What this is paragraph");
   assert.doesNotMatch(html, /Every conflict above links to the material we found/);

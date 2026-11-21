@@ -9,7 +9,7 @@
 // CLEAROTRON_GATHER_SESSION_KEY so the $0 provider-usage diff still attributes calls to the run.
 //
 // ── The tool set is the NEUTRAL register_* contract, minus exactly one tool ────────────────────────
-// This server exposes 7 of the 8 names in gather-config's REGISTER_TOOLS. The eighth,
+// This server exposes 7 of the 8 names in REGISTER_TOOLS (providers/_shared/register-tools.mjs). The eighth,
 // `register_expand_phoneme`, is NOT REGISTERED and is deliberately NOT stubbed:
 //
 //   Compumark Content's phonetic surface is the PHONETIC_WORD_MARK_SPECIFICATION field — opaque,
