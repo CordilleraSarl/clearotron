@@ -654,6 +654,11 @@
   details.searched .wnote{display:block;margin-top:4px;font-size:12.5px;line-height:1.45;color:var(--slate)}
   details.searched .row{display:grid;grid-template-columns:200px 1fr;gap:12px;padding:7px 0;border-top:1px solid var(--line);font-size:13.5px}
   details.searched .k{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);padding-top:3px}
+  /* ON A PHONE EACH LABEL SITS ABOVE ITS TEXT. These rows keep a 150 to 200 px label column, which at 390 px left the
+     text 52 to 148 px wide, measured on the demo pages, 2026-11-21. Below 700 px the label stacks, as a record's rows
+     already do. Screen only, so an exported PDF keeps its two columns. After every rule it overrides: same weight,
+     so the later rule wins. */
+  @media screen and (max-width:700px){.gconc .grow,.gconds-wrap,.gwhy .fa-row,.gexp,.gconf,.panel.about .row,.crow,details.searched .row{grid-template-columns:1fr;gap:2px}}
   .openrows,.provwrap{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
   .openrows .rk,.provwrap .rk{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);margin-bottom:6px}
   .provnote{margin:0;font-size:12.5px;line-height:1.5;color:var(--slate)}
