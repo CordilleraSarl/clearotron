@@ -270,6 +270,8 @@ export const WORKBOOK_LABELS = Object.freeze({
     'Enforcer': 'Likely to enforce',
     'Finding Reference': 'Finding reference', 'Finding Name': 'Conflicting mark', 'Band': 'Risk band',
     'Search Term': 'Search term', 'Source / Context': 'Source / context', 'Notes': 'Note', 'Result Summary': 'Result summary',
+    // The Knockout's link list, in the word its page heads the same list with.
+    'Evidence': 'Sources',
   }),
 });
 

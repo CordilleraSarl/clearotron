@@ -172,9 +172,13 @@ test("arm 3: the merged gate writes the framework's own inputs into the record t
 });
 
 test("arm 4: the knockout lane freezes the method before its manifest and reads it back on resume", () => {
-  // Source-bound: the attach sits inside the pipeline's run setup, which cannot be driven from here.
-  const src = readFileSync(join(HERE, "..", "pipeline-knockout.mjs"), "utf8");
-  const body = src.slice(src.indexOf("function attachKnockoutFramework(ctx) {"));
+  // Source-bound: the attach sits inside the pipeline's run setup, which cannot be driven from here. The Knockout freezes
+  // through the clearance's own freeze, so the order is read there.
+  const ko = readFileSync(join(HERE, "..", "pipeline-knockout.mjs"), "utf8");
+  assert.match(ko.slice(ko.indexOf("function attachKnockoutFramework(ctx) {")), /^function attachKnockoutFramework\(ctx\) \{\n  attachFramework\(ctx, \{/,
+    "the knockout lane freezes its framework some other way than the shared freeze");
+  const src = readFileSync(join(HERE, "..", "run-attachments.mjs"), "utf8");
+  const body = src.slice(src.indexOf("export function attachFramework(ctx, {"));
   const resume = body.indexOf("minted: false");
   const mint = body.indexOf("minted: true");
   const write = body.indexOf("atomicWrite(sidecarPath");

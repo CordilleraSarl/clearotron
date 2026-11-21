@@ -36,7 +36,8 @@ import { LANGUAGE_LANES, SERP_LANES, isMirrorHost, canonicalTerm, jxBillingStamp
 import { jxKey, MAX_LANE_ATTEMPTS } from "./jx.mjs";
 import { abbrev } from "./repair-contract.mjs";
 import { kebab } from "./search-policy.mjs";
-import { SERP_PROVIDERS, JX_PROVIDERS } from "./driver.config.mjs";
+import { SERP_PROVIDERS } from "./driver.config.mjs";
+import { JX_PROVIDERS } from "./jx-providers.mjs";
 import { findGridLedgerViolations, findPlatformIdentityViolations } from "./common-law-receipts.mjs";
 import { paths, readJson } from "./run-record.mjs";
 import { stopsWithTheRun } from "./cancel.mjs";

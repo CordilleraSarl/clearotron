@@ -5,8 +5,8 @@
 // headed "Enforcer" while the report calls the same meter "Likely to enforce"; it now takes the report's words. The
 // Knockout workbook headed its columns in title case ("Finding Reference", "Result Summary") beside a clearance
 // workbook in sentence case; it now uses the clearance's case, and the clearance's words where a column holds the same
-// thing: the conflicting mark, its risk band, the note. Read from the workbooks as built, on the committed Knockout
-// demo and an invented finding.
+// thing: the conflicting mark, its risk band, the note. Its link list is headed "Sources", as its page heads the same
+// list. Read from the workbooks as built, on the committed Knockout demo and an invented finding.
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -46,7 +46,7 @@ test("the clearance workbook heads its enforcement column in the report's words"
 
 test("the Knockout workbook heads its columns in the clearance workbook's case and words", async (t) => {
   const heads = await headings(t, (out) => buildKnockoutWorkbook(KNOCKOUT, [{ mark: KNOCKOUT.marks[0].name, ok: true, bytes: 10 }], out, COUNTS));
-  assert.deepEqual(heads.Findings, ["Mark", "Finding reference", "Conflicting mark", "Owner", "Risk band", "Type", "Net", "Basis", "Evidence"]);
+  assert.deepEqual(heads.Findings, ["Mark", "Finding reference", "Conflicting mark", "Owner", "Risk band", "Type", "Net", "Basis", "Sources"]);
   assert.deepEqual(heads["Audit Trail"], ["Mark", "Search term", "Source / context", "Result summary", "Finding reference"]);
   assert.ok(heads["Register Counts"].includes("Note"), `Register Counts: ${heads["Register Counts"].join(" | ")}`);
   assert.deepEqual(Object.keys(heads), ["Findings", "Negative Results", "Audit Trail", "Register Counts"]);

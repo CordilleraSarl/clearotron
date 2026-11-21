@@ -43,6 +43,7 @@ import { makeCountProbe } from "../../_shared/count.mjs";
 import { answerFromHeldList } from "./wider-list.js";
 import { CAPABILITY_GAP_MARKER, REFUSED_BEFORE_SENDING, defaultBuildEntryQuery, makeExecutePlan, makeRegionRequiredBuildEntryQuery, planPredicateParams } from "../../_shared/execute-plan.mjs";
 import { isNonLatinTerm } from "../../_shared/script-form.mjs";
+import { normalizeTerritory } from "../../_shared/territory-codes.mjs";
 import { CAPABILITIES, CLARIVATE_OFFICE_CODES } from "./capabilities.js";
 import { stripGoodsReservedWords } from "../../_shared/term-shape.mjs";   // the goods field parses these words as operators
 import { runDriverDirOf } from "../../_shared/follow-up-searches.mjs";   // the run's own folder, from its record log
@@ -648,16 +649,26 @@ export function joinOrValue(values) {
   return list.join(" OR ");
 }
 
+function officeOf(region) {
+  const c = CAPABILITIES.offices.translate(region);
+  if (!c || CLARIVATE_OFFICE_CODES.includes(c)) return c;
+  const code = normalizeTerritory(region);
+  return code ? CAPABILITIES.offices.translate(code) : c;
+}
+
 /**
  * Translate caller jurisdictions to Compumark registrationOfficeCodes (EU → EM, on EVERY request path)
  * and membership-check them. An office outside the provider's 186-code vocabulary is a genuine coverage
  * gap: it is reported, never silently dropped.
+ *
+ * A territory's name this register's aliases do not hold is read as the engine reads it before the
+ * office is looked up again, so a tool call that writes "Singapore" asks what a plan for it asks.
  */
 export function resolveOffices(regions) {
   const codes = [];
   const unknown = [];
   for (const r of (Array.isArray(regions) ? regions : [])) {
-    const c = CAPABILITIES.offices.translate(r);
+    const c = officeOf(r);
     if (!c) continue;
     if (!CLARIVATE_OFFICE_CODES.includes(c)) { unknown.push(String(r)); continue; }
     if (!codes.includes(c)) codes.push(c);

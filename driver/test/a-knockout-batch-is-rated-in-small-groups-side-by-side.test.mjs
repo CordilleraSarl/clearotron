@@ -115,10 +115,10 @@ test("each group is pointed at its own names' held filings, and the whole record
   assert.deepEqual(whole.marks.map((m) => m.name).sort(), [...names].sort(), "the full record holds every name");
   const groups = koChunks(names.map((name) => ({ name })));
   for (const [c, group] of groups.entries()) {
-    // The dispatch names the run's live folder; the record is read where the delivered run now sits.
+    // The dispatch names the run's live folder, with the platform's separator; the record is read where the delivered run now sits.
     const dispatch = readFileSync(driverDir(r.dir, `knockout-assess#${c}.attempt1.dispatch.txt`), "utf8");
     const named = dispatch.split("\n").find((l) => l.startsWith("THE REGISTER FILINGS THIS RUN ALREADY FETCHED — ")) ?? "";
-    assert.match(named, new RegExp(`/_driver/register-records\\.group-${c}\\.json\\. `), `group ${c + 1} is not pointed at its own filings`);
+    assert.match(named, new RegExp(`[\\\\/]_driver[\\\\/]register-records\\.group-${c}\\.json\\. `), `group ${c + 1} is not pointed at its own filings`);
     const slice = r.json(r.K.groupRegisterRecords(c));
     assert.deepEqual(slice.marks.map((m) => m.name), group.map((m) => m.name), `group ${c + 1}'s slice holds other names`);
     assert.equal(slice.schema, whole.schema, "the slice keeps the record's own fields");

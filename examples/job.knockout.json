@@ -1,0 +1,11 @@
+{
+  "id": "example-knockout-0001",
+  "msgId": "<example-knockout-0001@example.com>",
+  "ref": "TM-0001",
+  "forwarder": "alex",
+  "forwarderEmail": "alex@example.com",
+  "marks": [{ "ref": "TM-0001", "name": "IRONWHISK", "classes": [9, 42] }],
+  "goods": "cloud software for weather analytics",
+  "jurisdictions": ["EU"],
+  "product": "knockout-search"
+}

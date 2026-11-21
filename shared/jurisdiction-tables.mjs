@@ -18,12 +18,15 @@
 // ── read by driver/jurisdiction-codes.mjs ───────────────────────────────────────────────────────────────────
 
 // Aliases → canonical code. GB is the ISO 3166-1 code (UK is a habit, not a code); EU is the driver's
-// canonical EUIPO token (EM is Compumark's spelling of the same office, EUTM/EUIPO are prose).
+// canonical EUIPO token (EM is Compumark's spelling of the same office, EUTM/EUIPO are prose); WO is WIPO's
+// international register (INT is how a register names it on its own records, and the report's REGION_ALIAS
+// below already reads INT as WO, so the engine and the report join the same spellings).
 export const JURISDICTION_CODE_FOLD = Object.freeze({
   UK: "GB",
   EM: "EU",
   EUTM: "EU",
   EUIPO: "EU",
+  INT: "WO",
 });
 
 // The known universe: ISO 3166-1 alpha-2 (officially assigned) + the register-world extras — EU
@@ -77,7 +80,7 @@ export const TERRITORY_TO_CODE = Object.freeze({
   "EUROPEAN UNION": "EU", "EUIPO": "EU", "EUTM": "EU",
   "BENELUX": "BX",
   "AFRICAN REGIONAL ARIPO": "AP", "ARIPO": "AP", "AFRICAN REGIONAL": "AP",
-  "INTERNATIONAL": "WO", "INTERNATIONAL MADRID": "WO", "MADRID": "WO", "WIPO": "WO",
+  "INTERNATIONAL": "WO", "INTERNATIONAL MADRID": "WO", "MADRID": "WO", "WIPO": "WO", "INT": "WO",
   "UNITED STATES": "US", "UNITED STATES OF AMERICA": "US", "USA": "US", "U S": "US", "U S A": "US",
   "UNITED KINGDOM": "GB", "GREAT BRITAIN": "GB",
   "IRELAND": "IE",
@@ -120,6 +123,19 @@ export const TERRITORY_TO_CODE = Object.freeze({
   "UNITED ARAB EMIRATES": "AE", "UAE": "AE",
   "SAUDI ARABIA": "SA",
   "SOUTH AFRICA": "ZA",
+  // SPELLINGS A REGISTER'S OWN TABLE ALREADY HELD, with the meaning that table gives them. Clarivate's
+  // office aliases read each of these, but an order is read here first, so an order that wrote one was
+  // disclosed as unrecognized on every register, Clarivate's included.
+  "GBR": "GB", "ENGLAND": "GB", "SCOTLAND": "GB", "WALES": "GB",
+  "THE NETHERLANDS": "NL", "HOLLAND": "NL",
+  "DEUTSCHLAND": "DE",
+  "SCHWEIZ": "CH", "SUISSE": "CH",
+  "CZECH REPUBLIC": "CZ",
+  "PEOPLE'S REPUBLIC OF CHINA": "CN",
+  "RUSSIAN FEDERATION": "RU",
+  "OAPI": "OA",
+  "EUROPEAN UNION INTELLECTUAL PROPERTY OFFICE": "EU",
+  "MADRID PROTOCOL": "WO", "INTERNATIONAL REGISTER": "WO",
 });
 
 // ── read by driver/publish/regions.mjs ──────────────────────────────────────────────────────────────────────

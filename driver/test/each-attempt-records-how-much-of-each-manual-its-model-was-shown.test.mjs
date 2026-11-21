@@ -143,3 +143,44 @@ test("the gateway writes the share on the attempt row, from what that attempt wa
     assert.deepEqual(row.manualsSeen, { "skills/clearance-search/synthesis-rules.md": 1 });
   } finally { for (const [k, v] of Object.entries(prev)) pinEnv(process.env, k, v); }
 });
+
+test("a manual sent whole in the message the turn was sent is shown, beside what the turn's tools returned", () => {
+  const file = join(ROOT, "sent.jsonl");
+  writeFileSync(file, jsonl([{ type: "thread.started" }]));   // a stream of the engine's shape that read nothing
+  const stream = { file, present: true, bytes: 1 };
+  const inline = `=== MANUAL: skills/invented/manual.md ===\n${MANUAL}=== END MANUAL: skills/invented/manual.md ===\nThe task.`;
+  assert.deepEqual(measureManualsSeen({ stream }, told(), "openai-agent"), { "skills/invented/manual.md": 0 }, "premise: nothing was read");
+  assert.deepEqual(measureManualsSeen({ stream }, told(), "openai-agent", { sent: inline }), { "skills/invented/manual.md": 1 });
+  // two of the manual's five countable lines sent, none read: two fifths seen
+  const some = LINES.filter((l) => countable(l)).slice(0, 2).join("\n");
+  assert.deepEqual(measureManualsSeen({ stream }, told(), "openai-agent", { sent: some }), { "skills/invented/manual.md": 0.4 });
+  // a stream that cannot say is still null, whatever was sent
+  assert.equal(measureManualsSeen({ stream: { file, present: true, bytes: 1, reason: "cut short after 1 bytes" } }, told(), "openai-agent", { sent: inline }), null);
+});
+
+test("the gateway counts a manual its turn was sent whole as seen, with no read at all", async () => {
+  const GW = await import("../gateway.mjs");
+  const runDir = mkdtempSync(join(ROOT, "run-inline-"));
+  mkdirSync(driverDir(runDir), { recursive: true });
+  const out = join(runDir, "narrative.md");
+  GW.registerEngine({ name: "openai-agent", async runTurn({ message, streamFile }) {
+    // The stage's manual rides the opening message; this stand-in reads nothing.
+    assert.match(message, /=== MANUAL: skills\/clearance-search\/synthesis-rules\.md ===/, "premise: the manual was not sent inline");
+    mkdirSync(dirname(streamFile), { recursive: true });
+    writeFileSync(streamFile, jsonl([{ type: "thread.started" }]));
+    writeFileSync(out, "# Narrative\n\nAn invented narrative.\n");
+    return { code: 0, killed: false, wall: 5, stdout: "", stderr: "", laneWaitMs: 0, json: { status: "ok", runId: "run" },
+      usage: { input_tokens: 1, output_tokens: 1 }, sessionRef: "thr-2", stream: { file: streamFile, present: true, bytes: 1 } };
+  } });
+  const prev = {};
+  for (const [k, v] of Object.entries({ CLEAROTRON_AI: "openai-agent", CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0" })) {
+    prev[k] = process.env[k]; pinEnv(process.env, k, v);
+  }
+  try {
+    const r = await GW.runStage("synthesis", { agent: "mailagent", message: "First, read and follow exactly: skills/clearance-search/synthesis-rules.md.\nThe invented task.", model: "haiku",
+      sessionKey: "clearance-manuals-inline", timeoutSec: 600, runDir, expectFile: [out] });
+    assert.equal(r.ok, true, JSON.stringify(r));
+    const row = JSON.parse(readFileSync(driverDir(runDir, "synthesis.jsonl"), "utf8").trim().split("\n").at(-1));
+    assert.deepEqual(row.manualsSeen, { "skills/clearance-search/synthesis-rules.md": 1 });
+  } finally { for (const [k, v] of Object.entries(prev)) pinEnv(process.env, k, v); }
+});
