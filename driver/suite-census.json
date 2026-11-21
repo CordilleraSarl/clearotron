@@ -9501,8 +9501,8 @@
           "todos": 0
         },
         "account-audit-chain.test.mjs": {
-          "tests": 11,
-          "asserts": 50,
+          "tests": 12,
+          "asserts": 52,
           "skips": 0,
           "todos": 0
         },
