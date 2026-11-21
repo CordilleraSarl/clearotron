@@ -11,6 +11,7 @@
 //      noise without having spoken its protocol, which is)
 //   MOCK_CLAUDE_STALL=1   — emit init then go SILENT forever (no result) → the engine stall-watchdog must kill it
 //   MOCK_CLAUDE_USAGE_THEN_STALL=1 — one assistant turn WITH usage, then silence → the kill must carry streamed usage
+//     (+ MOCK_STALL_TREE_PIDFILE=<file> to leave a grandchild running and name both pids; mock-stall-tree.mjs)
 //   MOCK_CLAUDE_KILLED_MULTICALL=<n> — <n> completed calls streamed in the CLI's order, then silence → the kill's
 //     reconstruction must count each call's FINAL output (+ MOCK_CLAUDE_EMITTED_LOG=<file>: what was streamed)
 //   MOCK_CLAUDE_JUNK_STREAM=<ms>   — byte-alive non-progress chatter forever → the NO-PROGRESS watchdog must kill it
@@ -61,6 +62,7 @@ import { writeFileSync, mkdirSync, appendFileSync, existsSync, readFileSync, wri
 import { dirname } from "node:path";
 import { applyStageWrites, beforeForcedFailure, breakFindingsAfterWrites } from "./mock-stage-fixtures.mjs";
 import { stageTextOf } from "../manuals-inline.mjs";
+import { stallTree } from "./mock-stall-tree.mjs";
 
 const argv = process.argv.slice(2);
 
@@ -318,6 +320,7 @@ if (process.env.MOCK_CLAUDE_USAGE_THEN_STALL) {
   // journalled as a 0-token lane wedge / transient-provider fault.
   const u = process.env.MOCK_CLAUDE_USAGE ? JSON.parse(process.env.MOCK_CLAUDE_USAGE)
     : { input_tokens: 7, output_tokens: 3, cache_read_input_tokens: 2950000, cache_creation_input_tokens: 0 };
+  stallTree();
   send({ type: "assistant", message: { role: "assistant", model: wireModel, content: [{ type: "text", text: "working…" }], usage: u }, session_id: session });
   setInterval(() => {}, 1 << 30);
 } else if (process.env.MOCK_CLAUDE_KILLED_MULTICALL) {

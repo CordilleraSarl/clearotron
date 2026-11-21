@@ -9,6 +9,8 @@
 //
 // Env knobs mirror mock-claude (same names where shared, MOCK_CODEX_* where codex-specific):
 //   MOCK_CODEX_STALL=1     — emit the opening events then go SILENT → the engine stall-watchdog must kill it
+//                            (=mid: one agent message after them, so the turn is cut off mid-stream;
+//                            + MOCK_STALL_TREE_PIDFILE=<file> to leave a grandchild running; mock-stall-tree.mjs)
 //   MOCK_CODEX_FAIL=1      — emit turn.failed + exit 1 (a failed turn → nonzero_exit_1)
 //   MOCK_CODEX_RENEWAL_FAILED=<file> (+ MOCK_CODEX_RENEWAL_LINES) — once, a turn whose sign-in renewal did not get
 //                            through, as codex 0.162.0 reports it (its block follows `open` below)
@@ -44,6 +46,7 @@ import { writeFileSync, mkdirSync, appendFileSync, existsSync, readFileSync, rea
 import { join, dirname } from "node:path";
 import { applyStageWrites, beforeForcedFailure, breakFindingsAfterWrites } from "./mock-stage-fixtures.mjs";
 import { stageTextOf } from "../manuals-inline.mjs";
+import { stallTree } from "./mock-stall-tree.mjs";
 
 const argv = process.argv.slice(2);
 
@@ -286,6 +289,8 @@ if (process.env.MOCK_CODEX_FAIL) {
 
 // ── Stall: opening events streamed (stall clock reset), then silence → the engine SIGKILLs it. ──
 if (process.env.MOCK_CODEX_STALL) {
+  stallTree();
+  if (process.env.MOCK_CODEX_STALL === "mid") send({ type: "item.completed", item: { id: "item_0", type: "agent_message", text: "working…" } });
   setInterval(() => {}, 1 << 30);
 } else {
   function doStageWrites() {

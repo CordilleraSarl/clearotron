@@ -2757,6 +2757,12 @@
           "skips": 5,
           "todos": 0
         },
+        "a-stage-cut-off-mid-stream-ends-its-child-its-stream-and-its-record.test.mjs": {
+          "tests": 1,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
         "a-stage-meets-each-paragraph-its-manual-carries-once.test.mjs": {
           "tests": 5,
           "asserts": 14,
