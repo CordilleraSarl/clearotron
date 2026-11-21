@@ -1198,8 +1198,8 @@
           "todos": 0
         },
         "a-jurisdiction-s-tables-agree.test.mjs": {
-          "tests": 3,
-          "asserts": 5,
+          "tests": 4,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
@@ -4855,6 +4855,12 @@
           "tests": 3,
           "asserts": 9,
           "skips": 1,
+          "todos": 0
+        },
+        "every-spelling-of-the-uk-and-of-wipo-searches-the-same-office-on-every-register.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
           "todos": 0
         },
         "every-surface-draws-bands-from-the-report-ramp.test.mjs": {

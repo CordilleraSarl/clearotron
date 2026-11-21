@@ -90,6 +90,9 @@ export const SIGNA_OFFICE_BY_ISO = Object.freeze(
   Object.fromEntries(Object.entries(SIGNA_OFFICE_KEYS).map(([key, iso]) => [iso, key])),
 );
 
+/** Spellings an order may carry → the ISO code this register's office table is keyed on. */
+export const SIGNA_ISO_ALIASES = Object.freeze({ UK: "GB", INT: "WO" });
+
 export const CAPABILITIES = Object.freeze({
   id: "signa",
   label: "Signa",
@@ -250,12 +253,17 @@ export const CAPABILITIES = Object.freeze({
 
   offices: Object.freeze({
     vocabulary: "signa-office-key",
+    // TWO SPELLINGS THE ISO TABLE DOES NOT HOLD, and each named an office this register covers. "UK" is
+    // the United Kingdom the order means (ISO spells it GB), and "INT" is WIPO's international register
+    // (the office's code is WO). Without them a UK order was disclosed as unsearched here while the
+    // same order written "GB" or "United Kingdom" searched the UK office.
     translate: (code) => {
       const raw = String(code ?? "").trim();
       if (!raw) return null;
       const lower = raw.toLowerCase();
       if (lower in SIGNA_OFFICE_KEYS) return lower;            // already a Signa key — passthrough
-      return SIGNA_OFFICE_BY_ISO[raw.toUpperCase()] ?? null;   // ISO → key, or null (genuinely uncovered)
+      const iso = raw.toUpperCase();
+      return SIGNA_OFFICE_BY_ISO[SIGNA_ISO_ALIASES[iso] ?? iso] ?? null;   // ISO → key, or null (genuinely uncovered)
     },
     covered: Object.freeze(Object.keys(SIGNA_OFFICE_KEYS)),
 
