@@ -4582,8 +4582,8 @@
           "todos": 0
         },
         "each-attempt-records-how-much-of-each-manual-its-model-was-shown.test.mjs": {
-          "tests": 9,
-          "asserts": 31,
+          "tests": 11,
+          "asserts": 38,
           "skips": 0,
           "todos": 0
         },
