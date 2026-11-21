@@ -11,7 +11,7 @@
 // describes, since no live stage declares it. Invented values only.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, readFileSync, rmSync, existsSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, existsSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
@@ -78,6 +78,22 @@ for (const engine of Object.keys(ENGINES)) {
     assert.equal(r.calls.length, 2, "the retry did not reach the engine");
   });
 }
+
+test("an empty reply is a missing output, so a file an earlier turn left at the stage's path is not judged in its place", async () => {
+  for (const engine of Object.keys(ENGINES)) {
+    const dir = mkdtempSync(join(tmpdir(), "plain-empty-"));
+    try {
+      mkdirSync(driverDir(dir), { recursive: true });
+      const out = join(dir, "invented-answer.json");
+      writeFileSync(out, "{\"answer\": \"an earlier turn's\"}\n");
+      const res = await withEnv({ ...ENGINES[engine](dir, " "), CLEAROTRON_RETRY_BACKOFF_MS: "0" },
+        () => runStage("invented-plain-stage", { message: MESSAGE, model: "haiku", sessionKey: `plain-empty-${engine}`, runDir: dir, expectFile: out,
+          validate: inventedAnswer, declaration: DECLARATION, maxRetries: 0, timeoutSec: 30 }));
+      assert.equal(res.ok, false, `${engine}: an empty reply passed on an earlier turn's file`);
+      assert.match(String(res.fail), /^missing_file:invented-answer\.json/);
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  }
+});
 
 test("a reply that fails a form check takes the ladder's retry, not a form repair inside the dispatch", async () => {
   // A closed-vocabulary refusal is form-class, which a written file would have repaired in its own session. A reply has
