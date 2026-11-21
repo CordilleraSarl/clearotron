@@ -231,6 +231,8 @@ if ((process.env.MOCK_CODEX_ROLLOUT_MODEL || process.env.MOCK_CODEX_SESSION_STOR
   } catch { /* best-effort: a missing rollout is a real state the engine must handle */ }
 }
 
+// The stall tree is started and named before any output, so a stall kill can never land before its pidfile exists.
+if (process.env.MOCK_CODEX_STALL) stallTree();
 // ── Continuous-admission barrier (parity with mock-claude): hold the first stage until the sentinel. ──
 open();
 if (process.env.MOCK_BARRIER_FILE && /matter-context\.md/.test(msg)) {
@@ -289,7 +291,6 @@ if (process.env.MOCK_CODEX_FAIL) {
 
 // ── Stall: opening events streamed (stall clock reset), then silence → the engine SIGKILLs it. ──
 if (process.env.MOCK_CODEX_STALL) {
-  stallTree();
   if (process.env.MOCK_CODEX_STALL === "mid") send({ type: "item.completed", item: { id: "item_0", type: "agent_message", text: "working…" } });
   setInterval(() => {}, 1 << 30);
 } else {
