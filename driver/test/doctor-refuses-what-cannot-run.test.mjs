@@ -84,6 +84,21 @@ function repoWithoutBundle() {
   return dir;
 }
 
+test("an install that cannot search opens its VERDICT with the opening's sentence, which names the command that fixes it", () => {
+  // The exit status stays 0 for an absence, so the reader who reads only the end is told first, in the opening's
+  // own words, that no search can run and which command sets it up.
+  const { status, out } = doctor();
+  const lines = out.split("\n");
+  const refusals = lines.filter((l) => l.startsWith("  This install cannot run a search yet: "));
+  assert.equal(refusals.length, 2, `the refusal is not said in the opening and again in the verdict:\n${out}`);
+  assert.equal(refusals[0], refusals[1], "the verdict's sentence is not the opening's");
+  const verdict = lines.indexOf("  This install cannot do everything yet:");
+  assert.ok(verdict > 1, `no verdict list:\n${out}`);
+  assert.equal(lines[verdict - 2], refusals[1], "the refusal does not lead the verdict");
+  assert.match(refusals[1], /Run `[^`]*clearotron install` in a terminal to set it up\.$/, "the sentence names no command that fixes it");
+  assert.equal(status, 0, "an absence still exits 0");
+});
+
 test("an install that cannot search says so in its VERDICT, and still exits 0", () => {
   const { status, out } = doctor();                       // CLEAROTRON_DATABASE absent from the child's env
   assert.doesNotMatch(out, /Nothing wrong with what is configured/,
