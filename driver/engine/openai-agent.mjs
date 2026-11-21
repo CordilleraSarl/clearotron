@@ -406,8 +406,27 @@ export function withWorkFolder(env, dir) {
 // mechanism and replaces nothing: the profile is what keeps another run's files out of reach. Codex alone carries it,
 // since only a Codex stage runs commands and only a Codex turn has a working folder of its own.
 export const TEMP_FOLDER_RULE = "Keep temporary working files in the directory given by TMPDIR. Use only this run's supplied evidence and accepted work.";
-/** The instructions every Codex turn carries: the output rule, then the temp-folder rule. */
-export const CODEX_DEVELOPER_INSTRUCTIONS = `${WRITE_DISCIPLINE} ${TEMP_FOLDER_RULE}`;
+// THE OUTPUT RULE FOR A TURN THAT WRITES A FILE, in design's words of 2026-11-21, character for character. Claude's
+// rule (common.mjs, WRITE_DISCIPLINE) names Claude's Write and Edit tools, which a Codex turn does not have, so a
+// Codex turn that authors a file is given the same obligation in terms of its own file-writing operation: the whole
+// file at the exact path, checked before it is reported, and a repair that edits only what the correction names.
+export const CODEX_WRITE_RULE =
+  "When the task asks you to write output to an absolute file path, use your file-writing operation to write the " +
+  "complete content at that exact path, replacing the previous content if necessary. Text in your reply is discarded. " +
+  "Write every required file and verify that it exists before reporting it as written. Reply with just the path or " +
+  "paths you wrote and a two- or three-line summary. When the task asks you to fix an existing file, edit only what " +
+  "the correction names. If the file is missing, create it in full.";
+/** What a Codex turn that writes a file carries: its output rule, then the temp-folder rule. */
+export const CODEX_FILE_INSTRUCTIONS = `${CODEX_WRITE_RULE} ${TEMP_FOLDER_RULE}`;
+/** What a Codex turn whose result goes through its recording tool carries: the rule it had before, then the temp-folder rule. */
+export const CODEX_RECORDING_INSTRUCTIONS = `${WRITE_DISCIPLINE} ${TEMP_FOLDER_RULE}`;
+/**
+ * The developer instructions for one Codex turn. `seatWrites` is the stage's declaration, as the Claude adapter reads
+ * it (runDirGrant): `false` says the driver writes the stage's artifact from its recording tool, so the turn keeps the
+ * rule it had; `true` or unknown (`null`, as a form repair passes it) is a turn that authors a file. PURE.
+ */
+export const codexDeveloperInstructions = ({ seatWrites = null } = {}) =>
+  (seatWrites === false ? CODEX_RECORDING_INSTRUCTIONS : CODEX_FILE_INSTRUCTIONS);
 
 /**
  * The folder holding codex's own programs, which the stage's profile must let it read. codex runs every
@@ -1003,7 +1022,7 @@ export const openaiAgentEngine = {
   // `thread/resume failed: no rollout found for thread id ... (code -32600)`, exit 1 — with the control
   // (same id, same binary, its own home) resuming cleanly. So every warm-patch retry and every
   // form-repair sub-turn on the codex arm has been failing.
-  async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, stallSec, stageHome: providedHome, streamFile = null } = {}) {
+  async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, stallSec, stageHome: providedHome, streamFile = null } = {}) {
     if (!message) throw new Error("openai-agent.runTurn: message is required");
     const t0 = Date.now();
     let codexHome;
@@ -1028,8 +1047,8 @@ export const openaiAgentEngine = {
         seeded = seedAuth(authMaster, codexHome);
       }
       // Per-run config.toml: the gather MCP servers (translated from the claude-shaped mcpConfig, so
-      // gather-config.mjs is untouched) + developer_instructions = WRITE_DISCIPLINE (codex's
-      // append-system-prompt equivalent; the shared stage prompts are never mutated).
+      // gather-config.mjs is untouched) + developer_instructions = the turn's output rule (codex's
+      // append-system-prompt equivalent, codexDeveloperInstructions; the shared stage prompts are never mutated).
       //
       // — `toolTimeoutSec` carries THIS TURN'S budget to codex's per-call tool cap. It is written
       // here, before the child is spawned, so the turn's remaining budget is still its whole budget;
@@ -1050,7 +1069,7 @@ export const openaiAgentEngine = {
       const fence = codexSandboxBypassed() ? null
         : { runDir, workDir, readRoots: [...(skillsGrantRoots?.length ? skillsGrantRoots : [skillsDir]), codexProgramRoot(codexBin())].filter(Boolean) };
       writeFileSync(join(codexHome, "config.toml"),
-        renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions: CODEX_DEVELOPER_INSTRUCTIONS, toolTimeoutSec: timeoutSec, fence,
+        renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions: codexDeveloperInstructions({ seatWrites }), toolTimeoutSec: timeoutSec, fence,
           withheldFromCommands: codexCommandWithheld() }));
 
       const input = absolutizeSkillRefs(message, skillsDir, resolveSkill);

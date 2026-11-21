@@ -52,7 +52,7 @@ export const spawnGraceMs = () => Math.max(0, Number(process.env.CLEAROTRON_SPAW
 // runner crash. Default 64MB (gateway parity); CLEAROTRON_ENGINE_MAX_BUFFER shrinks it for tests.
 export const engineMaxBufferChars = () => Math.max(1024, Number(process.env.CLEAROTRON_ENGINE_MAX_BUFFER || 64 * 1024 * 1024));
 
-// ── Output discipline (shared verbatim across engines) ───────────────────────────────────────────────
+// ── Output discipline (Claude's on every turn; Codex's on a turn whose result goes through its recording tool) ──
 // The shared stage prompts say "write your output to <path>", which a workspace agent executes via its
 // file tool — but a headless coding CLI (`claude -p`, `codex exec`) tends to COMPOSE the output as text
 // and report "done" without ever calling the Write tool (the matter-frame missing_file failures,
@@ -62,7 +62,8 @@ export const engineMaxBufferChars = () => Math.max(1024, Number(process.env.CLEA
 // output and wrong for fixing one named defect in a 160 KB document that already passed its other checks.
 // Without this sentence a corrective turn retypes the whole file — measured at 3-4x the wall and tokens of
 // the patching attempt that actually passed (see repair-contract.mjs for the numbers). Kept byte-identical
-// with the anthropic-agent copy; engine.common.test.mjs pins that.
+// with the anthropic-agent copy; engine.common.test.mjs pins that. A Codex turn that writes a file is given the
+// same obligation in its own terms instead, since it has no Write or Edit tool (openai-agent.mjs, CODEX_WRITE_RULE).
 export const WRITE_DISCIPLINE =
   "OUTPUT DISCIPLINE — read carefully: when the task instructs you to write output to an absolute file path, " +
   "you MUST create that file by CALLING THE WRITE TOOL with that exact path and the full content. Output you " +

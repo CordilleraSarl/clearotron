@@ -129,7 +129,7 @@ test("the two engines' rewrites hand every stage the same instruction paths", ()
   }
 });
 
-test("the system-level instruction reaches both engines on every stage, fresh and resumed, the same output rule byte for byte", async () => {
+test("the system-level instruction reaches both engines on every stage, fresh and resumed, each engine's output rule byte for byte", async () => {
   assert.equal(CLAUDE_WRITE_DISCIPLINE, WRITE_DISCIPLINE, "the two copies of the system-level instruction have drifted");
   for (const d of dispatches()) {
     for (const resumeRef of [undefined, "invented-session"]) {
@@ -139,13 +139,19 @@ test("the system-level instruction reaches both engines on every stage, fresh an
         `claude, ${d.name}${resumeRef ? " (resumed)" : ""}: the system-level instruction is not appended`);
     }
   }
-  // Codex carries it as the configuration's developer instructions, which its adapter writes on every turn.
-  // It is Claude's instruction, then the temp-folder rule only a Codex turn needs (openai-agent.mjs, TEMP_FOLDER_RULE).
-  const { CODEX_DEVELOPER_INSTRUCTIONS, TEMP_FOLDER_RULE } = await import("../engine/openai-agent.mjs");
-  assert.equal(CODEX_DEVELOPER_INSTRUCTIONS, `${WRITE_DISCIPLINE} ${TEMP_FOLDER_RULE}`, "codex: the output rule is not the one Claude is given");
-  const toml = renderCodexConfigToml({ mcpConfig: null, allowedTools: "", developerInstructions: CODEX_DEVELOPER_INSTRUCTIONS });
-  const line = toml.split("\n").find((l) => l.startsWith("developer_instructions = "));
-  assert.ok(line, "codex: no developer instructions in the rendered configuration");
-  assert.equal(JSON.parse(line.slice("developer_instructions = ".length)), CODEX_DEVELOPER_INSTRUCTIONS,
-    "codex: the developer instructions are not the system-level instruction plus the temp-folder rule");
+  // Codex carries it as the configuration's developer instructions, which its adapter writes on every turn. A turn that
+  // writes a file is given Codex's own output rule, since it has no Write or Edit tool; a turn whose result goes through its
+  // recording tool keeps Claude's instruction. Either is followed by the temp-folder rule only a Codex turn needs
+  // (openai-agent.mjs, CODEX_WRITE_RULE and TEMP_FOLDER_RULE).
+  const { CODEX_FILE_INSTRUCTIONS, CODEX_RECORDING_INSTRUCTIONS, CODEX_WRITE_RULE, TEMP_FOLDER_RULE } = await import("../engine/openai-agent.mjs");
+  assert.equal(CODEX_RECORDING_INSTRUCTIONS, `${WRITE_DISCIPLINE} ${TEMP_FOLDER_RULE}`, "codex: a recording turn's output rule is not the one Claude is given");
+  assert.equal(CODEX_FILE_INSTRUCTIONS, `${CODEX_WRITE_RULE} ${TEMP_FOLDER_RULE}`, "codex: a writing turn's output rule is not Codex's own");
+  assert.doesNotMatch(CODEX_WRITE_RULE, /Write tool|Edit tool/, "codex: a writing turn is told to use a tool it does not have");
+  for (const developerInstructions of [CODEX_FILE_INSTRUCTIONS, CODEX_RECORDING_INSTRUCTIONS]) {
+    const toml = renderCodexConfigToml({ mcpConfig: null, allowedTools: "", developerInstructions });
+    const line = toml.split("\n").find((l) => l.startsWith("developer_instructions = "));
+    assert.ok(line, "codex: no developer instructions in the rendered configuration");
+    assert.equal(JSON.parse(line.slice("developer_instructions = ".length)), developerInstructions,
+      "codex: the developer instructions are not the output rule plus the temp-folder rule");
+  }
 });
