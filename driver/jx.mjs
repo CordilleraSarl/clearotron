@@ -17,7 +17,7 @@ import { join } from "node:path";
 import { decideJxLanes, candidateRefusal, canonicalTerm, romanizationSpellings, LANGUAGE_LANES, jxBillingStamp, jxModelFields } from "./jx-lanes.mjs";
 import { cnipaSubgroupsForClasses, cnipaEditionLabel } from "./jx-subclass.mjs";   // — replaces the hand-written seed table
 import { kebab } from "./search-policy.mjs";
-import { JX_PROVIDERS } from "./driver.config.mjs";
+import { JX_PROVIDERS } from "./jx-providers.mjs";
 import { foldSupplementalEntries, validatePlanFeasibility } from "./register-plan.mjs";
 
 export const JX_CANDIDATE_CAP = 8;   // per lane — a register query costs real money; depth is not volume
