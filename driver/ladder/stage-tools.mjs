@@ -10,7 +10,7 @@ import { buildGatherMcpConfig, allowedToolsFor, toolGroupsForStage, recordAxisFo
 import { GROUP_READING_STAGES } from "../stages.mjs";
 import { recordedRegister } from "../engine/run-choices.mjs";
 
-export function stageTools({ engine, name, sessionKey, agent, runDir, correction, excludeTools }) {
+export function stageTools({ engine, name, sessionKey, agent, runDir, correction, excludeTools, declaration = null }) {
   // Two INDEPENDENT engine capability flags (both default ON for an engine that declares neither, so the
   // anthropic engine — which sets neither — behaves exactly as before). A future adapter can opt out of
   // either without the other:
@@ -32,7 +32,8 @@ export function stageTools({ engine, name, sessionKey, agent, runDir, correction
   // tool-free judgment stages get none (lean context). Both current engines get the SAME claude-shaped
   // mcpConfig; a codex engine translates it to config.toml internally, so gather-config.mjs is untouched.
   if (engine.usesGatherMcp !== false) {
-    const groups = toolGroupsForStage(name);
+    // A stage the caller describes is granted what its declaration names; any other, what its own row names.
+    const groups = declaration ? [...declaration.grant] : toolGroupsForStage(name);
     if (groups.length) {
       // The bound card index rides the same label the grant was resolved from — derived by the SAME
       // declared rule (`perAxis`), never by a second string-sniff that could disagree with it.
