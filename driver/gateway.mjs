@@ -44,7 +44,7 @@ export { everyToolCallRefused };
 // The register-axis vocabulary, quoted verbatim into the coverage-form axis hint. ONE source: the same
 // constant `rowIsSettled` refuses against, so the hint can never name a set the gate does not accept.
 // Acyclic — coverage-ledger.mjs is PURE (no node imports, no driver imports).
-import { CORRECTION_ROWS, correctionHint, correctiveMessage, frameDiffUndispatchable, heldSynthesisRecord, patchRows, REPAIR_HINTS, repairTarget, REPLACED_ROWS, requiredFileClause, warmPatchMessage, warmTimeoutMessage } from "./ladder/repair-messages.mjs";
+import { CORRECTION_ROWS, correctionHint, correctiveMessage, frameDiffUndispatchable, heldSynthesisRecord, hintSelection, patchRows, REPAIR_HINTS, repairTarget, REPLACED_ROWS, requiredFileClause, warmPatchMessage, warmTimeoutMessage } from "./ladder/repair-messages.mjs";
 import { attemptOk, draftCarryEligible, killedWhile, retryBackoffMs, spentBudgetCleanly, STREAM_DIGEST_KEEP, streamDigest, streamMeta, tokensPerSec, toolGauge, vetoResumeRuledNone, warmEligible, writeBoundaryOf } from "./ladder/turn-signals.mjs";
 import { gradedArtifact, gridLedgerNameFor, isFormClassFail, SAID_BACK_TOKEN_SRC, saidBackOnly, syncCoverageForm, syncDispositionForm, syncPlacementForm, TOOL_WRITTEN_ARTIFACTS, TOOL_WRITTEN_DIRS, TOOL_WRITTEN_PATTERNS, toolWrittenArtifact } from "./ladder/form-sync.mjs";
 
@@ -295,7 +295,7 @@ async function runStageLadder(name, opts, stageHome = null, engine = selectEngin
 
 /** The code of the repair hint a failure string selects, or null when it gets the default. PURE. */
 export function failureCode(lastFail) {   // @internal — driven by its test
-  return REPAIR_HINTS.find((row) => row.when.test(lastFail))?.code ?? null;
+  return hintSelection(lastFail)?.row.code ?? null;
 }
 
 /** Every row's code, in the order the rows are read. */
