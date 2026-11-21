@@ -42,7 +42,7 @@ const { STAGES, composeFollowup, REGISTER_ENUMERATE_TOOL } = await import("../st
 const { KO_STAGES } = await import("../stages-knockout.mjs");
 const { toolGroupsForStage, allowedToolsFor, RECORDING_TOOLS } = await import("../engine/mcp/gather-config.mjs");
 const { WRITE_DISCIPLINE } = await import("../engine/common.mjs");
-const { CODEX_DEVELOPER_INSTRUCTIONS } = await import("../engine/openai-agent.mjs");   // the output rule, then the temp-folder rule
+const { CODEX_FILE_INSTRUCTIONS, CODEX_RECORDING_INSTRUCTIONS } = await import("../engine/openai-agent.mjs");   // the output rule, then the temp-folder rule
 const { DRIVER, everyModelStageDispatch, everyDispatchedLabel, baseOf } = await import("./model-stage-dispatches.mjs");
 
 function withEnv(env, fn) {
@@ -109,6 +109,10 @@ function grantedByServer(tokens) {
 
 /** The record tools a recording stage's pinned row names (the MCP tokens of RECORDING_TOOLS). */
 const recordToolsOf = (base) => (RECORDING_TOOLS[base] ?? []).filter((t) => t.startsWith("mcp__") && /__record_/.test(t));
+
+// A recording stage's result goes through its record tool, and its Codex turn keeps the rule it had; every other stage writes
+// a file and is given Codex's own output rule. Read from the pinned rows, not from the gateway's declaration it is checking.
+const codexRule = (label) => (recordToolsOf(baseOf(label)).length ? CODEX_RECORDING_INSTRUCTIONS : CODEX_FILE_INSTRUCTIONS);
 
 const LABELS = everyDispatchedLabel();
 const SUPPLEMENTAL = "register-unit:primary-sweep";
@@ -178,7 +182,7 @@ test("codex: every stage's program is handed, per server, exactly the tools it m
     const webFetch = expectedGrant(label).includes("WebFetch");
     if (webFetch !== Boolean(got.fetch)) wrong.push(`${label}: the page fetcher is ${got.fetch ? "mounted without" : "missing despite"} a WebFetch grant`);
     const line = String(call.configToml).split("\n").find((l) => l.startsWith("developer_instructions = "));
-    if (!line || JSON.parse(line.slice("developer_instructions = ".length)) !== CODEX_DEVELOPER_INSTRUCTIONS) wrong.push(`${label}: the system-level instruction is not the developer instructions`);
+    if (!line || JSON.parse(line.slice("developer_instructions = ".length)) !== codexRule(label)) wrong.push(`${label}: the developer instructions are not ${codexRule(label) === CODEX_FILE_INSTRUCTIONS ? "the writing" : "the recording"} turn's rule`);
   }
   assert.deepEqual(wrong, []);
 });
@@ -282,6 +286,41 @@ test("a follow-up is handed the same tools as its stage's first dispatch, on bot
           Object.keys(JSON.parse(flag(first.argv, "--mcp-config") ?? "{}").mcpServers ?? {}), `${label}: a follow-up mounts different servers`);
       } else {
         assert.deepEqual(codexServers(again.configToml), codexServers(first.configToml), `${label}: a Codex follow-up is offered different tools`);
+      }
+    }
+  }
+});
+
+/** Every call of a dispatch of `label` whose first attempt writes nothing, so the next attempt is a repair. */
+async function repaired(engine, label) {
+  const dir = mkdtempSync(join(tmpdir(), "stage-repair-"));
+  try {
+    mkdirSync(driverDir(dir), { recursive: true });
+    const out = join(dir, "out.md");
+    const nofile = engine === "anthropic-agent" ? { MOCK_CLAUDE_NOFILE: "1" } : { MOCK_CODEX_NOFILE: "1" };
+    await withEnv({ ...ENGINES[engine](dir, out), ...nofile, CLEAROTRON_RETRY_BACKOFF_MS: "0" },
+      () => runStage(label, { message: MESSAGES.get(baseOf(label))?.message ?? "invented message", model: "opus",
+        sessionKey: `stage-repair-${engine}-${label}`, runDir: dir, expectFile: out, maxRetries: 1, timeoutSec: 30 }));
+    return readFileSync(join(dir, "calls.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+}
+
+test("a repair turn is handed its engine's output rule for the stage, on a stage that writes a file and on a recording stage", async () => {
+  // case-law writes its file; report-overview returns its result through its record tool.
+  assert.equal(codexRule("case-law"), CODEX_FILE_INSTRUCTIONS, "the writing stage is not one");
+  assert.equal(codexRule("report-overview"), CODEX_RECORDING_INSTRUCTIONS, "the recording stage is not one");
+  for (const label of ["case-law", "report-overview"]) {
+    for (const engine of Object.keys(ENGINES)) {
+      const turns = await repaired(engine, label);
+      assert.ok(turns.length >= 2, `${engine}, ${label}: no repair turn followed the failed attempt`);
+      assert.notEqual(turns[1].prompt, turns[0].prompt, `${engine}, ${label}: the second turn is not a repair`);
+      for (const [i, call] of turns.entries()) {
+        if (engine === "anthropic-agent") {
+          assert.equal(flag(call.argv, "--append-system-prompt"), WRITE_DISCIPLINE, `${label}, Claude turn ${i + 1}: not Claude's output rule`);
+        } else {
+          const line = String(call.configToml).split("\n").find((l) => l.startsWith("developer_instructions = "));
+          assert.equal(line && JSON.parse(line.slice("developer_instructions = ".length)), codexRule(label), `${label}, Codex turn ${i + 1}: not the stage's output rule`);
+        }
       }
     }
   }

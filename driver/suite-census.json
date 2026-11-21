@@ -4804,14 +4804,14 @@
           "todos": 0
         },
         "every-model-stage-is-handed-its-tools-on-both-engines.test.mjs": {
-          "tests": 6,
-          "asserts": 11,
+          "tests": 7,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
         "every-model-stage-is-handed-the-instruction-files-it-declares.test.mjs": {
           "tests": 8,
-          "asserts": 18,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
