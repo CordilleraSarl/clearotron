@@ -61,7 +61,20 @@ const runIt = async (key, { startMs = 0, stallMs = 0 } = {}) => {
     agent: "mailagent", message: `TASK\nOUTPUT_FILE: ${process.env.MOCK_OUT_FILE}`, sessionKey: key,
     timeoutSec: 30, expectFile: process.env.MOCK_OUT_FILE, maxRetries: 0, runDir: dir,
   }).catch(() => {});
-  if (stallMs) setTimeout(() => { const until = Date.now() + stallMs; while (Date.now() < until) { /* block */ } }, startMs);
+  // THE STALL IS TIMED FROM THE PROGRAM'S START, NOT FROM THE CALL. The driver's own work before it starts the program
+  // takes longer on a slower runner (measured on Windows, 2026-11-21), and a stall that lands before the first ask blocks
+  // nothing the gauge reads. The stand-in logs its call as it starts, and every rung appends to the one log, so the start
+  // is the log growing by a line.
+  if (stallMs) {
+    const calls = () => { try { return readFileSync(process.env.MOCK_CLAUDE_CALL_LOG, "utf8").split("\n").filter(Boolean).length; } catch { return 0; } };
+    const before = calls();
+    const started = setInterval(() => {
+      if (calls() <= before) return;
+      clearInterval(started);
+      setTimeout(() => { const until = Date.now() + stallMs; while (Date.now() < until) { /* block */ } }, startMs);
+    }, 2);
+    p.finally(() => clearInterval(started));
+  }
   await p;
   // ✕ THE LAST LINE, NOT THE FIRST, AND THE LADDER IS WHY. This read was written when runIt ran ONCE
   // per test, where [0] and "the row this call wrote" are the same line. The escalating ladder made it
