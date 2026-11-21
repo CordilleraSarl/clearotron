@@ -118,9 +118,9 @@ test("E2(openai): full pipeline runs on the openai-agent engine (CLEAR, delivere
   }
   assert.match(first.prompt, /[\\/]driver[\\/]skills[\\/]matter-frame[\\/]SKILL\.md/, "matter-frame skill ref absolutized to the driver's skills tree");
 
-  // Every turn carries the WRITE_DISCIPLINE via config.toml's developer_instructions (codex's
+  // Every turn carries its output rule via config.toml's developer_instructions (codex's
   // append-system-prompt equivalent) — the shared stage prompts are never mutated.
-  assert.ok(first.configToml.includes("developer_instructions ="), "config.toml carries developer_instructions (WRITE_DISCIPLINE)");
+  assert.ok(first.configToml.includes("developer_instructions ="), "config.toml carries developer_instructions (the output rule)");
 
   // Per-stage tool selection via config.toml [mcp_servers]: judgment stages are LEAN (no servers); gather
   // stages get their MCP servers + per-server enabled_tools.

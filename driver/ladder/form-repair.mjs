@@ -22,7 +22,7 @@ import { rel, streamDigest, streamMeta, tokensPerSec, writeBoundaryOf } from "./
 export async function repairFormInDispatch(stage, { judgeArtifacts }, { attempt, key, turn, effTimeout, fail, stampedQuantity, failingFile,
   formRepairsUsed, killSeen, lastGraded, lastModelUsed }) {
   const { name, engine, stageHome, agent, model, thinking, files, runDir, stallSec, adds, supplementalLane, auth, gatherAllowedTools,
-    engineSkillsDir, engineSkillsGrantRoots, engineResolveSkill, turnConfig } = stage;
+    gatherSeatWrites, engineSkillsDir, engineSkillsGrantRoots, engineResolveSkill, turnConfig } = stage;
   const { json } = turn;
   // ── — WRITE-TIME FORM REJECTION, INSIDE THE DISPATCH ────────────────────────────────────
   // In the 08-02 round, 5 of 12 non-clean dispatches were PURE FORM: a bad enum, a closed-vocabulary
@@ -85,7 +85,10 @@ export async function repairFormInDispatch(stage, { judgeArtifacts }, { attempt,
     // this turn wants. Passing `gatherSeatWrites` would lean on the dispatch naming an ABSOLUTE path
     // under the run dir to win the grant back, and warmPatchMessage renders the target through rel();
     // a relative path there would silently strip the write root off the one turn that needs it most.
-    const rt = await engine.runTurn({ agent, sessionKey: key, message: repairMessage, model, thinking,
+    // — AND THE OUTPUT RULE IS THE STAGE'S, for the one engine that reads one per turn. A recording stage's form repair is a
+    // record call, so a Codex turn keeps that stage's rule (openai-agent.mjs, codexDeveloperInstructions). A signal only that
+    // adapter reads, from the same declaration, so the grant decided above is not touched.
+    const rt = await engine.runTurn({ agent, sessionKey: key, message: repairMessage, model, thinking, recordsItsResult: gatherSeatWrites === false,
       timeoutSec: effTimeout, resumeRef: repairRef, stageHome, mcpConfig: turnConfig(effTimeout), allowedTools: gatherAllowedTools,
       skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
       progressFiles: files, streamFile: streamFilePath(runDir, name, attempt, formRepairsUsed + 1) });
