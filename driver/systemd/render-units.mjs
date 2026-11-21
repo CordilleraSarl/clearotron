@@ -113,10 +113,11 @@ export function unitsNeedingRender(root = ROOT) {
 // a literal `process.env.X` here would be a spelling, and a spelling goes stale in silence.
 //
 // A `KEY=value` parser and nothing more, and it lives in `shared/env-file-merge.mjs` — a file that
-// imports nothing. THIS module is a command too: its `--apply` path awaits at the top level and imports
-// `bin/start.mjs` from inside that await, so anything that took the parser from here put a CLI in its
-// import path, and `start.mjs` doing so closed a cycle that stopped 21 install arms at once. Re-exported
-// so every reader here keeps one reader and one spelling.
+// imports nothing. THIS module is a command too: its `--apply` path awaits at the top level, and it once
+// imported `bin/start.mjs` from inside that await, so anything that took the parser from here put a CLI in
+// its import path, and `start.mjs` doing so closed a cycle that stopped 21 install arms at once. It now
+// reads the doors' ports from `shared/door-ports.mjs` and reaches nothing in `bin/`. Re-exported so every
+// reader here keeps one reader and one spelling.
 export { parseEnvFile } from "../../shared/env-file-merge.mjs";
 import { parseEnvFile } from "../../shared/env-file-merge.mjs";
 
@@ -276,7 +277,7 @@ export async function writeInstallEnv(envFile) {
   const { laneValuesFor, LANE_VALUE_NOTES, signingSecretIfAbsent } = await import("../../shared/lane-address.mjs");
   const { enablePlan, allowedHosts, allowedHostsMerged, DOOR_ALLOW_LISTS } = await import("../../shared/client-door.mjs");
   const { randomBytes } = await import("node:crypto");
-  const { resolvePorts } = await import("../../bin/start.mjs");
+  const { resolvePorts } = await import("../../shared/door-ports.mjs");
 
   const fileEnv = parseEnvFile(existsSync(envFile) ? readFileSync(envFile, "utf8") : "");
   const ports = resolvePorts({ ...fileEnv, ...process.env });

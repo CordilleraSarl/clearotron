@@ -34,8 +34,8 @@ import { WARM_ROOT, WARM_ROOT_DARK, WARM_ROOT_DARK_EXPLICIT, THEME_INIT, THEME_I
 import { NAV_CSS, siteNav, siteFab } from '../../shared/site-nav.mjs';
 import { anonAssets, anonClient, anonMark } from '../../shared/anon-overlay.mjs';
 
-const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const escAttr = s => esc(s).replace(/"/g, '&quot;');   // attribute sink — esc alone is quote-blind
+import { escapeText as esc, escapeAttr as escAttr } from '../../shared/html-escape.mjs';
+// esc for text, escAttr for an attribute's value: esc alone is quote-blind
 const dateOf = run => (String(run).match(/\d{4}-\d{2}-\d{2}/) || ['undated'])[0];
 
 // Newest-first run order for every pool listing (staff index, per-customer indexes, pool-admin list).

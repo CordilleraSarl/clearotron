@@ -17,6 +17,9 @@
 // Corsearch's query language is a single flat string of backtick-quoted clauses; the match mode is a
 // PREFIX on the clause (core.js MATCH_MODE_PREFIX). The mode strings below are exactly those keys, so
 // execute-plan.mjs's planPredicateParams({match_mode}) consumes them unchanged.
+/** Spellings an order may carry → this register's code for the same office (see `offices.translate`). */
+export const CORSEARCH_REGION_ALIASES = Object.freeze({ EM: "EU", UK: "GB", INT: "WO" });
+
 export const CAPABILITIES = Object.freeze({
   id: "corsearch",
   label: "Corsearch",
@@ -69,10 +72,15 @@ export const CAPABILITIES = Object.freeze({
     // canonical office code, so without this the region clause would carry a value this provider answers
     // as a server error rather than a bad request (the copper-bastion shape: a malformed region reads as
     // transient and burns the park budget).
+    //
+    // TWO MORE, for spellings an order may carry that are not this vocabulary's codes: "UK" is the United
+    // Kingdom, which ISO spells GB, and "INT" is WIPO's international register, which this vocabulary
+    // spells WO. Passed through, "UK" went to the wire as a region of its own while "GB" and "United
+    // Kingdom" sent GB, so one territory was asked for in two forms depending on how the order spelled it.
     translate: (code) => {
       const c = String(code ?? "").trim().toUpperCase();
       if (!c) return null;
-      return c === "EM" ? "EU" : c;
+      return CORSEARCH_REGION_ALIASES[c] ?? c;
     },
     // null = NO declared restriction (the provider is a global aggregator; there is no enumerable
     // covered set to check a jurisdiction against). Never read as "covers nothing".
