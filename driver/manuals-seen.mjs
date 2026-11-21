@@ -16,6 +16,10 @@
 // `nl`, `grep -n`, Claude's Read) is taken off. A line repeated in a manual counts each time. The share is a lower bound
 // on Codex, where the cut's size is the product's own measurement, not the vendor's.
 //
+// WHAT THE TURN WAS SENT IS SHOWN TOO. A fresh session's opening message carries its stage's manuals whole
+// (manuals-inline.mjs), so the lines of the message the turn was sent count as shown, beside what its tools returned. A
+// resumed turn is sent only its repair, so it is still measured on what it read after resuming.
+//
 // UNKNOWN IS null, NEVER 0. A stream that was not saved, was cut short, holds a line carrying a tool output that is not
 // JSON before its last, or holds no event of the engine's own shape, says nothing about what was seen, and an engine this does not read is the
 // same. A manual that changed since the stage was told it, or that holds no line long enough to count, is null on its
@@ -123,12 +127,14 @@ export function manualShares(told, shown, { readManual = (p) => readFileSync(p) 
  * The attempt row's `manualsSeen`: the shares for what this turn was told, read from the stream the engine saved, or
  * null when nothing was told or the stream cannot say. Never throws.
  */
-export function measureManualsSeen(turn, told, engine, { readManual } = {}) {
+export function measureManualsSeen(turn, told, engine, { readManual, sent = null } = {}) {
   try {
     if (!Array.isArray(told) || !told.length) return null;
     const s = turn?.stream;
     if (!s?.file || s.present !== true || s.reason) return null;
     // A closed session's stream is gzipped and a killed one's is plain; the session record's own reader reads either.
-    return manualShares(told, shownFrom(streamLines(s.file), engine), readManual ? { readManual } : {});
+    const shown = shownFrom(streamLines(s.file), engine);
+    if (shown && sent) for (const l of String(sent).split("\n")) { const c = countable(l); if (c) shown.add(c); }
+    return manualShares(told, shown, readManual ? { readManual } : {});
   } catch { return null; }
 }

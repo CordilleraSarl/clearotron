@@ -9,12 +9,12 @@ import { CLEARANCE_ENDING } from "./run-failed.mjs";
 import { runShell } from "./run-shell.mjs";
 import { deliveryEndState } from "./run-delivered.mjs";
 import { StageFailure, buildFailurePacket, isDesignedRefusal, stageWallFields, terminalReasonFields } from "./run-outcome.mjs";
-import { correctionReading, correctionRows, flagOrdinals, recordCorrectionsBasis, repairUnnamedRemovals, rollbackCorrectivePass } from "./steps/corrections.mjs";
+import { correctionReading, correctionRows, correctionsExtra, flagOrdinals, recordCorrectionsBasis, repairUnnamedRemovals, rollbackCorrectivePass } from "./steps/corrections.mjs";
 import { assembleReportMd, buildAskAnswersSection, buildOnlyYouSection, buildReasonedNegativesSection, buildReviewerOpenPointsSection, CODE_BUILT_SECTIONS, reassembleFromTheRecord, recordCorrectionsDelivered } from "./report-assembly.mjs";
 import { applyScopeFrontMatterOf, assessmentCoverageOfRun, assessmentCoverageRows, reportIdentityRecord, searchLogAuditMd, sentinel, setAsideTheAssessment, settlePendingWhatIfsBeforeArchive, writeScopeFactsOf } from "./run-end-state.mjs";
 import { keepDeliveredRecordAsHistory, ownerScreenForDelivery, readFindingsForReport, rebuildDeliveredRecord, rewriteFromBeforeTheSeam, withdrawSupersededAudit } from "./delivered-record-run.mjs";
 import { coverageJudgmentRows, coverageRowArea, coverageRowAreaLabel, decideScriptScopeHonesty, fullProseOrdinals, injectDeferralCoverage, injectLaneDepthCoverage, injectMeaningGapCoverage, injectScreenGateCoverage, injectScriptScopeCoverage, injectUncoveredMarketCoverage, localLanguageStateOf, mergedScriptScopeRow, orderMarketsOf, planWriteUps, scriptLaneRanOnRun, scriptScopeDisclosure, stampCoverageJudgmentRows } from "./coverage-rows-run.mjs";
-import { actionsRegisterListed, CORRECTIONS_DELIVERED_FILE, correctionsExtra, correctionsTheRestoreLacks, CORRECTIVE_RECHECK_FILE, correctiveCycleSettledDecision, DELIVERY_TAIL_LABEL_RE, openAskForClosure, partitionDeliveryStale, postRepairScope, recordChangeOwesReview, removalRepairedRow, restoredFindingsTable, saveWithRetries, snapshotFindingsForCorrections, stagesStaleOnPlacement, unreadRecordReview, UPSTREAM_STALE_REPAIR, whatTheRepairLeftStale, withdrawByToken } from "./repair-review-run.mjs";
+import { actionsRegisterListed, CORRECTIONS_DELIVERED_FILE, correctionsTheRestoreLacks, CORRECTIVE_RECHECK_FILE, correctiveCycleSettledDecision, DELIVERY_TAIL_LABEL_RE, openAskForClosure, partitionDeliveryStale, postRepairScope, recordChangeOwesReview, removalRepairedRow, restoredFindingsTable, saveWithRetries, snapshotFindingsForCorrections, stagesStaleOnPlacement, unreadRecordReview, UPSTREAM_STALE_REPAIR, whatTheRepairLeftStale, withdrawByToken } from "./repair-review-run.mjs";
 import { CASE_LAW_PRODUCT, CASE_LAW_TRIGGERS, caseLawJoin, composeDispatchExtra, decideCaseLaw, DISPATCH_EXTRA_BUILDERS, prepareDeclinationSpec, reviewProfileSelection, settleDerivedBases, withGoodsFrom, withGoodsStates } from "./dispatch-extras.mjs";
 import { askableOf, capabilityGapAxes, computeOpenFloors, conditionsFollowingTheRecord, enrichFindingDeadlines, envelopeDecision, envelopeHeldNote, escalationHeldNote, findFloorBreaches, isInactiveAxisRow, lateRecordIds, lateRecordsUnaddressed, loadScreenGateUnresolved, NOT_CLOSEABLE_KINDS, officeGapOf, readFloorAxes, refusedRecordsLeftOut, registerGapConditions, skepticDeferralExtra } from "./floor-and-gap-checks.mjs";
 import { connotationAuditSeats, connotationRemedyToken, recordConnotationAudit, taintDisposition, taintParkJudgmentArtifacts, undoTaintRenames } from "./connotation-audit-run.mjs";
@@ -82,7 +82,7 @@ import { acquireSlot, releaseSlot } from "./slot-lock.mjs";
 import { runLog, note, fileMeta } from "./log.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
 import { repairFollowup } from "./repair-composers.mjs";
 import { seedRunStatus, writeRunStatus, rollupStatus, signoffPatch, readSignoff } from "./progress.mjs";
-import { atomicWrite } from "./run-record.mjs";
+import { atomicWrite } from "./run-record.mjs"; import { findRunDirFor } from "./run-dir-lookup.mjs";
 import { writeOutboxPacket } from "./outbox.mjs";
 import { readInstructedScope } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed; and the classes it judged necessary beyond the instructed ones, each with its reason, which the plan compile gives one identical-mark question apiece (decision 18)
 // Conversion 6: the two line-form parsers are no longer on the live path — the seat sends typed
@@ -1993,9 +1993,9 @@ if (isEntrypoint(import.meta.url)) void (async () => {
     // slug comes from the job, which is the thing being rebuilt. So the studio root's matters are
     // scanned for the one holding a run dir with this codename. `findRunDirFor` decides what counts as
     // that leaf, imported rather than re-spelled here — a second private copy of the leaf rule is how
-    // a reclaim and a resume come to disagree about which directory is the run. The import is lazy
-    // because runner.mjs imports THIS module; at this point both are loaded and nothing cycles.
-    const { findRunDirFor } = await import("./runner.mjs");
+    // a reclaim and a resume come to disagree about which directory is the run. The rule lives in
+    // run-dir-lookup.mjs, which imports neither this module nor runner.mjs, so both import it from
+    // there and neither imports the other.
     const studioRoot = a.agent ? config.studioRootForAgent(a.agent) : config.studioRoot;
     const archiveRoot = a.agent ? config.archiveRootForAgent(a.agent) : config.archiveRoot;
     let found = null;

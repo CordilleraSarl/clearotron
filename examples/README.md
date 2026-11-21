@@ -1,10 +1,11 @@
 # examples
 
-The two input files you copy. Nothing here needs a credential and nothing here contacts anything.
+The three input files you copy. Nothing here needs a credential and nothing here contacts anything.
 
 | Path | What it is |
 |---|---|
 | `job.euipo.json` | the whole input contract for one clearance — 14 fields, ready to copy and edit |
+| `job.knockout.json` | a knockout search on the EU register, the first real clearance setup suggests |
 | `grants.example.json` | who may see and do what: two organisations, and one of each kind of person |
 
 ## The finished runs moved to `demo/`
@@ -31,9 +32,10 @@ actually has is `demo-brand-owner`. Replace the names with
 your own accounts and keep the shapes: a tenant with every account, a tenant with one, a tenant whose
 users see different subsets.
 
-`job.euipo.json` is what `bin/onboard.mjs` prints as the first real clearance to run. That command
-spends money and takes hours; [`../docs/INTAKE.md`](../docs/INTAKE.md) is the field-by-field reference,
-including what each omission means.
+`job.knockout.json` is what `bin/onboard.mjs` prints as the first real clearance to run: a knockout
+search, the cheapest of the four, as in the Quickstart. It spends money. `job.euipo.json` orders a
+multi-country focus search, which takes hours; [`../docs/INTAKE.md`](../docs/INTAKE.md) is the
+field-by-field reference, including what each omission means.
 
 ## Invented mark, real evidence
 

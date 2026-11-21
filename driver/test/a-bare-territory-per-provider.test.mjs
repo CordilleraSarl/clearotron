@@ -106,11 +106,14 @@ test("THE PLAN AND THE DISCLOSURE AGREE — every binding layer reads as searche
   assert.ok(checked >= 9, `only ${checked} territory reports examined — the fixture stopped enumerating`);
 });
 
-test("signa's translate still REFUSES the office code, and that pin is not collateral", () => {
-  // Signa's own territory-expansion suite pins this too, with a stated reason: `EM` is an office code,
-  // not a territory, and a future caller passing one should get a refusal rather than a quiet
-  // deferral. I aliased it while chasing the wrong finding above; this arm is here so the next person
-  // who reaches for that alias finds out from a test instead of from the provider suite.
-  assert.equal(signa.offices.translate("EM"), null, "EM resolved — see the comment above before changing it");
+test("signa reads the EU register's office code as the other registers do, and a national plan is unchanged by it", () => {
+  // `EM` is the EUIPO's office code, not a territory, and this arm used to pin signa refusing it, so a
+  // caller passing one got a deferral. The other registers read it as the EU register (clarivate sends EM,
+  // corsearch EU), so an order that named the EU register by its code was searched everywhere but here.
+  // The owner's ruling is that a register reads what the others read, in its own form. It is the EUIPO
+  // office, and nothing more: a France plan still asks one protection-matched question (the table above),
+  // and the disclosure arm above still reads every layer as searched.
+  assert.equal(signa.offices.translate("EM"), "euipo", "the EU register named by its office code reaches the EUIPO office");
   assert.equal(signa.offices.translate("EU"), "euipo", "the matter-facing territory code must still resolve");
+  assert.deepEqual(resolveRegions(["FR"], signa).regions, ["inpi-fr"], "reading EM must not widen a national plan");
 });

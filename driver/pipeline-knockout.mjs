@@ -35,8 +35,7 @@ import { StageFailure } from "./run-outcome.mjs";
 import { endTheDeliveredRun, runShell } from "./run-shell.mjs";   // — the runner and the delivered ending both products share
 import { logTurnaroundReconciliation } from "./run-quote.mjs";
 import { RunCancelled, assertNotCancelledBeforePublish, isCancelled, readCancel, stopsWithTheRun } from "./cancel.mjs";   // stop-by-user: never the failure lane below
-import { loadFrameworkManifest, parseFrameworkManifest, frameworkFor, DEFAULT_FRAMEWORK } from "./framework.mjs";
-import { attachFrameworkMethod, methodPathFor, FROZEN_METHOD_FILE } from "./framework-method.mjs";
+import { attachFramework } from "./run-attachments.mjs";   // the one framework freeze, both products'
 import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutGridSpec, KNOCKOUT_WEB, KNOCKOUT_MINUTES_BAR, knockoutBarVerdict, koChunks, groupRecordsDoc } from "./stages-knockout.mjs";
 import { kebabCollisions, reportIdentityFor, CAPABILITY_SKIPPED_CAUSE, CAPABILITY_SKIPPED_NOTE } from "./search-policy.mjs";
 import { countPreflight, countRegisterHits, countedMarks, resolveCountExecutor } from "./register-count.mjs";
@@ -63,7 +62,7 @@ import { batchMarkName } from "./mark-name.mjs";
 import { runLog, note } from "./log.mjs";
 import { defaultTerritoryState } from "./effective-scope.mjs";
 import { keepsInstructedScope } from "./accepted-order.mjs";   // a resume rebuilt from status keeps the scope its order wrote, as a clearance does   // the stored-defaults reading — one producer, shared with the clearance lane
-import { whatsappRouting } from "./stages.mjs";
+import { deliveryPacket, handOffDelivery } from "./delivery-handoff.mjs";
 import { rollupTokens, stampTokenRollup } from "./tokens.mjs";
 import { recordRunConsumption } from "./consumption-ledger.mjs";
 // The scoped owner lookup a promoted register filing is owed. Bounded, deduplicated
@@ -92,50 +91,12 @@ const koStep = (ctx, label, extra = {}) => {
     currentStep: { index: i, label, n: i + 1, total: steps.length }, ...extra });
 };
 
-// ── framework freeze (knockout flavour): the customer's OWN framework when configured, else the house
-// TRIAGE ladder (NOT the clearance Generic default — a knockout rates at triage grain). Same freeze
-// doctrine as attachFramework: minted once, read verbatim on resume, corrupt = loud.
+// ── framework freeze (knockout flavour): the clearance's own freeze (run-attachments.mjs, attachFramework), with the
+// customer's OWN framework when configured, else the house TRIAGE ladder (NOT the clearance Generic default — a knockout
+// rates at triage grain); the deck's path on ctx for the rater, on the resume path too; and the ladder read back the way
+// the rater's validator reads it. Same freeze doctrine: minted once, read verbatim on resume, corrupt = loud.
 function attachKnockoutFramework(ctx) {
-  const sidecarPath = paths(ctx.paths.runDir).framework;
-  // ── THE DECK'S PATH, RESOLVED ONCE AND ON BOTH PATHS ────────────────────────
-  //
-  // The assess stage is served the DECK now, not only the manifest — `framework.mjs` states the rule
-  // the manifest obeys: "vocabulary and order ONLY. Never a mapping table, threshold, or decision
-  // rule — those live in the deck prose, where the model reasons with them." A rater given the band
-  // words and not the rulebook was being told to honour ceilings stated in a document it never saw.
-  //
-  // Resolved HERE and hung on ctx rather than recomputed in the dispatch, because "which deck" is one
-  // decision and a second copy of it is how the two lanes drifted in the first place. ABOVE the resume
-  // return as well: a resumed run reads its manifest off the sidecar and would otherwise reach the
-  // dispatch with no deck path at all — the stage would silently fall back to reading nothing, which
-  // is exactly the failure this issue is about, reintroduced on the resume path only.
-  const configured = frameworkFor(ctx.profile);
-  const fwPath = configured !== DEFAULT_FRAMEWORK ? configured : TRIAGE_FRAMEWORK;
-  ctx.frameworkPath = fwPath;
-  let raw = null;
-  try { raw = readFileSync(sidecarPath, "utf8"); } catch { /* ENOENT */ }
-  if (raw != null) {
-    try { ctx.framework = parseFrameworkManifest(raw); }
-    catch (e) { throw new Error(`_driver/framework.json is corrupt (${e.message}) — investigate; the frozen framework is never silently re-derived`); }
-    readBackLadder(sidecarPath);
-    // The method is read back with the manifest it was frozen beside, never loaded fresh on a resume.
-    ctx.frameworkMethod = attachFrameworkMethod({ frozenPath: driverDir(ctx.paths.runDir, FROZEN_METHOD_FILE),
-      resolve: (rel) => config.resolveSkillPath(rel), fwPath, manifest: ctx.framework, minted: false });
-    return;
-  }
-  const manifest = loadFrameworkManifest((rel) => config.resolveSkillPath(rel), fwPath);   // see pipeline.mjs attachFramework
-  ctx.framework = manifest;
-  // THE FRAMEWORK'S METHOD, frozen when the framework states one (framework-method.mjs): every rated card
-  // on a knockout page then records the framework's inputs and takes its table's band. Frozen BEFORE the
-  // manifest, as the clearance lane does: a run interrupted between the two writes has no manifest, so its
-  // resume mints both again. The other order would leave a manifest with no method beside it, which the
-  // resume branch above reads as a framework that states none.
-  ctx.frameworkMethod = attachFrameworkMethod({ frozenPath: driverDir(ctx.paths.runDir, FROZEN_METHOD_FILE),
-    resolve: (rel) => config.resolveSkillPath(rel), fwPath, manifest, minted: true });
-  atomicWrite(sidecarPath, JSON.stringify(manifest, null, 2) + "\n");
-  runLog(ctx.paths.runDir, { event: "framework", key: manifest.framework_key, custom: fwPath !== TRIAGE_FRAMEWORK, lane: "knockout", bands: manifest.bands.map((b) => b.label).join("/"),
-    method: ctx.frameworkMethod ? methodPathFor(fwPath) : null });
-  readBackLadder(sidecarPath);
+  attachFramework(ctx, { defaultFramework: TRIAGE_FRAMEWORK, lane: "knockout", deckOnCtx: true, readBack: readBackLadder });
 }
 
 // ── — READ THE LADDER BACK THE WAY ITS CONSUMER READS IT, AT THE ONE MOMENT IT IS FREE ─────────
@@ -1616,23 +1577,13 @@ export async function knockoutInner(ctx, job, opts = {}) {
         writeFileSync(K.emailBody, emailHtml);
         const nMarks = merged.marks.length;
         const refTag = job.ref ? ` (${job.ref})` : "";
-        const packet = {
-          runId, agent,
-          forwarder: job.forwarder, forwarderEmail: job.forwarderEmail, msgId: job.msgId,
-          conversationId: job.conversationId ?? null,
+        // THE SAME ROUTING AS THE CLEARANCE PACKET (part b), in the one builder both use (delivery-handoff.mjs). This read
+        // `AGENT_WHATSAPP[agent]`, and every user of a deployment shares one agent id, so every knockout completion paged
+        // the operator and told the person who ordered it nothing. The failure notice (run-failed.mjs, buildFailurePacket)
+        // routes the same way: the courier relays it to the requester, and the operator keeps the page as the copy beside it.
+        const packet = deliveryPacket({ runId, agent, job,
           subject: `${[productName, job.ref ?? markNames[0] ?? "batch"].filter(Boolean).join(" — ")} (${nMarks} mark${nMarks === 1 ? "" : "s"})`,
           emailBodyHtml: emailHtml,
-          // THE SAME ROUTING AS THE CLEARANCE PACKET (part b). This read
-          // `AGENT_WHATSAPP[agent]`, and every user of a deployment shares one agent id, so every knockout
-          // completion paged the operator and told the person who ordered it nothing. The clearance packet
-          // was moved off that and this one was not, which is the half that shipped: one call site fixed,
-          // two existing. Where no number is held the packet now SAYS so in `whatsappToReason` rather than
-          // substituting the operator silently.
-          //
-          // The failure notice (run-failed.mjs, buildFailurePacket) routes the same way. It used to keep `AGENT_WHATSAPP[agent]` as an
-          // operational page, but the courier relays it to the requester, who is owed it as they are owed a report, and the
-          // operator keeps the page as the copy beside it.
-          ...whatsappRouting(job, agent),
           // ONE LINE, N LINKS. This said "Report: <one url>" and on a batch that url is now null, which would
           // have read "Report: null" — the fail-visible shape doing its job, and still not a line to send. A
           // batch names every report it produced, in the order the names were ordered.
@@ -1645,16 +1596,8 @@ export async function knockoutInner(ctx, job, opts = {}) {
           // says so: an integrator that only knows `url` gets null on a batch and fails visibly, instead of
           // mailing the first of eight names as though it were the answer.
           url: published.url, reports: published.reports.map((r) => ({ mark: r.mark, url: r.url })),
-          verdict: overall, markName: batchMarkName(markNames),
-        };
-        try { rmSync(join(run.runDir, ".sent")); } catch { /* none */ }
-        try { rmSync(paths(run.runDir).sendReceipts, { force: true }); } catch { /* none */ }
-        try { rmSync(paths(run.runDir).failure); } catch { /* none */ }
-        writeFileSync(paths(run.runDir).delivery, JSON.stringify(packet, null, 2) + "\n");
-        try {
-          mkdirSync(config.outboxDir, { recursive: true });
-          writeFileSync(join(config.outboxDir, `${packet.runId}.pending`), `${agent}\n`);
-        } catch (e) { note(`delivery: outbox marker write skipped (${String(e.message).slice(0, 100)})`); }
+          verdict: overall, markName: batchMarkName(markNames) });
+        handOffDelivery(run.runDir, packet);   // delivery-handoff.mjs: the packet written, the outbox marker dropped
         const deliveredAt = new Date().toISOString();
         // ── THE TEN-MINUTE BAR, AGAINST THE RUN (ruling 591) ────────────────────────────────────────────
         //

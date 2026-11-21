@@ -216,19 +216,18 @@ test("the test mocks' prefix admits no setting the product reads", () => {
 /** Read by modules the servers import for their tables and defaults; no tool needs it. */
 const NOT_A_TOOL_SETTING = "read at module top by a module the servers import for its tables; Codex has never forwarded it to a server, and searches run there";
 const NOT_PASSED = Object.freeze(Object.fromEntries([
-  "CLEAROTRON_AI", "CLEAROTRON_AI_BILLING", "CLEAROTRON_CLAUDE_PATH", "CLEAROTRON_CODEX_PATH", "CLEAROTRON_ENGINES_DIR",
+  "CLEAROTRON_AI", "CLEAROTRON_CLAUDE_PATH", "CLEAROTRON_CODEX_PATH", "CLEAROTRON_ENGINES_DIR",
   "CLEAROTRON_DATABASE", "CLEAROTRON_DEFAULT_AGENT", "CLEAROTRON_INSTRUCTIONS_DIR", "CLEAROTRON_INVOKED_AS",
   "CLEAROTRON_MAX_CLAIM_AGE_MS", "CLEAROTRON_MAX_CONCURRENT_RUNS", "CLEAROTRON_MAX_RETRIES", "CLEAROTRON_ORDER_PROBE_SEED",
   "CLEAROTRON_OUTBOX_DIR", "CLEAROTRON_QUEUE_DIR", "CLEAROTRON_RATE_LIMIT_DEFAULT_BACKOFF_MS",
   "CLEAROTRON_RATE_LIMIT_PROBE_CEILING_MS", "CLEAROTRON_RATE_LIMIT_PROBE_MS", "CLEAROTRON_RECIPES_DIR",
   "CLEAROTRON_REPORTS_DIR", "CLEAROTRON_REPORTS_URL", "CLEAROTRON_RUN_LOCK_DIR", "CLEAROTRON_WORK_DIR",
   "CLEAROTRON_WORKSPACE_PREFIX", "CLEAROTRON_CARD_CONCURRENCY", "CLEAROTRON_GATHER_CONCURRENCY",
-  "CLEAROTRON_MIN_FREE_DISK_MB", "CLEAROTRON_ACCESS_DOMAIN", "CLEAROTRON_UNREACHABLE_SENIOR", "CODEX_API_KEY",
+  "CLEAROTRON_MIN_FREE_DISK_MB", "CLEAROTRON_ACCESS_DOMAIN", "CLEAROTRON_UNREACHABLE_SENIOR",
   "INVOCATION_ID",
 ].map((n) => [n, NOT_A_TOOL_SETTING]).concat([
   ["CLEAROTRON_SUITE_TELEMETRY_DIR", "the driver resolves the ledgers under it and hands each server the resolved path by name"],
-], ["ANTHROPIC_BASE_URL", "CLAUDE_CODE_USE_BEDROCK", "CLAUDE_CODE_USE_FOUNDRY", "CLAUDE_CODE_USE_VERTEX"].map((n) => [n,
-  "a cloud's setting, read by auth.mjs, which the servers import for its tables; the program has it only under cloud billing, and no tool needs it"]),
+],
 ["CLEAROTRON_SIGNA_ANSWER_MEMORY", "CLEAROTRON_CLARIVATE_ANSWER_MEMORY"].map((n) => [n,
   "the driver reads it when an attempt starts and writes the mode into the run folder; a server reads that mode (answer-memory.mjs `openAnswerMemory`), never the switch"]))));
 

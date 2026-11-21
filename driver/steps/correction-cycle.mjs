@@ -16,13 +16,13 @@ import { recordSynthesisSeam } from "../record-carry-trace.mjs";
 import { atomicWrite, driverDir, readJson } from "../run-record.mjs";
 import { modelRecordPath } from "../record-fold.mjs";
 import { repairFollowup } from "../repair-composers.mjs";
-import { CORRECTIONS_DELIVERED_FILE, correctionsExtra, CORRECTIVE_RECHECK_FILE, correctiveCycleSettledDecision, removalRepairedRow, restoredFindingsTable, snapshotFindingsForCorrections } from "../repair-review-run.mjs";
+import { CORRECTIONS_DELIVERED_FILE, CORRECTIVE_RECHECK_FILE, correctiveCycleSettledDecision, removalRepairedRow, restoredFindingsTable, snapshotFindingsForCorrections } from "../repair-review-run.mjs";
 import { partsDrift, writeReviewAddresses } from "../review-addresses.mjs";
 import { asPartNotCompleted, must, stage, writerExclusionBlock } from "../stage-dispatch.mjs";
 import { lastAcceptedCall } from "../synthesis-record.mjs";
 import { shaOf } from "../stage-freshness.mjs";
 import { parseVerdict } from "../verify.mjs";
-import { correctionNamedLines, correctionNamedOrdinals, correctionNamedSet, correctionReading, correctionRows, enforceCorrectionsReachFindings, recordCorrectionsBasis, repairUnnamedRemovals, rollbackCorrectivePass } from "./corrections.mjs";
+import { correctionNamedLines, correctionNamedOrdinals, correctionNamedSet, correctionReading, correctionRows, correctionsExtra, enforceCorrectionsReachFindings, recordCorrectionsBasis, repairUnnamedRemovals, rollbackCorrectivePass } from "./corrections.mjs";
 import { existsSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 
 export async function runCorrectionCycle({ ctx, run, P, verdict, firstRef, synthesisKey, synthesisModel, synthesisThinking }) {

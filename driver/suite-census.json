@@ -59,7 +59,7 @@
         },
         "a-bare-territory-per-provider.test.mjs": {
           "tests": 4,
-          "asserts": 9,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
@@ -1204,8 +1204,8 @@
           "todos": 0
         },
         "a-jurisdiction-s-tables-agree.test.mjs": {
-          "tests": 3,
-          "asserts": 5,
+          "tests": 4,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
@@ -1259,7 +1259,7 @@
         },
         "a-knockout-conflict-carries-its-framework-inputs.test.mjs": {
           "tests": 6,
-          "asserts": 39,
+          "asserts": 40,
           "skips": 0,
           "todos": 0
         },
@@ -4588,8 +4588,8 @@
           "todos": 0
         },
         "each-attempt-records-how-much-of-each-manual-its-model-was-shown.test.mjs": {
-          "tests": 9,
-          "asserts": 31,
+          "tests": 11,
+          "asserts": 38,
           "skips": 0,
           "todos": 0
         },
@@ -4893,6 +4893,12 @@
           "skips": 1,
           "todos": 0
         },
+        "every-spelling-of-a-territory-searches-the-same-office-on-every-register.test.mjs": {
+          "tests": 8,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
         "every-surface-draws-bands-from-the-report-ramp.test.mjs": {
           "tests": 5,
           "asserts": 16,
@@ -4942,8 +4948,8 @@
           "todos": 0
         },
         "examples-jobs.test.mjs": {
-          "tests": 5,
-          "asserts": 9,
+          "tests": 6,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
@@ -8103,6 +8109,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-knockout-workbook-s-long-text-columns-are-at-least-40-wide.test.mjs": {
+          "tests": 1,
+          "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
         "the-known-register-providers-are-the-ones-with-a-grant.test.mjs": {
           "tests": 2,
           "asserts": 6,
@@ -8165,7 +8177,7 @@
         },
         "the-notice-goes-to-whoever-asked.test.mjs": {
           "tests": 10,
-          "asserts": 28,
+          "asserts": 29,
           "skips": 1,
           "todos": 0
         },
@@ -9507,8 +9519,8 @@
           "todos": 0
         },
         "account-audit-chain.test.mjs": {
-          "tests": 11,
-          "asserts": 50,
+          "tests": 12,
+          "asserts": 52,
           "skips": 0,
           "todos": 0
         },
