@@ -61,12 +61,12 @@ function plannedMisses(name, caps) {
   return misses;
 }
 
-test("every spelling is planned on the same offices as the plain code, on every register", () => {
-  for (const [name, { caps }] of Object.entries(REGISTERS)) assert.deepEqual(plannedMisses(name, caps), [], name);
-});
+for (const [name, { caps, direct, send }] of Object.entries(REGISTERS)) {
+  test(`${name}: every spelling is planned on the same offices as the plain code`, () => {
+    assert.deepEqual(plannedMisses(name, caps), []);
+  });
 
-test("every spelling is sent to each register in that register's own code, and never as UK or INT", () => {
-  for (const [name, { caps, direct, send }] of Object.entries(REGISTERS)) {
+  test(`${name}: every spelling is sent in this register's own code, and never as UK or INT`, () => {
     const paths = { "the plan": (r) => send(resolveRegions([r], caps).regions), ...(direct ? { "a tool call": (r) => send([r]) } : {}) };
     for (const [path, wire] of Object.entries(paths)) {
       for (const [code, spellings] of Object.entries(SPELLINGS)) {
@@ -79,8 +79,8 @@ test("every spelling is sent to each register in that register's own code, and n
         }
       }
     }
-  }
-});
+  });
+}
 
 test("the engine reads INT as WIPO's international register, as the report does", () => {
   assert.equal(canonicalJurisdictionCode("INT"), "WO");
