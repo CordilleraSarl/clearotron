@@ -197,8 +197,9 @@ test("the probed provider facts are encoded, not the stale core's warts", () => 
 // the exact shape exists to punish, one level out from where it punished it.
 const SIGNA_SRC = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "providers", "signa", "src");
 
-test("signa's core still carries NO figurative data — the absence reason in gather-config holds", () => {
-  const files = readdirSync(SIGNA_SRC).filter((f) => f.endsWith(".js") || f.endsWith(".mjs"));
+test("signa's core still carries NO figurative data — the absence reason in its register grant holds", () => {
+  // The grant itself states the reason in those very words, so it is not part of the core being read.
+  const files = readdirSync(SIGNA_SRC).filter((f) => (f.endsWith(".js") || f.endsWith(".mjs")) && f !== "register-grant.mjs");
   const corpus = files.map((f) => readFileSync(join(SIGNA_SRC, f), "utf8")).join("\n");
 
   // POSITIVE CONTROL FIRST. A scan that reads nothing reports every absence, so the arm below is
@@ -211,7 +212,7 @@ test("signa's core still carries NO figurative data — the absence reason in ga
   // and this provider publishes neither.
   const figurative = [...corpus.matchAll(/\b\w*(?:vienna|figurativ)\w*\b/gi)].map((m) => m[0]);
   assert.deepEqual([...new Set(figurative)], [],
-    "signa's core now names figurative data, so gather-config's register_image_fetch absence reason is "
+    "signa's core now names figurative data, so the register_image_fetch absence reason in its register-grant.mjs is "
     + "stale — re-read it, and wire the tool if the vendor really does publish Vienna codes now");
   assert.equal(capabilitiesFor("signa").hasPublicRecordUrl, false,
     "signa now declares a per-record public URL — half the register_image_fetch reason just went false");
