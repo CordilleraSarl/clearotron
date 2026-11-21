@@ -4936,8 +4936,8 @@
           "todos": 0
         },
         "examples-jobs.test.mjs": {
-          "tests": 5,
-          "asserts": 9,
+          "tests": 6,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
@@ -8091,6 +8091,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-knockout-workbook-s-long-text-columns-are-at-least-40-wide.test.mjs": {
+          "tests": 1,
+          "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
         "the-known-register-providers-are-the-ones-with-a-grant.test.mjs": {
           "tests": 2,
           "asserts": 6,
@@ -9495,8 +9501,8 @@
           "todos": 0
         },
         "account-audit-chain.test.mjs": {
-          "tests": 11,
-          "asserts": 50,
+          "tests": 12,
+          "asserts": 52,
           "skips": 0,
           "todos": 0
         },

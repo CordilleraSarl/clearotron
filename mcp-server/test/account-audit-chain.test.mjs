@@ -306,3 +306,13 @@ test("acme's token reads a cited record's goods in the register's own words, cop
   const web = await call("get_finding", { runId: RUN_ID, id: "F2" }, ACME());
   assert.ok(!("goodsAsRegistered" in web), "a marketplace source was given register goods");
 });
+
+// The account's assistant learns of the field from the tool's description, in the wording design approved.
+test("acme's tool listing tells its assistant what goodsAsRegistered carries", async () => {
+  const listed = await mcpRaw(ACME(), "tools/list", {});
+  const json = JSON.parse(listed.slice(listed.indexOf("{")).split("\n")[0]);
+  const def = json.result.tools.find((t) => t.name === "get_finding");
+  assert.ok(def, "the account's listing does not offer get_finding");
+  assert.ok(def.description.endsWith(" When a cited register record has saved goods or services, `goodsAsRegistered` gives the "
+    + "register\u2019s wording in its original language, with the provider\u2019s English translation where available."), def.description);
+});

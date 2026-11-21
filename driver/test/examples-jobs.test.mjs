@@ -62,6 +62,14 @@ for (const file of exampleJobs) {
   });
 }
 
+test("job.knockout.json, the first real clearance setup suggests, is a knockout search on the EU register alone", () => {
+  // Setup prints it only where the register reaches the EU, so a territory outside the EU would send a first-time
+  // reader at a register that cannot answer. A knockout is the Quickstart's first run: minutes, where the others take hours.
+  const job = JSON.parse(readFileSync(join(EXAMPLES, "job.knockout.json"), "utf8"));
+  assert.deepEqual(job.jurisdictions, ["EU"], "EU and nothing else");
+  assert.equal(job.product, "knockout-search");
+});
+
 test("job.euipo.json is EU-only and names a product whose geography admits a region", () => {
   // The file exists to be the free-tier example: EUIPO covers the EU register and nothing else, so an
   // example naming a territory outside it would send a first-time reader at a provider that cannot
