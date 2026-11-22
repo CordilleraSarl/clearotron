@@ -53,13 +53,18 @@ import { tmpdir } from "node:os";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
+// The record key the Knockout page looks a saved body up by, loaded from REPO as the publisher is below.
+const { normalizeRecordUri } = await import(pathToFileURL(join(REPO, "providers", "_shared", "record-uri.mjs")).href);
 
-// A FILE IS READ AS TEXT ONLY IF IT IS TEXT. A saved logo is an image, and reading one as UTF-8 does not throw: it
+// A FILE IS REWRITTEN ONLY IF IT IS TEXT. A saved logo is an image, and reading one as UTF-8 does not throw: it
 // decodes to replacement characters, and the rewrite would write that back over the image. Bytes that do not decode
-// are not text, so no pass here rewrites or searches them. The byte order mark is kept, so a text file that has one
-// is written back as it was read.
+// are not text, so the rewrite leaves them alone. The byte order mark is kept, so a text file that has one is written
+// back as it was read.
 const UTF8 = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true });
 const readText = (path) => { try { return UTF8.decode(readFileSync(path)); } catch { return null; } };
+// THE CHECKS STILL READ AN IMAGE, byte for byte, as latin1: what the rewrite may not touch it can still find, and a
+// key or a path inside an image's bytes would ship as surely as one in a text file. So it is a finding there too.
+const readForChecks = (path) => { const t = readText(path); if (t !== null) return t; try { return readFileSync(path, "latin1"); } catch { return null; } };
 
 // ── The allowlist ────────────────────────────────────────────────────────────────────────────────────
 // Every entry cites the read that puts it here. `required` means publish cannot render without it.
@@ -134,16 +139,22 @@ const KNOCKOUT_FILES = [
 ];
 
 /**
- * The record log as the page reads it: for each record, the last line that carries a body, keeping only the two
- * fields the log's index reads (`target`, `body`). The session ids, times and agents stay behind. Lines keep their
- * order, so a record written under two spellings resolves to the same body it did in the run. PURE.
+ * The record log as the page reads it: the records the run's register-records.json lists, which are the only ones
+ * filingRecordBodies looks up, each by the last line that carries its body, keeping only the two fields the log's
+ * index reads (`target`, `body`). A record the run fetched and did not list stays behind with its owner, and so do
+ * the session ids, times and agents. Lines keep their order, so a record written under two spellings resolves to
+ * the same body it did in the run.
  */
-function recordBodiesOnly(text) {
+function recordBodiesOnly(text, runDir) {
+  const listed = new Set();
+  const records = readJsonOr(driverDir(runDir, "register-records.json"), {});
+  for (const m of Array.isArray(records?.marks) ? records.marks : [])
+    for (const r of Array.isArray(m?.records) ? m.records : []) { const k = normalizeRecordUri(r?.recordId); if (k) listed.add(k); }
   const rows = [];
   for (const line of text.split("\n")) {
     let r = null;
     try { r = JSON.parse(line); } catch { continue; }
-    if (r?.body && typeof r.target === "string") rows.push({ target: r.target, body: r.body });
+    if (r?.body && typeof r.target === "string" && listed.has(normalizeRecordUri(r.target))) rows.push({ target: r.target, body: r.body });
   }
   const last = new Map(rows.map((r, i) => [r.target, i]));
   return rows.filter((r, i) => last.get(r.target) === i).map((r) => JSON.stringify(r)).join("\n") + (rows.length ? "\n" : "");
@@ -400,7 +411,7 @@ for (const entry of filesFor(template)) {
   }
   const dst = join(frozenRun, entry.path);
   mkdirSync(dirname(dst), { recursive: true });
-  if (entry.reduce) writeFileSync(dst, entry.reduce(readFileSync(src, "utf8")));
+  if (entry.reduce) writeFileSync(dst, entry.reduce(readFileSync(src, "utf8"), runDir));
   else copyFileSync(src, dst);
   copied.push(entry.path);
 }
@@ -500,7 +511,7 @@ if (sourceOrigin) note(`public origin: ${ogHits} link(s) in ${ogFiles} file(s) r
 {
   const survivorsCn = [], survivorsVk = [], survivorsOg = [];
   for (const rel of copied) {
-    const t = readText(join(frozenRun, rel)) ?? "";   // an image carries no text of either class, but its NAME can
+    const t = readForChecks(join(frozenRun, rel)) ?? "";
     if (renamed && sourceCodename && t.includes(sourceCodename)) survivorsCn.push(rel);
     if (sourceOrigin && t.includes(sourceOrigin.replace(/^https?:\/\//, ""))) survivorsOg.push(rel);
     VENDOR_KEY_RE.lastIndex = 0;   // a /g regex carries lastIndex across .test() calls
@@ -551,7 +562,7 @@ note(`${sourceCount} file(s) in the source run → ${frozenFiles.length} frozen`
 console.log("\n4. scrub");
 let scrubHits = 0;
 for (const rel of frozenFiles) {
-  const text = readText(join(frozenRun, rel));
+  const text = readForChecks(join(frozenRun, rel));
   if (text === null) continue;
   for (const rule of SCRUB) {
     rule.re.lastIndex = 0;
@@ -571,7 +582,7 @@ if (!scrubHits) note(`${SCRUB.length} rule(s), 0 hits across ${frozenFiles.lengt
 // literal this script already knows, and its job is to hand the person landing the sample the exact list.
 if (sourceCodename) {
   const echoes = frozenFiles.filter((rel) => {
-    return readText(join(frozenRun, rel))?.includes(sourceCodename) ?? false;
+    return readForChecks(join(frozenRun, rel))?.includes(sourceCodename) ?? false;
   });
   if (!echoes.length) note(`no file carries the source codename "${sourceCodename}"`);
   else if (renamed) finding(`${echoes.length} frozen file(s) still carry the source codename "${sourceCodename}" — rewrite each before committing: ${echoes.join(", ")}`);
