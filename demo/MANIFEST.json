@@ -1,7 +1,7 @@
 {
   "note": "What produced the evidence under demo/. Re-recorded by scripts/demo-evidence.mjs --apply in the same commit that regenerates it.",
   "generator": "scripts/freeze-example-run.mjs",
-  "recordedFromTree": "237eff69736310416ae607c46e6b809b0faf5f75",
+  "recordedFromTree": "ec67f36544f3e684c67f930195d97ebf4f379cde",
   "products": [
     {
       "product": "full-country-search",
