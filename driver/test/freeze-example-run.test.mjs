@@ -11,7 +11,7 @@ import { test } from "node:test";
 import { pinEnvAll } from "../../shared/env-aliases.mjs";   // — a spread carries EVERY spelling, so an override must clear every spelling
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, existsSync, readFileSync, readdirSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, existsSync, readFileSync, readdirSync, rmSync, cpSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
@@ -178,6 +178,89 @@ test("every input the publisher declares travels with a frozen run, the register
   const frozen = join(out, "run");
   for (const f of ["register-named-band.json", "_driver/jx-lanes.json", "_driver/jx/units.json", "_driver/register-recall.json"])
     assert.ok(existsSync(join(frozen, f)), `${f} is a declared publish input and did not travel: ${r.out}`);
+  rmSync(root, { recursive: true, force: true });
+});
+
+// A one-pixel PNG: the bytes a saved logo holds, which no text pass may rewrite.
+const PNG = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64");
+
+/** A run whose one finding cites a registration whose record and logo the run saved, named for its vendor key. */
+function logoRun(KEY, image) {
+  const uri = `/mark/em/${KEY.toUpperCase()}`;
+  const made = makeRun();
+  const findings = structuredClone(FINDINGS);
+  findings.findings[0].owner.registrations[0].uri = uri;
+  writeFileSync(join(made.runDir, "findings.json"), JSON.stringify(findings, null, 2));
+  mkdirSync(join(made.runDir, "_records"), { recursive: true });
+  writeFileSync(join(made.runDir, "_records", `em-${KEY}.json`), JSON.stringify({ mark: "AQUAPLUS" }, null, 2));
+  mkdirSync(driverDir(made.runDir, "logos"), { recursive: true });
+  writeFileSync(driverDir(made.runDir, "logos", `em-${KEY}.png`), image);
+  writeFileSync(driverDir(made.runDir, "logos.json"), JSON.stringify({ schema: 1, rows: [{ ref: uri.toLowerCase(), state: "fetched", file: `_driver/logos/em-${KEY}.png`, contentType: "image/png", bytes: image.length }] }, null, 2));
+  return made;
+}
+const LOGO_KEY = `ctmsi${"0123456789abcdef".repeat(2)}`;
+
+test("a run's saved logos travel with it, renamed with their record's key, bytes untouched, and both sides of the proof show them", () => {
+  // The logo is named for its record's vendor key, as a run names it. Before, the freeze left logos.json and the
+  // images behind, and the proof's staged source renamed nothing, so both pages lacked the logo and matched.
+  const { root, runDir } = logoRun(LOGO_KEY, PNG);
+  const r = runFreeze(runDir, join(root, "frozen"), ["--keep-scratch"]);
+  assert.equal(r.code, 0, r.out);
+  const frozen = join(root, "frozen", "run");
+  const saved = readdirSync(driverDir(frozen, "logos"));
+  assert.equal(saved.length, 1, r.out);
+  assert.ok(!saved[0].includes(LOGO_KEY), `the logo kept the vendor key in its name: ${saved[0]}`);
+  assert.ok(readFileSync(driverDir(frozen, "logos", saved[0])).equals(PNG), "the image's bytes were rewritten");
+  assert.ok(readFileSync(driverDir(frozen, "logos.json"), "utf8").includes(`_driver/logos/${saved[0]}`), "logos.json does not name the renamed image");
+  const scratch = r.out.match(/scratch pools kept at (\S+)/)?.[1];
+  assert.ok(scratch, r.out);
+  const img = `data:image/png;base64,${PNG.toString("base64")}`;
+  for (const side of ["full", "frozen"]) {
+    const page = readFileSync(join(scratch, side, "tmp8439-aquaplus-2026-01-01-synthetic-fixture", "report.html"), "utf8");
+    assert.ok(page.includes(img), `the ${side} side of the proof shows no logo`);
+  }
+  rmSync(scratch, { recursive: true, force: true });
+  rmSync(root, { recursive: true, force: true });
+});
+
+test("a vendor key inside an image's bytes is a finding, and the image is not rewritten to hide it", () => {
+  // The rewrite may not touch an image, so what it cannot remove the re-read must report: a key in the bytes ships.
+  const image = Buffer.concat([PNG, Buffer.from(LOGO_KEY)]);
+  const { root, runDir } = logoRun(LOGO_KEY, image);
+  const r = runFreeze(runDir, join(root, "frozen"));
+  assert.equal(r.code, 1, `a key inside an image passed: ${r.out}`);
+  assert.match(r.out, /FINDING: 1 file\(s\) still carry a vendor record key after substitution: _driver\/logos\/em-[0-9a-f-]+\.png/, r.out);
+  const frozen = join(root, "frozen", "run");
+  const [saved] = readdirSync(driverDir(frozen, "logos"));
+  assert.ok(readFileSync(driverDir(frozen, "logos", saved)).equals(image), "the image's bytes were rewritten");
+  rmSync(root, { recursive: true, force: true });
+});
+
+test("a Knockout's record log travels reduced to the last body of each listed record, and the rest of it stays behind", () => {
+  // A listed filing's register record is read from the run's record log. Each line also names the session that
+  // fetched it; only the target and the body of a record the run lists travel. A record it fetched and did not list
+  // stays behind, with its owner.
+  const root = mkdtempSync(join(tmpdir(), "freeze-ko-"));
+  const runDir = join(root, "archive", "2026-01", "tmp8439-aquaplus", "2026-01-01-synthetic-fixture");
+  cpSync(join(HERE, "fixtures", "delivered-knockout", "run"), runDir, { recursive: true });
+  const records = JSON.parse(readFileSync(driverDir(runDir, "register-records.json"), "utf8"));
+  records.marks[0].records = [{ recordId: "/mark/EU/000000001" }];
+  writeFileSync(driverDir(runDir, "register-records.json"), JSON.stringify(records, null, 2));
+  const line = (target, body, extra = {}) => JSON.stringify({ ts: "2026-01-01T10:00:00.000Z", provider: "fixture", agentId: "a", sessionKey: "s", sessionId: "x", target, body, ...extra });
+  writeFileSync(driverDir(runDir, "register-record-bodies.jsonl"), [
+    line("/mark/eu/000000001", { uri: "/mark/eu/000000001", markText: "FIRST" }),
+    line("/mark/eu/000000002", null),
+    line("/mark/eu/000000003", { uri: "/mark/eu/000000003", markText: "UNLISTED", owner: "Fetched Not Listed Ltd" }),
+    line("/mark/eu/000000001", { uri: "/mark/eu/000000001", markText: "LATER" }),
+  ].join("\n") + "\n");
+  writeFileSync(driverDir(runDir, "knockout-assess#0.jsonl"), '{"model":"fixture"}\n');
+  const r = runFreeze(runDir, join(root, "frozen"));
+  assert.equal(r.code, 0, r.out);
+  const frozen = join(root, "frozen", "run");
+  const kept = readFileSync(driverDir(frozen, "register-record-bodies.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
+  assert.deepEqual(kept, [{ target: "/mark/eu/000000001", body: { uri: "/mark/eu/000000001", markText: "LATER" } }]);
+  assert.ok(!existsSync(driverDir(frozen, "knockout-assess#0.jsonl")), "a Knockout stage's telemetry travelled");
+  assert.match(r.out, /no per-stage telemetry/, r.out);
   rmSync(root, { recursive: true, force: true });
 });
 

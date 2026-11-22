@@ -71,6 +71,16 @@ test("with no register chosen, the ending suggests the demo and no first real cl
     `the first-clearance line is no longer printed only when a register is chosen: ${block}`);
 });
 
+test("with no AI chosen, the ending says so plainly and names the one command that adds one", () => {
+  // Enter at every prompt ends with no AI, since installing a vendor's program is never the default. The ending then
+  // says so as it says a missing register: the command that refuses, and the command that sets it.
+  const at = ENDING.indexOf("if (!aiChosen) {");
+  assert.ok(at > 0, "the ending has no branch for an install with no AI");
+  const block = ENDING.slice(at, ENDING.indexOf("\n  }\n", at));
+  assert.ok(block.includes("no AI is chosen, so \\`${invocationPrefix()}clearotron run\\` will refuse at its door."), block);
+  assert.ok(block.includes("Set it by re-running \\`${invocationPrefix()}clearotron install\\`."), block);
+});
+
 test("setup's opening promises only what it does", () => {
   // A paid register key is written on the reader's word, unchecked: checking it would cost them. And the
   // organisation's name cannot be skipped. "No setting", since a cancel can leave programs setup installed.

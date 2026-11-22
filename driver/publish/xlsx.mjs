@@ -45,6 +45,12 @@ const WIDE = {
   // Audit Trail and Working Notes. One table for both workbooks, so a header means one width wherever it appears.
   'Mark': 40, 'Finding Name': 40, 'Band': 40, 'Type': 40, 'Net': 60, 'Basis': 60, 'Evidence': 60,
   'Search Term': 40, 'Source / Context': 40, 'Notes': 60, 'Result Summary': 60,
+  // A finding reference is the mark and the range of its ordinals, so it is as long as the mark.
+  'Finding Reference': 40,
+  // Register Counts and Register Filings: a worldwide scope's list of codes, the forms a close count was taken over,
+  // a filing's mark, the form it matched, its classes and its record's address.
+  'Territories': 60, 'Close variation forms': 60, 'Register': 24,
+  'Matched form': 40, 'Trademark': 40, 'Classes': 40, 'Record': 60,
 };
 const width = h => WIDE[h] || 16;
 

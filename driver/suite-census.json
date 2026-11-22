@@ -4420,8 +4420,8 @@
           "todos": 0
         },
         "doctor-refuses-what-cannot-run.test.mjs": {
-          "tests": 9,
-          "asserts": 22,
+          "tests": 10,
+          "asserts": 28,
           "skips": 0,
           "todos": 0
         },
@@ -5134,8 +5134,8 @@
           "todos": 0
         },
         "freeze-example-run.test.mjs": {
-          "tests": 14,
-          "asserts": 60,
+          "tests": 17,
+          "asserts": 74,
           "skips": 0,
           "todos": 0
         },
@@ -7762,8 +7762,8 @@
           "todos": 0
         },
         "the-end-of-setup-agrees-with-what-it-left-unset.test.mjs": {
-          "tests": 8,
-          "asserts": 21,
+          "tests": 9,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -8116,8 +8116,8 @@
           "todos": 0
         },
         "the-knockout-workbook-s-long-text-columns-are-at-least-40-wide.test.mjs": {
-          "tests": 1,
-          "asserts": 4,
+          "tests": 2,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
