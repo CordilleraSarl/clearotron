@@ -1,0 +1,8 @@
+{
+  "axis": "transliteration-numeric",
+  "families": {
+    "transliteration-numeric:exact:q-a74a3a76": {
+      "reason": "The provider indexes Japanese marks by romanisation; the planned VENKORI contains and exact searches cover this pronunciation, making another exact script-labelled query redundant."
+    }
+  }
+}

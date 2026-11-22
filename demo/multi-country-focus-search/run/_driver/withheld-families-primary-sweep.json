@@ -1,0 +1,26 @@
+{
+  "axis": "primary-sweep",
+  "families": {
+    "primary-sweep:exact:venqori-systems": {
+      "reason": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors."
+    },
+    "primary-sweep:exact:venqori-tech": {
+      "reason": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors."
+    },
+    "primary-sweep:exact:venqori-labs": {
+      "reason": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors."
+    },
+    "primary-sweep:exact:venqori-academy": {
+      "reason": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors."
+    },
+    "primary-sweep:exact:tech-venqori": {
+      "reason": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors."
+    },
+    "primary-sweep:exact:academy-venqori": {
+      "reason": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors."
+    },
+    "primary-sweep:wildcard:v-r": {
+      "reason": "The pattern v*r retains only two letters and loses VENQORI's distinctive syllables. The focused vowel skeleton, complete edit-one band and explicit sound/visual neighbours address buyer recognition; this remote pattern would add unrelated strings without a supported confusion theory. No count was obtained for it."
+    }
+  }
+}

@@ -1,0 +1,293 @@
+{
+  "_provenance": "driver-written form (#476; typed transport). Axes, coverage units, open crowd blocks with their query ids and hit counts, and deferred slices with their receipt reasons are computed by the driver from the frozen register plan, the plan-execution receipt and the per-axis bands — the same calculation the validator judges with — and are REGENERATED on every pass. Statuses and reasons arrive ONLY through the `record_coverage` tool; no seat opens or edits this file. A row marked `open` carries an obligation the machine computed and the seat cannot call confirmed-clean; its own `open_because` says which — a slice that was never searched is `deferred`, an unaccounted crowd block that ran and saturated is `coverage-limited`. EACH OPEN ROW IS DISCHARGED ONLY BY ITSELF: a status on one row never accounts for another row's slice. Statuses accumulate across attempts: a row settled once stays settled. Seat-added rows arrive through the same tool — see `seat_row_contract` for their closed axis vocabulary.",
+  "seat_row_contract": {
+    "what": "Rows you ADD, for coverage units the plan does not contain — the per-jurisdiction reconciliation, a cross-class merch check, a counted dominant-element crowd. Those are judgment and the ledger a lawyer reads has always carried them.",
+    "fields": [
+      "kind",
+      "axis",
+      "unit",
+      "status",
+      "reason"
+    ],
+    "kind": "seat",
+    "axis": [
+      "saturation-probe",
+      "primary-sweep",
+      "transliteration-numeric",
+      "incumbent-class"
+    ],
+    "axis_rule": "REQUIRED on a row you add, and EXACTLY one bare token of the `axis` list above — the vocabulary is CLOSED. Choose the axis whose coverage the row qualifies: a per-jurisdiction reconciliation or a cross-class / cross-check / merch sweep is `primary-sweep`; an owner, incumbent, watchlist-owner or stealth-filer sweep is `incumbent-class`; a counted dominant-element or meaning-token crowd is `saturation-probe`; a transliteration or numeric-form slice is `transliteration-numeric`. Never a jurisdiction, a class, a sweep name or a phrase.",
+    "unit": "<axis> / <what you swept> — the same shape the driver's own rows use.",
+    "status": [
+      "confirmed-clean",
+      "coverage-limited",
+      "deferred",
+      "withheld-by-judgment"
+    ],
+    "reason": "The sentence the lawyer reads.",
+    "counted_crowd": {
+      "when": "The dominant-element reconciliation left residual POSITIONS you did not end individually. This is the ONE row you are compelled to add, and the only seat row under a delivery-blocking gate: a residual position with no finding row and no drop row is covered ONLY by membership of a ruled, COUNTED crowd, and a position ending nowhere blocks the run.",
+      "unit": "<axis> / dominant-element crowd (<N> members): <one-line label for the residual class>",
+      "token": "dominant-element crowd",
+      "count_cell": "unit",
+      "count_rule": "The member count is read out of the `unit` cell and NOWHERE ELSE — a count that sits in `reason` parses as ZERO, the crowd then covers no position, and delivery blocks over a ruling you did make. Write it as a bare integer in `(<N> members)`, counted in POSITIONS, at least the number of residual positions you did not end individually."
+    },
+    "note": "The axis on a row the DRIVER wrote is the driver's and is regenerated every pass. This contract governs rows YOU add, and nothing else in this file."
+  },
+  "generated_from": {
+    "skeleton_axes": [
+      "primary-sweep",
+      "transliteration-numeric"
+    ],
+    "plan_entries": 56,
+    "open_blocks": 0,
+    "deferred_qids": 0,
+    "deferred_offices": 0,
+    "bands_unreadable": []
+  },
+  "rows": [
+    {
+      "row_id": "CA-JP4XJYVX",
+      "axis": "primary-sweep",
+      "kind": "axis",
+      "unit": "primary-sweep",
+      "qid": null,
+      "skeleton_state": "executed",
+      "open": false,
+      "status": "confirmed-clean",
+      "reason": "The dispatched name searches completed; the retained software and education rights require assessment, while missing specifications remain separately disclosed."
+    },
+    {
+      "row_id": "CF-JCEHFE80",
+      "axis": "primary-sweep",
+      "kind": "family",
+      "unit": "primary-sweep / exact: VENQORI SYSTEMS [cl 9, 42, 41]",
+      "qid": "primary-sweep:exact:venqori-systems",
+      "open": true,
+      "open_because": "a waiting family the reading turn did not ask — it was never searched, and its only judgment is withheld-by-judgment with the reason it was not asked",
+      "status": "withheld-by-judgment",
+      "reason": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+      "reason_from": "_driver/withheld-families-primary-sweep.json"
+    },
+    {
+      "row_id": "CF-9J6GK1BW",
+      "axis": "primary-sweep",
+      "kind": "family",
+      "unit": "primary-sweep / exact: VENQORI TECHNOLOGIES [cl 9, 42, 41]",
+      "qid": "primary-sweep:exact:venqori-technologies",
+      "open": true,
+      "open_because": "a waiting family the reading turn did not ask — it was never searched, and its only judgment is withheld-by-judgment with the reason it was not asked",
+      "status": "withheld-by-judgment",
+      "reason": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+      "reason_from": "_driver/withheld-families-primary-sweep.json"
+    },
+    {
+      "row_id": "CF-WV3KVQWT",
+      "axis": "primary-sweep",
+      "kind": "family",
+      "unit": "primary-sweep / exact: VENQORI DIGITAL [cl 9, 42, 41]",
+      "qid": "primary-sweep:exact:venqori-digital",
+      "open": true,
+      "open_because": "a waiting family the reading turn did not ask — it was never searched, and its only judgment is withheld-by-judgment with the reason it was not asked",
+      "status": "withheld-by-judgment",
+      "reason": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+      "reason_from": "_driver/withheld-families-primary-sweep.json"
+    },
+    {
+      "row_id": "CF-R6DXJEB3",
+      "axis": "primary-sweep",
+      "kind": "family",
+      "unit": "primary-sweep / exact: VENQORI SOFTWARE [cl 9, 42, 41]",
+      "qid": "primary-sweep:exact:venqori-software",
+      "open": true,
+      "open_because": "a waiting family the reading turn did not ask — it was never searched, and its only judgment is withheld-by-judgment with the reason it was not asked",
+      "status": "withheld-by-judgment",
+      "reason": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+      "reason_from": "_driver/withheld-families-primary-sweep.json"
+    },
+    {
+      "row_id": "CF-A84Y1EB6",
+      "axis": "primary-sweep",
+      "kind": "family",
+      "unit": "primary-sweep / exact: VENQORI LABS [cl 9, 42, 41]",
+      "qid": "primary-sweep:exact:venqori-labs",
+      "open": true,
+      "open_because": "a waiting family the reading turn did not ask — it was never searched, and its only judgment is withheld-by-judgment with the reason it was not asked",
+      "status": "withheld-by-judgment",
+      "reason": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+      "reason_from": "_driver/withheld-families-primary-sweep.json"
+    },
+    {
+      "row_id": "CF-5M42JT6T",
+      "axis": "primary-sweep",
+      "kind": "family",
+      "unit": "primary-sweep / exact: VENQORI CONSULTING [cl 9, 42, 41]",
+      "qid": "primary-sweep:exact:venqori-consulting",
+      "open": true,
+      "open_because": "a waiting family the reading turn did not ask — it was never searched, and its only judgment is withheld-by-judgment with the reason it was not asked",
+      "status": "withheld-by-judgment",
+      "reason": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+      "reason_from": "_driver/withheld-families-primary-sweep.json"
+    },
+    {
+      "row_id": "CF-5WN5ARWW",
+      "axis": "primary-sweep",
+      "kind": "family",
+      "unit": "primary-sweep / exact: VENQORI ACADEMY [cl 9, 42, 41]",
+      "qid": "primary-sweep:exact:venqori-academy",
+      "open": true,
+      "open_because": "a waiting family the reading turn did not ask — it was never searched, and its only judgment is withheld-by-judgment with the reason it was not asked",
+      "status": "withheld-by-judgment",
+      "reason": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+      "reason_from": "_driver/withheld-families-primary-sweep.json"
+    },
+    {
+      "row_id": "CF-QVVNCGWC",
+      "axis": "primary-sweep",
+      "kind": "family",
+      "unit": "primary-sweep / exact: VENQORI LEARNING [cl 9, 42, 41]",
+      "qid": "primary-sweep:exact:venqori-learning",
+      "open": true,
+      "open_because": "a waiting family the reading turn did not ask — it was never searched, and its only judgment is withheld-by-judgment with the reason it was not asked",
+      "status": "withheld-by-judgment",
+      "reason": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+      "reason_from": "_driver/withheld-families-primary-sweep.json"
+    },
+    {
+      "row_id": "CF-4PFWZX60",
+      "axis": "primary-sweep",
+      "kind": "family",
+      "unit": "primary-sweep / exact: VENQORI EDUCATION [cl 9, 42, 41]",
+      "qid": "primary-sweep:exact:venqori-education",
+      "open": true,
+      "open_because": "a waiting family the reading turn did not ask — it was never searched, and its only judgment is withheld-by-judgment with the reason it was not asked",
+      "status": "withheld-by-judgment",
+      "reason": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+      "reason_from": "_driver/withheld-families-primary-sweep.json"
+    },
+    {
+      "row_id": "CF-GRPK1GK0",
+      "axis": "primary-sweep",
+      "kind": "family",
+      "unit": "primary-sweep / exact: VENQORI TRAINING [cl 9, 42, 41]",
+      "qid": "primary-sweep:exact:venqori-training",
+      "open": true,
+      "open_because": "a waiting family the reading turn did not ask — it was never searched, and its only judgment is withheld-by-judgment with the reason it was not asked",
+      "status": "withheld-by-judgment",
+      "reason": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+      "reason_from": "_driver/withheld-families-primary-sweep.json"
+    },
+    {
+      "row_id": "CF-J5SHZEEV",
+      "axis": "primary-sweep",
+      "kind": "family",
+      "unit": "primary-sweep / wildcard: v*r [cl 9, 42, 41]",
+      "qid": "primary-sweep:wildcard:v-r",
+      "open": true,
+      "open_because": "a waiting family the reading turn did not ask — it was never searched, and its only judgment is withheld-by-judgment with the reason it was not asked",
+      "status": "withheld-by-judgment",
+      "reason": "Initial V and final R alone do not preserve the coined mark's distinctive structure. The complete edit-one band and the closer consonant skeleton address plausible recollection; this unrelated two-letter envelope would not help identify a plausible objector. No count was sought.",
+      "reason_from": "_driver/withheld-families-primary-sweep.json"
+    },
+    {
+      "row_id": "CA-JMJSF8A1",
+      "axis": "transliteration-numeric",
+      "kind": "axis",
+      "unit": "transliteration-numeric",
+      "qid": null,
+      "skeleton_state": "executed",
+      "open": false,
+      "status": "confirmed-clean",
+      "reason": "The dispatched romanised and numeric forms completed; local pronunciation and marketplace verification remain distinct open questions."
+    },
+    {
+      "row_id": "CF-4931RWXS",
+      "axis": "transliteration-numeric",
+      "kind": "family",
+      "unit": "transliteration-numeric / exact: ヴェンコリ [cl 9, 42, 41]",
+      "qid": "transliteration-numeric:exact:q-a74a3a76",
+      "open": true,
+      "open_because": "a waiting family the reading turn did not ask — it was never searched, and its only judgment is withheld-by-judgment with the reason it was not asked",
+      "status": "withheld-by-judgment",
+      "reason": "These forms share the romanisation VENKORI, already searched in exact and broader Latin questions covering the relevant markets; repeating it would not add a distinct register question.",
+      "reason_from": "_driver/withheld-families-transliteration-numeric.json"
+    },
+    {
+      "row_id": "CF-ESK81GQ7",
+      "axis": "transliteration-numeric",
+      "kind": "family",
+      "unit": "transliteration-numeric / exact: Венкори [cl 9, 42, 41]",
+      "qid": "transliteration-numeric:exact:q-9dd0911b",
+      "open": true,
+      "open_because": "a waiting family the reading turn did not ask — it was never searched, and its only judgment is withheld-by-judgment with the reason it was not asked",
+      "status": "withheld-by-judgment",
+      "reason": "These forms share the romanisation VENKORI, already searched in exact and broader Latin questions covering the relevant markets; repeating it would not add a distinct register question.",
+      "reason_from": "_driver/withheld-families-transliteration-numeric.json"
+    },
+    {
+      "row_id": "CF-6WT4BN9D",
+      "axis": "transliteration-numeric",
+      "kind": "family",
+      "unit": "transliteration-numeric / exact: Βενκόρι [cl 9, 42, 41]",
+      "qid": "transliteration-numeric:exact:q-9ca7884b",
+      "open": true,
+      "open_because": "a waiting family the reading turn did not ask — it was never searched, and its only judgment is withheld-by-judgment with the reason it was not asked",
+      "status": "withheld-by-judgment",
+      "reason": "These forms share the romanisation VENKORI, already searched in exact and broader Latin questions covering the relevant markets; repeating it would not add a distinct register question.",
+      "reason_from": "_driver/withheld-families-transliteration-numeric.json"
+    },
+    {
+      "row_id": "CF-T3PN8X32",
+      "axis": "transliteration-numeric",
+      "kind": "family",
+      "unit": "transliteration-numeric / exact: वेनकोरी [cl 9, 42, 41]",
+      "qid": "transliteration-numeric:exact:q-7a8e50b7",
+      "open": true,
+      "open_because": "a waiting family the reading turn did not ask — it was never searched, and its only judgment is withheld-by-judgment with the reason it was not asked",
+      "status": "withheld-by-judgment",
+      "reason": "These forms share the romanisation VENKORI, already searched in exact and broader Latin questions covering the relevant markets; repeating it would not add a distinct register question.",
+      "reason_from": "_driver/withheld-families-transliteration-numeric.json"
+    },
+    {
+      "row_id": "CA-ZQ8YPH1S",
+      "axis": "saturation-probe",
+      "kind": "axis",
+      "unit": "saturation-probe",
+      "qid": null,
+      "skeleton_state": null,
+      "open": false,
+      "status": "withheld-by-judgment",
+      "reason": "The coined name has no common component requiring a dilution count; no crowded name list remained unanswered."
+    },
+    {
+      "row_id": "CS-23F8Q5T2",
+      "axis": "primary-sweep",
+      "kind": "seat",
+      "unit": "primary-sweep / operative specifications",
+      "qid": null,
+      "open": false,
+      "status": "deferred",
+      "reason": "Operative goods are unavailable for German VINKORY, Venezuelan bare VENCOR, Guatemalan VENCORP and Venezuelan VENCOR with corporate wording. Obtain specifications and current status before clearing software and training overlap."
+    },
+    {
+      "row_id": "CS-NEZQ1ENC",
+      "axis": "primary-sweep",
+      "kind": "seat",
+      "unit": "primary-sweep / UAE attribution and scope",
+      "qid": null,
+      "open": false,
+      "status": "deferred",
+      "reason": "The UAE VONCORE record lacks a proprietor and a reliable English specification. Confirm ownership, original-language monitoring and data-equipment scope, and current status."
+    },
+    {
+      "row_id": "CS-G1VAW95T",
+      "axis": "transliteration-numeric",
+      "kind": "seat",
+      "unit": "transliteration-numeric / local marketplace reach",
+      "qid": null,
+      "open": false,
+      "status": "deferred",
+      "reason": "Local-script app-store and Naver coverage is not established, particularly for Japanese and Korean launch names; the other proposed Chinese, European and Indian script forms also require local marketplace verification. These unsearched platforms have no known result count."
+    }
+  ]
+}

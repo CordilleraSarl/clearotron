@@ -1,0 +1,10 @@
+{
+  "statuses": [
+    "confirmed-clean",
+    "coverage-limited",
+    "deferred",
+    "withheld-by-judgment"
+  ],
+  "form_required": true,
+  "form_path": "register-coverage-form.json"
+}

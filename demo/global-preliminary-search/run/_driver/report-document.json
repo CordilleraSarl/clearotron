@@ -1,8 +1,8 @@
 {
  "document": "report-document/clearance-1",
  "build": {
-  "engineCommit": "bb0b61204a1c273fa48110fbe9a06e11e3f8add5",
-  "renderedAt": "2026-11-22T10:25:49.142Z",
+  "engineCommit": "11b0a64c1e57213728a922eccf35635d31dda329",
+  "renderedAt": "2026-11-22T12:23:51.534Z",
   "tokens": {
    "input": 0,
    "output": 0,
@@ -24,7 +24,7 @@
   "markName": "VENQORI",
   "issued": "2026-11-20 · 21:47 GMT+1",
   "issuedAt": "2026-11-20T20:47:28.065Z",
-  "asOf": "2026-11-22T10:25:49.143Z",
+  "asOf": "2026-11-22T12:23:51.538Z",
   "url": null,
   "auditFile": "tmpdemo2014globalpreliminarysearch-venqori-2026-11-20-sample-capture-audit.xlsx",
   "product": {
@@ -3960,9 +3960,427 @@
   "lint": [],
   "droppedConditions": [],
   "undispatchedProbes": [],
-  "withheldFamilies": [],
-  "releasedFamilies": [],
-  "setAside": [],
+  "withheldFamilies": [
+   {
+    "area": "main register search / exact: VENQORI SYSTEMS [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+    "done": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: VENQORI TECHNOLOGIES [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+    "done": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: VENQORI DIGITAL [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+    "done": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: VENQORI SOFTWARE [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+    "done": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: VENQORI LABS [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+    "done": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: VENQORI CONSULTING [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+    "done": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: VENQORI ACADEMY [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+    "done": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: VENQORI LEARNING [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+    "done": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: VENQORI EDUCATION [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+    "done": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: VENQORI TRAINING [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+    "done": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record.",
+    "left": ""
+   },
+   {
+    "area": "main register search / wildcard: v*r [cl 9, 42, 41]",
+    "state": "note",
+    "note": "Initial V and final R alone do not preserve the coined mark's distinctive structure. The complete edit-one band and the closer consonant skeleton address plausible recollection; this unrelated two-letter envelope would not help identify a plausible objector. No count was sought.",
+    "done": "Initial V and final R alone do not preserve the coined mark's distinctive structure. The complete edit-one band and the closer consonant skeleton address plausible recollection; this unrelated two-letter envelope would not help identify a plausible objector. No count was sought.",
+    "left": ""
+   },
+   {
+    "area": "transliterations and numeric forms / exact: ヴェンコリ [cl 9, 42, 41]",
+    "state": "note",
+    "note": "These forms share the romanisation VENKORI, already searched in exact and broader Latin questions covering the relevant markets; repeating it would not add a distinct register question.",
+    "done": "These forms share the romanisation VENKORI, already searched in exact and broader Latin questions covering the relevant markets; repeating it would not add a distinct register question.",
+    "left": ""
+   },
+   {
+    "area": "transliterations and numeric forms / exact: Венкори [cl 9, 42, 41]",
+    "state": "note",
+    "note": "These forms share the romanisation VENKORI, already searched in exact and broader Latin questions covering the relevant markets; repeating it would not add a distinct register question.",
+    "done": "These forms share the romanisation VENKORI, already searched in exact and broader Latin questions covering the relevant markets; repeating it would not add a distinct register question.",
+    "left": ""
+   },
+   {
+    "area": "transliterations and numeric forms / exact: Βενκόρι [cl 9, 42, 41]",
+    "state": "note",
+    "note": "These forms share the romanisation VENKORI, already searched in exact and broader Latin questions covering the relevant markets; repeating it would not add a distinct register question.",
+    "done": "These forms share the romanisation VENKORI, already searched in exact and broader Latin questions covering the relevant markets; repeating it would not add a distinct register question.",
+    "left": ""
+   },
+   {
+    "area": "transliterations and numeric forms / exact: वेनकोरी [cl 9, 42, 41]",
+    "state": "note",
+    "note": "These forms share the romanisation VENKORI, already searched in exact and broader Latin questions covering the relevant markets; repeating it would not add a distinct register question.",
+    "done": "These forms share the romanisation VENKORI, already searched in exact and broader Latin questions covering the relevant markets; repeating it would not add a distinct register question.",
+    "left": ""
+   },
+   {
+    "area": "g2.com",
+    "state": "not-searched",
+    "note": "Enterprise software comparison channel; the supplied offering is a consumer app distributed through app stores.",
+    "done": "",
+    "left": "Enterprise software comparison channel; the supplied offering is a consumer app distributed through app stores."
+   },
+   {
+    "area": "capterra.com",
+    "state": "not-searched",
+    "note": "Business software procurement directory; no business procurement route is stated for this consumer app.",
+    "done": "",
+    "left": "Business software procurement directory; no business procurement route is stated for this consumer app."
+   },
+   {
+    "area": "aquatechtrade.com",
+    "state": "not-searched",
+    "note": "Water-industry trade exhibition channel; the request expressly places distribution outside the trade.",
+    "done": "",
+    "left": "Water-industry trade exhibition channel; the request expressly places distribution outside the trade."
+   },
+   {
+    "area": "wateronline.com",
+    "state": "not-searched",
+    "note": "Professional water and wastewater trade channel, rather than the stated consumer app-store route.",
+    "done": "",
+    "left": "Professional water and wastewater trade channel, rather than the stated consumer app-store route."
+   },
+   {
+    "area": "waterworld.com",
+    "state": "not-searched",
+    "note": "Utility and water-industry professional publication; no trade distribution is stated.",
+    "done": "",
+    "left": "Utility and water-industry professional publication; no trade distribution is stated."
+   },
+   {
+    "area": "smartwatermagazine.com",
+    "state": "not-searched",
+    "note": "Professional water-industry publication; consumer app-store discovery is the stated route.",
+    "done": "",
+    "left": "Professional water-industry publication; consumer app-store discovery is the stated route."
+   },
+   {
+    "area": "iwa-network.org",
+    "state": "not-searched",
+    "note": "Professional water-sector association; no professional membership or institutional training channel is stated.",
+    "done": "",
+    "left": "Professional water-sector association; no professional membership or institutional training channel is stated."
+   },
+   {
+    "area": "rakuten.co.jp",
+    "state": "not-searched",
+    "note": "Physical-goods marketplace is not an established channel for this downloadable mobile app; no testing hardware sales are supplied.",
+    "done": "",
+    "left": "Physical-goods marketplace is not an established channel for this downloadable mobile app; no testing hardware sales are supplied."
+   },
+   {
+    "area": "kakaku.com",
+    "state": "not-searched",
+    "note": "Product price-comparison channel is less direct than app stores for the supplied mobile app; no hardware or retail comparison route is stated.",
+    "done": "",
+    "left": "Product price-comparison channel is less direct than app stores for the supplied mobile app; no hardware or retail comparison route is stated."
+   },
+   {
+    "area": "coupang.com",
+    "state": "not-searched",
+    "note": "Consumer goods marketplace; no physical goods or marketplace distribution is supplied for this app.",
+    "done": "",
+    "left": "Consumer goods marketplace; no physical goods or marketplace distribution is supplied for this app."
+   },
+   {
+    "area": "line.me",
+    "state": "not-searched",
+    "note": "Messaging and platform ecosystem; no LINE mini-app, official-account or distribution integration is stated.",
+    "done": "",
+    "left": "Messaging and platform ecosystem; no LINE mini-app, official-account or distribution integration is stated."
+   }
+  ],
+  "releasedFamilies": [
+   {
+    "area": "main register search / default: VENKORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but sound-alike, visual and shortened families could identify different owners in the ordered classes. The unqualified VENQORI substring must also test composites beyond the goods-limited question; the consonant skeleton adds vowel-family coverage.",
+    "done": "The identical list is empty, but sound-alike, visual and shortened families could identify different owners in the ordered classes. The unqualified VENQORI substring must also test composites beyond the goods-limited question; the consonant skeleton adds vowel-family coverage.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VINKURI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but sound-alike, visual and shortened families could identify different owners in the ordered classes. The unqualified VENQORI substring must also test composites beyond the goods-limited question; the consonant skeleton adds vowel-family coverage.",
+    "done": "The identical list is empty, but sound-alike, visual and shortened families could identify different owners in the ordered classes. The unqualified VENQORI substring must also test composites beyond the goods-limited question; the consonant skeleton adds vowel-family coverage.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENKWORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but sound-alike, visual and shortened families could identify different owners in the ordered classes. The unqualified VENQORI substring must also test composites beyond the goods-limited question; the consonant skeleton adds vowel-family coverage.",
+    "done": "The identical list is empty, but sound-alike, visual and shortened families could identify different owners in the ordered classes. The unqualified VENQORI substring must also test composites beyond the goods-limited question; the consonant skeleton adds vowel-family coverage.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENQOR [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but sound-alike, visual and shortened families could identify different owners in the ordered classes. The unqualified VENQORI substring must also test composites beyond the goods-limited question; the consonant skeleton adds vowel-family coverage.",
+    "done": "The identical list is empty, but sound-alike, visual and shortened families could identify different owners in the ordered classes. The unqualified VENQORI substring must also test composites beyond the goods-limited question; the consonant skeleton adds vowel-family coverage.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENRI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but sound-alike, visual and shortened families could identify different owners in the ordered classes. The unqualified VENQORI substring must also test composites beyond the goods-limited question; the consonant skeleton adds vowel-family coverage.",
+    "done": "The identical list is empty, but sound-alike, visual and shortened families could identify different owners in the ordered classes. The unqualified VENQORI substring must also test composites beyond the goods-limited question; the consonant skeleton adds vowel-family coverage.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENOORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but sound-alike, visual and shortened families could identify different owners in the ordered classes. The unqualified VENQORI substring must also test composites beyond the goods-limited question; the consonant skeleton adds vowel-family coverage.",
+    "done": "The identical list is empty, but sound-alike, visual and shortened families could identify different owners in the ordered classes. The unqualified VENQORI substring must also test composites beyond the goods-limited question; the consonant skeleton adds vowel-family coverage.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENQOIR [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but sound-alike, visual and shortened families could identify different owners in the ordered classes. The unqualified VENQORI substring must also test composites beyond the goods-limited question; the consonant skeleton adds vowel-family coverage.",
+    "done": "The identical list is empty, but sound-alike, visual and shortened families could identify different owners in the ordered classes. The unqualified VENQORI substring must also test composites beyond the goods-limited question; the consonant skeleton adds vowel-family coverage.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENQORL [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but sound-alike, visual and shortened families could identify different owners in the ordered classes. The unqualified VENQORI substring must also test composites beyond the goods-limited question; the consonant skeleton adds vowel-family coverage.",
+    "done": "The identical list is empty, but sound-alike, visual and shortened families could identify different owners in the ordered classes. The unqualified VENQORI substring must also test composites beyond the goods-limited question; the consonant skeleton adds vowel-family coverage.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENCOR [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but sound-alike, visual and shortened families could identify different owners in the ordered classes. The unqualified VENQORI substring must also test composites beyond the goods-limited question; the consonant skeleton adds vowel-family coverage.",
+    "done": "The identical list is empty, but sound-alike, visual and shortened families could identify different owners in the ordered classes. The unqualified VENQORI substring must also test composites beyond the goods-limited question; the consonant skeleton adds vowel-family coverage.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENCORE [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but sound-alike, visual and shortened families could identify different owners in the ordered classes. The unqualified VENQORI substring must also test composites beyond the goods-limited question; the consonant skeleton adds vowel-family coverage.",
+    "done": "The identical list is empty, but sound-alike, visual and shortened families could identify different owners in the ordered classes. The unqualified VENQORI substring must also test composites beyond the goods-limited question; the consonant skeleton adds vowel-family coverage.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENQORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but sound-alike, visual and shortened families could identify different owners in the ordered classes. The unqualified VENQORI substring must also test composites beyond the goods-limited question; the consonant skeleton adds vowel-family coverage.",
+    "done": "The identical list is empty, but sound-alike, visual and shortened families could identify different owners in the ordered classes. The unqualified VENQORI substring must also test composites beyond the goods-limited question; the consonant skeleton adds vowel-family coverage.",
+    "left": ""
+   },
+   {
+    "area": "main register search / wildcard: v?nq?r? [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but sound-alike, visual and shortened families could identify different owners in the ordered classes. The unqualified VENQORI substring must also test composites beyond the goods-limited question; the consonant skeleton adds vowel-family coverage.",
+    "done": "The identical list is empty, but sound-alike, visual and shortened families could identify different owners in the ordered classes. The unqualified VENQORI substring must also test composites beyond the goods-limited question; the consonant skeleton adds vowel-family coverage.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENQORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The web finding warrants checking longer marks incorporating the identical coined anchor in Classes 9, 42 and 41: a composite incumbent could change who may object to the consumer monitoring app or its training and what clearance steps are needed.",
+    "done": "The web finding warrants checking longer marks incorporating the identical coined anchor in Classes 9, 42 and 41: a composite incumbent could change who may object to the consumer monitoring app or its training and what clearance steps are needed.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENCORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "These close whole-name spelling and sound neighbours can lead to different owners and composite families in the ordered software, technical-services and training classes. Reading those rights could change the objection assessment under imperfect consumer recollection.",
+    "done": "These close whole-name spelling and sound neighbours can lead to different owners and composite families in the ordered software, technical-services and training classes. Reading those rights could change the objection assessment under imperfect consumer recollection.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENQUORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "These close whole-name spelling and sound neighbours can lead to different owners and composite families in the ordered software, technical-services and training classes. Reading those rights could change the objection assessment under imperfect consumer recollection.",
+    "done": "These close whole-name spelling and sound neighbours can lead to different owners and composite families in the ordered software, technical-services and training classes. Reading those rights could change the objection assessment under imperfect consumer recollection.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VEN QORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "A separated presentation preserves the whole name's sound and can expose composite rights missed by an unspaced literal. Such rights could change advice about the app name and associated training branding.",
+    "done": "A separated presentation preserves the whole name's sound and can expose composite rights missed by an unspaced literal. Such rights could change advice about the app name and associated training branding.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENKWORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The kw pronunciation and compressed spoken form are distinct remembered-sound families in the manifest. Their software or training rights could identify different potential objectors; results for the longer spelling alone cannot answer them.",
+    "done": "The kw pronunciation and compressed spoken form are distinct remembered-sound families in the manifest. Their software or training rights could identify different potential objectors; results for the longer spelling alone cannot answer them.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENRI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The kw pronunciation and compressed spoken form are distinct remembered-sound families in the manifest. Their software or training rights could identify different potential objectors; results for the longer spelling alone cannot answer them.",
+    "done": "The kw pronunciation and compressed spoken form are distinct remembered-sound families in the manifest. Their software or training rights could identify different potential objectors; results for the longer spelling alone cannot answer them.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENQOIR [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The final-letter transposition preserves a close visual impression in app-store browsing. Longer marks built around it may identify ordered-class rights that change the assessment of visual confusion and the client's naming options.",
+    "done": "The final-letter transposition preserves a close visual impression in app-store browsing. Longer marks built around it may identify ordered-class rights that change the assessment of visual confusion and the client's naming options.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENCOR [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The manifest flags this historical company-name neighbour. Searching its family within the ordered classes can reveal surviving software or training rights and present owners that could affect the advice; its healthcare history alone does not resolve specification overlap.",
+    "done": "The manifest flags this historical company-name neighbour. Searching its family within the ordered classes can reveal surviving software or training rights and present owners that could affect the advice; its healthcare history alone does not resolve specification overlap.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: V3NQORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "Digit substitutions retain the coined name's visual identity in public-facing app branding. Their composite families may expose separate software or education owners or imitation filings, changing objection or protective-filing advice.",
+    "done": "Digit substitutions retain the coined name's visual identity in public-facing app branding. Their composite families may expose separate software or education owners or imitation filings, changing objection or protective-filing advice.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENQOR1 [cl 9, 42, 41]",
+    "state": "note",
+    "note": "Digit substitutions retain the coined name's visual identity in public-facing app branding. Their composite families may expose separate software or education owners or imitation filings, changing objection or protective-filing advice.",
+    "done": "Digit substitutions retain the coined name's visual identity in public-facing app branding. Their composite families may expose separate software or education owners or imitation filings, changing objection or protective-filing advice.",
+    "left": ""
+   },
+   {
+    "area": "transliterations and numeric forms / exact: V3NQORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "Digit substitutions and distinct Chinese and Korean romanisations may reveal visually or phonetically similar rights missed by the identical spelling, including in priority Korea.",
+    "done": "Digit substitutions and distinct Chinese and Korean romanisations may reveal visually or phonetically similar rights missed by the identical spelling, including in priority Korea.",
+    "left": ""
+   },
+   {
+    "area": "transliterations and numeric forms / exact: VENQ0RI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "Digit substitutions and distinct Chinese and Korean romanisations may reveal visually or phonetically similar rights missed by the identical spelling, including in priority Korea.",
+    "done": "Digit substitutions and distinct Chinese and Korean romanisations may reveal visually or phonetically similar rights missed by the identical spelling, including in priority Korea.",
+    "left": ""
+   },
+   {
+    "area": "transliterations and numeric forms / exact: VENQOR1 [cl 9, 42, 41]",
+    "state": "note",
+    "note": "Digit substitutions and distinct Chinese and Korean romanisations may reveal visually or phonetically similar rights missed by the identical spelling, including in priority Korea.",
+    "done": "Digit substitutions and distinct Chinese and Korean romanisations may reveal visually or phonetically similar rights missed by the identical spelling, including in priority Korea.",
+    "left": ""
+   },
+   {
+    "area": "transliterations and numeric forms / exact: 文科里 [cl 9, 42, 41]",
+    "state": "note",
+    "note": "Digit substitutions and distinct Chinese and Korean romanisations may reveal visually or phonetically similar rights missed by the identical spelling, including in priority Korea.",
+    "done": "Digit substitutions and distinct Chinese and Korean romanisations may reveal visually or phonetically similar rights missed by the identical spelling, including in priority Korea.",
+    "left": ""
+   },
+   {
+    "area": "transliterations and numeric forms / exact: 벤코리 [cl 9, 42, 41]",
+    "state": "note",
+    "note": "Digit substitutions and distinct Chinese and Korean romanisations may reveal visually or phonetically similar rights missed by the identical spelling, including in priority Korea.",
+    "done": "Digit substitutions and distinct Chinese and Korean romanisations may reveal visually or phonetically similar rights missed by the identical spelling, including in priority Korea.",
+    "left": ""
+   }
+  ],
+  "setAside": [
+   {
+    "area": "Set aside: VONCORE — Bank Vontobel AG",
+    "note": "VONCORE reads as VON CORE, with a different opening vowel and no final I syllable. That complete short name is sufficiently separate from VENQORI even allowing the broad measuring/computer goods; no banking-sector or non-use assumption is needed."
+   },
+   {
+    "area": "Set aside: VONCORE — Vontobel Holding AG",
+    "note": "The Hong Kong VONCORE sign has the same independent distinction: VON CORE changes the opening vowel and omits VENQORI's final syllable. Its broad apparatus wording is not treated as proof of an unrelated field."
+   },
+   {
+    "area": "Set aside: VONCORE — not stated on the register",
+    "note": "The UAE VONCORE sign is independently separated by its VON CORE word/sound pattern, changed opening vowel and absent final I syllable. Ownership and translated monitoring scope remain unresolved and are disclosed, but are not needed for this whole-name ground."
+   },
+   {
+    "area": "Set aside: RIVENCORE — RIVENCORE GLOBAL SOLUTIONS LIMITED",
+    "note": "RIVENCORE begins with the substantial RI opening and ends in CORE, rather than reproducing VENQORI's complete three-syllable sequence and final I. Its environmental-monitoring and education wording is acknowledged, not dismissed as unrelated merely because other goods are military or marine."
+   },
+   {
+    "area": "Set aside: https://velqory.com/",
+    "note": "The follow-up identifies BOUNCY ALGORITHM – UNIPESSOAL LIMITADA as Velqory's operator (https://velqory.com/about). Its actual common-law trade is bespoke business software and AI/cybersecurity/digital-skills training, with no consumer-water product in those offerings; those tasks and SME customers differ from this brief."
+   },
+   {
+    "area": "Set aside: https://velqory.com/platform",
+    "note": "The platform and terms describe reusable components for bespoke SME projects and software still in development, not a consumer environmental-reading app (https://velqory.com/platform; https://velqory.com/terms). This is the same Velqory business assessed at page 38, and its actual trade does not meet the instructed water app and learning."
+   },
+   {
+    "area": "Set aside: https://www.cbinsights.com/company/vencor",
+    "note": "The CB Insights Vencor result is a company-profile/historical-name lead, not an identified present water-software product or course. The distinct Vencore Labs research lead was separately investigated; this generic profile adds no independently attributable conflicting trade."
+   },
+   {
+    "area": "Set aside: https://www.udemy.com/",
+    "note": "The Udemy homepage identifies no particular course, mark or operator using a VENQORI-like name. A generic platform return supplies no conflict to rate."
+   },
+   {
+    "area": "Set aside: https://www.edn.com/vencore-inc-launches-its-transformative-new-research-organization-vencore-labs/",
+    "note": "The EDN article concerns applied communications, cybersecurity, data and smart-grid research for government, utility and commercial customers. The follow-up confirms subsequent name changes in https://business.sos.ri.gov/CorpWeb/CorpSearch/CorpSummary.aspx?FEIN=000715578; the actual infrastructure-research trade does not meet the consumer water app or attached public learning."
+   },
+   {
+    "area": "Set aside: https://www.venqorgroup.com/",
+    "note": "Venqor's pages describe textiles, industrial materials, packaging and automation (https://www.venqorgroup.com/category/all-products). Filtration materials do not establish a water-monitoring application or course; its legal operator remains unverified, and no band is assigned."
+   },
+   {
+    "area": "Set aside: https://venqore.com/features",
+    "note": "Venqore's terms and features identify retail POS/ERP, inventory, accounting and store operations (https://venqore.com/terms; https://venqore.com/features). That actual enterprise-retail workflow falls within the matter frame's separate SaaS field; the operator remains unidentified, without a rated claim or a purported clearance of its portfolio."
+   }
+  ],
   "fetchState": {
    "/mark/ae/29742280-0b1c-4bf5-869b-1b572d14ac7f": "retrieved",
    "/mark/ao/0cf1ec3e-8cc5-4191-9a72-8696d7a7368b": "retrieved",

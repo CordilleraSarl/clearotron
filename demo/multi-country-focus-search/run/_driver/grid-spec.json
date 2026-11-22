@@ -1,0 +1,148 @@
+{
+  "terms": [
+    "VENQORI",
+    "VENKORI",
+    "vencori",
+    "venqory",
+    "ヴェンコリ",
+    "ベンコリ",
+    "벤코리",
+    "VEN QORI",
+    "VENCORY",
+    "VINKARI",
+    "VENKRI",
+    "VENKOR",
+    "VENQORL",
+    "VENQOIR",
+    "VENQ0RI",
+    "VENQORI SYSTEMS",
+    "VENQORI TECH",
+    "VENQORI LABS",
+    "VENQORI ACADEMY",
+    "TECH VENQORI",
+    "ACADEMY VENQORI"
+  ],
+  "platforms": [
+    "udemy.com",
+    "coursera.org",
+    "apps.apple.com",
+    "play.google.com",
+    "rakuten.co.jp",
+    "kakaku.com",
+    "naver.com",
+    "coupang.com",
+    "web"
+  ],
+  "grids": [
+    {
+      "terms": [
+        "VENQORI",
+        "VENKORI",
+        "vencori",
+        "venqory",
+        "ヴェンコリ",
+        "ベンコリ",
+        "벤코리"
+      ],
+      "platforms": [
+        "udemy.com",
+        "coursera.org",
+        "apps.apple.com",
+        "play.google.com",
+        "rakuten.co.jp",
+        "kakaku.com",
+        "naver.com",
+        "coupang.com"
+      ]
+    },
+    {
+      "terms": [
+        "VENQORI",
+        "VEN QORI",
+        "VENKORI",
+        "VENCORY",
+        "VINKARI",
+        "VENKRI",
+        "VENKOR",
+        "VENQORL",
+        "VENQOIR",
+        "VENQ0RI",
+        "ヴェンコリ",
+        "벤코리",
+        "VENQORI SYSTEMS",
+        "VENQORI TECH",
+        "VENQORI LABS",
+        "VENQORI ACADEMY",
+        "TECH VENQORI",
+        "ACADEMY VENQORI",
+        "vencori",
+        "venqory",
+        "ベンコリ"
+      ],
+      "platforms": [
+        "web"
+      ]
+    }
+  ],
+  "menu": [
+    "g2.com",
+    "capterra.com",
+    "aquatechtrade.com",
+    "wateronline.com",
+    "waterworld.com",
+    "smartwatermagazine.com",
+    "iwa-network.org",
+    "udemy.com",
+    "coursera.org",
+    "apps.apple.com",
+    "play.google.com",
+    "rakuten.co.jp",
+    "kakaku.com",
+    "naver.com",
+    "coupang.com",
+    "line.me",
+    "web"
+  ],
+  "set_aside": [
+    {
+      "store": "g2.com",
+      "reason": "Enterprise software reviews do not match the stated consumer app-store purchase journey."
+    },
+    {
+      "store": "capterra.com",
+      "reason": "Business software procurement directory; no enterprise sales are stated."
+    },
+    {
+      "store": "aquatechtrade.com",
+      "reason": "Water-industry trade exhibition channel; the request expressly places distribution outside the trade."
+    },
+    {
+      "store": "wateronline.com",
+      "reason": "Professional water-treatment trade publication rather than a consumer app or attached-training channel."
+    },
+    {
+      "store": "waterworld.com",
+      "reason": "Municipal and industrial water-sector readership does not match this consumer app's buyers."
+    },
+    {
+      "store": "smartwatermagazine.com",
+      "reason": "Professional water-sector publication; no trade-facing offering is stated."
+    },
+    {
+      "store": "iwa-network.org",
+      "reason": "Professional water association and technical education channel; no professional credential or association distribution is stated."
+    },
+    {
+      "store": "line.me",
+      "reason": "Messaging and social distribution could promote an app, but no LINE integration, mini-app or official-account channel is supplied."
+    }
+  ],
+  "batch": 1,
+  "connotation": {
+    "queries": [],
+    "none_named": true,
+    "disposition_required": true
+  },
+  "ledger_required": true,
+  "results_per_cell": 20
+}

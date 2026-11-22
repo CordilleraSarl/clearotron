@@ -1,0 +1,11 @@
+{
+  "axis": "transliteration-numeric",
+  "families": {
+    "transliteration-numeric:exact:venq0ri": {
+      "reason": "The zero-for-O spelling could reveal a visually indistinguishable digital brand that the identical word search misses."
+    },
+    "transliteration-numeric:exact:q-9292d4cb": {
+      "reason": "The Korean B rendering may identify locally effective sound-alike rights missed by the identical Latin spelling."
+    }
+  }
+}

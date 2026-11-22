@@ -1,8 +1,8 @@
 {
  "document": "report-document/knockout-1",
  "build": {
-  "engineCommit": "bb0b61204a1c273fa48110fbe9a06e11e3f8add5",
-  "renderedAt": "2026-11-22T10:25:53.184Z",
+  "engineCommit": "11b0a64c1e57213728a922eccf35635d31dda329",
+  "renderedAt": "2026-11-22T12:23:56.118Z",
   "tokens": null
  },
  "run": {
@@ -4574,7 +4574,72 @@
     "fetched"
    ]
   ],
-  "ownerChecks": [],
+  "ownerChecks": [
+   {
+    "mark": "VENQORI",
+    "owner": "LEGADO IT S.R.L.-FERREYRA ESTEFANIA-CABRAL JUAN H.",
+    "recordIds": [
+     "/mark/ar/47492ce5-1f6d-4d5a-bea3-93cfae9eb8ff",
+     "/mark/ar/84f5c85b-798b-4e42-ac08-e30d4b02f0d5"
+    ],
+    "classes": [
+     9,
+     42
+    ],
+    "query": "What goods or services does the company \"LEGADO IT S.R.L.-FERREYRA ESTEFANIA-CABRAL JUAN H.\" actually sell or trade in? It holds a trademark registration for \"VENQORI\" (registered in classes 9, 42). Report what the business does today, with sources. If nothing can be established about this company, say so plainly.",
+    "preset": "pro-search",
+    "ok": true,
+    "source": "https://www.legadoit.com.ar/",
+    "payloadFile": "owner-legado-it-s-r-l-ferreyra-estefania-cabral-juan-h-20442c328a.md",
+    "ts": "2026-11-20T23:00:52.803Z",
+    "took_ms": 14771
+   },
+   {
+    "mark": "VENQORI",
+    "owner": "vencura AG",
+    "recordIds": [
+     "/mark/ch/75b855ee-314b-4713-8e3e-4e8ac1b10461"
+    ],
+    "classes": [
+     9,
+     16,
+     35,
+     36,
+     38,
+     41,
+     42,
+     44,
+     45
+    ],
+    "query": "What goods or services does the company \"vencura AG\" actually sell or trade in? It holds a trademark registration for \"VENQORI\" (registered in classes 9, 16, 35, 36, 38, 41, 42, 44, 45). Report what the business does today, with sources. If nothing can be established about this company, say so plainly.",
+    "preset": "pro-search",
+    "ok": true,
+    "source": "https://www.moneyhouse.ch/en/company/vencura-ag-12859082461",
+    "payloadFile": "owner-vencura-ag-a15325c36e.md",
+    "ts": "2026-11-20T23:01:00.322Z",
+    "took_ms": 22289
+   },
+   {
+    "mark": "VENQORI",
+    "owner": "Bank Vontobel AG",
+    "recordIds": [
+     "/mark/ch/a1b37fae-9606-4298-891e-6e27fbce482b",
+     "/mark/wo/df442737-643e-42ae-bfc5-783bd7b49eea"
+    ],
+    "classes": [
+     9,
+     16,
+     36
+    ],
+    "query": "What goods or services does the company \"Bank Vontobel AG\" actually sell or trade in? It holds a trademark registration for \"VENQORI\" (registered in classes 9, 16, 36). Report what the business does today, with sources. If nothing can be established about this company, say so plainly.",
+    "preset": "pro-search",
+    "ok": true,
+    "source": "https://www.vontobel.com/siteassets/about-vontobel/investor-relations/capital-instruments/fyr/fyr2025-vontobel-zuerich-einzelabschluss_en.pdf",
+    "payloadFile": "owner-bank-vontobel-ag-eed68a926c.md",
+    "ts": "2026-11-20T23:01:17.957Z",
+    "took_ms": 39923
+   }
+  ],
   "recordLinks": {
    "tally": {
     "linked": {
@@ -4626,7 +4691,33 @@
   "servedModels": null
  },
  "reviewer": {
-  "sweepReceipts": [],
+  "sweepReceipts": [
+   {
+    "ts": "2026-11-20T22:56:46.416Z",
+    "mark": "VENQORI",
+    "callNo": 1,
+    "preset": "pro-search",
+    "reasoning": "low",
+    "executor": "perplexity",
+    "spellings": [
+     "VENQORI",
+     "VENKORI"
+    ],
+    "places": [
+     "web",
+     "apps.apple.com",
+     "play.google.com"
+    ],
+    "use": "app",
+    "resultsPerCell": 10,
+    "cells": 6,
+    "present": 6,
+    "attempts": 1,
+    "took_ms": 10741,
+    "bytes": 7504,
+    "ok": true
+   }
+  ],
   "qcFlags": [],
   "machineChecksFailed": null,
   "lookupsNotRun": [],

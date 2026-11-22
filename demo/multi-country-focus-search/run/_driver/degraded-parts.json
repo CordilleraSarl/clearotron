@@ -1,0 +1,46 @@
+{
+  "parts": [
+    {
+      "part": "register",
+      "name": "Register",
+      "reason": "unfinished",
+      "cause": "the dominant-element crowd: the omission the blind frame comparison flagged was not closed by the reopen pass"
+    }
+  ],
+  "rows": [
+    {
+      "area": "Follow-up / Register",
+      "state": "open",
+      "note": "Register — not completed this run — it could not be completed this run, so it is left open here rather than reported as clean"
+    }
+  ],
+  "stores": {
+    "findings.json": "read",
+    "_driver/receipts.json": "read",
+    "_driver/senior-rights.json": "read",
+    "_driver/verdict.json": "read",
+    "_driver/framework.json": "read",
+    "_driver/register-recall.json": "absent",
+    "_driver/register-plan.json": "read",
+    "_driver/plan-execution.json": "read",
+    "register-named-band.json": "read",
+    "_driver/instructed-scope.json": "read",
+    "_driver/scope-facts.json": "read",
+    "_driver/jx-lanes.json": "absent",
+    "_driver/jx/units.json": "absent",
+    "case-law-findings.md": "absent",
+    "case-law-citations.json": "absent",
+    "_driver/enforcer-signals.json": "absent",
+    "_driver/predelivery-lint.json": "read",
+    "_driver/escalation-state.json": "absent",
+    "_driver/reasoning-integrity.json": "read",
+    "_driver/corrections-state.json": "absent",
+    "status.json": "read",
+    "_driver/search-policy.json": "read",
+    "common-law-grid.json": "read",
+    "_driver/profile.json": "read",
+    "_driver/not-completed/assessment.json": "absent",
+    "_driver/not-completed/assessment-coverage.json": "absent",
+    "_records/": "read"
+  }
+}

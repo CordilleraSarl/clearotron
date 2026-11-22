@@ -1,0 +1,50 @@
+{
+  "axis": "primary-sweep",
+  "families": {
+    "primary-sweep:exact:venqori-software": {
+      "reason": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate."
+    },
+    "primary-sweep:exact:venqori-systems": {
+      "reason": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate."
+    },
+    "primary-sweep:exact:venqori-technologies": {
+      "reason": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate."
+    },
+    "primary-sweep:exact:venqori-digital": {
+      "reason": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate."
+    },
+    "primary-sweep:exact:venqori-analytics": {
+      "reason": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate."
+    },
+    "primary-sweep:exact:venqori-labs": {
+      "reason": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate."
+    },
+    "primary-sweep:exact:venqori-solutions": {
+      "reason": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate."
+    },
+    "primary-sweep:exact:venqori-academy": {
+      "reason": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate."
+    },
+    "primary-sweep:exact:venqori-learning": {
+      "reason": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate."
+    },
+    "primary-sweep:exact:venqori-education": {
+      "reason": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate."
+    },
+    "primary-sweep:exact:venqori-training": {
+      "reason": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate."
+    },
+    "primary-sweep:exact:venqori-media": {
+      "reason": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate."
+    },
+    "primary-sweep:default:digital-venqori": {
+      "reason": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate."
+    },
+    "primary-sweep:default:studio-venqori": {
+      "reason": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate."
+    },
+    "primary-sweep:wildcard:v-r": {
+      "reason": "The v*r pattern preserves only two letters and is not a plausible form family for the full coined mark. The full edit neighbourhood, close consonant skeleton and specific heard-spelling families have been searched; this unrelated-word expansion would not improve identification of a confusing neighbour. No count was requested for it."
+    }
+  }
+}

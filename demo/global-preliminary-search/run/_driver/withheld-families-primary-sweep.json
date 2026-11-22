@@ -1,0 +1,38 @@
+{
+  "axis": "primary-sweep",
+  "families": {
+    "primary-sweep:wildcard:v-r": {
+      "reason": "Initial V and final R alone do not preserve the coined mark's distinctive structure. The complete edit-one band and the closer consonant skeleton address plausible recollection; this unrelated two-letter envelope would not help identify a plausible objector. No count was sought."
+    },
+    "primary-sweep:exact:venqori-systems": {
+      "reason": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record."
+    },
+    "primary-sweep:exact:venqori-technologies": {
+      "reason": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record."
+    },
+    "primary-sweep:exact:venqori-digital": {
+      "reason": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record."
+    },
+    "primary-sweep:exact:venqori-software": {
+      "reason": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record."
+    },
+    "primary-sweep:exact:venqori-labs": {
+      "reason": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record."
+    },
+    "primary-sweep:exact:venqori-consulting": {
+      "reason": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record."
+    },
+    "primary-sweep:exact:venqori-academy": {
+      "reason": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record."
+    },
+    "primary-sweep:exact:venqori-learning": {
+      "reason": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record."
+    },
+    "primary-sweep:exact:venqori-education": {
+      "reason": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record."
+    },
+    "primary-sweep:exact:venqori-training": {
+      "reason": "The completed worldwide VENQORI contains search in all three instructed classes returned zero. It already includes every listed VENQORI-plus-descriptor composite, so repeating their exact subsets cannot add an owner or record."
+    }
+  }
+}

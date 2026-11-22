@@ -1,8 +1,8 @@
 {
  "document": "report-document/clearance-1",
  "build": {
-  "engineCommit": "bb0b61204a1c273fa48110fbe9a06e11e3f8add5",
-  "renderedAt": "2026-11-22T10:25:51.827Z",
+  "engineCommit": "11b0a64c1e57213728a922eccf35635d31dda329",
+  "renderedAt": "2026-11-22T12:23:54.525Z",
   "tokens": {
    "input": 0,
    "output": 0,
@@ -24,7 +24,7 @@
   "markName": "VENQORI",
   "issued": "2026-11-20 · 22:51 GMT+1",
   "issuedAt": "2026-11-20T21:51:33.519Z",
-  "asOf": "2026-11-22T10:25:51.828Z",
+  "asOf": "2026-11-22T12:23:54.527Z",
   "url": null,
   "auditFile": "tmpdemo2014fullcountrysearch-venqori-2026-11-20-sample-capture-audit.xlsx",
   "product": {
@@ -735,9 +735,377 @@
   ],
   "droppedConditions": [],
   "undispatchedProbes": [],
-  "withheldFamilies": [],
-  "releasedFamilies": [],
-  "setAside": [],
+  "withheldFamilies": [
+   {
+    "area": "main register search / exact: VENQORI SOFTWARE [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate.",
+    "done": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: VENQORI SYSTEMS [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate.",
+    "done": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: VENQORI TECHNOLOGIES [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate.",
+    "done": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: VENQORI DIGITAL [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate.",
+    "done": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: VENQORI ANALYTICS [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate.",
+    "done": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: VENQORI LABS [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate.",
+    "done": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: VENQORI SOLUTIONS [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate.",
+    "done": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: VENQORI ACADEMY [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate.",
+    "done": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: VENQORI LEARNING [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate.",
+    "done": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: VENQORI EDUCATION [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate.",
+    "done": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: VENQORI TRAINING [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate.",
+    "done": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: VENQORI MEDIA [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate.",
+    "done": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: DIGITAL VENQORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate.",
+    "done": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: STUDIO VENQORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate.",
+    "done": "The completed, unrestricted-by-goods VENQORI contains search returned no records across the ordered classes and Japanese-effective scope. It includes these descriptor-bearing, prefixed and suffixed names, so repeating narrower composite queries would add no candidate.",
+    "left": ""
+   },
+   {
+    "area": "main register search / wildcard: v*r [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The v*r pattern preserves only two letters and is not a plausible form family for the full coined mark. The full edit neighbourhood, close consonant skeleton and specific heard-spelling families have been searched; this unrelated-word expansion would not improve identification of a confusing neighbour. No count was requested for it.",
+    "done": "The v*r pattern preserves only two letters and is not a plausible form family for the full coined mark. The full edit neighbourhood, close consonant skeleton and specific heard-spelling families have been searched; this unrelated-word expansion would not improve identification of a confusing neighbour. No count was requested for it.",
+    "left": ""
+   },
+   {
+    "area": "transliterations and numeric forms / exact: ヴェンコリ [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The provider indexes Japanese marks by romanisation; the planned VENKORI contains and exact searches cover this pronunciation, making another exact script-labelled query redundant.",
+    "done": "The provider indexes Japanese marks by romanisation; the planned VENKORI contains and exact searches cover this pronunciation, making another exact script-labelled query redundant.",
+    "left": ""
+   },
+   {
+    "area": "g2.com",
+    "state": "not-searched",
+    "note": "Enterprise software reviews and procurement are outside the stated consumer app-store sales channel.",
+    "done": "",
+    "left": "Enterprise software reviews and procurement are outside the stated consumer app-store sales channel."
+   },
+   {
+    "area": "capterra.com",
+    "state": "not-searched",
+    "note": "Business software selection is not the stated consumer purchasing route.",
+    "done": "",
+    "left": "Business software selection is not the stated consumer purchasing route."
+   },
+   {
+    "area": "aquatechtrade.com",
+    "state": "not-searched",
+    "note": "Water-industry trade exhibition and professional supplier channel; no trade distribution is stated.",
+    "done": "",
+    "left": "Water-industry trade exhibition and professional supplier channel; no trade distribution is stated."
+   },
+   {
+    "area": "wateronline.com",
+    "state": "not-searched",
+    "note": "Professional water-industry products and procurement readership, rather than consumer app discovery.",
+    "done": "",
+    "left": "Professional water-industry products and procurement readership, rather than consumer app discovery."
+   },
+   {
+    "area": "waterworld.com",
+    "state": "not-searched",
+    "note": "Utility and professional water-sector publication; the product is a consumer app.",
+    "done": "",
+    "left": "Utility and professional water-sector publication; the product is a consumer app."
+   },
+   {
+    "area": "smartwatermagazine.com",
+    "state": "not-searched",
+    "note": "Professional water-industry news channel, without a stated consumer app distribution role.",
+    "done": "",
+    "left": "Professional water-industry news channel, without a stated consumer app distribution role."
+   },
+   {
+    "area": "iwa-network.org",
+    "state": "not-searched",
+    "note": "Professional water association and sector education, rather than the stated consumer app and attached training market.",
+    "done": "",
+    "left": "Professional water association and sector education, rather than the stated consumer app and attached training market."
+   },
+   {
+    "area": "rakuten.co.jp",
+    "state": "not-searched",
+    "note": "Physical-goods marketplace; no testing hardware, kits or other retail goods are stated.",
+    "done": "",
+    "left": "Physical-goods marketplace; no testing hardware, kits or other retail goods are stated."
+   },
+   {
+    "area": "kakaku.com",
+    "state": "not-searched",
+    "note": "Consumer goods price-comparison channel; no hardware sale or comparable physical product is stated.",
+    "done": "",
+    "left": "Consumer goods price-comparison channel; no hardware sale or comparable physical product is stated."
+   },
+   {
+    "area": "naver.com",
+    "state": "not-searched",
+    "note": "Korean-focused discovery channel with no stated Japanese consumer distribution connection.",
+    "done": "",
+    "left": "Korean-focused discovery channel with no stated Japanese consumer distribution connection."
+   },
+   {
+    "area": "coupang.com",
+    "state": "not-searched",
+    "note": "Korean retail marketplace outside the Japan-only instruction and no hardware offering is stated.",
+    "done": "",
+    "left": "Korean retail marketplace outside the Japan-only instruction and no hardware offering is stated."
+   }
+  ],
+  "releasedFamilies": [
+   {
+    "area": "main register search / default: VENKORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "done": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENCORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "done": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENKORY [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "done": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENKRI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "done": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENKOR [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "done": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VANKORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "done": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VINKURI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "done": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: BENKORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "done": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENQ0RI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "done": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENQOR1 [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "done": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENQORl [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "done": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENQQORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "done": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENQOIR [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "done": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VEQNORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "done": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VEMQORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "done": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENQORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "done": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "left": ""
+   },
+   {
+    "area": "main register search / wildcard: v?nq?r? [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "done": "The identical list is empty, but longer VENQORI marks and independent sound-alike or visual families could identify an earlier Japanese-effective right in software or training that exact spelling coverage misses. Contains searches and the close consonant skeleton test those collision routes.",
+    "left": ""
+   },
+   {
+    "area": "transliterations and numeric forms / exact: V3NQORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "Digit substitutions can preserve the look of this coined app mark and reveal a different potential objector despite an empty identical list.",
+    "done": "Digit substitutions can preserve the look of this coined app mark and reveal a different potential objector despite an empty identical list.",
+    "left": ""
+   },
+   {
+    "area": "transliterations and numeric forms / exact: VENQ0RI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "Digit substitutions can preserve the look of this coined app mark and reveal a different potential objector despite an empty identical list.",
+    "done": "Digit substitutions can preserve the look of this coined app mark and reveal a different potential objector despite an empty identical list.",
+    "left": ""
+   },
+   {
+    "area": "transliterations and numeric forms / exact: VENQOR1 [cl 9, 42, 41]",
+    "state": "note",
+    "note": "Digit substitutions can preserve the look of this coined app mark and reveal a different potential objector despite an empty identical list.",
+    "done": "Digit substitutions can preserve the look of this coined app mark and reveal a different potential objector despite an empty identical list.",
+    "left": ""
+   }
+  ],
+  "setAside": [
+   {
+    "area": "Set aside: https://venqore.com/",
+    "note": "Adopt placement's off-field ERP distinction: the supplied VenQore page concerns POS, stock and accounting for businesses, not consumer water readings or attached training. No Japanese-effective right is established; its unidentified operator is not treated as a rated party."
+   },
+   {
+    "area": "Set aside: https://www.linkedin.com/company/venkor-ai",
+    "note": "Adopt placement's verification-only treatment: this Venkor LinkedIn descriptor identifies neither a product nor its legal owner or any Japanese registered right. Generic software development does not establish the same or adjacent consumer water-app trade required for inclusion."
+   },
+   {
+    "area": "Set aside: https://www.linkedin.com/company/https-vencor.com.tr-",
+    "note": "Adopt placement's verification-only treatment: the Vencor company descriptor supplies no identified product, legal owner or Japanese-effective right. It cannot support a rated conflict or a settled negative about consumer water software."
+   },
+   {
+    "area": "Set aside: https://www.venkorpharma.com/",
+    "note": "Adopt placement's existing ground: the Venkor pharmaceutical lead concerns a different clinical/pharmaceutical field. No medical function is stated for the company's water-reading app, and no relevant Japanese consumer-software connection is established."
+   },
+   {
+    "area": "Set aside: https://www.incert.lu/resources/qori-product-provenance",
+    "note": "Adopt placement's existing ground: INCERT's QORI lead concerns organizational product provenance and authentication, rather than consumer water readings or attached education. A shared fragment does not establish a competing VENQORI offering."
+   },
+   {
+    "area": "Set aside: https://www.inarimedical.com/venacore-thrombectomy-catheter",
+    "note": "Adopt placement's existing ground: the VenaCore page describes a thrombectomy catheter, a clinical device addressing different purposes and purchasers from this consumer water-quality app and online training."
+   },
+   {
+    "area": "Set aside: https://worldofwarcraft.blizzard.com/en-us/character/eu/blackmoore/Venkori/achievements/characters",
+    "note": "Adopt placement's existing ground: VENKORI identifies a player character/profile, not a commercially offered title or water-monitoring product. The profile does not establish relevant Japanese rights or marketplace competition."
+   },
+   {
+    "area": "Set aside: https://apps.apple.com/jp/developer/venkon-group-llc/id1560122380?l=en-US",
+    "note": "Adopt placement's existing ground: VENKON GROUP is a different complete developer name, with a different ending and structure from VENQORI or VENKORI. Its developer page is not a listing for an app under either proposed-name spelling."
+   },
+   {
+    "area": "Set aside: https://play.google.com/store/apps/details?id=com.va.qori.international.merdu&hl=en_US",
+    "note": "Adopt placement's existing ground: QORI / Qori International omits the distinctive VEN onset of the complete coined name VENQORI. The shared fragment alone does not create a plausible whole-name conflict on the supplied listing."
+   }
+  ],
   "fetchState": {
    "/mark/jp/1489c445-a777-4507-81a5-2490983cbd08": "retrieved",
    "/mark/jp/310027f2-0562-46fe-abea-385f068a8150": "retrieved",

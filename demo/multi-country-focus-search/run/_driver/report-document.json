@@ -1,8 +1,8 @@
 {
  "document": "report-document/clearance-1",
  "build": {
-  "engineCommit": "bb0b61204a1c273fa48110fbe9a06e11e3f8add5",
-  "renderedAt": "2026-11-22T10:25:50.524Z",
+  "engineCommit": "11b0a64c1e57213728a922eccf35635d31dda329",
+  "renderedAt": "2026-11-22T12:23:53.117Z",
   "tokens": {
    "input": 0,
    "output": 0,
@@ -24,7 +24,7 @@
   "markName": "VENQORI",
   "issued": "2026-11-20 · 22:14 GMT+1",
   "issuedAt": "2026-11-20T21:14:49.087Z",
-  "asOf": "2026-11-22T10:25:50.525Z",
+  "asOf": "2026-11-22T12:23:53.119Z",
   "url": null,
   "auditFile": "tmpdemo2014multicountryfocussearch-venqori-2026-11-20-sample-capture-audit.xlsx",
   "product": {
@@ -632,9 +632,315 @@
   ],
   "droppedConditions": [],
   "undispatchedProbes": [],
-  "withheldFamilies": [],
-  "releasedFamilies": [],
-  "setAside": [],
+  "withheldFamilies": [
+   {
+    "area": "main register search / exact: VENQORI SYSTEMS [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors.",
+    "done": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: VENQORI TECH [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors.",
+    "done": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: VENQORI LABS [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors.",
+    "done": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: VENQORI ACADEMY [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors.",
+    "done": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: TECH VENQORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors.",
+    "done": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: ACADEMY VENQORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors.",
+    "done": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors.",
+    "left": ""
+   },
+   {
+    "area": "main register search / wildcard: v*r [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The pattern v*r retains only two letters and loses VENQORI's distinctive syllables. The focused vowel skeleton, complete edit-one band and explicit sound/visual neighbours address buyer recognition; this remote pattern would add unrelated strings without a supported confusion theory. No count was obtained for it.",
+    "done": "The pattern v*r retains only two letters and loses VENQORI's distinctive syllables. The focused vowel skeleton, complete edit-one band and explicit sound/visual neighbours address buyer recognition; this remote pattern would add unrelated strings without a supported confusion theory. No count was obtained for it.",
+    "left": ""
+   },
+   {
+    "area": "transliterations and numeric forms / exact: ヴェンコリ [cl 9, 42, 41]",
+    "state": "note",
+    "note": "Clarivate indexes this script by romanisation, and the planned VENKORI contains and exact Latin searches already cover that Japanese pronunciation; repeating its exact query would not add a distinct question.",
+    "done": "Clarivate indexes this script by romanisation, and the planned VENKORI contains and exact Latin searches already cover that Japanese pronunciation; repeating its exact query would not add a distinct question.",
+    "left": ""
+   },
+   {
+    "area": "g2.com",
+    "state": "not-searched",
+    "note": "Enterprise software reviews do not match the stated consumer app-store purchase journey.",
+    "done": "",
+    "left": "Enterprise software reviews do not match the stated consumer app-store purchase journey."
+   },
+   {
+    "area": "capterra.com",
+    "state": "not-searched",
+    "note": "Business software procurement directory; no enterprise sales are stated.",
+    "done": "",
+    "left": "Business software procurement directory; no enterprise sales are stated."
+   },
+   {
+    "area": "aquatechtrade.com",
+    "state": "not-searched",
+    "note": "Water-industry trade exhibition channel; the request expressly places distribution outside the trade.",
+    "done": "",
+    "left": "Water-industry trade exhibition channel; the request expressly places distribution outside the trade."
+   },
+   {
+    "area": "wateronline.com",
+    "state": "not-searched",
+    "note": "Professional water-treatment trade publication rather than a consumer app or attached-training channel.",
+    "done": "",
+    "left": "Professional water-treatment trade publication rather than a consumer app or attached-training channel."
+   },
+   {
+    "area": "waterworld.com",
+    "state": "not-searched",
+    "note": "Municipal and industrial water-sector readership does not match this consumer app's buyers.",
+    "done": "",
+    "left": "Municipal and industrial water-sector readership does not match this consumer app's buyers."
+   },
+   {
+    "area": "smartwatermagazine.com",
+    "state": "not-searched",
+    "note": "Professional water-sector publication; no trade-facing offering is stated.",
+    "done": "",
+    "left": "Professional water-sector publication; no trade-facing offering is stated."
+   },
+   {
+    "area": "iwa-network.org",
+    "state": "not-searched",
+    "note": "Professional water association and technical education channel; no professional credential or association distribution is stated.",
+    "done": "",
+    "left": "Professional water association and technical education channel; no professional credential or association distribution is stated."
+   },
+   {
+    "area": "line.me",
+    "state": "not-searched",
+    "note": "Messaging and social distribution could promote an app, but no LINE integration, mini-app or official-account channel is supplied.",
+    "done": "",
+    "left": "Messaging and social distribution could promote an app, but no LINE integration, mini-app or official-account channel is supplied."
+   }
+  ],
+  "releasedFamilies": [
+   {
+    "area": "main register search / default: VENQORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but its goods-limited contains query cannot exclude descriptor-bearing or prefixed/suffixed VENQORI marks elsewhere in the ordered classes. Reading the unrestricted root band could identify an additional objector.",
+    "done": "The identical list is empty, but its goods-limited contains query cannot exclude descriptor-bearing or prefixed/suffixed VENQORI marks elsewhere in the ordered classes. Reading the unrestricted root band could identify an additional objector.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENKORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "done": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENCORY [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "done": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VINKARI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "done": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENKRI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "done": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENKOR [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "done": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENQORL [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "done": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENQOIR [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "done": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "left": ""
+   },
+   {
+    "area": "main register search / wildcard: v?nq?r? [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "done": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENKORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "These web-named forms preserve the coined mark's likely sound through K/Q and final I/Y spelling changes. JP/KR rights in classes 9, 42 or 41 could identify a different objector and change filing or naming advice; web use alone does not establish those rights.",
+    "done": "These web-named forms preserve the coined mark's likely sound through K/Q and final I/Y spelling changes. JP/KR rights in classes 9, 42 or 41 could identify a different objector and change filing or naming advice; web use alone does not establish those rights.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: venqory [cl 9, 42, 41]",
+    "state": "note",
+    "note": "These web-named forms preserve the coined mark's likely sound through K/Q and final I/Y spelling changes. JP/KR rights in classes 9, 42 or 41 could identify a different objector and change filing or naming advice; web use alone does not establish those rights.",
+    "done": "These web-named forms preserve the coined mark's likely sound through K/Q and final I/Y spelling changes. JP/KR rights in classes 9, 42 or 41 could identify a different objector and change filing or naming advice; web use alone does not establish those rights.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: ベンコリ [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The web-named Japanese ベンコリ form tests the local /b/ approximation of the proposed name. A JP-effective software or training right could change the advice even without a Latin-name match; Clarivate requires a contains search by romanization.",
+    "done": "The web-named Japanese ベンコリ form tests the local /b/ approximation of the proposed name. A JP-effective software or training right could change the advice even without a Latin-name match; Clarivate requires a contains search by romanization.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VINKARI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The vowel-family and spoken-shortening roots are distinct from the full VENQORI token. Their web appearance makes effective JP/KR rights in the ordered classes material to identifying potential objectors; a full-root search alone cannot answer them.",
+    "done": "The vowel-family and spoken-shortening roots are distinct from the full VENQORI token. Their web appearance makes effective JP/KR rights in the ordered classes material to identifying potential objectors; a full-root search alone cannot answer them.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENKOR [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The vowel-family and spoken-shortening roots are distinct from the full VENQORI token. Their web appearance makes effective JP/KR rights in the ordered classes material to identifying potential objectors; a full-root search alone cannot answer them.",
+    "done": "The vowel-family and spoken-shortening roots are distinct from the full VENQORI token. Their web appearance makes effective JP/KR rights in the ordered classes material to identifying potential objectors; a full-root search alone cannot answer them.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VEN QORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The observed spacing and adjacent-letter transposition preserve the visual identity consumers may recognize in app listings. Checking their JP/KR rights in the ordered classes could connect the observed uses to a proprietor or earlier filing and change advice.",
+    "done": "The observed spacing and adjacent-letter transposition preserve the visual identity consumers may recognize in app listings. Checking their JP/KR rights in the ordered classes could connect the observed uses to a proprietor or earlier filing and change advice.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENQOIR [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The observed spacing and adjacent-letter transposition preserve the visual identity consumers may recognize in app listings. Checking their JP/KR rights in the ordered classes could connect the observed uses to a proprietor or earlier filing and change advice.",
+    "done": "The observed spacing and adjacent-letter transposition preserve the visual identity consumers may recognize in app listings. Checking their JP/KR rights in the ordered classes could connect the observed uses to a proprietor or earlier filing and change advice.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENQORI SYSTEMS [cl 9, 42, 41]",
+    "state": "note",
+    "note": "These web-named software/technical descriptor compounds retain the whole distinctive root. Checking their JP/KR rights in classes 9, 42 and 41 could link observed traders to effective earlier rights and affect who must be investigated before launch; no local right is inferred from web use.",
+    "done": "These web-named software/technical descriptor compounds retain the whole distinctive root. Checking their JP/KR rights in classes 9, 42 and 41 could link observed traders to effective earlier rights and affect who must be investigated before launch; no local right is inferred from web use.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENQORI LABS [cl 9, 42, 41]",
+    "state": "note",
+    "note": "These web-named software/technical descriptor compounds retain the whole distinctive root. Checking their JP/KR rights in classes 9, 42 and 41 could link observed traders to effective earlier rights and affect who must be investigated before launch; no local right is inferred from web use.",
+    "done": "These web-named software/technical descriptor compounds retain the whole distinctive root. Checking their JP/KR rights in classes 9, 42 and 41 could link observed traders to effective earlier rights and affect who must be investigated before launch; no local right is inferred from web use.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: TECH VENQORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "These web-named software/technical descriptor compounds retain the whole distinctive root. Checking their JP/KR rights in classes 9, 42 and 41 could link observed traders to effective earlier rights and affect who must be investigated before launch; no local right is inferred from web use.",
+    "done": "These web-named software/technical descriptor compounds retain the whole distinctive root. Checking their JP/KR rights in classes 9, 42 and 41 could link observed traders to effective earlier rights and affect who must be investigated before launch; no local right is inferred from web use.",
+    "left": ""
+   },
+   {
+    "area": "transliterations and numeric forms / exact: VENQ0RI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The zero-for-O spelling could reveal a visually indistinguishable digital brand that the identical word search misses.",
+    "done": "The zero-for-O spelling could reveal a visually indistinguishable digital brand that the identical word search misses.",
+    "left": ""
+   },
+   {
+    "area": "transliterations and numeric forms / exact: 벤코리 [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The Korean B rendering may identify locally effective sound-alike rights missed by the identical Latin spelling.",
+    "done": "The Korean B rendering may identify locally effective sound-alike rights missed by the identical Latin spelling.",
+    "left": ""
+   }
+  ],
+  "setAside": [
+   {
+    "area": "Set aside: https://apps.apple.com/us/developer/quori-limited/id1577801356",
+    "note": "Placement retained QUORI because a developer page did not establish product overlap. The scoped follow-up identifies operational risk reporting and professional environmental field intelligence, with training on that system, not household water-quality readings or attached water instruction (https://apps.apple.com/jp/app/quori/id1577801354; https://quori.io/services/mission-applications/). Japanese storefront presence is commercial context, not an independent local rights conflict."
+   },
+   {
+    "area": "Set aside: https://apps.apple.com/es/developer/vennory/id1801632552",
+    "note": "Placement's verification reason was that 'actual app functions' were not established. The follow-up identifies weather/air-quality information and navigation utilities, rather than water-quality readings or water instruction (https://apps.apple.com/jp/app/weather-terminal/id6758122087; https://apps.apple.com/jp/app/forcemaps/id6748969920?l=en-US). Shared Japanese app-store availability alone does not establish the instructed product overlap or a local registered right."
+   },
+   {
+    "area": "Set aside: https://www.prnewswire.com/news-releases/introducing-vencore-268258302.html",
+    "note": "Adopt placement's ground: this historical Vencore business reference establishes no current consumer water-reading product, attached water instruction or JP/KR offering. The different whole name and absence of a concrete relevant product make the contextual page insufficient for a finding; no present corporate activity or rights-negative is inferred."
+   },
+   {
+    "area": "Set aside: https://www.referenceforbusiness.com/history2/79/Vencor-Inc.html",
+    "note": "Adopt placement's ground: the Vencor company-history page does not establish a present consumer water-monitoring app, attached course or Japan/Korea offering. It supplies historical near-name context, not a party/right relevant enough to drive this assessment."
+   },
+   {
+    "area": "Set aside: https://velqory.com/platform",
+    "note": "Placement retained Velqory because 'concrete products' were unestablished and specialist AI would be off-field. The follow-up establishes business document, cash-flow and VAT software under development, alongside AI/cybersecurity training, rather than household water readings or water instruction (https://velqory.com/platform; https://velqory.com/training). This resolves the product question on placement's own off-field ground."
+   },
+   {
+    "area": "Set aside: https://www.linkedin.com/company/venkor-ai",
+    "note": "Placement's 'potential software overlap' depended on an unspecified product. Venkor's own site describes business sales automation, lead conversion and customer reactivation, not consumer water-quality monitoring or instruction (https://venkor.ai/). Its unidentified legal operator does not require a rated or open conflict when the evidenced trade is outside the relevant field; no JP/KR rights-negative is asserted."
+   },
+   {
+    "area": "Set aside: https://www.vinkarisafari.com/wp/",
+    "note": "Adopt placement's ground: VinKari Safari is identified as a US physical children's playground, serving venue visitors rather than consumer water-reading apps or attached online water instruction. Recreation does not become relevant education merely through a possible Class 41 label."
+   },
+   {
+    "area": "Set aside: https://apps.apple.com/gb/app/venqo-business-card-scanner/id6777042694",
+    "note": "Adopt placement's ground: the identified Venqo business-card scanner serves contact capture, not water-quality readings or attached instruction. The UK storefront does not establish JP/KR availability or a local right; general app-store distribution does not make those functions meet."
+   },
+   {
+    "area": "Set aside: https://www.incert.lu/resources/qori-product-provenance",
+    "note": "Adopt placement's ground: QORI product provenance concerns supply-chain authentication and its professional users, not household water-quality readings or instruction. No relevant product-convergence evidence was supplied, and the page is not a source of an identified JP/KR right."
+   },
+   {
+    "area": "Set aside: https://www.edn.com/vencore-inc-launches-its-transformative-new-research-organization-vencore-labs/",
+    "note": "Adopt placement's ground: the Vencore Labs historical research-organization reference establishes no current household water app, attached course or local consumer channel. Its different compound name and absent concrete relevant offering do not justify a finding or an assumed ownership relationship."
+   },
+   {
+    "area": "Set aside: https://play.google.com/store/apps?hl=en-us",
+    "note": "The cited Google Play address is a generic storefront. The supplied candidate notes identify platform pages, personal names and weakly similar strings, not an attributable water-monitoring app or water-instruction offering; there is no specific competing mark or party to rate from this page."
+   }
+  ],
   "fetchState": {
    "/mark/jp/310027f2-0562-46fe-abea-385f068a8150": "retrieved",
    "/mark/jp/d21095b6-e079-467d-9715-cf40ca880822": "retrieved",
@@ -665,7 +971,13 @@
     }
    ]
   },
-  "degradedParts": [],
+  "degradedParts": [
+   {
+    "area": "Follow-up / Register",
+    "state": "open",
+    "note": "Register — not completed this run — it could not be completed this run, so it is left open here rather than reported as clean"
+   }
+  ],
   "commonLawJoinedTerms": [],
   "audit": {
    "findings": [

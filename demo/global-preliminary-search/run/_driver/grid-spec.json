@@ -1,0 +1,203 @@
+{
+  "terms": [
+    "VENQORI",
+    "VENKORI",
+    "VENCORI",
+    "VENQORY",
+    "VENQUORI",
+    "VENKORY",
+    "VEN QORI",
+    "VINKURI",
+    "VENKWORI",
+    "VENQOR",
+    "VENRI",
+    "VENOORI",
+    "VENQOIR",
+    "VENQORL",
+    "VENCOR",
+    "VENCORE",
+    "V3NQORI",
+    "VENQ0RI",
+    "VENQOR1",
+    "VENQORI SYSTEMS",
+    "VENQORI TECHNOLOGIES",
+    "VENQORI DIGITAL",
+    "VENQORI SOFTWARE",
+    "VENQORI LABS",
+    "VENQORI CONSULTING",
+    "VENQORI ACADEMY",
+    "VENQORI LEARNING",
+    "VENQORI EDUCATION",
+    "VENQORI TRAINING",
+    "文科里",
+    "ヴェンコリ",
+    "벤코리",
+    "Венкори",
+    "Βενκόρι",
+    "वेनकोरी",
+    "வென்கோரி",
+    "ভেনকোরি",
+    "વેનકોરી",
+    "ਵੇਨਕੋਰੀ",
+    "ଭେନକୋରି",
+    "వెన్కోరి",
+    "ವೆನ್ಕೋರಿ",
+    "വെൻകോരി",
+    "وینکوری",
+    "ᱵᱮᱱᱠᱳᱨᱤ",
+    "ꯚꯦꯟꯀꯣꯔꯤ"
+  ],
+  "platforms": [
+    "udemy.com",
+    "coursera.org",
+    "apps.apple.com",
+    "play.google.com",
+    "naver.com",
+    "web"
+  ],
+  "grids": [
+    {
+      "terms": [
+        "VENQORI",
+        "VENKORI",
+        "VENCORI",
+        "VENQORY",
+        "VENQUORI",
+        "VENKORY"
+      ],
+      "platforms": [
+        "udemy.com",
+        "coursera.org",
+        "apps.apple.com",
+        "play.google.com",
+        "naver.com"
+      ]
+    },
+    {
+      "terms": [
+        "VENQORI",
+        "VEN QORI",
+        "VENKORI",
+        "VINKURI",
+        "VENKWORI",
+        "VENQOR",
+        "VENRI",
+        "VENOORI",
+        "VENQOIR",
+        "VENQORL",
+        "VENCOR",
+        "VENCORE",
+        "V3NQORI",
+        "VENQ0RI",
+        "VENQOR1",
+        "VENQORI SYSTEMS",
+        "VENQORI TECHNOLOGIES",
+        "VENQORI DIGITAL",
+        "VENQORI SOFTWARE",
+        "VENQORI LABS",
+        "VENQORI CONSULTING",
+        "VENQORI ACADEMY",
+        "VENQORI LEARNING",
+        "VENQORI EDUCATION",
+        "VENQORI TRAINING",
+        "文科里",
+        "ヴェンコリ",
+        "벤코리",
+        "Венкори",
+        "Βενκόρι",
+        "वेनकोरी",
+        "வென்கோரி",
+        "ভেনকোরি",
+        "વેનકોરી",
+        "ਵੇਨਕੋਰੀ",
+        "ଭେନକୋରି",
+        "వెన్కోరి",
+        "ವೆನ್ಕೋರಿ",
+        "വെൻകോരി",
+        "وینکوری",
+        "ᱵᱮᱱᱠᱳᱨᱤ",
+        "ꯚꯦꯟꯀꯣꯔꯤ",
+        "VENCORI",
+        "VENQORY",
+        "VENQUORI",
+        "VENKORY"
+      ],
+      "platforms": [
+        "web"
+      ]
+    }
+  ],
+  "menu": [
+    "g2.com",
+    "capterra.com",
+    "aquatechtrade.com",
+    "wateronline.com",
+    "waterworld.com",
+    "smartwatermagazine.com",
+    "iwa-network.org",
+    "udemy.com",
+    "coursera.org",
+    "apps.apple.com",
+    "play.google.com",
+    "rakuten.co.jp",
+    "kakaku.com",
+    "naver.com",
+    "coupang.com",
+    "line.me",
+    "web"
+  ],
+  "set_aside": [
+    {
+      "store": "g2.com",
+      "reason": "Enterprise software comparison channel; the supplied offering is a consumer app distributed through app stores."
+    },
+    {
+      "store": "capterra.com",
+      "reason": "Business software procurement directory; no business procurement route is stated for this consumer app."
+    },
+    {
+      "store": "aquatechtrade.com",
+      "reason": "Water-industry trade exhibition channel; the request expressly places distribution outside the trade."
+    },
+    {
+      "store": "wateronline.com",
+      "reason": "Professional water and wastewater trade channel, rather than the stated consumer app-store route."
+    },
+    {
+      "store": "waterworld.com",
+      "reason": "Utility and water-industry professional publication; no trade distribution is stated."
+    },
+    {
+      "store": "smartwatermagazine.com",
+      "reason": "Professional water-industry publication; consumer app-store discovery is the stated route."
+    },
+    {
+      "store": "iwa-network.org",
+      "reason": "Professional water-sector association; no professional membership or institutional training channel is stated."
+    },
+    {
+      "store": "rakuten.co.jp",
+      "reason": "Physical-goods marketplace is not an established channel for this downloadable mobile app; no testing hardware sales are supplied."
+    },
+    {
+      "store": "kakaku.com",
+      "reason": "Product price-comparison channel is less direct than app stores for the supplied mobile app; no hardware or retail comparison route is stated."
+    },
+    {
+      "store": "coupang.com",
+      "reason": "Consumer goods marketplace; no physical goods or marketplace distribution is supplied for this app."
+    },
+    {
+      "store": "line.me",
+      "reason": "Messaging and platform ecosystem; no LINE mini-app, official-account or distribution integration is stated."
+    }
+  ],
+  "batch": 1,
+  "connotation": {
+    "queries": [],
+    "none_named": true,
+    "disposition_required": true
+  },
+  "ledger_required": true,
+  "results_per_cell": 15
+}
