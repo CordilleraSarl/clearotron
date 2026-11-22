@@ -1259,7 +1259,7 @@
         },
         "a-knockout-conflict-carries-its-framework-inputs.test.mjs": {
           "tests": 6,
-          "asserts": 39,
+          "asserts": 40,
           "skips": 0,
           "todos": 0
         },
@@ -2757,6 +2757,12 @@
           "skips": 5,
           "todos": 0
         },
+        "a-stage-cut-off-mid-stream-ends-its-child-its-stream-and-its-record.test.mjs": {
+          "tests": 2,
+          "asserts": 36,
+          "skips": 0,
+          "todos": 0
+        },
         "a-stage-meets-each-paragraph-its-manual-carries-once.test.mjs": {
           "tests": 5,
           "asserts": 14,
@@ -3642,6 +3648,12 @@
         "both-doors-start-on-both-paths.test.mjs": {
           "tests": 27,
           "asserts": 64,
+          "skips": 0,
+          "todos": 0
+        },
+        "both-engines-read-their-program-through-one-reader-with-their-own-rules.test.mjs": {
+          "tests": 9,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
@@ -4582,8 +4594,8 @@
           "todos": 0
         },
         "each-attempt-records-how-much-of-each-manual-its-model-was-shown.test.mjs": {
-          "tests": 9,
-          "asserts": 31,
+          "tests": 11,
+          "asserts": 38,
           "skips": 0,
           "todos": 0
         },
@@ -4690,8 +4702,8 @@
           "todos": 0
         },
         "engine.common.test.mjs": {
-          "tests": 18,
-          "asserts": 54,
+          "tests": 19,
+          "asserts": 56,
           "skips": 0,
           "todos": 0
         },
@@ -8171,7 +8183,7 @@
         },
         "the-notice-goes-to-whoever-asked.test.mjs": {
           "tests": 10,
-          "asserts": 28,
+          "asserts": 29,
           "skips": 1,
           "todos": 0
         },

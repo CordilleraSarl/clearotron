@@ -75,7 +75,7 @@ export function measureAttempt({ name, files, runDir }, { attempt, key, warm, tu
 
 export function writeAttemptRow({ name, engine, agent, model, files, runDir, followup, bandSize, derivedLimit, auth },
   { lastUnion, lastCoverageUnion, lastPlacementUnion }, facts) {
-  const { attempt, key, warm, warmEscalatedAt, effTimeout, dispatch, witnessed, turn, cli, modelRequested,
+  const { attempt, key, warm, warmEscalatedAt, effTimeout, dispatch, witnessed, wire, turn, cli, modelRequested,
     modelActual, modelBasis, modelSnapshot, modelMismatch, providerReported, timedOutBy, fail, formRepairsThisAttempt, rescued, quiescentMs,
     rescueRefused, rescueRefusedFile, rescueRefusedReason, attemptRefusals, attemptKilledWhile, lastGraded, wrote, reads, readsTruncated,
     quantity, noChange } = facts;
@@ -230,9 +230,10 @@ export function writeAttemptRow({ name, engine, agent, model, files, runDir, fol
     // `spentBudgetCleanly`.
     budgetSpentCleanly: spentBudgetCleanly({ fail, killed, code, wall, derivedLimitSec: derivedLimit?.sec }),
     killedWhile: attemptKilledWhile,
-    // The share of each told manual this turn's model was shown, read off its saved stream (manuals-seen.mjs); null
-    // where the stream cannot say. A resumed turn is shown only what it read after resuming, so read it beside `warm`.
-    manualsSeen: measureManualsSeen(turn, witnessed.told, engine.name),
+    // The share of each told manual this turn's model was shown: what it was sent, manuals inline, and what its tools returned
+    // (manuals-seen.mjs); null where the stream cannot say. A resumed turn is sent only its repair and is shown only what it
+    // read after resuming, so read it beside `warm`.
+    manualsSeen: measureManualsSeen(turn, witnessed.told, engine.name, { sent: wire?.text }),
     // AD-4 emitted-vs-landed, UNCONDITIONAL (was success-only, which made a failed attempt's mid-write
     // artifact invisible): `output` = what LANDED on disk after this attempt (null when the stage has no
     // expected file); `wrote` = whether THIS attempt emitted it (see the computation above the runDir
