@@ -54,6 +54,13 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 
+// A FILE IS READ AS TEXT ONLY IF IT IS TEXT. A saved logo is an image, and reading one as UTF-8 does not throw: it
+// decodes to replacement characters, and the rewrite would write that back over the image. Bytes that do not decode
+// are not text, so no pass here rewrites or searches them. The byte order mark is kept, so a text file that has one
+// is written back as it was read.
+const UTF8 = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true });
+const readText = (path) => { try { return UTF8.decode(readFileSync(path)); } catch { return null; } };
+
 // ── The allowlist ────────────────────────────────────────────────────────────────────────────────────
 // Every entry cites the read that puts it here. `required` means publish cannot render without it.
 const FROZEN_FILES = [
@@ -78,6 +85,7 @@ const FROZEN_FILES = [
   { path: "_driver/corrections-state.json", why: "publish/index.mjs:175 correctionsSink" },
   { path: "_driver/search-policy.json", why: "`searchPolicy` declared in index.mjs, level + stage label" },
   { path: "_driver/profile.json", why: "publish/index.mjs reads the frozen profile; report-registry.mjs:42 republishRun, customer key" },
+  { path: "_driver/logos.json", why: "logosForReport in mark-logos.mjs, called by publishReport() in index.mjs: each cited registration's saved logo" },
 ];
 
 // EVERY INPUT THE PUBLISHER DECLARES TRAVELS, taken from its own closed table rather than restated. The
@@ -119,7 +127,27 @@ const KNOCKOUT_FILES = [
   { path: "_driver/register-counts.json", why: "buildKnockoutWorkbook in publish/knockout.mjs: counted figures + the Register column" },
   { path: "_driver/register-records.json", why: "koPaths in stages-knockout.mjs: the terms behind the close-variation axis" },
   { path: "_driver/instructed-scope.json", why: "publish/index.mjs:915 searchedJurisdictions, the fallback for register-plan" },
+  { path: "_driver/logos.json", why: "logosForReport in mark-logos.mjs, called by publishKnockout in publish/knockout.mjs: each listed filing's saved logo" },
+  // A LISTED FILING'S REGISTER RECORD IS READ FROM THE RUN'S RECORD LOG, where a clearance reads _records/. The log
+  // is a .jsonl beside the telemetry, and each line carries the session that fetched it, so it travels reduced.
+  { path: "_driver/register-record-bodies.jsonl", reduce: recordBodiesOnly, why: "filingRecordBodies in publish/knockout.mjs, through recordBodyFromLog in providers/_shared/ledger.mjs" },
 ];
+
+/**
+ * The record log as the page reads it: for each record, the last line that carries a body, keeping only the two
+ * fields the log's index reads (`target`, `body`). The session ids, times and agents stay behind. Lines keep their
+ * order, so a record written under two spellings resolves to the same body it did in the run. PURE.
+ */
+function recordBodiesOnly(text) {
+  const rows = [];
+  for (const line of text.split("\n")) {
+    let r = null;
+    try { r = JSON.parse(line); } catch { continue; }
+    if (r?.body && typeof r.target === "string") rows.push({ target: r.target, body: r.body });
+  }
+  const last = new Map(rows.map((r, i) => [r.target, i]));
+  return rows.filter((r, i) => last.get(r.target) === i).map((r) => JSON.stringify(r)).join("\n") + (rows.length ? "\n" : "");
+}
 
 /** The allowlist for a template. One place, so a new template cannot half-exist. */
 const filesFor = (t) => (t === "knockout" ? KNOCKOUT_FILES : FROZEN_FILES);
@@ -128,6 +156,9 @@ const filesFor = (t) => (t === "knockout" ? KNOCKOUT_FILES : FROZEN_FILES);
 // and parses every file in it, so the set cannot be enumerated ahead of time.
 const FROZEN_DIRS = [
   { path: "_records", ext: ".json", why: "readRecordArtifacts() in registry-fidelity.mjs" },
+  // The images logos.json names, which logosForReport embeds in the page. They are binary, so the rewrite leaves
+  // their bytes alone and renames them only where the name carries a vendor key. Both lanes read them.
+  { path: "_driver/logos", ext: [".png", ".jpg", ".gif", ".webp"], why: "logosForReport in mark-logos.mjs, the extensions imageTypeOf names" },
 ];
 
 // The knockout lane's directories. Same rule as _records/: the set cannot be enumerated ahead of time,
@@ -369,7 +400,8 @@ for (const entry of filesFor(template)) {
   }
   const dst = join(frozenRun, entry.path);
   mkdirSync(dirname(dst), { recursive: true });
-  copyFileSync(src, dst);
+  if (entry.reduce) writeFileSync(dst, entry.reduce(readFileSync(src, "utf8")));
+  else copyFileSync(src, dst);
   copied.push(entry.path);
 }
 for (const dir of dirsFor(template)) {
@@ -377,7 +409,7 @@ for (const dir of dirsFor(template)) {
   if (!existsSync(src)) { note(`absent: ${dir.path}/ (${dir.why})`); continue; }
   mkdirSync(join(frozenRun, dir.path), { recursive: true });
   for (const name of readdirSync(src)) {
-    if (!name.endsWith(dir.ext)) continue;
+    if (![].concat(dir.ext).some((ext) => name.endsWith(ext))) continue;
     copyFileSync(join(src, name), join(frozenRun, dir.path, name));
     copied.push(join(dir.path, name));
   }
@@ -399,8 +431,8 @@ console.log("\n2b. rewrite");
 let cnFiles = 0, cnHits = 0, vkFiles = 0, vkHits = 0, ogFiles = 0, ogHits = 0;
 for (const rel of copied) {
   const path = join(frozenRun, rel);
-  let text;
-  try { text = readFileSync(path, "utf8"); } catch { continue; }   // a binary member of _records/ is not text
+  let text = readText(path);
+  if (text === null) continue;   // an image is not text, and its bytes travel as they are
   const before = text;
 
   if (renamed && sourceCodename) {
@@ -468,7 +500,7 @@ if (sourceOrigin) note(`public origin: ${ogHits} link(s) in ${ogFiles} file(s) r
 {
   const survivorsCn = [], survivorsVk = [], survivorsOg = [];
   for (const rel of copied) {
-    let t; try { t = readFileSync(join(frozenRun, rel), "utf8"); } catch { continue; }
+    const t = readText(join(frozenRun, rel)) ?? "";   // an image carries no text of either class, but its NAME can
     if (renamed && sourceCodename && t.includes(sourceCodename)) survivorsCn.push(rel);
     if (sourceOrigin && t.includes(sourceOrigin.replace(/^https?:\/\//, ""))) survivorsOg.push(rel);
     VENDOR_KEY_RE.lastIndex = 0;   // a /g regex carries lastIndex across .test() calls
@@ -502,12 +534,13 @@ const walk = (root, base = root) => {
 const frozenFiles = walk(frozenRun);
 const PRUNED = [
   { re: /\.dispatch\.txt(?:\.prev-[0-9a-f]+)?$/, what: "stage dispatch payloads" },
-  { re: /\.jsonl$/, what: "per-stage telemetry" },
+  // The record log is the one .jsonl a page reads, and it travels reduced to its bodies (KNOCKOUT_FILES).
+  { re: /\.jsonl$/, what: "per-stage telemetry", except: ["_driver/register-record-bodies.jsonl"] },
   { re: /^_driver\/stage-inputs\//, what: "stage inputs" },
   { re: /^_history\//, what: "pre-reopen history" },
 ];
 for (const p of PRUNED) {
-  const survivors = frozenFiles.filter((f) => p.re.test(f));
+  const survivors = frozenFiles.filter((f) => p.re.test(f) && !(p.except ?? []).includes(f));
   if (survivors.length) finding(`${p.what} survived the freeze: ${survivors.slice(0, 5).join(", ")}`);
   else note(`no ${p.what}`);
 }
@@ -518,8 +551,8 @@ note(`${sourceCount} file(s) in the source run → ${frozenFiles.length} frozen`
 console.log("\n4. scrub");
 let scrubHits = 0;
 for (const rel of frozenFiles) {
-  let text;
-  try { text = readFileSync(join(frozenRun, rel), "utf8"); } catch { continue; }
+  const text = readText(join(frozenRun, rel));
+  if (text === null) continue;
   for (const rule of SCRUB) {
     rule.re.lastIndex = 0;
     const hits = text.match(rule.re);
@@ -538,7 +571,7 @@ if (!scrubHits) note(`${SCRUB.length} rule(s), 0 hits across ${frozenFiles.lengt
 // literal this script already knows, and its job is to hand the person landing the sample the exact list.
 if (sourceCodename) {
   const echoes = frozenFiles.filter((rel) => {
-    try { return readFileSync(join(frozenRun, rel), "utf8").includes(sourceCodename); } catch { return false; }
+    return readText(join(frozenRun, rel))?.includes(sourceCodename) ?? false;
   });
   if (!echoes.length) note(`no file carries the source codename "${sourceCodename}"`);
   else if (renamed) finding(`${echoes.length} frozen file(s) still carry the source codename "${sourceCodename}" — rewrite each before committing: ${echoes.join(", ")}`);
@@ -573,15 +606,28 @@ const publishInto = async (pool, dir) => {
 // the source is staged and put through the same pass, and what remains is only ever an allowlist gap.
 //
 // A COPY, never the archive. The source run is real client matter; nothing here writes to it.
+//
+// THE NAMES TOO, BY THE SAME MAP, as step 2b renames the frozen copy's. A saved logo is named for its record's vendor
+// key, and logos.json names it: rewrite the content and not the name, and the staged source's logos.json points at
+// files that are not there, so the source renders without its logos and the proof compares two pages that both lack
+// them. Measured on the first freeze with logos, 2026-11-22: twelve fetched logos in the run, none on either side.
 const rewriteInPlace = (root, files) => {
   for (const rel of files) {
     const path = join(root, rel);
-    let t; try { t = readFileSync(path, "utf8"); } catch { continue; }
+    let t = readText(path);
+    if (t === null) continue;
     const before = t;
     if (renamed && sourceCodename) t = t.split(sourceCodename).join(codename);
     t = originPart(t);
     t = t.replace(VENDOR_KEY_RE, substituteFor);
     if (t !== before) writeFileSync(path, t);
+  }
+  for (const rel of files) {
+    const base = basename(rel);
+    VENDOR_KEY_RE.lastIndex = 0;
+    if (!VENDOR_KEY_RE.test(base)) { VENDOR_KEY_RE.lastIndex = 0; continue; }
+    VENDOR_KEY_RE.lastIndex = 0;
+    renameSync(join(root, rel), join(root, dirname(rel), base.replace(VENDOR_KEY_RE, substituteFor)));
   }
 };
 
