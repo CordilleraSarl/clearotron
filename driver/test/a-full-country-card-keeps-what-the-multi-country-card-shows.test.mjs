@@ -142,14 +142,19 @@ const countOf = (blocks, item) => [...blocks.values()].reduce((n, b) => n + show
 const policyOf = (product) => readFileSync(join(DEMO, product, "run", "_driver", "search-policy.json"), "utf8");
 
 // Every committed clearance demo, found rather than listed, so a demo added later is compared too.
-const CLEARANCE_DEMOS = readdirSync(DEMO, { withFileTypes: true })
-  .filter((d) => d.isDirectory() && existsSync(join(DEMO, d.name, "run", "report.md")))
+const clearanceRunsIn = (root) => readdirSync(root, { withFileTypes: true })
+  .filter((d) => d.isDirectory() && existsSync(join(root, d.name, "run", "report.md")))
   .map((d) => d.name)
   .sort();
+const CLEARANCE_DEMOS = clearanceRunsIn(DEMO);
+// The previous demo captures are compared too: they carry the ruled-out cards the fresh runs do not.
+const CAPTURES = join(REPO, "driver", "test", "fixtures", "demo-2026-09-18");
+const COMPARED = [...CLEARANCE_DEMOS.map((name) => ({ name, run: join(DEMO, name, "run") })),
+  ...clearanceRunsIn(CAPTURES).map((name) => ({ name: `${name}-2026-09-18`, run: join(CAPTURES, name, "run") }))];
 
-async function publishAs(demo, product) {
+async function publishAs({ name: demo, run }, product) {
   const runDir = join(ROOT, `${demo}--as--${product}`);
-  cpSync(join(DEMO, demo, "run"), runDir, { recursive: true });
+  cpSync(run, runDir, { recursive: true });
   writeFileSync(join(runDir, "_driver", "search-policy.json"), policyOf(product));
   const pool = join(ROOT, `pool--${demo}--as--${product}`);
   const runId = `compare-${demo}`;
@@ -158,7 +163,7 @@ async function publishAs(demo, product) {
   return readFileSync(join(out.poolRunDir, "report.html"), "utf8");
 }
 
-test("on every committed demo run, the full country report keeps every part of each finding", async () => {
+test("on every committed demo run and previous capture, the full country report keeps every part of each finding", async () => {
   assert.ok(CLEARANCE_DEMOS.length >= 3,
     `found ${CLEARANCE_DEMOS.length} clearance demo run(s) under demo/; the comparison needs the three products' runs`);
   assert.ok(CLEARANCE_DEMOS.includes(MULTI) && CLEARANCE_DEMOS.includes(FULL),
@@ -166,10 +171,10 @@ test("on every committed demo run, the full country report keeps every part of e
 
   const shapes = new Map();
   let recordOnFull = 0, recordOnMulti = 0, differing = 0;
-  for (const demo of CLEARANCE_DEMOS) {
+  for (const demo of COMPARED) {
     const [multiPage, fullPage] = [await publishAs(demo, MULTI), await publishAs(demo, FULL)];
     if (multiPage !== fullPage) differing++;
-    const { multi, full } = assertFullKeepsMulti(multiPage, fullPage, demo);
+    const { multi, full } = assertFullKeepsMulti(multiPage, fullPage, demo.name);
     for (const key of multi.keys()) { const s = key.split(" ")[0]; shapes.set(s, (shapes.get(s) ?? 0) + 1); }
     for (const item of RECORD_ROWS) { recordOnFull += countOf(full, item); recordOnMulti += countOf(multi, item); }
   }
@@ -179,7 +184,7 @@ test("on every committed demo run, the full country report keeps every part of e
   const conflictCards = (shapes.get("card") ?? 0) + (shapes.get("compact") ?? 0);
   assert.ok(conflictCards >= 10, `only ${conflictCards} conflict card(s) compared across the demo runs`);
   assert.ok((shapes.get("ruled") ?? 0) >= 3, `only ${shapes.get("ruled") ?? 0} ruled-out card(s) compared across the demo runs`);
-  assert.equal(differing, CLEARANCE_DEMOS.length, "a demo published the same document under both policies, so the two renders were one report");
+  assert.equal(differing, COMPARED.length, "a demo published the same document under both policies, so the two renders were one report");
   assert.ok(recordOnFull > 0 && recordOnMulti > 0, "a render shows no register record's goods or status, so the comparison read no record");
 });
 

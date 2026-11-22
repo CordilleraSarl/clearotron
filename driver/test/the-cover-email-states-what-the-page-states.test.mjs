@@ -78,7 +78,9 @@ const fromFiles = (runDir) => {
 
 test("an assessment that did not complete states no rating, and lists the report's conditions of reliance under its heading", async () => {
   const added = "Have the invented second register checked for later filings of the name.";
-  const { runDir, record } = await published(demoWith("report.md"), (dir) => {
+  // The previous full country demo capture: its report lists one condition of reliance, ended by the next bold line.
+  const capture = join(ROOT, "driver", "test", "fixtures", "demo-2026-09-18", "full-country-search");
+  const { runDir, record } = await published(capture, (dir) => {
     notCompleted(dir);
     const md = readFileSync(join(dir, "report.md"), "utf8");
     const at = md.indexOf(RELY);

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// @tier full — drives the real publisher over a copy of the committed full country demo, and reads what it wrote
+// @tier full — drives the real publisher over a copy of the previous full country demo capture, and reads what it wrote
 //
 // A court-decisions search that failed, or whose source was down, reads "could not be completed" on the
 // report: in the Court decisions section, on the row, and on the gauge. It never reads "found" or "none
@@ -8,7 +8,8 @@
 // its source answered), so this drives the whole path rather than the state function alone: a run
 // directory with each kind of record, published by the publisher, and the page it wrote.
 //
-// The demo is the fixture because it is a real full country run with a case-law file. Each variant copies
+// The previous full country demo capture (fixtures/demo-2026-09-18) is the fixture because it is a real full country
+// run with a case-law file and no case-law record of its own. Each variant copies
 // it and changes only the case-law pass's files, so any difference on the page is the court state's.
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, cpSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -27,7 +28,7 @@ import { driverDir } from "../../shared/driver-dir.mjs";
 const { publishReport } = await import("../publish/index.mjs");
 const { CASELAW_BRIDGES } = await import("../engine/mcp/gather-config.mjs");
 
-const DEMO = join(import.meta.dirname, "..", "..", "demo", "full-country-search", "run");
+const DEMO = join(import.meta.dirname, "fixtures", "demo-2026-09-18", "full-country-search", "run");
 
 // The case-law file's words, in the shapes the pass writes. Neither carries an outage phrase, so without a
 // record the first reads found and the second none found.
@@ -102,6 +103,6 @@ test("a pass that cited a decision reads found and keeps its strand, even where 
   assert.ok(!words.html.includes('class="clstrand"'));
 });
 
-test("the committed demo, which kept no record and says its source was unavailable, reads could not be completed", async () => {
-  assertPage(await publish(), "not-checked", "the demo as committed");
+test("the previous demo capture, which kept no record and says its source was unavailable, reads could not be completed", async () => {
+  assertPage(await publish(), "not-checked", "the capture as committed");
 });

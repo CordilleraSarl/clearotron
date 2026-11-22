@@ -19,7 +19,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { buildKnockoutWorkbook } from "../publish/knockout.mjs";
 
-const DEMO = JSON.parse(readFileSync(join(import.meta.dirname, "..", "..", "demo", "knockout-search", "run", "knockout-findings.json"), "utf8"));
+// The previous Knockout demo capture, whose name carries negative results.
+const DEMO = JSON.parse(readFileSync(join(import.meta.dirname, "fixtures", "demo-2026-09-18", "knockout-search", "run", "knockout-findings.json"), "utf8"));
 const CONFLICT = { ordinal: 1, name: "BRISKVALE", owner: "Briskvale Trading Ltd", band: "Serious", type: "Active Business",
   net: "An invented conflict.", evidence: ["https://example.test/briskvale"], basis: "An invented basis." };
 const KNOCKOUT = { ...DEMO, marks: [{ ...DEMO.marks[0], findings: [CONFLICT] }, ...DEMO.marks.slice(1)] };

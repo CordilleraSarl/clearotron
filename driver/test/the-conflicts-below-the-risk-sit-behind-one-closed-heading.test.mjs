@@ -26,17 +26,19 @@ const FRAMEWORK = parseFrameworkManifest(JSON.parse(readFileSync(join(RUN, "_dri
 const fullCards = (html) => [...html.matchAll(/<div class="card" id="c(\d+)">/g)].map((m) => Number(m[1]));
 const lower = (html) => html.match(/<details class="rgroup lowerband"><summary><span class="gname">([^<]*)<\/span><\/summary><div class="gbody">([\s\S]*?)\n  <\/div><\/details>/);
 
-test("on the demo, the two Moderate conflicts keep full cards and the seven Manageable ones sit behind the heading, unticked", () => {
+test("on the demo, the three Moderate conflicts keep full cards and the twenty-eight Manageable ones sit behind the heading, unticked", () => {
   const v = parseFindingsJson(readFileSync(join(RUN, "findings.json"), "utf8"));
   const html = renderHtml(parseReport(join(RUN, "report.md")), v.findings, v.coverage, { runId: "demo", framework: FRAMEWORK });
-  assert.deepEqual(fullCards(html), [1, 2], "the full cards are not the two that set the risk");
+  assert.deepEqual([...fullCards(html)].sort((a, b) => a - b), [1, 2, 3], "the full cards are not the three that set the risk");
   const section = lower(html);
   assert.ok(section, "the closed heading is missing, or opens");
-  assert.equal(section[1], "7 more conflicts rated Manageable");
+  assert.equal(section[1], "28 more conflicts rated Manageable");
   const compact = [...section[2].matchAll(/<div class="card compact" id="c(\d+)">/g)].map((m) => Number(m[1]));
-  assert.deepEqual([...compact].sort((a, b) => a - b), [3, 4, 5, 6, 7, 8, 9], "the compact cards are not the seven below the risk");
-  assert.equal((section[2].match(/<input type="checkbox" class="pickbox" aria-label/g) ?? []).length, 7, "a card below the risk is ticked for export");
-  assert.equal((html.match(/<input type="checkbox" class="pickbox" checked/g) ?? []).length, 2, "a card that sets the risk is not ticked");
+  // Finding 17 was withdrawn: it has no band and draws no card.
+  const below = Array.from({ length: 29 }, (_, i) => i + 4).filter((n) => n !== 17);
+  assert.deepEqual([...compact].sort((a, b) => a - b), below, "the compact cards are not the twenty-eight below the risk");
+  assert.equal((section[2].match(/<input type="checkbox" class="pickbox" aria-label/g) ?? []).length, 28, "a card below the risk is ticked for export");
+  assert.equal((html.match(/<input type="checkbox" class="pickbox" checked/g) ?? []).length, 3, "a card that sets the risk is not ticked");
 });
 
 const REPORT = (() => {

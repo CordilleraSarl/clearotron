@@ -29,7 +29,7 @@ const rendered = (html, site) => {
 };
 
 test("every clearance field the model writes prints its links, bold and code as such", () => {
-  const run = join(DEMO, "multi-country-focus-search", "run");
+  const run = join(dirname(fileURLToPath(import.meta.url)), "fixtures", "demo-2026-09-18", "multi-country-focus-search", "run");   // the previous capture, which has a ruled-out finding
   const v = parseFindingsJson(readFileSync(join(run, "findings.json"), "utf8"));
   const ruled = v.findings.find((f) => f.disposition === "off-field" && (f.legal_position || f.practical_position));
   assert.ok(ruled, "the demo has a ruled-out finding with its positions; without one the fold is not drawn");

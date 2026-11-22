@@ -401,8 +401,8 @@ test("writeFindings settles each named one-shot stage, and a stage that does not
 test("settleOneShotStamp keeps a report card's projection current, and the projection reads only a card's own finding", () => {
   const d = runDir();
   const file = join(d, "findings.json");
-  const demo = JSON.parse(readFileSync(new URL("../../demo/full-country-search/run/findings.json", import.meta.url), "utf8"));
-  assert.deepEqual(demo.findings.map((f) => f.ordinal), [1, 2], "premise: the demo's record holds findings 1 and 2");
+  const demo = JSON.parse(readFileSync(new URL("./fixtures/demo-2026-09-18/full-country-search/run/findings.json", import.meta.url), "utf8"));
+  assert.deepEqual(demo.findings.map((f) => f.ordinal), [1, 2], "premise: the previous demo capture's record holds findings 1 and 2");
   write(file, JSON.stringify(demo));
   writeStamp(d, "report-card:2", [file], { project: projectStageInput });
   const proj = readStamp(d, "report-card:2").inputs[0].proj;

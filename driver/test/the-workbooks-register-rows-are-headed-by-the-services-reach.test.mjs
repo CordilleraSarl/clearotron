@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// @tier full — drives the real publisher over copies of two committed demos, and reads the workbook it wrote
+// @tier full — drives the real publisher over copies of two demo runs, and reads the workbook it wrote
 //
 // THE WORKBOOK'S REGISTER ROWS ARE HEADED BY THE SERVICE'S REACH (owner, 2026-11-18). The head of the register rows
 // on "What was searched" read "vendor register, worldwide" on every run, while the coverage line now states the
@@ -31,7 +31,8 @@ const { WORKBOOK: W } = await import("../publish/strings.mjs");
 after(() => rmSync(ROOT, { recursive: true, force: true }));
 
 const demo = (name) => join(import.meta.dirname, "..", "..", "demo", name, "run");
-const WORLDWIDE = demo("global-preliminary-search");   // a worldwide order
+// A worldwide order whose audit lists register searches: the previous global demo capture.
+const WORLDWIDE = join(import.meta.dirname, "fixtures", "demo-2026-09-18", "global-preliminary-search", "run");
 const NAMED = demo("full-country-search");             // an order for named countries: Japan, and the international register
 const LINE = "Class 9: searched · registers: Signa, 15 offices; Japan, the Philippines, Indonesia and Vietnam not covered";
 

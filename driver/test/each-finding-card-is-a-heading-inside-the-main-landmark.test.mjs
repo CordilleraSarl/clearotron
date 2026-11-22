@@ -41,7 +41,7 @@ const everyH3UnderAnH2 = (html, name) => {
 };
 
 test("a clearance page: one h3 per finding card, under its section's h2, inside one <main>", () => {
-  const run = join(HERE, "..", "..", "demo", "multi-country-focus-search", "run");
+  const run = join(HERE, "fixtures", "demo-2026-09-18", "multi-country-focus-search", "run");   // the previous capture, which draws ruled-out cards
   const v = parseFindingsJson(readFileSync(join(run, "findings.json"), "utf8"));
   const html = renderHtml(parseReport(join(run, "report.md")), v.findings, v.coverage,
     { runId: "demo", contextNotes: v.contextNotes || [], markAssessment: v.markAssessment });
@@ -91,7 +91,7 @@ test("smooth scrolling waits for the reader's leave, and a heading title keeps t
   // :where() has no specificity, so every .who rule keeps winning and only the browser's heading defaults go.
   assert.match(css, /:where\(h3\.who\)\{margin:0;font:inherit;display:inline\}/);
   // The card links scroll with script, which the stylesheet does not govern; it asks the same question.
-  const run = join(HERE, "..", "..", "demo", "multi-country-focus-search", "run");
+  const run = join(HERE, "fixtures", "demo-2026-09-18", "multi-country-focus-search", "run");   // the previous capture, which draws ruled-out cards
   const v = parseFindingsJson(readFileSync(join(run, "findings.json"), "utf8"));
   const html = renderHtml(parseReport(join(run, "report.md")), v.findings, v.coverage, { runId: "demo" });
   const scrolls = [...html.matchAll(/scrollIntoView\(\{behavior:([^,]+),/g)].map((m) => m[1]);
