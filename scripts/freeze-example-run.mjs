@@ -77,12 +77,12 @@ const FROZEN_FILES = [
   { path: "case-law-findings.md", why: "`clPath` declared in index.mjs, the case-law section" },
   { path: "common-law-grid.json", why: "`commonLawJoinedTerms` declared in index.mjs, common-law coverage" },
   // publish/index.mjs — the _driver sidecars it reads by name
-  { path: "_driver/receipts.json", why: "publish/index.mjs:764 fetchReceipts" },
-  { path: "_driver/senior-rights.json", why: "publish/index.mjs:790 seniorRights" },
-  { path: "_driver/verdict.json", why: "publish/index.mjs:811 verdictInfo" },
+  { path: "_driver/receipts.json", why: "publish/index.mjs:783 fetchReceipts" },
+  { path: "_driver/senior-rights.json", why: "publish/index.mjs:814 seniorRights" },
+  { path: "_driver/verdict.json", why: "publish/index.mjs:819 verdictInfo" },
   { path: "_driver/framework.json", why: "publish/index.mjs, the frozen band vocabulary the run was rated under" },
-  { path: "_driver/register-plan.json", why: "publish/index.mjs:914 scopeBasis" },
-  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:915 searchedJurisdictions, the fallback for register-plan" },
+  { path: "_driver/register-plan.json", why: "publish/index.mjs:951 scopeBasis" },
+  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:952 searchedJurisdictions, the fallback for register-plan" },
   { path: "_driver/enforcer-signals.json", why: "`esPath` declared in index.mjs" },
   { path: "_driver/predelivery-lint.json", why: "publish/index.mjs:173 lintSink" },
   { path: "_driver/escalation-state.json", why: "publish/index.mjs:174 escSink" },
@@ -123,15 +123,15 @@ const KNOCKOUT_FILES = [
   { path: "_driver/framework.json", required: true, why: "republishRun() in report-registry.mjs, the bands it was rated under" },
   { path: "_driver/search-policy.json", why: "report-registry.mjs:71 level + stage label" },
   { path: "_driver/profile.json", why: "report-registry.mjs:72 customer key and the delivery overlay" },
-  { path: "_driver/verdict.json", why: "publish/index.mjs:811 verdictInfo" },
-  { path: "_driver/receipts.json", why: "publish/index.mjs:764 fetchReceipts" },
+  { path: "_driver/verdict.json", why: "publish/index.mjs:819 verdictInfo" },
+  { path: "_driver/receipts.json", why: "publish/index.mjs:783 fetchReceipts" },
   // THE COUNT SIDECARS, AND THE PROOF IS WHAT FOUND THEM. Without register-counts.json the republished
   // meta carries `registerCounts: undefined` where the source carried the provider, the taken-at stamp
   // and the per-mark counts — so the workbook's Register column and every counted figure in the
   // knockout report render empty (`buildKnockoutWorkbook` in publish/knockout.mjs). Named by `koPaths` in stages-knockout.mjs.
   { path: "_driver/register-counts.json", why: "buildKnockoutWorkbook in publish/knockout.mjs: counted figures + the Register column" },
   { path: "_driver/register-records.json", why: "koPaths in stages-knockout.mjs: the terms behind the close-variation axis" },
-  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:915 searchedJurisdictions, the fallback for register-plan" },
+  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:952 searchedJurisdictions, the fallback for register-plan" },
   { path: "_driver/logos.json", why: "logosForReport in mark-logos.mjs, called by publishKnockout in publish/knockout.mjs: each listed filing's saved logo" },
   // A LISTED FILING'S REGISTER RECORD IS READ FROM THE RUN'S RECORD LOG, where a clearance reads _records/. The log
   // is a .jsonl beside the telemetry, and each line carries the session that fetched it, so it travels reduced.
@@ -216,7 +216,7 @@ const SCRUB = [
 // hides the next real difference.
 const VOLATILE = [
   { id: "issued", re: /\d{4}-\d{2}-\d{2} · \d{2}:\d{2} [A-Z]{2,5}/g, sub: "<issued>", why: "publish/index.mjs, the issue stamp in the firm locale" },
-  { id: "iso-timestamp", re: /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z/g, sub: "<ts>", why: "publish/index.mjs:668 asOf" },
+  { id: "iso-timestamp", re: /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z/g, sub: "<ts>", why: "publish/index.mjs:672 asOf" },
 ];
 
 // ── REWRITES — what is CHANGED on the way out, as opposed to what is refused ───────────────────────

@@ -87,7 +87,7 @@
     ],
     "driver/test/a-demo-report-declares-itself.test.mjs": [
       0,
-      3
+      4
     ],
     "driver/test/a-demo-sample-that-cannot-be-read-is-named.test.mjs": [
       0,
@@ -595,7 +595,7 @@
     ],
     "driver/test/health-carries-the-build.test.mjs": [
       2,
-      2
+      3
     ],
     "driver/test/health-names-its-age-and-its-instance.test.mjs": [
       1,

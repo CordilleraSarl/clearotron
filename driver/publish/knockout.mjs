@@ -25,9 +25,8 @@ import { DEGRADED_NOTE } from './render-knockout.mjs';
 import { renderReport } from './render-report.mjs';   // the one report renderer: the document says which page it is
 import { knockoutReportDocument, knockoutReportDataOf, knockoutWorkbookOf } from './report-document.mjs';   // the run's report as one document, and what it carries
 import { readFrozenMethod, inputsLine, FROZEN_METHOD_FILE } from '../framework-method.mjs';
-import { resolveDemoData, demoBannerMd } from './demo-marking.mjs';   //
-import { engineCommit } from '../engine-build.mjs';
-import { servedModels } from '../tokens.mjs';
+import { demoBannerMd } from './demo-marking.mjs';
+import { readReportDocument } from './read-document.mjs';   // the one document reader: the reads every report makes, then the Knockout's
 import { knockoutFindingViews, knockoutFindingRange } from '../findings-model.mjs';
 import { knockoutReceipts, worstBand } from '../verify-knockout.mjs';
 
@@ -466,8 +465,29 @@ export function composeKnockoutEmail({ findings, framework, overall, reports = [
  * and data file, the pool's `report.md` and `meta.json`. It refuses a batch whose citations cannot be traced (the
  * receipts door below), and it writes the run's own lint receipt, as the publisher always did. It writes nothing to
  * the pool.
+ *
+ * It reads through the one document reader (read-document.mjs): the reads every report makes, then the Knockout's
+ * own, in the order `KNOCKOUT_READS` lists them.
  */
 export async function readKnockoutDocument({ runId, runDir, findings, plan, framework, overall, poolRoot, poolUrl, customerKey, searchPolicy, registerCounts = null }) {
+  return readReportDocument(KNOCKOUT_READING, { runId, runDir, findings, plan, framework, overall, poolRoot, poolUrl, customerKey, searchPolicy, registerCounts });
+}
+
+// ── The Knockout's reads, in order ────────────────────────────────────────────────────────────────────────────────
+//
+// Each read is handed every fact read before it and returns the ones it adds (read-document.mjs). Each block below is
+// the part of the one reader function it was, unchanged but for the facts it takes and returns: the stores, the
+// catches, the order of the log lines and the lint receipt's write are as they were.
+export const KNOCKOUT_READS = [
+  readTheReceiptsDoor, readWhenSearched, readTheSweep, readTheRegister, readTheRequest, readTheRecordLinks,
+  readTheMachineChecks, readThePartsNotCompleted, readTheProduct, readTheReports, readTheRunRecord,
+];
+
+// A Knockout always has its workspace, which is its directory for the run. Its issue time carries no zone.
+const KNOCKOUT_READING = { base: ({ runDir }) => runDir, issuedZone: false, reads: KNOCKOUT_READS, result: knockoutRead };
+
+/** The receipts door: every citation traced to this run's own research, or the publish refuses. */
+function readTheReceiptsDoor({ runId, runDir, findings }) {
   // ── THE RECEIPTS DOOR ───────────────────────────────────────────────────────────────────────
   // BEFORE anything is written, and it can refuse. The live lane already gates the merged artifact
   // (pipeline-knockout.mjs → validateMergedFindings), so on that path this is belt-and-braces; the path
@@ -493,11 +513,17 @@ export async function readKnockoutDocument({ runId, runDir, findings, plan, fram
   // A pass with nothing to check is not the same answer as a pass, so it is recorded rather than
   // assumed: `urls: 0` in the receipt below means no finding cited anything.
   note(`knockout receipts: ${receipts.checked.urls} citation(s) across ${receipts.checked.findings} finding(s) on ${receipts.checked.citing}/${receipts.checked.marks} mark(s) traced to held evidence`);
-  // WHAT THE RECORD SAYS, NOT THE CLOCK (report-dates.mjs): a republish is neither a new search nor a new issue.
-  const dates = reportDates({ runDir, poolRunDir: join(poolRoot, runId) });
-  const issued = zurichStamp(dates.issuedAt);
-  const searched = zurichStamp(dates.searchedAt);
+  return { receipts };
+}
 
+/** When the search ran, from the record (report-dates.mjs). */
+function readWhenSearched({ dates }) {
+  const searched = zurichStamp(dates.searchedAt);
+  return { searched };
+}
+
+/** The sweep ledger, for the audit trail. */
+function readTheSweep({ runDir }) {
   // the SWEEP ledger → the audit trail. Named apart from the URL-receipts check above on purpose: one
   // is the record of what the driver called, the other is the check that the findings cite what it held.
   let sweepReceipts = [];
@@ -505,7 +531,11 @@ export async function readKnockoutDocument({ runId, runDir, findings, plan, fram
     sweepReceipts = readFileSync(paths(runDir).knockoutSweep, 'utf8').split('\n').filter(Boolean)
       .map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
   } catch { /* fixture/degenerate runs may have none */ }
+  return { sweepReceipts };
+}
 
+/** What the register returned: its counts, its listed filings and their saved records, and the owner lookups. */
+function readTheRegister({ runDir, registerCounts }) {
   // Depth 2's sidecar, read from the RUN DIR rather than taken on trust from the caller: the
   // publisher renders what the driver measured and wrote, and a republish of an archived run picks up
   // the same file. An absent sidecar publishes exactly today's knockout.
@@ -529,15 +559,20 @@ export async function readKnockoutDocument({ runId, runDir, findings, plan, fram
   let registerRecords = null, registerRecordsUnreadable = false;
   try { registerRecords = readJson(paths(runDir).registerRecords); }
   catch { registerRecords = null; registerRecordsUnreadable = existsSync(paths(runDir).registerRecords); }
-  // Each listed filing's saved record, which its register record drop-down is built from, and each one's saved logo.
-  // A run that saved no records, or fetched no logos, has none, and its table renders as before.
-  const filingRecords = filingRecordBodies(runDir, registerRecords), logos = logosForReport(runDir);
+  // Each listed filing's saved record, which its register record drop-down is built from. A run that saved no records
+  // has none, and its table renders as before.
+  const filingRecords = filingRecordBodies(runDir, registerRecords);
   // The owner lookups this run made, read the same tolerant way as the records above:
   // an archived run that predates the lane has no file, and its cards then render exactly as they were
   // delivered. The source line the report prints comes from HERE, not from anything the seat typed.
   let ownerChecks = [];
   try { ownerChecks = readJson(paths(runDir).ownerChecks).checks ?? []; }
   catch { ownerChecks = []; }
+  return { registerCounts, registerCountsUnreadable, registerRecords, registerRecordsUnreadable, filingRecords, ownerChecks };
+}
+
+/** The request the run was given, and the frozen method. */
+function readTheRequest({ runDir, framework }) {
   // The request the run was given, read the same tolerant way as the sidecars above and for the same
   // reason (A.1). It is what "About this request" states; a run archived before the
   // sidecar existed has none, and its page renders exactly as it was delivered.
@@ -548,7 +583,11 @@ export async function readKnockoutDocument({ runId, runDir, findings, plan, fram
   // the workbook's band cell show the framework's inputs beside the band. A run that froze none — every
   // run before the method existed among them — renders the band alone, as it was delivered.
   const frameworkMethod = readFrozenMethod(driverDir(runDir, FROZEN_METHOD_FILE), framework).method ?? null;
+  return { instructedScope, scopeUnreadable, frameworkMethod };
+}
 
+/** Each listed filing's link, on its own register's host or its office's page. */
+function readTheRecordLinks({ registerRecords }) {
   // ── — THIS LANE HAD NO RECORD-ORIGIN LOGIC AT ALL ─────────────────────────────────────────────
   //
   // gave the clearance lane a provider-derived record host and gave it a repair; the knockout
@@ -577,7 +616,11 @@ export async function readKnockoutDocument({ runId, runDir, findings, plan, fram
   // sidecar that names no provider is left as it was, as the normalisation above leaves it.
   const officeLinks = addressListedFilings(registerRecords, declaredRecordOrigins(registerRecords?.provider));
   if (officeLinks) note(`[record-links] ${officeLinks.summary}`);
+  return { recordLinksDropped, officeLinks };
+}
 
+/** The predelivery lint, and its receipt in the run's record. */
+function readTheMachineChecks({ runDir, findings, receipts }) {
   // ── Predelivery lint — the APPLICABLE subset, FLAGS not FAILS (2026-07-31) ─────────────────────────
   // This lane wrote no lint receipt at all until now (docs/DELIVERY.md decision memo, updated in the
   // same change). It writes one here, on the publish path, so the workbook and the cover note have a QC
@@ -618,7 +661,11 @@ export async function readKnockoutDocument({ runId, runDir, findings, plan, fram
       }, null, 2) + '\n');
     } catch (e) { note(`knockout lint receipt write failed (non-fatal): ${e.message}`); }
   } catch (e) { note(`knockout predelivery lint skipped (non-fatal): ${e.message}`); machineChecksFailed = { reason: NOT_COMPLETED }; }
+  return { qcFlags, machineChecksFailed };
+}
 
+/** The parts that failed as a whole, for the workbook. */
+function readThePartsNotCompleted({ runDir, plan, sweepReceipts, ownerChecks, registerRecords }) {
   // ── THE PARTS THAT FAILED AS A WHOLE, for the workbook only (degraded-parts.mjs): the report is as it was.
   // The owner lookups, when their step failed before any was recorded, become one failed lookup per owner
   // the listing owed a check, so the trail's owner-lookup row prints each; the cards never see them.
@@ -639,12 +686,21 @@ export async function readKnockoutDocument({ runId, runDir, findings, plan, fram
     && !sweepReceipts.some((r) => r?.mark === name && !r.question))
     .map((mark) => ({ mark, preset: koPreset }));
   const openPoints = (() => { try { return readJson(paths(runDir).knockoutCorrections).open ?? []; } catch { return []; } })();
+  return { steps, lookupsNotRun, recordsNotKept, openPoints };
+}
+
+/** The product the run was sold as. */
+function readTheProduct({ searchPolicy }) {
   // The run's report identity, off the SAME registry row that chose its machinery (search-policy.mjs
   // PRODUCT_POLICIES). Resolved from the frozen policy sidecar so an archived run re-renders under the
   // stage it was sold as, not under whatever today's registry calls that level.
   const identity = reportIdentityFor(searchPolicy ?? null);
   const probeRan = Boolean(searchPolicy?.components?.registerProbe);
+  return { identity, probeRan };
+}
 
+/** One report per name, and each report's address. */
+function readTheReports({ runId, findings, poolUrl }) {
   // ── ONE REPORT PER MARK ─────────────────────────────────────────────────────────────────────
   //
   // The knockout is the only product sold over more than one name, and it published ONE document for all
@@ -703,13 +759,11 @@ export async function readKnockoutDocument({ runId, runDir, findings, plan, fram
   const reportUrlFor = (slug) => !origin ? null
     : single ? reportRouteFor(origin, runId)
     : markReportRouteFor(origin, runId, slug);
-  // — resolved once for the whole publish, off the same two sources the clearance
-  // publisher uses (frozen sidecar, then roster; either marks, neither un-marks).
-  const demoData = resolveDemoData({ runDir, customerKey });
-  // The models that served this batch, named as a client may read them — read once, like the demo answer,
-  // because it is a property of the run. A read that throws records nothing rather than failing a publish.
-  let served = null;
-  try { served = runDir ? servedModels(runDir) : null; } catch { served = null; }
+  return { markRows, single, origin, reportUrlFor };
+}
+
+/** The batch's statement, its names, and its organisation. */
+function readTheRunRecord({ findings, framework, profile }) {
   const statement = knockoutStatement(framework, findings.marks ?? []);
   // THE NAME THE RUN IS ABOUT. This object carried `title` and no `markName` key at all, so the
   // portal's displayName() fell through to `title` exactly as designed, and every delivered knockout row
@@ -727,16 +781,26 @@ export async function readKnockoutDocument({ runId, runDir, findings, plan, fram
   // lane wrote "(+N marks)" onto status.json for the same batch, so a run changed its name at delivery
   // and the browser, which threads reads on the name string, listed one batch as two different marks.
   const markNames = (findings.marks ?? []).map((m) => m.name).filter(Boolean);
-  // WHICH ORGANISATION'S GENERIC this batch was filed under, read from the frozen sidecar exactly as the clearance
-  // publisher reads it. Absent on a company's batch and on one filed before organisations existed.
-  const organisation = (() => { try { const f = readJson(paths(runDir).profile); return typeof f?.organisation === 'string' && f.organisation ? f.organisation : undefined; } catch { return undefined; } })();
+  // WHICH ORGANISATION'S GENERIC this batch was filed under, from the frozen profile the shared reads hold, as the
+  // clearance's is. Absent on a company's batch and on one filed before organisations existed: undefined here, null on a clearance.
+  const organisation = typeof profile?.organisation === 'string' && profile.organisation ? profile.organisation : undefined;
+  return { statement, markNames, organisation };
+}
+
+/** What readKnockoutDocument returns: the facts every read made, under the names the surfaces take them by. */
+function knockoutRead(r) {
+  const { receipts, dates, issued, searched, sweepReceipts, registerCounts, registerCountsUnreadable, registerRecords,
+    registerRecordsUnreadable, filingRecords, logos, ownerChecks, instructedScope, scopeUnreadable, frameworkMethod,
+    recordLinksDropped, officeLinks, qcFlags, machineChecksFailed, steps, lookupsNotRun, recordsNotKept, openPoints,
+    identity, probeRan, markRows, single, origin, reportUrlFor, demoData, served, statement, markNames, organisation,
+    framework, overall, engineCommit } = r;
   return {
     receipts, dates, issued, searched, sweepReceipts, registerCounts, registerCountsUnreadable, registerRecords,
     registerRecordsUnreadable, filingRecords, logos, ownerChecks, instructedScope, scopeUnreadable, frameworkMethod, recordLinksDropped,
     officeLinks, qcFlags, machineChecksFailed, steps, lookupsNotRun, recordsNotKept, openPoints, identity, probeRan,
     markRows, single, origin, reportUrlFor, demoData, served, statement, markNames, organisation,
     // WHICH BUILD produced this, read once for every surface that records it. null off a git checkout.
-    engineCommit: engineCommit(),
+    engineCommit,
     // FACTS THE SURFACES STATE TWO WAYS, each way named, so every surface prints what it printed before. Which way is
     // right is for the owner to rule; nothing here chooses.
     // The issue date: `issued` above is the firm's date and time (Europe/Zurich), which each name's page prints;
@@ -936,12 +1000,11 @@ export function knockoutDocumentRoutes(reports, { auditFile = null } = {}) {
 // The office's own page for each listed filing (office-record-links.mjs). Kept down here, below every
 // line the rest of the tree cites by number.
 import { addressListedFilings, reasonCellFor } from './office-record-links.mjs';
-import { reportDates, zurichStamp } from './report-dates.mjs';   // the dates a report prints, from its record
+import { zurichStamp } from './report-dates.mjs';   // the dates a report prints, from its record
 import { declaredRecordOrigins } from '../record-origins.mjs';
 import { driverDir, ensureDriverDir, paths, readJson } from "../run-record.mjs";
 import { readRecordArtifacts, normalizeRecordUri } from "../registry-fidelity.mjs";
 import { recordBodyFromLog } from "../../providers/_shared/ledger.mjs";   // the run record log's own index
-import { logosForReport } from "../mark-logos.mjs";   // the saved logo of each listed filing, embedded in the report
 
 /**
  * The saved record of each filing the Knockout lists, by its normalised record id: the run's `_records/` copy where

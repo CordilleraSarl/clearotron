@@ -95,11 +95,17 @@ test("the publisher resolves it from the roster, so a REPUBLISH picks it up", ()
   assert.match(resolver, /fp\?\.demoData === true/,
     "and a frozen sidecar that carries the marker still marks — either source marks, neither un-marks");
 
-  // …AND THE CLEARANCE PUBLISHER STILL ASKS. A resolver nobody calls marks nothing, which is exactly how
-  // the knockout side failed: the banner existed and was correct, and one renderer never asked for it.
+  // …AND EVERY PUBLISHER STILL ASKS. A resolver nobody calls marks nothing, which is exactly how the
+  // knockout side failed: the banner existed and was correct, and one renderer never asked for it. The
+  // question is now one of the reads every report makes, so both readers ask it by reading through them.
+  const reader = readFileSync(join(ROOT, "driver", "publish", "read-document.mjs"), "utf8");
+  assert.match(reader, /demoData: resolveDemoData\(\{ runDir, customerKey \}\)/,
+    "the reads every report makes ask the shared resolver");
+  for (const [file, reading] of [["index.mjs", "CLEARANCE_READING"], ["knockout.mjs", "KNOCKOUT_READING"]]) {
+    assert.match(readFileSync(join(ROOT, "driver", "publish", file), "utf8"), new RegExp(`return readReportDocument\\(${reading}, `),
+      `${file}'s reader reads through them`);
+  }
   const src = readFileSync(join(ROOT, "driver", "publish", "index.mjs"), "utf8");
-  assert.match(src, /resolveDemoData\(\{ runDir, customerKey \}\)/,
-    "the clearance publisher asks the shared resolver");
   // The page reads the run's report document, and the demo flag rides beside it as the page's surface, as it always
   // rode beside the page's other inputs.
   assert.match(src, /renderReport\(pageDocument\(reportDocument\), \{[^}]*\bdemoData \}\)/,
