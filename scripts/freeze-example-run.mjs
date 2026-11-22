@@ -45,7 +45,7 @@ import {
   readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, copyFileSync,
   statSync, rmSync, mkdtempSync, cpSync, renameSync,
 } from "node:fs";
-import { join, dirname, relative, basename, resolve } from "node:path";
+import { join, dirname, relative, basename, resolve, sep } from "node:path";
 import { createHash } from "node:crypto";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { PUBLISH_INPUTS } from "../driver/publish/publish-inputs.mjs";   //
@@ -475,7 +475,7 @@ for (const dir of dirsFor(template)) {
   for (const name of readdirSync(src)) {
     if (dir.match ? !dir.match.test(name) : ![].concat(dir.ext).some((ext) => name.endsWith(ext))) continue;
     copyFileSync(join(src, name), join(frozenRun, dir.path, name));
-    copied.push(join(dir.path, name));
+    copied.push(`${dir.path}/${name}`);   // a relative path is written with "/" on every system, as the allowlist names them
   }
 }
 note(`${copied.length} file(s) copied`);
@@ -591,7 +591,7 @@ const walk = (root, base = root) => {
   for (const e of readdirSync(root, { withFileTypes: true })) {
     const p = join(root, e.name);
     if (e.isDirectory()) out.push(...walk(p, base));
-    else out.push(relative(base, p));
+    else out.push(relative(base, p).split(sep).join("/"));   // "/" on every system: the prune's patterns and exceptions are written so
   }
   return out;
 };
