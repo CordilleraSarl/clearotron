@@ -47,7 +47,7 @@ import {
 } from "node:fs";
 import { join, dirname, relative, basename, resolve, sep } from "node:path";
 import { createHash } from "node:crypto";
-import { driverDir } from "../shared/driver-dir.mjs";
+import { driverDir, DRIVER_DIR } from "../shared/driver-dir.mjs";
 import { PUBLISH_INPUTS } from "../driver/publish/publish-inputs.mjs";   //
 import { tmpdir } from "node:os";
 import { createRequire } from "node:module";
@@ -193,7 +193,7 @@ const FROZEN_DIRS = [
   { path: "_records", ext: ".json", why: "readRecordArtifacts() in registry-fidelity.mjs" },
   // The families the register stage withheld and released, one file per axis, read by readWithheldFamilies and
   // releasedFamilyQids in withheld-families.mjs: the report document's reviewer record and the workbook's rows.
-  { path: "_driver", match: /^(?:withheld|released)-families-.+\.json$/, why: "withheld-families.mjs, by its own two file patterns" },
+  { path: DRIVER_DIR, match: /^(?:withheld|released)-families-.+\.json$/, why: "withheld-families.mjs, by its own two file patterns" },
   // The images logos.json names, which logosForReport embeds in the page. They are binary, so the rewrite leaves
   // their bytes alone and renames them only where the name carries a vendor key. Both lanes read them.
   { path: "_driver/logos", ext: [".png", ".jpg", ".gif", ".webp"], why: "logosForReport in mark-logos.mjs, the extensions imageTypeOf names" },
