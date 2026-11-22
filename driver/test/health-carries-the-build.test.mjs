@@ -78,8 +78,10 @@ test("the endpoint and the publisher import the same stamp, so they cannot drift
   // The join the acceptance criterion is really about, asserted at the source rather than by comparing
   // two runtime values that happen to agree today. A shape test would pass on a re-derived sha.
   const publisher = readFileSync(join(ROOT, "driver/publish/index.mjs"), "utf8");
+  // Both publishers read the stamp through the reads every report makes, so that is where the import is.
+  const reader = readFileSync(join(ROOT, "driver/publish/read-document.mjs"), "utf8");
   const portal = driverSource("portal-service.mjs");
-  for (const [what, src] of [["the publisher", publisher], ["the portal", portal]]) {
+  for (const [what, src] of [["the publishers' shared reads", reader], ["the portal", portal]]) {
     // widened the character class, not the subject. This guard is about the JOIN — that both
     // sites call engine-build's own function rather than re-deriving a sha — and added sibling
     // imports from the same module. Matching `engineCommit` inside a named-import list keeps the
@@ -91,7 +93,7 @@ test("the endpoint and the publisher import the same stamp, so they cannot drift
       + `stops being a statement about the run that pool meta will record`);
   }
   // Publishing reads the stamp once, the report document keeps it as its build, and meta.json takes it from there.
-  assert.match(publisher, /engineCommit: engineCommit\(\)/, "the publisher's report document reads engine-build's own stamp");
+  assert.match(reader, /engineCommit: engineCommit\(\)/, "the publishers' report documents read engine-build's own stamp");
   const document = readFileSync(join(ROOT, "driver/publish/report-document.mjs"), "utf8");
   assert.match(document, /build: \{ engineCommit: orNull\(d\.engineCommit\)/, "the report document keeps the stamp as its build");
   assert.match(publisher, /\n    engineCommit: build\.engineCommit,\n/, "and the publisher still stamps it into meta.json, from the document");

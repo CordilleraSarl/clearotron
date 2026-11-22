@@ -28,7 +28,9 @@ into the report document: every fact a surface prints, which run-side stores wer
 the one allowed hard structural refusal. Where two surfaces state one fact two ways, each way is its own
 field. `publishReport()` writes the pool run dir from that document. `coverNoteOptions()` reads the cover
 note's options from the run's frozen files, for the document and for the delivery's email.
-`knockout.mjs` is built the same way: `readKnockoutDocument()`, then `publishKnockout()`.
+`knockout.mjs` is built the same way: `readKnockoutDocument()`, then `publishKnockout()`. Both readers read
+through `readReportDocument()` in `read-document.mjs`: the reads every report makes, once, then the product's
+own list of named reads (`CLEARANCE_READS`, `KNOCKOUT_READS`), in order.
 
 **`render.mjs`** — but read `../test/render-frozen.test.mjs` first. The four demo runs' report pages are
 compared with a stored record, so a change to what a page prints, from this file, `templates/report.css` or
@@ -47,6 +49,7 @@ by another build is refused, so a delivered report keeps the page it was issued 
 | `xlsx.mjs` | The four-tab audit workbook (exceljs, loaded lazily) |
 | `audit-from-spine.mjs` | Builds the `audit.md` contract from the spine's markdown tables — no LLM, count-guarded |
 | `knockout.mjs` | The knockout publisher: `readKnockoutDocument`, then per-mark reports, its workbook, its cover note |
+| `read-document.mjs` | Reading a run into its report document, whichever report it is: the reads every report makes (dates, demo marking, served models, logos, frozen profile, build), then the product's own list of reads |
 | `shell.mjs` | What publishing does whichever report it is: the run's pool folder and its writers, a part that fails without stopping the report, `meta.json` last with the index refresh, and the staff pages |
 | `render-knockout.mjs` | The knockout report's HTML. A sibling of `render.mjs`: it takes the demo banner and the served-models line from it |
 | `page-shell.mjs` | The document both renderers wrap their page in: head, title, typefaces, favicon, theme script and the base, dark and print styles. Each renderer passes its own title, sheet and chrome address |
