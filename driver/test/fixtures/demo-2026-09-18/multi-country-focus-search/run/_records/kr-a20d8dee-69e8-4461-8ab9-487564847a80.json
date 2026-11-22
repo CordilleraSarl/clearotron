@@ -1,0 +1,140 @@
+{
+  "uri": "/mark/kr/a20d8dee-69e8-4461-8ab9-487564847a80",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "a20d8dee-69e8-4461-8ab9-487564847a80",
+  "applicationNumber": "40-1997-0007819",
+  "registrationNumber": "4004074590000",
+  "applicationDate": "1997-02-21",
+  "registrationDate": "1998-07-02",
+  "expiryDate": "2028-07-02",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GREENCHIP",
+  "markTransliteration": "GREENCHIP",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "집적회로",
+      "translation_language": "en",
+      "translation": "Integrated circuit"
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "목돈상 (MOK, Don-sang)",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "19961003",
+      "priorityNumber": "879693"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "네덜란드 엔엘- 아게 아인드호펜 하이 테크 캠퍼스",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V.",
+        "applicantNativeName": "엔엑스피 비 브이"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Integrated circuit",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "집적회로"
+        }
+      ]
+    },
+    "id": "a20d8dee-69e8-4461-8ab9-487564847a80",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "19961003",
+        "priorityNumber": "879693"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울특별시 강남구 강남대로 호 (역삼동, 황화빌딩)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "목돈상 (MOK, Don-sang)"
+      },
+      {
+        "representativeAddress": "SEOUL(NONE OFFICE)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "목영동 (Mok Young Dong)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19970221",
+        "applicationNumber": "40-1997-0007819"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280702",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "19980702",
+        "registrationNumber": "4004074590000"
+      }
+    },
+    "version": "20250625145419",
+    "wordMarkSpecification": {
+      "markTransliteration": "GREENCHIP",
+      "markVerbalElementText": "GREENCHIP"
+    }
+  },
+  "_uri": "/mark/kr/a20d8dee-69e8-4461-8ab9-487564847a80",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.926Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "policy": "open-item",
+  "rows": [
+    {
+      "ordinal": 1,
+      "mark": "enqor",
+      "applicable": true,
+      "seniorUri": "/mark/kr/a59ef335-9570-4757-8770-26b208dc24b1",
+      "rankedFrom": "record",
+      "verified": true,
+      "excludedDead": 0
+    },
+    {
+      "ordinal": 2,
+      "mark": "Ｖｅｎｋｕｒｉ",
+      "applicable": true,
+      "seniorUri": "/mark/cn/817a4fcd-a0f3-4048-b0de-2d9b598ca7f5",
+      "rankedFrom": "record",
+      "verified": true,
+      "excludedDead": 0
+    }
+  ]
+}

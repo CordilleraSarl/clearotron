@@ -1,0 +1,124 @@
+{
+  "uri": "/mark/kr/690dd025-1825-47a2-bcf1-d2a84d9d3d88",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "690dd025-1825-47a2-bcf1-d2a84d9d3d88",
+  "applicationNumber": "40-2010-0033907",
+  "registrationNumber": "4009165650000",
+  "applicationDate": "2010-06-28",
+  "registrationDate": "2012-04-20",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "XTRINSIC",
+  "markTransliteration": "XTRINSIC",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "가속도 센서,가속도계,감지기능을 위한 소프트웨어,감지기능을 위한 컴퓨터프로그램(알고리즘,,근접센서,레이더센서,마이크로프로세서,반도체,비디오스크린용 터치센서,압력센서,자기센서,자이로센서,전기용량센서,전기음향영상기기용 터치센서,전기통신기기용 터치센서,전자식 센서플랫폼장치(센서/소프트웨어/알고리즘/마이크로프로세서 /마이크로컨트롤러/로직 프로토콜/무선 프로토콜이 일체화된 것,,전자식 터치센서,직접회로,측정용 관성센서,컴퓨터 주변기기용 터치센서,컴퓨터용 터치센서,컴퓨터인터페이스용 센서(소프트웨어/펌웨어/전자집적회로칩으로 구성된 것,,터치스크린용 터치센서",
+      "translation_language": "en",
+      "translation": "Accelerometer, accelerometer, software for sensing function, computer program for sensing function (algorithm,, proximity sensor, radar sensor, microprocessor, semiconductor, touch sensor for video screen, pressure sensor, magnetic sensor, gyro sensor, capacitive sensor), Touch sensor for electroacoustic imaging equipment, touch sensor for telecommunication equipment, electronic sensor platform device (sensor/software/algorithm/microprocessor/microcontroller/logic protocol/wireless protocol integrated, electronic touch sensor, integrated circuit), Inertial sensor for measurement, touch sensor for computer peripheral devices, touch sensor for computer, sensor for computer interface (consisting of software/firmware/electronic integrated circuit chip,, touch sensor for touch screen"
+    }
+  ],
+  "owner": "NXP USA, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "양영준 (YANG, Young June)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미합중국 텍사스 (우편번호 ) 오스틴 윌리암 캐논 드라이브 웨스트",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc.",
+        "applicantNativeName": "엔엑스피 유에스에이, 인코포레이티드"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Accelerometer, accelerometer, software for sensing function, computer program for sensing function (algorithm,, proximity sensor, radar sensor, microprocessor, semiconductor, touch sensor for video screen, pressure sensor, magnetic sensor, gyro sensor, capacitive sensor), Touch sensor for electroacoustic imaging equipment, touch sensor for telecommunication equipment, electronic sensor platform device (sensor/software/algorithm/microprocessor/microcontroller/logic protocol/wireless protocol integrated, electronic touch sensor, integrated circuit), Inertial sensor for measurement, touch sensor for computer peripheral devices, touch sensor for computer, sensor for computer interface (consisting of software/firmware/electronic integrated circuit chip,, touch sensor for touch screen",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "가속도 센서,가속도계,감지기능을 위한 소프트웨어,감지기능을 위한 컴퓨터프로그램(알고리즘,,근접센서,레이더센서,마이크로프로세서,반도체,비디오스크린용 터치센서,압력센서,자기센서,자이로센서,전기용량센서,전기음향영상기기용 터치센서,전기통신기기용 터치센서,전자식 센서플랫폼장치(센서/소프트웨어/알고리즘/마이크로프로세서 /마이크로컨트롤러/로직 프로토콜/무선 프로토콜이 일체화된 것,,전자식 터치센서,직접회로,측정용 관성센서,컴퓨터 주변기기용 터치센서,컴퓨터용 터치센서,컴퓨터인터페이스용 센서(소프트웨어/펌웨어/전자집적회로칩으로 구성된 것,,터치스크린용 터치센서"
+        }
+      ]
+    },
+    "id": "690dd025-1825-47a2-bcf1-d2a84d9d3d88",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "F, Seyang B/D, Naeja-dong, Jongno-gu, Seoul, Korea(KIM & CHANG)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "양영준 (YANG, Young June)"
+      },
+      {
+        "representativeAddress": "Seoul(none)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "위혜숙 (Wee Hye Suk)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20100628",
+        "applicationNumber": "40-2010-0033907"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20120420",
+        "registrationNumber": "4009165650000"
+      }
+    },
+    "version": "20250625165528",
+    "wordMarkSpecification": {
+      "markTransliteration": "XTRINSIC",
+      "markVerbalElementText": "XTRINSIC"
+    }
+  },
+  "_uri": "/mark/kr/690dd025-1825-47a2-bcf1-d2a84d9d3d88",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.908Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

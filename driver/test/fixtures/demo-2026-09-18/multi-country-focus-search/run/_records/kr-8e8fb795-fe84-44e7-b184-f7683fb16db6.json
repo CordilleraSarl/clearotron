@@ -1,0 +1,139 @@
+{
+  "uri": "/mark/kr/8e8fb795-fe84-44e7-b184-f7683fb16db6",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "8e8fb795-fe84-44e7-b184-f7683fb16db6",
+  "applicationNumber": "40-2002-0053949",
+  "registrationNumber": "4005790580000",
+  "applicationDate": "2002-11-22",
+  "registrationDate": "2004-03-30",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "CLEAR@MOTION",
+  "markTransliteration": "CLEAR MOTION",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "기록된 컴퓨터프로그램,반도체,반도체소자,소프트웨어,집적회로,칩",
+      "translation_language": "en",
+      "translation": "Recorded computer program, semiconductor, semiconductor device, software, integrated circuit, chip"
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "목영동 (Mok Young Dong)",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20020530",
+      "priorityNumber": "1011859"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "네덜란드 엔엘- 아게 아인드호펜 하이 테크 캠퍼스",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V.",
+        "applicantNativeName": "엔엑스피 비 브이"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Recorded computer program, semiconductor, semiconductor device, software, integrated circuit, chip",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "기록된 컴퓨터프로그램,반도체,반도체소자,소프트웨어,집적회로,칩"
+        }
+      ]
+    },
+    "id": "8e8fb795-fe84-44e7-b184-f7683fb16db6",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20020530",
+        "priorityNumber": "1011859"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "SEOUL(NONE OFFICE)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "목영동 (Mok Young Dong)"
+      },
+      {
+        "representativeAddress": "(Y.P.LEE,MOCK&PARTNERS)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "목선영 (Mock Sun Young)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20021122",
+        "applicationNumber": "40-2002-0053949"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20040330",
+        "registrationNumber": "4005790580000"
+      }
+    },
+    "version": "20250625154012",
+    "wordMarkSpecification": {
+      "markTransliteration": "CLEAR MOTION",
+      "markVerbalElementText": "CLEAR@MOTION"
+    }
+  },
+  "_uri": "/mark/kr/8e8fb795-fe84-44e7-b184-f7683fb16db6",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.901Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/kr/6c570016-beef-4ee1-a9a7-20f3cc8822d6",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "6c570016-beef-4ee1-a9a7-20f3cc8822d6",
+  "applicationNumber": "40-2003-0009685",
+  "registrationNumber": "4005890750000",
+  "applicationDate": "2003-03-04",
+  "registrationDate": "2004-07-31",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "ONEZIG",
+  "markTransliteration": "ONEZIG",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "경보 스테이션,디브이디머신(소비자 전자 제품,,라디오(소비자 전자,라디오/텔레비젼/스테레오/조명/비디오 카세트 레코더/디브이디 머신/전자도어 오프너용 리모트 콘트롤,마이크로폰(비디오 컨퍼런스 장치,,모니터(비디오 게임 장치,,무선 키패드,무선 통신에 사용 되는 집적회로/컴퓨터 칩,보안경보기/침입방지경보기/침입탐지기/개인보안경보기/움직임을 감지하여반응하는 전자스위치로 이루어진 보안 시스템,보이스 센서/보이스센서용 음성 인식 소프트웨어로 이루어진보이스 콘트롤 시스템,비디오 모니터 (비디오 컨퍼런스,비디오 카메라/오디오 스피커로 이루어진 어린이 감시시스템,비디오 카세트 레코더(소비자 전자 제품,,스테레오(소비자 전자제품,,쌍방향 리모트 콘트롤 장치(비디오 게임 장치,,연기/화재 탐지기,오디오 스피커(비디오 컨퍼런스 장치,,유리 파손 감지센서,조이스틱(비디오 게임 장치,,차고 문 오프너,카메라(비디오 컨퍼런스,컴퓨터 마우스,컴퓨터(무선 통신이 가능한 전자/컴퓨터 장치, --,콘트롤러/서머스탯/전기 저항 가열 전선으로 이루어진 전기/가열시스템,텔레비젼(소비자 전자 제품,,텔레비젼/컴퓨터와 함께 사용하는 비디오 게임 머신(비디오 게임,퍼스널트랜스폰더,피디에이(소비자전자 제품,,화재경보기",
+      "translation_language": "en",
+      "translation": "Alarm station, DVD machine (consumer electronics,, radio (consumer electronics, radio/TV/stereo/lighting/video cassette recorder/DVD machine/electronic door opener) remote control, microphone (video conference device,, monitor (video game device),, Wireless keypad, integrated circuit/computer chip used for wireless communication, security alarm/intrusion prevention alarm/intrusion detector/personal security alarm/security system consisting of electronic switches that detect movement and respond, voice sensor/voice for voice sensor Voice control system consisting of recognition software, video monitor (video conference, child surveillance system consisting of video camera/audio speakers, video cassette recorder (consumer electronics,, stereo (consumer electronics,, interactive remote control device (video game device,, Smoke/fire detector, audio speaker (video conference device,, glass break detection sensor, joystick (video game device,, garage door opener, camera (video conference, computer mouse, computer (electronic/computer device capable of wireless communication,- -, Electric/heating system consisting of controller/thermostat/electric resistance heating wire, TV (consumer electronics,, video game machine used with TV/computer (video game, personal transponder, PDA (consumer electronic products,, Fire alarm"
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "목영동 (Mok Young Dong)",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20020906",
+      "priorityNumber": "1017647"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "네덜란드 엔엘- 아게 아인드호펜 하이 테크 캠퍼스",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V.",
+        "applicantNativeName": "엔엑스피 비 브이"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Alarm station, DVD machine (consumer electronics,, radio (consumer electronics, radio/TV/stereo/lighting/video cassette recorder/DVD machine/electronic door opener) remote control, microphone (video conference device,, monitor (video game device),, Wireless keypad, integrated circuit/computer chip used for wireless communication, security alarm/intrusion prevention alarm/intrusion detector/personal security alarm/security system consisting of electronic switches that detect movement and respond, voice sensor/voice for voice sensor Voice control system consisting of recognition software, video monitor (video conference, child surveillance system consisting of video camera/audio speakers, video cassette recorder (consumer electronics,, stereo (consumer electronics,, interactive remote control device (video game device,, Smoke/fire detector, audio speaker (video conference device,, glass break detection sensor, joystick (video game device,, garage door opener, camera (video conference, computer mouse, computer (electronic/computer device capable of wireless communication,- -, Electric/heating system consisting of controller/thermostat/electric resistance heating wire, TV (consumer electronics,, video game machine used with TV/computer (video game, personal transponder, PDA (consumer electronic products,, Fire alarm",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "경보 스테이션,디브이디머신(소비자 전자 제품,,라디오(소비자 전자,라디오/텔레비젼/스테레오/조명/비디오 카세트 레코더/디브이디 머신/전자도어 오프너용 리모트 콘트롤,마이크로폰(비디오 컨퍼런스 장치,,모니터(비디오 게임 장치,,무선 키패드,무선 통신에 사용 되는 집적회로/컴퓨터 칩,보안경보기/침입방지경보기/침입탐지기/개인보안경보기/움직임을 감지하여반응하는 전자스위치로 이루어진 보안 시스템,보이스 센서/보이스센서용 음성 인식 소프트웨어로 이루어진보이스 콘트롤 시스템,비디오 모니터 (비디오 컨퍼런스,비디오 카메라/오디오 스피커로 이루어진 어린이 감시시스템,비디오 카세트 레코더(소비자 전자 제품,,스테레오(소비자 전자제품,,쌍방향 리모트 콘트롤 장치(비디오 게임 장치,,연기/화재 탐지기,오디오 스피커(비디오 컨퍼런스 장치,,유리 파손 감지센서,조이스틱(비디오 게임 장치,,차고 문 오프너,카메라(비디오 컨퍼런스,컴퓨터 마우스,컴퓨터(무선 통신이 가능한 전자/컴퓨터 장치, --,콘트롤러/서머스탯/전기 저항 가열 전선으로 이루어진 전기/가열시스템,텔레비젼(소비자 전자 제품,,텔레비젼/컴퓨터와 함께 사용하는 비디오 게임 머신(비디오 게임,퍼스널트랜스폰더,피디에이(소비자전자 제품,,화재경보기"
+        }
+      ]
+    },
+    "id": "6c570016-beef-4ee1-a9a7-20f3cc8822d6",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20020906",
+        "priorityNumber": "1017647"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "SEOUL(NONE OFFICE)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "목영동 (Mok Young Dong)"
+      },
+      {
+        "representativeAddress": "(Y.P.LEE,MOCK&PARTNERS)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "목선영 (Mock Sun Young)"
+      },
+      {
+        "representativeAddress": "(Y.P.LEE,MOCK&PARTNERS)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "이영필 (Lee Young Pil)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20030304",
+        "applicationNumber": "40-2003-0009685"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20040731",
+        "registrationNumber": "4005890750000"
+      }
+    },
+    "version": "20250625151642",
+    "wordMarkSpecification": {
+      "markTransliteration": "ONEZIG",
+      "markVerbalElementText": "ONEZIG"
+    }
+  },
+  "_uri": "/mark/kr/6c570016-beef-4ee1-a9a7-20f3cc8822d6",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.902Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

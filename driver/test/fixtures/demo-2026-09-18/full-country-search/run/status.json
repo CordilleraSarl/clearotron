@@ -1,0 +1,713 @@
+{
+  "schema": 1,
+  "id": "mcp-mu73fpd0-831f06de",
+  "runId": "tmpdemo2014fullcountrysearch-venqori-2026-09-18-sample-capture",
+  "slug": "tmpdemo2014fullcountrysearch-venqori",
+  "codename": "sample-capture",
+  "date": "2026-09-18",
+  "agent": "localagent",
+  "forwarder": "e2e",
+  "ref": "DEMO-2014-full-country-search",
+  "markName": "VENQORI",
+  "classes": [
+    9,
+    42,
+    41
+  ],
+  "demoRun": false,
+  "demoDataProfile": false,
+  "state": "delivered",
+  "pid": 3394435,
+  "pidStarttime": "76921605",
+  "engineCommit": "bc3f30a81f7cd7862e82ccd383485d56891825de",
+  "engineCommitSource": "git",
+  "stepIndex": 8,
+  "stepLabel": "Sending to you",
+  "stepN": 9,
+  "stepTotal": 9,
+  "lastStage": "publish",
+  "verdict": "CONDITIONAL",
+  "url": "/portal/report/tmpdemo2014fullcountrysearch-venqori-2026-09-18-sample-capture/",
+  "failedStage": null,
+  "reason": null,
+  "deliveredAt": "2026-09-18T16:14:49.905Z",
+  "attempts": 1,
+  "updatedAt": "2026-09-18T16:14:49.906Z",
+  "startedAt": "2026-09-18T15:08:47.366Z",
+  "stoppable": false,
+  "providerUsage": {
+    "clarivate": {
+      "search": 0,
+      "record_fetch": 0,
+      "image": 0,
+      "phoneme": 0,
+      "batch_screen": 0,
+      "enumerate": 0,
+      "execute_plan": 465,
+      "propose_supplemental": 104,
+      "total": 569,
+      "by_tool": {
+        "execute_plan": 465,
+        "propose_supplemental": 104
+      },
+      "unclassified": 0,
+      "ledger": {
+        "configured": true,
+        "present": true,
+        "readable": true,
+        "rowsScanned": 21588
+      },
+      "retries": 0,
+      "errors": 0,
+      "cache_hits": 0,
+      "bytes": 2262833,
+      "duplicate_fetches": 0,
+      "duplicate_fetches_same_session": 0,
+      "duplicate_fetches_cross_session": 0
+    }
+  },
+  "tokens": {
+    "total": {
+      "input": 1802904,
+      "output": 164149,
+      "cacheRead": 19831936,
+      "cacheWrite": 0,
+      "attempts": 34,
+      "thoughtTurns": 0
+    },
+    "byStage": {
+      "blind-frame": {
+        "input": 10166,
+        "output": 3532,
+        "cacheRead": 60544,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "case-law": {
+        "input": 17088,
+        "output": 2456,
+        "cacheRead": 150528,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "clearance-variants": {
+        "input": 46384,
+        "output": 9307,
+        "cacheRead": 178688,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "common-law-half:a": {
+        "input": 132831,
+        "output": 7241,
+        "cacheRead": 1125376,
+        "cacheWrite": 0,
+        "attempts": 2,
+        "thoughtTurns": 0
+      },
+      "common-law-half:b": {
+        "input": 113704,
+        "output": 6539,
+        "cacheRead": 810496,
+        "cacheWrite": 0,
+        "attempts": 2,
+        "thoughtTurns": 0
+      },
+      "common-law-half:m": {
+        "input": 65730,
+        "output": 2466,
+        "cacheRead": 224000,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "doubt-closure": {
+        "input": 18472,
+        "output": 2121,
+        "cacheRead": 67584,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "frame-diff": {
+        "input": 67667,
+        "output": 3697,
+        "cacheRead": 236288,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "jx-completions": {
+        "input": 3692,
+        "output": 271,
+        "cacheRead": 9984,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "matter-frame": {
+        "input": 24391,
+        "output": 3911,
+        "cacheRead": 164352,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "narrative-refutation": {
+        "input": 238114,
+        "output": 31343,
+        "cacheRead": 3283200,
+        "cacheWrite": 0,
+        "attempts": 3,
+        "thoughtTurns": 0
+      },
+      "placement-inquiry": {
+        "input": 136575,
+        "output": 18386,
+        "cacheRead": 2140928,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "register-digest": {
+        "input": 135779,
+        "output": 10450,
+        "cacheRead": 1998208,
+        "cacheWrite": 0,
+        "attempts": 2,
+        "thoughtTurns": 0
+      },
+      "register-unit:incumbent-class": {
+        "input": 117144,
+        "output": 5832,
+        "cacheRead": 837376,
+        "cacheWrite": 0,
+        "attempts": 3,
+        "thoughtTurns": 0
+      },
+      "register-unit:primary-sweep": {
+        "input": 158103,
+        "output": 7529,
+        "cacheRead": 1036544,
+        "cacheWrite": 0,
+        "attempts": 3,
+        "thoughtTurns": 0
+      },
+      "register-unit:saturation-probe": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "register-unit:transliteration-numeric": {
+        "input": 48065,
+        "output": 2314,
+        "cacheRead": 379392,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "report-card:1": {
+        "input": 24291,
+        "output": 816,
+        "cacheRead": 77824,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "report-overview": {
+        "input": 92904,
+        "output": 4899,
+        "cacheRead": 509952,
+        "cacheWrite": 0,
+        "attempts": 3,
+        "thoughtTurns": 0
+      },
+      "skeptic": {
+        "input": 27904,
+        "output": 3407,
+        "cacheRead": 132608,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "synthesis": {
+        "input": 323900,
+        "output": 37632,
+        "cacheRead": 6408064,
+        "cacheWrite": 0,
+        "attempts": 3,
+        "thoughtTurns": 0
+      }
+    },
+    "byModel": {
+      "gpt-5.6-sol": {
+        "input": 915309,
+        "output": 114561,
+        "cacheRead": 14233984,
+        "cacheWrite": 0,
+        "attempts": 12,
+        "thoughtTurns": 0
+      },
+      "gpt-5.6-terra": {
+        "input": 571638,
+        "output": 33071,
+        "cacheRead": 3428096,
+        "cacheWrite": 0,
+        "attempts": 15,
+        "thoughtTurns": 0
+      },
+      "gpt-5.6-luna": {
+        "input": 312265,
+        "output": 16246,
+        "cacheRead": 2159872,
+        "cacheWrite": 0,
+        "attempts": 5,
+        "thoughtTurns": 0
+      },
+      "openai/unstamped:gpt-5.6-luna": {
+        "input": 3692,
+        "output": 271,
+        "cacheRead": 9984,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "code:execute-plan": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      }
+    },
+    "byEngine": {
+      "openai-agent": {
+        "input": 1799212,
+        "output": 163878,
+        "cacheRead": 19821952,
+        "cacheWrite": 0,
+        "attempts": 32,
+        "thoughtTurns": 0
+      },
+      "openai": {
+        "input": 3692,
+        "output": 271,
+        "cacheRead": 9984,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "code": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      }
+    },
+    "byAuthMode": {
+      "subscription": {
+        "input": 1802904,
+        "output": 164149,
+        "cacheRead": 19831936,
+        "cacheWrite": 0,
+        "attempts": 33,
+        "thoughtTurns": 0
+      },
+      "not-provider-billed": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      }
+    }
+  },
+  "economics": {
+    "phase": "delivered",
+    "schemaVersion": 1,
+    "modelBasis": "requested",
+    "dispatchCensus": {
+      "total": 34,
+      "measured": 33,
+      "streamed": 0,
+      "unmeasured": 0,
+      "codeSide": 1
+    },
+    "dispatchCensusReconciles": true,
+    "tokens": {
+      "input": 1802904,
+      "output": 164149,
+      "cacheWrite": 0,
+      "cacheRead": 19831936
+    },
+    "tokensComplete": true,
+    "byBilling": {
+      "openai-agent|subscription|gpt-5.6-sol": {
+        "engine": "openai-agent",
+        "authMode": "subscription",
+        "model": "gpt-5.6-sol",
+        "dispatches": 12,
+        "tokens": {
+          "input": 915309,
+          "output": 114561,
+          "cacheWrite": 0,
+          "cacheRead": 14233984
+        }
+      },
+      "openai-agent|subscription|gpt-5.6-terra": {
+        "engine": "openai-agent",
+        "authMode": "subscription",
+        "model": "gpt-5.6-terra",
+        "dispatches": 15,
+        "tokens": {
+          "input": 571638,
+          "output": 33071,
+          "cacheWrite": 0,
+          "cacheRead": 3428096
+        }
+      },
+      "openai-agent|subscription|gpt-5.6-luna": {
+        "engine": "openai-agent",
+        "authMode": "subscription",
+        "model": "gpt-5.6-luna",
+        "dispatches": 5,
+        "tokens": {
+          "input": 312265,
+          "output": 16246,
+          "cacheWrite": 0,
+          "cacheRead": 2159872
+        }
+      },
+      "openai|subscription|gpt-5.6-luna": {
+        "engine": "openai",
+        "authMode": "subscription",
+        "model": "gpt-5.6-luna",
+        "dispatches": 1,
+        "tokens": {
+          "input": 3692,
+          "output": 271,
+          "cacheWrite": 0,
+          "cacheRead": 9984
+        }
+      },
+      "code|not-provider-billed|code:execute-plan": {
+        "engine": "code",
+        "authMode": "not-provider-billed",
+        "model": "code:execute-plan",
+        "dispatches": 1,
+        "tokens": {
+          "input": 0,
+          "output": 0,
+          "cacheWrite": 0,
+          "cacheRead": 0
+        }
+      }
+    },
+    "billingComposition": {
+      "basis": "byBilling",
+      "vendors": [
+        "openai"
+      ],
+      "engines": [
+        "openai",
+        "openai-agent"
+      ],
+      "unmappedEngines": [],
+      "billingModes": [
+        "subscription"
+      ],
+      "mixedVendors": false,
+      "mixedBillingModes": false,
+      "unattributedDispatches": 0,
+      "notProviderBilledDispatches": 1,
+      "complete": true,
+      "statement": "this run spent on one vendor (openai) under one billing mode (subscription), over 2 engines (openai, openai-agent)"
+    },
+    "emittedVsLanded": {
+      "emittedOutputTokens": 164149,
+      "landedBytes": 139121,
+      "landedBytesFromStages": 20,
+      "stagesWithoutLandedRecord": [
+        "engine-turn",
+        "jx-completions",
+        "reading-log",
+        "record-discard",
+        "register-record-bodies",
+        "register-repair",
+        "tool-calls"
+      ],
+      "landedShareIsFloor": true,
+      "landedShare": 0.2119,
+      "landedShareBasis": "landedBytes / (emittedOutputTokens * bytesPerOutputTokenAssumed)",
+      "bytesPerOutputTokenAssumed": 4,
+      "emittedOnDispatchesThatWroteNothing": 0,
+      "thinkingNotSeparable": "thinking is billed inside output_tokens and is never broken out (engine/CONTRACT.md §2) — it sits inside the not-landed share and cannot be split from discarded prose",
+      "thoughtTurns": 0
+    },
+    "emittedVsLandedByStage": {
+      "blind-frame": {
+        "emittedOutputTokens": 3532,
+        "landedBytes": 11271,
+        "landedShare": 0.7978,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "case-law": {
+        "emittedOutputTokens": 2456,
+        "landedBytes": 2553,
+        "landedShare": 0.2599,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "clearance-variants": {
+        "emittedOutputTokens": 9307,
+        "landedBytes": 12965,
+        "landedShare": 0.3483,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "common-law-half:a": {
+        "emittedOutputTokens": 7241,
+        "landedBytes": 32322,
+        "landedShare": 1.1159,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "common-law-half:b": {
+        "emittedOutputTokens": 6539,
+        "landedBytes": 8916,
+        "landedShare": 0.3409,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "common-law-half:m": {
+        "emittedOutputTokens": 2466,
+        "landedBytes": 2940,
+        "landedShare": 0.2981,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "doubt-closure": {
+        "emittedOutputTokens": 2121,
+        "landedBytes": 6763,
+        "landedShare": 0.7971,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "engine-turn": {
+        "emittedOutputTokens": 0,
+        "landedBytes": null,
+        "landedShare": null,
+        "landedShareReason": "no dispatch row on this stage journalled an output record",
+        "tokensComplete": true
+      },
+      "frame-diff": {
+        "emittedOutputTokens": 3697,
+        "landedBytes": 5400,
+        "landedShare": 0.3652,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "jx-completions": {
+        "emittedOutputTokens": 271,
+        "landedBytes": null,
+        "landedShare": null,
+        "landedShareReason": "no dispatch row on this stage journalled an output record",
+        "tokensComplete": true
+      },
+      "matter-frame": {
+        "emittedOutputTokens": 3911,
+        "landedBytes": 8575,
+        "landedShare": 0.5481,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "narrative-refutation": {
+        "emittedOutputTokens": 31343,
+        "landedBytes": 5330,
+        "landedShare": 0.0425,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "placement-inquiry": {
+        "emittedOutputTokens": 18386,
+        "landedBytes": 19185,
+        "landedShare": 0.2609,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "reading-log": {
+        "emittedOutputTokens": 0,
+        "landedBytes": null,
+        "landedShare": null,
+        "landedShareReason": "no dispatch row on this stage journalled an output record",
+        "tokensComplete": true
+      },
+      "record-discard": {
+        "emittedOutputTokens": 0,
+        "landedBytes": null,
+        "landedShare": null,
+        "landedShareReason": "no dispatch row on this stage journalled an output record",
+        "tokensComplete": true
+      },
+      "register-digest": {
+        "emittedOutputTokens": 10450,
+        "landedBytes": 12164,
+        "landedShare": 0.291,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "register-record-bodies": {
+        "emittedOutputTokens": 0,
+        "landedBytes": null,
+        "landedShare": null,
+        "landedShareReason": "no dispatch row on this stage journalled an output record",
+        "tokensComplete": true
+      },
+      "register-repair": {
+        "emittedOutputTokens": 0,
+        "landedBytes": null,
+        "landedShare": null,
+        "landedShareReason": "no dispatch row on this stage journalled an output record",
+        "tokensComplete": true
+      },
+      "register-unit:incumbent-class": {
+        "emittedOutputTokens": 5832,
+        "landedBytes": 368,
+        "landedShare": 0.0158,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "register-unit:primary-sweep": {
+        "emittedOutputTokens": 7529,
+        "landedBytes": 346,
+        "landedShare": 0.0115,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "register-unit:saturation-probe": {
+        "emittedOutputTokens": 0,
+        "landedBytes": 833,
+        "landedShare": null,
+        "landedShareReason": "the stage journalled no emitted output tokens to compare against",
+        "tokensComplete": true
+      },
+      "register-unit:transliteration-numeric": {
+        "emittedOutputTokens": 2314,
+        "landedBytes": 331,
+        "landedShare": 0.0358,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:1": {
+        "emittedOutputTokens": 816,
+        "landedBytes": 800,
+        "landedShare": 0.2451,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-overview": {
+        "emittedOutputTokens": 4899,
+        "landedBytes": 1040,
+        "landedShare": 0.0531,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "skeptic": {
+        "emittedOutputTokens": 3407,
+        "landedBytes": 901,
+        "landedShare": 0.0661,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "synthesis": {
+        "emittedOutputTokens": 37632,
+        "landedBytes": 6118,
+        "landedShare": 0.0406,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "tool-calls": {
+        "emittedOutputTokens": 0,
+        "landedBytes": null,
+        "landedShare": null,
+        "landedShareReason": "no dispatch row on this stage journalled an output record",
+        "tokensComplete": true
+      }
+    },
+    "quotedVsActual": {
+      "quoted": {
+        "unitsVersion": 5,
+        "pipeline": "clearance",
+        "raw": 66.5,
+        "units": 10,
+        "costBand": 5,
+        "searches": 1,
+        "checksPerName": 17,
+        "gridCalls": 6,
+        "turnaroundHours": 2.5,
+        "turnaroundLowHours": 1.5,
+        "turnaroundHighHours": 2.5,
+        "turnaround": "1.5–2.5 hours"
+      },
+      "quoteSource": "_driver/run.jsonl:{event:\"quote\"}",
+      "quoteReason": null,
+      "unitsVersion": 5,
+      "dimensions": {
+        "turnaroundHours": {
+          "quoted": 2.5,
+          "actual": 1.1,
+          "ratio": 0.44,
+          "actualBasis": "wall:status.startedAt→terminal",
+          "actualIncludesParked": true,
+          "reason": null
+        },
+        "units": {
+          "quoted": 10,
+          "actual": null,
+          "reason": "an owner-relative 1-10 estimate scale — nothing the run produces is denominated in it"
+        },
+        "raw": {
+          "quoted": 66.5,
+          "actual": null,
+          "reason": "the absolute effort estimate — an input to the scale, not a physical quantity the run emits"
+        },
+        "costBand": {
+          "quoted": 5,
+          "actual": null,
+          "reason": "a 1-5 display band derived from the estimate — no measured counterpart exists"
+        },
+        "searches": {
+          "quoted": 1,
+          "actual": null,
+          "reason": "quoted searches are PRODUCT units (what the customer bought); no run artifact records a comparable count, and mapping them onto provider calls or model dispatches would be an invented correspondence"
+        },
+        "gridCalls": {
+          "quoted": 6,
+          "actual": null,
+          "reason": "quoted grid calls are a sizing term; the provider-call ledger counts calls of a different shape and the two are not 1:1"
+        },
+        "checksPerName": {
+          "quoted": 17,
+          "actual": null,
+          "reason": "a per-name marketplace fan-out constant, not an outcome"
+        }
+      },
+      "measurable": 1,
+      "unmeasurable": 6
+    }
+  },
+  "statement": "Manageable — conditional on: The two exact mixed-script forms, two Japanese spellings, exact VENCORE search and Vencora UK Limited owner search remain unresolved.",
+  "sendPending": true,
+  "endedAt": "2026-09-18T16:14:49.906Z"
+}

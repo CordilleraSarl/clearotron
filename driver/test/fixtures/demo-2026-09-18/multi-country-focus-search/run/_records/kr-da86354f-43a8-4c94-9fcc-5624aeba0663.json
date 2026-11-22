@@ -1,0 +1,137 @@
+{
+  "uri": "/mark/kr/da86354f-43a8-4c94-9fcc-5624aeba0663",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "da86354f-43a8-4c94-9fcc-5624aeba0663",
+  "applicationNumber": "40-2002-0003535",
+  "registrationNumber": "4005678810000",
+  "applicationDate": "2002-01-23",
+  "registrationDate": "2003-12-05",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "BLUE STREAK",
+  "markTransliteration": "BLUESTREAK",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "마이크로컨트롤러,마이크로컴퓨터,마이크로프로세서,매크로 셀,반도체,버스 인터페이스,시스템 온 칩,응용주문형집적회로,집적회로,컴퓨터기억장치,회로기판",
+      "translation_language": "en",
+      "translation": "Microcontroller, microcomputer, microprocessor, macro cell, semiconductor, bus interface, system on chip, application specific integrated circuit, integrated circuit, computer memory, circuit board"
+    }
+  ],
+  "owner": "NXP Semiconductors USA, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "이재민 (Lee, Jae Min)",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20011015",
+      "priorityNumber": "76/326425"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미국, 캘리포니아, 새너제이",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP Semiconductors USA, Inc.",
+        "applicantNativeName": "엔엑스피 세미컨덕터즈 유에스에이, 인코포레이티드"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Microcontroller, microcomputer, microprocessor, macro cell, semiconductor, bus interface, system on chip, application specific integrated circuit, integrated circuit, computer memory, circuit board",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "마이크로컨트롤러,마이크로컴퓨터,마이크로프로세서,매크로 셀,반도체,버스 인터페이스,시스템 온 칩,응용주문형집적회로,집적회로,컴퓨터기억장치,회로기판"
+        }
+      ]
+    },
+    "id": "da86354f-43a8-4c94-9fcc-5624aeba0663",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.04.19",
+      "27.09.19"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20011015",
+        "priorityNumber": "76/326425"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "Cylux West Tower, Suite Gwang Pyeong-Ro Suseo-Dong, Gangnam-Ku, Seoul, KOREA(J.LEE & ASSOCIATES)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "이재민 (Lee, Jae Min)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20020123",
+        "applicationNumber": "40-2002-0003535"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20031205",
+        "registrationNumber": "4005678810000"
+      }
+    },
+    "version": "20250625150552",
+    "wordMarkSpecification": {
+      "markTransliteration": "BLUESTREAK",
+      "markVerbalElementText": "BLUE STREAK"
+    }
+  },
+  "_uri": "/mark/kr/da86354f-43a8-4c94-9fcc-5624aeba0663",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.899Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

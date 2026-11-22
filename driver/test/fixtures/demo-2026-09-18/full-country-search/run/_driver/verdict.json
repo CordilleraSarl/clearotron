@@ -1,0 +1,24 @@
+{
+  "ts": "2026-09-18T16:05:15.962Z",
+  "verdict": "CONDITIONAL",
+  "reasons": [
+    "Have the Japanese register checked for the exact vεηqοrι, vеnqоri, ベンコリ, ヴェンクォリ and VENCORE forms and for Vencora UK Limited rights before relying unconditionally on this clearance."
+  ],
+  "clauses": [
+    "The two exact mixed-script forms, two Japanese spellings, exact VENCORE search and Vencora UK Limited owner search remain unresolved."
+  ],
+  "kinds": {
+    "legalActions": true
+  },
+  "tier": "Manageable",
+  "badge": "l2",
+  "gaugeIndex": 1,
+  "maxComposite": 0,
+  "band": {
+    "label": "Manageable",
+    "rankFromTop": 4,
+    "scale": 4
+  },
+  "statement": "Manageable — conditional on: The two exact mixed-script forms, two Japanese spellings, exact VENCORE search and Vencora UK Limited owner search remain unresolved.",
+  "stance": "conditional"
+}

@@ -1,0 +1,119 @@
+{
+  "uri": "/mark/kr/9d5b61f5-7e80-47ce-bd22-2b91cd050e74",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "9d5b61f5-7e80-47ce-bd22-2b91cd050e74",
+  "applicationNumber": "56-2008-0002139",
+  "registrationNumber": "4004020880000",
+  "applicationDate": "2008-01-14",
+  "registrationDate": "2008-09-23",
+  "expiryDate": "2028-05-14",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "I-CODE",
+  "markTransliteration": "I-CODE",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "도난방지용 경보장치,도트코드용 기록 워크스테이션,도트코드용 판독 워크스테이션,도트코드판독기,동물 추적 및 식별용 rfid 기록기,동물 추적 및 식별용 rfid 전자라벨,동물 추적 및 식별용 rfid 전자텍,동물 추적 및 식별용 rfid 칩,동물 추적 및 식별용 rfid 판독기,물건 추적 및 식별용 rfid 기록기,물건 추적 및 식별용 rfid 전자라벨,물건 추적 및 식별용 rfid 전자텍,물건 추적 및 식별용 rfid 칩,물건 추적 및 식별용 rfid 판독기,바코드용 기록 워크스테이션,바코드용 판독 워크스테이션,바코드판독기,반도체,사람 추적 및 식별용 rfid 기록기,사람 추적 및 식별용 rfid 전자라벨,사람 추적 및 식별용 rfid 전자텍,사람 추적 및 식별용 rfid 칩,사람 추적 및 식별용 rfid 판독기,상품추적확인용 전자기계기구,전기식 도난방지장치,집적회로",
+      "translation_language": "en",
+      "translation": "Anti-theft alarm system, recording work station for dot codes, reading workstation for dot codes, dot code reader, rfid recorder for animal tracking and identification, rfid electronic label for animal tracking and identification, rfid for animal tracking and identification Rfid chips for tracking and identification, rfid readers for animal tracking and identification, rfid recorders for identification and tracking of goods, rfid electronic labels for tracking and identification of goods, rfid electronics for tracking and identification of goods, rfid chips for goods tracking and identification Rfid readers for tracking and identification, record workstations for barcodes, read workstations for barcodes, barcode readers, semiconductors, rfid recorders for human tracking and identification, rfid electronic labels for human tracking and identification, rfid electronics for tracking and identification of people, Rfid chips for human tracking and identification, rfid readers for human tracking and identification, electromechanical devices for checking the tracking of goods, electric anti-theft devices, integrated circuits"
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "특허법인세신 (SESHIN PATENT & LAW FIRM)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "네덜란드 엔엘- 아게 아인드호펜 하이 테크 캠퍼스",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V.",
+        "applicantNativeName": "엔엑스피 비 브이"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Anti-theft alarm system, recording work station for dot codes, reading workstation for dot codes, dot code reader, rfid recorder for animal tracking and identification, rfid electronic label for animal tracking and identification, rfid for animal tracking and identification Rfid chips for tracking and identification, rfid readers for animal tracking and identification, rfid recorders for identification and tracking of goods, rfid electronic labels for tracking and identification of goods, rfid electronics for tracking and identification of goods, rfid chips for goods tracking and identification Rfid readers for tracking and identification, record workstations for barcodes, read workstations for barcodes, barcode readers, semiconductors, rfid recorders for human tracking and identification, rfid electronic labels for human tracking and identification, rfid electronics for tracking and identification of people, Rfid chips for human tracking and identification, rfid readers for human tracking and identification, electromechanical devices for checking the tracking of goods, electric anti-theft devices, integrated circuits",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "도난방지용 경보장치,도트코드용 기록 워크스테이션,도트코드용 판독 워크스테이션,도트코드판독기,동물 추적 및 식별용 rfid 기록기,동물 추적 및 식별용 rfid 전자라벨,동물 추적 및 식별용 rfid 전자텍,동물 추적 및 식별용 rfid 칩,동물 추적 및 식별용 rfid 판독기,물건 추적 및 식별용 rfid 기록기,물건 추적 및 식별용 rfid 전자라벨,물건 추적 및 식별용 rfid 전자텍,물건 추적 및 식별용 rfid 칩,물건 추적 및 식별용 rfid 판독기,바코드용 기록 워크스테이션,바코드용 판독 워크스테이션,바코드판독기,반도체,사람 추적 및 식별용 rfid 기록기,사람 추적 및 식별용 rfid 전자라벨,사람 추적 및 식별용 rfid 전자텍,사람 추적 및 식별용 rfid 칩,사람 추적 및 식별용 rfid 판독기,상품추적확인용 전자기계기구,전기식 도난방지장치,집적회로"
+        }
+      ]
+    },
+    "id": "9d5b61f5-7e80-47ce-bd22-2b91cd050e74",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "(Gasan-dong)#World Meridian Venture Center , Gasan digital -ro, Geumcheon-gu, Seoul, Korea",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "특허법인세신 (SESHIN PATENT & LAW FIRM)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20080114",
+        "applicationNumber": "56-2008-0002139"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280514",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20080923",
+        "registrationNumber": "4004020880000"
+      }
+    },
+    "version": "20250625194801",
+    "wordMarkSpecification": {
+      "markTransliteration": "I-CODE",
+      "markVerbalElementText": "I-CODE"
+    }
+  },
+  "_uri": "/mark/kr/9d5b61f5-7e80-47ce-bd22-2b91cd050e74",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.906Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

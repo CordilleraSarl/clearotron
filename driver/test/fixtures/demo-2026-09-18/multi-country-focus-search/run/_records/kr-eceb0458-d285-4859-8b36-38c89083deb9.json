@@ -1,0 +1,124 @@
+{
+  "uri": "/mark/kr/eceb0458-d285-4859-8b36-38c89083deb9",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "eceb0458-d285-4859-8b36-38c89083deb9",
+  "applicationNumber": "40-2002-0048923",
+  "registrationNumber": "4005734800000",
+  "applicationDate": "2002-10-24",
+  "registrationDate": "2004-02-04",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "AltiVec",
+  "markTransliteration": "ALTIVEC",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "기록된 컴퓨터 소프트웨어,멀티미디어/그래픽/비디오/오디오 및 수치 집중 계산용 어플리케이션에 사용되는 컴퓨터 소프트웨어,반도체 프로세서,읽기전용 반도체 프로세서 메모리에 저장된 컴퓨터 작동 프로그램,집적회로",
+      "translation_language": "en",
+      "translation": "Recorded computer software, multimedia/graphics/video/audio and computer software used in numerical intensive calculation applications, semiconductor processors, computer operating programs stored in read-only semiconductor processor memory, integrated circuits"
+    }
+  ],
+  "owner": "NXP USA, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "구영창 (KOO, Yeong Chang)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미합중국 텍사스 (우편번호 ) 오스틴 윌리암 캐논 드라이브 웨스트",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc.",
+        "applicantNativeName": "엔엑스피 유에스에이, 인코포레이티드"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Recorded computer software, multimedia/graphics/video/audio and computer software used in numerical intensive calculation applications, semiconductor processors, computer operating programs stored in read-only semiconductor processor memory, integrated circuits",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "기록된 컴퓨터 소프트웨어,멀티미디어/그래픽/비디오/오디오 및 수치 집중 계산용 어플리케이션에 사용되는 컴퓨터 소프트웨어,반도체 프로세서,읽기전용 반도체 프로세서 메모리에 저장된 컴퓨터 작동 프로그램,집적회로"
+        }
+      ]
+    },
+    "id": "eceb0458-d285-4859-8b36-38c89083deb9",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "Hungkuk Life Insurance B/D F, Sinmunno-ga,Jongno-gu,Seoul Korea(Kim & Chang )",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "구영창 (KOO, Yeong Chang)"
+      },
+      {
+        "representativeAddress": "F, Seyang B/D, Naeja-dong, Jongno-gu, Seoul, Korea(KIM & CHANG)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "장수길 (CHANG, Soo Kil)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20021024",
+        "applicationNumber": "40-2002-0048923"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20040204",
+        "registrationNumber": "4005734800000"
+      }
+    },
+    "version": "20250625152649",
+    "wordMarkSpecification": {
+      "markTransliteration": "ALTIVEC",
+      "markVerbalElementText": "AltiVec"
+    }
+  },
+  "_uri": "/mark/kr/eceb0458-d285-4859-8b36-38c89083deb9",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.902Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

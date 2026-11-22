@@ -1,0 +1,139 @@
+{
+  "uri": "/mark/kr/43dfba5e-07fb-40a6-a6ce-168aac749a11",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "43dfba5e-07fb-40a6-a6ce-168aac749a11",
+  "applicationNumber": "40-1999-0030060",
+  "registrationNumber": "4004810120000",
+  "applicationDate": "1999-08-17",
+  "registrationDate": "2000-11-10",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "SiliconMAX",
+  "markTransliteration": "SILICON MAX",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "다이오드,반도체,반도체소자,집적회로,칩,트랜지스터",
+      "translation_language": "en",
+      "translation": "Diodes, semiconductors, semiconductor devices, integrated circuits, chips, transistors"
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "목영동 (Mok Young Dong)",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "19990305",
+      "priorityNumber": "933726"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "네덜란드 엔엘- 아게 아인드호펜 하이 테크 캠퍼스",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V.",
+        "applicantNativeName": "엔엑스피 비 브이"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Diodes, semiconductors, semiconductor devices, integrated circuits, chips, transistors",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "다이오드,반도체,반도체소자,집적회로,칩,트랜지스터"
+        }
+      ]
+    },
+    "id": "43dfba5e-07fb-40a6-a6ce-168aac749a11",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "19990305",
+        "priorityNumber": "933726"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "SEOUL(NONE OFFICE)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "목영동 (Mok Young Dong)"
+      },
+      {
+        "representativeAddress": "(Y.P.LEE,MOCK&PARTNERS)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "목선영 (Mock Sun Young)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19990817",
+        "applicationNumber": "40-1999-0030060"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20001110",
+        "registrationNumber": "4004810120000"
+      }
+    },
+    "version": "20250625152649",
+    "wordMarkSpecification": {
+      "markTransliteration": "SILICON MAX",
+      "markVerbalElementText": "SiliconMAX"
+    }
+  },
+  "_uri": "/mark/kr/43dfba5e-07fb-40a6-a6ce-168aac749a11",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.907Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

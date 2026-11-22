@@ -1,0 +1,263 @@
+{
+  "schema": 1,
+  "id": "mcp-mu75vozj-4e141066",
+  "runId": "tmpdemo2014knockoutsearch-venqori-2026-09-18-sample-capture",
+  "slug": "tmpdemo2014knockoutsearch-venqori",
+  "codename": "sample-capture",
+  "date": "2026-09-18",
+  "agent": "localagent",
+  "forwarder": "e2e",
+  "ref": "DEMO-2014-knockout-search",
+  "state": "delivered",
+  "lane": "knockout",
+  "pid": 4131792,
+  "pidStarttime": "77771180",
+  "engineCommit": "7f7f7668374023298def34129e3007303163c5ed",
+  "engineCommitSource": "git",
+  "updatedAt": "2026-09-18T16:22:31.816Z",
+  "startedAt": "2026-09-18T16:18:15.965Z",
+  "markName": "VENQORI",
+  "marks": [
+    {
+      "name": "VENQORI"
+    }
+  ],
+  "classes": [
+    9,
+    42,
+    41
+  ],
+  "stageLabel": "Knockout search",
+  "stepIndex": 5,
+  "stepLabel": "Sending to you",
+  "stepN": 6,
+  "stepTotal": 6,
+  "verdict": "Low",
+  "url": "/portal/report/tmpdemo2014knockoutsearch-venqori-2026-09-18-sample-capture/",
+  "failedStage": null,
+  "reason": null,
+  "deliveredAt": "2026-09-18T16:22:31.816Z",
+  "stoppable": false,
+  "tokens": {
+    "total": {
+      "input": 95235,
+      "output": 8269,
+      "cacheRead": 748928,
+      "cacheWrite": 0,
+      "attempts": 3,
+      "thoughtTurns": 0
+    },
+    "byStage": {
+      "knockout-assess#0": {
+        "input": 87513,
+        "output": 7328,
+        "cacheRead": 689280,
+        "cacheWrite": 0,
+        "attempts": 2,
+        "thoughtTurns": 0
+      },
+      "knockout-frame": {
+        "input": 7722,
+        "output": 941,
+        "cacheRead": 59648,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      }
+    },
+    "byModel": {
+      "gpt-5.6-sol": {
+        "input": 95235,
+        "output": 8269,
+        "cacheRead": 748928,
+        "cacheWrite": 0,
+        "attempts": 3,
+        "thoughtTurns": 0
+      }
+    },
+    "byEngine": {
+      "openai-agent": {
+        "input": 95235,
+        "output": 8269,
+        "cacheRead": 748928,
+        "cacheWrite": 0,
+        "attempts": 3,
+        "thoughtTurns": 0
+      }
+    },
+    "byAuthMode": {
+      "subscription": {
+        "input": 95235,
+        "output": 8269,
+        "cacheRead": 748928,
+        "cacheWrite": 0,
+        "attempts": 3,
+        "thoughtTurns": 0
+      }
+    }
+  },
+  "economics": {
+    "phase": "delivered",
+    "schemaVersion": 1,
+    "modelBasis": "requested",
+    "dispatchCensus": {
+      "total": 3,
+      "measured": 3,
+      "streamed": 0,
+      "unmeasured": 0,
+      "codeSide": 0
+    },
+    "dispatchCensusReconciles": true,
+    "tokens": {
+      "input": 95235,
+      "output": 8269,
+      "cacheWrite": 0,
+      "cacheRead": 748928
+    },
+    "tokensComplete": true,
+    "byBilling": {
+      "openai-agent|subscription|gpt-5.6-sol": {
+        "engine": "openai-agent",
+        "authMode": "subscription",
+        "model": "gpt-5.6-sol",
+        "dispatches": 3,
+        "tokens": {
+          "input": 95235,
+          "output": 8269,
+          "cacheWrite": 0,
+          "cacheRead": 748928
+        }
+      }
+    },
+    "billingComposition": {
+      "basis": "byBilling",
+      "vendors": [
+        "openai"
+      ],
+      "engines": [
+        "openai-agent"
+      ],
+      "unmappedEngines": [],
+      "billingModes": [
+        "subscription"
+      ],
+      "mixedVendors": false,
+      "mixedBillingModes": false,
+      "unattributedDispatches": 0,
+      "notProviderBilledDispatches": 0,
+      "complete": true,
+      "statement": "this run spent on one vendor (openai) under one billing mode (subscription)"
+    },
+    "emittedVsLanded": {
+      "emittedOutputTokens": 8269,
+      "landedBytes": 5758,
+      "landedBytesFromStages": 2,
+      "stagesWithoutLandedRecord": [
+        "knockout-sweep",
+        "register-count",
+        "tool-calls"
+      ],
+      "landedShareIsFloor": true,
+      "landedShare": 0.1741,
+      "landedShareBasis": "landedBytes / (emittedOutputTokens * bytesPerOutputTokenAssumed)",
+      "bytesPerOutputTokenAssumed": 4,
+      "emittedOnDispatchesThatWroteNothing": 0,
+      "thinkingNotSeparable": "thinking is billed inside output_tokens and is never broken out (engine/CONTRACT.md §2) — it sits inside the not-landed share and cannot be split from discarded prose",
+      "thoughtTurns": 0
+    },
+    "emittedVsLandedByStage": {
+      "knockout-assess#0": {
+        "emittedOutputTokens": 7328,
+        "landedBytes": 4846,
+        "landedShare": 0.1653,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "knockout-frame": {
+        "emittedOutputTokens": 941,
+        "landedBytes": 912,
+        "landedShare": 0.2423,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "knockout-sweep": {
+        "emittedOutputTokens": 0,
+        "landedBytes": null,
+        "landedShare": null,
+        "landedShareReason": "no dispatch row on this stage journalled an output record",
+        "tokensComplete": true
+      },
+      "register-count": {
+        "emittedOutputTokens": 0,
+        "landedBytes": null,
+        "landedShare": null,
+        "landedShareReason": "no dispatch row on this stage journalled an output record",
+        "tokensComplete": true
+      },
+      "tool-calls": {
+        "emittedOutputTokens": 0,
+        "landedBytes": null,
+        "landedShare": null,
+        "landedShareReason": "no dispatch row on this stage journalled an output record",
+        "tokensComplete": true
+      }
+    },
+    "quotedVsActual": {
+      "quoted": null,
+      "quoteSource": null,
+      "quoteReason": "no {event:\"quote\"} row on _driver/run.jsonl — this run was never sized (the knockout lane computes no quote)",
+      "unitsVersion": null,
+      "dimensions": {
+        "turnaroundHours": {
+          "quoted": null,
+          "actual": 0.07,
+          "ratio": null,
+          "actualBasis": "wall:status.startedAt→terminal",
+          "actualIncludesParked": true,
+          "reason": null
+        },
+        "units": {
+          "quoted": null,
+          "actual": null,
+          "reason": "an owner-relative 1-10 estimate scale — nothing the run produces is denominated in it"
+        },
+        "raw": {
+          "quoted": null,
+          "actual": null,
+          "reason": "the absolute effort estimate — an input to the scale, not a physical quantity the run emits"
+        },
+        "costBand": {
+          "quoted": null,
+          "actual": null,
+          "reason": "a 1-5 display band derived from the estimate — no measured counterpart exists"
+        },
+        "searches": {
+          "quoted": null,
+          "actual": null,
+          "reason": "quoted searches are PRODUCT units (what the customer bought); no run artifact records a comparable count, and mapping them onto provider calls or model dispatches would be an invented correspondence"
+        },
+        "gridCalls": {
+          "quoted": null,
+          "actual": null,
+          "reason": "quoted grid calls are a sizing term; the provider-call ledger counts calls of a different shape and the two are not 1:1"
+        },
+        "checksPerName": {
+          "quoted": null,
+          "actual": null,
+          "reason": "a per-name marketplace fan-out constant, not an outcome"
+        }
+      },
+      "measurable": 1,
+      "unmeasurable": 6
+    }
+  },
+  "statement": "Knockout screen — 1 mark: 1 Low.",
+  "reports": [
+    {
+      "mark": "VENQORI",
+      "url": "/portal/report/tmpdemo2014knockoutsearch-venqori-2026-09-18-sample-capture/"
+    }
+  ],
+  "sendPending": true,
+  "endedAt": "2026-09-18T16:22:31.816Z"
+}

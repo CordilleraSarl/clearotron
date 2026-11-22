@@ -1,0 +1,129 @@
+{
+  "uri": "/mark/kr/fd0ec3ed-2928-4746-9c5f-8a6dfec8b3ff",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "fd0ec3ed-2928-4746-9c5f-8a6dfec8b3ff",
+  "applicationNumber": "40-1998-0029841",
+  "registrationNumber": "4004610360000",
+  "applicationDate": "1998-11-14",
+  "registrationDate": "1999-12-17",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "DIGITAL DNA",
+  "markTransliteration": "DIGITAL DNA",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "마이크로콘트롤러및그코아,마이크로콘트롤러프로그램용컴퓨터소프트웨어,마이크로프로세서및그코아,마이크로프로세서프로그램용컴퓨터소프트웨어,반도체및그코아,반도체프로그램용컴퓨터소프트웨어,집적회로 및그코아,집적회로프로그램용컴퓨터소프트웨어",
+      "translation_language": "en",
+      "translation": "Microcontroller and its core, computer software for microcontroller program, microprocessor and its core, computer software for microprocessor program, semiconductor and its core, computer software for semiconductor program, integrated circuit and its core, computer software for integrated circuit program"
+    }
+  ],
+  "owner": "NXP USA, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "이병호 (LEE, Byong Ho)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미합중국 텍사스 (우편번호 ) 오스틴 윌리암 캐논 드라이브 웨스트",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc.",
+        "applicantNativeName": "엔엑스피 유에스에이, 인코포레이티드"
+      },
+      {
+        "applicantAddress": "미합중국 텍사스 (우편번호 ) 오스틴 윌리암 캐논 드라이브 웨스트",
+        "applicantAddressCountryCode": "UNKN",
+        "applicantAddressCountryName": "Unknown Applicant Country/Region",
+        "applicantName": "Freescale Semiconductor, Inc.",
+        "applicantNativeName": "프리스케일 세미컨덕터, 인크."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Microcontroller and its core, computer software for microcontroller program, microprocessor and its core, computer software for microprocessor program, semiconductor and its core, computer software for semiconductor program, integrated circuit and its core, computer software for integrated circuit program",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "마이크로콘트롤러및그코아,마이크로콘트롤러프로그램용컴퓨터소프트웨어,마이크로프로세서및그코아,마이크로프로세서프로그램용컴퓨터소프트웨어,반도체및그코아,반도체프로그램용컴퓨터소프트웨어,집적회로 및그코아,집적회로프로그램용컴퓨터소프트웨어"
+        }
+      ]
+    },
+    "id": "fd0ec3ed-2928-4746-9c5f-8a6dfec8b3ff",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "05.05.19",
+      "05.05.20"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "Korean Re Bldg.F #, Soosong-dong, Chongro-Ku, Seoul Korea(CENTRAL INTERNATIONAL LAW FIRM)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "이병호 (LEE, Byong Ho)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19981114",
+        "applicationNumber": "40-1998-0029841"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "19991217",
+        "registrationNumber": "4004610360000"
+      }
+    },
+    "version": "20250625155012",
+    "wordMarkSpecification": {
+      "markTransliteration": "DIGITAL DNA",
+      "markVerbalElementText": "DIGITAL DNA"
+    }
+  },
+  "_uri": "/mark/kr/fd0ec3ed-2928-4746-9c5f-8a6dfec8b3ff",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.906Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

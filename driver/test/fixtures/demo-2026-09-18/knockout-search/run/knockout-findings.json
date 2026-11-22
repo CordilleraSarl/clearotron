@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "framework": {
+    "source": "house-triage",
+    "ladder": [
+      "Very High",
+      "High",
+      "Medium",
+      "Manageable",
+      "Low"
+    ]
+  },
+  "batch": {
+    "productContext": "A consumer mobile app provides water-quality readings and attached online training and is sold through app stores rather than through the trade.",
+    "standardCaveats": [
+      "App-store and social-platform indexing can vary by country and may omit newly published or login-restricted uses.",
+      "This is a Knockout search, not a clearance. A mark not knocked out here is not clear — it is not knocked out at this screen's depth, and proceeds to clearance. Nothing above is a finding of availability."
+    ],
+    "executiveSummary": "One name screened: VENQORI, rated Low.\n\n## VENQORI — Low\n\n- VENQORI is a coined product name for a consumer water-quality app with attached online training.\n- The screened marketplace showed no exact on-field use or famous cultural echo that creates an obvious blocker."
+  },
+  "marks": [
+    {
+      "ref": "DEMO-2014-knockout-search",
+      "name": "VENQORI",
+      "classesSearched": [
+        9,
+        42,
+        41
+      ],
+      "beltAndBraces": [
+        35
+      ],
+      "contextFraming": "VENQORI is intended as the product/app name for a consumer mobile water-quality monitoring application with attached online training, and reads as a coined term.",
+      "rating": "Low",
+      "ratingQualifier": null,
+      "classesDriving": [],
+      "bullets": [
+        "As a standalone product/app name, VENQORI would function as the source identifier for the software and training rather than as an in-app descriptive label."
+      ],
+      "purpleNotes": [],
+      "parodyNote": null,
+      "crowdedField": false,
+      "registerReads": [],
+      "basis": "VENQORI is rated Low because the reviewed consumer-app, water-quality, training, and software sources identified no exact on-field use or confusingly close commercial name.",
+      "factors": [
+        "No exact VENQORI use appeared for consumer water-quality apps, related software, online training, or app-store distribution in the reviewed sources.",
+        "The closest app-related spelling differs in sight and sound, and the evidence shows no water-quality connection.",
+        "No famous brand, cultural property, or adverse meaning was identified for VENQORI."
+      ],
+      "counterFactors": [
+        "App-store indexing varies by country and may omit newly published or unindexed products.",
+        "The observed domain failure can change and does not establish long-term availability."
+      ],
+      "mitigation": "An earlier identical use for related consumer software or training would change this rating.",
+      "assessment": "## Overall read\n\nVENQORI is a coined name intended to travel as the standalone product name for a consumer water-quality app and its attached online training. The reviewed marketplace and common-law material did not identify an exact commercial use in that field, a famous mark it evokes, or a cultural property that changes the trademark read. The resulting knockout rating is Low.\n\n## What drives the result\n\nThe closest visible spellings do not create the same overall impression and were tied to different commercial or cultural settings. The app-related result used a materially different name, and the material reviewed did not connect it to water-quality monitoring or the attached training. Other similar-looking terms appeared in industrial, pharmaceutical, or fictional contexts rather than in the client’s consumer-app market.\n\n- The intended use makes VENQORI a source name for downloadable software and related training.\n- The relevant sources showed different branding for existing water-quality apps and services.\n- The meaning sweep did not identify a famous-brand echo, offensive meaning, or notable negative association.\n\n## Limits\n\nApp-store visibility can vary by territory and indexing, and the observed failure of the matching domain does not prove continuing availability. The rating reflects the evidence reviewed for this triage screen.",
+      "findings": [],
+      "negatives": [
+        {
+          "term": "VENQORI — consumer water-quality apps and related training",
+          "source": "https://stroudcenter.org/virtual-learning-resource/waterquality-mobile-app/",
+          "note": "Accessible water-quality app results used different branding and showed no exact VENQORI use."
+        },
+        {
+          "term": "VENQORI — app-store software",
+          "source": "https://apps.apple.com/us/developer/vennory/id1801632552",
+          "note": "The closest accessible app-store result used a materially different name and showed no water-quality connection."
+        },
+        {
+          "term": "venqori.com",
+          "source": "https://venqori.com/",
+          "note": "The domain failed to resolve when checked, so no active commercial site was identified at that address."
+        }
+      ],
+      "degraded": null
+    }
+  ]
+}

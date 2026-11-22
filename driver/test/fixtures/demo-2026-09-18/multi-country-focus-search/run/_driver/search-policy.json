@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "level": "multi-country-focus-search",
+  "pipeline": "clearance",
+  "stageLabel": "Multi-country focus search",
+  "components": {
+    "registerProbe": false,
+    "jxLanes": false,
+    "commonLawGrid": true
+  },
+  "recipe": null,
+  "extras": null,
+  "origins": {
+    "level": "job.product"
+  },
+  "caseLaw": false,
+  "recipeScope": null,
+  "deliveryRoute": null,
+  "enqueuedVia": "mcp/start_run",
+  "enqueuedBy": "demo",
+  "parentRunId": null,
+  "frozenAt": "2026-09-18T14:03:02.805Z"
+}

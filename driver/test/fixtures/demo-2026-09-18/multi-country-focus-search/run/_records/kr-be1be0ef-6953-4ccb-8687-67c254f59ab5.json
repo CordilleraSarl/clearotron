@@ -1,0 +1,124 @@
+{
+  "uri": "/mark/kr/be1be0ef-6953-4ccb-8687-67c254f59ab5",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "be1be0ef-6953-4ccb-8687-67c254f59ab5",
+  "applicationNumber": "40-2012-0009016",
+  "registrationNumber": "4009719420000",
+  "applicationDate": "2012-02-13",
+  "registrationDate": "2013-05-30",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "VYBRID",
+  "markTransliteration": "VYBRID",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "마이크로프로세서,멀티코어 프로세서,반도체,소프트웨어 프로그램 가능한 마이크로프로세서,집적회로,특수용도의 집적회로",
+      "translation_language": "en",
+      "translation": "Microprocessor, multi-core processor, semiconductor, software programmable microprocessor, integrated circuit, special purpose integrated circuit"
+    }
+  ],
+  "owner": "NXP USA, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "양영준 (YANG, Young June)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미합중국 텍사스 (우편번호 ) 오스틴 윌리암 캐논 드라이브 웨스트",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc.",
+        "applicantNativeName": "엔엑스피 유에스에이, 인코포레이티드"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Microprocessor, multi-core processor, semiconductor, software programmable microprocessor, integrated circuit, special purpose integrated circuit",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "마이크로프로세서,멀티코어 프로세서,반도체,소프트웨어 프로그램 가능한 마이크로프로세서,집적회로,특수용도의 집적회로"
+        }
+      ]
+    },
+    "id": "be1be0ef-6953-4ccb-8687-67c254f59ab5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "F, Seyang B/D, Naeja-dong, Jongno-gu, Seoul, Korea(KIM & CHANG)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "양영준 (YANG, Young June)"
+      },
+      {
+        "representativeAddress": "Seoul(none)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "위혜숙 (Wee Hye Suk)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20120213",
+        "applicationNumber": "40-2012-0009016"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20130530",
+        "registrationNumber": "4009719420000"
+      }
+    },
+    "version": "20250625171049",
+    "wordMarkSpecification": {
+      "markTransliteration": "VYBRID",
+      "markVerbalElementText": "VYBRID"
+    }
+  },
+  "_uri": "/mark/kr/be1be0ef-6953-4ccb-8687-67c254f59ab5",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.909Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "uri": "/mark/kr/f112c244-3f58-4b36-9452-728e7fe157df",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "f112c244-3f58-4b36-9452-728e7fe157df",
+  "applicationNumber": "56-2008-0014566",
+  "registrationNumber": "4004074590000",
+  "applicationDate": "2008-06-25",
+  "registrationDate": "2008-11-07",
+  "expiryDate": "2028-07-02",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GREENCHIP",
+  "markTransliteration": "GREENCHIP",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "집적회로",
+      "translation_language": "en",
+      "translation": "Integrated circuit"
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "특허법인세신 (SESHIN PATENT & LAW FIRM)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "네덜란드 엔엘- 아게 아인드호펜 하이 테크 캠퍼스",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V.",
+        "applicantNativeName": "엔엑스피 비 브이"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Integrated circuit",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "집적회로"
+        }
+      ]
+    },
+    "id": "f112c244-3f58-4b36-9452-728e7fe157df",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "(Gasan-dong)#World Meridian Venture Center , Gasan digital -ro, Geumcheon-gu, Seoul, Korea",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "특허법인세신 (SESHIN PATENT & LAW FIRM)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20080625",
+        "applicationNumber": "56-2008-0014566"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280702",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20081107",
+        "registrationNumber": "4004074590000"
+      }
+    },
+    "version": "20250625193933",
+    "wordMarkSpecification": {
+      "markTransliteration": "GREENCHIP",
+      "markVerbalElementText": "GREENCHIP"
+    }
+  },
+  "_uri": "/mark/kr/f112c244-3f58-4b36-9452-728e7fe157df",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.912Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

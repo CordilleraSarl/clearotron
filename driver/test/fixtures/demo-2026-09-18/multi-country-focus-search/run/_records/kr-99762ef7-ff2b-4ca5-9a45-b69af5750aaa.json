@@ -1,0 +1,163 @@
+{
+  "uri": "/mark/kr/99762ef7-ff2b-4ca5-9a45-b69af5750aaa",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "99762ef7-ff2b-4ca5-9a45-b69af5750aaa",
+  "applicationNumber": "40-1997-0057124",
+  "registrationNumber": "4004397680000",
+  "applicationDate": "1997-12-11",
+  "registrationDate": "1999-01-28",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "M. CORE",
+  "markTransliteration": "M CORE",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    8,
+    9,
+    10,
+    11,
+    17,
+    21
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        17,
+        21
+      ],
+      "language": "ko",
+      "description": "마이크로프로세서,반도체,새창으로 열림,집적회로",
+      "translation_language": "en",
+      "translation": "microprocessor, semiconductor, opens in new window, integrated circuit"
+    }
+  ],
+  "owner": "NXP USA, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "이병호 (LEE, Byong Ho)",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "19970801",
+      "priorityNumber": "75\\334,791"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미합중국 텍사스 (우편번호 ) 오스틴 윌리암 캐논 드라이브 웨스트",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc.",
+        "applicantNativeName": "엔엑스피 유에스에이, 인코포레이티드"
+      },
+      {
+        "applicantAddress": "미합중국 텍사스 (우편번호 ) 오스틴 윌리암 캐논 드라이브 웨스트",
+        "applicantAddressCountryCode": "UNKN",
+        "applicantAddressCountryName": "Unknown Applicant Country/Region",
+        "applicantName": "Freescale Semiconductor, Inc.",
+        "applicantNativeName": "프리스케일 세미컨덕터, 인크."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "microprocessor, semiconductor, opens in new window, integrated circuit",
+          "intClassNumber": "07,08,09,10,11,17,21",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "마이크로프로세서,반도체,새창으로 열림,집적회로"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "039"
+        }
+      ]
+    },
+    "id": "99762ef7-ff2b-4ca5-9a45-b69af5750aaa",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "19970801",
+        "priorityNumber": "75\\334,791"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "Korean Re Bldg.F #, Soosong-dong, Chongro-Ku, Seoul Korea(CENTRAL INTERNATIONAL LAW FIRM)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "이병호 (LEE, Byong Ho)"
+      },
+      {
+        "representativeAddress": "F., Jinran Hoegwan, , Hyoryeong-ro -gil, Seocho-ku, Seoul KOREA(D.R.CHOI INTERNATIONAL PATENT OFFICE)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "최달용 (CHOI, Dall Ryong)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19971211",
+        "applicationNumber": "40-1997-0057124"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "19990128",
+        "registrationNumber": "4004397680000"
+      }
+    },
+    "version": "20250625150516",
+    "wordMarkSpecification": {
+      "markTransliteration": "M CORE",
+      "markVerbalElementText": "M. CORE"
+    }
+  },
+  "_uri": "/mark/kr/99762ef7-ff2b-4ca5-9a45-b69af5750aaa",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.926Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "uri": "/mark/kr/9aa0ac54-c826-4b1d-b13c-487ba107a5b3",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "9aa0ac54-c826-4b1d-b13c-487ba107a5b3",
+  "applicationNumber": "40-2000-0043617",
+  "registrationNumber": "4005137910000",
+  "applicationDate": "2000-09-18",
+  "registrationDate": "2002-02-28",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "SEA OF IP",
+  "markTransliteration": "SEA OF IP",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "기록된 컴퓨터 소프트웨어,마이크로프로쎄서,반도체,인쇄회로,칩",
+      "translation_language": "en",
+      "translation": "Recorded computer software, microprocessor, semiconductor, printed circuit, chip"
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "목영동 (Mok Young Dong)",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20000323",
+      "priorityNumber": "960509"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "네덜란드 엔엘- 아게 아인드호펜 하이 테크 캠퍼스",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V.",
+        "applicantNativeName": "엔엑스피 비 브이"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Recorded computer software, microprocessor, semiconductor, printed circuit, chip",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "기록된 컴퓨터 소프트웨어,마이크로프로쎄서,반도체,인쇄회로,칩"
+        }
+      ]
+    },
+    "id": "9aa0ac54-c826-4b1d-b13c-487ba107a5b3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20000323",
+        "priorityNumber": "960509"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "SEOUL(NONE OFFICE)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "목영동 (Mok Young Dong)"
+      },
+      {
+        "representativeAddress": "(Y.P.LEE,MOCK&PARTNERS)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "목선영 (Mock Sun Young)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20000918",
+        "applicationNumber": "40-2000-0043617"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20020228",
+        "registrationNumber": "4005137910000"
+      }
+    },
+    "version": "20250625155355",
+    "wordMarkSpecification": {
+      "markTransliteration": "SEA OF IP",
+      "markVerbalElementText": "SEA OF IP"
+    }
+  },
+  "_uri": "/mark/kr/9aa0ac54-c826-4b1d-b13c-487ba107a5b3",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.910Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

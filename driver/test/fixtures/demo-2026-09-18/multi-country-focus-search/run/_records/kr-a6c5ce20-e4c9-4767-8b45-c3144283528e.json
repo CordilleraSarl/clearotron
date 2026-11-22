@@ -1,0 +1,140 @@
+{
+  "uri": "/mark/kr/a6c5ce20-e4c9-4767-8b45-c3144283528e",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "a6c5ce20-e4c9-4767-8b45-c3144283528e",
+  "applicationNumber": "40-2009-0033027",
+  "registrationNumber": "4008384170000",
+  "applicationDate": "2009-07-13",
+  "registrationDate": "2010-10-05",
+  "expiryDate": "2030-10-05",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VORTIQA",
+  "markTransliteration": "VORTIQA",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "가상 사설망용 소프트웨어,기업보안용 소프트웨어,네트워크 접근용 소프트웨어,네트워크관리용 소프트웨어,단일화된 위험관련 장비/게이트웨이/집적접근장치/라우터/스위치/제어기/베이스스테이션/ 허브/보안기구용 네트워킹 및 보안 소프트웨어,데이터 플레인용 소프트웨어,딥 패킷 인스펙션용 소프트웨어,로드밸런싱 소프트웨어,무선 라디오 제어용 소프트웨어,방화벽용 소프트웨어,보이스오버아이피 소프트웨어,비디오오버아이피 소프트웨어,사용자메뉴얼과 일체로 판매되는 컴퓨터 소프트웨어,상태패킷검사용 소프트웨어,서비스품질용 소프트웨어,안티-바이러스/안티-스팸용 소프트웨어,애플리케이션 상태검사용 소프트웨어,원거리 사용자를 위한 보안서비스 제공 및 컴퓨터/소프트웨어/네트워크의 보안 측정용 컴퓨터 소프트웨어,원거리에서의 컴퓨터사용 및 네트워크상의 모바일 사용자간 커뮤니케이션용 유틸리티 소프트웨어,인터넷 보안용 소프트웨어,장애방지용 소프트웨어,전환용 소프트웨어,제어 플레인용 소프트웨어,집적 네트워킹/보안/협업용 소프트웨어,침입 탐지/방어용 소프트웨어,커맨드라인관리용 소프트웨어,컴퓨터 네트워크 협업 소프트웨어,컴퓨터 네트워크관리용 소프트웨어,컴퓨터 네트워크전환용 소프트웨어,컴퓨터 네트워킹 소프트웨어,컴퓨터 융합네트워크 소프트웨어,콘텐츠필터링용 소프트웨어,협업용 소프트웨어",
+      "translation_language": "en",
+      "translation": "Software for virtual private network, software for corporate security, software for network access, software for network management, networking and security software for unified risk-related equipment/gateway/integrated access device/router/switch/controller/basestation/hub/security device, Software for data plane, software for deep packet inspection, load balancing software, software for wireless radio control, software for firewall, voice over IP software, video over IP software, computer software sold integrally with user manual, software for status packet inspection, Software for quality of service, software for anti-virus/anti-spam, software for application status check, computer software for providing security services for remote users and measuring security of computer/software/network, remote computer use and mobile network Utility software for communication between users, software for Internet security, software for failure prevention, software for conversion, software for control plane, software for integrated networking/security/collaboration, software for intrusion detection/prevention, software for command line management, computer network collaboration software, computer network management software, computer network conversion software, computer networking software, computer convergence network software, content filtering software, collaboration software"
+    }
+  ],
+  "owner": "NXP USA, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "양영준 (YANG, Young June)",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20090617",
+      "priorityNumber": "77/761,881"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미합중국 텍사스 (우편번호 ) 오스틴 윌리암 캐논 드라이브 웨스트",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc.",
+        "applicantNativeName": "엔엑스피 유에스에이, 인코포레이티드"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Software for virtual private network, software for corporate security, software for network access, software for network management, networking and security software for unified risk-related equipment/gateway/integrated access device/router/switch/controller/basestation/hub/security device, Software for data plane, software for deep packet inspection, load balancing software, software for wireless radio control, software for firewall, voice over IP software, video over IP software, computer software sold integrally with user manual, software for status packet inspection, Software for quality of service, software for anti-virus/anti-spam, software for application status check, computer software for providing security services for remote users and measuring security of computer/software/network, remote computer use and mobile network Utility software for communication between users, software for Internet security, software for failure prevention, software for conversion, software for control plane, software for integrated networking/security/collaboration, software for intrusion detection/prevention, software for command line management, computer network collaboration software, computer network management software, computer network conversion software, computer networking software, computer convergence network software, content filtering software, collaboration software",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "가상 사설망용 소프트웨어,기업보안용 소프트웨어,네트워크 접근용 소프트웨어,네트워크관리용 소프트웨어,단일화된 위험관련 장비/게이트웨이/집적접근장치/라우터/스위치/제어기/베이스스테이션/ 허브/보안기구용 네트워킹 및 보안 소프트웨어,데이터 플레인용 소프트웨어,딥 패킷 인스펙션용 소프트웨어,로드밸런싱 소프트웨어,무선 라디오 제어용 소프트웨어,방화벽용 소프트웨어,보이스오버아이피 소프트웨어,비디오오버아이피 소프트웨어,사용자메뉴얼과 일체로 판매되는 컴퓨터 소프트웨어,상태패킷검사용 소프트웨어,서비스품질용 소프트웨어,안티-바이러스/안티-스팸용 소프트웨어,애플리케이션 상태검사용 소프트웨어,원거리 사용자를 위한 보안서비스 제공 및 컴퓨터/소프트웨어/네트워크의 보안 측정용 컴퓨터 소프트웨어,원거리에서의 컴퓨터사용 및 네트워크상의 모바일 사용자간 커뮤니케이션용 유틸리티 소프트웨어,인터넷 보안용 소프트웨어,장애방지용 소프트웨어,전환용 소프트웨어,제어 플레인용 소프트웨어,집적 네트워킹/보안/협업용 소프트웨어,침입 탐지/방어용 소프트웨어,커맨드라인관리용 소프트웨어,컴퓨터 네트워크 협업 소프트웨어,컴퓨터 네트워크관리용 소프트웨어,컴퓨터 네트워크전환용 소프트웨어,컴퓨터 네트워킹 소프트웨어,컴퓨터 융합네트워크 소프트웨어,콘텐츠필터링용 소프트웨어,협업용 소프트웨어"
+        }
+      ]
+    },
+    "id": "a6c5ce20-e4c9-4767-8b45-c3144283528e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20090617",
+        "priorityNumber": "77/761,881"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "F, Seyang B/D, Naeja-dong, Jongno-gu, Seoul, Korea(KIM & CHANG)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "양영준 (YANG, Young June)"
+      },
+      {
+        "representativeAddress": "Seoul(none)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "위혜숙 (Wee Hye Suk)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20090713",
+        "applicationNumber": "40-2009-0033027"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20301005",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20101005",
+        "registrationNumber": "4008384170000"
+      }
+    },
+    "version": "20250625164415",
+    "wordMarkSpecification": {
+      "markTransliteration": "VORTIQA",
+      "markVerbalElementText": "VORTIQA"
+    }
+  },
+  "_uri": "/mark/kr/a6c5ce20-e4c9-4767-8b45-c3144283528e",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.902Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

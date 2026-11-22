@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "batch": {
+    "productContext": "A consumer mobile app provides water-quality readings and attached online training and is sold through app stores rather than through the trade.",
+    "executionOrder": [
+      "VENQORI"
+    ]
+  },
+  "marks": [
+    {
+      "ref": "DEMO-2014-knockout-search",
+      "name": "VENQORI",
+      "classes": [
+        9,
+        42,
+        41
+      ],
+      "beltAndBraces": [
+        35
+      ],
+      "classesPlain": "downloadable water-quality monitoring software (9); online training services (41); software design, development and related technology services (42); online retail and app-store distribution services (35, belt-and-braces)",
+      "contextFraming": "VENQORI is intended as the product/app name for a consumer mobile water-quality monitoring application with attached online training, and reads as a coined term.",
+      "priority": 1
+    }
+  ]
+}

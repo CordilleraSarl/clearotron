@@ -1,0 +1,24 @@
+{
+  "ts": "2026-09-18T14:58:01.709Z",
+  "verdict": "CONDITIONAL",
+  "reasons": [
+    "Resolve the pending ENQOR applications before filing either form in South Korea; the use check did not confirm Align Networks Inc.'s ENQOR use."
+  ],
+  "clauses": [
+    "Pending ENQOR applications cover mobile apps and SaaS, and the use check did not confirm Align Networks Inc.'s current ENQOR use."
+  ],
+  "kinds": {
+    "legalActions": true
+  },
+  "tier": "Moderate",
+  "badge": "l3",
+  "gaugeIndex": 2,
+  "maxComposite": 0,
+  "band": {
+    "label": "Moderate",
+    "rankFromTop": 3,
+    "scale": 4
+  },
+  "statement": "Moderate — conditional on: Pending ENQOR applications cover mobile apps and SaaS, and the use check did not confirm Align Networks Inc.'s current ENQOR use.",
+  "stance": "conditional"
+}

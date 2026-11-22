@@ -1,0 +1,186 @@
+{
+  "schema_version": 2,
+  "ts": "2026-09-18T15:14:08.076Z",
+  "cap": {
+    "mark": 50,
+    "owner": 5
+  },
+  "directives": [
+    {
+      "qid": "recall-qoriq",
+      "uri": "/mark/jp/bb31005c-de89-4427-9e3b-eb870618399d",
+      "mark_text": "QORIQ",
+      "owner": "NXP USA, Inc."
+    },
+    {
+      "qid": "recall-owner-nxp-usa-inc",
+      "uri": "/mark/jp/bb31005c-de89-4427-9e3b-eb870618399d",
+      "mark_text": "QORIQ",
+      "owner": "NXP USA, Inc."
+    },
+    {
+      "qid": "recall-enqor",
+      "uri": "/mark/kr/a59ef335-9570-4757-8770-26b208dc24b1",
+      "mark_text": "enqor",
+      "owner": "Align Networks Inc."
+    },
+    {
+      "qid": "recall-owner-align-networks-inc",
+      "uri": "/mark/kr/a59ef335-9570-4757-8770-26b208dc24b1",
+      "mark_text": "enqor",
+      "owner": "Align Networks Inc."
+    },
+    {
+      "qid": "recall-vencora",
+      "uri": "/mark/gb/c3154106-158a-4756-b8f6-116bc310172f",
+      "mark_text": "VENCORA",
+      "owner": "Vencora UK Limited"
+    },
+    {
+      "qid": "recall-owner-vencora-uk-limited",
+      "uri": "/mark/gb/c3154106-158a-4756-b8f6-116bc310172f",
+      "mark_text": "VENCORA",
+      "owner": "Vencora UK Limited"
+    },
+    {
+      "qid": "recall-q-3acdc05f",
+      "uri": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150",
+      "mark_text": "Ｖｅｎｋｕｒｉ",
+      "owner": "YIWU TENGDING UMBRELLA CO., LTD."
+    },
+    {
+      "qid": "recall-owner-yiwu-tengding-umbrella-co-ltd",
+      "uri": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150",
+      "mark_text": "Ｖｅｎｋｕｒｉ",
+      "owner": "YIWU TENGDING UMBRELLA CO., LTD."
+    },
+    {
+      "qid": "recall-vencore",
+      "uri": "/mark/wo/9a9d3dd9-5014-4ce1-b2bd-5a73c93cfc13",
+      "mark_text": "VENCORE",
+      "owner": "Symetri AB"
+    },
+    {
+      "qid": "recall-owner-symetri-ab",
+      "uri": "/mark/wo/9a9d3dd9-5014-4ce1-b2bd-5a73c93cfc13",
+      "mark_text": "VENCORE",
+      "owner": "Symetri AB"
+    },
+    {
+      "qid": "recall-qoria",
+      "uri": "/mark/wo/f99ca2ce-9b6b-41ac-9318-90a66bfad14b",
+      "mark_text": "QORIA",
+      "owner": "Qoria Holdings Pty Ltd"
+    },
+    {
+      "qid": "recall-qori",
+      "uri": "/mark/em/539c21aa-9d8f-438b-b140-23a16d4b4660",
+      "mark_text": "qori",
+      "owner": "Firepay Merchant Services"
+    },
+    {
+      "qid": "recall-venq",
+      "uri": "/mark/gb/8cbb976f-cfe1-4cf1-bbd7-4d3d1a211b28",
+      "mark_text": "VenQ",
+      "owner": "LRG CONSULTANTS LIMITED"
+    },
+    {
+      "qid": "recall-venturi",
+      "uri": "/mark/us/6500c73f-7f2e-41df-9a5b-a59256a128ca",
+      "mark_text": "VENTURI",
+      "owner": "State Street Bank and Trust Company"
+    },
+    {
+      "qid": "recall-ventori",
+      "uri": "/mark/br/1ac5cfcf-0d54-4c62-bbbb-96803a302f9c",
+      "mark_text": "VENTORI",
+      "owner": "VENTORI ACESSORIOS LTDA - ME."
+    },
+    {
+      "qid": "recall-vincara",
+      "uri": "/mark/gb/1ed22bdd-4194-423f-af68-4d5d720d03cb",
+      "mark_text": "VINCARA",
+      "owner": "Vinctos Ltd"
+    },
+    {
+      "qid": "recall-venkaro",
+      "uri": "/mark/nz/51e372ff-5dbf-4c35-a168-b0a027a99551",
+      "mark_text": "VENKARO",
+      "owner": "VENKARO LIMITED"
+    },
+    {
+      "qid": "recall-vincora",
+      "uri": "/mark/em/346d96db-15d6-40f8-a707-c87059712771",
+      "mark_text": "VINCORA",
+      "owner": "Viacheslav Svizhevskyi"
+    },
+    {
+      "qid": "recall-v-vancora",
+      "uri": "/mark/tr/a80d04af-30db-4f6b-aca7-2749a7ff06e7",
+      "mark_text": "V vancora",
+      "owner": "RAMAZAN CEYLAN"
+    },
+    {
+      "qid": "recall-q-96221ae5",
+      "uri": "/mark/jp/9656ebff-2a51-4e2b-939b-b576ffa61504",
+      "mark_text": "コアアイキュ－コンバ－ジ　ＱＯＲＩＱ　ＱＯＮＶＥＲＧＥ",
+      "owner": "NXP USA, INC."
+    },
+    {
+      "qid": "recall-qoriq-qonverge",
+      "uri": "/mark/kr/92847fe6-ef71-4d90-a5ba-31ab42ae95cf",
+      "mark_text": "QORIQ QONVERGE",
+      "owner": "NXP USA, Inc."
+    }
+  ],
+  "overflow": [
+    {
+      "qid": "recall-owner-qoria-holdings-pty-ltd",
+      "term": "Qoria Holdings Pty Ltd"
+    },
+    {
+      "qid": "recall-owner-firepay-merchant-services",
+      "term": "Firepay Merchant Services"
+    },
+    {
+      "qid": "recall-owner-incert",
+      "term": "InCert"
+    },
+    {
+      "qid": "recall-owner-lrg-consultants-limited",
+      "term": "LRG CONSULTANTS LIMITED"
+    },
+    {
+      "qid": "recall-owner-state-street-bank-and-trust-company",
+      "term": "State Street Bank and Trust Company"
+    },
+    {
+      "qid": "recall-owner-ventori-acessorios-ltda-me",
+      "term": "VENTORI ACESSORIOS LTDA - ME."
+    },
+    {
+      "qid": "recall-owner-biogenie-canada-inc",
+      "term": "Biogénie Canada Inc."
+    },
+    {
+      "qid": "recall-owner-vinctos-ltd",
+      "term": "Vinctos Ltd"
+    },
+    {
+      "qid": "recall-owner-venkaro-limited",
+      "term": "VENKARO LIMITED"
+    },
+    {
+      "qid": "recall-owner-viacheslav-svizhevskyi",
+      "term": "Viacheslav Svizhevskyi"
+    },
+    {
+      "qid": "recall-owner-sethulakshmi-k-b-single-firm",
+      "term": "SETHULAKSHMI K B Single Firm"
+    },
+    {
+      "qid": "recall-owner-ramazan-ceylan",
+      "term": "RAMAZAN CEYLAN"
+    }
+  ]
+}

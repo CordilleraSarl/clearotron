@@ -1,0 +1,125 @@
+{
+  "uri": "/mark/kr/d6587d74-ca97-4374-bf8e-6795b491e7ce",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "d6587d74-ca97-4374-bf8e-6795b491e7ce",
+  "applicationNumber": "40-2011-0033093",
+  "registrationNumber": "4009271590000",
+  "applicationDate": "2011-06-17",
+  "registrationDate": "2012-07-12",
+  "expiryDate": "2032-07-12",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MAGNIV",
+  "markTransliteration": "MAGNIV",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "마이크로컨트롤러,반도체,집적회로",
+      "translation_language": "en",
+      "translation": "Microcontroller, semiconductor, integrated circuit"
+    }
+  ],
+  "owner": "NXP USA, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "양영준 (YANG, Young June)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미합중국 텍사스 (우편번호 ) 오스틴 윌리암 캐논 드라이브 웨스트",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc.",
+        "applicantNativeName": "엔엑스피 유에스에이, 인코포레이티드"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Microcontroller, semiconductor, integrated circuit",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "마이크로컨트롤러,반도체,집적회로"
+        }
+      ]
+    },
+    "id": "d6587d74-ca97-4374-bf8e-6795b491e7ce",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "F, Seyang B/D, Naeja-dong, Jongno-gu, Seoul, Korea(KIM & CHANG)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "양영준 (YANG, Young June)"
+      },
+      {
+        "representativeAddress": "Seoul(none)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "위혜숙 (Wee Hye Suk)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20110617",
+        "applicationNumber": "40-2011-0033093"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320712",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20120712",
+        "registrationNumber": "4009271590000"
+      }
+    },
+    "version": "20250625170647",
+    "wordMarkSpecification": {
+      "markTransliteration": "MAGNIV",
+      "markVerbalElementText": "MAGNIV"
+    }
+  },
+  "_uri": "/mark/kr/d6587d74-ca97-4374-bf8e-6795b491e7ce",
+  "_receipt": {
+    "fetched_at": "2026-09-18T14:09:34.905Z",
+    "context": "clearance-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}
