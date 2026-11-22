@@ -413,12 +413,12 @@ test("an absent report.md is refused as 'could not look' (exit 2), and the refus
 });
 
 /** The freeze script with findings.json cut from its allowlist, run over `runDir`. */
-function runHoledFreeze(root, runDir) {
+function runHoledFreeze(root, runDir, hole = /^\s*\{ path: "findings\.json".*$/m) {
   const holed = join(root, "holed-freeze.mjs");
   const src = readFileSync(SCRIPT, "utf8");
-  // Drop findings.json from the allowlist. publishReport falls back to dirname(reportMd)/findings.json,
+  // Drop findings.json from the allowlist by default. publishReport falls back to dirname(reportMd)/findings.json,
   // which in the FROZEN tree does not exist — so the frozen report renders without the machine contract.
-  const holedAllowlist = src.replace(/^\s*\{ path: "findings\.json".*$/m, "");
+  const holedAllowlist = src.replace(hole, "");
   assert.notEqual(holedAllowlist, src, "the allowlist line must exist to be holed");
   // The copy lives outside the repo, so its own REPO derivation (relative to import.meta.url) would
   // point at the temp dir. Pin it to the real checkout — the allowlist is what is under test here.
@@ -467,6 +467,36 @@ test("the republish proof CATCHES an allowlist that lost an input the renderer r
   assert.match(out, /FINDING: .*(?:differs|publishes fewer artifacts)/, out);
   // and specifically over the delivered surface, not only over a sidecar
   assert.match(out, /report\.html differs between the source run and the frozen copy/, out);
+  rmSync(root, { recursive: true, force: true });
+});
+
+// A page the reviewer set aside: it shows on the workbook's Coverage & gaps sheet and in the report document, and
+// nowhere on the page, so only those two comparisons can see it go missing.
+const DECLINED = { declinations: [{ page: "shop.example", url: "https://shop.example/", reason: "unrelated-goods", grounds: "An invented page set aside." }] };
+
+test("the republish proof compares the workbook cell by cell and the run's report document, and catches an input only they read", () => {
+  const { root, runDir } = makeRun();
+  writeFileSync(driverDir(runDir, "declinations.json"), JSON.stringify(DECLINED, null, 2));
+  const whole = runFreeze(runDir, join(root, "whole"));
+  assert.equal(whole.code, 0, whole.out);
+  assert.match(whole.out, /-audit\.xlsx identical, cell for cell \(\d+ sheets, \d+ rows\)/, whole.out);
+  assert.match(whole.out, /the run's report document identical apart from the served-model record/, whole.out);
+  const { code, out } = runHoledFreeze(root, runDir, /^\s*\{ path: "_driver\/declinations\.json".*$/m);
+  assert.equal(code, 1, `a workbook input left behind passed: ${out}`);
+  assert.match(out, /-audit\.xlsx differs between the source run and the frozen copy on Coverage & gaps/, out);
+  assert.match(out, /the run's report document differs between the source run and the frozen copy/, out);
+  assert.doesNotMatch(out, /report\.html differs/, "the page saw it, so this case does not test the workbook");
+  rmSync(root, { recursive: true, force: true });
+});
+
+test("the common-law grid travels without the paths the run wrote to on its own machine", () => {
+  const { root, runDir } = makeRun();
+  const grid = { terms: ["AQUAPLUS"], platforms: ["web"], output_path: "/srv/run-host/ws/run/common-law-grid.json", connotation: { dispositions_path: "/srv/run-host/ws/run/d.json", kept: true } };
+  writeFileSync(driverDir(runDir, "grid-spec.json"), JSON.stringify(grid, null, 2));
+  const r = runFreeze(runDir, join(root, "frozen"));
+  assert.equal(r.code, 0, r.out);
+  const frozen = JSON.parse(readFileSync(driverDir(join(root, "frozen", "run"), "grid-spec.json"), "utf8"));
+  assert.deepEqual(frozen, { terms: ["AQUAPLUS"], platforms: ["web"], connotation: { kept: true } });
   rmSync(root, { recursive: true, force: true });
 });
 
