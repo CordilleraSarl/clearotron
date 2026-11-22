@@ -9,7 +9,8 @@
 // reopens every id the list gives. Both describe the edition the report delivered: a resume that settles more later
 // changes neither until the report is published again. A run published before the report document answers as before.
 //
-// The Knockout demo is seeded as the connector finds a run, then made a batch of two invented names before it is
+// The previous Knockout demo capture (driver/test/fixtures/demo-2026-09-18), whose name carries negative results, is
+// seeded as the connector finds a run, then made a batch of two invented names before it is
 // published: the first with a finding, a filing the rater read and three negative results, the second with research
 // that was unavailable and one negative result, so both names hold a first negative result under the same number. The
 // register reading stopped part-way.
@@ -43,7 +44,7 @@ const statusFiles = (dir, depth = 0) => (depth > 7 || !existsSync(dir) ? [] : re
 }));
 
 mkdirSync(POOL, { recursive: true });
-const examples = publishSource(join(ROOT, "demo"), { repoRoot: ROOT });
+const examples = publishSource(join(ROOT, "driver", "test", "fixtures", "demo-2026-09-18"), { repoRoot: ROOT });
 seedDemoRuns({ workspace: WS, examplesDir: examples, portalOrigin: "http://127.0.0.1:9" });
 const meta = JSON.parse(readFileSync(join(examples, demoChildren(examples).find((n) => /knockout/.test(n)), "meta.json"), "utf8"));
 const runDir = dirname(statusFiles(WS).find((f) => JSON.parse(readFileSync(f, "utf8")).runId === meta.runId));

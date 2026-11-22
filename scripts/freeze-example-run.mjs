@@ -335,11 +335,16 @@ async function workbookRows(path) {
   return out;
 }
 
-/** A report document with every served-model record and token rollup taken out, wherever it sits, and its stamps normalised. */
+// The four places the report document holds what the freeze changes on purpose, named by path, so a later field that
+// happens to share one of these names is still compared: the served models, the token rollup, and the two stamps.
+const DOC_ASIDE = [["client", "servedModels"], ["build", "tokens"], ["build", "renderedAt"], ["run", "issuedAt"]];
+
+/** A report document with those four places taken out and its stamps normalised. */
 function normaliseDoc(d) {
+  for (const [a, b] of DOC_ASIDE) if (d?.[a] && typeof d[a] === "object") delete d[a][b];
   const walk = (v) => {
     if (Array.isArray(v)) return v.map(walk);
-    if (v && typeof v === "object") return Object.fromEntries(Object.entries(v).filter(([k]) => !["servedModels", "tokens", "issuedAt", "renderedAt"].includes(k)).map(([k, x]) => [k, walk(x)]));
+    if (v && typeof v === "object") return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, walk(x)]));
     return typeof v === "string" ? VOLATILE.reduce((acc, x) => acc.replace(x.re, x.sub), v) : v;
   };
   return walk(d);
@@ -537,6 +542,21 @@ for (const rel of copied) {
 // THE SAME MAP AS THE CONTENT PASS, which is what keeps the tree joined: a filename and every reference
 // to it inside the run — including the artifact's own `uri`, which the vendor writes in UPPER case —
 // resolve to one substitute. A second renaming scheme here would break every one of those silently.
+// THE AGENT A SAMPLE RAN AS IS THE INSTALL'S, NOT THE FREEZER'S. `npx clearotron demo` seeds each sample under
+// `workspace-<agent>`, read from its status.json, and a run captured on a deployment records that deployment's agent:
+// another product's name, and a folder no install of this one makes. A frozen sample records the agent an install runs
+// as when it sets none (driver.config.mjs defaultAgent), which every shipped sample carried until 2026-11-22.
+const SAMPLE_AGENT = "localagent";
+/** Give the run in `dir` the sample's agent; true when it recorded another. */
+function setSampleAgent(dir) {
+  const at = join(dir, "status.json");
+  const status = readJsonOr(at);
+  if (!status || status.agent === SAMPLE_AGENT) return false;
+  writeFileSync(at, JSON.stringify({ ...status, agent: SAMPLE_AGENT }, null, 2) + "\n");
+  return true;
+}
+if (setSampleAgent(frozenRun)) note(`agent: the run recorded a deployment's own agent, or none; the sample records ${SAMPLE_AGENT}`);
+
 let pathRenames = 0;
 for (let i = 0; i < copied.length; i++) {
   const rel = copied[i];
@@ -695,8 +715,10 @@ const rewriteInPlace = (root, files) => {
   }
 };
 
+// ALWAYS STAGED. Publishing writes the report document back into the run it publishes, so a source published in place
+// gains a file it never had; and the sample's agent is set on both sides. The source run is only ever read.
 let sourceForProof = runDir;
-if ((renamed && sourceCodename) || vendorKeyMap.size || sourceOrigin) {
+{
   const staged = join(scratch, "source");
   cpSync(runDir, staged, { recursive: true });
   const stagedFiles = [];
@@ -708,6 +730,7 @@ if ((renamed && sourceCodename) || vendorKeyMap.size || sourceOrigin) {
   };
   walkRel(staged);
   rewriteInPlace(staged, stagedFiles);
+  setSampleAgent(staged);   // the same identity on both sides, so the proof answers about the allowlist alone
   sourceForProof = staged;
   note(`source staged and put through the same rewrite (${stagedFiles.length} file(s)) — the diff below `
     + "answers about the allowlist alone");

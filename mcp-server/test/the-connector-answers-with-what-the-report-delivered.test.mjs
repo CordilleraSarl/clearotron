@@ -10,7 +10,8 @@
 // already reports is left out, and the native-script searches that did not complete are listed, with the places they
 // count. A run published before the report document answers from its files, as before.
 //
-// The full-country demo is seeded as the connector finds a run, and its first finding's saved record is given an invented
+// The previous full-country demo capture (driver/test/fixtures/demo-2026-09-18), whose record repeats a row its report
+// prints once, is seeded as the connector finds a run, and its first finding's saved record is given an invented
 // owner, status and classes before it is published.
 //
 // SAFETY GUARD: the workspace and the pool are pinned before anything is imported, because the driver config freezes
@@ -41,7 +42,7 @@ const statusFiles = (dir, depth = 0) => (depth > 7 || !existsSync(dir) ? [] : re
 }));
 
 mkdirSync(POOL, { recursive: true });
-const examples = publishSource(join(ROOT, "demo"), { repoRoot: ROOT });
+const examples = publishSource(join(ROOT, "driver", "test", "fixtures", "demo-2026-09-18"), { repoRoot: ROOT });
 seedDemoRuns({ workspace: WS, examplesDir: examples, portalOrigin: "http://127.0.0.1:9" });
 const name = demoChildren(examples).find((n) => /full-country/.test(n));
 const meta = JSON.parse(readFileSync(join(examples, name, "meta.json"), "utf8"));

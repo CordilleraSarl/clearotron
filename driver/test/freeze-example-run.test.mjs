@@ -13,6 +13,7 @@ import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, writeFileSync, existsSync, readFileSync, readdirSync, rmSync, cpSync } from "node:fs";
 import { tmpdir } from "node:os";
+import { createHash } from "node:crypto";
 import { join, dirname } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -497,6 +498,26 @@ test("the common-law grid travels without the paths the run wrote to on its own 
   assert.equal(r.code, 0, r.out);
   const frozen = JSON.parse(readFileSync(driverDir(join(root, "frozen", "run"), "grid-spec.json"), "utf8"));
   assert.deepEqual(frozen, { terms: ["AQUAPLUS"], platforms: ["web"], connotation: { kept: true } });
+  rmSync(root, { recursive: true, force: true });
+});
+
+test("a sample records the agent an install runs as by default, and the source run is only read", () => {
+  // A run captured on a deployment records that deployment's agent, which `npx clearotron demo` would seed under.
+  const { root, runDir } = makeRun();
+  writeFileSync(join(runDir, "status.json"), JSON.stringify({ markName: "AQUAPLUS", agent: "deployment-agent" }, null, 2));
+  // Every file of the source run, by path and bytes: the proof may read it and nothing else.
+  const snapshot = (dir) => readdirSync(dir, { recursive: true, withFileTypes: true }).filter((e) => e.isFile())
+    .map((e) => { const p = join(e.parentPath ?? e.path, e.name); return `${p.slice(dir.length + 1)} ${createHash("sha256").update(readFileSync(p)).digest("hex")}`; }).sort();
+  const before = snapshot(runDir);
+  const r = runFreeze(runDir, join(root, "frozen"));
+  assert.equal(r.code, 0, r.out);
+  const status = JSON.parse(readFileSync(join(root, "frozen", "run", "status.json"), "utf8"));
+  const env = { ...process.env }; delete env.CLEAROTRON_DEFAULT_AGENT;
+  const fallback = execFileSync(process.execPath, ["--input-type=module", "-e",
+    `const { config } = await import(${JSON.stringify(pathToFileURL(join(HERE, "..", "driver.config.mjs")).href)}); process.stdout.write(config.defaultAgent);`],
+    { encoding: "utf8", env: pinEnvAll(env, { CLEAROTRON_DATABASE: process.env.CLEAROTRON_DATABASE || "corsearch" }) });
+  assert.equal(status.agent, fallback, "the sample does not record the agent an install runs as when it sets none");
+  assert.deepEqual(snapshot(runDir), before, "the freeze changed, added or removed a file of the source run");
   rmSync(root, { recursive: true, force: true });
 });
 
