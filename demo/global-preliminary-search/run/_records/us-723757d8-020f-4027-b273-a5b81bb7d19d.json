@@ -1,0 +1,253 @@
+{
+  "uri": "/mark/us/723757d8-020f-4027-b273-a5b81bb7d19d",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "723757d8-020f-4027-b273-a5b81bb7d19d",
+  "applicationNumber": "99764264",
+  "registrationNumber": "8484910",
+  "applicationDate": "2026-04-14",
+  "registrationDate": "2026-10-06",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2026-08-18"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SEVEN RIVERS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 In-car telephone handset cradles; Holders adapted for mobile telephones and smartphones; Stands adapted for laptops; Stands adapted for mobile phones",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Dongguan Jiashengyuan Electronic Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": "Justin  Brown",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "No. 93, Tangdong Road, Dongguan City, Guangdong Province, 343700, CHIN",
+        "applicantAddressCity": "Dongguan City, Guangdong Province",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantAddressPostalCode": "343700",
+        "applicantAddressStreet": "No. 93, Tangdong Road",
+        "applicantJurisdictionOfIncorporation": "CHINA",
+        "applicantName": "Dongguan Jiashengyuan Electronic Technology Co., Ltd.",
+        "applicantSecondaryAddressUnit": "Tutang Village, Changping Town"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 In-car telephone handset cradles; Holders adapted for mobile telephones and smartphones; Stands adapted for laptops; Stands adapted for mobile phones"
+        }
+      ]
+    },
+    "id": "723757d8-020f-4027-b273-a5b81bb7d19d",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20261006",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20261006",
+        "descriptionText": "NOTICE OF REGISTRATION CONFIRMATION EMAILED"
+      },
+      {
+        "date": "20260818",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20260818",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20260812",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20260722",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20260716",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20260414",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20260414",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20260414",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "No. 93, Tangdong Road, Dongguan City, Guangdong Province, 343700, CHIN",
+        "city": "Dongguan City, Guangdong Province",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "name": "Dongguan Jiashengyuan Electronic Technology Co., Ltd.",
+        "postalCode": "343700",
+        "secondaryAddressUnit": "Tutang Village, Changping Town",
+        "street": "No. 93, Tangdong Road"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "No. 93, Tangdong Road, Dongguan City, Guangdong Province, 343700, CHIN",
+        "city": "Dongguan City, Guangdong Province",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "name": "Dongguan Jiashengyuan Electronic Technology Co., Ltd.",
+        "postalCode": "343700",
+        "secondaryAddressUnit": "Tutang Village, Changping Town",
+        "street": "No. 93, Tangdong Road"
+      },
+      {
+        "address": "No. 93, Tangdong Road, Dongguan City, Guangdong Province, 343700, CHIN",
+        "city": "Dongguan City, Guangdong Province",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "name": "Dongguan Jiashengyuan Electronic Technology Co., Ltd.",
+        "postalCode": "343700",
+        "secondaryAddressUnit": "Tutang Village, Changping Town",
+        "street": "No. 93, Tangdong Road"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "No. 93, Tangdong Road, Dongguan City, Guangdong Province, 343700, CHIN",
+        "city": "Dongguan City, Guangdong Province",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "name": "Dongguan Jiashengyuan Electronic Technology Co., Ltd.",
+        "postalCode": "343700",
+        "secondaryAddressUnit": "Tutang Village, Changping Town",
+        "street": "No. 93, Tangdong Road"
+      }
+    ],
+    "recordLastUpdated": "20261009",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Ann Arbor, MI 48103, United States",
+        "representativeCorrespondentAddressLines": [
+          "Ann Arbor, MI 48103",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Justin Brown BROWN BROTHERS LAW, LLP, 1827 Harley Drive"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Ann Arbor, MI 48103, United States",
+        "representativeAddressLines": [
+          "Ann Arbor, MI 48103",
+          "United States"
+        ],
+        "representativeName": "Justin  Brown"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260414",
+        "applicationNumber": "99764264"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20251203"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20251203"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20261006",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20260818"
+      ],
+      "registration": {
+        "registrationDate": "20261006",
+        "registrationNumber": "8484910"
+      }
+    },
+    "version": "20261009115954",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "7 RIVERS",
+      "markVerbalElementText": "SEVEN RIVERS"
+    }
+  },
+  "_uri": "/mark/us/723757d8-020f-4027-b273-a5b81bb7d19d",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.198Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "uri": "/mark/xs/aa454571-e748-41a4-be4e-9f3abf1505ee",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "aa454571-e748-41a4-be4e-9f3abf1505ee",
+  "applicationNumber": null,
+  "registrationNumber": "271147",
+  "applicationDate": null,
+  "registrationDate": "2018-03-21",
+  "expiryDate": "2024-11-29",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "RAVEN RISK SOLUTIONS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Consulting services in the area of threat & risk assessments as well as training & policy development in the areas of public safety",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Consulting services in the area of threat & risk assessments as well as training & policy development in the areas of public safety",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "PLUMMER CONSULTING GROUP L.L.C.",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1930 WESTMINSTER COURT, BLACKSBURG, VA, 24060, USAM",
+        "applicantAddressCity": "BLACKSBURG",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "24060",
+        "applicantAddressStateName": "VIRGINIA",
+        "applicantAddressStreet": "1930 WESTMINSTER COURT",
+        "applicantLegalEntity": "Limited Liability Company",
+        "applicantName": "PLUMMER CONSULTING GROUP L.L.C."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Consulting services in the area of threat & risk assessments as well as training & policy development in the areas of public safety"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Consulting services in the area of threat & risk assessments as well as training & policy development in the areas of public safety"
+        }
+      ]
+    },
+    "id": "aa454571-e748-41a4-be4e-9f3abf1505ee",
+    "ipRightKind": "tmk",
+    "kindMark": "TRADENAME",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "1930 WESTMINSTER COURT, BLACKSBURG, VA, 24060, USAM",
+        "city": "BLACKSBURG",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "Limited Liability Company",
+        "name": "PLUMMER CONSULTING GROUP L.L.C.",
+        "postalCode": "24060",
+        "stateName": "VIRGINIA",
+        "street": "1930 WESTMINSTER COURT"
+      }
+    ],
+    "recordLastUpdated": "20260116",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": false,
+      "cmNormalisedStatus": "EXPIRED",
+      "expiryDate": "20241129",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "EXPIRED"
+        ]
+      },
+      "markCurrentStatus": "EXPIRED",
+      "registration": {
+        "registrationDate": "20180321",
+        "registrationNumber": "271147"
+      }
+    },
+    "usStateOfficeCode": "ND",
+    "usStateOfficeName": "NORTH DAKOTA",
+    "version": "20260116143620",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "RAVEN RISK SOLUTIONS"
+    }
+  },
+  "_uri": "/mark/xs/aa454571-e748-41a4-be4e-9f3abf1505ee",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.190Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

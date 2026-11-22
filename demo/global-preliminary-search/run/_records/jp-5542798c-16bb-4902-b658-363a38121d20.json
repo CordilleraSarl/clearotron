@@ -1,0 +1,249 @@
+{
+  "uri": "/mark/jp/5542798c-16bb-4902-b658-363a38121d20",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "5542798c-16bb-4902-b658-363a38121d20",
+  "applicationNumber": "2003-008471",
+  "registrationNumber": "4716053",
+  "applicationDate": "2003-02-06",
+  "registrationDate": "2003-10-10",
+  "expiryDate": "2013-10-10",
+  "renewalDate": null,
+  "lastPublicationDate": "2003-11-11",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "株式会社　セブンライズ",
+  "markTransliteration": "SEBUNRAIZU",
+  "markTranslation": "KABUSHIKI GAISHA SEVEN RISE",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    37,
+    38,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "電気通信機械器具，電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "Telecommunications equipment, electronic appliances and appliances and parts thereof"
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": null,
+      "description": "機械器具設置工事，電気通信工事，内装仕上工事，建築工事に関する助言，電子応用機械器具の修理又は保守，電気通信機械器具の修理又は保守",
+      "translation_language": "en",
+      "translation": "Machine equipment installation work, telecommunication construction, interior finishing work, advice on construction work, repair or maintenance of electronic appliances and appliances, repair or maintenance of telecommunications machinery and equipment"
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": null,
+      "description": "電気通信（放送を除く。），情報通信に関する情報の提供，電話機・ファクシミリその他の通信機器の貸与",
+      "translation_language": "en",
+      "translation": "Telecommunication (excluding broadcasting), providing information on information communication, lending of telephone, facsimile and other communication equipment"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "建築物の設計，機械・装置若しくは器具（これらの部品を含む。）又はこれらの機械等により構成される設備の設計，デザインの考案，電子計算機のプログラムの設計・作成又は保守，電子計算機・同関連機器を用いて行う情報処理，情報通信ネットワークシステムに関するコンサルティングその他の情報システム構築に関するコンサルティング，電子計算機・自動車その他その用途に応じて的確な操作をするためには高度の専門的な知識・技術又は経験を必要とする機械の性能・操作方法等に関する紹介及び説明，情報通信に関する試験・研究又はこれらに関する指導，電子計算機及び周辺機器の貸与，電子計算機用プログラムの提供",
+      "translation_language": "en",
+      "translation": "Design of the building, machinery / equipment or appliances (including these parts) or design of the facility composed of these machines etc, devising the design, designing / creating or maintaining the program of the electronic computer, computer Consulting on information system using related equipment, consulting on information communication network system and other information system construction consulting, electronic computer / automobile and other applications in order to operate properly, highly specialized knowledge / technology or Introduction and explanation on performance and operation method etc. of machines requiring experience, test / research on information communication or guidance on them, lending of computer and peripheral equipment, provision of programs for electronic computers"
+    }
+  ],
+  "owner": "K.K. SEVEN RISE",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "ISONO MICHIZO",
+  "priorities": [
+    {
+      "priorityDate": "20030206"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "SHIBUYA TOKYO TO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "K.K. SEVEN RISE",
+        "applicantNativeAddress": "東京都渋谷区渋谷二丁目２２番３号",
+        "applicantNativeName": "株式会社セブンライズ"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Telecommunications equipment, electronic appliances and appliances and parts thereof",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "電気通信機械器具，電子応用機械器具及びその部品"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Machine equipment installation work, telecommunication construction, interior finishing work, advice on construction work, repair or maintenance of electronic appliances and appliances, repair or maintenance of telecommunications machinery and equipment",
+          "intClassNumber": "37",
+          "intGoodsServicesDescription": "機械器具設置工事，電気通信工事，内装仕上工事，建築工事に関する助言，電子応用機械器具の修理又は保守，電気通信機械器具の修理又は保守"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Telecommunication (excluding broadcasting), providing information on information communication, lending of telephone, facsimile and other communication equipment",
+          "intClassNumber": "38",
+          "intGoodsServicesDescription": "電気通信（放送を除く。），情報通信に関する情報の提供，電話機・ファクシミリその他の通信機器の貸与"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Design of the building, machinery / equipment or appliances (including these parts) or design of the facility composed of these machines etc, devising the design, designing / creating or maintaining the program of the electronic computer, computer Consulting on information system using related equipment, consulting on information communication network system and other information system construction consulting, electronic computer / automobile and other applications in order to operate properly, highly specialized knowledge / technology or Introduction and explanation on performance and operation method etc. of machines requiring experience, test / research on information communication or guidance on them, lending of computer and peripheral equipment, provision of programs for electronic computers",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "建築物の設計，機械・装置若しくは器具（これらの部品を含む。）又はこれらの機械等により構成される設備の設計，デザインの考案，電子計算機のプログラムの設計・作成又は保守，電子計算機・同関連機器を用いて行う情報処理，情報通信ネットワークシステムに関するコンサルティングその他の情報システム構築に関するコンサルティング，電子計算機・自動車その他その用途に応じて的確な操作をするためには高度の専門的な知識・技術又は経験を必要とする機械の性能・操作方法等に関する紹介及び説明，情報通信に関する試験・研究又はこれらに関する指導，電子計算機及び周辺機器の貸与，電子計算機用プログラムの提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Electrical communication apparatus and instruments"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, instruments and parts"
+        },
+        {
+          "natClassNumber": "11C02"
+        },
+        {
+          "natClassNumber": "37A01",
+          "natGoodsServicesDescription": "Construction services: General building construction, Dredging, General civil engineering, Road paving, Masonry, Glazing (Glasswork), Steel construction, Plastering, Carpentry, Tile / brick / block laying, Joinery, Reinforcing, Painting, Scaffolding / Earthworks / Concrete construction, Interior finishing, Metal plating, Building sealing* / damp-proofing, Roofing, Plumbing,       Machinery installation, Drilling of wells, Electrical work, Telecommunication work, Building insulating"
+        },
+        {
+          "natClassNumber": "37A02",
+          "natGoodsServicesDescription": "Building construction consulting"
+        },
+        {
+          "natClassNumber": "37D06",
+          "natGoodsServicesDescription": "Repair or maintenance of electronic applied apparatus"
+        },
+        {
+          "natClassNumber": "37D07",
+          "natGoodsServicesDescription": "Repair of telephones"
+        },
+        {
+          "natClassNumber": "37D09",
+          "natGoodsServicesDescription": "Repair of radio receivers, television receivers"
+        },
+        {
+          "natClassNumber": "37D10",
+          "natGoodsServicesDescription": "Repair or maintenance of electrical communication apparatus, excluding telephone sets, radio receivers, television receivers"
+        },
+        {
+          "natClassNumber": "38A01",
+          "natGoodsServicesDescription": "Telecommunication Services (except for broadcasting services). Communication by cellular telephone, telex, computer, telegram, telephone, facsimile. Radio or telephone paging services"
+        },
+        {
+          "natClassNumber": "38D01",
+          "natGoodsServicesDescription": "Renting or leasing of communication equipment, telephones, facsimile machines"
+        },
+        {
+          "natClassNumber": "42N01",
+          "natGoodsServicesDescription": "Architectural design, Surveying"
+        },
+        {
+          "natClassNumber": "42N03",
+          "natGoodsServicesDescription": "Designing of machines and apparatus / implements (including their parts) or composed equipments of machines and apparatus / instruments"
+        },
+        {
+          "natClassNumber": "42P01",
+          "natGoodsServicesDescription": "Design planning"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer programming, Maintenance of computer software. Designing / maintenance of website"
+        },
+        {
+          "natClassNumber": "42P03",
+          "natGoodsServicesDescription": "Introduction or Explanation of mechanical performance / operation which needs advanced special knowledge, technology, experience to operate exactly the response to their purposes like computers / motor vehides and so on"
+        },
+        {
+          "natClassNumber": "42Q02",
+          "natGoodsServicesDescription": "Construction, city planning, prevention of pollution, electrical, civil engineering research and testing"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Renting or leasing of computers, Provision of computer programs"
+        }
+      ]
+    },
+    "id": "5542798c-16bb-4902-b658-363a38121d20",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20030206"
+      }
+    ],
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "ISONO MICHIZO",
+        "representativeNativeName": "磯野　道造"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20030206",
+        "applicationNumber": "2003-008471"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20131010",
+      "lastPublicationDate": "20031111",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20031010",
+        "registrationNumber": "4716053"
+      }
+    },
+    "version": "20230427110554",
+    "wordMarkSpecification": {
+      "markTranslation": "KABUSHIKI GAISHA SEVEN RISE",
+      "markTransliteration": "SEBUNRAIZU",
+      "markVerbalElementText": "株式会社　セブンライズ"
+    }
+  },
+  "_uri": "/mark/jp/5542798c-16bb-4902-b658-363a38121d20",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.182Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,420 @@
+{
+  "uri": "/mark/us/e0f2809d-43bf-4a39-8b9f-fde774e67809",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "e0f2809d-43bf-4a39-8b9f-fde774e67809",
+  "applicationNumber": "86978830",
+  "registrationNumber": "4970657",
+  "applicationDate": "2015-02-12",
+  "registrationDate": "2016-05-31",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2015-06-30"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "THE GIVEN RIGHT",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Entertainment, namely, production of a television show",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "XPEDITION MEDIA, LLC",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "Bobby W. Braxton",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20230606",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+    },
+    "applicants": [
+      {
+        "applicantAddress": "668 ROUTE 70 WEST, LAKEHURST, NEW JERSEY, 08733",
+        "applicantAddressCity": "LAKEHURST",
+        "applicantAddressPostalCode": "08733",
+        "applicantAddressStateName": "NEW JERSEY",
+        "applicantAddressStreet": "668 ROUTE 70 WEST",
+        "applicantJurisdictionOfIncorporation": "NEW JERSEY",
+        "applicantLegalEntity": "LIMITED LIABILITY COMPANY",
+        "applicantName": "XPEDITION MEDIA, LLC"
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "668 ROUTE 70 WEST, LAKEHURST, NEW JERSEY, 08733",
+            "city": "LAKEHURST",
+            "jurisdictionOfIncorporation": "NEW JERSEY",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "XPEDITION MEDIA, LLC",
+            "postalCode": "08733",
+            "stateName": "NEW JERSEY",
+            "street": "668 ROUTE 70 WEST"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "NEBRASKA",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "THE GIVEN RIGHT, LLC"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "5000 LEGACY DRIVE, SUITE 465, PLANO, TX 75024",
+            "addressLines": [
+              "BRAXTON PERRONE, PLLC",
+              "5000 LEGACY DRIVE",
+              "SUITE 465",
+              "PLANO, TX 75024"
+            ],
+            "name": "BRAXTON PERRONE, PLLC"
+          }
+        ],
+        "descriptionText": "ASSIGNS THE ENTIRE INTEREST",
+        "executedDate": "20200127",
+        "recordedDate": "20200304",
+        "reelFrameNumber": "6885/0508"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Entertainment, namely, production of a television show"
+        }
+      ]
+    },
+    "id": "e0f2809d-43bf-4a39-8b9f-fde774e67809",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20250601",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (10-YR)/SEC. 9 E-MAILED"
+      },
+      {
+        "date": "20230606",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20230606",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+      },
+      {
+        "date": "20230606",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 & 15 - E-MAILED"
+      },
+      {
+        "date": "20221130",
+        "descriptionText": "TEAS SECTION 8 & 15 RECEIVED"
+      },
+      {
+        "date": "20210531",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20200311",
+        "descriptionText": "AUTOMATIC UPDATE OF ASSIGNMENT OF OWNERSHIP"
+      },
+      {
+        "date": "20160531",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20160426",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF STATEMENT OF USE E-MAILED"
+      },
+      {
+        "date": "20160425",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20160421",
+        "descriptionText": "DIVISIONAL PROCESSING COMPLETE"
+      },
+      {
+        "date": "20160421",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20160416",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20160225",
+        "descriptionText": "DIVISIONAL REQUEST RECEIVED"
+      },
+      {
+        "date": "20160225",
+        "descriptionText": "TEAS REQUEST TO DIVIDE RECEIVED"
+      },
+      {
+        "date": "20160225",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20160225",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20150825",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20150630",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20150630",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20150610",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20150526",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20150526",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20150521",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20150520",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20150520",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20150520",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20150520",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20150520",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20150520",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20150520",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20150520",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20150519",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20150429",
+        "descriptionText": "AUTOMATIC UPDATE OF ASSIGNMENT OF OWNERSHIP"
+      },
+      {
+        "date": "20150228",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20150216",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "1981 E. Gulf Stream Drive, Grand Island, NE, 68801",
+        "city": "Grand Island",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "NEBRASKA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Big & J Industries, LLC",
+        "postalCode": "68801",
+        "stateName": "NEBRASKA",
+        "street": "1981 E. Gulf Stream Drive"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "1981 E. GULFSTREAM DR., GRAND ISLAND, NE, 68801",
+        "city": "GRAND ISLAND",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "NEBRASKA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "THE GIVEN RIGHT, LLC",
+        "postalCode": "68801",
+        "stateName": "NEBRASKA",
+        "street": "1981 E. GULFSTREAM DR."
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "1981 E. GULFSTREAM DR., GRAND ISLAND, NE, 68801",
+        "city": "GRAND ISLAND",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "NEBRASKA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "THE GIVEN RIGHT, LLC",
+        "postalCode": "68801",
+        "stateName": "NEBRASKA",
+        "street": "1981 E. GULFSTREAM DR."
+      }
+    ],
+    "postApplicationOwners": [
+      {
+        "address": "1981 E. GULFSTREAM DR., GRAND ISLAND, NE, 68801",
+        "city": "GRAND ISLAND",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "NEBRASKA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "THE GIVEN RIGHT, LLC",
+        "postalCode": "68801",
+        "stateName": "NEBRASKA",
+        "street": "1981 E. GULFSTREAM DR."
+      }
+    ],
+    "postRegistrationOwners": [
+      {
+        "address": "LAKEHURST, NJ, 08733",
+        "city": "LAKEHURST",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "NEW JERSEY",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "XPEDITION MEDIA, LLC",
+        "postalCode": "08733",
+        "secondaryAddressUnit": "668 ROUTE 70 WEST",
+        "stateName": "NEW JERSEY"
+      }
+    ],
+    "recordLastUpdated": "20260128",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "SUITE 300, BOX 32, Frisco, TX 75034, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "SUITE 300, BOX 32",
+          "Frisco, TX 75034",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Bobby W. Braxton BRAXTON PERRONE, PLLC, 5 Cowboys Way"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "SUITE 300, BOX 32, Frisco, TX 75034, UNITED STATES",
+        "representativeAddressLines": [
+          "SUITE 300, BOX 32",
+          "Frisco, TX 75034",
+          "UNITED STATES"
+        ],
+        "representativeName": "Bobby W. Braxton"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20150212",
+        "applicationNumber": "86978830"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "41",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20160224"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "41",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20160224"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "SECTION 8 & 15 - ACCEPTED AND ACKNOWLEDGED",
+        "markOfficialStatusCode": "702",
+        "markOfficialStatusDate": "20230606",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20150630"
+      ],
+      "registration": {
+        "registrationDate": "20160531",
+        "registrationNumber": "4970657"
+      }
+    },
+    "version": "20260128195527",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "THE GIVEN RIGHT"
+    }
+  },
+  "_uri": "/mark/us/e0f2809d-43bf-4a39-8b9f-fde774e67809",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.198Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

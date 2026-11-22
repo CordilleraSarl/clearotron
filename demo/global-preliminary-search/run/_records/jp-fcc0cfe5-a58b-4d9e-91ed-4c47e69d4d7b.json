@@ -1,0 +1,272 @@
+{
+  "uri": "/mark/jp/fcc0cfe5-a58b-4d9e-91ed-4c47e69d4d7b",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "fcc0cfe5-a58b-4d9e-91ed-4c47e69d4d7b",
+  "applicationNumber": "2016-029028",
+  "registrationNumber": "5895062",
+  "applicationDate": "2016-03-02",
+  "registrationDate": "2016-11-11",
+  "expiryDate": "2026-11-11",
+  "renewalDate": null,
+  "lastPublicationDate": "2016-12-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "アドベンリアス",
+  "markTransliteration": "ADOBENRIASU",
+  "markTranslation": "ADVENRIUS",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "電気通信機械器具及びその部品・付属品，電子応用機械器具及びその部品・付属品，電気通信機械器具用または電子応用機械器具用またはコンピュータ用（携帯電話やスマートフォンなどモバイル端末を含む）のソフトウエア（ダウンロード可能なものあるいは記録媒体に記録されたものを含む），家庭用・携帯用ゲーム機のプログラム（ダウンロード可能なものあるいはコンピュータ用の記録媒体に記録されたものを含む），携帯電話やスマートフォンなどモバイル端末用ゲームプログラム（ダウンロード可能なものあるいはコンピュータ用の記録媒体に記録されたものを含む），電子出版物（ダウンロード可能なものあるいはコンピュータ用の記録媒体に記録されたものを含む），音声ファイル又は音楽ファイル又は画像ファイル又は動画ファイル（ダウンロード可能なものあるいはコンピュータ用の記録媒体に記録されたものを含む）",
+      "translation_language": "en",
+      "translation": "Telecommunication machinery equipment and its parts / accessories, electronic appliances and appliances and parts / accessories, telecommunications machinery tools or electronic appliances appliances or computers (including mobile terminals such as mobile phones and smart phones) software (Including downloadable ones or those recorded on a recording medium), programs for home and portable game machines (including downloadable ones or recorded on recording media for computers), mobile phones and smartphones (Including downloadable ones or those recorded on recording media for computers), electronic publications (including downloadable ones and those recorded on recording media for computers), sound File or music file or image file or motion File (including those recorded on the recording medium for those downloadable or computer)"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "インターネット等のコンピュータネットワークを利用した広告，ソーシャルネットワーキングの提供のための情報ファイルの管理および事業の管理・運営，市場調査又は分析，商品の売買に関する情報の提供，事業の管理に関する情報提供，事業の管理の代行，コンピュータネットワーク・コンピュータデータベースを利用したビジネス情報の提供及びその検索の代行，職業のあっせん，求人情報・求職情報の提供，おもちゃ・人形及び娯楽用具の小売又は卸売の業務において行われる顧客に対する便益の提供",
+      "translation_language": "en",
+      "translation": "Advertisement using computer networks such as the Internet, management of information files for providing social networking, management and operation of business, market research or analysis, provision of information on sales of goods, provision of information on business management, business Proxy for management, Providing business information using computer network · Computer database, Agent for searching, Providing employment, Providing job information and job information, Retailing or wholesale business of toys, dolls and entertainment equipment Providing benefits to"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "コンピュータネットワークを利用したコンピュータソフトウエアの提供（貸与を含む），コンピュータプログラムの設計・作成・保守又はコンサルティング及びこれらに関する情報の提供，通信ネットワークシステムの設計・構築・保守又はコンサルティング及びこれらに関する情報の提供，ウェブサイトの設計・作成又は保守又はコンサルティング及びこれらに関する情報の提供，コンピュータを用いた情報処理及びこれらに関する情報の提供（コンサルティングを含む），コンピュータネットワークを介したコンピュータ（ネットワーク上サーバを含む）の貸与及びこれに関する情報の提供，電子応用機械器具及びその部品の貸与（コンピュータ用プログラムを含む）又はそのコンサルティング及びこれらに関する情報の提供，インターネットにおける検索エンジンの提供又はこれに関する情報の提供，気象情報の提供，デザインの考案（広告に関するものを除く。）",
+      "translation_language": "en",
+      "translation": "Provision of computer software using computer network (including loan), designing, creating, maintaining or consulting computer program, providing information on them, designing, constructing, maintaining or consulting communication network system and providing information on these , The design and creation or maintenance or consultation of the website, the provision of information on these, the information processing using the computer, the provision of information on them (including consulting), the computer (including server on the network) via the computer network Provide information on loan and related information, lending of electronic appliances and appliances and parts thereof (including computer programs) or consulting thereof, providing information on them, inter Provide search engine in Tsu door or which relates to the provision of information, the provision of weather information, devised the design (except those related to the ad.)"
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": null,
+      "description": "知的財産権に関する手続の代理又は鑑定又は管理業務（契約手続きを含む），知的財産権の利用（実施許諾もしくは使用許諾を含む）の許諾、知的財産権の利用（実施許諾もしくは使用許諾を含む）に関する契約又はその代理・媒介・仲介・斡旋，知的財産に関する内容又は流通又はライセンスに関する情報の提供（コンサルティングを含む），知的財産に関する調査及び研究，知的財産に関する情報の提供（助言・相談・指導を含む），知的財産権の事業化のための仲介及び斡旋及び情報の提供（コンサルティングを含む），知的財産契約に関する調査及び研究及び情報の提供，知的財産契約の締結の代理又は媒介，命名に関する情報の提供，ファッション情報の提供",
+      "translation_language": "en",
+      "translation": "License of use of intellectual property right (including licensing or license use), substitution of appraisal or administrative work (including contract procedure), intellectual property right of the intellectual property right proceedings, use of the intellectual property right (licensing or license (Including consulting), information on intellectual property, distribution of information on intellectual property (including consulting), investigation and research on intellectual property, provision of information on intellectual property Including advice, counseling and guidance), brokerage and mediation for the commercialization of intellectual property rights, providing information (including consulting), investigation and research on intellectual property contracts and providing information, information on intellectual property contracts Proxy or mediation of conclusion, provision of information on naming, provision of fashion information"
+    }
+  ],
+  "owner": "SAKAMOTO MORIHIRO",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "20160302"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "NARASHI NARA KEN",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "SAKAMOTO MORIHIRO",
+        "applicantNativeAddress": "奈良県奈良市",
+        "applicantNativeName": "坂元　盛浩"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Telecommunication machinery equipment and its parts / accessories, electronic appliances and appliances and parts / accessories, telecommunications machinery tools or electronic appliances appliances or computers (including mobile terminals such as mobile phones and smart phones) software (Including downloadable ones or those recorded on a recording medium), programs for home and portable game machines (including downloadable ones or recorded on recording media for computers), mobile phones and smartphones (Including downloadable ones or those recorded on recording media for computers), electronic publications (including downloadable ones and those recorded on recording media for computers), sound File or music file or image file or motion File (including those recorded on the recording medium for those downloadable or computer)",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "電気通信機械器具及びその部品・付属品，電子応用機械器具及びその部品・付属品，電気通信機械器具用または電子応用機械器具用またはコンピュータ用（携帯電話やスマートフォンなどモバイル端末を含む）のソフトウエア（ダウンロード可能なものあるいは記録媒体に記録されたものを含む），家庭用・携帯用ゲーム機のプログラム（ダウンロード可能なものあるいはコンピュータ用の記録媒体に記録されたものを含む），携帯電話やスマートフォンなどモバイル端末用ゲームプログラム（ダウンロード可能なものあるいはコンピュータ用の記録媒体に記録されたものを含む），電子出版物（ダウンロード可能なものあるいはコンピュータ用の記録媒体に記録されたものを含む），音声ファイル又は音楽ファイル又は画像ファイル又は動画ファイル（ダウンロード可能なものあるいはコンピュータ用の記録媒体に記録されたものを含む）"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advertisement using computer networks such as the Internet, management of information files for providing social networking, management and operation of business, market research or analysis, provision of information on sales of goods, provision of information on business management, business Proxy for management, Providing business information using computer network · Computer database, Agent for searching, Providing employment, Providing job information and job information, Retailing or wholesale business of toys, dolls and entertainment equipment Providing benefits to",
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "インターネット等のコンピュータネットワークを利用した広告，ソーシャルネットワーキングの提供のための情報ファイルの管理および事業の管理・運営，市場調査又は分析，商品の売買に関する情報の提供，事業の管理に関する情報提供，事業の管理の代行，コンピュータネットワーク・コンピュータデータベースを利用したビジネス情報の提供及びその検索の代行，職業のあっせん，求人情報・求職情報の提供，おもちゃ・人形及び娯楽用具の小売又は卸売の業務において行われる顧客に対する便益の提供"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Provision of computer software using computer network (including loan), designing, creating, maintaining or consulting computer program, providing information on them, designing, constructing, maintaining or consulting communication network system and providing information on these , The design and creation or maintenance or consultation of the website, the provision of information on these, the information processing using the computer, the provision of information on them (including consulting), the computer (including server on the network) via the computer network Provide information on loan and related information, lending of electronic appliances and appliances and parts thereof (including computer programs) or consulting thereof, providing information on them, inter Provide search engine in Tsu door or which relates to the provision of information, the provision of weather information, devised the design (except those related to the ad.)",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "コンピュータネットワークを利用したコンピュータソフトウエアの提供（貸与を含む），コンピュータプログラムの設計・作成・保守又はコンサルティング及びこれらに関する情報の提供，通信ネットワークシステムの設計・構築・保守又はコンサルティング及びこれらに関する情報の提供，ウェブサイトの設計・作成又は保守又はコンサルティング及びこれらに関する情報の提供，コンピュータを用いた情報処理及びこれらに関する情報の提供（コンサルティングを含む），コンピュータネットワークを介したコンピュータ（ネットワーク上サーバを含む）の貸与及びこれに関する情報の提供，電子応用機械器具及びその部品の貸与（コンピュータ用プログラムを含む）又はそのコンサルティング及びこれらに関する情報の提供，インターネットにおける検索エンジンの提供又はこれに関する情報の提供，気象情報の提供，デザインの考案（広告に関するものを除く。）"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "License of use of intellectual property right (including licensing or license use), substitution of appraisal or administrative work (including contract procedure), intellectual property right of the intellectual property right proceedings, use of the intellectual property right (licensing or license (Including consulting), information on intellectual property, distribution of information on intellectual property (including consulting), investigation and research on intellectual property, provision of information on intellectual property Including advice, counseling and guidance), brokerage and mediation for the commercialization of intellectual property rights, providing information (including consulting), investigation and research on intellectual property contracts and providing information, information on intellectual property contracts Proxy or mediation of conclusion, provision of information on naming, provision of fashion information",
+          "intClassNumber": "45",
+          "intGoodsServicesDescription": "知的財産権に関する手続の代理又は鑑定又は管理業務（契約手続きを含む），知的財産権の利用（実施許諾もしくは使用許諾を含む）の許諾、知的財産権の利用（実施許諾もしくは使用許諾を含む）に関する契約又はその代理・媒介・仲介・斡旋，知的財産に関する内容又は流通又はライセンスに関する情報の提供（コンサルティングを含む），知的財産に関する調査及び研究，知的財産に関する情報の提供（助言・相談・指導を含む），知的財産権の事業化のための仲介及び斡旋及び情報の提供（コンサルティングを含む），知的財産契約に関する調査及び研究及び情報の提供，知的財産契約の締結の代理又は媒介，命名に関する情報の提供，ファッション情報の提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Telecommunication machines and apparatus; Personal digital assistants"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "11C02",
+          "natGoodsServicesDescription": "Geiger counters; High frequency apparatus for welding; Cyclotrons, not for medical purposes; Industrial X-ray machines and apparatus, not for medical use; Industrial betatrons, not for medical use; Magnetic prospecting machines; Magnetic object detectors; Seismic exploration machines and apparatus; Hydrophone machines and apparatus; Echo sounders; Ultrasonic flaw detectors; Ultrasonic sensors; Electronic door closing control systems; Electron microscopes"
+        },
+        {
+          "natClassNumber": "24A01",
+          "natGoodsServicesDescription": "Game programs for home video game machines; Electronic circuits and CD-ROMs recorded with programs for hand-held games with liquid crystal displays"
+        },
+        {
+          "natClassNumber": "24E02",
+          "natGoodsServicesDescription": "Phonograph records; Downloadable music files; Downloadable image files; Recorded video discs and video tapes"
+        },
+        {
+          "natClassNumber": "26A01",
+          "natGoodsServicesDescription": "Electronic publications"
+        },
+        {
+          "natClassNumber": "26D01",
+          "natGoodsServicesDescription": "Downloadable image files; Recorded video discs and video tapes; Electronic publications; Exposed cinematographic films; Exposed slide films; Slide film mounts"
+        },
+        {
+          "natClassNumber": "24A01"
+        },
+        {
+          "natClassNumber": "24B01"
+        },
+        {
+          "natClassNumber": "24B02"
+        },
+        {
+          "natClassNumber": "35A01",
+          "natGoodsServicesDescription": "Advertising and publicity services"
+        },
+        {
+          "natClassNumber": "35B01",
+          "natGoodsServicesDescription": "Business management analysis or business consultancy; Business management; Marketing research or analysis; Providing information concerning commercial sales"
+        },
+        {
+          "natClassNumber": "35D01",
+          "natGoodsServicesDescription": "Employment agency services"
+        },
+        {
+          "natClassNumber": "35G03",
+          "natGoodsServicesDescription": "Office functions, namely filing, in particular documents or magnetic tapes; Compilation of information into computer databases"
+        },
+        {
+          "natClassNumber": "35K14",
+          "natGoodsServicesDescription": "Retail services or wholesale services for sports goods; Retail services or wholesale services for toys, dolls, game machines and apparatus"
+        },
+        {
+          "natClassNumber": "42G02",
+          "natGoodsServicesDescription": "Providing employment information"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Compilation of information into computer databases"
+        },
+        {
+          "natClassNumber": "42G01",
+          "natGoodsServicesDescription": "Providing meteorological information"
+        },
+        {
+          "natClassNumber": "42P01",
+          "natGoodsServicesDescription": "Design services"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        },
+        {
+          "natClassNumber": "42G03",
+          "natGoodsServicesDescription": "Information relating to fashion coordination services for individuals"
+        },
+        {
+          "natClassNumber": "42Q99"
+        },
+        {
+          "natClassNumber": "42R01",
+          "natGoodsServicesDescription": "Agencies for procedures relating to industrial property rights, preparation of expert opinions; Agencies for legal procedures relating to lawsuits or other legal issues; Agencies for judicial registration or deposits"
+        },
+        {
+          "natClassNumber": "42R02",
+          "natGoodsServicesDescription": "Agencies for copyright licensing"
+        },
+        {
+          "natClassNumber": "42U02",
+          "natGoodsServicesDescription": "Fortune-telling; Non-therapeutic counselling services rendered to meet the needs of individuals"
+        }
+      ]
+    },
+    "id": "fcc0cfe5-a58b-4d9e-91ed-4c47e69d4d7b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20160302"
+      }
+    ],
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20160302",
+        "applicationNumber": "2016-029028"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20261111",
+      "lastPublicationDate": "20161213",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20161111",
+        "registrationNumber": "5895062"
+      }
+    },
+    "version": "20230427183103",
+    "wordMarkSpecification": {
+      "markTranslation": "ADVENRIUS",
+      "markTransliteration": "ADOBENRIASU",
+      "markVerbalElementText": "アドベンリアス"
+    }
+  },
+  "_uri": "/mark/jp/fcc0cfe5-a58b-4d9e-91ed-4c47e69d4d7b",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.185Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

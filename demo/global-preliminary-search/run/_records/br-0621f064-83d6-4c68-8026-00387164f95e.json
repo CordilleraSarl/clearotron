@@ -1,0 +1,115 @@
+{
+  "uri": "/mark/br/0621f064-83d6-4c68-8026-00387164f95e",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "0621f064-83d6-4c68-8026-00387164f95e",
+  "applicationNumber": "825862469",
+  "registrationNumber": "825862469",
+  "applicationDate": "2003-09-09",
+  "registrationDate": "2007-06-19",
+  "expiryDate": "2027-06-19",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "PREVENRIO",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "pt",
+      "description": "Organização de exposições para fins culturais ou educativos, organização e apresentação de colóquios, organização e apresentação de conferências, organização e apresentação de congressos, organização e apresentação de seminários, organização e apresentação de simpósios, organização e apresentação de oficinas de trabalho (treinamento).",
+      "translation_language": "en",
+      "translation": "ORGANIZATION OF EXHIBITIONS FOR CULTURAL OR EDUCATIONAL PURPOSES, ORGANIZATION AND PRESENTATION OF COLLOQUIUMS, ORGANIZATION AND PRESENTATION OF CONFERENCES, ORGANIZATION AND PRESENTATION OF CONFERENCES, ORGANIZATION AND PRESENTATION OF SEMINARS, ORGANIZATION AND PRESENTATION OF SYMPTOMS ."
+    }
+  ],
+  "owner": "PROTEÇÃO EVENTOS LTDA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "CUSTÓDIO DE ALMEIDA & CIA.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "PROTEÇÃO EVENTOS LTDA"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "ORGANIZATION OF EXHIBITIONS FOR CULTURAL OR EDUCATIONAL PURPOSES, ORGANIZATION AND PRESENTATION OF COLLOQUIUMS, ORGANIZATION AND PRESENTATION OF CONFERENCES, ORGANIZATION AND PRESENTATION OF CONFERENCES, ORGANIZATION AND PRESENTATION OF SEMINARS, ORGANIZATION AND PRESENTATION OF SYMPTOMS .",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Organização de exposições para fins culturais ou educativos, organização e apresentação de colóquios, organização e apresentação de conferências, organização e apresentação de congressos, organização e apresentação de seminários, organização e apresentação de simpósios, organização e apresentação de oficinas de trabalho (treinamento)."
+        }
+      ]
+    },
+    "id": "0621f064-83d6-4c68-8026-00387164f95e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "06.07.01",
+      "27.05.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "CUSTÓDIO DE ALMEIDA & CIA."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20030909",
+        "applicationNumber": "825862469"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270619",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20070619",
+        "registrationNumber": "825862469"
+      }
+    },
+    "version": "20250630210534",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "PREVENRIO"
+    }
+  },
+  "_uri": "/mark/br/0621f064-83d6-4c68-8026-00387164f95e",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.188Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

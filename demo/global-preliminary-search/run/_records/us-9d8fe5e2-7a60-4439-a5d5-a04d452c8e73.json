@@ -82,6 +82,18 @@
     "ipRightKind": "tmk",
     "markEvents": [
       {
+        "date": "20261118",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20261027",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20261026",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
         "date": "20260725",
         "descriptionText": "NEW APPLICATION ENTERED"
       },
@@ -121,7 +133,7 @@
         "street": "No. 31, Zhaohui Road, Yuhua District"
       }
     ],
-    "recordLastUpdated": "20260810",
+    "recordLastUpdated": "20261119",
     "registrationOfficeCode": "US",
     "registrationOfficeName": "USPTO",
     "representativeCorrespondents": [
@@ -154,9 +166,9 @@
       },
       "cmNormalisedStatus": "PENDING",
       "ipOffice": {
-        "markOfficialStatus": "NEW APPLICATION - RECORD INITIALIZED NOT ASSIGNED TO EXAMINER",
-        "markOfficialStatusCode": "630",
-        "markOfficialStatusDate": "20260725",
+        "markOfficialStatus": "PUBLICATION & ISSUE REVIEW COMPLETE",
+        "markOfficialStatusCode": "681",
+        "markOfficialStatusDate": "20261104",
         "markOfficialStatusEvents": [
           "Intent to Use - Filed",
           "Intent to Use"
@@ -164,14 +176,14 @@
       },
       "markCurrentStatus": "PENDING"
     },
-    "version": "20260810151004",
+    "version": "20261119151051",
     "wordMarkSpecification": {
       "markVerbalElementText": "VUNQERI"
     }
   },
   "_uri": "/mark/us/9d8fe5e2-7a60-4439-a5d5-a04d452c8e73",
   "_receipt": {
-    "fetched_at": "2026-09-18T12:41:59.527Z",
+    "fetched_at": "2026-11-20T19:48:16.279Z",
     "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
   }
 }

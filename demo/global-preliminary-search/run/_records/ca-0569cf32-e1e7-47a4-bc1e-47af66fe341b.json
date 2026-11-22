@@ -1,0 +1,163 @@
+{
+  "uri": "/mark/ca/0569cf32-e1e7-47a4-bc1e-47af66fe341b",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "0569cf32-e1e7-47a4-bc1e-47af66fe341b",
+  "applicationNumber": "2487005",
+  "registrationNumber": null,
+  "applicationDate": "2026-07-09",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": null,
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "(1) Social club services, namely, arranging, organizing, and hosting social events, get-togethers, and parties for club members",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Nelson Da Mota Gaspar",
+  "ownerNative": null,
+  "ownerCountry": "CA",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "43 Donald Ave, York, ONTARIO, M6M1K2",
+        "applicantAddressCountryCode": "CA",
+        "applicantAddressCountryName": "Canada",
+        "applicantAddressLines": [
+          "43 Donald Ave",
+          "York",
+          "ONTARIO"
+        ],
+        "applicantAddressPostalCode": "M6M1K2",
+        "applicantName": "Nelson Da Mota Gaspar"
+      }
+    ],
+    "categorizedTexts": {},
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Social club services, namely, arranging, organizing, and hosting social events, get-togethers, and parties for club members"
+        }
+      ]
+    },
+    "id": "0569cf32-e1e7-47a4-bc1e-47af66fe341b",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20260709",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20260709",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20260709",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "DESIGN MARK",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "Colour is claimed as a feature of the trademark. Black, grey, white (outline and design): white, black, royal blue (eyes): black, white, royal blue, cyan (forehead eye).",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImageViennaClassification": [
+      "02.09.04",
+      "03.01.01",
+      "03.01.16",
+      "03.01.24",
+      "26.01.01",
+      "26.01.04",
+      "26.01.24",
+      "26.04.02",
+      "26.04.05",
+      "26.04.10",
+      "26.04.14",
+      "26.04.15",
+      "26.04.24",
+      "29.01.08",
+      "29.01.06",
+      "29.01.04"
+    ],
+    "markImagesAvailable": true,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "43 Donald Ave, York, ONTARIO, M6M1K2",
+        "addressLines": [
+          "43 Donald Ave",
+          "York",
+          "ONTARIO",
+          "M6M1K2"
+        ],
+        "countryName": "Canada",
+        "name": "Nelson Da Mota Gaspar",
+        "postalCode": "M6M1K2"
+      }
+    ],
+    "recordLastUpdated": "20260715",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260709",
+        "applicationNumber": "2487005"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "formalisationDate": "20260709",
+      "markCurrentStatus": "Formalized"
+    },
+    "version": "20260715160009",
+    "wordMarkSpecification": {
+      "markVerbalElementTextFormal": "North Haven Riders Logo"
+    }
+  },
+  "_uri": "/mark/ca/0569cf32-e1e7-47a4-bc1e-47af66fe341b",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.186Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

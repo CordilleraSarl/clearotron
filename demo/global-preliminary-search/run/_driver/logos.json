@@ -1,0 +1,268 @@
+{
+  "schema": 1,
+  "register": "clarivate",
+  "takenAt": "2026-11-20T23:13:06.039Z",
+  "rows": [
+    {
+      "ref": "/mark/gb/c3154106-158a-4756-b8f6-116bc310172f",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/em/dc47debd-f2b2-44d5-aa83-50743a2cc274",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/cn/f0264885-2d0b-40d5-9427-33e979c227d3",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/fr/1a4d9de2-d825-4d6a-b828-e1c009d7be3b",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/gb/3e578d41-d112-4024-b7ab-624e4e12b9e5",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/us/d7bb1c5b-ef6c-46f4-a93e-5df47424d994",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/wo/91f55cd4-8f93-4241-b550-5f46e2a92491",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/nz/51e372ff-5dbf-4c35-a168-b0a027a99551",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/cn/69f446d9-ed77-4362-9e33-80e0c858f050",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/cn/79791ff4-e3b8-417a-bbaa-bd0a56a14d54",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/cn/735e6db2-dd04-4115-b518-4154a42ab8f4",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/em/481679a2-c6f6-4b6f-8aa4-1e49414b5140",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/us/5a9e5373-b07e-43c9-88c1-a73fb2b61cfd",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/wo/9a9d3dd9-5014-4ce1-b2bd-5a73c93cfc13",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/em/a1858458-6b0d-401a-879b-e1bcb67554fd",
+      "register": "clarivate",
+      "state": "fetched",
+      "file": "_driver/logos/em-a1858458-6b0d-401a-879b-e1bcb67554fd.jpg",
+      "contentType": "image/jpeg",
+      "bytes": 24166
+    },
+    {
+      "ref": "/mark/gb/798b935a-8e9a-4ade-be98-e79c66c9a16e",
+      "register": "clarivate",
+      "state": "fetched",
+      "file": "_driver/logos/gb-798b935a-8e9a-4ade-be98-e79c66c9a16e.jpg",
+      "contentType": "image/jpeg",
+      "bytes": 29072
+    },
+    {
+      "ref": "/mark/cn/817a4fcd-a0f3-4048-b0de-2d9b598ca7f5",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/cn/90eef81e-2b6f-4f84-8b9f-ac78dd65a11f",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/ca/013d9006-55f8-459f-ba5a-b33df474916d",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/ru/bdb60e5c-8795-4552-9344-7f5505187619",
+      "register": "clarivate",
+      "state": "fetched",
+      "file": "_driver/logos/ru-bdb60e5c-8795-4552-9344-7f5505187619.jpg",
+      "contentType": "image/jpeg",
+      "bytes": 19917
+    },
+    {
+      "ref": "/mark/ru/00eca061-13ee-4d29-b0c2-7d183b04cf37",
+      "register": "clarivate",
+      "state": "fetched",
+      "file": "_driver/logos/ru-00eca061-13ee-4d29-b0c2-7d183b04cf37.jpg",
+      "contentType": "image/jpeg",
+      "bytes": 14160
+    },
+    {
+      "ref": "/mark/cn/71246c53-f5f7-44ab-ac9d-730dffd96771",
+      "register": "clarivate",
+      "state": "fetched",
+      "file": "_driver/logos/cn-71246c53-f5f7-44ab-ac9d-730dffd96771.jpg",
+      "contentType": "image/jpeg",
+      "bytes": 9826
+    },
+    {
+      "ref": "/mark/ve/9312e3bd-9672-4efa-b971-b4e824d2a959",
+      "register": "clarivate",
+      "state": "fetched",
+      "file": "_driver/logos/ve-9312e3bd-9672-4efa-b971-b4e824d2a959.jpg",
+      "contentType": "image/jpeg",
+      "bytes": 5386
+    },
+    {
+      "ref": "/mark/ve/c4ca64c7-906f-4b0f-9848-f6b066413eaa",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/gt/a9c13104-054d-4ce9-b348-6f05779bd833",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/ar/47492ce5-1f6d-4d5a-bea3-93cfae9eb8ff",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/ar/84f5c85b-798b-4e42-ac08-e30d4b02f0d5",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/cn/2795cefe-fb74-4a92-a4b6-2643c19cfc2f",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/cn/5786e5ce-3962-4cb9-9fe1-f4df4522f575",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/in/d4702fdd-f353-476c-8874-eedc36d6a582",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/gb/5043fc0d-ca64-4987-a605-d2d018b2262f",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/gb/2663cfa1-16ff-4795-ba2c-ce8b0d508011",
+      "register": "clarivate",
+      "state": "fetched",
+      "file": "_driver/logos/gb-2663cfa1-16ff-4795-ba2c-ce8b0d508011.jpg",
+      "contentType": "image/jpeg",
+      "bytes": 24635
+    },
+    {
+      "ref": "/mark/mx/a294a82d-1f29-436d-994c-e3c20ab7e5c2",
+      "register": "clarivate",
+      "state": "fetched",
+      "file": "_driver/logos/mx-a294a82d-1f29-436d-994c-e3c20ab7e5c2.jpg",
+      "contentType": "image/jpeg",
+      "bytes": 3975
+    },
+    {
+      "ref": "/mark/ch/d43bb5d5-c9cf-40f7-a11a-84b5178961a0",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/gb/fd913d2f-cbdb-4d2d-89d7-94a8e9468891",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/wo/4531d3d2-3240-4db7-b47a-6b2204a58be8",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/cn/52dcb67e-a6fc-4251-86be-88a28068fbee",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/ru/36176772-0665-4036-958a-fa33b06851f3",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/tr/a80d04af-30db-4f6b-aca7-2749a7ff06e7",
+      "register": "clarivate",
+      "state": "fetched",
+      "file": "_driver/logos/tr-a80d04af-30db-4f6b-aca7-2749a7ff06e7.jpg",
+      "contentType": "image/jpeg",
+      "bytes": 5148
+    },
+    {
+      "ref": "/mark/de/c5b0c781-8444-4731-a082-9159c81fbe3d",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/ch/75b855ee-314b-4713-8e3e-4e8ac1b10461",
+      "register": "clarivate",
+      "state": "no-logo"
+    },
+    {
+      "ref": "/mark/em/346d96db-15d6-40f8-a707-c87059712771",
+      "register": "clarivate",
+      "state": "fetched",
+      "file": "_driver/logos/em-346d96db-15d6-40f8-a707-c87059712771.jpg",
+      "contentType": "image/jpeg",
+      "bytes": 21246
+    },
+    {
+      "ref": "/mark/gb/1ed22bdd-4194-423f-af68-4d5d720d03cb",
+      "register": "clarivate",
+      "state": "fetched",
+      "file": "_driver/logos/gb-1ed22bdd-4194-423f-af68-4d5d720d03cb.jpg",
+      "contentType": "image/jpeg",
+      "bytes": 13312
+    },
+    {
+      "ref": "/mark/br/1ac5cfcf-0d54-4c62-bbbb-96803a302f9c",
+      "register": "clarivate",
+      "state": "fetched",
+      "file": "_driver/logos/br-1ac5cfcf-0d54-4c62-bbbb-96803a302f9c.jpg",
+      "contentType": "image/jpeg",
+      "bytes": 8030
+    }
+  ]
+}

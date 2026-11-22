@@ -1,0 +1,302 @@
+{
+  "uri": "/mark/us/4be19429-5a34-4354-9e4a-d5b2c12db4cb",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "4be19429-5a34-4354-9e4a-d5b2c12db4cb",
+  "applicationNumber": "97576361",
+  "registrationNumber": null,
+  "applicationDate": "2022-09-02",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2023-10-03"
+  ],
+  "abandonmentDate": "2025-10-01",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "VEN'RIF",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Downloadable and recorded computer and video game programs and software; Downloadable computer and video game programs and software; Downloadable digital materials, namely, wallpapers in the nature of digital images, computer screen saver software, digital music files, and graphics, videos, films, multimedia files, live action programs, motion pictures, and visual animation recordings all in the field of video games and computer games, all delivered via global computer networks and wireless networks; Pre-recorded digital media featuring computer games and video games, wallpapers in the nature of digital images, computer screen saver software, digital music files, and graphics, videos, films, multimedia files, live action programs, motion pictures, and visual animation recordings all in the field of video games and computer games",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Vilein Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Lynn Lehnert",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "P.O. Box 42, Somerville, MA, 02144",
+        "applicantAddressCity": "Somerville",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "02144",
+        "applicantAddressStateName": "MASSACHUSETTS",
+        "applicantAddressStreet": "P.O. Box 42",
+        "applicantJurisdictionOfIncorporation": "DELAWARE",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "Vilein Inc."
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "26.01.07",
+      "26.07.08",
+      "26.07.10",
+      "26.07.37"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Downloadable and recorded computer and video game programs and software; Downloadable computer and video game programs and software; Downloadable digital materials, namely, wallpapers in the nature of digital images, computer screen saver software, digital music files, and graphics, videos, films, multimedia files, live action programs, motion pictures, and visual animation recordings all in the field of video games and computer games, all delivered via global computer networks and wireless networks; Pre-recorded digital media featuring computer games and video games, wallpapers in the nature of digital images, computer screen saver software, digital music files, and graphics, videos, films, multimedia files, live action programs, motion pictures, and visual animation recordings all in the field of video games and computer games"
+        }
+      ]
+    },
+    "id": "4be19429-5a34-4354-9e4a-d5b2c12db4cb",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20251001",
+        "descriptionText": "ABANDONMENT - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20251001",
+        "descriptionText": "ABANDONMENT NOTICE E-MAILED - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20240711",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20240711",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20240711",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20240522",
+        "descriptionText": "NOTICE OF APPROVAL OF EXTENSION REQUEST E-MAILED"
+      },
+      {
+        "date": "20240521",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20240521",
+        "descriptionText": "SOU EXTENSION 1 FILED"
+      },
+      {
+        "date": "20240521",
+        "descriptionText": "SOU EXTENSION 1 GRANTED"
+      },
+      {
+        "date": "20231128",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20231003",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20231003",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20230913",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20230826",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20230818",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20230818",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20230818",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20230617",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20230617",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20230617",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20230617",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20220922",
+        "descriptionText": "NOTICE OF DESIGN SEARCH CODE E-MAILED"
+      },
+      {
+        "date": "20220921",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20220906",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "Color is not claimed as a feature of the mark.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "The mark consists of a hollow single-line circle dissected into equal parts by six shaded diamonds, with the word \"VEN'RIF\" centered underneath the circle in stylized capital lettering.",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "P.O. Box 42, Somerville, MA, 02144",
+        "city": "Somerville",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "Vilein Inc.",
+        "postalCode": "02144",
+        "stateName": "MASSACHUSETTS",
+        "street": "P.O. Box 42"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "P.O. Box 42, Somerville, MA, 02144",
+        "city": "Somerville",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "Vilein Inc.",
+        "postalCode": "02144",
+        "stateName": "MASSACHUSETTS",
+        "street": "P.O. Box 42"
+      },
+      {
+        "address": "P.O. Box 42, Somerville, MA, 02144",
+        "city": "Somerville",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "Vilein Inc.",
+        "postalCode": "02144",
+        "stateName": "MASSACHUSETTS",
+        "street": "P.O. Box 42"
+      }
+    ],
+    "recordLastUpdated": "20260130",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Wilmington, DE 19806, United States",
+        "representativeCorrespondentAddressLines": [
+          "Wilmington, DE 19806",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Lynn Lehnert Devlin Law Firm LLC, 1526 Gilpin Ave."
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Wilmington, DE 19806, United States",
+        "representativeAddressLines": [
+          "Wilmington, DE 19806",
+          "United States"
+        ],
+        "representativeName": "Lynn Lehnert"
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20251001",
+      "active": false,
+      "application": {
+        "applicationDate": "20220902",
+        "applicationNumber": "97576361"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "extension": {
+        "approvalDate": [
+          "20240521"
+        ]
+      },
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-NO STATEMENT OF USE FILED",
+        "markOfficialStatusCode": "606",
+        "markOfficialStatusDate": "20251001",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED",
+      "publicationDate": [
+        "20231003"
+      ]
+    },
+    "version": "20260130164005",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "VEN RIF",
+      "markVerbalElementText": "VEN'RIF"
+    }
+  },
+  "_uri": "/mark/us/4be19429-5a34-4354-9e4a-d5b2c12db4cb",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.197Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

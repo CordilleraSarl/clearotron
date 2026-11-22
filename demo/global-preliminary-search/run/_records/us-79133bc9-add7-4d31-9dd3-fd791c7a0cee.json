@@ -1,0 +1,178 @@
+{
+  "uri": "/mark/us/79133bc9-add7-4d31-9dd3-fd791c7a0cee",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "79133bc9-add7-4d31-9dd3-fd791c7a0cee",
+  "applicationNumber": "50147664",
+  "registrationNumber": null,
+  "applicationDate": "2026-10-06",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "AVENRIX",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Platform as a service (PAAS) featuring computer software platforms for pharmacy management and pharmacy operations; Providing temporary use of on-line non-downloadable software for pharmacy management, namely, software for processing prescriptions, managing patient medication records, managing pharmacy inventory, and processing prescription insurance claims; Software as a service (SAAS) services featuring software for pharmacy management, namely, software for prescription intake and processing, prescription fulfillment and dispensing workflow, patient profile and medication record management, pharmacy inventory management, prescription insurance claims processing, patient communications, and pharmacy reporting and analytics",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Avenrix Technologies LLC",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "320 McKnight Rd S, Maplewood, MN, 55119, USAM",
+        "applicantAddressCity": "Maplewood",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "55119",
+        "applicantAddressStateName": "MINNESOTA",
+        "applicantAddressStreet": "320 McKnight Rd S",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "Avenrix Technologies LLC",
+        "applicantSecondaryAddressUnit": "Unit 114"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Platform as a service (PAAS) featuring computer software platforms for pharmacy management and pharmacy operations; Providing temporary use of on-line non-downloadable software for pharmacy management, namely, software for processing prescriptions, managing patient medication records, managing pharmacy inventory, and processing prescription insurance claims; Software as a service (SAAS) services featuring software for pharmacy management, namely, software for prescription intake and processing, prescription fulfillment and dispensing workflow, patient profile and medication record management, pharmacy inventory management, prescription insurance claims processing, patient communications, and pharmacy reporting and analytics"
+        }
+      ]
+    },
+    "id": "79133bc9-add7-4d31-9dd3-fd791c7a0cee",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20261006",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20261006",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "320 McKnight Rd S, Maplewood, MN, 55119, USAM",
+        "city": "Maplewood",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Avenrix Technologies LLC",
+        "postalCode": "55119",
+        "secondaryAddressUnit": "Unit 114",
+        "stateName": "MINNESOTA",
+        "street": "320 McKnight Rd S"
+      },
+      {
+        "address": "320 McKnight Rd S, Maplewood, MN, 55119, USAM",
+        "city": "Maplewood",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Avenrix Technologies LLC",
+        "postalCode": "55119",
+        "secondaryAddressUnit": "Unit 114",
+        "stateName": "MINNESOTA",
+        "street": "320 McKnight Rd S"
+      }
+    ],
+    "recordLastUpdated": "20261009",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Unit 114, Maplewood, MN 55119, United States",
+        "representativeCorrespondentAddressLines": [
+          "Unit 114",
+          "Maplewood, MN 55119",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Avenrix Technologies LLC, 320 McKnight Rd S"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Unit 114, Maplewood, MN 55119, United States",
+        "representativeAddressLines": [
+          "Unit 114",
+          "Maplewood, MN 55119",
+          "United States"
+        ]
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20261006",
+        "applicationNumber": "50147664"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "ipOffice": {
+        "markOfficialStatus": "NEW APPLICATION - RECORD INITIALIZED NOT ASSIGNED TO EXAMINER",
+        "markOfficialStatusCode": "630",
+        "markOfficialStatusDate": "20261006",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20261009120303",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AVENRIX"
+    }
+  },
+  "_uri": "/mark/us/79133bc9-add7-4d31-9dd3-fd791c7a0cee",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.200Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

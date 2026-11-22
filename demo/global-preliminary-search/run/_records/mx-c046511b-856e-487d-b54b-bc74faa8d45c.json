@@ -1,0 +1,119 @@
+{
+  "uri": "/mark/mx/c046511b-856e-487d-b54b-bc74faa8d45c",
+  "provider": "clarivate",
+  "office": "mx",
+  "guid": "c046511b-856e-487d-b54b-bc74faa8d45c",
+  "applicationNumber": "1473241",
+  "registrationNumber": "1519111",
+  "applicationDate": "2014-04-02",
+  "registrationDate": "2015-02-27",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ELEVEN RIVERS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios cientificos y tecnologicos, asi como servicios de investigacion y diseño en estos ambitos; servicios de analisis e investigacion industriales; diseño y desarrollo de equipos informaticos y de software; servicios de control de calidad para la expedicion de una certificacion; control de calidad; estudio de proyectos tecnicos; evaluacion de la calidad de madera en pie; investigacion y desarrollo de nuevos productos para terceros; servicios de certificacion mediante el control de calidad de productos agricolas prestado por un organismo de certificacion en materia de inocuidad, calidad, responsabilidad social y proteccion al medio ambiente; servicios de certificacion de calidad en frutas, verduras, hortalizas y granos.",
+      "translation_language": "en",
+      "translation": "SCIENTIFIC AND TECHNOLOGICAL SERVICES, AND SERVICES RESEARCH AND design relating thereto; SERVICES Industrial analysis and research; DESIGN AND DEVELOPMENT OF COMPUTER EQUIPMENT AND SOFTWARE; QUALITY CONTROL SERVICES FOR THE ISSUANCE OF A CERTIFICATE; QA; TECHNICAL STUDY PROJECTS; QUALITY EVALUATION stumpage; RESEARCH AND DEVELOPMENT OF NEW PRODUCTS FOR THIRD PARTIES; CERTIFICATION SERVICES THROUGH THE QUALITY CONTROL OF AGRICULTURAL PRODUCTS PROVIDED BY AN AGENCY CERTIFICATION ON SAFETY, QUALITY, SOCIAL RESPONSIBILITY AND ENVIRONMENTAL PROTECTION; SERVICE QUALITY CERTIFICATION IN FRUITS, VEGETABLES, VEGETABLES AND GRAINS."
+    }
+  ],
+  "owner": "CAADES SINALOA, A.C.",
+  "ownerNative": null,
+  "ownerCountry": "MX",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "JUAN CARRASCO # 787 NTE. COL. CENTRO, CULIACAN, SIN., 80000",
+        "applicantAddressCountryCode": "MX",
+        "applicantAddressCountryName": "Mexico",
+        "applicantName": "CAADES SINALOA, A.C."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "SCIENTIFIC AND TECHNOLOGICAL SERVICES, AND SERVICES RESEARCH AND design relating thereto; SERVICES Industrial analysis and research; DESIGN AND DEVELOPMENT OF COMPUTER EQUIPMENT AND SOFTWARE; QUALITY CONTROL SERVICES FOR THE ISSUANCE OF A CERTIFICATE; QA; TECHNICAL STUDY PROJECTS; QUALITY EVALUATION stumpage; RESEARCH AND DEVELOPMENT OF NEW PRODUCTS FOR THIRD PARTIES; CERTIFICATION SERVICES THROUGH THE QUALITY CONTROL OF AGRICULTURAL PRODUCTS PROVIDED BY AN AGENCY CERTIFICATION ON SAFETY, QUALITY, SOCIAL RESPONSIBILITY AND ENVIRONMENTAL PROTECTION; SERVICE QUALITY CERTIFICATION IN FRUITS, VEGETABLES, VEGETABLES AND GRAINS.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios cientificos y tecnologicos, asi como servicios de investigacion y diseño en estos ambitos; servicios de analisis e investigacion industriales; diseño y desarrollo de equipos informaticos y de software; servicios de control de calidad para la expedicion de una certificacion; control de calidad; estudio de proyectos tecnicos; evaluacion de la calidad de madera en pie; investigacion y desarrollo de nuevos productos para terceros; servicios de certificacion mediante el control de calidad de productos agricolas prestado por un organismo de certificacion en materia de inocuidad, calidad, responsabilidad social y proteccion al medio ambiente; servicios de certificacion de calidad en frutas, verduras, hortalizas y granos."
+        }
+      ]
+    },
+    "id": "c046511b-856e-487d-b54b-bc74faa8d45c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "05.09.24",
+      "26.02.01",
+      "25.05.25"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "02",
+        "publicationYear": "2015"
+      }
+    ],
+    "recordLastUpdated": "20250704",
+    "registrationOfficeCode": "MX",
+    "registrationOfficeName": "Mexico",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20140402",
+        "applicationNumber": "1473241"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "RENEWED",
+      "registration": {
+        "registrationDate": "20150227",
+        "registrationNumber": "1519111"
+      }
+    },
+    "version": "20250704174654",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ELEVEN RIVERS"
+    }
+  },
+  "_uri": "/mark/mx/c046511b-856e-487d-b54b-bc74faa8d45c",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.201Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "uri": "/mark/ph/8542d544-b3e4-4fd2-b0b1-77da3395d2c2",
+  "provider": "clarivate",
+  "office": "ph",
+  "guid": "8542d544-b3e4-4fd2-b0b1-77da3395d2c2",
+  "applicationNumber": "4202300510926",
+  "registrationNumber": "PH/4/2023/00510926",
+  "applicationDate": "2023-05-11",
+  "registrationDate": "2023-10-26",
+  "expiryDate": "2033-10-26",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VA VENRICH HOLDINGS OPC",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Film production.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Venrich Holdings OPC",
+  "ownerNative": null,
+  "ownerCountry": "PH",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Unit 8 - 2A Alicia Apartment Charity Corner Friendship St. Peace Valley, Lahug, Cebu",
+        "applicantAddressCountryCode": "PH",
+        "applicantAddressCountryName": "Philippines",
+        "applicantName": "Venrich Holdings OPC"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Film production."
+        }
+      ]
+    },
+    "id": "8542d544-b3e4-4fd2-b0b1-77da3395d2c2",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.01.18",
+      "27.05.22",
+      "29.01.12"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251112",
+    "registrationOfficeCode": "PH",
+    "registrationOfficeName": "Philippines",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230511",
+        "applicationNumber": "4202300510926"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20331026",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20231026",
+        "registrationNumber": "PH/4/2023/00510926"
+      }
+    },
+    "version": "20251112153658",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VA VENRICH HOLDINGS OPC"
+    }
+  },
+  "_uri": "/mark/ph/8542d544-b3e4-4fd2-b0b1-77da3395d2c2",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.203Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

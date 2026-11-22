@@ -1,0 +1,529 @@
+{
+  "uri": "/mark/us/213cee00-ad63-4bdf-bba1-13b9383b6821",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "213cee00-ad63-4bdf-bba1-13b9383b6821",
+  "applicationNumber": "86329497",
+  "registrationNumber": "5010503",
+  "applicationDate": "2014-07-07",
+  "registrationDate": "2016-08-02",
+  "expiryDate": null,
+  "renewalDate": "2026-08-02",
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2016-05-17"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ELEVEN RIVERS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    16,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        16
+      ],
+      "language": null,
+      "description": "INT. CL. 16 Paper goods, namely, book bindings; photographs; stationery; glue for stationery or for household use; artist brushes; typewriters; teacher instruction manuals in the field of farming and agriculture; packing paper cardboard and containers of paper and cardboard; watercolor pictures; catalogs on the subject of farming and agriculture; paper tags, printed publications, namely, brochures, forms, manuals, magazines on the subject of farming and agriculture; self-adhesive tapes for stationery or for household use; flags of paper; paper pennants; printed tickets; notebooks; bags of paper or plastic for packaging; boxes of cardboard or paper; decals; calendars; paper folders for documents and flyers; paper coasters; drawings; rubber and ink stamps; illustrations; graphic art prints; newspapers; paperweight; paper napkins; stationery seals, seals for office; desk mats; note cards",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Scientific and technological services, namely, scientific research, analysis, and testing, in the field of industrial engineering; Design and development of computer hardware and software; Scientific research and development; Quality control for others; Developing quality control standards for others in the field of standing timber and horticulture; Quality management services, namely, quality evaluation and analysis, quality assurance, and quality control, in the field of agriculture and horticulture; Research and development of technology in the field of horticulture and agriculture; research and development of new products for others; Testing, analysis and evaluation of the goods and services of others for the purpose of certification in the field of agricultural environment quality of fruits, vegetables, and grains",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "CAADES SINALOA, A.C.",
+  "ownerNative": null,
+  "ownerCountry": "MX",
+  "representative": "Paula B. Mays",
+  "priorities": [
+    {
+      "priorityApplicationDate": "20140402",
+      "priorityApplicationNumber": "86329497",
+      "priorityCountryCode": "MX",
+      "priorityCountryName": "Mexico"
+    },
+    {
+      "priorityApplicationDate": "20140402",
+      "priorityApplicationNumber": "1473241",
+      "priorityCountryCode": "MX",
+      "priorityCountryName": "Mexico"
+    },
+    {
+      "priorityCountryCode": "MX",
+      "priorityCountryName": "Mexico",
+      "priorityExpiryDate": "20240402",
+      "priorityRegistrationDate": "20140402",
+      "priorityRegistrationNumber": "1465943"
+    },
+    {
+      "priorityCountryCode": "MX",
+      "priorityCountryName": "Mexico",
+      "priorityExpiryDate": "20250227",
+      "priorityRegistrationDate": "20150227",
+      "priorityRegistrationNumber": "1519111"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20260811",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED"
+    },
+    "applicants": [
+      {
+        "applicantAddress": "Culiacán, Sinaloa, 80015, MEXI",
+        "applicantAddressCity": "Culiacán, Sinaloa",
+        "applicantAddressCountryCode": "MX",
+        "applicantAddressCountryName": "Mexico",
+        "applicantAddressPostalCode": "80015",
+        "applicantJurisdictionOfIncorporation": "MEXICO",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "CAADES SINALOA, A.C.",
+        "applicantSecondaryAddressUnit": "Juan Carrasco 787 NorteColonia Centro,"
+      }
+    ],
+    "associatedMarks": [
+      {
+        "registrationNumbers": [
+          "3933641"
+        ]
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "01.15.11",
+      "05.03.25",
+      "05.11.04",
+      "05.11.06",
+      "05.11.25",
+      "06.03.03",
+      "06.09.03",
+      "26.01.04",
+      "26.01.37",
+      "26.01.41"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "16",
+          "intGoodsServicesDescription": "INT. CL. 16 Paper goods, namely, book bindings; photographs; stationery; glue for stationery or for household use; artist brushes; typewriters; teacher instruction manuals in the field of farming and agriculture; packing paper cardboard and containers of paper and cardboard; watercolor pictures; catalogs on the subject of farming and agriculture; paper tags, printed publications, namely, brochures, forms, manuals, magazines on the subject of farming and agriculture; self-adhesive tapes for stationery or for household use; flags of paper; paper pennants; printed tickets; notebooks; bags of paper or plastic for packaging; boxes of cardboard or paper; decals; calendars; paper folders for documents and flyers; paper coasters; drawings; rubber and ink stamps; illustrations; graphic art prints; newspapers; paperweight; paper napkins; stationery seals, seals for office; desk mats; note cards"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Scientific and technological services, namely, scientific research, analysis, and testing, in the field of industrial engineering; Design and development of computer hardware and software; Scientific research and development; Quality control for others; Developing quality control standards for others in the field of standing timber and horticulture; Quality management services, namely, quality evaluation and analysis, quality assurance, and quality control, in the field of agriculture and horticulture; Research and development of technology in the field of horticulture and agriculture; research and development of new products for others; Testing, analysis and evaluation of the goods and services of others for the purpose of certification in the field of agricultural environment quality of fruits, vegetables, and grains"
+        }
+      ]
+    },
+    "id": "213cee00-ad63-4bdf-bba1-13b9383b6821",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260811",
+        "descriptionText": "REGISTERED - SEC. 8 (10-YR) ACCEPTED/SEC. 9 GRANTED"
+      },
+      {
+        "date": "20260811",
+        "descriptionText": "REGISTERED AND RENEWED (FIRST RENEWAL - 10 YRS)"
+      },
+      {
+        "date": "20260811",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 & 9 - E-MAILED"
+      },
+      {
+        "date": "20260810",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20260612",
+        "descriptionText": "TEAS SECTION 8 & 9 RECEIVED"
+      },
+      {
+        "date": "20250802",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (10-YR)/SEC. 9 E-MAILED"
+      },
+      {
+        "date": "20220802",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20220802",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED"
+      },
+      {
+        "date": "20220802",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 - E-MAILED"
+      },
+      {
+        "date": "20220226",
+        "descriptionText": "TEAS SECTION 8 RECEIVED"
+      },
+      {
+        "date": "20210802",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20160802",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20160517",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20160517",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20160427",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20160414",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20160414",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20160414",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20160414",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20160414",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20160414",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20160322",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20160322",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20160315",
+        "descriptionText": "TEAS RESPONSE TO SUSPENSION INQUIRY RECEIVED"
+      },
+      {
+        "date": "20160215",
+        "descriptionText": "SUSPENSION LETTER  WRITTEN"
+      },
+      {
+        "date": "20160215",
+        "descriptionText": "LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20160215",
+        "descriptionText": "NOTIFICATION OF LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20160208",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20160208",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20160204",
+        "descriptionText": "TEAS RESPONSE TO SUSPENSION INQUIRY RECEIVED"
+      },
+      {
+        "date": "20160126",
+        "descriptionText": "SUSPENSION INQUIRY WRITTEN"
+      },
+      {
+        "date": "20160126",
+        "descriptionText": "INQUIRY TO SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20160126",
+        "descriptionText": "NOTIFICATION OF INQUIRY AS TO SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20150708",
+        "descriptionText": "SUSPENSION LETTER  WRITTEN"
+      },
+      {
+        "date": "20150708",
+        "descriptionText": "LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20150708",
+        "descriptionText": "NOTIFICATION OF LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20150622",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20150622",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20150615",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20150608",
+        "descriptionText": "TEAS RESPONSE TO SUSPENSION INQUIRY RECEIVED"
+      },
+      {
+        "date": "20150605",
+        "descriptionText": "SUSPENSION INQUIRY WRITTEN"
+      },
+      {
+        "date": "20150605",
+        "descriptionText": "INQUIRY TO SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20150605",
+        "descriptionText": "NOTIFICATION OF INQUIRY AS TO SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20141129",
+        "descriptionText": "SUSPENSION LETTER  WRITTEN"
+      },
+      {
+        "date": "20141129",
+        "descriptionText": "LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20141129",
+        "descriptionText": "NOTIFICATION OF LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20141110",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20141110",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20141110",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20141020",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20141020",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20141020",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20141017",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20140711",
+        "descriptionText": "NOTICE OF DESIGN SEARCH CODE E-MAILED"
+      },
+      {
+        "date": "20140710",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20140710",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      }
+    ],
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "The color(s) red, green, blue, white, yellow, and purple is/are claimed as a feature of the mark.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "The mark consists of a semi-circle fruit bowl design. The left side of the bowl design is striped green and white. The right side of the bowl design is striped blue and white. Inside the bowl various fruit representations, peppers in yellow with a green stem, a tomato in red with a green star on top, cucumber in green, eggplant with a green top, a white stripe divides the eggplant which is purple on the bottom and green on the top. Circles above the bowl various colors of red, green, and yellow. The term \"Eleven Rivers\", is at the bottom is in blue.",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Juan Carrasco 787 NorteColonia Centro, Culiacán, Sinaloa, MEXI",
+        "city": "Culiacán, Sinaloa",
+        "countryCode": "MX",
+        "countryName": "Mexico",
+        "jurisdictionOfIncorporation": "MEXICO",
+        "legalEntity": "CORPORATION",
+        "name": "CAADES SINALOA, A.C.",
+        "street": "Juan Carrasco 787 NorteColonia Centro,"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "Culiacán, Sinaloa, 80015, MEXI",
+        "city": "Culiacán, Sinaloa",
+        "countryCode": "MX",
+        "countryName": "Mexico",
+        "jurisdictionOfIncorporation": "MEXICO",
+        "legalEntity": "CORPORATION",
+        "name": "CAADES SINALOA, A.C.",
+        "postalCode": "80015",
+        "secondaryAddressUnit": "Juan Carrasco 787 NorteColonia Centro,"
+      },
+      {
+        "address": "Culiacán, Sinaloa, 80015, MEXI",
+        "city": "Culiacán, Sinaloa",
+        "countryCode": "MX",
+        "countryName": "Mexico",
+        "jurisdictionOfIncorporation": "MEXICO",
+        "legalEntity": "CORPORATION",
+        "name": "CAADES SINALOA, A.C.",
+        "postalCode": "80015",
+        "secondaryAddressUnit": "Juan Carrasco 787 NorteColonia Centro,"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "Juan Carrasco 787 NorteColonia Centro, Culiacán, Sinaloa, MEXI",
+        "city": "Culiacán, Sinaloa",
+        "countryCode": "MX",
+        "countryName": "Mexico",
+        "jurisdictionOfIncorporation": "MEXICO",
+        "legalEntity": "CORPORATION",
+        "name": "CAADES SINALOA, A.C.",
+        "street": "Juan Carrasco 787 NorteColonia Centro,"
+      }
+    ],
+    "priorities": [
+      {
+        "priorityApplicationDate": "20140402",
+        "priorityApplicationNumber": "86329497",
+        "priorityCountryCode": "MX",
+        "priorityCountryName": "Mexico"
+      },
+      {
+        "priorityApplicationDate": "20140402",
+        "priorityApplicationNumber": "1473241",
+        "priorityCountryCode": "MX",
+        "priorityCountryName": "Mexico"
+      },
+      {
+        "priorityCountryCode": "MX",
+        "priorityCountryName": "Mexico",
+        "priorityExpiryDate": "20240402",
+        "priorityRegistrationDate": "20140402",
+        "priorityRegistrationNumber": "1465943"
+      },
+      {
+        "priorityCountryCode": "MX",
+        "priorityCountryName": "Mexico",
+        "priorityExpiryDate": "20250227",
+        "priorityRegistrationDate": "20150227",
+        "priorityRegistrationNumber": "1519111"
+      }
+    ],
+    "recordLastUpdated": "20260902",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "10411 Motor City Drive, Bethesda, MD 20817, United States",
+        "representativeCorrespondentAddressLines": [
+          "10411 Motor City Drive",
+          "Bethesda, MD 20817",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Paula B. Mays, 750"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "10411 Motor City Drive, Bethesda, MD 20817, United States",
+        "representativeAddressLines": [
+          "10411 Motor City Drive",
+          "Bethesda, MD 20817",
+          "United States"
+        ],
+        "representativeName": "Paula B. Mays"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20140707",
+        "applicationNumber": "86329497"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED AND RENEWED",
+        "markOfficialStatusCode": "800",
+        "markOfficialStatusDate": "20260811",
+        "markOfficialStatusEvents": [
+          "Section 44(D)",
+          "Section 44(d) Filed",
+          "Section 44(e) Amended",
+          "Section 44(e) Currently",
+          "Color Drawing Filed",
+          "Color Drawing Currently"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20160517"
+      ],
+      "registration": {
+        "registrationDate": "20160802",
+        "registrationNumber": "5010503"
+      },
+      "renewalDate": "20260802"
+    },
+    "version": "20260902174415",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "11 RIVERS",
+      "markVerbalElementText": "ELEVEN RIVERS"
+    }
+  },
+  "_uri": "/mark/us/213cee00-ad63-4bdf-bba1-13b9383b6821",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.196Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

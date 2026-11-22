@@ -1,0 +1,106 @@
+{
+  "uri": "/mark/kr/7a569424-5122-497c-8a34-72ee122d0ad5",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "7a569424-5122-497c-8a34-72ee122d0ad5",
+  "applicationNumber": "40-2025-0024732",
+  "registrationNumber": null,
+  "applicationDate": "2025-02-18",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "Evenring",
+  "markTransliteration": "Evenring",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "금융거래 전자이체용 암호화 카드, 금융거래취급에 관한 컴퓨터 소프트웨어, 내려받기 가능한 전자지갑, 내려받기 가능한 전자화폐용 소프트웨어, 대체 불가능한 토큰 으로 인증된 다운로드 가능한 디지털 파일, 대체불가능한 토큰 주조용 내려받기 가능한 컴퓨터 소프트웨어 애플리케이션, 딥러닝 분야의 데이터 수집/분석 및 정리를 위한 다운로드 가능한 컴퓨터 소프트웨어, 블록체인기술에 사용되는 암호화폐 거래관리용 내려받기 가능한 컴퓨터 소프트웨어, 애플리케이션 및 데이터베이스 통합용 컴퓨터 소프트웨어, 컴퓨터 전자 상거래 소프트웨어",
+      "translation_language": "en",
+      "translation": "Financial transaction electronic encryption card, computer software for financial transaction handling, downloadable electronic wallet, downloadable electronic rich software, downloadable digital files certified with not replacement tokens Software application, Downloadable computer software for data collection/analysis and cleanup in deep learning field, computer software, application and database integration computer software, computer e -commerce software used in blockchain technology"
+    }
+  ],
+  "owner": "CHO GI HUN",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 관악구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "CHO GI HUN",
+        "applicantNativeName": "조기훈"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Financial transaction electronic encryption card, computer software for financial transaction handling, downloadable electronic wallet, downloadable electronic rich software, downloadable digital files certified with not replacement tokens Software application, Downloadable computer software for data collection/analysis and cleanup in deep learning field, computer software, application and database integration computer software, computer e -commerce software used in blockchain technology",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "금융거래 전자이체용 암호화 카드, 금융거래취급에 관한 컴퓨터 소프트웨어, 내려받기 가능한 전자지갑, 내려받기 가능한 전자화폐용 소프트웨어, 대체 불가능한 토큰 으로 인증된 다운로드 가능한 디지털 파일, 대체불가능한 토큰 주조용 내려받기 가능한 컴퓨터 소프트웨어 애플리케이션, 딥러닝 분야의 데이터 수집/분석 및 정리를 위한 다운로드 가능한 컴퓨터 소프트웨어, 블록체인기술에 사용되는 암호화폐 거래관리용 내려받기 가능한 컴퓨터 소프트웨어, 애플리케이션 및 데이터베이스 통합용 컴퓨터 소프트웨어, 컴퓨터 전자 상거래 소프트웨어"
+        }
+      ]
+    },
+    "id": "7a569424-5122-497c-8a34-72ee122d0ad5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250218",
+        "applicationNumber": "40-2025-0024732"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLIED"
+    },
+    "version": "20250625222107",
+    "wordMarkSpecification": {
+      "markTransliteration": "Evenring",
+      "markVerbalElementText": "Evenring"
+    }
+  },
+  "_uri": "/mark/kr/7a569424-5122-497c-8a34-72ee122d0ad5",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.194Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

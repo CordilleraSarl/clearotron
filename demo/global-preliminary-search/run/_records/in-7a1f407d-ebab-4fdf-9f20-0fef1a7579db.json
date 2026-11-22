@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/in/7a1f407d-ebab-4fdf-9f20-0fef1a7579db",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "7a1f407d-ebab-4fdf-9f20-0fef1a7579db",
+  "applicationNumber": "4276345",
+  "registrationNumber": null,
+  "applicationDate": "2019-08-27",
+  "registrationDate": null,
+  "expiryDate": "2029-08-27",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SEVEN RIVERS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Scientific, research, navigation, surveying, photographic, cinematographic, audiovisual, optical, weighing, measuring, signalling, detecting, testing, inspecting, life-saving and teaching apparatus and instruments; Apparatus and instruments for conducting, switching, transforming, accumulating, regulating or controlling the distribution or use of electricity; Apparatus and instruments for recording, transmitting, reproducing or processing sound, images or data; Recorded and downloadable media, computer software, blank digital or analogue recording and storage media; Mechanisms for coin-operated apparatus; Cash registers, calculating devices; Computers and computer peripheral devices; Diving suits, divers' masks, ear plugs for divers, nose clips for divers and swimmers, gloves for divers, breathing apparatus for underwater swimming; Fire-extinguishing apparatus.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "ANHEUSER BUSCH INBEV INDIA LIMITED Body Incorporate",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "ANAND AND ANAND.[295]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Unit No 301-302, Third Floor, Dynasty Business Park, B Wing, Andheri Kurla Road, Andheri (East), Mumbai-40005",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "ANHEUSER BUSCH INBEV INDIA LIMITED Body Incorporate"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scientific, research, navigation, surveying, photographic, cinematographic, audiovisual, optical, weighing, measuring, signalling, detecting, testing, inspecting, life-saving and teaching apparatus and instruments; Apparatus and instruments for conducting, switching, transforming, accumulating, regulating or controlling the distribution or use of electricity; Apparatus and instruments for recording, transmitting, reproducing or processing sound, images or data; Recorded and downloadable media, computer software, blank digital or analogue recording and storage media; Mechanisms for coin-operated apparatus; Cash registers, calculating devices; Computers and computer peripheral devices; Diving suits, divers' masks, ear plugs for divers, nose clips for divers and swimmers, gloves for divers, breathing apparatus for underwater swimming; Fire-extinguishing apparatus."
+        }
+      ]
+    },
+    "id": "7a1f407d-ebab-4fdf-9f20-0fef1a7579db",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1938"
+      }
+    ],
+    "recordLastUpdated": "20250710",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "B-41,NIZAMUDDIN EAST, NEW DELHI - 110 013.",
+        "representativeName": "ANAND AND ANAND.[295]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190827",
+        "applicationNumber": "4276345"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290827",
+      "markCurrentStatus": "REGISTERED"
+    },
+    "version": "20250710144643",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SEVEN RIVERS"
+    }
+  },
+  "_uri": "/mark/in/7a1f407d-ebab-4fdf-9f20-0fef1a7579db",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.176Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,317 @@
+{
+  "uri": "/mark/us/b9ec89b8-adcd-4c9b-9ad5-7d9a73d5cc2f",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "b9ec89b8-adcd-4c9b-9ad5-7d9a73d5cc2f",
+  "applicationNumber": "98746729",
+  "registrationNumber": "8153879",
+  "applicationDate": "2024-09-12",
+  "registrationDate": "2026-02-24",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2025-04-15"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "HAVEN RIVER RANCH",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Audio books in the field of series of fictional novels; Downloadable e-books in the field of series of fictional novels",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": null,
+      "description": "INT. CL. 16 Series of printed fiction works, namely, novels and books",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Devney Perry LLC",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "LAUREN BETH EMERSON",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "PO Box 273, Valleyford, WA, 99036, USAM",
+        "applicantAddressCity": "Valleyford",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "99036",
+        "applicantAddressStateName": "WASHINGTON",
+        "applicantAddressStreet": "PO Box 273",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "Devney Perry LLC"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Audio books in the field of series of fictional novels; Downloadable e-books in the field of series of fictional novels"
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsServicesDescription": "INT. CL. 16 Series of printed fiction works, namely, novels and books"
+        }
+      ]
+    },
+    "id": "b9ec89b8-adcd-4c9b-9ad5-7d9a73d5cc2f",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260224",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20260224",
+        "descriptionText": "NOTICE OF REGISTRATION CONFIRMATION EMAILED"
+      },
+      {
+        "date": "20260203",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20260203",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF STATEMENT OF USE E-MAILED"
+      },
+      {
+        "date": "20260116",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20260116",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20250711",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20250711",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20250623",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20250623",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20250623",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20250610",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20250415",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20250415",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20250409",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20250318",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20250312",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20240912",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20240912",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "PO Box 273, Valleyford, WA, 99036, USAM",
+        "city": "Valleyford",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Devney Perry LLC",
+        "postalCode": "99036",
+        "stateName": "WASHINGTON",
+        "street": "PO Box 273"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "PO Box 273, Valleyford, WA, 99036, USAM",
+        "city": "Valleyford",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Devney Perry LLC",
+        "postalCode": "99036",
+        "stateName": "WASHINGTON",
+        "street": "PO Box 273"
+      },
+      {
+        "address": "PO Box 273, Valleyford, WA, 99036, USAM",
+        "city": "Valleyford",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Devney Perry LLC",
+        "postalCode": "99036",
+        "stateName": "WASHINGTON",
+        "street": "PO Box 273"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "PO Box 273, Valleyford, WA, 99036, USAM",
+        "city": "Valleyford",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Devney Perry LLC",
+        "postalCode": "99036",
+        "stateName": "WASHINGTON",
+        "street": "PO Box 273"
+      }
+    ],
+    "recordLastUpdated": "20260226",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "White Plains, NY 10601, United States",
+        "representativeCorrespondentAddressLines": [
+          "White Plains, NY 10601",
+          "United States"
+        ],
+        "representativeCorrespondentName": "LAUREN BETH EMERSON LEASON ELLIS LLP, One North Lexington Ave., Suite 1200"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "White Plains, NY 10601, United States",
+        "representativeAddressLines": [
+          "White Plains, NY 10601",
+          "United States"
+        ],
+        "representativeName": "LAUREN BETH EMERSON"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240912",
+        "applicationNumber": "98746729"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20240604"
+        },
+        {
+          "firstUsedClass": "16",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20240604"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20240604"
+        },
+        {
+          "firstUsedCommerceClass": "16",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20240604"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20260224",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20250415"
+      ],
+      "registration": {
+        "registrationDate": "20260224",
+        "registrationNumber": "8153879"
+      }
+    },
+    "version": "20260226074001",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "HAVEN RIVER RANCH"
+    }
+  },
+  "_uri": "/mark/us/b9ec89b8-adcd-4c9b-9ad5-7d9a73d5cc2f",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.199Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

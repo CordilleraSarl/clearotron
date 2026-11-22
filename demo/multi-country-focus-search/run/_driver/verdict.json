@@ -1,24 +1,30 @@
 {
-  "ts": "2026-09-18T14:58:01.709Z",
+  "ts": "2026-11-20T21:14:06.344Z",
   "verdict": "CONDITIONAL",
   "reasons": [
-    "Resolve the pending ENQOR applications before filing either form in South Korea; the use check did not confirm Align Networks Inc.'s ENQOR use."
+    "the lawyer judged a material slice not fully cleared: The unassessed local spellings could conceal close Japanese or Korean names for the company's software and training.",
+    "the blind frame-diff flagged a dominant-element omission the reopen pass did not close",
+    "register coverage deferred on primary-sweep — the search did not finish and must be re-run before this can be relied on"
   ],
   "clauses": [
-    "Pending ENQOR applications cover mobile apps and SaaS, and the use check did not confirm Align Networks Inc.'s current ENQOR use."
+    null,
+    null,
+    "register coverage deferred — the search did not finish and must be re-run before this can be relied on"
   ],
   "kinds": {
-    "legalActions": true
+    "coverage": true,
+    "frame": true,
+    "registerGap": true
   },
-  "tier": "Moderate",
-  "badge": "l3",
-  "gaugeIndex": 2,
+  "tier": "Manageable",
+  "badge": "l2",
+  "gaugeIndex": 1,
   "maxComposite": 0,
   "band": {
-    "label": "Moderate",
-    "rankFromTop": 3,
+    "label": "Manageable",
+    "rankFromTop": 4,
     "scale": 4
   },
-  "statement": "Moderate — conditional on: Pending ENQOR applications cover mobile apps and SaaS, and the use check did not confirm Align Networks Inc.'s current ENQOR use.",
+  "statement": "Manageable — conditional on: Register coverage deferred — the search did not finish and must be re-run before this can be relied on.",
   "stance": "conditional"
 }

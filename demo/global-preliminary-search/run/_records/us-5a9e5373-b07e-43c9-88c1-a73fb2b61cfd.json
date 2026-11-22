@@ -93,6 +93,18 @@
     "ipRightKind": "tmk",
     "markEvents": [
       {
+        "date": "20261011",
+        "descriptionText": "NON-FINAL ACTION (IB REFUSAL) PREPARED FOR REVIEW"
+      },
+      {
+        "date": "20261010",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20260918",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
         "date": "20260717",
         "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
       },
@@ -130,7 +142,7 @@
         "street": "Forskargatan 3"
       }
     ],
-    "recordLastUpdated": "20260720",
+    "recordLastUpdated": "20261015",
     "registrationOfficeCode": "US",
     "registrationOfficeName": "USPTO",
     "status": {
@@ -141,18 +153,19 @@
       },
       "cmNormalisedStatus": "PENDING",
       "ipOffice": {
-        "markOfficialStatus": "NEW APPLICATION - RECORD INITIALIZED NOT ASSIGNED TO EXAMINER",
-        "markOfficialStatusCode": "630",
-        "markOfficialStatusDate": "20260709",
+        "markOfficialStatus": "NON-FINAL ACTION COUNTED - NOT MAILED",
+        "markOfficialStatusCode": "640",
+        "markOfficialStatusDate": "20261010",
         "markOfficialStatusEvents": [
           "Section 66(a) (Madrid Protocol) - Filed",
           "Section 66(a) (Madrid Protocol) - Current",
-          "International Priority Claimed"
+          "International Priority Claimed",
+          "Notice of First Refusal"
         ]
       },
       "markCurrentStatus": "PENDING"
     },
-    "version": "20260720061100",
+    "version": "20261015130959",
     "wordMarkSpecification": {
       "markVerbalElementCrossReferences": "VEN CORE",
       "markVerbalElementText": "VENCORE"
@@ -160,7 +173,7 @@
   },
   "_uri": "/mark/us/5a9e5373-b07e-43c9-88c1-a73fb2b61cfd",
   "_receipt": {
-    "fetched_at": "2026-09-18T12:41:45.630Z",
+    "fetched_at": "2026-11-20T19:48:13.922Z",
     "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
   }
 }

@@ -1,0 +1,116 @@
+{
+  "uri": "/mark/gb/8afa3b96-c5d4-4fc2-8fde-831e69ad1ae4",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "8afa3b96-c5d4-4fc2-8fde-831e69ad1ae4",
+  "applicationNumber": "4443196",
+  "registrationNumber": null,
+  "applicationDate": "2026-09-10",
+  "registrationDate": null,
+  "expiryDate": "2036-09-10",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "SevenCoRain",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Downloadable applications for mobile devices;Software for smartphones;Downloadable computer software applications;Downloadable computer software;Downloadable computer software for the management of data;Weighing scales;Portable digital electronic scales;Network monitoring cameras;Videocameras [camcorders];Network communication apparatus;Two-way wireless communication systems;Wearable activity trackers;Wearable computers;Smartwatches;Smart rings;Wristband computer devices;Electronic measurement sensors;Electrical controllers;Computer hardware;Data communications hardware.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Shenzhen Saiwenkarun Intelligent Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": "James Anderson",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Unit 289O, 2F, Bldg 523, Bagualing Industrial Zone, Bagua 3rd Rd, Hualin Community, Yuanling Subdistrict, Futian District, Shenzhen 518000",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Saiwenkarun Intelligent Technology Co., Ltd."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Downloadable applications for mobile devices;Software for smartphones;Downloadable computer software applications;Downloadable computer software;Downloadable computer software for the management of data;Weighing scales;Portable digital electronic scales;Network monitoring cameras;Videocameras [camcorders];Network communication apparatus;Two-way wireless communication systems;Wearable activity trackers;Wearable computers;Smartwatches;Smart rings;Wristband computer devices;Electronic measurement sensors;Electrical controllers;Computer hardware;Data communications hardware."
+        }
+      ]
+    },
+    "id": "8afa3b96-c5d4-4fc2-8fde-831e69ad1ae4",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "2026/039"
+      }
+    ],
+    "recordLastUpdated": "20261001",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Unit 149577, PO Box 7169, Poole, Dorset BH15 9EL",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "James Anderson"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260910",
+        "applicationNumber": "4443196"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20360910",
+      "markCurrentStatus": "ADVERTISED"
+    },
+    "version": "20261001120005",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SevenCoRain"
+    }
+  },
+  "_uri": "/mark/gb/8afa3b96-c5d4-4fc2-8fde-831e69ad1ae4",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:13.925Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

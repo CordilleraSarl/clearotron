@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/xs/fb51839c-9330-4f90-b031-36d8f3eb3ac7",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "fb51839c-9330-4f90-b031-36d8f3eb3ac7",
+  "applicationNumber": null,
+  "registrationNumber": "9204626",
+  "applicationDate": null,
+  "registrationDate": "2021-02-16",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "LOVE'''''N RICH'''N''''''",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Life skills",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Life skills",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "JADID-ALAM ORGAN",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "4424 E BASELINE RD, PHOENIX, AZ, 85042",
+        "applicantAddressCity": "PHOENIX",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "85042",
+        "applicantAddressStateName": "ARIZONA",
+        "applicantAddressStreet": "4424 E BASELINE RD",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "JADID-ALAM ORGAN",
+        "applicantPhoneNumber": "602-434-0626"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Life skills"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Life skills"
+        }
+      ]
+    },
+    "id": "fb51839c-9330-4f90-b031-36d8f3eb3ac7",
+    "ipRightKind": "tmk",
+    "kindMark": "TRADENAME",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "4424 E BASELINE RD, PHOENIX, AZ, 85042",
+        "city": "PHOENIX",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "INDIVIDUAL",
+        "name": "JADID-ALAM ORGAN",
+        "phoneNumber": "602-434-0626",
+        "postalCode": "85042",
+        "stateName": "ARIZONA",
+        "street": "4424 E BASELINE RD"
+      }
+    ],
+    "recordLastUpdated": "20241213",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsedAnywhereDate": "20210216",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "REGISTERED"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20210216",
+        "registrationNumber": "9204626"
+      }
+    },
+    "usStateOfficeCode": "AZ",
+    "usStateOfficeName": "ARIZONA",
+    "version": "20241213181150",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "LOVE N RICH N, LOVING RICH N, LOVE AND RICH AND",
+      "markVerbalElementText": "LOVE'''''N RICH'''N''''''"
+    }
+  },
+  "_uri": "/mark/xs/fb51839c-9330-4f90-b031-36d8f3eb3ac7",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.190Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,20 +1,29 @@
 {
-  "ts": "2026-09-18T13:39:41.268Z",
+  "ts": "2026-11-20T20:47:10.839Z",
   "verdict": "CONDITIONAL",
   "reasons": [
-    "Resolve Align Networks' Korean ENQOR applications before filing or launching VENQORI in South Korea.",
-    "Resolve Yiwu Tengding's Japanese VENKURI right before filing or launching VENKURI in Japan.",
-    "Identify the QUORI App's owner and function before treating the app-store result as cleared.",
-    "floor_duty_undischarged:4 of 22 floor row(s) — every floor is a LIVE in-class identical or near-identical record and the duty is uncapped: each is placed at any tier, or named by its record id with a one-line ground. These came back neither: VENKURI (/mark/cn/817a4fcd-a0f3-4048-b0de-2d9b598ca7f5); VENKURI (/mark/cn/90eef81e-2b6f-4f84-8b9f-ac78dd65a11f); QORIQ (/mark/in/a4a7d356-5f02-4a72-be2c-e6aca1628c45); QORIQ (/mark/mx/da914964-05ca-4122-a2a9-480f56deb3f1). The report ships with these named rather than being withheld."
+    "Obtain Vencora's consent for the proposed UK water-training use.",
+    "Obtain a Chinese opinion on 文科里 if that name is selected for launch.",
+    "Establish Vennory's earlier rights and reach for environmental apps in the intended launch markets.",
+    "Obtain Venezuelan and Guatemalan opinions on the unresolved scope of the earlier rights.",
+    "the lawyer judged a material slice not fully cleared: The unanswered Japanese and Korean local-name marketplace questions and unresolved close-name product scopes prevent a clean conclusion for the proposed app and teaching.",
+    "follow-ups left open this run: water and environmental technology directories, trade exhibitions, specialist publications and integrators, public procurement portals, utility tenders and supplier catalogues, microsoft software marketplaces and desktop download or vendor portals",
+    "register coverage deferred on primary-sweep, transliteration-numeric — the search did not finish and must be re-run before this can be relied on"
   ],
   "clauses": [
-    "Align Networks' three ENQOR applications remain pending on the Korean record searched.",
-    "Yiwu Tengding's identical VENKURI registration is live on the Japanese record searched.",
-    "The app-store receipt does not identify the proprietor or the app's function.",
-    "4 of the 22 live registrations identical or near-identical to the mark are not individually addressed in this report — each remains an open point a reader must weigh"
+    "No consent covering the proposed UK water-training use appears on the record searched.",
+    "Obtain a Chinese opinion on 文科里 if that name is selected for launch.",
+    "Whether consumers recognised Vennory's app-store name as identifying that business before the company’s use, and its territorial reach, remain unresolved.",
+    "Both separately recorded Venezuelan signs' scope and status, and VENCORP's scope remain unresolved.",
+    null,
+    null,
+    "register coverage deferred — the search did not finish and must be re-run before this can be relied on"
   ],
   "kinds": {
-    "legalActions": true
+    "legalActions": true,
+    "coverage": true,
+    "frame": true,
+    "registerGap": true
   },
   "tier": "Moderate",
   "badge": "l3",
@@ -25,6 +34,6 @@
     "rankFromTop": 3,
     "scale": 4
   },
-  "statement": "Moderate — conditional on: Align Networks' three ENQOR applications remain pending on the Korean record searched (and 3 more).",
+  "statement": "Moderate — conditional on: No consent covering the proposed UK water-training use appears on the record searched (and 4 more).",
   "stance": "conditional"
 }

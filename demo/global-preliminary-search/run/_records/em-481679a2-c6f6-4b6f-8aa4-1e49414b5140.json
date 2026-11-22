@@ -4,9 +4,9 @@
   "office": "em",
   "guid": "481679a2-c6f6-4b6f-8aa4-1e49414b5140",
   "applicationNumber": "19368837",
-  "registrationNumber": null,
+  "registrationNumber": "19368837",
   "applicationDate": "2026-05-22",
-  "registrationDate": null,
+  "registrationDate": "2026-09-27",
   "expiryDate": "2036-05-22",
   "renewalDate": null,
   "lastPublicationDate": "2026-06-19",
@@ -14,7 +14,7 @@
   "abandonmentDate": null,
   "cancellationDate": null,
   "statusClass": "live",
-  "statusText": "PENDING",
+  "statusText": "REGISTERED",
   "markText": "VENCORE",
   "markTransliteration": null,
   "markTranslation": null,
@@ -390,7 +390,7 @@
         "publicationVolume": "114"
       }
     ],
-    "recordLastUpdated": "20260918",
+    "recordLastUpdated": "20261006",
     "registrationOfficeCode": "EM",
     "registrationOfficeName": "EU trade marks",
     "representatives": [
@@ -408,19 +408,23 @@
         "applicationDate": "20260522",
         "applicationNumber": "19368837"
       },
-      "cmNormalisedStatus": "PENDING",
+      "cmNormalisedStatus": "REGISTERED",
       "expiryDate": "20360522",
       "lastPublicationDate": "20260619",
-      "markCurrentStatus": "APPLICATION PUBLISHED"
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20260927",
+        "registrationNumber": "19368837"
+      }
     },
-    "version": "20260918013221",
+    "version": "20261006173004",
     "wordMarkSpecification": {
       "markVerbalElementText": "VENCORE"
     }
   },
   "_uri": "/mark/em/481679a2-c6f6-4b6f-8aa4-1e49414b5140",
   "_receipt": {
-    "fetched_at": "2026-09-18T12:41:45.630Z",
+    "fetched_at": "2026-11-20T19:48:13.893Z",
     "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
   }
 }

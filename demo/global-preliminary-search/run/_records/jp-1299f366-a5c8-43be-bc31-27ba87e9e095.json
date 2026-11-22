@@ -1,0 +1,169 @@
+{
+  "uri": "/mark/jp/1299f366-a5c8-43be-bc31-27ba87e9e095",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "1299f366-a5c8-43be-bc31-27ba87e9e095",
+  "applicationNumber": "H09-176662",
+  "registrationNumber": "4280850",
+  "applicationDate": "1997-11-14",
+  "registrationDate": "1999-06-04",
+  "expiryDate": "2009-06-04",
+  "renewalDate": null,
+  "lastPublicationDate": "1999-08-05",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＶＥＮＲＩ",
+  "markTransliteration": "BENRI",
+  "markTranslation": "VENRI",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "配電用又は制御用の機械器具，回転変流機，調相機，電池，電気磁気測定器，電線及びケーブル，眼鏡，電気通信機械器具，磁心，抵抗線，電極，映写フィルム，スライドフィルム，スライドフィルム用マウント，録画済みビデオディスク及びビデオテープ",
+      "translation_language": "en",
+      "translation": "Electrical current measuring equipment, electric wire and cable, spectacles, telecommunication equipment, magnetic core, resistance wire, electrode, projection film, slide film, slide film Mount, recorded video disk and video tape"
+    }
+  ],
+  "owner": "CANON INC.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "MARUJIMA GIICHI",
+  "priorities": [
+    {
+      "priorityDate": "19971114"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "OTA TOKYO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "CANON INC.",
+        "applicantNativeAddress": "東京都大田区下丸子３丁目３０番２号",
+        "applicantNativeName": "キヤノン株式会社"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electrical current measuring equipment, electric wire and cable, spectacles, telecommunication equipment, magnetic core, resistance wire, electrode, projection film, slide film, slide film Mount, recorded video disk and video tape",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "配電用又は制御用の機械器具，回転変流機，調相機，電池，電気磁気測定器，電線及びケーブル，眼鏡，電気通信機械器具，磁心，抵抗線，電極，映写フィルム，スライドフィルム，スライドフィルム用マウント，録画済みビデオディスク及びビデオテープ"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11A01",
+          "natGoodsServicesDescription": "Electrical distribution or control machines, Rotary converters, Phase modifiers"
+        },
+        {
+          "natClassNumber": "11A03",
+          "natGoodsServicesDescription": "Batteries"
+        },
+        {
+          "natClassNumber": "11A04",
+          "natGoodsServicesDescription": "Electric or magnetic measuring machines and instruments"
+        },
+        {
+          "natClassNumber": "11A05",
+          "natGoodsServicesDescription": "Electric wires and cables"
+        },
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Electrical communication apparatus and instruments"
+        },
+        {
+          "natClassNumber": "11D01",
+          "natGoodsServicesDescription": "Magnetic cores, Resistance wires, Electrodes"
+        },
+        {
+          "natClassNumber": "23B01",
+          "natGoodsServicesDescription": "Eyeglasses"
+        },
+        {
+          "natClassNumber": "24E02"
+        },
+        {
+          "natClassNumber": "26D01",
+          "natGoodsServicesDescription": "Cinematographic films, Slide films, Transparencies, Prerecorded videodiscs or tapes"
+        }
+      ]
+    },
+    "id": "1299f366-a5c8-43be-bc31-27ba87e9e095",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19971114"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "MARUJIMA GIICHI",
+        "representativeNativeName": "丸島　儀一"
+      },
+      {
+        "representativeName": "NISHIYAMA KEIZO",
+        "representativeNativeName": "西山　恵三"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19971114",
+        "applicationNumber": "H09-176662"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20090604",
+      "lastPublicationDate": "19990805",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "19990604",
+        "registrationNumber": "4280850"
+      }
+    },
+    "version": "20240321111903",
+    "wordMarkSpecification": {
+      "markTranslation": "VENRI",
+      "markTransliteration": "BENRI",
+      "markVerbalElementText": "ＶＥＮＲＩ"
+    }
+  },
+  "_uri": "/mark/jp/1299f366-a5c8-43be-bc31-27ba87e9e095",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.184Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

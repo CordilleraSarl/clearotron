@@ -1,0 +1,257 @@
+{
+  "uri": "/mark/us/0e411ba6-5ad8-43f3-81b0-b931ca20fd78",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "0e411ba6-5ad8-43f3-81b0-b931ca20fd78",
+  "applicationNumber": "99148041",
+  "registrationNumber": null,
+  "applicationDate": "2025-04-21",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2025-11-18"
+  ],
+  "abandonmentDate": "2026-08-17",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "RESET & RISE - RESET DRIVEN. RISE FUELED.",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": [
+    "\"RESET & RISE\""
+  ],
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Personal coaching services in the field of health, wellness, fitness, and nutrition",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Damareis J Lewis",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "5440 N Sheridan Road, Chicago, IL, 60640, USAM",
+        "applicantAddressCity": "Chicago",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "60640",
+        "applicantAddressStateName": "ILLINOIS",
+        "applicantAddressStreet": "5440 N Sheridan Road",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Damareis J Lewis",
+        "applicantSecondaryAddressUnit": "218"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Personal coaching services in the field of health, wellness, fitness, and nutrition"
+        }
+      ]
+    },
+    "id": "0e411ba6-5ad8-43f3-81b0-b931ca20fd78",
+    "ipRightKind": "tmk",
+    "markDisclaimers": [
+      "\"RESET & RISE\""
+    ],
+    "markEvents": [
+      {
+        "date": "20260817",
+        "descriptionText": "ABANDONMENT - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20260817",
+        "descriptionText": "ABANDONMENT NOTICE E-MAILED - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20260113",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20251118",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20251118",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20251112",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20251017",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20250922",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20250922",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20250922",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20250922",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20250915",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20250828",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20250421",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20250421",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "5440 N Sheridan Road, Chicago, IL, 60640, USAM",
+        "city": "Chicago",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Damareis J Lewis",
+        "postalCode": "60640",
+        "secondaryAddressUnit": "218",
+        "stateName": "ILLINOIS",
+        "street": "5440 N Sheridan Road"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "5440 N Sheridan Road, Chicago, IL, 60640, USAM",
+        "city": "Chicago",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Damareis J Lewis",
+        "postalCode": "60640",
+        "secondaryAddressUnit": "218",
+        "stateName": "ILLINOIS",
+        "street": "5440 N Sheridan Road"
+      },
+      {
+        "address": "5440 N Sheridan Road, Chicago, IL, 60640, USAM",
+        "city": "Chicago",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Damareis J Lewis",
+        "postalCode": "60640",
+        "secondaryAddressUnit": "218",
+        "stateName": "ILLINOIS",
+        "street": "5440 N Sheridan Road"
+      }
+    ],
+    "recordLastUpdated": "20260818",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "218, Chicago, IL 60640, United States",
+        "representativeCorrespondentAddressLines": [
+          "218",
+          "Chicago, IL 60640",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Damareis J Lewis, 5440 N Sheridan Road"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "218, Chicago, IL 60640, United States",
+        "representativeAddressLines": [
+          "218",
+          "Chicago, IL 60640",
+          "United States"
+        ]
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20260817",
+      "active": false,
+      "application": {
+        "applicationDate": "20250421",
+        "applicationNumber": "99148041"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-NO STATEMENT OF USE FILED",
+        "markOfficialStatusCode": "606",
+        "markOfficialStatusDate": "20260817",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED",
+      "publicationDate": [
+        "20251118"
+      ]
+    },
+    "version": "20260818104002",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "RESET & RISE  RESET DRIVEN RISE FUELED, RESET AND RISE  RESET DRIVEN RISE FUELED",
+      "markVerbalElementText": "RESET & RISE - RESET DRIVEN. RISE FUELED."
+    }
+  },
+  "_uri": "/mark/us/0e411ba6-5ad8-43f3-81b0-b931ca20fd78",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.200Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

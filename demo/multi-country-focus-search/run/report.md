@@ -5,76 +5,64 @@ title: VENQORI
 client: Demo Brand Owner
 use: Downloadable software for water-quality monitoring with online training services attached
 classes: 9, 42, 41
-run: 2026-09-18 · Clarivate Compumark + common-law
-overall_label: Moderate
-overall_badge: l3
-overall_caption: Moderate risk: Align Networks Inc.'s pending ENQOR applications are likely to obstruct both forms in South Korea, with a stronger case against VENQORI, because their mobile-app and SaaS services overlap. Reliance remains conditional because the mixed-Greek and mixed-Cyrillic exact forms, Vencora owner identity and the material water-software field remain unsearched.
-handling_note: Open third-party web links only in a private browser window.
-coverage_line: Classes 9 and 42: 75 of 82 searches completed — of the remaining 7, 2 are non-Latin script forms and 5 returned more records than could be listed in full · 8 oversized result sets were counted rather than listed; Class 41: 73 of 80 searches completed — of the remaining 7, 2 are non-Latin script forms and 5 returned more records than could be listed in full · 8 oversized result sets were counted rather than listed · registers: JP, KR, WO
-rated_under: Demo Brand Owner · generic default framework
+run: 2026-11-20 · Clarivate Compumark + common-law
+overall_label: Manageable
+overall_badge: l2
+overall_caption: VENQORI presents Manageable risk: YIWU TENGDING’s Latin-script Ｖｅｎｋｕｒｉ registration poses a Japanese obstacle for related electronics. Unsearched Japanese and Korean spellings could conceal closer rights for the company’s software and instruction.
+coverage_line: Classes 9 and 42: 48 of 49 searches completed — the remaining 1 is a non-Latin script form; Class 41: 47 of 48 searches completed — the remaining 1 is a non-Latin script form · registers: JP, KR, WO
+rated_under: Demo Brand Owner · Standard risk scale
 run_under_project: Japan and Korea app launch (Demo Brand Owner)
 origins_json: [{"field":"Marketplaces","value":"16 stores + web","origin":"customer+project"},{"field":"Default classes","value":"9, 42","origin":"project"},{"field":"Default jurisdictions","value":"JP, KR","origin":"project"},{"field":"Marketplace density","value":"sparse","origin":"project"},{"field":"Delivery format","value":"summary, privileged","origin":"project"},{"field":"Risk posture","value":"set","origin":"project"},{"field":"Sector","value":"consumer mobile app for water-quality readings,…","origin":"project"}]
-envelope_note: floor work still open at delivery: primary-sweep / exact: vεηqοrι [cl 9, 42, 41]; primary-sweep / exact: vеnqоri [cl 9, 42, 41]; primary-sweep / Vencora owner-identity check — still recorded open after the in-loop close attempt (see envelope events in the run log)
+envelope_note: These searches cannot be carried out because the register does not support this kind of search; no run can close this gap.
 ---
 
-### Reviewer's open questions
+# Left open
 
-**The independent reviewer raised the points below, and this report does not show them closed.** Each was put back to the drafting pass; what the run could establish about each one is noted against it. They are open questions for the reviewing lawyer's judgment — not conditions for you to satisfy, and not steps that complete the work.
+**Partially covered (2)**
 
-- [Open question] narrative.md, “ENQOR is the only earlier sign whose registered digital goods meet the proposed app and hosted service” misstates three pending Korean applications as registrations; band_record confirms PENDING status and no registration number for all three ENQOR records. *(finding 1 — the report did not change in response)*
-- [Open question] narrative.md, Coverage uses engine-only labels and nouns in “The broad wildcard and owner-portfolio counts...” and the rows “primary-sweep,” “transliteration-numeric,” “incumbent-class,” and “saturation-probe,” leaving the client to decode the search machinery. *(the run could not check whether this was addressed)*
+- **Japanese and Korean marketplace coverage**: Local-language results were noisy and sometimes language-mismatched, so they do not establish local marketplace absence.
+- **Japanese-script and Korean-script register equivalents (JP / KR)**: Japanese-script and Korean-script same-meaning/phonetic register equivalents not searched on this search — The native-language investigation is offered on a Multi-country focus search and runs automatically on a Full country search.
 
-# Actions
+**Open item (6)**
 
-### Checks we ran — what we found
+- **Japan / further long-vowel and KW spellings**: No concrete alternative spellings were specified for these additional register questions.
+- **Follow-up / ヴェンコリー**: ヴェンコリー — not completed this run — the searches proposed for it could not be put to this register, so it was never searched
+- **Follow-up / ヴェンクォリ**: ヴェンクォリ — not completed this run — the searches proposed for it could not be put to this register, so it was never searched
+- **Follow-up / 벤쿼리**: 벤쿼리 — not completed this run — the searches proposed for it could not be put to this register, so it was never searched
+- **Follow-up / japanese long-vowel and kw alternatives**: japanese long-vowel and kw alternatives — not completed this run — no search could be built for it: the item names a category rather than a name a register can be searched for, so searching the wording literally would return nothing and read as clean, and it is left open here
+- **Follow-up / worldwide registers and related classes**: worldwide registers and related classes — not completed this run — the source it needed was not searched, so nothing is known about it either way
 
-- Current ENQOR use by Align Networks Inc. was not confirmed (perplexity_research: no result).
-- Japanese and Korean romanizations and the numeric-substitution form were searched and produced no on-point records.
-- The named water-sector owners were checked against VENQORI and no similar sign was returned.
-- The broad V…R search produced unrelated results, while the close-name searches identified the material candidates.
-- The apparel search found no identical VENQORI right.
+**Not searched (14)**
 
-### Only you can close these
-
-**Before you can rely on this result**
-
-- **[Before you can rely]** Resolve the pending ENQOR applications before filing either form in South Korea; the use check did not confirm Align Networks Inc.'s ENQOR use.
-
-**We need an answer from you**
-
-- **[Open question]** Identify the applicant and its affiliates so their own rights can be separated from third-party conflicts.
-- **[Open question]** Confirm whether either form will connect to or be bundled with sensors, test kits, purifiers or embedded hardware. (re: Ｖｅｎｋｕｒｉ (YIWU TENGDING UMBRELLA CO., LTD.); ＱＯＲＩＱ (NXP USA, INC.); +3 more)
-- **[Open question]** Confirm the exact Japanese and Korean display forms and the goods wording intended for each filing. (re: enqor (Align Networks Inc.); Ｖｅｎｋｕｒｉ (YIWU TENGDING UMBRELLA CO., LTD.))
+- **Japan / ベンコリ in Classes 9, 42 and 41**: Character searching was unsupported, and an equivalent completed spelling search is not established.
+- **Japan / ヴェンコリー and ヴェンクォリ**: The character queries were rejected because the register search uses romanised names.
+- **South Korea / 벤쿼리**: The character query was rejected because the register search uses romanised names.
+- **Professional and industrial water monitoring**: No additional search question was specified for this broader field; consumer-app conclusions do not clear it.
+- **Registers outside Japan and South Korea, and additional goods classes**: We did not extend the search worldwide or beyond Classes 9, 42 and 41. The request covers Japan and South Korea.
+- **Specialist water-industry directories and procurement**: These sources were not searched; professional procurement was outside the consumer-channel search.
+- **Developer ecosystems and package registries**: These sources were not searched; no developer-distribution product is stated.
+- **Cloud marketplaces and industrial integration catalogues**: These sources were not searched.
+- **Microsoft Store and specialist desktop-software directories**: These sources were not searched.
+- **Local technical-learning and professional communities**: These sources were not searched.
+- **Meaning-based and grammatical name variants**: Compound, translation, plural-root and other semantic families were omitted because no meaning or separable root is established.
+- **Other software fields and standalone treatment, reagent, retail or medical offerings**: Games, enterprise tools, specialist AI and these additional goods were omitted as separate fields, rather than cleared.
+- **The company's own prior rights**: We did not separately search for the applicant's own filings because the request does not identify the applicant.
+- **Local-script spellings**: No search in Katakana script was completed.
 
 # Marks
 
-## Align Networks Inc. — ENQOR
+## YIWU TENGDING UMBRELLA CO., LTD. — ＶＥＮＫＵＲＩ
 - ord: 1
 - open: true
-- net: Align Networks Inc.'s pending ENQOR applications are likely to obstruct both VENQORI and VENKORI in South Korea, with the case stronger against VENQORI.
+- net: YIWU TENGDING UMBRELLA CO., LTD.’s Ｖｅｎｋｕｒｉ would probably lose against VENQORI for water-quality software in Japan.
 - group: on-field
 - source: Register
 ### Full detail
 
-- **Risk assessment.** Against VENQORI, ENQOR is a close truncation and its mobile-app and SaaS wording directly overlaps the company’s digital goods. Against VENKORI, the Q/K difference weakens similarity, but the close sound pattern and the same digital goods mean Align Networks Inc. is still likely to win.
-- **Filing.** Align Networks Inc.’s ENQOR applications are pending; their recent filing leaves no established non-use defence.
-- **Enforcement.** The available signals do not establish Align Networks Inc.’s enforcement approach, and current ENQOR use was not confirmed by the use check.
-
-## YIWU TENGDING UMBRELLA CO., LTD. — ＶＥＮＫＵＲＩ
-- ord: 2
-- net: YIWU TENGDING UMBRELLA CO., LTD. is likely to lose against either proposed form in Japan on the current software-only goods.
-- group: on-field
-- source: Register
-### Full detail
-
-- **Risk assessment.** Although VENKURI is highly similar to VENKORI and moderately similar to VENQORI, YIWU TENGDING UMBRELLA CO., LTD. is likely to lose because its electronics goods do not meet the software-only goods.
-- **Portfolio.** YIWU TENGDING UMBRELLA CO., LTD. holds one Japanese registration for the Latin-script mark VENKURI, covering batteries, cameras, audio equipment, plugs, surveillance monitors and chargers.
-- **Enforcement.** On the available signals, the record provides no basis to regard YIWU TENGDING UMBRELLA CO., LTD. as an active enforcer.
+- **Risk assessment.** The similar Latin-script name covers surveillance apparatus with a monitor and other electronics, rather than downloadable software or instruction. Relatedness between devices and apps leaves a real risk to registration in Japan. That risk would increase if the app controls or accompanies monitoring hardware.
+- **Use.** The owner and mark search did not confirm Japanese use in the registered electronics or water-related software. This does not establish non-use, and no cancellation defence is assumed.
+- **Enforcement.** The search identified no public enforcement record. This does not establish that the owner would be unwilling to enforce its rights.
 
 # Reasoned negatives
 
-**The same name in a different commercial field** — 4 marks.
-- **#3 ＱＯＲＩＱ** — NXP USA, INC. · *NXP USA, INC.'s Japanese QORIQ registration for semiconductors and microprocessors does not reach either proposed software name.*
-- **#4 QORIQ** — NXP USA, Inc. · *NXP USA, Inc.'s Korean QORIQ registration for processors and integrated circuits does not reach either proposed software name.*
-- **#5 コアアイキュ－コンバ－ジ　ＱＯＲＩＱ　ＱＯＮＶＥＲＧＥ** — NXP USA, INC. · *NXP USA, INC.'s Japanese QORIQ QONVERGE registration for semiconductor hardware does not reach either proposed software name.*
-- **#6 QORIQ QONVERGE** — NXP USA, Inc. · *NXP USA, Inc.'s Korean QORIQ QONVERGE registration for semiconductor hardware does not reach either proposed software name.*
+None. Every retrieved close match on this run is an on-field conflict above — nothing was cleared into this section.

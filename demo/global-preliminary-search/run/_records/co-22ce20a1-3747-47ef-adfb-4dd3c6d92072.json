@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/co/22ce20a1-3747-47ef-adfb-4dd3c6d92072",
+  "provider": "clarivate",
+  "office": "co",
+  "guid": "22ce20a1-3747-47ef-adfb-4dd3c6d92072",
+  "applicationNumber": "SD20210100817",
+  "registrationNumber": "707430",
+  "applicationDate": "2021-10-22",
+  "registrationDate": "2022-05-26",
+  "expiryDate": "2032-05-26",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "S7N Seven Rivas",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "servicios de composición musical; servicios de compositores y autores de música; organización y dirección de conciertos; organización y dirección de conciertos de música; servicios de disc - jockey; servicios de disc - jockey para fiestas y eventos especiales; servicios de pinchadiscos; servicios de pinchadiscos para fiestas y eventos especiales; servicios de estudios de grabación; servicios de estudios de grabación de sonido; servicios de estudios de grabación musical; alquiler de grabaciones sonoras; alquiler de grabaciones sonoras y de vídeo; producción musical; servicios de ingenieros de sonido para eventos; representación de espectáculos en vivo.",
+      "translation_language": "en",
+      "translation": "music composition services; music composers and authors services; organization and conducting of concerts; organization and conducting of music concerts; disc jockey services; disc jockey services for parties and special events; DJ services; DJ services for parties and special events; recording studio services; sound recording studio services; music recording studio services; rental of sound recordings; rental of sound and video recordings; musical production; sound engineer services for events; representation of live shows."
+    }
+  ],
+  "owner": "Daniel Mauricio Rivas Ramirez",
+  "ownerNative": null,
+  "ownerCountry": "CO",
+  "representative": "Daniel Mauricio Rivas Ramirez",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Calle 22 # 83B - 60 MEDELLIN ANTIOQUIA 050026",
+        "applicantAddressCountryCode": "CO",
+        "applicantAddressCountryName": "Colombia",
+        "applicantName": "Daniel Mauricio Rivas Ramirez"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "music composition services; music composers and authors services; organization and conducting of concerts; organization and conducting of music concerts; disc jockey services; disc jockey services for parties and special events; DJ services; DJ services for parties and special events; recording studio services; sound recording studio services; music recording studio services; rental of sound recordings; rental of sound and video recordings; musical production; sound engineer services for events; representation of live shows.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "servicios de composición musical; servicios de compositores y autores de música; organización y dirección de conciertos; organización y dirección de conciertos de música; servicios de disc - jockey; servicios de disc - jockey para fiestas y eventos especiales; servicios de pinchadiscos; servicios de pinchadiscos para fiestas y eventos especiales; servicios de estudios de grabación; servicios de estudios de grabación de sonido; servicios de estudios de grabación musical; alquiler de grabaciones sonoras; alquiler de grabaciones sonoras y de vídeo; producción musical; servicios de ingenieros de sonido para eventos; representación de espectáculos en vivo."
+        }
+      ]
+    },
+    "id": "22ce20a1-3747-47ef-adfb-4dd3c6d92072",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251223",
+    "registrationOfficeCode": "CO",
+    "registrationOfficeName": "Colombia",
+    "representatives": [
+      {
+        "representativeAddress": "Calle 22 # 83B - 60",
+        "representativeAddressCountryCode": "CO",
+        "representativeAddressCountryName": "Colombia",
+        "representativeName": "Daniel Mauricio Rivas Ramirez"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20211022",
+        "applicationNumber": "SD20210100817"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320526",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220526",
+        "registrationNumber": "707430"
+      }
+    },
+    "version": "20251223021233",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "S7N Seven Rivas"
+    }
+  },
+  "_uri": "/mark/co/22ce20a1-3747-47ef-adfb-4dd3c6d92072",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.201Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

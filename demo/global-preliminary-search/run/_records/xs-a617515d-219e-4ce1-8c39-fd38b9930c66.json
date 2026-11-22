@@ -1,0 +1,148 @@
+{
+  "uri": "/mark/xs/a617515d-219e-4ce1-8c39-fd38b9930c66",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "a617515d-219e-4ce1-8c39-fd38b9930c66",
+  "applicationNumber": null,
+  "registrationNumber": "533382",
+  "applicationDate": null,
+  "registrationDate": "2011-11-09",
+  "expiryDate": "2016-11-15",
+  "renewalDate": "2016-10-28",
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "WINTERHAVEN RIDES",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Hayride",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "RJW ENTERPRISES INC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "895 WEST RUNNING BIRD LANE, BENSON, AZ, 85602",
+        "applicantAddressCity": "BENSON",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "85602",
+        "applicantAddressStateName": "ARIZONA",
+        "applicantAddressStreet": "895 WEST RUNNING BIRD LANE",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "RJW ENTERPRISES INC",
+        "applicantPhoneNumber": "520-730-7676"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Hayride"
+        }
+      ]
+    },
+    "id": "a617515d-219e-4ce1-8c39-fd38b9930c66",
+    "ipRightKind": "tmk",
+    "kindMark": "TRADENAME",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "895 WEST RUNNING BIRD LANE, BENSON, AZ, 85602",
+        "city": "BENSON",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "CORPORATION",
+        "name": "RJW ENTERPRISES INC",
+        "phoneNumber": "520-825-0208",
+        "postalCode": "85602",
+        "stateName": "ARIZONA",
+        "street": "895 WEST RUNNING BIRD LANE"
+      }
+    ],
+    "recordLastUpdated": "20241213",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "renewalOwners": [
+      {
+        "address": "895 WEST RUNNING BIRD LANE, BENSON, AZ, 85602",
+        "city": "BENSON",
+        "legalEntity": "CORPORATION",
+        "name": "RJW ENTERPRISES INC",
+        "phoneNumber": "520-730-7676",
+        "postalCode": "85602",
+        "renewalDate": "20161028",
+        "stateName": "ARIZONA",
+        "street": "895 WEST RUNNING BIRD LANE"
+      }
+    ],
+    "status": {
+      "active": false,
+      "cmNormalisedStatus": "EXPIRED",
+      "expiryDate": "20161115",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20021120"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "EXPIRED"
+        ]
+      },
+      "markCurrentStatus": "EXPIRED",
+      "registration": {
+        "registrationDate": "20111109",
+        "registrationNumber": "533382"
+      },
+      "renewalDate": "20161028"
+    },
+    "usStateOfficeCode": "AZ",
+    "usStateOfficeName": "ARIZONA",
+    "version": "20241213180717",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "WINTERHAVEN RIDES"
+    }
+  },
+  "_uri": "/mark/xs/a617515d-219e-4ce1-8c39-fd38b9930c66",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.189Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

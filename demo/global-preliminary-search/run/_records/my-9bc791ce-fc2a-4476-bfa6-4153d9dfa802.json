@@ -1,0 +1,143 @@
+{
+  "uri": "/mark/my/9bc791ce-fc2a-4476-bfa6-4153d9dfa802",
+  "provider": "clarivate",
+  "office": "my",
+  "guid": "9bc791ce-fc2a-4476-bfa6-4153d9dfa802",
+  "applicationNumber": "TM2025006757",
+  "registrationNumber": null,
+  "applicationDate": "2025-03-05",
+  "registrationDate": "2025-03-05",
+  "expiryDate": "2035-03-05",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SEVENRICH",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    11,
+    35
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "smartwatches; smartwatches incorporating electronic game functions; smartwatches incorporating telecommunication functions; smartwatches that communicate data to pdas; smartwatches that communicate data to personal digital assistants [pdas]; wearable technological devices being smartwatches, connected bracelets [measuring instruments] and head-mounted displays; wearable technological devices being smartwatches, smart wristbands and virtual reality headsets; digital cell phones; digital cellular phones; digital mobile phones; earphones; foldable smartphones; mobile telephone cases; mobile telephone cases and covers; mobile telephone chargers; smartphones; smartphones in the shape of a watch; wireless earphones; wireless headsets for smartphones.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "en",
+      "description": "air filters for household purposes; air filters for industrial and household use; air cleaning filters [parts of air cleaning machines or installations]; air filtering installations; air purifiers; air purifiers for automobiles; air purifiers for household purposes; air purifiers, electric; industrial air purifiers; portable air purifiers; robotic air purifiers for household purposes; wearable air purifiers; electric hair dryers; hair dryers; handheld electric hair dryers.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "on-line retail store services featuring smartwatches; on-line wholesale store services featuring smartwatches; online retail store services featuring smartwatches; online wholesale store services featuring smartwatches; wholesale store services for smartwatches; advice relating to business management; advisory and consultancy services relating to business management; business and management consultancy services; business assistance, management and administrative services; business assistance, management and information services; business consultancy, management, planning and supervision; business consultation and management regarding marketing activities and launching of new products; business management; business management assistance services; business management consultancy; business management consultation services; online advertising; online advertising services; outdoor advertising; planning services for advertising; preparation of advertising materials; promotional advertising services; promotional and advertising services; provision and rental of advertising space on the internet; advertising services to create brand identity for others; advertising services to create corporate and brand identity; brand consultancy; brand consultancy services; brand creation; brand creation services; brand evaluation services; brand management; brand management services; brand marketing services; brand orientation; brand positioning; brand positioning services; brand strategy services; brand testing; brand testing services; business management and marketing of brands for businesses and individuals; corporate branding services; on-line customer-based social media brand marketing services; online customer-based social media brand marketing services; advisory services relating to the operation of franchises; business advisory services relating to the establishment and operation of franchises; providing assistance in the field of business management and product commercialization within the framework of a franchise contract; providing assistance in the field of business management within the framework of a franchise contract; providing assistance in the field of product commercialization within the framework of a franchise contract; providing assistance in the management of franchised businesses; advertising services relating to the commercialization of new products; business consultation regarding marketing activities and launching of new products; commercial information and advice for consumers in the choice of products and services; compilation, production and dissemination of advertising matter; demonstration of products; distribution of products for advertising purposes; product marketing; product marketing services; product merchandising; product merchandising services; production of advertisements; production of advertising matter and commercials; retail services provided by online department stores.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "ANDREW LIM ZAO TIAN",
+  "ownerNative": null,
+  "ownerCountry": "MY",
+  "representative": "TAY PECK LING",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "NO 338 , JALAN SRI PUTRI 1/14 , TAMAN PUTRI Kulai 81000 Johor",
+        "applicantAddressCountryCode": "MY",
+        "applicantAddressCountryName": "Malaysia",
+        "applicantName": "ANDREW LIM ZAO TIAN"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "smartwatches; smartwatches incorporating electronic game functions; smartwatches incorporating telecommunication functions; smartwatches that communicate data to pdas; smartwatches that communicate data to personal digital assistants [pdas]; wearable technological devices being smartwatches, connected bracelets [measuring instruments] and head-mounted displays; wearable technological devices being smartwatches, smart wristbands and virtual reality headsets; digital cell phones; digital cellular phones; digital mobile phones; earphones; foldable smartphones; mobile telephone cases; mobile telephone cases and covers; mobile telephone chargers; smartphones; smartphones in the shape of a watch; wireless earphones; wireless headsets for smartphones."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "air filters for household purposes; air filters for industrial and household use; air cleaning filters [parts of air cleaning machines or installations]; air filtering installations; air purifiers; air purifiers for automobiles; air purifiers for household purposes; air purifiers, electric; industrial air purifiers; portable air purifiers; robotic air purifiers for household purposes; wearable air purifiers; electric hair dryers; hair dryers; handheld electric hair dryers."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "on-line retail store services featuring smartwatches; on-line wholesale store services featuring smartwatches; online retail store services featuring smartwatches; online wholesale store services featuring smartwatches; wholesale store services for smartwatches; advice relating to business management; advisory and consultancy services relating to business management; business and management consultancy services; business assistance, management and administrative services; business assistance, management and information services; business consultancy, management, planning and supervision; business consultation and management regarding marketing activities and launching of new products; business management; business management assistance services; business management consultancy; business management consultation services; online advertising; online advertising services; outdoor advertising; planning services for advertising; preparation of advertising materials; promotional advertising services; promotional and advertising services; provision and rental of advertising space on the internet; advertising services to create brand identity for others; advertising services to create corporate and brand identity; brand consultancy; brand consultancy services; brand creation; brand creation services; brand evaluation services; brand management; brand management services; brand marketing services; brand orientation; brand positioning; brand positioning services; brand strategy services; brand testing; brand testing services; business management and marketing of brands for businesses and individuals; corporate branding services; on-line customer-based social media brand marketing services; online customer-based social media brand marketing services; advisory services relating to the operation of franchises; business advisory services relating to the establishment and operation of franchises; providing assistance in the field of business management and product commercialization within the framework of a franchise contract; providing assistance in the field of business management within the framework of a franchise contract; providing assistance in the field of product commercialization within the framework of a franchise contract; providing assistance in the management of franchised businesses; advertising services relating to the commercialization of new products; business consultation regarding marketing activities and launching of new products; commercial information and advice for consumers in the choice of products and services; compilation, production and dissemination of advertising matter; demonstration of products; distribution of products for advertising purposes; product marketing; product marketing services; product merchandising; product merchandising services; production of advertisements; production of advertising matter and commercials; retail services provided by online department stores."
+        }
+      ]
+    },
+    "id": "9bc791ce-fc2a-4476-bfa6-4153d9dfa802",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260224",
+    "registrationOfficeCode": "MY",
+    "registrationOfficeName": "Malaysia",
+    "representatives": [
+      {
+        "representativeAddress": "79, Batu Kawa Resettlement Scheme, Jalan Batu Kawa, Kuching 93250 Sarawak",
+        "representativeAddressCountryCode": "MY",
+        "representativeAddressCountryName": "Malaysia",
+        "representativeName": "TAY PECK LING"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250305",
+        "applicationNumber": "TM2025006757"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350305",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20250305"
+      }
+    },
+    "version": "20260224050051",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SEVENRICH"
+    }
+  },
+  "_uri": "/mark/my/9bc791ce-fc2a-4476-bfa6-4153d9dfa802",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.200Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

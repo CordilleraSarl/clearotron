@@ -1,0 +1,120 @@
+{
+  "uri": "/mark/kr/a5ea8dbb-7ee1-477f-acee-854004a9ae8e",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "a5ea8dbb-7ee1-477f-acee-854004a9ae8e",
+  "applicationNumber": "40-2020-0055821",
+  "registrationNumber": "4017299510000",
+  "applicationDate": "2020-04-03",
+  "registrationDate": "2021-05-20",
+  "expiryDate": "2031-05-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2021-05-25",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "엔벤트릭",
+  "markTransliteration": "Envenrick",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "생명공학관련 연구업,생물학연구업,의료기기 연구개발대행업,의료에 관한 연구업,의료용 과학연구업,의료장비 연구개발업,의료장치개발업,의학연구업",
+      "translation_language": "en",
+      "translation": "Biotechnology-related research, biological research, medical device R & D agency, medical research, medical science research, medical equipment research and development, medical device development, medical research"
+    }
+  ],
+  "owner": "NVENTRIC",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "특허법인 아이피에스 (IPS PATENT FIRM)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 영등포구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "NVENTRIC",
+        "applicantNativeName": "주식회사 엔벤트릭"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Biotechnology-related research, biological research, medical device R & D agency, medical research, medical science research, medical equipment research and development, medical device development, medical research",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "생명공학관련 연구업,생물학연구업,의료기기 연구개발대행업,의료에 관한 연구업,의료용 과학연구업,의료장비 연구개발업,의료장치개발업,의학연구업"
+        }
+      ]
+    },
+    "id": "a5ea8dbb-7ee1-477f-acee-854004a9ae8e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "(Seocho-dong) th Fl., , Banpo-daero -gil, Seocho-gu, Seoul, Republic of Korea",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "특허법인 아이피에스 (IPS PATENT FIRM)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200403",
+        "applicationNumber": "40-2020-0055821"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310520",
+      "lastPublicationDate": "20210525",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20210520",
+        "registrationNumber": "4017299510000"
+      }
+    },
+    "version": "20250625204351",
+    "wordMarkSpecification": {
+      "markTransliteration": "Envenrick",
+      "markVerbalElementText": "엔벤트릭"
+    }
+  },
+  "_uri": "/mark/kr/a5ea8dbb-7ee1-477f-acee-854004a9ae8e",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.195Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

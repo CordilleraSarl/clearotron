@@ -1,6 +1,5 @@
-One name screened: VENQORI, rated Low.
+One name assessed for the Japan and Korea launch, limited to the supplied Latin spellings.
 
-## VENQORI — Low
+## VENQORI
 
-- VENQORI is a coined product name for a consumer water-quality app with attached online training.
-- The screened marketplace showed no exact on-field use or famous cultural echo that creates an obvious blocker.
+**Low for Classes 9, 42 and 41 in Japan and Korea.** Japan's Ｖｅｎｋｕｒｉ electronics differ from the requested app and training. The Korean records returned are cancelled or expired. They do not settle whether those businesses still trade. The overseas marks rated Moderate do not establish protection or related trade in either launch market. Japanese and Korean versions of the proposed name remain unassessed.

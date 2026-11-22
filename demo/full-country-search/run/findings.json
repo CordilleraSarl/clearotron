@@ -15,7 +15,7 @@
         ]
       },
       "band": "Manageable",
-      "net": "Yiwu Tengding Umbrella’s registered VENKURI is unlikely to defeat VENQORI for consumer water-monitoring software and training in Japan.",
+      "net": "YIWU TENGDING's VenKuri would probably lose against the company’s VENQORI water-quality software and training in Japan, although a registration objection remains possible.",
       "disposition": "adversarial",
       "meters": {
         "mark_similarity": {
@@ -24,304 +24,196 @@
           "source": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150"
         },
         "goods_proximity": {
-          "token": "low",
+          "token": "medium",
           "basis": "verified-from-record",
           "source": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150"
         },
         "use": {
-          "token": "not-confirmed",
-          "basis": "inferred-from-signal",
-          "source": ""
+          "token": "unknown",
+          "basis": "inferred-from-signal"
         },
         "enforcer": {
           "token": "unknown",
-          "basis": "inferred-from-signal",
-          "source": ""
+          "basis": "inferred-from-signal"
         }
       },
       "quadrant": {
-        "x": 0.22,
-        "y": 0.82
+        "x": 0.4,
+        "y": 0.78
       },
       "source": {
         "source_type": "register-vendor",
         "resolved_link": ""
       },
-      "legal_position": "VENQORI and VENKURI share a three-beat structure and the expected Q-to-K sound, creating high aural similarity. The goods cover electronics and non-medical monitoring apparatus, not downloadable water software or training, so the owner is likely to lose.",
-      "practical_position": "The live registration could still cause a Japanese filing objection. Targeted research found no verified Japanese use by the owner for those electronics, limiting practical exposure without neutralising the registered right.\n- **Use-check source:** perplexity_research — no result",
-      "use_check": {
-        "source": "perplexity_research — no result"
-      }
-    },
-    {
-      "ordinal": 2,
-      "mark": "ＱＯＲＩＱ",
-      "owner": {
-        "name": "NXP USA, INC.",
-        "country": "US",
-        "registrations": [
-          {
-            "uri": "/mark/jp/bb31005c-de89-4427-9e3b-eb870618399d"
-          }
-        ]
-      },
-      "net": "NXP USA’s QORIQ right does not materially reach VENQORI’s consumer water-monitoring software and training in Japan.",
-      "disposition": "off-field",
-      "meters": {
-        "mark_similarity": {
-          "token": "medium",
-          "basis": "verified-from-record",
-          "source": "/mark/jp/bb31005c-de89-4427-9e3b-eb870618399d"
-        },
-        "goods_proximity": {
-          "token": "low",
-          "basis": "verified-from-record",
-          "source": "/mark/jp/bb31005c-de89-4427-9e3b-eb870618399d"
-        },
-        "use": {
-          "token": "unknown",
-          "basis": "inferred-from-signal",
-          "source": ""
-        },
-        "enforcer": {
-          "token": "unknown",
-          "basis": "inferred-from-signal",
-          "source": ""
-        }
-      },
-      "quadrant": {
-        "x": 0.12,
-        "y": 0.56
-      },
-      "source": {
-        "source_type": "register-vendor",
-        "resolved_link": ""
-      },
-      "legal_position": "QORIQ shares the QORI sequence, but VENQORI adds a leading VEN sound and differs as a whole. The official specification is “Semiconductors, customized microprocessors, microprocessors capable of recording computer software, other microprocessors, multicore processors, application specific integrated circuits, other integrated circuits, other electronic applied equipment and parts thereof.” It does not identify downloadable water-monitoring software or training, so confusion is unlikely. This conclusion does not rely on dilution.",
-      "practical_position": "The supplied record does not establish current QORIQ marketplace use outside semiconductor and processor components. The live Japanese right becomes relevant if VENQORI later brands sensors, processors or embedded hardware; on the stated app-and-training use, the purchasing settings do not meet.",
-      "off_field_ground": "different-field"
+      "legal_position": "VenKuri's BENKURI reading is close to VENQORI, but the earlier owner is likely to lose on the stated software-and-training use: its registered goods are cameras and non-medical surveillance apparatus (among broad goods), not downloadable software or training. The Japanese measuring/testing classification leaves a possible registration objection, while the O/U sound difference in the middle syllable and narrower goods provide good defences.",
+      "practical_position": "Actual products, Japanese sales channels and enforcement appetite are unverified, so no dormancy, non-use or low-enforcement mitigation is applied. The live Japanese registration supports residual challenge risk, but neither competing water-quality software nor a need for consent is established."
     }
   ],
   "coverage": [
     {
-      "area": "primary-sweep",
-      "state": "confirmed-clean",
-      "note": "The broad v*r search returned 6,280 results and was not enumerated. Its two-letter pattern was crowd context; bounded named variants were reviewed, subject to the separately disclosed character-form gaps."
+      "area": "Japanese register / completed name searches",
+      "state": "note",
+      "note": "We assessed VenKuri and set aside the other results because their complete names differed materially. This assessment covers those rights without clearing the name generally."
     },
     {
-      "area": "transliteration-numeric",
-      "state": "confirmed-clean",
-      "note": "Romanised spellings, Japanese-script equivalents and number-substitution spellings were reviewed."
-    },
-    {
-      "area": "incumbent-class / named-owner screen",
-      "state": "confirmed-clean",
-      "note": "Checks for VENQORI filings owned by the named water-sector companies found no matches; their broader portfolio counts were context only, not full portfolio screening."
-    },
-    {
-      "area": "primary-sweep / exact: vεηqοrι [cl 9, 42, 41]",
-      "state": "not-searched",
-      "note": "This visually exact mixed Greek-and-Latin form could not be searched because the register indexes non-Latin marks by transliteration."
-    },
-    {
-      "area": "primary-sweep / exact: vеnqоri [cl 9, 42, 41]",
-      "state": "not-searched",
-      "note": "This visually exact Cyrillic-and-Latin form could not be searched because the register indexes non-Latin marks by transliteration."
-    },
-    {
-      "area": "primary-sweep / exact: コアアイキュ－コンバ－ジ　ＱＯＲＩＱ　ＱＯＮＶＥＲＧＥ [cl 9, 42, 41]",
-      "state": "not-searched",
-      "note": "The Japanese-character query did not run; the same live right was independently found and assessed through its romanised wording."
-    },
-    {
-      "area": "register / Japanese form ヴェンクォリ",
-      "state": "not-searched",
-      "note": "This Japanese spelling could not be searched because the register indexes non-Latin marks by transliteration."
-    },
-    {
-      "area": "register / Japanese form ヴェンクォリ",
-      "state": "not-searched",
-      "note": "This Japanese spelling could not be searched because the register indexes non-Latin marks by transliteration."
-    },
-    {
-      "area": "WO / supplementary national-register channel",
+      "area": "Japanese-script consumer software and training / Apple, Google Play, LINE, Udemy, Coursera and web",
       "state": "coverage-limited",
-      "note": "The attempted supplementary register research returned no usable result, so it supports no absence conclusion."
+      "note": "Results for ベンコリ, ヴェンコリ and ヴェンクォリ were noisy and did not resolve local marketplace use. Their absence from the findings does not establish clearance."
     },
     {
-      "area": "JP / Japanese marketplace reach",
+      "area": "Japanese pronunciation alternatives / direct character searches",
+      "state": "not-searched",
+      "note": "Direct character queries were withheld because the register indexes romanized readings. The completed romanized searches do not answer local marketplace use."
+    },
+    {
+      "area": "Professional environmental monitoring and water-testing services",
+      "state": "not-searched",
+      "note": "No separate professional-services expansion was made beyond the stated consumer software and training. No distinct additional searchable goods category was identified."
+    },
+    {
+      "area": "Worldwide registers and Madrid Monitor",
+      "state": "not-searched",
+      "note": "No separate worldwide or direct Madrid Monitor search was undertaken. Independent foreign rights fall outside the Japan-only instruction."
+    },
+    {
+      "area": "Water-industry suppliers, procurement and specialist publications",
+      "state": "not-searched",
+      "note": "No dedicated search covered these trade channels."
+    },
+    {
+      "area": "Enterprise directories, developer repositories and integration catalogs",
+      "state": "not-searched",
+      "note": "No dedicated search covered these professional software channels."
+    },
+    {
+      "area": "Japanese specialist training catalogs and vendor academies",
+      "state": "not-searched",
+      "note": "No dedicated search covered these additional training sources."
+    },
+    {
+      "area": "Amazon Japan, Rakuten, equipment marketplaces and comparison sites",
+      "state": "not-searched",
+      "note": "No dedicated search covered these physical-goods channels."
+    },
+    {
+      "area": "Scientific literature and research repositories",
+      "state": "not-searched",
+      "note": "No dedicated search covered these research sources."
+    },
+    {
+      "area": "Microsoft Store and professional SaaS sites",
+      "state": "not-searched",
+      "note": "No dedicated search covered these additional software channels."
+    },
+    {
+      "area": "Translated meanings, plural roots and additional semantic forms",
+      "state": "not-searched",
+      "note": "These forms were omitted because VENQORI has no supplied meaning, inflection or separable affix. Conflicts depending on such meanings remain unassessed."
+    },
+    {
+      "area": "Dedicated industrial, laboratory, clinical, enterprise and unrelated education sectors",
+      "state": "not-searched",
+      "note": "No separate expansion covered plant control, utility procurement, laboratory systems, clinical research, enterprise software, music-AI, drug-discovery AI, blockchain or unrelated education."
+    },
+    {
+      "area": "Testing chemicals, preparations, water-treatment apparatus and retail services",
       "state": "coverage-limited",
-      "note": "Japan-specific availability could not be confirmed for every marketplace result; the identified uses were nevertheless in unrelated fields."
+      "note": "These fields received no dedicated clearance beyond an extra exact-name apparatus check. They are not stated client offerings."
     },
     {
-      "area": "register / applicant-owned rights",
+      "area": "Independent US, EU, UK, China and Korea clearance and Korean-focused channels",
       "state": "not-searched",
-      "note": "The applicant’s legal name and corporate group were not supplied, so applicant-owned and affiliate rights could not be checked."
+      "note": "These territories and channels are outside the Japan-only instruction."
     },
     {
-      "area": "Japanese register check for the exact vεηqοrι spelling in Classes 9, 41 and 42",
-      "state": "not-searched",
-      "note": "This visually exact mixed Greek-and-Latin form could not be searched because the register indexes non-Latin marks by transliteration."
-    },
-    {
-      "area": "Japanese register check for the exact vеnqоri spelling in Classes 9, 41 and 42",
-      "state": "not-searched",
-      "note": "This visually exact Cyrillic-and-Latin form could not be searched because the register indexes non-Latin marks by transliteration."
-    },
-    {
-      "area": "Japanese register check for the exact コアアイキュ－コンバ－ジ　ＱＯＲＩＱ　ＱＯＮＶＥＲＧＥ spelling in Classes 9, 41 and 42",
-      "state": "not-searched",
-      "note": "The Japanese-character query did not run; the same live right was independently found and assessed through its romanised wording."
-    },
-    {
-      "area": "Japanese Classes 9, 41 and 42 rights owned by Vencora UK Limited",
+      "area": "Near-name software-company leads",
       "state": "open",
-      "note": "The register check could not resolve that owner name and remains unverified."
+      "note": "VenQore, Venkor and Vencor remain leads with unverified legal ownership and Japanese rights. None is treated as an identified Japanese rights-holder."
     },
     {
-      "area": "Exact VENCORE register search",
+      "area": "The company's own earlier Japanese rights",
       "state": "open",
-      "note": "The search did not complete; a broader VENCORE search returned ProvenCore and Woven Core, which were assessed."
+      "note": "The applicant's identity was not supplied, so its earlier Japanese filings and unregistered use remain unverified."
     },
     {
-      "area": "Additional water-quality software, training, industry and corporate sources",
+      "area": "Follow-up / japanese pronunciation alternatives",
+      "state": "open",
+      "note": "japanese pronunciation alternatives — not completed this run — the searches proposed for it could not be put to this register, so it was never searched"
+    },
+    {
+      "area": "Follow-up / amazon japan, rakuten and specialist equipment…",
+      "state": "open",
+      "note": "amazon japan, rakuten and specialist equipment marketplaces — not completed this run — the source it needed was not searched, so nothing is known about it either way"
+    },
+    {
+      "area": "Japanese-language search depth",
       "state": "coverage-limited",
-      "note": "These searches were not completed, so no absence conclusion can be drawn from them."
-    },
-    {
-      "area": "Follow-up / vencore",
-      "state": "open",
-      "note": "vencore — not completed this run — the search for it was planned and never reached the register, so nothing is known about it either way"
-    },
-    {
-      "area": "Follow-up / water-quality environmental monitoring…",
-      "state": "open",
-      "note": "water-quality environmental monitoring, laboratory informatics, compliance reporting, and analytics software (classes 9, 42) — not completed this run — nothing in the run's own record confirms it was searched, so it is left open rather than assumed done"
-    },
-    {
-      "area": "Native-language investigation depth / ja",
-      "state": "coverage-limited",
-      "note": "Japanese-script deepening: the configured depth for this lane was `full` and this run delivered the candidate lane only. this build carries no deep slice for the ja lane — the SERP grid and native read are zh-only (JX_SLICES, SERP_LANES), so `full` cannot be delivered here by any environment. The lane ran as a slice-1 candidate lane, which is what it ships as. This is a disclosed limit on what was searched, not a change to any verdict below — the lane's results stand for what it did cover."
+      "note": "The requested full-depth Japanese-language search is not available in this version. Only the candidate search ran; the deeper web search and native-language review were not performed."
     }
   ],
+  "context_notes": [],
   "actions": [
     {
       "id": 1,
       "kind": "client-fact",
-      "text": "Confirm the applicant’s legal name and corporate group so applicant-owned and affiliate rights can be identified.",
-      "ordinals": []
-    },
-    {
-      "id": 2,
-      "kind": "client-fact",
-      "text": "Confirm whether VENQORI will brand sensors, meters, test kits, hardware or health claims, because that would change the goods comparison.",
-      "ordinals": [
-        1,
-        2
-      ]
-    },
-    {
-      "id": 3,
-      "kind": "filing-routine",
-      "text": "Refresh the live status of VENKURI and QORIQ immediately before filing in Japan.",
-      "ordinals": [
-        1,
-        2
-      ]
-    },
-    {
-      "id": 4,
-      "kind": "senior-clearance",
-      "text": "Have the Japanese register checked for the exact vεηqοrι, vеnqоri, ベンコリ, ヴェンクォリ and VENCORE forms and for Vencora UK Limited rights before relying unconditionally on this clearance.",
-      "condition": "The two exact mixed-script forms, two Japanese spellings, exact VENCORE search and Vencora UK Limited owner search remain unresolved.",
-      "ordinals": []
-    }
-  ],
-  "mark_assessment": {
-    "distinctiveness": {
-      "read": "VENQORI is coined and plainly distinctive for consumer water-monitoring software and training. The whole word is the source cue.",
-      "spectrum": "Coined and inherently distinctive",
-      "per_market": [
-        {
-          "market": "JP",
-          "note": "VENQORI and the instructed ヴェンコリ rendering have no descriptive meaning in the searched material."
-        }
-      ]
-    },
-    "connotation": {
-      "read": "No adverse reading surfaced across the queried English and Japanese forms. QORI means “gold” in Quechua and may give VENQORI an Andean association.",
-      "spectrum": "Benign coined term with a positive Quechua subelement",
-      "per_market": [
-        {
-          "market": "JP",
-          "note": "The instructed Japanese form did not produce a loaded meaning."
-        }
-      ],
-      "note": "- **Connotation-search source:** perplexity_research — no result"
-    }
-  },
-  "four_answers": {
-    "third_party_rights": {
-      "read": "The closest Japanese right is strong on sound but weak on goods overlap. The other carried right sits in a different commercial field.",
-      "token": "weak",
-      "basis": "The VENKURI and QORIQ registrations and their goods lists.",
-      "ordinals": [
-        1,
-        2
-      ]
-    },
-    "objection_likelihood": {
-      "read": "An objection is possible because VENKURI sounds close and remains registered, although its listed goods do not meet the company’s software or training.",
-      "token": "possible",
-      "basis": "Finding 1’s live Japanese registration, sound similarity and distinct goods.",
+      "text": "Confirm the intended Japanese spelling and pronunciation of VENQORI.",
       "ordinals": [
         1
       ]
     },
-    "registrability": {
-      "read": "VENQORI appears registrable for consumer water-monitoring software and training, but unresolved close-character searches prevent an unconditional view.",
-      "token": "registrable-with-conditions",
-      "basis": "The live findings, the reviewed Japanese register material and the disclosed unsearched forms.",
+    {
+      "id": 2,
+      "kind": "client-fact",
+      "text": "Confirm whether the offering includes connected sensors, testing hardware or medical interpretation.",
       "ordinals": [
-        1,
-        2
-      ],
-      "obstacles": [
+        1
+      ]
+    },
+    {
+      "id": 3,
+      "kind": "client-fact",
+      "text": "Confirm the applicant and affiliate names and any earlier Japanese filings or unregistered use of VENQORI.",
+      "ordinals": [
+        1
+      ]
+    }
+  ],
+  "mark_assessment": {
+    "distinctiveness": {
+      "read": "VENQORI is coined and distinctive for the company's water-quality software and training. The whole name supplies its distinctiveness.",
+      "spectrum": "Coined",
+      "per_market": [
         {
-          "class": "9",
-          "note": "VENKURI is the closest live Japanese right; its goods list does not cover downloadable water software."
+          "market": "JP",
+          "note": "ヴェンコリ is a provisional sound rendering rather than an established translation. No descriptive Japanese meaning is established in the supplied evidence."
         }
+      ]
+    },
+    "connotation": "No meaning search was undertaken, so English and Japanese connotations remain unassessed."
+  },
+  "four_answers": {
+    "third_party_rights": {
+      "read": "The assessed Japanese right is weak against the stated software and training, although it could complicate registration.",
+      "token": "weak",
+      "basis": "Finding 1: the close recorded sound meets an electronics and surveillance-hardware goods list, with limited proximity to the stated offering.",
+      "ordinals": [
+        1
       ]
     }
   },
   "coverage_judgment": {
     "sufficient": false,
-    "reason": "Exact mixed-script forms, two Japanese phonetic spellings and the Vencora owner styling remain unresolved in the company’s core Japanese classes.",
+    "reason": "The most relevant local consumer-app and training names remain unresolved, so the available evidence cannot support an unconditional adoption assessment.",
     "rows": [
       {
-        "area": "primary-sweep / exact: vεηqοrι [cl 9, 42, 41]",
-        "areaLabel": "main register sweep / exact: vεηqοrι [cl 9, 42, 41]",
-        "note": "deferred — The visually exact mixed Greek-and-Latin form vεηqοrι was not searched because the provider indexes non-Latin filings by transliteration rather than by these ch"
-      },
-      {
-        "area": "primary-sweep / exact: vеnqоri [cl 9, 42, 41]",
-        "areaLabel": "main register sweep / exact: vеnqоri [cl 9, 42, 41]",
-        "note": "deferred — The visually exact Cyrillic-and-Latin form vеnqоri was not searched because the provider indexes non-Latin filings by transliteration rather than by these chara"
-      },
-      {
-        "area": "primary-sweep / exact: コアアイキュ－コンバ－ジ　ＱＯＲＩＱ　ＱＯＮＶＥＲＧＥ [cl 9, 42, 41]",
-        "areaLabel": "main register sweep / exact: コアアイキュ－コンバ－ジ　ＱＯＲＩＱ　ＱＯＮＶＥＲＧＥ [cl 9, 42, 41]",
-        "note": "deferred — The Japanese-character form コアアイキュ－コンバ－ジ ＱＯＲＩＱ ＱＯＮＶＥＲＧＥ was not searched because the provider indexes non-Latin filings by transliteration rather than by these "
-      },
-      {
-        "area": "incumbent-class / Vencora UK Limited owner slice",
-        "areaLabel": "owner portfolio sweep / Vencora UK Limited owner slice",
-        "note": "deferred — The Vencora UK Limited owner-styling search could not be resolved by the provider and its zero-record response is unverified; this remains open for Japan in Cla"
+        "area": "primary-sweep / Japanese-script marketplace reach",
+        "areaLabel": "main register search / Japanese-script marketplace reach",
+        "note": "coverage-limited — Japanese-script consumer software and training uses under ベンコリ, ヴェンコリ and ヴェンクォリ remain unresolved across app stores, LINE, training platforms and the web. The "
       }
     ]
   },
   "corrections": {
     "applied": true,
-    "note": "1 QORI app listings: corrected.\n2 primary-sweep wildcard coverage: corrected.\n3 Finding 2 QORIQ scope comparison: corrected.\n4 unconditional-reliance condition action: corrected.\n5 transliteration-numeric coverage wording: corrected.\n6 named-owner coverage wording: corrected.\n7 exact-spelling coverage labels: corrected.\n8 Vencora UK Limited coverage wording: corrected.\n9 exact VENCORE coverage wording: corrected.\n10 additional common-law field coverage wording: corrected."
+    "note": "The coverage line for \"The company's own earlier Japanese rights\": corrected to unidentified applicant and unverified earlier filings/use; action 3 preserved.\nFinding 1 (VenKuri): corrected the sound difference to O/U in the middle syllable in legal_position and spine; goods comparison, Manageable band and meters preserved. The four_answers basis, read and ordinals remain valid and unchanged.\nThe spine and calibration: corrected internal placement wording to concluded assessments and named Woven Core, ProvenCore and the 37° composite; retained potentially overlapping goods and complete-name grounds.\nThe coverage line for \"Japanese register / completed name searches\": corrected to the concluded VenKuri assessment and complete-name exclusions, without general clearance. No other finding, action, coverage row or assessment changed."
   }
 }

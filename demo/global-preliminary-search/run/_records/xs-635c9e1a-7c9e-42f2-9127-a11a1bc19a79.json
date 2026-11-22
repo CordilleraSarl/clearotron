@@ -1,0 +1,128 @@
+{
+  "uri": "/mark/xs/635c9e1a-7c9e-42f2-9127-a11a1bc19a79",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "635c9e1a-7c9e-42f2-9127-a11a1bc19a79",
+  "applicationNumber": null,
+  "registrationNumber": "118002",
+  "applicationDate": null,
+  "registrationDate": "2006-12-16",
+  "expiryDate": "2011-12-16",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "Horse Haven Riding Club",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Equine events",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Horse Haven Riding Club",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "MS, USAM",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressStateName": "MISSISSIPPI",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Horse Haven Riding Club"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Equine events"
+        }
+      ]
+    },
+    "id": "635c9e1a-7c9e-42f2-9127-a11a1bc19a79",
+    "ipRightKind": "tmk",
+    "kindMark": "SERVICE MARK",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "MS, USAM",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Horse Haven Riding Club",
+        "stateName": "MISSISSIPPI"
+      }
+    ],
+    "recordLastUpdated": "20251226",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": false,
+      "cmNormalisedStatus": "EXPIRED",
+      "expiryDate": "20111216",
+      "firstUsed": [
+        {
+          "firstUsedDate": "19500101"
+        }
+      ],
+      "firstUsedAnywhereDate": "19500101",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "EXPIRED"
+        ]
+      },
+      "markCurrentStatus": "EXPIRED",
+      "registration": {
+        "registrationDate": "20061216",
+        "registrationNumber": "118002"
+      }
+    },
+    "usStateOfficeCode": "MS",
+    "usStateOfficeName": "MISSISSIPPI",
+    "version": "20251226111621",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Horse Haven Riding Club"
+    }
+  },
+  "_uri": "/mark/xs/635c9e1a-7c9e-42f2-9127-a11a1bc19a79",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.190Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

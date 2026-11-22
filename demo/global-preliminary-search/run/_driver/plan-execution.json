@@ -1,0 +1,368 @@
+{
+  "plan_version": 4,
+  "executed": [
+    {
+      "qid": "primary-sweep:exact:venqori",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:venkori",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:vinkuri",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:venkwori",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:venqor",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:venri",
+      "state": "enumerated",
+      "records": 102,
+      "total_hits": 102
+    },
+    {
+      "qid": "primary-sweep:default:venoori",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:venqoir",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:venqorl",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:vencor",
+      "state": "enumerated",
+      "records": 100,
+      "total_hits": 100
+    },
+    {
+      "qid": "primary-sweep:default:vencore",
+      "state": "enumerated",
+      "records": 48,
+      "total_hits": 48
+    },
+    {
+      "qid": "primary-sweep:default:venqori",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:venqori+goods",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:exact:aenqori+form",
+      "state": "enumerated",
+      "records": 1,
+      "total_hits": 1
+    },
+    {
+      "qid": "primary-sweep:wildcard:v-nq-r",
+      "state": "enumerated",
+      "records": 6,
+      "total_hits": 6
+    },
+    {
+      "qid": "primary-sweep:exact:venqori+merch",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "transliteration-numeric:exact:v3nqori",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "transliteration-numeric:exact:venq0ri",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "transliteration-numeric:exact:venqor1",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "transliteration-numeric:exact:q-828d0bdb",
+      "state": "enumerated",
+      "records": 9,
+      "total_hits": 9
+    },
+    {
+      "qid": "transliteration-numeric:exact:q-9292d4cb",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "xcheck-mark-venqori",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "xcheck-mark-vencori",
+      "state": "enumerated",
+      "records": 3,
+      "total_hits": 3
+    },
+    {
+      "qid": "xcheck-mark-venquori",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "xcheck-mark-ven-qori",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "xcheck-mark-venkwori",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "xcheck-mark-venri",
+      "state": "enumerated",
+      "records": 102,
+      "total_hits": 102
+    },
+    {
+      "qid": "xcheck-mark-venqoir",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "xcheck-mark-vencor",
+      "state": "enumerated",
+      "records": 100,
+      "total_hits": 100
+    },
+    {
+      "qid": "xcheck-mark-v3nqori",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "xcheck-mark-venqor1",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:phonetic:venqori:eac756bf",
+      "state": "enumerated",
+      "records": 69,
+      "total_hits": 69
+    },
+    {
+      "qid": "supp:primary-sweep:default:ven-qori:1a6bd242",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:default:venkuri:1b385422",
+      "state": "enumerated",
+      "records": 3,
+      "total_hits": 3
+    },
+    {
+      "qid": "supp:primary-sweep:default:vinkory:e64e2418",
+      "state": "enumerated",
+      "records": 1,
+      "total_hits": 1
+    },
+    {
+      "qid": "supp:primary-sweep:default:vunqeri:a467e41c",
+      "state": "enumerated",
+      "records": 1,
+      "total_hits": 1
+    },
+    {
+      "qid": "supp:transliteration-numeric:exact:venqori:a60444fc",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:transliteration-numeric:default:wen-ke-li:bbeec9c5",
+      "state": "enumerated",
+      "records": 9,
+      "total_hits": 9
+    },
+    {
+      "qid": "supp:transliteration-numeric:default:ben-ko-ri:29e84880",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:transliteration-numeric:default:bhen-ko-ri:8a11942b",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venqori:a9da01c2",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    }
+  ],
+  "missing": [],
+  "skipped": [],
+  "deferred": [],
+  "awaiting": [
+    {
+      "qid": "primary-sweep:exact:venqori-systems",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-technologies",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-digital",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-software",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-labs",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-consulting",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-academy",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-learning",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-education",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-training",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:wildcard:v-r",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "transliteration-numeric:exact:q-a74a3a76",
+      "axis": "transliteration-numeric"
+    },
+    {
+      "qid": "transliteration-numeric:exact:q-9dd0911b",
+      "axis": "transliteration-numeric"
+    },
+    {
+      "qid": "transliteration-numeric:exact:q-9ca7884b",
+      "axis": "transliteration-numeric"
+    },
+    {
+      "qid": "transliteration-numeric:exact:q-7a8e50b7",
+      "axis": "transliteration-numeric"
+    }
+  ],
+  "asked": [],
+  "unplanned": [],
+  "answered": 41,
+  "incomplete": 0,
+  "supplemental": [
+    "xcheck-mark-venqori",
+    "xcheck-mark-vencori",
+    "xcheck-mark-venquori",
+    "xcheck-mark-ven-qori",
+    "xcheck-mark-venkwori",
+    "xcheck-mark-venri",
+    "xcheck-mark-venqoir",
+    "xcheck-mark-vencor",
+    "xcheck-mark-v3nqori",
+    "xcheck-mark-venqor1",
+    "supp:primary-sweep:phonetic:venqori:eac756bf",
+    "supp:primary-sweep:default:ven-qori:1a6bd242",
+    "supp:primary-sweep:default:venkuri:1b385422",
+    "supp:primary-sweep:default:vinkory:e64e2418",
+    "supp:primary-sweep:default:vunqeri:a467e41c",
+    "supp:transliteration-numeric:exact:venqori:a60444fc",
+    "supp:transliteration-numeric:default:wen-ke-li:bbeec9c5",
+    "supp:transliteration-numeric:default:ben-ko-ri:29e84880",
+    "supp:transliteration-numeric:default:bhen-ko-ri:8a11942b",
+    "supp:primary-sweep:exact:venqori:a9da01c2"
+  ],
+  "main_markets": [
+    "JP",
+    "KR"
+  ],
+  "skeleton": [
+    {
+      "axis": "primary-sweep",
+      "state": "executed",
+      "entries": 43,
+      "executed": 32,
+      "crowds": 0,
+      "skipped": 0,
+      "missing": [],
+      "awaiting": 11
+    },
+    {
+      "axis": "transliteration-numeric",
+      "state": "executed",
+      "entries": 13,
+      "executed": 9,
+      "crowds": 0,
+      "skipped": 0,
+      "missing": [],
+      "awaiting": 4
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "uri": "/mark/mm/ce4c4b89-1c15-4e1b-aa16-639be1e30cb6",
+  "provider": "clarivate",
+  "office": "mm",
+  "guid": "ce4c4b89-1c15-4e1b-aa16-639be1e30cb6",
+  "applicationNumber": null,
+  "registrationNumber": "4662/1996",
+  "applicationDate": null,
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "VENRI SERIES",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "MATSUSHITA",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "KADOMA SHI",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "MATSUSHITA"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09"
+        }
+      ]
+    },
+    "id": "ce4c4b89-1c15-4e1b-aa16-639be1e30cb6",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250203",
+    "registrationOfficeCode": "MM",
+    "registrationOfficeName": "Myanmar",
+    "status": {
+      "active": false,
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "LAPSED REGISTRATION",
+      "registration": {
+        "registrationNumber": "4662/1996"
+      }
+    },
+    "version": "20250203143424",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENRI SERIES"
+    }
+  },
+  "_uri": "/mark/mm/ce4c4b89-1c15-4e1b-aa16-639be1e30cb6",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.203Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

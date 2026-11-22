@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/in/d4b0576a-f239-4936-90b0-662dd47e8c7c",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "d4b0576a-f239-4936-90b0-662dd47e8c7c",
+  "applicationNumber": "4276343",
+  "registrationNumber": null,
+  "applicationDate": "2019-08-27",
+  "registrationDate": null,
+  "expiryDate": "2029-08-27",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SEVEN RIVERS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education; Providing of training; Entertainment; Sporting and cultural activities.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "ANHEUSER BUSCH INBEV INDIA LIMITED Body Incorporate",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "ANAND AND ANAND.[295]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Unit No 301-302, Third Floor, Dynasty Business Park, B Wing, Andheri Kurla Road, Andheri (East), Mumbai-40005",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "ANHEUSER BUSCH INBEV INDIA LIMITED Body Incorporate"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education; Providing of training; Entertainment; Sporting and cultural activities."
+        }
+      ]
+    },
+    "id": "d4b0576a-f239-4936-90b0-662dd47e8c7c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1939"
+      }
+    ],
+    "recordLastUpdated": "20250710",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "B-41,NIZAMUDDIN EAST, NEW DELHI - 110 013.",
+        "representativeName": "ANAND AND ANAND.[295]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190827",
+        "applicationNumber": "4276343"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290827",
+      "markCurrentStatus": "REGISTERED"
+    },
+    "version": "20250710144643",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SEVEN RIVERS"
+    }
+  },
+  "_uri": "/mark/in/d4b0576a-f239-4936-90b0-662dd47e8c7c",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.177Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

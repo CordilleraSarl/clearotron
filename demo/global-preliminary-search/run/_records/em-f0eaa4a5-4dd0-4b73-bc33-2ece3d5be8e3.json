@@ -2728,10 +2728,10 @@
       "translation": null
     }
   ],
-  "owner": "JULIEN SATGE",
+  "owner": "ENVIE NOMADE",
   "ownerNative": null,
   "ownerCountry": "FR",
-  "representative": "Alexandrine PANTZ",
+  "representative": "WE ARE BOLD",
   "priorities": null,
   "seniorities": null,
   "basicRegistrationApplications": null,
@@ -2750,10 +2750,10 @@
     "contentType": "trademark",
     "applicants": [
       {
-        "applicantAddress": "6 Avenue du Lac,Flourens, 31130",
+        "applicantAddress": "24 RUE SEVESO,FENOUILLET, 31150",
         "applicantAddressCountryCode": "FR",
         "applicantAddressCountryName": "France",
-        "applicantName": "JULIEN SATGE"
+        "applicantName": "ENVIE NOMADE"
       }
     ],
     "applicationLanguageCode": "fr",
@@ -4266,15 +4266,15 @@
         "publicationVolume": "35"
       }
     ],
-    "recordLastUpdated": "20260918",
+    "recordLastUpdated": "20261102",
     "registrationOfficeCode": "EM",
     "registrationOfficeName": "EU trade marks",
     "representatives": [
       {
-        "representativeAddress": "78 Route d'Espagne,Toulouse, 31100",
+        "representativeAddress": "19, rue des Petites Ecuries,Paris, 75010",
         "representativeAddressCountryCode": "FR",
         "representativeAddressCountryName": "France",
-        "representativeName": "Alexandrine PANTZ"
+        "representativeName": "WE ARE BOLD"
       }
     ],
     "secondLanguageCode": "en",
@@ -4293,14 +4293,14 @@
         "registrationNumber": "19103922"
       }
     },
-    "version": "20260918002835",
+    "version": "20261102120115",
     "wordMarkSpecification": {
       "markVerbalElementText": "VANCORE"
     }
   },
   "_uri": "/mark/em/f0eaa4a5-4dd0-4b73-bc33-2ece3d5be8e3",
   "_receipt": {
-    "fetched_at": "2026-09-18T12:42:34.368Z",
+    "fetched_at": "2026-11-20T19:48:47.516Z",
     "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
   }
 }

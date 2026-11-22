@@ -1,0 +1,286 @@
+{
+  "uri": "/mark/us/4d9a88fd-7225-457f-ab80-c21b554c027d",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "4d9a88fd-7225-457f-ab80-c21b554c027d",
+  "applicationNumber": "75500986",
+  "registrationNumber": "2268897",
+  "applicationDate": "1998-06-12",
+  "registrationDate": "1999-08-10",
+  "expiryDate": null,
+  "renewalDate": "2009-08-10",
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "1999-05-18"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2021-11-05",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "OVENRIDER",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 devices comprised of data loggers and hardware for sensing, storing and transmitting data on temperature, heat transfer, zone, speed and timing for use in reflow solder oven systems and computer software for analyzing data generated therefrom",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Electronic Controls Design, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "BENJAMIN H KAMINASH",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20090813",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+    },
+    "applicants": [
+      {
+        "applicantAddress": "4287B SE International Way, Milwaukie, OR, 97222",
+        "applicantAddressCity": "Milwaukie",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "97222",
+        "applicantAddressStateName": "OREGON",
+        "applicantAddressStreet": "4287B SE International Way",
+        "applicantJurisdictionOfIncorporation": "OREGON",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "Electronic Controls Design, Inc."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 devices comprised of data loggers and hardware for sensing, storing and transmitting data on temperature, heat transfer, zone, speed and timing for use in reflow solder oven systems and computer software for analyzing data generated therefrom"
+        }
+      ]
+    },
+    "id": "4d9a88fd-7225-457f-ab80-c21b554c027d",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20211105",
+        "descriptionText": "CANCELLED SEC. 8 (10-YR)/EXPIRED SECTION 9"
+      },
+      {
+        "date": "20090813",
+        "descriptionText": "REGISTERED AND RENEWED (FIRST RENEWAL - 10 YRS)"
+      },
+      {
+        "date": "20090813",
+        "descriptionText": "REGISTERED - SEC. 8 (10-YR) ACCEPTED/SEC. 9 GRANTED"
+      },
+      {
+        "date": "20090810",
+        "descriptionText": "ASSIGNED TO PARALEGAL"
+      },
+      {
+        "date": "20090806",
+        "descriptionText": "TEAS SECTION 8 & 9 RECEIVED"
+      },
+      {
+        "date": "20060821",
+        "descriptionText": "CASE FILE IN TICRS"
+      },
+      {
+        "date": "20041203",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+      },
+      {
+        "date": "20041018",
+        "descriptionText": "TEAS SECTION 8 & 15 RECEIVED"
+      },
+      {
+        "date": "20041018",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) & SEC. 15 FILED"
+      },
+      {
+        "date": "20021121",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "19990810",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "19990518",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "19990416",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "19990204",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "19990125",
+        "descriptionText": "EXAMINER'S AMENDMENT MAILED"
+      },
+      {
+        "date": "19990115",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      }
+    ],
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "4287A SE International Way, Milwaukie, OR, 97222",
+        "city": "Milwaukie",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "OREGON",
+        "legalEntity": "CORPORATION",
+        "name": "Electronic Controls Design, Inc.",
+        "postalCode": "97222",
+        "stateName": "OREGON",
+        "street": "4287A SE International Way"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "4287B SE International Way, Milwaukie, OR, 97222",
+        "city": "Milwaukie",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "OREGON",
+        "legalEntity": "CORPORATION",
+        "name": "Electronic Controls Design, Inc.",
+        "postalCode": "97222",
+        "stateName": "OREGON",
+        "street": "4287B SE International Way"
+      },
+      {
+        "address": "4287B SE International Way, Milwaukie, OR, 97222",
+        "city": "Milwaukie",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "OREGON",
+        "legalEntity": "CORPORATION",
+        "name": "Electronic Controls Design, Inc.",
+        "postalCode": "97222",
+        "stateName": "OREGON",
+        "street": "4287B SE International Way"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "4287A SE International Way, Milwaukie, OR, 97222",
+        "city": "Milwaukie",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "OREGON",
+        "legalEntity": "CORPORATION",
+        "name": "Electronic Controls Design, Inc.",
+        "postalCode": "97222",
+        "stateName": "OREGON",
+        "street": "4287A SE International Way"
+      }
+    ],
+    "recordLastUpdated": "20260109",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "PORTLAND, OR 97208, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "PORTLAND, OR 97208",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "BENJAMIN H KAMINASH KAMINASH & ASSOCIATES, LLC, PO BOX 3317"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "PORTLAND, OR 97208, UNITED STATES",
+        "representativeAddressLines": [
+          "PORTLAND, OR 97208",
+          "UNITED STATES"
+        ],
+        "representativeName": "BENJAMIN H KAMINASH"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19980612",
+        "applicationNumber": "75500986"
+      },
+      "cancellationDate": "20211105",
+      "cancellationPublicationDate": "20211214",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "19980303"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "19980303"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20211105",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "19990518"
+      ],
+      "registration": {
+        "registrationDate": "19990810",
+        "registrationNumber": "2268897"
+      },
+      "renewalDate": "20090810"
+    },
+    "version": "20260109051338",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "OVEN RIDER",
+      "markVerbalElementText": "OVENRIDER"
+    }
+  },
+  "_uri": "/mark/us/4d9a88fd-7225-457f-ab80-c21b554c027d",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.198Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

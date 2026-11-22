@@ -1,0 +1,149 @@
+{
+  "uri": "/mark/xs/0c63c9e7-27be-4764-86a3-4b12f7ca7315",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "0c63c9e7-27be-4764-86a3-4b12f7ca7315",
+  "applicationNumber": null,
+  "registrationNumber": "M05910",
+  "applicationDate": null,
+  "registrationDate": "2005-01-31",
+  "expiryDate": null,
+  "renewalDate": "2015-01-31",
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "PROVENRICH",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Miscellaneous services",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "PROVENRICH, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "3934 BLUE SPRUCE DR, DEWITT, MI, 48820",
+        "applicantAddressCity": "DEWITT",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "48820",
+        "applicantAddressStateName": "MICHIGAN",
+        "applicantAddressStreet": "3934 BLUE SPRUCE DR",
+        "applicantName": "PROVENRICH, INC."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Miscellaneous services"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "100",
+          "natGoodsServicesDescription": "Miscellaneous services"
+        }
+      ]
+    },
+    "id": "0c63c9e7-27be-4764-86a3-4b12f7ca7315",
+    "ipRightKind": "tmk",
+    "kindMark": "SERVICE MARK",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "3934 BLUE SPRUCE DR, DEWITT, MI, 48820",
+        "city": "DEWITT",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "name": "PROVENRICH, INC.",
+        "postalCode": "48820",
+        "stateName": "MICHIGAN",
+        "street": "3934 BLUE SPRUCE DR"
+      }
+    ],
+    "recordLastUpdated": "20260913",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "renewalOwners": [
+      {
+        "address": "3934 BLUE SPRUCE DR, DEWITT, MI, 48820",
+        "city": "DEWITT",
+        "name": "PROVENRICH, INC.",
+        "postalCode": "48820",
+        "renewalDate": "20150131",
+        "stateName": "MICHIGAN",
+        "street": "3934 BLUE SPRUCE DR"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20050108"
+        }
+      ],
+      "firstUsedAnywhereDate": "20050108",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "RENEWED"
+        ]
+      },
+      "markCurrentStatus": "RENEWED",
+      "registration": {
+        "registrationDate": "20050131",
+        "registrationNumber": "M05910"
+      },
+      "renewalDate": "20150131"
+    },
+    "usStateOfficeCode": "MI",
+    "usStateOfficeName": "MICHIGAN",
+    "version": "20260913153428",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "PROVEN RICH",
+      "markVerbalElementText": "PROVENRICH"
+    }
+  },
+  "_uri": "/mark/xs/0c63c9e7-27be-4764-86a3-4b12f7ca7315",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.188Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

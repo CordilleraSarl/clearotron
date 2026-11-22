@@ -1,0 +1,119 @@
+{
+  "uri": "/mark/in/ba73af1c-4a0d-4c24-a50f-865a99eb92e6",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "ba73af1c-4a0d-4c24-a50f-865a99eb92e6",
+  "applicationNumber": "3934852",
+  "registrationNumber": null,
+  "applicationDate": "2018-09-04",
+  "registrationDate": null,
+  "expiryDate": "2028-09-04",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SEVEN RING",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Wearable devices, payment devices, electronic hardware, internet of things, integrated circuits, electronic sensors, batteries, software, firmware, contactless payment devices, access control devices, keyless entry devices, transport ticketing devices, near field communication devices",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "SEVENRING INNOVATIONS PRIVATE LIMITED Body Incorporate",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "BHAVIK SALIA[18094]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Flat No. 1003, C-Wing, Marathon Cosmos, LBS Marg, Mulund West, Mumbai - 400080",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "SEVENRING INNOVATIONS PRIVATE LIMITED Body Incorporate"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Wearable devices, payment devices, electronic hardware, internet of things, integrated circuits, electronic sensors, batteries, software, firmware, contactless payment devices, access control devices, keyless entry devices, transport ticketing devices, near field communication devices"
+        }
+      ]
+    },
+    "id": "ba73af1c-4a0d-4c24-a50f-865a99eb92e6",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1876"
+      }
+    ],
+    "recordLastUpdated": "20250710",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "703, Vijay Tower, Dr. Lazarus Road, Charai, Thane",
+        "representativeName": "BHAVIK SALIA[18094]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180904",
+        "applicationNumber": "3934852"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280904",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20180423"
+        }
+      ],
+      "markCurrentStatus": "REGISTERED"
+    },
+    "version": "20250710142252",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SEVEN RING"
+    }
+  },
+  "_uri": "/mark/in/ba73af1c-4a0d-4c24-a50f-865a99eb92e6",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.176Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

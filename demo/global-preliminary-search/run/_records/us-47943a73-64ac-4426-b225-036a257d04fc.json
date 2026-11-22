@@ -1,0 +1,173 @@
+{
+  "uri": "/mark/us/47943a73-64ac-4426-b225-036a257d04fc",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "47943a73-64ac-4426-b225-036a257d04fc",
+  "applicationNumber": "50152173",
+  "registrationNumber": null,
+  "applicationDate": "2026-10-09",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "VINQR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Software as a service (SAAS) services featuring software for Creating, storing, organizing, and sharing digital vehicle profiles, vehicle maintenance and restoration records, ownership histories, photographs, documents, and personal stories, and managing access to and transfer of those records between vehicle custodians.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "VINQR LLC",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "2005 NE 123rd Ave, Vancouver, WA, 98684, USAM",
+        "applicantAddressCity": "Vancouver",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "98684",
+        "applicantAddressStateName": "WASHINGTON",
+        "applicantAddressStreet": "2005 NE 123rd Ave",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "VINQR LLC"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Software as a service (SAAS) services featuring software for Creating, storing, organizing, and sharing digital vehicle profiles, vehicle maintenance and restoration records, ownership histories, photographs, documents, and personal stories, and managing access to and transfer of those records between vehicle custodians."
+        }
+      ]
+    },
+    "id": "47943a73-64ac-4426-b225-036a257d04fc",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20261009",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20261009",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "2005 NE 123rd Ave, Vancouver, WA, 98684, USAM",
+        "city": "Vancouver",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "VINQR LLC",
+        "postalCode": "98684",
+        "stateName": "WASHINGTON",
+        "street": "2005 NE 123rd Ave"
+      },
+      {
+        "address": "2005 NE 123rd Ave, Vancouver, WA, 98684, USAM",
+        "city": "Vancouver",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "VINQR LLC",
+        "postalCode": "98684",
+        "stateName": "WASHINGTON",
+        "street": "2005 NE 123rd Ave"
+      }
+    ],
+    "recordLastUpdated": "20261013",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Vancouver, WA 98684, United States",
+        "representativeCorrespondentAddressLines": [
+          "Vancouver, WA 98684",
+          "United States"
+        ],
+        "representativeCorrespondentName": "VINQR LLC, 2005 NE 123rd Ave"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Vancouver, WA 98684, United States",
+        "representativeAddressLines": [
+          "Vancouver, WA 98684",
+          "United States"
+        ]
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20261009",
+        "applicationNumber": "50152173"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "ipOffice": {
+        "markOfficialStatus": "NEW APPLICATION - RECORD INITIALIZED NOT ASSIGNED TO EXAMINER",
+        "markOfficialStatusCode": "630",
+        "markOfficialStatusDate": "20261009",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20261013111910",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VINQR"
+    }
+  },
+  "_uri": "/mark/us/47943a73-64ac-4426-b225-036a257d04fc",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:16.279Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/in/ba9a0f47-4f51-4521-ad22-95496cab6bab",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "ba9a0f47-4f51-4521-ad22-95496cab6bab",
+  "applicationNumber": "4072421",
+  "registrationNumber": null,
+  "applicationDate": "2019-01-30",
+  "registrationDate": null,
+  "expiryDate": "2029-01-30",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SEVEN RIVERS INTERNATIONAL SCHOOL",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Nursery school, secondary school, education, educational services, teaching, providing of training, instruction services, entertainment, sporting and cultural activities, services of all forms of education of persons, physical education, organisation of sports and other competitions.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "GREEN ACRES EDUCATION SERVICES LLP Limited Liability Partnership(LLP)",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "Khaitan & Co.[1887]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "96, Chembur Mankhurd Link Road, Shivaji Nagar, Mumbai - 400043",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "GREEN ACRES EDUCATION SERVICES LLP Limited Liability Partnership(LLP)"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Nursery school, secondary school, education, educational services, teaching, providing of training, instruction services, entertainment, sporting and cultural activities, services of all forms of education of persons, physical education, organisation of sports and other competitions."
+        }
+      ]
+    },
+    "id": "ba9a0f47-4f51-4521-ad22-95496cab6bab",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1890"
+      }
+    ],
+    "recordLastUpdated": "20250710",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "Khaitan & Co. One Indiabulls Centre, 13th Floor, 841 Senapati Bapat Marg, Elphinstone Road, Mumbai 400 013.",
+        "representativeName": "Khaitan & Co.[1887]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190130",
+        "applicationNumber": "4072421"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290130",
+      "markCurrentStatus": "REGISTERED"
+    },
+    "version": "20250710143230",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SEVEN RIVERS INTERNATIONAL SCHOOL"
+    }
+  },
+  "_uri": "/mark/in/ba9a0f47-4f51-4521-ad22-95496cab6bab",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.176Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

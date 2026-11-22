@@ -68,7 +68,7 @@
     "agreement": null,
     "aripo": null
   },
-  "imageAvailable": false,
+  "imageAvailable": true,
   "resolved_link": null,
   "oppositions": null,
   "_provenance": {
@@ -254,7 +254,7 @@
       }
     ],
     "markFeature": "WORD ONLY",
-    "markImagesAvailable": false,
+    "markImagesAvailable": true,
     "markPublicationCopiesAvailable": false,
     "originalApplicants": [
       {
@@ -310,7 +310,7 @@
         "street": "7155 SW Varns Street"
       }
     ],
-    "recordLastUpdated": "20260109",
+    "recordLastUpdated": "20261018",
     "registrationOfficeCode": "US",
     "registrationOfficeName": "USPTO",
     "representativeCorrespondents": [
@@ -399,14 +399,14 @@
       },
       "revivalDate": "20060927"
     },
-    "version": "20260109053222",
+    "version": "20261018172426",
     "wordMarkSpecification": {
       "markVerbalElementText": "VENCORE"
     }
   },
   "_uri": "/mark/us/5a19992f-6f39-4cf2-abcc-ea8b5d879972",
   "_receipt": {
-    "fetched_at": "2026-09-18T12:41:45.630Z",
+    "fetched_at": "2026-11-20T19:48:13.919Z",
     "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
   }
 }

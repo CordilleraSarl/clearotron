@@ -1,0 +1,191 @@
+{
+  "uri": "/mark/bx/89496d4f-8fb1-47dd-b75e-edd5c63af273",
+  "provider": "clarivate",
+  "office": "bx",
+  "guid": "89496d4f-8fb1-47dd-b75e-edd5c63af273",
+  "applicationNumber": "1549779",
+  "registrationNumber": "1549779",
+  "applicationDate": "2026-05-26",
+  "registrationDate": "2026-08-18",
+  "expiryDate": "2036-05-26",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-08-18",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "RAVENRING",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    25,
+    28,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Software; Software en applicaties voor mobiele toestellen; downloadbare interactieve entertainment software voor het spelen van computerspellen; camera's; wegwerpfototoestellen",
+      "translation_language": "en",
+      "translation": "Software; Software and applications for mobile devices; downloadable interactive entertainment software for playing computer games; cameras; disposable cameras"
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "nl",
+      "description": "Drukwerken; Schriften; tekeninstrumenten; schrijfinstrumenten; kleurpotloden; kleurplaten; kleurboeken; decoratieve penuiteindeversierselen; pennen- en potlodenhouders; schrijf- en stempelgerei; stickers; foto's; fotoalbums; ansichtkaarten; wenskaarten; prenten; posters; portretten; decoratiemateriaal en materialen voor kunst en media van papier of karton, zoals schilderpapier, vouwpapier en karton voor grafische kunst; wanddecoraties van papier; tissues; papieren slabbetjes; plattegronden; wereldbollen",
+      "translation_language": "en",
+      "translation": "Printed matter; Notebooks; drawing instruments; writing instruments; colored pencils; coloring pages; coloring books; decorative pen tip decorations; pen and pencil holders; writing and stamping implements; stickers; photographs; photo albums; postcards; greeting cards; prints; posters; portraits; decorative material and materials for art and media made of paper or cardboard, such as painting paper, folding paper and cardboard for graphic art; paper wall decorations; tissues; paper bibs; maps; globes"
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "nl",
+      "description": "Kleding; schoeisel; hoofddeksels; mutsen; zonnekleppen; dassen; sjaals; handschoenen; sokken; T-shirts; zwemkleding; badkleding; ondergoed en nachtkleding; sportkleding; schorten; verkleedkostuums; kledingstukken voor gebruik in het theater; babyslabbetjes van plastic",
+      "translation_language": "en",
+      "translation": "Clothing; footwear; headgear; caps; sun visors; ties; scarves; gloves; socks; T-shirts; swimwear; bathing suits; underwear and nightwear; sportswear; aprons; fancy dress costumes; theatrical garments; plastic baby bibs"
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "nl",
+      "description": "Speelgoed; speelgoed voor meerdere activiteiten voor kinderen; knuffelspeelgoed; Pluchen speelgoed; speelgoedpoppen; speelgoedfiguurtjes; verkleedmaskers; spellen; puzzels; speelkaarten; speelconstructies voor kinderen; videospelapparatuur; feestartikelen; feestgeschenkjes in de vorm van klein speelgoed; pretparkattracties",
+      "translation_language": "en",
+      "translation": "Toys; multi-activity toys for children; stuffed toys; plush toys; toy dolls; toy figures; dress-up masks; games; puzzles; playing cards; children&#39;s play constructions; video game equipment; party supplies; small toy party favors; amusement park attractions"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "nl",
+      "description": "Entertainment diensten; opvoeding; educatie; ontspanning in de vorm van shows in pretparken; ontspanning in de vorm van theaterproducties; organisatie, productie en presentatie van theater-opvoeringen; theatervoorstellingen",
+      "translation_language": "en",
+      "translation": "Entertainment services; education; recreation in the form of amusement park shows; recreation in the form of theatrical productions; organization, production, and presentation of theatrical performances; theatrical performances"
+    }
+  ],
+  "owner": "DE EFTELING B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "Winston Taylor N.V.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Europalaan 1, 5171 KW Kaatsheuvel",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "DE EFTELING B.V."
+      }
+    ],
+    "applicationLanguageCode": "nl",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Software; Software and applications for mobile devices; downloadable interactive entertainment software for playing computer games; cameras; disposable cameras",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Software; Software en applicaties voor mobiele toestellen; downloadbare interactieve entertainment software voor het spelen van computerspellen; camera's; wegwerpfototoestellen"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Printed matter; Notebooks; drawing instruments; writing instruments; colored pencils; coloring pages; coloring books; decorative pen tip decorations; pen and pencil holders; writing and stamping implements; stickers; photographs; photo albums; postcards; greeting cards; prints; posters; portraits; decorative material and materials for art and media made of paper or cardboard, such as painting paper, folding paper and cardboard for graphic art; paper wall decorations; tissues; paper bibs; maps; globes",
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Drukwerken; Schriften; tekeninstrumenten; schrijfinstrumenten; kleurpotloden; kleurplaten; kleurboeken; decoratieve penuiteindeversierselen; pennen- en potlodenhouders; schrijf- en stempelgerei; stickers; foto's; fotoalbums; ansichtkaarten; wenskaarten; prenten; posters; portretten; decoratiemateriaal en materialen voor kunst en media van papier of karton, zoals schilderpapier, vouwpapier en karton voor grafische kunst; wanddecoraties van papier; tissues; papieren slabbetjes; plattegronden; wereldbollen"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Clothing; footwear; headgear; caps; sun visors; ties; scarves; gloves; socks; T-shirts; swimwear; bathing suits; underwear and nightwear; sportswear; aprons; fancy dress costumes; theatrical garments; plastic baby bibs",
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Kleding; schoeisel; hoofddeksels; mutsen; zonnekleppen; dassen; sjaals; handschoenen; sokken; T-shirts; zwemkleding; badkleding; ondergoed en nachtkleding; sportkleding; schorten; verkleedkostuums; kledingstukken voor gebruik in het theater; babyslabbetjes van plastic"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Toys; multi-activity toys for children; stuffed toys; plush toys; toy dolls; toy figures; dress-up masks; games; puzzles; playing cards; children&#39;s play constructions; video game equipment; party supplies; small toy party favors; amusement park attractions",
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Speelgoed; speelgoed voor meerdere activiteiten voor kinderen; knuffelspeelgoed; Pluchen speelgoed; speelgoedpoppen; speelgoedfiguurtjes; verkleedmaskers; spellen; puzzels; speelkaarten; speelconstructies voor kinderen; videospelapparatuur; feestartikelen; feestgeschenkjes in de vorm van klein speelgoed; pretparkattracties"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Entertainment services; education; recreation in the form of amusement park shows; recreation in the form of theatrical productions; organization, production, and presentation of theatrical performances; theatrical performances",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Entertainment diensten; opvoeding; educatie; ontspanning in de vorm van shows in pretparken; ontspanning in de vorm van theaterproducties; organisatie, productie en presentatie van theater-opvoeringen; theatervoorstellingen"
+        }
+      ]
+    },
+    "id": "89496d4f-8fb1-47dd-b75e-edd5c63af273",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "0818"
+      }
+    ],
+    "recordLastUpdated": "20260825",
+    "registrationOfficeCode": "BX",
+    "registrationOfficeName": "Benelux",
+    "representatives": [
+      {
+        "representativeAddress": "Kennedyplein 201, 5611 ZT Eindhoven",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "Winston Taylor N.V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260526",
+        "applicationNumber": "1549779"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360526",
+      "lastPublicationDate": "20260818",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20260818",
+        "registrationNumber": "1549779"
+      }
+    },
+    "version": "20260825020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "RAVENRING"
+    }
+  },
+  "_uri": "/mark/bx/89496d4f-8fb1-47dd-b75e-edd5c63af273",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.200Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

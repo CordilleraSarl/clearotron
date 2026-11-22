@@ -12,13 +12,7 @@
   "customer": null,
   "marksDetailed": [
     {
-      "name": "VENQORI",
-      "classes": [
-        9,
-        42,
-        41
-      ],
-      "ref": "DEMO-2014-knockout-search"
+      "name": "VENQORI"
     }
   ]
 }

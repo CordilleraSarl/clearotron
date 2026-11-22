@@ -1,0 +1,150 @@
+{
+  "uri": "/mark/cn/de12a421-bfac-4adc-936b-8bc2bf32fd50",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "de12a421-bfac-4adc-936b-8bc2bf32fd50",
+  "applicationNumber": "62967336",
+  "registrationNumber": "62967336",
+  "applicationDate": "2022-03-02",
+  "registrationDate": "2022-08-21",
+  "expiryDate": "2032-08-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-05-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SEVEN RINGS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "体育培训,组织体育比赛,出借书籍和杂志,文字出版(广告宣传文本除外),娱乐服务,体育场设施出租,具有汽车赛性质的娱乐,演出,游戏器具出租,导游服务",
+      "translation_language": "en",
+      "translation": "Sports training, organization of sports competitions, lending of books and magazines, text publishing (except for advertising texts), entertainment services, rental of stadium facilities, entertainment of the nature of car racing, performances, rental of game equipment, tour guide services"
+    }
+  ],
+  "owner": "Beijing Seven Runs Karting Culture Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "北京市昌平区中兴路21号院1号楼10层1022",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Beijing Seven Runs Karting Culture Co., Ltd.",
+        "applicantNativeName": "北京赛文润斯卡丁车文化有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Sports training, organization of sports competitions, lending of books and magazines, text publishing (except for advertising texts), entertainment services, rental of stadium facilities, entertainment of the nature of car racing, performances, rental of game equipment, tour guide services",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "体育培训,组织体育比赛,出借书籍和杂志,文字出版(广告宣传文本除外),娱乐服务,体育场设施出租,具有汽车赛性质的娱乐,演出,游戏器具出租,导游服务"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Education",
+        "Arranging and conducting service of events",
+        "Library service",
+        "Publishing service",
+        "Amusement and sports service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4101",
+          "subNatGoodsServicesDescription": "Education"
+        },
+        {
+          "subNatClassNumber": "4102",
+          "subNatGoodsServicesDescription": "Arranging and conducting service of events"
+        },
+        {
+          "subNatClassNumber": "4103",
+          "subNatGoodsServicesDescription": "Library service"
+        },
+        {
+          "subNatClassNumber": "4104",
+          "subNatGoodsServicesDescription": "Publishing service"
+        },
+        {
+          "subNatClassNumber": "4105",
+          "subNatGoodsServicesDescription": "Amusement and sports service"
+        }
+      ]
+    },
+    "id": "de12a421-bfac-4adc-936b-8bc2bf32fd50",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1792"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "广州创腾知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220302",
+        "applicationNumber": "62967336"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320820",
+      "lastPublicationDate": "20220520",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220821",
+        "registrationNumber": "62967336"
+      }
+    },
+    "version": "20251004195415",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SEVEN RINGS"
+    }
+  },
+  "_uri": "/mark/cn/de12a421-bfac-4adc-936b-8bc2bf32fd50",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.186Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

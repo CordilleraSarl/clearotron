@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/cn/1d6e4969-9745-4be5-b33f-91630f3a6e6b",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "1d6e4969-9745-4be5-b33f-91630f3a6e6b",
+  "applicationNumber": "80116833",
+  "registrationNumber": "80116833",
+  "applicationDate": "2024-07-31",
+  "registrationDate": "2025-04-21",
+  "expiryDate": "2035-04-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-01-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SEVENRICH",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "穿戴式行动追踪器;电话机;电话听筒;含内部通信系统的电话机;免提扬声电话机;手表式智能手机;无线电话设备;移动电话",
+      "translation_language": "en",
+      "translation": "Wearable activity tracker; telephone; telephone handset; telephone with intercom system; hands-free speakerphone; watch-type smartphone; cordless telephone device; mobile phone"
+    }
+  ],
+  "owner": "ANDREW LIM ZAO TIAN",
+  "ownerNative": null,
+  "ownerCountry": "MY",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "NO.338,JALAN SRI PUTRI 1/14,TAMAN PUTRI,81000 KULAI,JOHOR. MALAYSIA",
+        "applicantAddressCountryCode": "MY",
+        "applicantAddressCountryName": "Malaysia",
+        "applicantName": "ANDREW LIM ZAO TIAN",
+        "applicantNativeName": "林藻钿;ANDREW LIM ZAO TIAN"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Wearable activity tracker; telephone; telephone handset; telephone with intercom system; hands-free speakerphone; watch-type smartphone; cordless telephone device; mobile phone",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "穿戴式行动追踪器;电话机;电话听筒;含内部通信系统的电话机;免提扬声电话机;手表式智能手机;无线电话设备;移动电话"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Equipments used in communication and navigation"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        }
+      ]
+    },
+    "id": "1d6e4969-9745-4be5-b33f-91630f3a6e6b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1920"
+      }
+    ],
+    "recordLastUpdated": "20251005",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "云南新起点知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240731",
+        "applicationNumber": "80116833"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350420",
+      "lastPublicationDate": "20250120",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20250421",
+        "registrationNumber": "80116833"
+      }
+    },
+    "version": "20251005131344",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SEVENRICH"
+    }
+  },
+  "_uri": "/mark/cn/1d6e4969-9745-4be5-b33f-91630f3a6e6b",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.187Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

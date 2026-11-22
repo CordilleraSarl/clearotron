@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/br/4d66f2ae-9663-44fb-8070-5c127bc0545b",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "4d66f2ae-9663-44fb-8070-5c127bc0545b",
+  "applicationNumber": "929310314",
+  "registrationNumber": "929310314",
+  "applicationDate": "2023-01-30",
+  "registrationDate": "2024-06-18",
+  "expiryDate": "2034-06-18",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ESV ENRIQUEÇA SUA VIDA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "pt",
+      "description": "Cursos e treinamentos sobre desenvolvimento pessoal, profissional e financeiro voltados para o público feminino.",
+      "translation_language": "en",
+      "translation": "Courses and training on personal, professional and financial development aimed at women."
+    }
+  ],
+  "owner": "ARIELLA DURIGAN AMARAL",
+  "ownerNative": null,
+  "ownerCountry": "BR",
+  "representative": "ANDERSON TONI",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "BR",
+        "applicantAddressCountryName": "Brazil",
+        "applicantName": "ARIELLA DURIGAN AMARAL"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Courses and training on personal, professional and financial development aimed at women.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Cursos e treinamentos sobre desenvolvimento pessoal, profissional e financeiro voltados para o público feminino."
+        }
+      ]
+    },
+    "id": "4d66f2ae-9663-44fb-8070-5c127bc0545b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "24.17.18",
+      "27.05.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250701",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "ANDERSON TONI"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230130",
+        "applicationNumber": "929310314"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340618",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20240618",
+        "registrationNumber": "929310314"
+      }
+    },
+    "version": "20250701012937",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ESV ENRIQUEÇA SUA VIDA"
+    }
+  },
+  "_uri": "/mark/br/4d66f2ae-9663-44fb-8070-5c127bc0545b",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.188Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,154 @@
+{
+  "uri": "/mark/jp/96bfcb0f-5227-4166-a72f-17315e2eb802",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "96bfcb0f-5227-4166-a72f-17315e2eb802",
+  "applicationNumber": "2018-012260",
+  "registrationNumber": "6099770",
+  "applicationDate": "2018-01-31",
+  "registrationDate": "2018-11-22",
+  "expiryDate": "2028-11-22",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-12-18",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＣＯＶＥＮＲＩＦＥ",
+  "markTransliteration": "KOBENRIFE",
+  "markTranslation": "COVENRIFE",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "携帯電話機専用スタンド，バッテリーチャージャー，盗難警報器，スピーカー用筐体，携帯電話用のケース，携帯電話機用カバー，電気プラグ用コンバーター，データ送信用ケーブル，電気式ナビゲーション装置，開閉器，電線及びケーブル，電気式及び電子式盗難予防用警報機，全地球測位装置（ＧＰＳ），ヘッドホーン，写真用カメラ，携帯型メディアプレーヤー，コンピュータの画面保護用フィルム，台架類，モニター付監視装置（医療用のものを除く。），スマートフォン用保護フィルム",
+      "translation_language": "en",
+      "translation": "Mobile phone stand, Battery charger, Burglar alarm, Speaker cabinet, Case for mobile phone, Cover for mobile phone, Converter for electric plug, Data transmission cable, Electric navigation device, Switchgear, electric wire and cable, Electrical and electronic anti-theft alarm, Global Positioning System (GPS), Headphones, Photographic Camera, Portable Media Player, Screen Protective Film for Computer, Terminals, Monitoring Device with Monitor Except things), protective films for smartphones"
+    }
+  ],
+  "owner": "CHEN LU YANG",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": "FUJII KENICHI",
+  "priorities": [
+    {
+      "priorityDate": "20180131"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "CHEN LU YANG",
+        "applicantNativeAddress": "中華人民共和国",
+        "applicantNativeName": "陳露洋"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Mobile phone stand, Battery charger, Burglar alarm, Speaker cabinet, Case for mobile phone, Cover for mobile phone, Converter for electric plug, Data transmission cable, Electric navigation device, Switchgear, electric wire and cable, Electrical and electronic anti-theft alarm, Global Positioning System (GPS), Headphones, Photographic Camera, Portable Media Player, Screen Protective Film for Computer, Terminals, Monitoring Device with Monitor Except things), protective films for smartphones",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "携帯電話機専用スタンド，バッテリーチャージャー，盗難警報器，スピーカー用筐体，携帯電話用のケース，携帯電話機用カバー，電気プラグ用コンバーター，データ送信用ケーブル，電気式ナビゲーション装置，開閉器，電線及びケーブル，電気式及び電子式盗難予防用警報機，全地球測位装置（ＧＰＳ），ヘッドホーン，写真用カメラ，携帯型メディアプレーヤー，コンピュータの画面保護用フィルム，台架類，モニター付監視装置（医療用のものを除く。），スマートフォン用保護フィルム"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "09G04",
+          "natGoodsServicesDescription": "Fire alarms; Gas alarms; Anti-theft warning apparatus"
+        },
+        {
+          "natClassNumber": "10B01",
+          "natGoodsServicesDescription": "Photographic machines and apparatus; Cinematographic machines and apparatus; Optical machines and apparatus"
+        },
+        {
+          "natClassNumber": "11A01",
+          "natGoodsServicesDescription": "Power distribution or control machines and apparatus; Rotary converters; Phase modifiers; Solar batteries"
+        },
+        {
+          "natClassNumber": "11A05",
+          "natGoodsServicesDescription": "Electric wires and cables"
+        },
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Telecommunication machines and apparatus; Personal digital assistants in the shape of a watch; Smartphones"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants in the shape of a watch; Smartphones; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        }
+      ]
+    },
+    "id": "96bfcb0f-5227-4166-a72f-17315e2eb802",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20180131"
+      }
+    ],
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "FUJII KENICHI",
+        "representativeNativeName": "藤井　健一"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180131",
+        "applicationNumber": "2018-012260"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20281122",
+      "lastPublicationDate": "20181218",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20181122",
+        "registrationNumber": "6099770"
+      }
+    },
+    "version": "20230427183845",
+    "wordMarkSpecification": {
+      "markTranslation": "COVENRIFE",
+      "markTransliteration": "KOBENRIFE",
+      "markVerbalElementText": "ＣＯＶＥＮＲＩＦＥ"
+    }
+  },
+  "_uri": "/mark/jp/96bfcb0f-5227-4166-a72f-17315e2eb802",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.184Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,222 @@
+{
+  "uri": "/mark/kr/70b016ce-c4cd-4c18-9e62-77c6f4dc32c5",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "70b016ce-c4cd-4c18-9e62-77c6f4dc32c5",
+  "applicationNumber": "40-2018-0121982",
+  "registrationNumber": "4014953550000",
+  "applicationDate": "2018-08-31",
+  "registrationDate": "2019-07-02",
+  "expiryDate": "2029-07-02",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-07-08",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "HEAVENRICH",
+  "markTransliteration": "HEAVENRICH",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    36,
+    37,
+    41,
+    42,
+    43
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "ko",
+      "description": "가구전시업, 광고 및 광고물(전단지/브로셔/인쇄물 및 견본) 배포업, 광고 및 홍보업, 광고업, 광고목적의 상품전시업, 금융 및 보험서비스 판촉대행업, 회계업, 기업정보 및 회계자문업, 거래계약알선업, 건축프로젝트의 사업프로젝트 관리업, 기업경영 및 사무처리업, 경매서비스업, 텔레마틱/전화 또는 컴퓨터서비스 가입알선업, 전기통신에 의한 통신판매중개업, 광고대행업, 건축관련 광고업, 휴양리조트 관련 광고업, 휴양리조트사업 운영(경영)업",
+      "translation_language": "en",
+      "translation": "Furniture display business, advertisement and advertisement (flyer/brochure/print and sample) distribution business, advertisement and public relations business, advertisement business, product display business for advertising purposes, financial and insurance service promotion agency business, accounting business, corporate information and accounting advisory business, Transaction contract mediation business, business project management business of building projects, corporate management and office processing business, auction service business, telematic/telephone or computer service subscription mediation business, telecommunication mail-order brokerage business, advertising agency business, architecture-related advertising business, recreational resort-related advertising business, Recreational resort business operation (management) business"
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "ko",
+      "description": "금융서비스업, 거래/자문/관리/처리 관련 금융서비스업, 리스금융업, 뮤추얼펀드업, 부동산금융업, 숙박권발행업, 신기술사업금융업, 신용카드업, 은행업, 자금대부업, 주택담보대출업, 은행 및 보험업, 건물보험업, 건축프로젝트 관련 재무관리업, 거주용 주택 임대업, 건축단지 관련 부동산관리업, 오피스텔분양업, 신용평가서비스업, 건물분양업, 건물임대 관리업, 건물 리스금융업",
+      "translation_language": "en",
+      "translation": "Financial service business, transaction/advisory/management/processing related financial service business, leasing finance business, mutual fund business, real estate finance business, lodging ticket issuance business, new technology business finance business, credit card business, banking business, loan business, mortgage business, banking and insurance business, building Insurance business, construction project related financial management business, residential housing rental business, real estate management business related to building complexes, officetel sales business, credit rating service business, building sales business, building rental management business, building lease finance business"
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "ko",
+      "description": "건물 건축업, 건물단지/거주지건물/거주용 부동산/상업용 건물/쇼핑센터/사무용 건물/주차용 구조물 건축/관리업, 건설업, 공공사업 건축/관리/개조업, 전문공사업, 거주용 건물 건설공사업, 빌딩건설업, 종합건설공사업, 주거용 및 상업용 건축물건설업, 주방공사업, 주상복합건물 건축관리업, 주택 및 빌딩건축상담업, 건설장비임대업, 건설정보제공업, 소방공사업, 건설공사 자문제공업, 토목건축용 장비/기계 임대업, 주택건축업, 전문건설공사업",
+      "translation_language": "en",
+      "translation": "Building construction business, building complex/residential building/residential real estate/commercial building/shopping center/office building/parking structure construction/management business, construction business, public construction construction/management/renovation business, professional construction business, residential building construction business, building Construction business, general construction business, residential and commercial building construction business, kitchen construction business, mixed-use building management business, housing and building construction consulting business, construction equipment rental business, construction information provision business, firefighting construction business, construction consulting business, civil construction equipment/machine rental business, Housing construction business, specialized construction business"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "스포츠경기 및 스포츠행사의 준비 및 진행업, 스포츠지도업, 스포츠시설제공업, 스포츠행사/운동경기 및 수상프로그램용 다양한 시설제공업, 운동시설 임대업, 체육교육/경기 및 스포츠시설 제공업, 신체단련 및 운동시설/서비스 제공업, 산림치유체험장 시설제공업, 경기장시설임대업, 골프시설제공업, 스포츠 관련 교육 및 훈련업, 스포츠설비관리업, 문화공연정보제공업, 쇼 및 스포츠행사 좌석예약업, 연예오락/스포츠 및 문화 행사용 티켓예약업, 훈련 및 지도업, 브로슈어 출판업, 문화적 목적의 행사조직업, 토론회/컨퍼런스/집회/세미나/심포지엄/워크샵 준비 및 진행업, 직원개발용 훈련 및 추가훈련업",
+      "translation_language": "en",
+      "translation": "Preparation and execution of sports events and sports events, sports guidance business, sports facility provision industry, sports event/sports event and water program various facility provision business, sports facility rental business, physical education/game and sports facility provision business, physical training and exercise facilities /Service provider business, forest healing experience center facility provider business, stadium facility rental business, golf facility provision business, sports-related education and training business, sports equipment management business, cultural performance information provider business, seat reservation business for shows and sports events, tickets for entertainment/sports and cultural events Reservation business, training and guidance business, brochure publishing business, cultural event organization business, discussion/conference/assembly/seminar/symposium/workshop preparation and management business, training for employee development and additional training business"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "가정용 실내장식에 관한 디자인서비스업, 건축설계에 관한 자문업, 거주지 커뮤니티 설계 및 디자인업, 건축계획 준비를 위한 건축설계업, 건축제도업, 건축프로젝트 관련 컴퓨터지원식 디자인업, 구조물 설계용 공학서비스업, 부동산 관련 디자인서비스업, 상업건물 설계 서비스업, 스포츠시설 설계 및 디자인업, 주택설계업, 측량업, 토목설계업, 토지조사설계업, 건물내 환경영향 사건 모니터링업, 환경연구업, 호텔 설계업, 리조트 설계업, 건축물설계업, 오피스텔 설계업, 리조트 휴양시설 건축도면 작성업, 휴양시설 건축도면 작성업, 가구디자인업",
+      "translation_language": "en",
+      "translation": "Design service business related to home interior decoration, architectural design consulting business, residential community design and design business, architectural design business for preparing architectural plans, architectural drafting business, computer-aided design business related to building projects, engineering service business for structure design, real estate related business Design service business, commercial building design service business, sports facility design and design business, housing design business, survey business, civil engineering design business, land survey design business, environmental impact event monitoring business in buildings, environmental research business, hotel design business, resort design business, building design business, officetel design business, Resort recreation facility architectural drawing business, recreation facility architectural drawing business, furniture design business"
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "ko",
+      "description": "리조트숙박업, 리조트호텔업, 여행숙박 정보제공 및 여행숙박시설 예약대행업, 웹사이트를 통한 친환경여행 예약 형태의 임시숙박시설 예약업, 펜션업, 호스텔업, 회원제 숙박시설제공업, 휴가용 거주지 및 아파트용 임시숙박시설 제공업, 휴양임시숙박예약 관련 온라인 정보제공업, 휴가캠프 숙박서비스업, 호텔/모텔/리조트업, 콘도미니엄업, 임시숙박시설 제공업, 카페 및 레스토랑서비스업, 레스토랑 및 호텔서비스업, 인터넷을 통한 숙박 정보제공업, 게스트하우스 서비스제공업, 고급아파트 임시숙박시설 제공업, 공영 주택 서비스업, 관광객숙박알선업",
+      "translation_language": "en",
+      "translation": "Resort accommodation business, resort hotel business, travel accommodation information provision and travel accommodation reservation agency business, temporary accommodation facility reservation business in the form of eco-friendly travel reservation through website, pension business, hostel business, membership accommodation facility provider business, temporary accommodation for vacation residences and apartments Facility provision business, online information providing business related to temporary vacation accommodation reservation, vacation camp accommodation service business, hotel/motel/resort business, condominium business, temporary accommodation facility provider business, cafe and restaurant service business, restaurant and hotel service business, accommodation information providing business through the Internet, guest House service provider, luxury apartment temporary accommodation facility, public housing service, tourist accommodation arrangement"
+    }
+  ],
+  "owner": "TAEGUN CO.,LTD",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "김해중 (Kim Hae Joong)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "경기도 오산시",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "TAEGUN CO.,LTD",
+        "applicantNativeName": "주식회사 태건산업개발"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Furniture display business, advertisement and advertisement (flyer/brochure/print and sample) distribution business, advertisement and public relations business, advertisement business, product display business for advertising purposes, financial and insurance service promotion agency business, accounting business, corporate information and accounting advisory business, Transaction contract mediation business, business project management business of building projects, corporate management and office processing business, auction service business, telematic/telephone or computer service subscription mediation business, telecommunication mail-order brokerage business, advertising agency business, architecture-related advertising business, recreational resort-related advertising business, Recreational resort business operation (management) business",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "가구전시업, 광고 및 광고물(전단지/브로셔/인쇄물 및 견본) 배포업, 광고 및 홍보업, 광고업, 광고목적의 상품전시업, 금융 및 보험서비스 판촉대행업, 회계업, 기업정보 및 회계자문업, 거래계약알선업, 건축프로젝트의 사업프로젝트 관리업, 기업경영 및 사무처리업, 경매서비스업, 텔레마틱/전화 또는 컴퓨터서비스 가입알선업, 전기통신에 의한 통신판매중개업, 광고대행업, 건축관련 광고업, 휴양리조트 관련 광고업, 휴양리조트사업 운영(경영)업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Financial service business, transaction/advisory/management/processing related financial service business, leasing finance business, mutual fund business, real estate finance business, lodging ticket issuance business, new technology business finance business, credit card business, banking business, loan business, mortgage business, banking and insurance business, building Insurance business, construction project related financial management business, residential housing rental business, real estate management business related to building complexes, officetel sales business, credit rating service business, building sales business, building rental management business, building lease finance business",
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "금융서비스업, 거래/자문/관리/처리 관련 금융서비스업, 리스금융업, 뮤추얼펀드업, 부동산금융업, 숙박권발행업, 신기술사업금융업, 신용카드업, 은행업, 자금대부업, 주택담보대출업, 은행 및 보험업, 건물보험업, 건축프로젝트 관련 재무관리업, 거주용 주택 임대업, 건축단지 관련 부동산관리업, 오피스텔분양업, 신용평가서비스업, 건물분양업, 건물임대 관리업, 건물 리스금융업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Building construction business, building complex/residential building/residential real estate/commercial building/shopping center/office building/parking structure construction/management business, construction business, public construction construction/management/renovation business, professional construction business, residential building construction business, building Construction business, general construction business, residential and commercial building construction business, kitchen construction business, mixed-use building management business, housing and building construction consulting business, construction equipment rental business, construction information provision business, firefighting construction business, construction consulting business, civil construction equipment/machine rental business, Housing construction business, specialized construction business",
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "건물 건축업, 건물단지/거주지건물/거주용 부동산/상업용 건물/쇼핑센터/사무용 건물/주차용 구조물 건축/관리업, 건설업, 공공사업 건축/관리/개조업, 전문공사업, 거주용 건물 건설공사업, 빌딩건설업, 종합건설공사업, 주거용 및 상업용 건축물건설업, 주방공사업, 주상복합건물 건축관리업, 주택 및 빌딩건축상담업, 건설장비임대업, 건설정보제공업, 소방공사업, 건설공사 자문제공업, 토목건축용 장비/기계 임대업, 주택건축업, 전문건설공사업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Preparation and execution of sports events and sports events, sports guidance business, sports facility provision industry, sports event/sports event and water program various facility provision business, sports facility rental business, physical education/game and sports facility provision business, physical training and exercise facilities /Service provider business, forest healing experience center facility provider business, stadium facility rental business, golf facility provision business, sports-related education and training business, sports equipment management business, cultural performance information provider business, seat reservation business for shows and sports events, tickets for entertainment/sports and cultural events Reservation business, training and guidance business, brochure publishing business, cultural event organization business, discussion/conference/assembly/seminar/symposium/workshop preparation and management business, training for employee development and additional training business",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "스포츠경기 및 스포츠행사의 준비 및 진행업, 스포츠지도업, 스포츠시설제공업, 스포츠행사/운동경기 및 수상프로그램용 다양한 시설제공업, 운동시설 임대업, 체육교육/경기 및 스포츠시설 제공업, 신체단련 및 운동시설/서비스 제공업, 산림치유체험장 시설제공업, 경기장시설임대업, 골프시설제공업, 스포츠 관련 교육 및 훈련업, 스포츠설비관리업, 문화공연정보제공업, 쇼 및 스포츠행사 좌석예약업, 연예오락/스포츠 및 문화 행사용 티켓예약업, 훈련 및 지도업, 브로슈어 출판업, 문화적 목적의 행사조직업, 토론회/컨퍼런스/집회/세미나/심포지엄/워크샵 준비 및 진행업, 직원개발용 훈련 및 추가훈련업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Design service business related to home interior decoration, architectural design consulting business, residential community design and design business, architectural design business for preparing architectural plans, architectural drafting business, computer-aided design business related to building projects, engineering service business for structure design, real estate related business Design service business, commercial building design service business, sports facility design and design business, housing design business, survey business, civil engineering design business, land survey design business, environmental impact event monitoring business in buildings, environmental research business, hotel design business, resort design business, building design business, officetel design business, Resort recreation facility architectural drawing business, recreation facility architectural drawing business, furniture design business",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "가정용 실내장식에 관한 디자인서비스업, 건축설계에 관한 자문업, 거주지 커뮤니티 설계 및 디자인업, 건축계획 준비를 위한 건축설계업, 건축제도업, 건축프로젝트 관련 컴퓨터지원식 디자인업, 구조물 설계용 공학서비스업, 부동산 관련 디자인서비스업, 상업건물 설계 서비스업, 스포츠시설 설계 및 디자인업, 주택설계업, 측량업, 토목설계업, 토지조사설계업, 건물내 환경영향 사건 모니터링업, 환경연구업, 호텔 설계업, 리조트 설계업, 건축물설계업, 오피스텔 설계업, 리조트 휴양시설 건축도면 작성업, 휴양시설 건축도면 작성업, 가구디자인업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Resort accommodation business, resort hotel business, travel accommodation information provision and travel accommodation reservation agency business, temporary accommodation facility reservation business in the form of eco-friendly travel reservation through website, pension business, hostel business, membership accommodation facility provider business, temporary accommodation for vacation residences and apartments Facility provision business, online information providing business related to temporary vacation accommodation reservation, vacation camp accommodation service business, hotel/motel/resort business, condominium business, temporary accommodation facility provider business, cafe and restaurant service business, restaurant and hotel service business, accommodation information providing business through the Internet, guest House service provider, luxury apartment temporary accommodation facility, public housing service, tourist accommodation arrangement",
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "리조트숙박업, 리조트호텔업, 여행숙박 정보제공 및 여행숙박시설 예약대행업, 웹사이트를 통한 친환경여행 예약 형태의 임시숙박시설 예약업, 펜션업, 호스텔업, 회원제 숙박시설제공업, 휴가용 거주지 및 아파트용 임시숙박시설 제공업, 휴양임시숙박예약 관련 온라인 정보제공업, 휴가캠프 숙박서비스업, 호텔/모텔/리조트업, 콘도미니엄업, 임시숙박시설 제공업, 카페 및 레스토랑서비스업, 레스토랑 및 호텔서비스업, 인터넷을 통한 숙박 정보제공업, 게스트하우스 서비스제공업, 고급아파트 임시숙박시설 제공업, 공영 주택 서비스업, 관광객숙박알선업"
+        }
+      ]
+    },
+    "id": "70b016ce-c4cd-4c18-9e62-77c6f4dc32c5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.03.23",
+      "27.05.08",
+      "27.09.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "YOUNG-JIN BLDG, F, , SEOCHO -DONG, SEOCHO-GU, SEOUL KOREA (KIM, HONG & ASSOCIATES)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "김해중 (Kim Hae Joong)"
+      },
+      {
+        "representativeAddress": "F, , Seochojungang-ro, Seocho-gu, Republic of Korea(raonpat)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "장만철 (Jang, MAN CHUL)"
+      },
+      {
+        "representativeAddress": "Young-Jin Venture Building, , Seocho -dong, Seocho-gu, Seoul - Korea(RAON International Patent Office)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "이충한 (Lee ChoongHan)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180831",
+        "applicationNumber": "40-2018-0121982"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290702",
+      "lastPublicationDate": "20190708",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20190702",
+        "registrationNumber": "4014953550000"
+      }
+    },
+    "version": "20250625184641",
+    "wordMarkSpecification": {
+      "markTransliteration": "HEAVENRICH",
+      "markVerbalElementText": "HEAVENRICH"
+    }
+  },
+  "_uri": "/mark/kr/70b016ce-c4cd-4c18-9e62-77c6f4dc32c5",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.195Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

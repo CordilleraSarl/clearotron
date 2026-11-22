@@ -1,0 +1,172 @@
+{
+  "uri": "/mark/us/3ba06c9c-744a-4d4d-9e30-6df316322e5e",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "3ba06c9c-744a-4d4d-9e30-6df316322e5e",
+  "applicationNumber": "50117015",
+  "registrationNumber": null,
+  "applicationDate": "2026-09-18",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "SEVENCORAIN",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Downloadable software for monitoring and controlling communication between computers and automated machine systems; Wireless electronic scales; Weighing scales; Weighing scales for kitchen use; Webcams; Wireless electronic devices for locating and tracking wallets; Wearable activity trackers; Wearable computers in the nature of smartwatches; Smart rings; Wearable technological devices being smartwatches; Smart home hubs comprised of voice-activated speakers, computer hardware, and downloadable software for controlling networked devices in the internet of things (IoT)",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Shenzhen Saiwenkarun Intelligent Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": "SPENCER  JONES",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "U.289O, 2F, Bldg.523, Bagualing Ind. Zone, Bagua 3rd Rd., Shenzhen, 518000, CHIN",
+        "applicantAddressCity": "Shenzhen",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantAddressPostalCode": "518000",
+        "applicantAddressStreet": "U.289O, 2F, Bldg.523, Bagualing Ind. Zone, Bagua 3rd Rd.",
+        "applicantJurisdictionOfIncorporation": "CHINA",
+        "applicantName": "Shenzhen Saiwenkarun Intelligent Technology Co., Ltd.",
+        "applicantSecondaryAddressUnit": "Hualin Comm.,Yuanling Subdist.,Futian Dist.,"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Downloadable software for monitoring and controlling communication between computers and automated machine systems; Wireless electronic scales; Weighing scales; Weighing scales for kitchen use; Webcams; Wireless electronic devices for locating and tracking wallets; Wearable activity trackers; Wearable computers in the nature of smartwatches; Smart rings; Wearable technological devices being smartwatches; Smart home hubs comprised of voice-activated speakers, computer hardware, and downloadable software for controlling networked devices in the internet of things (IoT)"
+        }
+      ]
+    },
+    "id": "3ba06c9c-744a-4d4d-9e30-6df316322e5e",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260918",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20260918",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "U.289O, 2F, Bldg.523, Bagualing Ind. Zone, Bagua 3rd Rd., Shenzhen, 518000, CHIN",
+        "city": "Shenzhen",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "name": "Shenzhen Saiwenkarun Intelligent Technology Co., Ltd.",
+        "postalCode": "518000",
+        "secondaryAddressUnit": "Hualin Comm.,Yuanling Subdist.,Futian Dist.,",
+        "street": "U.289O, 2F, Bldg.523, Bagualing Ind. Zone, Bagua 3rd Rd."
+      },
+      {
+        "address": "U.289O, 2F, Bldg.523, Bagualing Ind. Zone, Bagua 3rd Rd., Shenzhen, 518000, CHIN",
+        "city": "Shenzhen",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "name": "Shenzhen Saiwenkarun Intelligent Technology Co., Ltd.",
+        "postalCode": "518000",
+        "secondaryAddressUnit": "Hualin Comm.,Yuanling Subdist.,Futian Dist.,",
+        "street": "U.289O, 2F, Bldg.523, Bagualing Ind. Zone, Bagua 3rd Rd."
+      }
+    ],
+    "recordLastUpdated": "20260922",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Arlington, TX 76003-2341, United States",
+        "representativeCorrespondentAddressLines": [
+          "Arlington, TX 76003-2341",
+          "United States"
+        ],
+        "representativeCorrespondentName": "SPENCER JONES SPENCER JONES LAW, PLLC, P.O. Box 172341"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Arlington, TX 76003-2341, United States",
+        "representativeAddressLines": [
+          "Arlington, TX 76003-2341",
+          "United States"
+        ],
+        "representativeName": "SPENCER  JONES"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260918",
+        "applicationNumber": "50117015"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "ipOffice": {
+        "markOfficialStatus": "NEW APPLICATION - RECORD INITIALIZED NOT ASSIGNED TO EXAMINER",
+        "markOfficialStatusCode": "630",
+        "markOfficialStatusDate": "20260918",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260922122224",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "SEVEN CO RAIN, 7 CO RAIN",
+      "markVerbalElementText": "SEVENCORAIN"
+    }
+  },
+  "_uri": "/mark/us/3ba06c9c-744a-4d4d-9e30-6df316322e5e",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:13.923Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}
