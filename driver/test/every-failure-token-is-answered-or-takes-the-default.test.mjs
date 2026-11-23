@@ -100,7 +100,7 @@ function unmintedCodes(census, rows) {
     }
     if (MINTED_ELSEWHERE[c]) {
       const src = readFileSync(new URL(MINTED_ELSEWHERE[c], import.meta.url), "utf8");
-      if (!new RegExp(`["\`]${c.replace(/[+]/g, "\\+")}[:"\`]`).test(src)) problems.push(`${c}: ${MINTED_ELSEWHERE[c]} no longer mints it`);
+      if (!new RegExp(`["\`]${c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}[:"\`]`).test(src)) problems.push(`${c}: ${MINTED_ELSEWHERE[c]} no longer mints it`);
     } else if (!MINTED_NOWHERE[c]) problems.push(`${c}: a row answers it, and nothing mints it`);
   }
   for (const r of rows) for (const p of r.families ?? []) if (!families.some((f) => p.startsWith(f) || f.startsWith(p))) problems.push(`family ${p} (row ${r.code}): no census family mints it`);
