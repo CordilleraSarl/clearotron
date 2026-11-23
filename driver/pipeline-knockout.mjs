@@ -175,7 +175,7 @@ async function knockoutReviewingPass({ ctx, run, K, merged, plan, chunks, compos
   // It adds no session: the review reads it with the record.
   const rightsDoc = readJsonOrNull(driverDir(run.runDir, EARLIER_RIGHTS_FILE));
   const rightsOutcome = rightsDoc ? earlierRightsOutcome(rightsDoc, merged) : [];
-  if (rightsOutcome.length) atomicWrite(driverDir(run.runDir, "earlier-rights-outcome.json"), JSON.stringify({ schema: 1, outcome: rightsOutcome }, null, 2) + "\n");
+  if (rightsOutcome.length) atomicWrite(driverDir(run.runDir, "earlier-rights-outcome.json"), JSON.stringify({ schema: 1, filings: rightsOutcome }, null, 2) + "\n");
   if (!d.dispatch && !sourceDefects.length && !sourceAnswered.length) {
     runLog(run.runDir, { event: "knockout-review", outcome: "nothing-flagged", flagged: 0, listed: 0,
       marks: merged.marks.length, excludedMarks: about.marks.length, excludedOwners: about.owners.length });

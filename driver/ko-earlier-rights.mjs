@@ -19,7 +19,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { classifyRecord, prepareTargets, isLiveRecord, niceClassKey } from "./band-shape.mjs";
 import { kebab } from "./search-policy.mjs";
-import { driverDir } from "../shared/driver-dir.mjs";
+import { paths } from "./run-record.mjs";
 
 export const EARLIER_RIGHTS_FILE = "earlier-rights.json";
 export const earlierRightsGroupFile = (chunkNo) => `earlier-rights.group-${chunkNo}.json`;
@@ -53,8 +53,8 @@ const RESEMBLES = { "normalized-equal": "the same", "alias-exact": "the same", "
  */
 export function earlierRights(runDir, { leadsPerBusiness = 40 } = {}) {
   const plan = readJson(join(runDir, "knockout-plan.json"))?.marks ?? [];
-  const list = readJson(driverDir(runDir, "register-records.json"))?.marks ?? [];
-  const checks = readJson(driverDir(runDir, "owner-checks.json"))?.checks ?? [];
+  const list = readJson(paths(runDir).registerRecords)?.marks ?? [];
+  const checks = readJson(paths(runDir).ownerChecks)?.checks ?? [];
   // Filings found by a name's own search, never a copy a later step made under the name it was weighed for.
   const ownOf = (n) => (list.find((m) => key(m.name) === key(n))?.records ?? []).filter((r) => r?.recordId && !r.foundUnder);
   const found = list.flatMap((m) => (m.records ?? []).filter((r) => r?.recordId && !r.foundUnder).map((r) => ({ r, under: m.name })));
