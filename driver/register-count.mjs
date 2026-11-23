@@ -332,7 +332,7 @@ export async function countRegisterHits({
     // ONE PROBE = ONE PROVIDER CALL = ONE LEDGER LINE. Extracted so the aggregate predicate below bills,
     // records and degrades through exactly the same path as the two simple ones — a second copy of this
     // for the variant loop is how the two would come to disagree about what a failure means.
-    const probe = async (term, p, { form = null } = {}) => {
+    const probeOnce = async (term, p, { form = null, retry = false } = {}) => {
       const started = Date.now();
       let r;
       try { r = await counter(term, p, { classes: scoped, regions }); }
@@ -362,7 +362,7 @@ export async function countRegisterHits({
       if (ledgerPath) {
         try {
           appendFileSync(ledgerPath, JSON.stringify({
-            ts: now().toISOString(), mark: name, predicate: p.key, match_mode: p.matchMode,
+            ts: now().toISOString(), mark: name, predicate: p.key, match_mode: p.matchMode, ...(retry ? { retry: true } : {}),
             // THE BILLABLE UNIT IS THE FORM, so the form is on the line. A close-variation row costs N
             // calls, not one, and the receipts ledger is where that multiplier is read off — a single
             // aggregate line would report one call and understate the bill by a factor of N.
@@ -381,6 +381,15 @@ export async function countRegisterHits({
       // a count and may never be filled in as one. What travels beside it is the disclosure.
       if (approximated) return { total: null, approximate: true, floor: r.floor };
       return { total: null, unavailable: String(refusal ?? "the count could not be taken").slice(0, 300), ...(deterministic ? { deterministic: true } : {}) };
+    };
+    // A CALL THE REGISTER DID NOT ANSWER IS ASKED ONCE MORE, at once, before its count is left open (2026-11-23). The
+    // provider's own retry covers a server error only, so a dropped connection reached this lane as a failed count and
+    // stayed one for the run. A refusal no retry can change is not asked again, and neither is an answer: a figure, or the
+    // register's floor. One more call for each call that failed, so at most twice a run's count calls, and none on a run
+    // where every call answered.
+    const probe = async (term, p, opts = {}) => {
+      const first = await probeOnce(term, p, opts);
+      return first.unavailable == null || first.deterministic === true ? first : probeOnce(term, p, { ...opts, retry: true });
     };
 
     // The aggregate: the provider's EXACT predicate, once per generated form, summed.

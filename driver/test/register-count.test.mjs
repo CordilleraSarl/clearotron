@@ -159,12 +159,13 @@ test("the close column is a SUM over the generated forms, and the forms ride wit
 test("a PARTIAL variant sweep is null, not a smaller number", async () => {
   // The sum over a half-answered form set is a lower bound wearing the clothes of a total. That is the
   // never-zero rule one step along: a confident small figure over a name that may be everywhere.
-  let n = 0;
+  // The second form fails each time it is asked, its one re-ask included.
+  const second = variantForms("ALCHEMIST").forms[1].form;
   const doc = await run({
     marks: [{ name: "ALCHEMIST" }],
-    counter: async (_t, p) => {
+    counter: async (t, p) => {
       if (p.key !== "close") return { ok: true, total: 1 };
-      return (++n === 2) ? { ok: false, reason: "HTTP 502 from the register" } : { ok: true, total: 3 };
+      return t === second ? { ok: false, reason: "HTTP 502 from the register" } : { ok: true, total: 3 };
     },
   });
   const cell = doc.marks[0].counts.close;
@@ -347,7 +348,7 @@ test("a DETERMINISTIC capability gap is marked as one — and a resume does not 
   const flaky = await run({ marks: [{ name: "FLAKY" }], counter: async () => { n += 1; return { ok: false, reason: "HTTP 502" }; } });
   const flakyCalls = 2 + variantForms("FLAKY").forms.length;
   await run({ marks: [{ name: "FLAKY" }], counter: async () => { n += 1; return { ok: true, total: 4 }; }, prior: flaky });
-  assert.equal(n, flakyCalls * 2, "every probe failed transiently, then every one was retried");
+  assert.equal(n, flakyCalls * 3, "every probe failed transiently and was asked once more, then every one was retried on resume");
 
   // A MIXED close cell — one form structurally refused, one merely 502'd — must NOT settle. Freezing it
   // would keep a retryable gap forever, and the column would read "not available" on every later resume.
@@ -377,9 +378,11 @@ test("receipts: one ledger row per call, carrying what it cost and what it asked
   });
   const rows = readFileSync(ledgerPath, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l));
   const forms = variantForms("IRONWHISK").forms.map((f) => f.form);
-  assert.equal(rows.length, 2 + forms.length,
+  // Each failed count is asked once more, and the re-ask is its own billable line, marked as one.
+  assert.equal(rows.length, 1 + 2 * (1 + forms.length),
     "every billable question is on the record — this is the cost of the product, and the close column is N of them");
-  assert.deepEqual(rows.slice(0, 2).map((r) => r.predicate), ["identical", "containing"]);
+  assert.deepEqual(rows.slice(0, 3).map((r) => r.predicate), ["identical", "containing", "containing"]);
+  assert.deepEqual(rows.map((r) => r.retry === true), rows.map((_, i) => i > 0 && i % 2 === 0), "every second asking of a failed count says so");
   assert.deepEqual(rows[0], {
     ts: "2026-07-22T09:00:00.000Z", mark: "IRONWHISK", predicate: "identical", match_mode: "exact",
     // ["US","WO"], not ["US"]: the receipt records the scope the call was actually made at, and since
@@ -394,7 +397,7 @@ test("receipts: one ledger row per call, carrying what it cost and what it asked
   // THE MULTIPLIER IS READ OFF THE LEDGER, not inferred. Each variant probe is its own line and names
   // the form it asked about — a single aggregate row would report one call where N were billed.
   const variantRows = rows.filter((r) => r.predicate === "close");
-  assert.deepEqual(variantRows.map((r) => r.variant_form), forms);
+  assert.deepEqual(variantRows.map((r) => r.variant_form), forms.flatMap((f) => [f, f]));
   assert.ok(variantRows.every((r) => r.mark === "IRONWHISK" && r.term === r.variant_form),
     "the line names both the mark it belongs to and the term actually sent");
   assert.ok(variantRows.every((r) => r.match_mode === "exact"), "…under the exact predicate, always");
