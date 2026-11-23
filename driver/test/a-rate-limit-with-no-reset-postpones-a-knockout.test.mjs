@@ -40,10 +40,10 @@ const { answeredGrid } = await import("./knockout-grid-fixture.mjs");
 
 const FILING = { record_id: "tm_1", mark_text: "LANTERNWICK", owner_name: "Brightmoor Candle Co", status: "Registered", classes: [4] };
 /** A phrase only the register reading's turn carries (stages-knockout.mjs, "knockout-register-read"). */
-const READING_TURN = "You are reading the register for a KNOCKOUT batch";
-/** A phrase only the review's second look carries, after a correction (stages-knockout.mjs, "knockout-review"). */
-const RECHECK_TURN = "THIS IS THE SECOND LOOK";
-/** The first review raises one material defect on the batch's one name, so a correction and its recheck run. */
+const READING_TURN = "You are reading the register for one name of a KNOCKOUT screen";
+/** A phrase only the correction's turn carries, after the review (stages-knockout.mjs, "knockout-correct"). */
+const CORRECTION_TURN = "A DEFECT IS ANOTHER READER'S FINDING, NOT AN ORDER.";
+/** The review raises one material defect on the batch's one name, so a correction runs. */
 const ONE_DEFECT = JSON.stringify([{ kind: "contradiction", mark: "LANTERNWICK", finding: 1, problem: "The first conflict is rated below what its own evidence shows." }]);
 
 /** One knockout through the lane, with the turn that carries `match` rejected; what the lane answered or threw. */
@@ -91,10 +91,10 @@ test("a rate limit that names no reset time stops the knockout for the shared po
   assert.ok(timed.thrown?.resetsAt, "premise: the control carries its reset time");
 });
 
-test("the recheck after a correction hands a rate limit with no reset time to the same postponement", async () => {
-  const bare = await knockoutWithATurnRejected("recheck-no-reset", "none", { match: RECHECK_TURN, env: { MOCK_KO_MATERIAL: ONE_DEFECT, MOCK_KO_CORRECTED_BAND: "High" } });
-  assert.equal(bare.res, null, `the run went on past a rate limit at the recheck: ${JSON.stringify(bare.res)?.slice(0, 200)}`);
+test("the correction after the review hands a rate limit with no reset time to the same postponement", async () => {
+  const bare = await knockoutWithATurnRejected("correction-no-reset", "none", { match: CORRECTION_TURN, env: { MOCK_KO_MATERIAL: ONE_DEFECT, MOCK_KO_CORRECTED_BAND: "High" } });
+  assert.equal(bare.res, null, `the run went on past a rate limit at the correction: ${JSON.stringify(bare.res)?.slice(0, 200)}`);
   assert.equal(bare.thrown?.rateLimited, true, `what reached pipeline() was not a rate limit: ${bare.thrown?.message}`);
-  assert.match(String(bare.thrown?.stage ?? bare.thrown?.message), /knockout-review/, "premise: it was the recheck's turn that was rejected");
+  assert.match(String(bare.thrown?.stage ?? bare.thrown?.message), /knockout-correct/, "premise: it was the correction's turn that was rejected");
   assert.equal(existsSync(join(bare.dir, ".failed")), false, "a rate limit is no failure");
 });

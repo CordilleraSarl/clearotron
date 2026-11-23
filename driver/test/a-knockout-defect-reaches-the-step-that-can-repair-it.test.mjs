@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
 // A knockout's independent check can name a material defect, and it reaches the step that can repair it. Once: one
-// correction, then a fresh read of the corrected record. What no defect named stays as it was, by construction, and a
+// correction, and nothing reads the corrected record again. What no defect named stays as it was, by construction, and a
 // correction that cannot stand leaves the rated record standing. Names here are invented.
 import { createHash } from "node:crypto";
 import { mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync, existsSync } from "node:fs";
@@ -47,7 +47,7 @@ const NAME = "QUILLBRAE", SIBLING = "MOSSVALE";
 
 /** One two-name knockout through the lane, on the mock engine. What the run left. */
 async function knockout(codename, env = {}, { recordLister = async () => ({ ok: true, total: 0, records: [] }), countExecutor = async () => ({ ok: true, total: 0 }) } = {}) {
-  const set = { MOCK_KO_CLASS_GROUPS: undefined, MOCK_KO_CORRECTED_GROUPS: undefined, MOCK_KO_MATERIAL: undefined, MOCK_KO_MATERIAL_OPEN: undefined, MOCK_KO_CORRECTED_BAND: undefined, MOCK_KO_CORRECTION_STANDS: undefined, MOCK_KO_CORRECTION_MOVES: undefined, MOCK_KO_REWRITE_AT: undefined, MOCK_KO_CORRECTION_PARTIAL: undefined, MOCK_KO_CORRECTED_READS: undefined, MOCK_KO_CITE_NOWHERE: undefined, MOCK_KO_CITE_NOWHERE_THEN: undefined, MOCK_FAIL_STAGE: undefined,
+  const set = { MOCK_KO_FAMILIES: undefined, MOCK_KO_CLASS_GROUPS: undefined, MOCK_KO_CORRECTED_GROUPS: undefined, MOCK_KO_MATERIAL: undefined, MOCK_KO_MATERIAL_OPEN: undefined, MOCK_KO_CORRECTED_BAND: undefined, MOCK_KO_CORRECTION_STANDS: undefined, MOCK_KO_CORRECTION_MOVES: undefined, MOCK_KO_REWRITE_AT: undefined, MOCK_KO_CORRECTION_PARTIAL: undefined, MOCK_KO_CORRECTED_READS: undefined, MOCK_KO_CITE_NOWHERE: undefined, MOCK_KO_CITE_NOWHERE_THEN: undefined, MOCK_FAIL_STAGE: undefined,
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_AI_BILLING: undefined, CODEX_API_KEY: undefined, ...env };
   for (const [k, v] of Object.entries(set)) { if (v === undefined) delete process.env[k]; else process.env[k] = v; }
   const id = `ko-${codename}`;
@@ -76,10 +76,10 @@ async function knockout(codename, env = {}, { recordLister = async () => ({ ok: 
 const DEFECT = { kind: "contradiction", mark: NAME, finding: 1, problem: "The first conflict is rated below what its own evidence shows." };
 
 for (const [engine, wiring] of [["anthropic-agent", {}], ["openai-agent", { CLEAROTRON_AI_BILLING: "api-key", CODEX_API_KEY: "invented-test-value" }]]) {
-  test(`a defect reaches the rating step, its dependent answers move, the sibling stands, and the corrected record is read again (${engine})`, async () => {
+  test(`a defect reaches the rating step, its dependent answers move, the sibling stands, and nothing reads the corrected record again (${engine})`, async () => {
     const r = await knockout(`corrected-${engine}`, { CLEAROTRON_AI: engine, ...wiring, MOCK_KO_MATERIAL: JSON.stringify([DEFECT]), MOCK_KO_CORRECTED_BAND: "High" });
     assert.ok(r.stages.includes("knockout-correct#0"), `no correction was dispatched: ${r.stages}`);
-    assert.ok(r.stages.includes("knockout-review#1"), `no fresh read of the corrected record: ${r.stages}; ${JSON.stringify(r.review)}`);
+    assert.ok(!r.stages.includes("knockout-review#1"), `a second look read the corrected record: ${r.stages}`);
     const rated = r.json(driverDir(r.dir, "knockout-correction-work.json")).rated;
     const now = r.of(r.findings, NAME), was = r.of(rated, NAME);
     assert.notEqual(was.rating, "High", "the fixture has to start from another band");
@@ -90,36 +90,27 @@ for (const [engine, wiring] of [["anthropic-agent", {}], ["openai-agent", { CLEA
     assert.match(now.assessment, /now screens at High/, "the name's opening read moved with it");
     assert.equal(summaryBlock(r.findings.batch.executiveSummary, NAME).includes("High"), true, "the batch summary moved with it");
     assert.deepEqual(r.of(r.findings, SIBLING), r.of(rated, SIBLING), "the name no defect named stands byte for byte");
-    assert.match(r.json(knockoutReviewFile(r.dir, 1)).first_question, new RegExp(`${NAME}: High`), "the second look read the corrected record");
     const record = r.json(driverDir(r.dir, "knockout-corrections.json"));
     assert.deepEqual(record.outcomes.map((o) => o.outcome), ["findings-changed"]);
-    assert.equal(record.recheck, "ran");
+    assert.equal(record.recheck, undefined, "there is no recheck to record");
     assert.deepEqual(record.open, []);
     assert.deepEqual([r.review.outcome, r.review.material, r.review.open], ["corrected", 1, 0]);
   });
 }
 
-test("a defect the rating step answers with no change leaves the record, and the second look is told so", async () => {
+test("a defect the rating step answers with no change leaves the record, and nothing reads it again", async () => {
   const r = await knockout("stands", { MOCK_KO_MATERIAL: JSON.stringify([DEFECT]), MOCK_KO_CORRECTION_STANDS: "1" });
   const record = r.json(driverDir(r.dir, "knockout-corrections.json"));
   assert.deepEqual(record.outcomes.map((o) => [o.outcome, o.reason]), [["findings-unchanged", "mock correction: the evidence does not support the defect"]]);
-  assert.ok(r.stages.includes("knockout-review#1"));
+  assert.ok(!r.stages.includes("knockout-review#1"));
 });
 
-test("what the second look still finds stays on the record, in the workbook's notes, and no third look follows", async () => {
+test("one review and one correction: nothing looks at the corrected record again, so nothing it would raise reaches the record", async () => {
   const still = { kind: "contradiction", mark: NAME, problem: "The opening read still leans on the old band." };
   const r = await knockout("open", { MOCK_KO_MATERIAL: JSON.stringify([DEFECT]), MOCK_KO_CORRECTED_BAND: "High", MOCK_KO_MATERIAL_OPEN: JSON.stringify([still]) });
-  assert.deepEqual(r.json(driverDir(r.dir, "knockout-corrections.json")).open, [still]);
+  assert.deepEqual(r.json(driverDir(r.dir, "knockout-corrections.json")).open, []);
   assert.equal(r.stages.filter((s) => s.startsWith("knockout-correct")).length, 1, "one correction");
-  assert.equal(r.stages.filter((s) => s.startsWith("knockout-review")).length, 2, "two looks");
-  const ExcelJS = (await import("exceljs")).default;
-  const pool = join(ROOT, "pool");
-  const book = readdirSync(pool, { recursive: true }).find((p) => String(p).endsWith("knockout-audit-open.xlsx"));
-  const wb = new ExcelJS.Workbook();
-  await wb.xlsx.readFile(join(pool, book));
-  const notes = [];
-  wb.getWorksheet("Working Notes").eachRow((row) => notes.push(String(row.values[3] ?? "")));
-  assert.ok(notes.includes(still.problem), `the open point is not in the notes: ${JSON.stringify(notes)}`);
+  assert.equal(r.stages.filter((s) => s.startsWith("knockout-review")).length, 1, "one look");
 });
 
 const notes = async (codename) => {
@@ -146,31 +137,28 @@ test("a correction that fails leaves the rated record standing and the defect on
 });
 
 // THE KNOCKOUT'S POLICY, PINNED END TO END, as a clearance's (design ruling, 2026-11-10): a correction that also moved a name
-// no defect concerns is recorded and rechecked, never stood down. The move here is made past the correction call, which never
-// sees it, so only the check after composing finds it, and the recheck is told.
-test("a correction that also moves a name no defect concerns is recorded and rechecked, and the corrected record ships", async () => {
-  const r = await knockout("moved-sibling", { MOCK_KO_MATERIAL: JSON.stringify([DEFECT]), MOCK_KO_CORRECTED_BAND: "High", MOCK_KO_CORRECTION_MOVES: SIBLING });
+// no defect concerns is recorded, never stood down. The move here is made past the correction call, which never sees it, so only
+// the check after composing finds it.
+test("a correction that also moves a name no defect concerns is recorded, and the corrected record ships", async () => {
+  // The two names are one family, rated and corrected in one turn, so the correction can reach the name no defect concerns.
+  const r = await knockout("moved-sibling", { MOCK_KO_FAMILIES: JSON.stringify([[NAME, SIBLING]]), MOCK_KO_MATERIAL: JSON.stringify([DEFECT]), MOCK_KO_CORRECTED_BAND: "High", MOCK_KO_CORRECTION_MOVES: SIBLING });
   const work = r.json(driverDir(r.dir, "knockout-correction-work.json"));
   assert.equal(work.stoodDown, undefined, "a move outside the defects stood the correction down");
   assert.equal(r.review.outcome, "corrected");
   assert.equal(r.review.movedOutsideDefects, 1, "the run log does not count the name that moved");
   assert.equal(r.of(r.findings, NAME).rating, "High", "the correction did not ship");
-  assert.ok(existsSync(knockoutReviewFile(r.dir, 1)), "nobody read the corrected record");
   const record = r.json(driverDir(r.dir, "knockout-corrections.json"));
   assert.deepEqual(record.movedOutsideDefects.map((m) => m.name), [SIBLING], "the record does not keep what moved outside the defects");
   const kept = record.movedOutsideDefects[0];
   assert.deepEqual(kept.before.mark, r.of(work.rated, SIBLING), "the record does not keep the name as it was rated");
   assert.notDeepEqual(kept.after.mark, kept.before.mark, "the record does not keep the name as it moved");
   assert.equal(record.comparisonComplete, true);
-  const recheck = readdirSync(driverDir(r.dir)).filter((f) => /^knockout-review.*1.*\.dispatch\.txt$/.test(f)).map((f) => readFileSync(driverDir(r.dir, f), "utf8")).join("\n");
-  assert.ok(recheck.includes(`THE CORRECTION ALSO CHANGED THESE NAMES, WHICH NO DEFECT NAMED: "${SIBLING}".`), "the recheck was not told which name moved");
 });
 
 // THE FIRST LOOK'S REWRITE OF A LINE GOES WITH ANY CHANGE THE CORRECTION MADE TO ITS NAME. Its prose was written against the
-// record as rated; laid over a name the correction changed, it would put back words the change replaced, before the recheck
-// reads the record that ships.
+// record as rated; laid over a name the correction changed, it would put back words the change replaced in the record that ships.
 test("a first look's rewrite on a name the correction then changed is not laid over the change", async () => {
-  const r = await knockout("moved-sibling-rewritten", { MOCK_KO_MATERIAL: JSON.stringify([DEFECT]), MOCK_KO_CORRECTED_BAND: "High", MOCK_KO_CORRECTION_MOVES: SIBLING, MOCK_KO_REWRITE_AT: SIBLING });
+  const r = await knockout("moved-sibling-rewritten", { MOCK_KO_FAMILIES: JSON.stringify([[NAME, SIBLING]]), MOCK_KO_MATERIAL: JSON.stringify([DEFECT]), MOCK_KO_CORRECTED_BAND: "High", MOCK_KO_CORRECTION_MOVES: SIBLING, MOCK_KO_REWRITE_AT: SIBLING });
   const first = r.json(knockoutReviewFile(r.dir, 0));
   assert.equal(first.rewrites?.length, 1, `the first look made no rewrite on ${SIBLING} to test with`);
   const shipped = JSON.stringify(r.of(r.findings, SIBLING));
@@ -180,26 +168,13 @@ test("a first look's rewrite on a name the correction then changed is not laid o
   assert.deepEqual(record.movedOutsideDefects.map((m) => m.name), [SIBLING]);
 });
 
-test("a recheck that fails leaves the corrected record standing, and calls no defect answered", async () => {
-  const r = await knockout("recheck-failed", { MOCK_KO_MATERIAL: JSON.stringify([DEFECT]), MOCK_KO_CORRECTED_BAND: "High", MOCK_FAIL_STAGE: "THIS IS THE SECOND LOOK" });
-  assert.equal(r.review.outcome, "recheck-failed");
-  assert.equal(r.of(r.findings, NAME).rating, "High", "the accepted repair stands");
-  const record = r.json(driverDir(r.dir, "knockout-corrections.json"));
-  assert.equal(record.recheck, "failed");
-  assert.deepEqual(record.open.map((o) => [o.problem, o.state]), [[DEFECT.problem, "not-rechecked"]]);
-  assert.ok((await notes("recheck-failed")).includes(`Corrected, but not read again: ${DEFECT.problem}`));
-});
-
-test("a repair that answers one defect of two is kept, and the second look is told the other was not answered", async () => {
+test("a repair that answers one defect of two is kept, and the one no answer reached stays open for the reviewing lawyer", async () => {
   const other = { kind: "contradiction", mark: SIBLING, problem: "The second name's opening read disagrees with its band." };
   const r = await knockout("partial", { MOCK_KO_MATERIAL: JSON.stringify([DEFECT, other]), MOCK_KO_CORRECTED_BAND: "High", MOCK_KO_CORRECTION_PARTIAL: "1" });
   assert.equal(r.of(r.findings, NAME).rating, "High", "the valid repair stands though the stage did not complete");
   const record = r.json(driverDir(r.dir, "knockout-corrections.json"));
   assert.deepEqual(record.outcomes.map((o) => o.outcome), ["findings-changed", "not-answered"]);
   assert.deepEqual(record.open.map((o) => [o.mark, o.state]), [[SIBLING, "not-answered"]], "the defect no one answered stays open");
-  const dispatch = readFileSync(driverDir(r.dir, "knockout-review#1.attempt1.dispatch.txt"), "utf8");
-  assert.match(dispatch, /including any the rating step did not answer/);
-  assert.match(dispatch, /not-answered/, "the second look is told what actually happened");
   assert.ok((await notes("partial")).includes(`Not answered: ${other.problem}`), "the reviewing lawyer sees which one no answer reached");
 });
 
@@ -601,7 +576,7 @@ test("the correction's dispatch names each defect, in the chunk's own numbering"
 
 // THE KNOCKOUT'S CHECK AND ITS CORRECTION APPLY THE FRAMEWORK THEY ARE HANDED, as the clearance's review does. The sentence
 // was approved word for word for the clearance review and then for these two stages; it is the one constant, stated once.
-test("the first look, the recheck and the correction each name the frozen framework and state the approved sentence once", () => {
+test("the review and the correction each name the frozen framework and state the approved sentence once", () => {
   const FW = "skills/clearance-search/risk-framework-invented-owner.md";
   const dir = mkdtempSync(join(tmpdir(), "ko-framework-"));
   const chunkFile = join(dir, "knockout-assess-0.json");
@@ -610,8 +585,7 @@ test("the first look, the recheck and the correction each name the frozen framew
   const K = { runDir: dir, findings: join(dir, "findings.json"), researchDir: join(dir, "research"), assessChunk: () => chunkFile, plan: join(dir, "plan.json"), research: (k) => join(dir, "research", `${k}.md`),
     registerRecords: join(dir, "absent"), inboundRequest: join(dir, "absent"), confirmationBrief: join(dir, "absent"), ownerChecks: join(dir, "absent") };
   const sessions = {
-    "the first look": KO_STAGES["knockout-review"].message({ K, frameworkPath: FW }),
-    "the recheck": KO_STAGES["knockout-review"].message({ K, frameworkPath: FW, recheckTable: "| # | kind |", movedNames: [SIBLING] }),
+    "the review": KO_STAGES["knockout-review"].message({ K, frameworkPath: FW }),
     "the correction": KO_STAGES["knockout-correct"].message({ K, frameworkPath: FW, chunkNo: 0, work: w, chunkMarks: [{ name: NAME }, { name: SIBLING }] }),
   };
   for (const [label, msg] of Object.entries(sessions)) {
@@ -622,15 +596,3 @@ test("the first look, the recheck and the correction each name the frozen framew
     "Apply the frozen risk framework supplied for this run. If it or another required instruction is missing or unreadable, report the missing input; do not search other folders for a replacement.");
 });
 
-test("the recheck is told the names the correction moved outside its defects, or to read the whole batch when they could not be compared", () => {
-  const K = { runDir: "/nonexistent/ko", findings: "/nonexistent/ko/findings.json", researchDir: "/nonexistent/ko/research", registerRecords: "/nonexistent/absent", inboundRequest: "/nonexistent/absent", confirmationBrief: "/nonexistent/absent", review: "/nonexistent/ko/review.json" };
-  const MOVED = `THE CORRECTION ALSO CHANGED THESE NAMES, WHICH NO DEFECT NAMED: "${SIBLING}". Read each changed finding, answer and summary block against its evidence, and say whether the change is defended. A change that is not defended is a material defect.`;
-  const WHOLE = "THE DRIVER COULD NOT COMPARE THE NAMES NO DEFECT NAMED. Recheck the whole corrected batch, not only the names the defects concern.";
-  const second = (extra) => String(KO_STAGES["knockout-review"].message({ K, recheckTable: "| # | kind |", ...extra }));
-  assert.ok(second({ movedNames: [SIBLING] }).includes(MOVED));
-  assert.ok(!second({ movedNames: [SIBLING] }).includes(WHOLE), "a completed comparison asked for the whole batch");
-  assert.ok(second({ comparisonComplete: false }).includes(WHOLE));
-  assert.ok(!second({}).includes("THE CORRECTION ALSO CHANGED"), "a recheck with nothing moved was told something moved");
-  const first = String(KO_STAGES["knockout-review"].message({ K, movedNames: [SIBLING], comparisonComplete: false }));
-  assert.ok(!first.includes(MOVED) && !first.includes(WHOLE), "the first look carries the recheck's lines");
-});

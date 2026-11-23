@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// THE KNOCKOUT CHECK READS AS A KNOCKOUT, AND RECORDS A CLEAN READ ONCE. The first look checks the request, the material
-// conflicts, their support and the answer's agreement with itself; it rewrites only wording that obscures or misstates the
-// answer. It is no longer told to account for every line it leaves alone, by the dispatch or by the tool it answers through.
-// The question it answers first and the plain-language rule are unchanged, and the second look keeps its own scope.
+// THE KNOCKOUT CHECK READS AS A KNOCKOUT, AND RECORDS A CLEAN READ ONCE. The review checks facts against their sources and the
+// ratings of findings on registered marks. It is no longer told to account for every line it leaves alone, by the dispatch or by
+// the tool it answers through. The question it answers first and the plain-language rule are unchanged, and there is no second look.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
@@ -17,17 +16,17 @@ import { KO_STAGES, koPaths } from "../stages-knockout.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 
-const KNOCKOUT_CHECK = "Check this as a knockout: does the answer address the actual request, carry the material exact or near-exact conflicts, use held support, and agree with itself? Challenge a supported judgment only for a material defect, not because you would phrase it differently. Follow a specific concern into the held evidence where needed; do not repeat the entire search or expand the product's scope. Rewrite only wording that obscures or misstates the answer, preserving its facts and reasons. If no change is needed, record that once; do not explain every unchanged line. A later recheck checks the original defects, repairs and their consequences, not another general prose edit.";
+const KNOCKOUT_CHECK = "Read the opinions, their cited sources, and the carried-filings table. Check material factual claims against the sources and the ratings of findings on registered marks against the filing, its goods, status and territory, the proposed use and the risk framework. Where a particular fact or filing needs checking, consult that source or full record. Identify the affected name, the exact claim or rating, the evidence and the correction needed. A difference in another name's band alone is no defect. Leave supported judgments and wording alone.";
 const RECORD_ONCE = "If no change is needed, record that once; do not explain every unchanged line.";
 const EVERY_LINE = /FOR A LINE YOU ARE LEAVING ALONE|neither rewrite nor decline|One row per flagged line/;
 
 const message = (extra = {}) => KO_STAGES["knockout-review"].message({ K: koPaths(mkdtempSync(join(tmpdir(), "ko-check-"))), evidenceLines: [], firstReadLines: [], ...extra });
 
-test("the first look is told to check the answer as a knockout, once, and keeps its first question and its plain-language rule", () => {
+test("the review is told to check the answer as a knockout, once, and keeps its first question and its plain-language rule", () => {
   const first = message();
-  assert.equal(first.split(KNOCKOUT_CHECK).length - 1, 1, "the knockout check's paragraph is in the first look once, word for word");
-  assert.ok(first.indexOf(KNOCKOUT_CHECK) < first.indexOf("MATERIAL DEFECTS COME FIRST."), "it opens the first look's own instructions");
-  assert.doesNotMatch(first, EVERY_LINE, "the first look is still told to account for every line it leaves alone");
+  assert.equal(first.split(KNOCKOUT_CHECK).length - 1, 1, "the knockout check's paragraph is in the review once, word for word");
+  assert.ok(first.indexOf(KNOCKOUT_CHECK) < first.indexOf("MATERIAL DEFECTS COME FIRST."), "it opens the review's own instructions");
+  assert.doesNotMatch(first, EVERY_LINE, "the review is still told to account for every line it leaves alone");
   assert.match(first, /^Does the report answer the client's question: who could object, how strong they are, what the client should do\?/m);
   assert.match(first, /THE RULE\. A line a reader meets before opening anything carries no legal or engine vocabulary and no sentence longer than 25 words\./);
   assert.match(first, /send one `declined` row at one of these addresses saying so, rather than inventing a rewrite to fill the call\./,
@@ -37,11 +36,11 @@ test("the first look is told to check the answer as a knockout, once, and keeps 
   assert.doesNotMatch(flagged, EVERY_LINE, "a flagged line left alone owes no row");
 });
 
-test("the second look keeps its own scope and is not handed the first look's paragraph", () => {
-  const recheck = message({ recheckTable: "| 1 | band | QUILLBRAE | not answered |" });
-  assert.ok(!recheck.includes(KNOCKOUT_CHECK));
-  assert.doesNotMatch(recheck, EVERY_LINE);
-  assert.match(recheck, /Recheck every material defect raised by the first review, every changed answer and summary, and any other conclusion that the changes could affect\./);
+test("there is no second look: whatever the review is handed, it is the only look and is told of none after it", () => {
+  const handed = message({ recheckTable: "| 1 | band | QUILLBRAE | not answered |", movedNames: ["QUILLBRAE"] });
+  assert.ok(handed.includes(KNOCKOUT_CHECK));
+  assert.doesNotMatch(handed, /Recheck every material defect|THIS IS THE SECOND LOOK|QUILLBRAE/);
+  assert.doesNotMatch(handed, EVERY_LINE);
 });
 
 // The tool's own words reach the model beside the dispatch's, so they are read as the model receives them: from the server.

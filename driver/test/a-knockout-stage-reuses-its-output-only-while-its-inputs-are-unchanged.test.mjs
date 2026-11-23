@@ -129,7 +129,7 @@ test("a Knockout stage that holds no record of what it read runs again, since it
 });
 
 // ── THE REVIEW ROUND ─────────────────────────────────────────────────────────────────────────────────────────────
-// The check raises a material defect, the rating step corrects it, and a second look reads the corrected record.
+// The check raises a material defect and the rating step corrects it. Nothing reads the corrected record again.
 const DEFECT = { kind: "contradiction", mark: "LANTERNWICK", finding: 1, problem: "The first conflict is rated below what its own evidence shows." };
 const ROUND = { MOCK_KO_MATERIAL: JSON.stringify([DEFECT]), MOCK_KO_CORRECTED_BAND: "High" };
 async function withEnv(env, fn) {
@@ -142,8 +142,9 @@ test("a Knockout resumed after its review round, with nothing changed, neither r
   const { rows, calls } = await withEnv(ROUND, () => resumedAfter("round-unchanged"));
   assert.deepEqual(calls, { list: 0, count: 0 }, "the register was asked again for something the run already held");
   assert.deepEqual(ran(rows), [], `a stage ran again with nothing changed: ${JSON.stringify(rows.filter((r) => r.event === "stage-stale"))}`);
-  assert.ok(reused(rows).includes("knockout-correct#0") && reused(rows).includes("knockout-review#1"),
-    `premise: the first pass ran a correction and a second look, and the resume reused both: ${reused(rows)}`);
+  assert.ok(reused(rows).includes("knockout-correct#0"),
+    `premise: the first pass ran a correction, and the resume reused it: ${reused(rows)}`);
+  assert.ok(!reused(rows).includes("knockout-review#1"), "there is no second look to reuse");
   assert.ok(!rows.some((r) => r.event === "knockout-review-round-set-aside"));
 });
 
@@ -156,8 +157,9 @@ test("a chunk rated again on a resume sets aside the round begun on its old rati
   const setAside = rows.find((r) => r.event === "knockout-review-round-set-aside");
   assert.equal(setAside?.why, "a chunk was rated again on this pass", JSON.stringify(setAside));
   assert.ok(setAside.moved.includes("knockout-correction-work.json"), `the round's work is set aside: ${setAside.moved}`);
-  for (const stage of ["knockout-assess#0", "knockout-review", "knockout-correct#0", "knockout-review#1"])
+  for (const stage of ["knockout-assess#0", "knockout-review", "knockout-correct#0"])
     assert.ok(ran(rows).includes(stage), `${stage} did not run on the new rating: ${ran(rows)}`);
+  assert.ok(!ran(rows).includes("knockout-review#1"), "a second look ran on the corrected record");
   const kept = readdirSync(driverDir(runDir, "knockout-review-set-aside"));
   assert.equal(kept.length, 1, "the earlier round is kept, set aside, not deleted");
   assert.deepEqual(calls, { list: 0, count: 0 }, "the register was asked again for something the run already held");

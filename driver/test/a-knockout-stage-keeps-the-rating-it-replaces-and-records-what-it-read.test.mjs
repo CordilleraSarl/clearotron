@@ -53,7 +53,7 @@ const EXECUTORS = {
   sweepExecutor: async () => ({ ok: true, text: "Brightmoor sells candles. https://example.test/brightmoor" }),
 };
 /** A phrase only the rating turn carries (stages-knockout.mjs, "knockout-assess"). */
-const RATING_TURN = "You are rating chunk";
+const RATING_TURN = "You are rating one name for a Knockout screen.";
 const CHUNK = "knockout-assess-0.json";
 
 async function withEnv(env, fn) {
@@ -171,7 +171,7 @@ test("a replacement rating that fails leaves the earlier rating in the history, 
   assert.ok(!rows.some((r) => r.event === "skip" && /^knockout-review/.test(r.stage)), "the review was reached after the failure");
 });
 
-test("a stop recorded while the review runs: no correction or second look runs after it, and the run ends cancelled", async () => {
+test("a stop recorded while the review runs: no correction runs after it, and the run ends cancelled", async () => {
   const studio = join(ROOT, "studio", "ko-stopped", "clearance-search");
   const dir = join(studio, "runs", "lanternwick", "2026-11-20-stopped");
   mkdirSync(driverDir(dir), { recursive: true });
@@ -182,7 +182,7 @@ test("a stop recorded while the review runs: no correction or second look runs a
   assert.ok(existsSync(join(dir, ".cancel")), "premise: the review recorded the stop while it ran");
   const ran = stageRows(journal(dir)).map((r) => r.stage);
   assert.ok(ran.includes("knockout-review"), `premise: the review ran: ${ran}`);
-  for (const after of ["knockout-correct#0", "knockout-review#1"]) assert.ok(!ran.includes(after), `${after} ran after the stop: ${ran}`);
+  for (const after of ["knockout-correct#0"]) assert.ok(!ran.includes(after), `${after} ran after the stop: ${ran}`);
   assert.equal(JSON.parse(readFileSync(join(dir, "status.json"), "utf8")).state, "cancelled");
 });
 

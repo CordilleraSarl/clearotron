@@ -1239,7 +1239,7 @@
           "skips": 2,
           "todos": 0
         },
-        "a-knockout-batch-is-rated-in-small-groups-side-by-side.test.mjs": {
+        "a-knockout-batch-is-rated-a-family-at-a-time-side-by-side.test.mjs": {
           "tests": 9,
           "asserts": 53,
           "skips": 0,
@@ -1264,8 +1264,8 @@
           "todos": 0
         },
         "a-knockout-defect-reaches-the-step-that-can-repair-it.test.mjs": {
-          "tests": 35,
-          "asserts": 197,
+          "tests": 33,
+          "asserts": 181,
           "skips": 0,
           "todos": 0
         },
@@ -1296,6 +1296,12 @@
         "a-knockout-finding-carries-every-key-its-doctrine-teaches.test.mjs": {
           "tests": 7,
           "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-knockout-is-reviewed-once-for-facts-and-ratings.test.mjs": {
+          "tests": 4,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
@@ -1347,6 +1353,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-reads-and-rates-a-family-at-a-time.test.mjs": {
+          "tests": 10,
+          "asserts": 53,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-reads-the-clients-own-request.test.mjs": {
           "tests": 4,
           "asserts": 24,
@@ -1354,14 +1366,8 @@
           "todos": 0
         },
         "a-knockout-reads-the-register-by-judgment.test.mjs": {
-          "tests": 45,
-          "asserts": 211,
-          "skips": 0,
-          "todos": 0
-        },
-        "a-knockout-recheck-reads-the-defects-and-what-they-could-affect.test.mjs": {
-          "tests": 1,
-          "asserts": 6,
+          "tests": 46,
+          "asserts": 214,
           "skips": 0,
           "todos": 0
         },
@@ -1415,7 +1421,7 @@
         },
         "a-knockout-stage-reuses-its-output-only-while-its-inputs-are-unchanged.test.mjs": {
           "tests": 9,
-          "asserts": 41,
+          "asserts": 43,
           "skips": 0,
           "todos": 0
         },

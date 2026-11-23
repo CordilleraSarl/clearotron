@@ -338,7 +338,7 @@ export const OWN_SEARCH_TOOLS = Object.freeze(["WebSearch"]);
 /** The program's tools that write a file. A result that comes back an error is a write that failed. */
 const FILE_WRITE_TOOLS = Object.freeze(["Write", "Edit", "MultiEdit", "NotebookEdit"]);
 
-export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig, allowedTools, maxBudgetUsd, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null }) {
+export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig, allowedTools, builtinTools = null, maxBudgetUsd, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null }) {
   const input = absolutizeSkillRefs(message, skillsDir, resolveSkill);
   const args = ["-p", "--output-format", "stream-json", "--verbose", "--include-partial-messages"];
   const m = claudeModel(model); if (m) args.push("--model", m);
@@ -358,6 +358,9 @@ export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig
   if (resumeRef) args.push("--resume", resumeRef);          // warm-resume → reuses the prompt cache
   if (mcpConfig) { args.push("--mcp-config", mcpConfig, "--strict-mcp-config"); }
   if (allowedTools) args.push("--allowedTools", allowedTools);
+  // A STAGE THAT NAMES ITS BUILT-IN TOOLS is started with those alone (`--tools`, the vendor's
+  // CLI help: "Specify the list of available tools from the built-in set"). The tool servers' tools are unaffected.
+  if (Array.isArray(builtinTools) && builtinTools.length) args.push("--tools", builtinTools.join(","));
   // NO TOOL THAT RUNS A COMMAND, ON ANY STAGE, WHATEVER THE MACHINE'S OWN SETTINGS SAY. `--allowedTools`
   // lists tools that run without asking; it removes nothing, and the program runs a command it classes as
   // read-only (`cat`, `ls`) without asking at all. Measured on 2.1.280 with this argv: the model ran `echo`
@@ -495,9 +498,9 @@ export const anthropicAgentEngine = {
   writeBoundary: "enforced",
   // The id a turn's rows record as asked for: the tier through Claude's catalog, `opus` → `anthropic/claude-opus`.
   resolveModelId(model) { return resolveModel(model); },
-  async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null, stallSec, progressFiles, streamFile = null } = {}) {
+  async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, builtinTools = null, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null, stallSec, progressFiles, streamFile = null } = {}) {
     if (!message) throw new Error("anthropic-agent.runTurn: message is required");
-    const { args, input, grantNote } = buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites, grantDispatch });
+    const { args, input, grantNote } = buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig, allowedTools, builtinTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites, grantDispatch });
     // the cross-check speaks. Driver stderr is what an operator reads, and it is where the other
     // drift notices in this engine already land ([ledger], [env-aliases], [queue-watch]).
     if (grantNote) process.stderr.write(`${grantNote}\n`);

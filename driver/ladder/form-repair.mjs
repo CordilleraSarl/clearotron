@@ -19,6 +19,7 @@ import { isFormClassFail, MAX_FORM_REPAIRS } from "./form-sync.mjs";
 import { repairTarget, warmPatchMessage } from "./repair-messages.mjs";
 import { rel, streamDigest, streamMeta, tokensPerSec, writeBoundaryOf } from "./turn-signals.mjs";
 import { replyIsOutput } from "../stage-declarations.mjs";
+import { builtinToolsFor } from "../engine/mcp/gather-config.mjs";
 
 export async function repairFormInDispatch(stage, { judgeArtifacts }, { attempt, key, turn, effTimeout, fail, stampedQuantity, failingFile,
   formRepairsUsed, killSeen, lastGraded, lastModelUsed }) {
@@ -93,7 +94,7 @@ export async function repairFormInDispatch(stage, { judgeArtifacts }, { attempt,
     // record call, so a Codex turn keeps that stage's rule (openai-agent.mjs, codexDeveloperInstructions). A signal only that
     // adapter reads, from the same declaration, so the grant decided above is not touched.
     const rt = await engine.runTurn({ agent, sessionKey: key, message: repairMessage, model, thinking, recordsItsResult: gatherSeatWrites === false,
-      timeoutSec: effTimeout, resumeRef: repairRef, stageHome, mcpConfig: turnConfig(effTimeout), allowedTools: gatherAllowedTools,
+      timeoutSec: effTimeout, resumeRef: repairRef, stageHome, mcpConfig: turnConfig(effTimeout), allowedTools: gatherAllowedTools, builtinTools: builtinToolsFor(name),
       skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
       progressFiles: files, streamFile: streamFilePath(runDir, name, attempt, formRepairsUsed + 1) });
     repairRef = rt.sessionRef ?? repairRef;

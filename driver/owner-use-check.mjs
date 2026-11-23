@@ -94,13 +94,20 @@ export function ownersOwedACheck(recordsDoc, { cap = OWNER_CHECK_CAP } = {}) {
       // nothing — the same shape the register read itself uses.
       if (!owner) continue;
       const key = owner.toLowerCase();
-      const g = byOwner.get(key) ?? { owner, mark, recordIds: [], classes: new Set() };
+      const g = byOwner.get(key) ?? { owner, mark, recordIds: [], classes: new Set(), filingMarks: new Map() };
       g.recordIds.push(String(r.recordId ?? "").trim());
-      for (const c of (Array.isArray(r.classes) ? r.classes : [])) if (Number.isFinite(Number(c))) g.classes.add(Number(c));
+      // THE QUESTION NAMES THE FILING'S OWN MARK with its own classes,
+      // never the name screened. A filing with no mark text on the record adds no mark to the question.
+      const fm = String(r?.mark ?? "").trim();
+      const f = fm ? (g.filingMarks.get(fm.toUpperCase()) ?? { mark: fm, classes: new Set() }) : null;
+      if (f) g.filingMarks.set(fm.toUpperCase(), f);
+      for (const c of (Array.isArray(r.classes) ? r.classes : [])) if (Number.isFinite(Number(c))) { g.classes.add(Number(c)); f?.classes.add(Number(c)); }
       byOwner.set(key, g);
     }
     for (const g of [...byOwner.values()].slice(0, cap)) {
-      out.push({ mark: g.mark, owner: g.owner, recordIds: g.recordIds.filter(Boolean), classes: [...g.classes].sort((a, b) => a - b) });
+      const filingMarks = [...g.filingMarks.entries()].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+        .map(([, f]) => ({ mark: f.mark, classes: [...f.classes].sort((a, b) => a - b) }));
+      out.push({ mark: g.mark, owner: g.owner, recordIds: g.recordIds.filter(Boolean), classes: [...g.classes].sort((a, b) => a - b), filingMarks });
     }
   }
   return out;
@@ -115,10 +122,15 @@ export function ownersOwedACheck(recordsDoc, { cap = OWNER_CHECK_CAP } = {}) {
  * actually in — an answer no question phrased about the MARK returns, because the owner had never traded
  * under it.
  */
-export function composeOwnerQuery({ owner, mark, classes = [] }) {
-  const scope = classes.length ? ` (registered in class${classes.length === 1 ? "" : "es"} ${classes.join(", ")})` : "";
+export function composeOwnerQuery({ owner, mark, classes = [], filingMarks = null }) {
+  // Each filing mark with its own classes, in words that hold for an application as for a registration. A row with
+  // no filing marks (a caller that names one mark) names that mark; a row whose filings carry no mark text names none.
+  const named = Array.isArray(filingMarks) ? filingMarks : [{ mark, classes }];
+  const one = (f) => `"${f.mark}"${f.classes?.length ? ` in class${f.classes.length === 1 ? "" : "es"} ${f.classes.join(", ")}` : ""}`;
+  const list = named.map((f) => `for ${one(f)}`);
+  const marks = list.length > 1 ? `${list.slice(0, -1).join(", ")} and ${list.at(-1)}` : list[0];
   return `What goods or services does the company "${owner}" actually sell or trade in? `
-    + `It holds a trademark registration for "${mark}"${scope}. `
+    + (marks ? `The trademark record names this company ${marks}. ` : "")
     + `Report what the business does today, with sources. If nothing can be established about this company, say so plainly.`;
 }
 
@@ -149,7 +161,11 @@ export function firstSourceUrl(text) {
 export async function runOwnerChecks({ owners, exec, runDir, ledgerPath = null, rawDir = null, preset = "pro-search", concurrency = 1, now = () => new Date().toISOString() }) {
   const list = Array.isArray(owners) ? owners : [];
   const rows = new Array(list.length);
-  const check = async (o) => {
+  // AN IDENTICAL QUESTION IS ASKED ONCE, and its answer goes to every row that owes it: a paid request is not repeated.
+  const byQuery = new Map();
+  list.forEach((o, i) => { const q = composeOwnerQuery(o); byQuery.set(q, [...(byQuery.get(q) ?? []), i]); });
+  const questions = [...byQuery.values()];
+  const check = async (o, sharers = [o]) => {
     const query = composeOwnerQuery(o);
     const started = Date.now();
     let r;
@@ -161,36 +177,45 @@ export async function runOwnerChecks({ owners, exec, runDir, ledgerPath = null, 
 
     // THE SEARCHES BEHIND THE ANSWER ARE KEPT, answered or not, beside the answer's own name: the answer
     // alone cannot say which pages the lookup was handed.
-    if (rawDir && Array.isArray(r?.raw) && r.raw.length) {
-      try {
-        mkdirSync(rawDir, { recursive: true });
-        writeFileSync(join(rawDir, ownerPayloadFile(o).replace(/\.md$/, ".json")), JSON.stringify({ mark: o.mark, owner: o.owner, query, items: r.raw }, null, 1) + "\n");
-      } catch { /* the ledger row is the receipt; a raw-results write never fails a lookup */ }
-    }
     const ok = Boolean(r?.ok && isResearchAnswer(r?.text));
-    let payloadFile = null;
-    if (ok && runDir) {
-      // The payload lands beside the mark payloads, under a name derived from the row rather than the
-      // record, because one payload answers for every filing that owner holds under that mark.
-      payloadFile = ownerPayloadFile(o);
-      try { writeFileSync(join(runDir, "research", payloadFile), r.text); } catch { payloadFile = null; }
-    }
     const source = ok ? firstSourceUrl(r.text) : null;
-    const row = {
-      mark: o.mark, owner: o.owner, recordIds: o.recordIds, classes: o.classes,
-      query, preset, ok, source, payloadFile,
-      ...(ok ? {} : { cause: String(r?.cause ?? "no result").slice(0, 300) }),
-      ...(r?.outage === true ? { outage: true } : {}),
-      ts: now(), took_ms: r?.tookMs ?? (Date.now() - started),
-    };
-    if (ledgerPath) { try { appendFileSync(ledgerPath, JSON.stringify(row) + "\n"); } catch { /* receipts best-effort, never fatal */ } }
-    return row;
+    const ts = now(), took = r?.tookMs ?? (Date.now() - started);
+    const out = sharers.map((s, k) => {
+      if (rawDir && Array.isArray(r?.raw) && r.raw.length) {
+        try {
+          mkdirSync(rawDir, { recursive: true });
+          writeFileSync(join(rawDir, ownerPayloadFile(s).replace(/\.md$/, ".json")), JSON.stringify({ mark: s.mark, owner: s.owner, query, items: r.raw }, null, 1) + "\n");
+        } catch { /* the ledger row is the receipt; a raw-results write never fails a lookup */ }
+      }
+      let payloadFile = null;
+      if (ok && runDir) {
+        // The payload lands beside the mark payloads, under a name derived from the row rather than the
+        // record, because one payload answers for every filing that owner holds under that mark.
+        payloadFile = ownerPayloadFile(s);
+        try { writeFileSync(join(runDir, "research", payloadFile), r.text); } catch { payloadFile = null; }
+      }
+      return {
+        mark: s.mark, owner: s.owner, recordIds: s.recordIds, classes: s.classes, filingMarks: s.filingMarks ?? null,
+        query, preset, ok, source, payloadFile,
+        ...(ok ? {} : { cause: String(r?.cause ?? "no result").slice(0, 300) }),
+        ...(r?.outage === true ? { outage: true } : {}),
+        ...(k > 0 ? { sharedQuestion: true } : {}),
+        ts, took_ms: took,
+      };
+    });
+    // One ledger line per question asked, naming every row its answer went to.
+    if (ledgerPath) { try { appendFileSync(ledgerPath, JSON.stringify({ ...out[0], servesMarks: sharers.map((s) => s.mark) }) + "\n"); } catch { /* receipts best-effort, never fatal */ } }
+    return out;
   };
   // A non-finite or sub-1 limit runs one lookup at a time, never none.
   const limit = Number.isFinite(concurrency) && concurrency >= 1 ? Math.floor(concurrency) : 1;
   let next = 0;
-  await Promise.all(Array.from({ length: Math.max(1, Math.min(limit, list.length)) }, async () => {
-    while (next < list.length) { const i = next++; rows[i] = await check(list[i]); }
+  await Promise.all(Array.from({ length: Math.max(1, Math.min(limit, questions.length)) }, async () => {
+    while (next < questions.length) {
+      const idx = questions[next++];
+      const out = await check(list[idx[0]], idx.map((i) => list[i]));
+      idx.forEach((i, k) => { rows[i] = out[k]; });
+    }
   }));
   return rows;
 }

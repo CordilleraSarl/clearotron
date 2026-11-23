@@ -15,6 +15,7 @@ import { profilesStoreDir } from "../profiles.mjs";
 import { recordDispatch, streamFilePath } from "../dispatch-record.mjs";
 import { witnessStageMethodology, describeMethodologyDrift } from "../methodology-witness.mjs";
 import { inlineManuals } from "../manuals-inline.mjs";
+import { builtinToolsFor } from "../engine/mcp/gather-config.mjs";
 import { statOf } from "./judge.mjs";
 import { correctiveMessage, warmPatchMessage, warmTimeoutMessage } from "./repair-messages.mjs";
 import { retryBackoffMs, sleep, vetoResumeRuledNone, warmEligible } from "./turn-signals.mjs";
@@ -133,7 +134,7 @@ export async function dispatchTurn(stage, { attempt, warm, timeoutWarm, vetoedRe
   // already holds them, and its message names none. The dispatch record and the witness above keep the composed text.
   const wire = warm || timeoutWarm ? { text: effMessage, inlined: [], missing: [] }
     : inlineManuals(effMessage, { resolve: engineResolveSkill, skillsDir: engineSkillsDir });
-  const turn = await engine.runTurn({ agent, sessionKey: key, message: wire.text, grantDispatch: base, model, thinking, timeoutSec: effTimeout, resumeRef: warm ? lastSessionRef : undefined, stageHome, mcpConfig, allowedTools: gatherAllowedTools, seatWrites: gatherSeatWrites, skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
+  const turn = await engine.runTurn({ agent, sessionKey: key, message: wire.text, grantDispatch: base, model, thinking, timeoutSec: effTimeout, resumeRef: warm ? lastSessionRef : undefined, stageHome, mcpConfig, allowedTools: gatherAllowedTools, builtinTools: builtinToolsFor(name), seatWrites: gatherSeatWrites, skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
     progressFiles: files,   // the no-progress watchdog's artifact-advance signal (anthropic-agent; other adapters ignore it)
     // The raw stream of this session, beside its dispatch record (engine/session-record.mjs). The engines
     // keep it while the disk has room and say on the tuple's `stream` what landed.

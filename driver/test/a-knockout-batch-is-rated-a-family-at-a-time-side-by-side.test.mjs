@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// A KNOCKOUT BATCH IS RATED IN GROUPS OF AT MOST THREE NAMES, SIDE BY SIDE, at most three turns at once. Each group is its own turn
-// and writes only its own chunk. The lane joins every group before it composes the record, and the composed batch is the whole
-// batch's: its scope is the frozen plan's, and every group's batch-wide caveat is kept once. A group that fails leaves the others'
-// accepted work, and a resume runs only what failed. Names here are invented.
+// A KNOCKOUT BATCH IS RATED ONE FAMILY PER TURN, SIDE BY SIDE, at most eight turns at once; a name with no family is rated alone.
+// Each group is its own turn and writes only its own chunk. The lane joins every group before it composes the record, and the
+// composed batch is the whole batch's: its scope is the frozen plan's, and every group's batch-wide caveat is kept once. A group that
+// fails leaves the others' accepted work, and a resume runs only what failed. Names here are invented.
 import { mkdirSync, mkdtempSync, readFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
@@ -67,36 +67,43 @@ async function knockout(codename, names, env = {}, executors = {}) {
     findings: existsSync(join(at, "knockout-findings.json")) ? json(join(at, "knockout-findings.json")) : null };
 }
 
-test("a batch splits into groups of at most three names, in plan order", () => {
-  assert.equal(KO_ASSESS_CHUNK, 3);
-  const sizes = (n) => koChunks(NAMES.slice(0, n).map((name) => ({ name }))).map((g) => g.length);
+test("a batch splits into one group per family, a name with no family alone, in the plan's order", () => {
+  assert.equal(KO_ASSESS_CHUNK, 1);
+  const rows = (n) => NAMES.slice(0, n).map((name) => ({ name }));
+  const sizes = (n, families = null) => koChunks(rows(n), families).map((g) => g.length);
   assert.deepEqual(sizes(1), [1]);
-  assert.deepEqual(sizes(8), [3, 3, 2]);
-  assert.deepEqual(sizes(10), [3, 3, 3, 1]);
-  assert.deepEqual(koChunks(NAMES.map((name) => ({ name }))).flat().map((m) => m.name), NAMES, "every name in exactly one group, in order");
+  assert.deepEqual(sizes(8), [1, 1, 1, 1, 1, 1, 1, 1], "with no families every name is rated alone");
+  const families = [["odravel", "QUILLBRAE"], ["NOVAPULSE", "MOSSVALE", "IRONWHISK"]];
+  assert.deepEqual(koChunks(rows(7), families).map((g) => g.map((m) => m.name)),
+    [["QUILLBRAE", "ODRAVEL"], ["MOSSVALE", "NOVAPULSE", "IRONWHISK"], ["LANTERNWICK"], ["CLUVENDRA"]],
+    "a family's names in plan order, the families in the order of their first name, every name once");
+  assert.deepEqual(koChunks(rows(7), families).flat().map((m) => m.name).sort(), NAMES.slice(0, 7).sort(), "every name in exactly one group");
 });
 
-test("a group is told it is one of several, and may carry a caveat for the whole batch", () => {
+test("a group's message is its own job: one name's words or a family's, and no batch duties", () => {
   const K = koPaths(mkdtempSync(join(tmpdir(), "ko-groups-msg-")));
-  const message = (chunkNo, chunkTotal) => KO_STAGES["knockout-assess"].message({ K, job: {}, chunkNo, chunkMarks: [{ name: "QUILLBRAE" }], chunkTotal,
+  const message = (names) => KO_STAGES["knockout-assess"].message({ K, job: {}, chunkNo: 0, chunkMarks: names.map((name) => ({ name })), chunkTotal: 3,
     framework: { bands: [{ label: "High" }, { label: "Low" }] }, frameworkPath: null, probeNote: "" });
-  assert.match(message(1, 3), /This batch is rated in 3 groups side by side, and code joins the groups' summaries in order\. Open your `chunkSummary` with a line for these names, not for the whole batch/);
-  assert.match(message(1, 3), /As a CONTINUATION chunk you send `marks` and `chunkSummary`, and in `batch\.standardCaveats` only a qualification that holds for the whole batch\. Use the supplied frozen framework\./);
-  assert.match(message(0, 3), /As the FIRST chunk you also send `batch`/);
-  assert.doesNotMatch(message(0, 1), /groups side by side/, "a batch rated in one turn is told nothing about groups");
+  const one = message(["QUILLBRAE"]);
+  assert.match(one, /^You are rating one name for a Knockout screen\.$/m);
+  assert.match(one, /only a qualification that holds for this name's whole report\. Use the supplied frozen framework\. Open your `chunkSummary` with a line for this name/);
+  const family = message(["QUILLBRAE", "QUILBRAE", "QUILL BRAE"]);
+  assert.match(family, /^You are rating a family of 3 names for a Knockout screen\. Each name is a client choice and gets its own rating and reasons\.$/m);
+  assert.match(family, /only a qualification that holds for each name's whole report\./);
+  for (const m of [one, family]) assert.doesNotMatch(m, /As the FIRST chunk|CONTINUATION chunk|groups side by side/, "a group carries no duty for the batch");
 });
 
-test("the groups run side by side, at most three at once, and the record composed from them is the whole batch's", async () => {
+test("the groups run side by side, at most eight at once, and the record composed from them is the whole batch's", async () => {
   const log = join(ROOT, "hold.jsonl");
   const r = await knockout("side-by-side", NAMES, { MOCK_KO_ASSESS_HOLD_MS: "1500", MOCK_KO_ASSESS_LOG: log,
     MOCK_KO_GROUP_CONTEXT: "only the first group's goods", MOCK_KO_LATER_CAVEAT: "A caveat a later group raised for the whole batch." });
   assert.equal(r.res?.ok, true, `the knockout did not deliver: ${r.thrown?.message ?? JSON.stringify(r.res)}`);
   const rows = readFileSync(log, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l));
-  assert.deepEqual(rows.map((x) => x.chunk).sort(), [0, 1, 2, 3], "each group is its own turn");
+  assert.deepEqual(rows.map((x) => x.chunk).sort((a, b) => a - b), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], "each name is its own turn");
   const inFlight = (t) => rows.filter((x) => x.start <= t && t < x.end).length;
   const most = Math.max(...rows.map((x) => inFlight(x.start)));
   assert.ok(most >= 2, "the groups overlapped");
-  assert.ok(most <= 3, `${most} turns ran at once`);
+  assert.ok(most <= 8, `${most} turns ran at once`);
   assert.deepEqual(r.findings.marks.map((m) => m.name), NAMES, "every name, in plan order");
   assert.equal(r.findings.batch.productContext, r.json(r.K.plan).batch.productContext, "the batch's scope is the plan's, not the first group's");
   assert.equal(r.findings.batch.standardCaveats.filter((c) => c === "A caveat a later group raised for the whole batch.").length, 1, "a later group's caveat is kept, once");
@@ -125,44 +132,40 @@ test("each group is pointed at its own names' held filings, and the whole record
   }
 });
 
-test("a batch rated in one turn is pointed at the whole record, and the cut keeps every field but the names", () => {
-  const K = koPaths(mkdtempSync(join(tmpdir(), "ko-groups-one-")));
+test("a group's cut of the record keeps every field but the other names", () => {
   const doc = { schema: 2, provider: "invented", marks: [{ name: "QUILLBRAE", records: [] }, { name: "MOSSVALE", records: [] }] };
   assert.deepEqual(groupRecordsDoc(doc, [" quillbrae "]), { schema: 2, provider: "invented", marks: [{ name: "QUILLBRAE", records: [] }] });
   assert.deepEqual(groupRecordsDoc({ schema: 2 }, ["QUILLBRAE"]).marks, []);
-  const message = KO_STAGES["knockout-assess"].message({ K, job: {}, chunkNo: 0, chunkMarks: [{ name: "QUILLBRAE" }], chunkTotal: 1,
-    framework: { bands: [{ label: "High" }, { label: "Low" }] }, frameworkPath: null, probeNote: "" });
-  assert.ok(!message.includes(K.groupRegisterRecords(0)), "a single group is pointed at a slice");
 });
 
 test("a group that fails leaves the others' work, and a resume runs only that group again", async () => {
   const names = NAMES.slice(0, 7);
-  const failed = await knockout("one-fails", names, { MOCK_FAIL_STAGE: "You are rating chunk 2/3" });
+  const failed = await knockout("one-fails", names, { MOCK_FAIL_STAGE: `Rate ONLY these marks (one entry each, names verbatim): ${names[1]}.` });
   assert.ok(failed.thrown || failed.res?.ok === false, "the lane does not deliver with a group missing");
-  for (const c of [0, 2]) assert.ok(existsSync(failed.K.assessChunk(c)), `group ${c + 1}'s accepted chunk is kept`);
+  for (const c of [0, 2, 3, 4, 5, 6]) assert.ok(existsSync(failed.K.assessChunk(c)), `group ${c + 1}'s accepted chunk is kept`);
   assert.equal(existsSync(failed.K.assessChunk(1)), false, "the failed group wrote nothing");
   const before = failed.journal.length;
   const resumed = await knockout("one-fails", names);
   assert.equal(resumed.res?.ok, true, `the resume did not deliver: ${resumed.thrown?.message ?? JSON.stringify(resumed.res)}`);
   const after = resumed.journal.slice(before).filter((e) => /^knockout-assess#/.test(String(e.stage)));
   assert.deepEqual(after.filter((e) => e.event === "stage").map((e) => e.stage), ["knockout-assess#1"], "only the failed group runs again");
-  assert.deepEqual(after.filter((e) => e.event === "skip").map((e) => e.stage).sort(), ["knockout-assess#0", "knockout-assess#2"]);
+  assert.deepEqual(after.filter((e) => e.event === "skip").map((e) => e.stage).sort(), [0, 2, 3, 4, 5, 6].map((c) => `knockout-assess#${c}`));
 });
 
 test("a group that meets a rate limit starts no further group, and a resume rates only what did not finish", async () => {
   const log = join(ROOT, "limited.jsonl");
   const limited = await knockout("rate-limited", NAMES, { MOCK_KO_ASSESS_HOLD_MS: "1500", MOCK_KO_ASSESS_LOG: log,
-    MOCK_CLAUDE_RATELIMIT: String(Math.floor(Date.now() / 1000) + 3600), MOCK_CLAUDE_RATELIMIT_MATCH: "You are rating chunk 1/4" });
+    MOCK_CLAUDE_RATELIMIT: String(Math.floor(Date.now() / 1000) + 3600), MOCK_CLAUDE_RATELIMIT_MATCH: `Rate ONLY these marks (one entry each, names verbatim): ${NAMES[0]}.` });
   assert.ok(limited.thrown || limited.res?.ok === false, "the lane does not deliver with groups missing");
-  const sent = limited.journal.filter((e) => /^knockout-assess#/.test(String(e.stage)) && e.event === "stage").map((e) => e.stage).sort();
-  assert.deepEqual(sent, ["knockout-assess#0", "knockout-assess#1", "knockout-assess#2"], "the fourth group was sent into the limit");
-  for (const c of [1, 2]) assert.ok(existsSync(limited.K.assessChunk(c)), `group ${c + 1}, already running, kept its work`);
-  for (const c of [0, 3]) assert.equal(existsSync(limited.K.assessChunk(c)), false, `group ${c + 1} has no chunk`);
+  const sent = limited.journal.filter((e) => /^knockout-assess#/.test(String(e.stage)) && e.event === "stage").map((e) => Number(e.stage.split("#")[1])).sort((a, b) => a - b);
+  assert.deepEqual(sent, [0, 1, 2, 3, 4, 5, 6, 7], "a group was sent into the limit after it was met");
+  for (const c of [1, 2, 3, 4, 5, 6, 7]) assert.ok(existsSync(limited.K.assessChunk(c)), `group ${c + 1}, already running, kept its work`);
+  for (const c of [0, 8, 9]) assert.equal(existsSync(limited.K.assessChunk(c)), false, `group ${c + 1} has no chunk`);
   const before = limited.journal.length;
   const resumed = await knockout("rate-limited", NAMES);
   assert.equal(resumed.res?.ok, true, `the resume did not deliver: ${resumed.thrown?.message ?? JSON.stringify(resumed.res)}`);
   const after = resumed.journal.slice(before).filter((e) => /^knockout-assess#/.test(String(e.stage)));
-  assert.deepEqual(after.filter((e) => e.event === "stage").map((e) => e.stage).sort(), ["knockout-assess#0", "knockout-assess#3"], "only the unfinished groups are rated again");
+  assert.deepEqual(after.filter((e) => e.event === "stage").map((e) => e.stage).sort(), ["knockout-assess#0", "knockout-assess#8", "knockout-assess#9"], "only the unfinished groups are rated again");
   assert.deepEqual(resumed.findings.marks.map((m) => m.name), NAMES);
 });
 
@@ -192,13 +195,13 @@ test("the batch's framework is the frozen one, and a group that echoes another s
 });
 
 test("a stop asked for while the corrections run starts no queued correction, and reaches the run as a stop, not a failed correction", async () => {
-  // One defect in each of the four groups, so four corrections and one of them queued behind the first three. The first asks the
-  // run to stop while the other two are still running.
-  const defects = [0, 3, 6, 9].map((i) => ({ kind: "contradiction", mark: NAMES[i], finding: 1, problem: "The first conflict is rated below what its own evidence shows." }));
+  // One defect on each of the ten names, each its own group, so ten corrections and two of them queued behind the first eight. The
+  // first asks the run to stop while the others are still running.
+  const defects = NAMES.map((_, i) => i).map((i) => ({ kind: "contradiction", mark: NAMES[i], finding: 1, problem: "The first conflict is rated below what its own evidence shows." }));
   const r = await knockout("stopped-in-correction", NAMES, { MOCK_KO_MATERIAL: JSON.stringify(defects), MOCK_KO_CORRECTED_BAND: "High",
     MOCK_KO_CORRECT_CANCEL_AT: "0", MOCK_KO_CORRECT_HOLD_MS: "1500" });
   const sent = r.journal.filter((e) => /^knockout-correct#/.test(String(e.stage)) && e.event === "stage").map((e) => e.stage).sort();
-  assert.deepEqual(sent, ["knockout-correct#0", "knockout-correct#1", "knockout-correct#2"], "the queued correction was sent after the stop");
+  assert.deepEqual(sent, [0, 1, 2, 3, 4, 5, 6, 7].map((c) => `knockout-correct#${c}`).sort(), "a queued correction was sent after the stop");
   assert.equal(r.thrown, null, `the lane threw: ${r.thrown?.message}`);
   assert.equal(r.res?.cancelled, true, `the stop did not reach the run as a stop: ${JSON.stringify(r.res)}`);
   assert.equal(r.res?.failedStage, "knockout-correct", "the run stopped somewhere other than the corrections");
