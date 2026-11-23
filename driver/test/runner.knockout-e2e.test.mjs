@@ -327,7 +327,8 @@ test("a 3-mark knockout batch runs end to end: receipts, degrade, publish stamps
   const journal = readFileSync(driverDir(rd, "run.jsonl"), "utf8")
     .split("\n").filter(Boolean).map((l) => JSON.parse(l));
   const stageRows = journal.filter((e) => e.event === "stage" || e.event === "skip");
-  // The lane has exactly TWO stages that go through koStage — knockout-frame and knockout-assess#N.
+  // The lane has exactly TWO stages that go through koStage here — knockout-frame and knockout-assess#N, one per name, since no
+  // name of this batch has a family and each is rated alone. The register here is injected, so no reader turn runs.
   // The sweep and the register count are code-side and receipt themselves (`knockout-sweep-start`,
   // `knockout-register-counts`); they are not LLM stages and must not grow a stage row, or the lane
   // would report walls for work no dispatch did. Naming them here so a future reader does not read
@@ -336,7 +337,7 @@ test("a 3-mark knockout batch runs end to end: receipts, degrade, publish stamps
   // suffix, and it appears on every knockout: a record flagged nowhere hands the reviewer its first-read
   // lines instead (owner ruling 2026-10-10). Only a record with no such line logs
   // `knockout-review outcome:nothing-flagged` and emits no stage row.
-  assert.deepEqual(stageRows.map((e) => e.stage).sort(), ["knockout-assess#0", "knockout-frame", "knockout-review"],
+  assert.deepEqual(stageRows.map((e) => e.stage).sort(), ["knockout-assess#0", "knockout-assess#1", "knockout-assess#2", "knockout-frame", "knockout-review"],
     `the knockout lane must emit one completion row per DISPATCHED stage (event census: ${
       [...new Set(journal.map((e) => e.event))].sort().join(", ")})`);
 

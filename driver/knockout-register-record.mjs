@@ -35,9 +35,20 @@ const DECLARED = {
 /** The artifact this transport writes, at the run root. */
 export const knockoutRegisterFile = (runDir) => join(String(runDir ?? ""), "knockout-register.json");
 
+// ONE READER PER FAMILY, side by side. Each writes its own record under the ordinal the driver bound to its turn, is captured in its
+// own folder and is checked against its own names only; the driver joins them into knockout-register.json once every reader has
+// answered.
+export const knockoutRegisterChunkFile = (runDir, chunkNo) => join(String(runDir ?? ""), `knockout-register-${Number(chunkNo)}.json`);
+export const knockoutRegisterChunksFile = (runDir) => join(String(runDir ?? ""), DRIVER_DIR, "knockout-register-chunks.json");
+const chunkNamesOf = (runDir, chunkNo) => {
+  const doc = readJsonOrNull(knockoutRegisterChunksFile(runDir));
+  const names = Array.isArray(doc?.chunks) ? doc.chunks[Number(chunkNo)] : null;
+  return Array.isArray(names) ? names.map(String) : null;
+};
+
 /** One file per call, refusals included, beside the other transports' capture directories. */
-export function knockoutRegisterCallPaths(runDir) {
-  const dir = runPaths(runDir).knockoutRegisterCalls;
+export function knockoutRegisterCallPaths(runDir, chunkNo = null) {
+  const dir = chunkNo == null ? runPaths(runDir).knockoutRegisterCalls : join(runPaths(runDir).knockoutRegisterCalls, `chunk-${Number(chunkNo)}`);
   return { dir, accepted: join(dir, "accepted.json"), refusals: join(dir, "refusals.jsonl") };
 }
 
@@ -129,9 +140,11 @@ function rowDefect(row, n, { counts, plan, runDir }) {
  * The accepted record against this run: one row per instructed name, ids the register returned, nothing unaccounted for.
  * `standing` is the rows that hold whatever the verdict on the others.
  */
-export function checkKnockoutRegisterAgainstRun(model, runDir) {
+export function checkKnockoutRegisterAgainstRun(model, runDir, { names = null } = {}) {
   const scope = readJsonOrNull(runPaths(runDir).instructedScope);
-  const instructed = (Array.isArray(scope?.marks) ? scope.marks : []).map((n) => String(n));
+  const all = (Array.isArray(scope?.marks) ? scope.marks : []).map((n) => String(n));
+  // A bound reader answers for its own names, which must be instructed ones.
+  const instructed = names ? all.filter((n) => names.some((x) => nameKey(x) === nameKey(n))) : all;
   if (!instructed.length) return { ok: false, standing: [], reason: `${TOKEN}_scope: the run's instructed scope could not be read, so the names cannot be checked.` };
   const byName = new Map(model.marks.map((m) => [nameKey(m.name), m]));
   const known = new Set(instructed.map(nameKey));
@@ -151,11 +164,11 @@ export function checkKnockoutRegisterAgainstRun(model, runDir) {
 }
 
 /** What the step had settled when its turn ended: every row that still stands, or null where none does. */
-export function settledKnockoutReading(runDir) {
-  const paths = knockoutRegisterCallPaths(runDir);
+export function settledKnockoutReading(runDir, chunkNo = null) {
+  const paths = knockoutRegisterCallPaths(runDir, chunkNo);
   const shape = acceptKnockoutRegister(lastAccepted(paths.accepted, readFileSync));
   if (!shape.ok) return null;
-  const { standing } = checkKnockoutRegisterAgainstRun(shape.model, runDir);
+  const { standing } = checkKnockoutRegisterAgainstRun(shape.model, runDir, { names: chunkNo == null ? null : chunkNamesOf(runDir, chunkNo) });
   return standing.length ? { schema_version: SCHEMA_VERSION, marks: standing } : null;
 }
 
@@ -168,12 +181,23 @@ export function validateKnockoutRegisterFile(file, content) {
   const dir = dirname(file);
   const runDir = basename(dir) === DRIVER_DIR ? dirname(dir) : dir;
   if (!existsSync(runPaths(runDir).instructedScope)) return { ok: false, reason: "the run's instructed scope is not on disk, so this record cannot be checked." };
+  const chunk = basename(file).match(/^knockout-register-(\d+)\.json$/);
+  if (chunk) {
+    const names = chunkNamesOf(runDir, chunk[1]);
+    if (!names) return { ok: false, reason: "the readers' name assignment is not on disk, so this reader's record cannot be checked." };
+    return checkKnockoutRegisterAgainstRun(shape.model, runDir, { names });
+  }
   return checkKnockoutRegisterAgainstRun(shape.model, runDir);
 }
 
-export function recordKnockoutRegisterRead(runDir, received, { now = () => new Date().toISOString() } = {}) {
+export function recordKnockoutRegisterRead(runDir, received, { now = () => new Date().toISOString(), boundOrdinal = null } = {}) {
   const dir = String(runDir ?? "");
-  const paths = knockoutRegisterCallPaths(dir);
+  const chunkNo = boundOrdinal == null || boundOrdinal === "" ? null : Number(boundOrdinal);
+  if (chunkNo != null && (!Number.isInteger(chunkNo) || chunkNo < 0))
+    return { written: null, refused: `${TOKEN}_bad_ordinal:${boundOrdinal} — the reader's bound ordinal is not a whole number` };
+  const names = chunkNo == null ? null : chunkNamesOf(dir, chunkNo);
+  if (chunkNo != null && !names) return { written: null, refused: `${TOKEN}_unassigned: no names are assigned to reader ${chunkNo}` };
+  const paths = knockoutRegisterCallPaths(dir, chunkNo);
   const nameFor = (seq) => join(paths.dir, `call-${String(seq).padStart(3, "0")}.json`);
   const cap = captureCall({ nameFor, params: received, now });
   const closeCapture = (v) => { stampVerdict(cap.path, v); return cap.path; };
@@ -192,7 +216,7 @@ export function recordKnockoutRegisterRead(runDir, received, { now = () => new D
   const call = mergeKnockoutRegisterCall(lastAccepted(paths.accepted, readFileSync), received);
   const verdict = acceptKnockoutRegister(call);
   if (!verdict.ok) return refused(verdict.reason);
-  const joined = checkKnockoutRegisterAgainstRun(verdict.model, dir);
+  const joined = checkKnockoutRegisterAgainstRun(verdict.model, dir, { names });
   if (!joined.ok) {
     if (joined.standing.length) {
       try { writeFileSync(paths.accepted, acceptedEnvelope({ marks: joined.standing }, now())); }
@@ -201,7 +225,7 @@ export function recordKnockoutRegisterRead(runDir, received, { now = () => new D
     return refused(joined.reason);
   }
 
-  const file = knockoutRegisterFile(dir);
+  const file = chunkNo == null ? knockoutRegisterFile(dir) : knockoutRegisterChunkFile(dir, chunkNo);
   try {
     writeFileSync(file, JSON.stringify(verdict.model, null, 2) + "\n");
     writeFileSync(paths.accepted, acceptedEnvelope(call, now()));

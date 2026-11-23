@@ -17,7 +17,7 @@ import { KNOCKOUT_ASSESS_CHUNK_RE, knockoutAssessChunkFile } from "../knockout-a
 import { KNOCKOUT_CORRECTION_RE, knockoutCorrectionFile } from "../knockout-correction-record.mjs";
 import { frameRefusalsFor } from "../knockout-frame-record.mjs";
 import { knockoutRegisterRefusalsFor } from "../knockout-register-record.mjs";
-import { KNOCKOUT_RECHECK_RE, knockoutReviewFile, knockoutReviewRefusalsFor } from "../knockout-review-record.mjs";
+import { knockoutReviewRefusalsFor } from "../knockout-review-record.mjs";
 import { note } from "../log.mjs";
 import { MATTER_CONTEXT_FILE } from "../matter-frame-record.mjs";
 import { placementFormStamp, readPlacementForm, readPlacementFormInput, readSubmittedPlacementForm, readSubmittedPlacementSetAside, renderPlacementsFile, writePlacementForm } from "../placement-form-io.mjs";
@@ -195,7 +195,6 @@ export const TOOL_WRITTEN_PATTERNS = Object.freeze([
     sample: basename(knockoutAssessChunkFile("", 0)),
   }),
   Object.freeze({ re: KNOCKOUT_CORRECTION_RE, tool: "record_knockout_correction", what: "your answer to each defect, and what you repaired", sample: basename(knockoutCorrectionFile("", 0)) }),
-  Object.freeze({ re: KNOCKOUT_RECHECK_RE, tool: "record_knockout_review", what: "your second look at the corrected record", sample: basename(knockoutReviewFile("", 1)) }),
 ]);
 
 /**

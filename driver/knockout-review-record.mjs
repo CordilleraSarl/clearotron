@@ -135,7 +135,6 @@ export function knockoutReviewCallPaths(runDir, pass = 0) {
 export function knockoutReviewFile(runDir, pass = 0) {
   return join(String(runDir ?? ""), pass ? `knockout-review-${Number(pass)}.json` : "knockout-review.json");
 }
-export const KNOCKOUT_RECHECK_RE = /^knockout-review-\d+\.json$/;
 
 /**
  * The address as one string, for joining and for saying which address was refused.

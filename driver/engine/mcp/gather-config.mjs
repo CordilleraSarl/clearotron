@@ -457,6 +457,7 @@ const RECORDING = Object.freeze({
   "knockout-register-read": {
     seatWrites: false,
     keepsRetrieval: true,
+    perChunk: true,   // one reader per family, bound by its label
     tools: Object.freeze(["record_knockout_register_read", "read_register_list"]),
     reason: "hands back the filings it carries forward, what it set aside and why, and what it chose not to ask as "
       + "VALUES through record_knockout_register_read, so the driver joins each record id to the band at the call and "
@@ -840,6 +841,20 @@ export function withSendUntil(mcpConfigJson, sendUntilMs) {
   for (const server of Object.values(cfg.mcpServers))
     if (server && typeof server === "object") server.env = { ...(server.env ?? {}), CLEAROTRON_GATHER_SEND_UNTIL_MS: String(Math.floor(Number(sendUntilMs))) };
   return JSON.stringify(cfg);
+}
+
+// THE ENGINE'S OWN BUILT-IN TOOLS a stage is started with, where a stage names them. Measured in testing, 2026-11-23, on Claude
+// readers: they used file read and tool search (and one search-in-files with no result), and the other built-in tools' definitions
+// were most of every call's starting context, about 14k tokens of 28k. A stage not named here keeps the engine's full set. Tool
+// search stays, or the tool servers' tools load in full on the first call. The tool servers' tools are the grant's, as before; this
+// names only the engine's own.
+// The rating, the review and the correction record through their tools and write no file; measured on the same runs, they used file
+// read, search-in-files, file match and tool search, and none of the other built-in tools.
+const READ_AND_SEARCH = Object.freeze(["Read", "Grep", "Glob", "ToolSearch"]);
+const BUILTIN_TOOLS = Object.freeze({ "knockout-register-read": Object.freeze(["Read", "ToolSearch"]),
+  "knockout-assess": READ_AND_SEARCH, "knockout-review": READ_AND_SEARCH, "knockout-correct": READ_AND_SEARCH });
+export function builtinToolsFor(stage) {
+  return BUILTIN_TOOLS[String(stage ?? "").replace(/#\d+$/, "")] ?? null;
 }
 
 export function buildGatherMcpConfig(groups = [], { sessionKey, agent, runDir, recordAxis, bandGroups = false, correctionPositions = null,

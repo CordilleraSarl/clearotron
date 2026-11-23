@@ -2567,7 +2567,9 @@ export function applyStageWrites(msg, argv) {
       // NO BATCH PLACES from ruling 570 on: each mark names its own, below. The old shape (one list here,
       // none on the marks) is driven by the plan validator's own arms, not by this mock.
       batch: { productContext: "mock consumer product line", inUseAs: "a product line, a character or a place",
-        umbrellaBrandNote: null, executionOrder: [...names] },
+        umbrellaBrandNote: null, executionOrder: [...names],
+        // MOCK_KO_FAMILIES — the intake's families, `[["<name>", …], …]`; without it the intake groups nothing.
+        ...(process.env.MOCK_KO_FAMILIES ? { families: JSON.parse(process.env.MOCK_KO_FAMILIES) } : {}) },
       marks: names.map((n, i) => ({ ref: null, name: n, classes: [9], beltAndBraces: [35],
         classesPlain: "software (9); retail services (35, belt-and-braces)",
         contextFraming: /[aeiou]{2}|q[^u]/i.test(n) ? "coined/fanciful term" : "brand-like compound",

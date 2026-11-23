@@ -616,8 +616,7 @@ export const validators = {
       return { ok: false, reason: `chunkSummary carries an "# " heading. A single hash opens a SECTION of the report, so the client's summary ends at that line and everything after it is dropped from the page with nothing reporting the loss. Sub-headers here are "## " or "### "` };
     if (isUnbrokenWall(c.chunkSummary))
       return { ok: false, reason: `chunkSummary is ${c.chunkSummary.trim().length} characters with no line break in it — the grouped page opens with this and a reader cannot scan a wall. Keep the length; add the structure: a short opening line, then one "## <MARK NAME>" sub-header per mark, bullets where they help` };
-    if (chunkNo === 0 && !(c.batch && typeof c.batch.productContext === "string" && c.batch.productContext.trim()))
-      return { ok: false, reason: "chunk 0 must carry the batch object (productContext at minimum)" };
+    // No group carries the order's duties: the product context comes from the plan (knockoutPlan above requires it).
     for (const m of c.marks) {
       if (typeof m.name !== "string" || !m.name.trim()) return { ok: false, reason: "every mark needs a name" };
       // degraded parity vs the DISK truth (the sweep's payload/.failed sentinels), both directions:

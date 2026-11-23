@@ -36,7 +36,9 @@ import { endTheDeliveredRun, runShell } from "./run-shell.mjs";   // — the run
 import { logTurnaroundReconciliation } from "./run-quote.mjs";
 import { RunCancelled, assertNotCancelledBeforePublish, isCancelled, readCancel, stopsWithTheRun } from "./cancel.mjs";   // stop-by-user: never the failure lane below
 import { attachFramework } from "./run-attachments.mjs";   // the one framework freeze, both products'
-import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutGridSpec, KNOCKOUT_WEB, KNOCKOUT_MINUTES_BAR, knockoutBarVerdict, koChunks, groupRecordsDoc } from "./stages-knockout.mjs";
+import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutGridSpec, KNOCKOUT_WEB, KNOCKOUT_MINUTES_BAR, knockoutBarVerdict, koChunks, groupRecordsDoc, filingsOnce, expandFilingsOnce, sameRecord } from "./stages-knockout.mjs";
+import { familiesDefect } from "./knockout-frame-record.mjs";
+import { registerTable, writeRegisterTable } from "./ko-register-tables.mjs";
 import { kebabCollisions, reportIdentityFor, CAPABILITY_SKIPPED_CAUSE, CAPABILITY_SKIPPED_NOTE } from "./search-policy.mjs";
 import { countPreflight, countRegisterHits, countedMarks, resolveCountExecutor } from "./register-count.mjs";
 import { recordsPreflight, listedMarks } from "./register-records.mjs";
@@ -52,8 +54,9 @@ import { KNOCKOUT_CARD_ORDER } from "./findings-model.mjs";
 import { reviewDispatch, applyKnockoutReview, knockoutReviewFile, rewritesThatSurvive } from "./knockout-review-record.mjs";
 import { chunkBasePath, correctionAnswers, correctionOutcomes, correctionWork, correctionWorkPath, keepChunkBases, knockoutCorrectionFile, movedOutsideScope, readCorrectionWork, restoreChunkBases, rollBackName, sameFinding } from "./knockout-correction-record.mjs";
 import { knockoutAssessSourceDefects } from "./knockout-assess-record.mjs";
-import { correctionsAppliedTable, unresolvedFlags } from "./corrections-feedforward.mjs";
-import { settledKnockoutReading } from "./knockout-register-record.mjs";
+import { EARLIER_RIGHTS_FILE, earlierRights, earlierRightsGroupDoc, earlierRightsGroupFile, earlierRightsLines, earlierRightsOutcome, earlierRightsReviewLines } from "./ko-earlier-rights.mjs";
+import { unresolvedFlags } from "./corrections-feedforward.mjs";
+import { knockoutRegisterChunkFile, knockoutRegisterChunksFile, settledKnockoutReading } from "./knockout-register-record.mjs";
 import { stripNextStepSections } from "./knockout-next-step.mjs";
 import { publishKnockout, composeKnockoutCoverNote, knockoutName } from "./publish/knockout.mjs";
 import { markLogos, logosStep, writeRecordImages } from "./mark-logos.mjs";
@@ -154,7 +157,7 @@ async function knockoutReviewingPass({ ctx, run, K, merged, plan, chunks, compos
     begun = null;
   }
   if (begun?.stoodDown) return merged;
-  if (begun) return correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, work: begun, firstReview: readJsonOrNull(knockoutReviewFile(run.runDir)), merged });
+  if (begun) return correctOnce({ ctx, run, K, plan, chunks, composeRecord, work: begun, firstReview: readJsonOrNull(knockoutReviewFile(run.runDir)), merged });
   // A SOURCE THE RATING LOST STAYS OPEN: leaving a reference out does not support the claim it stood behind. It goes to the correction
   // with whatever the check raises, and where no check or correction follows, it stays on the record for the reviewing lawyer.
   const sourceDefects = sourceDefectsOf(run.runDir, merged, chunks);
@@ -168,6 +171,11 @@ async function knockoutReviewingPass({ ctx, run, K, merged, plan, chunks, compos
   };
   const d = reviewDispatch(merged, plan);
   const { about } = d;
+  // What each rating did with the earlier rights it was handed from the order's other names, kept on the run and shown to the review.
+  // It adds no session: the review reads it with the record.
+  const rightsDoc = readJsonOrNull(driverDir(run.runDir, EARLIER_RIGHTS_FILE));
+  const rightsOutcome = rightsDoc ? earlierRightsOutcome(rightsDoc, merged) : [];
+  if (rightsOutcome.length) atomicWrite(driverDir(run.runDir, "earlier-rights-outcome.json"), JSON.stringify({ schema: 1, outcome: rightsOutcome }, null, 2) + "\n");
   if (!d.dispatch && !sourceDefects.length && !sourceAnswered.length) {
     runLog(run.runDir, { event: "knockout-review", outcome: "nothing-flagged", flagged: 0, listed: 0,
       marks: merged.marks.length, excludedMarks: about.marks.length, excludedOwners: about.owners.length });
@@ -184,7 +192,7 @@ async function knockoutReviewingPass({ ctx, run, K, merged, plan, chunks, compos
 
   try {
     await koStage("knockout-review", ctx, {
-      msgCtx: { ...d.msgCtx, sourceAnswers: sourceAnswered.map(sourceAnswerLine) },
+      msgCtx: { ...d.msgCtx, sourceAnswers: sourceAnswered.map(sourceAnswerLine), earlierRightsReview: earlierRightsReviewLines(rightsOutcome), ...reviewTableCtx(run, K, plan) },
     });
   } catch (e) {
     return keep("stage-failed", { reason: String(e?.message ?? e).slice(0, 200) });
@@ -199,7 +207,7 @@ async function knockoutReviewingPass({ ctx, run, K, merged, plan, chunks, compos
     const work = correctionWork({ rated: merged, material: [...(review.material ?? []), ...sourceDefects], chunks });
     keepChunkBases(run.runDir, chunksOf(work));
     atomicWrite(correctionWorkPath(run.runDir), JSON.stringify(work, null, 2) + "\n");
-    return correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, work, firstReview: review, merged });
+    return correctOnce({ ctx, run, K, plan, chunks, composeRecord, work, firstReview: review, merged });
   }
 
   const { doc, receipt } = applyKnockoutReview(merged, review);
@@ -243,7 +251,7 @@ function setAsideTheRound(runDir, work, rated, why) {
   const dest = driverDir(runDir, "knockout-review-set-aside", new Date().toISOString().replace(/[:.]/g, "-"));
   mkdirSync(dest, { recursive: true });
   const moved = [];
-  for (const f of [correctionWorkPath(runDir), paths(runDir).knockoutCorrections, knockoutReviewFile(runDir, 0), knockoutReviewFile(runDir, 1),
+  for (const f of [correctionWorkPath(runDir), paths(runDir).knockoutCorrections, knockoutReviewFile(runDir),
     ...touched.flatMap((c) => [chunkBasePath(runDir, c), knockoutCorrectionFile(runDir, c)])]) {
     if (!existsSync(f)) continue;
     renameSync(f, join(dest, basename(f)));
@@ -271,17 +279,25 @@ function sourceDefectsOf(runDir, merged, chunks) {
   }).filter(Boolean);
 }
 
+/** The review's carried-filings table, written beside the run's register record. One that cannot be written leaves the review its pointer to the whole record. */
+function reviewTableCtx(run, K, plan) {
+  try {
+    const held = JSON.parse(readFileSync(K.registerRecords, "utf8"));
+    return { registerTableFile: writeRegisterTable(driverDir(run.runDir, "register-table.review.json"), registerTable(held, plan)) };
+  } catch { return {}; }
+}
+
 const readJsonOrNull = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
 const chunksOf = (work) => [...new Set((work?.defects ?? []).map((x) => x.chunk).filter((c) => c != null))];
 
 /**
- * One correction and one recheck. Each chunk a defect names goes back to the rating step; the record is composed again through the
- * same steps and gate; and a fresh reader reads the result, with what became of each defect. There is no third look. What it still
- * finds, and any defect no one answered, stays on the record for the reviewing lawyer. Nothing here can cost a client the report,
- * and no defect leaves the record by a step failing: a repair the record cannot stand with goes back name by name, and a stage that
- * fails leaves what it had accepted.
+ * One correction, and no second look. Each chunk a defect names goes back to the rating step, and the record is composed again
+ * through the same steps and gate. Any defect no correction answered stays on the record for the reviewing lawyer. Measured in
+ * testing, 2026-11-23, on five real orders: no correction moved a band, and a second look took about a sixth of a run's tokens.
+ * Nothing here can cost a client the report, and no defect leaves the record by a step failing: a repair the record cannot stand
+ * with goes back name by name, and a stage that fails leaves what it had accepted.
  */
-async function correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, work, firstReview, merged }) {
+async function correctOnce({ ctx, run, K, plan, chunks, composeRecord, work, firstReview, merged }) {
   const touched = chunksOf(work);
   const correctedNames = [...new Set(work.defects.map((x) => x.mark))];
   const log = (outcome, detail = {}) => runLog(run.runDir, { event: "knockout-review", outcome, material: work.defects.length, marks: correctedNames.length, ...detail });
@@ -331,15 +347,14 @@ async function correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, wor
     }
     if (!corrected) return standDown("correction-refused-by-the-merged-gate", { reason: gateCause });
   }
-  // A CHANGE OUTSIDE THE DEFECTS IS RECORDED AND RECHECKED, as a clearance records it (design ruling, 2026-11-10: the
-  // Knockout corrects the clearance's way). It no longer stands the correction down: each moved name is kept with its
-  // before and after, and the recheck reads it. A comparison that could not be made sends the recheck to the whole batch.
+  // A CHANGE OUTSIDE THE DEFECTS IS RECORDED, as a clearance records it (design ruling, 2026-11-10: the Knockout corrects the
+  // clearance's way). It does not stand the correction down: each moved name is kept with its before and after.
   const outside = movedOutsideScope(work, corrected);
   const movedNames = [...new Set([...outside.marks, ...outside.blocks])];
 
   // THE FIRST PASS'S REWRITES STILL STAND ONLY ON A NAME THE CORRECTION DID NOT CHANGE. A rewrite on a changed name was
   // written against the record as rated, and laid over the change it would put back the words the change replaced. With no
-  // comparison, no name is known to be unchanged. The second pass reads the record with the survivors on it, as it ships.
+  // comparison, no name is known to be unchanged.
   let doc = corrected;
   const survivors = rewritesThatSurvive(firstReview, outside.complete ? [...new Set([...correctedNames, ...movedNames])] : null);
   const rewritesRetired = (firstReview?.rewrites?.length ?? 0) - survivors.rewrites.length;
@@ -353,25 +368,9 @@ async function correctAndRecheck({ ctx, run, K, plan, chunks, composeRecord, wor
   const held = { defects: work.defects, outcomes, failedChunks: failed, rolledBack, ...(gateCause ? { gateCause } : {}),
     movedOutsideDefects: outside.moved, comparisonComplete: outside.complete, rewritesRetired };
 
-  const d = reviewDispatch(doc, plan);
-  try {
-    await koStage("knockout-review", ctx, { chunkNo: 1, msgCtx: { ...d.msgCtx, recheckTable: correctionsAppliedTable(outcomes),
-      movedNames, comparisonComplete: outside.complete } });
-  } catch (e) {
-    if (e instanceof RunCancelled || (e instanceof StageFailure && (e.rateLimited || e.resetsAt))) throw e;
-    // NOBODY READ THE CORRECTED RECORD, so nothing here can call a defect answered.
-    const reason = String(e?.message ?? e).slice(0, 200);
-    keepRecord({ ...held, recheck: "failed", failure: reason, open: asOpen(work.defects, "not-rechecked", "recheck-failed") });
-    log("recheck-failed", { applied: receipt.applied, unresolved: unresolved.length, reason, movedOutsideDefects: movedNames.length, comparisonComplete: outside.complete });
-    return doc;
-  }
-  const second = readJsonOrNull(knockoutReviewFile(run.runDir, 1));
-  const found = second?.material ?? [];
-  const open = [...found, ...asOpen(notAnswered.filter((x) => !found.some((m) => m.mark === x.mark && m.kind === x.kind)), "not-answered")];
-  keepRecord({ ...held, recheck: "ran", open });
-  const again = applyKnockoutReview(doc, second ?? {});
-  if (validateMergedFindings(run.runDir, again.doc, plan).ok) { doc = again.doc; atomicWrite(K.findings, JSON.stringify(doc, null, 2) + "\n"); }
-  log("corrected", { applied: receipt.applied + again.receipt.applied, unresolved: unresolved.length, open: open.length, failedChunks: failed.length, rolledBack: rolledBack.length,
+  const open = asOpen(notAnswered, "not-answered");
+  keepRecord({ ...held, open });
+  log("corrected", { applied: receipt.applied, unresolved: unresolved.length, open: open.length, failedChunks: failed.length, rolledBack: rolledBack.length,
     movedOutsideDefects: movedNames.length, comparisonComplete: outside.complete });
   return doc;
 }
@@ -573,6 +572,41 @@ export async function koStage(name, ctx, opts = {}) {   // @internal — driven 
 // them delivers. When a turn fails the record keeps every answer the run holds and every decision the turn had settled,
 // with the failure on it, and nothing more is fetched: listing each smaller count is no recovery. A rate limit is not
 // that failure: it parks and resumes as every stage's does, and the resume reuses each answer held.
+/**
+ * A reader's own rows of the plan and of the instructed scope, written beside the order's: one name's, named for the name, so a
+ * solo order and a shortlist hand its reader the same files; or a family's (`family`, its names), named for its place (`tag`).
+ * No priority, no execution order: those rank a name among others. Returns their paths.
+ */
+export function knockoutReaderFiles(runDir, plan, scopeDoc, name, { family = null, tag = null } = {}) {
+  const want = new Set((family ?? [name]).map((n) => String(n).trim().toLowerCase()));
+  const keep = (x) => want.has(String((typeof x === "string" ? x : x?.name) ?? "").trim().toLowerCase());
+  const planFile = driverDir(runDir, family && family.length > 1 ? `knockout-plan.family-${tag}.json` : `knockout-plan.name-${kebab(name)}.json`);
+  const { executionOrder: _order, ...batch } = plan?.batch ?? {};
+  atomicWrite(planFile, JSON.stringify({ schema: plan?.schema, batch, marks: (plan?.marks ?? []).filter(keep).map(({ priority: _p, ...m }) => m) }, null, 2) + "\n");
+  const scopeFile = driverDir(runDir, family && family.length > 1 ? `instructed-scope.family-${tag}.json` : `instructed-scope.name-${kebab(name)}.json`);
+  const one = { ...(scopeDoc ?? {}) };
+  for (const k of ["marks", "marksDetailed"]) if (Array.isArray(one[k])) one[k] = one[k].filter(keep);
+  atomicWrite(scopeFile, JSON.stringify(one, null, 2) + "\n");
+  return { planFile, scopeFile };
+}
+
+/**
+ * The intake's families as the schedule uses them, checked again in code. Families that fail the check are not used: every name is
+ * then its own family, and the journal says why.
+ */
+function checkedFamilies(runDir, rows, plan) {
+  const families = plan?.batch?.families;
+  if (families == null) return null;
+  const defect = familiesDefect(rows, families);
+  if (defect) { runLog(runDir, { event: "knockout-families-refused", defect: defect.slice(0, 300) }); return null; }
+  return families;
+}
+function orderFamilies(runDir, names, plan) {
+  const groups = koChunks(names, checkedFamilies(runDir, names, plan));
+  runLog(runDir, { event: "knockout-families", source: plan?.batch?.families ? "intake" : "none", groups: groups.map((g) => g.length) });
+  return groups;
+}
+
 async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts, countExec, opts }) {
   const register = ctx.register ?? REGISTER_PROVIDER;   // the run's register (ctx.register), the machine's where none is named
   const names = markRows.map((m) => ({ name: String(m.name), classes: Array.isArray(m.classes) ? m.classes : null }));
@@ -627,13 +661,39 @@ async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts
         if (r?.ok === false) note(`register list for one name did not complete (non-fatal): ${String(r.cause ?? "").slice(0, 160)}`);
       });
     } else {
-      const inScope = [...new Set(names.flatMap((m) => m.classes ?? []).concat(Array.isArray(job.classes) ? job.classes : []))].join(", ") || null;
-      await koStage("knockout-register-read", ctx, { msgCtx: {
-        readingLines: readingTableLines({ marks: names, counts, classes: job.classes ?? null, framedMarks: plan.marks, runDir: run.runDir }),
-        providerDoc: adapterForRegister(ctx.register)?.skillDoc ?? null, inScope,
-      } });
-      reading = JSON.parse(readFileSync(K.registerReading, "utf8"));
-      runLog(run.runDir, { event: "knockout-register-read", names: reading.marks?.length ?? 0 });
+      // ONE READER PER FAMILY OF THE INTAKE, side by side, a name with no family its own: its own counts, its own rows of the plan
+      // and of the scope, its own classes. The driver joins what they settle into the one reading every later step reads. A reader
+      // that does not finish keeps what it had settled. One reader for a whole order read every name's lists in one session, in turn.
+      const families = orderFamilies(run.runDir, names, plan);
+      atomicWrite(knockoutRegisterChunksFile(run.runDir), JSON.stringify({ schema: 1, chunks: families.map((f) => f.map((m) => m.name)) }, null, 2) + "\n");
+      const scopeDoc = readJsonOrNull(K.instructedScope) ?? {};
+      const readerFailures = [];
+      await runBatched(families.map((_, c) => c), KO_CONCURRENT_TURNS, async (c) => {
+        const fam = families[c];
+        const inScope = [...new Set(fam.flatMap((m) => m.classes ?? []).concat(Array.isArray(job.classes) ? job.classes : []))].join(", ") || null;
+        try {
+          await koStage("knockout-register-read", ctx, { chunkNo: c, msgCtx: {
+            readingLines: readingTableLines({ marks: fam, counts, classes: job.classes ?? null, framedMarks: plan.marks, runDir: run.runDir }),
+            providerDoc: adapterForRegister(ctx.register)?.skillDoc ?? null, inScope, familySize: fam.length,
+            ...knockoutReaderFiles(run.runDir, plan, scopeDoc, fam[0].name, { family: fam.map((m) => m.name), tag: c }),
+          } });
+        } catch (e) { readerFailures.push({ c, e }); }
+      }, { stop: () => readerFailures.some((f) => rateLimited(f) || f.e instanceof RunCancelled) });
+      const hard = readerFailures.find((f) => rateLimited(f) || f.e instanceof RunCancelled);
+      if (hard) throw hard.e;
+      // A STOP RECORDED WHILE THE READERS RAN ends the run here as a stop: a reader it cut short is not a reading that failed.
+      if (isCancelled(run.runDir)) throw new RunCancelled("knockout-register-read", readCancel(run.runDir));
+      const rows = families.flatMap((_, c) => readJsonOrNull(knockoutRegisterChunkFile(run.runDir, c))?.marks ?? settledKnockoutReading(run.runDir, c)?.marks ?? []);
+      reading = rows.length ? { schema_version: 1, marks: rows } : null;
+      if (reading) atomicWrite(K.registerReading, JSON.stringify(reading, null, 2) + "\n");
+      // A READER THAT DID NOT FINISH IS THE STEP'S LAST WORD: the failure is the event a delivery reads, never followed by a success.
+      if (readerFailures.length) {
+        note(`register reading: ${readerFailures.length} of ${families.length} reader(s) did not finish (non-fatal): ${String(readerFailures[0].e?.message ?? readerFailures[0].e).slice(0, 160)}`);
+        runLog(run.runDir, { event: "knockout-register-read-failed", readers: families.length, failed: readerFailures.length, names: reading?.marks?.length ?? 0,
+          cause: String(readerFailures[0].e?.message ?? readerFailures[0].e).slice(0, 300) });
+      } else {
+        runLog(run.runDir, { event: "knockout-register-read", names: reading?.marks?.length ?? 0, readers: families.length, families: families.map((f) => f.length) });
+      }
     }
   } catch (e) {
     if (e instanceof StageFailure && (e.rateLimited || e.resetsAt)) throw e;
@@ -737,8 +797,9 @@ export function frameworkEchoFault(echo, frozen) {
   return null;
 }
 
-// AT MOST THREE MODEL TURNS AT ONCE, for the rating groups and for their corrections (design, 2026-11-05).
-const KO_CONCURRENT_TURNS = 3;
+// AT MOST EIGHT MODEL TURNS AT ONCE, for the readers, the rating groups and their corrections: one per family, so an order of up to
+// eight names runs every family side by side (design, 2026-11-23; the bound was three from 2026-11-05).
+const KO_CONCURRENT_TURNS = 8;
 
 // bounded-concurrency fan-out (local copy of the runBatched idiom — pipeline.mjs's is private).
 // A non-finite limit collapses to 1 worker, never to zero (Array.from({length: NaN}) is [] — a typo'd
@@ -1261,6 +1322,8 @@ export async function knockoutInner(ctx, job, opts = {}) {
                   unanswered: checks.filter((c) => !c.ok).length,
                   // Answers the run already held, so asked nothing for: `asked` is what this pass paid for.
                   reused: held.size, asked: ask.length,
+                  // The distinct questions put to the service: an identical question is asked once.
+                  questions: new Set(ask.map((o) => composeOwnerQuery(o))).size,
                 });
               } else {
                 runLog(run.runDir, { event: "knockout-owner-checks", owners: 0, answered: 0, unanswered: 0,
@@ -1339,7 +1402,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
           const has = existsSync(K.research(kebab(m.name)));
           return { name: m.name, degraded: has ? null : (degraded.get(m.name) ?? "research unavailable (prior attempt)") };
         });
-        chunks = koChunks(chunkRows);
+        chunks = koChunks(chunkRows, checkedFamilies(run.runDir, chunkRows, plan));
         // the assignment sidecar — the per-chunk validator joins each chunk's marks against THIS (membership
         // is enforced in code, not prompted); deterministic from the frozen plan, so a resume re-mints equal.
         atomicWrite(paths(run.runDir).knockoutChunks,
@@ -1361,17 +1424,53 @@ export async function knockoutInner(ctx, job, opts = {}) {
         // read every other group's filings three times over: measured in testing, 2026-11-21, about 0.7 MB of output per Codex group, against
         // 66-172 KB of the group's own research. The full record stays where it is, for the validator and for every later step.
         const groupRecords = new Map();
-        if (chunks.length > 1 && existsSync(K.registerRecords)) {
+        const groupForms = new Map();
+        // A one-name order reads its own part too, so a name gets the same job whether it is ordered alone or in a shortlist.
+        if (existsSync(K.registerRecords)) {
           let held = null;
           try { held = JSON.parse(readFileSync(K.registerRecords, "utf8")); } catch { held = null; }
           if (held) for (let c = 0; c < chunks.length; c++) {
-            atomicWrite(K.groupRegisterRecords(c), JSON.stringify(groupRecordsDoc(held, chunks[c].map((m) => m.name)), null, 2) + "\n");
+            const doc = groupRecordsDoc(held, chunks[c].map((m) => m.name));
+            // A FAMILY'S FILINGS ARE HELD ONCE, used only where expanding them gives back every name's record exactly. Measured in testing,
+            // 2026-11-23: a six-name family's file listed 85 distinct filings 504 times, and held once it was 59% smaller. The run's journal
+            // says which form each group read.
+            const once = chunks[c].length > 1 ? filingsOnce(doc) : null;
+            const equal = once ? sameRecord(expandFilingsOnce(once), doc) : null;
+            const out = once && equal ? once : doc;
+            atomicWrite(K.groupRegisterRecords(c), JSON.stringify(out, null, 2) + "\n");
             groupRecords.set(c, K.groupRegisterRecords(c));
+            groupForms.set(c, out.form ?? "per-name");
+            runLog(run.runDir, { event: "knockout-group-records", chunk: c, names: chunks[c].length, form: out.form ?? "per-name",
+              ...(once ? { expandsEqual: equal, listings: doc.marks.reduce((n, m) => n + (m.records?.length ?? 0) + (m.setAsideRecords?.length ?? 0), 0), filings: Object.keys(once.filings).length } : {}),
+              bytes: Buffer.byteLength(JSON.stringify(out, null, 2)) });
           }
         }
+        // Each group's own rows of the plan, beside the order's.
+        const groupPlans = new Map();
+        for (let c = 0; c < chunks.length; c++) {
+          const names = new Set(chunks[c].map((m) => String(m.name).trim().toLowerCase()));
+          const file = driverDir(run.runDir, `knockout-plan.group-${c}.json`);
+          const { executionOrder: _order, ...batch } = plan.batch ?? {};
+          atomicWrite(file, JSON.stringify({ schema: plan.schema, batch, marks: (plan.marks ?? []).filter((m) => names.has(String(m.name).trim().toLowerCase())).map(({ priority: _p, ...m }) => m) }, null, 2) + "\n");
+          groupPlans.set(c, file);
+        }
+        // THE EARLIER RIGHTS HELD UNDER THE ORDER'S OTHER NAMES that the held evidence ties to each name, put in front of that name's
+        // rating. Read before the rating, so no copy a rating makes counts.
+        let rightsDoc = null;
+        try { rightsDoc = earlierRights(run.runDir); atomicWrite(driverDir(run.runDir, EARLIER_RIGHTS_FILE), JSON.stringify(rightsDoc, null, 2) + "\n"); }
+        catch (e) { note(`earlier rights not gathered (non-fatal): ${String(e?.message ?? e).slice(0, 160)}`); }
+        // Each group reads its own names' part, which names no other name of the order; the order's whole document is the reviewer's.
+        const rightsCtx = (c) => {
+          const names = chunks[c].map((m) => m.name);
+          const lines = rightsDoc ? earlierRightsLines(rightsDoc, names) : [];
+          if (!lines.length) return {};
+          const file = driverDir(run.runDir, earlierRightsGroupFile(c));
+          atomicWrite(file, JSON.stringify(earlierRightsGroupDoc(rightsDoc, names), null, 2) + "\n");
+          return { earlierRightsLines: lines, earlierRightsFile: file };
+        };
         const assessFailures = [];
         await runBatched(chunks.map((_, c) => c), KO_CONCURRENT_TURNS, async (c) => {
-          try { await koStage("knockout-assess", ctx, { chunkNo: c, msgCtx: { chunkMarks: chunks[c], chunkTotal: chunks.length, framework: ctx.framework, frameworkMethod: ctx.frameworkMethod ?? null, registerRecordsFile: groupRecords.get(c) ?? null } }); }
+          try { await koStage("knockout-assess", ctx, { chunkNo: c, msgCtx: { chunkMarks: chunks[c], chunkTotal: chunks.length, framework: ctx.framework, frameworkMethod: ctx.frameworkMethod ?? null, registerRecordsFile: groupRecords.get(c) ?? null, registerRecordsForm: groupForms.get(c) ?? null, planFile: groupPlans.get(c) ?? null, ...rightsCtx(c) } }); }
           catch (e) { assessFailures.push({ c, e }); }
         }, { stop: () => assessFailures.some((f) => rateLimited(f) || f.e instanceof RunCancelled) });
         if (assessFailures.length) throw firstFailure(assessFailures);

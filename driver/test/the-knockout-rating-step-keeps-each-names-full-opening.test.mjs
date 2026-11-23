@@ -32,7 +32,7 @@ const dispatch = (chunkNo) => {
 test("every chunk's rating dispatch carries the opening instruction once, word for word", () => {
   for (const chunkNo of [0, 1]) {
     const text = dispatch(chunkNo);
-    assert.match(text, chunkNo === 0 ? /As the FIRST chunk/ : /As a CONTINUATION chunk/, "premise: the chunk's own branch rendered");
+    assert.match(text, /Open your `chunkSummary` with a line for this name/, "premise: the group's own duties rendered");
     assert.equal(text.split(OPENING).length - 1, 1, `chunk ${chunkNo + 1}: the opening instruction is not in the dispatch once, word for word`);
     assert.doesNotMatch(text, WITHDRAWN, `chunk ${chunkNo + 1}: the withdrawn sentence reached the rating step`);
   }

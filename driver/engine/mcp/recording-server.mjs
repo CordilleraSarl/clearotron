@@ -142,7 +142,8 @@ async function record_knockout_register_read(params) {
   if (!runDir) {
     return { error: "this server was started without a run — the driver wires it per run; there is no parameter for it and this tool never guesses one" };
   }
-  return recordKnockoutRegisterRead(runDir, params);
+  // A family's reader is bound by its label, as a rating group is; a reader for the whole order has none.
+  return recordKnockoutRegisterRead(runDir, params, { boundOrdinal: String(process.env.CLEAROTRON_RECORD_AXIS ?? "") || null });
 }
 
 async function read_register_list(params) {
@@ -1521,7 +1522,8 @@ serve({
   }, {
     name: "read_register_list",
     description:
-      "Read the held answer to one question by `qid`, with its filings and goods evidence. A row's `goods_state` " +
+      "Read the held answer to one question by `qid`, with its filings and goods evidence, as a table of one filing a line. " +
+      "The goods column holds the wording in the classes this name searches, cut at 200 characters a class. A row's `goods_state` " +
       "distinguishes complete, cut, unknown, absent, unavailable, and not-held wording. Pass `record_id` as well to read " +
       "all wording held for that filing. This reads existing evidence and makes no register call. Full wording is available " +
       "only where this run holds it.",
@@ -1634,6 +1636,10 @@ serve({
             executionOrder: {
               type: "array", items: { type: "string" },
               description: "The mark names in the order they should be swept — common-word and known-problem marks first. Every entry must be a mark in this plan.",
+            },
+            families: {
+              type: "array", items: { type: "array", items: { type: "string" } },
+              description: "Put each submitted name verbatim in exactly one group in batch.families. Keep spellings generated only for searching outside the groups.",
             },
           },
         },

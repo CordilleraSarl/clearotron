@@ -21,7 +21,7 @@ import { countRegisterHits, variantFormsLine } from "../register-count.mjs";
 import { capabilitiesFor } from "../register-capabilities.mjs";
 import { fixtureFileName, fixtureLister, recordsLine } from "../register-records.mjs";
 import { writeFixtureMarker } from "../register-fixture-marker.mjs";
-import { executeQuestionsWithLister, knockoutAxis, knockoutBandBlocks, knockoutBandPath, knockoutListView, knockoutProposals,
+import { executeQuestionsWithLister, knockoutAxis, knockoutBandBlocks, knockoutBandPath, knockoutListView, knockoutProposals, LIST_GOODS_CHARS,
   knockoutQuestionPlan, knockoutRecordsDoc, openingQid, questionPlanPath, questionsOwed, resolveQuestionExecutor, runPrefixOfSession, unfoldFormCounts, withCitedFilings, withHeldGoods } from "../knockout-register-read.mjs";
 import { registerRecordIdsFor } from "../verify-knockout.mjs";
 import { ownersOwedACheck } from "../owner-use-check.mjs";
@@ -620,6 +620,10 @@ test("a reading step that did not finish leaves what the run held carried, and s
 
 // ── READING A LIST ─────────────────────────────────────────────────────────────────────────────
 
+/** A list's rows as objects, by the columns the list names: the list is a table, one filing a line. */
+const tableRows = (view) => view.rows.map((line) => Object.fromEntries(view.columns.split(" | ").map((k, i) => [k, line.split(" | ")[i]])));
+const GOODS = "goods in this name's classes";
+
 test("a list is read whole with the goods the run holds, in the shipped states, and one filing's whole wording by its record_id", () => {
   const id = openingQid(NAME, "identical");
   const list = [row("short"), row("long"), row("none")];
@@ -630,19 +634,20 @@ test("a list is read whole with the goods the run holds, in the shipped states, 
   writeFileSync(driverDir(dir, "register-record-bodies.jsonl"), bodies.join("\n") + "\n");
   const view = knockoutListView(dir, { qid: id });
   assert.equal(view.total_hits, 3);
+  assert.equal(view.columns, `record_id | mark | owner | status | office | classes | filed | registered | goods_state | ${GOODS}`);
   assert.equal(view.rows.length, 3);
-  const byId = Object.fromEntries(view.rows.map((r) => [r.record_id.split("/").pop(), r]));
+  const byId = Object.fromEntries(tableRows(view).map((r) => [r.record_id.split("/").pop(), r]));
   assert.equal(byId.short.goods_state, "complete");
-  assert.deepEqual(byId.short.goods, ["9: tonic water"]);
-  assert.equal(byId.long.goods_shortened, true, "the view says it cut a statement");
-  assert.ok(byId.long.goods[0].length < LONG.length);
+  assert.equal(byId.short[GOODS], "9: tonic water");
+  assert.ok(byId.long[GOODS].endsWith("…"), "the view says it cut a statement");
+  assert.equal(byId.long[GOODS].length, LIST_GOODS_CHARS + 1, "a class's wording is cut at its limit");
   const whole = knockoutListView(dir, { qid: id, record_id: byId.long.record_id });
   assert.match(JSON.stringify(whole.full_record), /tonic water tonic water/, "the whole held record is there to read, with nothing fetched");
   assert.equal(whole.goods_state, "complete");
   assert.deepEqual(knockoutListView(dir, { qid: id, record_id: byId.none.record_id }).goods, [], "no wording held is said, not filled in");
   assert.match(knockoutListView(dir, { qid: id, record_id: "/mark/em/stranger" }).error, /no filing/);
   assert.notEqual(byId.none.goods_state, "complete", "no goods on file is said");
-  assert.deepEqual(byId.none.goods, []);
+  assert.equal(byId.none[GOODS], "");
   assert.match(knockoutListView(dir, { qid: "nothing" }).error, /no question/);
 });
 
@@ -650,18 +655,18 @@ test("goods that came on the search row reach the list and its whole wording, wi
   const id = openingQid(NAME, "identical");
   const onRow = (classifications, extra = {}) => row("onrow", NAME, { raw: { classifications }, ...extra });
   const c = (nice, text, extra = {}) => ({ nice_class: nice, goods_services_text: text, goods_services_language: "en", ...extra });
-  const listed = (r) => { const dir = runWith({ total: 1, blocks: [listBlock(id, [r])] }); return { dir, view: knockoutListView(dir, { qid: id }).rows[0] }; };
+  const listed = (r) => { const dir = runWith({ total: 1, blocks: [listBlock(id, [r])] }); return { dir, view: tableRows(knockoutListView(dir, { qid: id }))[0] }; };
   const { dir, view } = listed(onRow([c(9, "tonic water"), c(35, "retail of tonic water")]));
-  assert.deepEqual(view.goods, ["9: tonic water", "35: retail of tonic water"]);
+  assert.equal(view[GOODS], "9: tonic water / 35: retail of tonic water");
   assert.notEqual(view.goods_state, "not-held", "goods held on the search row are held");
-  assert.equal(view.goods_shortened, false);
+  assert.ok(!view[GOODS].endsWith("…"), "nothing was cut");
   const whole = knockoutListView(dir, { qid: id, record_id: view.record_id });
   assert.deepEqual(whole.goods, ["9: tonic water", "35: retail of tonic water"], "a view that cut nothing is all the wording held");
   assert.equal(listed(onRow([c(9, "tonic water and", { goods_services_text_truncated: true })])).view.goods_state, "cut", "the register's own cut stays a cut");
   assert.equal(listed(onRow([c(9, "tonic ".repeat(60))])).view.goods_state, "unknown", "a default answer at its length limit is not known whole");
   const long = "tonic water ".repeat(200);
   const shortened = listed(onRow([c(9, long)], { goods_whole: true }));
-  assert.equal(shortened.view.goods_shortened, true);
+  assert.ok(shortened.view[GOODS].endsWith("…"));
   assert.equal(knockoutListView(shortened.dir, { qid: id, record_id: shortened.view.record_id }).full_record.goods[0].text, long.trim(), "a statement the view cut is whole behind its record_id");
 });
 
@@ -670,10 +675,21 @@ test("a fetch that failed reads as failed in a list, not as a record never held"
   const dir = runWith({ total: 1, blocks: [listBlock(id, [row("gone")])] });
   const callLog = join(dir, "register-calls.jsonl");
   writeFileSync(callLog, JSON.stringify({ tool: "record_fetch", sessionKey: "clearance-invented-run-knockout-register-read", target: "/mark/em/gone", ok: false, http_status: 503 }) + "\n");
-  const failed = knockoutListView(dir, { qid: id }, { runPrefix: "clearance-invented-run", callLog }).rows[0];
+  const failed = tableRows(knockoutListView(dir, { qid: id }, { runPrefix: "clearance-invented-run", callLog }))[0];
   assert.equal(failed.goods_state, "unavailable");
-  assert.equal(knockoutListView(dir, { qid: id }).rows[0].goods_state, "not-held", "no ledger to read says only that the run holds none");
+  assert.equal(tableRows(knockoutListView(dir, { qid: id }))[0].goods_state, "not-held", "no ledger to read says only that the run holds none");
   assert.equal(runPrefixOfSession("clearance-invented-run-knockout-assess#2-rerun1"), "clearance-invented-run");
+});
+
+test("a list shows the goods in the classes its name searches; the rest stay behind the record_id", () => {
+  const id = openingQid(NAME, "identical");
+  const dir = runWith({ total: 1, blocks: [listBlock(id, [row("two", NAME, { raw: { classifications: [
+    { nice_class: 9, goods_services_text: "tonic water", goods_services_language: "en" },
+    { nice_class: 35, goods_services_text: "retail of tonic water", goods_services_language: "en" }] } })])] });
+  writeFileSync(join(dir, "knockout-plan.json"), JSON.stringify({ schema: 1, batch: {}, marks: [{ name: NAME, classes: [9] }] }));
+  const view = tableRows(knockoutListView(dir, { qid: id }))[0];
+  assert.equal(view[GOODS], "9: tonic water", "a class the name does not search is not in the table");
+  assert.deepEqual(knockoutListView(dir, { qid: id, record_id: view.record_id }).goods, ["9: tonic water", "35: retail of tonic water"], "the whole wording is one call away");
 });
 
 test("what the step set aside carries its goods too, so the rating step can read it without asking again", () => {

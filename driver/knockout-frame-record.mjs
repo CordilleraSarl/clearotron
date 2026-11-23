@@ -85,9 +85,30 @@ export function knockoutFrameCallPaths(runDir) {
  */
 const DECLARED = Object.freeze({
   "": ["schema", "batch", "marks", "scope_note"],
-  batch: ["productContext", "inUseAs", "places", "umbrellaBrandNote", "executionOrder"],
+  batch: ["productContext", "inUseAs", "places", "umbrellaBrandNote", "executionOrder", "families"],
   marks: ["ref", "name", "classes", "beltAndBraces", "classesPlain", "contextFraming", "useKind", "places", "spellings", "alternatives", "priorKnowledge", "priority"],
 });
+
+/**
+ * The intake's families, checked in code. Every submitted name sits in
+ * exactly one family, and a family names only submitted names. null when the families hold, else the defect. PURE.
+ */
+export function familiesDefect(marks, families) {
+  if (!Array.isArray(families) || !families.length || families.some((f) => !Array.isArray(f) || !f.length || f.some((n) => typeof n !== "string" || !n.trim())))
+    return "batch.families must be a list of families, each a non-empty list of instructed names";
+  const key = (n) => String(n ?? "").trim().toLowerCase();
+  const submitted = new Set((marks ?? []).map((m) => key(m?.name)));
+  const verbatim = new Map((marks ?? []).map((m) => [key(m?.name), String(m?.name ?? "").trim()]));
+  const seen = new Map();
+  for (const f of families) for (const n of f) { seen.set(key(n), (seen.get(key(n)) ?? 0) + 1); if (!verbatim.has(key(n))) verbatim.set(key(n), String(n).trim()); }
+  const unknown = [...seen.keys()].filter((n) => !submitted.has(n));
+  const twice = [...seen].filter(([, c]) => c > 1).map(([n]) => n);
+  const missing = [...submitted].filter((n) => !seen.has(n));
+  const parts = [unknown.length ? `names no instructed name: ${unknown.map((n) => `"${verbatim.get(n)}"`).join(", ")}` : "",
+    twice.length ? `places a name in more than one family: ${twice.map((n) => `"${verbatim.get(n)}"`).join(", ")}` : "",
+    missing.length ? `leaves out: ${missing.map((n) => `"${verbatim.get(n)}"`).join(", ")}` : ""].filter(Boolean);
+  return parts.length ? `batch.families ${parts.join("; ")}. Put each submitted name verbatim in exactly one group in batch.families.` : null;
+}
 
 /** Refuse an undeclared key by path, through the shared implementation every transport now uses. */
 export const refuseUndeclared = (params) => refuseUndeclaredShared(params, DECLARED, "knockoutframe");
@@ -128,6 +149,7 @@ export function mergeKnockoutFrameCall(stored, received) {
     places: keepIfAbsent(bPatch.places, bBase.places),
     umbrellaBrandNote: keepIfAbsent(bPatch.umbrellaBrandNote, bBase.umbrellaBrandNote),
     executionOrder: keepIfAbsent(bPatch.executionOrder, bBase.executionOrder),
+    families: keepIfAbsent(bPatch.families, bBase.families),   // the intake's families, checked when the record is accepted
   };
 
   const byName = new Map();
@@ -215,6 +237,11 @@ export function acceptKnockoutFrame(params) {
     const collisions = kebabCollisions(marks.map((m) => String(m?.name ?? "")));
     if (collisions.length)
       defects.push(`knockoutframe_key_collision: marks ${collisions.map(([a, b]) => `"${a}"/"${b}"`).join(", ")} collide to the same research key — a batch cannot carry two marks that differ only in spacing, punctuation or case, because they would share ONE research payload and one of them would be rated on the other's evidence. Reword or drop one`);
+
+    if (params?.batch?.families !== undefined) {
+      const familiesRefused = familiesDefect(marks, params.batch.families);
+      if (familiesRefused) defects.push(`knockoutframe_families: ${familiesRefused}`);
+    }
 
     const order = params?.batch?.executionOrder;
     if (order != null) {
