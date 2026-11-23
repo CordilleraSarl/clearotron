@@ -459,8 +459,11 @@ test("STAGE 0.5 end to end: counts measured in code, on the report, in the workb
   const ironForms = variantForms("IRONWHISK").forms.map((f) => f.form);
   const cluvForms = variantForms("CLUVENDRA").forms.map((f) => f.form);
   const countRows = ledger.filter((r) => r.stage !== "records");
-  assert.equal(countRows.length, 2 * 2 + ironForms.length + cluvForms.length,
+  assert.equal(countRows.filter((r) => !r.retry).length, 2 * 2 + ironForms.length + cluvForms.length,
     "2 marks × (2 simple predicates + one call per generated variant form), each receipted");
+  // A call with no answer is asked once more, and that call is receipted too: CLUVENDRA's fixture holds no containing
+  // figure and none for its forms.
+  assert.equal(countRows.filter((r) => r.retry).length, 1 + cluvForms.length, "each call that got no answer, asked once more");
   // The billable unit is the FORM, and the receipts say so: without the per-form line the ledger would
   // report two calls where nine were made, and the corsearch multiplier would be invisible.
   assert.deepEqual(countRows.filter((r) => r.predicate === "close" && r.mark === "IRONWHISK").map((r) => r.variant_form), ironForms);
