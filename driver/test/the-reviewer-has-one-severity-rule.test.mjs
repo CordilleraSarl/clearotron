@@ -24,4 +24,13 @@ test("the verdict is chosen by severity, never by how many flags there are", () 
   // Four minor defects are CONDITIONAL, and one material defect is BLOCKING: the paragraph that says so stays.
   assert.match(logic, /Total flag count is NOT itself a blocking criterion/);
   assert.match(logic, /A run with one material flag .* is BLOCKING regardless of total count/);
+  // The reviewer still names each edit, and the blocking grounds stand.
+  assert.match(logic, /none is a BLOCKING ground below\. List the edits\./, "the reviewer's duty to name the edits is gone");
+  assert.match(logic, /- \*\*BLOCKING\*\*: any of —\n(  - .+\n){10,}/, "the blocking grounds are gone");
+});
+
+test("the last word on softening sends the reviewer to the grounds, not to BLOCKING for any defect", () => {
+  const notToDo = MANUAL.slice(MANUAL.indexOf("## What NOT to do"), MANUAL.indexOf("## Failure fallback"));
+  assert.ok(notToDo.includes(`**Don't soften your verdict to avoid recomposition.** ${REFUTATION_SENTENCES.reportEveryDefect}`));
+  assert.doesNotMatch(MANUAL, /If something's wrong, say BLOCKING/, "any defect is still sent to BLOCKING");
 });

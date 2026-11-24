@@ -177,7 +177,7 @@ comes from a fresh-eyes audit plus targeted escalation, not from one giant sessi
 
 ## Step 3 — Cross-pollination (Option D — deterministic cross-checks, cap N=10)
 
-Read both findings files. Apply four explicit rules tied to the reviewing lawyer's stated practice:
+Read both findings files. Apply four explicit rules tied to the staff lawyer's stated practice:
 
 | # | Trigger | Action | Owned by |
 |---|---|---|---|
@@ -231,7 +231,7 @@ This check applies on every rung the stage message names, and to any finding who
 ## Step 3.6 — Owner workup (mandatory for high-risk findings)
 
 For every finding heading for the **high-risk** band — the provisional headline-driver the reviewing lawyer would
-weigh a rename over — work up the **owner** before the rating is fixed, the way the reviewing lawyer does: *"if it's high
+weigh a rename over — work up the **owner** before the rating is fixed, the way the staff lawyer does: *"if it's high
 risk, find out everything you can about the owner to judge the **practical likelihood** they actually create
 a problem for us."* Run it via `perplexity_research`, as in Step 3.5. It is
 **triggered by risk level, never always-on**; one entity is a bounded target, so be exhaustive on that one

@@ -6,6 +6,7 @@
 // the-ruled-sentences-tests-hold-are-in-their-manuals.test.mjs checks each one is still in the manual, word for word.
 export const REFUTATION_SENTENCES = Object.freeze({
   listEveryCorrectableDefect: "List every correctable defect. Choose the verdict by the severity grounds below.",
+  reportEveryDefect: "Report every defect and apply the verdict grounds above, even when correcting it requires another pass.",
   theDriverChecksTheStructured: "The driver checks the structured finding record. A required use-check source belongs in that record. An "
     + "unknown use status does not require an invented source. The reviewer checks whether the available "
     + "evidence supports the claim.",
