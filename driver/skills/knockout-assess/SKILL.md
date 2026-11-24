@@ -134,11 +134,13 @@ were the hardest lines on the page.
 
 **Everything a reader sees before opening a fold is written for the client's business owner.** Ordinary
 nouns, one idea per sentence, no sentence over 25 words, the conclusion first. On this product that is:
-`chunkSummary`, `basis`, `factors`, `counterFactors`, `mitigation`, every finding's `net`, every `registerReads[].read`, and `standardCaveats`.
+`chunkSummary`, `marks[].basis`, `factors`, `counterFactors`, `mitigation`, every finding's `net`, every `registerReads[].read`, and `standardCaveats`.
 
-**Inside a fold the lawyer's vocabulary is allowed** where a plain word would lose precision — a
-finding's `basis`, the provenance, the long `assessment`. Even there, a term is explained the first time
+**Inside a fold the lawyer's vocabulary is allowed** where a plain word would lose precision —
+`findings[].basis`, the provenance, the long `assessment`. Even there, a term is explained the first time
 it appears on the page.
+
+Every surface carries the same caution: never hedge MORE on one surface than on another, and never flatten a surface to bald assertion.
 
 Name the evidence you found, the places you searched, or the wording you compared. Use the terms the
 reader knows for those things.

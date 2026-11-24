@@ -54,13 +54,18 @@ test("the contract carries the word budgets, each-fact-once and the two RULED pr
   assert.match(PROSE_VOICE, /20-25 words a sentence/, "the per-sentence budget is stated");
   assert.match(PROSE_VOICE, /80 words a paragraph/, "the per-paragraph budget is stated");
   // §7: the caption obeyed "3 sentences" with three 60-word sentences. A cap is not a budget.
-  assert.match(PROSE_VOICE, /FOLD POINT and never the target/i, "a code cap is taught as a fold point, not a target");
+  assert.match(PROSE_VOICE, /that cap is a ceiling and never the target/, "a cap is taught as a ceiling, not a target");
+  assert.match(PROSE_VOICE, /at most 3 sentences for the caption, at most 2 for a finding's conclusion/, "both caps are kept");
+  assert.doesNotMatch(PROSE_VOICE, /2-sentence finding sentence|roughly 75 words/, "a dropped wording is back");
   assert.match(PROSE_VOICE, /EACH FACT ONCE, AT ITS RANK/, "the repetition rule is stated");
   assert.match(PROSE_VOICE, /CROSS-REFERENCES IT BY ORDINAL/, "…with the mechanism that replaces retelling");
   // Ruling 4, both halves.
   assert.match(PROSE_VOICE, /NO PRESCRIPTIONS \(RULED\)/);
   assert.match(PROSE_VOICE, /we recommend/, "the banned advice grammar is named");
   assert.match(PROSE_VOICE, /NO DISCLAIMERS \(RULED\)/);
+  // The ban is on boilerplate; a material limit on the answer is still stated (design, 2026-11-24).
+  assert.match(PROSE_VOICE, /No boilerplate caveat about the document/);
+  assert.match(PROSE_VOICE, /A material limit on the answer \(what was or was not searched, evidence that is missing, a qualification the framework requires\) is a FACT/);
 });
 
 // The "ONE READER" test that stood here asserted the two-audience posture was gone from the
@@ -117,7 +122,7 @@ test("one rulebook: report-prose.md holds the message's rules word for word, and
   // THE ONE HOME (owner, 2026-11-24: the prose rules consolidated around two levels). The message states each rule in
   // the rulebook's own words, so the two cannot teach different rules; the other manuals point and do not restate.
   const prose = flat(skill("report-prose.md"));
-  for (const rule of PROSE_VOICE.split("\n").slice(1))
+  for (const rule of PROSE_VOICE.split("\n"))
     assert.ok(prose.includes(flat(rule)), `report-prose.md does not carry the message's rule: ${rule.slice(0, 60)}`);
   for (const [name, body] of [["delivery-contract.md", delivery], ["synthesis-rules.md", synthesis], ["worked-examples.md", worked]]) {
     assert.match(body, /\[report-prose\.md\]\(report-prose\.md\)/, `${name} does not point to the rulebook`);
