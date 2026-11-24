@@ -41,6 +41,7 @@ const { runStage } = await import("../gateway.mjs");
 const { STAGES, composeFollowup, REGISTER_ENUMERATE_TOOL } = await import("../stages.mjs");
 const { KO_STAGES } = await import("../stages-knockout.mjs");
 const { toolGroupsForStage, allowedToolsFor, RECORDING_TOOLS, builtinToolsFor } = await import("../engine/mcp/gather-config.mjs");
+const { TOOL_WRITTEN_ARTIFACTS } = await import("../gateway.mjs");
 const { claudeTurnInstructions } = await import("../engine/common.mjs");
 const { codexDeveloperInstructions } = await import("../engine/openai-agent.mjs");   // the output rule, then the temp-folder rule
 const { DRIVER, everyModelStageDispatch, everyDispatchedLabel, baseOf } = await import("./model-stage-dispatches.mjs");
@@ -364,4 +365,100 @@ test("codex: a form repair inside the dispatch keeps the stage's output rule, a 
       assert.equal(line && JSON.parse(line.slice("developer_instructions = ".length)), codexRule(label), `${label}, Codex turn ${i + 1}: not the stage's output rule`);
     }
   }
+});
+
+// WHAT EACH STAGE'S WORK NEEDS, read from how it returns its result, not from the table that grants it. A stage that writes
+// a file is started with Claude's file-writing and file-editing tools, and may call them; a stage that records through its
+// own tool is started without them. The two stages that write a file AND record through a tool keep both. case-law reads
+// its decisions from the page, so it keeps Claude's page fetcher.
+const MIXED = { "common-law": "mcp__dispositions__", "register-unit": "mcp__unit-note__record_unit_note" };
+const builtinsOf = (argv) => flag(argv, "--tools")?.split(",") ?? [];
+function needsMet(label, argv) {
+  const missing = [];
+  const builtin = builtinsOf(argv);
+  const allowed = (flag(argv, "--allowedTools") ?? "").split(" ");
+  if (!builtin.includes("Read")) missing.push("Read");
+  if (outputOf(label).kind === "file") {
+    for (const t of ["Write", "Edit"]) if (!builtin.includes(t) || !allowed.includes(t)) missing.push(t);
+  } else if (builtin.some((t) => t === "Write" || t === "Edit")) missing.push("no file tool on a recording stage");
+  const mixed = MIXED[baseOf(label)];
+  if (mixed && !allowed.some((t) => t.startsWith(mixed))) missing.push(`its own record tool (${mixed}…)`);
+  if (baseOf(label) === "case-law" && !builtin.includes("WebFetch")) missing.push("WebFetch");
+  return missing;
+}
+
+test("claude: every stage is started with the built-in tools its work needs: file tools to write a file, its record tools beside them on a mixed stage, the page fetcher on case-law", async () => {
+  const c = await calls();
+  const wrong = [];
+  for (const [label, call] of Object.entries(c["anthropic-agent"])) {
+    const missing = needsMet(label.replace(/ \(supplemental lane\)$/, ""), call.argv);
+    if (missing.length) wrong.push(`${label}: ${missing.join(", ")}`);
+  }
+  assert.deepEqual(wrong, []);
+  for (const base of Object.keys(MIXED)) assert.equal(outputOf(base).kind, "file", `${base} is no longer a stage that writes a file`);
+});
+
+/** The file a stage's result lands in: a recording stage's is the one the driver writes from its call. */
+const resultFile = (label) => (outputOf(label).kind === "record"
+  ? [...TOOL_WRITTEN_ARTIFACTS].find(([, row]) => row.tool === outputOf(label).tool)?.[0] : null) ?? "out.md";
+
+/**
+ * Every Claude call of a dispatch of `label` whose first attempt fails, so the next is a resumed repair. `missing`: the
+ * first turn writes nothing, so the repair must create the result. Otherwise it is written and one check refuses it once,
+ * so the repair must correct it. `form`: that check is a closed vocabulary's, repaired inside the dispatch.
+ */
+async function claudeAttempts(label, { missing = false, form = null, check = "invented_check_failed" } = {}) {
+  const dir = mkdtempSync(join(tmpdir(), "stage-claude-attempts-"));
+  try {
+    mkdirSync(driverDir(dir), { recursive: true });
+    const out = join(dir, resultFile(label));
+    if (!missing) writeFileSync(out, "an invented draft\n");
+    let checks = 0;
+    const validate = missing ? undefined : () => (checks++ === 0 ? { ok: false, reason: form ?? check } : { ok: true });
+    await withEnv({ ...ENGINES["anthropic-agent"](dir, out), MOCK_CLAUDE_NOFILE: "1", CLEAROTRON_RETRY_BACKOFF_MS: "0" },
+      () => runStage(label, { message: MESSAGES.get(baseOf(label))?.message ?? "invented message", model: "opus",
+        sessionKey: `stage-claude-attempts-${label}`, runDir: dir, expectFile: out, validate, maxRetries: form ? 0 : 1, timeoutSec: 30 }));
+    return { out, turns: readFileSync(join(dir, "calls.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l)) };
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+}
+
+function sameToolsEveryTurn(label, path, turns, { resumed = false } = {}) {
+  assert.ok(turns.length >= 2, `${label}, ${path}: no second turn followed the first`);
+  for (const [i, call] of turns.entries()) {
+    assert.deepEqual(needsMet(label, call.argv), [], `${label}, ${path}, turn ${i + 1}: a tool the stage needs is missing`);
+    assert.equal(flag(call.argv, "--tools"), flag(turns[0].argv, "--tools"), `${label}, ${path}, turn ${i + 1}: started with other built-in tools`);
+    assert.equal(flag(call.argv, "--allowedTools"), flag(turns[0].argv, "--allowedTools"), `${label}, ${path}, turn ${i + 1}: permitted other tools`);
+  }
+  if (resumed) assert.ok(turns[1].argv.includes("--resume"), `${label}, ${path}: the second turn did not resume the first`);
+}
+
+test("claude: a resumed attempt that must create the result, and a fresh one that must correct it, keep what the stage's work needs, on the stages no saved run measured and on each kind of stage", async () => {
+  // case-law and common-law are the two stages with no saved Claude session; register-unit records beside its file;
+  // report-overview records its result and writes none.
+  for (const label of ["case-law", "common-law", "register-unit:primary-sweep", "report-overview"]) {
+    const record = outputOf(label).kind === "record" ? outputOf(label).tool : null;
+    const created = await claudeAttempts(label, { missing: true });
+    sameToolsEveryTurn(label, "create", created.turns, { resumed: true });
+    if (record) assert.match(created.turns[1].prompt, new RegExp(`the \`${record}\` tool was never called`), `${label}: the repair does not ask for the record call`);
+    else assert.ok(created.turns[1].prompt.includes(`Write the COMPLETE file now at ${created.out}`), `${label}: the repair does not ask for the whole file`);
+    // A check with no resumed repair of its own starts a fresh session with the correction: the other path a repair takes.
+    const corrected = await claudeAttempts(label);
+    sameToolsEveryTurn(label, "correct", corrected.turns);
+    if (record) assert.ok(corrected.turns[1].prompt.includes(`\`${record}\``), `${label}: the correction does not ask for the record call`);
+    else assert.ok(corrected.turns[1].prompt.includes("CORRECTION: your previous attempt failed file validation"), `${label}: the fresh session is not handed the correction`);
+  }
+  // A check with a resumed repair of its own, on a stage that writes its file: the repair edits that file in place.
+  const edited = await claudeAttempts("common-law", { check: "platforms_missing:invented-platform" });
+  sameToolsEveryTurn("common-law", "edit", edited.turns, { resumed: true });
+  assert.ok(edited.turns[1].prompt.includes(`${edited.out} with your file-editing operation:`), "common-law: the repair does not ask for an edit of the file");
+});
+
+test("claude: a form repair inside the dispatch keeps the stage's tools, where one happens", async () => {
+  const { turns } = await claudeAttempts("frame-diff", { form: "framediff_severity_invalid:major (not in: dominant-element, material, minor)" });
+  assert.equal(turns.length, 2, "no form repair followed the refused draft");
+  for (const [i, call] of turns.entries()) {
+    assert.deepEqual(needsMet("frame-diff", call.argv), [], `frame-diff, form repair, turn ${i + 1}: a tool the stage needs is missing`);
+    assert.equal(flag(call.argv, "--tools"), flag(turns[0].argv, "--tools"), `frame-diff, form repair, turn ${i + 1}: started with other built-in tools`);
+  }
+  assert.match(turns[1].prompt, /record_frame_diff/, "the form repair does not ask for the record call");
 });

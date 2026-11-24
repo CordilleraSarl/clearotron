@@ -28,7 +28,7 @@ import { newSessionRecord, noteCodexEvent, sessionSummary, countTool, streamSink
 import { writeSecretFile } from "../../shared/secret-file.mjs";   // the rotated login goes back the way every credential is written
 import { tmpdir, homedir } from "node:os";
 import { join, dirname, sep } from "node:path";
-import { runStreamingChild, absolutizeSkillRefs, outputRule, FILE_OUTPUT, buildEnvelope, resolveSpawnCwd, isRecordTool } from "./common.mjs";
+import { runStreamingChild, absolutizeSkillRefs, outputRule, FILE_OUTPUT, EVIDENCE_RULE, buildEnvelope, resolveSpawnCwd, isRecordTool } from "./common.mjs";
 import { renderCodexConfigToml } from "./mcp/codex-config.mjs";
 import { resolveAuthMode } from "./auth.mjs";
 import { engineEnv, codexCommandWithheld } from "./engine-env.mjs";
@@ -405,7 +405,7 @@ export function withWorkFolder(env, dir) {
 // WHAT THE MODEL IS TOLD, as the design ruling of 2026-10-27 approved it (its section on isolation). It describes the
 // mechanism and replaces nothing: the profile is what keeps another run's files out of reach. Codex alone carries it,
 // since only a Codex stage runs commands and only a Codex turn has a working folder of its own.
-export const TEMP_FOLDER_RULE = "Keep temporary working files in the directory given by TMPDIR. Use only this run's supplied evidence and accepted work.";
+export const TEMP_FOLDER_RULE = `Keep temporary working files in the directory given by TMPDIR. ${EVIDENCE_RULE}`;
 /**
  * The developer instructions for one Codex turn: its output rule, by how it returns its result (common.mjs,
  * `outputRule`), then the temp-folder rule. The same output rule Claude carries; a turn whose reply is its result

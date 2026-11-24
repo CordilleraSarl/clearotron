@@ -312,7 +312,7 @@ export const REPAIR_HINTS = [
       `applicable or not searched is an honest \`deferred\` with the reason stated. Leave every other row ` +
       `and section unchanged`;
   } },
-  { code: "coverage_ledger_shape", codes: ["coverage_ledger_unparseable", "coverage_ledger_empty", "coverage_axis_invalid", "coverage_axis_missing", "coverage_status_invalid", "coverage_key_unknown", "coverage_mirror_missing"], hint(lastFail, { resaveClause }) {
+  { code: "coverage_ledger_shape", codes: ["coverage_ledger_unparseable", "coverage_ledger_empty", "coverage_axis_invalid", "coverage_axis_missing", "coverage_status_invalid", "coverage_key_unknown", "coverage_mirror_missing"], hint(lastFail, { resaveClause, toolWritten }) {
     // Map #3 — `mirror_missing` is LEGACY and never fires anymore (the JSON is code-derived from the prose,
     // so the prose↔JSON cross-check was retired); the alternation keeps it only to give a sane hint to any
     // in-flight pre-Map-#3 run that might surface it. The structure tokens (unparseable/empty/axis_*/status_*/
@@ -337,7 +337,9 @@ export const REPAIR_HINTS = [
       `table only — never invent an axis to carry it, and never drop a real axis to make room. scope = the ` +
       `verbatim right side; status = EXACTLY one bare token of confirmed-clean / coverage-limited / deferred ` +
       `(a qualifier like "(count-only, saturated)" moves into reason). The failed check was: ${tok}. ` +
-      resaveClause;
+      // THE LEDGER'S ROWS RIDE THEIR OWN TOOL. Where the findings are written from the digest's record call, the
+      // coverage rows still come from `record_coverage`, so the correction names that tool and not the digest's.
+      (toolWritten ? resaveVia(COVERAGE_TOOL) : resaveClause);
   } },
   { code: "use_check_missing", codes: ["use_check_missing"], hint(lastFail) {
     return "every finding the failed check names by number, a finding at a material band whose owner's use is recorded as " +
@@ -1008,13 +1010,17 @@ export const REPAIR_HINTS = [
   } },
 ];
 
+/** The repair act on a step whose result a record tool carries: the values go through that tool, and the driver writes. */
+const resaveVia = (tool) => `Fix exactly that. Send the corrected values through \`${tool}\`. The driver writes the result`;
+const COVERAGE_TOOL = "record_coverage";
+
 const REPAIR_HINT_DEFAULT = "the required output file is actually written and contains every required section IN FULL";
 
 export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.json", supplementalLane = false, undispatchable = [], toolWritten = null, heldRecord = false, adds = false } = {}) {
-  // The repair act, for the hints that name one. Kept to a single sentence and a single decision so a
+  // The repair act, for the hints that name one. Kept to a single decision so a
   // new hint has one thing to append rather than a branch to reproduce.
   const resaveClause = toolWritten
-    ? `Fix exactly that and send the corrected values — the driver re-derives this file and the prose table together from your \`${toolWritten}\` call, so there is nothing here for you to save`
+    ? resaveVia(toolWritten)
     : `Fix exactly that, re-save the COMPLETE JSON file, and leave the prose table unchanged`;
   const row = hintSelection(lastFail)?.row;
   if (row) return row.hint(lastFail, { resaveClause, gridLedgerName, supplementalLane, undispatchable, toolWritten, heldRecord, adds });
@@ -1243,7 +1249,7 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
         // anything.
         : `What you sent did not pass (${lastFail}). Fix exactly this: ensure ${correctionHint(lastFail, { supplementalLane, undispatchable: frameDiffUndispatchable(files, lastFail), toolWritten: toolWritten.tool, heldRecord: heldSynthesisRecord(files), adds })}.\n`) +
       `Call \`${toolWritten.tool}\` with the values from the work already in your context — never by writing or editing any file. ` +
-      `Do not stop until the tool accepts the call.`;
+      `Do not stop until the tool accepts the call or reports a product fault.`;
   }
   // Write-mode branch (E2E R2 2026-07-30/31): the FAILURE TOKEN is the validator's own existence verdict,
   // measured at the moment that matters — branch on it rather than re-deriving with an existsSync here

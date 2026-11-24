@@ -239,7 +239,7 @@ third is never a clean negative either: its count stays on the record.
 
 **Each open row is discharged only by ITSELF.** A `coverage-limited` row about one slice does not
 account for a different slice's block, however plainly its reason discusses the axis — so set the status
-on the row that owns the block. The driver wrote each block its own row. Rows about slices that genuinely enumerated to `has_more:false` STAY
+on the row that owns the block. You do not have to name the block, because the driver wrote each block its own row. Rows about slices that genuinely enumerated to `has_more:false` STAY
 `confirmed-clean` — do not downgrade them, that trades one false claim for another.
 
 Never retype a query id, a hit count or any other identifier into a reason cell to prove you read

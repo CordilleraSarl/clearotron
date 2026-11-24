@@ -74,7 +74,8 @@ The calibration of *how much* a properly-earned crowded field caps risk lives in
 
 ## Firm-wide reasoning discipline (applies under every framework)
 
-*(This discipline applies whichever framework is in force. Band references below use positional language — "the lowest band", "the middle band", "the top
+*(The framework files carry each customer's deck only; the firm's how-to-reason discipline lives here and applies
+whichever framework is in force. Band references below use positional language — "the lowest band", "the middle band", "the top
 bands" — because the words differ per framework; the framework in force supplies the words.)*
 
 ### The consumer confusion test — the governing gate (apply FIRST)

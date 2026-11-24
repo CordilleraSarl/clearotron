@@ -72,7 +72,10 @@ export const recordRule = (tool) =>
   `Return this step's result by calling \`${tool}\`. The driver writes this step's files from that call and does not ` +
   "read your reply text or any file you write. If the tool refuses a call, correct what it names and call it again, " +
   "unless it says the failure is a product fault. Do not stop until the tool accepts the call or reports a product fault.";
-export const EVIDENCE_RULE = "Use only this run's supplied evidence and accepted work.";
+// The evidence rule, design's of 2026-11-24 for both engines. It names the tools a step is granted so a research step may
+// still gather its evidence; a step held to its supplied evidence says so in its own task.
+export const EVIDENCE_RULE =
+  "Use only evidence supplied for this task or obtained through the tools it authorizes, and work already accepted for this run.";
 /** A turn that does not say how it returns its result writes a file, as every turn did before this rule had kinds. */
 export const FILE_OUTPUT = Object.freeze({ kind: "file" });
 /** The output rule for a turn, or null for a turn whose reply is its result. PURE. */

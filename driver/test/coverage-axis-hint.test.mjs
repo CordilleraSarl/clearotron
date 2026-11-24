@@ -57,3 +57,12 @@ test("the sibling schema tokens keep the JSON-shape hint", () => {
     assert.match(h, /confirmed-clean \/ coverage-limited \/ deferred/, `${tok} still gets the status enum`);
   }
 });
+
+test("where the digest's findings come from its record call, the ledger correction names the coverage tool, not the digest's", () => {
+  const h = correctionHint(LIVE_FAIL, { toolWritten: "record_register_digest" });
+  assert.ok(h.includes("Send the corrected values through `record_coverage`. The driver writes the result"), h);
+  assert.ok(!h.includes("record_register_digest"), "the digest's own tool does not carry the coverage rows");
+  assert.ok(!/re-save/i.test(h), "nothing is saved by hand where the driver writes");
+  // A run whose findings file the seat writes keeps the file correction.
+  assert.ok(correctionHint(LIVE_FAIL).includes("re-save the COMPLETE JSON file"));
+});

@@ -17,7 +17,7 @@ fetch-before-cite spine is unchanged — you still read every holding from the d
 | The web-fetch tool your session provides | **Fetch the full judgment** (Step 3) from the verified EUR-Lex URL below. Read the holding, ECLI, and parties from the returned text. |
 | `legaldatahunter__search` | **Lead-finding only** — to discover a candidate case name / number when the finding doesn't already name one. A lead is **not** an authority; you must still fetch the judgment before citing. |
 
-## The fetch pattern
+## The fetch pattern (live-verified 2026-06-05)
 
 Fetch by CELEX number at:
 

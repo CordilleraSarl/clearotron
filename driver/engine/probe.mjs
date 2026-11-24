@@ -128,6 +128,8 @@ export function probeToolConfig(words) {
   };
 }
 
+/** How the probe returns its result: its reply, which carries the words its tools gave. */
+export const PROBE_OUTPUT = Object.freeze({ kind: "reply" });
 /** A word no model would produce unprompted, fresh per turn. */
 export const mintProbeSentinel = () => `probe-${randomBytes(4).toString("hex")}`;
 /** The CHEAP rung of the driver's tier vocabulary on BOTH adapters (engine/CONTRACT.md §3). */
@@ -682,7 +684,9 @@ export async function probeEngineTurn({
       commandFile = join(runDir, PROBE_COMMAND_FILE);
       writeFileSync(commandFile, `${command}\n`);
     }
-    const tuple = await turn({ message: probePrompt(file, commandFile), model: PROBE_MODEL, thinking: PROBE_THINKING, timeoutSec, stallSec, runDir, ...probeToolConfig(words) });
+    // ITS DUTIES ARE ITS PROMPT'S. The probe is judged on the words in its reply, so it carries no output rule: a file
+    // stage's rule says to reply with just the path, which would contradict the reply it is checked on.
+    const tuple = await turn({ message: probePrompt(file, commandFile), model: PROBE_MODEL, thinking: PROBE_THINKING, timeoutSec, stallSec, runDir, output: PROBE_OUTPUT, ...probeToolConfig(words) });
     let written = null;
     try { written = readFileSync(file, "utf8"); } catch { /* not written: classifyProbe says what that means */ }
     return classifyProbe({ engine: id, tuple, timeoutSec, auth, program, expect: { words, written, ...(command ? { command, commandFile } : {}) } });

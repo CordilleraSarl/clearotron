@@ -29,7 +29,7 @@ import { STAGES } from "../stages.mjs";
 import { KO_STAGES } from "../stages-knockout.mjs";
 import { requireRegisterProvider } from "../driver.config.mjs";
 import { buildClaudeArgs } from "../engine/anthropic-agent.mjs";
-import { absolutizeSkillRefs as codexRewrite, claudeTurnInstructions } from "../engine/common.mjs";
+import { absolutizeSkillRefs as codexRewrite, claudeTurnInstructions, EVIDENCE_RULE } from "../engine/common.mjs";
 import { STAGE_DECLARATIONS, turnOutputOf } from "../stage-declarations.mjs";
 import { declaredStageOfLabel } from "../engine/mcp/gather-config.mjs";
 import { renderCodexConfigToml } from "../engine/mcp/codex-config.mjs";
@@ -149,7 +149,7 @@ test("the system-level instruction reaches both engines on every stage, fresh an
     if (output.kind === "record") assert.ok(claudeTurnInstructions(output).includes(`calling \`${output.tool}\``), `${d.name}: the rule does not name the stage's own record tool`);
     assert.doesNotMatch(claudeTurnInstructions(output), /Write tool|Edit tool|WRITE TOOL/, `${d.name}: the rule names one engine's own file tool`);
     const developerInstructions = codexDeveloperInstructions({ output });
-    assert.ok(developerInstructions.startsWith(claudeTurnInstructions(output).replace(/ Use only this run's supplied evidence and accepted work\.$/, "")),
+    assert.ok(developerInstructions.startsWith(claudeTurnInstructions(output).slice(0, -EVIDENCE_RULE.length).trimEnd()),
       `codex, ${d.name}: not the output rule Claude is given`);
     const toml = renderCodexConfigToml({ mcpConfig: null, allowedTools: "", developerInstructions });
     const line = toml.split("\n").find((l) => l.startsWith("developer_instructions = "));

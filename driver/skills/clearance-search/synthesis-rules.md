@@ -314,7 +314,7 @@ doctrine is ordered for every reader and granted to none.
 
 This rule stays here because it is a rule about **what the reader needs**, and knowing it is what makes
 each section the right length and the right thing: a verdict written as though the reader has already
-read the spine is wrong even when the driver puts it first.
+read the spine is wrong even when the driver puts it first. You do not arrange them.
 
 **Findings group by why they matter — never by jurisdiction or class.** Jurisdiction is the one thing
 about a negative a reader does not need repeated, and a class number is a filing convention, not a
