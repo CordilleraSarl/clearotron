@@ -1355,7 +1355,7 @@
         },
         "a-knockout-reads-and-rates-a-family-at-a-time.test.mjs": {
           "tests": 10,
-          "asserts": 53,
+          "asserts": 54,
           "skips": 0,
           "todos": 0
         },
@@ -4727,7 +4727,7 @@
         },
         "engine.common.test.mjs": {
           "tests": 19,
-          "asserts": 56,
+          "asserts": 63,
           "skips": 0,
           "todos": 0
         },

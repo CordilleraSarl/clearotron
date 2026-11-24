@@ -103,6 +103,6 @@ test("gate token — the repair message is the GENERIC findings.json recital, an
   // where the reasoning goes, and it is carried into the turn verbatim. Adding an arm here would be a
   // gateway edit for wording that is already in the message.
   const hint = String(correctionHint(WIRE));
-  assert.match(hint, /findings\.json is a JSON OBJECT/, "the generic recital, as expected");
+  assert.match(hint, /The findings record is a JSON OBJECT/, "the generic recital, as expected");
   assert.match(hint, new RegExp(`The failed check was: .*${TOKEN}`), "…with the token appended, so the turn still learns which check failed");
 });

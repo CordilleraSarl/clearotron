@@ -42,7 +42,7 @@
 // IT REUSES EACH ADAPTER'S OWN SPAWN PATH AND HAND-ROLLS NOTHING
 //
 // The turn goes through `engine.runTurn()`. On anthropic that is `buildClaudeArgs` (prompt on STDIN, `-p`
-// as a bare flag, `--effort`, the WRITE_DISCIPLINE system prompt) plus `spawnEnv`; on codex it is
+// as a bare flag, `--effort`, the output rule as its system prompt) plus `spawnEnv`; on codex it is
 // `buildCodexArgs` plus `spawnEnv` plus the per-run `CODEX_HOME` with its rendered config.toml and its
 // seeded auth.json — including that adapter's own auth.json refusal, which is a cheaper check than a
 // turn and runs before one. Both bring their stall watchdog, their detached group-kill and their result

@@ -40,9 +40,9 @@ process.env.CLEAROTRON_RUN_LOCK_DIR = mkdtempSync(join(tmpdir(), "stage-tools-lo
 const { runStage } = await import("../gateway.mjs");
 const { STAGES, composeFollowup, REGISTER_ENUMERATE_TOOL } = await import("../stages.mjs");
 const { KO_STAGES } = await import("../stages-knockout.mjs");
-const { toolGroupsForStage, allowedToolsFor, RECORDING_TOOLS } = await import("../engine/mcp/gather-config.mjs");
-const { WRITE_DISCIPLINE } = await import("../engine/common.mjs");
-const { CODEX_FILE_INSTRUCTIONS, CODEX_RECORDING_INSTRUCTIONS } = await import("../engine/openai-agent.mjs");   // the output rule, then the temp-folder rule
+const { toolGroupsForStage, allowedToolsFor, RECORDING_TOOLS, builtinToolsFor } = await import("../engine/mcp/gather-config.mjs");
+const { claudeTurnInstructions } = await import("../engine/common.mjs");
+const { codexDeveloperInstructions } = await import("../engine/openai-agent.mjs");   // the output rule, then the temp-folder rule
 const { DRIVER, everyModelStageDispatch, everyDispatchedLabel, baseOf } = await import("./model-stage-dispatches.mjs");
 
 function withEnv(env, fn) {
@@ -110,9 +110,15 @@ function grantedByServer(tokens) {
 /** The record tools a recording stage's pinned row names (the MCP tokens of RECORDING_TOOLS). */
 const recordToolsOf = (base) => (RECORDING_TOOLS[base] ?? []).filter((t) => t.startsWith("mcp__") && /__record_/.test(t));
 
-// A recording stage's result goes through its record tool, and its Codex turn keeps the rule it had; every other stage writes
-// a file and is given Codex's own output rule. Read from the pinned rows, not from the gateway's declaration it is checking.
-const codexRule = (label) => (recordToolsOf(baseOf(label)).length ? CODEX_RECORDING_INSTRUCTIONS : CODEX_FILE_INSTRUCTIONS);
+// A recording stage's result goes through its own record tool, and both engines tell its turns to call that tool, by name;
+// every other stage writes a file and both engines give it the file rule. Read from the pinned rows, not from the gateway's
+// declaration it is checking.
+const outputOf = (label) => {
+  const own = recordToolsOf(baseOf(label)).find((t) => t.startsWith(`mcp__recording-${baseOf(label)}__`));
+  return own ? { kind: "record", tool: own.replace(/^mcp__.+?__/, "") } : { kind: "file" };
+};
+const claudeRule = (label) => claudeTurnInstructions(outputOf(label));
+const codexRule = (label) => codexDeveloperInstructions({ output: outputOf(label) });
 
 const LABELS = everyDispatchedLabel();
 const SUPPLEMENTAL = "register-unit:primary-sweep";
@@ -158,7 +164,13 @@ test("claude: every stage's program is handed exactly its resolved grant, its re
     for (const s of Object.keys(grantedByServer(want))) if (!servers.includes(s)) wrong.push(`${label}: the ${s} server it may call is not mounted`);
     for (const s of Object.values(cfg ? JSON.parse(cfg).mcpServers : {}))
       for (const a of s.args ?? []) if (/\.mjs$/.test(a) && !existsSync(a)) wrong.push(`${label}: a mounted server's script ${a} does not exist`);
-    if (flag(call.argv, "--append-system-prompt") !== WRITE_DISCIPLINE) wrong.push(`${label}: the system-level instruction is not appended`);
+    if (flag(call.argv, "--append-system-prompt") !== claudeRule(label)) wrong.push(`${label}: the system-level instruction is not its stage's output rule`);
+    // The engine's own tools: the stage's set, holding every built-in tool its grant names, and no file writer on a stage
+    // whose result goes through its record tool.
+    const builtin = flag(call.argv, "--tools")?.split(",") ?? null;
+    if (JSON.stringify(builtin) !== JSON.stringify(builtinToolsFor(label))) wrong.push(`${label}: --tools is not the stage's built-in set`);
+    for (const t of want.filter((x) => !x.startsWith("mcp__"))) if (!builtin?.includes(t)) wrong.push(`${label}: its granted ${t} is not among its built-in tools`);
+    if (outputOf(label).kind === "record" && builtin?.some((x) => x === "Write" || x === "Edit")) wrong.push(`${label}: a recording stage holds a file writer`);
   }
   assert.deepEqual(wrong, []);
 });
@@ -182,7 +194,7 @@ test("codex: every stage's program is handed, per server, exactly the tools it m
     const webFetch = expectedGrant(label).includes("WebFetch");
     if (webFetch !== Boolean(got.fetch)) wrong.push(`${label}: the page fetcher is ${got.fetch ? "mounted without" : "missing despite"} a WebFetch grant`);
     const line = String(call.configToml).split("\n").find((l) => l.startsWith("developer_instructions = "));
-    if (!line || JSON.parse(line.slice("developer_instructions = ".length)) !== codexRule(label)) wrong.push(`${label}: the developer instructions are not ${codexRule(label) === CODEX_FILE_INSTRUCTIONS ? "the writing" : "the recording"} turn's rule`);
+    if (!line || JSON.parse(line.slice("developer_instructions = ".length)) !== codexRule(label)) wrong.push(`${label}: the developer instructions are not the ${outputOf(label).kind === "file" ? "writing" : "recording"} turn's rule`);
   }
   assert.deepEqual(wrong, []);
 });
@@ -307,8 +319,8 @@ async function repaired(engine, label) {
 
 test("a repair turn is handed its engine's output rule for the stage, on a stage that writes a file and on a recording stage", async () => {
   // case-law writes its file; report-overview returns its result through its record tool.
-  assert.equal(codexRule("case-law"), CODEX_FILE_INSTRUCTIONS, "the writing stage is not one");
-  assert.equal(codexRule("report-overview"), CODEX_RECORDING_INSTRUCTIONS, "the recording stage is not one");
+  assert.equal(outputOf("case-law").kind, "file", "the writing stage is not one");
+  assert.deepEqual(outputOf("report-overview"), { kind: "record", tool: "record_report_overview" }, "the recording stage is not one");
   for (const label of ["case-law", "report-overview"]) {
     for (const engine of Object.keys(ENGINES)) {
       const turns = await repaired(engine, label);
@@ -316,7 +328,7 @@ test("a repair turn is handed its engine's output rule for the stage, on a stage
       assert.notEqual(turns[1].prompt, turns[0].prompt, `${engine}, ${label}: the second turn is not a repair`);
       for (const [i, call] of turns.entries()) {
         if (engine === "anthropic-agent") {
-          assert.equal(flag(call.argv, "--append-system-prompt"), WRITE_DISCIPLINE, `${label}, Claude turn ${i + 1}: not Claude's output rule`);
+          assert.equal(flag(call.argv, "--append-system-prompt"), claudeRule(label), `${label}, Claude turn ${i + 1}: not the stage's output rule`);
         } else {
           const line = String(call.configToml).split("\n").find((l) => l.startsWith("developer_instructions = "));
           assert.equal(line && JSON.parse(line.slice("developer_instructions = ".length)), codexRule(label), `${label}, Codex turn ${i + 1}: not the stage's output rule`);

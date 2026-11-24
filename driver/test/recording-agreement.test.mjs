@@ -670,9 +670,9 @@ test("PLANT (b): a hand-write order for a tool-owned artifact is caught, per sta
       const p = plantBase(stage);
       const sample = { "writeReturn:absolute-path": "Write your output to this ABSOLUTE path: /run/probe-artifact.json",
         "writeReturn:you-owe": "YOU OWE 2 FILES. 2. probe-artifact.json",
-        "repair-tail:write-tool": "Write the COMPLETE file now at probe-artifact.json with the Write tool.",
-        "repair-tail:edit-tool": "Apply TARGETED EDITS to probe-artifact.json using the Edit tool.",
-        "corrective:max-tokens-write-tool": "CALL THE WRITE TOOL for probe-artifact.json as soon as it is ready.",
+        "repair-tail:write-complete": "Write the COMPLETE file now at probe-artifact.json — full file.",
+        "repair-tail:targeted-edits": "Apply the fix by TARGETED EDITS to probe-artifact.json with your file-editing operation.",
+        "corrective:max-tokens-write": "write the required file(s) as soon as their content is ready: probe-artifact.json.",
         "warm-sibling:re-save-complete": "Re-save the COMPLETE corrected JSON at /run/probe-artifact.json." }[marker.id];
       assert.ok(sample, `no plant sample for marker ${marker.id} — a marker added without one is unproven`);
       p.union.push({ surface: "repair:probe", kind: INSTRUCTION, phase: REPAIR, text: sample });

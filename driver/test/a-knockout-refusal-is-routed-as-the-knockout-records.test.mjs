@@ -32,5 +32,5 @@ test("a clearance writer's findings refusal routes exactly as before", () => {
   const report = join(RUN, "report.md");
   for (const tok of ["finding_registration_invalid:3 (a registration needs its uri)", "findings_coverage_missing: no coverage", "synthesis_findings_invalid: unparseable"])
     assert.equal(gradedArtifact(tok, report), join(RUN, "findings.json"), `${tok.split(":")[0]} no longer grades findings.json`);
-  assert.match(correctionHint(`invalid_file:${report}:finding_registration_invalid:3`), /^findings\.json is a JSON OBJECT/);
+  assert.match(correctionHint(`invalid_file:${report}:finding_registration_invalid:3`), /^The findings record is a JSON OBJECT/);
 });

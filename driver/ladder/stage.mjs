@@ -6,12 +6,12 @@
 // every attempt. It refuses a dispatch with no message or no session key, and a billing mode it cannot honour.
 
 import { config } from "../driver.config.mjs";
-import { withSendUntil } from "../engine/mcp/gather-config.mjs";
+import { withSendUntil, declaredStageOfLabel } from "../engine/mcp/gather-config.mjs";
 import { sendReserveMs } from "../../providers/_shared/send-until.mjs";   // each turn's plan calls stop sending ahead of its deadline
 import { resolveAuthMode } from "../engine/auth.mjs";
 import { REGISTER_ENUMERATE_TOOL } from "../stages.mjs";
 import { stageTools } from "./stage-tools.mjs";
-import { STAGE_DECLARATIONS, declaredStageOf, replyIsOutput } from "../stage-declarations.mjs";
+import { STAGE_DECLARATIONS, declaredStageOf, replyIsOutput, turnOutputOf } from "../stage-declarations.mjs";
 
 export function stageOf(name, opts, stageHome, engine) {
   const {
@@ -74,5 +74,5 @@ export function stageOf(name, opts, stageHome, engine) {
   const turnConfig = (sec) => withSendUntil(gatherMcpConfig, Date.now() + sec * 1000 - sendReserveMs(sec));
   return { name, engine, stageHome, agent, message, refreshMessage, model, thinking, sessionKey, timeoutSec, stallSec, files, validate,
     maxRetries, runDir, followup, bandSize, derivedLimit, adds, supplementalLane, auth, gatherAllowedTools, gatherSeatWrites: seatWrites,
-    declaration: declared, engineSkillsDir, engineSkillsGrantRoots, engineResolveSkill, turnConfig };
+    declaration: declared, turnOutput: turnOutputOf(declared ?? STAGE_DECLARATIONS[declaredStageOfLabel(name)] ?? null), engineSkillsDir, engineSkillsGrantRoots, engineResolveSkill, turnConfig };
 }

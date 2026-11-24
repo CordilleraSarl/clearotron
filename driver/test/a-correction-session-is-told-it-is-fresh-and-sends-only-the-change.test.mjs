@@ -169,7 +169,7 @@ test("the writer's retry after a failed check sends only the change while the dr
   // On the correction answering a review's flags, and its retries, the rows are described as ruled for it.
   const CORRECTION_PATCH = PATCH.replace("the complete corrected finding object(s), each with the `ordinal` it replaces", "the complete finding objects you changed or added: keep each existing finding's `ordinal`; for a new finding answering a flag about an excluded position named in this correction, use the next unused ordinal after the highest in the current record and cite a record from that position");
   assert.notEqual(CORRECTION_PATCH, PATCH);
-  const WHOLE = "Fix exactly that, re-save the COMPLETE findings.json, and leave the narrative prose unchanged";
+  const WHOLE = "Fix exactly that in one complete `record_synthesis` call, and leave the narrative prose unchanged";
   const tok = "finding_meter_unknown:1";
   assert.ok(correctionHint(tok, { heldRecord: true }).includes(PATCH), "a held record takes the patch");
   assert.ok(correctionHint(tok, { heldRecord: true, adds: true }).includes(CORRECTION_PATCH), "the correction's retry is not told it may add the finding");

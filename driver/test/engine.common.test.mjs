@@ -9,7 +9,7 @@ import assert from "node:assert/strict";
 import { execPath } from "node:process";
 import { join } from "node:path";
 import {
-  runStreamingChild, absolutizeSkillRefs, buildEnvelope, WRITE_DISCIPLINE,
+  runStreamingChild, absolutizeSkillRefs, buildEnvelope, FILE_RULE, recordRule, outputRule, claudeTurnInstructions, EVIDENCE_RULE,
 } from "../engine/common.mjs";
 
 // helper: run a node child whose body is `code`, collecting every parsed stdout line.
@@ -141,20 +141,28 @@ test("buildEnvelope: ok → status ok with the payload text; killed → timeout;
   assert.equal(buildEnvelope({ ok: false, killed: false }).status, "error");
 });
 
-test("WRITE_DISCIPLINE names the Write tool and the DISCARDED failure mode", () => {
-  assert.match(WRITE_DISCIPLINE, /WRITE TOOL/);
-  assert.match(WRITE_DISCIPLINE, /DISCARDED/);
+test("a turn gets one output rule, by how it returns its result, naming no engine's own tool", () => {
+  // A step that records through its tool is told to call that tool and nothing about files; a step that writes a file is
+  // told to write the whole file, and to fix only what a correction names; a step whose reply is its result is told
+  // neither. The file rule names an operation both engines have, never one engine's tool.
+  const record = outputRule({ kind: "record", tool: "record_invented_step" });
+  assert.equal(record, recordRule("record_invented_step"));
+  assert.match(record, /^Return this step's result by calling `record_invented_step`\./);
+  assert.match(record, /unless it says the failure is a product fault\. Do not stop until the tool accepts the call or reports a product fault\.$/,
+    "a product fault is never repeated, so the rule never orders the turn to keep calling through one");
+  assert.doesNotMatch(record, /absolute file path|Write tool|Edit tool/);
+  assert.equal(outputRule({ kind: "file" }), FILE_RULE);
+  assert.equal(outputRule(), FILE_RULE, "a turn that does not say how it returns its result writes a file");
+  assert.match(FILE_RULE, /edit only what the correction names\. If the file is missing, create it in full\.$/);
+  assert.doesNotMatch(FILE_RULE, /Write tool|Edit tool|WRITE TOOL/);
+  assert.equal(outputRule({ kind: "reply" }), null);
+  assert.equal(outputRule({ kind: "record" }), FILE_RULE, "a record turn with no tool named falls back to the file rule rather than an empty call");
 });
 
-test("WRITE_DISCIPLINE carries the repair exception", () => {
-  // Producing a stage's output and repairing one named defect in it are different acts. Without this
-  // sentence a corrective turn retypes a whole 160 KB document to fix a few lines — measured at 3-4x the
-  // wall and tokens of the patching attempt that actually passed (repair-contract.mjs carries the numbers).
-  assert.match(WRITE_DISCIPLINE, /EXCEPTION — REPAIRS/);
-  assert.match(WRITE_DISCIPLINE, /Edit tool/);
-  assert.match(WRITE_DISCIPLINE, /counts as written/, "a repaired file must not read as an unwritten one");
-  // …and the exception must never swallow the base rule: an ABSENT file is still written in full.
-  assert.match(WRITE_DISCIPLINE, /If the file does not exist, the rule above stands/);
+test("Claude's system prompt is the turn's output rule, then the evidence rule; a reply turn carries the evidence rule alone", () => {
+  assert.equal(claudeTurnInstructions({ kind: "record", tool: "record_invented_step" }), `${recordRule("record_invented_step")} ${EVIDENCE_RULE}`);
+  assert.equal(claudeTurnInstructions({ kind: "file" }), `${FILE_RULE} ${EVIDENCE_RULE}`);
+  assert.equal(claudeTurnInstructions({ kind: "reply" }), EVIDENCE_RULE);
 });
 
 // ── — THE STALL CLOCK STARTED AT SPAWN, SO STARTUP COUNTED AS SILENCE ───────────────────────────

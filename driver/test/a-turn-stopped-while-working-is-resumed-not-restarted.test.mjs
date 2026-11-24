@@ -51,7 +51,7 @@ test("the resume message is design's, closed by the stage's own tail", () => {
   assert.match(recorded, /and then Call `record_synthesis` with the values from the work already in your context/);
   const written = GW.warmTimeoutMessage([join(ROOT, "an-invented-output.md")]);
   assert.ok(written.startsWith(OPENING) && written.endsWith(CLOSING), written);
-  assert.match(written, /and then Write the COMPLETE file now at .*an-invented-output\.md with the Write tool/);
+  assert.match(written, /and then Write the COMPLETE file now at .*an-invented-output\.md — full file/);
 });
 
 /** One synthesis stage through the ladder; `turns` answers each attempt in order. What each attempt was handed. */
