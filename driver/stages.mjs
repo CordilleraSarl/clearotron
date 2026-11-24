@@ -1609,7 +1609,7 @@ export const STAGES = {
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
-      "deterministic grid dispatch — call perplexity_research with enable_sandbox:true and grid_spec_path: _driver/grid-spec.json": {
+      "deterministic grid dispatch — call perplexity_research with grid_spec_path: _driver/grid-spec.json": {
         class: "mechanical:tool-written", tokens: ["grid_ledger_missing", "grid_join_missing", "platforms_missing", "connotation_search_missing"],
         why: "The driver wrote _driver/grid-spec.json and the plugin writes common-law-grid.json from the API response. The model supplies no value at all — the only arg is a path the message interpolates. #850 calls this the reference pattern.",
       },
@@ -1741,7 +1741,7 @@ export const STAGES = {
         `Inputs: variant manifest ${P.variantManifest}; matter frame ${P.matterContext}.`,
         systemScope,
         asksBlock,
-        `Run the marketplace sweep via the DETERMINISTIC grid: call perplexity_research with enable_sandbox:true and grid_spec_path: ${specPath}. The tool runs EXACTLY the dictated term × platform grid and WRITES the complete ledger to ${P.commonLawGrid} itself.`,
+        `Run the marketplace sweep via the DETERMINISTIC grid: call perplexity_research with grid_spec_path: ${specPath}. The tool runs EXACTLY the dictated term × platform grid and WRITES the complete ledger to ${P.commonLawGrid} itself.`,
         `Do NOT author the grid program, do NOT save ${P.commonLawGrid} yourself, and do NOT re-emit the grid JSON in your message (re-emitting is exactly what truncated/dropped cells before). The tool returns only the candidate hits that need judgment.`,
         `Judge each returned candidate into the fixed taxonomy and write your findings file to ${P.commonLaw} with its Findings, Negative-results matrix, Coverage ledger, and Audit trail sections. The driver validates grid completeness from the ledger the tool wrote — never from your prose.`,
         // P2-C (Round-2 §8b leg 2) — receipts disposition is a dictated obligation, not skill-prose-only
@@ -1790,7 +1790,7 @@ export const STAGES = {
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
-      "half grid dispatch — call perplexity_research with enable_sandbox:true and grid_spec_path: _driver/grid-spec.half-<h>.json": {
+      "half grid dispatch — call perplexity_research with grid_spec_path: _driver/grid-spec.half-<h>.json": {
         class: "mechanical:tool-written", tokens: ["grid_ledger_missing", "grid_join_missing", "platforms_missing", "connotation_query_unrecorded", "grid_ledger_unparseable", "platform_identity_error"],
         why: "The driver wrote the half spec (common-law-receipts.splitGridTerms) and the plugin writes common-law-grid.half-<h>.json itself. The model's only contribution is the call. #850 calls this the reference pattern; there is no legacy branch on this stage, so the transcription lane is already closed here.",
       },
@@ -1891,7 +1891,7 @@ export const STAGES = {
         USE_THE_INPUTS,
         systemScope,
         `You own this matter's MEANING SWEEP and nothing else. Two sibling members are running the marketplace grid concurrently and the driver merges all three in code — do NOT sweep marketplaces, do NOT judge listings, and do NOT widen beyond your dictated queries.`,
-        `Run the sweep via the DETERMINISTIC grid: call perplexity_research with enable_sandbox:true and grid_spec_path set to your grid specification. Your spec carries the dictated meaning queries and NO term x platform cells. The tool runs exactly those queries and WRITES your grid ledger itself.`,
+        `Run the sweep via the DETERMINISTIC grid: call perplexity_research with grid_spec_path set to your grid specification. Your spec carries the dictated meaning queries and NO term x platform cells. The tool runs exactly those queries and WRITES your grid ledger itself.`,
         `Do NOT author the grid program, do NOT save your grid ledger yourself, and do NOT re-emit the ledger JSON in your message.`,
         `If your spec's connotation carries "none_named": true, the matter frame named no meaning question for this mark, so there is nothing to search: do not call perplexity_research, and write your findings file with a "Findings" heading saying no meaning search ran because the matter frame named no meaning question, and an "Audit trail" section saying the same.`,
         // The MEANING seat always owns meaning queries — that is what it is for — so the may-own-nothing
@@ -1916,7 +1916,7 @@ export const STAGES = {
         USE_THE_INPUTS,
         systemScope,
         `You are running ONE HALF of this matter's marketplace grid — a sibling member runs the other half concurrently, and the driver merges the two in code. Cover ONLY your half's dictated terms; never widen to terms outside your spec.`,
-        `Run your half of the sweep via the DETERMINISTIC grid: call perplexity_research with enable_sandbox:true and grid_spec_path set to your grid specification. The tool runs EXACTLY your half's dictated term × platform grid and WRITES this half's complete grid ledger itself.`,
+        `Run your half of the sweep via the DETERMINISTIC grid: call perplexity_research with grid_spec_path set to your grid specification. The tool runs EXACTLY your half's dictated term × platform grid and WRITES this half's complete grid ledger itself.`,
         `Do NOT author the grid program, do NOT save your grid ledger yourself, and do NOT re-emit the grid JSON in your message (re-emitting is exactly what truncated/dropped cells before). The tool returns only the candidate hits that need judgment.`,
         `Judge each returned candidate into the fixed taxonomy and write your findings file with its Findings, Negative-results matrix, Coverage ledger, and Audit trail sections. The driver validates grid completeness from the ledger the tool wrote — never from your prose.`,
         // P2-C (Round-2 §8b leg 2) — the SAME dictate the single-member message carries, half-scoped

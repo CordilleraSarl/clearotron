@@ -374,7 +374,7 @@ Transliteration variants are included in the instructed grid like every other va
 ### Step 2 — Search-as-code marketplace grid (1 sandbox call per mark)
 
 > **DETERMINISTIC GRID MODE (preferred — use whenever the task message gives you a `grid_spec_path`).**
-> Call `perplexity_research` with `enable_sandbox: true` and `grid_spec_path: <the path from the task>`
+> Call `perplexity_research` with `grid_spec_path: <the path from the task>`
 > and nothing else for the grid. The tool runs EXACTLY the dictated term × platform grid and **writes
 > `common-law-grid.json` itself** from the program's stdout. In this mode you do **NOT** author the
 > program, you do **NOT** save `common-law-grid.json` (saving it yourself —
@@ -407,7 +407,7 @@ If an answer is "no" or "unsure" and closing it could change what you tell the c
 ### Step 5 — Judge the grid output into structured tables
 
 The grid call returns recorded candidates, not judged findings — **the legal filtering is yours.**
-For every cell in the stdout JSON, review its candidates: identical / confusingly similar /
+For every cell in the candidate list the grid call returns, review its candidates: identical / confusingly similar /
 conceptually related listings become findings; plain noise (unrelated products that merely share a
 common word) does not. Then categorise each finding into one of:
 

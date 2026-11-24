@@ -106,8 +106,10 @@ test("on a pinned run the research tool says it runs at the search's depth and o
   assert.equal("depth" in tool.inputSchema.properties, false);
 });
 
-test("THE CONTROL: a run frozen before the rule is served the tool it always was", async () => {
+test("a run frozen before the rule is offered no depth either: the tool decides its tier, as the step is told", async () => {
   const [tool] = await toolsFor(runWithPolicy({ schema: 1, level: "global-preliminary-search", components: {} }));
-  assert.match(tool.description, /Auto-detects depth \(fast-search\|pro-search\|deep-research\|advanced-deep-research\) unless `depth` is given\./);
-  assert.deepEqual(tool.inputSchema.properties.depth.enum, ["fast-search", "pro-search", "deep-research", "advanced-deep-research"]);
+  assert.match(tool.description, /^Web\/marketplace research via Perplexity's agent API\. For deterministic marketplace grids/);
+  assert.doesNotMatch(tool.description, /depth/i);
+  for (const k of ["depth", "model", "response_schema", "schema_name"]) assert.equal(k in tool.inputSchema.properties, false, `${k} is offered`);
+  assert.deepEqual(tool.inputSchema.required ?? [], [], "a field is required that one route never uses");
 });

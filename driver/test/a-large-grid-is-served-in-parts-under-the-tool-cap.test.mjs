@@ -69,7 +69,7 @@ function recordedGrid({ terms, perCell }) {
 
 // The cells a reply carries: the JSON array between the count line and the part's closing line.
 function cellsIn(text) {
-  const start = text.indexOf("\n[", text.indexOf("Candidate hits needing your taxonomy judgment"));
+  const start = text.indexOf("\n[", text.indexOf("Candidates from "));
   const end = text.includes("\n[end of part") ? text.indexOf("\n[end of part") : text.length;
   return JSON.parse(text.slice(start + 1, end));
 }
@@ -87,8 +87,9 @@ test("a grid past the cap is served in parts, each under it, and together they a
     const replies = [first];
     for (let p = 2; p <= total; p++) replies.push(await callTool({ task: "grid", grid_spec_path: g.specPath, part: p }));
     assert.match(replies[total - 1], new RegExp(`\\[end of part ${total}/${total} — the candidates are complete once parts 1\\.\\.${total} are all read\\]`));
+    assert.match(first, /Grid ALREADY RECORDED/, "the first page of a saved grid does not say it was already recorded");
+    for (const r of replies.slice(1)) assert.match(r, /^\[perplexity_research part \d+\//, `a later page carries more than its page header: ${r.slice(0, 120)}`);
     for (const r of replies) {
-      assert.match(r, /Grid ALREADY RECORDED/, "a later part searched again");
       assert.ok(r.length < 80000, `a part is ${r.length} characters, past what one tool result can carry`);
     }
     const served = replies.flatMap(cellsIn).map((c) => `${c.term}|${c.platform}|${c.candidates.length}`);
@@ -175,7 +176,8 @@ test("THE CONTROL: a grid that fits is one reply with no part lines, as before",
   try {
     const text = await callTool({ task: "grid", grid_spec_path: g.specPath });
     assert.doesNotMatch(text, /part \d+\//);
-    assert.match(text, /Candidate hits needing your taxonomy judgment \(5\):\n\[/);
+    assert.match(text, /Candidates from 5 cells, the whole result:\n\[/);
+    assert.match(text, /The ledger records each requested cell as a result or a gap\. Read it for completed searches with no hits and for gaps\. The list below contains only cells with candidates\./);
     assert.equal(cellsIn(text).length, 5);
   } finally { rmSync(g.root, { recursive: true, force: true }); }
 });
