@@ -303,12 +303,6 @@
           "skips": 0,
           "todos": 0
         },
-        "a-clean-knockout-hands-the-reviewer-its-first-read-lines.test.mjs": {
-          "tests": 6,
-          "asserts": 25,
-          "skips": 0,
-          "todos": 0
-        },
         "a-clear-from-a-review-asked-again-keeps-the-conditions-still-standing.pipeline.test.mjs": {
           "tests": 3,
           "asserts": 26,
@@ -1264,8 +1258,8 @@
           "todos": 0
         },
         "a-knockout-defect-reaches-the-step-that-can-repair-it.test.mjs": {
-          "tests": 33,
-          "asserts": 181,
+          "tests": 32,
+          "asserts": 178,
           "skips": 0,
           "todos": 0
         },
@@ -1300,8 +1294,8 @@
           "todos": 0
         },
         "a-knockout-is-reviewed-once-for-facts-and-ratings.test.mjs": {
-          "tests": 4,
-          "asserts": 11,
+          "tests": 7,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
@@ -1373,7 +1367,7 @@
         },
         "a-knockout-reads-the-register-by-judgment.test.mjs": {
           "tests": 46,
-          "asserts": 214,
+          "asserts": 213,
           "skips": 0,
           "todos": 0
         },
@@ -1398,6 +1392,12 @@
         "a-knockout-resumed-from-status-keeps-the-scope-its-order-wrote.test.mjs": {
           "tests": 3,
           "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-knockout-review-is-handed-the-opinions-and-their-evidence.test.mjs": {
+          "tests": 4,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
@@ -8079,12 +8079,6 @@
           "skips": 0,
           "todos": 0
         },
-        "the-knockout-check-reads-as-a-knockout-and-records-a-clean-read-once.test.mjs": {
-          "tests": 3,
-          "asserts": 15,
-          "skips": 0,
-          "todos": 0
-        },
         "the-knockout-labels-read-as-the-clearances.test.mjs": {
           "tests": 2,
           "asserts": 8,
@@ -8124,12 +8118,6 @@
         "the-knockout-review-meets-the-tone-and-figure-checks.test.mjs": {
           "tests": 2,
           "asserts": 5,
-          "skips": 0,
-          "todos": 0
-        },
-        "the-knockout-reviewing-pass-rewrites-what-a-reader-sees-first.test.mjs": {
-          "tests": 21,
-          "asserts": 80,
           "skips": 0,
           "todos": 0
         },

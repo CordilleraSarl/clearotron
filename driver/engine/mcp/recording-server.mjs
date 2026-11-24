@@ -1380,14 +1380,8 @@ serve({
   }, {
     name: "record_knockout_review",
     description:
-      "Hand back the MATERIAL DEFECTS you found and your REWRITES of the lines a reader meets first, as VALUES. A material " +
-      "defect goes to the step that rated the batch, and you repair nothing. The driver writes a rewrite into " +
-      "the rated record itself, so you never format JSON and never write a file. Each rewrite names the " +
-      "line it replaces by the `at` address you were handed in the dispatch, copied verbatim — you do " +
-      "not quote the sentence and there is no field for one. An address naming no line on this run's " +
-      "record is refused by name, so a mistyped address costs you a turn rather than landing your text " +
-      "on the wrong line. A repair turn may send only the rows it is correcting: the driver merges BY " +
-      "ADDRESS onto what it already accepted, so rows you omit survive.",
+      "Hand back the MATERIAL DEFECTS you found, as VALUES, and your answer to the question the dispatch opens with. A material " +
+      "defect goes to the step that rated the batch, and you repair nothing. Send an empty `material` list when you found none.",
     inputSchema: {
       type: "object",
       additionalProperties: false,
@@ -1399,7 +1393,7 @@ serve({
         },
         material: {
           type: "array",
-          description: "What would change what the client is told. Empty or left out where you found nothing of that weight.",
+          description: "What would change what the client is told. Empty where you found nothing of that weight.",
           items: {
             type: "object", additionalProperties: false, required: ["kind", "mark", "problem"],
             properties: {
@@ -1408,47 +1402,6 @@ serve({
               finding: { type: "integer", description: "The finding's ordinal, where the defect is about one." },
               problem: { type: "string", description: "What is wrong and why it matters to the client." },
               rests_on: { type: "array", items: { type: "string" }, description: "The held evidence behind the defect: recordIds, question qids and URLs copied from what the run holds. Required for missing and exclusion. A defect about scope, the framework or internal agreement may name its source in problem instead." },
-            },
-          },
-        },
-        rewrites: {
-          type: "array",
-          description:
-            "One row per line you are replacing. A rewrite keeps every fact and changes only the " +
-            "register — the same band, names, reasons and conclusion, in the words the reader owns.",
-          items: {
-            type: "object", additionalProperties: false, required: ["at", "text"],
-            properties: {
-              at: {
-                type: "object", additionalProperties: false, required: ["field"],
-                description: "The address, copied VERBATIM from the dispatch row. Do not compose one.",
-                properties: {
-                  field: { type: "string", description: "The field this line lives in." },
-                  mark: { type: "string", description: "The mark's name, where the field is a mark's." },
-                  index: { type: "integer", description: "The position, where the field is a list." },
-                  ordinal: { type: "integer", description: "The finding's ordinal, for a conflict's one sentence." },
-                },
-              },
-              text: { type: "string", description: "The replacement prose, finished — written into the field exactly as sent." },
-              why: { type: "string", description: "Optional: what was wrong with the line you replaced." },
-            },
-          },
-        },
-        declined: {
-          type: "array",
-          description:
-            "If no change is needed, record that once; do not explain every unchanged line.",
-          items: {
-            type: "object", additionalProperties: false, required: ["at", "why"],
-            properties: {
-              at: {
-                type: "object", additionalProperties: false, required: ["field"],
-                properties: {
-                  field: { type: "string" }, mark: { type: "string" },
-                  index: { type: "integer" }, ordinal: { type: "integer" },
-                },
-              },
-              why: { type: "string", description: "Why the line stands as written." },
             },
           },
         },

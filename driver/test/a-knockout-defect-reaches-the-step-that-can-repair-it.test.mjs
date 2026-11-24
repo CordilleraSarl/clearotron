@@ -155,19 +155,6 @@ test("a correction that also moves a name no defect concerns is recorded, and th
   assert.equal(record.comparisonComplete, true);
 });
 
-// THE FIRST LOOK'S REWRITE OF A LINE GOES WITH ANY CHANGE THE CORRECTION MADE TO ITS NAME. Its prose was written against the
-// record as rated; laid over a name the correction changed, it would put back words the change replaced in the record that ships.
-test("a first look's rewrite on a name the correction then changed is not laid over the change", async () => {
-  const r = await knockout("moved-sibling-rewritten", { MOCK_KO_FAMILIES: JSON.stringify([[NAME, SIBLING]]), MOCK_KO_MATERIAL: JSON.stringify([DEFECT]), MOCK_KO_CORRECTED_BAND: "High", MOCK_KO_CORRECTION_MOVES: SIBLING, MOCK_KO_REWRITE_AT: SIBLING });
-  const first = r.json(knockoutReviewFile(r.dir, 0));
-  assert.equal(first.rewrites?.length, 1, `the first look made no rewrite on ${SIBLING} to test with`);
-  const shipped = JSON.stringify(r.of(r.findings, SIBLING));
-  assert.ok(!shipped.includes("An old rewrite from the first look."), "the first look's rewrite was laid over the corrected name");
-  assert.match(r.of(r.findings, SIBLING).assessment, /A sentence no defect asked for\./, "the correction's change did not ship");
-  const record = r.json(driverDir(r.dir, "knockout-corrections.json"));
-  assert.deepEqual(record.movedOutsideDefects.map((m) => m.name), [SIBLING]);
-});
-
 test("a repair that answers one defect of two is kept, and the one no answer reached stays open for the reviewing lawyer", async () => {
   const other = { kind: "contradiction", mark: SIBLING, problem: "The second name's opening read disagrees with its band." };
   const r = await knockout("partial", { MOCK_KO_MATERIAL: JSON.stringify([DEFECT, other]), MOCK_KO_CORRECTED_BAND: "High", MOCK_KO_CORRECTION_PARTIAL: "1" });
@@ -278,14 +265,15 @@ test("the check is handed the findings the rating step amended after losing a so
   assert.doesNotMatch(KO_STAGES["knockout-review"].message({ K, evidenceLines: [], firstReadLines: [] }), /CHANGED AFTERWARDS/, "and nothing is said where there is none");
 });
 
-test("the check reads the knockout's own doctrine, and a link in its prose standard brings in no clearance rule", () => {
+test("the check reads the knockout's own doctrine and the frozen framework, and no writing standard", () => {
   const K = koPaths(mkdtempSync(join(tmpdir(), "ko-doctrine-")));
-  const msg = KO_STAGES["knockout-review"].message({ K, evidenceLines: [], firstReadLines: [] });
-  for (const manual of ["skills/knockout-assess/SKILL.md", "skills/clearance-search/firm-wide-reasoning.md", "skills/clearance-search/report-prose.md"]) {
+  const msg = KO_STAGES["knockout-review"].message({ K });
+  for (const manual of ["skills/knockout-assess/SKILL.md", "skills/clearance-search/firm-wide-reasoning.md"]) {
     assert.ok(msg.includes(manual), `the check is not given ${manual}`);
     assert.ok(KO_STAGES["knockout-review"].skillReads.includes(manual), `${manual} is not declared`);
   }
-  assert.match(msg, /its links do not import clearance-only finding or placement rules into this screen\. An unidentified owner is an explicit evidence gap, not by itself grounds to remove or lower a finding's band\./);
+  assert.ok(!msg.includes("report-prose.md") && !KO_STAGES["knockout-review"].skillReads.includes("skills/clearance-search/report-prose.md"), "the check rewrites nothing, so it reads no writing standard");
+  assert.match(msg, /Apply the frozen framework, the knockout assessment manual and shared firm-wide reasoning\. An unidentified owner is an explicit evidence gap, not by itself grounds to remove or lower a finding's band\./);
 });
 
 test("a correction brings classesDriving with the other answers that rest on its repair", () => {
@@ -570,8 +558,8 @@ test("the correction's dispatch names each defect, in the chunk's own numbering"
   assert.match(msg, /1\. \[band\] "QUILLBRAE", finding 5 \(TWO\): The second conflict is rated too low\. Rests on: \/mark\/em\/x\./);
   assert.ok(msg.includes("Change a name no defect concerns only for a finding it shares with a name you repair, or an answer that depends on your repair; a shared rating alone is not such a dependency. List each finding you change or remove there in that defect's `findings`, and say why. Within an affected name, repair the findings and dependent answers needed to resolve the defect, and explain their connection to it. Leave unrelated findings unchanged."));
   assert.ok(msg.includes("A filing held for this batch may bear on more than one name. Weigh it against the particular name and its instructed scope, and cite its held recordId and source. Keep where it was found: using that filing does not mean its original search answered this name's register question."));
-  assert.match(msg, /quillbrae\.md/);
-  assert.doesNotMatch(msg, /mossvale\.md/, "a name no defect names is not reopened");
+  assert.ok(msg.includes("A held source is one call away when the evidence above is not enough to decide a point"), "the correction is not told where a held source is");
+  assert.doesNotMatch(msg, /quillbrae\.md|mossvale\.md/, "the correction is pointed at whole research payloads");
 });
 
 // THE KNOCKOUT'S CHECK AND ITS CORRECTION APPLY THE FRAMEWORK THEY ARE HANDED, as the clearance's review does. The sentence
