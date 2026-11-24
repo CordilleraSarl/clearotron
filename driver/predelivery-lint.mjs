@@ -1294,7 +1294,7 @@ export function permissionProseChecks({ text, surface = "report", idSuffix = "",
   }
   // Whole-text pass: splitCards drops everything outside a `## ` card. On report.md that shell is the
   // front-matter, `# Actions` and `# Methodology` — all authored by report-overview, so the shell redo can
-  // genuinely fix what this names. (The coverage LEDGER is not here: delivery-contract.md:147 forbids
+  // genuinely fix what this names. (The coverage LEDGER is not here: delivery-contract.md:68 forbids
   // report-overview from authoring a `# Coverage` section, and the panel renders from the typed coverage[]
   // array — so ledger prose reaches this check on the findings surface, which is structural with no redo by
   // design.) Deduped by POSITION, never by phrase: a card and the shell routinely carry the same anchor, and

@@ -89,7 +89,7 @@ Each finding's `source.source_type` names its actual source.
 | **Common-law** | Surfaced by `clearance-common-law` only. Marketplace presence, no register evidence. |
 | **Register** | Surfaced by `clearance-register` only. Filed protection, no visible marketplace use yet (or no marketplace evidence captured). |
 | **Both** | Same entity / mark / owner surfaced on BOTH sides. Strongest evidence type. |
-| **Cross-pollination** | Surfaced by a deterministic cross-check (Option D Triggers 1-4) — not in either layer's primary first-pass. Audit-trail proof-of-work. |
+| **Cross-pollination** | Surfaced by a deterministic cross-check (one of the four cross-check triggers) — not in either layer's primary first-pass. Audit-trail proof-of-work. |
 
 `Both` rows get cluster-aggregated during synthesis: one row per matched entity, with both layers' evidence merged in the Description column.
 
