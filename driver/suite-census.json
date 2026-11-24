@@ -1240,8 +1240,8 @@
           "todos": 0
         },
         "a-knockout-batch-is-rated-a-family-at-a-time-side-by-side.test.mjs": {
-          "tests": 9,
-          "asserts": 53,
+          "tests": 10,
+          "asserts": 56,
           "skips": 0,
           "todos": 0
         },
@@ -1338,6 +1338,12 @@
         "a-knockout-publishes-once.test.mjs": {
           "tests": 2,
           "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-knockout-rating-carries-the-calibration-of-its-worked-examples.test.mjs": {
+          "tests": 4,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },

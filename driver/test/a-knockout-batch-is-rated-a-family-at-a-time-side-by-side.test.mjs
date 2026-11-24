@@ -33,7 +33,7 @@ import assert from "node:assert/strict";
 
 const { driverDir } = await import("../../shared/driver-dir.mjs");
 const { knockoutInner, frameworkEchoFault } = await import("../pipeline-knockout.mjs");
-const { KO_ASSESS_CHUNK, KO_STAGES, koChunks, koPaths, groupRecordsDoc } = await import("../stages-knockout.mjs");
+const { KO_ASSESS_CHUNK, KO_STAGES, koChunks, koPaths, groupRecordsDoc, calibrationExcerptOf } = await import("../stages-knockout.mjs");
 const { answeredGrid } = await import("./knockout-grid-fixture.mjs");
 
 const NAMES = ["QUILLBRAE", "MOSSVALE", "LANTERNWICK", "ODRAVEL", "NOVAPULSE", "IRONWHISK", "CLUVENDRA", "BRIMSTARE", "TALLOWMERE", "PEBBLEWAY"];
@@ -130,6 +130,21 @@ test("each group is pointed at its own names' held filings, and the whole record
     assert.deepEqual(slice.marks.map((m) => m.name), group.map((m) => m.name), `group ${c + 1}'s slice holds other names`);
     assert.equal(slice.schema, whole.schema, "the slice keeps the record's own fields");
   }
+});
+
+test("every group's rating carries the calibration of the run's worked examples, read once for the run", async () => {
+  const names = NAMES.slice(0, 3);
+  const r = await knockout("calibration", names, {});
+  assert.equal(r.res?.ok, true, `the knockout did not deliver: ${r.thrown?.message ?? JSON.stringify(r.res)}`);
+  const ref = "skills/clearance-search/worked-examples.md";
+  const want = calibrationExcerptOf(readFileSync(join(HERE, "..", "skills", "clearance-search", "worked-examples.md"), "utf8"), ref);
+  for (const c of koChunks(names.map((name) => ({ name }))).keys()) {
+    const dispatch = readFileSync(driverDir(r.dir, `knockout-assess#${c}.attempt1.dispatch.txt`), "utf8");
+    assert.ok(dispatch.includes(want), `group ${c + 1} does not carry the house calibration`);
+  }
+  const journal = readFileSync(driverDir(r.dir, "run.jsonl"), "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l))
+    .filter((e) => e.event === "knockout-calibration");
+  assert.deepEqual(journal.map((e) => [e.ref, e.chars]), [[ref, want.length]], "the calibration is read once for the run, and the journal names it");
 });
 
 test("a group's cut of the record keeps every field but the other names", () => {

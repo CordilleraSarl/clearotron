@@ -36,7 +36,8 @@ import { endTheDeliveredRun, runShell } from "./run-shell.mjs";   // — the run
 import { logTurnaroundReconciliation } from "./run-quote.mjs";
 import { RunCancelled, assertNotCancelledBeforePublish, isCancelled, readCancel, stopsWithTheRun } from "./cancel.mjs";   // stop-by-user: never the failure lane below
 import { attachFramework } from "./run-attachments.mjs";   // the one framework freeze, both products'
-import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutGridSpec, KNOCKOUT_WEB, KNOCKOUT_MINUTES_BAR, knockoutBarVerdict, koChunks, groupRecordsDoc, filingsOnce, expandFilingsOnce, sameRecord } from "./stages-knockout.mjs";
+import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutGridSpec, KNOCKOUT_WEB, KNOCKOUT_MINUTES_BAR, knockoutBarVerdict, koChunks, groupRecordsDoc, filingsOnce, expandFilingsOnce, sameRecord, calibrationExcerptOf } from "./stages-knockout.mjs";
+import { workedExamplesFor } from "./framework.mjs";   // which worked examples the rating's calibration comes from
 import { familiesDefect } from "./knockout-frame-record.mjs";
 import { registerTable, writeRegisterTable } from "./ko-register-tables.mjs";
 import { kebabCollisions, reportIdentityFor, CAPABILITY_SKIPPED_CAUSE, CAPABILITY_SKIPPED_NOTE } from "./search-policy.mjs";
@@ -98,6 +99,21 @@ const koStep = (ctx, label, extra = {}) => {
 // customer's OWN framework when configured, else the house TRIAGE ladder (NOT the clearance Generic default — a knockout
 // rates at triage grain); the deck's path on ctx for the rater, on the resume path too; and the ladder read back the way
 // the rater's validator reads it. Same freeze doctrine: minted once, read verbatim on resume, corrupt = loud.
+/**
+ * The calibration every rating group carries (calibrationExcerptOf), from the worked examples the profile names, or the house set
+ * when it names none. Read once per run; the journal records which file and how much. A file that cannot be read gives none, and
+ * the journal says so by name rather than the rating going without it unseen.
+ */
+function calibrationExcerptFor(ctx) {
+  if (ctx.koCalibrationExcerpt !== undefined) return ctx.koCalibrationExcerpt;
+  const ref = workedExamplesFor(ctx.profile);
+  let text = null;
+  try { text = readFileSync(config.resolveSkillPath(ref), "utf8"); } catch { text = null; }
+  ctx.koCalibrationExcerpt = text == null ? null : calibrationExcerptOf(text, ref);
+  runLog(ctx.run.runDir, { event: "knockout-calibration", ref, chars: ctx.koCalibrationExcerpt?.length ?? 0, ...(text == null ? { unreadable: true } : {}) });
+  return ctx.koCalibrationExcerpt;
+}
+
 function attachKnockoutFramework(ctx) {
   attachFramework(ctx, { defaultFramework: TRIAGE_FRAMEWORK, lane: "knockout", deckOnCtx: true, readBack: readBackLadder });
 }
@@ -1470,7 +1486,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
         };
         const assessFailures = [];
         await runBatched(chunks.map((_, c) => c), KO_CONCURRENT_TURNS, async (c) => {
-          try { await koStage("knockout-assess", ctx, { chunkNo: c, msgCtx: { chunkMarks: chunks[c], chunkTotal: chunks.length, framework: ctx.framework, frameworkMethod: ctx.frameworkMethod ?? null, registerRecordsFile: groupRecords.get(c) ?? null, registerRecordsForm: groupForms.get(c) ?? null, planFile: groupPlans.get(c) ?? null, ...rightsCtx(c) } }); }
+          try { await koStage("knockout-assess", ctx, { chunkNo: c, msgCtx: { chunkMarks: chunks[c], chunkTotal: chunks.length, framework: ctx.framework, frameworkMethod: ctx.frameworkMethod ?? null, registerRecordsFile: groupRecords.get(c) ?? null, registerRecordsForm: groupForms.get(c) ?? null, planFile: groupPlans.get(c) ?? null, calibrationExcerpt: calibrationExcerptFor(ctx), ...rightsCtx(c) } }); }
           catch (e) { assessFailures.push({ c, e }); }
         }, { stop: () => assessFailures.some((f) => rateLimited(f) || f.e instanceof RunCancelled) });
         if (assessFailures.length) throw firstFailure(assessFailures);

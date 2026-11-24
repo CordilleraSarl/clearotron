@@ -253,6 +253,35 @@ const SIBLING_SOURCE = `When you use another name's research payload, explain ho
 // The earlier rights a rating is handed from the order's other names (ko-earlier-rights.mjs), and what it says it did with each.
 const EARLIER_RIGHTS_SENTENCE = (file) => `Earlier filings and market sources to consider for this name are in ${file}. Each suggested filing resembles a spelling being searched and overlaps a requested class. Read its goods, status and territory against the proposed use.`;
 const EARLIER_RIGHTS_ANSWER = `For each filing, say what you concluded for this name: weigh it in a finding and list its recordId in \`weighedFilings\`, or write a \`registerReads\` row saying why it does or does not bear on this name. Where a filing or source was found is provenance only, and no reason either way.`;
+// THE RATING WORKS FROM WHAT IT IS HANDED: its manuals, the customer's framework and the calibration below. A worked example is
+// opened only for a calibration question that is still open, never as a collection.
+const APPLY_THE_SUPPLIED_RULES = "Apply the supplied Knockout assessment rules and the customer’s risk framework to each finding. If a specific calibration question remains, consult the relevant rule or worked example for that question.";
+
+/**
+ * The calibration a rating carries from its framework's worked examples, framed for the opening message. PURE.
+ *
+ * THE CALIBRATION PART, NOT THE COLLECTION. The rest of a worked-examples file is written for the full clearance report: its
+ * delivery prose, voice pairs and whole worked matters. Codex rating sessions opened those files whole, with the synthesis
+ * rules, and got 25k to 400k characters back a session. On held inputs, Codex ratings that carried this part alone opened no
+ * manual, took 50 steps where two draws of the old wording took 69 and 73, and moved no band beyond what those two draws moved
+ * between themselves (measured in testing, 2026-11-24).
+ *
+ * A FILE WITHOUT BOTH HEADINGS HAS NO SUCH PART, and is carried whole: a calibration is never dropped. The files that lack them
+ * are short. null only for an empty file.
+ */
+export function calibrationExcerptOf(text, ref) {
+  const body = String(text ?? "").replace(/\s+$/, "");
+  if (!body) return null;
+  const L = body.split("\n");
+  const start = L.findIndex((l) => /^## The reasoning to reproduce\b/.test(l));
+  const moves = start < 0 ? -1 : L.findIndex((l, i) => i > start && /^### Two calibration moves\b/.test(l));
+  if (moves < 0) return `=== MANUAL: ${ref} ===\n${body}\n=== END MANUAL: ${ref} ===`;
+  let end = L.findIndex((l, i) => i > moves && /^#{1,3} /.test(l));
+  if (end < 0) end = L.length;
+  return `=== MANUAL EXCERPT: ${ref}, from "The reasoning to reproduce" to the end of "Two calibration moves" ===\n`
+    + `${L.slice(start, end).join("\n").replace(/\s+$/, "")}\n=== END MANUAL EXCERPT ===`;
+}
+
 // A FAMILY OF CLOSE VARIATIONS RATED IN ONE SESSION, each name with its own rating and reasons. A family of one keeps the one-name
 // words, unchanged.
 const FAMILY_OPENER = (n) => `You are rating a family of ${n} names for a Knockout screen. Each name is a client choice and gets its own rating and reasons.`;
@@ -490,10 +519,13 @@ export const KO_STAGES = {
     validate: declaredValidator("knockout-assess", KO_VALIDATORS),
     reads: (K) => ({ files: [K.plan, K.instructedScope, ...asRequested(K), ...frozenRules(K), K.registerRecords, K.registerCounts, K.ownerChecks],
       dirs: [K.researchDir], message: true, deck: true }),
-    message: ({ K, job, chunkNo, chunkMarks, chunkTotal, framework, frameworkPath, probeNote, frameworkMethod, registerRecordsFile = null, registerRecordsForm = null, earlierRightsLines = [], earlierRightsFile = null, planFile = null }) => lines(
+    message: ({ K, job, chunkNo, chunkMarks, chunkTotal, framework, frameworkPath, probeNote, frameworkMethod, registerRecordsFile = null, registerRecordsForm = null, earlierRightsLines = [], earlierRightsFile = null, planFile = null, calibrationExcerpt = null }) => lines(
       // The deck path comes from ctx (attachKnockoutFramework resolves it once, on the fresh and the
       // resume path both) — never recomputed here, because "which deck" is one decision.
       reads(["skills/knockout-assess/SKILL.md", frameworkPath, "skills/clearance-search/firm-wide-reasoning.md"].filter(Boolean)),
+      // The calibration of the framework's worked examples (calibrationExcerptOf), read once per run by the pipeline.
+      ...(calibrationExcerpt ? [calibrationExcerpt] : []),
+      APPLY_THE_SUPPLIED_RULES,
       // ONE JOB FOR A NAME, the same whether it is ordered alone or in a shortlist; a family's words where the group holds more than one.
       chunkMarks.length > 1 ? [FAMILY_OPENER(chunkMarks.length), FAMILY_RULE].join("\n") : `You are rating one name for a Knockout screen.`,
       `Rate ONLY these marks (one entry each, names verbatim): ${chunkMarks.map((m) => m.name).join(" · ")}.`,
