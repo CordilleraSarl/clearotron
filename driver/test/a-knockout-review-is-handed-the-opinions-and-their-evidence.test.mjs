@@ -71,7 +71,8 @@ test("each cited source is handed once with what the run holds of it, a filing's
   assert.ok(filing.length < EVIDENCE_GOODS_CHARS + 600, "the goods were not cut");
   assert.match(filing, /carried under "QUILLBRAE" \(the same mark on candles\) · cited by "QUILLBRAE" finding 1$/);
   assert.match(sources.find((l) => l.startsWith("- tm_2 ")), /goods by record_id/, "an unbanded read's filing carries its goods");
-  assert.match(sources.find((l) => l.includes(LISTING)), /"Quillbrae candles" · returned by the search for "QUILLBRAE" on web/);
+  const sourceOf = (l) => l.split(" · ")[0];   // a source line opens with the source it holds
+  assert.match(sources.find((l) => sourceOf(l) === `- ${LISTING}`), /"Quillbrae candles" · returned by the search for "QUILLBRAE" on web/);
   assert.deepEqual(ownerChecks, ['- Brightmoor Candle Co (proprietor of the filings for "QUILLBRAE"), filings tm_1: Brightmoor Candle Co sells candles in the EU. https://brightmoor.example.test']);
 });
 
@@ -89,6 +90,6 @@ test("a correction is handed what its defect rests on and what the finding it na
   const { sources } = defectEvidence([{ mark: "QUILLBRAE", finding: 1, rests_on: ["https://nowhere.example.test/x"] }], RECORD, dir, plan);
   assert.equal(sources.length, 3, sources.join("\n"));
   assert.match(sources[0], /https:\/\/nowhere\.example\.test\/x · not held by this run/);
-  assert.ok(sources.some((l) => l.startsWith("- tm_1 ")) && sources.some((l) => l.includes(LISTING)));
+  assert.ok(sources.some((l) => l.startsWith("- tm_1 ")) && sources.some((l) => l.split(" · ")[0] === `- ${LISTING}`));
   assert.ok(!sources.some((l) => l.startsWith("- tm_2 ")), "a source no defect or finding names is handed");
 });
