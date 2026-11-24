@@ -170,7 +170,7 @@
     "skills/clearance-search/report-prose.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 0,
-      "dictated-line-shape": 0
+      "dictated-line-shape": 1
     },
     "skills/case-law-citation/SKILL.md": {
       "literal-json-skeleton": 0,
@@ -190,6 +190,6 @@
   },
   "totals": {
     "stages": 41,
-    "files": 49
+    "files": 50
   }
 }

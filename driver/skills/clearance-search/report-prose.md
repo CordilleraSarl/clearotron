@@ -1,14 +1,13 @@
-# Report prose — what a good finding reads like
+# Report prose — the rules for every line a reader sees
 
-Every earlier ruling about report prose was a **prohibition**: no advice, no disclaimers, no repetition
-(the *House prose contract* sections in [synthesis-rules.md](synthesis-rules.md) and
-[delivery-contract.md](delivery-contract.md)). Nothing stated what a good finding should READ like, so
-the prose drifted to model defaults — hedging, over-explanation, adjectives, the same point four to six
-times. This file is the other half: the **positive standard**, derived from three trademark lawyers'
-actual clearance reports, which agree with each other.
+This file is the one home of the prose rules. It holds the rules themselves, below, and the **positive
+standard** for what a good finding reads like, derived from three trademark lawyers' actual clearance
+reports, which agree with each other. Other manuals point here and do not restate the rules; each writing
+stage's message carries the same rules in the same words.
 
-It is guidance, **not a checker**. No lint rule reads this file and no delivery gate fails on it — a
-prose checker is a rule engine that flattens the writing and then passes its own test.
+It is guidance, **not a checker**. No lint rule reads this file — a prose checker is a rule engine that
+flattens the writing and then passes its own test. The one limit code holds is the summary's three
+sentences: the save refuses a fourth, and the page folds there.
 
 **The reader is a lawyer who layers advice on top.** The report is facts, evidence, assessment. That one
 sentence generates most of what follows.
@@ -18,6 +17,22 @@ typed findings), `report-overview` (the shell), `report-card` (the cards). The *
 writes lives in that stage's own file — the finding sentence and the grouped reasoned negative in
 [synthesis-rules.md](synthesis-rules.md), the card's shape is the driver's. What is below is general and is stated only here.
 
+## The rules
+
+- TWO LEVELS. Default-visible text, anything a reader meets before opening a fold, is in plain words a client reads, with no visible sentence over 25 words. The detail behind the folds stays in legal language, each term glossed at first use. Every surface carries the same caution: never hedge MORE on one surface than on another, and never flatten a surface to bald assertion. The hedge is calibration ("appears to be", "cannot be excluded"), NEVER a substitute for a fact the run holds — where the run has the record, state the record.
+- WORD BUDGETS (targets, not a checker): about 20-25 words a sentence behind a fold, no visible sentence over 25 words (TWO LEVELS), about 80 words a paragraph. Where code states a hard cap (a 3-sentence caption, a 2-sentence finding sentence), that cap is the FOLD POINT and never the target — three 60-word sentences obey the cap and defeat it. One idea a sentence; three or more parallel items become a real list, never an inline "(a)…(b)…(c)" run.
+- EACH FACT ONCE, AT ITS RANK. A finding is stated in its own row. The summary names the decisive one and no other. A later section that needs an earlier finding CROSS-REFERENCES IT BY ORDINAL ("the three US class-32 rights — findings 1, 4 and 7") and stops. Telling the same mark, owner or conflict again in a second and third section is the largest single defect in the delivered product: the report's structure already holds each fact once, and your prose must use that structure instead of restating into it.
+- NO PRESCRIPTIONS (RULED). Prose states the POSITION, never the remedy. NEVER "we recommend / we advise / we suggest", "you should", "the practical path is", "the realistic path is", "consider …ing", "it would be prudent to", or any imperative aimed at the reader. State what IS — the risk, the evidence, the weakest point, the deadline, the process fact — and let the typed actions register carry what a human must do.
+- NO DISCLAIMERS (RULED). No caveat about the document (none per card, none in the caption, none in the email), no "further investigation may be warranted" tail, no warning about the report's own completeness. A real limit on the answer is a FACT, stated ONCE where it belongs, in consequence terms: "Chinese-script registers were not searched, so a Chinese filing could surface later."
+- THE READER OWNS EVERY NOUN. Every noun on a reader's surface is a word they already hold, from their business, their market, or the law said plainly. Where this run has no reader-facing word for a thing, DESCRIBE the thing: the description is the finished sentence, never a stand-in for the term you meant. "The full variant band enumerated to zero" and "annexed on mark distance, not cleared on goods" name machinery the reader has never met and leave a smart reader nothing to picture; "we searched every spelling of the name and found no live rights" and "the right was set aside because the marks look different, not because their goods were checked" carry the same facts in words they own. The bar is ONE PASS — a smart reader who is not a lawyer takes the meaning the first time — and this engine already clears it: "Every other right on the record turned out narrower than its class number suggested once the specification was read." JUDGE THE SENTENCE, NEVER THE WORD: a mark, an owner or a product genuinely called AXIS, SLICE or BAND is written exactly as it is named. No word is forbidden here; naming the engine's own thing on the reader's surface is.
+- SAY THE LEVEL, NOT ITS NEIGHBOURS. State risk as the level it IS ("a manageable risk", "a high risk") — never as a relation to another level ("sits below that level", "does not quite reach the level above", "one step down from high").
+- THIRD-PARTY RIGHTS ARE NAMED AS RIGHTS. Write "<MARK>-formative rights", "rights that contain <MARK>", "other owners of marks containing <MARK>". NEVER "<MARK>-branded" or "<MARK> branded goods": that reads as the client's own brand and mis-attributes the right to the wrong party.
+- NEVER ASSERT A FACT ABOUT THE CLIENT. Write only what the run's own material establishes. "Consent or coexistence is not in hand" claims something about the client's own file that no search reached — the honest form is record-scoped: "no coexistence agreement appears on the record searched". The same holds for the client's use, portfolio, budget, timing and intentions.
+- SEARCHED-AND-EMPTY IS NOT COULD-NOT-SEARCH. Say which one it is, every time, in the words the run earned: "searched — none found" for a source this run actually queried, "not searched this run" or "could not be searched — <the reason>" for one it did not reach. The two readings must never both appear about the same source in one report.
+- ABSENCE OF A PRIVATE ACT PROVES NOTHING. Cease-and-desist letters, settlements, licences and consents are private — no search reaches them, so their absence is never evidence and is never implied to be one. "No enforcement history surfaced" may not be written, or positioned, as "the owner does not enforce".
+- NAME THE LEGAL TEST IN PLAIN WORDS. "applying the well-accepted framework for confusion — the marks as wholes against the goods and services" reads correctly to a lawyer and to a client. Never recite a court's factor template as though it structured the analysis, and never cite a decision this run did not fetch.
+- NO FILLER. Delete any phrase carrying no fact: run-shaped noise ("session-wide notice coverage", "coverage across the session"), throat-clearing ("it is worth noting that", "importantly", "as noted above"), and any sentence whose deletion loses nothing.
+
 ## At every step: look at what you have before you work on it
 
 Fifty? Read them all. A few hundred? Sort by the client's goods and markets, read the near ones first, list
@@ -26,14 +41,14 @@ goods, tell the client it is crowded, and do not write up the rest. Carry forwar
 raise with the client. Write down what you set aside and why. This applies to the register's answer, to the
 list of records, to the placements, to the off-register sweep and to the write-up alike.
 
-## Two registers, and the reader of the first one is not a lawyer
+## Two levels: what a reader sees first, and what a fold holds
 
 **The reader is a lawyer who layers advice on top — and that lawyer's client reads the same page.** The
 band, the summary, the basis line and the one-liners are the whole product for the second reader, and
 they were the hardest text on it: single sentences of seventy-odd words in the vocabulary of the
 profession.
 
-So the page has two registers, and which one a line is written in is decided by whether the reader has
+So the page has two levels, and which one a line is written at is decided by whether the reader has
 to open something to see it.
 
 **DEFAULT-VISIBLE TEXT CARRIES NO LEGAL OR ENGINE VOCABULARY.** Default-visible means anything a reader
@@ -204,8 +219,8 @@ govern the same surfaces, so where they meet, the wider one binds: the lawyer is
 is read downstream, too: a card's sentence and an action's text reach the client verbatim, and the cover
 note is assembled in code around that same caption.
 
-So the rule is not "avoid jargon", and it never was. Trademark vocabulary a lawyer uses daily belongs
-here: a class number, a specification, an opposition, a formative mark. **What does not is this engine's
+So the rule is not "avoid jargon", and it never was. Inside a fold, trademark vocabulary a lawyer uses
+daily belongs: a class number, a specification, an opposition, a formative mark. **What does not is this engine's
 own vocabulary** — the words the machine has for its own parts and its own acts. A lawyer is no better
 placed than a client to decode those, because nobody outside this project was ever given them, and no
 context on the page supplies one.

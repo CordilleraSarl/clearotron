@@ -15,10 +15,10 @@ of the framework in force (`risk-framework.md` house default, or the profile-sel
 
 **Banding by disposition (placement only — never the rating).** Each finding's `disposition` sets where the driver places it: adversarial among the conflicts, coexistence-partner and distinguished under notable but manageable, off-field as awareness. It never changes the band.
 
-**Distil for the reviewing lawyer (the one reader).** Lead with the decision: `overall_caption` is at most 3 sentences of plain legal English.
+**Distil for the reviewing lawyer.** Lead with the decision: `overall_caption` is at most 3 sentences in plain words a client reads.
 The driver renders the open external checks from the `actions` register — both surface above the fold.
 The card's risk chip is code-built from the finding's `band` + disposition; the typed `net` and
-`overall_caption` are plain legal English: the consequence and the fact that conditions it, with no risk codes and no step to take — never
+`overall_caption` are plain words a client reads: the consequence and the fact that conditions it, with no risk codes and no step to take — never
 engineering/pipeline register. "Full detail" is collapsed.
 This is distillation by *removal and relocation* — do not add length to hit it.
 
@@ -128,45 +128,7 @@ or impersonal. Never address the reviewer by name ("[Name] —"). Flags and acti
 whether the client has prior use predating <date>", not "you should confirm…"). Owner / filer names (the parties
 behind the marks) stay — they are the findings' subject.
 
-## House prose contract (P6 — spec §7 + the lawyer walk-through)
+## Prose
 
-Prompt guidance, deliberately **not** a gate: a code gate on prose adds redelivery cycles and removes the
-flexibility the judgment needs. The stage message carries the same contract — these two levels
-must never teach different rules.
-
-**This section is the PROHIBITIONS.** What a good finding positively reads like is
-[report-prose.md](report-prose.md), which every prose stage reads: fact · assessment · prescription;
-hedge the assessment, never the fact; numbers do the work adjectives would; say it once; concision never
-trades away a fact; the controlled assessment vocabulary. Read both — a card that breaks none of the
-rules below can still be unreadable.
-
-- **Word budgets.** ~20–25 words a sentence, ~80 a paragraph. The one hard cap is the 3-sentence caption; it is a limit, not a target
-  — three 60-word sentences obey the cap and
-  defeat it. One idea a sentence; 3+ parallel items become a list.
-- **Each fact once, at its rank.** A finding is stated in its row; the caption names the decisive one and
-  no other; a later section **cross-references by ordinal** (*"the three US class-32 rights — findings 1, 4
-  and 7"*) instead of retelling. The delivered report told one mark in six of its nine sections — that, not
-  sentence length, is what made it undigestible, and the section spine already holds each fact once.
-- **No prescriptions (ruled).** State the position, never the remedy. No *"we recommend / advise /
-  suggest"*, no *"you should"*, no *"the practical path is"*. Forward steps live **only** in the typed
-  actions register.
-- **No disclaimers (ruled).** None per card, none in the caption, none in the email. A real limit is a
-  **fact**, stated once, in consequence terms: *"Chinese-script registers were not searched, so a Chinese
-  filing could surface later."*
-- **One reader, one posture.** Every surface is for the reviewing lawyer, in the calibrated register of an
-  advisory preliminary assessment. Never hedge *more* on one surface than another; never flatten one to
-  bald assertion. The hedge is calibration, **never** a substitute for a fact the run holds.
-- **The reader owns every noun.** Every noun on a reader surface is a word the reader already holds — from
-  their business, their market, or the law said plainly. Where the run has no reader-facing word for a
-  thing, **describe** it rather than name it: *"the full variant band enumerated to zero"* → *"we searched
-  every spelling of the name and found no live rights"*. One pass is the bar — a smart reader who is not a
-  lawyer takes the meaning the first time. Judge the sentence, never the word: a mark genuinely called AXIS
-  or BAND is written exactly as it is named ([report-prose.md](report-prose.md) → *The reader owns every
-  noun*).
-- **Language (from the walk-through).** Say the level (*"a manageable risk"*), never its neighbours
-  (*"sits below that level"*). *"<MARK>-formative rights"* / *"rights that contain <MARK>"* — never
-  *"<MARK>-branded"*. Never assert a fact about the client's own file (*"consent is not in hand"* → *"no
-  consent appears on the record searched"*). Private acts — C&D letters, settlements, licences — are
-  unreachable by any search: their absence is never evidence. Name the legal test in plain words
-  (*"applying the well-accepted framework for confusion"*), never a court's factor template. Cut filler
-  (*"session-wide notice coverage"*, *"it is worth noting that"*).
+Every line a reader sees follows the prose rules in [report-prose.md](report-prose.md), which this stage
+reads. They are not restated here.

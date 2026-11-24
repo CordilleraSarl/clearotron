@@ -53,8 +53,8 @@ both attach to the same source in one report: *"searched — none found"* for a 
 queried, *"not searched this run"* / *"could not be searched — <reason>"* for one it did not reach. (The
 delivered WAVO report said both about TTAB decisions, which **are** searchable — the reader could not tell
 which had happened.) Coverage prose is also the **longest-running prose in the report** — two of its four
-longest sentences were coverage/gap prose — so it is held to the house budgets like everything else:
-~20–25 words a sentence, each coverage fact stated **once**, in one place (an area's state in its
+longest sentences were coverage/gap prose — so it is held to the prose rules like everything else:
+no visible sentence over 25 words, each coverage fact stated **once**, in one place (an area's state in its
 `coverage[]` row, the sufficiency read in `coverage_judgment.reason`, neither re-narrated in the other).
 And **the numbers are code's**: the reader-facing register coverage line is computed from the run record
 (`scope-facts.mjs`) and stamped as `coverage_line:` front-matter, which sits **outside** the prose scan —
@@ -513,60 +513,19 @@ The principle is the famous-mark URI guard at the metadata level: **no registry 
 
 ## Synthesis output
 
-### Distil for the reviewing lawyer — one reader, read in order of what she needs
+### Distil for the reviewing lawyer — read in order of what she needs
 
-The report has a single audience: the reviewing lawyer. Optimise for a fast, high-trust review (the `delivery-contract.md` shape encodes the layout — set it, don't re-explain it):
-- **Bottom line first** — `overall_caption` is ≤3 sentences of plain legal English, ~20–25 words each: risk level + the one finding that drives it + **the fact that conditions reliance**. **Never the recommended action** (ruled 2026-07-30 — facts, evidence, assessment, weakest point, deadlines and process facts; no mitigation advice, no disclaimers): the forward asks are typed into the `actions` register and rendered by code, and a caption restating one as an instruction is a delivery defect. No engineering register ("Composite N" / "Level C" codes from the retired scale, "axes", "Option D", query/fetch counts) — the overall risk is stated in the framework in force’s band words.
+The report is written for the reviewing lawyer, and her client reads its default-visible text too: the two levels in [report-prose.md](report-prose.md). Optimise for a fast, high-trust review (the `delivery-contract.md` shape encodes the layout — set it, don't re-explain it):
+- **Bottom line first** — `overall_caption` is ≤3 sentences in plain words a client reads, none over 25 words: risk level + the one finding that drives it + **the fact that conditions reliance**. **Never the recommended action** (ruled 2026-07-30 — facts, evidence, assessment, weakest point, deadlines and process facts; no mitigation advice, no disclaimers): the forward asks are typed into the `actions` register and rendered by code, and a caption restating one as an instruction is a delivery defect. No engineering register ("Composite N" / "Level C" codes from the retired scale, "axes", "Option D", query/fetch counts) — the overall risk is stated in the framework in force’s band words.
 - **Open external actions promoted** — the registry/renewal/owner-identity checks are typed into the `actions` register (the report's forward-ask section is code-built from it), never buried in coverage prose. Write each one in **lawyer English**, as something a lawyer would say aloud to a client — *"Investigate whether the owner is using the mark in Germany"*, never *"test for non-use"*, and never an engine mechanism as the ask (*"rerun the owner-by-owner screen"*, *"close the script gaps by the transliteration index route"*, *"read the unread registry documents"*). Reading this run's own records is the engine's job, owed before delivery — it is never printed as something the reader must do.
 - **Telemetry + debug out of the body** — run counts, axis mechanics, and any internal calibration note (e.g. an A–E framing correction) live in the run-dir / audit.
 
 Distillation is *removal and relocation*, not added prose.
 
-### House prose contract (P6 — spec §7 + the lawyer walk-through, 2026-07-30)
+### Prose
 
-Guidance, deliberately **not** a gate — a code gate on prose adds redelivery cycles and removes the
-flexibility the judgment needs. The stage message carries this contract; the two levels must never
-teach different rules.
-
-**This section is the PROHIBITIONS.** What a good finding positively reads like is
-[report-prose.md](report-prose.md), which every prose stage reads: fact · assessment · prescription;
-hedge the assessment, never the fact; numbers do the work adjectives would; say it once; concision never
-trades away a fact; the controlled assessment vocabulary. Read both — a report that breaks none of the
-rules below can still be unreadable.
-
-- **Word budgets.** ~20–25 words a sentence, ~80 a paragraph. The one hard cap is the 3-sentence caption; it is a limit, not a target
-  — three 60-word sentences obey it
-  and defeat it.
-- **Each fact once, at its rank.** A finding is stated in its own row; the caption names the decisive one and
-  no other; a later section **cross-references by ordinal**, never retells. One delivered report told a
-  single mark in six of nine sections — repetition, not sentence length, is what made it undigestible.
-- **No prescriptions (ruled).** Facts, evidence, assessment, the weakest point, deadlines and process facts.
-  No *"we recommend / advise / suggest"*, no *"you should"*, no *"the practical path is"*. Forward steps are
-  typed into the `actions` register and rendered by code — nowhere else.
-- **No disclaimers (ruled).** A real limit is a **fact**, stated once, in consequence terms.
-- **One reader, one posture.** Every surface is written for the reviewing lawyer, in the calibrated register
-  of an advisory preliminary assessment. Never hedge *more* on one surface than another, and never flatten
-  one to bald assertion — the hedge is calibration, never a stand-in for a fact the run holds.
-- **The reader owns every noun.** Every noun on a reader surface is a word the reader already holds — from
-  their business, their market, or the law said plainly. Where the run has no reader-facing word for a
-  thing, **describe** it rather than name it: *"the full variant band enumerated to zero"* → *"we searched
-  every spelling of the name and found no live rights"*. The bar is one pass — a smart reader who is not a
-  lawyer takes the meaning the first time. Judge the sentence, never the word: a mark genuinely called AXIS
-  or BAND is written exactly as it is named. The positive standard is
-  [report-prose.md](report-prose.md) → *The reader owns every noun*.
-- **Say the level, not its neighbours.** *"a manageable risk"*, never *"sits below that level"*.
-- **Name third-party rights as rights.** *"<MARK>-formative rights"*, *"rights that contain <MARK>"* — never
-  *"<MARK>-branded"*, which mis-attributes the right to the client.
-- **Never assert a fact about the client.** *"Consent is not in hand"* claims something about the client's own
-  file that no search reached; write *"no consent appears on the record searched"*.
-- **A private act's absence proves nothing.** C&D letters, settlements, licences and consents are unreachable
-  by any search — *"no enforcement history surfaced"* is never written, or positioned, as *"the owner does
-  not enforce"*.
-- **Name the legal test in plain words.** *"applying the well-accepted framework for confusion — the marks as
-  wholes against the goods and services"*; never a court's factor template recited as the structure of the
-  analysis, and never a decision this run did not fetch.
-- **Cut filler.** *"session-wide notice coverage"*, *"it is worth noting that"*, and any sentence whose
-  deletion loses nothing.
+Every line a reader sees follows the prose rules in [report-prose.md](report-prose.md), which this stage
+reads. They are not restated here.
 
 The narrative is the cross-finding read; it does not retell each finding, and it must agree with the findings it relies on.
 

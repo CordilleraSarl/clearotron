@@ -57,14 +57,9 @@ Both are the same principle from opposite sides: **rate our use meeting their us
 
 ### Delivery prose & the table formula
 
-How findings are written on the report (not how they are scored):
-
-1. Cut dead weight and throat-clearing; one idea per sentence; 3+ parallel items become a real list, never an inline `(a)…(b)…(c)` run. **Word budgets: ~20–25 words a sentence, ~80 a paragraph** — the one hard cap is the 3-sentence caption; it is a limit, not a target.
-2. Verdict-first — lead with the line the reader can act on; numbers over superlatives; no intensifiers, no GPT-isms. **No disclaimers at all** (ruled): a real limit on the answer is a *fact*, stated once where it belongs, in consequence terms — not a caveat about the document.
-3. Each finding's sentence follows *The finding sentence* in synthesis-rules.md.
-4. **One reader, one posture — the hedge is the house register, not a table exception.** There is one report and one reader (the reviewing lawyer), so there is one voice: the calibrated register of an advisory preliminary assessment ("appears to be", "could likely be reduced in scope", "cannot be excluded"). It **survives everywhere** — no surface strips it to bald assertion, and no surface hedges *more* than another. (This item used to read "hedge exception (table only)", which made the cover note hedge harder than the report it covered; that was the two-audience premise, and it is retired.) The hedge is calibration and **never** a substitute for a fact the run holds: where the run has the record, state the record.
-5. **No prescriptions** (ruled 2026-07-30). Prose states the position, never the remedy — no "we recommend / advise / suggest", no "you should", no "the practical path is". Every forward step a human must take is a typed action in the `actions` register, which code renders.
-6. **Each fact once, at its rank.** A finding is written in its own row; the summary names the decisive one and no other; a later section cross-references by ordinal ("the three US class-32 rights — findings 1, 4 and 7") rather than retelling. The section spine already holds each fact once — use it.
+How findings are written on the report (not how they are scored) is [report-prose.md](report-prose.md),
+the prose rules every writing stage reads. Each finding's sentence follows *The finding sentence* in
+synthesis-rules.md.
 
 ---
 

@@ -126,7 +126,7 @@ Measured tone only — no "extremely difficult", "most dangerous", "massive", "e
 colour communicates urgency. No quantitative claims from research ("major streaming hit", never
 "294M streams"; "significant market presence", never revenue figures).
 
-## Plain language — the two-register rule
+## Plain language — the two levels
 
 The report goes to a lawyer who layers advice on top, and that lawyer's client reads the same page. The
 band, the summary, the basis line and the one-liners are the whole product for the second reader. They
