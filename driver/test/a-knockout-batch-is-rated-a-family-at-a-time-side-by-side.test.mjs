@@ -37,7 +37,7 @@ const { KO_ASSESS_CHUNK, KO_STAGES, koChunks, koPaths, groupRecordsDoc, calibrat
 const { answeredGrid } = await import("./knockout-grid-fixture.mjs");
 
 const NAMES = ["QUILLBRAE", "MOSSVALE", "LANTERNWICK", "ODRAVEL", "NOVAPULSE", "IRONWHISK", "CLUVENDRA", "BRIMSTARE", "TALLOWMERE", "PEBBLEWAY"];
-const MOCK_KEYS = ["MOCK_KO_ASSESS_HOLD_MS", "MOCK_KO_ASSESS_LOG", "MOCK_KO_GROUP_CONTEXT", "MOCK_KO_LATER_CAVEAT", "MOCK_KO_FIRST_FRAMEWORK", "MOCK_KO_LATER_FRAMEWORK", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_RATELIMIT", "MOCK_CLAUDE_RATELIMIT_MATCH", "MOCK_KO_MATERIAL", "MOCK_KO_CORRECTED_BAND", "MOCK_KO_CORRECT_CANCEL_AT", "MOCK_KO_CORRECT_HOLD_MS"];
+const MOCK_KEYS = ["MOCK_KO_ASSESS_HOLD_MS", "MOCK_KO_ASSESS_LOG", "MOCK_KO_GROUP_CONTEXT", "MOCK_KO_LATER_CAVEAT", "MOCK_KO_NAME_QUALIFICATION", "MOCK_KO_FIRST_FRAMEWORK", "MOCK_KO_LATER_FRAMEWORK", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_RATELIMIT", "MOCK_CLAUDE_RATELIMIT_MATCH", "MOCK_KO_MATERIAL", "MOCK_KO_CORRECTED_BAND", "MOCK_KO_CORRECT_CANCEL_AT", "MOCK_KO_CORRECT_HOLD_MS"];
 
 /** One knockout of these names through the lane, on the mock engine. What the run left, whether or not it delivered. */
 async function knockout(codename, names, env = {}, executors = {}) {
@@ -86,17 +86,20 @@ test("a group's message is its own job: one name's words or a family's, and no b
     framework: { bands: [{ label: "High" }, { label: "Low" }] }, frameworkPath: null, probeNote: "" });
   const one = message(["QUILLBRAE"]);
   assert.match(one, /^You are rating one name for a Knockout screen\.$/m);
-  assert.match(one, /only a qualification that holds for this name's whole report\. Use the supplied frozen framework\. Open your `chunkSummary` with a line for this name/);
+  const CAVEAT_DUTY = "Use `batch.standardCaveats` only for a qualification the brief establishes for every name in the order. Put a qualification specific to an assigned name in that name’s assessment.";
+  assert.ok(one.includes(`You send \`marks\` and \`chunkSummary\`. ${CAVEAT_DUTY} Use the supplied frozen framework. Open your \`chunkSummary\` with a line for this name`), "a name rated alone is told where an order-wide and a name's own qualification go");
   const family = message(["QUILLBRAE", "QUILBRAE", "QUILL BRAE"]);
   assert.match(family, /^You are rating a family of 3 names for a Knockout screen\. Each name is a client choice and gets its own rating and reasons\.$/m);
-  assert.match(family, /only a qualification that holds for each name's whole report\./);
+  assert.ok(family.includes(`You send \`marks\` and \`chunkSummary\`. ${CAVEAT_DUTY} Use the supplied frozen framework. Open your \`chunkSummary\` with a line for each name`), "a family is told the same");
+  for (const m of [one, family]) assert.doesNotMatch(m, /whole report/, "the earlier caveat clause is gone");
   for (const m of [one, family]) assert.doesNotMatch(m, /As the FIRST chunk|CONTINUATION chunk|groups side by side/, "a group carries no duty for the batch");
 });
 
 test("the groups run side by side, at most eight at once, and the record composed from them is the whole batch's", async () => {
   const log = join(ROOT, "hold.jsonl");
   const r = await knockout("side-by-side", NAMES, { MOCK_KO_ASSESS_HOLD_MS: "1500", MOCK_KO_ASSESS_LOG: log,
-    MOCK_KO_GROUP_CONTEXT: "only the first group's goods", MOCK_KO_LATER_CAVEAT: "A caveat a later group raised for the whole batch." });
+    MOCK_KO_GROUP_CONTEXT: "only the first group's goods", MOCK_KO_LATER_CAVEAT: "A caveat a later group raised for the whole batch.",
+    MOCK_KO_NAME_QUALIFICATION: JSON.stringify({ LANTERNWICK: "This holds for LANTERNWICK alone: its lamps are sold only through its own shop." }) });
   assert.equal(r.res?.ok, true, `the knockout did not deliver: ${r.thrown?.message ?? JSON.stringify(r.res)}`);
   const rows = readFileSync(log, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l));
   assert.deepEqual(rows.map((x) => x.chunk).sort((a, b) => a - b), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], "each name is its own turn");
@@ -107,6 +110,10 @@ test("the groups run side by side, at most eight at once, and the record compose
   assert.deepEqual(r.findings.marks.map((m) => m.name), NAMES, "every name, in plan order");
   assert.equal(r.findings.batch.productContext, r.json(r.K.plan).batch.productContext, "the batch's scope is the plan's, not the first group's");
   assert.equal(r.findings.batch.standardCaveats.filter((c) => c === "A caveat a later group raised for the whole batch.").length, 1, "a later group's caveat is kept, once");
+  // The same held order carries an order-wide qualification and one name's own: through the merger, each stays where its group put it.
+  const own = /holds for LANTERNWICK alone/;
+  assert.ok(!r.findings.batch.standardCaveats.some((c) => own.test(String(c))), "a name's own qualification is not an order-wide caveat");
+  assert.deepEqual(r.findings.marks.filter((m) => own.test(m.assessment)).map((m) => m.name), ["LANTERNWICK"], "a name's own qualification stays in that name's assessment");
   const summary = r.findings.batch.executiveSummary;
   const at = (n) => summary.indexOf(n);
   assert.ok(NAMES.every((n) => at(n) >= 0) && at(NAMES[0]) < at(NAMES[3]) && at(NAMES[3]) < at(NAMES[9]), "the groups' summaries are joined in group order");
