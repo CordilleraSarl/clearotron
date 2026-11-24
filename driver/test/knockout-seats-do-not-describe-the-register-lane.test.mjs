@@ -19,6 +19,7 @@
 // writes about scope — so a prompt that says the first thing must say the second.
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { knockoutGridSpec, KO_STAGES } from "../stages-knockout.mjs";
 import { buildGridProgramTask } from "../../providers/perplexity/src/core.js";
 import { RETIRED_POLICIES } from "../search-policy.mjs";   // — the retired rungs, derived not recited
@@ -102,6 +103,23 @@ test("the assess seat's cure is still there — #706 part 2 is not traded for #1
   const assess = seatPrompts()["knockout-assess"];
   assert.ok(assess, "the assess seat no longer builds, so its cure is unverified");
   assert.match(assess, CARRIES_SILENCE, "the cure #706 part 2 put on the assess seat is gone");
+});
+
+// ── EACH PLACE STATES ONLY ITS OWN DUTY ──────────────────────────────────────
+//
+// Code states coverage from measured activity, and the validator refuses a rater's claim about the search. The rater's manual
+// still asked it to keep "a verified zero, a failed question, and an unread answer distinct" and listed "register-pending
+// notes" among its notes: duties to describe the search that the same rater is refused for doing. The distinction stays
+// where it changes what the rater infers, in what the register reading hands it, as the reading's own states.
+test("the rater's manual leaves register coverage to the report and keeps the reading's states for inference", () => {
+  const manual = readFileSync(new URL("../skills/knockout-assess/SKILL.md", import.meta.url), "utf8").replace(/\s+/g, " ");
+  assert.ok(manual.includes("Use registerEstimate only where your message says the register component was skipped. An empty carried list does not establish that it was skipped. With held filings, weigh their evidence."));
+  for (const gone of ["under RF-15", "keep a verified zero, a failed question, and an unread answer distinct", "register-pending notes"])
+    assert.ok(!manual.includes(gone), `the rater's manual still asks it to state the search: "${gone}"`);
+  assert.match(manual, /`zero` \(a verified zero\), `failed` \(no answer\), `crowd-not-read` or `not-asked`/,
+    "the reading's states no longer reach the rater, so a failed question could be weighed as a zero");
+  assert.ok(seatPrompts()["knockout-assess"].includes("a filing you were handed is evidence like any other. You may say what a particular held filing's record does not show."),
+    "the rater is not told it may say what a held filing's record does not show");
 });
 
 // ── NO LIVE DISPATCH NAMES A RETIRED PRODUCT RUNG ─────────────────────────────

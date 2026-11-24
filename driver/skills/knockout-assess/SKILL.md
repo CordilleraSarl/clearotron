@@ -35,14 +35,13 @@ a band that needs sharpening is the band above it, stated as that word.
 5. **`findings[]` — one typed record per conflicting name you actually found**, ordered most blocking
    first and numbered `ordinal: 1…N` in that order (the ordinal is per MARK). The code then re-ranks on
    the band and renumbers, so what your order decides is the order inside a band. A cited URL must come from a recorded research payload for this batch, a filing held for this batch, or a recorded owner check linked to a held filing. The receipts gate refuses a citation the driver cannot trace, at the chunk, at the merged artifact, and again at publish.
-6. **`registerEstimate`.** Use registerEstimate only where the register component was skipped, under
-   RF-15. An empty carried list does not establish that it was skipped. Use the run's recorded state; keep
-   a verified zero, a failed question, and an unread answer distinct. With held filings, weigh their
+6. **`registerEstimate`.** Use registerEstimate only where your message says the register component was
+   skipped. An empty carried list does not establish that it was skipped. With held filings, weigh their
    evidence. Where it is owed it is an EXPECTATION and labels itself as one, ending with a sentence in the
    shape of "This is an expectation only, not a search result."
 7. **Purple notes** (internal, for the reviewing lawyer): belt-and-braces additions, famous-brand
    adjacency, institutional-knowledge gaps ("Confirm firm history on [MARK]"),
-   register-pending notes, prior-use mitigation.
+   prior-use mitigation.
 
 ## Calibration rules (they override gut instinct)
 

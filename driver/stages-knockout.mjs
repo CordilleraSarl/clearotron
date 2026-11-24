@@ -201,8 +201,10 @@ export function knockoutBarVerdict({ startedAt = null, deliveredAt = null } = {}
 function registerStateLine(K) {
   const lane = registerLaneState(K.runDir);
   if (lane.state === "skipped") return `The register component was skipped on this run, so it holds no filings.`;
-  if (lane.state === "unavailable") return `The register listing was unavailable on this run. Use the recorded counts and failure reason, and keep that gap explicit. The recorded counts: ${K.registerCounts}.${lane.reason ? ` The recorded reason: ${lane.reason}` : ""}`;
-  if (lane.state === "unknown") return `The held files do not establish whether the register component ran. Keep that uncertainty explicit.`;
+  // THE REPORT STATES COVERAGE, NOT THE RATER (design, 2026-11-24). The unavailable state can arise from a counts file alone, so the
+  // line names no cause; the counts and any recorded reason reach the report from code.
+  if (lane.state === "unavailable") return `No register listing is available to this assessment. Weigh the evidence supplied. The report states what the register covered.`;
+  if (lane.state === "unknown") return `The saved material does not establish whether the register search ran. Weigh the evidence supplied. The report states what the register covered.`;
   return "";
 }
 const registerRecordHeld = (K) => registerLaneState(K.runDir).state === "held";
@@ -652,7 +654,7 @@ export const KO_STAGES = {
       // those requirements was withdrawn. The line below says so to the rating step and changes none of it: the manual's "keep
       // the length" and the validators' minimums stand. Model words, landed as approved.
       `Give each name a complete opening assessment for a client reading that name's report alone. Explain the relevant landscape, what drives the rating, and what matters for the client's decision. Preserve the established depth and a broadly consistent scale across the batch. Use sub-headings, short paragraphs and bullets to make the assessment easy to scan. Keep the existing structured fields and their requirements. Do not invent observations or repeat a point merely to fill space; preserve the material supporting and contrary facts, goods and class distinctions, implications and search limitations needed to understand the advice. The batch summary compares the names separately and does not replace any name's own opening assessment.`,
-      `SAY NOTHING ABOUT WHETHER THE REGISTER LANE RAN — whether registers were searched, counted, overlaid or checked, how many filings exist, or how far the search reached. Not in any field, not in the chunk summary. The report states its coverage in code from the run's own measurements, and the validator refuses a chunk that speaks for it. That is a rule about the lane, not about the filings: a filing you were handed is evidence like any other.`,
+      `SAY NOTHING ABOUT WHETHER THE REGISTER LANE RAN — whether registers were searched, counted, overlaid or checked, how many filings exist, or how far the search reached. Not in any field, not in the chunk summary. The report states its coverage in code from the run's own measurements, and the validator refuses a chunk that speaks for it. That is a rule about the lane, not about the filings: a filing you were handed is evidence like any other. You may say what a particular held filing's record does not show.`,
       THIN_LEADS,
       `EVERY conflicting name is a typed findings[] record. A named conflict belongs in findings[], not in bullets — write it once.`,
       `The manual sets out each mark's record: its \`findings[]\`, its opening read in \`assessment\`, its typed read, and the chunk's \`chunkSummary\`, which code joins into the batch summary, so a mark missing from it is missing from the report.`,
