@@ -1252,13 +1252,12 @@ serve({
         chunkSummary: {
           type: "string",
           description:
-            "The cross-mark read covering THIS chunk's marks: a short opening line for what the batch as a whole shows, then one \"## <MARK NAME>\" sub-header per mark with its band and the one or two things that drive it, bullets where they help. EVERY chunk emits one: " +
-            "the whole-batch executive summary is composed in code by concatenating them, so a chunk " +
-            "without one vanishes from the summary a client reads.",
+            "The summary of THIS group's names. Open with a line for each name and its band, then one \"## <MARK NAME>\" sub-header per name with the one or two things that drive its band, bullets where they help. " +
+            "Every group sends one, and code joins them into the order's summary once every name is rated, so a name missing here is missing from what the client reads.",
         },
         framework: {
           type: "object", additionalProperties: false,
-          description: "Chunk 0 only — the deck in force and its ladder, as you were handed them.",
+          description: "Not needed: the driver records the frozen framework. If you send it, it must name that framework and its ladder.",
           properties: {
             source: { type: "string", description: "The framework key." },
             ladder: { type: "array", items: { type: "string" }, description: "Band words, highest first." },
@@ -1266,9 +1265,9 @@ serve({
         },
         batch: {
           type: "object", additionalProperties: false,
-          description: "Chunk 0 only, and required there — the merged artifact takes it from chunk 0 alone.",
+          description: "Optional, from any group. Use `batch.standardCaveats` only for a qualification the brief establishes for every name in the order. Put a qualification specific to an assigned name in that name’s assessment.",
           properties: {
-            productContext: { type: "string", description: "What the batch is FOR, in the client's terms." },
+            productContext: { type: "string", description: "Not needed: the driver takes the product context from the plan." },
             standardCaveats: { type: "array", items: { type: "string" } },
           },
         },

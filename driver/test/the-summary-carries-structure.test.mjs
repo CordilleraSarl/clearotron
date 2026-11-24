@@ -51,8 +51,8 @@ test("the manual orders structure on both summaries, and the superseded wording 
   const d = read("driver/stages-knockout.mjs") + read("driver/skills/knockout-assess/SKILL.md");
   assert.match(d, /Structure it so it can be scanned/,
     "the per-mark assessment is no longer ordered as an unstructured paragraph");
-  assert.match(d, /\*\*Structure it:\*\* a short opening line/,
-    "the cross-mark chunkSummary is no longer ordered as an unstructured paragraph");
+  assert.match(d, /open with a line for\s+each name and its band, then one `## <MARK NAME>` sub-header per name/,
+    "the group summary is no longer ordered as an unstructured paragraph");
   // THE PLANT. This is the exact clause that produced the 2,875-character block, and an arm that cannot
   // fail on it is measuring that a sentence exists rather than that the instruction changed.
   assert.doesNotMatch(d, /2–5 measured sentences covering THIS chunk's marks/,
