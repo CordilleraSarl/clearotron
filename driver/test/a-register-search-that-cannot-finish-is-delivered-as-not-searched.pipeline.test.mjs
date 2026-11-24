@@ -98,6 +98,9 @@ for (const engine of Object.keys(ENGINES)) {
     assert.equal(deferred.length, qids.size, `a slice never reached is not deferred: ${deferred.length} of ${qids.size}`);
     assert.deepEqual(deferred.filter((d) => d.reason !== NOT_LANDED), [], "a slice is deferred without the shipped reason");
     assert.notEqual(p2.verdict, "CLEAR", "the verdict stayed CLEAR over slices nobody searched");
+    // THE READER IS TOLD: the delivered report's coverage carries the search as open, with the line its record holds.
+    assert.ok(json(join(rd, "findings.json")).coverage.some((c) => c.area === "Follow-up / main register search" && c.state === "open"
+      && c.note === `main register search — not completed this run — ${NOT_LANDED}`), "the delivered report does not carry the search as open");
   });
 }
 
@@ -161,6 +164,8 @@ for (const engine of Object.keys(ENGINES)) {
     const deferred = (json(driverDir(p1.runDir, "plan-execution.json")).deferred ?? []).filter((d) => record.slices.some((x) => x.qid === d.qid));
     assert.equal(deferred.length, record.slices.length, "a slice whose call never came back is not deferred");
     assert.deepEqual(deferred.filter((d) => d.reason !== LEFT_OPEN), [], "a slice is deferred without the line for a search left open");
+    assert.ok(json(join(p1.runDir, "findings.json")).coverage.some((c) => c.area === "Follow-up / main register search" && c.state === "open"
+      && c.note === `main register search — not completed this run — ${LEFT_OPEN}`), "the delivered report does not carry the search as open");
   });
 
   test(`${engine}: beside a unit whose call never came back, a sibling that failed on its own work keeps its recovery, and only the faulted unit is never sent again`, async () => {

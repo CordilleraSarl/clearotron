@@ -15,6 +15,7 @@ import { parkedCoverageRows } from "./coverage-union.mjs";
 import { coverageUnitLabel } from "./coverage-ledger.mjs";
 import { deferralCoverageRow, plainDeferralReason, plainDirective } from "./deferral-row.mjs";
 import { NOT_COMPLETED, PART_NAMES } from "./degraded-parts.mjs";
+import { readPartNotCompleted } from "./parts-not-completed.mjs";
 import { clientMarkets, orderTerritories } from "./effective-scope.mjs";
 import { parseFindingsJson } from "./findings-model.mjs";
 import { loadScreenGateUnresolved } from "./floor-and-gap-checks.mjs";
@@ -227,7 +228,15 @@ function layerRowNotes(ledgerRows, formRows) {
 // The search behind it stands as it was recorded; what was not completed is the unit's coverage judgment.
 export const PARKED_JUDGMENT_NOTE = `not completed this run — ${plainDeferralReason("unfinished")}`;
 
-export function coverageJudgmentRows(ledgerRows, planExecution, plan = null, formRows = null) {   // @internal
+// THE SLICES THE SEARCHES' RECORD TOOK OUT OF THE BAND (parts-not-completed.mjs): a unit that never finished, or one
+// whose call never came back. Each reaches the reader as open, with the line its record holds, in the shipped words.
+// The record holds the reader's line; the token it came from is found again so the report row reads it unchanged.
+const SLICE_LINE_TOKENS = ["slice-not-landed", "unfinished", "not-verified-closed", "no-resumable-session", "mechanical-fail:timeout"];
+const tokenOfLine = (line) => SLICE_LINE_TOKENS.find((t) => plainDeferralReason(t) === line) ?? "unfinished";
+const searchesOpenSlices = (record) => (Array.isArray(record?.slices) ? record.slices : [])
+  .filter((x) => x?.qid && x?.axis).map((x) => ({ qid: String(x.qid), axis: String(x.axis).toLowerCase(), line: String(x.reason ?? "").trim() || plainDeferralReason("unfinished") }));
+
+export function coverageJudgmentRows(ledgerRows, planExecution, plan = null, formRows = null, searchesOpen = null) {   // @internal
   const open = [];
   const layers = layerRowNotes(ledgerRows, formRows);
   for (const r of ledgerRows ?? []) {
@@ -260,6 +269,12 @@ export function coverageJudgmentRows(ledgerRows, planExecution, plan = null, for
   // row a lawyer reads names its slice, never an engine identifier (ruled 2026-10-01). One row per slice.
   const rows = open.map((o) => ({ area: o.area, ...(o.areaLabel ? { areaLabel: o.areaLabel } : {}),
     note: o.note }));
+  // A slice the searches' record took out: one row each, named as the workbook names a planned search, never by its id.
+  for (const x of searchesOpenSlices(searchesOpen)) {
+    const label = orphanAreaLabel(x.qid, x.axis, plan);
+    if (!label.areaLabel) continue;
+    rows.push({ area: x.qid, ...label, note: `not completed this run — ${x.line}` });
+  }
   // A ruling the coverage tool parked: the unit's coverage was never judged, so it is open, and never read as clean.
   for (const r of parkedCoverageRows(formRows ?? [])) {
     if (rowIsSettled(r, r)) continue;
@@ -293,7 +308,7 @@ export function stampCoverageJudgmentRows(P, runDir, note, ctx) {   // @internal
       return;
     }
     const rows = coverageJudgmentRows(loadCoverageLedger(runDir).rows, readPlanExecution(ctx), ctx?.registerPlan ?? null,
-      readCoverageForm(runDir).rows);
+      readCoverageForm(runDir).rows, readPartNotCompleted(runDir, "searches"));
     const discarded = Array.isArray(cj.rows) ? cj.rows.length : 0;
     const next = { ...doc, coverage_judgment: { ...cj } };
     if (rows.length) next.coverage_judgment.rows = rows;
@@ -745,6 +760,43 @@ export function fullProseOrdinals(findings) {
 // repeat the row's own "not completed this run" the way the generic fallback does. It borrows that arm's
 // sentence only; if the arm is ever reworded for its own case, re-read this row against it.
 const MEANING_SEARCH_UNFINISHED = "not-verified-closed";
+/**
+ * The register searches a run did not complete, on the report's own coverage: one open row per search and line, named
+ * by the search's reader name ("main register search"), with the line the searches' record holds. The workbook carries
+ * each slice (coverageJudgmentRows). A search synthesis already named is not added twice.
+ */
+export function injectSearchesOpenCoverage(P, runDir, note) {   // @internal — exported so the row is testable without a run
+  try {
+    if (!existsSync(P.findings)) return;
+    const slices = searchesOpenSlices(readPartNotCompleted(runDir, "searches"));
+    if (!slices.length) return;
+    const doc = JSON.parse(readFileSync(P.findings, "utf8"));
+    if (!Array.isArray(doc.coverage)) doc.coverage = [];
+    const normTxt = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    const covText = normTxt(doc.coverage.map((c) => `${c.area} ${c.note ?? ""}`).join(" "));
+    const seen = new Set();
+    let added = 0;
+    for (const x of slices) {
+      const name = coverageUnitLabel(x.axis);
+      const key = `${name}\u0000${x.line}`;
+      if (!name || name === x.axis || seen.has(key)) continue;
+      seen.add(key);
+      const row = deferralCoverageRow(name, tokenOfLine(x.line));
+      if (covText.includes(normTxt(row.note))) continue;
+      doc.coverage.push(row);
+      added++;
+    }
+    if (!added) return;
+    parseFindingsJson(JSON.stringify(doc));
+    writeFindings(runDir, doc, { why: "searches-open-coverage-rows", settles: [] });
+    note(`[register] ${added} register search(es) the run did not complete now reach the report's coverage`);
+    runLog(runDir, { event: "searches-open-coverage", added });
+  } catch (e) {
+    note(`[register] searches-open coverage skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
+    coverageRowNotAdded(runDir, "searches-open", e);
+  }
+}
+
 export function injectMeaningGapCoverage(P, runDir, note) {   // @internal — exported so the refusal shape is testable without a run
   try {
     if (!existsSync(P.commonLawGrid) || !existsSync(P.findings)) return;

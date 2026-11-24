@@ -2243,7 +2243,7 @@
         },
         "a-register-search-that-cannot-finish-is-delivered-as-not-searched.pipeline.test.mjs": {
           "tests": 5,
-          "asserts": 40,
+          "asserts": 42,
           "skips": 0,
           "todos": 0
         },
@@ -3516,6 +3516,12 @@
         "an-unended-position-is-delivered-stated.test.mjs": {
           "tests": 2,
           "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-unfinished-register-search-reaches-the-reader-as-open.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
