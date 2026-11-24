@@ -6,8 +6,9 @@ reports, which agree with each other. Other manuals point here and do not restat
 stage's message carries the same rules in the same words.
 
 It is guidance, **not a checker**. No lint rule reads this file — a prose checker is a rule engine that
-flattens the writing and then passes its own test. The one limit code holds is the summary's three
-sentences: the save refuses a fourth, and the page folds there.
+flattens the writing and then passes its own test. Code holds two limits: the summary's three sentences
+(the save refuses a fourth, and the page folds there), and the finding sentence, which the save refuses
+when it is missing, chained with a semicolon or an arrow, or prescribes an action.
 
 **The reader is a lawyer who layers advice on top.** The report is facts, evidence, assessment. That one
 sentence generates most of what follows.
