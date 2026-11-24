@@ -99,7 +99,6 @@ Two scopes live here, and the doctrine is **narrow at citation, never silently a
 ### Watchlist-owner seeds
 - 3-7 named owners worth particular attention
 - Obvious major competitors in the sector
-- Partner-ecosystem owners (e.g. if MS is client and Nordwave is a Windows-Dynamic-Lighting partner, name Nordwave with the partnership context)
 - Aggressive enforcers on the dominant token
 - Prior incumbents whose marks may be vulnerable to revocation
 - **Enrichment from [watchlist-reference.md](watchlist-reference.md), not authority.** Surface the reference entries RELEVANT TO THIS MATTER's customer / sector as enrichment — you still name the seeds you judge relevant for this matter with your own reasoning; reference entries that do not fit this matter are not surfaced, and (per the applicant-exclusion posture) any reference entry that IS the applicant or an affiliate is dropped.
