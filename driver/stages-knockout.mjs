@@ -21,7 +21,8 @@ import { knockoutReviewFile, validateKnockoutReviewFile } from "./knockout-revie
 import { knockoutRegisterChunkFile, knockoutRegisterFile, validateKnockoutRegisterFile } from "./knockout-register-record.mjs";
 import { narrowingOrderLine } from "./effective-scope.mjs";
 import { REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK } from "./stages.mjs";
-import { declaredValidator } from "./stage-declarations.mjs";   // each stage's validator, by the name its declaration gives
+import { declaredValidator } from "./stage-declarations.mjs";
+import { defectEvidence } from "./ko-review-evidence.mjs";   // each stage's validator, by the name its declaration gives
 
 // The Knockout's validators by the names its stages declare: the lane's own table, and the three records' own checks.
 const KO_VALIDATORS = { ...koValidators, validateKnockoutRegisterFile, validateKnockoutReviewFile, validateKnockoutCorrectionFile };
@@ -294,8 +295,8 @@ const FAMILY_READER_OPENER = (n) => `You are reading the register for a family o
 // THE REVIEW CHECKS FACTS AGAINST THEIR SOURCES AND THE RATINGS OF FINDINGS ON REGISTERED MARKS, and one correction answers what it
 // raises. Measured in testing, 2026-11-23: of 23 review complaints on five real orders, 13 chased thin web leads and 4 were coverage
 // gaps code now answers; 2 were wrong facts and 4 were findings rated too low.
-const REVIEW_SCOPE = `Read the opinions, their cited sources, and the carried-filings table. Check material factual claims against the sources and the ratings of findings on registered marks against the filing, its goods, status and territory, the proposed use and the risk framework. Where a particular fact or filing needs checking, consult that source or full record. Identify the affected name, the exact claim or rating, the evidence and the correction needed. A difference in another name's band alone is no defect. Leave supported judgments and wording alone.`;
-const CORRECTION_SCOPE = `Address the review’s stated defect for the affected name using the cited source or filing and the relevant part of the framework. Correct the factual statement or finding rating and any conclusion that depends on it. Preserve supported material elsewhere. If the source leaves a material fact uncertain, state that limit.`;
+const REVIEW_SCOPE = `Read the opinion summaries and their cited evidence together. For each name, check the stated use and scope, material claims against their sources, and registered findings against the filing and risk framework. Report each material defect with the affected name, claim or finding, source, and correction needed. Consult a specific held source only when the supplied evidence is insufficient to decide that point. Leave supported wording alone.`;
+const CORRECTION_SCOPE = `Read the reported defect, the affected passage or finding, and its cited evidence. Correct the error and any conclusion for this name that depends on it. When the evidence leaves a material fact uncertain, state that limit.`;
 // A THIN WEB LEAD GETS NO CARD, and the review does not chase one: a Knockout is a fast screen.
 const THIN_LEADS = `Give a marketplace lead its own finding when the source supports a relevant commercial use. A thin unregistered mention or isolated listing with no evidence of trade does not warrant a separate finding or follow-up. When a source supports relevant trade but leaves its location or priority uncertain, describe the use and the uncertainty it actually supports.`;
 const CORRECTION_OWN_REASONS = `Move a band only for a reason in this name's own goods, use, sound and the framework. Another name's band is not that reason. Where a defect rests only on a difference between names, the band stands; say why in \`why\`.`;
@@ -692,7 +693,7 @@ export const KO_STAGES = {
     // DECLARATIVE ONLY on this lane, exactly as the assess stage records: nothing in koStage reads
     // `skillReads`, and the effective read is the `reads([...])` call in the message below. The two are
     // edited together and the asymmetry is written down rather than left to be discovered.
-    skillReads: ["skills/knockout-assess/SKILL.md", "skills/clearance-search/firm-wide-reasoning.md", "skills/clearance-search/report-prose.md"],
+    skillReads: ["skills/knockout-assess/SKILL.md", "skills/clearance-search/firm-wide-reasoning.md"],
     // ONE REVIEW, and no second look at the corrected record: a correction is not read again.
     out: (K) => K.review,
     validate: declaredValidator("knockout-review", KO_VALIDATORS),
@@ -708,56 +709,45 @@ export const KO_STAGES = {
     // exists to stop. A record the driver's read flags nowhere is handed its first-read lines instead,
     // by the owner's ruling of 2026-10-10, so both branches have rows under them; a record with no such
     // line is not dispatched at all.
-    message: ({ K, frameworkPath = null, evidenceLines = [], firstReadLines = [], exclusionNote = "", sourceAnswers = [], earlierRightsReview = [], registerTableFile = null }) => lines(
-      // THE CLIENT'S QUESTION LEADS, in the owner's words (ruling 2026-09-24), ahead of the rewrite job.
-      `Does the report answer the client's question: who could object, how strong they are, what the client should do? Are the marks a lawyer would list present, and is each position written from the record that matters? Answer that before any check on wording.`,
-      reads(["skills/knockout-assess/SKILL.md", "skills/clearance-search/firm-wide-reasoning.md", "skills/clearance-search/report-prose.md", frameworkPath].filter(Boolean)),
+    message: ({ K, frameworkPath = null, digestLines = [], searchedRows = [], setAsideRows = [], sourceLines = [], ownerCheckRows = [], sourceAnswers = [], earlierRightsReview = [], registerTableFile = null }) => lines(
+      // THE CLIENT'S QUESTION LEADS, in the owner's words (ruling 2026-09-24).
+      `Does the report answer the client's question: who could object, how strong they are, what the client should do? Are the marks a lawyer would list present, and is each position written from the record that matters?`,
+      reads(["skills/knockout-assess/SKILL.md", "skills/clearance-search/firm-wide-reasoning.md", frameworkPath].filter(Boolean)),
       REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK,
-      `You are the INDEPENDENT CHECK on a knockout screen: another step rated this batch. Check what the client is told against the request, the framework and the evidence, then check its wording. You change no band and no finding yourself.`,
-      `Apply the frozen framework, the knockout assessment manual and shared firm-wide reasoning. Read report-prose.md for writing standards; its links do not import clearance-only finding or placement rules into this screen. An unidentified owner is an explicit evidence gap, not by itself grounds to remove or lower a finding's band. Never invent attribution or a right; explain what the held evidence supports and what remains uncertain.`,
+      `You are the INDEPENDENT CHECK on a knockout screen: another step rated this batch. Check what the client is told against the request, the framework and the evidence. You change no band and no finding yourself.`,
+      `Apply the frozen framework, the knockout assessment manual and shared firm-wide reasoning. An unidentified owner is an explicit evidence gap, not by itself grounds to remove or lower a finding's band. Never invent attribution or a right; explain what the held evidence supports and what remains uncertain.`,
       requestLine(K, (at) => `The client's request, as it arrived: ${at}`, (at) => `The available brief: ${at}. The original request is not held here.`),
-      // THE REVIEW CHECKS FACTS AGAINST THEIR SOURCES AND THE RATINGS OF FINDINGS ON REGISTERED MARKS, not another search and not a
-      // copy-edit, and does not chase a thin web lead. A clean read is recorded once; the recorder still refuses an empty call, so a
-      // completed review stays on the record as a row and never as an absence.
+      // THE REVIEW CHECKS THE OPINIONS AGAINST THEIR CITED EVIDENCE, handed to it in this message, and does not chase a thin web lead.
+      // It does not reword: a supported line stands. A clean read is an answer, and the recorder refuses a call that sends neither.
       REVIEW_SCOPE,
       THIN_LEADS,
       `MATERIAL DEFECTS COME FIRST. A defect is material when repairing it would change what the client is told: a band the framework and the evidence do not support, including one band where the evidence divides the requested goods, or a division it does not support (\`band\`), a filing or use a lawyer would raise that the answer leaves out (\`missing\`), something set aside against the evidence (\`exclusion\`), scope the request asked for that the answer does not cover, including reasoning that never connects the requested use and the held goods to the conclusion (\`scope\`), or a line that contradicts the record beneath it (\`contradiction\`). Send each as a \`material\` row: \`kind\`, \`mark\` verbatim, the finding's ordinal as \`finding\` where it is about one, and what is wrong and why it matters as \`problem\`. Identify the held evidence behind the defect in rests_on. A defect about scope, the framework, or internal agreement may instead identify the supplied request passage, framework rule, or rated field in problem. Do not invent a filing or URL to justify that defect. A filing held for this batch may bear on more than one name, so a defect on one name may rest on a filing held under another, by its held recordId and source. You repair nothing: the step that rated the batch answers each row. A rating a lawyer could reasonably reach is not a defect, and neither is a preference about wording.`,
       // What each rating did with the earlier rights it was handed from the order's other names.
       earlierRightsReview.length ? [EARLIER_RIGHTS_REVIEW, ...earlierRightsReview].join("\n") : "",
-      `Each name's research payload is under ${K.researchDir}.`,
       `rests_on takes a recordId, a question qid, or a URL from ${PERMITTED_SOURCES}. A failed question's qid supports a statement about the failure, not a finding about filings the question never returned. ${SIBLING_SOURCE}`,
       sourceAnswers.length
         ? [`THESE CITATIONS WERE LEFT OUT AS NOT HELD, AND THE FINDINGS THAT CITED THEM CHANGED AFTERWARDS. Read each against that problem: a claim still without held support is a material defect.`, ...sourceAnswers].join("\n")
         : "",
-      `THE WORDS COME AFTER. A line a reader meets before opening anything is held to this rule.`,
-      `THE RULE. A line a reader meets before opening anything carries no legal or engine vocabulary and no sentence longer than 25 words. Inside a fold the lawyer's words are allowed where a plain one would lose precision; on a default-visible line they are not. The reader here is the client of the lawyer who ordered this screen, and they read the same page.`,
-      `The rated record: ${K.findings}. Read it — the lines named below are quoted from it and you are rewriting them in place.`,
-      // THE CARRIED FILINGS AS A TABLE BY RECORD ID, not the whole register record: measured in testing, 2026-11-23, the review read
-      // 37k to 223k characters of register record a run, and the table is 76% to 94% smaller. The whole record stays one tool call away.
-      registerTableFile ? `The carried-filings table: ${registerTableFile}.` : existsSync(K.registerRecords) ? `The register record behind it: ${K.registerRecords}. It holds what the reading step carried, what it set aside and why.` : "",
-      `Where this run read the register, \`read_register_list\` reads any of its lists whole, by qid, and fetches nothing. Use it to answer the first question; a rewrite still adds no fact the rating did not weigh.`,
-      evidenceLines.length
-        ? `THE DRIVER MEASURED THESE LINES. Each row is the line, the ADDRESS that names it, and what a deterministic read found. THIS IS EVIDENCE, NOT A VERDICT: judge each in context and pass over any where the word is the subject rather than the profession's shorthand. ${exclusionNote}`
-        : `THE DRIVER'S READ FLAGGED NO LINE ON THIS RECORD, so nothing below is evidence of a fault. These are the lines a reader meets first, each with the ADDRESS that names it. Rewrite one only where it would answer the client's question more plainly; if every line already does, send one \`declined\` row at one of these addresses saying so, rather than inventing a rewrite to fill the call.`,
-      ...(evidenceLines.length ? evidenceLines : firstReadLines),
-      // ── THE DICTATION NAMES THE FIELD, NOT AN EFFECT ────────────────────────────────
-      //
-      // "Make the report plainer" is read and not applied, and nothing refuses — it simply does not
-      // happen. The address IS the field, so every rewrite this stage returns names the exact line it
-      // replaces and the driver writes it there.
-      `Send your answer to that first question as \`first_question\` in the same call.`,
-      `HAND YOUR ANSWER BACK BY CALLING \`record_knockout_review\`. THERE IS NO FILE FOR YOU TO WRITE and this dispatch names none for you to write to. Send \`material\` as above, and \`rewrites\`: one row per line you are replacing, each carrying the \`at\` address COPIED VERBATIM from the row above and \`text\`, the replacement prose. The driver writes your text into that field exactly as you send it.`,
-      `A REWRITE KEEPS EVERY FACT. You are changing the register, never the content: the same band, the same names, the same reasons, the same conclusion, in the words the reader already owns. Splitting one long sentence into two short ones is the commonest right answer. Dropping the reason to make a line shorter is the commonest wrong one.`,
-      `A REWRITE MOVES NOTHING ELSE. No band, no finding, no ordinal, no count, no piece of evidence and no caveat the engine wrote. There is no field for any of them and a payload naming one is refused.`,
-      `IF YOU CALL AGAIN, SEND ONLY WHAT YOU ARE CORRECTING. The driver merges BY ADDRESS onto what it already accepted, so a row you omit keeps what you sent for it before.`,
+      // EVERYTHING THE REVIEW CHECKS, UP FRONT (ko-review-evidence.mjs): the opinions as rated, and what this run holds of each source
+      // they cite. Each call the review makes carries the conversation so far, so what it would otherwise fetch in calls is here once.
+      digestLines.length ? [`THE OPINION SUMMARIES, as rated, one block a name. Findings carry their ordinals; their sources are named by record ID or address.`, ...digestLines].join("\n") : "",
+      sourceLines.length ? [`THEIR CITED EVIDENCE, each source once, with what this run holds of it and the opinion that cites it:`, ...sourceLines].join("\n") : "",
+      ownerCheckRows.length ? [`THE OWNER CHECKS behind each name's filings, each with its answer:`, ...ownerCheckRows].join("\n") : "",
+      searchedRows.length ? [`WHAT WAS SEARCHED, per name: each register question with its count, and what the reading read or left unread:`,
+        `The report states each name's register coverage itself. Raise a search here only where a claim on the page depends on it.`, ...searchedRows].join("\n") : "",
+      setAsideRows.length ? [`THE WEB LEADS THE RATING SET ASIDE, with its reason for each:`, ...setAsideRows].join("\n") : "",
+      `A held source is one call away when the evidence above is not enough to decide a point: \`read_register_list\` by qid and record_id reads a filing's whole wording, the research payloads are under ${K.researchDir}${registerTableFile ? `, and what the reading set aside, and why, is in ${registerTableFile}` : ""}.`,
+      `HAND YOUR ANSWER BACK BY CALLING \`record_knockout_review\`. THERE IS NO FILE FOR YOU TO WRITE. Send \`first_question\`, your answer to the question this message opens with, and \`material\`: one row per material defect, as above, or an empty list where there is none.`,
     ),
   },
   // A MATERIAL DEFECT'S REPAIR. Dispatched only when the check raised one, per chunk, on the chunk as rated. Its answer is its own
   // artifact because the chunk it changes is already valid: a turn that called nothing would otherwise pass.
   "knockout-correct": {
     model: "opus", thinking: "high", timeoutSec: 1200, stallSec: 600,
-    // DECLARATIVE ONLY on this lane, as the assess stage records; the effective read is in the message.
-    skillReads: ["skills/knockout-assess/SKILL.md", "skills/clearance-search/firm-wide-reasoning.md"],
+    // DECLARATIVE ONLY on this lane, as the assess stage records; the effective read is in the message. A CORRECTION READS ITS DEFECT,
+    // NOT THE RATER'S MANUALS: measured in testing, 2026-11-24, Claude's corrections averaged 0.85M tokens each, reading those
+    // manuals whole. It is handed its defect, what that rests on and the customer's framework.
+    skillReads: [],
     out: (K, chunkNo) => knockoutCorrectionFile(K.runDir, chunkNo),
     validate: declaredValidator("knockout-correct", KO_VALIDATORS),
     reads: (K) => ({ files: [paths(K.runDir).knockoutCorrectionWork, knockoutReviewFile(K.runDir, 0), K.plan, K.instructedScope,
@@ -766,9 +756,12 @@ export const KO_STAGES = {
       const asRated = (() => { try { return JSON.parse(readFileSync(K.assessChunk(chunkNo), "utf8")); } catch { return null; } })();
       const scope = chunkScope(work, chunkNo, asRated);
       const ordinalOf = (d) => (asRated?.marks ?? []).find((m) => m?.name === d.mark)?.findings?.find((f) => sameFinding(f, d.names))?.ordinal;
-      const named = new Set(scope.defects.map((d) => d.mark));
+      // WHAT EACH DEFECT RESTS ON, handed to the correction with its defects (ko-review-evidence.mjs): the sources each one names and the
+      // sources the finding it names cites, as the run holds them. The correction reads its defect, not the run's whole record.
+      const plan = (() => { try { return JSON.parse(readFileSync(K.plan, "utf8")); } catch { return null; } })();
+      const restsOn = defectEvidence(scope.defects, asRated, K.runDir, plan);
       return lines(
-        reads(["skills/knockout-assess/SKILL.md", frameworkPath, "skills/clearance-search/firm-wide-reasoning.md"].filter(Boolean)),
+        frameworkPath ? reads([frameworkPath]) : "",
         REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK,
         `An independent check read this rated batch and raised the defects below. Repair what the evidence supports, and nothing else.`,
         requestLine(K,
@@ -776,12 +769,12 @@ export const KO_STAGES = {
           (at) => `AVAILABLE BRIEF: ${at}. The original request is not held here. Read the brief before you rate, keep its stated scope, and distinguish supplied facts from inferred uses. Do not lower a rating on a guessed use.`),
         `The record as rated: ${K.assessChunk(chunkNo)}. The ordinals you use are the ones in that file.`,
         `The batch plan: ${K.plan}. The frozen framework's bands: ${paths(K.runDir).framework}.`,
-        `Each name's research payload: ${chunkMarks.filter((m) => named.has(m.name)).map((m) => K.research(kebab(m.name))).join(" · ")}. The batch's other recorded research payloads are under ${K.researchDir}.`,
-        existsSync(K.ownerChecks) ? `The recorded owner checks, with the owner and filing each belongs to: ${K.ownerChecks}.` : "",
-        existsSync(K.registerRecords) ? `The filings this run read: ${K.registerRecords}. \`read_register_list\` reads any question's whole list by qid, and fetches nothing.` : "",
         orderedTerritories(job).length ? `THE TERRITORIES THIS SCREEN WAS ORDERED FOR: ${orderedTerritories(job).join(", ")}. A use found only outside them is out of scope for this screen.` : "",
         `THE DEFECTS.`,
         ...scope.defects.map((d) => `${d.n}. [${d.kind}] "${d.mark}"${d.names ? `, finding ${ordinalOf(d) ?? "?"} (${d.names.name})` : ""}: ${d.problem}${d.rests_on?.length ? ` Rests on: ${d.rests_on.join(", ")}.` : ""}`),
+        restsOn.sources.length ? [`WHAT YOUR DEFECTS REST ON, as this run holds it: each source a defect names, and each source the finding it names cites.`, ...restsOn.sources].join("\n") : "",
+        restsOn.ownerChecks.length ? [`THE OWNER CHECKS behind these names' filings, each with its answer:`, ...restsOn.ownerChecks].join("\n") : "",
+        `A held source is one call away when the evidence above is not enough to decide a point: \`read_register_list\` by qid and record_id reads a filing's whole wording, and the research payloads are under ${K.researchDir}.`,
         `A DEFECT IS ANOTHER READER'S FINDING, NOT AN ORDER. Check it against the evidence. Where it holds, repair the finding or the rating. Where it does not, leave the record and say why.`,
         CORRECTION_SCOPE,
         CORRECTION_OWN_REASONS,

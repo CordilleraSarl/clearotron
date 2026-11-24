@@ -852,7 +852,10 @@ export function withSendUntil(mcpConfigJson, sendUntilMs) {
 // read, search-in-files, file match and tool search, and none of the other built-in tools.
 const READ_AND_SEARCH = Object.freeze(["Read", "Grep", "Glob", "ToolSearch"]);
 const BUILTIN_TOOLS = Object.freeze({ "knockout-register-read": Object.freeze(["Read", "ToolSearch"]),
-  "knockout-assess": READ_AND_SEARCH, "knockout-review": READ_AND_SEARCH, "knockout-correct": READ_AND_SEARCH });
+  "knockout-assess": READ_AND_SEARCH,
+  // THE REVIEW AND THE CORRECTION ARE HANDED WHAT THEY CHECK, so a consult is one deliberate read: measured in testing, 2026-11-24,
+  // with file search the review searched the run's files call after call, and each call carried everything before it.
+  "knockout-review": Object.freeze(["Read", "ToolSearch"]), "knockout-correct": Object.freeze(["Read", "ToolSearch"]) });
 export function builtinToolsFor(stage) {
   return BUILTIN_TOOLS[String(stage ?? "").replace(/#\d+$/, "")] ?? null;
 }
