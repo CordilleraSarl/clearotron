@@ -1,12 +1,12 @@
 # Synthesis rules — combining common-law and register findings
 
-How the orchestrator turns two findings files (one per layer) into a single risk assessment per finding, with the `Source Layer` column on the unified Findings sheet driving the final read.
+How synthesis turns two findings files (one per layer) into a single risk assessment per finding, with the `Source Layer` column on the unified Findings sheet driving the final read.
 
 ## Reasoning posture — default to senior-lawyer judgment as ground truth
 
 Across the synthesis, two postures are load-bearing:
 
-1. **If the orchestrator rates a candidate higher than the staff lawyer's calibration would** (e.g. promoting a sheet-2 candidate to client-facing headline), it MUST defend the promotion explicitly with reasoning rooted in `matter-context.md` and placement's own record — the structured `placements.json` (tier **and its stated reason**, per candidate) plus the rulings tail in `placement-recommendations.md`. A defence ENGAGES the reason placement gave: quote it and say why it does not hold. Divergences require defense, not assumption. The Touchpoint 3 (`narrative-refutation`) gate enforces this at delivery: a promotion above `placement-inquiry`'s placement without "promotion defended" reasoning is a BLOCKING flag.
+1. **If synthesis rates a candidate higher than the staff lawyer's calibration would** (e.g. promoting a sheet-2 candidate to client-facing headline), it MUST defend the promotion explicitly with reasoning rooted in `matter-context.md` and placement's own record — the structured `placements.json` (tier **and its stated reason**, per candidate) plus the rulings tail in `placement-recommendations.md`. A defence ENGAGES the reason placement gave: quote it and say why it does not hold. Divergences require defense, not assumption. The Touchpoint 3 (`narrative-refutation`) gate enforces this at delivery: a promotion above `placement-inquiry`'s placement without "promotion defended" reasoning is a BLOCKING flag.
 
 2. **Carry forward matter-context and placement-recommendations.** Synthesis reads `matter-context.md` (the strategic anchor produced at Phase 0 by `matter-frame`) and `placement-recommendations.md` (the per-candidate placements produced at Phase 2 Step 2C by `placement-inquiry`). The off-field reasoning, the named jurisdictions, the watchlist seeds, and the per-candidate placements are inputs to synthesis — not optional context. Disagreements with either MUST be surfaced explicitly ("matter-context flagged X as off-field; this candidate may warrant re-evaluation because Y"), not silently reframed.
 
@@ -132,7 +132,7 @@ Before rating individual findings, **rank and select them by the consumer-confus
    "no use → procedural risk only / no injunction exposure" — the registration is enforceable today;
    non-use only shapes the Stage-2 practical read and a possible counterclaim.** (This is also
    why the file-truth precondition matters: a prior run found an identical-mark registration but dropped
-   it from the deliverable because the register-findings file never reached the orchestrator.)
+   it from the deliverable because the register-findings file never reached synthesis.)
    **This holds regardless of filer profile.** A tail-market individual or single-class small-entity
    filer of an in-class identical / near-identical mark is a real paper conflict — surface it,
    characterise the owner (individual / tail-market / small entity), and apply revocation-vulnerability

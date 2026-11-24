@@ -78,7 +78,7 @@ const ANCHORED = [
   "| Coverage unit | Status | Reason |",
   "|---|---|---|",
   "| store.example | confirmed-clean | https://store.example/search?q=sampel |",
-  "### Cross-checks suggested",
+  "### Register checks requested",
   "- North Studio → register owner sweep (https://north.example/about)",
   "### Audit trail",
   "<!-- clearotron:section=audit-trail -->",

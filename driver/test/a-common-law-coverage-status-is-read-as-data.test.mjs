@@ -279,7 +279,7 @@ test("the server refuses a call with no driver-written spec, and writes nothing"
 
 test("the manual orders the tool, and names exactly the values its served schema accepts", async () => {
   const skill = readFileSync(join(DRIVER, "skills", "clearance-common-law", "SKILL.md"), "utf8");
-  const ledger = skill.slice(skill.indexOf("### Coverage ledger"), skill.indexOf("### Cross-checks suggested"));
+  const ledger = skill.slice(skill.indexOf("### Coverage ledger"), skill.indexOf("### Register checks requested"));
   assert.ok(ledger.length > 100, "the manual's coverage ledger section could not be found");
   assert.match(ledger, /`record_coverage_status`, passing `grid_spec_path`/, "the manual does not order the tool beside the ledger");
   const tools = (await server("tools/list", {}))?.tools ?? [];

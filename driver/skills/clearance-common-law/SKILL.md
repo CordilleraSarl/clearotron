@@ -5,7 +5,7 @@ description: Common-law / marketplace execution for the trademark search workflo
 
 ## Spawned session
 
-Invoked from `clearance-search` (orchestrator) alongside `clearance-register`. Reads:
+Run by the driver alongside `clearance-register`. Reads:
 - The variant manifest at the path your task message names (produced by `clearance-variants`)
 - The request context (classes, jurisdiction scope, industry, manner of use)
 
@@ -13,10 +13,10 @@ Writes:
 - A common-law findings file at the path your task message names
 - The grid ledger common-law-grid.json is written by the tool. Do not write it.
 
-Returns to the orchestrator: your **final session message** MUST be a 2–3 line summary (call
+Returns to the driver: your **final session message** MUST be a 2–3 line summary (call
 count, platform coverage, whether the Negative results matrix is present, finding counts) plus
-the **absolute path** to the findings file you wrote. **Write the findings file before you return — returning without it is a failure** (the deterministic driver gates on this file: if it is missing after your turn it fails/retries the stage under a fresh session key; a common-law findings file that never lands as a file is lost coverage). The orchestrator reads your completion payload to locate and synthesise from that file and
-checks your coverage in its skeptic review. Keep raw Perplexity output in your own session — do
+the **absolute path** to the findings file you wrote. **Write the findings file before you return — returning without it is a failure** (the deterministic driver gates on this file: if it is missing after your turn it fails/retries the stage under a fresh session key; a common-law findings file that never lands as a file is lost coverage). Synthesis reads that file, and the skeptic review
+checks your coverage. Keep raw Perplexity output in your own session — do
 not paste it into the final message (that would defeat the isolation this worker exists for).
 
 Companion files:
@@ -32,7 +32,7 @@ The model tier is set **by the deterministic driver** — `driver/stages.mjs` is
 source of truth (currently Haiku, low thinking). This worker is extraction, not open analysis: it
 fills templated Perplexity prompts from the manifest and transcribes what Perplexity returns into
 the fixed finding taxonomy. The creative variant/strategy work is already done upstream by
-`clearance-variants` (Opus), and the cross-cutting risk synthesis is the orchestrator's (Opus).
+`clearance-variants`. Synthesis assesses risk across the search.
 
 ## Tool call budget
 
@@ -54,7 +54,6 @@ Operative rules for this sub-skill (Perplexity-side):
 - **Strip from queries:** client identity, reference numbers, internal contact names
 - Mark names are public-bound (destined for trademark registries); who is asking is confidential.
 
-See the orchestrator for the canonical policy text and rationale.
 
 ## Failure protocol — a dead marketplace layer FAILS the run, never ships
 
@@ -98,7 +97,7 @@ so there is **no partial-delivery fallback**:
 - Formal enforcement history analysis (organic mentions OK; targeted register-based enforcement search NOT)
 - Prior-art register-based analysis
 
-**Bleed rule:** if register information surfaces organically during a common-law search (e.g., a news article mentions a filing), note it briefly. Record each on its own line as CROSS-CHECK REQUIRED: <what> — <why>, mark in capitals; the driver reads only that line. Do not pursue it — the orchestrator hands such flags to `clearance-register` for cross-pollination.
+**Bleed rule:** if register information surfaces organically during a common-law search (e.g., a news article mentions a filing), note it briefly. Record each on its own line as CROSS-CHECK REQUIRED: <what> — <why>, mark in capitals; the driver reads only that line. Do not pursue it. The driver records the requested check and its outcome when one is available.
 
 ## Output — common-law findings file
 
@@ -329,7 +328,7 @@ One row per planned coverage unit (each dictated platform; non-Latin / translite
 
 Record the same statuses by calling `record_coverage_status`, passing `grid_spec_path` (the same driver-written spec path the grid tool was given) and one entry per ledger row: its coverage unit, and its status, exactly `confirmed-clean`, `coverage-limited` or `deferred`.
 
-### Cross-checks suggested (handed to orchestrator for clearance-register dispatch)
+### Register checks requested
 
 Record each on its own line as CROSS-CHECK REQUIRED: <what> — <why>, mark in capitals; the driver reads only that line.
 
@@ -417,7 +416,7 @@ common word) does not. Then categorise each finding into one of:
 - **Competitor intelligence** — watchlist matches; existing partnerships major brands have in the space
 - **PR / reputational risk** — the meaning read of the mark AND its near-forms, scoped by the run's OWN dictated sweep: the fixed meaning / slang / gang / offensive / lookup shapes plus the matter frame's derived `Meaning angles:` queries (cultural origin/appropriation, charged history of the term or its imagery, category-specific controversy — as THIS matter's frame reasoned them). Never a generic sensitivities checklist — the scope IS the dictated sweep. NOT scored on legal-risk framework — separate category. **Every recorded query with results carries a ruling recorded through `record_dispositions`, whatever this section concludes** — reporting a loaded reading does not discharge the rest of the sweep (see the PR / reputational risk contract above). `None identified` is additionally a clean *receipt* ONLY when the meaning sweep ran — cite a `Connotation-search source:` line; the driver rejects an unsearched clean claim (`connotation_search_missing`) and refuses the turn while any ruling is unrecorded (the `connotation_call_*` family). A dictionary gloss is never a clearance.
 - **Negative results** — **one row for EVERY grid cell**, **plus rows for the field-scoped cells** (collab / non-gaming goods) when run. **Each row carries its receipt:** `No results` (the search returned nothing), `No similar listings (N candidates reviewed)` (returned N candidates, none prima facie similar), `Similar listing(s) found — see Findings (N candidates)` (the cell produced findings), or `not executed — coverage-limited (see ledger)` (the cell is in the grid's `gaps` — never a clean negative).
-- **Cross-checks suggested** — register-side checks the orchestrator should dispatch to `clearance-register` (every common-law owner found → ONE register check)
+- **Register checks requested** — Record the register checks this search calls for, in the format above (every common-law owner found → ONE register check)
 
 **100% URL coverage is mandatory.** Every finding row must have a clickable URL. If a finding cannot be verified with a URL, mark it as an Open verification flag and note the source.
 
@@ -439,7 +438,7 @@ For every Consumer-confusion-risks row that is a **game title** (Steam game, Mic
 - Add the candidate to the Open verification flags section with the specific gap
 - DO NOT GUESS by inferring from prior-frequent gaming companies (Bandai Namco, Tencent, Capcom, Behold Studios, etc.) — even when the title's genre or style suggests a likely publisher, leave the field as `not extracted` rather than confabulating
 
-The downstream orchestrator's `placement-inquiry` (Phase 2 Step 2C) will place any game-title with `developer_of_record: not extracted` at **sheet-2** with a verify-publisher flag — never at headline-candidate. The `narrative-refutation` gate (Phase 2 Step 4.7) will flag in the audit workbook any case where the orchestrator's narrative names a publisher / developer that doesn't trace back to one of these extracted fields.
+The downstream `placement-inquiry` stage will place any game-title with `developer_of_record: not extracted` at **sheet-2** with a verify-publisher flag — never at headline-candidate. The `narrative-refutation` gate (Phase 2 Step 4.7) will flag in the audit workbook any case where the orchestrator's narrative names a publisher / developer that doesn't trace back to one of these extracted fields.
 
 This requirement applies even when the model running this skill is at the Haiku tier (per the live workflow config). Treat `developer_of_record` and `publisher_of_record` as required, unambiguous columns; mark them `not extracted` when uncertain rather than confabulating.
 
@@ -454,7 +453,7 @@ Assemble common-law-findings.md at the path your task message names, per the for
 5. **PR / reputational risk** (or "None identified")
 6. **Negative results** — one row per grid cell
 7. **Coverage ledger** — one row per planned coverage unit (`confirmed-clean`/`coverage-limited`/`deferred`); the structured form of the open-verification prose, consumed by synthesis + the skeptic
-8. **Cross-checks suggested** — the register-side hand-offs to the orchestrator
+8. **Register checks requested** — Record the register checks this search calls for, in the format above.
 9. **Audit trail** — Perplexity call log
 10. **Open verification flags** — URL-404s, thin-coverage regions, transliteration confirmations needed
 
@@ -473,7 +472,7 @@ Assemble common-law-findings.md at the path your task message names, per the for
 - [ ] **Every game-title finding in Consumer-confusion-risks has both `developer_of_record` and `publisher_of_record` columns populated** — with the extracted value when known, or the literal string `not extracted` when uncertain. Never confabulated.
 - [ ] Negative results documented for every grid cell
 - [ ] Coverage ledger emitted — one row per planned coverage unit; non-Latin / thin-data reach logged `coverage-limited`, not silently clean
-- [ ] Cross-checks suggested section populated
+- [ ] Register checks requested section populated
 - [ ] Open verification flags listed (URL-404s, thin coverage, transliteration confirmations)
 - [ ] Common-law findings file written at the path your task message names
 - [ ] No client identity, reference numbers, or contact names in any submitted Perplexity prompt

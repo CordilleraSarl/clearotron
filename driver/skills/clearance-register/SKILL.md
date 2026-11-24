@@ -27,7 +27,7 @@ Writes:
 - Unit mode — TWO artifacts, both gate-checked, neither optional. On a plan run, on an axis with no work and no planned entries, the driver writes the band empty and you write no block. `studio/clearance-search/<slug>/<date>/register-units/<axis>.md` is the stage's DECLARED OUTPUT: the driver renders it from your `record_unit_note` call and fails the pass outright when it is absent, and the digest worker reads it as an input. `studio/clearance-search/<slug>/<date>/register-units/<axis>-band.json` is the COMPLETE named band — a JSON array of `enumerated` / `incomplete` blocks (see `unit.md` → *Named-band artifact*) — carrying every record and no clearance verdict. The md narrates and proves nothing on its own: an md narrating a completed sweep while the band its plan entries call for is missing is refused as `named_band_missing`. In plan mode `register_execute_plan` writes the band itself and you never hand-write its blocks.
 - Digest mode: you write no file. The driver renders `studio/clearance-search/<slug>/<date>/register-findings.md` from what you send. Coverage statuses are NOT a file you write: they ride the `record_coverage` tool into a driver-held record, and the driver renders the `## Coverage ledger` table and its JSON mirror from it (see *Coverage ledger* below and `digest.md` → *Coverage ledger*).
 
-Returns to the orchestrator: your **final session message** — a 2–3 line summary of counts. Keep raw character-noise records out of the message and out of any
+Returns to the driver: your **final session message** — a 2–3 line summary of counts. Keep raw character-noise records out of the message and out of any
 upward summary; keep clearance verdicts out of the unit message (verdicts are Layer B's).
 
 Companion files:
@@ -39,7 +39,7 @@ Companion files:
 
 ## Model
 
-Set by the orchestrator per mode:
+Set by the driver per mode:
 
 - Unit mode — `saturation-probe` uses `haiku`, with thinking off, for count-only work. `primary-sweep` uses `opus`, with adaptive thinking, to run the plan, read its answers, and decide which further searches could change the advice. `transliteration-numeric` and `incumbent-class` use `sonnet`, with adaptive thinking.
 - **Digest mode** — The driver selects the model.
@@ -48,7 +48,7 @@ Register units execute searches and decide which further questions could change 
 
 ## Provider
 
-Set by orchestrator via `provider` — **exactly one register per run**: Corsearch, Clarivate, Signa, or
+Set by the driver via `provider` — **exactly one register per run**: Corsearch, Clarivate, Signa, or
 EUIPO. Operator vocabulary and field names live in `providers/<name>.md`; the universal logic in THIS
 SKILL.md applies whichever sits behind the neutral `register_*` tools. There is no second register and
 no cross-check alongside it: where the active provider's coverage does not reach a territory, that is a
@@ -149,7 +149,7 @@ category is **structurally impossible** now: there is no sampling verb in the fu
 + reason) rather than throwing or silently truncating — so most "failure" handling is just **writing the
 `incomplete` block verbatim** and letting judgment act on it.
 
-- **Provider session-key invalid** → halt; surface to orchestrator with one-line diagnostic (no band can be written).
+- **Provider session-key invalid** → halt; surface it to the driver with a one-line diagnostic (no band can be written).
 - **A named slice cannot be enumerated** (provider 5000-record window, resource ceiling, persistent provider error) → `register_enumerate` returns `{state:"incomplete", …, reason}`; **write that block verbatim.** Do NOT narrow-and-call-clean and do NOT fabricate an empty. The `incomplete` block (a could-not-reach / crowd signal) crosses to judgment. The unit narrows a crowd or records it with its count. A `sufficient:false` does not re-search; a `deferred` row may be re-run by the driver.
 - **Rate-limit signal (429 or sustained 5xx)** → handled inside the primitive (back off); a persistent failure surfaces as an `incomplete` block with the error in `reason`.
 - **A unit's axis has no work** in this manifest (e.g. transliteration-numeric with an English-only mark) and no entries in the frozen plan → write no block, send `record_unit_note` with a `note` saying why, leave `null_result` unset, and return. Do NOT fabricate work. For a run without a frozen plan, follow *No work on this axis* in `unit.md`.

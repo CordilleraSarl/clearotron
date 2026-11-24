@@ -233,7 +233,7 @@ This check applies on every rung the stage message names, and to any finding who
 For every finding heading for the **high-risk** band — the provisional headline-driver a senior lawyer would
 weigh a rename over — work up the **owner** before the rating is fixed, the way the staff lawyer does: *"if it's high
 risk, find out everything you can about the owner to judge the **practical likelihood** they actually create
-a problem for us."* Run it via `perplexity_research` (the orchestrator's web access, same as Step 3.5). It is
+a problem for us."* Run it via `perplexity_research`, as in Step 3.5. It is
 **triggered by risk level, never always-on**; one entity is a bounded target, so be exhaustive on that one
 owner.
 

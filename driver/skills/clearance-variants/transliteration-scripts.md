@@ -13,7 +13,7 @@ Non-Latin scripts to consider when the jurisdiction scope is multi-region or wor
 | **Indian subcontinent** | Devanagari (Hindi) |
 | **US / UK / single-Latin-script jurisdiction** | None — skip unless the mark is itself non-Latin |
 
-For specific country lists, the orchestrator passes the jurisdiction list through; this reference covers the major scripts only.
+For specific country lists, the driver passes the jurisdiction list through; this reference covers the major scripts only.
 
 ## The 8 scripts
 

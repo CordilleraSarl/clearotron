@@ -18,7 +18,7 @@ description: Shared strategy + variant generation for the trademark search workf
 
 ## Spawned session
 
-Invoked from `clearance-search` (orchestrator) as the first stage of any preliminary trademark review. Reads `task` containing: mark(s), class(es), jurisdiction scope, product description, optional industry context. Produces a single artifact — the **variant manifest** — written by the driver from your `record_clearance_variants` call for the downstream skills to consume.
+Run by the driver. Reads `task` containing: mark(s), class(es), jurisdiction scope, product description, optional industry context. Produces a single artifact — the **variant manifest** — written by the driver from your `record_clearance_variants` call for the downstream skills to consume.
 
 Hand the manifest back by calling the `record_clearance_variants` tool. Pure analytical work.
 

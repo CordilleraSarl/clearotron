@@ -148,7 +148,7 @@ crowd is a legitimate reasoned ending for the residual: rule it once, count it, 
 individual reasoning where it matters. This is not a write-everything rule — it is a no-silent-death
 rule.
 
-### Coverage ledger — you rule the driver's form rows through `record_coverage` (orchestrator: the driver renders the `## Coverage ledger` section and `register-coverage-ledger.json` from what the tool records; synthesis lifts the rolled-up sufficiency into `coverage_judgment`)
+### Coverage ledger — you rule the driver's form rows through `record_coverage` (the driver renders the `## Coverage ledger` section and `register-coverage-ledger.json` from what the tool records; synthesis lifts the rolled-up sufficiency into `coverage_judgment`)
 
 You are JUDGMENT (Layer B), not the funnel. The funnel handed up the band in **two states only**: `enumerated`
 (paged to `has_more:false` — complete) or `incomplete` (a crowd descriptor it could not exhaust). The funnel wrote
@@ -474,7 +474,7 @@ kept.
 ### Step 6 — Stealth-filer detection + Option-D cross-checks
 
 Run the stealth-filer regex ([stealth-filer-indicators.md](stealth-filer-indicators.md)) over all
-owners. Then per the orchestrator's cross-pollination logic:
+owners. Then:
 
 The driver prepares Trigger 1 and 4 checks before this stage. Read their receipt and the band to distinguish checks that ran from checks withheld, refused, or left beyond the cap. Keep each not-searched reason; a check that did not run is not a clean result. Record Triggers 2 and 3 in `cross_checks`, naming the owner and why. No stage runs those two; synthesis and the reviewing lawyer read them as open checks.
 
@@ -487,7 +487,7 @@ lost between judgment and the Excel). **You write no file and you name none.**
 
 The per-unit counts are rendered from the run's own receipts, so the audit trail is not yours to compile.
 What IS yours is the judgment beside it: **explicitly flag any unit
-that reported it shortcut its axis**, in your `open_flags` prose — the orchestrator's skeptic review
+that reported it shortcut its axis**, in your `open_flags` prose — the skeptic review
 decides whether to re-run that unit (the driver resumes that unit's own session warm, at its own tier —
 not a fresh Opus spawn). You do NOT re-run anything.
 

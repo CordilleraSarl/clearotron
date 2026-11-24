@@ -1,6 +1,6 @@
 # Status rules — status classification, Madrid handling, non-Latin status strings
 
-Cross-referenced from [clearance-register/SKILL.md](SKILL.md) — the canonical entry point. The provider files and stealth-filer indicators link here for the status-classification rules; the orchestrator never reads this file directly.
+Cross-referenced from [clearance-register/SKILL.md](SKILL.md) — the canonical entry point. The provider files and stealth-filer indicators link here for the status-classification rules.
 
 > **Funnel vs judgment (read this first).** Under the two-layer split, the **funnel (Layer A) does NOT drop
 > records on status** — `register_enumerate` carries **every** record forward (live AND dead) **with its
