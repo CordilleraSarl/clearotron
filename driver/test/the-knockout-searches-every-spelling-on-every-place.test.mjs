@@ -40,7 +40,7 @@ const { knockoutInner } = await import("../pipeline-knockout.mjs");
 const { KO_STAGES, koPaths, knockoutGridSpec, KNOCKOUT_WEB, kebab } = await import("../stages-knockout.mjs");
 const { buildKnockoutWorkbook } = await import("../publish/knockout.mjs");
 const { plainDeferralReason } = await import("../deferral-row.mjs");
-const { knockoutReceipts, validators, placesDefect, spellingsDefect, useKindDefect } = await import("../verify-knockout.mjs");
+const { knockoutReceipts, validators, placesDefect, spellingsDefect, useKindDefect, useOf } = await import("../verify-knockout.mjs");
 const { acceptKnockoutFrame, refuseUndeclared } = await import("../knockout-frame-record.mjs");
 const { buildRequestBody, buildGridProgramTask, validateGridSpec, SANDBOX_INSTRUCTIONS } = await import("../../providers/perplexity/src/core.js");
 const { RESEARCH_PROVIDERS } = await import("../driver.config.mjs");
@@ -123,7 +123,8 @@ test("the plan and the frame's tool refuse with the same sentence, and the tool 
   assert.equal(call(batch, mark).ok, true);
   assert.equal(call(batch, { ...mark, places: ["web"] }).reason, `knockoutframe_places:LANTERNWICK — ${PLACES_SENTENCE}`);
   assert.match(call(batch, { ...mark, spellings: ["LANTERN WICK", "X"] }).reason, /^knockoutframe_spellings:LANTERNWICK — mark "LANTERNWICK": spellings is required/);
-  assert.match(call(batch, { ...mark, useKind: undefined }).reason, /^knockoutframe_use_kind:LANTERNWICK — mark "LANTERNWICK": useKind is required/);
+  // A call with no use at all is asked for the order's phrase (design, 2026-11-24); the plan above, frozen with a use per name, reads back under its rule.
+  assert.match(call(batch, { ...mark, useKind: undefined }).reason, /^knockoutframe_use_kind: batch\.useKind is required/);
   assert.equal(refuseUndeclared({ batch, marks: [mark] }), null, "the tool declares all four fields");
 
   // THE ARCHIVED SHAPE STILL VALIDATES AND STILL RUNS: one list on the batch, no list on the marks. That
@@ -334,14 +335,16 @@ test("each mark is one grid call, its ledger is its research file, and everythin
     assert.ok(b.input.includes(`PLATFORMS (${m.places.length}): ${JSON.stringify(m.places)}`), `${m.name}'s own places are not in its call, verbatim`);
     // AND THE KIND OF USE the frame named for THIS mark, read off the frozen plan rather than written
     // here, so the arm fails if the driver sends a use the plan does not hold.
-    assert.ok(m.useKind, `${m.name}'s plan row carries no kind of use`);
-    assert.ok(b.input.includes(`pplx_sdk.search.web(term + " " + ${JSON.stringify(m.useKind)}, limit=10`),
+    // The name's own where the frame gave one, else the order's phrase (design, 2026-11-24).
+    const use = useOf(m, plan.batch);
+    assert.ok(use, `${m.name}'s plan row carries no kind of use`);
+    assert.ok(b.input.includes(`pplx_sdk.search.web(term + " " + ${JSON.stringify(use)}, limit=10`),
       `${m.name}'s cells do not search its spelling followed by its kind of use`);
   }
 
   // THE PAYLOAD: the ledger, every cell, the listings where a search found some
   const payload = JSON.parse(readFileSync(join(dir, "research", "lanternwick.md"), "utf8"));
-  assert.equal(payload.cells.length, 4, "two spellings on two places");
+  assert.equal(payload.cells.length, 2, "a name of one word is one spelling, on its two places");
   assert.deepEqual(payload.cells.flatMap((c) => c.candidates.map((r) => r.url)), HITS.LANTERNWICK.map((h) => h.url));
   assert.equal(existsSync(join(dir, "research", "mossglen.md")), true, "the retried mark has its payload");
 
@@ -356,7 +359,7 @@ test("each mark is one grid call, its ledger is its research file, and everythin
   const lw = rows.find((r) => r.mark === "LANTERNWICK");
   assert.deepEqual(
     { ok: lw.ok, preset: lw.preset, reasoning: lw.reasoning, resultsPerCell: lw.resultsPerCell, cells: lw.cells, present: lw.present, attempts: lw.attempts },
-    { ok: true, preset: "pro-search", reasoning: "low", resultsPerCell: 10, cells: 4, present: 4, attempts: 1 });
+    { ok: true, preset: "pro-search", reasoning: "low", resultsPerCell: 10, cells: 2, present: 2, attempts: 1 });
   const lwRow = plan.marks.find((m) => m.name === "LANTERNWICK");
   assert.deepEqual([lw.spellings, lw.places], [lwRow.spellings, lwRow.places], "the receipt does not carry THIS mark's own places");
   // AND THE TWO MARKS' LISTS DIFFER in this batch, which is what makes the assertion above able to fail:
@@ -365,7 +368,7 @@ test("each mark is one grid call, its ledger is its research file, and everythin
   assert.notDeepEqual(lwRow.places, mgRow.places, "both marks were framed with the same places, so nothing here could tell them apart");
   // AND THE USE ON THE RECEIPT, so what each cell searched is readable after the run from the receipt
   // alone, beside the spellings and the places it was crossed with.
-  assert.equal(lw.use, plan.marks.find((m) => m.name === "LANTERNWICK").useKind, "the receipt does not say what use the cells carried");
+  assert.equal(lw.use, useOf(lwRow, plan.batch), "the receipt does not say what use the cells carried");
   assert.equal(rows.find((r) => r.mark === "MOSSGLEN").attempts, 2);
   assert.ok(Number.isFinite(lw.took_ms) && lw.took_ms >= 0);
 

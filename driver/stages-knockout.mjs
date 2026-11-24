@@ -9,7 +9,7 @@ import { paths } from "./run-record.mjs";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
-import { validators as koValidators, registerLaneState, PERMITTED_SOURCES } from "./verify-knockout.mjs";
+import { validators as koValidators, registerLaneState, PERMITTED_SOURCES, useOf } from "./verify-knockout.mjs";
 import { kebab, PRODUCT_POLICIES } from "./search-policy.mjs";
 // — the door owns "did the request name any classes?"; this builder reads it rather than
 // re-deriving it. A third copy is what put the knockout frame a class behind the intake.
@@ -284,14 +284,17 @@ export const orderedTerritories = (job) =>
  * One mark's grid, dictated from the frozen plan: its spellings, with its kind of use, on the batch's
  * places. PURE.
  *
- * The spellings, the use and the places are the frame's own words, copied and never re-typed. The plan's
- * validator has already refused a plan without them, so an empty list here is a plan frozen before they
- * existed. So is a mark with no `useKind`, and its cells search the bare spelling as they did then.
- * THE USE IS THE FRAME'S JUDGMENT (ruled 2026-09-26): a cell searches the spelling plus the kind of use
- * the frame named for that name, never a word from a list here.
+ * The spellings are the ones the plan carries: built from the name when the intake recorded it (marketSpellings), or the
+ * frame's own in a plan frozen before that. The use and the places are the frame's own words, copied and never re-typed.
+ * The plan's validator has already refused a plan without them, so an empty list here is a plan frozen before they
+ * existed. So is a mark with no use, and its cells search the bare spelling as they did then.
+ * THE USE IS THE FRAME'S JUDGMENT (ruled 2026-09-26), one phrase from the brief for the order's proposed use (design,
+ * 2026-11-24): a cell searches the spelling plus that phrase, or the name's own where the client gave it a different use,
+ * never a word from a list here.
  */
 export function knockoutGridSpec(markRow, batch, { outputPath }) {
-  const use = typeof markRow?.useKind === "string" ? markRow.useKind.trim() : "";
+  // The name's own use where the client expressly gave one, else the order's (design, 2026-11-24).
+  const use = useOf(markRow, batch);
   // THIS NAME'S OWN PLACES (ruling 570), falling back to the batch's for a plan frozen before the field
   // existed. The fallback is the whole of the back-compatibility: an archived plan carries one list for
   // the batch and every mark reads it, exactly as it did when it ran.
@@ -426,8 +429,8 @@ export const KO_STAGES = {
       // second chance the Write tool used to give.
       `HAND THE FRAME BACK BY CALLING \`record_knockout_frame\`. THERE ARE NO FILES FOR YOU TO WRITE and this dispatch names none — the driver writes both the plan and the scope note from what you send, and nothing you write by hand is read.`,
       `Send \`scope_note\`: the 2–3 sentence scope note, FINISHED — what the batch is, which classes, anything flagged. It is written to knockout-frame.md exactly as you send it, with no heading added and nothing composed into it, so it must read as a complete document on arrival.`,
-      `Send \`marks\`: one row per instructed mark, names verbatim from the instructed scope, each with its classes, beltAndBraces, classesPlain, contextFraming, useKind (task 2c: in one to three words, the kind of use this name is searched for), places (task 2d: the places THIS name is searched on, two or more, one of them the whole web, as many as the name needs), spellings (task 2e) and priority. Two names that differ only in spacing, punctuation or case are REFUSED — they would share one research payload, and one of them would then be rated on the other's evidence.`,
-      `Send \`batch\`: productContext, inUseAs (task 2c), and executionOrder as a permutation of your mark names. THE PLACES ARE PER NAME (task 2d) and go on each mark, not here.`,
+      `Send \`marks\`: one row per instructed mark, names verbatim from the instructed scope, each with its classes, beltAndBraces, classesPlain, contextFraming, places (task 2d: the places THIS name is searched on, two or more, one of them the whole web, as many as the name needs) and priority, and useKind only where the request gives that name a different use (task 2c). The driver writes each name's spellings (task 2e). Two names that differ only in spacing, punctuation or case are REFUSED — they would share one research payload, and one of them would then be rated on the other's evidence.`,
+      `Send \`batch\`: productContext, inUseAs (task 2c), useKind (task 2c), and executionOrder as a permutation of your mark names. THE PLACES ARE PER NAME (task 2d) and go on each mark, not here.`,
       FAMILIES_LINE,
       `IF YOU CALL AGAIN, SEND ONLY WHAT YOU ARE CORRECTING. The driver merges marks BY NAME onto what it already accepted, so a mark you omit keeps its row — but a mark you DO send replaces that row whole, so send a corrected mark complete rather than as a fragment.`,
     ),

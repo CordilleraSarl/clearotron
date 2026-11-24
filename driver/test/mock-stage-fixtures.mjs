@@ -35,7 +35,7 @@ import { recordCoverage, MAX_ROWS_PER_CALL } from "../coverage-tool.mjs";
 // them — and the suite exercises the transport e2e measured as never having executed.
 import { recordBlindFrame } from "../blind-frame-record.mjs";
 import { recordKnockoutAssess } from "../knockout-assess-record.mjs";
-import { recordKnockoutFrame } from "../knockout-frame-record.mjs";
+import { recordKnockoutFrame, requestText } from "../knockout-frame-record.mjs";
 import { recordKnockoutReview } from "../knockout-review-record.mjs";
 import { recordKnockoutRegisterRead } from "../knockout-register-record.mjs";
 import { recordKnockoutCorrection } from "../knockout-correction-record.mjs";
@@ -2562,21 +2562,28 @@ export function applyStageWrites(msg, argv) {
     const scopePath = msg.match(/quote mark names verbatim from it\):\s*((?:[A-Za-z]:)?[\\/]\S+instructed-scope\.json)/)?.[1];
     let names = ["MOCKMARK"];
     try { const sc = JSON.parse(readFileSync(scopePath, "utf8")); if (Array.isArray(sc.marks) && sc.marks.length) names = sc.marks; } catch { /* fallback */ }
+    // THE USE PHRASE IS COPIED FROM THE REQUEST (owner, 2026-11-24), as a real intake must: the record refuses a phrase the
+    // request does not hold. The order's phrase is the request's first two words, and a name's own the next two.
+    const words = String(requestText(runDir) ?? "").split("\n")[0].split(" ").filter(Boolean);
+    const orderUse = words.length >= 2 ? words.slice(0, 2).join(" ") : "product line";
+    const ownUse = words.length >= 4 ? words.slice(2, 4).join(" ") : null;
     const plan = {
       schema: 1,
       // NO BATCH PLACES from ruling 570 on: each mark names its own, below. The old shape (one list here,
       // none on the marks) is driven by the plan validator's own arms, not by this mock.
       batch: { productContext: "mock consumer product line", inUseAs: "a product line, a character or a place",
+        // THE ORDER'S USE PHRASE (design, 2026-11-24), and a name's own below only where its use differs.
+        useKind: orderUse,
         umbrellaBrandNote: null, executionOrder: [...names],
         // MOCK_KO_FAMILIES — the intake's families, `[["<name>", …], …]`; without it the intake groups nothing.
         ...(process.env.MOCK_KO_FAMILIES ? { families: JSON.parse(process.env.MOCK_KO_FAMILIES) } : {}) },
       marks: names.map((n, i) => ({ ref: null, name: n, classes: [9], beltAndBraces: [35],
         classesPlain: "software (9); retail services (35, belt-and-braces)",
         contextFraming: /[aeiou]{2}|q[^u]/i.test(n) ? "coined/fanciful term" : "brand-like compound",
-        // THE KIND OF USE, and DERIVED FROM THE MARK for the same reason contextFraming above it is: an
+        // A NAME'S OWN USE, and DERIVED FROM THE MARK for the same reason contextFraming above it is: an
         // arm asserting that a mark's cells carry THAT mark's use cannot fail against a fixture that
-        // gives every mark the same word. A real frame judges this; the mock only has to differ per mark.
-        useKind: /[aeiou]{2}|q[^u]/i.test(n) ? "character" : "product line",
+        // gives every mark the same word. The others take the order's phrase above.
+        ...(ownUse && /[aeiou]{2}|q[^u]/i.test(n) ? { useKind: ownUse } : {}),
         // THIS NAME'S OWN PLACES (ruling 570), and DERIVED FROM THE MARK'S POSITION rather than from its
         // spelling. An arm asserting a mark's cells ran on THAT mark's places cannot fail against a fixture
         // that gives every mark the same list, so any two marks in a batch must differ — and a predicate on
@@ -2589,8 +2596,7 @@ export function applyStageWrites(msg, argv) {
           : i % 2 === 0
             ? ["web", "shop.example.com"]
             : ["web", "shop.example.com", "wiki.example.com"],
-        // the name as instructed, and one misspelling: its last letter doubled, which no name can equal
-        spellings: [n, `${n}${n.slice(-1)}`],
+        // NO SPELLINGS: the driver builds them from the name (task 2e).
         priorKnowledge: null, priority: i + 1 })),
     };
     // THE NOTE'S BYTES ARE UNCHANGED, deliberately. This conversion moves who writes the file and not
