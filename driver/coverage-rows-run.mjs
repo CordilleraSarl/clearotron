@@ -10,9 +10,10 @@ import { driverDir } from "../shared/driver-dir.mjs";
 import { floorMarkKey, floorTierByMark } from "./band-shape.mjs";
 import { CL_STAGES, commonLawCarryEvent, traceCommonLawCarry } from "./commonlaw-carry.mjs";
 import { readCoverageForm } from "./coverage-form-io.mjs";
-import { isLayerRow, nationalRegistersNote, nationalRegistersNotSearched, orderFormName, unitLabel } from "./coverage-form.mjs";
+import { isLayerRow, nationalRegistersNote, nationalRegistersNotSearched, orderFormName, rowIsSettled, unitLabel } from "./coverage-form.mjs";
+import { parkedCoverageRows } from "./coverage-union.mjs";
 import { coverageUnitLabel } from "./coverage-ledger.mjs";
-import { deferralCoverageRow, plainDirective } from "./deferral-row.mjs";
+import { deferralCoverageRow, plainDeferralReason, plainDirective } from "./deferral-row.mjs";
 import { NOT_COMPLETED, PART_NAMES } from "./degraded-parts.mjs";
 import { clientMarkets, orderTerritories } from "./effective-scope.mjs";
 import { parseFindingsJson } from "./findings-model.mjs";
@@ -222,6 +223,10 @@ function layerRowNotes(ledgerRows, formRows) {
   return { keyOf, notes };
 }
 
+// A COVERAGE RULING THE TOOL PARKED reaches the reader as open: the shipped words for a check left open, held once here.
+// The search behind it stands as it was recorded; what was not completed is the unit's coverage judgment.
+export const PARKED_JUDGMENT_NOTE = `not completed this run — ${plainDeferralReason("unfinished")}`;
+
 export function coverageJudgmentRows(ledgerRows, planExecution, plan = null, formRows = null) {   // @internal
   const open = [];
   const layers = layerRowNotes(ledgerRows, formRows);
@@ -255,6 +260,13 @@ export function coverageJudgmentRows(ledgerRows, planExecution, plan = null, for
   // row a lawyer reads names its slice, never an engine identifier (ruled 2026-10-01). One row per slice.
   const rows = open.map((o) => ({ area: o.area, ...(o.areaLabel ? { areaLabel: o.areaLabel } : {}),
     note: o.note }));
+  // A ruling the coverage tool parked: the unit's coverage was never judged, so it is open, and never read as clean.
+  for (const r of parkedCoverageRows(formRows ?? [])) {
+    if (rowIsSettled(r, r)) continue;
+    const axis = String(r.axis ?? "").toLowerCase();
+    const areaLabel = coverageRowAreaLabel(axis, r.unit);
+    rows.push({ area: coverageRowArea(axis, r.unit), ...(areaLabel ? { areaLabel } : {}), note: PARKED_JUDGMENT_NOTE });
+  }
   for (const qid of Array.isArray(planExecution?.missing) ? planExecution.missing : []) {
     const q = String(qid ?? "").trim();
     if (q && !claimed.has(q)) rows.push({ area: q, ...orphanAreaLabel(q, axisOf.get(q), plan), note: "planned and not executed this run" });

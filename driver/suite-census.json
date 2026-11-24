@@ -1797,6 +1797,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-parked-coverage-ruling-is-exempt-and-reaches-the-reader.test.mjs": {
+          "tests": 4,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "a-parked-run-carries-what-resumes-it.test.mjs": {
           "tests": 7,
           "asserts": 29,
