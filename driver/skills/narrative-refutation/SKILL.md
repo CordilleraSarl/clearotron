@@ -283,7 +283,7 @@ For any candidate the narrative escalates above a "distinguished by its own dist
 This audits *recall of the imagination*, not execution — the catch a narrative-vs-files read alone cannot make. The blind frame-diff now re-derives the neighbour set independently and reopens what the manifest missed; you remain the **backstop** for anything the diff did not catch. Read the proposed mark + its dominant element in `variant-manifest.md`, then ask, with fresh eyes and your own world knowledge: **what obvious neighbours of the dominant element did the manifest NOT include?** Specifically:
 - a **one-letter-off real word** (e.g. for `ZUUM` → `ZOOM`),
 - a **homophone** or near-homophone,
-- a **famous / well-known mark** sitting one or two edits from the anchor (a senior lawyer reaches for these on sight).
+- a **famous / well-known mark** sitting one or two edits from the anchor (the reviewing lawyer reaches for these on sight).
 
 For each obvious neighbour missing from the manifest, **FLAG (missing-variant)** and name it. A missing one-letter-off *famous mark* in the proposed mark's field is **BLOCKING** — that is the canonical recall miss (e.g. failing to search ZOOM on a ZUUM clearance). Do not enumerate edit-distance mechanically; name the few neighbours a knowledgeable human would obviously check.
 
@@ -413,7 +413,7 @@ List every correctable defect. Choose the verdict by the severity grounds below.
   - `use-negative-unsupported` — a finding, at any band, whose conclusion relies on an absence of use with no supporting completed search in `use_check.source` (check the structured source, not a prose source line; unknown use is not a searched negative): the pivotal use question inferred from the owner's profile instead of searched
   - `missing-coverage-row` — a `matter-context` material jurisdiction no question reached at all
   - `missing-variant` on a **one-letter-off famous mark in the proposed mark's field** that the manifest never searched (the canonical recall miss)
-  - Missing-named-owner on a senior-lawyer-required incumbent
+  - Missing-named-owner on an incumbent the reviewing lawyer requires
 
 Total flag count is NOT itself a blocking criterion. A run with many flags that are individually minor (formatting / wording / non-material attribution) is CONDITIONAL with all corrections applied. A run with one material flag (tier inversion, confabulation, overconfident negative, missing required incumbent) is BLOCKING regardless of total count. A high flag count without any material flag is a soft signal that the narrative may be sloppy at a deeper level — surface it in the review's verdict explanation but do not block on it.
 

@@ -169,7 +169,7 @@ recall-recovery loop: a *visible* deferral is recoverable; a silent one is not. 
 
 A worker that did the work properly and validly found little is **not** re-run — thinness alone is a question, not
 a quota; never manufacture make-work to hit a number. At most one re-run per worker; if still short, proceed but
-record the gap in the Audit Trail and narrative so the staff lawyer sees it. Log every skeptic flag + the decision + outcome
+record the gap in the Audit Trail and narrative so the reviewing lawyer sees it. Log every skeptic flag + the decision + outcome
 in the Audit Trail.
 
 This review replaces the old single-session "Opus + max thinking does it all" guard — quality now
@@ -177,7 +177,7 @@ comes from a fresh-eyes audit plus targeted escalation, not from one giant sessi
 
 ## Step 3 — Cross-pollination (Option D — deterministic cross-checks, cap N=10)
 
-Read both findings files. Apply four explicit rules tied to the staff lawyer's stated practice:
+Read both findings files. Apply four explicit rules tied to the reviewing lawyer's stated practice:
 
 | # | Trigger | Action | Owned by |
 |---|---|---|---|
@@ -192,9 +192,9 @@ owner-carrying hit demoted without an executed receipt). The cap N=10 is overflo
 
 The driver ranks its cross-checks (a verified use with a URL, then an owner, then a bare term) and logs what exceeds the cap of 10.
 
-Cap-overflow MUST be flagged in the deliverable audit trail with a specific reason ("would have triggered cross-check on owner X but cap reached after 10 — the staff lawyer to assess manually").
+Cap-overflow MUST be flagged in the deliverable audit trail with a specific reason ("would have triggered cross-check on owner X but cap reached after 10 — the reviewing lawyer to assess manually").
 
-Every cross-check (including "checked, found nothing") logged in the unified audit trail as proof-of-work. The collaborator value-add (vs assistant) is in this section: synthesis can be decisive ("HP uses, does not register → a common-law conflict, banded in the framework's words") rather than tentative ("recommend the staff lawyer check HP register").
+Every cross-check (including "checked, found nothing") logged in the unified audit trail as proof-of-work. The collaborator value-add (vs assistant) is in this section: synthesis can be decisive ("HP uses, does not register → a common-law conflict, banded in the framework's words") rather than tentative ("recommend the reviewing lawyer check HP register").
 
 ## Step 3.5 — Actual-use and enforcement check (mandatory for register hits rated medium risk or higher)
 
@@ -230,8 +230,8 @@ This check applies on every rung the stage message names, and to any finding who
 
 ## Step 3.6 — Owner workup (mandatory for high-risk findings)
 
-For every finding heading for the **high-risk** band — the provisional headline-driver a senior lawyer would
-weigh a rename over — work up the **owner** before the rating is fixed, the way the staff lawyer does: *"if it's high
+For every finding heading for the **high-risk** band — the provisional headline-driver the reviewing lawyer would
+weigh a rename over — work up the **owner** before the rating is fixed, the way the reviewing lawyer does: *"if it's high
 risk, find out everything you can about the owner to judge the **practical likelihood** they actually create
 a problem for us."* Run it via `perplexity_research`, as in Step 3.5. It is
 **triggered by risk level, never always-on**; one entity is a bounded target, so be exhaustive on that one
@@ -273,7 +273,7 @@ For **each finding** in the combined findings set (common-law + register, both l
 **Source of truth (file-truth precondition).** Build every Findings row from `studio/clearance-search/<slug>/<date>/register-findings.md` and `studio/clearance-search/<slug>/<date>/common-law-findings.md`. Do **NOT** assemble the Findings sheet / Excel from inline digest output — if the register-findings file is not present the synthesis is not ready (the driver re-runs the digest). *(Prior-incident anchor: a run where the register layer found an identical-mark registration, but with no register-findings file written it never reached the deliverable — the deliverable is built from files, not inline payloads.)*
 
 
-The staff lawyer makes the final determination. The skill's role is to surface the facts, apply the framework systematically, and flag what matters — not to make conclusive legal judgments.
+The reviewing lawyer makes the final determination. The skill's role is to surface the facts, apply the framework systematically, and flag what matters — not to make conclusive legal judgments.
 
 Per-finding output is the band in the framework's words, with the legal and practical positions, which carry the elevation and mitigation factors observed.
 - Cross-Mark Reference (if applicable)

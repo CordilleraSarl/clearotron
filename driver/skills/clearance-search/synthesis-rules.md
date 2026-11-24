@@ -2,11 +2,11 @@
 
 How synthesis turns two findings files (one per layer) into a single risk assessment per finding, with the `Source Layer` column on the unified Findings sheet driving the final read.
 
-## Reasoning posture — default to senior-lawyer judgment as ground truth
+## Reasoning posture — default to the reviewing lawyer's judgment as ground truth
 
 Across the synthesis, two postures are load-bearing:
 
-1. **If synthesis rates a candidate higher than the staff lawyer's calibration would** (e.g. promoting a sheet-2 candidate to client-facing headline), it MUST defend the promotion explicitly with reasoning rooted in `matter-context.md` and placement's own record — the structured `placements.json` (tier **and its stated reason**, per candidate) plus the rulings tail in `placement-recommendations.md`. A defence ENGAGES the reason placement gave: quote it and say why it does not hold. Divergences require defense, not assumption. The Touchpoint 3 (`narrative-refutation`) gate enforces this at delivery: a promotion above `placement-inquiry`'s placement without "promotion defended" reasoning is a BLOCKING flag.
+1. **If synthesis rates a candidate higher than the reviewing lawyer's calibration would** (e.g. promoting a sheet-2 candidate to client-facing headline), it MUST defend the promotion explicitly with reasoning rooted in `matter-context.md` and placement's own record — the structured `placements.json` (tier **and its stated reason**, per candidate) plus the rulings tail in `placement-recommendations.md`. A defence ENGAGES the reason placement gave: quote it and say why it does not hold. Divergences require defense, not assumption. The Touchpoint 3 (`narrative-refutation`) gate enforces this at delivery: a promotion above `placement-inquiry`'s placement without "promotion defended" reasoning is a BLOCKING flag.
 
 2. **Carry forward matter-context and placement-recommendations.** Synthesis reads `matter-context.md` (the strategic anchor produced at Phase 0 by `matter-frame`) and `placement-recommendations.md` (the per-candidate placements produced at Phase 2 Step 2C by `placement-inquiry`). The off-field reasoning, the named jurisdictions, the watchlist seeds, and the per-candidate placements are inputs to synthesis — not optional context. Disagreements with either MUST be surfaced explicitly ("matter-context flagged X as off-field; this candidate may warrant re-evaluation because Y"), not silently reframed.
 
@@ -117,7 +117,7 @@ Cross-pollination rows (Source Layer = "Cross-pollination") follow special rules
 > own this word?*), never only of the words below.
 
 Before rating individual findings, **rank and select them by the consumer-confusion gate** (see *The consumer confusion test — the governing gate* in `firm-wide-reasoning.md`), centred on the proposed mark's
-**dominant element** (from the variant manifest). This is what turns a pile of hits into the staff lawyer's analysis:
+**dominant element** (from the variant manifest). This is what turns a pile of hits into the reviewing lawyer's analysis:
 
 1. **Centre on the dominant element.** Rank by: shares the dominant element (no distinguishing affix) ×
    same/related G&S. Bare-dominant-element-in-field = top; dominant-element-plus-distinctive-matter
@@ -125,7 +125,7 @@ Before rating individual findings, **rank and select them by the consumer-confus
    finding (commercial awareness only).
 2. **Never drop an on-point identical or near-identical mark in the relevant class, even if it looks revocable or
    shelved.** A position placement put on sheet 2 is written up when it changes the advice, and otherwise declined
-   with its ground. The staff lawyer: *"until it has actually been revoked it remains a live legal
+   with its ground. The reviewing lawyer: *"until it has actually been revoked it remains a live legal
    risk."* Surface it, rank it high, flag the non-use vulnerability as a Stage-2 mitigation. **Non-use is
    a revocation DEFENCE, never an injunction shield (spec-48 C5): a registered right can support an
    injunction without the owner's own use (country-dependent; grace periods run ~5 years). Never reason
@@ -360,8 +360,8 @@ A synthesis attempt that gets it wrong costs the run the whole attempt.
 Cancelled, expired, or otherwise invalid register hits are **included on the Findings sheet only when the mark text is an exact match to the proposed mark.** Treatment:
 
 - Put them on the Findings sheet with the status accurately reflected (Cancelled / Expired / Abandoned).
-- **Do not write them up in the narrative summary** unless the staff lawyer's upfront instructions say otherwise.
-- They serve as historical context — the staff lawyer wants to see them but they don't drive risk for this clearance.
+- **Do not write them up in the narrative summary** unless the reviewing lawyer's upfront instructions say otherwise.
+- They serve as historical context — the reviewing lawyer wants to see them but they don't drive risk for this clearance.
 - Class / field is irrelevant for this rule — an exact-match cancelled mark in an unrelated class (e.g. adult products, Class 10) still goes on the sheet without narrative commentary; the PR / brand-safety angle is handled separately under `firm-wide-reasoning.md` (*PR / reputational risk*).
 
 Non-exact-match cancelled hits are excluded from the Findings sheet entirely.
@@ -370,7 +370,7 @@ Non-exact-match cancelled hits are excluded from the Findings sheet entirely.
 
 **Read it, don't just receipt it — the search running is not the work being done.** The receipt proves the meaning search *ran*; it does not mean anyone *read* it. Do not accept the common-law layer's bottom-line `clean` / `None identified` at face value — read the actual readings it surfaced for the mark **and each near-form** like a skeptical lawyer: **is the obvious meaning the whole story, or is there an odd, loaded, or unresolved secondary reading the tidy gloss skipped past?** (`mara` = "crowd" is the tidy gloss; `Mara` is the street gang the same word carries — the colloquial reading does not clear it.) This is a **general habit, not a meaning-only checklist**: wherever a result resolves to a tidy answer, the question is whether one cheap thread is worth pulling before you accept it — meaning is simply where it bites first.
 
-**Pull the thread in-run; don't defer what one search would settle.** When a secondary reading looks loaded or unresolved and a single check would settle it, run **one scoped `perplexity_research` query** now (the same tool you already use for the actual-use check). This is judgment-gated, **not** a new per-run requirement — pull only the one thread that is both *worth it* and *checkable*. If it resolves, say so; if it surfaces something real, carry it. This settle-don't-defer rule is **general**: a live question a single cheap search would close is closed in this run, not written down as homework. The honest *"a human should look"* outcome (a staff-lawyer purple bullet / `coverage_judgment.sufficient:false`) is reserved for a question **genuinely unanswerable now** — never for one a single search would have closed.
+**Pull the thread in-run; don't defer what one search would settle.** When a secondary reading looks loaded or unresolved and a single check would settle it, run **one scoped `perplexity_research` query** now (the same tool you already use for the actual-use check). This is judgment-gated, **not** a new per-run requirement — pull only the one thread that is both *worth it* and *checkable*. If it resolves, say so; if it surfaces something real, carry it. This settle-don't-defer rule is **general**: a live question a single cheap search would close is closed in this run, not written down as homework. The honest *"a human should look"* outcome (a purple bullet for the reviewing lawyer / `coverage_judgment.sufficient:false`) is reserved for a question **genuinely unanswerable now** — never for one a single search would have closed.
 
 ## The mark itself — standing assessment (every run)
 
@@ -405,7 +405,7 @@ For every register finding advisory-rated on a rung the framework rates medium r
 
 The same enforced contract applies to the client's OWN rights: if a finding's clearance reasoning relies on the client's house mark or franchise root ("the prefix is the client's own registered mark"), synthesis runs ONE own-portfolio check over the run's FROZEN register material — `band_lookup` with `owner:<the applicant/house-mark owner>` (plus `band_record` for any registration cited) — and the finding MUST record its source in the finding's `own_rights.source`, which the driver checks in the structured finding record. **Know what the negative means:** the frozen material covers only this matter's dispatched slices (its classes, its mark texts), so an empty owner lookup is NEVER evidence the client's registrations do not exist — a house mark's registrations usually live in the client's home classes under mark text no slice covers. Never write "no registrations found" or any portfolio-wide register-negative: state the honest scoped negative, let the reasoning stand or fall without the crutch, and record the un-run owner query (owner + house root + its home classes/key jurisdictions) as an open Coverage/open-item row so the escalation lane can propose it through the supplemental mint — the same treatment as any instructed check the frozen material cannot answer. The affiliate-exclusion mandate governs *conflicts* (never flag the client against itself); it does **not** suppress this *supporting-evidence* check — those are different things.
 
-**The staff lawyer's rule:** Any use of a registered trademark that poses medium risk or higher (any band the framework rates medium risk or higher, whatever its position on the ladder) is relevant. The actual-use check applies **after** the preliminary legal read is made — not before. The correct sequence is:
+**The reviewing lawyer's rule:** Any use of a registered trademark that poses medium risk or higher (any band the framework rates medium risk or higher, whatever its position on the ladder) is relevant. The actual-use check applies **after** the preliminary legal read is made — not before. The correct sequence is:
 
 1. **Stage 1 — Legal claim strength, net of merits defences:** Make the legal read as the probability the claim prevails, stated in plain likelihood words — the whole-mark confusion read, **net of the credible merits defences** named in the per-finding structure (descriptiveness / weak senior mark, the opponent's own undermining conduct, the client's fair-use defence, priority). Whether **our actual use meets theirs in the market** (real commercial / manner-of-use / channel overlap) IS part of this Stage-1 read — it is the goods-half of likelihood-of-confusion and it sets the read: our use being a descriptive / in-product label vs their standalone source-brand, or the two sitting in a genuinely different commercial field, is a merits reason the claim may not prevail → the **client-favoured read**. **The basis for "theirs" splits by right type:** a **registered** senior meets us on the mark and G&S **as registered** (read the specification; quote it when it decides the point) — never on the owner's current presentation; a **common-law** senior meets us on its **actual trade**. OUR side of the meeting stays our own actual/intended manner of use (per the request form) — that lever is untouched. What stays in Stage 2 is the *senior's enforcement reality* — is the mark actually used, revocable for non-use, will the owner bother, how the owner currently dresses or positions it in the market — **NOT** whether the uses meet. (Merits defences are claim-strength, not practical mitigation; they belong in the legal read.)
 2. **Stage 2 — Practical risk mitigation:** For every hit whose legal read reaches "more likely than not they'd win" or worse, apply the practical mitigants — actual use, revocation-vulnerability, owner enforcement appetite, coexistence. These are the **business read**. **Response availability is Stage 2 at most:** that a route exists — coexistence, consent, rebrand, a cancellation lever — never enters the Stage-1 Legal position; mitigation-availability speaks only through the framework's own **Practical position** words for the band it belongs to.
@@ -421,14 +421,14 @@ mark is later renewed, remains fully non-use-vulnerable — the renewal is upkee
 
 **Actual-use assessment results:**
 - **Use confirmed in the searched field** — risk weight stands; cite the marketplace evidence in `legal_position` and `practical_position`.
-- **Use not found in the searched field** — **do NOT automatically downgrade.** Assess whether the registration is also vulnerable to non-use revocation (see the Revocability rule in `firm-wide-reasoning.md`). If vulnerable, note the combination as a mitigating factor in `legal_position` and `practical_position`. If not yet vulnerable (registration is within the non-use grace period), note the lack of use as context only — the registration is still legally enforceable. The staff lawyer's rule: "Lack of use does not always downgrade the risk, as the registration may not yet be vulnerable to revocation. Always assess the use for 3+ marks and comment on the use (or lack thereof), but do not automatically downgrade for lack of use."
-- **Use unclear / ambiguous** — note in `legal_position` and `practical_position` and flag for the staff lawyer with a purple bullet: "Staff lawyer — confirm whether [owner] actually uses [mark] for [field]."
+- **Use not found in the searched field** — **do NOT automatically downgrade.** Assess whether the registration is also vulnerable to non-use revocation (see the Revocability rule in `firm-wide-reasoning.md`). If vulnerable, note the combination as a mitigating factor in `legal_position` and `practical_position`. If not yet vulnerable (registration is within the non-use grace period), note the lack of use as context only — the registration is still legally enforceable. The reviewing lawyer's rule: "Lack of use does not always downgrade the risk, as the registration may not yet be vulnerable to revocation. Always assess the use for 3+ marks and comment on the use (or lack thereof), but do not automatically downgrade for lack of use."
+- **Use unclear / ambiguous** — note in `legal_position` and `practical_position` and flag for the reviewing lawyer with a purple bullet: "Staff lawyer — confirm whether [owner] actually uses [mark] for [field]."
 
-**Rule on downgrade quantum:** There is no automatic downgrade rule. Use is one factor among several in Stage 2. A registration with no identifiable marketplace use may still carry full legal risk if the registration is not yet vulnerable to revocation (e.g. within the 5-year non-use window in many jurisdictions). Document the use assessment and revocability status together in `legal_position` and `practical_position`; let the staff lawyer weigh the combination.
+**Rule on downgrade quantum:** There is no automatic downgrade rule. Use is one factor among several in Stage 2. A registration with no identifiable marketplace use may still carry full legal risk if the registration is not yet vulnerable to revocation (e.g. within the 5-year non-use window in many jurisdictions). Document the use assessment and revocability status together in `legal_position` and `practical_position`; let the reviewing lawyer weigh the combination.
 
 ## Prosecution history — mandatory for identical-mark hits in relevant classes
 
-For all identical-mark hits covering identical or similar goods/services, check prosecution history as a standard step — not only when a flag is raised. The staff lawyer's rule: "I would check prosecution history for all identical marks covering identical/similar goods and services, especially (but not exclusively) where there is a global portfolio of marks."
+For all identical-mark hits covering identical or similar goods/services, check prosecution history as a standard step — not only when a flag is raised. The reviewing lawyer's rule: "I would check prosecution history for all identical marks covering identical/similar goods and services, especially (but not exclusively) where there is a global portfolio of marks."
 
 **How to apply:**
 - If the owner has filed the mark in multiple jurisdictions, check whether any related filings (same mark, related owner entities) have been abandoned or lapsed.
@@ -478,7 +478,7 @@ When judging which common-law hits to include in the Findings sheet:
 
 - Include: identical mark in the same field, near-identical mark (one-word swap, plural variation, phonetic equivalent) in the same field, identical mark in a directly-adjacent field with channel overlap.
 - Exclude: conceptually similar but lexically different marks (e.g. "Set My Pace" surfacing for a "Set Your Pace" clearance is borderline — include only with very-similar / same-field overlap).
-- Document the scope decision in `coverage.read` so the staff lawyer can see what was and wasn't searched.
+- Document the scope decision in `coverage.read` so the reviewing lawyer can see what was and wasn't searched.
 
 ## Watchlist findings
 
