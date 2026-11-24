@@ -714,26 +714,6 @@ export const REPAIR_HINTS = [
       `Answer from the gather stages' actual results (the owning stage was instructed to run each check); an ` +
       `un-run check gets the honest "NOT executed this run — <reason>" answer plus an open coverage[] row — never silence`;
   } },
-  { code: "tool_timeout", withDetail: ["tool_timeout"], hint(lastFail) {
-    // — THE SAME ABSENT BAND, AND THE OPPOSITE INSTRUCTION.
-    //
-    // `named_band_missing`'s hint below tells the model it never made its call. When the call WAS made
-    // and was killed in flight, that sentence is false, and it is worse than merely useless: it accuses
-    // a model that did exactly what it was told, and it invites the one repair the doctrine forbids —
-    // writing the band by hand to make the complaint go away. R5 on 2026-08-12 took that hint four
-    // times against a deterministic 300s cap.
-    //
-    // So the hint says what is actually true: the call is right, the call is what to repeat, and if it
-    // dies again the honest audit note IS the answer. Nothing here asks for a shorter or cheaper call —
-    // no model gets a time budget, and the cap that killed it is the bridge's, fixed in this issue's
-    // other half.
-    return `your dictated register tool call was MADE and never RETURNED — it was still running when ` +
-      `the bridge killed it, so the band was never written. This is NOT a missing-structure defect and ` +
-      `NOT something you did wrong. Call register_execute_plan ONCE more with the exact ` +
-      `{"plan_path", "axis", "output_path"} from your stage instructions. If it is killed again, do ` +
-      `NOT author band blocks by hand and do NOT narrate coverage you did not get — the driver's own call ` +
-      `log records that the call never returned`;
-  } },
   { code: "named_band_missing", codes: ["named_band_missing"], hint(lastFail) {
     // 2026-07-14 (copper-keystone): the unit's .md narrated success but the band file was NEVER WRITTEN —
     // the model skipped its one register_execute_plan call and fabricated the narrative. Unlike the
@@ -1086,16 +1066,6 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
     const band = join(dirname(files[0]), basename(files[0]).replace(/\.md$/i, "-band.json"));
     return `You are RESUMING your own session for this stage — your prior work and inputs are already in your context. Do NOT redo your digest prose (${names} already passed validation) and do NOT author band blocks by hand.\n` +
       `The named band ${band} was NEVER WRITTEN — the stage cannot pass without it. Call register_execute_plan ONCE with the exact {"plan_path", "axis", "output_path"} from your original stage instructions (output_path = ${band}); the TOOL executes the dictated entries and writes the band itself, qid-stamped. Then stop — do not edit the band afterwards.`;
-  }
-  // — THE SAME RESUME, WITHOUT THE ACCUSATION. The branch above tells the model the band was never
-  // written, which on a killed call reads as "you did not do it" to a model that did. Worse, a model
-  // told it failed to produce an artifact has one obvious way to comply, and it is the forbidden one.
-  // Warm for the same reason that one is: the session completed cleanly and the repair is one call.
-  if (/\btool_timeout:/.test(lastFail ?? "") && files.length) {
-    const band = join(dirname(files[0]), basename(files[0]).replace(/\.md$/i, "-band.json"));
-    return `You are RESUMING your own session for this stage — your prior work and inputs are already in your context. Do NOT redo your digest prose (${names} already passed validation).\n` +
-      `Your register tool call WAS MADE and never returned — it was still running when the bridge killed it, so ${band} was never written. Nothing about your turn was wrong. Call register_execute_plan ONCE more with the exact {"plan_path", "axis", "output_path"} from your original stage instructions (output_path = ${band}), then stop.\n` +
-      `If it is killed again: do NOT author band blocks by hand and do NOT narrate coverage you did not obtain. The driver's own call log records that the call never returned.`;
   }
   // Sibling-JSON defects (WS-A coverage mirror / common-law grid): the FINDINGS file already passed
   // its prose checks — telling the model to rewrite it "in full" on a patch turn risks degrading

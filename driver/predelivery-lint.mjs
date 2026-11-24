@@ -2689,10 +2689,13 @@ export function runLint({ followUpKinds = null, depth, commonLawGrid, matterCont
 //
 // Derivation. The knockout lane's ONE model-authored artifact is knockout-findings.json. It has no
 // register RECORD store (it counts, it does not retrieve), no actions register, no verdict sidecar, no
-// client summary, no card assembly, no reviewer correction cycle, no intake-ask register. So the
-// applicable checks are exactly those whose whole input is model-authored TEXT:
+// client summary, no card assembly, no intake-ask register. So the applicable checks are those whose
+// whole input is model-authored TEXT:
 //   permission-prose · scope-numbers-in-prose · counting-consistency · wipo-designation-language ·
 //   prescription-prose
+// and one more since every Knockout is reviewed and corrected once: correction-consistency, which the
+// publish computes from the run's own round (knockout-correction-check.mjs) and hands in, because the
+// round's records are read off the run directory and this module reads none.
 // Everything else is ABSENT BY DESIGN and says so in the receipt (KNOCKOUT_ABSENT_BY_DESIGN below) —
 // never an entry that silently passes, which is the failure mode this tranche exists to kill. Measured
 // against two archived knockout runs, from 2026-07-28 and 2026-07-29: zero flags on the
@@ -2913,7 +2916,6 @@ export const KNOCKOUT_ABSENT_BY_DESIGN = [
   ["senior-rights-present", "registry", "no senior-right receipt — the closure that owes it is clearance machinery"],
   ["senior-right-coverage", "registry", "same"],
   ["counting-vs-findings", "counting", "reads the clearance finding set's owner + registration URIs; knockout findings carry neither"],
-  ["correction-consistency", "corrections", "no reviewer correction cycle on this lane — nothing is corrected or withdrawn after rating"],
   ["client-tier-match", "client", "no client summary (one report), so there is no second tier word to disagree"],
   ["overall-tier", "client", "the overall band is DERIVED in code (worstBand over the rated marks) and cannot drift from the finding set"],
   ["actions-reachability", "actions", "no actions register and no ask bucket"],
@@ -2936,7 +2938,7 @@ export const KNOCKOUT_ABSENT_BY_DESIGN = [
  * Returns { checks, failures, notApplicable } in runLint's shape. FLAG-ONLY by construction: it
  * decides nothing, throws nothing, and the caller writes its receipt best-effort.
  */
-export function runKnockoutLint({ findings }) {
+export function runKnockoutLint({ findings, correction = null }) {
   const { report, working } = knockoutSurfaces(findings);
   const checks = [];
   // The client-facing page. permission-prose here is NOT a re-run of the hard gate: verify-knockout's
@@ -2969,8 +2971,13 @@ export function runKnockoutLint({ findings }) {
   // the plain-language reviewer, over the fields a reader meets before opening a
   // fold. Internal by surface, so a hit reaches whoever is fixing the run and never a delivery surface.
   checks.push(...plainLanguageChecks({ findings }));
+  // A corrected Knockout delivers its correction (knockout-correction-check.mjs). The caller reads the round; a caller that
+  // hands none, and a run that holds no review, list the check with the reason rather than pass it.
+  checks.push(...(correction?.checks ?? []));
+  const unchecked = !correction ? { id: "correction-consistency", family: "corrections", reason: "the run's review round was not handed to this check" }
+    : correction.notApplicable;
   const failures = checks.filter((c) => !c.pass);
-  return { checks, failures, notApplicable: KNOCKOUT_ABSENT_BY_DESIGN };
+  return { checks, failures, notApplicable: unchecked ? [...KNOCKOUT_ABSENT_BY_DESIGN, unchecked] : KNOCKOUT_ABSENT_BY_DESIGN };
 }
 
 // The raw check detail, INTERNAL side only: the _driver sink, the run log, the staff diagnosis lane.

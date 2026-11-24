@@ -35,7 +35,7 @@ const TAKES_THE_DEFAULT = [
   "declared_not_executed", "named_band_invalid", "placementmodel_missing", "placement_unjudged", "placement_register_unrendered",
   "placement_form_unreadable", "placement_floors_without_fate", "placement_refused", "caselaw_ledger_missing",
   "caselaw_ledger_unparseable", "no_verdict_line", "missing_file",
-  // The tool_timeout row answers the token with its detail (`tool_timeout:<tool>`), which is how the ladder writes it.
+  // A register call that never returned is a product fault: the ladder ends on it before any re-ask (product-fault.mjs).
   "tool_timeout",
 ];
 

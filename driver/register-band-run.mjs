@@ -914,12 +914,12 @@ export function noteChannelCoverageAtStageExit(P, mergedGrid) {
  * search that never reached the register. A slice with a block, a timed-out one included, is not among them: the band
  * already accounts for it. A guarded child is left to the plan join, which reads it off its parent. PURE but for the read.
  */
-export function slicesUnitNeverReached(P, plan, axis) {   // @internal
+export function slicesUnitNeverReached(P, plan, axis, reason = plainDeferralReason("slice-not-landed")) {   // @internal
   let band = [];
   try { const parsed = JSON.parse(readFileSync(P.registerBand(axis), "utf8")); band = Array.isArray(parsed) ? parsed : []; } catch { band = []; }
   const held = new Set(band.map((b) => b?.qid).filter(Boolean).map(String));
   return (plan?.entries ?? []).filter((e) => e?.axis === axis && e?.qid && !e.when && !held.has(String(e.qid)))
-    .map((e) => ({ axis, qid: String(e.qid), reason: plainDeferralReason("slice-not-landed") }));
+    .map((e) => ({ axis, qid: String(e.qid), reason }));
 }
 
 /** The unit a run records as unfinished, taken as its band stands: its note rendered from it, nothing dispatched. */

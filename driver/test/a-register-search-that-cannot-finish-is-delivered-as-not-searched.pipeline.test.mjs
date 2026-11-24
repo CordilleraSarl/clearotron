@@ -21,7 +21,7 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { driverDir } from "../../shared/driver-dir.mjs";
-import { plainDeferralReason } from "../deferral-row.mjs";
+import { plainCause, plainDeferralReason } from "../deferral-row.mjs";
 
 const TEMP_DIRS = [];
 after(() => { for (const d of TEMP_DIRS) rmSync(d, { recursive: true, force: true }); });
@@ -121,3 +121,33 @@ test("the slices a unit never reached are the planned ones its band holds no blo
   const never = slicesUnitNeverReached(P, plan, AXIS);
   assert.deepEqual(never, [{ axis: AXIS, qid: "q-never", reason: NOT_LANDED }], "a slice with a block was counted as never reached");
 });
+
+// A REGISTER CALL SENT AND NEVER RETURNED IS A PRODUCT FAULT. The unit is not sent back to make the call again, though
+// attempts remain, and its slices are delivered open with the shipped timeout line, not as never having reached the
+// register: the call reached it, and its outcome is unknown.
+for (const engine of Object.keys(ENGINES)) {
+  test(`${engine}: a register unit whose plan call never came back is sent once, and its slices are delivered as timed out`, async () => {
+    const root = tempDir("clearotron-unit-call-killed-");
+    const knobs = { MOCK_FAIL_STAGE: FAIL_UNIT, MOCK_KILLED_REGISTER_CALL: AXIS, CLEAROTRON_REGISTER_GAP_CLAMP: "1", CLEAROTRON_MAX_RETRIES: "2" };
+    const p1 = await runPass(root, engine, knobs);
+    assert.equal(p1.postponed, true, `pass 1 did not park: ${JSON.stringify(p1).slice(0, 300)}`);
+    const ev1 = events(p1.runDir);
+    assert.equal(ev1.filter((e) => e.event === "attempt" && e.stage === `register-unit:${AXIS}`).length, 1, "the unit was sent again after its call never came back");
+    assert.deepEqual(ev1.filter((e) => e.event === "attempt-prevented" && e.stage === `register-unit:${AXIS}`).map((e) => e.decision),
+      ["ladder-break:product-fault"], "the ladder did not end on the product fault");
+    const record = json(driverDir(p1.runDir, "not-completed", "searches.json"));
+    assert.deepEqual(record.unfinished_units, [AXIS], "the record does not name the unit");
+    assert.ok((record.slices ?? []).length > 0, "guard: the record holds no slice");
+    assert.ok(record.slices.every((s) => s.axis === AXIS && s.reason === plainCause("tool_timeout")),
+      `a slice was recorded without the timeout line: ${JSON.stringify(record.slices.slice(0, 2))}`);
+
+    const p2 = await runPass(root, engine, knobs, p1.codename);
+    assert.equal(p2.ok, true, `the run did not deliver: ${JSON.stringify(p2).slice(0, 300)}`);
+    const ev2 = events(p2.runDir);
+    assert.equal(ev2.filter((e) => e.event === "attempt" && e.stage === `register-unit:${AXIS}`).length, 1, "the unit was sent again on the pass that delivers");
+    assert.equal(ev2.filter((e) => e.event === "unit-not-completed-delivery" && e.stage === `register-unit:${AXIS}`).length, 1, "the unit was not taken as it stands");
+    const deferred = (json(driverDir(p2.runDir, "plan-execution.json")).deferred ?? []).filter((d) => record.slices.some((s) => s.qid === d.qid));
+    assert.equal(deferred.length, record.slices.length, "a slice whose call never came back is not deferred");
+    assert.deepEqual(deferred.filter((d) => d.reason !== plainCause("tool_timeout")), [], "a slice is deferred without the timeout line");
+  });
+}
