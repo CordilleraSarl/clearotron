@@ -287,7 +287,7 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
       { quantity: first?.quantity, ...(fault ? { failClass: "deterministic" } : {}) }),
       { notCompletedPart: "searches", unfinishedUnits: axesOut,
         excludedSlices: unfinished.flatMap((i) => slicesUnitNeverReached(P, ctx.registerPlan, gather[i].axis,
-          ...(killedCall(i) ? [productFaultReason(gatherResults[i]?.fail)] : []))) });
+          ...(killedCall(i) ? [productFaultReason()] : []))) });
   }
   // winning session key per axis → a later escalation resumes the EXACT key the unit succeeded on.
   // (register units only — a common-law half's axis is its half id, tracked in clHalves, never here.)

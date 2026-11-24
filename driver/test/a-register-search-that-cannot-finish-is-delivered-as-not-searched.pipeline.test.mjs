@@ -124,8 +124,7 @@ test("the slices a unit never reached are the planned ones its band holds no blo
 
 // A REGISTER CALL SENT AND NEVER RETURNED IS A PRODUCT FAULT. The unit is not sent back to make the call again, though
 // attempts and the run's recovery budget remain, and its slices are delivered open, not as never having reached the
-// register: the call reached it, and its outcome is unknown. Here the turn itself ended with the call still out, which
-// shows no timeout, so the slices take the line for a search left open.
+// register: a start with no return shows only that no answer was recorded, so they take the line for a search left open.
 const LEFT_OPEN = plainDeferralReason("unfinished");
 for (const engine of Object.keys(ENGINES)) {
   test(`${engine}: a register unit whose plan call never came back is sent once, even with recovery on, and its slices are delivered open`, async () => {

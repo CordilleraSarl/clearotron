@@ -45,10 +45,9 @@ export function productFaultOf({ fail, runDir = null, label = null } = {}) {
 }
 
 /**
- * The reader's line for a slice a product fault left open, from the attempt's own failure. A call the engine cut off
- * inside a turn that completed timed out: the unit's note says so (`tool_timeout`), or the note is missing because the
- * call never returned. A turn that ended with the call still out shows no timeout, so it takes the line for a search
- * left open. Both are shipped sentences (deferral-row.mjs). PURE.
+ * The reader's line for a slice a product fault left open: the shipped line for a search left open. A call that started and
+ * never returned shows only that no answer was recorded. It does not show whether the source received the request, timed
+ * out, or answered after our process stopped (even `tool_timeout` is minted from the missing return), so the line says
+ * what is known and no more. The attempt's own failure stays in the run's record. PURE.
  */
-export const productFaultReason = (fail) =>
-  plainCause(/(?:^|:)tool_timeout:|^missing_file:/.test(String(fail ?? "")) ? "tool_timeout" : "unfinished");
+export const productFaultReason = () => plainCause("unfinished");

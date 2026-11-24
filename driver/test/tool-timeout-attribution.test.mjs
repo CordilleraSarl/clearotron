@@ -209,10 +209,10 @@ test("a register stage's server really is given the run dir the log hangs off", 
   }
 });
 
-test("the reader's line for a slice the killed call left open says timed out only where a timeout is shown", () => {
-  assert.equal(productFaultReason("invalid_file:incumbent-class.md:tool_timeout:register_execute_plan:incumbent-class"), "the source timed out this run");
-  assert.equal(productFaultReason("missing_file:/run/register-units/incumbent-class.md"), "the source timed out this run",
-    "a turn that completed with its call never returned: the engine cut the call off");
-  assert.equal(productFaultReason("nonzero_exit_1"), plainCause("unfinished"), "a turn that died with the call out shows no timeout");
+test("the reader's line for a slice the killed call left open says only that it was not completed", () => {
+  // A start with no return shows no answer was recorded; it does not show the source timed out, and `tool_timeout` is
+  // itself minted from the missing return.
+  assert.equal(productFaultReason(), plainCause("unfinished"));
   assert.equal(plainCause("unfinished"), "it could not be completed this run, so it is left open here rather than reported as clean");
+  assert.doesNotMatch(productFaultReason(), /timed out/);
 });
