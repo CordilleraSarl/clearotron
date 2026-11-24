@@ -78,10 +78,13 @@ test("a fresh plan with no groups is asked to complete them, in the one definiti
     "the stage's check refuses a saved plan for the groups a fresh call must now carry");
 });
 
-test("a held answer from before keeps reading without groups, and a broken grouping is still named", () => {
+test("a saved answer keeps reading without groups, a fresh call shaped like one does not, and a broken grouping is still named", () => {
   const held = { scope_note: "One invented name, screened.", batch: { productContext: "An invented range.", inUseAs: "a sweet" },
     marks: [{ ...ROW("Brindlecove"), useKind: "sweet", spellings: ["Brindlecove", "Brindle Cove"] }] };
-  assert.equal(acceptKnockoutFrame(held).ok, true, "a held answer framed before the field was required is refused");
+  assert.equal(acceptKnockoutFrame(held, { saved: true }).ok, true, "a saved answer framed before the field was required is refused");
+  const fresh = acceptKnockoutFrame(held).reason ?? "";
+  assert.match(fresh, /knockoutframe_families: batch\.families is required/, "a fresh call shaped like a saved answer skips the groups");
+  assert.match(fresh, /knockoutframe_use_kind: batch\.useKind is required/, "a fresh call shaped like a saved answer skips the order's use phrase");
   const twice = acceptKnockoutFrame(CALL([SIX, ["Brindlecove", "Tallowmere"], ["Ostrevane"]]));
   assert.match(twice.reason ?? "", /places a name in more than one family: "Tallowmere"/);
   assert.ok(twice.reason.endsWith(FAMILIES_RULE), "the defect closes on the one definition");
@@ -131,7 +134,7 @@ test("the groups and the repair rule each have one definition, said the same way
   assert.ok(tool.description.includes(FRAME_REPAIR_RULE), "the tool's description does not state the repair rule in the one definition");
   assert.doesNotMatch(tool.description, /key by key/, "the tool still says a sent row is merged key by key; it replaces the row whole");
   assert.equal(tool.inputSchema.properties.batch.properties.families.description, FAMILIES_RULE);
-  assert.ok(tool.inputSchema.properties.batch.required.includes("families"), "the tool offers the groups as optional");
+  assert.equal(tool.inputSchema.properties.batch.required, undefined, "the gate refuses a repair that sends one batch field alone");
   const refusal = acceptKnockoutFrame({ ...CALL(undefined), scope_note: "" }).reason;
   assert.ok(refusal.includes(FRAME_REPAIR_RULE), "a refusal of several defects does not state the repair rule");
   assert.doesNotMatch(refusal, /key by key/, "the refusal still says a sent row is merged key by key; it replaces the row whole");

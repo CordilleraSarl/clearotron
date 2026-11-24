@@ -169,7 +169,7 @@ export function mergeKnockoutFrameCall(stored, received) {
  * driver state, so it stays in `knockoutPlan` where the file is in reach. A seat cannot satisfy it by
  * restating anything, which is exactly why it is not a call-time question.
  */
-export function acceptKnockoutFrame(params) {
+export function acceptKnockoutFrame(params, { saved = false } = {}) {
   // ── EVERY DEFECT IN ONE REFUSAL (ruling 592, 2026-09-27) ──────────────────────────────────────────
   //
   // This returned on the FIRST defect, so a frame with four faults was refused four times and each
@@ -195,6 +195,10 @@ export function acceptKnockoutFrame(params) {
   const productContext = str(params?.batch?.productContext);
   if (!productContext)
     defects.push("knockoutframe_context_missing: batch.productContext (one sentence) is required — every mark's contextFraming is read against it");
+  // Asked here since the tool's schema stopped requiring it (design, 2026-11-24), in the plan check's own words: that check
+  // runs after the write, so a plan without it would otherwise be saved and then refused.
+  if (!str(params?.batch?.inUseAs))
+    defects.push("knockoutframe_in_use_as_missing: batch.inUseAs (string) is required: the kinds of use off the register, for this client's field");
 
   // THE BATCH'S LIST IS OPTIONAL FROM RULING 570 ON — the places are per name, checked with each mark
   // below. A call that still sends a batch list is not refused for sending it, only for sending a bad one.
@@ -208,8 +212,12 @@ export function acceptKnockoutFrame(params) {
   // held answer from before carries no phrase on the batch and a use and spellings on every name, and keeps them, so a
   // replayed run frames as it ran. Any other call is asked for the order's phrase, never for spellings, and a null use on
   // a name is no use.
+  //
+  // SAVED IS SAID BY THE CALLER, NEVER BY THE PAYLOAD (design, 2026-11-24). Only a replay handing back an answer this
+  // recorder already accepted passes `saved`; the tool the model calls never does. So a fresh call shaped like an old
+  // answer is still a fresh call, and cannot skip the use phrase or the groups by looking like one.
   const marks = Array.isArray(params?.marks) ? params.marks : null;
-  const built = !heldTerms(params?.batch, marks);
+  const built = !(saved && heldTerms(params?.batch, marks));
   // With no marks there is no telling a held answer from a call, so the phrase is not asked for (ruling 592's skip).
   if (built && marks?.length && batchUseKindDefect(params?.batch?.useKind))
     defects.push(`knockoutframe_use_kind: ${batchUseKindDefect(params?.batch?.useKind)}`);
@@ -250,8 +258,9 @@ export function acceptKnockoutFrame(params) {
     if (collisions.length)
       defects.push(`knockoutframe_key_collision: marks ${collisions.map(([a, b]) => `"${a}"/"${b}"`).join(", ")} collide to the same research key — a batch cannot carry two marks that differ only in spacing, punctuation or case, because they would share ONE research payload and one of them would be rated on the other's evidence. Reword or drop one`);
 
-    // A FRESH PLAN STATES EVERY NAME'S GROUP (design, 2026-11-24); a held answer from before keeps what it framed.
-    if (built && familiesMissingDefect(params?.batch?.families)) {
+    // A FRESH PLAN STATES EVERY NAME'S GROUP (design, 2026-11-24). A saved answer that left them out is rated one name at a
+    // time, as it was when it ran; groups it does carry are still checked.
+    if (!saved && familiesMissingDefect(params?.batch?.families)) {
       defects.push(`knockoutframe_families: ${familiesMissingDefect(params?.batch?.families)}`);
     } else if (params?.batch?.families != null && marks.every((m) => str(m?.name))) {   // an unnamed mark is reported once, above
       const familiesRefused = familiesDefect(marks, params.batch.families);
@@ -334,8 +343,10 @@ function frameRefusal(defects) {
  * either leaves `write_failed` on the verdict rather than a partial success: a run holding a plan with no
  * note is the pre-conversion state this transport exists to end, and it must not be reachable through a
  * half-completed write.
+ *
+ * `saved` is the replay's alone: an answer this recorder accepted on an earlier run, handed back (see acceptKnockoutFrame).
  */
-export function recordKnockoutFrame(runDir, received, { now = () => new Date().toISOString() } = {}) {
+export function recordKnockoutFrame(runDir, received, { now = () => new Date().toISOString(), saved = false } = {}) {
   const dir = String(runDir ?? "");
   const paths = knockoutFrameCallPaths(dir);
   // — ONE FILE PER CALL, refusals included. This wrote a single fixed
@@ -364,7 +375,7 @@ export function recordKnockoutFrame(runDir, received, { now = () => new Date().t
   }
 
   const call = mergeKnockoutFrameCall(lastAcceptedFrame(dir), received);
-  const verdict = acceptKnockoutFrame(call);
+  const verdict = acceptKnockoutFrame(call, { saved });
   const notInRequest = verdict.ok ? useNotInRequest(verdict.model, requestText(dir)) : [];
   if (notInRequest.length) verdict.ok = false, verdict.reason = notInRequest.length === 1 ? notInRequest[0] : frameRefusal(notInRequest);
   if (!verdict.ok) {

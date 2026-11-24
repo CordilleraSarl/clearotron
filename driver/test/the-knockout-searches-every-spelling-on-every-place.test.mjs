@@ -119,12 +119,13 @@ test("the plan and the frame's tool refuse with the same sentence, and the tool 
   const noUse = validators.knockoutPlan(join(dir, "knockout-plan.json"), plan(batch, { ...mark, useKind: undefined }));
   assert.match(noUse.reason, /^mark "LANTERNWICK": useKind is required/);
 
-  const call = (b, m) => acceptKnockoutFrame({ scope_note: "One name, screened.", batch: b, marks: [m] });
+  // A use and spellings on every name is an answer framed before the driver built them, which only a replay hands back as saved.
+  const call = (b, m, saved = true) => acceptKnockoutFrame({ scope_note: "One name, screened.", batch: b, marks: [m] }, { saved });
   assert.equal(call(batch, mark).ok, true);
   assert.equal(call(batch, { ...mark, places: ["web"] }).reason, `knockoutframe_places:LANTERNWICK — ${PLACES_SENTENCE}`);
   assert.match(call(batch, { ...mark, spellings: ["LANTERN WICK", "X"] }).reason, /^knockoutframe_spellings:LANTERNWICK — mark "LANTERNWICK": spellings is required/);
   // A call with no use at all is asked for the order's phrase (design, 2026-11-24); the plan above, frozen with a use per name, reads back under its rule.
-  assert.match(call({ ...batch, families: [["LANTERNWICK"]] }, { ...mark, useKind: undefined }).reason, /^knockoutframe_use_kind: batch\.useKind is required/);
+  assert.match(call({ ...batch, families: [["LANTERNWICK"]] }, { ...mark, useKind: undefined }, false).reason, /^knockoutframe_use_kind: batch\.useKind is required/);
   assert.equal(refuseUndeclared({ batch, marks: [mark] }), null, "the tool declares all four fields");
 
   // THE ARCHIVED SHAPE STILL VALIDATES AND STILL RUNS: one list on the batch, no list on the marks. That

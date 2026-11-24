@@ -1555,14 +1555,12 @@ serve({
       `from the instructed scope. ${FRAME_REPAIR_RULE}`,
     inputSchema: {
       type: "object",
-      // THE FIRST CALL'S CONTRACT, and it matches the acceptor rather than under-promising against it.
-      // This schema declared NOTHING required while `acceptKnockoutFrame` refused a call missing any of
-      // these three, so the document handed to the seat said a field was optional and the driver then
-      // refused it by name. A schema and an acceptor that disagree resolve toward the STRICTER side.
+      // NOTHING IS REQUIRED AT THE TOP OR ON THE BATCH, because the gate cannot tell a first call from a repair (design,
+      // 2026-11-24). The seat is handed this schema once, at the start of its session, and the gate checks every call
+      // against it; required fields here refused the repair the description asks for, a batch field or a name row sent
+      // alone, before the recorder saw it. The recorder holds the two states instead: the complete plan before its first
+      // save, and the plan a repair leaves after it. A name row stays required whole, because a row sent replaces its row.
       //
-      // A REPAIR turn may still omit all three: the acceptor validates the MERGED result, so the stored
-      // value stands. `required` describes the call that has nothing to merge onto — the first one.
-      required: ["scope_note", "batch", "marks"],
       // `schema` is accepted and ignored: the driver writes its own. Declared so a seat that sends it is
       // not refused for a field nobody reads — the narrow-refusal rule preserve-merge.mjs states.
       properties: {
@@ -1576,7 +1574,6 @@ serve({
         },
         batch: {
           type: "object",
-          required: ["productContext", "inUseAs", "useKind", "families"],   // places are per name (ruling 570): the batch list is optional, as in the acceptor and the manual
           properties: {
             productContext: { type: "string", description: "One sentence: what the batch is for. Every mark's contextFraming is read against it." },
             // THE ORDER'S USE PHRASE (design, 2026-11-24): one for the names with the order's proposed use, so two runs of one order ask the same questions.

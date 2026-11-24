@@ -261,6 +261,9 @@ const PLANTED = Object.freeze({
     expect: "merges",
     accept: (params) => acceptKnockoutFrame(params),
     record: (runDir, params) => recordKnockoutFrame(runDir, params),
+    // TWO ARTIFACTS, READ BACK AS ONE: the plan, and the scope note the plan never carries. Compared with what the first
+    // call stored, because the driver writes the spellings it builds onto every name.
+    readBack: (runDir) => ({ ...JSON.parse(readFile(knockoutFrameFiles(runDir).plan, "utf8")), scope_note: readFile(knockoutFrameFiles(runDir).frame, "utf8") }),
     full: {
       schema: 1,
       scope_note: "A knockout triage of two names for a beverages launch, swept in class 32 with class 33 "
@@ -268,17 +271,18 @@ const PLANTED = Object.freeze({
       batch: {
         productContext: "A two-name knockout batch for a beverages launch.",
         inUseAs: "a drink, a cocktail or a bar",
+        useKind: "drink",
         places: ["web", "shop.example.com"],
         umbrellaBrandNote: "Both names would sit under an existing house brand.",
         executionOrder: ["NOVAPULSE", "VELTRIN"],
+        families: [["NOVAPULSE"], ["VELTRIN"]],
       },
       marks: [
         {
           ref: "m1", name: "NOVAPULSE", classes: [32], beltAndBraces: [33],
           classesPlain: "soft drinks and mineral waters, with beers and spirits swept as a precaution",
           contextFraming: "a drink name for the core product line",
-          useKind: "drink",
-          spellings: ["NOVAPULSE", "NOVA PULSE"],
+          alternatives: ["NOVA PULSE"],
           priorKnowledge: "The requester believes it is coined.",
           priority: 1,
         },
@@ -289,7 +293,6 @@ const PLANTED = Object.freeze({
           // DIFFERENT FROM ITS SIBLING'S, so the drop-each-key arm reads back this mark's own word and
           // not one a merge could have copied across from the other row.
           useKind: "cocktail",
-          spellings: ["VELTRIN", "VELTRINN"],
           priorKnowledge: "",
           priority: 2,
         },
@@ -438,6 +441,7 @@ test("a merging transport PRESERVES what a second call omits — written twice, 
 
     const optional = optionalFields(schema);
     assert.ok(optional.length > 0, `${tool} declares no optional field — there is nothing a second call could omit`);
+    const stored0 = spec.readBack ? spec.readBack(runDir) : null;
 
     for (const field of optional) {
       assert.ok(field in spec.full,
@@ -450,8 +454,8 @@ test("a merging transport PRESERVES what a second call omits — written twice, 
         `${tool} REFUSED a second call omitting '${field}' (${again.refused}). A merging transport must accept a `
         + "partial — refusing one is the wholesale contract, and then this transport belongs in the refusing arm");
 
-      const stored = JSON.parse(readFile(again.written, "utf8"));
-      assert.deepEqual(stored[field], spec.full[field],
+      const stored = spec.readBack ? spec.readBack(runDir) : JSON.parse(readFile(again.written, "utf8"));
+      assert.deepEqual(stored[field], stored0 ? stored0[field] : spec.full[field],
         `${tool} accepted a second call omitting '${field}' and the stored artifact no longer carries the value the `
         + "FIRST call supplied. That is the deletion this whole file exists to catch: the omission read as an "
         + "instruction to clear the key rather than as silence about it");
@@ -463,10 +467,9 @@ test("a merging transport PRESERVES what a second call omits — written twice, 
 //
 // The generic merge arm above reads ONE artifact — `written` — and asserts the omitted key came back off
 // it. `record_knockout_frame` writes TWO from one call: the plan, and the scope note as its own document.
-// `scope_note` is never in the plan by design, so the generic arm cannot see it, and once the schema
-// declares it required the generic arm stops dropping it at all. Both are correct and both leave the
-// client-facing question unasked: does a repair turn that corrects ONE MARK still leave the scope note
-// and the untouched mark standing?
+// `scope_note` is never in the plan by design, so the generic arm reads it back through the plant's own
+// `readBack`. That drops one key at a time and leaves the client-facing question unasked: does a repair
+// turn that corrects ONE MARK still leave the scope note and the untouched mark standing?
 //
 // It is asked here because the answer was NO when this transport was written, and nothing caught it. Its
 // `lastAcceptedFrame` called the shared reader without the injected `readFileSync` that six sibling
@@ -480,6 +483,7 @@ test("a knockout-frame repair turn correcting ONE mark keeps the note, the batch
   const first = recordKnockoutFrame(runDir, full);
   assert.ok(first.written, `the full fixture was refused (${first.refused}) — this arm is planting nothing`);
   const files = knockoutFrameFiles(runDir);
+  const firstPlan = JSON.parse(readFile(files.plan, "utf8"));
   const noteAfterFirst = readFile(files.frame, "utf8");
   assert.equal(noteAfterFirst, full.scope_note, "the note is written VERBATIM — no heading, no trailing newline");
 
@@ -505,7 +509,7 @@ test("a knockout-frame repair turn correcting ONE mark keeps the note, the batch
   assert.equal(plan.marks.length, full.marks.length,
     "the repair carried one mark and the plan now holds a different number — the mark it did not send was "
     + "dropped, which is the whole deletion class this file exists to catch");
-  assert.deepEqual(byName.get(full.marks[1].name), full.marks[1],
+  assert.deepEqual(byName.get(full.marks[1].name), firstPlan.marks[1],
     "the mark the repair did not mention was rewritten or lost");
   assert.equal(byName.get(full.marks[0].name).contextFraming, "a drink name for the flagship line",
     "the correction did not land — the repair turn wrote nothing");
@@ -518,12 +522,13 @@ test("a knockout-frame repair turn correcting the execution order keeps the plac
   const full = PLANTED.record_knockout_frame.full;
   const runDir = mkdtempSync(join(tmpdir(), "frame-places-"));
   assert.ok(recordKnockoutFrame(runDir, full).written, "the full fixture was refused — this arm is planting nothing");
+  const firstPlan = JSON.parse(readFile(knockoutFrameFiles(runDir).plan, "utf8"));
   const again = recordKnockoutFrame(runDir, { batch: { executionOrder: ["VELTRIN", "NOVAPULSE"] } });
   assert.ok(again.written, `the order-only repair was refused (${again.refused})`);
   const plan = JSON.parse(readFile(knockoutFrameFiles(runDir).plan, "utf8"));
   assert.deepEqual(plan.batch.executionOrder, ["VELTRIN", "NOVAPULSE"], "the correction did not land");
   assert.deepEqual(plan.batch.places, full.batch.places, "the repair did not speak about the places and they moved");
-  assert.deepEqual(plan.marks.map((m) => m.spellings), full.marks.map((m) => m.spellings));
+  assert.deepEqual(plan.marks.map((m) => m.spellings), firstPlan.marks.map((m) => m.spellings));
 });
 
 test("the known-open rows name fields the schema actually declares as optional", async () => {
@@ -618,6 +623,12 @@ const DECLARES_NONE_BY_DESIGN = Object.freeze({
     + "seat and unit-note-server.mjs injects it, so the seat is told to omit it. Every other field merges "
     + "onto the axis's last accepted note (register-unit-record.mjs:233). Measured: acceptUnitNote "
     + "accepts a call carrying nothing but the bound axis.",
+  record_knockout_frame:
+    "A call after the plan's first save IS the repair: recordKnockoutFrame() in knockout-frame-record.mjs merges it onto "
+    + "the last accepted plan before acceptKnockoutFrame judges it, so a batch field or a name row sent alone is a whole "
+    + "call. The gate cannot tell a first call from a repair, and the seat is handed this schema once, so a required "
+    + "field refused the repair (design, 2026-11-24). acceptKnockoutFrame refuses a first call missing the note, a batch "
+    + "field or the names, and the arms in a-knockout-plan-is-repaired-in-two-states.test.mjs drive both states.",
   record_knockout_review:
     "What its acceptor demands is a DISJUNCTION — at least one of `rewrites` or `declined` — and "
     + "`required[]` can only state a conjunction. Declaring either would refuse a legitimate call: a "

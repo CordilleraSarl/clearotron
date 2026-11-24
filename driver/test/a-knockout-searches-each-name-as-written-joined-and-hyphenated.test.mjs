@@ -100,11 +100,13 @@ test("the use phrase has one definition: the manual, the tool's field note and t
 test("a held answer framed before this keeps its own spellings and uses, so a replayed run frames as it ran", () => {
   const held = { scope_note: NOTE, batch: { productContext: "An invented confectionery range.", inUseAs: "a sweet" },
     marks: [ROW("Quillmere Vane", { useKind: "sweet", spellings: ["Quillmere Vane", "QuillmereVane"] })] };
-  const r = acceptKnockoutFrame(held);
+  // Saved is the replay's to say, never the payload's (design, 2026-11-24).
+  const saved = (p) => acceptKnockoutFrame(p, { saved: true });
+  const r = saved(held);
   assert.equal(r.ok, true, r.reason);
   assert.deepEqual(r.model.marks[0].spellings, ["Quillmere Vane", "QuillmereVane"]);
   assert.equal(useOf(r.model.marks[0], r.model.batch), "sweet");
-  assert.match(acceptKnockoutFrame({ ...held, marks: [{ ...held.marks[0], spellings: ["Quillmere Vane"] }] }).reason ?? "",
+  assert.match(saved({ ...held, marks: [{ ...held.marks[0], spellings: ["Quillmere Vane"] }] }).reason ?? "",
     /spellings is required/, "and is checked under the rule it was written to");
 });
 
