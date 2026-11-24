@@ -65,7 +65,7 @@ const ordersTheCall = (m, target, label) => {
 };
 
 const ordersEdits = (m, target, label) => {
-  assert.ok(m.includes(`TARGETED EDITS to ${target} using the Edit tool`), `${label} — names the Edit tool and the target by absolute path`);
+  assert.ok(m.includes(`TARGETED EDITS to ${target} with your file-editing operation`), `${label} — orders edits and names the target by absolute path`);
   assert.match(m, /leave every other line of the file byte-identical/, `${label} — states the untouched-remainder guarantee`);
   assert.doesNotMatch(m, /full file, not a diff/, `${label} — the whole-document re-emission is gone`);
   assert.doesNotMatch(m, /re-emit the COMPLETE/i, `${label} — and so is every re-emit order`);
@@ -76,7 +76,7 @@ test("the two tails say opposite things about write mode, and the edit tail neve
   const e = editRepairTail("/runs/x/out.md");
   ordersEdits(e, "/runs/x/out.md", "editRepairTail");
   // The one escape hatch: an Edit direction aimed at a file that turns out not to exist must not deadlock.
-  assert.match(e, /does not exist, create it in full with the Write tool/);
+  assert.match(e, /does not exist, create it in full\./);
   // …and it must never argue in terms of how long a rewrite takes or what it costs. The reason given to a
   // model is degradation risk, which is a correctness argument and true independently of any budget.
   assert.doesNotMatch(e, /\b(minute|second|hour|token|cost|budget|deadline|faster|slower|cheap|expensive)\b/i,
@@ -220,7 +220,7 @@ test("stages.mjs holds the full-write wording ONLY inside the cold-retry builder
 const composedSamples = () =>
   REPAIR_COMPOSERS.flatMap((c) => c.samples.map((s) => ({ key: c.key, name: s.name, tail: s.tail, text: c.compose(s.args) })));
 
-const EDIT_TAIL = /Apply the fix by TARGETED EDITS to .+ using the Edit tool/;
+const EDIT_TAIL = /Apply the fix by TARGETED EDITS to .+ with your file-editing operation/;
 
 test("a composer's declared tail matches the text it composes — in BOTH directions", () => {
   const all = composedSamples();

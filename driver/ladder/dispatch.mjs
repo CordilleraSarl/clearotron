@@ -59,7 +59,7 @@ export async function retryMode({ name }, { attempt, lastFail, lastJson, lastKil
 
 export async function dispatchTurn(stage, { attempt, warm, timeoutWarm, vetoedResume, lastFail, lastKey, lastSessionRef, warmEscalatedAt, effTimeout }) {
   const { name, engine, stageHome, agent, message, refreshMessage, model, thinking, sessionKey, stallSec, files, maxRetries, runDir, followup, adds,
-    supplementalLane, gatherAllowedTools, gatherSeatWrites, engineSkillsDir, engineSkillsGrantRoots, engineResolveSkill, turnConfig } = stage;
+    supplementalLane, gatherAllowedTools, gatherSeatWrites, turnOutput, engineSkillsDir, engineSkillsGrantRoots, engineResolveSkill, turnConfig } = stage;
   // Snapshot each expected artifact at THIS attempt's start. TWO readers, one base — so they can never
   // disagree about what this dispatch emitted:
   //   · AD-4 emitted-vs-landed telemetry — `wrote` says whether this dispatch WROTE its artifact, as
@@ -134,7 +134,7 @@ export async function dispatchTurn(stage, { attempt, warm, timeoutWarm, vetoedRe
   // already holds them, and its message names none. The dispatch record and the witness above keep the composed text.
   const wire = warm || timeoutWarm ? { text: effMessage, inlined: [], missing: [] }
     : inlineManuals(effMessage, { resolve: engineResolveSkill, skillsDir: engineSkillsDir });
-  const turn = await engine.runTurn({ agent, sessionKey: key, message: wire.text, grantDispatch: base, model, thinking, timeoutSec: effTimeout, resumeRef: warm ? lastSessionRef : undefined, stageHome, mcpConfig, allowedTools: gatherAllowedTools, builtinTools: builtinToolsFor(name), seatWrites: gatherSeatWrites, skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
+  const turn = await engine.runTurn({ agent, sessionKey: key, message: wire.text, grantDispatch: base, model, thinking, timeoutSec: effTimeout, resumeRef: warm ? lastSessionRef : undefined, stageHome, mcpConfig, allowedTools: gatherAllowedTools, builtinTools: builtinToolsFor(name), output: turnOutput, seatWrites: gatherSeatWrites, skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
     progressFiles: files,   // the no-progress watchdog's artifact-advance signal (anthropic-agent; other adapters ignore it)
     // The raw stream of this session, beside its dispatch record (engine/session-record.mjs). The engines
     // keep it while the disk has room and say on the tuple's `stream` what landed.

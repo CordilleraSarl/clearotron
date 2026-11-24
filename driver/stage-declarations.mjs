@@ -79,6 +79,12 @@ export function declaredStageOf(label = "") {
 
 /** Does this declaration make the stage's reply its output? PURE. */
 export const replyIsOutput = (declaration) => declaration?.output === "reply";
+/**
+ * How a stage's turn returns its result, which picks the output rule it is given (engine/common.mjs): through its record
+ * tool, named; as its reply; or as a file it writes, which is also the answer for a stage with no declaration. PURE.
+ */
+export const turnOutputOf = (declaration) => (replyIsOutput(declaration) ? { kind: "reply" }
+  : declaration?.recording ? { kind: "record", tool: declaration.recording } : { kind: "file" });
 
 /** The named validator a stage declares, from the stage file's own table of them. Throws where the name is not in the table. */
 export function declaredValidator(stage, table) {

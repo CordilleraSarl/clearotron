@@ -171,11 +171,12 @@ test("a rating names an owner with the filing marks it holds, and a family reads
 
 // ── THE TOOLS A CLAUDE STAGE STARTS WITH ────────────────────────────────────────────────────────────────
 
-test("a reader starts with file read and tool search alone, and the rating, review and correction with read and search", () => {
-  assert.deepEqual(builtinToolsFor("knockout-register-read"), ["Read", "ToolSearch"]);
-  for (const stage of ["knockout-assess", "knockout-assess#3", "knockout-review", "knockout-correct#0"])
+test("a reader, the review and the correction start with file read and tool search alone, and the rating with read and search", () => {
+  for (const stage of ["knockout-register-read", "knockout-review", "knockout-correct#0"]) assert.deepEqual(builtinToolsFor(stage), ["Read", "ToolSearch"], stage);
+  for (const stage of ["knockout-assess", "knockout-assess#3"])
     assert.deepEqual(builtinToolsFor(stage), ["Read", "Grep", "Glob", "ToolSearch"], stage);
-  assert.equal(builtinToolsFor("knockout-frame"), null, "a stage not named keeps the engine's own set");
+  assert.deepEqual(builtinToolsFor("knockout-frame"), ["Read", "Grep", "Glob", "ToolSearch"], "the intake records through its tool, like the rating");
+  assert.equal(builtinToolsFor("an-invented-label"), null, "a label no stage declares keeps the engine's own set");
   const argv = (builtinTools) => buildClaudeArgs({ message: "m", model: "opus", thinking: "high", builtinTools, cwd: fresh("argv") }).args;
   const named = argv(["Read", "ToolSearch"]);
   assert.equal(named[named.indexOf("--tools") + 1], "Read,ToolSearch");

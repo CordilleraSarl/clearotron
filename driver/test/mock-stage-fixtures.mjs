@@ -2781,48 +2781,24 @@ export function applyStageWrites(msg, argv) {
     if (!verdict.written) return `mock knockout-register-read: the transport refused the composed call — ${verdict.refused ?? verdict.write_failed}`;
     return "mock knockout register reading ok";
   }
-  // ── THE REVIEWING PASS ────────────────────────────────────────────────────────────────────────────
+  // ── THE REVIEWING PASS ───────────────────────────────────────────────────────────────
   //
-  // THE ADDRESSES ARE READ BACK OUT OF THE DISPATCH, never invented. The driver measured them and put
-  // them in the message; a mock that composed its own would be asserting that the addresses it makes up
-  // resolve, which is a fact about the mock. Reading them back is also what a seat does, so a dispatch
-  // that stopped carrying addresses fails here rather than passing on fabricated ones.
-  //
-  // IT DECLINES RATHER THAN REWRITES. A fixture inventing replacement prose would put mock sentences on
-  // the record every knockout e2e then asserts against, and the rewrite path is driven by its own arms
-  // against a real record. What the e2e needs from this branch is that the stage COMPLETES through the
-  // real transport, which a declined row does exactly as well. It records the clean read ONCE, as the
-  // check is told to: one row, at the first address the dispatch carries.
+  // THE REVIEW ANSWERS ITS QUESTION AND SENDS ITS DEFECTS, through the real transport: a clean read is the question answered and an
+  // empty list. It reads the opinion summaries back out of the dispatch, as a seat does, so a dispatch that stopped carrying them
+  // fails here rather than passing on a record the mock read for itself.
   if (/record_knockout_review/.test(msg)) {
     const runDir = runDirFromWiring(argv);
     if (!runDir) return "mock knockout-review: no run dir in the engine wiring — the driver wires CLEAROTRON_BAND_RUN_DIR per run and this branch refuses rather than guessing one";
     recordMockToolCall(runDir, "record_knockout_review", "recording-knockout-review");
-    const declined = [];
-    for (const m of msg.matchAll(/address (\{"field":[^}]*\})/g)) {
-      try { declined.push({ at: JSON.parse(m[1]), why: "mock review: the lines read plainly enough in context" }); break; }
-      catch { /* a row whose address will not parse is not one this mock can answer */ }
-    }
-    if (!declined.length) return "mock knockout-review: the dispatch carried no address to answer — the driver measures them and puts them in the message";
-    // MOCK_KO_MATERIAL: the defects a first look raises, as JSON. MOCK_KO_MATERIAL_OPEN: what the look at the corrected record
-    // still finds. That look says what it read off the record on disk, so a test can see the corrected record reached it.
-    const pass = recordAxisFromWiring(argv);
-    const raised = pass ? process.env.MOCK_KO_MATERIAL_OPEN : process.env.MOCK_KO_MATERIAL;
-    const material = raised ? JSON.parse(raised) : [];
-    const reads = pass ? ((JSON.parse(readFileSync(join(runDir, "knockout-findings.json"), "utf8")).marks ?? []).map((m) => `${m.name}: ${m.rating}`).join("; ")) : "the report answers the client's question";
-    // MOCK_KO_REWRITE_AT=<name>: the first look also rewrites that name's first line the dispatch offers, so a test can see
-    // whether that old rewrite lands over what a correction then changed there.
-    const rewrites = [];
-    if (!pass && process.env.MOCK_KO_REWRITE_AT) {
-      for (const m of msg.matchAll(/address (\{"field":[^}]*\})/g)) {
-        let at; try { at = JSON.parse(m[1]); } catch { continue; }
-        if (at.mark === process.env.MOCK_KO_REWRITE_AT && JSON.stringify(at) !== JSON.stringify(declined[0].at)) { rewrites.push({ at, text: "An old rewrite from the first look.", why: "mock review: plainer" }); break; }
-      }
-    }
-    const verdict = recordKnockoutReview(runDir, { first_question: `mock review: ${reads}`, material, declined, ...(rewrites.length ? { rewrites } : {}) }, { boundOrdinal: pass });
+    const summaries = [...msg.matchAll(/^### "([^"]+)": ([^\n]+)$/gm)].map((m) => `${m[1]}: ${m[2]}`);
+    if (!summaries.length) return "mock knockout-review: the dispatch carried no opinion summary to read — the driver composes them and puts them in the message";
+    // MOCK_KO_MATERIAL: the defects the review raises, as JSON.
+    const material = process.env.MOCK_KO_MATERIAL ? JSON.parse(process.env.MOCK_KO_MATERIAL) : [];
+    const verdict = recordKnockoutReview(runDir, { first_question: `mock review: ${summaries.join("; ")}`, material }, { boundOrdinal: recordAxisFromWiring(argv) });
     if (!verdict.written) return `mock knockout-review: the transport refused the composed call — ${verdict.refused ?? verdict.write_failed}`;
-    // MOCK_KO_REVIEW_STOP: the operator presses Stop while the review, the lane's last stage, is running. The turn still
-    // finishes, as a dispatched turn does, and only a read after it can see the stop.
-    if (process.env.MOCK_KO_REVIEW_STOP && !pass) requestCancel(runDir, { via: "mock/review", by: "mock" });
+    // MOCK_KO_REVIEW_STOP: the operator presses Stop while the review is running. The turn still finishes, as a dispatched turn does,
+    // and only a read after it can see the stop.
+    if (process.env.MOCK_KO_REVIEW_STOP) requestCancel(runDir, { via: "mock/review", by: "mock" });
     return "mock knockout review ok";
   }
   // ── A MATERIAL DEFECT'S REPAIR ──────────────────────────────────────────────

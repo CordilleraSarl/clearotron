@@ -55,7 +55,7 @@ The hardest calls sit on the **Manageable ↔ Moderate** line, and the answer tu
 
 Both are the same principle from opposite sides: **rate our use meeting their use, not the marks in the abstract.**
 
-### Delivery prose & the table formula (spec 09)
+### Delivery prose & the table formula
 
 How findings are written on the report (not how they are scored):
 

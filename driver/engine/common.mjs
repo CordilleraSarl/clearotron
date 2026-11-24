@@ -52,28 +52,40 @@ export const spawnGraceMs = () => Math.max(0, Number(process.env.CLEAROTRON_SPAW
 // runner crash. Default 64MB (gateway parity); CLEAROTRON_ENGINE_MAX_BUFFER shrinks it for tests.
 export const engineMaxBufferChars = () => Math.max(1024, Number(process.env.CLEAROTRON_ENGINE_MAX_BUFFER || 64 * 1024 * 1024));
 
-// ── Output discipline (Claude's on every turn; Codex's on a turn whose result goes through its recording tool) ──
-// The shared stage prompts say "write your output to <path>", which a workspace agent executes via its
-// file tool — but a headless coding CLI (`claude -p`, `codex exec`) tends to COMPOSE the output as text
-// and report "done" without ever calling the Write tool (the matter-frame missing_file failures,
-// 2026-06-16). This system-prompt directive forces the Write-tool behaviour so every stage's file lands.
-// The REPAIR EXCEPTION (2026-08-01) is part of the same directive because it corrects the same directive:
-// "write every required file via the Write tool (overwrite if it exists)" is right for producing a stage's
-// output and wrong for fixing one named defect in a 160 KB document that already passed its other checks.
-// Without this sentence a corrective turn retypes the whole file — measured at 3-4x the wall and tokens of
-// the patching attempt that actually passed (see repair-contract.mjs for the numbers). Kept byte-identical
-// with the anthropic-agent copy; engine.common.test.mjs pins that. A Codex turn that writes a file is given the
-// same obligation in its own terms instead, since it has no Write or Edit tool (openai-agent.mjs, CODEX_WRITE_RULE).
-export const WRITE_DISCIPLINE =
-  "OUTPUT DISCIPLINE — read carefully: when the task instructs you to write output to an absolute file path, " +
-  "you MUST create that file by CALLING THE WRITE TOOL with that exact path and the full content. Output you " +
-  "place only in your text reply is DISCARDED and the task is scored as FAILED. Do the actual work, write every " +
-  "required file via the Write tool (overwrite if it exists), and only THEN reply — with just the path(s) you " +
-  "wrote and a 2-3 line summary. Never claim a file is written unless you invoked the Write tool to write it. " +
-  "EXCEPTION — REPAIRS: when the task instructs you to FIX or CORRECT an EXISTING file, use the Edit tool and " +
-  "change only what the correction names — a file corrected with the Edit tool counts as written. Rewriting a " +
-  "whole file to fix a few lines risks degrading content that already passed. If the file does not exist, the " +
-  "rule above stands: create it in full with the Write tool.";
+// ── The output rule: one per turn, by how the turn returns its result, the same text on both engines ──
+// A turn hands its result back one of three ways, and its stage's declaration says which (stage-declarations.mjs,
+// `turnOutputOf`): through its record tool, which the driver writes the stage's files from; as a file it writes; or
+// as its reply, which is read as it stands. Each way gets its own rule and no other. Claude carries it as its
+// appended system prompt, Codex as its developer instructions, each followed by the evidence rule. A turn whose
+// reply is its result carries no output rule: its prompt says what to reply.
+// The file rule is design's, of 2026-11-21, character for character, first written for Codex and now carried by
+// both engines. The record rule names the turn's own tool and what to do when the tool refuses a call: correct and call
+// again, except after a product fault, which the turn is told not to repeat.
+export const FILE_RULE =
+  "When the task asks you to write output to an absolute file path, use your file-writing operation to write the " +
+  "complete content at that exact path, replacing the previous content if necessary. Text in your reply is discarded. " +
+  "Write every required file and verify that it exists before reporting it as written. Reply with just the path or " +
+  "paths you wrote and a two- or three-line summary. When the task asks you to fix an existing file, edit only what " +
+  "the correction names. If the file is missing, create it in full.";
+/** The rule for a turn that hands its result back through its record tool, named. PURE. */
+export const recordRule = (tool) =>
+  `Return this step's result by calling \`${tool}\`. The driver writes this step's files from that call and does not ` +
+  "read your reply text or any file you write. If the tool refuses a call, correct what it names and call it again, " +
+  "unless it says the failure is a product fault. Do not stop until the tool accepts the call or reports a product fault.";
+// The evidence rule, design's of 2026-11-24 for both engines. It names the tools a step is granted so a research step may
+// still gather its evidence; a step held to its supplied evidence says so in its own task.
+export const EVIDENCE_RULE =
+  "Use only evidence supplied for this task or obtained through the tools it authorizes, and work already accepted for this run.";
+/** A turn that does not say how it returns its result writes a file, as every turn did before this rule had kinds. */
+export const FILE_OUTPUT = Object.freeze({ kind: "file" });
+/** The output rule for a turn, or null for a turn whose reply is its result. PURE. */
+export function outputRule(output = FILE_OUTPUT) {
+  if (output?.kind === "reply") return null;
+  if (output?.kind === "record" && output.tool) return recordRule(output.tool);
+  return FILE_RULE;
+}
+/** What Claude appends to its system prompt for one turn: the output rule, then the evidence rule. PURE. */
+export const claudeTurnInstructions = (output = FILE_OUTPUT) => [outputRule(output), EVIDENCE_RULE].filter(Boolean).join(" ");
 
 // ── Skill-ref absolutization (shared verbatim across engines) ────────────────────────────────────────
 // The shared stage prompts reference skills by the convention `skills/foo/SKILL.md` — a workspace agent

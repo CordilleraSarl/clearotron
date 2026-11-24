@@ -28,8 +28,10 @@ import { join } from "node:path";
 import { STAGES } from "../stages.mjs";
 import { KO_STAGES } from "../stages-knockout.mjs";
 import { requireRegisterProvider } from "../driver.config.mjs";
-import { buildClaudeArgs, WRITE_DISCIPLINE as CLAUDE_WRITE_DISCIPLINE } from "../engine/anthropic-agent.mjs";
-import { absolutizeSkillRefs as codexRewrite, WRITE_DISCIPLINE } from "../engine/common.mjs";
+import { buildClaudeArgs } from "../engine/anthropic-agent.mjs";
+import { absolutizeSkillRefs as codexRewrite, claudeTurnInstructions, EVIDENCE_RULE } from "../engine/common.mjs";
+import { STAGE_DECLARATIONS, turnOutputOf } from "../stage-declarations.mjs";
+import { declaredStageOfLabel } from "../engine/mcp/gather-config.mjs";
 import { renderCodexConfigToml } from "../engine/mcp/codex-config.mjs";
 import { skillRefsIn } from "../methodology-witness.mjs";
 import { DRIVER, SKILLS, CLEARANCE_CTXS, knockoutDispatches, everyModelStageDispatch } from "./model-stage-dispatches.mjs";
@@ -129,29 +131,31 @@ test("the two engines' rewrites hand every stage the same instruction paths", ()
   }
 });
 
-test("the system-level instruction reaches both engines on every stage, fresh and resumed, each engine's output rule byte for byte", async () => {
-  assert.equal(CLAUDE_WRITE_DISCIPLINE, WRITE_DISCIPLINE, "the two copies of the system-level instruction have drifted");
+test("the system-level instruction reaches both engines on every stage, fresh and resumed, the stage's own output rule byte for byte", async () => {
+  // Each stage's output rule is chosen by how it returns its result (stage-declarations.mjs, turnOutputOf): its record
+  // tool, by name, or the file it writes. Claude carries it as its appended system prompt with the evidence rule, Codex as
+  // its developer instructions with the temp-folder rule, and the two carry the same output rule.
+  const { codexDeveloperInstructions } = await import("../engine/openai-agent.mjs");
+  const kinds = new Set();
   for (const d of dispatches()) {
+    const output = turnOutputOf(STAGE_DECLARATIONS[declaredStageOfLabel(d.name)] ?? null);
+    kinds.add(output.kind);
     for (const resumeRef of [undefined, "invented-session"]) {
-      const { args } = buildClaudeArgs({ message: d.message, model: "opus", thinking: "low", cwd: "/tmp", skillsDir: SKILLS, runDir: RUN, resumeRef });
+      const { args } = buildClaudeArgs({ message: d.message, model: "opus", thinking: "low", cwd: "/tmp", skillsDir: SKILLS, runDir: RUN, resumeRef, output });
       const at = args.indexOf("--append-system-prompt");
-      assert.ok(at >= 0 && args[at + 1] === WRITE_DISCIPLINE,
-        `claude, ${d.name}${resumeRef ? " (resumed)" : ""}: the system-level instruction is not appended`);
+      assert.ok(at >= 0 && args[at + 1] === claudeTurnInstructions(output),
+        `claude, ${d.name}${resumeRef ? " (resumed)" : ""}: the stage's output rule is not appended`);
     }
-  }
-  // Codex carries it as the configuration's developer instructions, which its adapter writes on every turn. A turn that
-  // writes a file is given Codex's own output rule, since it has no Write or Edit tool; a turn whose result goes through its
-  // recording tool keeps Claude's instruction. Either is followed by the temp-folder rule only a Codex turn needs
-  // (openai-agent.mjs, CODEX_WRITE_RULE and TEMP_FOLDER_RULE).
-  const { CODEX_FILE_INSTRUCTIONS, CODEX_RECORDING_INSTRUCTIONS, CODEX_WRITE_RULE, TEMP_FOLDER_RULE } = await import("../engine/openai-agent.mjs");
-  assert.equal(CODEX_RECORDING_INSTRUCTIONS, `${WRITE_DISCIPLINE} ${TEMP_FOLDER_RULE}`, "codex: a recording turn's output rule is not the one Claude is given");
-  assert.equal(CODEX_FILE_INSTRUCTIONS, `${CODEX_WRITE_RULE} ${TEMP_FOLDER_RULE}`, "codex: a writing turn's output rule is not Codex's own");
-  assert.doesNotMatch(CODEX_WRITE_RULE, /Write tool|Edit tool/, "codex: a writing turn is told to use a tool it does not have");
-  for (const developerInstructions of [CODEX_FILE_INSTRUCTIONS, CODEX_RECORDING_INSTRUCTIONS]) {
+    if (output.kind === "record") assert.ok(claudeTurnInstructions(output).includes(`calling \`${output.tool}\``), `${d.name}: the rule does not name the stage's own record tool`);
+    assert.doesNotMatch(claudeTurnInstructions(output), /Write tool|Edit tool|WRITE TOOL/, `${d.name}: the rule names one engine's own file tool`);
+    const developerInstructions = codexDeveloperInstructions({ output });
+    assert.ok(developerInstructions.startsWith(claudeTurnInstructions(output).slice(0, -EVIDENCE_RULE.length).trimEnd()),
+      `codex, ${d.name}: not the output rule Claude is given`);
     const toml = renderCodexConfigToml({ mcpConfig: null, allowedTools: "", developerInstructions });
     const line = toml.split("\n").find((l) => l.startsWith("developer_instructions = "));
     assert.ok(line, "codex: no developer instructions in the rendered configuration");
     assert.equal(JSON.parse(line.slice("developer_instructions = ".length)), developerInstructions,
-      "codex: the developer instructions are not the output rule plus the temp-folder rule");
+      `codex, ${d.name}: the developer instructions are not the output rule plus the temp-folder rule`);
   }
+  assert.deepEqual([...kinds].sort(), ["file", "record"], "the stages cover both a recording stage and a writing stage");
 });

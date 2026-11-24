@@ -24,7 +24,7 @@
 //
 // — THAT IS NO LONGER UNIVERSAL, and a tail composed here can now name a tool its reader does not
 // hold. A recording stage whose artifact the DRIVER writes is seeded `Read` alone, so `editRepairTail`'s
-// "using the Edit tool" and `fullWriteTail`'s "with the Write tool" are wrong for it — gateway.mjs
+// targeted edits and `fullWriteTail`'s whole-file write are wrong for it — gateway.mjs
 // intercepts those stages before either tail is reached and orders a re-call of the typed tool instead.
 // blind-frame is the first; every conversion adds one. If you are adding a tail here, the question is no
 // longer "what should it say" but "which stages can obey it". The models were simply told, in the
@@ -72,10 +72,10 @@ export const ABBREVIATED_VALUE_NOTE =
 
 export function editRepairTail(target) {
   const what = target || "the stage output";
-  return `Apply the fix by TARGETED EDITS to ${what} using the Edit tool: change ONLY what the correction ` +
+  return `Apply the fix by TARGETED EDITS to ${what} with your file-editing operation: change ONLY what the correction ` +
     `above names, and leave every other line of the file byte-identical. Do NOT rewrite, re-emit or re-type ` +
     `the whole file — everything not named above already passed, a full rewrite risks degrading it, and an ` +
-    `unexplained size jump is flagged. If ${what} does not exist, create it in full with the Write tool. ` +
+    `unexplained size jump is flagged. If ${what} does not exist, create it in full. ` +
     `Do not stop until it is corrected and valid.`;
 }
 
@@ -89,11 +89,11 @@ export function editRepairTail(target) {
 // against the file. Same write mode, different truth about why.
 export function appendRepairTail(target) {
   const what = target || "the stage output";
-  return `Apply this by TARGETED EDITS to ${what} using the Edit tool: ADD exactly what the correction ` +
+  return `Apply this by TARGETED EDITS to ${what} with your file-editing operation: ADD exactly what the correction ` +
     `above names and leave every other line of the file byte-identical. This correction ADDS what is ` +
     `missing — it does not replace what is there — so do NOT rewrite, re-emit or re-type the whole file: ` +
     `a full rewrite risks degrading prose that is already correct, and growth beyond the additions ` +
-    `themselves is flagged. If ${what} does not exist, create it in full with the Write tool. Do not stop ` +
+    `themselves is flagged. If ${what} does not exist, create it in full. Do not stop ` +
     `until the additions are in place and the file is valid.`;
 }
 
@@ -101,7 +101,7 @@ export function appendRepairTail(target) {
 // missing is the file itself, so there is nothing to patch.
 export function fullWriteTail(target) {
   const what = target || "the stage output";
-  return `Write the COMPLETE file now at ${what} with the Write tool — full file, from the work already in ` +
+  return `Write the COMPLETE file now at ${what} — full file, from the work already in ` +
     `your context. Do not stop until it exists and is complete.`;
 }
 

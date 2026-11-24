@@ -326,11 +326,10 @@ test("the rating step and the review can read a list set aside, and nothing on t
   const dir = mkdtempSync(join(tmpdir(), "ko-review-"));
   mkdirSync(driverDir(dir), { recursive: true });
   const K = koPaths(dir);
-  assert.doesNotMatch(KO_STAGES["knockout-review"].message({ K, evidenceLines: [], firstReadLines: [] }), /register-records\.json/, "a path the run does not hold is not named");
   writeFileSync(K.registerRecords, "{}");
-  const message = KO_STAGES["knockout-review"].message({ K, evidenceLines: [], firstReadLines: [] });
-  assert.match(message, /register-records\.json/);
-  assert.match(message, /read_register_list/);
+  const message = KO_STAGES["knockout-review"].message({ K });
+  assert.doesNotMatch(message, /register-records\.json/, "the review is pointed at the whole register record");
+  assert.match(message, /`read_register_list` by qid and record_id reads a filing's whole wording/);
 });
 
 test("the mechanical forms are one question on a register that answers a joined count, and the total is the same", async () => {

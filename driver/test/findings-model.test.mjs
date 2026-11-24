@@ -333,13 +333,13 @@ test("dispatch: valid JSON + a narrative that OMITS the mark → ok (Instance #4
 test("gateway: findings_* tokens route to the findings.json hint, are warm-eligible, and don't hijack coverage_", () => {
   // every contract token reaches the findings hint (not the generic fallback)
   for (const tok of ["findings_unparseable", "finding_composite_invalid:6", "finding_meter_token_invalid:use:huge", "findings_coverage_state_invalid:clean"]) {
-    assert.match(correctionHint(tok), /findings\.json is a JSON OBJECT/, `hint for ${tok}`);
+    assert.match(correctionHint(tok), /The findings record is a JSON OBJECT/, `hint for ${tok}`);
     assert.equal(warmEligible(`invalid_file:narrative.md:${tok}`, { status: "ok" }), true, `warm-eligible: ${tok}`);
   }
   // REGRESSION GUARD: placing the findings branch first must not steal real coverage-ledger tokens, and
   // the register-digest structural "findings+ledger" token (no underscore) must not hit the findings branch.
   assert.match(correctionHint("coverage_axis_invalid:foo"), /register-coverage-ledger\.json/);
-  assert.doesNotMatch(correctionHint("missing:findings+ledger"), /findings\.json is a JSON OBJECT/);
+  assert.doesNotMatch(correctionHint("missing:findings+ledger"), /The findings record is a JSON OBJECT/);
 });
 
 test("dispatch: invalid JSON → fail(token), and the validator NEVER throws on any malformed input", () => {

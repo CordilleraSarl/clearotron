@@ -28,7 +28,7 @@ import { newSessionRecord, noteCodexEvent, sessionSummary, countTool, streamSink
 import { writeSecretFile } from "../../shared/secret-file.mjs";   // the rotated login goes back the way every credential is written
 import { tmpdir, homedir } from "node:os";
 import { join, dirname, sep } from "node:path";
-import { runStreamingChild, absolutizeSkillRefs, WRITE_DISCIPLINE, buildEnvelope, resolveSpawnCwd, isRecordTool } from "./common.mjs";
+import { runStreamingChild, absolutizeSkillRefs, outputRule, FILE_OUTPUT, EVIDENCE_RULE, buildEnvelope, resolveSpawnCwd, isRecordTool } from "./common.mjs";
 import { renderCodexConfigToml } from "./mcp/codex-config.mjs";
 import { resolveAuthMode } from "./auth.mjs";
 import { engineEnv, codexCommandWithheld } from "./engine-env.mjs";
@@ -405,29 +405,14 @@ export function withWorkFolder(env, dir) {
 // WHAT THE MODEL IS TOLD, as the design ruling of 2026-10-27 approved it (its section on isolation). It describes the
 // mechanism and replaces nothing: the profile is what keeps another run's files out of reach. Codex alone carries it,
 // since only a Codex stage runs commands and only a Codex turn has a working folder of its own.
-export const TEMP_FOLDER_RULE = "Keep temporary working files in the directory given by TMPDIR. Use only this run's supplied evidence and accepted work.";
-// THE OUTPUT RULE FOR A TURN THAT WRITES A FILE, in design's words of 2026-11-21, character for character. Claude's
-// rule (common.mjs, WRITE_DISCIPLINE) names Claude's Write and Edit tools, which a Codex turn does not have, so a
-// Codex turn that authors a file is given the same obligation in terms of its own file-writing operation: the whole
-// file at the exact path, checked before it is reported, and a repair that edits only what the correction names.
-export const CODEX_WRITE_RULE =
-  "When the task asks you to write output to an absolute file path, use your file-writing operation to write the " +
-  "complete content at that exact path, replacing the previous content if necessary. Text in your reply is discarded. " +
-  "Write every required file and verify that it exists before reporting it as written. Reply with just the path or " +
-  "paths you wrote and a two- or three-line summary. When the task asks you to fix an existing file, edit only what " +
-  "the correction names. If the file is missing, create it in full.";
-/** What a Codex turn that writes a file carries: its output rule, then the temp-folder rule. */
-export const CODEX_FILE_INSTRUCTIONS = `${CODEX_WRITE_RULE} ${TEMP_FOLDER_RULE}`;
-/** What a Codex turn whose result goes through its recording tool carries: the rule it had before, then the temp-folder rule. */
-export const CODEX_RECORDING_INSTRUCTIONS = `${WRITE_DISCIPLINE} ${TEMP_FOLDER_RULE}`;
+export const TEMP_FOLDER_RULE = `Keep temporary working files in the directory given by TMPDIR. ${EVIDENCE_RULE}`;
 /**
- * The developer instructions for one Codex turn. `seatWrites` is the stage's declaration, as the Claude adapter reads
- * it (runDirGrant): `false` says the driver writes the stage's artifact from its recording tool, so the turn keeps the
- * rule it had. `recordsItsResult` says the same for a turn that leaves `seatWrites` unknown on purpose: a form repair,
- * which keeps Claude's write grant, on a recording stage. Any other turn authors a file. PURE.
+ * The developer instructions for one Codex turn: its output rule, by how it returns its result (common.mjs,
+ * `outputRule`), then the temp-folder rule. The same output rule Claude carries; a turn whose reply is its result
+ * carries the temp-folder rule alone. PURE.
  */
-export const codexDeveloperInstructions = ({ seatWrites = null, recordsItsResult = false } = {}) =>
-  (seatWrites === false || recordsItsResult === true ? CODEX_RECORDING_INSTRUCTIONS : CODEX_FILE_INSTRUCTIONS);
+export const codexDeveloperInstructions = ({ output = FILE_OUTPUT } = {}) =>
+  [outputRule(output), TEMP_FOLDER_RULE].filter(Boolean).join(" ");
 
 /**
  * The folder holding codex's own programs, which the stage's profile must let it read. codex runs every
@@ -1023,7 +1008,7 @@ export const openaiAgentEngine = {
   // `thread/resume failed: no rollout found for thread id ... (code -32600)`, exit 1 — with the control
   // (same id, same binary, its own home) resuming cleanly. So every warm-patch retry and every
   // form-repair sub-turn on the codex arm has been failing.
-  async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, recordsItsResult = false, stallSec, stageHome: providedHome, streamFile = null } = {}) {
+  async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, output = FILE_OUTPUT, stallSec, stageHome: providedHome, streamFile = null } = {}) {
     if (!message) throw new Error("openai-agent.runTurn: message is required");
     const t0 = Date.now();
     let codexHome;
@@ -1070,7 +1055,7 @@ export const openaiAgentEngine = {
       const fence = codexSandboxBypassed() ? null
         : { runDir, workDir, readRoots: [...(skillsGrantRoots?.length ? skillsGrantRoots : [skillsDir]), codexProgramRoot(codexBin())].filter(Boolean) };
       writeFileSync(join(codexHome, "config.toml"),
-        renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions: codexDeveloperInstructions({ seatWrites, recordsItsResult }), toolTimeoutSec: timeoutSec, fence,
+        renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions: codexDeveloperInstructions({ output }), toolTimeoutSec: timeoutSec, fence,
           withheldFromCommands: codexCommandWithheld() }));
 
       const input = absolutizeSkillRefs(message, skillsDir, resolveSkill);

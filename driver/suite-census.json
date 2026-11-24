@@ -303,12 +303,6 @@
           "skips": 0,
           "todos": 0
         },
-        "a-clean-knockout-hands-the-reviewer-its-first-read-lines.test.mjs": {
-          "tests": 6,
-          "asserts": 25,
-          "skips": 0,
-          "todos": 0
-        },
         "a-clear-from-a-review-asked-again-keeps-the-conditions-still-standing.pipeline.test.mjs": {
           "tests": 3,
           "asserts": 26,
@@ -1264,8 +1258,8 @@
           "todos": 0
         },
         "a-knockout-defect-reaches-the-step-that-can-repair-it.test.mjs": {
-          "tests": 33,
-          "asserts": 181,
+          "tests": 32,
+          "asserts": 178,
           "skips": 0,
           "todos": 0
         },
@@ -1300,8 +1294,8 @@
           "todos": 0
         },
         "a-knockout-is-reviewed-once-for-facts-and-ratings.test.mjs": {
-          "tests": 4,
-          "asserts": 11,
+          "tests": 7,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
@@ -1367,7 +1361,7 @@
         },
         "a-knockout-reads-and-rates-a-family-at-a-time.test.mjs": {
           "tests": 10,
-          "asserts": 53,
+          "asserts": 54,
           "skips": 0,
           "todos": 0
         },
@@ -1379,7 +1373,7 @@
         },
         "a-knockout-reads-the-register-by-judgment.test.mjs": {
           "tests": 46,
-          "asserts": 214,
+          "asserts": 213,
           "skips": 0,
           "todos": 0
         },
@@ -1404,6 +1398,12 @@
         "a-knockout-resumed-from-status-keeps-the-scope-its-order-wrote.test.mjs": {
           "tests": 3,
           "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-knockout-review-is-handed-the-opinions-and-their-evidence.test.mjs": {
+          "tests": 4,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
@@ -4084,8 +4084,8 @@
           "todos": 0
         },
         "coverage-axis-hint.test.mjs": {
-          "tests": 5,
-          "asserts": 11,
+          "tests": 6,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -4715,7 +4715,7 @@
         },
         "engine-probe.test.mjs": {
           "tests": 55,
-          "asserts": 289,
+          "asserts": 291,
           "skips": 0,
           "todos": 0
         },
@@ -4739,7 +4739,7 @@
         },
         "engine.common.test.mjs": {
           "tests": 19,
-          "asserts": 56,
+          "asserts": 63,
           "skips": 0,
           "todos": 0
         },
@@ -4882,8 +4882,8 @@
           "todos": 0
         },
         "every-model-stage-is-handed-its-tools-on-both-engines.test.mjs": {
-          "tests": 8,
-          "asserts": 19,
+          "tests": 11,
+          "asserts": 35,
           "skips": 0,
           "todos": 0
         },
@@ -8097,12 +8097,6 @@
           "skips": 0,
           "todos": 0
         },
-        "the-knockout-check-reads-as-a-knockout-and-records-a-clean-read-once.test.mjs": {
-          "tests": 3,
-          "asserts": 15,
-          "skips": 0,
-          "todos": 0
-        },
         "the-knockout-labels-read-as-the-clearances.test.mjs": {
           "tests": 2,
           "asserts": 8,
@@ -8142,12 +8136,6 @@
         "the-knockout-review-meets-the-tone-and-figure-checks.test.mjs": {
           "tests": 2,
           "asserts": 5,
-          "skips": 0,
-          "todos": 0
-        },
-        "the-knockout-reviewing-pass-rewrites-what-a-reader-sees-first.test.mjs": {
-          "tests": 21,
-          "asserts": 80,
           "skips": 0,
           "todos": 0
         },

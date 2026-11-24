@@ -135,10 +135,10 @@ test("the knockout's whole steps: the last word of each is its state at delivery
   // A listing refused for a reason the sidecar states is not a failure here: its own row already says why.
   log(dir, { event: "knockout-register-records-refused", reason: "this register lists no filings" });
   assert.equal(knockoutStepFailures(dir).listing, null);
-  for (const outcome of ["artifact-unreadable", "rewrite-refused-by-the-merged-gate"]) {
+  for (const outcome of ["artifact-unreadable", "correction-failed"]) {
     log(dir, { event: "knockout-review", outcome });
-    assert.ok(knockoutStepFailures(dir).review, `${outcome} ships the rater's wording unreviewed`);
+    assert.ok(knockoutStepFailures(dir).review, `${outcome} ships the rated record unreviewed or uncorrected`);
   }
-  log(dir, { event: "knockout-review", outcome: "applied" });
+  log(dir, { event: "knockout-review", outcome: "clean" });
   assert.equal(knockoutStepFailures(dir).review, null);
 });
