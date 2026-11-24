@@ -283,9 +283,9 @@ export function calibrationExcerptOf(text, ref) {
     + `${L.slice(start, end).join("\n").replace(/\s+$/, "")}\n=== END MANUAL EXCERPT ===`;
 }
 
-// A FAMILY OF CLOSE VARIATIONS RATED IN ONE SESSION, each name with its own rating and reasons. A family of one keeps the one-name
-// words, unchanged.
-const FAMILY_OPENER = (n) => `You are rating a family of ${n} names for a Knockout screen. Each name is a client choice and gets its own rating and reasons.`;
+// A GROUP OF CLOSELY RELATED NAMES RATED IN ONE SESSION, each name with its own rating and reasons. A group of one keeps the
+// one-name words, unchanged.
+const FAMILY_OPENER = `You are rating a group of closely related names for a Knockout screen. Each name is a client choice and gets its own rating and reasons.`;
 const FAMILY_RULE = `Read the common evidence once, and give each name its own comparison wherever its sound, appearance or a particular earlier filing changes the answer. A difference in band needs a reason grounded in the evidence. Matching bands are equally admissible. Spellings generated only to search for one name remain search terms, not names to rate.`;
 const FAMILY_RIGHTS_SENTENCE = (file) => `Earlier filings and market sources to consider for these names are in ${file}, each listed under the name it is for. Each suggested filing resembles a spelling being searched and overlaps a requested class. Read its goods, status and territory against the proposed use.`;
 const FAMILY_RIGHTS_ANSWER = `For each filing, say what you concluded for the name it is listed under: weigh it in a finding and list its recordId in \`weighedFilings\`, or write a \`registerReads\` row saying why it does or does not bear on that name. Where a filing or source was found is provenance only, and no reason either way.`;
@@ -531,7 +531,7 @@ export const KO_STAGES = {
       ...(calibrationExcerpt ? [calibrationExcerpt] : []),
       APPLY_THE_SUPPLIED_RULES,
       // ONE JOB FOR A NAME, the same whether it is ordered alone or in a shortlist; a family's words where the group holds more than one.
-      chunkMarks.length > 1 ? [FAMILY_OPENER(chunkMarks.length), FAMILY_RULE].join("\n") : `You are rating one name for a Knockout screen.`,
+      chunkMarks.length > 1 ? [FAMILY_OPENER, FAMILY_RULE].join("\n") : `You are rating one name for a Knockout screen.`,
       `Rate ONLY these marks (one entry each, names verbatim): ${chunkMarks.map((m) => m.name).join(" · ")}.`,
       chunkMarks.length > 1 ? `The plan for these names (context framing, classes): ${planFile ?? K.plan}` : `The plan for this name (context framing, classes): ${planFile ?? K.plan}`,
       requestLine(K,
@@ -545,7 +545,7 @@ export const KO_STAGES = {
       // it, so the requester's per-name detail reached the run and stopped. Shipping the doctrine
       // without pointing at the field it turns on is half a fix.
       `Read each name's contextFraming against the client's request. Apply the manner-of-use calibration to the use the client actually states. Where the frame inferred a use, keep it as a possibility; it does not narrow the instructed scope or lower the rating. Correct a material framing error when the request or evidence contradicts it, and explain the correction in the assessment.`,
-      `Each mark's RAW research payload: the record of its web searches, every spelling on every place, with the listings each search returned and any search that could not run. It holds no summary and no judgment; the judgment is yours. ${CITED_URL_RULE} The order's other recorded research payloads and its recorded owner checks are under ${K.researchDir}.`,
+      `Each mark's RAW research payload: the record of its web searches, every spelling on every place, with the listings each search returned and any search that could not run. It holds no summary and no judgment; the judgment is yours. ${CITED_URL_RULE} The order's other recorded research payloads and its recorded owner checks are under ${K.researchDir}. ${SIBLING_SOURCE}`,
       ...chunkMarks.map((m) => `- ${m.name}: ${K.research(kebab(m.name))}${m.degraded ? `   (DEGRADED: ${m.degraded} — apply the null-results doctrine, never inflate)` : ""}`),
       // THE ORDERED TERRITORIES, where the request named some. The web questions used to carry them in
       // their own scope lines and drop what fell outside; the grid returns results and judges nothing, so

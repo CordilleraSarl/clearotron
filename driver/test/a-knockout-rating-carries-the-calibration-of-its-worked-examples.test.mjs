@@ -60,7 +60,7 @@ test("the rating carries the calibration after its manuals, and the instruction 
     const read = m.indexOf("First, read and follow exactly: "), at = m.indexOf(calibration), said = m.indexOf(INSTRUCTION);
     assert.ok(read >= 0 && at > read && said > at + calibration.length, `${names.length} name(s): manuals, then the calibration, then the instruction`);
     assert.equal(m.split(INSTRUCTION).length, 2, "the instruction is said once");
-    assert.ok(m.indexOf(names.length > 1 ? "You are rating a family of" : "You are rating one name for a Knockout screen.") > said, "the job follows the rules it applies");
+    assert.ok(m.indexOf(names.length > 1 ? "You are rating a group of closely related names" : "You are rating one name for a Knockout screen.") > said, "the job follows the rules it applies");
   }
   // With no calibration to carry, the message says the instruction and nothing in its place.
   const bare = message(["QUILLBRAE"], null);

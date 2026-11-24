@@ -5,7 +5,7 @@ description: Frame a KNOCKOUT order — scope, added classes, context framing an
 
 # Knockout order framing
 
-You are framing a **knockout order**: a first triage screen of several candidate names at once —
+You are framing a **knockout order**: a first screen of one or more candidate names —
 broad-not-deep, kill/no-kill. Your output drives a CODE-side web search and the assessment turn. The
 search runs each name's spellings (task 2e), with its use phrase (task 2c),
 on every place you name for it (task 2d), and keeps what each search returned, with no summary. Nothing you write here searches anything.

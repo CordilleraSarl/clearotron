@@ -88,9 +88,11 @@ test("a group's message is its own job: one name's words or a family's, and no b
   assert.match(one, /^You are rating one name for a Knockout screen\.$/m);
   assert.match(one, /only a qualification that holds for this name's whole report\. Use the supplied frozen framework\. Open your `chunkSummary` with a line for this name/);
   const family = message(["QUILLBRAE", "QUILBRAE", "QUILL BRAE"]);
-  assert.match(family, /^You are rating a family of 3 names for a Knockout screen\. Each name is a client choice and gets its own rating and reasons\.$/m);
+  assert.match(family, /^You are rating a group of closely related names for a Knockout screen\. Each name is a client choice and gets its own rating and reasons\.$/m);
   assert.match(family, /only a qualification that holds for each name's whole report\./);
   for (const m of [one, family]) assert.doesNotMatch(m, /As the FIRST chunk|CONTINUATION chunk|groups side by side/, "a group carries no duty for the batch");
+  // A source the order holds still has to bear on the particular name (design, 2026-11-24), alone or in a group.
+  for (const m of [one, family]) assert.match(m, /A source's presence in the order does not establish that it supports the claim\./, "the order-wide caveat on sources is missing");
 });
 
 test("the groups run side by side, at most eight at once, and the record composed from them is the whole batch's", async () => {
