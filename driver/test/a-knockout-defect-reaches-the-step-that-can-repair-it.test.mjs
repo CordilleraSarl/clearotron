@@ -231,7 +231,7 @@ test("a source the rating lost and never restored goes to the correction, though
   const r = await knockout("source-lost", { MOCK_KO_CITE_NOWHERE: "https://nowhere.example.test/invented", MOCK_KO_CORRECTED_BAND: "High" });
   assert.ok(r.stages.includes("knockout-correct#0"), `no correction was dispatched: ${r.stages}`);
   const record = r.json(driverDir(r.dir, "knockout-corrections.json"));
-  assert.ok(record.defects.some((x) => x.kind === "source" && /not traceable to a recorded research payload for this batch/.test(x.problem)), JSON.stringify(record.defects));
+  assert.ok(record.defects.some((x) => x.kind === "source" && /not traceable to a recorded research payload for this order/.test(x.problem)), JSON.stringify(record.defects));
 });
 
 test("a repair the rating step proposed goes to the check, stays on the record if the check fails, and keeps the changed work", async () => {
@@ -245,7 +245,7 @@ test("a repair the rating step proposed goes to the check, stays on the record i
     assert.equal(r.review.outcome, "stage-failed");
     const record = r.json(driverDir(r.dir, "knockout-corrections.json"));
     assert.deepEqual(record.open.map((o) => [o.kind, o.mark, o.state]), [["source", NAME, "not-rechecked"], ["source", SIBLING, "not-rechecked"]], then);
-    assert.match(record.open[0].problem, /not traceable to a recorded research payload for this batch/);
+    assert.match(record.open[0].problem, /not traceable to a recorded research payload for this order/);
     assert.ok((await notes(`source-${then}-unread`)).includes(`Corrected, but not read again: ${record.open[0].problem}`), "the reviewing lawyer sees it, and why it is open");
     if (then === "amended") assert.equal(r.of(r.findings, NAME).findings[0].net, "An amended claim, on what the run holds.", "the valid changed work stays");
   }
@@ -515,7 +515,7 @@ test("a material row is held to its shape, and to what this run holds", () => {
   const check = (m) => validateKnockoutReviewFile(knockoutReviewFile(dir), JSON.stringify({ material: [m] }));
   assert.match(check({ kind: "band", mark: "STRANGER", problem: "p", rests_on: ["x"] }).reason, /not a name on this record/);
   assert.match(check({ kind: "band", mark: NAME, finding: 9, problem: "p", rests_on: ["/mark/em/carried"] }).reason, /does not hold/);
-  assert.match(check({ kind: "band", mark: NAME, problem: "p", rests_on: ["/mark/em/invented"] }).reason, /not traceable to a recorded research payload for this batch, a filing held for this batch, or a recorded owner check linked to a held filing, or a question this run asked\. Copy a recordId, question qid, or URL from what this run holds\./);
+  assert.match(check({ kind: "band", mark: NAME, problem: "p", rests_on: ["/mark/em/invented"] }).reason, /not traceable to a recorded research payload for this order, a filing held for this order, or a recorded owner check linked to a held filing, or a question this run asked\. Copy a recordId, question qid, or URL from what this run holds\./);
   assert.equal(check({ kind: "band", mark: NAME, problem: "p", rests_on: ["https://example.test/owner"] }).ok, true, "an owner check linked to a held filing is held evidence");
   assert.match(check({ kind: "band", mark: NAME, problem: "p", rests_on: ["https://example.test/owner-gone"] }).reason, /not traceable/, "and one linked to none is not");
   assert.equal(check({ kind: "band", mark: NAME, problem: "p", rests_on: ["https://example.test/other-web"] }).ok, true, "another name's recorded payload is held evidence");
@@ -531,7 +531,7 @@ test("a reference the run does not hold is refused at the call, in the turn, and
   writeFileSync(driverDir(dir, "register-records.json"), JSON.stringify({ marks: [{ name: NAME, records: [{ recordId: "/mark/em/held" }], terms: [{ qid: "supp:asked" }] }] }));
   const call = (rests_on) => recordKnockoutReview(dir, { material: [{ kind: "missing", mark: NAME, problem: "p", rests_on }] });
   const refused = call(["/mark/em/invented"]);
-  assert.match(String(refused.refused), /rests on "\/mark\/em\/invented", which is not traceable to a recorded research payload for this batch/);
+  assert.match(String(refused.refused), /rests on "\/mark\/em\/invented", which is not traceable to a recorded research payload for this order/);
   assert.equal(refused.written, null);
   assert.equal(existsSync(knockoutReviewFile(dir)), false, "nothing is written for the stage to refuse afterwards");
   assert.ok(call(["/mark/em/held", "supp:asked"]).written, "a held filing and a question the run asked are held");
@@ -557,7 +557,7 @@ test("the correction's dispatch names each defect, in the chunk's own numbering"
   const msg = KO_STAGES["knockout-correct"].message({ K, chunkNo: 0, work: w, chunkMarks: [{ name: NAME }, { name: SIBLING }] });
   assert.match(msg, /1\. \[band\] "QUILLBRAE", finding 5 \(TWO\): The second conflict is rated too low\. Rests on: \/mark\/em\/x\./);
   assert.ok(msg.includes("Change a name no defect concerns only for a finding it shares with a name you repair, or an answer that depends on your repair; a shared rating alone is not such a dependency. List each finding you change or remove there in that defect's `findings`, and say why. Within an affected name, repair the findings and dependent answers needed to resolve the defect, and explain their connection to it. Leave unrelated findings unchanged."));
-  assert.ok(msg.includes("A filing held for this batch may bear on more than one name. Weigh it against the particular name and its instructed scope, and cite its held recordId and source. Keep where it was found: using that filing does not mean its original search answered this name's register question."));
+  assert.ok(msg.includes("A filing held for this order may bear on more than one name. Weigh it against the particular name and its instructed scope, and cite its held recordId and source. Keep where it was found: using that filing does not mean its original search answered this name's register question."));
   assert.ok(msg.includes("A held source is one call away when the evidence above is not enough to decide a point"), "the correction is not told where a held source is");
   assert.doesNotMatch(msg, /quillbrae\.md|mossvale\.md/, "the correction is pointed at whole research payloads");
 });

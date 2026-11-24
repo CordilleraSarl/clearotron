@@ -34,7 +34,7 @@ function runWithRecords() {
   return dir;
 }
 
-test("a citation of a filing held for this batch, or of a recorded payload for it, is held evidence", () => {
+test("a citation of a filing held for this order, or of a recorded payload for it, is held evidence", () => {
   const dir = runWithRecords();
   try {
     const cited = (url) => knockoutReceipts(dir, [{ name: "LANTERNWICK", findings: [{ name: "An invented finding", url }] }]);
@@ -63,7 +63,7 @@ test("a mark with no payload may still cite a held filing, and nothing else", ()
 // They are engine-independent strings, composed once here; the manual reaches both engines through the step's reads.
 const RULE = ASSESS_SENTENCES.citedUrlMustComeFrom;
 function REFUSAL(mark, url) {
-  return `knockout_url_unreceipted:${mark}: "${url}" is not traceable to a recorded research payload for this batch, a filing held for this batch, or a recorded owner check linked to a held filing. Cite a source from that held evidence.`;
+  return `knockout_url_unreceipted:${mark}: "${url}" is not traceable to a recorded research payload for this order, a filing held for this order, or a recorded owner check linked to a held filing. Cite a source from that held evidence.`;
 }
 test("the rating step's message, its manual and its refusal state one citation rule, and none the old one", async () => {
   const { KO_STAGES, koPaths } = await import("../stages-knockout.mjs");

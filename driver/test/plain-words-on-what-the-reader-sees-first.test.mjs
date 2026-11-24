@@ -303,9 +303,9 @@ test("every field a reader meets without clicking is a field the reviewer reads"
 
 // ── the doctrine that teaches it ─────────────────────────────────────────────────────────────────────
 
-test("the skill carries the two-register rule, and its worked examples obey it", () => {
+test("the skill carries the two-levels rule, and its worked examples obey it", () => {
   const skill = readFileSync(SKILL, "utf8");
-  assert.match(skill, /## Plain language — the two-register rule/);
+  assert.match(skill, /## Plain language — the two levels/);
   assert.match(skill, /no sentence over 25 words/);
   // The swaps are examples of one failure, not its boundary — the skill must say so, because a writer
   // who reads the table as the rule will find a synonym the table missed and ship it.
