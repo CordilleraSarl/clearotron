@@ -31,7 +31,7 @@ import { validators } from "../verify.mjs";
 import { repairTarget, warmPatchMessage, warmEligible } from "../gateway.mjs";
 import { nextRung } from "../ladder/next-rung.mjs";
 import { productFaultOf, productFaultReason, PRODUCT_FAULT_MESSAGE } from "../product-fault.mjs";
-import { plainCause } from "../deferral-row.mjs";
+import { plainCause, plainDeferralReason } from "../deferral-row.mjs";
 import { recordUnitNote } from "../register-unit-record.mjs";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
 
@@ -215,4 +215,5 @@ test("the reader's line for a slice the killed call left open says only that it 
   assert.equal(productFaultReason(), plainCause("unfinished"));
   assert.equal(plainCause("unfinished"), "it could not be completed this run, so it is left open here rather than reported as clean");
   assert.doesNotMatch(productFaultReason(), /timed out/);
+  assert.notEqual(productFaultReason(), plainDeferralReason("slice-not-landed"), "a call that was sent is not said to have never reached the register");
 });
