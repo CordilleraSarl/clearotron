@@ -75,7 +75,19 @@ export const WHATIF_REFUSED_MARKERS = Object.freeze([".delivered", ".cancelled",
  * drift: the MCP door knows `location`/`state`, the worker knows which marker files are on disk, and
  * both get the same sentence for the same run.
  */
-export function whatIfRefusal({ location = null, state = null, markers = [], kind = "stage" } = {}) {
+// ── WHAT A MEMO CAN READ ───────────────────────────────────────────────────────────────────────────
+//
+// The memo worker reads the delivered clearance's findings file and nothing else (whatif-memo-run.mjs). A Knockout keeps
+// its ratings in a file of its own, so a memo was planned on a delivered Knockout and then refused by the worker, after
+// the asker had been told it would run (reproduced offline, 2026-11-24). Every door that offers a memo asks this first.
+export const MEMO_EVIDENCE_FILE = "findings.json";
+/** Does this run hold the evidence a memo reads? */
+export const memoReadable = (runDir, exists = existsSync) => Boolean(runDir) && exists(join(String(runDir), MEMO_EVIDENCE_FILE));
+/** Why a memo cannot be written over this run, or null. One sentence for the planner, the queue and the worker. */
+export const memoUnreadableReason = (runDir, exists = existsSync) => (memoReadable(runDir, exists) ? null
+  : "a memo reads a delivered clearance report's findings, and this search has none for it to read, so no memo can be written for it");
+
+export function whatIfRefusal({ location = null, state = null, markers = [], kind = "stage", memoOffered = false } = {}) {
   const has = (m) => markers.includes(m);
   const finished = location === "archive" || state === "delivered" || has(".delivered");
   // — A MEMO IS NOT A RE-RUN, AND THE FINISHED STATE IS WHY IT EXISTS.
@@ -92,8 +104,12 @@ export function whatIfRefusal({ location = null, state = null, markers = [], kin
   //
   // CANCELLED STAYS REFUSED FOR BOTH. A run its owner stopped has evidence that was never completed, and
   // reasoning over a half-gathered record is how a memo comes to say more than the run ever knew.
+  // THE REFUSAL NAMES THE MEMO where one can be written, so a re-run refused on a delivered report points at the answer
+  // that exists rather than ending the question (design, 2026-11-24). Where no memo can be read, it does not offer one.
   if (finished && kind !== "memo")
-    return "this run is delivered or archived — what-if runs on live runs only; read it with trace or read_artifact instead";
+    return memoOffered
+      ? "this search is delivered, so no step of it re-runs; to ask what changes under an assumption, plan a memo instead: kind \"memo\", with the assumption in instructions"
+      : "this run is delivered or archived — what-if runs on live runs only; read it with trace or read_artifact instead";
   if (state === "cancelled" || has(".cancelled") || has(".cancel"))
     return kind === "memo"
       ? "this run was stopped before its evidence was complete, so a memo over it would reason from a record the run itself never finished"

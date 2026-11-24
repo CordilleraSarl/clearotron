@@ -1605,6 +1605,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-memo-is-offered-only-where-it-can-be-written.test.mjs": {
+          "tests": 3,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "a-memo-over-a-delivered-report-leaves-it-alone.test.mjs": {
           "tests": 16,
           "asserts": 60,

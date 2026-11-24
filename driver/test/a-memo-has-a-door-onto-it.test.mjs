@@ -75,7 +75,8 @@ test("planning a memo without an assumption refuses, and says what is missing", 
 test("the STAGE plan path is untouched — a memo mode is not a licence to re-run a delivered report", () => {
   const refused = whatIfPlan({ run: deliveredRun(), stage: "synthesis" });
   assert.equal(refused.runnable, false, "a stage re-run on an archived run must still be refused");
-  assert.match(refused.reason, /live runs only/);
+  // …and the refusal points at the memo this run can have, instead of ending the question (design, 2026-11-24).
+  assert.match(refused.reason, /no step of it re-runs; to ask what changes under an assumption, plan a memo instead: kind "memo"/);
 });
 
 // ── the entry point ──────────────────────────────────────────────────────────────────────────────────

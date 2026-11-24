@@ -26,7 +26,7 @@ import { join, basename } from "node:path";
 // — the SHARED eligibility composer. A leaf module (fs/path/crypto only), so a
 // static import here costs the read-only surface nothing and buys the one thing three copies of this
 // question could not give: the same answer at the door and at the worker.
-import { whatIfRefusal } from "../../driver/whatif-queue.mjs";
+import { whatIfRefusal, memoReadable, memoUnreadableReason } from "../../driver/whatif-queue.mjs";
 import { driverDir, paths, readJson } from "../../driver/run-record.mjs";
 
 // ── — THE NOTE SAYS WHAT IS TRUE, AND IT IS THE STRONGER SENTENCE ────────
@@ -91,7 +91,7 @@ export function whatIfPlan({ run, stage, axis = null, instructions = null, model
   // prior telemetry to quote (this stage never ran). Carrying those keys with null values would tell a
   // reader the questions had been asked and answered "none", which is not what happened.
   if (kind === "memo") {
-    const refusal = whatIfRefusal({ location: run.location, state: run.state, kind: "memo" });
+    const refusal = whatIfRefusal({ location: run.location, state: run.state, kind: "memo" }) ?? memoUnreadableReason(run.runDir);
     if (refusal) return { runnable: false, reason: `Run ${run.runId}: ${refusal}.` };
     const assumption = String(instructions ?? "").trim();
     if (!assumption)
@@ -120,7 +120,7 @@ export function whatIfPlan({ run, stage, axis = null, instructions = null, model
   } else if (axis) {
     axis = null; // axis only applies to register-unit; ignore it elsewhere
   }
-  const refusal = whatIfRefusal({ location: run.location, state: run.state });
+  const refusal = whatIfRefusal({ location: run.location, state: run.state, memoOffered: memoReadable(run.runDir) });
   if (refusal) return { runnable: false, reason: `Run ${run.runId}: ${refusal}.` };
   const resolvedModel = resolveModel(model ?? (axis ? axisTier(axis).model : STAGES[stage].model));
   const ord = stageOrdinal(stage);
@@ -196,7 +196,8 @@ export async function whatIfEnqueue({ run, confirmationToken, requestedBy = null
     throw new Error(`whatIfEnqueue: this confirmationToken is for run "${op.runId}", not "${run.runId}" — plan the what-if on the run you mean to change.`);
   // — the KIND decides what "finished" means here: a stage re-run on a delivered
   // run is refused, and a memo over one is the whole point.
-  const refusal = whatIfRefusal({ location: run.location, state: run.state, kind: op.kind ?? "stage" });
+  const refusal = whatIfRefusal({ location: run.location, state: run.state, kind: op.kind ?? "stage", memoOffered: memoReadable(run.runDir) })
+    ?? (op.kind === "memo" ? memoUnreadableReason(run.runDir) : null);
   if (refusal) throw new Error(`whatIfEnqueue: run ${run.runId}: ${refusal}.`);
   const enqueue = deps.enqueueWhatIf ?? (await import("../../driver/whatif-queue.mjs")).enqueueWhatIf;
   const job = enqueue(run.runDir, { op, requestedBy, account });

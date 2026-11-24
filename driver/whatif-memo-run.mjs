@@ -33,6 +33,8 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { composeMemo } from "./whatif-memo.mjs";
 import { DRIVER_DIR, paths as runPaths } from "./run-record.mjs";   // the subtree name from its one definition, never a literal
+import { MEMO_EVIDENCE_FILE } from "./whatif-queue.mjs";   // the file a memo reads, named once for every door that offers one
+import { FROZEN_METHOD_FILE } from "./framework-method.mjs";
 
 export const SKILL_ROOT = join(dirname(fileURLToPath(import.meta.url)), "skills");
 
@@ -122,6 +124,21 @@ export function splitMemoFootprint(moved = []) {
   return { own, foreign };
 }
 
+/**
+ * The framework the PARENT froze: its bands, highest to lowest, and its rating table where it states one. The run freezes
+ * these two and not the framework's text, so the memo is handed what was archived and told that the text is not among it
+ * (design, 2026-11-24). null where the run froze no framework.
+ */
+export function parentFramework(runDir, { read = readFileSync } = {}) {
+  let bands = [];
+  try { bands = (JSON.parse(read(runPaths(runDir).framework, "utf8"))?.bands ?? []).map((b) => String(b?.label ?? "").trim()).filter(Boolean); }
+  catch { return null; }
+  let method = null;
+  try { method = JSON.parse(read(join(runDir, DRIVER_DIR, FROZEN_METHOD_FILE), "utf8")); }
+  catch { method = null; }   // a framework that states no table rates by its band definitions
+  return bands.length ? { bands, method } : null;
+}
+
 /** The profile key the PARENT rated under — read from its frozen sidecar, never re-resolved. */
 export function parentRatedUnder(runDir, { read = readFileSync } = {}) {
   try { return JSON.parse(read(runPaths(runDir).profile, "utf8"))?.profileKey ?? null; }
@@ -141,7 +158,7 @@ export function parentRatedUnder(runDir, { read = readFileSync } = {}) {
  * The reply is a FILE the seat writes and this validates, not prose scraped from a transcript — the
  * typed-transport pattern, chosen here before it could bite rather than after.
  */
-export async function seatReason({ runDir, runId, assumption, ratedUnder, findings }, deps = {}) {
+export async function seatReason({ runDir, runId, assumption, ratedUnder, findings, framework = null }, deps = {}) {
   const {
     runStage = null,
     read = readFileSync,
@@ -157,7 +174,7 @@ export async function seatReason({ runDir, runId, assumption, ratedUnder, findin
   const replyPath = join(runDir, MEMO_DIR, `reply-${sha(`${runId}${assumption}`).slice(0, 10)}.json`);
   mkdirSync(join(runDir, MEMO_DIR), { recursive: true });
   const r = await dispatch("whatif-memo", {
-    message: composeMemoMessage({ assumption, findings, ratedUnder, skill, replyPath }),
+    message: composeMemoMessage({ assumption, findings, ratedUnder, framework, skill, replyPath }),
     model,
     // A BOUNDED READING, and the ceiling says so. This re-reads evidence already gathered; a memo that
     // needed the clearance's own ceiling would not be the cheap thing the plan promised the reader.
@@ -235,7 +252,7 @@ export function validateMemoReply(raw) {
 // composing — so a forgotten field is caught there. It stops being safe the moment a dispatch path calls
 // this composer alone: the seat would be instructed "house default" with no artifact refusal behind it,
 // because no artifact would be composed. A caller that dispatches without composing owes its own check.
-export function composeMemoMessage({ assumption, findings, ratedUnder = null, skill = "", replyPath = null } = {}) {
+export function composeMemoMessage({ assumption, findings, ratedUnder = null, framework = null, skill = "", replyPath = null } = {}) {
   return [
     skill.trim(),
     "",
@@ -248,6 +265,10 @@ export function composeMemoMessage({ assumption, findings, ratedUnder = null, sk
     ratedUnder
       ? `${ratedUnder} — assess under this one, not the house default.`
       : "This run froze no customer profile, so it was assessed under the house default. Stay with it.",
+    ...(framework?.bands?.length ? ["", `Its bands, highest to lowest: ${framework.bands.join(" · ")}.`] : []),
+    ...(framework?.method ? ["", "Its rating table:", "", "```json", JSON.stringify(framework.method, null, 2), "```"] : []),
+    "",
+    "The framework's full text is not given to you. Where the answer turns on how it defines a band, say so in the body.",
     "",
     "## The findings this report delivered",
     "",
@@ -266,7 +287,7 @@ export function composeMemoMessage({ assumption, findings, ratedUnder = null, sk
     // one document and left a retried stage on the parent run's ledger — an INVESTIGATE line on a report
     // that had already been delivered clean.
     replyPath
-      ? `Write it to this ABSOLUTE path (create parent dirs if needed): ${replyPath}`
+      ? `Write your reply to this ABSOLUTE path (create parent dirs if needed): ${replyPath}`
       : "Write the JSON object the skill dictates, and nothing else.",
     replyPath ? "Write the JSON object the skill dictates, and nothing else." : null,
   ].filter((l) => l !== null).join("\n");
@@ -304,9 +325,9 @@ export async function askArchivedRun({ runId, question, requestedBy = null } = {
 
   // The evidence must exist before anything is asked of it. A memo over a run with no findings would
   // reason from nothing and say so in the voice of a document that had read something.
-  const findingsPath = join(run.runDir, "findings.json");
+  const findingsPath = join(run.runDir, MEMO_EVIDENCE_FILE);
   if (!existsSync(findingsPath))
-    return { ok: false, fail: MEMO_FAILS.NO_EVIDENCE, detail: `${runId} carries no findings.json to reason over` };
+    return { ok: false, fail: MEMO_FAILS.NO_EVIDENCE, detail: `${runId} carries no ${MEMO_EVIDENCE_FILE} to reason over` };
 
   if (typeof reason !== "function")
     return { ok: false, fail: MEMO_FAILS.NOT_WIRED,
@@ -314,11 +335,12 @@ export async function askArchivedRun({ runId, question, requestedBy = null } = {
 
   const before = digestRunDir(run.runDir);
   const ratedUnder = parentRatedUnder(run.runDir, { read });
+  const framework = parentFramework(run.runDir, { read });
 
   let reading;
   try {
     reading = await reason({
-      runDir: run.runDir, runId: run.runId, assumption, ratedUnder,
+      runDir: run.runDir, runId: run.runId, assumption, ratedUnder, framework,
       findings: JSON.parse(read(findingsPath, "utf8")),
     });
   } catch (e) {
