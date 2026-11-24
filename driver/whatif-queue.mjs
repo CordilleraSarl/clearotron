@@ -44,10 +44,11 @@
 // re-running a CLEARANCE twice costs a second billable search and a second report to a lawyer. The
 // cheaper failure buys a much simpler protocol, and the asymmetry is the whole reason to state it.
 
-import { existsSync, mkdirSync, readdirSync, renameSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { randomUUID } from "node:crypto";
-import { readJson } from "./run-record.mjs";
+import { readJson, paths as runPaths } from "./run-record.mjs";
+import { PRODUCTS } from "./products.mjs";
 
 // ── WHICH RUNS A WHAT-IF MAY TOUCH — ONE DECLARATION, TWO READERS ───────────────────────────────────
 //
@@ -75,17 +76,48 @@ export const WHATIF_REFUSED_MARKERS = Object.freeze([".delivered", ".cancelled",
  * drift: the MCP door knows `location`/`state`, the worker knows which marker files are on disk, and
  * both get the same sentence for the same run.
  */
-// ── WHAT A MEMO CAN READ ───────────────────────────────────────────────────────────────────────────
+// ── WHICH RUNS A MEMO IS WRITTEN OVER ──────────────────────────────────────────────────────────────
 //
-// The memo worker reads the delivered clearance's findings file and nothing else (whatif-memo-run.mjs). A Knockout keeps
-// its ratings in a file of its own, so a memo was planned on a delivered Knockout and then refused by the worker, after
-// the asker had been told it would run (reproduced offline, 2026-11-24). Every door that offers a memo asks this first.
+// A delivered clearance report whose findings can be read, and nothing else (design, 2026-11-24). A live run's findings
+// file is an intermediate one; a run archived or cancelled without being delivered never completed; and a Knockout is not
+// a product a memo is written for, though it has findings of its own. A memo was planned on a delivered Knockout and then
+// refused by the worker after the asker had been told it would run (reproduced offline, 2026-11-24), so this one check
+// is asked by the plan, the queue, the run and the worker alike, before any session starts.
+//
+// DELIVERED IS READ FROM POSITIVE EVIDENCE: the run's state, or its delivery marker. Sitting in the archive is not
+// evidence, because a stopped or failed run is archived too.
 export const MEMO_EVIDENCE_FILE = "findings.json";
-/** Does this run hold the evidence a memo reads? */
-export const memoReadable = (runDir, exists = existsSync) => Boolean(runDir) && exists(join(String(runDir), MEMO_EVIDENCE_FILE));
-/** Why a memo cannot be written over this run, or null. One sentence for the planner, the queue and the worker. */
-export const memoUnreadableReason = (runDir, exists = existsSync) => (memoReadable(runDir, exists) ? null
-  : "a memo reads a delivered clearance report's findings, and this search has none for it to read, so no memo can be written for it");
+const KNOCKOUT_FILES = Object.freeze(["knockout-findings.json", "knockout-plan.json", "knockout-frame.md"]);
+const MEMO_STOPPED = "this run was stopped before its evidence was complete, so a memo over it would reason from a record the run itself never finished";
+
+/** Is this run a Knockout? Its frozen product where it has one, else the files only a Knockout writes. */
+function isKnockout(runDir, { exists, read }) {
+  try {
+    const level = JSON.parse(read(runPaths(runDir).searchPolicy, "utf8"))?.level;
+    const product = PRODUCTS.find((p) => p.id === level);
+    if (product) return product.pipeline === "knockout";
+  } catch { /* no frozen product on this run: the files decide */ }
+  return KNOCKOUT_FILES.some((f) => exists(join(runDir, f)));
+}
+
+/**
+ * Why no memo may be written over this run, or null when one may. `{ fail, reason }`: `fail` is a stable word for the
+ * worker's code, `reason` the sentence every door returns. `run` is a resolved run: its directory and recorded state.
+ */
+export function memoEligibility(run, { exists = existsSync, read = readFileSync } = {}) {
+  const dir = String(run?.runDir ?? "");
+  const has = (f) => Boolean(dir) && exists(join(dir, f));
+  if (run?.state === "cancelled" || has(".cancelled") || has(".cancel")) return { fail: "stopped", reason: MEMO_STOPPED };
+  if (!(run?.state === "delivered" || has(".delivered")))
+    return { fail: "not_delivered", reason: "a memo reads a delivered clearance report, and this search has not been delivered" };
+  if (isKnockout(dir, { exists, read }))
+    return { fail: "knockout", reason: "memos are offered on delivered clearance reports only, and this search is a Knockout" };
+  try { JSON.parse(read(join(dir, MEMO_EVIDENCE_FILE), "utf8")); }
+  catch { return { fail: "unreadable", reason: "this report's findings could not be read, so no memo can be written over it" }; }
+  return null;
+}
+/** The sentence alone, or null: what the plan, the queue and the run return. */
+export const memoRefusal = (run, io) => memoEligibility(run, io)?.reason ?? null;
 
 export function whatIfRefusal({ location = null, state = null, markers = [], kind = "stage", memoOffered = false } = {}) {
   const has = (m) => markers.includes(m);
@@ -111,9 +143,7 @@ export function whatIfRefusal({ location = null, state = null, markers = [], kin
       ? "this search is delivered, so no step of it re-runs; to ask what changes under an assumption, plan a memo instead: kind \"memo\", with the assumption in instructions"
       : "this run is delivered or archived — what-if runs on live runs only; read it with trace or read_artifact instead";
   if (state === "cancelled" || has(".cancelled") || has(".cancel"))
-    return kind === "memo"
-      ? "this run was stopped before its evidence was complete, so a memo over it would reason from a record the run itself never finished"
-      : "this run was stopped, so there is nothing here to re-run";
+    return kind === "memo" ? MEMO_STOPPED : "this run was stopped, so there is nothing here to re-run";
   return null;
 }
 

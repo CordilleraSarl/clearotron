@@ -17,7 +17,7 @@ import { drainWhatIfQueues } from "../whatif-worker.mjs";
 import { enqueueWhatIf } from "../whatif-queue.mjs";
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
-import { askArchivedRun, digestRunDir, movedArtifacts, parentRatedUnder, seatReason, validateMemoReply, composeMemoMessage, MEMO_FAILS, MEMO_DIR } from "../whatif-memo-run.mjs";
+import { askArchivedRun, digestRunDir, movedArtifacts, parentRatedUnder, seatReason, validateMemoReply, composeMemoMessage, MEMO_FAILS, MEMO_DIR, MEMO_RULES_LINE } from "../whatif-memo-run.mjs";
 
 // A delivered run on disk. Its own temp directory every time: /tmp is shared across logins on this box
 // and carries files weeks old — a bare join(tmpdir(), "findings.json") reads somebody else's, which is
@@ -161,7 +161,10 @@ test("the dispatch carries the assumption verbatim, the parent's framework, and 
   assert.match(msg, /petcary — assess under this one, not the house default/);
   assert.match(msg, /"ordinal": 2/, "the run's own findings, not our summary of them");
   const houseMsg = composeMemoMessage({ assumption: "x", findings: {}, ratedUnder: null, skill: "" });
-  assert.match(houseMsg, /froze no customer profile/, "and null says which fact that is");
+  assert.match(houseMsg, /kept no record of the customer profile it was rated under/, "and null says which fact that is");
+  // A missing record does not show the house default was used (design, 2026-11-24).
+  assert.doesNotMatch(houseMsg, /house default/, "a run with no profile record is said to have been rated under the house default");
+  assert.ok(houseMsg.includes(MEMO_RULES_LINE), "the memo is not told what to do where a rule it needs is missing");
 });
 
 // ── THE FIRST ATTEMPT MUST SAY WHERE, or it is not the attempt that lands ────────────────────────────
@@ -241,8 +244,11 @@ test("each refusal names its own state", async () => {
     MEMO_FAILS.NO_RUN);
   const empty = mkdtempSync(join(tmpdir(), "memo-empty-"));
   assert.equal((await askArchivedRun({ runId: "x", question: "q" },
-    { resolveRun: () => ({ runId: "x", runDir: empty }), reason })).fail, MEMO_FAILS.NO_EVIDENCE,
+    { resolveRun: () => ({ runId: "x", runDir: empty, state: "delivered" }), reason })).fail, MEMO_FAILS.NO_EVIDENCE,
     "a memo over a run with no findings would reason from nothing in the voice of a document that read something");
+  assert.equal((await askArchivedRun({ runId: "x", question: "q" },
+    { resolveRun: () => ({ runId: "x", runDir: run.runDir, state: "running" }), reason })).fail, MEMO_FAILS.NOT_ELIGIBLE,
+    "a memo over a live run's intermediate findings was written");
 });
 
 // ── the immutability proof ───────────────────────────────────────────────────────────────────────────
@@ -400,9 +406,10 @@ test("the WORKER still refuses a stage re-run on a delivered run — not merely 
 // AND A DIFFERENT MEMBER AGAIN: cancelled. A memo is exempt from "finished", never from "stopped".
 test("the worker still refuses a memo over a CANCELLED run, and says why a memo in particular cannot run", async () => {
   const { studio, runDir, run } = deliveredStudio();
-  writeFileSync(join(runDir, ".cancelled"), "");
   const plan = whatIfPlan({ run: { ...run, state: "delivered" }, kind: "memo", instructions: "assume it lapsed" });
   await whatIfEnqueue({ run, confirmationToken: plan.confirmationToken });
+  // Stopped after it was queued: the plan and the queue refuse a stopped run themselves, so only the worker is left to.
+  writeFileSync(join(runDir, ".cancelled"), "");
   const settled = await drainWith(studio, run);
   assert.equal(settled[0].state, "failed", "a memo over a stopped run was admitted");
   assert.match(settled[0].error, /evidence was complete|stopped/i);
